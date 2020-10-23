@@ -2,407 +2,364 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E39FE297395
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Oct 2020 18:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1ED297448
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Oct 2020 18:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750571AbgJWQ0Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Oct 2020 12:26:16 -0400
-Received: from mga17.intel.com ([192.55.52.151]:10550 "EHLO mga17.intel.com"
+        id S465803AbgJWQfh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Oct 2020 12:35:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750557AbgJWQ0Q (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:26:16 -0400
-IronPort-SDR: KGkRxTDWx0sT8w0apV3EYOh4VQHxvrmmA+s+ixI0VSVr0uVgXq6LaedWx71kI+K2vLljaeZylV
- LSo3x2A32Bpg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="147556672"
-X-IronPort-AV: E=Sophos;i="5.77,409,1596524400"; 
-   d="scan'208";a="147556672"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 09:26:15 -0700
-IronPort-SDR: 0xBzPI2/b35bif2NL2fQWxUKl/CNOqjwcxYMBKxO5Mvt/Ratv83eIUU2Bmqx+Osyi5rGfArs9V
- 29In0Xqn7R6A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,409,1596524400"; 
-   d="scan'208";a="349257214"
-Received: from cst-dev.jf.intel.com ([10.23.221.69])
-  by fmsmga004.fm.intel.com with ESMTP; 23 Oct 2020 09:26:15 -0700
-From:   Jianxin Xiong <jianxin.xiong@intel.com>
-To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
+        id S1751829AbgJWQdv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 23 Oct 2020 12:33:51 -0400
+Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6D6024689;
+        Fri, 23 Oct 2020 16:33:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603470827;
+        bh=j7k7sytz8mKgmUBtNYdsAfWtUy2wSY3Ypl6djEUtgfo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=RYJoqd4a41qjmTHYS0m/pi3m5fP/352dPxkQ6viKSFVOyNYQtPgtV2aebt+ONNEl8
+         qs+Wm/tqWz1R+YXP6FHHy3mb3PFHJPEmp6/pr2oK5nRBSJvD9U5udJbDFQtghb/JLj
+         Qs64/Qbn1CQ0AOQ60S2N8PrpFG2/R0zwFi14CWS8=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kW00f-002Avu-6Y; Fri, 23 Oct 2020 18:33:45 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Danit Goldberg <danitg@mellanox.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Divya Indi <divya.indi@oracle.com>,
         Doug Ledford <dledford@redhat.com>,
+        Gal Pressman <galpress@amazon.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Leon Romanovsky <leon@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH v6 4/4] RDMA/mlx5: Support dma-buf based userspace memory region
-Date:   Fri, 23 Oct 2020 09:40:01 -0700
-Message-Id: <1603471201-32588-5-git-send-email-jianxin.xiong@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1603471201-32588-1-git-send-email-jianxin.xiong@intel.com>
-References: <1603471201-32588-1-git-send-email-jianxin.xiong@intel.com>
+        Maor Gottlieb <maorg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Ursula Braun <ubraun@linux.ibm.com>,
+        Xi Wang <wangxi11@huawei.com>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        target-devel@vger.kernel.org
+Subject: [PATCH v3 14/56] IB: fix kernel-doc markups
+Date:   Fri, 23 Oct 2020 18:33:01 +0200
+Message-Id: <f201c81b58f7087425387672b24af5b85aa04b1a.1603469755.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1603469755.git.mchehab+huawei@kernel.org>
+References: <cover.1603469755.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Implement the new driver method 'reg_user_mr_dmabuf'.  Utilize the core
-functions to import dma-buf based memory region and update the mappings.
+Some functions have different names between their prototypes
+and the kernel-doc markup.
 
-Add code to handle dma-buf related page fault.
+Others need to be fixed, as kernel-doc markups should use this format:
+        identifier - description
 
-Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
-Reviewed-by: Sean Hefty <sean.hefty@intel.com>
-Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
-Acked-by: Christian Koenig <christian.koenig@amd.com>
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/main.c    |   2 +
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  11 ++++
- drivers/infiniband/hw/mlx5/mr.c      | 114 ++++++++++++++++++++++++++++++++++-
- drivers/infiniband/hw/mlx5/odp.c     |  70 +++++++++++++++++++--
- 4 files changed, 191 insertions(+), 6 deletions(-)
+ drivers/infiniband/core/cm.c                         |  5 +++--
+ drivers/infiniband/core/cq.c                         |  4 ++--
+ drivers/infiniband/core/iwpm_util.h                  |  2 +-
+ drivers/infiniband/core/sa_query.c                   |  3 ++-
+ drivers/infiniband/core/verbs.c                      |  4 ++--
+ drivers/infiniband/sw/rdmavt/ah.c                    |  2 +-
+ drivers/infiniband/sw/rdmavt/mcast.c                 | 12 ++++++------
+ drivers/infiniband/sw/rdmavt/qp.c                    |  8 ++++----
+ drivers/infiniband/ulp/iser/iscsi_iser.c             |  2 +-
+ drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h     |  2 +-
+ .../infiniband/ulp/opa_vnic/opa_vnic_vema_iface.c    |  2 +-
+ drivers/infiniband/ulp/srpt/ib_srpt.h                |  2 +-
+ include/rdma/ib_verbs.h                              | 11 +++++++++++
+ 13 files changed, 36 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 89e04ca..ec4ad2f 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
- /*
-  * Copyright (c) 2013-2020, Mellanox Technologies inc. All rights reserved.
-+ * Copyright (c) 2020, Intel Corporation. All rights reserved.
-  */
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 5740d1ba3568..2dfbfdd6cc57 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -1251,7 +1251,8 @@ int ib_cm_listen(struct ib_cm_id *cm_id, __be64 service_id, __be64 service_mask)
+ EXPORT_SYMBOL(ib_cm_listen);
  
- #include <linux/debugfs.h>
-@@ -4060,6 +4061,7 @@ static int mlx5_ib_enable_driver(struct ib_device *dev)
- 	.query_srq = mlx5_ib_query_srq,
- 	.query_ucontext = mlx5_ib_query_ucontext,
- 	.reg_user_mr = mlx5_ib_reg_user_mr,
-+	.reg_user_mr_dmabuf = mlx5_ib_reg_user_mr_dmabuf,
- 	.req_notify_cq = mlx5_ib_arm_cq,
- 	.rereg_user_mr = mlx5_ib_rereg_user_mr,
- 	.resize_cq = mlx5_ib_resize_cq,
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index b1f2b34..4b72ff9 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1,6 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
- /*
-  * Copyright (c) 2013-2020, Mellanox Technologies inc. All rights reserved.
-+ * Copyright (c) 2020, Intel Corporation. All rights reserved.
-  */
- 
- #ifndef MLX5_IB_H
-@@ -639,6 +640,12 @@ static inline bool is_odp_mr(struct mlx5_ib_mr *mr)
- 	       mr->umem->is_odp;
- }
- 
-+static inline bool is_dmabuf_mr(struct mlx5_ib_mr *mr)
-+{
-+	return IS_ENABLED(CONFIG_INFINIBAND_ON_DEMAND_PAGING) && mr->umem &&
-+	       mr->umem->is_dmabuf;
-+}
-+
- struct mlx5_ib_mw {
- 	struct ib_mw		ibmw;
- 	struct mlx5_core_mkey	mmkey;
-@@ -1174,6 +1181,10 @@ int mlx5_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 				  u64 virt_addr, int access_flags,
- 				  struct ib_udata *udata);
-+struct ib_mr *mlx5_ib_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
-+					 u64 length, u64 virt_addr,
-+					 int fd, int access_flags,
-+					 struct ib_udata *udata);
- int mlx5_ib_advise_mr(struct ib_pd *pd,
- 		      enum ib_uverbs_advise_mr_advice advice,
- 		      u32 flags,
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index b261797..3bc412b 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -1,5 +1,6 @@
- /*
-  * Copyright (c) 2013-2015, Mellanox Technologies. All rights reserved.
-+ * Copyright (c) 2020, Intel Corporation. All rights reserved.
-  *
-  * This software is available to you under a choice of one of two
-  * licenses.  You may choose to be licensed under the terms of the GNU
-@@ -36,6 +37,8 @@
- #include <linux/debugfs.h>
- #include <linux/export.h>
- #include <linux/delay.h>
-+#include <linux/dma-buf.h>
-+#include <linux/dma-resv.h>
- #include <rdma/ib_umem.h>
- #include <rdma/ib_umem_odp.h>
- #include <rdma/ib_verbs.h>
-@@ -1113,6 +1116,8 @@ int mlx5_ib_update_xlt(struct mlx5_ib_mr *mr, u64 idx, int npages,
- 		dma_sync_single_for_cpu(ddev, dma, size, DMA_TO_DEVICE);
- 		if (mr->umem->is_odp) {
- 			mlx5_odp_populate_xlt(xlt, idx, npages, mr, flags);
-+		} else if (mr->umem->is_dmabuf && (flags & MLX5_IB_UPD_XLT_ZAP)) {
-+			memset(xlt, 0, size);
- 		} else {
- 			__mlx5_ib_populate_pas(dev, mr->umem, page_shift, idx,
- 					       npages, xlt,
-@@ -1462,6 +1467,111 @@ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 	return ERR_PTR(err);
- }
- 
-+static void mlx5_ib_dmabuf_invalidate_cb(struct dma_buf_attachment *attach)
-+{
-+	struct ib_umem_dmabuf *umem_dmabuf = attach->importer_priv;
-+	struct mlx5_ib_mr *mr = umem_dmabuf->device_context;
-+
-+	mlx5_ib_update_xlt(mr, 0, mr->npages, PAGE_SHIFT, MLX5_IB_UPD_XLT_ZAP);
-+	ib_umem_dmabuf_unmap_pages(umem_dmabuf);
-+}
-+
-+static struct dma_buf_attach_ops mlx5_ib_dmabuf_attach_ops = {
-+	.allow_peer2peer = 1,
-+	.move_notify = mlx5_ib_dmabuf_invalidate_cb,
-+};
-+
-+struct ib_mr *mlx5_ib_reg_user_mr_dmabuf(struct ib_pd *pd, u64 offset,
-+					 u64 length, u64 virt_addr,
-+					 int fd, int access_flags,
-+					 struct ib_udata *udata)
-+{
-+	struct mlx5_ib_dev *dev = to_mdev(pd->device);
-+	struct mlx5_ib_mr *mr = NULL;
-+	struct ib_umem *umem;
-+	struct ib_umem_dmabuf *umem_dmabuf;
-+	int npages;
-+	int order;
-+	int err;
-+
-+	if (!IS_ENABLED(CONFIG_INFINIBAND_USER_MEM))
-+		return ERR_PTR(-EOPNOTSUPP);
-+
-+	mlx5_ib_dbg(dev,
-+		    "offset 0x%llx, virt_addr 0x%llx, length 0x%llx, fd %d, access_flags 0x%x\n",
-+		    offset, virt_addr, length, fd, access_flags);
-+
-+	if (!mlx5_ib_can_load_pas_with_umr(dev, length))
-+		return ERR_PTR(-EINVAL);
-+
-+	umem = ib_umem_dmabuf_get(&dev->ib_dev, offset, length, fd, access_flags,
-+				  &mlx5_ib_dmabuf_attach_ops);
-+	if (IS_ERR(umem)) {
-+		mlx5_ib_dbg(dev, "umem get failed (%ld)\n", PTR_ERR(umem));
-+		return ERR_PTR(PTR_ERR(umem));
-+	}
-+
-+	npages = ib_umem_num_pages(umem);
-+	if (!npages) {
-+		mlx5_ib_warn(dev, "avoid zero region\n");
-+		ib_umem_release(umem);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	order = ilog2(roundup_pow_of_two(npages));
-+
-+	mlx5_ib_dbg(dev, "npages %d, ncont %d, order %d, page_shift %d\n",
-+		    npages, npages, order, PAGE_SHIFT);
-+
-+	mr = alloc_mr_from_cache(pd, umem, virt_addr, length, npages,
-+				 PAGE_SHIFT, order, access_flags);
-+	if (IS_ERR(mr))
-+		mr = NULL;
-+
-+	if (!mr) {
-+		mutex_lock(&dev->slow_path_mutex);
-+		mr = reg_create(NULL, pd, virt_addr, length, umem, npages,
-+				PAGE_SHIFT, access_flags, false);
-+		mutex_unlock(&dev->slow_path_mutex);
-+	}
-+
-+	if (IS_ERR(mr)) {
-+		err = PTR_ERR(mr);
-+		goto error;
-+	}
-+
-+	mlx5_ib_dbg(dev, "mkey 0x%x\n", mr->mmkey.key);
-+
-+	mr->umem = umem;
-+	set_mr_fields(dev, mr, npages, length, access_flags);
-+
-+	umem_dmabuf = to_ib_umem_dmabuf(umem);
-+	umem_dmabuf->device_context = mr;
-+
-+	err = mlx5_ib_update_xlt(mr, 0, mr->npages, PAGE_SHIFT,
-+				 MLX5_IB_UPD_XLT_ENABLE | MLX5_IB_UPD_XLT_ZAP);
-+
-+	if (err) {
-+		dereg_mr(dev, mr);
-+		return ERR_PTR(err);
-+	}
-+
-+	init_waitqueue_head(&mr->q_deferred_work);
-+	atomic_set(&mr->num_deferred_work, 0);
-+	err = xa_err(xa_store(&dev->odp_mkeys,
-+			      mlx5_base_mkey(mr->mmkey.key), &mr->mmkey,
-+			      GFP_KERNEL));
-+	if (err) {
-+		dereg_mr(dev, mr);
-+		return ERR_PTR(err);
-+	}
-+
-+	return &mr->ibmr;
-+error:
-+	ib_umem_release(umem);
-+	return ERR_PTR(err);
-+}
-+
  /**
-  * mlx5_mr_cache_invalidate - Fence all DMA on the MR
-  * @mr: The MR to fence
-@@ -1536,7 +1646,7 @@ int mlx5_ib_rereg_user_mr(struct ib_mr *ib_mr, int flags, u64 start,
- 	if (!mr->umem)
- 		return -EINVAL;
- 
--	if (is_odp_mr(mr))
-+	if (is_odp_mr(mr) || is_dmabuf_mr(mr))
- 		return -EOPNOTSUPP;
- 
- 	if (flags & IB_MR_REREG_TRANS) {
-@@ -1695,7 +1805,7 @@ static void dereg_mr(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr)
- 	struct ib_umem *umem = mr->umem;
- 
- 	/* Stop all DMA */
--	if (is_odp_mr(mr))
-+	if (is_odp_mr(mr) || is_dmabuf_mr(mr))
- 		mlx5_ib_fence_odp_mr(mr);
- 	else
- 		clean_mr(dev, mr);
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index 5c853ec..7bc863b 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -33,6 +33,8 @@
- #include <rdma/ib_umem.h>
- #include <rdma/ib_umem_odp.h>
- #include <linux/kernel.h>
-+#include <linux/dma-buf.h>
-+#include <linux/dma-resv.h>
- 
- #include "mlx5_ib.h"
- #include "cmd.h"
-@@ -204,6 +206,16 @@ static void dma_fence_odp_mr(struct mlx5_ib_mr *mr)
- 	}
- }
- 
-+static void dma_fence_dmabuf_mr(struct mlx5_ib_mr *mr)
-+{
-+	mlx5_mr_cache_invalidate(mr);
-+
-+	if (!mr->cache_ent) {
-+		mlx5_core_destroy_mkey(mr->dev->mdev, &mr->mmkey);
-+		WARN_ON(mr->descs);
-+	}
-+}
-+
- /*
-  * This must be called after the mr has been removed from implicit_children
-  * and the SRCU synchronized.  NOTE: The MR does not necessarily have to be
-@@ -661,6 +673,9 @@ void mlx5_ib_fence_odp_mr(struct mlx5_ib_mr *mr)
- 
- 	wait_event(mr->q_deferred_work, !atomic_read(&mr->num_deferred_work));
- 
-+	if (is_dmabuf_mr(mr))
-+		return dma_fence_dmabuf_mr(mr);
-+
- 	dma_fence_odp_mr(mr);
- }
- 
-@@ -801,6 +816,52 @@ static int pagefault_implicit_mr(struct mlx5_ib_mr *imr,
-  * Returns:
-  *  -EFAULT: The io_virt->bcnt is not within the MR, it covers pages that are
-  *           not accessible, or the MR is no longer valid.
-+ *  -EAGAIN: The operation should be retried
-+ *
-+ *  >0: Number of pages mapped
-+ */
-+static int pagefault_dmabuf_mr(struct mlx5_ib_mr *mr, struct ib_umem *umem,
-+			       u64 io_virt, size_t bcnt, u32 *bytes_mapped,
-+			       u32 flags)
-+{
-+	struct ib_umem_dmabuf *umem_dmabuf = to_ib_umem_dmabuf(umem);
-+	u64 user_va;
-+	u64 end;
-+	int npages;
-+	int err;
-+
-+	if (unlikely(io_virt < mr->mmkey.iova))
-+		return -EFAULT;
-+	if (check_add_overflow(io_virt - mr->mmkey.iova,
-+			       (u64)umem->address, &user_va))
-+		return -EFAULT;
-+
-+	/* Overflow has alreddy been checked at the umem creation time */
-+	end = umem->address + umem->length;
-+	if (unlikely(user_va >= end || end  - user_va < bcnt))
-+		return -EFAULT;
-+
-+	dma_resv_lock(umem_dmabuf->attach->dmabuf->resv, NULL);
-+	err = ib_umem_dmabuf_map_pages(umem_dmabuf);
-+	if (!err)
-+		err = mlx5_ib_update_xlt(mr, 0, mr->npages, PAGE_SHIFT, 0);
-+	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
-+
-+	if (err)
-+		return err;
-+
-+	if (bytes_mapped)
-+		*bytes_mapped += bcnt;
-+
-+	npages = (ALIGN(user_va + bcnt, PAGE_SIZE) -
-+		 ALIGN_DOWN(user_va, PAGE_SIZE)) >> PAGE_SHIFT;
-+	return npages;
-+}
-+
-+/*
-+ * Returns:
-+ *  -EFAULT: The io_virt->bcnt is not within the MR, it covers pages that are
-+ *           not accessible, or the MR is no longer valid.
-  *  -EAGAIN/-ENOMEM: The operation should be retried
+- * Create a new listening ib_cm_id and listen on the given service ID.
++ * ib_cm_insert_listen - Create a new listening ib_cm_id and listen on
++ *			 the given service ID.
   *
-  *  -EINVAL/others: General internal malfunction
-@@ -811,6 +872,10 @@ static int pagefault_mr(struct mlx5_ib_mr *mr, u64 io_virt, size_t bcnt,
- {
- 	struct ib_umem_odp *odp = to_ib_umem_odp(mr->umem);
+  * If there's an existing ID listening on that same device and service ID,
+  * return it.
+@@ -1764,7 +1765,7 @@ static u16 cm_get_bth_pkey(struct cm_work *work)
+ }
  
-+	if (is_dmabuf_mr(mr))
-+		return pagefault_dmabuf_mr(mr, mr->umem, io_virt, bcnt,
-+					   bytes_mapped, flags);
-+
- 	lockdep_assert_held(&mr->dev->odp_srcu);
- 	if (unlikely(io_virt < mr->mmkey.iova))
- 		return -EFAULT;
-@@ -1747,7 +1812,6 @@ static void destroy_prefetch_work(struct prefetch_mr_work *work)
- {
- 	struct mlx5_ib_dev *dev = to_mdev(pd->device);
- 	struct mlx5_core_mkey *mmkey;
--	struct ib_umem_odp *odp;
- 	struct mlx5_ib_mr *mr;
+ /**
+- * Convert OPA SGID to IB SGID
++ * cm_opa_to_ib_sgid - Convert OPA SGID to IB SGID
+  * ULPs (such as IPoIB) do not understand OPA GIDs and will
+  * reject them as the local_gid will not match the sgid. Therefore,
+  * change the pathrec's SGID to an IB SGID.
+diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
+index 12ebacf52958..d4248bbe74da 100644
+--- a/drivers/infiniband/core/cq.c
++++ b/drivers/infiniband/core/cq.c
+@@ -123,7 +123,7 @@ static int __ib_process_cq(struct ib_cq *cq, int budget, struct ib_wc *wcs,
+ }
  
- 	lockdep_assert_held(&dev->odp_srcu);
-@@ -1761,11 +1825,9 @@ static void destroy_prefetch_work(struct prefetch_mr_work *work)
- 	if (mr->ibmr.pd != pd)
- 		return NULL;
+ /**
+- * ib_process_direct_cq - process a CQ in caller context
++ * ib_process_cq_direct - process a CQ in caller context
+  * @cq:		CQ to process
+  * @budget:	number of CQEs to poll for
+  *
+@@ -197,7 +197,7 @@ static void ib_cq_completion_workqueue(struct ib_cq *cq, void *private)
+ }
  
--	odp = to_ib_umem_odp(mr->umem);
--
- 	/* prefetch with write-access must be supported by the MR */
- 	if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_WRITE &&
--	    !odp->umem.writable)
-+	    !mr->umem->writable)
- 		return NULL;
+ /**
+- * __ib_alloc_cq        allocate a completion queue
++ * __ib_alloc_cq - allocate a completion queue
+  * @dev:		device to allocate the CQ for
+  * @private:		driver private data, accessible from cq->cq_context
+  * @nr_cqe:		number of CQEs to allocate
+diff --git a/drivers/infiniband/core/iwpm_util.h b/drivers/infiniband/core/iwpm_util.h
+index 1bf87d9fd0bd..eeb8e6010907 100644
+--- a/drivers/infiniband/core/iwpm_util.h
++++ b/drivers/infiniband/core/iwpm_util.h
+@@ -141,7 +141,7 @@ int iwpm_wait_complete_req(struct iwpm_nlmsg_request *nlmsg_request);
+ int iwpm_get_nlmsg_seq(void);
  
- 	return mr;
+ /**
+- * iwpm_add_reminfo - Add remote address info of the connecting peer
++ * iwpm_add_remote_info - Add remote address info of the connecting peer
+  *                    to the remote info hash table
+  * @reminfo: The remote info to be added
+  */
+diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+index 8c930bf1df89..89a831fa1885 100644
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -1435,7 +1435,8 @@ enum opa_pr_supported {
+ };
+ 
+ /**
+- * Check if current PR query can be an OPA query.
++ * opa_pr_query_possible - Check if current PR query can be an OPA query.
++ *
+  * Retuns PR_NOT_SUPPORTED if a path record query is not
+  * possible, PR_OPA_SUPPORTED if an OPA path record query
+  * is possible and PR_IB_SUPPORTED if an IB path record
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 740f8454b6b4..89f379cd7909 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -244,7 +244,7 @@ EXPORT_SYMBOL(rdma_port_get_link_layer);
+ /* Protection domains */
+ 
+ /**
+- * ib_alloc_pd - Allocates an unused protection domain.
++ * __ib_alloc_pd - Allocates an unused protection domain.
+  * @device: The device on which to allocate the protection domain.
+  * @flags: protection domain flags
+  * @caller: caller's build-time module name
+@@ -1662,7 +1662,7 @@ static bool is_qp_type_connected(const struct ib_qp *qp)
+ 		qp->qp_type == IB_QPT_XRC_TGT);
+ }
+ 
+-/**
++/*
+  * IB core internal function to perform QP attributes modification.
+  */
+ static int _ib_modify_qp(struct ib_qp *qp, struct ib_qp_attr *attr,
+diff --git a/drivers/infiniband/sw/rdmavt/ah.c b/drivers/infiniband/sw/rdmavt/ah.c
+index b938c4ffa99a..3c175bd4ad55 100644
+--- a/drivers/infiniband/sw/rdmavt/ah.c
++++ b/drivers/infiniband/sw/rdmavt/ah.c
+@@ -126,7 +126,7 @@ int rvt_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
+ }
+ 
+ /**
+- * rvt_destory_ah - Destory an address handle
++ * rvt_destroy_ah - Destory an address handle
+  * @ibah: address handle
+  * @destroy_flags: destroy address handle flags (see enum rdma_destroy_ah_flags)
+  *
+diff --git a/drivers/infiniband/sw/rdmavt/mcast.c b/drivers/infiniband/sw/rdmavt/mcast.c
+index dd11c6fcd060..5233a63d99a6 100644
+--- a/drivers/infiniband/sw/rdmavt/mcast.c
++++ b/drivers/infiniband/sw/rdmavt/mcast.c
+@@ -54,7 +54,7 @@
+ #include "mcast.h"
+ 
+ /**
+- * rvt_driver_mcast - init resources for multicast
++ * rvt_driver_mcast_init - init resources for multicast
+  * @rdi: rvt dev struct
+  *
+  * This is per device that registers with rdmavt
+@@ -69,7 +69,7 @@ void rvt_driver_mcast_init(struct rvt_dev_info *rdi)
+ }
+ 
+ /**
+- * mcast_qp_alloc - alloc a struct to link a QP to mcast GID struct
++ * rvt_mcast_qp_alloc - alloc a struct to link a QP to mcast GID struct
+  * @qp: the QP to link
+  */
+ static struct rvt_mcast_qp *rvt_mcast_qp_alloc(struct rvt_qp *qp)
+@@ -98,7 +98,7 @@ static void rvt_mcast_qp_free(struct rvt_mcast_qp *mqp)
+ }
+ 
+ /**
+- * mcast_alloc - allocate the multicast GID structure
++ * rvt_mcast_alloc - allocate the multicast GID structure
+  * @mgid: the multicast GID
+  * @lid: the muilticast LID (host order)
+  *
+@@ -181,7 +181,7 @@ struct rvt_mcast *rvt_mcast_find(struct rvt_ibport *ibp, union ib_gid *mgid,
+ EXPORT_SYMBOL(rvt_mcast_find);
+ 
+ /**
+- * mcast_add - insert mcast GID into table and attach QP struct
++ * rvt_mcast_add - insert mcast GID into table and attach QP struct
+  * @mcast: the mcast GID table
+  * @mqp: the QP to attach
+  *
+@@ -426,8 +426,8 @@ int rvt_detach_mcast(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
+ }
+ 
+ /**
+- *rvt_mast_tree_empty - determine if any qps are attached to any mcast group
+- *@rdi: rvt dev struct
++ * rvt_mcast_tree_empty - determine if any qps are attached to any mcast group
++ * @rdi: rvt dev struct
+  *
+  * Return: in use count
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+index ee48befc8978..a0cdde8a2335 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -1823,7 +1823,7 @@ int rvt_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ }
+ 
+ /**
+- * rvt_post_receive - post a receive on a QP
++ * rvt_post_recv - post a receive on a QP
+  * @ibqp: the QP to post the receive on
+  * @wr: the WR to post
+  * @bad_wr: the first bad WR is put here
+@@ -2245,7 +2245,7 @@ int rvt_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
+ }
+ 
+ /**
+- * rvt_post_srq_receive - post a receive on a shared receive queue
++ * rvt_post_srq_recv - post a receive on a shared receive queue
+  * @ibsrq: the SRQ to post the receive on
+  * @wr: the list of work requests to post
+  * @bad_wr: A pointer to the first WR to cause a problem is put here
+@@ -2497,7 +2497,7 @@ int rvt_get_rwqe(struct rvt_qp *qp, bool wr_id_only)
+ EXPORT_SYMBOL(rvt_get_rwqe);
+ 
+ /**
+- * qp_comm_est - handle trap with QP established
++ * rvt_comm_est - handle trap with QP established
+  * @qp: the QP
+  */
+ void rvt_comm_est(struct rvt_qp *qp)
+@@ -2943,7 +2943,7 @@ static enum ib_wc_status loopback_qp_drop(struct rvt_ibport *rvp,
+ }
+ 
+ /**
+- * ruc_loopback - handle UC and RC loopback requests
++ * rvt_ruc_loopback - handle UC and RC loopback requests
+  * @sqp: the sending QP
+  *
+  * This is called from rvt_do_send() to forward a WQE addressed to the same HFI
+diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.c b/drivers/infiniband/ulp/iser/iscsi_iser.c
+index 3690e28cc7ea..84cebf937680 100644
+--- a/drivers/infiniband/ulp/iser/iscsi_iser.c
++++ b/drivers/infiniband/ulp/iser/iscsi_iser.c
+@@ -739,7 +739,7 @@ iscsi_iser_set_param(struct iscsi_cls_conn *cls_conn,
+ }
+ 
+ /**
+- * iscsi_iser_set_param() - set class connection parameter
++ * iscsi_iser_conn_get_stats() - set class connection parameter
+  * @cls_conn:    iscsi class connection
+  * @stats:       iscsi stats to output
+  *
+diff --git a/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h b/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h
+index f64519872297..012fc27c5c93 100644
+--- a/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h
++++ b/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h
+@@ -437,7 +437,7 @@ struct opa_veswport_trap {
+ } __packed;
+ 
+ /**
+- * struct opa_vnic_iface_macs_entry - single entry in the mac list
++ * struct opa_vnic_iface_mac_entry - single entry in the mac list
+  * @mac_addr: MAC address
+  */
+ struct opa_vnic_iface_mac_entry {
+diff --git a/drivers/infiniband/ulp/opa_vnic/opa_vnic_vema_iface.c b/drivers/infiniband/ulp/opa_vnic/opa_vnic_vema_iface.c
+index 868b5aec1537..292c037aa239 100644
+--- a/drivers/infiniband/ulp/opa_vnic/opa_vnic_vema_iface.c
++++ b/drivers/infiniband/ulp/opa_vnic/opa_vnic_vema_iface.c
+@@ -74,7 +74,7 @@ void opa_vnic_vema_report_event(struct opa_vnic_adapter *adapter, u8 event)
+ }
+ 
+ /**
+- * opa_vnic_get_error_counters - get summary counters
++ * opa_vnic_get_summary_counters - get summary counters
+  * @adapter: vnic port adapter
+  * @cntrs: pointer to destination summary counters structure
+  *
+diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.h b/drivers/infiniband/ulp/srpt/ib_srpt.h
+index bdeb010efee6..76e66f630c17 100644
+--- a/drivers/infiniband/ulp/srpt/ib_srpt.h
++++ b/drivers/infiniband/ulp/srpt/ib_srpt.h
+@@ -347,7 +347,7 @@ struct srpt_nexus {
+ };
+ 
+ /**
+- * struct srpt_port_attib - attributes for SRPT port
++ * struct srpt_port_attrib - attributes for SRPT port
+  * @srp_max_rdma_size: Maximum size of SRP RDMA transfers for new connections.
+  * @srp_max_rsp_size: Maximum size of SRP response messages in bytes.
+  * @srp_sq_size: Shared receive queue (SRQ) size.
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 9bf6c319a670..5837bf0ac451 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -3430,6 +3430,17 @@ enum ib_pd_flags {
+ struct ib_pd *__ib_alloc_pd(struct ib_device *device, unsigned int flags,
+ 		const char *caller);
+ 
++/**
++ * ib_alloc_pd - Allocates an unused protection domain.
++ * @device: The device on which to allocate the protection domain.
++ * @flags: protection domain flags
++ *
++ * A protection domain object provides an association between QPs, shared
++ * receive queues, address handles, memory regions, and memory windows.
++ *
++ * Every PD has a local_dma_lkey which can be used as the lkey value for local
++ * memory operations.
++ */
+ #define ib_alloc_pd(device, flags) \
+ 	__ib_alloc_pd((device), (flags), KBUILD_MODNAME)
+ 
 -- 
-1.8.3.1
+2.26.2
 
