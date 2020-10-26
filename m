@@ -2,74 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1336298FA9
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Oct 2020 15:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBCB52991B4
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Oct 2020 17:02:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781837AbgJZOmc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 26 Oct 2020 10:42:32 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:59599 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1781681AbgJZOmc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Oct 2020 10:42:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1603723352; x=1635259352;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=Zill1pUuo+nkHeeNq/mAVl0OAHizrzmB8AWW8UBFl1Y=;
-  b=BFa1KzFk+bpZTzYKoqyZxh+3G6cRxa2YXmfRaAHwppgoPOtEWqEc+uFS
-   CTqvZR7MNCFvzHmzoaiFsvJw8W94PPdoVDUxG06lpUmV6Nx1QKPNQxtJC
-   1HovY5Lknc+EyMB/cSqqDJpfuVJKzM+vz4GP6KFQkGNWGntc4lAISBGSA
-   8=;
-X-IronPort-AV: E=Sophos;i="5.77,419,1596499200"; 
-   d="scan'208";a="80391384"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 26 Oct 2020 14:42:24 +0000
-Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com (Postfix) with ESMTPS id DB36FC0A5F;
-        Mon, 26 Oct 2020 14:42:21 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.144) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 26 Oct 2020 14:42:17 +0000
-Subject: Re: [PATCH rdma-next 3/6] RDMA/mlx5: Use
- mlx5_umem_find_best_quantized_pgoff() for WQ
-To:     Leon Romanovsky <leon@kernel.org>,
+        id S1784668AbgJZQCK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 26 Oct 2020 12:02:10 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:35832 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1773897AbgJZQBz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Oct 2020 12:01:55 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09QG0RiS143985;
+        Mon, 26 Oct 2020 16:01:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=puZm8te2B4YUXTyJ+yl+MFZs9tJFgCp00txrAgjUTd8=;
+ b=srkrKcxd0TjuqXDo4tCrkWwipxah5XrMtCOqExR6Sbwke60m+ZNE/d2owiP1dq72ckY+
+ 41u5K7b0JhJxQm4RChV7MJSSy+AxIb/GkBOItJjXLwllSRl8kAq4prJWUdBXZkg1IUW5
+ SCkbeeXPbboMDISRH5LLEW49vu8eLv5oGC64AViH2mbD2JZfiEgTxE/7nLjtZw5elNnR
+ wn4sGVvzwLBDb12E2K4Hw4hRt8hsWv8MQRgVMY+yfoPDe/lq/tnYrjNWgGibrxSEv9gD
+ aYU/eRL15HRufvKGRxS7gMNEKpyiu0Qv7DyLL+kUKHys36gyZTRt/O2aVPdSrcJnkgSC wA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 34dgm3u1de-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 26 Oct 2020 16:01:26 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09QG0FsQ154600;
+        Mon, 26 Oct 2020 16:01:26 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 34cx1pp5gv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 26 Oct 2020 16:01:26 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09QG1PHM161397;
+        Mon, 26 Oct 2020 16:01:25 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 34cx1pp5g7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Oct 2020 16:01:25 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09QG1NSx023332;
+        Mon, 26 Oct 2020 16:01:24 GMT
+Received: from [10.74.104.229] (/10.74.104.229)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 26 Oct 2020 09:01:23 -0700
+Subject: Re: [PATCH] RDMA: Add rdma_connect_locked()
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-CC:     <linux-rdma@vger.kernel.org>,
-        "majd@mellanox.com" <majd@mellanox.com>,
-        Matan Barak <matanb@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Yishai Hadas <yishaih@mellanox.com>
-References: <20201026132635.1337663-1-leon@kernel.org>
- <20201026132635.1337663-4-leon@kernel.org>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <94d30486-1909-f044-b59c-ba52e0b1e0e9@amazon.com>
-Date:   Mon, 26 Oct 2020 16:42:12 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.0
+        Christoph Hellwig <hch@lst.de>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Keith Busch <kbusch@kernel.org>,
+        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+        Max Gurtovoy <mgurtovoy@nvidia.com>, netdev@vger.kernel.org,
+        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>
+Cc:     Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Leon Romanovsky <leonro@nvidia.com>
+References: <0-v1-75e124dbad74+b05-rdma_connect_locking_jgg@nvidia.com>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <ed68ad93-602e-c617-87e4-a713856478a0@oracle.com>
+Date:   Mon, 26 Oct 2020 09:01:20 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20201026132635.1337663-4-leon@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <0-v1-75e124dbad74+b05-rdma_connect_locking_jgg@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.144]
-X-ClientProxiedBy: EX13D31UWA002.ant.amazon.com (10.43.160.82) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9785 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ adultscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxlogscore=999
+ suspectscore=0 clxscore=1011 mlxscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010260110
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 26/10/2020 15:26, Leon Romanovsky wrote:
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> 
-> This fixes a subtle bug, the WQ mailbox has only 5 bits to describe the
-> page_offset, while mlx5_ib_get_buf_offset() is hard wired to only work
-> with 6 bit page_offsets.
-> 
-> Thus it did not properly reject badly aligned buffers.
-> 
-> YISHAI: WTF? Why does this PRM command only have 5 bits? We must force 4k
-> alignment for WQ umems in the userspace?
 
-You forgot to remove those :).
+
+On 10/26/20 7:25 AM, Jason Gunthorpe wrote:
+> There are two flows for handling RDMA_CM_EVENT_ROUTE_RESOLVED, either the
+> handler triggers a completion and another thread does rdma_connect() or
+> the handler directly calls rdma_connect().
+> 
+> In all cases rdma_connect() needs to hold the handler_mutex, but when
+> handler's are invoked this is already held by the core code. This causes
+> ULPs using the 2nd method to deadlock.
+> 
+> Provide a rdma_connect_locked() and have all ULPs call it from their
+> handlers.
+> 
+> Reported-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+> Fixes: 2a7cec538169 ("RDMA/cma: Fix locking for the RDMA_CM_CONNECT state"
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+
+[....]
+
+> diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
+> index 06603dd1c8aa38..b36b60668b1da9 100644
+> --- a/net/rds/ib_cm.c
+> +++ b/net/rds/ib_cm.c
+> @@ -956,9 +956,10 @@ int rds_ib_cm_initiate_connect(struct rdma_cm_id *cm_id, bool isv6)
+>   	rds_ib_cm_fill_conn_param(conn, &conn_param, &dp,
+>   				  conn->c_proposed_version,
+>   				  UINT_MAX, UINT_MAX, isv6);
+> -	ret = rdma_connect(cm_id, &conn_param);
+> +	ret = rdma_connect_locked(cm_id, &conn_param);
+>   	if (ret)
+> -		rds_ib_conn_error(conn, "rdma_connect failed (%d)\n", ret);
+> +		rds_ib_conn_error(conn, "rdma_connect_locked failed (%d)\n",
+> +				  ret);
+>   
+>   out:
+>   	/* Beware - returning non-zero tells the rdma_cm to destroy
+> 
+For RDS part,
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
