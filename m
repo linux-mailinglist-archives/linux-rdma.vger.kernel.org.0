@@ -2,84 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F526299A0F
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Oct 2020 00:01:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C099029A0B6
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Oct 2020 01:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395083AbgJZXBK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 26 Oct 2020 19:01:10 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:4844 "EHLO nat-hk.nvidia.com"
+        id S2408613AbgJZXtL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 26 Oct 2020 19:49:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395082AbgJZXBJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:01:09 -0400
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9755340000>; Tue, 27 Oct 2020 07:01:08 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 26 Oct
- 2020 23:01:08 +0000
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.107)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 26 Oct 2020 23:01:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CQCfOnpP0DB3dhrCBEdcpS/unqDHKXUFyXvBaCwUNbyEWCuZ6YxR0DMcOkwe5nYuQpRJHzdPXR3Nca0P/+OTNbRopk7fXbwKwXFqKOGKOkLYWqx8kTwDwlujV9Xfv85xyhNFru3SxrXyy4Hyj6XEI06qKMFopsp/cDEXW8PijQWxTIIcwD5OrRBhl1vfbmKwzYbYCQXO9//6WQ/avjT76LY2JWDSf1GlHDaru53kCFNDCof1C+GQ5GY7L4DEJC/bZpciTtSzsYSkjZkmjURqzzc5OQ/Ozsl2QLfOW6oR7GnGpGF+ouVBCltSi48ZtVa6xZr2zBhon/xdWQULcVNzXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HrYO0+QOHS940qv7dynBguYbu+7jeyYIzT2H9/EQ3zc=;
- b=ZB8TglFfBUxl6o8K0C/186wHlc0h4R+d3HOGZIPRzGRLl0/X5euIxoQGecV6R4mV2uhiXUricr+N22GSAtIXH/Arr/U176UmmILLGO8xFR46iIDVGPmy2nu39Au1onSKZiPVj9gXUrUaaGCe+TEb5Y+oGMK+wfqn5M6FqLVzMcZ6WY0W6FyAmwYhaMerE9CPAV5D9ybH9YbCNCxqCQh/i6Ovk5OEz3YbvRCaqYIm7uQ7pWkkHmcucJdnuSLFqJoUcxyJgdAeAjFmkDANQvFwth7lBkKEEifa+tSKJM4P5doZG4RinYyby6V+ooo6vuXprT8B8hl36BR18+zpM6ENZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1436.namprd12.prod.outlook.com (2603:10b6:3:78::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3477.20; Mon, 26 Oct 2020 23:01:05 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.028; Mon, 26 Oct 2020
- 23:01:05 +0000
-Date:   Mon, 26 Oct 2020 20:01:04 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-CC:     <zyjzyj2000@gmail.com>, <linux-rdma@vger.kernel.org>,
-        Bob Pearson <rpearson@hpe.com>
-Subject: Re: [PATCH for-next] rdma_rxe: remove unused RXE_MR_TYPE_FMR
-Message-ID: <20201026230104.GA2160312@nvidia.com>
-References: <20201009165112.271143-1-rpearson@hpe.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201009165112.271143-1-rpearson@hpe.com>
-X-ClientProxiedBy: MN2PR16CA0050.namprd16.prod.outlook.com
- (2603:10b6:208:234::19) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S2408598AbgJZXtK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:49:10 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 361402075B;
+        Mon, 26 Oct 2020 23:49:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603756149;
+        bh=SwXqYwRkx/z615Ox9quIoeda/08mwl9yxzkKyFz1PUY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=CTwDY6e7vX0LYOkNchxrgcomRUcupMDeNxg78EOEOwQ7WHpVW0xKnIIO9OGFnD/Bz
+         c+wJI35dvD7RdIZ+cpSyZVzMdCHi2ZCKzH408WVihUDHgS8qyP00cgi3e8uHd8w+X6
+         JV+BRb58b4SBfUxKbkqX4MJ29hG/ZrvYHAN5LcFY=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 003/147] RDMA/core: Change how failing destroy is handled during uobj abort
+Date:   Mon, 26 Oct 2020 19:46:41 -0400
+Message-Id: <20201026234905.1022767-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
+References: <20201026234905.1022767-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR16CA0050.namprd16.prod.outlook.com (2603:10b6:208:234::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Mon, 26 Oct 2020 23:01:05 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kXBU8-00940S-2q; Mon, 26 Oct 2020 20:01:04 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603753268; bh=HrYO0+QOHS940qv7dynBguYbu+7jeyYIzT2H9/EQ3zc=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=NhDWlrv8PYhYxOLXBsZS3VzUOpYhSEqAr7sjdNGHrZ9SVkFslENQMioFnipHZwz1e
-         GM9h7/7pYZPnERU5vQa8LYcVDf3dnJnbE63cNc9VsKDAideX4nHa+UBGDN1IGBUOOW
-         0hqUfxasRrvpW2BrAIEvIUz15fTUOE8l21Heu1SCVY6SQRqpnVgAIhnAMsrU0h7rYd
-         T+J11nvqQqUXlQclvpl87mRIM8BhU64sc5eA6Kz65N5S6zbiCpqJYJ3JTtCnvTtLcW
-         jrQT0Ldnj+cRWkVzKCcrLS8UM1/q15nF7BRSj+49zZ1gSb9ibkx0H1KV3tPQFmOcW9
-         iude83fNp8NOA==
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 11:51:13AM -0500, Bob Pearson wrote:
-> This is a left over from the past. It is no longer used.
-> 
-> Signed-off-by: Bob Pearson <rpearson@hpe.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_mr.c    | 1 -
->  drivers/infiniband/sw/rxe/rxe_verbs.h | 1 -
->  2 files changed, 2 deletions(-)
+From: Jason Gunthorpe <jgg@nvidia.com>
 
-Applied to for-next, thanks
+[ Upstream commit f553246f7f794675da1794ae7ee07d1f35e561ae ]
 
-Jason
+Currently it triggers a WARN_ON and then goes ahead and destroys the
+uobject anyhow, leaking any driver memory.
+
+The only place that leaks driver memory should be during FD close() in
+uverbs_destroy_ufile_hw().
+
+Drivers are only allowed to fail destroy uobjects if they guarantee
+destroy will eventually succeed. uverbs_destroy_ufile_hw() provides the
+loop to give the driver that chance.
+
+Link: https://lore.kernel.org/r/20200902081708.746631-1-leon@kernel.org
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/core/rdma_core.c | 30 ++++++++++++++---------------
+ include/rdma/ib_verbs.h             |  5 -----
+ 2 files changed, 15 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
+index 6d3ed7c6e19eb..3962da54ffbf4 100644
+--- a/drivers/infiniband/core/rdma_core.c
++++ b/drivers/infiniband/core/rdma_core.c
+@@ -130,17 +130,6 @@ static int uverbs_destroy_uobject(struct ib_uobject *uobj,
+ 	lockdep_assert_held(&ufile->hw_destroy_rwsem);
+ 	assert_uverbs_usecnt(uobj, UVERBS_LOOKUP_WRITE);
+ 
+-	if (reason == RDMA_REMOVE_ABORT_HWOBJ) {
+-		reason = RDMA_REMOVE_ABORT;
+-		ret = uobj->uapi_object->type_class->destroy_hw(uobj, reason,
+-								attrs);
+-		/*
+-		 * Drivers are not permitted to ignore RDMA_REMOVE_ABORT, see
+-		 * ib_is_destroy_retryable, cleanup_retryable == false here.
+-		 */
+-		WARN_ON(ret);
+-	}
+-
+ 	if (reason == RDMA_REMOVE_ABORT) {
+ 		WARN_ON(!list_empty(&uobj->list));
+ 		WARN_ON(!uobj->context);
+@@ -674,11 +663,22 @@ void rdma_alloc_abort_uobject(struct ib_uobject *uobj,
+ 			      bool hw_obj_valid)
+ {
+ 	struct ib_uverbs_file *ufile = uobj->ufile;
++	int ret;
++
++	if (hw_obj_valid) {
++		ret = uobj->uapi_object->type_class->destroy_hw(
++			uobj, RDMA_REMOVE_ABORT, attrs);
++		/*
++		 * If the driver couldn't destroy the object then go ahead and
++		 * commit it. Leaking objects that can't be destroyed is only
++		 * done during FD close after the driver has a few more tries to
++		 * destroy it.
++		 */
++		if (WARN_ON(ret))
++			return rdma_alloc_commit_uobject(uobj, attrs);
++	}
+ 
+-	uverbs_destroy_uobject(uobj,
+-			       hw_obj_valid ? RDMA_REMOVE_ABORT_HWOBJ :
+-					      RDMA_REMOVE_ABORT,
+-			       attrs);
++	uverbs_destroy_uobject(uobj, RDMA_REMOVE_ABORT, attrs);
+ 
+ 	/* Matches the down_read in rdma_alloc_begin_uobject */
+ 	up_read(&ufile->hw_destroy_rwsem);
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index c0b2fa7e9b959..0095fc186a9fd 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -1463,11 +1463,6 @@ enum rdma_remove_reason {
+ 	RDMA_REMOVE_DRIVER_REMOVE,
+ 	/* uobj is being cleaned-up before being committed */
+ 	RDMA_REMOVE_ABORT,
+-	/*
+-	 * uobj has been fully created, with the uobj->object set, but is being
+-	 * cleaned up before being comitted
+-	 */
+-	RDMA_REMOVE_ABORT_HWOBJ,
+ };
+ 
+ struct ib_rdmacg_object {
+-- 
+2.25.1
+
