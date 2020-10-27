@@ -2,203 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1840429AAFA
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Oct 2020 12:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 955D129AB58
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Oct 2020 13:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411832AbgJ0Lfp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Oct 2020 07:35:45 -0400
-Received: from mga01.intel.com ([192.55.52.88]:64047 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411843AbgJ0Lfp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 27 Oct 2020 07:35:45 -0400
-IronPort-SDR: JNbvH2DwgTrV3au26POP9f9dNZyG02Oeq/nem9PwZCgtdzAfB0kqvbrd8icMk1fax3wJa7saH2
- yV7ZSjgFAxIQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="185804787"
-X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
-   d="scan'208";a="185804787"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 04:35:44 -0700
-IronPort-SDR: pCgMH1uSLsTXhN8X8Getm1rvbGNE/8uzbY5n//0n9v3v20nvt0Ny18CSYJsUeO1wOv+VYb6XgV
- F+zQO6J+g8Ow==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,423,1596524400"; 
-   d="scan'208";a="350495759"
-Received: from lkp-server01.sh.intel.com (HELO ef28dff175aa) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 27 Oct 2020 04:35:43 -0700
-Received: from kbuild by ef28dff175aa with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kXNGQ-0000DC-Qu; Tue, 27 Oct 2020 11:35:42 +0000
-Date:   Tue, 27 Oct 2020 19:35:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 676a80adba0131e1603ef3de5f73a19a0d3d0e65
-Message-ID: <5f9805f9.7Rr5EUGTYLhaG8zF%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2899564AbgJ0MAu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Oct 2020 08:00:50 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:12366 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897312AbgJ0MAt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Oct 2020 08:00:49 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f980bf70009>; Tue, 27 Oct 2020 05:00:55 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 27 Oct
+ 2020 12:00:44 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.171)
+ by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 27 Oct 2020 12:00:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g2FwqwmxJ2w/YMUeqxlS/RgBqC7+pqc8Y5WrTpJpxT1GW/9Cefi/yeUzr9VZQPj9KMrYRlSTgL4ZEo4Hjzr92c42arJZ6r66cQ0qRubZ63GWcSQ2sxRPvjbWwsbXfPWeNvCwUinsUIeVmdN0a2cSJIsgIGRkWvRSkOOy3yUpLYpaQ1dWoYVH9nLg3G0ya4jU4QQ6FeGZYHR+2KUyQtlbKDWuztrR9ALuSCA1HqqYwWrMcxtlKKgkHagRi2P/qLTK5lvd6vS0r8H6gOkGP/evwkVzmGteSinFSLrzU3fxY0r2PQm2uSlydIFPme3S874KPVKfVAkPwr3Hjdrrpi96hw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qVjL38duaU6sTOh08XTelj0txgnpIU7gLTO6m7WrnCM=;
+ b=aFR8GvjzcxB1OMTKHHibPgcm6MmqbLgx8R7bN9g4AbuniUa8CV4H7PGBVd7DX4m12WiaU7cFcSk3sexEDTTbjWNIp3D1JR7P+pG2gUdAS/apUtgl2+wBrBLZr3A3YDKxH2sSZVcg/C6bfeioGpW1R1/SNtw6CX/kXPh1sKkQN8nXcftfeTTZE9hoNSQ+XpiL2vXMlRA0NkyadLBl1QMiUbTqrqY1pnvWoTsVL9PXvlVU+oMphcZEkmxu33DN67EG1oR31jmF6psxZqK6p4gpygfhYss922ypLkCFtN2nwjB49zyonTxrglPRGvSg76VIga7oQx6xyg1FpS3PjlqJAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR1201MB0201.namprd12.prod.outlook.com (2603:10b6:4:5b::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Tue, 27 Oct
+ 2020 12:00:43 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.028; Tue, 27 Oct 2020
+ 12:00:43 +0000
+Date:   Tue, 27 Oct 2020 09:00:41 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Chao Leng <lengchao@huawei.com>
+CC:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Keith Busch <kbusch@kernel.org>,
+        <linux-nvme@lists.infradead.org>, <linux-rdma@vger.kernel.org>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>, <netdev@vger.kernel.org>,
+        <rds-devel@oss.oracle.com>, Sagi Grimberg <sagi@grimberg.me>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Leon Romanovsky <leonro@nvidia.com>
+Subject: Re: [PATCH] RDMA: Add rdma_connect_locked()
+Message-ID: <20201027120041.GI1523783@nvidia.com>
+References: <0-v1-75e124dbad74+b05-rdma_connect_locking_jgg@nvidia.com>
+ <e13ec119-3cc6-87ab-bc76-d2d3de7631e4@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <e13ec119-3cc6-87ab-bc76-d2d3de7631e4@huawei.com>
+X-ClientProxiedBy: MN2PR11CA0023.namprd11.prod.outlook.com
+ (2603:10b6:208:23b::28) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR11CA0023.namprd11.prod.outlook.com (2603:10b6:208:23b::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Tue, 27 Oct 2020 12:00:42 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kXNeb-009GRY-SB; Tue, 27 Oct 2020 09:00:41 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603800055; bh=qVjL38duaU6sTOh08XTelj0txgnpIU7gLTO6m7WrnCM=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=ntYWLwfLUxG88YLiEwTYaRecEr1b29TXd+4lQG3FRXrOw0cSffingX5XQMrK45mgl
+         50WI+Uy6P+UEJrAgEOsrUItYg8DxX0MyyuWH9suSK+xow4DqP074KUfXu5Vz369BKA
+         7DPOmO5Nk5Fy+Te4GODCD5JnQrgoYg9BzluUMwdHQOd3ozOi1mzqh6QIpcns1FiEA5
+         cPSdDGm0ooptbHRfX85cRvGwo2S6pD7BS+7Fna3CqBo3wBPvBz+saeHeazmK0dka/Y
+         uYcDvgQ6dseaFhQhUw0yKRjeBAYMKiMDADjaxBFiwuUF3ejqh1iYtfSCUSG7JFh9bN
+         8oGH7Ke9qsVNA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: 676a80adba0131e1603ef3de5f73a19a0d3d0e65  RDMA: Remove AH from uverbs_cmd_mask
+On Tue, Oct 27, 2020 at 10:01:00AM +0800, Chao Leng wrote:
+> > diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+> > index aad829a2b50d0f..f488dc5f4c2c61 100644
+> > +++ b/drivers/nvme/host/rdma.c
+> > @@ -1730,11 +1730,10 @@ static void nvme_rdma_process_nvme_rsp(struct nvme_rdma_queue *queue,
+> >   	req->result = cqe->result;
+> >   	if (wc->wc_flags & IB_WC_WITH_INVALIDATE) {
+> > -		if (unlikely(!req->mr ||
+> > -			     wc->ex.invalidate_rkey != req->mr->rkey)) {
+> > +		if (unlikely(wc->ex.invalidate_rkey != req->mr->rkey)) {
+> >   			dev_err(queue->ctrl->ctrl.device,
+> >   				"Bogus remote invalidation for rkey %#x\n",
+> > -				req->mr ? req->mr->rkey : 0);
+> > +				req->mr->rkey);
+> Maybe the code version is incorrect, cause falsely code rollback.
 
-elapsed time: 735m
+Oh wow, thanks for noticing that, I made a git fumble when doing this
+:(
 
-configs tested: 139
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                         tb0219_defconfig
-sh                          landisk_defconfig
-arm                             mxs_defconfig
-powerpc                       holly_defconfig
-ia64                             allyesconfig
-arm                          pxa910_defconfig
-xtensa                generic_kc705_defconfig
-arm                            qcom_defconfig
-arm                           h3600_defconfig
-arm                           sama5_defconfig
-arm                         s3c2410_defconfig
-powerpc                 mpc85xx_cds_defconfig
-sh                          rsk7269_defconfig
-powerpc                      obs600_defconfig
-mips                      pic32mzda_defconfig
-sh                      rts7751r2d1_defconfig
-mips                      malta_kvm_defconfig
-arm                         assabet_defconfig
-arc                              alldefconfig
-sh                           se7343_defconfig
-xtensa                         virt_defconfig
-powerpc                 linkstation_defconfig
-mips                      bmips_stb_defconfig
-parisc                generic-32bit_defconfig
-arm                      integrator_defconfig
-arm                          simpad_defconfig
-arm                         shannon_defconfig
-arm                         s3c6400_defconfig
-sh                            shmin_defconfig
-sh                             espt_defconfig
-i386                                defconfig
-arm                          iop32x_defconfig
-xtensa                              defconfig
-arm                        multi_v7_defconfig
-xtensa                  nommu_kc705_defconfig
-i386                             alldefconfig
-powerpc                      mgcoge_defconfig
-arm                            lart_defconfig
-mips                     loongson1c_defconfig
-arm                        mvebu_v5_defconfig
-ia64                         bigsur_defconfig
-arm                          moxart_defconfig
-sh                        edosk7760_defconfig
-arm                             rpc_defconfig
-sh                              ul2_defconfig
-powerpc                 mpc837x_rdb_defconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                          allyesconfig
-powerpc                 mpc8313_rdb_defconfig
-ia64                        generic_defconfig
-m68k                       m5275evb_defconfig
-m68k                        m5272c3_defconfig
-arm                      footbridge_defconfig
-arm                  colibri_pxa270_defconfig
-mips                      fuloong2e_defconfig
-mips                           mtx1_defconfig
-m68k                            mac_defconfig
-sh                        dreamcast_defconfig
-powerpc                     ppa8548_defconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                     redwood_defconfig
-arc                      axs103_smp_defconfig
-ia64                                defconfig
-m68k                        mvme16x_defconfig
-powerpc                      acadia_defconfig
-powerpc                     tqm8560_defconfig
-arm                           stm32_defconfig
-powerpc                    gamecube_defconfig
-mips                      pistachio_defconfig
-ia64                             allmodconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20201026
-i386                 randconfig-a003-20201026
-i386                 randconfig-a005-20201026
-i386                 randconfig-a001-20201026
-i386                 randconfig-a006-20201026
-i386                 randconfig-a004-20201026
-x86_64               randconfig-a011-20201026
-x86_64               randconfig-a013-20201026
-x86_64               randconfig-a016-20201026
-x86_64               randconfig-a015-20201026
-x86_64               randconfig-a012-20201026
-x86_64               randconfig-a014-20201026
-i386                 randconfig-a016-20201026
-i386                 randconfig-a015-20201026
-i386                 randconfig-a014-20201026
-i386                 randconfig-a012-20201026
-i386                 randconfig-a013-20201026
-i386                 randconfig-a011-20201026
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a001-20201026
-x86_64               randconfig-a003-20201026
-x86_64               randconfig-a002-20201026
-x86_64               randconfig-a006-20201026
-x86_64               randconfig-a004-20201026
-x86_64               randconfig-a005-20201026
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Jason
