@@ -2,175 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAE229C246
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Oct 2020 18:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4B829C51C
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Oct 2020 19:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1820103AbgJ0Rcx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Oct 2020 13:32:53 -0400
-Received: from mga17.intel.com ([192.55.52.151]:62671 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1820096AbgJ0Rcw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 27 Oct 2020 13:32:52 -0400
-IronPort-SDR: FpmSqnMMkcUrnkK9qvNAyAzrqSgdSpbAF9SvkFPk7vH3r1/WWgDDoWx0tpui74w1ewV1gPMGZU
- YkTcGhnA9Xjg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9787"; a="147983751"
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="147983751"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Oct 2020 10:32:50 -0700
-IronPort-SDR: bO6WDdYq4JnUjpQ2L19avZVACSrB9N2phgT2IekZlrf8vAsii0MX7y2pdg1cSm5/0izRZytCOg
- i/XreWTOo7NA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,424,1596524400"; 
-   d="scan'208";a="535884552"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga005.jf.intel.com with ESMTP; 27 Oct 2020 10:32:50 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 27 Oct 2020 10:32:50 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 27 Oct 2020 10:32:49 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 27 Oct 2020 10:32:49 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.107)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Tue, 27 Oct 2020 10:32:47 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JkWMgbKCUlzcsj7KF8Nja+1N/mxWlU5iC12ztKdKVz7T76seqbXbRkbfTEu7UEaLeF72rIyYnnCTi7B/oNegg7BqjobMQ1kM4pav8AHaPCBnD3KOWOz3JNJ5/x7GGz+7VY6z8S5vSivAQ2UhhtZLp819fe5shJgmwIMIXxcf24HG4ZneEkGkCQfduHEjrZkMDSNInJA1S0S788E7qrVNTnmwlAn1dHf17i8d5aXXi71zH9BQeN/WXu5zlKCqXI+77K+7T8Hm6KAICqbnOj3zx2aQQ+s2pffIob4HcpEOTgssu/oqlyvUp46Re4xeAvHNHJq9Xh78Yzqb1ff9cGg9mQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fXcLA2c0uh3zc2KOepJHtv+caDdMb91Rjp0OJx5wV/U=;
- b=KLcT4zDQCaTH0p4O3nkvr9vUB/oXTmL9qN3ncaQ0gHzxbf3oLZviKxTQfLVGoFZ9dwMU9lyDyOiUU+0z8eHTyerjeo0GA8PC5WRIAKm6KayJeTJKEiagNB3dRG7jK0AVPG4yXZbslccEcW/Hw1R4alyXWKhz+ZHasWPFnRxRuewxN/bfEhwNJKbaY0pt1kyzeyLu2EVS9Fi1Yb+h2p1KvCLzb4JZ98DH5enxE5CE9EtVKJquTqPayHUBBYCGAgxHaK7GUEOl7Ld5oBy6va5VhYpYjqopdOQu6wRB5OrSqzGMAC1rIs3aSednxgPol9PQYLD2/nSNIFDp1x77nZSMeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fXcLA2c0uh3zc2KOepJHtv+caDdMb91Rjp0OJx5wV/U=;
- b=EsCDBUKWeUGo8JBhujg+O6ISia3HhNd6LGkeOh5RpufRn/YTEx7xTceOOHjYSO4Pqv5W9RpX7mq81Z3r+HpnXetGA91NtwqD6LnevAW899ZXAKLJHbP0P+D9QMoL4S4b1LHOPQp506b4VJeaF4TsQKeJUrP3/nJ0mtVCSqWxTFA=
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
- by CO1PR11MB4961.namprd11.prod.outlook.com (2603:10b6:303:93::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Tue, 27 Oct
- 2020 17:32:26 +0000
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::7067:d996:719:10fa]) by MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::7067:d996:719:10fa%5]) with mapi id 15.20.3477.029; Tue, 27 Oct 2020
- 17:32:26 +0000
-From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
-To:     Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Daniel Vetter <daniel@ffwll.ch>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        "Doug Ledford" <dledford@redhat.com>,
-        "Vetter, Daniel" <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Subject: RE: [PATCH v6 1/4] RDMA/umem: Support importing dma-buf as user
- memory region
-Thread-Topic: [PATCH v6 1/4] RDMA/umem: Support importing dma-buf as user
- memory region
-Thread-Index: AQHWqVlE332Lg1o1rU+Qqd8CQ3VTXKmlZiqAgAAZZoCAAOHDgIADcnmAgAFKJgCAAJZW4A==
-Date:   Tue, 27 Oct 2020 17:32:26 +0000
-Message-ID: <MW3PR11MB4555208D038CEFE6C468DAF5E5160@MW3PR11MB4555.namprd11.prod.outlook.com>
-References: <1603471201-32588-1-git-send-email-jianxin.xiong@intel.com>
- <1603471201-32588-2-git-send-email-jianxin.xiong@intel.com>
- <20201023164911.GF401619@phenom.ffwll.local>
- <20201023182005.GP36674@ziepe.ca> <20201024074807.GA3112@infradead.org>
- <20201026122637.GQ36674@ziepe.ca> <20201027080816.GA2692@infradead.org>
-In-Reply-To: <20201027080816.GA2692@infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [73.53.14.45]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d4e861fc-370f-4592-d78b-08d87a9e459b
-x-ms-traffictypediagnostic: CO1PR11MB4961:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CO1PR11MB49615E655411B0954103E5BAE5160@CO1PR11MB4961.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lWYhyJFxBlylJn0VrnQMeY1H5qUcBJPTpgfqhT3BGxNmAl+DqTyrToQSqVNkIEFIeP99kvce+AxlqgM6kUnFwWTWhjTTTKRXKFaGevDAs1rz1HsDzPQWDpCO+3+g7J3u5gSpKQhdiTCsY1AZr+9IOTcuCkFXJWFl0PkbkqrbLhnEQF5ODjooyndU1NSRtxrO8dwuHASCSC6JXGYnhJmJZbsB9x7wvgi19KdrCGEJLlmElXpTNRwmFt61Xb65P8XNPLYIJeqZ7ad8MIoAeqyfgQmscCa7e+mPYmaXen+Y5fWb/65fYnUzRWCrhuyxzwK6pUThz3Eo3NIj6j8Dyugbag==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(396003)(39860400002)(53546011)(33656002)(6506007)(83380400001)(8936002)(186003)(71200400001)(86362001)(2906002)(4326008)(55016002)(52536014)(478600001)(316002)(66476007)(66556008)(54906003)(110136005)(9686003)(66446008)(26005)(8676002)(7696005)(76116006)(5660300002)(64756008)(66946007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: bYA/v28wrNsZyek+hL5GNYYtG86ivp0XN/bDwczn62sQyFU/x6JbSFt5IN0g3ND7DJmH/o9hBKyRyN/jKa2i/5bBJvFh4yUKRtqIxtU7d6Fmc4shrdJu48FTZMHQ4iOJeGvdweeqrtdJl6kFElcyEPeVrWZ56stJxqio+2PA5KU/aU9lxFc7riN0k4H0mCEUmEmvRGmVUKx3U3mLT5gSEnNc4IH+C5uFSj63BgWd25qV64IRhrQSCVVVa6LApE9SlUNhFjVAbJ9sESRsQ+BFYVlNX80BA4P4cBYrGmzPsnD5a4M3Axvl4Q9zL5NqdIJwdE9okNKl+9hPpHn31P0F3tgY50l267UodUMM7u6r2LjBHjyvAg5lOq4bD8oJph9hW3/Cqy9rokwzRlwXztLm02x2Rbk3M04ezrEX1JpukSNcKKFzkNdOk7nlJ1nUQsR7e4F0m6pAQQn+O2Oa/xkxb1YoT7jgw3AHIY1zyY4vsZpDhQ94bTs5G1C5ei8+aGP1dJgc5SwyiwTqlYmJeRx92950AWTeHwjQRAdVK7uXo28i33Kyr0mOyJ8TTTaXKbOJxYquCBSMP/7v8Z8Epr8QUhVZYBqL//rDP3793B4z5zCeJIi5xqw75j8CmQoRTwMv3qd/6dLfr5R5rC2RC3z/vA==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1824202AbgJ0SEI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Oct 2020 14:04:08 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:57676 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1756932AbgJ0OSk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Oct 2020 10:18:40 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09REFYLh152692;
+        Tue, 27 Oct 2020 14:18:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=nI3m8Y8OcNr/GVLvzRaUSo3wS/gzjtSUTYSe1wHMf7I=;
+ b=FiY6WeDkT1tv1bqtXDMVPDMn/ZfLQafK5QYzCeaSQEjmjVkjoWPvrtzF+u0R5wemHtYc
+ /tqFB650oaiDzjAbPhkeNM5u68OvWKV7nzwTjWuflPLTPNvwe3FcjxNe13JVtHWwYx3q
+ AjwjNmDdk6IDarj64ypIgDzyWUAa8VeW9YqwZsqGjBOdQmV/Qw37YEFQ5LqYZ7jxmEmq
+ 12R2FVYR3ewbtgDSegc+geLz7MF+IF4XJs1OOh6ipXV0bflV5nHTJZyFJb9Et5f2Ox7n
+ 0xoSoQPtX96MuDpsf+XqqjIiKnhdmKPeR32sASuG9g5qUs5PzWp4NrGzYv3X4gHPvPEH rA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 34cc7kt7rq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 27 Oct 2020 14:18:39 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09REG2Dc089358;
+        Tue, 27 Oct 2020 14:18:38 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 34cx5x66pu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Oct 2020 14:18:38 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09REIb8x025107;
+        Tue, 27 Oct 2020 14:18:37 GMT
+Received: from [10.159.235.220] (/10.159.235.220)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 27 Oct 2020 07:18:37 -0700
+Subject: Re: [PATCH 0/2] rds: MR(Memory Region) related patches
+To:     santosh.shilimkar@oracle.com
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rama.nichanamatlu@oracle.com
+References: <1603144088-8769-1-git-send-email-manjunath.b.patil@oracle.com>
+From:   Manjunath Patil <manjunath.b.patil@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <dab2480c-64d9-0238-7737-eb0b2738922e@oracle.com>
+Date:   Tue, 27 Oct 2020 07:18:36 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4e861fc-370f-4592-d78b-08d87a9e459b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2020 17:32:26.3590
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8vRvY3fKcJIvd2hZNKvm+xVAwdS050sSVj98wV9UBsBpfu4Dqy6zwDXi7Ll6/IXyM9qEJLHgM62K19dLuQp60A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4961
-X-OriginatorOrg: intel.com
+In-Reply-To: <1603144088-8769-1-git-send-email-manjunath.b.patil@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
+ suspectscore=1 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010270090
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=1
+ priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010270090
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> -----Original Message-----
-> From: Christoph Hellwig <hch@infradead.org>
-> Sent: Tuesday, October 27, 2020 1:08 AM
-> To: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Christoph Hellwig <hch@infradead.org>; Daniel Vetter <daniel@ffwll.ch=
->; Xiong, Jianxin <jianxin.xiong@intel.com>; linux-
-> rdma@vger.kernel.org; dri-devel@lists.freedesktop.org; Leon Romanovsky <l=
-eon@kernel.org>; Doug Ledford <dledford@redhat.com>;
-> Vetter, Daniel <daniel.vetter@intel.com>; Christian Koenig <christian.koe=
-nig@amd.com>
-> Subject: Re: [PATCH v6 1/4] RDMA/umem: Support importing dma-buf as user =
-memory region
->=20
-> On Mon, Oct 26, 2020 at 09:26:37AM -0300, Jason Gunthorpe wrote:
-> > On Sat, Oct 24, 2020 at 08:48:07AM +0100, Christoph Hellwig wrote:
-> > > On Fri, Oct 23, 2020 at 03:20:05PM -0300, Jason Gunthorpe wrote:
-> > > > The problem is we have RDMA drivers that assume SGL's have a valid
-> > > > struct page, and these hacky/wrong P2P sgls that DMABUF creates
-> > > > cannot be passed into those drivers.
-> > >
-> > > RDMA drivers do not assume scatterlist have a valid struct page,
-> > > scatterlists are defined to have a valid struct page.  Any
-> > > scatterlist without a struct page is completely buggy.
-> >
-> > It is not just having the struct page, it needs to be a CPU accessible
-> > one for memcpy/etc. They aren't correct with the
-> > MEMORY_DEVICE_PCI_P2PDMA SGLs either.
->=20
-> Exactly.
+ping!
 
-In the function ib_umem_dmabuf_sgt_slice() (part of this patch) we could ge=
-nerate
-a dma address array instead of filling the scatterlist 'umem->sg_head'. The=
- array
-would be handled similar to 'umem_odp->dma_list'. With such change, the RDM=
-A
-drivers wouldn't see incorrectly formed scatterlist. The check for dma_virt=
-_ops here
-wouldn't be needed either.
+On 10/19/2020 2:48 PM, Manjunath Patil wrote:
+> This patchset intends to add functionality to track MR usages by RDS
+> applications.
+>
+> Manjunath Patil (2):
+>    rds: track memory region (MR) usage in kernel
+>    rds: add functionality to print MR related information
+>
+>   include/uapi/linux/rds.h | 13 ++++++++++++-
+>   net/rds/af_rds.c         | 42 ++++++++++++++++++++++++++++++++++++++++
+>   net/rds/ib.c             |  1 +
+>   net/rds/rdma.c           | 29 ++++++++++++++++++++-------
+>   net/rds/rds.h            | 10 +++++++++-
+>   5 files changed, 86 insertions(+), 9 deletions(-)
+>
 
-Would such proposal address the concern here?
-
--Jianxin
-=20
