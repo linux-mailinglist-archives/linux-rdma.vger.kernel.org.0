@@ -2,227 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1BC29CABE
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Oct 2020 21:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED93529CAED
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Oct 2020 22:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1829307AbgJ0Ux3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Oct 2020 16:53:29 -0400
-Received: from fieldses.org ([173.255.197.46]:45906 "EHLO fieldses.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1829279AbgJ0Ux3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 27 Oct 2020 16:53:29 -0400
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 38D976814; Tue, 27 Oct 2020 16:53:27 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 38D976814
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1603832007;
-        bh=udMB4klfObKe+kmSusmH9Qgg92RhbS7M1xRkA4YrwDg=;
-        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
-        b=EkoKQssiwNf9h/QyoUSuYbUQB6WhcTBQbfItG4CJS6AOZ/TLO2TSYA69lcOQfkZ1U
-         XjxvthfeCEzwLF5TytH2obu1Q63E5DujFcBYcGqgdtmZcaKBbxvAx7469GI5bYI8gE
-         zFhS/yijbe3qp7DrDVhM2A3J+Y+N7PbMqgMwNK3A=
-Date:   Tue, 27 Oct 2020 16:53:27 -0400
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 04/20] SUNRPC: Rename svc_encode_read_payload()
-Message-ID: <20201027205327.GC4697@fieldses.org>
-References: <160373843299.1886.12604782813896379719.stgit@klimt.1015granger.net>
- <160373845420.1886.3075276814923041440.stgit@klimt.1015granger.net>
+        id S1832055AbgJ0VIV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Oct 2020 17:08:21 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:54920 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502171AbgJ0VIV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Oct 2020 17:08:21 -0400
+Received: by mail-wm1-f68.google.com with SMTP id w23so2674149wmi.4;
+        Tue, 27 Oct 2020 14:08:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
+        b=cWYcgar89VbgMBiXIooRPzFGEhxdKRleH7SL0eqjWvgFLt65pm8yPjwJsZio1JxZSQ
+         50Ugo2q2eupeaP0IXsMBKIPS+eMVoZvSb/ATyMTbtin2FUuZYneq7TT+uixn6Hmhj3y/
+         CMV4komX7V8SehIKPRtENSYvLudLE9ag93oi/g/f+mM+vZwrtuI6D17DcXqXUKHOT9vW
+         Q3ZzbuPfd5acqQ98bmlbGg7mJkpwrZqSy9DktbCtyy+PInDBcuDYWoBld4QbRXct9CNJ
+         a0gVBsccvJsASZ759IkIboIAKHGGRJ8NoHfC37v/IQvj6QJFgfeTVc5NGr7ySTrQZH2c
+         yg3A==
+X-Gm-Message-State: AOAM533Nuk1RX72QzVdjnQoGPOBVmSNJNBNtGw7d62+yYraszpIpqloE
+        mNburAUWSFyzjxqhK9Ee4g8=
+X-Google-Smtp-Source: ABdhPJxnlO6ffp5qWoU5jOtD133cQ5prG7Y2H4oyC2WTpcqYd3cQ2KUgy7rtjGlgdBJXSp8U9aC7qA==
+X-Received: by 2002:a1c:6408:: with SMTP id y8mr4896067wmb.51.1603832899088;
+        Tue, 27 Oct 2020 14:08:19 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:8235:3100:f389:bca1? ([2601:647:4802:9070:8235:3100:f389:bca1])
+        by smtp.gmail.com with ESMTPSA id y201sm3336956wmd.27.2020.10.27.14.08.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 14:08:18 -0700 (PDT)
+Subject: Re: [PATCH rdma v2] RDMA: Add rdma_connect_locked()
+To:     Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org
+Cc:     Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Chao Leng <lengchao@huawei.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Keith Busch <kbusch@kernel.org>,
+        linux-nvme@lists.infradead.org,
+        Max Gurtovoy <mgurtovoy@nvidia.com>, netdev@vger.kernel.org,
+        rds-devel@oss.oracle.com
+References: <0-v2-53c22d5c1405+33-rdma_connect_locking_jgg@nvidia.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <73296987-3f3e-7d39-b131-f93621d01851@grimberg.me>
+Date:   Tue, 27 Oct 2020 14:08:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <160373845420.1886.3075276814923041440.stgit@klimt.1015granger.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-From:   bfields@fieldses.org (J. Bruce Fields)
+In-Reply-To: <0-v2-53c22d5c1405+33-rdma_connect_locking_jgg@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 02:54:14PM -0400, Chuck Lever wrote:
-> Clean up: "result payload" is a less confusing name for these
-> payloads. "READ payload" reflects only the NFS usage.
-> 
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> ---
->  fs/nfsd/nfs4xdr.c                        |    2 +-
->  include/linux/sunrpc/svc.h               |    6 +++---
->  include/linux/sunrpc/svc_rdma.h          |    4 ++--
->  include/linux/sunrpc/svc_xprt.h          |    4 ++--
->  net/sunrpc/svc.c                         |   11 ++++++-----
->  net/sunrpc/svcsock.c                     |    8 ++++----
->  net/sunrpc/xprtrdma/svc_rdma_sendto.c    |    8 ++++----
->  net/sunrpc/xprtrdma/svc_rdma_transport.c |    2 +-
->  8 files changed, 23 insertions(+), 22 deletions(-)
-> 
-> diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
-> index 833a2c64dfe8..7e24fb3ca36e 100644
-> --- a/fs/nfsd/nfs4xdr.c
-> +++ b/fs/nfsd/nfs4xdr.c
-> @@ -3829,7 +3829,7 @@ static __be32 nfsd4_encode_readv(struct nfsd4_compoundres *resp,
->  	read->rd_length = maxcount;
->  	if (nfserr)
->  		return nfserr;
-> -	if (svc_encode_read_payload(resp->rqstp, starting_len + 8, maxcount))
-> +	if (svc_encode_result_payload(resp->rqstp, starting_len + 8, maxcount))
->  		return nfserr_io;
-
-Why does this call check for an error return while the
-svc_encode_result_payload() calls in the next patch don't?
-
---b.
-
->  	xdr_truncate_encode(xdr, starting_len + 8 + xdr_align_size(maxcount));
->  
-> diff --git a/include/linux/sunrpc/svc.h b/include/linux/sunrpc/svc.h
-> index 386628b36bc7..c220b734fa69 100644
-> --- a/include/linux/sunrpc/svc.h
-> +++ b/include/linux/sunrpc/svc.h
-> @@ -519,9 +519,9 @@ void		   svc_wake_up(struct svc_serv *);
->  void		   svc_reserve(struct svc_rqst *rqstp, int space);
->  struct svc_pool *  svc_pool_for_cpu(struct svc_serv *serv, int cpu);
->  char *		   svc_print_addr(struct svc_rqst *, char *, size_t);
-> -int		   svc_encode_read_payload(struct svc_rqst *rqstp,
-> -					   unsigned int offset,
-> -					   unsigned int length);
-> +int		   svc_encode_result_payload(struct svc_rqst *rqstp,
-> +					     unsigned int offset,
-> +					     unsigned int length);
->  unsigned int	   svc_fill_write_vector(struct svc_rqst *rqstp,
->  					 struct page **pages,
->  					 struct kvec *first, size_t total);
-> diff --git a/include/linux/sunrpc/svc_rdma.h b/include/linux/sunrpc/svc_rdma.h
-> index 9dc3a3b88391..2b870a3f391b 100644
-> --- a/include/linux/sunrpc/svc_rdma.h
-> +++ b/include/linux/sunrpc/svc_rdma.h
-> @@ -207,8 +207,8 @@ extern void svc_rdma_send_error_msg(struct svcxprt_rdma *rdma,
->  				    struct svc_rdma_recv_ctxt *rctxt,
->  				    int status);
->  extern int svc_rdma_sendto(struct svc_rqst *);
-> -extern int svc_rdma_read_payload(struct svc_rqst *rqstp, unsigned int offset,
-> -				 unsigned int length);
-> +extern int svc_rdma_result_payload(struct svc_rqst *rqstp, unsigned int offset,
-> +				   unsigned int length);
->  
->  /* svc_rdma_transport.c */
->  extern struct svc_xprt_class svc_rdma_class;
-> diff --git a/include/linux/sunrpc/svc_xprt.h b/include/linux/sunrpc/svc_xprt.h
-> index aca35ab5cff2..92455e0d5244 100644
-> --- a/include/linux/sunrpc/svc_xprt.h
-> +++ b/include/linux/sunrpc/svc_xprt.h
-> @@ -21,8 +21,8 @@ struct svc_xprt_ops {
->  	int		(*xpo_has_wspace)(struct svc_xprt *);
->  	int		(*xpo_recvfrom)(struct svc_rqst *);
->  	int		(*xpo_sendto)(struct svc_rqst *);
-> -	int		(*xpo_read_payload)(struct svc_rqst *, unsigned int,
-> -					    unsigned int);
-> +	int		(*xpo_result_payload)(struct svc_rqst *, unsigned int,
-> +					      unsigned int);
->  	void		(*xpo_release_rqst)(struct svc_rqst *);
->  	void		(*xpo_detach)(struct svc_xprt *);
->  	void		(*xpo_free)(struct svc_xprt *);
-> diff --git a/net/sunrpc/svc.c b/net/sunrpc/svc.c
-> index c211b607239e..b41500645c3f 100644
-> --- a/net/sunrpc/svc.c
-> +++ b/net/sunrpc/svc.c
-> @@ -1622,7 +1622,7 @@ u32 svc_max_payload(const struct svc_rqst *rqstp)
->  EXPORT_SYMBOL_GPL(svc_max_payload);
->  
->  /**
-> - * svc_encode_read_payload - mark a range of bytes as a READ payload
-> + * svc_encode_result_payload - mark a range of bytes as a result payload
->   * @rqstp: svc_rqst to operate on
->   * @offset: payload's byte offset in rqstp->rq_res
->   * @length: size of payload, in bytes
-> @@ -1630,12 +1630,13 @@ EXPORT_SYMBOL_GPL(svc_max_payload);
->   * Returns zero on success, or a negative errno if a permanent
->   * error occurred.
->   */
-> -int svc_encode_read_payload(struct svc_rqst *rqstp, unsigned int offset,
-> -			    unsigned int length)
-> +int svc_encode_result_payload(struct svc_rqst *rqstp, unsigned int offset,
-> +			      unsigned int length)
->  {
-> -	return rqstp->rq_xprt->xpt_ops->xpo_read_payload(rqstp, offset, length);
-> +	return rqstp->rq_xprt->xpt_ops->xpo_result_payload(rqstp, offset,
-> +							   length);
->  }
-> -EXPORT_SYMBOL_GPL(svc_encode_read_payload);
-> +EXPORT_SYMBOL_GPL(svc_encode_result_payload);
->  
->  /**
->   * svc_fill_write_vector - Construct data argument for VFS write call
-> diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
-> index c2752e2b9ce3..b248f2349437 100644
-> --- a/net/sunrpc/svcsock.c
-> +++ b/net/sunrpc/svcsock.c
-> @@ -181,8 +181,8 @@ static void svc_set_cmsg_data(struct svc_rqst *rqstp, struct cmsghdr *cmh)
->  	}
->  }
->  
-> -static int svc_sock_read_payload(struct svc_rqst *rqstp, unsigned int offset,
-> -				 unsigned int length)
-> +static int svc_sock_result_payload(struct svc_rqst *rqstp, unsigned int offset,
-> +				   unsigned int length)
->  {
->  	return 0;
->  }
-> @@ -635,7 +635,7 @@ static const struct svc_xprt_ops svc_udp_ops = {
->  	.xpo_create = svc_udp_create,
->  	.xpo_recvfrom = svc_udp_recvfrom,
->  	.xpo_sendto = svc_udp_sendto,
-> -	.xpo_read_payload = svc_sock_read_payload,
-> +	.xpo_result_payload = svc_sock_result_payload,
->  	.xpo_release_rqst = svc_udp_release_rqst,
->  	.xpo_detach = svc_sock_detach,
->  	.xpo_free = svc_sock_free,
-> @@ -1123,7 +1123,7 @@ static const struct svc_xprt_ops svc_tcp_ops = {
->  	.xpo_create = svc_tcp_create,
->  	.xpo_recvfrom = svc_tcp_recvfrom,
->  	.xpo_sendto = svc_tcp_sendto,
-> -	.xpo_read_payload = svc_sock_read_payload,
-> +	.xpo_result_payload = svc_sock_result_payload,
->  	.xpo_release_rqst = svc_tcp_release_rqst,
->  	.xpo_detach = svc_tcp_sock_detach,
->  	.xpo_free = svc_sock_free,
-> diff --git a/net/sunrpc/xprtrdma/svc_rdma_sendto.c b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-> index c3d588b149aa..c8411b4f3492 100644
-> --- a/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-> +++ b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-> @@ -979,19 +979,19 @@ int svc_rdma_sendto(struct svc_rqst *rqstp)
->  }
->  
->  /**
-> - * svc_rdma_read_payload - special processing for a READ payload
-> + * svc_rdma_result_payload - special processing for a result payload
->   * @rqstp: svc_rqst to operate on
->   * @offset: payload's byte offset in @xdr
->   * @length: size of payload, in bytes
->   *
->   * Returns zero on success.
->   *
-> - * For the moment, just record the xdr_buf location of the READ
-> + * For the moment, just record the xdr_buf location of the result
->   * payload. svc_rdma_sendto will use that location later when
->   * we actually send the payload.
->   */
-> -int svc_rdma_read_payload(struct svc_rqst *rqstp, unsigned int offset,
-> -			  unsigned int length)
-> +int svc_rdma_result_payload(struct svc_rqst *rqstp, unsigned int offset,
-> +			    unsigned int length)
->  {
->  	struct svc_rdma_recv_ctxt *rctxt = rqstp->rq_xprt_ctxt;
->  
-> diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c b/net/sunrpc/xprtrdma/svc_rdma_transport.c
-> index fb044792b571..afba4e9d5425 100644
-> --- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
-> +++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
-> @@ -80,7 +80,7 @@ static const struct svc_xprt_ops svc_rdma_ops = {
->  	.xpo_create = svc_rdma_create,
->  	.xpo_recvfrom = svc_rdma_recvfrom,
->  	.xpo_sendto = svc_rdma_sendto,
-> -	.xpo_read_payload = svc_rdma_read_payload,
-> +	.xpo_result_payload = svc_rdma_result_payload,
->  	.xpo_release_rqst = svc_rdma_release_rqst,
->  	.xpo_detach = svc_rdma_detach,
->  	.xpo_free = svc_rdma_free,
-> 
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
