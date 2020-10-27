@@ -2,131 +2,218 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F1F29AD38
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Oct 2020 14:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C0D29BD9D
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Oct 2020 17:50:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900632AbgJ0NZA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Oct 2020 09:25:00 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:37082 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900629AbgJ0NY7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Oct 2020 09:24:59 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09RDOVoT033003;
-        Tue, 27 Oct 2020 13:24:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=fC+yZrdMxx7rSRuu0HJMNlV82nWZ5C8M4zX+YqUM4ho=;
- b=VoeRpNvxOEn3W9L3HnlWZuR+LzS5QRUIsdzjPfpAi44qShrs3bHiOlQqlw+zUsKHZ6ZU
- O9IzWHDFm5p/Eov9MmGVAHX8Y2s7FrVNYaoiGMxSoRfnAvulLY+ImjFBcb2WoQkog7vW
- RNzTJhY86W+grYnOMXqZmulk6VpRbZHcMWeVEq/ba6x8yKOZOspH9Y6kiZSF2M1hIKbS
- db74btrBbxlE1ac0diDm/njRd699QRUuUze7aOXHkV8ztNU8SyjaDmQvkg0uIu3upYWR
- sDk3UV8YCJBdyCmjvGHHYOGMrPR2aM8c0KsbPaOLNTrMw3d5oewH9kg7cpAVnm2eDa1e KA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 34dgm3yg52-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 27 Oct 2020 13:24:56 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09RDLJlG126554;
-        Tue, 27 Oct 2020 13:24:56 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 34cx6vy4ur-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Oct 2020 13:24:56 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09RDOtaa005149;
-        Tue, 27 Oct 2020 13:24:55 GMT
-Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 27 Oct 2020 06:24:55 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH 00/20] NFSD support for multiple RPC/RDMA chunks
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <20201027060823.GF4821@unreal>
-Date:   Tue, 27 Oct 2020 09:24:54 -0400
-Cc:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-rdma@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <DAC657D8-D254-452C-9B21-3053F70C8C73@oracle.com>
-References: <160373843299.1886.12604782813896379719.stgit@klimt.1015granger.net>
- <20201027060823.GF4821@unreal>
-To:     Leon Romanovsky <leon@kernel.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
- bulkscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010270084
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
- adultscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxlogscore=999
- suspectscore=0 clxscore=1015 mlxscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010270084
+        id S1811892AbgJ0QnV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Oct 2020 12:43:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52992 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1811879AbgJ0QnU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 27 Oct 2020 12:43:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603816997;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=mj6uaiHROCag3uZJ/gHJroorYDnXKuN4EyYRFIYPu8Y=;
+        b=iMWK/9udZzW6xrAGHscjJXdgSKzRvPSDOpFhpewEulwue0luZDWR/Ryv1JtcRbdtckAno/
+        8gCre/qcu5loxPOISVxTx/Px6r/O5Yh9WbP8UDElywsNUWAGOrXct/LtPnIVtJFCBwfPv0
+        dL2+ox3hVo2/V3PWm26kL+Qs4OpFesk=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-422-Rk1ZD-JmNQqc8cIzNO9oUw-1; Tue, 27 Oct 2020 12:43:14 -0400
+X-MC-Unique: Rk1ZD-JmNQqc8cIzNO9oUw-1
+Received: by mail-ot1-f70.google.com with SMTP id x18so606330otp.5
+        for <linux-rdma@vger.kernel.org>; Tue, 27 Oct 2020 09:43:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=mj6uaiHROCag3uZJ/gHJroorYDnXKuN4EyYRFIYPu8Y=;
+        b=E7m32KXU0iCfWWi0BPzvrataJI77U5CgEIra+H4yVP19PoiVjIj0N0rXiKj0a4XzYw
+         HI/TT4olRs4v5uiqj7Y8QDdwN3jxBlLGVT6CHqDV+DHWviKSWKWqdoJS6ZdOCaQtFZtI
+         99P05YiMNLy7K2o75inS9HjSFWNEr3TxidTpSy9DXBK6KLA9jOpj0khFGCnETWGV4Efx
+         4wC6lgfQzjH/WpMvmVYRxjIu6YZPNfST84w8S5ojWgSr3/Ff3y357L+qfUsd4xZK9qvB
+         9w9Wc0R41EA5OeWrqxvcJunau9gyYhKJoTPKF+7051kjXy+bEHIqDhnlPePtodCOLrt0
+         EyYg==
+X-Gm-Message-State: AOAM531hTJ1dNV04EPqAplbV5B9Vajig1p9SrrwFeeIMz4SxehqjGrbB
+        bavBJWzSC5j82FNx8yiV8Pnde//jKTPA0mYlQd4oRsN0hcGnDeidQ2t0i/swd30NaL0g2dEOKZ6
+        djUHwMNlhEHAx9+l3Bk2IBQ==
+X-Received: by 2002:aca:ef03:: with SMTP id n3mr2048458oih.67.1603816993827;
+        Tue, 27 Oct 2020 09:43:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw7y1eCX7WfRNi9tkZnfLpiDio1qtG9FKTpwYlLMD9SlPYp6FIE57BquNUx5oTk2cs+UUc+WA==
+X-Received: by 2002:aca:ef03:: with SMTP id n3mr2048435oih.67.1603816993577;
+        Tue, 27 Oct 2020 09:43:13 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id l89sm90968otc.6.2020.10.27.09.43.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 09:43:12 -0700 (PDT)
+From:   trix@redhat.com
+To:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Cc:     linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        qat-linux@intel.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org,
+        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
+        =?UTF-8?q?=EF=BB=BFFrom=20=3A=20Tom=20Rix?= <trix@redhat.com>
+Subject: Subject: [RFC] clang tooling cleanups
+Date:   Tue, 27 Oct 2020 09:42:55 -0700
+Message-Id: <20201027164255.1573301-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Leon-
+This rfc will describe
+An upcoming treewide cleanup.
+How clang tooling was used to programatically do the clean up.
+Solicit opinions on how to generally use clang tooling.
 
-> On Oct 27, 2020, at 2:08 AM, Leon Romanovsky <leon@kernel.org> wrote:
->=20
-> On Mon, Oct 26, 2020 at 02:53:53PM -0400, Chuck Lever wrote:
->> This series implements support for multiple RPC/RDMA chunks per RPC
->> transaction. This is one of the few remaining generalities that the
->> Linux NFS/RDMA server implementation lacks.
->>=20
->> There is currently one known NFS/RDMA client implementation that can
->> send multiple chunks per RPC, and that is Solaris. Multiple chunks
->> are rare enough that the Linux NFS/RDMA implementation has been
->> successful without this support for many years.
->=20
-> So why do we need it? Solaris is dead, and like you wrote Linux =
-systems
-> work without this feature just fine, what are the benefits? Who will =
-use it?
+The clang warning -Wextra-semi-stmt produces about 10k warnings.
+Reviewing these, a subset of semicolon after a switch looks safe to
+fix all the time.  An example problem
 
-The Linux NFS implementation is living. We can add the ability
-to provision multiple chunks per RPC to the Linux NFS client at
-any time.
+void foo(int a) {
+     switch(a) {
+     	       case 1:
+	       ...
+     }; <--- extra semicolon
+}
 
-Likewise any actively developed NFS/RDMA implementation can add
-this feature. The RPC/RDMA version 1 protocol does not have the
-ability to communicate the maximum number of chunks the server
-will accept per RPC.
+Treewide, there are about 100 problems in 50 files for x86_64 allyesconfig.
+These fixes will be the upcoming cleanup.
 
-Other server implementations do support multiple chunks per RPC.
-The Linux NFS/RDMA server implementation has always been incomplete
-in this regard.
+clang already supports fixing this problem. Add to your command line
 
-And the Linux NFS server implementation (the non-transport specific
-part) already supports multiple data payloads per NFSv4 COMPOUND.
+  clang -c -Wextra-semi-stmt -Xclang -fixit foo.c
 
+  foo.c:8:3: warning: empty expression statement has no effect;
+    remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+        };
+         ^
+  foo.c:8:3: note: FIX-IT applied suggested code changes
+  1 warning generated.
 
-Restoring a little more of the cover letter:
+The big problem is using this treewide is it will fix all 10k problems.
+10k changes to analyze and upstream is not practical.
 
->> Along with multiple chunk support, this series adds the following
->> benefits:
->>=20
->> - More robust input sanitization of RPC/RDMA headers
->> - An internal representation of chunks that is agnostic to their
->>  wire format
+Another problem is the generic fixer only removes the semicolon.
+So empty lines with some tabs need to be manually cleaned.
 
-The Linux NFS/RDMA server implementation does need to have better
-input sanitization.
+What is needed is a more precise fixer.
 
-And there is a version 2 of RPC/RDMA under active development:
+Enter clang-tidy.
+https://clang.llvm.org/extra/clang-tidy/
 
-https://datatracker.ietf.org/doc/draft-ietf-nfsv4-rpcrdma-version-two/
+Already part of the static checker infrastructure, invoke on the clang
+build with
+  make clang-tidy
 
-Having some protocol version agnosticism in our transport might
-be necessary eventually.
+It is only a matter of coding up a specific checker for the cleanup.
+Upstream this is review is happening here
+https://reviews.llvm.org/D90180
 
---
-Chuck Lever
+The development of a checker/fixer is
+Start with a reproducer
 
+void foo (int a) {
+  switch (a) {};
+}
 
+Generate the abstract syntax tree (AST)
+
+  clang -Xclang -ast-dump foo.c
+
+`-FunctionDecl 
+  |-ParmVarDecl 
+  `-CompoundStmt 
+    |-SwitchStmt 
+    | |-ImplicitCastExpr
+    | | `-DeclRefExpr
+    | `-CompoundStmt
+    `-NullStmt
+
+Write a matcher to get you most of the way
+
+void SwitchSemiCheck::registerMatchers(MatchFinder *Finder) {
+  Finder->addMatcher(
+      compoundStmt(has(switchStmt().bind("switch"))).bind("comp"), this);
+}
+
+The 'bind' method is important, it allows a string to be associated
+with a node in the AST.  In this case these are
+
+`-FunctionDecl 
+  |-ParmVarDecl 
+  `-CompoundStmt <-------- comp
+    |-SwitchStmt <-------- switch
+    | |-ImplicitCastExpr
+    | | `-DeclRefExpr
+    | `-CompoundStmt
+    `-NullStmt
+
+When a match is made the 'check' method will be called.
+
+  void SwitchSemiCheck::check(const MatchFinder::MatchResult &Result) {
+    auto *C = Result.Nodes.getNodeAs<CompoundStmt>("comp");
+    auto *S = Result.Nodes.getNodeAs<SwitchStmt>("switch");
+
+This is where the string in the bind calls are changed to nodes
+
+`-FunctionDecl 
+  |-ParmVarDecl 
+  `-CompoundStmt <-------- comp, C
+    |-SwitchStmt <-------- switch, S
+    | |-ImplicitCastExpr
+    | | `-DeclRefExpr
+    | `-CompoundStmt
+    `-NullStmt <---------- looking for N
+
+And then more logic to find the NullStmt
+
+  auto Current = C->body_begin();
+  auto Next = Current;
+  Next++;
+  while (Next != C->body_end()) {
+    if (*Current == S) {
+      if (const auto *N = dyn_cast<NullStmt>(*Next)) {
+
+When it is found, a warning is printed and a FixItHint is proposed.
+
+  auto H = FixItHint::CreateReplacement(
+    SourceRange(S->getBody()->getEndLoc(), N->getSemiLoc()), "}");
+  diag(N->getSemiLoc(), "unneeded semicolon") << H;
+
+This fixit replaces from the end of switch to the semicolon with a
+'}'.  Because the end of the switch is '}' this has the effect of
+removing all the whitespace as well as the semicolon.
+
+Because of the checker's placement in clang-tidy existing linuxkernel
+checkers, all that was needed to fix the tree was to add a '-fix'to the
+build's clang-tidy call.
+
+I am looking for opinions on what we want to do specifically with
+cleanups and generally about other source-to-source programmatic
+changes to the code base.
+
+For cleanups, I think we need a new toplevel target
+
+clang-tidy-fix
+
+And an explicit list of fixers that have a very high (100%?) fix rate.
+
+Ideally a bot should make the changes, but a bot could also nag folks.
+Is there interest in a bot making the changes? Does one already exist?
+
+The general source-to-source is a bit blue sky.  Ex/ could automagicly
+refactor api, outline similar cut-n-pasted functions etc. Anything on
+someone's wishlist you want to try out ?
+
+Signed-off-by: Tom Rix <trix@redhat.com>
 
