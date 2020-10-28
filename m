@@ -2,127 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD1029D77C
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Oct 2020 23:24:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 926F729D5BE
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Oct 2020 23:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733005AbgJ1WYn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Oct 2020 18:24:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36802 "EHLO mail.kernel.org"
+        id S1730326AbgJ1WI2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Oct 2020 18:08:28 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:20949 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732649AbgJ1WWX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:22:23 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D25ED2222B;
-        Wed, 28 Oct 2020 06:50:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603867856;
-        bh=pdyqwookFdKHx/L0xEZjzidki8/nv150rb5h0kxgJiw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=G2bpjIzajqVgUG60F/FnIUdykqfIV1SwUhWDmUyvnS98XSOSdY+GyXp8PvWT/ukg1
-         XoUmrYVG+vqtx/l6H0ZjBruU1X8VrQMchTGdZVACc/cA7nnX11QoV0gdBN8xyeDZRN
-         KtfNVe+vJ9SVsk5x1qgsQVdR9KlhzZOwypVBu6/M=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-rdma@vger.kernel.org,
-        "Nicholas A. Bellinger" <nab@risingtidesystems.com>,
-        target-devel@vger.kernel.org
-Subject: [PATCH rdma-next v2] IB/srpt: Fix memory leak in srpt_add_one
-Date:   Wed, 28 Oct 2020 08:50:51 +0200
-Message-Id: <20201028065051.112430-1-leon@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S1730240AbgJ1WI2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:08:28 -0400
+Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9968930000>; Wed, 28 Oct 2020 20:48:19 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 28 Oct
+ 2020 12:48:15 +0000
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.171)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 28 Oct 2020 12:48:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H0Qr1LGZDirL/pBknilQXMn8/TFvZVfOk0D9P+s939+TKQhzkhUTQZvRizYOhiwUGDWEfQJtOxqMeVwqlfYvIxtZJHgmUZF4nteayum6IiaCqBl7Pt39+UqeEIs6LCLeko7DMIszBFqaHeCXOUe4Tj9fihjufq6ZKr7xu4aDpTitoTa2k08XqtXZIwpftGWD1RfSsTMB6PTUdi7qPf6iG1eqnB6WZPdlMtX/DTzMFkI7AK2tILpgXepQFYhDGDjhu6Er60VYwpCIYRsX51WKW2MJh4KnJcbNRgd8IMFzCYibL7av/7dXveeJ1aYe9lsL+ORlNiAYH/JhoMdyMJEwjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ghyZTfiJrbLH8htT9lWbfxGAcGH+4Pglq2ExrRrKRJU=;
+ b=bH/wQiIdg/8U2VZqG8QjHC1lAQ7JGnH29haRfegKwz933rdzCaCYSgxqFO0Urzpaao6qyTQbo4I55VRex8WbEPVr88w7GFAKK6KjsjOmGKIN+utoiZv1GIFUh5ogbE4sQcQ0C1DctJVwieV78GZkNJcsPPhkwHN8XwGVE4NPkvR/vaeAfXDkiQjY6fiFNWdfUpvS/4uuX5v9mGm3wdz8s+ii0dnYQuoYD1+GKsmk905BH9UTk5hYpG/uQvsj08aTGv+amri6fUk4yiy+JMckGSS2sF8TWH5CuFrANUgt4FfgCoVrrNoju+zoPQlNiB92vpHe8AJ3l3sFgtI1Z2AJhQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4041.namprd12.prod.outlook.com (2603:10b6:5:210::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Wed, 28 Oct
+ 2020 12:48:12 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.027; Wed, 28 Oct 2020
+ 12:48:12 +0000
+Date:   Wed, 28 Oct 2020 09:48:11 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alok Prasad <palok@marvell.com>
+CC:     <dledford@redhat.com>, <michal.kalderon@marvell.com>,
+        <ariel.elior@marvell.com>, <linux-rdma@vger.kernel.org>,
+        Igor Russkikh <irusskikh@marvell.com>
+Subject: Re: [PATCH rdma-next] RDMA/qedr: Fix memory leak in iWARP cm
+Message-ID: <20201028124811.GA2394084@nvidia.com>
+References: <20201021115008.28138-1-palok@marvell.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201021115008.28138-1-palok@marvell.com>
+X-ClientProxiedBy: MN2PR18CA0024.namprd18.prod.outlook.com
+ (2603:10b6:208:23c::29) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR18CA0024.namprd18.prod.outlook.com (2603:10b6:208:23c::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 28 Oct 2020 12:48:12 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kXks7-00A2pF-4S; Wed, 28 Oct 2020 09:48:11 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603889299; bh=ghyZTfiJrbLH8htT9lWbfxGAcGH+4Pglq2ExrRrKRJU=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=Xn7gcv5w8YynQHmNPj2XTLTkPbRl+iXpNx24iLpLvU8whk8KVAfeTKFB4HJtB1TAd
+         ynoNmlRARJqUnGonECIZn7lQKyUZt5E9Lo91PdtJMI7PFwYBK99ZkwVPJmS/Hj7ua0
+         wguGb4sfoJNbpCpVNl5OaRQtHtdxNBsPYQj0Gv/P+8bqpEUy43VvNMLNbVbEPBZMoG
+         K4FtosohozJX8iAtn88FZPFpYBigy/nr8OZVKkro/mUdLZT0iYgE+rQaF80Jz+tyUe
+         ArCC5Y+oxXKumKGKck0zM9OOTTrwpHH4AB+IpxSPadCHPzEOR+3cUjd4f739qkF65x
+         VbRYrDhZ4aVng==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+On Wed, Oct 21, 2020 at 11:50:08AM +0000, Alok Prasad wrote:
+> Fixes memory leak in iWARP cm
+> 
+> Fixes: e411e0587e0d ("RDMA/qedr: Add iWARP connection management functions")
+> Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+> Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
+> Signed-off-by: Alok Prasad <palok@marvell.com>
+> ---
+>  drivers/infiniband/hw/qedr/qedr_iw_cm.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-Failure in srpt_refresh_port() for the second port will leave MAD
-registered for the first one, however, the srpt_add_one() will be
-marked as "failed" and SRPT will leak resources for that registered
-but not used and released first port.
+Applied to for-rc, thanks
 
-Unregister the MAD agent for all ports in case of failure.
-
-Fixes: a42d985bd5b2 ("ib_srpt: Initial SRP Target merge for v3.3-rc1")
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
-Changelog:
-v2:
- * Added an extra parameter to srpt_unregister_mad_agent() to eliminate
-   an extra obfuscation call.
-v1:
-https://lore.kernel.org/linux-rdma/20201027055920.1760663-1-leon@kernel.org
- * Fixed and updated commit message.
- * Remove port_cnt check from __srpt_unregister_mad_agent().
-v0:
-https://lore.kernel.org/linux-rdma/20201026132737.1338171-1-leon@kernel.org
----
- drivers/infiniband/ulp/srpt/ib_srpt.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index 0065eb17ae36..1b096305de1a 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -622,10 +622,11 @@ static int srpt_refresh_port(struct srpt_port *sport)
- /**
-  * srpt_unregister_mad_agent - unregister MAD callback functions
-  * @sdev: SRPT HCA pointer.
-+ * #port_cnt: number of ports with registered MAD
-  *
-  * Note: It is safe to call this function more than once for the same device.
-  */
--static void srpt_unregister_mad_agent(struct srpt_device *sdev)
-+static void srpt_unregister_mad_agent(struct srpt_device *sdev, int port_cnt)
- {
- 	struct ib_port_modify port_modify = {
- 		.clr_port_cap_mask = IB_PORT_DEVICE_MGMT_SUP,
-@@ -633,7 +634,7 @@ static void srpt_unregister_mad_agent(struct srpt_device *sdev)
- 	struct srpt_port *sport;
- 	int i;
-
--	for (i = 1; i <= sdev->device->phys_port_cnt; i++) {
-+	for (i = 1; i <= port_cnt; i++) {
- 		sport = &sdev->port[i - 1];
- 		WARN_ON(sport->port != i);
- 		if (sport->mad_agent) {
-@@ -3185,7 +3186,8 @@ static int srpt_add_one(struct ib_device *device)
- 		if (ret) {
- 			pr_err("MAD registration failed for %s-%d.\n",
- 			       dev_name(&sdev->device->dev), i);
--			goto err_event;
-+			i--;
-+			goto err_port;
- 		}
- 	}
-
-@@ -3197,7 +3199,8 @@ static int srpt_add_one(struct ib_device *device)
- 	pr_debug("added %s.\n", dev_name(&device->dev));
- 	return 0;
-
--err_event:
-+err_port:
-+	srpt_unregister_mad_agent(sdev, i);
- 	ib_unregister_event_handler(&sdev->event_handler);
- err_cm:
- 	if (sdev->cm_id)
-@@ -3221,7 +3224,7 @@ static void srpt_remove_one(struct ib_device *device, void *client_data)
- 	struct srpt_device *sdev = client_data;
- 	int i;
-
--	srpt_unregister_mad_agent(sdev);
-+	srpt_unregister_mad_agent(sdev, sdev->device->phys_port_cnt);
-
- 	ib_unregister_event_handler(&sdev->event_handler);
-
---
-2.28.0
-
+Jason
