@@ -2,105 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5D829D5C9
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Oct 2020 23:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF0129D5C5
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Oct 2020 23:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730091AbgJ1WIl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Oct 2020 18:08:41 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:56402 "EHLO nat-hk.nvidia.com"
+        id S1730407AbgJ1WIi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Oct 2020 18:08:38 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:24373 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730249AbgJ1WI1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:08:27 -0400
-Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9977ef0001>; Wed, 28 Oct 2020 21:53:51 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 28 Oct
- 2020 13:53:51 +0000
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.50) by
- HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 28 Oct 2020 13:53:51 +0000
+        id S1730064AbgJ1WI3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:08:29 -0400
+Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f99988a0000>; Thu, 29 Oct 2020 00:12:58 +0800
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 28 Oct
+ 2020 16:12:57 +0000
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 28 Oct 2020 16:12:57 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HB/nllvY1FsIkhLc78H0W20Y8wJp+SqhI/YS5riGP5KoV2oPuBI4jCT3y0zyKUzECIxYoKQUgPte1ZPlYsB1SMI48R63FhqJmX/RnTXpxNix080l13+OTXPHO4ZXPEHUGakldDpuLXVzNCzPChP8YDT2+dWivgfxx8kqJAnqapbGD2RtaR7cgy4h4xOJY9BGTp3V2Vh7Wxy2AlCh4zFlN6wXsnUjuXcPzwEG87fMMtYXowcVhKf34nXAlWEIdL3YOdKLxxEsyHdE20D1fxOu7J1+lkKot92gSHYFXSZRkTfuaWkp+K85xO06u87ayWXXpCXNYcRWnsytxCwZu5XeUw==
+ b=fhHaEEMjnFIAUPTWod1a81ZOGJW98Y/4WrLEh32U/RK6AdBwggeWaXxugpPRalQ03JOQOcelX7tfGEOxtWeXb3LLNR9WH1RvK4GfZQOIHJyQYQi+DkW0SwaP3NlqJQXkusIbGfEtJW1BP5xYz8pULr7i/skzPUAnxPosqTq7eUkaOriGUnhxpHSeoukz6QKorymmrewB7/1zi3+2FwT+FXMfN4Alyoysoo2ZYIgM3b3abV/PdYPfazwNxrlaKOrmTqa5tomURFocKouuKkAsWwgc3bJ1DfkUwyRI7DJ9Sf2Ut9GyJqfpZ+flPNGIqGQGZC3QW9vGsHkW11Xb2lMzlQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qH8whS5HriTeMT1LPRknBf7kTTDsFep+DpGhB9ciLJ4=;
- b=i6AWDhNxCUoEr8N0K/tHVg8S7YklahQszT/9QM9pVFeE+AyoIqSPOMMr3mNyDM4WNiMUp45B67a/cIwvddt67oc7klgTyIQYmxfaPPMOKQh+HJRTusKKKdy8TdlesajfkVcSp1e7MqB7JgDSTrjCxXlSdAOziN3eA2x63MQ81H2/zNAikL2F2LeAT0xuUYXNbq6rM+IHsDcXhe4IV4WLKtFpgNF/mhgyIrq9dt0WS61A0aSqJ/SP8t+gwC2LeCiGztj8cuW0MQLC6fQgu6w1X+0v7nv3mw82CZKOY0jz3U441V8Q2ykmoBdSIbWJceZWh+vPqmWJLGd9WYlV5Xcjxg==
+ bh=OxKMLgGXgHoPSB0kxA6jBQoCX5EBSSdgxjg5G03ahFs=;
+ b=J3UoYztvM5o2NqHcODr3+dZX8JSA/zOZeUXnya8p+OPkW9uYYp7uMXG5HGebu0STV6UwVtofls+9Y2ukqSdCYVrxsOYtAliGlB3I4CAM624RX7kmTD5+y7AqLNy5kbEucwIQw/AAnVCpO+PyvqQQx6JtLq746OzRA+EIWznQ4VAzl18Mw41Ah2iKuZuJFOrfq+Tkhs1zhQ8CoJGLkRJIA8tEHzPo+vR0a53o/pcjsc20saLsSNwo28oCmei5yPFBBfZBno904dnq3JuHnES2aHQsWF6C3qRBr/ocFPoIXAViX5N+t/MqypqgIU3P+c0rDuQveAlrnBhT3rK6qLkwgw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4402.namprd12.prod.outlook.com (2603:10b6:5:2a5::18) with
+ by DM6PR12MB4267.namprd12.prod.outlook.com (2603:10b6:5:21e::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Wed, 28 Oct
- 2020 13:53:48 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Wed, 28 Oct
+ 2020 16:12:55 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.027; Wed, 28 Oct 2020
- 13:53:48 +0000
-Date:   Wed, 28 Oct 2020 10:53:46 -0300
+ 16:12:55 +0000
+Date:   Wed, 28 Oct 2020 13:12:54 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
-CC:     <linux-rdma@vger.kernel.org>, Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Subject: Re: [PATCH] RDMA/ipoib: distribute cq completion vector better
-Message-ID: <20201028135346.GW1523783@nvidia.com>
-References: <20201013074342.15867-1-jinpu.wang@cloud.ionos.com>
- <20201028134419.GA2417977@nvidia.com>
- <CAMGffE=Hm7LNTS1iACZDMg77uP3xG=K0yM4qMjgj9A12E9OL=A@mail.gmail.com>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+CC:     <sagi@grimberg.me>, <krishna2@chelsio.com>,
+        <linux-rdma@vger.kernel.org>, <dledford@redhat.com>,
+        <oren@nvidia.com>, <maxg@mellanox.com>
+Subject: Re: [PATCH v2 1/1] IB/isert: add module param to set sg_tablesize
+ for IO cmd
+Message-ID: <20201028161254.GA2437800@nvidia.com>
+References: <20201019094628.17202-1-mgurtovoy@nvidia.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CAMGffE=Hm7LNTS1iACZDMg77uP3xG=K0yM4qMjgj9A12E9OL=A@mail.gmail.com>
-X-ClientProxiedBy: BL0PR0102CA0065.prod.exchangelabs.com
- (2603:10b6:208:25::42) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <20201019094628.17202-1-mgurtovoy@nvidia.com>
+X-ClientProxiedBy: BL0PR02CA0022.namprd02.prod.outlook.com
+ (2603:10b6:207:3c::35) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR0102CA0065.prod.exchangelabs.com (2603:10b6:208:25::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 28 Oct 2020 13:53:48 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kXltb-00A9Jr-0M; Wed, 28 Oct 2020 10:53:47 -0300
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0022.namprd02.prod.outlook.com (2603:10b6:207:3c::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 28 Oct 2020 16:12:55 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kXo4E-00AEC1-2E; Wed, 28 Oct 2020 13:12:54 -0300
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603893231; bh=qH8whS5HriTeMT1LPRknBf7kTTDsFep+DpGhB9ciLJ4=;
+        t=1603901578; bh=OxKMLgGXgHoPSB0kxA6jBQoCX5EBSSdgxjg5G03ahFs=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=KdD0asjfscqS6/HBqJfp0E5AbQjX9fQg9jZtC5JLVDX21Is9l4l1jwy18Um7kOt5r
-         lfz2BNbnBnKnGUh1Og5l2n1xu/tB9rBifDmrQOOQkljra2oYui3n3jym6myA6B84gu
-         2vcQwfqUlj9tkio35p8HD7rKJx3Wjfq5AHJEpuE3OA+JF4K+hRIgBG2h0vzAGxwPji
-         I8ZQhOKN5cj+0abwKQOQbo7+dzAz1VxzpM1m7fQPeCLEN0+nsUZE8qHAv7VAY5ACLX
-         Vcw0pHqFtbfSQELyF+wgPHUCBlmH2MBzm04l87mKRtjgQcKJn4dXNGInJO+idzr9iG
-         zuRULx+aEVGQg==
+        b=QVwMTLNViQoruEDkHUBmmmId6uxq6xIOYd86VUSU/FctMd6vYKNbYFp2l6+48Izic
+         tryQlaCL7zsfMHTd3gEL+WFgJJQb1zeGw5/i4FQG8ChK/a63obl8qOKkSTSbKiJ/Gv
+         iCsnPBytmHRUrswqBXFdQMMXWO890QMgOexbPz137PHuIptVM2J6pry2cHSfKlYGBE
+         X4ZXj/6lhHqFYCsSutTscgzzqVisviWm62bh3k413YrA3Fjesxwu8Am1B+uJFEiSyb
+         B3+Lh9b9hhDQdhhd4xAf0zu+FjXeirP1Dt0AB4SRrvTCGDvckxkEMozjmAYXU8tknc
+         u1UIKo2+MtZRQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 02:48:01PM +0100, Jinpu Wang wrote:
-> On Wed, Oct 28, 2020 at 2:44 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >
-> > On Tue, Oct 13, 2020 at 09:43:42AM +0200, Jack Wang wrote:
-> > > Currently ipoib choose cq completion vector based on port number,
-> > > when HCA only have one port, all the interface recv queue completion
-> > > are bind to cq completion vector 0.
-> > >
-> > > To better distribute the load, use same method as __ib_alloc_cq_any
-> > > to choose completion vector, with the change, each interface now use
-> > > different completion vectors.
-> > >
-> > > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > > Reviewed-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
-> > >  drivers/infiniband/ulp/ipoib/ipoib_verbs.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > If you care about IPoIB performance you should be using the
-> > accelerated IPoIB stuff, the drivers implementing that all provide
-> > much better handling of CQ affinity.
-> >
-> > What scenario does this patch make a difference?
+On Mon, Oct 19, 2020 at 12:46:28PM +0300, Max Gurtovoy wrote:
+> Currently, iser target support max IO size of 16MiB by default. For some
+> adapters, allocating this amount of resources might reduce the total
+> number of possible connections that can be created. For those adapters,
+> it's preferred to reduce the max IO size to be able to create more
+> connections. Since there is no handshake procedure for max IO size in
+> iser protocol, set the default max IO size to 1MiB and add a module
+> parameter for enabling the option to control it for suitable adapters.
 > 
-> AFAIK the enhance mode is only for datagram mode, we are using connected mode.
+> Fixes: 317000b926b0 ("IB/isert: allocate RW ctxs according to max IO size")
+> Reported-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+> Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+> ---
+> 
+> changes from v1:
+>  - added "Fixes" line (Sagi)
+>  - renamed ISCSI_ISER_SG_TABLESIZE to ISCSI_ISER_DEF_SG_TABLESIZE (Sagi)
+>  - added "Reviewed-by" signature
+> 
+> ---
+>  drivers/infiniband/ulp/isert/ib_isert.c | 27 ++++++++++++++++++++++++-
+>  drivers/infiniband/ulp/isert/ib_isert.h |  6 ++++++
+>  2 files changed, 32 insertions(+), 1 deletion(-)
 
-And you are using child interfaces or multiple cards?
+Applied to for-next, thanks
 
 Jason
