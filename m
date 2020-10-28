@@ -2,76 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C08A29D676
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Oct 2020 23:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CB429D73B
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Oct 2020 23:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731313AbgJ1WPS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Oct 2020 18:15:18 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51986 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731268AbgJ1WPG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Oct 2020 18:15:06 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id A654929A58;
-        Tue, 27 Oct 2020 23:26:19 -0400 (EDT)
-Date:   Wed, 28 Oct 2020 14:26:12 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Tom Rix <trix@redhat.com>
-cc:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        qat-linux@intel.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
-        netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org,
-        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
-Subject: Re: [RFC] clang tooling cleanups
-In-Reply-To: <20201027164255.1573301-1-trix@redhat.com>
-Message-ID: <alpine.LNX.2.23.453.2010281344120.31@nippy.intranet>
-References: <20201027164255.1573301-1-trix@redhat.com>
+        id S1732662AbgJ1WWZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Oct 2020 18:22:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732646AbgJ1WWY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:22:24 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A7052223C;
+        Wed, 28 Oct 2020 05:18:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603862321;
+        bh=oP+H2tKIIIzfompxh2yT/7z0AAWJ6eqX+XY7fexlECA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Js7nTTeyGXRif/jF0msULfLVT0tETc3VPiXLM+mjL6mkb5s9HwCl/x4djAbGmAQWn
+         KgZ2WU0ojFMTHhM6XUMGoeTjqT82ncfaroLHabF3/BBE25OAWx/Nz/m7TZPJnUWaPa
+         OIsMsJgKC9Dxpux/AuqSxKldIKpjbtm1pPnY8EJA=
+Date:   Wed, 28 Oct 2020 07:18:37 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>, linux-rdma@vger.kernel.org,
+        "Nicholas A. Bellinger" <nab@risingtidesystems.com>,
+        target-devel@vger.kernel.org
+Subject: Re: [PATCH rdma-next v1] IB/srpt: Fix memory leak in srpt_add_one
+Message-ID: <20201028051837.GE1763578@unreal>
+References: <20201027055920.1760663-1-leon@kernel.org>
+ <1bc9ef14-4d91-6b12-f396-222cb6775ce4@acm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1bc9ef14-4d91-6b12-f396-222cb6775ce4@acm.org>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Oct 27, 2020 at 08:45:11PM -0700, Bart Van Assche wrote:
+> On 10/26/20 10:59 PM, Leon Romanovsky wrote:
+> > +/**
+> > + * srpt_unregister_mad_agent - unregister MAD callback functions
+> > + * @sdev: SRPT HCA pointer.
+> > + *
+> > + * Note: It is safe to call this function more than once for the same device.
+> > + */
+> > +static void srpt_unregister_mad_agent(struct srpt_device *sdev)
+> > +{
+> > +	__srpt_unregister_mad_agent(sdev, sdev->device->phys_port_cnt);
+> > +}
+>
+> As far as I can see with this patch applied srpt_unregister_mad_agent()
+> has no callers. So please add an argument to srpt_unregister_mad_agent()
+> instead of introducing __srpt_unregister_mad_agent().
 
-On Tue, 27 Oct 2020, trix@redhat.com wrote:
+srpt_unregister_mad_agent() is called in srpt_remove_one(), but will
+change to get extra parameter.
 
-> This rfc will describe
-> An upcoming treewide cleanup.
-> How clang tooling was used to programatically do the clean up.
-> Solicit opinions on how to generally use clang tooling.
-> 
+Thanks
 
-This tooling is very impressive. It makes possible an idea that I had a 
-while ago, to help make code review more efficient. It works like this. 
-
-Suppose a patch, p, is the difference between the new tree, n, and the old 
-tree, o. That is, p = n - o.
-
-Now let clang-tidy be the transformation 't'. This gets you a much more 
-readable patch submission, P = t(n) - t(o).
-
-The only difficulty is that, if I submit P intead of p then 'git am' will 
-probably reject it. This is solved by a little tooling around git, such 
-that, should a patch P fail to apply, the relevant files are automatically 
-reformatted with the officially endorsed transformation t, to generate a 
-minimal cleanup patch, such that P can be automatically applied on top.
-
-If the patch submission process required* that every patch submission was 
-generated like P and not like p, it would immediately eliminate all 
-clean-up patches from the workload of all reviewers, and also make the 
-reviewers' job easier because all submissions are now formatted correctly, 
-and also avoid time lost to round-trips, such as, "you can have a 
-reviewed-by if you respin to fix some minor style issues".
-
-* Enforcing this, e.g. with checkpatch, is slightly more complicated, but 
-it works the same way: generate a minimal cleanup patch for the relevant 
-files, apply the patch-to-be-submitted, and finally confirm that the 
-modified files are unchanged under t.
+>
+> Thanks,
+>
+> Bart.
