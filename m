@@ -2,132 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4DCC29CC57
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Oct 2020 23:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5993029D2D1
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Oct 2020 22:35:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1832587AbgJ0W4P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Oct 2020 18:56:15 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50108 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1832564AbgJ0W4H (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Oct 2020 18:56:07 -0400
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603839365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jttJQYUY921gdQBinUA2N0GBiq3HS7MmOYm/9rq3mlU=;
-        b=0GnEbZqlXJZLQfjONDg/KSujsSvfMvUdN9MjzKaP55p1OEL8105JJGIQe6F3XVpxye4QRG
-        RNPtf8SiqF6hXmGgkfl/1C/UqBtecqyV1R5ba28I2myfZGnsuvT0wtttW7aBU23i8cp0Kp
-        KPePrRqnO5QD3zsNjl0yz3RIKPYR9IqDfkJJwLOramUuxXxYnkd8Z0mwa5+ATFm5MBsojH
-        c1s8YWDtwJjB+Py3JzwS5Sia73LSJCXx75eylZj0Pz3x7x+1Nh9Y0AYUTJPGgc6ryex4na
-        0xwLG2EUr3iK9u8qT5n0uUKslQ2EpAHI1jsLzfDpVY5F44gyFbKLZ6KAepUyjA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603839365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jttJQYUY921gdQBinUA2N0GBiq3HS7MmOYm/9rq3mlU=;
-        b=LsJR1NJ1kfuG7mH7WHiTgHjGj108g1qTNgV4c1oTVdGNGA/LhmC59JAAm3KDssv9bSM5bW
-        AvG+0+npRHIheYCA==
-To:     netdev@vger.kernel.org
-Cc:     Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Daniel Drake <dsd@gentoo.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>, Jon Mason <jdmason@kudzu.us>,
-        Jouni Malinen <j@w1.fi>, Kalle Valo <kvalo@codeaurora.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-rdma@vger.kernel.org,
-        linux-wireless@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Rain River <rain.1986.08.12@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Samuel Chessman <chessman@tux.org>,
-        Ulrich Kunitz <kune@deine-taler.de>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH net-next 15/15] crypto: caam: Replace in_irq() usage.
-Date:   Tue, 27 Oct 2020 23:54:54 +0100
-Message-Id: <20201027225454.3492351-16-bigeasy@linutronix.de>
-In-Reply-To: <20201027225454.3492351-1-bigeasy@linutronix.de>
-References: <20201027225454.3492351-1-bigeasy@linutronix.de>
+        id S1726729AbgJ1VfR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Oct 2020 17:35:17 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:28258 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726700AbgJ1VfK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:35:10 -0400
+Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9960b90000>; Wed, 28 Oct 2020 20:14:49 +0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 28 Oct
+ 2020 12:14:43 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
+ by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 28 Oct 2020 12:14:43 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OCSDZgL05dyDiIyyctUaDs9bPa/AMR7fcRlj8gDV4gonXgS3mVisqdbR1RonXkd/J8/SXu1ED2TtELTt2rVeHwyforKVvtElXsIDJ2oNIzVVsmeaEvjDlmErIQh8Amt2rDKLxR3CzcoLlRucbUo/04zjSNGey5dBLI6fU+MUJUlxa2lQI56q4ccQfqG6wAX91EpgijO1MopwnxxZPRM6UI59kG1pAo4esvmYcT01ldn/doMQdLU+dBglpjebvqos/jdE459rqUmWGVgG6xSTfGrbtsZQzyP8Qnn+/pokqVmYnpuPMRJb+7suQfBIRF6AJ/RD3V0dhVsIXy5QrIHXEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GDsk0pGeWll3uhXmO7tKPci2CWy4O4fCJM6xIer31Ao=;
+ b=cE2azgy6OKXmje4H1nnHi/maQfbOzS/R02IW8EEemRbE62+ZPZyvcGDhdlRKxT7dRp2b6p1f2r4rwC2Tj+8mJqix+xgVe706hhDzMOZCYH+QMUPWYN5I8PoUtTgwrqntP69YyKJZy+d/ZoayFUygxJsbw71p/QS1d4hGmRkjzFeu0mNuDONyV1w2IUdwQ5lKlRzcHXx30xtdIDqR2hbkn6YoRBGl8YTVp7F19Im4NUzIJItJpHRP9DdkeaAaW7Lo5Rmh2Q9DOMLRU3C03M9VGh5SCFSEz0gGa0t4Vi26O7/OP/YIZi9FZpTwJgPs7hp6L1ZwdFpRAczSlXg17KSlgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from CH2PR12MB3831.namprd12.prod.outlook.com (2603:10b6:610:29::13)
+ by CH2PR12MB4021.namprd12.prod.outlook.com (2603:10b6:610:2b::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Wed, 28 Oct
+ 2020 12:14:40 +0000
+Received: from CH2PR12MB3831.namprd12.prod.outlook.com
+ ([fe80::304d:bd84:52d9:7f74]) by CH2PR12MB3831.namprd12.prod.outlook.com
+ ([fe80::304d:bd84:52d9:7f74%6]) with mapi id 15.20.3477.028; Wed, 28 Oct 2020
+ 12:14:40 +0000
+Date:   Wed, 28 Oct 2020 09:14:37 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Maor Gottlieb <maorg@nvidia.com>
+CC:     <linux-rdma@vger.kernel.org>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Chao Leng <lengchao@huawei.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Keith Busch <kbusch@kernel.org>,
+        <linux-nvme@lists.infradead.org>,
+        "Max Gurtovoy" <mgurtovoy@nvidia.com>, <netdev@vger.kernel.org>,
+        <rds-devel@oss.oracle.com>, Sagi Grimberg <sagi@grimberg.me>
+Subject: Re: [PATCH rdma v2] RDMA: Add rdma_connect_locked()
+Message-ID: <20201028121437.GU1523783@nvidia.com>
+References: <0-v2-53c22d5c1405+33-rdma_connect_locking_jgg@nvidia.com>
+ <4401b7b1-5d05-a715-4701-957fd09f34c9@nvidia.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <4401b7b1-5d05-a715-4701-957fd09f34c9@nvidia.com>
+X-ClientProxiedBy: MN2PR08CA0008.namprd08.prod.outlook.com
+ (2603:10b6:208:239::13) To CH2PR12MB3831.namprd12.prod.outlook.com
+ (2603:10b6:610:29::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR08CA0008.namprd08.prod.outlook.com (2603:10b6:208:239::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 28 Oct 2020 12:14:40 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kXkLd-009vvx-Mn; Wed, 28 Oct 2020 09:14:37 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603887289; bh=GDsk0pGeWll3uhXmO7tKPci2CWy4O4fCJM6xIer31Ao=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=aS+R9tss6LVVb5Qv8AxvF/SbcIZwtLAToMUBdozqBpZyM0nbXaAnYELa8HsvV+2nn
+         JfH07a9NeE6PAjWd+KdiGzKdWm3Qw2MPTKZaYG5yZptJ4l1rW9at+lE6BQpjxtrIjp
+         P3CWHAGi1+B6IbQl2FENZOjXX/yzOTEt0W7BS+jsGtnDUAccNgaqlvBb0c45Sl3xw5
+         uV/xxyFWQWJa4GZ4aH/f7XjQn5WXmYWISnue1aG5SaYaXNAftDSAEzOQvm9wY4an4Z
+         DCPFV3BZHPIi2AiXbNr80XgZP92UEX7KjzCs2intun9fljaj7glWNN1qtRdAwfeeCJ
+         v4oikr2yYOAqA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The driver uses in_irq() + in_serving_softirq() magic to decide if NAPI
-scheduling is required or packet processing.
+On Wed, Oct 28, 2020 at 11:19:14AM +0200, Maor Gottlieb wrote:
+> > +			struct rdma_conn_param *conn_param)
+> >   {
+> >   	struct rdma_id_private *id_priv =
+> >   		container_of(id, struct rdma_id_private, id);
+> >   	int ret;
+> > -	mutex_lock(&id_priv->handler_mutex);
+> 
+> You need to delete the mutex_unlock in success path too.
 
-The usage of in_*() in drivers is phased out and Linus clearly requested
-that code which changes behaviour depending on context should either be
-seperated or the context be conveyed in an argument passed by the caller,
-which usually knows the context.
+Gaaaaah. Just goes to prove I shouldn't write patches with a child on
+my lap :\
 
-Use the `napi' argument passed by the callback. It is set true if
-called from the interrupt handler and NAPI should be scheduled.
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index f58d19881524dc..a77750b8954db0 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -4072,7 +4072,6 @@ int rdma_connect_locked(struct rdma_cm_id *id,
+ 		ret = -ENOSYS;
+ 	if (ret)
+ 		goto err_state;
+-	mutex_unlock(&id_priv->handler_mutex);
+ 	return 0;
+ err_state:
+ 	cma_comp_exch(id_priv, RDMA_CM_CONNECT, RDMA_CM_ROUTE_RESOLVED);
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: "Horia Geant=C4=83" <horia.geanta@nxp.com>
-Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Madalin Bucur <madalin.bucur@nxp.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Li Yang <leoyang.li@nxp.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-arm-kernel@lists.infradead.org
----
- drivers/crypto/caam/qi.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/crypto/caam/qi.c b/drivers/crypto/caam/qi.c
-index 09ea398304c8b..79dbd90887f8a 100644
---- a/drivers/crypto/caam/qi.c
-+++ b/drivers/crypto/caam/qi.c
-@@ -545,14 +545,10 @@ static void cgr_cb(struct qman_portal *qm, struct qma=
-n_cgr *cgr, int congested)
- 	}
- }
-=20
--static int caam_qi_napi_schedule(struct qman_portal *p, struct caam_napi *=
-np)
-+static int caam_qi_napi_schedule(struct qman_portal *p, struct caam_napi *=
-np,
-+				 bool napi)
- {
--	/*
--	 * In case of threaded ISR, for RT kernels in_irq() does not return
--	 * appropriate value, so use in_serving_softirq to distinguish between
--	 * softirq and irq contexts.
--	 */
--	if (unlikely(in_irq() || !in_serving_softirq())) {
-+	if (napi) {
- 		/* Disable QMan IRQ source and invoke NAPI */
- 		qman_p_irqsource_remove(p, QM_PIRQ_DQRI);
- 		np->p =3D p;
-@@ -574,7 +570,7 @@ static enum qman_cb_dqrr_result caam_rsp_fq_dqrr_cb(str=
-uct qman_portal *p,
- 	struct caam_drv_private *priv =3D dev_get_drvdata(qidev);
- 	u32 status;
-=20
--	if (caam_qi_napi_schedule(p, caam_napi))
-+	if (caam_qi_napi_schedule(p, caam_napi, napi))
- 		return qman_cb_dqrr_stop;
-=20
- 	fd =3D &dqrr->fd;
---=20
-2.28.0
-
+Thanks,
+Jason
