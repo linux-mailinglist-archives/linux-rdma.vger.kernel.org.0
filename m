@@ -2,106 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77ED929DAEF
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Oct 2020 00:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D10D29DBAF
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Oct 2020 01:11:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725999AbgJ1Xil (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Oct 2020 19:38:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390564AbgJ1Xhf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Oct 2020 19:37:35 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5AEC0613CF
-        for <linux-rdma@vger.kernel.org>; Wed, 28 Oct 2020 16:37:34 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id g25so456581edm.6
-        for <linux-rdma@vger.kernel.org>; Wed, 28 Oct 2020 16:37:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ki+Ts9WKcCq40vX0E5rPi4mRWX8BE4sWZrihaMXRb7g=;
-        b=NTNS3xhYiThv5AiuO5UDhrHOnw5VCnYAvwXB7jjq0zfMjHu7n7O4LVCi/oOA9RaziR
-         6VCUp6Ig5apT+1Ex/2cgMk1LLZYC7capZxQPreHKfEvUIjhg/nLhKjQoKfZ/onR1qZCA
-         zoVhSOGo7BscXno+Vy0o8of31fVKfOZmBexOqWQPIMVvVc4rh3jCPICSoJ+brrnwbbv3
-         BnuVTAiWfn1fBDr7UKrJAGLAhX/I4j2yMyVVEgsYSfQ1m+yRe9zM8tx44DTKKVKiOfGz
-         YRINgQUnT6Yxkw4yDRvXHcQJnZEbPApFAkZps0+oLrIFB8xfm6scd5OQ4reQhFxt1XHk
-         iErw==
+        id S1732002AbgJ2ALZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Oct 2020 20:11:25 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:42982 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731875AbgJ1Wqj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Oct 2020 18:46:39 -0400
+Received: by mail-pg1-f194.google.com with SMTP id s22so713067pga.9;
+        Wed, 28 Oct 2020 15:46:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ki+Ts9WKcCq40vX0E5rPi4mRWX8BE4sWZrihaMXRb7g=;
-        b=jaHg4uDFmGLW9lltDq2WGLNpkQz6rVvSdbxW5FVyTknPiyM47XkaVAHc8gSaMkpOc3
-         HLJ4YfKy+/FC6XXlTrkhznQe1XQVzF4BLEHHQiXUZgGJKGEx6B0lCV/6WfPClvrjOg4R
-         LOwIPjt2pOh25rkbtS475DWlVStLcXlS09InLneZvOu8N8+AmMrurXh2Zsbjs4gXRqfP
-         qGcFadUJFFvRU/BErONF4tQlqUq1GVos/nd+A4ev0D67e+qAQrT5SUuEjgFWaTNsoZGS
-         5rpnIKPU295ZtV29nIXj5bg/8bvP1GCBzfXQ9ft5+JVsagfzVqh906i+uICxSumZGWWD
-         mEyQ==
-X-Gm-Message-State: AOAM531dsTlEExe4faXe3G5MsqMrMgvSYGL2JDCLsHUnAAUH2wfY5org
-        9tWZVgQDMrnDffNfeYLq2kYP0iidhmy8dUEyl9MCnTuL8YzETQ==
-X-Google-Smtp-Source: ABdhPJypa7/FW2Ldanl3eHfEyTIia5wXvIQvT38PzNyrCGwSRJTStqNY3jundbwNOyUp8FPEUSojU6iOHTz53YfWxh0=
-X-Received: by 2002:aa7:c984:: with SMTP id c4mr7787222edt.42.1603894095174;
- Wed, 28 Oct 2020 07:08:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201013074342.15867-1-jinpu.wang@cloud.ionos.com>
- <20201028134419.GA2417977@nvidia.com> <CAMGffE=Hm7LNTS1iACZDMg77uP3xG=K0yM4qMjgj9A12E9OL=A@mail.gmail.com>
- <20201028135346.GW1523783@nvidia.com> <CAMGffE=9j+yWXhWj+X2XVYm018GBwOw4ZZxQ5GYs-rwrW4q3Kg@mail.gmail.com>
- <20201028135929.GX1523783@nvidia.com>
-In-Reply-To: <20201028135929.GX1523783@nvidia.com>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Wed, 28 Oct 2020 15:08:03 +0100
-Message-ID: <CAMGffEmWLqVft9YKA2WoBbHcfD8_knbhsBxJneV9dGpJzwuAiw@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/ipoib: distribute cq completion vector better
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oatMflBbvtVoFbzfhbNEDvGH+eoG5r1OUVv4RU4nvk4=;
+        b=hcnkdHhtqWBL0kf4N9Pb2Hgam3t5OK9ORRmqjwwzzRUOOo0PN0wUj7Ki9/XMmZg8SO
+         GM4dvd1bE/UimigiqxNLIh7zLboAfaLyAgtCjL8IBbEjdlMrnlb3FEW3eS7i5OvHiB9B
+         boyOAu67VfdBQImB3D+lw7cgoJZMeuxzslGGfubVWkR8iWKCgEU+hf5a4DkRCUUEpAOH
+         C94S9W71s6hxII0B9ASEFFmQjVJLUOIV0weX9qIsYlzPKrLgUI0lhA49iEakr+B7u09q
+         rFKBwjIlGut/5M5imGud6BvbTp8FALVaH1U4x5b8EZujYndJwiylojF4WHpkNlCgXwo/
+         qqvg==
+X-Gm-Message-State: AOAM531kI6v4839qxIPMaKLzsBRoF///KBVkXRjGarCVR0C0STpgxhXd
+        qL1St8FRYDWBTA9yuJu9vZcB/GHQboPAvQ==
+X-Google-Smtp-Source: ABdhPJzy2uuO9GujIGNJL1JsizVekBJIiPMa5j0MOcXzQbtLtnddVMaI2cP33Pc3xmuN/SwUEeZNEQ==
+X-Received: by 2002:a05:6a00:16c7:b029:163:ce86:1d5d with SMTP id l7-20020a056a0016c7b0290163ce861d5dmr5239143pfc.80.1603856713993;
+        Tue, 27 Oct 2020 20:45:13 -0700 (PDT)
+Received: from [192.168.3.218] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id q23sm3879617pfg.192.2020.10.27.20.45.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 20:45:13 -0700 (PDT)
+Subject: Re: [PATCH rdma-next v1] IB/srpt: Fix memory leak in srpt_add_one
+To:     Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Maor Gottlieb <maorg@nvidia.com>, linux-rdma@vger.kernel.org,
+        "Nicholas A. Bellinger" <nab@risingtidesystems.com>,
+        target-devel@vger.kernel.org
+References: <20201027055920.1760663-1-leon@kernel.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <1bc9ef14-4d91-6b12-f396-222cb6775ce4@acm.org>
+Date:   Tue, 27 Oct 2020 20:45:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
+MIME-Version: 1.0
+In-Reply-To: <20201027055920.1760663-1-leon@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 2:59 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Wed, Oct 28, 2020 at 02:57:57PM +0100, Jinpu Wang wrote:
-> > On Wed, Oct 28, 2020 at 2:53 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > >
-> > > On Wed, Oct 28, 2020 at 02:48:01PM +0100, Jinpu Wang wrote:
-> > > > On Wed, Oct 28, 2020 at 2:44 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > > > >
-> > > > > On Tue, Oct 13, 2020 at 09:43:42AM +0200, Jack Wang wrote:
-> > > > > > Currently ipoib choose cq completion vector based on port number,
-> > > > > > when HCA only have one port, all the interface recv queue completion
-> > > > > > are bind to cq completion vector 0.
-> > > > > >
-> > > > > > To better distribute the load, use same method as __ib_alloc_cq_any
-> > > > > > to choose completion vector, with the change, each interface now use
-> > > > > > different completion vectors.
-> > > > > >
-> > > > > > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > > > > > Reviewed-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
-> > > > > >  drivers/infiniband/ulp/ipoib/ipoib_verbs.c | 4 ++--
-> > > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > If you care about IPoIB performance you should be using the
-> > > > > accelerated IPoIB stuff, the drivers implementing that all provide
-> > > > > much better handling of CQ affinity.
-> > > > >
-> > > > > What scenario does this patch make a difference?
-> > > >
-> > > > AFAIK the enhance mode is only for datagram mode, we are using connected mode.
-> > >
-> > > And you are using child interfaces or multiple cards?
-> > we are using multiple child interfaces on Connect x5 HCA
-> > (MCX556A-ECAT)
->
-> Ok.. Do you think it would be better to change IPoIB to use the new
-> shared CQ pool API?
->
-> Jason
-I thought about it, but CQ pool API doesn't work with IB_POLL_DIRECT,
-ipoib is using NAPI,
-and it's non-trivial to convert to CQ pool API. I'm not confident to
-do it properly,
+On 10/26/20 10:59 PM, Leon Romanovsky wrote:
+> +/**
+> + * srpt_unregister_mad_agent - unregister MAD callback functions
+> + * @sdev: SRPT HCA pointer.
+> + *
+> + * Note: It is safe to call this function more than once for the same device.
+> + */
+> +static void srpt_unregister_mad_agent(struct srpt_device *sdev)
+> +{
+> +	__srpt_unregister_mad_agent(sdev, sdev->device->phys_port_cnt);
+> +}
+
+As far as I can see with this patch applied srpt_unregister_mad_agent()
+has no callers. So please add an argument to srpt_unregister_mad_agent()
+instead of introducing __srpt_unregister_mad_agent().
+
+Thanks,
+
+Bart.
