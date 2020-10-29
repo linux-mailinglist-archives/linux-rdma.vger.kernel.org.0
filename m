@@ -2,98 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031FD29F2C9
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Oct 2020 18:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DC829F434
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Oct 2020 19:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgJ2RQv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Oct 2020 13:16:51 -0400
-Received: from smtprelay0188.hostedemail.com ([216.40.44.188]:35400 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726811AbgJ2RQv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 29 Oct 2020 13:16:51 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 9E10A18029122;
-        Thu, 29 Oct 2020 17:16:50 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2691:2828:3138:3139:3140:3141:3142:3353:3622:3865:3867:3871:3872:3873:4321:5007:6742:8603:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12438:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:21080:21627:21939:21990:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: help67_190e8b72728f
-X-Filterd-Recvd-Size: 2905
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf08.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 29 Oct 2020 17:16:48 +0000 (UTC)
-Message-ID: <d045c9c63b5ba9535314d9af823607d0659758c0.camel@perches.com>
-Subject: Re: [PATCH 3/4] RDMA: manual changes for sysfs_emit and neatening
-From:   Joe Perches <joe@perches.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Parvi Kaustubhi <pkaustub@cisco.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-rdma@vger.kernel.org
-Date:   Thu, 29 Oct 2020 10:16:46 -0700
-In-Reply-To: <4684eb7d2a872b23bd3258153370d4de1691bbe4.camel@perches.com>
-References: <cover.1602122879.git.joe@perches.com>
-         <f5c9e4c9d8dafca1b7b70bd597ee7f8f219c31c8.1602122880.git.joe@perches.com>
-         <20201028172530.GA2460290@nvidia.com>
-         <4684eb7d2a872b23bd3258153370d4de1691bbe4.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1725774AbgJ2Sl0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Oct 2020 14:41:26 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17387 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725648AbgJ2Sl0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Oct 2020 14:41:26 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9b0cdb0000>; Thu, 29 Oct 2020 11:41:31 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 29 Oct
+ 2020 18:41:25 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.172)
+ by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 29 Oct 2020 18:41:25 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Oz/CYlqqOdCw7/IGSCeq4abXRVkcnJOJsS7z8Ig24DjW1Pht5BZtgW/rmKC8vWuT5ReaKduDFcezdT8KyxI6LT8ttRlhUh8Er8kDdbj0lJaEEUQPxuhuomgRSnKr9/XD7vcwD/eTUGKEix4BOQHJhRjJ4Jh+sXqsnVK692RgmbFRQ2Pu7qBjfNYlULPGeYoGgqka3D1RtMFxH9/ntm5/Y8XDwwFvnw0LTTkPkRmt6KdIVYJP+pvCi5TyjbOwp+86+hKTqkCl/kN5gmnO6Rbk7oNs6du4eoXC+Sx/HCw3sTkTFF7/65SLXx9WeIX+pJNoY7ffOrXlJIZ1w3KkmVfBvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1Glls7vTISXRSD6YqHxBre4V7aeE/LuZZQTL9e47XHg=;
+ b=kd8qY4AejJBqfrNnOe0HFQOCCw3sbfUqhSdFWXYjXC7mXqfU+/OPV0nQBA98kWhELjdbHLb2nbbMEr0mutkt6nkjK0vVDUAP7dC+G2g3Qe6EcroNZWkBSo+qe/JjNkIWOIxy3LDBZJTxvYGUyL6wpIzH5zkPNcrrbrOBvINnBWNHXlj8o5W+aXLu4SdqX76YAinPYIBcymNkS+IjXUTMYfjvVGjC6HcTGD+20ku64pIwT5938w2wF+PeIwQpzowQO6LP1WvEhmdSZyYwE1ukPZIIDgI6AqozEdzrp3Hq8jquOQ3xNyW66XLpYekjKdoHmKBtnOcGAQUKW9efWFrGeA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR1201MB0203.namprd12.prod.outlook.com (2603:10b6:4:56::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.28; Thu, 29 Oct
+ 2020 18:41:24 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.027; Thu, 29 Oct 2020
+ 18:41:24 +0000
+Date:   Thu, 29 Oct 2020 15:41:23 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] Please pull RDMA subsystem changes
+Message-ID: <20201029184123.GA2920455@nvidia.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
+Content-Disposition: inline
+X-ClientProxiedBy: MN2PR06CA0022.namprd06.prod.outlook.com
+ (2603:10b6:208:23d::27) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR06CA0022.namprd06.prod.outlook.com (2603:10b6:208:23d::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Thu, 29 Oct 2020 18:41:24 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kYCrT-00CFnA-38; Thu, 29 Oct 2020 15:41:23 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603996891; bh=1Glls7vTISXRSD6YqHxBre4V7aeE/LuZZQTL9e47XHg=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:Content-Type:Content-Disposition:
+         X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=UCgBT1GTvHBt4h6mwQ4C1p6dcZCBf4PSpLpkKX9+/2W1jnED9tsQuyVSR6ifrSFbh
+         r3NIBwqsNgv9+YZru0YGo4dRBkRrrOwu58wueqIM432ma53zx3n+oj7qgW0zdps344
+         VB3dOI5NYj4QhDzztJpB55LZVvmjSixBuaiuChyjnPp3CbWdyRNLaqRC115Ks+I/Iw
+         hg1rX25ma8P6n+8uRhcfWTBkglOb8ir1M1FQMpn/UaYKsKk+nFxNxT64eGB2uAZ7nc
+         /xxnfaNJn+ObvuIfiHlBcV/qv0u4I4EzdAc82ADRyO7yTbdjL9MKncFhdwj7PKI+8N
+         0fnoidllf2CCA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 2020-10-28 at 10:54 -0700, Joe Perches wrote:
-> On Wed, 2020-10-28 at 14:25 -0300, Jason Gunthorpe wrote:
-> > On Wed, Oct 07, 2020 at 07:36:26PM -0700, Joe Perches wrote:
-> > 
-> > > @@ -653,10 +651,7 @@ static ssize_t serial_show(struct device *device,
-> > >  		rdma_device_to_drv_device(device, struct qib_ibdev, rdi.ibdev);
-> > >  	struct qib_devdata *dd = dd_from_dev(dev);
-> > >  
-> > > 
-> > > -	buf[sizeof(dd->serial)] = '\0';
-> > > -	memcpy(buf, dd->serial, sizeof(dd->serial));
-> > > -	strcat(buf, "\n");
-> > > -	return strlen(buf);
-> > > +	return sysfs_emit(buf, "%s\n", dd->serial);
-> > >  }
-> > 
-> > This is not the same thing? dd->serial does not look null terminated,
-> > eg it is filled like this:
-> > 
-> > 		memcpy(dd->serial, ifp->if_serial, sizeof(ifp->if_serial));
-> > 
-> > From data read off the flash
-> 
-> It seems you are correct.
-> 
-> Maybe instead:
-> ---
-> static ssize_t serial_show(struct device *device,
-> 			   struct device_attribute *attr, char *buf)
-> {
-> 	struct qib_ibdev *dev =
-> 		rdma_device_to_drv_device(device, struct qib_ibdev, rdi.ibdev);
-> 	struct qib_devdata *dd = dd_from_dev(dev);
-> 	const u8 *end = memchr(dd->serial, 0, ARRAY_SIZE(dd->serial));
-> 	int size = end ? end - dd->serial : ARRAY_SIZE(dd->serial);
-> 
-> 	return sysfs_emit(buf, "%*s\n", size, dd->serial);
+--RnlQjJ0d97Da+TV1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I believe for this to actually be correct, this should be:
+Hi Linus,
 
-	return sysfs_emit(buf, "%.*s\n", size, dd->serial);
+First rc pull request
 
+The good news is people are testing rc1 in the RDMA world - the bad
+news is testing of the for-next area is not as good as I had hoped, as
+we really should have caught at least the rdma_connect_locked() issue
+before now.
 
+Here are several regression fixes for issues found by people testing
+rc1.
+
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+
+for you to fetch changes up to a2267f8a52eea9096861affd463f691be0f0e8c9:
+
+  RDMA/qedr: Fix memory leak in iWARP CM (2020-10-28 09:45:25 -0300)
+
+----------------------------------------------------------------
+RDMA 5.10 first rc pull request
+
+Three notable merge window regressions that didn't get caught/fixed in
+time for rc1:
+
+- Fix in kernel users of rxe, they were broken by the rapid fix to undo
+  the uABI breakage in rxe from another patch
+
+- EFA userspace needs to read the GID table but was broken with the new
+  GID table logic
+
+- Fix user triggerable deadlock in mlx5 using devlink reload
+
+- Fix deadlock in several ULPs using rdma_connect from the CM handler
+  callbacks
+
+- Memory leak in qedr
+
+----------------------------------------------------------------
+Alok Prasad (1):
+      RDMA/qedr: Fix memory leak in iWARP CM
+
+Bob Pearson (1):
+      RDMA/rxe: Fix small problem in network_type patch
+
+Gal Pressman (1):
+      RDMA/uverbs: Fix false error in query gid IOCTL
+
+Jason Gunthorpe (1):
+      RDMA: Add rdma_connect_locked()
+
+Parav Pandit (1):
+      RDMA/mlx5: Fix devlink deadlock on net namespace deletion
+
+ drivers/infiniband/core/cma.c                      | 48 +++++++++++++++++-----
+ drivers/infiniband/core/uverbs_std_types_device.c  |  3 --
+ drivers/infiniband/hw/mlx5/main.c                  |  6 ++-
+ drivers/infiniband/hw/qedr/qedr_iw_cm.c            |  1 +
+ drivers/infiniband/sw/rxe/rxe_av.c                 | 35 ++++++++++++++--
+ drivers/infiniband/sw/rxe/rxe_net.c                |  2 +-
+ drivers/infiniband/ulp/iser/iser_verbs.c           |  2 +-
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c             |  4 +-
+ drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h |  5 ---
+ drivers/nvme/host/rdma.c                           |  4 +-
+ include/linux/mlx5/driver.h                        | 18 ++++++++
+ include/rdma/rdma_cm.h                             | 14 +------
+ net/rds/ib_cm.c                                    |  5 ++-
+ 13 files changed, 103 insertions(+), 44 deletions(-)
+
+--RnlQjJ0d97Da+TV1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEfB7FMLh+8QxL+6i3OG33FX4gmxoFAl+bDNEACgkQOG33FX4g
+mxprvg//WSpcpBqrGpi0zciVV4UcBxPc7jrOEGCNhj8bWT+8wt1L/7GGVq8xviRM
+chAdLzRHCChKPYWLAxOeiaOim5hMl9TR9kPHvbPc8u8HB6aqBJGoBfQzBZJgiPZO
+0SCojhgcBZgERVytKveGfiNLmWAXov1rrtWz6wOmjsdlfgp3W7n6Hlh0liQQBZd4
+uYytwv1IE/eatNTYJ1aMd8/4H6Tm4kmnzn3zonjMNqwkTkrpKWe9qRCTC5qEZPO8
+BxVkj8sdIbkhr9xRAgsoR3pTZUBiVdzYSwPsisjuiHW4p30oAuEN6B8AzQlhkie6
+2kd0RShswJ1wMoB+cYec/mE05063Kyp83/rdMJ/ZtwKENncosVNu6jdioBAderiB
+ZcQalbr+yig2K6qrnnzNsokj8Lfx84X0tKzJty3FnMXv77K/YuxB54mA5BpoIRIU
+LtMQq8eT8z9ELwKiR/CmZX3j9QzXzyU7TS03748XnMhRzqfg3wng09AIOkwW4S9/
+G1Kl0AcwgXzEOzaPndd4Io28UBaG4rClgGMNFEwDAvcztfCfZgvtDTJ43/sO5gBM
+yqJCD6B+tqifmqhW0da4v2aoWmRpXLbnYwbRUozzwW3+MFxR+opBeRdlHT6jgRWC
+0rul/0eBTIjfvFQBAc8twlkVOt9vuljhxlGwe//A98CugXa6OmI=
+=B0IU
+-----END PGP SIGNATURE-----
+
+--RnlQjJ0d97Da+TV1--
