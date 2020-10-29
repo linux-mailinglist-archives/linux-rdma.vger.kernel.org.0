@@ -2,118 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDFF29F107
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Oct 2020 17:16:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E83C929F299
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Oct 2020 18:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725859AbgJ2QQn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Oct 2020 12:16:43 -0400
-Received: from mail-bn8nam11on2078.outbound.protection.outlook.com ([40.107.236.78]:35264
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726112AbgJ2QQn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:16:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ve2zGfObInoPnixBfn7+cYax3mVOyMkmaFOaKk4nAq/15o65KKgAJvR7IiAcon2I/5loKk94EBAbRc8a8zXIZX+mRadZ/h3qK8TqPD3MImXa8OQklit4p6vN9NVxyCwIrjclbjG0wUjWpIxpVyStPXH9jJMW67haYjmlpekF5t604NpxOxqT6dqnDpy5pBrSd6xaJM1y+Rs3DK7S6Kmnoaou0a20tXdFa5Be0jCYqteH3sHp43IgYeTNQuW+uv/HaDULTNN7f+bgIhLfrklG49u3Q+QnGQNnZuotHFvg6twQdiVi6M2v5IGj4vuS539cegPpEhLiTIFRBVZQx8Jskw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+4wqyVomLCB/nNhmm1tH+OaCHOXcjNfREcz242Nv+RY=;
- b=H6QSmTEIxy4Pf61PGzRLZ8RvqOyrHzjseCecL9wiKN3VvIu4Wj9Z+RIq46dRoSYGeeF1094Pfu5NOH1jh1w1ZBOJw3/jJGqPAO86VyHvXbblt5BWHTrTDyqNwKMvtHsYI+qXpYNrs22E9H5LbGKhGUc+/ZIHLGXIzB/HAhMmsCTFfBiAKIHiqmNePhzfL0tHN3m8R1DRYnfIcxUATMup4DMv8u0xeHzGeDlGL4bqFP9KQ8CtykxwKx87FFw3CO6Q1ICEvobplTuH+x0URpt6AT8QX9ZQPvkkOzXeJst3JJN6/6+emx2sK8G1jFHFtDg8s7JQTW8XHFCtw5VTc42JRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+4wqyVomLCB/nNhmm1tH+OaCHOXcjNfREcz242Nv+RY=;
- b=2CPWxPk3WbHhgw9ajQnp1TZCDsirY/3DFnJjyvwFtVZs7LqnDHnuFvH0fqETfzqg0g8XxKOqUV5Wl/J+fnqM6pOTrdSRrwwc/XRHKYIbvVkNj4ur9WmRGeshWEyr27/CqeomiF/ID46oD1VviXrl9r1/Yt5rdJt+GddeNScFRYw=
-Authentication-Results: vmware.com; dkim=none (message not signed)
- header.d=none;vmware.com; dmarc=none action=none header.from=vmware.com;
-Received: from BYAPR05MB5511.namprd05.prod.outlook.com (2603:10b6:a03:1a::28)
- by BYAPR05MB5719.namprd05.prod.outlook.com (2603:10b6:a03:1e::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.13; Thu, 29 Oct
- 2020 16:16:40 +0000
-Received: from BYAPR05MB5511.namprd05.prod.outlook.com
- ([fe80::958b:64f6:b2f9:97e0]) by BYAPR05MB5511.namprd05.prod.outlook.com
- ([fe80::958b:64f6:b2f9:97e0%7]) with mapi id 15.20.3499.027; Thu, 29 Oct 2020
- 16:16:39 +0000
-Subject: Re: [Suspected Spam] Re: [PATCH for-rc] RDMA/vmw_pvrdma: Fix the
- active_speed and phys_state value
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        pv-drivers@vmware.com
-References: <20201028231945.6533-1-aditr@vmware.com>
- <20201029115733.GA2620339@nvidia.com>
-From:   Adit Ranadive <aditr@vmware.com>
-Message-ID: <e0a834a1-e5ee-4838-4718-d6ded1e954be@vmware.com>
-Date:   Thu, 29 Oct 2020 09:16:38 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.0
-In-Reply-To: <20201029115733.GA2620339@nvidia.com>
+        id S1726324AbgJ2RJe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Oct 2020 13:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725957AbgJ2RJe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Oct 2020 13:09:34 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4492FC0613CF
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Oct 2020 10:09:08 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id w191so3795533oif.2
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Oct 2020 10:09:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2AwA1hxFj/0BuLWtos4w6V8NcCJAERGAQVlsu77HYgw=;
+        b=Ururn9CmqZ+XWzAGb7upSdzW/1ydgkJKq/2jdwHFRt5miG90OZz8d2hcJRa0VxfDyz
+         APeLzfc4WGNHSMol+fId5cnCs3yNasFj7g9uM/yhjCgYmplgljdaAlI1jux/sSK27Z7P
+         MErx/DVXZtoWdhJqsdaYhonnrZKAMEhUPnsDiR2ERaOfjfgxglOm0mBfu9FIqQ+Cjvc5
+         hDc6nQslaUSxFkPd9Kpq9klYf0pX44WSMqIni+dioDj6bASU7VWAEWGUSfhAJBeaeSnb
+         l4SlvqaH4i6CiKMAVIBqoP4nfuK/4kTxXF5rneRLnTAGLhGhxIIfaoQErZFPJ3Zkhnhb
+         gReQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2AwA1hxFj/0BuLWtos4w6V8NcCJAERGAQVlsu77HYgw=;
+        b=qJnDvGyVz2ITqMY+8jVYNTErmbpPf9utiPjFIiaDJ683EEj9j5LhR2QZJ1C7VwYT/u
+         DemrThsyV1GAJZ0oGjdhETI7pgi6qGO702iny4Ur6HrfQGRZ/vm7vm7uYnrpbbWAapCw
+         rq0WOrDA3Vd9ArIPjiSpnSXleY/MaX4zl5/PqvtCvptJci9vOUAZMbkaC4jv++lQDoTe
+         JxQ/9ecamRCtxDiMNG+pYXTdPy0WNNueDDPDY20qlY9/iHUmQtEbYo8E1IuzE9d7DW6U
+         ZMMbZfofrCVKPz/lUAr5SJqMNEOBQf5fvLKBlci++rpWn6l5aDSVgMD52irbwR4+Dlkf
+         ytCw==
+X-Gm-Message-State: AOAM533CtCZhH7gqKnKPx0n49TBEHIONpiR9Vpo7398WliQgrwuIqPE6
+        ddRedlxFe6HhYH/ihoXD3pk=
+X-Google-Smtp-Source: ABdhPJy40ynpriJiF2DsqB7QsPWepQZenqRMV5q2KYH+UzJidWxwF3eT3K3Y88vSmXpERBAKCa+vPw==
+X-Received: by 2002:aca:3b0a:: with SMTP id i10mr150994oia.167.1603991346992;
+        Thu, 29 Oct 2020 10:09:06 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:c0b7:d10f:c08b:770f? (2603-8081-140c-1a00-c0b7-d10f-c08b-770f.res6.spectrum.com. [2603:8081:140c:1a00:c0b7:d10f:c08b:770f])
+        by smtp.gmail.com with ESMTPSA id a80sm777706oib.2.2020.10.29.10.09.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 10:09:06 -0700 (PDT)
+Subject: Re: [PATCH for-next] RDMA/rxe fixed bug in rxe_requester
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
+        Bob Pearson <rpearson@hpe.com>
+References: <20201013170741.3590-1-rpearson@hpe.com>
+ <20201029092754.GE114054@unreal>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Message-ID: <329c2fec-926d-b2de-2049-650503db8893@gmail.com>
+Date:   Thu, 29 Oct 2020 12:09:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
+MIME-Version: 1.0
+In-Reply-To: <20201029092754.GE114054@unreal>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [107.3.164.70]
-X-ClientProxiedBy: BYAPR07CA0101.namprd07.prod.outlook.com
- (2603:10b6:a03:12b::42) To BYAPR05MB5511.namprd05.prod.outlook.com
- (2603:10b6:a03:1a::28)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Adits-MacBook-Pro.local (107.3.164.70) by BYAPR07CA0101.namprd07.prod.outlook.com (2603:10b6:a03:12b::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Thu, 29 Oct 2020 16:16:39 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 108c248a-2fdf-4c73-5810-08d87c260443
-X-MS-TrafficTypeDiagnostic: BYAPR05MB5719:
-X-LD-Processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR05MB57197603E5DF848983AE26B8C5140@BYAPR05MB5719.namprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:454;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HY9mNCYdWuo7/zzhFdmpUJ2wvrbO8OKDeCBRFlGOPQNDXkjP3k+xjtn5UBxw+pW6volXvLs5tOPlmbQWpirrB9SDNimCGVExJeVIVC599K86IDi4lvKmfLz6JmY9xYRuNXeDiQeDihhRPcap4tOkhHMFpJcBTly+SkSFWd8WSv+WeH49jEnfamHHmDpLpxRq5FHGcvqIhap+LVU/FXOs1mfmjDO3E5JVEXgVsZAH0q1fq2h+kyRazXO2dRO9gFtjMSHg+Ort5zh24ekpBZhz3qEbPjQPfIrGL5QwxQTREv8Ku1iNxoPadZRHdwdtIrj2TSEj/Y6LzPFPl4XK9uDv4jnQVRx4ys4JTd84sVaMglnovisf6VQKYDjK0j5ln7sb
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB5511.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(366004)(396003)(136003)(6506007)(16526019)(186003)(6916009)(4326008)(8676002)(478600001)(66476007)(316002)(2616005)(86362001)(107886003)(2906002)(31696002)(66946007)(26005)(8936002)(66556008)(36756003)(956004)(53546011)(6512007)(5660300002)(6486002)(31686004)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 47tKfTLhFXA1huJqIFaJjECXPPAcsnSUUPAQPfmbmdH6MTaZPr014/vLAn/XWYjXqrW2GnnEzsLRILoei9VACHyQig1Zz+1tt3lWyLvWtx7F9rjxYvsbYznqViz1izQYmGUw29pN5csPY5h+DSWaI4S/nhk7ZaNZ+ObPwwoZStvpYRyg4MKVgO1ueF3A1Njio592NJlhUQmnCoukYklSen6zTLYYBR5bJ5UOCAWNgYCLYEl5a7WtV9Rr87NLwILX39lVr8hxldcEorf6eHzinUOsTcIFkYJ+H6ASCRpSqKz0GbkGvO5fgUiu5KhUvacKBg6UmqehQY+I6X21OvHqXLaE32z6dAwE3KuIeXfK9CaoL+Q1i3bovjZEBnmJa3eJf+yqDZqZvV+2kgylrXix/kvJyZc9vO+RlqVAR5rM5lptP4ytB7ZFNPLzlyojik0pePX+rjLNLwo1sJHlv6xeCXqCfonTrncOicElPMhOHUe6VLmpWa/hLj5tei3RfBhlHgxcMMyuNwFVZCYl4g4lN9l+VjTM5k1yvgXtHtmU+kAkgb7mLAposaOTcGuhktqyEkrbdjIdBf5QY72Dc95JkCZVY6LK2eS6Yewq7dfpmNycgGGqyLvRgnTxiAE9BREnzHJHXkZFSuIfehDbGcXEHQ==
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 108c248a-2fdf-4c73-5810-08d87c260443
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB5511.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2020 16:16:39.8277
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Mp7ahDSi5BQaq+LTrTiClsk/Rh9eW7mQbBAa71TXlj9pJkVhduwPZY/p4P84/JDKZMNzE6lq5pY+7sbrdMI8xQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB5719
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/29/20 4:57 AM, Jason Gunthorpe wrote:
-> On Wed, Oct 28, 2020 at 11:19:45PM +0000, Adit Ranadive wrote:
->> The PVRDMA device still reports the active_speed in u8.
->> Lets use the ib_eth_get_speed to report the speed and
->> width. Unfortunately, phys_state gets stored as msb of
->> the new u16 active_speed.
+On 10/29/20 4:27 AM, Leon Romanovsky wrote:
+> On Tue, Oct 13, 2020 at 12:07:42PM -0500, Bob Pearson wrote:
+>> The code which limited the number of unacknowledged PSNs was incorrect.
+>> The PSNs are limited to 24 bits and wrap back to zero from 0x00ffffff.
+>> The test was computing a 32 bit value which wraps at 32 bits so that
+>> qp->req.psn can appear smaller than the limit when it is actually larger.
+>>
+>> Replace '>' test with psn_compare which is used for other PSN comparisons
+>> and correctly handles the 24 bit size.
+>>
+>> Fixes: 8700e3e7c485 ("Soft RoCE (RXE) - The software RoCE driver")
+>> Signed-off-by: Bob Pearson <rpearson@hpe.com>
+>> ---
+>>  drivers/infiniband/sw/rxe/rxe_req.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+>> index af3923bf0a36..d4917646641a 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_req.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
+>> @@ -634,7 +634,8 @@ int rxe_requester(void *arg)
+>>  	}
+>>
+>>  	if (unlikely(qp_type(qp) == IB_QPT_RC &&
+>> -		     qp->req.psn > (qp->comp.psn + RXE_MAX_UNACKED_PSNS))) {
+>> +		psn_compare(qp->req.psn, (qp->comp.psn +
+>> +				RXE_MAX_UNACKED_PSNS)) > 0)) {
 > 
-> This explanation is not clear, I have no idea what this is fixing
-
-It seemed more clear to me in my head, I guess :).
-
-After commit 376ceb31ff87 changed the active_speed attribute to
-u16, both the active_speed and phys_state attributes in the
-pvrdma_port_attr struct are getting stored in this u16. As a 
-result, these show up as invalid values in ibv_devinfo.
-
-Our device still gives us back a u8 active_speed so both these
-are getting stored in the u16. This fix I proposed simply gets 
-the active_speed from the netdev while the phys_state still 
-needs to come from the pvrdma device, i.e. the msb the of the
-u16. I also removed some unused functions as a result.
-
-Alternatively, I could change the u8 active_width and u16 
-active_speed to reserved now that we're getting the active_speed
-and active_width from the ib_get_eth_speed function.
-
+> qp->comp.psn is u32, so you are checking that
+> qp->comp.psn + RXE_MAX_UNACKED_PSNS != 0, am I right?
 > 
-> Jason
-> 
+>>  		qp->req.wait_psn = 1;
+>>  		goto exit;
+>>  	}
+>> --
+>> 2.25.1
+
+First, qp->comp.psn is a 24 bit unsigned quantity as is qp->req.psn.
+
+RXE_MAX_UNACKED_PSNS is a reasonably small number e.g. 128 for now.
+
+So qp->comp.psn + RXE_MAX_UNACKED_PSNS which is a 32 bit number never wraps to zero and remains in the
+range [RXE_MAX_UNACKED_PSNS, RXE_MAX_UNACKED_PSNS + 2^24 -1]. The upper limit will not wrap back zero unless
+RXE_MAX_UNACKED_PSNS is > 2^32 - 2^24 which would be a grossly unreasonable upper limit. You would have long
+since run out of memory.
+
+psn_compare(a, b) = (a - b) << 8 and is a signed 32 bit number.
+
+This correctly determines the magnitude and sign of the difference between a and b as long as that difference
+is less than 2^23.
+
+Bob
