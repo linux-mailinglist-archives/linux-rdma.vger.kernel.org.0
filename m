@@ -2,181 +2,197 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA892A0181
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Oct 2020 10:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A722A0191
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Oct 2020 10:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725888AbgJ3Jf6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 30 Oct 2020 05:35:58 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3779 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgJ3Jf5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Oct 2020 05:35:57 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9bde880000>; Fri, 30 Oct 2020 02:36:08 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
- 2020 09:35:42 +0000
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 30 Oct 2020 09:35:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bz6F5eI34fR78jmjHwgRDj2MrjMar1EJrrObQ1EGCu87LX+jBzXVlj7lA9wfLY/xR0YOPfNF0/ugExg77qefuGT8wtynSbRSUSLZayUQP//RMUvc1Hc6zhgtVMKGY1WszHb379gFA9n3ixYLc2bmgADa+l9gf66Vl616y6/IMj7+Xy+6+xo6g52i9DzELnqgwgNmVzbZjycfo2R3J+69wG8Y1x3jmcysk6N9NsckBVzHrNnccBOgu0otogbA+nL50j7RLrqeyE6cpV8Kxpw2JvXQ5cOb1ZoFMoQ6DpzrMs2DHcznUdznHXfudc2kkbmwJjUK0lexF7OxEpFmzm1+OA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dWTAd7opkAERURr3qxfuOLB8iQ03YIm60A46/6r37+A=;
- b=XdkbgJGXSNnUqkFhstXLSmPoXPIBsGNV9Hkv/lJJNUWh1VP65DxXHL4DdPMW5rT+ud1m1g4qy9SbL6uWnVaBb6Wb5uJ20YWSYuzLuYpUuxIoOuXxykl2sw8auAmdgNyT9p3West+wuaPN+G/t2pHwZ1pjkn0tvrHSfHchIDV5vkElQc28pYXjsYBBHWXVR5CS+evRb0WTVTm/uA9daWUj+epvQ5F6z6lVaEXRijvIcp1HLHpgY2eRgM6VhmZHz5CjViMqripI8MUPm5iQblPEZSV2JZV7dWZsfbcS2xw9BZYqnVCdN1rDhX/CcFey2D83qwa5oKxpCbrmyvtmjMeQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from BY5PR12MB4322.namprd12.prod.outlook.com (2603:10b6:a03:20a::20)
- by BYAPR12MB3173.namprd12.prod.outlook.com (2603:10b6:a03:13d::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19; Fri, 30 Oct
- 2020 09:35:40 +0000
-Received: from BY5PR12MB4322.namprd12.prod.outlook.com
- ([fe80::3c25:6e4c:d506:6105]) by BY5PR12MB4322.namprd12.prod.outlook.com
- ([fe80::3c25:6e4c:d506:6105%5]) with mapi id 15.20.3499.029; Fri, 30 Oct 2020
- 09:35:40 +0000
+        id S1725808AbgJ3JiZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 30 Oct 2020 05:38:25 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:10106 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725876AbgJ3JiZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Oct 2020 05:38:25 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9bdf130000>; Fri, 30 Oct 2020 02:38:27 -0700
+Received: from sw-mtx-036.mtx.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
+ 2020 09:38:23 +0000
 From:   Parav Pandit <parav@nvidia.com>
-To:     "hch@lst.de" <hch@lst.de>
-CC:     Jakub Kicinski <kuba@kernel.org>,
-        syzbot <syzbot+34dc2fea3478e659af01@syzkaller.appspotmail.com>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linaro-mm-sig-owner@lists.linaro.org" 
-        <linaro-mm-sig-owner@lists.linaro.org>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: WARNING in dma_map_page_attrs
-Thread-Topic: WARNING in dma_map_page_attrs
-Thread-Index: AQHWqbLPPEPI9mnwmUSeVEeL/Zim3qmnD9kAgAJKk0CAAcOagIAATcGAgAHhEQCAAp+JsA==
-Date:   Fri, 30 Oct 2020 09:35:40 +0000
-Message-ID: <BY5PR12MB4322B3F74495D950A2DF59FCDC150@BY5PR12MB4322.namprd12.prod.outlook.com>
-References: <000000000000335adc05b23300f6@google.com>
- <000000000000a0f8a305b261fe4a@google.com>
- <20201024111516.59abc9ec@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <BY5PR12MB4322CC03CE0D34B83269676ADC190@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20201027081103.GA22877@lst.de>
- <BY5PR12MB43221380BB0259FF0693BB0CDC160@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20201028173108.GA10135@lst.de>
-In-Reply-To: <20201028173108.GA10135@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [49.207.200.190]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e7d9918c-bfb9-4581-240e-08d87cb72a78
-x-ms-traffictypediagnostic: BYAPR12MB3173:
-x-microsoft-antispam-prvs: <BYAPR12MB31738EAE4736D98E391A6F93DC150@BYAPR12MB3173.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:923;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OhdeXHUxt2FA/MFFECvZtby02BvFWOngEalRKPhMwX7HXiqNroxcJLH5avg7jEwRNj8T7QcAjflq3zZZgU46DF/q8unaxtbltdYq/VBZ2G/8KA4KrP3m3113umtKplIrTfbKcx01If97Jc7LpDaF+1oP9U20b8E+G9AhWAeTiFSR5ZTL9hFKEg4ht8ECpprlp0laZSh3HQ4l9RvYmuwliXdbJQnYgxU5Fz27qkVAkoMw35vBBOeCnz05nTGpUQwHcIeBYTrfGvEJktySPmrV4mjzhAUXHOpR8E6Rn4WOon5vis9DVqKHXovRR0P+3U4LNUOMdraOr7YsmekOr4nsOg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4322.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(376002)(346002)(136003)(2906002)(6916009)(7416002)(7116003)(52536014)(66446008)(7696005)(55016002)(9686003)(64756008)(66476007)(8676002)(316002)(54906003)(76116006)(66556008)(66946007)(5660300002)(8936002)(55236004)(71200400001)(186003)(26005)(6506007)(86362001)(83380400001)(4326008)(33656002)(478600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: OjRmIRgh21a33RTAnR76YfN2xHA8BZkMcAiad1IcQRsDJiZcD5dk8eh6YHRgSzDbMB1wRx+d8MFrnTUHwkAoO9hmQcIRgxahirs4LrUnI0jVMa29bam4d8XXijmeQ450a36S1sjfErWxIGvCMmE/IfQwDY0Tfk4tk09uuWPheBPyEJlNI8o7jPcz8+3RytdqhBVLqbEJN6aPaY657b8HZV5IsnfzmdfQgaW7l/KxP+ppOwY/vp9TGsJqbKLau7rtcDCzUekrgHgmqZ+lg0zVpi+An0oR3Z97Oe6142/VMjFV+FF4wTiU8gvpWirSe59BrtTUiG15WhU9rbXBVTWdtc0D4Zbe5tkumxIMb5hj2UllnOh7/l5CIg+ZxrYxsWzhLG8JNUnrnN2YWx+LsJn+o4+4YqMFmqgXw7YAJsycP5slRTEJ3Q564dwfmd8ldp5HFArvh/EfFOjhJgjeI0JMP5gqrMY2hiSxlgMqE1w8PJmG2iW6OOQxPfdCgwxRsEMpx4ZxT6xj3wJjDWchx3N7lVBoQonvoTea86BfuhAdv0/NffR6n5gndOllyjU/t/y41QGRlXCJl5yBW+ostT2sReWBdyw3MXQG/kitAjjl5ecopDgyCn2U0SCh72hlOyQyAD+vjgXmCpUcdVCHAmct4w==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+To:     <dennis.dalessandro@cornelisnetworks.com>,
+        <mike.marciniszyn@cornelisnetworks.com>, <dledford@redhat.com>,
+        <jgg@ziepe.ca>, <yanjunz@nvidia.com>, <bmt@zurich.ibm.com>,
+        <linux-rdma@vger.kernel.org>
+CC:     <hch@lst.de>, Parav Pandit <parav@nvidia.com>,
+        <syzbot+34dc2fea3478e659af01@syzkaller.appspotmail.com>
+Subject: [PATCH] RDMA: Fix software RDMA drivers for dma mapping error
+Date:   Fri, 30 Oct 2020 11:38:03 +0200
+Message-ID: <20201030093803.278830-1-parav@nvidia.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4322.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7d9918c-bfb9-4581-240e-08d87cb72a78
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Oct 2020 09:35:40.4718
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CgHH+xAEN3e0xCD5oZ2wfdo63z7HVx5VtnIRjdiE2mTEDQAy8PSxd1ZyFSdVDbU12jS0GpPLURBpLCaBx/9vRA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3173
-X-OriginatorOrg: Nvidia.com
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604050568; bh=dWTAd7opkAERURr3qxfuOLB8iQ03YIm60A46/6r37+A=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
-         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
-         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
-         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
-         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
-         x-ms-traffictypediagnostic:x-microsoft-antispam-prvs:
-         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
-         x-microsoft-antispam:x-microsoft-antispam-message-info:
-         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
-         x-ms-exchange-transport-forked:Content-Type:
-         Content-Transfer-Encoding:MIME-Version:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-originalarrivaltime:
-         X-MS-Exchange-CrossTenant-fromentityheader:
-         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-         X-MS-Exchange-CrossTenant-userprincipalname:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=KpW0208/lrHOJ6KvcoQdxl5iC32O7tO9okXla0wPDR+Zw97Z69XRc+q0SguKpq2l+
-         0HIUs7u10Q/R4JrQhZcnUJ3AsVThXAlCyEu/zZJDviU8s5xAq7OaaT6mX5f5R3UWSN
-         hcBvKcGyVANGHQW+IMY5xAYxPesySJunXDBfaOBL493f8+W00AAZEVlOcNMVz9zxTE
-         V3Dq3HOqIGL0N4p/l+fO/+E3MfunBccgCtHF1G8FR86KUVu7f2C5kuLRHqPoub5VZx
-         imiXBkInc2RZBp/wUdKF3rTxisShqrbEU0cM4kIvv1HSH5tgjMCCsH8THMFQe4U4S8
-         8d+s/cqIgi82Q==
+        t=1604050707; bh=D7cUV9bu2QNlHEg/WWDQCoEyg4LG34+8Z5Z86Mq3jEE=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         Content-Transfer-Encoding:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=mgJBUqo/vUTQ3aulX86qxewGQVwwdkIzmUAyjF814tgISI+2FGj26Ih0yJeWf1QQq
+         w0cYcJQAuJGtJHX7g9HuI8jZcccLrZpRE+SkdS6mmljg4WCL8zq/MgBDYcU/VHkSFy
+         iuCyimCUOtmNYgu4S3c7F4CNOndCDUVCF891xlggetcA76OXK5AUYoSNtBBDzrVhVw
+         4qPXQ7NYb+cJMZvoYworDP2A5QLQdDZ+RMylHUVYFrAqXAURoXyEUciBAO0N5dDAwL
+         Y7ZWbOkabvymfQ0u/rP/9brhiDWdSmjzBTJ+cP/DAIYmHxp0OLPJBozAkHlaOYMlgR
+         7dpANg3mhht3A==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+A cited commit in fixes tag avoided setting dma_mask of the ib_device.
+Commit [1] made dma_mask as mandetory field to be setup even for
+dma_virt_ops based dma devices. Due to which below call trace occurred.
 
+Fix it by setting empty DMA MASK for software based RDMA devices.
 
-> From: hch@lst.de <hch@lst.de>
-> Sent: Wednesday, October 28, 2020 11:01 PM
->=20
-> On Tue, Oct 27, 2020 at 12:52:30PM +0000, Parav Pandit wrote:
-> >
-> > > From: hch@lst.de <hch@lst.de>
-> > > Sent: Tuesday, October 27, 2020 1:41 PM
-> > >
-> > > On Mon, Oct 26, 2020 at 05:23:48AM +0000, Parav Pandit wrote:
-> > > > Hi Christoph,
-> > > >
-> > > > > From: Jakub Kicinski <kuba@kernel.org>
-> > > > > Sent: Saturday, October 24, 2020 11:45 PM
-> > > > >
-> > > > > CC: rdma, looks like rdma from the stack trace
-> > > > >
-> > > > > On Fri, 23 Oct 2020 20:07:17 -0700 syzbot wrote:
-> > > > > > syzbot has found a reproducer for the following issue on:
-> > > > > >
-> > > > > > HEAD commit:    3cb12d27 Merge tag 'net-5.10-rc1' of
-> > > git://git.kernel.org/..
-> > > >
-> > > > In [1] you mentioned that dma_mask should not be set for
-> dma_virt_ops.
-> > > > So patch [2] removed it.
-> > > >
-> > > > But check to validate the dma mask for all dma_ops was added in [3]=
-.
-> > > >
-> > > > What is the right way? Did I misunderstood your comment about
-> > > dma_mask in [1]?
-> > >
-> > > No, I did not say we don't need the mask.  I said copying over the
-> > > various dma-related fields from the parent is bogus.
-> > >
-> > > I think rxe (and ther other drivers/infiniband/sw drivers) need a
-> > > simple dma_coerce_mask_and_coherent and nothing else.
-> >
-> > I see. Does below fix make sense?
-> > Is DMA_MASK_NONE correct?
->=20
-> DMA_MASK_NONE is gone in 5.10.  I think you want DMA_BIT_MASK(64).
-> That isn't actually correct for 32-bit platforms, but good enough.
-Ok. thanks for the input.
-Sending updated fix to set 64-bit mask for 64-bit platform and 32-bit mask =
-otherwise.
+WARNING: CPU: 1 PID: 8488 at kernel/dma/mapping.c:149
+dma_map_page_attrs+0x493/0x700 kernel/dma/mapping.c:149 Modules linked in:
+CPU: 1 PID: 8488 Comm: syz-executor144 Not tainted 5.9.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine,
+BIOS Google 01/01/2011
+RIP: 0010:dma_map_page_attrs+0x493/0x700 kernel/dma/mapping.c:149
+Trace:
+ dma_map_single_attrs include/linux/dma-mapping.h:279 [inline]
+ib_dma_map_single include/rdma/ib_verbs.h:3967 [inline]
+ ib_mad_post_receive_mads+0x23f/0xd60
+drivers/infiniband/core/mad.c:2715
+ ib_mad_port_start drivers/infiniband/core/mad.c:2862 [inline]
+ib_mad_port_open drivers/infiniband/core/mad.c:3016 [inline]
+ ib_mad_init_device+0x72b/0x1400 drivers/infiniband/core/mad.c:3092
+ add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:680
+ enable_device_and_get+0x1d5/0x3c0
+drivers/infiniband/core/device.c:1301
+ ib_register_device drivers/infiniband/core/device.c:1376 [inline]
+ ib_register_device+0x7a7/0xa40 drivers/infiniband/core/device.c:1335
+ rxe_register_device+0x46d/0x570
+drivers/infiniband/sw/rxe/rxe_verbs.c:1182
+ rxe_add+0x12fe/0x16d0 drivers/infiniband/sw/rxe/rxe.c:247
+ rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:507
+ rxe_newlink drivers/infiniband/sw/rxe/rxe.c:269 [inline]
+ rxe_newlink+0xb7/0xe0 drivers/infiniband/sw/rxe/rxe.c:250
+ nldev_newlink+0x30e/0x540 drivers/infiniband/core/nldev.c:1555
+ rdma_nl_rcv_msg+0x367/0x690 drivers/infiniband/core/netlink.c:195
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x2f2/0x440 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x443699
+
+[1] commit f959dcd6ddfd ("dma-direct: Fix potential NULL pointer dereferenc=
+e")
+
+Reported-by: syzbot+34dc2fea3478e659af01@syzkaller.appspotmail.com
+Fixes: e0477b34d9d1 ("RDMA: Explicitly pass in the dma_device to ib_registe=
+r_device")
+Signed-off-by: Parav Pandit <parav@nvidia.com>
+---
+ drivers/infiniband/sw/rdmavt/vt.c     | 7 +++++--
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 6 +++++-
+ drivers/infiniband/sw/siw/siw_main.c  | 7 +++++--
+ 3 files changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/infiniband/sw/rdmavt/vt.c b/drivers/infiniband/sw/rdma=
+vt/vt.c
+index 43fbc4e54edf..5bd817490b1f 100644
+--- a/drivers/infiniband/sw/rdmavt/vt.c
++++ b/drivers/infiniband/sw/rdmavt/vt.c
+@@ -525,6 +525,7 @@ static noinline int check_support(struct rvt_dev_info *=
+rdi, int verb)
+ int rvt_register_device(struct rvt_dev_info *rdi)
+ {
+ 	int ret =3D 0, i;
++	u64 dma_mask;
+=20
+ 	if (!rdi)
+ 		return -EINVAL;
+@@ -581,8 +582,10 @@ int rvt_register_device(struct rvt_dev_info *rdi)
+=20
+ 	/* DMA Operations */
+ 	rdi->ibdev.dev.dma_parms =3D rdi->ibdev.dev.parent->dma_parms;
+-	dma_set_coherent_mask(&rdi->ibdev.dev,
+-			      rdi->ibdev.dev.parent->coherent_dma_mask);
++	dma_mask =3D IS_ENABLED(CONFIG_64BIT) ? DMA_BIT_MASK(64) : DMA_BIT_MASK(3=
+2);
++	ret =3D dma_coerce_mask_and_coherent(&rdi->ibdev.dev, dma_mask);
++	if (ret)
++		goto bail_wss;
+=20
+ 	/* Protection Domain */
+ 	spin_lock_init(&rdi->n_pds_lock);
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/=
+rxe/rxe_verbs.c
+index 7652d53af2c1..50ad3dded786 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -1128,6 +1128,7 @@ int rxe_register_device(struct rxe_dev *rxe, const ch=
+ar *ibdev_name)
+ 	int err;
+ 	struct ib_device *dev =3D &rxe->ib_dev;
+ 	struct crypto_shash *tfm;
++	u64 dma_mask;
+=20
+ 	strlcpy(dev->node_desc, "rxe", sizeof(dev->node_desc));
+=20
+@@ -1140,7 +1141,10 @@ int rxe_register_device(struct rxe_dev *rxe, const c=
+har *ibdev_name)
+ 			    rxe->ndev->dev_addr);
+ 	dev->dev.dma_parms =3D &rxe->dma_parms;
+ 	dma_set_max_seg_size(&dev->dev, UINT_MAX);
+-	dma_set_coherent_mask(&dev->dev, dma_get_required_mask(&dev->dev));
++	dma_mask =3D IS_ENABLED(CONFIG_64BIT) ? DMA_BIT_MASK(64) : DMA_BIT_MASK(3=
+2);
++	err =3D dma_coerce_mask_and_coherent(&dev->dev, dma_mask);
++	if (err)
++		return err;
+=20
+ 	dev->uverbs_cmd_mask |=3D BIT_ULL(IB_USER_VERBS_CMD_REQ_NOTIFY_CQ);
+=20
+diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/s=
+iw/siw_main.c
+index e49faefdee92..6fe120187238 100644
+--- a/drivers/infiniband/sw/siw/siw_main.c
++++ b/drivers/infiniband/sw/siw/siw_main.c
+@@ -306,6 +306,7 @@ static struct siw_device *siw_device_create(struct net_=
+device *netdev)
+ 	struct siw_device *sdev =3D NULL;
+ 	struct ib_device *base_dev;
+ 	struct device *parent =3D netdev->dev.parent;
++	u64 dma_mask;
+ 	int rv;
+=20
+ 	if (!parent) {
+@@ -360,8 +361,10 @@ static struct siw_device *siw_device_create(struct net=
+_device *netdev)
+ 	base_dev->dev.parent =3D parent;
+ 	base_dev->dev.dma_parms =3D &sdev->dma_parms;
+ 	dma_set_max_seg_size(&base_dev->dev, UINT_MAX);
+-	dma_set_coherent_mask(&base_dev->dev,
+-			      dma_get_required_mask(&base_dev->dev));
++	dma_mask =3D IS_ENABLED(CONFIG_64BIT) ? DMA_BIT_MASK(64) : DMA_BIT_MASK(3=
+2);
++	if (dma_coerce_mask_and_coherent(&base_dev->dev, dma_mask))
++		goto error;
++
+ 	base_dev->num_comp_vectors =3D num_possible_cpus();
+=20
+ 	xa_init_flags(&sdev->qp_xa, XA_FLAGS_ALLOC1);
+--=20
+2.26.2
+
