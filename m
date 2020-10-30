@@ -2,104 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26782A0B11
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Oct 2020 17:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C76EA2A0C4D
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Oct 2020 18:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbgJ3Q2M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 30 Oct 2020 12:28:12 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:11062 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgJ3Q2M (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 30 Oct 2020 12:28:12 -0400
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9c3f1a0000>; Sat, 31 Oct 2020 00:28:10 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
- 2020 16:28:09 +0000
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (104.47.46.50) by
- HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 30 Oct 2020 16:28:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EsKB/GyxQLMy8cr+vEcpwjEaMT/l1Q0kPskieKGf/F2RDK1Gu4m60hFFJF7ESc65Y/8yiU0uuOREPR6755s9q5NpIShA8nJY1Zxf9Y/eJRH5+9kO0OXP/rEE26uX7h3y91joElcZ6zGx+uot5nFGavGgYbniZEAj6lPclk+ixAVEzyWvO+BdJotk29oQzhK2s1uIFjRzzYy5XUA/4LvOoaeHLzn7EdsxLd6uPNpcEPqaczUXNLQN8mO16ZOYLDZdyQn+zkXS7ScNG4z+iCh/eggxRhxZRbzrSJlCjQGLbGPXRIbI9gYFkg5zMgpflphned0VQ4IO7LIFw7XIsn9CNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JTCRC3CfJezAc++LiBj+NZozC5+MfvMVVB/odU2TAqg=;
- b=KLixakqk+jOhJkBypebWi0cjA3bJ2oo03NXevbobfx/5MIJDf1ZNpZ3JZxlnSXB7xotZvwio9u0xGXqsjE2U11b0PZ/lrUm4qIQ7L+VwRCkhcXZ9fwMpqAEtl3OwBaQd0CEDNPADLi+rPUjYF/UVJwaCuQGMA3ofr4xWzuxwdlB633de+jtYKvSWOlZ2JnViKVeQY+ADtJ0JbObQ/5btOYAIy06eyUVDvnbQVVpzxI24YJ7CejebwsyM5cQYsfxcpfMtiaVLHB/z4HNMu5B5e5IJBq+lj+seldpGehkfcBwA9OQPmV/dswapO0Zq8sBciLMYgR8ogTN3pfXOPM6W2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.24; Fri, 30 Oct
- 2020 16:28:07 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.027; Fri, 30 Oct 2020
- 16:28:07 +0000
-Date:   Fri, 30 Oct 2020 13:28:05 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-CC:     Bob Pearson <rpearsonhpe@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: Re: another change breaks rxe
-Message-ID: <20201030162805.GE2620339@nvidia.com>
-References: <20201030114732.GC2620339@nvidia.com>
- <32fa9c9f-5816-7474-b821-ccccd4cb5af0@gmail.com>
- <OFAB5249F6.49569DF7-ON00258611.0045601D-00258611.00467F48@notes.na.collabserv.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <OFAB5249F6.49569DF7-ON00258611.0045601D-00258611.00467F48@notes.na.collabserv.com>
-X-ClientProxiedBy: BL0PR02CA0020.namprd02.prod.outlook.com
- (2603:10b6:207:3c::33) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1726573AbgJ3RRz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 30 Oct 2020 13:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbgJ3RRz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Oct 2020 13:17:55 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BEEAC0613CF
+        for <linux-rdma@vger.kernel.org>; Fri, 30 Oct 2020 10:17:55 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id i18so1488908ots.0
+        for <linux-rdma@vger.kernel.org>; Fri, 30 Oct 2020 10:17:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ea02V0gD7fl7r9EkkfIlVRfPLNH+c/n7YfZ8Gk5JFvY=;
+        b=SFZ5UVkaFCL4Ej+bY41rbZpqxVNLeIFJZqWab+1+lOOX5l6Cb4xc5WbvQiL4/5KBhJ
+         n+NlYrPG/WCJZ/dECwEBzs3vZkNOFK/zhYd4Z3m22QkFXOKnjODXMG3HNnWFyOw1gbS0
+         k6RuS02LX8UZ9osTQBiuvN7HRQZMjZ6tpuqgFDHriqEVmFn8BEfX6hN+Jq+3aKv12CUE
+         RnT+IlWqW5IwHrBjvbXfj1z6Zq/UW3qpR5A4/j//uux77/eMeW8KpCAnXQ/TS23ES6xw
+         eY1OBgkyeZxTKE1z6EvhcooIWZ6h5ObEO8ZKDs1xSbfQxAsPev3jyjdurmb1EFEsUP4O
+         WDJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ea02V0gD7fl7r9EkkfIlVRfPLNH+c/n7YfZ8Gk5JFvY=;
+        b=UzPXkV4xYq5AGrio630KfilHzWLb1hO3y4J6sIcmhGvOo23YfPGpz6Zjd8D70XnxN6
+         WGTpqlONgBfa+EJgxoy/GikVDTcMEinsmtnrl24xRJkQ9Q3sBrnoZreoQtpb3LGxMAQX
+         qPvxWkagBipz76s5blx9KPkfOlBzdVZk2sz8p/i446tEC2LzhhMktfwqKbJEvmQadkj0
+         sx8wgq8arpfzBTxJr2LwMeKit6UjK2yBMZKblVZmqvm1GWXAtMqqg5EpPpm8p0R9cuuk
+         RrreivbK9nyYF8DQl/vvbcoOEHPp8L3sSi7bvwJ6zVKqqkRgRVbTJWBGbKGlnshx7fGU
+         Zb3g==
+X-Gm-Message-State: AOAM531vIpo1xyv9HKrYzB79uHA22D9NzPpnvyEWOTCK+aP+WCi317Pr
+        WGc/DjDnPl6PvjLIMYPzY/g=
+X-Google-Smtp-Source: ABdhPJxW0BO5Rc25z//mN7c0Zwpb8tBZcDF2mKRr9I0BX0px3TJeaJR82KYjdUkj+ih+IfX6bWLOUQ==
+X-Received: by 2002:a05:6830:1694:: with SMTP id k20mr2651559otr.100.1604078274540;
+        Fri, 30 Oct 2020 10:17:54 -0700 (PDT)
+Received: from localhost (2603-8081-140c-1a00-9ab5-99a7-d140-ecf9.res6.spectrum.com. [2603:8081:140c:1a00:9ab5:99a7:d140:ecf9])
+        by smtp.gmail.com with ESMTPSA id v5sm1498414otb.44.2020.10.30.10.17.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 10:17:54 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearson@hpe.com>
+Subject: [PATCH for-next v2] RDMA/rxe: fix regression caused by recent patch
+Date:   Fri, 30 Oct 2020 12:11:07 -0500
+Message-Id: <20201030171106.4191-1-rpearson@hpe.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0020.namprd02.prod.outlook.com (2603:10b6:207:3c::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Fri, 30 Oct 2020 16:28:06 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kYXG1-00DPXY-Qv; Fri, 30 Oct 2020 13:28:05 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604075290; bh=JTCRC3CfJezAc++LiBj+NZozC5+MfvMVVB/odU2TAqg=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=WUh6wZZQRkSbkwqAMOaefEh52LPEqEvD9HJyxURoxIJ8PuVctdKH4SpFeaWN2McNE
-         IMX8GVm0ewqLTYRP0RffweImCcVMRAfqdTlZl/yMMlkj8panCxnDSFZhuUBhR4ty7a
-         hdxzVCgVwCxvpQ0rjrFviOCkynd8fj6bSz5c8W8dKONiut8Gd/ez3Mes6PE0f0rfde
-         8C9ZBgrz994A06PVjdBndYkF82ltn2iozlPeRxXfWKlUymJDaudf6TeoxuQFrlLzbM
-         JLQKznIAdDP6xVSjoSfwEweRfyFfwYbs4zX4iHCr/NK/ijesGD1KD0NFBcDc23ikyj
-         n5aXKrgzWQTZg==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 12:50:01PM +0000, Bernard Metzler wrote:
+The commit referenced below performs additional checking on
+devices used for DMA. Specifically it checks that
 
-> I see the hfi and ipath drivers similarly using ibv_cmd_post_send
-> to push the wqe's (while not having them in shared mem). Do they
-> brake as well?
-> Do we have an example of decent eventfd usage where I could learn
-> from how to use it?
+device->dma_mask != NULL
 
-You'd add a uAPI accepting a eventfd and then call a sequence like:
+Rdma_rxe uses this device when pinning MR memory but did not
+set the value of dma_mask. In fact rdma_rxe does not perform
+any DMA operations so the value is never used but is checked.
 
-        init_waitqueue_func_entry(.., my_func);
-        init_poll_funcptr(..);
+This patch gives dma_mask a valid value extracted from the device
+backing the ndev used by rxe.
 
-        events = vfs_poll(evfile, ..);
+Without this patch rdma_rxe does not function.
 
-And my_func will be called when the user does write() on the event fd.
+N.B. This patch needs to be applied before the recent fix to add back
+IB_USER_VERBS_CMD_POST_SEND to uverbs_cmd_mask.
 
-drivers/vfio/virqfd.c has the simplest version of this
+Dennis Dallesandro reported that Parav's similar patch did not apply
+cleanly to rxe. This one does to for-next head of tree as of yesterday.
 
-It could be some core code to do this setup with a new driver callback
-'user_doorbell_trigger' or something like that.
+Fixes: f959dcd6ddfd2 ("dma-direct: Fix potential NULL pointer dereference")
+Signed-off-by: Bob Pearson <rpearson@hpe.com>
+---
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-However, I see at closer inspection that rxe and siw both want the QPN
-to be passed in, so this doesn't look like it would work - an eventfd
-per QP is too much overhead.
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index 7652d53af2c1..c857e83323ed 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -1128,19 +1128,32 @@ int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
+ 	int err;
+ 	struct ib_device *dev = &rxe->ib_dev;
+ 	struct crypto_shash *tfm;
++	u64 dma_mask;
+ 
+ 	strlcpy(dev->node_desc, "rxe", sizeof(dev->node_desc));
+ 
+ 	dev->node_type = RDMA_NODE_IB_CA;
+ 	dev->phys_port_cnt = 1;
+ 	dev->num_comp_vectors = num_possible_cpus();
+-	dev->dev.parent = rxe_dma_device(rxe);
+ 	dev->local_dma_lkey = 0;
+ 	addrconf_addr_eui48((unsigned char *)&dev->node_guid,
+ 			    rxe->ndev->dev_addr);
+ 	dev->dev.dma_parms = &rxe->dma_parms;
+ 	dma_set_max_seg_size(&dev->dev, UINT_MAX);
+-	dma_set_coherent_mask(&dev->dev, dma_get_required_mask(&dev->dev));
++
++	/* rdma_rxe never does real DMA but does rely on
++	 * pinning user memory in MRs to avoid page faults
++	 * in responder and completer tasklets. This code
++	 * supplies a valid dma_mask from the underlying
++	 * network device. It is never used but is checked.
++	 */
++	dev->dev.parent = rxe_dma_device(rxe);
++	dma_mask = *(dev->dev.parent->dma_mask);
++	err = dma_coerce_mask_and_coherent(&dev->dev, dma_mask);
++	if (err) {
++		pr_warn("dma_mask not supported\n");
++		return err;
++	}
+ 
+ 	dev->uverbs_cmd_mask |= BIT_ULL(IB_USER_VERBS_CMD_REQ_NOTIFY_CQ);
+ 
+-- 
+2.27.0
 
-But calling post_send, even with a 0 length, is really slow.
-
-Jason
