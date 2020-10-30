@@ -2,119 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BE32A075C
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Oct 2020 15:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEE02A08BA
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Oct 2020 16:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbgJ3ODL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 30 Oct 2020 10:03:11 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10700 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726653AbgJ3ODJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Oct 2020 10:03:09 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9c1d270002>; Fri, 30 Oct 2020 07:03:19 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
- 2020 14:03:08 +0000
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.109)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 30 Oct 2020 14:03:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WLXyjp9qIe3erWamO+JvxmbU8nr/+WHfAZ82rAvW5qP3ZN94pkvJm65ob18I/B9SYy7HmJGPjpOVJzBz1Ou28CumSA04G79gpMF7NNiplTFCo8ICD0zURdOkx9laqHqX9FJOEqOnRkI5s/cid4+GTXVZ4nfRCPTeZoVLVbN+PnOc4lbRMZIsMnOP2OjCZBRSASCJOTSLyeHr7OVWOkYOqXQxzzdtH5d1JK7Objav6AUFcMxv0dqYmeOrRy+0j8WtSdsfNQrVEqb/ycjYAtdamiLS67M5SJOhzOQjinuDcr/dkDlLzn5XI4ULNE2gJHgXQ4X6sqC6S/I9WhMFja4rVA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Pvz573NFZ3QPZ62op1ryPkG607dT8d0VAWmyZYein8c=;
- b=Emt52P/OabCzOfG93m8XiAdnHCh/dSeZAh3HDYJorEJnOp6FgBDZtZGuz1WFQZN4ewyQh2gr+ONB8zxLnm+WZr/gtmwvGRatIVqfhAdBOSG3FOoURMy1FTvY5DdIP99OF9sxNKyfUp7WiUsR4bsPNwOdgHjQkf8SjOAmUXmC+0KhtvHaz6Fjn3XHX0I8unHElQ0D4GhI3KSqhmGOAJdy+CwgXaUOZhUEch7LhIIKpLRMTxLa5OhSTDWLa59mBZAzjmKtSNvIstKrdS0L/WwIgkqSecQddeif0tMv4xCqnYYBENRCdnktWrFBJkDQ5huah0kvIgaZxm30rQdnac8XRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3836.namprd12.prod.outlook.com (2603:10b6:5:1c3::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Fri, 30 Oct
- 2020 14:03:07 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.027; Fri, 30 Oct 2020
- 14:03:07 +0000
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bernard Metzler <bmt@zurich.ibm.com>, <linux-rdma@vger.kernel.org>,
-        Zhu Yanjun <yanjunz@nvidia.com>
-CC:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH] RDMA/rxe,siw: Restore uverbs_cmd_mask IB_USER_VERBS_CMD_POST_SEND
-Date:   Fri, 30 Oct 2020 11:03:05 -0300
-Message-ID: <0-v1-4608c5610afa+fb-uverbs_cmd_post_send_fix_jgg@nvidia.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-X-ClientProxiedBy: MN2PR16CA0027.namprd16.prod.outlook.com
- (2603:10b6:208:134::40) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1727010AbgJ3PAd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 30 Oct 2020 11:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726999AbgJ3PAc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Oct 2020 11:00:32 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05F6C0613B4
+        for <linux-rdma@vger.kernel.org>; Fri, 30 Oct 2020 07:59:36 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id p93so6961745edd.7
+        for <linux-rdma@vger.kernel.org>; Fri, 30 Oct 2020 07:59:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=9fkQXWnoPSypfyxvIrXWSyd1r4Ua0eeDJczOBpIf/BU=;
+        b=TjZDjTDUyG5IOPAjtKhDz6bJNm6DqwPh3GYjQnJOtk58Qe+VS+LrjG9D+UJTL89L5a
+         hPszd6YttBU2gVDN4Hgd0nVvKmUsgBGa0RfR9y4dU1VG6wqrOSeXXlqa/jT4b2a91QjD
+         sT+ma7QKBtdbME0ZKxl0kc6DEI2BSZsRxuMkNkQsvOWxO6URWAKkh65L3Tk879AJ4LqG
+         Bj9eXYFDUcjXqha9S32esb82rsLCjf9rEdFYrDoZfWxC18Um3HNxqbzetSufrWkdrmWB
+         Hgfuw2XlX0g8ZkLr3paRT5DvZbKL3ccSJq24BaLzNsiQWn1tArC4uUyPSHMQ3hVqPZo6
+         Sb9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=9fkQXWnoPSypfyxvIrXWSyd1r4Ua0eeDJczOBpIf/BU=;
+        b=nxlJWuQagPxOqn3Tamlw25Zn9avoUQrjuzZPLgp8AbuI3wInE9+aJlRbhnueQJlX6P
+         O0+zGq/5EBPW91i41zDMYI38ayy9R/FHR6lqqMqJ1onS7X+esaxw0FiwbrHanv7q1vze
+         MA38biElyvHQFR3hdBQk7ruBRY1HzgC3EXWvKbTGuW0pwZNHsqddd/peVIBrulI0+NQ1
+         /SJScI7AwtLtTJB6rVDEEFEGN9tRj+CRcuQ4SNZ0aSBRfvmpGiTsNLj1jAfne5tG8SZU
+         OEsm+Mivfi6zfGz/S3QAWAJE5n5IACioHjRnNWzEs5reXuVc7hqjUZO1XQAw2spYdPwX
+         kLeA==
+X-Gm-Message-State: AOAM530xgvvLN4iNrnYrkuD55OAgUIuxPqZsfE2ghIyltRmxDEDkLYeB
+        oAc+hnRDAg66NYQRiMteMxXBTcUOWlPr/W+98QHHscMk3w==
+X-Google-Smtp-Source: ABdhPJz0XXuJnPS5g3+lbBiW+XXmkDUqYoNBDu76t3os6QvlPQSI6Onyl30CWs+Md1o+E0r28qs03HXLpOQosKz8YWo=
+X-Received: by 2002:a50:f307:: with SMTP id p7mr2761574edm.235.1604069974505;
+ Fri, 30 Oct 2020 07:59:34 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR16CA0027.namprd16.prod.outlook.com (2603:10b6:208:134::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Fri, 30 Oct 2020 14:03:06 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kYUzh-00DDTr-LC; Fri, 30 Oct 2020 11:03:05 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604066599; bh=s4LsK2eF2M0pTMuYIVQMOCqQpKXC8cya0UqXQ9UqSBs=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
-         CC:Subject:Date:Message-ID:Content-Transfer-Encoding:Content-Type:
-         X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=jfJUZ564bSTSXJoE9kulI6+qUNNnFmr66glIpS1DcV47nzFfKv5zywC3X6afB9TfD
-         v+AltztkWfQ2S4NAnSG41Jfiz/NX7gPnozRKNtwz7mTzDli5OOu+Z+j+eld2UOw7EG
-         sUN2ILiC3R8xP7rEUud8EwxTFtd36WosR0ci2MStW0BqhqDvx/KuFe81jPJ2Ud2/v0
-         s5IfFz9fAzU3Eqf9CfQHm9Xbe3qjQ7iHY6irqJILMn5pBGYfAjMBzmy/7nY7A5iU7B
-         2zB84q94QeNd+gr6FbeCaN1as+7mFg6UuoMo+obsm1Ub28h/lztAbhWexUfNF3701d
-         KzKA8Da7Wv7+g==
+Received: by 2002:a50:f14c:0:0:0:0:0 with HTTP; Fri, 30 Oct 2020 07:59:34
+ -0700 (PDT)
+Reply-To: li.anable85@gmail.com
+From:   Liliane Abel <k.griest04@gmail.com>
+Date:   Fri, 30 Oct 2020 15:59:34 +0100
+Message-ID: <CABAZL7=b-NWks3DKb=fdDjnu_xt_-CcJCqf-F5s0yQCFVH73-A@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-These two drivers open code the call to POST_SEND and do not use the
-rdma-core wrapper to do it, thus their usages was missed during the audit.
+Dearest
 
-Both drivers use this as a doorbell to signal the kernel to start DMA.
+Greeting my dear, I am Liliane Abel by name, The only daughter of late
+Mr.Benson Abel. My father is one of the top Politician in our country
+and my mother is a farmers and cocoa merchant when they were both
+alive. After the death of my mother, long ago, my father was
+controlling their business until he was poisoned by his business
+associates which he suffered and died.
 
-Fixes: 628c02bf38aa ("RDMA: Remove uverbs cmds from drivers that don't use =
-them")
-Reported-by: Bob Pearson <rpearsonhpe@gmail.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
----
- drivers/infiniband/sw/rxe/rxe_verbs.c | 3 ++-
- drivers/infiniband/sw/siw/siw_main.c  | 2 ++
- 2 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/=
-rxe/rxe_verbs.c
-index 7652d53af2c1d9..209c7b3fab97a2 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -1142,7 +1142,8 @@ int rxe_register_device(struct rxe_dev *rxe, const ch=
-ar *ibdev_name)
- 	dma_set_max_seg_size(&dev->dev, UINT_MAX);
- 	dma_set_coherent_mask(&dev->dev, dma_get_required_mask(&dev->dev));
-=20
--	dev->uverbs_cmd_mask |=3D BIT_ULL(IB_USER_VERBS_CMD_REQ_NOTIFY_CQ);
-+	dev->uverbs_cmd_mask |=3D BIT_ULL(IB_USER_VERBS_CMD_POST_SEND) |
-+				BIT_ULL(IB_USER_VERBS_CMD_REQ_NOTIFY_CQ);
-=20
- 	ib_set_device_ops(dev, &rxe_dev_ops);
- 	err =3D ib_device_set_netdev(&rxe->ib_dev, rxe->ndev, 1);
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/s=
-iw/siw_main.c
-index e49faefdee923d..9cf596429dbf7d 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -347,6 +347,8 @@ static struct siw_device *siw_device_create(struct net_=
-device *netdev)
- 				    addr);
- 	}
-=20
-+	base_dev->uverbs_cmd_mask |=3D BIT_ULL(IB_USER_VERBS_CMD_POST_SEND);
-+
- 	base_dev->node_type =3D RDMA_NODE_RNIC;
- 	memcpy(base_dev->node_desc, SIW_NODE_DESC_COMMON,
- 	       sizeof(SIW_NODE_DESC_COMMON));
---=20
-2.28.0
-
+Before the death of my father, He told me about (two million five
+hundred thousand united states dollars) which he deposited in the bank
+in Lome-Togo, It was the money he intended to transfer overseas for
+investment before he was poisoned. He also instructed me that I should
+seek for foreign partners in any country of my choice who will assist
+me transfer this money in overseas account where the money will be
+wisely invested.
+I am seeking for your kind assistance in the following ways:  (1) to
+provide a safe bank account into where the money will be transferred
+for investment. (2) To serve as a guardian of this fund since I am a
+girl of 19 years old. (3) To make arrangement for me to come over to
+your country to further my education. This is my reason for writing to
+you. Please if you are willing to assist me I will offer you 25% of
+the total money. Reply if  you are interested
+Best regards.
+Liliane Abel.
