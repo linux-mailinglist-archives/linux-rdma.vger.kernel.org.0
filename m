@@ -2,111 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC882A05C7
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Oct 2020 13:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BE32A075C
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Oct 2020 15:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726226AbgJ3MuF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 30 Oct 2020 08:50:05 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42644 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726096AbgJ3MuE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 30 Oct 2020 08:50:04 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09UCWGnu041560
-        for <linux-rdma@vger.kernel.org>; Fri, 30 Oct 2020 08:50:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
- from : to : cc : date : mime-version : references :
- content-transfer-encoding : content-type : message-id; s=pp1;
- bh=4M6MKq50mvrySbRd9qhzZIjkM0W741sOCQxJEdtBlR4=;
- b=UlMB3dgOpQxlTN6K2Hbwivao3XFKoxBjIL17f01NE711Y7n5uta/uJUgwLGI8g/SiZpD
- fHUxsetFs4v2OKpBOoqc99Cn5wfsjXhMr2Y7w1xlK3/4ewwAHI7oDyu+7L9Oatgd7o20
- 4W/qjcl8c3nfjszrkdEvkNbLMooNmIK6Jg4UnazSnBbsX1B4GPZ0Vt9s5iHQIf7PYhgF
- AS33z/xYeva7VOyLbmGHQyT7JLkM1h1ScbJC9ScFo1n2H3e9+ARgEpBRLd0BixjG+iy1
- uZIl07WpJJ978OeJe0Tl0G+HR5gB5MIqZv9UyJNJP6dE8B7lElH759FTo/bMLJVy6tPg oQ== 
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.114])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34gfp4e6us-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Fri, 30 Oct 2020 08:50:03 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Fri, 30 Oct 2020 12:50:02 -0000
-Received: from us1b3-smtp02.a3dr.sjc01.isc4sb.com (10.122.7.175)
-        by smtp.notes.na.collabserv.com (10.122.47.58) with smtp.notes.na.collabserv.com ESMTP;
-        Fri, 30 Oct 2020 12:50:01 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp02.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2020103012500112-362801 ;
-          Fri, 30 Oct 2020 12:50:01 +0000 
-In-Reply-To: <20201030114732.GC2620339@nvidia.com>
-Subject: Re: Re: another change breaks rxe
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Jason Gunthorpe" <jgg@nvidia.com>
-Cc:     "Bob Pearson" <rpearsonhpe@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Date:   Fri, 30 Oct 2020 12:50:01 +0000
-MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20201030114732.GC2620339@nvidia.com>,<32fa9c9f-5816-7474-b821-ccccd4cb5af0@gmail.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP65 April 15, 2020 at 09:48
-X-KeepSent: AB5249F6:49569DF7-00258611:0045601D;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 5871
-X-TNEFEvaluated: 1
+        id S1726178AbgJ3ODL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 30 Oct 2020 10:03:11 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10700 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726653AbgJ3ODJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Oct 2020 10:03:09 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9c1d270002>; Fri, 30 Oct 2020 07:03:19 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 30 Oct
+ 2020 14:03:08 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.109)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 30 Oct 2020 14:03:08 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WLXyjp9qIe3erWamO+JvxmbU8nr/+WHfAZ82rAvW5qP3ZN94pkvJm65ob18I/B9SYy7HmJGPjpOVJzBz1Ou28CumSA04G79gpMF7NNiplTFCo8ICD0zURdOkx9laqHqX9FJOEqOnRkI5s/cid4+GTXVZ4nfRCPTeZoVLVbN+PnOc4lbRMZIsMnOP2OjCZBRSASCJOTSLyeHr7OVWOkYOqXQxzzdtH5d1JK7Objav6AUFcMxv0dqYmeOrRy+0j8WtSdsfNQrVEqb/ycjYAtdamiLS67M5SJOhzOQjinuDcr/dkDlLzn5XI4ULNE2gJHgXQ4X6sqC6S/I9WhMFja4rVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Pvz573NFZ3QPZ62op1ryPkG607dT8d0VAWmyZYein8c=;
+ b=Emt52P/OabCzOfG93m8XiAdnHCh/dSeZAh3HDYJorEJnOp6FgBDZtZGuz1WFQZN4ewyQh2gr+ONB8zxLnm+WZr/gtmwvGRatIVqfhAdBOSG3FOoURMy1FTvY5DdIP99OF9sxNKyfUp7WiUsR4bsPNwOdgHjQkf8SjOAmUXmC+0KhtvHaz6Fjn3XHX0I8unHElQ0D4GhI3KSqhmGOAJdy+CwgXaUOZhUEch7LhIIKpLRMTxLa5OhSTDWLa59mBZAzjmKtSNvIstKrdS0L/WwIgkqSecQddeif0tMv4xCqnYYBENRCdnktWrFBJkDQ5huah0kvIgaZxm30rQdnac8XRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3836.namprd12.prod.outlook.com (2603:10b6:5:1c3::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Fri, 30 Oct
+ 2020 14:03:07 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.027; Fri, 30 Oct 2020
+ 14:03:07 +0000
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bernard Metzler <bmt@zurich.ibm.com>, <linux-rdma@vger.kernel.org>,
+        Zhu Yanjun <yanjunz@nvidia.com>
+CC:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH] RDMA/rxe,siw: Restore uverbs_cmd_mask IB_USER_VERBS_CMD_POST_SEND
+Date:   Fri, 30 Oct 2020 11:03:05 -0300
+Message-ID: <0-v1-4608c5610afa+fb-uverbs_cmd_post_send_fix_jgg@nvidia.com>
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 20103012-1639-0000-0000-000002F312BF
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.411265; ST=0; TS=0; UL=0; ISC=; MB=0.000007
-X-IBM-SpamModules-Versions: BY=3.00014105; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000295; SDB=6.01456644; UDB=6.00783623; IPR=6.01239324;
- MB=3.00034776; MTD=3.00000008; XFM=3.00000015; UTC=2020-10-30 12:50:01
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2020-10-30 11:33:38 - 6.00012014
-x-cbparentid: 20103012-1640-0000-0000-0000C7B213E4
-Message-Id: <OFAB5249F6.49569DF7-ON00258611.0045601D-00258611.00467F48@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-30_04:2020-10-30,2020-10-30 signatures=0
-X-Proofpoint-Spam-Reason: orgsafe
+Content-Type: text/plain
+X-ClientProxiedBy: MN2PR16CA0027.namprd16.prod.outlook.com
+ (2603:10b6:208:134::40) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR16CA0027.namprd16.prod.outlook.com (2603:10b6:208:134::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Fri, 30 Oct 2020 14:03:06 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kYUzh-00DDTr-LC; Fri, 30 Oct 2020 11:03:05 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604066599; bh=s4LsK2eF2M0pTMuYIVQMOCqQpKXC8cya0UqXQ9UqSBs=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+         CC:Subject:Date:Message-ID:Content-Transfer-Encoding:Content-Type:
+         X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=jfJUZ564bSTSXJoE9kulI6+qUNNnFmr66glIpS1DcV47nzFfKv5zywC3X6afB9TfD
+         v+AltztkWfQ2S4NAnSG41Jfiz/NX7gPnozRKNtwz7mTzDli5OOu+Z+j+eld2UOw7EG
+         sUN2ILiC3R8xP7rEUud8EwxTFtd36WosR0ci2MStW0BqhqDvx/KuFe81jPJ2Ud2/v0
+         s5IfFz9fAzU3Eqf9CfQHm9Xbe3qjQ7iHY6irqJILMn5pBGYfAjMBzmy/7nY7A5iU7B
+         2zB84q94QeNd+gr6FbeCaN1as+7mFg6UuoMo+obsm1Ub28h/lztAbhWexUfNF3701d
+         KzKA8Da7Wv7+g==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Jason Gunthorpe" <jgg@nvidia.com> wrote: -----
+These two drivers open code the call to POST_SEND and do not use the
+rdma-core wrapper to do it, thus their usages was missed during the audit.
 
->To: "Bob Pearson" <rpearsonhpe@gmail.com>
->From: "Jason Gunthorpe" <jgg@nvidia.com>
->Date: 10/30/2020 12:47PM
->Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
->Subject: [EXTERNAL] Re: another change breaks rxe
->
->On Fri, Oct 30, 2020 at 12:41:12AM -0500, Bob Pearson wrote:
->
->> breaks rxe because it does use IB=5FUSER=5FVERBS=5FCMD=5FPOST=5FSEND. rxe
->> posts wqes to a work queue in shared memory and then calls
->> ibv=5Fpost=5Fsend with zero wqes as a doorbell to the kernel which uses
->> this as a hint to go read the shared memory.
->
->Gah, siw and rxe are open coding this stuff (wrongly!) in rdma-core
->
->This would be a lot better to use an eventfd
->
->Jason
->
-Yes, siw does it the same.
+Both drivers use this as a doorbell to signal the kernel to start DMA.
 
-I see the hfi and ipath drivers similarly using ibv=5Fcmd=5Fpost=5Fsend
-to push the wqe's (while not having them in shared mem). Do they
-brake as well?
-Do we have an example of decent eventfd usage where I could learn
-from how to use it? Though I think having another fd open per context
-might become a scaling issue.
+Fixes: 628c02bf38aa ("RDMA: Remove uverbs cmds from drivers that don't use =
+them")
+Reported-by: Bob Pearson <rpearsonhpe@gmail.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+---
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 3 ++-
+ drivers/infiniband/sw/siw/siw_main.c  | 2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-Thanks and best regards,
-Bernard.
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/=
+rxe/rxe_verbs.c
+index 7652d53af2c1d9..209c7b3fab97a2 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -1142,7 +1142,8 @@ int rxe_register_device(struct rxe_dev *rxe, const ch=
+ar *ibdev_name)
+ 	dma_set_max_seg_size(&dev->dev, UINT_MAX);
+ 	dma_set_coherent_mask(&dev->dev, dma_get_required_mask(&dev->dev));
+=20
+-	dev->uverbs_cmd_mask |=3D BIT_ULL(IB_USER_VERBS_CMD_REQ_NOTIFY_CQ);
++	dev->uverbs_cmd_mask |=3D BIT_ULL(IB_USER_VERBS_CMD_POST_SEND) |
++				BIT_ULL(IB_USER_VERBS_CMD_REQ_NOTIFY_CQ);
+=20
+ 	ib_set_device_ops(dev, &rxe_dev_ops);
+ 	err =3D ib_device_set_netdev(&rxe->ib_dev, rxe->ndev, 1);
+diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/s=
+iw/siw_main.c
+index e49faefdee923d..9cf596429dbf7d 100644
+--- a/drivers/infiniband/sw/siw/siw_main.c
++++ b/drivers/infiniband/sw/siw/siw_main.c
+@@ -347,6 +347,8 @@ static struct siw_device *siw_device_create(struct net_=
+device *netdev)
+ 				    addr);
+ 	}
+=20
++	base_dev->uverbs_cmd_mask |=3D BIT_ULL(IB_USER_VERBS_CMD_POST_SEND);
++
+ 	base_dev->node_type =3D RDMA_NODE_RNIC;
+ 	memcpy(base_dev->node_desc, SIW_NODE_DESC_COMMON,
+ 	       sizeof(SIW_NODE_DESC_COMMON));
+--=20
+2.28.0
 
