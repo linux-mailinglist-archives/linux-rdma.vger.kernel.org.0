@@ -2,162 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC0F2A2128
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Nov 2020 20:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1902A2146
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Nov 2020 21:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727054AbgKATuy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 1 Nov 2020 14:50:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52320 "EHLO mail.kernel.org"
+        id S1726873AbgKAUPw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 1 Nov 2020 15:15:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726790AbgKATuy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 1 Nov 2020 14:50:54 -0500
+        id S1726848AbgKAUPv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 1 Nov 2020 15:15:51 -0500
 Received: from localhost (host-213-179-129-39.customer.m-online.net [213.179.129.39])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90327208B6;
-        Sun,  1 Nov 2020 19:50:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75F4B208B6;
+        Sun,  1 Nov 2020 20:15:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604260253;
-        bh=ggvoVwwLIzKiSDItohf4zJ0R+fBUJRlqriGIhjydae8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qEYxzv1vwTB402op7PJL2cPdmf5feB2evrGSKOTRqrmiKqQhtkoEfMrwaVKQen0PY
-         w4+YCdzaeNIIaaUnNAznWhNTzjCDrznPSPPabGqBARLvXcBwi/Lg+xmoJyP3v6wTe8
-         2Lsao4TpzJYcr+TtZMPFZYWxuynJjjl6E84jcSzs=
-Date:   Sun, 1 Nov 2020 21:50:49 +0200
+        s=default; t=1604261751;
+        bh=bLA0ev2Kwh6uGquFheDvSSBq9w7KOIljOSNWPIWB5Ck=;
+        h=From:To:Cc:Subject:Date:From;
+        b=huv9rtKkUhey6AamSaXCXbtImWrQjVRiNn7errL5az2kng2obK+UpzHMgRoTggLer
+         1dBBKOeF5LUNXfpJc8oH/xshEX5x5c1wRB20IYPUR9hZXO1LgTIPCJD8CZWVC6KF0K
+         mklVx1CS0NWIH+Tn9mTb693ZRQ9UFxuyrKijadxs=
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-rc 1/3] RDMA/core: Postpone uobject cleanup on
- failure till FD close
-Message-ID: <20201101195049.GC5429@unreal>
-References: <20201012045600.418271-1-leon@kernel.org>
- <20201012045600.418271-2-leon@kernel.org>
- <20201027165508.GA2267703@nvidia.com>
- <20201027171122.GP1523783@nvidia.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        gregkh <gregkh@linuxfoundation.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>, linux-rdma@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        Parav Pandit <parav@nvidia.com>, Roi Dayan <roid@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
+        shiraz.saleem@intel.com, dan.j.williams@intel.com,
+        kiran.patil@intel.com, linux-kernel@vger.kernel.org
+Subject: [PATCH mlx5-next v1 00/11] Convert mlx5 to use auxiliary bus
+Date:   Sun,  1 Nov 2020 22:15:31 +0200
+Message-Id: <20201101201542.2027568-1-leon@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027171122.GP1523783@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 02:11:22PM -0300, Jason Gunthorpe wrote:
-> On Tue, Oct 27, 2020 at 01:55:08PM -0300, Jason Gunthorpe wrote:
->
-> > diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-> > index 3d366cb79cef42..3ae878f3d173d3 100644
-> > +++ b/drivers/infiniband/core/rdma_core.c
-> > @@ -540,6 +540,9 @@ static int __must_check destroy_hw_idr_uobject(struct ib_uobject *uobj,
-> >  	if (ret)
-> >  		return ret;
-> >
-> > +	if (why == RDMA_REMOVE_ABORT)
-> > +		return 0;
-> > +
-> >  	ib_rdmacg_uncharge(&uobj->cg_obj, uobj->context->device,
-> >  			   RDMACG_RESOURCE_HCA_OBJECT);
-> >
-> > @@ -727,10 +730,8 @@ void release_ufile_idr_uobject(struct ib_uverbs_file *ufile)
-> >  	 *
-> >  	 * This is an optimized equivalent to remove_handle_idr_uobject
-> >  	 */
-> > -	xa_for_each(&ufile->idr, id, entry) {
-> > -		WARN_ON(entry->object);
-> > +	xa_for_each(&ufile->idr, id, entry)
-> >  		uverbs_uobject_put(entry);
-> > -	}
->
-> Actually this is not a good idea
->
-> This one is better:
+From: Leon Romanovsky <leonro@nvidia.com>
 
-This causes to many syzkaller bugs, I didn't debug yet.
+Changelog:
+v1:
+ * Renamed _mlx5_rescan_driver to be mlx5_rescan_driver_locked like in
+   other parts of the mlx5 driver.
+ * Renamed MLX5_INTERFACE_PROTOCOL_VDPA to tbe MLX5_INTERFACE_PROTOCOL_VNET as
+   a preparation to coming series from Eli C.
+ * Some small naming renames in mlx5_vdpa.
+ * Refactored adev index code to make Parav's SF series to apply more easily.
+ * Fixed devlink reload bug that caused to lost TCP connection.
+v0:
+https://lore.kernel.org/lkml/20201026111849.1035786-1-leon@kernel.org/
+
+--------------------------------------------------------------
+
+Hi,
+
+This patch set converts mlx5 driver to use auxiliary bus [1].
+
+In this series, we are connecting three subsystems (VDPA, netdev and
+RDMA) through mlx5_core PCI driver. That driver is responsible to create
+proper devices based on supported firmware.
+
+First four patches are preparitions and fixes that were spotted during
+code development, rest is the conversion itself.
 
 Thanks
 
->
-> diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-> index 3d366cb79cef42..fd012be700ccc2 100644
-> --- a/drivers/infiniband/core/rdma_core.c
-> +++ b/drivers/infiniband/core/rdma_core.c
-> @@ -540,6 +540,9 @@ static int __must_check destroy_hw_idr_uobject(struct ib_uobject *uobj,
->  	if (ret)
->  		return ret;
->
-> +	if (why == RDMA_REMOVE_ABORT)
-> +		return 0;
-> +
->  	ib_rdmacg_uncharge(&uobj->cg_obj, uobj->context->device,
->  			   RDMACG_RESOURCE_HCA_OBJECT);
->
-> @@ -845,11 +848,17 @@ static int __uverbs_cleanup_ufile(struct ib_uverbs_file *ufile,
->  		 * racing with a lookup_get.
->  		 */
->  		WARN_ON(uverbs_try_lock_object(obj, UVERBS_LOOKUP_WRITE));
-> +		if (reason == RDMA_REMOVE_DRIVER_FAILURE)
-> +			obj->object = NULL;
->  		if (!uverbs_destroy_uobject(obj, reason, &attrs))
->  			ret = 0;
->  		else
->  			atomic_set(&obj->usecnt, 0);
->  	}
-> +	if (reason == RDMA_REMOVE_DRIVER_FAILURE) {
-> +		WARN_ON(!list_empty(&ufile->uobjects));
-> +		return 0;
-> +	}
->  	return ret;
->  }
->
-> @@ -862,9 +871,6 @@ static int __uverbs_cleanup_ufile(struct ib_uverbs_file *ufile,
->  void uverbs_destroy_ufile_hw(struct ib_uverbs_file *ufile,
->  			     enum rdma_remove_reason reason)
->  {
-> -	struct ib_uobject *obj, *next_obj;
-> -	unsigned long flags;
-> -
->  	down_write(&ufile->hw_destroy_rwsem);
->
->  	/*
-> @@ -875,25 +881,10 @@ void uverbs_destroy_ufile_hw(struct ib_uverbs_file *ufile,
->  		goto done;
->
->  	while (!list_empty(&ufile->uobjects))
-> -		if (__uverbs_cleanup_ufile(ufile, reason)) {
-> -			/*
-> -			 * No entry was cleaned-up successfully during this
-> -			 * iteration. It is a driver bug to fail destruction.
-> -			 */
-> -			WARN_ON(!list_empty(&ufile->uobjects));
-> +		if (__uverbs_cleanup_ufile(ufile, reason))
->  			break;
-> -		}
-> -
-> -	list_for_each_entry_safe (obj, next_obj, &ufile->uobjects, list) {
-> -		spin_lock_irqsave(&ufile->uobjects_lock, flags);
-> -		list_del_init(&obj->list);
-> -		spin_unlock_irqrestore(&ufile->uobjects_lock, flags);
-> -		/*
-> -		 * Pairs with the get in rdma_alloc_commit_uobject(), could
-> -		 * destroy uobj.
-> -		 */
-> -		uverbs_uobject_put(obj);
-> -	}
-> +	if (WARN_ON(!list_empty(&ufile->uobjects)))
-> +		__uverbs_cleanup_ufile(ufile, RDMA_REMOVE_DRIVER_FAILURE);
->  	ufile_destroy_ucontext(ufile, reason);
->
->  done:
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index edfc1d7d3766ca..7e330f4a6d33ff 100644
-> --- a/include/rdma/ib_verbs.h
-> +++ b/include/rdma/ib_verbs.h
-> @@ -1471,6 +1471,8 @@ enum rdma_remove_reason {
->  	RDMA_REMOVE_DRIVER_REMOVE,
->  	/* uobj is being cleaned-up before being committed */
->  	RDMA_REMOVE_ABORT,
-> +	/* The driver failed to destroy the uobject and is being disconnected */
-> +	RDMA_REMOVE_DRIVER_FAILURE,
->  };
->
->  struct ib_rdmacg_object {
+[1]
+https://lore.kernel.org/lkml/20201023003338.1285642-1-david.m.ertman@intel.com
+
+Leon Romanovsky (11):
+  net/mlx5: Don't skip vport check
+  net/mlx5: Properly convey driver version to firmware
+  net/mlx5_core: Clean driver version and name
+  vdpa/mlx5: Make hardware definitions visible to all mlx5 devices
+  net/mlx5: Register mlx5 devices to auxiliary virtual bus
+  vdpa/mlx5: Connect mlx5_vdpa to auxiliary bus
+  net/mlx5e: Connect ethernet part to auxiliary bus
+  RDMA/mlx5: Convert mlx5_ib to use auxiliary bus
+  net/mlx5: Delete custom device management logic
+  net/mlx5: Simplify eswitch mode check
+  RDMA/mlx5: Remove IB representors dead code
+
+ drivers/infiniband/hw/mlx5/counters.c         |   7 -
+ drivers/infiniband/hw/mlx5/ib_rep.c           | 113 ++--
+ drivers/infiniband/hw/mlx5/ib_rep.h           |  45 +-
+ drivers/infiniband/hw/mlx5/main.c             | 148 +++--
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/Kconfig   |   1 +
+ drivers/net/ethernet/mellanox/mlx5/core/dev.c | 567 ++++++++++++------
+ .../net/ethernet/mellanox/mlx5/core/devlink.c |   4 +-
+ .../ethernet/mellanox/mlx5/core/en_ethtool.c  |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c | 135 ++---
+ .../net/ethernet/mellanox/mlx5/core/en_rep.c  |  42 +-
+ .../net/ethernet/mellanox/mlx5/core/en_rep.h  |   6 +-
+ .../net/ethernet/mellanox/mlx5/core/en_tc.c   |   8 +-
+ .../mellanox/mlx5/core/esw/devlink_port.c     |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/eswitch.c |  28 +-
+ .../mellanox/mlx5/core/eswitch_offloads.c     |   6 +
+ .../mellanox/mlx5/core/ipoib/ethtool.c        |   2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/lag.c |  58 +-
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  50 +-
+ .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  33 +-
+ drivers/vdpa/mlx5/Makefile                    |   2 +-
+ drivers/vdpa/mlx5/net/main.c                  |  76 ---
+ drivers/vdpa/mlx5/net/mlx5_vnet.c             |  53 +-
+ drivers/vdpa/mlx5/net/mlx5_vnet.h             |  24 -
+ include/linux/mlx5/driver.h                   |  34 +-
+ include/linux/mlx5/eswitch.h                  |   8 +-
+ .../linux/mlx5/mlx5_ifc_vdpa.h                |   6 +-
+ 27 files changed, 818 insertions(+), 648 deletions(-)
+ delete mode 100644 drivers/vdpa/mlx5/net/main.c
+ delete mode 100644 drivers/vdpa/mlx5/net/mlx5_vnet.h
+ rename drivers/vdpa/mlx5/core/mlx5_vdpa_ifc.h => include/linux/mlx5/mlx5_ifc_vdpa.h (97%)
+
+--
+2.28.0
+
