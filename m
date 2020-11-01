@@ -2,209 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A50832A1E83
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Nov 2020 15:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8832A1E6C
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Nov 2020 15:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgKAORl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 1 Nov 2020 09:17:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbgKAORk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 1 Nov 2020 09:17:40 -0500
-X-Greylist: delayed 902 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 01 Nov 2020 06:17:40 PST
-Received: from mailg110.ethz.ch (mailg110.ethz.ch [IPv6:2001:67c:10ec:5605::21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57940C0617A6
-        for <linux-rdma@vger.kernel.org>; Sun,  1 Nov 2020 06:17:40 -0800 (PST)
-Received: from mailm214.d.ethz.ch (2001:67c:10ec:5603::28) by mailg110.ethz.ch
- (2001:67c:10ec:5605::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Sun, 1 Nov 2020
- 15:02:30 +0100
-Received: from ktaranov-laptop (194.230.155.211) by mailm214.d.ethz.ch
- (2001:67c:10ec:5603::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Sun, 1 Nov 2020
- 15:02:35 +0100
-Date:   Sun, 1 Nov 2020 15:02:33 +0100
-From:   Konstantin Taranov <konstantin.taranov@inf.ethz.ch>
-To:     <linux-rdma@vger.kernel.org>
-CC:     <konstantin.taranov@inf.ethz.ch>
-Subject: [PATCH] The patch fixes minor typos in debug messages and comments
- in rdma-core
-Message-ID: <20201101150233.3b9ebb41@ktaranov-laptop>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [194.230.155.211]
-X-ClientProxiedBy: mailm213.d.ethz.ch (2001:67c:10ec:5603::27) To
- mailm214.d.ethz.ch (2001:67c:10ec:5603::28)
-X-TM-SNTS-SMTP: 4D315C5289D373E4DC944A3D9E411D3FEF2513F506C6E202A40D85DE1F2780192000:8
+        id S1726496AbgKAOFi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 1 Nov 2020 09:05:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20810 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726370AbgKAOFi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 1 Nov 2020 09:05:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604239536;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=aWuZ6CNcX73ZRXvjOOgvWKSO2p04g3cpgBeEkZo1Tfs=;
+        b=iNhip/XE7whz6XZlukyr7LjzpuRMhXyXewJ/gd6Xp74KMTwgH9+B21IptDWTOFAQQk/8MC
+        JQT5eGhLHH12Ji3Lc7j4V0EYoosE+f4zRMQG5zjBUP2z4iQnvPzRGzjfNUqfNRmdOtLLkC
+        kvre9tVyqx0kT96Wud8PVsyRZ8MiO3s=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-156-l1_kQRoxNmS8CdGArOMbHA-1; Sun, 01 Nov 2020 09:05:35 -0500
+X-MC-Unique: l1_kQRoxNmS8CdGArOMbHA-1
+Received: by mail-ot1-f70.google.com with SMTP id k103so4758467otk.1
+        for <linux-rdma@vger.kernel.org>; Sun, 01 Nov 2020 06:05:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=aWuZ6CNcX73ZRXvjOOgvWKSO2p04g3cpgBeEkZo1Tfs=;
+        b=YZhs2cX+ETRSJiZbAmH6rwniRqTp+1fadmHCfr9xa9E07flsIkPNccfFxXRCGoCkNX
+         0dQf8VpCrf20tb7gEG73LrpWPAMsuth6TUiXJHMU45BlTGJt/8EJho/Av6Y7FpCa7BnZ
+         Kn0bXnES7Mdxr4VqPXa2A2r//5S9tsR1RW7V7yPAmSazkyn5wMWcN6HCkTNU1Ct2kq9J
+         GufmpNyvn8eb//yB3ts4lK2LRYLm9g66c5Irx5MC0ekS0uCyyNnMDnHUPd0uh3GuXpY8
+         RihNS2dQQRvDUxwCB2G2bFR4Wfdany/S9OJapSvZC7S/KZXitX3JuJSIFUjbMBKw0HAf
+         Pa3Q==
+X-Gm-Message-State: AOAM532aXfMGbhEJ4Y1cys3IWkvfQsLYzg/NcgW61tk3ShbscqeN+o8x
+        j/E4kMVG5Hk2Dx6AH5nHL3k1WB5lzIEWtzKbCiwtHhy+ATbPUkbIePbPN9MIakT9NBokWu8zVop
+        A+qmMCR2QlJ0DDmUSXfPOjQ==
+X-Received: by 2002:a9d:6c0e:: with SMTP id f14mr8738003otq.275.1604239534468;
+        Sun, 01 Nov 2020 06:05:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw4WDgKv4A+XxRMymr7Yk4a/1H3WY29ZBfgtBiE1ZxZk/R2BNNIqV4/zyl4X5ZA7JzAKIVmtA==
+X-Received: by 2002:a9d:6c0e:: with SMTP id f14mr8737996otq.275.1604239534306;
+        Sun, 01 Nov 2020 06:05:34 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id s27sm2923193otg.80.2020.11.01.06.05.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Nov 2020 06:05:33 -0800 (PST)
+From:   trix@redhat.com
+To:     tariqt@nvidia.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] net/mlx4_core : remove unneeded semicolon
+Date:   Sun,  1 Nov 2020 06:05:28 -0800
+Message-Id: <20201101140528.2279424-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The patch only makes grammar-related fixes. It fixes misspelled abbreviations for Remote Direct Memory Access and incorrect use of the article "a" with "RDMA".
+From: Tom Rix <trix@redhat.com>
 
-The changes include:
- * Changed "a RDMA" to "an RDMA"
- * Changed "RMDA" to "RDMA".
+A semicolon is not needed after a switch statement.
 
-Signed-off-by: Konstantin Taranov <konstantin.taranov@inf.ethz.ch>
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- Documentation/udev.md                   | 4 ++--
- buildlib/azure-pipelines.yml            | 2 +-
- debian/control                          | 2 +-
- libibverbs/driver.h                     | 2 +-
- libibverbs/man/ibv_query_gid_table.3.md | 2 +-
- librdmacm/examples/rping.c              | 2 +-
- librdmacm/man/rdma_init_qp_attr.3.md    | 4 ++--
- tests/base_rdmacm.py                    | 2 +-
- tests/rdmacm_utils.py                   | 4 ++--
- 9 files changed, 12 insertions(+), 12 deletions(-)
+ drivers/net/ethernet/mellanox/mlx4/resource_tracker.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/udev.md b/Documentation/udev.md
-index cf94a4fb..1ebee250 100644
---- a/Documentation/udev.md
-+++ b/Documentation/udev.md
-@@ -26,7 +26,7 @@ This can happen in several spots along the bootup:
-    This happens asynchronously in the boot process, systemd does not wait for
-    udev to finish loading modules before it continues on.
- 
--   This path makes it very likely the system will experience a RDMA 'hot plug'
-+   This path makes it very likely the system will experience an RDMA 'hot plug'
-    scenario.
- 
-  - From systemd's fixed module loader systemd-modules-load.service, e.g. from
-@@ -41,7 +41,7 @@ This is triggered automatically by udev rules that match the master devices
- and load the protocol module with udev's module loader. This happens
- asynchronously to the rest of the systemd startup.
- 
--Once a RDMA device is created by the kernel then udev will cause systemd to
-+Once an RDMA device is created by the kernel then udev will cause systemd to
- schedule ULP module loading services (e.g. rdma-load-modules@.service) specific
- to the plugged hardware. If sysinit.target has not yet been passed then these
- loaders will defer sysinit.target until they complete, otherwise this is a hot
-diff --git a/buildlib/azure-pipelines.yml b/buildlib/azure-pipelines.yml
-index f2a86b46..6a948480 100644
---- a/buildlib/azure-pipelines.yml
-+++ b/buildlib/azure-pipelines.yml
-@@ -165,7 +165,7 @@ stages:
- 
-           - task: PublishPipelineArtifact@0
-             inputs:
--              # Contains a rdma-core-XX.tar.gz file
-+              # Contains an rdma-core-XX.tar.gz file
-               artifactName: source_tar
-               targetPath: artifacts
- 
-diff --git a/debian/control b/debian/control
-index 0837cfc1..290b14d8 100644
---- a/debian/control
-+++ b/debian/control
-@@ -87,7 +87,7 @@ Description: User space provider drivers for libibverbs
-  hardware access from userspace (kernel bypass), and libibverbs
-  supports this when available.
-  .
-- A RDMA driver consists of a kernel portion and a user space portion.
-+ An RDMA driver consists of a kernel portion and a user space portion.
-  This package contains the user space verbs drivers:
-  .
-   - bnxt_re: Broadcom NetXtreme-E RoCE HCAs
-diff --git a/libibverbs/driver.h b/libibverbs/driver.h
-index 451924d4..87d1a030 100644
---- a/libibverbs/driver.h
-+++ b/libibverbs/driver.h
-@@ -190,7 +190,7 @@ enum {
- 	VSYSFS_READ_FW_VER = 1 << 2,
- };
- 
--/* A rdma device detected in sysfs */
-+/* An rdma device detected in sysfs */
- struct verbs_sysfs_dev {
- 	struct list_node entry;
- 	void *provider_data;
-diff --git a/libibverbs/man/ibv_query_gid_table.3.md b/libibverbs/man/ibv_query_gid_table.3.md
-index e10f51c6..63f17a49 100644
---- a/libibverbs/man/ibv_query_gid_table.3.md
-+++ b/libibverbs/man/ibv_query_gid_table.3.md
-@@ -37,7 +37,7 @@ to the size of *entries* array.
- *entries* array must be allocated such that it can contain all the valid
- GID table entries of the device. If there are more valid GID entries than
- the provided value of *max_entries* and *entries* array, the call will fail.
--For example, if a RDMA device *context* has a total of 10 valid
-+For example, if an RDMA device *context* has a total of 10 valid
- GID entries, *entries* should be allocated for at least 10 entries, and
- *max_entries* should be set appropriately.
- 
-diff --git a/librdmacm/examples/rping.c b/librdmacm/examples/rping.c
-index 882f878b..a270d7db 100644
---- a/librdmacm/examples/rping.c
-+++ b/librdmacm/examples/rping.c
-@@ -1119,7 +1119,7 @@ static int rping_connect_client(struct rping_cb *cb)
- 		}
- 	}
- 
--	DEBUG_LOG("rmda_connect successful\n");
-+	DEBUG_LOG("rdma_connect successful\n");
- 	return 0;
+diff --git a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
+index 1187ef1375e2..394f43add85c 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
++++ b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
+@@ -300,7 +300,7 @@ static const char *resource_str(enum mlx4_resource rt)
+ 	case RES_FS_RULE: return "RES_FS_RULE";
+ 	case RES_XRCD: return "RES_XRCD";
+ 	default: return "Unknown resource type !!!";
+-	};
++	}
  }
  
-diff --git a/librdmacm/man/rdma_init_qp_attr.3.md b/librdmacm/man/rdma_init_qp_attr.3.md
-index 99e812ab..dfd6f22a 100644
---- a/librdmacm/man/rdma_init_qp_attr.3.md
-+++ b/librdmacm/man/rdma_init_qp_attr.3.md
-@@ -10,7 +10,7 @@ title: RDMA_INIT_QP_ATTR
- 
- # NAME
- 
--rdma_init_qp_attr - Returns qp attributes of a rdma_cm_id.
-+rdma_init_qp_attr - Returns qp attributes of an rdma_cm_id.
- 
- # SYNOPSIS
- 
-@@ -23,7 +23,7 @@ int rdma_init_qp_attr(struct rdma_cm_id *id,
- ```
- # DESCRIPTION
- 
--**rdma_init_qp_attr()** returns qp attributes of a rdma_cm_id.
-+**rdma_init_qp_attr()** returns qp attributes of an rdma_cm_id.
- 
- Information about qp attributes and qp attributes mask is returned through the *qp_attr* and *qp_attr_mask* parameters.
- 
-diff --git a/tests/base_rdmacm.py b/tests/base_rdmacm.py
-index 67d00fbf..e5ecc7df 100755
---- a/tests/base_rdmacm.py
-+++ b/tests/base_rdmacm.py
-@@ -91,7 +91,7 @@ class CMResources(abc.ABC):
- 
-     def create_qp(self):
-         """
--        Create a rdmacm QP. If self.with_ext_qp is set, then an external CQ and
-+        Create an rdmacm QP. If self.with_ext_qp is set, then an external CQ and
-         RC QP will be created and set in self.cq and self.qp
-         respectively.
-         """
-diff --git a/tests/rdmacm_utils.py b/tests/rdmacm_utils.py
-index 834762cb..2880fa2a 100755
---- a/tests/rdmacm_utils.py
-+++ b/tests/rdmacm_utils.py
-@@ -267,7 +267,7 @@ class CMAsyncConnection(CMConnection):
- 
-     def establish_connection(self):
-         """
--        Establish RMDACM connection between two Async CMIDs.
-+        Establish RDMACM connection between two Async CMIDs.
-         """
-         if self.cm_res.passive:
-             self.cm_res.cmid.bind_addr(self.cm_res.ai)
-@@ -378,7 +378,7 @@ class CMSyncConnection(CMConnection):
- 
-     def establish_connection(self):
-         """
--        Establish RMDACM connection between two Sync CMIDs.
-+        Establish RDMACM connection between two Sync CMIDs.
-         """
-         if self.cm_res.passive:
-             self.cm_res.cmid.listen()
+ static void rem_slave_vlans(struct mlx4_dev *dev, int slave);
 -- 
-2.25.1
+2.18.1
 
