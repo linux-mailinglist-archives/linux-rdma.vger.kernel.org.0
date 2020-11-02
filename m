@@ -2,113 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66CB2A3684
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Nov 2020 23:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5ABE2A36D0
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Nov 2020 23:55:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725833AbgKBW0Z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Nov 2020 17:26:25 -0500
-Received: from mail-dm6nam08on2106.outbound.protection.outlook.com ([40.107.102.106]:46065
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        id S1726172AbgKBWyz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Nov 2020 17:54:55 -0500
+Received: from mail-eopbgr750042.outbound.protection.outlook.com ([40.107.75.42]:7350
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725821AbgKBW0Z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 2 Nov 2020 17:26:25 -0500
+        id S1725940AbgKBWyz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 2 Nov 2020 17:54:55 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nHdbK6VKbHXqhRVsDT7uZ5kK6lpEE6fyLpbO28mYXwGw6PXrwY0jTZKo01JVphyrrCQcZmDfnqfoxyXAlwMxY8GGlbH2TTOalCWRbXH5MJhGtS/8skFosLjMNscna/6Qg5dJ1ibLVaFLNqZhFkiSjADd/HW2rhFv3Th2lrN+CEIWV0RhDG7Fe33Vgouknusj1aqPIBVj8IAHLIkMlzb4ZPGGuBnREH/qxp8O1AwtCuf2JM2FhZgj1FFiAIMOCxvWVg0ldWyAEzXZA8Rb8lSYqpIs/zPcgFyAnGLXZNcoOaKE20cR6RLQYVtDzGYVH0dMZCRXm4MTUEeYuz60XQ7hDg==
+ b=ClG64Ry3xE+rxJijAXLI+W8oehhrM8/Po107LgnZTMUNMPnjgU9HBosP4ezE/Vec3Bcm+fXJY6a0D/jNcTb5brJ893VBDKS65m0VS6ymjExneoierrBxTIQCApK5DeB7kiLghdGjYjFVrm3FcLQfIMb8bZXBVlBqTWdwJpHZ+GEf2pz9csODNsT/fWaWIaTgQp1xlWZiUOBQeenQaaPZp2sJgPm45lH1Ak3cwv4ShIvmUz7VvXoTERRcJaALAIlwA2Qc1sfYlC0Gpd1gOSjBvUhnGCf5ZbQJeYJBtVEzbNM7MCjZznyTHuirJqfKmSVr/JkdcIsfjHAVPzckukQCUg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mE2qDmQ3ZRwv0hMyj0aDmKNq8xhk2lGtl+tuyL0ALz4=;
- b=DQ2tt2WKtTjR53Iwjq/mVNf3Qur9xZ0lYSYj8uB2JAEnLoiLmJJnpHBGP7ZQD8jVFjlqGehRbDccURIXUx1pP19GIC1pWRCSnathkwjr3agAeThlGOw6PY8W54W434R7v6/50s3mypjAvCKTUfvs65o5nhVbrKtNU43DgR+CK8gE88rw3yj3d4q0UJeLwnZt/wPrGsMocTCd33n+Mrn3qE6iS9hSwEaHc9Ji1zPtdd1eyAd5RLdvTxSx6w4NsCkgBvBL/ArkSYjnDP08TEDRfesKLv8NOG2Gz46O8i0Yo7Z9MYM88QHZ/bkxmExQaXaId9cCFB10loC335VXJWn1jA==
+ bh=w4mlU/Or0VWKthCpsaFPZNBD6MJX/UvzdJztGFk7CfE=;
+ b=GpzAkXZrhon9Kp5jQF8C/eR6ZG6HyiuVLckxJk32Cg/ilRFZxXtpfHIWSHhKedRp9O9b/EiNGVSEEZPntGND1eBS6U0jv5zNd5ZZHEOUZujTCPlYRkYmaPzVyHWOdp6A7Ub7zPGLCi/qiKsqbyrtTt486VKoQFyHX2AxmEPC6WEDuXi4KaSAvECs4ZAM7S5JVZwsn4cxFBXALkdSyPSB4av8nVL+W5bhTJ0yblElBFPE0s2jGr7gLZ6rBWdCqTbcvnrCZi9QYHK36lLy5a2TEHC7u7/w4cJ0+/cnpk7hlXtcgBfGZ/ohqMCo5usBTdlzI/WT8tB0qribewEw0QqgRw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=northeastern.edu; dmarc=pass action=none
- header.from=northeastern.edu; dkim=pass header.d=northeastern.edu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=northeastern.edu;
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mE2qDmQ3ZRwv0hMyj0aDmKNq8xhk2lGtl+tuyL0ALz4=;
- b=C9Q3LTxTo+Un1bC5DwiQo2uljavid37CaEhGfvpJoDY0avMf+JQQ70HCrD4vfK4gsfUmkyKw3ISFWYF1p6jBPB4qNeiJLhL2/gNxyZYWqaTwu63EpKO/9Io40mhVmTurVUV658F+BxOgWVUOCDG0cA5gO9A/NC+Rq1KsfBn15jM=
-Received: from BN6PR06MB2532.namprd06.prod.outlook.com (2603:10b6:404:2a::10)
- by BN8PR06MB5922.namprd06.prod.outlook.com (2603:10b6:408:c4::19) with
+ bh=w4mlU/Or0VWKthCpsaFPZNBD6MJX/UvzdJztGFk7CfE=;
+ b=kDVASdyRNHHkULPqRXn4D/T0K9d1lthskJbnhCN4NRCOteH5G6dFA5fQ/sUgBtq3jByh1Rd/sqGetctvThcSeCBj9Ar0Y+F4WVrld1Gk0LrXRIvDAjJ1v3OFdNSozXQqL9GkqyFToMZiEEXvnMdlDvIaaDxamRXyXKI7GWL1Qww=
+Authentication-Results: mellanox.com; dkim=none (message not signed)
+ header.d=none;mellanox.com; dmarc=none action=none header.from=vmware.com;
+Received: from BYAPR05MB5511.namprd05.prod.outlook.com (2603:10b6:a03:1a::28)
+ by BYAPR05MB4711.namprd05.prod.outlook.com (2603:10b6:a03:4f::30) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Mon, 2 Nov
- 2020 22:26:23 +0000
-Received: from BN6PR06MB2532.namprd06.prod.outlook.com
- ([fe80::2c22:5dbb:becd:88d]) by BN6PR06MB2532.namprd06.prod.outlook.com
- ([fe80::2c22:5dbb:becd:88d%3]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
- 22:26:23 +0000
-From:   Changming Liu <liu.changm@northeastern.edu>
-To:     Ira Weiny <ira.weiny@intel.com>
-CC:     "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        yaohway <yaohway@gmail.com>
-Subject: RE: How to fuzz testing infiniband/uverb driver
-Thread-Topic: How to fuzz testing infiniband/uverb driver
-Thread-Index: AdawkarIjS+Q8tCzT3S+sAjKAmsjCQAodNCAAAzcBsA=
-Date:   Mon, 2 Nov 2020 22:26:22 +0000
-Message-ID: <BN6PR06MB2532A64BB4D75A9D8D02E310E5100@BN6PR06MB2532.namprd06.prod.outlook.com>
-References: <BN6PR06MB2532A875B6C3AC57072570B6E5130@BN6PR06MB2532.namprd06.prod.outlook.com>
- <20201102161617.GE971338@iweiny-DESK2.sc.intel.com>
-In-Reply-To: <20201102161617.GE971338@iweiny-DESK2.sc.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=northeastern.edu;
-x-originating-ip: [173.48.78.29]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1f00bab8-8f8d-4232-b99f-08d87f7e5454
-x-ms-traffictypediagnostic: BN8PR06MB5922:
-x-ld-processed: a8eec281-aaa3-4dae-ac9b-9a398b9215e7,ExtAddr
-x-microsoft-antispam-prvs: <BN8PR06MB592257160006AEB14BB03D06E5100@BN8PR06MB5922.namprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vvf3oQYqxhOi9s1T75YraorcB3ONCqVVtXwubaG0ubv6c2XwSpP5oZpMRfoJEwNztuh6sim/Dns3gi7e5USRf0zBFuxkXjA0ie+7R9jwyjp7QO1K1bX35mdLPrFtKHDgY7p0Uaopf354oYpD99sy8CYTc5SZ/37lF0uPXVxROpihS5HebfwAFWW8iKOkSLl6CMNYncl0OG/FUhMtgVSDHirU8kwhwavZkN2kFS6Bm5MP1GV22eLF2FXwB4UT1kF0eX8PQFIe57/ARTwEouYaFJcbxqf63s3bHsQmMjQoRnxYP89+ZHYripHJmHMPE7eupABzfwNa/Tz4B1ue2NfM3Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR06MB2532.namprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(396003)(346002)(376002)(86362001)(5660300002)(6506007)(7696005)(786003)(9686003)(478600001)(52536014)(66946007)(66556008)(66446008)(316002)(53546011)(75432002)(64756008)(2906002)(4326008)(8936002)(76116006)(8676002)(83380400001)(4744005)(71200400001)(26005)(186003)(54906003)(55016002)(66476007)(6916009)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: E1xznToDh5Y3nrYhhOV34JtaXbeRIluXakNqUCfRNbAQwkmctGa45CaAXwmeoSJL22Csac7GHGCy+QuuyvIWaQLrWGZTfwI/0HatR0i0/EQm9fkD5qlPb28OHbUSyLCAuzISZ1J42R/Ziy6XSxNl1b3vdG4DEM1FKEXfZZNO+KBO8EeWRWB4J1rneH0LYpxtHNgad+AlVc6AsfJSuYguf8feGFKPIu70t52nU0S3699NRFL6vl1W5wCdAx6+L90XdYPzQyqQr2YvpvdUYXAmiHQXjMd+pbowa4X0QHIiGjvO4bb6G2BGL8VTI/8GmJGv27w6eap3EIJCasBBZPsRyoZhYjmDd17o/udf9dyHi7/T73gpqLLTcR9K9dATiilGgA0d/WkS5Li9wA8Xev1G7CNn+ihHfjLSdta37iVOVckbnOgU/c+7YIQKfWUUT2xEKiwAvC4Cr8mhSCIDdyK6Db9BKT2Uuobtup5VUH7dky214Iw2RzckZe8k528xwrC7iguJ5sc+iI0zmUFf7WmMfrtbhWb2PxobpBFsPFxagj3xq+RHbot5xtzxhnXWYrZ7Sg7ou7VNpqrLOIqRbu7EG5T3zXFD6bTNPOx3yh3OHwMI/yIr7IHahc02IVTzQTH8SdahlI6gkFbktfBFp7kFmA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.11; Mon, 2 Nov
+ 2020 22:54:48 +0000
+Received: from BYAPR05MB5511.namprd05.prod.outlook.com
+ ([fe80::958b:64f6:b2f9:97e0]) by BYAPR05MB5511.namprd05.prod.outlook.com
+ ([fe80::958b:64f6:b2f9:97e0%7]) with mapi id 15.20.3541.011; Mon, 2 Nov 2020
+ 22:54:48 +0000
+From:   Adit Ranadive <aditr@vmware.com>
+To:     jgg@mellanox.com, dledford@redhat.com, linux-rdma@vger.kernel.org
+Cc:     Adit Ranadive <aditr@vmware.com>, pv-drivers@vmware.com
+Subject: [PATCH v1 for-rc] RDMA/vmw_pvrdma: Fix the active_speed and phys_state value
+Date:   Mon,  2 Nov 2020 22:54:37 +0000
+Message-Id: <20201102225437.26557-1-aditr@vmware.com>
+X-Mailer: git-send-email 2.18.1
+Content-Type: text/plain
+X-Originating-IP: [66.170.99.2]
+X-ClientProxiedBy: SJ0PR03CA0162.namprd03.prod.outlook.com
+ (2603:10b6:a03:338::17) To BYAPR05MB5511.namprd05.prod.outlook.com
+ (2603:10b6:a03:1a::28)
 MIME-Version: 1.0
-X-OriginatorOrg: northeastern.edu
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from linux-build.eng.vmware.com (66.170.99.2) by SJ0PR03CA0162.namprd03.prod.outlook.com (2603:10b6:a03:338::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Mon, 2 Nov 2020 22:54:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 03b4ed56-6d97-40ad-d984-08d87f824bad
+X-MS-TrafficTypeDiagnostic: BYAPR05MB4711:
+X-LD-Processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR05MB4711A562874EBC806F53B915C5100@BYAPR05MB4711.namprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vsvrBo1DQl6DvG9qwkT55x65seBEX3ZCLtK8/7It821RtxRQEnTslKokdKQPyhiOctyH3NJ34rfHCuPyA1U2qCf+jG7UeJA5FnEoiZLogs9b8ALIMpQ/YBDwFTnKRMNUkw9CVgitr/FInIF1FwZzzZ1zzSOuc3Ima+NaxfqH6jPV6fo3JYmg2Og79vCKt5HHoT58D1NQUZt6Q523QL2APahVefmG92H7UJdurJwhuOHFY95hDcgekFEgWDgNK1S3mvln/JljwryfCLWt4z4K/+kY45e9+m2Zw1VWQgFO/nbXNMAGwV7po/sABY9kpKl24zDAapr3Z7odAJA2MxutVQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB5511.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(376002)(396003)(366004)(107886003)(4326008)(2906002)(52116002)(7696005)(186003)(478600001)(16526019)(6666004)(26005)(2616005)(86362001)(956004)(6486002)(8676002)(8936002)(1076003)(66946007)(5660300002)(316002)(66556008)(36756003)(83380400001)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: U107JmCJkfD9r5Q7FPxyEvTk0QsPRUQSpTLumIYO5lt4Y9WFT/zFOutcbZQF56Yxel20rIEKrdAZmV0SrGhdkN9CuGotvL5rzvbBrEvgIrK9Aq0XNkwitjQ2RFt4wfNBBELgB5FWaXEzt6pFYd1tTePer4HKyM8AVpciA6KyBwhW6AIy3L+paH/ZxcCvLfPRSBqviIp48w95AXt97v7CveFhq9sW96ejpJRw+frcZFBlgyVqdbfuLpB48ijnjCupGAv5mWrYZ6u1bSAUBlB8PGL3B6d5Xb0hcFQxjKZTODkuLxpl71XqOmJvWyg090+RpiLSYkLtxp40toyE/zSX4N/uepwbORwQGSa96g9Ee00/ittkEfPviauVuhZ+kqoI7FE+iC92e0/m5zv6xM/N46IAFnSD28+RDsPuhAV4u7jO+JEJ6Kag1jnWUz6DuR7MV+6fKKc9fI+ec42FfQwGv7EwfY0FZ4PMrDpM5ji66Zq4O5FIKv3Jgh1pMQqEK/f2T22zNmj2gu+RigLGBuqrv7eMExd6lycCHMaIQrK/KbJ/qiRC5wAOLZuBODUQxxTska/BkkCITLUCA2PVZD35DtX0VWlXyO2CFf4tuljWHAbsSygPuslQU3kPY5m2D+FmQ1E3xDCs6MphdlYeq7r4Rg==
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 03b4ed56-6d97-40ad-d984-08d87f824bad
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB5511.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR06MB2532.namprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f00bab8-8f8d-4232-b99f-08d87f7e5454
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2020 22:26:22.8271
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2020 22:54:48.5624
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a8eec281-aaa3-4dae-ac9b-9a398b9215e7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ehXUEATDEQW5zuJPBbas2vNGYEzOf4unW4QEnmaUj+hB9rtKthT5NSIjUzyeYF+JAZSGZXkEmu5P5iL6SjUky3yeRzoLR3TIy9ubtI8VfYc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR06MB5922
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6JoDeGn5fIOC3UO37A83mWddYW7OFfxVsIoPlIPc216e6w50vfkFHS+LFx7oRQZPO6Uj0IEI8dEbXLXeMhcmlg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB4711
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+The PVRDMA device still reports the active_speed in u8.
+The pvrdma_port_attr structure is used by the device to report the
+port attributes in the device API query port response structure -
+pvrdma_cmd_query_port_resp - and shouldn't be changed.
 
+Fixes: 376ceb31ff87 ("RDMA: Fix link active_speed size")
+Reviewed-by: Vishnu Dasa <vdasa@vmware.com>
+Signed-off-by: Adit Ranadive <aditr@vmware.com>
+---
 
-> -----Original Message-----
-> From: Ira Weiny <ira.weiny@intel.com>
-> Sent: Monday, November 2, 2020 11:16 AM
-> To: Changming Liu <liu.changm@northeastern.edu>
-> Cc: jgg@ziepe.ca; linux-rdma@vger.kernel.org; yaohway
-> <yaohway@gmail.com>
-> Subject: Re: How to fuzz testing infiniband/uverb driver
->=20
-> On Sun, Nov 01, 2020 at 09:00:13PM +0000, Changming Liu wrote:
-> >
-> > there is no 'uverbs0' file created under /sys/class/infiniband or
-> > /dev/infiniband/. So may I ask how to properly set up my testing
-> > environment so that I can fuzzi testing this driver? Is a physical
-> > device required?
->=20
-> A physical device is not required.  Look at one of the software drivers l=
-ike rxe.
->=20
+Changelog:
+ - v0->v1: Reverted the structure layout only as per Jason. Updated description.
+---
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you so much for your guidance,=20
-now uverb0 has appeared and syzkaller works!
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
+index f0e5ffba2d51..97ed8f952f6e 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
+@@ -176,7 +176,7 @@ struct pvrdma_port_attr {
+ 	u8			subnet_timeout;
+ 	u8			init_type_reply;
+ 	u8			active_width;
+-	u16			active_speed;
++	u8			active_speed;
+ 	u8			phys_state;
+ 	u8			reserved[2];
+ };
+-- 
+2.18.1
 
-Best,
-Changming
