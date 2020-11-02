@@ -2,119 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C892A2627
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Nov 2020 09:32:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F041C2A2712
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Nov 2020 10:32:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728166AbgKBIc6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Nov 2020 03:32:58 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:38704 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727818AbgKBIc5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Nov 2020 03:32:57 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A28TSTL150766;
-        Mon, 2 Nov 2020 08:32:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=KSymEnRa+9K099ANpmCQECO5JBQhVzr6VLQmxrXeA7U=;
- b=OqH8DPWirYntU9kx8sDyP81QRBWuG/033pRxpX2CZSk2q1m+JM/3p4JT7IDoYGxDhWd2
- sXfg3aYNfIWBsFLg/lV2BBnRQHJ3EQ7Kmqm73d1+QieupvTlw/O7k93uD+9HLuAPDegU
- 0pJFhfjLe2yYW6jIVYzj/vh42KyoCOQT0H8ygI/Jy6FjvxnRrgNBo6/eYFRnSouUE5FR
- cPv7BOeObP6BFbPVc/TEs2c/CruO+wzKZrjS9kWojh7qFQwGdIQcKvJYYGc5jbTgYyqI
- WWSWc+kxVluIN5Etf3CbXcUTUgtsJtvo+Dnfm+/3IxBunf0FKMW6FLYqmwT3VeVwSGQL TA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34hhvc2js6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 02 Nov 2020 08:32:54 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A28UQ81035674;
-        Mon, 2 Nov 2020 08:32:54 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 34hw0eqw6b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 02 Nov 2020 08:32:54 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A28Wr1Q032509;
-        Mon, 2 Nov 2020 08:32:54 GMT
-Received: from mwanda (/10.175.190.96)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 02 Nov 2020 00:32:53 -0800
-Date:   Mon, 2 Nov 2020 11:32:48 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     vuhuong@mellanox.com
-Cc:     linux-rdma@vger.kernel.org
-Subject: [bug report] net/mlx5: E-Switch, Refactor eswitch ingress acl codes
-Message-ID: <20201102083248.GA194043@mwanda>
+        id S1728226AbgKBJcD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Nov 2020 04:32:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728183AbgKBJcD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Nov 2020 04:32:03 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4360CC0617A6;
+        Mon,  2 Nov 2020 01:32:03 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id p19so839459wmg.0;
+        Mon, 02 Nov 2020 01:32:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fxn54+spuIXW0t4s3BDcY6uqQBBHMmtfchzkmc933PE=;
+        b=ANwLl6TsKpDmt4VwXtzxP4sK2m5hQ+sSgLcptDfFtRRpXprfPF+VMZMHQvGJoxbt/y
+         BlLIBeKIQg5P1PwyH8qm7YV8RnvOAdFH+usbJF84uvERnHMRSm2SE2PC9wRhkh72lVo9
+         LU1VjePgujid5ieBeWykpvEiksGBdegyA8V/53JE9maeFE+rLK4zw2Db/iNVNYmBqJDy
+         W2nO6/aqwQsfyhjeCEcLMlJrMqLSZMzWMJa31n2dc04DqlDE4z89JF6NKQ6KaYubK1nC
+         K0smz5QP5rO0XIiiKJtOs8pkjhhvEkQViZirNGaSDfDk5vjsuAEJkWwfxR/6/0XWMKBA
+         duOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fxn54+spuIXW0t4s3BDcY6uqQBBHMmtfchzkmc933PE=;
+        b=NGo0Z8foF8ruAzvwhdte3/24npR2untygR5L7QbHUPpidAhGztlO56g6qqufZfYzLA
+         VK7TBlqLdQ5voVbhJ/Li7QK8Lh1OvMTy3zJ2DtgRBM137gVPkMRqEpNQ6DRKrn99QeJF
+         gARIclinSi2ijcEos25TJF6pM71zOg6CJ3sWaAlQT1lwhRklOxtXbp7VdkEHKXw0iO7I
+         RrVkCLXOexyQMF5/sCSTY72KBxDTnzVSP1pDh32LyTOSglqUC0S9hyo4YXyTAgC/8Jnu
+         wdUWkm9XBtnWL8qSFroN9nqdpZP0/z4VeMmqsHdSB1qzBQCmh5r2tVr6m6glgbQA7CB2
+         to9g==
+X-Gm-Message-State: AOAM532kTZ3ZJ9ciO7+4H7wBRtZYrXqFcWeWVIyJtI0hJ0K8hc7Q/sSh
+        v7Ynqa4jE1DylySHLD1xCSCTm+5C/G4=
+X-Google-Smtp-Source: ABdhPJyopv8ojRtnQV+gjgi7YOURbJT35p3dzUR7KcDk9qfqH+rV61n7VQm/cd/WHTU3HCjDS6lY+Q==
+X-Received: by 2002:a7b:c4c3:: with SMTP id g3mr16056892wmk.127.1604309521914;
+        Mon, 02 Nov 2020 01:32:01 -0800 (PST)
+Received: from [10.21.182.73] ([212.23.236.67])
+        by smtp.gmail.com with ESMTPSA id f4sm21281301wrq.54.2020.11.02.01.32.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 01:32:01 -0800 (PST)
+Subject: Re: [PATCH] net/mlx4_core : remove unneeded semicolon
+To:     trix@redhat.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201101140528.2279424-1-trix@redhat.com>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+Message-ID: <78cd4150-0040-44a7-81cf-02c17d61f463@gmail.com>
+Date:   Mon, 2 Nov 2020 11:31:57 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9792 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 bulkscore=0
- mlxscore=0 suspectscore=3 spamscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011020067
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9792 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=3
- impostorscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999
- bulkscore=0 phishscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011020067
+In-Reply-To: <20201101140528.2279424-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Vu Pham,
 
-The patch 07bab9502641: "net/mlx5: E-Switch, Refactor eswitch ingress
-acl codes" from Mar 27, 2020, leads to the following static checker
-warning:
 
-	drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c:184 esw_acl_ingress_lgcy_setup()
-	warn: passing zero to 'PTR_ERR'
+On 11/1/2020 4:05 PM, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> A semicolon is not needed after a switch statement.
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>   drivers/net/ethernet/mellanox/mlx4/resource_tracker.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
+> index 1187ef1375e2..394f43add85c 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
+> @@ -300,7 +300,7 @@ static const char *resource_str(enum mlx4_resource rt)
+>   	case RES_FS_RULE: return "RES_FS_RULE";
+>   	case RES_XRCD: return "RES_XRCD";
+>   	default: return "Unknown resource type !!!";
+> -	};
+> +	}
+>   }
+>   
+>   static void rem_slave_vlans(struct mlx4_dev *dev, int slave);
+> 
 
-drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c
-  163          if (MLX5_CAP_ESW_INGRESS_ACL(esw->dev, flow_counter)) {
-   164                  counter = mlx5_fc_create(esw->dev, false);
-   165                  if (IS_ERR(counter)) {
-   166                          esw_warn(esw->dev,
-   167                                   "vport[%d] configure ingress drop rule counter failed\n",
-   168                                   vport->vport);
-   169                          counter = NULL;
-   170                  }
-   171                  vport->ingress.legacy.drop_counter = counter;
-   172          }
-   173  
-   174          if (!vport->info.vlan && !vport->info.qos && !vport->info.spoofchk) {
-   175                  esw_acl_ingress_lgcy_cleanup(esw, vport);
-   176                  return 0;
-   177          }
-   178  
-   179          if (!vport->ingress.acl) {
-   180                  vport->ingress.acl = esw_acl_table_create(esw, vport->vport,
-   181                                                            MLX5_FLOW_NAMESPACE_ESW_INGRESS,
-   182                                                            table_size);
-   183                  if (IS_ERR_OR_NULL(vport->ingress.acl)) {
-   184                          err = PTR_ERR(vport->ingress.acl);
-                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-esw_acl_table_create() doesn't return NULL, but if it did that would
-mean "err = 0;" (ie.  The success path).
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
-When a function returns both error pointers and NULL then the NULL
-return is meant to be an optional thing where the feature has been
-manually disabled by the admin or by the kernel config.
-
-   185                          vport->ingress.acl = NULL;
-   186                          return err;
-   187                  }
-   188  
-   189                  err = esw_acl_ingress_lgcy_groups_create(esw, vport);
-   190                  if (err)
-   191                          goto out;
-   192          }
-   193  
-   194          esw_debug(esw->dev,
-   195                    "vport[%d] configure ingress rules, vlan(%d) qos(%d)\n",
-   196                    vport->vport, vport->info.vlan, vport->info.qos);
-
-regards,
-dan carpenter
+Thanks,
+Tariq
