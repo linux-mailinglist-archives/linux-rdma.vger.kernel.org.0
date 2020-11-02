@@ -2,248 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C802A247F
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Nov 2020 06:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C892A2627
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Nov 2020 09:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725935AbgKBF4b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Nov 2020 00:56:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgKBF4b (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 2 Nov 2020 00:56:31 -0500
-Received: from localhost (host-213-179-129-39.customer.m-online.net [213.179.129.39])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7DC820870;
-        Mon,  2 Nov 2020 05:56:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604296590;
-        bh=H4bxrHgb7QzAd4s6R7ZAcPSYQsd0k6a8eql72d8Wh3g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IVgUDyjOS+GO22O0osaO3K3VzLaZ5+NfqDzIdn3mEMC6Vw5Yp7Pm/EgRYKkZQqnLK
-         R1Gw0mAB9KsxH2iSTGv+VOVRvic3kO2Q+DRP+NkrKNolUy5EZgtKHfaAXdGEBNeGb7
-         7kW+SggiAe5YWsZ2eXZnpDk8Hnz9ZN5kCTnuZ+Jo=
-Date:   Mon, 2 Nov 2020 07:56:26 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Parav Pandit <parav@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "tiwai@suse.de" <tiwai@suse.de>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        "ranjani.sridharan@linux.intel.com" 
-        <ranjani.sridharan@linux.intel.com>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
-        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "kiran.patil@intel.com" <kiran.patil@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH mlx5-next v1 03/11] net/mlx5_core: Clean driver version
- and name
-Message-ID: <20201102055626.GD5429@unreal>
-References: <20201101201542.2027568-1-leon@kernel.org>
- <20201101201542.2027568-4-leon@kernel.org>
- <BY5PR12MB4322B244D7AEBDCED43B906EDC100@BY5PR12MB4322.namprd12.prod.outlook.com>
+        id S1728166AbgKBIc6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Nov 2020 03:32:58 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:38704 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727818AbgKBIc5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Nov 2020 03:32:57 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A28TSTL150766;
+        Mon, 2 Nov 2020 08:32:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=KSymEnRa+9K099ANpmCQECO5JBQhVzr6VLQmxrXeA7U=;
+ b=OqH8DPWirYntU9kx8sDyP81QRBWuG/033pRxpX2CZSk2q1m+JM/3p4JT7IDoYGxDhWd2
+ sXfg3aYNfIWBsFLg/lV2BBnRQHJ3EQ7Kmqm73d1+QieupvTlw/O7k93uD+9HLuAPDegU
+ 0pJFhfjLe2yYW6jIVYzj/vh42KyoCOQT0H8ygI/Jy6FjvxnRrgNBo6/eYFRnSouUE5FR
+ cPv7BOeObP6BFbPVc/TEs2c/CruO+wzKZrjS9kWojh7qFQwGdIQcKvJYYGc5jbTgYyqI
+ WWSWc+kxVluIN5Etf3CbXcUTUgtsJtvo+Dnfm+/3IxBunf0FKMW6FLYqmwT3VeVwSGQL TA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 34hhvc2js6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 02 Nov 2020 08:32:54 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A28UQ81035674;
+        Mon, 2 Nov 2020 08:32:54 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 34hw0eqw6b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 02 Nov 2020 08:32:54 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A28Wr1Q032509;
+        Mon, 2 Nov 2020 08:32:54 GMT
+Received: from mwanda (/10.175.190.96)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 02 Nov 2020 00:32:53 -0800
+Date:   Mon, 2 Nov 2020 11:32:48 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     vuhuong@mellanox.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [bug report] net/mlx5: E-Switch, Refactor eswitch ingress acl codes
+Message-ID: <20201102083248.GA194043@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <BY5PR12MB4322B244D7AEBDCED43B906EDC100@BY5PR12MB4322.namprd12.prod.outlook.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9792 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 bulkscore=0
+ mlxscore=0 suspectscore=3 spamscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011020067
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9792 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=3
+ impostorscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999
+ bulkscore=0 phishscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011020067
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 05:07:59AM +0000, Parav Pandit wrote:
->
->
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Monday, November 2, 2020 1:46 AM
-> >
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> >
-> > Remove exposed driver version as it was done in other drivers, so module
-> > version will work correctly by displaying the kernel version for which it is
-> > compiled.
-> >
-> > And move mlx5_core module name to general include, so auxiliary drivers
-> > will be able to use it as a basis for a name in their device ID tables.
-> >
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/devlink.c     |  2 +-
-> >  drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c  |  4 +---
-> >  drivers/net/ethernet/mellanox/mlx5/core/en_rep.c      |  1 -
-> >  .../net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c   |  2 +-
-> >  drivers/net/ethernet/mellanox/mlx5/core/main.c        | 11 +++++++----
-> >  drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h   |  3 ---
-> >  include/linux/mlx5/driver.h                           |  2 ++
-> >  7 files changed, 12 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-> > b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-> > index a28f95df2901..1a351e2f6ace 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-> > @@ -52,7 +52,7 @@ mlx5_devlink_info_get(struct devlink *devlink, struct
-> > devlink_info_req *req,
-> >  	u32 running_fw, stored_fw;
-> >  	int err;
-> >
-> > -	err = devlink_info_driver_name_put(req, DRIVER_NAME);
-> > +	err = devlink_info_driver_name_put(req, KBUILD_MODNAME);
-> >  	if (err)
-> >  		return err;
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-> > b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-> > index d25a56ec6876..bcff18a87bcd 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-> > @@ -40,9 +40,7 @@ void mlx5e_ethtool_get_drvinfo(struct mlx5e_priv
-> > *priv,  {
-> >  	struct mlx5_core_dev *mdev = priv->mdev;
-> >
-> > -	strlcpy(drvinfo->driver, DRIVER_NAME, sizeof(drvinfo->driver));
-> > -	strlcpy(drvinfo->version, DRIVER_VERSION,
-> > -		sizeof(drvinfo->version));
-> > +	strlcpy(drvinfo->driver, KBUILD_MODNAME, sizeof(drvinfo-
-> > >driver));
-> >  	snprintf(drvinfo->fw_version, sizeof(drvinfo->fw_version),
-> >  		 "%d.%d.%04d (%.16s)",
-> >  		 fw_rev_maj(mdev), fw_rev_min(mdev),
-> > fw_rev_sub(mdev), diff --git
-> > a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > index 67247c33b9fd..ef2f8889ba0f 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > @@ -64,7 +64,6 @@ static void mlx5e_rep_get_drvinfo(struct net_device
-> > *dev,
-> >
-> >  	strlcpy(drvinfo->driver, mlx5e_rep_driver_name,
-> >  		sizeof(drvinfo->driver));
-> > -	strlcpy(drvinfo->version, UTS_RELEASE, sizeof(drvinfo->version));
-> >  	snprintf(drvinfo->fw_version, sizeof(drvinfo->fw_version),
-> >  		 "%d.%d.%04d (%.16s)",
-> >  		 fw_rev_maj(mdev), fw_rev_min(mdev),
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
-> > b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
-> > index cac8f085b16d..97d96fc38a65 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
-> > @@ -39,7 +39,7 @@ static void mlx5i_get_drvinfo(struct net_device *dev,
-> >  	struct mlx5e_priv *priv = mlx5i_epriv(dev);
-> >
-> >  	mlx5e_ethtool_get_drvinfo(priv, drvinfo);
-> > -	strlcpy(drvinfo->driver, DRIVER_NAME "[ib_ipoib]",
-> > +	strlcpy(drvinfo->driver, KBUILD_MODNAME "[ib_ipoib]",
-> >  		sizeof(drvinfo->driver));
-> >  }
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > index 71e210f22f69..9827127cb674 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> > @@ -77,7 +77,6 @@
-> >  MODULE_AUTHOR("Eli Cohen <eli@mellanox.com>");
-> > MODULE_DESCRIPTION("Mellanox 5th generation network adapters
-> > (ConnectX series) core driver");  MODULE_LICENSE("Dual BSD/GPL"); -
-> > MODULE_VERSION(DRIVER_VERSION);
-> >
-> >  unsigned int mlx5_core_debug_mask;
-> >  module_param_named(debug_mask, mlx5_core_debug_mask, uint, 0644);
-> > @@ -228,7 +227,7 @@ static void mlx5_set_driver_version(struct
-> > mlx5_core_dev *dev)
-> >  	strncat(string, ",", remaining_size);
-> >
-> >  	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
-> > -	strncat(string, DRIVER_NAME, remaining_size);
-> > +	strncat(string, KBUILD_MODNAME, remaining_size);
-> >
-> >  	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
-> >  	strncat(string, ",", remaining_size);
-> > @@ -313,7 +312,7 @@ static int request_bar(struct pci_dev *pdev)
-> >  		return -ENODEV;
-> >  	}
-> >
-> > -	err = pci_request_regions(pdev, DRIVER_NAME);
-> > +	err = pci_request_regions(pdev, KBUILD_MODNAME);
-> >  	if (err)
-> >  		dev_err(&pdev->dev, "Couldn't get PCI resources,
-> > aborting\n");
-> >
-> > @@ -1617,7 +1616,7 @@ void mlx5_recover_device(struct mlx5_core_dev
-> > *dev)  }
-> >
-> >  static struct pci_driver mlx5_core_driver = {
-> > -	.name           = DRIVER_NAME,
-> > +	.name           = KBUILD_MODNAME,
-> >  	.id_table       = mlx5_core_pci_table,
-> >  	.probe          = init_one,
-> >  	.remove         = remove_one,
-> > @@ -1643,6 +1642,10 @@ static int __init init(void)  {
-> >  	int err;
-> >
-> > +	WARN_ONCE(strcmp(MLX5_ADEV_NAME, KBUILD_MODNAME) ||
-> > +		  strlen(MLX5_ADEV_NAME) != strlen(KBUILD_MODNAME),
-> > +		  "mlx5_core name not in sync with kernel module name");
-> > +
-> In which case, both the strings are same but their length not?
-> You likely don't need the string length check.
+Hello Vu Pham,
 
-Yes, I was overzealous, I'll remove when will apply the series.
+The patch 07bab9502641: "net/mlx5: E-Switch, Refactor eswitch ingress
+acl codes" from Mar 27, 2020, leads to the following static checker
+warning:
 
->
-> >  	get_random_bytes(&sw_owner_id, sizeof(sw_owner_id));
-> >
-> >  	mlx5_core_verify_params();
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-> > b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-> > index 8cec85ab419d..b285f1515e4e 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-> > @@ -42,9 +42,6 @@
-> >  #include <linux/mlx5/fs.h>
-> >  #include <linux/mlx5/driver.h>
-> >
-> > -#define DRIVER_NAME "mlx5_core"
-> > -#define DRIVER_VERSION "5.0-0"
-> > -
-> >  extern uint mlx5_core_debug_mask;
-> >
-> >  #define mlx5_core_dbg(__dev, format, ...)				\
-> > diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h index
-> > 317257f8e0ad..ed1d030658d2 100644
-> > --- a/include/linux/mlx5/driver.h
-> > +++ b/include/linux/mlx5/driver.h
-> > @@ -56,6 +56,8 @@
-> >  #include <linux/ptp_clock_kernel.h>
-> >  #include <net/devlink.h>
-> >
-> > +#define MLX5_ADEV_NAME "mlx5_core"
-> > +
-> >  enum {
-> >  	MLX5_BOARD_ID_LEN = 64,
-> >  };
-> > --
-> > 2.28.0
->
->
-> Other than strlen removal check,
-> Reviewed-by: Parav Pandit <parav@nvidia.com>
->
+	drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c:184 esw_acl_ingress_lgcy_setup()
+	warn: passing zero to 'PTR_ERR'
 
-Thanks
+drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c
+  163          if (MLX5_CAP_ESW_INGRESS_ACL(esw->dev, flow_counter)) {
+   164                  counter = mlx5_fc_create(esw->dev, false);
+   165                  if (IS_ERR(counter)) {
+   166                          esw_warn(esw->dev,
+   167                                   "vport[%d] configure ingress drop rule counter failed\n",
+   168                                   vport->vport);
+   169                          counter = NULL;
+   170                  }
+   171                  vport->ingress.legacy.drop_counter = counter;
+   172          }
+   173  
+   174          if (!vport->info.vlan && !vport->info.qos && !vport->info.spoofchk) {
+   175                  esw_acl_ingress_lgcy_cleanup(esw, vport);
+   176                  return 0;
+   177          }
+   178  
+   179          if (!vport->ingress.acl) {
+   180                  vport->ingress.acl = esw_acl_table_create(esw, vport->vport,
+   181                                                            MLX5_FLOW_NAMESPACE_ESW_INGRESS,
+   182                                                            table_size);
+   183                  if (IS_ERR_OR_NULL(vport->ingress.acl)) {
+   184                          err = PTR_ERR(vport->ingress.acl);
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+esw_acl_table_create() doesn't return NULL, but if it did that would
+mean "err = 0;" (ie.  The success path).
+
+When a function returns both error pointers and NULL then the NULL
+return is meant to be an optional thing where the feature has been
+manually disabled by the admin or by the kernel config.
+
+   185                          vport->ingress.acl = NULL;
+   186                          return err;
+   187                  }
+   188  
+   189                  err = esw_acl_ingress_lgcy_groups_create(esw, vport);
+   190                  if (err)
+   191                          goto out;
+   192          }
+   193  
+   194          esw_debug(esw->dev,
+   195                    "vport[%d] configure ingress rules, vlan(%d) qos(%d)\n",
+   196                    vport->vport, vport->info.vlan, vport->info.qos);
+
+regards,
+dan carpenter
