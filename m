@@ -2,102 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B782A3769
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Nov 2020 01:03:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A66EC2A37AE
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Nov 2020 01:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbgKCADB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Nov 2020 19:03:01 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:41640 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725869AbgKCADB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 2 Nov 2020 19:03:01 -0500
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa09e330000>; Tue, 03 Nov 2020 08:02:59 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Nov
- 2020 00:02:59 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 3 Nov 2020 00:02:59 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IzuSzSrDEi+PpeO6vfqv9veCr+4JoVTysvvFV+gLaojwqHF3vhucXbss0J381zN09WPqNjY+htKhqmxUwu5YblDqGO71GGsZgi2xRYFVdxjDtqTUh6z7YmN6kLp2d4XFI3lF07tnHEmi9kxoTY1CB1CeVn1MDiHWKl3FsU8AKRMecXleE4tVwZgJK1nKCO7ePDVYxfIIsRvR5Wzx/HPnjfjKLgHJXIg48jwQRuBWJTp9fbvz/ZfbrxqqAFduEWf6lu3gOiSpj0kH3yLSI57XiSTb0ZPUgkp9wBCjbixoRtI+lXFfLnqstDjxwaqb4LZAp/w9Qu3427QXypkjgYFhUA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tEWTApxt69eLdJiVh4Bas5DprF8ni9T6ufOBEtdjudo=;
- b=DUi7uwOrHf5mDAfTFm89SmCLH4Y7Eu3ZYdzRoLO6N0+xAZEn3YqLnfuZEJLAMzkHL6WGzFAn1aOyAf8+xDyIsS1z/B6RHVzXV8/IwdO9d4yV7VsN4vJJ4g1u5jiopKYyKVgupJn6rwoJAs3ckdUei+1o41EKI8ESrT2EM7NiRtnQeamvvy7NpHKZx89ocM07gxDA2Rf279Er465g0eq3I1sliExaPTzlpXj2O9Uz2b/BYR47cZ/F3vrntnaCMF5wymM2Ik+FMnMiZ0/NLzcGqWcBQWvSmDX83d+HtJ/rf2Uu9Jf8wm8Ws5HcFqoYf+WZsfsJg8m6PWJxIorbhq2s9w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3307.namprd12.prod.outlook.com (2603:10b6:5:15d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Tue, 3 Nov
- 2020 00:02:56 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.030; Tue, 3 Nov 2020
- 00:02:56 +0000
-Date:   Mon, 2 Nov 2020 20:02:54 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Adit Ranadive <aditr@vmware.com>
-CC:     <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        <pv-drivers@vmware.com>
-Subject: Re: [PATCH v1 for-rc] RDMA/vmw_pvrdma: Fix the active_speed and
- phys_state value
-Message-ID: <20201103000254.GA3741762@nvidia.com>
-References: <20201102225437.26557-1-aditr@vmware.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201102225437.26557-1-aditr@vmware.com>
-X-ClientProxiedBy: MN2PR02CA0034.namprd02.prod.outlook.com
- (2603:10b6:208:fc::47) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1726575AbgKCAWn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Nov 2020 19:22:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbgKCAWn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Nov 2020 19:22:43 -0500
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A2FC0617A6
+        for <linux-rdma@vger.kernel.org>; Mon,  2 Nov 2020 16:22:41 -0800 (PST)
+Received: by mail-qv1-xf44.google.com with SMTP id g13so7027827qvu.1
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Nov 2020 16:22:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=h0U8boqn3EBQvT6Kbbxc6BuT59mvexf27LUkicPZNAE=;
+        b=U0vQwEt600cnSMm9w+paOrTiSQpPDz7AmXBuVM5UkG3W6yT4VU8+M17QAcMElpAAFG
+         uTXhvlzSZBU/TTjlLz1BkwQgYgJtWk8VYFOQeWgqACub0/M04wYrOqH270ytd+hmac8H
+         sHTyniUFW+MyFgNZknO/JT2aT5nb9HZuosK19mNGykfnskWgBkT8wS4yGjLO1hFiL/aj
+         sHUEcgWwBPksiogB1LPMCn1im76TUsjOUKSjmAELzHlySoxaPnPxv1RHy9JwDdCcdmeB
+         h1HPRkZjtLSLr08U0ucBhguQ/WI7Der6dKAtJR4ZWdXiO57MlkcLAeiwUFGzCdprD8WP
+         o9Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=h0U8boqn3EBQvT6Kbbxc6BuT59mvexf27LUkicPZNAE=;
+        b=id4mq/bLgYNDASn4lQKx+mCV3gNiES/iQcNhS3ntEkfuEgJEryfhCvaFW3rUT0kxK9
+         VhB0HVP3GvtO+vT3w3tyHdRT1h/5KuH+W+Zifr0Nnth7dMQDPujz24aGCUkSFyM2BR+9
+         uRfHZAuQJXOhtEq439ruqOfu6bS9U+h33HVVq9muO+uH7ExPUeTsOjKnXFscc4ua0Yw9
+         5Tcjgv5uKmSxPmW8VNiAP4P0KN7VGOtPYrly6VfJjt+6MGsOm0PiC6FM/1h+gp7OSInY
+         01tKts7gxzivzmVutl0pIYYLQXikE/2xCZDy+216ZvOn1Vja2QjrKzOZASSkOwEJYxAI
+         A5EQ==
+X-Gm-Message-State: AOAM531vODk3SR1HYtlQ00U0ZXArfDbdZhCxmB/ZMXDxs8y2V631844f
+        4ro8hBvbqUp4BRItFDLvBUO+hA==
+X-Google-Smtp-Source: ABdhPJxbkjYTENDIS2kuHfzvz3v005IvLS+wx0PhpsgTv9QKoKEbVFJ/bDWvyxbVD2ZTRh5csxuuMg==
+X-Received: by 2002:a0c:fb47:: with SMTP id b7mr21067534qvq.25.1604362961120;
+        Mon, 02 Nov 2020 16:22:41 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id c12sm9088728qtp.14.2020.11.02.16.22.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 16:22:40 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kZk5v-00Fihl-TQ; Mon, 02 Nov 2020 20:22:39 -0400
+Date:   Mon, 2 Nov 2020 20:22:39 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     dledford@redhat.com, Jann Horn <jannh@google.com>,
+        linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        linux-mm@kvack.org, Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH for-rc v1] IB/hfi1: Move cached value of mm into handler
+Message-ID: <20201103002239.GI36674@ziepe.ca>
+References: <20201029012243.115730.93867.stgit@awfm-01.aw.intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR02CA0034.namprd02.prod.outlook.com (2603:10b6:208:fc::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Tue, 3 Nov 2020 00:02:56 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kZjmo-00FhQs-5H; Mon, 02 Nov 2020 20:02:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604361779; bh=tEWTApxt69eLdJiVh4Bas5DprF8ni9T6ufOBEtdjudo=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=HW8VJaq2qy8IafKQ1kAvzYkqZ6U/IuYH/MN/+YC9QbfoNuPRpKDMmdOmND7cs2mLZ
-         h9qvNsd8zebWVMhivpbls5mNRGg5t269BkdJy6RUxm4awkeQ7Zqpwu3x3uIxuuSnUg
-         RLUE4UTrbaOyHPSHoAqUiwKsXjGhpTSQo1I9UgMBiabbCdmJv9hdLRWum82fYT3F/O
-         jnGggcMI3m0lCdMaw6I770tv+muyhxcHqcEkJffj6UUJHZFGfsuqKrsddjxNka9NZr
-         Ze0e/oLV6qP8K6oOHMtz6j5Spb6EoxvsrNZ/Jh2Oqv2vQ0Y5VWOi/J7vzIUHjR94Nh
-         tWgIKrNiWBAcQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201029012243.115730.93867.stgit@awfm-01.aw.intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 10:54:37PM +0000, Adit Ranadive wrote:
-> The PVRDMA device still reports the active_speed in u8.
-> The pvrdma_port_attr structure is used by the device to report the
-> port attributes in the device API query port response structure -
-> pvrdma_cmd_query_port_resp - and shouldn't be changed.
-> 
-> Fixes: 376ceb31ff87 ("RDMA: Fix link active_speed size")
-> Reviewed-by: Vishnu Dasa <vdasa@vmware.com>
-> Signed-off-by: Adit Ranadive <aditr@vmware.com>
-> ---
-> 
-> Changelog:
->  - v0->v1: Reverted the structure layout only as per Jason. Updated description.
-> ---
->  drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Oct 28, 2020 at 09:22:43PM -0400, Dennis Dalessandro wrote:
 
-Applied to for-rc
+> Will add a Cc for stable once the patch is finalized. I'd like to get
+> some more feedback on this patch especially in the mmu_interval_notifier
+> stuff. 
 
-If you think it is better you can send another patch to use the
-ib_get_eth_speed() function
+Which mmu_interval_notifier stuff in this patch?
 
-Also please send a patch to move all of these ABI structs into the
-pvrdma_dev_api.h - ABI structures should not be strewn randomly over
-header files, it leads to mistakes like this.
+Can you convert this last usage of mmu_notifier in mmu_rb_handler to
+use an interval notifier? I seem to remember thinking it was the right
+thing but too complicated for me to attempt
 
-Thanks,
 Jason
