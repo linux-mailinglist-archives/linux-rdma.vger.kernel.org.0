@@ -2,252 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089242A3F0E
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Nov 2020 09:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4E72A444D
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Nov 2020 12:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727706AbgKCIiv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Nov 2020 03:38:51 -0500
-Received: from mga03.intel.com ([134.134.136.65]:64744 "EHLO mga03.intel.com"
+        id S1728160AbgKCLcH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 3 Nov 2020 06:32:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727703AbgKCIiv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:38:51 -0500
-IronPort-SDR: 4RjstmhNBgG/ez0nIPVsQr2wfBKOVsA68lfSK7CbhN9QCPfTWp0BNRZYxfqaHBcW0MNU/D9/nb
- VsWH4Ui/ZHcw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="169123449"
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="scan'208";a="169123449"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 00:38:50 -0800
-IronPort-SDR: QclZlu7XlSX9k4KN0mo0mIFXYSKL3UBK8sTecRV9GNWVqE7yaAvGfeFDFgyaELQ+wTR2LO1Ew4
- pUpyyWYE7zFA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
-   d="scan'208";a="320352663"
-Received: from lkp-server02.sh.intel.com (HELO e61783667810) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 03 Nov 2020 00:38:49 -0800
-Received: from kbuild by e61783667810 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kZrq4-000078-Ea; Tue, 03 Nov 2020 08:38:48 +0000
-Date:   Tue, 03 Nov 2020 16:38:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 2f3f202afa371f9211df308d443dfd1b90177c39
-Message-ID: <5fa116f8.iwkQHiAhDOmkpM/f%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727323AbgKCLcH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 3 Nov 2020 06:32:07 -0500
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-rdma@vger.kernel.org
+Subject: [Bug 210021] New: IB/rxe: build error due to unmet dependency for
+ CRYPTO_CRC32 by RDMA_RXE
+Date:   Tue, 03 Nov 2020 11:32:05 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo
+ drivers_infiniband-rdma@kernel-bugs.osdl.org
+X-Bugzilla-Product: Drivers
+X-Bugzilla-Component: Infiniband/RDMA
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: fazilyildiran@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: drivers_infiniband-rdma@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cc cf_regression attachments.created
+Message-ID: <bug-210021-11804@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: 2f3f202afa371f9211df308d443dfd1b90177c39  IB/mlx5: Add support for NDR link speed
+https://bugzilla.kernel.org/show_bug.cgi?id=210021
 
-elapsed time: 722m
+            Bug ID: 210021
+           Summary: IB/rxe: build error due to unmet dependency for
+                    CRYPTO_CRC32 by RDMA_RXE
+           Product: Drivers
+           Version: 2.5
+    Kernel Version: 5.4.4
+          Hardware: All
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: Infiniband/RDMA
+          Assignee: drivers_infiniband-rdma@kernel-bugs.osdl.org
+          Reporter: fazilyildiran@gmail.com
+                CC: dledford@redhat.com, fazilyildiran@gmail.com,
+                    leon@leon.nu, paul@pgazz.com
+        Regression: No
 
-configs tested: 188
-configs skipped: 2
+Created attachment 293417
+  --> https://bugzilla.kernel.org/attachment.cgi?id=293417&action=edit
+reproduce.tar.gz
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Attachment (reproduce.tar.gz) content:
+ - sample.config: Config file to reproduce the bug.
+ - build_out.txt: Output of Kbuild including the error messages.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          rsk7269_defconfig
-arm                      tct_hammer_defconfig
-arm                            xcep_defconfig
-sh                   rts7751r2dplus_defconfig
-mips                      maltasmvp_defconfig
-powerpc                 mpc834x_itx_defconfig
-powerpc                 mpc8272_ads_defconfig
-um                           x86_64_defconfig
-arm64                            alldefconfig
-sh                        sh7763rdp_defconfig
-xtensa                              defconfig
-powerpc               mpc834x_itxgp_defconfig
-mips                       rbtx49xx_defconfig
-arm                          exynos_defconfig
-arm                        neponset_defconfig
-arm                        oxnas_v6_defconfig
-arc                     nsimosci_hs_defconfig
-sh                           se7750_defconfig
-arm                         at91_dt_defconfig
-arm                              zx_defconfig
-sh                           se7343_defconfig
-sh                            hp6xx_defconfig
-powerpc                      makalu_defconfig
-sh                          polaris_defconfig
-sh                           se7724_defconfig
-m68k                             allmodconfig
-m68k                       bvme6000_defconfig
-ia64                            zx1_defconfig
-m68k                        mvme16x_defconfig
-mips                        bcm47xx_defconfig
-mips                            gpr_defconfig
-powerpc                 mpc837x_mds_defconfig
-arm                        shmobile_defconfig
-m68k                        m5407c3_defconfig
-mips                        qi_lb60_defconfig
-arm                            u300_defconfig
-powerpc                          allmodconfig
-mips                     loongson1b_defconfig
-powerpc                      arches_defconfig
-arm                         lpc32xx_defconfig
-m68k                        mvme147_defconfig
-powerpc                     redwood_defconfig
-mips                      bmips_stb_defconfig
-arm                         lubbock_defconfig
-arm                        vexpress_defconfig
-powerpc                     mpc512x_defconfig
-arm                         axm55xx_defconfig
-parisc                           alldefconfig
-powerpc                    socrates_defconfig
-powerpc                 mpc834x_mds_defconfig
-arm                     davinci_all_defconfig
-arm                       omap2plus_defconfig
-sh                             sh03_defconfig
-arm                      pxa255-idp_defconfig
-sh                          sdk7780_defconfig
-powerpc                       eiger_defconfig
-m68k                          multi_defconfig
-xtensa                generic_kc705_defconfig
-powerpc                      obs600_defconfig
-sh                   sh7770_generic_defconfig
-csky                                defconfig
-nios2                            alldefconfig
-c6x                        evmc6472_defconfig
-sh                            migor_defconfig
-sh                          rsk7264_defconfig
-m68k                       m5475evb_defconfig
-m68k                        m5307c3_defconfig
-mips                           jazz_defconfig
-arm                          prima2_defconfig
-mips                          rb532_defconfig
-powerpc                 mpc832x_rdb_defconfig
-m68k                          amiga_defconfig
-arc                        nsim_700_defconfig
-mips                   sb1250_swarm_defconfig
-mips                malta_kvm_guest_defconfig
-mips                        jmr3927_defconfig
-powerpc                   currituck_defconfig
-arm                         socfpga_defconfig
-sh                   sh7724_generic_defconfig
-powerpc                     powernv_defconfig
-mips                  maltasmvp_eva_defconfig
-sh                               j2_defconfig
-sh                          rsk7201_defconfig
-powerpc                 mpc8313_rdb_defconfig
-powerpc                    gamecube_defconfig
-powerpc                    sam440ep_defconfig
-nds32                               defconfig
-arm                       spear13xx_defconfig
-arm                          pxa168_defconfig
-xtensa                  nommu_kc705_defconfig
-arm                          pxa3xx_defconfig
-mips                      fuloong2e_defconfig
-arm                       cns3420vb_defconfig
-arm                  colibri_pxa270_defconfig
-m68k                             allyesconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                                defconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201102
-i386                 randconfig-a006-20201102
-i386                 randconfig-a005-20201102
-i386                 randconfig-a001-20201102
-i386                 randconfig-a002-20201102
-i386                 randconfig-a003-20201102
-i386                 randconfig-a004-20201103
-i386                 randconfig-a006-20201103
-i386                 randconfig-a005-20201103
-i386                 randconfig-a001-20201103
-i386                 randconfig-a002-20201103
-i386                 randconfig-a003-20201103
-x86_64               randconfig-a012-20201102
-x86_64               randconfig-a015-20201102
-x86_64               randconfig-a011-20201102
-x86_64               randconfig-a013-20201102
-x86_64               randconfig-a014-20201102
-x86_64               randconfig-a016-20201102
-i386                 randconfig-a013-20201102
-i386                 randconfig-a015-20201102
-i386                 randconfig-a014-20201102
-i386                 randconfig-a016-20201102
-i386                 randconfig-a011-20201102
-i386                 randconfig-a012-20201102
-i386                 randconfig-a013-20201103
-i386                 randconfig-a015-20201103
-i386                 randconfig-a014-20201103
-i386                 randconfig-a016-20201103
-i386                 randconfig-a011-20201103
-i386                 randconfig-a012-20201103
-x86_64               randconfig-a004-20201103
-x86_64               randconfig-a005-20201103
-x86_64               randconfig-a003-20201103
-x86_64               randconfig-a002-20201103
-x86_64               randconfig-a006-20201103
-x86_64               randconfig-a001-20201103
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+When RDMA_RXE is enabled and CRYPTO is disabled, it results in the
+following Kbuild warning:
 
-clang tested configs:
-x86_64               randconfig-a004-20201102
-x86_64               randconfig-a005-20201102
-x86_64               randconfig-a003-20201102
-x86_64               randconfig-a002-20201102
-x86_64               randconfig-a006-20201102
-x86_64               randconfig-a001-20201102
-x86_64               randconfig-a012-20201103
-x86_64               randconfig-a015-20201103
-x86_64               randconfig-a011-20201103
-x86_64               randconfig-a013-20201103
-x86_64               randconfig-a014-20201103
-x86_64               randconfig-a016-20201103
+WARNING: unmet direct dependencies detected for CRYPTO_CRC32
+  Depends on [n]: CRYPTO [=n]
+  Selected by [y]:
+  - RDMA_RXE [=y] && (INFINIBAND_USER_ACCESS [=y] || !INFINIBAND_USER_ACCESS
+[=y]) && INET [=y] && PCI [=y] && INFINIBAND [=y] && (!64BIT [=y] ||
+ARCH_DMA_ADDR_T_64BIT [=y])
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Building the kernel fails due to this unmet direct dependency issue as follows:
+
+[...]
+  LD      .tmp_vmlinux1
+crypto/crc32_generic.o: In function `crc32_mod_fini':
+crc32_generic.c:(.exit.text+0x8): undefined reference to
+`crypto_unregister_shash'
+crypto/crc32_generic.o: In function `crc32_mod_init':
+crc32_generic.c:(.init.text+0x8): undefined reference to
+`crypto_register_shash'
+drivers/infiniband/sw/rxe/rxe.o: In function `rxe_dealloc':
+rxe.c:(.text+0x102): undefined reference to `crypto_destroy_tfm'
+drivers/infiniband/sw/rxe/rxe_req.o: In function `rxe_crc32.isra.17':
+rxe_req.c:(.text+0x219): undefined reference to `crypto_shash_update'
+drivers/infiniband/sw/rxe/rxe_recv.o: In function `rxe_crc32.isra.7':
+rxe_recv.c:(.text+0xeb): undefined reference to `crypto_shash_update'
+drivers/infiniband/sw/rxe/rxe_verbs.o: In function `rxe_register_device':
+rxe_verbs.c:(.text+0x117d): undefined reference to `crypto_alloc_shash'
+drivers/infiniband/sw/rxe/rxe_mr.o: In function `rxe_crc32.isra.3':
+rxe_mr.c:(.text+0x13b): undefined reference to `crypto_shash_update'
+drivers/infiniband/sw/rxe/rxe_icrc.o: In function `rxe_crc32.isra.0':
+rxe_icrc.c:(.text+0x26): undefined reference to `crypto_shash_update'
+Makefile:1077: recipe for target 'vmlinux' failed
+make: *** [vmlinux] Error 1
+
+Steps to reproduce the bug for v5.4.4:
+  1. wget
+https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O
+~/bin/make.cross
+  2. chmod +x ~/bin/make.cross
+  3. tar -xvf reproduce.tar.gz # sample.config and build_out.txt
+  4. cp sample.config path/to/linux-source-v5.4.4/.config
+  5. cd path/to/linux-source-v5.4.4/
+  6. ~/bin/make.cross ARCH=x86_64 clean
+  7. ~/bin/make.cross ARCH=x86_64 olddefconfig # unmet direct dependency
+warning
+  8. ~/bin/make.cross ARCH=x86_64 # should have a build error
+
+The output for the steps [6-8] can be found in build_out.txt.
+
+The build error happens as follows: RDMA_RXE selects CRYPTO_CRC32.
+CRYPTO_CRC32 selects CRYPTO_HASH, and CRYPTO_HASH selects CRYPTO_HASH2.
+When RDMA_RXE selects CRYPTO_CRC32 without accounting for its direct
+dependency (CRYPTO), CRYPTO_CRC32 gets enabled but it does not select
+CRYPTO_HASH thus CRYPTO_HASH2. Consequently, the required functions
+such crypto_unregister_shash are left undefined, causing the build error.
+
+Thanks,
+Necip
+
+-- 
+You are receiving this mail because:
+You are watching the assignee of the bug.
