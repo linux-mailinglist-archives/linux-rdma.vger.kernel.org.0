@@ -2,70 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00EB82A46C0
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Nov 2020 14:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9D32A46C7
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Nov 2020 14:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728138AbgKCNl7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Nov 2020 08:41:59 -0500
-Received: from mga03.intel.com ([134.134.136.65]:25485 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728080AbgKCNl6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:41:58 -0500
-IronPort-SDR: k/oTAfFhJ9gZXNowxrvYEjuH2DfOQ1D3Nyt/2VtW+bt0dG/qpTvv/6mzlijokEdRbA5taoHNmu
- e5K3mnz+7lbQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="169156977"
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="169156977"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 05:41:58 -0800
-IronPort-SDR: 0lkPVRStevKvuHjmGu0t607rGAkskgQQc7fhWgg+x0/0/f4pXQrf7DcMlISLtVecK/WMvhqK7P
- /Wk6B2w2IaHA==
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="538494148"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.204.251]) ([10.254.204.251])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 05:41:57 -0800
-Subject: Re: [PATCH for-rc v1] IB/hfi1: Move cached value of mm into handler
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     dledford@redhat.com, Jann Horn <jannh@google.com>,
-        linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        linux-mm@kvack.org, Ira Weiny <ira.weiny@intel.com>
-References: <20201029012243.115730.93867.stgit@awfm-01.aw.intel.com>
- <20201103002239.GI36674@ziepe.ca>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Message-ID: <be4067af-f491-81f6-39e2-771366f89086@cornelisnetworks.com>
-Date:   Tue, 3 Nov 2020 08:41:53 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1729285AbgKCNqu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Nov 2020 08:46:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729253AbgKCNpY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Nov 2020 08:45:24 -0500
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FA4C0617A6
+        for <linux-rdma@vger.kernel.org>; Tue,  3 Nov 2020 05:45:24 -0800 (PST)
+Received: by mail-qv1-xf44.google.com with SMTP id e5so4097267qvr.2
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Nov 2020 05:45:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xD2j+fnjVBXZ8FUkzGpuq6ZM6Rk+Sah3F2AKvkh1s5I=;
+        b=CM/sC5t2gnERlz7Wf5wolVmL6SgTqtThZ9ED3MoPNajahGLD2Gf48yDMRTQIFoeeS2
+         Tkknw7804frEnBLCLdbsgCYOaN8yrM5JpWM9kF06biAdPR2nU6VLVfYI5+KUXFfC+zcv
+         2q1R9C1Oj3DFYspXFHcLlkxjifY7oAvrphqQP4e+slzEK+dtG1RrRfWg+4jK/WNJpR3G
+         /w9eRnIzaclQDs80+kthr6dpsSkNZmId8LfBesa37kMxIRuUfoz9KmC72+yTkKI/l9oX
+         j6fCcvWxTWCdDq0YwMsZBLLI2CjC6C3xCi0LoXjrx+CGRUqB1Jt9GhKPnxil6j0jRoKe
+         Q7XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xD2j+fnjVBXZ8FUkzGpuq6ZM6Rk+Sah3F2AKvkh1s5I=;
+        b=jeAB09JYoEn/pl/uVXg1nmeU47eLgdXHSWqvEZuA00RR/BUHhQuusb8Xl2pnQHw67d
+         k+Ya2xiz4/2SsiMUQ0xJy3d/wBHrTMqE55ykeQOpsU0szGIsO3FvXl9rL4reniByaVCz
+         2QFdYbGntVBn8jJvQ/utBRFRbujRi+gUU+CBosKLGdW/VGlQmk+a+NhemEaPHvH/VsJ1
+         bpb4nqKBjKYXF0xQHk5P57JL+D6M044Sm19MBMVxJ8wOUJwVWEbqk8fDXM1pgsll9WnK
+         B+r0rnpgcbWKVjhL9gJ5ZDIgW5JCrmZWg5O1KitJFDZKMcHtfdCC5R4cm766n1cnKc4r
+         shVw==
+X-Gm-Message-State: AOAM532Nwf9S9zunQaiim95n2LNSfEklKWmGOWWghNYDyrU+L6vZKJ8o
+        QW6CVBq5EKQTOC+NrG8uqz30fQ==
+X-Google-Smtp-Source: ABdhPJwB8AjQcYArIheCms0p/rpTh6HzbHYjvplKJ7hKHoUDGVNlw/XuRk4lhmOz0FUaAyYGkijVcg==
+X-Received: by 2002:ad4:58eb:: with SMTP id di11mr11017816qvb.34.1604411123667;
+        Tue, 03 Nov 2020 05:45:23 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id x7sm9866232qtw.76.2020.11.03.05.45.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 05:45:23 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kZwck-00FuPD-Af; Tue, 03 Nov 2020 09:45:22 -0400
+Date:   Tue, 3 Nov 2020 09:45:22 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Leon Romanovsky <leonro@nvidia.com>
+Subject: Re: [PATCH for-next] RDMA/nldev: Add parent bdf to device
+ information dump
+Message-ID: <20201103134522.GL36674@ziepe.ca>
+References: <20201103132627.67642-1-galpress@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <20201103002239.GI36674@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103132627.67642-1-galpress@amazon.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/2/2020 7:22 PM, Jason Gunthorpe wrote:
-> On Wed, Oct 28, 2020 at 09:22:43PM -0400, Dennis Dalessandro wrote:
+On Tue, Nov 03, 2020 at 03:26:27PM +0200, Gal Pressman wrote:
+> Add the ability to query the device's bdf through rdma tool netlink
+> command (in addition to the sysfs infra).
 > 
->> Will add a Cc for stable once the patch is finalized. I'd like to get
->> some more feedback on this patch especially in the mmu_interval_notifier
->> stuff.
-> 
-> Which mmu_interval_notifier stuff in this patch?
-> 
-> Can you convert this last usage of mmu_notifier in mmu_rb_handler to
-> use an interval notifier? I seem to remember thinking it was the right
-> thing but too complicated for me to attempt
+> In case of virtual devices (rxe/siw), the netdev bdf will be shown.
 
-The call to mmu_interval_notifier_insert() in set_rcvarray_entry() 
-specifically. Instead of passing the saved mm I changed it to use current.
+Why? What is the use case?
 
-Yes we may be able to convert to the interval notifier for the rest of 
-it. I'd rather do that as a separate patch and get this fixed for 5.10 
-and in the stable kernels and do that as a for-next sort of thing.
-
--Denny
+Jason
