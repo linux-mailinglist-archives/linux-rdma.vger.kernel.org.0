@@ -2,205 +2,252 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8032A3D36
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Nov 2020 08:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 089242A3F0E
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Nov 2020 09:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727835AbgKCHLA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Nov 2020 02:11:00 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:19738 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727821AbgKCHK7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Nov 2020 02:10:59 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa102830000>; Mon, 02 Nov 2020 23:10:59 -0800
-Received: from [172.27.13.204] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Nov
- 2020 07:10:51 +0000
-Subject: Re: [PATCH mlx5-next v1 11/11] RDMA/mlx5: Remove IB representors dead
- code
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        gregkh <gregkh@linuxfoundation.org>
-CC:     Leon Romanovsky <leonro@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>, <linux-rdma@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>, <netdev@vger.kernel.org>,
-        Parav Pandit <parav@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <tiwai@suse.de>,
-        <broonie@kernel.org>, "David S . Miller" <davem@davemloft.net>,
-        <ranjani.sridharan@linux.intel.com>,
-        <pierre-louis.bossart@linux.intel.com>, <fred.oh@linux.intel.com>,
-        <shiraz.saleem@intel.com>, <dan.j.williams@intel.com>,
-        <kiran.patil@intel.com>, <linux-kernel@vger.kernel.org>
-References: <20201101201542.2027568-1-leon@kernel.org>
- <20201101201542.2027568-12-leon@kernel.org>
-From:   Roi Dayan <roid@nvidia.com>
-Message-ID: <845b26c8-4dfa-5ef2-67a8-1ae6f556fd71@nvidia.com>
-Date:   Tue, 3 Nov 2020 09:10:48 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727706AbgKCIiv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Nov 2020 03:38:51 -0500
+Received: from mga03.intel.com ([134.134.136.65]:64744 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727703AbgKCIiv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 3 Nov 2020 03:38:51 -0500
+IronPort-SDR: 4RjstmhNBgG/ez0nIPVsQr2wfBKOVsA68lfSK7CbhN9QCPfTWp0BNRZYxfqaHBcW0MNU/D9/nb
+ VsWH4Ui/ZHcw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="169123449"
+X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
+   d="scan'208";a="169123449"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 00:38:50 -0800
+IronPort-SDR: QclZlu7XlSX9k4KN0mo0mIFXYSKL3UBK8sTecRV9GNWVqE7yaAvGfeFDFgyaELQ+wTR2LO1Ew4
+ pUpyyWYE7zFA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,447,1596524400"; 
+   d="scan'208";a="320352663"
+Received: from lkp-server02.sh.intel.com (HELO e61783667810) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 03 Nov 2020 00:38:49 -0800
+Received: from kbuild by e61783667810 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kZrq4-000078-Ea; Tue, 03 Nov 2020 08:38:48 +0000
+Date:   Tue, 03 Nov 2020 16:38:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 2f3f202afa371f9211df308d443dfd1b90177c39
+Message-ID: <5fa116f8.iwkQHiAhDOmkpM/f%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20201101201542.2027568-12-leon@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604387459; bh=4WUhWdFgickYDSVFf73IeSlsegDSnCyqJHXLcImggck=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=Dah3vnxqaguW+nzDWpLeyjsmEMHzddxz/bOE8aJ2quo8SYWhPfZW9duce4clcU2ej
-         GDvO7zRgP2eEzc57IkWZzFs0B8FdA4oKAREzx4GKnuosH6K8N+gYKCzkRksHIwl+BY
-         J/lDEDeZ/jEIpOjtHSLOLEuTrWFl7yRZOjGW0s9jh0zRZFgVXmWM6aWYdZpEf4+sBU
-         py9TwqCM+HnDehlKgL3fsLF3JZPH3K0pmL260bnNDmwfiW9C6vnS4YaXSX/rdNX2uZ
-         ih2ncLS8xu/ZN9QxF8Ygw1/FKacbdTF/cGpwDzDrqYWjFzaJI/phkRuYPZhzRozU3o
-         Z1jQ9+kZh73JA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: 2f3f202afa371f9211df308d443dfd1b90177c39  IB/mlx5: Add support for NDR link speed
 
+elapsed time: 722m
 
-On 2020-11-01 10:15 PM, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> Delete dead code.
-> 
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->   drivers/infiniband/hw/mlx5/ib_rep.c | 31 +++++++----------------------
->   drivers/infiniband/hw/mlx5/ib_rep.h | 31 -----------------------------
->   2 files changed, 7 insertions(+), 55 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/mlx5/ib_rep.c b/drivers/infiniband/hw/mlx5/ib_rep.c
-> index 9810bdd7f3bc..a1a9450ed92c 100644
-> --- a/drivers/infiniband/hw/mlx5/ib_rep.c
-> +++ b/drivers/infiniband/hw/mlx5/ib_rep.c
-> @@ -13,7 +13,7 @@ mlx5_ib_set_vport_rep(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
->   	struct mlx5_ib_dev *ibdev;
->   	int vport_index;
-> 
-> -	ibdev = mlx5_ib_get_uplink_ibdev(dev->priv.eswitch);
-> +	ibdev = mlx5_eswitch_uplink_get_proto_dev(dev->priv.eswitch, REP_IB);
->   	vport_index = rep->vport_index;
-> 
->   	ibdev->port[vport_index].rep = rep;
-> @@ -74,6 +74,11 @@ mlx5_ib_vport_rep_load(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
->   	return ret;
->   }
-> 
-> +static void *mlx5_ib_rep_to_dev(struct mlx5_eswitch_rep *rep)
-> +{
-> +	return rep->rep_data[REP_IB].priv;
-> +}
-> +
->   static void
->   mlx5_ib_vport_rep_unload(struct mlx5_eswitch_rep *rep)
->   {
-> @@ -91,40 +96,18 @@ mlx5_ib_vport_rep_unload(struct mlx5_eswitch_rep *rep)
->   		__mlx5_ib_remove(dev, dev->profile, MLX5_IB_STAGE_MAX);
->   }
-> 
-> -static void *mlx5_ib_vport_get_proto_dev(struct mlx5_eswitch_rep *rep)
-> -{
-> -	return mlx5_ib_rep_to_dev(rep);
-> -}
-> -
->   static const struct mlx5_eswitch_rep_ops rep_ops = {
->   	.load = mlx5_ib_vport_rep_load,
->   	.unload = mlx5_ib_vport_rep_unload,
-> -	.get_proto_dev = mlx5_ib_vport_get_proto_dev,
-> +	.get_proto_dev = mlx5_ib_rep_to_dev,
->   };
-> 
-> -struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
-> -					  u16 vport_num)
-> -{
-> -	return mlx5_eswitch_get_proto_dev(esw, vport_num, REP_IB);
-> -}
-> -
->   struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
->   					  u16 vport_num)
->   {
->   	return mlx5_eswitch_get_proto_dev(esw, vport_num, REP_ETH);
->   }
-> 
-> -struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw)
-> -{
-> -	return mlx5_eswitch_uplink_get_proto_dev(esw, REP_IB);
-> -}
-> -
-> -struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
-> -					   u16 vport_num)
-> -{
-> -	return mlx5_eswitch_vport_rep(esw, vport_num);
-> -}
-> -
->   struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
->   						   struct mlx5_ib_sq *sq,
->   						   u16 port)
-> diff --git a/drivers/infiniband/hw/mlx5/ib_rep.h b/drivers/infiniband/hw/mlx5/ib_rep.h
-> index 93f562735e89..ce1dcb105dbd 100644
-> --- a/drivers/infiniband/hw/mlx5/ib_rep.h
-> +++ b/drivers/infiniband/hw/mlx5/ib_rep.h
-> @@ -12,11 +12,6 @@
->   extern const struct mlx5_ib_profile raw_eth_profile;
-> 
->   #ifdef CONFIG_MLX5_ESWITCH
-> -struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
-> -					  u16 vport_num);
-> -struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw);
-> -struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
-> -					   u16 vport_num);
->   int mlx5r_rep_init(void);
->   void mlx5r_rep_cleanup(void);
->   struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
-> @@ -25,26 +20,6 @@ struct mlx5_flow_handle *create_flow_rule_vport_sq(struct mlx5_ib_dev *dev,
->   struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
->   					  u16 vport_num);
->   #else /* CONFIG_MLX5_ESWITCH */
-> -static inline
-> -struct mlx5_ib_dev *mlx5_ib_get_rep_ibdev(struct mlx5_eswitch *esw,
-> -					  u16 vport_num)
-> -{
-> -	return NULL;
-> -}
-> -
-> -static inline
-> -struct mlx5_ib_dev *mlx5_ib_get_uplink_ibdev(struct mlx5_eswitch *esw)
-> -{
-> -	return NULL;
-> -}
-> -
-> -static inline
-> -struct mlx5_eswitch_rep *mlx5_ib_vport_rep(struct mlx5_eswitch *esw,
-> -					   u16 vport_num)
-> -{
-> -	return NULL;
-> -}
-> -
->   static inline int mlx5r_rep_init(void) { return 0; }
->   static inline void mlx5r_rep_cleanup(void) {}
->   static inline
-> @@ -62,10 +37,4 @@ struct net_device *mlx5_ib_get_rep_netdev(struct mlx5_eswitch *esw,
->   	return NULL;
->   }
->   #endif
-> -
-> -static inline
-> -struct mlx5_ib_dev *mlx5_ib_rep_to_dev(struct mlx5_eswitch_rep *rep)
-> -{
-> -	return rep->rep_data[REP_IB].priv;
-> -}
->   #endif /* __MLX5_IB_REP_H__ */
-> --
-> 2.28.0
-> 
+configs tested: 188
+configs skipped: 2
 
-Reviewed-by: Roi Dayan <roid@nvidia.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          rsk7269_defconfig
+arm                      tct_hammer_defconfig
+arm                            xcep_defconfig
+sh                   rts7751r2dplus_defconfig
+mips                      maltasmvp_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                 mpc8272_ads_defconfig
+um                           x86_64_defconfig
+arm64                            alldefconfig
+sh                        sh7763rdp_defconfig
+xtensa                              defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                       rbtx49xx_defconfig
+arm                          exynos_defconfig
+arm                        neponset_defconfig
+arm                        oxnas_v6_defconfig
+arc                     nsimosci_hs_defconfig
+sh                           se7750_defconfig
+arm                         at91_dt_defconfig
+arm                              zx_defconfig
+sh                           se7343_defconfig
+sh                            hp6xx_defconfig
+powerpc                      makalu_defconfig
+sh                          polaris_defconfig
+sh                           se7724_defconfig
+m68k                             allmodconfig
+m68k                       bvme6000_defconfig
+ia64                            zx1_defconfig
+m68k                        mvme16x_defconfig
+mips                        bcm47xx_defconfig
+mips                            gpr_defconfig
+powerpc                 mpc837x_mds_defconfig
+arm                        shmobile_defconfig
+m68k                        m5407c3_defconfig
+mips                        qi_lb60_defconfig
+arm                            u300_defconfig
+powerpc                          allmodconfig
+mips                     loongson1b_defconfig
+powerpc                      arches_defconfig
+arm                         lpc32xx_defconfig
+m68k                        mvme147_defconfig
+powerpc                     redwood_defconfig
+mips                      bmips_stb_defconfig
+arm                         lubbock_defconfig
+arm                        vexpress_defconfig
+powerpc                     mpc512x_defconfig
+arm                         axm55xx_defconfig
+parisc                           alldefconfig
+powerpc                    socrates_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                     davinci_all_defconfig
+arm                       omap2plus_defconfig
+sh                             sh03_defconfig
+arm                      pxa255-idp_defconfig
+sh                          sdk7780_defconfig
+powerpc                       eiger_defconfig
+m68k                          multi_defconfig
+xtensa                generic_kc705_defconfig
+powerpc                      obs600_defconfig
+sh                   sh7770_generic_defconfig
+csky                                defconfig
+nios2                            alldefconfig
+c6x                        evmc6472_defconfig
+sh                            migor_defconfig
+sh                          rsk7264_defconfig
+m68k                       m5475evb_defconfig
+m68k                        m5307c3_defconfig
+mips                           jazz_defconfig
+arm                          prima2_defconfig
+mips                          rb532_defconfig
+powerpc                 mpc832x_rdb_defconfig
+m68k                          amiga_defconfig
+arc                        nsim_700_defconfig
+mips                   sb1250_swarm_defconfig
+mips                malta_kvm_guest_defconfig
+mips                        jmr3927_defconfig
+powerpc                   currituck_defconfig
+arm                         socfpga_defconfig
+sh                   sh7724_generic_defconfig
+powerpc                     powernv_defconfig
+mips                  maltasmvp_eva_defconfig
+sh                               j2_defconfig
+sh                          rsk7201_defconfig
+powerpc                 mpc8313_rdb_defconfig
+powerpc                    gamecube_defconfig
+powerpc                    sam440ep_defconfig
+nds32                               defconfig
+arm                       spear13xx_defconfig
+arm                          pxa168_defconfig
+xtensa                  nommu_kc705_defconfig
+arm                          pxa3xx_defconfig
+mips                      fuloong2e_defconfig
+arm                       cns3420vb_defconfig
+arm                  colibri_pxa270_defconfig
+m68k                             allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                                defconfig
+sparc                            allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201102
+i386                 randconfig-a006-20201102
+i386                 randconfig-a005-20201102
+i386                 randconfig-a001-20201102
+i386                 randconfig-a002-20201102
+i386                 randconfig-a003-20201102
+i386                 randconfig-a004-20201103
+i386                 randconfig-a006-20201103
+i386                 randconfig-a005-20201103
+i386                 randconfig-a001-20201103
+i386                 randconfig-a002-20201103
+i386                 randconfig-a003-20201103
+x86_64               randconfig-a012-20201102
+x86_64               randconfig-a015-20201102
+x86_64               randconfig-a011-20201102
+x86_64               randconfig-a013-20201102
+x86_64               randconfig-a014-20201102
+x86_64               randconfig-a016-20201102
+i386                 randconfig-a013-20201102
+i386                 randconfig-a015-20201102
+i386                 randconfig-a014-20201102
+i386                 randconfig-a016-20201102
+i386                 randconfig-a011-20201102
+i386                 randconfig-a012-20201102
+i386                 randconfig-a013-20201103
+i386                 randconfig-a015-20201103
+i386                 randconfig-a014-20201103
+i386                 randconfig-a016-20201103
+i386                 randconfig-a011-20201103
+i386                 randconfig-a012-20201103
+x86_64               randconfig-a004-20201103
+x86_64               randconfig-a005-20201103
+x86_64               randconfig-a003-20201103
+x86_64               randconfig-a002-20201103
+x86_64               randconfig-a006-20201103
+x86_64               randconfig-a001-20201103
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20201102
+x86_64               randconfig-a005-20201102
+x86_64               randconfig-a003-20201102
+x86_64               randconfig-a002-20201102
+x86_64               randconfig-a006-20201102
+x86_64               randconfig-a001-20201102
+x86_64               randconfig-a012-20201103
+x86_64               randconfig-a015-20201103
+x86_64               randconfig-a011-20201103
+x86_64               randconfig-a013-20201103
+x86_64               randconfig-a014-20201103
+x86_64               randconfig-a016-20201103
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
