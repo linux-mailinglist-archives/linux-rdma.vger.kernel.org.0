@@ -2,82 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1752A5ACB
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Nov 2020 00:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F962A5AD7
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Nov 2020 01:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728712AbgKCXzA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Nov 2020 18:55:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726709AbgKCXzA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Nov 2020 18:55:00 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33F6C0613D1
-        for <linux-rdma@vger.kernel.org>; Tue,  3 Nov 2020 15:54:59 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id w145so14637184oie.9
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Nov 2020 15:54:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=5wMaTbJo7M349roI6AfdxPHA8d4dW1qcN/rcY30wI8I=;
-        b=MSmE50zpJrUqQX/PVzWMJN6Q4fc+V1uoceFfzd+WQhxGhttA3ZGkLme5vfj3xF2k5S
-         rGf9OWmaWOcNP9Zzt1UyyFW9pNJN3Rel4PT7xZL5EumHaS5HB2sFHf5Cu748cxZ3c6ge
-         ZtIzKKZJxsfRppYVNrQKiuaUmoT82pOpiJaIyR0zwlVRV/BIKLYitTYSN6ou4OJGqv1f
-         Hox3+7H4pCxHUN2RS0ob5ebiU16zrMT4kdy+Zrmuy49C4Sgxg92K1QOQHtuKVGZo5/dY
-         wofQjaujYIz8Ngdp8DRhIfAW7Iusl8EBf4g2onsQHqCoQ5ahcdUqul2IbD7HFllNcpPa
-         4zWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=5wMaTbJo7M349roI6AfdxPHA8d4dW1qcN/rcY30wI8I=;
-        b=edysDLimtFX3PkmRZZL7ypDG9+wZS24xfMa3cd/x297XROUnYn3pMQx3YAT6uwWDyN
-         MWlqdwzah9efEdq9dUjGvDnHgu3av8/aqoqe5ERdzOP+TxQBr3TB3sq4ZhjAb5DWIt2M
-         FasZ56Sr9nd/T7grgP0eoceDMBNMmnSkpxRb41nKrVuMrJlEFn3CgOGmayeoYJvF43pl
-         Xsc1EgQoB+ZRccXf1qyc0oeVoJKNIWsTaXpIt4L3RsVZeAB0Z9bpz0MOnqUCguSQJvhM
-         3HWVl5As5TfCaB6aXVgNOLLDchLLz3+9rpRSyOxKtXl6qX+MyWrb53YgIaMGlIOUY8XR
-         yT8w==
-X-Gm-Message-State: AOAM533jvpCfL9U4+vCsF8gn0fIw76kXxA7jbFXH34Ga467o/y1CaDe7
-        XCstp4ivOqFatAdYOyWy+1ftXCI9tzM=
-X-Google-Smtp-Source: ABdhPJzk41C/xoGn4Wsvgp6K/FBrC+RlhuYEbslWQ+pFvLIlE3R+eczegDFXrksMoiRkdUV+o6Ctmg==
-X-Received: by 2002:aca:3dd4:: with SMTP id k203mr992025oia.86.1604447699209;
-        Tue, 03 Nov 2020 15:54:59 -0800 (PST)
-Received: from ?IPv6:2603:8081:140c:1a00:1c77:3258:9ca4:99ae? (2603-8081-140c-1a00-1c77-3258-9ca4-99ae.res6.spectrum.com. [2603:8081:140c:1a00:1c77:3258:9ca4:99ae])
-        by smtp.gmail.com with ESMTPSA id b123sm55862oii.47.2020.11.03.15.54.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Nov 2020 15:54:58 -0800 (PST)
-To:     Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leon@kernel.org>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Subject: pyverbs test regression
-Message-ID: <f8de77b3-d9c7-5b0f-c118-c95f0c6a271c@gmail.com>
-Date:   Tue, 3 Nov 2020 17:54:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1729772AbgKDAAY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Nov 2020 19:00:24 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18825 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729763AbgKDAAY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Nov 2020 19:00:24 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa1ef170003>; Tue, 03 Nov 2020 16:00:23 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 4 Nov
+ 2020 00:00:24 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.175)
+ by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 4 Nov 2020 00:00:24 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XlntbAxWeJwRBUAFCmlJquVRdgaSkjcfebEZBYT1PZOVRh4sQcSFWxioR6e9P9CNIbH8yls1Uep//iISbVA/+R8BuJs2BSHCAImEav55bIOCx96WmmHTRgHEGto8f2na2kSzr7arUl/n5aJ0Cn69ZfIzgYW+15AGSqHQtO7fpo6MQXlNkLIZYJIuhw/hG63ZY/q/1ESYcSsvDkQ4dKRjySBmBCvuYIUW0fTc9y0ga6u9aK9j9/Ykj08vk/OvRHQy7IKmxeQ3rAXHoNVdk3gOsfCJc7KOg2A6SLQ7fbh4kOP8FZuH4bVLO0qPXxK2CyE/XsMylrWC5V/RraCMYI8aJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=af3hyzghuvcZ4Zq8wFRwNeJrfuiKyIS9rG9piJsIxPY=;
+ b=dWBV840Ahtuh0jhh3qJwbODlfr7o5dXHWM5hCG/PCF6cwGnH9W/vd8OXz3eIt78wdsYO8TS0NeI07jcmtNW/OouuAd2BNplD8ZNJnkjC616LyOw3H0XcCTBGbo7H3kUgWUr4Rr9z143oiks0dihbZ0PXSBG9UzIyxZFuavlo33cd2OzFmKqk3erezXy4adGBWn9APji6lfGMgR7D+xUkouP5tBiRHEJYFWWkUCz225LUY+ws8RxvxRNw85o2Rvp6OGiPv6SNtO4v05ia3XZZkkh60+xgiL7hpttMrnNBocyUThBUgzpJjm32fC7ixIY2K0XS8wXSN1yLwUkTp7IEtw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4973.namprd12.prod.outlook.com (2603:10b6:5:1b7::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Wed, 4 Nov
+ 2020 00:00:22 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Wed, 4 Nov 2020
+ 00:00:22 +0000
+Date:   Tue, 3 Nov 2020 20:00:20 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>,
+        Edward Srouji <edwards@mellanox.com>
+CC:     Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: pyverbs test regression
+Message-ID: <20201104000020.GU2620339@nvidia.com>
+References: <f8de77b3-d9c7-5b0f-c118-c95f0c6a271c@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <f8de77b3-d9c7-5b0f-c118-c95f0c6a271c@gmail.com>
+X-ClientProxiedBy: MN2PR08CA0012.namprd08.prod.outlook.com
+ (2603:10b6:208:239::17) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR08CA0012.namprd08.prod.outlook.com (2603:10b6:208:239::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Wed, 4 Nov 2020 00:00:22 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ka6Ds-00GJir-Qb; Tue, 03 Nov 2020 20:00:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604448023; bh=af3hyzghuvcZ4Zq8wFRwNeJrfuiKyIS9rG9piJsIxPY=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=bN+3yTeLczsroE+v2UzPHkAONxYAGfewXt1Ra3JfOTnj8vaM7TvlRCoAA2Db+Yhm/
+         omx3DsXfpIiRgTKBjaiG8SBlEYOUQIQb5wK6lOTuSuKQjXD3BOG7CFHSCMh8eX/Fq1
+         gAxnGdK9/mwX3/x0KdUFXrGb/GC+/hf0qZUHmvTvxV7XSo3+013Wp5XSxPTsn+ShZK
+         2m79XPbgL/zogvCOQq0WomZMWi4v3CgYsc/f/pq81SpfxJxhM543YyK4vvsTJtw6eR
+         PwxZm4uAS0hOkV6AnAvcy3jcdxOBSEwurofqhaodqN2KY1ppywL5CsCVtoycxuKDYv
+         WIdmtk62zEI3A==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Since 5.10 some of the pyverbs tests are skipping with the warning
-	"Device rxe_0 doesn't have net interface"
+On Tue, Nov 03, 2020 at 05:54:58PM -0600, Bob Pearson wrote:
+> Since 5.10 some of the pyverbs tests are skipping with the warning
+> 	"Device rxe_0 doesn't have net interface"
+> 
+> These occur in tests/test_rdmacm.py. As far as I can tell the error occurs in
+> 
+> RDMATestCase _add_gids_per_port after the following
+> 
+> 	    if not os.path.exists('/sys/class/infiniband/{}/device/net/'.format(dev)):
+>                 self.args.append([dev, port, idx, None])
+>                 continue
+> 
+> In fact there is no such path which means it never finds an ip_addr for the device.
 
-These occur in tests/test_rdmacm.py. As far as I can tell the error occurs in
+That isn't an acceptable way to find netdevs for a RDMA device..
 
-RDMATestCase _add_gids_per_port after the following
+This test is really buggy, that is not an acceptable way to find the
+netdev for a RDMA device. Looks like it is some hacky way to read the
+gid table? It should just read the gid table.. Edward?
 
-	    if not os.path.exists('/sys/class/infiniband/{}/device/net/'.format(dev)):
-                self.args.append([dev, port, idx, None])
-                continue
+> Did something change here? Do other RDMA devices have /sys/class/infiniband/XXX/device/net?
 
-In fact there is no such path which means it never finds an ip_addr for the device.
+Yes, some will
 
-Did something change here? Do other RDMA devices have /sys/class/infiniband/XXX/device/net?
-
-Thanks,
-
-Bob Pearson
+Jason
