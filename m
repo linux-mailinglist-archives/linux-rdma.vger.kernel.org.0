@@ -2,41 +2,43 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F9E2A60F0
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Nov 2020 10:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8A12A60F6
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Nov 2020 10:55:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728437AbgKDJxL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Nov 2020 04:53:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58362 "EHLO
+        id S1728867AbgKDJzU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Nov 2020 04:55:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727110AbgKDJxK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Nov 2020 04:53:10 -0500
+        with ESMTP id S1728645AbgKDJzT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Nov 2020 04:55:19 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC42C0613D3;
-        Wed,  4 Nov 2020 01:53:10 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F5AC0613D3;
+        Wed,  4 Nov 2020 01:55:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=10NYNDvXK47Xx4pemLtAWVco029+HRxpmX00NcH63GE=; b=NGo9ostWCiYg6sDnjnfEcDzzIu
-        bw1JEU/3J8uJGjIQtQ3FGZ9lzz5hIabozqpexq5IduLABu5XJ2D0ympH0erezuMJAke3Q+N9+2j6y
-        CQZarVzZ/0rhSi4bUrotHZGNaoSczpDABKXioE9c65Nxmn1Ccoe0A8LOAmfcZ2cUH8twiu62GDa/L
-        l5fhVcQKYIfQKjkufFFoYGjsvK2Ox2oFBUmuutOyqSjOR3KNxhsbBO09mBu27EycME4Vq/ONGvnJp
-        Ce2DQNYH/udzwjJIRM1gpsiIoXqJH24M/o6dZHhkX4lZ79dU0Es+bWJROyRq5sliVITz95pPA4/5A
-        KK0kP2ww==;
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=hZa3n5ik5K9NEIIFqkcsrq/NzQKDJhbA+4bSf/JW2go=; b=QZL0h2X17AaXP/HywlpyPS7J2D
+        DfWsdGFLQMNO9V3nJ38eAxz4hRyoBbbfRxf9S3MpkHHUSI3yVaKj4BeZNi6b01jyYW/+f+5KkDv4T
+        jxdA31izJY7Lq0n9u+m1LjxdJaanCEep2uII52vVNFzycQTKqa1NAOMlmR0tDX0DcKPrK/Lts46J9
+        yOZ/e8mJdnyQRJbniUEhH+1DAXMwK3Imr8ll7yfjxmfPi3jPsg1gKd/0kNdRPTeB6kv6QwZvGpo0c
+        bVA/z34lpAFkEBX0K/j9q7tXMjfUIw/yaGltZ9ngTTchcMK+ORwnhY1BxXLpriEHwM9lYUULPW/o7
+        936aE/eQ==;
 Received: from 089144208145.atnat0017.highway.a1.net ([89.144.208.145] helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kaFTT-0001yT-E1; Wed, 04 Nov 2020 09:53:05 +0000
+        id 1kaFVc-0002K0-J0; Wed, 04 Nov 2020 09:55:17 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Bjorn Helgaas <bhelgaas@google.com>,
         Logan Gunthorpe <logang@deltatee.com>,
         linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
         iommu@lists.linux-foundation.org
-Subject: remove dma_virt_ops
-Date:   Wed,  4 Nov 2020 10:50:47 +0100
-Message-Id: <20201104095052.1222754-1-hch@lst.de>
+Subject: [PATCH 1/5] RDMA/core: remove ib_dma_{alloc,free}_coherent
+Date:   Wed,  4 Nov 2020 10:50:48 +0100
+Message-Id: <20201104095052.1222754-2-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201104095052.1222754-1-hch@lst.de>
+References: <20201104095052.1222754-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -44,33 +46,53 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Jason,
+These two functions are entirely unused.
 
-this series switches the RDMA core to opencode the special case of
-devices bypassing the DMA mapping in the RDMA ULPs.  The virt ops
-have caused a bit of trouble due to the P2P code node working with
-them due to the fact that we'd do two dma mapping iterations for a
-single I/O, but also are a bit of layering violation and lead to
-more code than necessary.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ include/rdma/ib_verbs.h | 29 -----------------------------
+ 1 file changed, 29 deletions(-)
 
-Tested with nvme-rdma over rxe.
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 9bf6c319a670e2..5f8fd7976034e0 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -4098,35 +4098,6 @@ static inline void ib_dma_sync_single_for_device(struct ib_device *dev,
+ 	dma_sync_single_for_device(dev->dma_device, addr, size, dir);
+ }
+ 
+-/**
+- * ib_dma_alloc_coherent - Allocate memory and map it for DMA
+- * @dev: The device for which the DMA address is requested
+- * @size: The size of the region to allocate in bytes
+- * @dma_handle: A pointer for returning the DMA address of the region
+- * @flag: memory allocator flags
+- */
+-static inline void *ib_dma_alloc_coherent(struct ib_device *dev,
+-					   size_t size,
+-					   dma_addr_t *dma_handle,
+-					   gfp_t flag)
+-{
+-	return dma_alloc_coherent(dev->dma_device, size, dma_handle, flag);
+-}
+-
+-/**
+- * ib_dma_free_coherent - Free memory allocated by ib_dma_alloc_coherent()
+- * @dev: The device for which the DMA addresses were allocated
+- * @size: The size of the region
+- * @cpu_addr: the address returned by ib_dma_alloc_coherent()
+- * @dma_handle: the DMA address returned by ib_dma_alloc_coherent()
+- */
+-static inline void ib_dma_free_coherent(struct ib_device *dev,
+-					size_t size, void *cpu_addr,
+-					dma_addr_t dma_handle)
+-{
+-	dma_free_coherent(dev->dma_device, size, cpu_addr, dma_handle);
+-}
+-
+ /* ib_reg_user_mr - register a memory region for virtual addresses from kernel
+  * space. This function should be called when 'current' is the owning MM.
+  */
+-- 
+2.28.0
 
-Diffstat:
- b/drivers/infiniband/core/device.c      |   41 +++++++-------
- b/drivers/infiniband/core/rw.c          |    2 
- b/drivers/infiniband/sw/rdmavt/Kconfig  |    3 -
- b/drivers/infiniband/sw/rdmavt/mr.c     |    6 --
- b/drivers/infiniband/sw/rdmavt/vt.c     |    8 --
- b/drivers/infiniband/sw/rxe/Kconfig     |    2 
- b/drivers/infiniband/sw/rxe/rxe_verbs.c |    7 --
- b/drivers/infiniband/sw/rxe/rxe_verbs.h |    1 
- b/drivers/infiniband/sw/siw/Kconfig     |    1 
- b/drivers/infiniband/sw/siw/siw.h       |    1 
- b/drivers/infiniband/sw/siw/siw_main.c  |    7 --
- b/drivers/pci/p2pdma.c                  |   25 ---------
- b/include/linux/dma-mapping.h           |    2 
- b/include/rdma/ib_verbs.h               |   88 ++++++++++++++------------------
- b/kernel/dma/Kconfig                    |    5 -
- b/kernel/dma/Makefile                   |    1 
- kernel/dma/virt.c                       |   61 ----------------------
- 17 files changed, 66 insertions(+), 195 deletions(-)
