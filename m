@@ -2,66 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B74042A69CE
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Nov 2020 17:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE9A2A6B04
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Nov 2020 17:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727285AbgKDQbi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Nov 2020 11:31:38 -0500
-Received: from verein.lst.de ([213.95.11.211]:43309 "EHLO verein.lst.de"
+        id S1731456AbgKDQx6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Nov 2020 11:53:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726944AbgKDQbi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:31:38 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 6C26768B02; Wed,  4 Nov 2020 17:31:35 +0100 (CET)
-Date:   Wed, 4 Nov 2020 17:31:35 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Christoph Hellwig <hch@lst.de>,
+        id S1731453AbgKDQxz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 4 Nov 2020 11:53:55 -0500
+Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4EBE206FA;
+        Wed,  4 Nov 2020 16:53:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604508835;
+        bh=2AnCcDgCUl6mvSBgQ/DNDlhMjVmEBjE51au1El1BYuY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=ufgUb7fUuwShufuwOFMMiN+b9KhxmZPRjeacpooFT3rGtbvfpEYeTIDtR+8qbpybZ
+         ViNnVNVez79xeThoXkIgQLPNu1B162vS+R/Iws4UAxxNYredVESg2yvamgQAHpoXqg
+         QCtTCOr9+JeAYws//F1IQSU6/a4lEYyRNDJ8N6Ho=
+Date:   Wed, 4 Nov 2020 10:53:53 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Logan Gunthorpe <logang@deltatee.com>,
         linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
         iommu@lists.linux-foundation.org
-Subject: Re: [PATCH 2/5] RDMA/core: remove use of dma_virt_ops
-Message-ID: <20201104163135.GA15840@lst.de>
-References: <20201104095052.1222754-1-hch@lst.de> <20201104095052.1222754-3-hch@lst.de> <20201104134241.GP36674@ziepe.ca> <20201104140108.GA5674@lst.de> <20201104155255.GR36674@ziepe.ca>
+Subject: Re: [PATCH 3/5] PCI/p2p: remove the DMA_VIRT_OPS hacks
+Message-ID: <20201104165353.GA357989@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104155255.GR36674@ziepe.ca>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20201104095052.1222754-4-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 11:52:55AM -0400, Jason Gunthorpe wrote:
-> It could work, I think a resonable ULP API would be to have some
+s|PCI/p2p: remove|PCI/P2PDMA: Remove/
+to match history.
+
+On Wed, Nov 04, 2020 at 10:50:50AM +0100, Christoph Hellwig wrote:
+> Now that all users of dma_virt_ops are gone we can remove the workaround
+> for it in the PCIe peer to peer code.
+
+s/PCIe/PCI/
+We went to some trouble to make P2PDMA work on conventional PCI as
+well as PCIe.
+
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
+> ---
+>  drivers/pci/p2pdma.c | 20 --------------------
+>  1 file changed, 20 deletions(-)
 > 
->  rdma_fill_ib_sge_from_sgl()
->  rdma_map_sge_single()
->  etc etc
+> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+> index de1c331dbed43f..b07018af53876c 100644
+> --- a/drivers/pci/p2pdma.c
+> +++ b/drivers/pci/p2pdma.c
+> @@ -556,15 +556,6 @@ int pci_p2pdma_distance_many(struct pci_dev *provider, struct device **clients,
+>  		return -1;
+>  
+>  	for (i = 0; i < num_clients; i++) {
+> -#ifdef CONFIG_DMA_VIRT_OPS
+> -		if (clients[i]->dma_ops == &dma_virt_ops) {
+> -			if (verbose)
+> -				dev_warn(clients[i],
+> -					 "cannot be used for peer-to-peer DMA because the driver makes use of dma_virt_ops\n");
+> -			return -1;
+> -		}
+> -#endif
+> -
+>  		pci_client = find_parent_pci_dev(clients[i]);
+>  		if (!pci_client) {
+>  			if (verbose)
+> @@ -837,17 +828,6 @@ static int __pci_p2pdma_map_sg(struct pci_p2pdma_pagemap *p2p_pgmap,
+>  	phys_addr_t paddr;
+>  	int i;
+>  
+> -	/*
+> -	 * p2pdma mappings are not compatible with devices that use
+> -	 * dma_virt_ops. If the upper layers do the right thing
+> -	 * this should never happen because it will be prevented
+> -	 * by the check in pci_p2pdma_distance_many()
+> -	 */
+> -#ifdef CONFIG_DMA_VIRT_OPS
+> -	if (WARN_ON_ONCE(dev->dma_ops == &dma_virt_ops))
+> -		return 0;
+> -#endif
+> -
+>  	for_each_sg(sg, s, nents, i) {
+>  		paddr = sg_phys(s);
+>  
+> -- 
+> 2.28.0
 > 
-> ie instead of wrappering the DMA API as-is we have a new API that
-> directly builds the ib_sge. It always fills the local_dma_lkey from
-> the pd, so it knows it is doing DMA from local kernel memory.
-
-Yeah.
-
-> Logically SW devices then have a local_dma_lkey MR that has an IOVA of
-> the CPU physical address space, not the DMA address space as HW
-> devices have. The ib_sge builders can know this detail and fill in
-> addr from either a cpu phyical or a dma map.
-
-I don't think the builders are the right place to do it - it really
-should to be in the low-level drivers for a bunch of reasons:
-
- 1) this avoids doing the dma_map when no DMA is performed, e.g. for
-    mlx5 when send data is in the extended WQE
- 2) to deal with the fact that dma mapping reduces the number of SGEs.
-    When the system uses a modern IOMMU we'll always end up with a
-    single IOVA range no matter how many pages were mapped originally.
-    This means any MR process can actually be consolidated to use
-    a single SGE with the local lkey.
-
-Note that 2 implies a somewhat more complicated API, where the ULP
-attempts to create a MR, but the core/driver will tell it that it didn't
-need a MR at all.
