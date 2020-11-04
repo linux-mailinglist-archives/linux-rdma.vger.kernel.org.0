@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074272A66A7
+	by mail.lfdr.de (Postfix) with ESMTP id 9701F2A66A8
 	for <lists+linux-rdma@lfdr.de>; Wed,  4 Nov 2020 15:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730296AbgKDOqI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Nov 2020 09:46:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45828 "EHLO mail.kernel.org"
+        id S1730292AbgKDOqL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Nov 2020 09:46:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730292AbgKDOqI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 4 Nov 2020 09:46:08 -0500
+        id S1730243AbgKDOqL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 4 Nov 2020 09:46:11 -0500
 Received: from localhost (searspoint.nvidia.com [216.228.112.21])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74DE92074B;
-        Wed,  4 Nov 2020 14:46:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3728020756;
+        Wed,  4 Nov 2020 14:46:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604501166;
-        bh=htfAPMPBH2qOvKDFn4IRC5EzcO1+FDweE6+5fm/3Sfk=;
+        s=default; t=1604501170;
+        bh=hmwoY4MJbp4fuCyVElNKcOABoCbpzbnNp7EcrYhDsOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GfzvvmUGbAMrQBIB4MK/TwAb4rO5vBS95echLY4DCpQAp9wkf8irDHRB2rwZ2Bw9t
-         6nty66UaqaC52B4x/iv/0CaoDQvi0oJTKEyFCAMhBQ37Gh99HKS08w74l046Qmvruo
-         TCa+2+HNUKZYNIPOxnClr0LID6plMtA+0j+DjP2E=
+        b=t+ZZ/9DDeWnW+RvPkXzfiHoe3i0QXiPCU2ANSYIAsX5s7DW1uE7A8PvMYK3OmWoP9
+         TlE2TTNFl78WiVTswY1PqZfaY1XCOKGqJ4pHQLiXcyujN3GLGB9ZV+dm5Yc8/Zolvb
+         uVbnjnuQWQmwjEBeiy0dbTYbTKt0Hxyn7f0pF28I=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v1 1/2] RDMA/core: Postpone uobject cleanup on failure till FD close
-Date:   Wed,  4 Nov 2020 16:45:55 +0200
-Message-Id: <20201104144556.3809085-2-leon@kernel.org>
+Subject: [PATCH rdma-next v1 2/2] RDMA/core: Make FD destroy callback void
+Date:   Wed,  4 Nov 2020 16:45:56 +0200
+Message-Id: <20201104144556.3809085-3-leon@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201104144556.3809085-1-leon@kernel.org>
 References: <20201104144556.3809085-1-leon@kernel.org>
@@ -41,439 +41,129 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-The drivers were updated to allow return their destroy status,
-while the failure during object cleanup is allowed as long as the
-driver can guarantee to clean them during FD close().
+All FD object destroy implementations return 0, so declare
+this callback void.
 
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/rdma_core.c           | 51 +++++++------------
- drivers/infiniband/core/uverbs_cmd.c          |  5 +-
- drivers/infiniband/core/uverbs_std_types.c    | 15 +++---
- .../core/uverbs_std_types_counters.c          |  5 +-
- drivers/infiniband/core/uverbs_std_types_cq.c |  4 +-
- drivers/infiniband/core/uverbs_std_types_dm.c |  6 +--
- .../core/uverbs_std_types_flow_action.c       |  6 +--
- drivers/infiniband/core/uverbs_std_types_qp.c |  4 +-
- .../infiniband/core/uverbs_std_types_srq.c    |  4 +-
- drivers/infiniband/core/uverbs_std_types_wq.c |  4 +-
- drivers/infiniband/hw/mlx5/devx.c             |  4 +-
- drivers/infiniband/hw/mlx5/fs.c               |  6 +--
- include/rdma/ib_verbs.h                       | 44 +---------------
- 13 files changed, 45 insertions(+), 113 deletions(-)
+ drivers/infiniband/core/rdma_core.c                 |  3 ++-
+ drivers/infiniband/core/uverbs_std_types.c          |  3 +--
+ drivers/infiniband/core/uverbs_std_types_async_fd.c |  5 ++---
+ drivers/infiniband/hw/mlx5/devx.c                   | 10 ++++------
+ include/rdma/uverbs_types.h                         |  4 ++--
+ 5 files changed, 11 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-index 5d41785f507b..1ec1b1cd221d 100644
+index 1ec1b1cd221d..1b641106b29b 100644
 --- a/drivers/infiniband/core/rdma_core.c
 +++ b/drivers/infiniband/core/rdma_core.c
-@@ -137,15 +137,9 @@ static int uverbs_destroy_uobject(struct ib_uobject *uobj,
- 	} else if (uobj->object) {
- 		ret = uobj->uapi_object->type_class->destroy_hw(uobj, reason,
- 								attrs);
--		if (ret) {
--			if (ib_is_destroy_retryable(ret, reason, uobj))
--				return ret;
--
--			/* Nothing to be done, dangle the memory and move on */
--			WARN(true,
--			     "ib_uverbs: failed to remove uobject id %d, driver err=%d",
--			     uobj->id, ret);
--		}
-+		if (ret)
-+			/* Nothing to be done, wait till ucontext will clean it */
-+			return ret;
- 
- 		uobj->object = NULL;
- 	}
-@@ -543,12 +537,7 @@ static int __must_check destroy_hw_idr_uobject(struct ib_uobject *uobj,
- 			     struct uverbs_obj_idr_type, type);
- 	int ret = idr_type->destroy_object(uobj, why, attrs);
- 
--	/*
--	 * We can only fail gracefully if the user requested to destroy the
--	 * object or when a retry may be called upon an error.
--	 * In the rest of the cases, just remove whatever you can.
--	 */
--	if (ib_is_destroy_retryable(ret, why, uobj))
-+	if (ret)
- 		return ret;
- 
- 	if (why == RDMA_REMOVE_ABORT)
-@@ -581,12 +570,8 @@ static int __must_check destroy_hw_fd_uobject(struct ib_uobject *uobj,
- {
+@@ -571,7 +571,8 @@ static int __must_check destroy_hw_fd_uobject(struct ib_uobject *uobj,
  	const struct uverbs_obj_fd_type *fd_type = container_of(
  		uobj->uapi_object->type_attrs, struct uverbs_obj_fd_type, type);
--	int ret = fd_type->destroy_object(uobj, why);
  
--	if (ib_is_destroy_retryable(ret, why, uobj))
--		return ret;
--
--	return 0;
-+	return fd_type->destroy_object(uobj, why);
+-	return fd_type->destroy_object(uobj, why);
++	fd_type->destroy_object(uobj, why);
++	return 0;
  }
  
  static void remove_handle_fd_uobject(struct ib_uobject *uobj)
-@@ -862,11 +847,18 @@ static int __uverbs_cleanup_ufile(struct ib_uverbs_file *ufile,
- 		 * racing with a lookup_get.
- 		 */
- 		WARN_ON(uverbs_try_lock_object(obj, UVERBS_LOOKUP_WRITE));
-+		if (reason == RDMA_REMOVE_DRIVER_FAILURE)
-+			obj->object = NULL;
- 		if (!uverbs_destroy_uobject(obj, reason, &attrs))
- 			ret = 0;
- 		else
- 			atomic_set(&obj->usecnt, 0);
- 	}
-+
-+	if (reason == RDMA_REMOVE_DRIVER_FAILURE) {
-+		WARN_ON(!list_empty(&ufile->uobjects));
-+		return 0;
-+	}
- 	return ret;
- }
- 
-@@ -888,21 +880,12 @@ void uverbs_destroy_ufile_hw(struct ib_uverbs_file *ufile,
- 	if (!ufile->ucontext)
- 		goto done;
- 
--	ufile->ucontext->cleanup_retryable = true;
--	while (!list_empty(&ufile->uobjects))
--		if (__uverbs_cleanup_ufile(ufile, reason)) {
--			/*
--			 * No entry was cleaned-up successfully during this
--			 * iteration. It is a driver bug to fail destruction.
--			 */
--			WARN_ON(!list_empty(&ufile->uobjects));
--			break;
--		}
--
--	ufile->ucontext->cleanup_retryable = false;
--	if (!list_empty(&ufile->uobjects))
--		__uverbs_cleanup_ufile(ufile, reason);
-+	while (!list_empty(&ufile->uobjects) &&
-+	       !__uverbs_cleanup_ufile(ufile, reason)) {
-+	}
- 
-+	if (WARN_ON(!list_empty(&ufile->uobjects)))
-+		__uverbs_cleanup_ufile(ufile, RDMA_REMOVE_DRIVER_FAILURE);
- 	ufile_destroy_ucontext(ufile, reason);
- 
- done:
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 96282ba74bce..a43c3d6d92a2 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -680,8 +680,7 @@ int ib_uverbs_dealloc_xrcd(struct ib_uobject *uobject, struct ib_xrcd *xrcd,
- 		return 0;
- 
- 	ret = ib_dealloc_xrcd_user(xrcd, &attrs->driver_udata);
--
--	if (ib_is_destroy_retryable(ret, why, uobject)) {
-+	if (ret) {
- 		atomic_inc(&xrcd->usecnt);
- 		return ret;
- 	}
-@@ -689,7 +688,7 @@ int ib_uverbs_dealloc_xrcd(struct ib_uobject *uobject, struct ib_xrcd *xrcd,
- 	if (inode)
- 		xrcd_table_delete(dev, inode);
- 
--	return ret;
-+	return 0;
- }
- 
- static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
 diff --git a/drivers/infiniband/core/uverbs_std_types.c b/drivers/infiniband/core/uverbs_std_types.c
-index 0658101fca00..585042ead939 100644
+index 585042ead939..13776a66e2e4 100644
 --- a/drivers/infiniband/core/uverbs_std_types.c
 +++ b/drivers/infiniband/core/uverbs_std_types.c
-@@ -88,7 +88,7 @@ static int uverbs_free_rwq_ind_tbl(struct ib_uobject *uobject,
- 		return -EBUSY;
- 
- 	ret = rwq_ind_tbl->device->ops.destroy_rwq_ind_table(rwq_ind_tbl);
--	if (ib_is_destroy_retryable(ret, why, uobject))
-+	if (ret)
- 		return ret;
- 
- 	for (i = 0; i < table_size; i++)
-@@ -96,7 +96,7 @@ static int uverbs_free_rwq_ind_tbl(struct ib_uobject *uobject,
- 
- 	kfree(rwq_ind_tbl);
- 	kfree(ind_tbl);
--	return ret;
-+	return 0;
+@@ -154,7 +154,7 @@ void ib_uverbs_free_event_queue(struct ib_uverbs_event_queue *event_queue)
+ 	spin_unlock_irq(&event_queue->lock);
  }
  
- static int uverbs_free_xrcd(struct ib_uobject *uobject,
-@@ -108,9 +108,8 @@ static int uverbs_free_xrcd(struct ib_uobject *uobject,
- 		container_of(uobject, struct ib_uxrcd_object, uobject);
- 	int ret;
- 
--	ret = ib_destroy_usecnt(&uxrcd->refcnt, why, uobject);
--	if (ret)
--		return ret;
-+	if (atomic_read(&uxrcd->refcnt))
-+		return -EBUSY;
- 
- 	mutex_lock(&attrs->ufile->device->xrcd_tree_mutex);
- 	ret = ib_uverbs_dealloc_xrcd(uobject, xrcd, why, attrs);
-@@ -124,11 +123,9 @@ static int uverbs_free_pd(struct ib_uobject *uobject,
- 			  struct uverbs_attr_bundle *attrs)
+-static int
++static void
+ uverbs_completion_event_file_destroy_uobj(struct ib_uobject *uobj,
+ 					  enum rdma_remove_reason why)
  {
- 	struct ib_pd *pd = uobject->object;
--	int ret;
+@@ -163,7 +163,6 @@ uverbs_completion_event_file_destroy_uobj(struct ib_uobject *uobj,
+ 			     uobj);
  
--	ret = ib_destroy_usecnt(&pd->usecnt, why, uobject);
--	if (ret)
--		return ret;
-+	if (atomic_read(&pd->usecnt))
-+		return -EBUSY;
- 
- 	return ib_dealloc_pd_user(pd, &attrs->driver_udata);
- }
-diff --git a/drivers/infiniband/core/uverbs_std_types_counters.c b/drivers/infiniband/core/uverbs_std_types_counters.c
-index b3c6c066b601..999da9c79866 100644
---- a/drivers/infiniband/core/uverbs_std_types_counters.c
-+++ b/drivers/infiniband/core/uverbs_std_types_counters.c
-@@ -42,9 +42,8 @@ static int uverbs_free_counters(struct ib_uobject *uobject,
- 	struct ib_counters *counters = uobject->object;
- 	int ret;
- 
--	ret = ib_destroy_usecnt(&counters->usecnt, why, uobject);
--	if (ret)
--		return ret;
-+	if (atomic_read(&counters->usecnt))
-+		return -EBUSY;
- 
- 	ret = counters->device->ops.destroy_counters(counters);
- 	if (ret)
-diff --git a/drivers/infiniband/core/uverbs_std_types_cq.c b/drivers/infiniband/core/uverbs_std_types_cq.c
-index 253dabb71f0e..b5e8a6aebecf 100644
---- a/drivers/infiniband/core/uverbs_std_types_cq.c
-+++ b/drivers/infiniband/core/uverbs_std_types_cq.c
-@@ -46,7 +46,7 @@ static int uverbs_free_cq(struct ib_uobject *uobject,
- 	int ret;
- 
- 	ret = ib_destroy_cq_user(cq, &attrs->driver_udata);
--	if (ib_is_destroy_retryable(ret, why, uobject))
-+	if (ret)
- 		return ret;
- 
- 	ib_uverbs_release_ucq(
-@@ -55,7 +55,7 @@ static int uverbs_free_cq(struct ib_uobject *uobject,
- 					ev_queue) :
- 			   NULL,
- 		ucq);
--	return ret;
-+	return 0;
+ 	ib_uverbs_free_event_queue(&file->ev_queue);
+-	return 0;
  }
  
- static int UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE)(
-diff --git a/drivers/infiniband/core/uverbs_std_types_dm.c b/drivers/infiniband/core/uverbs_std_types_dm.c
-index d5a1de33c2c9..98c522cf86d6 100644
---- a/drivers/infiniband/core/uverbs_std_types_dm.c
-+++ b/drivers/infiniband/core/uverbs_std_types_dm.c
-@@ -39,11 +39,9 @@ static int uverbs_free_dm(struct ib_uobject *uobject,
- 			  struct uverbs_attr_bundle *attrs)
+ int uverbs_destroy_def_handler(struct uverbs_attr_bundle *attrs)
+diff --git a/drivers/infiniband/core/uverbs_std_types_async_fd.c b/drivers/infiniband/core/uverbs_std_types_async_fd.c
+index 61899eaf1f91..cc24cfdf7aee 100644
+--- a/drivers/infiniband/core/uverbs_std_types_async_fd.c
++++ b/drivers/infiniband/core/uverbs_std_types_async_fd.c
+@@ -19,8 +19,8 @@ static int UVERBS_HANDLER(UVERBS_METHOD_ASYNC_EVENT_ALLOC)(
+ 	return 0;
+ }
+ 
+-static int uverbs_async_event_destroy_uobj(struct ib_uobject *uobj,
+-					   enum rdma_remove_reason why)
++static void uverbs_async_event_destroy_uobj(struct ib_uobject *uobj,
++					    enum rdma_remove_reason why)
  {
- 	struct ib_dm *dm = uobject->object;
--	int ret;
- 
--	ret = ib_destroy_usecnt(&dm->usecnt, why, uobject);
--	if (ret)
--		return ret;
-+	if (atomic_read(&dm->usecnt))
-+		return -EBUSY;
- 
- 	return dm->device->ops.dealloc_dm(dm, attrs);
- }
-diff --git a/drivers/infiniband/core/uverbs_std_types_flow_action.c b/drivers/infiniband/core/uverbs_std_types_flow_action.c
-index 459cf165b231..d42ed7ff223e 100644
---- a/drivers/infiniband/core/uverbs_std_types_flow_action.c
-+++ b/drivers/infiniband/core/uverbs_std_types_flow_action.c
-@@ -39,11 +39,9 @@ static int uverbs_free_flow_action(struct ib_uobject *uobject,
- 				   struct uverbs_attr_bundle *attrs)
- {
- 	struct ib_flow_action *action = uobject->object;
--	int ret;
- 
--	ret = ib_destroy_usecnt(&action->usecnt, why, uobject);
--	if (ret)
--		return ret;
-+	if (atomic_read(&action->usecnt))
-+		return -EBUSY;
- 
- 	return action->device->ops.destroy_flow_action(action);
- }
-diff --git a/drivers/infiniband/core/uverbs_std_types_qp.c b/drivers/infiniband/core/uverbs_std_types_qp.c
-index 198c3cd6f8b9..c00cfb5ed387 100644
---- a/drivers/infiniband/core/uverbs_std_types_qp.c
-+++ b/drivers/infiniband/core/uverbs_std_types_qp.c
-@@ -32,14 +32,14 @@ static int uverbs_free_qp(struct ib_uobject *uobject,
- 	}
- 
- 	ret = ib_destroy_qp_user(qp, &attrs->driver_udata);
--	if (ib_is_destroy_retryable(ret, why, uobject))
-+	if (ret)
- 		return ret;
- 
- 	if (uqp->uxrcd)
- 		atomic_dec(&uqp->uxrcd->refcnt);
- 
- 	ib_uverbs_release_uevent(&uqp->uevent);
--	return ret;
-+	return 0;
+ 	struct ib_uverbs_async_event_file *event_file =
+ 		container_of(uobj, struct ib_uverbs_async_event_file, uobj);
+@@ -30,7 +30,6 @@ static int uverbs_async_event_destroy_uobj(struct ib_uobject *uobj,
+ 	if (why == RDMA_REMOVE_DRIVER_REMOVE)
+ 		ib_uverbs_async_handler(event_file, 0, IB_EVENT_DEVICE_FATAL,
+ 					NULL, NULL);
+-	return 0;
  }
  
- static int check_creation_flags(enum ib_qp_type qp_type,
-diff --git a/drivers/infiniband/core/uverbs_std_types_srq.c b/drivers/infiniband/core/uverbs_std_types_srq.c
-index c0ecbba26bf4..e5513f828bdc 100644
---- a/drivers/infiniband/core/uverbs_std_types_srq.c
-+++ b/drivers/infiniband/core/uverbs_std_types_srq.c
-@@ -18,7 +18,7 @@ static int uverbs_free_srq(struct ib_uobject *uobject,
- 	int ret;
- 
- 	ret = ib_destroy_srq_user(srq, &attrs->driver_udata);
--	if (ib_is_destroy_retryable(ret, why, uobject))
-+	if (ret)
- 		return ret;
- 
- 	if (srq_type == IB_SRQT_XRC) {
-@@ -30,7 +30,7 @@ static int uverbs_free_srq(struct ib_uobject *uobject,
- 	}
- 
- 	ib_uverbs_release_uevent(uevent);
--	return ret;
-+	return 0;
- }
- 
- static int UVERBS_HANDLER(UVERBS_METHOD_SRQ_CREATE)(
-diff --git a/drivers/infiniband/core/uverbs_std_types_wq.c b/drivers/infiniband/core/uverbs_std_types_wq.c
-index f2e6a625724a..7ded8339346f 100644
---- a/drivers/infiniband/core/uverbs_std_types_wq.c
-+++ b/drivers/infiniband/core/uverbs_std_types_wq.c
-@@ -17,11 +17,11 @@ static int uverbs_free_wq(struct ib_uobject *uobject,
- 	int ret;
- 
- 	ret = ib_destroy_wq_user(wq, &attrs->driver_udata);
--	if (ib_is_destroy_retryable(ret, why, uobject))
-+	if (ret)
- 		return ret;
- 
- 	ib_uverbs_release_uevent(&uwq->uevent);
--	return ret;
-+	return 0;
- }
- 
- static int UVERBS_HANDLER(UVERBS_METHOD_WQ_CREATE)(
+ int uverbs_async_event_release(struct inode *inode, struct file *filp)
 diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index 274f04b39dce..a27a7110b63c 100644
+index a27a7110b63c..5acfe2ba9f0f 100644
 --- a/drivers/infiniband/hw/mlx5/devx.c
 +++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -1308,7 +1308,7 @@ static int devx_obj_cleanup(struct ib_uobject *uobject,
- 	else
- 		ret = mlx5_cmd_exec(obj->ib_dev->mdev, obj->dinbox,
- 				    obj->dinlen, out, sizeof(out));
--	if (ib_is_destroy_retryable(ret, why, uobject))
-+	if (ret)
- 		return ret;
- 
- 	devx_event_table = &dev->devx_event_table;
-@@ -2175,7 +2175,7 @@ static int devx_umem_cleanup(struct ib_uobject *uobject,
- 	int err;
- 
- 	err = mlx5_cmd_exec(obj->mdev, obj->dinbox, obj->dinlen, out, sizeof(out));
--	if (ib_is_destroy_retryable(err, why, uobject))
-+	if (err)
- 		return err;
- 
- 	ib_umem_release(obj->umem);
-diff --git a/drivers/infiniband/hw/mlx5/fs.c b/drivers/infiniband/hw/mlx5/fs.c
-index 492cfe063bca..25da0b05b4e2 100644
---- a/drivers/infiniband/hw/mlx5/fs.c
-+++ b/drivers/infiniband/hw/mlx5/fs.c
-@@ -2035,11 +2035,9 @@ static int flow_matcher_cleanup(struct ib_uobject *uobject,
- 				struct uverbs_attr_bundle *attrs)
- {
- 	struct mlx5_ib_flow_matcher *obj = uobject->object;
--	int ret;
- 
--	ret = ib_destroy_usecnt(&obj->usecnt, why, uobject);
--	if (ret)
--		return ret;
-+	if (atomic_read(&obj->usecnt))
-+		return -EBUSY;
- 
- 	kfree(obj);
- 	return 0;
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 0867158b8112..35653744df4e 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -1471,6 +1471,8 @@ enum rdma_remove_reason {
- 	RDMA_REMOVE_DRIVER_REMOVE,
- 	/* uobj is being cleaned-up before being committed */
- 	RDMA_REMOVE_ABORT,
-+	/* The driver failed to destroy the uobject and is being disconnected */
-+	RDMA_REMOVE_DRIVER_FAILURE,
+@@ -2588,8 +2588,8 @@ static const struct file_operations devx_async_event_fops = {
+ 	.llseek	 = no_llseek,
  };
  
- struct ib_rdmacg_object {
-@@ -1483,8 +1485,6 @@ struct ib_ucontext {
- 	struct ib_device       *device;
- 	struct ib_uverbs_file  *ufile;
- 
--	bool cleanup_retryable;
--
- 	struct ib_rdmacg_object	cg_obj;
- 	/*
- 	 * Implementation details of the RDMA core, don't use in drivers:
-@@ -2903,46 +2903,6 @@ static inline bool ib_is_udata_cleared(struct ib_udata *udata,
- 	return ib_is_buffer_cleared(udata->inbuf + offset, len);
- }
- 
--/**
-- * ib_is_destroy_retryable - Check whether the uobject destruction
-- * is retryable.
-- * @ret: The initial destruction return code
-- * @why: remove reason
-- * @uobj: The uobject that is destroyed
-- *
-- * This function is a helper function that IB layer and low-level drivers
-- * can use to consider whether the destruction of the given uobject is
-- * retry-able.
-- * It checks the original return code, if it wasn't success the destruction
-- * is retryable according to the ucontext state (i.e. cleanup_retryable) and
-- * the remove reason. (i.e. why).
-- * Must be called with the object locked for destroy.
-- */
--static inline bool ib_is_destroy_retryable(int ret, enum rdma_remove_reason why,
--					   struct ib_uobject *uobj)
--{
--	return ret && (why == RDMA_REMOVE_DESTROY ||
--		       uobj->context->cleanup_retryable);
--}
--
--/**
-- * ib_destroy_usecnt - Called during destruction to check the usecnt
-- * @usecnt: The usecnt atomic
-- * @why: remove reason
-- * @uobj: The uobject that is destroyed
-- *
-- * Non-zero usecnts will block destruction unless destruction was triggered by
-- * a ucontext cleanup.
-- */
--static inline int ib_destroy_usecnt(atomic_t *usecnt,
--				    enum rdma_remove_reason why,
--				    struct ib_uobject *uobj)
--{
--	if (atomic_read(usecnt) && ib_is_destroy_retryable(-EBUSY, why, uobj))
--		return -EBUSY;
+-static int devx_async_cmd_event_destroy_uobj(struct ib_uobject *uobj,
+-					     enum rdma_remove_reason why)
++static void devx_async_cmd_event_destroy_uobj(struct ib_uobject *uobj,
++					      enum rdma_remove_reason why)
+ {
+ 	struct devx_async_cmd_event_file *comp_ev_file =
+ 		container_of(uobj, struct devx_async_cmd_event_file,
+@@ -2611,11 +2611,10 @@ static int devx_async_cmd_event_destroy_uobj(struct ib_uobject *uobj,
+ 		kvfree(entry);
+ 	}
+ 	spin_unlock_irq(&comp_ev_file->ev_queue.lock);
 -	return 0;
--}
--
- /**
-  * ib_modify_qp_is_ok - Check that the supplied attribute mask
-  * contains all required attributes and no attributes not allowed for
+ };
+ 
+-static int devx_async_event_destroy_uobj(struct ib_uobject *uobj,
+-					 enum rdma_remove_reason why)
++static void devx_async_event_destroy_uobj(struct ib_uobject *uobj,
++					  enum rdma_remove_reason why)
+ {
+ 	struct devx_async_event_file *ev_file =
+ 		container_of(uobj, struct devx_async_event_file,
+@@ -2659,7 +2658,6 @@ static int devx_async_event_destroy_uobj(struct ib_uobject *uobj,
+ 	mutex_unlock(&dev->devx_event_table.event_xa_lock);
+ 
+ 	put_device(&dev->ib_dev.dev);
+-	return 0;
+ };
+ 
+ DECLARE_UVERBS_NAMED_METHOD(
+diff --git a/include/rdma/uverbs_types.h b/include/rdma/uverbs_types.h
+index 06db27e35f40..a27e9fb4903f 100644
+--- a/include/rdma/uverbs_types.h
++++ b/include/rdma/uverbs_types.h
+@@ -138,8 +138,8 @@ struct uverbs_obj_fd_type {
+ 	 * because the driver is removed or the FD is closed.
+ 	 */
+ 	struct uverbs_obj_type  type;
+-	int (*destroy_object)(struct ib_uobject *uobj,
+-			      enum rdma_remove_reason why);
++	void (*destroy_object)(struct ib_uobject *uobj,
++			       enum rdma_remove_reason why);
+ 	const struct file_operations	*fops;
+ 	const char			*name;
+ 	int				flags;
 -- 
 2.28.0
 
