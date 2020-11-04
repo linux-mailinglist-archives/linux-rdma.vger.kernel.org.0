@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE9A2A6B04
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Nov 2020 17:54:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9FB2A6B1C
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Nov 2020 17:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731456AbgKDQx6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Nov 2020 11:53:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50764 "EHLO mail.kernel.org"
+        id S1731059AbgKDQyu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Nov 2020 11:54:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731453AbgKDQxz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:53:55 -0500
+        id S1731255AbgKDQyt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 4 Nov 2020 11:54:49 -0500
 Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4EBE206FA;
-        Wed,  4 Nov 2020 16:53:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC7782072C;
+        Wed,  4 Nov 2020 16:54:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604508835;
-        bh=2AnCcDgCUl6mvSBgQ/DNDlhMjVmEBjE51au1El1BYuY=;
+        s=default; t=1604508889;
+        bh=ArcQJwinIpORlAmkBGB/AAkFp/7wMyEXpZdR/3J4wBQ=;
         h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=ufgUb7fUuwShufuwOFMMiN+b9KhxmZPRjeacpooFT3rGtbvfpEYeTIDtR+8qbpybZ
-         ViNnVNVez79xeThoXkIgQLPNu1B162vS+R/Iws4UAxxNYredVESg2yvamgQAHpoXqg
-         QCtTCOr9+JeAYws//F1IQSU6/a4lEYyRNDJ8N6Ho=
-Date:   Wed, 4 Nov 2020 10:53:53 -0600
+        b=A2dV6ftbFeL34zkMdFbtruZhBI1rmk5r4E50s63hTH493XEIMYiT1h5F49xpGnXOM
+         aiaZlQv4h/qyRD7jYsfpFqZ6bSRgipAJEIknQ1F5HZGFEREF8+Cyj+VjJ1fj/3OHMd
+         1/J1Z1wCrb4HIDVlpvH4cYELRmp+oQoKUPLF9nXo=
+Date:   Wed, 4 Nov 2020 10:54:47 -0600
 From:   Bjorn Helgaas <helgaas@kernel.org>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
@@ -31,72 +31,48 @@ Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
         Logan Gunthorpe <logang@deltatee.com>,
         linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
         iommu@lists.linux-foundation.org
-Subject: Re: [PATCH 3/5] PCI/p2p: remove the DMA_VIRT_OPS hacks
-Message-ID: <20201104165353.GA357989@bjorn-Precision-5520>
+Subject: Re: [PATCH 4/5] PCI/p2p: cleanup up __pci_p2pdma_map_sg a bit
+Message-ID: <20201104165447.GA358343@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104095052.1222754-4-hch@lst.de>
+In-Reply-To: <20201104095052.1222754-5-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-s|PCI/p2p: remove|PCI/P2PDMA: Remove/
+s|PCI/p2p: cleanup up __pci_p2pdma_map_sg|PCI/P2PDMA: Cleanup up __pci_p2pdma_map_sg|
 to match history.
 
-On Wed, Nov 04, 2020 at 10:50:50AM +0100, Christoph Hellwig wrote:
-> Now that all users of dma_virt_ops are gone we can remove the workaround
-> for it in the PCIe peer to peer code.
-
-s/PCIe/PCI/
-We went to some trouble to make P2PDMA work on conventional PCI as
-well as PCIe.
-
+On Wed, Nov 04, 2020 at 10:50:51AM +0100, Christoph Hellwig wrote:
+> Remove the pointless paddr variable that was only used once.
+> 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
 Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
 > ---
->  drivers/pci/p2pdma.c | 20 --------------------
->  1 file changed, 20 deletions(-)
+>  drivers/pci/p2pdma.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
 > 
 > diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-> index de1c331dbed43f..b07018af53876c 100644
+> index b07018af53876c..afd792cc272832 100644
 > --- a/drivers/pci/p2pdma.c
 > +++ b/drivers/pci/p2pdma.c
-> @@ -556,15 +556,6 @@ int pci_p2pdma_distance_many(struct pci_dev *provider, struct device **clients,
->  		return -1;
->  
->  	for (i = 0; i < num_clients; i++) {
-> -#ifdef CONFIG_DMA_VIRT_OPS
-> -		if (clients[i]->dma_ops == &dma_virt_ops) {
-> -			if (verbose)
-> -				dev_warn(clients[i],
-> -					 "cannot be used for peer-to-peer DMA because the driver makes use of dma_virt_ops\n");
-> -			return -1;
-> -		}
-> -#endif
-> -
->  		pci_client = find_parent_pci_dev(clients[i]);
->  		if (!pci_client) {
->  			if (verbose)
-> @@ -837,17 +828,6 @@ static int __pci_p2pdma_map_sg(struct pci_p2pdma_pagemap *p2p_pgmap,
->  	phys_addr_t paddr;
+> @@ -825,13 +825,10 @@ static int __pci_p2pdma_map_sg(struct pci_p2pdma_pagemap *p2p_pgmap,
+>  		struct device *dev, struct scatterlist *sg, int nents)
+>  {
+>  	struct scatterlist *s;
+> -	phys_addr_t paddr;
 >  	int i;
 >  
-> -	/*
-> -	 * p2pdma mappings are not compatible with devices that use
-> -	 * dma_virt_ops. If the upper layers do the right thing
-> -	 * this should never happen because it will be prevented
-> -	 * by the check in pci_p2pdma_distance_many()
-> -	 */
-> -#ifdef CONFIG_DMA_VIRT_OPS
-> -	if (WARN_ON_ONCE(dev->dma_ops == &dma_virt_ops))
-> -		return 0;
-> -#endif
-> -
 >  	for_each_sg(sg, s, nents, i) {
->  		paddr = sg_phys(s);
+> -		paddr = sg_phys(s);
+> -
+> -		s->dma_address = paddr - p2p_pgmap->bus_offset;
+> +		s->dma_address = sg_phys(s) - p2p_pgmap->bus_offset;
+>  		sg_dma_len(s) = s->length;
+>  	}
 >  
 > -- 
 > 2.28.0
