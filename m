@@ -2,128 +2,951 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BDD2A79A8
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 09:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 535F42A7A51
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 10:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729263AbgKEIwt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Nov 2020 03:52:49 -0500
-Received: from mail-am6eur05on2050.outbound.protection.outlook.com ([40.107.22.50]:63649
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726756AbgKEIws (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Nov 2020 03:52:48 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QMM3ly8Vi3r0Oob+8kFTjaabiXQEKYRN81pib/BxzUJe8aGUTgBtJ1uwnt3sPBIC+5rL6YYaQ3xGwAQ6Ma1vnmFLz61IH5K+jf3I/veeQIg1YpJV2UasaGWiKKGsfceTPhA6dYHgRgmtevnWoeMX5m+08FWwUWj1dJJElvzpiyc9LSJMzgwKCTSbG0IpsIBr0nOxGwyWo844ZwZw2AUBVippHvQnr8mspzbP3oB40XVspanV/f+bUQxxZyk1WBOddqFmCL4NwLY9aKsuIc4mpsikdJtdcY64XpnxdacbCPrOFzR3Zm+NLGrEm1zxgkozEdi6wSQQbdhPq+LeMyFzHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=usYIq6ArO5tvX9DB3w6Dz5XSyyphpRXoniQxebcJFaU=;
- b=hWqPtRAeCZ5RrCyeqqYjHXdxlzI/Dk8PgKwV6MNj8uAwhN/xknSzQphqyGRYvcEblMmGXWEwjSD620lHSoFzKrkrUEyTztXZbCaofLymrm2rFzHFt6E81cGGugJiyzjOD6QYWMPur3pXIY7uxZ/jTMwu0A8A2JON6Jol0ex2EfM2Yj3UX2WTuAzdcY58tEpe1MuE9EPezXokX1j2lx8Pazp3wa5qXhdsF0SECZP9fEtDtKfyPq9pe9reHf+Axuw2Xjqac+seH1LZ0yMk6HkQeuVXW25Rno2/4ghgjOfdm23n+FYt3aJfgX/DPQkdO1wI64zDGDJQUAAwNxh1tWSffA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=usYIq6ArO5tvX9DB3w6Dz5XSyyphpRXoniQxebcJFaU=;
- b=LyeSOeKV15iUfGd50Uk3T8T/rcZQqmb41uPvgVzr5prjlkFv2HKpGpaPZFpbxdvPQh6SdLNkGUya35pfa+g42Y43Fq351MUtoOpHoP4f4ZxDloyqmRwf9mAyY/S+KSIwtS40jp9RbXQ87cedhB0Zm7Q7V+VUkgeJwmRc+vs5BNQ=
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=mellanox.com;
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
- by AM7PR05MB7137.eurprd05.prod.outlook.com (2603:10a6:20b:1a9::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19; Thu, 5 Nov
- 2020 08:52:45 +0000
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::c809:3cfb:d4d5:6007]) by AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::c809:3cfb:d4d5:6007%6]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
- 08:52:44 +0000
-Date:   Thu, 5 Nov 2020 10:52:31 +0200
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH] RDMA/cm: Make the local_id_table xarray non-irq
-Message-ID: <20201105085231.GP5429@unreal>
-References: <0-v1-808b6da3bd3f+1857-cm_xarray_no_irq_jgg@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0-v1-808b6da3bd3f+1857-cm_xarray_no_irq_jgg@nvidia.com>
-X-Originating-IP: [216.228.112.21]
-X-ClientProxiedBy: SJ0PR13CA0042.namprd13.prod.outlook.com
- (2603:10b6:a03:2c2::17) To AM6PR05MB6408.eurprd05.prod.outlook.com
- (2603:10a6:20b:b8::23)
+        id S1730276AbgKEJT0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Nov 2020 04:19:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728553AbgKEJTZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Nov 2020 04:19:25 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E21C0613D3
+        for <linux-rdma@vger.kernel.org>; Thu,  5 Nov 2020 01:19:23 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id oq3so1563636ejb.7
+        for <linux-rdma@vger.kernel.org>; Thu, 05 Nov 2020 01:19:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iWD2srPr1cv3JyB5DfrBVQOd6Zyg5fgaeAs2W+Vw5K8=;
+        b=DMP5lLt/LqqgxJKDIKaMGz7PjXqBcqeTHca7WIxBH8Z2Exk4xmZ0vg7LRkQjlswjrw
+         SNmx7imGs3HCcofkIJ9Gu9zHAecS5DSMmF/T83A2gPE6g442X9b/E/snowCwizyEAsZy
+         a95t2BCR5iEkCj15q4zxEBDLb9ZmDOrmfZvHyaJc4rRPALAJWw8O+iNa3K5CIQyj+u/v
+         dDMxJMncP7oHwbyi1mWbcNhmRX8hQHusbSWrpSWmf2kBhTxtvFFcNCavU1H/xtfUgjl8
+         J3gupFamjiZcazDMLxClkYmTQWMUYgc3EcDromVCa34ZKarDTlnlC2Rg21GMf/Zrg/Qo
+         z61g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iWD2srPr1cv3JyB5DfrBVQOd6Zyg5fgaeAs2W+Vw5K8=;
+        b=eDuTa/Blr3cQFSKCzUy8iwBgU/avxNN4KMHv3Vjs2G1vc6K1YvWEnYPkhI6pEaCvan
+         MUV0Bmauz8OhsQjBvQjDk2XWZIjGDVUysckQIos97TlhC9VCxryrlGn4Fs/3e995SFbk
+         Dz+IkiW+Q+bvTc8xR2tqVjytUrg35B/ICa5dlu6oFWcampMjDaEO8x/475Ko6TCTtqkN
+         91TZ/XKXAfa1IeF1rmXrIrQREONEzVruk5dAQrI3KHdvURvH5GVJk4jQmrAN2pFB4L6r
+         ruGb0PVsSRMWM8rjyr3QhkYa00CvXC1vb5GlZ+vCWvygTDyZaGmRWhG4HtnYxMCHtt71
+         Maig==
+X-Gm-Message-State: AOAM5324q8Cfq2dWtq7Nn4VL/N5BXYRn+OpVfAiecxkmqP2bh1ccPQC3
+        VJcLUSs30ojeZDgRJ/YKTUIH+UAnAzqWh4L7lgl1lg==
+X-Google-Smtp-Source: ABdhPJwGM2/sOcRSfdhRLkBsT7IwCAFBUy47txIpuzpkS3bqRitgjGfyA0KtSlAN+0SoiGPVPnMZ80keQGMvbhtqgxQ=
+X-Received: by 2002:a17:906:241b:: with SMTP id z27mr1311098eja.418.1604567961636;
+ Thu, 05 Nov 2020 01:19:21 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (216.228.112.21) by SJ0PR13CA0042.namprd13.prod.outlook.com (2603:10b6:a03:2c2::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.13 via Frontend Transport; Thu, 5 Nov 2020 08:52:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 436c7ed9-8cb1-48ae-716d-08d8816828e7
-X-MS-TrafficTypeDiagnostic: AM7PR05MB7137:
-X-LD-Processed: a652971c-7d2e-4d9b-a6a4-d149256f461b,ExtAddr
-X-Microsoft-Antispam-PRVS: <AM7PR05MB7137ACAC37F35F3266A82535B0EE0@AM7PR05MB7137.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Qeok2nUf8d9htCkbLJ0TPhroKDoQpgdJQQdsOCEqEymMtexaxR7RZ+dgGai5itO6+aSSwA3x6ajsacuDYFdOmnqhXfHEPL4blAhp0oXKwLspZa4wX3N3FZkzAaVPu6qeH5lc91gZCgyElPVbeqAe7hP524J2W2qXtuGQl/Bxzh8GLON/Yk0KHPgel9CkZXJtcrEcf22OtZd49kg7KpLwx8opaqsdQZOl38bn9hVSWeWLRL7MCs6P0cXjMX+ue76Mkx83NlmCc5Y/QsWcnMKezawHyzW9vV9iZOyKf/vD689FrlzgGWhPXRwaakfoFRx9uzoPSlmpCEb+9c0gQa7auQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6408.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(136003)(346002)(376002)(39860400002)(366004)(396003)(4326008)(2906002)(478600001)(52116002)(956004)(86362001)(66476007)(66556008)(6496006)(33716001)(9686003)(66946007)(1076003)(8936002)(5660300002)(83380400001)(33656002)(316002)(186003)(6666004)(8676002)(6916009)(16526019)(26005)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: V2c5bIhtPMR8I9/HXCtTkFOCRHcTudEsINVmEZUD/vi0ShLhNrH2uzHybKl9Ytvw5lvaSD4Cw/1iHKYUZe2T/aiYMoHABURcJvLTT1RaEfaU2TMmMS7o6mdz87iDLqp15R6Y3M3wbEOV2RKyrlWRdGFO4X28TDDKLz2EDDIQ8iiAGFU5g+TF1uaxZ+rcYSE5ORfFnn0kuh4eqovcq+2d/UeQFCCi9ZlAFxPaDjhqL6BjG+f3KUPjZ6jROY1Pgjz4fVOxR4uciWaZrFwHFvQj0pDIoqZxay+j79g8NVungiPDnM1qcuKY7Zid3z3JVbiJpW2gNJKujB5U0OArzVJ3bl7xDfKNL6muKeNfeRsyXuJ+FDt2MH10ADCobynE+XbJJ79yDJ7U9J9MyCSlOqfjg1i3gi+YnKMTbRrwSTRs4kGIBs7ZytGY07zGYxD2xoOQuueZeRpQpZX2uV0TdGHceE5jT7MGhJ5sXTrUZz/mD4NFJjqpOJWgfH77tpviLAs3zdYhNQgRqt7482ZR4jLMhTDu9Mgr21viO0xVvMoHNF/VMllIaSzjCHOE7zSqZjqafngN/wcNE4Di/a4hJc2vtVjCaOUWVYMwDBJqB0UPpOWiCY+0i35KyR4X/FPATNG75EcWATTo+vmOBQQenuifpQ==
-X-MS-Exchange-Transport-Forked: True
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 436c7ed9-8cb1-48ae-716d-08d8816828e7
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR05MB6408.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2020 08:52:44.7677
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xtoADNsMaM7oDQ/amUGxt0Xy0i1nmhufUs9qU8zPaTy/PQtvsSyrADXxIQMGi9TAx0sQUx2evosQQPiTkAXREg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR05MB7137
+References: <20201023003338.1285642-1-david.m.ertman@intel.com> <20201023003338.1285642-2-david.m.ertman@intel.com>
+In-Reply-To: <20201023003338.1285642-2-david.m.ertman@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 5 Nov 2020 01:19:09 -0800
+Message-ID: <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
+Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
+To:     Dave Ertman <david.m.ertman@intel.com>
+Cc:     alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Netdev <netdev@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 05:40:59PM -0400, Jason Gunthorpe wrote:
-> The xarray is never mutated from an IRQ handler, only from work queues
-> under a spinlock_irq. Thus there is no reason for it be an IRQ type
-> xarray.
+Some doc fixups, and minor code feedback. Otherwise looks good to me.
+
+On Thu, Oct 22, 2020 at 5:35 PM Dave Ertman <david.m.ertman@intel.com> wrote:
 >
-> This was copied over from the original IDR code, but the recent rework put
-> the xarray inside another spinlock_irq which will unbalance the unlocking.
+> Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
+> It enables drivers to create an auxiliary_device and bind an
+> auxiliary_driver to it.
 >
-> Fixes: c206f8bad15d ("RDMA/cm: Make it clearer how concurrency works in cm_req_handler()")
-> Reported-by: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> The bus supports probe/remove shutdown and suspend/resume callbacks.
+> Each auxiliary_device has a unique string based id; driver binds to
+> an auxiliary_device based on this id through the bus.
+>
+> Co-developed-by: Kiran Patil <kiran.patil@intel.com>
+> Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> Reviewed-by: Parav Pandit <parav@mellanox.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
 > ---
->  drivers/infiniband/core/cm.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>  Documentation/driver-api/auxiliary_bus.rst | 228 ++++++++++++++++++
+>  Documentation/driver-api/index.rst         |   1 +
+>  drivers/base/Kconfig                       |   3 +
+>  drivers/base/Makefile                      |   1 +
+>  drivers/base/auxiliary.c                   | 267 +++++++++++++++++++++
+>  include/linux/auxiliary_bus.h              |  78 ++++++
+>  include/linux/mod_devicetable.h            |   8 +
+>  scripts/mod/devicetable-offsets.c          |   3 +
+>  scripts/mod/file2alias.c                   |   8 +
+>  9 files changed, 597 insertions(+)
+>  create mode 100644 Documentation/driver-api/auxiliary_bus.rst
+>  create mode 100644 drivers/base/auxiliary.c
+>  create mode 100644 include/linux/auxiliary_bus.h
 >
-> diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-> index 0201364974594f..167e436ae11ded 100644
-> --- a/drivers/infiniband/core/cm.c
-> +++ b/drivers/infiniband/core/cm.c
-> @@ -859,8 +859,8 @@ static struct cm_id_private *cm_alloc_id_priv(struct ib_device *device,
->  	atomic_set(&cm_id_priv->work_count, -1);
->  	refcount_set(&cm_id_priv->refcount, 1);
+> diff --git a/Documentation/driver-api/auxiliary_bus.rst b/Documentation/driver-api/auxiliary_bus.rst
+> new file mode 100644
+> index 000000000000..500f29692c81
+> --- /dev/null
+> +++ b/Documentation/driver-api/auxiliary_bus.rst
+> @@ -0,0 +1,228 @@
+> +.. SPDX-License-Identifier: GPL-2.0-only
+> +
+> +=============
+> +Auxiliary Bus
+> +=============
+> +
+> +In some subsystems, the functionality of the core device (PCI/ACPI/other) is
+> +too complex for a single device to be managed as a monolithic block or a part of
+> +the functionality needs to be exposed to a different subsystem.
+
+I think there are three identified use cases for this now, so call out
+those examples for others to compare if aux bus is a fit for their use
+case.
+
+"In some subsystems, the functionality of the core device
+(PCI/ACPI/other) is too complex to be handled by a monolithic driver
+(e.g. Sound Open Firmware), multiple devices might implement a common
+intersection of functionality (e.g. NICs + RDMA), or a driver may want
+to export an interface for another subsystem to drive (e.g. SIOV
+Physical Function export Virtual Function management)."
+
+> + Splitting the
+> +functionality into smaller orthogonal devices would make it easier to manage
+> +data, power management and domain-specific interaction with the hardware.
+
+Passive voice and I don't understand what is meant by the word "orthogonal"
+
+"A split of the functionality into child-devices representing
+sub-domains of functionality makes it possible to compartmentalize,
+layer, and distribute domain-specific concerns via a Linux
+device-driver model"
+
+> A key
+> +requirement for such a split is that there is no dependency on a physical bus,
+> +device, register accesses or regmap support.
+> These individual devices split from
+> +the core cannot live on the platform bus as they are not physical devices that
+> +are controlled by DT/ACPI. The same argument applies for not using MFD in this
+> +scenario as MFD relies on individual function devices being physical devices.
+
+These last few sentences are confusing the justification of the
+existence of auxiliary bus, not the explanation of when why and how to
+use it.
+
+The "When Should the Auxiliary Bus Be Used" should mention where
+Auxiliary bus fits relative to the platform-bus and MFD, perhaps in an
+explicit "When not to use Auxiliary Bus" section to direct people to
+platform-bus and MFD when those are a better fit.
+
+> +
+> +An example for this kind of requirement is the audio subsystem where a single
+> +IP is handling multiple entities such as HDMI, Soundwire, local devices such as
+> +mics/speakers etc. The split for the core's functionality can be arbitrary or
+> +be defined by the DSP firmware topology and include hooks for test/debug. This
+> +allows for the audio core device to be minimal and focused on hardware-specific
+> +control and communication.
+> +
+> +The auxiliary bus is intended to be minimal, generic and avoid domain-specific
+> +assumptions.
+
+As this file will be sitting in Documentation/ it will be too late to
+"intend" it either does and or it doesn't. This again feels more like
+justification for existence that should already be in the changelog,
+it can go from the Documentation.
+
+> Each auxiliary_device represents a part of its parent
+> +functionality. The generic behavior can be extended and specialized as needed
+> +by encapsulating an auxiliary_device within other domain-specific structures and
+> +the use of .ops callbacks. Devices on the auxiliary bus do not share any
+> +structures and the use of a communication channel with the parent is
+> +domain-specific.
+
+Should there be any guidance here on when to use ops and when to just
+export functions from parent driver to child. EXPORT_SYMBOL_NS() seems
+a perfect fit for publishing shared routines between parent and child.
+
+> +
+> +When Should the Auxiliary Bus Be Used
+> +=====================================
+> +
+> +The auxiliary bus is to be used when a driver and one or more kernel modules,
+> +who share a common header file with the driver, need a mechanism to connect and
+> +provide access to a shared object allocated by the auxiliary_device's
+> +registering driver.  The registering driver for the auxiliary_device(s) and the
+> +kernel module(s) registering auxiliary_drivers can be from the same subsystem,
+> +or from multiple subsystems.
+> +
+> +The emphasis here is on a common generic interface that keeps subsystem
+> +customization out of the bus infrastructure.
+> +
+> +One example could be a multi-port PCI network device that is rdma-capable and
+
+s/could be/is/
+s/multi-port//
+s/rdma-capable/RDMA-capable/
+
+> +needs to export this functionality and attach to an rdma driver in another
+> +subsystem.
+
+"exports a child device to be driven by an auxiliary_driver in the
+RDMA subsystem"
+
+>  The PCI driver will allocate and register an auxiliary_device for
+
+Fix tense confusion:
+
+s/will allocate and register/allocates and registers/
+
+> +each physical function on the NIC.  The rdma driver will register an
+
+s/rdma/RDMA/
+s/will register/registers/
+
+> +auxiliary_driver that will be matched with and probed for each of these
+
+s/that will be matched with and probed for/that claims/
+
+> +auxiliary_devices.  This will give the rdma driver access to the shared data/ops
+> +in the PCI drivers shared object to establish a connection with the PCI driver.
+
+How about?
+
+This conveys data/ops published by the parent PCI device/driver to the
+RDMA auxiliary_driver.
+
+> +
+> +Another use case is for the PCI device to be split out into multiple sub
+> +functions.  For each sub function an auxiliary_device will be created.  A PCI
+> +sub function driver will bind to such devices that will create its own one or
+> +more class devices.  A PCI sub function auxiliary device will likely be
+> +contained in a struct with additional attributes such as user defined sub
+> +function number and optional attributes such as resources and a link to the
+> +parent device.  These attributes could be used by systemd/udev; and hence should
+> +be initialized before a driver binds to an auxiliary_device.
+
+This does not read like an explicit example like the previous 2. Did
+you have something specific in mind?
+
+Here's where the "when not to" / "MFD platform-bus" redirect section can go.
+
+> +
+> +Auxiliary Device
+> +================
+> +
+> +An auxiliary_device is created and registered to represent a part of its parent
+
+s/created and registered to represent/represents/
+
+> +device's functionality. It is given a name that, combined with the registering
+> +drivers KBUILD_MODNAME, creates a match_name that is used for driver binding,
+> +and an id that combined with the match_name provide a unique name to register
+> +with the bus subsystem.
+> +
+> +Registering an auxiliary_device is a two-step process.  First you must call
+
+Imperative implied:
+
+s/you must//
+
+
+> +auxiliary_device_init(), which will check several aspects of the
+> +auxiliary_device struct and perform a device_initialize().  After this step
+> +completes, any error state must have a call to auxiliary_device_unin() in its
+> +resolution path.  The second step in registering an auxiliary_device is to
+> +perform a call to auxiliary_device_add(), which will set the name of the device
+> +and add the device to the bus.
+> +
+> +Unregistering an auxiliary_device is also a two-step process to mirror the
+> +register process.  First will be a call to auxiliary_device_delete(), then
+
+s/will be a call to/call/
+
+> +followed by a call to auxiliary_device_unin().
+
+s/followed by a call to/call/
+
+> +
+> +.. code-block:: c
+> +
+> +       struct auxiliary_device {
+> +               struct device dev;
+> +                const char *name;
+> +               u32 id;
+> +       };
+> +
+> +If two auxiliary_devices both with a match_name "mod.foo" are registered onto
+> +the bus, they must have unique id values (e.g. "x" and "y") so that the
+> +registered devices names will be "mod.foo.x" and "mod.foo.y".  If match_name +
+> +id are not unique, then the device_add will fail and generate an error message.
+> +
+> +The auxiliary_device.dev.type.release or auxiliary_device.dev.release must be
+> +populated with a non-NULL pointer to successfully register the auxiliary_device.
+> +
+> +The auxiliary_device.dev.parent must also be populated.
+> +
+> +Auxiliary Device Memory Model and Lifespan
+> +------------------------------------------
+> +
+> +When a kernel driver registers an auxiliary_device on the auxiliary bus, we will
+> +use the nomenclature to refer to this kernel driver as a registering driver.
+
+Kill this sentence, it adds nothing and has a dreaded "we". Just say:
+
+The registering driver is the entity...
+
+> +is the entity that will allocate memory for the auxiliary_device and register it
+> +on the auxiliary bus.  It is important to note that, as opposed to the platform
+> +bus, the registering driver is wholly responsible for the management for the
+> +memory used for the driver object.
+> +
+> +A parent object, defined in the shared header file, will contain the
+
+Another "will", and more below. Convert all to present tense please.
+
+> +auxiliary_device.  It will also contain a pointer to the shared object(s), which
+> +will also be defined in the shared header.  Both the parent object and the
+> +shared object(s) will be allocated by the registering driver.  This layout
+> +allows the auxiliary_driver's registering module to perform a container_of()
+> +call to go from the pointer to the auxiliary_device, that is passed during the
+> +call to the auxiliary_driver's probe function, up to the parent object, and then
+> +have access to the shared object(s).
+> +
+> +The memory for the auxiliary_device will be freed only in its release()
+> +callback flow as defined by its registering driver.
+> +
+> +The memory for the shared object(s) must have a lifespan equal to, or greater
+> +than, the lifespan of the memory for the auxiliary_device.  The auxiliary_driver
+> +should only consider that this shared object is valid as long as the
+> +auxiliary_device is still registered on the auxiliary bus.  It is up to the
+> +registering driver to manage (e.g. free or keep available) the memory for the
+> +shared object beyond the life of the auxiliary_device.
+> +
+> +Registering driver must unregister all auxiliary devices before its registering
+> +parent device's remove() is completed.
+
+Too many "registerings"
+
+The registering driver must unregister all auxiliary devices before
+its own driver.remove() callback is completed.
+
+> +
+> +Auxiliary Drivers
+> +=================
+> +
+> +Auxiliary drivers follow the standard driver model convention, where
+> +discovery/enumeration is handled by the core, and drivers
+> +provide probe() and remove() methods. They support power management
+> +and shutdown notifications using the standard conventions.
+> +
+> +.. code-block:: c
+> +
+> +       struct auxiliary_driver {
+> +               int (*probe)(struct auxiliary_device *,
+> +                             const struct auxiliary_device_id *id);
+> +               int (*remove)(struct auxiliary_device *);
+> +               void (*shutdown)(struct auxiliary_device *);
+> +               int (*suspend)(struct auxiliary_device *, pm_message_t);
+> +               int (*resume)(struct auxiliary_device *);
+> +               struct device_driver driver;
+> +               const struct auxiliary_device_id *id_table;
+> +       };
+> +
+> +Auxiliary drivers register themselves with the bus by calling
+> +auxiliary_driver_register(). The id_table contains the match_names of auxiliary
+> +devices that a driver can bind with.
+> +
+> +Example Usage
+> +=============
+> +
+> +Auxiliary devices are created and registered by a subsystem-level core device
+> +that needs to break up its functionality into smaller fragments. One way to
+> +extend the scope of an auxiliary_device would be to encapsulate it within a
+
+More passive tense
+
+s/would be/is/
+
+> +domain-specific structure defined by the parent device. This structure contains
+> +the auxiliary_device and any associated shared data/callbacks needed to
+> +establish the connection with the parent.
+> +
+> +An example would be:
+
+s/would be/is/
+
+> +
+> +.. code-block:: c
+> +
+> +        struct foo {
+> +               struct auxiliary_device auxdev;
+> +               void (*connect)(struct auxiliary_device *auxdev);
+> +               void (*disconnect)(struct auxiliary_device *auxdev);
+> +               void *data;
+> +        };
+> +
+> +The parent device would then register the auxiliary_device by calling
+
+again with the passive...
+
+> +auxiliary_device_init(), and then auxiliary_device_add(), with the pointer to
+> +the auxdev member of the above structure. The parent would provide a name for
+> +the auxiliary_device that, combined with the parent's KBUILD_MODNAME, will
+> +create a match_name that will be used for matching and binding with a driver.
+> +
+> +Whenever an auxiliary_driver is registered, based on the match_name, the
+> +auxiliary_driver's probe() is invoked for the matching devices.  The
+> +auxiliary_driver can also be encapsulated inside custom drivers that make the
+> +core device's functionality extensible by adding additional domain-specific ops
+> +as follows:
+> +
+> +.. code-block:: c
+> +
+> +       struct my_ops {
+> +               void (*send)(struct auxiliary_device *auxdev);
+> +               void (*receive)(struct auxiliary_device *auxdev);
+> +       };
+> +
+> +
+> +       struct my_driver {
+> +               struct auxiliary_driver auxiliary_drv;
+> +               const struct my_ops ops;
+> +       };
+> +
+> +An example of this type of usage would be:
+
+*is
+
+> +
+> +.. code-block:: c
+> +
+> +       const struct auxiliary_device_id my_auxiliary_id_table[] = {
+> +               { .name = "foo_mod.foo_dev" },
+> +               { },
+> +       };
+> +
+> +       const struct my_ops my_custom_ops = {
+> +               .send = my_tx,
+> +               .receive = my_rx,
+> +       };
+> +
+> +       const struct my_driver my_drv = {
+> +               .auxiliary_drv = {
+> +                       .name = "myauxiliarydrv",
+> +                       .id_table = my_auxiliary_id_table,
+> +                       .probe = my_probe,
+> +                       .remove = my_remove,
+> +                       .shutdown = my_shutdown,
+> +               },
+> +               .ops = my_custom_ops,
+> +       };
+> diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
+> index 987d6e74ea6a..af206dc816ca 100644
+> --- a/Documentation/driver-api/index.rst
+> +++ b/Documentation/driver-api/index.rst
+> @@ -72,6 +72,7 @@ available subsections can be seen below.
+>     thermal/index
+>     fpga/index
+>     acpi/index
+> +   auxiliary_bus
+>     backlight/lp855x-driver.rst
+>     connector
+>     console
+> diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
+> index 8d7001712062..040be48ce046 100644
+> --- a/drivers/base/Kconfig
+> +++ b/drivers/base/Kconfig
+> @@ -1,6 +1,9 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  menu "Generic Driver Options"
 >
-> -	ret = xa_alloc_cyclic_irq(&cm.local_id_table, &id, NULL, xa_limit_32b,
-> -				  &cm.local_id_next, GFP_KERNEL);
-> +	ret = xa_alloc_cyclic(&cm.local_id_table, &id, NULL, xa_limit_32b,
-> +			      &cm.local_id_next, GFP_KERNEL);
->  	if (ret < 0)
->  		goto error;
->  	cm_id_priv->id.local_id = (__force __be32)id ^ cm.random_id_operand;
-> @@ -878,8 +878,8 @@ static struct cm_id_private *cm_alloc_id_priv(struct ib_device *device,
->   */
->  static void cm_finalize_id(struct cm_id_private *cm_id_priv)
->  {
-> -	xa_store_irq(&cm.local_id_table, cm_local_id(cm_id_priv->id.local_id),
-> -		     cm_id_priv, GFP_KERNEL);
-> +	xa_store(&cm.local_id_table, cm_local_id(cm_id_priv->id.local_id),
-> +		 cm_id_priv, GFP_ATOMIC);
+> +config AUXILIARY_BUS
+> +       bool
+
+tristate? Unless you need non-exported symbols, might as well let this
+be a module.
+
+> +
+>  config UEVENT_HELPER
+>         bool "Support for uevent helper"
+>         help
+> diff --git a/drivers/base/Makefile b/drivers/base/Makefile
+> index 41369fc7004f..5e7bf9669a81 100644
+> --- a/drivers/base/Makefile
+> +++ b/drivers/base/Makefile
+> @@ -7,6 +7,7 @@ obj-y                   := component.o core.o bus.o dd.o syscore.o \
+>                            attribute_container.o transport_class.o \
+>                            topology.o container.o property.o cacheinfo.o \
+>                            swnode.o
+> +obj-$(CONFIG_AUXILIARY_BUS) += auxiliary.o
+>  obj-$(CONFIG_DEVTMPFS) += devtmpfs.o
+>  obj-y                  += power/
+>  obj-$(CONFIG_ISA_BUS_API)      += isa.o
+> diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
+> new file mode 100644
+> index 000000000000..b7c66785352e
+> --- /dev/null
+> +++ b/drivers/base/auxiliary.c
+> @@ -0,0 +1,267 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Software based bus for Auxiliary devices
+
+I'd just remove this line, it doesn't add anything.
+
+> + *
+> + * Copyright (c) 2019-2020 Intel Corporation
+> + *
+> + * Please see Documentation/driver-api/auxiliary_bus.rst for more information.
+> + */
+> +
+> +#define pr_fmt(fmt) "%s:%s: " fmt, KBUILD_MODNAME, __func__
+> +
+> +#include <linux/device.h>
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/pm_domain.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/string.h>
+> +#include <linux/auxiliary_bus.h>
+> +
+> +static const struct auxiliary_device_id *auxiliary_match_id(const struct auxiliary_device_id *id,
+> +                                                           const struct auxiliary_device *auxdev)
+> +{
+> +       for (; id->name[0]; id++) {
+> +               const char *p = strrchr(dev_name(&auxdev->dev), '.');
+> +               int match_size;
+> +
+> +               if (!p)
+> +                       continue;
+> +               match_size = p - dev_name(&auxdev->dev);
+> +
+> +               /* use dev_name(&auxdev->dev) prefix before last '.' char to match to */
+> +               if (strlen(id->name) == match_size &&
+> +                   !strncmp(dev_name(&auxdev->dev), id->name, match_size))
+> +                       return id;
+> +       }
+> +       return NULL;
+> +}
+> +
+> +static int auxiliary_match(struct device *dev, struct device_driver *drv)
+> +{
+> +       struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
+> +       struct auxiliary_driver *auxdrv = to_auxiliary_drv(drv);
+> +
+> +       return !!auxiliary_match_id(auxdrv->id_table, auxdev);
+> +}
+> +
+> +static int auxiliary_uevent(struct device *dev, struct kobj_uevent_env *env)
+> +{
+> +       const char *name, *p;
+> +
+> +       name = dev_name(dev);
+> +       p = strrchr(name, '.');
+> +
+> +       return add_uevent_var(env, "MODALIAS=%s%.*s", AUXILIARY_MODULE_PREFIX, (int)(p - name),
+> +                             name);
+> +}
+> +
+> +static const struct dev_pm_ops auxiliary_dev_pm_ops = {
+> +       SET_RUNTIME_PM_OPS(pm_generic_runtime_suspend, pm_generic_runtime_resume, NULL)
+> +       SET_SYSTEM_SLEEP_PM_OPS(pm_generic_suspend, pm_generic_resume)
+> +};
+> +
+> +static int auxiliary_bus_probe(struct device *dev)
+> +{
+> +       struct auxiliary_driver *auxdrv = to_auxiliary_drv(dev->driver);
+> +       struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
+> +       int ret;
+> +
+> +       ret = dev_pm_domain_attach(dev, true);
+> +       if (ret) {
+> +               dev_warn(dev, "Failed to attach to PM Domain : %d\n", ret);
+> +               return ret;
+> +       }
+> +
+> +       ret = auxdrv->probe(auxdev, auxiliary_match_id(auxdrv->id_table, auxdev));
+> +       if (ret)
+> +               dev_pm_domain_detach(dev, true);
+> +
+> +       return ret;
+> +}
+> +
+> +static int auxiliary_bus_remove(struct device *dev)
+> +{
+> +       struct auxiliary_driver *auxdrv = to_auxiliary_drv(dev->driver);
+> +       struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
+> +       int ret = 0;
+> +
+> +       if (auxdrv->remove)
+> +               ret = auxdrv->remove(auxdev);
+> +       dev_pm_domain_detach(dev, true);
+> +
+> +       return ret;
+> +}
+> +
+> +static void auxiliary_bus_shutdown(struct device *dev)
+> +{
+> +       struct auxiliary_driver *auxdrv = to_auxiliary_drv(dev->driver);
+> +       struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
+> +
+> +       if (auxdrv->shutdown)
+> +               auxdrv->shutdown(auxdev);
+> +}
+> +
+> +static struct bus_type auxiliary_bus_type = {
+> +       .name = "auxiliary",
+> +       .probe = auxiliary_bus_probe,
+> +       .remove = auxiliary_bus_remove,
+> +       .shutdown = auxiliary_bus_shutdown,
+> +       .match = auxiliary_match,
+> +       .uevent = auxiliary_uevent,
+> +       .pm = &auxiliary_dev_pm_ops,
+> +};
+> +
+> +/**
+> + * auxiliary_device_init - check auxiliary_device and initialize
+> + * @auxdev: auxiliary device struct
+> + *
+> + * This is the first step in the two-step process to register an auxiliary_device.
+> + *
+> + * When this function returns an error code, then the device_initialize will *not* have
+> + * been performed, and the caller will be responsible to free any memory allocated for the
+> + * auxiliary_device in the error path directly.
+> + *
+> + * It returns 0 on success.  On success, the device_initialize has been performed.  After this
+> + * point any error unwinding will need to include a call to auxiliary_device_init().
+
+Whoops, you meant to say auxiliary_device_uninit().
+
+> + * In this post-initialize error scenario, a call to the device's .release callback will be
+> + * triggered by auxiliary_device_uninit(), and all memory clean-up is expected to be
+
+with this function already mentioned above you can drop "by
+auxiliary_device_uninit()"
+
+> + * handled there.
+> + */
+> +int auxiliary_device_init(struct auxiliary_device *auxdev)
+> +{
+> +       struct device *dev = &auxdev->dev;
+> +
+> +       if (!dev->parent) {
+> +               pr_err("auxiliary_device has a NULL dev->parent\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (!auxdev->name) {
+> +               pr_err("auxiliary_device has a NULL name\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       dev->bus = &auxiliary_bus_type;
+> +       device_initialize(&auxdev->dev);
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(auxiliary_device_init);
+> +
+> +/**
+> + * __auxiliary_device_add - add an auxiliary bus device
+> + * @auxdev: auxiliary bus device to add to the bus
+> + * @modname: name of the parent device's driver module
+> + *
+> + * This is the second step in the two-step process to register an auxiliary_device.
+> + *
+> + * This function must be called after a successful call to auxiliary_device_init(), which
+> + * will perform the device_initialize.  This means that if this returns an error code, then a
+> + * call to auxiliary_device_uninit() must be performed so that the .release callback will
+> + * be triggered to free the memory associated with the auxiliary_device.
+
+Might want to mention the typical expectation is that users call
+auxiliary_device_add without underbars. Only if custom names are
+needed would this direct version be used.
+
+> + */
+> +int __auxiliary_device_add(struct auxiliary_device *auxdev, const char *modname)
+> +{
+> +       struct device *dev = &auxdev->dev;
+> +       int ret;
+> +
+> +       if (!modname) {
+> +               pr_err("auxiliary device modname is NULL\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       ret = dev_set_name(dev, "%s.%s.%d", modname, auxdev->name, auxdev->id);
+> +       if (ret) {
+> +               pr_err("auxiliary device dev_set_name failed: %d\n", ret);
+> +               return ret;
+> +       }
+> +
+> +       ret = device_add(dev);
+> +       if (ret)
+> +               dev_err(dev, "adding auxiliary device failed!: %d\n", ret);
+> +
+> +       return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(__auxiliary_device_add);
+> +
+> +/**
+> + * auxiliary_find_device - auxiliary device iterator for locating a particular device.
+> + * @start: Device to begin with
+> + * @data: Data to pass to match function
+> + * @match: Callback function to check device
+> + *
+> + * This function returns a reference to a device that is 'found'
+> + * for later use, as determined by the @match callback.
+> + *
+> + * The callback should return 0 if the device doesn't match and non-zero
+> + * if it does.  If the callback returns non-zero, this function will
+> + * return to the caller and not iterate over any more devices.
+> + */
+> +struct auxiliary_device *
+> +auxiliary_find_device(struct device *start, const void *data,
+> +                     int (*match)(struct device *dev, const void *data))
+> +{
+> +       struct device *dev;
+> +
+> +       dev = bus_find_device(&auxiliary_bus_type, start, data, match);
+> +       if (!dev)
+> +               return NULL;
+> +
+> +       return to_auxiliary_dev(dev);
+> +}
+> +EXPORT_SYMBOL_GPL(auxiliary_find_device);
+> +
+> +/**
+> + * __auxiliary_driver_register - register a driver for auxiliary bus devices
+> + * @auxdrv: auxiliary_driver structure
+> + * @owner: owning module/driver
+> + * @modname: KBUILD_MODNAME for parent driver
+> + */
+> +int __auxiliary_driver_register(struct auxiliary_driver *auxdrv, struct module *owner,
+> +                               const char *modname)
+> +{
+> +       if (WARN_ON(!auxdrv->probe) || WARN_ON(!auxdrv->id_table))
+> +               return -EINVAL;
+> +
+> +       if (auxdrv->name)
+> +               auxdrv->driver.name = kasprintf(GFP_KERNEL, "%s.%s", modname, auxdrv->name);
+> +       else
+> +               auxdrv->driver.name = kasprintf(GFP_KERNEL, "%s", modname);
+> +       if (!auxdrv->driver.name)
+> +               return -ENOMEM;
+> +
+> +       auxdrv->driver.owner = owner;
+> +       auxdrv->driver.bus = &auxiliary_bus_type;
+> +       auxdrv->driver.mod_name = modname;
+> +
+> +       return driver_register(&auxdrv->driver);
+> +}
+> +EXPORT_SYMBOL_GPL(__auxiliary_driver_register);
+> +
+> +/**
+> + * auxiliary_driver_unregister - unregister a driver
+> + * @auxdrv: auxiliary_driver structure
+> + */
+> +void auxiliary_driver_unregister(struct auxiliary_driver *auxdrv)
+> +{
+> +       driver_unregister(&auxdrv->driver);
+> +       kfree(auxdrv->driver.name);
+> +}
+> +EXPORT_SYMBOL_GPL(auxiliary_driver_unregister);
+> +
+> +static int __init auxiliary_bus_init(void)
+> +{
+> +       return bus_register(&auxiliary_bus_type);
+> +}
+> +
+> +static void __exit auxiliary_bus_exit(void)
+> +{
+> +       bus_unregister(&auxiliary_bus_type);
+> +}
+> +
+> +module_init(auxiliary_bus_init);
+> +module_exit(auxiliary_bus_exit);
+> +
+> +MODULE_LICENSE("GPL");
+
+Per above SPDX is v2 only, so...
+
+MODULE_LICENSE("GPL v2");
+
+> +MODULE_DESCRIPTION("Auxiliary Bus");
+> +MODULE_AUTHOR("David Ertman <david.m.ertman@intel.com>");
+> +MODULE_AUTHOR("Kiran Patil <kiran.patil@intel.com>");
+> diff --git a/include/linux/auxiliary_bus.h b/include/linux/auxiliary_bus.h
+> new file mode 100644
+> index 000000000000..282fbf7bf9af
+> --- /dev/null
+> +++ b/include/linux/auxiliary_bus.h
+> @@ -0,0 +1,78 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2019-2020 Intel Corporation
+> + *
+> + * Please see Documentation/driver-api/auxiliary_bus.rst for more information.
+> + */
+> +
+> +#ifndef _AUXILIARY_BUS_H_
+> +#define _AUXILIARY_BUS_H_
+> +
+> +#include <linux/device.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/slab.h>
+> +
+> +struct auxiliary_device {
+> +       struct device dev;
+> +       const char *name;
+
+I'd say name this "suffix" since it is only a component of the name.
+
+> +       u32 id;
+> +};
+> +
+> +struct auxiliary_driver {
+> +       int (*probe)(struct auxiliary_device *auxdev, const struct auxiliary_device_id *id);
+> +       int (*remove)(struct auxiliary_device *auxdev);
+> +       void (*shutdown)(struct auxiliary_device *auxdev);
+> +       int (*suspend)(struct auxiliary_device *auxdev, pm_message_t state);
+> +       int (*resume)(struct auxiliary_device *auxdev);
+> +       const char *name;
+> +       struct device_driver driver;
+> +       const struct auxiliary_device_id *id_table;
+> +};
+> +
+> +static inline struct auxiliary_device *to_auxiliary_dev(struct device *dev)
+> +{
+> +       return container_of(dev, struct auxiliary_device, dev);
+> +}
+> +
+> +static inline struct auxiliary_driver *to_auxiliary_drv(struct device_driver *drv)
+> +{
+> +       return container_of(drv, struct auxiliary_driver, driver);
+> +}
+> +
+> +int auxiliary_device_init(struct auxiliary_device *auxdev);
+> +int __auxiliary_device_add(struct auxiliary_device *auxdev, const char *modname);
+> +#define auxiliary_device_add(auxdev) __auxiliary_device_add(auxdev, KBUILD_MODNAME)
+> +
+> +static inline void auxiliary_device_uninit(struct auxiliary_device *auxdev)
+> +{
+> +       put_device(&auxdev->dev);
+> +}
+> +
+> +static inline void auxiliary_device_delete(struct auxiliary_device *auxdev)
+> +{
+> +       device_del(&auxdev->dev);
+> +}
+> +
+> +int __auxiliary_driver_register(struct auxiliary_driver *auxdrv, struct module *owner,
+> +                               const char *modname);
+> +#define auxiliary_driver_register(auxdrv) \
+> +       __auxiliary_driver_register(auxdrv, THIS_MODULE, KBUILD_MODNAME)
+> +
+> +void auxiliary_driver_unregister(struct auxiliary_driver *auxdrv);
+> +
+> +/**
+> + * module_auxiliary_driver() - Helper macro for registering an auxiliary driver
+> + * @__auxiliary_driver: auxiliary driver struct
+> + *
+> + * Helper macro for auxiliary drivers which do not do anything special in
+> + * module init/exit. This eliminates a lot of boilerplate. Each module may only
+> + * use this macro once, and calling it replaces module_init() and module_exit()
+> + */
+> +#define module_auxiliary_driver(__auxiliary_driver) \
+> +       module_driver(__auxiliary_driver, auxiliary_driver_register, auxiliary_driver_unregister)
+> +
+> +struct auxiliary_device *
+> +auxiliary_find_device(struct device *start, const void *data,
+> +                     int (*match)(struct device *dev, const void *data));
+> +
+> +#endif /* _AUXILIARY_BUS_H_ */
+> diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+> index 5b08a473cdba..c425290b21e2 100644
+> --- a/include/linux/mod_devicetable.h
+> +++ b/include/linux/mod_devicetable.h
+> @@ -838,4 +838,12 @@ struct mhi_device_id {
+>         kernel_ulong_t driver_data;
+>  };
+>
+> +#define AUXILIARY_NAME_SIZE 32
+> +#define AUXILIARY_MODULE_PREFIX "auxiliary:"
+> +
+> +struct auxiliary_device_id {
+> +       char name[AUXILIARY_NAME_SIZE];
+> +       kernel_ulong_t driver_data;
+> +};
+> +
+>  #endif /* LINUX_MOD_DEVICETABLE_H */
+> diff --git a/scripts/mod/devicetable-offsets.c b/scripts/mod/devicetable-offsets.c
+> index 27007c18e754..e377f52dbfa3 100644
+> --- a/scripts/mod/devicetable-offsets.c
+> +++ b/scripts/mod/devicetable-offsets.c
+> @@ -243,5 +243,8 @@ int main(void)
+>         DEVID(mhi_device_id);
+>         DEVID_FIELD(mhi_device_id, chan);
+>
+> +       DEVID(auxiliary_device_id);
+> +       DEVID_FIELD(auxiliary_device_id, name);
+> +
+>         return 0;
 >  }
-
-I see that in the ib_create_cm_id() function, we call to cm_finalize_id(),
-won't it be a problem to do it without irq lock?
-
-Thanks
+> diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
+> index 2417dd1dee33..fb4827027536 100644
+> --- a/scripts/mod/file2alias.c
+> +++ b/scripts/mod/file2alias.c
+> @@ -1364,6 +1364,13 @@ static int do_mhi_entry(const char *filename, void *symval, char *alias)
+>  {
+>         DEF_FIELD_ADDR(symval, mhi_device_id, chan);
+>         sprintf(alias, MHI_DEVICE_MODALIAS_FMT, *chan);
+> +       return 1;
+> +}
+> +
+> +static int do_auxiliary_entry(const char *filename, void *symval, char *alias)
+> +{
+> +       DEF_FIELD_ADDR(symval, auxiliary_device_id, name);
+> +       sprintf(alias, AUXILIARY_MODULE_PREFIX "%s", *name);
+>
+>         return 1;
+>  }
+> @@ -1442,6 +1449,7 @@ static const struct devtable devtable[] = {
+>         {"tee", SIZE_tee_client_device_id, do_tee_entry},
+>         {"wmi", SIZE_wmi_device_id, do_wmi_entry},
+>         {"mhi", SIZE_mhi_device_id, do_mhi_entry},
+> +       {"auxiliary", SIZE_auxiliary_device_id, do_auxiliary_entry},
+>  };
+>
+>  /* Create MODULE_ALIAS() statements.
+> --
+> 2.26.2
+>
