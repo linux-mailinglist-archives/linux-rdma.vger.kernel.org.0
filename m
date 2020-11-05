@@ -2,111 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBC92A8887
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 22:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A6B2A8972
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 23:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732156AbgKEVJ4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Nov 2020 16:09:56 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:23934 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726729AbgKEVJ4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Nov 2020 16:09:56 -0500
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa46a220000>; Fri, 06 Nov 2020 05:09:54 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 5 Nov
- 2020 21:09:52 +0000
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.106)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 5 Nov 2020 21:09:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l7Mm8rjmSxgUjiEKPG+2C2ztLxyMxJD8g4JqIscbI9IcVuiOymBJ9Zw2OceEa5XQcmqxs+FSZsHWqgUBBwM5NmaLj0t3siT/KUrqUrfWlj4ncLFilLUjo5ulfN3CSt/+/bcOJgIPF2PDsutbCCBDduc/WtiUCCwMx2tkYSG1QpGqFVw8NAkqZGkUMxUibgxLMJh5CwyvLZqtaRBb00fUMnOhiWCfQvwziAKDOGnhy5zGJUSQ98BWM9s8yJmuWHaD0ayVq8fc8lZa+BiR43rsjYo3jgmNoXY3hITse5wwB+nkxxIPRH6Hkoea/U5axI+YNYyxPbEHoUjwd5TsCEZVZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UTpSXDMNYpq/ZlPjrRPFdXrTNx19FUH06M+gwR9NKyc=;
- b=dslCMAGAOpYGxSqUDx40LVedgBfzDAWlXCqsEo4aE4mv6yMMl4yMhUaaoYI/wiuT1dCgckj6NIyVc6L/jp/GOPjrbs0fDkRx0BpT10MS9HLlDBbRHSFv8+W0F6fiDxvtxDPoN3G64CZCy9iWc/wF6USUwMazba1nc0ntippw44OPuBRkrnz2dmgbjkAoqs22UZtKIM9MEsyXNxLc+vPwu+4XDLr8VN7LFJBc4PbDX/PIIOyrtlVhUk496fg2JRWZszUrA4M7Lbog2/bbHaGxr5cK4DBkBVxULRzs+aYWOglE8xX4W5myAAipXwM6FHC22DG0vGaVz1zSWpQJRf8vnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3305.namprd12.prod.outlook.com (2603:10b6:5:189::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Thu, 5 Nov
- 2020 21:09:50 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
- 21:09:50 +0000
-Date:   Thu, 5 Nov 2020 17:09:48 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Saeed Mahameed <saeed@kernel.org>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>, <linux-rdma@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>, <netdev@vger.kernel.org>,
-        Parav Pandit <parav@nvidia.com>, Roi Dayan <roid@nvidia.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <tiwai@suse.de>,
-        <broonie@kernel.org>, "David S . Miller" <davem@davemloft.net>,
-        <ranjani.sridharan@linux.intel.com>,
-        <pierre-louis.bossart@linux.intel.com>, <fred.oh@linux.intel.com>,
-        <shiraz.saleem@intel.com>, <dan.j.williams@intel.com>,
-        <kiran.patil@intel.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH mlx5-next v1 05/11] net/mlx5: Register mlx5 devices to
- auxiliary virtual bus
-Message-ID: <20201105210948.GS2620339@nvidia.com>
-References: <20201101201542.2027568-1-leon@kernel.org>
- <20201101201542.2027568-6-leon@kernel.org>
- <d10e7a08200458c1bddb72fc983a5917daebc8f1.camel@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <d10e7a08200458c1bddb72fc983a5917daebc8f1.camel@kernel.org>
-X-ClientProxiedBy: MN2PR15CA0052.namprd15.prod.outlook.com
- (2603:10b6:208:237::21) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1732731AbgKEWA4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Nov 2020 17:00:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732585AbgKEWAz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Nov 2020 17:00:55 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803B8C0613D3
+        for <linux-rdma@vger.kernel.org>; Thu,  5 Nov 2020 14:00:55 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id s25so4856834ejy.6
+        for <linux-rdma@vger.kernel.org>; Thu, 05 Nov 2020 14:00:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kkrL6/jK3eJFpTLVXsZRPhI+a3UIbjZsmKJ9Y1LYQJ0=;
+        b=l1zyt1jYkTklLUA4dKaMEI57G5m3V/WrJO9UWEROVOt1ialjv5+aPaK+2azNEcKZm0
+         vrcxfUIr6eZ8Kun/So75Mc20VmON8d5xdIS2rpzD+CsMBd2VqqhnemRqlDOnL66sjr1P
+         Ecc5lreu6+8+82eLvbrs02WwGF4FFHLHcePgPZ8d4QfyEF9+q7bmSY/+90lZC5kIEp4O
+         5u8S7sFHPozXs0wKAV3gQx9l3oe6/V92olWejfApaKFk3N1zIixtWQeU33iTAoGmromx
+         XUW+nJIH2V3f6sE6BWIFVXi1z/N5WJiO7KgF5iUw/PsjqHrTRre+btTWTFt0ilKSzUBm
+         fn3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kkrL6/jK3eJFpTLVXsZRPhI+a3UIbjZsmKJ9Y1LYQJ0=;
+        b=ciq9uPf8XUcSs91xqoy+WW9EGrpyt1nIyHgGjiMV6BGTVD7JAiLgBGJ3do1t4Aqaez
+         8MSx+k6BCFMIz+q2CYak20rPwa1oHcbOeDLIb+6reiiItxSG+l+lOvNBT1ihz6FNUw5D
+         hPExvrWx+6gMsrSUySFb7bDYGzHJWm5FuuJSeSK2r7AXaU3XfDZOEXySPQX3oBSbaPUl
+         JLB4hZUPdwKFdAml/Y/cduxtsx2F83h2CK/KYTw2JI0DIX5NrFxbF2MDhjuP6imfPs5r
+         LwrF+GME1nr4hcKnmsNJpUBy4obexNx/MKsRt7H2OO9TB1r4h/MPb9gZqejuJUzSVeko
+         W8Zw==
+X-Gm-Message-State: AOAM533VVupsp3lrqXWcHrj+q5TOTcLnwhW/6GI8evYnSpAuxPdCVsDz
+        sL3KUiuVuu6wR7RcvhQqNVwfiwQOYvBvjsHEpqoJeQ==
+X-Google-Smtp-Source: ABdhPJythImg+6Su9fzxeATyfrRJDwfwiTfRoJbZhE2LPNRyXKMolHFGhd5ZFcfi1TtxdV0OdBNkOfUeah9GASwsFOs=
+X-Received: by 2002:a17:906:ad8e:: with SMTP id la14mr4221902ejb.264.1604613654118;
+ Thu, 05 Nov 2020 14:00:54 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR15CA0052.namprd15.prod.outlook.com (2603:10b6:208:237::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Thu, 5 Nov 2020 21:09:49 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kamVw-000OcU-51; Thu, 05 Nov 2020 17:09:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604610594; bh=UTpSXDMNYpq/ZlPjrRPFdXrTNx19FUH06M+gwR9NKyc=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=SUx0ceXcIW2zyJzHeYJoQGPTM/viv1DoGfTPcR0+or2v9digYGZK78iY9mTNpmef7
-         eUtw7hgBMufh50UwcciJQ8V2m7eaCVfamyaldJ8oynQvlS2KpW3k6O42mi39+Tjz28
-         EgfhLlS304zbVNNTXO4RlSkKNHCUCZLAmD9Wu7k3z8sHagGO2c0AyuUxtwgMGqg+Tv
-         sDF6YnUQPt9cLhjFOB4x1uUNGN2qrHxOc9wiQzSsAI3U2RrNHywHlSUvRv12EAd5Y5
-         MhrzRRKuj94zXBaNHtf1YY6rZP9GT6oOgpknv5oJu5B4Oda3hgFQlqRy9g18EgdqIH
-         CNI51dBK3rr0w==
+References: <20201023003338.1285642-1-david.m.ertman@intel.com>
+ <20201023003338.1285642-2-david.m.ertman@intel.com> <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
+ <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
+In-Reply-To: <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 5 Nov 2020 14:00:00 -0800
+Message-ID: <CAPcyv4hjCmaCEUhgchkJO7WaGQeTz8gtS2YgMtBAvoGBksvvSg@mail.gmail.com>
+Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
+To:     "Ertman, David M" <david.m.ertman@intel.com>
+Cc:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Netdev <netdev@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 12:59:20PM -0800, Saeed Mahameed wrote:
+On Thu, Nov 5, 2020 at 11:28 AM Ertman, David M
+<david.m.ertman@intel.com> wrote:
+[..]
+> > > Each auxiliary_device represents a part of its parent
+> > > +functionality. The generic behavior can be extended and specialized as
+> > needed
+> > > +by encapsulating an auxiliary_device within other domain-specific
+> > structures and
+> > > +the use of .ops callbacks. Devices on the auxiliary bus do not share any
+> > > +structures and the use of a communication channel with the parent is
+> > > +domain-specific.
+> >
+> > Should there be any guidance here on when to use ops and when to just
+> > export functions from parent driver to child. EXPORT_SYMBOL_NS() seems
+> > a perfect fit for publishing shared routines between parent and child.
+> >
+>
+> I would leave this up the driver writers to determine what is best for them.
 
-> 2. you can always load a driver without its underlying device existed.
-> for example, you can load a pci device driver/module and it will load
-> and wait for pci devices to pop up, the subsysetem infrastructure will
-> match between drivers and devices and probe them.
+I think there is a pathological case that can be avoided with a
+statement like the following:
 
-Yes, this works fine with this design
+"Note that ops are intended as a way to augment instance behavior
+within a class of auxiliary devices, it is not the mechanism for
+exporting common infrastructure from the parent. Consider
+EXPORT_SYMBOL_NS() to convey infrastructure from the parent module to
+the auxiliary module(s)."
 
-> struct aux_driver mlx5_vpda_aux_driver {
-> 
->       .name = "vdpa",
->        /* match this driver with mlx5_core devices */
->       .id_table = {"mlx5_core"}, 
->       .ops {
->             /* called before probe on actual aux mlx5_core device */
->            .is_supported(struct aux_device); 
-
-This means module auto loading is impossible, we can't tell to load
-the module until we load the module to call the is_supported code ..
-
-Jason
+As for your other dispositions of the feedback, looks good to me.
