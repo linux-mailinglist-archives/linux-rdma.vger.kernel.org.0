@@ -2,114 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C88932A780B
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 08:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CA92A782A
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 08:44:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728553AbgKEHcT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Nov 2020 02:32:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbgKEHcQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Nov 2020 02:32:16 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 930A420936;
-        Thu,  5 Nov 2020 07:32:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604561534;
-        bh=95POjnfgmnBfa+PcIUbO71yIixyEwcBCZu8ONi41qSI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=v7jixjnRS8IofHWpcD2+DxxCXJ90U/evKE0DUQul2JT/Y8H+g7nVaRbkifKy48xox
-         VDGBlpUHfWervGmkwxAM0ACUtpdpFRRs9k0EqAwpLdfoM3L9+GBIUBILJMUGPAe8zd
-         NU6sc18Y6rTq9FYLuezM9oiY3jBE5sPskCQybDUw=
-Date:   Thu, 5 Nov 2020 08:33:02 +0100
-From:   gregkh <gregkh@linuxfoundation.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Netdev <netdev@vger.kernel.org>, Parav Pandit <parav@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
-        Mark Brown <broonie@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David M Ertman <david.m.ertman@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH mlx5-next v1 06/11] vdpa/mlx5: Connect mlx5_vdpa to
- auxiliary bus
-Message-ID: <20201105073302.GA3415673@kroah.com>
-References: <20201101201542.2027568-1-leon@kernel.org>
- <20201101201542.2027568-7-leon@kernel.org>
- <20201103154525.GO36674@ziepe.ca>
- <CAPcyv4jP9nFAGdvB7agg3x7Y7moHGcxLd5=f5=5CXnJRUf3n9w@mail.gmail.com>
+        id S1725827AbgKEHoa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Nov 2020 02:44:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgKEHoa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Nov 2020 02:44:30 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9150C0613CF;
+        Wed,  4 Nov 2020 23:44:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=sdDqJs+tyRqodiImj9cA2noijaJPm3lpR9cgqXfZnTc=; b=ZY41Diy6e0toQAP1LxcHY6dYBZ
+        15YTUisplwNmkjfn3i8MJ1+CORNnL8XaNBpvaiOJnWiwIy6gRte5nTHGj1nT5ipDuV+I8GEQJfYSq
+        MqbY40NYK66JCTYO84IGJH71Jlh5fdlKwOWKRTBi6KonLRKvfAhPV6Jj9Q3bbmB3vrN3BtNski31P
+        81UvbgNgpEOHx4qAwuD5V+zfS7qJizXcOT1k3QKf2Hz0jTZZhsEn0oAJp3MTaHgMxGetRNOccmOI+
+        HZI98W3p5DNY1ryVfwFdvLovBJ3VIpcVY+DIf+/UxBwdS3fV63FKXOsSubiivoNCrLHF3I/SWxQ5m
+        q6oIQpwQ==;
+Received: from 089144208145.atnat0017.highway.a1.net ([89.144.208.145] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kaZwP-0004Ud-Jn; Thu, 05 Nov 2020 07:44:18 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
+        iommu@lists.linux-foundation.org
+Subject: remove dma_virt_ops v2
+Date:   Thu,  5 Nov 2020 08:41:59 +0100
+Message-Id: <20201105074205.1690638-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4jP9nFAGdvB7agg3x7Y7moHGcxLd5=f5=5CXnJRUf3n9w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 03:21:23PM -0800, Dan Williams wrote:
-> On Tue, Nov 3, 2020 at 7:45 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> [..]
-> > > +MODULE_DEVICE_TABLE(auxiliary, mlx5v_id_table);
-> > > +
-> > > +static struct auxiliary_driver mlx5v_driver = {
-> > > +     .name = "vnet",
-> > > +     .probe = mlx5v_probe,
-> > > +     .remove = mlx5v_remove,
-> > > +     .id_table = mlx5v_id_table,
-> > > +};
-> >
-> > It is hard to see from the diff, but when this patch is applied the
-> > vdpa module looks like I imagined things would look with the auxiliary
-> > bus. It is very similar in structure to a PCI driver with the probe()
-> > function cleanly registering with its subsystem. This is what I'd like
-> > to see from the new Intel RDMA driver.
-> >
-> > Greg, I think this patch is the best clean usage example.
-> >
-> > I've looked over this series and it has the right idea and
-> > parts. There is definitely more that can be done to improve mlx5 in
-> > this area, but this series is well scoped and cleans a good part of
-> > it.
-> 
-> Greg?
-> 
-> I know you alluded to going your own way if the auxiliary bus patches
-> did not shape up soon, but it seems they have and the stakeholders
-> have reached this consensus point.
-> 
-> Were there any additional changes you wanted to see happen? I'll go
-> give the final set another once over, but David has been diligently
-> fixing up all the declared major issues so I expect to find at most
-> minor incremental fixups.
+Hi Jason,
 
-This is in my to-review pile, along with a load of other stuff at the
-moment:
-	$ ~/bin/mdfrm -c ~/mail/todo/
-	1709 messages in /home/gregkh/mail/todo/
+this series switches the RDMA core to opencode the special case of
+devices bypassing the DMA mapping in the RDMA ULPs.  The virt ops
+have caused a bit of trouble due to the P2P code node working with
+them due to the fact that we'd do two dma mapping iterations for a
+single I/O, but also are a bit of layering violation and lead to
+more code than necessary.
 
-So give me a chance.  There is no rush on my side for this given the
-huge delays that have happened here on the authorship side many times in
-the past :)
+Tested with nvme-rdma over rxe.
 
-If you can review it, or anyone else, that is always most appreciated.
-
-thanks,
-
-greg k-h
+Changes since v1:
+ - disable software RDMA drivers for highmem configs
+ - update the PCI commit logs
