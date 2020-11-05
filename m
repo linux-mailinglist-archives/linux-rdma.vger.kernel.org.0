@@ -2,257 +2,185 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D147B2A73E2
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 01:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C64F22A75D5
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 03:59:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732295AbgKEAgl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Nov 2020 19:36:41 -0500
-Received: from mga18.intel.com ([134.134.136.126]:42330 "EHLO mga18.intel.com"
+        id S1733155AbgKEC7q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Nov 2020 21:59:46 -0500
+Received: from mga02.intel.com ([134.134.136.20]:20194 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726608AbgKEAgl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 4 Nov 2020 19:36:41 -0500
-IronPort-SDR: izIsg0OMNUbjrgU3WKSwIgUk0qEBd2LYEMRoo4arNhtZxeVQLtF4anYqDBZCYfHVhDdvmpSccz
- zi1C8s5Ky7Wg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="157083875"
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="157083875"
+        id S1733111AbgKEC7q (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 4 Nov 2020 21:59:46 -0500
+IronPort-SDR: 0rPuQaN7XRPk6on7wDC1bGAjyJUHDmcrLrdX+PwHzwGaJX4LsLyjg/pgZtpDoKtJlaPMQ33cRo
+ xmK9+UZPsjaw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="156307731"
+X-IronPort-AV: E=Sophos;i="5.77,452,1596524400"; 
+   d="scan'208";a="156307731"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 16:36:35 -0800
-IronPort-SDR: bBLiB8lhjKjdzYONrOWqNn8vCSoaosdGo/CyV58Cli/sGQW2jcohmo9aCQp1wP/LIFShym24vn
- aJY5VstxVh3Q==
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 18:59:45 -0800
+IronPort-SDR: CHwtnafyYho8ZXX1NwT5LMPGn4sQN3ivtqBVHXgxX7Cw1YWLAJPeVf5b7XlKGVwbXlLKHSu9kz
+ rNWhJ0t4Ez2Q==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,451,1596524400"; 
-   d="scan'208";a="471436250"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by orsmga004.jf.intel.com with ESMTP; 04 Nov 2020 16:36:35 -0800
-Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 4 Nov 2020 16:36:35 -0800
-Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
- fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 4 Nov 2020 16:36:34 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 4 Nov 2020 16:36:34 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.43) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Wed, 4 Nov 2020 16:36:33 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iS5LBC/b7W4ztrVApenNNYtH0asRhydO7M8wUXaYDpmqrLQ79Y5y0/zaVQo6CdbUg6a/oiQGLgXu692Cz+4X937DW/PNNXMiZtxTZbDIoYD5P+hPNG+TZjLxMud3YaiLuBlmApF/xOi5MTTLHmc6qsUE7b345zFQjEC94fIAWhWfwp6Vk/61TnK2XavkInDM/WPo+TrMCIr1XlbtkEHZTMeg5/3pqiUMNNwWQBMV3gu1kgAdQeQQoP/6g4aVKFZ6SaFMGW8WLdo4nEB4RfAM6qJSCfqr/RY8S8OeNs+U9GC198yQjPjbQ5uCyn05w+KvQq6jMAHyCI6IjNi2We13lw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=McW0Y3R+bFlJWryiSNQP5Wk88rXalb9dIYTykZGwKJI=;
- b=EYCTl5Ilcgmu96VLvfr/8mT3Smjeh2zarSgk0nrWnZ5BIOrqZoV+dX17moTdtooC8WxSwdJmZX74G7d9Qwf28tdbpCNxrXbjrFMfmv2LSVM/cPK86Dy8DLqV+eCt9YoX04gXr6WVGDJkn7S5n3K9qiDoAR0Fvt8YI0rO1fYFQUYzzVg4GxuYRQaowTW8QllyKmjJ/08W2YfkKAyZIrdVoaXCnO6Tbp836Y479+h8bkB2kLgJBG8KCKm/4cUQd3304Ifndg5Ey0Ra/zJkwfDou9HrOT27e/zuOdl+wgNYBvhI7zBTY6rRsyDHPlnbHRc7OAP0s0zHdixHIsA+Vy325A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=McW0Y3R+bFlJWryiSNQP5Wk88rXalb9dIYTykZGwKJI=;
- b=sAK+IgUVRnT1yNrl3cV+aaD3xwY5JOG5KFXhyofqxxlHUJzSARenqAAUcW/EeewgNEfuBpiwXDrSbphmYXCvxl8QMOzd84KRMr1UMN3uycH6hQkf0B3Mwo4BIQolhMo/DBcavZVtdHjMeBaF8eqSkdnW9IfSgxnU2ZGK/3IjSUI=
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
- by MWHPR1101MB2351.namprd11.prod.outlook.com (2603:10b6:300:74::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Thu, 5 Nov
- 2020 00:36:25 +0000
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::8d73:60dd:89aa:99a9]) by MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::8d73:60dd:89aa:99a9%8]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
- 00:36:25 +0000
-From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "Doug Ledford" <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "Sumit Semwal" <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        "Vetter, Daniel" <daniel.vetter@intel.com>
-Subject: RE: [PATCH v7 4/5] RDMA/mlx5: Support dma-buf based userspace memory
- region
-Thread-Topic: [PATCH v7 4/5] RDMA/mlx5: Support dma-buf based userspace memory
- region
-Thread-Index: AQHWsvTdoAQ94Ud9CEmDtlSFntAEqam4qVmAgAAC3KA=
-Date:   Thu, 5 Nov 2020 00:36:25 +0000
-Message-ID: <MW3PR11MB4555C4C6A58F0D054C69FEADE5EE0@MW3PR11MB4555.namprd11.prod.outlook.com>
-References: <1604527595-39736-1-git-send-email-jianxin.xiong@intel.com>
- <1604527595-39736-5-git-send-email-jianxin.xiong@intel.com>
- <20201105000721.GY36674@ziepe.ca>
-In-Reply-To: <20201105000721.GY36674@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: ziepe.ca; dkim=none (message not signed)
- header.d=none;ziepe.ca; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [73.53.14.45]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a0e15d5f-a7d1-4610-3023-08d88122d406
-x-ms-traffictypediagnostic: MWHPR1101MB2351:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR1101MB2351E37441322A1B2C39F323E5EE0@MWHPR1101MB2351.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2276;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GIwYRjZompMDQe55yZAGlLVW/D0zcZY0uOrMiPfPhUNQnZwnKGATxrZOIyTEojgnkKn+6S79v76G5SnSH1Et9ogyL+PchB21TZyiOmmVaZir2u+AuMgHLh5Q9G6RXI2oR6uOi/P4PDDc7ZV230dr1cpskq264vwTuUjSPZAsyBBB23dHG36fUB07SHE9SFC1wtLxuuQu6RB+MS+WSNzPd86YKvXl1MWdWHBCXWN0ApY1vdNjavlo48t02+5ZJrJw7tq1P13WXBBsT/uYdevfKEns3WfSxqfbzJu0VybDrSsYuU48a7Tioe+K3G0jZh6qBOMBBWnzmBGDY61S7rtHiQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(366004)(376002)(136003)(39860400002)(8936002)(7696005)(66556008)(66476007)(55016002)(76116006)(2906002)(64756008)(66446008)(26005)(9686003)(66946007)(53546011)(71200400001)(107886003)(316002)(83380400001)(4326008)(8676002)(186003)(5660300002)(54906003)(86362001)(52536014)(478600001)(33656002)(6916009)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: aR5MG9Tf7eh8XnIR2bUO37eTx1m6a6v7kd1EPweISN1qAigQETW+HsVeuHaPUErKkch0XuapdPCFQLgN4qMwkqrJsaEDHRAiXpVkaLp+i1Vd8VMaY7ERRXi8Rkzld6hao+yDSK2cA8sEMoHtIN8wfIPBc3xTTXCbXy4wn8nT+mI5X0qOgukqUQBTM/D8yzZNRBqfuzxq4KxKA4fjo2K/5PydI2PHae34BrO9csCqkF5A/bvCwHAxFGCat9HvGcUbf1P5jCiOMRnZ7bnfamu2Vx00yuCpkGK/GkZ0iNK4iu1B087BkJ+ZNV2o2vsWNrUTEGl/Fqnmg6plw/USYBb3cJ7ToZGxjF5vrSGr2l70rch8AMf5JdUR3I+yqoU4m67HLqIebH/kAl2Z9D+vYyiQzNgX5Iq7gsXaCOEhEGoiXv2o3HFotVbsxj00pfNa69KDXiQEATHAbX9/qhvR0TRZR7Rwgnsdi73yr7j0Q4c/EcmkSXa7Lps0OUs3kEjmoPuunIlGewLjUnuLNTXi0njwvrNVFEHRUPlsYXgqvccS2uOpzBd3R5h3C4KMiZircr/c9Qe4LkZ4IYGojikn61eay3Rx6jptW3nYWAINtWnYPh2kGBnPt8vwsohfhszZbN/gKI+shduXM0QPZCvAvbjBLw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+X-IronPort-AV: E=Sophos;i="5.77,452,1596524400"; 
+   d="scan'208";a="306645058"
+Received: from lkp-server02.sh.intel.com (HELO e61783667810) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 04 Nov 2020 18:59:43 -0800
+Received: from kbuild by e61783667810 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kaVV1-0001CT-Ak; Thu, 05 Nov 2020 02:59:43 +0000
+Date:   Thu, 05 Nov 2020 10:58:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ f946e45f59ef01ff54ffb3b1eba3a8e7915e7326
+Message-ID: <5fa36a6e.Zby/RYRcPg4TVwij%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0e15d5f-a7d1-4610-3023-08d88122d406
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2020 00:36:25.7557
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +XpsS/1ZK0hKd4Lpeq6Wp6TGMvAEPNfHbKBNZhbubR1WcIvfLgcpsasI7vdUOPKmYVH3gMGWYbrGUAD6dzDuhg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2351
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> -----Original Message-----
-> From: Jason Gunthorpe <jgg@ziepe.ca>
-> Sent: Wednesday, November 04, 2020 4:07 PM
-> To: Xiong, Jianxin <jianxin.xiong@intel.com>
-> Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org; Doug Led=
-ford <dledford@redhat.com>; Leon Romanovsky
-> <leon@kernel.org>; Sumit Semwal <sumit.semwal@linaro.org>; Christian Koen=
-ig <christian.koenig@amd.com>; Vetter, Daniel
-> <daniel.vetter@intel.com>
-> Subject: Re: [PATCH v7 4/5] RDMA/mlx5: Support dma-buf based userspace me=
-mory region
->=20
-> On Wed, Nov 04, 2020 at 02:06:34PM -0800, Jianxin Xiong wrote:
-> > +	umem =3D ib_umem_dmabuf_get(&dev->ib_dev, offset, length, fd, access_=
-flags,
-> > +				  &mlx5_ib_dmabuf_attach_ops);
-> > +	if (IS_ERR(umem)) {
-> > +		mlx5_ib_dbg(dev, "umem get failed (%ld)\n", PTR_ERR(umem));
-> > +		return ERR_PTR(PTR_ERR(umem));
-> > +	}
-> > +
-> > +	mr =3D alloc_mr_from_cache(pd, umem, virt_addr, access_flags);
->=20
-> It is very subtle, but this calls mlx5_umem_find_best_pgsz() which calls =
-ib_umem_find_best_pgsz() which goes over the SGL to determine
-> the page size to use.
->=20
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: f946e45f59ef01ff54ffb3b1eba3a8e7915e7326  IB/mlx5: Add support for NDR link speed
 
-When this is called here, the umem sglist is still NULL because dma_buf_map=
-_attachment()
-is not called until a page fault occurs. In patch 1/5, the function ib_umem=
-_find_best_pgsz()
-has been modified to always return PAGE_SIZE for dma-buf based MR.
+elapsed time: 720m
 
-> As part of this it does validation of the IOVA vs first page offset vs fi=
-rst page dma address. These little details come into play if the IOVA and
-> offset are not PAGE_SIZE aligned, which is very possible if the dma buf e=
-xporter or system PAGE_SIZE is over 4k.
->=20
-> In other words, the dma_address of the first SGL must be the page aligned=
- starting point of the MR. Since the 'skip' approach is being done
-> when breaking the SGL into blocks the ib_umem_find_best_pgsz() sees an in=
-valid page size.
->=20
-> Slicing it has to be done in a way that gives a properly formed SGL.
->=20
-> My suggestion is to just change the SGL in place. Iterate to the starting=
- SGE in the SGL and assign it to the sg table, modify it to have a offset
-> dma_address and reduced length
->=20
-> Count the number of SGEs to span the remaning range and use that as the n=
-ew nmaped
->=20
-> Edit the last SGE to have a reduced length
+configs tested: 121
+configs skipped: 2
 
-Do you still think modifying the SGL in place needed given the above explan=
-ation? I do see
-some benefits of doing so -- hiding the discrepancy of sgl and addr/length =
-from the device drivers and avoid special handling in the code that use the=
- sgl.=20
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->=20
-> Upon unmap undo the edits so the exporter doesn't see the mangled SGL.
->=20
-> It would be saner if the exporter could do this, but oh well.
->=20
-> Approximately like this:
->=20
-> 	struct ib_umem *umem =3D &umem_p->umem;
-> 	struct scatterlist *sg;
-> 	int i;
->=20
-> 	for_each_sg(umem_p->umem.sg_head.sgl, sg, umem_p->umem.nmap, i) {
-> 		if (cur + sg_dma_len(sg) > ALIGN_DOWN(umem->address, PAGE_SIZE)) {
-> 			unsigned long offset;
->=20
-> 			umem_p->first_sg =3D sg;
-> 			umem_p->first_dma_address =3D sg->dma_address;
-> 			umem_p->first_dma_length =3D sg_dma_len(sg);
-> 			umem_p->first_length =3D sg->length;
-> 			offset =3D ALIGN_DOWN(umem->addressm PAGE_SIZE) - cur;
-> 			sg->dma_address +=3D offset;
-> 			sg_dma_len(sg) -=3D offset;
-> 			sg->length -=3D offset;
-> 		}
-> 		if (ALIGN(umem->address + umem->length, PAGE_SIZE) < cur + sg_dma_len(s=
-g)) {
-> 			unsigned long trim;
->=20
-> 			umem_p->last_sg =3D sg;
-> 			umem_p->last_dma_length =3D sg_dma_len(sg);
-> 			umem_p->last_length =3D sg->length;
-> 			trim =3D  cur + sg_dma_len(sg) - ALIGN(umem->address + umem->length, P=
-AGE_SIZE);
-> 			sg_dma_len(sg) -=3D trim;
-> 			sg->length -=3D trim;
-> 			return npages;
-> 		}
->                 cur +=3D sg_dma_len(sg);
-> 	}
->         /* It is essential that the length of the SGL exactly match
->   	   the adjusted page aligned length of umem->length */
-> 	return -EINVAL;
->=20
-> Further, this really only works if the umem->page_size is locked to 4k be=
-cause this doesn't have code to resize the MKEY, or change the
-> underlying page size when the SGL changes.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                        shmobile_defconfig
+sh                           se7751_defconfig
+arm                        vexpress_defconfig
+mips                          ath25_defconfig
+arm                            u300_defconfig
+sh                          rsk7269_defconfig
+sh                   secureedge5410_defconfig
+mips                        maltaup_defconfig
+arm                      pxa255-idp_defconfig
+arm                          tango4_defconfig
+parisc                           alldefconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                           tegra_defconfig
+mips                         cobalt_defconfig
+openrisc                            defconfig
+mips                         tb0226_defconfig
+xtensa                              defconfig
+alpha                            allyesconfig
+powerpc                      cm5200_defconfig
+arc                            hsdk_defconfig
+mips                        jmr3927_defconfig
+powerpc                      ppc6xx_defconfig
+arm                      integrator_defconfig
+powerpc                 mpc837x_rdb_defconfig
+arm                        clps711x_defconfig
+sh                        edosk7760_defconfig
+parisc                generic-64bit_defconfig
+powerpc                     tqm8555_defconfig
+i386                             allyesconfig
+i386                             alldefconfig
+sh                           se7722_defconfig
+powerpc                       holly_defconfig
+arm                        mvebu_v7_defconfig
+mips                        bcm47xx_defconfig
+mips                            gpr_defconfig
+powerpc                      katmai_defconfig
+m68k                       bvme6000_defconfig
+sh                     sh7710voipgw_defconfig
+arm                         orion5x_defconfig
+mips                            ar7_defconfig
+riscv                    nommu_virt_defconfig
+powerpc                        cell_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc                  iss476-smp_defconfig
+arm                          gemini_defconfig
+powerpc                     asp8347_defconfig
+powerpc                      ppc64e_defconfig
+powerpc                     tqm8548_defconfig
+powerpc                     ksi8560_defconfig
+arc                     nsimosci_hs_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201104
+i386                 randconfig-a006-20201104
+i386                 randconfig-a005-20201104
+i386                 randconfig-a001-20201104
+i386                 randconfig-a002-20201104
+i386                 randconfig-a003-20201104
+x86_64               randconfig-a012-20201104
+x86_64               randconfig-a015-20201104
+x86_64               randconfig-a013-20201104
+x86_64               randconfig-a011-20201104
+x86_64               randconfig-a014-20201104
+x86_64               randconfig-a016-20201104
+i386                 randconfig-a015-20201104
+i386                 randconfig-a013-20201104
+i386                 randconfig-a014-20201104
+i386                 randconfig-a016-20201104
+i386                 randconfig-a011-20201104
+i386                 randconfig-a012-20201104
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Yes, now it's locked to 4K.=20
+clang tested configs:
+x86_64               randconfig-a004-20201104
+x86_64               randconfig-a003-20201104
+x86_64               randconfig-a005-20201104
+x86_64               randconfig-a002-20201104
+x86_64               randconfig-a006-20201104
+x86_64               randconfig-a001-20201104
 
->=20
-> So, I'd say put something like the above in the core code to validate and=
- properly form the umem->sgl
->=20
-> Then modify the alloc_mr_from_cache to use only PAGE_SIZE:
->=20
->  if (umem->is_dma_buf)
->         page_size =3D ib_umem_find_best_pgsz(umem, PAGE_SIZE, iova);  els=
-e
->     	page_size =3D mlx5_umem_find_best_pgsz(umem, mkc, log_page_size, 0, =
-iova);
->=20
-
-This should have been addressed in patch 1/5.
-
-Thanks,
-Jianxin
-
-> Jason
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
