@@ -2,204 +2,509 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE162A885D
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 21:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C85882A8876
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 21:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732035AbgKEUwT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Nov 2020 15:52:19 -0500
-Received: from mga01.intel.com ([192.55.52.88]:23149 "EHLO mga01.intel.com"
+        id S1731508AbgKEU7Z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Nov 2020 15:59:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726996AbgKEUwT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Nov 2020 15:52:19 -0500
-IronPort-SDR: Gs4UEiplqQTpigG3bPiqEHKCM/ySrAImEu40Q5ap6+ofFJIAhH/QrG6uabM1zwq3SK67Ap8Qa7
- KcSL6VcueTPw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="187370599"
-X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
-   d="scan'208";a="187370599"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 12:52:18 -0800
-IronPort-SDR: 5craox6rAKb9swdbfOh5gX7xCNiz6zeUUtjBp3PPR3aTHSBvyc3Cf3AeqK3TWOqzcL6F73bK5Z
- qhTpm5YEJ6fQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
-   d="scan'208";a="471803650"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga004.jf.intel.com with ESMTP; 05 Nov 2020 12:52:18 -0800
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 5 Nov 2020 12:52:17 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 5 Nov 2020 12:52:17 -0800
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.47) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Thu, 5 Nov 2020 12:52:17 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FgcbGA1gIJEQGhwaZUgk5HFWopgM8SMjYg01j2l6RJs+/Wgsf4ZvtwGXMutmlatmayApsXtuFJi1IgqpGbIfg9g1s46Aizl9IfQ3nSV0GEVokaYckoZoQ1JY8aebEPvqPOzAIOIVss+QC2AgIzQEPAxO7E8k7H7iMHKPbXw6RZj0BNp3LEVjyEbr+oFS92UpBxVQQw7I1+lsOauutyXSy1jgDSA7Q0anlI+lIKaW3kplLvrz3NJmKreLHcD5k1BUmSq38wZ6/z+cTlp1qIWG0+f8bSelwDF1KDBHbZODbAxPgQKmeBzs0z3BqZg70dgOTofFMvx2edwRHwRTNbqRAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pwMgkecA+AoS9RlEsts9+uuv4vo9O+aoPYfE3lqoVw0=;
- b=LRuux+DBZkLAmWHjW7urinHVsIJIEqGMj3IifeSAjnhiUYfQg/X+O5OcDjtaIChz5wt9meqn4P2BQofipuK7O43w6j/ksXN7KOYAit1uV+QAyj5lzdPPgqWRIKFaZGxYPYF1KKAbVByjUXq6M75VtnpuU8IwvoF3W+7Ci+QHeCy8JV1p07lTaVUhFHPwUSdiOo41sNyJUdrHH1wFCOcECbmmkp5lb4VKXEyki9JAqLSnwPnYMfE0D/k8vVXo47/N8cyw+VTxCM1MEru02bRGbgZLVfXGWAmFK7a7orbufbMvYDZAcFo9NxOkbgp0iCsc3ptsb1FB7RRkR+w2tvhwwQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pwMgkecA+AoS9RlEsts9+uuv4vo9O+aoPYfE3lqoVw0=;
- b=A4JJrfQtrOzSyVvApLAiLS+vsMSwVy84JjbZ4E0EzgMuvwCBYluAAcDcTW74Rwa4yiOkhEXj20a+8yviUg4T2KdkWTT0kA/TjLq3c6Y4YKpQDUQdywSrQDRygSzvanVWJo59vODLq6AH6gUURrtslppNzKVzkqAAxF4s+x2LUYw=
-Received: from DM6PR11MB2841.namprd11.prod.outlook.com (2603:10b6:5:c8::32) by
- DM5PR1101MB2284.namprd11.prod.outlook.com (2603:10b6:4:58::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3499.29; Thu, 5 Nov 2020 20:52:13 +0000
-Received: from DM6PR11MB2841.namprd11.prod.outlook.com
- ([fe80::6d8e:9b06:ef72:2a]) by DM6PR11MB2841.namprd11.prod.outlook.com
- ([fe80::6d8e:9b06:ef72:2a%5]) with mapi id 15.20.3541.021; Thu, 5 Nov 2020
- 20:52:13 +0000
-From:   "Ertman, David M" <david.m.ertman@intel.com>
-To:     Leon Romanovsky <leonro@nvidia.com>
-CC:     "Williams, Dan J" <dan.j.williams@intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        id S1726801AbgKEU7Z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 5 Nov 2020 15:59:25 -0500
+Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D803120719;
+        Thu,  5 Nov 2020 20:59:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604609963;
+        bh=DRNl3UpSeodOLfeM+mn+V6LFTVAs94M33BnMQXxp74U=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=zpSpNwA2dgS6fJ+B3dMKuscWCUALftl/jghIIz+UBAaXGmwNUQvYCnRqRa6zQJz25
+         yiqapd3x1bT55OkjGFZoKE/7/a1x/kBEtAudGHZxpNvAswRS0pD1rLUZkRZxeleGub
+         gRtcneWhJDOrkAvTeXNBS4DuFPGKJQo84UouINRQ=
+Message-ID: <d10e7a08200458c1bddb72fc983a5917daebc8f1.camel@kernel.org>
+Subject: Re: [PATCH mlx5-next v1 05/11] net/mlx5: Register mlx5 devices to
+ auxiliary virtual bus
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
-        Netdev <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        gregkh <gregkh@linuxfoundation.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 01/10] Add auxiliary bus support
-Thread-Topic: [PATCH v3 01/10] Add auxiliary bus support
-Thread-Index: AQHWqNRxbABQ//8l1UOfD+CnDPwsEKm5V8WAgACIGmCAACQFgIAAB9xQ
-Date:   Thu, 5 Nov 2020 20:52:13 +0000
-Message-ID: <DM6PR11MB2841C04DA30B0EA299554704DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
-References: <20201023003338.1285642-1-david.m.ertman@intel.com>
- <20201023003338.1285642-2-david.m.ertman@intel.com>
- <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
- <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <20201105193511.GB5475@unreal>
-In-Reply-To: <20201105193511.GB5475@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [50.38.47.144]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e7df671d-e207-40ca-e29f-08d881ccac20
-x-ms-traffictypediagnostic: DM5PR1101MB2284:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR1101MB2284772B6740229B1CB300C9DDEE0@DM5PR1101MB2284.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DCCZhd8Mn7WAn2gUMdZN8z0UUiQfhleFAAwXMOejlKL5pty1bEQRx0xcKMYDWgxyTwMMLkknDJ3BlfZFsG7wbrQsC0s6tVG3l3/epnekyv4XMCJPL/AL1rCsl+xSackW0Je0zYSIi2B/Gk1zO7arYL0onlN2nZM4R3RjGgzPAdDxOXI9Zqqvm02UWrBo91uGBgfnQceIZGFuKvDgRTo1xzYlANPkBMGV03oBvWB+ctyAGm1xx7heRP3ue9cFE4IB1/PCqnMImq2aTdrPB/mhbSHRj9s0LDZU4gxGUP2HU5SQ1vtTkwo9RBme0wLD37Y1Fco4HiVJg7h0QWiyjtRW5A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2841.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(366004)(39860400002)(376002)(66476007)(66556008)(76116006)(66446008)(64756008)(53546011)(33656002)(71200400001)(478600001)(186003)(6506007)(52536014)(66946007)(5660300002)(9686003)(7416002)(8676002)(83380400001)(26005)(54906003)(55016002)(4326008)(7696005)(86362001)(316002)(8936002)(2906002)(6916009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: qC2YGckFwNg5boxji38cJHhzXulase2Ngkxci5DLI/PQwhzFmjFbRPH/yw4MtfCH9bi9xQcmRyaXd1SZ2WgQ81805hBi3T88FN0/0h68thVUw2kAW4cCKPoCesmfAWDq3mEoUi8lUxSlVJYiFpRfxsJnSWavBQ1oxA+IWYmiwOTEbGrqiu8Fn7aQ/VPsZ9lB/3GE8kvMf9ZMZApVi5s9eemgqu63sjTElv/m18vDy+G3FBWCNQPtwki+RiSO1FAL9xqcN7yKYC4a/8hwBUxHVjXRfoT4wmzSlsWTPdjfySNamHbDu0mLs/QQZ7jjai6W7H5mNhm+Aio7UMfDPhewAXwM/QdNmloyYZbiyJLM9cH73YZjFokMrU9rlMSvoPU6F7gj14i7PBTbV304UDk00BGCHkyN+E2Hj+HhdvGwa0Yxja5TJmVgYp7ui/CLopVcsSZFqFWT9xFQG1g3cmhMzTUl6M0qVz4ea/+Ht3XaHqaCbShFwP8HjKJn2qalLAdiHjaeFMYy3Ss084zfzqnpkc0FoiU8uq5mLmrAbWhBlBGAIzP9CIcruwt4GyCnDC3WYljmAJBYCKDzxo2QW6h8HS8h0xM9GAmX/9rN9w7J5fDcInBzlIE8g0SvylfOAWkCNgxCGteoZdv93ZhcWTMJ9g==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Jason Wang <jasowang@redhat.com>, linux-rdma@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        Parav Pandit <parav@nvidia.com>, Roi Dayan <roid@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
+        shiraz.saleem@intel.com, dan.j.williams@intel.com,
+        kiran.patil@intel.com, linux-kernel@vger.kernel.org
+Date:   Thu, 05 Nov 2020 12:59:20 -0800
+In-Reply-To: <20201101201542.2027568-6-leon@kernel.org>
+References: <20201101201542.2027568-1-leon@kernel.org>
+         <20201101201542.2027568-6-leon@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2841.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7df671d-e207-40ca-e29f-08d881ccac20
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2020 20:52:13.2723
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6uX3z692HQ3evUZUZkdWtJxopVe5R1ql7wBFS3/Z86bOmew+e8x33S23ALsuoKaMUtHF1/gTT+9PQi5HnkgWd4YhlazVPUgczk9JZfxTvcM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2284
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> -----Original Message-----
+On Sun, 2020-11-01 at 22:15 +0200, Leon Romanovsky wrote:
 > From: Leon Romanovsky <leonro@nvidia.com>
-> Sent: Thursday, November 5, 2020 11:35 AM
-> To: Ertman, David M <david.m.ertman@intel.com>
-> Cc: Williams, Dan J <dan.j.williams@intel.com>; alsa-devel@alsa-project.o=
-rg;
-> Takashi Iwai <tiwai@suse.de>; Mark Brown <broonie@kernel.org>; linux-
-> rdma <linux-rdma@vger.kernel.org>; Jason Gunthorpe <jgg@nvidia.com>;
-> Doug Ledford <dledford@redhat.com>; Netdev <netdev@vger.kernel.org>;
-> David Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>;
-> Greg KH <gregkh@linuxfoundation.org>; Ranjani Sridharan
-> <ranjani.sridharan@linux.intel.com>; Pierre-Louis Bossart <pierre-
-> louis.bossart@linux.intel.com>; Fred Oh <fred.oh@linux.intel.com>; Parav
-> Pandit <parav@mellanox.com>; Saleem, Shiraz <shiraz.saleem@intel.com>;
-> Patil, Kiran <kiran.patil@intel.com>; Linux Kernel Mailing List <linux-
-> kernel@vger.kernel.org>
-> Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
->=20
-> On Thu, Nov 05, 2020 at 07:27:56PM +0000, Ertman, David M wrote:
-> > > -----Original Message-----
-> > > From: Dan Williams <dan.j.williams@intel.com>
-> > > Sent: Thursday, November 5, 2020 1:19 AM
-> > > To: Ertman, David M <david.m.ertman@intel.com>
-> > > Cc: alsa-devel@alsa-project.org; Takashi Iwai <tiwai@suse.de>; Mark
-> Brown
-> > > <broonie@kernel.org>; linux-rdma <linux-rdma@vger.kernel.org>; Jason
-> > > Gunthorpe <jgg@nvidia.com>; Doug Ledford <dledford@redhat.com>;
-> > > Netdev <netdev@vger.kernel.org>; David Miller
-> <davem@davemloft.net>;
-> > > Jakub Kicinski <kuba@kernel.org>; Greg KH
-> <gregkh@linuxfoundation.org>;
-> > > Ranjani Sridharan <ranjani.sridharan@linux.intel.com>; Pierre-Louis
-> Bossart
-> > > <pierre-louis.bossart@linux.intel.com>; Fred Oh
-> <fred.oh@linux.intel.com>;
-> > > Parav Pandit <parav@mellanox.com>; Saleem, Shiraz
-> > > <shiraz.saleem@intel.com>; Patil, Kiran <kiran.patil@intel.com>; Linu=
-x
-> > > Kernel Mailing List <linux-kernel@vger.kernel.org>; Leon Romanovsky
-> > > <leonro@nvidia.com>
-> > > Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
-> > >
-> > > Some doc fixups, and minor code feedback. Otherwise looks good to me.
-> > >
-> > > On Thu, Oct 22, 2020 at 5:35 PM Dave Ertman
-> <david.m.ertman@intel.com>
-> > > wrote:
->=20
-> <...>
->=20
-> >
-> > Again, thanks for the review Dan.  Changes will be in next release (v4)=
- once
-> I give
-> > stake-holders a little time to respond.
->=20
-> Everything here can go as a Fixes, the review comments are valuable and
-> need
-> to be fixed, but they don't change anything dramatically that prevent fro=
-m
-> merging v3.
->=20
+> 
+> Create auxiliary devices under new virtual bus. This will replace
+> the custom-made mlx5 ->add()/->remove() interfaces and next patches
+> will fill the missing callback and remove the old interface logic.
+> 
+> The attachment of auxiliary drivers to the devices is possible in
+> 1-to-1 manner only and it requires us to create device for every
+> protocol,
+> so that device (module) will be able to connect to it.
+> 
+> System with 2 IB and 1 RoCE cards:
+> [leonro@vm ~]$ lspci |grep nox
+> 00:09.0 Ethernet controller: Mellanox Technologies MT27800 Family
+> [ConnectX-5]
+> 00:0a.0 Ethernet controller: Mellanox Technologies MT28908 Family
+> [ConnectX-6]
+> 00:0b.0 Ethernet controller: Mellanox Technologies MT2910 Family
+> [ConnectX-7]
+> [leonro@vm ~]$ ls -l /sys/bus/auxiliary/devices/
+>  mlx5_core.eth.2 ->
+> ../../../devices/pci0000:00/0000:00:0b.0/mlx5_core.eth.2
+>  mlx5_core.rdma.0 ->
+> ../../../devices/pci0000:00/0000:00:09.0/mlx5_core.rdma.0
+>  mlx5_core.rdma.1 ->
+> ../../../devices/pci0000:00/0000:00:0a.0/mlx5_core.rdma.1
+>  mlx5_core.rdma.2 ->
+> ../../../devices/pci0000:00/0000:00:0b.0/mlx5_core.rdma.2
+>  mlx5_core.vdpa.1 ->
+> ../../../devices/pci0000:00/0000:00:0a.0/mlx5_core.vdpa.1
+>  mlx5_core.vdpa.2 ->
+> ../../../devices/pci0000:00/0000:00:0b.0/mlx5_core.vdpa.2
+> [leonro@vm ~]$ rdma dev
+> 0: ibp0s9: node_type ca fw 4.6.9999 node_guid 5254:00c0:fe12:3455
+> sys_image_guid 5254:00c0:fe12:3455
+> 1: ibp0s10: node_type ca fw 4.6.9999 node_guid 5254:00c0:fe12:3456
+> sys_image_guid 5254:00c0:fe12:3456
+> 2: rdmap0s11: node_type ca fw 4.6.9999 node_guid 5254:00c0:fe12:3457
+> sys_image_guid 5254:00c0:fe12:3457
+> 
+> System with RoCE SR-IOV card with 4 VFs:
+> [leonro@vm ~]$ lspci |grep nox
+> 01:00.0 Ethernet controller: Mellanox Technologies MT28908 Family
+> [ConnectX-6]
+> 01:00.1 Ethernet controller: Mellanox Technologies MT28908 Family
+> [ConnectX-6 Virtual Function]
+> 01:00.2 Ethernet controller: Mellanox Technologies MT28908 Family
+> [ConnectX-6 Virtual Function]
+> 01:00.3 Ethernet controller: Mellanox Technologies MT28908 Family
+> [ConnectX-6 Virtual Function]
+> 01:00.4 Ethernet controller: Mellanox Technologies MT28908 Family
+> [ConnectX-6 Virtual Function]
+> [leonro@vm ~]$ ls -l /sys/bus/auxiliary/devices/
+>  mlx5_core.eth.0 ->
+> ../../../devices/pci0000:00/0000:00:09.0/0000:01:00.0/mlx5_core.eth.0
+>  mlx5_core.eth.1 ->
+> ../../../devices/pci0000:00/0000:00:09.0/0000:01:00.1/mlx5_core.eth.1
+>  mlx5_core.eth.2 ->
+> ../../../devices/pci0000:00/0000:00:09.0/0000:01:00.2/mlx5_core.eth.2
+>  mlx5_core.eth.3 ->
+> ../../../devices/pci0000:00/0000:00:09.0/0000:01:00.3/mlx5_core.eth.3
+>  mlx5_core.eth.4 ->
+> ../../../devices/pci0000:00/0000:00:09.0/0000:01:00.4/mlx5_core.eth.4
+>  mlx5_core.rdma.0 ->
+> ../../../devices/pci0000:00/0000:00:09.0/0000:01:00.0/mlx5_core.rdma.
+> 0
+>  mlx5_core.rdma.1 ->
+> ../../../devices/pci0000:00/0000:00:09.0/0000:01:00.1/mlx5_core.rdma.
+> 1
+>  mlx5_core.rdma.2 ->
+> ../../../devices/pci0000:00/0000:00:09.0/0000:01:00.2/mlx5_core.rdma.
+> 2
+>  mlx5_core.rdma.3 ->
+> ../../../devices/pci0000:00/0000:00:09.0/0000:01:00.3/mlx5_core.rdma.
+> 3
+>  mlx5_core.rdma.4 ->
+> ../../../devices/pci0000:00/0000:00:09.0/0000:01:00.4/mlx5_core.rdma.
+> 4
+>  mlx5_core.vdpa.1 ->
+> ../../../devices/pci0000:00/0000:00:09.0/0000:01:00.1/mlx5_core.vdpa.
+> 1
+>  mlx5_core.vdpa.2 ->
+> ../../../devices/pci0000:00/0000:00:09.0/0000:01:00.2/mlx5_core.vdpa.
+> 2
+>  mlx5_core.vdpa.3 ->
+> ../../../devices/pci0000:00/0000:00:09.0/0000:01:00.3/mlx5_core.vdpa.
+> 3
+>  mlx5_core.vdpa.4 ->
+> ../../../devices/pci0000:00/0000:00:09.0/0000:01:00.4/mlx5_core.vdpa.
+> 4
+> [leonro@vm ~]$ rdma dev
+> 0: rocep1s0f0: node_type ca fw 4.6.9999 node_guid 5254:00c0:fe12:3455
+> sys_image_guid 5254:00c0:fe12:3455
+> 1: rocep1s0f0v0: node_type ca fw 4.6.9999 node_guid
+> 0000:0000:0000:0000 sys_image_guid 5254:00c0:fe12:3456
+> 2: rocep1s0f0v1: node_type ca fw 4.6.9999 node_guid
+> 0000:0000:0000:0000 sys_image_guid 5254:00c0:fe12:3457
+> 3: rocep1s0f0v2: node_type ca fw 4.6.9999 node_guid
+> 0000:0000:0000:0000 sys_image_guid 5254:00c0:fe12:3458
+> 4: rocep1s0f0v3: node_type ca fw 4.6.9999 node_guid
+> 0000:0000:0000:0000 sys_image_guid 5254:00c0:fe12:3459
+> 
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  .../net/ethernet/mellanox/mlx5/core/Kconfig   |   1 +
+>  drivers/net/ethernet/mellanox/mlx5/core/dev.c | 265
+> +++++++++++++++++-
+>  .../net/ethernet/mellanox/mlx5/core/main.c    |  24 +-
+>  .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  20 +-
+>  include/linux/mlx5/driver.h                   |  26 +-
+>  5 files changed, 325 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+> b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+> index 99f1ec3b2575..485478979b1a 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+> @@ -6,6 +6,7 @@
+>  config MLX5_CORE
+>  	tristate "Mellanox 5th generation network adapters (ConnectX
+> series) core driver"
+>  	depends on PCI
+> +	select AUXILIARY_BUS
+>  	select NET_DEVLINK
+>  	depends on VXLAN || !VXLAN
+>  	depends on MLXFW || !MLXFW
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/dev.c
+> b/drivers/net/ethernet/mellanox/mlx5/core/dev.c
+> index 1972ddd12704..8ddf469b2d05 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/dev.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/dev.c
+> @@ -37,6 +37,7 @@ static LIST_HEAD(intf_list);
+>  static LIST_HEAD(mlx5_dev_list);
+>  /* intf dev list mutex */
+>  static DEFINE_MUTEX(mlx5_intf_mutex);
+> +static DEFINE_IDA(mlx5_adev_ida);
+> 
+>  struct mlx5_device_context {
+>  	struct list_head	list;
+> @@ -50,6 +51,39 @@ enum {
+>  	MLX5_INTERFACE_ATTACHED,
+>  };
+> 
+> +static const struct mlx5_adev_device {
+> +	const char *suffix;
+> +	bool (*is_supported)(struct mlx5_core_dev *dev);
+> +} mlx5_adev_devices[1] = {};
+> +
+> +int mlx5_adev_idx_alloc(void)
+> +{
+> +	return ida_alloc(&mlx5_adev_ida, GFP_KERNEL);
+> +}
+> +
+> +void mlx5_adev_idx_free(int idx)
+> +{
+> +	ida_free(&mlx5_adev_ida, idx);
+> +}
+> +
+> +int mlx5_adev_init(struct mlx5_core_dev *dev)
+> +{
+> +	struct mlx5_priv *priv = &dev->priv;
+> +
+> +	priv->adev = kcalloc(ARRAY_SIZE(mlx5_adev_devices),
+> +			     sizeof(struct mlx5_adev *), GFP_KERNEL);
+> +	if (!priv->adev)
+> +		return -ENOMEM;
+> +
+> +	return 0;
+> +}
+> +
+> +void mlx5_adev_cleanup(struct mlx5_core_dev *dev)
+> +{
+> +	struct mlx5_priv *priv = &dev->priv;
+> +
+> +	kfree(priv->adev);
+> +}
+> 
+>  void mlx5_add_device(struct mlx5_interface *intf, struct mlx5_priv
+> *priv)
+>  {
+> @@ -135,15 +169,99 @@ static void mlx5_attach_interface(struct
+> mlx5_interface *intf, struct mlx5_priv
+>  	}
+>  }
+> 
+> -void mlx5_attach_device(struct mlx5_core_dev *dev)
+> +static void adev_release(struct device *dev)
+> +{
+> +	struct mlx5_adev *mlx5_adev =
+> +		container_of(dev, struct mlx5_adev, adev.dev);
+> +	struct mlx5_priv *priv = &mlx5_adev->mdev->priv;
+> +	int idx = mlx5_adev->idx;
+> +
+> +	kfree(mlx5_adev);
+> +	priv->adev[idx] = NULL;
+> +}
+> +
+> +static struct mlx5_adev *add_adev(struct mlx5_core_dev *dev, int
+> idx)
+> +{
+> +	const char *suffix = mlx5_adev_devices[idx].suffix;
+> +	struct auxiliary_device *adev;
+> +	struct mlx5_adev *madev;
+> +	int ret;
+> +
+> +	madev = kzalloc(sizeof(*madev), GFP_KERNEL);
+> +	if (!madev)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	adev = &madev->adev;
+> +	adev->id = dev->priv.adev_idx;
+> +	adev->name = suffix;
+> +	adev->dev.parent = dev->device;
+> +	adev->dev.release = adev_release;
+> +	madev->mdev = dev;
+> +	madev->idx = idx;
+> +
+> +	ret = auxiliary_device_init(adev);
+> +	if (ret) {
+> +		kfree(madev);
+> +		return ERR_PTR(ret);
+> +	}
+> +
+> +	ret = auxiliary_device_add(adev);
+> +	if (ret) {
+> +		auxiliary_device_uninit(adev);
+> +		return ERR_PTR(ret);
+> +	}
+> +	return madev;
+> +}
+> +
+> +static void del_adev(struct auxiliary_device *adev)
+> +{
+> +	auxiliary_device_delete(adev);
+> +	auxiliary_device_uninit(adev);
+> +}
+> +
+> +int mlx5_attach_device(struct mlx5_core_dev *dev)
+>  {
+>  	struct mlx5_priv *priv = &dev->priv;
+> +	struct auxiliary_device *adev;
+> +	struct auxiliary_driver *adrv;
+>  	struct mlx5_interface *intf;
+> +	int ret = 0, i;
+> 
+>  	mutex_lock(&mlx5_intf_mutex);
+> +	for (i = 0; i < ARRAY_SIZE(mlx5_adev_devices); i++) {
+> +		if (!priv->adev[i]) {
+> +			bool is_supported = false;
+> +
+> +			if (mlx5_adev_devices[i].is_supported)
+> +				is_supported =
+> mlx5_adev_devices[i].is_supported(dev);
+> +
+> +			if (!is_supported)
+> +				continue;
+> +
+> +			priv->adev[i] = add_adev(dev, i);
+> +			if (IS_ERR(priv->adev[i])) {
+> +				ret = PTR_ERR(priv->adev[i]);
+> +				priv->adev[i] = NULL;
+> +			}
+> +		} else {
+> +			adev = &priv->adev[i]->adev;
+> +			adrv = to_auxiliary_drv(adev->dev.driver);
+> +
+> +			if (adrv->resume)
+> +				ret = adrv->resume(adev);
+> +		}
+> +		if (ret) {
+> +			mlx5_core_warn(dev, "Device[%d] (%s) failed to
+> load\n",
+> +				       i, mlx5_adev_devices[i].suffix);
+> +
+> +			break;
+> +		}
+> +	}
+> +
+>  	list_for_each_entry(intf, &intf_list, list)
+>  		mlx5_attach_interface(intf, priv);
+>  	mutex_unlock(&mlx5_intf_mutex);
+> +	return ret;
+>  }
+> 
+>  static void mlx5_detach_interface(struct mlx5_interface *intf,
+> struct mlx5_priv *priv)
+> @@ -171,9 +289,29 @@ static void mlx5_detach_interface(struct
+> mlx5_interface *intf, struct mlx5_priv
+>  void mlx5_detach_device(struct mlx5_core_dev *dev)
+>  {
+>  	struct mlx5_priv *priv = &dev->priv;
+> +	struct auxiliary_device *adev;
+> +	struct auxiliary_driver *adrv;
+>  	struct mlx5_interface *intf;
+> +	pm_message_t pm = {};
+> +	int i;
+> 
+>  	mutex_lock(&mlx5_intf_mutex);
+> +	for (i = ARRAY_SIZE(mlx5_adev_devices) - 1; i >= 0; i--) {
+> +		if (!priv->adev[i])
+> +			continue;
+> +
+> +		adev = &priv->adev[i]->adev;
+> +		adrv = to_auxiliary_drv(adev->dev.driver);
+> +
+> +		if (adrv->suspend) {
+> +			adrv->suspend(adev, pm);
+> +			continue;
+> +		}
+> +
+> +		del_adev(&priv->adev[i]->adev);
+> +		priv->adev[i] = NULL;
+> +	}
+> +
+>  	list_for_each_entry(intf, &intf_list, list)
+>  		mlx5_detach_interface(intf, priv);
+>  	mutex_unlock(&mlx5_intf_mutex);
+> @@ -193,16 +331,30 @@ bool mlx5_device_registered(struct
+> mlx5_core_dev *dev)
+>  	return found;
+>  }
+> 
+> -void mlx5_register_device(struct mlx5_core_dev *dev)
+> +int mlx5_register_device(struct mlx5_core_dev *dev)
+>  {
+>  	struct mlx5_priv *priv = &dev->priv;
+>  	struct mlx5_interface *intf;
+> +	int ret;
+> +
+> +	mutex_lock(&mlx5_intf_mutex);
+> +	dev->priv.flags &= ~MLX5_PRIV_FLAGS_DISABLE_ALL_ADEV;
+> +	ret = mlx5_rescan_drivers_locked(dev);
+> +	mutex_unlock(&mlx5_intf_mutex);
+> +	if (ret)
+> +		goto add_err;
+> 
+>  	mutex_lock(&mlx5_intf_mutex);
+>  	list_add_tail(&priv->dev_list, &mlx5_dev_list);
+>  	list_for_each_entry(intf, &intf_list, list)
+>  		mlx5_add_device(intf, priv);
+>  	mutex_unlock(&mlx5_intf_mutex);
+> +
+> +	return 0;
+> +
+> +add_err:
+> +	mlx5_unregister_device(dev);
+> +	return ret;
+>  }
+> 
+>  void mlx5_unregister_device(struct mlx5_core_dev *dev)
+> @@ -214,6 +366,9 @@ void mlx5_unregister_device(struct mlx5_core_dev
+> *dev)
+>  	list_for_each_entry_reverse(intf, &intf_list, list)
+>  		mlx5_remove_device(intf, priv);
+>  	list_del(&priv->dev_list);
+> +
+> +	dev->priv.flags |= MLX5_PRIV_FLAGS_DISABLE_ALL_ADEV;
+> +	mlx5_rescan_drivers_locked(dev);
+>  	mutex_unlock(&mlx5_intf_mutex);
+>  }
+> 
+> @@ -246,6 +401,77 @@ void mlx5_unregister_interface(struct
+> mlx5_interface *intf)
+>  }
+>  EXPORT_SYMBOL(mlx5_unregister_interface);
+> 
+> +static int add_drivers(struct mlx5_core_dev *dev)
+> +{
+> +	struct mlx5_priv *priv = &dev->priv;
+> +	int i, ret = 0;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(mlx5_adev_devices); i++) {
+> +		bool is_supported = false;
+> +
+> +		if (priv->adev[i])
+> +			continue;
+> +
+> +		if (mlx5_adev_devices[i].is_supported)
+> +			is_supported =
+> mlx5_adev_devices[i].is_supported(dev);
+> +
+> +		if (!is_supported)
+> +			continue;
+> +
 
-This works for me - I have the changes saved into an add-on patch that I ha=
-ven't
-squashed into the main patch yet.
+I think this is wrong for two reasons.
 
-> Thanks
->=20
-> >
-> > -DaveE
+1. is_supported should belong to the ulp aux device itself, and must be
+performed before probe. drivers should be added unconditionally and
+is_supproted should be checked only prior to probe.
+
+2. you can always load a driver without its underlying device existed.
+for example, you can load a pci device driver/module and it will load
+and wait for pci devices to pop up, the subsysetem infrastructure will
+match between drivers and devices and probe them.
+
+Aux should be the same with the small change that all ulp aux devices
+should implement is_supported if they need, since they are virtual
+devices they might have some other constrains other than just matching
+device ids.
+
+
+
+I would suggest the following infra/API semantics changes:
+
+Aux bus parent device:
+mlx5_core pci device load/probe(pci_dev) 
+{
+  struct aux_device *mlx5_aux_dev = alloc_aux_device()
+
+  mlx5_aux_dev->priv = pci_dev;
+  register_aux_device("mlx5_core", mlx5_aux_dev);
+}
+
+
+
+Aux ULP driver:
+
+struct aux_driver mlx5_vpda_aux_driver {
+
+      .name = "vdpa",
+       /* match this driver with mlx5_core devices */
+      .id_table = {"mlx5_core"}, 
+      .ops {
+            /* called before probe on actual aux mlx5_core device */
+           .is_supported(struct aux_device); 
+
+           .probe = mlx5v_probe,
+           .remove = mlx5v_remove,
+        }
+}
+
+mlx5_vdpa_module_init():
+    register_aux_driver(mlx5_vpda_aux_driver);
+
+
+
+Aux infrastructure semantics:
+
+  a) on  register_aux_device("mlx5_core", mlx5_aux_dev); 
+     it will match all drivers and probe them if is_supported is true,
+     reveres flow on unregister_aux_device()
+
+  b) on register_aux_driver(); probe driver on all current devices with
+matching ids if is_supported() returned ture
+
+
+So you don't really need to re-implement mlx5_rescan_drivers_locked and
+mlx5_add_drivers in each and every aux device/driver providers, this
+should be a aux bus infra' logic.
+
+
