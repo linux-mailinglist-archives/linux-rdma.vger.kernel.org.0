@@ -2,89 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2622A8416
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 17:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288092A8456
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 18:00:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727275AbgKEQ4Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Nov 2020 11:56:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51926 "EHLO mail.kernel.org"
+        id S1731060AbgKERAK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Nov 2020 12:00:10 -0500
+Received: from verein.lst.de ([213.95.11.211]:47871 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726214AbgKEQ4Q (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:56:16 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A773C2073A;
-        Thu,  5 Nov 2020 16:56:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604595375;
-        bh=rveaLrZ2VekMaBIfhcAvnGUg2fcFO3veOvwCKc6KlV8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p0zlCIJSZLU+hIGO/1OT9CsKyGQRT9xRqtuEOEJYahXBjO2R63qCOEBzaoC2jvC/W
-         b3CyZRYfIxq8nHLYW+R8WfeBMZfDYBVEuMJK7rNNLj7g5UvHMQPmTC8sRuIQAKq6bJ
-         KIIuiYd6H/ssEmRFS4YipJuNXx5/cC0UxgvuXAYQ=
-Date:   Thu, 5 Nov 2020 17:57:01 +0100
-From:   gregkh <gregkh@linuxfoundation.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Netdev <netdev@vger.kernel.org>, Parav Pandit <parav@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
-        Mark Brown <broonie@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David M Ertman <david.m.ertman@intel.com>
-Subject: Re: [PATCH mlx5-next v1 06/11] vdpa/mlx5: Connect mlx5_vdpa to
- auxiliary bus
-Message-ID: <20201105165701.GA1243785@kroah.com>
-References: <20201101201542.2027568-1-leon@kernel.org>
- <20201101201542.2027568-7-leon@kernel.org>
- <20201103154525.GO36674@ziepe.ca>
- <CAPcyv4jP9nFAGdvB7agg3x7Y7moHGcxLd5=f5=5CXnJRUf3n9w@mail.gmail.com>
- <20201105073302.GA3415673@kroah.com>
- <20201105164738.GD36674@ziepe.ca>
+        id S1726996AbgKERAK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 5 Nov 2020 12:00:10 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 0E0A568B02; Thu,  5 Nov 2020 18:00:05 +0100 (CET)
+Date:   Thu, 5 Nov 2020 18:00:04 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Zhu Yanjun <yanjunz@nvidia.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        iommu@lists.linux-foundation.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Logan Gunthorpe <logang@deltatee.com>
+Subject: Re: [PATCH 1/6] RMDA/sw: don't allow drivers using dma_virt_ops on
+ highmem configs
+Message-ID: <20201105170004.GA7502@lst.de>
+References: <20201105074205.1690638-1-hch@lst.de> <20201105074205.1690638-2-hch@lst.de> <40d0a990-0fca-6f12-16ff-3612a9847ab3@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105164738.GD36674@ziepe.ca>
+In-Reply-To: <40d0a990-0fca-6f12-16ff-3612a9847ab3@arm.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 12:47:38PM -0400, Jason Gunthorpe wrote:
-> On Thu, Nov 05, 2020 at 08:33:02AM +0100, gregkh wrote:
-> > > Were there any additional changes you wanted to see happen? I'll go
-> > > give the final set another once over, but David has been diligently
-> > > fixing up all the declared major issues so I expect to find at most
-> > > minor incremental fixups.
-> > 
-> > This is in my to-review pile, along with a load of other stuff at the
-> > moment:
-> > 	$ ~/bin/mdfrm -c ~/mail/todo/
-> > 	1709 messages in /home/gregkh/mail/todo/
-> > 
-> > So give me a chance.  There is no rush on my side for this given the
-> > huge delays that have happened here on the authorship side many times in
-> > the past :)
-> 
-> On the other hand Leon and his team did invest alot of time and
-> effort, very quickly, to build and QA this large mlx5 series here to
-> give a better/second example as you requested only a few weeks ago.
+On Thu, Nov 05, 2020 at 12:15:46PM +0000, Robin Murphy wrote:
+> On 2020-11-05 07:42, Christoph Hellwig wrote:
+>> dma_virt_ops requires that all pages have a kernel virtual address.
+>> Introduce a INFINIBAND_VIRT_DMA Kconfig symbol that depends on !HIGHMEM
+>> and a large enough dma_addr_t, and make all three driver depend on the
+>> new symbol.
+>>
+>> Signed-off-by: Christoph Hellwig <hch@lst.de>
+>> ---
+>>   drivers/infiniband/Kconfig           | 6 ++++++
+>>   drivers/infiniband/sw/rdmavt/Kconfig | 3 ++-
+>>   drivers/infiniband/sw/rxe/Kconfig    | 2 +-
+>>   drivers/infiniband/sw/siw/Kconfig    | 1 +
+>>   4 files changed, 10 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
+>> index 32a51432ec4f73..81acaf5fb5be67 100644
+>> --- a/drivers/infiniband/Kconfig
+>> +++ b/drivers/infiniband/Kconfig
+>> @@ -73,6 +73,12 @@ config INFINIBAND_ADDR_TRANS_CONFIGFS
+>>   	  This allows the user to config the default GID type that the CM
+>>   	  uses for each device, when initiaing new connections.
+>>   +config INFINIBAND_VIRT_DMA
+>> +	bool
+>> +	default y
+>> +	depends on !HIGHMEM
+>> +	depends on !64BIT || ARCH_DMA_ADDR_T_64BIT
+>
+> Isn't that effectively always true now since 4965a68780c5? I had a quick 
+> try of manually overriding CONFIG_ARCH_DMA_ADDR_T_64BIT in my .config, and 
+> the build just forces it back to "=y".
 
-Leon and his team have done a great job, and I never said otherwise.
-
-greg k-h
+True.  The guy who did the commit should have really told me about it :)
