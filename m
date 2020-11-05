@@ -2,185 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64F22A75D5
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 03:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C88932A780B
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 08:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733155AbgKEC7q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Nov 2020 21:59:46 -0500
-Received: from mga02.intel.com ([134.134.136.20]:20194 "EHLO mga02.intel.com"
+        id S1728553AbgKEHcT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Nov 2020 02:32:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733111AbgKEC7q (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 4 Nov 2020 21:59:46 -0500
-IronPort-SDR: 0rPuQaN7XRPk6on7wDC1bGAjyJUHDmcrLrdX+PwHzwGaJX4LsLyjg/pgZtpDoKtJlaPMQ33cRo
- xmK9+UZPsjaw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="156307731"
-X-IronPort-AV: E=Sophos;i="5.77,452,1596524400"; 
-   d="scan'208";a="156307731"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2020 18:59:45 -0800
-IronPort-SDR: CHwtnafyYho8ZXX1NwT5LMPGn4sQN3ivtqBVHXgxX7Cw1YWLAJPeVf5b7XlKGVwbXlLKHSu9kz
- rNWhJ0t4Ez2Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,452,1596524400"; 
-   d="scan'208";a="306645058"
-Received: from lkp-server02.sh.intel.com (HELO e61783667810) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 04 Nov 2020 18:59:43 -0800
-Received: from kbuild by e61783667810 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kaVV1-0001CT-Ak; Thu, 05 Nov 2020 02:59:43 +0000
-Date:   Thu, 05 Nov 2020 10:58:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- f946e45f59ef01ff54ffb3b1eba3a8e7915e7326
-Message-ID: <5fa36a6e.Zby/RYRcPg4TVwij%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1725320AbgKEHcQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 5 Nov 2020 02:32:16 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 930A420936;
+        Thu,  5 Nov 2020 07:32:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604561534;
+        bh=95POjnfgmnBfa+PcIUbO71yIixyEwcBCZu8ONi41qSI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=v7jixjnRS8IofHWpcD2+DxxCXJ90U/evKE0DUQul2JT/Y8H+g7nVaRbkifKy48xox
+         VDGBlpUHfWervGmkwxAM0ACUtpdpFRRs9k0EqAwpLdfoM3L9+GBIUBILJMUGPAe8zd
+         NU6sc18Y6rTq9FYLuezM9oiY3jBE5sPskCQybDUw=
+Date:   Thu, 5 Nov 2020 08:33:02 +0100
+From:   gregkh <gregkh@linuxfoundation.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Netdev <netdev@vger.kernel.org>, Parav Pandit <parav@nvidia.com>,
+        Roi Dayan <roid@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David M Ertman <david.m.ertman@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH mlx5-next v1 06/11] vdpa/mlx5: Connect mlx5_vdpa to
+ auxiliary bus
+Message-ID: <20201105073302.GA3415673@kroah.com>
+References: <20201101201542.2027568-1-leon@kernel.org>
+ <20201101201542.2027568-7-leon@kernel.org>
+ <20201103154525.GO36674@ziepe.ca>
+ <CAPcyv4jP9nFAGdvB7agg3x7Y7moHGcxLd5=f5=5CXnJRUf3n9w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4jP9nFAGdvB7agg3x7Y7moHGcxLd5=f5=5CXnJRUf3n9w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: f946e45f59ef01ff54ffb3b1eba3a8e7915e7326  IB/mlx5: Add support for NDR link speed
+On Wed, Nov 04, 2020 at 03:21:23PM -0800, Dan Williams wrote:
+> On Tue, Nov 3, 2020 at 7:45 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> [..]
+> > > +MODULE_DEVICE_TABLE(auxiliary, mlx5v_id_table);
+> > > +
+> > > +static struct auxiliary_driver mlx5v_driver = {
+> > > +     .name = "vnet",
+> > > +     .probe = mlx5v_probe,
+> > > +     .remove = mlx5v_remove,
+> > > +     .id_table = mlx5v_id_table,
+> > > +};
+> >
+> > It is hard to see from the diff, but when this patch is applied the
+> > vdpa module looks like I imagined things would look with the auxiliary
+> > bus. It is very similar in structure to a PCI driver with the probe()
+> > function cleanly registering with its subsystem. This is what I'd like
+> > to see from the new Intel RDMA driver.
+> >
+> > Greg, I think this patch is the best clean usage example.
+> >
+> > I've looked over this series and it has the right idea and
+> > parts. There is definitely more that can be done to improve mlx5 in
+> > this area, but this series is well scoped and cleans a good part of
+> > it.
+> 
+> Greg?
+> 
+> I know you alluded to going your own way if the auxiliary bus patches
+> did not shape up soon, but it seems they have and the stakeholders
+> have reached this consensus point.
+> 
+> Were there any additional changes you wanted to see happen? I'll go
+> give the final set another once over, but David has been diligently
+> fixing up all the declared major issues so I expect to find at most
+> minor incremental fixups.
 
-elapsed time: 720m
+This is in my to-review pile, along with a load of other stuff at the
+moment:
+	$ ~/bin/mdfrm -c ~/mail/todo/
+	1709 messages in /home/gregkh/mail/todo/
 
-configs tested: 121
-configs skipped: 2
+So give me a chance.  There is no rush on my side for this given the
+huge delays that have happened here on the authorship side many times in
+the past :)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+If you can review it, or anyone else, that is always most appreciated.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                        shmobile_defconfig
-sh                           se7751_defconfig
-arm                        vexpress_defconfig
-mips                          ath25_defconfig
-arm                            u300_defconfig
-sh                          rsk7269_defconfig
-sh                   secureedge5410_defconfig
-mips                        maltaup_defconfig
-arm                      pxa255-idp_defconfig
-arm                          tango4_defconfig
-parisc                           alldefconfig
-powerpc               mpc834x_itxgp_defconfig
-arm                           tegra_defconfig
-mips                         cobalt_defconfig
-openrisc                            defconfig
-mips                         tb0226_defconfig
-xtensa                              defconfig
-alpha                            allyesconfig
-powerpc                      cm5200_defconfig
-arc                            hsdk_defconfig
-mips                        jmr3927_defconfig
-powerpc                      ppc6xx_defconfig
-arm                      integrator_defconfig
-powerpc                 mpc837x_rdb_defconfig
-arm                        clps711x_defconfig
-sh                        edosk7760_defconfig
-parisc                generic-64bit_defconfig
-powerpc                     tqm8555_defconfig
-i386                             allyesconfig
-i386                             alldefconfig
-sh                           se7722_defconfig
-powerpc                       holly_defconfig
-arm                        mvebu_v7_defconfig
-mips                        bcm47xx_defconfig
-mips                            gpr_defconfig
-powerpc                      katmai_defconfig
-m68k                       bvme6000_defconfig
-sh                     sh7710voipgw_defconfig
-arm                         orion5x_defconfig
-mips                            ar7_defconfig
-riscv                    nommu_virt_defconfig
-powerpc                        cell_defconfig
-sh                  sh7785lcr_32bit_defconfig
-powerpc                  iss476-smp_defconfig
-arm                          gemini_defconfig
-powerpc                     asp8347_defconfig
-powerpc                      ppc64e_defconfig
-powerpc                     tqm8548_defconfig
-powerpc                     ksi8560_defconfig
-arc                     nsimosci_hs_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201104
-i386                 randconfig-a006-20201104
-i386                 randconfig-a005-20201104
-i386                 randconfig-a001-20201104
-i386                 randconfig-a002-20201104
-i386                 randconfig-a003-20201104
-x86_64               randconfig-a012-20201104
-x86_64               randconfig-a015-20201104
-x86_64               randconfig-a013-20201104
-x86_64               randconfig-a011-20201104
-x86_64               randconfig-a014-20201104
-x86_64               randconfig-a016-20201104
-i386                 randconfig-a015-20201104
-i386                 randconfig-a013-20201104
-i386                 randconfig-a014-20201104
-i386                 randconfig-a016-20201104
-i386                 randconfig-a011-20201104
-i386                 randconfig-a012-20201104
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+thanks,
 
-clang tested configs:
-x86_64               randconfig-a004-20201104
-x86_64               randconfig-a003-20201104
-x86_64               randconfig-a005-20201104
-x86_64               randconfig-a002-20201104
-x86_64               randconfig-a006-20201104
-x86_64               randconfig-a001-20201104
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+greg k-h
