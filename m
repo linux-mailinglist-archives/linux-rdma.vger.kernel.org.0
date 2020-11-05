@@ -2,127 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726D72A80C2
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 15:22:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0802A80FF
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 15:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731016AbgKEOWJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Nov 2020 09:22:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43376 "EHLO
+        id S1730973AbgKEOeU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Nov 2020 09:34:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727275AbgKEOWJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Nov 2020 09:22:09 -0500
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD56C0613CF
-        for <linux-rdma@vger.kernel.org>; Thu,  5 Nov 2020 06:22:08 -0800 (PST)
-Received: by mail-qv1-xf44.google.com with SMTP id r12so719318qvq.13
-        for <linux-rdma@vger.kernel.org>; Thu, 05 Nov 2020 06:22:08 -0800 (PST)
+        with ESMTP id S1727275AbgKEOeT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Nov 2020 09:34:19 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21A8C0613CF
+        for <linux-rdma@vger.kernel.org>; Thu,  5 Nov 2020 06:34:17 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id p12so1173368qtp.7
+        for <linux-rdma@vger.kernel.org>; Thu, 05 Nov 2020 06:34:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=xY0gw3/90YPQ1U742g9g0K7TZkNj4Nia2/KRaz9FQ5U=;
-        b=bp39PS4upm1bbgrETcatnn3WIC8cYzuzxcn/DP/v7cnEcGv5eSri+CJTroBCPrXkjM
-         7kD+vm0KCQlLiYJX92RpLpTlJNQ/54rbRW2XSXo0jnqES0L3qjzNGrlCxAGdb+McaHlh
-         X0ypw0r5JLbxcdXKafySPMLGR6pF9n1dIY9adYxgesmqolCfNzSC9byGKfXGxvjw7wVZ
-         yWBBLg8BP0YK0Xc4SIiSUdFUq9o7cdDHLUpC2lLMcyYY7ZIJEaqXDGdxeHHkg3AUTAzV
-         RJMS/BkomKCCnNTr6V7DCqRmrsFVWDTB51NkvGMUTzX8pirv4rtsYuDzGJ1lf+W9+AU6
-         XogA==
+        bh=I5rECYk/qu8iCaGcU6CltoiiEiUYjixQTANnN1V5Lm0=;
+        b=BpHyF83c8VisTR39W6S5ccfgQByKDmir2lo8vkR5JM3jlQnNqfHGjowVKysk5gpPhK
+         n3yULq08kY1GAiqGMRB9cViGD54NkjgicZmuTHbjGHd4p8W3YvAbNV1apoeUoWGJvleo
+         iStYaIy2UACtuFhBjWhhB1kBIeW8fP0PWrwozESGAhwPh1ADT0iXE3SBASWtgfJdZeSW
+         27x+JBCNX15rSelKQl1Mn2vjkXMLL6LGQcPq6xPi5D3lma2Tb3OUYYatGrDKTE/OILAX
+         BQk7LcD1A5qshxOmFxzVxROJjWVpcey/I7oVeqwB+wBWxUTPwukTwcoxwpwYTbu7LC/1
+         xixA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=xY0gw3/90YPQ1U742g9g0K7TZkNj4Nia2/KRaz9FQ5U=;
-        b=KKLzg/RCu7mI01RHgASevtoPQTLRrsEkzCi2I9Mk/K6kXMtkJ46Q5spUVE7tmjGnEK
-         A+SJ2TG/5LpcnaryGlSQwotruRIv0wENDP5K9oRtsubfNfZJDzMHL4OfEHpiv5IESfcP
-         ZBbIQmBU1FE2VtcXlEmNqVPaMZodcFJGJpUisejAn/es8y7eYM4Pjw35oWrRco5EBCgL
-         6zlYXMrDJdOkVRrx4+5bhaEUXyPL82Nv/AWTWqJZbGRvcphM6JB+GeSK/4bpvvpvN9bC
-         3ieFebJyd2sVuJ2estIn5miTiAlba2TdF3RM67Y+yo7js0OXs6u+Xf+M6n1vDYZYrtB+
-         ApVQ==
-X-Gm-Message-State: AOAM53196zy18lHGj6Hvmhu9M37qec7FHQzSipWejXwvWSHGW4ArvzZ0
-        YFGj07jrtR9oQLRFq0Ynpx6phg==
-X-Google-Smtp-Source: ABdhPJxDiEORmxD5IDVG4orcjN0eGkXKJJeNyo4OH00r2Sf52mVKj/gmqiWyH88OewAQls8s7U3iEQ==
-X-Received: by 2002:ad4:4e84:: with SMTP id dy4mr2218341qvb.47.1604586128216;
-        Thu, 05 Nov 2020 06:22:08 -0800 (PST)
+        bh=I5rECYk/qu8iCaGcU6CltoiiEiUYjixQTANnN1V5Lm0=;
+        b=kMAlJAYINWhH24mMWTVKpTyZ98D80H39xI7vi6nbhi7YI64tUk6Lt13oQ0VmNdQI5W
+         Dek4Eicp1tEOdCS14NFXeYpiB8Re9s3vqHDqsOhdSbPsyfUuweUkYCCnOCADCtQk7B8w
+         8cqw6LzpgCH+tEnUcu2boveTuaausGCTC87t8gl8mEY2M9+zYMxj3c3MRKudUcgs12gw
+         7JyVFqD51TJ9OKjgLtXS9Ti6jIyWI3dprGGUsyj3vcJNVaTm/Z2TQzOfHzx6jzxL6F4U
+         e0l1qhuRJD2TU5axsifQ2SqHK4+WGAxfKGg+jaURqMJrcWZ0nSNKMSBXlsFXwUvBlszN
+         Gl4A==
+X-Gm-Message-State: AOAM530W1C6qCM0i8/Q7iKNIBtPgxpCNKKrzU8m09fMeg47J6MxsCOG9
+        54aqBIEdWPj+0pL973GVxMDg+O0Wqmm9OG9I
+X-Google-Smtp-Source: ABdhPJx+gEzteow3B6jBiGbKO3tmtMId5XEoAWNmGBpXJ4b46a6vEg/U6TjnTg7sjzUg2oRcIwG5DQ==
+X-Received: by 2002:ac8:6f1c:: with SMTP id g28mr2157920qtv.65.1604586857069;
+        Thu, 05 Nov 2020 06:34:17 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id b12sm974336qtj.12.2020.11.05.06.22.07
+        by smtp.gmail.com with ESMTPSA id a128sm1090283qkc.68.2020.11.05.06.34.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 06:22:07 -0800 (PST)
+        Thu, 05 Nov 2020 06:34:16 -0800 (PST)
 Received: from jgg by mlx with local (Exim 4.94)
         (envelope-from <jgg@ziepe.ca>)
-        id 1kag9O-00HNUk-MI; Thu, 05 Nov 2020 10:22:06 -0400
-Date:   Thu, 5 Nov 2020 10:22:06 -0400
+        id 1kagL9-00HNlq-O2; Thu, 05 Nov 2020 10:34:15 -0400
+Date:   Thu, 5 Nov 2020 10:34:15 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        "Vetter, Daniel" <daniel.vetter@intel.com>
-Subject: Re: [PATCH v7 4/5] RDMA/mlx5: Support dma-buf based userspace memory
- region
-Message-ID: <20201105142206.GA36674@ziepe.ca>
-References: <1604527595-39736-1-git-send-email-jianxin.xiong@intel.com>
- <1604527595-39736-5-git-send-email-jianxin.xiong@intel.com>
- <20201105000721.GY36674@ziepe.ca>
- <MW3PR11MB4555C4C6A58F0D054C69FEADE5EE0@MW3PR11MB4555.namprd11.prod.outlook.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
+        iommu@lists.linux-foundation.org
+Subject: Re: [PATCH 3/6] RDMA/core: remove use of dma_virt_ops
+Message-ID: <20201105143415.GB36674@ziepe.ca>
+References: <20201105074205.1690638-1-hch@lst.de>
+ <20201105074205.1690638-4-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <MW3PR11MB4555C4C6A58F0D054C69FEADE5EE0@MW3PR11MB4555.namprd11.prod.outlook.com>
+In-Reply-To: <20201105074205.1690638-4-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 12:36:25AM +0000, Xiong, Jianxin wrote:
-> > From: Jason Gunthorpe <jgg@ziepe.ca>
-> > Sent: Wednesday, November 04, 2020 4:07 PM
-> > To: Xiong, Jianxin <jianxin.xiong@intel.com>
-> > Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org; Doug Ledford <dledford@redhat.com>; Leon Romanovsky
-> > <leon@kernel.org>; Sumit Semwal <sumit.semwal@linaro.org>; Christian Koenig <christian.koenig@amd.com>; Vetter, Daniel
-> > <daniel.vetter@intel.com>
-> > Subject: Re: [PATCH v7 4/5] RDMA/mlx5: Support dma-buf based userspace memory region
-> > 
-> > On Wed, Nov 04, 2020 at 02:06:34PM -0800, Jianxin Xiong wrote:
-> > > +	umem = ib_umem_dmabuf_get(&dev->ib_dev, offset, length, fd, access_flags,
-> > > +				  &mlx5_ib_dmabuf_attach_ops);
-> > > +	if (IS_ERR(umem)) {
-> > > +		mlx5_ib_dbg(dev, "umem get failed (%ld)\n", PTR_ERR(umem));
-> > > +		return ERR_PTR(PTR_ERR(umem));
-> > > +	}
-> > > +
-> > > +	mr = alloc_mr_from_cache(pd, umem, virt_addr, access_flags);
-> > 
-> > It is very subtle, but this calls mlx5_umem_find_best_pgsz() which calls ib_umem_find_best_pgsz() which goes over the SGL to determine
-> > the page size to use.
-> > 
-> 
-> When this is called here, the umem sglist is still NULL because dma_buf_map_attachment()
-> is not called until a page fault occurs. In patch 1/5, the function ib_umem_find_best_pgsz()
-> has been modified to always return PAGE_SIZE for dma-buf based MR.
+On Thu, Nov 05, 2020 at 08:42:02AM +0100, Christoph Hellwig wrote:
+> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+> index 5f8fd7976034e0..661e4a22b3cb81 100644
+> +++ b/include/rdma/ib_verbs.h
+> @@ -3950,6 +3950,8 @@ static inline int ib_req_ncomp_notif(struct ib_cq *cq, int wc_cnt)
+>   */
+>  static inline int ib_dma_mapping_error(struct ib_device *dev, u64 dma_addr)
+>  {
+> +	if (!dev->dma_device)
+> +		return 0;
 
-Oh.. That isn't a good idea.
+How about:
 
-ib_umem_find_best_pgsz() must be run on any SGL list to validate it
-against the constraints, making it un-runable for the dmabuf case
-means we can never support large page size or even validate that the
-SGL is properly formed.
+static inline bool ib_uses_virt_dma(struct ib_device *dev)
+{
+	return IS_ENABLED(CONFIG_INFINIBAND_VIRT_DMA) && !dev->dma_device;
+}
 
-So I think this need to change the alloc_mr_from_cache() to early exit
-for dma_buf ones
-
-And it still need to call ib_umem_find_best_pgsz() but
-just check the page size.
-
-> > Edit the last SGE to have a reduced length
-> 
-> Do you still think modifying the SGL in place needed given the above
-> explanation? I do see some benefits of doing so -- hiding the
-> discrepancy of sgl and addr/length from the device drivers and avoid
-> special handling in the code that use the sgl.
-
-Yes, a umem SGL should always be properly formed or I will have a
-meltdown trying to keep all the drivers working :\
+Which is a a little more guidance that driver authors need to set this
+config symbol.
 
 Jason
