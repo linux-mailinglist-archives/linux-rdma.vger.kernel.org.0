@@ -2,123 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339082A7E64
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 13:15:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 726D72A80C2
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 15:22:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729113AbgKEMPu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Nov 2020 07:15:50 -0500
-Received: from foss.arm.com ([217.140.110.172]:59086 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725468AbgKEMPu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Nov 2020 07:15:50 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E529142F;
-        Thu,  5 Nov 2020 04:15:49 -0800 (PST)
-Received: from [10.57.54.223] (unknown [10.57.54.223])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 62E5D3F719;
-        Thu,  5 Nov 2020 04:15:47 -0800 (PST)
-Subject: Re: [PATCH 1/6] RMDA/sw: don't allow drivers using dma_virt_ops on
- highmem configs
-To:     Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Zhu Yanjun <yanjunz@nvidia.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        iommu@lists.linux-foundation.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-References: <20201105074205.1690638-1-hch@lst.de>
- <20201105074205.1690638-2-hch@lst.de>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <40d0a990-0fca-6f12-16ff-3612a9847ab3@arm.com>
-Date:   Thu, 5 Nov 2020 12:15:46 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1731016AbgKEOWJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Nov 2020 09:22:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727275AbgKEOWJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Nov 2020 09:22:09 -0500
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD56C0613CF
+        for <linux-rdma@vger.kernel.org>; Thu,  5 Nov 2020 06:22:08 -0800 (PST)
+Received: by mail-qv1-xf44.google.com with SMTP id r12so719318qvq.13
+        for <linux-rdma@vger.kernel.org>; Thu, 05 Nov 2020 06:22:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xY0gw3/90YPQ1U742g9g0K7TZkNj4Nia2/KRaz9FQ5U=;
+        b=bp39PS4upm1bbgrETcatnn3WIC8cYzuzxcn/DP/v7cnEcGv5eSri+CJTroBCPrXkjM
+         7kD+vm0KCQlLiYJX92RpLpTlJNQ/54rbRW2XSXo0jnqES0L3qjzNGrlCxAGdb+McaHlh
+         X0ypw0r5JLbxcdXKafySPMLGR6pF9n1dIY9adYxgesmqolCfNzSC9byGKfXGxvjw7wVZ
+         yWBBLg8BP0YK0Xc4SIiSUdFUq9o7cdDHLUpC2lLMcyYY7ZIJEaqXDGdxeHHkg3AUTAzV
+         RJMS/BkomKCCnNTr6V7DCqRmrsFVWDTB51NkvGMUTzX8pirv4rtsYuDzGJ1lf+W9+AU6
+         XogA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xY0gw3/90YPQ1U742g9g0K7TZkNj4Nia2/KRaz9FQ5U=;
+        b=KKLzg/RCu7mI01RHgASevtoPQTLRrsEkzCi2I9Mk/K6kXMtkJ46Q5spUVE7tmjGnEK
+         A+SJ2TG/5LpcnaryGlSQwotruRIv0wENDP5K9oRtsubfNfZJDzMHL4OfEHpiv5IESfcP
+         ZBbIQmBU1FE2VtcXlEmNqVPaMZodcFJGJpUisejAn/es8y7eYM4Pjw35oWrRco5EBCgL
+         6zlYXMrDJdOkVRrx4+5bhaEUXyPL82Nv/AWTWqJZbGRvcphM6JB+GeSK/4bpvvpvN9bC
+         3ieFebJyd2sVuJ2estIn5miTiAlba2TdF3RM67Y+yo7js0OXs6u+Xf+M6n1vDYZYrtB+
+         ApVQ==
+X-Gm-Message-State: AOAM53196zy18lHGj6Hvmhu9M37qec7FHQzSipWejXwvWSHGW4ArvzZ0
+        YFGj07jrtR9oQLRFq0Ynpx6phg==
+X-Google-Smtp-Source: ABdhPJxDiEORmxD5IDVG4orcjN0eGkXKJJeNyo4OH00r2Sf52mVKj/gmqiWyH88OewAQls8s7U3iEQ==
+X-Received: by 2002:ad4:4e84:: with SMTP id dy4mr2218341qvb.47.1604586128216;
+        Thu, 05 Nov 2020 06:22:08 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id b12sm974336qtj.12.2020.11.05.06.22.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 06:22:07 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kag9O-00HNUk-MI; Thu, 05 Nov 2020 10:22:06 -0400
+Date:   Thu, 5 Nov 2020 10:22:06 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>
+Subject: Re: [PATCH v7 4/5] RDMA/mlx5: Support dma-buf based userspace memory
+ region
+Message-ID: <20201105142206.GA36674@ziepe.ca>
+References: <1604527595-39736-1-git-send-email-jianxin.xiong@intel.com>
+ <1604527595-39736-5-git-send-email-jianxin.xiong@intel.com>
+ <20201105000721.GY36674@ziepe.ca>
+ <MW3PR11MB4555C4C6A58F0D054C69FEADE5EE0@MW3PR11MB4555.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20201105074205.1690638-2-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW3PR11MB4555C4C6A58F0D054C69FEADE5EE0@MW3PR11MB4555.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-11-05 07:42, Christoph Hellwig wrote:
-> dma_virt_ops requires that all pages have a kernel virtual address.
-> Introduce a INFINIBAND_VIRT_DMA Kconfig symbol that depends on !HIGHMEM
-> and a large enough dma_addr_t, and make all three driver depend on the
-> new symbol.
+On Thu, Nov 05, 2020 at 12:36:25AM +0000, Xiong, Jianxin wrote:
+> > From: Jason Gunthorpe <jgg@ziepe.ca>
+> > Sent: Wednesday, November 04, 2020 4:07 PM
+> > To: Xiong, Jianxin <jianxin.xiong@intel.com>
+> > Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org; Doug Ledford <dledford@redhat.com>; Leon Romanovsky
+> > <leon@kernel.org>; Sumit Semwal <sumit.semwal@linaro.org>; Christian Koenig <christian.koenig@amd.com>; Vetter, Daniel
+> > <daniel.vetter@intel.com>
+> > Subject: Re: [PATCH v7 4/5] RDMA/mlx5: Support dma-buf based userspace memory region
+> > 
+> > On Wed, Nov 04, 2020 at 02:06:34PM -0800, Jianxin Xiong wrote:
+> > > +	umem = ib_umem_dmabuf_get(&dev->ib_dev, offset, length, fd, access_flags,
+> > > +				  &mlx5_ib_dmabuf_attach_ops);
+> > > +	if (IS_ERR(umem)) {
+> > > +		mlx5_ib_dbg(dev, "umem get failed (%ld)\n", PTR_ERR(umem));
+> > > +		return ERR_PTR(PTR_ERR(umem));
+> > > +	}
+> > > +
+> > > +	mr = alloc_mr_from_cache(pd, umem, virt_addr, access_flags);
+> > 
+> > It is very subtle, but this calls mlx5_umem_find_best_pgsz() which calls ib_umem_find_best_pgsz() which goes over the SGL to determine
+> > the page size to use.
+> > 
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   drivers/infiniband/Kconfig           | 6 ++++++
->   drivers/infiniband/sw/rdmavt/Kconfig | 3 ++-
->   drivers/infiniband/sw/rxe/Kconfig    | 2 +-
->   drivers/infiniband/sw/siw/Kconfig    | 1 +
->   4 files changed, 10 insertions(+), 2 deletions(-)
+> When this is called here, the umem sglist is still NULL because dma_buf_map_attachment()
+> is not called until a page fault occurs. In patch 1/5, the function ib_umem_find_best_pgsz()
+> has been modified to always return PAGE_SIZE for dma-buf based MR.
+
+Oh.. That isn't a good idea.
+
+ib_umem_find_best_pgsz() must be run on any SGL list to validate it
+against the constraints, making it un-runable for the dmabuf case
+means we can never support large page size or even validate that the
+SGL is properly formed.
+
+So I think this need to change the alloc_mr_from_cache() to early exit
+for dma_buf ones
+
+And it still need to call ib_umem_find_best_pgsz() but
+just check the page size.
+
+> > Edit the last SGE to have a reduced length
 > 
-> diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
-> index 32a51432ec4f73..81acaf5fb5be67 100644
-> --- a/drivers/infiniband/Kconfig
-> +++ b/drivers/infiniband/Kconfig
-> @@ -73,6 +73,12 @@ config INFINIBAND_ADDR_TRANS_CONFIGFS
->   	  This allows the user to config the default GID type that the CM
->   	  uses for each device, when initiaing new connections.
->   
-> +config INFINIBAND_VIRT_DMA
-> +	bool
-> +	default y
-> +	depends on !HIGHMEM
-> +	depends on !64BIT || ARCH_DMA_ADDR_T_64BIT
+> Do you still think modifying the SGL in place needed given the above
+> explanation? I do see some benefits of doing so -- hiding the
+> discrepancy of sgl and addr/length from the device drivers and avoid
+> special handling in the code that use the sgl.
 
-Isn't that effectively always true now since 4965a68780c5? I had a quick 
-try of manually overriding CONFIG_ARCH_DMA_ADDR_T_64BIT in my .config, 
-and the build just forces it back to "=y".
+Yes, a umem SGL should always be properly formed or I will have a
+meltdown trying to keep all the drivers working :\
 
-Robin.
-
-> +
->   if INFINIBAND_USER_ACCESS || !INFINIBAND_USER_ACCESS
->   source "drivers/infiniband/hw/mthca/Kconfig"
->   source "drivers/infiniband/hw/qib/Kconfig"
-> diff --git a/drivers/infiniband/sw/rdmavt/Kconfig b/drivers/infiniband/sw/rdmavt/Kconfig
-> index 9ef5f5ce1ff6b0..c8e268082952b0 100644
-> --- a/drivers/infiniband/sw/rdmavt/Kconfig
-> +++ b/drivers/infiniband/sw/rdmavt/Kconfig
-> @@ -1,7 +1,8 @@
->   # SPDX-License-Identifier: GPL-2.0-only
->   config INFINIBAND_RDMAVT
->   	tristate "RDMA verbs transport library"
-> -	depends on X86_64 && ARCH_DMA_ADDR_T_64BIT
-> +	depends on INFINIBAND_VIRT_DMA
-> +	depends on X86_64
->   	depends on PCI
->   	select DMA_VIRT_OPS
->   	help
-> diff --git a/drivers/infiniband/sw/rxe/Kconfig b/drivers/infiniband/sw/rxe/Kconfig
-> index a0c6c7dfc1814f..8810bfa680495a 100644
-> --- a/drivers/infiniband/sw/rxe/Kconfig
-> +++ b/drivers/infiniband/sw/rxe/Kconfig
-> @@ -2,7 +2,7 @@
->   config RDMA_RXE
->   	tristate "Software RDMA over Ethernet (RoCE) driver"
->   	depends on INET && PCI && INFINIBAND
-> -	depends on !64BIT || ARCH_DMA_ADDR_T_64BIT
-> +	depends on INFINIBAND_VIRT_DMA
->   	select NET_UDP_TUNNEL
->   	select CRYPTO_CRC32
->   	select DMA_VIRT_OPS
-> diff --git a/drivers/infiniband/sw/siw/Kconfig b/drivers/infiniband/sw/siw/Kconfig
-> index b622fc62f2cd6d..3450ba5081df51 100644
-> --- a/drivers/infiniband/sw/siw/Kconfig
-> +++ b/drivers/infiniband/sw/siw/Kconfig
-> @@ -1,6 +1,7 @@
->   config RDMA_SIW
->   	tristate "Software RDMA over TCP/IP (iWARP) driver"
->   	depends on INET && INFINIBAND && LIBCRC32C
-> +	depends on INFINIBAND_VIRT_DMA
->   	select DMA_VIRT_OPS
->   	help
->   	This driver implements the iWARP RDMA transport over
-> 
+Jason
