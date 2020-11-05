@@ -2,128 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A96B2A8813
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 21:28:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 611CD2A8820
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 21:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729783AbgKEU17 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Nov 2020 15:27:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726996AbgKEU17 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Nov 2020 15:27:59 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FAFC0613CF
-        for <linux-rdma@vger.kernel.org>; Thu,  5 Nov 2020 12:27:58 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id v4so2981318edi.0
-        for <linux-rdma@vger.kernel.org>; Thu, 05 Nov 2020 12:27:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4tO08g/mdJrUnRp5xmIkC4E/sM1L+cB4NfZ88sr/eLY=;
-        b=0Gexu+U6183ptqb2s+FG8/LMY6pXKXn7N3ue80u0iYvQLt+J1c2jziWIJNZODieL9I
-         fjudyFeW2Y8vrOoj/uVLGT946g16HQe9FL8wBkxCdGiWweZU2yE2/V2gb4Bqcm8BYY+/
-         ns6dNvrguGQ8l6UlwQ19zwKV0nsKkWa27hj/znxgNjAWTwoklQ1nLt+8YIkOsZdmkPvC
-         3q3H5/w0tJ3ggiRN/S0VmI7w6ofXq+u9NWrITHIzdaNW9JjSbueu3JGkhuCe0FDdmPbB
-         99034gC0Dhmp0LfcxNOoxcJnDRGv8mIiyor9veTUHkdTOiqrRpVnSG0GX3EAWjathtJi
-         9AwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4tO08g/mdJrUnRp5xmIkC4E/sM1L+cB4NfZ88sr/eLY=;
-        b=BTxDKyUfRlP7GGHWuiRbFiyyV8C8hGDwu9bJ/vby7ZqoKb8/PqV7Wi9129GmxqPFqZ
-         PQaT2TC6QLuGvceq1xvLHrMvCu8xi7mLL5G5hZOcgNtl4HAqPsbzrARLJyqk4OjjdKjN
-         k69AxItv3YSQ62xxn8FZTEQxcY4MhKgTYCL3Ro/wo4kKgct7/pFmGR7eQNtp2o8YDIag
-         KlKvqeFHa+iiaAqXEV2/vMDqxbpX5wxlAGaGAoCgByqmS+QhSON5g7a7YLtglDXtdnGc
-         TIJTRkLPGh5sKW9VuQvRYia6QhvWi1bs+BQdhOsRssdMp037TKwif0iXO4qOkXfi9LBc
-         iP1w==
-X-Gm-Message-State: AOAM5321zUus6t0hgAP9Ndt6ifinwHDCgg12xVYnvFRao7ToBircoBde
-        ButNqih9eBbewYuwQDpys7ZKhyZUjGnptVKfEpWANQ==
-X-Google-Smtp-Source: ABdhPJxZyMj5TW7rvvLgOn3hpEvUsDtY61IBF+U1P3Dju0RxQi9OL2cMh7kULFE2kxodEX2WW11HNleHVODps7fifRk=
-X-Received: by 2002:a05:6402:b35:: with SMTP id bo21mr4691836edb.52.1604608077519;
- Thu, 05 Nov 2020 12:27:57 -0800 (PST)
-MIME-Version: 1.0
-References: <20201023003338.1285642-1-david.m.ertman@intel.com>
- <20201023003338.1285642-2-david.m.ertman@intel.com> <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
- <20201105094719.GQ5429@unreal> <CAPcyv4hmBhkFjSA2Q_p=Ss40CLFs86N7FugJOpq=sZ-NigoSRw@mail.gmail.com>
- <20201105193009.GA5475@unreal>
-In-Reply-To: <20201105193009.GA5475@unreal>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 5 Nov 2020 12:27:46 -0800
-Message-ID: <CAPcyv4j9CiOnxpzcpje-AvdX=EbzUVTGBqiC2AyhLv8rP12sVg@mail.gmail.com>
-Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
-To:     Leon Romanovsky <leonro@nvidia.com>
-Cc:     Dave Ertman <david.m.ertman@intel.com>,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
-        Mark Brown <broonie@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        id S1732043AbgKEUbz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Nov 2020 15:31:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726996AbgKEUbz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 5 Nov 2020 15:31:55 -0500
+Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70B86206CB;
+        Thu,  5 Nov 2020 20:31:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604608314;
+        bh=mLsNqMpg+fjeU5Wj1TlalFF/ej18WzbVB4jrTqF1H+g=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=tip2y8ihPjnL+k84Ml5q7RJaT+qHuQ8ouQtkwEu9HT+3NJ+Do7g6/WkFLgvWr0nxG
+         XL66eSQHoh7XVgTbzWogbyGV0wbtvQ24hhUBY24NLMphWpdncSrpEJ1V5DOZXDJx+e
+         SeV6rpliRjmRwz5J0sZtZO/dmhjGVN3fW+ON4qpQ=
+Message-ID: <8a8e75215a5d3d8cfa9c3c6747325dbbf965811f.camel@kernel.org>
+Subject: Re: [PATCH mlx5-next v1 04/11] vdpa/mlx5: Make hardware definitions
+ visible to all mlx5 devices
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
-        Netdev <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        gregkh <gregkh@linuxfoundation.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Jason Wang <jasowang@redhat.com>, linux-rdma@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        Parav Pandit <parav@nvidia.com>, Roi Dayan <roid@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
+        shiraz.saleem@intel.com, dan.j.williams@intel.com,
+        kiran.patil@intel.com, linux-kernel@vger.kernel.org
+Date:   Thu, 05 Nov 2020 12:31:52 -0800
+In-Reply-To: <20201101201542.2027568-5-leon@kernel.org>
+References: <20201101201542.2027568-1-leon@kernel.org>
+         <20201101201542.2027568-5-leon@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 11:30 AM Leon Romanovsky <leonro@nvidia.com> wrote:
->
-> On Thu, Nov 05, 2020 at 09:12:51AM -0800, Dan Williams wrote:
-> > On Thu, Nov 5, 2020 at 1:47 AM Leon Romanovsky <leonro@nvidia.com> wrote:
-> > >
-> > > On Thu, Nov 05, 2020 at 01:19:09AM -0800, Dan Williams wrote:
-> > > > Some doc fixups, and minor code feedback. Otherwise looks good to me.
-> > > >
-> > > > On Thu, Oct 22, 2020 at 5:35 PM Dave Ertman <david.m.ertman@intel.com> wrote:
-> > > > >
-> > >
-> > > <...>
-> > >
-> > > > >
-> > > > > +config AUXILIARY_BUS
-> > > > > +       bool
-> > > >
-> > > > tristate? Unless you need non-exported symbols, might as well let this
-> > > > be a module.
-> > >
-> > > I asked it to be "bool", because bus as a module is an invitation for
-> > > a disaster. For example if I compile-in mlx5 which is based on this bus,
-> > > and won't add auxiliary_bus as a module to initramfs, the system won't boot.
-> >
-> > Something is broken if module dependencies don't arrange for
-> > auxiliary_bus.ko to be added to the initramfs automatically, but yes,
-> > it is another degree of freedom for something to go wrong if you build
-> > the initramfs by hand.
->
-> And this is something that I would like to avoid for now.
+On Sun, 2020-11-01 at 22:15 +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Move mlx5_vdpa IFC header file to the general include folder, so
+> mlx5_core will be able to reuse it to check if VDPA is supported
+> prior to creating an auxiliary device.
+> 
 
-Fair enough.
+I don't really like this, the whole idea of aux devices is that they
+get to do own logic and hide details, now we are exposing aux specific
+stuff to the bus .. 
+let's figure a way to avoid such exposure as we discussed yesterday.
 
->
-> >
-> > >
-> > > <...>
-> > >
-> > > >
-> > > > Per above SPDX is v2 only, so...
-> > >
-> > > Isn't it default for the Linux kernel?
-> >
-> > SPDX eliminated the need to guess a default, and MODULE_LICENSE("GPL")
-> > implies the "or later" language. The only default assumption is that
-> > the license is GPL v2 compatible, those possibilities are myriad, but
-> > v2-only is the first preference.
->
-> I mean that plain GPL == GPL v2 in the kernel.
+is_supported check shouldn't belong to mlx5_core and each aux device
+(en/ib/vdpa) should implement own is_supported op and keep the details
+hidden in the aux driver like it was before this patch.
 
-You are right, I was wrong.
