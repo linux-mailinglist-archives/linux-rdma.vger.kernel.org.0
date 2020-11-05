@@ -2,115 +2,164 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C42F2A7164
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 00:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 985342A739A
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 01:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733005AbgKDXVj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Nov 2020 18:21:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
+        id S1730241AbgKEAHY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Nov 2020 19:07:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732555AbgKDXVg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Nov 2020 18:21:36 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47E8C0613D3
-        for <linux-rdma@vger.kernel.org>; Wed,  4 Nov 2020 15:21:35 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id p5so308409ejj.2
-        for <linux-rdma@vger.kernel.org>; Wed, 04 Nov 2020 15:21:35 -0800 (PST)
+        with ESMTP id S1728323AbgKEAHY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Nov 2020 19:07:24 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09947C0613CF
+        for <linux-rdma@vger.kernel.org>; Wed,  4 Nov 2020 16:07:24 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id s14so207367qkg.11
+        for <linux-rdma@vger.kernel.org>; Wed, 04 Nov 2020 16:07:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IkxbaeAsRvfPNMaiW0gFtiCQOBmoS4GNd3nY4Wwz8Hk=;
-        b=nbBwJZMY+xrKg6w6NoyyZ8wH6PRrpWDJMwjQmqe2WQUKuJO5hUA4CVT37Q2bT3zk6M
-         XXGYTpqF1YDiy5XaStqn2/wwlKmEE4KiWnngd9Hg4pwEnL3nDkVgzYAWjotLvVSgC8RI
-         OHRURM5VZ+ERQIF6Zw6htdalcHKNqqZ5XS6xWz/S3YRSMU2iC+YP3iut1T2hy68jS+YE
-         L1nTzHri580AMi64MfXaRmO1YeFLTfHm4V1xZh5k6V5MQdopCu5nARpraa1dfQ7trQzf
-         +6RvDh4gvwQHvyG3b9jdZ9wWt+STGKccdgYSKelxfhKJOayGBw+tSbjtTiFw+2KIRg8M
-         qiEw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ngyyrd+7YeTNUGD6RWJvWNxN+aS5ZNXXD5GfmJI2C9s=;
+        b=GYL7zB9kVnVbLQLfDQ7CNvcYkF80/hffFnJdGh/buXrdEBiQIoNyV5ftYv4B945PWp
+         texok6bTLa0kCiwJq+Cthi41KeaJ5RcS9Z+VTq2aLUtb9D9MRdwtCUaB9fY0dTgyZsIV
+         7ISBqrMcwMO4xPZuveqJcG8EXqzfgERI4tSQiOfpwnGdTuehBS3je4ko+nA5bwX5QFkw
+         sL1tyX8Ru6jb/558l/WcK7QZ4MSVQCyDEjEI6Zl+7PdmjCd6G26+QRi/Pbd2sdBFkJ+P
+         j5gIBIaQNzHPdpgOKgGX8enUFCck1hoJG8Y7yzTGpdkTJZmKg4hjq2HXs+S4D7O2K+qK
+         qvzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IkxbaeAsRvfPNMaiW0gFtiCQOBmoS4GNd3nY4Wwz8Hk=;
-        b=bSkWAM8ryFa7q7Ceyzp+qTKJWGXOu1TR4XP60MmZ9/An8EACMLIvpribwGpW7wmFbD
-         ca2nPSLnKALg+TXrJlSNudTFoqE7IgqW/VmrJ6nUEleuUJGUaGt+iAJzfHgjth/MBrUC
-         Ezd4uesjmR+UG0U73bCpcFoo5/W3pSWPPjUSBqdSUZLVCdhFoBFTXMdzbGAr5qFkvFq+
-         P0Omkzspkaeu59QXGbHyviZxZZCVl39kZSy8UyDneyZNegAytWzkjleD2ylXaAdDOQxf
-         sIh8pj6V8DRXO1VAkS5Xbq0GDSq/Ott0d9UeJljOPNeWtDSA5ucEEQz1+9vztsxcDlTS
-         eEgQ==
-X-Gm-Message-State: AOAM532QTuTioYayHKbOnXOADeucbAcIblw0wFhdnJNiMGlctQJAT5tb
-        iCDSV5UUz3uz92WPyPV7BxIgq8NbQYGvZfWuFbY4lg==
-X-Google-Smtp-Source: ABdhPJxvb/hNG9Gu9hrl82xWn1tmJIgoueWGEVMCGBlWcYM3JxH/JkmRoeh47/b7BtcC3eHP9KumYl6m1HGAoVQj2Mk=
-X-Received: by 2002:a17:906:d92c:: with SMTP id rn12mr427071ejb.472.1604532094560;
- Wed, 04 Nov 2020 15:21:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20201101201542.2027568-1-leon@kernel.org> <20201101201542.2027568-7-leon@kernel.org>
- <20201103154525.GO36674@ziepe.ca>
-In-Reply-To: <20201103154525.GO36674@ziepe.ca>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 4 Nov 2020 15:21:23 -0800
-Message-ID: <CAPcyv4jP9nFAGdvB7agg3x7Y7moHGcxLd5=f5=5CXnJRUf3n9w@mail.gmail.com>
-Subject: Re: [PATCH mlx5-next v1 06/11] vdpa/mlx5: Connect mlx5_vdpa to
- auxiliary bus
-To:     gregkh <gregkh@linuxfoundation.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ngyyrd+7YeTNUGD6RWJvWNxN+aS5ZNXXD5GfmJI2C9s=;
+        b=CPZSgDfuXU1PKmcTullX5Zx1d9zS7vTmujcW1QqVr+6fGHXvMHXzvz1VMRcx30YRLX
+         c3M7VQF5nu60k/Fs/GxhAopp/c0lFgdppDBMPzfYRtXt/TO0gxr6lprnhU8gsX+f+Z63
+         vkzVolUxJomx2pY89x6JU8ReumhtxOyMEZY/r/Mq6f94ahD8G0Cfi9xAO+Sld8kQFyye
+         6mU2X/vKbtw9ERiRI6c1ogjG4ot1zCmU57mKC2IiDfTsx+L6JUiLp4TXigGrY/GgKgxx
+         O7TEElq5+IvLfbSVZDwOA2qS3TGgbwwGwAeUTJH6VEHoC4HiSbBO/tPHTGmCbUtwq1MK
+         QGRQ==
+X-Gm-Message-State: AOAM531DlewqzHHO0TaKFEdq7EajhjOOLckJIej4wArRJW/QiJLk6r5F
+        rfT80ezUv3LhqEiPpeCtqtKOSw==
+X-Google-Smtp-Source: ABdhPJwZ2zq4kbXGpuRR9Mw0TOTWAdjlsCRldJcSUyYR7qPJ2IsfD0KFKtR9c++Nf7n/gtYO2KsuBQ==
+X-Received: by 2002:a37:a642:: with SMTP id p63mr749300qke.5.1604534843136;
+        Wed, 04 Nov 2020 16:07:23 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id y3sm1433098qto.2.2020.11.04.16.07.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 16:07:22 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kaSoD-00Gl4C-NS; Wed, 04 Nov 2020 20:07:21 -0400
+Date:   Wed, 4 Nov 2020 20:07:21 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jianxin Xiong <jianxin.xiong@intel.com>
+Cc:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
         Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Netdev <netdev@vger.kernel.org>, Parav Pandit <parav@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
-        Mark Brown <broonie@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David M Ertman <david.m.ertman@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: Re: [PATCH v7 4/5] RDMA/mlx5: Support dma-buf based userspace memory
+ region
+Message-ID: <20201105000721.GY36674@ziepe.ca>
+References: <1604527595-39736-1-git-send-email-jianxin.xiong@intel.com>
+ <1604527595-39736-5-git-send-email-jianxin.xiong@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604527595-39736-5-git-send-email-jianxin.xiong@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 7:45 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-[..]
-> > +MODULE_DEVICE_TABLE(auxiliary, mlx5v_id_table);
-> > +
-> > +static struct auxiliary_driver mlx5v_driver = {
-> > +     .name = "vnet",
-> > +     .probe = mlx5v_probe,
-> > +     .remove = mlx5v_remove,
-> > +     .id_table = mlx5v_id_table,
-> > +};
->
-> It is hard to see from the diff, but when this patch is applied the
-> vdpa module looks like I imagined things would look with the auxiliary
-> bus. It is very similar in structure to a PCI driver with the probe()
-> function cleanly registering with its subsystem. This is what I'd like
-> to see from the new Intel RDMA driver.
->
-> Greg, I think this patch is the best clean usage example.
->
-> I've looked over this series and it has the right idea and
-> parts. There is definitely more that can be done to improve mlx5 in
-> this area, but this series is well scoped and cleans a good part of
-> it.
+On Wed, Nov 04, 2020 at 02:06:34PM -0800, Jianxin Xiong wrote:
+> +	umem = ib_umem_dmabuf_get(&dev->ib_dev, offset, length, fd, access_flags,
+> +				  &mlx5_ib_dmabuf_attach_ops);
+> +	if (IS_ERR(umem)) {
+> +		mlx5_ib_dbg(dev, "umem get failed (%ld)\n", PTR_ERR(umem));
+> +		return ERR_PTR(PTR_ERR(umem));
+> +	}
+> +
+> +	mr = alloc_mr_from_cache(pd, umem, virt_addr, access_flags);
 
-Greg?
+It is very subtle, but this calls mlx5_umem_find_best_pgsz() which
+calls ib_umem_find_best_pgsz() which goes over the SGL to determine
+the page size to use.
 
-I know you alluded to going your own way if the auxiliary bus patches
-did not shape up soon, but it seems they have and the stakeholders
-have reached this consensus point.
+As part of this it does validation of the IOVA vs first page offset vs
+first page dma address. These little details come into play if the
+IOVA and offset are not PAGE_SIZE aligned, which is very possible if
+the dma buf exporter or system PAGE_SIZE is over 4k.
 
-Were there any additional changes you wanted to see happen? I'll go
-give the final set another once over, but David has been diligently
-fixing up all the declared major issues so I expect to find at most
-minor incremental fixups.
+In other words, the dma_address of the first SGL must be the page
+aligned starting point of the MR. Since the 'skip' approach is being
+done when breaking the SGL into blocks the ib_umem_find_best_pgsz()
+sees an invalid page size.
+
+Slicing it has to be done in a way that gives a properly formed
+SGL. 
+
+My suggestion is to just change the SGL in place. Iterate to the
+starting SGE in the SGL and assign it to the sg table, modify it to
+have a offset dma_address and reduced length
+
+Count the number of SGEs to span the remaning range and use that as
+the new nmaped
+
+Edit the last SGE to have a reduced length
+
+Upon unmap undo the edits so the exporter doesn't see the mangled SGL.
+
+It would be saner if the exporter could do this, but oh well.
+
+Approximately like this:
+
+	struct ib_umem *umem = &umem_p->umem;
+	struct scatterlist *sg;
+	int i;
+
+	for_each_sg(umem_p->umem.sg_head.sgl, sg, umem_p->umem.nmap, i) {
+		if (cur + sg_dma_len(sg) > ALIGN_DOWN(umem->address, PAGE_SIZE)) {
+			unsigned long offset;
+
+			umem_p->first_sg = sg;
+			umem_p->first_dma_address = sg->dma_address;
+			umem_p->first_dma_length = sg_dma_len(sg);
+			umem_p->first_length = sg->length;
+			offset = ALIGN_DOWN(umem->addressm PAGE_SIZE) - cur;
+			sg->dma_address += offset;
+			sg_dma_len(sg) -= offset;
+			sg->length -= offset;
+		}
+		if (ALIGN(umem->address + umem->length, PAGE_SIZE) < cur + sg_dma_len(sg)) {
+			unsigned long trim;
+
+			umem_p->last_sg = sg;
+			umem_p->last_dma_length = sg_dma_len(sg);
+			umem_p->last_length = sg->length;
+			trim =  cur + sg_dma_len(sg) - ALIGN(umem->address + umem->length, PAGE_SIZE);
+			sg_dma_len(sg) -= trim;
+			sg->length -= trim;
+			return npages;
+		}
+                cur += sg_dma_len(sg);
+	}
+        /* It is essential that the length of the SGL exactly match
+  	   the adjusted page aligned length of umem->length */
+	return -EINVAL;
+
+Further, this really only works if the umem->page_size is locked to 4k
+because this doesn't have code to resize the MKEY, or change the
+underlying page size when the SGL changes.
+
+So, I'd say put something like the above in the core code to validate
+and properly form the umem->sgl
+
+Then modify the alloc_mr_from_cache to use only PAGE_SIZE:
+
+ if (umem->is_dma_buf)
+        page_size = ib_umem_find_best_pgsz(umem, PAGE_SIZE, iova);
+ else
+    	page_size = mlx5_umem_find_best_pgsz(umem, mkc, log_page_size, 0, iova);
+
+Jason
