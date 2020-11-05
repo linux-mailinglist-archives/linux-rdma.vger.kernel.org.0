@@ -2,105 +2,222 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A6B2A8972
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 23:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5373A2A89DD
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Nov 2020 23:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732731AbgKEWA4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Nov 2020 17:00:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732585AbgKEWAz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Nov 2020 17:00:55 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803B8C0613D3
-        for <linux-rdma@vger.kernel.org>; Thu,  5 Nov 2020 14:00:55 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id s25so4856834ejy.6
-        for <linux-rdma@vger.kernel.org>; Thu, 05 Nov 2020 14:00:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kkrL6/jK3eJFpTLVXsZRPhI+a3UIbjZsmKJ9Y1LYQJ0=;
-        b=l1zyt1jYkTklLUA4dKaMEI57G5m3V/WrJO9UWEROVOt1ialjv5+aPaK+2azNEcKZm0
-         vrcxfUIr6eZ8Kun/So75Mc20VmON8d5xdIS2rpzD+CsMBd2VqqhnemRqlDOnL66sjr1P
-         Ecc5lreu6+8+82eLvbrs02WwGF4FFHLHcePgPZ8d4QfyEF9+q7bmSY/+90lZC5kIEp4O
-         5u8S7sFHPozXs0wKAV3gQx9l3oe6/V92olWejfApaKFk3N1zIixtWQeU33iTAoGmromx
-         XUW+nJIH2V3f6sE6BWIFVXi1z/N5WJiO7KgF5iUw/PsjqHrTRre+btTWTFt0ilKSzUBm
-         fn3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kkrL6/jK3eJFpTLVXsZRPhI+a3UIbjZsmKJ9Y1LYQJ0=;
-        b=ciq9uPf8XUcSs91xqoy+WW9EGrpyt1nIyHgGjiMV6BGTVD7JAiLgBGJ3do1t4Aqaez
-         8MSx+k6BCFMIz+q2CYak20rPwa1oHcbOeDLIb+6reiiItxSG+l+lOvNBT1ihz6FNUw5D
-         hPExvrWx+6gMsrSUySFb7bDYGzHJWm5FuuJSeSK2r7AXaU3XfDZOEXySPQX3oBSbaPUl
-         JLB4hZUPdwKFdAml/Y/cduxtsx2F83h2CK/KYTw2JI0DIX5NrFxbF2MDhjuP6imfPs5r
-         LwrF+GME1nr4hcKnmsNJpUBy4obexNx/MKsRt7H2OO9TB1r4h/MPb9gZqejuJUzSVeko
-         W8Zw==
-X-Gm-Message-State: AOAM533VVupsp3lrqXWcHrj+q5TOTcLnwhW/6GI8evYnSpAuxPdCVsDz
-        sL3KUiuVuu6wR7RcvhQqNVwfiwQOYvBvjsHEpqoJeQ==
-X-Google-Smtp-Source: ABdhPJythImg+6Su9fzxeATyfrRJDwfwiTfRoJbZhE2LPNRyXKMolHFGhd5ZFcfi1TtxdV0OdBNkOfUeah9GASwsFOs=
-X-Received: by 2002:a17:906:ad8e:: with SMTP id la14mr4221902ejb.264.1604613654118;
- Thu, 05 Nov 2020 14:00:54 -0800 (PST)
-MIME-Version: 1.0
-References: <20201023003338.1285642-1-david.m.ertman@intel.com>
- <20201023003338.1285642-2-david.m.ertman@intel.com> <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
- <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 5 Nov 2020 14:00:00 -0800
-Message-ID: <CAPcyv4hjCmaCEUhgchkJO7WaGQeTz8gtS2YgMtBAvoGBksvvSg@mail.gmail.com>
-Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
-To:     "Ertman, David M" <david.m.ertman@intel.com>
-Cc:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        id S1731694AbgKEWeL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Nov 2020 17:34:11 -0500
+Received: from mga02.intel.com ([134.134.136.20]:57150 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731234AbgKEWeK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 5 Nov 2020 17:34:10 -0500
+IronPort-SDR: 0V6d8lvhXyny+3TOg1HSDFpiQxTs91yG6bort7cyy/swScb/tCrQR2OYLWc2B1ZZGL48Xz1NAo
+ /LETn4AEeiQw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9796"; a="156468952"
+X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
+   d="scan'208";a="156468952"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2020 14:34:08 -0800
+IronPort-SDR: Xgv3e+suQY1Exby5AP8XJKAg6N8mVwvdZX0wcaDkl+7REJbCuHyE//QRjbI3GglhA4hZ36lfE2
+ 234gig5Ai1Vg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,454,1596524400"; 
+   d="scan'208";a="363980529"
+Received: from cst-dev.jf.intel.com ([10.23.221.69])
+  by FMSMGA003.fm.intel.com with ESMTP; 05 Nov 2020 14:34:07 -0800
+From:   Jianxin Xiong <jianxin.xiong@intel.com>
+To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
         Doug Ledford <dledford@redhat.com>,
-        Netdev <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: [PATCH v8 0/5] RDMA: Add dma-buf support
+Date:   Thu,  5 Nov 2020 14:48:04 -0800
+Message-Id: <1604616489-69267-1-git-send-email-jianxin.xiong@intel.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 11:28 AM Ertman, David M
-<david.m.ertman@intel.com> wrote:
-[..]
-> > > Each auxiliary_device represents a part of its parent
-> > > +functionality. The generic behavior can be extended and specialized as
-> > needed
-> > > +by encapsulating an auxiliary_device within other domain-specific
-> > structures and
-> > > +the use of .ops callbacks. Devices on the auxiliary bus do not share any
-> > > +structures and the use of a communication channel with the parent is
-> > > +domain-specific.
-> >
-> > Should there be any guidance here on when to use ops and when to just
-> > export functions from parent driver to child. EXPORT_SYMBOL_NS() seems
-> > a perfect fit for publishing shared routines between parent and child.
-> >
->
-> I would leave this up the driver writers to determine what is best for them.
+This is the eighth version of the patch set. Changelog:
 
-I think there is a pathological case that can be avoided with a
-statement like the following:
+v8:
+* Modify the dma-buf sg list in place to get a proper umem sg list and
+  restore it before calling dma_buf_unmap_attachment()
+* Validate the umem sg list with ib_umem_find_best_pgsz()
+* Remove the logic for slicing the sg list at runtime
 
-"Note that ops are intended as a way to augment instance behavior
-within a class of auxiliary devices, it is not the mechanism for
-exporting common infrastructure from the parent. Consider
-EXPORT_SYMBOL_NS() to convey infrastructure from the parent module to
-the auxiliary module(s)."
+v7: https://www.spinics.net/lists/linux-rdma/msg97297.html
+* Rebase on top of latest mlx5 MR patch series
+* Slice dma-buf sg list at runtime instead of creating a new list
+* Preload the buffer page mapping when the MR is created
+* Move the 'dma_virt_ops' check into dma_buf_dynamic_attach()
 
-As for your other dispositions of the feedback, looks good to me.
+v6: https://www.spinics.net/lists/linux-rdma/msg96923.html
+* Move the dma-buf invalidation callback from the core to the device
+  driver
+* Move mapping update from work queue to pagefault handler
+* Add dma-buf based MRs to the xarray of mmkeys so that the pagefault
+  handler can be reached
+* Update the new driver method and uverbs command signature by changing
+  the paramter 'addr' to 'offset'
+* Modify the sg list returned from dma_buf_map_attachment() based on
+  the parameters 'offset' and 'length'
+* Don't import dma-buf if 'dma_virt_ops' is used by the dma device
+* The patch that clarifies dma-buf sg lists alignment has landed at
+  https://cgit.freedesktop.org/drm/drm-misc/commit/?id=ac80cd17a615
+  and thus is no longer included with this set
+
+v5: https://www.spinics.net/lists/linux-rdma/msg96786.html
+* Fix a few warnings reported by kernel test robot:
+    - no previous prototype for function 'ib_umem_dmabuf_release' 
+    - no previous prototype for function 'ib_umem_dmabuf_map_pages'
+    - comparison of distinct pointer types in 'check_add_overflow'
+* Add comment for the wait between getting the dma-buf sg tagle and
+  updating the NIC page table
+
+v4: https://www.spinics.net/lists/linux-rdma/msg96767.html
+* Add a new ib_device method reg_user_mr_dmabuf() instead of expanding
+  the existing method reg_user_mr()
+* Use a separate code flow for dma-buf instead of adding special cases
+  to the ODP memory region code path
+* In invalidation callback, new mapping is updated as whole using work
+  queue instead of being updated in page granularity in the page fault
+  handler
+* Use dma_resv_get_excl() and dma_fence_wait() to ensure the content of
+  the pages have been moved to the new location before the new mapping
+  is programmed into the NIC
+* Add code to the ODP page fault handler to check the mapping status
+* The new access flag added in v3 is removed.
+* The checking for on-demand paging support in the new uverbs command
+  is removed because it is implied by implementing the new ib_device
+  method
+* Clarify that dma-buf sg lists are page aligned
+
+v3: https://www.spinics.net/lists/linux-rdma/msg96330.html
+* Use dma_buf_dynamic_attach() instead of dma_buf_attach()
+* Use on-demand paging mechanism to avoid pinning the GPU memory
+* Instead of adding a new parameter to the device method for memory
+  registration, pass all the attributes including the file descriptor
+  as a structure
+* Define a new access flag for dma-buf based memory region
+* Check for on-demand paging support in the new uverbs command
+
+v2: https://www.spinics.net/lists/linux-rdma/msg93643.html
+* The Kconfig option is removed. There is no dependence issue since
+  dma-buf driver is always enabled.
+* The declaration of new data structure and functions is reorganized to
+  minimize the visibility of the changes.
+* The new uverbs command now goes through ioctl() instead of write().
+* The rereg functionality is removed.
+* Instead of adding new device method for dma-buf specific registration,
+  existing method is extended to accept an extra parameter. 
+* The correct function is now used for address range checking. 
+
+v1: https://www.spinics.net/lists/linux-rdma/msg90720.html
+* The initial patch set
+* Implement core functions for importing and mapping dma-buf
+* Use dma-buf static attach interface
+* Add two ib_device methods reg_user_mr_fd() and rereg_user_mr_fd()
+* Add two uverbs commands via the write() interface
+* Add Kconfig option
+* Add dma-buf support to mlx5 device
+
+When enabled, an RDMA capable NIC can perform peer-to-peer transactions
+over PCIe to access the local memory located on another device. This can
+often lead to better performance than using a system memory buffer for
+RDMA and copying data between the buffer and device memory.
+
+Current kernel RDMA stack uses get_user_pages() to pin the physical
+pages backing the user buffer and uses dma_map_sg_attrs() to get the
+dma addresses for memory access. This usually doesn't work for peer
+device memory due to the lack of associated page structures.
+
+Several mechanisms exist today to facilitate device memory access.
+
+ZONE_DEVICE is a new zone for device memory in the memory management
+subsystem. It allows pages from device memory being described with
+specialized page structures, but what can be done with these page
+structures may be different from system memory. ZONE_DEVICE is further
+specialized into multiple memory types, such as one type for PCI
+p2pmem/p2pdma and one type for HMM.
+
+PCI p2pmem/p2pdma uses ZONE_DEVICE to represent device memory residing
+in a PCI BAR and provides a set of calls to publish, discover, allocate,
+and map such memory for peer-to-peer transactions. One feature of the
+API is that the buffer is allocated by the side that does the DMA
+transfer. This works well with the storage usage case, but is awkward
+with GPU-NIC communication, where typically the buffer is allocated by
+the GPU driver rather than the NIC driver.
+
+Heterogeneous Memory Management (HMM) utilizes mmu_interval_notifier
+and ZONE_DEVICE to support shared virtual address space and page
+migration between system memory and device memory. HMM doesn't support
+pinning device memory because pages located on device must be able to
+migrate to system memory when accessed by CPU. Peer-to-peer access
+is currently not supported by HMM.
+
+Dma-buf is a standard mechanism for sharing buffers among different
+device drivers. The buffer to be shared is exported by the owning
+driver and imported by the driver that wants to use it. The exporter
+provides a set of ops that the importer can call to pin and map the
+buffer. In addition, a file descriptor can be associated with a dma-
+buf object as the handle that can be passed to user space.
+
+This patch series adds dma-buf importer role to the RDMA driver in
+attempt to support RDMA using device memory such as GPU VRAM. Dma-buf is
+chosen for a few reasons: first, the API is relatively simple and allows
+a lot of flexibility in implementing the buffer manipulation ops.
+Second, it doesn't require page structure. Third, dma-buf is already
+supported in many GPU drivers. However, we are aware that existing GPU
+drivers don't allow pinning device memory via the dma-buf interface.
+Pinning would simply cause the backing storage to migrate to system RAM.
+True peer-to-peer access is only possible using dynamic attach, which
+requires on-demand paging support from the NIC to work. For this reason,
+this series only works with ODP capable NICs.
+
+This series consists of five patches. The first patch adds the common
+code for importing dma-buf from a file descriptor and mapping the
+dma-buf pages. Patch 2 add the new driver method reg_user_mr_dmabuf().
+Patch 3 adds a new uverbs command for registering dma-buf based memory
+region. Patch 4 adds dma-buf support to the mlx5 driver. Patch 5 adds
+code to dma_buf_dynamic_attach() to check the importer device for use
+of dma_virt_ops and reject the request if so.
+
+Related user space RDMA library changes will be provided as a separate
+patch series.
+
+Jianxin Xiong (5):
+  RDMA/umem: Support importing dma-buf as user memory region
+  RDMA/core: Add device method for registering dma-buf based memory
+    region
+  RDMA/uverbs: Add uverbs command for dma-buf based MR registration
+  RDMA/mlx5: Support dma-buf based userspace memory region
+  dma-buf: Reject attach request from importers that use dma_virt_ops
+
+ drivers/dma-buf/dma-buf.c                     |   5 +
+ drivers/infiniband/core/Makefile              |   2 +-
+ drivers/infiniband/core/device.c              |   1 +
+ drivers/infiniband/core/umem.c                |   4 +
+ drivers/infiniband/core/umem_dmabuf.c         | 193 ++++++++++++++++++++++++++
+ drivers/infiniband/core/umem_dmabuf.h         |  11 ++
+ drivers/infiniband/core/uverbs_std_types_mr.c | 112 +++++++++++++++
+ drivers/infiniband/hw/mlx5/main.c             |   2 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  18 +++
+ drivers/infiniband/hw/mlx5/mr.c               | 118 +++++++++++++++-
+ drivers/infiniband/hw/mlx5/odp.c              |  97 +++++++++++--
+ include/rdma/ib_umem.h                        |  39 +++++-
+ include/rdma/ib_verbs.h                       |   6 +-
+ include/uapi/rdma/ib_user_ioctl_cmds.h        |  14 ++
+ 14 files changed, 604 insertions(+), 18 deletions(-)
+ create mode 100644 drivers/infiniband/core/umem_dmabuf.c
+ create mode 100644 drivers/infiniband/core/umem_dmabuf.h
+
+-- 
+1.8.3.1
+
