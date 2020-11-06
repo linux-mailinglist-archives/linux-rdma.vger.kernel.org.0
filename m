@@ -2,116 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F174D2A93B2
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Nov 2020 11:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1051C2A9667
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Nov 2020 13:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgKFKIZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 6 Nov 2020 05:08:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59248 "EHLO
+        id S1726939AbgKFMsg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 6 Nov 2020 07:48:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgKFKIZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Nov 2020 05:08:25 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07206C0613CF
-        for <linux-rdma@vger.kernel.org>; Fri,  6 Nov 2020 02:08:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=1dFKN2o+8kGazOe0y0HWPZu2S++bPIj+AcbHCPxryog=; b=Aa/P+utqH4wKXH4Vx3m0pOSO08
-        lHl7qzWEQvSidyccd7OJ4Jj+uyCFQIgzBAvhdvfJtkup6c1K9quLwHZUNBXkWdYBhav7DObYxGLD8
-        H1oMJSeRCBpzneTMGFpEzNFhIJBB6NS+SlPb2DPUYbFGQSg333BQljJRL5N9/1ow+hRtbshh04PT3
-        7ogoFTEUKiAyKEpJv4cok57hb8sCzSZrl8+Vza45AEpYZrMgAweYyjCdwxUe8n643F3IKwwP7erG0
-        EWaFKki/UJthVTnkzofLIDjaILWMqVkouzDsV5xdc4j8AOvclQHRqdyBmbK1T3Wr4tfKo9Nr7T2S/
-        bKP+UjZA==;
-Received: from [2001:4bb8:193:77ca:c7fa:617a:a81c:130] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kayfF-0007R0-LL; Fri, 06 Nov 2020 10:08:15 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     jgg@ziepe.ca
-Cc:     bmt@zurich.ibm.com, yanjunz@nvidia.com,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, linux-rdma@vger.kernel.org
-Subject: [PATCH] RMDA/sw: don't allow drivers using dma_virt_ops on highmem configs
-Date:   Fri,  6 Nov 2020 11:08:12 +0100
-Message-Id: <20201106100812.1726764-1-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
+        with ESMTP id S1726757AbgKFMsg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Nov 2020 07:48:36 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0686C0613CF
+        for <linux-rdma@vger.kernel.org>; Fri,  6 Nov 2020 04:48:35 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id h12so607596qtc.9
+        for <linux-rdma@vger.kernel.org>; Fri, 06 Nov 2020 04:48:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dT/suzaNkB3c7S+yaEZ14QPSLd3HnsKmQIxsHBswjYA=;
+        b=JQfd8wBzk3V/4qXEdChqsDgUtvZ9OKF+td8b1EK2NBfvWYsVkmasAbBjZntX0rqdM7
+         kltSlTy7iYIKPt9IXRVkNOzCqztDLU3CCuod/463qdFzfh+B9ljPI0ygOB5fhiyEHM8I
+         MKC8x+s3iSxQt/7BvRoL428wDYhJ0DwKlSkrpAbOCQrDhwVEz9g2i0PhsEWR6+YrPysA
+         iTmcGO9vmhbxWYrm5owaMABbQAQDQcsu/dw2Gc9ZKXHlsSav2bubgXgmbCPe7DCa50ZI
+         JY33QQaidF0F98ieqItIn7AvgmG/zwo8zOLCgaCbavga7Jxg2VzeZUdiZy2P7E6+vJiy
+         uc6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dT/suzaNkB3c7S+yaEZ14QPSLd3HnsKmQIxsHBswjYA=;
+        b=ugLcUq4lHbyWwJ7+/Atf9z7S5JuLIuL5Lo7tX8YDjjKyJ49X4p8HpVo2Bf6WuGC8h4
+         JeIrUVNGeJdH4+TaP4PYT7DeLKgla2AZ3S+hI6MJi8X36dzu4OiuELTVwiPGIsQ8fSzl
+         Lt1oUxuwmlk3sMF9dEZuNIoVcu3VEm1qAX7NbjkOIoKGBzWKyBkN4pbAlrheT+GFEo+n
+         dUCkkmrObjVKXUtm70JpqNQt2fPQOpW/1cH57cpyhsEa8XxuJM+6el0dY8/gnJBAN4/0
+         jV+44QIZaDVk8bCzn9Jxpczk7Zf32Tde3uIgblmSze7cxfE2JlfugTUPx5mSZnWWiFFS
+         BpPA==
+X-Gm-Message-State: AOAM5336sj7Ek7PTM18sYHUwxum8tKBEgCO+qxjHn667cSzxVxWvnkia
+        NxayHSb+5GQvrQgKxIdpFZzv4w==
+X-Google-Smtp-Source: ABdhPJxdLSvL+7ucIJuva+yEGO+hLgE5wOg7ZB6/6wXGjHV/nF9UoGM01M2i1Of2FF8JKh/+nxYYaw==
+X-Received: by 2002:ac8:7408:: with SMTP id p8mr1223264qtq.320.1604666915029;
+        Fri, 06 Nov 2020 04:48:35 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id x26sm402691qki.108.2020.11.06.04.48.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 04:48:34 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kb1AP-000lO1-8C; Fri, 06 Nov 2020 08:48:33 -0400
+Date:   Fri, 6 Nov 2020 08:48:33 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>
+Subject: Re: [PATCH v8 4/5] RDMA/mlx5: Support dma-buf based userspace memory
+ region
+Message-ID: <20201106124833.GN36674@ziepe.ca>
+References: <1604616489-69267-1-git-send-email-jianxin.xiong@intel.com>
+ <1604616489-69267-5-git-send-email-jianxin.xiong@intel.com>
+ <20201106002515.GM36674@ziepe.ca>
+ <MW3PR11MB45556A1524ABE605698B9A8EE5ED0@MW3PR11MB4555.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW3PR11MB45556A1524ABE605698B9A8EE5ED0@MW3PR11MB4555.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-dma_virt_ops requires that all pages have a kernel virtual address.
-Introduce a INFINIBAND_VIRT_DMA Kconfig symbol that depends on !HIGHMEM
-and make all three driver depend on the new symbol.
+On Fri, Nov 06, 2020 at 01:11:38AM +0000, Xiong, Jianxin wrote:
+> > On Thu, Nov 05, 2020 at 02:48:08PM -0800, Jianxin Xiong wrote:
+> > > @@ -966,7 +969,10 @@ static struct mlx5_ib_mr *alloc_mr_from_cache(struct ib_pd *pd,
+> > >  	struct mlx5_ib_mr *mr;
+> > >  	unsigned int page_size;
+> > >
+> > > -	page_size = mlx5_umem_find_best_pgsz(umem, mkc, log_page_size, 0, iova);
+> > > +	if (umem->is_dmabuf)
+> > > +		page_size = ib_umem_find_best_pgsz(umem, PAGE_SIZE, iova);
+> > 
+> > You said the sgl is not set here, why doesn't this crash? It is certainly wrong to call this function without a SGL.
+> 
+> The sgl is NULL, and nmap is 0. The 'for_each_sg' loop is just skipped and won't crash.
 
-Also remove the ARCH_DMA_ADDR_T_64BIT dependency, which has been
-obsolete since commit 4965a68780c5 ("arch: define the
-ARCH_DMA_ADDR_T_64BIT config symbol in lib/Kconfig")
+Just wire this to 4k it is clearer than calling some no-op pgsz
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/infiniband/Kconfig           | 3 +++
- drivers/infiniband/sw/rdmavt/Kconfig | 3 ++-
- drivers/infiniband/sw/rxe/Kconfig    | 2 +-
- drivers/infiniband/sw/siw/Kconfig    | 1 +
- 4 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
-index 32a51432ec4f73..9325e189a21536 100644
---- a/drivers/infiniband/Kconfig
-+++ b/drivers/infiniband/Kconfig
-@@ -73,6 +73,9 @@ config INFINIBAND_ADDR_TRANS_CONFIGFS
- 	  This allows the user to config the default GID type that the CM
- 	  uses for each device, when initiaing new connections.
- 
-+config INFINIBAND_VIRT_DMA
-+	def_bool !HIGHMEM
-+
- if INFINIBAND_USER_ACCESS || !INFINIBAND_USER_ACCESS
- source "drivers/infiniband/hw/mthca/Kconfig"
- source "drivers/infiniband/hw/qib/Kconfig"
-diff --git a/drivers/infiniband/sw/rdmavt/Kconfig b/drivers/infiniband/sw/rdmavt/Kconfig
-index 9ef5f5ce1ff6b0..c8e268082952b0 100644
---- a/drivers/infiniband/sw/rdmavt/Kconfig
-+++ b/drivers/infiniband/sw/rdmavt/Kconfig
-@@ -1,7 +1,8 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config INFINIBAND_RDMAVT
- 	tristate "RDMA verbs transport library"
--	depends on X86_64 && ARCH_DMA_ADDR_T_64BIT
-+	depends on INFINIBAND_VIRT_DMA
-+	depends on X86_64
- 	depends on PCI
- 	select DMA_VIRT_OPS
- 	help
-diff --git a/drivers/infiniband/sw/rxe/Kconfig b/drivers/infiniband/sw/rxe/Kconfig
-index a0c6c7dfc1814f..8810bfa680495a 100644
---- a/drivers/infiniband/sw/rxe/Kconfig
-+++ b/drivers/infiniband/sw/rxe/Kconfig
-@@ -2,7 +2,7 @@
- config RDMA_RXE
- 	tristate "Software RDMA over Ethernet (RoCE) driver"
- 	depends on INET && PCI && INFINIBAND
--	depends on !64BIT || ARCH_DMA_ADDR_T_64BIT
-+	depends on INFINIBAND_VIRT_DMA
- 	select NET_UDP_TUNNEL
- 	select CRYPTO_CRC32
- 	select DMA_VIRT_OPS
-diff --git a/drivers/infiniband/sw/siw/Kconfig b/drivers/infiniband/sw/siw/Kconfig
-index b622fc62f2cd6d..3450ba5081df51 100644
---- a/drivers/infiniband/sw/siw/Kconfig
-+++ b/drivers/infiniband/sw/siw/Kconfig
-@@ -1,6 +1,7 @@
- config RDMA_SIW
- 	tristate "Software RDMA over TCP/IP (iWARP) driver"
- 	depends on INET && INFINIBAND && LIBCRC32C
-+	depends on INFINIBAND_VIRT_DMA
- 	select DMA_VIRT_OPS
- 	help
- 	This driver implements the iWARP RDMA transport over
--- 
-2.28.0
+> > > +	if (!mr->cache_ent) {
+> > > +		mlx5_core_destroy_mkey(mr->dev->mdev, &mr->mmkey);
+> > > +		WARN_ON(mr->descs);
+> > > +	}
+> > > +}
+> > 
+> > I would expect this to call ib_umem_dmabuf_unmap_pages() ?
+> > 
+> > Who calls it on the dereg path?
+> > 
+> > This looks quite strange to me, it calls ib_umem_dmabuf_unmap_pages() only from the invalidate callback?
+> 
+> It is also called from ib_umem_dmabuf_release(). 
 
+Hmm, that is no how the other APIs work, the unmap should be paired
+with the map in the caller, and the sequence for destroy should be
+
+ invalidate
+ unmap
+ destroy_mkey
+ release_umem
+
+I have another series coming that makes the other three destroy flows
+much closer to that ideal.
+
+> > I feel uneasy how this seems to assume everything works sanely, we can have parallel page faults so pagefault_dmabuf_mr() can be called
+> > multiple times after an invalidation, and it doesn't protect itself against calling ib_umem_dmabuf_map_pages() twice.
+> > 
+> > Perhaps the umem code should keep track of the current map state and exit if there is already a sgl. NULL or not NULL sgl would do and
+> > seems quite reasonable.
+> 
+> Ib_umem_dmabuf_map() already checks the sgl and will do nothing if it is already set.
+
+How? What I see in patch 1 is an unconditonal call to
+dma_buf_map_attachment() ?
+
+> > > +		if (is_dmabuf_mr(mr))
+> > > +			return pagefault_dmabuf_mr(mr, umem_dmabuf, user_va,
+> > > +						   bcnt, bytes_mapped, flags);
+> > 
+> > But this doesn't care about user_va or bcnt it just triggers the whole thing to be remapped, so why calculate it?
+> 
+> The range check is still needed, in order to catch application
+> errors of using incorrect address or count in verbs command. Passing
+> the values further in is to allow pagefault_dmabuf_mr to generate
+> return value and set bytes_mapped in a way consistent with the page
+> fault handler chain.
+
+The HW validates the range. The range check in the ODP case is to
+protect against a HW bug that would cause the kernel to
+malfunction. For dmabuf you don't need to do it
+
+Jason
