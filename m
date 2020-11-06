@@ -2,95 +2,168 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5160D2AA09D
-	for <lists+linux-rdma@lfdr.de>; Sat,  7 Nov 2020 00:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B342AA09E
+	for <lists+linux-rdma@lfdr.de>; Sat,  7 Nov 2020 00:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728883AbgKFXBe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 6 Nov 2020 18:01:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39866 "EHLO
+        id S1728977AbgKFXB4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 6 Nov 2020 18:01:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728111AbgKFXBb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Nov 2020 18:01:31 -0500
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902CCC0613CF
-        for <linux-rdma@vger.kernel.org>; Fri,  6 Nov 2020 15:01:31 -0800 (PST)
-Received: by mail-oo1-xc42.google.com with SMTP id t28so735701ood.6
-        for <linux-rdma@vger.kernel.org>; Fri, 06 Nov 2020 15:01:31 -0800 (PST)
+        with ESMTP id S1728390AbgKFXB4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Nov 2020 18:01:56 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA6CC0613CF
+        for <linux-rdma@vger.kernel.org>; Fri,  6 Nov 2020 15:01:56 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id f16so2813515otl.11
+        for <linux-rdma@vger.kernel.org>; Fri, 06 Nov 2020 15:01:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UTqlqlQLMwLNCg7+Wn/ofmV2pxkAEfSHKDpVZNdhU2U=;
-        b=U6Jv5o2OaeYgVj/b+pmmcoc9SDn5jzTCEwQK7WxAuFHqzkTls0UCsboozjk15r9i6T
-         4QBSMtulqkU/Ij5NQuIW6rtVuy3btS50KaCPcexWXwp/UHVhuZPOsHK6tEJDrF/GxKlI
-         ej1y0bVavK1U8cT25fBJj6jnNvcgRpfkYUrYKZcGZv58L3MGpBlPwt8lWypDBjxZ9qGd
-         eQMpFzroIYF3dDbRsc9wpCmxg6dBFAEH+zTs1ymDWQ82Gz9UDEs3LpKRVWTSZtdJ4BqJ
-         FcoIyFTdaHCevGXkdIchvMatdMZ7Ke3GxLnrTDW3eDTRrVzFj/9KbZChc0mrrJ1rRvIW
-         krpA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=h7I1Xj/6njXLU1TK0BCYtaI5uX5fD5BW8jEIxK0Qk/k=;
+        b=BW8pOjCSWLgDpeP4pr0iLOo6imLBZIOeEflKCspYKvsYqdBM/hiDJpaA/5gcO7m3OK
+         3xtOTGZrlu1dvoDs08E/LvlVaUrkPyRnRMHOdKVUFC/mvJ+MrIbecKsg2Cq4ByCVmpMe
+         V/E6er6LQTdAG4dmdNT1hg5EZaCZ+XN68aJHm1kOAbbgsqPfsLvSM5XfurMT5vXLWACO
+         iRRH/+/fphn5w+ftB35EwHRoml4WP1nExm5k5GkB1MvJIi1iB3QqmqkHUiszDIS1asoK
+         xuuQmE+gmUeG9uCKx1XBcypKmUOT5N8J5w7QVHiSEiMFMe8jSoWaChkuKc32kip8ytzn
+         GaKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UTqlqlQLMwLNCg7+Wn/ofmV2pxkAEfSHKDpVZNdhU2U=;
-        b=FmC9G2jFA8nKpltX9hS2AHbrpnrMesKGQUNmbOH66n+68WVi+CJghk6hfmg/LImxbF
-         dTUKq7psZqFOvheycVn23Wgg8+WcROwq5h+wQg0d0rYrmn2rw/185ixxbAT/uFUrYOR/
-         8zuRofbw5A/ZKaAg+0OqvNoSpDf8zLfheMCvng6Q+W+GMLrLx5+0eL4WdS1bbWxqLXCf
-         AcbrDsJARDXAbi8XMDeHpwkPmAaFQ+14/73I/pqGgJWAxh5tL68yd0NuvA3mDEJWOjQD
-         c5w9VLVzFNHizogWeeKaP/iLicrJW/vB4YUsZdiwSuOtpVcPUELcY1gh29PFgpmoHt9x
-         M5tQ==
-X-Gm-Message-State: AOAM533yTP6XBkqEVvmRtsVP/sO6fiExbEiMqgA16u53qYtZfsQPYtOW
-        fl8VAp7mlwQ49CWXE0lDKjM=
-X-Google-Smtp-Source: ABdhPJxhIK4Xxz1RvNm7XDE8Afn28hpGvb29M9RDGXn9lETg/QnAIvWkRQKcinEd+gBHeoSHpFv8MA==
-X-Received: by 2002:a4a:c018:: with SMTP id v24mr2781015oop.2.1604703691039;
-        Fri, 06 Nov 2020 15:01:31 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=h7I1Xj/6njXLU1TK0BCYtaI5uX5fD5BW8jEIxK0Qk/k=;
+        b=KNGY6zeEP5mJpc7axJ42Otxz0j4ttqds8Am6/HWz+tWInYDbfcp/nCAEMXGxGW7Av2
+         MeLsPxPHb0CXXBU+d44enS3Gk60H4kC3n9lFfX6mG6oVZiJ4jnmvUIu3nGKwPox89yti
+         dpQDmdrpzZmYoiWGwcUioFfaR7jhMa9n6+0bpcaObGs/nV8o8j5FgzFoeih8Ws3Ai/pR
+         kMRIlsuJOE8mf3zj/P3DLRA2qkI2diB6USlKy5PmM9kUse8X8qa/Nqi/UISafWaZPEim
+         y8Ldbpjroh0yfvZP2DYCgVGiiODNiaoUe9GjZ4mrwDqIUDeXGDeoWaQ8reXIVpz/b8F9
+         UDBw==
+X-Gm-Message-State: AOAM53062+KbLFwtdiDAFPQSfCUnq8VOIa7JJNxge1Cigt0y5kluRInD
+        yC55XNrw6YgSRELtAyxgwx4=
+X-Google-Smtp-Source: ABdhPJys1haPKQODXCcoCjbaaP3WwjzZjCgGb41UO8jV+Cq/P4+l61jNeK73J7VD7qhQezLBDepTdA==
+X-Received: by 2002:a9d:6641:: with SMTP id q1mr2732574otm.190.1604703715539;
+        Fri, 06 Nov 2020 15:01:55 -0800 (PST)
 Received: from localhost (2603-8081-140c-1a00-f960-8e80-5b89-d06d.res6.spectrum.com. [2603:8081:140c:1a00:f960:8e80:5b89:d06d])
-        by smtp.gmail.com with ESMTPSA id 72sm641368otd.11.2020.11.06.15.01.30
+        by smtp.gmail.com with ESMTPSA id h32sm639090oth.2.2020.11.06.15.01.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 15:01:30 -0800 (PST)
+        Fri, 06 Nov 2020 15:01:55 -0800 (PST)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearson@hpe.com>
-Subject: [PATCH 0/4] Provider/rxe: Implement extended verbs APIs
-Date:   Fri,  6 Nov 2020 17:01:18 -0600
-Message-Id: <20201106230122.17411-1-rpearson@hpe.com>
+Subject: [PATCH 1/4] Provider/rxe: Exchange capabilities with driver
+Date:   Fri,  6 Nov 2020 17:01:19 -0600
+Message-Id: <20201106230122.17411-2-rpearson@hpe.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201106230122.17411-1-rpearson@hpe.com>
+References: <20201106230122.17411-1-rpearson@hpe.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Implement the following erxtended verbs APIs:
-	ibv_query_device_ex
-	ibv_create_cq_ex
-	ibv_create_qp_ex
-
-Also implement the field parse and set ops in struct ibv_cq and ibv_qp.
-
-Introduce a pair of SW capability bit masks that are exchanged between
-the user space provider and the kernel space driver during the
-ibv_alloc_context verb to allow the provider and driver to adjust
-shared data structures depending on which capabilities are supported.
-This is an extensible mechanism to avoid changes to ABI version.
-
-This patch set depends on the following patch
-	0001-Provider-rxe-Cleanup-style-warnings.patch
-
-Bob Pearson (4):
-  Provider/rxe: Exchange capabilities with driver
-  Provider/rxe: Implement ibv_query_device_ex verb
-  Providers/rxe: Implement ibv_create_cq_ex verb
-  Providers/rxe: Implement ibv_create_qp_ex verb
-
- kernel-headers/rdma/rdma_user_rxe.h |  49 ++
- providers/rxe/rxe-abi.h             |   8 +-
- providers/rxe/rxe.c                 | 976 +++++++++++++++++++++++++++-
- providers/rxe/rxe.h                 |  27 +-
- providers/rxe/rxe_queue.h           |  80 ++-
- 5 files changed, 1092 insertions(+), 48 deletions(-)
+Exchange capability masks between provider and driver
+during alloc_context verb.
 
 Signed-off-by: Bob Pearson <rpearson@hpe.com>
+---
+ kernel-headers/rdma/rdma_user_rxe.h | 18 ++++++++++++++++++
+ providers/rxe/rxe-abi.h             |  2 ++
+ providers/rxe/rxe.c                 | 12 ++++++++----
+ providers/rxe/rxe.h                 |  5 +++++
+ 4 files changed, 33 insertions(+), 4 deletions(-)
+
+diff --git a/kernel-headers/rdma/rdma_user_rxe.h b/kernel-headers/rdma/rdma_user_rxe.h
+index d8f2e0e4..70ac031e 100644
+--- a/kernel-headers/rdma/rdma_user_rxe.h
++++ b/kernel-headers/rdma/rdma_user_rxe.h
+@@ -152,6 +158,18 @@ struct rxe_recv_wqe {
+ 	struct rxe_dma_info	dma;
+ };
+ 
++enum rxe_capabilities {
++	RXE_CAP_NONE		= 0,
++};
++
++struct rxe_alloc_context_cmd {
++	__aligned_u64		provider_cap;
++};
++
++struct rxe_alloc_context_resp {
++	__aligned_u64		driver_cap;
++};
++
+ struct rxe_create_cq_resp {
+ 	struct mminfo mi;
+ };
+diff --git a/providers/rxe/rxe-abi.h b/providers/rxe/rxe-abi.h
+index b4680a24..0b0b4b38 100644
+--- a/providers/rxe/rxe-abi.h
++++ b/providers/rxe/rxe-abi.h
+@@ -39,6 +39,8 @@
+ #include <rdma/rdma_user_rxe.h>
+ #include <kernel-abi/rdma_user_rxe.h>
+ 
++DECLARE_DRV_CMD(urxe_alloc_context, IB_USER_VERBS_CMD_GET_CONTEXT,
++		rxe_alloc_context_cmd, rxe_alloc_context_resp);
+ DECLARE_DRV_CMD(urxe_create_cq, IB_USER_VERBS_CMD_CREATE_CQ,
+ 		empty, rxe_create_cq_resp);
+ DECLARE_DRV_CMD(urxe_create_qp, IB_USER_VERBS_CMD_CREATE_QP,
+diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
+index ca881304..c29b7de5 100644
+--- a/providers/rxe/rxe.c
++++ b/providers/rxe/rxe.c
+@@ -865,18 +865,22 @@ static struct verbs_context *rxe_alloc_context(struct ibv_device *ibdev,
+ 					       void *private_data)
+ {
+ 	struct rxe_context *context;
+-	struct ibv_get_context cmd;
+-	struct ib_uverbs_get_context_resp resp;
++	struct urxe_alloc_context cmd = {};
++	struct urxe_alloc_context_resp resp = {};
+ 
+ 	context = verbs_init_and_alloc_context(ibdev, cmd_fd, context, ibv_ctx,
+ 					       RDMA_DRIVER_RXE);
+ 	if (!context)
+ 		return NULL;
+ 
+-	if (ibv_cmd_get_context(&context->ibv_ctx, &cmd, sizeof(cmd),
+-				&resp, sizeof(resp)))
++	cmd.provider_cap = RXE_PROVIDER_CAP;
++
++	if (ibv_cmd_get_context(&context->ibv_ctx, &cmd.ibv_cmd, sizeof(cmd),
++				&resp.ibv_resp, sizeof(resp)))
+ 		goto out;
+ 
++	context->capabilities = cmd.provider_cap & resp.driver_cap;
++
+ 	verbs_set_ops(&context->ibv_ctx, &rxe_ctx_ops);
+ 
+ 	return &context->ibv_ctx;
+diff --git a/providers/rxe/rxe.h b/providers/rxe/rxe.h
+index 96f4ee9c..736cc30e 100644
+--- a/providers/rxe/rxe.h
++++ b/providers/rxe/rxe.h
+@@ -48,6 +48,10 @@ enum rdma_network_type {
+ 	RDMA_NETWORK_IPV6
+ };
+ 
++enum rxe_provider_cap {
++	RXE_PROVIDER_CAP	= RXE_CAP_NONE,
++};
++
+ struct rxe_device {
+ 	struct verbs_device	ibv_dev;
+ 	int	abi_version;
+@@ -55,6 +59,7 @@ struct rxe_device {
+ 
+ struct rxe_context {
+ 	struct verbs_context	ibv_ctx;
++	uint64_t		capabilities;
+ };
+ 
+ struct rxe_cq {
 -- 
 2.27.0
 
