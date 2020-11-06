@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9532AA0A1
-	for <lists+linux-rdma@lfdr.de>; Sat,  7 Nov 2020 00:02:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9943C2AA0A2
+	for <lists+linux-rdma@lfdr.de>; Sat,  7 Nov 2020 00:02:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbgKFXCD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 6 Nov 2020 18:02:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
+        id S1728931AbgKFXCI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 6 Nov 2020 18:02:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728390AbgKFXCC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Nov 2020 18:02:02 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87BCC0613CF
-        for <linux-rdma@vger.kernel.org>; Fri,  6 Nov 2020 15:02:02 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id a15so1110866otf.5
-        for <linux-rdma@vger.kernel.org>; Fri, 06 Nov 2020 15:02:02 -0800 (PST)
+        with ESMTP id S1728984AbgKFXCI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Nov 2020 18:02:08 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126E2C0613CF
+        for <linux-rdma@vger.kernel.org>; Fri,  6 Nov 2020 15:02:08 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id j14so2842750ots.1
+        for <linux-rdma@vger.kernel.org>; Fri, 06 Nov 2020 15:02:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=44Fac/RJP6rk9Ekls8uFsZF85HF2HPf2YxJTb+6sWxA=;
-        b=dqol/tcFWQeIhkQWnZsrP1JcC09fEqf2xyu3F4zku1C9Dj2hKpEXJSxa1h/TUzw6HO
-         gpj1471I350LL3lyCePRU85LF19Swd5zsohBIaZB30zT+6Zq0vA+tCuNENsR3vJCxn8m
-         I7BBku53FtpwyOK9EHJgpt0YIjxGb43Tc/gAAgM08sj9ucEww40x1ALK0q8IPY2SBrJ7
-         m/4tKbugvbM1WHRdsaY9yaXRqGLVfvJTumXdF2KKMtgNO/ta5DfO+MZIP5znJAQ3i0iq
-         tk6hU5URHCPj8REEIoOr/zKFwZBBhu3bZzMy1ToAfDvikIGhogEvXfKnfsSqG91frpcK
-         qUVQ==
+        bh=mg9AOq8WW4NJR2c/Rp03Zik5skUnaXxKqf9eVJYc0UM=;
+        b=F31+1QiZoexkM/TNMt1Guto0YkyhboxYamjvE6acKZ7Q0NrEN+tbzawDrFR7Wt32jq
+         i392vqWlXmRNxWSNW2Sxxj77pCERlPCWXBz2Snnys2ovQTbalkbWozNb5EScn4+sKJgL
+         D7ZFcp55f40VBXzei9NI/0zYmlZMdsCv7lKk9FEV+dKP2wYX8wI6MqXyVrEqKgxjzdnv
+         eQ8DZYwGiJDQNebyLFhYBKplfz2uultNVAMu8qC5w/C2V9WUF7680BGaIlWCKdG5lfAp
+         gFBJNFifV5RSsoJStEvmCZeuhKjkhPe6swrP3bvwitLGvHxpzNcSrPiSXArZfQcCqJYI
+         UlWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=44Fac/RJP6rk9Ekls8uFsZF85HF2HPf2YxJTb+6sWxA=;
-        b=bDHKPnxHudU+PxRkYD7gUy8yp8C7r6UyRCFUNbIpPsF8ecIELa+e12ArGI05pYI8Sa
-         KCUsAij1tkc3uTgsmBuw95EGgHEVykZNkVLLd5++CnSVmP9xSjvbFEnb6t/o8Uy7Mpen
-         2yPKsdG/bHu6zLtsJbyt8ATGsSZN0QUWdnfRLeU3S3dfHanFFk+YQRTexGO2m04JMuBe
-         K0rguMv10UQRD/G3BQp7VDQQ8CcQ+BvQPuHFREjCJBM9Z6dS0EK/rITKEH232le3wF3b
-         SpW91a65h9lAisXjMBRtCNTGiHZAkD5pObsleouS1baue59E0eayWrUkW8h4pRb4b1zT
-         RCsw==
-X-Gm-Message-State: AOAM532uUPWg52g8ooQc7pRGrFPppO5BGITB6zRawxB8y1kZvRfwrlpg
-        H8cIAj4q0yzmzLfn5UGRvFI=
-X-Google-Smtp-Source: ABdhPJy/w5lml/9SufjS+gLBfGcI6j8KQ1Qw2/4I84s4Mrltd8HZ0zhQDERBP8wI2Tr/uR2V6nTsLQ==
-X-Received: by 2002:a9d:3b84:: with SMTP id k4mr2822348otc.4.1604703722026;
-        Fri, 06 Nov 2020 15:02:02 -0800 (PST)
+        bh=mg9AOq8WW4NJR2c/Rp03Zik5skUnaXxKqf9eVJYc0UM=;
+        b=WcBA4UQ7IVE+AaKAIM2/c2fHGDFq02WGnIo6wI9QEv7IISwwQId2JUgs7nR6GEp/Xp
+         x71+cDXWAGZTVma5IdLZUXX/ZJ5k8RkBA1+QHP2wtbOTA5NLzJDov/rNwowS63HL/Oaj
+         Lja9mMXoUMHj3ZXzcNaEIGM6qDj5p33zls3oP+DdSyd6p5j1uigBJGisu3evCXbzjhNW
+         rRUsIRMnvYuUPRYg73YAuS8f3yYnP0lumV4CmYEMDXhC1t4NQSYm6c1BHR7P+yRZfYBA
+         RH3mDISVkJhUVAajoa0w3ky2Vh/c3x2w3RUkmM4QvvSJODYw+gfzmU+SLk8YNOjeLVQz
+         QaiA==
+X-Gm-Message-State: AOAM533StKTA+Bb8h1OrCdXfKsrPiZTqfV1KNDlcfsXpKKBmQMqebVq+
+        M/9uUVML9MNziQHBDEN5di7SFXNJrXw=
+X-Google-Smtp-Source: ABdhPJyVDwK9XYoyjmYLkyYE2Q9OzTPx++0cqchfV70lZd6cVk6FhVVNpYzdHGrpAMIqo2nJRm9E5g==
+X-Received: by 2002:a05:6830:128b:: with SMTP id z11mr2730934otp.83.1604703727426;
+        Fri, 06 Nov 2020 15:02:07 -0800 (PST)
 Received: from localhost (2603-8081-140c-1a00-f960-8e80-5b89-d06d.res6.spectrum.com. [2603:8081:140c:1a00:f960:8e80:5b89:d06d])
-        by smtp.gmail.com with ESMTPSA id z19sm633823otm.58.2020.11.06.15.02.01
+        by smtp.gmail.com with ESMTPSA id h1sm631294oti.78.2020.11.06.15.02.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 15:02:01 -0800 (PST)
+        Fri, 06 Nov 2020 15:02:07 -0800 (PST)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearson@hpe.com>
-Subject: [PATCH 3/4] Providers/rxe: Implement ibv_create_cq_ex verb
-Date:   Fri,  6 Nov 2020 17:01:21 -0600
-Message-Id: <20201106230122.17411-4-rpearson@hpe.com>
+Subject: [PATCH 4/4] Providers/rxe: Implement ibv_create_qp_ex verb
+Date:   Fri,  6 Nov 2020 17:01:22 -0600
+Message-Id: <20201106230122.17411-5-rpearson@hpe.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201106230122.17411-1-rpearson@hpe.com>
 References: <20201106230122.17411-1-rpearson@hpe.com>
@@ -63,548 +63,825 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Together with the matching commit for the rxe driver
-implement the ibv_create_cq_ex verb.
-Also implement the operations in ibv_cq_ex struct.
+Add ibv_create_qp_ex verb.
+Add WQ operations in verbs_qp struct.
 
 Signed-off-by: Bob Pearson <rpearson@hpe.com>
 ---
- kernel-headers/rdma/rdma_user_rxe.h |  30 ++++
- providers/rxe/rxe-abi.h             |   4 +-
- providers/rxe/rxe.c                 | 267 +++++++++++++++++++++++++++-
- providers/rxe/rxe.h                 |  12 +-
- providers/rxe/rxe_queue.h           |  59 +++++-
- 5 files changed, 357 insertions(+), 15 deletions(-)
+ providers/rxe/rxe-abi.h   |   2 +
+ providers/rxe/rxe.c       | 664 ++++++++++++++++++++++++++++++++++++--
+ providers/rxe/rxe.h       |  10 +-
+ providers/rxe/rxe_queue.h |  21 ++
+ 4 files changed, 667 insertions(+), 30 deletions(-)
 
-diff --git a/kernel-headers/rdma/rdma_user_rxe.h b/kernel-headers/rdma/rdma_user_rxe.h
-index a31465e2..e8bde1b6 100644
---- a/kernel-headers/rdma/rdma_user_rxe.h
-+++ b/kernel-headers/rdma/rdma_user_rxe.h
-@@ -158,6 +158,32 @@ struct rxe_recv_wqe {
- 	struct rxe_dma_info	dma;
- };
- 
-+struct rxe_uverbs_wc {
-+	/* keep these the same as ib_uverbs_wc */
-+	__aligned_u64		wr_id;
-+	__u32			status;
-+	__u32			opcode;
-+	__u32			vendor_err;
-+	__u32			byte_len;
-+	union {
-+		__be32		imm_data;
-+		__u32		invalidate_rkey;
-+	} ex;
-+	__u32			qp_num;
-+	__u32			src_qp;
-+	__u32			wc_flags;
-+	__u16			pkey_index;
-+	__u16			slid;
-+	__u8			sl;
-+	__u8			dlid_path_bits;
-+	__u8			port_num;
-+	__u8			reserved;
-+
-+	/* any extras go here */
-+	__aligned_u64		timestamp;
-+	__aligned_u64		realtime;
-+};
-+
- enum rxe_capabilities {
- 	RXE_CAP_NONE		= 0,
- 	RXE_CAP_CMD_EX		= 1ULL << 0,
-@@ -171,6 +197,10 @@ struct rxe_alloc_context_resp {
- 	__aligned_u64		driver_cap;
- };
- 
-+struct rxe_create_cq_cmd {
-+	__aligned_u64 is_ex;
-+};
-+
- struct rxe_create_cq_resp {
- 	struct mminfo mi;
- };
 diff --git a/providers/rxe/rxe-abi.h b/providers/rxe/rxe-abi.h
-index 0b0b4b38..08bdb546 100644
+index 08bdb546..aa7700ed 100644
 --- a/providers/rxe/rxe-abi.h
 +++ b/providers/rxe/rxe-abi.h
-@@ -42,7 +42,9 @@
- DECLARE_DRV_CMD(urxe_alloc_context, IB_USER_VERBS_CMD_GET_CONTEXT,
- 		rxe_alloc_context_cmd, rxe_alloc_context_resp);
- DECLARE_DRV_CMD(urxe_create_cq, IB_USER_VERBS_CMD_CREATE_CQ,
--		empty, rxe_create_cq_resp);
-+		rxe_create_cq_cmd, rxe_create_cq_resp);
-+DECLARE_DRV_CMD(urxe_create_cq_ex, IB_USER_VERBS_EX_CMD_CREATE_CQ,
-+		rxe_create_cq_cmd, rxe_create_cq_resp);
+@@ -47,6 +47,8 @@ DECLARE_DRV_CMD(urxe_create_cq_ex, IB_USER_VERBS_EX_CMD_CREATE_CQ,
+ 		rxe_create_cq_cmd, rxe_create_cq_resp);
  DECLARE_DRV_CMD(urxe_create_qp, IB_USER_VERBS_CMD_CREATE_QP,
  		empty, rxe_create_qp_resp);
++DECLARE_DRV_CMD(urxe_create_qp_ex, IB_USER_VERBS_EX_CMD_CREATE_QP,
++		empty, rxe_create_qp_resp);
  DECLARE_DRV_CMD(urxe_create_srq, IB_USER_VERBS_CMD_CREATE_SRQ,
+ 		empty, rxe_create_srq_resp);
+ DECLARE_DRV_CMD(urxe_modify_srq, IB_USER_VERBS_CMD_MODIFY_SRQ,
 diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
-index b1fa2f42..57f0c500 100644
+index 57f0c500..012db800 100644
 --- a/providers/rxe/rxe.c
 +++ b/providers/rxe/rxe.c
-@@ -187,20 +186,163 @@ static int rxe_dereg_mr(struct verbs_mr *vmr)
- 	return 0;
+@@ -718,25 +718,638 @@ static int rxe_post_srq_recv(struct ibv_srq *ibvsrq,
+ 	return rc;
  }
  
-+static int cq_start_poll(struct ibv_cq_ex *current,
-+			 struct ibv_poll_cq_attr *attr)
+-static struct ibv_qp *rxe_create_qp(struct ibv_pd *pd,
+-				    struct ibv_qp_init_attr *attr)
++/*
++ * builders always consume one send queue slot
++ * setters (below) reach back and adjust previous build
++ */
++static void wr_atomic_cmp_swp(struct ibv_qp_ex *ibqp, uint32_t rkey,
++			      uint64_t remote_addr, uint64_t compare,
++			      uint64_t swap)
 +{
-+	struct rxe_cq *cq = container_of(current, struct rxe_cq, vcq.cq_ex);
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue, qp->cur_index);
 +
-+	pthread_spin_lock(&cq->lock);
++	if (check_qp_queue_full(qp))
++		return;
 +
-+	atomic_thread_fence(memory_order_acquire);
-+	cq->cur_index = load_consumer_index(cq->queue);
++	memset(wqe, 0, sizeof(*wqe));
 +
-+	if (check_cq_queue_empty(cq)) {
-+		pthread_spin_unlock(&cq->lock);
-+		errno = ENOENT;
-+		return errno;
-+	}
++	wqe->wr.wr_id = ibqp->wr_id;
++	wqe->wr.send_flags = ibqp->wr_flags;
++	wqe->wr.opcode = IBV_WR_ATOMIC_CMP_AND_SWP;
 +
-+	cq->wc = addr_from_index(cq->queue, cq->cur_index);
-+	cq->vcq.cq_ex.status = cq->wc->status;
-+	cq->vcq.cq_ex.wr_id = cq->wc->wr_id;
++	wqe->wr.wr.atomic.remote_addr = remote_addr;
++	wqe->wr.wr.atomic.compare_add = compare;
++	wqe->wr.wr.atomic.swap = swap;
++	wqe->wr.wr.atomic.rkey = rkey;
++	wqe->iova = remote_addr;
++	wqe->ssn = qp->ssn++;;
 +
-+	return 0;
-+}
-+
-+static int cq_next_poll(struct ibv_cq_ex *current)
-+{
-+	struct rxe_cq *cq = container_of(current, struct rxe_cq, vcq.cq_ex);
-+
-+	advance_cq_cur_index(cq);
-+
-+	if (check_cq_queue_empty(cq)) {
-+		store_consumer_index(cq->queue, cq->cur_index);
-+		pthread_spin_unlock(&cq->lock);
-+		errno = ENOENT;
-+		return errno;
-+	}
-+
-+	cq->wc = addr_from_index(cq->queue, cq->cur_index);
-+	cq->vcq.cq_ex.status = cq->wc->status;
-+	cq->vcq.cq_ex.wr_id = cq->wc->wr_id;
-+
-+	return 0;
-+}
-+
-+static void cq_end_poll(struct ibv_cq_ex *current)
-+{
-+	struct rxe_cq *cq = container_of(current, struct rxe_cq, vcq.cq_ex);
-+
-+	advance_cq_cur_index(cq);
-+	store_consumer_index(cq->queue, cq->cur_index);
-+	pthread_spin_unlock(&cq->lock);
++	advance_qp_cur_index(qp);
 +
 +	return;
 +}
 +
-+static enum ibv_wc_opcode cq_read_opcode(struct ibv_cq_ex *current)
++static void wr_atomic_fetch_add(struct ibv_qp_ex *ibqp, uint32_t rkey,
++				uint64_t remote_addr, uint64_t add)
 +{
-+	struct rxe_cq *cq = container_of(current, struct rxe_cq, vcq.cq_ex);
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue, qp->cur_index);
 +
-+	return cq->wc->opcode;
++	if (check_qp_queue_full(qp))
++		return;
++
++	memset(wqe, 0, sizeof(*wqe));
++
++	wqe->wr.wr_id = qp->vqp.qp_ex.wr_id;
++	wqe->wr.opcode = IBV_WR_ATOMIC_FETCH_AND_ADD;
++	wqe->wr.send_flags = qp->vqp.qp_ex.wr_flags;
++	wqe->wr.wr.atomic.remote_addr = remote_addr;
++	wqe->wr.wr.atomic.compare_add = add;
++	wqe->wr.wr.atomic.rkey = rkey;
++	wqe->iova = remote_addr;
++	wqe->ssn = qp->ssn++;;
++
++	advance_qp_cur_index(qp);
++
++	return;
 +}
 +
-+static uint32_t cq_read_vendor_err(struct ibv_cq_ex *current)
++static void wr_local_inv(struct ibv_qp_ex *ibqp, uint32_t invalidate_rkey)
 +{
-+	struct rxe_cq *cq = container_of(current, struct rxe_cq, vcq.cq_ex);
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue, qp->cur_index);
 +
-+	return cq->wc->vendor_err;
++	if (check_qp_queue_full(qp))
++		return;
++
++	memset(wqe, 0, sizeof(*wqe));
++
++	wqe->wr.wr_id = qp->vqp.qp_ex.wr_id;
++	wqe->wr.opcode = IBV_WR_LOCAL_INV;
++	wqe->wr.send_flags = qp->vqp.qp_ex.wr_flags;
++	wqe->wr.ex.invalidate_rkey = invalidate_rkey;
++	wqe->ssn = qp->ssn++;;
++
++	advance_qp_cur_index(qp);
++
++	return;
 +}
 +
-+static uint32_t cq_read_byte_len(struct ibv_cq_ex *current)
++static void wr_rdma_read(struct ibv_qp_ex *ibqp, uint32_t rkey,
++			 uint64_t remote_addr)
 +{
-+	struct rxe_cq *cq = container_of(current, struct rxe_cq, vcq.cq_ex);
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue, qp->cur_index);
 +
-+	return cq->wc->byte_len;
++	if (check_qp_queue_full(qp))
++		return;
++
++	memset(wqe, 0, sizeof(*wqe));
++
++	wqe->wr.wr_id = qp->vqp.qp_ex.wr_id;
++	wqe->wr.opcode = IBV_WR_RDMA_READ;
++	wqe->wr.send_flags = qp->vqp.qp_ex.wr_flags;
++	wqe->wr.wr.rdma.remote_addr = remote_addr;
++	wqe->wr.wr.rdma.rkey = rkey;
++	wqe->iova = remote_addr;
++	wqe->ssn = qp->ssn++;;
++
++	advance_qp_cur_index(qp);
++
++	return;
 +}
 +
-+static __be32 cq_read_imm_data(struct ibv_cq_ex *current)
++static void wr_rdma_write(struct ibv_qp_ex *ibqp, uint32_t rkey,
++			  uint64_t remote_addr)
 +{
-+	struct rxe_cq *cq = container_of(current, struct rxe_cq, vcq.cq_ex);
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue, qp->cur_index);
 +
-+	return cq->wc->ex.imm_data;
++	if (check_qp_queue_full(qp))
++		return;
++
++	memset(wqe, 0, sizeof(*wqe));
++
++	wqe->wr.wr_id = qp->vqp.qp_ex.wr_id;
++	wqe->wr.opcode = IBV_WR_RDMA_WRITE;
++	wqe->wr.send_flags = qp->vqp.qp_ex.wr_flags;
++	wqe->wr.wr.rdma.remote_addr = remote_addr;
++	wqe->wr.wr.rdma.rkey = rkey;
++	wqe->iova = remote_addr;
++	wqe->ssn = qp->ssn++;;
++
++	advance_qp_cur_index(qp);
++
++	return;
 +}
 +
-+static uint32_t cq_read_qp_num(struct ibv_cq_ex *current)
++static void wr_rdma_write_imm(struct ibv_qp_ex *ibqp, uint32_t rkey,
++			      uint64_t remote_addr, __be32 imm_data)
 +{
-+	struct rxe_cq *cq = container_of(current, struct rxe_cq, vcq.cq_ex);
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue, qp->cur_index);
 +
-+	return cq->wc->qp_num;
++	if (check_qp_queue_full(qp))
++		return;
++
++	memset(wqe, 0, sizeof(*wqe));
++
++	wqe->wr.wr_id = qp->vqp.qp_ex.wr_id;
++	wqe->wr.opcode = IBV_WR_RDMA_WRITE_WITH_IMM;
++	wqe->wr.send_flags = qp->vqp.qp_ex.wr_flags;
++	wqe->wr.wr.rdma.remote_addr = remote_addr;
++	wqe->wr.wr.rdma.rkey = rkey;
++	wqe->wr.ex.imm_data = (uint32_t)imm_data;
++	wqe->iova = remote_addr;
++	wqe->ssn = qp->ssn++;;
++
++	advance_qp_cur_index(qp);
++
++	return;
 +}
 +
-+static uint32_t cq_read_src_qp(struct ibv_cq_ex *current)
++static void wr_send(struct ibv_qp_ex *ibqp)
 +{
-+	struct rxe_cq *cq = container_of(current, struct rxe_cq, vcq.cq_ex);
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue, qp->cur_index);
 +
-+	return cq->wc->src_qp;
++	if (check_qp_queue_full(qp))
++		return;
++
++	memset(wqe, 0, sizeof(*wqe));
++
++	wqe->wr.wr_id = qp->vqp.qp_ex.wr_id;
++	wqe->wr.opcode = IBV_WR_SEND;
++	wqe->wr.send_flags = qp->vqp.qp_ex.wr_flags;
++	wqe->ssn = qp->ssn++;;
++
++	advance_qp_cur_index(qp);
++
++	return;
 +}
 +
-+static unsigned int cq_read_wc_flags(struct ibv_cq_ex *current)
++static void wr_send_imm(struct ibv_qp_ex *ibqp, __be32 imm_data)
 +{
-+	struct rxe_cq *cq = container_of(current, struct rxe_cq, vcq.cq_ex);
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue, qp->cur_index);
 +
-+	return cq->wc->wc_flags;
++	if (check_qp_queue_full(qp))
++		return;
++
++	memset(wqe, 0, sizeof(*wqe));
++
++	wqe->wr.wr_id = qp->vqp.qp_ex.wr_id;
++	wqe->wr.opcode = IBV_WR_SEND_WITH_IMM;
++	wqe->wr.send_flags = qp->vqp.qp_ex.wr_flags;
++	wqe->wr.ex.imm_data = (uint32_t)imm_data;
++	wqe->ssn = qp->ssn++;;
++
++	advance_qp_cur_index(qp);
++
++	return;
 +}
 +
-+static uint32_t cq_read_slid(struct ibv_cq_ex *current)
++static void wr_send_inv(struct ibv_qp_ex *ibqp, uint32_t invalidate_rkey)
 +{
-+	struct rxe_cq *cq = container_of(current, struct rxe_cq, vcq.cq_ex);
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue, qp->cur_index);
 +
-+	return cq->wc->slid;
++	if (check_qp_queue_full(qp))
++		return;
++
++	memset(wqe, 0, sizeof(*wqe));
++
++	wqe->wr.wr_id = qp->vqp.qp_ex.wr_id;
++	wqe->wr.opcode = IBV_WR_SEND_WITH_INV;
++	wqe->wr.send_flags = qp->vqp.qp_ex.wr_flags;
++	wqe->wr.ex.invalidate_rkey = invalidate_rkey;
++	wqe->ssn = qp->ssn++;;
++
++	advance_qp_cur_index(qp);
++
++	return;
 +}
 +
-+static uint8_t cq_read_sl(struct ibv_cq_ex *current)
++static void wr_send_tso(struct ibv_qp_ex *ibqp, void *hdr, uint16_t hdr_sz,
++			uint16_t mss)
 +{
-+	struct rxe_cq *cq = container_of(current, struct rxe_cq, vcq.cq_ex);
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue, qp->cur_index);
 +
-+	return cq->wc->sl;
++	if (check_qp_queue_full(qp))
++		return;
++
++	memset(wqe, 0, sizeof(*wqe));
++
++	wqe->wr.wr_id = qp->vqp.qp_ex.wr_id;
++	wqe->wr.opcode = IBV_WR_TSO;
++	wqe->wr.send_flags = qp->vqp.qp_ex.wr_flags;
++	wqe->ssn = qp->ssn++;;
++
++	advance_qp_cur_index(qp);
++
++	return;
 +}
 +
-+static uint8_t cq_read_dlid_path_bits(struct ibv_cq_ex *current)
++static void wr_set_ud_addr(struct ibv_qp_ex *ibqp, struct ibv_ah *ibah,
++			   uint32_t remote_qpn, uint32_t remote_qkey)
 +{
-+	struct rxe_cq *cq = container_of(current, struct rxe_cq, vcq.cq_ex);
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++	struct rxe_ah *ah = container_of(ibah, struct rxe_ah, ibv_ah);
++	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue,
++						   qp->cur_index - 1);
 +
-+	return cq->wc->dlid_path_bits;
++	if (qp->err)
++		return;
++
++	memcpy(&wqe->av, &ah->av, sizeof(ah->av));
++	wqe->wr.wr.ud.remote_qpn = remote_qpn;
++	wqe->wr.wr.ud.remote_qkey = remote_qkey;
++
++	return;
 +}
 +
-+static uint64_t cq_read_completion_ts(struct ibv_cq_ex *current)
++static void wr_set_xrc_srqn(struct ibv_qp_ex *ibqp, uint32_t remote_srqn)
 +{
-+	struct rxe_cq *cq = container_of(current, struct rxe_cq, vcq.cq_ex);
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
 +
-+	return cq->wc->timestamp;
++	if (qp->err)
++		return;
++
++	/* TODO when we add xrc */
++
++	return;
 +}
 +
-+static uint64_t cq_read_completion_wallclock_ns(struct ibv_cq_ex *current)
-+{
-+	struct rxe_cq *cq = container_of(current, struct rxe_cq, vcq.cq_ex);
 +
-+	return cq->wc->realtime;
++static void wr_set_inline_data(struct ibv_qp_ex *ibqp, void *addr,
++			       size_t length)
++{
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue,
++						   qp->cur_index - 1);
++
++	if (qp->err)
++		return;
++
++	if (length > qp->sq.max_inline) {
++		qp->err = ENOSPC;
++		return;
++	}
++
++	memcpy(wqe->dma.inline_data, addr, length);
++	wqe->dma.length = length;
++	wqe->dma.resid = 0;
++
++	return;
 +}
 +
-+static int rxe_destroy_cq(struct ibv_cq *ibcq);
++static void wr_set_inline_data_list(struct ibv_qp_ex *ibqp, size_t num_buf,
++				    const struct ibv_data_buf *buf_list)
++{
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue,
++						   qp->cur_index - 1);
++	uint8_t *data = wqe->dma.inline_data;
++	size_t length;
++	size_t tot_length = 0;
 +
- static struct ibv_cq *rxe_create_cq(struct ibv_context *context, int cqe,
- 				    struct ibv_comp_channel *channel,
- 				    int comp_vector)
++	if (qp->err)
++		return;
++
++	while(num_buf--) {
++		length = buf_list->length;
++
++		if (tot_length + length > qp->sq.max_inline) {
++			qp->err = ENOSPC;
++			return;
++		}
++
++		memcpy(data, buf_list->addr, length);
++
++		buf_list++;
++		data += length;
++	}
++
++	wqe->dma.length = tot_length;
++
++	return;
++}
++
++static void wr_set_sge(struct ibv_qp_ex *ibqp, uint32_t lkey, uint64_t addr,
++		       uint32_t length)
++{
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue,
++						   qp->cur_index - 1);
++
++	if (qp->err)
++		return;
++
++	if (length) {
++		wqe->dma.length = length;
++		wqe->dma.resid = length;
++		wqe->dma.num_sge = 1;
++
++		wqe->dma.sge[0].addr = addr;
++		wqe->dma.sge[0].length = length;
++		wqe->dma.sge[0].lkey = lkey;
++	}
++
++	return;
++}
++
++static void wr_set_sge_list(struct ibv_qp_ex *ibqp, size_t num_sge,
++			    const struct ibv_sge *sg_list)
++{
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue,
++						   qp->cur_index - 1);
++	size_t tot_length = 0;
++
++	if (qp->err)
++		return;
++
++	if (num_sge > qp->sq.max_sge) {
++		qp->err = ENOSPC;
++		return;
++	}
++
++	wqe->dma.num_sge = num_sge;
++	memcpy(wqe->dma.sge, sg_list, num_sge*sizeof(*sg_list));
++
++	while(num_sge--)
++		tot_length += sg_list->length;
++
++	wqe->dma.length = tot_length;
++	wqe->dma.resid = tot_length;
++
++	return;
++}
++
++
++static void wr_start(struct ibv_qp_ex *ibqp)
++{
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
++
++	pthread_spin_lock(&qp->sq.lock);
++
++	qp->err = 0;
++	qp->cur_index = load_producer_index(qp->sq.queue);
++
++	return;
++}
++
++static int post_send_db(struct ibv_qp *ibqp);
++
++static int wr_complete(struct ibv_qp_ex *ibqp)
  {
- 	struct rxe_cq *cq;
--	struct urxe_create_cq_resp resp;
-+	struct urxe_create_cq cmd = {};
-+	struct urxe_create_cq_resp resp = {};
+-	struct ibv_create_qp cmd;
+-	struct urxe_create_qp_resp resp;
+-	struct rxe_qp *qp;
  	int ret;
- 
- 	cq = malloc(sizeof(*cq));
- 	if (!cq)
- 		return NULL;
- 
-+	cmd.is_ex = 0;
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
 +
- 	ret = ibv_cmd_create_cq(context, cqe, channel, comp_vector,
--				&cq->ibv_cq, NULL, 0,
-+				&cq->vcq.cq, &cmd.ibv_cmd, sizeof(cmd),
- 				&resp.ibv_resp, sizeof(resp));
- 	if (ret) {
- 		free(cq);
-@@ -210,15 +352,129 @@ static struct ibv_cq *rxe_create_cq(struct ibv_context *context, int cqe,
- 	cq->queue = mmap(NULL, resp.mi.size, PROT_READ | PROT_WRITE, MAP_SHARED,
- 			 context->cmd_fd, resp.mi.offset);
- 	if ((void *)cq->queue == MAP_FAILED) {
--		ibv_cmd_destroy_cq(&cq->ibv_cq);
-+		ibv_cmd_destroy_cq(&cq->vcq.cq);
-+		free(cq);
-+		return NULL;
++	if (qp->err) {
++		pthread_spin_unlock(&qp->sq.lock);
++		return qp->err;
 +	}
 +
-+	cq->wc_size = 1ULL << cq->queue->log2_elem_size;
++	store_producer_index(qp->sq.queue, qp->cur_index);
++	ret = post_send_db(&qp->vqp.qp);
 +
-+	if (cq->wc_size < sizeof(struct ib_uverbs_wc)) {
-+		fprintf(stderr, "cq wc size too small %ld need %ld\n",
-+			cq->wc_size, sizeof(struct ib_uverbs_wc));
-+		rxe_destroy_cq(&cq->vcq.cq);
-+		return NULL;
-+	}
-+
-+	cq->mmap_info = resp.mi;
-+	pthread_spin_init(&cq->lock, PTHREAD_PROCESS_PRIVATE);
-+
-+	return &cq->vcq.cq;
++	pthread_spin_unlock(&qp->sq.lock);
++	return ret;
 +}
 +
-+enum rxe_sup_wc_flags {
-+	RXE_SUP_WC_FLAGS = IBV_WC_EX_WITH_BYTE_LEN
-+			 | IBV_WC_EX_WITH_IMM
-+			 | IBV_WC_EX_WITH_QP_NUM
-+			 | IBV_WC_EX_WITH_SRC_QP
-+			 | IBV_WC_EX_WITH_SLID
-+			 | IBV_WC_EX_WITH_SL
-+			 | IBV_WC_EX_WITH_DLID_PATH_BITS
-+			 | IBV_WC_EX_WITH_COMPLETION_TIMESTAMP
-+			 | IBV_WC_EX_WITH_COMPLETION_TIMESTAMP_WALLCLOCK,
++static void wr_abort(struct ibv_qp_ex *ibqp)
++{
++	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
+ 
++	pthread_spin_unlock(&qp->sq.lock);
++	return;
++}
++
++static struct ibv_qp *rxe_create_qp(struct ibv_pd *ibpd,
++			     struct ibv_qp_init_attr *attr)
++{
++ 	struct ibv_create_qp cmd;
++ 	struct urxe_create_qp_resp resp;
++ 	struct rxe_qp *qp;
++ 	int ret;
++ 
+ 	qp = malloc(sizeof(*qp));
+ 	if (!qp)
++ 		return NULL;
++ 
++	ret = ibv_cmd_create_qp(ibpd, &qp->vqp.qp, attr, &cmd, sizeof(cmd),
++				&resp.ibv_resp, sizeof(resp));
++ 	if (ret) {
++ 		free(qp);
++ 		return NULL;
++	}
++
++	if (attr->srq) {
++		qp->rq.max_sge = 0;
++		qp->rq.queue = NULL;
++		qp->rq_mmap_info.size = 0;
++	} else {
++		qp->rq.max_sge = attr->cap.max_recv_sge;
++		qp->rq.queue = mmap(NULL, resp.rq_mi.size, PROT_READ | PROT_WRITE,
++				    MAP_SHARED,
++				    ibpd->context->cmd_fd, resp.rq_mi.offset);
++		if ((void *)qp->rq.queue == MAP_FAILED) {
++			ibv_cmd_destroy_qp(&qp->vqp.qp);
++			free(qp);
++			return NULL;
++		}
++
++		qp->rq_mmap_info = resp.rq_mi;
++		pthread_spin_init(&qp->rq.lock, PTHREAD_PROCESS_PRIVATE);
++	}
++
++	qp->sq.max_sge = attr->cap.max_send_sge;
++	qp->sq.max_inline = attr->cap.max_inline_data;
++	qp->sq.queue = mmap(NULL, resp.sq_mi.size, PROT_READ | PROT_WRITE,
++			    MAP_SHARED,
++			    ibpd->context->cmd_fd, resp.sq_mi.offset);
++	if ((void *)qp->sq.queue == MAP_FAILED) {
++		if (qp->rq_mmap_info.size)
++			munmap(qp->rq.queue, qp->rq_mmap_info.size);
++		ibv_cmd_destroy_qp(&qp->vqp.qp);
++		free(qp);
+ 		return NULL;
++	}
+ 
+-	ret = ibv_cmd_create_qp(pd, &qp->ibv_qp, attr, &cmd, sizeof(cmd),
+-				&resp.ibv_resp, sizeof(resp));
++ 	qp->sq_mmap_info = resp.sq_mi;
++ 	pthread_spin_init(&qp->sq.lock, PTHREAD_PROCESS_PRIVATE);
++ 
++	return &qp->vqp.qp;
++}
++
++enum {
++	RXE_QP_CREATE_FLAGS_SUP = 0
++	//	| IBV_QP_CREATE_BLOCK_SELF_MCAST_LB
++	//	| IBV_QP_CREATE_SCATTER_FCS
++	//	| IBV_QP_CREATE_CVLAN_STRIPPING
++	//	| IBV_QP_CREATE_SOURCE_QPN
++	//	| IBV_QP_CREATE_PCI_WRITE_END_PADDING
++		,
++
++	RXE_QP_COMP_MASK_SUP =
++		  IBV_QP_INIT_ATTR_PD
++		| IBV_QP_INIT_ATTR_XRCD
++		| IBV_QP_INIT_ATTR_CREATE_FLAGS
++	//	| IBV_QP_INIT_ATTR_MAX_TSO_HEADER
++	//	| IBV_QP_INIT_ATTR_IND_TABLE
++	//	| IBV_QP_INIT_ATTR_RX_HASH
++		| IBV_QP_INIT_ATTR_SEND_OPS_FLAGS,
++
++	RXE_SUP_RC_QP_SEND_OPS_FLAGS =
++		  IBV_QP_EX_WITH_RDMA_WRITE
++		| IBV_QP_EX_WITH_RDMA_WRITE_WITH_IMM
++		| IBV_QP_EX_WITH_SEND
++		| IBV_QP_EX_WITH_SEND_WITH_IMM
++		| IBV_QP_EX_WITH_RDMA_READ
++		| IBV_QP_EX_WITH_ATOMIC_CMP_AND_SWP
++		| IBV_QP_EX_WITH_ATOMIC_FETCH_AND_ADD
++		| IBV_QP_EX_WITH_LOCAL_INV
++	//	| IBV_QP_EX_WITH_BIND_MW
++		| IBV_QP_EX_WITH_SEND_WITH_INV,
++
++	RXE_SUP_UC_QP_SEND_OPS_FLAGS =
++		  IBV_QP_EX_WITH_RDMA_WRITE
++		| IBV_QP_EX_WITH_RDMA_WRITE_WITH_IMM
++		| IBV_QP_EX_WITH_SEND
++		| IBV_QP_EX_WITH_SEND_WITH_IMM
++	//	| IBV_QP_EX_WITH_BIND_MW
++		| IBV_QP_EX_WITH_SEND_WITH_INV,
++
++	RXE_SUP_UD_QP_SEND_OPS_FLAGS =
++		  IBV_QP_EX_WITH_SEND
++		| IBV_QP_EX_WITH_SEND_WITH_IMM,
++
++	RXE_SUP_XRC_QP_SEND_OPS_FLAGS =
++		RXE_SUP_RC_QP_SEND_OPS_FLAGS,
 +};
 +
-+static struct ibv_cq_ex *rxe_create_cq_ex(struct ibv_context *context,
-+					  struct ibv_cq_init_attr_ex *attr)
++static int check_qp_init_attr(struct ibv_context *context,
++			      struct ibv_qp_init_attr_ex *attr)
++{
++	if (attr->comp_mask & ~RXE_QP_COMP_MASK_SUP)
++		return EOPNOTSUPP;
++
++	if ((attr->comp_mask & IBV_QP_INIT_ATTR_CREATE_FLAGS) &&
++	    (attr->create_flags & ~RXE_QP_CREATE_FLAGS_SUP))
++		return EOPNOTSUPP;
++
++	if (attr->comp_mask & IBV_QP_INIT_ATTR_SEND_OPS_FLAGS) {
++		switch(attr->qp_type) {
++		case IBV_QPT_RC:
++			if (attr->send_ops_flags & ~RXE_SUP_RC_QP_SEND_OPS_FLAGS)
++				return EOPNOTSUPP;
++			break;
++		case IBV_QPT_UC:
++			if (attr->send_ops_flags & ~RXE_SUP_UC_QP_SEND_OPS_FLAGS)
++				return EOPNOTSUPP;
++			break;
++		case IBV_QPT_UD:
++			if (attr->send_ops_flags & ~RXE_SUP_UD_QP_SEND_OPS_FLAGS)
++				return EOPNOTSUPP;
++			break;
++		case IBV_QPT_RAW_PACKET:
++			return EOPNOTSUPP;
++		case IBV_QPT_XRC_SEND:
++			if (attr->send_ops_flags & ~RXE_SUP_XRC_QP_SEND_OPS_FLAGS)
++				return EOPNOTSUPP;
++			break;
++		case IBV_QPT_XRC_RECV:
++			return EOPNOTSUPP;
++		case IBV_QPT_DRIVER:
++			return EOPNOTSUPP;
++		default:
++			return EOPNOTSUPP;
++		}
++	}
++
++	return 0;
++}
++ 
++static void set_qp_send_ops(struct rxe_qp *qp, uint64_t flags)
++{
++	if (flags & IBV_QP_EX_WITH_ATOMIC_CMP_AND_SWP)
++		qp->vqp.qp_ex.wr_atomic_cmp_swp = wr_atomic_cmp_swp;
++
++	if (flags & IBV_QP_EX_WITH_ATOMIC_FETCH_AND_ADD)
++		qp->vqp.qp_ex.wr_atomic_fetch_add = wr_atomic_fetch_add;
++
++	if (flags & IBV_QP_EX_WITH_LOCAL_INV)
++		qp->vqp.qp_ex.wr_local_inv = wr_local_inv;
++
++	if (flags & IBV_QP_EX_WITH_RDMA_READ)
++		qp->vqp.qp_ex.wr_rdma_read = wr_rdma_read;
++
++	if (flags & IBV_QP_EX_WITH_RDMA_WRITE)
++		qp->vqp.qp_ex.wr_rdma_write = wr_rdma_write;
++
++	if (flags & IBV_QP_EX_WITH_RDMA_WRITE_WITH_IMM)
++		qp->vqp.qp_ex.wr_rdma_write_imm = wr_rdma_write_imm;
++
++	if (flags & IBV_QP_EX_WITH_SEND)
++		qp->vqp.qp_ex.wr_send = wr_send;
++
++	if (flags & IBV_QP_EX_WITH_SEND_WITH_IMM)
++		qp->vqp.qp_ex.wr_send_imm = wr_send_imm;
++
++	if (flags & IBV_QP_EX_WITH_SEND_WITH_INV)
++		qp->vqp.qp_ex.wr_send_inv = wr_send_inv;
++
++	if (flags & IBV_QP_EX_WITH_TSO)
++		qp->vqp.qp_ex.wr_send_tso = wr_send_tso;
++
++	qp->vqp.qp_ex.wr_set_ud_addr = wr_set_ud_addr;
++	qp->vqp.qp_ex.wr_set_xrc_srqn = wr_set_xrc_srqn;
++	qp->vqp.qp_ex.wr_set_inline_data = wr_set_inline_data;
++	qp->vqp.qp_ex.wr_set_inline_data_list = wr_set_inline_data_list;
++	qp->vqp.qp_ex.wr_set_sge = wr_set_sge;
++	qp->vqp.qp_ex.wr_set_sge_list = wr_set_sge_list;
++
++	qp->vqp.qp_ex.wr_start = wr_start;
++	qp->vqp.qp_ex.wr_complete = wr_complete;
++	qp->vqp.qp_ex.wr_abort = wr_abort;
++}
++
++static struct ibv_qp *rxe_create_qp_ex(struct ibv_context *context,
++				struct ibv_qp_init_attr_ex *attr)
 +{
 +	int ret;
-+	struct rxe_cq *cq;
-+	struct urxe_create_cq_ex cmd = {};
-+	struct urxe_create_cq_ex_resp resp = {};
++	struct rxe_qp *qp;
++	struct ibv_create_qp_ex cmd = {};
++	struct urxe_create_qp_ex_resp resp = {};
++	size_t cmd_size = sizeof(cmd);
++	size_t resp_size = sizeof(resp);
 +
-+	if (attr->wc_flags & ~RXE_SUP_WC_FLAGS) {
-+		errno = EOPNOTSUPP;
-+		return NULL;
-+	}
-+
-+	cq = calloc(1, sizeof(*cq));
-+	if (!cq)
-+		return NULL;
-+
-+	cmd.is_ex = 1;
-+
-+	ret = ibv_cmd_create_cq_ex(context, attr, &cq->vcq,
-+				   &cmd.ibv_cmd, sizeof(cmd),
-+				   &resp.ibv_resp, sizeof(resp));
++	ret = check_qp_init_attr(context, attr);
 +	if (ret) {
-+		free(cq);
++		errno = ret;
 +		return NULL;
 +	}
 +
-+	cq->queue = mmap(NULL, resp.mi.size, PROT_READ | PROT_WRITE, MAP_SHARED,
-+			 context->cmd_fd, resp.mi.offset);
-+	if ((void *)cq->queue == MAP_FAILED) {
-+		ibv_cmd_destroy_cq(&cq->vcq.cq);
- 		free(cq);
++	qp = calloc(1, sizeof(*qp));
++	if (!qp)
++		return NULL;
++
++	if (attr->comp_mask & IBV_QP_INIT_ATTR_SEND_OPS_FLAGS)
++		set_qp_send_ops(qp, attr->send_ops_flags);
++
++	ret = ibv_cmd_create_qp_ex2(context, &qp->vqp, attr,
++				    &cmd, cmd_size,
++				    &resp.ibv_resp, resp_size);
+ 	if (ret) {
+ 		free(qp);
  		return NULL;
  	}
  
-+	cq->wc_size = 1ULL << cq->queue->log2_elem_size;
++	qp->vqp.comp_mask |= VERBS_QP_EX;
 +
-+	if (cq->wc_size < sizeof(struct rxe_uverbs_wc)) {
-+		fprintf(stderr, "cq wc size too small %ld need %ld\n",
-+			cq->wc_size, sizeof(struct rxe_uverbs_wc));
-+		rxe_destroy_cq(&cq->vcq.cq);
-+		return NULL;
-+	}
-+
- 	cq->mmap_info = resp.mi;
- 	pthread_spin_init(&cq->lock, PTHREAD_PROCESS_PRIVATE);
+ 	if (attr->srq) {
+ 		qp->rq.max_sge = 0;
+ 		qp->rq.queue = NULL;
+@@ -744,10 +1357,9 @@ static struct ibv_qp *rxe_create_qp(struct ibv_pd *pd,
+ 	} else {
+ 		qp->rq.max_sge = attr->cap.max_recv_sge;
+ 		qp->rq.queue = mmap(NULL, resp.rq_mi.size, PROT_READ | PROT_WRITE,
+-				    MAP_SHARED,
+-				    pd->context->cmd_fd, resp.rq_mi.offset);
++				    MAP_SHARED, context->cmd_fd, resp.rq_mi.offset);
+ 		if ((void *)qp->rq.queue == MAP_FAILED) {
+-			ibv_cmd_destroy_qp(&qp->ibv_qp);
++			ibv_cmd_destroy_qp(&qp->vqp.qp);
+ 			free(qp);
+ 			return NULL;
+ 		}
+@@ -759,12 +1371,11 @@ static struct ibv_qp *rxe_create_qp(struct ibv_pd *pd,
+ 	qp->sq.max_sge = attr->cap.max_send_sge;
+ 	qp->sq.max_inline = attr->cap.max_inline_data;
+ 	qp->sq.queue = mmap(NULL, resp.sq_mi.size, PROT_READ | PROT_WRITE,
+-			    MAP_SHARED,
+-			    pd->context->cmd_fd, resp.sq_mi.offset);
++			    MAP_SHARED, context->cmd_fd, resp.sq_mi.offset);
+ 	if ((void *)qp->sq.queue == MAP_FAILED) {
+ 		if (qp->rq_mmap_info.size)
+ 			munmap(qp->rq.queue, qp->rq_mmap_info.size);
+-		ibv_cmd_destroy_qp(&qp->ibv_qp);
++		ibv_cmd_destroy_qp(&qp->vqp.qp);
+ 		free(qp);
+ 		return NULL;
+ 	}
+@@ -772,34 +1383,32 @@ static struct ibv_qp *rxe_create_qp(struct ibv_pd *pd,
+ 	qp->sq_mmap_info = resp.sq_mi;
+ 	pthread_spin_init(&qp->sq.lock, PTHREAD_PROCESS_PRIVATE);
  
--	return &cq->ibv_cq;
-+	cq->vcq.cq_ex.start_poll	= cq_start_poll;
-+	cq->vcq.cq_ex.next_poll		= cq_next_poll;
-+	cq->vcq.cq_ex.end_poll		= cq_end_poll;
-+	cq->vcq.cq_ex.read_opcode	= cq_read_opcode;
-+	cq->vcq.cq_ex.read_vendor_err	= cq_read_vendor_err;
-+	cq->vcq.cq_ex.read_wc_flags	= cq_read_wc_flags;
-+
-+	if (attr->wc_flags & IBV_WC_EX_WITH_BYTE_LEN)
-+		cq->vcq.cq_ex.read_byte_len
-+			= cq_read_byte_len;
-+
-+	if (attr->wc_flags & IBV_WC_EX_WITH_IMM)
-+		cq->vcq.cq_ex.read_imm_data
-+			= cq_read_imm_data;
-+
-+	if (attr->wc_flags & IBV_WC_EX_WITH_QP_NUM)
-+		cq->vcq.cq_ex.read_qp_num
-+			= cq_read_qp_num;
-+
-+	if (attr->wc_flags & IBV_WC_EX_WITH_SRC_QP)
-+		cq->vcq.cq_ex.read_src_qp
-+			= cq_read_src_qp;
-+
-+	if (attr->wc_flags & IBV_WC_EX_WITH_SLID)
-+		cq->vcq.cq_ex.read_slid
-+			= cq_read_slid;
-+
-+	if (attr->wc_flags & IBV_WC_EX_WITH_SL)
-+		cq->vcq.cq_ex.read_sl
-+			= cq_read_sl;
-+
-+	if (attr->wc_flags & IBV_WC_EX_WITH_DLID_PATH_BITS)
-+		cq->vcq.cq_ex.read_dlid_path_bits
-+			= cq_read_dlid_path_bits;
-+
-+	if (attr->wc_flags & IBV_WC_EX_WITH_COMPLETION_TIMESTAMP)
-+		cq->vcq.cq_ex.read_completion_ts
-+			= cq_read_completion_ts;
-+
-+	if (attr->wc_flags & IBV_WC_EX_WITH_COMPLETION_TIMESTAMP_WALLCLOCK)
-+		cq->vcq.cq_ex.read_completion_wallclock_ns
-+			= cq_read_completion_wallclock_ns;
-+
-+	return &cq->vcq.cq_ex;
+-	return &qp->ibv_qp;
++	return &qp->vqp.qp;
  }
  
- static int rxe_resize_cq(struct ibv_cq *ibcq, int cqe)
-@@ -890,6 +1146,7 @@ static const struct verbs_context_ops rxe_ctx_ops = {
+-static int rxe_query_qp(struct ibv_qp *qp, struct ibv_qp_attr *attr,
+-			int attr_mask,
+-			struct ibv_qp_init_attr *init_attr)
++static int rxe_query_qp(struct ibv_qp *ibqp, struct ibv_qp_attr *attr, int attr_mask,
++		 struct ibv_qp_init_attr *init_attr)
+ {
+ 	struct ibv_query_qp cmd;
  
+-	return ibv_cmd_query_qp(qp, attr, attr_mask, init_attr,
++	return ibv_cmd_query_qp(ibqp, attr, attr_mask, init_attr,
+ 				&cmd, sizeof(cmd));
+ }
+-
+-static int rxe_modify_qp(struct ibv_qp *ibvqp,
+-			 struct ibv_qp_attr *attr,
+-			 int attr_mask)
++ 
++static int rxe_modify_qp(struct ibv_qp *ibqp, struct ibv_qp_attr *attr,
++		  int attr_mask)
+ {
+ 	struct ibv_modify_qp cmd = {};
+ 
+-	return ibv_cmd_modify_qp(ibvqp, attr, attr_mask, &cmd, sizeof(cmd));
++	return ibv_cmd_modify_qp(ibqp, attr, attr_mask, &cmd, sizeof(cmd));
+ }
+-
+-static int rxe_destroy_qp(struct ibv_qp *ibv_qp)
++ 
++static int rxe_destroy_qp(struct ibv_qp *ibqp)
+ {
+ 	int ret;
+-	struct rxe_qp *qp = to_rqp(ibv_qp);
++	struct rxe_qp *qp = to_rqp(ibqp);
+ 
+-	ret = ibv_cmd_destroy_qp(ibv_qp);
++	ret = ibv_cmd_destroy_qp(ibqp);
+ 	if (!ret) {
+ 		if (qp->rq_mmap_info.size)
+ 			munmap(qp->rq.queue, qp->rq_mmap_info.size);
+@@ -1147,6 +1756,7 @@ static const struct verbs_context_ops rxe_ctx_ops = {
  static const struct verbs_context_ops rxe_ctx_ops_cmd_ex = {
  	.query_device_ex = rxe_query_device_ex,
-+	.create_cq_ex = rxe_create_cq_ex,
+ 	.create_cq_ex = rxe_create_cq_ex,
++	.create_qp_ex = rxe_create_qp_ex,
  };
  
  static struct verbs_context *rxe_alloc_context(struct ibv_device *ibdev,
 diff --git a/providers/rxe/rxe.h b/providers/rxe/rxe.h
-index f9cae315..e89a781f 100644
+index e89a781f..51e78347 100644
 --- a/providers/rxe/rxe.h
 +++ b/providers/rxe/rxe.h
-@@ -62,11 +62,17 @@ struct rxe_context {
- 	uint64_t		capabilities;
+@@ -88,15 +88,19 @@ struct rxe_wq {
  };
  
-+/* common between cq and cq_ex */
- struct rxe_cq {
--	struct ibv_cq		ibv_cq;
-+	struct verbs_cq		vcq;
- 	struct mminfo		mmap_info;
--	struct rxe_queue		*queue;
-+	struct rxe_queue	*queue;
- 	pthread_spinlock_t	lock;
+ struct rxe_qp {
+-	struct ibv_qp		ibv_qp;
++	struct verbs_qp		vqp;
+ 	struct mminfo		rq_mmap_info;
+ 	struct rxe_wq		rq;
+ 	struct mminfo		sq_mmap_info;
+ 	struct rxe_wq		sq;
+ 	unsigned int		ssn;
 +
 +	/* new API support */
-+	struct rxe_uverbs_wc	*wc;
-+	size_t			wc_size;
 +	uint32_t		cur_index;
++	int			err;
  };
  
- struct rxe_ah {
-@@ -113,7 +119,7 @@ static inline struct rxe_device *to_rdev(struct ibv_device *ibdev)
+-#define qp_type(qp)		((qp)->ibv_qp.qp_type)
++#define qp_type(qp)		((qp)->vqp.qp.qp_type)
  
- static inline struct rxe_cq *to_rcq(struct ibv_cq *ibcq)
- {
--	return to_rxxx(cq, cq);
-+	return container_of(ibcq, struct rxe_cq, vcq.cq);
- }
+ struct rxe_srq {
+ 	struct ibv_srq		ibv_srq;
+@@ -124,7 +128,7 @@ static inline struct rxe_cq *to_rcq(struct ibv_cq *ibcq)
  
  static inline struct rxe_qp *to_rqp(struct ibv_qp *ibqp)
+ {
+-	return to_rxxx(qp, qp);
++	return container_of(ibqp, struct rxe_qp, vqp.qp);
+ }
+ 
+ static inline struct rxe_srq *to_rsrq(struct ibv_srq *ibsrq)
 diff --git a/providers/rxe/rxe_queue.h b/providers/rxe/rxe_queue.h
-index 5c57b3e3..1c3c3d5c 100644
+index 1c3c3d5c..246aad83 100644
 --- a/providers/rxe/rxe_queue.h
 +++ b/providers/rxe/rxe_queue.h
-@@ -40,6 +40,8 @@
- #include <stdint.h>
- #include <stdatomic.h>
- 
-+#include "rxe.h"
-+
- /* MUST MATCH kernel struct rxe_pqc in rxe_queue.h */
- struct rxe_queue {
- 	uint32_t		log2_elem_size;
-@@ -57,27 +59,27 @@ static inline int next_index(struct rxe_queue *q, int index)
- 	return (index + 1) & q->index_mask;
+@@ -172,4 +172,25 @@ static inline int check_cq_queue_empty(struct rxe_cq *cq)
+ 	return (cq->cur_index == producer_index);
  }
  
-+/* Must hold consumer_index lock */
- static inline int queue_empty(struct rxe_queue *q)
- {
--	/* Must hold consumer_index lock */
- 	return ((atomic_load(&q->producer_index) -
- 		 atomic_load_explicit(&q->consumer_index,
- 				      memory_order_relaxed)) &
- 		q->index_mask) == 0;
- }
- 
-+/* Must hold producer_index lock */
- static inline int queue_full(struct rxe_queue *q)
- {
--	/* Must hold producer_index lock */
- 	return ((atomic_load_explicit(&q->producer_index,
- 				      memory_order_relaxed) +
- 		 1 - atomic_load(&q->consumer_index)) &
- 		q->index_mask) == 0;
- }
- 
-+/* Must hold producer_index lock */
- static inline void advance_producer(struct rxe_queue *q)
- {
--	/* Must hold producer_index lock */
- 	atomic_thread_fence(memory_order_release);
- 	atomic_store(
- 	    &q->producer_index,
-@@ -86,9 +88,9 @@ static inline void advance_producer(struct rxe_queue *q)
- 		q->index_mask);
- }
- 
-+/* Must hold consumer_index lock */
- static inline void advance_consumer(struct rxe_queue *q)
- {
--	/* Must hold consumer_index lock */
- 	atomic_store(
- 	    &q->consumer_index,
- 	    (atomic_load_explicit(&q->consumer_index, memory_order_relaxed) +
-@@ -96,18 +98,48 @@ static inline void advance_consumer(struct rxe_queue *q)
- 		q->index_mask);
- }
- 
-+/* Must hold producer_index lock */
-+static inline uint32_t load_producer_index(struct rxe_queue *q)
++static inline void advance_qp_cur_index(struct rxe_qp *qp)
 +{
-+	return atomic_load_explicit(&q->producer_index,
-+				    memory_order_relaxed);
++	struct rxe_queue *q = qp->sq.queue;
++
++	qp->cur_index = (qp->cur_index + 1) & q->index_mask;
 +}
 +
-+/* Must hold producer_index lock */
-+static inline void store_producer_index(struct rxe_queue *q, uint32_t index)
++static inline int check_qp_queue_full(struct rxe_qp *qp)
 +{
-+	/* flush writes to work queue before moving index */
-+	atomic_thread_fence(memory_order_release);
-+	atomic_store(&q->producer_index, index);
-+}
++	struct rxe_queue *q = qp->sq.queue;
++	uint32_t consumer_index = atomic_load(&q->consumer_index);
 +
-+/* Must hold consumer_index lock */
-+static inline uint32_t load_consumer_index(struct rxe_queue *q)
-+{
-+	return atomic_load_explicit(&q->consumer_index,
-+				    memory_order_relaxed);
-+}
++	if (qp->err)
++		goto err;
 +
-+/* Must hold consumer_index lock */
-+static inline void store_consumer_index(struct rxe_queue *q, uint32_t index)
-+{
-+	/* flush writes to work queue before moving index */
-+	atomic_thread_fence(memory_order_release);
-+	atomic_store(&q->consumer_index, index);
-+}
-+
-+/* Must hold producer_index lock */
- static inline void *producer_addr(struct rxe_queue *q)
- {
--	/* Must hold producer_index lock */
- 	return q->data + ((atomic_load_explicit(&q->producer_index,
- 						memory_order_relaxed) &
- 			   q->index_mask)
- 			  << q->log2_elem_size);
- }
- 
-+/* Must hold consumer_index lock */
- static inline void *consumer_addr(struct rxe_queue *q)
- {
--	/* Must hold consumer_index lock */
- 	return q->data + ((atomic_load_explicit(&q->consumer_index,
- 						memory_order_relaxed) &
- 			   q->index_mask)
-@@ -125,4 +157,19 @@ static inline unsigned int index_from_addr(const struct rxe_queue *q, const void
- 	return (((uint8_t *)addr - q->data) >> q->log2_elem_size) & q->index_mask;
- }
- 
-+static inline void advance_cq_cur_index(struct rxe_cq *cq)
-+{
-+	struct rxe_queue *q = cq->queue;
-+
-+	cq->cur_index = (cq->cur_index + 1) & q->index_mask;
-+}
-+
-+static inline int check_cq_queue_empty(struct rxe_cq *cq)
-+{
-+	struct rxe_queue *q = cq->queue;
-+	uint32_t producer_index = atomic_load(&q->producer_index);
-+
-+	return (cq->cur_index == producer_index);
++	if ((qp->cur_index + 1 - consumer_index) % q->index_mask == 0)
++		qp->err = ENOSPC;
++err:
++	return qp->err;
 +}
 +
  #endif /* H_RXE_PCQ */
