@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB0B2A9EAA
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Nov 2020 21:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5160D2AA09D
+	for <lists+linux-rdma@lfdr.de>; Sat,  7 Nov 2020 00:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728391AbgKFUmk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 6 Nov 2020 15:42:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46348 "EHLO
+        id S1728883AbgKFXBe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 6 Nov 2020 18:01:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727559AbgKFUmj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Nov 2020 15:42:39 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89990C0613CF
-        for <linux-rdma@vger.kernel.org>; Fri,  6 Nov 2020 12:42:39 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id i18so2506522ots.0
-        for <linux-rdma@vger.kernel.org>; Fri, 06 Nov 2020 12:42:39 -0800 (PST)
+        with ESMTP id S1728111AbgKFXBb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Nov 2020 18:01:31 -0500
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902CCC0613CF
+        for <linux-rdma@vger.kernel.org>; Fri,  6 Nov 2020 15:01:31 -0800 (PST)
+Received: by mail-oo1-xc42.google.com with SMTP id t28so735701ood.6
+        for <linux-rdma@vger.kernel.org>; Fri, 06 Nov 2020 15:01:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=xFFjqvClbFddAmYhuH4/S/h6KxAzjNX/0qk9jeIllk8=;
-        b=CqqfqbIgz9L4V3rUN7gPPww430dfNdOPcy3uQ893RWKrfbhgxGedMWbalIKHfmKSQG
-         0shoovVoygb7zjdX5v5wU377zEXUT2ma3rGV/X2Jei6ce6z6MyGiymFnJUnSTiXo0Jyk
-         40IGPazYzbJu2uTxn1A3bgzlyuFUVD3tEU/2dgIuPb6cf08ANap8do3Wd86q+Wxsz4DM
-         abHo3e9T7gAQhFw5iiv+7skgoJ3sZzcZR12PtP1HC2oQpTSulqG76gZCdMXv4RtfRpjP
-         WfFuKgLIpH0Ngrdzxj5yVSHBx9BUnX2EC0y17sPAI/OZtNkq9+8BNasoSZzl6BSYNqOf
-         KWDA==
+        bh=UTqlqlQLMwLNCg7+Wn/ofmV2pxkAEfSHKDpVZNdhU2U=;
+        b=U6Jv5o2OaeYgVj/b+pmmcoc9SDn5jzTCEwQK7WxAuFHqzkTls0UCsboozjk15r9i6T
+         4QBSMtulqkU/Ij5NQuIW6rtVuy3btS50KaCPcexWXwp/UHVhuZPOsHK6tEJDrF/GxKlI
+         ej1y0bVavK1U8cT25fBJj6jnNvcgRpfkYUrYKZcGZv58L3MGpBlPwt8lWypDBjxZ9qGd
+         eQMpFzroIYF3dDbRsc9wpCmxg6dBFAEH+zTs1ymDWQ82Gz9UDEs3LpKRVWTSZtdJ4BqJ
+         FcoIyFTdaHCevGXkdIchvMatdMZ7Ke3GxLnrTDW3eDTRrVzFj/9KbZChc0mrrJ1rRvIW
+         krpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=xFFjqvClbFddAmYhuH4/S/h6KxAzjNX/0qk9jeIllk8=;
-        b=EjC9Yr7gJ1RDHSy5nDrtE1cdvFx1pYe1qQAFNXQWItdHlAGFHvMGxDHV/01/H7GDnx
-         Sxy1qUhP0ChGbEN82eQ+bZ48O/+UKgqlbbvW2GYVdkt3vMVnlxP++zUEqjv9o9X+MR9t
-         kLqwsevDMeyZSra2+UUWm7GhAbvudHjqit0vc4rCdcyJrbLbIr2NjMEgqZkVqr99s8pw
-         /LX6SmONnCXtix28vaO0WwkrEBmvoc4HKEnGnJTggTmhRZhthJfxSiFff5FXkW7UnD+H
-         yhPklFxZrVFr3vef92n1QGn0UCB5AK7T+6VmPJveHWnW9S6u8rzR1Hlvu9q/qnQCeW+1
-         7xrQ==
-X-Gm-Message-State: AOAM531RJIpqJFWrFOrhAFcsiy532s3hxW3LDIK1YLuXrtclzN+EfbW9
-        kG2lP6m5rI3ZV8qnzLi2rww=
-X-Google-Smtp-Source: ABdhPJxFKXOfsAflpufH3cHB27QbnotmrMTpZLSJnClt6+Dc1hPqKeE0e7vMmSaMACfMpPKZHoHncQ==
-X-Received: by 2002:a9d:6311:: with SMTP id q17mr2274937otk.284.1604695358956;
-        Fri, 06 Nov 2020 12:42:38 -0800 (PST)
+        bh=UTqlqlQLMwLNCg7+Wn/ofmV2pxkAEfSHKDpVZNdhU2U=;
+        b=FmC9G2jFA8nKpltX9hS2AHbrpnrMesKGQUNmbOH66n+68WVi+CJghk6hfmg/LImxbF
+         dTUKq7psZqFOvheycVn23Wgg8+WcROwq5h+wQg0d0rYrmn2rw/185ixxbAT/uFUrYOR/
+         8zuRofbw5A/ZKaAg+0OqvNoSpDf8zLfheMCvng6Q+W+GMLrLx5+0eL4WdS1bbWxqLXCf
+         AcbrDsJARDXAbi8XMDeHpwkPmAaFQ+14/73I/pqGgJWAxh5tL68yd0NuvA3mDEJWOjQD
+         c5w9VLVzFNHizogWeeKaP/iLicrJW/vB4YUsZdiwSuOtpVcPUELcY1gh29PFgpmoHt9x
+         M5tQ==
+X-Gm-Message-State: AOAM533yTP6XBkqEVvmRtsVP/sO6fiExbEiMqgA16u53qYtZfsQPYtOW
+        fl8VAp7mlwQ49CWXE0lDKjM=
+X-Google-Smtp-Source: ABdhPJxhIK4Xxz1RvNm7XDE8Afn28hpGvb29M9RDGXn9lETg/QnAIvWkRQKcinEd+gBHeoSHpFv8MA==
+X-Received: by 2002:a4a:c018:: with SMTP id v24mr2781015oop.2.1604703691039;
+        Fri, 06 Nov 2020 15:01:31 -0800 (PST)
 Received: from localhost (2603-8081-140c-1a00-f960-8e80-5b89-d06d.res6.spectrum.com. [2603:8081:140c:1a00:f960:8e80:5b89:d06d])
-        by smtp.gmail.com with ESMTPSA id z126sm534888oiz.41.2020.11.06.12.42.38
+        by smtp.gmail.com with ESMTPSA id 72sm641368otd.11.2020.11.06.15.01.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 12:42:38 -0800 (PST)
+        Fri, 06 Nov 2020 15:01:30 -0800 (PST)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearson@hpe.com>
-Subject: [PATCH] Provider/rxe: Cleanup style warnings
-Date:   Fri,  6 Nov 2020 14:41:29 -0600
-Message-Id: <20201106204128.5384-1-rpearson@hpe.com>
+Subject: [PATCH 0/4] Provider/rxe: Implement extended verbs APIs
+Date:   Fri,  6 Nov 2020 17:01:18 -0600
+Message-Id: <20201106230122.17411-1-rpearson@hpe.com>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -61,237 +61,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Cleanup style warnings produced by checkpatch --no-tree -f.
-Not all warnings were appropriate for user space code and
-those were ignored.
+Implement the following erxtended verbs APIs:
+	ibv_query_device_ex
+	ibv_create_cq_ex
+	ibv_create_qp_ex
+
+Also implement the field parse and set ops in struct ibv_cq and ibv_qp.
+
+Introduce a pair of SW capability bit masks that are exchanged between
+the user space provider and the kernel space driver during the
+ibv_alloc_context verb to allow the provider and driver to adjust
+shared data structures depending on which capabilities are supported.
+This is an extensible mechanism to avoid changes to ABI version.
+
+This patch set depends on the following patch
+	0001-Provider-rxe-Cleanup-style-warnings.patch
+
+Bob Pearson (4):
+  Provider/rxe: Exchange capabilities with driver
+  Provider/rxe: Implement ibv_query_device_ex verb
+  Providers/rxe: Implement ibv_create_cq_ex verb
+  Providers/rxe: Implement ibv_create_qp_ex verb
+
+ kernel-headers/rdma/rdma_user_rxe.h |  49 ++
+ providers/rxe/rxe-abi.h             |   8 +-
+ providers/rxe/rxe.c                 | 976 +++++++++++++++++++++++++++-
+ providers/rxe/rxe.h                 |  27 +-
+ providers/rxe/rxe_queue.h           |  80 ++-
+ 5 files changed, 1092 insertions(+), 48 deletions(-)
 
 Signed-off-by: Bob Pearson <rpearson@hpe.com>
----
- providers/rxe/rxe.c | 69 ++++++++++++++++++++++-----------------------
- 1 file changed, 34 insertions(+), 35 deletions(-)
-
-diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
-index 3af58bfb..ca881304 100644
---- a/providers/rxe/rxe.c
-+++ b/providers/rxe/rxe.c
-@@ -69,11 +69,11 @@ static int rxe_query_device(struct ibv_context *context,
- {
- 	struct ibv_query_device cmd;
- 	uint64_t raw_fw_ver;
--	unsigned major, minor, sub_minor;
-+	unsigned int major, minor, sub_minor;
- 	int ret;
- 
- 	ret = ibv_cmd_query_device(context, attr, &raw_fw_ver,
--				   &cmd, sizeof cmd);
-+				   &cmd, sizeof(cmd));
- 	if (ret)
- 		return ret;
- 
-@@ -81,7 +81,7 @@ static int rxe_query_device(struct ibv_context *context,
- 	minor = (raw_fw_ver >> 16) & 0xffff;
- 	sub_minor = raw_fw_ver & 0xffff;
- 
--	snprintf(attr->fw_ver, sizeof attr->fw_ver,
-+	snprintf(attr->fw_ver, sizeof(attr->fw_ver),
- 		 "%d.%d.%d", major, minor, sub_minor);
- 
- 	return 0;
-@@ -92,7 +92,7 @@ static int rxe_query_port(struct ibv_context *context, uint8_t port,
- {
- 	struct ibv_query_port cmd;
- 
--	return ibv_cmd_query_port(context, port, attr, &cmd, sizeof cmd);
-+	return ibv_cmd_query_port(context, port, attr, &cmd, sizeof(cmd));
- }
- 
- static struct ibv_pd *rxe_alloc_pd(struct ibv_context *context)
-@@ -101,11 +101,12 @@ static struct ibv_pd *rxe_alloc_pd(struct ibv_context *context)
- 	struct ib_uverbs_alloc_pd_resp resp;
- 	struct ibv_pd *pd;
- 
--	pd = malloc(sizeof *pd);
-+	pd = malloc(sizeof(*pd));
- 	if (!pd)
- 		return NULL;
- 
--	if (ibv_cmd_alloc_pd(context, pd, &cmd, sizeof cmd, &resp, sizeof resp)) {
-+	if (ibv_cmd_alloc_pd(context, pd, &cmd, sizeof(cmd),
-+					&resp, sizeof(resp))) {
- 		free(pd);
- 		return NULL;
- 	}
-@@ -166,14 +167,13 @@ static struct ibv_cq *rxe_create_cq(struct ibv_context *context, int cqe,
- 	struct urxe_create_cq_resp resp;
- 	int ret;
- 
--	cq = malloc(sizeof *cq);
--	if (!cq) {
-+	cq = malloc(sizeof(*cq));
-+	if (!cq)
- 		return NULL;
--	}
- 
- 	ret = ibv_cmd_create_cq(context, cqe, channel, comp_vector,
- 				&cq->ibv_cq, NULL, 0,
--				&resp.ibv_resp, sizeof resp);
-+				&resp.ibv_resp, sizeof(resp));
- 	if (ret) {
- 		free(cq);
- 		return NULL;
-@@ -202,8 +202,8 @@ static int rxe_resize_cq(struct ibv_cq *ibcq, int cqe)
- 
- 	pthread_spin_lock(&cq->lock);
- 
--	ret = ibv_cmd_resize_cq(ibcq, cqe, &cmd, sizeof cmd,
--				&resp.ibv_resp, sizeof resp);
-+	ret = ibv_cmd_resize_cq(ibcq, cqe, &cmd, sizeof(cmd),
-+				&resp.ibv_resp, sizeof(resp));
- 	if (ret) {
- 		pthread_spin_unlock(&cq->lock);
- 		return ret;
-@@ -277,13 +277,12 @@ static struct ibv_srq *rxe_create_srq(struct ibv_pd *pd,
- 	struct urxe_create_srq_resp resp;
- 	int ret;
- 
--	srq = malloc(sizeof *srq);
--	if (srq == NULL) {
-+	srq = malloc(sizeof(*srq));
-+	if (srq == NULL)
- 		return NULL;
--	}
- 
--	ret = ibv_cmd_create_srq(pd, &srq->ibv_srq, attr, &cmd, sizeof cmd,
--				 &resp.ibv_resp, sizeof resp);
-+	ret = ibv_cmd_create_srq(pd, &srq->ibv_srq, attr, &cmd, sizeof(cmd),
-+				 &resp.ibv_resp, sizeof(resp));
- 	if (ret) {
- 		free(srq);
- 		return NULL;
-@@ -319,9 +318,9 @@ static int rxe_modify_srq(struct ibv_srq *ibsrq,
- 	if (attr_mask & IBV_SRQ_MAX_WR)
- 		pthread_spin_lock(&srq->rq.lock);
- 
--	cmd.mmap_info_addr = (__u64)(uintptr_t) & mi;
-+	cmd.mmap_info_addr = (__u64)(uintptr_t) &mi;
- 	rc = ibv_cmd_modify_srq(ibsrq, attr, attr_mask,
--				&cmd.ibv_cmd, sizeof cmd);
-+				&cmd.ibv_cmd, sizeof(cmd));
- 	if (rc)
- 		goto out;
- 
-@@ -351,7 +350,7 @@ static int rxe_query_srq(struct ibv_srq *srq, struct ibv_srq_attr *attr)
- {
- 	struct ibv_query_srq cmd;
- 
--	return ibv_cmd_query_srq(srq, attr, &cmd, sizeof cmd);
-+	return ibv_cmd_query_srq(srq, attr, &cmd, sizeof(cmd));
- }
- 
- static int rxe_destroy_srq(struct ibv_srq *ibvsrq)
-@@ -396,9 +395,8 @@ static int rxe_post_one_recv(struct rxe_wq *rq, struct ibv_recv_wr *recv_wr)
- 	memcpy(wqe->dma.sge, recv_wr->sg_list,
- 	       wqe->num_sge*sizeof(*wqe->dma.sge));
- 
--	for (i = 0; i < wqe->num_sge; i++) {
-+	for (i = 0; i < wqe->num_sge; i++)
- 		length += wqe->dma.sge[i].length;
--	}
- 
- 	wqe->dma.length = length;
- 	wqe->dma.resid = length;
-@@ -444,13 +442,12 @@ static struct ibv_qp *rxe_create_qp(struct ibv_pd *pd,
- 	struct rxe_qp *qp;
- 	int ret;
- 
--	qp = malloc(sizeof *qp);
--	if (!qp) {
-+	qp = malloc(sizeof(*qp));
-+	if (!qp)
- 		return NULL;
--	}
- 
--	ret = ibv_cmd_create_qp(pd, &qp->ibv_qp, attr, &cmd, sizeof cmd,
--				&resp.ibv_resp, sizeof resp);
-+	ret = ibv_cmd_create_qp(pd, &qp->ibv_qp, attr, &cmd, sizeof(cmd),
-+				&resp.ibv_resp, sizeof(resp));
- 	if (ret) {
- 		free(qp);
- 		return NULL;
-@@ -501,7 +498,7 @@ static int rxe_query_qp(struct ibv_qp *qp, struct ibv_qp_attr *attr,
- 	struct ibv_query_qp cmd;
- 
- 	return ibv_cmd_query_qp(qp, attr, attr_mask, init_attr,
--				&cmd, sizeof cmd);
-+				&cmd, sizeof(cmd));
- }
- 
- static int rxe_modify_qp(struct ibv_qp *ibvqp,
-@@ -510,7 +507,7 @@ static int rxe_modify_qp(struct ibv_qp *ibvqp,
- {
- 	struct ibv_modify_qp cmd = {};
- 
--	return ibv_cmd_modify_qp(ibvqp, attr, attr_mask, &cmd, sizeof cmd);
-+	return ibv_cmd_modify_qp(ibvqp, attr, attr_mask, &cmd, sizeof(cmd));
- }
- 
- static int rxe_destroy_qp(struct ibv_qp *ibv_qp)
-@@ -561,7 +558,7 @@ static void convert_send_wr(struct rxe_send_wr *kwr, struct ibv_send_wr *uwr)
- 	kwr->send_flags		= uwr->send_flags;
- 	kwr->ex.imm_data	= uwr->imm_data;
- 
--	switch(uwr->opcode) {
-+	switch (uwr->opcode) {
- 	case IBV_WR_RDMA_WRITE:
- 	case IBV_WR_RDMA_WRITE_WITH_IMM:
- 	case IBV_WR_RDMA_READ:
-@@ -688,7 +685,8 @@ static int post_send_db(struct ibv_qp *ibqp)
- }
- 
- /* this API does not make a distinction between
--   restartable and non-restartable errors */
-+ * restartable and non-restartable errors
-+ */
- static int rxe_post_send(struct ibv_qp *ibqp,
- 			 struct ibv_send_wr *wr_list,
- 			 struct ibv_send_wr **bad_wr)
-@@ -704,7 +702,7 @@ static int rxe_post_send(struct ibv_qp *ibqp,
- 	*bad_wr = NULL;
- 
- 	if (!sq || !wr_list || !sq->queue)
--	 	return EINVAL;
-+		return EINVAL;
- 
- 	pthread_spin_lock(&sq->lock);
- 
-@@ -792,7 +790,7 @@ static struct ibv_ah *rxe_create_ah(struct ibv_pd *pd, struct ibv_ah_attr *attr)
- 		return NULL;
- 	}
- 
--	ah = malloc(sizeof *ah);
-+	ah = malloc(sizeof(*ah));
- 	if (ah == NULL)
- 		return NULL;
- 
-@@ -875,8 +873,8 @@ static struct verbs_context *rxe_alloc_context(struct ibv_device *ibdev,
- 	if (!context)
- 		return NULL;
- 
--	if (ibv_cmd_get_context(&context->ibv_ctx, &cmd,
--				sizeof cmd, &resp, sizeof resp))
-+	if (ibv_cmd_get_context(&context->ibv_ctx, &cmd, sizeof(cmd),
-+				&resp, sizeof(resp)))
- 		goto out;
- 
- 	verbs_set_ops(&context->ibv_ctx, &rxe_ctx_ops);
-@@ -907,6 +905,7 @@ static void rxe_uninit_device(struct verbs_device *verbs_device)
- static struct verbs_device *rxe_device_alloc(struct verbs_sysfs_dev *sysfs_dev)
- {
- 	struct rxe_device *dev;
-+
- 	dev = calloc(1, sizeof(*dev));
- 	if (!dev)
- 		return NULL;
 -- 
 2.27.0
 
