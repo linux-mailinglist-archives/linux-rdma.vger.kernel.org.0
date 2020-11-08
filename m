@@ -2,106 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D37F2AAB11
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 Nov 2020 14:08:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF182AAB25
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 Nov 2020 14:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727949AbgKHNIu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 8 Nov 2020 08:08:50 -0500
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:5134 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726607AbgKHNIt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 8 Nov 2020 08:08:49 -0500
+        id S1726607AbgKHNWs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 8 Nov 2020 08:22:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728516AbgKHNUq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 8 Nov 2020 08:20:46 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C3CC0613D2
+        for <linux-rdma@vger.kernel.org>; Sun,  8 Nov 2020 05:20:36 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id cw8so8418249ejb.8
+        for <linux-rdma@vger.kernel.org>; Sun, 08 Nov 2020 05:20:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1604840928; x=1636376928;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=YEbDrFEzfEshk+AU1KE5yPLF2KWuAt3thzLX0wHMfxA=;
-  b=v4kj+fmVlbACIaffnc5LQtcYFp4pxqaoJEdaC8E15Js7ujHM2WMpDNv2
-   5ztxbeMBTyBRBav06Zq8vn8Z6X9zBVAxtH2OoA5BO5DK/26OhnouO/u+c
-   vdRRLyK990qLfpFYDAXEnqnT+g5+SKlVb8+cGJsVgSSIXZzwBB//gTJfa
-   s=;
-X-IronPort-AV: E=Sophos;i="5.77,461,1596499200"; 
-   d="scan'208";a="92981248"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-c300ac87.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 08 Nov 2020 13:08:42 +0000
-Received: from EX13D19EUB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-c300ac87.us-west-2.amazon.com (Postfix) with ESMTPS id 1F8D1A17B4;
-        Sun,  8 Nov 2020 13:03:54 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.55) by
- EX13D19EUB001.ant.amazon.com (10.43.166.229) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sun, 8 Nov 2020 13:03:50 +0000
-Subject: Re: [PATCH for-next] RDMA/nldev: Add parent bdf to device information
- dump
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Leon Romanovsky <leonro@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>
-References: <20201103132627.67642-1-galpress@amazon.com>
- <20201103134522.GL36674@ziepe.ca> <20201103135719.GK5429@unreal>
- <0825e1bf-f913-d2c1-ad3f-35ba3d6b75ef@amazon.com>
- <20201103142243.GM36674@ziepe.ca>
- <5e2208ab-9e87-56ae-bc38-5827637eb5be@amazon.com>
- <20201105200005.GJ36674@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <cd3f2926-0491-8540-d6b1-534014190bae@amazon.com>
-Date:   Sun, 8 Nov 2020 15:03:45 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.0
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DV1l8lmjvdgn+Y3g2/iau26JAUepjL4LV62fgjbVGoM=;
+        b=BP4VWh6O/zg9dh2ZJaQimN+pTUodjDDRmjvGP7d8/fP4FnZmKm22C4JJ2IcT0Io0GU
+         keGj5kx/o9ImWYyOb0FKrO0hMwc60p8V9XdokTycxYNFyQXL2UL40FqQzY3e0mHdSJrG
+         q1Mq3TMOD1LALZkd+uM2TK40eGqr7J1/A9Tj9a+SLX5gnPnXxeAJKk5XYvlXsey6V5+1
+         vhCnRq9+ol1sbBZaUQc/m2yELYxGJn1TasEo0Wm8USsolFOdHtHjDwa/+XUh/VV4Ellv
+         lQUWSeb0qCXv8Z+huv0Wh1L1HRmTA5S1Ph3lX8ZyNJXUT9LleQR54Uw3/xmJXFWTgF+s
+         pXbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DV1l8lmjvdgn+Y3g2/iau26JAUepjL4LV62fgjbVGoM=;
+        b=UDWpG5WqIBTs++lAqfwbEQxzvKXHEQDnbFkrmErYtULfZmbaghIO1HBy8jxZnlJpdc
+         S5G06Ugh/9voZahZiLCbbKw9WvoQ8TPcA+JtUqHcKtYmp1iyCXExNJP6D+DnrWLboPZr
+         LFjQJ3ysEEtTSO8BEpBdqrFcZD157YZn1uYQ0LecuE3WnSG8jQIgbbaNG3iYmEatjnik
+         ZZk+keLSdPE2oeu43TFOBdaSBc+C2CfwPq7Ipp2//hyJnvu3q6s6oSqJjZo9jYg5lN8C
+         NVlPo/amJKWRHPn8gCOKTWg4UO5/EicS0xsFi7bdzA4fl7d6b2cwLIEy3XI5zzXATkdW
+         uXhA==
+X-Gm-Message-State: AOAM533l5Nl3LlA/sff+CsHC4jVubBiQUnanfC4pab7XbO2NRULfI2as
+        SZRUB8XE354E+guifQujCTEib9Lla5ux4g==
+X-Google-Smtp-Source: ABdhPJw3EYvIUv06HcZz/EVYW2TAO594Gel4UqS3nJR/939yqMMfPzCA874wfZUx6MrpL6ypm1QA9Q==
+X-Received: by 2002:a17:906:1f85:: with SMTP id t5mr10528190ejr.352.1604841634637;
+        Sun, 08 Nov 2020 05:20:34 -0800 (PST)
+Received: from kheib-workstation.redhat.com ([77.137.92.108])
+        by smtp.gmail.com with ESMTPSA id s21sm6041384edc.42.2020.11.08.05.20.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Nov 2020 05:20:34 -0800 (PST)
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: [PATCH] RDMA/cxgb4: Validate the number of CQEs
+Date:   Sun,  8 Nov 2020 15:20:07 +0200
+Message-Id: <20201108132007.67537-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201105200005.GJ36674@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.55]
-X-ClientProxiedBy: EX13D42UWA001.ant.amazon.com (10.43.160.153) To
- EX13D19EUB001.ant.amazon.com (10.43.166.229)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 05/11/2020 22:00, Jason Gunthorpe wrote:
-> On Tue, Nov 03, 2020 at 05:45:26PM +0200, Gal Pressman wrote:
->> On 03/11/2020 16:22, Jason Gunthorpe wrote:
->>> On Tue, Nov 03, 2020 at 04:11:19PM +0200, Gal Pressman wrote:
->>>> On 03/11/2020 15:57, Leon Romanovsky wrote:
->>>>> On Tue, Nov 03, 2020 at 09:45:22AM -0400, Jason Gunthorpe wrote:
->>>>>> On Tue, Nov 03, 2020 at 03:26:27PM +0200, Gal Pressman wrote:
->>>>>>> Add the ability to query the device's bdf through rdma tool netlink
->>>>>>> command (in addition to the sysfs infra).
->>>>>>>
->>>>>>> In case of virtual devices (rxe/siw), the netdev bdf will be shown.
->>>>>>
->>>>>> Why? What is the use case?
->>>>>
->>>>> Right, and why isn't netdev (RDMA_NLDEV_ATTR_NDEV_NAME) enough?
->>>>
->>>> When taking system topology into consideration you need some way to pair the
->>>> ibdev and bdf, especially when working with multiple devices.
->>>> The netdev name doesn't exist on devices with no netdevs (IB, EFA).
->>>
->>> You are supposed to use sysfs
->>>
->>> /sys/class/infiniband/ibp0s9/device
->>>
->>> Should always be the physical device
->>>
->>>> Why rdma tool? Because it's more intuitive than sysfs.
->>>
->>> But we generally don't put this information into netlink BDF is just
->>> the start, you need all the other topology information to make sense
->>> of it, and all that is in sysfs only already
->>
->> As the commit message says, it's in addition to the device sysfs.
->>
->> Many (if not most) of the existing rdma netlink commands are duplicates of some
->> sysfs entries, but show it in a more "modern" way.
->> I'm not convinced that bdf should be treated differently.
-> 
-> Why did you call it BDF anyhow? it has nothing to do with PCI BDF
-> other than it happens to be the PDF for PCI devices. Netdev called
-> this bus_info
+Before create CQ, make sure that the requested number of CQEs is in the
+supported range.
 
-Are there non pci devices in the subsystem?
-I can rename to a more fitting name, will change to bus_info unless someone has
-a better idea.
+Fixes: cfdda9d76436 ("RDMA/cxgb4: Add driver for Chelsio T4 RNIC")
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+---
+ drivers/infiniband/hw/cxgb4/cq.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
+index 2cb65be24770..44c2416588d4 100644
+--- a/drivers/infiniband/hw/cxgb4/cq.c
++++ b/drivers/infiniband/hw/cxgb4/cq.c
+@@ -1008,6 +1008,9 @@ int c4iw_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	if (attr->flags)
+ 		return -EOPNOTSUPP;
+ 
++	if (entries < 1 || entries > ibdev->attrs.max_cqe)
++		return -EINVAL;
++
+ 	if (vector >= rhp->rdev.lldi.nciq)
+ 		return -EINVAL;
+ 
+-- 
+2.26.2
+
