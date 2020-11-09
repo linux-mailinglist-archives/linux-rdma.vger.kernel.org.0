@@ -2,146 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB9E2AC538
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Nov 2020 20:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 842342AC652
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Nov 2020 21:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729499AbgKITkY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Nov 2020 14:40:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55006 "EHLO
+        id S1729817AbgKIUwf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Nov 2020 15:52:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729987AbgKITkY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Nov 2020 14:40:24 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD3DC0613CF;
-        Mon,  9 Nov 2020 11:40:23 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id 7so2492910qtp.1;
-        Mon, 09 Nov 2020 11:40:23 -0800 (PST)
+        with ESMTP id S1725946AbgKIUwf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Nov 2020 15:52:35 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE9AC0613CF
+        for <linux-rdma@vger.kernel.org>; Mon,  9 Nov 2020 12:52:35 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id f93so7038048qtb.10
+        for <linux-rdma@vger.kernel.org>; Mon, 09 Nov 2020 12:52:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:from:to:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=tZiyGwrA/U2qRY5Er4ZTvmCWX7cI7UkuFpiSNzAINWs=;
-        b=HCB66DsW7QG7+z3rJgYiLrtMAjfEcptRTiMvhodOL5oUMXar/2XjN7kWsCADp1TW1H
-         +riTEeI1ZHIg8NLTV1GIir/pG/G/WBNINaFlQOYv5FYYmCBrmbMzsOEHs7ipPy24WDUA
-         qkBa0jJvKW0cjRbK/rv5YEn9YxLWfxTKVxXD3MDBO3/6ceEWjDW3Ayfj9KuJmFCadZnq
-         yc2pzMpuAfWZ7YrjUKrmSpVoeStkb2wAI8O7VYk+iSf61Ta/UAgcn8xlLvLFOpdD05fy
-         Bq56Rajl+mqMsQSsX8UYU/SCjXTgvoYUpu/3tzpWLixP6344FEzXU5Mlsan+laXb15kP
-         ofVQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=h+5AS1UAN6IG5itjeosMYs/x5pZ1pPVekrx/fUTSQGA=;
+        b=UAw9/1Oz58ga9K9N3oXk3xZcD/LnhKQyXgzvxSGqzkqbYZJHaNbAgARCUUxja1yFz2
+         WXhDVyEGvSWw0l/i8jhadaYHM4JsPvo4kTye05bihGmZwav0k6TbkqPM29fRpS/wsvWJ
+         MYXU4jOW8cTwqzhw3zlA7szl4ez/zp3y77+NGNO7YmpVtrqI1dIYL+f/69dgH4x2AQmQ
+         LH6R7/9IRhvsL20Q3sU2pslj7fLHM7sE1S4/5MZCoVGkeTRwqDzs/Rd24QpbUoLzKv4P
+         BbQT+YkgR84GsJXepnhv0T/qAcvDDg/m8GfxVGiND1m92TB1ekN32HnMtG3yYIrjardh
+         jkkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:from:to:date:message-id
-         :in-reply-to:references:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=tZiyGwrA/U2qRY5Er4ZTvmCWX7cI7UkuFpiSNzAINWs=;
-        b=IqN8lYI9sd3dSe1itpucK3Lde2+zNeaxySFJN3TZhg7YNINJR8Nfjn9XjRrzEJ3zz1
-         QQAbnqoyC5It3VmdirJQp6mR6ltra+hwtODFhyYx6c4a4lPZU4WaTx8Zj0HUE/CxtNa5
-         L3cKyoHcAIcXM8sFe+cJuog3GSmaIevv1R+sLFNyqowR5zWsnS+lRGu9nkTQGcHp7bC3
-         7bep5kDnpT0Tn/NgqaJFk1Vx/ZUs3c7wJ2D0yFmhFKSOD/ysaw0VqR0DFAEqCtoYb2RX
-         pFdOheMg4OhdwAwyXhukZYWqomc5ZgynJVqX7o0GPTWUS09rZIKxdfzYoZM5a2zOk/B6
-         3Eww==
-X-Gm-Message-State: AOAM532xZULUJE7TAWSZ27biRusk/m6vWhutlRUS3Q2AP6NBrUf5f6jZ
-        TTt9mF+f5r9Lc8EBB4syx1A/1N0jTaA=
-X-Google-Smtp-Source: ABdhPJxXeZdqAvdy03EdymlXrELK7hS8X/M6jknNHsQHsi9xhv8I8VexFtyWMJvxwl5s6aVYm4itRQ==
-X-Received: by 2002:ac8:5c50:: with SMTP id j16mr6458333qtj.306.1604950822069;
-        Mon, 09 Nov 2020 11:40:22 -0800 (PST)
-Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
-        by smtp.gmail.com with ESMTPSA id y14sm5070796qkj.56.2020.11.09.11.40.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Nov 2020 11:40:20 -0800 (PST)
-Sender: Chuck Lever <chucklever@gmail.com>
-Received: from manet.1015granger.net (manet.1015granger.net [192.168.1.51])
-        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id 0A9JeJfm021838;
-        Mon, 9 Nov 2020 19:40:19 GMT
-Subject: [PATCH v1 13/13] xprtrdma: Micro-optimize MR DMA-unmapping
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Date:   Mon, 09 Nov 2020 14:40:19 -0500
-Message-ID: <160495081970.2072548.8942608240215406369.stgit@manet.1015granger.net>
-In-Reply-To: <160495073877.2072548.16070760241273615384.stgit@manet.1015granger.net>
-References: <160495073877.2072548.16070760241273615384.stgit@manet.1015granger.net>
-User-Agent: StGit/0.23-29-ga622f1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=h+5AS1UAN6IG5itjeosMYs/x5pZ1pPVekrx/fUTSQGA=;
+        b=pFzEp0+yr4VsgTtsN5UWsCGiGAuEkZ6K1geTQ012FZBShZk20TqnJdEfLCTiE2YCHI
+         chvR3igyPj6D0hyf8bj34N8v38oMnVoo0biFwaPeMzOzm31KR46c7oZo4dmHuTogR1ER
+         KCZ67Wu2/cMamGxLDIgIg0COrRFJEUErL+hjNECKhvRJvHdz2Jf5xeMsWOq4yxS3tWxr
+         AxW7MN1YrJTViVwsSJsKF4qZu/Zjw25CoEUzu1ALKhmOQzJ/e/VL7ZB03cydwmDan3gx
+         axWFH7Hb4GtGUD67/tusi6ObfmqI4UD00H8CN/BDRmL5fOqTx2bfuK0RJKxpadW7BXj4
+         dxVA==
+X-Gm-Message-State: AOAM531flaucaeDrzGqs/05xOEffCppgw3pmJ80CRaoVy+fR4Lkw4nYv
+        43Hc7zzFVI70wDax6o3LjuA1RA==
+X-Google-Smtp-Source: ABdhPJywNymnP2MR+G1kl8vN/jM3BTl2P5r2jzpnYkweiQvO0UUHaB8V8tMztuoOxJHNPOz53DUzLA==
+X-Received: by 2002:ac8:1288:: with SMTP id y8mr14996277qti.177.1604955154334;
+        Mon, 09 Nov 2020 12:52:34 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id l3sm5075169qkj.114.2020.11.09.12.52.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 12:52:33 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kcE9Q-0026th-Pc; Mon, 09 Nov 2020 16:52:32 -0400
+Date:   Mon, 9 Nov 2020 16:52:32 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jianxin Xiong <jianxin.xiong@intel.com>
+Cc:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: Re: [PATCH v9 4/5] RDMA/mlx5: Support dma-buf based userspace memory
+ region
+Message-ID: <20201109205232.GH244516@ziepe.ca>
+References: <1604949781-20735-1-git-send-email-jianxin.xiong@intel.com>
+ <1604949781-20735-5-git-send-email-jianxin.xiong@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604949781-20735-5-git-send-email-jianxin.xiong@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Now that rpcrdma_ep is no longer part of rpcrdma_xprt, there are
-four or five serial address dereferences needed to get to the
-IB device needed for DMA unmapping.
+On Mon, Nov 09, 2020 at 11:23:00AM -0800, Jianxin Xiong wrote:
+> @@ -1291,8 +1303,11 @@ static struct mlx5_ib_mr *reg_create(struct ib_mr *ibmr, struct ib_pd *pd,
+>  	int err;
+>  	bool pg_cap = !!(MLX5_CAP_GEN(dev->mdev, pg));
+>  
+> -	page_size =
+> -		mlx5_umem_find_best_pgsz(umem, mkc, log_page_size, 0, iova);
+> +	if (umem->is_dmabuf)
+> +		page_size = ib_umem_find_best_pgsz(umem, PAGE_SIZE, iova);
+> +	else
+> +		page_size = mlx5_umem_find_best_pgsz(umem, mkc, log_page_size,
+> +						     0, iova);
 
-Instead, let's use the same pattern that regbufs use: cache a
-pointer to the device in the MR, and use that as the indication
-that unmapping is necessary.
+Any place touching the sgl has to also hold the resv lock, and sgl
+might be NULL since an invalidation could come in at any time, eg
+before we get here.
 
-This also guarantees that the exact same device is used for DMA
-mapping and unmapping, even if the r_xprt's ep has been replaced. I
-don't think this can happen today, but future changes might break
-this assumption.
+You can avoid those problems by ingoring the SGL and hard wiring
+PAGE_SIZE here
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- net/sunrpc/xprtrdma/frwr_ops.c  |   12 ++++++------
- net/sunrpc/xprtrdma/xprt_rdma.h |    1 +
- 2 files changed, 7 insertions(+), 6 deletions(-)
+> +static int pagefault_dmabuf_mr(struct mlx5_ib_mr *mr, size_t bcnt,
+> +			       u32 *bytes_mapped, u32 flags)
+> +{
+> +	struct ib_umem_dmabuf *umem_dmabuf = to_ib_umem_dmabuf(mr->umem);
+> +	u32 xlt_flags = 0;
+> +	int err;
+> +
+> +	if (flags & MLX5_PF_FLAGS_ENABLE)
+> +		xlt_flags |= MLX5_IB_UPD_XLT_ENABLE;
+> +
+> +	dma_resv_lock(umem_dmabuf->attach->dmabuf->resv, NULL);
+> +	err = ib_umem_dmabuf_map_pages(umem_dmabuf);
+> +	if (!err)
+> +		err = mlx5_ib_update_mr_pas(mr, xlt_flags);
 
-diff --git a/net/sunrpc/xprtrdma/frwr_ops.c b/net/sunrpc/xprtrdma/frwr_ops.c
-index e93b3457b958..baca49fe83af 100644
---- a/net/sunrpc/xprtrdma/frwr_ops.c
-+++ b/net/sunrpc/xprtrdma/frwr_ops.c
-@@ -67,11 +67,11 @@ void frwr_release_mr(struct rpcrdma_mr *mr)
- 
- static void frwr_mr_unmap(struct rpcrdma_xprt *r_xprt, struct rpcrdma_mr *mr)
- {
--	if (mr->mr_dir != DMA_NONE) {
-+	if (mr->mr_device) {
- 		trace_xprtrdma_mr_unmap(mr);
--		ib_dma_unmap_sg(r_xprt->rx_ep->re_id->device,
--				mr->mr_sg, mr->mr_nents, mr->mr_dir);
--		mr->mr_dir = DMA_NONE;
-+		ib_dma_unmap_sg(mr->mr_device, mr->mr_sg, mr->mr_nents,
-+				mr->mr_dir);
-+		mr->mr_device = NULL;
- 	}
- }
- 
-@@ -145,7 +145,7 @@ int frwr_mr_init(struct rpcrdma_xprt *r_xprt, struct rpcrdma_mr *mr)
- 
- 	mr->mr_xprt = r_xprt;
- 	mr->frwr.fr_mr = frmr;
--	mr->mr_dir = DMA_NONE;
-+	mr->mr_device = NULL;
- 	INIT_LIST_HEAD(&mr->mr_list);
- 	init_completion(&mr->frwr.fr_linv_done);
- 
-@@ -330,6 +330,7 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt *r_xprt,
- 				  mr->mr_dir);
- 	if (!dma_nents)
- 		goto out_dmamap_err;
-+	mr->mr_device = ep->re_id->device;
- 
- 	ibmr = mr->frwr.fr_mr;
- 	n = ib_map_mr_sg(ibmr, mr->mr_sg, dma_nents, NULL, PAGE_SIZE);
-@@ -356,7 +357,6 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt *r_xprt,
- 	return seg;
- 
- out_dmamap_err:
--	mr->mr_dir = DMA_NONE;
- 	trace_xprtrdma_frwr_sgerr(mr, i);
- 	return ERR_PTR(-EIO);
- 
-diff --git a/net/sunrpc/xprtrdma/xprt_rdma.h b/net/sunrpc/xprtrdma/xprt_rdma.h
-index 6a45bf241ec0..94b28657aeeb 100644
---- a/net/sunrpc/xprtrdma/xprt_rdma.h
-+++ b/net/sunrpc/xprtrdma/xprt_rdma.h
-@@ -243,6 +243,7 @@ struct rpcrdma_req;
- struct rpcrdma_mr {
- 	struct list_head	mr_list;
- 	struct rpcrdma_req	*mr_req;
-+	struct ib_device	*mr_device;
- 	struct scatterlist	*mr_sg;
- 	int			mr_nents;
- 	enum dma_data_direction	mr_dir;
+This still has to call mlx5_umem_find_best_pgsz() each time the sgl
+changes to ensure it is still Ok. Just checking that 
 
+  mlx5_umem_find_best_pgsz() > PAGE_SIZE
 
+and then throwing away the value is OK
+
+Jason
