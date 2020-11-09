@@ -2,100 +2,184 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FBC12AC671
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Nov 2020 21:54:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 786322AC68A
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Nov 2020 22:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729336AbgKIUyy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Nov 2020 15:54:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727311AbgKIUyy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Nov 2020 15:54:54 -0500
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E88FC0613CF
-        for <linux-rdma@vger.kernel.org>; Mon,  9 Nov 2020 12:54:54 -0800 (PST)
-Received: by mail-qv1-xf42.google.com with SMTP id 13so4790837qvr.5
-        for <linux-rdma@vger.kernel.org>; Mon, 09 Nov 2020 12:54:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZWfCBVb6wdh86JJY+JHZAzKgRO6yO3kF5gcqfRdc/XE=;
-        b=RGQUc1i+sxmsUcaYRXj6AGhL/tSQvMOR9P2qRxJil9ZhV2V5Jlrh68grkfTk3yia7Z
-         Op3G0kIWOJBeqBGH849j2cmorhXN0c4cTgUnFwDeNpkjzUbMwM3x26eU3lmFAjCtQDbT
-         CLE6y/iV0nZxlmDI1pnKq8kH/17KcImqjYRyTUYmBHfVHXt64uuS9QS6vw6pKjsnfYzd
-         vuKihFEbwJoRF7kLTtJydJg5SSuBv50YcOJgVda3is0cb05vBS1U0d3d8ptg5thFCeY6
-         LotCkTumcfuFOECshfN3HAN1AEjiy5xXCde4oy3YKjD+LrZk29aDvkpVyRrAWCM2+sl4
-         9CPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZWfCBVb6wdh86JJY+JHZAzKgRO6yO3kF5gcqfRdc/XE=;
-        b=og7MJDdg9LY738CHaVuuiYRLZ8ikgelOairsb7LEo8b8xXlLFZxmzQdmmGEkkiSnc8
-         RBQ8y46SF2U+DTid7xn7dj6bTUXlbz3YYRjJGKoQ+7BgRCIWcFn2kaydI15aF9BnPUh9
-         HmYDlmYeuw+2Jb3ixVzDJu3w6ib9FzHYgSqzLw7LgE9IVjwzVyx5Ta38kbc5ncJ50FUm
-         DrGXYypg/IlsGwxzC63z/W7e43whjiIGAauFGxTdJTXosNtDhuWC7+p5HhCnrPUmA2yc
-         QJ2BVeZ+BVdfZ786yYHd4Roc/nab7MEuyPIo4DpQQnYEEsz9BMGOfzo7M1DQy29ZIjqK
-         o9YQ==
-X-Gm-Message-State: AOAM533e6fk4OwKWg09W/uxnvs7Fx3Dm3AH8DVeaubyRlbNv231GvjKp
-        AhupuANiG/P4PkBUemHgs+AxzQ==
-X-Google-Smtp-Source: ABdhPJwgIkXIR1vtoQiV7Ey971G0RSO/aAn38DNq+nnoSmm43OB68r9Nhg47k7XxI4GCjc8Fx7VbdA==
-X-Received: by 2002:ad4:57a6:: with SMTP id g6mr6091574qvx.27.1604955293447;
-        Mon, 09 Nov 2020 12:54:53 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id x31sm6779466qtb.81.2020.11.09.12.54.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 12:54:52 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kcEBg-0026z5-47; Mon, 09 Nov 2020 16:54:52 -0400
-Date:   Mon, 9 Nov 2020 16:54:52 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Zhu Yanjun <yanjunz@nvidia.com>,
-        "Pearson, Robert B" <robert.pearson2@hpe.com>
-Subject: Re: [PATCH] RDMA/siw,rxe: Make emulated devices virtual in the
- device tree
-Message-ID: <20201109205452.GI244516@ziepe.ca>
-References: <0-v1-dcbfc68c4b4a+d6-virtual_dev_jgg@nvidia.com>
- <677434b0-7482-2a11-ae80-7f9f9563aad0@acm.org>
+        id S1729451AbgKIVFW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Nov 2020 16:05:22 -0500
+Received: from mga07.intel.com ([134.134.136.100]:56600 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729247AbgKIVFV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 9 Nov 2020 16:05:21 -0500
+IronPort-SDR: qzL2RIvJszHwZmr3g+MYRDv3XB2r2oIfYkPcDBPsufpiSV/66L+fDrEY1U1Ma3P2S7KB7+zVPC
+ RTZzHOF9TpVw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="234039162"
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
+   d="scan'208";a="234039162"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 13:05:20 -0800
+IronPort-SDR: N0+dCvm+cHkF0J7rUQyZ7iKd8wa0TLfRX6ljO7oo7mlSIG/KmEBMW32qm3ZscYUID6XfSUBABY
+ y3fHdb4ExBEw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
+   d="scan'208";a="327421739"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga006.jf.intel.com with ESMTP; 09 Nov 2020 13:05:20 -0800
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 9 Nov 2020 13:05:19 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 9 Nov 2020 13:05:19 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.108)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Mon, 9 Nov 2020 13:05:19 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hsBDn6Xb9iq45wLxcyJG0l6C1dsCLVLC2Cmv9sXlrZZwNvfvVhmQmiL2zO8sgfya54zHApEbpN3t8Y9y4AEDVhwD0MIfCCkzZ+JSEBmLzExqS2R2KjrJc+pP7sw6458jX5CJNmgnLdGfq2kK3LMX/tv0UUiYIBNnDFLdnvK2wYLvCSM5wzSfP/rnITGsKZIgw7ZxJ1AeRU6TIBNQWnKghfnAWgld8E5ZGICaGWSXFR08hmdc7nSb+qSYkulbw3Z5W3/hnzOw4jOfbFsWnU1uQxc0HxS4lfUqkOqsc7S5sDsMskJsKFS3C+LJFT9nKtadaxhGY+MCjhJQ9S4iUaGqdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=unvnIdBUAkEkuXjwTH6wevYPHtCfRXztsvEQJRN2R4g=;
+ b=aA+x4gBFNDI17IaKn6nRJ91WDFpbBRPsL66YjI2uPLbLtsTFRRHTZCufZGd3Gwah7gik9sPCmkh3JO3FpsOfyBUQ2gjC0QmQHSgprDyfbWQVKeLhpJcFehIrDw/8+/4pv4Q5d5fCKJmRDkgNMqvE9tqFLLlBuJmNaidaja2fx2Ma9nrH+KLLSEENoL4JpxUl3fFMHR+750fHoyhNE88f/65XopbR91PgUYhp8UTL0WqHehNsZbWKUaX4ebi+Bu2rJNWkmmWDJglMkLK2GMItP4fkz/BT0F7WxBCK6oxKHJ4HnLOAKWmnxibz6NhL5e+z7vKxTbJGBV/oLy2xjHJEQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=unvnIdBUAkEkuXjwTH6wevYPHtCfRXztsvEQJRN2R4g=;
+ b=o2h8XaJgBF5n8+P3cOr9ZAyYFH00Ya5OmNFi9Bo8CxmLpsR01T5h/D1RMP8lX93NYwesrg1LS7HJkw83w/smH4KIoPFJK8qO3yu2B7FCIRNx+LlFl3/DarfKdBac1tBlO/EnTKxQD0POkjgwjInG6bav1u6KU8bq1IIux7u/1Kk=
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
+ by MWHPR1101MB2142.namprd11.prod.outlook.com (2603:10b6:301:56::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.23; Mon, 9 Nov
+ 2020 21:05:17 +0000
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::7510:71a5:3cfe:ab94]) by MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::7510:71a5:3cfe:ab94%8]) with mapi id 15.20.3541.025; Mon, 9 Nov 2020
+ 21:05:16 +0000
+From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "Doug Ledford" <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "Sumit Semwal" <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>
+Subject: RE: [PATCH v9 4/5] RDMA/mlx5: Support dma-buf based userspace memory
+ region
+Thread-Topic: [PATCH v9 4/5] RDMA/mlx5: Support dma-buf based userspace memory
+ region
+Thread-Index: AQHWtsvaDlLuQ6V520WjdecNcH5E7qnARuUAgAACYgA=
+Date:   Mon, 9 Nov 2020 21:05:16 +0000
+Message-ID: <MW3PR11MB4555DC145B4286B512FB5F0CE5EA0@MW3PR11MB4555.namprd11.prod.outlook.com>
+References: <1604949781-20735-1-git-send-email-jianxin.xiong@intel.com>
+ <1604949781-20735-5-git-send-email-jianxin.xiong@intel.com>
+ <20201109205232.GH244516@ziepe.ca>
+In-Reply-To: <20201109205232.GH244516@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: ziepe.ca; dkim=none (message not signed)
+ header.d=none;ziepe.ca; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [73.53.14.45]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: dd12a60b-95fb-4d90-7770-08d884f328ca
+x-ms-traffictypediagnostic: MWHPR1101MB2142:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR1101MB21424BB19EDCC770970417ECE5EA0@MWHPR1101MB2142.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3826;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: edxANHCmchRmeA0mTFnP+xj7WopVl90i/s7fAShqoAB85HxlcJwxJw0UlAyy8X2bK2JW1i0B0M3p5hYBFlixM1NtEBuYYhRWoSCCNPIogx2s/040wVS6GE/5sBzda286MTReF9j5JiMpuRpry/+iPSPIq34gvoCUw5zOVICznaWlvYndOpLJLA31PgDrre5BcmZBMcLNDt0G+KzenEfe5XSpG7EGMNzBG1Pe1CY4uk4wEoXiN5+IdZlpN5EnQYkjZLkDW2VYqwwBA2VNKoQfAnG8Ye4kZqwbngjN/QlSnHkAhg3p+Gm6TmBbgXtPzi1GxBsxilED17YorZSaEBXx8A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(346002)(366004)(136003)(54906003)(86362001)(9686003)(8676002)(55016002)(83380400001)(2906002)(71200400001)(33656002)(66446008)(26005)(64756008)(53546011)(66556008)(478600001)(66476007)(6506007)(66946007)(7696005)(6916009)(5660300002)(8936002)(186003)(107886003)(76116006)(52536014)(316002)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: IGB/xIjHIgj2MIAtU2DoRgnYuAvYse7fPc4AAf1pGF4k600EirlYeSPqiN+9cgW2PCQ44t6by+rJXjrFYiyO611jZCd9heiDVD/2JjWbQvPwkmfKTCq/I6XbWxRSB6J9JDLok+XUz9Z9gvukAaN5gnzKB9rVHr7Ywkzw6Hh8J3q7UsJHai8UELMIxeVlvvB0PLxG/nWA2TQXOt9fYVY+RbbfX1nQMFfbk3rpSvSt3PII6Mive+psrbSi0Y1sRwo00AFN6hBF/zuX1E1SM+ZKwTj058Y/TKq6vtwjFzB5poJi0htU02yDkiP1Wh+aAvznLTUcQyy79drO2xj1E1DtWN+xQZX9ur/C8WWE92qo6/ytSxU2sI/anUqju36kF6GdYtS2X8YJmWgFqfSXXqKLC9TLLsh/d2eMXH+XOL2RGcU8EeNSgudz6MOlzaQ5ag4KlpVelC3xAE18ww0ciWgtfCn3id6PU4e9Z3PJJe8+IJa7I4I5NbilvPuZyHsqLPbdylyiwzt3KJYJ2gshJc/pX4DvGCn0qVslEGUFSqVvkQF/e/ldR2h5nNYNUi/BFXH8VL6fMSoUfuUGe6IL3/efc8MRFQ0+H8T9Olm1xD2wq0X9L88+zUIbSCv3Bu/ZDDkQCfxf8DA9jL8MlFXNDLt4y1ytSOU30OP+JqLgmfJZGo5nAm6t4aqFjaq21234GTKqX4I+N5Aklx/SzxnB4Rame8uA5KfRVwtbSbEI2hEsmSWfainyWxevB/Y9rzId+C1Dz1rHRfxVgptAz54XY+1x9uSs42UvLWNdzREfpFK/OZA9jaCPmjHvibE7rXspLe1rIwIy/EKOMde/UhzUa/mR/fcv00T18TyPq4j45uKWd2JhEPyoNHFwvlJgX85CcUHDorm1OftcNRjyPnSm6gvw0w==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <677434b0-7482-2a11-ae80-7f9f9563aad0@acm.org>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd12a60b-95fb-4d90-7770-08d884f328ca
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Nov 2020 21:05:16.7031
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tSvVxF21JqRJeCOb10EglCboTBPRK9SGJrn6omwsUksWkC3+H8EQDOErBe4AWV+EYuyxoHJElhRRic03xjPWDg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2142
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 05:04:24PM -0800, Bart Van Assche wrote:
-> On 11/6/20 6:00 AM, Jason Gunthorpe wrote:
-> > This moves siw and rxe to be virtual devices in the device tree:
-> > 
-> > lrwxrwxrwx 1 root root 0 Nov  6 13:55 /sys/class/infiniband/rxe0 -> ../../devices/virtual/infiniband/rxe0/
-> > 
-> > Previously they were trying to parent themselves to the physical device of
-> > their attached netdev, which doesn't make alot of sense.
-> > 
-> > My hope is this will solve some weird syzkaller hits related to sysfs as
-> > it could be possible that the parent of a netdev is another netdev, eg
-> > under bonding or some other syzkaller found netdev configuration.
-> > 
-> > Nesting a ib_device under anything but a physical device is going to cause
-> > inconsistencies in sysfs during destructions.
-> 
-> Hi Jason,
-> 
-> I do not know enough about the code touched by this patch to comment on
-> the patch itself. But I expect that the blktests code will have to be
-> modified to compensate for this change. How to translate the name of a
-> virtual RDMA device into a netdev device with this patch applied?
+> -----Original Message-----
+> From: Jason Gunthorpe <jgg@ziepe.ca>
+> Sent: Monday, November 09, 2020 12:53 PM
+> To: Xiong, Jianxin <jianxin.xiong@intel.com>
+> Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org; Doug Led=
+ford <dledford@redhat.com>; Leon Romanovsky
+> <leon@kernel.org>; Sumit Semwal <sumit.semwal@linaro.org>; Christian Koen=
+ig <christian.koenig@amd.com>; Vetter, Daniel
+> <daniel.vetter@intel.com>
+> Subject: Re: [PATCH v9 4/5] RDMA/mlx5: Support dma-buf based userspace me=
+mory region
+>=20
+> On Mon, Nov 09, 2020 at 11:23:00AM -0800, Jianxin Xiong wrote:
+> > @@ -1291,8 +1303,11 @@ static struct mlx5_ib_mr *reg_create(struct ib_m=
+r *ibmr, struct ib_pd *pd,
+> >  	int err;
+> >  	bool pg_cap =3D !!(MLX5_CAP_GEN(dev->mdev, pg));
+> >
+> > -	page_size =3D
+> > -		mlx5_umem_find_best_pgsz(umem, mkc, log_page_size, 0, iova);
+> > +	if (umem->is_dmabuf)
+> > +		page_size =3D ib_umem_find_best_pgsz(umem, PAGE_SIZE, iova);
+> > +	else
+> > +		page_size =3D mlx5_umem_find_best_pgsz(umem, mkc, log_page_size,
+> > +						     0, iova);
+>=20
+> Any place touching the sgl has to also hold the resv lock, and sgl might =
+be NULL since an invalidation could come in at any time, eg before
+> we get here.
+>=20
+> You can avoid those problems by ingoring the SGL and hard wiring PAGE_SIZ=
+E here
+>=20
+> > +static int pagefault_dmabuf_mr(struct mlx5_ib_mr *mr, size_t bcnt,
+> > +			       u32 *bytes_mapped, u32 flags) {
+> > +	struct ib_umem_dmabuf *umem_dmabuf =3D to_ib_umem_dmabuf(mr->umem);
+> > +	u32 xlt_flags =3D 0;
+> > +	int err;
+> > +
+> > +	if (flags & MLX5_PF_FLAGS_ENABLE)
+> > +		xlt_flags |=3D MLX5_IB_UPD_XLT_ENABLE;
+> > +
+> > +	dma_resv_lock(umem_dmabuf->attach->dmabuf->resv, NULL);
+> > +	err =3D ib_umem_dmabuf_map_pages(umem_dmabuf);
+> > +	if (!err)
+> > +		err =3D mlx5_ib_update_mr_pas(mr, xlt_flags);
+>=20
+> This still has to call mlx5_umem_find_best_pgsz() each time the sgl chang=
+es to ensure it is still Ok. Just checking that
+>=20
+>   mlx5_umem_find_best_pgsz() > PAGE_SIZE
+>=20
+> and then throwing away the value is OK
 
-$ rdma link
-link rxe0/1 state ACTIVE physical_state LINK_UP netdev eth1 
+ib_umem_find_best_pgsz() is already called inside ib_umem_dmabuf_map_pages(=
+). Do we
+still need to call mlx5_umem_find_best_pgsz() here?
 
-Is the correct way
-
-Jason
+>=20
+> Jason
