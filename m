@@ -2,56 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5522C017C
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Nov 2020 09:36:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E986F2C087D
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Nov 2020 14:16:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727554AbgKWIdh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Nov 2020 03:33:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60280 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726932AbgKWIdh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Nov 2020 03:33:37 -0500
-Received: from localhost (searspoint.nvidia.com [216.228.112.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1512920727;
-        Mon, 23 Nov 2020 08:33:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606120416;
-        bh=a2+ogxVdQiPbMwZhmq+HnxOUJdTmD4FwYgbSmUV37hM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SR9s3HrkDsPo/IeaWrDy0WhZh05L2y99+8oRLB4+G1UjFhjS+Whkfeytbsqy/2Oso
-         JstxKyEVaJebN6WANbtzpMKDAAb/4flC9SRDvg4Wccoz3hfAV1qioEYzXGtLdmDGwD
-         lLiOvWhOzOwux+lKQCwtjUjtTRNqRtQz1NUG4fow=
-Date:   Mon, 23 Nov 2020 10:33:32 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 050/141] RDMA/mlx5: Fix fall-through warnings for Clang
-Message-ID: <20201123083332.GC3159@unreal>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <2b0c87362bc86f6adfe56a5a6685837b71022bbf.1605896059.git.gustavoars@kernel.org>
+        id S1732543AbgKWMwO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 23 Nov 2020 07:52:14 -0500
+Received: from sw73-70-41.adsl.seed.net.tw ([203.73.70.41]:45388 "EHLO
+        oa.trendtek.com.tw" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S2387650AbgKWMvs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Nov 2020 07:51:48 -0500
+Received: from [156.96.44.214] ([156.96.44.214])
+        (authenticated bits=0)
+        by oa.trendtek.com.tw (8.13.8/8.13.1) with ESMTP id 0AACGp4J001402
+        for <linux-rdma@vger.kernel.org>; Tue, 10 Nov 2020 20:17:18 +0800
+Message-Id: <202011101217.0AACGp4J001402@oa.trendtek.com.tw>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2b0c87362bc86f6adfe56a5a6685837b71022bbf.1605896059.git.gustavoars@kernel.org>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Corporate and Personal Loan+
+To:     linux-rdma@vger.kernel.org
+From:   "Investment  Corporate" <financialcapability6@gmail.com>
+Date:   Tue, 10 Nov 2020 04:17:14 -0800
+Reply-To: hmurrah39@gmail.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 12:31:49PM -0600, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> by explicitly adding the new pseudo-keyword fallthrough; instead of
-> letting the code fall through to the next case.
->
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/infiniband/hw/mlx5/qp.c | 1 +
->  1 file changed, 1 insertion(+)
->
+Hello linux-rdma@vger.kernel.org
 
-Thanks,
-Acked-by: Leon Romanovsky <leonro@nvidia.com>
+
+We are Base Investment Company offering Corporate and Personal Loan at 3% Interest Rate for a duration of 10Years.
+
+
+We also pay 1% commission to brokers, who introduce project owners for finance or other opportunities.
+
+
+Please get back to me if you are interested for more
+
+details.
+
+
+Yours faithfully,
+
+Hashim Murrah
