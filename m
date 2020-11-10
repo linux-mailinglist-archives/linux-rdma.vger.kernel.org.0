@@ -2,122 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBB62AD72B
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Nov 2020 14:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AEA32AD7DD
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Nov 2020 14:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731017AbgKJNMe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Nov 2020 08:12:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49406 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730368AbgKJNMd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:12:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605013952;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2V11rFQ3FKVTN+koXAVvig/bkOvKVZoOl9jWSSiZ8Ik=;
-        b=Di+p8tHpuaV5rtMlatp24D6j8+WKmCUBtqz8yv0zCEdrS6sGXtBKp/ajiNQKnRgk1iVbBf
-        EPgPhQ0oDcmNLweqKLA2uf1G287zKEdUoDcJ+SAJtNZ7ElvnOQlZ77m+OxtwtGg6hoPAvK
-        H8JUZjK8UjW7EnlIU91t9XZBpHRi/X8=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-166-mwDFq6FBNuqzqVFykYKdNQ-1; Tue, 10 Nov 2020 08:12:30 -0500
-X-MC-Unique: mwDFq6FBNuqzqVFykYKdNQ-1
-Received: by mail-qv1-f69.google.com with SMTP id dd7so8002753qvb.6
-        for <linux-rdma@vger.kernel.org>; Tue, 10 Nov 2020 05:12:30 -0800 (PST)
+        id S1730897AbgKJNlZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Nov 2020 08:41:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730373AbgKJNlZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Nov 2020 08:41:25 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408A0C0613CF
+        for <linux-rdma@vger.kernel.org>; Tue, 10 Nov 2020 05:41:25 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id q7so2025929qvt.12
+        for <linux-rdma@vger.kernel.org>; Tue, 10 Nov 2020 05:41:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SMCHyYQ6JN9Tw0XiHQc2rDlJH0TI4VqmvKvthC2CIQo=;
+        b=OCcwk+EfYsFc0zbPWbQlZCdovJ5r7vn1vHdvzvoL/UWKmlYslSF9eAmLtPTmnAUBQO
+         Qf2usvs7bXO0BJvObaGGcjlH9a7PJzvQCxHzY7/E4AVAw9HV8yNBFM1UmPAFJakZH0FM
+         TH6CV5NYH9Gt80G7DsbbpwROkL+hBYsxNPVT8bfiRw765UligGYKBNZCHBPptQssAnBR
+         KJpx6mxFIMFtclsMYzJe+M3fq+2g8mOGuX+blJzKFfTdz8qvubfR9EsMIkXG4woDyIvn
+         tw/m1xTI0lAET+5mrrpl78782S69qP0knd/pQDtyzERkFK5pLhhBIP6vdbJl/L6x6WdP
+         92MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=2V11rFQ3FKVTN+koXAVvig/bkOvKVZoOl9jWSSiZ8Ik=;
-        b=Sq8zGsXAXW/XUnm9DlFAuDk2gP+AwyEb9nxwNnNLn/v2IMC5qgnICNRWCe5PMf2q+u
-         Ce7n/pCM2WvkUGxDgYkRWwrSVV73m7o5YhrolfatXYpKN5ZUAGN30xlRIP4SOcodLmml
-         k8sJ5zG8LY36qf7W7je/kFaYGmsFbtF0hmtsaxpAk/DVNpetyNMD3gg6vnE9cN65bXSr
-         zM+Hhh3d28jF2MmcWIC3UTiyoumkZEQxD+WkyWAbkRj6CVCYh++60KNK+VZKiTf978ez
-         Ttzogk66F2lU8BIBqFqFF3y5P8ZwDgVYjizzE7bZUAWY9UgJsNN4SYpWHi8b5Q0l6yH7
-         kelg==
-X-Gm-Message-State: AOAM530xEVMmBcJ6mFhtDHDghF6NOwO1TNgMwX4SNohhAiR8shpUeL7Y
-        Rn5iGSFGIqnSPtX+0Hkt/JPFTRnBE0bP8662/toP5gi+9kSE9OTVNVPwd3f0tFSlkXRxKxT5mji
-        L1tvyubPycAzreKUsgHC3wg==
-X-Received: by 2002:ac8:3621:: with SMTP id m30mr8787092qtb.168.1605013950431;
-        Tue, 10 Nov 2020 05:12:30 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyRnI1rUF5eW2rST1vImtIogpOlMRBum2fO0dVCe+zUlRqVIaRBqmVo31rjlhOk2kmW2Hr8dQ==
-X-Received: by 2002:ac8:3621:: with SMTP id m30mr8787064qtb.168.1605013950178;
-        Tue, 10 Nov 2020 05:12:30 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id e8sm7658678qti.28.2020.11.10.05.12.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 05:12:29 -0800 (PST)
-Subject: Re: Subject: [RFC] clang tooling cleanups
-To:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, cocci <cocci@systeme.lip6.fr>
-Cc:     linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        qat-linux@intel.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
-        netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org,
-        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
-References: <20201027164255.1573301-1-trix@redhat.com>
- <3c39c363690d0b46069afddc3ad09213011e5cd4.camel@perches.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <cc512954-2e1d-a165-f1f1-2c489fd6d3a9@redhat.com>
-Date:   Tue, 10 Nov 2020 05:12:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SMCHyYQ6JN9Tw0XiHQc2rDlJH0TI4VqmvKvthC2CIQo=;
+        b=hcOq3b59fxhH2PwKepATN3vb+mEJJdo1XGVMfiPZqr6N/BQp6T5s4S24gXfxW7OI61
+         ooy25zWuy/8HXo5wYVjIMYlLJF8Gt4e1tRxCSeiVcJIyaQ0kvWZ/8SEtzbwHoz/8COG+
+         bv8YvWado8Wg0vsehX+45Lnbf6SLjsBx4yXbK6I7rUWQu1UQbFaLWAXGUmYW2QZVrVKx
+         3uvMJXre4s9kmiTywk7ECAhFn7bBL9Ha+ks5SN39t4AV75+a2myhBl+o5LVUlmPtitfC
+         pwVdWjFrT3GB+BF3vuPybLGtHKYqjQ056yMudR7o0js2qeV9wBYbHKx/zh+vpG93Fbnt
+         z2Vw==
+X-Gm-Message-State: AOAM533xnrKVg5VoypXEqpn3LoR2zOaF37cbuw23aj3JCsHYOiwMa/z2
+        ty7m4nxl8ZMnBy+cnT344KuGfg==
+X-Google-Smtp-Source: ABdhPJyaqyWhKjcmKRSgzo9QlgovWPTAP/Cc1vROwqTLo9mTPpzC7s+L4Vb9sR+VQ2BfGpFgHxDOwA==
+X-Received: by 2002:a0c:a5a2:: with SMTP id z31mr20236933qvz.15.1605015684496;
+        Tue, 10 Nov 2020 05:41:24 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id e18sm8018950qtc.39.2020.11.10.05.41.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 05:41:23 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kcTti-002Q93-Uy; Tue, 10 Nov 2020 09:41:22 -0400
+Date:   Tue, 10 Nov 2020 09:41:22 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next] RDMA/nldev: Add parent bdf to device
+ information dump
+Message-ID: <20201110134122.GL244516@ziepe.ca>
+References: <20201103135719.GK5429@unreal>
+ <0825e1bf-f913-d2c1-ad3f-35ba3d6b75ef@amazon.com>
+ <20201103142243.GM36674@ziepe.ca>
+ <5e2208ab-9e87-56ae-bc38-5827637eb5be@amazon.com>
+ <20201105200005.GJ36674@ziepe.ca>
+ <cd3f2926-0491-8540-d6b1-534014190bae@amazon.com>
+ <20201108234935.GC244516@ziepe.ca>
+ <7a9866b6-fa33-0b95-4bda-4c83112be369@amazon.com>
+ <20201109175700.GF244516@ziepe.ca>
+ <6c77ad03-db3b-a1f8-cd28-a744585ba26d@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <3c39c363690d0b46069afddc3ad09213011e5cd4.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6c77ad03-db3b-a1f8-cd28-a744585ba26d@amazon.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Nov 10, 2020 at 09:49:11AM +0200, Gal Pressman wrote:
+> On 09/11/2020 19:57, Jason Gunthorpe wrote:
+> > On Mon, Nov 09, 2020 at 11:03:47AM +0200, Gal Pressman wrote:
+> > 
+> >>> The thing is, is is still useless. You have to consult sysfs to
+> >>> understand what bus it is scoped on to do anything further with
+> >>> it. Can't just assume it is PCI.
+> >>
+> >> This can be solved with Parav's suggestion.
+> > 
+> > Now you are adding more stuff.
+> > 
+> > What is wrong with reading sysfs? sysfs is where topology information
+> > lives, why do we need to denormalize things?
+> 
+> And yet you have lspci so you don't have to dig through the sysfs files by hand
+> for that topology.
+> Please drop this patch.
 
-On 11/9/20 6:52 PM, Joe Perches wrote:
-> On Tue, 2020-10-27 at 09:42 -0700, trix@redhat.com wrote:
->> This rfc will describe
->> An upcoming treewide cleanup.
->> How clang tooling was used to programatically do the clean up.
->> Solicit opinions on how to generally use clang tooling.
->>
->> The clang warning -Wextra-semi-stmt produces about 10k warnings.
->> Reviewing these, a subset of semicolon after a switch looks safe to
->> fix all the time.  An example problem
->>
->> void foo(int a) {
->>      switch(a) {
->>      	       case 1:
->> 	       ...
->>      }; <--- extra semicolon
->> }
->>
->> Treewide, there are about 100 problems in 50 files for x86_64 allyesconfig.
->> These fixes will be the upcoming cleanup.
-> coccinelle already does some of these.
->
-> For instance: scripts/coccinelle/misc/semicolon.cocci
->
-> Perhaps some tool coordination can be done here as
-> coccinelle/checkpatch/clang/Lindent call all be used
-> to do some facet or another of these cleanup issues.
+If you want to add something to rdma tool it can read sysfs and disply it
 
-Thanks for pointing this out.
-
-I will take a look at it.
-
-Tom
-
->
->
-
+Jason
