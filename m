@@ -2,146 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC5A2ACA29
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Nov 2020 02:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 330152ACACD
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Nov 2020 02:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731188AbgKJBOA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Nov 2020 20:14:00 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:54746 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731095AbgKJBN7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Nov 2020 20:13:59 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604970836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UkwosGD4CNwpr5O4mn7FToWEjHCGounmVIqa5vjwzhQ=;
-        b=DRjXCHfaWTV+37wSriT1BjBgrVPE6jdQ5QSgYOIapfxJkFIwaFOAyxB9axkmnF7jwFoYyj
-        IwVALzvZ0PuA7RxNph9leDCS6B9rTa4rL3nKcIBy/Am24PTMh01e/A2SQWp6LTkOQfBaj6
-        TPNYDFf29DCqNiv3sgD8nE6enYeIlsYkCGyKDzwB1FGN01/Y3vKoJQtpchwkYWrvNb9W70
-        4PCnBA8S0oYM/XwkwwZotKzR9vmT9oC6FdGvh5lMI1bLUaS0qdB+ZPTGprUeJSBjnvH0Xv
-        xyRk7zOTS6b0OUuDBNt+X1xYcMB1KSB7gGowiPoSA5hPR5omsqQ5g20Kt4+uKg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604970836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UkwosGD4CNwpr5O4mn7FToWEjHCGounmVIqa5vjwzhQ=;
-        b=acv/dHWHYYmtT1/z0brDNSAmBtlvEk8c07ItXmS/RUDap25yEm8biO9jTMWItRsTlNRTeF
-        x/KI3sqvslL8SkDg==
-To:     ira.weiny@intel.com, Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
-        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
-        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
-        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH RFC PKS/PMEM 05/58] kmap: Introduce k[un]map_thread
-In-Reply-To: <20201009195033.3208459-6-ira.weiny@intel.com>
-References: <20201009195033.3208459-1-ira.weiny@intel.com> <20201009195033.3208459-6-ira.weiny@intel.com>
-Date:   Tue, 10 Nov 2020 02:13:56 +0100
-Message-ID: <87h7pyhv3f.fsf@nanos.tec.linutronix.de>
+        id S1729874AbgKJB6g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Nov 2020 20:58:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728607AbgKJB6f (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Nov 2020 20:58:35 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20FEC0613CF;
+        Mon,  9 Nov 2020 17:58:35 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id c80so12552250oib.2;
+        Mon, 09 Nov 2020 17:58:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DC8+tLhb9a8fMLxHpLtJ9VTDmC950bus6WDTnMhq6EI=;
+        b=Folh9NIKyaT4XVyUdc3Fy7l3SM0kW87zCzcF2vWHUeKWkjONGj1ZsU01wfRvmexy/l
+         Zrs1R90AN+JFbX3uoghO0qcRYwfIrapfe+PtnKWC8HIfGzD7x+y6NG5RGZIJADh7jbVk
+         jwnS/R1VTEYVllDo1hrGkhv9U8zoc6R6yvSVWWYUJNTpIS9llzZJwcC7O+qMSZrnund6
+         reTwOawFmbM+X0h0CyVZKFoHTlAl/iKmmTf9n4OT+71cMCcbLsWesPA/TqSAUfCJPO6K
+         0RKY137HHkNCZaAKi0nk23mtWagLh2Sv/k1L6fYRrohOkFG9kicrWWlrrDB1jmWEZaN+
+         dMxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DC8+tLhb9a8fMLxHpLtJ9VTDmC950bus6WDTnMhq6EI=;
+        b=kYQBppqdpXesT1zcRforDGOvl52PDDEDY72DGYtcLnZ4pH+GMzk5DzrLrF4yjXT2bT
+         sgcGUOXc52gQExF4SqC0/vyo922AMkd20PSuplK8nEwTh5JeN51ji6TyC+jcoKtly1pz
+         PTmESRajb6xsYSTth3lCzKctL501MpadLaneM7oP7UR4lo5WW88x1l6qy6uf+2ask+7B
+         74v/LtLh1/hL/McpjR6xm+Y6D91wDDnULW6oQ8Zy7HLIdWwByudOER+UM5hC5DpI67LI
+         WLESLjxrltt8IqGuDjvDwDPkVrDzizfoZpJnV15Y8vY5Y8y8vRReEUm/5fw1ZRDrY6vi
+         Rokg==
+X-Gm-Message-State: AOAM5322w2/F5Ura0I4vkZaMPiv7hRdxZfo2e5LD6AKfX4iTRvkq2a36
+        BQ4YZSkypn0qvpwE3xEABjnS6xx48TqDLeSklM8=
+X-Google-Smtp-Source: ABdhPJyndzSrsy63dd3cPba+mThUF2ZBAEHKGVYrvxzYJ06ov8mkQrwaX8KAh9RlKx1oHXZ1WMa3JWGAtFB8/wtc95Q=
+X-Received: by 2002:aca:ec97:: with SMTP id k145mr1373199oih.163.1604973515290;
+ Mon, 09 Nov 2020 17:58:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201107122617.55d0909c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <222b9c1b-9d60-22f3-6097-8abd651cc192@gmail.com> <CAD=hENdP8sJrBZ7uDEWtatZ3D6bKQY=wBKdM5NQ79xveohAnhQ@mail.gmail.com>
+ <20201109102518.6b3d92a5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201109102518.6b3d92a5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Tue, 10 Nov 2020 09:58:24 +0800
+Message-ID: <CAD=hENcAc8TZSeW1ba_BDiT7M7+HeyWUHSVwnFQjOi6vk5TPMQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] RDMA/rxe: Fetch skb packets from ethernet layer
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org, netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Ira,
-
-On Fri, Oct 09 2020 at 12:49, ira weiny wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+On Tue, Nov 10, 2020 at 2:25 AM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> To correctly support the semantics of kmap() with Kernel protection keys
-> (PKS), kmap() may be required to set the protections on multiple
-> processors (globally).  Enabling PKS globally can be very expensive
-> depending on the requested operation.  Furthermore, enabling a domain
-> globally reduces the protection afforded by PKS.
+> On Sun, 8 Nov 2020 13:27:32 +0800 Zhu Yanjun wrote:
+> > On Sun, Nov 8, 2020 at 1:24 PM Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
+> > > On Thu, 5 Nov 2020 19:12:01 +0800 Zhu Yanjun wrote:
+> > >
+> > > In the original design, in rx, skb packet would pass ethernet
+> > > layer and IP layer, eventually reach udp tunnel.
+> > >
+> > > Now rxe fetches the skb packets from the ethernet layer directly.
+> > > So this bypasses the IP and UDP layer. As such, the skb packets
+> > > are sent to the upper protocals directly from the ethernet layer.
+> > >
+> > > This increases bandwidth and decreases latency.
+> > >
+> > > Signed-off-by: Zhu Yanjun <yanjunz@nvidia.com>
+> > >
+> > >
+> > > Nope, no stealing UDP packets with some random rx handlers.
+> >
+> > Why? Is there any risks?
 >
-> Most kmap() (Aprox 209 of 229) callers use the map within a single thread and
-> have no need for the protection domain to be enabled globally.  However, the
-> remaining callers do not follow this pattern and, as best I can tell, expect
-> the mapping to be 'global' and available to any thread who may access the
-> mapping.[1]
+> Are there risks in layering violations? Yes.
 >
-> We don't anticipate global mappings to pmem, however in general there is a
-> danger in changing the semantics of kmap().  Effectively, this would cause an
-> unresolved page fault with little to no information about why the failure
-> occurred.
+> For example - you do absolutely no protocol parsing,
+
+Protocol parsing is in rxe driver.
+
+> checksum validation, only support IPv4, etc.
+
+Since only ipv4 is supported in rxe, if ipv6 is supported in rxe, I
+will add ipv6.
+
 >
-> To resolve this a number of options were considered.
+> Besides it also makes the code far less maintainable, rx_handler is a
+
+This rx_handler is also used in openvswitch and bridge.
+
+Zhu Yanjun
+
+> singleton, etc. etc.
 >
-> 1) Attempt to change all the thread local kmap() calls to kmap_atomic()[2]
-> 2) Introduce a flags parameter to kmap() to indicate if the mapping should be
->    global or not
-> 3) Change ~20 call sites to 'kmap_global()' to indicate that they require a
->    global enablement of the pages.
-> 4) Change ~209 call sites to 'kmap_thread()' to indicate that the mapping is to
->    be used within that thread of execution only
->
-> Option 1 is simply not feasible.  Option 2 would require all of the call sites
-> of kmap() to change.  Option 3 seems like a good minimal change but there is a
-> danger that new code may miss the semantic change of kmap() and not get the
-> behavior the developer intended.  Therefore, #4 was chosen.
-
-There is Option #5:
-
-Convert the thread local kmap() invocations to the proposed kmap_local()
-interface which is coming along [1].
-
-That solves a couple of issues:
-
- 1) It relieves the current kmap_atomic() usage sites from the implict
-    pagefault/preempt disable semantics which apply even when
-    CONFIG_HIGHMEM is disabled. kmap_local() still can be invoked from
-    atomic context.
-
- 2) Due to #1 it allows to replace the conditional usage of kmap() and
-    kmap_atomic() for purely thread local mappings.
-
- 3) It puts the burden on the HIGHMEM inflicted systems
-
- 4) It is actually more efficient for most of the pure thread local use
-    cases on HIGHMEM inflicted systems because it avoids the overhead of
-    the global lock and the potential kmap slot exhaustion. A potential
-    preemption will be more expensive, but that's not really the case we
-    want to optimize for.
-
- 5) It solves the RT issue vs. kmap_atomic()
-
-So instead of creating yet another variety of kmap() which is just
-scratching the particular PKRS itch, can we please consolidate all of
-that on the wider reaching kmap_local() approach?
-
-Thanks,
-
-        tglx
-     
-[1] https://lore.kernel.org/lkml/20201103092712.714480842@linutronix.de/
-
+> > > The tunnel socket is a correct approach.
