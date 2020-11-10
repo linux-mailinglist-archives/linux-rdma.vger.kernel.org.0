@@ -2,81 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602B82ADE35
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Nov 2020 19:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D65542AE00A
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Nov 2020 20:46:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgKJSY7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Nov 2020 13:24:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40986 "EHLO
+        id S1731670AbgKJTqk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Nov 2020 14:46:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726557AbgKJSY7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Nov 2020 13:24:59 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C137EC0613CF
-        for <linux-rdma@vger.kernel.org>; Tue, 10 Nov 2020 10:24:58 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id h15so12383841qkl.13
-        for <linux-rdma@vger.kernel.org>; Tue, 10 Nov 2020 10:24:58 -0800 (PST)
+        with ESMTP id S1725862AbgKJTqk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Nov 2020 14:46:40 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141B3C0613D1;
+        Tue, 10 Nov 2020 11:46:40 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id za3so19345930ejb.5;
+        Tue, 10 Nov 2020 11:46:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=V/6gfszAYVYz7DGAlmCLhZrUPfPuR0ZaUx8/0Zh3mv4=;
-        b=he1Nj7Bde/eHrsEsgHLWcPTNc6NIvkGB1gbHnK6donuOIoXYgDFeFCCZc7cZl2NspT
-         fJujzdISyoLw4UHNAhFIl+IYi5tgekNyDak6IbUChGGnS9H15tclPF4ROyEYs0CY2OjK
-         taiutvzPBDXbm9iq5sWzpjpie1r86dvWSPoWBVx/Ilw8pdrTbiaCm4QQPthezXmYM0T4
-         Kt7h2EAYJm67p4FuWWnzbZ35z3TZJmjRDJiq4ZuaJdesDybQ3zDt8GTSsSBNP3c4FpIp
-         1H8iBxDN3ODteGfxKs/ZWPGnxen67sJRjP+jZThnthZDUCZxUQIHPTDdYGBidkOFVZ1Q
-         mprA==
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=94xWn4igC2rRAAMu2z0THiSQOP5rKPvk0MjxLB0+gEY=;
+        b=iVYffJCCKWKLf191Owwu9ps45oJ7w9Nsd3V1GMUP0v9PMSJuKYCZC08k1fdQhTpfBx
+         ecNx1Vb53dVKtcylVvR26kuqYWfkLW244MXcqcKV6+yOHOBZKL3zJoBUyLShZqfrigN4
+         cV/3xMGsh2Wwno0jGtRaEIQolja5WheurLRzzTn856lrrBkuiYnVQCbeLrMQobxfzaHd
+         LrRvN/KJJsjW1D8ruoxpYri6L3wb4YFqT0ohJnvjXhlaRTv45TujBISx3sb6VI+tEFK/
+         cOEsfBW4bxqsFs6qMuHult0tFx8EAu6JUuroRdZB+gUzYTEBNKKqRXhTecSJmMcy3INT
+         WUlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=V/6gfszAYVYz7DGAlmCLhZrUPfPuR0ZaUx8/0Zh3mv4=;
-        b=fWiA8gRqjncLiDsCaotnkgepHSNGLyi+q57Fs19oyPirTx0dlXfDEe3zRBoFHJMZp1
-         ODIKjnIbb4cdLYjmuVN6rGxdlphjaLpqfPykQgG3SWQfaDLj/kEFZ30mHihMjm8hpPp7
-         8WGrHToTVse9qj5jdPJ6tssmcogekfvrif5meBNtAEGj4ZG/FJhAhL1cmTFaPOMWzg20
-         Si2FhQCerEmipUY/kUd2cPMWGjILz65GpOtcJTCEkqV7adF90nwSA4Aksw14kYlxjh3T
-         i/NMDhWLI7q+rwioG/NgZ02Uv7dUnYczXy6r3eTTBuyRCTPVpZGahPvpkZMuRaMwT5N1
-         zC+A==
-X-Gm-Message-State: AOAM531b7oLqei7XecpILo4nzYM/5jj30q8laezEDBiXXl0HobqdEC3r
-        TgKVcWjBzBU8mXhR6mqOenOM/dZML2TTmAK/
-X-Google-Smtp-Source: ABdhPJzz19HhPyWzqZngbcv2nAA59FArSMcikgJl6CZRIkRevopZW3P8DDqYW09sg4++17koU4C15g==
-X-Received: by 2002:a05:620a:100e:: with SMTP id z14mr19843501qkj.278.1605032697680;
-        Tue, 10 Nov 2020 10:24:57 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id p73sm1402540qka.79.2020.11.10.10.24.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 10:24:56 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kcYK8-002lRF-8F; Tue, 10 Nov 2020 14:24:56 -0400
-Date:   Tue, 10 Nov 2020 14:24:56 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Christian Koenig <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: UCX annual conference
-Message-ID: <20201110182456.GO244516@ziepe.ca>
+        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=94xWn4igC2rRAAMu2z0THiSQOP5rKPvk0MjxLB0+gEY=;
+        b=G1nTqed18XMGU/eKDlJ5M13INbTFXZB7nMtEtdNpM+6v6BoJEBaBKvbxt26W1LDIFQ
+         ToXrbv4fXTM8fudV3yhhkiaPQksSo4sb37QMQBeniwKwaqhsMJ7Yh1ySVY2RGYFbCMBD
+         bLRa5+NmfUMCzNQ6eoHZMiyrfUZ/maMTadAj90TtllvJA2NfuEgm8T22X6jizcEUu9d0
+         3+ZcNi+O4QDGaOMv0StQY82GgJQI8AYtnr6aqi9eHr/09M/VYDm4XZIe/w7LMfp7JxWn
+         8wcWnmgNuIUj8gp3FOKhIJN5r54UinIt2fYBKgb48idcxlcYK7O/ZBw+2zCJ/32ieqJz
+         YscQ==
+X-Gm-Message-State: AOAM532vHLq2I9eUEUOJ4I8eBZOnYNIihUO4QCPu8Bpgs6pvRPpeJrhp
+        O7ELBotVZxRNdBcHE0mH6eFq06fR5nZyXg==
+X-Google-Smtp-Source: ABdhPJyyiDTRA9Xdiopj0gYPnrIo3pXG4hJzhgyBoCLnKnknMPKS8uj57zFbZ3FbPjWaHnal/xUDFQ==
+X-Received: by 2002:a17:906:268c:: with SMTP id t12mr20832985ejc.377.1605037598523;
+        Tue, 10 Nov 2020 11:46:38 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f23:2800:895e:e59d:3602:de4b? (p200300ea8f232800895ee59d3602de4b.dip0.t-ipconnect.de. [2003:ea:8f23:2800:895e:e59d:3602:de4b])
+        by smtp.googlemail.com with ESMTPSA id n22sm11419876edr.11.2020.11.10.11.46.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 11:46:38 -0800 (PST)
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Subject: [PATCH net-next 0/5] net: switch further drivers to core
+ functionality for handling per-cpu byte/packet counters
+To:     Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Bj=c3=b8rn_Mork?= <bjorn@mork.no>,
+        Igor Mitsyanko <imitsyanko@quantenna.com>,
+        Sergey Matyukevich <geomatsi@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Oliver Neukum <oneukum@suse.com>,
+        Peter Korsgaard <jacmet@sunsite.dk>,
+        Steve Glendinning <steve.glendinning@shawell.net>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Jussi Kivilinna <jussi.kivilinna@iki.fi>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        Linux USB Mailing List <linux-usb@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>
+Message-ID: <5fbe3a1f-6625-eadc-b1c9-f76f78debb94@gmail.com>
+Date:   Tue, 10 Nov 2020 20:46:26 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-UCX is going to have their virtual conference a bit earlier this year,
-there is a couple of GPU and RDMA topics related to HPC networking on
-the agenda, particularly in day 1 that may be interesting to a broader
-audience.
+Switch further drivers to core functionality for handling per-cpu
+byte/packet counters.
+All changes are compile-tested only.
 
-The details are here:
+Heiner Kallweit (5):
+  IB/hfi1: switch to core handling of rx/tx byte/packet counters
+  qmi_wwan: switch to core handling of rx/tx byte/packet counters
+  qtnfmac: switch to core handling of rx/tx byte/packet counters
+  usbnet: switch to core handling of rx/tx byte/packet counters
+  net: usb: switch to dev_get_tstats64 and remove usbnet_get_stats64
+    alias
 
- https://github.com/openucx/ucx/wiki/UCF-Virtual-Workshop-2020
+ drivers/infiniband/hw/hfi1/driver.c           |  4 +-
+ drivers/infiniband/hw/hfi1/ipoib.h            | 27 -------
+ drivers/infiniband/hw/hfi1/ipoib_main.c       | 15 +---
+ drivers/infiniband/hw/hfi1/ipoib_tx.c         |  2 +-
+ drivers/net/usb/aqc111.c                      |  2 +-
+ drivers/net/usb/asix_devices.c                |  6 +-
+ drivers/net/usb/ax88172a.c                    |  2 +-
+ drivers/net/usb/ax88179_178a.c                |  2 +-
+ drivers/net/usb/cdc_mbim.c                    |  2 +-
+ drivers/net/usb/cdc_ncm.c                     |  2 +-
+ drivers/net/usb/dm9601.c                      |  2 +-
+ drivers/net/usb/int51x1.c                     |  2 +-
+ drivers/net/usb/mcs7830.c                     |  2 +-
+ drivers/net/usb/qmi_wwan.c                    | 41 +++-------
+ drivers/net/usb/rndis_host.c                  |  2 +-
+ drivers/net/usb/sierra_net.c                  |  2 +-
+ drivers/net/usb/smsc75xx.c                    |  2 +-
+ drivers/net/usb/smsc95xx.c                    |  2 +-
+ drivers/net/usb/sr9700.c                      |  2 +-
+ drivers/net/usb/sr9800.c                      |  2 +-
+ drivers/net/usb/usbnet.c                      | 23 ++----
+ drivers/net/wireless/quantenna/qtnfmac/core.c | 78 ++++---------------
+ drivers/net/wireless/quantenna/qtnfmac/core.h |  4 -
+ .../quantenna/qtnfmac/pcie/pearl_pcie.c       |  4 +-
+ .../quantenna/qtnfmac/pcie/topaz_pcie.c       |  4 +-
+ drivers/net/wireless/rndis_wlan.c             |  2 +-
+ include/linux/usb/usbnet.h                    |  4 -
+ 27 files changed, 59 insertions(+), 183 deletions(-)
 
-Attendance is free.
+-- 
+2.29.2
 
-UCX is a popular higher level communication library that is designed
-to provide functionality suitable for implementing popular HPC
-frameworks like MPI/SHMEM/GAS.
-
-Jason
