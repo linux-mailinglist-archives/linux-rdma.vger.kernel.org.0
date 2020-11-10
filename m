@@ -2,362 +2,247 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269E02AE026
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Nov 2020 20:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1512D2AE1AD
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Nov 2020 22:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731722AbgKJTvb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Nov 2020 14:51:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731613AbgKJTv3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Nov 2020 14:51:29 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D79DC0613D1;
-        Tue, 10 Nov 2020 11:51:29 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id o23so19373999ejn.11;
-        Tue, 10 Nov 2020 11:51:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=HH3eQpgACFc0U7/w0sEUlYSVeHEP4oODaS+YLEBlqzk=;
-        b=K7WBROx+NQYbR4nWTmYwYSoLBjquYRRNJUYANnNuVwBOfSGxffrEZsbRmOK4pFg+hV
-         h+2ALZaHn/SjgGHYjul25syEsCXxShqAk/Hza3VuOs8lPmK25OPtx6XH/CyV/z8aIyZU
-         sfc3yG2EQ9YjYcGvgsnP+LmEvtdlROiNwZ5Mck3wo+jHCeUnsKCK8e8jhnXfz6HywR9w
-         CTNZ3x43OsxB7vmXt/o+1y53Ponh0LRShKzgVKb2DTdZ0+axHWLaq5pJFWktcpT6dLb6
-         nOam/wXBAremig+CLzi/qYnWpbWOSz86uvvzNdjJpEnmkGtP1mATiiEbf0BQ7ZahoTHh
-         e+QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=HH3eQpgACFc0U7/w0sEUlYSVeHEP4oODaS+YLEBlqzk=;
-        b=h8De7nWNofLLkkpbYZSDAuhj98RCtgYGHAqEZYSNQau499UprdwXdGA6/cIGrQQNZZ
-         qWiLCCH32kszOjjIH8j8Dt8i8JGJJSDEFr0uUlt03eWJ9IsjyIeiHARTgBdc/InCO0Pm
-         wK3APlcxcDXTQkzJRCcRi4HX5BM53HpkbU2GGnAIa+o09RSIwuEgftvDsFaSkroC+xOF
-         hllm3mkZtGQV8l20iWeHP0jowrPr7ZkRc1/CwwmF+DlQXwLo4IVpkUF8/80C/PaFCBft
-         wzEQ1gk+aNqSjt+EjTbn0cW2kQIU10jd6EGf+wbtAZs51CbUFXbIQ6ZN94CGT4/ImP2p
-         CL7w==
-X-Gm-Message-State: AOAM533hnIra35zlN5xfW8SDS3WCQwfzim7x/a0P1MloopldhTXPcOF4
-        AEXFRy6GVnlun4NsEKbO0ws3TjbRXiotbA==
-X-Google-Smtp-Source: ABdhPJzOpD+iG/6Kqb/nWpvnuEymcgQb7LmaE3K2QMu6lKg5LMdkfUVDy7WhCeJrttpFy6FWM4Y/Ow==
-X-Received: by 2002:a17:906:f84f:: with SMTP id ks15mr20944652ejb.337.1605037887372;
-        Tue, 10 Nov 2020 11:51:27 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f23:2800:895e:e59d:3602:de4b? (p200300ea8f232800895ee59d3602de4b.dip0.t-ipconnect.de. [2003:ea:8f23:2800:895e:e59d:3602:de4b])
-        by smtp.googlemail.com with ESMTPSA id d23sm8595042edy.57.2020.11.10.11.51.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 11:51:26 -0800 (PST)
-Subject: [PATCH net-next 5/5] net: usb: switch to dev_get_tstats64 and remove
- usbnet_get_stats64 alias
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        id S1726688AbgKJV1X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Nov 2020 16:27:23 -0500
+Received: from mga12.intel.com ([192.55.52.136]:25656 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725862AbgKJV1X (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 10 Nov 2020 16:27:23 -0500
+IronPort-SDR: 7yQkiBZqtF9EuBZkc/dzecgrKoz/ydCiTZWPWsGTJqdOHmMnTZUSGB/pLAgNq3anxpuzlwEcHc
+ fl4QO9wEF99g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="149327790"
+X-IronPort-AV: E=Sophos;i="5.77,467,1596524400"; 
+   d="scan'208";a="149327790"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 13:27:22 -0800
+IronPort-SDR: K6svLRrH1wP+dR+CaGxZBhgp6Am7CEZyjdDAAy5Wa17UcoI3WokytPr0WBHfsRJ5Ktia5ikV9v
+ 3tjoOB5/7HDA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,467,1596524400"; 
+   d="scan'208";a="541500493"
+Received: from cst-dev.jf.intel.com ([10.23.221.69])
+  by orsmga005.jf.intel.com with ESMTP; 10 Nov 2020 13:27:22 -0800
+From:   Jianxin Xiong <jianxin.xiong@intel.com>
+To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Bj=c3=b8rn_Mork?= <bjorn@mork.no>,
-        Igor Mitsyanko <imitsyanko@quantenna.com>,
-        Sergey Matyukevich <geomatsi@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Oliver Neukum <oneukum@suse.com>,
-        Peter Korsgaard <jacmet@sunsite.dk>,
-        Steve Glendinning <steve.glendinning@shawell.net>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Jussi Kivilinna <jussi.kivilinna@iki.fi>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        linux-rdma@vger.kernel.org,
-        Linux USB Mailing List <linux-usb@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>
-References: <5fbe3a1f-6625-eadc-b1c9-f76f78debb94@gmail.com>
-Message-ID: <35569407-d028-ed00-bf2a-2fc572a938e9@gmail.com>
-Date:   Tue, 10 Nov 2020 20:51:03 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
-MIME-Version: 1.0
-In-Reply-To: <5fbe3a1f-6625-eadc-b1c9-f76f78debb94@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: [PATCH v10 0/6] RDMA: Add dma-buf support
+Date:   Tue, 10 Nov 2020 13:41:11 -0800
+Message-Id: <1605044477-51833-1-git-send-email-jianxin.xiong@intel.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Replace usbnet_get_stats64() with new identical core function
-dev_get_tstats64() in all users and remove usbnet_get_stats64().
+This is the tenth version of the patch set. Changelog:
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
----
- drivers/net/usb/aqc111.c          | 2 +-
- drivers/net/usb/asix_devices.c    | 6 +++---
- drivers/net/usb/ax88172a.c        | 2 +-
- drivers/net/usb/ax88179_178a.c    | 2 +-
- drivers/net/usb/cdc_mbim.c        | 2 +-
- drivers/net/usb/cdc_ncm.c         | 2 +-
- drivers/net/usb/dm9601.c          | 2 +-
- drivers/net/usb/int51x1.c         | 2 +-
- drivers/net/usb/mcs7830.c         | 2 +-
- drivers/net/usb/qmi_wwan.c        | 2 +-
- drivers/net/usb/rndis_host.c      | 2 +-
- drivers/net/usb/sierra_net.c      | 2 +-
- drivers/net/usb/smsc75xx.c        | 2 +-
- drivers/net/usb/smsc95xx.c        | 2 +-
- drivers/net/usb/sr9700.c          | 2 +-
- drivers/net/usb/sr9800.c          | 2 +-
- drivers/net/wireless/rndis_wlan.c | 2 +-
- include/linux/usb/usbnet.h        | 2 --
- 18 files changed, 19 insertions(+), 21 deletions(-)
+v10:
+* Don't map the pages in ib_umem_dmabuf_get(); use the size information
+  of the dma-buf object to validate the umem size instead
+* Use PAGE_SIZE directly instead of use ib_umem_find_best_pgsz() when
+  the MR is created since the pages have not been mapped yet and dma-buf
+  requires PAGE_SIZE anyway
+* Always call mlx5_umem_find_best_pgsz() after mapping the pages to
+  verify that the page size requirement is satisfied
+* Add a patch to document that dma-buf size is fixed
 
-diff --git a/drivers/net/usb/aqc111.c b/drivers/net/usb/aqc111.c
-index 0717c1801..73b97f4cc 100644
---- a/drivers/net/usb/aqc111.c
-+++ b/drivers/net/usb/aqc111.c
-@@ -641,7 +641,7 @@ static const struct net_device_ops aqc111_netdev_ops = {
- 	.ndo_stop		= usbnet_stop,
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_change_mtu		= aqc111_change_mtu,
- 	.ndo_set_mac_address	= aqc111_set_mac_addr,
- 	.ndo_validate_addr	= eth_validate_addr,
-diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
-index ef548beba..6e13d8165 100644
---- a/drivers/net/usb/asix_devices.c
-+++ b/drivers/net/usb/asix_devices.c
-@@ -194,7 +194,7 @@ static const struct net_device_ops ax88172_netdev_ops = {
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
- 	.ndo_change_mtu		= usbnet_change_mtu,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_set_mac_address 	= eth_mac_addr,
- 	.ndo_validate_addr	= eth_validate_addr,
- 	.ndo_do_ioctl		= asix_ioctl,
-@@ -580,7 +580,7 @@ static const struct net_device_ops ax88772_netdev_ops = {
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
- 	.ndo_change_mtu		= usbnet_change_mtu,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_set_mac_address 	= asix_set_mac_address,
- 	.ndo_validate_addr	= eth_validate_addr,
- 	.ndo_do_ioctl		= asix_ioctl,
-@@ -1050,7 +1050,7 @@ static const struct net_device_ops ax88178_netdev_ops = {
- 	.ndo_stop		= usbnet_stop,
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_set_mac_address 	= asix_set_mac_address,
- 	.ndo_validate_addr	= eth_validate_addr,
- 	.ndo_set_rx_mode	= asix_set_multicast,
-diff --git a/drivers/net/usb/ax88172a.c b/drivers/net/usb/ax88172a.c
-index fd3a04d98..b404c9462 100644
---- a/drivers/net/usb/ax88172a.c
-+++ b/drivers/net/usb/ax88172a.c
-@@ -120,7 +120,7 @@ static const struct net_device_ops ax88172a_netdev_ops = {
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
- 	.ndo_change_mtu		= usbnet_change_mtu,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_set_mac_address	= asix_set_mac_address,
- 	.ndo_validate_addr	= eth_validate_addr,
- 	.ndo_do_ioctl		= phy_do_ioctl_running,
-diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
-index 5541f3fae..d650b39b6 100644
---- a/drivers/net/usb/ax88179_178a.c
-+++ b/drivers/net/usb/ax88179_178a.c
-@@ -1031,7 +1031,7 @@ static const struct net_device_ops ax88179_netdev_ops = {
- 	.ndo_stop		= usbnet_stop,
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_change_mtu		= ax88179_change_mtu,
- 	.ndo_set_mac_address	= ax88179_set_mac_addr,
- 	.ndo_validate_addr	= eth_validate_addr,
-diff --git a/drivers/net/usb/cdc_mbim.c b/drivers/net/usb/cdc_mbim.c
-index eb100eb33..5db66272f 100644
---- a/drivers/net/usb/cdc_mbim.c
-+++ b/drivers/net/usb/cdc_mbim.c
-@@ -98,7 +98,7 @@ static const struct net_device_ops cdc_mbim_netdev_ops = {
- 	.ndo_stop             = usbnet_stop,
- 	.ndo_start_xmit       = usbnet_start_xmit,
- 	.ndo_tx_timeout       = usbnet_tx_timeout,
--	.ndo_get_stats64      = usbnet_get_stats64,
-+	.ndo_get_stats64      = dev_get_tstats64,
- 	.ndo_change_mtu       = cdc_ncm_change_mtu,
- 	.ndo_set_mac_address  = eth_mac_addr,
- 	.ndo_validate_addr    = eth_validate_addr,
-diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
-index e04f58853..abe1162dc 100644
---- a/drivers/net/usb/cdc_ncm.c
-+++ b/drivers/net/usb/cdc_ncm.c
-@@ -793,7 +793,7 @@ static const struct net_device_ops cdc_ncm_netdev_ops = {
- 	.ndo_start_xmit	     = usbnet_start_xmit,
- 	.ndo_tx_timeout	     = usbnet_tx_timeout,
- 	.ndo_set_rx_mode     = usbnet_set_rx_mode,
--	.ndo_get_stats64     = usbnet_get_stats64,
-+	.ndo_get_stats64     = dev_get_tstats64,
- 	.ndo_change_mtu	     = cdc_ncm_change_mtu,
- 	.ndo_set_mac_address = eth_mac_addr,
- 	.ndo_validate_addr   = eth_validate_addr,
-diff --git a/drivers/net/usb/dm9601.c b/drivers/net/usb/dm9601.c
-index 915ac75b5..b5d2ac55a 100644
---- a/drivers/net/usb/dm9601.c
-+++ b/drivers/net/usb/dm9601.c
-@@ -343,7 +343,7 @@ static const struct net_device_ops dm9601_netdev_ops = {
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
- 	.ndo_change_mtu		= usbnet_change_mtu,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_validate_addr	= eth_validate_addr,
- 	.ndo_do_ioctl 		= dm9601_ioctl,
- 	.ndo_set_rx_mode	= dm9601_set_multicast,
-diff --git a/drivers/net/usb/int51x1.c b/drivers/net/usb/int51x1.c
-index cb5bc1a7f..ed05f992c 100644
---- a/drivers/net/usb/int51x1.c
-+++ b/drivers/net/usb/int51x1.c
-@@ -133,7 +133,7 @@ static const struct net_device_ops int51x1_netdev_ops = {
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
- 	.ndo_change_mtu		= usbnet_change_mtu,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_set_mac_address	= eth_mac_addr,
- 	.ndo_validate_addr	= eth_validate_addr,
- 	.ndo_set_rx_mode	= int51x1_set_multicast,
-diff --git a/drivers/net/usb/mcs7830.c b/drivers/net/usb/mcs7830.c
-index 09bfa6a4d..fc512b780 100644
---- a/drivers/net/usb/mcs7830.c
-+++ b/drivers/net/usb/mcs7830.c
-@@ -462,7 +462,7 @@ static const struct net_device_ops mcs7830_netdev_ops = {
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
- 	.ndo_change_mtu		= usbnet_change_mtu,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_validate_addr	= eth_validate_addr,
- 	.ndo_do_ioctl 		= mcs7830_ioctl,
- 	.ndo_set_rx_mode	= mcs7830_set_multicast,
-diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
-index b9d74d9a7..afeb09b96 100644
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -575,7 +575,7 @@ static const struct net_device_ops qmi_wwan_netdev_ops = {
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
- 	.ndo_change_mtu		= usbnet_change_mtu,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_set_mac_address	= qmi_wwan_mac_addr,
- 	.ndo_validate_addr	= eth_validate_addr,
- };
-diff --git a/drivers/net/usb/rndis_host.c b/drivers/net/usb/rndis_host.c
-index 6fa7a009a..6609d21ef 100644
---- a/drivers/net/usb/rndis_host.c
-+++ b/drivers/net/usb/rndis_host.c
-@@ -279,7 +279,7 @@ static const struct net_device_ops rndis_netdev_ops = {
- 	.ndo_stop		= usbnet_stop,
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_set_mac_address 	= eth_mac_addr,
- 	.ndo_validate_addr	= eth_validate_addr,
- };
-diff --git a/drivers/net/usb/sierra_net.c b/drivers/net/usb/sierra_net.c
-index 0abd257b6..55a244eca 100644
---- a/drivers/net/usb/sierra_net.c
-+++ b/drivers/net/usb/sierra_net.c
-@@ -184,7 +184,7 @@ static const struct net_device_ops sierra_net_device_ops = {
- 	.ndo_start_xmit         = usbnet_start_xmit,
- 	.ndo_tx_timeout         = usbnet_tx_timeout,
- 	.ndo_change_mtu         = usbnet_change_mtu,
--	.ndo_get_stats64        = usbnet_get_stats64,
-+	.ndo_get_stats64        = dev_get_tstats64,
- 	.ndo_set_mac_address    = eth_mac_addr,
- 	.ndo_validate_addr      = eth_validate_addr,
- };
-diff --git a/drivers/net/usb/smsc75xx.c b/drivers/net/usb/smsc75xx.c
-index 8689835a5..4353b3702 100644
---- a/drivers/net/usb/smsc75xx.c
-+++ b/drivers/net/usb/smsc75xx.c
-@@ -1435,7 +1435,7 @@ static const struct net_device_ops smsc75xx_netdev_ops = {
- 	.ndo_stop		= usbnet_stop,
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_change_mtu		= smsc75xx_change_mtu,
- 	.ndo_set_mac_address 	= eth_mac_addr,
- 	.ndo_validate_addr	= eth_validate_addr,
-diff --git a/drivers/net/usb/smsc95xx.c b/drivers/net/usb/smsc95xx.c
-index ea0d5f04d..4c8ee1cff 100644
---- a/drivers/net/usb/smsc95xx.c
-+++ b/drivers/net/usb/smsc95xx.c
-@@ -1041,7 +1041,7 @@ static const struct net_device_ops smsc95xx_netdev_ops = {
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
- 	.ndo_change_mtu		= usbnet_change_mtu,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_set_mac_address 	= eth_mac_addr,
- 	.ndo_validate_addr	= eth_validate_addr,
- 	.ndo_do_ioctl 		= smsc95xx_ioctl,
-diff --git a/drivers/net/usb/sr9700.c b/drivers/net/usb/sr9700.c
-index e04c8054c..878557ad0 100644
---- a/drivers/net/usb/sr9700.c
-+++ b/drivers/net/usb/sr9700.c
-@@ -308,7 +308,7 @@ static const struct net_device_ops sr9700_netdev_ops = {
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
- 	.ndo_change_mtu		= usbnet_change_mtu,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_validate_addr	= eth_validate_addr,
- 	.ndo_do_ioctl		= sr9700_ioctl,
- 	.ndo_set_rx_mode	= sr9700_set_multicast,
-diff --git a/drivers/net/usb/sr9800.c b/drivers/net/usb/sr9800.c
-index 681e0def6..da56735d7 100644
---- a/drivers/net/usb/sr9800.c
-+++ b/drivers/net/usb/sr9800.c
-@@ -681,7 +681,7 @@ static const struct net_device_ops sr9800_netdev_ops = {
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
- 	.ndo_change_mtu		= usbnet_change_mtu,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_set_mac_address	= sr_set_mac_address,
- 	.ndo_validate_addr	= eth_validate_addr,
- 	.ndo_do_ioctl		= sr_ioctl,
-diff --git a/drivers/net/wireless/rndis_wlan.c b/drivers/net/wireless/rndis_wlan.c
-index 75b5d545b..9fe775568 100644
---- a/drivers/net/wireless/rndis_wlan.c
-+++ b/drivers/net/wireless/rndis_wlan.c
-@@ -3379,7 +3379,7 @@ static const struct net_device_ops rndis_wlan_netdev_ops = {
- 	.ndo_stop		= usbnet_stop,
- 	.ndo_start_xmit		= usbnet_start_xmit,
- 	.ndo_tx_timeout		= usbnet_tx_timeout,
--	.ndo_get_stats64	= usbnet_get_stats64,
-+	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_set_mac_address 	= eth_mac_addr,
- 	.ndo_validate_addr	= eth_validate_addr,
- 	.ndo_set_rx_mode	= rndis_wlan_set_multicast_list,
-diff --git a/include/linux/usb/usbnet.h b/include/linux/usb/usbnet.h
-index 1f6dfa977..88a767389 100644
---- a/include/linux/usb/usbnet.h
-+++ b/include/linux/usb/usbnet.h
-@@ -284,6 +284,4 @@ extern void usbnet_status_stop(struct usbnet *dev);
- 
- extern void usbnet_update_max_qlen(struct usbnet *dev);
- 
--#define usbnet_get_stats64 dev_get_tstats64
--
- #endif /* __LINUX_USB_USBNET_H */
+v9: https://www.spinics.net/lists/linux-rdma/msg97432.html
+* Clean up the code for sg list in-place modification
+* Prevent dma-buf pages from being mapped multiple times
+* Map the pages in ib_umem_dmabuf_get() so that inproper values of
+  address/length/iova can be caught early
+* Check for unsupported flags in the new uverbs command
+* Add missing uverbs_finalize_uobj_create()
+* Sort uverbs objects by name
+* Fix formating issue -- unnecessary alignment of '='
+* Unmap pages in mlx5_ib_fence_dmabuf_mr()
+* Remove address range checking from pagefault_dmabuf_mr()
+
+v8: https://www.spinics.net/lists/linux-rdma/msg97370.html
+* Modify the dma-buf sg list in place to get a proper umem sg list and
+  restore it before calling dma_buf_unmap_attachment()
+* Validate the umem sg list with ib_umem_find_best_pgsz()
+* Remove the logic for slicing the sg list at runtime
+
+v7: https://www.spinics.net/lists/linux-rdma/msg97297.html
+* Rebase on top of latest mlx5 MR patch series
+* Slice dma-buf sg list at runtime instead of creating a new list
+* Preload the buffer page mapping when the MR is created
+* Move the 'dma_virt_ops' check into dma_buf_dynamic_attach()
+
+v6: https://www.spinics.net/lists/linux-rdma/msg96923.html
+* Move the dma-buf invalidation callback from the core to the device
+  driver
+* Move mapping update from work queue to pagefault handler
+* Add dma-buf based MRs to the xarray of mmkeys so that the pagefault
+  handler can be reached
+* Update the new driver method and uverbs command signature by changing
+  the paramter 'addr' to 'offset'
+* Modify the sg list returned from dma_buf_map_attachment() based on
+  the parameters 'offset' and 'length'
+* Don't import dma-buf if 'dma_virt_ops' is used by the dma device
+* The patch that clarifies dma-buf sg lists alignment has landed at
+  https://cgit.freedesktop.org/drm/drm-misc/commit/?id=ac80cd17a615
+  and thus is no longer included with this set
+
+v5: https://www.spinics.net/lists/linux-rdma/msg96786.html
+* Fix a few warnings reported by kernel test robot:
+    - no previous prototype for function 'ib_umem_dmabuf_release' 
+    - no previous prototype for function 'ib_umem_dmabuf_map_pages'
+    - comparison of distinct pointer types in 'check_add_overflow'
+* Add comment for the wait between getting the dma-buf sg tagle and
+  updating the NIC page table
+
+v4: https://www.spinics.net/lists/linux-rdma/msg96767.html
+* Add a new ib_device method reg_user_mr_dmabuf() instead of expanding
+  the existing method reg_user_mr()
+* Use a separate code flow for dma-buf instead of adding special cases
+  to the ODP memory region code path
+* In invalidation callback, new mapping is updated as whole using work
+  queue instead of being updated in page granularity in the page fault
+  handler
+* Use dma_resv_get_excl() and dma_fence_wait() to ensure the content of
+  the pages have been moved to the new location before the new mapping
+  is programmed into the NIC
+* Add code to the ODP page fault handler to check the mapping status
+* The new access flag added in v3 is removed.
+* The checking for on-demand paging support in the new uverbs command
+  is removed because it is implied by implementing the new ib_device
+  method
+* Clarify that dma-buf sg lists are page aligned
+
+v3: https://www.spinics.net/lists/linux-rdma/msg96330.html
+* Use dma_buf_dynamic_attach() instead of dma_buf_attach()
+* Use on-demand paging mechanism to avoid pinning the GPU memory
+* Instead of adding a new parameter to the device method for memory
+  registration, pass all the attributes including the file descriptor
+  as a structure
+* Define a new access flag for dma-buf based memory region
+* Check for on-demand paging support in the new uverbs command
+
+v2: https://www.spinics.net/lists/linux-rdma/msg93643.html
+* The Kconfig option is removed. There is no dependence issue since
+  dma-buf driver is always enabled.
+* The declaration of new data structure and functions is reorganized to
+  minimize the visibility of the changes.
+* The new uverbs command now goes through ioctl() instead of write().
+* The rereg functionality is removed.
+* Instead of adding new device method for dma-buf specific registration,
+  existing method is extended to accept an extra parameter. 
+* The correct function is now used for address range checking. 
+
+v1: https://www.spinics.net/lists/linux-rdma/msg90720.html
+* The initial patch set
+* Implement core functions for importing and mapping dma-buf
+* Use dma-buf static attach interface
+* Add two ib_device methods reg_user_mr_fd() and rereg_user_mr_fd()
+* Add two uverbs commands via the write() interface
+* Add Kconfig option
+* Add dma-buf support to mlx5 device
+
+When enabled, an RDMA capable NIC can perform peer-to-peer transactions
+over PCIe to access the local memory located on another device. This can
+often lead to better performance than using a system memory buffer for
+RDMA and copying data between the buffer and device memory.
+
+Current kernel RDMA stack uses get_user_pages() to pin the physical
+pages backing the user buffer and uses dma_map_sg_attrs() to get the
+dma addresses for memory access. This usually doesn't work for peer
+device memory due to the lack of associated page structures.
+
+Several mechanisms exist today to facilitate device memory access.
+
+ZONE_DEVICE is a new zone for device memory in the memory management
+subsystem. It allows pages from device memory being described with
+specialized page structures, but what can be done with these page
+structures may be different from system memory. ZONE_DEVICE is further
+specialized into multiple memory types, such as one type for PCI
+p2pmem/p2pdma and one type for HMM.
+
+PCI p2pmem/p2pdma uses ZONE_DEVICE to represent device memory residing
+in a PCI BAR and provides a set of calls to publish, discover, allocate,
+and map such memory for peer-to-peer transactions. One feature of the
+API is that the buffer is allocated by the side that does the DMA
+transfer. This works well with the storage usage case, but is awkward
+with GPU-NIC communication, where typically the buffer is allocated by
+the GPU driver rather than the NIC driver.
+
+Heterogeneous Memory Management (HMM) utilizes mmu_interval_notifier
+and ZONE_DEVICE to support shared virtual address space and page
+migration between system memory and device memory. HMM doesn't support
+pinning device memory because pages located on device must be able to
+migrate to system memory when accessed by CPU. Peer-to-peer access
+is currently not supported by HMM.
+
+Dma-buf is a standard mechanism for sharing buffers among different
+device drivers. The buffer to be shared is exported by the owning
+driver and imported by the driver that wants to use it. The exporter
+provides a set of ops that the importer can call to pin and map the
+buffer. In addition, a file descriptor can be associated with a dma-
+buf object as the handle that can be passed to user space.
+
+This patch series adds dma-buf importer role to the RDMA driver in
+attempt to support RDMA using device memory such as GPU VRAM. Dma-buf is
+chosen for a few reasons: first, the API is relatively simple and allows
+a lot of flexibility in implementing the buffer manipulation ops.
+Second, it doesn't require page structure. Third, dma-buf is already
+supported in many GPU drivers. However, we are aware that existing GPU
+drivers don't allow pinning device memory via the dma-buf interface.
+Pinning would simply cause the backing storage to migrate to system RAM.
+True peer-to-peer access is only possible using dynamic attach, which
+requires on-demand paging support from the NIC to work. For this reason,
+this series only works with ODP capable NICs.
+
+This series consists of six patches. The first patch adds the common
+code for importing dma-buf from a file descriptor and mapping the
+dma-buf pages. Patch 2 add the new driver method reg_user_mr_dmabuf().
+Patch 3 adds a new uverbs command for registering dma-buf based memory
+region. Patch 4 adds dma-buf support to the mlx5 driver. Patch 5 adds
+code to dma_buf_dynamic_attach() to check the importer device for use
+of dma_virt_ops and reject the request if so. Patch 6 documents that
+dma-buf size is invariant over the lifetime of the buffer.
+
+Related user space RDMA library changes will be provided as a separate
+patch series.
+
+Jianxin Xiong (6):
+  RDMA/umem: Support importing dma-buf as user memory region
+  RDMA/core: Add device method for registering dma-buf based memory
+    region
+  RDMA/uverbs: Add uverbs command for dma-buf based MR registration
+  RDMA/mlx5: Support dma-buf based userspace memory region
+  dma-buf: Reject attach request from importers that use dma_virt_ops
+  dma-buf: Document that dma-buf size is fixed
+
+ drivers/dma-buf/dma-buf.c                     |   5 +
+ drivers/infiniband/core/Makefile              |   2 +-
+ drivers/infiniband/core/device.c              |   1 +
+ drivers/infiniband/core/umem.c                |   4 +
+ drivers/infiniband/core/umem_dmabuf.c         | 184 ++++++++++++++++++++++++++
+ drivers/infiniband/core/umem_dmabuf.h         |  11 ++
+ drivers/infiniband/core/uverbs_std_types_mr.c | 122 ++++++++++++++++-
+ drivers/infiniband/hw/mlx5/main.c             |   2 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  18 +++
+ drivers/infiniband/hw/mlx5/mr.c               | 124 ++++++++++++++++-
+ drivers/infiniband/hw/mlx5/odp.c              |  86 +++++++++++-
+ include/linux/dma-buf.h                       |   4 +-
+ include/rdma/ib_umem.h                        |  39 +++++-
+ include/rdma/ib_verbs.h                       |   6 +-
+ include/uapi/rdma/ib_user_ioctl_cmds.h        |  14 ++
+ 15 files changed, 606 insertions(+), 16 deletions(-)
+ create mode 100644 drivers/infiniband/core/umem_dmabuf.c
+ create mode 100644 drivers/infiniband/core/umem_dmabuf.h
+
 -- 
-2.29.2
-
+1.8.3.1
 
