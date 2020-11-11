@@ -2,81 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621D02AE1B3
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Nov 2020 22:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC2B2AE6F2
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Nov 2020 04:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgKJV1c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Nov 2020 16:27:32 -0500
-Received: from mga05.intel.com ([192.55.52.43]:54360 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731657AbgKJV1b (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:27:31 -0500
-IronPort-SDR: 28+EG9fki/VjzvlzwIC0cqUZkAb2njzM0356+kBAuUlIwBmsFciAIRioJNC5TbJLkV8/vW6HmE
- fm8xE9v7vp/w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="254762137"
-X-IronPort-AV: E=Sophos;i="5.77,467,1596524400"; 
-   d="scan'208";a="254762137"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 13:27:29 -0800
-IronPort-SDR: 0NS6aqzbuIqjlXBVxN7ajmtLstwKmkSe/I+jNmp4B05cgZBS6lE5JvIRmrlc7sL+cjw6uo8Fxq
- KGoGPbSHX2dA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,467,1596524400"; 
-   d="scan'208";a="541500552"
-Received: from cst-dev.jf.intel.com ([10.23.221.69])
-  by orsmga005.jf.intel.com with ESMTP; 10 Nov 2020 13:27:28 -0800
-From:   Jianxin Xiong <jianxin.xiong@intel.com>
-To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
+        id S1725983AbgKKDRH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Nov 2020 22:17:07 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7169 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726251AbgKKDRG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Nov 2020 22:17:06 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CW8zB1wS6z15TsS;
+        Wed, 11 Nov 2020 11:16:54 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 11 Nov 2020 11:16:52 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Adit Ranadive <aditr@vmware.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH v10 6/6] dma-buf: Document that dma-buf size is fixed
-Date:   Tue, 10 Nov 2020 13:41:17 -0800
-Message-Id: <1605044477-51833-7-git-send-email-jianxin.xiong@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1605044477-51833-1-git-send-email-jianxin.xiong@intel.com>
-References: <1605044477-51833-1-git-send-email-jianxin.xiong@intel.com>
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Qinglang Miao" <miaoqinglang@huawei.com>
+Subject: [PATCH] RDMA/pvrdma: fix missing kfree in pvrdma_register_device
+Date:   Wed, 11 Nov 2020 11:22:02 +0800
+Message-ID: <20201111032202.17925-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The fact that the size of dma-buf is invariant over the lifetime of the
-buffer is mentioned in the comment of 'dma_buf_ops.mmap', but is not
-documented at where the info is defined. Add the missing documentation.
+Fix missing kfree in pvrdma_register_device() when fails
+to do ib_device_set_netdev.
 
-Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+Fixes: 4b38da75e089 ("RDMA/drivers: Convert easy drivers to use ib_device_set_netdev()")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- include/linux/dma-buf.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index 9dcd569..92da98b 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -272,7 +272,7 @@ struct dma_buf_ops {
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
+index fa2a3fa0c3e4..f71d99946bed 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
+@@ -266,7 +266,7 @@ static int pvrdma_register_device(struct pvrdma_dev *dev)
+ 	}
+ 	ret = ib_device_set_netdev(&dev->ib_dev, dev->netdev, 1);
+ 	if (ret)
+-		return ret;
++		goto err_qp_free;
+ 	spin_lock_init(&dev->srq_tbl_lock);
+ 	rdma_set_device_sysfs_group(&dev->ib_dev, &pvrdma_attr_group);
  
- /**
-  * struct dma_buf - shared buffer object
-- * @size: size of the buffer
-+ * @size: size of the buffer; invariant over the lifetime of the buffer.
-  * @file: file pointer used for sharing buffers across, and for refcounting.
-  * @attachments: list of dma_buf_attachment that denotes all devices attached,
-  *               protected by dma_resv lock.
-@@ -404,7 +404,7 @@ struct dma_buf_attachment {
-  * @exp_name:	name of the exporter - useful for debugging.
-  * @owner:	pointer to exporter module - used for refcounting kernel module
-  * @ops:	Attach allocator-defined dma buf ops to the new buffer
-- * @size:	Size of the buffer
-+ * @size:	Size of the buffer - invariant over the lifetime of the buffer
-  * @flags:	mode flags for the file
-  * @resv:	reservation-object, NULL to allocate default one
-  * @priv:	Attach private data of allocator to this buffer
 -- 
-1.8.3.1
+2.23.0
 
