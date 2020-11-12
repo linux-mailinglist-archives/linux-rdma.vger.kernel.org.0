@@ -2,94 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623582B0666
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Nov 2020 14:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A672B06F7
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Nov 2020 14:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgKLNZQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Nov 2020 08:25:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
+        id S1728415AbgKLNtz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Nov 2020 08:49:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727646AbgKLNZQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Nov 2020 08:25:16 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C2EC0613D1
-        for <linux-rdma@vger.kernel.org>; Thu, 12 Nov 2020 05:25:15 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id g15so3851731qtq.13
-        for <linux-rdma@vger.kernel.org>; Thu, 12 Nov 2020 05:25:15 -0800 (PST)
+        with ESMTP id S1728223AbgKLNty (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Nov 2020 08:49:54 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 424E4C0613D4
+        for <linux-rdma@vger.kernel.org>; Thu, 12 Nov 2020 05:49:54 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id t191so5243129qka.4
+        for <linux-rdma@vger.kernel.org>; Thu, 12 Nov 2020 05:49:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Vkv5jtIJud+QIqcEKAOrz49oEiKkFPAoACrsXa1ygRI=;
-        b=Y+8FL3R3aa2iCZyQyaVvGjWPzY6Z3jTlOk9UvCp0XbmnptOo8ioxNJ342L9eRV87/v
-         kBr7Uc3IcB3jLIhgBWj1JLHFlzjPn0ONvp4KvsrXBnvBpM1bbAQYW80fTqopVwzy7/QL
-         v145ule18cZqgJGNSFTRfnRLoNxnfkxGCv93Qk+prb4/ElemeYtnlRkwMxXSTIaZ2+et
-         7uTa75c1MGuYO6AE50dBzd6nJ7UOsGsItaUtEd1GToXwyuwnyUraDj3IyQ6RLvWLuc7e
-         C8Y2B8b1gQCO5U6HOpbcp7psDZG3km2Wm82VXZqxWnB0n4UhGhU+sr85efHvVAPMlDt4
-         j5vw==
+        bh=Eg/RjAIZKwAbJrMIrbrRdkEGP27Yqte35m8OKOzH3B0=;
+        b=DFRG3uh9srwcvUG7AdAKgEet8jCSEWusYDlt6asbzD4TH5DL8lm0dKKLsXZo8GP/4o
+         wU0LGFXeuWEW69E84n+bIq8bGLGlLjQh3+eGLwy6oP3y3diCtIWd8zpxDSimsbsyr0IM
+         XFAG8hVgEFl05eBB1QyvHVgYsT/oKCkSq+9zLxaFcPaqCws3GrQVhhL9m5rsmKUh2WYH
+         tPkASd42zRcx92wm3BYYOdMpcfieGKGfPss/D0c/wN0Lbx19RlRuYXYzoZBBG/+fXESq
+         Q41k0dGYyCE1NVDPuMUyDA5huljco1w0nO0MH4KnL0AwzlJRzX4Fp969BkIs/2SpZct9
+         WRpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Vkv5jtIJud+QIqcEKAOrz49oEiKkFPAoACrsXa1ygRI=;
-        b=SOSG0ylqkrVkDdqCF1rywgjueJvfKw92TG91MjdEC0XdbvcPcXKcjesSEfnbreAnSR
-         0Io3ISwf1pTAaCWcJLBshg3a5anp2CUCtDSCMrZUREyJBrfGM7+iIRLnL3I0HD7ZzFZz
-         jbWI7sHojwP/rpK/LIe4khE12VnRDtnwtsw17UfioCmDNXHv2Py6gxoCcptAHbtBLeog
-         D+W18yIqMWnVbFY46uO188ip8Pl9LzMJB1auh9rJg13JFCcKoVr+3cIo0zh/HAVoQfaR
-         0PutE/GkOUKi6HZEC7Nbgd2D8m5bhCBjjAZ0GfU/xiYcPoM/HhCHeWlpnyb9P4cmmJz1
-         Cpyw==
-X-Gm-Message-State: AOAM533L31tcmqpNf2uBvF3MKsB4y498P/ZZTSori69XixbR8JrEVAsJ
-        BWqJtDIvh6yjUtvHrEGLo4xliw==
-X-Google-Smtp-Source: ABdhPJwYDJZ9CsmJHHji4+pBSpYm8kKmHl05XRyzWDUaADZStBu1Fbw/SJ8cr66iCQGhH6tHaJ1vNw==
-X-Received: by 2002:a05:622a:254:: with SMTP id c20mr5230454qtx.335.1605187515293;
-        Thu, 12 Nov 2020 05:25:15 -0800 (PST)
+        bh=Eg/RjAIZKwAbJrMIrbrRdkEGP27Yqte35m8OKOzH3B0=;
+        b=rnVbk2Fl5rmlBCf3RAEvSzVIS6BU0hxHZqbmdsp9wqsLXNGyBRTK2Z34PZ8ykOW1mi
+         bptk3MPFluWE8NljGJzctmvOds1DslAzlNKqfwWOXfn3aRe7H+wPTVOTZgpk+UZU2gAO
+         7n4c3BWBxsY2qrbU/ciUCa83AyVI7gEpcomtkhiIKIlmBh1CwHvUTFCW3PWsxpTZYvUR
+         3KjimyIpAz+bjQNEIn+G2OX11qYmzoywASEwEphhUM7YxtFuZJH4SfL83vMCib21at9k
+         gq72N/wLAX1DOYUPdw+NMT/rv5j1CPyB9jCXEAralrdpvhpKu3/D2g8NZXhADAT+Rqbx
+         G/YQ==
+X-Gm-Message-State: AOAM531/YIM4gXqsbcyX52OgZ4q7g4ZjytudVhrHDwmGBm/k7EpkETcx
+        hDEGufwNHgSlFgfSIpbUCdyL4A==
+X-Google-Smtp-Source: ABdhPJyiG+AWMVllInSFkDTazT0TjS77XHNnGJMdZGOKj8oXGaskcS+Y2DphXPV4+iJ0BQ/4jmIc5w==
+X-Received: by 2002:a05:620a:1539:: with SMTP id n25mr15856223qkk.258.1605188993531;
+        Thu, 12 Nov 2020 05:49:53 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id w45sm5038843qtw.96.2020.11.12.05.25.14
+        by smtp.gmail.com with ESMTPSA id k11sm4930974qtu.45.2020.11.12.05.49.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 05:25:14 -0800 (PST)
+        Thu, 12 Nov 2020 05:49:52 -0800 (PST)
 Received: from jgg by mlx with local (Exim 4.94)
         (envelope-from <jgg@ziepe.ca>)
-        id 1kdCbC-003frw-5j; Thu, 12 Nov 2020 09:25:14 -0400
-Date:   Thu, 12 Nov 2020 09:25:14 -0400
+        id 1kdCz2-003gor-0U; Thu, 12 Nov 2020 09:49:52 -0400
+Date:   Thu, 12 Nov 2020 09:49:52 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
-        linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Leon Romanovsky <leon@kernel.org>,
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Doug Ledford <dledford@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Subject: Re: [PATCH v10 6/6] dma-buf: Document that dma-buf size is fixed
-Message-ID: <20201112132514.GR244516@ziepe.ca>
-References: <1605044477-51833-1-git-send-email-jianxin.xiong@intel.com>
- <1605044477-51833-7-git-send-email-jianxin.xiong@intel.com>
- <20201111163323.GP401619@phenom.ffwll.local>
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        =?utf-8?B?QmrDuHJu?= Mork <bjorn@mork.no>,
+        Igor Mitsyanko <imitsyanko@quantenna.com>,
+        Sergey Matyukevich <geomatsi@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Oliver Neukum <oneukum@suse.com>,
+        Peter Korsgaard <jacmet@sunsite.dk>,
+        Steve Glendinning <steve.glendinning@shawell.net>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Jussi Kivilinna <jussi.kivilinna@iki.fi>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        Linux USB Mailing List <linux-usb@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>
+Subject: Re: [PATCH net-next 1/5] IB/hfi1: switch to core handling of rx/tx
+ byte/packet counters
+Message-ID: <20201112134952.GS244516@ziepe.ca>
+References: <5fbe3a1f-6625-eadc-b1c9-f76f78debb94@gmail.com>
+ <5093239e-2d3b-a716-3039-790abdb7a5ba@gmail.com>
+ <20201111090355.63fe3898@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201111163323.GP401619@phenom.ffwll.local>
+In-Reply-To: <20201111090355.63fe3898@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 05:33:23PM +0100, Daniel Vetter wrote:
-> On Tue, Nov 10, 2020 at 01:41:17PM -0800, Jianxin Xiong wrote:
-> > The fact that the size of dma-buf is invariant over the lifetime of the
-> > buffer is mentioned in the comment of 'dma_buf_ops.mmap', but is not
-> > documented at where the info is defined. Add the missing documentation.
+On Wed, Nov 11, 2020 at 09:03:55AM -0800, Jakub Kicinski wrote:
+> On Tue, 10 Nov 2020 20:47:34 +0100 Heiner Kallweit wrote:
+> > Use netdev->tstats instead of a member of hfi1_ipoib_dev_priv for storing
+> > a pointer to the per-cpu counters. This allows us to use core
+> > functionality for statistics handling.
 > > 
-> > Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+> > Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 > 
-> Applied to drm-misc-next, thanks for your patch. For the preceeding
-> dma-buf patch I'll wait for more review/acks before I apply it. Ack from
-> Jason might also be good, since looks like this dma_virt_ops is only used
-> in rdma.
+> RDMA folks, ack for merging via net-next?
 
-We are likely to delete it entirely this cycle, Christoph already has
-a patch series to do it:
+Yes OK
 
-https://patchwork.kernel.org/project/linux-rdma/list/?series=379277
-
-So, lets just forget about it
+Ack-by: Jason Gunthorpe <jgg@nvidia.com>
 
 Jason
