@@ -2,66 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DE02B0177
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Nov 2020 10:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D49702B021C
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Nov 2020 10:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgKLJBi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Nov 2020 04:01:38 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7176 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgKLJBi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Nov 2020 04:01:38 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CWwZF2fBJz15VWx;
-        Thu, 12 Nov 2020 17:01:25 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 12 Nov 2020 17:01:24 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>,
-        <maorg@mellanox.com>
-CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chenzhou10@huawei.com>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] RDMA/core: Fix error return code in _ib_modify_qp()
-Date:   Thu, 12 Nov 2020 17:06:26 +0800
-Message-ID: <20201112090626.184976-1-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726969AbgKLJke (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Nov 2020 04:40:34 -0500
+Received: from verein.lst.de ([213.95.11.211]:42940 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725928AbgKLJke (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Nov 2020 04:40:34 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 1A9D367373; Thu, 12 Nov 2020 10:40:31 +0100 (CET)
+Date:   Thu, 12 Nov 2020 10:40:30 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org
+Subject: Re: remove dma_virt_ops v2
+Message-ID: <20201112094030.GA19550@lst.de>
+References: <20201106181941.1878556-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106181941.1878556-1-hch@lst.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fix to return a negative error code from the error handling case
-instead of 0 in function _ib_modify_qp(), as done elsewhere in this
-function.
+ping?
 
-Fixes: 51aab12631dd ("RDMA/core: Get xmit slave for LAG")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
----
- drivers/infiniband/core/verbs.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 740f8454b6b4..3d895cc41c3a 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1698,8 +1698,10 @@ static int _ib_modify_qp(struct ib_qp *qp, struct ib_qp_attr *attr,
- 			slave = rdma_lag_get_ah_roce_slave(qp->device,
- 							   &attr->ah_attr,
- 							   GFP_KERNEL);
--			if (IS_ERR(slave))
-+			if (IS_ERR(slave)) {
-+				ret = PTR_ERR(slave);
- 				goto out_av;
-+			}
- 			attr->xmit_slave = slave;
- 		}
- 	}
--- 
-2.20.1
-
+On Fri, Nov 06, 2020 at 07:19:31PM +0100, Christoph Hellwig wrote:
+> Hi Jason,
+> 
+> this series switches the RDMA core to opencode the special case of
+> devices bypassing the DMA mapping in the RDMA ULPs.  The virt ops
+> have caused a bit of trouble due to the P2P code node working with
+> them due to the fact that we'd do two dma mapping iterations for a
+> single I/O, but also are a bit of layering violation and lead to
+> more code than necessary.
+> 
+> Tested with nvme-rdma over rxe.
+> 
+> Note that the rds changes are untested, as I could not find any
+> simple rds test setup.
+> 
+> Changes since v2:
+>  - simplify the INFINIBAND_VIRT_DMA dependencies
+>  - add a ib_uses_virt_dma helper
+>  - use ib_uses_virt_dma in nvmet-rdma to disable p2p for virt_dma devices
+>  - use ib_dma_max_seg_size in umem
+>  - stop using dmapool in rds
+> 
+> Changes since v1:
+>  - disable software RDMA drivers for highmem configs
+>  - update the PCI commit logs
+---end quoted text---
