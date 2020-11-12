@@ -2,88 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7BD2B0B71
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Nov 2020 18:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B88D82B0C85
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Nov 2020 19:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgKLRlq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Nov 2020 12:41:46 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13242 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgKLRlq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Nov 2020 12:41:46 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fad73d40000>; Thu, 12 Nov 2020 09:41:40 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
- 2020 17:41:44 +0000
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
- by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 12 Nov 2020 17:41:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KMAgl96/ARc5dlF6fQ63XDemxq3kK5H9gwej0ov8Is/X9Oy3rgGPAnkrqH8+eI+PGinzOKYoSiSZy+OOK996v74amIf2N5DKPp+0SEwaW4Zo8FK7b4JHk5TUWeMFKKENr6JWmhpGEatojcuBOODIcPty4cQRhD7jUxMMtvGY1PSAlEyJbP6//HNnx/n56OFS1ZIIA6d4CbbKHQtZ9Cb1rUo+pAAjLgGExPMRsOj0UA3yneAez3MEJk3lJ7DOSH5/gr/bZuDlIg7zfZkyKs4G67VClXDZFRN3Md0q165Hx1Avoa3P8akDCmN9m8xuqGV8v9/8r9fS/Hefa/0D7rGODw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PtaJc1nr8oErvJx7z8jX6M4evmxq3fS0ZO9zpnKBgqc=;
- b=BkP8BkS8PjQaV+wlvS3/gWh5IjbAqWjzQr/i6gjB08QvRKQ2pXw/rpB7f2cYD81otkCWm0uf+8TzBxHdKIGdSSjuL2bxo5KIQqCZ6KrhKmEWRo+of/f8CB+t0s+hioofMs42DSnknbsc6mFcIVKhIsqimG8vrmLEmsScJJAroisTUgOxdmWNzGAyuAOnsPyBJKPIVKDYSTUJHG5uHF69WUi6PjDw1v4ri82HeT2FsrmCEC5Ne84+qN5EfV33IkTSTSglx30yo9oZDShYucQsZUFzuyVz+izVMqTaseGHih5BWRu+llMFuLTiMBntW52viGtO7pRSzEOEfcRRNsK2aQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3515.namprd12.prod.outlook.com (2603:10b6:5:15f::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Thu, 12 Nov
- 2020 17:41:41 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Thu, 12 Nov 2020
- 17:41:41 +0000
-Date:   Thu, 12 Nov 2020 13:41:39 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Weihang Li <liweihang@huawei.com>
-CC:     <dledford@redhat.com>, <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: Re: [PATCH for-next] RDMA/hns: Fix double free of the pointer to
- TSQ/TPQ
-Message-ID: <20201112174139.GA950009@nvidia.com>
-References: <1605180582-46504-1-git-send-email-liweihang@huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1605180582-46504-1-git-send-email-liweihang@huawei.com>
-X-ClientProxiedBy: MN2PR13CA0016.namprd13.prod.outlook.com
- (2603:10b6:208:160::29) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1726221AbgKLSZx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Nov 2020 13:25:53 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:41614 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbgKLSZw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Nov 2020 13:25:52 -0500
+Received: by mail-pl1-f193.google.com with SMTP id w11so3226171pll.8;
+        Thu, 12 Nov 2020 10:25:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QvplDTvTZnay/C4NlrXwy3WiT/KqaqbHVC2O6qZP0hg=;
+        b=BEVpDlTFXLoANApF0cRFqmy6gV0y/SJOBbHU7JX1BducnTiNzPyKnZL6YxAQCFSRML
+         /fX64mGqyrtV1YtRE/vbR3T9/qOhLYT7foyzh7dTZn2YClS5E4Ad69R6udajOs/wgR37
+         twn3NyQPNNTexniJcF6Pc4l/itV3Ffrca3doB+dDR84lCByL5We0Q2lozsA3/yMNo7/d
+         Qg46WQQaYxRpb1kcxJnBfNumGL5QZuIWuCr/M2ZhrvmNm6EMLYbfIK3OJGGZk45TgCZ9
+         +44SAc4W75EgIH/N5q8IH5fzxvQnk8vLPNQ2KEcNLrEMpdjXlS8XqU4CFbe6lr/BADdr
+         5K0A==
+X-Gm-Message-State: AOAM530pGKL1KvLQDwsfFB3sgm+Ola+ShLGXQoaW5WGLifqRAcM2+eD3
+        MyF+zil4hGN1ye1Rbr9OjVCIcdjOb6Y=
+X-Google-Smtp-Source: ABdhPJwmwJ9oyvDBaHX1IV3z0OBdcR8Y0E0H9te5SVdVx2RNM/0cqbEnX6LvSYcE87EuemmXdGKyxw==
+X-Received: by 2002:a17:902:e788:b029:d6:dc69:80a8 with SMTP id cp8-20020a170902e788b02900d6dc6980a8mr881007plb.59.1605205551213;
+        Thu, 12 Nov 2020 10:25:51 -0800 (PST)
+Received: from [192.168.50.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id k6sm7162512pfd.169.2020.11.12.10.25.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Nov 2020 10:25:50 -0800 (PST)
+Subject: Re: [PATCH] IB/srpt: Fix passing zero to 'PTR_ERR'
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        YueHaibing <yuehaibing@huawei.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201112145443.17832-1-yuehaibing@huawei.com>
+ <20201112172008.GA944848@nvidia.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <c73d9be0-0bd8-634a-e3d1-c81fe4c30482@acm.org>
+Date:   Thu, 12 Nov 2020 10:25:48 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR13CA0016.namprd13.prod.outlook.com (2603:10b6:208:160::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.21 via Frontend Transport; Thu, 12 Nov 2020 17:41:40 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kdGbL-003zBW-Oh; Thu, 12 Nov 2020 13:41:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605202900; bh=PtaJc1nr8oErvJx7z8jX6M4evmxq3fS0ZO9zpnKBgqc=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=NFBqeGpPoF1RgYoV1yQnI6jJzckk7b29J+8dUTZRrtTvy/MMIWrdK6pifNGcTAT5h
-         9tbc4xQrn5O8zrM8G9mbhWMbfqTj68TWe0cpl9ejiGSeyylR45qNQY4DsJ8urK5LwZ
-         x1RTLGbG+re5R/Ed5os3UmsrQm1pYJFz/aEtLMRTsk7WziS8fabMjyDWIiCH770DUe
-         vHxswc5Q4S2IUVOjDtYLmKYv2qkEKJMnVpd8i072kiv/9bknpQIGtXph+cG/sujQq7
-         U4RzTEUa+fGYyN299BocnHQb+IOvgmetQm6Rqbm8Mu7meAjX2rhuO1VXXQE57ARM8s
-         ZtnZKU/dWmbUA==
+In-Reply-To: <20201112172008.GA944848@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 07:29:42PM +0800, Weihang Li wrote:
-> A return statement is omitted after getting HEM table, then the newly
-> allocated pointer will be freed directly, which will cause a calltrace when
-> the driver was removed.
+On 11/12/20 9:20 AM, Jason Gunthorpe wrote:
+> I think it should be like this, Bart?
 > 
-> Fixes: d6d91e46210f ("RDMA/hns: Add support for configuring GMV table")
-> Signed-off-by: Weihang Li <liweihang@huawei.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 ++
->  1 file changed, 2 insertions(+)
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 6017d525084a0c..80f9673956ced2 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -2311,7 +2311,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>   
+>   	mutex_lock(&sport->port_guid_id.mutex);
+>   	list_for_each_entry(stpg, &sport->port_guid_id.tpg_list, entry) {
+> -		if (!IS_ERR_OR_NULL(ch->sess))
+> +		if (ch->sess)
+>   			break;
+>   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
+>   						tag_size, TARGET_PROT_NORMAL,
+> @@ -2321,12 +2321,12 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>   
+>   	mutex_lock(&sport->port_gid_id.mutex);
+>   	list_for_each_entry(stpg, &sport->port_gid_id.tpg_list, entry) {
+> -		if (!IS_ERR_OR_NULL(ch->sess))
+> +		if (ch->sess)
+>   			break;
+>   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
+>   					tag_size, TARGET_PROT_NORMAL, i_port_id,
+>   					ch, NULL);
+> -		if (!IS_ERR_OR_NULL(ch->sess))
+> +		if (ch->sess)
+>   			break;
+>   		/* Retry without leading "0x" */
+>   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
+> @@ -2335,7 +2335,9 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>   	}
+>   	mutex_unlock(&sport->port_gid_id.mutex);
+>   
+> -	if (IS_ERR_OR_NULL(ch->sess)) {
+> +	if (!ch->sess)
+> +		ch->sess = ERR_PTR(-ENOENT);
+> +	if (IS_ERR(ch->sess)) {
+>   		WARN_ON_ONCE(ch->sess == NULL);
+>   		ret = PTR_ERR(ch->sess);
+>   		ch->sess = NULL;
+> 
 
-Applied to for-next, thanks
+Hi Jason,
 
-Jason
+The ib_srpt driver accepts three different formats for the initiator 
+ACL. Up to two of the three target_setup_session() calls will fail if 
+the fifth argument of target_setup_session() does not use the format of 
+the initiator ID in configfs. If the first or the second 
+target_setup_session() call fails it is essential that later 
+target_setup_session() calls happen. Hence the IS_ERR_OR_NULL(ch->sess) 
+checks in the above loops.
+
+In other words, I like YueHaibing's patch better.
+
+Thanks,
+
+Bart.
