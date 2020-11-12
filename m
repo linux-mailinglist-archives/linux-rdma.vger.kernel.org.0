@@ -2,91 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA9C2B0A02
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Nov 2020 17:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0B02B0A38
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Nov 2020 17:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728089AbgKLQcf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Nov 2020 11:32:35 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2609 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727646AbgKLQce (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Nov 2020 11:32:34 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fad63a90002>; Thu, 12 Nov 2020 08:32:41 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
- 2020 16:32:33 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 12 Nov 2020 16:32:33 +0000
+        id S1728757AbgKLQiq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Nov 2020 11:38:46 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:7207 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728086AbgKLQip (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Nov 2020 11:38:45 -0500
+Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fad65130002>; Fri, 13 Nov 2020 00:38:43 +0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
+ 2020 16:38:39 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.171)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 12 Nov 2020 16:38:39 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DlbM9TXJESzUIcCZw1CG9Xsw8r1jdfdeXb3+IfXZ8HlbMz5E0n4zc3/9TB8xaiPZvtVklbSNjZreWu5Hd0t9h5mkUFoPbUYWhANr/lFzzVj2youPYtrJsHibCJikTs/jqvwmVDnbUh7EJSzIFl1Ki/rowGBuQDFBurI3Wi0Ke+WWiqRNUbxAI72lxyPG3cR5QoyZSKe8+jSpTJoqJnuIEDet0CbJ781PPF9sThr+yeNlJYKPqKmxuyxZecnQ4JOvgE5WESsxXGLTALioX1f7UPE3Z/bmwOKyOcMiUrAYi0PBJCuRCpl3jq9nKKw4tflJgG7GeByDMa6n/hxdVY5nqg==
+ b=Jr8dW4eis32u6WyUiqRsWXP472mU2GBxeA/WYggJDrQeLe1C5zWIHGICNtK7qVlxeTKnL9l1d8W/QUPe1Ebk5s6aTYyZZnFuB8vQT/qlclF3vV59qMb/A9lklVVBlucFqGliJeqUHR6kfxzwn8gQAGrJU9DHtEutv4CowApD0638/vwdJs3pC1dbdZolp6BgfJBjFfSzWpm90lNXfxwMXZpOpVKn4wiKd1aRxvH+mRz0F0cM0VooilG/4MKoHsOEIhXH57NNfktApq4nxKRMvuVxKRZbbbIoUREAx+hxmP4VmNwZ6k0JsL3fvQYJrbyrCWhwDXsVQUSyEaoUvgYdeQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GRe1SMsnU9eSCa26p0C2lPRBmY3V63gsIkuX+MhEDLY=;
- b=Bq1Ywf9tmkH2XWU4AIGJYAcjyGWMfokSeK/NvX7HxIgZ7vtgNS/Jw2SEldGp127K4wnVPVWTopKV2fXcEQo3uvgXzmlSpzL2HN1JQFdu2bPR2HHehL5aclUPzUe3MQgwRii4K7fTO/nijN46vzuuy8EUCEfa1mA48DGBBNzbA+SWpDlIGRZLzTWw5JTfd1Dzdrg/0cm/z7OfP9WAGJ60Adgs9WUy2ccHYJiLBtBVD0VySP78PA80DOtYBFh0iRJl5jO1c6XbhKP7DpmK88dSWh3YFDLDjNzCi75QCSNeGjXCIrJLN2nhUiETWPfBn1CNHctU0Y9Qw1lY2L8WXlyNAg==
+ bh=GcTG2IcE1Hb9XQM+imSj69ZypnT/1I6k6eML/+1ITjg=;
+ b=KnCWxCBLVx16z4QVV/TTX8QYj+WH9q2WS9CveIT+92CEvukh2introSF6Lp7OCk5YUIWKH2y+efNsxKhOgyNVANgERKxvDao13zPZOBckZleM+SFk9I4WSVG3bmZtpQpSGj4ShYdxLPq2ME4SvYRblC2GJAe6VPMiaUT/S2JHHKW1FqzZuTbUJGk0ZWkI4IA7ftqmhYiDyZ3LrB9yGq6QxUA7/dvKordKURcDNzf3dY0EhCk3ErRf3dyUUCOTWcBH5SGbNjbVQfgapjea4KqMfyvpI0IBzy+BPbfFLNOKTU3TqPPMydo/3Q238urhWZhQvr7b/HktWQS3okCoRGhWg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3929.namprd12.prod.outlook.com (2603:10b6:5:148::20) with
+ by DM6PR12MB3212.namprd12.prod.outlook.com (2603:10b6:5:186::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.22; Thu, 12 Nov
- 2020 16:32:32 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Thu, 12 Nov
+ 2020 16:38:37 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Thu, 12 Nov 2020
- 16:32:32 +0000
-Date:   Thu, 12 Nov 2020 12:32:30 -0400
+ 16:38:36 +0000
+Date:   Thu, 12 Nov 2020 12:38:34 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     <linux-rdma@vger.kernel.org>
-CC:     Leon Romanovsky <leonro@mellanox.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH] RDMA/cm: Make the local_id_table xarray non-irq
-Message-ID: <20201112163230.GA904052@nvidia.com>
-References: <0-v1-808b6da3bd3f+1857-cm_xarray_no_irq_jgg@nvidia.com>
+To:     Zou Wei <zou_wei@huawei.com>
+CC:     <sagi@grimberg.me>, <dledford@redhat.com>,
+        <linux-rdma@vger.kernel.org>, <target-devel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] IB/isert: Fix warning Comparison to bool
+Message-ID: <20201112163834.GA917430@nvidia.com>
+References: <1604404674-32998-1-git-send-email-zou_wei@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <0-v1-808b6da3bd3f+1857-cm_xarray_no_irq_jgg@nvidia.com>
-X-ClientProxiedBy: MN2PR20CA0030.namprd20.prod.outlook.com
- (2603:10b6:208:e8::43) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <1604404674-32998-1-git-send-email-zou_wei@huawei.com>
+X-ClientProxiedBy: BL1PR13CA0065.namprd13.prod.outlook.com
+ (2603:10b6:208:2b8::10) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR20CA0030.namprd20.prod.outlook.com (2603:10b6:208:e8::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Thu, 12 Nov 2020 16:32:31 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kdFWQ-003nC8-RR; Thu, 12 Nov 2020 12:32:30 -0400
+Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0065.namprd13.prod.outlook.com (2603:10b6:208:2b8::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.21 via Frontend Transport; Thu, 12 Nov 2020 16:38:35 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kdFcI-003qgV-FJ; Thu, 12 Nov 2020 12:38:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605198761; bh=GRe1SMsnU9eSCa26p0C2lPRBmY3V63gsIkuX+MhEDLY=;
+        t=1605199123; bh=GcTG2IcE1Hb9XQM+imSj69ZypnT/1I6k6eML/+1ITjg=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=mTmfN1ZfiiomWwZFtLDQdz+sh1eMvJ3ooAwo0pQrYS6PZKewfH+NmIWZJcZ4QCN66
-         s4uCfNpnojrIJkHXeBzqOwS0+sFMLkdSfrLA/h+yHnF5mL4wkIZbWEPXU/Ze80bQnI
-         9iSXyYHkmfxmFitOTzeNA1F+KzqJVFdnNRXZ5s+ogbyo1vXO5JrYkucGDndluhRPsR
-         /kOEEDg/EYLM4m8DpCYBC0Ku/oY0WuIFJOJ89mqBz7ZsR9JVwe0gGyAdWY4F/P3ls9
-         4/E/z62PcApm0iYEPS5bRpgq7Quzm7w7xF2r3/7cuDS6O5EUIL3oo9O/RZI63oG7c0
-         LOFvTD9a1vDIw==
+        b=Ep2SaKfHIYMJRpjMoXvvW583Z1GiEsgWiG+WcjXxVb1dA1TNBT6Y0/F9sQ/JghhY0
+         PoPi4D95MllY2KexDQUtRdXZejiHRIoW4xed5nFQJ2y7I0kPlyAiWSK4LRsaS3R4pu
+         t5WIpxKv8kRa4nCh+GuCnxy6N5Kb+PaPNfsNYtedm/i2qwOG003EKRQDrL1ejrP7ig
+         XyKqTxFdA+s2d0aOd5bHTYDBZREccS3fEKrotod1zUlDBn75unvMVmFGI0REpoHBHA
+         fuKMWmeZR67rcXO/YLLjsmXiyQaszxN07mXMfz0e/3v6SDdpv7zEp2eKzr4XWp8yj8
+         9YzeFUK/rukaw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 05:40:59PM -0400, Jason Gunthorpe wrote:
-> The xarray is never mutated from an IRQ handler, only from work queues
-> under a spinlock_irq. Thus there is no reason for it be an IRQ type
-> xarray.
+On Tue, Nov 03, 2020 at 07:57:54PM +0800, Zou Wei wrote:
+> Fix below warning reported by coccicheck:
 > 
-> This was copied over from the original IDR code, but the recent rework put
-> the xarray inside another spinlock_irq which will unbalance the unlocking.
+> ./ib_isert.c:1104:12-24: WARNING: Comparison to bool
 > 
-> Fixes: c206f8bad15d ("RDMA/cm: Make it clearer how concurrency works in cm_req_handler()")
-> Reported-by: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
 > ---
->  drivers/infiniband/core/cm.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>  drivers/infiniband/ulp/isert/ib_isert.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied to for-rc, thanks
+Applied to for-next, thanks
 
 Jason
