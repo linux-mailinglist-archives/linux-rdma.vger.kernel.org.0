@@ -2,130 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957C62B0B62
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Nov 2020 18:36:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D532B0B6B
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Nov 2020 18:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbgKLRgx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Nov 2020 12:36:53 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:40550 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726175AbgKLRgx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Nov 2020 12:36:53 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACHXu2g162325;
-        Thu, 12 Nov 2020 17:36:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=u8xTTEyvJew25Q05G3W90SnBKx46lCOhX7hkliQ7xEw=;
- b=v1pEmVs/yvU/Fn2PZBXV4Fb7dLMejTrmQc7UX1SvzAxdVcrqCkGCf7mvHMEXXYul1ml2
- KzaNwmTD3k6XT4S1yoCPvSCS17li0snVSJE7A151HvQULO3yyWzSM1l7OzeP8YwipMs/
- LCGo/UcPcoZ5tMASrtsqiFCV6BJsbcM7jcTL5j/cyBNSgIDufTXlaRTeB0RXU+v9TZUl
- cKtXkMMehXrsb0srwJzwpq7smJ0tFrSGCtbWPvJCZOnpyRA/3KI8TtxLFdCDLiFwdlyU
- nGjD/tIUGheTKC8rV99uQYDpNebMa8amCC5PODk7ebbfF7X+6WGudMW7ZwhjcWa7TqQy pg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34nkhm6nnn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Nov 2020 17:36:37 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ACHZ0RG166849;
-        Thu, 12 Nov 2020 17:36:37 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 34p5g3d4nr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Nov 2020 17:36:37 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ACHaa0J172896;
-        Thu, 12 Nov 2020 17:36:36 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 34p5g3d4mr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Nov 2020 17:36:36 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0ACHaUv0023246;
-        Thu, 12 Nov 2020 17:36:31 GMT
-Received: from [10.74.105.253] (/10.74.105.253)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 12 Nov 2020 09:36:30 -0800
-Subject: Re: remove dma_virt_ops v2
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Ka-Cheong Poon <ka-cheong.poon@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        id S1726116AbgKLRjI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Nov 2020 12:39:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgKLRjI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Nov 2020 12:39:08 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8792C0613D1
+        for <linux-rdma@vger.kernel.org>; Thu, 12 Nov 2020 09:39:08 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id d38so1821122qvc.3
+        for <linux-rdma@vger.kernel.org>; Thu, 12 Nov 2020 09:39:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9/BWB2JMcyfr9SsyIuCQhSr0cozjVOSg0qZsEvg/Gec=;
+        b=ScUqn50Av3jkuanAHL9FGgKs2H2CEtXkHfhtLCKnJl/JiHzXM6ZbzMHOwZ2hp+OVWx
+         Fi+0vs1eN6mEx8OmQp7fn4u8wWGm8kj8NVs7rBtEM7yvcDuwy5qDdx1T0eYjrmriTWdQ
+         TA3moLECIUN1PPVAu7IX9pZj8s7lUFYHIf/pVvChzvfn/0oXRiGe/H0vUzt7bo0jX06e
+         tmnOhDEESzGoBN/C/rIcyYQA3vEILCTSVyippGbU4XhjiCwQUYijQdef9FmKKpYJTadq
+         RJuyOMJeRyyohYZIhVoK3M2B9uoBrkvVFWuxnJaphy18XoYCDwDAKW9xlbTD7A35Jvfi
+         k+Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9/BWB2JMcyfr9SsyIuCQhSr0cozjVOSg0qZsEvg/Gec=;
+        b=PTsg2g8NBcUhc0IAewNiWAO8lhKvPgcseLrK+MY9EaSKRJ9dVwbNlD0R1z2/7Ydog+
+         azvU77GAKCTNam4VZC5+XQi4+DHW9CKH3LIsy36YUt4szFoh31emA/lzZp2w44kv9xns
+         UuZIUKHYM0klE/9B+cPCt+ylX5h/07AuSkBcr9eVORHcAm8+Cjp7q7YOU0PSg7+A5iN7
+         4sUnRgVxL/27afO20goZQP10k9esIkNnPGULX4+1I8U0Lj0Z8tFK53y2y3Qd+dFvX7s4
+         XvfzY6c5OP8TqcJhFzDxjO5d/AHruUrBLcQk8jxfLer0CW8mmdtfRkd3ai4xrFUK3HFF
+         Lv7Q==
+X-Gm-Message-State: AOAM530EGvcFPjzXYb+RkQo8sKJRT2AkgIQPYHAATHlSxu2Jt3pwqESq
+        kPpcCGitTq1gSsQvSf9NBr4ayQ==
+X-Google-Smtp-Source: ABdhPJxGjs7RKm1+d6vm7YlPcQDBoWbQJjGD0bECyIRJfi4QeWUNLlgH4DteMkEt2qfo5HNkxSMv+g==
+X-Received: by 2002:a0c:f607:: with SMTP id r7mr714119qvm.47.1605202747806;
+        Thu, 12 Nov 2020 09:39:07 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id d12sm4989837qtp.77.2020.11.12.09.39.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 09:39:07 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kdGYs-003z7n-Ku; Thu, 12 Nov 2020 13:39:06 -0400
+Date:   Thu, 12 Nov 2020 13:39:06 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
         Bernard Metzler <bmt@zurich.ibm.com>,
         Zhu Yanjun <yanjunz@nvidia.com>,
         Logan Gunthorpe <logang@deltatee.com>,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
         linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
         linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org
+Subject: Re: remove dma_virt_ops v2
+Message-ID: <20201112173906.GT244516@ziepe.ca>
 References: <20201106181941.1878556-1-hch@lst.de>
- <20201112094030.GA19550@lst.de> <20201112132353.GQ244516@ziepe.ca>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <2f644747-4a4f-7e03-d857-c2d7879054dd@oracle.com>
-Date:   Thu, 12 Nov 2020 09:36:28 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+ <20201112165935.GA932629@nvidia.com>
+ <20201112170956.GA18813@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20201112132353.GQ244516@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
- mlxscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
- malwarescore=0 adultscore=0 clxscore=1011 bulkscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011120104
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112170956.GA18813@lst.de>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-+ Ka-Cheong
-
-On 11/12/20 5:23 AM, Jason Gunthorpe wrote:
-> On Thu, Nov 12, 2020 at 10:40:30AM +0100, Christoph Hellwig wrote:
->> ping?
->>
->> On Fri, Nov 06, 2020 at 07:19:31PM +0100, Christoph Hellwig wrote:
->>> Hi Jason,
->>>
->>> this series switches the RDMA core to opencode the special case of
->>> devices bypassing the DMA mapping in the RDMA ULPs.  The virt ops
->>> have caused a bit of trouble due to the P2P code node working with
->>> them due to the fact that we'd do two dma mapping iterations for a
->>> single I/O, but also are a bit of layering violation and lead to
->>> more code than necessary.
->>>
->>> Tested with nvme-rdma over rxe.
->>>
->>> Note that the rds changes are untested, as I could not find any
->>> simple rds test setup.
->>>
->>> Changes since v2:
->>>   - simplify the INFINIBAND_VIRT_DMA dependencies
->>>   - add a ib_uses_virt_dma helper
->>>   - use ib_uses_virt_dma in nvmet-rdma to disable p2p for virt_dma devices
->>>   - use ib_dma_max_seg_size in umem
->>>   - stop using dmapool in rds
->>>
->>> Changes since v1:
->>>   - disable software RDMA drivers for highmem configs
->>>   - update the PCI commit logs
+On Thu, Nov 12, 2020 at 06:09:56PM +0100, Christoph Hellwig wrote:
+> On Thu, Nov 12, 2020 at 12:59:35PM -0400, Jason Gunthorpe wrote:
+> >  RMDA/sw: Don't allow drivers using dma_virt_ops on highmem configs
 > 
-> Santosh can you please check the RDA parts??
-> 
+> I think this one actually is something needed in 5.10 and -stable.
 
-Hi Ka-Cheong,
+Done, I added a
 
-Can you please check Christoph change [1] which clean-up
-dma-pool API to use ib_dma_* and slab allocator ? This was added
-as part of your "net/rds: Use DMA memory pool allocation for rds_header"
-commit.
+Fixes: 551199aca1c3 ("lib/dma-virt: Add dma_virt_ops")
 
-
-Regards,
-Santosh
-
-[1] https://www.spinics.net/lists/linux-pci/msg101547.html
+Jason
