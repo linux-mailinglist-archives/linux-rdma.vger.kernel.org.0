@@ -2,122 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEECC2B0AA6
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Nov 2020 17:46:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 548632B0AD6
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Nov 2020 17:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729041AbgKLQqk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Nov 2020 11:46:40 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:48220 "EHLO nat-hk.nvidia.com"
+        id S1726163AbgKLQ7o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Nov 2020 11:59:44 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:53996 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728757AbgKLQqj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Nov 2020 11:46:39 -0500
-Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fad66ee0000>; Fri, 13 Nov 2020 00:46:38 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
- 2020 16:46:38 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.174)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 12 Nov 2020 16:46:37 +0000
+        id S1726133AbgKLQ7n (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Nov 2020 11:59:43 -0500
+Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fad69fd0000>; Fri, 13 Nov 2020 00:59:41 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Nov
+ 2020 16:59:41 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.43) by
+ HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 12 Nov 2020 16:59:39 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pz0cyj8bYFOYF85qIEsY+Yh55bLLUpfBmqKf8TJULhFu+Mk6HsPR0DTtPg3oJA+O74qGNgavbJfjcQFMhM5uVabYLot01GpL0BRPeJk5CdmKAYSM54/czElw45cfQ+8yIKZyckD8ekCYmP2YTzLgLSGg3PyR0hwSutEXwpKWmmc0E0h/SN0YnDUTeEFEU1qH8w+6ThefiMUcfM2ANlsD6sCdjmeefZBajv8ojqhpYp7HxRM6phpPzsZBEdcZ34uxo0KZt9lGz1NHmqjCvQB/olZ92SH9cLaojMHYmMGWXFzveqVYJl/scf+yf+ExE7IiHaJc2j2+4AkJLRtk/td5RA==
+ b=Fo5Fylpcqg1c1ICago8gt/nwxngqcg9pwCP0bbD+BLkp2jsR6iGi+ENnqZ+nQSAcxaoFHKAT9haAD9lDmwwTERdrR0gUe3cN0TMUPjwkx2EVNTHn6lFf4SBF18LK9nYfvA0SZW7khOeFL+Kq76OY26We/yxljzw6VVCIufvHFtywQimFw3LLsC0KrgdrKmzBZILVUhzAzZFrWJN1XsFqbHOXLpWtL+gz1rbExdv0+Hh27BRMAqw+mZPzWCg0nd0OIgLytsbnnmw9KrxHarajaR+WiUzqZ6r90qZ+PofZYQlEjdyGcJt0Vsrs7dYAbyQyOh0ZRZ7kV6fBmGyZEO6xLQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0sfAr+xkv7/SVXYVYVUFOI4Z9rzMq3BLsPV7CykTexU=;
- b=YshhgmkquBNvs+AICuxnKpu6EV6Qyf09pNa+npeqv2+t0wpeCvS6GThDgWfcp9XahDT/NztGYN1GHczh8WM4RS/IpBa3XuaqU2CS185Y7/MHCeydwUwuemOx6j9xb6YB1tdXDiudlmq+v9hQn+ocnRHWy1uULs8kPOjY13sAGGede5Y8+qCYhVGKn0LslPFO5URp5EgTkVeI58VEQZwSNLFFJacSYsUQB2e5BVJmq3MwVBN+hnJmYI5g9CsP49isdcAasVTd7YFExV88gi8UDlbyElmSX35e5IyZ18WeW//RKNfPLwJd1kzeIt7fGfIuugxRqwt0a821i9NW4Spa6w==
+ bh=mjYw2sGjcuhzNrZV2pwl3CFN9OypHf5Gzys0L+0bO88=;
+ b=eDtReuw/trq0HvRSUcFSdVLzMQfhELH4HxfF0SpbKRFjiDOwMjpqAuYYMJzNWS5hrPFPdgqlRsephJ0+x15W4iKhfq42XOi3Zi4AYijBC0XWQQSx2ggw0NJeyuF6cBLEKYh2gioP12RzAeKeZzeeXi9tCsXPHr/9Q0Zb4365AuVjFOV5urvOxmxubiOLdM768UGuWaVMkdKK4uxraCaxwk7LLTmIStTmsMwyTPHHjrjdgVOCb/cr3rShpfE2b2TTwvV52hT8gN6bdW+VIDe74F9w8XIBgTYqye8LERz/RyyPaMUVmGbqjcoVds43YQazWxRCLZcYeo36kjfMcM07pw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2940.namprd12.prod.outlook.com (2603:10b6:5:15f::19) with
+ by DM6PR12MB4042.namprd12.prod.outlook.com (2603:10b6:5:215::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Thu, 12 Nov
- 2020 16:46:23 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Thu, 12 Nov
+ 2020 16:59:37 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Thu, 12 Nov 2020
- 16:46:23 +0000
-Date:   Thu, 12 Nov 2020 12:46:21 -0400
+ 16:59:37 +0000
+Date:   Thu, 12 Nov 2020 12:59:35 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mthca: work around -Wenum-conversion warning
-Message-ID: <20201112164621.GA917484@nvidia.com>
-References: <20201026211311.3887003-1-arnd@kernel.org>
- <20201112155709.GA894300@nvidia.com>
- <CAK8P3a3Vq4K_pJWCEutvua5GijAL5mgzrCZC-sXWxz4MAOTThg@mail.gmail.com>
+To:     Christoph Hellwig <hch@lst.de>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Zhu Yanjun <yanjunz@nvidia.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        <linux-rdma@vger.kernel.org>, <rds-devel@oss.oracle.com>,
+        <linux-pci@vger.kernel.org>, <iommu@lists.linux-foundation.org>
+Subject: Re: remove dma_virt_ops v2
+Message-ID: <20201112165935.GA932629@nvidia.com>
+References: <20201106181941.1878556-1-hch@lst.de>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a3Vq4K_pJWCEutvua5GijAL5mgzrCZC-sXWxz4MAOTThg@mail.gmail.com>
-X-ClientProxiedBy: BL1PR13CA0180.namprd13.prod.outlook.com
- (2603:10b6:208:2bd::35) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <20201106181941.1878556-1-hch@lst.de>
+X-ClientProxiedBy: BL0PR02CA0078.namprd02.prod.outlook.com
+ (2603:10b6:208:51::19) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0180.namprd13.prod.outlook.com (2603:10b6:208:2bd::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.13 via Frontend Transport; Thu, 12 Nov 2020 16:46:23 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kdFjp-003qzb-N5; Thu, 12 Nov 2020 12:46:21 -0400
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0078.namprd02.prod.outlook.com (2603:10b6:208:51::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend Transport; Thu, 12 Nov 2020 16:59:37 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kdFwd-003ul0-PF; Thu, 12 Nov 2020 12:59:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605199598; bh=0sfAr+xkv7/SVXYVYVUFOI4Z9rzMq3BLsPV7CykTexU=;
+        t=1605200381; bh=mjYw2sGjcuhzNrZV2pwl3CFN9OypHf5Gzys0L+0bO88=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=B34V/UAPA3/tPUbhVXNVrRA7bwYta/PSoM8hrJLGXrs2VCJ+wQS3s/KkrHjD4HdIw
-         IhKpn8AQeCC1oEzlxHo/IBrUi/osboKCOnD0Yaapbx4V+AC7WHUU9jFNod+uneDdZV
-         z0Zc7UkdqH1+AXPE3qVb++XUrC20DLkyoKbLqKfMcrhSaxPdrNnr/ELNVyb+C1s4yO
-         rsg2FF/C9UVimXPzvI1pN7qGNnnETSA1K6cHXLvxmAytFigHo+qepD9qZCNLhKwO0/
-         hOKqTXhIpSemzVNyteNJz+s9VLQiJgXGkK1PRz3gmrJAySn5Q50PmzTBV9cV4DjsWX
-         82T6SzNvQwJIQ==
+        b=PolRm/+9iSArJhGLhQEUp/bdPhYEjooDTEC295gKwXUHVln7M7s9RORnhZwFicZxt
+         PncGptw0xN6WVnpE1Bowh2O1W1fTRSWFGW06Z097NJganQnSWr1AFPn17kJhcW1LaY
+         Xi/nL3UvYblGvNqK7wgy1A+y0uWNAIHJ0wtvChZce6i0nCIkyGh0PX3x2V9aZJUunc
+         +eXQFJiHo8w7cb6aPwHubTNUGraCHyOFi6eW/RljHNZgpyjL0/uAD3g3SuV+++q1a+
+         xKipKL9WrtvlzqQoEnB6d1p4Wv2f/sc/c98QFCZHMGrwfWdp9sZuxjxyr3qk6rfJk8
+         npTADLGoUnAtg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 05:45:00PM +0100, Arnd Bergmann wrote:
-> On Thu, Nov 12, 2020 at 4:57 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >
-> > On Mon, Oct 26, 2020 at 10:12:30PM +0100, Arnd Bergmann wrote:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > >
-> > > gcc points out a suspicious mixing of enum types in a function that
-> > > converts from MTHCA_OPCODE_* values to IB_WC_* values:
-> > >
-> > > drivers/infiniband/hw/mthca/mthca_cq.c: In function 'mthca_poll_one':
-> > > drivers/infiniband/hw/mthca/mthca_cq.c:607:21: warning: implicit conversion from 'enum <anonymous>' to 'enum ib_wc_opcode' [-Wenum-conversion]
-> > >   607 |    entry->opcode    = MTHCA_OPCODE_INVALID;
-> > >
-> > > Nothing seems to ever check for MTHCA_OPCODE_INVALID again, no
-> > > idea if this is meaningful, but it seems harmless as it deals
-> > > with an invalid input.
-> > >
-> > > Add a cast to suppress the warning.
-> > >
-> > > Fixes: 2a4443a69934 ("[PATCH] IB/mthca: fill in opcode field for send completions")
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > >  drivers/infiniband/hw/mthca/mthca_cq.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/infiniband/hw/mthca/mthca_cq.c b/drivers/infiniband/hw/mthca/mthca_cq.c
-> > > index c3cfea243af8..319b8aa63f36 100644
-> > > +++ b/drivers/infiniband/hw/mthca/mthca_cq.c
-> > > @@ -604,7 +604,7 @@ static inline int mthca_poll_one(struct mthca_dev *dev,
-> > >                       entry->byte_len  = MTHCA_ATOMIC_BYTE_LEN;
-> > >                       break;
-> > >               default:
-> > > -                     entry->opcode    = MTHCA_OPCODE_INVALID;
-> > > +                     entry->opcode    = (u8)MTHCA_OPCODE_INVALID;
-> > >                       break;
-> >
-> > This code is completely bogus, sigh
-> >
-> > Is this OK as far as the warning goes?
+On Fri, Nov 06, 2020 at 07:19:31PM +0100, Christoph Hellwig wrote:
+> Hi Jason,
 > 
-> Yes, I'm sure your patch fixes it and it makes more sense than my version.
+> this series switches the RDMA core to opencode the special case of
+> devices bypassing the DMA mapping in the RDMA ULPs.  The virt ops
+> have caused a bit of trouble due to the P2P code node working with
+> them due to the fact that we'd do two dma mapping iterations for a
+> single I/O, but also are a bit of layering violation and lead to
+> more code than necessary.
 > 
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> Tested with nvme-rdma over rxe.
+> 
+> Note that the rds changes are untested, as I could not find any
+> simple rds test setup.
+> 
+> Changes since v2:
+>  - simplify the INFINIBAND_VIRT_DMA dependencies
+>  - add a ib_uses_virt_dma helper
+>  - use ib_uses_virt_dma in nvmet-rdma to disable p2p for virt_dma devices
+>  - use ib_dma_max_seg_size in umem
+>  - stop using dmapool in rds
+> 
+> Changes since v1:
+>  - disable software RDMA drivers for highmem configs
+>  - update the PCI commit logs
 
-Okay, I'll revise it, thanks
+Lets give Santosh a little longer for RDS, I've grabbed the precursor
+parts to for-next for now:
 
+ nvme-rdma: Use ibdev_to_node instead of dereferencing ->dma_device
+ RDMA: Lift ibdev_to_node from rds to common code
+ RDMA/core: Remove ib_dma_{alloc,free}_coherent
+ RDMA/umem: Use ib_dma_max_seg_size instead of dma_get_max_seg_size
+ RMDA/sw: Don't allow drivers using dma_virt_ops on highmem configs
+
+Will get the rest next week regardless.
+
+Thanks,
 Jason
