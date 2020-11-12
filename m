@@ -2,78 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B14B2B1104
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Nov 2020 23:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9AF2B1268
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Nov 2020 00:04:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727270AbgKLWI0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Nov 2020 17:08:26 -0500
-Received: from mga18.intel.com ([134.134.136.126]:29237 "EHLO mga18.intel.com"
+        id S1727044AbgKLXEs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Nov 2020 18:04:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727268AbgKLWI0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Nov 2020 17:08:26 -0500
-IronPort-SDR: kjfnFdJx9rIOZrPL+c0u72kAMz31dgbm1e3mhr/tWRLAULI8N1IgX8v795y5Dgq4SGUHkFhJPh
- +zBdDtd185dQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="158166282"
-X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; 
-   d="scan'208";a="158166282"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 14:08:25 -0800
-IronPort-SDR: oSJg95d+2qGVSc9BPM+O7l7Ft+ZCzI1FJhAPLj7FpsqLPipmi/QzvoSu8Ic+EkeguCaQj4BSR8
- w12mNhyiftGw==
-X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; 
-   d="scan'208";a="542419330"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.205.29]) ([10.254.205.29])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 14:08:23 -0800
-Subject: Re: [PATCH for-rc v2] IB/hfi1: Move cached value of mm into handler
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     jgg@ziepe.ca, dledford@redhat.com, Jann Horn <jannh@google.com>,
-        linux-rdma@vger.kernel.org,
+        id S1725929AbgKLXEs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Nov 2020 18:04:48 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 53D4F20797;
+        Thu, 12 Nov 2020 23:04:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605222287;
+        bh=jw9sACHMVzmJYd4L54xn1aIJz0KtCK05yHvhEjyeWbE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=C4FG8TSr3zH5RokcVXAEa81nhqHRJf8tr8mvr2rL8Od3EEl48NFCwT9mIOsVfxrQo
+         Lvgmqy6pVUIgjYMZt5GX2qwOZY3lX24cN7TpeZmvq48LDMIjScKLfZxZNpQUwm5r8U
+         UwpIWa4j1/le4dgwS45roJ6b6m7a8+GI8eSayews=
+Date:   Thu, 12 Nov 2020 15:04:45 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?B?QmrDuHJu?= Mork <bjorn@mork.no>,
+        Kalle Valo <kvalo@codeaurora.org>
+Cc:     David Miller <davem@davemloft.net>,
         Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@nvidia.com>
-References: <20201112025837.24440.6767.stgit@awfm-01.aw.intel.com>
- <20201112171439.GT3976735@iweiny-DESK2.sc.intel.com>
- <b45c2303-a78e-a3b6-fcd2-371886caf788@cornelisnetworks.com>
-Message-ID: <ba7df075-ab50-3344-aacb-656ae10b517a@cornelisnetworks.com>
-Date:   Thu, 12 Nov 2020 17:08:22 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Igor Mitsyanko <imitsyanko@quantenna.com>,
+        Sergey Matyukevich <geomatsi@gmail.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Peter Korsgaard <jacmet@sunsite.dk>,
+        Steve Glendinning <steve.glendinning@shawell.net>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Jussi Kivilinna <jussi.kivilinna@iki.fi>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        Linux USB Mailing List <linux-usb@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>
+Subject: Re: [PATCH net-next 0/5] net: switch further drivers to core
+ functionality for handling per-cpu byte/packet counters
+Message-ID: <20201112150445.6586480d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <5fbe3a1f-6625-eadc-b1c9-f76f78debb94@gmail.com>
+References: <5fbe3a1f-6625-eadc-b1c9-f76f78debb94@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <b45c2303-a78e-a3b6-fcd2-371886caf788@cornelisnetworks.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/12/2020 5:06 PM, Dennis Dalessandro wrote:
-> On 11/12/2020 12:14 PM, Ira Weiny wrote:
->> On Wed, Nov 11, 2020 at 09:58:37PM -0500, Dennis Dalessandro wrote:
->>> Two earlier bug fixes have created a security problem in the hfi1
->>> driver. One fix aimed to solve an issue where current->mm was not valid
->>> when closing the hfi1 cdev. It attempted to do this by saving a cached
->>> value of the current->mm pointer at file open time. This is a problem if
->>> another process with access to the FD calls in via write() or ioctl() to
->>> pin pages via the hfi driver. The other fix tried to solve a use after
->>> free by taking a reference on the mm. This was just wrong because its
->>> possible for a race condition between one process with an mm that opened
->>> the cdev if it was accessing via an IOCTL, and another process
->>> attempting to close the cdev with a different current->mm.
->>
->> Again I'm still not seeing the race here.  It is entirely possible 
->> that the fix
->> I was trying to do way back was mistaken too...  ;-)  I would just 
->> delete the
->> last 2 sentences...  and/or reference the commit of those fixes and help
->> explain this more.
-> 
-> I was attempting to refer to [1], the email that started all of this.
+On Tue, 10 Nov 2020 20:46:26 +0100 Heiner Kallweit wrote:
+> Switch further drivers to core functionality for handling per-cpu
+> byte/packet counters.
+> All changes are compile-tested only.
 
-That link should be:
-[1] https://marc.info/?l=linux-rdma&m=159891753806720&w=2
-
--Denny
-
+Applied, thanks everyone!
