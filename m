@@ -2,63 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9AF2B1268
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Nov 2020 00:04:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3529D2B12ED
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Nov 2020 00:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgKLXEs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Nov 2020 18:04:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52234 "EHLO mail.kernel.org"
+        id S1726187AbgKLX6N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Nov 2020 18:58:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725929AbgKLXEs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Nov 2020 18:04:48 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        id S1726017AbgKLX6M (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Nov 2020 18:58:12 -0500
+Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53D4F20797;
-        Thu, 12 Nov 2020 23:04:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B9D4C20723;
+        Thu, 12 Nov 2020 23:58:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605222287;
-        bh=jw9sACHMVzmJYd4L54xn1aIJz0KtCK05yHvhEjyeWbE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=C4FG8TSr3zH5RokcVXAEa81nhqHRJf8tr8mvr2rL8Od3EEl48NFCwT9mIOsVfxrQo
-         Lvgmqy6pVUIgjYMZt5GX2qwOZY3lX24cN7TpeZmvq48LDMIjScKLfZxZNpQUwm5r8U
-         UwpIWa4j1/le4dgwS45roJ6b6m7a8+GI8eSayews=
-Date:   Thu, 12 Nov 2020 15:04:45 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?B?QmrDuHJu?= Mork <bjorn@mork.no>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Igor Mitsyanko <imitsyanko@quantenna.com>,
-        Sergey Matyukevich <geomatsi@gmail.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Peter Korsgaard <jacmet@sunsite.dk>,
-        Steve Glendinning <steve.glendinning@shawell.net>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Jussi Kivilinna <jussi.kivilinna@iki.fi>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        linux-rdma@vger.kernel.org,
-        Linux USB Mailing List <linux-usb@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>
-Subject: Re: [PATCH net-next 0/5] net: switch further drivers to core
- functionality for handling per-cpu byte/packet counters
-Message-ID: <20201112150445.6586480d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <5fbe3a1f-6625-eadc-b1c9-f76f78debb94@gmail.com>
-References: <5fbe3a1f-6625-eadc-b1c9-f76f78debb94@gmail.com>
+        s=default; t=1605225492;
+        bh=D7BWy4zT3PbHd0AJ1nIJLQwiLiRhReaFI7Ef1rnHFDs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=S4FV+tZpTU+OfMLs2eYEKR/CDcjXZHX5syjhq2Y0dg4O6sRfU0+rSRJ9V1wkm+ZH/
+         mWp0vPD6Cl+vZen2NfpjleqxROKHz9dRNanmiLu2VcYdvdeRCowDxEXrF0kC5n5veA
+         ASJDWZSBPF3ztBAaCeFYVeT7zJFondbYRcZJkU4I=
+Message-ID: <06f889297f97217961e4e563d2715f28d1e8d953.camel@kernel.org>
+Subject: Re: [PATCH net-next] net/mlx5: Fix passing zero to 'PTR_ERR'
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     YueHaibing <yuehaibing@huawei.com>, leon@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, vuhuong@mellanox.com
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 12 Nov 2020 15:58:10 -0800
+In-Reply-To: <20201112142845.54580-1-yuehaibing@huawei.com>
+References: <20201112142845.54580-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 10 Nov 2020 20:46:26 +0100 Heiner Kallweit wrote:
-> Switch further drivers to core functionality for handling per-cpu
-> byte/packet counters.
-> All changes are compile-tested only.
+On Thu, 2020-11-12 at 22:28 +0800, YueHaibing wrote:
+> Fix smatch warnings:
+> 
+> drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c:105
+> esw_acl_egress_lgcy_setup() warn: passing zero to 'PTR_ERR'
+> drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_ofld.c:177
+> esw_acl_egress_ofld_setup() warn: passing zero to 'PTR_ERR'
+> drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c:184
+> esw_acl_ingress_lgcy_setup() warn: passing zero to 'PTR_ERR'
+> drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_ofld.c:262
+> esw_acl_ingress_ofld_setup() warn: passing zero to 'PTR_ERR'
+> 
+> esw_acl_table_create() never returns NULL, so
+> NULL test should be removed.
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> 
 
-Applied, thanks everyone!
+Applied to net-next-mlx5 
+
+thanks 
+
