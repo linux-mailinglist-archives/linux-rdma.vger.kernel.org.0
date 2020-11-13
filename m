@@ -2,111 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3182B1347
+	by mail.lfdr.de (Postfix) with ESMTP id AFF2D2B1348
 	for <lists+linux-rdma@lfdr.de>; Fri, 13 Nov 2020 01:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725965AbgKMAd7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Nov 2020 19:33:59 -0500
-Received: from mga14.intel.com ([192.55.52.115]:47707 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725894AbgKMAd7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Nov 2020 19:33:59 -0500
-IronPort-SDR: qS3qQNM6vpsPzx9gRDLyWHmejzR+tT80VnKH0cY7ZX/nEKjXedQqgYM4Eb85dx9KOyUQQway3p
- 3iFf9s2g2D7A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="169621739"
-X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; 
-   d="scan'208";a="169621739"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 16:33:58 -0800
-IronPort-SDR: oorlKCcdMPi5FiuEQSWO3toS2B0mmzscwtxZjs8e2Fd24nSlC6WeYHIqBcrVpHQRqoh4vIPpb1
- Mw/eztIzJUHg==
-X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; 
-   d="scan'208";a="357310119"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 16:33:58 -0800
-Date:   Thu, 12 Nov 2020 16:33:57 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc:     jgg@ziepe.ca, dledford@redhat.com, Jann Horn <jannh@google.com>,
-        linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH for-rc v2] IB/hfi1: Move cached value of mm into handler
-Message-ID: <20201113003357.GW3976735@iweiny-DESK2.sc.intel.com>
-References: <20201112025837.24440.6767.stgit@awfm-01.aw.intel.com>
- <20201112171439.GT3976735@iweiny-DESK2.sc.intel.com>
- <b45c2303-a78e-a3b6-fcd2-371886caf788@cornelisnetworks.com>
- <ba7df075-ab50-3344-aacb-656ae10b517a@cornelisnetworks.com>
+        id S1725972AbgKMAeA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Nov 2020 19:34:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgKMAeA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Nov 2020 19:34:00 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A088C0613D1
+        for <linux-rdma@vger.kernel.org>; Thu, 12 Nov 2020 16:34:00 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id b11so3817923qvr.9
+        for <linux-rdma@vger.kernel.org>; Thu, 12 Nov 2020 16:34:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=afW4WZCzKSBkopY3D+EVH1mNn8OfkBRY3siF83lMqQE=;
+        b=GUB8oXHn8qWx1yZtNDBUNGqTLGpekKppaOjDD2/QhlEVR9N0rxsCnt3wtwTpUAoqZ5
+         PGK138XPCL/h3BSPAWJhZCi+5FuqJgzGaf+au5hUAKFkpgxpTHcAadz1vo1a8Q/SAy8L
+         MI+lP9mVzqVmmkxzorDX3NvY0A/j1ot5n3Tt94i8bC+FU0mlVX86NxbZLjPgjcrP8JpB
+         D/tHzmselKJEt2LNgNXviNM2vM0kYITy0CLHHcwvaXfVaOTkAoLWD151voKCmVizgULW
+         2AZZgo2sFFC/RsxFoQj81yg+6A9YWQF6JKUxxD2OqFpzi6Ds5p21p/IBe+ZdknM851fN
+         kdPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=afW4WZCzKSBkopY3D+EVH1mNn8OfkBRY3siF83lMqQE=;
+        b=LfO4GFJdf92NOcy5OFIkjKnuHltcLNkkeiM3gI1pSuU6rLs6E2x1f0YRBvCxIVIZPr
+         cqYxsaqzc6FZ4A/maepMK881z8xxu3Q9+mN4VEEya+Ld6OCQ1eBcTeugMcHMjzwwTceB
+         18RHChxI2hD7FQ1MlwFebuWi8CjDMzMENxZls2/tfPYJ4iMtTFMCldXZY6GuXJQfZwsk
+         qMvk3zkrmNgZRt9DtqANZX0WpWkrQz6dLVbV5X69i36oz0lxKjw/8a3ndsIYNlb1U17I
+         EsnHAno1CVVRX87z5dOlY6e7EcmWUxF0yqWJ21dWvRehVHdx4iVMj0u6LcCjqtV7kDkQ
+         satA==
+X-Gm-Message-State: AOAM530hh/MeunB8bx3J794z1Iwi5V+zSuigvahO58aV0+FtuwrFcaM7
+        w9krnNK9Tdu04aocEzB9GPZ8Sr/j40ZAUVqt
+X-Google-Smtp-Source: ABdhPJxTEQq72i7ob2HRVE794ShOLxAvgR60EjaYjpz/aWIW8rfgL1FNfruWyXs0j85qUGJNVa9aUA==
+X-Received: by 2002:a0c:8b91:: with SMTP id r17mr2393438qva.29.1605227639736;
+        Thu, 12 Nov 2020 16:33:59 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id t133sm6123625qke.82.2020.11.12.16.33.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 16:33:59 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kdN2M-004CW8-It; Thu, 12 Nov 2020 20:33:58 -0400
+Date:   Thu, 12 Nov 2020 20:33:58 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jianxin Xiong <jianxin.xiong@intel.com>
+Cc:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: Re: [PATCH v10 3/6] RDMA/uverbs: Add uverbs command for dma-buf
+ based MR registration
+Message-ID: <20201113003358.GZ244516@ziepe.ca>
+References: <1605044477-51833-1-git-send-email-jianxin.xiong@intel.com>
+ <1605044477-51833-4-git-send-email-jianxin.xiong@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ba7df075-ab50-3344-aacb-656ae10b517a@cornelisnetworks.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <1605044477-51833-4-git-send-email-jianxin.xiong@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 05:08:22PM -0500, Dennis Dalessandro wrote:
-> On 11/12/2020 5:06 PM, Dennis Dalessandro wrote:
-> > On 11/12/2020 12:14 PM, Ira Weiny wrote:
-> > > On Wed, Nov 11, 2020 at 09:58:37PM -0500, Dennis Dalessandro wrote:
-> > > > Two earlier bug fixes have created a security problem in the hfi1
-> > > > driver. One fix aimed to solve an issue where current->mm was not valid
-> > > > when closing the hfi1 cdev. It attempted to do this by saving a cached
-> > > > value of the current->mm pointer at file open time. This is a problem if
-> > > > another process with access to the FD calls in via write() or ioctl() to
-> > > > pin pages via the hfi driver. The other fix tried to solve a use after
-> > > > free by taking a reference on the mm. This was just wrong because its
-> > > > possible for a race condition between one process with an mm that opened
-> > > > the cdev if it was accessing via an IOCTL, and another process
-> > > > attempting to close the cdev with a different current->mm.
-> > > 
-> > > Again I'm still not seeing the race here.  It is entirely possible
-> > > that the fix
-> > > I was trying to do way back was mistaken too...  ;-)  I would just
-> > > delete the
-> > > last 2 sentences...  and/or reference the commit of those fixes and help
-> > > explain this more.
-> > 
-> > I was attempting to refer to [1], the email that started all of this.
-> 
-> That link should be:
-> [1] https://marc.info/?l=linux-rdma&m=159891753806720&w=2
+On Tue, Nov 10, 2020 at 01:41:14PM -0800, Jianxin Xiong wrote:
+> +	mr = pd->device->ops.reg_user_mr_dmabuf(pd, offset, length, virt_addr,
+> +						fd, access_flags,
+> +						&attrs->driver_udata);
+> +	if (IS_ERR(mr))
+> +		return PTR_ERR(mr);
+> +
+> +	mr->device = pd->device;
+> +	mr->pd = pd;
+> +	mr->type = IB_MR_TYPE_USER;
+> +	mr->uobject = uobj;
+> +	atomic_inc(&pd->usecnt);
+> +
+> +	uobj->object = mr;
+> +
+> +	uverbs_finalize_uobj_create(attrs, UVERBS_ATTR_REG_DMABUF_MR_HANDLE);
+> +
+> +	ret = uverbs_copy_to(attrs, UVERBS_ATTR_REG_DMABUF_MR_RESP_LKEY,
+> +			     &mr->lkey, sizeof(mr->lkey));
+> +	if (ret)
+> +		goto err_dereg;
+> +
+> +	ret = uverbs_copy_to(attrs, UVERBS_ATTR_REG_DMABUF_MR_RESP_RKEY,
+> +			     &mr->rkey, sizeof(mr->rkey));
+> +	if (ret)
+> +		goto err_dereg;
+> +
+> +	return 0;
+> +
+> +err_dereg:
+> +	ib_dereg_mr_user(mr, uverbs_get_cleared_udata(attrs));
 
-Ah...  ok  That does not have anything to do with a close.  He is worried about
-the mm structure going away because the other process exited.  That can't
-happen, even with the old code, because the release will not be called until
-the child process calls close.
+This isn't how the error handling works with
+uverbs_finalize_uobj_create() - you just return the error code and the
+caller deals with destroying the fully initialized HW object
+properly. Calling ib_dereg_mr_user() here will crash the kernel.
 
-But even if the mm is still around the get_user_pages_fast() in the child is
-_going_ to use current->mm if it falls back to the locked version.  Thus it is
-going to go off in the weeds when trying to pin user addresses in the child.
+Check the other uses for an example.
 
-Basically there is no 'race', the code is just broken and going to do the wrong
-thing regardless of timing!  :-(
+Again I must ask what the plan is for testing as even a basic set of
+pyverbs sanity tests would catch this.
 
-The new code is keeping the mm_grab() reference in the mmu_notifier rather than
-in the fd structure, an improvement for sure, but for many applications likely
-to have almost the same lifetime as before, in the parent process.
+I've generally been insisting that all new uABI needs testing support
+in rdma-core. This *might* be the exception but I want to hear a
+really good reason why we can't have a test first...
 
-Also Jann is 100% correct that the driver should not be operating on the wrong
-mm and you are using his methodology #3.[1]
-
-So I think the final point is the key to fixing the bug.  Keeping any
-current->mm which is not the one we opened the file with...  (or more
-specifically the one which first registered memory).  In some ways this may be
-worse than before because technically the parent could open the fd and hand it
-to the child and have the child register with it's mm.  But that is ok
-really...  May just be odd behavior for some users depending on what operations
-they do and in what order.
-
-Ira
-
-[1] Also, you probably should credit Jann for the idea with a suggested by tag.
-
-> 
-> -Denny
-> 
+Jason
