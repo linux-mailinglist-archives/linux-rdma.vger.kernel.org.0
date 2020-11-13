@@ -2,100 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6034A2B25AF
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Nov 2020 21:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF14E2B291C
+	for <lists+linux-rdma@lfdr.de>; Sat, 14 Nov 2020 00:20:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgKMUlf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 Nov 2020 15:41:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgKMUlf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Nov 2020 15:41:35 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD32C0613D1
-        for <linux-rdma@vger.kernel.org>; Fri, 13 Nov 2020 12:41:34 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id u12so4326013wrt.0
-        for <linux-rdma@vger.kernel.org>; Fri, 13 Nov 2020 12:41:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=L5e4DIZV3VJ4/DZhaxMedvf932BuCNS+uWtVsQlOpwI=;
-        b=XxNPjkbmXf7MCgGcE/QgflUYbsN17qETnpKjYFS9Tmq8Ug+Eh73nfFd9TdzkCf9AE2
-         oXqwEtnOGsYB3/Qkqvm7ruzS2MjUIY3aaFb/sI8NiY9wk+1Z71m9h2JfZmeR80VoBtTg
-         7iQXDKjWZq5LlUw07orJj+TOP6gH4hHKFOli0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=L5e4DIZV3VJ4/DZhaxMedvf932BuCNS+uWtVsQlOpwI=;
-        b=Wti74QJBC1abKFYpupi/kRhwn+mA6zie5QLfeTiBOQhe0gU++dfzf7Qt1n0DVHwonP
-         ytuVXgMdWgEVrHQ/Y8Nfzg9BmRhltDYDr5NvNGh8xElB2dBrDwVXpyAkBKz6iBwYn/Uu
-         7zVDOx/0UaRG9wJpuzUCnPswCaLH9qip3MLgJfT+S1Qpu3DdMvNFLLRUwxeMc0dWjt7j
-         kULRuZiAEdKvt7NS82DSnNfPcSSb4B/H2iApWhM13zkAEsEWw410K/SBzQbX6QtVnslo
-         bZp+UkB9ySMSxogMq0JmdGDmVpNUp02Jz1fkUywhV+hpLwCqeHmnGZL6oocvtzEG7UnD
-         xDjQ==
-X-Gm-Message-State: AOAM530lqTLr2+TGtE1RhsfFZCtEgjlOzV7MVyjCYWBD7cps9PzdHDg7
-        S4VQsvpeVOYGdqknUM5vvgpfKA==
-X-Google-Smtp-Source: ABdhPJy+vZyBmSoL9CBj+APp8QgyaRgbuZ4I7P5mhruXWGfad54Kzai82pflGZdDNk9mmE7+FVR9aA==
-X-Received: by 2002:a5d:4cca:: with SMTP id c10mr5895092wrt.372.1605300092835;
-        Fri, 13 Nov 2020 12:41:32 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id o63sm11571531wmo.2.2020.11.13.12.41.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 12:41:32 -0800 (PST)
-Date:   Fri, 13 Nov 2020 21:41:30 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Subject: Re: [PATCH v10 6/6] dma-buf: Document that dma-buf size is fixed
-Message-ID: <20201113204130.GU401619@phenom.ffwll.local>
-References: <1605044477-51833-1-git-send-email-jianxin.xiong@intel.com>
- <1605044477-51833-7-git-send-email-jianxin.xiong@intel.com>
- <20201111163323.GP401619@phenom.ffwll.local>
- <20201112132514.GR244516@ziepe.ca>
+        id S1725981AbgKMXUn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Nov 2020 18:20:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725885AbgKMXUn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 13 Nov 2020 18:20:43 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5905322256;
+        Fri, 13 Nov 2020 23:20:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605309643;
+        bh=NuhkiV2bk+P2nm9RmCwzXiSURYvAzkorSkZlQdsyIyI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HNYHa1YTSWRM2Nq4Lj/6KwBuYRXmoOm3ylGPkVHoS34gXThqVVPWjmsVbQzYPDVGe
+         Ev+dOOC5dlHp2f3V2hGbgMKgYfcwzn600L4peMVNsguIXxtCxuuKLybuZfpcstEV3b
+         /izANNTZJa3cloFxirC+Vr31LhhTxVOvY2D9LtRE=
+Date:   Sat, 14 Nov 2020 00:21:39 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Ertman, David M" <david.m.ertman@intel.com>
+Cc:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "tiwai@suse.de" <tiwai@suse.de>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "leonro@nvidia.com" <leonro@nvidia.com>
+Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
+Message-ID: <X68VA6uw5nz51dll@kroah.com>
+References: <20201023003338.1285642-1-david.m.ertman@intel.com>
+ <20201023003338.1285642-2-david.m.ertman@intel.com>
+ <X66rMg1lNJq+W/cp@kroah.com>
+ <DM6PR11MB284160D4E69D9C7801A6B1C2DDE60@DM6PR11MB2841.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201112132514.GR244516@ziepe.ca>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <DM6PR11MB284160D4E69D9C7801A6B1C2DDE60@DM6PR11MB2841.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 09:25:14AM -0400, Jason Gunthorpe wrote:
-> On Wed, Nov 11, 2020 at 05:33:23PM +0100, Daniel Vetter wrote:
-> > On Tue, Nov 10, 2020 at 01:41:17PM -0800, Jianxin Xiong wrote:
-> > > The fact that the size of dma-buf is invariant over the lifetime of the
-> > > buffer is mentioned in the comment of 'dma_buf_ops.mmap', but is not
-> > > documented at where the info is defined. Add the missing documentation.
-> > > 
-> > > Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+On Fri, Nov 13, 2020 at 04:07:57PM +0000, Ertman, David M wrote:
+> > -----Original Message-----
+> > From: Greg KH <gregkh@linuxfoundation.org>
+> > Sent: Friday, November 13, 2020 7:50 AM
+> > To: Ertman, David M <david.m.ertman@intel.com>
+> > Cc: alsa-devel@alsa-project.org; tiwai@suse.de; broonie@kernel.org; linux-
+> > rdma@vger.kernel.org; jgg@nvidia.com; dledford@redhat.com;
+> > netdev@vger.kernel.org; davem@davemloft.net; kuba@kernel.org;
+> > ranjani.sridharan@linux.intel.com; pierre-louis.bossart@linux.intel.com;
+> > fred.oh@linux.intel.com; parav@mellanox.com; Saleem, Shiraz
+> > <shiraz.saleem@intel.com>; Williams, Dan J <dan.j.williams@intel.com>;
+> > Patil, Kiran <kiran.patil@intel.com>; linux-kernel@vger.kernel.org;
+> > leonro@nvidia.com
+> > Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
 > > 
-> > Applied to drm-misc-next, thanks for your patch. For the preceeding
-> > dma-buf patch I'll wait for more review/acks before I apply it. Ack from
-> > Jason might also be good, since looks like this dma_virt_ops is only used
-> > in rdma.
+> > On Thu, Oct 22, 2020 at 05:33:29PM -0700, Dave Ertman wrote:
+> > > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
+> > > It enables drivers to create an auxiliary_device and bind an
+> > > auxiliary_driver to it.
+> > >
+> > > The bus supports probe/remove shutdown and suspend/resume callbacks.
+> > > Each auxiliary_device has a unique string based id; driver binds to
+> > > an auxiliary_device based on this id through the bus.
+> > >
+> > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
+> > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> > > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> > > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
+> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> > > Reviewed-by: Parav Pandit <parav@mellanox.com>
+> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> > > ---
+> > 
+> > Is this really the "latest" version of this patch submission?
+> > 
+> > I see a number of comments on it already, have you sent out a newer one,
+> > or is this the same one that the mlx5 driver conversion was done on top
+> > of?
+> > 
+> > thanks,
+> > 
+> > greg k-h
 > 
-> We are likely to delete it entirely this cycle, Christoph already has
-> a patch series to do it:
+> V3 is the latest sent so far.  There was a suggestion that v3 might be merged and
+> the documentation changes could be in a follow up patch.  I have those changes done
+> and ready though, so no reason not to merge them in and do a resend.
 > 
-> https://patchwork.kernel.org/project/linux-rdma/list/?series=379277
-> 
-> So, lets just forget about it
+> Please expect v4 in just a little while.
 
-I can get behind that :-) Also I realized that even when we need it,
-probably best if you merge it to avoid a partially broken feature in the
-rdma tree. So not my problem anyway ...
-
-Cheers, Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thank you, follow-up patches aren't usually a good idea :)
