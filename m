@@ -2,295 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2932B1648
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Nov 2020 08:20:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D153E2B1707
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Nov 2020 09:15:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbgKMHUy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 Nov 2020 02:20:54 -0500
-Received: from mga09.intel.com ([134.134.136.24]:37410 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgKMHUx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 13 Nov 2020 02:20:53 -0500
-IronPort-SDR: IBfxElQI+av0wo9Xv8q5fi9Chsuq7Ymnu4wEDKIxt47j0PGYR8nKo6NooIUJusvFud/FoFAGr/
- QDRjBeLn4xag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="170607078"
-X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
-   d="scan'208";a="170607078"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 23:20:53 -0800
-IronPort-SDR: OSA5ai85cLNQ3cYQFL1EuXrVvRHIPI/k36IrInedaU9MWj/0AyUbXdGAmWzLdMLdGSkGTDk/Rv
- OHJL+VCTrq/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
-   d="scan'208";a="532472625"
-Received: from lkp-server02.sh.intel.com (HELO 697932c29306) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 12 Nov 2020 23:20:50 -0800
-Received: from kbuild by 697932c29306 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kdTO6-00008C-1K; Fri, 13 Nov 2020 07:20:50 +0000
-Date:   Fri, 13 Nov 2020 15:19:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 7af80c02c7b3cf7ac580a33f15d155730574769f
-Message-ID: <5fae3398.mcWnc84aiAzArStT%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726130AbgKMIPn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Nov 2020 03:15:43 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:35774 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgKMIPn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Nov 2020 03:15:43 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AD8E1Xc049282;
+        Fri, 13 Nov 2020 08:15:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=kJkONnTy4qTACnft4+048FilnZRaTNqdgXCvN93D+hI=;
+ b=FMXjz5NV9YRmYPrD0qckN6gS+rWO/kD7DFoVqTYiFJ3PwqmH2LLU1/m2Gy2FsVr7XiWq
+ OLeP/MVIegEhz7J8Lh6IS4uuDRG8wnkv3VORkzVlO5bSrb/1tVRkfXJ2iToWOHOKOi2W
+ hKbmQhYNbzlsTSCvOvzanrnSjDhhFFvt63KzMh/zkY0o5ACNTvoNMnfzhq38l9Mxj4Jp
+ EZltwOMDa76GTZGxda4WZq3SvG2sd6qYnSuXW6YemhRK7uqHydQ7PYSyqFIDzEJiXtFK
+ USz+SDOm2Vg0Zk8UJkJ/iIx/Ke8hGg8U5qeAdY+JgoQymz4TsW8oO5SArR2P/G6xBJV0 uw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 34nh3b9fje-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 13 Nov 2020 08:15:42 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AD8FEE5053262;
+        Fri, 13 Nov 2020 08:15:41 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 34rt57exys-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Nov 2020 08:15:41 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AD8Fehd032184;
+        Fri, 13 Nov 2020 08:15:40 GMT
+Received: from mwanda (/10.175.206.108)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 13 Nov 2020 00:15:39 -0800
+Date:   Fri, 13 Nov 2020 11:15:34 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     devesh.sharma@broadcom.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [bug report] RDMA/bnxt_re: Fix broken RoCE driver due to recent L2
+ driver changes
+Message-ID: <20201113081534.GA50833@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxscore=0
+ mlxlogscore=999 suspectscore=3 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011130049
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9803 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1011 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=3
+ mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011130049
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: 7af80c02c7b3cf7ac580a33f15d155730574769f  RDMA/hns: Fix double free of the pointer to TSQ/TPQ
+Hello Devesh Sharma,
 
-elapsed time: 756m
+The patch 6e04b1035689: "RDMA/bnxt_re: Fix broken RoCE driver due to
+recent L2 driver changes" from May 25, 2018, leads to the following
+static checker warning:
 
-configs tested: 231
-configs skipped: 3
+	drivers/infiniband/hw/bnxt_re/qplib_fp.c:471 bnxt_qplib_nq_start_irq()
+	warn: 'nq->msix_vec' not released on lines: 471.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+drivers/infiniband/hw/bnxt_re/qplib_fp.c
+   441  int bnxt_qplib_nq_start_irq(struct bnxt_qplib_nq *nq, int nq_indx,
+   442                              int msix_vector, bool need_init)
+   443  {
+   444          int rc;
+   445  
+   446          if (nq->requested)
+   447                  return -EFAULT;
+   448  
+   449          nq->msix_vec = msix_vector;
+   450          if (need_init)
+   451                  tasklet_setup(&nq->nq_tasklet, bnxt_qplib_service_nq);
+   452          else
+   453                  tasklet_enable(&nq->nq_tasklet);
+   454  
+   455          snprintf(nq->name, sizeof(nq->name), "bnxt_qplib_nq-%d", nq_indx);
+   456          rc = request_irq(nq->msix_vec, bnxt_qplib_nq_irq, 0, nq->name, nq);
+   457          if (rc)
+   458                  return rc;
+   459  
+   460          cpumask_clear(&nq->mask);
+   461          cpumask_set_cpu(nq_indx, &nq->mask);
+   462          rc = irq_set_affinity_hint(nq->msix_vec, &nq->mask);
+   463          if (rc) {
+   464                  dev_warn(&nq->pdev->dev,
+   465                           "set affinity failed; vector: %d nq_idx: %d\n",
+   466                           nq->msix_vec, nq_indx);
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         bcm2835_defconfig
-arm                        shmobile_defconfig
-arm                        spear6xx_defconfig
-arm                       aspeed_g5_defconfig
-ia64                        generic_defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                    ge_imp3a_defconfig
-sparc                               defconfig
-sparc64                          alldefconfig
-sh                        dreamcast_defconfig
-m68k                             alldefconfig
-m68k                            q40_defconfig
-arm                          ep93xx_defconfig
-arm                       multi_v4t_defconfig
-mips                      maltasmvp_defconfig
-nios2                         10m50_defconfig
-arm                             mxs_defconfig
-arm                          prima2_defconfig
-arm64                            alldefconfig
-mips                          ath79_defconfig
-powerpc                       maple_defconfig
-sh                          polaris_defconfig
-powerpc                     pq2fads_defconfig
-sh                          kfr2r09_defconfig
-arm                        mvebu_v5_defconfig
-mips                        workpad_defconfig
-m68k                         apollo_defconfig
-sh                ecovec24-romimage_defconfig
-riscv                            alldefconfig
-arm                       aspeed_g4_defconfig
-m68k                          atari_defconfig
-powerpc                     pseries_defconfig
-arm                   milbeaut_m10v_defconfig
-arm                        multi_v5_defconfig
-mips                     loongson1c_defconfig
-parisc                generic-32bit_defconfig
-arm                          tango4_defconfig
-arm                         s3c2410_defconfig
-xtensa                              defconfig
-sh                          lboxre2_defconfig
-m68k                          hp300_defconfig
-sparc                       sparc64_defconfig
-powerpc                     tqm8555_defconfig
-powerpc                           allnoconfig
-sh                           se7722_defconfig
-powerpc                        warp_defconfig
-arm                  colibri_pxa270_defconfig
-arm                              alldefconfig
-sh                          rsk7203_defconfig
-mips                     loongson1b_defconfig
-powerpc                    mvme5100_defconfig
-sh                          sdk7786_defconfig
-mips                       bmips_be_defconfig
-sparc                       sparc32_defconfig
-powerpc                     tqm8548_defconfig
-um                            kunit_defconfig
-arc                          axs103_defconfig
-sh                           se7750_defconfig
-arc                    vdk_hs38_smp_defconfig
-arc                           tb10x_defconfig
-c6x                              alldefconfig
-arc                     nsimosci_hs_defconfig
-xtensa                         virt_defconfig
-arm                          gemini_defconfig
-powerpc                      pasemi_defconfig
-powerpc                      walnut_defconfig
-mips                        vocore2_defconfig
-arm                          imote2_defconfig
-mips                           rs90_defconfig
-arm                          exynos_defconfig
-m68k                           sun3_defconfig
-ia64                                defconfig
-mips                          ath25_defconfig
-mips                         cobalt_defconfig
-arm                        spear3xx_defconfig
-powerpc                    adder875_defconfig
-powerpc                       ebony_defconfig
-xtensa                    smp_lx200_defconfig
-microblaze                      mmu_defconfig
-arm                        trizeps4_defconfig
-c6x                                 defconfig
-csky                             alldefconfig
-arc                        nsim_700_defconfig
-arc                          axs101_defconfig
-mips                           ip28_defconfig
-powerpc                     powernv_defconfig
-ia64                         bigsur_defconfig
-ia64                             alldefconfig
-powerpc                  mpc885_ads_defconfig
-sh                      rts7751r2d1_defconfig
-h8300                     edosk2674_defconfig
-mips                             allyesconfig
-powerpc                 mpc836x_rdk_defconfig
-nios2                            allyesconfig
-arm                       imx_v6_v7_defconfig
-sh                  sh7785lcr_32bit_defconfig
-arm                            dove_defconfig
-sh                              ul2_defconfig
-sh                            hp6xx_defconfig
-microblaze                          defconfig
-mips                malta_kvm_guest_defconfig
-i386                             alldefconfig
-mips                        maltaup_defconfig
-arm                         mv78xx0_defconfig
-s390                          debug_defconfig
-arm                         hackkit_defconfig
-x86_64                           allyesconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                            pleb_defconfig
-mips                        omega2p_defconfig
-mips                          malta_defconfig
-arm                      footbridge_defconfig
-mips                 decstation_r4k_defconfig
-arm                         nhk8815_defconfig
-arm                         assabet_defconfig
-arm                            u300_defconfig
-openrisc                 simple_smp_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                          pxa168_defconfig
-arm                         socfpga_defconfig
-m68k                        m5307c3_defconfig
-ia64                      gensparse_defconfig
-m68k                        stmark2_defconfig
-sh                               allmodconfig
-arm                           spitz_defconfig
-powerpc                      pmac32_defconfig
-arm                           viper_defconfig
-powerpc                      obs600_defconfig
-sh                        sh7785lcr_defconfig
-arm                         orion5x_defconfig
-sh                          rsk7269_defconfig
-powerpc                         wii_defconfig
-xtensa                          iss_defconfig
-mips                        nlm_xlr_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-i386                 randconfig-a006-20201112
-i386                 randconfig-a005-20201112
-i386                 randconfig-a002-20201112
-i386                 randconfig-a001-20201112
-i386                 randconfig-a003-20201112
-i386                 randconfig-a004-20201112
-i386                 randconfig-a006-20201111
-i386                 randconfig-a005-20201111
-i386                 randconfig-a002-20201111
-i386                 randconfig-a001-20201111
-i386                 randconfig-a003-20201111
-i386                 randconfig-a004-20201111
-i386                 randconfig-a006-20201113
-i386                 randconfig-a005-20201113
-i386                 randconfig-a002-20201113
-i386                 randconfig-a001-20201113
-i386                 randconfig-a003-20201113
-i386                 randconfig-a004-20201113
-x86_64               randconfig-a015-20201113
-x86_64               randconfig-a011-20201113
-x86_64               randconfig-a014-20201113
-x86_64               randconfig-a013-20201113
-x86_64               randconfig-a016-20201113
-x86_64               randconfig-a012-20201113
-x86_64               randconfig-a015-20201111
-x86_64               randconfig-a011-20201111
-x86_64               randconfig-a014-20201111
-x86_64               randconfig-a013-20201111
-x86_64               randconfig-a016-20201111
-x86_64               randconfig-a012-20201111
-i386                 randconfig-a012-20201113
-i386                 randconfig-a014-20201113
-i386                 randconfig-a016-20201113
-i386                 randconfig-a011-20201113
-i386                 randconfig-a015-20201113
-i386                 randconfig-a013-20201113
-i386                 randconfig-a012-20201111
-i386                 randconfig-a014-20201111
-i386                 randconfig-a016-20201111
-i386                 randconfig-a011-20201111
-i386                 randconfig-a015-20201111
-i386                 randconfig-a013-20201111
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Say irq_set_affinity_hint() fails then should we call release_irq()?
 
-clang tested configs:
-x86_64               randconfig-a003-20201113
-x86_64               randconfig-a005-20201113
-x86_64               randconfig-a004-20201113
-x86_64               randconfig-a002-20201113
-x86_64               randconfig-a006-20201113
-x86_64               randconfig-a001-20201113
-x86_64               randconfig-a003-20201111
-x86_64               randconfig-a005-20201111
-x86_64               randconfig-a004-20201111
-x86_64               randconfig-a002-20201111
-x86_64               randconfig-a006-20201111
-x86_64               randconfig-a001-20201111
+   467          }
+   468          nq->requested = true;
+   469          bnxt_qplib_ring_nq_db(&nq->nq_db.dbinfo, nq->res->cctx, true);
+   470  
+   471          return rc;
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I think that maybe the intent was to "return 0;" here even if setting
+the hint failed.
+
+   472  }
+
+regards,
+dan carpenter
