@@ -2,199 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CCFD2B14FC
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Nov 2020 05:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAB52B15E6
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Nov 2020 07:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726054AbgKMECh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Nov 2020 23:02:37 -0500
-Received: from mga12.intel.com ([192.55.52.136]:31994 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726182AbgKMECg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Nov 2020 23:02:36 -0500
-IronPort-SDR: sfpi3vHZCNfGQqTJk0H/YfFrJ1wPQl8U6PsYQ6tm0oFaTR7hPDXFyrOuSfWenfqCxUBVkJ70TD
- YLaJ2Xd/xYAw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="149693580"
-X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
-   d="scan'208";a="149693580"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 20:02:27 -0800
-IronPort-SDR: dyPsDs2ksIAbu+eph4aLCLvppH3xjzHKEdgKeVWItrD1TboSxHB1qtHnHF+6IabZqh3xOzU/uJ
- xI1t3brd0fng==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
-   d="scan'208";a="366603167"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by FMSMGA003.fm.intel.com with ESMTP; 12 Nov 2020 20:02:27 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 12 Nov 2020 20:02:27 -0800
-Received: from orsmsx604.amr.corp.intel.com (10.22.229.17) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 12 Nov 2020 20:02:27 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 12 Nov 2020 20:02:27 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Thu, 12 Nov 2020 20:02:26 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LiVxVw/sgmKkfZdRoXcvWlxdttf7FcBcc2Q9/pMZfZV1V2m2hXhaMKtLrByCxX4N7nDh2UURl1ZAkTUeXT6NNgVzCN3koqhTsl6PIIamK5KdJUhf8IwCin+7iK4myVaE8DF7Zi8OAnMOGms0LSBVGZbB0nNOLoZfBqGx1dgSBl0TBRCgPobKMH/WZSH/qc6N4Tlx0ONUpZDaGnxtEzdsxgdor/GgI3uNz/PIaaueZqDn/fTaA4OvWM85ns8vRm/cVukcZvRodc8I6YyXXmsRVguZLHkCGNBia8BSRFpEUYw9aRFw+AHAIulvI0iP85mqTowhWB5x15uV5Fe2x5VLsg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OmSgndxTo9D6jbCBS9rlSzjfJe3QE8N4qWFO8pSchRs=;
- b=XY+/6Yp+ZSRQ+dpJLt2eliajGD84i3V6jcmgMiI1YrzFOXwinQMPbITgSat4r6C+593ZpPgaHCr79oYRZWT2+SMt+WJ+7BIKYLmvxQ/PUozOaiWnV9g6FAQfp6aFRh1R1fJo2CKaIWK0Ke4cMIiH2rciZEUnA50aeYC6EgDvmKcZGcEMs3uAp3xVmE3ajVaLRxGQZoV/+YdfOcIQ7Zik8+Kz5MwlriieS4joWcGcVj2WNX2WnknCvL83TPdbu6B2nNPuk4yMI9Ugf30z8oBMi79yDlBhV59Bl8up8BOKq2pdpZBX8yYAY0Eyw8NpjdNsHdL0kqNCbyXlHstbuB2Xdg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OmSgndxTo9D6jbCBS9rlSzjfJe3QE8N4qWFO8pSchRs=;
- b=bSppdPZB/+5SqpbkHp8tj2V8WJuf1tGlUVIbiKr8O06vSw8CG1jlMU1rNqSO/of0BSGiv0MCsMXX2II0qQbCP5mUapwtl02WUIGqfohOf6ZxCpLmkH1IGDcs/BUHrg3NTdjpC6Cx+E+My5aORbrGWyJfXp/D+H+kPOUxvOMAuic=
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
- by MWHPR1101MB2352.namprd11.prod.outlook.com (2603:10b6:300:7e::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Fri, 13 Nov
- 2020 04:02:23 +0000
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::7510:71a5:3cfe:ab94]) by MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::7510:71a5:3cfe:ab94%8]) with mapi id 15.20.3541.026; Fri, 13 Nov 2020
- 04:02:23 +0000
-From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "Doug Ledford" <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "Sumit Semwal" <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        "Vetter, Daniel" <daniel.vetter@intel.com>
-Subject: RE: [PATCH v10 3/6] RDMA/uverbs: Add uverbs command for dma-buf based
- MR registration
-Thread-Topic: [PATCH v10 3/6] RDMA/uverbs: Add uverbs command for dma-buf
- based MR registration
-Thread-Index: AQHWt6hUi+hGF8eG30+pLw0f8vpb0KnFOggAgAA333A=
-Date:   Fri, 13 Nov 2020 04:02:23 +0000
-Message-ID: <MW3PR11MB4555EE4E1EC56080BFF9CE4AE5E60@MW3PR11MB4555.namprd11.prod.outlook.com>
-References: <1605044477-51833-1-git-send-email-jianxin.xiong@intel.com>
- <1605044477-51833-4-git-send-email-jianxin.xiong@intel.com>
- <20201113003358.GZ244516@ziepe.ca>
-In-Reply-To: <20201113003358.GZ244516@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: ziepe.ca; dkim=none (message not signed)
- header.d=none;ziepe.ca; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [73.53.14.45]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 08bfa4e7-5446-4cac-0492-08d88788ed01
-x-ms-traffictypediagnostic: MWHPR1101MB2352:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR1101MB23523278805A832AA3B73CF5E5E60@MWHPR1101MB2352.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3383;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: sK2d6POLiMqF6o0iPOOJ4mO9oufnJeHZVLIroSsWhz81qHouq8Hpglkcye6TxAZeCaJK/RbBIPpJGxuYXEovjtXGoZi2FXugOwMUZtGcOpX2o+XW54sCpxfv9daOuvsMo3E8nSoC3ErTrF4MAePbqW7GJSOpKw8NP9NENIqZtEQrvSdBhjxcIOmJZ+nr3npDtyJG2yl1LMw5wRFJqr2wX6hY4JCjpxm7nO9WSoyfyZq0Zn1hTZKbcR8mLraH4rALlK9o85sUHFEHwEUl9BaMukRQERKWM1GATnASRsqkaSBrRSFyvxgjsvZC8GRzMUsRU2SzKsCDpCCSYj08BGdOww==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(136003)(376002)(366004)(478600001)(83380400001)(6916009)(71200400001)(186003)(26005)(2906002)(8936002)(107886003)(55016002)(66556008)(64756008)(53546011)(54906003)(66946007)(6506007)(66446008)(33656002)(8676002)(9686003)(52536014)(66476007)(316002)(5660300002)(7696005)(4326008)(86362001)(76116006);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: E9bVwSUq+mk04udWGo3mR6MlDDRa/L1GFMYJRc2GTbyZxEyqltaJyZgfmdCqrhbA/vyBPMfc1VCicjdeR4+l6H1iSGzcjeQGRR3pngBDe0O++yxE2pFrYGewSn4D74GvVliQQ8m1SXkdll4XOisU88p6gA7v8wRaGfU7ZXCQxKK3/IbSvoirJvLF/3d9YvNqa7yA7dam2wvx0Tr/uNVoCTcRJmFBbNmDoZpgKUwu1xZYukBfzuLtbwzBLS7Cj9KVonFcKOcPfA6WaoBdASHJnBxeADxcm93yrkvBMLz+iF62Zgr7sRrBRy4+7SRENA0ewC4wz8XxMUbDccBAKhU0lt7zVUzDDTXI0qnU0OTSDh8TKTeODjqSIP4pKOt2yo+rvVaHmWFYyMSAq6DwL4Pz1LZuJUD4DP8u7mHv6O1XyBgBx6TvsV1rMWgLA2G9d3m0S5ngxc/RBDwpAPxbytfr52n5IGuoi5qWzhHzZ3bubVXSsvWUEWcxx2ZPXNRr7Xt1wrqzfhfqd3IwmYsPhz3Z+mnkW1en2s+tudlX9Fu++1Zz6Fbghykj7bG9UCBkZJOW5FVXOv1qlNYkhGD4wpRcaMLXgRsc0QETl+CbiFWrFGCln8PKjLDxgaCcJn5A6t3pzeuEMivTsM/Gj+X0g1+159AoAPdaTyC/hkugMITm9yzd9NOgs1tSalVYj5cbZOKdVWK9hgomwJe5cvcKh4Gej2v2iuOYUigop3k3ePVJYXjdk/T9xY2/ZrsTqLa9CIBkUMlK0+RVqogmivrRxzNXoVdaQwmXSOnHuMk6D7jlbLJSZUHON9ImcxuLsrhcdid8DjhU26YilVknrsJszF3lk4r5DdsC1/mi1iRR3pHLZxRVHn6hOqUODR7wHc27gvyoBNbmwv6pdNVkBKgVrGnQCQ==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726285AbgKMGlU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Nov 2020 01:41:20 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8080 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbgKMGlS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Nov 2020 01:41:18 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CXTPp0Ps6zLxvd;
+        Fri, 13 Nov 2020 14:41:02 +0800 (CST)
+Received: from compute.localdomain (10.175.112.70) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Fri, 13 Nov 2020 14:41:13 +0800
+From:   Zhang Changzhong <zhangchangzhong@huawei.com>
+To:     <mike.marciniszyn@cornelisnetworks.com>,
+        <dennis.dalessandro@cornelisnetworks.com>, <dledford@redhat.com>,
+        <jgg@ziepe.ca>, <sadanand.warrier@intel.com>,
+        <grzegorz.andrejczuk@intel.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] IB/hfi1: fix error return code in hfi1_init_dd()
+Date:   Fri, 13 Nov 2020 14:42:27 +0800
+Message-ID: <1605249747-17942-1-git-send-email-zhangchangzhong@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 08bfa4e7-5446-4cac-0492-08d88788ed01
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Nov 2020 04:02:23.3508
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: H7qwrOpm8Zkbhb+HuoeWuYT+h5cqV3lRRjZ7wfEc3aeoE5vQ4X7+KWQntKi3eM/9y7C7gKna+Uuv8RVMWxAT3g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2352
-X-OriginatorOrg: intel.com
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> -----Original Message-----
-> From: Jason Gunthorpe <jgg@ziepe.ca>
-> Sent: Thursday, November 12, 2020 4:34 PM
-> To: Xiong, Jianxin <jianxin.xiong@intel.com>
-> Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org; Doug Led=
-ford <dledford@redhat.com>; Leon Romanovsky
-> <leon@kernel.org>; Sumit Semwal <sumit.semwal@linaro.org>; Christian Koen=
-ig <christian.koenig@amd.com>; Vetter, Daniel
-> <daniel.vetter@intel.com>
-> Subject: Re: [PATCH v10 3/6] RDMA/uverbs: Add uverbs command for dma-buf =
-based MR registration
->=20
-> On Tue, Nov 10, 2020 at 01:41:14PM -0800, Jianxin Xiong wrote:
-> > +	mr =3D pd->device->ops.reg_user_mr_dmabuf(pd, offset, length, virt_ad=
-dr,
-> > +						fd, access_flags,
-> > +						&attrs->driver_udata);
-> > +	if (IS_ERR(mr))
-> > +		return PTR_ERR(mr);
-> > +
-> > +	mr->device =3D pd->device;
-> > +	mr->pd =3D pd;
-> > +	mr->type =3D IB_MR_TYPE_USER;
-> > +	mr->uobject =3D uobj;
-> > +	atomic_inc(&pd->usecnt);
-> > +
-> > +	uobj->object =3D mr;
-> > +
-> > +	uverbs_finalize_uobj_create(attrs,
-> > +UVERBS_ATTR_REG_DMABUF_MR_HANDLE);
-> > +
-> > +	ret =3D uverbs_copy_to(attrs, UVERBS_ATTR_REG_DMABUF_MR_RESP_LKEY,
-> > +			     &mr->lkey, sizeof(mr->lkey));
-> > +	if (ret)
-> > +		goto err_dereg;
-> > +
-> > +	ret =3D uverbs_copy_to(attrs, UVERBS_ATTR_REG_DMABUF_MR_RESP_RKEY,
-> > +			     &mr->rkey, sizeof(mr->rkey));
-> > +	if (ret)
-> > +		goto err_dereg;
-> > +
-> > +	return 0;
-> > +
-> > +err_dereg:
-> > +	ib_dereg_mr_user(mr, uverbs_get_cleared_udata(attrs));
->=20
-> This isn't how the error handling works with
-> uverbs_finalize_uobj_create() - you just return the error code and the ca=
-ller deals with destroying the fully initialized HW object properly.
-> Calling ib_dereg_mr_user() here will crash the kernel.
->=20
-> Check the other uses for an example.
->=20
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Will fix.
+Fixes: 4730f4a6c6b2 ("IB/hfi1: Activate the dummy netdev")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+---
+ drivers/infiniband/hw/hfi1/chip.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> Again I must ask what the plan is for testing as even a basic set of pyve=
-rbs sanity tests would catch this.
->=20
-> I've generally been insisting that all new uABI needs testing support in =
-rdma-core. This *might* be the exception but I want to hear a really
-> good reason why we can't have a test first...
->=20
+diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
+index 7eaf9953..c87b94e 100644
+--- a/drivers/infiniband/hw/hfi1/chip.c
++++ b/drivers/infiniband/hw/hfi1/chip.c
+@@ -15245,7 +15245,8 @@ int hfi1_init_dd(struct hfi1_devdata *dd)
+ 		    & CCE_REVISION_SW_MASK);
+ 
+ 	/* alloc netdev data */
+-	if (hfi1_netdev_alloc(dd))
++	ret = hfi1_netdev_alloc(dd);
++	if (ret)
+ 		goto bail_cleanup;
+ 
+ 	ret = set_up_context_variables(dd);
+-- 
+2.9.5
 
-So far I have been using a user space test that focuses on basic functional=
-ity and limited parameter checking (e.g. incorrect addr, length, flags). Th=
-is specific error path happens
-to be untested. Will work more on the test front to increase the code cover=
-age.
-
-> Jason
