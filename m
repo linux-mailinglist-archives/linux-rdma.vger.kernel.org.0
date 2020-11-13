@@ -2,67 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989E32B14DE
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Nov 2020 04:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CCFD2B14FC
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Nov 2020 05:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726134AbgKMDvc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Nov 2020 22:51:32 -0500
-Received: from mga18.intel.com ([134.134.136.126]:55102 "EHLO mga18.intel.com"
+        id S1726054AbgKMECh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Nov 2020 23:02:37 -0500
+Received: from mga12.intel.com ([192.55.52.136]:31994 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726011AbgKMDvb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Nov 2020 22:51:31 -0500
-IronPort-SDR: ifXIjHP3htGH9T/lBuuTYBSmoI13sJZzPvAm6iaxy7UeL+3EFtsHgbYvQzWpZEtt1EWCeeP0Yz
- BIts6FfEZsqw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="158200177"
+        id S1726182AbgKMECg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Nov 2020 23:02:36 -0500
+IronPort-SDR: sfpi3vHZCNfGQqTJk0H/YfFrJ1wPQl8U6PsYQ6tm0oFaTR7hPDXFyrOuSfWenfqCxUBVkJ70TD
+ YLaJ2Xd/xYAw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="149693580"
 X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
-   d="scan'208";a="158200177"
+   d="scan'208";a="149693580"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 19:51:29 -0800
-IronPort-SDR: RldrbvVGJyPKcWoiM52vEHEL+6NNLeAL5HDJy/NZ94t3xUFyXtsBfdj4gdkuPhMzk+ueo44NOB
- nT3dH8kRbB5A==
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 20:02:27 -0800
+IronPort-SDR: dyPsDs2ksIAbu+eph4aLCLvppH3xjzHKEdgKeVWItrD1TboSxHB1qtHnHF+6IabZqh3xOzU/uJ
+ xI1t3brd0fng==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,474,1596524400"; 
-   d="scan'208";a="474525220"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga004.jf.intel.com with ESMTP; 12 Nov 2020 19:51:28 -0800
-Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+   d="scan'208";a="366603167"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by FMSMGA003.fm.intel.com with ESMTP; 12 Nov 2020 20:02:27 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 12 Nov 2020 19:51:23 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
+ 15.1.1713.5; Thu, 12 Nov 2020 20:02:27 -0800
+Received: from orsmsx604.amr.corp.intel.com (10.22.229.17) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 12 Nov 2020 20:02:27 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 12 Nov 2020 19:51:23 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.171)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ via Frontend Transport; Thu, 12 Nov 2020 20:02:27 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Thu, 12 Nov 2020 19:51:23 -0800
+ 15.1.1713.5; Thu, 12 Nov 2020 20:02:26 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mr15xVCE81PX8cRhKNSGAhLR7gdMpuBuTxMDgoNdMspSDon/82j7zwa+Mm/JAFeU/8/aYfktigH/U48LtDwr6SYTN3lkOSAZJ2+r/BGoWLd3mHDcR4sHA2ceQpfBOH9Z34YS/Ql+3j//Iq2dTD/BUO4aeaPD75ZFH82uq82M7/JcKZdDXE/is2LLU7dRpJdYdwvZy8U4n3pUjijfUk6DmytC8cyZ4sDqG8BvC3iDzbV+GOVvRHfMhAY3xcXyP+I1GHnRKTE7sn3dGTI2kCAfxFldBx5qSHcCOoMDGIjVDtUoZqnP3NpWXxYRih+XqRmhDqjZt1dh36jOIQ22ye4mAg==
+ b=LiVxVw/sgmKkfZdRoXcvWlxdttf7FcBcc2Q9/pMZfZV1V2m2hXhaMKtLrByCxX4N7nDh2UURl1ZAkTUeXT6NNgVzCN3koqhTsl6PIIamK5KdJUhf8IwCin+7iK4myVaE8DF7Zi8OAnMOGms0LSBVGZbB0nNOLoZfBqGx1dgSBl0TBRCgPobKMH/WZSH/qc6N4Tlx0ONUpZDaGnxtEzdsxgdor/GgI3uNz/PIaaueZqDn/fTaA4OvWM85ns8vRm/cVukcZvRodc8I6YyXXmsRVguZLHkCGNBia8BSRFpEUYw9aRFw+AHAIulvI0iP85mqTowhWB5x15uV5Fe2x5VLsg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=45DjwU+dC8R/19uwsMBJVOXdcEuc5LFKqI3r8BbHDl8=;
- b=i0zKUJyAU0FChYOL6v7Qos48/qT3NjM1n/xsK+WdRLtZTa+m6K9IliDS87bM4nOpYaFmLTrgABBmAd/YGccaTCyRQpYvADgLlMWDUPuUyte7rlyHZUIuvv1FVwtTNGaLzPBovbykGVxedGD/gWD0pgOnw1MHjhvhi3oUGs6o26PfWaH4u/iZ8JODg3aLiLGcsWbL1+2EeDRhFAcXQKfGFkt1ybzR2laIHwaglEMlVqjgEZk4+C1927/h/S2zqzkzcw7kuAgQC4bF5CPoVA+6iIeO5iAaSb7I4cd4sqNFu4nkkgcPZXo/eTrnf1AhTR9SK2WHgCayRk6wCJ2Esa/93A==
+ bh=OmSgndxTo9D6jbCBS9rlSzjfJe3QE8N4qWFO8pSchRs=;
+ b=XY+/6Yp+ZSRQ+dpJLt2eliajGD84i3V6jcmgMiI1YrzFOXwinQMPbITgSat4r6C+593ZpPgaHCr79oYRZWT2+SMt+WJ+7BIKYLmvxQ/PUozOaiWnV9g6FAQfp6aFRh1R1fJo2CKaIWK0Ke4cMIiH2rciZEUnA50aeYC6EgDvmKcZGcEMs3uAp3xVmE3ajVaLRxGQZoV/+YdfOcIQ7Zik8+Kz5MwlriieS4joWcGcVj2WNX2WnknCvL83TPdbu6B2nNPuk4yMI9Ugf30z8oBMi79yDlBhV59Bl8up8BOKq2pdpZBX8yYAY0Eyw8NpjdNsHdL0kqNCbyXlHstbuB2Xdg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
  s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=45DjwU+dC8R/19uwsMBJVOXdcEuc5LFKqI3r8BbHDl8=;
- b=f8Eac2ocLkcQOou/fnTrWo3T8Pinpa2Q/foBzkgl5pHaJE3l2ctPDO61IyeOto7OUkkHA/5zlRJYeQ7al8Dypyy6OnNWzWe4Ngd5Rufu1zLT3p9Qn1A2+PnnJ1qrW/gxTsC3grDH5j7wslVx7CCWHl607h65zJrsTMCogivT9kA=
+ bh=OmSgndxTo9D6jbCBS9rlSzjfJe3QE8N4qWFO8pSchRs=;
+ b=bSppdPZB/+5SqpbkHp8tj2V8WJuf1tGlUVIbiKr8O06vSw8CG1jlMU1rNqSO/of0BSGiv0MCsMXX2II0qQbCP5mUapwtl02WUIGqfohOf6ZxCpLmkH1IGDcs/BUHrg3NTdjpC6Cx+E+My5aORbrGWyJfXp/D+H+kPOUxvOMAuic=
 Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
- by CO1PR11MB4995.namprd11.prod.outlook.com (2603:10b6:303:9f::22) with
+ by MWHPR1101MB2352.namprd11.prod.outlook.com (2603:10b6:300:7e::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.23; Fri, 13 Nov
- 2020 03:51:21 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Fri, 13 Nov
+ 2020 04:02:23 +0000
 Received: from MW3PR11MB4555.namprd11.prod.outlook.com
  ([fe80::7510:71a5:3cfe:ab94]) by MW3PR11MB4555.namprd11.prod.outlook.com
  ([fe80::7510:71a5:3cfe:ab94%8]) with mapi id 15.20.3541.026; Fri, 13 Nov 2020
- 03:51:21 +0000
+ 04:02:23 +0000
 From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
 CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
@@ -72,17 +76,17 @@ CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "Sumit Semwal" <sumit.semwal@linaro.org>,
         Christian Koenig <christian.koenig@amd.com>,
         "Vetter, Daniel" <daniel.vetter@intel.com>
-Subject: RE: [PATCH v10 4/6] RDMA/mlx5: Support dma-buf based userspace memory
- region
-Thread-Topic: [PATCH v10 4/6] RDMA/mlx5: Support dma-buf based userspace
- memory region
-Thread-Index: AQHWt6hWWtXHedGI1Eu5Tn8UtjOrH6nFO6cAgAAyciA=
-Date:   Fri, 13 Nov 2020 03:51:20 +0000
-Message-ID: <MW3PR11MB45550E49934ECB53FC42E688E5E60@MW3PR11MB4555.namprd11.prod.outlook.com>
+Subject: RE: [PATCH v10 3/6] RDMA/uverbs: Add uverbs command for dma-buf based
+ MR registration
+Thread-Topic: [PATCH v10 3/6] RDMA/uverbs: Add uverbs command for dma-buf
+ based MR registration
+Thread-Index: AQHWt6hUi+hGF8eG30+pLw0f8vpb0KnFOggAgAA333A=
+Date:   Fri, 13 Nov 2020 04:02:23 +0000
+Message-ID: <MW3PR11MB4555EE4E1EC56080BFF9CE4AE5E60@MW3PR11MB4555.namprd11.prod.outlook.com>
 References: <1605044477-51833-1-git-send-email-jianxin.xiong@intel.com>
- <1605044477-51833-5-git-send-email-jianxin.xiong@intel.com>
- <20201113003946.GA244516@ziepe.ca>
-In-Reply-To: <20201113003946.GA244516@ziepe.ca>
+ <1605044477-51833-4-git-send-email-jianxin.xiong@intel.com>
+ <20201113003358.GZ244516@ziepe.ca>
+In-Reply-To: <20201113003358.GZ244516@ziepe.ca>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -94,30 +98,30 @@ authentication-results: ziepe.ca; dkim=none (message not signed)
  header.d=none;ziepe.ca; dmarc=none action=none header.from=intel.com;
 x-originating-ip: [73.53.14.45]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4e28a154-ae00-4329-6ca6-08d88787622b
-x-ms-traffictypediagnostic: CO1PR11MB4995:
+x-ms-office365-filtering-correlation-id: 08bfa4e7-5446-4cac-0492-08d88788ed01
+x-ms-traffictypediagnostic: MWHPR1101MB2352:
 x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CO1PR11MB4995F801AA44A9CBF9A6F178E5E60@CO1PR11MB4995.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-microsoft-antispam-prvs: <MWHPR1101MB23523278805A832AA3B73CF5E5E60@MWHPR1101MB2352.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3383;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bZxegftkuWtV04JOOTGWt5CY2JBU4lhRnhcjmYV/8JYPA0gYtddIe4pcPyTK4ZaYq5FPx2PXKfkCgWXhyK/yQGWiSMGxIxEraposHbQ6ru/UwEGpwgY44h2E0mqxVyil4ixccgXK5+8qiYh5FIbv94AE8qLtm/fkdNJ4AArjPn0E/4hHplm9tpCBTfraZ8BHJh6sJ15dGjx7RLI5DYauHp2ot9pnuq48tGSPUNTBqlQrlFhUCOmW9wILluCMp9jGRsLI1i0k2Mv3S3TcUOwYmufTh6dbT8DFu5s6sh7cBWNCa7Qi8Zk+7mKEZ6VKKDv0TEpOeqOeW+oPjZ8jJtoIBQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(136003)(346002)(376002)(39860400002)(71200400001)(8676002)(66946007)(5660300002)(6916009)(186003)(53546011)(478600001)(52536014)(83380400001)(8936002)(66556008)(6506007)(66476007)(2906002)(107886003)(7696005)(9686003)(26005)(66446008)(33656002)(55016002)(64756008)(76116006)(4326008)(316002)(54906003)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 98iH8lVph5YcLnNbCbL3WqF10b6709WHJ/9InPecMfiedxhVr5o6Nn6AYT6rcymYZ1r+t3ra9vk8Gr2HJrnIZo8cvWx3PdHktT//U3HeBg7esA478r8jLFyu2OeV4fW8rcKj/iKFzi0NAHW9/IvAbuoHOIOeY55efieLtgNaII7ZUGadalCecq7IIVQLWuYa02tnYEHQx5wkpGfZfyq3uIoZ4a1K3I1lbEn6nBS+Y/VPxCAJgX92wmWKOV19bWV1cvqB8x2S1GRCIixk84Q+Qde8m/91oihjg7YqOHFYLsZcyi45qmSUxD9NCamGr1A929XdkD9TpiBIDmrGvJppwNeEj725JcSa7S8RTRvNNfLS0rTgj9JtHWSNTsRAUIu9HSl4SrmnVhQ+N/ZyW7nV8kb2o20JD093dESRHNpTKmOEHyjb86rdrhuJ0PRGrrJZhuFe4DTLvvRVgQAxov/ERe18Vm07PdhhrgJpdKr2yLkI3PrOLXH9f0eZjYtXWBaTkRUZk4JqN47xmjZyI4kjc0qO/FhOkUDOCto26YmGFKLv3eS0Hm9ud1CSlRLxiAUNqFm3n/a8VNUxM9Y+8uF5nEXsQJnErgYRclIQWb6jLmChPc+PTzuIH+24cLoFAgOiuaFarMGcYN/c3YFfsJaNxGy7+XFYmwgN9+WAG/nzkmstl30pe+LLzuhBfX/RFAle2wG1RVKx+yZiPKkSFcaigtqbvUN0PdNDB3wm3rjZO0ENU5VSN3b6KQlbxUEz4542aOqPK3LHjBvQ+JermuTVox7ug6nEJO3y1VtJY76lTP+++wWNRPauk9itMAFxFOK3f/faGKpFL6sKqvGUCXown2MBqo4GEU49AmX3V/vtTkZ5BYcfxw39TL43mHRk7mz4BPYr335aKMZhJ+Z9KNktnA==
+x-microsoft-antispam-message-info: sK2d6POLiMqF6o0iPOOJ4mO9oufnJeHZVLIroSsWhz81qHouq8Hpglkcye6TxAZeCaJK/RbBIPpJGxuYXEovjtXGoZi2FXugOwMUZtGcOpX2o+XW54sCpxfv9daOuvsMo3E8nSoC3ErTrF4MAePbqW7GJSOpKw8NP9NENIqZtEQrvSdBhjxcIOmJZ+nr3npDtyJG2yl1LMw5wRFJqr2wX6hY4JCjpxm7nO9WSoyfyZq0Zn1hTZKbcR8mLraH4rALlK9o85sUHFEHwEUl9BaMukRQERKWM1GATnASRsqkaSBrRSFyvxgjsvZC8GRzMUsRU2SzKsCDpCCSYj08BGdOww==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(136003)(376002)(366004)(478600001)(83380400001)(6916009)(71200400001)(186003)(26005)(2906002)(8936002)(107886003)(55016002)(66556008)(64756008)(53546011)(54906003)(66946007)(6506007)(66446008)(33656002)(8676002)(9686003)(52536014)(66476007)(316002)(5660300002)(7696005)(4326008)(86362001)(76116006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: E9bVwSUq+mk04udWGo3mR6MlDDRa/L1GFMYJRc2GTbyZxEyqltaJyZgfmdCqrhbA/vyBPMfc1VCicjdeR4+l6H1iSGzcjeQGRR3pngBDe0O++yxE2pFrYGewSn4D74GvVliQQ8m1SXkdll4XOisU88p6gA7v8wRaGfU7ZXCQxKK3/IbSvoirJvLF/3d9YvNqa7yA7dam2wvx0Tr/uNVoCTcRJmFBbNmDoZpgKUwu1xZYukBfzuLtbwzBLS7Cj9KVonFcKOcPfA6WaoBdASHJnBxeADxcm93yrkvBMLz+iF62Zgr7sRrBRy4+7SRENA0ewC4wz8XxMUbDccBAKhU0lt7zVUzDDTXI0qnU0OTSDh8TKTeODjqSIP4pKOt2yo+rvVaHmWFYyMSAq6DwL4Pz1LZuJUD4DP8u7mHv6O1XyBgBx6TvsV1rMWgLA2G9d3m0S5ngxc/RBDwpAPxbytfr52n5IGuoi5qWzhHzZ3bubVXSsvWUEWcxx2ZPXNRr7Xt1wrqzfhfqd3IwmYsPhz3Z+mnkW1en2s+tudlX9Fu++1Zz6Fbghykj7bG9UCBkZJOW5FVXOv1qlNYkhGD4wpRcaMLXgRsc0QETl+CbiFWrFGCln8PKjLDxgaCcJn5A6t3pzeuEMivTsM/Gj+X0g1+159AoAPdaTyC/hkugMITm9yzd9NOgs1tSalVYj5cbZOKdVWK9hgomwJe5cvcKh4Gej2v2iuOYUigop3k3ePVJYXjdk/T9xY2/ZrsTqLa9CIBkUMlK0+RVqogmivrRxzNXoVdaQwmXSOnHuMk6D7jlbLJSZUHON9ImcxuLsrhcdid8DjhU26YilVknrsJszF3lk4r5DdsC1/mi1iRR3pHLZxRVHn6hOqUODR7wHc27gvyoBNbmwv6pdNVkBKgVrGnQCQ==
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e28a154-ae00-4329-6ca6-08d88787622b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Nov 2020 03:51:20.9008
+X-MS-Exchange-CrossTenant-Network-Message-Id: 08bfa4e7-5446-4cac-0492-08d88788ed01
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Nov 2020 04:02:23.3508
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VkD9WVRiwKV+wVJxkIuui2LpxzU47mH+4SyIG6bxjoNCii3D5++HmYQzFi8HjZOON6bs+eo90D2D1tpuDZccpQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4995
+X-MS-Exchange-CrossTenant-userprincipalname: H7qwrOpm8Zkbhb+HuoeWuYT+h5cqV3lRRjZ7wfEc3aeoE5vQ4X7+KWQntKi3eM/9y7C7gKna+Uuv8RVMWxAT3g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2352
 X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
@@ -125,113 +129,72 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 > -----Original Message-----
 > From: Jason Gunthorpe <jgg@ziepe.ca>
-> Sent: Thursday, November 12, 2020 4:40 PM
+> Sent: Thursday, November 12, 2020 4:34 PM
 > To: Xiong, Jianxin <jianxin.xiong@intel.com>
 > Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org; Doug Led=
 ford <dledford@redhat.com>; Leon Romanovsky
 > <leon@kernel.org>; Sumit Semwal <sumit.semwal@linaro.org>; Christian Koen=
 ig <christian.koenig@amd.com>; Vetter, Daniel
 > <daniel.vetter@intel.com>
-> Subject: Re: [PATCH v10 4/6] RDMA/mlx5: Support dma-buf based userspace m=
-emory region
+> Subject: Re: [PATCH v10 3/6] RDMA/uverbs: Add uverbs command for dma-buf =
+based MR registration
 >=20
-> On Tue, Nov 10, 2020 at 01:41:15PM -0800, Jianxin Xiong wrote:
->=20
-> > -static int mlx5_ib_update_mr_pas(struct mlx5_ib_mr *mr, unsigned int
-> > flags)
-> > +int mlx5_ib_update_mr_pas(struct mlx5_ib_mr *mr, unsigned int flags)
-> >  {
-> >  	struct mlx5_ib_dev *dev =3D mr->dev;
-> >  	struct device *ddev =3D dev->ib_dev.dev.parent; @@ -1255,6 +1267,10 @=
-@
-> > static int mlx5_ib_update_mr_pas(struct mlx5_ib_mr *mr, unsigned int fl=
-ags)
-> >  		cur_mtt->ptag =3D
-> >  			cpu_to_be64(rdma_block_iter_dma_address(&biter) |
-> >  				    MLX5_IB_MTT_PRESENT);
+> On Tue, Nov 10, 2020 at 01:41:14PM -0800, Jianxin Xiong wrote:
+> > +	mr =3D pd->device->ops.reg_user_mr_dmabuf(pd, offset, length, virt_ad=
+dr,
+> > +						fd, access_flags,
+> > +						&attrs->driver_udata);
+> > +	if (IS_ERR(mr))
+> > +		return PTR_ERR(mr);
 > > +
-> > +		if (mr->umem->is_dmabuf && (flags & MLX5_IB_UPD_XLT_ZAP))
-> > +			cur_mtt->ptag =3D 0;
+> > +	mr->device =3D pd->device;
+> > +	mr->pd =3D pd;
+> > +	mr->type =3D IB_MR_TYPE_USER;
+> > +	mr->uobject =3D uobj;
+> > +	atomic_inc(&pd->usecnt);
 > > +
-> >  		cur_mtt++;
-> >  	}
-> >
-> > @@ -1291,8 +1307,15 @@ static struct mlx5_ib_mr *reg_create(struct ib_m=
-r *ibmr, struct ib_pd *pd,
-> >  	int err;
-> >  	bool pg_cap =3D !!(MLX5_CAP_GEN(dev->mdev, pg));
-> >
-> > -	page_size =3D
-> > -		mlx5_umem_find_best_pgsz(umem, mkc, log_page_size, 0, iova);
-> > +	if (umem->is_dmabuf) {
-> > +		if ((iova ^ umem->address) & (PAGE_SIZE - 1))
-> > +			return ERR_PTR(-EINVAL);
-> > +		umem->iova =3D iova;
-> > +		page_size =3D PAGE_SIZE;
-> > +	} else {
-> > +		page_size =3D mlx5_umem_find_best_pgsz(umem, mkc, log_page_size,
-> > +						     0, iova);
-> > +	}
->=20
-> Urk, maybe this duplicated sequence should be in a function..
->=20
-> This will also collide with a rereg_mr bugfixing series that should be po=
-sted soon..
->=20
-> > +static void mlx5_ib_dmabuf_invalidate_cb(struct dma_buf_attachment
-> > +*attach) {
-> > +	struct ib_umem_dmabuf *umem_dmabuf =3D attach->importer_priv;
-> > +	struct mlx5_ib_mr *mr =3D umem_dmabuf->private;
+> > +	uobj->object =3D mr;
 > > +
-> > +	dma_resv_assert_held(umem_dmabuf->attach->dmabuf->resv);
+> > +	uverbs_finalize_uobj_create(attrs,
+> > +UVERBS_ATTR_REG_DMABUF_MR_HANDLE);
 > > +
-> > +	if (mr)
+> > +	ret =3D uverbs_copy_to(attrs, UVERBS_ATTR_REG_DMABUF_MR_RESP_LKEY,
+> > +			     &mr->lkey, sizeof(mr->lkey));
+> > +	if (ret)
+> > +		goto err_dereg;
+> > +
+> > +	ret =3D uverbs_copy_to(attrs, UVERBS_ATTR_REG_DMABUF_MR_RESP_RKEY,
+> > +			     &mr->rkey, sizeof(mr->rkey));
+> > +	if (ret)
+> > +		goto err_dereg;
+> > +
+> > +	return 0;
+> > +
+> > +err_dereg:
+> > +	ib_dereg_mr_user(mr, uverbs_get_cleared_udata(attrs));
 >=20
-> I don't think this 'if (mr)' test is needed anymore? I certainly prefer i=
-t gone as it is kind of messy. I expect unmapping the dma to ensure this
-> function is not running, and won't run again.
+> This isn't how the error handling works with
+> uverbs_finalize_uobj_create() - you just return the error code and the ca=
+ller deals with destroying the fully initialized HW object properly.
+> Calling ib_dereg_mr_user() here will crash the kernel.
+>=20
+> Check the other uses for an example.
+>=20
 
-It is still needed. When the dma-buf moves, the callback function of every =
-attached importer is invoked, regardless if the importer has mapped the dma=
- or not.
+Will fix.
 
+> Again I must ask what the plan is for testing as even a basic set of pyve=
+rbs sanity tests would catch this.
 >=20
-> > +/**
-> > + * mlx5_ib_fence_dmabuf_mr - Stop all access to the dmabuf MR
-> > + * @mr: to fence
-> > + *
-> > + * On return no parallel threads will be touching this MR and no DMA
-> > +will be
-> > + * active.
-> > + */
-> > +void mlx5_ib_fence_dmabuf_mr(struct mlx5_ib_mr *mr) {
-> > +	struct ib_umem_dmabuf *umem_dmabuf =3D to_ib_umem_dmabuf(mr->umem);
-> > +
-> > +	/* Prevent new page faults and prefetch requests from succeeding */
-> > +	xa_erase(&mr->dev->odp_mkeys, mlx5_base_mkey(mr->mmkey.key));
-> > +
-> > +	/* Wait for all running page-fault handlers to finish. */
-> > +	synchronize_srcu(&mr->dev->odp_srcu);
-> > +
-> > +	wait_event(mr->q_deferred_work,
-> > +!atomic_read(&mr->num_deferred_work));
-> > +
-> > +	dma_resv_lock(umem_dmabuf->attach->dmabuf->resv, NULL);
-> > +	mlx5_mr_cache_invalidate(mr);
-> > +	umem_dmabuf->private =3D NULL;
-> > +	ib_umem_dmabuf_unmap_pages(umem_dmabuf);
-> > +	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
-> > +
-> > +	if (!mr->cache_ent) {
-> > +		mlx5_core_destroy_mkey(mr->dev->mdev, &mr->mmkey);
-> > +		WARN_ON(mr->descs);
-> > +	}
+> I've generally been insisting that all new uABI needs testing support in =
+rdma-core. This *might* be the exception but I want to hear a really
+> good reason why we can't have a test first...
 >=20
-> I didn't check carefully, but are you sure this destroy_mkey should be he=
-re??
 
-To my understanding, yes. This is similar to what dma_fence_odp_mr() does,
-just inlined here since it's not called from other places.
-=20
->=20
+So far I have been using a user space test that focuses on basic functional=
+ity and limited parameter checking (e.g. incorrect addr, length, flags). Th=
+is specific error path happens
+to be untested. Will work more on the test front to increase the code cover=
+age.
+
 > Jason
