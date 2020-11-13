@@ -2,72 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1182B1BFB
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Nov 2020 14:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CABD92B1D9B
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Nov 2020 15:42:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgKMNih (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 Nov 2020 08:38:37 -0500
-Received: from [192.55.52.120] ([192.55.52.120]:52334 "EHLO mga04.intel.com"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1726336AbgKMNih (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:38:37 -0500
-IronPort-SDR: tfYLtipSQyLaMAB3TDkMvgseZRyB1wllq6ensrA1fZ5tB2TZeUIg57AVXnESYPJcG4f3NIHWX5
- 2leCj1keT6ZA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="167892656"
-X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; 
-   d="scan'208";a="167892656"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 05:37:44 -0800
-IronPort-SDR: qfPd63oDbHJ+QFUJqHY6NNuX8RBeWdVtOV/FE/hkJTkfhbp4NuQl2y1zoEbocJcoUVpU/uR8+c
- b6uVYExJINeA==
-X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; 
-   d="scan'208";a="542657881"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.205.99]) ([10.254.205.99])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2020 05:37:42 -0800
-Subject: Re: [PATCH for-rc v2] IB/hfi1: Move cached value of mm into handler
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     jgg@ziepe.ca, dledford@redhat.com, Jann Horn <jannh@google.com>,
-        linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@nvidia.com>
-References: <20201112025837.24440.6767.stgit@awfm-01.aw.intel.com>
- <20201112171439.GT3976735@iweiny-DESK2.sc.intel.com>
- <b45c2303-a78e-a3b6-fcd2-371886caf788@cornelisnetworks.com>
- <ba7df075-ab50-3344-aacb-656ae10b517a@cornelisnetworks.com>
- <20201113003357.GW3976735@iweiny-DESK2.sc.intel.com>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Message-ID: <d423534f-806d-317c-d51d-46f1f104a7e6@cornelisnetworks.com>
-Date:   Fri, 13 Nov 2020 08:37:39 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726324AbgKMOmQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Nov 2020 09:42:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726267AbgKMOmQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Nov 2020 09:42:16 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DAFDC0613D1
+        for <linux-rdma@vger.kernel.org>; Fri, 13 Nov 2020 06:42:16 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id b16so6547309qtb.6
+        for <linux-rdma@vger.kernel.org>; Fri, 13 Nov 2020 06:42:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=utPnGzEwakwT/6asJ5quxVUqO8Le0Dtu/Fy33I9lAgc=;
+        b=NBQ1sqVM+RjVN34HwPUERxKIAOt9ed6RD1bEhrQR+As5NKS4hMZTQRXXd+awX4i17C
+         if3kNZK6rA94ylS+F7R7QK5EfYSJmxfa9aYJ2Fr/1nHsAtxfKq7XKqzOxyE3LYJ0biqH
+         kmWtqjkuo9NPyekVhpiBekk4DCyuBanFIRLGEco/KU1VUdmkwEbtjhSyRUdQ05XcgwD5
+         inU7avZFm1/MtPc/T5jgqsi7RYOsvrg5dIP2Zc9vQ9NkY+gwpSoS8mWFoA8bo21AknPV
+         PZd4BYqM1GCiunOS/mAq32vhOYTaTf7rNaIYqPjOdqHBpm9ZJIpcYc07o4jsi7VC/KHK
+         PhxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=utPnGzEwakwT/6asJ5quxVUqO8Le0Dtu/Fy33I9lAgc=;
+        b=hcF0PN2HCcZQd2QK+f4R1Cg265vyr8ycJoUU5SV4fRdceF03YPS+hSVUtb1aGCPVeI
+         d9nxUc3Xe3y9RkGG4dpBum2jQquORpf9H4oxpLbbvtfn+O4Zsci6WxLbi3NwvuHRo19Q
+         94PisICcxT5t/Rj6HisJrybUvHi/cWRhVG4z2vSBK1OZ+qhZ7dlJzsHxOVaB1i4UMhpu
+         8GazjsYvGDwAyqxhS8eKF4cjGryk3QX/mn6hcW6SlmR8yS7Yf1ayJpL2L30oiYeYwl35
+         tg3F7KalDiNfU3dzWqsD+TvfSdEdApVjTVdkQHhR3bMElqWEJyo+kX7+io2sVMgK7VbR
+         oH2Q==
+X-Gm-Message-State: AOAM532AqgzQ3R0RD6q87MFptpZxi88L6niWdfmCBH6Zoq7tPTWLpbc5
+        Tj1ExlKKcaKcFDuJ+oIeFdahFQ==
+X-Google-Smtp-Source: ABdhPJybbXMsnk3NRAie+HLNPiFo77zLfqHBFbZUXRNl7jPO+wGaTAn51CXGhWGzf1ZrxuVwnOJ+Ig==
+X-Received: by 2002:ac8:74ce:: with SMTP id j14mr2144751qtr.329.1605278535318;
+        Fri, 13 Nov 2020 06:42:15 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id r55sm7257434qte.8.2020.11.13.06.42.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 06:42:14 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kdaHF-004aME-E3; Fri, 13 Nov 2020 10:42:13 -0400
+Date:   Fri, 13 Nov 2020 10:42:13 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
+        Bob Pearson <rpearson@hpe.com>
+Subject: Re: [PATCH] Provider/rxe: Cleanup style warnings
+Message-ID: <20201113144213.GE244516@ziepe.ca>
+References: <20201106204128.5384-1-rpearson@hpe.com>
 MIME-Version: 1.0
-In-Reply-To: <20201113003357.GW3976735@iweiny-DESK2.sc.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106204128.5384-1-rpearson@hpe.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/12/2020 7:33 PM, Ira Weiny wrote:
-> So I think the final point is the key to fixing the bug.  Keeping any
-> current->mm which is not the one we opened the file with...  (or more
-> specifically the one which first registered memory).  In some ways this may be
-> worse than before because technically the parent could open the fd and hand it
-> to the child and have the child register with it's mm.  But that is ok
-> really...  May just be odd behavior for some users depending on what operations
-> they do and in what order.
+On Fri, Nov 06, 2020 at 02:41:29PM -0600, Bob Pearson wrote:
+> Cleanup style warnings produced by checkpatch --no-tree -f.
+> Not all warnings were appropriate for user space code and
+> those were ignored.
+> 
+> Signed-off-by: Bob Pearson <rpearson@hpe.com>
+> ---
+>  providers/rxe/rxe.c | 69 ++++++++++++++++++++++-----------------------
+>  1 file changed, 34 insertions(+), 35 deletions(-)
 
-I don't think that's worse than before. Before we were letting it 
-operate on the wrong mm. That's so much worse. Yes, parent could open fd 
-and hand it off, which is OK. The "odd" behavior is up to whoever wrote 
-the user space code to do that in the first place.
+Applied to rdma-core, thanks
 
-> [1] Also, you probably should credit Jann for the idea with a suggested by tag.
-
-Will change reported-by to suggested-by.
-
--Denny
-
+Jason
