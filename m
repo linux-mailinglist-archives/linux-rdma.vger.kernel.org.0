@@ -2,51 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3682B3512
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Nov 2020 14:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09BA42B3671
+	for <lists+linux-rdma@lfdr.de>; Sun, 15 Nov 2020 17:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbgKONgv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 15 Nov 2020 08:36:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727079AbgKONgu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 15 Nov 2020 08:36:50 -0500
-Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B12B92071E;
-        Sun, 15 Nov 2020 13:36:49 +0000 (UTC)
-Date:   Sun, 15 Nov 2020 15:36:46 +0200
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next] RDMA/counter: Combine allocation and bind logic
-Message-ID: <20201115133646.GF47002@unreal>
-References: <20201115093405.129689-1-leon@kernel.org>
+        id S1726876AbgKOQnd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Sun, 15 Nov 2020 11:43:33 -0500
+Received: from sw73-70-41.adsl.seed.net.tw ([203.73.70.41]:60607 "EHLO
+        oa.trendtek.com.tw" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1726631AbgKOQnd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 15 Nov 2020 11:43:33 -0500
+Received: from [156.96.44.214] ([156.96.44.214])
+        (authenticated bits=0)
+        by oa.trendtek.com.tw (8.13.8/8.13.1) with ESMTP id 0AFGh3iT029258
+        for <linux-rdma@vger.kernel.org>; Mon, 16 Nov 2020 00:43:31 +0800
+Message-Id: <202011151643.0AFGh3iT029258@oa.trendtek.com.tw>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201115093405.129689-1-leon@kernel.org>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Corporate and Personal Loan *
+To:     linux-rdma@vger.kernel.org
+From:   "Investment  Corporate" <financialcapability6@gmail.com>
+Date:   Sun, 15 Nov 2020 08:43:27 -0800
+Reply-To: hmurrah39@gmail.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Nov 15, 2020 at 11:34:05AM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
->
-> RDMA counters are allocated and bounded to QP immediately after that.
-> Only after this two step process they are really usable. By combining
-> the logic, we are ensuring that once counter is returned to the caller,
-> it will have everything set.
->
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/core/counters.c | 130 +++++++++++++----------------
->  1 file changed, 58 insertions(+), 72 deletions(-)
+Hello linux-rdma@vger.kernel.org
 
-Sorry, for resending it, you wrote here [1] that you took it, but I
-don't see it in the tree.
-[1] https://lore.kernel.org/linux-rdma/20201112185951.GA981682@nvidia.com/
 
-Thanks
+We are Base Investment Company offering Corporate and Personal Loan at 3% Interest Rate for a duration of 10Years.
+
+
+We also pay 1% commission to brokers, who introduce project owners for finance or other opportunities.
+
+
+Please get back to me if you are interested for more
+
+details.
+
+
+Yours faithfully,
+
+Hashim Murrah
