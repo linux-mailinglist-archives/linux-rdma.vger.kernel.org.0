@@ -2,34 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D846A2B34B0
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Nov 2020 12:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 515582B34B1
+	for <lists+linux-rdma@lfdr.de>; Sun, 15 Nov 2020 12:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbgKOLn3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 15 Nov 2020 06:43:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52532 "EHLO mail.kernel.org"
+        id S1727002AbgKOLnc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 15 Nov 2020 06:43:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbgKOLn2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 15 Nov 2020 06:43:28 -0500
+        id S1726537AbgKOLnc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 15 Nov 2020 06:43:32 -0500
 Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64BA62225B;
-        Sun, 15 Nov 2020 11:43:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E98D22225B;
+        Sun, 15 Nov 2020 11:43:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605440608;
-        bh=iL9+Uq23ybTZSxslVYWs0fQlOcsZwm+ytkUqB7ZsCTI=;
+        s=default; t=1605440611;
+        bh=/QlisB8UYI6fSBwj0gdr64/tLm7MKBvm4aG4sIV71dc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1nTdOymhrqfcZU78zUCI70QtpLXGOLJTRcQmy3MFS+yC9pyNun3JWCifGcwWEtERX
-         BNET7mtzvq/aKWWAMspUpEIWfl7cSlvo+FZVHMHhiJdp9A/C45dGQonwiFMDSAUM+u
-         2j/MuRwaDSAxWlPvawCGF9ZhaRVex8qUWfGKQ6zc=
+        b=eSrX/JpIqag4QjSQLuxUfyI/QmCtOSG9Inx303XXlvh8rOpSbQrmCcGkjsl0ntCDH
+         k1u9mtDw21wgclZdLv6KtTyn81kt0GawyGcA46ijPteXDfumxreZffnGreCvTHxiw2
+         KX8tWhCN1xoYI5yA8SepjDMf5yD44Kj9Q3xuxFf0=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v1 4/7] RDMA/mlx5: Use mlx5_umem_find_best_quantized_pgoff() for QP
-Date:   Sun, 15 Nov 2020 13:43:08 +0200
-Message-Id: <20201115114311.136250-5-leon@kernel.org>
+Cc:     Eli Cohen <eli@mellanox.com>,
+        Jack Morgenstein <jackm@dev.mellanox.co.il>,
+        linux-rdma@vger.kernel.org, Or Gerlitz <ogerlitz@mellanox.com>,
+        Roland Dreier <roland@purestorage.com>
+Subject: [PATCH rdma-next v1 5/7] RDMA/mlx5: mlx5_umem_find_best_quantized_pgoff() for CQ
+Date:   Sun, 15 Nov 2020 13:43:09 +0200
+Message-Id: <20201115114311.136250-6-leon@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201115114311.136250-1-leon@kernel.org>
 References: <20201115114311.136250-1-leon@kernel.org>
@@ -41,166 +44,161 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@nvidia.com>
 
-Delete custom logic in the QP in favor of more general variant.
+This fixes a bug where the page_offset was not being considered when
+building a CQ. The HW specification says it 'must be zero', so use
+a variant of mlx5_umem_find_best_quantized_pgoff() with a 0 pgoff_bitmask
+to force this result.
 
+Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/mem.c     | 21 --------
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  1 -
- drivers/infiniband/hw/mlx5/qp.c      | 71 +++++++++-------------------
- 3 files changed, 23 insertions(+), 70 deletions(-)
+ drivers/infiniband/hw/mlx5/cq.c      | 48 ++++++++++++++++++++--------
+ drivers/infiniband/hw/mlx5/mlx5_ib.h | 10 ++++++
+ 2 files changed, 44 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/mem.c b/drivers/infiniband/hw/mlx5/mem.c
-index fd9778113d26..ad9830eeb4b6 100644
---- a/drivers/infiniband/hw/mlx5/mem.c
-+++ b/drivers/infiniband/hw/mlx5/mem.c
-@@ -152,27 +152,6 @@ unsigned long __mlx5_umem_find_best_quantized_pgoff(
- 	return page_size;
- }
- 
--int mlx5_ib_get_buf_offset(u64 addr, int page_shift, u32 *offset)
--{
--	u64 page_size;
--	u64 page_mask;
--	u64 off_size;
--	u64 off_mask;
--	u64 buf_off;
--
--	page_size = (u64)1 << page_shift;
--	page_mask = page_size - 1;
--	buf_off = addr & page_mask;
--	off_size = page_size >> 6;
--	off_mask = off_size - 1;
--
--	if (buf_off & off_mask)
--		return -EINVAL;
--
--	*offset = buf_off >> ilog2(off_size);
--	return 0;
--}
--
- #define WR_ID_BF 0xBF
- #define WR_ID_END 0xBAD
- #define TEST_WC_NUM_WQES 255
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 2f08a5b4a438..555bc94d4786 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1267,7 +1267,6 @@ int mlx5_ib_process_mad(struct ib_device *ibdev, int mad_flags, u8 port_num,
- 			size_t *out_mad_size, u16 *out_mad_pkey_index);
- int mlx5_ib_alloc_xrcd(struct ib_xrcd *xrcd, struct ib_udata *udata);
- int mlx5_ib_dealloc_xrcd(struct ib_xrcd *xrcd, struct ib_udata *udata);
--int mlx5_ib_get_buf_offset(u64 addr, int page_shift, u32 *offset);
- int mlx5_query_ext_port_caps(struct mlx5_ib_dev *dev, u8 port);
- int mlx5_query_mad_ifc_smp_attr_node_info(struct ib_device *ibdev,
- 					  struct ib_smp *out_mad);
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 25904778e371..b66fa112d0b0 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -778,39 +778,6 @@ int bfregn_to_uar_index(struct mlx5_ib_dev *dev,
- 	return bfregi->sys_pages[index_of_sys_page] + offset;
- }
- 
--static int mlx5_ib_umem_get(struct mlx5_ib_dev *dev, struct ib_udata *udata,
--			    unsigned long addr, size_t size,
--			    struct ib_umem **umem, int *page_shift,
--			    u32 *offset)
--{
--	int err;
--
--	*umem = ib_umem_get(&dev->ib_dev, addr, size, 0);
--	if (IS_ERR(*umem)) {
--		mlx5_ib_dbg(dev, "umem_get failed\n");
--		return PTR_ERR(*umem);
--	}
--
--	mlx5_ib_cont_pages(*umem, addr, 0, page_shift);
--
--	err = mlx5_ib_get_buf_offset(addr, *page_shift, offset);
--	if (err) {
--		mlx5_ib_warn(dev, "bad offset\n");
--		goto err_umem;
--	}
--
--	mlx5_ib_dbg(dev, "addr 0x%lx, size %zu, npages %zu, page_shift %d, offset %d\n",
--		    addr, size, ib_umem_num_pages(*umem), *page_shift, *offset);
--
--	return 0;
--
--err_umem:
--	ib_umem_release(*umem);
--	*umem = NULL;
--
--	return err;
--}
--
- static void destroy_user_rq(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 			    struct mlx5_ib_rwq *rwq, struct ib_udata *udata)
+diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
+index 9ab93d730769..eb92cefffd77 100644
+--- a/drivers/infiniband/hw/mlx5/cq.c
++++ b/drivers/infiniband/hw/mlx5/cq.c
+@@ -707,8 +707,9 @@ static int create_cq_user(struct mlx5_ib_dev *dev, struct ib_udata *udata,
+ 			  int *cqe_size, int *index, int *inlen)
  {
-@@ -897,9 +864,9 @@ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- {
- 	struct mlx5_ib_ucontext *context;
- 	struct mlx5_ib_ubuffer *ubuffer = &base->ubuffer;
--	int page_shift = 0;
-+	unsigned int page_offset_quantized = 0;
-+	unsigned long page_size = 0;
- 	int uar_index = 0;
--	u32 offset = 0;
- 	int bfregn;
- 	int ncont = 0;
+ 	struct mlx5_ib_create_cq ucmd = {};
++	unsigned long page_size;
++	unsigned int page_offset_quantized;
+ 	size_t ucmdlen;
+-	int page_shift;
  	__be64 *pas;
-@@ -950,12 +917,21 @@ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 	int ncont;
+ 	void *cqc;
+@@ -741,17 +742,24 @@ static int create_cq_user(struct mlx5_ib_dev *dev, struct ib_udata *udata,
+ 		return err;
+ 	}
  
- 	if (ucmd->buf_addr && ubuffer->buf_size) {
- 		ubuffer->buf_addr = ucmd->buf_addr;
--		err = mlx5_ib_umem_get(dev, udata, ubuffer->buf_addr,
--				       ubuffer->buf_size, &ubuffer->umem,
--				       &page_shift, &offset);
--		if (err)
-+		ubuffer->umem = ib_umem_get(&dev->ib_dev, ubuffer->buf_addr,
-+					    ubuffer->buf_size, 0);
-+		if (IS_ERR(ubuffer->umem)) {
-+			err = PTR_ERR(ubuffer->umem);
- 			goto err_bfreg;
--		ncont = ib_umem_num_dma_blocks(ubuffer->umem, 1UL << page_shift);
-+		}
-+		page_size = mlx5_umem_find_best_quantized_pgoff(
-+			ubuffer->umem, qpc, log_page_size,
++	page_size = mlx5_umem_find_best_cq_quantized_pgoff(
++		cq->buf.umem, cqc, log_page_size, MLX5_ADAPTER_PAGE_SHIFT,
++		page_offset, 64, &page_offset_quantized);
++	if (!page_size) {
++		err = -EINVAL;
++		goto err_umem;
++	}
++
+ 	err = mlx5_ib_db_map_user(context, udata, ucmd.db_addr, &cq->db);
+ 	if (err)
+ 		goto err_umem;
+ 
+-	mlx5_ib_cont_pages(cq->buf.umem, ucmd.buf_addr, 0, &page_shift);
+-	ncont = ib_umem_num_dma_blocks(cq->buf.umem, 1UL << page_shift);
++	ncont = ib_umem_num_dma_blocks(cq->buf.umem, page_size);
+ 	mlx5_ib_dbg(
+ 		dev,
+-		"addr 0x%llx, size %u, npages %zu, page_shift %d, ncont %d\n",
++		"addr 0x%llx, size %u, npages %zu, page_size %lu, ncont %d\n",
+ 		ucmd.buf_addr, entries * ucmd.cqe_size,
+-		ib_umem_num_pages(cq->buf.umem), page_shift, ncont);
++		ib_umem_num_pages(cq->buf.umem), page_size, ncont);
+ 
+ 	*inlen = MLX5_ST_SZ_BYTES(create_cq_in) +
+ 		 MLX5_FLD_SZ_BYTES(create_cq_in, pas[0]) * ncont;
+@@ -762,11 +770,12 @@ static int create_cq_user(struct mlx5_ib_dev *dev, struct ib_udata *udata,
+ 	}
+ 
+ 	pas = (__be64 *)MLX5_ADDR_OF(create_cq_in, *cqb, pas);
+-	mlx5_ib_populate_pas(cq->buf.umem, 1UL << page_shift, pas, 0);
++	mlx5_ib_populate_pas(cq->buf.umem, page_size, pas, 0);
+ 
+ 	cqc = MLX5_ADDR_OF(create_cq_in, *cqb, cq_context);
+ 	MLX5_SET(cqc, cqc, log_page_size,
+-		 page_shift - MLX5_ADAPTER_PAGE_SHIFT);
++		 order_base_2(page_size) - MLX5_ADAPTER_PAGE_SHIFT);
++	MLX5_SET(cqc, cqc, page_offset, page_offset_quantized);
+ 
+ 	if (ucmd.flags & MLX5_IB_CREATE_CQ_FLAGS_UAR_PAGE_INDEX) {
+ 		*index = ucmd.uar_page_index;
+@@ -1131,7 +1140,7 @@ int mlx5_ib_modify_cq(struct ib_cq *cq, u16 cq_count, u16 cq_period)
+ 
+ static int resize_user(struct mlx5_ib_dev *dev, struct mlx5_ib_cq *cq,
+ 		       int entries, struct ib_udata *udata,
+-		       int *page_shift, int *cqe_size)
++		       int *cqe_size)
+ {
+ 	struct mlx5_ib_resize_cq ucmd;
+ 	struct ib_umem *umem;
+@@ -1156,8 +1165,6 @@ static int resize_user(struct mlx5_ib_dev *dev, struct mlx5_ib_cq *cq,
+ 		return err;
+ 	}
+ 
+-	mlx5_ib_cont_pages(umem, ucmd.buf_addr, 0, page_shift);
+-
+ 	cq->resize_umem = umem;
+ 	*cqe_size = ucmd.cqe_size;
+ 
+@@ -1250,7 +1257,8 @@ int mlx5_ib_resize_cq(struct ib_cq *ibcq, int entries, struct ib_udata *udata)
+ 	int err;
+ 	int npas;
+ 	__be64 *pas;
+-	int page_shift;
++	unsigned int page_offset_quantized = 0;
++	unsigned int page_shift;
+ 	int inlen;
+ 	int cqe_size;
+ 	unsigned long flags;
+@@ -1277,11 +1285,22 @@ int mlx5_ib_resize_cq(struct ib_cq *ibcq, int entries, struct ib_udata *udata)
+ 
+ 	mutex_lock(&cq->resize_mutex);
+ 	if (udata) {
+-		err = resize_user(dev, cq, entries, udata, &page_shift,
+-				  &cqe_size);
++		unsigned long page_size;
++
++		err = resize_user(dev, cq, entries, udata, &cqe_size);
+ 		if (err)
+ 			goto ex;
+-		npas = ib_umem_num_dma_blocks(cq->resize_umem, 1UL << page_shift);
++
++		page_size = mlx5_umem_find_best_cq_quantized_pgoff(
++			cq->resize_umem, cqc, log_page_size,
 +			MLX5_ADAPTER_PAGE_SHIFT, page_offset, 64,
 +			&page_offset_quantized);
 +		if (!page_size) {
 +			err = -EINVAL;
-+			goto err_umem;
++			goto ex_resize;
 +		}
-+		ncont = ib_umem_num_dma_blocks(ubuffer->umem, page_size);
++		npas = ib_umem_num_dma_blocks(cq->resize_umem, page_size);
++		page_shift = order_base_2(page_size);
  	} else {
- 		ubuffer->umem = NULL;
- 	}
-@@ -970,15 +946,14 @@ static int _create_user_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
+ 		struct mlx5_frag_buf *frag_buf;
  
- 	uid = (attr->qp_type != IB_QPT_XRC_INI) ? to_mpd(pd)->uid : 0;
- 	MLX5_SET(create_qp_in, *in, uid, uid);
--	pas = (__be64 *)MLX5_ADDR_OF(create_qp_in, *in, pas);
--	if (ubuffer->umem)
--		mlx5_ib_populate_pas(ubuffer->umem, 1UL << page_shift, pas, 0);
--
- 	qpc = MLX5_ADDR_OF(create_qp_in, *in, qpc);
--
--	MLX5_SET(qpc, qpc, log_page_size, page_shift - MLX5_ADAPTER_PAGE_SHIFT);
--	MLX5_SET(qpc, qpc, page_offset, offset);
--
-+	pas = (__be64 *)MLX5_ADDR_OF(create_qp_in, *in, pas);
-+	if (ubuffer->umem) {
-+		mlx5_ib_populate_pas(ubuffer->umem, page_size, pas, 0);
-+		MLX5_SET(qpc, qpc, log_page_size,
-+			 order_base_2(page_size) - MLX5_ADAPTER_PAGE_SHIFT);
-+		MLX5_SET(qpc, qpc, page_offset, page_offset_quantized);
-+	}
- 	MLX5_SET(qpc, qpc, uar_page, uar_index);
- 	if (bfregn != MLX5_IB_INVALID_BFREG)
- 		resp->bfreg_index = adjust_bfregn(dev, &context->bfregi, bfregn);
+@@ -1320,6 +1339,7 @@ int mlx5_ib_resize_cq(struct ib_cq *ibcq, int entries, struct ib_udata *udata)
+ 
+ 	MLX5_SET(cqc, cqc, log_page_size,
+ 		 page_shift - MLX5_ADAPTER_PAGE_SHIFT);
++	MLX5_SET(cqc, cqc, page_offset, page_offset_quantized);
+ 	MLX5_SET(cqc, cqc, cqe_sz,
+ 		 cqe_sz_to_mlx_sz(cqe_size,
+ 				  cq->private_flags &
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index 555bc94d4786..3098a7e0d186 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -100,6 +100,16 @@ unsigned long __mlx5_umem_find_best_quantized_pgoff(
+ 		GENMASK(31, order_base_2(scale)), scale,                       \
+ 		page_offset_quantized)
+ 
++#define mlx5_umem_find_best_cq_quantized_pgoff(umem, typ, log_pgsz_fld,        \
++					       pgsz_shift, page_offset_fld,    \
++					       scale, page_offset_quantized)   \
++	__mlx5_umem_find_best_quantized_pgoff(                                 \
++		umem,                                                          \
++		__mlx5_log_page_size_to_bitmap(                                \
++			__mlx5_bit_sz(typ, log_pgsz_fld), pgsz_shift),         \
++		__mlx5_bit_sz(typ, page_offset_fld), 0, scale,                 \
++		page_offset_quantized)
++
+ enum {
+ 	MLX5_IB_MMAP_OFFSET_START = 9,
+ 	MLX5_IB_MMAP_OFFSET_END = 255,
 -- 
 2.28.0
 
