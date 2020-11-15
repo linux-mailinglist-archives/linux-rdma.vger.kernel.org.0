@@ -2,273 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F89D2B3339
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Nov 2020 10:34:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 732722B3375
+	for <lists+linux-rdma@lfdr.de>; Sun, 15 Nov 2020 11:34:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgKOJeW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 15 Nov 2020 04:34:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726438AbgKOJeU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 15 Nov 2020 04:34:20 -0500
-Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE13322450;
-        Sun, 15 Nov 2020 09:34:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605432859;
-        bh=vkpM12b3WQ5XdHmd5GCHyUIjHPRpZzIPWXw8gsEYoz8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=TkEIkF5kfTv3EEzzD61loboCpHkGBodlxy9knF6yyPxhkNxCUGn8+KGhecm5nBdnn
-         FXi9VHzjy089L2LdJP7BoHABOCXzf8xC5bF1hXTEDOhHaDTmM/hcqiqaJQ4XpOSq6Y
-         FwJvotxzku7pqNEer6n7JK/+DxyflK5fSvTfnMVA=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next] RDMA/counter: Combine allocation and bind logic
-Date:   Sun, 15 Nov 2020 11:34:05 +0200
-Message-Id: <20201115093405.129689-1-leon@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S1726859AbgKOKeN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 15 Nov 2020 05:34:13 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:60475 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726826AbgKOKeM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 15 Nov 2020 05:34:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1605436453; x=1636972453;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4Ne5/a94BmoMFZV40fDneeH74q15SgdCOR21CAz3cMw=;
+  b=RmfJvGZ0JnjS2GjxkhZ1AohvvEeLZPPPCqhi++latvwpWzg51Fkt6QKN
+   KIBdtB3BzXd8MBxEL58+kP1a5JZAKbaQCq8Qrm00j6UgwXiC6A24IAuXr
+   itSKVgl0uDF8L1pT3X+lVLdgmsTNbRPShLIvXXCm7zpCAAoVOiPPee2z4
+   M=;
+X-IronPort-AV: E=Sophos;i="5.77,480,1596499200"; 
+   d="scan'208";a="65065439"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 15 Nov 2020 10:34:12 +0000
+Received: from EX13D19EUA003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id 31D42A17C5;
+        Sun, 15 Nov 2020 10:34:11 +0000 (UTC)
+Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
+ EX13D19EUA003.ant.amazon.com (10.43.165.175) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sun, 15 Nov 2020 10:34:09 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.1.212.17) by
+ mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Sun, 15 Nov 2020 10:34:06 +0000
+From:   Gal Pressman <galpress@amazon.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>, Gal Pressman <galpress@amazon.com>
+Subject: [PATCH for-next 0/2] create_user_ah introduction fixups
+Date:   Sun, 15 Nov 2020 12:34:01 +0200
+Message-ID: <20201115103404.48829-1-galpress@amazon.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+The first patch fixes the create_ah NULL check to only happen in case of
+kernel AH (!udata).
+The second patch removes the create_ah callback from EFA as it does not
+support kverbs.
 
-RDMA counters are allocated and bounded to QP immediately after that.
-Only after this two step process they are really usable. By combining
-the logic, we are ensuring that once counter is returned to the caller,
-it will have everything set.
+Thanks,
+Gal
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/counters.c | 130 +++++++++++++----------------
- 1 file changed, 58 insertions(+), 72 deletions(-)
+Gal Pressman (2):
+  RDMA/core: Check .create_ah is not NULL only in case it's needed
+  RDMA/efa: Remove .create_ah callback assignment
 
-diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
-index e4ff0d3328b6..4e1ec4479e0b 100644
---- a/drivers/infiniband/core/counters.c
-+++ b/drivers/infiniband/core/counters.c
-@@ -64,8 +64,40 @@ int rdma_counter_set_auto_mode(struct ib_device *dev, u8 port,
- 	return ret;
- }
- 
--static struct rdma_counter *rdma_counter_alloc(struct ib_device *dev, u8 port,
--					       enum rdma_nl_counter_mode mode)
-+static void auto_mode_init_counter(struct rdma_counter *counter,
-+				   const struct ib_qp *qp,
-+				   enum rdma_nl_counter_mask new_mask)
-+{
-+	struct auto_mode_param *param = &counter->mode.param;
-+
-+	counter->mode.mode = RDMA_COUNTER_MODE_AUTO;
-+	counter->mode.mask = new_mask;
-+
-+	if (new_mask & RDMA_COUNTER_MASK_QP_TYPE)
-+		param->qp_type = qp->qp_type;
-+}
-+
-+static int __rdma_counter_bind_qp(struct rdma_counter *counter,
-+				  struct ib_qp *qp)
-+{
-+	int ret;
-+
-+	if (qp->counter)
-+		return -EINVAL;
-+
-+	if (!qp->device->ops.counter_bind_qp)
-+		return -EOPNOTSUPP;
-+
-+	mutex_lock(&counter->lock);
-+	ret = qp->device->ops.counter_bind_qp(counter, qp);
-+	mutex_unlock(&counter->lock);
-+
-+	return ret;
-+}
-+
-+static struct rdma_counter *alloc_and_bind(struct ib_device *dev, u8 port,
-+					   struct ib_qp *qp,
-+					   enum rdma_nl_counter_mode mode)
- {
- 	struct rdma_port_counter *port_counter;
- 	struct rdma_counter *counter;
-@@ -88,11 +120,19 @@ static struct rdma_counter *rdma_counter_alloc(struct ib_device *dev, u8 port,
- 
- 	port_counter = &dev->port_data[port].port_counter;
- 	mutex_lock(&port_counter->lock);
--	if (mode == RDMA_COUNTER_MODE_MANUAL) {
-+	switch (mode) {
-+	case RDMA_COUNTER_MODE_MANUAL:
- 		ret = __counter_set_mode(&port_counter->mode,
- 					 RDMA_COUNTER_MODE_MANUAL, 0);
- 		if (ret)
- 			goto err_mode;
-+		break;
-+	case RDMA_COUNTER_MODE_AUTO:
-+		auto_mode_init_counter(counter, qp, port_counter->mode.mask);
-+		break;
-+	default:
-+		ret = -EOPNOTSUPP;
-+		goto err_mode;
- 	}
- 
- 	port_counter->num_counters++;
-@@ -102,6 +142,12 @@ static struct rdma_counter *rdma_counter_alloc(struct ib_device *dev, u8 port,
- 	kref_init(&counter->kref);
- 	mutex_init(&counter->lock);
- 
-+	ret = __rdma_counter_bind_qp(counter, qp);
-+	if (ret)
-+		goto err_mode;
-+
-+	rdma_restrack_parent_name(&counter->res, &qp->res);
-+	rdma_restrack_add(&counter->res);
- 	return counter;
- 
- err_mode:
-@@ -132,19 +178,6 @@ static void rdma_counter_free(struct rdma_counter *counter)
- 	kfree(counter);
- }
- 
--static void auto_mode_init_counter(struct rdma_counter *counter,
--				   const struct ib_qp *qp,
--				   enum rdma_nl_counter_mask new_mask)
--{
--	struct auto_mode_param *param = &counter->mode.param;
--
--	counter->mode.mode = RDMA_COUNTER_MODE_AUTO;
--	counter->mode.mask = new_mask;
--
--	if (new_mask & RDMA_COUNTER_MASK_QP_TYPE)
--		param->qp_type = qp->qp_type;
--}
--
- static bool auto_mode_match(struct ib_qp *qp, struct rdma_counter *counter,
- 			    enum rdma_nl_counter_mask auto_mask)
- {
-@@ -161,24 +194,6 @@ static bool auto_mode_match(struct ib_qp *qp, struct rdma_counter *counter,
- 	return match;
- }
- 
--static int __rdma_counter_bind_qp(struct rdma_counter *counter,
--				  struct ib_qp *qp)
--{
--	int ret;
--
--	if (qp->counter)
--		return -EINVAL;
--
--	if (!qp->device->ops.counter_bind_qp)
--		return -EOPNOTSUPP;
--
--	mutex_lock(&counter->lock);
--	ret = qp->device->ops.counter_bind_qp(counter, qp);
--	mutex_unlock(&counter->lock);
--
--	return ret;
--}
--
- static int __rdma_counter_unbind_qp(struct ib_qp *qp)
- {
- 	struct rdma_counter *counter = qp->counter;
-@@ -247,13 +262,6 @@ static struct rdma_counter *rdma_get_counter_auto_mode(struct ib_qp *qp,
- 	return counter;
- }
- 
--static void rdma_counter_res_add(struct rdma_counter *counter,
--				 struct ib_qp *qp)
--{
--	rdma_restrack_parent_name(&counter->res, &qp->res);
--	rdma_restrack_add(&counter->res);
--}
--
- static void counter_release(struct kref *kref)
- {
- 	struct rdma_counter *counter;
-@@ -293,19 +301,9 @@ int rdma_counter_bind_qp_auto(struct ib_qp *qp, u8 port)
- 			return ret;
- 		}
- 	} else {
--		counter = rdma_counter_alloc(dev, port, RDMA_COUNTER_MODE_AUTO);
-+		counter = alloc_and_bind(dev, port, qp, RDMA_COUNTER_MODE_AUTO);
- 		if (!counter)
- 			return -ENOMEM;
--
--		auto_mode_init_counter(counter, qp, port_counter->mode.mask);
--
--		ret = __rdma_counter_bind_qp(counter, qp);
--		if (ret) {
--			rdma_counter_free(counter);
--			return ret;
--		}
--
--		rdma_counter_res_add(counter, qp);
- 	}
- 
- 	return 0;
-@@ -419,15 +417,6 @@ static struct ib_qp *rdma_counter_get_qp(struct ib_device *dev, u32 qp_num)
- 	return NULL;
- }
- 
--static int rdma_counter_bind_qp_manual(struct rdma_counter *counter,
--				       struct ib_qp *qp)
--{
--	if ((counter->device != qp->device) || (counter->port != qp->port))
--		return -EINVAL;
--
--	return __rdma_counter_bind_qp(counter, qp);
--}
--
- static struct rdma_counter *rdma_get_counter_by_id(struct ib_device *dev,
- 						   u32 counter_id)
- {
-@@ -475,7 +464,12 @@ int rdma_counter_bind_qpn(struct ib_device *dev, u8 port,
- 		goto err_task;
- 	}
- 
--	ret = rdma_counter_bind_qp_manual(counter, qp);
-+	if ((counter->device != qp->device) || (counter->port != qp->port)) {
-+		ret = -EINVAL;
-+		goto err_task;
-+	}
-+
-+	ret = __rdma_counter_bind_qp(counter, qp);
- 	if (ret)
- 		goto err_task;
- 
-@@ -520,26 +514,18 @@ int rdma_counter_bind_qpn_alloc(struct ib_device *dev, u8 port,
- 		goto err;
- 	}
- 
--	counter = rdma_counter_alloc(dev, port, RDMA_COUNTER_MODE_MANUAL);
-+	counter = alloc_and_bind(dev, port, qp, RDMA_COUNTER_MODE_MANUAL);
- 	if (!counter) {
- 		ret = -ENOMEM;
- 		goto err;
- 	}
- 
--	ret = rdma_counter_bind_qp_manual(counter, qp);
--	if (ret)
--		goto err_bind;
--
- 	if (counter_id)
- 		*counter_id = counter->id;
- 
--	rdma_counter_res_add(counter, qp);
--
- 	rdma_restrack_put(&qp->res);
--	return ret;
-+	return 0;
- 
--err_bind:
--	rdma_counter_free(counter);
- err:
- 	rdma_restrack_put(&qp->res);
- 	return ret;
+ drivers/infiniband/core/verbs.c      | 2 +-
+ drivers/infiniband/hw/efa/efa_main.c | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
 -- 
-2.28.0
+2.29.2
 
