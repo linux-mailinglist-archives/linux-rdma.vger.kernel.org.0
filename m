@@ -2,30 +2,30 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC162B5262
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Nov 2020 21:24:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE202B5267
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Nov 2020 21:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732269AbgKPUXO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Nov 2020 15:23:14 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:12625 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727359AbgKPUXN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Nov 2020 15:23:13 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb2dfbb0000>; Mon, 16 Nov 2020 12:23:23 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 16 Nov
- 2020 20:23:12 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.175)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 16 Nov 2020 20:23:13 +0000
+        id S1732273AbgKPUXU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Nov 2020 15:23:20 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:43069 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732296AbgKPUXU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 16 Nov 2020 15:23:20 -0500
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb2dfb70000>; Tue, 17 Nov 2020 04:23:19 +0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 16 Nov
+ 2020 20:23:19 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.172)
+ by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 16 Nov 2020 20:23:18 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IsU0ejNyBy83Sj9tzZWtGmG2/80YE+EY56XAA/kVUfu5yMvcPPhJbgJL/xyFKldXRIlYFnRgng0CST2ovi5BArFFURZKUAPAGFrMidVhmKnCSJcmpVtWNpSBZchF6x2QxlnFZPmY3nwOlgq/yy8YpLeqrfzi8pOrX01IXUpK4YjMx9xhv2FjE2aZQcf/LV9r1Nj9bcL/jyHz4PCZX0ck7zZRfSKbT6+Xh1xIJZLf//XXSmxAjBfksdM2CkJ/5XhvYS6Hu/Xmk95xMW5UoMz9QkmLAOfpLGDaiwYCprP4vX72y4b5D+r1BlvRtmvtSnZ8yMAOFtSL6y6EHb+0htIlKA==
+ b=SZ8GRjlUmg3htAfvorM0/hC8Z+22jxN5ZKmhA8k/SdY6zXv7IQj4eeTQd1wpV1EhcS/elliIaAtzZWvbxCBefB+hqd8PuJGZ1LhQ9RLOg7DHMwuE2jHaDI2vNrXdAFEt1FCr9eqMtF3anaFC7Ykmh+UyVRfbkAshV6zaPIeV/L7BHQ86Fvyr2UpFOGiqGQ3WRQEHKAARljz2nhA1YMadBApT8BwT2+FiAohOuQumyv4em62G4/SiiTnrvbFY2Tn7xUfUSQlVPbDqEZ5pbksIZX1LEwsb3C0xhBmLGCmgMFB7fcyZRydRmQSgFNCa0mL8TcsQnUA9B61UOiLkM2A8Sw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=51s1+kWORPkJl090L1pmm00dTc7s19N82eli6m206aw=;
- b=Xv1a0ess24vUWAG87QM+KLx1WZGwr2LYT7ugHIKa99pS84pLgkBfF43rRgyvxOp6gkUz3orhAStCKzx1nEsDlkhZNXF9Sj3pDl4dgSDj6iF2AAnZBjSNJZC/vGYwzCPgeEYBXPThMc0H4J/+fgx6TI0ABwSE1KkuGIzl6EOfOgFgB9qGV0g7Yr0lzBp4/l9rvP/Bs2vim7T9uLObk/Pv7wtD76WC111USIBtJ/zA9iJn4gqXACulg5nKjaxvHVqcxm7DGc7bNArSz10rp8+akXdMBXrbeDamWMVbgPvcMWfvYBKmBXcgpW+43hZ/lJmX+wXjzPyw1lFC95YjQKNLYw==
+ bh=/EnnM0es8CU1PxAsd9gvqh2VIRy8netKPwRkme9VR7c=;
+ b=iwajj08ZUFDpNhnz83xnqeNbstLSg1fqQ1GbAdNiPT6qCPtwybZopHPHBRewi9XXWiT70PzJE/Zi1BuMQ9ZhoBThmZNqe2THfxsb8Z29lQ6UuJeAEYBWvuHS48bUpyqZuMKB4Ihzl2hekoLHXZPrjx8N4cmtSTTR9t22uVtHaIK+1ARxDgwPtHWopKJsavky+cEMnMCvdNvJ0C1rnsKAY6LmoMUJC5q1A3MvV8weSLUbPuoqCJFjv/RXEh6m7DBlBrQ5Q21fClAhjoUpB9QQXJKK8vjeODgKZwir/NOdCdFF/Y5hv4tCwXlyO6PQ+6vDumoglboHKpyRmoZermwGQQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
@@ -33,211 +33,171 @@ Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
  by DM6PR12MB3305.namprd12.prod.outlook.com (2603:10b6:5:189::29) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Mon, 16 Nov
- 2020 20:23:11 +0000
+ 2020 20:23:16 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3564.028; Mon, 16 Nov 2020
- 20:23:11 +0000
+ 20:23:16 +0000
 From:   Jason Gunthorpe <jgg@nvidia.com>
 To:     <linux-rdma@vger.kernel.org>, Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH 3/9] mlx5: Move context initialization out of mlx5_query_device_ex()
-Date:   Mon, 16 Nov 2020 16:23:04 -0400
-Message-ID: <3-v1-34e141ddf17e+89-query_device_ex_jgg@nvidia.com>
+CC:     Gal Pressman <galpress@amazon.com>
+Subject: [PATCH 4/9] efa: Move the context intialization out of efa_query_device_ex()
+Date:   Mon, 16 Nov 2020 16:23:05 -0400
+Message-ID: <4-v1-34e141ddf17e+89-query_device_ex_jgg@nvidia.com>
 In-Reply-To: <0-v1-34e141ddf17e+89-query_device_ex_jgg@nvidia.com>
 References: 
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
-X-ClientProxiedBy: MN2PR11CA0001.namprd11.prod.outlook.com
- (2603:10b6:208:23b::6) To DM6PR12MB3834.namprd12.prod.outlook.com
+X-ClientProxiedBy: MN2PR19CA0008.namprd19.prod.outlook.com
+ (2603:10b6:208:178::21) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR11CA0001.namprd11.prod.outlook.com (2603:10b6:208:23b::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend Transport; Mon, 16 Nov 2020 20:23:11 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kel1q-006l7v-P8; Mon, 16 Nov 2020 16:23:10 -0400
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR19CA0008.namprd19.prod.outlook.com (2603:10b6:208:178::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25 via Frontend Transport; Mon, 16 Nov 2020 20:23:13 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kel1q-006l7z-Q0; Mon, 16 Nov 2020 16:23:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605558203; bh=GEePscrNeNY8DNgcLpwdv53Z3sJTM2FGoOcqyrl16ow=;
+        t=1605558199; bh=MvlJR4z3rc0QfhINWKcWhq0XqLO/+ljYEfZwMSN/l9Q=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
-         Subject:Date:Message-ID:In-Reply-To:References:
+         CC:Subject:Date:Message-ID:In-Reply-To:References:
          Content-Transfer-Encoding:Content-Type:X-ClientProxiedBy:
          MIME-Version:X-MS-Exchange-MessageSentRepresentingType;
-        b=aHV+NuqAL1d+PU4J6OVXtANPgNNK4ddJrUtYNkW5x9kGLFveqD5fXRekvZXo0vMZj
-         xEyZ5yBXg3wp5EBkVNDJoPfGyfJN9Jp5tGbIvbbQ+O0XS4QVMD1CTJux/DdcacKnki
-         EkF5bTCNojyWr04vrixLOr3RdWur3H5DTs4hLWRK/PjyTPi0E0VnW9nW/vo4osdD90
-         KcJjrkxw10EeVDLzs2biLRfrxDPYNhfn1ouaxqgOjzKKLCraZEjzijpQrA0qbB6z8a
-         SbAHSPjXjmK4mw+I+0mxfXTgdHd+ghIkGlQ8/ijjtiKZTctrz4MG6l3juoxDJnvuk5
-         oPhD6+1YLeWlg==
+        b=aM1md6eqVbkI012Z2x8XTbPqVbKLS6Q8P9xkpP8p/jZCIni9/glTeoq3QwFrpjZdr
+         cLVX+lafbnjb9Fv22DCYfTDMllFB+pQ1Ptp2Ha/cvWZ+LVFjO/2+qRbjp/h1taYPao
+         QTpNthNTY9e/g+R9JwRNT6+wLdGut8j0HQAH6Y5wYL2SZemVgKM2h6hltd35rTvcBm
+         mb87FXfYkwkNGEQ6lsrhO1KLmhUUZ/PwzRtuZ0WT+VKVA0ITtjEWLDqiuRFPcXx0Jh
+         C3cPULw8PoMuV25MmR9RYAyBXRgYl9sw3UzZvgDx6Wr+DFYBvd+8EejHNvBOOI9kLr
+         Y68m6AoElnkNw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When the user calls mlx5_query_device_ex() it should not cause the context
-values to be mutated, only the attribute should be returned.
+When the user calls efa_query_device_ex() it should not cause the context
+values to be mutated, only the attribute shuld be returned.
 
 Move this code to a dedicated function that is only called during context
 setup.
 
+Cc: Gal Pressman <galpress@amazon.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- providers/mlx5/mlx5.c  | 10 +------
- providers/mlx5/mlx5.h  |  1 +
- providers/mlx5/verbs.c | 62 ++++++++++++++++++++++++++++--------------
- 3 files changed, 44 insertions(+), 29 deletions(-)
+ providers/efa/efa.c   | 14 +------------
+ providers/efa/verbs.c | 46 +++++++++++++++++++++++++++++++++++--------
+ providers/efa/verbs.h |  1 +
+ 3 files changed, 40 insertions(+), 21 deletions(-)
 
-diff --git a/providers/mlx5/mlx5.c b/providers/mlx5/mlx5.c
-index 1378acf2e2f3af..06b9a52ebb3019 100644
---- a/providers/mlx5/mlx5.c
-+++ b/providers/mlx5/mlx5.c
-@@ -1373,7 +1373,6 @@ static int mlx5_set_context(struct mlx5_context *cont=
-ext,
+diff --git a/providers/efa/efa.c b/providers/efa/efa.c
+index 35f9b246a711ec..b24c14f7fa1fe1 100644
+--- a/providers/efa/efa.c
++++ b/providers/efa/efa.c
+@@ -54,10 +54,7 @@ static struct verbs_context *efa_alloc_context(struct ib=
+v_device *vdev,
  {
- 	struct verbs_context *v_ctx =3D &context->ibv_ctx;
- 	struct ibv_port_attr port_attr =3D {};
--	struct ibv_device_attr_ex device_attr =3D {};
- 	int cmd_fd =3D v_ctx->context.cmd_fd;
- 	struct mlx5_device *mdev =3D to_mdev(v_ctx->context.device);
- 	struct ibv_device *ibdev =3D v_ctx->context.device;
-@@ -1518,14 +1517,7 @@ bf_done:
- 			goto err_free;
- 	}
+ 	struct efa_alloc_ucontext_resp resp =3D {};
+ 	struct efa_alloc_ucontext cmd =3D {};
+-	struct ibv_device_attr_ex attr;
+-	unsigned int qp_table_sz;
+ 	struct efa_context *ctx;
+-	int err;
 =20
--	if (!mlx5_query_device_ex(&v_ctx->context, NULL, &device_attr,
--				  sizeof(struct ibv_device_attr_ex))) {
--		context->cached_device_cap_flags =3D
--			device_attr.orig_attr.device_cap_flags;
--		context->atomic_cap =3D device_attr.orig_attr.atomic_cap;
--		context->cached_tso_caps =3D device_attr.tso_caps;
--		context->max_dm_size =3D device_attr.max_dm_size;
--	}
-+	mlx5_query_device_ctx(context);
+ 	cmd.comp_mask |=3D EFA_ALLOC_UCONTEXT_CMD_COMP_TX_BATCH;
+ 	cmd.comp_mask |=3D EFA_ALLOC_UCONTEXT_CMD_COMP_MIN_SQ_WR;
+@@ -86,17 +83,8 @@ static struct verbs_context *efa_alloc_context(struct ib=
+v_device *vdev,
 =20
- 	for (j =3D 0; j < min(MLX5_MAX_PORTS_NUM, context->num_ports); ++j) {
- 		memset(&port_attr, 0, sizeof(port_attr));
-diff --git a/providers/mlx5/mlx5.h b/providers/mlx5/mlx5.h
-index 782d29bf757e0b..72e710b7b5e4aa 100644
---- a/providers/mlx5/mlx5.h
-+++ b/providers/mlx5/mlx5.h
-@@ -878,6 +878,7 @@ __be32 *mlx5_alloc_dbrec(struct mlx5_context *context, =
-struct ibv_pd *pd,
- void mlx5_free_db(struct mlx5_context *context, __be32 *db, struct ibv_pd =
-*pd,
- 		  bool custom_alloc);
+ 	verbs_set_ops(&ctx->ibvctx, &efa_ctx_ops);
 =20
-+void mlx5_query_device_ctx(struct mlx5_context *mctx);
- int mlx5_query_device(struct ibv_context *context,
- 		       struct ibv_device_attr *attr);
- int mlx5_query_device_ex(struct ibv_context *context,
-diff --git a/providers/mlx5/verbs.c b/providers/mlx5/verbs.c
-index 3622cae1df5017..42c984033d8eaa 100644
---- a/providers/mlx5/verbs.c
-+++ b/providers/mlx5/verbs.c
-@@ -3450,19 +3450,19 @@ static void get_pci_atomic_caps(struct ibv_context =
-*context,
- 	}
+-	err =3D efa_query_device_ex(&ctx->ibvctx.context, NULL, &attr,
+-				  sizeof(attr));
+-	if (err)
++	if (!efa_query_device_ctx(ctx))
+ 		goto err_free_spinlock;
+-
+-	qp_table_sz =3D roundup_pow_of_two(attr.orig_attr.max_qp);
+-	ctx->qp_table_sz_m1 =3D qp_table_sz - 1;
+-	ctx->qp_table =3D calloc(qp_table_sz, sizeof(*ctx->qp_table));
+-	if (!ctx->qp_table)
+-		goto err_free_spinlock;
+-
+ 	return &ctx->ibvctx;
+=20
+ err_free_spinlock:
+diff --git a/providers/efa/verbs.c b/providers/efa/verbs.c
+index 1a9633155c62f8..52d6285f1f409c 100644
+--- a/providers/efa/verbs.c
++++ b/providers/efa/verbs.c
+@@ -106,14 +106,6 @@ int efa_query_device_ex(struct ibv_context *context,
+ 	if (err)
+ 		return err;
+=20
+-	ctx->device_caps =3D resp.device_caps;
+-	ctx->max_sq_wr =3D resp.max_sq_wr;
+-	ctx->max_rq_wr =3D resp.max_rq_wr;
+-	ctx->max_sq_sge =3D resp.max_sq_sge;
+-	ctx->max_rq_sge =3D resp.max_rq_sge;
+-	ctx->max_rdma_size =3D resp.max_rdma_size;
+-	ctx->max_wr_rdma_sge =3D a->max_sge_rd;
+-
+ 	a->max_qp_wr =3D min_t(int, a->max_qp_wr,
+ 			     ctx->max_llq_size / sizeof(struct efa_io_tx_wqe));
+ 	snprintf(a->fw_ver, sizeof(a->fw_ver), "%u.%u.%u.%u",
+@@ -122,6 +114,44 @@ int efa_query_device_ex(struct ibv_context *context,
+ 	return 0;
  }
 =20
--static void get_lag_caps(struct ibv_context *ctx)
-+static void get_lag_caps(struct mlx5_context *mctx)
- {
- 	uint16_t opmod =3D MLX5_SET_HCA_CAP_OP_MOD_GENERAL_DEVICE |
- 		HCA_CAP_OPMOD_GET_CUR;
- 	uint32_t out[DEVX_ST_SZ_DW(query_hca_cap_out)] =3D {};
- 	uint32_t in[DEVX_ST_SZ_DW(query_hca_cap_in)] =3D {};
--	struct mlx5_context *mctx =3D to_mctx(ctx);
- 	int ret;
-=20
- 	DEVX_SET(query_hca_cap_in, in, opcode, MLX5_CMD_OP_QUERY_HCA_CAP);
- 	DEVX_SET(query_hca_cap_in, in, op_mod, opmod);
-=20
--	ret =3D mlx5dv_devx_general_cmd(ctx, in, sizeof(in), out, sizeof(out));
-+	ret =3D mlx5dv_devx_general_cmd(&mctx->ibv_ctx.context, in, sizeof(in),
-+				      out, sizeof(out));
- 	if (ret)
- 		return;
-=20
-@@ -3512,6 +3512,41 @@ int mlx5_query_device_ex(struct ibv_context *context=
-,
- 	attr->packet_pacing_caps.supported_qpts =3D
- 		resp.packet_pacing_caps.supported_qpts;
-=20
-+	major     =3D (raw_fw_ver >> 32) & 0xffff;
-+	minor     =3D (raw_fw_ver >> 16) & 0xffff;
-+	sub_minor =3D raw_fw_ver & 0xffff;
-+	a =3D &attr->orig_attr;
-+	snprintf(a->fw_ver, sizeof(a->fw_ver), "%d.%d.%04d",
-+		 major, minor, sub_minor);
++int efa_query_device_ctx(struct efa_context *ctx)
++{
++	struct ibv_device_attr_ex attr;
++	struct efa_query_device_ex_resp resp;
++	size_t resp_size =3D sizeof(resp);
++	unsigned int qp_table_sz;
++	int err;
 +
-+	if (attr_size >=3D offsetof(struct ibv_device_attr_ex, pci_atomic_caps) +
-+			sizeof(attr->pci_atomic_caps))
-+		get_pci_atomic_caps(context, attr);
++	if (ctx->cmds_supp_udata_mask & EFA_USER_CMDS_SUPP_UDATA_QUERY_DEVICE) {
++		err =3D ibv_cmd_query_device_any(&ctx->ibvctx.context, NULL,
++					       &attr, sizeof(attr),
++					       &resp.ibv_resp, &resp_size);
++		if (err)
++			return err;
 +
++		ctx->device_caps =3D resp.device_caps;
++		ctx->max_sq_wr =3D resp.max_sq_wr;
++		ctx->max_rq_wr =3D resp.max_rq_wr;
++		ctx->max_sq_sge =3D resp.max_sq_sge;
++		ctx->max_rq_sge =3D resp.max_rq_sge;
++		ctx->max_rdma_size =3D resp.max_rdma_size;
++		ctx->max_wr_rdma_sge =3D attr.orig_attr.max_sge_rd;
++	} else {
++		err =3D ibv_cmd_query_device_any(&ctx->ibvctx.context, NULL,
++					       &attr, sizeof(attr.orig_attr),
++					       NULL, NULL);
++		if (err)
++			return err;
++	}
++
++	qp_table_sz =3D roundup_pow_of_two(attr.orig_attr.max_qp);
++	ctx->qp_table_sz_m1 =3D qp_table_sz - 1;
++	ctx->qp_table =3D calloc(qp_table_sz, sizeof(*ctx->qp_table));
++	if (!ctx->qp_table)
++		return ENOMEM;
 +	return 0;
 +}
 +
-+void mlx5_query_device_ctx(struct mlx5_context *mctx)
-+{
-+	struct ibv_device_attr_ex device_attr;
-+	struct mlx5_query_device_ex_resp resp;
-+	size_t resp_size =3D sizeof(resp);
-+
-+	get_lag_caps(mctx);
-+
-+	if (!(mctx->cmds_supp_uhw & MLX5_USER_CMDS_SUPP_UHW_QUERY_DEVICE))
-+		return;
-+
-+	if (ibv_cmd_query_device_any(&mctx->ibv_ctx.context, NULL, &device_attr,
-+				     sizeof(device_attr), &resp.ibv_resp,
-+				     &resp_size))
-+		return;
-+
-+	mctx->cached_device_cap_flags =3D device_attr.orig_attr.device_cap_flags;
-+	mctx->atomic_cap =3D device_attr.orig_attr.atomic_cap;
-+	mctx->cached_tso_caps =3D device_attr.tso_caps;
-+	mctx->max_dm_size =3D device_attr.max_dm_size;
-+
- 	if (resp.mlx5_ib_support_multi_pkt_send_wqes & MLX5_IB_ALLOW_MPW)
- 		mctx->vendor_cap_flags |=3D MLX5_VENDOR_CAP_FLAGS_MPW_ALLOWED;
+ int efadv_query_device(struct ibv_context *ibvctx,
+ 		       struct efadv_device_attr *attr,
+ 		       uint32_t inlen)
+diff --git a/providers/efa/verbs.h b/providers/efa/verbs.h
+index da022e615af064..3b0e4e0d498761 100644
+--- a/providers/efa/verbs.h
++++ b/providers/efa/verbs.h
+@@ -9,6 +9,7 @@
+ #include <infiniband/driver.h>
+ #include <infiniband/verbs.h>
 =20
-@@ -3519,7 +3554,8 @@ int mlx5_query_device_ex(struct ibv_context *context,
- 		mctx->vendor_cap_flags |=3D MLX5_VENDOR_CAP_FLAGS_ENHANCED_MPW;
-=20
- 	mctx->cqe_comp_caps.max_num =3D resp.cqe_comp_caps.max_num;
--	mctx->cqe_comp_caps.supported_format =3D resp.cqe_comp_caps.supported_for=
-mat;
-+	mctx->cqe_comp_caps.supported_format =3D
-+		resp.cqe_comp_caps.supported_format;
- 	mctx->sw_parsing_caps.sw_parsing_offloads =3D
- 		resp.sw_parsing_caps.sw_parsing_offloads;
- 	mctx->sw_parsing_caps.supported_qpts =3D
-@@ -3544,25 +3580,11 @@ int mlx5_query_device_ex(struct ibv_context *contex=
-t,
- 		mctx->vendor_cap_flags |=3D MLX5_VENDOR_CAP_FLAGS_CQE_128B_PAD;
-=20
- 	if (resp.flags & MLX5_IB_QUERY_DEV_RESP_PACKET_BASED_CREDIT_MODE)
--		mctx->vendor_cap_flags |=3D MLX5_VENDOR_CAP_FLAGS_PACKET_BASED_CREDIT_MO=
-DE;
-+		mctx->vendor_cap_flags |=3D
-+			MLX5_VENDOR_CAP_FLAGS_PACKET_BASED_CREDIT_MODE;
-=20
- 	if (resp.flags & MLX5_IB_QUERY_DEV_RESP_FLAGS_SCAT2CQE_DCT)
- 		mctx->vendor_cap_flags |=3D MLX5_VENDOR_CAP_FLAGS_SCAT2CQE_DCT;
--
--	major     =3D (raw_fw_ver >> 32) & 0xffff;
--	minor     =3D (raw_fw_ver >> 16) & 0xffff;
--	sub_minor =3D raw_fw_ver & 0xffff;
--	a =3D &attr->orig_attr;
--	snprintf(a->fw_ver, sizeof(a->fw_ver), "%d.%d.%04d",
--		 major, minor, sub_minor);
--
--	if (attr_size >=3D offsetof(struct ibv_device_attr_ex, pci_atomic_caps) +
--			sizeof(attr->pci_atomic_caps))
--		get_pci_atomic_caps(context, attr);
--
--	get_lag_caps(context);
--
--	return 0;
- }
-=20
- static int rwq_sig_enabled(struct ibv_context *context)
++int efa_query_device_ctx(struct efa_context *ctx);
+ int efa_query_device(struct ibv_context *uctx, struct ibv_device_attr *att=
+r);
+ int efa_query_port(struct ibv_context *uctx, uint8_t port,
+ 		   struct ibv_port_attr *attr);
 --=20
 2.29.2
 
