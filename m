@@ -2,18 +2,18 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04722B42EA
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Nov 2020 12:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3A32B42EE
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Nov 2020 12:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729801AbgKPLfN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Nov 2020 06:35:13 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7909 "EHLO
+        id S1726281AbgKPLfR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Nov 2020 06:35:17 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:7912 "EHLO
         szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729455AbgKPLfN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Nov 2020 06:35:13 -0500
+        with ESMTP id S1729799AbgKPLfR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Nov 2020 06:35:17 -0500
 Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CZRnY1Fhmz6wqB;
-        Mon, 16 Nov 2020 19:34:57 +0800 (CST)
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CZRnX722zz6wj0;
+        Mon, 16 Nov 2020 19:34:56 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
  14.3.487.0; Mon, 16 Nov 2020 19:35:03 +0800
@@ -21,9 +21,9 @@ From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next 6/7] RDMA/hns: Add UD support for HIP09
-Date:   Mon, 16 Nov 2020 19:33:27 +0800
-Message-ID: <1605526408-6936-7-git-send-email-liweihang@huawei.com>
+Subject: [PATCH v2 for-next 7/7] RDMA/hns: Add support for UD inline
+Date:   Mon, 16 Nov 2020 19:33:28 +0800
+Message-ID: <1605526408-6936-8-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1605526408-6936-1-git-send-email-liweihang@huawei.com>
 References: <1605526408-6936-1-git-send-email-liweihang@huawei.com>
@@ -35,134 +35,251 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-HIP09 supports service type of Unreliable Datagram, add necessary process
-to enable this feature.
+HIP09 supports UD inline up to size of 1024 Bytes. When data size is
+smaller than 8 bytes, they will be stored in sqwqe. Otherwise, the data
+will be filled into extended sges.
 
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_ah.c    |  3 +++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c |  6 +++--
- drivers/infiniband/hw/hns/hns_roce_main.c  |  1 +
- drivers/infiniband/hw/hns/hns_roce_qp.c    | 39 ++++++++++++++++++++++--------
- 4 files changed, 37 insertions(+), 12 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_device.h |   2 +
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 111 ++++++++++++++++++++++++++--
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  14 ++++
+ drivers/infiniband/hw/hns/hns_roce_qp.c     |   6 ++
+ 4 files changed, 126 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_ah.c b/drivers/infiniband/hw/hns/hns_roce_ah.c
-index d65ff6a..b09ef33 100644
---- a/drivers/infiniband/hw/hns/hns_roce_ah.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_ah.c
-@@ -64,6 +64,9 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
- 	struct hns_roce_ah *ah = to_hr_ah(ibah);
- 	int ret = 0;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 9a032d0..f54739b 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -133,6 +133,7 @@ enum hns_roce_qp_caps {
+ 	HNS_ROCE_QP_CAP_RQ_RECORD_DB = BIT(0),
+ 	HNS_ROCE_QP_CAP_SQ_RECORD_DB = BIT(1),
+ 	HNS_ROCE_QP_CAP_OWNER_DB = BIT(2),
++	HNS_ROCE_QP_CAP_UD_SQ_INL = BIT(3),
+ };
  
-+	if (hr_dev->pci_dev->revision <= PCI_REVISION_ID_HIP08 && udata)
-+		return -EOPNOTSUPP;
-+
- 	ah->av.port = rdma_ah_get_port_num(ah_attr);
- 	ah->av.gid_index = grh->sgid_index;
+ enum hns_roce_cq_flags {
+@@ -222,6 +223,7 @@ enum {
+ 	HNS_ROCE_CAP_FLAG_FRMR                  = BIT(8),
+ 	HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL		= BIT(9),
+ 	HNS_ROCE_CAP_FLAG_ATOMIC		= BIT(10),
++	HNS_ROCE_CAP_FLAG_UD_SQ_INL		= BIT(13),
+ 	HNS_ROCE_CAP_FLAG_SDI_MODE		= BIT(14),
+ };
  
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 273d968..57ff223 100644
+index 57ff223..285d455 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -693,7 +693,7 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 		       ~(((qp->sq.head + nreq) >> ilog2(qp->sq.wqe_cnt)) & 0x1);
+@@ -428,9 +428,6 @@ static int fill_ud_av(struct hns_roce_v2_ud_send_wqe *ud_sq_wqe,
+ 	struct ib_device *ib_dev = ah->ibah.device;
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ib_dev);
  
- 		/* Corresponding to the QP type, wqe process separately */
--		if (ibqp->qp_type == IB_QPT_GSI)
-+		if (ibqp->qp_type == IB_QPT_GSI || ibqp->qp_type == IB_QPT_UD)
- 			ret = set_ud_wqe(qp, wr, wqe, &sge_idx, owner_bit);
- 		else if (ibqp->qp_type == IB_QPT_RC)
- 			ret = set_rc_wqe(qp, wr, wqe, &sge_idx, owner_bit);
-@@ -5151,7 +5151,9 @@ static int hns_roce_v2_destroy_qp_common(struct hns_roce_dev *hr_dev,
- 	unsigned long flags;
- 	int ret = 0;
- 
--	if (hr_qp->ibqp.qp_type == IB_QPT_RC && hr_qp->state != IB_QPS_RESET) {
-+	if ((hr_qp->ibqp.qp_type == IB_QPT_RC ||
-+	     hr_qp->ibqp.qp_type == IB_QPT_UD) &&
-+	   hr_qp->state != IB_QPS_RESET) {
- 		/* Modify qp to reset before destroying qp */
- 		ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, NULL, 0,
- 					    hr_qp->state, IB_QPS_RESET);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index 97fdc55..f01590d 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -424,6 +424,7 @@ static const struct ib_device_ops hns_roce_dev_ops = {
- 	.alloc_pd = hns_roce_alloc_pd,
- 	.alloc_ucontext = hns_roce_alloc_ucontext,
- 	.create_ah = hns_roce_create_ah,
-+	.create_user_ah = hns_roce_create_ah,
- 	.create_cq = hns_roce_create_cq,
- 	.create_qp = hns_roce_create_qp,
- 	.dealloc_pd = hns_roce_dealloc_pd,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index e288946..5e505a3 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -998,6 +998,30 @@ void hns_roce_qp_destroy(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 	kfree(hr_qp);
+-	roce_set_field(ud_sq_wqe->byte_24, V2_UD_SEND_WQE_BYTE_24_UDPSPN_M,
+-		       V2_UD_SEND_WQE_BYTE_24_UDPSPN_S, ah->av.udp_sport);
+-
+ 	roce_set_field(ud_sq_wqe->byte_36, V2_UD_SEND_WQE_BYTE_36_HOPLIMIT_M,
+ 		       V2_UD_SEND_WQE_BYTE_36_HOPLIMIT_S, ah->av.hop_limit);
+ 	roce_set_field(ud_sq_wqe->byte_36, V2_UD_SEND_WQE_BYTE_36_TCLASS_M,
+@@ -456,6 +453,90 @@ static int fill_ud_av(struct hns_roce_v2_ud_send_wqe *ud_sq_wqe,
+ 	return 0;
  }
  
-+static int check_qp_type(struct hns_roce_dev *hr_dev, enum ib_qp_type type,
-+			 bool is_user)
++static void fill_ud_inn_inl_data(const struct ib_send_wr *wr,
++				 struct hns_roce_v2_ud_send_wqe *ud_sq_wqe)
 +{
-+	switch (type) {
-+	case IB_QPT_UD:
-+		if (hr_dev->pci_dev->revision <= PCI_REVISION_ID_HIP08 &&
-+		    is_user)
-+			goto out;
-+		fallthrough;
-+	case IB_QPT_RC:
-+	case IB_QPT_GSI:
-+		break;
-+	default:
-+		goto out;
++	u8 data[HNS_ROCE_V2_MAX_UD_INL_INN_SZ] = {0};
++	u32 *loc = (u32 *)data;
++	void *tmp = data;
++	unsigned int i;
++	u32 tmp_data;
++
++	for (i = 0; i < wr->num_sge; i++) {
++		memcpy(tmp, ((void *)wr->sg_list[i].addr),
++		       wr->sg_list[i].length);
++		tmp += wr->sg_list[i].length;
 +	}
 +
-+	return 0;
++	roce_set_field(ud_sq_wqe->msg_len,
++		       V2_UD_SEND_WQE_BYTE_8_INL_DATA_15_0_M,
++		       V2_UD_SEND_WQE_BYTE_8_INL_DATA_15_0_S,
++		       *loc & 0xffff);
 +
-+out:
-+	ibdev_err(&hr_dev->ib_dev, "not support QP type %d\n", type);
++	roce_set_field(ud_sq_wqe->byte_16,
++		       V2_UD_SEND_WQE_BYTE_16_INL_DATA_23_16_M,
++		       V2_UD_SEND_WQE_BYTE_16_INL_DATA_23_16_S,
++		       (*loc >> 16) & 0xff);
 +
-+	return -EOPNOTSUPP;
++	tmp_data = *loc >> 24;
++	loc++;
++	tmp_data |= ((*loc & 0xffff) << 8);
++
++	roce_set_field(ud_sq_wqe->byte_20,
++		       V2_UD_SEND_WQE_BYTE_20_INL_DATA_47_24_M,
++		       V2_UD_SEND_WQE_BYTE_20_INL_DATA_47_24_S,
++		       tmp_data);
++
++	roce_set_field(ud_sq_wqe->byte_24,
++		       V2_UD_SEND_WQE_BYTE_24_INL_DATA_63_48_M,
++		       V2_UD_SEND_WQE_BYTE_24_INL_DATA_63_48_S,
++		       *loc >> 16);
 +}
 +
- struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
- 				 struct ib_qp_init_attr *init_attr,
- 				 struct ib_udata *udata)
-@@ -1007,15 +1031,9 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
- 	struct hns_roce_qp *hr_qp;
- 	int ret;
- 
--	switch (init_attr->qp_type) {
--	case IB_QPT_RC:
--	case IB_QPT_GSI:
--		break;
--	default:
--		ibdev_err(ibdev, "not support QP type %d\n",
--			  init_attr->qp_type);
--		return ERR_PTR(-EOPNOTSUPP);
--	}
-+	ret = check_qp_type(hr_dev, init_attr->qp_type, !!udata);
-+	if (ret)
-+		return ERR_PTR(ret);
- 
- 	hr_qp = kzalloc(sizeof(*hr_qp), GFP_KERNEL);
- 	if (!hr_qp)
-@@ -1030,10 +1048,11 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
- 	if (ret) {
- 		ibdev_err(ibdev, "Create QP type 0x%x failed(%d)\n",
- 			  init_attr->qp_type, ret);
--		ibdev_err(ibdev, "Create GSI QP failed!\n");
++static int set_ud_inl(struct hns_roce_qp *qp, const struct ib_send_wr *wr,
++		      struct hns_roce_v2_ud_send_wqe *ud_sq_wqe,
++		      unsigned int *sge_idx)
++{
++	struct hns_roce_dev *hr_dev = to_hr_dev(qp->ibqp.device);
++	u32 msg_len = le32_to_cpu(ud_sq_wqe->msg_len);
++	struct ib_device *ibdev = &hr_dev->ib_dev;
++	unsigned int curr_idx = *sge_idx;
++	int ret;
 +
- 		kfree(hr_qp);
- 		return ERR_PTR(ret);
++	if (!(qp->en_flags & HNS_ROCE_QP_CAP_UD_SQ_INL)) {
++		ibdev_err(ibdev, "not support UD SQ inline!\n");
++		return -EOPNOTSUPP;
++	}
++
++	if (!check_inl_data_len(qp, msg_len))
++		return -EINVAL;
++
++	roce_set_bit(ud_sq_wqe->byte_4, V2_UD_SEND_WQE_BYTE_4_INL_S, 1);
++
++	if (msg_len <= HNS_ROCE_V2_MAX_UD_INL_INN_SZ) {
++		roce_set_bit(ud_sq_wqe->byte_20,
++			     V2_UD_SEND_WQE_BYTE_20_INL_TYPE_S, 0);
++
++		fill_ud_inn_inl_data(wr, ud_sq_wqe);
++	} else {
++		roce_set_bit(ud_sq_wqe->byte_20,
++			     V2_UD_SEND_WQE_BYTE_20_INL_TYPE_S, 1);
++
++		ret = fill_ext_sge_inl_data(qp, wr, &curr_idx, msg_len);
++		if (ret)
++			return ret;
++
++		roce_set_field(ud_sq_wqe->byte_16,
++			       V2_UD_SEND_WQE_BYTE_16_SGE_NUM_M,
++			       V2_UD_SEND_WQE_BYTE_16_SGE_NUM_S,
++			       curr_idx - *sge_idx);
++	}
++
++	*sge_idx = curr_idx;
++
++	return 0;
++}
++
+ static inline int set_ud_wqe(struct hns_roce_qp *qp,
+ 			     const struct ib_send_wr *wr,
+ 			     void *wqe, unsigned int *sge_idx,
+@@ -486,9 +567,6 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
+ 	roce_set_field(ud_sq_wqe->byte_16, V2_UD_SEND_WQE_BYTE_16_PD_M,
+ 		       V2_UD_SEND_WQE_BYTE_16_PD_S, to_hr_pd(qp->ibqp.pd)->pdn);
+ 
+-	roce_set_field(ud_sq_wqe->byte_16, V2_UD_SEND_WQE_BYTE_16_SGE_NUM_M,
+-		       V2_UD_SEND_WQE_BYTE_16_SGE_NUM_S, valid_num_sge);
+-
+ 	roce_set_field(ud_sq_wqe->byte_20,
+ 		       V2_UD_SEND_WQE_BYTE_20_MSG_START_SGE_IDX_M,
+ 		       V2_UD_SEND_WQE_BYTE_20_MSG_START_SGE_IDX_S,
+@@ -503,7 +581,23 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
+ 	if (ret)
+ 		return ret;
+ 
+-	set_extend_sge(qp, wr, &curr_idx, valid_num_sge);
++	if (wr->send_flags & IB_SEND_INLINE) {
++		ret = set_ud_inl(qp, wr, ud_sq_wqe, &curr_idx);
++		if (ret)
++			return ret;
++	} else {
++		roce_set_field(ud_sq_wqe->byte_16,
++			       V2_UD_SEND_WQE_BYTE_16_SGE_NUM_M,
++			       V2_UD_SEND_WQE_BYTE_16_SGE_NUM_S,
++			       valid_num_sge);
++
++		roce_set_field(ud_sq_wqe->byte_24,
++			       V2_UD_SEND_WQE_BYTE_24_UDPSPN_M,
++			       V2_UD_SEND_WQE_BYTE_24_UDPSPN_S,
++			       ah->av.udp_sport);
++
++		set_extend_sge(qp, wr, &curr_idx, valid_num_sge);
++	}
+ 
+ 	/*
+ 	 * The pipeline can sequentially post all valid WQEs into WQ buffer,
+@@ -1916,6 +2010,8 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
+ 		caps->gmv_buf_pg_sz = 0;
+ 		caps->gid_table_len[0] = caps->gmv_bt_num * (HNS_HW_PAGE_SIZE /
+ 					 caps->gmv_entry_sz);
++		caps->flags |= HNS_ROCE_CAP_FLAG_UD_SQ_INL;
++		caps->max_sq_inline = HNS_ROCE_V2_MAX_SQ_INL_EXT;
  	}
-+
- 	return &hr_qp->ibqp;
  }
  
+@@ -5125,6 +5221,7 @@ static int hns_roce_v2_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
+ 	qp_attr->cur_qp_state = qp_attr->qp_state;
+ 	qp_attr->cap.max_recv_wr = hr_qp->rq.wqe_cnt;
+ 	qp_attr->cap.max_recv_sge = hr_qp->rq.max_gs;
++	qp_attr->cap.max_inline_data = hr_qp->max_inline_data;
+ 
+ 	if (!ibqp->uobject) {
+ 		qp_attr->cap.max_send_wr = hr_qp->sq.wqe_cnt;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index c068517..1c1a773 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -61,6 +61,8 @@
+ #define HNS_ROCE_V2_MAX_SQ_SGE_NUM		64
+ #define HNS_ROCE_V2_MAX_EXTEND_SGE_NUM		0x200000
+ #define HNS_ROCE_V2_MAX_SQ_INLINE		0x20
++#define HNS_ROCE_V2_MAX_SQ_INL_EXT		0x400
++#define HNS_ROCE_V2_MAX_UD_INL_INN_SZ		8
+ #define HNS_ROCE_V2_MAX_RC_INL_INN_SZ		32
+ #define HNS_ROCE_V2_UAR_NUM			256
+ #define HNS_ROCE_V2_PHY_UAR_NUM			1
+@@ -1126,6 +1128,18 @@ struct hns_roce_v2_ud_send_wqe {
+ 
+ #define	V2_UD_SEND_WQE_BYTE_40_LBI_S 31
+ 
++#define V2_UD_SEND_WQE_BYTE_4_INL_S 12
++#define V2_UD_SEND_WQE_BYTE_20_INL_TYPE_S 31
++
++#define V2_UD_SEND_WQE_BYTE_8_INL_DATA_15_0_S 16
++#define V2_UD_SEND_WQE_BYTE_8_INL_DATA_15_0_M GENMASK(31, 16)
++#define V2_UD_SEND_WQE_BYTE_16_INL_DATA_23_16_S 24
++#define V2_UD_SEND_WQE_BYTE_16_INL_DATA_23_16_M GENMASK(31, 24)
++#define V2_UD_SEND_WQE_BYTE_20_INL_DATA_47_24_S 0
++#define V2_UD_SEND_WQE_BYTE_20_INL_DATA_47_24_M GENMASK(23, 0)
++#define V2_UD_SEND_WQE_BYTE_24_INL_DATA_63_48_S 0
++#define V2_UD_SEND_WQE_BYTE_24_INL_DATA_63_48_M GENMASK(15, 0)
++
+ struct hns_roce_v2_rc_send_wqe {
+ 	__le32		byte_4;
+ 	__le32		msg_len;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 5e505a3..1210061 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -862,6 +862,9 @@ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 		return ret;
+ 	}
+ 
++	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_UD_SQ_INL)
++		hr_qp->en_flags |= HNS_ROCE_QP_CAP_UD_SQ_INL;
++
+ 	if (udata) {
+ 		if (ib_copy_from_udata(ucmd, udata, sizeof(*ucmd))) {
+ 			ibdev_err(ibdev, "Failed to copy QP ucmd\n");
+@@ -946,6 +949,9 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
+ 	}
+ 
+ 	if (udata) {
++		if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_UD_SQ_INL)
++			resp.cap_flags |= HNS_ROCE_QP_CAP_UD_SQ_INL;
++
+ 		ret = ib_copy_to_udata(udata, &resp,
+ 				       min(udata->outlen, sizeof(resp)));
+ 		if (ret) {
 -- 
 2.8.1
 
