@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0162B433C
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Nov 2020 13:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 503732B4339
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Nov 2020 13:00:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726175AbgKPMA1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Nov 2020 07:00:27 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7916 "EHLO
+        id S1726487AbgKPMAY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Nov 2020 07:00:24 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:7915 "EHLO
         szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726238AbgKPMA1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Nov 2020 07:00:27 -0500
+        with ESMTP id S1726175AbgKPMAY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Nov 2020 07:00:24 -0500
 Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CZSLc0tv7z6xlZ;
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CZSLc0j8Hz6xlY;
         Mon, 16 Nov 2020 20:00:08 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next 1/2] RDMA/hns: Add support for CQ stash
-Date:   Mon, 16 Nov 2020 19:58:38 +0800
-Message-ID: <1605527919-48769-2-git-send-email-liweihang@huawei.com>
+Subject: [PATCH v2 for-next 2/2] RDMA/hns: Add support for QP stash
+Date:   Mon, 16 Nov 2020 19:58:39 +0800
+Message-ID: <1605527919-48769-3-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1605527919-48769-1-git-send-email-liweihang@huawei.com>
 References: <1605527919-48769-1-git-send-email-liweihang@huawei.com>
@@ -39,123 +39,45 @@ From: Lang Cheng <chenglang@huawei.com>
 
 Stash is a mechanism that uses the core information carried by the ARM AXI
 bus to access the L3 cache. It can be used to improve the performance by
-increasing the hit ratio of L3 cache. CQs need to enable stash by default.
+increasing the hit ratio of L3 cache. QPs need to enable stash by default.
 
 Signed-off-by: Lang Cheng <chenglang@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_common.h | 12 +++++++++
- drivers/infiniband/hw/hns/hns_roce_device.h |  1 +
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  3 +++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 39 +++++++++++++++++------------
- 4 files changed, 39 insertions(+), 16 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 6 ++++++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 2 ++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_common.h b/drivers/infiniband/hw/hns/hns_roce_common.h
-index f5669ff..8d96c4e 100644
---- a/drivers/infiniband/hw/hns/hns_roce_common.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_common.h
-@@ -53,6 +53,18 @@
- #define roce_set_bit(origin, shift, val) \
- 	roce_set_field((origin), (1ul << (shift)), (shift), (val))
- 
-+#define FIELD_LOC(field_h, field_l) field_h, field_l
-+
-+#define _hr_reg_set(arr, field_h, field_l)                                     \
-+	do {                                                                   \
-+		BUILD_BUG_ON(((field_h) / 32) != ((field_l) / 32));            \
-+		BUILD_BUG_ON((field_h) / 32 >= ARRAY_SIZE(arr));               \
-+		(arr)[(field_h) / 32] |=                                       \
-+			cpu_to_le32(GENMASK((field_h) % 32, (field_l) % 32));  \
-+	} while (0)
-+
-+#define hr_reg_set(arr, field) _hr_reg_set(arr, field)
-+
- #define ROCEE_GLB_CFG_ROCEE_DB_SQ_MODE_S 3
- #define ROCEE_GLB_CFG_ROCEE_DB_OTH_MODE_S 4
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 1d99022..ab7df8e 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -223,6 +223,7 @@ enum {
- 	HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL		= BIT(9),
- 	HNS_ROCE_CAP_FLAG_ATOMIC		= BIT(10),
- 	HNS_ROCE_CAP_FLAG_SDI_MODE		= BIT(14),
-+	HNS_ROCE_CAP_FLAG_STASH			= BIT(17),
- };
- 
- #define HNS_ROCE_DB_TYPE_COUNT			2
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 4d697e4..5fd0458 100644
+index 5fd0458..eb2838a 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -3177,6 +3177,9 @@ static void hns_roce_v2_write_cqc(struct hns_roce_dev *hr_dev,
- 		       V2_CQC_BYTE_8_CQE_SIZE_S, hr_cq->cqe_size ==
- 		       HNS_ROCE_V3_CQE_SIZE ? 1 : 0);
- 
-+	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_STASH)
-+		hr_reg_set(cq_context->raw, CQC_STASH);
+@@ -3986,6 +3986,12 @@ static void modify_qp_reset_to_init(struct ib_qp *ibqp,
+ 	hr_qp->access_flags = attr->qp_access_flags;
+ 	roce_set_field(context->byte_252_err_txcqn, V2_QPC_BYTE_252_TX_CQN_M,
+ 		       V2_QPC_BYTE_252_TX_CQN_S, to_hr_cq(ibqp->send_cq)->cqn);
 +
- 	cq_context->cqe_cur_blk_addr = cpu_to_le32(to_hr_hw_page_addr(mtts[0]));
++	if (hr_dev->caps.qpc_sz < HNS_ROCE_V3_QPC_SZ)
++		return;
++
++	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_STASH)
++		hr_reg_set(context->ext, QPCEX_STASH);
+ }
  
- 	roce_set_field(cq_context->byte_16_hop_addr,
+ static void modify_qp_init_to_init(struct ib_qp *ibqp,
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index 1409d05..50a5187 100644
+index 50a5187..4679afb 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -267,22 +267,27 @@ enum hns_roce_sgid_type {
- };
+@@ -898,6 +898,8 @@ struct hns_roce_v2_qp_context {
+ #define	V2_QPC_BYTE_256_SQ_FLUSH_IDX_S 16
+ #define V2_QPC_BYTE_256_SQ_FLUSH_IDX_M GENMASK(31, 16)
  
- struct hns_roce_v2_cq_context {
--	__le32	byte_4_pg_ceqn;
--	__le32	byte_8_cqn;
--	__le32	cqe_cur_blk_addr;
--	__le32	byte_16_hop_addr;
--	__le32	cqe_nxt_blk_addr;
--	__le32	byte_24_pgsz_addr;
--	__le32	byte_28_cq_pi;
--	__le32	byte_32_cq_ci;
--	__le32	cqe_ba;
--	__le32	byte_40_cqe_ba;
--	__le32	byte_44_db_record;
--	__le32	db_record_addr;
--	__le32	byte_52_cqe_cnt;
--	__le32	byte_56_cqe_period_maxcnt;
--	__le32	cqe_report_timer;
--	__le32	byte_64_se_cqe_idx;
-+	union {
-+		struct {
-+			__le32 byte_4_pg_ceqn;
-+			__le32 byte_8_cqn;
-+			__le32 cqe_cur_blk_addr;
-+			__le32 byte_16_hop_addr;
-+			__le32 cqe_nxt_blk_addr;
-+			__le32 byte_24_pgsz_addr;
-+			__le32 byte_28_cq_pi;
-+			__le32 byte_32_cq_ci;
-+			__le32 cqe_ba;
-+			__le32 byte_40_cqe_ba;
-+			__le32 byte_44_db_record;
-+			__le32 db_record_addr;
-+			__le32 byte_52_cqe_cnt;
-+			__le32 byte_56_cqe_period_maxcnt;
-+			__le32 cqe_report_timer;
-+			__le32 byte_64_se_cqe_idx;
-+		};
-+		__le32 raw[16];
-+	};
- };
- #define HNS_ROCE_V2_CQ_DEFAULT_BURST_NUM 0x0
- #define HNS_ROCE_V2_CQ_DEFAULT_INTERVAL	0x0
-@@ -360,6 +365,8 @@ struct hns_roce_v2_cq_context {
- #define	V2_CQC_BYTE_64_SE_CQE_IDX_S 0
- #define	V2_CQC_BYTE_64_SE_CQE_IDX_M GENMASK(23, 0)
- 
-+#define CQC_STASH FIELD_LOC(63, 63)
++#define QPCEX_STASH FIELD_LOC(82, 82)
 +
- struct hns_roce_srq_context {
- 	__le32	byte_4_srqn_srqst;
- 	__le32	byte_8_limit_wl;
+ #define	V2_QP_RWE_S 1 /* rdma write enable */
+ #define	V2_QP_RRE_S 2 /* rdma read enable */
+ #define	V2_QP_ATE_S 3 /* rdma atomic enable */
 -- 
 2.8.1
 
