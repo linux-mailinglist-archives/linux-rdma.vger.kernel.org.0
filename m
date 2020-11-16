@@ -2,231 +2,272 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E272B4071
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Nov 2020 11:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAEE2B40BC
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Nov 2020 11:19:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgKPKF0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Nov 2020 05:05:26 -0500
-Received: from mga14.intel.com ([192.55.52.115]:23563 "EHLO mga14.intel.com"
+        id S1728964AbgKPKS7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Nov 2020 05:18:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726884AbgKPKF0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 16 Nov 2020 05:05:26 -0500
-IronPort-SDR: HNa70cZO7PKkCsE6mTvq0P7iVnT1GhaOf05vNL59iOMF+xGji4CSbUtrfX3t2CKhEqTfoqF4BF
- OZVluAnhuEqQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="169941271"
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="169941271"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 02:05:24 -0800
-IronPort-SDR: VIog+AcJmXGZCg66LnX7fY/DUEZpANr6AQelYTw0uCRmAtz0l9pvgM4K4OrCUqAHfNSPDL1if1
- +YfwrtAckfUQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="310346736"
-Received: from lkp-server01.sh.intel.com (HELO fb398427a497) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Nov 2020 02:05:22 -0800
-Received: from kbuild by fb398427a497 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kebNx-00002a-VV; Mon, 16 Nov 2020 10:05:21 +0000
-Date:   Mon, 16 Nov 2020 18:05:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- e96ea81cacb1f8c6c87062ab0822e1f2e0e65068
-Message-ID: <5fb24ecf.hgkZWPx/+ZYEZuaz%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728867AbgKPKSc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 16 Nov 2020 05:18:32 -0500
+Received: from mail.kernel.org (ip5f5ad5de.dynamic.kabel-deutschland.de [95.90.213.222])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C48B2467D;
+        Mon, 16 Nov 2020 10:18:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605521909;
+        bh=hrYDFejIWKc2Sc1kJcaDxBLFYaPls+fhDdb9MsI3AZg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nOYrZpl4mWNo4VChMm50rhlZZFPHrNl2Md99UAjXUoT1Rv4ai6qEtKNY48QQHHDZ9
+         HHi0C1trk4izVD71hsF3fVqJ+98gWWf5nNLgENrcQfgxQXQZ2k1Gs3wz9z2aw/LySR
+         l+js1iuF3inRwlmH2DVzaLCAfu7AYgHEXvSB+IiI=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kebab-00FwDo-Pf; Mon, 16 Nov 2020 11:18:25 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Ben Segall <bsegall@google.com>,
+        Colin Cross <ccross@android.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Evgeniy Polyakov <zbr@ioremap.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>, Jan Kara <jack@suse.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Mike Rapoport <rppt@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Gong <richard.gong@linux.intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sebastian Reichel <sre@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Will Drewry <wad@chromium.org>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-ext4@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, target-devel@vger.kernel.org
+Subject: [PATCH v4 00/27]Fix several bad kernel-doc markups
+Date:   Mon, 16 Nov 2020 11:17:56 +0100
+Message-Id: <cover.1605521731.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: e96ea81cacb1f8c6c87062ab0822e1f2e0e65068  RDMA/cma: Add missing error handling of listen_id
+Kernel-doc has always be limited to a probably bad documented
+rule:
 
-elapsed time: 859m
+The kernel-doc markups should appear *imediatelly before* the
+function or data structure that it documents.
 
-configs tested: 167
-configs skipped: 3
+On other words, if a C file would contain something like this:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+	/**
+	 * foo - function foo
+	 * @args: foo args
+	 */
+	static inline void bar(int args);
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         lpc32xx_defconfig
-mips                            e55_defconfig
-openrisc                 simple_smp_defconfig
-powerpc                           allnoconfig
-arm                         at91_dt_defconfig
-arm                          exynos_defconfig
-m68k                        mvme147_defconfig
-arm                       spear13xx_defconfig
-microblaze                    nommu_defconfig
-powerpc                  mpc866_ads_defconfig
-arm                       mainstone_defconfig
-um                           x86_64_defconfig
-arm                        magician_defconfig
-m68k                        m5272c3_defconfig
-arm                        spear3xx_defconfig
-arc                            hsdk_defconfig
-sh                             shx3_defconfig
-um                            kunit_defconfig
-mips                        vocore2_defconfig
-sh                      rts7751r2d1_defconfig
-arm                     eseries_pxa_defconfig
-mips                      malta_kvm_defconfig
-m68k                         amcore_defconfig
-arm                           viper_defconfig
-ia64                          tiger_defconfig
-mips                       capcella_defconfig
-mips                        nlm_xlr_defconfig
-sh                        dreamcast_defconfig
-h8300                       h8s-sim_defconfig
-powerpc64                           defconfig
-xtensa                           alldefconfig
-powerpc                      pmac32_defconfig
-s390                          debug_defconfig
-powerpc                    ge_imp3a_defconfig
-arm                         s3c6400_defconfig
-powerpc                  storcenter_defconfig
-powerpc                 mpc837x_rdb_defconfig
-openrisc                         alldefconfig
-powerpc                      cm5200_defconfig
-mips                          malta_defconfig
-powerpc                     tqm8555_defconfig
-powerpc                      ppc40x_defconfig
-microblaze                          defconfig
-sh                          rsk7203_defconfig
-powerpc               mpc834x_itxgp_defconfig
-mips                           xway_defconfig
-alpha                               defconfig
-riscv                             allnoconfig
-powerpc                     mpc512x_defconfig
-powerpc                      walnut_defconfig
-powerpc                     ep8248e_defconfig
-alpha                            allyesconfig
-riscv                               defconfig
-h8300                               defconfig
-arm                          pxa3xx_defconfig
-i386                             allyesconfig
-powerpc                     powernv_defconfig
-i386                                defconfig
-powerpc                     pq2fads_defconfig
-mips                        jmr3927_defconfig
-xtensa                  audio_kc705_defconfig
-arm                        vexpress_defconfig
-m68k                          hp300_defconfig
-sh                          kfr2r09_defconfig
-arm                       multi_v4t_defconfig
-arm                          ixp4xx_defconfig
-powerpc                      chrp32_defconfig
-arm                          moxart_defconfig
-powerpc                      arches_defconfig
-arm                     am200epdkit_defconfig
-sh                          lboxre2_defconfig
-arm                         s3c2410_defconfig
-c6x                        evmc6457_defconfig
-powerpc                 linkstation_defconfig
-mips                     loongson1b_defconfig
-mips                         mpc30x_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a003-20201116
-x86_64               randconfig-a005-20201116
-x86_64               randconfig-a004-20201116
-x86_64               randconfig-a002-20201116
-x86_64               randconfig-a001-20201116
-x86_64               randconfig-a006-20201116
-i386                 randconfig-a006-20201116
-i386                 randconfig-a005-20201116
-i386                 randconfig-a001-20201116
-i386                 randconfig-a002-20201116
-i386                 randconfig-a004-20201116
-i386                 randconfig-a003-20201116
-i386                 randconfig-a006-20201115
-i386                 randconfig-a005-20201115
-i386                 randconfig-a001-20201115
-i386                 randconfig-a002-20201115
-i386                 randconfig-a004-20201115
-i386                 randconfig-a003-20201115
-x86_64               randconfig-a015-20201115
-x86_64               randconfig-a011-20201115
-x86_64               randconfig-a014-20201115
-x86_64               randconfig-a013-20201115
-x86_64               randconfig-a016-20201115
-x86_64               randconfig-a012-20201115
-i386                 randconfig-a012-20201116
-i386                 randconfig-a014-20201116
-i386                 randconfig-a016-20201116
-i386                 randconfig-a011-20201116
-i386                 randconfig-a015-20201116
-i386                 randconfig-a013-20201116
-i386                 randconfig-a012-20201115
-i386                 randconfig-a014-20201115
-i386                 randconfig-a016-20201115
-i386                 randconfig-a011-20201115
-i386                 randconfig-a015-20201115
-i386                 randconfig-a013-20201115
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+	/**
+	 * bar - function bar
+	 * @args: foo args
+	 */
+	static inline void foo(void *args);
 
-clang tested configs:
-x86_64               randconfig-a003-20201115
-x86_64               randconfig-a005-20201115
-x86_64               randconfig-a004-20201115
-x86_64               randconfig-a002-20201115
-x86_64               randconfig-a001-20201115
-x86_64               randconfig-a006-20201115
-x86_64               randconfig-a015-20201116
-x86_64               randconfig-a011-20201116
-x86_64               randconfig-a014-20201116
-x86_64               randconfig-a013-20201116
-x86_64               randconfig-a016-20201116
-x86_64               randconfig-a012-20201116
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+The output (in ReST format) will be:
+
+	.. c:function:: void bar (int args)
+
+	   function foo
+
+	**Parameters**
+
+	``int args``
+	  foo args
+
+
+	.. c:function:: void foo (void *args)
+
+	   function bar
+
+	**Parameters**
+
+	``void *args``
+	  foo args
+
+Which is clearly a wrong result.  Before this changeset, 
+not even a warning is produced on such cases.
+
+As placing such markups just before the documented
+data is a common practice, on most cases this is fine.
+
+However, as patches touch things, identifiers may be
+renamed, and people may forget to update the kernel-doc
+markups to follow such changes.
+
+This has been happening for quite a while, as there are
+lots of files with kernel-doc problems.
+
+This series address those issues and add a file at the
+end that will enforce that the identifier will match the
+kernel-doc markup, avoiding this problem from
+keep happening as time goes by.
+
+This series is based on current upstream tree.
+
+@maintainers: feel free to pick the patches and
+apply them directly on your trees, as all patches on 
+this series are independent from the other ones.
+
+--
+
+v4:
+
+  - Patches got rebased and got some acks.
+
+Mauro Carvalho Chehab (27):
+  net: phy: fix kernel-doc markups
+  net: datagram: fix some kernel-doc markups
+  net: core: fix some kernel-doc markups
+  s390: fix kernel-doc markups
+  drm: fix some kernel-doc markups
+  HSI: fix a kernel-doc markup
+  IB: fix kernel-doc markups
+  parport: fix a kernel-doc markup
+  rapidio: fix kernel-doc a markup
+  video: fix some kernel-doc markups
+  fs: fix kernel-doc markups
+  jbd2: fix kernel-doc markups
+  pstore/zone: fix a kernel-doc markup
+  completion: fix kernel-doc markups
+  firmware: stratix10-svc: fix kernel-doc markups
+  connector: fix a kernel-doc markup
+  lib/crc7: fix a kernel-doc markup
+  hrtimer: fix kernel-doc markups
+  genirq: fix kernel-doc markups
+  list: fix a typo at the kernel-doc markup
+  memblock: fix kernel-doc markups
+  w1: fix a kernel-doc markup
+  resource: fix kernel-doc markups
+  shed: fix kernel-doc markup
+  mm: fix kernel-doc markups
+  selftests: kselftest_harness.h: partially fix kernel-doc markups
+  scripts: kernel-doc: validate kernel-doc markup with the actual names
+
+ arch/s390/include/asm/ccwdev.h                |  2 +-
+ arch/s390/include/asm/cio.h                   |  2 +-
+ drivers/gpu/drm/drm_atomic_state_helper.c     |  2 +-
+ drivers/gpu/drm/drm_connector.c               |  3 +-
+ drivers/gpu/drm/drm_dp_helper.c               |  2 +-
+ drivers/gpu/drm/drm_framebuffer.c             |  2 +-
+ drivers/gpu/drm/drm_gem.c                     |  4 +-
+ drivers/gpu/drm/drm_gem_vram_helper.c         |  2 +-
+ drivers/gpu/drm/drm_mode_object.c             |  2 +-
+ drivers/gpu/drm/drm_modes.c                   |  4 +-
+ drivers/gpu/drm/drm_scdc_helper.c             |  2 +-
+ drivers/gpu/drm/i915/display/intel_dpll_mgr.c |  2 +-
+ drivers/gpu/drm/i915/i915_gem_evict.c         |  2 +-
+ drivers/gpu/drm/i915/i915_perf.c              |  8 ++-
+ drivers/gpu/drm/scheduler/sched_main.c        |  2 +-
+ drivers/gpu/drm/v3d/v3d_sched.c               |  2 +-
+ drivers/gpu/drm/vc4/vc4_bo.c                  |  2 +-
+ drivers/hsi/hsi_core.c                        |  2 +-
+ drivers/infiniband/core/cm.c                  |  5 +-
+ drivers/infiniband/core/cq.c                  |  4 +-
+ drivers/infiniband/core/iwpm_util.h           |  2 +-
+ drivers/infiniband/core/sa_query.c            |  3 +-
+ drivers/infiniband/core/verbs.c               |  4 +-
+ drivers/infiniband/sw/rdmavt/ah.c             |  2 +-
+ drivers/infiniband/sw/rdmavt/mcast.c          | 12 ++--
+ drivers/infiniband/sw/rdmavt/qp.c             |  8 +--
+ drivers/infiniband/ulp/iser/iscsi_iser.c      |  2 +-
+ .../infiniband/ulp/opa_vnic/opa_vnic_encap.h  |  2 +-
+ .../ulp/opa_vnic/opa_vnic_vema_iface.c        |  2 +-
+ drivers/infiniband/ulp/srpt/ib_srpt.h         |  2 +-
+ drivers/net/phy/mdio_bus.c                    |  2 +-
+ drivers/net/phy/phy-c45.c                     |  2 +-
+ drivers/net/phy/phy.c                         |  2 +-
+ drivers/net/phy/phy_device.c                  |  2 +-
+ drivers/net/phy/phylink.c                     |  2 +-
+ drivers/parport/share.c                       |  2 +-
+ drivers/rapidio/rio.c                         |  2 +-
+ drivers/video/fbdev/core/fbcmap.c             |  2 +-
+ drivers/video/hdmi.c                          |  3 +-
+ fs/dcache.c                                   | 72 +++++++++----------
+ fs/inode.c                                    |  4 +-
+ fs/jbd2/journal.c                             | 34 ++++-----
+ fs/jbd2/transaction.c                         | 31 ++++----
+ fs/pstore/zone.c                              |  2 +-
+ fs/seq_file.c                                 |  5 +-
+ fs/super.c                                    | 12 ++--
+ include/drm/drm_atomic_helper.h               |  4 +-
+ include/drm/drm_connector.h                   |  2 +-
+ include/drm/drm_device.h                      |  2 +-
+ include/drm/drm_dsc.h                         |  3 +-
+ include/drm/drm_gem_vram_helper.h             |  8 +--
+ include/linux/completion.h                    | 10 ++-
+ include/linux/connector.h                     |  2 +-
+ .../firmware/intel/stratix10-svc-client.h     | 10 +--
+ include/linux/hrtimer.h                       |  6 +-
+ include/linux/jbd2.h                          |  2 +-
+ include/linux/list.h                          |  2 +-
+ include/linux/memblock.h                      |  4 +-
+ include/linux/netdevice.h                     | 11 ++-
+ include/linux/parport.h                       | 31 ++++++++
+ include/linux/w1.h                            |  2 +-
+ include/rdma/ib_verbs.h                       | 11 +++
+ kernel/irq/chip.c                             |  2 +-
+ kernel/irq/generic-chip.c                     |  2 +-
+ kernel/resource.c                             | 24 ++++---
+ kernel/sched/core.c                           | 16 ++---
+ kernel/sched/fair.c                           |  2 +-
+ kernel/time/hrtimer.c                         |  2 +-
+ lib/crc7.c                                    |  2 +-
+ mm/gup.c                                      | 24 ++++---
+ mm/page_alloc.c                               | 16 ++---
+ mm/truncate.c                                 | 10 ++-
+ net/core/datagram.c                           |  2 +-
+ net/core/dev.c                                |  4 +-
+ net/core/skbuff.c                             |  2 +-
+ net/ethernet/eth.c                            |  6 +-
+ net/sunrpc/rpc_pipe.c                         |  3 +-
+ scripts/kernel-doc                            | 62 +++++++++++-----
+ tools/testing/selftests/kselftest_harness.h   | 22 +++---
+ 79 files changed, 350 insertions(+), 235 deletions(-)
+
+-- 
+2.28.0
+
+
