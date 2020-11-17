@@ -2,77 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9C72B696B
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Nov 2020 17:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A28F2B6949
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Nov 2020 17:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgKQQIp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Nov 2020 11:08:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40708 "EHLO mail.kernel.org"
+        id S1726766AbgKQQCq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Nov 2020 11:02:46 -0500
+Received: from btbn.de ([5.9.118.179]:37528 "EHLO btbn.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726433AbgKQQIp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 17 Nov 2020 11:08:45 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4726924655;
-        Tue, 17 Nov 2020 16:08:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605629324;
-        bh=g4vB3mdu+chdNCAjY+sz6l9E1Ab2sYs0J3DRDQUTmw8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N6mnx5J1ajFlk7nf3GPVAtAaEeGioyhfHPcOpXrf0e/MQ3hIKdhv4Yv/4fPKKT0uV
-         Ch3fWm6duvtgpVxRBepEVXCzH79fbvDkQidB7nXk/L5+S6QW5ryytTFy0s1Sgk+kOL
-         MV8BJOxmCISOyFxQGhTTS08EQ/hyYbRFeL+XRLds=
-Date:   Tue, 17 Nov 2020 16:48:44 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Leon Romanovsky <leonro@nvidia.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        alsa-devel@alsa-project.org, tiwai@suse.de,
-        linux-rdma@vger.kernel.org, jgg@nvidia.com, dledford@redhat.com,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
-        parav@mellanox.com, shiraz.saleem@intel.com,
-        dan.j.williams@intel.com, kiran.patil@intel.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 01/10] Add auxiliary bus support
-Message-ID: <X7Pw3GQr80BAE1L1@kroah.com>
-References: <20201113161859.1775473-1-david.m.ertman@intel.com>
- <20201113161859.1775473-2-david.m.ertman@intel.com>
- <20201117053000.GM47002@unreal>
- <20201117134808.GC5142@sirena.org.uk>
- <20201117135724.GA2160964@unreal>
+        id S1726588AbgKQQCq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 17 Nov 2020 11:02:46 -0500
+X-Greylist: delayed 494 seconds by postgrey-1.27 at vger.kernel.org; Tue, 17 Nov 2020 11:02:45 EST
+Received: from [IPv6:2001:16b8:64fc:e100:ecd3:36d:b750:1faf] (200116b864fce100ecd3036db7501faf.dip.versatel-1u1.de [IPv6:2001:16b8:64fc:e100:ecd3:36d:b750:1faf])
+        by btbn.de (Postfix) with ESMTPSA id 0A385E289C
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Nov 2020 16:54:31 +0100 (CET)
+To:     RDMA mailing list <linux-rdma@vger.kernel.org>
+From:   Timo Rothenpieler <timo@rothenpieler.org>
+Subject: Issue after 5.4.70->5.4.77 update: mlx5_core: reg_mr_callback: async
+ reg mr failed. status -11
+Message-ID: <53e3f194-fe27-ba79-bcff-6dd1d778ede0@rothenpieler.org>
+Date:   Tue, 17 Nov 2020 16:54:30 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117135724.GA2160964@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 03:57:24PM +0200, Leon Romanovsky wrote:
-> On Tue, Nov 17, 2020 at 01:48:08PM +0000, Mark Brown wrote:
-> > On Tue, Nov 17, 2020 at 07:30:00AM +0200, Leon Romanovsky wrote:
-> > > On Fri, Nov 13, 2020 at 08:18:50AM -0800, Dave Ertman wrote:
-> >
-> > > > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
-> > > > It enables drivers to create an auxiliary_device and bind an
-> > > > auxiliary_driver to it.
-> >
-> > > This horse was beaten to death, can we please progress with this patch?
-> > > Create special topic branch or ack so I'll prepare this branch.
-> >
-> > It's been about 2 working days since the patch was last posted.
-> 
-> There is no code changes between v3 and v4 except docs improvements.
-> The v3 was posted almost 3-4 weeks ago.
+This has started happening after I upgraded from 5.4.70 to 5.4.77, on a 
+"Mellanox Technologies MT27700 Family [ConnectX-4]".
 
-But everything else that came in since then needs to be reviewed first,
-right?  It's a fifo queue, no jumping the line.  And, to be frank, if
-people complain, that's a sure way for it to get dumped to the end of
-the line, as you know.
+On every bootup, the following messages appear in dmesg:
 
-thanks,
+> store01 ~ # journalctl -b | grep mlx5
+> Nov 17 01:25:23 store01 kernel: mlx5_core 0000:01:00.0: firmware version: 12.28.1002
+> Nov 17 01:25:23 store01 kernel: mlx5_core 0000:01:00.0: 126.016 Gb/s available PCIe bandwidth (8 GT/s x16 link)
+> Nov 17 01:25:23 store01 kernel: mlx5_core 0000:01:00.0: Port module event: module 0, Cable plugged
+> Nov 17 01:25:23 store01 kernel: mlx5_ib: Mellanox Connect-IB Infiniband driver v5.0-0
+> Nov 17 01:25:23 store01 kernel: mlx5_core 0000:01:00.0: cmd_work_handler:887:(pid 376): failed to allocate command entry
+> Nov 17 01:25:23 store01 kernel: infiniband mlx5_0: reg_mr_callback:104:(pid 376): async reg mr failed. status -11
+> Nov 17 01:25:23 store01 kernel: mlx5_core 0000:01:00.0: MLX5E: StrdRq(0) RqSz(1024) StrdSz(256) RxCqeCmprss(0)
+> Nov 17 01:25:23 store01 kernel: mlx5_core 0000:01:00.0: MLX5E: StrdRq(0) RqSz(1024) StrdSz(256) RxCqeCmprss(0)
+> Nov 17 01:25:23 store01 kernel: mlx5_core 0000:01:00.0 ibp1s0: renamed from ib0
 
-greg k-h
+Other than those two error messages, the system and adapter appears to 
+work fine.
+However, sporadically, the issue extends itself and fails to bring up IPoIB:
+
+> store01 ~ # journalctl -b -1 | grep mlx5
+> Nov 17 01:12:58 store01 kernel: mlx5_core 0000:01:00.0: firmware version: 12.28.1002
+> Nov 17 01:12:58 store01 kernel: mlx5_core 0000:01:00.0: 126.016 Gb/s available PCIe bandwidth (8 GT/s x16 link)
+> Nov 17 01:12:58 store01 kernel: mlx5_core 0000:01:00.0: Port module event: module 0, Cable plugged
+> Nov 17 01:12:58 store01 kernel: mlx5_ib: Mellanox Connect-IB Infiniband driver v5.0-0
+> Nov 17 01:12:58 store01 kernel: mlx5_core 0000:01:00.0: cmd_work_handler:887:(pid 383): failed to allocate command entry
+> Nov 17 01:12:58 store01 kernel: infiniband mlx5_0: reg_mr_callback:104:(pid 383): async reg mr failed. status -11
+> Nov 17 01:12:58 store01 kernel: mlx5_core 0000:01:00.0: cmd_work_handler:887:(pid 383): failed to allocate command entry
+> Nov 17 01:12:58 store01 kernel: mlx5_core 0000:01:00.0: mlx5e_create_mdev_resources:104:(pid 1): alloc td failed, -11
+> Nov 17 01:12:58 store01 kernel: mlx5_0, 1: ipoib_intf_alloc failed -11
+
+When that happens, only another reboot fixes IPoIB.
+Neither of those issues are a thing when booting 5.4.70.
+
+The most likely candidate for this seems to be 
+0ec52f0194638e2d284ad55eba5a7aff753de1b9(RDMA/mlx5: Disable 
+IB_DEVICE_MEM_MGT_EXTENSIONS if IB_WR_REG_MR can't work)  which was 
+merged in 5.4.73. There were also a lot of mlx5 related changes in 
+5.4.71 though.
+Though since this is a production system, I cannot sensibly bisect this.
+
+
+Any ideas on how to mitigate this, like backporting more patches or 
+changing some settings are appreciated.
