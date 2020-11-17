@@ -2,60 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F692B65A4
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Nov 2020 14:58:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A09462B6740
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Nov 2020 15:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731656AbgKQN5b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Nov 2020 08:57:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38998 "EHLO mail.kernel.org"
+        id S1728442AbgKQOUX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Nov 2020 09:20:23 -0500
+Received: from gentwo.org ([3.19.106.255]:36714 "EHLO gentwo.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731321AbgKQN5a (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 17 Nov 2020 08:57:30 -0500
-Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C374206F1;
-        Tue, 17 Nov 2020 13:57:28 +0000 (UTC)
-Date:   Tue, 17 Nov 2020 15:57:24 +0200
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Dave Ertman <david.m.ertman@intel.com>, gregkh@linuxfoundation.org,
-        alsa-devel@alsa-project.org, tiwai@suse.de,
-        linux-rdma@vger.kernel.org, jgg@nvidia.com, dledford@redhat.com,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
-        parav@mellanox.com, shiraz.saleem@intel.com,
-        dan.j.williams@intel.com, kiran.patil@intel.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 01/10] Add auxiliary bus support
-Message-ID: <20201117135724.GA2160964@unreal>
-References: <20201113161859.1775473-1-david.m.ertman@intel.com>
- <20201113161859.1775473-2-david.m.ertman@intel.com>
- <20201117053000.GM47002@unreal>
- <20201117134808.GC5142@sirena.org.uk>
+        id S1725355AbgKQOUX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 17 Nov 2020 09:20:23 -0500
+Received: by gentwo.org (Postfix, from userid 1002)
+        id 6A0B63F4C9; Tue, 17 Nov 2020 14:20:22 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.org (Postfix) with ESMTP id 694F13F1C3;
+        Tue, 17 Nov 2020 14:20:22 +0000 (UTC)
+Date:   Tue, 17 Nov 2020 14:20:22 +0000 (UTC)
+From:   Christopher Lameter <cl@linux.com>
+X-X-Sender: cl@www.lameter.com
+To:     Jens Domke <jens.domke@riken.jp>
+cc:     linux-rdma@vger.kernel.org
+Subject: Re: Is there a working cache for path record and lids etc for
+ librdmacm?
+In-Reply-To: <bbaa9827-fed4-492b-5c22-e543e8c69fbf@riken.jp>
+Message-ID: <alpine.DEB.2.22.394.2011171418050.206345@www.lameter.com>
+References: <alpine.DEB.2.22.394.2011170253150.206345@www.lameter.com> <bbaa9827-fed4-492b-5c22-e543e8c69fbf@riken.jp>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117134808.GC5142@sirena.org.uk>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 01:48:08PM +0000, Mark Brown wrote:
-> On Tue, Nov 17, 2020 at 07:30:00AM +0200, Leon Romanovsky wrote:
-> > On Fri, Nov 13, 2020 at 08:18:50AM -0800, Dave Ertman wrote:
->
-> > > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
-> > > It enables drivers to create an auxiliary_device and bind an
-> > > auxiliary_driver to it.
->
-> > This horse was beaten to death, can we please progress with this patch?
-> > Create special topic branch or ack so I'll prepare this branch.
->
-> It's been about 2 working days since the patch was last posted.
+On Tue, 17 Nov 2020, Jens Domke wrote:
 
-There is no code changes between v3 and v4 except docs improvements.
-The v3 was posted almost 3-4 weeks ago.
+> I have used ibacm successfully years ago (think somewhere in the
+> 2013-2015 timeframe) but abandoned the approach because some
+> measurements indicated that using OpenMPI with rdmacm had a big
+> runtime overhead compared to using OpenMPI+oob (Mellanox was
+> informed but I'm unsure how much has changed until now)
 
-Thanks
+Mellanox does not support ibacm.... But ok. Thanks. Good to know someone
+that has actually used it.
+
+> > Is there something that can locally cache the results of the SM queries to
+> > avoid additional requests?
+>
+> Not that I know of, but others might know better. Maybe try contacting
+> Sean Hefty (driver behind ibacm) directly if he missed your email here
+> on the list.
+
+
+I have talked to Ira Weiny who wax the last one who did major changes to
+the source but he does not know of any alternate solution.
+
+> > We have tried IBACM but the address resolution does not work on it. It is
+> > unable to complete a request for any address resolution and leaves kernel
+> > threads that never terminate instead.
+>
+> Setting up ibacm was/is painful, maybe you could verify that it works on
+> a test bed with lowlevel rdmacm tools to debug with ping-pong, etc.
+
+That was done and the bug was confirmed. There is bitrot there in the MAD
+communication layer.
+
+> Furthermore, another thing I learned the hard way was that a cold cache
+> can overwhelm opensm as well. So, if you deploy ibacm, you have to make
+> sure that not too many requests go to the local ibacm on too many nodes
+> simultaneously right after starting ibacm service, otherwise having all
+> nodes sending numerous requests to opensm could timeout -> could be the
+> reason for your stalled kernel threads.
+
+Right But our cluster only has around 200 nodes max. Should be fine.
+
+> (another explanation is obviously a bug in ibacm and/or incompatibility
+> to newer versions of librdmacm or opensm or other IB libs)
+>
+> Sorry, that I cannot provide more specific and direct help, but maybe my
+> pointers can help you solve the issue.
+
+Thanks.
+
