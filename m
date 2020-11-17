@@ -2,82 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196202B594B
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Nov 2020 06:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1932B59C8
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Nov 2020 07:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725863AbgKQFaG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Nov 2020 00:30:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgKQFaF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 17 Nov 2020 00:30:05 -0500
-Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A3B9246AE;
-        Tue, 17 Nov 2020 05:30:04 +0000 (UTC)
-Date:   Tue, 17 Nov 2020 07:30:00 +0200
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Dave Ertman <david.m.ertman@intel.com>, gregkh@linuxfoundation.org
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
-        linux-rdma@vger.kernel.org, jgg@nvidia.com, dledford@redhat.com,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ranjani.sridharan@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
-        parav@mellanox.com, shiraz.saleem@intel.com,
-        dan.j.williams@intel.com, kiran.patil@intel.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 01/10] Add auxiliary bus support
-Message-ID: <20201117053000.GM47002@unreal>
-References: <20201113161859.1775473-1-david.m.ertman@intel.com>
- <20201113161859.1775473-2-david.m.ertman@intel.com>
+        id S1725764AbgKQGiC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 17 Nov 2020 01:38:02 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2372 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgKQGiC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Nov 2020 01:38:02 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4CZx850Z8Mz4wqy;
+        Tue, 17 Nov 2020 14:37:41 +0800 (CST)
+Received: from dggema701-chm.china.huawei.com (10.3.20.65) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Tue, 17 Nov 2020 14:37:58 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema701-chm.china.huawei.com (10.3.20.65) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Tue, 17 Nov 2020 14:37:58 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
+ Tue, 17 Nov 2020 14:37:58 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH v2 for-next 1/2] RDMA/hns: Add support for CQ stash
+Thread-Topic: [PATCH v2 for-next 1/2] RDMA/hns: Add support for CQ stash
+Thread-Index: AQHWvBAlKbwt9UNgt0KPBLCpit0Bsw==
+Date:   Tue, 17 Nov 2020 06:37:58 +0000
+Message-ID: <2692da9a4b814dfa952659a903eb96f0@huawei.com>
+References: <1605527919-48769-1-git-send-email-liweihang@huawei.com>
+ <1605527919-48769-2-git-send-email-liweihang@huawei.com>
+ <20201116134645.GL47002@unreal>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113161859.1775473-2-david.m.ertman@intel.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 08:18:50AM -0800, Dave Ertman wrote:
-> Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
-> It enables drivers to create an auxiliary_device and bind an
-> auxiliary_driver to it.
->
-> The bus supports probe/remove shutdown and suspend/resume callbacks.
-> Each auxiliary_device has a unique string based id; driver binds to
-> an auxiliary_device based on this id through the bus.
->
-> Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> Reviewed-by: Parav Pandit <parav@mellanox.com>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> ---
+On 2020/11/16 21:47, Leon Romanovsky wrote:
+> On Mon, Nov 16, 2020 at 07:58:38PM +0800, Weihang Li wrote:
+>> From: Lang Cheng <chenglang@huawei.com>
+>>
+>> Stash is a mechanism that uses the core information carried by the ARM AXI
+>> bus to access the L3 cache. It can be used to improve the performance by
+>> increasing the hit ratio of L3 cache. CQs need to enable stash by default.
+>>
+>> Signed-off-by: Lang Cheng <chenglang@huawei.com>
+>> Signed-off-by: Weihang Li <liweihang@huawei.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_common.h | 12 +++++++++
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |  1 +
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  3 +++
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 39 +++++++++++++++++------------
+>>  4 files changed, 39 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_common.h b/drivers/infiniband/hw/hns/hns_roce_common.h
+>> index f5669ff..8d96c4e 100644
+>> --- a/drivers/infiniband/hw/hns/hns_roce_common.h
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_common.h
+>> @@ -53,6 +53,18 @@
+>>  #define roce_set_bit(origin, shift, val) \
+>>  	roce_set_field((origin), (1ul << (shift)), (shift), (val))
+>>
+>> +#define FIELD_LOC(field_h, field_l) field_h, field_l
+>> +
+>> +#define _hr_reg_set(arr, field_h, field_l)                                     \
+>> +	do {                                                                   \
+>> +		BUILD_BUG_ON(((field_h) / 32) != ((field_l) / 32));            \
+>> +		BUILD_BUG_ON((field_h) / 32 >= ARRAY_SIZE(arr));               \
+>> +		(arr)[(field_h) / 32] |=                                       \
+>> +			cpu_to_le32(GENMASK((field_h) % 32, (field_l) % 32));  \
+>> +	} while (0)
+>> +
+>> +#define hr_reg_set(arr, field) _hr_reg_set(arr, field)
+> 
+> I afraid that it is too much.
 
-Greg,
+Hi Leon,
 
-This horse was beaten to death, can we please progress with this patch?
-Create special topic branch or ack so I'll prepare this branch.
+Thanks for the comments.
 
-We are in -rc4 now and we (Mellanox) can't hold our submissions anymore.
-My mlx5_core probe patches [1] were too intrusive and they are ready to
-be merged, Parav's patches got positive review as well [2] and will be
-taken next.
+> 1. FIELD_LOC() macro to hide two fields.
 
-We delayed and have in our internal queues the patches for VDPA, eswitch
-and followup for mlx5_core probe rework, but trapped due to this AUX bus
-patch.
+Jason has suggested us to simplify the function of setting/getting bit/field in
+hns driver like IBA_SET and IBA_GET.
 
-Thanks
+https://patchwork.kernel.org/project/linux-rdma/patch/1589982799-28728-3-git-send-email-liweihang@huawei.com/
 
-[1] https://lore.kernel.org/linux-rdma/20201101201542.2027568-1-leon@kernel.org/
-[2] https://lore.kernel.org/linux-rdma/BY5PR12MB43229F23C101AFBCD2971534DCE20@BY5PR12MB4322.namprd12.prod.outlook.com/T/#md25b9a2feb4c60d3fef5d57da41db559af1062d8
+So we try to make it easier and clearer to define a bitfield for developers.
+
+For example:
+
+	#define QPCEX_SRC_ID FIELD_LOC(94, 84)
+
+	hr_reg_set(context->ext, QPCEX_SRC_ID);
+
+This will set 84 ~ 91 bit of QPC to 1. Without FIELD_LOC(), it may look
+like:
+
+	#define QPCEX_SRC_ID_START 84
+	#define QPCEX_SRC_ID_END 94
+
+	hr_reg_set(context->ext, QPCEX_SRC_ID_END, QPCEX_SRC_ID_START);
+
+> 2. hr_reg_set and  _hr_reg_set are the same.
+
+'field' will be spilted into two parts: 'field_h' and 'field_l':
+
+	#define _hr_reg_set(arr, field_h, field_l)
+	...
+
+	#define hr_reg_set(arr, field) _hr_reg_set(arr, field)
+
+> 3. In both patches field_h and field_l are the same.
+
+This is because we want hr_reg_set() to be used both for setting bits and for
+setting fields. In this series, we just use it to set bit.
+
+> 4. "do {} while (0)" without need.
+
+OK, I will remove the do-while and replace BUILD_BUG_ON with BUILD_BUG_ON_ZERO:
+
+	#define _hr_reg_set(arr, field_h, field_l)                                  \
+		(arr)[(field_h) / 32] |=                                            \
+			cpu_to_le32(GENMASK((field_h) % 32, (field_l) % 32)) +      \
+			BUILD_BUG_ON_ZERO(((field_h) / 32) != ((field_l) / 32)) +   \
+			BUILD_BUG_ON_ZERO((field_h) / 32 >= ARRAY_SIZE(arr));
+
+Weihang
+
+> 
+> Thanks
+> 
+
