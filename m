@@ -2,125 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F512B59D2
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Nov 2020 07:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3314F2B59F9
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Nov 2020 08:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgKQGmY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 17 Nov 2020 01:42:24 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2308 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgKQGmX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Nov 2020 01:42:23 -0500
-Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4CZxDw6Gnfz13TKX;
-        Tue, 17 Nov 2020 14:41:52 +0800 (CST)
-Received: from dggema751-chm.china.huawei.com (10.1.198.193) by
- DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Tue, 17 Nov 2020 14:42:18 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema751-chm.china.huawei.com (10.1.198.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 17 Nov 2020 14:42:17 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
- Tue, 17 Nov 2020 14:42:17 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH for-next 4/8] RDMA/hns: Add check for the validity of sl
- configuration in UD SQ WQE
-Thread-Topic: [PATCH for-next 4/8] RDMA/hns: Add check for the validity of sl
- configuration in UD SQ WQE
-Thread-Index: AQHWrrGb5sJLpqzLpESbSm5eotxBOw==
-Date:   Tue, 17 Nov 2020 06:42:17 +0000
-Message-ID: <5dc53d785c034d0684cd02f2a94d30cb@huawei.com>
-References: <1604057975-23388-1-git-send-email-liweihang@huawei.com>
- <1604057975-23388-5-git-send-email-liweihang@huawei.com>
- <20201112183245.GA963928@nvidia.com>
- <5100fe6771d24c3e83fc401e490ce4fa@huawei.com>
- <20201116160922.GM917484@nvidia.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726426AbgKQHBz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Nov 2020 02:01:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726387AbgKQHBy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 17 Nov 2020 02:01:54 -0500
+Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22FF4241A6;
+        Tue, 17 Nov 2020 07:01:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605596513;
+        bh=F9nczTQGYkSFtNatdOGDtmL3fXRqk522Wwk8t9ZSgD4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EKvG/6RRxoZkJdDAAE7nVFcOzZnEbrVziizhvLF7Kn1QmWasYfrmo2g+pNXGInijq
+         +7APxZ7QKauXmTKu5q4mLn3dYFpm+eFHOU3+GTA4Itye3lhE2WAs4oR81tF7O4L0Ck
+         sH+9onwF4zPk4Cz5DCKg79mBaiMUqKq/JRWXyylA=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Ariel Levkovich <lariel@mellanox.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Mark Zhang <markz@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: [PATCH rdma-next v5 0/3] Track memory allocation with restrack DB help (Part II)
+Date:   Tue, 17 Nov 2020 09:01:45 +0200
+Message-Id: <20201117070148.1974114-1-leon@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/11/17 0:09, Jason Gunthorpe wrote:
-> On Sat, Nov 14, 2020 at 03:46:58AM +0000, liweihang wrote:
->> On 2020/11/13 2:33, Jason Gunthorpe wrote:
->>> On Fri, Oct 30, 2020 at 07:39:31PM +0800, Weihang Li wrote:
->>>> From: Jiaran Zhang <zhangjiaran@huawei.com>
->>>>
->>>> According to the RoCE v1 specification, the sl (service level) 0-7 are
->>>> mapped directly to priorities 0-7 respectively, sl 8-15 are reserved. The
->>>> driver should verify whether the value of sl is larger than 7, if so, an
->>>> exception should be returned.
->>>>
->>>> Fixes: d6a3627e311c ("RDMA/hns: Optimize wqe buffer set flow for post send")
->>>> Signed-off-by: Jiaran Zhang <zhangjiaran@huawei.com>
->>>> Signed-off-by: Weihang Li <liweihang@huawei.com>
->>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 10 +++++++++-
->>>>  1 file changed, 9 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->>>> index 7a1d30f..69386a5 100644
->>>> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->>>> @@ -427,9 +427,10 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
->>>>  			     void *wqe, unsigned int *sge_idx,
->>>>  			     unsigned int owner_bit)
->>>>  {
->>>> -	struct hns_roce_dev *hr_dev = to_hr_dev(qp->ibqp.device);
->>>>  	struct hns_roce_ah *ah = to_hr_ah(ud_wr(wr)->ah);
->>>>  	struct hns_roce_v2_ud_send_wqe *ud_sq_wqe = wqe;
->>>> +	struct ib_device *ib_dev = qp->ibqp.device;
->>>> +	struct hns_roce_dev *hr_dev = to_hr_dev(ib_dev);
->>>>  	unsigned int curr_idx = *sge_idx;
->>>>  	int valid_num_sge;
->>>>  	u32 msg_len = 0;
->>>> @@ -489,6 +490,13 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
->>>>  		       V2_UD_SEND_WQE_BYTE_36_TCLASS_S, ah->av.tclass);
->>>>  	roce_set_field(ud_sq_wqe->byte_40, V2_UD_SEND_WQE_BYTE_40_FLOW_LABEL_M,
->>>>  		       V2_UD_SEND_WQE_BYTE_40_FLOW_LABEL_S, ah->av.flowlabel);
->>>> +
->>>> +	if (unlikely(ah->av.sl > MAX_SERVICE_LEVEL)) {
->>>> +		ibdev_err(ib_dev,
->>>> +			  "failed to fill ud av, ud sl (%d) shouldn't be larger than %d.\n",
->>>> +			  ah->av.sl, MAX_SERVICE_LEVEL);
->>>> +		return -EINVAL;
->>>> +	}
->>>
->>> We should not print for things like this, IIRC userspace can cause the
->>> ah's sl to become set out of bounds
-> 
->  
->> In "Annex A 16: RoCE", I found the following description:
->>
->> 	SL 0-7 are mapped directly to Priorities 0-7, respectively
->>
->> 	SL 8-15 are reserved.
->>
->> 	CA16-18: An attempt to use an Address Vector for a RoCE port containing
->> 	a reserved SL value shall result in the Invalid Address Vector verb result.
->>
->> So what should we do if the user wants to use the reserved sl? Should I just let it
->> do mask with 0x7 when creating AH?
-> 
-> Fail and don't print anything
-> 
-> Jason
-> 
+From: Leon Romanovsky <leonro@nvidia.com>
 
-OK, thank you.
+Changelog:
+v5:
+ * Reorder patches to postpone changes in rdma_restrack_add to be in next series.
+v4: https://lore.kernel.org/linux-rdma/20201104144008.3808124-1-leon@kernel.org/
+ * Rebased on latest for-upstream, all that time the patches were in
+ our regression and didn't introduce any issues.
+ * Took first five patches that hadn't any comments
+v3: https://lore.kernel.org/lkml/20200926101938.2964394-1-leon@kernel.org
+ * Rebased on already accepted patches.
+ * Added mlx4 special QPs to the list of not-tracked QPs (dropped previous mlx4 special QP patch).
+ * Separated to two patches change in return value of cma_listen_* routines.
+ * Changed commit messages and added Fixes as Jason requested.
+v2: https://lore.kernel.org/linux-rdma/20200907122156.478360-1-leon@kernel.org/
+ * Added new patch to fix mlx4 failure on SR-IOV, it didn't have port set.
+ * Changed "RDMA/cma: Delete from restrack DB after successful destroy" patch.
+v1: https://lore.kernel.org/lkml/20200830101436.108487-1-leon@kernel.org
+ * Fixed rebase error, deleted second assignment of qp_type.
+ * Rebased code on latests rdma-next, the changes in cma.c caused to change
+   in patch "RDMA/cma: Delete from restrack DB after successful destroy".
+ * Dropped patch of port assignment, it is already done as part of this
+   series.
+ * I didn't add @calller description, regular users should not use _named() funciton.
+v0: https://lore.kernel.org/lkml/20200824104415.1090901-1-leon@kernel.org
 
-Weihang
+----------------------------------------------------------------------------------
+
+Leon Romanovsky (3):
+  RDMA/core: Track device memory MRs
+  RDMA/core: Allow drivers to disable restrack DB
+  RDMA/restrack: Support all QP types
+
+ drivers/infiniband/core/core_priv.h           | 25 ++++++-------------
+ drivers/infiniband/core/counters.c            |  2 +-
+ drivers/infiniband/core/restrack.c            | 12 +++++++--
+ drivers/infiniband/core/uverbs_cmd.c          |  4 +--
+ drivers/infiniband/core/uverbs_std_types_mr.c |  4 +++
+ drivers/infiniband/core/uverbs_std_types_qp.c |  4 +--
+ drivers/infiniband/core/verbs.c               | 11 ++++----
+ drivers/infiniband/hw/mlx4/qp.c               |  5 ++++
+ drivers/infiniband/hw/mlx5/qp.c               |  2 +-
+ include/rdma/ib_verbs.h                       | 10 ++++++--
+ include/rdma/restrack.h                       | 24 ++++++++++++++++++
+ 11 files changed, 70 insertions(+), 33 deletions(-)
+
+--
+2.28.0
 
