@@ -2,103 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEBA2B6F53
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Nov 2020 20:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E332B709D
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Nov 2020 22:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730535AbgKQTut (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Nov 2020 14:50:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35376 "EHLO
+        id S1726459AbgKQVFJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Nov 2020 16:05:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728309AbgKQTus (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Nov 2020 14:50:48 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC493C0613CF
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Nov 2020 11:50:48 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id 11so21885727qkd.5
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Nov 2020 11:50:48 -0800 (PST)
+        with ESMTP id S1725943AbgKQVFI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Nov 2020 16:05:08 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960F1C0613CF
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Nov 2020 13:05:08 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id f23so31480393ejk.2
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Nov 2020 13:05:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NypQx984dAXlmJpVO3kBy4u4BTutVPH4kO2vdac5fW8=;
-        b=dSm8iPYkHnDlt8o69Eopxj6Jkw+BVIUSjpv8KDcpLATQOkmZkuBFfHwAq886hwftB8
-         yDwH61uKBAPM2j8UzjEL4pqM0T1GXmoKLXa7FVacLue8JcihEPwrs7ZP4WmFve1P6HCh
-         qBC7Yi2KEVepbRXHJH7xWgLggzSuf1VkbBEpv6d+lM4WWInqbmGc0Uq6g5m/97hyrnVk
-         N/p4O0LD0UkQtNvpF94ju3ga1uwTe2b8MvvJeFwc4r+f7Gw7ZeXpZ7surZQnd9j32XrD
-         RZDRLNfPQzBeHogPCqHL6XgggVpCy09kEpU2ofPrg+DfICTSNmAserSnqkD/Xf8imlfi
-         8ByQ==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kPEScT6gyGX81QUKHxjlw3b2BBUYfWDEeiwl2fVm1wc=;
+        b=p+pnzb/QV2PtGwSdlBCCfgAyW8YeNSqAdFBepLZnfBYuN8ZsISPTLreqLJrA1uF2a7
+         JIXpiidK8x1BZ3q54txbRPbxcTBDky4tJDzlsTVAhQKBxJoobg/6zPaXV7Vl+QSryYTW
+         soZx7D0rcc+lDUmhEejuFMzf1msPmPpBn+PNoxSblv6bfenihydjzscQsDUgo2sREyOU
+         qvJ+nDebS94wyW7FnAt3NR3eDkvEdqhOn/DNfQmD7fC/TZImL/cMErCXf/K8W5yTtYga
+         1ue9DHOUJDF5V2UGiwF6AIAXecxfsnCmkUuDOPjFFBFpbofxmE7TOC7SUS5j4hF6t4B1
+         rXoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NypQx984dAXlmJpVO3kBy4u4BTutVPH4kO2vdac5fW8=;
-        b=iJPnEDYMLhz2iUvtMy6ktrQNiCVXiCOdI+ZYO0gugq2v2Je8lFo0cenOTAqcSso0dR
-         vEV000pdq7EvC60ukFf3KhKXOiVA8yvZKmOL1D8OCHfp9N0CPF2b7klP3X2s6ywacBiJ
-         0YePlL2VXYe0Yub8beFqP8TKq4JMf/RffKvvJJNtb65hWEhbSa9a0GXMigC2mvs3NgP6
-         GPTHu/2AzFoYQeZC7nmcBuBSbsV0c4pHgylj/uN5/0swNQMHlY5EInr9V/uSnaziiqvK
-         sJC1INp5lYEdOpOfB45bQ9rCMvhiOPyd+q1uq3ru/0IwWNdh8WIgLw33Pozv00hwsmrk
-         +N9A==
-X-Gm-Message-State: AOAM530v175DA76xts6t1W7imXEWFV4qo+n7PlqGUvOysLpeESRTjVMS
-        g46KvTDfiThPUuf7pMspn3mUuw==
-X-Google-Smtp-Source: ABdhPJwU78HaRRxwEllvjAXvquK9oGFxriPrrJKwqqE4qpH/N+p8F72b3P5tIfRti7e+Vf3qidexKQ==
-X-Received: by 2002:a37:7c81:: with SMTP id x123mr1183098qkc.383.1605642647996;
-        Tue, 17 Nov 2020 11:50:47 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id q11sm14304473qtp.47.2020.11.17.11.50.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 11:50:47 -0800 (PST)
-From:   jgg@ziepe.ca
-X-Google-Original-From: Jason Gunthorpe <jgg@ziepe.ca>, Eran Ben Elisha <eranbe@mellanox.com>
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kf702-007NUp-Bl; Tue, 17 Nov 2020 15:50:46 -0400
-Date:   Tue, 17 Nov 2020 15:50:46 -0400
-To:     Timo Rothenpieler <timo@rothenpieler.org>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: Issue after 5.4.70->5.4.77 update: mlx5_core: reg_mr_callback:
- async reg mr failed. status -11
-Message-ID: <20201117195046.GI244516@ziepe.ca>
-References: <53e3f194-fe27-ba79-bcff-6dd1d778ede0@rothenpieler.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kPEScT6gyGX81QUKHxjlw3b2BBUYfWDEeiwl2fVm1wc=;
+        b=ra/zlkJn92Oc7L5SXlxgaaQMTQYSb4FTwARX/bEl7wqLnNqgJ64tZO+SKcHU7Hjn7k
+         9R1Ny4xz7+YK7/xNHBZCt+sSDIxlfru1ApNlOhpYGr8+fx6966RE8fLMrRU3lC/FvnSR
+         RGtRh4CIGhSM8LhQIsPJaOwjnQtVRzGhpkyDDBBCkduiIQUvN1zVqek/v0GynUcDw+o8
+         lvI09BEAFYwV/k0esLbHaX7x4Yf1LG7wf7ThRQI/9hxbdB8RavUsIGp/3A6ATrJI8Kvz
+         q1MKGqDYvuNGRGAsB4JBMzkTYeSUoZK+Kqusih2kgCtYuYjKutwfJ1atoFm7wUM8Umt7
+         c1WQ==
+X-Gm-Message-State: AOAM533JyvlmzGI9jOPXmWKO/RZLqGDtdMypij07vxX3regJypap/qdx
+        DhzJ76RcmhkhKbTw04rDiGBtRAWvweits7kcMhrq5A==
+X-Google-Smtp-Source: ABdhPJxIPEbRet7rRI98nHMy4znmKu8Wwkus/v7GOUPBHi9d8SdQldIDo6o+qUCd10IbSYlqVfJ2O+BKKa6GUrV8c6Y=
+X-Received: by 2002:a17:906:ad8e:: with SMTP id la14mr17989866ejb.264.1605647107261;
+ Tue, 17 Nov 2020 13:05:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <53e3f194-fe27-ba79-bcff-6dd1d778ede0@rothenpieler.org>
+References: <20201113161859.1775473-1-david.m.ertman@intel.com>
+ <20201113161859.1775473-2-david.m.ertman@intel.com> <20201117053000.GM47002@unreal>
+ <X7N1naYOXodPsP/I@kroah.com>
+In-Reply-To: <X7N1naYOXodPsP/I@kroah.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 17 Nov 2020 13:04:56 -0800
+Message-ID: <CAPcyv4jXinvaLgtdpXTLLQ3sDOhvoBjF=7v7pba5rAd0g_rdow@mail.gmail.com>
+Subject: Re: [PATCH v4 01/10] Add auxiliary bus support
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Netdev <netdev@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 04:54:30PM +0100, Timo Rothenpieler wrote:
-> The most likely candidate for this seems to be
-> 0ec52f0194638e2d284ad55eba5a7aff753de1b9(RDMA/mlx5: Disable
-> IB_DEVICE_MEM_MGT_EXTENSIONS if IB_WR_REG_MR can't work)  which was merged
-> in 5.4.73. There were also a lot of mlx5 related changes in 5.4.71 though.
-> Though since this is a production system, I cannot sensibly bisect this.
+On Mon, Nov 16, 2020 at 11:02 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Nov 17, 2020 at 07:30:00AM +0200, Leon Romanovsky wrote:
+> > On Fri, Nov 13, 2020 at 08:18:50AM -0800, Dave Ertman wrote:
+> > > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
+> > > It enables drivers to create an auxiliary_device and bind an
+> > > auxiliary_driver to it.
+> > >
+> > > The bus supports probe/remove shutdown and suspend/resume callbacks.
+> > > Each auxiliary_device has a unique string based id; driver binds to
+> > > an auxiliary_device based on this id through the bus.
+> > >
+> > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
+> > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> > > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> > > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
+> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> > > Reviewed-by: Parav Pandit <parav@mellanox.com>
+> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> > > ---
+> >
+> > Greg,
+> >
+> > This horse was beaten to death, can we please progress with this patch?
+> > Create special topic branch or ack so I'll prepare this branch.
+> >
+> > We are in -rc4 now and we (Mellanox) can't hold our submissions anymore.
+> > My mlx5_core probe patches [1] were too intrusive and they are ready to
+> > be merged, Parav's patches got positive review as well [2] and will be
+> > taken next.
+> >
+> > We delayed and have in our internal queues the patches for VDPA, eswitch
+> > and followup for mlx5_core probe rework, but trapped due to this AUX bus
+> > patch.
+>
+> There are no deadlines for kernel patches here, sorry.  Give me some
+> time to properly review this, core kernel changes should not be rushed.
+>
+> Also, if you really want to blame someone for the delay, look at the
+> patch submitters not the reviewers, as they are the ones that took a
+> very long time with this over the lifecycle of this patchset, not me.  I
+> have provided many "instant" reviews of this patchset, and then months
+> went by between updates from them.
 
-It is very unlikely, neither mlx5 or ipoib read that bit.
-
-That error print is very bad:
-
-  Nov 17 01:12:58 store01 kernel: mlx5_core 0000:01:00.0: cmd_work_handler:887:(pid 383): failed to allocate command entry
-
-It really shouldn't happen
-
-This is more likely the cause:
-
-commit 073fff8102062cd675170ceb54d90da22fe7e668
-Author: Eran Ben Elisha <eranbe@mellanox.com>
-Date:   Tue Aug 4 10:40:21 2020 +0300
-
-    net/mlx5: Avoid possible free of command entry while timeout comp handler
-    
-    [ Upstream commit 50b2412b7e7862c5af0cbf4b10d93bc5c712d021 ]
-    
-    Upon command completion timeout, driver simulates a forced command
-    completion. In a rare case where real interrupt for that command arrives
-    simultaneously, it might release the command entry while the forced
-    handler might still access it.
-
-Most likely it is missing some element.
-
-Eran, can you check why v5.4.77 is totaly broken?
-
-Jason
+Please stop this finger pointing. It was already noted that the team,
+out of abundance of caution / deference to the process, decided not to
+push the patches while I was out on family leave. It's cruel to hold
+that against them, and if anyone is to blame it's me for not
+clarifying it was ok to proceed while I was out.
