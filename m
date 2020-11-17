@@ -2,123 +2,232 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7192B5B43
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Nov 2020 09:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C00A2B5C50
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Nov 2020 10:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbgKQIuR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Nov 2020 03:50:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55874 "EHLO mail.kernel.org"
+        id S1727647AbgKQJx0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Nov 2020 04:53:26 -0500
+Received: from mga03.intel.com ([134.134.136.65]:25824 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725792AbgKQIuR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 17 Nov 2020 03:50:17 -0500
-Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3CDF2225E;
-        Tue, 17 Nov 2020 08:50:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605603016;
-        bh=aYTVVs+0OrCIXimh9iWn6oYZNlG7Q/OY9Uwo8hFAlv0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vBYBRFDdxnALiCtmn9yOhCkz3VTqGt1uckxZ35BRWIkjDiW2eV86MtyAfPNCVqbuk
-         rcGE0DV6Zv/yt1gvWvgoN5SLE0kJypOf86dBMwjc1w0eO+eup+RbHZbRl8KBMrMeE7
-         pecHtGCRtY5kwizIlQJQkTvNzk6K1hoYhYL03MlM=
-Date:   Tue, 17 Nov 2020 10:50:11 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     liweihang <liweihang@huawei.com>
-Cc:     "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v2 for-next 1/2] RDMA/hns: Add support for CQ stash
-Message-ID: <20201117085011.GQ47002@unreal>
-References: <1605527919-48769-1-git-send-email-liweihang@huawei.com>
- <1605527919-48769-2-git-send-email-liweihang@huawei.com>
- <20201116134645.GL47002@unreal>
- <2692da9a4b814dfa952659a903eb96f0@huawei.com>
- <20201117072034.GO47002@unreal>
- <f688022a7cce488a82ce0d8427a1054e@huawei.com>
+        id S1727377AbgKQJxZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 17 Nov 2020 04:53:25 -0500
+IronPort-SDR: eMTl5d+3Z6ktfwukGhXrC3Rh6wi+7/09tTULvsLv0h+maVvoIcHpkOlWKf3i66AXqxSbzZJXkz
+ pNvbY460Ef8w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9807"; a="170995997"
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="170995997"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2020 01:53:25 -0800
+IronPort-SDR: ufFwZ+dNRwDKnUTrBSNPl6EvhRua9alRpZ3QOI+N+lUEOtr2JHLWB63m5dScRLbJ6P8KZ7pLX8
+ kL0ZuVDEMUMQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,485,1596524400"; 
+   d="scan'208";a="543976550"
+Received: from lkp-server01.sh.intel.com (HELO 45561eaec37e) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 17 Nov 2020 01:53:23 -0800
+Received: from kbuild by 45561eaec37e with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kexfu-00001a-RJ; Tue, 17 Nov 2020 09:53:22 +0000
+Date:   Tue, 17 Nov 2020 17:53:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 8a7904a672a1d33c848e5129f886ee69e0773a2e
+Message-ID: <5fb39d8d.CVHnTT/zMpZi4B2o%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f688022a7cce488a82ce0d8427a1054e@huawei.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 08:35:55AM +0000, liweihang wrote:
-> On 2020/11/17 15:21, Leon Romanovsky wrote:
-> > On Tue, Nov 17, 2020 at 06:37:58AM +0000, liweihang wrote:
-> >> On 2020/11/16 21:47, Leon Romanovsky wrote:
-> >>> On Mon, Nov 16, 2020 at 07:58:38PM +0800, Weihang Li wrote:
-> >>>> From: Lang Cheng <chenglang@huawei.com>
-> >>>>
-> >>>> Stash is a mechanism that uses the core information carried by the ARM AXI
-> >>>> bus to access the L3 cache. It can be used to improve the performance by
-> >>>> increasing the hit ratio of L3 cache. CQs need to enable stash by default.
-> >>>>
-> >>>> Signed-off-by: Lang Cheng <chenglang@huawei.com>
-> >>>> Signed-off-by: Weihang Li <liweihang@huawei.com>
-> >>>> ---
-> >>>>  drivers/infiniband/hw/hns/hns_roce_common.h | 12 +++++++++
-> >>>>  drivers/infiniband/hw/hns/hns_roce_device.h |  1 +
-> >>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  3 +++
-> >>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 39 +++++++++++++++++------------
-> >>>>  4 files changed, 39 insertions(+), 16 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/infiniband/hw/hns/hns_roce_common.h b/drivers/infiniband/hw/hns/hns_roce_common.h
-> >>>> index f5669ff..8d96c4e 100644
-> >>>> --- a/drivers/infiniband/hw/hns/hns_roce_common.h
-> >>>> +++ b/drivers/infiniband/hw/hns/hns_roce_common.h
-> >>>> @@ -53,6 +53,18 @@
-> >>>>  #define roce_set_bit(origin, shift, val) \
-> >>>>  	roce_set_field((origin), (1ul << (shift)), (shift), (val))
-> >>>>
-> >>>> +#define FIELD_LOC(field_h, field_l) field_h, field_l
-> >>>> +
-> >>>> +#define _hr_reg_set(arr, field_h, field_l)                                     \
-> >>>> +	do {                                                                   \
-> >>>> +		BUILD_BUG_ON(((field_h) / 32) != ((field_l) / 32));            \
-> >>>> +		BUILD_BUG_ON((field_h) / 32 >= ARRAY_SIZE(arr));               \
-> >>>> +		(arr)[(field_h) / 32] |=                                       \
-> >>>> +			cpu_to_le32(GENMASK((field_h) % 32, (field_l) % 32));  \
-> >>>> +	} while (0)
-> >>>> +
-> >>>> +#define hr_reg_set(arr, field) _hr_reg_set(arr, field)
-> >>>
-> >>> I afraid that it is too much.
-> >>
-> >> Hi Leon,
-> >>
-> >> Thanks for the comments.
-> >>
-> >>> 1. FIELD_LOC() macro to hide two fields.
-> >>
-> >> Jason has suggested us to simplify the function of setting/getting bit/field in
-> >> hns driver like IBA_SET and IBA_GET.
-> >>
-> >> https://patchwork.kernel.org/project/linux-rdma/patch/1589982799-28728-3-git-send-email-liweihang@huawei.com/
-> >>
-> >> So we try to make it easier and clearer to define a bitfield for developers.
-> >
-> > Jason asked to use genmask and FIELD_PREP, but you invented something else.
-> >
-> > Thanks
-> >
->
-> We use them in another interface 'hr_reg_write(arr, field, val)' which hasn't been
-> used in this series.
->
-> Does it make any unacceptable mistake? We would appreciate any suggestions :)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: 8a7904a672a1d33c848e5129f886ee69e0773a2e  RDMA/mlx5: Lower setting the umem's PAS for SRQ
 
-The invention of FIELD_LOC() and hr_reg_set equal to __hr_reg_set are unacceptable.
-Pass directly your field_h and field_l to hr_reg_set().
+elapsed time: 722m
 
-Thanks
+configs tested: 168
+configs skipped: 2
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->
-> Thanks
-> Weihang
->
->
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+m68k                            q40_defconfig
+m68k                       m5475evb_defconfig
+arm                        mini2440_defconfig
+arm                        vexpress_defconfig
+mips                  decstation_64_defconfig
+sh                          rsk7203_defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                         bigsur_defconfig
+sh                           sh2007_defconfig
+mips                        bcm63xx_defconfig
+arm                         shannon_defconfig
+mips                           gcw0_defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                          iop32x_defconfig
+powerpc                 linkstation_defconfig
+mips                          rb532_defconfig
+m68k                        mvme147_defconfig
+openrisc                    or1ksim_defconfig
+sh                          rsk7201_defconfig
+mips                          rm200_defconfig
+mips                       lemote2f_defconfig
+mips                 decstation_r4k_defconfig
+powerpc                     ppa8548_defconfig
+sh                     magicpanelr2_defconfig
+arm                            zeus_defconfig
+arm                           omap1_defconfig
+arm                        neponset_defconfig
+mips                           ip22_defconfig
+mips                         tb0219_defconfig
+arc                      axs103_smp_defconfig
+mips                        qi_lb60_defconfig
+m68k                            mac_defconfig
+mips                          ath79_defconfig
+sh                         ecovec24_defconfig
+m68k                          hp300_defconfig
+arm                          gemini_defconfig
+arm                      tct_hammer_defconfig
+mips                        bcm47xx_defconfig
+sh                      rts7751r2d1_defconfig
+mips                     cu1830-neo_defconfig
+mips                            gpr_defconfig
+powerpc                        icon_defconfig
+sh                           se7721_defconfig
+mips                      loongson3_defconfig
+powerpc                     stx_gp3_defconfig
+arc                     nsimosci_hs_defconfig
+mips                        jmr3927_defconfig
+powerpc                       holly_defconfig
+xtensa                          iss_defconfig
+powerpc                     mpc83xx_defconfig
+mips                      bmips_stb_defconfig
+powerpc                   lite5200b_defconfig
+sh                        apsh4ad0a_defconfig
+s390                             alldefconfig
+arm                           sunxi_defconfig
+powerpc                  mpc885_ads_defconfig
+powerpc                     powernv_defconfig
+arm                            mmp2_defconfig
+arm                       cns3420vb_defconfig
+arm                         lpc32xx_defconfig
+ia64                      gensparse_defconfig
+powerpc                    amigaone_defconfig
+sh                           se7724_defconfig
+arc                    vdk_hs38_smp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20201116
+x86_64               randconfig-a005-20201116
+x86_64               randconfig-a004-20201116
+x86_64               randconfig-a002-20201116
+x86_64               randconfig-a001-20201116
+x86_64               randconfig-a006-20201116
+i386                 randconfig-a006-20201116
+i386                 randconfig-a005-20201116
+i386                 randconfig-a001-20201116
+i386                 randconfig-a002-20201116
+i386                 randconfig-a004-20201116
+i386                 randconfig-a003-20201116
+i386                 randconfig-a006-20201115
+i386                 randconfig-a005-20201115
+i386                 randconfig-a001-20201115
+i386                 randconfig-a002-20201115
+i386                 randconfig-a004-20201115
+i386                 randconfig-a003-20201115
+x86_64               randconfig-a015-20201115
+x86_64               randconfig-a011-20201115
+x86_64               randconfig-a014-20201115
+x86_64               randconfig-a013-20201115
+x86_64               randconfig-a016-20201115
+x86_64               randconfig-a012-20201115
+i386                 randconfig-a012-20201116
+i386                 randconfig-a014-20201116
+i386                 randconfig-a016-20201116
+i386                 randconfig-a011-20201116
+i386                 randconfig-a015-20201116
+i386                 randconfig-a013-20201116
+i386                 randconfig-a012-20201117
+i386                 randconfig-a014-20201117
+i386                 randconfig-a016-20201117
+i386                 randconfig-a011-20201117
+i386                 randconfig-a015-20201117
+i386                 randconfig-a013-20201117
+i386                 randconfig-a012-20201115
+i386                 randconfig-a014-20201115
+i386                 randconfig-a016-20201115
+i386                 randconfig-a011-20201115
+i386                 randconfig-a015-20201115
+i386                 randconfig-a013-20201115
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a003-20201115
+x86_64               randconfig-a005-20201115
+x86_64               randconfig-a004-20201115
+x86_64               randconfig-a002-20201115
+x86_64               randconfig-a001-20201115
+x86_64               randconfig-a006-20201115
+x86_64               randconfig-a015-20201116
+x86_64               randconfig-a011-20201116
+x86_64               randconfig-a014-20201116
+x86_64               randconfig-a013-20201116
+x86_64               randconfig-a016-20201116
+x86_64               randconfig-a012-20201116
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
