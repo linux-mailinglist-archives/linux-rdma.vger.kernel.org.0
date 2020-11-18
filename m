@@ -2,61 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FE72B7DD1
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 13:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF9D2B7DE7
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 13:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbgKRMsH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Nov 2020 07:48:07 -0500
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:53868 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgKRMsH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Nov 2020 07:48:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1605703687; x=1637239687;
-  h=subject:to:references:from:message-id:date:mime-version:
-   in-reply-to:content-transfer-encoding;
-  bh=WMKZ/JDOuhSxM5k963vNiuDM6kyH3qDL6MrKWFaY7Jo=;
-  b=HWX09jZ0YYy3rQitafFXtnZKyvdTcMYKQyWCU92tfq93s4t5MKRigDvr
-   oGIB2vzB181H1VgzVICDky94WqDOarF4Lg8E1aBCKbW1ILAuzn/9bf1XB
-   dOBJ138YydKmOfPTFeeejtJd/E9NJBNbAOH8Z2REbmAzFdO9nIMdbdN9Z
-   A=;
-X-IronPort-AV: E=Sophos;i="5.77,486,1596499200"; 
-   d="scan'208";a="67165310"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-76e0922c.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 18 Nov 2020 12:48:00 +0000
-Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2c-76e0922c.us-west-2.amazon.com (Postfix) with ESMTPS id 70C43A868A;
-        Wed, 18 Nov 2020 12:47:58 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.50) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 18 Nov 2020 12:47:56 +0000
-Subject: Re: [PATCH 6/9] providers: Remove normal query_device() from
- providers that have _ex
-To:     Jason Gunthorpe <jgg@nvidia.com>, <linux-rdma@vger.kernel.org>,
-        Bob Pearson <rpearsonhpe@gmail.com>
-References: <6-v1-34e141ddf17e+89-query_device_ex_jgg@nvidia.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <37245b05-bc88-2d8d-d6f9-6cd53d2e1dfb@amazon.com>
-Date:   Wed, 18 Nov 2020 14:47:50 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.3
+        id S1726141AbgKRMxq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Nov 2020 07:53:46 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:52047 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725767AbgKRMxp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Nov 2020 07:53:45 -0500
+Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb519580001>; Wed, 18 Nov 2020 20:53:44 +0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Nov
+ 2020 12:53:44 +0000
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.107)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 18 Nov 2020 12:53:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j47HFOrT999x6d8RvLWmc8ZeO3p11SxJad3btNsgn76xiqYqpvarfJijAQrKH/d570dR8M7i7E+O+1M+vHB9WBl421HM/Dxd0j/Av91Ag7vdqIaWfrNUPQ+LdwEsOmhPtlWOs9iRH3Ea2POVrt3ffxRw1NzS8ci3GTOsUiMt/cWgd1XRF4mG02SxKCTMAV3pAWHrPIcq8OgZn+qVY7yxZXappK+w+xRYofOxZEBpD2qYvLy+Uj2ngAPFHZSaampovhmX2DSdiaXaEVVw4EPXzdN4gqwdVokIOQaAAHiTZQkBq9g8TQN22tzfl/4sB/1ZIhGQWXviKUOMN9JkGnYANg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7bXRgTQ577zvBbvw7P9/oRcSYcOrekdgmyxpvGwqmx0=;
+ b=Pr8a0EEZjk56AL/CNU4CKAGlb0WespbX6nS6vYbWsNdFeseL3kf6UwmxL90P8/qhA3P46rADuKq94KzX6sMKR+CDn51LtytoD7ElG92o9bK8uglGDidwJPdRE1LLoWlatoAZknroGU2CQgx2FJ7VIIqSB9F+I2OwLQI69/QdRGCm6rHjEz+9X2n6s3jZhvJZjpttDZ6FziQXc/yyUuHNkDVhakLmUANS7HSfDZalX++E7++HDGRVYg/gVxhjntHWGIx8kkSJjK9ccmsnFguzwPgzSSrXBkKYxl1X6jSPxHLiX6yTIsmTAReJtk7wYXT3CHsxLtpr347uzlZlCPM1WQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR1201MB0107.namprd12.prod.outlook.com (2603:10b6:4:55::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Wed, 18 Nov
+ 2020 12:53:42 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3564.028; Wed, 18 Nov 2020
+ 12:53:42 +0000
+Date:   Wed, 18 Nov 2020 08:53:40 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Gal Pressman <galpress@amazon.com>
+CC:     <linux-rdma@vger.kernel.org>, Bob Pearson <rpearsonhpe@gmail.com>
+Subject: Re: [PATCH 8/9] verbs: Remove dead code
+Message-ID: <20201118125340.GZ917484@nvidia.com>
+References: <8-v1-34e141ddf17e+89-query_device_ex_jgg@nvidia.com>
+ <c78be7ca-7a04-6a7e-5a55-06a2dd58e947@amazon.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <c78be7ca-7a04-6a7e-5a55-06a2dd58e947@amazon.com>
+X-ClientProxiedBy: MN2PR05CA0059.namprd05.prod.outlook.com
+ (2603:10b6:208:236::28) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <6-v1-34e141ddf17e+89-query_device_ex_jgg@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.50]
-X-ClientProxiedBy: EX13D06UWC003.ant.amazon.com (10.43.162.86) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR05CA0059.namprd05.prod.outlook.com (2603:10b6:208:236::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.16 via Frontend Transport; Wed, 18 Nov 2020 12:53:41 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kfMxw-007g7Z-Hn; Wed, 18 Nov 2020 08:53:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605704024; bh=7bXRgTQ577zvBbvw7P9/oRcSYcOrekdgmyxpvGwqmx0=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=WmEAjDcPMLkKMP6+dsqLR2Jor3gJa2pMUhk6d9gzQNh4Q+tRT8U4NsSdcznq2glYF
+         zbMS9DWkZs2ITwBLz2jQsqgWIkOHxWVXP69MWZPIMoYr+3sHnjEFmgVOmrK1RHt/KC
+         LmprWmvWXHB9hMXiATbqd1UEL2b8/LTRuDuRfeC8gFqB5k+5IDEylZpYkO6WwMgs3a
+         T39zxVpuPOiYt2oYW7471kxYM+5cdVgFRbHKz0uvZL0T1gyPregqpbpBJcblCFffgA
+         deJrJ3RsI1/JemOF5c9GWpX6wmGkzMDIUOHtJeFsvAHlP5izMN7//Lqyzpvx7OmgNR
+         y67xtokLWuLwg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 16/11/2020 22:23, Jason Gunthorpe wrote:
-> The ex callback can implement both versions, no reason for duplicate
-> code in two paths. Have the core code call the _ex version instead.
+On Wed, Nov 18, 2020 at 02:46:05PM +0200, Gal Pressman wrote:
+> On 16/11/2020 22:23, Jason Gunthorpe wrote:
+> > Remove the old query_device support code, it is now replaced by
+> > ibv_cmd_query_device_any()
+> > 
+> > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 > 
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Shouldn't the legacy fallback in ibv_query_device_ex() be removed as well?
 
-Reviewed-by: Gal Pressman <galpress@amazon.com>
+I thought about it, and yes we could convert that into a real function
+call and remove all the junk
+
+But if we do that it causes a symbol ver dependencies and if we are
+going that far then we should really just do all of the
+verbs_get_ctx_op() inlines and be done with that mess entirely.
+
+This would mean anything linked with a new rdma-core would not be able
+to load on any of the older ones..
+
+I've been saving that gem for some future adventure since it seems to
+cause some general pain. It would be good to couple it with some other
+verbs.h clean up as well
+
+Jason
