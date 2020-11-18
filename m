@@ -2,156 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9522B838E
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 19:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D56D2B83F4
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 19:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726243AbgKRSD1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Nov 2020 13:03:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbgKRSD0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Nov 2020 13:03:26 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B3BC0613D4;
-        Wed, 18 Nov 2020 10:03:26 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id j12so3018188iow.0;
-        Wed, 18 Nov 2020 10:03:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IK1go2P+4Cgotz5tygo8p+NSeUmlZN9jC8qWTM9Dn1s=;
-        b=Uqg22v89jOZ30R6x78ltNX31dPyVM8mhi83VVDWmgrJt/nCHKc1EIA4xxN4VVz60Mt
-         9h2J83oH1OrXoIlZxROxc5x7HumrTRxKiK6xMTOQ2uw8fgC+0w8MMJ+uFUsCconxt+Mu
-         txuy31/+t16jEJU5fMRuQZ69aPbnS5m+n7kvnb2951gfKirpaa0AdURh1FXyOP/jwgl4
-         KW/u1zdEEhbkmv1gATp67cYTnuepHy2Ntvha55VeEK1sG9rzGvM2HgRUDaNnVesF7Ypy
-         Kw3Zmwi/yHT1yOCKbO7pCEeWCO7/13UeUE0X5cbNcJRtIktgulwccrcf98EdVIVmah7P
-         Aq/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IK1go2P+4Cgotz5tygo8p+NSeUmlZN9jC8qWTM9Dn1s=;
-        b=cnzojBu49dNJHzg6oxisyYPSQWJlb4VNcbvxnCSDS1pOKY84sO9P8kk/VucKNjmHlO
-         Z4eWzLUv/MmiqPwnnsZKWorR0geFp5ljjq0haZTyl4tK2CfM/6HwEFhXe3ConPSabP9s
-         cAdtNiwABKglRdKC+c/zjGhiJutawxCfcUXTum9w/xwdkCUB8++4KJXXjALPPE9eSL0M
-         pr10qoHyWtHJN4MC9FAakQZF+CbYJ2EcUD0WLwS/X4QuQw6N6N7yupTW0SCruiIZ1pJp
-         aJRPvhXHVH5XfjZ/Kdy1+VLkFXMXCsf8KnT+ko3Ll5pqEKeXurVCeeE1r1dKLUmgdMJj
-         q+jA==
-X-Gm-Message-State: AOAM531vypEvcrK+XBXUod3O6ViuUDI6ovDIi3j9DNe/+bVLyg7cQdk8
-        WjoVPFWAHzjjeVMiR47x5Hs=
-X-Google-Smtp-Source: ABdhPJy7Sp9Au4ICOjo88CPTzHBDFSyNa1qSn+UlFUfoYRqnXlY1ZH6sWlQHp2jZgT9jzyg+Gaw3TQ==
-X-Received: by 2002:a02:7fd0:: with SMTP id r199mr4207593jac.69.1605722605985;
-        Wed, 18 Nov 2020 10:03:25 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([2601:284:8203:54f0:cd3a:ec11:4d4f:e8d8])
-        by smtp.googlemail.com with ESMTPSA id z9sm13385076iog.3.2020.11.18.10.03.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Nov 2020 10:03:25 -0800 (PST)
-Subject: Re: [PATCH net-next 03/13] devlink: Support add and delete devlink
- port
-To:     Parav Pandit <parav@nvidia.com>,
+        id S1725794AbgKRSig (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Nov 2020 13:38:36 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:63783 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725772AbgKRSig (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Nov 2020 13:38:36 -0500
+Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb56a2a0000>; Thu, 19 Nov 2020 02:38:34 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Nov
+ 2020 18:38:34 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 18 Nov 2020 18:38:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b3zVkCPdIydQFmGgrSeui7NLNZAb/NToe0Jns/kldc6EIR9rGIGnZOQb1McBK15xEq1nyTjUATJS7Iz3nZKi3ra+y4fatWNmHxVpuhzatJX0EiPWvwJ5Y+5fim22zvqZzz6F6Y2QUMJky8ZRYkZn1VmufZFQxjEW14hdbs/HYhAUSzjT6Gk5ejCWqAUzyJcvlBoQUeiavxMjs6gdWt/Uwt/OPkS5xy9WqneqPNbW/ThjKJ3WxkoT39FTvWxS3yFj68WisKLwpfaI0LdQkrli/Xw/nPc6OIq5/5TbWTHrTsX2gV4LhFSz+enj1lICyJZ/bTrrLR1n6FGUo+cnryCYsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MYKhiLwmvWlpvlGROuoP9wg6zdOwuThucrHKDRyYJV4=;
+ b=PRsL1VBXvKIs/fQx4cCimt6tKzKn+0qo6n1M1DRG0D1tQJC0h6thhy8TWlsZ/e+B4um+vIfz+d+PlP50wxuemeGfcR5CN6oRFZtSR9gECRxRBKDf0fXDlVAgQp0SdlrJrNM153dck5o6phNRJGnZGFkiIc2//YEcskwK2z6AEzXSRaCnao4DaG1vZOHt2hDbREenvLo3ZFoOO+oOod1PjYQZKz/CVeWjPOkYLTJI4rl365AqnzbPTn69Vkin+ip8Aa6fGAI9VXNJdGKRFfbFlkIGM77wG91OUennW6+/rAhpqU7ikK0xiXXfb+RZCzTw+7DXUkZKIb411OIlTcPinQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR1201MB0106.namprd12.prod.outlook.com (2603:10b6:4:4f::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Wed, 18 Nov
+ 2020 18:38:32 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3564.028; Wed, 18 Nov 2020
+ 18:38:32 +0000
+Date:   Wed, 18 Nov 2020 14:38:30 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     David Ahern <dsahern@gmail.com>
+CC:     Parav Pandit <parav@nvidia.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     Jiri Pirko <jiri@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jiri Pirko <jiri@nvidia.com>,
         "dledford@redhat.com" <dledford@redhat.com>,
         Leon Romanovsky <leonro@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         "kuba@kernel.org" <kuba@kernel.org>,
         "davem@davemloft.net" <davem@davemloft.net>,
         Vu Pham <vuhuong@nvidia.com>
+Subject: Re: [PATCH net-next 03/13] devlink: Support add and delete devlink
+ port
+Message-ID: <20201118183830.GA917484@nvidia.com>
 References: <20201112192424.2742-1-parav@nvidia.com>
  <20201112192424.2742-4-parav@nvidia.com>
  <e7b2b21f-b7d0-edd5-1af0-a52e2fc542ce@gmail.com>
  <BY5PR12MB43222AB94ED279AF9B710FF1DCE10@BY5PR12MB4322.namprd12.prod.outlook.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <b34d8427-51c0-0bbd-471e-1af30375c702@gmail.com>
-Date:   Wed, 18 Nov 2020 11:03:24 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.3
+ <b34d8427-51c0-0bbd-471e-1af30375c702@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <b34d8427-51c0-0bbd-471e-1af30375c702@gmail.com>
+X-ClientProxiedBy: BL1PR13CA0266.namprd13.prod.outlook.com
+ (2603:10b6:208:2ba::31) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <BY5PR12MB43222AB94ED279AF9B710FF1DCE10@BY5PR12MB4322.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0266.namprd13.prod.outlook.com (2603:10b6:208:2ba::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.9 via Frontend Transport; Wed, 18 Nov 2020 18:38:32 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kfSLe-007pL1-4d; Wed, 18 Nov 2020 14:38:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605724714; bh=MYKhiLwmvWlpvlGROuoP9wg6zdOwuThucrHKDRyYJV4=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=TPUT8yb0yx7tYU+r49P5E0L5sUkJaijO8kVBKb4DSxQjEyzU4xP6ITRpzQYmJjcpQ
+         6TkgeMbKhGujR3foixB7wfMwFMvJJuGD1QNwiM4ziJs+gaQFpZA4L1E4OqCWzeAZb6
+         /e/8DBfQrXn1NhrIg6VAFMINtyXBhsNeNJLJpq5q99fFQq9czU0h3u4rFwfDogRsoi
+         JbBYkRYHJJg9zjYoZ0CFUZwUmt8q208XnvMYYQ8PSPGARHc9QzXITPz3BriZ71h9yJ
+         ejdzpKqXc4bZ6YD+uUL6JqcwM1z5vS0fPjMFqiUYVvHVheLGHJHgWlAQZUp480uCxl
+         pGdi5XXfd/soA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/18/20 10:02 AM, Parav Pandit wrote:
-> 
->> From: David Ahern <dsahern@gmail.com>
->> Sent: Wednesday, November 18, 2020 9:51 PM
->>
->> On 11/12/20 12:24 PM, Parav Pandit wrote:
->>> Extended devlink interface for the user to add and delete port.
->>> Extend devlink to connect user requests to driver to add/delete such
->>> port in the device.
->>>
->>> When driver routines are invoked, devlink instance lock is not held.
->>> This enables driver to perform several devlink objects registration,
->>> unregistration such as (port, health reporter, resource etc) by using
->>> exising devlink APIs.
->>> This also helps to uniformly use the code for port unregistration
->>> during driver unload and during port deletion initiated by user.
->>>
->>> Examples of add, show and delete commands:
->>> $ devlink dev eswitch set pci/0000:06:00.0 mode switchdev
->>>
->>> $ devlink port show
->>> pci/0000:06:00.0/65535: type eth netdev ens2f0np0 flavour physical
->>> port 0 splittable false
->>>
->>> $ devlink port add pci/0000:06:00.0 flavour pcisf pfnum 0 sfnum 88
->>>
->>> $ devlink port show pci/0000:06:00.0/32768
->>> pci/0000:06:00.0/32768: type eth netdev eth0 flavour pcisf controller 0
->> pfnum 0 sfnum 88 external false splittable false
->>>   function:
->>>     hw_addr 00:00:00:00:88:88 state inactive opstate detached
->>>
->>
->> There has to be limits on the number of sub functions that can be created for
->> a device. How does a user find that limit?
-> Yes, this came up internally, but didn't really converged.
-> The devlink resource looked too verbose for an average or simple use cases.
-> But it may be fine.
-> The hurdle I faced with devlink resource is with defining the granularity.
-> 
-> For example one devlink instance deploys sub functions on multiple pci functions.
-> So how to name them? Currently we have controller and PFs in port annotation.
-> So resource name as 
-> c0pf0_subfunctions -> for controller 0, pf 0 
-> c1pf2_subfunctions -> for controller 1, pf 2
-> 
-> Couldn't convince my self to name it this way.
-> 
-> Below example looked simpler to use but plumbing doesn’t exist for it.
-> 
-> $ devlink resource show pci/0000:03:00.0
-> pci/0000:03:00.0/1: name max_sfs count 256 controller 0 pf 0
-> pci/0000:03:00.0/2: name max_sfs count 100 controller 1 pf 0
-> pci/0000:03:00.0/3: name max_sfs count 64 controller 1 pf 1
-> 
-> $ devlink resource set pci/0000:03:00.0/1 max_sfs 100
-> 
-> Second option I was considering was use port params which doesn't sound so right as resource.
-> 
->>
->> Also, seems like there are hardware constraint at play. e.g., can a user reduce
->> the number of queues used by the physical function to support more sub-
->> functions? If so how does a user programmatically learn about this limitation?
->> e.g., devlink could have support to show resource sizing and configure
->> constraints similar to what mlxsw has.
-> Yes, need to figure out its naming. For mlx5 num queues doesn't have relation to subfunctions.
-> But PCI resource has relation and this is something we want to do in future, as you said may be using devlink resource.
-> 
+On Wed, Nov 18, 2020 at 11:03:24AM -0700, David Ahern wrote:
 
-With Connectx-4 Lx for example the netdev can have at most 63 queues
-leaving 96 cpu servers a bit short - as an example of the limited number
-of queues that a nic can handle (or currently exposes to the OS not sure
-which). If I create a subfunction for ethernet traffic, how many queues
-are allocated to it by default, is it managed via ethtool like the pf
-and is there an impact to the resources used by / available to the
-primary device?
+> With Connectx-4 Lx for example the netdev can have at most 63 queues
+
+What netdev calls a queue is really a "can the device deliver
+interrupts and packets to a given per-CPU queue" and covers a whole
+spectrum of smaller limits like RSS scheme, # of available interrupts,
+ability of the device to create queues, etc.
+
+CX4Lx can create a huge number of queues, but hits one of these limits
+that mean netdev's specific usage can't scale up. Other stuff like
+RDMA doesn't have the same limits, and has tonnes of queues.
+
+What seems to be needed is a resource controller concept like cgroup
+has for processes. The system is really organized into a tree:
+
+           physical device
+              mlx5_core
+        /      |      \      \                        (aux bus)
+     netdev   rdma    vdpa   SF  etc
+                             |                        (aux bus)
+                           mlx5_core
+                          /      \                    (aux bus)
+                       netdev   vdpa
+
+And it does make a lot of sense to start to talk about limits at each
+tree level.
+
+eg the top of the tree may have 128 physical interrupts. With 128 CPU
+cores that isn't enough interrupts to support all of those things
+concurrently.
+
+So the user may want to configure:
+ - The first level netdev only gets 64,
+ - 3rd level mlx5_core gets 32 
+ - Final level vdpa gets 8
+
+Other stuff has to fight it out with the remaining shared interrupts.
+
+In netdev land # of interrupts governs # of queues
+
+For RDMA # of interrupts limits the CPU affinities for queues
+
+VPDA limits the # of VMs that can use VT-d
+
+The same story repeats for other less general resources, mlx5 also
+has consumption of limited BAR space, and consumption of some limited
+memory elements. These numbers are much bigger and may not need
+explicit governing, but the general concept holds.
+
+It would be very nice if the limit could be injected when the aux
+device is created but before the driver is bound. I'm not sure how to
+manage that though..
+
+I assume other devices will be different, maybe some devices have a
+limit on the number of total queues, or a limit on the number of
+VDPA or RDMA devices.
+
+Jason
