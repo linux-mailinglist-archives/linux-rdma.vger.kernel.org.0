@@ -2,142 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 842E42B84DE
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 20:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8551E2B84FE
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 20:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726632AbgKRTWa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Nov 2020 14:22:30 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17876 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgKRTWa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Nov 2020 14:22:30 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb574800000>; Wed, 18 Nov 2020 11:22:40 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Nov
- 2020 19:22:29 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.172)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 18 Nov 2020 19:22:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V3gO++zNQEJhNdTL8gzCosd7o8LrePTiP0LrU1dNbq/PtFeb1jY3Q8FRptF5vNVMjyY4Afc/DWPPEKQJqFVunJw4AR+FCfSR/8Y6f7UiNFeGsfrTMY+Gl/wQbQcs3Ev2fqkCM1SnCaBryq3CkdCemqgfMr9Masr7fCiKtHVEXbV7yNY9mCu5LX67pC7ne6m+xcKZq74gS7fOb6Qh/2lEM869xXQR5sbPa4pUr0r2irOgXQEV+WM0boLwgfuIx9I5CXjs9CeBAsSNxy+7zxUNbea99cO3y5pczTaWoIKMBQfG/YxER+7c7sr/QieL6PtaJR5LdQqmJC9Tpmpl0cMQRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wecLphUpw1gJFvVhID2jMjH5Wf1pTsvQWPZIYQ8HG3U=;
- b=g0sGbcUDUWVPwb8LugibIqbMRnraCAQfBjYkg2nY/DzB82SAPePYRavTTSXg+e1dnpX6s0UrMvSbblUikJ+qkcjqCKEgRHBF2ujdmzPQnGDEsj3S48j5etuUZVPE4Jn/+wfGqmR8pHez9CHymOw/rTYCySuqcx6uzny23v2w9SCAY/Gtq8i3PkVc88B9JMAG7OloZCUdVf7wshdf81tZgDHJZYHAFK2LIU8nZ8NQ1pM5t3u0SpB9oI0ySwY243V1/uu6vyxRFsexSdRBE/v06RRxJj2uqMfagnLb9EulIoTE0pVCyBGpMB/2oOeL7Zt1EIVAfU2xoGH/BT+OH2cDqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from BY5PR12MB4322.namprd12.prod.outlook.com (2603:10b6:a03:20a::20)
- by BYAPR12MB3270.namprd12.prod.outlook.com (2603:10b6:a03:137::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Wed, 18 Nov
- 2020 19:22:28 +0000
-Received: from BY5PR12MB4322.namprd12.prod.outlook.com
- ([fe80::9493:cfdd:5a45:df53]) by BY5PR12MB4322.namprd12.prod.outlook.com
- ([fe80::9493:cfdd:5a45:df53%7]) with mapi id 15.20.3564.028; Wed, 18 Nov 2020
- 19:22:28 +0000
-From:   Parav Pandit <parav@nvidia.com>
-To:     David Ahern <dsahern@gmail.com>,
+        id S1726510AbgKRTg3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Nov 2020 14:36:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726440AbgKRTg3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Nov 2020 14:36:29 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D70C0613D4;
+        Wed, 18 Nov 2020 11:36:29 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id m9so3280495iox.10;
+        Wed, 18 Nov 2020 11:36:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NFxIz4DFF3gZxGeuDXZ4yoOt17ZqxeXR60fCHkT4skI=;
+        b=RMPan1xWTHuhyPAXBRZZwRayvHftLGVdRvFdzCIbKr/3wsIWxjSxx4js8nnkBLkMus
+         O7Lax3ZoVS/2h6XlYcOifD1TwJaeGK5FjeDc9gWi9Im1hShb/iVr0/wKCG1cZs9tu2k5
+         LC2XdoNjLJacvUGC2CWIsLkypi7LIjIAlc/j5HPcLeq5+v7E4nE1Ku0fiVqAV4hUSOQI
+         ouQfUU+HZRMVuMMw/F/UtzzSFrJ9Wz1L2iknEheRLwtierERAsgeIjKbHWuybx422YWy
+         Y+kmp19YYGaIASsgfYo8MN3cMHjUCj4dh/yqkzDNl4DAVpQILvJ3CyfYjsONPdzfWqto
+         dONA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NFxIz4DFF3gZxGeuDXZ4yoOt17ZqxeXR60fCHkT4skI=;
+        b=mLQ89kzGcie/d3y6yXZOcbrbFxeUyWvyg+Nq4Lyg5XBsHrpld04YMhG7ikIcBugObq
+         EcQUIBRl+Ko14WR7bmZ9uIrYpL3/lJd59nXg9M3hQ74mMVl77hxwSUXgOdnrbCTXCmKC
+         I+G8Jen37v8Bd1tCGHTZnNlacS6oqj+0ge1tsez0te4DEh9qCqs9h8Tv/4wMb04/0cnX
+         vEWNl5+fy5DHl8zbcLymYCRHD/VBHQafcUMRHk3BdkENhzKnrnsMYChvqgVjFrYhu4zX
+         AHthOZvwQ3oJGidkMmdGyrQsM5/GWzunwIps10NLIOey6THZe34J83s+HnMo8RS40WhJ
+         3p3A==
+X-Gm-Message-State: AOAM533ilMjxyW9WvDsEjPCkRFf+sacej0VnD859shBRhydLQsQ8b/xI
+        6scQ/lrhbPFjtBxgTyUqdvY=
+X-Google-Smtp-Source: ABdhPJzOXL6/coAWf02etIo97MIRzLRQ6shkVnZ/UFzz/5u5dBKVAAXroIC+BP2noA7iy+7WqIlDDQ==
+X-Received: by 2002:a5d:964a:: with SMTP id d10mr12770766ios.5.1605728188448;
+        Wed, 18 Nov 2020 11:36:28 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([2601:284:8203:54f0:70e6:174c:7aed:1d19])
+        by smtp.googlemail.com with ESMTPSA id c8sm12910992ioq.40.2020.11.18.11.36.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Nov 2020 11:36:27 -0800 (PST)
+Subject: Re: [PATCH net-next 03/13] devlink: Support add and delete devlink
+ port
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Parav Pandit <parav@nvidia.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     Jiri Pirko <jiri@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jiri Pirko <jiri@nvidia.com>,
         "dledford@redhat.com" <dledford@redhat.com>,
         Leon Romanovsky <leonro@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         "kuba@kernel.org" <kuba@kernel.org>,
         "davem@davemloft.net" <davem@davemloft.net>,
         Vu Pham <vuhuong@nvidia.com>
-Subject: RE: [PATCH net-next 03/13] devlink: Support add and delete devlink
- port
-Thread-Topic: [PATCH net-next 03/13] devlink: Support add and delete devlink
- port
-Thread-Index: AQHWuSmOH7LCCBYTi0yxfqvbYXKqLqnOG2YAgAAG43CAABWaAIAAFAmQ
-Date:   Wed, 18 Nov 2020 19:22:28 +0000
-Message-ID: <BY5PR12MB4322863EA236F30C9E542F00DCE10@BY5PR12MB4322.namprd12.prod.outlook.com>
 References: <20201112192424.2742-1-parav@nvidia.com>
  <20201112192424.2742-4-parav@nvidia.com>
  <e7b2b21f-b7d0-edd5-1af0-a52e2fc542ce@gmail.com>
  <BY5PR12MB43222AB94ED279AF9B710FF1DCE10@BY5PR12MB4322.namprd12.prod.outlook.com>
  <b34d8427-51c0-0bbd-471e-1af30375c702@gmail.com>
-In-Reply-To: <b34d8427-51c0-0bbd-471e-1af30375c702@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [49.207.222.183]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0455a8b8-b30f-427b-7c17-08d88bf749c0
-x-ms-traffictypediagnostic: BYAPR12MB3270:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR12MB32703D6668295298821B96CDDCE10@BYAPR12MB3270.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6AeACw1xA2hglwKaQZr6hlKSc0oLVhKxdKpK8UgbN/J+pCYMGIUeOozkz7v5ROwXvmQCdDUznQMEkmyx5FpNHhOJHzLG4y7OxN01jRjAfu/pJwUu5p9af1QfuV61MC5rOmyWOiTLUb/cZveSYPhpqxbHoo+MDQhQrLsTWiz5DdobxKbpuIgk851kPKcLY6LmOHgK9S1I2Fl+96qXoaXUqFHnBtvgXiiOcMig8kBFKv82svHDVd1p0Lu2nD2b5Tmdo6/l5y5FMo8BKYOOb4lVF6jD6qkjQk7sf/AYsDW3dX/T3/J5uSPWPU5NQuXS8x+bCEfYX0H7JxKmcfs/EB0wHQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4322.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(136003)(366004)(396003)(86362001)(71200400001)(478600001)(26005)(4744005)(55236004)(186003)(76116006)(66946007)(107886003)(5660300002)(6506007)(52536014)(83380400001)(316002)(4326008)(9686003)(66556008)(55016002)(2906002)(8936002)(66446008)(64756008)(33656002)(54906003)(66476007)(7696005)(8676002)(110136005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ifZPcpYjOOClG4/PjAL47vogC3GtAG2PeOnXew63QYZBCb3olP/RfMf7lTp9N6nFuB2uIqP6QGt2TvcLY0KNGEhPhK4CQ+o5hIxGINrU9+SdaYLqv1V++tCl6LwjB5kRfyhUaSx+YjfY/KCDQfUie8rUt0DRkewQyJSIN6opYI4/8C8KKx9Tq44fpL1aLN1hYksnxCMqCsH/szjXfERbXe5jk7aSIVEa3A3qeofOUfyvtLnJhIWe9Tx4pPUvdvW6cgQfRh+Df3uX3RWZKOhfLCCCQi0kynsM2cRcauYtcR/8qMZKjXsR95KYdz36TdJr8GDlSJzgi6JmZ9D4U+uXiJOOz04vQPGusuo6ehgA9W1JOXvxebWADx3DvB+VklmP3QE3tCvy1jvtMxrQ1aIZodED4kRqQowKD8d94v+hm5q4N/eywCKO01ToXiAYuCcTS+H+cMfclS+dTPlDlATruuKbvB77AsBmVQf89dsQ8gvfoCSlapuxdYV92kVwodpqaJF1dJgDxoBSI7k3CgBpMiFUdfqWYVLd6nI62ktcJvnVZ9aMzK149C3Hny28VQG+5cEDyan098B1Nmiojr6EwxgT0HZVfnHTybEuJI330/NbChA4Gmvd5H6uKXlCAnYKv+UK0SwUKNGjt471VIlUYg==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <20201118183830.GA917484@nvidia.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <ac0c5a69-06e4-3809-c778-b27d6e437ed5@gmail.com>
+Date:   Wed, 18 Nov 2020 12:36:26 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.3
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4322.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0455a8b8-b30f-427b-7c17-08d88bf749c0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Nov 2020 19:22:28.1836
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bQwBT8oRS5npgCLxtjNCoKJAhe2+YPhnsgtPa1x6nH6nTVELKwl85M6Wih6AvZyU9I7sSJqYJi/S1kMTD363eQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3270
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605727360; bh=wecLphUpw1gJFvVhID2jMjH5Wf1pTsvQWPZIYQ8HG3U=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
-         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
-         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
-         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
-         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
-         x-ms-traffictypediagnostic:x-ms-exchange-transport-forked:
-         x-microsoft-antispam-prvs:x-ms-oob-tlc-oobclassifiers:
-         x-ms-exchange-senderadcheck:x-microsoft-antispam:
-         x-microsoft-antispam-message-info:x-forefront-antispam-report:
-         x-ms-exchange-antispam-messagedata:Content-Type:
-         Content-Transfer-Encoding:MIME-Version:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-originalarrivaltime:
-         X-MS-Exchange-CrossTenant-fromentityheader:
-         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-         X-MS-Exchange-CrossTenant-userprincipalname:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=YZTdzMLr7dKeCaG92ubR85Ufob/pM/Xv7KXT3J72THSkWN85VXITSUpx6TvgIqJdi
-         yRUPHv0bI1qtgchg5XzveI4JBAHQMdfuELefPrg+F8V+SDFiPwvzQnNKptnELg9Q3a
-         7l0LFK98a8El2oBdC5gFWJV1l4PUfsTHC3Hy9tzDyxOuY3EgsLJs0I/KStu98EX6P4
-         cawAc6L40ZMrZg7mqAKkY2bu8e41LoIgkkDYsNe9Rrmz4Rni2mKE/nTd4glUPixc0O
-         oHS1SD5Qj50N4LZ0Q2hisfU3Ig/01qwY50eejvdLqcTzPPHuPZNOFQrv1UVz3nDMd9
-         NdVk4Q+jwSS4w==
+In-Reply-To: <20201118183830.GA917484@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCj4gRnJvbTogRGF2aWQgQWhlcm4gPGRzYWhlcm5AZ21haWwuY29tPg0KPiBTZW50OiBXZWRu
-ZXNkYXksIE5vdmVtYmVyIDE4LCAyMDIwIDExOjMzIFBNDQo+IA0KPiANCj4gV2l0aCBDb25uZWN0
-eC00IEx4IGZvciBleGFtcGxlIHRoZSBuZXRkZXYgY2FuIGhhdmUgYXQgbW9zdCA2MyBxdWV1ZXMN
-Cj4gbGVhdmluZyA5NiBjcHUgc2VydmVycyBhIGJpdCBzaG9ydCAtIGFzIGFuIGV4YW1wbGUgb2Yg
-dGhlIGxpbWl0ZWQgbnVtYmVyIG9mDQo+IHF1ZXVlcyB0aGF0IGEgbmljIGNhbiBoYW5kbGUgKG9y
-IGN1cnJlbnRseSBleHBvc2VzIHRvIHRoZSBPUyBub3Qgc3VyZSB3aGljaCkuDQo+IElmIEkgY3Jl
-YXRlIGEgc3ViZnVuY3Rpb24gZm9yIGV0aGVybmV0IHRyYWZmaWMsIGhvdyBtYW55IHF1ZXVlcyBh
-cmUgYWxsb2NhdGVkDQo+IHRvIGl0IGJ5IGRlZmF1bHQsIGlzIGl0IG1hbmFnZWQgdmlhIGV0aHRv
-b2wgbGlrZSB0aGUgcGYgYW5kIGlzIHRoZXJlIGFuIGltcGFjdCB0bw0KPiB0aGUgcmVzb3VyY2Vz
-IHVzZWQgYnkgLyBhdmFpbGFibGUgdG8gdGhlIHByaW1hcnkgZGV2aWNlPw0KDQpKYXNvbiBhbHJl
-YWR5IGFuc3dlcmVkIGl0IHdpdGggZGV0YWlscy4NClRoYW5rcyBhIGxvdCBKYXNvbi4NCg0KU2hv
-cnQgYW5zd2VyIHRvIGV0aHRvb2wgcXVlc3Rpb24sIHllcywgZXRodG9vbCBjYW4gY2hhbmdlIG51
-bSBxdWV1ZXMgZm9yIHN1YmZ1bmN0aW9uIGxpa2UgUEYuDQpEZWZhdWx0IGlzIHNhbWUgbnVtYmVy
-IG9mIHF1ZXVlcyBmb3Igc3ViZnVuY3Rpb24gYXMgdGhhdCBvZiBQRiBpbiB0aGlzIHBhdGNoc2V0
-Lg0K
+On 11/18/20 11:38 AM, Jason Gunthorpe wrote:
+> On Wed, Nov 18, 2020 at 11:03:24AM -0700, David Ahern wrote:
+> 
+>> With Connectx-4 Lx for example the netdev can have at most 63 queues
+> 
+> What netdev calls a queue is really a "can the device deliver
+> interrupts and packets to a given per-CPU queue" and covers a whole
+> spectrum of smaller limits like RSS scheme, # of available interrupts,
+> ability of the device to create queues, etc.
+> 
+> CX4Lx can create a huge number of queues, but hits one of these limits
+> that mean netdev's specific usage can't scale up. Other stuff like
+> RDMA doesn't have the same limits, and has tonnes of queues.
+> 
+> What seems to be needed is a resource controller concept like cgroup
+> has for processes. The system is really organized into a tree:
+> 
+>            physical device
+>               mlx5_core
+>         /      |      \      \                        (aux bus)
+>      netdev   rdma    vdpa   SF  etc
+>                              |                        (aux bus)
+>                            mlx5_core
+>                           /      \                    (aux bus)
+>                        netdev   vdpa
+> 
+> And it does make a lot of sense to start to talk about limits at each
+> tree level.
+> 
+> eg the top of the tree may have 128 physical interrupts. With 128 CPU
+> cores that isn't enough interrupts to support all of those things
+> concurrently.
+> 
+> So the user may want to configure:
+>  - The first level netdev only gets 64,
+>  - 3rd level mlx5_core gets 32 
+>  - Final level vdpa gets 8
+> 
+> Other stuff has to fight it out with the remaining shared interrupts.
+> 
+> In netdev land # of interrupts governs # of queues
+> 
+> For RDMA # of interrupts limits the CPU affinities for queues
+> 
+> VPDA limits the # of VMs that can use VT-d
+> 
+> The same story repeats for other less general resources, mlx5 also
+> has consumption of limited BAR space, and consumption of some limited
+> memory elements. These numbers are much bigger and may not need
+> explicit governing, but the general concept holds.
+> 
+> It would be very nice if the limit could be injected when the aux
+> device is created but before the driver is bound. I'm not sure how to
+> manage that though..
+> 
+> I assume other devices will be different, maybe some devices have a
+> limit on the number of total queues, or a limit on the number of
+> VDPA or RDMA devices.
+> 
+> Jason
+> 
+
+A lot of low level resource details that need to be summarized into a
+nicer user / config perspective to specify limits / allocations.
+
+Thanks for the detailed response.
