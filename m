@@ -2,203 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD512B7BCF
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 11:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 553EA2B7C1A
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 12:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgKRKtR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 18 Nov 2020 05:49:17 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2310 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726528AbgKRKtR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Nov 2020 05:49:17 -0500
-Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4CbfgM5dGpz13TqX;
-        Wed, 18 Nov 2020 18:48:47 +0800 (CST)
-Received: from dggema751-chm.china.huawei.com (10.1.198.193) by
- DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Wed, 18 Nov 2020 18:49:14 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema751-chm.china.huawei.com (10.1.198.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 18 Nov 2020 18:49:14 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
- Wed, 18 Nov 2020 18:49:14 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v2 for-next 1/2] RDMA/hns: Add support for CQ stash
-Thread-Topic: [PATCH v2 for-next 1/2] RDMA/hns: Add support for CQ stash
-Thread-Index: AQHWvBAlKbwt9UNgt0KPBLCpit0Bsw==
-Date:   Wed, 18 Nov 2020 10:49:14 +0000
-Message-ID: <18b9cb60c6a34f0995798affec0262c5@huawei.com>
-References: <1605527919-48769-1-git-send-email-liweihang@huawei.com>
- <1605527919-48769-2-git-send-email-liweihang@huawei.com>
- <20201116134645.GL47002@unreal> <2692da9a4b814dfa952659a903eb96f0@huawei.com>
- <20201117072034.GO47002@unreal> <f688022a7cce488a82ce0d8427a1054e@huawei.com>
- <20201117085011.GQ47002@unreal>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726164AbgKRLKY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Nov 2020 06:10:24 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:53798 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgKRLKX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Nov 2020 06:10:23 -0500
+Received: by mail-il1-f200.google.com with SMTP id t9so1215831ilp.20
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Nov 2020 03:10:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=qxJMdjmQc4H+kMVNFv1PlhPGxPauXxN3GYZOTbxiOq8=;
+        b=sg+NCQC+rzumd5tyPCbEsq3VJbYf9gC7B+CmEKet8BZ+8f0m+WrhomuKY+EqJF62kD
+         bkik26O5jcvtXQhYTLOjIchIac2zaJ2t0Np7AIL5Ru+cHh61pKD0c31fidvvcW39iFUc
+         KTt5hLzOvxWWl/t+GfF+alh7KfYRf38Wh5vNlgwUpmOuyX/3PERJ6grt7EKUEVSkd/yE
+         2SuXZrUtB/ocp5bcLPOEF2ow4EWCVjeGxEF294sLusw6q/3j3q6qzpJpN4uhsGgNvREI
+         tRRA2OthjUYpw0Zi9BRB+URamGeWSFZ+5Lu2gKTDbvcLZUv/i0RPUcDwNq7ROCTAo9D/
+         ADwA==
+X-Gm-Message-State: AOAM531aLzBHDFpQY7o+8oCFbJ+oQZbEq9jwemiI8SGz4XHm7TpCUJki
+        sEgWcyje1DibCljAV9LT5B/IoakIETFMcx9i9ssWlul6csGW
+X-Google-Smtp-Source: ABdhPJy3Zpy2YQ6D11LXPDs3qsFz4kgOOHPt9zlTXh7zZoY7bEtfnEVKLL0BjQscXuszlJVSnEwWplA/fEpsAKALNrc4RRhEcHLp
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a92:c64b:: with SMTP id 11mr17056910ill.224.1605697821285;
+ Wed, 18 Nov 2020 03:10:21 -0800 (PST)
+Date:   Wed, 18 Nov 2020 03:10:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004129c705b45fa8f2@google.com>
+Subject: possible deadlock in _destroy_id
+From:   syzbot <syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com>
+To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        parav@mellanox.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/11/17 16:50, Leon Romanovsky wrote:
-> On Tue, Nov 17, 2020 at 08:35:55AM +0000, liweihang wrote:
->> On 2020/11/17 15:21, Leon Romanovsky wrote:
->>> On Tue, Nov 17, 2020 at 06:37:58AM +0000, liweihang wrote:
->>>> On 2020/11/16 21:47, Leon Romanovsky wrote:
->>>>> On Mon, Nov 16, 2020 at 07:58:38PM +0800, Weihang Li wrote:
->>>>>> From: Lang Cheng <chenglang@huawei.com>
->>>>>>
->>>>>> Stash is a mechanism that uses the core information carried by the ARM AXI
->>>>>> bus to access the L3 cache. It can be used to improve the performance by
->>>>>> increasing the hit ratio of L3 cache. CQs need to enable stash by default.
->>>>>>
->>>>>> Signed-off-by: Lang Cheng <chenglang@huawei.com>
->>>>>> Signed-off-by: Weihang Li <liweihang@huawei.com>
->>>>>> ---
->>>>>>  drivers/infiniband/hw/hns/hns_roce_common.h | 12 +++++++++
->>>>>>  drivers/infiniband/hw/hns/hns_roce_device.h |  1 +
->>>>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  3 +++
->>>>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 39 +++++++++++++++++------------
->>>>>>  4 files changed, 39 insertions(+), 16 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/infiniband/hw/hns/hns_roce_common.h b/drivers/infiniband/hw/hns/hns_roce_common.h
->>>>>> index f5669ff..8d96c4e 100644
->>>>>> --- a/drivers/infiniband/hw/hns/hns_roce_common.h
->>>>>> +++ b/drivers/infiniband/hw/hns/hns_roce_common.h
->>>>>> @@ -53,6 +53,18 @@
->>>>>>  #define roce_set_bit(origin, shift, val) \
->>>>>>  	roce_set_field((origin), (1ul << (shift)), (shift), (val))
->>>>>>
->>>>>> +#define FIELD_LOC(field_h, field_l) field_h, field_l
->>>>>> +
->>>>>> +#define _hr_reg_set(arr, field_h, field_l)                                     \
->>>>>> +	do {                                                                   \
->>>>>> +		BUILD_BUG_ON(((field_h) / 32) != ((field_l) / 32));            \
->>>>>> +		BUILD_BUG_ON((field_h) / 32 >= ARRAY_SIZE(arr));               \
->>>>>> +		(arr)[(field_h) / 32] |=                                       \
->>>>>> +			cpu_to_le32(GENMASK((field_h) % 32, (field_l) % 32));  \
->>>>>> +	} while (0)
->>>>>> +
->>>>>> +#define hr_reg_set(arr, field) _hr_reg_set(arr, field)
->>>>>
->>>>> I afraid that it is too much.
->>>>
->>>> Hi Leon,
->>>>
->>>> Thanks for the comments.
->>>>
->>>>> 1. FIELD_LOC() macro to hide two fields.
->>>>
->>>> Jason has suggested us to simplify the function of setting/getting bit/field in
->>>> hns driver like IBA_SET and IBA_GET.
->>>>
->>>> https://patchwork.kernel.org/project/linux-rdma/patch/1589982799-28728-3-git-send-email-liweihang@huawei.com/
->>>>
->>>> So we try to make it easier and clearer to define a bitfield for developers.
->>>
->>> Jason asked to use genmask and FIELD_PREP, but you invented something else.
->>>
->>> Thanks
->>>
->>
->> We use them in another interface 'hr_reg_write(arr, field, val)' which hasn't been
->> used in this series.
->>
->> Does it make any unacceptable mistake? We would appreciate any suggestions :)
-> 
-> The invention of FIELD_LOC() and hr_reg_set equal to __hr_reg_set are unacceptable.
-> Pass directly your field_h and field_l to hr_reg_set().
-> 
-> Thanks
-> 
+Hello,
 
-Hi Leon,
+syzbot found the following issue on:
 
-We let hr_reg_set equal() to __hr_reg_set() because if not, there will be a compile error:
+HEAD commit:    20529233 Add linux-next specific files for 20201118
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13093cf2500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2c4fb58b6526b3c1
+dashboard link: https://syzkaller.appspot.com/bug?extid=1bc48bf7f78253f664a9
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-../hns_roce_hw_v2.c:4566:41: error: macro "_hr_reg_set" requires 3 arguments, but only 2 given
-_hr_reg_set(cq_context->raw, CQC_STASH);
+Unfortunately, I don't have any reproducer for this issue yet.
 
-There are similar codes in iba.h, I think they are of the same reason:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com
 
-	#define _IBA_SET(field_struct, field_offset, field_mask, num_bits, ptr, value) \
-		({                                                                     \
-			field_struct *_ptr = ptr;                                      \
-			_iba_set##num_bits((void *)_ptr + (field_offset), field_mask,  \
-					   FIELD_PREP(field_mask, value));             \
-		})
-	#define IBA_SET(field, ptr, value) _IBA_SET(field, ptr, value)
+iwpm_register_pid: Unable to send a nlmsg (client = 2)
+infiniband syz1: RDMA CMA: cma_listen_on_dev, error -98
+============================================
+WARNING: possible recursive locking detected
+5.10.0-rc4-next-20201118-syzkaller #0 Not tainted
+--------------------------------------------
+syz-executor.5/12844 is trying to acquire lock:
+ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_release_dev drivers/infiniband/core/cma.c:476 [inline]
+ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: _destroy_id+0x299/0xa00 drivers/infiniband/core/cma.c:1852
 
-	#define IBA_FIELD64_LOC(field_struct, byte_offset)                             \
-		field_struct, byte_offset, GENMASK_ULL(63, 0), 64
+but task is already holding lock:
+ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_add_one+0x55c/0xce0 drivers/infiniband/core/cma.c:4902
 
-	#define CM_FIELD64_LOC(field_struct, byte_offset)                              \
-		IBA_FIELD64_LOC(field_struct, (byte_offset + sizeof(struct ib_mad_hdr)))
+other info that might help us debug this:
+ Possible unsafe locking scenario:
 
-	#define CM_REQ_LOCAL_CA_GUID CM_FIELD64_LOC(struct cm_req_msg, 16)
+       CPU0
+       ----
+  lock(lock#6);
+  lock(lock#6);
 
-	IBA_SET(CM_REQ_LOCAL_CA_GUID, req_msg,
-		be64_to_cpu(cm_id_priv->id.device->node_guid));
+ *** DEADLOCK ***
 
-As I said, we want to use a single symbol to represent a field to make it
-easier and clearer to define and set a bitfield for developers.
+ May be due to missing lock nesting notation
 
-Let's compare the following implementations:
+6 locks held by syz-executor.5/12844:
+ #0: ffffffff8fa76958 (&rdma_nl_types[idx].sem){.+.+}-{3:3}, at: rdma_nl_rcv_msg+0x15b/0x690 drivers/infiniband/core/netlink.c:164
+ #1: ffffffff8c66c490 (link_ops_rwsem){++++}-{3:3}, at: nldev_newlink+0x261/0x540 drivers/infiniband/core/nldev.c:1545
+ #2: ffffffff8c65bd90 (devices_rwsem){++++}-{3:3}, at: enable_device_and_get+0xfc/0x3c0 drivers/infiniband/core/device.c:1321
+ #3: ffffffff8c65bc50 (clients_rwsem){++++}-{3:3}, at: enable_device_and_get+0x163/0x3c0 drivers/infiniband/core/device.c:1331
+ #4: ffff888027bb0598 (&device->client_data_rwsem){++++}-{3:3}, at: add_client_context+0x3d0/0x5e0 drivers/infiniband/core/device.c:710
+ #5: ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_add_one+0x55c/0xce0 drivers/infiniband/core/cma.c:4902
 
-	#define _hr_reg_set(arr, field_h, field_l) \
-		(arr)[(field_h) / 32] |= \
-			cpu_to_le32(GENMASK((field_h) % 32, (field_l) % 32)) + \
-			BUILD_BUG_ON_ZERO(((field_h) / 32) != ((field_l) / 32)) + \
-			BUILD_BUG_ON_ZERO((field_h) / 32 >= ARRAY_SIZE(arr))
+stack backtrace:
+CPU: 1 PID: 12844 Comm: syz-executor.5 Not tainted 5.10.0-rc4-next-20201118-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_deadlock_bug kernel/locking/lockdep.c:2759 [inline]
+ check_deadlock kernel/locking/lockdep.c:2802 [inline]
+ validate_chain kernel/locking/lockdep.c:3593 [inline]
+ __lock_acquire.cold+0x115/0x39f kernel/locking/lockdep.c:4830
+ lock_acquire kernel/locking/lockdep.c:5435 [inline]
+ lock_acquire+0x2a3/0x8c0 kernel/locking/lockdep.c:5400
+ __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+ __mutex_lock+0x134/0x1110 kernel/locking/mutex.c:1103
+ cma_release_dev drivers/infiniband/core/cma.c:476 [inline]
+ _destroy_id+0x299/0xa00 drivers/infiniband/core/cma.c:1852
+ cma_listen_on_dev.cold+0x168/0x16d drivers/infiniband/core/cma.c:2535
+ cma_add_one+0x667/0xce0 drivers/infiniband/core/cma.c:4905
+ add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:712
+ enable_device_and_get+0x1d5/0x3c0 drivers/infiniband/core/device.c:1333
+ ib_register_device drivers/infiniband/core/device.c:1408 [inline]
+ ib_register_device+0x7a0/0xa30 drivers/infiniband/core/device.c:1367
+ siw_device_register drivers/infiniband/sw/siw/siw_main.c:72 [inline]
+ siw_newlink drivers/infiniband/sw/siw/siw_main.c:545 [inline]
+ siw_newlink+0xddb/0x1340 drivers/infiniband/sw/siw/siw_main.c:522
+ nldev_newlink+0x30e/0x540 drivers/infiniband/core/nldev.c:1555
+ rdma_nl_rcv_msg+0x367/0x690 drivers/infiniband/core/netlink.c:195
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x2f2/0x440 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:650 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:670
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2339
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2393
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2426
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45deb9
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f2728c60c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000002d040 RCX: 000000000045deb9
+RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000003
+RBP: 000000000118bf60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
+R13: 00007ffddb965a9f R14: 00007f2728c619c0 R15: 000000000118bf2c
 
-1)
-	#define hr_reg_set(arr, field) _hr_reg_set(arr, field)
 
-	#define QPCEX_PASID_EN FIELD_LOC(111, 95)
-	hr_reg_set(context->ext, QPCEX_PASID_EN);
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-In this way, we just need to define a single symbol and use it easily.
-
-2)
-	#define QPCEX_PASID_EN_H 111
-	#define QPCEX_PASID_EN_L 95
-	_hr_reg_set(context->ext, QPCEX_PASID_EN_H, QPCEX_PASID_EN_L);
-
-We have to define and pass 2 symbols.
-
-3)
-	#define QPCEX_PASID_EN_H 111
-	#define QPCEX_PASID_EN 95
-	#define hr_reg_set(arr, field) _hr_reg_set(arr, field, field##_H)
-	hr_reg_set(context->ext, QPCEX_PASID_EN);
-
-We have to define 2 symbols and use 1 symbols when setting field.
-
-4)
-	#define _hr_reg_set(arr, field_h, field_l) \
-		...
-
-	#define QPCEX_PASID_EN_M GENMASK(111, 95) //mask
-	#define QPCEX_PASID_EN 95 // shift
-	#define hr_reg_set(arr, field) _hr_reg_set(arr, field, field##_M)
-	hr_reg_set(context->ext, QPCEX_PASID_EN);
-
-We use mask and shift, similar with the way #3.
-
-I think the first way is the best, and it doesn't seem to have any side effects.
-
-Thanks
-Weihang
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
