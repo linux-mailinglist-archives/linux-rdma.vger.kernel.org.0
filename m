@@ -2,172 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC882B7DC4
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 13:46:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3AB32B7DC3
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 13:46:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726172AbgKRMqD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Nov 2020 07:46:03 -0500
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:18506 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726107AbgKRMqD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Nov 2020 07:46:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1605703563; x=1637239563;
-  h=subject:to:references:from:message-id:date:mime-version:
-   in-reply-to:content-transfer-encoding;
-  bh=l30GIg8dXwzeQoqMoj5Z2NzIJFdrV4R5CMkEEckh6sU=;
-  b=jbarLmp6U9IVADqyDdj4DPiG/ZF+cOZBuwV6o3ZN7VFHgEHDdvBSR+N9
-   tLjAXROBbG4Yea1/aJYQiDfLxmLGVwEA6lz9XKn3L3FIBpTJuMFF6mIc9
-   4QAMPSvpAerSYvrGTYWR0Tx/pdSXqdHWoYqVBqpabUjnWf6nvJopeYwHM
-   8=;
-X-IronPort-AV: E=Sophos;i="5.77,486,1596499200"; 
-   d="scan'208";a="96605231"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-456ef9c9.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 18 Nov 2020 12:45:51 +0000
-Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2c-456ef9c9.us-west-2.amazon.com (Postfix) with ESMTPS id E05D3BF9B7;
-        Wed, 18 Nov 2020 12:45:49 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.59) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 18 Nov 2020 12:45:47 +0000
-Subject: Re: [PATCH 4/9] efa: Move the context intialization out of
- efa_query_device_ex()
-To:     Jason Gunthorpe <jgg@nvidia.com>, <linux-rdma@vger.kernel.org>,
-        Bob Pearson <rpearsonhpe@gmail.com>
-References: <4-v1-34e141ddf17e+89-query_device_ex_jgg@nvidia.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <3ef1c929-5a36-9d55-091c-2a983c450f38@amazon.com>
-Date:   Wed, 18 Nov 2020 14:45:42 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.3
+        id S1726195AbgKRMpw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Nov 2020 07:45:52 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3028 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726181AbgKRMpv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Nov 2020 07:45:51 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb5178a0000>; Wed, 18 Nov 2020 04:46:02 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Nov
+ 2020 12:45:51 +0000
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.59) by
+ HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 18 Nov 2020 12:45:51 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ewv9zhcBuDhSE5vUuU7+v9LARinaUNUhAvsBYLP7wMB8Sm3aMBz8IaP1bS5ct4ASgeIoVBBjUG9WdtXBsbI1Ig6Bff67h0yy2wXZOZckxFn0KX/iWOCOF7z8pDN2vx0TIkinyQ6x+AElQAkEv02uJ6HASD2E8qPl59LwTI3q7orsxVDrLsPOQrnnco71tyq2e3Wqe2heyglfYiuOWUkB7kLvv5m86DKwozHHUbvqYdWvxE9D7fmb9lDbb6CKtnsndUc448VDc+enaEfyq8AlTompN+7ALU4eL7wlg+kLsWr4QxA+pMtwy1E5RjSjTgHQ8Fj7nZxUwd5R1Aqy+Pw4xg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FzTR/zUXQACf9bBnloifwCmpNrWt0Y3/vic1Ngm5LL0=;
+ b=d5XTAGCVWT4lxd8+NrbRard1hIYcMWmpHyrklS7dFOYEljGEzfHNjvax4dhonH2hQ0YQ3m9UtnDX6ft95mlz0jtGwcybvtuYWK42w7lDsoiZkFbzaFcN7cEavdIlRVK7aMzTeJccrdOHjOuYSfwJyo+azVhQwNiAKIvJ8N5wAY6+RWJbO0jbYIwJQm9uyH8fFpwYq/4ukbAEMlOGB3rDWRUEFCS8L9v9JzAUQ17du9dHy2IWY/kvMMLftk41CnOeC+fKs7fxcSN/0kRhzf06KelxiDrzeuZL6fZ6m+APUaPnRAEfExNdQIOTsSCO1YzHVPds/T9BzPjfdhaXnplSCQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1546.namprd12.prod.outlook.com (2603:10b6:4:8::23) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3589.20; Wed, 18 Nov 2020 12:45:49 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3564.028; Wed, 18 Nov 2020
+ 12:45:49 +0000
+Date:   Wed, 18 Nov 2020 08:45:48 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Gal Pressman <galpress@amazon.com>
+CC:     <linux-rdma@vger.kernel.org>, Bob Pearson <rpearsonhpe@gmail.com>
+Subject: Re: [PATCH 2/9] verbs: Add ibv_cmd_query_device_any()
+Message-ID: <20201118124548.GY917484@nvidia.com>
+References: <2-v1-34e141ddf17e+89-query_device_ex_jgg@nvidia.com>
+ <bdb30557-27fa-3ea4-39a9-4bdb136ff798@amazon.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <bdb30557-27fa-3ea4-39a9-4bdb136ff798@amazon.com>
+X-ClientProxiedBy: MN2PR16CA0043.namprd16.prod.outlook.com
+ (2603:10b6:208:234::12) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <4-v1-34e141ddf17e+89-query_device_ex_jgg@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.59]
-X-ClientProxiedBy: EX13d09UWC002.ant.amazon.com (10.43.162.102) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR16CA0043.namprd16.prod.outlook.com (2603:10b6:208:234::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Wed, 18 Nov 2020 12:45:49 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kfMqK-007fwz-8k; Wed, 18 Nov 2020 08:45:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605703562; bh=FzTR/zUXQACf9bBnloifwCmpNrWt0Y3/vic1Ngm5LL0=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=j1EeOFzRZjPUAaUCKfIhC7rf613YorZyhoZk9a7Zp5Y6wcGpwSj9I4MVQ7rTBmEDx
+         JjyKCPPox8P+QMMxaui9YL0xcnLMHoB6DoY8jpM3dcIhkQkscMiaLmE6UqPuC+qDg4
+         lH3ElO8SbWYl36OSs4jBSxAUCUaJi9ftbvT5fNfF5rC74tLzFRBSFoC4O0L5Wls0kt
+         YdRbvcP0vBbVJsnJoXoXIHbGsmYJwBaHMs6x8p65S9ZrlpUlrQG8EbaRRW9orVPJ8m
+         SzOh7LHRVlY7X6ppwZYZYbY0Z+u+Hy78R4vLxiUnQLwqLC0bEuJKGLmiVHcXHW94eK
+         8R+qlqzWVFnxg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 16/11/2020 22:23, Jason Gunthorpe wrote:
-> When the user calls efa_query_device_ex() it should not cause the context
-> values to be mutated, only the attribute shuld be returned.
+On Wed, Nov 18, 2020 at 02:43:57PM +0200, Gal Pressman wrote:
+> On 16/11/2020 22:23, Jason Gunthorpe wrote:
+
+> > +int ibv_cmd_query_device_any(struct ibv_context *context,
+> > +			     const struct ibv_query_device_ex_input *input,
+> > +			     struct ibv_device_attr_ex *attr, size_t attr_size,
+> > +			     struct ib_uverbs_ex_query_device_resp *resp,
+> > +			     size_t *resp_size)
+> > +{
+> > +	struct ib_uverbs_ex_query_device_resp internal_resp;
+> > +	size_t internal_resp_size;
+> > +	int err;
+> > +
+> > +	if (input && input->comp_mask)
+> > +		return EINVAL;
+> > +	if (attr_size < sizeof(attr->orig_attr))
+> > +		return EINVAL;
+> > +
+> > +	if (!resp) {
+> > +		resp = &internal_resp;
+> > +		internal_resp_size = sizeof(internal_resp);
+> > +		resp_size = &internal_resp_size;
+> > +	}
+> > +	memset(attr, 0, attr_size);
+> > +	memset(resp, 0, *resp_size);
+> > +
+> > +	if (attr_size > sizeof(attr->orig_attr)) {
+> > +		struct ibv_query_device_ex cmd = {};
+> > +
+> > +		err = execute_cmd_write_ex(context,
+> > +					   IB_USER_VERBS_EX_CMD_QUERY_DEVICE,
+> > +					   &cmd, sizeof(cmd), resp, *resp_size);
+> > +		if (err) {
+> > +			if (err != EOPNOTSUPP)
 > 
-> Move this code to a dedicated function that is only called during context
-> setup.
-> 
-> Cc: Gal Pressman <galpress@amazon.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->  providers/efa/efa.c   | 14 +------------
->  providers/efa/verbs.c | 46 +++++++++++++++++++++++++++++++++++--------
->  providers/efa/verbs.h |  1 +
->  3 files changed, 40 insertions(+), 21 deletions(-)
-> 
-> diff --git a/providers/efa/efa.c b/providers/efa/efa.c
-> index 35f9b246a711ec..b24c14f7fa1fe1 100644
-> --- a/providers/efa/efa.c
-> +++ b/providers/efa/efa.c
-> @@ -54,10 +54,7 @@ static struct verbs_context *efa_alloc_context(struct ibv_device *vdev,
->  {
->  	struct efa_alloc_ucontext_resp resp = {};
->  	struct efa_alloc_ucontext cmd = {};
-> -	struct ibv_device_attr_ex attr;
-> -	unsigned int qp_table_sz;
->  	struct efa_context *ctx;
-> -	int err;
->  
->  	cmd.comp_mask |= EFA_ALLOC_UCONTEXT_CMD_COMP_TX_BATCH;
->  	cmd.comp_mask |= EFA_ALLOC_UCONTEXT_CMD_COMP_MIN_SQ_WR;
-> @@ -86,17 +83,8 @@ static struct verbs_context *efa_alloc_context(struct ibv_device *vdev,
->  
->  	verbs_set_ops(&ctx->ibvctx, &efa_ctx_ops);
->  
-> -	err = efa_query_device_ex(&ctx->ibvctx.context, NULL, &attr,
-> -				  sizeof(attr));
-> -	if (err)
-> +	if (!efa_query_device_ctx(ctx))
+> Are you sure about that?
+> I think older kernels return ENOSYS.
 
-Remove the not.
+Oh, that is possibly true, we changed those at one point, I didn't
+test that far back.
 
->  		goto err_free_spinlock;
-> -
-> -	qp_table_sz = roundup_pow_of_two(attr.orig_attr.max_qp);
-> -	ctx->qp_table_sz_m1 = qp_table_sz - 1;
-> -	ctx->qp_table = calloc(qp_table_sz, sizeof(*ctx->qp_table));
-> -	if (!ctx->qp_table)
-> -		goto err_free_spinlock;
-> -
->  	return &ctx->ibvctx;
->  
->  err_free_spinlock:
-> diff --git a/providers/efa/verbs.c b/providers/efa/verbs.c
-> index 1a9633155c62f8..52d6285f1f409c 100644
-> --- a/providers/efa/verbs.c
-> +++ b/providers/efa/verbs.c
-> @@ -106,14 +106,6 @@ int efa_query_device_ex(struct ibv_context *context,
->  	if (err)
->  		return err;
->  
-> -	ctx->device_caps = resp.device_caps;
-> -	ctx->max_sq_wr = resp.max_sq_wr;
-> -	ctx->max_rq_wr = resp.max_rq_wr;
-> -	ctx->max_sq_sge = resp.max_sq_sge;
-> -	ctx->max_rq_sge = resp.max_rq_sge;
-> -	ctx->max_rdma_size = resp.max_rdma_size;
-> -	ctx->max_wr_rdma_sge = a->max_sge_rd;
-> -
->  	a->max_qp_wr = min_t(int, a->max_qp_wr,
->  			     ctx->max_llq_size / sizeof(struct efa_io_tx_wqe));
->  	snprintf(a->fw_ver, sizeof(a->fw_ver), "%u.%u.%u.%u",
-> @@ -122,6 +114,44 @@ int efa_query_device_ex(struct ibv_context *context,
->  	return 0;
->  }
->  
-> +int efa_query_device_ctx(struct efa_context *ctx)
-> +{
-> +	struct ibv_device_attr_ex attr;
-> +	struct efa_query_device_ex_resp resp;
-
-Preferably I would put this first.
-
-> +	size_t resp_size = sizeof(resp);
-> +	unsigned int qp_table_sz;
-> +	int err;
-> +
-> +	if (ctx->cmds_supp_udata_mask & EFA_USER_CMDS_SUPP_UDATA_QUERY_DEVICE) {
-> +		err = ibv_cmd_query_device_any(&ctx->ibvctx.context, NULL,
-> +					       &attr, sizeof(attr),
-> +					       &resp.ibv_resp, &resp_size);
-> +		if (err)
-> +			return err;
-> +
-> +		ctx->device_caps = resp.device_caps;
-> +		ctx->max_sq_wr = resp.max_sq_wr;
-> +		ctx->max_rq_wr = resp.max_rq_wr;
-> +		ctx->max_sq_sge = resp.max_sq_sge;
-> +		ctx->max_rq_sge = resp.max_rq_sge;
-> +		ctx->max_rdma_size = resp.max_rdma_size;
-> +		ctx->max_wr_rdma_sge = attr.orig_attr.max_sge_rd;
-
-max_wr_rdma_sge assignment can be done in the else clause as well.
-
-> +	} else {
-> +		err = ibv_cmd_query_device_any(&ctx->ibvctx.context, NULL,
-> +					       &attr, sizeof(attr.orig_attr),
-> +					       NULL, NULL);
-> +		if (err)
-> +			return err;
-> +	}
-> +
-> +	qp_table_sz = roundup_pow_of_two(attr.orig_attr.max_qp);
-> +	ctx->qp_table_sz_m1 = qp_table_sz - 1;
-> +	ctx->qp_table = calloc(qp_table_sz, sizeof(*ctx->qp_table));
-> +	if (!ctx->qp_table)
-> +		return ENOMEM;
-> +	return 0;
-> +}
+Jason
