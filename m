@@ -2,97 +2,238 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF9D2B7DE7
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 13:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 362D62B7E69
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 14:40:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbgKRMxq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Nov 2020 07:53:46 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:52047 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725767AbgKRMxp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 18 Nov 2020 07:53:45 -0500
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb519580001>; Wed, 18 Nov 2020 20:53:44 +0800
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Nov
- 2020 12:53:44 +0000
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.107)
- by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 18 Nov 2020 12:53:44 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j47HFOrT999x6d8RvLWmc8ZeO3p11SxJad3btNsgn76xiqYqpvarfJijAQrKH/d570dR8M7i7E+O+1M+vHB9WBl421HM/Dxd0j/Av91Ag7vdqIaWfrNUPQ+LdwEsOmhPtlWOs9iRH3Ea2POVrt3ffxRw1NzS8ci3GTOsUiMt/cWgd1XRF4mG02SxKCTMAV3pAWHrPIcq8OgZn+qVY7yxZXappK+w+xRYofOxZEBpD2qYvLy+Uj2ngAPFHZSaampovhmX2DSdiaXaEVVw4EPXzdN4gqwdVokIOQaAAHiTZQkBq9g8TQN22tzfl/4sB/1ZIhGQWXviKUOMN9JkGnYANg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7bXRgTQ577zvBbvw7P9/oRcSYcOrekdgmyxpvGwqmx0=;
- b=Pr8a0EEZjk56AL/CNU4CKAGlb0WespbX6nS6vYbWsNdFeseL3kf6UwmxL90P8/qhA3P46rADuKq94KzX6sMKR+CDn51LtytoD7ElG92o9bK8uglGDidwJPdRE1LLoWlatoAZknroGU2CQgx2FJ7VIIqSB9F+I2OwLQI69/QdRGCm6rHjEz+9X2n6s3jZhvJZjpttDZ6FziQXc/yyUuHNkDVhakLmUANS7HSfDZalX++E7++HDGRVYg/gVxhjntHWGIx8kkSJjK9ccmsnFguzwPgzSSrXBkKYxl1X6jSPxHLiX6yTIsmTAReJtk7wYXT3CHsxLtpr347uzlZlCPM1WQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0107.namprd12.prod.outlook.com (2603:10b6:4:55::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Wed, 18 Nov
- 2020 12:53:42 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3564.028; Wed, 18 Nov 2020
- 12:53:42 +0000
-Date:   Wed, 18 Nov 2020 08:53:40 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Gal Pressman <galpress@amazon.com>
-CC:     <linux-rdma@vger.kernel.org>, Bob Pearson <rpearsonhpe@gmail.com>
-Subject: Re: [PATCH 8/9] verbs: Remove dead code
-Message-ID: <20201118125340.GZ917484@nvidia.com>
-References: <8-v1-34e141ddf17e+89-query_device_ex_jgg@nvidia.com>
- <c78be7ca-7a04-6a7e-5a55-06a2dd58e947@amazon.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <c78be7ca-7a04-6a7e-5a55-06a2dd58e947@amazon.com>
-X-ClientProxiedBy: MN2PR05CA0059.namprd05.prod.outlook.com
- (2603:10b6:208:236::28) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1726479AbgKRNiA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Nov 2020 08:38:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726278AbgKRNiA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Nov 2020 08:38:00 -0500
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B576EC0613D4
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Nov 2020 05:37:59 -0800 (PST)
+Received: by mail-qv1-xf42.google.com with SMTP id z17so971242qvy.11
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Nov 2020 05:37:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oL9ZE4upvJh/oljpGLb+sWVGETmgVz7ngr+ciRfT49k=;
+        b=l5TZbxeXgAkmWP/0QupXAj21lLzhwHFL71oJFi0ryBJTgN2cC1MaMXFrwCr+IoRqs0
+         jfPlLDkX+6FQ23YvwnK7igz5Stx0+NnzAYizy6pVLDWelaxH4jsY1/w9sug1o2/9apmy
+         w3fuMOplq9d3QDLbGQmAYX2RN7RMTRj+IEY0m1QlGLncnsyqERcC0VZdZx2/0VIfrU7X
+         9iq6JWZvpJo/RgnVfeGfEaDnWlmRWfvDjwSShZIpbVtil/YLM749Srvs6MdNfoEbkO0Y
+         EKc5HEUegjk9i57tY+F5Dw5KqkKLihh3Egr/jmYcM4ZSZz1F+TV+0aKYhDYPRDrEwGbo
+         bjRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oL9ZE4upvJh/oljpGLb+sWVGETmgVz7ngr+ciRfT49k=;
+        b=cjbXLUL18Lgok32X/tScu7koAVzNY6/aLPEksDgDhfSAKPbOivUfp60G0bIRyxKSPr
+         4xVrt2HPW60DIbcwfUUz247mm6qimHfurM2ctGjR+Qbq0GEwIvNZa2MNSAyXrBPp5JwB
+         Tnnx27bjpxomT/So8cnIVCetwD0Y+LXGWlRIlp4ya7cjlsF8QT1j7ccbGA3R1WbKjwbw
+         IEAA3Sne3krkXJ7oFlxlXn/Fin5WOFcbGnEnS9wNG8rhYVYYp99tZHOYLSZHkOZx34He
+         OqLU0AIwwwztN4yvIauYA9vDPYyLSCI/J2YRDLOb5RZUV7eAFcY/ZSPW7l+maLrfk4+q
+         yY8w==
+X-Gm-Message-State: AOAM530zlqYI+1q2OXU6UPA+Cz5ic5sxJ6bZD9dUsAr9URsHFMZ2X6wC
+        ALG98dkSyrh2u2ktxUsk8usbrw==
+X-Google-Smtp-Source: ABdhPJzXpJJdjKVdK0fjPS7bypm+rDnXdoigZ9/odAR+ixDpQu8oeaX5z0CA+4HrqTocRzqofwDkQA==
+X-Received: by 2002:a0c:bd19:: with SMTP id m25mr4930191qvg.52.1605706678862;
+        Wed, 18 Nov 2020 05:37:58 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id b8sm14904247qtx.73.2020.11.18.05.37.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 05:37:58 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kfNem-007jKp-VZ; Wed, 18 Nov 2020 09:37:57 -0400
+Date:   Wed, 18 Nov 2020 09:37:56 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     syzbot <syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com>,
+        leon@kernel.org
+Cc:     dledford@redhat.com, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, parav@mellanox.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: possible deadlock in _destroy_id
+Message-ID: <20201118133756.GK244516@ziepe.ca>
+References: <0000000000004129c705b45fa8f2@google.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR05CA0059.namprd05.prod.outlook.com (2603:10b6:208:236::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.16 via Frontend Transport; Wed, 18 Nov 2020 12:53:41 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kfMxw-007g7Z-Hn; Wed, 18 Nov 2020 08:53:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605704024; bh=7bXRgTQ577zvBbvw7P9/oRcSYcOrekdgmyxpvGwqmx0=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=WmEAjDcPMLkKMP6+dsqLR2Jor3gJa2pMUhk6d9gzQNh4Q+tRT8U4NsSdcznq2glYF
-         zbMS9DWkZs2ITwBLz2jQsqgWIkOHxWVXP69MWZPIMoYr+3sHnjEFmgVOmrK1RHt/KC
-         LmprWmvWXHB9hMXiATbqd1UEL2b8/LTRuDuRfeC8gFqB5k+5IDEylZpYkO6WwMgs3a
-         T39zxVpuPOiYt2oYW7471kxYM+5cdVgFRbHKz0uvZL0T1gyPregqpbpBJcblCFffgA
-         deJrJ3RsI1/JemOF5c9GWpX6wmGkzMDIUOHtJeFsvAHlP5izMN7//Lqyzpvx7OmgNR
-         y67xtokLWuLwg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000004129c705b45fa8f2@google.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 02:46:05PM +0200, Gal Pressman wrote:
-> On 16/11/2020 22:23, Jason Gunthorpe wrote:
-> > Remove the old query_device support code, it is now replaced by
-> > ibv_cmd_query_device_any()
-> > 
-> > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+On Wed, Nov 18, 2020 at 03:10:21AM -0800, syzbot wrote:
+
+> HEAD commit:    20529233 Add linux-next specific files for 20201118
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13093cf2500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=2c4fb58b6526b3c1
+> dashboard link: https://syzkaller.appspot.com/bug?extid=1bc48bf7f78253f664a9
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
 > 
-> Shouldn't the legacy fallback in ibv_query_device_ex() be removed as well?
+> Unfortunately, I don't have any reproducer for this issue yet.
 
-I thought about it, and yes we could convert that into a real function
-call and remove all the junk
+Oh? Is this because the error injection is too random?
+ 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com
+> 
+> iwpm_register_pid: Unable to send a nlmsg (client = 2)
+> infiniband syz1: RDMA CMA: cma_listen_on_dev, error -98
+> ============================================
+> WARNING: possible recursive locking detected
+> 5.10.0-rc4-next-20201118-syzkaller #0 Not tainted
+> syz-executor.5/12844 is trying to acquire lock:
+> ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_release_dev drivers/infiniband/core/cma.c:476 [inline]
+> ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: _destroy_id+0x299/0xa00 drivers/infiniband/core/cma.c:1852
+> 
+> but task is already holding lock:
+> ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_add_one+0x55c/0xce0 drivers/infiniband/core/cma.c:4902
 
-But if we do that it causes a symbol ver dependencies and if we are
-going that far then we should really just do all of the
-verbs_get_ctx_op() inlines and be done with that mess entirely.
+Leon, this is caused by
 
-This would mean anything linked with a new rdma-core would not be able
-to load on any of the older ones..
+commit c80a0c52d85c49a910d0dc0e342e8d8898677dc0
+Author: Leon Romanovsky <leon@kernel.org>
+Date:   Wed Nov 4 16:40:07 2020 +0200
 
-I've been saving that gem for some future adventure since it seems to
-cause some general pain. It would be good to couple it with some other
-verbs.h clean up as well
+    RDMA/cma: Add missing error handling of listen_id
+    
+    Don't silently continue if rdma_listen() fails but destroy previously
+    created CM_ID and return an error to the caller.
 
-Jason
+rdma_destroy_id() can't be called while holding the global lock
+
+This is quite hard to fix. I came up with this ugly thing:
+
+From 8e6568f99fbe4bf734cc4e5dcda987e4ae118bdd Mon Sep 17 00:00:00 2001
+From: Jason Gunthorpe <jgg@nvidia.com>
+Date: Wed, 18 Nov 2020 09:33:23 -0400
+Subject: [PATCH] RDMA/cma: Fix deadlock on &lock in rdma_cma_listen_on_all()
+ error unwind
+
+rdma_detroy_id() cannot be called under &lock - we must instead keep the
+error'd ID around until &lock can be released, then destory it.
+
+This is complicated by the usual way listen IDs are destroyed through
+cma_process_remove() which can run at any time and will asynchronously
+destroy the same ID.
+
+Remove the ID from visiblity of cma_process_remove() before going down the
+destroy path outside the locking.
+
+Fixes: c80a0c52d85c ("RDMA/cma: Add missing error handling of listen_id")
+Reported-by: syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+---
+ drivers/infiniband/core/cma.c | 25 ++++++++++++++++++-------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 4585f654f88369..c06c87a4dc5e7d 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -2496,7 +2496,8 @@ static int cma_listen_handler(struct rdma_cm_id *id,
+ }
+ 
+ static int cma_listen_on_dev(struct rdma_id_private *id_priv,
+-			     struct cma_device *cma_dev)
++			     struct cma_device *cma_dev,
++			     struct rdma_id_private **to_destroy)
+ {
+ 	struct rdma_id_private *dev_id_priv;
+ 	struct net *net = id_priv->id.route.addr.dev_addr.net;
+@@ -2504,6 +2505,7 @@ static int cma_listen_on_dev(struct rdma_id_private *id_priv,
+ 
+ 	lockdep_assert_held(&lock);
+ 
++	*to_destroy = NULL;
+ 	if (cma_family(id_priv) == AF_IB && !rdma_cap_ib_cm(cma_dev->device, 1))
+ 		return 0;
+ 
+@@ -2518,7 +2520,6 @@ static int cma_listen_on_dev(struct rdma_id_private *id_priv,
+ 	       rdma_addr_size(cma_src_addr(id_priv)));
+ 
+ 	_cma_attach_to_dev(dev_id_priv, cma_dev);
+-	list_add_tail(&dev_id_priv->listen_list, &id_priv->listen_list);
+ 	cma_id_get(id_priv);
+ 	dev_id_priv->internal_id = 1;
+ 	dev_id_priv->afonly = id_priv->afonly;
+@@ -2528,25 +2529,31 @@ static int cma_listen_on_dev(struct rdma_id_private *id_priv,
+ 	ret = rdma_listen(&dev_id_priv->id, id_priv->backlog);
+ 	if (ret)
+ 		goto err_listen;
++	list_add_tail(&dev_id_priv->listen_list, &id_priv->listen_list);
+ 	return 0;
+ err_listen:
+-	list_del(&id_priv->listen_list);
++	/* Caller must destroy this after releasing lock */
++	*to_destroy = dev_id_priv;
+ 	dev_warn(&cma_dev->device->dev, "RDMA CMA: %s, error %d\n", __func__, ret);
+-	rdma_destroy_id(&dev_id_priv->id);
+ 	return ret;
+ }
+ 
+ static int cma_listen_on_all(struct rdma_id_private *id_priv)
+ {
++	struct rdma_id_private *to_destroy;
+ 	struct cma_device *cma_dev;
+ 	int ret;
+ 
+ 	mutex_lock(&lock);
+ 	list_add_tail(&id_priv->list, &listen_any_list);
+ 	list_for_each_entry(cma_dev, &dev_list, list) {
+-		ret = cma_listen_on_dev(id_priv, cma_dev);
+-		if (ret)
++		ret = cma_listen_on_dev(id_priv, cma_dev, &to_destroy);
++		if (ret) {
++			/* Prevent racing with cma_process_remove() */
++			if (to_destroy)
++				list_del_init(&to_destroy->list);
+ 			goto err_listen;
++		}
+ 	}
+ 	mutex_unlock(&lock);
+ 	return 0;
+@@ -2554,6 +2561,8 @@ static int cma_listen_on_all(struct rdma_id_private *id_priv)
+ err_listen:
+ 	list_del(&id_priv->list);
+ 	mutex_unlock(&lock);
++	if (to_destroy)
++		rdma_destroy_id(&to_destroy->id);
+ 	return ret;
+ }
+ 
+@@ -4855,6 +4864,7 @@ static void cma_process_remove(struct cma_device *cma_dev)
+ 
+ static int cma_add_one(struct ib_device *device)
+ {
++	struct rdma_id_private *to_destroy;
+ 	struct cma_device *cma_dev;
+ 	struct rdma_id_private *id_priv;
+ 	unsigned int i;
+@@ -4902,7 +4912,7 @@ static int cma_add_one(struct ib_device *device)
+ 	mutex_lock(&lock);
+ 	list_add_tail(&cma_dev->list, &dev_list);
+ 	list_for_each_entry(id_priv, &listen_any_list, list) {
+-		ret = cma_listen_on_dev(id_priv, cma_dev);
++		ret = cma_listen_on_dev(id_priv, cma_dev, &to_destroy);
+ 		if (ret)
+ 			goto free_listen;
+ 	}
+@@ -4915,6 +4925,7 @@ static int cma_add_one(struct ib_device *device)
+ 	list_del(&cma_dev->list);
+ 	mutex_unlock(&lock);
+ 
++	/* cma_process_remove() will delete to_destroy */
+ 	cma_process_remove(cma_dev);
+ 	kfree(cma_dev->default_roce_tos);
+ free_gid_type:
+-- 
+2.29.2
+
