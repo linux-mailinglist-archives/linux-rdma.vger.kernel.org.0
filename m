@@ -2,182 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037142B8553
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 21:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F6C2B85D3
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 21:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgKRUHx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Nov 2020 15:07:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgKRUHx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Nov 2020 15:07:53 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C53C0613D4
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Nov 2020 12:07:53 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id n132so3150652qke.1
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Nov 2020 12:07:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1XDH7fJ4rVGATnWwtlCMphw5YU96QLz+frx3iDQUwT4=;
-        b=PsDgr16DGqk5ElSp++SMACRWjwYRDECJcS+q+e5S6RzUYIy1pdaUoItC0+hoMSlrhP
-         9bUaVrp33EgZWfSppbLNoPIFh+l7q+Wb4vnSXIWA5hwUP2EeD4yuBCHja4yitnX/LkGO
-         xD04KoYqdOmAkMD5XZMilMtmPnEKl0Ln9oBLnKMi5z+Im+g68XWeoC9KWdBuj0MvRd9m
-         kiUPu8SsO0ObRlmwVS0EYZXH++cy3qwU0WYGRhj2B+XOtsq1isBTpY93cQ4AGzAKjnBp
-         pupkh3jdZWZ7epCX7vl5xybHtXs7EcxJzD5IPxTgv90reM3GE9xdK3JbDdVe2spRB2cy
-         SE6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1XDH7fJ4rVGATnWwtlCMphw5YU96QLz+frx3iDQUwT4=;
-        b=Omgc9hwnSyX3EuTyiVkN9RqSTKWwmP66fB4wzqJjIiTpsDaku6hVVySR1zQvxOny2J
-         OvgZZcXy1lHdAQjCFi9oaNPTwAXS5ZBbTAbQyljSx1pLchrrP5BcsPM34aVRRXc3PdEX
-         TcX7CDBRujTIAVezjHz6bS2bNUG+1q3aigNUl0S5gWVLXCYtDeqyzXn63mM9zmslDjpR
-         ty+xAc72vXjMroQGMkGyeL6M4W24kR5Oz4kDDfoRP2drFgyrzPdk2a75iO9zPZDGKpJI
-         W4d/OGA9OKDgO3iZK/CRi3TPkDnC/GG4y5+LZ8iIp2ovZ5UorMHUZ8gam3LCMcflKjoF
-         DRkA==
-X-Gm-Message-State: AOAM531aSoyRO8K29JUlWv58RMNWvT/peEymyVojQjrkdKGZ1D463lNr
-        3TLFr6xIThaA0LSqEvslC+1apg==
-X-Google-Smtp-Source: ABdhPJx8a/1uAQbue3MeBqYN3bcVRC2mYgL80d2Lcy6n114W9smIgdc1R0Odj3JVaeJOAQ1zGPFvEA==
-X-Received: by 2002:a37:9fcc:: with SMTP id i195mr6611473qke.411.1605730072575;
-        Wed, 18 Nov 2020 12:07:52 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id m2sm16808332qtu.62.2020.11.18.12.07.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 12:07:51 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kfTk6-007rJM-Rz; Wed, 18 Nov 2020 16:07:50 -0400
-Date:   Wed, 18 Nov 2020 16:07:50 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     liweihang <liweihang@huawei.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
+        id S1725823AbgKRUma (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Nov 2020 15:42:30 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:7442 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgKRUm3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Nov 2020 15:42:29 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb5872b0003>; Wed, 18 Nov 2020 12:42:19 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Nov
+ 2020 20:42:29 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.176)
+ by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 18 Nov 2020 20:42:29 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QvHt7seuM5CQokARn0Xguq+WOWS50EigiMlWofvmjaumLdrvayqTpwbwQP0ib3ydLhwo4yDosRpG+noR/nRMH7X5+W6nBKWr3nT4PtYnVPsRD2nLJSF9+0qua+fU06Ar3UwSuFv8UKF8KF+8yGF/ezX2zZVClllqRF/X9mC5uY4Qoa/CGx4DcR6V/TnDQRplDUR9IIiMYJ0gP0XhoDmhfHBwZtGWHoNhfSXwwqqbAt75E/Rjm5KfJlcmfAmJFAuZgbpMQxwXKJDgKirKAiK9+a8e5jkgMZcxUpSHtO4hWpSV+as8HkTbfLMTlX+sIZE3k1oAy42vQmvEootxnhoZAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P3sKtobY9FDohelesmaY4d4N72d9+aYWxfSqsCUl9lk=;
+ b=C3GPwJrwY0sUGuosGf+uAz7VCcC+omIPlDvoXjg5dj4UUTizERMh/ps8/rVKF1RRmRXe/hUz9covh3TEm7sOKFMtgAir+gI+421wPa2ZUK4B0VJXw53/xmLCMJ06EYunwDVpdSC0wLHuxweRbvBlxQy6figlWaqY4POx1nSLyPFfC1l8cDsl/OFyHDxGYQhI0GmkVVy8mwExGJv4/PVbmj65XHCenAQ6FyOc29hFOoI3gMdJzfEV/+Xcf1Ko4u9DYDPiCtdAv9wMlx5knWck6Rx3NGW9Pa+hOzcceBeI5cbOvHEpcnzirXZSaMmxiddkYCdvHoWPq8nBjAVPT92mdw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3737.namprd12.prod.outlook.com (2603:10b6:5:1c5::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Wed, 18 Nov
+ 2020 20:42:27 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3564.028; Wed, 18 Nov 2020
+ 20:42:27 +0000
+Date:   Wed, 18 Nov 2020 16:42:26 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     David Ahern <dsahern@gmail.com>
+CC:     Parav Pandit <parav@nvidia.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v2 for-next 1/2] RDMA/hns: Add support for CQ stash
-Message-ID: <20201118200750.GM244516@ziepe.ca>
-References: <1605527919-48769-1-git-send-email-liweihang@huawei.com>
- <1605527919-48769-2-git-send-email-liweihang@huawei.com>
- <20201116134645.GL47002@unreal>
- <2692da9a4b814dfa952659a903eb96f0@huawei.com>
- <20201117072034.GO47002@unreal>
- <f688022a7cce488a82ce0d8427a1054e@huawei.com>
- <20201117085011.GQ47002@unreal>
- <18b9cb60c6a34f0995798affec0262c5@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jiri Pirko <jiri@nvidia.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Vu Pham <vuhuong@nvidia.com>
+Subject: Re: [PATCH net-next 03/13] devlink: Support add and delete devlink
+ port
+Message-ID: <20201118204226.GB917484@nvidia.com>
+References: <20201112192424.2742-1-parav@nvidia.com>
+ <20201112192424.2742-4-parav@nvidia.com>
+ <e7b2b21f-b7d0-edd5-1af0-a52e2fc542ce@gmail.com>
+ <BY5PR12MB43222AB94ED279AF9B710FF1DCE10@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <b34d8427-51c0-0bbd-471e-1af30375c702@gmail.com>
+ <20201118183830.GA917484@nvidia.com>
+ <ac0c5a69-06e4-3809-c778-b27d6e437ed5@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <18b9cb60c6a34f0995798affec0262c5@huawei.com>
+In-Reply-To: <ac0c5a69-06e4-3809-c778-b27d6e437ed5@gmail.com>
+X-ClientProxiedBy: BL0PR0102CA0028.prod.exchangelabs.com
+ (2603:10b6:207:18::41) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR0102CA0028.prod.exchangelabs.com (2603:10b6:207:18::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Wed, 18 Nov 2020 20:42:27 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kfUHa-007s1f-20; Wed, 18 Nov 2020 16:42:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605732139; bh=P3sKtobY9FDohelesmaY4d4N72d9+aYWxfSqsCUl9lk=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=BiwJS/cHk2FsM3oONlnIPi6Q9obUeVvm+tmhL49QTod7NVs5SMfVX6rXO79NKnAFp
+         TuZGZRBbxA9xY3WGk8epVa1s58rxLwXS19cltxu/lFTgikf7lRhDW53pBoV+UlWAHF
+         Oc9LqPERrsNbqp+zw85lBfBKwqy/ohWPryEQjoSaaqrvxIGidIhwrSnjxilQYGKzSt
+         tKKmTtjULtRnfOBC66nphM4M/F02pNK4TveFtXcEt7MRd0/lFgKSlHa1YPAi1nsOmA
+         6Tlwe/goNfyHgyDI8oM4/FxOpIBsJebWyULu9jUaHKo6ye2ZJD7rqvXBeJIfmh0IDq
+         sKU989AI3fGpA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 10:49:14AM +0000, liweihang wrote:
-> On 2020/11/17 16:50, Leon Romanovsky wrote:
-> > On Tue, Nov 17, 2020 at 08:35:55AM +0000, liweihang wrote:
-> >> On 2020/11/17 15:21, Leon Romanovsky wrote:
-> >>> On Tue, Nov 17, 2020 at 06:37:58AM +0000, liweihang wrote:
-> >>>> On 2020/11/16 21:47, Leon Romanovsky wrote:
-> >>>>> On Mon, Nov 16, 2020 at 07:58:38PM +0800, Weihang Li wrote:
-> >>>>>> From: Lang Cheng <chenglang@huawei.com>
-> >>>>>>
-> >>>>>> Stash is a mechanism that uses the core information carried by the ARM AXI
-> >>>>>> bus to access the L3 cache. It can be used to improve the performance by
-> >>>>>> increasing the hit ratio of L3 cache. CQs need to enable stash by default.
-> >>>>>>
-> >>>>>> Signed-off-by: Lang Cheng <chenglang@huawei.com>
-> >>>>>> Signed-off-by: Weihang Li <liweihang@huawei.com>
-> >>>>>>  drivers/infiniband/hw/hns/hns_roce_common.h | 12 +++++++++
-> >>>>>>  drivers/infiniband/hw/hns/hns_roce_device.h |  1 +
-> >>>>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  3 +++
-> >>>>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 39 +++++++++++++++++------------
-> >>>>>>  4 files changed, 39 insertions(+), 16 deletions(-)
-> >>>>>>
-> >>>>>> diff --git a/drivers/infiniband/hw/hns/hns_roce_common.h b/drivers/infiniband/hw/hns/hns_roce_common.h
-> >>>>>> index f5669ff..8d96c4e 100644
-> >>>>>> +++ b/drivers/infiniband/hw/hns/hns_roce_common.h
-> >>>>>> @@ -53,6 +53,18 @@
-> >>>>>>  #define roce_set_bit(origin, shift, val) \
-> >>>>>>  	roce_set_field((origin), (1ul << (shift)), (shift), (val))
-> >>>>>>
-> >>>>>> +#define FIELD_LOC(field_h, field_l) field_h, field_l
-> >>>>>> +
-> >>>>>> +#define _hr_reg_set(arr, field_h, field_l)                                     \
-> >>>>>> +	do {                                                                   \
-> >>>>>> +		BUILD_BUG_ON(((field_h) / 32) != ((field_l) / 32));            \
-> >>>>>> +		BUILD_BUG_ON((field_h) / 32 >= ARRAY_SIZE(arr));               \
-> >>>>>> +		(arr)[(field_h) / 32] |=                                       \
-> >>>>>> +			cpu_to_le32(GENMASK((field_h) % 32, (field_l) % 32));  \
-> >>>>>> +	} while (0)
-> >>>>>> +
-> >>>>>> +#define hr_reg_set(arr, field) _hr_reg_set(arr, field)
-> >>>>>
-> >>>>> I afraid that it is too much.
-> >>>>
-> >>>> Hi Leon,
-> >>>>
-> >>>> Thanks for the comments.
-> >>>>
-> >>>>> 1. FIELD_LOC() macro to hide two fields.
-> >>>>
-> >>>> Jason has suggested us to simplify the function of setting/getting bit/field in
-> >>>> hns driver like IBA_SET and IBA_GET.
-> >>>>
-> >>>> https://patchwork.kernel.org/project/linux-rdma/patch/1589982799-28728-3-git-send-email-liweihang@huawei.com/
-> >>>>
-> >>>> So we try to make it easier and clearer to define a bitfield for developers.
-> >>>
-> >>> Jason asked to use genmask and FIELD_PREP, but you invented something else.
-> >>>
-> >>> Thanks
-> >>>
-> >>
-> >> We use them in another interface 'hr_reg_write(arr, field, val)' which hasn't been
-> >> used in this series.
-> >>
-> >> Does it make any unacceptable mistake? We would appreciate any suggestions :)
+On Wed, Nov 18, 2020 at 12:36:26PM -0700, David Ahern wrote:
+> On 11/18/20 11:38 AM, Jason Gunthorpe wrote:
+> > On Wed, Nov 18, 2020 at 11:03:24AM -0700, David Ahern wrote:
 > > 
-> > The invention of FIELD_LOC() and hr_reg_set equal to __hr_reg_set are unacceptable.
-> > Pass directly your field_h and field_l to hr_reg_set().
+> >> With Connectx-4 Lx for example the netdev can have at most 63 queues
 > > 
-> > Thanks
+> > What netdev calls a queue is really a "can the device deliver
+> > interrupts and packets to a given per-CPU queue" and covers a whole
+> > spectrum of smaller limits like RSS scheme, # of available interrupts,
+> > ability of the device to create queues, etc.
 > > 
+> > CX4Lx can create a huge number of queues, but hits one of these limits
+> > that mean netdev's specific usage can't scale up. Other stuff like
+> > RDMA doesn't have the same limits, and has tonnes of queues.
+> > 
+> > What seems to be needed is a resource controller concept like cgroup
+> > has for processes. The system is really organized into a tree:
+> > 
+> >            physical device
+> >               mlx5_core
+> >         /      |      \      \                        (aux bus)
+> >      netdev   rdma    vdpa   SF  etc
+> >                              |                        (aux bus)
+> >                            mlx5_core
+> >                           /      \                    (aux bus)
+> >                        netdev   vdpa
+> > 
+> > And it does make a lot of sense to start to talk about limits at each
+> > tree level.
+> > 
+> > eg the top of the tree may have 128 physical interrupts. With 128 CPU
+> > cores that isn't enough interrupts to support all of those things
+> > concurrently.
+> > 
+> > So the user may want to configure:
+> >  - The first level netdev only gets 64,
+> >  - 3rd level mlx5_core gets 32 
+> >  - Final level vdpa gets 8
+> > 
+> > Other stuff has to fight it out with the remaining shared interrupts.
+> > 
+> > In netdev land # of interrupts governs # of queues
+> > 
+> > For RDMA # of interrupts limits the CPU affinities for queues
+> > 
+> > VPDA limits the # of VMs that can use VT-d
+> > 
+> > The same story repeats for other less general resources, mlx5 also
+> > has consumption of limited BAR space, and consumption of some limited
+> > memory elements. These numbers are much bigger and may not need
+> > explicit governing, but the general concept holds.
+> > 
+> > It would be very nice if the limit could be injected when the aux
+> > device is created but before the driver is bound. I'm not sure how to
+> > manage that though..
+> > 
+> > I assume other devices will be different, maybe some devices have a
+> > limit on the number of total queues, or a limit on the number of
+> > VDPA or RDMA devices.
 > 
-> Hi Leon,
-> 
-> We let hr_reg_set equal() to __hr_reg_set() because if not, there will be a compile error:
-> 
-> .../hns_roce_hw_v2.c:4566:41: error: macro "_hr_reg_set" requires 3 arguments, but only 2 given
-> _hr_reg_set(cq_context->raw, CQC_STASH);
+> A lot of low level resource details that need to be summarized into a
+> nicer user / config perspective to specify limits / allocations.
 
-Yes, it is very un-intuitive but the rules for CPP require the extra
-macro pass to generate the correct expansion. Otherwise cpp will try
-to pass the value with commas in as a single argument, what we need
-here is to expand the commads first and have them break up into macro
-arguments as it goes down the macro chain.
+Well, now that we have the aux bus stuff there is a nice natural place
+to put things..
 
-> Let's compare the following implementations:
-> 
-> 	#define _hr_reg_set(arr, field_h, field_l) \
-> 		(arr)[(field_h) / 32] |= \
-> 			cpu_to_le32(GENMASK((field_h) % 32, (field_l) % 32)) + \
-> 			BUILD_BUG_ON_ZERO(((field_h) / 32) != ((field_l) / 32)) + \
-> 			BUILD_BUG_ON_ZERO((field_h) / 32 >= ARRAY_SIZE(arr))
-> 
-> 1)
-> 	#define hr_reg_set(arr, field) _hr_reg_set(arr, field)
-> 
-> 	#define QPCEX_PASID_EN FIELD_LOC(111, 95)
-> 	hr_reg_set(context->ext, QPCEX_PASID_EN);
+The aux bus owner device (mlx5_core) could have a list of available
+resources
 
-It is also weird that something called set can only write all ones to
-the field.
+Each aux bus device (netdev/rdma/vdpa) could have a list of consumed
+resources
 
-It feels saner to have a set that accepts a value and if the all ones
-case is something very common then use a macro to compute it from the
-field name.
+Some API to place a limit on the consumed resources at each aux bus
+device.
+
+The tricky bit is the auto-probing/configure. By the time the user has
+a chance to apply a limit the drivers are already bound and have
+already done their setup. So each subsystem has to support dynamically
+imposing a limit..
+
+And I simplified things a bit above too, we actually have two kinds of
+interrupt demand: sharable and dedicated. The actual need is to carve
+out a bunch of dedicated interrupts and only allow subsystems that are
+doing VT-d guest interrupt assignment to consume them (eg VDPA)
 
 Jason
