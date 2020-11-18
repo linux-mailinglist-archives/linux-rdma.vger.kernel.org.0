@@ -2,106 +2,266 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F00E2B7836
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 09:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D25FC2B7A89
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 10:42:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726273AbgKRIJz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Nov 2020 03:09:55 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12490 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgKRIJz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Nov 2020 03:09:55 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb4d6c90006>; Wed, 18 Nov 2020 00:09:45 -0800
-Received: from [172.27.14.21] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Nov
- 2020 08:09:53 +0000
-Subject: Re: Issue after 5.4.70->5.4.77 update: mlx5_core: reg_mr_callback:
- async reg mr failed. status -11
-To:     <jgg@ziepe.ca>, Timo Rothenpieler <timo@rothenpieler.org>,
-        Saeed Mahameed <saeedm@nvidia.com>
-CC:     RDMA mailing list <linux-rdma@vger.kernel.org>
-References: <53e3f194-fe27-ba79-bcff-6dd1d778ede0@rothenpieler.org>
- <20201117195046.GI244516@ziepe.ca>
-From:   Eran Ben Elisha <eranbe@nvidia.com>
-Message-ID: <6cf6f99b-7d12-8964-d044-b11a313a4c26@nvidia.com>
-Date:   Wed, 18 Nov 2020 10:09:51 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        id S1725774AbgKRJkX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Nov 2020 04:40:23 -0500
+Received: from mga05.intel.com ([192.55.52.43]:58781 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726182AbgKRJkX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Nov 2020 04:40:23 -0500
+IronPort-SDR: FHic7V4/pd+W3gxhxroeWgXUc0Tnbw/upVAH1AdQTET0H1gLuv4uzElJGdTl8nzkHWuiS9Uk6T
+ Lp97fTsm6q5w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9808"; a="255801334"
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="255801334"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 01:40:22 -0800
+IronPort-SDR: EVf5l8N9wCEk5BtyI9RFPpX+2+NydlZvlBtwCvZgGBm00rRigPVvCCtWrlEA5HfUTzPqYYXsnB
+ ZzmWAIrtBMzQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,486,1596524400"; 
+   d="scan'208";a="325507357"
+Received: from lkp-server02.sh.intel.com (HELO 67996b229c47) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 18 Nov 2020 01:40:20 -0800
+Received: from kbuild by 67996b229c47 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kfJwp-000026-M7; Wed, 18 Nov 2020 09:40:19 +0000
+Date:   Wed, 18 Nov 2020 17:39:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 172292be01dbd6c26aba23f62e8ec090f31cdb71
+Message-ID: <5fb4ebe7.1nZFLnjtrKBAB5iZ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20201117195046.GI244516@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605686985; bh=SzqX0hn6SamxsfqDTd92M3D6ECjultJckAsg2RGm838=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=GbGuzm4a01oBMb/X8xkXyF4EcsncahDmQOTy5j6Mee/QB9R1PdjQtdAj/rA8e7Wps
-         Z9QjbiaEzw6Cq6AOOTZpYuQUTMMAFInDwpaIjerbfXbNON7sFvIRa+tEssgqtU7XhS
-         YgpbVlVJnxRdPMKvMMiP75C3Iz2X4BRtLY1Cp0tPLIrH2CD1DPfZRP37WazYxKYoxe
-         +bsAGAezDJ2C1wUFnlBpT60QvSARRkQM7ToRpStb9ywnfS4hgcZmv7pTRDnc8Kvq5f
-         Ljuh5dBGcthT/XHG5kfeDPKyNtXRC5DBzzkI5Ky8dbm96XuduSzpFhT5ke7/8tijrp
-         or1RW1uegHKXg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: 172292be01dbd6c26aba23f62e8ec090f31cdb71  dma-mapping: remove dma_virt_ops
 
+elapsed time: 817m
 
-On 11/17/2020 9:50 PM, jgg@ziepe.ca wrote:
-> On Tue, Nov 17, 2020 at 04:54:30PM +0100, Timo Rothenpieler wrote:
->> The most likely candidate for this seems to be
->> 0ec52f0194638e2d284ad55eba5a7aff753de1b9(RDMA/mlx5: Disable
->> IB_DEVICE_MEM_MGT_EXTENSIONS if IB_WR_REG_MR can't work)  which was merged
->> in 5.4.73. There were also a lot of mlx5 related changes in 5.4.71 though.
->> Though since this is a production system, I cannot sensibly bisect this.
-> 
-> It is very unlikely, neither mlx5 or ipoib read that bit.
-> 
-> That error print is very bad:
-> 
->    Nov 17 01:12:58 store01 kernel: mlx5_core 0000:01:00.0: cmd_work_handler:887:(pid 383): failed to allocate command entry
-> 
-> It really shouldn't happen
-> 
-> This is more likely the cause:
-> 
-> commit 073fff8102062cd675170ceb54d90da22fe7e668
-> Author: Eran Ben Elisha <eranbe@mellanox.com>
-> Date:   Tue Aug 4 10:40:21 2020 +0300
-> 
->      net/mlx5: Avoid possible free of command entry while timeout comp handler
->      
->      [ Upstream commit 50b2412b7e7862c5af0cbf4b10d93bc5c712d021 ]
->      
->      Upon command completion timeout, driver simulates a forced command
->      completion. In a rare case where real interrupt for that command arrives
->      simultaneously, it might release the command entry while the forced
->      handler might still access it.
-> 
-> Most likely it is missing some element.
-> 
-> Eran, can you check why v5.4.77 is totaly broken?
+configs tested: 202
+configs skipped: 2
 
-linux-5.4.y branch is missing the fixes below:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-1. 1d5558b1f0de net/mlx5: poll cmd EQ in case of command timeout
-2. 410bd754cd73 net/mlx5: Add retry mechanism to the command entry ...
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          rsk7269_defconfig
+powerpc                 mpc832x_rdb_defconfig
+sh                        edosk7760_defconfig
+sh                         microdev_defconfig
+sh                            shmin_defconfig
+sh                            migor_defconfig
+nios2                            alldefconfig
+arc                           tb10x_defconfig
+sh                              ul2_defconfig
+arm                          lpd270_defconfig
+powerpc                 mpc836x_rdk_defconfig
+xtensa                generic_kc705_defconfig
+powerpc                     tqm8540_defconfig
+sh                          rsk7201_defconfig
+arc                          axs101_defconfig
+c6x                        evmc6678_defconfig
+sh                        sh7785lcr_defconfig
+arm                          pxa910_defconfig
+powerpc                 mpc85xx_cds_defconfig
+mips                malta_kvm_guest_defconfig
+powerpc                       maple_defconfig
+arm                            qcom_defconfig
+c6x                         dsk6455_defconfig
+arm                         mv78xx0_defconfig
+ia64                            zx1_defconfig
+h8300                            alldefconfig
+sh                          sdk7786_defconfig
+powerpc                     tqm8555_defconfig
+powerpc                     tqm8560_defconfig
+arm                         orion5x_defconfig
+powerpc                      mgcoge_defconfig
+mips                           mtx1_defconfig
+arm                      tct_hammer_defconfig
+csky                             alldefconfig
+sparc64                             defconfig
+arm                        cerfcube_defconfig
+arm                           viper_defconfig
+arm                         axm55xx_defconfig
+arm                         lpc18xx_defconfig
+arm                          moxart_defconfig
+arm                           u8500_defconfig
+m68k                            mac_defconfig
+arm                              alldefconfig
+mips                            ar7_defconfig
+powerpc                      cm5200_defconfig
+mips                          malta_defconfig
+openrisc                    or1ksim_defconfig
+um                           x86_64_defconfig
+powerpc                mpc7448_hpc2_defconfig
+sh                        edosk7705_defconfig
+sh                           se7780_defconfig
+arm                         hackkit_defconfig
+m68k                         apollo_defconfig
+mips                          rm200_defconfig
+mips                  decstation_64_defconfig
+sh                            hp6xx_defconfig
+arm                         shannon_defconfig
+h8300                       h8s-sim_defconfig
+sh                   sh7724_generic_defconfig
+powerpc                    klondike_defconfig
+powerpc                 mpc832x_mds_defconfig
+powerpc                    gamecube_defconfig
+arm                       mainstone_defconfig
+mips                       bmips_be_defconfig
+xtensa                       common_defconfig
+arm                        neponset_defconfig
+arc                                 defconfig
+powerpc                     redwood_defconfig
+mips                          rb532_defconfig
+h8300                    h8300h-sim_defconfig
+arc                          axs103_defconfig
+arm                            zeus_defconfig
+arm                        clps711x_defconfig
+sh                         ap325rxa_defconfig
+mips                     cu1000-neo_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc                  mpc866_ads_defconfig
+arm                              zx_defconfig
+powerpc                     mpc83xx_defconfig
+sh                             shx3_defconfig
+powerpc                     ppa8548_defconfig
+powerpc                    adder875_defconfig
+m68k                         amcore_defconfig
+mips                            e55_defconfig
+arm                         socfpga_defconfig
+powerpc                 mpc8313_rdb_defconfig
+sh                               j2_defconfig
+arm                          exynos_defconfig
+xtensa                  cadence_csp_defconfig
+mips                        workpad_defconfig
+mips                         tb0219_defconfig
+mips                         cobalt_defconfig
+microblaze                    nommu_defconfig
+sh                          polaris_defconfig
+arm                            lart_defconfig
+arm                          prima2_defconfig
+mips                         mpc30x_defconfig
+mips                      bmips_stb_defconfig
+arm                           h5000_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20201117
+i386                 randconfig-a005-20201117
+i386                 randconfig-a001-20201117
+i386                 randconfig-a003-20201117
+i386                 randconfig-a002-20201117
+i386                 randconfig-a004-20201117
+i386                 randconfig-a006-20201118
+i386                 randconfig-a005-20201118
+i386                 randconfig-a002-20201118
+i386                 randconfig-a001-20201118
+i386                 randconfig-a003-20201118
+i386                 randconfig-a004-20201118
+x86_64               randconfig-a005-20201118
+x86_64               randconfig-a003-20201118
+x86_64               randconfig-a004-20201118
+x86_64               randconfig-a002-20201118
+x86_64               randconfig-a006-20201118
+x86_64               randconfig-a001-20201118
+x86_64               randconfig-a015-20201115
+x86_64               randconfig-a011-20201115
+x86_64               randconfig-a014-20201115
+x86_64               randconfig-a013-20201115
+x86_64               randconfig-a016-20201115
+x86_64               randconfig-a012-20201115
+i386                 randconfig-a012-20201117
+i386                 randconfig-a014-20201117
+i386                 randconfig-a016-20201117
+i386                 randconfig-a011-20201117
+i386                 randconfig-a013-20201117
+i386                 randconfig-a015-20201117
+i386                 randconfig-a012-20201118
+i386                 randconfig-a014-20201118
+i386                 randconfig-a016-20201118
+i386                 randconfig-a011-20201118
+i386                 randconfig-a013-20201118
+i386                 randconfig-a015-20201118
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-The second fix in particular matches Timo's bug report.
-It does not directly fix the offending commit, however the offending 
-commit raised the probability to bump with this issue.
+clang tested configs:
+x86_64               randconfig-a003-20201117
+x86_64               randconfig-a005-20201117
+x86_64               randconfig-a004-20201117
+x86_64               randconfig-a002-20201117
+x86_64               randconfig-a001-20201117
+x86_64               randconfig-a006-20201117
+x86_64               randconfig-a015-20201116
+x86_64               randconfig-a011-20201116
+x86_64               randconfig-a014-20201116
+x86_64               randconfig-a013-20201116
+x86_64               randconfig-a016-20201116
+x86_64               randconfig-a012-20201116
+x86_64               randconfig-a015-20201118
+x86_64               randconfig-a014-20201118
+x86_64               randconfig-a011-20201118
+x86_64               randconfig-a013-20201118
+x86_64               randconfig-a016-20201118
+x86_64               randconfig-a012-20201118
 
-Saeed, can you notify about it to stable maintainers? I assume every 
-stable branch should have all these 3 commits or non of them.
-
-Eran
-
-> 
-> Jason
-> 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
