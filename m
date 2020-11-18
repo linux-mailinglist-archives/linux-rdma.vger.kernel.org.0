@@ -2,238 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 362D62B7E69
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 14:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B05802B7F5F
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 15:28:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbgKRNiA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Nov 2020 08:38:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgKRNiA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Nov 2020 08:38:00 -0500
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B576EC0613D4
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Nov 2020 05:37:59 -0800 (PST)
-Received: by mail-qv1-xf42.google.com with SMTP id z17so971242qvy.11
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Nov 2020 05:37:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oL9ZE4upvJh/oljpGLb+sWVGETmgVz7ngr+ciRfT49k=;
-        b=l5TZbxeXgAkmWP/0QupXAj21lLzhwHFL71oJFi0ryBJTgN2cC1MaMXFrwCr+IoRqs0
-         jfPlLDkX+6FQ23YvwnK7igz5Stx0+NnzAYizy6pVLDWelaxH4jsY1/w9sug1o2/9apmy
-         w3fuMOplq9d3QDLbGQmAYX2RN7RMTRj+IEY0m1QlGLncnsyqERcC0VZdZx2/0VIfrU7X
-         9iq6JWZvpJo/RgnVfeGfEaDnWlmRWfvDjwSShZIpbVtil/YLM749Srvs6MdNfoEbkO0Y
-         EKc5HEUegjk9i57tY+F5Dw5KqkKLihh3Egr/jmYcM4ZSZz1F+TV+0aKYhDYPRDrEwGbo
-         bjRw==
+        id S1726638AbgKRO0V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Nov 2020 09:26:21 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:50385 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgKRO0U (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Nov 2020 09:26:20 -0500
+Received: by mail-il1-f197.google.com with SMTP id f66so1636767ilh.17
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Nov 2020 06:26:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oL9ZE4upvJh/oljpGLb+sWVGETmgVz7ngr+ciRfT49k=;
-        b=cjbXLUL18Lgok32X/tScu7koAVzNY6/aLPEksDgDhfSAKPbOivUfp60G0bIRyxKSPr
-         4xVrt2HPW60DIbcwfUUz247mm6qimHfurM2ctGjR+Qbq0GEwIvNZa2MNSAyXrBPp5JwB
-         Tnnx27bjpxomT/So8cnIVCetwD0Y+LXGWlRIlp4ya7cjlsF8QT1j7ccbGA3R1WbKjwbw
-         IEAA3Sne3krkXJ7oFlxlXn/Fin5WOFcbGnEnS9wNG8rhYVYYp99tZHOYLSZHkOZx34He
-         OqLU0AIwwwztN4yvIauYA9vDPYyLSCI/J2YRDLOb5RZUV7eAFcY/ZSPW7l+maLrfk4+q
-         yY8w==
-X-Gm-Message-State: AOAM530zlqYI+1q2OXU6UPA+Cz5ic5sxJ6bZD9dUsAr9URsHFMZ2X6wC
-        ALG98dkSyrh2u2ktxUsk8usbrw==
-X-Google-Smtp-Source: ABdhPJzXpJJdjKVdK0fjPS7bypm+rDnXdoigZ9/odAR+ixDpQu8oeaX5z0CA+4HrqTocRzqofwDkQA==
-X-Received: by 2002:a0c:bd19:: with SMTP id m25mr4930191qvg.52.1605706678862;
-        Wed, 18 Nov 2020 05:37:58 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id b8sm14904247qtx.73.2020.11.18.05.37.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 05:37:58 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kfNem-007jKp-VZ; Wed, 18 Nov 2020 09:37:57 -0400
-Date:   Wed, 18 Nov 2020 09:37:56 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     syzbot <syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com>,
-        leon@kernel.org
-Cc:     dledford@redhat.com, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, parav@mellanox.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: possible deadlock in _destroy_id
-Message-ID: <20201118133756.GK244516@ziepe.ca>
-References: <0000000000004129c705b45fa8f2@google.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=l2YGKnIiac0LtUxDygHJD2CNY6JUGYnAhg9eqNKMueU=;
+        b=GmQ4MmpWUsjRKhuXNtRgdGmOBNaBv7yJEl8vkHoQkzzNZrDrMJX6giIxKI0x/Hsd7q
+         oJEQLVHiH5zC9OMKP55WySMxVdZ7OT9KX7ZNbR/osxsbdUl0V9oqL0poCg0LQ2FQ47H8
+         BS+47/2RfDRtfxUtPXN9ghlt/ECJkQp6hBcZ7JA7pc0ppECiBPE1E44kyMMx6UoAmW+D
+         q6K7JCepwMkx9lLaf7pk6w3EHqEAI2pvX+7nSMAh36RaqrabEwEpug9ISwaVPmwuvnRd
+         nowoNoZveN0qo062B4bfN5JfLADzzMmttT53zndG3SRmbewun3oBlpzVu/5pj4lQiIGU
+         y4qQ==
+X-Gm-Message-State: AOAM531gxlpY2++NbapBJBO83Unx16P5dzecIZc3DhjaJsIrr8pY1Tz7
+        d+OR4dpVvdujyWpsFKz9n240zlGcFAq9ASHEKTQe/yK/7Xkj
+X-Google-Smtp-Source: ABdhPJzpRHimeeP85L7WZavrx3Idc0otWW5TjKG26EYleneNHbqK05WPbK2gCDuhZJ+S2rqdldfIIwyQi/TPF2sHeETXQ/SJ85Ss
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Received: by 2002:a05:6602:1305:: with SMTP id h5mr15473303iov.41.1605709579395;
+ Wed, 18 Nov 2020 06:26:19 -0800 (PST)
+Date:   Wed, 18 Nov 2020 06:26:19 -0800
 In-Reply-To: <0000000000004129c705b45fa8f2@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000017a55905b4626510@google.com>
+Subject: Re: possible deadlock in _destroy_id
+From:   syzbot <syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com>
+To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        parav@mellanox.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 03:10:21AM -0800, syzbot wrote:
+syzbot has found a reproducer for the following issue on:
 
-> HEAD commit:    20529233 Add linux-next specific files for 20201118
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13093cf2500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=2c4fb58b6526b3c1
-> dashboard link: https://syzkaller.appspot.com/bug?extid=1bc48bf7f78253f664a9
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
+HEAD commit:    20529233 Add linux-next specific files for 20201118
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=16ce97be500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2c4fb58b6526b3c1
+dashboard link: https://syzkaller.appspot.com/bug?extid=1bc48bf7f78253f664a9
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10b53981500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10e94c7e500000
 
-Oh? Is this because the error injection is too random?
- 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com
-> 
-> iwpm_register_pid: Unable to send a nlmsg (client = 2)
-> infiniband syz1: RDMA CMA: cma_listen_on_dev, error -98
-> ============================================
-> WARNING: possible recursive locking detected
-> 5.10.0-rc4-next-20201118-syzkaller #0 Not tainted
-> syz-executor.5/12844 is trying to acquire lock:
-> ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_release_dev drivers/infiniband/core/cma.c:476 [inline]
-> ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: _destroy_id+0x299/0xa00 drivers/infiniband/core/cma.c:1852
-> 
-> but task is already holding lock:
-> ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_add_one+0x55c/0xce0 drivers/infiniband/core/cma.c:4902
-
-Leon, this is caused by
-
-commit c80a0c52d85c49a910d0dc0e342e8d8898677dc0
-Author: Leon Romanovsky <leon@kernel.org>
-Date:   Wed Nov 4 16:40:07 2020 +0200
-
-    RDMA/cma: Add missing error handling of listen_id
-    
-    Don't silently continue if rdma_listen() fails but destroy previously
-    created CM_ID and return an error to the caller.
-
-rdma_destroy_id() can't be called while holding the global lock
-
-This is quite hard to fix. I came up with this ugly thing:
-
-From 8e6568f99fbe4bf734cc4e5dcda987e4ae118bdd Mon Sep 17 00:00:00 2001
-From: Jason Gunthorpe <jgg@nvidia.com>
-Date: Wed, 18 Nov 2020 09:33:23 -0400
-Subject: [PATCH] RDMA/cma: Fix deadlock on &lock in rdma_cma_listen_on_all()
- error unwind
-
-rdma_detroy_id() cannot be called under &lock - we must instead keep the
-error'd ID around until &lock can be released, then destory it.
-
-This is complicated by the usual way listen IDs are destroyed through
-cma_process_remove() which can run at any time and will asynchronously
-destroy the same ID.
-
-Remove the ID from visiblity of cma_process_remove() before going down the
-destroy path outside the locking.
-
-Fixes: c80a0c52d85c ("RDMA/cma: Add missing error handling of listen_id")
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
 Reported-by: syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
----
- drivers/infiniband/core/cma.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 4585f654f88369..c06c87a4dc5e7d 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -2496,7 +2496,8 @@ static int cma_listen_handler(struct rdma_cm_id *id,
- }
- 
- static int cma_listen_on_dev(struct rdma_id_private *id_priv,
--			     struct cma_device *cma_dev)
-+			     struct cma_device *cma_dev,
-+			     struct rdma_id_private **to_destroy)
- {
- 	struct rdma_id_private *dev_id_priv;
- 	struct net *net = id_priv->id.route.addr.dev_addr.net;
-@@ -2504,6 +2505,7 @@ static int cma_listen_on_dev(struct rdma_id_private *id_priv,
- 
- 	lockdep_assert_held(&lock);
- 
-+	*to_destroy = NULL;
- 	if (cma_family(id_priv) == AF_IB && !rdma_cap_ib_cm(cma_dev->device, 1))
- 		return 0;
- 
-@@ -2518,7 +2520,6 @@ static int cma_listen_on_dev(struct rdma_id_private *id_priv,
- 	       rdma_addr_size(cma_src_addr(id_priv)));
- 
- 	_cma_attach_to_dev(dev_id_priv, cma_dev);
--	list_add_tail(&dev_id_priv->listen_list, &id_priv->listen_list);
- 	cma_id_get(id_priv);
- 	dev_id_priv->internal_id = 1;
- 	dev_id_priv->afonly = id_priv->afonly;
-@@ -2528,25 +2529,31 @@ static int cma_listen_on_dev(struct rdma_id_private *id_priv,
- 	ret = rdma_listen(&dev_id_priv->id, id_priv->backlog);
- 	if (ret)
- 		goto err_listen;
-+	list_add_tail(&dev_id_priv->listen_list, &id_priv->listen_list);
- 	return 0;
- err_listen:
--	list_del(&id_priv->listen_list);
-+	/* Caller must destroy this after releasing lock */
-+	*to_destroy = dev_id_priv;
- 	dev_warn(&cma_dev->device->dev, "RDMA CMA: %s, error %d\n", __func__, ret);
--	rdma_destroy_id(&dev_id_priv->id);
- 	return ret;
- }
- 
- static int cma_listen_on_all(struct rdma_id_private *id_priv)
- {
-+	struct rdma_id_private *to_destroy;
- 	struct cma_device *cma_dev;
- 	int ret;
- 
- 	mutex_lock(&lock);
- 	list_add_tail(&id_priv->list, &listen_any_list);
- 	list_for_each_entry(cma_dev, &dev_list, list) {
--		ret = cma_listen_on_dev(id_priv, cma_dev);
--		if (ret)
-+		ret = cma_listen_on_dev(id_priv, cma_dev, &to_destroy);
-+		if (ret) {
-+			/* Prevent racing with cma_process_remove() */
-+			if (to_destroy)
-+				list_del_init(&to_destroy->list);
- 			goto err_listen;
-+		}
- 	}
- 	mutex_unlock(&lock);
- 	return 0;
-@@ -2554,6 +2561,8 @@ static int cma_listen_on_all(struct rdma_id_private *id_priv)
- err_listen:
- 	list_del(&id_priv->list);
- 	mutex_unlock(&lock);
-+	if (to_destroy)
-+		rdma_destroy_id(&to_destroy->id);
- 	return ret;
- }
- 
-@@ -4855,6 +4864,7 @@ static void cma_process_remove(struct cma_device *cma_dev)
- 
- static int cma_add_one(struct ib_device *device)
- {
-+	struct rdma_id_private *to_destroy;
- 	struct cma_device *cma_dev;
- 	struct rdma_id_private *id_priv;
- 	unsigned int i;
-@@ -4902,7 +4912,7 @@ static int cma_add_one(struct ib_device *device)
- 	mutex_lock(&lock);
- 	list_add_tail(&cma_dev->list, &dev_list);
- 	list_for_each_entry(id_priv, &listen_any_list, list) {
--		ret = cma_listen_on_dev(id_priv, cma_dev);
-+		ret = cma_listen_on_dev(id_priv, cma_dev, &to_destroy);
- 		if (ret)
- 			goto free_listen;
- 	}
-@@ -4915,6 +4925,7 @@ static int cma_add_one(struct ib_device *device)
- 	list_del(&cma_dev->list);
- 	mutex_unlock(&lock);
- 
-+	/* cma_process_remove() will delete to_destroy */
- 	cma_process_remove(cma_dev);
- 	kfree(cma_dev->default_roce_tos);
- free_gid_type:
--- 
-2.29.2
+wlan1 speed is unknown, defaulting to 1000
+iwpm_register_pid: Unable to send a nlmsg (client = 2)
+infiniband syz2: RDMA CMA: cma_listen_on_dev, error -98
+============================================
+WARNING: possible recursive locking detected
+5.10.0-rc4-next-20201118-syzkaller #0 Not tainted
+--------------------------------------------
+syz-executor872/8502 is trying to acquire lock:
+ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_release_dev drivers/infiniband/core/cma.c:476 [inline]
+ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: _destroy_id+0x299/0xa00 drivers/infiniband/core/cma.c:1852
+
+but task is already holding lock:
+ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_add_one+0x55c/0xce0 drivers/infiniband/core/cma.c:4902
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(lock#6);
+  lock(lock#6);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+6 locks held by syz-executor872/8502:
+ #0: ffffffff8fa76958 (&rdma_nl_types[idx].sem){.+.+}-{3:3}, at: rdma_nl_rcv_msg+0x15b/0x690 drivers/infiniband/core/netlink.c:164
+ #1: ffffffff8c66c490 (link_ops_rwsem){++++}-{3:3}, at: nldev_newlink+0x261/0x540 drivers/infiniband/core/nldev.c:1545
+ #2: ffffffff8c65bd90 (devices_rwsem){++++}-{3:3}, at: enable_device_and_get+0xfc/0x3c0 drivers/infiniband/core/device.c:1321
+ #3: ffffffff8c65bc50 (clients_rwsem){++++}-{3:3}, at: enable_device_and_get+0x163/0x3c0 drivers/infiniband/core/device.c:1331
+ #4: ffff888026f28598 (&device->client_data_rwsem){++++}-{3:3}, at: add_client_context+0x3d0/0x5e0 drivers/infiniband/core/device.c:710
+ #5: ffffffff8c684748 (lock#6){+.+.}-{3:3}, at: cma_add_one+0x55c/0xce0 drivers/infiniband/core/cma.c:4902
+
+stack backtrace:
+CPU: 1 PID: 8502 Comm: syz-executor872 Not tainted 5.10.0-rc4-next-20201118-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_deadlock_bug kernel/locking/lockdep.c:2759 [inline]
+ check_deadlock kernel/locking/lockdep.c:2802 [inline]
+ validate_chain kernel/locking/lockdep.c:3593 [inline]
+ __lock_acquire.cold+0x115/0x39f kernel/locking/lockdep.c:4830
+ lock_acquire kernel/locking/lockdep.c:5435 [inline]
+ lock_acquire+0x2a3/0x8c0 kernel/locking/lockdep.c:5400
+ __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+ __mutex_lock+0x134/0x1110 kernel/locking/mutex.c:1103
+ cma_release_dev drivers/infiniband/core/cma.c:476 [inline]
+ _destroy_id+0x299/0xa00 drivers/infiniband/core/cma.c:1852
+ cma_listen_on_dev.cold+0x168/0x16d drivers/infiniband/core/cma.c:2535
+ cma_add_one+0x667/0xce0 drivers/infiniband/core/cma.c:4905
+ add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:712
+ enable_device_and_get+0x1d5/0x3c0 drivers/infiniband/core/device.c:1333
+ ib_register_device drivers/infiniband/core/device.c:1408 [inline]
+ ib_register_device+0x7a0/0xa30 drivers/infiniband/core/device.c:1367
+ siw_device_register drivers/infiniband/sw/siw/siw_main.c:72 [inline]
+ siw_newlink drivers/infiniband/sw/siw/siw_main.c:545 [inline]
+ siw_newlink+0xddb/0x1340 drivers/infiniband/sw/siw/siw_main.c:522
+ nldev_newlink+0x30e/0x540 drivers/infiniband/core/nldev.c:1555
+ rdma_nl_rcv_msg+0x367/0x690 drivers/infiniband/core/netlink.c:195
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x2f2/0x440 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:650 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:670
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2339
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2393
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2426
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440339
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff91ac9ae8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440339
+RDX: 0000000000000000 RSI: 00000000200002c0 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 0000000000000014 R09: 00000000004002c8
+R10: 0000000000000041 R11: 0000000000000246 R12: 0000000000401b40
+R13: 0000000000401bd0 R14: 0000000000000000 R15: 0000000000000000
 
