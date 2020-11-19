@@ -2,178 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C99D2B940A
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Nov 2020 15:02:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E72502B9640
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Nov 2020 16:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbgKSOA1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Nov 2020 09:00:27 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:35398 "EHLO nat-hk.nvidia.com"
+        id S1727171AbgKSPbB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Nov 2020 10:31:01 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:2640 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726790AbgKSOAZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:00:25 -0500
-Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb67a760003>; Thu, 19 Nov 2020 22:00:23 +0800
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 19 Nov
- 2020 14:00:22 +0000
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.49) by
- HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 19 Nov 2020 14:00:22 +0000
+        id S1726691AbgKSPbA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 19 Nov 2020 10:31:00 -0500
+Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fb68fb20000>; Thu, 19 Nov 2020 23:30:58 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 19 Nov
+ 2020 15:30:54 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.171)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 19 Nov 2020 15:30:54 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QK3elSB5tnQUWKXb1CbsiNMcp0hw8Afy0WB05CJJ95DWVgOuMubGXj06y3ccZp816Gy4Zmhie1/3ILaMoHlndXLjCR4TtRosIqD64M/mflqYWFl8DrnbM1zIFp2Q7UZs9c0prx3En10IVs8Lw2ktudA0LLOWRN3e9h3WGRT7C7TzxogXaOHdF5/i/I4efDIbEk3LQaL2f6gM5ODa79QWFOny5WndGauB2TuvqHudAZgR/V1N/xoWss8ngik7SwqaTacSdPpNSjmIwKEhro0lwiz/926xyG8CiBe/7B1PAQNlacvViqxGapclzlx2LP/ZvAA4o2fnAb7UMQ9DBXlAIg==
+ b=C3w1B5NqvLpnc7pOAIhdqWs9psiOf15COXaMj53eSVWKgFqKXaawJpjtRs8hFsEYeNdJbLYf2cqjnud5tJtPIEThsx8JD1kcMvrFghdVM0dRxd8KvNCRukN2E8YrFe+MTS8D/OsnwD/kfyVQufjanzJCSFegySvECGvGnBR57f6NpXUY7rklhIgD25sjB7d9DpIkJq9qZUC68nkH/nIvkZ8yFH17x9SsiFLPgqSqj4UBU0xmlBhABzE0J6RErds8thl8dqU7r8Qaks1zynx2vmX/TnbZIPzQdZZvqyg8rPxa5kH0XZ6/2a0P1iZ2RLMOcq7WCac47Wl72Beq7XBfNw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qpm3AiOzlKfA5wmelcGBOMsJTZ7+d3UwcxHf/xqmzbY=;
- b=jarar4C1l9mBeLhCy+knXEd/QWP0nixFxVJGAXPJAq5wDI6ai6j7/rRU8IFA/eMFmOWsshsnDRuXylhLDytGdyQ4D23i8AJvARcOyLH3gtfL7YE+NvTbqSdXqIM9L1EP8Sl+UnG7wPI0cl2Djc/i9rgnkah4CwvdXs2r+EHtGlpRkyCCz1KNCklT7j5irzfskDbyisGluwYJ9XjmzTMNMaTRo97Wrm37PA4VGzBtaHFMTF+fGb6RjZUqZs1/LE3tD0nR8U/JxxZAVM9v/f51HrKVCqpAbjnElWyMpz5noRwMbWbHr/Je/x2305ByhHmuzpuM81LZByV46Jc5SF4hKg==
+ bh=bpxPmkk/QmdinUr1rcPJTGyxpgrcO/YAYQSLBpuzy/w=;
+ b=ikA9SvEkkWdm09YvzIeWurDP5/1dKg0O8or8NHroQeMA7jLOoBOIq2hFXcL9iwL6BfXkAu6y9CYdJ5PQZSi7TRsjE5Xq1p3boU+sbw1YgZgL2ODhuCLS0lc/KlUDWwsQhcD11ICJQLZsXad6ipnq+aUp78UIK+2jHWPPcacw76Uk0lmWpX2cShF5ujVmQnGHgoHIFm/AZlLI0XmHk1dWJJlj3smWScK4hX6wkqmU+9nDsEUU4546jB5iWSRn8rFrytNxnnwx+ecAP5bnUD+ami5WirjoZv50OZroFZqFVNYzF/7grgjcokxrSqtRVHbtzcyV76/amF4mCSUy6BvObw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2779.namprd12.prod.outlook.com (2603:10b6:5:4f::21) with
+ by DM5PR12MB1754.namprd12.prod.outlook.com (2603:10b6:3:10f::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Thu, 19 Nov
- 2020 14:00:19 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Thu, 19 Nov
+ 2020 15:30:52 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3589.022; Thu, 19 Nov 2020
- 14:00:19 +0000
-Date:   Thu, 19 Nov 2020 10:00:17 -0400
+ 15:30:52 +0000
+Date:   Thu, 19 Nov 2020 11:30:50 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Saeed Mahameed <saeed@kernel.org>, Jakub Kicinski <kuba@kernel.org>
-CC:     Parav Pandit <parav@nvidia.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jiri Pirko <jiri@nvidia.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Subject: Re: [PATCH net-next 00/13] Add mlx5 subfunction support
-Message-ID: <20201119140017.GN244516@ziepe.ca>
-References: <20201112192424.2742-1-parav@nvidia.com>
- <20201116145226.27b30b1f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <cdd576ebad038a3a9801e7017b7794e061e3ddcc.camel@kernel.org>
- <20201116175804.15db0b67@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <BY5PR12MB43229F23C101AFBCD2971534DCE20@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20201117091120.0c933a4c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <BY5PR12MB4322F01A4505AF21F696DCA2DCE20@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20201118182319.7bad1ca6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <28239ff66a27c0ddf8be4f1461e27b0ac0b02871.camel@kernel.org>
+To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
+CC:     <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] IB/mthca: fix return value of error branch in
+ mthca_init_cq()
+Message-ID: <20201119153050.GA1960484@nvidia.com>
+References: <1605789529-54808-1-git-send-email-wangxiongfeng2@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <28239ff66a27c0ddf8be4f1461e27b0ac0b02871.camel@kernel.org>
-X-ClientProxiedBy: MN2PR08CA0005.namprd08.prod.outlook.com
- (2603:10b6:208:239::10) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <1605789529-54808-1-git-send-email-wangxiongfeng2@huawei.com>
+X-ClientProxiedBy: MN2PR19CA0041.namprd19.prod.outlook.com
+ (2603:10b6:208:19b::18) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR08CA0005.namprd08.prod.outlook.com (2603:10b6:208:239::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Thu, 19 Nov 2020 14:00:19 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kfkTx-008BS8-RQ; Thu, 19 Nov 2020 10:00:17 -0400
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR19CA0041.namprd19.prod.outlook.com (2603:10b6:208:19b::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Thu, 19 Nov 2020 15:30:51 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kflta-008FIr-Li; Thu, 19 Nov 2020 11:30:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605794423; bh=Qpm3AiOzlKfA5wmelcGBOMsJTZ7+d3UwcxHf/xqmzbY=;
+        t=1605799858; bh=bpxPmkk/QmdinUr1rcPJTGyxpgrcO/YAYQSLBpuzy/w=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=rN9fZDnYwwmwEUYfnccSRYjiWEW0J6mTMdFXF+z9Ty7GP5+xmik7pBA2Mal/DgVZo
-         WGFB4e0XZqHsbrtlLlDIJ9NmLaeWTKnWKQepPkx3O504zQQzcEfRNNo88W6XX/ALln
-         nV85uiqFTAyXo1u5A7U2QVlkaI3bScw0ZTCXo2GidM1p+K1EKcKDHyaPraeO0M0dKK
-         E3eQ+w5Exci2mXFsGZOegg5fXpOUKg1sh6YNJZC/r1OKP1VBGt6/wNcifRpD/gZmDs
-         nv6RRFpQu+rVTTKCh11+St6DtjNTXxT8FxzzuxCgcxRmPQKlWYVECLaxKorQiU46bx
-         NcVnfdl7lWa0A==
+        b=W66E96HYcoSD9CRgtSphzl4ESm2g2Y1RCkXtri18TT7OOktIXiwtShnACTzOTdHAy
+         ULSmbTkiIyqWb+oZPG64GMRBk95xGQ7M24ELbSr63RHQmGblERL+BiqFV81x8neYQG
+         F1OvZhfJrR2HzRVPxX0wE+y13kfiPoy/jMq3C2Hc7lkNJDpJAKfr1wpC82NKOj007b
+         SrF4i0norNOmQR1Z5rH5eCvU4zZywZgTYD8MQW/abNwT/EuW5VfkvEFGOm1S+wNMgd
+         /C13bUPFCsW+MhMVyRYKty8BlgpZftqMvGFoqSVn011O24U+hnczACzRa0o/DZintv
+         CmGuFFkkS/fjA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 10:22:51PM -0800, Saeed Mahameed wrote:
-> > I think the biggest missing piece in my understanding is what's the
-> > technical difference between an SF and a VDPA device.
+On Thu, Nov 19, 2020 at 08:38:49PM +0800, Xiongfeng Wang wrote:
+> We return 'err' in the error branch, but this variable may be set as
+> zero by the above code. Fix it by setting 'err'  as a negative value
+> before we goto the error label.
 > 
-> Same difference as between a VF and netdev.
-> SF == VF, so a full HW function.
-> VDPA/RDMA/netdev/SCSI/nvme/etc.. are just interfaces (ULPs) sharing the
-> same functions as always been, nothing new about this.
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 
-All the implementation details are very different, but this white
-paper from Intel goes into some detail the basic elements and rational
-for the SF concept:
+Missing fixes line
 
-https://software.intel.com/content/dam/develop/public/us/en/documents/intel-scalable-io-virtualization-technical-specification.pdf
+>  drivers/infiniband/hw/mthca/mthca_cq.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/mthca/mthca_cq.c b/drivers/infiniband/hw/mthca/mthca_cq.c
+> index c3cfea2..98d697b 100644
+> --- a/drivers/infiniband/hw/mthca/mthca_cq.c
+> +++ b/drivers/infiniband/hw/mthca/mthca_cq.c
+> @@ -803,8 +803,10 @@ int mthca_init_cq(struct mthca_dev *dev, int nent,
+>  	}
+>  
+>  	mailbox = mthca_alloc_mailbox(dev, GFP_KERNEL);
+> -	if (IS_ERR(mailbox))
+> +	if (IS_ERR(mailbox)) {
+> +		err = -ENOMEM;
+>  		goto err_out_arm;
+> +	}
 
-What we are calling a sub-function here is a close cousin to what
-Intel calls an Assignable Device Interface. I expect to see other
-drivers following this general pattern eventually.
+mthca_alloc_mailbox returns err_ptr so this should do 
 
-A SF will eventually be assignable to a VM and the VM won't be able to
-tell the difference between a VF or SF providing the assignable PCI
-resources.
+   err = ERR_PTR(mailbox)
 
-VDPA is also assignable to a guest, but the key difference between
-mlx5's SF and VDPA is what guest driver binds to the virtual PCI
-function. For a SF the guest will bind mlx5_core, for VDPA the guest
-will bind virtio-net.
+>  	cq_context = mailbox->buf;
+>  
+> @@ -850,6 +852,7 @@ int mthca_init_cq(struct mthca_dev *dev, int nent,
+>  			    cq->cqn & (dev->limits.num_cqs - 1),
+>  			    cq)) {
+>  		spin_unlock_irq(&dev->cq_table.lock);
+> +		err = -ENOMEM;
 
-So, the driver stack for a VM using VDPA might be
+And this should assign err to the output of mthca_array_set
 
- Physical device [pci] -> mlx5_core -> [aux] -> SF -> [aux] ->  mlx5_core -> [aux] -> mlx5_vdpa -> QEMU -> |VM| -> [pci] -> virtio_net
+Please fix and resend.
 
-When Parav is talking about creating VDPA devices he means attaching
-the VDPA accelerator subsystem to a mlx5_core, where ever that
-mlx5_core might be attached to.
-
-To your other remark:
-
-> > What are you NAK'ing?
-> Spawning multiple netdevs from one device by slicing up its queues.
-
-This is a bit vauge. In SRIOV a device spawns multiple netdevs for a
-physical port by "slicing up its physical queues" - where do you see
-the cross over between VMDq (bad) and SRIOV (ok)?
-
-I thought the issue with VMDq was more on the horrid management to
-configure the traffic splitting, not the actual splitting itself?
-
-In classic SRIOV the traffic is split by a simple non-configurable HW
-switch based on MAC address of the VF.
-
-mlx5 already has the extended version of that idea, we can run in
-switchdev mode and use switchdev to configure the HW switch. Now
-configurable switchdev rules split the traffic for VFs.
-
-This SF step replaces the VF in the above, but everything else is the
-same. The switchdev still splits the traffic, it still ends up in same
-nested netdev queue structure & RSS a VF/PF would use, etc, etc. No
-queues are "stolen" to create the nested netdev.
-
-From the driver perspective there is no significant difference between
-sticking a netdev on a mlx5 VF or sticking a netdev on a mlx5 SF. A SF
-netdev is not going in and doing deep surgery to the PF netdev to
-steal queues or something.
-
-Both VF and SF will be eventually assignable to guests, both can
-support all the accelerator subsystems - VDPA, RDMA, etc. Both can
-support netdev.
-
-Compared to VMDq, I think it is really no comparison. SF/ADI is an
-evolution of a SRIOV VF from something PCI-SGI controlled to something
-device specific and lighter weight.
-
-SF/ADI come with a architectural security boundary suitable for
-assignment to an untrusted guest. It is not just a jumble of queues.
-
-VMDq is .. not that.
-
-Actually it has been one of the open debates in the virtualization
-userspace world. The approach to use switchdev to control the traffic
-splitting to VMs is elegant but many drivers are are not following
-this design. :(
-
-Finally, in the mlx5 model VDPA is just an "application". It asks the
-device to create a 'RDMA' raw ethernet packet QP that is uses rings
-formed in the virtio-net specification. We can create it in the kernel
-using mlx5_vdpa, and we can create it in userspace through the RDMA
-subsystem. Like any "RDMA" application it is contained by the security
-boundary of the PF/VF/SF the mlx5_core is running on.
-
+Thanks,
 Jason
