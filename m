@@ -2,102 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C342B8626
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Nov 2020 22:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 114652B8924
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Nov 2020 01:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727427AbgKRU70 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Nov 2020 15:59:26 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:39742 "EHLO nat-hk.nvidia.com"
+        id S1726412AbgKSAln (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Nov 2020 19:41:43 -0500
+Received: from mga12.intel.com ([192.55.52.136]:57655 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727000AbgKRU7Z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 18 Nov 2020 15:59:25 -0500
-Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb58b2b0000>; Thu, 19 Nov 2020 04:59:23 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Nov
- 2020 20:59:22 +0000
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.48) by
- HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 18 Nov 2020 20:59:22 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ARvURhL6H/g+LBmDfArhccJlX7CeaibBYfPShy0nkON7gpDtJ4M8tIHkYVHkoXPbPRnekL3eMLO1fryjUSrqkBja0Uw3KuG8CKMIWRfAshifHGoCOWd51ODHFroN/9sX7wNlj7qefNhN1iFZOp5at34HB9XTIdy2rJzkJc/+2p6uxY6+AdmePBu8NITk1E3/Ss1yCWQyx3LMKM4RtjUV0PgrJ2n3iJKhfqLemEC9/5C611WWGnrS8MiPFyUAkhrRC+n3q87pn1CqmUsfoNLABbO8KUWHUz2hx3uuIA5MJJr4JBFA+RenTEJW5Ij7k2nRveKkl178J+pH+YF714tyvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tZYLc8AofvvualEzy2PXnRAwiDq0ST9/uqqG4KOSTkQ=;
- b=hr3DqDTLe65qC8Vh4+THUFXycUxs90Pdsdz8Oobac80pDGa0uH1kV/w2prnm95TUGRLkXpOGqBhfWe6D0OQ1Z2TRAPcuZSR932Mbz1qq9N19TRc1Il7fsBsV00DUhXf6f7H9HpU07ZXFu2Uipm6JvhCp9O+hTWq27vYBITgA0z7GhW1aZkBp68DpnobjJri4c8AQKhfATdRq33/rmGpRM6RlhE28PijsuqOpBEquivExGvQgDp+BamtMmFVZFZxmc/L1zbGDeM2yNulhUitbSJSeJjoXyMxDiTrZGorsrJQQiqpfmOuMf8ICKJc4OqFHm0/buPO6OeZr5XEwffYsSg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4620.namprd12.prod.outlook.com (2603:10b6:5:76::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Wed, 18 Nov
- 2020 20:59:19 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3564.028; Wed, 18 Nov 2020
- 20:59:19 +0000
-Date:   Wed, 18 Nov 2020 16:59:17 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Gal Pressman <galpress@amazon.com>
-CC:     <linux-rdma@vger.kernel.org>, Bob Pearson <rpearsonhpe@gmail.com>
-Subject: Re: [PATCH 4/9] efa: Move the context intialization out of
- efa_query_device_ex()
-Message-ID: <20201118205917.GC917484@nvidia.com>
-References: <4-v1-34e141ddf17e+89-query_device_ex_jgg@nvidia.com>
- <3ef1c929-5a36-9d55-091c-2a983c450f38@amazon.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <3ef1c929-5a36-9d55-091c-2a983c450f38@amazon.com>
-X-ClientProxiedBy: BL1PR13CA0204.namprd13.prod.outlook.com
- (2603:10b6:208:2be::29) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1726098AbgKSAlm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Nov 2020 19:41:42 -0500
+IronPort-SDR: QVasj0CuM5JclvUFc1bm/GlRWG20bQq72UGsSjI8zeGrPScbZL3/DefmpC2l1rmFZZ5SsZgP7+
+ Antut0zKBaAg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="150479136"
+X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
+   d="scan'208";a="150479136"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 16:41:42 -0800
+IronPort-SDR: Y8rTmHCtB7/sn2V4taDUYDFv3fbt2XLk3lVUpAW3YPpGFl/PJFmkLEcE0znizQStUbrqozMmL9
+ /axsBdMD4ulg==
+X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; 
+   d="scan'208";a="330725949"
+Received: from jekeller-mobl1.amr.corp.intel.com (HELO [10.212.247.114]) ([10.212.247.114])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2020 16:41:41 -0800
+Subject: Re: [PATCH net-next 03/13] devlink: Support add and delete devlink
+ port
+To:     Parav Pandit <parav@nvidia.com>, David Ahern <dsahern@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     Jiri Pirko <jiri@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Vu Pham <vuhuong@nvidia.com>
+References: <20201112192424.2742-1-parav@nvidia.com>
+ <20201112192424.2742-4-parav@nvidia.com>
+ <e7b2b21f-b7d0-edd5-1af0-a52e2fc542ce@gmail.com>
+ <BY5PR12MB43222AB94ED279AF9B710FF1DCE10@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <b34d8427-51c0-0bbd-471e-1af30375c702@gmail.com>
+ <BY5PR12MB4322863EA236F30C9E542F00DCE10@BY5PR12MB4322.namprd12.prod.outlook.com>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+Organization: Intel Corporation
+Message-ID: <c409964b-3f07-cac9-937c-4062f879cb85@intel.com>
+Date:   Wed, 18 Nov 2020 16:41:38 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0204.namprd13.prod.outlook.com (2603:10b6:208:2be::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.21 via Frontend Transport; Wed, 18 Nov 2020 20:59:19 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kfUXt-007sSd-HO; Wed, 18 Nov 2020 16:59:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605733163; bh=tZYLc8AofvvualEzy2PXnRAwiDq0ST9/uqqG4KOSTkQ=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=MrVSj7GmClltkPlC9XMJygGRleqZwHoxZnSIqnzI+X9RUr6QnGkJJKXkoertmSajz
-         zit5xzsqxAahS2+QFqYKb5yZGG4SLfO1ZdbW9pxO7rcEj0KaUpa0mOLyBbshW92Gyl
-         TRJ59N0ZDLIGTejLk5cykB3V3qLjR9sImqYZXu6SdHJczpGeYcdzFLabs43UsxjGnR
-         ugXrp7eqkFibwA8GRppywKslUjcH0aye+TVMhnFiXbq9WZi5D4x7eyEoyC+HJN1iAT
-         +w1cajwMQU4NyTZGX95HYaW4JimjbD5IagJIdBs9Z45YxDksmmvDYAFBpdNgau+USl
-         Kqhjn1ciiKF7A==
+In-Reply-To: <BY5PR12MB4322863EA236F30C9E542F00DCE10@BY5PR12MB4322.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 02:45:42PM +0200, Gal Pressman wrote:
 
-> > +	size_t resp_size = sizeof(resp);
-> > +	unsigned int qp_table_sz;
-> > +	int err;
-> > +
-> > +	if (ctx->cmds_supp_udata_mask & EFA_USER_CMDS_SUPP_UDATA_QUERY_DEVICE) {
-> > +		err = ibv_cmd_query_device_any(&ctx->ibvctx.context, NULL,
-> > +					       &attr, sizeof(attr),
-> > +					       &resp.ibv_resp, &resp_size);
-> > +		if (err)
-> > +			return err;
-> > +
-> > +		ctx->device_caps = resp.device_caps;
-> > +		ctx->max_sq_wr = resp.max_sq_wr;
-> > +		ctx->max_rq_wr = resp.max_rq_wr;
-> > +		ctx->max_sq_sge = resp.max_sq_sge;
-> > +		ctx->max_rq_sge = resp.max_rq_sge;
-> > +		ctx->max_rdma_size = resp.max_rdma_size;
-> > +		ctx->max_wr_rdma_sge = attr.orig_attr.max_sge_rd;
+
+On 11/18/2020 11:22 AM, Parav Pandit wrote:
 > 
-> max_wr_rdma_sge assignment can be done in the else clause as well.
+> 
+>> From: David Ahern <dsahern@gmail.com>
+>> Sent: Wednesday, November 18, 2020 11:33 PM
+>>
+>>
+>> With Connectx-4 Lx for example the netdev can have at most 63 queues
+>> leaving 96 cpu servers a bit short - as an example of the limited number of
+>> queues that a nic can handle (or currently exposes to the OS not sure which).
+>> If I create a subfunction for ethernet traffic, how many queues are allocated
+>> to it by default, is it managed via ethtool like the pf and is there an impact to
+>> the resources used by / available to the primary device?
+> 
+> Jason already answered it with details.
+> Thanks a lot Jason.
+> 
+> Short answer to ethtool question, yes, ethtool can change num queues for subfunction like PF.
+> Default is same number of queues for subfunction as that of PF in this patchset.
+> 
 
-Yes, it is the same mistake as I did in mlx5
+But what is the mechanism for partitioning the global resources of the
+device into each sub function?
 
-I updated everything, thanks
-
-Jason
+Is it just evenly divided into the subfunctions? is there some maximum
+limit per sub function?
