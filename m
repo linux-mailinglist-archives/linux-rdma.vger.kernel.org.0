@@ -2,77 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97762B8B79
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Nov 2020 07:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3272B8B97
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Nov 2020 07:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgKSGPq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 19 Nov 2020 01:15:46 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2067 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726287AbgKSGPq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Nov 2020 01:15:46 -0500
-Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Cc8YH1knyzVq9m;
-        Thu, 19 Nov 2020 14:15:15 +0800 (CST)
-Received: from dggema703-chm.china.huawei.com (10.3.20.67) by
- DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Thu, 19 Nov 2020 14:15:42 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema703-chm.china.huawei.com (10.3.20.67) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Thu, 19 Nov 2020 14:15:42 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
- Thu, 19 Nov 2020 14:15:42 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
+        id S1726255AbgKSGWy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Nov 2020 01:22:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726200AbgKSGWy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 19 Nov 2020 01:22:54 -0500
+Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E4BE246AD;
+        Thu, 19 Nov 2020 06:22:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605766973;
+        bh=Flg8FSn6jtiUD6lsTxWCt3rDnH7Rd+y0XZDO992S1sI=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=lkZI1WJm47cDfpIAyS6iqYxQvs8isYaqF139cwwN+uUR7p+VZ0HplLmywEA9rlk+w
+         SjytbsoYUF+A79rbp0WeYGbTFg8aqNRAse2Z0/Ot5DoYYYKlVjswWa1x7NoKt0FIL0
+         ktH3LUaXKA99fxGGyuiwCNO70qaiel8EkQMRDXjQ=
+Message-ID: <28239ff66a27c0ddf8be4f1461e27b0ac0b02871.camel@kernel.org>
+Subject: Re: [PATCH net-next 00/13] Add mlx5 subfunction support
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>, Parav Pandit <parav@nvidia.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v2 for-next 7/7] RDMA/hns: Add support for UD inline
-Thread-Topic: [PATCH v2 for-next 7/7] RDMA/hns: Add support for UD inline
-Thread-Index: AQHWvAyZ1U9I9yddukaFoH2luFPjtw==
-Date:   Thu, 19 Nov 2020 06:15:42 +0000
-Message-ID: <7a7ee7427b68488f98ebc18d5b7c4d75@huawei.com>
-References: <1605526408-6936-1-git-send-email-liweihang@huawei.com>
- <1605526408-6936-8-git-send-email-liweihang@huawei.com>
- <20201118191051.GL244516@ziepe.ca>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jiri Pirko <jiri@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "davem@davemloft.net" <davem@davemloft.net>
+Date:   Wed, 18 Nov 2020 22:22:51 -0800
+In-Reply-To: <20201118182319.7bad1ca6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+References: <20201112192424.2742-1-parav@nvidia.com>
+         <20201116145226.27b30b1f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <cdd576ebad038a3a9801e7017b7794e061e3ddcc.camel@kernel.org>
+         <20201116175804.15db0b67@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <BY5PR12MB43229F23C101AFBCD2971534DCE20@BY5PR12MB4322.namprd12.prod.outlook.com>
+         <20201117091120.0c933a4c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+         <BY5PR12MB4322F01A4505AF21F696DCA2DCE20@BY5PR12MB4322.namprd12.prod.outlook.com>
+         <20201118182319.7bad1ca6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/11/19 3:11, Jason Gunthorpe wrote:
-> On Mon, Nov 16, 2020 at 07:33:28PM +0800, Weihang Li wrote:
->> @@ -503,7 +581,23 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
->>  	if (ret)
->>  		return ret;
->>  
->> -	set_extend_sge(qp, wr, &curr_idx, valid_num_sge);
->> +	if (wr->send_flags & IB_SEND_INLINE) {
->> +		ret = set_ud_inl(qp, wr, ud_sq_wqe, &curr_idx);
->> +		if (ret)
->> +			return ret;
+On Wed, 2020-11-18 at 18:23 -0800, Jakub Kicinski wrote:
+> On Tue, 17 Nov 2020 18:50:57 +0000 Parav Pandit wrote:
+> > At this point vdpa tool of [1] can create one or more vdpa net
+> > devices on this subfunction device in below sequence.
+> > 
+> > $ vdpa parentdev list
+> > auxiliary/mlx5_core.sf.4
+> >   supported_classes
+> >     net
+> > 
+> > $ vdpa dev add parentdev auxiliary/mlx5_core.sf.4 type net name
+> > foo0
+> > 
+> > $ vdpa dev show foo0
+> > foo0: parentdev auxiliary/mlx5_core.sf.4 type network parentdev
+> > vdpasim vendor_id 0 max_vqs 2 max_vq_size 256
+> > 
+> > > I'm asking how the vdpa API fits in with this, and you're showing
+> > > me the two
+> > > devlink commands we already talked about in the past.  
+> > Oh ok, sorry, my bad. I understood your question now about relation
+> > of vdpa commands with this.
+> > Please look at the above example sequence that covers the vdpa
+> > example also.
+> > 
+> > [1] 
+> > https://lore.kernel.org/netdev/20201112064005.349268-1-parav@nvidia.com/
 > 
-> Why are you implementing this in the kernel? No kernel ULP sets this
-> flag?
+> I think the biggest missing piece in my understanding is what's the
+> technical difference between an SF and a VDPA device.
 > 
-> Jason
-> 
-Hi Jason,
 
-Sorry, I don't understand. Some kernel users may set IB_SEND_INLINE
-when using UD, some may not, we just check this flag to decide how
-to fill the data into UD SQ WQE here.
+Same difference as between a VF and netdev.
+SF == VF, so a full HW function.
+VDPA/RDMA/netdev/SCSI/nvme/etc.. are just interfaces (ULPs) sharing the
+same functions as always been, nothing new about this.
 
-Thanks
-Weihang
+Today on a VF we load a RDMA/VDPA/netdev interfaces
+SF will do exactly the same and the ULPs will simply load, and we don't
+need to modify them.
+
+> Isn't a VDPA device an SF with a particular descriptor format for the
+> queues?
+No :/, 
+I hope the above answer clarifies things a bit.
+SF is a device function that provides all kinds of queues.
+
+
