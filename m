@@ -2,69 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5102BB344
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Nov 2020 19:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CFA2BB355
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Nov 2020 19:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730663AbgKTSbp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Nov 2020 13:31:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730130AbgKTSbo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 20 Nov 2020 13:31:44 -0500
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D4A824137;
-        Fri, 20 Nov 2020 18:31:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605897104;
-        bh=2eGFjiWyewYdJs9WHsfiLjzP22DYaqQLj4qoiKEX8Qg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dDNZKLx6ifyMUW6k3oPMC7kVDKrOraVSclNcMirgTi5S0Qo3nN+Net99rUullR4fW
-         RcTx37ewFa0V/tktXe9+P4G0cSesxSnmOK3KBgk/DU4HD+y+7O+13sfU1gXgBDl90p
-         KxQ//OXIiim8Yk9UVHY9Kxujl+ep+9YpUWxz2RMY=
-Date:   Fri, 20 Nov 2020 12:31:49 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 050/141] RDMA/mlx5: Fix fall-through warnings for Clang
-Message-ID: <2b0c87362bc86f6adfe56a5a6685837b71022bbf.1605896059.git.gustavoars@kernel.org>
-References: <cover.1605896059.git.gustavoars@kernel.org>
+        id S1730731AbgKTScr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Nov 2020 13:32:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730723AbgKTSco (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Nov 2020 13:32:44 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91DCC0613CF
+        for <linux-rdma@vger.kernel.org>; Fri, 20 Nov 2020 10:32:44 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id z17so5110567qvy.11
+        for <linux-rdma@vger.kernel.org>; Fri, 20 Nov 2020 10:32:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iWqrZShOD+kRcre329kKVLGBiUFIo9BUZTpNDUEM+ic=;
+        b=V+M+ohGOZ4Vys/bIL+F/am2Z09M0O/OjVX62sCjm0xlNyRUUTZcDFeWXP66tqIj143
+         TXbGk0c5xLXXgTTMMfQzsOldHOJNi2TNxA1S/WOgHEeoBHKCL+mwk3GYOOwZ08D7GULj
+         aRPrtYvMSuHm6eG/P2PQwHr+atBnSQwVPnAWUwYhMUagBvNOkcQpSBpwCDdJQkXZ9yyK
+         XJ7lFP29cx+xJSKbVqwOiteimNYTAE9tBrYBrBG0kxMrBhpu1akQV0kS+ajRCRfsFUbO
+         pSgCaPdFAIbDVEbHVkqnyCqKVqDol4cAPp9rXiJKi9/ODsd6ZWL+65eGu1FcVFal2IV2
+         arVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iWqrZShOD+kRcre329kKVLGBiUFIo9BUZTpNDUEM+ic=;
+        b=c82HSMwo3y6HRwdWCWss4q+ooNqIbBJEi1gSCtewU2ecKKvVNyCTpiA9N4bfy6BHAF
+         X/i2ilQq47bT2+nrfon4N4uw22RxZobn69QBozNhZLolGsMqITrnl832ULXlnXb7BGcW
+         h3WDPNTdqnwTDjPkaLMlgqtLV55V1riXjw0EWplh3zggKXa3vdQzGjvaERmHGeg7d81e
+         Vac5AIOpURB0WLmDL00blJlqigiWSKJoJUYE2Qj9PwDaQVk8SFqNsqb7nmuHDbyaAg3F
+         0GgT26mI/spge967kdx/4GyjUQPxq/Ur41s+j7Hf21jNTCl7V/cYkij0La4J5SWIYL6K
+         sltQ==
+X-Gm-Message-State: AOAM533Q683IL3GppxnNVbqT0sJ14GlFH5w5W/VYuOnuN8cJbd5+36+w
+        Z1J/4byPADXjMQ7Nm5UoMGJXBA==
+X-Google-Smtp-Source: ABdhPJyRRjRCoFGRFb7jaVk+jooMV/sXva+uftYeveZslt+PAcJG3pQJq4SW9oIhiR+Ru8ji9TDGmw==
+X-Received: by 2002:a0c:df0f:: with SMTP id g15mr18206883qvl.19.1605897163961;
+        Fri, 20 Nov 2020 10:32:43 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id w30sm2568810qkw.24.2020.11.20.10.32.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 10:32:43 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kgBD8-008upw-RH; Fri, 20 Nov 2020 14:32:42 -0400
+Date:   Fri, 20 Nov 2020 14:32:42 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     syzbot <syzbot+76c931ae5fdee51fff5b@syzkaller.appspotmail.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, parav@mellanox.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: possible deadlock in rdma_destroy_id
+Message-ID: <20201120183242.GR244516@ziepe.ca>
+References: <0000000000002653f805b48b50f5@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1605896059.git.gustavoars@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <0000000000002653f805b48b50f5@google.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-by explicitly adding the new pseudo-keyword fallthrough; instead of
-letting the code fall through to the next case.
+On Fri, Nov 20, 2020 at 07:15:21AM -0800, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    20529233 Add linux-next specific files for 20201118
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=124ae36e500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=2c4fb58b6526b3c1
+> dashboard link: https://syzkaller.appspot.com/bug?extid=76c931ae5fdee51fff5b
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+76c931ae5fdee51fff5b@syzkaller.appspotmail.com
 
-Link: https://github.com/KSPP/linux/issues/115
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/infiniband/hw/mlx5/qp.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 600e056798c0..ccaa4589331c 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -2460,6 +2460,7 @@ static int check_qp_type(struct mlx5_ib_dev *dev, struct ib_qp_init_attr *attr,
- 	case IB_QPT_GSI:
- 		if (dev->profile == &raw_eth_profile)
- 			goto out;
-+		fallthrough;
- 	case IB_QPT_RAW_PACKET:
- 	case IB_QPT_UD:
- 	case MLX5_IB_QPT_REG_UMR:
--- 
-2.27.0
+#syz dup: possible deadlock in _destroy_id
 
