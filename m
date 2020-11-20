@@ -2,112 +2,224 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22552BA599
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Nov 2020 10:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9E22BA6B5
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Nov 2020 10:57:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727256AbgKTJMI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Nov 2020 04:12:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
+        id S1727497AbgKTJ4O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Nov 2020 04:56:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727163AbgKTJMH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Nov 2020 04:12:07 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3629DC0617A7
-        for <linux-rdma@vger.kernel.org>; Fri, 20 Nov 2020 01:12:07 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id 142so9278800ljj.10
-        for <linux-rdma@vger.kernel.org>; Fri, 20 Nov 2020 01:12:07 -0800 (PST)
+        with ESMTP id S1727304AbgKTJ4N (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Nov 2020 04:56:13 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE973C061A48
+        for <linux-rdma@vger.kernel.org>; Fri, 20 Nov 2020 01:56:12 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id 1so9255830wme.3
+        for <linux-rdma@vger.kernel.org>; Fri, 20 Nov 2020 01:56:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zYwHjbKEpls2WUbFGvsAlTnALvxjY3C45fMPKOCCdWo=;
-        b=SHXWMa+QBbvSWXTVTvc9oCEYja53wrH4XnNDPeDjBZ+0PzbUw/zJjF0sOwfukdto2I
-         yv4yeH324vWGnkO3rxD77aI3dC+Y7Nna31AhnQIDQ9yic0vUGsrNF06nsfiEwsD47Kro
-         UAi8KcIpnD8LZMUU1t1HDrAtiS/irUs9O71BHRasiL5n9VXF52ZIdC9wLjq86Qu22owJ
-         kMhLLzuIm7a6dgG6k1Si7fbwfZdq16DMcWEk7EETvYItWfSJTBFCIfLok5+DvbAbsi3r
-         S+o7ch2CzwMiFWx81DFF1H1ms+b082ZMsq6ftLFKcUJSGVL4uqQ8C5KS28zlaooJLeZK
-         WnTA==
+        d=ffwll.ch; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=twJ9Iv0GrWi2HSfwSfV1gOqC9HMYu+pjSEuPdNwPfIY=;
+        b=gbKAYR06usTeKaSMH6KvB92fHlEBNo4+RmCIx3it8RmRuweXViGkHt2NLqQg41aUEm
+         /cdA7UEQtMS2Lfo2xXYvLteOUM15w6L4q4zFzc6iz6hRyia8XL8rj1a+ITjHiVkYOQnz
+         kyhh2EagpE9UkW23wbuldKAJzF6KntErybybI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zYwHjbKEpls2WUbFGvsAlTnALvxjY3C45fMPKOCCdWo=;
-        b=cv5K/AGZtIa2GXSxGDtqZJjBjD0ONpGT+GM9Pu2r2d8CRntra85pOj4M9grBL5izIN
-         4LaRvPngehN9uJ2s9NdUhSLtKyXx3HzkJSSrKvQvt/mSpv9pebC7J4KTJiYhZ6UjAsZn
-         ID5MI2OBxrW/Z51CXK9Vqe1DREpF/ymkGNkW9Ed+OxeRCBpFFUdX2VDAO5mKqykzcC2R
-         x/vS6zE0UVCksUtqGFqKkOfRybD2j4l/Q3bT4+8uWbLJs9WEtjiNUBiBautb29NX+iyr
-         AuXP6ifNENB1N6qlb0pj2FFWAZAKH2p/4VbQG8FmuvTupSOMW8T3hY2UAN2KPq6qzGh/
-         eEoA==
-X-Gm-Message-State: AOAM531jj6uoOH8nKgbqX59Dv4DleMmf1YwlrA2ZRgklSNIylbHJdgvJ
-        wGzExkjUZHXybzr1tjOAip1bqf3QCD37NGwvfOAFu/APzzul
-X-Google-Smtp-Source: ABdhPJxe3gqqTHhUOIoW4RhjpAyW8nk/gUrLRGbbSANUyqjh2R+b6qVn3dxWsuAQG4KNWibj/6cGMLuL7fDMiZQUMEw=
-X-Received: by 2002:a2e:a164:: with SMTP id u4mr7809363ljl.75.1605863525418;
- Fri, 20 Nov 2020 01:12:05 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=twJ9Iv0GrWi2HSfwSfV1gOqC9HMYu+pjSEuPdNwPfIY=;
+        b=Drg3ZAJFAQA5ZJfh0XaTixpjNb2SAL6rb1RUT4owe7DpS0ftfphRhxCK6UwSb+7ZhO
+         pVneftfEhZUQJSyLhEsJMaVoGDaLWcLOpqxPD8RuOTYlTtO/+7yR6zeoRh5zJbGC7WDC
+         BqqI+8KV842EyTT42a6aVBir6TOGb14Rpgp3vhWtU9B6oLnf3kHhs/4YTlL9lPPfWhCN
+         8+PS+6OPZwC3PnHZ/JcFxnDlH9FxJqkO/tX9+aPYOBJp06FA56wCrx1ZpRcKRVGoR5eG
+         yJxA4WbYEX0jpHtT9ie88ctTv45sTsRGn2ifEmWIjfDuNRc6bUKKmHjm1kLfynadKwk8
+         XLyQ==
+X-Gm-Message-State: AOAM531CujlDQzl04bOQkISVgQt6Xn24gNmSMx8WyLIH/lm3Dpwtu7XF
+        wvV+SyuK5N/vrEZrEmBEVhdl2g==
+X-Google-Smtp-Source: ABdhPJyHPm9O3wkh7JZ6u0DEVaNnU3GqZO5vw/S+tBPm5AXz0/1G/C3ZbR8ZP3R+EG2BDhICxCw1Rg==
+X-Received: by 2002:a7b:c7d3:: with SMTP id z19mr9261970wmk.4.1605866171520;
+        Fri, 20 Nov 2020 01:56:11 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id t9sm4500208wrr.49.2020.11.20.01.56.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 01:56:10 -0800 (PST)
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+To:     DRI Development <dri-devel@lists.freedesktop.org>
+Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
+        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas_os@shipmail.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@mellanox.com>, linux-rdma@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: [PATCH 1/3] mm: Track mmu notifiers in fs_reclaim_acquire/release
+Date:   Fri, 20 Nov 2020 10:54:42 +0100
+Message-Id: <20201120095445.1195585-2-daniel.vetter@ffwll.ch>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201120095445.1195585-1-daniel.vetter@ffwll.ch>
+References: <20201120095445.1195585-1-daniel.vetter@ffwll.ch>
 MIME-Version: 1.0
-References: <CAHg0Huzvhg7ZizbCGQyyVNdnAWmQCsypRWvdBzm0GWwPzXD0dw@mail.gmail.com>
- <3b2f6267-e7a0-4266-867d-b0109d5a7cb4@acm.org> <CAHg0HuyGr8BfgBvXUG7N5WYyXKEzyh3i7eA=2XZxbW3zyXLTsA@mail.gmail.com>
- <cc14aa58-254e-5c33-89ab-6f3900143164@acm.org> <CAHg0HuxJ-v7WgqbU62zkihquN9Kyc9nPzGhcung+UyFOG7LECQ@mail.gmail.com>
- <a1446914-1388-40af-4204-5ef8b7618b42@acm.org>
-In-Reply-To: <a1446914-1388-40af-4204-5ef8b7618b42@acm.org>
-From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Date:   Fri, 20 Nov 2020 10:11:54 +0100
-Message-ID: <CAHg0Huy6U5hKUVjPt0PtZQJ2ur7gFveZjnq_MV-vE4hF2d6f0Q@mail.gmail.com>
-Subject: Re: [RFC] Reliable Multicast on top of RTRS
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     linux-rdma@vger.kernel.org, linux-block@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Bart,
+fs_reclaim_acquire/release nicely catch recursion issues when
+allocating GFP_KERNEL memory against shrinkers (which gpu drivers tend
+to use to keep the excessive caches in check). For mmu notifier
+recursions we do have lockdep annotations since 23b68395c7c7
+("mm/mmu_notifiers: add a lockdep map for invalidate_range_start/end").
 
-On Sun, Sep 27, 2020 at 2:03 AM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 2020-09-09 04:42, Danil Kipnis wrote:
-> > On Fri, Sep 4, 2020 at 5:33 PM Bart Van Assche <bvanassche@acm.org> wrote:
-> >> On 2020-09-04 04:35, Danil Kipnis wrote:
-> >>> On Thu, Sep 3, 2020 at 1:07 AM Bart Van Assche <bvanassche@acm.org> wrote:
-> >>>> How will it be guaranteed that the resulting software does
-> >>>> not suffer from the problems that have been solved by the introduction
-> >>>> of the DRBD activity log
-> >>>> (https://www.linbit.com/drbd-user-guide/users-guide-drbd-8-4/#s-activity-log)?
-> >>>
-> >>> The above would require some kind of activity log also, I'm afraid.
-> >>
-> >> How about collaborating with the DRBD team? My concern is that otherwise
-> >> we will end up with two drivers in the kernel that implement block device
-> >> replication between servers connected over a network.
-> >
-> > I have two general understanding questions:
-> > - What is the conceptual difference between DRBD and an md-raid1 with
-> > one local leg and one remote (imported over srp/nvmeof/rnbd)?
->
-> I'm not sure there is a conceptual difference. But there will be a big
-> difference in recovery speed after a temporary network outage (assuming that
-> the md-raid write intent bitmap has been disabled).
+But these only fire if a path actually results in some pte
+invalidation - for most small allocations that's very rarely the case.
+The other trouble is that pte invalidation can happen any time when
+__GFP_RECLAIM is set. Which means only really GFP_ATOMIC is a safe
+choice, GFP_NOIO isn't good enough to avoid potential mmu notifier
+recursion.
 
-I think RMR is conceptually different to either of the setups
-(drbd or md-raid over srp/iser/nvmeof/rnbd devices) in the sense that
-the logic required for replication policies (coding) is present inside rdma
-subsystem which would allow to potentially offload it to underlying
-rdma devices. The user of the rdma enabled devices can then utilize
-them for both: block io transport and replication.
+I was pondering whether we should just do the general annotation, but
+there's always the risk for false positives. Plus I'm assuming that
+the core fs and io code is a lot better reviewed and tested than
+random mmu notifier code in drivers. Hence why I decide to only
+annotate for that specific case.
 
-Another difference is that one can put a volume manager on top of RMR and
-have it work as a distributed one.
+Furthermore even if we'd create a lockdep map for direct reclaim, we'd
+still need to explicit pull in the mmu notifier map - there's a lot
+more places that do pte invalidation than just direct reclaim, these
+two contexts arent the same.
 
->
-> > - Is this possible to setup an md-raid1 on a client sitting on top of
-> > two remote DRBD devices, which are configured in "active-active" mode?
->
-> I don't think that DRBD supports this. From the DRBD source code:
-> "this code path is to recover from a situation that "should not happen":
-> concurrent writes in multi-primary setup."
+Note that the mmu notifiers needing their own independent lockdep map
+is also the reason we can't hold them from fs_reclaim_acquire to
+fs_reclaim_release - it would nest with the acquistion in the pte
+invalidation code, causing a lockdep splat. And we can't remove the
+annotations from pte invalidation and all the other places since
+they're called from many other places than page reclaim. Hence we can
+only do the equivalent of might_lock, but on the raw lockdep map.
 
-This means md-raid on top of two block devices imported over rdma has write
-latency twice shorter (while having recovery latency twice as high) as drbd.
-RMR would allow for having single hop for both: write IO and resync IO.
+With this we can also remove the lockdep priming added in 66204f1d2d1b
+("mm/mmu_notifiers: prime lockdep") since the new annotations are
+strictly more powerful.
 
-Thank you,
-Danil.
+v2: Review from Thomas Hellstrom:
+- unbotch the fs_reclaim context check, I accidentally inverted it,
+  but it didn't blow up because I inverted it immediately
+- fix compiling for !CONFIG_MMU_NOTIFIER
+
+v3: Unbreak the PF_MEMALLOC_ context flags. Thanks to Qian for the
+report and Dave for explaining what I failed to see.
+
+Cc: linux-fsdevel@vger.kernel.org
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Qian Cai <cai@lca.pw>
+Cc: linux-xfs@vger.kernel.org
+Cc: Thomas Hellström (Intel) <thomas_os@shipmail.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jason Gunthorpe <jgg@mellanox.com>
+Cc: linux-mm@kvack.org
+Cc: linux-rdma@vger.kernel.org
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Christian König <christian.koenig@amd.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+---
+ mm/mmu_notifier.c |  7 -------
+ mm/page_alloc.c   | 31 ++++++++++++++++++++-----------
+ 2 files changed, 20 insertions(+), 18 deletions(-)
+
+diff --git a/mm/mmu_notifier.c b/mm/mmu_notifier.c
+index 5654dd19addc..61ee40ed804e 100644
+--- a/mm/mmu_notifier.c
++++ b/mm/mmu_notifier.c
+@@ -612,13 +612,6 @@ int __mmu_notifier_register(struct mmu_notifier *subscription,
+ 	mmap_assert_write_locked(mm);
+ 	BUG_ON(atomic_read(&mm->mm_users) <= 0);
+ 
+-	if (IS_ENABLED(CONFIG_LOCKDEP)) {
+-		fs_reclaim_acquire(GFP_KERNEL);
+-		lock_map_acquire(&__mmu_notifier_invalidate_range_start_map);
+-		lock_map_release(&__mmu_notifier_invalidate_range_start_map);
+-		fs_reclaim_release(GFP_KERNEL);
+-	}
+-
+ 	if (!mm->notifier_subscriptions) {
+ 		/*
+ 		 * kmalloc cannot be called under mm_take_all_locks(), but we
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 23f5066bd4a5..ff0f9a84b8de 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -57,6 +57,7 @@
+ #include <trace/events/oom.h>
+ #include <linux/prefetch.h>
+ #include <linux/mm_inline.h>
++#include <linux/mmu_notifier.h>
+ #include <linux/migrate.h>
+ #include <linux/hugetlb.h>
+ #include <linux/sched/rt.h>
+@@ -4264,10 +4265,8 @@ should_compact_retry(struct alloc_context *ac, unsigned int order, int alloc_fla
+ static struct lockdep_map __fs_reclaim_map =
+ 	STATIC_LOCKDEP_MAP_INIT("fs_reclaim", &__fs_reclaim_map);
+ 
+-static bool __need_fs_reclaim(gfp_t gfp_mask)
++static bool __need_reclaim(gfp_t gfp_mask)
+ {
+-	gfp_mask = current_gfp_context(gfp_mask);
+-
+ 	/* no reclaim without waiting on it */
+ 	if (!(gfp_mask & __GFP_DIRECT_RECLAIM))
+ 		return false;
+@@ -4276,10 +4275,6 @@ static bool __need_fs_reclaim(gfp_t gfp_mask)
+ 	if (current->flags & PF_MEMALLOC)
+ 		return false;
+ 
+-	/* We're only interested __GFP_FS allocations for now */
+-	if (!(gfp_mask & __GFP_FS))
+-		return false;
+-
+ 	if (gfp_mask & __GFP_NOLOCKDEP)
+ 		return false;
+ 
+@@ -4298,15 +4293,29 @@ void __fs_reclaim_release(void)
+ 
+ void fs_reclaim_acquire(gfp_t gfp_mask)
+ {
+-	if (__need_fs_reclaim(gfp_mask))
+-		__fs_reclaim_acquire();
++	gfp_mask = current_gfp_context(gfp_mask);
++
++	if (__need_reclaim(gfp_mask)) {
++		if (gfp_mask & __GFP_FS)
++			__fs_reclaim_acquire();
++
++#ifdef CONFIG_MMU_NOTIFIER
++		lock_map_acquire(&__mmu_notifier_invalidate_range_start_map);
++		lock_map_release(&__mmu_notifier_invalidate_range_start_map);
++#endif
++
++	}
+ }
+ EXPORT_SYMBOL_GPL(fs_reclaim_acquire);
+ 
+ void fs_reclaim_release(gfp_t gfp_mask)
+ {
+-	if (__need_fs_reclaim(gfp_mask))
+-		__fs_reclaim_release();
++	gfp_mask = current_gfp_context(gfp_mask);
++
++	if (__need_reclaim(gfp_mask)) {
++		if (gfp_mask & __GFP_FS)
++			__fs_reclaim_release();
++	}
+ }
+ EXPORT_SYMBOL_GPL(fs_reclaim_release);
+ #endif
+-- 
+2.29.2
+
