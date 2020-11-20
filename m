@@ -2,99 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623112BB381
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Nov 2020 19:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C0E2BB3D6
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Nov 2020 19:39:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730371AbgKTSfG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Nov 2020 13:35:06 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:43836 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730845AbgKTSfG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Nov 2020 13:35:06 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AKIOr1i170968;
-        Fri, 20 Nov 2020 18:35:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=SYZwxIozdmOnycvEDobbRvfnI59VjJJebvX1yBnruUY=;
- b=ZHGraGFpM4XipsRSv5VYP3liLW9DvtoSz+6YHktqYJHbipTuEuKW89ChRClbVayjIjT4
- WQZSUsAdOXpbezRwO2fUWATfd1UtlH19DHcTQ+NTovzKqw7PfC5GarZs+G7ZvonOiTPo
- AhqDrdPPpqErSMFEUNYxpdjUcKbeFhzxEk6OAfhOqhj+vThiSGbjX2YnepXq98VqaUGJ
- iDSiLrUB1dr3aPTeQjLku9wsjBL+RVOLuq6fg/n6C1VIqljBwMQnJM2CgcbTZOXRegWc
- R5rXnSVIgGYKPFyoyagoVmVlYKEF9pm1rlWN5WtH2HqfaUIj03sqQ/GMaTIlMVVg1BxK /A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34t76mc2e5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 20 Nov 2020 18:35:03 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AKIPgb7070093;
-        Fri, 20 Nov 2020 18:35:03 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 34umd3sxyj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Nov 2020 18:35:03 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AKIZ1Hd015643;
-        Fri, 20 Nov 2020 18:35:02 GMT
-Received: from dhcp-10-175-168-234.vpn.oracle.com (/10.175.168.234)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 20 Nov 2020 10:35:01 -0800
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: Is there a working cache for path record and lids etc for
- librdmacm?
-From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
-In-Reply-To: <alpine.DEB.2.22.394.2011201805000.248138@www.lameter.com>
-Date:   Fri, 20 Nov 2020 19:34:59 +0100
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Mark Haywood <mark.haywood@oracle.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <6F632AE0-7921-4C5F-8455-F8E9390BD071@oracle.com>
-References: <alpine.DEB.2.22.394.2011170253150.206345@www.lameter.com>
- <20201117193329.GH244516@ziepe.ca>
- <alpine.DEB.2.22.394.2011201805000.248138@www.lameter.com>
-To:     Christopher Lameter <cl@linux.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9811 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 mlxscore=0 phishscore=0
- spamscore=0 bulkscore=0 mlxlogscore=778 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011200126
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9811 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 phishscore=0
- adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1011 mlxlogscore=789
- malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011200126
+        id S1731341AbgKTSin (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Nov 2020 13:38:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730900AbgKTSim (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:38:42 -0500
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21C4121D91;
+        Fri, 20 Nov 2020 18:38:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605897522;
+        bh=VTHRslqAi1uoY+aDcHnLLFPLWt88Db72fhwgoQKvPB8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ILXKx4tvUfne0yLrwW0TBzswhYbTvB4M69NonHE7gnhRnu6jTk2ZaRg1IrB/978Rd
+         UPLF8XOHWiVmGhKJvoM7KB45O5d8bamDNSEfly7bCamk81+jIil7rB6PDoCkBl5B6V
+         djUyZCiDABEkJwwmyFLcBcY66tOFHKog24H64wiM=
+Date:   Fri, 20 Nov 2020 12:38:47 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH 115/141] rds: Fix fall-through warnings for Clang
+Message-ID: <7af5923b0293ec5715d17c2290664ca1a6552b1b.1605896060.git.gustavoars@kernel.org>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1605896059.git.gustavoars@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+warnings by explicitly adding multiple break statements instead of
+letting the code fall through to the next case.
 
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ net/rds/tcp_connect.c | 1 +
+ net/rds/threads.c     | 2 ++
+ 2 files changed, 3 insertions(+)
 
-> On 20 Nov 2020, at 19:05, Christopher Lameter <cl@linux.com> wrote:
->=20
-> On Tue, 17 Nov 2020, Jason Gunthorpe wrote:
->=20
->> If it really doesn't work at all any more we should delete it from
->> rdma-core if nobody is interested to fix it.
->>=20
->> Haakon and Mark had stepped up to maintain it a while ago because =
-they
->> were using it internally, so I'm surprised to hear it is broken.
->=20
-> Oh great. I did not know. Will work with them to get things sorted =
-out.
-
-Inside Oracle, we're only using it for resolving IB routes. A cache for =
-address resolution already exists in the kernel. There is a config =
-option to disable address resolution from user-space =
-(acme_plus_kernel_only).
-
-
-Thxs, H=C3=A5kon
-
+diff --git a/net/rds/tcp_connect.c b/net/rds/tcp_connect.c
+index 4e64598176b0..5461d77fff4f 100644
+--- a/net/rds/tcp_connect.c
++++ b/net/rds/tcp_connect.c
+@@ -78,6 +78,7 @@ void rds_tcp_state_change(struct sock *sk)
+ 	case TCP_CLOSE_WAIT:
+ 	case TCP_CLOSE:
+ 		rds_conn_path_drop(cp, false);
++		break;
+ 	default:
+ 		break;
+ 	}
+diff --git a/net/rds/threads.c b/net/rds/threads.c
+index 32dc50f0a303..1f424cbfcbb4 100644
+--- a/net/rds/threads.c
++++ b/net/rds/threads.c
+@@ -208,6 +208,7 @@ void rds_send_worker(struct work_struct *work)
+ 		case -ENOMEM:
+ 			rds_stats_inc(s_send_delayed_retry);
+ 			queue_delayed_work(rds_wq, &cp->cp_send_w, 2);
++			break;
+ 		default:
+ 			break;
+ 		}
+@@ -232,6 +233,7 @@ void rds_recv_worker(struct work_struct *work)
+ 		case -ENOMEM:
+ 			rds_stats_inc(s_recv_delayed_retry);
+ 			queue_delayed_work(rds_wq, &cp->cp_recv_w, 2);
++			break;
+ 		default:
+ 			break;
+ 		}
+-- 
+2.27.0
 
