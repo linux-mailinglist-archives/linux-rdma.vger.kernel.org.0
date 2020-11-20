@@ -2,664 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB552BB9BB
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Nov 2020 00:11:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9C12BBA6A
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Nov 2020 00:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728726AbgKTXLC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Nov 2020 18:11:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728559AbgKTXLC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Nov 2020 18:11:02 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86E2C0613CF
-        for <linux-rdma@vger.kernel.org>; Fri, 20 Nov 2020 15:11:00 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id i13so8592818pgm.9
-        for <linux-rdma@vger.kernel.org>; Fri, 20 Nov 2020 15:11:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=PBVpUm+a8y3bX5fmv47DsqQpsT8fuAgPMf5KNdVmJ7k=;
-        b=gpVcy7kcV4rB8A+udHHvBJb8f2amYn/FSQBSqTC/oEuzZXUvKaPG7Gnrndc9bP25Hr
-         1Rk3wJ3dMfjkQrJsnJ/nRM/1KYC7UguaVb+uaP3ZoFu2hriwUhmzGsrPURdzPMQ++tnM
-         7RZXpRDYq6i17RMV47pZlsTphAMPDxTJnS8qRs65xR/JUBdwtDqYDZJwBPwAFvNCe42I
-         IK2UsL95vnGVqME9jQjmAT2Z25CbYWFacfZgUM5x1xx2cMusp+RgSHVSlZB6fKjFmfMP
-         ebU+ncXxJ5WgF6V8TkkmkKbqZDAd5hDUARXSh/h22IGgMbfQLKa8jIyPtLLVdpC9WgwI
-         Ge2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=PBVpUm+a8y3bX5fmv47DsqQpsT8fuAgPMf5KNdVmJ7k=;
-        b=mqpSOFBC7Rh+O9VBzmxUTRTYSIcFURSV0Iaq/dz7OsNbVtUkUDUmyrQwRrd24nCD2d
-         3LGfY/wnbpvLsn15R8dCrcFibA1aJmMBq6gPNyXAGZtKPK//9VEnA8/VfuRuzqpLHhl2
-         Hh6hSS29wQJNlSfqVcokc2ZmWjStlKTLtpFDu5At7yMdzHTkFFtA148U3ONhdih49LHr
-         2gnP2dr/7Ch7f3uITStIu65Wb/Ns/CBq/5gQmqlBI8vTwQP7WUMPqB9DXAWJ6p28mrvP
-         zAT5+ctzz1Td6OugcyToKU16Do11ZqHku2V49swLnjm/7B69YXGWrDMQbPGI5XzuNohc
-         7JtQ==
-X-Gm-Message-State: AOAM532y7PKAlLfXoGyXlS2biGeXV2NkX5Vy9ISDnMjCy0bKuRRta+jk
-        yjTUyCprYunX+gT3WnV+n39HWg==
-X-Google-Smtp-Source: ABdhPJwGB5568h6MzRGYBjOY3rbFSEhWHWZ41bvtSLcW9hpiWoneSJLyQ1qjyTWFxlfQjEORJ/KzOA==
-X-Received: by 2002:a63:5963:: with SMTP id j35mr18314299pgm.55.1605913860216;
-        Fri, 20 Nov 2020 15:11:00 -0800 (PST)
-Received: from Shannons-MacBook-Pro.local (static-50-53-47-17.bvtn.or.frontiernet.net. [50.53.47.17])
-        by smtp.gmail.com with ESMTPSA id 26sm4227899pgm.92.2020.11.20.15.10.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 15:10:59 -0800 (PST)
-Subject: Re: [PATCH net-next] net: don't include ethtool.h from netdevice.h
-To:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net
-Cc:     netdev@vger.kernel.org, andrew@lunn.ch, mkubecek@suse.cz,
-        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org
-References: <20201120221328.1422925-1-kuba@kernel.org>
-From:   Shannon Nelson <snelson@pensando.io>
-Message-ID: <94a796a2-cb4b-8edb-8f8e-12f207b7adf7@pensando.io>
-Date:   Fri, 20 Nov 2020 15:10:57 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.1
-MIME-Version: 1.0
-In-Reply-To: <20201120221328.1422925-1-kuba@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S1727364AbgKTX4j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Nov 2020 18:56:39 -0500
+Received: from mga05.intel.com ([192.55.52.43]:44944 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726587AbgKTX4j (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 20 Nov 2020 18:56:39 -0500
+IronPort-SDR: Ah9cBt2+wpGoxtpj+SzQLwvi7HBtTrZTGWfVDfEWPNG2yVHTnXcEPaNKF97VIrLtsNU+wFd8Hz
+ zGFh+8Zd7REg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9811"; a="256268669"
+X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
+   d="scan'208";a="256268669"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 15:56:38 -0800
+IronPort-SDR: BkLj09hIScDBszO0gb6IvpY6b9W7IPeyk18DkoRShKqOZPmtX7SdFw8e9UIMItdCTQ1h3Yjx+A
+ DoFcbZKqY6dA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
+   d="scan'208";a="369381626"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga007.jf.intel.com with ESMTP; 20 Nov 2020 15:56:37 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 20 Nov 2020 15:56:37 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 20 Nov 2020 15:56:36 -0800
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.1713.004;
+ Fri, 20 Nov 2020 15:56:36 -0800
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>, zhudi <zhudi21@huawei.com>
+CC:     "Latif, Faisal" <faisal.latif@intel.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "rose.chen@huawei.com" <rose.chen@huawei.com>
+Subject: RE: [PATCH] RDMA/i40iw: Fix a mmap handler exploitation
+Thread-Topic: [PATCH] RDMA/i40iw: Fix a mmap handler exploitation
+Thread-Index: AQHWvldctEnc/TWp0kmNUaS0awe+t6nQO9wAgAD8xSA=
+Date:   Fri, 20 Nov 2020 23:56:36 +0000
+Message-ID: <9edd382c89c64c988b8833f22fe027ba@intel.com>
+References: <20201119093523.7588-1-zhudi21@huawei.com>
+ <20201119172712.GA1973356@nvidia.com>
+In-Reply-To: <20201119172712.GA1973356@nvidia.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/20/20 2:13 PM, Jakub Kicinski wrote:
-> linux/netdevice.h is included in very many places, touching any
-> of its dependecies causes large incremental builds.
->
-> Drop the linux/ethtool.h include, linux/netdevice.h just needs
-> a forward declaration of struct ethtool_ops.
->
-> Fix all the places which made use of this implicit include.
->
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> ---
->   drivers/isdn/capi/capi.c                                 | 1 +
->   drivers/media/pci/ttpci/av7110_av.c                      | 1 +
->   drivers/net/bonding/bond_procfs.c                        | 1 +
->   drivers/net/can/usb/gs_usb.c                             | 1 +
->   drivers/net/ethernet/amazon/ena/ena_ethtool.c            | 1 +
->   drivers/net/ethernet/aquantia/atlantic/aq_nic.h          | 2 ++
->   drivers/net/ethernet/broadcom/bnxt/bnxt.h                | 1 +
->   drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c          | 1 +
->   drivers/net/ethernet/cavium/liquidio/lio_ethtool.c       | 1 +
->   drivers/net/ethernet/cavium/thunder/nicvf_ethtool.c      | 1 +
->   drivers/net/ethernet/chelsio/cxgb4/cxgb4.h               | 1 +
->   drivers/net/ethernet/chelsio/cxgb4vf/t4vf_hw.c           | 1 +
->   drivers/net/ethernet/google/gve/gve_ethtool.c            | 1 +
->   drivers/net/ethernet/hisilicon/hns3/hnae3.h              | 1 +
->   drivers/net/ethernet/huawei/hinic/hinic_port.h           | 1 +
->   drivers/net/ethernet/intel/fm10k/fm10k_ethtool.c         | 1 +
->   drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h | 1 +
->   drivers/net/ethernet/mellanox/mlx4/mlx4_en.h             | 1 +
->   drivers/net/ethernet/mellanox/mlxsw/spectrum.h           | 1 +
->   drivers/net/ethernet/mellanox/mlxsw/switchx2.c           | 1 +
->   drivers/net/ethernet/pensando/ionic/ionic_lif.c          | 1 +
->   drivers/net/ethernet/pensando/ionic/ionic_stats.c        | 1 +
-
-Acked-by: Shannon Nelson <snelson@pensando.io>
-
->   drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c          | 1 +
->   drivers/net/geneve.c                                     | 1 +
->   drivers/net/hyperv/netvsc_drv.c                          | 1 +
->   drivers/net/hyperv/rndis_filter.c                        | 1 +
->   drivers/net/ipvlan/ipvlan_main.c                         | 2 ++
->   drivers/net/nlmon.c                                      | 1 +
->   drivers/net/team/team.c                                  | 1 +
->   drivers/net/vrf.c                                        | 1 +
->   drivers/net/vsockmon.c                                   | 1 +
->   drivers/scsi/bnx2fc/bnx2fc_fcoe.c                        | 2 ++
->   drivers/scsi/fcoe/fcoe_transport.c                       | 1 +
->   drivers/staging/fsl-dpaa2/ethsw/ethsw-ethtool.c          | 2 ++
->   drivers/staging/wimax/i2400m/usb.c                       | 1 +
->   include/linux/netdevice.h                                | 2 +-
->   include/linux/qed/qed_if.h                               | 1 +
->   include/net/cfg80211.h                                   | 1 +
->   include/rdma/ib_addr.h                                   | 1 +
->   include/rdma/ib_verbs.h                                  | 1 +
->   net/packet/af_packet.c                                   | 1 +
->   net/sched/sch_cbs.c                                      | 1 +
->   net/sched/sch_taprio.c                                   | 1 +
->   net/socket.c                                             | 1 +
->   44 files changed, 48 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/isdn/capi/capi.c b/drivers/isdn/capi/capi.c
-> index 85767f52fe3c..fdf87acccd06 100644
-> --- a/drivers/isdn/capi/capi.c
-> +++ b/drivers/isdn/capi/capi.c
-> @@ -11,6 +11,7 @@
->   
->   #include <linux/compiler.h>
->   #include <linux/module.h>
-> +#include <linux/ethtool.h>
->   #include <linux/errno.h>
->   #include <linux/kernel.h>
->   #include <linux/major.h>
-> diff --git a/drivers/media/pci/ttpci/av7110_av.c b/drivers/media/pci/ttpci/av7110_av.c
-> index ea9f7d0058a2..91f4866c7e59 100644
-> --- a/drivers/media/pci/ttpci/av7110_av.c
-> +++ b/drivers/media/pci/ttpci/av7110_av.c
-> @@ -11,6 +11,7 @@
->    * the project's page is at https://linuxtv.org
->    */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/types.h>
->   #include <linux/kernel.h>
->   #include <linux/string.h>
-> diff --git a/drivers/net/bonding/bond_procfs.c b/drivers/net/bonding/bond_procfs.c
-> index fd5c9cbe45b1..56d34be5e797 100644
-> --- a/drivers/net/bonding/bond_procfs.c
-> +++ b/drivers/net/bonding/bond_procfs.c
-> @@ -1,5 +1,6 @@
->   // SPDX-License-Identifier: GPL-2.0
->   #include <linux/proc_fs.h>
-> +#include <linux/ethtool.h>
->   #include <linux/export.h>
->   #include <net/net_namespace.h>
->   #include <net/netns/generic.h>
-> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-> index 3005157059ca..853c7b22aaef 100644
-> --- a/drivers/net/can/usb/gs_usb.c
-> +++ b/drivers/net/can/usb/gs_usb.c
-> @@ -9,6 +9,7 @@
->    * Many thanks to all socketcan devs!
->    */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/init.h>
->   #include <linux/signal.h>
->   #include <linux/module.h>
-> diff --git a/drivers/net/ethernet/amazon/ena/ena_ethtool.c b/drivers/net/ethernet/amazon/ena/ena_ethtool.c
-> index 3b2cd28f962d..6cdd9efe8df3 100644
-> --- a/drivers/net/ethernet/amazon/ena/ena_ethtool.c
-> +++ b/drivers/net/ethernet/amazon/ena/ena_ethtool.c
-> @@ -3,6 +3,7 @@
->    * Copyright 2015-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
->    */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/pci.h>
->   
->   #include "ena_netdev.h"
-> diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_nic.h b/drivers/net/ethernet/aquantia/atlantic/aq_nic.h
-> index 926cca9a0c83..1a7148041e3d 100644
-> --- a/drivers/net/ethernet/aquantia/atlantic/aq_nic.h
-> +++ b/drivers/net/ethernet/aquantia/atlantic/aq_nic.h
-> @@ -10,6 +10,8 @@
->   #ifndef AQ_NIC_H
->   #define AQ_NIC_H
->   
-> +#include <linux/ethtool.h>
-> +
->   #include "aq_common.h"
->   #include "aq_rss.h"
->   #include "aq_hw.h"
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-> index 47b3c3127879..950ea26ae0d2 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-> @@ -20,6 +20,7 @@
->   #define DRV_VER_MIN	10
->   #define DRV_VER_UPD	1
->   
-> +#include <linux/ethtool.h>
->   #include <linux/interrupt.h>
->   #include <linux/rhashtable.h>
->   #include <linux/crash_dump.h>
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c
-> index 23b80aa171dd..a217316228f4 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c
-> @@ -8,6 +8,7 @@
->    * the Free Software Foundation.
->    */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/module.h>
->   #include <linux/pci.h>
->   #include <linux/netdevice.h>
-> diff --git a/drivers/net/ethernet/cavium/liquidio/lio_ethtool.c b/drivers/net/ethernet/cavium/liquidio/lio_ethtool.c
-> index 16eebfc52109..66f2c553370c 100644
-> --- a/drivers/net/ethernet/cavium/liquidio/lio_ethtool.c
-> +++ b/drivers/net/ethernet/cavium/liquidio/lio_ethtool.c
-> @@ -15,6 +15,7 @@
->    * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
->    * NONINFRINGEMENT.  See the GNU General Public License for more details.
->    ***********************************************************************/
-> +#include <linux/ethtool.h>
->   #include <linux/netdevice.h>
->   #include <linux/net_tstamp.h>
->   #include <linux/pci.h>
-> diff --git a/drivers/net/ethernet/cavium/thunder/nicvf_ethtool.c b/drivers/net/ethernet/cavium/thunder/nicvf_ethtool.c
-> index c7bdac79299a..2f218fbfed06 100644
-> --- a/drivers/net/ethernet/cavium/thunder/nicvf_ethtool.c
-> +++ b/drivers/net/ethernet/cavium/thunder/nicvf_ethtool.c
-> @@ -5,6 +5,7 @@
->   
->   /* ETHTOOL Support for VNIC_VF Device*/
->   
-> +#include <linux/ethtool.h>
->   #include <linux/pci.h>
->   #include <linux/net_tstamp.h>
->   
-> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h b/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h
-> index 27308600da15..8e681ce72d62 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h
-> +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h
-> @@ -39,6 +39,7 @@
->   
->   #include <linux/bitops.h>
->   #include <linux/cache.h>
-> +#include <linux/ethtool.h>
->   #include <linux/interrupt.h>
->   #include <linux/list.h>
->   #include <linux/netdevice.h>
-> diff --git a/drivers/net/ethernet/chelsio/cxgb4vf/t4vf_hw.c b/drivers/net/ethernet/chelsio/cxgb4vf/t4vf_hw.c
-> index cd8f9a481d73..d546993bda09 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb4vf/t4vf_hw.c
-> +++ b/drivers/net/ethernet/chelsio/cxgb4vf/t4vf_hw.c
-> @@ -33,6 +33,7 @@
->    * SOFTWARE.
->    */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/pci.h>
->   
->   #include "t4vf_common.h"
-> diff --git a/drivers/net/ethernet/google/gve/gve_ethtool.c b/drivers/net/ethernet/google/gve/gve_ethtool.c
-> index 7b44769bd87c..2fb197fd3daf 100644
-> --- a/drivers/net/ethernet/google/gve/gve_ethtool.c
-> +++ b/drivers/net/ethernet/google/gve/gve_ethtool.c
-> @@ -4,6 +4,7 @@
->    * Copyright (C) 2015-2019 Google, Inc.
->    */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/rtnetlink.h>
->   #include "gve.h"
->   #include "gve_adminq.h"
-> diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-> index f9d4d234a2af..8cb8f9eb354f 100644
-> --- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-> +++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-> @@ -25,6 +25,7 @@
->   #include <linux/dcbnl.h>
->   #include <linux/delay.h>
->   #include <linux/device.h>
-> +#include <linux/ethtool.h>
->   #include <linux/module.h>
->   #include <linux/netdevice.h>
->   #include <linux/pci.h>
-> diff --git a/drivers/net/ethernet/huawei/hinic/hinic_port.h b/drivers/net/ethernet/huawei/hinic/hinic_port.h
-> index 9c3cbe45c9ec..c9ae3d4dc547 100644
-> --- a/drivers/net/ethernet/huawei/hinic/hinic_port.h
-> +++ b/drivers/net/ethernet/huawei/hinic/hinic_port.h
-> @@ -8,6 +8,7 @@
->   #define HINIC_PORT_H
->   
->   #include <linux/types.h>
-> +#include <linux/ethtool.h>
->   #include <linux/etherdevice.h>
->   #include <linux/bitops.h>
->   
-> diff --git a/drivers/net/ethernet/intel/fm10k/fm10k_ethtool.c b/drivers/net/ethernet/intel/fm10k/fm10k_ethtool.c
-> index 908fefaa6b85..66776ba7bfb6 100644
-> --- a/drivers/net/ethernet/intel/fm10k/fm10k_ethtool.c
-> +++ b/drivers/net/ethernet/intel/fm10k/fm10k_ethtool.c
-> @@ -1,6 +1,7 @@
->   // SPDX-License-Identifier: GPL-2.0
->   /* Copyright(c) 2013 - 2019 Intel Corporation. */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/vmalloc.h>
->   
->   #include "fm10k.h"
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-> index b18b45d02165..724040743a6d 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-> @@ -11,6 +11,7 @@
->   #ifndef OTX2_COMMON_H
->   #define OTX2_COMMON_H
->   
-> +#include <linux/ethtool.h>
->   #include <linux/pci.h>
->   #include <linux/iommu.h>
->   #include <linux/net_tstamp.h>
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-> index a46efe37cfa9..6e02910f7692 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-> +++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-> @@ -36,6 +36,7 @@
->   
->   #include <linux/bitops.h>
->   #include <linux/compiler.h>
-> +#include <linux/ethtool.h>
->   #include <linux/list.h>
->   #include <linux/mutex.h>
->   #include <linux/netdevice.h>
-> diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum.h b/drivers/net/ethernet/mellanox/mlxsw/spectrum.h
-> index 74b3959b36d4..642099fee380 100644
-> --- a/drivers/net/ethernet/mellanox/mlxsw/spectrum.h
-> +++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum.h
-> @@ -4,6 +4,7 @@
->   #ifndef _MLXSW_SPECTRUM_H
->   #define _MLXSW_SPECTRUM_H
->   
-> +#include <linux/ethtool.h>
->   #include <linux/types.h>
->   #include <linux/netdevice.h>
->   #include <linux/rhashtable.h>
-> diff --git a/drivers/net/ethernet/mellanox/mlxsw/switchx2.c b/drivers/net/ethernet/mellanox/mlxsw/switchx2.c
-> index 5023d91269f4..40e2e79d4517 100644
-> --- a/drivers/net/ethernet/mellanox/mlxsw/switchx2.c
-> +++ b/drivers/net/ethernet/mellanox/mlxsw/switchx2.c
-> @@ -6,6 +6,7 @@
->   #include <linux/types.h>
->   #include <linux/pci.h>
->   #include <linux/netdevice.h>
-> +#include <linux/ethtool.h>
->   #include <linux/etherdevice.h>
->   #include <linux/slab.h>
->   #include <linux/device.h>
-> diff --git a/drivers/net/ethernet/pensando/ionic/ionic_lif.c b/drivers/net/ethernet/pensando/ionic/ionic_lif.c
-> index deabd813e3fe..0afec2fa572d 100644
-> --- a/drivers/net/ethernet/pensando/ionic/ionic_lif.c
-> +++ b/drivers/net/ethernet/pensando/ionic/ionic_lif.c
-> @@ -1,6 +1,7 @@
->   // SPDX-License-Identifier: GPL-2.0
->   /* Copyright(c) 2017 - 2019 Pensando Systems, Inc */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/printk.h>
->   #include <linux/dynamic_debug.h>
->   #include <linux/netdevice.h>
-> diff --git a/drivers/net/ethernet/pensando/ionic/ionic_stats.c b/drivers/net/ethernet/pensando/ionic/ionic_stats.c
-> index ff20a2ac4c2f..6ae75b771a15 100644
-> --- a/drivers/net/ethernet/pensando/ionic/ionic_stats.c
-> +++ b/drivers/net/ethernet/pensando/ionic/ionic_stats.c
-> @@ -1,6 +1,7 @@
->   // SPDX-License-Identifier: GPL-2.0
->   /* Copyright(c) 2017 - 2019 Pensando Systems, Inc */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/kernel.h>
->   #include <linux/mutex.h>
->   #include <linux/netdevice.h>
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
-> index d58b51d277f1..ca1535ebb6e7 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
-> @@ -5,6 +5,7 @@
->    */
->   
->   #include <linux/etherdevice.h>
-> +#include <linux/ethtool.h>
->   #include <linux/if_arp.h>
->   #include <net/pkt_sched.h>
->   #include "rmnet_config.h"
-> diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
-> index a3c8ce6deb93..26fd3ab54406 100644
-> --- a/drivers/net/geneve.c
-> +++ b/drivers/net/geneve.c
-> @@ -7,6 +7,7 @@
->   
->   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
->   
-> +#include <linux/ethtool.h>
->   #include <linux/kernel.h>
->   #include <linux/module.h>
->   #include <linux/etherdevice.h>
-> diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-> index 261e6e55a907..d17bbc75f5e7 100644
-> --- a/drivers/net/hyperv/netvsc_drv.c
-> +++ b/drivers/net/hyperv/netvsc_drv.c
-> @@ -10,6 +10,7 @@
->   
->   #include <linux/init.h>
->   #include <linux/atomic.h>
-> +#include <linux/ethtool.h>
->   #include <linux/module.h>
->   #include <linux/highmem.h>
->   #include <linux/device.h>
-> diff --git a/drivers/net/hyperv/rndis_filter.c b/drivers/net/hyperv/rndis_filter.c
-> index b22e47bcfeca..2c2b55c32a7a 100644
-> --- a/drivers/net/hyperv/rndis_filter.c
-> +++ b/drivers/net/hyperv/rndis_filter.c
-> @@ -6,6 +6,7 @@
->    *   Haiyang Zhang <haiyangz@microsoft.com>
->    *   Hank Janssen  <hjanssen@microsoft.com>
->    */
-> +#include <linux/ethtool.h>
->   #include <linux/kernel.h>
->   #include <linux/sched.h>
->   #include <linux/wait.h>
-> diff --git a/drivers/net/ipvlan/ipvlan_main.c b/drivers/net/ipvlan/ipvlan_main.c
-> index 60b7d93bb834..a707502a0c0f 100644
-> --- a/drivers/net/ipvlan/ipvlan_main.c
-> +++ b/drivers/net/ipvlan/ipvlan_main.c
-> @@ -2,6 +2,8 @@
->   /* Copyright (c) 2014 Mahesh Bandewar <maheshb@google.com>
->    */
->   
-> +#include <linux/ethtool.h>
-> +
->   #include "ipvlan.h"
->   
->   static int ipvlan_set_port_mode(struct ipvl_port *port, u16 nval,
-> diff --git a/drivers/net/nlmon.c b/drivers/net/nlmon.c
-> index afb119f38325..5e19a6839dea 100644
-> --- a/drivers/net/nlmon.c
-> +++ b/drivers/net/nlmon.c
-> @@ -1,4 +1,5 @@
->   // SPDX-License-Identifier: GPL-2.0-only
-> +#include <linux/ethtool.h>
->   #include <linux/module.h>
->   #include <linux/kernel.h>
->   #include <linux/netdevice.h>
-> diff --git a/drivers/net/team/team.c b/drivers/net/team/team.c
-> index b4092127a92c..c19dac21c468 100644
-> --- a/drivers/net/team/team.c
-> +++ b/drivers/net/team/team.c
-> @@ -4,6 +4,7 @@
->    * Copyright (c) 2011 Jiri Pirko <jpirko@redhat.com>
->    */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/kernel.h>
->   #include <linux/types.h>
->   #include <linux/module.h>
-> diff --git a/drivers/net/vrf.c b/drivers/net/vrf.c
-> index f2793ffde191..f8d711a84763 100644
-> --- a/drivers/net/vrf.c
-> +++ b/drivers/net/vrf.c
-> @@ -9,6 +9,7 @@
->    * Based on dummy, team and ipvlan drivers
->    */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/module.h>
->   #include <linux/kernel.h>
->   #include <linux/netdevice.h>
-> diff --git a/drivers/net/vsockmon.c b/drivers/net/vsockmon.c
-> index e8563acf98e8..b1bb1b04b664 100644
-> --- a/drivers/net/vsockmon.c
-> +++ b/drivers/net/vsockmon.c
-> @@ -1,4 +1,5 @@
->   // SPDX-License-Identifier: GPL-2.0-only
-> +#include <linux/ethtool.h>
->   #include <linux/module.h>
->   #include <linux/kernel.h>
->   #include <linux/if_arp.h>
-> diff --git a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-> index 6890bbe04a8c..1528ef69a514 100644
-> --- a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-> +++ b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-> @@ -14,6 +14,8 @@
->    * Written by: Bhanu Prakash Gollapudi (bprakash@broadcom.com)
->    */
->   
-> +#include <linux/ethtool.h>
-> +
->   #include "bnx2fc.h"
->   
->   static struct list_head adapter_list;
-> diff --git a/drivers/scsi/fcoe/fcoe_transport.c b/drivers/scsi/fcoe/fcoe_transport.c
-> index 6e187d0e71fd..b927b3d84523 100644
-> --- a/drivers/scsi/fcoe/fcoe_transport.c
-> +++ b/drivers/scsi/fcoe/fcoe_transport.c
-> @@ -10,6 +10,7 @@
->   #include <linux/kernel.h>
->   #include <linux/list.h>
->   #include <linux/netdevice.h>
-> +#include <linux/ethtool.h>
->   #include <linux/errno.h>
->   #include <linux/crc32.h>
->   #include <scsi/libfcoe.h>
-> diff --git a/drivers/staging/fsl-dpaa2/ethsw/ethsw-ethtool.c b/drivers/staging/fsl-dpaa2/ethsw/ethsw-ethtool.c
-> index ace4a6d28562..ad55cd738847 100644
-> --- a/drivers/staging/fsl-dpaa2/ethsw/ethsw-ethtool.c
-> +++ b/drivers/staging/fsl-dpaa2/ethsw/ethsw-ethtool.c
-> @@ -7,6 +7,8 @@
->    *
->    */
->   
-> +#include <linux/ethtool.h>
-> +
->   #include "ethsw.h"
->   
->   static struct {
-> diff --git a/drivers/staging/wimax/i2400m/usb.c b/drivers/staging/wimax/i2400m/usb.c
-> index 3b84dd7b5567..f250d03ce7c7 100644
-> --- a/drivers/staging/wimax/i2400m/usb.c
-> +++ b/drivers/staging/wimax/i2400m/usb.c
-> @@ -51,6 +51,7 @@
->   #include "i2400m-usb.h"
->   #include "linux-wimax-i2400m.h"
->   #include <linux/debugfs.h>
-> +#include <linux/ethtool.h>
->   #include <linux/slab.h>
->   #include <linux/module.h>
->   
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index 03433a4c929e..0049e8fe4905 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -34,7 +34,6 @@
->   #include <linux/workqueue.h>
->   #include <linux/dynamic_queue_limits.h>
->   
-> -#include <linux/ethtool.h>
->   #include <net/net_namespace.h>
->   #ifdef CONFIG_DCB
->   #include <net/dcbnl.h>
-> @@ -51,6 +50,7 @@
->   
->   struct netpoll_info;
->   struct device;
-> +struct ethtool_ops;
->   struct phy_device;
->   struct dsa_port;
->   struct ip_tunnel_parm;
-> diff --git a/include/linux/qed/qed_if.h b/include/linux/qed/qed_if.h
-> index 57fb295ea41a..68d17a4fbf20 100644
-> --- a/include/linux/qed/qed_if.h
-> +++ b/include/linux/qed/qed_if.h
-> @@ -7,6 +7,7 @@
->   #ifndef _QED_IF_H
->   #define _QED_IF_H
->   
-> +#include <linux/ethtool.h>
->   #include <linux/types.h>
->   #include <linux/interrupt.h>
->   #include <linux/netdevice.h>
-> diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-> index ab249ca5d5d1..78c763dfc99a 100644
-> --- a/include/net/cfg80211.h
-> +++ b/include/net/cfg80211.h
-> @@ -10,6 +10,7 @@
->    * Copyright (C) 2018-2020 Intel Corporation
->    */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/netdevice.h>
->   #include <linux/debugfs.h>
->   #include <linux/list.h>
-> diff --git a/include/rdma/ib_addr.h b/include/rdma/ib_addr.h
-> index b0e636ac6690..d808dc3d239e 100644
-> --- a/include/rdma/ib_addr.h
-> +++ b/include/rdma/ib_addr.h
-> @@ -7,6 +7,7 @@
->   #ifndef IB_ADDR_H
->   #define IB_ADDR_H
->   
-> +#include <linux/ethtool.h>
->   #include <linux/in.h>
->   #include <linux/in6.h>
->   #include <linux/if_arp.h>
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index 9bf6c319a670..3883efd588aa 100644
-> --- a/include/rdma/ib_verbs.h
-> +++ b/include/rdma/ib_verbs.h
-> @@ -12,6 +12,7 @@
->   #ifndef IB_VERBS_H
->   #define IB_VERBS_H
->   
-> +#include <linux/ethtool.h>
->   #include <linux/types.h>
->   #include <linux/device.h>
->   #include <linux/dma-mapping.h>
-> diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-> index 62ebfaa7adcb..48a0ed836b46 100644
-> --- a/net/packet/af_packet.c
-> +++ b/net/packet/af_packet.c
-> @@ -46,6 +46,7 @@
->    *					Copyright (C) 2011, <lokec@ccs.neu.edu>
->    */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/types.h>
->   #include <linux/mm.h>
->   #include <linux/capability.h>
-> diff --git a/net/sched/sch_cbs.c b/net/sched/sch_cbs.c
-> index 2eaac2ff380f..459cc240eda9 100644
-> --- a/net/sched/sch_cbs.c
-> +++ b/net/sched/sch_cbs.c
-> @@ -50,6 +50,7 @@
->    *	locredit = max_frame_size * (sendslope / port_transmit_rate)
->    */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/module.h>
->   #include <linux/types.h>
->   #include <linux/kernel.h>
-> diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
-> index b0ad7687ee2c..26fb8a62996b 100644
-> --- a/net/sched/sch_taprio.c
-> +++ b/net/sched/sch_taprio.c
-> @@ -6,6 +6,7 @@
->    *
->    */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/types.h>
->   #include <linux/slab.h>
->   #include <linux/kernel.h>
-> diff --git a/net/socket.c b/net/socket.c
-> index 152b1dcf93c6..bfef11ba35b8 100644
-> --- a/net/socket.c
-> +++ b/net/socket.c
-> @@ -52,6 +52,7 @@
->    *	Based upon Swansea University Computer Society NET3.039
->    */
->   
-> +#include <linux/ethtool.h>
->   #include <linux/mm.h>
->   #include <linux/socket.h>
->   #include <linux/file.h>
-
+PiBTdWJqZWN0OiBSZTogW1BBVENIXSBSRE1BL2k0MGl3OiBGaXggYSBtbWFwIGhhbmRsZXIgZXhw
+bG9pdGF0aW9uDQo+IA0KPiBPbiBUaHUsIE5vdiAxOSwgMjAyMCBhdCAwNTozNToyM1BNICswODAw
+LCB6aHVkaSB3cm90ZToNCj4gPiBGcm9tOiBEaSBaaHUgPHpodWRpMjFAaHVhd2VpLmNvbT4NCj4g
+Pg0KPiA+IE5vdGljZSB0aGF0IGk0MGl3X21tYXAoKSBpcyB1c2VkIGFzIG1tYXAgZm9yIGZpbGUN
+Cj4gPiAvZGV2L2luZmluaWJhbmQvdXZlcmJzJWQgYW5kIHRoZXNlIGZpbGVzIGhhdmUgYWNjZXNz
+IG1vZGUgd2l0aCAwNjY2DQo+ID4gc3BlY2lmaWVkIGJ5IHV2ZXJic19kZXZub2RlKCkgYW5kIHZt
+YS0+dm1fcGdvZmYgaXMgZGlyZWN0bHkgdXNlZCB0bw0KPiA+IGNhbGN1bGF0ZSBwZm4gd2hpY2gg
+aXMgcGFzc2VkIGluIHJlbWFwX3Bmbl9yYW5nZSBmdW5jdGlvbiB3aXRob3V0IGFueQ0KPiA+IHZh
+bGlkIHZhbGlkYXRpb24uDQo+ID4NCj4gPiBUaGlzIHdvdWxkIHJlc3VsdCBpbiBhIG1hbGljaW91
+cyBwcm9jZXNzIGJlaW5nIGFibGUgdG8gcGFzcyBhbg0KPiA+IGFyYml0cmFyeSBwaHlzaWNhbCBh
+ZGRyZXNzIHRvIOKAmG1tYXDigJkgd2hpY2ggd291bGQgYWxsb3cgZm9yIGFjY2VzcyB0bw0KPiA+
+IGFsbCBvZiBrZXJuZWwgbWVtb3J5IGZyb20gdXNlciBzcGFjZSBhbmQgZXZlbnR1YWxseSBnYWlu
+IHJvb3QgcHJpdmlsZWdlcy4NCj4gPg0KPiA+IFNvLCB3ZSBzaG91bGQgY2hlY2sgd2hldGhlciBm
+aW5hbCBjYWxjdWxhdGVkIHZhbHVlIG9mIHZtX3Bnb2ZmIGlzIGluDQo+ID4gcmFuZ2Ugb2Ygc3Bl
+Y2lmaWVkIHBjaSByZXNvdXJjZSBiZWZvcmUgd2UgdXNlIGl0IHRvIGNhbGN1bGF0ZSBwZm4NCj4g
+PiB3aGljaCBpcyBwYXNzZWQgaW4gcmVtYXBfcGZuX3JhbmdlDQo+ID4NCj4gPiBTaWduZWQtb2Zm
+LWJ5OiBEaSBaaHUgPHpodWRpMjFAaHVhd2VpLmNvbT4NCj4gDQo+IG5lZWRzIGEgIGZpeGVzIGxp
+bmUNCj4gYW5kIGNjIHN0YWJsZQ0KPiANCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9pbmZpbmliYW5k
+L2h3L2k0MGl3L2k0MGl3X3ZlcmJzLmMgfCA0ICsrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDQg
+aW5zZXJ0aW9ucygrKQ0KPiANCg0KWy4uLl0NCg0KPiANCj4gSSBhbSB3aWxsaW5nIHRvIGFwcGx5
+IHRoaXMgaWYgU2hpcmF6IGNvbmZpcm1zIGl0IGlzIE9LDQoNCkkgYW0gb2sgd2l0aCBpdC4gQXQg
+bGVhc3QgaXQgcmVkdWNlcyB0aGUgc2V2ZXJpdHkgb2YgdGhlIGlzc3VlIOKYuQ0KDQo+IA0KPiBI
+b3dldmVyLCBpdCBpcyBub3QgdGhlIHJpZ2h0IGZpeC4gU2hpcmF6IHlvdSBuZWVkIHRvIHNlbmQg
+bWUgYSBwYXRjaCB0byBtYWtlIHByb3Blcg0KPiB1c2Ugb2YgdGhlIG5ldyBtbWFwIGNvb2tpZSBm
+cmFtZXdvcmsuDQo+IA0KPiBJIHNlZSBpbiB0aGUgdXNlcnNwYWNlIHRoZXJlIGFyZSBvbmx5IDMg
+YWNjZXB0YWJsZSB2YWx1ZXMgZm9yIG9mZnNldDoNCj4gDQo+IC0gMA0KPiAtIGk0MGl3X3VjcmVh
+dGVfcXBfcmVzcC0+cHVzaF9pZHggKyBJNDBJV19CQVNFX1BVU0hfUEFHRQ0KPiAtIGk0MGl3X3Vj
+cmVhdGVfcXBfcmVzcC0+cHVzaF9pZHggKyBJNDBJV19CQVNFX1BVU0hfUEFHRSArIDENCg0KVGhh
+dOKAmXMgcmlnaHQuIEJ1dC4uLnNlZSBiZWxvdw0KDQo+IA0KPiBTbyBjcmVhdGUgbW1hcCBjb29r
+aWVzIGZvciBvbmx5IHRob3NlIHZhbHVlcyBhbmQgZGVyaXZlIHRoZSBwZm4gb25seSBmcm9tIGVu
+dHJ5DQo+IGFmdGVyIGV4dHJhY3RpbmcgaXQgZnJvbSB0aGUgY29va2llLiBUaGlzIHNob3VsZCBh
+bHNvIGJlIGJsb2NraW5nIGFjY2VzcyB0byBwYXJ0cyBvZg0KPiB0aGUgQkFSIHRoZSBwcm9jZXNz
+IGlzIG5vdCBhbGxvd2VkIHRvIGFjY2Vzcy4NCj4gDQo+IEVGQSBoYXMgYSBwcmV0dHkgZWFzeSB0
+byBmb2xsb3cgZXhhbXBsZSBmb3IgdGhlIEFQSSBpbiBfX2VmYV9tbWFwOg0KPiANCj4gCXJkbWFf
+ZW50cnkgPSByZG1hX3VzZXJfbW1hcF9lbnRyeV9nZXQoJnVjb250ZXh0LT5pYnVjb250ZXh0LCB2
+bWEpOw0KPiBbLi5dDQo+IAlwZm4gPSBlbnRyeS0+YWRkcmVzcyA+PiBQQUdFX1NISUZUOw0KPiBb
+Li5dDQo+IAkJZXJyID0gcmRtYV91c2VyX21tYXBfaW8oJnVjb250ZXh0LT5pYnVjb250ZXh0LCB2
+bWEsIHBmbiwNCj4gCQkJCQllbnRyeS0+cmRtYV9lbnRyeS5ucGFnZXMgKiBQQUdFX1NJWkUsDQo+
+IAkJCQkJcGdwcm90X25vbmNhY2hlZCh2bWEtPnZtX3BhZ2VfcHJvdCksDQo+IAkJCQkJcmRtYV9l
+bnRyeSk7DQo+IA0KPiBlZmFfdXNlcl9tbWFwX2VudHJ5X2luc2VydCgpIHNob3dzIGhvdyB0byBn
+ZXQgdGhlIGNvb2tpZSB5b3UnZCByZXR1cm4gaW4NCj4gcHVzaF9pZHgsIGZvciBjb21wYXRhYmls
+aXR5IHlvdSdkIGhhdmUgdG8gbWFrZSBzb21lIGFkanVzdG1lbnRzIGhlcmUsIGJ1dCB0aGVyZQ0K
+PiBhcmUgQVBJcyBmb3IgdGhhdCB0b28sIG1seDUgaGFzIGV4YW1wbGVzLg0KPiANCg0KV2VsbCwg
+dGhlIHB1c2ggZmVhdHVyZSBpcyBkaXNhYmxlZCBieSBkZWZhdWx0IGFuZCB0b2RheSB0aGVyZSB3
+aWxsIGJlIG5vIHB1c2ggcGFnZSBtbWFwIGZyb20NCnVzZXItc3BhY2Ugc2luY2UgdXJlc3AucHVz
+aF9pZHggaXMgYW4gaW52YWxpZCBvbmUuIEl0cyBkaXNhYmxlZCBmb3IgZ29vZCByZWFzb24NCmFz
+IGl0cyBub3Qgd29ya2luZyBhcyBleHBlY3RlZC4gVGhlcmUgaXMgYW4gb3B0aW9uIHRvIHR1cm4g
+aXQgb24gdmlhIG1vZHVsZSBwYXJhbSBidXQgdGhhdA0KZG9lcyBub3Qgd29yayBhcyBleHBlY3Rl
+ZCBzdGlsbCByZXN1bHRpbmcgaW4gYW4gaW52YWxpZCB1cmVzcC5wdXNoX2lkeCBwYXNzZWQgdG8g
+dXNlci1zcGFjZQ0KYW5kIG5vIG1tYXAuDQoNClNvIGlzbuKAmXQgaXQgYmV0dGVyIHRvIGp1c3Qg
+cmVtb3ZlIHRoZSBwdXNoIHJlbGF0ZWQgY29kZSBpbiB0aGUgZHJpdmVyPyB3aGljaCBzaG91bGQg
+YWxzbyByZW1vdmUgdGhlIG1hbmlwdWxhdGlvbiBvbiB0aGUgdm1fcGdvZmYgSSBiZWxpZXZlLg0K
+DQpJIHdpbGwgcmV2aWV3IHRoZSBtbWFwIEFQSSBhbmQgc2VlIGhvdyB3ZSBjYW4gdXNlIGl0IGZv
+ciBEQiBtbWFwLg0KDQpTaGlyYXoNCg==
