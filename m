@@ -2,174 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88B22BA564
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Nov 2020 10:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A22552BA599
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Nov 2020 10:12:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727300AbgKTJBx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 20 Nov 2020 04:01:53 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2378 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727286AbgKTJBx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Nov 2020 04:01:53 -0500
-Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4CcrBf12Ndz55gZ;
-        Fri, 20 Nov 2020 17:01:30 +0800 (CST)
-Received: from dggema751-chm.china.huawei.com (10.1.198.193) by
- DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Fri, 20 Nov 2020 17:01:50 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema751-chm.china.huawei.com (10.1.198.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Fri, 20 Nov 2020 17:01:50 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
- Fri, 20 Nov 2020 17:01:50 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v2 for-next 1/2] RDMA/hns: Add support for CQ stash
-Thread-Topic: [PATCH v2 for-next 1/2] RDMA/hns: Add support for CQ stash
-Thread-Index: AQHWvBAlKbwt9UNgt0KPBLCpit0Bsw==
-Date:   Fri, 20 Nov 2020 09:01:50 +0000
-Message-ID: <dc02e18f2622481ca8f2f24b0b4b8911@huawei.com>
-References: <1605527919-48769-1-git-send-email-liweihang@huawei.com>
- <1605527919-48769-2-git-send-email-liweihang@huawei.com>
- <20201116134645.GL47002@unreal> <2692da9a4b814dfa952659a903eb96f0@huawei.com>
- <20201117072034.GO47002@unreal> <f688022a7cce488a82ce0d8427a1054e@huawei.com>
- <20201117085011.GQ47002@unreal> <18b9cb60c6a34f0995798affec0262c5@huawei.com>
- <20201118200750.GM244516@ziepe.ca>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727256AbgKTJMI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Nov 2020 04:12:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727163AbgKTJMH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Nov 2020 04:12:07 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3629DC0617A7
+        for <linux-rdma@vger.kernel.org>; Fri, 20 Nov 2020 01:12:07 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id 142so9278800ljj.10
+        for <linux-rdma@vger.kernel.org>; Fri, 20 Nov 2020 01:12:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zYwHjbKEpls2WUbFGvsAlTnALvxjY3C45fMPKOCCdWo=;
+        b=SHXWMa+QBbvSWXTVTvc9oCEYja53wrH4XnNDPeDjBZ+0PzbUw/zJjF0sOwfukdto2I
+         yv4yeH324vWGnkO3rxD77aI3dC+Y7Nna31AhnQIDQ9yic0vUGsrNF06nsfiEwsD47Kro
+         UAi8KcIpnD8LZMUU1t1HDrAtiS/irUs9O71BHRasiL5n9VXF52ZIdC9wLjq86Qu22owJ
+         kMhLLzuIm7a6dgG6k1Si7fbwfZdq16DMcWEk7EETvYItWfSJTBFCIfLok5+DvbAbsi3r
+         S+o7ch2CzwMiFWx81DFF1H1ms+b082ZMsq6ftLFKcUJSGVL4uqQ8C5KS28zlaooJLeZK
+         WnTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zYwHjbKEpls2WUbFGvsAlTnALvxjY3C45fMPKOCCdWo=;
+        b=cv5K/AGZtIa2GXSxGDtqZJjBjD0ONpGT+GM9Pu2r2d8CRntra85pOj4M9grBL5izIN
+         4LaRvPngehN9uJ2s9NdUhSLtKyXx3HzkJSSrKvQvt/mSpv9pebC7J4KTJiYhZ6UjAsZn
+         ID5MI2OBxrW/Z51CXK9Vqe1DREpF/ymkGNkW9Ed+OxeRCBpFFUdX2VDAO5mKqykzcC2R
+         x/vS6zE0UVCksUtqGFqKkOfRybD2j4l/Q3bT4+8uWbLJs9WEtjiNUBiBautb29NX+iyr
+         AuXP6ifNENB1N6qlb0pj2FFWAZAKH2p/4VbQG8FmuvTupSOMW8T3hY2UAN2KPq6qzGh/
+         eEoA==
+X-Gm-Message-State: AOAM531jj6uoOH8nKgbqX59Dv4DleMmf1YwlrA2ZRgklSNIylbHJdgvJ
+        wGzExkjUZHXybzr1tjOAip1bqf3QCD37NGwvfOAFu/APzzul
+X-Google-Smtp-Source: ABdhPJxe3gqqTHhUOIoW4RhjpAyW8nk/gUrLRGbbSANUyqjh2R+b6qVn3dxWsuAQG4KNWibj/6cGMLuL7fDMiZQUMEw=
+X-Received: by 2002:a2e:a164:: with SMTP id u4mr7809363ljl.75.1605863525418;
+ Fri, 20 Nov 2020 01:12:05 -0800 (PST)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <CAHg0Huzvhg7ZizbCGQyyVNdnAWmQCsypRWvdBzm0GWwPzXD0dw@mail.gmail.com>
+ <3b2f6267-e7a0-4266-867d-b0109d5a7cb4@acm.org> <CAHg0HuyGr8BfgBvXUG7N5WYyXKEzyh3i7eA=2XZxbW3zyXLTsA@mail.gmail.com>
+ <cc14aa58-254e-5c33-89ab-6f3900143164@acm.org> <CAHg0HuxJ-v7WgqbU62zkihquN9Kyc9nPzGhcung+UyFOG7LECQ@mail.gmail.com>
+ <a1446914-1388-40af-4204-5ef8b7618b42@acm.org>
+In-Reply-To: <a1446914-1388-40af-4204-5ef8b7618b42@acm.org>
+From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
+Date:   Fri, 20 Nov 2020 10:11:54 +0100
+Message-ID: <CAHg0Huy6U5hKUVjPt0PtZQJ2ur7gFveZjnq_MV-vE4hF2d6f0Q@mail.gmail.com>
+Subject: Re: [RFC] Reliable Multicast on top of RTRS
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     linux-rdma@vger.kernel.org, linux-block@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/11/19 4:08, Jason Gunthorpe wrote:
-> On Wed, Nov 18, 2020 at 10:49:14AM +0000, liweihang wrote:
->> On 2020/11/17 16:50, Leon Romanovsky wrote:
->>> On Tue, Nov 17, 2020 at 08:35:55AM +0000, liweihang wrote:
->>>> On 2020/11/17 15:21, Leon Romanovsky wrote:
->>>>> On Tue, Nov 17, 2020 at 06:37:58AM +0000, liweihang wrote:
->>>>>> On 2020/11/16 21:47, Leon Romanovsky wrote:
->>>>>>> On Mon, Nov 16, 2020 at 07:58:38PM +0800, Weihang Li wrote:
->>>>>>>> From: Lang Cheng <chenglang@huawei.com>
->>>>>>>>
->>>>>>>> Stash is a mechanism that uses the core information carried by the ARM AXI
->>>>>>>> bus to access the L3 cache. It can be used to improve the performance by
->>>>>>>> increasing the hit ratio of L3 cache. CQs need to enable stash by default.
->>>>>>>>
->>>>>>>> Signed-off-by: Lang Cheng <chenglang@huawei.com>
->>>>>>>> Signed-off-by: Weihang Li <liweihang@huawei.com>
->>>>>>>>  drivers/infiniband/hw/hns/hns_roce_common.h | 12 +++++++++
->>>>>>>>  drivers/infiniband/hw/hns/hns_roce_device.h |  1 +
->>>>>>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  3 +++
->>>>>>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 39 +++++++++++++++++------------
->>>>>>>>  4 files changed, 39 insertions(+), 16 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/drivers/infiniband/hw/hns/hns_roce_common.h b/drivers/infiniband/hw/hns/hns_roce_common.h
->>>>>>>> index f5669ff..8d96c4e 100644
->>>>>>>> +++ b/drivers/infiniband/hw/hns/hns_roce_common.h
->>>>>>>> @@ -53,6 +53,18 @@
->>>>>>>>  #define roce_set_bit(origin, shift, val) \
->>>>>>>>  	roce_set_field((origin), (1ul << (shift)), (shift), (val))
->>>>>>>>
->>>>>>>> +#define FIELD_LOC(field_h, field_l) field_h, field_l
->>>>>>>> +
->>>>>>>> +#define _hr_reg_set(arr, field_h, field_l)                                     \
->>>>>>>> +	do {                                                                   \
->>>>>>>> +		BUILD_BUG_ON(((field_h) / 32) != ((field_l) / 32));            \
->>>>>>>> +		BUILD_BUG_ON((field_h) / 32 >= ARRAY_SIZE(arr));               \
->>>>>>>> +		(arr)[(field_h) / 32] |=                                       \
->>>>>>>> +			cpu_to_le32(GENMASK((field_h) % 32, (field_l) % 32));  \
->>>>>>>> +	} while (0)
->>>>>>>> +
->>>>>>>> +#define hr_reg_set(arr, field) _hr_reg_set(arr, field)
->>>>>>>
->>>>>>> I afraid that it is too much.
->>>>>>
->>>>>> Hi Leon,
->>>>>>
->>>>>> Thanks for the comments.
->>>>>>
->>>>>>> 1. FIELD_LOC() macro to hide two fields.
->>>>>>
->>>>>> Jason has suggested us to simplify the function of setting/getting bit/field in
->>>>>> hns driver like IBA_SET and IBA_GET.
->>>>>>
->>>>>> https://patchwork.kernel.org/project/linux-rdma/patch/1589982799-28728-3-git-send-email-liweihang@huawei.com/
->>>>>>
->>>>>> So we try to make it easier and clearer to define a bitfield for developers.
->>>>>
->>>>> Jason asked to use genmask and FIELD_PREP, but you invented something else.
->>>>>
->>>>> Thanks
->>>>>
->>>>
->>>> We use them in another interface 'hr_reg_write(arr, field, val)' which hasn't been
->>>> used in this series.
->>>>
->>>> Does it make any unacceptable mistake? We would appreciate any suggestions :)
->>>
->>> The invention of FIELD_LOC() and hr_reg_set equal to __hr_reg_set are unacceptable.
->>> Pass directly your field_h and field_l to hr_reg_set().
->>>
->>> Thanks
->>>
->>
->> Hi Leon,
->>
->> We let hr_reg_set equal() to __hr_reg_set() because if not, there will be a compile error:
->>
->> .../hns_roce_hw_v2.c:4566:41: error: macro "_hr_reg_set" requires 3 arguments, but only 2 given
->> _hr_reg_set(cq_context->raw, CQC_STASH);
-> 
-> Yes, it is very un-intuitive but the rules for CPP require the extra
-> macro pass to generate the correct expansion. Otherwise cpp will try
-> to pass the value with commas in as a single argument, what we need
-> here is to expand the commads first and have them break up into macro
-> arguments as it goes down the macro chain.
-> 
+Hi Bart,
 
-Thanks for your explanation :)
+On Sun, Sep 27, 2020 at 2:03 AM Bart Van Assche <bvanassche@acm.org> wrote:
+>
+> On 2020-09-09 04:42, Danil Kipnis wrote:
+> > On Fri, Sep 4, 2020 at 5:33 PM Bart Van Assche <bvanassche@acm.org> wrote:
+> >> On 2020-09-04 04:35, Danil Kipnis wrote:
+> >>> On Thu, Sep 3, 2020 at 1:07 AM Bart Van Assche <bvanassche@acm.org> wrote:
+> >>>> How will it be guaranteed that the resulting software does
+> >>>> not suffer from the problems that have been solved by the introduction
+> >>>> of the DRBD activity log
+> >>>> (https://www.linbit.com/drbd-user-guide/users-guide-drbd-8-4/#s-activity-log)?
+> >>>
+> >>> The above would require some kind of activity log also, I'm afraid.
+> >>
+> >> How about collaborating with the DRBD team? My concern is that otherwise
+> >> we will end up with two drivers in the kernel that implement block device
+> >> replication between servers connected over a network.
+> >
+> > I have two general understanding questions:
+> > - What is the conceptual difference between DRBD and an md-raid1 with
+> > one local leg and one remote (imported over srp/nvmeof/rnbd)?
+>
+> I'm not sure there is a conceptual difference. But there will be a big
+> difference in recovery speed after a temporary network outage (assuming that
+> the md-raid write intent bitmap has been disabled).
 
->> Let's compare the following implementations:
->>
->> 	#define _hr_reg_set(arr, field_h, field_l) \
->> 		(arr)[(field_h) / 32] |= \
->> 			cpu_to_le32(GENMASK((field_h) % 32, (field_l) % 32)) + \
->> 			BUILD_BUG_ON_ZERO(((field_h) / 32) != ((field_l) / 32)) + \
->> 			BUILD_BUG_ON_ZERO((field_h) / 32 >= ARRAY_SIZE(arr))
->>
->> 1)
->> 	#define hr_reg_set(arr, field) _hr_reg_set(arr, field)
->>
->> 	#define QPCEX_PASID_EN FIELD_LOC(111, 95)
->> 	hr_reg_set(context->ext, QPCEX_PASID_EN);
-> 
-> It is also weird that something called set can only write all ones to
-> the field.
-> 
-> It feels saner to have a set that accepts a value and if the all ones
-> case is something very common then use a macro to compute it from the
-> field name.
-> 
-> Jason
-> 
+I think RMR is conceptually different to either of the setups
+(drbd or md-raid over srp/iser/nvmeof/rnbd devices) in the sense that
+the logic required for replication policies (coding) is present inside rdma
+subsystem which would allow to potentially offload it to underlying
+rdma devices. The user of the rdma enabled devices can then utilize
+them for both: block io transport and replication.
 
-OK, We will achieve hr_reg_enable(arr, field) for setting a single bit
-and hr_reg_write(arr, field, val) for filling a value into a field.
+Another difference is that one can put a volume manager on top of RMR and
+have it work as a distributed one.
 
-Thanks
-Weihang
+>
+> > - Is this possible to setup an md-raid1 on a client sitting on top of
+> > two remote DRBD devices, which are configured in "active-active" mode?
+>
+> I don't think that DRBD supports this. From the DRBD source code:
+> "this code path is to recover from a situation that "should not happen":
+> concurrent writes in multi-primary setup."
 
+This means md-raid on top of two block devices imported over rdma has write
+latency twice shorter (while having recovery latency twice as high) as drbd.
+RMR would allow for having single hop for both: write IO and resync IO.
 
+Thank you,
+Danil.
