@@ -2,146 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B322BB285
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Nov 2020 19:24:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6522BB2C5
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Nov 2020 19:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728442AbgKTSXT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Nov 2020 13:23:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728383AbgKTSXT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Nov 2020 13:23:19 -0500
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0872C0617A7
-        for <linux-rdma@vger.kernel.org>; Fri, 20 Nov 2020 10:23:18 -0800 (PST)
-Received: by mail-qv1-xf43.google.com with SMTP id j18so603596qvl.7
-        for <linux-rdma@vger.kernel.org>; Fri, 20 Nov 2020 10:23:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=UCRF1tW/AZBL2cTgUwVNxqtk7LoMkUYo1UAbEj+RJjA=;
-        b=B4hybK4yzaLM2Npm1+7g6r63APKMgeTYmtc+xA4iVzmdUpm8/fc6u8PaaYBUCEqsTa
-         DQGtD0B85sfZ6AQDUGUUQC5pVjZlDUujNTP78g/UuI8FK4lpcR30mtecsvkVf7DRgiuW
-         MlO955aCtgx98+WPuV3NTYdOklNjuBLotWjSZU4ObiQWcAx2srZjTgQUtz+nDfdm6w6W
-         DZqPXoE1QXdh/pboRXeD4ejJgfX5GK2Q1BTBAtJtZmFj9fTPLr6v/mkTDWfR54U03nWV
-         iXOwhBmbqACTOvfxkYtC+csJIypzFC+zmDe+YDbqWg3tSfxHioKaKSUTa24FTqD2nFIt
-         rECQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=UCRF1tW/AZBL2cTgUwVNxqtk7LoMkUYo1UAbEj+RJjA=;
-        b=l8EXDAmxh4Z2+w4bvC4ILYrB9XSuchqz0apo0PUud3uHQeHilSO4bl0keLP5BL+eiH
-         V1T5nCKXviaQLVnga50sCb6TwjZZ0CGgUplGM0r4W1F8D5vBq5VKmt481wlEiaNa4uyN
-         AaBrhoMvZPGHzpZ2dZ+5nYiYEf0k1yln/cON8Wj3amEyRgmc6CZsuhSIv991X8VdP1vv
-         LiTX3lsatbuT6hFut8BcLHI7t316FOzktMi6+Nh6z/H2oc8olq+GYso4kHyKKsDKf2Yz
-         A1aKcRe9q/tnoApbnIgbYCb2n86C4af6c2PNPuRO0ibPaZFKRyfCYA67dULq1rdSxJ6y
-         Ps6g==
-X-Gm-Message-State: AOAM5313t/oRKO7HaZjPPXHCo+PnuCtezVh49pB33idXGtAPiyquCsUQ
-        bqu6IlZRkutYDulJEtfgHOUtjQ==
-X-Google-Smtp-Source: ABdhPJyYHlJdtw+Gau+17nV3WJLVIt14si/LWrTbl0K59MDQ0saInzPp33g3U6H6OWsC2O3yX2B0AQ==
-X-Received: by 2002:a0c:b18a:: with SMTP id v10mr16583162qvd.46.1605896597938;
-        Fri, 20 Nov 2020 10:23:17 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id v9sm2453624qkv.34.2020.11.20.10.23.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 10:23:17 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kgB40-008ub6-IN; Fri, 20 Nov 2020 14:23:16 -0400
-Date:   Fri, 20 Nov 2020 14:23:16 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
-        Thomas =?utf-8?Q?Hellstr=C3=B6m?= <thomas_os@shipmail.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-rdma@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: Re: [PATCH 1/3] mm: Track mmu notifiers in fs_reclaim_acquire/release
-Message-ID: <20201120182316.GP244516@ziepe.ca>
-References: <20201120095445.1195585-1-daniel.vetter@ffwll.ch>
- <20201120095445.1195585-2-daniel.vetter@ffwll.ch>
+        id S1729680AbgKTSZW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Nov 2020 13:25:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728698AbgKTSZW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 20 Nov 2020 13:25:22 -0500
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AFCD824124;
+        Fri, 20 Nov 2020 18:25:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605896721;
+        bh=pf6kfPHaE4HzxEiOc7dj5m5zf+4ABXtrZUmxTrBrs64=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vGhM8XQ8zi1783KAgnAwvuVBBc93CvB158cTTQNqnhyjy+Q/EUYe806GD2IufmK33
+         npmPDfMra03ksYPRSPi5C/+6jncNTP7GP8vmA/igOvMEKEFVHpF0yTrnb0BepJSgdA
+         tqd0Bsk5AjeSaxSRN+G7YbmKxbM33CGZft9cXGBY=
+Date:   Fri, 20 Nov 2020 12:25:27 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH 008/141] IB/hfi1: Fix fall-through warnings for Clang
+Message-ID: <13cc2fe2cf8a71a778dbb3d996b07f5e5d04fd40.1605896059.git.gustavoars@kernel.org>
+References: <cover.1605896059.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201120095445.1195585-2-daniel.vetter@ffwll.ch>
+In-Reply-To: <cover.1605896059.git.gustavoars@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 10:54:42AM +0100, Daniel Vetter wrote:
-> fs_reclaim_acquire/release nicely catch recursion issues when
-> allocating GFP_KERNEL memory against shrinkers (which gpu drivers tend
-> to use to keep the excessive caches in check). For mmu notifier
-> recursions we do have lockdep annotations since 23b68395c7c7
-> ("mm/mmu_notifiers: add a lockdep map for invalidate_range_start/end").
-> 
-> But these only fire if a path actually results in some pte
-> invalidation - for most small allocations that's very rarely the case.
-> The other trouble is that pte invalidation can happen any time when
-> __GFP_RECLAIM is set. Which means only really GFP_ATOMIC is a safe
-> choice, GFP_NOIO isn't good enough to avoid potential mmu notifier
-> recursion.
-> 
-> I was pondering whether we should just do the general annotation, but
-> there's always the risk for false positives. Plus I'm assuming that
-> the core fs and io code is a lot better reviewed and tested than
-> random mmu notifier code in drivers. Hence why I decide to only
-> annotate for that specific case.
-> 
-> Furthermore even if we'd create a lockdep map for direct reclaim, we'd
-> still need to explicit pull in the mmu notifier map - there's a lot
-> more places that do pte invalidation than just direct reclaim, these
-> two contexts arent the same.
-> 
-> Note that the mmu notifiers needing their own independent lockdep map
-> is also the reason we can't hold them from fs_reclaim_acquire to
-> fs_reclaim_release - it would nest with the acquistion in the pte
-> invalidation code, causing a lockdep splat. And we can't remove the
-> annotations from pte invalidation and all the other places since
-> they're called from many other places than page reclaim. Hence we can
-> only do the equivalent of might_lock, but on the raw lockdep map.
-> 
-> With this we can also remove the lockdep priming added in 66204f1d2d1b
-> ("mm/mmu_notifiers: prime lockdep") since the new annotations are
-> strictly more powerful.
-> 
-> v2: Review from Thomas Hellstrom:
-> - unbotch the fs_reclaim context check, I accidentally inverted it,
->   but it didn't blow up because I inverted it immediately
-> - fix compiling for !CONFIG_MMU_NOTIFIER
-> 
-> v3: Unbreak the PF_MEMALLOC_ context flags. Thanks to Qian for the
-> report and Dave for explaining what I failed to see.
-> 
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: Dave Chinner <david@fromorbit.com>
-> Cc: Qian Cai <cai@lca.pw>
-> Cc: linux-xfs@vger.kernel.org
-> Cc: Thomas Hellström (Intel) <thomas_os@shipmail.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Jason Gunthorpe <jgg@mellanox.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-rdma@vger.kernel.org
-> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Cc: Christian König <christian.koenig@amd.com>
-> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> ---
->  mm/mmu_notifier.c |  7 -------
->  mm/page_alloc.c   | 31 ++++++++++++++++++++-----------
->  2 files changed, 20 insertions(+), 18 deletions(-)
+In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+warnings by explicitly adding multiple break statements instead of just
+letting the code fall through to the next case.
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/infiniband/hw/hfi1/qp.c       | 1 +
+ drivers/infiniband/hw/hfi1/tid_rdma.c | 5 +++++
+ 2 files changed, 6 insertions(+)
 
-Jason
+diff --git a/drivers/infiniband/hw/hfi1/qp.c b/drivers/infiniband/hw/hfi1/qp.c
+index 356518e17fa6..681bb4e918c9 100644
+--- a/drivers/infiniband/hw/hfi1/qp.c
++++ b/drivers/infiniband/hw/hfi1/qp.c
+@@ -339,6 +339,7 @@ int hfi1_setup_wqe(struct rvt_qp *qp, struct rvt_swqe *wqe, bool *call_send)
+ 			return -EINVAL;
+ 		if (ibp->sl_to_sc[rdma_ah_get_sl(&ah->attr)] == 0xf)
+ 			return -EINVAL;
++		break;
+ 	default:
+ 		break;
+ 	}
+diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c b/drivers/infiniband/hw/hfi1/tid_rdma.c
+index 73d197e21730..92aa2a9b3b5a 100644
+--- a/drivers/infiniband/hw/hfi1/tid_rdma.c
++++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
+@@ -2826,6 +2826,7 @@ static bool handle_read_kdeth_eflags(struct hfi1_ctxtdata *rcd,
+ 		default:
+ 			break;
+ 		}
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -3005,6 +3006,7 @@ bool hfi1_handle_kdeth_eflags(struct hfi1_ctxtdata *rcd,
+ 		default:
+ 			break;
+ 		}
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -3221,6 +3223,7 @@ bool hfi1_tid_rdma_wqe_interlock(struct rvt_qp *qp, struct rvt_swqe *wqe)
+ 			req = wqe_to_tid_req(prev);
+ 			if (req->ack_seg != req->total_segs)
+ 				goto interlock;
++			break;
+ 		default:
+ 			break;
+ 		}
+@@ -3239,9 +3242,11 @@ bool hfi1_tid_rdma_wqe_interlock(struct rvt_qp *qp, struct rvt_swqe *wqe)
+ 			req = wqe_to_tid_req(prev);
+ 			if (req->ack_seg != req->total_segs)
+ 				goto interlock;
++			break;
+ 		default:
+ 			break;
+ 		}
++		break;
+ 	default:
+ 		break;
+ 	}
+-- 
+2.27.0
+
