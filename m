@@ -2,65 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC672B9FC9
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Nov 2020 02:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C4B2B9FFD
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Nov 2020 02:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726431AbgKTBfY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Nov 2020 20:35:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38110 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726122AbgKTBfX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 19 Nov 2020 20:35:23 -0500
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4959322254;
-        Fri, 20 Nov 2020 01:35:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605836123;
-        bh=N0kdo0aZujVoSZM1juiGNen6gF3n89ASxhmwOx6KOYw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=K7PUrwBdqKcGKQzFxSlokUcsJcCtdTCUUQbhRDRAUe1wMdV4i2AU2wIWeWtUtZrbO
-         edeTnUvjp9C0Cx1lGMjShTcNu2RlKlczN2PwL1I6X6PlDLUCrWvXeKP03pl33x2ux2
-         zOkGLjdj3yLISN3RYlzWdi4Wi8nQnjYxTjPJpPko=
-Date:   Thu, 19 Nov 2020 17:35:21 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, Parav Pandit <parav@nvidia.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jiri Pirko <jiri@nvidia.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Subject: Re: [PATCH net-next 00/13] Add mlx5 subfunction support
-Message-ID: <20201119173521.204c4595@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <533a8308c25b62d213990e5a7e44562f4dc7b66f.camel@kernel.org>
-References: <20201112192424.2742-1-parav@nvidia.com>
-        <20201116145226.27b30b1f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <cdd576ebad038a3a9801e7017b7794e061e3ddcc.camel@kernel.org>
-        <20201116175804.15db0b67@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <BY5PR12MB43229F23C101AFBCD2971534DCE20@BY5PR12MB4322.namprd12.prod.outlook.com>
-        <20201117091120.0c933a4c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <20201117184954.GV917484@nvidia.com>
-        <20201118181423.28f8090e@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <533a8308c25b62d213990e5a7e44562f4dc7b66f.camel@kernel.org>
+        id S1726392AbgKTBvT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Nov 2020 20:51:19 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8123 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726365AbgKTBvT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Nov 2020 20:51:19 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Ccfdr1PC6zLqcx;
+        Fri, 20 Nov 2020 09:50:56 +0800 (CST)
+Received: from [10.174.177.160] (10.174.177.160) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 20 Nov 2020 09:51:12 +0800
+Subject: Re: [PATCH] IB/mthca: fix return value of error branch in
+ mthca_init_cq()
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1605789529-54808-1-git-send-email-wangxiongfeng2@huawei.com>
+ <20201119153050.GA1960484@nvidia.com>
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Message-ID: <c108c895-b7f2-af71-51a5-f34bcfa17825@huawei.com>
+Date:   Fri, 20 Nov 2020 09:51:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201119153050.GA1960484@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.160]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 18 Nov 2020 22:12:22 -0800 Saeed Mahameed wrote:
-> > Right, devices of other subsystems are fine, I don't care.
-> 
-> But a netdev will be loaded on SF automatically just through the
-> current driver design and modularity, since SF == VF and our netdev is
-> abstract and doesn't know if it runs on a PF/VF/SF .. we literally have
-> to add code to not load a netdev on a SF. why ? :/
+Hi, Jason
 
-A netdev is fine, but the examples so far don't make it clear (to me) 
-if it's expected/supported to spawn _multiple_ netdevs from a single
-"vdpa parentdev".
+Thanks for your reply !
+
+On 2020/11/19 23:30, Jason Gunthorpe wrote:
+> On Thu, Nov 19, 2020 at 08:38:49PM +0800, Xiongfeng Wang wrote:
+>> We return 'err' in the error branch, but this variable may be set as
+>> zero by the above code. Fix it by setting 'err'  as a negative value
+>> before we goto the error label.
+>>
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+> 
+> Missing fixes line
+> 
+>>  drivers/infiniband/hw/mthca/mthca_cq.c | 5 ++++-
+>>  1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/infiniband/hw/mthca/mthca_cq.c b/drivers/infiniband/hw/mthca/mthca_cq.c
+>> index c3cfea2..98d697b 100644
+>> --- a/drivers/infiniband/hw/mthca/mthca_cq.c
+>> +++ b/drivers/infiniband/hw/mthca/mthca_cq.c
+>> @@ -803,8 +803,10 @@ int mthca_init_cq(struct mthca_dev *dev, int nent,
+>>  	}
+>>  
+>>  	mailbox = mthca_alloc_mailbox(dev, GFP_KERNEL);
+>> -	if (IS_ERR(mailbox))
+>> +	if (IS_ERR(mailbox)) {
+>> +		err = -ENOMEM;
+>>  		goto err_out_arm;
+>> +	}
+> 
+> mthca_alloc_mailbox returns err_ptr so this should do 
+> 
+>    err = ERR_PTR(mailbox)
+
+Is it PTR_ERR here ?
+Since mailbox is a pointer.
+
+> 
+>>  	cq_context = mailbox->buf;
+>>  
+>> @@ -850,6 +852,7 @@ int mthca_init_cq(struct mthca_dev *dev, int nent,
+>>  			    cq->cqn & (dev->limits.num_cqs - 1),
+>>  			    cq)) {
+>>  		spin_unlock_irq(&dev->cq_table.lock);
+>> +		err = -ENOMEM;
+> 
+> And this should assign err to the output of mthca_array_set
+> 
+> Please fix and resend.
+
+Sure.
+
+Thanks,
+Xiongfeng
+
+> 
+> Thanks,
+> Jason
+> 
