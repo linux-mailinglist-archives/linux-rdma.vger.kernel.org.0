@@ -2,79 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BEC42BBE49
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Nov 2020 10:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 953562BC2C7
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Nov 2020 00:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727353AbgKUJvc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 21 Nov 2020 04:51:32 -0500
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:36781 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727200AbgKUJvb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 21 Nov 2020 04:51:31 -0500
-Received: from localhost.localdomain ([81.185.161.242])
-        by mwinf5d61 with ME
-        id uxrS230045E5lq903xrSLm; Sat, 21 Nov 2020 10:51:27 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 21 Nov 2020 10:51:27 +0100
-X-ME-IP: 81.185.161.242
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] IB/qib: Use dma_set_mask_and_coherent to simplify code
-Date:   Sat, 21 Nov 2020 10:51:27 +0100
-Message-Id: <20201121095127.1335228-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        id S1726281AbgKUX6y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 21 Nov 2020 18:58:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726175AbgKUX6x (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 21 Nov 2020 18:58:53 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8ECE208B6;
+        Sat, 21 Nov 2020 23:58:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606003133;
+        bh=NguiQML7DP2UKGGce/Au7HpsoxG+V5xLQC4ZV49v6Gc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=y2nTtQ/hve+FNZlA50fKeB+9na+LjoCZThjjhGbz5QaoqFTxDTdKY4MBYxOzWPe7I
+         rytGtftWsk4onFC5FKnS/ANaM2MJ5td1j5zu8o2YcXMrC1f+qapj8p/zD72Ziv6be/
+         36Hzm/ETMYYo7orliveqb+WUhfsSjGAX8uLLp4eA=
+Date:   Sat, 21 Nov 2020 15:58:52 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, Aya Levin <ayal@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>
+Subject: Re: [PATCH mlx5-next 09/16] net/mlx5: Expose IP-in-IP TX and RX
+ capability bits
+Message-ID: <20201121155852.4ca8eb68@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201120230339.651609-10-saeedm@nvidia.com>
+References: <20201120230339.651609-1-saeedm@nvidia.com>
+        <20201120230339.651609-10-saeedm@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
-an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
+On Fri, 20 Nov 2020 15:03:32 -0800 Saeed Mahameed wrote:
+> From: Aya Levin <ayal@nvidia.com>
+> 
+> Expose FW indication that it supports stateless offloads for IP over IP
+> tunneled packets per direction. In some HW like ConnectX-4 IP-in-IP
+> support is not symmetric, it supports steering on the inner header but
+> it doesn't TX-Checksum and TSO. Add IP-in-IP capability per direction to
+> cover this case as well.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/infiniband/hw/qib/qib_pcie.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/infiniband/hw/qib/qib_pcie.c b/drivers/infiniband/hw/qib/qib_pcie.c
-index 3dc6ce033319..2e07b3749b88 100644
---- a/drivers/infiniband/hw/qib/qib_pcie.c
-+++ b/drivers/infiniband/hw/qib/qib_pcie.c
-@@ -90,25 +90,18 @@ int qib_pcie_init(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto bail;
- 	}
- 
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-+	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
- 	if (ret) {
- 		/*
- 		 * If the 64 bit setup fails, try 32 bit.  Some systems
- 		 * do not setup 64 bit maps on systems with 2GB or less
- 		 * memory installed.
- 		 */
--		ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+		ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 		if (ret) {
- 			qib_devinfo(pdev, "Unable to set DMA mask: %d\n", ret);
- 			goto bail;
- 		}
--		ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
--	} else
--		ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
--	if (ret) {
--		qib_early_err(&pdev->dev,
--			      "Unable to set DMA consistent mask: %d\n", ret);
--		goto bail;
- 	}
- 
- 	pci_set_master(pdev);
--- 
-2.27.0
-
+What's the use for the rx capability in Linux? We don't have an API to
+configure that AFAIK.
