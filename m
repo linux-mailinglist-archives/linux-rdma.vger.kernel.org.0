@@ -2,103 +2,197 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0BC2BBAC4
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Nov 2020 01:19:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D552BBAD2
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Nov 2020 01:27:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728514AbgKUASM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Nov 2020 19:18:12 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17871 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728291AbgKUASL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Nov 2020 19:18:11 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fb85cce0000>; Fri, 20 Nov 2020 16:18:22 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 21 Nov
- 2020 00:18:05 +0000
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.50) by
- HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Sat, 21 Nov 2020 00:18:05 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eeD9tHfz1cuc8DL6/YfOgirXnOadtDbmXVm0pkMZHwMv86pW3rrJMJnUeTCe+ZR2hrI0GmskUZlyUHZ5zMMyQIVry7kjPKLWM2WhtJFE/t8bOmRwIGOh4DvYqx+GqNkM4iiyDML40ijuYb+iC3gEe5N72UjT/kOhX/ozQvXSjbznazXtRQeLz/9I7JGLxOo9fnGnSZBA24rEcnLbi9u1Pkn/blqIUZvqprmDT1FYOAQXpkl1N9vg5KCFm558bUBBax7P+qGmBxTEmfozAmXmvgToytv6eptOE0AfI4HuQw7Fj+dCwMjgIJWWNcNcJ6jB485BD5tEOek0aojO5KvvBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PVakWYJGLzPdEdh8p/IzWJ4N3L9Dz8UtttPzPeyAuyI=;
- b=O0AopfiiFmPZFohVmPmet6lfnaKTSCcmPi+9/IC1IdHlN3st2qPi34eyS1bNSJpmBuuJ273JMSYxKiVP0ToqN3vEuZEr3zShBnIRrCY1a1reSR7JfHKXPhujm3fYNK8NGN9UBfmNkSKZBWXwDUVWELoZM6Rrl746JA8ta2CWvrUMzQD+yPGJp91dlTSsbIyoJ5IbFvX32jHfon2hdW0QaCRXHduRdSNbKrTwEaa3Y1FjgV2KclqFC5p2MhLWhzFit/Kcl0iIaFWBqt6t7teW75OaxOm7phNP7elYEWe/DblRgQqAJIInSCJbfieBnYUIj78DcziVUZgGKPh76pM0bg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4483.namprd12.prod.outlook.com (2603:10b6:5:2a2::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.25; Sat, 21 Nov
- 2020 00:18:03 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3589.022; Sat, 21 Nov 2020
- 00:18:03 +0000
-Date:   Fri, 20 Nov 2020 20:18:02 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-CC:     zhudi <zhudi21@huawei.com>,
-        "Latif, Faisal" <faisal.latif@intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "rose.chen@huawei.com" <rose.chen@huawei.com>
-Subject: Re: [PATCH] RDMA/i40iw: Fix a mmap handler exploitation
-Message-ID: <20201121001802.GL917484@nvidia.com>
-References: <20201119093523.7588-1-zhudi21@huawei.com>
- <20201119172712.GA1973356@nvidia.com>
- <9edd382c89c64c988b8833f22fe027ba@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <9edd382c89c64c988b8833f22fe027ba@intel.com>
-X-ClientProxiedBy: MN2PR03CA0009.namprd03.prod.outlook.com
- (2603:10b6:208:23a::14) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1727367AbgKUAZk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Nov 2020 19:25:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726426AbgKUAZk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Nov 2020 19:25:40 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FCB6C0613CF;
+        Fri, 20 Nov 2020 16:25:38 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id z21so15878589lfe.12;
+        Fri, 20 Nov 2020 16:25:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HZIPnEA5dzlkIwnEZ0yykdrPjovgQlTtEkygolng4EI=;
+        b=AmSrNYjTnk/Yuy0vu6nm77dBwX1lCu10x2k+1h/W8GGmd7ABUF17Vpksyxo4MdzNPA
+         mVWJNFsfBNR9LwJTsDHR2o3NVOcbhpJpvN7tru+5bQ2ecTOJifuhEJWa/IWhREA18Sm0
+         hTKE8fu44xB8m22AQof0Ltq61l2L/Tg4Ha9c1DBFoe2HXKVuAR9ThjoIqIc/oaaxNVYF
+         FRC8j7G9XJRhtsuHKjSGjBLbARSktuxQkQbSt5RsKSSui+Thhb4lqW/REZyhDngH4QYj
+         2WSAgL7FZglvPacG26jyEHg7MiuTQ9kPj44zTMZyhELxb3SdpUeY1y2DKA/ifaeXVBDM
+         a6/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HZIPnEA5dzlkIwnEZ0yykdrPjovgQlTtEkygolng4EI=;
+        b=I91SBB5f4ZJaP0LckYTTflQ0m5xksXMc1/U2vnCuXx3cCO+oXnEcB58aHTp+EnKUDV
+         lsf9ShckfS4EA65Q+I/ZGledW9/YeovCDbJDTNf+bSH/3WZBJzF0XshcPRIirHHv7nMD
+         5paNx2NWpUOm+tV9aWhwprNVQvT17RDAgcxCCS5BM5vHebZsNbuv8HD6yOaTCu2OFwOK
+         LL6kEPysucZpHVutGmsnlrrcKIElex2ZpCFRgKuoJxeE14gUQGh8Wy2Ijs9ehqSGQoUX
+         /4i/Pu9J0VbEYS2cgnYDE2OZrr+DXcJ71qrdFVdJO2Dk1fe7IaUJAsDMJGel2NMhrASP
+         JZzA==
+X-Gm-Message-State: AOAM533GH1oUgAWbQ3UlRUZfqHDGVukMizxGCNni92l5FlsX24x2usRe
+        s8UUdVc/e6mQQBX67leq044=
+X-Google-Smtp-Source: ABdhPJwRW123ugXYYhyW8R8d1Aq2lA5BeYkDsmyWBkdQv6P+kC/UTpJWC3M4Z3r/JkqiGUk3Yc4hxQ==
+X-Received: by 2002:a19:6417:: with SMTP id y23mr8742546lfb.399.1605918336859;
+        Fri, 20 Nov 2020 16:25:36 -0800 (PST)
+Received: from localhost.localdomain (h-158-174-22-6.NA.cust.bahnhof.se. [158.174.22.6])
+        by smtp.gmail.com with ESMTPSA id w28sm432959ljd.48.2020.11.20.16.25.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 16:25:35 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH rdma-next] RDMA/i40iw: Constify ops structs
+Date:   Sat, 21 Nov 2020 01:25:29 +0100
+Message-Id: <20201121002529.89148-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR03CA0009.namprd03.prod.outlook.com (2603:10b6:208:23a::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Sat, 21 Nov 2020 00:18:03 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kgGbK-0092nQ-9U; Fri, 20 Nov 2020 20:18:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605917902; bh=eeQNXooyNB5feKF6kBclY4C83tbT2eTO0zdNPk39YEc=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:Content-Transfer-Encoding:In-Reply-To:
-         X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=K8RH6vvwiIu0uX8AbERT8bZB1z+065q95NzFs2lQhaMtxvjLKaQcZo39s5Rgwb8ub
-         wa4J7GCSwNpjsRshZ5UMThtlIaZ9K9/Q2Be3Ne19W7Ea3WlFqKttO4WTbABN61R8fv
-         J/WmMR7lvewyAFQ+gT4XJj2Jtpj86UlVT2mbB+QqK5ozVGOyB0jdbO20K89R4G+uNy
-         KNjbQt5Rvw+ntrMpYB3rDQkMF5aFKoggM4SiqF5JsElf7UvXkt5dh1QqFlZaBxU5Dh
-         oFNII+499GBysABXjmZcTo1WnGC/iXHoJJLTAeEtBUGV0KNQzy8dABc6RRj2VzT5AL
-         9Hc75T/Hx6NwQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 11:56:36PM +0000, Saleem, Shiraz wrote:
+The ops structs are never modified. Make them const to allow the
+compiler to put them in read-only memory.
 
-> Well, the push feature is disabled by default and today there will
-> be no push page mmap from user-space since uresp.push_idx is an
-> invalid one. Its disabled for good reason as its not working as
-> expected. There is an option to turn it on via module param but that
-> does not work as expected still resulting in an invalid
-> uresp.push_idx passed to user-space and no mmap.
->=20
-> So isn=E2=80=99t it better to just remove the push related code in the
-> driver? which should also remove the manipulation on the vm_pgoff I
-> believe.
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ drivers/infiniband/hw/i40iw/i40iw_ctrl.c | 20 ++++++++++----------
+ drivers/infiniband/hw/i40iw/i40iw_type.h | 20 ++++++++++----------
+ 2 files changed, 20 insertions(+), 20 deletions(-)
 
-Yes, delete all the push code, module param, etc. Set the invalid
-push_idx, verify vm_pgoff =3D=3D 0 and hardwire the pfn to be a single BAR
-page.
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_ctrl.c b/drivers/infiniband/hw/i40iw/i40iw_ctrl.c
+index 86d3f8aff329..7ed9826221c1 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_ctrl.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_ctrl.c
+@@ -5098,7 +5098,7 @@ void i40iw_vsi_stats_free(struct i40iw_sc_vsi *vsi)
+ 	i40iw_hw_stats_stop_timer(vsi);
+ }
+ 
+-static struct i40iw_cqp_ops iw_cqp_ops = {
++static const struct i40iw_cqp_ops iw_cqp_ops = {
+ 	.cqp_init = i40iw_sc_cqp_init,
+ 	.cqp_create = i40iw_sc_cqp_create,
+ 	.cqp_post_sq = i40iw_sc_cqp_post_sq,
+@@ -5107,7 +5107,7 @@ static struct i40iw_cqp_ops iw_cqp_ops = {
+ 	.poll_for_cqp_op_done = i40iw_sc_poll_for_cqp_op_done
+ };
+ 
+-static struct i40iw_ccq_ops iw_ccq_ops = {
++static const struct i40iw_ccq_ops iw_ccq_ops = {
+ 	.ccq_init = i40iw_sc_ccq_init,
+ 	.ccq_create = i40iw_sc_ccq_create,
+ 	.ccq_destroy = i40iw_sc_ccq_destroy,
+@@ -5116,7 +5116,7 @@ static struct i40iw_ccq_ops iw_ccq_ops = {
+ 	.ccq_arm = i40iw_sc_ccq_arm
+ };
+ 
+-static struct i40iw_ceq_ops iw_ceq_ops = {
++static const struct i40iw_ceq_ops iw_ceq_ops = {
+ 	.ceq_init = i40iw_sc_ceq_init,
+ 	.ceq_create = i40iw_sc_ceq_create,
+ 	.cceq_create_done = i40iw_sc_cceq_create_done,
+@@ -5126,7 +5126,7 @@ static struct i40iw_ceq_ops iw_ceq_ops = {
+ 	.process_ceq = i40iw_sc_process_ceq
+ };
+ 
+-static struct i40iw_aeq_ops iw_aeq_ops = {
++static const struct i40iw_aeq_ops iw_aeq_ops = {
+ 	.aeq_init = i40iw_sc_aeq_init,
+ 	.aeq_create = i40iw_sc_aeq_create,
+ 	.aeq_destroy = i40iw_sc_aeq_destroy,
+@@ -5137,11 +5137,11 @@ static struct i40iw_aeq_ops iw_aeq_ops = {
+ };
+ 
+ /* iwarp pd ops */
+-static struct i40iw_pd_ops iw_pd_ops = {
++static const struct i40iw_pd_ops iw_pd_ops = {
+ 	.pd_init = i40iw_sc_pd_init,
+ };
+ 
+-static struct i40iw_priv_qp_ops iw_priv_qp_ops = {
++static const struct i40iw_priv_qp_ops iw_priv_qp_ops = {
+ 	.qp_init = i40iw_sc_qp_init,
+ 	.qp_create = i40iw_sc_qp_create,
+ 	.qp_modify = i40iw_sc_qp_modify,
+@@ -5156,14 +5156,14 @@ static struct i40iw_priv_qp_ops iw_priv_qp_ops = {
+ 	.iw_mr_fast_register = i40iw_sc_mr_fast_register
+ };
+ 
+-static struct i40iw_priv_cq_ops iw_priv_cq_ops = {
++static const struct i40iw_priv_cq_ops iw_priv_cq_ops = {
+ 	.cq_init = i40iw_sc_cq_init,
+ 	.cq_create = i40iw_sc_cq_create,
+ 	.cq_destroy = i40iw_sc_cq_destroy,
+ 	.cq_modify = i40iw_sc_cq_modify,
+ };
+ 
+-static struct i40iw_mr_ops iw_mr_ops = {
++static const struct i40iw_mr_ops iw_mr_ops = {
+ 	.alloc_stag = i40iw_sc_alloc_stag,
+ 	.mr_reg_non_shared = i40iw_sc_mr_reg_non_shared,
+ 	.mr_reg_shared = i40iw_sc_mr_reg_shared,
+@@ -5172,7 +5172,7 @@ static struct i40iw_mr_ops iw_mr_ops = {
+ 	.mw_alloc = i40iw_sc_mw_alloc
+ };
+ 
+-static struct i40iw_cqp_misc_ops iw_cqp_misc_ops = {
++static const struct i40iw_cqp_misc_ops iw_cqp_misc_ops = {
+ 	.manage_push_page = i40iw_sc_manage_push_page,
+ 	.manage_hmc_pm_func_table = i40iw_sc_manage_hmc_pm_func_table,
+ 	.set_hmc_resource_profile = i40iw_sc_set_hmc_resource_profile,
+@@ -5195,7 +5195,7 @@ static struct i40iw_cqp_misc_ops iw_cqp_misc_ops = {
+ 	.update_resume_qp = i40iw_sc_resume_qp
+ };
+ 
+-static struct i40iw_hmc_ops iw_hmc_ops = {
++static const struct i40iw_hmc_ops iw_hmc_ops = {
+ 	.init_iw_hmc = i40iw_sc_init_iw_hmc,
+ 	.parse_fpm_query_buf = i40iw_sc_parse_fpm_query_buf,
+ 	.configure_iw_fpm = i40iw_sc_configure_iw_fpm,
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_type.h b/drivers/infiniband/hw/i40iw/i40iw_type.h
+index c3babf3cbb8e..1dbf3991cc54 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_type.h
++++ b/drivers/infiniband/hw/i40iw/i40iw_type.h
+@@ -493,16 +493,16 @@ struct i40iw_sc_dev {
+ 	struct i40iw_sc_aeq *aeq;
+ 	struct i40iw_sc_ceq *ceq[I40IW_CEQ_MAX_COUNT];
+ 	struct i40iw_sc_cq *ccq;
+-	struct i40iw_cqp_ops *cqp_ops;
+-	struct i40iw_ccq_ops *ccq_ops;
+-	struct i40iw_ceq_ops *ceq_ops;
+-	struct i40iw_aeq_ops *aeq_ops;
+-	struct i40iw_pd_ops *iw_pd_ops;
+-	struct i40iw_priv_qp_ops *iw_priv_qp_ops;
+-	struct i40iw_priv_cq_ops *iw_priv_cq_ops;
+-	struct i40iw_mr_ops *mr_ops;
+-	struct i40iw_cqp_misc_ops *cqp_misc_ops;
+-	struct i40iw_hmc_ops *hmc_ops;
++	const struct i40iw_cqp_ops *cqp_ops;
++	const struct i40iw_ccq_ops *ccq_ops;
++	const struct i40iw_ceq_ops *ceq_ops;
++	const struct i40iw_aeq_ops *aeq_ops;
++	const struct i40iw_pd_ops *iw_pd_ops;
++	const struct i40iw_priv_qp_ops *iw_priv_qp_ops;
++	const struct i40iw_priv_cq_ops *iw_priv_cq_ops;
++	const struct i40iw_mr_ops *mr_ops;
++	const struct i40iw_cqp_misc_ops *cqp_misc_ops;
++	const struct i40iw_hmc_ops *hmc_ops;
+ 	struct i40iw_vchnl_if vchnl_if;
+ 	const struct i40iw_vf_cqp_ops *iw_vf_cqp_ops;
+ 
+-- 
+2.29.2
 
-Can you send a patch soon?
-
-> I will review the mmap API and see how we can use it for DB mmap.
-
-This would be something to use if you ever make it work again
-
-Jason
