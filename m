@@ -2,125 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FC52BC694
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Nov 2020 16:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7342BC6A5
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Nov 2020 17:08:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727382AbgKVPuc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 22 Nov 2020 10:50:32 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:54450 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727876AbgKVPub (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 22 Nov 2020 10:50:31 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AMFnr1H099441;
-        Sun, 22 Nov 2020 15:50:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=ews1W+AhunL5A4EYyEiHqF35ePBNE6n3tTDT2hL8Xzc=;
- b=DwRYkb/A82WzNTbOZWF46iJbrw9pMk7MK7Hd3YYlJ1V+w3kUEu102+tVf8BaAuuYCGlp
- GmpzFR2wvOl/6EYE4EM63CfvcC/1hFmRHs5vDXn2g3wF+CCKnXbY9FNpRZvaFVNyJiW3
- Az9vObUKf9CXWjXf6UM+F917J0q/XGdxMU1g5GwIaZLIoJBT3WhMyW3do69kBSj+o5hc
- hld65pkewqHf2PGu2YpyeEWN5ong/2KHYxlDMdysPrfZTPfhbBDh0QtidCDEJk4J/5HU
- UbsdO70DmONFy3DTqIFec6TvifthJVSjh7flu9wDbOQWpbc1nhi4r6Db29fiKuLVwFwQ Pw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 34xuhmjekk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 22 Nov 2020 15:50:29 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AMFnXjE174509;
-        Sun, 22 Nov 2020 15:50:28 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 34ycsvkn6h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 22 Nov 2020 15:50:28 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AMFoRTJ010815;
-        Sun, 22 Nov 2020 15:50:27 GMT
-Received: from dhcp-10-175-177-236.vpn.oracle.com (/10.175.177.236)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 22 Nov 2020 07:50:27 -0800
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: Is there a working cache for path record and lids etc for
- librdmacm?
-From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
-In-Reply-To: <alpine.DEB.2.22.394.2011221246230.261606@www.lameter.com>
-Date:   Sun, 22 Nov 2020 16:50:24 +0100
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Mark Haywood <mark.haywood@oracle.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <801AE4A1-7AE8-4756-8F32-5F3BFD189E2B@oracle.com>
-References: <alpine.DEB.2.22.394.2011170253150.206345@www.lameter.com>
- <20201117193329.GH244516@ziepe.ca>
- <alpine.DEB.2.22.394.2011201805000.248138@www.lameter.com>
- <6F632AE0-7921-4C5F-8455-F8E9390BD071@oracle.com>
- <alpine.DEB.2.22.394.2011221246230.261606@www.lameter.com>
-To:     Christopher Lameter <cl@linux.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9813 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=3
- mlxlogscore=999 adultscore=0 bulkscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011220113
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9813 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
- adultscore=0 phishscore=0 spamscore=0 impostorscore=0 lowpriorityscore=0
- suspectscore=3 priorityscore=1501 mlxlogscore=999 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011220113
+        id S1727728AbgKVQIb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 22 Nov 2020 11:08:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727317AbgKVQIb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 22 Nov 2020 11:08:31 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E0F9C0613D3
+        for <linux-rdma@vger.kernel.org>; Sun, 22 Nov 2020 08:08:29 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id r24so4243726lfm.8
+        for <linux-rdma@vger.kernel.org>; Sun, 22 Nov 2020 08:08:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=safEzczHGHLXs45ryoEAbi+vFjxDiy4IY9/ZKygPeno=;
+        b=Eo76B3qt1Iak9u+z31PtXQiZoVCKTWV2jZKDS91tXdNvEgzikGvFxeyOxH8UKgG9WF
+         w6CAiu0PIqWisd1OOR6l/SUpvKxHdCcRWyNdbPjxj8V5vuuo4HvtZR9lbP+OivvlIu9B
+         vR/ekmYVE43reG3CpC8eV5N+5ZRKQS7roSZgvWtUGpYvbfpEFYUCSFwg2l3Sx/JX3dXA
+         AceERB9NkIUcIIM+FqNoPFSyMTB0BrvvFGwcS3VlclZuagdcL/EHCU+OVIHesWYcn4kB
+         BtQfsuarcYnG9Cv0KO2Z7kHEtqInD0b5Sbmry2VWzqRGppsk9DpyG/5Ps3s5taCBHTfe
+         juFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=safEzczHGHLXs45ryoEAbi+vFjxDiy4IY9/ZKygPeno=;
+        b=P8bG6cRiiRzciFKWdxl+coDsnzYUrgzb1o+55aRLjJ1VLHS7XnhRfa4h6VpyJuQkQY
+         CdEdIyPz7HSDyTqI2nEvavzoNWgUx9l+tHQv8oYVcCI6LyfRmbgFZCH3WokEGbgHuxdU
+         1UzRJiQyT2eWGfopUIpcCwRQlhHlg8hpPwj8iPX4VtBA8mdIvGEZd0iTyQEVnaQwycn+
+         FPqZBIllFREsyo7DkKKPH4c3sr3J8NWYlLWVaZTsIyu1Ia/HbYSLChd2nQT0xXCnb0eU
+         wN4x0cIdbd1rk4tcju2gwHeBHAIFdoRXRz6q7HAAfuFtt+RmCvkLQiro+XFgeYrAl90m
+         k39Q==
+X-Gm-Message-State: AOAM531wRDRPXRXckAkLNqsoWaNpSjD7kbCKtltaV4fOpYYJuFFZomnN
+        gs7cXCUuAlBSsAFxFawxHrGZluzjhyAQM2rD+HHH
+X-Google-Smtp-Source: ABdhPJxytEe46vZYdqpmquTHcqOtJ6iCost52VJxvqnFhXqqqLVsS0bJnFZk7HNiDucyLAFRUgZ/LmZWN0GCc44beEE=
+X-Received: by 2002:a19:ca:: with SMTP id 193mr83210lfa.331.1606061307677;
+ Sun, 22 Nov 2020 08:08:27 -0800 (PST)
+MIME-Version: 1.0
+References: <CAHg0Huzvhg7ZizbCGQyyVNdnAWmQCsypRWvdBzm0GWwPzXD0dw@mail.gmail.com>
+ <5438d63e-0879-1d7b-cac1-f20fa24ecedb@grimberg.me>
+In-Reply-To: <5438d63e-0879-1d7b-cac1-f20fa24ecedb@grimberg.me>
+From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
+Date:   Sun, 22 Nov 2020 17:08:16 +0100
+Message-ID: <CAHg0Huzufxh1bjATpAy6PppTLFaj3N4S1HevNjpGwNE=zmqObQ@mail.gmail.com>
+Subject: Re: [RFC] Reliable Multicast on top of RTRS
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     linux-rdma@vger.kernel.org, linux-block@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hi Sagi,
 
+On Fri, Sep 4, 2020 at 12:18 AM Sagi Grimberg <sagi@grimberg.me> wrote:
+>
+>
+> > Hi @,
+> >
+> > RTRS allows for reliable transmission of sg lists between two hosts
+> > over rdma. It is optimised for block io. One can implement a client
+> > and a server module on top of RTRS which would allow for reliable
+> > transmission to a group of hosts.
+> >
+> > In the networking world this is called reliable multicast. I think one
+> > can say that reliable multicast is an equivalent to what is called
+> > "mirror" in the storage world.
+>
+> md-raid1
 
-> On 22 Nov 2020, at 13:49, Christopher Lameter <cl@linux.com> wrote:
->=20
-> On Fri, 20 Nov 2020, H=C3=A5kon Bugge wrote:
->>> Oh great. I did not know. Will work with them to get things sorted =
-out.
->> Inside Oracle, we're only using it for resolving IB routes. A cache =
-for
->> address resolution already exists in the kernel. There is a config
->> option to disable address resolution from user-space
->> (acme_plus_kernel_only).
->=20
-> The app that we have runs in user space. Can it use the cache? Is the
-> cache only in Mellanox OFED? I heard that it was removed.
+Exact
 
-An app in user space can use the ibacm cache. If you use the default =
-configuration that comes with rdma-core, both address and route =
-resolution will be from librdmacm directly to ibacm, i.e., no kernel =
-involved. The ibacm options are by default installed in =
-/etc/rdma/ibacm_opts.cfg
+>
+> > There is something called XoR network
+> > coding which seems to be an equivalent of raid5.
+>
+> md-raid5
 
-If you set acme_plus_kernel_only to one in said config file, you app =
-will resolve the address using the kernel neighbour cache and the route =
-resolution will go into the kernel and then "bounce" back  to user space =
-and ibacm through NetLink.
+Exact
 
-I do not know if ibacm is present in Mellanox OFED, but it is easy to =
-find out:
+>
+> > There is also Reed
+> > Solomon network coding.
+> >
+> > Having a reliable multicast with coding rdma-based transport layer
+> > would allow for very flexible and scalable designs of distributed
+> > replication solutions based on different in-kernel transport, block
+> > and replication drivers.
+> >
+> > What do you think?
+>
+> You should probably use the device-mapper stack or modify it to fit your
+> needs.
 
-# rpm -q ibacm
-
-
-> This is an an option while building ibacm?
-
-Nop, runtime config option as depicted above.
-
-> And yes we need it to resolve IB routes.
-
-Then the above will work.
-
-> Can you share a working config?
-
-The default provided by rdma-core should work, possible requiring the =
-option above.
-
-
-Thxs, H=C3=A5kon
-
+Will look into the dm framework,
+Thank you,
+Danil.
