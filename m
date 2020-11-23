@@ -2,555 +2,254 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA872C1110
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Nov 2020 17:54:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 145332C1225
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Nov 2020 18:40:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732831AbgKWQug (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Nov 2020 11:50:36 -0500
-Received: from mga09.intel.com ([134.134.136.24]:42033 "EHLO mga09.intel.com"
+        id S2390296AbgKWRiY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Nov 2020 12:38:24 -0500
+Received: from mga05.intel.com ([192.55.52.43]:24096 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731719AbgKWQug (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Nov 2020 11:50:36 -0500
-IronPort-SDR: lEZaMrOByW62cxf9uBQL8pFsqdpdrJiAisPid4UNbiWhNUx0v7UbxNhW83Hz2hU2gmNsQvdMJn
- zwIuFcM7zBVg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="171959473"
-X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="171959473"
+        id S1733248AbgKWRiX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:38:23 -0500
+IronPort-SDR: MN2Y9m7GGX5RUNDWpjY1U6iiD/IZhLnulLdOoWp4wHyMtOlDJbRJcCbiktcZFIicntVxPmaFLD
+ AsATHXz51FsA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="256518418"
+X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
+   d="scan'208";a="256518418"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 08:50:34 -0800
-IronPort-SDR: 3k8UNNingIB0sbPvDdWDDg9icRdFGlCkP/MBqnE6kXOhOuu10bweAtBZTqg8b4NKs39F6QlLUD
- NWArUKgmzrhQ==
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 09:38:22 -0800
+IronPort-SDR: +rBT6nv615Ez03BjJ2d7MJaEkrvGkydSiTK4Ncdl0nBV+cnG+w2P4L8IJ2ccus3T9JMjIqaFP9
+ DhT6FGsr7Tbw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
-   d="scan'208";a="361510475"
-Received: from sedona.ch.intel.com ([10.2.136.157])
-  by fmsmga004.fm.intel.com with ESMTP; 23 Nov 2020 08:50:29 -0800
-Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 0ANGoRCv032095;
-        Mon, 23 Nov 2020 09:50:27 -0700
-Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 0ANGoO6X158936;
-        Mon, 23 Nov 2020 11:50:25 -0500
-Subject: [PATCH for-rc v4] IB/hfi1: Ensure correct mm is used at all times
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        stable@vger.kernel.org, linux-mm@kvack.org,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Ira Weiny <ira.weiny@intel.com>
-Date:   Mon, 23 Nov 2020 11:50:24 -0500
-Message-ID: <20201123165024.158913.71029.stgit@awfm-01.aw.intel.com>
-User-Agent: StGit/0.17.1-dirty
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
+   d="scan'208";a="364717871"
+Received: from cst-dev.jf.intel.com ([10.23.221.69])
+  by fmsmga002.fm.intel.com with ESMTP; 23 Nov 2020 09:38:21 -0800
+From:   Jianxin Xiong <jianxin.xiong@intel.com>
+To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: [PATCH v11 0/4] RDMA: Add dma-buf support
+Date:   Mon, 23 Nov 2020 09:51:55 -0800
+Message-Id: <1606153919-104513-1-git-send-email-jianxin.xiong@intel.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Two earlier bug fixes have created a security problem in the hfi1
-driver. One fix aimed to solve an issue where current->mm was not valid
-when closing the hfi1 cdev. It attempted to do this by saving a cached
-value of the current->mm pointer at file open time. This is a problem if
-another process with access to the FD calls in via write() or ioctl() to
-pin pages via the hfi driver. The other fix tried to solve a use after
-free by taking a reference on the mm.
+This is the eleventh version of the patch set. Changelog:
 
-To fix this correctly we use the existing cached value of the mm in the
-mmu notifier. Now we can check in the insert, evict, etc. routines that
-current->mm matched what the notifier was registered for. If not, then
-don't allow access. The register of the mmu notifier will save the mm
-pointer.
+v11:
+* Rework the parameter checking code inside ib_umem_dmabuf_get() 
+* Fix incorrect error handling in the new verbs command handler
+* Put a duplicated code sequence for checking iova and setting page size
+  into a function
+* In the invalidation callback, check for if the buffer has been mapped
+  and thus the presence of a valid driver mr is ensured
+* The patch that checks for dma_virt_ops is dropped because it is no
+  longer needed
+* The patch that documents that dma-buf size is fixed has landed at:
+  https://cgit.freedesktop.org/drm/drm-misc/commit/?id=476b485be03c
+  and thus is no longer included here
+* The matching user space patch set is sent separately
 
-Note the check in the unregister is not needed in the event that
-current->mm is empty. This means the tear down is happening due to a
-SigKill or OOM Killer, something along those lines. If current->mm has a
-value then it must be checked and only the task that did the register
-can do the unregister.
+v10: https://www.spinics.net/lists/linux-rdma/msg97483.html
+* Don't map the pages in ib_umem_dmabuf_get(); use the size information
+  of the dma-buf object to validate the umem size instead
+* Use PAGE_SIZE directly instead of use ib_umem_find_best_pgsz() when
+  the MR is created since the pages have not been mapped yet and dma-buf
+  requires PAGE_SIZE anyway
+* Always call mlx5_umem_find_best_pgsz() after mapping the pages to
+  verify that the page size requirement is satisfied
+* Add a patch to document that dma-buf size is fixed
 
-Since in do_exit() the exit_mm() is called before exit_files(), which
-would call our close routine a reference is needed on the mm. We rely on
-the mmgrab done by the registration of the notifier, whereas before it
-was explicit.
+v9: https://www.spinics.net/lists/linux-rdma/msg97432.html
+* Clean up the code for sg list in-place modification
+* Prevent dma-buf pages from being mapped multiple times
+* Map the pages in ib_umem_dmabuf_get() so that inproper values of
+  address/length/iova can be caught early
+* Check for unsupported flags in the new uverbs command
+* Add missing uverbs_finalize_uobj_create()
+* Sort uverbs objects by name
+* Fix formating issue -- unnecessary alignment of '='
+* Unmap pages in mlx5_ib_fence_dmabuf_mr()
+* Remove address range checking from pagefault_dmabuf_mr()
 
-Also of note is we do not do any explicit work to protect the interval
-tree notifier. It doesn't seem that this is going to be needed since we
-aren't actually doing anything with current->mm. The interval tree
-notifier stuff still has a FIXME noted from a previous commit that will
-be addressed in a follow on patch.
+v8: https://www.spinics.net/lists/linux-rdma/msg97370.html
+* Modify the dma-buf sg list in place to get a proper umem sg list and
+  restore it before calling dma_buf_unmap_attachment()
+* Validate the umem sg list with ib_umem_find_best_pgsz()
+* Remove the logic for slicing the sg list at runtime
 
-Fixes: e0cf75deab81 ("IB/hfi1: Fix mm_struct use after free")
-Fixes: 3faa3d9a308e ("IB/hfi1: Make use of mm consistent")
-Cc: <stable@vger.kernel.org>
-Suggested-by: Jann Horn <jannh@google.com>
-Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-Reviewed-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+v7: https://www.spinics.net/lists/linux-rdma/msg97297.html
+* Rebase on top of latest mlx5 MR patch series
+* Slice dma-buf sg list at runtime instead of creating a new list
+* Preload the buffer page mapping when the MR is created
+* Move the 'dma_virt_ops' check into dma_buf_dynamic_attach()
 
----
+v6: https://www.spinics.net/lists/linux-rdma/msg96923.html
+* Move the dma-buf invalidation callback from the core to the device
+  driver
+* Move mapping update from work queue to pagefault handler
+* Add dma-buf based MRs to the xarray of mmkeys so that the pagefault
+  handler can be reached
+* Update the new driver method and uverbs command signature by changing
+  the paramter 'addr' to 'offset'
+* Modify the sg list returned from dma_buf_map_attachment() based on
+  the parameters 'offset' and 'length'
+* Don't import dma-buf if 'dma_virt_ops' is used by the dma device
+* The patch that clarifies dma-buf sg lists alignment has landed at
+  https://cgit.freedesktop.org/drm/drm-misc/commit/?id=ac80cd17a615
+  and thus is no longer included with this set
 
-Changes since v0:
-----------------
-Removed the checking of the pid and limitation that
-whatever task opens the dev is the only one that can do write() or
-ioctl(). While this limitation is OK it doesn't appear to be strictly
-necessary.
+v5: https://www.spinics.net/lists/linux-rdma/msg96786.html
+* Fix a few warnings reported by kernel test robot:
+    - no previous prototype for function 'ib_umem_dmabuf_release' 
+    - no previous prototype for function 'ib_umem_dmabuf_map_pages'
+    - comparison of distinct pointer types in 'check_add_overflow'
+* Add comment for the wait between getting the dma-buf sg tagle and
+  updating the NIC page table
 
-Rebased on top of 5.10-rc1. Testing has been done on 5.9 due to a bug in
-5.10 that is being worked (separate issue).
+v4: https://www.spinics.net/lists/linux-rdma/msg96767.html
+* Add a new ib_device method reg_user_mr_dmabuf() instead of expanding
+  the existing method reg_user_mr()
+* Use a separate code flow for dma-buf instead of adding special cases
+  to the ODP memory region code path
+* In invalidation callback, new mapping is updated as whole using work
+  queue instead of being updated in page granularity in the page fault
+  handler
+* Use dma_resv_get_excl() and dma_fence_wait() to ensure the content of
+  the pages have been moved to the new location before the new mapping
+  is programmed into the NIC
+* Add code to the ODP page fault handler to check the mapping status
+* The new access flag added in v3 is removed.
+* The checking for on-demand paging support in the new uverbs command
+  is removed because it is implied by implementing the new ib_device
+  method
+* Clarify that dma-buf sg lists are page aligned
 
-Changes since v1:
-----------------
-Remove explicit mmget/put to rely on the notifier register's mmgrab
-instead.
+v3: https://www.spinics.net/lists/linux-rdma/msg96330.html
+* Use dma_buf_dynamic_attach() instead of dma_buf_attach()
+* Use on-demand paging mechanism to avoid pinning the GPU memory
+* Instead of adding a new parameter to the device method for memory
+  registration, pass all the attributes including the file descriptor
+  as a structure
+* Define a new access flag for dma-buf based memory region
+* Check for on-demand paging support in the new uverbs command
 
-Fixed missing check in rb_unregister to only check current->mm if its
-actually valid.
+v2: https://www.spinics.net/lists/linux-rdma/msg93643.html
+* The Kconfig option is removed. There is no dependence issue since
+  dma-buf driver is always enabled.
+* The declaration of new data structure and functions is reorganized to
+  minimize the visibility of the changes.
+* The new uverbs command now goes through ioctl() instead of write().
+* The rereg functionality is removed.
+* Instead of adding new device method for dma-buf specific registration,
+  existing method is extended to accept an extra parameter. 
+* The correct function is now used for address range checking. 
 
-Moved mm_from_tid_node to exp_rcv header and use it
+v1: https://www.spinics.net/lists/linux-rdma/msg90720.html
+* The initial patch set
+* Implement core functions for importing and mapping dma-buf
+* Use dma-buf static attach interface
+* Add two ib_device methods reg_user_mr_fd() and rereg_user_mr_fd()
+* Add two uverbs commands via the write() interface
+* Add Kconfig option
+* Add dma-buf support to mlx5 device
 
-Changes since v2:
-----------------
-Change Reported-by to Suggested-by for Jann
+When enabled, an RDMA capable NIC can perform peer-to-peer transactions
+over PCIe to access the local memory located on another device. This can
+often lead to better performance than using a system memory buffer for
+RDMA and copying data between the buffer and device memory.
 
-Commit msg updates
+Current kernel RDMA stack uses get_user_pages() to pin the physical
+pages backing the user buffer and uses dma_map_sg_attrs() to get the
+dma addresses for memory access. This usually doesn't work for peer
+device memory due to the lack of associated page structures.
 
-Remove private mm pointer and use notifier's
+Several mechanisms exist today to facilitate device memory access.
 
-Changes since v3:
------------------
-Added Ira's RB and Cc stable list
+ZONE_DEVICE is a new zone for device memory in the memory management
+subsystem. It allows pages from device memory being described with
+specialized page structures, but what can be done with these page
+structures may be different from system memory. ZONE_DEVICE is further
+specialized into multiple memory types, such as one type for PCI
+p2pmem/p2pdma and one type for HMM.
 
-Updated commit message
+PCI p2pmem/p2pdma uses ZONE_DEVICE to represent device memory residing
+in a PCI BAR and provides a set of calls to publish, discover, allocate,
+and map such memory for peer-to-peer transactions. One feature of the
+API is that the buffer is allocated by the side that does the DMA
+transfer. This works well with the storage usage case, but is awkward
+with GPU-NIC communication, where typically the buffer is allocated by
+the GPU driver rather than the NIC driver.
 
-Added comment to mmu_rb_unregister
+Heterogeneous Memory Management (HMM) utilizes mmu_interval_notifier
+and ZONE_DEVICE to support shared virtual address space and page
+migration between system memory and device memory. HMM doesn't support
+pinning device memory because pages located on device must be able to
+migrate to system memory when accessed by CPU. Peer-to-peer access
+is currently not supported by HMM.
 
-Renamed confusing variable in mmu_rb_register
----
- drivers/infiniband/hw/hfi1/file_ops.c     |    4 --
- drivers/infiniband/hw/hfi1/hfi.h          |    2 -
- drivers/infiniband/hw/hfi1/mmu_rb.c       |   76 ++++++++++++++++-------------
- drivers/infiniband/hw/hfi1/mmu_rb.h       |   16 ++++++
- drivers/infiniband/hw/hfi1/user_exp_rcv.c |   12 +++--
- drivers/infiniband/hw/hfi1/user_exp_rcv.h |    6 ++
- drivers/infiniband/hw/hfi1/user_sdma.c    |   13 +++--
- drivers/infiniband/hw/hfi1/user_sdma.h    |    7 ++-
- 8 files changed, 87 insertions(+), 49 deletions(-)
+Dma-buf is a standard mechanism for sharing buffers among different
+device drivers. The buffer to be shared is exported by the owning
+driver and imported by the driver that wants to use it. The exporter
+provides a set of ops that the importer can call to pin and map the
+buffer. In addition, a file descriptor can be associated with a dma-
+buf object as the handle that can be passed to user space.
 
-diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
-index 8ca51e4..329ee4f 100644
---- a/drivers/infiniband/hw/hfi1/file_ops.c
-+++ b/drivers/infiniband/hw/hfi1/file_ops.c
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright(c) 2020 Cornelis Networks, Inc.
-  * Copyright(c) 2015-2020 Intel Corporation.
-  *
-  * This file is provided under a dual BSD/GPLv2 license.  When using or
-@@ -206,8 +207,6 @@ static int hfi1_file_open(struct inode *inode, struct file *fp)
- 	spin_lock_init(&fd->tid_lock);
- 	spin_lock_init(&fd->invalid_lock);
- 	fd->rec_cpu_num = -1; /* no cpu affinity by default */
--	fd->mm = current->mm;
--	mmgrab(fd->mm);
- 	fd->dd = dd;
- 	fp->private_data = fd;
- 	return 0;
-@@ -711,7 +710,6 @@ static int hfi1_file_close(struct inode *inode, struct file *fp)
- 
- 	deallocate_ctxt(uctxt);
- done:
--	mmdrop(fdata->mm);
- 
- 	if (atomic_dec_and_test(&dd->user_refcount))
- 		complete(&dd->user_comp);
-diff --git a/drivers/infiniband/hw/hfi1/hfi.h b/drivers/infiniband/hw/hfi1/hfi.h
-index b4c6bff..e09e824 100644
---- a/drivers/infiniband/hw/hfi1/hfi.h
-+++ b/drivers/infiniband/hw/hfi1/hfi.h
-@@ -1,6 +1,7 @@
- #ifndef _HFI1_KERNEL_H
- #define _HFI1_KERNEL_H
- /*
-+ * Copyright(c) 2020 Cornelis Networks, Inc.
-  * Copyright(c) 2015-2020 Intel Corporation.
-  *
-  * This file is provided under a dual BSD/GPLv2 license.  When using or
-@@ -1451,7 +1452,6 @@ struct hfi1_filedata {
- 	u32 invalid_tid_idx;
- 	/* protect invalid_tids array and invalid_tid_idx */
- 	spinlock_t invalid_lock;
--	struct mm_struct *mm;
- };
- 
- extern struct xarray hfi1_dev_table;
-diff --git a/drivers/infiniband/hw/hfi1/mmu_rb.c b/drivers/infiniband/hw/hfi1/mmu_rb.c
-index 24ca17b..06a422c 100644
---- a/drivers/infiniband/hw/hfi1/mmu_rb.c
-+++ b/drivers/infiniband/hw/hfi1/mmu_rb.c
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright(c) 2020 Cornelis Networks, Inc.
-  * Copyright(c) 2016 - 2017 Intel Corporation.
-  *
-  * This file is provided under a dual BSD/GPLv2 license.  When using or
-@@ -48,23 +49,11 @@
- #include <linux/rculist.h>
- #include <linux/mmu_notifier.h>
- #include <linux/interval_tree_generic.h>
-+#include <linux/sched/mm.h>
- 
- #include "mmu_rb.h"
- #include "trace.h"
- 
--struct mmu_rb_handler {
--	struct mmu_notifier mn;
--	struct rb_root_cached root;
--	void *ops_arg;
--	spinlock_t lock;        /* protect the RB tree */
--	struct mmu_rb_ops *ops;
--	struct mm_struct *mm;
--	struct list_head lru_list;
--	struct work_struct del_work;
--	struct list_head del_list;
--	struct workqueue_struct *wq;
--};
--
- static unsigned long mmu_node_start(struct mmu_rb_node *);
- static unsigned long mmu_node_last(struct mmu_rb_node *);
- static int mmu_notifier_range_start(struct mmu_notifier *,
-@@ -92,37 +81,36 @@ static unsigned long mmu_node_last(struct mmu_rb_node *node)
- 	return PAGE_ALIGN(node->addr + node->len) - 1;
- }
- 
--int hfi1_mmu_rb_register(void *ops_arg, struct mm_struct *mm,
-+int hfi1_mmu_rb_register(void *ops_arg,
- 			 struct mmu_rb_ops *ops,
- 			 struct workqueue_struct *wq,
- 			 struct mmu_rb_handler **handler)
- {
--	struct mmu_rb_handler *handlr;
-+	struct mmu_rb_handler *h;
- 	int ret;
- 
--	handlr = kmalloc(sizeof(*handlr), GFP_KERNEL);
--	if (!handlr)
-+	h = kmalloc(sizeof(*h), GFP_KERNEL);
-+	if (!h)
- 		return -ENOMEM;
- 
--	handlr->root = RB_ROOT_CACHED;
--	handlr->ops = ops;
--	handlr->ops_arg = ops_arg;
--	INIT_HLIST_NODE(&handlr->mn.hlist);
--	spin_lock_init(&handlr->lock);
--	handlr->mn.ops = &mn_opts;
--	handlr->mm = mm;
--	INIT_WORK(&handlr->del_work, handle_remove);
--	INIT_LIST_HEAD(&handlr->del_list);
--	INIT_LIST_HEAD(&handlr->lru_list);
--	handlr->wq = wq;
--
--	ret = mmu_notifier_register(&handlr->mn, handlr->mm);
-+	h->root = RB_ROOT_CACHED;
-+	h->ops = ops;
-+	h->ops_arg = ops_arg;
-+	INIT_HLIST_NODE(&h->mn.hlist);
-+	spin_lock_init(&h->lock);
-+	h->mn.ops = &mn_opts;
-+	INIT_WORK(&h->del_work, handle_remove);
-+	INIT_LIST_HEAD(&h->del_list);
-+	INIT_LIST_HEAD(&h->lru_list);
-+	h->wq = wq;
-+
-+	ret = mmu_notifier_register(&h->mn, current->mm);
- 	if (ret) {
--		kfree(handlr);
-+		kfree(h);
- 		return ret;
- 	}
- 
--	*handler = handlr;
-+	*handler = h;
- 	return 0;
- }
- 
-@@ -133,8 +121,16 @@ void hfi1_mmu_rb_unregister(struct mmu_rb_handler *handler)
- 	unsigned long flags;
- 	struct list_head del_list;
- 
-+	/*
-+	 * do_exit() calls exit_mm() before exit_files() which would call close
-+	 * and end up in here. If there is no mm, then its a kernel thread and
-+	 * we need to let it continue the removal.
-+	 */
-+	if (current->mm && (handler->mn.mm != current->mm))
-+		return;
-+
- 	/* Unregister first so we don't get any more notifications. */
--	mmu_notifier_unregister(&handler->mn, handler->mm);
-+	mmu_notifier_unregister(&handler->mn, handler->mn.mm);
- 
- 	/*
- 	 * Make sure the wq delete handler is finished running.  It will not
-@@ -166,6 +162,10 @@ int hfi1_mmu_rb_insert(struct mmu_rb_handler *handler,
- 	int ret = 0;
- 
- 	trace_hfi1_mmu_rb_insert(mnode->addr, mnode->len);
-+
-+	if (current->mm != handler->mn.mm)
-+		return -EPERM;
-+
- 	spin_lock_irqsave(&handler->lock, flags);
- 	node = __mmu_rb_search(handler, mnode->addr, mnode->len);
- 	if (node) {
-@@ -180,6 +180,7 @@ int hfi1_mmu_rb_insert(struct mmu_rb_handler *handler,
- 		__mmu_int_rb_remove(mnode, &handler->root);
- 		list_del(&mnode->list); /* remove from LRU list */
- 	}
-+	mnode->handler = handler;
- unlock:
- 	spin_unlock_irqrestore(&handler->lock, flags);
- 	return ret;
-@@ -217,6 +218,9 @@ bool hfi1_mmu_rb_remove_unless_exact(struct mmu_rb_handler *handler,
- 	unsigned long flags;
- 	bool ret = false;
- 
-+	if (current->mm != handler->mn.mm)
-+		return ret;
-+
- 	spin_lock_irqsave(&handler->lock, flags);
- 	node = __mmu_rb_search(handler, addr, len);
- 	if (node) {
-@@ -239,6 +243,9 @@ void hfi1_mmu_rb_evict(struct mmu_rb_handler *handler, void *evict_arg)
- 	unsigned long flags;
- 	bool stop = false;
- 
-+	if (current->mm != handler->mn.mm)
-+		return;
-+
- 	INIT_LIST_HEAD(&del_list);
- 
- 	spin_lock_irqsave(&handler->lock, flags);
-@@ -272,6 +279,9 @@ void hfi1_mmu_rb_remove(struct mmu_rb_handler *handler,
- {
- 	unsigned long flags;
- 
-+	if (current->mm != handler->mn.mm)
-+		return;
-+
- 	/* Validity of handler and node pointers has been checked by caller. */
- 	trace_hfi1_mmu_rb_remove(node->addr, node->len);
- 	spin_lock_irqsave(&handler->lock, flags);
-diff --git a/drivers/infiniband/hw/hfi1/mmu_rb.h b/drivers/infiniband/hw/hfi1/mmu_rb.h
-index f04cec1..423aacc 100644
---- a/drivers/infiniband/hw/hfi1/mmu_rb.h
-+++ b/drivers/infiniband/hw/hfi1/mmu_rb.h
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright(c) 2020 Cornelis Networks, Inc.
-  * Copyright(c) 2016 Intel Corporation.
-  *
-  * This file is provided under a dual BSD/GPLv2 license.  When using or
-@@ -54,6 +55,7 @@ struct mmu_rb_node {
- 	unsigned long len;
- 	unsigned long __last;
- 	struct rb_node node;
-+	struct mmu_rb_handler *handler;
- 	struct list_head list;
- };
- 
-@@ -71,7 +73,19 @@ struct mmu_rb_ops {
- 		     void *evict_arg, bool *stop);
- };
- 
--int hfi1_mmu_rb_register(void *ops_arg, struct mm_struct *mm,
-+struct mmu_rb_handler {
-+	struct mmu_notifier mn;
-+	struct rb_root_cached root;
-+	void *ops_arg;
-+	spinlock_t lock;        /* protect the RB tree */
-+	struct mmu_rb_ops *ops;
-+	struct list_head lru_list;
-+	struct work_struct del_work;
-+	struct list_head del_list;
-+	struct workqueue_struct *wq;
-+};
-+
-+int hfi1_mmu_rb_register(void *ops_arg,
- 			 struct mmu_rb_ops *ops,
- 			 struct workqueue_struct *wq,
- 			 struct mmu_rb_handler **handler);
-diff --git a/drivers/infiniband/hw/hfi1/user_exp_rcv.c b/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-index f81ca20..b94fc7f 100644
---- a/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-+++ b/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright(c) 2020 Cornelis Networks, Inc.
-  * Copyright(c) 2015-2018 Intel Corporation.
-  *
-  * This file is provided under a dual BSD/GPLv2 license.  When using or
-@@ -173,15 +174,18 @@ static void unpin_rcv_pages(struct hfi1_filedata *fd,
- {
- 	struct page **pages;
- 	struct hfi1_devdata *dd = fd->uctxt->dd;
-+	struct mm_struct *mm;
- 
- 	if (mapped) {
- 		pci_unmap_single(dd->pcidev, node->dma_addr,
- 				 node->npages * PAGE_SIZE, PCI_DMA_FROMDEVICE);
- 		pages = &node->pages[idx];
-+		mm = mm_from_tid_node(node);
- 	} else {
- 		pages = &tidbuf->pages[idx];
-+		mm = current->mm;
- 	}
--	hfi1_release_user_pages(fd->mm, pages, npages, mapped);
-+	hfi1_release_user_pages(mm, pages, npages, mapped);
- 	fd->tid_n_pinned -= npages;
- }
- 
-@@ -216,12 +220,12 @@ static int pin_rcv_pages(struct hfi1_filedata *fd, struct tid_user_buf *tidbuf)
- 	 * pages, accept the amount pinned so far and program only that.
- 	 * User space knows how to deal with partially programmed buffers.
- 	 */
--	if (!hfi1_can_pin_pages(dd, fd->mm, fd->tid_n_pinned, npages)) {
-+	if (!hfi1_can_pin_pages(dd, current->mm, fd->tid_n_pinned, npages)) {
- 		kfree(pages);
- 		return -ENOMEM;
- 	}
- 
--	pinned = hfi1_acquire_user_pages(fd->mm, vaddr, npages, true, pages);
-+	pinned = hfi1_acquire_user_pages(current->mm, vaddr, npages, true, pages);
- 	if (pinned <= 0) {
- 		kfree(pages);
- 		return pinned;
-@@ -756,7 +760,7 @@ static int set_rcvarray_entry(struct hfi1_filedata *fd,
- 
- 	if (fd->use_mn) {
- 		ret = mmu_interval_notifier_insert(
--			&node->notifier, fd->mm,
-+			&node->notifier, current->mm,
- 			tbuf->vaddr + (pageidx * PAGE_SIZE), npages * PAGE_SIZE,
- 			&tid_mn_ops);
- 		if (ret)
-diff --git a/drivers/infiniband/hw/hfi1/user_exp_rcv.h b/drivers/infiniband/hw/hfi1/user_exp_rcv.h
-index 332abb4..d45c7b6 100644
---- a/drivers/infiniband/hw/hfi1/user_exp_rcv.h
-+++ b/drivers/infiniband/hw/hfi1/user_exp_rcv.h
-@@ -1,6 +1,7 @@
- #ifndef _HFI1_USER_EXP_RCV_H
- #define _HFI1_USER_EXP_RCV_H
- /*
-+ * Copyright(c) 2020 - Cornelis Networks, Inc.
-  * Copyright(c) 2015 - 2017 Intel Corporation.
-  *
-  * This file is provided under a dual BSD/GPLv2 license.  When using or
-@@ -95,4 +96,9 @@ int hfi1_user_exp_rcv_clear(struct hfi1_filedata *fd,
- int hfi1_user_exp_rcv_invalid(struct hfi1_filedata *fd,
- 			      struct hfi1_tid_info *tinfo);
- 
-+static inline struct mm_struct *mm_from_tid_node(struct tid_rb_node *node)
-+{
-+	return node->notifier.mm;
-+}
-+
- #endif /* _HFI1_USER_EXP_RCV_H */
-diff --git a/drivers/infiniband/hw/hfi1/user_sdma.c b/drivers/infiniband/hw/hfi1/user_sdma.c
-index a92346e..4a4956f9 100644
---- a/drivers/infiniband/hw/hfi1/user_sdma.c
-+++ b/drivers/infiniband/hw/hfi1/user_sdma.c
-@@ -1,4 +1,5 @@
- /*
-+ * Copyright(c) 2020 - Cornelis Networks, Inc.
-  * Copyright(c) 2015 - 2018 Intel Corporation.
-  *
-  * This file is provided under a dual BSD/GPLv2 license.  When using or
-@@ -188,7 +189,6 @@ int hfi1_user_sdma_alloc_queues(struct hfi1_ctxtdata *uctxt,
- 	atomic_set(&pq->n_reqs, 0);
- 	init_waitqueue_head(&pq->wait);
- 	atomic_set(&pq->n_locked, 0);
--	pq->mm = fd->mm;
- 
- 	iowait_init(&pq->busy, 0, NULL, NULL, defer_packet_queue,
- 		    activate_packet_queue, NULL, NULL);
-@@ -230,7 +230,7 @@ int hfi1_user_sdma_alloc_queues(struct hfi1_ctxtdata *uctxt,
- 
- 	cq->nentries = hfi1_sdma_comp_ring_size;
- 
--	ret = hfi1_mmu_rb_register(pq, pq->mm, &sdma_rb_ops, dd->pport->hfi1_wq,
-+	ret = hfi1_mmu_rb_register(pq, &sdma_rb_ops, dd->pport->hfi1_wq,
- 				   &pq->handler);
- 	if (ret) {
- 		dd_dev_err(dd, "Failed to register with MMU %d", ret);
-@@ -980,13 +980,13 @@ static int pin_sdma_pages(struct user_sdma_request *req,
- 
- 	npages -= node->npages;
- retry:
--	if (!hfi1_can_pin_pages(pq->dd, pq->mm,
-+	if (!hfi1_can_pin_pages(pq->dd, current->mm,
- 				atomic_read(&pq->n_locked), npages)) {
- 		cleared = sdma_cache_evict(pq, npages);
- 		if (cleared >= npages)
- 			goto retry;
- 	}
--	pinned = hfi1_acquire_user_pages(pq->mm,
-+	pinned = hfi1_acquire_user_pages(current->mm,
- 					 ((unsigned long)iovec->iov.iov_base +
- 					 (node->npages * PAGE_SIZE)), npages, 0,
- 					 pages + node->npages);
-@@ -995,7 +995,7 @@ static int pin_sdma_pages(struct user_sdma_request *req,
- 		return pinned;
- 	}
- 	if (pinned != npages) {
--		unpin_vector_pages(pq->mm, pages, node->npages, pinned);
-+		unpin_vector_pages(current->mm, pages, node->npages, pinned);
- 		return -EFAULT;
- 	}
- 	kfree(node->pages);
-@@ -1008,7 +1008,8 @@ static int pin_sdma_pages(struct user_sdma_request *req,
- static void unpin_sdma_pages(struct sdma_mmu_node *node)
- {
- 	if (node->npages) {
--		unpin_vector_pages(node->pq->mm, node->pages, 0, node->npages);
-+		unpin_vector_pages(mm_from_sdma_node(node), node->pages, 0,
-+				   node->npages);
- 		atomic_sub(node->npages, &node->pq->n_locked);
- 	}
- }
-diff --git a/drivers/infiniband/hw/hfi1/user_sdma.h b/drivers/infiniband/hw/hfi1/user_sdma.h
-index 9972e0e..1e8c02f 100644
---- a/drivers/infiniband/hw/hfi1/user_sdma.h
-+++ b/drivers/infiniband/hw/hfi1/user_sdma.h
-@@ -1,6 +1,7 @@
- #ifndef _HFI1_USER_SDMA_H
- #define _HFI1_USER_SDMA_H
- /*
-+ * Copyright(c) 2020 - Cornelis Networks, Inc.
-  * Copyright(c) 2015 - 2018 Intel Corporation.
-  *
-  * This file is provided under a dual BSD/GPLv2 license.  When using or
-@@ -133,7 +134,6 @@ struct hfi1_user_sdma_pkt_q {
- 	unsigned long unpinned;
- 	struct mmu_rb_handler *handler;
- 	atomic_t n_locked;
--	struct mm_struct *mm;
- };
- 
- struct hfi1_user_sdma_comp_q {
-@@ -250,4 +250,9 @@ int hfi1_user_sdma_process_request(struct hfi1_filedata *fd,
- 				   struct iovec *iovec, unsigned long dim,
- 				   unsigned long *count);
- 
-+static inline struct mm_struct *mm_from_sdma_node(struct sdma_mmu_node *node)
-+{
-+	return node->rb.handler->mn.mm;
-+}
-+
- #endif /* _HFI1_USER_SDMA_H */
+This patch series adds dma-buf importer role to the RDMA driver in
+attempt to support RDMA using device memory such as GPU VRAM. Dma-buf is
+chosen for a few reasons: first, the API is relatively simple and allows
+a lot of flexibility in implementing the buffer manipulation ops.
+Second, it doesn't require page structure. Third, dma-buf is already
+supported in many GPU drivers. However, we are aware that existing GPU
+drivers don't allow pinning device memory via the dma-buf interface.
+Pinning would simply cause the backing storage to migrate to system RAM.
+True peer-to-peer access is only possible using dynamic attach, which
+requires on-demand paging support from the NIC to work. For this reason,
+this series only works with ODP capable NICs.
+
+This series consists of four patches. The first patch adds the common
+code for importing dma-buf from a file descriptor and mapping the
+dma-buf pages. Patch 2 add the new driver method reg_user_mr_dmabuf().
+Patch 3 adds a new uverbs command for registering dma-buf based memory
+region. Patch 4 adds dma-buf support to the mlx5 driver.
+
+Related user space RDMA library changes are provided as a separate
+patch series.
+
+Jianxin Xiong (4):
+  RDMA/umem: Support importing dma-buf as user memory region
+  RDMA/core: Add device method for registering dma-buf based memory
+    region
+  RDMA/uverbs: Add uverbs command for dma-buf based MR registration
+  RDMA/mlx5: Support dma-buf based userspace memory region
+
+ drivers/infiniband/core/Makefile              |   2 +-
+ drivers/infiniband/core/device.c              |   1 +
+ drivers/infiniband/core/umem.c                |   4 +
+ drivers/infiniband/core/umem_dmabuf.c         | 174 ++++++++++++++++++++++++++
+ drivers/infiniband/core/umem_dmabuf.h         |  11 ++
+ drivers/infiniband/core/uverbs_std_types_mr.c | 114 ++++++++++++++++-
+ drivers/infiniband/hw/mlx5/main.c             |   2 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  18 +++
+ drivers/infiniband/hw/mlx5/mr.c               | 127 ++++++++++++++++++-
+ drivers/infiniband/hw/mlx5/odp.c              |  86 ++++++++++++-
+ include/rdma/ib_umem.h                        |  39 +++++-
+ include/rdma/ib_verbs.h                       |   6 +-
+ include/uapi/rdma/ib_user_ioctl_cmds.h        |  14 +++
+ 13 files changed, 584 insertions(+), 14 deletions(-)
+ create mode 100644 drivers/infiniband/core/umem_dmabuf.c
+ create mode 100644 drivers/infiniband/core/umem_dmabuf.h
+
+-- 
+1.8.3.1
 
