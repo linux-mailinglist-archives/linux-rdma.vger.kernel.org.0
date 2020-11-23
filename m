@@ -2,130 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743CF2C1501
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Nov 2020 21:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7724F2C1656
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Nov 2020 21:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728938AbgKWUD4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Nov 2020 15:03:56 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17000 "EHLO
+        id S2387594AbgKWUP6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Nov 2020 15:15:58 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18454 "EHLO
         hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726770AbgKWUDy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Nov 2020 15:03:54 -0500
+        with ESMTP id S2387593AbgKWUP6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Nov 2020 15:15:58 -0500
 Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fbc15a70004>; Mon, 23 Nov 2020 12:03:51 -0800
+        id <B5fbc187f0001>; Mon, 23 Nov 2020 12:15:59 -0800
 Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 23 Nov
- 2020 20:03:49 +0000
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.103)
+ 2020 20:15:57 +0000
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.105)
  by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 23 Nov 2020 20:03:49 +0000
+ 15.0.1473.3 via Frontend Transport; Mon, 23 Nov 2020 20:15:57 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gITd84wMHHzcOptjQRg1Bi4wKYLoloErjGXTzbxbsYYxXpRm6DfDjP1G8JsqPPruG8n8djHpWT3ChykgCoTQdTlPHkj05TPw7WZ4Y46HlI8bprZC3XuF3n009Te/qaTwPxc9ef3s3wxgnUStlvtZrJvP5WQhh3MIKLFTGEWjhLXWcgs1VmoV9q6ndrBwWgPhsRBIC9rKh9qqm9cf9Ujr9sks/ml2cZ4bW16uPSJVifE1ke5RuUikXPZ60YcpNVw15sbmeBPfJ8v059YAkVfr8AOpsBgi+OymMySTg/JYVNFtVJ2pGo3M9pC5txLp474ztgTCR2D9RfvqUQOXT+42RA==
+ b=l3Sb6lQKKRe8Ur8fDSFF7ck7n67eJUARsdZ241YppPwk51T29jnS0zdFzbA7FRr6dAc7J3mRxwS0I8CRBhXzwsLmfflcwdnTa3FtYnGZLHOF2E4bAalOHNo3P4JH996NovDJ+3ffbgb7XVVr8m4SjTrN2F+rp+P53atv9WH63QDgbRzOyqgMx6teb+2Ml4dKVgeay5nvRkXNECV2Gv1EBCYDjiQBZHHahFIR9J3WqglVFR0gHTEZSJc0XGTNyqx4N8aIJiiFg7IrjYj7QyL7OloAunDLuB3Oi999bvnLx9gAjioC9r/s1+qic0EVyaF02X+3c0uemNdcEDaW0jilnA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QophqWBVIGhmInjMMmoN1JCz5yEuED07MVw87J8AVUY=;
- b=dpOj+p56VpZQgFejSTc+TjZx9PpIbmIlWcJPfXyA8QiV6hyerQ1PNIg37pZm/OoPMM7dRNU+MPO2Sxmva5Z6iKtLQpQNkcM79tS52of8WjxHEmReB+Qc/VB0gzy26dU2FtXMoEzn5Rx6YHRp97uhlWeSk7Nsi1BUrieORD+G9yqkgKBmwQvC726s6EkJ0s32uNc7iMGffyCjKbyBtSLggJX9G9WEJ0m0GYQlYWRE7aVXL+Iy16bXoksvn7nW7YXP74v45GAqxPt7EElquzCZ4kXurFfWXXWM9ThsUobGLm/yb7wWVAmTEM+ttWZwc1mR7P3I+RsId2H9o2Xiqq+zAg==
+ bh=xkv4wkBngWd0JbVHnelCOqmopt3j20rq3d8uo28ftuQ=;
+ b=TZ4G+UvHkWRwLPDafGg20JFBwWozJ5OkV5vz2C0Pi9i+IMnI1zKTJ3rdpLibwx9yTPq8gjqz/BvE+DMkCizdnOT4LEyiHRgpcfTEGJXBUx2uoQTyBg1oiNaeFMQZYa0x57LbFTwLIb29wSLHDlzCRKWy+I10zE2NTzsR9b4n4QxpO2zYfx8FGBq/Fu42IuvJqDwCi9Fm1l3iBdGWDLEKvlfeSiipI/9Y8kvXop04pcpvh2NhMDJBwaMmWcPCMPJz9Q2vdJ5ywPmPtWS/rlXujBOjB2aKJobrfuj2TAMYWBtjcujT1Um0RbETU+yWv3OxP9QRg23WoFtStiXcfNFymA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4338.namprd12.prod.outlook.com (2603:10b6:5:2a2::21) with
+ by DM5PR12MB2439.namprd12.prod.outlook.com (2603:10b6:4:b4::32) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.21; Mon, 23 Nov
- 2020 20:03:48 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Mon, 23 Nov
+ 2020 20:15:50 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3589.022; Mon, 23 Nov 2020
- 20:03:48 +0000
-Date:   Mon, 23 Nov 2020 16:03:45 -0400
+ 20:15:50 +0000
+Date:   Mon, 23 Nov 2020 16:15:48 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <amd-gfx@lists.freedesktop.org>,
-        <bridge@lists.linux-foundation.org>, <ceph-devel@vger.kernel.org>,
-        <cluster-devel@redhat.com>, <coreteam@netfilter.org>,
-        <devel@driverdev.osuosl.org>, <dm-devel@redhat.com>,
-        <drbd-dev@lists.linbit.com>, <dri-devel@lists.freedesktop.org>,
-        <GR-everest-linux-l2@marvell.com>, <GR-Linux-NIC-Dev@marvell.com>,
-        <intel-gfx@lists.freedesktop.org>,
-        <intel-wired-lan@lists.osuosl.org>, <keyrings@vger.kernel.org>,
-        <linux1394-devel@lists.sourceforge.net>,
-        <linux-acpi@vger.kernel.org>, <linux-afs@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-atm-general@lists.sourceforge.net>,
-        <linux-block@vger.kernel.org>, <linux-can@vger.kernel.org>,
-        <linux-cifs@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-decnet-user@lists.sourceforge.net>,
-        <linux-ext4@vger.kernel.org>, <linux-fbdev@vger.kernel.org>,
-        <linux-geode@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
-        <linux-hams@vger.kernel.org>, <linux-hwmon@vger.kernel.org>,
-        <linux-i3c@lists.infradead.org>, <linux-ide@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-input@vger.kernel.org>,
-        <linux-integrity@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-media@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-mtd@lists.infradead.org>,
-        <linux-nfs@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <linux-sctp@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-usb@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <netfilter-devel@vger.kernel.org>, <nouveau@lists.freedesktop.org>,
-        <op-tee@lists.trustedfirmware.org>, <oss-drivers@netronome.com>,
-        <patches@opensource.cirrus.com>, <rds-devel@oss.oracle.com>,
-        <reiserfs-devel@vger.kernel.org>,
-        <samba-technical@lists.samba.org>, <selinux@vger.kernel.org>,
-        <target-devel@vger.kernel.org>,
-        <tipc-discussion@lists.sourceforge.net>,
-        <usb-storage@lists.one-eyed-alien.net>,
-        <virtualization@lists.linux-foundation.org>,
-        <wcn36xx@lists.infradead.org>, <x86@kernel.org>,
-        <xen-devel@lists.xenproject.org>,
-        <linux-hardening@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-Message-ID: <20201123200345.GA38546@nvidia.com>
-References: <cover.1605896059.git.gustavoars@kernel.org>
+To:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        <linux-rdma@vger.kernel.org>, Zhu Yanjun <yanjunz@nvidia.com>,
+        "Pearson, Robert B" <robert.pearson2@hpe.com>
+Subject: Re: [PATCH] RDMA/siw,rxe: Make emulated devices virtual in the
+ device tree
+Message-ID: <20201123201548.GA43190@nvidia.com>
+References: <0-v1-dcbfc68c4b4a+d6-virtual_dev_jgg@nvidia.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <cover.1605896059.git.gustavoars@kernel.org>
-X-ClientProxiedBy: MN2PR03CA0013.namprd03.prod.outlook.com
- (2603:10b6:208:23a::18) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <0-v1-dcbfc68c4b4a+d6-virtual_dev_jgg@nvidia.com>
+X-ClientProxiedBy: BL0PR03CA0024.namprd03.prod.outlook.com
+ (2603:10b6:208:2d::37) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR03CA0013.namprd03.prod.outlook.com (2603:10b6:208:23a::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Mon, 23 Nov 2020 20:03:47 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1khI3t-000A35-Tb; Mon, 23 Nov 2020 16:03:45 -0400
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR03CA0024.namprd03.prod.outlook.com (2603:10b6:208:2d::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Mon, 23 Nov 2020 20:15:50 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1khIFY-000BFE-PA; Mon, 23 Nov 2020 16:15:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606161831; bh=QophqWBVIGhmInjMMmoN1JCz5yEuED07MVw87J8AVUY=;
+        t=1606162559; bh=xkv4wkBngWd0JbVHnelCOqmopt3j20rq3d8uo28ftuQ=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
+         From:To:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=Zr1EZlr7FGouweCXJ2A3YJZ8lxsTazMwmiIDkNNgeYuPc4M3hA0h9guNHLXrnnLeX
-         Dp0jtpGLpYuZZsYit0m8+Y/3Pgk+U78P2KDuhjfei0oh+kHbQnRfzB2jD1Wu7rVyZ8
-         A2iuCgvA8hhwNVx8Bo/l4LfRAECKvf8eJj6um7c8+wyJ6oFgyijvPixB8Xcq6YNTLj
-         o7o09Zdo2SkPJV9Ld82VvGAW1KENwGx8qxL8L4kHw5xGizl/kk/4FLfOCs8mx17bXD
-         N2PIS7AsaPoH2bHogxWrZ7vcH6YOCMGYKk/oZQ1BhSoaDoH96AMZAs9BCirfcyYEMq
-         3EMRDyReptNPA==
+        b=rJ2WfyH4cQA5zfyM6nDEe4gdtud4jcnBC9k+0lT3NPruX0Nef4EIGfnlCjhryXB4F
+         nzj7/CsozCsDKfAhXdZRyyApHQJaozRU1MYeGS+GP5pVkgRCDbuKQaMYojyhxI7tnv
+         6stBdw0shOMfGaRP7SLJjhDU1U5cD4hptpS8ohLkCJ3X/JAk30yRNY6CdF3DVQw5DS
+         2Se/p/A6WvNYlTGcOWAHekuJTarAlUYBgQFM20nRnaHWO5rzQY54xzh1RQhapDZWLb
+         rRnZKO25UKT9pkXQUxlBuHvdYOpIdZkOfleF4DiD958H6z58m3N4KARknYHLSYds9p
+         EMjJ2ijsZLUUg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 12:21:39PM -0600, Gustavo A. R. Silva wrote:
+On Fri, Nov 06, 2020 at 10:00:49AM -0400, Jason Gunthorpe wrote:
+> This moves siw and rxe to be virtual devices in the device tree:
+> 
+> lrwxrwxrwx 1 root root 0 Nov  6 13:55 /sys/class/infiniband/rxe0 -> ../../devices/virtual/infiniband/rxe0/
+> 
+> Previously they were trying to parent themselves to the physical device of
+> their attached netdev, which doesn't make alot of sense.
+> 
+> My hope is this will solve some weird syzkaller hits related to sysfs as
+> it could be possible that the parent of a netdev is another netdev, eg
+> under bonding or some other syzkaller found netdev configuration.
+> 
+> Nesting a ib_device under anything but a physical device is going to cause
+> inconsistencies in sysfs during destructions.
+> 
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_net.c   | 12 ------------
+>  drivers/infiniband/sw/rxe/rxe_verbs.c |  1 -
+>  drivers/infiniband/sw/siw/siw_main.c  | 19 +------------------
+>  3 files changed, 1 insertion(+), 31 deletions(-)
 
->   IB/hfi1: Fix fall-through warnings for Clang
->   IB/mlx4: Fix fall-through warnings for Clang
->   IB/qedr: Fix fall-through warnings for Clang
->   RDMA/mlx5: Fix fall-through warnings for Clang
-
-I picked these four to the rdma tree, thanks
+Applied to for-next
 
 Jason
