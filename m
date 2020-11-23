@@ -2,140 +2,261 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560CF2C0909
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Nov 2020 14:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA772C0985
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Nov 2020 14:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388387AbgKWNDs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Nov 2020 08:03:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388335AbgKWNDp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:03:45 -0500
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 191D120758;
-        Mon, 23 Nov 2020 13:03:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606136621;
-        bh=J/TET3MqSRKQBkZDLmw3offBuTNq8xblR6VPj5c7KTQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=huMDpxd34lY8zl81VJt6WrkzA8VbZ3WZKfCc+01YUsnQkEm+dvBfrNL343ZTscxgS
-         4cn7RRAIuR/6lyK6TO0qxACy3TNrSBuTodAx+s4Q2YpvApK9inZpqsbsSdtJmbV9Zx
-         YwwBYqtSxUH9kHvWkiEz2t98c4vnYVnAJ6qqQTEg=
-Date:   Mon, 23 Nov 2020 07:03:48 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Joe Perches <joe@perches.com>, Kees Cook <keescook@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>, alsa-devel@alsa-project.org,
-        linux-atm-general@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-ide@vger.kernel.org, dm-devel@redhat.com,
-        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
-        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
-        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-afs@lists.infradead.org,
-        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
-        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
-        rds-devel@oss.oracle.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
-        oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
-        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
-        intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        tipc-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        selinux@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
-        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
-        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
-        x86@kernel.org, linux-nfs@vger.kernel.org,
-        GR-Linux-NIC-Dev@marvell.com, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linux-decnet-user@lists.sourceforge.net,
-        linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        patches@opensource.cirrus.com, linux-integrity@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for
- Clang
-Message-ID: <20201123130348.GA3119@embeddedor>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011201129.B13FDB3C@keescook>
- <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook>
- <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
- <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
- <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
- <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
+        id S2388731AbgKWNIs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Nov 2020 08:08:48 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:8387 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388395AbgKWNIr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Nov 2020 08:08:47 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CfnWw3dVxz72NQ;
+        Mon, 23 Nov 2020 21:08:12 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 23 Nov 2020 21:08:24 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH v2 for-next] RDMA/hns: Create QP with selected QPN for bank load balance
+Date:   Mon, 23 Nov 2020 21:06:48 +0800
+Message-ID: <1606136808-32136-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 11:53:55AM -0800, James Bottomley wrote:
-> On Sun, 2020-11-22 at 11:22 -0800, Joe Perches wrote:
-> > On Sun, 2020-11-22 at 11:12 -0800, James Bottomley wrote:
-> > > On Sun, 2020-11-22 at 10:25 -0800, Joe Perches wrote:
-> > > > On Sun, 2020-11-22 at 10:21 -0800, James Bottomley wrote:
-> > > > > Please tell me our reward for all this effort isn't a single
-> > > > > missing error print.
-> > > > 
-> > > > There were quite literally dozens of logical defects found
-> > > > by the fallthrough additions.  Very few were logging only.
-> > > 
-> > > So can you give us the best examples (or indeed all of them if
-> > > someone is keeping score)?  hopefully this isn't a US election
-> > > situation ...
-> > 
-> > Gustavo?  Are you running for congress now?
-> > 
-> > https://lwn.net/Articles/794944/
-> 
-> That's 21 reported fixes of which about 50% seem to produce no change
-> in code behaviour at all, a quarter seem to have no user visible effect
-> with the remaining quarter producing unexpected errors on obscure
-> configuration parameters, which is why no-one really noticed them
-> before.
+From: Yangyang Li <liyangyang20@huawei.com>
 
-The really important point here is the number of bugs this has prevented
-and will prevent in the future. See an example of this, below:
+In order to improve performance by balancing the load between different
+banks of cache, the QPC cache is desigend to choose one of 8 banks
+according to lower 3 bits of QPN. The hns driver needs to count the number
+of QP on each bank and then assigns the QP being created to the bank with
+the minimum load first.
 
-https://lore.kernel.org/linux-iio/20190813135802.GB27392@kroah.com/
+Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+---
+Changes since v1:
+- Use ida instead of bitmap to allocate QPN.
+- Remove CQ parts, which will be reorganized in a separate patch.
+Link: https://patchwork.kernel.org/project/linux-rdma/patch/1599642563-10264-1-git-send-email-liweihang@huawei.com/
 
-This work is still relevant, even if the total number of issues/bugs
-we find in the process is zero (which is not the case).
+ drivers/infiniband/hw/hns/hns_roce_device.h |  15 ++++-
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 100 +++++++++++++++++++++++-----
+ 2 files changed, 96 insertions(+), 19 deletions(-)
 
-"The sucky thing about doing hard work to deploy hardening is that the
-result is totally invisible by definition (things not happening) [..]"
-- Dmitry Vyukov
-
-Thanks
---
-Gustavo
-
-
-
-
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 1d99022..e9783cc 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -117,6 +117,8 @@
+ #define HNS_ROCE_IDX_QUE_ENTRY_SZ		4
+ #define SRQ_DB_REG				0x230
+ 
++#define HNS_ROCE_QP_BANK_NUM 8
++
+ /* The chip implementation of the consumer index is calculated
+  * according to twice the actual EQ depth
+  */
+@@ -512,13 +514,22 @@ struct hns_roce_uar_table {
+ 	struct hns_roce_bitmap bitmap;
+ };
+ 
++struct hns_roce_bank {
++	struct ida ida;
++	u32 inuse; /* Number of IDs allocated */
++	u32 min; /* Lowest ID to allocate.  */
++	u32 max; /* Highest ID to allocate. */
++	u32 rsv_bot; /* Reserved bottom ids */
++};
++
+ struct hns_roce_qp_table {
+-	struct hns_roce_bitmap		bitmap;
+ 	struct hns_roce_hem_table	qp_table;
+ 	struct hns_roce_hem_table	irrl_table;
+ 	struct hns_roce_hem_table	trrl_table;
+ 	struct hns_roce_hem_table	sccc_table;
+ 	struct mutex			scc_mutex;
++	struct hns_roce_bank bank[HNS_ROCE_QP_BANK_NUM];
++	spinlock_t bank_lock;
+ };
+ 
+ struct hns_roce_cq_table {
+@@ -768,7 +779,7 @@ struct hns_roce_caps {
+ 	u32		max_rq_sg;
+ 	u32		max_extend_sg;
+ 	int		num_qps;
+-	int             reserved_qps;
++	u32             reserved_qps;
+ 	int		num_qpc_timer;
+ 	int		num_cqc_timer;
+ 	int		num_srqs;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index e288946..73de6e5 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -154,9 +154,50 @@ static void hns_roce_ib_qp_event(struct hns_roce_qp *hr_qp,
+ 	}
+ }
+ 
++static u8 get_least_load_bankid_for_qp(struct hns_roce_bank *bank)
++{
++	u32 least_load = bank[0].inuse;
++	u8 bankid = 0;
++	u32 bankcnt;
++	u8 i;
++
++	for (i = 1; i < HNS_ROCE_QP_BANK_NUM; i++) {
++		bankcnt = bank[i].inuse;
++		if (bankcnt < least_load) {
++			least_load = bankcnt;
++			bankid = i;
++		}
++	}
++
++	return bankid;
++}
++
++static int alloc_qpn_with_bankid(struct hns_roce_bank *bank, u8 bankid,
++				 unsigned long *qpn)
++{
++	int id;
++
++	id = ida_alloc_range(&bank->ida, bank->min, bank->max, GFP_KERNEL);
++	if (id < 0) {
++		id = ida_alloc_range(&bank->ida, bank->rsv_bot, bank->min,
++				     GFP_KERNEL);
++		if (id < 0)
++			return id;
++	}
++
++	/* the QPN should keep increasing until the max value is reached. */
++	bank->min = (id + 1) > bank->max ? bank->rsv_bot : id + 1;
++
++	/* the lower 3 bits is bankid */
++	*qpn = (id << 3) | bankid;
++
++	return 0;
++}
+ static int alloc_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ {
++	struct hns_roce_qp_table *qp_table = &hr_dev->qp_table;
+ 	unsigned long num = 0;
++	u8 bankid;
+ 	int ret;
+ 
+ 	if (hr_qp->ibqp.qp_type == IB_QPT_GSI) {
+@@ -169,13 +210,21 @@ static int alloc_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ 
+ 		hr_qp->doorbell_qpn = 1;
+ 	} else {
+-		ret = hns_roce_bitmap_alloc_range(&hr_dev->qp_table.bitmap,
+-						  1, 1, &num);
++		spin_lock(&qp_table->bank_lock);
++		bankid = get_least_load_bankid_for_qp(qp_table->bank);
++
++		ret = alloc_qpn_with_bankid(&qp_table->bank[bankid], bankid,
++					    &num);
+ 		if (ret) {
+-			ibdev_err(&hr_dev->ib_dev, "Failed to alloc bitmap\n");
+-			return -ENOMEM;
++			ibdev_err(&hr_dev->ib_dev,
++				  "failed to alloc QPN, ret = %d\n", ret);
++			spin_unlock(&qp_table->bank_lock);
++			return ret;
+ 		}
+ 
++		qp_table->bank[bankid].inuse++;
++		spin_unlock(&qp_table->bank_lock);
++
+ 		hr_qp->doorbell_qpn = (u32)num;
+ 	}
+ 
+@@ -340,9 +389,15 @@ static void free_qpc(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ 	hns_roce_table_put(hr_dev, &qp_table->irrl_table, hr_qp->qpn);
+ }
+ 
++static inline u8 get_qp_bankid(unsigned long qpn)
++{
++	/* The lower 3 bits of QPN are used to hash to different banks */
++	return (u8)(qpn & GENMASK(2, 0));
++}
++
+ static void free_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ {
+-	struct hns_roce_qp_table *qp_table = &hr_dev->qp_table;
++	u8 bankid;
+ 
+ 	if (hr_qp->ibqp.qp_type == IB_QPT_GSI)
+ 		return;
+@@ -350,7 +405,13 @@ static void free_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ 	if (hr_qp->qpn < hr_dev->caps.reserved_qps)
+ 		return;
+ 
+-	hns_roce_bitmap_free_range(&qp_table->bitmap, hr_qp->qpn, 1, BITMAP_RR);
++	bankid = get_qp_bankid(hr_qp->qpn);
++
++	ida_free(&hr_dev->qp_table.bank[bankid].ida, hr_qp->qpn >> 3);
++
++	spin_lock(&hr_dev->qp_table.bank_lock);
++	hr_dev->qp_table.bank[bankid].inuse--;
++	spin_unlock(&hr_dev->qp_table.bank_lock);
+ }
+ 
+ static int set_rq_size(struct hns_roce_dev *hr_dev, struct ib_qp_cap *cap,
+@@ -1275,22 +1336,24 @@ bool hns_roce_wq_overflow(struct hns_roce_wq *hr_wq, int nreq,
+ int hns_roce_init_qp_table(struct hns_roce_dev *hr_dev)
+ {
+ 	struct hns_roce_qp_table *qp_table = &hr_dev->qp_table;
+-	int reserved_from_top = 0;
+-	int reserved_from_bot;
+-	int ret;
++	unsigned int reserved_from_bot;
++	unsigned int i;
+ 
+ 	mutex_init(&qp_table->scc_mutex);
+ 	xa_init(&hr_dev->qp_table_xa);
+ 
+ 	reserved_from_bot = hr_dev->caps.reserved_qps;
+ 
+-	ret = hns_roce_bitmap_init(&qp_table->bitmap, hr_dev->caps.num_qps,
+-				   hr_dev->caps.num_qps - 1, reserved_from_bot,
+-				   reserved_from_top);
+-	if (ret) {
+-		dev_err(hr_dev->dev, "qp bitmap init failed!error=%d\n",
+-			ret);
+-		return ret;
++	for (i = 0; i < reserved_from_bot; i++) {
++		hr_dev->qp_table.bank[get_qp_bankid(i)].inuse++;
++		hr_dev->qp_table.bank[get_qp_bankid(i)].rsv_bot++;
++	}
++
++	for (i = 0; i < HNS_ROCE_QP_BANK_NUM; i++) {
++		ida_init(&hr_dev->qp_table.bank[i].ida);
++		hr_dev->qp_table.bank[i].max = hr_dev->caps.num_qps /
++					       HNS_ROCE_QP_BANK_NUM - 1;
++		hr_dev->qp_table.bank[i].min = hr_dev->qp_table.bank[i].rsv_bot;
+ 	}
+ 
+ 	return 0;
+@@ -1298,5 +1361,8 @@ int hns_roce_init_qp_table(struct hns_roce_dev *hr_dev)
+ 
+ void hns_roce_cleanup_qp_table(struct hns_roce_dev *hr_dev)
+ {
+-	hns_roce_bitmap_cleanup(&hr_dev->qp_table.bitmap);
++	int i;
++
++	for (i = 0; i < HNS_ROCE_QP_BANK_NUM; i++)
++		ida_destroy(&hr_dev->qp_table.bank[i].ida);
+ }
+-- 
+2.8.1
 
