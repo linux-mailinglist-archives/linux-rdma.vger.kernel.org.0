@@ -2,147 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1B22C0D55
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Nov 2020 15:27:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7A52C0E9C
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Nov 2020 16:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388946AbgKWOUJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Nov 2020 09:20:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730804AbgKWOUH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Nov 2020 09:20:07 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97705C061A4D;
-        Mon, 23 Nov 2020 06:20:06 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id r127so12314537yba.10;
-        Mon, 23 Nov 2020 06:20:06 -0800 (PST)
+        id S2389429AbgKWPSI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Nov 2020 10:18:08 -0500
+Received: from mail-dm6nam12on2114.outbound.protection.outlook.com ([40.107.243.114]:8160
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731162AbgKWPSH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 23 Nov 2020 10:18:07 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SomMrIURgxR/8ZVJvzWH2mePotEqETQ0NABWToX7Zm9ft0NfduAVuveL/rGRE2CleQi2tWlOzyVszfEXCGCCnN9qhPrzsJEb+30jsXlnlsVaj/qQGhFsR2mFBTSlDLoy195b2fYV/yA0ocLJiNLO8aWi3TeWSEMwDOTYlQQMkmSKOo6AGHloYbKt9jlmgUG0YYi3xM34MFzMfC11zgxOE0dttyL1SHjkVLAelfpSCIdgl+UZlIBPia6VqoO8jrIwZZHGQyXoHyNNowl3/ojNn4VFTMUhOAlhYCndV8v9XArxihhaoKz5PFOl91s61hZFFg9q/0EeTdS6Q1QsziJtcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B7aCvJWP8oTe/p2RGpmA8n6qha+jo/ydzPYN+o9i3kE=;
+ b=AeMNjEceGJexGAtuAHjhCVKfglBwwmvaPnVmGcEUvujMIdKll5nwc9KdEXfvQKtCy8jqAvfUo0oM244TDDlcoChD/e1bwixte3qpB4UGJxG4MsYjrsQnBIJcTF3dzMx5m1XqjZJ8xAeuDZuNNl6XecTxm4FBeUmJpVPFUTgoDDt9gAqDD8RWnL49XWf4wobYhm/jnVMj6y8V7uD2iNmIF+tmML57m4IPGwaO/GH8i7N7Rr9ooompFHuJXC8sj78QhkEMCfrR/1bCn7UBSlO9Swa4/VC95Ei8TlwYItVAoaOSSlw+Z12B3eW21y0eG9GI+1Btnxg4DAdHYgsd2xDOmg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WUYMqcUnfpAQa1YuH9tQ3ze5bp2bxaoGLXc9Sg/470Y=;
-        b=b0LkeT2q71Z3peIccxL7MkU5QadaCN3igdEC89IE4ykmdOxIlhuoo/0+H7pQCoNmlh
-         0UX19Z7soasUpz2fDZHX56luUWrH4GLKAJ9K28HwPu9km7qlcvasqfBffaQW+LtXvh6a
-         fVP4J8wQFxbi1QWFB10Wsq9dLONxRShLcqQtcaktrZCy3tSRV5R4FOw2MSdgwNuCxNwd
-         cKQMyE/jYgmlc9Qm972BZKz9xJaasT5iW6gpZgai8YpCh1sxJNgZFzlfCpv21Fvd7rwb
-         akOsznbnFT4mJT95mXFDUPnplTdAJirWAcm8YfzHFRAfOGn9Vk91PuRcq7JipLelDPMB
-         VWgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WUYMqcUnfpAQa1YuH9tQ3ze5bp2bxaoGLXc9Sg/470Y=;
-        b=lKwdUTbbfqoTkTAIgp9mZrmqU0ijWcHp+iS8IAhntH72d3s9iYJuX87xfDva9I4lf3
-         v8fZFrd6A/ZoNnnKI9Ufo/CQd84EPCVmP699vgDnaebb1AOTGh35TDQox+Tjt+Mkl+PO
-         9xhrICCS8DPqhs5qDLfgPBudTzTlVuoCX1zMCGn265RUXoKazk8TNw8gVmCeIWmxjXu0
-         9atl13SD50eRTituupdU7yHj0eeNc1FZy80Dql4f4jClf3PJKAd0dw0fF0iq70BlyjBm
-         D/8h5bsNDzQDKcXJmk5WKbzZmOyiV9nWldAukc3pft/P820sC0PeoGme7yQLVJZl6dNN
-         68lQ==
-X-Gm-Message-State: AOAM533cX8axbPLyO/5uGloelj8h1rp7LshnxgMBjIAQvMSvBl7c7+7W
-        X/53WSk6j6xjolzoHOFypqUhx/48H/iN54UXOIs=
-X-Google-Smtp-Source: ABdhPJyiJqjBIpEzWlk5pyqpoGG3+KpoWdKnlyza2YA6ODhXnRhATytwh5Bq+iGOzNqc5gs+zuqHC8iB1cjfDTXU/ik=
-X-Received: by 2002:a25:bcc7:: with SMTP id l7mr32380985ybm.115.1606141205830;
- Mon, 23 Nov 2020 06:20:05 -0800 (PST)
+ d=CornelisNetworks.onmicrosoft.com;
+ s=selector1-CornelisNetworks-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B7aCvJWP8oTe/p2RGpmA8n6qha+jo/ydzPYN+o9i3kE=;
+ b=Ax+mSnezgaIXCEqwMiFCVPS7teR7717Srz4Eczx0DH5RQdBi3b6YkgLfqOBpwv+Gqr/x8Y04uFlWoO4S+C2pfqmVyDYGnT1mJ+0+plIuIXdI4viJlrZHkgg3vjGsl5T7JShReAW2kqwh2dY2XDhPypcYgkpy1PfxwIBlmqBRIEjNacE48xqlB/pHXR+hInaKgoWs1G+d8hHBN5Sivou/Q4DQ6s2NgmKhz+b1QXkP1cBan0Z1qCcx/qmCZW/CsVk+fxLgN+NqF2H7DcDaoGKEmYHXpD5wyqM+MhpCtrSsVT3cAhWXlaZfTHjXic2FKCO9xFwHE7NtsVLP3GEHmAycpw==
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=cornelisnetworks.com;
+Received: from BYAPR01MB3816.prod.exchangelabs.com (2603:10b6:a02:88::20) by
+ BYAPR01MB5365.prod.exchangelabs.com (2603:10b6:a03:11a::26) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3589.30; Mon, 23 Nov 2020 15:18:02 +0000
+Received: from BYAPR01MB3816.prod.exchangelabs.com
+ ([fe80::c436:2a2e:75d9:ebc6]) by BYAPR01MB3816.prod.exchangelabs.com
+ ([fe80::c436:2a2e:75d9:ebc6%5]) with mapi id 15.20.3589.025; Mon, 23 Nov 2020
+ 15:18:01 +0000
+Subject: Re: [PATCH] IB/qib: Use dma_set_mask_and_coherent to simplify code
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <20201121095127.1335228-1-christophe.jaillet@wanadoo.fr>
+From:   Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Message-ID: <eb1144c2-f54b-621f-0d7e-d6b8e3d47462@cornelisnetworks.com>
+Date:   Mon, 23 Nov 2020 10:17:56 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+In-Reply-To: <20201121095127.1335228-1-christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [192.55.54.42]
+X-ClientProxiedBy: MWHPR20CA0035.namprd20.prod.outlook.com
+ (2603:10b6:300:ed::21) To BYAPR01MB3816.prod.exchangelabs.com
+ (2603:10b6:a02:88::20)
 MIME-Version: 1.0
-References: <cover.1605896059.git.gustavoars@kernel.org> <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com> <1c7d7fde126bc0acf825766de64bf2f9b888f216.camel@HansenPartnership.com>
-In-Reply-To: <1c7d7fde126bc0acf825766de64bf2f9b888f216.camel@HansenPartnership.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Mon, 23 Nov 2020 15:19:55 +0100
-Message-ID: <CANiq72m22Jb5_+62NnwX8xds2iUdWDMAqD8PZw9cuxdHd95W0A@mail.gmail.com>
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org,
-        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
-        cluster-devel@redhat.com, coreteam@netfilter.org,
-        devel@driverdev.osuosl.org, dm-devel@redhat.com,
-        drbd-dev@lists.linbit.com, dri-devel@lists.freedesktop.org,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
-        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
-        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net,
-        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-cifs@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-decnet-user@lists.sourceforge.net,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-fbdev@vger.kernel.org, linux-geode@lists.infradead.org,
-        linux-gpio@vger.kernel.org, linux-hams@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
-        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input <linux-input@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-mmc@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
-        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
-        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
-        selinux@vger.kernel.org, target-devel@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        usb-storage@lists.one-eyed-alien.net,
-        virtualization@lists.linux-foundation.org,
-        wcn36xx@lists.infradead.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.55.54.42] (192.55.54.42) by MWHPR20CA0035.namprd20.prod.outlook.com (2603:10b6:300:ed::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.21 via Frontend Transport; Mon, 23 Nov 2020 15:17:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a9f85098-2638-4067-2781-08d88fc2f70c
+X-MS-TrafficTypeDiagnostic: BYAPR01MB5365:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR01MB536526C00159C2AA89583BA1F2FC0@BYAPR01MB5365.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: b9fewKFJk/KGUNwUKWpkPzl98PtRm18xNtvv5rOcgE7Ab1DTmm/l379ar3nmVMh4m0WVFwW6eMCYlsZjUAdkb5at7XFYd05lCpXcI+1QQn7yazCU9ZA/dR/q5LjfqkUxjm6cFgZcT+tFceYaG4JpOnOgZI4vHHTYnXNcuC25WBwm3GQdNJde8fKbuvS9G2r32QhJPKpFL7xAYdMl859LbfsJJlD9l5Ul5adLhq36q2prdlJW8mie7vNDRmpVDw3tUWCIDS+lDPHpVyGNv5ZzUMko6/sE+P3C4EFT6pPAlpTfeUlFthpGkSXEnhAqS5j57EnO/b5UskoN3wD6jK3IgkA/qXKe3Q3Dyue7Djtd9uY83X/GukowPEOrMP61DOCMD+ddGbeApCRxGZ6A7XqTJshBvC5prM0fl9/yYWauSy0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB3816.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39830400003)(346002)(376002)(396003)(136003)(186003)(16526019)(26005)(31696002)(316002)(8676002)(2616005)(36756003)(2906002)(86362001)(5660300002)(478600001)(53546011)(956004)(6706004)(8936002)(66476007)(66556008)(66946007)(31686004)(52116002)(4744005)(6666004)(6486002)(16576012)(4326008)(44832011)(3940600001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 3SbUSPtn+eGRURaHDFDGW1HUR0x1aR1pg4bnCIt5Sds4XPN3+F4u98d9psfuXKXVWmvBEB1A6yXVEEZ4FxuOAa7OwbzbGEYgp5qaIfpkRoSVlhKqMB/0mZ6X1YnXuw3MT5HrnnX9NPsUW9cvawL/7tQjoHEXdtZleH5QPyGDhYMOxQerxhkAwEvlxtvPMNz+D/B8PJJ24H09gzdy2TZki54V1rk6wr/DhlHrATjDP2bQFDsKl5YvDE3QhxUQ5eq3bdpGuFwmEP48KJ7aiToryvdt9d6vc92s/HoK2KpMYGk6R8+mTVbxMYocb0BbmOF6+o9Lhnyb37S+DAlSi0vvkitxKOqYW+CQgFQIjcUeeYSeklJVWMlc1bdRpwqC81j3dMWljGSq/phPIncSuzkakXMRUzaqztKfbkAXKIWR9xfAaNARC05GMb/481GEuqed1EO6NR/CB21n4hAyJGvGwVGtoOmmkMAblsgu1MXWGrFLFfKr2AWoNBKYLkaD8WUhMHoWEl+3FmoBe2SVqZuvrTelcmzt2eglRE+5wXv6IOEOUY+hm7pYtMeGWndC1J+z4/cR4z6YNgtroHmY5ntnTYiT1oM87zjjZXEUUGSzlO+j+dvnISACnm62d8m53kYleMnJ5uj1lzY1BvuvX7kZvQ==
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a9f85098-2638-4067-2781-08d88fc2f70c
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR01MB3816.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2020 15:18:01.3535
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oICzIU8/enDgHlwkwd+XedY39DrKUvF+YfcKSwFrkOfMqTqNi8uJ6uPTSwilaPzPvNZVaX5VIENiSiUb8cAO52EmqGmXP6DRBXC1n9hwFGq9q1sY1PW1K3FXWKjCdW6d
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB5365
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 11:36 PM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
+
+On 11/21/2020 4:51 AM, Christophe JAILLET wrote:
+> 'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
+> an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
 >
-> Well, it seems to be three years of someone's time plus the maintainer
-> review time and series disruption of nearly a thousand patches.  Let's
-> be conservative and assume the producer worked about 30% on the series
-> and it takes about 5-10 minutes per patch to review, merge and for
-> others to rework existing series.  So let's say it's cost a person year
-> of a relatively junior engineer producing the patches and say 100h of
-> review and application time.  The latter is likely the big ticket item
-> because it's what we have in least supply in the kernel (even though
-> it's 20x vs the producer time).
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-How are you arriving at such numbers? It is a total of ~200 trivial lines.
+Thanks for the patch.
 
-> It's not about the risk of the changes it's about the cost of
-> implementing them.  Even if you discount the producer time (which
-> someone gets to pay for, and if I were the engineering manager, I'd be
-> unhappy about), the review/merge/rework time is pretty significant in
-> exchange for six minor bug fixes.  Fine, when a new compiler warning
-> comes along it's certainly reasonable to see if we can benefit from it
-> and the fact that the compiler people think it's worthwhile is enough
-> evidence to assume this initially.  But at some point you have to ask
-> whether that assumption is supported by the evidence we've accumulated
-> over the time we've been using it.  And if the evidence doesn't support
-> it perhaps it is time to stop the experiment.
+Looks ok to me.
 
-Maintainers routinely review 1-line trivial patches, not to mention
-internal API changes, etc.
+Acked-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 
-If some company does not want to pay for that, that's fine, but they
-don't get to be maintainers and claim `Supported`.
-
-Cheers,
-Miguel
