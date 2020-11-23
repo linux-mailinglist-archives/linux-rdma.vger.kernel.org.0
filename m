@@ -2,67 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112BF2C1499
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Nov 2020 20:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C5B2C14BC
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Nov 2020 20:50:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729868AbgKWTkZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Nov 2020 14:40:25 -0500
-Received: from mga05.intel.com ([192.55.52.43]:35504 "EHLO mga05.intel.com"
+        id S1728938AbgKWTtE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Nov 2020 14:49:04 -0500
+Received: from mga06.intel.com ([134.134.136.31]:54076 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729030AbgKWTkY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Nov 2020 14:40:24 -0500
-IronPort-SDR: kqLzJOE/RY32e+cfO8C2b2a6/XI+OEDAQX2K4B9rnGCifqrfUBmj2uGhpKAlynrbrK56akSwUG
- w9PuqpgMbYMQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="256539254"
+        id S1728576AbgKWTtE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 23 Nov 2020 14:49:04 -0500
+IronPort-SDR: CLCt+X1iSzSn1ABGbX4Wf7s1o3L+NCIwd5fmzsHGxjOSWAzn0y0O5KxW0r3f/qvFRfPDCwaStE
+ HsH9iyFCzt2w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="233441908"
 X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="256539254"
+   d="scan'208";a="233441908"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 11:40:23 -0800
-IronPort-SDR: h4tjOtPIBPK+qxrvNsi0ymh1XTHjMc6rLvvLfudgoIDO2BuhHLv2eBnjFjxaYkgjCcw2Dz3sFN
- qW5usob03rrg==
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 11:49:03 -0800
+IronPort-SDR: pCSnYo+Kqq6VYt2Mox3iMfgvUEoaoRvLNt/XBiMz0g08bn9+bXQThXrNy/agH/DWD2yz1LdGCm
+ w3RfuJEDZrsg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,364,1599548400"; 
-   d="scan'208";a="312995720"
-Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
-  by fmsmga007.fm.intel.com with ESMTP; 23 Nov 2020 11:40:23 -0800
-Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
- ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+   d="scan'208";a="370132220"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+  by orsmga007.jf.intel.com with ESMTP; 23 Nov 2020 11:49:03 -0800
+Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 23 Nov 2020 11:40:23 -0800
+ 15.1.1713.5; Mon, 23 Nov 2020 11:49:03 -0800
 Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ orsmsx609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 23 Nov 2020 11:40:23 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.59) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ via Frontend Transport; Mon, 23 Nov 2020 11:49:03 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.103)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Mon, 23 Nov 2020 11:40:21 -0800
+ 15.1.1713.5; Mon, 23 Nov 2020 11:49:00 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ehcY5h799KUMXTQUOE8ciYUBysj9f9+BU2XW0KOsV7smx6TCFK9UCakBvwc4kDAsiml+GJAq5btMRmF6qsMwgYbKHRgnlpjtVpw6qjPZA7+9qbn/XCd28D7EXxsnaqyCYWRa1BXKanGOiiFU0ovIhCLgd4yIQE2E7U/T+cRGHpnjVtwvZJtY5A+SkRenzizSE16zrHPYwaO1WHVpLz4Cb4PpBHxmOnqKcdfblqqN2f8Wq1nE5kbO6XN+iWxG+uFDUaEsOh3JK2zZKJvcpBHk7H6Dx5V7OkE1ZKL7y4qLrNTxDcVHSwocl+nnu2EgyZXJ17g6MVrVJJCWn8+cNgSBHQ==
+ b=HKJJlu/bqZoIYcLGn4OGk9rw632siy67NOKqmKxGdSerUF/3mv5wvuc90P0flJlsui9ZqJtCbIWOR+45GhCdnQAHsSD2+/f3hYIATNdQlXzhYTzjKmG2UBDkV0g54JAXq5sGfe2OgtAn5XbO7IWAuLdLVES4/LWEO6nSp16d/MYKdNLW2D/DyuZUVBO2R5ibX0LX2Tlg3DS8aIubFT0uBe7Oh6lmmrRkaShw4tH0xiUp2GIvI5fdah98L2YSVAopjH/O+kLaU1s8m/MVv7MdzF9IVORTbZVw3wokoSGqC0MTdVUlKC887slgN9EDLPioVn/ipWy+NSbFOb3yfUOhMg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lz0bDjnI55GrH+QnjN5k2PHG3AjvjSYi+2ZBb6CJmFs=;
- b=B/dIW9kgQamD+bithIdjppZQuOwStVHhbinesVaBYgCMdL5LlP/v3ea9DXAuLQd2mQSq9u6WoAv8lq5dh8ALsxPcc9FCZFgSavyaiXJY44sel2YsEorL87aCyvdey4kVNo08ridqUbu5t4bl9UbwcEeIK/hy3+ZUF2/Bckjr2zR0RwoC4PLaln3WI+RiqVnPHghIi5MWXtqLsad8KerjCwVAxj9VlOpfgtVEW5mj51aIMRQHG2n+rEcNNnNbVUA3rR84FvKK20NdvU2/JKSz5zzXN9icttaxG/GH972rXAXA0Bz6ms6P6a1vcOWhzri2VzcSoh4tJhVYuia9NqSQwA==
+ bh=wYpGuU79Hs++/MIruSg67N3jjlzUYCjrycQTQX7Qc+4=;
+ b=l4RTETjTvS2unxb7GMbSXyC4fph/yyrT/rfes/wHCnt22+/jHHmndGX+S7Dh0UVt5Hxn7woPbhuBcHapnBKqZwaclM8k9jXFI39j6gzKfaTt3RlbL84UtR9m4NSX5pW9PnyAJRDfNaMLSzey/FePqLddpTGy/lGXAsBYK2Les7bt1V32e8tmGiNgHXg79Uwhlgap5JNiirvVm+/CrqHj+sE6MpHKb4gb6P+JAHnirn0XjXjq+Zuyo3ys9hwd4y1Bc7+gDrnQulobVx6LXCOw3zg7Dm0Y0RSD8udTPHccobhJQKQJGJABpchDW5KLNDnR6hmQpBwmyXR4WBv9lY+ZIQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
  s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lz0bDjnI55GrH+QnjN5k2PHG3AjvjSYi+2ZBb6CJmFs=;
- b=MX40urFO/q46ZewHwrjCG2p3t/pf24t3Y9JiHXjx6W63Og6N9NPOneImGBerKNvkMaIhpON4actwKVoMKMF2co5SSqKRjzxO0SVxxjCQBLjLvJPZwJsEwIyU0muJAUFfTpzFN3NYDCkR06uf9Q6xa0RJ354gg0yCvNVaAzGPuu4=
+ bh=wYpGuU79Hs++/MIruSg67N3jjlzUYCjrycQTQX7Qc+4=;
+ b=fLY2GuvgIPKLdPsb19I+7xoQFqCiD+V9sxE2kftlZbn63KxW/8FPdECingpZAZsCJvoBYVHLZgtieXNKiuySsPnVtFhuzkjdGv7ZGY1QwCBVQpZBX3BP/fdZtNZ47axXGgIBtGROe23bHxBTv3QVfaFt+ey1bqCRjxQpqPM7N+k=
 Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
- by MWHPR11MB1534.namprd11.prod.outlook.com (2603:10b6:301:c::14) with
+ by MWHPR11MB1982.namprd11.prod.outlook.com (2603:10b6:300:10f::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Mon, 23 Nov
- 2020 19:40:19 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.29; Mon, 23 Nov
+ 2020 19:48:58 +0000
 Received: from MW3PR11MB4555.namprd11.prod.outlook.com
  ([fe80::7510:71a5:3cfe:ab94]) by MW3PR11MB4555.namprd11.prod.outlook.com
  ([fe80::7510:71a5:3cfe:ab94%8]) with mapi id 15.20.3589.030; Mon, 23 Nov 2020
- 19:40:19 +0000
+ 19:48:58 +0000
 From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
 CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
@@ -72,15 +72,15 @@ CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "Sumit Semwal" <sumit.semwal@linaro.org>,
         Christian Koenig <christian.koenig@amd.com>,
         "Vetter, Daniel" <daniel.vetter@intel.com>
-Subject: RE: [PATCH rdma-core 2/5] mlx5: Support dma-buf based memory region
-Thread-Topic: [PATCH rdma-core 2/5] mlx5: Support dma-buf based memory region
-Thread-Index: AQHWwb+SA/RCVtXmxkmIh6XX7Boo76nWAfkAgAAZFOA=
-Date:   Mon, 23 Nov 2020 19:40:19 +0000
-Message-ID: <MW3PR11MB455503CB188A47B40A142A7EE5FC0@MW3PR11MB4555.namprd11.prod.outlook.com>
+Subject: RE: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
+Thread-Topic: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
+Thread-Index: AQHWwb+RTBTJqBZYLEWXdlNPeqTq1qnWAtcAgAAbDuA=
+Date:   Mon, 23 Nov 2020 19:48:58 +0000
+Message-ID: <MW3PR11MB45551AB179916585D911D16DE5FC0@MW3PR11MB4555.namprd11.prod.outlook.com>
 References: <1606153984-104583-1-git-send-email-jianxin.xiong@intel.com>
- <1606153984-104583-3-git-send-email-jianxin.xiong@intel.com>
- <20201123180158.GZ244516@ziepe.ca>
-In-Reply-To: <20201123180158.GZ244516@ziepe.ca>
+ <1606153984-104583-4-git-send-email-jianxin.xiong@intel.com>
+ <20201123180504.GA244516@ziepe.ca>
+In-Reply-To: <20201123180504.GA244516@ziepe.ca>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -92,46 +92,46 @@ authentication-results: ziepe.ca; dkim=none (message not signed)
  header.d=none;ziepe.ca; dmarc=none action=none header.from=intel.com;
 x-originating-ip: [73.53.14.45]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 862391fe-39b0-43cc-3a1e-08d88fe79c22
-x-ms-traffictypediagnostic: MWHPR11MB1534:
+x-ms-office365-filtering-correlation-id: 9e21b4bc-5d45-42e3-ad05-08d88fe8d192
+x-ms-traffictypediagnostic: MWHPR11MB1982:
 x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR11MB15340A3C4FCE692C86DFD64EE5FC0@MWHPR11MB1534.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2089;
+x-microsoft-antispam-prvs: <MWHPR11MB198297F4A71F61AD8CF4634FE5FC0@MWHPR11MB1982.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:177;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bvHWM8hq1nV7B6VSl4yS4lrfuAbkpEwtVsAB4QmpyS3sP1bJdotjC5Qu5Q/Bym64mLw90Y7QkswyLAhSJlkwCggZGPnlIQW1nIwi1J5AzxWng2kUPIp3ZoIHTMbXeg+OPgjKkB9hXtCOwRznn5HnD7d5n7Quuy0LDt6s8go9CcfjyKFhN/FYSC35sDUu89dPZdR4qBhDKxqLLAglFz/+bD8PVCSKRRH+aemAc7mH/s+eAyWDqjOOARe/3eCqVQ2YPVjP7fVEQGWGCiuf7Z4D8HwddwUrv5aXqL0UoJN8r28Kowtepfky8HV4NQhALcKAvyxrTp2WXohNvnafVkLXrA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(366004)(346002)(136003)(8676002)(8936002)(55016002)(5660300002)(478600001)(9686003)(52536014)(66476007)(33656002)(64756008)(66446008)(66946007)(66556008)(6916009)(6506007)(76116006)(83380400001)(86362001)(4744005)(2906002)(26005)(71200400001)(107886003)(4326008)(7696005)(186003)(53546011)(316002)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?/uhX5EVfPfEGXAuHnsgywLE+fQPEP978PwcDBepImf3uFuQ6mkOLL8zCj6Z1?=
- =?us-ascii?Q?TnZ8B8SdEPb8P9g9aBKtnRtatY038FXFLsBCknCVRRLn6kHt+xSRc4pJgPlb?=
- =?us-ascii?Q?HA32INWgGQKV6J+xcx30QWcnAaU87o9OYVrwes2MJwL/9R6/chEi/S8t0bvj?=
- =?us-ascii?Q?keIeT4Fx9o40/w84x8acTJRXjGBiIDE1ifPftBSVf6KLwvw/MapoYbvNFAWD?=
- =?us-ascii?Q?xXdKlhNaSCXQHoOYrc8XcJlMwD0gK/gqfTA4K8NrJfZT/OvD8TprpTZBFTGb?=
- =?us-ascii?Q?97v/L813Nv8pj2gWniQUpYQRcZpOrVS/RfGIA+bxb3RTt01VtB1ZovOlmzHD?=
- =?us-ascii?Q?BenFS7igurRg4A0l4etVBv3O1yRCzp8BNnKMIPbtKv6KPCLW4KP7LmZcv3bs?=
- =?us-ascii?Q?JQvZ42ECfvByVX5qBWcCBI5vzaw5M+UhOhfhfPo+HQNtgwr4teJKIMvabY8L?=
- =?us-ascii?Q?oq/3u7Bw7E06qDljIVoA6CMmXVgJ7ZYB95RS/wWQAv31P6nWOYXnqO68RGRq?=
- =?us-ascii?Q?mgHyvWRrv2hSfcnEyW8YmT0Bh6TGmNDjbPmqJ3VCzYrOJWqg/LGRHUMGZ1Hq?=
- =?us-ascii?Q?03oXt+bq81m3Fg7yIzDig3ZUvM6ozvQZXkdcRjlbmG0e1DkhD8fCuYZ56BWJ?=
- =?us-ascii?Q?qUhVRHIxXDjlLGpPO1fzNl1cIG1LNwQi6Ahbe2QzyccJ9KM5ZkLsqMlXAT+Z?=
- =?us-ascii?Q?2fsPuLu2L0vN429b/ZeUvpxnlwOAI81JeE0kV09PWoVlpx6prYDkF7VRjkfH?=
- =?us-ascii?Q?4wcAZA6LHMnPKvbHqdRLDMJ9oDgmqNJhEMN48fc82/A0plLeTGSIQMNyf/Jt?=
- =?us-ascii?Q?iri4hIyAQc3AWeZc+Gj0A40yRmSj8SoyL/Rf08az/pHb3ygsPzSSAvIGqFP7?=
- =?us-ascii?Q?ihjZGK9k/ujY6Vc+FVH3VRanbMERMXIEv75pZwS01bOMbfw5forbP9N3i3xJ?=
- =?us-ascii?Q?rF6ZIS451nkQWfxyeYjl+O35lp/f5FaPdEOUj/LiOeA=3D?=
+x-microsoft-antispam-message-info: P7iFvqr3+7tVhm6/vJ6hUAa/e7FjkC59I6Qap8Pgb15uFRLXPVI+quCtKj7yw2KuRHZTeUyBptavXDB8cmLz9R3D4FvEgtCY4AdgLbUKZaEuyyZsaD3f4dPFmLxkDjS8i9z1/zxpkXr6GGYVHUe5LQERFpctkSnLtgtshiOQV7E5V8GyT3oL72orDgtijomeVjM+ivMh8EzlsVFUsL3yxNlvo+ZcP4iS9th9cu18fPU3qjkRZZ0RIUGCzgahi1ncHpxSW29yD+IDsMY2VaqlklQeEDvNJUW50jj4/EZtj6Xx8dBzM+wA4jOHimn0j7gTtd145q3cEoNbyqZNnDYkgdy3nnSzC6JD7e8QR5OKjJEDYU1dZXeajLQI9hzup83g
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(396003)(366004)(136003)(376002)(26005)(107886003)(33656002)(55016002)(66476007)(66946007)(54906003)(9686003)(8936002)(66556008)(2906002)(8676002)(76116006)(5660300002)(64756008)(66446008)(7696005)(83380400001)(6506007)(4326008)(52536014)(53546011)(186003)(316002)(86362001)(71200400001)(6916009)(478600001)(21314003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?6Ne7xclgPO9lzlwUpoa1ze0EqXxQLyyLiujoZ2/TadDfY56JKM9Vu5UE7ncI?=
+ =?us-ascii?Q?G064vc5DT9m4A+PfpJZZL2xY1FlSV+/vvabHwzxQOt+QexCvR1x1rE985E99?=
+ =?us-ascii?Q?99Gf+t+fFpEk2pM88dmYlU9rhiMhpPUl6T/DPo3tv1mTXgDF/8ziM3NoK8tP?=
+ =?us-ascii?Q?iV2u1Szy/idlm8WJuP1M97brFc8FbuNEDgu3Y+GsGhW5E33qN8ZUUYpO9uWG?=
+ =?us-ascii?Q?EJEI6r8cyEa9iToWchwIfR58zIm0XgRDxPE+2TjWbw6n1+eZ5Ay8JZv3gx6R?=
+ =?us-ascii?Q?5fAy18jGXI1Ql21PMPE/L8WF4y0nywmXnOHnRO+8LzfTFDFiSGdNssCJkba5?=
+ =?us-ascii?Q?sYhE3SBTyLK1lc0cateBSaI6IRXxTkfXq4QJ3KvyPBnnF38+MyPP7XG6UC22?=
+ =?us-ascii?Q?fAn+uQz/NHzJqQ7fnQVAHRA9PB6zaECicY0o+rQ8rbpBr5SGQ46+hG66Ruct?=
+ =?us-ascii?Q?rpNQ1e0YHQMI3dAk2BSmFjvX2JOvT9yqDdnzy1lSx87CaaZu04WLv06EDmj3?=
+ =?us-ascii?Q?/i2ech09WV2TMGSE1bJj9XWOc7k5cl00fs1S88IgQJUaJ9voJ80X4GaOBG3g?=
+ =?us-ascii?Q?CNCDyOec3iWB1bHXgBVGUkvXPsIcCapetDNcN66GdDL5Z3DEe3GLHhTgbA1w?=
+ =?us-ascii?Q?drgt/vVw8ZJzwXKoM1DGOMzqOLmY+eRqbZz1q/YQFarkYw2tnajqvcS+eSNB?=
+ =?us-ascii?Q?WTdupiXkRAwQi081ZLTRalUYsmlnedncrosiJDwmQDJnSRlQcYlJhhkJ/qjX?=
+ =?us-ascii?Q?wm+f4RQZ7N8tztrq8EyuHokI53cxWIrHN8iTyBkYlbAPmvNVJVHtM2LNLvaU?=
+ =?us-ascii?Q?upVX/0P5eLN/t2+RgoeofnFrdWgSqN6zNuwokXQSGWB0jO0fKJp+nr4qIiv4?=
+ =?us-ascii?Q?6uzJqEZAi9sgEKGZzRT+3lJOIWd4ah3dycsCFFnoxEJpl3l27f2rCfLM4a2i?=
+ =?us-ascii?Q?/J+7+z6bATOvNy6ZnZ8Z7TrV9tol84+elYG7OgInZTA=3D?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 862391fe-39b0-43cc-3a1e-08d88fe79c22
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2020 19:40:19.1247
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e21b4bc-5d45-42e3-ad05-08d88fe8d192
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2020 19:48:58.3125
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EC0QQTb0boNko9XOGKxdEpRnvw08eN3qwkhFlqwap1n423zM1PKp7l+XX5QWiBegpZzVG0BKQ/f2RfZQLYUSmQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1534
+X-MS-Exchange-CrossTenant-userprincipalname: 6Xliy4Zu0Hwz0Ul/r6qp/ohoUtuscM/tAPgoajSIIrYVdXHDXsu1YXackX0AZf0VAMCF4+afFg5lZLg5+uCQzQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1982
 X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
@@ -139,29 +139,70 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 > -----Original Message-----
 > From: Jason Gunthorpe <jgg@ziepe.ca>
-> Sent: Monday, November 23, 2020 10:02 AM
+> Sent: Monday, November 23, 2020 10:05 AM
 > To: Xiong, Jianxin <jianxin.xiong@intel.com>
 > Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org; Doug Led=
 ford <dledford@redhat.com>; Leon Romanovsky
 > <leon@kernel.org>; Sumit Semwal <sumit.semwal@linaro.org>; Christian Koen=
 ig <christian.koenig@amd.com>; Vetter, Daniel
 > <daniel.vetter@intel.com>
-> Subject: Re: [PATCH rdma-core 2/5] mlx5: Support dma-buf based memory reg=
-ion
+> Subject: Re: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
 >=20
-> On Mon, Nov 23, 2020 at 09:53:01AM -0800, Jianxin Xiong wrote:
+> On Mon, Nov 23, 2020 at 09:53:02AM -0800, Jianxin Xiong wrote:
 >=20
-> > +struct ibv_mr *mlx5_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset, =
-size_t length,
-> > +				  uint64_t iova, int fd, int acc) {
-> > +	struct mlx5_mr *mr;
-> > +	int ret;
-> > +	enum ibv_access_flags access =3D (enum ibv_access_flags)acc;
+> > +cdef class DmaBuf:
+> > +    def __init__(self, size, unit=3D0):
+> > +        """
+> > +        Allocate DmaBuf object from a GPU device. This is done through=
+ the
+> > +        DRI device interface (/dev/dri/card*). Usually this requires t=
+he
+> > +        effective user id being root or being a member of the 'video' =
+group.
+> > +        :param size: The size (in number of bytes) of the buffer.
+> > +        :param unit: The unit number of the GPU to allocate the buffer=
+ from.
+> > +        :return: The newly created DmaBuf object on success.
+> > +        """
+> > +        self.dmabuf_mrs =3D weakref.WeakSet()
+> > +        self.dri_fd =3D open('/dev/dri/card'+str(unit), O_RDWR)
+> > +
+> > +        args =3D bytearray(32)
+> > +        pack_into('=3Diiiiiiq', args, 0, 1, size, 8, 0, 0, 0, 0)
+> > +        ioctl(self.dri_fd, DRM_IOCTL_MODE_CREATE_DUMB, args)
+> > +        a, b, c, d, self.handle, e, self.size =3D unpack('=3Diiiiiiq',
+> > + args)
+> > +
+> > +        args =3D bytearray(12)
+> > +        pack_into('=3Diii', args, 0, self.handle, O_RDWR, 0)
+> > +        ioctl(self.dri_fd, DRM_IOCTL_PRIME_HANDLE_TO_FD, args)
+> > +        a, b, self.fd =3D unpack('=3Diii', args)
+> > +
+> > +        args =3D bytearray(16)
+> > +        pack_into('=3Diiq', args, 0, self.handle, 0, 0)
+> > +        ioctl(self.dri_fd, DRM_IOCTL_MODE_MAP_DUMB, args);
+> > +        a, b, self.map_offset =3D unpack('=3Diiq', args);
 >=20
-> Why?
+> Wow, OK
+>=20
+> Is it worth using ctypes here instead? Can you at least add a comment bef=
+ore each pack specifying the 'struct XXX' this is following?
+>=20
 
-It's copied from mlx5_reg_mr(). Didn't pay attention to this but looks unne=
-cessary now.
+The ioctl call only accept a bytearray, not sure how to use ctypes here. I =
+will add=20
+comments with the actual layout of the parameter structure.
 
+> Does this work with normal Intel GPUs, like in a Laptop? AMD too?
 >=20
+
+Yes, the interface is generic and works with most GPUs. Works with AMD, too=
+.
+
+> Christian, I would be very happy to hear from you that this entire work i=
+s good for AMD as well
+>=20
+> Edward should look through this, but I'm glad to see something like this
+>=20
+> Thanks,
 > Jason
