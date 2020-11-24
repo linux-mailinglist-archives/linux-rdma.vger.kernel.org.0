@@ -2,67 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C589C2C34F9
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 00:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D69F2C34FA
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 00:52:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgKXXwY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Nov 2020 18:52:24 -0500
-Received: from mga07.intel.com ([134.134.136.100]:19164 "EHLO mga07.intel.com"
+        id S1726306AbgKXXwe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Nov 2020 18:52:34 -0500
+Received: from mga17.intel.com ([192.55.52.151]:36672 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725989AbgKXXwX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 24 Nov 2020 18:52:23 -0500
-IronPort-SDR: 5BxE5a9yCS4+Mmnwd08zAKP9oe5nbSCsp91vHr2KLNLlv20nQN8fTjEwYIMaMO0oAyT7leRnku
- S/t0rnJmAVTA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="236173478"
+        id S1726392AbgKXXwe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 24 Nov 2020 18:52:34 -0500
+IronPort-SDR: fpl6LWU7VVKkvj5jYWCPTjcE4UiB7udHxZ7fgws9WtJsi28OkW7SLvuM9cRxN545ejLaG0hL4G
+ 8UDXm3ZeX+hA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="151875157"
 X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
-   d="scan'208";a="236173478"
+   d="scan'208";a="151875157"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 15:52:22 -0800
-IronPort-SDR: N0BpXHo3R1kFo6GEQwQSPDxGgx8B1nwP9M8KppbouYliikmpHXTOFJuzOf4PIV1vKp0RplPvxE
- OzcV5+4fEtdw==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 15:52:33 -0800
+IronPort-SDR: nCf9kjmJfhMk+N0WmkUBZNofjKeKj+n6x/hKJsDQWMK0lHoutl5WrXHatfpLwHzFmEjOL6w4sj
+ RksH9WbaX6OA==
 X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; 
-   d="scan'208";a="478697783"
+   d="scan'208";a="478697804"
 Received: from ssaleem-mobl.amr.corp.intel.com ([10.212.134.32])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 15:52:22 -0800
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 15:52:32 -0800
 From:   Shiraz Saleem <shiraz.saleem@intel.com>
 To:     dledford@redhat.com, jgg@nvidia.com
 Cc:     linux-rdma@vger.kernel.org, stable@kernel.org,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: [PATCH v1 0/2] Fix an mmap exploit and remove push in i40iw
-Date:   Tue, 24 Nov 2020 17:51:01 -0600
-Message-Id: <20201124235102.1745-1-shiraz.saleem@intel.com>
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Di Zhu <zhudi21@huawei.com>
+Subject: [PATCH v1 1/2] RDMA/i40iw: Address an mmap handler exploit in i40iw
+Date:   Tue, 24 Nov 2020 17:51:02 -0600
+Message-Id: <20201124235102.1745-2-shiraz.saleem@intel.com>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20201124235102.1745-1-shiraz.saleem@intel.com>
+References: <20201124235102.1745-1-shiraz.saleem@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-i40iw_mmap is vulnerable to an mmap exploit due to its manipulation on
-vma->vm_pgoff done for the push feature, and its subsequent use in
-remap_pfn_range without validation.
+i40iw_mmap manipulates the vma->vm_pgoff to differentiate a push page
+mmap vs a doorbell mmap, and uses it to compute the pfn in remap_pfn_range
+without any validation. This is vulnerable to an mmap exploit as
+described in [1].
 
-Patch #1 fixes the mmap exploit in i40iw_mmap and can be backported to stable if acceptable.
+Push feature is disabled in the driver currently and therefore no push
+mmaps are issued from user-space. The feature does not work as expected
+in the x722 product.
 
-Patch #2 removes the push feature from the driver
+Remove the push module parameter and all VMA attribute manipulations
+for this feature in i40iw_mmap. Update i40iw_mmap to only allow DB
+user mmapings at offset = 0. Check vm_pgoff for zero and if the mmaps
+are bound to a single page.
 
-v0-->v1:
-* Add missing cc and reported by tags in Patch #1
+[1] https://lore.kernel.org/linux-rdma/20201119093523.7588-1-zhudi21@huawei.com/raw
 
-Shiraz Saleem (2):
-  RDMA/i40iw: Address an mmap handler exploit in i40iw
-  RDMA/i40iw: Remove push code from i40iw
+Fixes: d37498417947 ("i40iw: add files for iwarp interface")
+Cc: stable@kernel.org
+Reported-by: Di Zhu <zhudi21@huawei.com>
+Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+---
+ drivers/infiniband/hw/i40iw/i40iw_main.c  |    4 ---
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c |   37 +++++-----------------------
+ 2 files changed, 7 insertions(+), 34 deletions(-)
 
- drivers/infiniband/hw/i40iw/i40iw.h        |    1 -
- drivers/infiniband/hw/i40iw/i40iw_ctrl.c   |   52 +------------
- drivers/infiniband/hw/i40iw/i40iw_d.h      |   35 +++-----
- drivers/infiniband/hw/i40iw/i40iw_main.c   |    5 -
- drivers/infiniband/hw/i40iw/i40iw_status.h |    1 -
- drivers/infiniband/hw/i40iw/i40iw_type.h   |   18 ----
- drivers/infiniband/hw/i40iw/i40iw_uk.c     |   41 +--------
- drivers/infiniband/hw/i40iw/i40iw_user.h   |    8 --
- drivers/infiniband/hw/i40iw/i40iw_verbs.c  |  123 ++--------------------------
- 9 files changed, 25 insertions(+), 259 deletions(-)
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_main.c b/drivers/infiniband/hw/i40iw/i40iw_main.c
+index 2408b27..8bf15c1 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_main.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_main.c
+@@ -54,10 +54,6 @@
+ #define DRV_VERSION	__stringify(DRV_VERSION_MAJOR) "."		\
+ 	__stringify(DRV_VERSION_MINOR) "." __stringify(DRV_VERSION_BUILD)
+ 
+-static int push_mode;
+-module_param(push_mode, int, 0644);
+-MODULE_PARM_DESC(push_mode, "Low latency mode: 0=disabled (default), 1=enabled)");
+-
+ static int debug;
+ module_param(debug, int, 0644);
+ MODULE_PARM_DESC(debug, "debug flags: 0=disabled (default), 0x7fffffff=all");
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+index 581ecba..533f3ca 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+@@ -167,39 +167,16 @@ static void i40iw_dealloc_ucontext(struct ib_ucontext *context)
+  */
+ static int i40iw_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
+ {
+-	struct i40iw_ucontext *ucontext;
+-	u64 db_addr_offset, push_offset, pfn;
+-
+-	ucontext = to_ucontext(context);
+-	if (ucontext->iwdev->sc_dev.is_pf) {
+-		db_addr_offset = I40IW_DB_ADDR_OFFSET;
+-		push_offset = I40IW_PUSH_OFFSET;
+-		if (vma->vm_pgoff)
+-			vma->vm_pgoff += I40IW_PF_FIRST_PUSH_PAGE_INDEX - 1;
+-	} else {
+-		db_addr_offset = I40IW_VF_DB_ADDR_OFFSET;
+-		push_offset = I40IW_VF_PUSH_OFFSET;
+-		if (vma->vm_pgoff)
+-			vma->vm_pgoff += I40IW_VF_FIRST_PUSH_PAGE_INDEX - 1;
+-	}
++	struct i40iw_ucontext *ucontext = to_ucontext(context);
++	u64 dbaddr;
+ 
+-	vma->vm_pgoff += db_addr_offset >> PAGE_SHIFT;
+-
+-	if (vma->vm_pgoff == (db_addr_offset >> PAGE_SHIFT)) {
+-		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+-	} else {
+-		if ((vma->vm_pgoff - (push_offset >> PAGE_SHIFT)) % 2)
+-			vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+-		else
+-			vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
+-	}
++	if (vma->vm_pgoff || vma->vm_end - vma->vm_start != PAGE_SIZE)
++		return -EINVAL;
+ 
+-	pfn = vma->vm_pgoff +
+-	      (pci_resource_start(ucontext->iwdev->ldev->pcidev, 0) >>
+-	       PAGE_SHIFT);
++	dbaddr = I40IW_DB_ADDR_OFFSET + pci_resource_start(ucontext->iwdev->ldev->pcidev, 0);
+ 
+-	return rdma_user_mmap_io(context, vma, pfn, PAGE_SIZE,
+-				 vma->vm_page_prot, NULL);
++	return rdma_user_mmap_io(context, vma, dbaddr >> PAGE_SHIFT, PAGE_SIZE,
++				 pgprot_noncached(vma->vm_page_prot), NULL);
+ }
+ 
+ /**
+-- 
+1.7.1
 
