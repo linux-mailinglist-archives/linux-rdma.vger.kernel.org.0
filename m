@@ -2,145 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111012C3492
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 00:17:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F272C34B4
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 00:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387430AbgKXXQ3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Nov 2020 18:16:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732612AbgKXXQG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Nov 2020 18:16:06 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D41C061A4D;
-        Tue, 24 Nov 2020 15:16:05 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id u4so1022695qkk.10;
-        Tue, 24 Nov 2020 15:16:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jbdr1BEjJUZERXYDOU4Gv/mlbgAbUhdHLiICpsfXV1E=;
-        b=l+vUmSI7i0l7fGuVwLPE5fOuxSSHusFrOEG0e9vJ5rcmJlRUOrCYTNMgOLszTPHVi8
-         kkm8fDq5tpugZyKejz3uk0cqdmJQS1mRaMRBkOrvbAyI5fs/P/fRtiJLDz+N02sHzTn9
-         5/inSz1Fbn+KfojwxtYTlcXPJfmsrqKqTBJHlwr9t4EjDd547DXA4VcN7evdsnVsuQ6p
-         BBfcG3FVJZcSml9If1GSG7EsdjE7zI8hFJDY7AHsK/qRYVzYo+XeozyqqdAfx+vCyNIu
-         chiyZGm6NoHt+eS3/xbHVpbDRehhnbGG6wOdrUeu9OVynRP4/UUYeZuXMpT7icG9n0vb
-         4oYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jbdr1BEjJUZERXYDOU4Gv/mlbgAbUhdHLiICpsfXV1E=;
-        b=qNrhruTN4K3shm+r5iYa5hVsCZZ4Fe6V+BUrrDDih6zuDtTYIoYnpMXiV9p9zIYbse
-         GX5qL7Y5MrouFLTAhLKhp59FnXn1+/CzBzZnhbGoiyt4jfXL6HWEb6ojFYzBJ/FNpz1a
-         l0Pi1SGeszErrYLRFPEI0dCAFnwBroZJBh7QAljea+bBnMvwaaGz+JXM65ZOSzeHCz+w
-         1p6vleKiVIWnzKbuP1QaWOSnjgw5OiJ0jQuc8TtJExazZJZfntF/Q3fNxrhDF38PCc0w
-         9ERD/d59ay1eM1jJFKEKfDCjFsTE5/cWB1DgkNI/W2kG8jfXBvLm/hYusJ8ODCSk/krx
-         1BQA==
-X-Gm-Message-State: AOAM533yPy42awkMO/Fu3gKlMM+dl72Amht+Xb2LK7e4h6kKEU+/1Oo5
-        AKvi5/kao8x7hTt5k+GgnrgBF2FQDWCdfQDN8ig=
-X-Google-Smtp-Source: ABdhPJzk8nFL+kqPtl4RF6lmqD43KwMnT4A8Oapd7ArTtvgjfEhtR30+WEgNSraaEzhK8tG/u1tJxvxiaOrV9LODN+o=
-X-Received: by 2002:a25:61c5:: with SMTP id v188mr748702ybb.422.1606259765056;
- Tue, 24 Nov 2020 15:16:05 -0800 (PST)
+        id S2388981AbgKXXel (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Nov 2020 18:34:41 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:17064 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728480AbgKXXel (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 24 Nov 2020 18:34:41 -0500
+Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fbd988e0000>; Wed, 25 Nov 2020 07:34:39 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 24 Nov
+ 2020 23:34:38 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 24 Nov 2020 23:34:38 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SrQyXlLDafkR/SWIQ9LspMs8C+n7RMvooUZN/kFT8cHSr6UFM3wOjIqEorTav1w4AJh2r/6ytOWTlBhp8Mb/6s4MWm9HRqiAuGqYYFWQvfPYKjcgZhBJ10KAQ+Wj+stevBnEnhrkspbMjZHEsh2evgNXjYHlbPVnLEAmzKChIURum9HxK7R/7P5VX/rq/moUsbXCuFyYDwndClXy56NNoYx20UwvXcpLOoeN+r2J0B67uF5wObelxv8DJ5pZCieKTo8EyhGQqaqeCWg6NgO/oRGMI3kBJfiemV/3a9diNaQiKrFMrFCPFhR0EUVFasI4SUigOEvZLiLQC05S8Bk4Qw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FwVNP9MmoYgUM5Ng1T6mu03+gtQKaiEUyvH6DZlZl2A=;
+ b=en6CZco1S80KeRA5ccFNYrQhrgdRaEp59gaLkkgrN1cf6mvFydmP6F1q2FmryX4LW6tFiu3eVOy9a5RhwW/1RHwcd78Ue0nsa/28TccuL58K7YxfAjveiMm8UzF9WGrvB+AdMQlzPj1YTVRpHwoXyy0OtuLGWZvhTtiYejSgdupKBIvYbkQSCneuhPeAinjngkeC+/sSZHF6qqMAeKDrpIqSVO/yitMusIYSZJvp4CUcxoRv4T4drEdn+dWoDe/K+rBXzZ9VsCAnrC4weMYjj083M7bdpC4RwNlNDhybCbdn7HdVPQFVBN2eZeWJTouSgp0W+mymlBl02gpRa6vmow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3402.namprd12.prod.outlook.com (2603:10b6:5:3b::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.29; Tue, 24 Nov
+ 2020 23:34:34 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3589.022; Tue, 24 Nov 2020
+ 23:34:34 +0000
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     <linux-rdma@vger.kernel.org>
+CC:     Leon Romanovsky <leonro@mellanox.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: [PATCH] RDMA/mlx5: Check for ERR_PTR from uverbs_zalloc()
+Date:   Tue, 24 Nov 2020 19:34:33 -0400
+Message-ID: <0-v1-4d05ccc1c223+173-devx_err_ptr_jgg@nvidia.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: BL0PR03CA0008.namprd03.prod.outlook.com
+ (2603:10b6:208:2d::21) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
- <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
- <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
- <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
- <20201123130348.GA3119@embeddedor> <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
- <202011241327.BB28F12F6@keescook> <alpine.LNX.2.23.453.2011250859290.15@nippy.intranet>
-In-Reply-To: <alpine.LNX.2.23.453.2011250859290.15@nippy.intranet>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 25 Nov 2020 00:15:54 +0100
-Message-ID: <CANiq72nUt57u5DG9rH=DB0DzQH7U6-QbG-2Ou+PyCY=p=_Ggag@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for Clang
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Kees Cook <keescook@chromium.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Jakub Kicinski <kuba@kernel.org>, alsa-devel@alsa-project.org,
-        linux-atm-general@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-ide@vger.kernel.org, dm-devel@redhat.com,
-        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
-        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
-        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-afs@lists.infradead.org,
-        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
-        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
-        rds-devel@oss.oracle.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
-        oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
-        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
-        intel-wired-lan@lists.osuosl.org,
-        linux-input <linux-input@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        tipc-discussion@lists.sourceforge.net,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org, selinux@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        linux-geode@lists.infradead.org, linux-can@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-gpio@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org,
-        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
-        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-hwmon@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
-        Linux-MM <linux-mm@kvack.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-usb@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        patches@opensource.cirrus.com, linux-integrity@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR03CA0008.namprd03.prod.outlook.com (2603:10b6:208:2d::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Tue, 24 Nov 2020 23:34:34 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1khhpR-0010WV-Ch; Tue, 24 Nov 2020 19:34:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606260879; bh=MH9Hh9HQ2frngCFObaq+9/y7ABNKpboZELwh6zrx6I8=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+         CC:Subject:Date:Message-ID:Content-Transfer-Encoding:Content-Type:
+         X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=HeI1qCEi6Xn2Y4e0kV8fBX02yJGEHAViDVzTkwaLtTG5DgnwRv/lXXQHhJUgzhiF7
+         JI/UW2fZN3tiQ2Ip2O8SAWj88tU8p2Iv+W2oCPe37jDHCPGZL9Nc7JwJbI+qM6pwx0
+         7naT6+hMfIYzuR2h6zYqsSEz7hQyGjvbjyVvf5nlhzgYK9ZdSrKOJ9QQOhlBWOgN6y
+         oYQmKXAk9k4cu6abdCM0E5BfuajL40H7j+h1qfuucRFKJstdfZ4TGBd5NtC2GTj24r
+         PvxeyXS384I2onYYdFd1dKOQX2B/qV4vzt+tAjikQ/GDoQ3KiO69Sxd66EEldTIHn1
+         YXF40xma86Wwg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:24 PM Finn Thain <fthain@telegraphics.com.au> wrote:
->
-> These statements are not "missing" unless you presume that code written
-> before the latest de facto language spec was written should somehow be
-> held to that spec.
+The return code from uverbs_zalloc() was wrongly checked, it is ERR_PTR
+not NULL like other allocators:
 
-There is no "language spec" the kernel adheres to. Even if it did,
-kernel code is not frozen. If an improvement is found, it should be
-applied.
+drivers/infiniband/hw/mlx5/devx.c:2110 devx_umem_reg_cmd_alloc() warn: pass=
+ing zero to 'PTR_ERR'
 
-> If the 'fallthrough' statement is not part of the latest draft spec then
-> we should ask why not before we embrace it. Being that the kernel still
-> prefers -std=gnu89 you might want to consider what has prevented
-> -std=gnu99 or -std=gnu2x etc.
+Fixes: 878f7b31c3a7 ("RDMA/mlx5: Use ib_umem_find_best_pgsz() for devx")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+---
+ drivers/infiniband/hw/mlx5/devx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The C standard has nothing to do with this. We use compiler extensions
-of several kinds, for many years. Even discounting those extensions,
-the kernel is not even conforming to C due to e.g. strict aliasing. I
-am not sure what you are trying to argue here.
+diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5=
+/devx.c
+index 7c3eefba619716..ad0173f62c0e95 100644
+--- a/drivers/infiniband/hw/mlx5/devx.c
++++ b/drivers/infiniband/hw/mlx5/devx.c
+@@ -2106,7 +2106,7 @@ static int devx_umem_reg_cmd_alloc(struct mlx5_ib_dev=
+ *dev,
+ 		     (MLX5_ST_SZ_BYTES(mtt) *
+ 		      ib_umem_num_dma_blocks(obj->umem, page_size));
+ 	cmd->in =3D uverbs_zalloc(attrs, cmd->inlen);
+-	if (!cmd->in)
++	if (IS_ERR(cmd->in))
+ 		return PTR_ERR(cmd->in);
+=20
+ 	umem =3D MLX5_ADDR_OF(create_umem_in, cmd->in, umem);
+--=20
+2.29.2
 
-But, since you insist: yes, the `fallthrough` attribute is in the
-current C2x draft.
-
-Cheers,
-Miguel
