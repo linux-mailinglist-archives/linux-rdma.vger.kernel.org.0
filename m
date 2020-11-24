@@ -2,260 +2,268 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F095A2C2401
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Nov 2020 12:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC94A2C25A4
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Nov 2020 13:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732485AbgKXLUn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Nov 2020 06:20:43 -0500
-Received: from mga06.intel.com ([134.134.136.31]:9232 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726315AbgKXLUn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:20:43 -0500
-IronPort-SDR: GJEl4q4fjVAUrSSjHMNnMilv6rUd2It2fX2bMPVySIo0CgDtsyfEHU9TShXBRuCfPoJP6Clwtr
- Lptuc5B+vBdw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="233535732"
-X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
-   d="scan'208";a="233535732"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 03:20:42 -0800
-IronPort-SDR: tpTYrIv6t1zgz7hVSE7l1AtQn9jd76EMC86htATwrBEZJrbbVK5WdxYDZfICULrK2tSuaJFKKk
- hMDlXhsSGtGw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
-   d="scan'208";a="478467589"
-Received: from lkp-server01.sh.intel.com (HELO 2820ec516a85) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 24 Nov 2020 03:20:40 -0800
-Received: from kbuild by 2820ec516a85 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1khWNE-00004x-0u; Tue, 24 Nov 2020 11:20:40 +0000
-Date:   Tue, 24 Nov 2020 19:20:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- 6830ff853a5764c75e56750d59d0bbb6b26f1835
-Message-ID: <5fbcec86.FeA6mQQMMLWU9s5G%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1733022AbgKXMZ6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Nov 2020 07:25:58 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7672 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729172AbgKXMZ5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Nov 2020 07:25:57 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CgNXC6zBfz15KGh;
+        Tue, 24 Nov 2020 20:25:31 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 24 Nov 2020 20:25:45 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH v3 for-next] RDMA/hns: Create QP with selected QPN for bank load balance
+Date:   Tue, 24 Nov 2020 20:24:09 +0800
+Message-ID: <1606220649-1465-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-rc
-branch HEAD: 6830ff853a5764c75e56750d59d0bbb6b26f1835  IB/mthca: fix return value of error branch in mthca_init_cq()
+From: Yangyang Li <liyangyang20@huawei.com>
 
-elapsed time: 804m
+In order to improve performance by balancing the load between different
+banks of cache, the QPC cache is desigend to choose one of 8 banks
+according to lower 3 bits of QPN. The hns driver needs to count the number
+of QP on each bank and then assigns the QP being created to the bank with
+the minimum load first.
 
-configs tested: 196
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                          axs101_defconfig
-c6x                        evmc6678_defconfig
-mips                          malta_defconfig
-parisc                           alldefconfig
-sh                          kfr2r09_defconfig
-m68k                       m5208evb_defconfig
-powerpc                     asp8347_defconfig
-arm                           viper_defconfig
-mips                         cobalt_defconfig
-arm                       mainstone_defconfig
-arm                          moxart_defconfig
-openrisc                         alldefconfig
-ia64                                defconfig
-arm                        mvebu_v5_defconfig
-powerpc                      makalu_defconfig
-arc                              allyesconfig
-sh                         microdev_defconfig
-c6x                         dsk6455_defconfig
-powerpc                     tqm8560_defconfig
-sh                   rts7751r2dplus_defconfig
-arm                        keystone_defconfig
-mips                           ip32_defconfig
-arm                            u300_defconfig
-mips                         bigsur_defconfig
-mips                           jazz_defconfig
-powerpc                      pmac32_defconfig
-mips                       lemote2f_defconfig
-mips                      maltasmvp_defconfig
-powerpc                      ppc44x_defconfig
-mips                     loongson1b_defconfig
-arm                           sama5_defconfig
-arc                            hsdk_defconfig
-mips                       rbtx49xx_defconfig
-m68k                        m5272c3_defconfig
-m68k                        m5307c3_defconfig
-mips                     cu1000-neo_defconfig
-sh                             espt_defconfig
-mips                          ath79_defconfig
-powerpc                  mpc866_ads_defconfig
-arm                        multi_v5_defconfig
-powerpc                 mpc837x_mds_defconfig
-sh                           se7619_defconfig
-mips                             allyesconfig
-powerpc                 mpc832x_mds_defconfig
-arm                          badge4_defconfig
-powerpc                     stx_gp3_defconfig
-arm                      integrator_defconfig
-sh                         ecovec24_defconfig
-mips                      bmips_stb_defconfig
-m68k                         amcore_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                     akebono_defconfig
-sh                             shx3_defconfig
-sparc                               defconfig
-sh                           se7750_defconfig
-arm                       imx_v6_v7_defconfig
-sh                          sdk7786_defconfig
-sh                            titan_defconfig
-xtensa                       common_defconfig
-m68k                        stmark2_defconfig
-mips                  cavium_octeon_defconfig
-sh                          landisk_defconfig
-arm                         bcm2835_defconfig
-powerpc                 mpc8272_ads_defconfig
-sh                        edosk7760_defconfig
-mips                        workpad_defconfig
-m68k                       m5475evb_defconfig
-arm                             ezx_defconfig
-powerpc                       eiger_defconfig
-sh                            hp6xx_defconfig
-powerpc                 mpc85xx_cds_defconfig
-m68k                        m5407c3_defconfig
-arm                            lart_defconfig
-m68k                          amiga_defconfig
-powerpc                        fsp2_defconfig
-powerpc                      ppc40x_defconfig
-arm                         at91_dt_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arm                         nhk8815_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                 mpc832x_rdb_defconfig
-arm                           h5000_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                 mpc836x_rdk_defconfig
-arm                           omap1_defconfig
-arm                          pxa168_defconfig
-powerpc                     ksi8560_defconfig
-mips                         rt305x_defconfig
-arc                      axs103_smp_defconfig
-powerpc                      arches_defconfig
-powerpc                      ppc64e_defconfig
-arm                          collie_defconfig
-mips                         tb0219_defconfig
-arm                          simpad_defconfig
-arm                        spear3xx_defconfig
-powerpc                    sam440ep_defconfig
-xtensa                         virt_defconfig
-mips                         tb0226_defconfig
-xtensa                    xip_kc705_defconfig
-mips                            ar7_defconfig
-arm                     am200epdkit_defconfig
-arm                         orion5x_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20201124
-x86_64               randconfig-a003-20201124
-x86_64               randconfig-a004-20201124
-x86_64               randconfig-a005-20201124
-x86_64               randconfig-a001-20201124
-x86_64               randconfig-a002-20201124
-i386                 randconfig-a004-20201123
-i386                 randconfig-a003-20201123
-i386                 randconfig-a002-20201123
-i386                 randconfig-a005-20201123
-i386                 randconfig-a001-20201123
-i386                 randconfig-a006-20201123
-i386                 randconfig-a004-20201124
-i386                 randconfig-a003-20201124
-i386                 randconfig-a002-20201124
-i386                 randconfig-a005-20201124
-i386                 randconfig-a001-20201124
-i386                 randconfig-a006-20201124
-x86_64               randconfig-a015-20201123
-x86_64               randconfig-a011-20201123
-x86_64               randconfig-a014-20201123
-x86_64               randconfig-a016-20201123
-x86_64               randconfig-a012-20201123
-x86_64               randconfig-a013-20201123
-i386                 randconfig-a012-20201123
-i386                 randconfig-a013-20201123
-i386                 randconfig-a011-20201123
-i386                 randconfig-a016-20201123
-i386                 randconfig-a014-20201123
-i386                 randconfig-a015-20201123
-i386                 randconfig-a012-20201124
-i386                 randconfig-a013-20201124
-i386                 randconfig-a011-20201124
-i386                 randconfig-a016-20201124
-i386                 randconfig-a014-20201124
-i386                 randconfig-a015-20201124
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20201123
-x86_64               randconfig-a003-20201123
-x86_64               randconfig-a004-20201123
-x86_64               randconfig-a005-20201123
-x86_64               randconfig-a002-20201123
-x86_64               randconfig-a001-20201123
-x86_64               randconfig-a015-20201124
-x86_64               randconfig-a011-20201124
-x86_64               randconfig-a014-20201124
-x86_64               randconfig-a016-20201124
-x86_64               randconfig-a012-20201124
-x86_64               randconfig-a013-20201124
-
+Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Changes since v2:
+- Fixed values of min and max when allocating id, and add 'next' to
+  represent the next id.
+
+Changes since v1:
+- Use ida instead of bitmap to allocate QPN.
+- Remove CQ parts, which will be reorganized in a separate patch.
+
+Link of previous versions:
+v2: https://patchwork.kernel.org/project/linux-rdma/patch/1599642563-10264-1-git-send-email-liweihang@huawei.com/
+v1: https://patchwork.kernel.org/project/linux-rdma/patch/1606136808-32136-1-git-send-email-liweihang@huawei.com/
+
+ drivers/infiniband/hw/hns/hns_roce_device.h |  15 ++++-
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 100 +++++++++++++++++++++++-----
+ 2 files changed, 96 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 1d99022..c4c39c6 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -117,6 +117,8 @@
+ #define HNS_ROCE_IDX_QUE_ENTRY_SZ		4
+ #define SRQ_DB_REG				0x230
+ 
++#define HNS_ROCE_QP_BANK_NUM 8
++
+ /* The chip implementation of the consumer index is calculated
+  * according to twice the actual EQ depth
+  */
+@@ -512,13 +514,22 @@ struct hns_roce_uar_table {
+ 	struct hns_roce_bitmap bitmap;
+ };
+ 
++struct hns_roce_bank {
++	struct ida ida;
++	u32 inuse; /* Number of IDs allocated */
++	u32 min; /* Lowest ID to allocate.  */
++	u32 max; /* Highest ID to allocate. */
++	u32 next; /* Next ID to allocate. */
++};
++
+ struct hns_roce_qp_table {
+-	struct hns_roce_bitmap		bitmap;
+ 	struct hns_roce_hem_table	qp_table;
+ 	struct hns_roce_hem_table	irrl_table;
+ 	struct hns_roce_hem_table	trrl_table;
+ 	struct hns_roce_hem_table	sccc_table;
+ 	struct mutex			scc_mutex;
++	struct hns_roce_bank bank[HNS_ROCE_QP_BANK_NUM];
++	spinlock_t bank_lock;
+ };
+ 
+ struct hns_roce_cq_table {
+@@ -768,7 +779,7 @@ struct hns_roce_caps {
+ 	u32		max_rq_sg;
+ 	u32		max_extend_sg;
+ 	int		num_qps;
+-	int             reserved_qps;
++	u32             reserved_qps;
+ 	int		num_qpc_timer;
+ 	int		num_cqc_timer;
+ 	int		num_srqs;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index e288946..a8b8961 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -154,9 +154,50 @@ static void hns_roce_ib_qp_event(struct hns_roce_qp *hr_qp,
+ 	}
+ }
+ 
++static u8 get_least_load_bankid_for_qp(struct hns_roce_bank *bank)
++{
++	u32 least_load = bank[0].inuse;
++	u8 bankid = 0;
++	u32 bankcnt;
++	u8 i;
++
++	for (i = 1; i < HNS_ROCE_QP_BANK_NUM; i++) {
++		bankcnt = bank[i].inuse;
++		if (bankcnt < least_load) {
++			least_load = bankcnt;
++			bankid = i;
++		}
++	}
++
++	return bankid;
++}
++
++static int alloc_qpn_with_bankid(struct hns_roce_bank *bank, u8 bankid,
++				 unsigned long *qpn)
++{
++	int id;
++
++	id = ida_alloc_range(&bank->ida, bank->next, bank->max, GFP_KERNEL);
++	if (id < 0) {
++		id = ida_alloc_range(&bank->ida, bank->min, bank->max,
++				     GFP_KERNEL);
++		if (id < 0)
++			return id;
++	}
++
++	/* the QPN should keep increasing until the max value is reached. */
++	bank->next = (id + 1) > bank->max ? bank->min : id + 1;
++
++	/* the lower 3 bits is bankid */
++	*qpn = (id << 3) | bankid;
++
++	return 0;
++}
+ static int alloc_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ {
++	struct hns_roce_qp_table *qp_table = &hr_dev->qp_table;
+ 	unsigned long num = 0;
++	u8 bankid;
+ 	int ret;
+ 
+ 	if (hr_qp->ibqp.qp_type == IB_QPT_GSI) {
+@@ -169,13 +210,21 @@ static int alloc_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ 
+ 		hr_qp->doorbell_qpn = 1;
+ 	} else {
+-		ret = hns_roce_bitmap_alloc_range(&hr_dev->qp_table.bitmap,
+-						  1, 1, &num);
++		spin_lock(&qp_table->bank_lock);
++		bankid = get_least_load_bankid_for_qp(qp_table->bank);
++
++		ret = alloc_qpn_with_bankid(&qp_table->bank[bankid], bankid,
++					    &num);
+ 		if (ret) {
+-			ibdev_err(&hr_dev->ib_dev, "Failed to alloc bitmap\n");
+-			return -ENOMEM;
++			ibdev_err(&hr_dev->ib_dev,
++				  "failed to alloc QPN, ret = %d\n", ret);
++			spin_unlock(&qp_table->bank_lock);
++			return ret;
+ 		}
+ 
++		qp_table->bank[bankid].inuse++;
++		spin_unlock(&qp_table->bank_lock);
++
+ 		hr_qp->doorbell_qpn = (u32)num;
+ 	}
+ 
+@@ -340,9 +389,15 @@ static void free_qpc(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ 	hns_roce_table_put(hr_dev, &qp_table->irrl_table, hr_qp->qpn);
+ }
+ 
++static inline u8 get_qp_bankid(unsigned long qpn)
++{
++	/* The lower 3 bits of QPN are used to hash to different banks */
++	return (u8)(qpn & GENMASK(2, 0));
++}
++
+ static void free_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ {
+-	struct hns_roce_qp_table *qp_table = &hr_dev->qp_table;
++	u8 bankid;
+ 
+ 	if (hr_qp->ibqp.qp_type == IB_QPT_GSI)
+ 		return;
+@@ -350,7 +405,13 @@ static void free_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ 	if (hr_qp->qpn < hr_dev->caps.reserved_qps)
+ 		return;
+ 
+-	hns_roce_bitmap_free_range(&qp_table->bitmap, hr_qp->qpn, 1, BITMAP_RR);
++	bankid = get_qp_bankid(hr_qp->qpn);
++
++	ida_free(&hr_dev->qp_table.bank[bankid].ida, hr_qp->qpn >> 3);
++
++	spin_lock(&hr_dev->qp_table.bank_lock);
++	hr_dev->qp_table.bank[bankid].inuse--;
++	spin_unlock(&hr_dev->qp_table.bank_lock);
+ }
+ 
+ static int set_rq_size(struct hns_roce_dev *hr_dev, struct ib_qp_cap *cap,
+@@ -1275,22 +1336,24 @@ bool hns_roce_wq_overflow(struct hns_roce_wq *hr_wq, int nreq,
+ int hns_roce_init_qp_table(struct hns_roce_dev *hr_dev)
+ {
+ 	struct hns_roce_qp_table *qp_table = &hr_dev->qp_table;
+-	int reserved_from_top = 0;
+-	int reserved_from_bot;
+-	int ret;
++	unsigned int reserved_from_bot;
++	unsigned int i;
+ 
+ 	mutex_init(&qp_table->scc_mutex);
+ 	xa_init(&hr_dev->qp_table_xa);
+ 
+ 	reserved_from_bot = hr_dev->caps.reserved_qps;
+ 
+-	ret = hns_roce_bitmap_init(&qp_table->bitmap, hr_dev->caps.num_qps,
+-				   hr_dev->caps.num_qps - 1, reserved_from_bot,
+-				   reserved_from_top);
+-	if (ret) {
+-		dev_err(hr_dev->dev, "qp bitmap init failed!error=%d\n",
+-			ret);
+-		return ret;
++	for (i = 0; i < reserved_from_bot; i++) {
++		hr_dev->qp_table.bank[get_qp_bankid(i)].inuse++;
++		hr_dev->qp_table.bank[get_qp_bankid(i)].min++;
++	}
++
++	for (i = 0; i < HNS_ROCE_QP_BANK_NUM; i++) {
++		ida_init(&hr_dev->qp_table.bank[i].ida);
++		hr_dev->qp_table.bank[i].max = hr_dev->caps.num_qps /
++					       HNS_ROCE_QP_BANK_NUM - 1;
++		hr_dev->qp_table.bank[i].next = hr_dev->qp_table.bank[i].min;
+ 	}
+ 
+ 	return 0;
+@@ -1298,5 +1361,8 @@ int hns_roce_init_qp_table(struct hns_roce_dev *hr_dev)
+ 
+ void hns_roce_cleanup_qp_table(struct hns_roce_dev *hr_dev)
+ {
+-	hns_roce_bitmap_cleanup(&hr_dev->qp_table.bitmap);
++	int i;
++
++	for (i = 0; i < HNS_ROCE_QP_BANK_NUM; i++)
++		ida_destroy(&hr_dev->qp_table.bank[i].ida);
+ }
+-- 
+2.8.1
+
