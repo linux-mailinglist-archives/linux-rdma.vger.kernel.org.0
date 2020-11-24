@@ -2,117 +2,178 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D332C2F7B
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Nov 2020 19:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D459B2C2FEB
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Nov 2020 19:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404008AbgKXSCQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Nov 2020 13:02:16 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4634 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403986AbgKXSCP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Nov 2020 13:02:15 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fbd4aa70007>; Tue, 24 Nov 2020 10:02:15 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 24 Nov
- 2020 18:02:15 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.170)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 24 Nov 2020 18:02:14 +0000
+        id S2390909AbgKXSYv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Nov 2020 13:24:51 -0500
+Received: from mga02.intel.com ([134.134.136.20]:64451 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390902AbgKXSYu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 24 Nov 2020 13:24:50 -0500
+IronPort-SDR: 3GmQTB76QrvGXmWlrecuVVnexZJIUel2SKgMlYGMfB+J2Z+G9iFX0C2GWl3MQPEaG0FVS3vpJx
+ ZfG5e/pzkAQQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="159037914"
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="159037914"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 10:24:49 -0800
+IronPort-SDR: YFkUZ5fw8cChFZBae31BBN2DXxL0LyBozpbuFXILT+5a2mxUViGiabWaKy+MKQiIMuETx02Q6c
+ jd2YAuTNnuaw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
+   d="scan'208";a="536559909"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by fmsmga005.fm.intel.com with ESMTP; 24 Nov 2020 10:24:49 -0800
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 24 Nov 2020 10:24:49 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 24 Nov 2020 10:24:49 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Tue, 24 Nov 2020 10:24:47 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hsco2a4ybgn4RID7o0dSryUcRprRSlAapBGZbNUN0f4/RatPKO6K9W/KqrjXwkcGgynUo4r9uPw797ziq4hq0Ehddszt+0cvRuBismlkJrwwPapLlrd01cIT11WmDjWSqQGVl3UN7uKysUovx0GK7WpiZy0azyq1fGv8iu3vsZAAvsJnNnNmyBsaVa7s7PrMqExOarg1wPdxNxrxSSyfYJ+WiA3/lPKRS7p+pC/q4GghcBvBNzqlx/rCuyeGhojNI2aTwQG6KadAKJTozCBW3dj4meYF/g3F++13ZSkwplL8JD7ugizPuicFMsyHitdUZt2jpF1i7X1CZnlB6uWbZw==
+ b=hVXbnTUhdoXffvAK0X9URz1cqZWfmQ87Zea+11C34GEQq2td+cgDF5rJG8GyhxLu1jTtU2m0dMgWGK93GtPMDor14ynWZrlP3ZkpQuwmm/U/U/4jh7VCo7HIXktyYjnAdfi6OL1j1ZWnIehXS3xnkFFAJgyRO3qndrA0iund++kAqsFUTAxzNMXNbRbc3NC59lRNAktn9UEMxqWZVGi8ZJxxW2J2xid4LzPRliwjbia2UX6O5kpg3mxldUqk/ERvDaiZrHsF9q+PWmed6LyYiJulJyI3UGZDtF8/WtW8AcUOilcHp+21F9NxMcRXx+FUAzLMehVQIdUD3pdyhtpUkw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=435ogFDV+MDYgFDgvf9KV37fb5NYsuyuzUu8OSBCooA=;
- b=VyV4M4HPrhSFbAWlLtQYegI0wsvIKMr/bPazwFJH3F6DkGkvsBbqBfPzqRQdbm13T85frayacym5yNBOD30A5rFyfBD6WKUJZrHOtTuRb7hrwhXzg8e5SU4Qi1t0Jz0P+NgleIMB4DdtbC3rtTj8/T7e1osgFZhMbpItyfTriQG2j1uUu5harwpoZWooLPyHcgdLK4DttJcgign1qSF6mAN84xJbJVfWx5vLsfzHeJ1F+s/T/0UVNupjPE5ZWYj01al/c2TQTG1ao81H7s09sYHuf8/KSxZMc8Shr2oSnl4k7AKWaM2eOxsPh/rRLiCO9tjgz8dfGFKrk7ob7yqviw==
+ bh=O0tNsnd6QHBT+h/zAndHZJ48alju/Z7YJIV0ZgyBcvk=;
+ b=jx64EsKCvJ6fO0SY1klvqqVyun6n/qQRvdkYTZbswe092YRZtHFZWl3PJNMVUQY+WBp8po3iFlhBEtyZJIdCszU0QuYV03em2eZnzzb65KuqaJrRb8j6MWneJ7A/cQgVvxiW2t1cinPFKPVfyTPKDJAZuu4c5gHzM79JZ1IGXAn6Lpg6etxDWvVjVNZuGrcJ0GWd0oVRhVkqQyhBEA2e9tOpqIig/YgtN6yehpQgO71HnXySU+kjr+vB8SMX84vBgkdo4/x7qlLsC0nXbid5AzvXwb6DUkKyRnkXxXcbj3IIQSza8kIy+G4QEAjxUriC4edkVuHTmdQoVbjr2urJjw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4265.namprd12.prod.outlook.com (2603:10b6:5:211::14) with
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O0tNsnd6QHBT+h/zAndHZJ48alju/Z7YJIV0ZgyBcvk=;
+ b=qx7C2rUvZlciv2oLf40V2+231YVYp7BHlfI+uwSNSm0nuBQR6CBPYJSdl0d1AMNz0AeO6etEBHtzSoKpNWWMaeQMvGLH0iYgOZn3VvUz82/XZ416YVXWQP1bFQHZBrw47VKY4YOZSqQCM8pp/7+zdOel3nTBG1zLSe00EZ6c1GM=
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
+ by MWHPR1101MB2143.namprd11.prod.outlook.com (2603:10b6:301:4f::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.21; Tue, 24 Nov
- 2020 18:02:13 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3589.022; Tue, 24 Nov 2020
- 18:02:13 +0000
-Date:   Tue, 24 Nov 2020 14:02:10 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     Saeed Mahameed <saeedm@nvidia.com>, Eli Cohen <elic@nvidia.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Eli Cohen <eli@mellanox.com>, Mark Bloch <mbloch@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>
-Subject: Re: [PATCH mlx5-next 11/16] net/mlx5: Add VDPA priority to NIC RX
- namespace
-Message-ID: <20201124180210.GJ5487@ziepe.ca>
-References: <20201120230339.651609-1-saeedm@nvidia.com>
- <20201120230339.651609-12-saeedm@nvidia.com>
- <20201121160155.39d84650@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201122064158.GA9749@mtl-vdi-166.wap.labs.mlnx>
- <20201124091219.5900e7bb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.21; Tue, 24 Nov
+ 2020 18:24:44 +0000
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::7510:71a5:3cfe:ab94]) by MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::7510:71a5:3cfe:ab94%8]) with mapi id 15.20.3589.030; Tue, 24 Nov 2020
+ 18:24:43 +0000
+From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "Doug Ledford" <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>
+Subject: RE: [PATCH v11 1/4] RDMA/umem: Support importing dma-buf as user
+ memory region
+Thread-Topic: [PATCH v11 1/4] RDMA/umem: Support importing dma-buf as user
+ memory region
+Thread-Index: AQHWwb94WgcoLsFquUCM/lDOVBeSeanXBlgAgACRfuA=
+Date:   Tue, 24 Nov 2020 18:24:43 +0000
+Message-ID: <MW3PR11MB4555410B8487CA3B6627E463E5FB0@MW3PR11MB4555.namprd11.prod.outlook.com>
+References: <1606153919-104513-1-git-send-email-jianxin.xiong@intel.com>
+ <1606153919-104513-2-git-send-email-jianxin.xiong@intel.com>
+ <20201124093352.GB29715@infradead.org>
+In-Reply-To: <20201124093352.GB29715@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [73.53.14.45]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 582f8373-9c49-4b73-cfdc-08d890a6374f
+x-ms-traffictypediagnostic: MWHPR1101MB2143:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR1101MB21437EE8C26462ACCC51B4A6E5FB0@MWHPR1101MB2143.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AggCeLC8TYv8uuFQrdFZiLyP9ySl7P9ZZpdQJ7povUsp1N2UyyodriK2MpYGgah15n0Q+ivAT9gUdFKjm7e61LcQeVZevvkaRIcwz8THFDP4FIvgAbdzNC2iPx/qbVuKLHtnMXwVzWMgcuKGfzRwbXdk/oMaHJW+yNDMNLUEEomNsZyNkMs+bpPU/y2yCV6v2iG4YZkWj2NVEPHqrivI0isgBQLJL7JV2wEPDcAplf8VKv3+b/BPf2a4xsC5BI7+Dm+7Z8bI+rPlp1322q4vagD/VoKvCHKgfY9Q4wa01JRMVxuzGumIze+Q3ayObOSP9n3A9QB/ssrLbq9rd0YC4A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(136003)(346002)(366004)(33656002)(53546011)(6916009)(26005)(7696005)(2906002)(86362001)(71200400001)(186003)(66556008)(66476007)(52536014)(66446008)(64756008)(66946007)(76116006)(5660300002)(107886003)(8936002)(8676002)(6506007)(9686003)(83380400001)(55016002)(4326008)(54906003)(478600001)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?xOXUsbU5O17z3mrYTOwiuNP2zCAZa4cjC2Unx+HIXMW3F0+zP7WJKrlsDQfR?=
+ =?us-ascii?Q?Qvdc7sPI2mGZCWUDen/bi4hqappTAPkw+zr9f9HohdBn1AO0roYZEICfizhi?=
+ =?us-ascii?Q?q6oITPYM+lE9LshGEsEf0LFyappsSnimaw7qK9uarc/zJp1RQW17vi1nuiHH?=
+ =?us-ascii?Q?B6HwjZvYkEe7/M3GkblieKsf//WJskRQjfkZzlNbP10X+8PU7Ivh/Gx+y3vC?=
+ =?us-ascii?Q?J6FJFedircqaYO9oNkEJ43pfSrD3qatPqFivxVpkU0OQxqs+7mdRIRp0tXtW?=
+ =?us-ascii?Q?Iqqp5ZNREo1wdfxivCP7lQESEqsATABxDq+2vAhP3vuv4fbVtLszK+oCJoiI?=
+ =?us-ascii?Q?ZaWw34nUEwMcs0CqRgDRhI4KTuox6cyNQFhcECx9OoOajTcW7ZHqSFafz4wB?=
+ =?us-ascii?Q?Y50Z86P7kpNe1/NAPU/6LtoeWxLcNvYZPVnM4gSpBSZ03b24ulbJ1f6BA7UB?=
+ =?us-ascii?Q?Cuj05KIrLeKAbFB9/5qKjL63BR42nnZw4madr0IEZKSWCv0xP1Axtc7vGh3/?=
+ =?us-ascii?Q?5CslZshtG2LPZI5/AMmf1NUAKntGzvHtBSJpjXUXrNDsmSY1hb6lJfnVMxE3?=
+ =?us-ascii?Q?OnayUmjaU0nd7h63ZSlD8PmqAEuGRVNsTycVJBhX0A2zn5Q5rQxe45WmfNVk?=
+ =?us-ascii?Q?xMhwSeyy+ljsqiHrISYvYcmPn74Xu5T8mT4FX0Xilh+O/fmUDe6fu7YJHTz3?=
+ =?us-ascii?Q?sWoVoRRjlVfwX4j5eLnEk9Qxwix+I1PRLOoB2vK/VGdxkHxHPsi4GA74/i1M?=
+ =?us-ascii?Q?oqSdX9qFtOInwhDr2N0+dyUXahVJ0MztqgjEENS+70W3IzzmsmVfvP6SiWq8?=
+ =?us-ascii?Q?bqefK6l2sOhTkyiAZ3oi3WIPTuA6McHUPPT324Rknr9T6orYDxLgocSAC9dz?=
+ =?us-ascii?Q?Z2CGCqpcIfm7gqZvvYUboQF/nttLux1U36UQHwfN9WTJdF+gNpRIzQZB5KmD?=
+ =?us-ascii?Q?bRJL8b540Y6jvin3HElgrjzldxbxZx615ZhZgjrcatg=3D?=
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201124091219.5900e7bb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-X-ClientProxiedBy: MN2PR04CA0020.namprd04.prod.outlook.com
- (2603:10b6:208:d4::33) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR04CA0020.namprd04.prod.outlook.com (2603:10b6:208:d4::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Tue, 24 Nov 2020 18:02:12 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1khcdm-000tGu-SC; Tue, 24 Nov 2020 14:02:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606240935; bh=435ogFDV+MDYgFDgvf9KV37fb5NYsuyuzUu8OSBCooA=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=nGd3SJhYI3KpPGx/tigd5dog+XXH0uX80gZKM2fbw54ONWWiKx1Lea8igZK4nz/Ks
-         d3XoHdz0u8x1uqIuoGI1G/wLbX5j8O6EIskll3bK37mykgAASM5EFuadouiBchD1qp
-         AxsPIgWwqK4FFKhnJ7ZBnLBHoS/3dX3Oc6Dpz9jW0jQOCFxI8s+odJQKG8WVRRmQnZ
-         6g4ODoU/TiNoSKMma3d0UL54YIWJ/JpNeNc1/iPaQkKoTxLMzpcPWIVz9c1v/fIcxT
-         vcv4E2zOh3b+hXK67Gmb71ZM3X3knieMCuzMWK7/rDjDumee3SGhneBMV90SLqquC8
-         397Y1IFIs2RyQ==
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 582f8373-9c49-4b73-cfdc-08d890a6374f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 18:24:43.9315
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: w+tbUPeJOi8osNluBj3zseEOzlSbAZVWlxkLjl2qqFce3ZXoP6tt8Kj3mj4gicL4kl8xH4p7kC+n2/aE5tBsyA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2143
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 09:12:19AM -0800, Jakub Kicinski wrote:
-> On Sun, 22 Nov 2020 08:41:58 +0200 Eli Cohen wrote:
-> > On Sat, Nov 21, 2020 at 04:01:55PM -0800, Jakub Kicinski wrote:
-> > > On Fri, 20 Nov 2020 15:03:34 -0800 Saeed Mahameed wrote:  
-> > > > From: Eli Cohen <eli@mellanox.com>
-> > > > 
-> > > > Add a new namespace type to the NIC RX root namespace to allow for
-> > > > inserting VDPA rules before regular NIC but after bypass, thus allowing
-> > > > DPDK to have precedence in packet processing.  
-> > > 
-> > > How does DPDK and VDPA relate in this context?  
-> > 
-> > mlx5 steering is hierarchical and defines precedence amongst namespaces.
-> > Up till now, the VDPA implementation would insert a rule into the
-> > MLX5_FLOW_NAMESPACE_BYPASS hierarchy which is used by DPDK thus taking
-> > all the incoming traffic.
-> > 
-> > The MLX5_FLOW_NAMESPACE_VDPA hirerachy comes after
-> > MLX5_FLOW_NAMESPACE_BYPASS.
-> 
-> Our policy was no DPDK driver bifurcation. There's no asterisk saying
-> "unless you pretend you need flow filters for RDMA, get them upstream
-> and then drop the act".
+> -----Original Message-----
+> From: Christoph Hellwig <hch@infradead.org>
+> Sent: Tuesday, November 24, 2020 1:34 AM
+> To: Xiong, Jianxin <jianxin.xiong@intel.com>
+> Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org; Doug Led=
+ford <dledford@redhat.com>; Jason Gunthorpe <jgg@ziepe.ca>;
+> Leon Romanovsky <leon@kernel.org>; Sumit Semwal <sumit.semwal@linaro.org>=
+; Christian Koenig <christian.koenig@amd.com>; Vetter,
+> Daniel <daniel.vetter@intel.com>
+> Subject: Re: [PATCH v11 1/4] RDMA/umem: Support importing dma-buf as user=
+ memory region
+>=20
+> As these are mostly trivial wrappers around the EXPORT_SYMBOL_GPL dmabuf =
+exports please stick to that export style.
+>=20
+> > --- /dev/null
+> > +++ b/drivers/infiniband/core/umem_dmabuf.h
+> > @@ -0,0 +1,11 @@
+> > +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
+> > +/*
+> > + * Copyright (c) 2020 Intel Corporation. All rights reserved.
+> > + */
+> > +
+> > +#ifndef UMEM_DMABUF_H
+> > +#define UMEM_DMABUF_H
+> > +
+> > +void ib_umem_dmabuf_release(struct ib_umem_dmabuf *umem_dmabuf);
+> > +
+> > +#endif /* UMEM_DMABUF_H */
+>=20
+> Does this really need a separate header?
 
-Huh?
-
-mlx5 DPDK is an *RDMA* userspace application. It links to
-libibverbs. It runs on the RDMA stack. It uses RDMA flow filtering and
-RDMA raw ethernet QPs. It has been like this for years, it is not some
-"act".
-
-It is long standing uABI that accelerators like RDMA/etc get to take
-the traffic before netdev. This cannot be reverted. I don't really
-understand what you are expecting here?
-
-Jason
+The symbol doesn't need to be exported otherwise it can be put into "ib_ume=
+m.h".
+Although the prototype could be put into the file where it is called direct=
+ly, using a
+separate header file provides a cleaner interface.
