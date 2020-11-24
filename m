@@ -2,112 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B092C2FFE
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Nov 2020 19:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E402C3014
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Nov 2020 19:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404197AbgKXSdu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Nov 2020 13:33:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729291AbgKXSdt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Nov 2020 13:33:49 -0500
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED56AC0613D6
-        for <linux-rdma@vger.kernel.org>; Tue, 24 Nov 2020 10:33:48 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id e60so7600333qtd.3
-        for <linux-rdma@vger.kernel.org>; Tue, 24 Nov 2020 10:33:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=odsbBeKSImj9d1Vv8raolHLvpmJrGUmkgBM9p8FNK3Q=;
-        b=eLNZNZCQTAwNvP7xEmrTUCN5f1NDlDsjafaUM/HJUMB6EjXbHZ+bA1SNfHOcw83nD9
-         ydyiFsplhGd8UN+pgnqim7lF0p6YxMhutezg55zTYcmVER4aXpTDApV0zsQ06T62pwwC
-         hyOIl3cegy4mKfbIKMa2SC/5g0HeRUiqVO6On6jHP9EZbAckGKCaOkpFDqnlppjuTG/O
-         BD0sdqpHptRUeecGpLSB5G9gJb+nJ2yztm/Fhf54ou5nz3bGH7T5x0JsVFWhA8hnUaLg
-         dtbDcbcj+b6AjiblM4cU3e10jV6xM6azX/DlLqbgQ7e+dSro0Q0rlmHosPjSIVASBhXs
-         K/pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=odsbBeKSImj9d1Vv8raolHLvpmJrGUmkgBM9p8FNK3Q=;
-        b=R5q98w8+pW6zC2cEs7PZVDoZeme8Ltmn4tBeJWxkAY69W91nxtN6hg6CD/VOixvxFh
-         199hMnaABYpKg8cxLFOqBBIQ9ogkaIc3o3BpYTW4GQDiySHEueJLWLSwSsxZ6CiRUCXp
-         dzxR27tHFey6SMT9EYFN6ApFAcAp0W51F5ljiWZT4F/0BBhAtIpzIU7cMPM9raIg/uyS
-         9HRb3UMNA7dPkSOEujeCynmUiBkKN+O0RiIfDXM+STqTMpRkw1fidwZRnXUDMFTWmcvc
-         8nzGX2jtjY7Of1zMVFkhVpw+suF8Wh6fEyRj3JuX88UCX97iEd/nLv0B8Jc6jkq9lPuS
-         /cDQ==
-X-Gm-Message-State: AOAM530QGTjYkAuU1TIB1+ZfC53i4L2XDCp/zKmZxaDPduUbVvX3229k
-        gq/bIL0cdleA/vWlfFQlV2DGBg==
-X-Google-Smtp-Source: ABdhPJzRkSGH4VGPVgluncPI5g1/7rvX0PdC+isyGXnvguOnIEpGZFiUrpVdGdfAGhO/9EaeK4vWEQ==
-X-Received: by 2002:ac8:34ea:: with SMTP id x39mr5691723qtb.26.1606242828227;
-        Tue, 24 Nov 2020 10:33:48 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id i9sm13437558qtp.72.2020.11.24.10.33.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 10:33:47 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1khd8M-000tkv-TT; Tue, 24 Nov 2020 14:33:46 -0400
-Date:   Tue, 24 Nov 2020 14:33:46 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        "Vetter, Daniel" <daniel.vetter@intel.com>
-Subject: Re: [PATCH v11 1/4] RDMA/umem: Support importing dma-buf as user
- memory region
-Message-ID: <20201124183346.GK5487@ziepe.ca>
-References: <1606153919-104513-1-git-send-email-jianxin.xiong@intel.com>
- <1606153919-104513-2-git-send-email-jianxin.xiong@intel.com>
- <20201124093352.GB29715@infradead.org>
- <MW3PR11MB4555410B8487CA3B6627E463E5FB0@MW3PR11MB4555.namprd11.prod.outlook.com>
+        id S2404186AbgKXSlP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Nov 2020 13:41:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404168AbgKXSlO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 24 Nov 2020 13:41:14 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5AFF2206D8;
+        Tue, 24 Nov 2020 18:41:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606243273;
+        bh=yVfi6Rus2ygw10iMKFhX/lFhewUdnnSLDtB4juWYiy4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jdS/5hQ7BCLJDwu2/PmHPPsMJcah6FlbFJ3tBgSXoWjbpwLxb06pmGPjNisbxsxK8
+         opi6lm9ersrzUU+45Dh91LjMDW88bRaobxY9VbsQK+BqSzoyTmCGX4rY+WE3nsBMM7
+         NOq/fnS8xsDU4FGzP+QZXSn2zPa6yU3+6OYfFMTw=
+Date:   Tue, 24 Nov 2020 10:41:06 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>, Eli Cohen <elic@nvidia.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Eli Cohen <eli@mellanox.com>, Mark Bloch <mbloch@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>
+Subject: Re: [PATCH mlx5-next 11/16] net/mlx5: Add VDPA priority to NIC RX
+ namespace
+Message-ID: <20201124104106.0b1201b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201124180210.GJ5487@ziepe.ca>
+References: <20201120230339.651609-1-saeedm@nvidia.com>
+        <20201120230339.651609-12-saeedm@nvidia.com>
+        <20201121160155.39d84650@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201122064158.GA9749@mtl-vdi-166.wap.labs.mlnx>
+        <20201124091219.5900e7bb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201124180210.GJ5487@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW3PR11MB4555410B8487CA3B6627E463E5FB0@MW3PR11MB4555.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 06:24:43PM +0000, Xiong, Jianxin wrote:
-> > From: Christoph Hellwig <hch@infradead.org>
-> > Sent: Tuesday, November 24, 2020 1:34 AM
-> > To: Xiong, Jianxin <jianxin.xiong@intel.com>
-> > Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org; Doug Ledford <dledford@redhat.com>; Jason Gunthorpe <jgg@ziepe.ca>;
-> > Leon Romanovsky <leon@kernel.org>; Sumit Semwal <sumit.semwal@linaro.org>; Christian Koenig <christian.koenig@amd.com>; Vetter,
-> > Daniel <daniel.vetter@intel.com>
-> > Subject: Re: [PATCH v11 1/4] RDMA/umem: Support importing dma-buf as user memory region
-> > 
-> > As these are mostly trivial wrappers around the EXPORT_SYMBOL_GPL dmabuf exports please stick to that export style.
-> > 
-> > > +++ b/drivers/infiniband/core/umem_dmabuf.h
-> > > @@ -0,0 +1,11 @@
-> > > +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
-> > > +/*
-> > > + * Copyright (c) 2020 Intel Corporation. All rights reserved.
-> > > + */
-> > > +
-> > > +#ifndef UMEM_DMABUF_H
-> > > +#define UMEM_DMABUF_H
-> > > +
-> > > +void ib_umem_dmabuf_release(struct ib_umem_dmabuf *umem_dmabuf);
-> > > +
-> > > +#endif /* UMEM_DMABUF_H */
-> > 
-> > Does this really need a separate header?
-> 
-> The symbol doesn't need to be exported otherwise it can be put into "ib_umem.h".
-> Although the prototype could be put into the file where it is called directly, using a
-> separate header file provides a cleaner interface.
+On Tue, 24 Nov 2020 14:02:10 -0400 Jason Gunthorpe wrote:
+> On Tue, Nov 24, 2020 at 09:12:19AM -0800, Jakub Kicinski wrote:
+> > On Sun, 22 Nov 2020 08:41:58 +0200 Eli Cohen wrote: =20
+> > > On Sat, Nov 21, 2020 at 04:01:55PM -0800, Jakub Kicinski wrote: =20
+> > > > On Fri, 20 Nov 2020 15:03:34 -0800 Saeed Mahameed wrote:   =20
+> > > > > From: Eli Cohen <eli@mellanox.com>
+> > > > >=20
+> > > > > Add a new namespace type to the NIC RX root namespace to allow for
+> > > > > inserting VDPA rules before regular NIC but after bypass, thus al=
+lowing
+> > > > > DPDK to have precedence in packet processing.   =20
+> > > >=20
+> > > > How does DPDK and VDPA relate in this context?   =20
+> > >=20
+> > > mlx5 steering is hierarchical and defines precedence amongst namespac=
+es.
+> > > Up till now, the VDPA implementation would insert a rule into the
+> > > MLX5_FLOW_NAMESPACE_BYPASS hierarchy which is used by DPDK thus taking
+> > > all the incoming traffic.
+> > >=20
+> > > The MLX5_FLOW_NAMESPACE_VDPA hirerachy comes after
+> > > MLX5_FLOW_NAMESPACE_BYPASS. =20
+> >=20
+> > Our policy was no DPDK driver bifurcation. There's no asterisk saying
+> > "unless you pretend you need flow filters for RDMA, get them upstream
+> > and then drop the act". =20
+>=20
+> Huh?
+>=20
+> mlx5 DPDK is an *RDMA* userspace application.=20
 
-It is fine to put this single symbol in ib_umem.h
+Forgive me for my naivet=C3=A9.=20
 
-Thanks
-Jason
+Here I thought the RDMA subsystem is for doing RDMA.
+
+I'm sure if you start doing crypto over ibverbs crypto people will want
+to have a look.
+
+> libibverbs. It runs on the RDMA stack. It uses RDMA flow filtering and
+> RDMA raw ethernet QPs.=20
+
+I'm not saying that's not the case. I'm saying I don't think this was
+something that netdev developers signed-off on. And our policy on DPDK
+is pretty widely known.
+
+Would you mind pointing us to the introduction of raw Ethernet QPs?
+
+Is there any production use for that without DPDK?
+
+> It has been like this for years, it is not some "act".
+>=20
+> It is long standing uABI that accelerators like RDMA/etc get to take
+> the traffic before netdev. This cannot be reverted. I don't really
+> understand what you are expecting here?
+
+Same. I don't really know what you expect me to do either. I don't
+think I can sign-off on kernel changes needed for DPDK.
