@@ -2,182 +2,180 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBF32C2CB2
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Nov 2020 17:21:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D28C2C2D93
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Nov 2020 17:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390253AbgKXQVL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Nov 2020 11:21:11 -0500
-Received: from mga03.intel.com ([134.134.136.65]:37997 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390211AbgKXQVK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 24 Nov 2020 11:21:10 -0500
-IronPort-SDR: 0AKiWEXhiLaSFwCT08bVz8SkkE7yUa1Sbr46RkGX2g+Uy5DDJujCA5zrZXPRyFw01nh+23QsVn
- c9d6RSci3CTw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="172070615"
-X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
-   d="scan'208";a="172070615"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 08:21:09 -0800
-IronPort-SDR: YNh0VaNg91IOOrsKtNYqh7lo1VdW7fEhSImKjdh8rnlcHGYEApZJKe1xhxdUjivfD4hJSyQiIA
- TBAc3O9NqOsA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; 
-   d="scan'208";a="365061442"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga002.fm.intel.com with ESMTP; 24 Nov 2020 08:21:09 -0800
-Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 24 Nov 2020 08:21:08 -0800
-Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
- ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 24 Nov 2020 08:21:08 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 24 Nov 2020 08:21:08 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.108)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Tue, 24 Nov 2020 08:21:07 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AWikc5wmJFZ35beGI5bZ9pM5j9mp1Go2aqx3x9HroFs+PX/SHqeGnMIngqyJ/WJmuidPiV5F6goM+2KDvW/+Bn0qynkiBLxf4NlNMahw2qEhcQteCkYRahLtJXBZM3y3m+i/dkQLsw+S2COTLplUgGg1NHpoHW1r09AAoBnEwnBPNMhWHKyCgLDM7L2T31tQWlj77fIxHDJwEOcpzSpg1xhLPP1QLFO1GKS0bjIXRODlyYWXIrU+RQdxNESjf3Qick9P8GZDBZe0ZO1QNduIRmvGbY64Os7q6xv0L4ZyeGHij7sNQGspTZV5UgxEMCtQ9e9iO/s8xScWflgdX79zCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VbWLXvcsEkRND6xW798ZustdbLZAGot0X4LpEMz2vNI=;
- b=LSzmTnuohq1NKfuQcWJ/teqmAHHZ6l8/0hRYFk3p5SXzQT+9wWTLR9Vnfk0qkKJ3z44aKyiWefnpHE6ahJT7lHKfZhrzH1jIhR73fngQxV96v4Irazai4rilqP3PXmpkSL0Y+FJ4EVNK6Eu2b2qu+B4PLpp2kQarBAFq7e7c8UVgQVkGtLt0v+P0A0KZeA/WbFOqYw1uwDqHh59ZrFOw9DacY0U4g34R79u7FG+ojYtMyoGjTmRJLXu6rcsCZTMua2feVeHaCFgK+r2hkxUI36u6dL8qV44uPW/GokTq/3hkeoWGxypml3Mz6D73ks8gk2IBwHvjoe6X83ZUUzmTeA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VbWLXvcsEkRND6xW798ZustdbLZAGot0X4LpEMz2vNI=;
- b=xY6ijk6zGBaBy8TRwXLyqwVNdu2g3Anz6GohMehwql/bTOjbdTAR7DXTd3YFg35Z7JSAn6OBvuLTNTvBytlEEDYRitlITYl1wt0KhM/snxpYscITyEoY+8Oj+OEPBgWK+m2G3MvX2mJ9DwQkX4+GU1R18R8jFrd2tYLlRKzmEck=
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
- by MWHPR1101MB2109.namprd11.prod.outlook.com (2603:10b6:301:53::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20; Tue, 24 Nov
- 2020 16:21:04 +0000
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::7510:71a5:3cfe:ab94]) by MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::7510:71a5:3cfe:ab94%8]) with mapi id 15.20.3589.030; Tue, 24 Nov 2020
- 16:21:04 +0000
-From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Daniel Vetter <daniel@ffwll.ch>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "Vetter, Daniel" <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Subject: RE: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
-Thread-Topic: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
-Thread-Index: AQHWwb+RTBTJqBZYLEWXdlNPeqTq1qnWAtcAgAFjXQCAAAVwAIAAC2nQ
-Date:   Tue, 24 Nov 2020 16:21:04 +0000
-Message-ID: <MW3PR11MB45557126CBD10A3A8798F94CE5FB0@MW3PR11MB4555.namprd11.prod.outlook.com>
-References: <1606153984-104583-1-git-send-email-jianxin.xiong@intel.com>
- <1606153984-104583-4-git-send-email-jianxin.xiong@intel.com>
- <20201123180504.GA244516@ziepe.ca>
- <20201124151658.GT401619@phenom.ffwll.local> <20201124153626.GG5487@ziepe.ca>
-In-Reply-To: <20201124153626.GG5487@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: ziepe.ca; dkim=none (message not signed)
- header.d=none;ziepe.ca; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [73.53.14.45]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f04cbdcc-6218-439c-8703-08d89094f101
-x-ms-traffictypediagnostic: MWHPR1101MB2109:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR1101MB2109F94654A374256344F1FAE5FB0@MWHPR1101MB2109.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1169;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: yuj2BT5lnvFMKcwVRZ4JG6Xb2s7XVvcdMBTvSedmBevEdFEisECT/cDg3lQjdias60YDo62gFngfMmkujv5cuvm43E85B9HIR/3ZFfl281+gcJZ6/snJHDzvVy9qTpy8vtO6E04fiQeMk5pU4VbnNIDQAmiyqB/baYR2/Xo7+FCRV72VMHmC7CaPFYREn/2KTLCgr0kdkVA9BQILq3uwnuklodmRTMJrUjEE3lm8OXeQJW0mKLO/lhtrWknDN1EpX64zZ9it1sI4nb+lnbZW0/dnT/N3u58mN1psNU0SON1Kd/q5mZBuNckzcFdIOhBgmMysRIUVRtHtIg7q6rmoBw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(376002)(396003)(346002)(5660300002)(76116006)(66946007)(53546011)(6506007)(83380400001)(7696005)(2906002)(33656002)(54906003)(26005)(186003)(66556008)(66446008)(66476007)(64756008)(71200400001)(110136005)(52536014)(478600001)(4326008)(86362001)(316002)(55016002)(8676002)(8936002)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?90URRPZGYiU19y87rE5Lz4vVlJmWOVUzMId3jik8f+8xZklfmCyqsaPv7n0K?=
- =?us-ascii?Q?bVcaev+SdCfxE3LHhIR4XaYfiMRUsHipAZTjO86MqKglQJTS5IAl6DjOWXkm?=
- =?us-ascii?Q?u0eItNmfK+3GsHLaL/GhSN6arP8UJrlaCfjeUKBW6VedR2xyqoiY2h3r4JZC?=
- =?us-ascii?Q?beKADVSvORpUTIhKc15NsZqDWWYn/UNYhNaVXxS7MpjAhhtNIkZYOJNMOen4?=
- =?us-ascii?Q?iTahve3bnZz5yEH9z8keOh4Nidm0O34SCUj2DVZbt3+NqyV6mzcO11qFOphV?=
- =?us-ascii?Q?QxkM9Xj2wmbZS77feFCT62Tghg6UKJbk4XX9z9x6l5CKeiQYqWyUdbiHNzdc?=
- =?us-ascii?Q?C9SuY1Gmyd7ApLi9phZaWSJ8KRMpFb7tr8Y4QzlMircgDBAsOCUUd/M8WmYb?=
- =?us-ascii?Q?4YS9rWIQzTebRBYKgoKsz9ZMVSEc6URLTkB76L4lzMmHWd7klj/nSkka1C8J?=
- =?us-ascii?Q?GL/2nlvITksuW3VgFnDUUWY8R/9VijJ1Ev7lTO+Am3tF5e5RKyuKAnw9iR5y?=
- =?us-ascii?Q?9Mx2B3R3M8PjqMKX0PTzT/WcZuQQRCheBHI7uD+JrtlbUjWIsioND6XedoTO?=
- =?us-ascii?Q?dX7FEtyuAG2LcO/YoKJDn/yfuBfujWE7NC3c+a0euTKYQDz5WeCS/kCorMY/?=
- =?us-ascii?Q?t7YkeXofhdMVTk3gIOyrGHPlMXiWHlicqMhYeLErJQxIoyvOr+Aziw1ZqEbK?=
- =?us-ascii?Q?HcsW823uJthA/PAIhk41Nmt9Cg2on2rJV7WKnueOMfHXW3rVBnOmuuY/Ybob?=
- =?us-ascii?Q?la9C4v9aVTMKFq5PTzvqX/MU20koKNtKlQFNc18/t/k5k0eh1n1Ya3yqAjuD?=
- =?us-ascii?Q?2iPpVzK6Tksj/NlB7QNt5UuHuObQA4OACrES4w5cVsvWD9DWpI7q6ucUE14d?=
- =?us-ascii?Q?0YSiHXSqKjqQ55WZSh0VNoMy1edA4vUEI73i+vEeFqLfGQeOKkGb03tHutUx?=
- =?us-ascii?Q?/muMzsZDEg3l68jaiCwdSpg2ONwysNr+WqOsnF2s3uI=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1731477AbgKXQ63 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Nov 2020 11:58:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728997AbgKXQ63 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Nov 2020 11:58:29 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA08C0613D6
+        for <linux-rdma@vger.kernel.org>; Tue, 24 Nov 2020 08:58:29 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id m65so16522297qte.11
+        for <linux-rdma@vger.kernel.org>; Tue, 24 Nov 2020 08:58:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fddjU/4HSPzFNEnV0vUK3Hg4ZN54TRVTD2cIUhZFQhU=;
+        b=JAvv/k0v1mSyKhCcZhARJ9j8RUdYDClFyAAGOLydMVq2omVpjCKc7Ce5/fO98Efz4p
+         gzQaPGxNFu140IBHSpaA5+yD6/FR0h2gQxOQaDhzjSmQKNM6L9dnNKilLffe4gi7KeGx
+         cb5Wsmkt+144jaIi85mCp3froyaAgcK/UPTQYcNSpZW7sRuu6F/yfYBAzJVEDweHsEE+
+         yCZnHyTYj/rKvoefExTO/EX68WufJJNEJrjC5x5hnfR15KdrlNwX4EjBlABnzgWpu1lC
+         R+yMqCRcml8kqmBps5n9L9JpQPsjk/y1vva1s8w+Rm1nLMZNDHNJC/lcfLGmh69x1c7r
+         se+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fddjU/4HSPzFNEnV0vUK3Hg4ZN54TRVTD2cIUhZFQhU=;
+        b=dwHRDCS/Pwovpawzhr8gSDAav8Jv7qTgaK64ZrGi7pOpmb1jNF59xrDaDJ0+L9e8R/
+         RG99igtALvqGUT7zY95mGrF6Xrl2ti7+Qhe1L7f43bcIwu9A2UN0G6LnE1F+Lv6NVUwE
+         qqUnNaN0LXgBF0bKVpH/O68a0Q/EjDE6ERZHTtANhfWuNE+jKSOTAd1hUvWGQtl8gJcQ
+         3T6FWBTCwNaYtkT30gWMVogbuCw7exXUxy/YhUQahfBB0YLdvjzfPTTP3dIh6D/gHUJB
+         NMc8DcWyMuxzcIyu6eAThF6aV4RmBO9MXSCbFVM0pHo5Wxi1EP9cW2CBw3dJKNQLRotn
+         Yraw==
+X-Gm-Message-State: AOAM533mvA/FMgCtaH/UVOdBJ/GXJyb9g3Z/8pLgktE2VJl3OywlDbKk
+        uwhcjfgwmzuUDruj8CGotadpkg==
+X-Google-Smtp-Source: ABdhPJycp18ssHWseJIGbxiBsn4oarPMAEKiUWprW4blYpVq6N6aKiFYYMYXfNcPVs1y7tC9PPX1vA==
+X-Received: by 2002:ac8:41d4:: with SMTP id o20mr5082150qtm.313.1606237108320;
+        Tue, 24 Nov 2020 08:58:28 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id j19sm13460394qkk.119.2020.11.24.08.58.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2020 08:58:27 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1khbe6-000sKp-Ja; Tue, 24 Nov 2020 12:58:26 -0400
+Date:   Tue, 24 Nov 2020 12:58:26 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Shiraz Saleem <shiraz.saleem@intel.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org, stable@kernel.org,
+        Di Zhu <zhudi21@huawei.com>
+Subject: Re: [PATCH] RDMA/i40iw: Address an mmap handler exploit in i40iw
+Message-ID: <20201124165826.GI5487@ziepe.ca>
+References: <20201123225625.1556-1-shiraz.saleem@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f04cbdcc-6218-439c-8703-08d89094f101
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 16:21:04.4490
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9dOnY7tovNo796Iieln+qcKljuBu8YCIbLdOZ1UNdoDLrWNB+iCEWlt8PGeNiVhmn2uToP1q6/GyQTInFuGg+Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2109
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201123225625.1556-1-shiraz.saleem@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> -----Original Message-----
-> From: Jason Gunthorpe <jgg@ziepe.ca>
-> Sent: Tuesday, November 24, 2020 7:36 AM
-> To: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Xiong, Jianxin <jianxin.xiong@intel.com>; Leon Romanovsky <leon@kerne=
-l.org>; linux-rdma@vger.kernel.org; dri-
-> devel@lists.freedesktop.org; Doug Ledford <dledford@redhat.com>; Vetter, =
-Daniel <daniel.vetter@intel.com>; Christian Koenig
-> <christian.koenig@amd.com>
-> Subject: Re: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
->=20
-> On Tue, Nov 24, 2020 at 04:16:58PM +0100, Daniel Vetter wrote:
->=20
-> > Compute is the worst, because opencl is widely considered a mistake
-> > (maybe opencl 3 is better, but nvidia is stuck on 1.2). The actually
-> > used stuff is cuda (nvidia-only), rocm (amd-only) and now with intel
-> > also playing we have xe (intel-only).
->=20
-> > It's pretty glorious :-/
->=20
-> I enjoyed how the Intel version of CUDA is called "OneAPI" not "Third API=
-" ;)
->=20
-> Hopefuly xe compute won't leave a lot of half finished abandoned kernel c=
-ode like Xeon Phi did :(
->=20
-> > Also I think we discussed this already, but for actual p2p the intel
-> > patches aren't in upstream yet. We have some internally, but with very
-> > broken locking (in the process of getting fixed up, but it's taking tim=
-e).
->=20
-> Someone needs to say this test works on a real system with an unpatched u=
-pstream driver.
->=20
-> I thought AMD had the needed parts merged?
+On Mon, Nov 23, 2020 at 04:56:24PM -0600, Shiraz Saleem wrote:
+> i40iw_mmap manipulates the vma->vm_pgoff to differentiate a push page
+> mmap vs a doorbell mmap, and uses it to compute the pfn in remap_pfn_range
+> without any validation. This is vulnerable to an mmap exploit as
+> described in [1].
+> 
+> Push feature is disabled in the driver currently and therefore no push
+> mmaps are issued from user-space. The feature does not work as expected
+> in the x722 product. So remove it along with the VMA attribute
+> manipulations for it in i40iw_mmap.
+> 
+> Update i40iw_mmap to only allow DB user mmapings at offset = 0.
+> Check vm_pgoff for zero and if the mmaps are bound to a single page.
+> 
+> [1] https://lore.kernel.org/linux-rdma/20201119093523.7588-1-zhudi21@huawei.com/raw
+> 
+> Fixes: d37498417947 ("i40iw: add files for iwarp interface")
+> Cc: stable@kernel.org
+> Reported-by: Di Zhu <zhudi21@huawei.com>
+> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> ---
+>  drivers/infiniband/hw/i40iw/i40iw.h        |    1 -
+>  drivers/infiniband/hw/i40iw/i40iw_ctrl.c   |   52 +------------
+>  drivers/infiniband/hw/i40iw/i40iw_d.h      |   35 +++-----
+>  drivers/infiniband/hw/i40iw/i40iw_main.c   |    5 -
+>  drivers/infiniband/hw/i40iw/i40iw_status.h |    1 -
+>  drivers/infiniband/hw/i40iw/i40iw_type.h   |   18 ----
+>  drivers/infiniband/hw/i40iw/i40iw_uk.c     |   41 +--------
+>  drivers/infiniband/hw/i40iw/i40iw_user.h   |    8 --
+>  drivers/infiniband/hw/i40iw/i40iw_verbs.c  |  123 ++--------------------------
+>  9 files changed, 26 insertions(+), 258 deletions(-)
 
-Yes, I have tested these with AMD GPU.
+This is great, but it is too big for a single security patch stable
+back port. Please split it to two patches
 
->=20
-> Jason
+> diff --git a/drivers/infiniband/hw/i40iw/i40iw_main.c b/drivers/infiniband/hw/i40iw/i40iw_main.c
+> index 2408b27..584932d 100644
+> --- a/drivers/infiniband/hw/i40iw/i40iw_main.c
+> +++ b/drivers/infiniband/hw/i40iw/i40iw_main.c
+> @@ -54,10 +54,6 @@
+>  #define DRV_VERSION	__stringify(DRV_VERSION_MAJOR) "."		\
+>  	__stringify(DRV_VERSION_MINOR) "." __stringify(DRV_VERSION_BUILD)
+>  
+> -static int push_mode;
+> -module_param(push_mode, int, 0644);
+> -MODULE_PARM_DESC(push_mode, "Low latency mode: 0=disabled (default), 1=enabled)");
+
+The first should delete this module param (so push_mode == 0), and
+then this:
+
+> diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> index 581ecba..26dac09 100644
+> --- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> +++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> @@ -167,111 +167,18 @@ static void i40iw_dealloc_ucontext(struct ib_ucontext *context)
+>   */
+>  static int i40iw_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
+>  {
+> -	struct i40iw_ucontext *ucontext;
+> -	u64 db_addr_offset, push_offset, pfn;
+> -
+> -	ucontext = to_ucontext(context);
+> -	if (ucontext->iwdev->sc_dev.is_pf) {
+> -		db_addr_offset = I40IW_DB_ADDR_OFFSET;
+> -		push_offset = I40IW_PUSH_OFFSET;
+> -		if (vma->vm_pgoff)
+> -			vma->vm_pgoff += I40IW_PF_FIRST_PUSH_PAGE_INDEX - 1;
+> -	} else {
+> -		db_addr_offset = I40IW_VF_DB_ADDR_OFFSET;
+> -		push_offset = I40IW_VF_PUSH_OFFSET;
+> -		if (vma->vm_pgoff)
+> -			vma->vm_pgoff += I40IW_VF_FIRST_PUSH_PAGE_INDEX - 1;
+> -	}
+> +	struct i40iw_ucontext *ucontext = to_ucontext(context);
+> +	u64 dbaddr_pgoff, pfn;
+>  
+> -	vma->vm_pgoff += db_addr_offset >> PAGE_SHIFT;
+> -
+> -	if (vma->vm_pgoff == (db_addr_offset >> PAGE_SHIFT)) {
+> -		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+> -	} else {
+> -		if ((vma->vm_pgoff - (push_offset >> PAGE_SHIFT)) % 2)
+> -			vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+> -		else
+> -			vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
+> -	}
+> +	if (vma->vm_pgoff || vma->vm_end - vma->vm_start != PAGE_SIZE)
+> +		return -EINVAL;
+>  
+> -	pfn = vma->vm_pgoff +
+> -	      (pci_resource_start(ucontext->iwdev->ldev->pcidev, 0) >>
+> -	       PAGE_SHIFT);
+> +	dbaddr_pgoff = I40IW_DB_ADDR_OFFSET >> PAGE_SHIFT;
+> +	pfn = dbaddr_pgoff + (pci_resource_start(ucontext->iwdev->ldev->pcidev, 0)
+> +			      >> PAGE_SHIFT);
+>  
+>  	return rdma_user_mmap_io(context, vma, pfn, PAGE_SIZE,
+> -				 vma->vm_page_prot, NULL);
+> -}
+
+Which should fix the bug and is a reasonable security backport
+
+I would also write the math as 
+
+        dbaddr = pci_resource_start(ucontext->iwdev->ldev->pcidev, 0) + I40IW_DB_ADDR_OFFSET
+ 	return rdma_user_mmap_io(context, vma, dbaddr >> PAGE_SHIFT, PAGE_SIZE,
+				 vma->vm_page_prot, NULL);
+
+Which is easier to understand
+
+Then the 2nd patch is all the purging
+
+Jason
