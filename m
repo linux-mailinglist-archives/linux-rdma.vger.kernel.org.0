@@ -2,156 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E792C4818
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 20:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB922C4845
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 20:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgKYTPv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Nov 2020 14:15:51 -0500
-Received: from mail-bn7nam10on2118.outbound.protection.outlook.com ([40.107.92.118]:16993
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725989AbgKYTPv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:15:51 -0500
+        id S1728285AbgKYT1M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Nov 2020 14:27:12 -0500
+Received: from mga17.intel.com ([192.55.52.151]:8891 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727848AbgKYT1L (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 25 Nov 2020 14:27:11 -0500
+IronPort-SDR: JCrpNHuu9P0CZIf55ah0x30A/pWHYQghoQFACZIv9BaNIptjSoFKKU9APahUHOap8LOy3EEKVx
+ ENRt11Kd6rgw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="152025059"
+X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
+   d="scan'208";a="152025059"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 11:27:11 -0800
+IronPort-SDR: M+b2LmzxJOf2GU6Bpoh91aEtRf8ltfUKq152CET0wdA34zi5AdPoSRANimJnJs/DBIYu1uIGc+
+ ceY3rvaFHntA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
+   d="scan'208";a="365530639"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga002.fm.intel.com with ESMTP; 25 Nov 2020 11:27:11 -0800
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 25 Nov 2020 11:27:10 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 25 Nov 2020 11:27:10 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.103)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Wed, 25 Nov 2020 11:27:10 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aw1ILoJRP56MNw6cGX194RTD/eBobMHAfci7L72mo+MXulOKORK96sQ86oHuexY3TaV7bjwhaoPLiGiWsEQCVVsQ05p64BTn1kl2W35XIPGz+GLEadXc9wLqDGadh/Opyr83OTGQmRQh8jmQBn0kLoUp3iMH0d/tEbY0nwote27Rv3IlKNjAwBjjXsjin+kIctsBAdd05svjKpKkbDP5GFhGEMh6MG1tSaKT5H+sRfbeltnTAgqPZVzKFvlC8dLMDUaynrcBGRnAGFXiv5mx40yzbEw9yekyZXWbwOCl3B1yVBgwmTTOt93RyXZsb1D2baVPGwqe96amS+8vxGrM8A==
+ b=ftRiyu9V2kyCq/g60b8RP+hI2i2P7DjfxR4Ccco5uGVttf1J107Lf3+2t2r5hPTaSLLJt0BO8TVOGz12CG4jMZpQQzOYgKO/61QXeGAwWAnDbZ6cHTCJX9tXwbtqO2V9XVH/H/l72khAOkNO3ZK/bDV0F/hYkcF7RqGv/mJ4HzJJD6AvSUdk/DJD1dB3KrSNUEU8g2rHHslfasyIrMCGBvy9izLYlRAF3MJzDU5fr9rbeINDD9nZekaXIr8WiLuGA+2kJpnAWvdmBb4nwZLyw2KUI+YI51iavnmaGJ7gp8RWX/iTUrzuqmvw+jM8WgPcpbOlYHku4EUrv/S29Nq2Fg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lBrBH6LcpFMd1F6plQ6dSCXqKrkmSHB8aorCiN2xXgg=;
- b=g0oZfck0iu865PYjMHT+/w9cgnHFABWVK+9r932mfQTHuXYPQKjezeNHU2aFop8hJoqPZhy17cvjUDUBj9msdJTE9X5Z365z6pizwk6eDnJ/wPnWOcgmZRgYcCb22h2KvQA7ERNmCffty0OjCbvB9xvowSwesuV+QWfAsVmQG4fsgPwno3OUfmYjoxb0MK6ln798x7J7PO1vwWaaraxpS1neMq3iSIfKUMoJlJ/C3NCwkXN7Qb7Eq4GvDvuKsl7SLOnoMnMtv6Vk+zgfwS5MaU6zxv4FHlU8RthKq5NaiHP3OEjUdkLi1MbAokyDvo/ZzlUOKxvLjK53t0ikg+Tcbg==
+ bh=6P7JnzIkmW+9Ex1vWhoSVZ/46d+7W0uSMcPylvO+lbM=;
+ b=T9OLT0lCgmBzK2at+JHWm0P8QoQhHtziaxFsMjRwpfLAqIO17e2zQtyq8Aa/HVKEdG/zLIL2kYm0c0n09pneZHAyOGfPyQC5w4Y5Sz2pFqFlTbl1+3xwesHU2M925ADU6CQiZinVD544ks1uYzQEClOyFw/IqF9PYHeUtnWUxaMCSalwDjzCQ/rDX4plWdMnvkXBQ6IjcKTY7RRJ0g2ItEQqTDw98NNhYfO0IBiRabDPs/EI+bDAjfRFrVBv/VY9V1oVo8rPk2Tg6Za6Kin6GYgSMd1R7uH9zpVfwXsNdW2t5AphTKdcMyuZSChUdcum8hTJNaI3MwxVutP04Nmcfg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=CornelisNetworks.onmicrosoft.com;
- s=selector1-CornelisNetworks-onmicrosoft-com;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lBrBH6LcpFMd1F6plQ6dSCXqKrkmSHB8aorCiN2xXgg=;
- b=J8Ufrsk8L6Md/y55hMSGvwTYdykWqedcor5Gko2xmVedKLQWblhpjmLKPGb0sfzmORi+Al/7JgaFDsTon1xwr6z3Yy8OcaVugZQJFdDNM887E+yUj0QYfZqPg/6Z6NvsGHJwRZPbivwJBEp9dkcPCz5zChd1v/p2TH07T/88I2XVmGS0nYFgGyl5PUtds+VUZVpZAA9/IxEZOF4IIHY5MK12ngAKUubOcCZb9xXt+43NMuBfSuNhaIkeNRWzF7FQh/riFCd5sk9Mh1vqXPKXsbf6Ovsx3OaTRsqiKvHD9qh5G/8KfNNXj/ThfjTqNt0o4TETCuQ4/ECBoTVrkKIk1A==
-Authentication-Results: cornelisnetworks.com; dkim=none (message not signed)
- header.d=none;cornelisnetworks.com; dmarc=none action=none
- header.from=cornelisnetworks.com;
-Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
- PH0PR01MB6200.prod.exchangelabs.com (2603:10b6:510:9::5) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3611.21; Wed, 25 Nov 2020 19:15:46 +0000
-Received: from PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::8b2:9c60:5983:2896]) by PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::8b2:9c60:5983:2896%4]) with mapi id 15.20.3611.022; Wed, 25 Nov 2020
- 19:15:46 +0000
-Subject: Re: [PATCH for-rc v4] IB/hfi1: Ensure correct mm is used at all times
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        stable@vger.kernel.org, linux-mm@kvack.org,
-        Ira Weiny <ira.weiny@intel.com>
-References: <20201123165024.158913.71029.stgit@awfm-01.aw.intel.com>
- <20201125150224.GO5487@ziepe.ca>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Message-ID: <cc07055a-b221-359f-7f2c-052a81007499@cornelisnetworks.com>
-Date:   Wed, 25 Nov 2020 14:15:42 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-In-Reply-To: <20201125150224.GO5487@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ bh=6P7JnzIkmW+9Ex1vWhoSVZ/46d+7W0uSMcPylvO+lbM=;
+ b=BEx9lAMIR/J1zSO5dI/J7VY9hKfmvYSkVR9AZJhw0LDfkR0Guk0hic2qI+eQx+2CahZcL0BhA2WrJFoiVMFP8SQzkpjM9vhAfe4NGcS9G9ClBHGMN4EEgehdCua9d+099wuAk2UDgHi8AfPh+4jQwDyurrb6cwfvIoglVKZr1G8=
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
+ by MW3PR11MB4602.namprd11.prod.outlook.com (2603:10b6:303:52::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20; Wed, 25 Nov
+ 2020 19:27:07 +0000
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::7510:71a5:3cfe:ab94]) by MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::7510:71a5:3cfe:ab94%8]) with mapi id 15.20.3589.030; Wed, 25 Nov 2020
+ 19:27:07 +0000
+From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Daniel Vetter <daniel@ffwll.ch>
+CC:     Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>,
+        Christian Koenig <christian.koenig@amd.com>
+Subject: RE: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
+Thread-Topic: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
+Thread-Index: AQHWwb+RTBTJqBZYLEWXdlNPeqTq1qnWAtcAgAFjXQCAADV8kIABEnOAgAAXigCAAHeKoA==
+Date:   Wed, 25 Nov 2020 19:27:07 +0000
+Message-ID: <MW3PR11MB4555A91A6CF5D23AD538EF34E5FA0@MW3PR11MB4555.namprd11.prod.outlook.com>
+References: <1606153984-104583-1-git-send-email-jianxin.xiong@intel.com>
+ <1606153984-104583-4-git-send-email-jianxin.xiong@intel.com>
+ <20201123180504.GA244516@ziepe.ca>
+ <20201124151658.GT401619@phenom.ffwll.local>
+ <MW3PR11MB45554AAEB1C370A78EB87816E5FB0@MW3PR11MB4555.namprd11.prod.outlook.com>
+ <20201125105041.GX401619@phenom.ffwll.local> <20201125121456.GM5487@ziepe.ca>
+In-Reply-To: <20201125121456.GM5487@ziepe.ca>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.55.54.40]
-X-ClientProxiedBy: SJ0PR05CA0036.namprd05.prod.outlook.com
- (2603:10b6:a03:33f::11) To PH0PR01MB6439.prod.exchangelabs.com
- (2603:10b6:510:d::22)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: ziepe.ca; dkim=none (message not signed)
+ header.d=none;ziepe.ca; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [73.53.14.45]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e88e6a31-0aa2-453b-1547-08d8917818cc
+x-ms-traffictypediagnostic: MW3PR11MB4602:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW3PR11MB46020C9AC5099C4D7842FCD8E5FA0@MW3PR11MB4602.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:248;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DqEcRp2YIigrrjKnKtARxPWRgq1VW+MXiLziogBtNOuiypst+xpaPT6P+7YJkf02R7zPrBMDbjrBDdYrqgYDif+vOUvK8uZYhQcOpv6RSlsJSfcBBWsr6+1YYrPBDRVq3ksIIJpVt/0nuvhi3eKFasYFWuhu3MQQMuDsH6nyRUFgdZ2/FOLKpzBCtmeykRplNwe6nsM8Y+9mWSToFwqHu8hmywEPNHkkVuHWc8maT1BHWWSywiK5GnqJyfNWwNlDfAZZFj7YxV0mNjiA9tuGoBbhrQRUbkysT21HVEshv+OY4klsE+iPWCLNMsZORSDfdk2RCkQwCvY2ejJtiYrZ3A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(366004)(346002)(136003)(396003)(9686003)(186003)(71200400001)(33656002)(66946007)(8676002)(52536014)(316002)(55016002)(76116006)(66446008)(66476007)(83380400001)(66556008)(8936002)(64756008)(2906002)(478600001)(86362001)(7696005)(6506007)(110136005)(4326008)(54906003)(53546011)(26005)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?/8CqosiMjr/MUFDLP81YGJ9fUB8CC7wwHMKQ3lcRcSdsgYtwYQ+cqH02R7ds?=
+ =?us-ascii?Q?ufr7SLLmgNvjNqhtgUUFI/VsEsq4FbnWpHb4Pi4fgeTpoClSn/x+70TuFOOO?=
+ =?us-ascii?Q?EQKNHNlCIR5Zz307SRKPNNjlgiH4bBa1Fg+AsE8/6IV1y2wChi1IJYZli5Hk?=
+ =?us-ascii?Q?Sox7n9kCXtPiGv5KuNmo74JH1OSTWh8dTZJw8hieBVQrIGoH2au4adEqcxg2?=
+ =?us-ascii?Q?fae7AVojmZZiaay71I7M4yjxQf4Hrp2XsRvBWUVXxcexY2xLSpMAxtDIXKlw?=
+ =?us-ascii?Q?0t12Ban1UIhfb4pEzgp3hSXhHjkDLy/PeW2r45wCySfFJ+p54RhWRrPXljk1?=
+ =?us-ascii?Q?jcAIoslWQe8xUrG/wG10UN2uKgXEqByt1ps+qmCkiAcyt+GHCsLSCbAi8uOE?=
+ =?us-ascii?Q?XDNOGg6MCyW+0zI2RBs7gFJGbEH2K0bWmZzXnu8Ei68GBk5MpLObG3QVKtME?=
+ =?us-ascii?Q?3Rh3Bom9vWU/UdwMRqG4rkFoAaxF7iAKAVYlMyyF//cZ/BhkjOQnVj+4rysi?=
+ =?us-ascii?Q?pM5nsLO25+uNHDiTSHlBhqzx5Z4SpVQjc5SK2IYTh4tLVzF8WhXOFg4ow3wT?=
+ =?us-ascii?Q?ZXuWi330gD7VZFHjrBuWIBN6Ba3rPHhs5DUOwLrb22/Mzadgzz/01avy3Hsr?=
+ =?us-ascii?Q?jIW1KkkQ+k7iOYux3A6Cl5xJ9/VNxKeGCrnJTQaXmXInsENlE4PJpvNM73fd?=
+ =?us-ascii?Q?iqKvurJMoBtU0/pdxcDuqAOGHAas3s1pKymIW75twz+EZen+FPI2b0WBuxcV?=
+ =?us-ascii?Q?cJuqnJWrFiW+u7EaQjCjmFBDSPS/A/4KV35XYXL7GtdGLKmOnlbJACmOXkw8?=
+ =?us-ascii?Q?93DGBBgR5BvBicy+H1IKR+IrEdf1GeE0ARJGJDWNt9YcOjTzOo1uiuHKFoFe?=
+ =?us-ascii?Q?9b1nUHCTNicv4m95XgSyq1j9tZa+H14Ad80aj9Ys4mcYn7M+EE3aW7jg8eHX?=
+ =?us-ascii?Q?amt18fY7JBjS0JuFTrl/RQimMyQY0UV/AqRTk8mZwlM=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.55.54.40] (192.55.54.40) by SJ0PR05CA0036.namprd05.prod.outlook.com (2603:10b6:a03:33f::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.6 via Frontend Transport; Wed, 25 Nov 2020 19:15:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a6a37739-a8ef-4717-584d-08d8917682f4
-X-MS-TrafficTypeDiagnostic: PH0PR01MB6200:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR01MB6200C5824F031002EF908EE5F4FA0@PH0PR01MB6200.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: v4GIxY2SgjbDDzYVnXkPaL8JwSK0RFDbzRLw3lkghQxXGkjX4d/GN/6LegdNwdsRnss5kmf6PMJfIaT0HLKa1oG6QR1wNXoao/sbKeS2lB51FekdJsfWTXRmbhqc+SJXqBa9AmxcKStB7e87D2aNws0RT9Apkhqt2Ex8LJp5od9S40BvvFOauBBRGOddNzMBH3zd//VixAKVOpcAOLAkSnVte/kRv8Muu38nWqT86jg5W3ZyjCLcENUcIvFhfWHdywKFOXdSIDNedrYrvDJe9qKEhGkps/MxrOtEAjDPQ+G8wbKm36z4F87xzpIIj+9Oele6DUvIjL6IA/nWxIk8gtcMks5V3y4V7efy3hG6vYPm9t4Hn9dhzwS8JPFO3PUN/03LSGbibt7f5zVJQjeOavAR7gyJptFDiYHzaSskSXU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(376002)(366004)(39830400003)(66476007)(66556008)(316002)(66946007)(4326008)(31686004)(26005)(8936002)(16526019)(6486002)(52116002)(8676002)(53546011)(54906003)(2906002)(44832011)(5660300002)(6916009)(186003)(2616005)(83380400001)(956004)(478600001)(86362001)(36756003)(16576012)(6706004)(31696002)(3940600001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VHgwOHVtcUhpcjJmNHJDNjdKSkxhVDNSaDRSSEh2QmkzczliQ2RuSWFvd0dW?=
- =?utf-8?B?MlV4T3FQYm8wVXhLbUV5SVpqRW9Sa2hqYW1uK21zVGl5UzVFeEFZQzVhbzlE?=
- =?utf-8?B?RGxNOVFnNEtRMzk4MVc0ZlhLV01sdmE1UW9SbHJRWWgyTjB2QTR5NUJGYnhn?=
- =?utf-8?B?S0lCbSt2enZlcWFTTzc0bVY5UlVKVnRYUTk4TGJSSytBNnI0TzJac0tQL0Zu?=
- =?utf-8?B?Qy9PZHlDeUxEVXpzSXNnMDlCcjlrWmQyWHRSZEhuYTFLZmxma2REYTBUTjlS?=
- =?utf-8?B?WEs2citpT2ZySFBId1JMK01FTzUwbTdEaFVrYnpCVjY0VzMybHdWRE1pNWUv?=
- =?utf-8?B?d2xhUDlwUkpPaXMzYWFLc0lrU0lvSkV1RDNnejhJSnBnUVpPLy9IMllHRXYz?=
- =?utf-8?B?ckFoQmtFVFN4alZNd1ZodkJqMS9nWnRUS2prTjFzY3BpejdGdHFqTHBtZnhU?=
- =?utf-8?B?emJEOVRsZjVZa1ZJZUpvcEhyeXo1UFVJQkZUYWVoVTlxUnVrOUpSb2tydDJs?=
- =?utf-8?B?N2hTMWxROVdzODBySk9SZ28waWtPTnZkRjFGUUtRSnU5ZlRlVkJQdUVwbWJD?=
- =?utf-8?B?Q0g5ZGFHcGxJY2I1RjFacUwwVGlpaCtqdTk0dVdqYVlmdllUVk9VTFNOcUlh?=
- =?utf-8?B?bmg1ZmwvQzRUL1h3WnYrTGJLeVNkd0ZRVzVDSElhOE1zY0JQQWU5dmM1aFYw?=
- =?utf-8?B?VkNDNEwxUndwK211V2xNZWFQT0RwbjJ5aEJuQnYwSTBCaVVXY2F6UmFEY1Z2?=
- =?utf-8?B?b0NOVU5XZFJzNDF2WHB3OHNLT3JXRTRMVWlkSlRTZkt3UUlrRDNvY1BPcllH?=
- =?utf-8?B?UHBGV2dFQ2RDNkpKYVY4bGtGODcrN2JwTUlWNGhEa01JdXNGWTZRcS9JZzFR?=
- =?utf-8?B?K3VsN1Y0RnB3djZ2TjhzcDJYaWtaZUI0S0VGYzU3LzFUdHp5THhidFpuK1lK?=
- =?utf-8?B?SHVqOWZ4aWFiVU1sRnQxVVUzNW45TG5ITHd5VDlsZGJ3bHN4Vy9xcGJTQ01J?=
- =?utf-8?B?aTNOcnpwMU1xQTI2L0lQZ2hKWk9xYThkM0ljY25YWU10MDljOWw4cnpUVFNh?=
- =?utf-8?B?TTdiQXNkM1pBVjZlV2RDQWNyeWR5MnRmOUVJemtVdzVKaEZ1cGxWSTFxYm1v?=
- =?utf-8?B?WFV6dEE1Rm4rbWtjTXJyYjA4d1RZdXdnSjVZcUdjM3ltYy9QaTYzUTNJUWo0?=
- =?utf-8?B?MHZINFRyMi8yL1FjT3IzQkJjVDUrNnMrL3h1K1h3MXkrei9tOVZVbHBHWXJ4?=
- =?utf-8?B?dXZDaWxrUlNpc2NENUNzOFBuUWpCYm83WmNaWmhOcVpXSDZKNGpaMTloRXg3?=
- =?utf-8?Q?NJKN6F6I5rKxLkwrX8u3oK21lqWtDv4MG8?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a6a37739-a8ef-4717-584d-08d8917682f4
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2020 19:15:46.3439
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e88e6a31-0aa2-453b-1547-08d8917818cc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2020 19:27:07.0787
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: geecfXP1SQ9tqeh4l5nJM1Uxr4zLHOOgp2m9Wtte+AMszflKJgquT3U7l7f1BiqkAHmxnoKAV0O9Ho74BKzUA4af1HuCsFrSqrIg1IdxDJvrpvCQBCeg2o5sdBUwkp/n
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6200
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MXQzJHYVBP3j4MyFWiBUIaP/3RNTc2PM15yEyeVdir6FPkgJy9yrX6AYLMe5XBCcw6VemrfHfTdTzRFGK3zvXA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4602
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/25/2020 10:02 AM, Jason Gunthorpe wrote:
-> On Mon, Nov 23, 2020 at 11:50:24AM -0500, Dennis Dalessandro wrote:
->> @@ -133,8 +121,16 @@ void hfi1_mmu_rb_unregister(struct mmu_rb_handler *handler)
->>   	unsigned long flags;
->>   	struct list_head del_list;
->>   
->> +	/*
->> +	 * do_exit() calls exit_mm() before exit_files() which would call close
->> +	 * and end up in here. If there is no mm, then its a kernel thread and
->> +	 * we need to let it continue the removal.
->> +	 */
->> +	if (current->mm && (handler->mn.mm != current->mm))
->> +		return;
->> +
->>   	/* Unregister first so we don't get any more notifications. */
->> -	mmu_notifier_unregister(&handler->mn, handler->mm);
->> +	mmu_notifier_unregister(&handler->mn, handler->mn.mm);
-> 
-> This logic cannot be right.. The only caller does:
-> 
-> 		if (pq->handler)
-> 			hfi1_mmu_rb_unregister(pq->handler);
-> [..]
-> 		kfree(pq);
-> 
-> So this is leaking the mmu_notifier registration if the user manages
-> to trigger hfi1_user_sdma_free_queues() from another process.
-> 
-> Since hfi1_user_sdma_free_queues() is called from close() it doesn't
-> look OK.
-> 
-> When the object that creates the notifier is destroyed the notifier
-> should be deleted unconditionally.
-> 
-> Only accesses to a VA should be qualified to ensure that a notifier is
-> registered on current->mm before touching the VA.
+> -----Original Message-----
+> From: Jason Gunthorpe <jgg@ziepe.ca>
+> Sent: Wednesday, November 25, 2020 4:15 AM
+> To: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Xiong, Jianxin <jianxin.xiong@intel.com>; Leon Romanovsky <leon@kerne=
+l.org>; linux-rdma@vger.kernel.org; dri-
+> devel@lists.freedesktop.org; Doug Ledford <dledford@redhat.com>; Vetter, =
+Daniel <daniel.vetter@intel.com>; Christian Koenig
+> <christian.koenig@amd.com>
+> Subject: Re: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
+>=20
+> On Wed, Nov 25, 2020 at 11:50:41AM +0100, Daniel Vetter wrote:
+>=20
+> > Yeah imo makes sense. It's a bunch more code for you to make it work
+> > on
+> > i915 and amd, but it's not terrible. And avoids the dependencies, and
+> > also avoids the abuse of card* and dumb buffers. Plus not really more
+> > complex, you just need a table or something to match from the drm
+> > driver name to the driver-specific buffer create function. Everything
+> > else stays the same.
+>=20
+> If it is going to get more complicated please write it in C then. We have=
+n't done it yet, but you can link a C function through cython to the
+> python test script
+>=20
+> If you struggle here I can probably work out the build system bits, but i=
+t should not be too terrible
 
-Ah yes. I think this just all goes away then. The context init and pq 
-allocation is what triggers the registration, whenever we tear it down 
-it should do the de-registration. v5 coming up after running tests.
-
--Denny
-
+Thanks Daniel and Jason. I have started working in this direction. There sh=
+ould be no
+technical obstacle here.=20
