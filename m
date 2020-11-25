@@ -2,165 +2,220 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624B42C465A
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 18:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D44F2C4795
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 19:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732469AbgKYREd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Nov 2020 12:04:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731273AbgKYRE1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Nov 2020 12:04:27 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425FFC061A4F;
-        Wed, 25 Nov 2020 09:04:27 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id t33so377302ybd.0;
-        Wed, 25 Nov 2020 09:04:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U7yONu+GErpj3wVA3mUEvd1gZrZu1iMtuB4J5cc4iYs=;
-        b=bn+pL/HmrYW2tlvsO08UsmlB+e0sDsIo/gBe6lZBPy5Ml0r7IepVRmwL3Z1msCDTmB
-         4Fj8yYJnSSwKpycrMD6jc9mJYcLEOxyjBt+mj/swgeJwfcTqBWFSYbINT99XJh8MBLLG
-         BhdJX4URpdAlU1PS41QCV8cX0uycEbKi5uankHMmLYXfRheyb1dBSnJ2lYbkM9jPzYRg
-         +YL1Fiv4xli6A/G5oR00+c/fqffNKJdLOgNLmafCTxGe8sUqpvTjraMjrzXLQkd2Vyg7
-         6NJIAQ3gm8Ro9XvzXTxxo6aHXEqSB5bdv5UB5bHkEX37ZUG4NR8CwSl4aaovOFcf7q/J
-         MTKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U7yONu+GErpj3wVA3mUEvd1gZrZu1iMtuB4J5cc4iYs=;
-        b=Qpmh2GhI2WFs2qzp7Yn0fsgZaW8qKZK7HSbi+NCT0Jsrn+O5TTnjfpO9+adg1ygVEg
-         He2LQK3eRrPr4xLBwGPGrkPHhKCZ6HNIFcBvOjEKxDQ993YxbqYTay1DZxWZjjkBSFtp
-         M0hx760u7VARoHEO5ak8GSqWZwst+zM/sXvn6sP7otDrBGFamZd7Uz7ks+exNWem11Bz
-         TJSh2xoh5NFtzMA6eC7gJcnDdrPFmcPP0fZxsrUGVnTidS1mOEmaHSUvIO3cuqBKc9Xy
-         7ZuVaVdr95Q26yooscZkYKo0LK7NYIKVwJvh5HlNeqPgtTp5RkDNNpfGJhliNkKNrQ8k
-         0r7Q==
-X-Gm-Message-State: AOAM533+U9pipnNe4G+sfWPHuOqXn+o+A4RGhehQmfihcqsqUhS5WoXN
-        z5/CDlpRDEKMyKWOtPsW01afemh/jiL5NVUaOAk=
-X-Google-Smtp-Source: ABdhPJwRDTWwRnnt/vVfXeVU3lUNCXdaAf9CCrzUJdkBRbFdtXrCpJBbeymEiGhAam+E5oqqQjDTbAdkVQMGwErIDPw=
-X-Received: by 2002:a25:aac5:: with SMTP id t63mr6307293ybi.22.1606323866493;
- Wed, 25 Nov 2020 09:04:26 -0800 (PST)
+        id S1732932AbgKYS0k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Nov 2020 13:26:40 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:47976 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732581AbgKYS0k (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 25 Nov 2020 13:26:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1606328796;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=IcI9IoYkBxUh8Q5R7EtTknIMK4WNhR6NVIelDWopizU=;
+        b=GL+V3CNdap5isGksEdiP2fntB1DfGRfsGQvM2Lfi4VH2JmijeTLy5fPdphZcAaE/Dl9ycG
+        caBum0S6shTXha7oQdxqrZ8Jk0zRRaxylRHkbo/PwHMyUHGLMlOIWfNc2fQCAt34jUjKLu
+        lIa1o9/IwN1BXetWbjt2U/Hv2+wjqRw=
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur04lp2050.outbound.protection.outlook.com [104.47.13.50]) (Using
+ TLS) by relay.mimecast.com with ESMTP id de-mta-6-aVEc9vKjNQGLE6lEcbFXaQ-1;
+ Wed, 25 Nov 2020 19:26:34 +0100
+X-MC-Unique: aVEc9vKjNQGLE6lEcbFXaQ-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JqXntzbOFQlHDTdCWB0Kdt2K/0Bha8yW5cA9d6kJQxi4cxcURRaNwKokPoYh4K4h8idaZLF/iN94gM4hPeFq9Ax3zJTS0lWYMWR5mKF7NiQJPFCwEmZ/teNs371Hwal1d3PQOtL+wjSg6v3oO0GxPVSQDuZzLm/+HeZWMmp6OOkoei/ltcJob6N10oMhyBiP/AzC6dx9+fw1vbXyGQdccq/Ejx2we+ZdLyOZxVPoWe6Aat0JYhC8Eq3b3anGnIVj091n1bq8JVCdtcIn7RWEE6i3WT+ZGXHff2YcnVQJIQPFkcKNO4QYLd2pPdrPVHwmRYwZiV8vRTyqX53EgeNmAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IcI9IoYkBxUh8Q5R7EtTknIMK4WNhR6NVIelDWopizU=;
+ b=A65z+L3QqvXkOwv/vldCO2NqfuAKcVKi4Xhk1N0p8pU0mfo9jxEXboIrg0ftxEYe4tzMFHj190EtARl8E/GQbUYD98/qs1TqAJ850CuuLpuW4DnZDDFe3WIY25FJ9ShP/dQL88Xxc+3C/3JagL15D7pRIqrNYs79gmm+9B2Se+5bydIgENF9XgKOpEFmoM9j3twrsiHemMAPANn18lYTNBEn/kGdnhdcBJMukAWCJ52j8SLnKRM/1kM0YvI3TApNLQ0tbSQG/lBA7Cc0TKEs1Kyfvo6cOQFkf0hHDNu3Yzv9nTE2fT8JqTsSwr6rCPsEhc36nCYJu12IgTVp7Ti2Fw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: wdc.com; dkim=none (message not signed)
+ header.d=none;wdc.com; dmarc=none action=none header.from=suse.com;
+Received: from DB8PR04MB7193.eurprd04.prod.outlook.com (2603:10a6:10:121::16)
+ by DBBPR04MB7660.eurprd04.prod.outlook.com (2603:10a6:10:20f::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.23; Wed, 25 Nov
+ 2020 18:26:33 +0000
+Received: from DB8PR04MB7193.eurprd04.prod.outlook.com
+ ([fe80::2dbc:de81:6c7a:ac41]) by DB8PR04MB7193.eurprd04.prod.outlook.com
+ ([fe80::2dbc:de81:6c7a:ac41%7]) with mapi id 15.20.3611.020; Wed, 25 Nov 2020
+ 18:26:33 +0000
+From:   Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Subject: [PATCH] RDMA/srp: Fix support for unpopulated NUMA nodes
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Bart Van Assche <bart.vanassche@wdc.com>
+Message-ID: <6c9f38f6-de5b-d01f-f67a-52a518d2a26d@suse.com>
+Date:   Wed, 25 Nov 2020 19:26:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [86.200.199.24]
+X-ClientProxiedBy: PR0P264CA0106.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:19::22) To DB8PR04MB7193.eurprd04.prod.outlook.com
+ (2603:10a6:10:121::16)
 MIME-Version: 1.0
-References: <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
- <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
- <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
- <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
- <20201123130348.GA3119@embeddedor> <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
- <202011241327.BB28F12F6@keescook> <a841536fe65bb33f1c72ce2455a6eb47a0107565.camel@HansenPartnership.com>
- <CAKwvOdkGBn7nuWTAqrORMeN1G+w3YwBfCqqaRD2nwvoAXKi=Aw@mail.gmail.com> <20201125082405.1d8c23dc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201125082405.1d8c23dc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 25 Nov 2020 18:04:15 +0100
-Message-ID: <CANiq72=RuekXf1O6Fxrz2Eend0GtS6=E72P4T2=48SDqVcTChA@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for Clang
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Joe Perches <joe@perches.com>, alsa-devel@alsa-project.org,
-        linux-atm-general@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        linux-fbdev@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-ide@vger.kernel.org, dm-devel@redhat.com,
-        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
-        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
-        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-afs@lists.infradead.org,
-        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
-        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-scsi@vger.kernel.org,
-        linux-rdma@vger.kernel.org, oss-drivers@netronome.com,
-        bridge@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
-        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
-        intel-wired-lan@lists.osuosl.org,
-        linux-input <linux-input@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        tipc-discussion@lists.sourceforge.net,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org, selinux@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
-        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
-        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-hwmon@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
-        netfilter-devel@vger.kernel.org,
-        =?UTF-8?Q?open_list=3AHARDWARE_RANDOM_NUMBER_GENERATOR_CORE_=3Clinux=2Dcrypt?=
-         =?UTF-8?Q?o=40vger=2Ekernel=2Eorg=3E=2C_patches=40opensource=2Ecirrus=2Ecom=2C_linux=2Dint?=
-         =?UTF-8?Q?egrity=40vger=2Ekernel=2Eorg=2C_target=2Ddevel=40vger=2Ekernel=2Eorg=2C_linux=2D?=
-         =?UTF-8?Q?hardening=40vger=2Ekernel=2Eorg=2C_Jonathan_Cameron_=3CJonathan=2ECamero?=
-         =?UTF-8?Q?n=40huawei=2Ecom=3E=2C_Greg_KH?= 
-        <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.0.2.127] (86.200.199.24) by PR0P264CA0106.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:19::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Wed, 25 Nov 2020 18:26:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 973f6425-f9f5-4d97-581c-08d8916fa29e
+X-MS-TrafficTypeDiagnostic: DBBPR04MB7660:
+X-Microsoft-Antispam-PRVS: <DBBPR04MB7660B30DC16B0CF30070DA0EBFFA0@DBBPR04MB7660.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PTLRGRBFm4uww4mSeje/lQrbnfp2X/NM9Uj9oBLkMNS2sbx5QaiXYPMyrLHqEioMXk71Bq+tYJljE0zXb/UW7ADE+EEMfcgm1HRuB3Ob4u0TuuOoSU5e+UkNvfTs3CPEozaRjoynHCuIlTq+dmsGk+iWrtf5WocqzrHm5SRonuurvJERf2le4IbB91NIFA4Z0+Fb+vAbJvUthFuS9GQKcRHTWbrbrs4sh8SIh7kK7UJO7GrnlxJ1mA12BMNGljZd5VSaMWlcsslo+fBaOK6+JAl/pfPA64TxoJxYCqWLmHKf9BuWhL0XNhlWcQsFR0O64RD5WyEfoNutUxUVzvTrAiCyZH/1DxfjU8bmGzoeIo+5aq6YeLoFeFc1jZhfcUzV
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB7193.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(376002)(39860400002)(346002)(136003)(66476007)(66946007)(66556008)(26005)(31686004)(110136005)(186003)(6486002)(86362001)(36756003)(16526019)(2616005)(956004)(478600001)(2906002)(52116002)(83380400001)(316002)(31696002)(5660300002)(8676002)(6666004)(16576012)(8936002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?aVWl2qY2zgSjDZi6aMhuWw5cAE3E3zEJREDV4V+nGSNhKVbhdzOSOfto?=
+ =?Windows-1252?Q?V17Zg0tXiJOXrCTCLpFOUHFyP4qT4Fg8jufURwFOlzN17PlmUWPULUEk?=
+ =?Windows-1252?Q?3Ye/VuXhHygNKnu8YVfEfuyTC8/VLs15QEgTPhEDmmrW9woNQ40ofZTG?=
+ =?Windows-1252?Q?n+tjZwm6rmhU3J7r2X7VreOR7wZ9HWMHfx4dBEn1I5trhmmcTNPbtfmQ?=
+ =?Windows-1252?Q?dfgHc3scZu/qAMKiHt61abvT9nIbEWs8hZHK7jt/bNnCeBKoOXW+kHLQ?=
+ =?Windows-1252?Q?b81BICkcJJ2ZilGxo1OdQCi2ePZVhNDXeidbMc9YVQKKUPtaNYARD9d5?=
+ =?Windows-1252?Q?Notoqy44WJCe7R5v0n4szXsexslJnyBDlV5xqyUAaRLZe892N+c1diLa?=
+ =?Windows-1252?Q?MiDJEzeV2hddxRM1HekJ0jE1xhDzPjmFH4FzB4Hu1I55890qqz5znVMP?=
+ =?Windows-1252?Q?DEPl/1HvlZyXet/VfirQ0/w0kfFGoHMu4JWCo80vyn+DcAQWMqJeFC/X?=
+ =?Windows-1252?Q?u2BLMzJm/T/rlmONTs83+z71xnAwIXB8o4RhpqE5Kh567R2FdokIlrKI?=
+ =?Windows-1252?Q?ZhLirIVeccE5M+gvEPdF2+w6fmQzTNUaUwKIlnhBYZ9o1eDxh0SsOJ9M?=
+ =?Windows-1252?Q?t1izTg/5Y6DUeX6O3YfQFZL+9yXbvWifP3sx02aQm6RX7AHKkEQlq1Cn?=
+ =?Windows-1252?Q?SAsDVfNHpRnAropipbZIwkixfKh7me7mefxUI2GCN79GImPYDBN6/BLF?=
+ =?Windows-1252?Q?r5JGJz75YO571SyUaxaRoHm6795pP0qvQkucHFGHSvIZW167TdPyKMB9?=
+ =?Windows-1252?Q?Npug8TVDfnGf9sPAkhXPu2PYfapNFiheBix832yqANpwksbRc2vBUFFZ?=
+ =?Windows-1252?Q?u3X1T/tMjWfdMcHCQx80Qfy8qBsaiiPtKZJizs6tfKBwB/5T1h7+yqCA?=
+ =?Windows-1252?Q?qm2z4tsTqaJxdim95t+R8mV9AQrwgwXWnp4bl4NgdcAnM/mat8TRZjHG?=
+ =?Windows-1252?Q?In96vZ+xzm1tQCGAmL20jJAYivtcHMrRDNn4fOXjP33y4IzExn20O74S?=
+ =?Windows-1252?Q?oaHABIrfeb2tgz/V?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 973f6425-f9f5-4d97-581c-08d8916fa29e
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB7193.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2020 18:26:33.0052
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +u6FRNDlzTbrJWN1rKKU6y87/3XKQ0qOROsEaUqB4zm0gwTb0tZNDJeq9fkANZS6axOpwotPRwV5GwwGPpS26xboHd2UTF0XIdFouKv84Tg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7660
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 5:24 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> And just to spell it out,
->
-> case ENUM_VALUE1:
->         bla();
->         break;
-> case ENUM_VALUE2:
->         bla();
-> default:
->         break;
->
-> is a fairly idiomatic way of indicating that not all values of the enum
-> are expected to be handled by the switch statement.
+The current code computes a number of channels per SRP target and spread them
+equally across all online NUMA nodes.
+Each channel is then assigned a CPU within this node.
 
-It looks like a benign typo to me -- `ENUM_VALUE2` does not follow the
-same pattern like `ENUM_VALUE1`. To me, the presence of the `default`
-is what indicates (explicitly) that not everything is handled.
+However some NUMA nodes may not have any online CPU at the time.
+This causes the SRP connection to fail as some channels do not get connected.
 
-> Applying a real patch set and then getting a few follow ups the next day
-> for trivial coding things like fallthrough missing or static missing,
-> just because I didn't have the full range of compilers to check with
-> before applying makes me feel pretty shitty, like I'm not doing a good
-> job. YMMV.
+This patch solves the issue by using the number of populated NUMA nodes
+instead of the number of online ones. It also ensures that there cannot be
+more channels than online CPUs.
 
-The number of compilers, checkers, static analyzers, tests, etc. we
-use keeps going up. That, indeed, means maintainers will miss more
-things (unless maintainers do more work than before). But catching
-bugs before they happen is *not* a bad thing.
+Signed-off-by: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+---
+  drivers/infiniband/ulp/srp/ib_srp.c | 48 ++++++++++++++++++++++-------
+  1 file changed, 37 insertions(+), 11 deletions(-)
 
-Perhaps we could encourage more rebasing in -next (while still giving
-credit to bots and testers) to avoid having many fixing commits
-afterwards, but that is orthogonal.
+diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
+index d8fcd21ab472..e0c4e1ac05d2 100644
+--- a/drivers/infiniband/ulp/srp/ib_srp.c
++++ b/drivers/infiniband/ulp/srp/ib_srp.c
+@@ -3613,6 +3613,28 @@ static int srp_parse_options(struct net *net, const char *buf,
+  	return ret;
+  }
+  
++static int srp_get_num_populated_nodes(void)
++{
++	int num_populated_nodes = 0;
++	int node, cpu;
++
++	for_each_online_node(node) {
++		bool populated = false;
++		for_each_online_cpu(cpu) {
++			if (cpu_to_node(cpu) == node){
++				populated = true;
++				break;
++			}
++		}
++		if (populated) {
++			num_populated_nodes++;
++			break;
++		}
++	}
++
++	return num_populated_nodes;
++}
++
+  static ssize_t srp_create_target(struct device *dev,
+  				 struct device_attribute *attr,
+  				 const char *buf, size_t count)
+@@ -3624,7 +3646,7 @@ static ssize_t srp_create_target(struct device *dev,
+  	struct srp_rdma_ch *ch;
+  	struct srp_device *srp_dev = host->srp_dev;
+  	struct ib_device *ibdev = srp_dev->dev;
+-	int ret, node_idx, node, cpu, i;
++	int ret, node_idx, node, cpu, i, num_populated_nodes;
+  	unsigned int max_sectors_per_mr, mr_per_cmd = 0;
+  	bool multich = false;
+  	uint32_t max_iu_len;
+@@ -3749,13 +3771,16 @@ static ssize_t srp_create_target(struct device *dev,
+  		goto out;
+  
+  	ret = -ENOMEM;
++
++	num_populated_nodes = srp_get_num_populated_nodes();
++
+  	if (target->ch_count == 0)
+  		target->ch_count =
+-			max_t(unsigned int, num_online_nodes(),
+-			      min(ch_count ?:
+-					  min(4 * num_online_nodes(),
+-					      ibdev->num_comp_vectors),
+-				  num_online_cpus()));
++			min(ch_count ?:
++				min(4 * num_populated_nodes,
++					ibdev->num_comp_vectors),
++				num_online_cpus());
++
+  	target->ch = kcalloc(target->ch_count, sizeof(*target->ch),
+  			     GFP_KERNEL);
+  	if (!target->ch)
+@@ -3764,13 +3789,13 @@ static ssize_t srp_create_target(struct device *dev,
+  	node_idx = 0;
+  	for_each_online_node(node) {
+  		const int ch_start = (node_idx * target->ch_count /
+-				      num_online_nodes());
++				      num_populated_nodes);
+  		const int ch_end = ((node_idx + 1) * target->ch_count /
+-				    num_online_nodes());
++				    num_populated_nodes);
+  		const int cv_start = node_idx * ibdev->num_comp_vectors /
+-				     num_online_nodes();
++				     num_populated_nodes;
+  		const int cv_end = (node_idx + 1) * ibdev->num_comp_vectors /
+-				   num_online_nodes();
++				   num_populated_nodes;
+  		int cpu_idx = 0;
+  
+  		for_each_online_cpu(cpu) {
+@@ -3823,7 +3848,8 @@ static ssize_t srp_create_target(struct device *dev,
+  			multich = true;
+  			cpu_idx++;
+  		}
+-		node_idx++;
++		if(cpu_idx)
++			node_idx++;
+  	}
+  
+  connected:
+-- 
+2.29.2
 
-I really don't think we should encourage the feeling that a maintainer
-is doing a bad job if they don't catch everything on their reviews.
-Any review is worth it. Maintainers, in the end, are just the
-"guaranteed" reviewers that decide when the code looks reasonable
-enough. They should definitely not feel pressured to be perfect.
-
-Cheers,
-Miguel
