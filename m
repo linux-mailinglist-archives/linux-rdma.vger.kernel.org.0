@@ -2,205 +2,156 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0952C4809
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 20:04:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E792C4818
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 20:15:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgKYTEd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Nov 2020 14:04:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726287AbgKYTEc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:04:32 -0500
-Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52BD9206CA;
-        Wed, 25 Nov 2020 19:04:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606331071;
-        bh=BG9RtXrLVfIUmhZPYwd7utIU0Z/QV+j5gRlultB+4c8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=JmdtvICAK6oeoSdIKFECP6L8EzlYiY22+fsFp6Nfk/WLZF9nzhYdFUsaeO48Sx1fG
-         DN/7JZtTc+Ap8bKga3ximmUlE3yOezthHuOD2MWmwO6YtTKCm1nmi8unnrRLsJl14x
-         /N+a+B9juHcIstT7XB2WAHW6ue9VBG/b245bxc5g=
-Message-ID: <3e425104273c0a979ebd57bb8537e9522fe90fa9.camel@kernel.org>
-Subject: Re: [PATCH mlx5-next 11/16] net/mlx5: Add VDPA priority to NIC RX
- namespace
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Eli Cohen <elic@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leonro@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Eli Cohen <eli@mellanox.com>,
-        Mark Bloch <mbloch@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>
-Date:   Wed, 25 Nov 2020 11:04:30 -0800
-In-Reply-To: <20201125061957.GA147410@mtl-vdi-166.wap.labs.mlnx>
-References: <20201120230339.651609-1-saeedm@nvidia.com>
-         <20201120230339.651609-12-saeedm@nvidia.com>
-         <20201121160155.39d84650@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <20201122064158.GA9749@mtl-vdi-166.wap.labs.mlnx>
-         <20201124091219.5900e7bb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <20201124180210.GJ5487@ziepe.ca>
-         <20201124104106.0b1201b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <20201124194413.GF4800@nvidia.com>
-         <20201125061957.GA147410@mtl-vdi-166.wap.labs.mlnx>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1726314AbgKYTPv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Nov 2020 14:15:51 -0500
+Received: from mail-bn7nam10on2118.outbound.protection.outlook.com ([40.107.92.118]:16993
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725989AbgKYTPv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 25 Nov 2020 14:15:51 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aw1ILoJRP56MNw6cGX194RTD/eBobMHAfci7L72mo+MXulOKORK96sQ86oHuexY3TaV7bjwhaoPLiGiWsEQCVVsQ05p64BTn1kl2W35XIPGz+GLEadXc9wLqDGadh/Opyr83OTGQmRQh8jmQBn0kLoUp3iMH0d/tEbY0nwote27Rv3IlKNjAwBjjXsjin+kIctsBAdd05svjKpKkbDP5GFhGEMh6MG1tSaKT5H+sRfbeltnTAgqPZVzKFvlC8dLMDUaynrcBGRnAGFXiv5mx40yzbEw9yekyZXWbwOCl3B1yVBgwmTTOt93RyXZsb1D2baVPGwqe96amS+8vxGrM8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lBrBH6LcpFMd1F6plQ6dSCXqKrkmSHB8aorCiN2xXgg=;
+ b=g0oZfck0iu865PYjMHT+/w9cgnHFABWVK+9r932mfQTHuXYPQKjezeNHU2aFop8hJoqPZhy17cvjUDUBj9msdJTE9X5Z365z6pizwk6eDnJ/wPnWOcgmZRgYcCb22h2KvQA7ERNmCffty0OjCbvB9xvowSwesuV+QWfAsVmQG4fsgPwno3OUfmYjoxb0MK6ln798x7J7PO1vwWaaraxpS1neMq3iSIfKUMoJlJ/C3NCwkXN7Qb7Eq4GvDvuKsl7SLOnoMnMtv6Vk+zgfwS5MaU6zxv4FHlU8RthKq5NaiHP3OEjUdkLi1MbAokyDvo/ZzlUOKxvLjK53t0ikg+Tcbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=CornelisNetworks.onmicrosoft.com;
+ s=selector1-CornelisNetworks-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lBrBH6LcpFMd1F6plQ6dSCXqKrkmSHB8aorCiN2xXgg=;
+ b=J8Ufrsk8L6Md/y55hMSGvwTYdykWqedcor5Gko2xmVedKLQWblhpjmLKPGb0sfzmORi+Al/7JgaFDsTon1xwr6z3Yy8OcaVugZQJFdDNM887E+yUj0QYfZqPg/6Z6NvsGHJwRZPbivwJBEp9dkcPCz5zChd1v/p2TH07T/88I2XVmGS0nYFgGyl5PUtds+VUZVpZAA9/IxEZOF4IIHY5MK12ngAKUubOcCZb9xXt+43NMuBfSuNhaIkeNRWzF7FQh/riFCd5sk9Mh1vqXPKXsbf6Ovsx3OaTRsqiKvHD9qh5G/8KfNNXj/ThfjTqNt0o4TETCuQ4/ECBoTVrkKIk1A==
+Authentication-Results: cornelisnetworks.com; dkim=none (message not signed)
+ header.d=none;cornelisnetworks.com; dmarc=none action=none
+ header.from=cornelisnetworks.com;
+Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
+ PH0PR01MB6200.prod.exchangelabs.com (2603:10b6:510:9::5) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3611.21; Wed, 25 Nov 2020 19:15:46 +0000
+Received: from PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::8b2:9c60:5983:2896]) by PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::8b2:9c60:5983:2896%4]) with mapi id 15.20.3611.022; Wed, 25 Nov 2020
+ 19:15:46 +0000
+Subject: Re: [PATCH for-rc v4] IB/hfi1: Ensure correct mm is used at all times
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        stable@vger.kernel.org, linux-mm@kvack.org,
+        Ira Weiny <ira.weiny@intel.com>
+References: <20201123165024.158913.71029.stgit@awfm-01.aw.intel.com>
+ <20201125150224.GO5487@ziepe.ca>
+From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Message-ID: <cc07055a-b221-359f-7f2c-052a81007499@cornelisnetworks.com>
+Date:   Wed, 25 Nov 2020 14:15:42 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+In-Reply-To: <20201125150224.GO5487@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.55.54.40]
+X-ClientProxiedBy: SJ0PR05CA0036.namprd05.prod.outlook.com
+ (2603:10b6:a03:33f::11) To PH0PR01MB6439.prod.exchangelabs.com
+ (2603:10b6:510:d::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.55.54.40] (192.55.54.40) by SJ0PR05CA0036.namprd05.prod.outlook.com (2603:10b6:a03:33f::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.6 via Frontend Transport; Wed, 25 Nov 2020 19:15:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a6a37739-a8ef-4717-584d-08d8917682f4
+X-MS-TrafficTypeDiagnostic: PH0PR01MB6200:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR01MB6200C5824F031002EF908EE5F4FA0@PH0PR01MB6200.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: v4GIxY2SgjbDDzYVnXkPaL8JwSK0RFDbzRLw3lkghQxXGkjX4d/GN/6LegdNwdsRnss5kmf6PMJfIaT0HLKa1oG6QR1wNXoao/sbKeS2lB51FekdJsfWTXRmbhqc+SJXqBa9AmxcKStB7e87D2aNws0RT9Apkhqt2Ex8LJp5od9S40BvvFOauBBRGOddNzMBH3zd//VixAKVOpcAOLAkSnVte/kRv8Muu38nWqT86jg5W3ZyjCLcENUcIvFhfWHdywKFOXdSIDNedrYrvDJe9qKEhGkps/MxrOtEAjDPQ+G8wbKm36z4F87xzpIIj+9Oele6DUvIjL6IA/nWxIk8gtcMks5V3y4V7efy3hG6vYPm9t4Hn9dhzwS8JPFO3PUN/03LSGbibt7f5zVJQjeOavAR7gyJptFDiYHzaSskSXU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(376002)(366004)(39830400003)(66476007)(66556008)(316002)(66946007)(4326008)(31686004)(26005)(8936002)(16526019)(6486002)(52116002)(8676002)(53546011)(54906003)(2906002)(44832011)(5660300002)(6916009)(186003)(2616005)(83380400001)(956004)(478600001)(86362001)(36756003)(16576012)(6706004)(31696002)(3940600001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VHgwOHVtcUhpcjJmNHJDNjdKSkxhVDNSaDRSSEh2QmkzczliQ2RuSWFvd0dW?=
+ =?utf-8?B?MlV4T3FQYm8wVXhLbUV5SVpqRW9Sa2hqYW1uK21zVGl5UzVFeEFZQzVhbzlE?=
+ =?utf-8?B?RGxNOVFnNEtRMzk4MVc0ZlhLV01sdmE1UW9SbHJRWWgyTjB2QTR5NUJGYnhn?=
+ =?utf-8?B?S0lCbSt2enZlcWFTTzc0bVY5UlVKVnRYUTk4TGJSSytBNnI0TzJac0tQL0Zu?=
+ =?utf-8?B?Qy9PZHlDeUxEVXpzSXNnMDlCcjlrWmQyWHRSZEhuYTFLZmxma2REYTBUTjlS?=
+ =?utf-8?B?WEs2citpT2ZySFBId1JMK01FTzUwbTdEaFVrYnpCVjY0VzMybHdWRE1pNWUv?=
+ =?utf-8?B?d2xhUDlwUkpPaXMzYWFLc0lrU0lvSkV1RDNnejhJSnBnUVpPLy9IMllHRXYz?=
+ =?utf-8?B?ckFoQmtFVFN4alZNd1ZodkJqMS9nWnRUS2prTjFzY3BpejdGdHFqTHBtZnhU?=
+ =?utf-8?B?emJEOVRsZjVZa1ZJZUpvcEhyeXo1UFVJQkZUYWVoVTlxUnVrOUpSb2tydDJs?=
+ =?utf-8?B?N2hTMWxROVdzODBySk9SZ28waWtPTnZkRjFGUUtRSnU5ZlRlVkJQdUVwbWJD?=
+ =?utf-8?B?Q0g5ZGFHcGxJY2I1RjFacUwwVGlpaCtqdTk0dVdqYVlmdllUVk9VTFNOcUlh?=
+ =?utf-8?B?bmg1ZmwvQzRUL1h3WnYrTGJLeVNkd0ZRVzVDSElhOE1zY0JQQWU5dmM1aFYw?=
+ =?utf-8?B?VkNDNEwxUndwK211V2xNZWFQT0RwbjJ5aEJuQnYwSTBCaVVXY2F6UmFEY1Z2?=
+ =?utf-8?B?b0NOVU5XZFJzNDF2WHB3OHNLT3JXRTRMVWlkSlRTZkt3UUlrRDNvY1BPcllH?=
+ =?utf-8?B?UHBGV2dFQ2RDNkpKYVY4bGtGODcrN2JwTUlWNGhEa01JdXNGWTZRcS9JZzFR?=
+ =?utf-8?B?K3VsN1Y0RnB3djZ2TjhzcDJYaWtaZUI0S0VGYzU3LzFUdHp5THhidFpuK1lK?=
+ =?utf-8?B?SHVqOWZ4aWFiVU1sRnQxVVUzNW45TG5ITHd5VDlsZGJ3bHN4Vy9xcGJTQ01J?=
+ =?utf-8?B?aTNOcnpwMU1xQTI2L0lQZ2hKWk9xYThkM0ljY25YWU10MDljOWw4cnpUVFNh?=
+ =?utf-8?B?TTdiQXNkM1pBVjZlV2RDQWNyeWR5MnRmOUVJemtVdzVKaEZ1cGxWSTFxYm1v?=
+ =?utf-8?B?WFV6dEE1Rm4rbWtjTXJyYjA4d1RZdXdnSjVZcUdjM3ltYy9QaTYzUTNJUWo0?=
+ =?utf-8?B?MHZINFRyMi8yL1FjT3IzQkJjVDUrNnMrL3h1K1h3MXkrei9tOVZVbHBHWXJ4?=
+ =?utf-8?B?dXZDaWxrUlNpc2NENUNzOFBuUWpCYm83WmNaWmhOcVpXSDZKNGpaMTloRXg3?=
+ =?utf-8?Q?NJKN6F6I5rKxLkwrX8u3oK21lqWtDv4MG8?=
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a6a37739-a8ef-4717-584d-08d8917682f4
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2020 19:15:46.3439
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: geecfXP1SQ9tqeh4l5nJM1Uxr4zLHOOgp2m9Wtte+AMszflKJgquT3U7l7f1BiqkAHmxnoKAV0O9Ho74BKzUA4af1HuCsFrSqrIg1IdxDJvrpvCQBCeg2o5sdBUwkp/n
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6200
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 2020-11-25 at 08:19 +0200, Eli Cohen wrote:
-> On Tue, Nov 24, 2020 at 03:44:13PM -0400, Jason Gunthorpe wrote:
-> > On Tue, Nov 24, 2020 at 10:41:06AM -0800, Jakub Kicinski wrote:
-> > > On Tue, 24 Nov 2020 14:02:10 -0400 Jason Gunthorpe wrote:
-> > > > On Tue, Nov 24, 2020 at 09:12:19AM -0800, Jakub Kicinski wrote:
-> > > > > On Sun, 22 Nov 2020 08:41:58 +0200 Eli Cohen wrote:  
-> > > > > > On Sat, Nov 21, 2020 at 04:01:55PM -0800, Jakub Kicinski
-> > > > > > wrote:  
-> > > > > > > On Fri, 20 Nov 2020 15:03:34 -0800 Saeed Mahameed
-> > > > > > > wrote:    
-> > > > > > > > From: Eli Cohen <eli@mellanox.com>
-> > > > > > > > 
-> > > > > > > > Add a new namespace type to the NIC RX root namespace
-> > > > > > > > to allow for
-> > > > > > > > inserting VDPA rules before regular NIC but after
-> > > > > > > > bypass, thus allowing
-> > > > > > > > DPDK to have precedence in packet processing.    
-> > > > > > > 
-> > > > > > > How does DPDK and VDPA relate in this context?    
-> > > > > > 
-> > > > > > mlx5 steering is hierarchical and defines precedence
-> > > > > > amongst namespaces.
-> > > > > > Up till now, the VDPA implementation would insert a rule
-> > > > > > into the
-> > > > > > MLX5_FLOW_NAMESPACE_BYPASS hierarchy which is used by DPDK
-> > > > > > thus taking
-> > > > > > all the incoming traffic.
-> > > > > > 
-> > > > > > The MLX5_FLOW_NAMESPACE_VDPA hirerachy comes after
-> > > > > > MLX5_FLOW_NAMESPACE_BYPASS.  
-> > > > > 
-> > > > > Our policy was no DPDK driver bifurcation. There's no
-> > > > > asterisk saying
-> > > > > "unless you pretend you need flow filters for RDMA, get them
-> > > > > upstream
-> > > > > and then drop the act".  
-> > > > 
-> > > > Huh?
-> > > > 
-> > > > mlx5 DPDK is an *RDMA* userspace application. 
-> > > 
-> > > Forgive me for my naiveté. 
-> > > 
-> > > Here I thought the RDMA subsystem is for doing RDMA.
-> > 
-> > RDMA covers a wide range of accelerated networking these days..
-> > Where
-> > else are you going to put this stuff in the kernel?
-> > 
-> > > I'm sure if you start doing crypto over ibverbs crypto people
-> > > will want
-> > > to have a look.
-> > 
-> > Well, RDMA has crypto transforms for a few years now too. Why would
-> > crypto subsystem people be involved? It isn't using or duplicating
-> > their APIs.
-> > 
-> > > > libibverbs. It runs on the RDMA stack. It uses RDMA flow
-> > > > filtering and
-> > > > RDMA raw ethernet QPs. 
-> > > 
-> > > I'm not saying that's not the case. I'm saying I don't think this
-> > > was
-> > > something that netdev developers signed-off on.
-> > 
-> > Part of the point of the subsystem split was to end the fighting
-> > that
-> > started all of it. It was very clear during the whole iWarp and TCP
-> > Offload Engine buisness in the mid 2000's that netdev wanted
-> > nothing
-> > to do with the accelerator world.
-> > 
-> > So why would netdev need sign off on any accelerator stuff?  Do you
-> > want to start co-operating now? I'm willing to talk about how to do
-> > that.
-> > 
-> > > And our policy on DPDK is pretty widely known.
-> > 
-> > I honestly have no idea on the netdev DPDK policy, I'm maintaining
-> > the
-> > RDMA subsystem not DPDK :)
-> > 
-> > > Would you mind pointing us to the introduction of raw Ethernet
-> > > QPs?
-> > > 
-> > > Is there any production use for that without DPDK?
-> > 
-> > Hmm.. It is very old. RAW (InfiniBand) QPs were part of the
-> > original
-> > IBA specification cira 2000. When RoCE was defined (around 2010)
-> > they
-> > were naturally carried forward to Ethernet. The "flow steering"
-> > concept to make raw ethernet QP useful was added to verbs around
-> > 2012
-> > - 2013. It officially made it upstream in commit 436f2ad05a0b
-> > ("IB/core: Export ib_create/destroy_flow through uverbs")
-> > 
-> > If I recall properly the first real application was ultra low
-> > latency
-> > ethernet processing for financial applications.
-> > 
-> > dpdk later adopted the first mlx4 PMD using this libibverbs API
-> > around
-> > 2015. Interestingly the mlx4 PMD was made through an open source
-> > process with minimal involvment from Mellanox, based on the
-> > pre-existing RDMA work.
-> > 
-> > Currently there are many projects, and many open source, built on
-> > top
-> > of the RDMA raw ethernet QP and RDMA flow steering model. It is now
-> > long established kernel ABI.
-> > 
-> > > > It has been like this for years, it is not some "act".
-> > > > 
-> > > > It is long standing uABI that accelerators like RDMA/etc get to
-> > > > take
-> > > > the traffic before netdev. This cannot be reverted. I don't
-> > > > really
-> > > > understand what you are expecting here?
-> > > 
-> > > Same. I don't really know what you expect me to do either. I
-> > > don't
-> > > think I can sign-off on kernel changes needed for DPDK.
-> > 
-> > This patch is fine tuning the shared logic that splits the traffic
-> > to
-> > accelerator subsystems, I don't think netdev should have a veto
-> > here. This needs to be consensus among the various communities and
-> > subsystems that rely on this.
-> > 
-> > Eli did not explain this well in his commit message. When he said
-> > DPDK
-> > he means RDMA which is the owner of the FLOW_NAMESPACE. Each
-> > accelerator subsystem gets hooked into this, so here VPDA is
-> > getting
-> > its own hook because re-using the the same hook between two kernel
-> > subsystems is buggy.
+On 11/25/2020 10:02 AM, Jason Gunthorpe wrote:
+> On Mon, Nov 23, 2020 at 11:50:24AM -0500, Dennis Dalessandro wrote:
+>> @@ -133,8 +121,16 @@ void hfi1_mmu_rb_unregister(struct mmu_rb_handler *handler)
+>>   	unsigned long flags;
+>>   	struct list_head del_list;
+>>   
+>> +	/*
+>> +	 * do_exit() calls exit_mm() before exit_files() which would call close
+>> +	 * and end up in here. If there is no mm, then its a kernel thread and
+>> +	 * we need to let it continue the removal.
+>> +	 */
+>> +	if (current->mm && (handler->mn.mm != current->mm))
+>> +		return;
+>> +
+>>   	/* Unregister first so we don't get any more notifications. */
+>> -	mmu_notifier_unregister(&handler->mn, handler->mm);
+>> +	mmu_notifier_unregister(&handler->mn, handler->mn.mm);
 > 
-> I agree, RDMA should have been used here. DPDK is just one, though
-> widely used, accelerator using RDMA interfaces to flow steering.
+> This logic cannot be right.. The only caller does:
 > 
-> I will push submit another patch with a modified change log.
+> 		if (pq->handler)
+> 			hfi1_mmu_rb_unregister(pq->handler);
+> [..]
+> 		kfree(pq);
+> 
+> So this is leaking the mmu_notifier registration if the user manages
+> to trigger hfi1_user_sdma_free_queues() from another process.
+> 
+> Since hfi1_user_sdma_free_queues() is called from close() it doesn't
+> look OK.
+> 
+> When the object that creates the notifier is destroyed the notifier
+> should be deleted unconditionally.
+> 
+> Only accesses to a VA should be qualified to ensure that a notifier is
+> registered on current->mm before touching the VA.
 
-Hi Jakub, Given that this patch is just defining the HW domain of vDPA
-to separate it from the RDMA domain, it has no actual functionality,
-just the mlx5_core low level hw definition, can i take this patch to
-mlx5-next and move on to my next series ? 
+Ah yes. I think this just all goes away then. The context init and pq 
+allocation is what triggers the registration, whenever we tear it down 
+it should do the de-registration. v5 coming up after running tests.
 
-Thanks,
-Saeed.
-
+-Denny
 
