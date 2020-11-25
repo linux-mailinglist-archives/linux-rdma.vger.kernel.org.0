@@ -2,158 +2,233 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F1F2C3DE8
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 11:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E262C3E6E
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 11:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729109AbgKYKhd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Nov 2020 05:37:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60192 "EHLO
+        id S1728252AbgKYKux (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Nov 2020 05:50:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbgKYKh3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Nov 2020 05:37:29 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 572EAC0613D6;
-        Wed, 25 Nov 2020 02:37:29 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id b23so898046pls.11;
-        Wed, 25 Nov 2020 02:37:29 -0800 (PST)
+        with ESMTP id S1725876AbgKYKuw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Nov 2020 05:50:52 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972A2C0613D4
+        for <linux-rdma@vger.kernel.org>; Wed, 25 Nov 2020 02:50:45 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id r17so1451287wrw.1
+        for <linux-rdma@vger.kernel.org>; Wed, 25 Nov 2020 02:50:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lG3+Uwz8lZti6FSb8xjGyaQfdt5OwV03xvf6+L3ZqWc=;
-        b=YCtEdyPA4vCzWZsMjIt3djSgR9gg7vMRhn3I5LT7lEmWHdT3b/jEkR0QdduouORJ7k
-         kiuUl5RijkS3EJmc3PIdIbhuWrYEtLAccN+wdoprBDsU56ruoUGszfH1Sxvuy4WXIhMK
-         0dDt7R//JtRYOU1+gQ96Rpa2FinP3O1pFccTMutbPTGjvqTac0chojMQO8cZdySzLIim
-         HHsTKo91pUaUTwyxPnWizwDASocTC+n+eyDdN/HKPn9pe4V2vLDA/DOFrCcWbsrVXkvE
-         5CsjPeXzCB0gF8EvrEVdW+qQjVnUcViOyjSAD57xy0gbwLs+FCHLejwxIxOdH/xJHiTG
-         +NRA==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dbid+wntBG+K6X7iyhkUNMneOKYkyXw5MgQKzeb759I=;
+        b=lC0uLlGRy2XOpsw0TVgma76WzCM3ZO9W+Xt7mv3UgbEoJLMFH8u2xDLwfZJgZkTl+M
+         0ZklcnnTBeoWbEhC2ssDInpoit3B27T2MLh6utu0ciADHkxoLMEYSHr3tKWapdiE8E3N
+         /mBKCwyBVjRLnhlYo59O6ktitGTcNr/Z5t11M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lG3+Uwz8lZti6FSb8xjGyaQfdt5OwV03xvf6+L3ZqWc=;
-        b=HqxCMBnUjIt02wGgCngQgoatqmWXXlAtuei00ZaLA+J48O+B1j6bCYFuvdzJZHAMy9
-         SQZI3ZiFCUDUFHusJmIWT0MC92rOtiWOq6sEYoy8q25N3mDQAz1InmwPUJ2Roy/M3iPa
-         vltnthynrm17qL0rghDuth0vDo20iDxAaR+anXajOpA/0VENftxw7HJGmAtN+2MyxP0c
-         cw4tjtyc+WlxAzt4+qTpy9KvfvIVCmRuF5v3nK5U6GDt/TDSh1+4tewI/akYbvoF8/uY
-         f1WblEOyb3N1rkqS7L34BJzRlxD6yYBVFdYI5Vs/ET0tu9tthm6XyZscWs0u3X//933D
-         hunw==
-X-Gm-Message-State: AOAM5304mZtoVvAcNBp/cPMGh/vdShE0t5qCmjw2XeMKosWoDEmFIXv8
-        IAHmTwESxPjqzwmi9sJ7XwoV7crHuuNgZomTcvU=
-X-Google-Smtp-Source: ABdhPJzEY8ebPN4xZ4jf0ZFVw9i65L6qlCom+E751HZA34/qY3SkadUuuLf2HukIG4qONDPWI5feIsM1VQGLuSbFYSc=
-X-Received: by 2002:a17:902:ead2:b029:da:2596:198e with SMTP id
- p18-20020a170902ead2b02900da2596198emr1937529pld.21.1606300648824; Wed, 25
- Nov 2020 02:37:28 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dbid+wntBG+K6X7iyhkUNMneOKYkyXw5MgQKzeb759I=;
+        b=jdJstDlQ5+fCuonhLV1UUtOUpUQ7n82dCi0S6NbVb0wXBmp3I2HMA3Xtz1qxeAZXDu
+         utyrPfJooO8BXXacreIrP/j1QoQSFNLrnYnTlUBNzGCfL1ONO8J0CvSh7gTo4HopGRTC
+         zNboP6BbP3aUhe73W6hB5xDewLBj3EKqgx+hAg3n/iGPuN9kTDOoF3l3N0wJxuQFtQyG
+         52N6TbB8mvknEXl0GLaBA1L138pPYltrgJD4pNnFy70BsqnnOzaEZNcxNBwQeW5nvNd1
+         YGgBjSmOf/bUhc0yOr1Ob+AGlx7HMKYIdpLAW8yH8oFp/oZIrSovCEsRtAL/oqYs5ZXj
+         cGIw==
+X-Gm-Message-State: AOAM530ath2j1aUq4uES1RaU5b7yrUw8Ynl471M9vijEaqxBgs0S1PLF
+        xpPUFlGnVNstAc3/RwTv7tkoxw==
+X-Google-Smtp-Source: ABdhPJygzAIvTOlpUoBDHn45BEkEBF9FjCc4t6mc0lKvBSO9U0pBJ4Me1FeEcIo9aXbaVoYQPyGpJw==
+X-Received: by 2002:a5d:474f:: with SMTP id o15mr3301528wrs.377.1606301444354;
+        Wed, 25 Nov 2020 02:50:44 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id u16sm4014316wrn.55.2020.11.25.02.50.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 02:50:43 -0800 (PST)
+Date:   Wed, 25 Nov 2020 11:50:41 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>,
+        Christian Koenig <christian.koenig@amd.com>
+Subject: Re: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
+Message-ID: <20201125105041.GX401619@phenom.ffwll.local>
+References: <1606153984-104583-1-git-send-email-jianxin.xiong@intel.com>
+ <1606153984-104583-4-git-send-email-jianxin.xiong@intel.com>
+ <20201123180504.GA244516@ziepe.ca>
+ <20201124151658.GT401619@phenom.ffwll.local>
+ <MW3PR11MB45554AAEB1C370A78EB87816E5FB0@MW3PR11MB4555.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <cover.1605896059.git.gustavoars@kernel.org> <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
- <1c7d7fde126bc0acf825766de64bf2f9b888f216.camel@HansenPartnership.com>
- <CANiq72m22Jb5_+62NnwX8xds2iUdWDMAqD8PZw9cuxdHd95W0A@mail.gmail.com>
- <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
- <CANiq72k5tpDoDPmJ0ZWc1DGqm+81Gi-uEENAtvEs9v3SZcx6_Q@mail.gmail.com> <4993259d01a0064f8bb22770503490f9252f3659.camel@HansenPartnership.com>
-In-Reply-To: <4993259d01a0064f8bb22770503490f9252f3659.camel@HansenPartnership.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 25 Nov 2020 12:38:17 +0200
-Message-ID: <CAHp75VfaewwkLsrht95Q7DaxFk7JpQjwx0KQ7Jvh5f7DUbZkRA@mail.gmail.com>
-Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        amd-gfx@lists.freedesktop.org, bridge@lists.linux-foundation.org,
-        ceph-devel@vger.kernel.org, cluster-devel@redhat.com,
-        coreteam@netfilter.org,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        device-mapper development <dm-devel@redhat.com>,
-        drbd-dev@lists.linbit.com,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-afs@lists.infradead.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net,
-        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-cifs@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-decnet-user@lists.sourceforge.net,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
-        linux-geode@lists.infradead.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-hams@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-i3c@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
-        linux-nfs@vger.kernel.org,
-        "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-sctp@vger.kernel.org,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        USB <linux-usb@vger.kernel.org>, linux-watchdog@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
-        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
-        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
-        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
-        selinux@vger.kernel.org,
-        target-devel <target-devel@vger.kernel.org>,
-        tipc-discussion@lists.sourceforge.net,
-        usb-storage@lists.one-eyed-alien.net,
-        virtualization@lists.linux-foundation.org,
-        wcn36xx@lists.infradead.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW3PR11MB45554AAEB1C370A78EB87816E5FB0@MW3PR11MB4555.namprd11.prod.outlook.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 10:39 PM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-> On Mon, 2020-11-23 at 19:56 +0100, Miguel Ojeda wrote:
-> > On Mon, Nov 23, 2020 at 4:58 PM James Bottomley
-> > <James.Bottomley@hansenpartnership.com> wrote:
+On Tue, Nov 24, 2020 at 06:45:06PM +0000, Xiong, Jianxin wrote:
+> > -----Original Message-----
+> > From: Daniel Vetter <daniel@ffwll.ch>
+> > Sent: Tuesday, November 24, 2020 7:17 AM
+> > To: Jason Gunthorpe <jgg@ziepe.ca>
+> > Cc: Xiong, Jianxin <jianxin.xiong@intel.com>; Leon Romanovsky <leon@kernel.org>; linux-rdma@vger.kernel.org; dri-
+> > devel@lists.freedesktop.org; Doug Ledford <dledford@redhat.com>; Vetter, Daniel <daniel.vetter@intel.com>; Christian Koenig
+> > <christian.koenig@amd.com>
+> > Subject: Re: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
+> > 
+> > On Mon, Nov 23, 2020 at 02:05:04PM -0400, Jason Gunthorpe wrote:
+> > > On Mon, Nov 23, 2020 at 09:53:02AM -0800, Jianxin Xiong wrote:
+> > >
+> > > > +cdef class DmaBuf:
+> > > > +    def __init__(self, size, unit=0):
+> > > > +        """
+> > > > +        Allocate DmaBuf object from a GPU device. This is done through the
+> > > > +        DRI device interface (/dev/dri/card*). Usually this
+> > > > +requires the
+> > 
+> > Please use /dev/dri/renderD* instead. That's the interface meant for unpriviledged rendering access. card* is the legacy interface with
+> > backwards compat galore, don't use.
+> > 
+> > Specifically if you do this on a gpu which also has display (maybe some testing on a local developer machine, no idea ...) then you mess with
+> > compositors and stuff.
+> > 
+> > Also wherever you copied this from, please also educate those teams that using /dev/dri/card* for rendering stuff is a Bad Idea (tm)
+> 
+> /dev/dri/renderD* is not always available (e.g. for many iGPUs) and doesn't support
+> mode setting commands (including dumb_buf). The original intention here is to
+> have something to support the new tests added, not for general compute. 
 
-...
+Not having dumb_buf available is a feature. So even more reasons to use
+that.
 
-> > But if we do the math, for an author, at even 1 minute per line
-> > change and assuming nothing can be automated at all, it would take 1
-> > month of work. For maintainers, a couple of trivial lines is noise
-> > compared to many other patches.
->
-> So you think a one line patch should take one minute to produce ... I
-> really don't think that's grounded in reality.  I suppose a one line
-> patch only takes a minute to merge with b4 if no-one reviews or tests
-> it, but that's not really desirable.
+Also note that amdgpu has killed card* access pretty much, it's for
+modesetting only.
 
-In my practice most of the one line patches were either to fix or to
-introduce quite interesting issues.
-1 minute is 2-3 orders less than usually needed for such patches.
-That's why I don't like churn produced by people who often even didn't
-compile their useful contributions.
+> > > > +        effective user id being root or being a member of the 'video' group.
+> > > > +        :param size: The size (in number of bytes) of the buffer.
+> > > > +        :param unit: The unit number of the GPU to allocate the buffer from.
+> > > > +        :return: The newly created DmaBuf object on success.
+> > > > +        """
+> > > > +        self.dmabuf_mrs = weakref.WeakSet()
+> > > > +        self.dri_fd = open('/dev/dri/card'+str(unit), O_RDWR)
+> > > > +
+> > > > +        args = bytearray(32)
+> > > > +        pack_into('=iiiiiiq', args, 0, 1, size, 8, 0, 0, 0, 0)
+> > > > +        ioctl(self.dri_fd, DRM_IOCTL_MODE_CREATE_DUMB, args)
+> > > > +        a, b, c, d, self.handle, e, self.size = unpack('=iiiiiiq',
+> > > > + args)
+> > 
+> > Yeah no, don't allocate render buffers with create_dumb. Every time this comes up I'm wondering whether we should just completely
+> > disable dma-buf operations on these. Dumb buffers are explicitly only for software rendering for display purposes when the gpu userspace
+> > stack isn't fully running yet, aka boot splash.
+> > 
+> > And yes I know there's endless amounts of abuse of that stuff floating around, especially on arm-soc/android systems.
+> 
+> One alternative is to use the GEM_CREATE method which can be done via the renderD*
+> device, but the command is vendor specific, so the logic is a little bit more complex. 
+
+Yup. I guess the most minimal thing is to have a per-vendor (you can ask
+drm for the driver name to match the right one) callback here to allocate
+buffers correctly. Might be less churn than trying to pull in vulkan or
+something like that.
+
+It's at least what we're doing in igt for testing drm drivers (although
+most of the generic igt tests for display, so dumb_buffer fallback is
+available).
+
+DRM_IOCTL_VERSION is the thing you'd need here, struct drm_version.name
+has the field for figuring out which driver it is.
+
+Also drivers without render node support won't ever be in the same system
+as an rdma card and actually useful (because well they're either very old,
+or display-only). So not an issue I think.
+
+> > > > +
+> > > > +        args = bytearray(12)
+> > > > +        pack_into('=iii', args, 0, self.handle, O_RDWR, 0)
+> > > > +        ioctl(self.dri_fd, DRM_IOCTL_PRIME_HANDLE_TO_FD, args)
+> > > > +        a, b, self.fd = unpack('=iii', args)
+> > > > +
+> > > > +        args = bytearray(16)
+> > > > +        pack_into('=iiq', args, 0, self.handle, 0, 0)
+> > > > +        ioctl(self.dri_fd, DRM_IOCTL_MODE_MAP_DUMB, args);
+> > > > +        a, b, self.map_offset = unpack('=iiq', args);
+> > >
+> > > Wow, OK
+> > >
+> > > Is it worth using ctypes here instead? Can you at least add a comment
+> > > before each pack specifying the 'struct XXX' this is following?
+> > >
+> > > Does this work with normal Intel GPUs, like in a Laptop? AMD too?
+> > >
+> > > Christian, I would be very happy to hear from you that this entire
+> > > work is good for AMD as well
+> > 
+> > I think the smallest generic interface for allocating gpu buffers which are more useful than the stuff you get from CREATE_DUMB is gbm.
+> > That's used by compositors to get bare metal opengl going on linux. Ofc Android has gralloc for the same purpose, and cros has minigbm
+> > (which isn't the same as gbm at all). So not so cool.
+> 
+> Again, would the "renderD* + GEM_CREATE" combination be an acceptable alternative? 
+> That would be much simpler than going with gbm and less dependency in setting up
+> the testing evrionment.
+
+Yeah imo makes sense. It's a bunch more code for you to make it work on
+i915 and amd, but it's not terrible. And avoids the dependencies, and also
+avoids the abuse of card* and dumb buffers. Plus not really more complex,
+you just need a table or something to match from the drm driver name to
+the driver-specific buffer create function. Everything else stays the
+same.
+
+Also this opens up the door to force-test stuff like p2p in the future,
+since at least on i915 you'll be able to ensure that a buffer is in vram
+only.
+
+Would be good if we also have a trick for amdgpu to make sure the buffer
+stays in vram. I think there's some flags you can pass to the amdgpu
+buffer create function. So maybe you want 2 testcases here, one allocates
+the buffer in system memory, the other in vram for testing p2p
+functionality. That kind of stuff isn't possible with dumb buffers.
+-Daniel
+
+
+
+
+> > 
+> > The other generic option is using vulkan, which works directly on bare metal (without a compositor or anything running), and is cross vendor.
+> > So cool, except not used for compute, which is generally the thing you want if you have an rdma card.
+> > 
+> > Both gbm-egl/opengl and vulkan have extensions to hand you a dma-buf back, properly.
+> > 
+> > Compute is the worst, because opencl is widely considered a mistake (maybe opencl 3 is better, but nvidia is stuck on 1.2). The actually used
+> > stuff is cuda (nvidia-only), rocm (amd-only) and now with intel also playing we have xe (intel-only).
+> > 
+> > It's pretty glorious :-/
+> > 
+> > Also I think we discussed this already, but for actual p2p the intel patches aren't in upstream yet. We have some internally, but with very
+> > broken locking (in the process of getting fixed up, but it's taking time).
+> > 
+> > Cheers, Daniel
+> > 
+> > > Edward should look through this, but I'm glad to see something like
+> > > this
+> > >
+> > > Thanks,
+> > > Jason
+> > > _______________________________________________
+> > > dri-devel mailing list
+> > > dri-devel@lists.freedesktop.org
+> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > 
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
