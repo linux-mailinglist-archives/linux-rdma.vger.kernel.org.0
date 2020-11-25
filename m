@@ -2,233 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E262C3E6E
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 11:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D21982C3F0D
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 12:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728252AbgKYKux (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Nov 2020 05:50:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbgKYKuw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Nov 2020 05:50:52 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972A2C0613D4
-        for <linux-rdma@vger.kernel.org>; Wed, 25 Nov 2020 02:50:45 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id r17so1451287wrw.1
-        for <linux-rdma@vger.kernel.org>; Wed, 25 Nov 2020 02:50:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dbid+wntBG+K6X7iyhkUNMneOKYkyXw5MgQKzeb759I=;
-        b=lC0uLlGRy2XOpsw0TVgma76WzCM3ZO9W+Xt7mv3UgbEoJLMFH8u2xDLwfZJgZkTl+M
-         0ZklcnnTBeoWbEhC2ssDInpoit3B27T2MLh6utu0ciADHkxoLMEYSHr3tKWapdiE8E3N
-         /mBKCwyBVjRLnhlYo59O6ktitGTcNr/Z5t11M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dbid+wntBG+K6X7iyhkUNMneOKYkyXw5MgQKzeb759I=;
-        b=jdJstDlQ5+fCuonhLV1UUtOUpUQ7n82dCi0S6NbVb0wXBmp3I2HMA3Xtz1qxeAZXDu
-         utyrPfJooO8BXXacreIrP/j1QoQSFNLrnYnTlUBNzGCfL1ONO8J0CvSh7gTo4HopGRTC
-         zNboP6BbP3aUhe73W6hB5xDewLBj3EKqgx+hAg3n/iGPuN9kTDOoF3l3N0wJxuQFtQyG
-         52N6TbB8mvknEXl0GLaBA1L138pPYltrgJD4pNnFy70BsqnnOzaEZNcxNBwQeW5nvNd1
-         YGgBjSmOf/bUhc0yOr1Ob+AGlx7HMKYIdpLAW8yH8oFp/oZIrSovCEsRtAL/oqYs5ZXj
-         cGIw==
-X-Gm-Message-State: AOAM530ath2j1aUq4uES1RaU5b7yrUw8Ynl471M9vijEaqxBgs0S1PLF
-        xpPUFlGnVNstAc3/RwTv7tkoxw==
-X-Google-Smtp-Source: ABdhPJygzAIvTOlpUoBDHn45BEkEBF9FjCc4t6mc0lKvBSO9U0pBJ4Me1FeEcIo9aXbaVoYQPyGpJw==
-X-Received: by 2002:a5d:474f:: with SMTP id o15mr3301528wrs.377.1606301444354;
-        Wed, 25 Nov 2020 02:50:44 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id u16sm4014316wrn.55.2020.11.25.02.50.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 02:50:43 -0800 (PST)
-Date:   Wed, 25 Nov 2020 11:50:41 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "Vetter, Daniel" <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Subject: Re: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
-Message-ID: <20201125105041.GX401619@phenom.ffwll.local>
-References: <1606153984-104583-1-git-send-email-jianxin.xiong@intel.com>
- <1606153984-104583-4-git-send-email-jianxin.xiong@intel.com>
- <20201123180504.GA244516@ziepe.ca>
- <20201124151658.GT401619@phenom.ffwll.local>
- <MW3PR11MB45554AAEB1C370A78EB87816E5FB0@MW3PR11MB4555.namprd11.prod.outlook.com>
+        id S1728883AbgKYLZF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Nov 2020 06:25:05 -0500
+Received: from vie01a-dmta-pe05-2.mx.upcmail.net ([84.116.36.12]:55313 "EHLO
+        vie01a-dmta-pe05-2.mx.upcmail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728864AbgKYLZF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 25 Nov 2020 06:25:05 -0500
+Received: from [172.31.216.234] (helo=vie01a-pemc-psmtp-pe11.mail.upcmail.net)
+        by vie01a-dmta-pe05.mx.upcmail.net with esmtp (Exim 4.92)
+        (envelope-from <matthias.leopold@meduniwien.ac.at>)
+        id 1khsv1-0003f3-Kb
+        for linux-rdma@vger.kernel.org; Wed, 25 Nov 2020 12:25:03 +0100
+Received: from [192.168.0.108] ([213.47.20.147])
+        by vie01a-pemc-psmtp-pe11.mail.upcmail.net with ESMTP
+        id hsv1kHaQNVVAxhsv1kFV2x; Wed, 25 Nov 2020 12:25:03 +0100
+X-Env-Mailfrom: matthias.leopold@meduniwien.ac.at
+X-Env-Rcptto: linux-rdma@vger.kernel.org
+X-SourceIP: 213.47.20.147
+X-CNFS-Analysis: v=2.3 cv=LOsYv6e9 c=1 sm=1 tr=0
+ a=JpRxMuvZrRLl2G7g9WOtgg==:117 a=JpRxMuvZrRLl2G7g9WOtgg==:17
+ a=IkcTkHD0fZMA:10 a=x7bEGLp0ZPQA:10 a=20KFwNOVAAAA:8 a=bZH8oU2pz0In-QGGkksA:9
+ a=QEXdDO2ut3YA:10
+To:     linux-rdma@vger.kernel.org
+From:   Matthias Leopold <matthias.leopold@meduniwien.ac.at>
+Subject: Newbie Soft-RoCE Problem in VM
+Message-ID: <f6d57d8f-f1c3-9de3-e0b2-3e670702290f@meduniwien.ac.at>
+Date:   Wed, 25 Nov 2020 12:25:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW3PR11MB45554AAEB1C370A78EB87816E5FB0@MW3PR11MB4555.namprd11.prod.outlook.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfPyXUFdb/wrR1E/yaFtstrXCx9Xja96zOT9ROakyHDq9ULQROSmsX6Fhq72O3ejr4GoFDberDISdEBhT6+FG1L8YsUgfFH2SgiKTtl1EFKAirG8CwhLu
+ r0k0cxySLMqHP/oKNb/B63543+Fr0NVXf1gaiuubn7u+c/oI5Lt5pvUzJKSFcrJRzYQTgxFkZ0Nztp8BqPwb0N3F4IJLWLQlQSA=
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 06:45:06PM +0000, Xiong, Jianxin wrote:
-> > -----Original Message-----
-> > From: Daniel Vetter <daniel@ffwll.ch>
-> > Sent: Tuesday, November 24, 2020 7:17 AM
-> > To: Jason Gunthorpe <jgg@ziepe.ca>
-> > Cc: Xiong, Jianxin <jianxin.xiong@intel.com>; Leon Romanovsky <leon@kernel.org>; linux-rdma@vger.kernel.org; dri-
-> > devel@lists.freedesktop.org; Doug Ledford <dledford@redhat.com>; Vetter, Daniel <daniel.vetter@intel.com>; Christian Koenig
-> > <christian.koenig@amd.com>
-> > Subject: Re: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
-> > 
-> > On Mon, Nov 23, 2020 at 02:05:04PM -0400, Jason Gunthorpe wrote:
-> > > On Mon, Nov 23, 2020 at 09:53:02AM -0800, Jianxin Xiong wrote:
-> > >
-> > > > +cdef class DmaBuf:
-> > > > +    def __init__(self, size, unit=0):
-> > > > +        """
-> > > > +        Allocate DmaBuf object from a GPU device. This is done through the
-> > > > +        DRI device interface (/dev/dri/card*). Usually this
-> > > > +requires the
-> > 
-> > Please use /dev/dri/renderD* instead. That's the interface meant for unpriviledged rendering access. card* is the legacy interface with
-> > backwards compat galore, don't use.
-> > 
-> > Specifically if you do this on a gpu which also has display (maybe some testing on a local developer machine, no idea ...) then you mess with
-> > compositors and stuff.
-> > 
-> > Also wherever you copied this from, please also educate those teams that using /dev/dri/card* for rendering stuff is a Bad Idea (tm)
-> 
-> /dev/dri/renderD* is not always available (e.g. for many iGPUs) and doesn't support
-> mode setting commands (including dumb_buf). The original intention here is to
-> have something to support the new tests added, not for general compute. 
+Please excuse for posting to this list, but I couldn't get help at other 
+places.
 
-Not having dumb_buf available is a feature. So even more reasons to use
-that.
+I'm trying to follow 
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/sec-configuring_soft-_roce 
+with two CentOS 7 KVM VMs and VirtIO NICs (running on CentOS 7 
+hypervisors).
+When verifying connectivity with ibv_rc_pingpong the server side fails with
 
-Also note that amdgpu has killed card* access pretty much, it's for
-modesetting only.
+Failed to modify QP to RTR
+Couldn't connect to remote QP
 
-> > > > +        effective user id being root or being a member of the 'video' group.
-> > > > +        :param size: The size (in number of bytes) of the buffer.
-> > > > +        :param unit: The unit number of the GPU to allocate the buffer from.
-> > > > +        :return: The newly created DmaBuf object on success.
-> > > > +        """
-> > > > +        self.dmabuf_mrs = weakref.WeakSet()
-> > > > +        self.dri_fd = open('/dev/dri/card'+str(unit), O_RDWR)
-> > > > +
-> > > > +        args = bytearray(32)
-> > > > +        pack_into('=iiiiiiq', args, 0, 1, size, 8, 0, 0, 0, 0)
-> > > > +        ioctl(self.dri_fd, DRM_IOCTL_MODE_CREATE_DUMB, args)
-> > > > +        a, b, c, d, self.handle, e, self.size = unpack('=iiiiiiq',
-> > > > + args)
-> > 
-> > Yeah no, don't allocate render buffers with create_dumb. Every time this comes up I'm wondering whether we should just completely
-> > disable dma-buf operations on these. Dumb buffers are explicitly only for software rendering for display purposes when the gpu userspace
-> > stack isn't fully running yet, aka boot splash.
-> > 
-> > And yes I know there's endless amounts of abuse of that stuff floating around, especially on arm-soc/android systems.
-> 
-> One alternative is to use the GEM_CREATE method which can be done via the renderD*
-> device, but the command is vendor specific, so the logic is a little bit more complex. 
+The same happens with CentOS 8 guests running on CentOS 8 hypervisors.
+Is Soft-RoCE _supposed_ to work in VMs?
 
-Yup. I guess the most minimal thing is to have a per-vendor (you can ask
-drm for the driver name to match the right one) callback here to allocate
-buffers correctly. Might be less churn than trying to pull in vulkan or
-something like that.
-
-It's at least what we're doing in igt for testing drm drivers (although
-most of the generic igt tests for display, so dumb_buffer fallback is
-available).
-
-DRM_IOCTL_VERSION is the thing you'd need here, struct drm_version.name
-has the field for figuring out which driver it is.
-
-Also drivers without render node support won't ever be in the same system
-as an rdma card and actually useful (because well they're either very old,
-or display-only). So not an issue I think.
-
-> > > > +
-> > > > +        args = bytearray(12)
-> > > > +        pack_into('=iii', args, 0, self.handle, O_RDWR, 0)
-> > > > +        ioctl(self.dri_fd, DRM_IOCTL_PRIME_HANDLE_TO_FD, args)
-> > > > +        a, b, self.fd = unpack('=iii', args)
-> > > > +
-> > > > +        args = bytearray(16)
-> > > > +        pack_into('=iiq', args, 0, self.handle, 0, 0)
-> > > > +        ioctl(self.dri_fd, DRM_IOCTL_MODE_MAP_DUMB, args);
-> > > > +        a, b, self.map_offset = unpack('=iiq', args);
-> > >
-> > > Wow, OK
-> > >
-> > > Is it worth using ctypes here instead? Can you at least add a comment
-> > > before each pack specifying the 'struct XXX' this is following?
-> > >
-> > > Does this work with normal Intel GPUs, like in a Laptop? AMD too?
-> > >
-> > > Christian, I would be very happy to hear from you that this entire
-> > > work is good for AMD as well
-> > 
-> > I think the smallest generic interface for allocating gpu buffers which are more useful than the stuff you get from CREATE_DUMB is gbm.
-> > That's used by compositors to get bare metal opengl going on linux. Ofc Android has gralloc for the same purpose, and cros has minigbm
-> > (which isn't the same as gbm at all). So not so cool.
-> 
-> Again, would the "renderD* + GEM_CREATE" combination be an acceptable alternative? 
-> That would be much simpler than going with gbm and less dependency in setting up
-> the testing evrionment.
-
-Yeah imo makes sense. It's a bunch more code for you to make it work on
-i915 and amd, but it's not terrible. And avoids the dependencies, and also
-avoids the abuse of card* and dumb buffers. Plus not really more complex,
-you just need a table or something to match from the drm driver name to
-the driver-specific buffer create function. Everything else stays the
-same.
-
-Also this opens up the door to force-test stuff like p2p in the future,
-since at least on i915 you'll be able to ensure that a buffer is in vram
-only.
-
-Would be good if we also have a trick for amdgpu to make sure the buffer
-stays in vram. I think there's some flags you can pass to the amdgpu
-buffer create function. So maybe you want 2 testcases here, one allocates
-the buffer in system memory, the other in vram for testing p2p
-functionality. That kind of stuff isn't possible with dumb buffers.
--Daniel
-
-
-
-
-> > 
-> > The other generic option is using vulkan, which works directly on bare metal (without a compositor or anything running), and is cross vendor.
-> > So cool, except not used for compute, which is generally the thing you want if you have an rdma card.
-> > 
-> > Both gbm-egl/opengl and vulkan have extensions to hand you a dma-buf back, properly.
-> > 
-> > Compute is the worst, because opencl is widely considered a mistake (maybe opencl 3 is better, but nvidia is stuck on 1.2). The actually used
-> > stuff is cuda (nvidia-only), rocm (amd-only) and now with intel also playing we have xe (intel-only).
-> > 
-> > It's pretty glorious :-/
-> > 
-> > Also I think we discussed this already, but for actual p2p the intel patches aren't in upstream yet. We have some internally, but with very
-> > broken locking (in the process of getting fixed up, but it's taking time).
-> > 
-> > Cheers, Daniel
-> > 
-> > > Edward should look through this, but I'm glad to see something like
-> > > this
-> > >
-> > > Thanks,
-> > > Jason
-> > > _______________________________________________
-> > > dri-devel mailing list
-> > > dri-devel@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > 
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+thanks for help
+Matthias
