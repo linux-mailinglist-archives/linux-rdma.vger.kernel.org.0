@@ -2,250 +2,230 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71FD2C4999
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 22:11:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBA92C49CF
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 22:24:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731440AbgKYVKE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Nov 2020 16:10:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730979AbgKYVKD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Nov 2020 16:10:03 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ADB7C0617A7
-        for <linux-rdma@vger.kernel.org>; Wed, 25 Nov 2020 13:10:03 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id x24so3522541pfn.6
-        for <linux-rdma@vger.kernel.org>; Wed, 25 Nov 2020 13:10:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5kDOOuMOjwqEdI4fOY8lF/zJwxoesF7EbkKd66qXZt4=;
-        b=AWR/7M4mhE4fi43nRvdimsQoF0WR0/yRvzcmpbbdNnukQZ4s3FUnDOA4HlPrcfy1KL
-         TnDV3Sp7ib0l66wO1u9Qkihqc0ymqk7uAD73hLx1Hbj+4zgGkd46Av0r6N17g4aWHL9f
-         T52peLS6H3gWn2HtVm1n8SJNqsSbmk3lehF9k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5kDOOuMOjwqEdI4fOY8lF/zJwxoesF7EbkKd66qXZt4=;
-        b=CLozHUdcabMI918k/salzCtOY/pn9vNWuSdXRnX6s/pBMn51y2d8SY2S+TNqpEVIDN
-         LLW/2nvEUjQ7XE0ELdG4hsS24HKYL1sxo9SE447/0MbOK6EhGedYd5hRDFm7As3yu78W
-         QDOEnMQeHHW2gvn1/HjX361emE3uW7P/u/hrpkxgBmwzl0E+y62QwwY/xWl4Sg18qIuI
-         pYzjmSdS6MO6dN6NZ17hIdktyOrTefJLoGG02rUGCtm3NUhDIsd0rGpBA+kqvl6qRzLB
-         Boi+2y9PVvWqfXC0FXk0eujowI/nq1XzZPZedVXpD27KhikGejQKprqqSY+ZIT1wsMBe
-         lCzg==
-X-Gm-Message-State: AOAM531BUkxnqFupSdxxgKz6Qzmn1UCiQqW3jId0jUSxuOgCu4veuqp2
-        BNEFWtQyE0c1aZeDVFG/FeLmuw==
-X-Google-Smtp-Source: ABdhPJx/eEsXFJ4LN0K87oZeE7bvP2eO9KEt7vLrempCPcmRQAJuuV8YImLC928PO4R7i7Khu5FszQ==
-X-Received: by 2002:a65:6547:: with SMTP id a7mr4391475pgw.198.1606338602870;
-        Wed, 25 Nov 2020 13:10:02 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x30sm2796297pgc.86.2020.11.25.13.10.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Nov 2020 13:10:01 -0800 (PST)
-Date:   Wed, 25 Nov 2020 13:10:00 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Jakub Kicinski <kuba@kernel.org>, alsa-devel@alsa-project.org,
-        linux-atm-general@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-ide@vger.kernel.org, dm-devel@redhat.com,
-        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
-        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
-        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-afs@lists.infradead.org,
-        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
-        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
-        rds-devel@oss.oracle.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
-        oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
-        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
-        intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        tipc-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        selinux@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
-        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
-        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
-        x86@kernel.org, linux-nfs@vger.kernel.org,
-        GR-Linux-NIC-Dev@marvell.com, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linux-decnet-user@lists.sourceforge.net,
-        linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        patches@opensource.cirrus.com, linux-integrity@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for
- Clang
-Message-ID: <202011251240.1E67BE900@keescook>
-References: <202011220816.8B6591A@keescook>
- <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
- <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
- <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com>
- <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com>
- <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com>
- <20201123130348.GA3119@embeddedor>
- <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com>
- <202011241327.BB28F12F6@keescook>
- <a841536fe65bb33f1c72ce2455a6eb47a0107565.camel@HansenPartnership.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1730254AbgKYVW2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Nov 2020 16:22:28 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2557 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730091AbgKYVW1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Nov 2020 16:22:27 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fbecb1a0000>; Wed, 25 Nov 2020 13:22:34 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 25 Nov
+ 2020 21:22:27 +0000
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.109)
+ by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 25 Nov 2020 21:22:27 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SDVLRvZy7ZJNbS1/8TmE1Kc7a4aL72xbrg7S/vReMm7beA6Cvnk7nP71B/o11MD9x4Zmnjhq4ywpL7M2suzhusybAkNlnslNd8TgdDjICAPuVF8wuwoRjJ6mW25NoEQLXcfNJQs96s6xOMipcQ+ri48hDSMqKkj9w60U8ZtauPSpuBkPGgIyuAdaD5mCDtY4rvDpOBhX/292dCmsou9tH4dM9gjFWiox6zykCJNw9CG1lAW92JTFgmNatm3MNe0WU+TGtCJQ7aFu4fU6l8hqXFFe9MKhc0VqXfrc2heQGK5pRam+jTtFSb8kDFWnHfQMs8SZDWk5Ioe2kmwi7kW/Uw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5Y0EB4TUFa2cpWYQ7sOUIfvw0HMhIDv4p9sC+l57PM4=;
+ b=DjSf5C0QlV4JzOtsvgLSJhe7oXa4pJDD84ZxnMd15R66vi7cw12kG/Bb+tK1fw3Ui7npRTJy5GiZ2+a4lygske01LT01BcfMecaU4mgr771MtNckt0zIhja7NDJ1+A6dUR+yPhxYivbeqQhmCPgzCUFf5W5+PMsZjyAiMYxvklEWqCKq8xPhx24mt0dZ8EKqigi72GIWOrwFfUUYlTN1fryE3JzXd6nGnM7T18wWRwQEWhy8FAyqEMxpob8zjoLERvwA8R6wK7wjuBupdwlREnKFHDIZfr+JC+h35Oc5K3JYDAhRlWc8BY8Ik4BiZfFhaV5XSEnsx++BimzUD3EF7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2937.namprd12.prod.outlook.com (2603:10b6:5:181::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Wed, 25 Nov
+ 2020 21:22:26 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3589.022; Wed, 25 Nov 2020
+ 21:22:26 +0000
+Date:   Wed, 25 Nov 2020 17:22:24 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     Saeed Mahameed <saeedm@nvidia.com>, Eli Cohen <elic@nvidia.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Eli Cohen <eli@mellanox.com>, Mark Bloch <mbloch@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>
+Subject: Re: [PATCH mlx5-next 11/16] net/mlx5: Add VDPA priority to NIC RX
+ namespace
+Message-ID: <20201125212224.GN4800@nvidia.com>
+References: <20201120230339.651609-1-saeedm@nvidia.com>
+ <20201120230339.651609-12-saeedm@nvidia.com>
+ <20201121160155.39d84650@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201122064158.GA9749@mtl-vdi-166.wap.labs.mlnx>
+ <20201124091219.5900e7bb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201124180210.GJ5487@ziepe.ca>
+ <20201124104106.0b1201b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201124194413.GF4800@nvidia.com>
+ <20201125105422.7f90184c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <a841536fe65bb33f1c72ce2455a6eb47a0107565.camel@HansenPartnership.com>
+In-Reply-To: <20201125105422.7f90184c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-ClientProxiedBy: BL0PR02CA0136.namprd02.prod.outlook.com
+ (2603:10b6:208:35::41) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0136.namprd02.prod.outlook.com (2603:10b6:208:35::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Wed, 25 Nov 2020 21:22:25 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ki2F6-001ON4-GS; Wed, 25 Nov 2020 17:22:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606339354; bh=5Y0EB4TUFa2cpWYQ7sOUIfvw0HMhIDv4p9sC+l57PM4=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=o2u/PezeOoBHpHAhhRGiLg/2765g6td3F2vu6iUtzcGPSlN/Sd+NIR+NzSEEyYFn8
+         Bcy8if+4ZEvZehxyCGhq3AFPVmPFHP0X02Hk6dOhRxifBy9i+d44VsdjxwpiVpgJuZ
+         Bty69sfYlgNJ0GEeskVJN40nJW7GjbVvAXPRV0wN5rGo1vf0M5h9w2H+2HR/JOP/pI
+         BX0oj/3XFsWlh8NiuqiZWIxlW8FNN9/09dgzngq/lLNwF0cg/EiBWWY6wWop4G2Kwb
+         LcCK9SNmiO/v2N62UY/mrKL44fFNxC7g0dYGBXAmWbdgHZoeObHyYPYhy1LBz4Mynl
+         KaNwbfMouwyOQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:05:35PM -0800, James Bottomley wrote:
-> Now, what we have seems to be about 6 cases (at least what's been shown
-> in this thread) where a missing break would cause potentially user
-> visible issues.  That means the value of this isn't zero, but it's not
-> a no-brainer massive win either.  That's why I think asking what we've
-> invested vs the return isn't a useless exercise.
+On Wed, Nov 25, 2020 at 10:54:22AM -0800, Jakub Kicinski wrote:
 
-The number is much higher[1]. If it were 6 in the entire history of the
-kernel, I would agree with you. :) Some were fixed _before_ Gustavo's
-effort too, which I also count towards the idea of "this is a dangerous
-weakness in C, and now we have stopped it forever."
+> > RDMA covers a wide range of accelerated networking these days.. Where
+> > else are you going to put this stuff in the kernel?
+> 
+> IDK what else you got in there :) It's probably a case by case answer.
 
-> But the broader point I'm making is just because the compiler people
-> come up with a shiny new warning doesn't necessarily mean the problem
-> it's detecting is one that causes us actual problems in the code base. 
-> I'd really be happier if we had a theory about what classes of CVE or
-> bug we could eliminate before we embrace the next new warning.
+Hmm, yes, it seems endless sometimes :(
+ 
+> IMHO even using libibverbs is no strong reason for things to fall under
+> RDMA exclusively. Client drivers of virtio don't get silently funneled
+> through a separate tree just because they use a certain spec.
 
-But we did! It was long ago justified and documented[2], and even links to
-the CWE[3] for it. This wasn't random joy over discovering a new warning
-we could turn on, this was turning on a warning that the compiler folks
-finally gave us to handle an entire class of flaws. If we need to update
-the code-base to address it not a useful debate -- that was settled
-already, even if you're only discovering it now. :P. This last patch
-set is about finishing that work for Clang, which is correctly even
-more strict than GCC.
+I'm not sure I understand this, libibverbs is the user library to
+interface with the kernel RDMA subsystem. I don't care what apps
+people build on top of it, it doesn't matter to me that netdev and
+DPDK have some kind of feud.
 
--Kees
+> > > I'm sure if you start doing crypto over ibverbs crypto people will want
+> > > to have a look.  
+> > 
+> > Well, RDMA has crypto transforms for a few years now too. 
+> 
+> Are you talking about RDMA traffic being encrypted? That's a different
+> case.
 
-[1] https://outflux.net/slides/2019/lss/kspp.pdf calls out specific
-    numbers (about 6.5% of the patches fixed missing breaks):
-	v4.19:  3 of 129
-	v4.20:  2 of  59
-	v5.0:   3 of  56
-	v5.1:  10 of 100
-	v5.2:   6 of  71
-	v5.3:   7 of  69
+That too, but in general, anything netdev can do can be done via RDMA
+in userspace. So all the kTLS and IPSEC xfrm HW offloads mlx5 supports
+are all available in userspace too.
 
-    And in the history of the kernel, it's been an ongoing source of
-    flaws:
+> > Part of the point of the subsystem split was to end the fighting that
+> > started all of it. It was very clear during the whole iWarp and TCP
+> > Offload Engine buisness in the mid 2000's that netdev wanted nothing
+> > to do with the accelerator world.
+> 
+> I was in middle school at the time, not sure what exactly went down :)
 
-    $ l --no-merges | grep -i 'missing break' | wc -l
-    185
+Ah, it was quite the thing. Microsoft and Co were heavilly pushing TOE
+technology (Microsoft Chimney!) as the next most certain thing and I
+recall DaveM&co was completely against it in Linux.
 
-    The frequency of such errors being "naturally" found was pretty
-    steady until the static checkers started warning, and then it was
-    on the rise, but the full effort flushed the rest out, and now it's
-    dropped to almost zero:
+I will admit at the time I was doubtful, but in hindsight this was the
+correct choice. netdev would not look like it does today if it had
+been shackled by the HW implementations of the day. Instead all this
+HW stuff ended up largely in RDMA and some in block with the iSCSI
+mania of old. It is quite evident to me the mess being tied to HW has
+caused to a SW ecosystem. DRM and RDMA both have a very similiar kind
+of suffering due to this.
 
-      1 v2.6.12
-      3 v2.6.16.28
-      1 v2.6.17
-      1 v2.6.19
-      2 v2.6.21
-      1 v2.6.22
-      3 v2.6.24
-      3 v2.6.29
-      1 v2.6.32
-      1 v2.6.33
-      1 v2.6.35
-      4 v2.6.36
-      3 v2.6.38
-      2 v2.6.39
-      7 v3.0
-      2 v3.1
-      2 v3.2
-      2 v3.3
-      3 v3.4
-      1 v3.5
-      8 v3.6
-      7 v3.7
-      3 v3.8
-      6 v3.9
-      3 v3.10
-      2 v3.11
-      5 v3.12
-      5 v3.13
-      2 v3.14
-      4 v3.15
-      2 v3.16
-      3 v3.17
-      2 v3.18
-      2 v3.19
-      1 v4.0
-      2 v4.1
-      5 v4.2
-      4 v4.5
-      5 v4.7
-      6 v4.8
-      1 v4.9
-      3 v4.10
-      2 v4.11
-      6 v4.12
-      3 v4.13
-      2 v4.14
-      5 v4.15
-      2 v4.16
-      7 v4.18
-      2 v4.19
-      6 v4.20
-      3 v5.0
-     12 v5.1
-      3 v5.2
-      4 v5.3
-      2 v5.4
-      1 v5.8
+However - over the last 20 years it has been steadfast that there is
+*always* a compelling reason for certain applications to use something
+from the accelerator side. It is not for everyone, but the specialized
+applications that need it, *really need it*.
 
+For instance, it is the difference between being able to get a COVID
+simulation result in a few week vs .. well.. never.
 
-    And the reason it's fully zero, is because we still have the cases we're
-    cleaning up right now. Even this last one from v5.8 is specifically of
-    the same type this series addresses:
+> But I'm going by common sense here. Perhaps there was an agreement
+> I'm not aware of?
 
-        case 4:
-                color_index = TrueCModeIndex;
-+               break;
-        default:
-                return;
-        }
+The resolution to the argument above was to split them in Linux.  Thus
+what logically is networking was split up in the kernel between netdev
+and the accelerator subsystems (iscsi, rdma, and so on).
 
+The general notion is netdev doesn't have to accomodate anything an
+accelerator does. If you choose to run them then you do not get to
+complain that your ethtool counters are wrong, your routing tables
+and tc don't work, firewalling doesn't work. Etc.
 
-[2] https://www.kernel.org/doc/html/latest/process/deprecated.html#implicit-switch-case-fall-through
+That is all broken by design.
 
-	All switch/case blocks must end in one of:
+In turn, the accelerators do their own thing, tap the traffic before
+it hits netdev and so on. netdev does not care what goes on over there
+and is not responsible.
 
-	break;
-	fallthrough;
-	continue;
-	goto <label>;
-	return [expression];
+I would say this is the basic unspoken agreement of the last 15 years.
 
-[3] https://cwe.mitre.org/data/definitions/484.html
+Both have a right to exist in Linux. Both have a right to use the
+physical ethernet port.
 
--- 
-Kees Cook
+> > So why would netdev need sign off on any accelerator stuff?
+> 
+> I'm not sure why you keep saying accelerators!
+> 
+> What is accelerated in raw Ethernet frame access??
+
+The nature of the traffic is not relavent.
+
+It goes through RDMA, it is accelerator traffic (vs netdev traffic,
+which goes to netdev). Even if you want to be pedantic, in the raw
+ethernet area there is lots of HW special accelerated stuff going
+on. Mellanox has some really neat hard realtime networking technology
+that works on raw ethernet packets, for instance.
+
+And of course raw ethernet is a fraction of what RDMA covers. iWarp
+and RoCE are much more like you might imagine when you hear the word
+accelerator.
+
+> > Do you want to start co-operating now? I'm willing to talk about how
+> > to do that.
+> 
+> IDK how that's even in question. I always try to bump all RDMA-looking
+> stuff to linux-rdma when it's not CCed there. That's the bare minimum
+> of cooperation I'd expect from anyone.
+
+I mean co-operate in the sense of defining a scheme where the two
+worlds are not completely seperated and isolated.
+
+> > > And our policy on DPDK is pretty widely known.  
+> > 
+> > I honestly have no idea on the netdev DPDK policy,
+> > 
+> > I'm maintaining the RDMA subsystem not DPDK :)
+> 
+> That's what I thought, but turns out DPDK is your important user.
+
+Nonsense.
+
+I don't have stats but the majority of people I work with using RDMA
+are not using DPDK. DPDK serves two somewhat niche markets of NFV and
+certain hyperscalers - RDMA covers the entire scientific computing
+community and a big swath of the classic "Big Iron" enterprise stuff,
+like databases and storage.
+
+> Now IIUC you're tapping traffic for DPDK/raw QPs _before_ all switching
+> happens in the NIC? That breaks the switchdev model. We're back to
+> per-vendor magic.
+
+No, as I explained before, the switchdev completely contains the SF/VF
+and all applications running on a mlx5_core are trapped by it. This
+includes netdev, RDMA and VDPA.
+
+> And why do you need a separate VDPA table in the first place?
+> Forwarding to a VDPA device has different semantics than forwarding to
+> any other VF/SF?
+
+The VDPA table is not switchdev. Go back to my overly long email about
+VDPA, here we are talking about the "selector" that chooses which
+subsystem the traffic will go to. The selector is after switchdev but
+before netdev, VDPA, RDMA.
+
+Each accelerator subsystem gets a table. RDMA, VDPA, and netdev all
+get one. It is some part of the HW to make the selectoring work.
+
+Jason
