@@ -2,119 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B782C353A
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 01:08:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D37FF2C3598
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 01:33:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726521AbgKYAHm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Nov 2020 19:07:42 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:12514 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726466AbgKYAHm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 24 Nov 2020 19:07:42 -0500
-Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fbda04d0000>; Wed, 25 Nov 2020 08:07:41 +0800
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 25 Nov
- 2020 00:07:30 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.174)
- by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 25 Nov 2020 00:07:30 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a8NL82clqwU04R9waT+08G63mlkFvFJW5lrdNpDbzFymV4EiiUvkLjTUdO5RtW9PxPaHweUgy0lgsyY58zWyVWfLKq22G1TVh7kLMWAojZEExFHS7p9IiO7rxs84TSZuizM5FomGWHu/r8+YQRxQbXbf36RZNO2wZZGpLsnD3PsCz4w/YJczHhHDk4ikrpDqxSyl9U25xC/QmPvIpGKLTss0yHbbSQg7NkPCCY56XiC8wty3gcQKVSUpCoOoXoQh1nauJLIkYEUOTXE5BrGZ4CixYriWnUSX16iYpPNwV8nh7Sg8QViGZMcxCoWxTB/5vSkcaTFam0bX7CL5m1krrw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/U7WD/vzDUTRLY0TuN9s5JI791Aa+KHiJZaN+7M6dUU=;
- b=Qgzj3pWiwTHjUOzAeU/DSSoRT9QKYk+I4OBpzQLHuWa+4Ks2fnoirBwSyOQlNrbB7d/bWKHAXsyva/58iieq4xfCsAzfapRgdyrusI1FNtfqbHU71PhC2R1Tf26S/Z270Gg8MUmCLyDEZT98P9nECNHhEgPr51yzBxZ/Phih04SxMcAyiR/azBUKlsDpfj5GA9gRhHXVAYU8ulWHg9c/QoSZXDVmycvipNTlKjU/Omx062KmDvf20niwy+ZvJVPJaRkegHxLnq7MqHitB3nbEFoz7zsvuqSiMKJJWL9hfH+w5vUms6npq2mnXwRziNj3C1dj4JQmY6neV43J+mGUFA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4338.namprd12.prod.outlook.com (2603:10b6:5:2a2::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.21; Wed, 25 Nov
- 2020 00:07:28 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::e40c:730c:156c:2ef9%7]) with mapi id 15.20.3589.022; Wed, 25 Nov 2020
- 00:07:28 +0000
-Date:   Tue, 24 Nov 2020 20:07:26 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Shiraz Saleem <shiraz.saleem@intel.com>
-CC:     <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        <stable@kernel.org>, Di Zhu <zhudi21@huawei.com>
-Subject: Re: [PATCH v1 1/2] RDMA/i40iw: Address an mmap handler exploit in
- i40iw
-Message-ID: <20201125000726.GG4800@nvidia.com>
-References: <20201124235102.1745-1-shiraz.saleem@intel.com>
- <20201124235102.1745-2-shiraz.saleem@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201124235102.1745-2-shiraz.saleem@intel.com>
-X-ClientProxiedBy: MN2PR05CA0053.namprd05.prod.outlook.com
- (2603:10b6:208:236::22) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1727514AbgKYAcc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Nov 2020 19:32:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbgKYAca (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Nov 2020 19:32:30 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA17C0613D6;
+        Tue, 24 Nov 2020 16:32:29 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id x25so81283qkj.3;
+        Tue, 24 Nov 2020 16:32:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QqqubA90NyDjnD5SH+OxnZbso0TzlLiuZ5gzRUm0zsY=;
+        b=DYdo15DH5n4eMCA51W2vXZfybVLPbTpwO6CR+j1CET94cx9FmUQEkAzz4OadVdmrht
+         /5QscdfYh1sAKLvu6dkrheNjvEoR4Mdvvl3diWkBzFiGJNP9BCqxLhr4zTkKEaaVMxi5
+         qUA6kNkUTJzI9KEPxIujLpbBVVOhJKSQSAf+FeTM6jY84RGcXl9jGks4AfD2ojo1GxQQ
+         uEwHm9wuAxdOf70IRL+AXs8sujZOQd+kSEI1eU2QAsFia5W6QaIddZOITngYX9DSKM5R
+         mNvBJUTqyzODtQONxErP8O8dRkCcVm25oDOfEuyrse782pSy0gFJjFFgzHOgMIi8mZem
+         jSGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QqqubA90NyDjnD5SH+OxnZbso0TzlLiuZ5gzRUm0zsY=;
+        b=snqjE+pgbH+a6/A7jPlUdXy2whhW302EjrjCMPv8wi67+5UYB1mcpxLsEMa2AwWdgE
+         Z3ogb3mnS6cm39pBmugB8Yyu3qPz760xuqoEdTA1d8tmPLlwAVAV87k5lE6QwmJQRd9e
+         bUxQIDg/Aaoiuj5RrObJi3RhJzwmp+x9jUs2l/R/QX5GALJ5ha3cBth6BWrqbsnY+SlQ
+         9oM5wRkqwL45XieMtADalKIGCusgMlLWbdZl9/yyhUjSbsPmZba8gE28h7YJsD1zRePl
+         9PJZy42UDve6Tl95p/M8loj5o0/C+9jo+P8wdQPCB7Hs234mYNhFWxcaapjdhHr5aCdM
+         iBSQ==
+X-Gm-Message-State: AOAM532bS9JGxvfssjcio/Twt5CRLZKuxDtn69ZFpXhjuvaRA8Ki9on5
+        /J2Dw0UU4S5F0wRU7qA4z43bOMQibjftG4sZpvQ=
+X-Google-Smtp-Source: ABdhPJwwVKQFQuxzNO/2Mi/lJ3RUII3vPq9FIwhq+sZ6y3vyBbFPDKm/uCaEGwo9LU3j1fjBVCpYTO563lD14rGXSok=
+X-Received: by 2002:a25:5f0f:: with SMTP id t15mr779915ybb.26.1606264348932;
+ Tue, 24 Nov 2020 16:32:28 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR05CA0053.namprd05.prod.outlook.com (2603:10b6:208:236::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.11 via Frontend Transport; Wed, 25 Nov 2020 00:07:28 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1khiLG-00121w-QA; Tue, 24 Nov 2020 20:07:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606262861; bh=3KvC0HxyPKSqD1qnkGn2hF7YW/abOqdIVajQoVP0ui4=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:Content-Transfer-Encoding:In-Reply-To:
-         X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=mN/afRqtZc1Mg2zzIhkQ98CJ90aLjswnVRSpW8zR9lkV/vaK2/I4VWVleP1I2Jw+D
-         ZhFP1Dqq5bmHk9QzUprYYpl+FfSianVMQne+KgZfPUnorCnd9rH0MJk0tEeMbhH1fu
-         Ydbp/MX/7QycRrzDW/6aM7p6XDPkoCT/cZ2aavA+933D113QLBseIf0wIc95wQVTtY
-         +EAQngkfjNeeCtQur4jiOU/mwAbC/MtX7kS9lXobCaBx4O2JrOfI/w/IPgBtFYO4xp
-         ANvZdS4RoT5iC3cy8w3HHDKbYggJok87+qSxCIRMDJqICTT85r7qMGblyyX/ScqDGt
-         kq5bqkntnX8oQ==
+References: <cover.1605896059.git.gustavoars@kernel.org> <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com>
+ <CANiq72nZrHWTA4_Msg6MP9snTyenC6-eGfD27CyfNSu7QoVZbw@mail.gmail.com>
+ <1c7d7fde126bc0acf825766de64bf2f9b888f216.camel@HansenPartnership.com>
+ <CANiq72m22Jb5_+62NnwX8xds2iUdWDMAqD8PZw9cuxdHd95W0A@mail.gmail.com>
+ <fc45750b6d0277c401015b7aa11e16cd15f32ab2.camel@HansenPartnership.com>
+ <CANiq72k5tpDoDPmJ0ZWc1DGqm+81Gi-uEENAtvEs9v3SZcx6_Q@mail.gmail.com> <4993259d01a0064f8bb22770503490f9252f3659.camel@HansenPartnership.com>
+In-Reply-To: <4993259d01a0064f8bb22770503490f9252f3659.camel@HansenPartnership.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 25 Nov 2020 01:32:17 +0100
+Message-ID: <CANiq72kqO=bYMJnFS2uYRpgWATJ=uXxZuNUsTXT+3aLtrpnzvQ@mail.gmail.com>
+Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org,
+        bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org,
+        cluster-devel@redhat.com, coreteam@netfilter.org,
+        devel@driverdev.osuosl.org, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, dri-devel@lists.freedesktop.org,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        intel-gfx@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org,
+        keyrings@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+        linux-acpi@vger.kernel.org, linux-afs@lists.infradead.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-block@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-cifs@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fbdev@vger.kernel.org, linux-geode@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
+        linux-ide@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        op-tee@lists.trustedfirmware.org, oss-drivers@netronome.com,
+        patches@opensource.cirrus.com, rds-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org, samba-technical@lists.samba.org,
+        selinux@vger.kernel.org, target-devel@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        usb-storage@lists.one-eyed-alien.net,
+        virtualization@lists.linux-foundation.org,
+        wcn36xx@lists.infradead.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-hardening@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 05:51:02PM -0600, Shiraz Saleem wrote:
-> i40iw_mmap manipulates the vma->vm_pgoff to differentiate a push page
-> mmap vs a doorbell mmap, and uses it to compute the pfn in remap_pfn_rang=
-e
-> without any validation. This is vulnerable to an mmap exploit as
-> described in [1].
->=20
-> Push feature is disabled in the driver currently and therefore no push
-> mmaps are issued from user-space. The feature does not work as expected
-> in the x722 product.
->=20
-> Remove the push module parameter and all VMA attribute manipulations
-> for this feature in i40iw_mmap. Update i40iw_mmap to only allow DB
-> user mmapings at offset =3D 0. Check vm_pgoff for zero and if the mmaps
-> are bound to a single page.
->=20
-> [1] https://lore.kernel.org/linux-rdma/20201119093523.7588-1-zhudi21@huaw=
-ei.com/raw
->=20
-> Fixes: d37498417947 ("i40iw: add files for iwarp interface")
-> Cc: stable@kernel.org
-> Reported-by: Di Zhu <zhudi21@huawei.com>
-> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
->  drivers/infiniband/hw/i40iw/i40iw_main.c  |    4 ---
->  drivers/infiniband/hw/i40iw/i40iw_verbs.c |   37 +++++------------------=
------
->  2 files changed, 7 insertions(+), 34 deletions(-)
+On Mon, Nov 23, 2020 at 9:38 PM James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>
+> So you think a one line patch should take one minute to produce ... I
+> really don't think that's grounded in reality.
 
-Please compile your patches:
+No, I have not said that. Please don't put words in my mouth (again).
 
-drivers/infiniband/hw/i40iw/i40iw_main.c: In function =E2=80=98i40iw_setup_=
-init_state=E2=80=99:
-drivers/infiniband/hw/i40iw/i40iw_main.c:1579:21: error: =E2=80=98push_mode=
-=E2=80=99 undeclared (first use in this function); did you mean =E2=80=98us=
-er_mode=E2=80=99?
- 1579 |  iwdev->push_mode =3D push_mode;
-      |                     ^~~~~~~~~
-      |                     user_mode
-drivers/infiniband/hw/i40iw/i40iw_main.c:1579:21: note: each undeclared ide=
-ntifier is reported only once for each function it appears in
+I have said *authoring* lines of *this* kind takes a minute per line.
+Specifically: lines fixing the fallthrough warning mechanically and
+repeatedly where the compiler tells you to, and doing so full-time for
+a month.
 
-Jason
+For instance, take the following one from Gustavo. Are you really
+saying it takes 12 minutes (your number) to write that `break;`?
+
+diff --git a/drivers/gpu/drm/via/via_irq.c b/drivers/gpu/drm/via/via_irq.c
+index 24cc445169e2..a3e0fb5b8671 100644
+--- a/drivers/gpu/drm/via/via_irq.c
++++ b/drivers/gpu/drm/via/via_irq.c
+@@ -364,6 +364,7 @@ int via_wait_irq(struct drm_device *dev, void
+*data, struct drm_file *file_priv)
+                irqwait->request.sequence +=
+                        atomic_read(&cur_irq->irq_received);
+                irqwait->request.type &= ~_DRM_VBLANK_RELATIVE;
++               break;
+        case VIA_IRQ_ABSOLUTE:
+                break;
+        default:
+
+>  I suppose a one line
+> patch only takes a minute to merge with b4 if no-one reviews or tests
+> it, but that's not really desirable.
+
+I have not said that either. I said reviewing and merging those are
+noise compared to any complex patch. Testing should be done by the
+author comparing codegen.
+
+> Part of what I'm trying to measure is the "and useful" bit because
+> that's not a given.
+
+It is useful since it makes intent clear. It also catches actual bugs,
+which is even more valuable.
+
+> Well, you know, subsystems are very different in terms of the amount of
+> patches a maintainer has to process per release cycle of the kernel.
+> If a maintainer is close to capacity, additional patches, however
+> trivial, become a problem.  If a maintainer has spare cycles, trivial
+> patches may look easy.
+
+First of all, voluntary maintainers choose their own workload.
+Furthermore, we already measure capacity in the `MAINTAINERS` file:
+maintainers can state they can only handle a few patches. Finally, if
+someone does not have time for a trivial patch, they are very unlikely
+to have any time to review big ones.
+
+> You seem to be saying that because you find it easy to merge trivial
+> patches, everyone should.
+
+Again, I have not said anything of the sort.
+
+Cheers,
+Miguel
