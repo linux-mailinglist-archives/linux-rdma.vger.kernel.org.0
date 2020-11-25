@@ -2,154 +2,261 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3444E2C423F
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 15:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D202C424B
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 15:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729904AbgKYOiB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Nov 2020 09:38:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729482AbgKYOiB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Nov 2020 09:38:01 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAF5C0613D4;
-        Wed, 25 Nov 2020 06:38:00 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id u21so2318689iol.12;
-        Wed, 25 Nov 2020 06:38:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+FWS0S6MIFKcLijSc7gkDfW5vqGQ+TSuTXybIpZdRMM=;
-        b=XxJuDp1M9GgjnaTupdyln/fjw3NUs/Ni/CQexKbfNFj6xqMp6sei964Bbl3ar/2nqw
-         pw5l5mPddjXX6pk7fZkkQ9IG6u2+ASu1EjJqjnjVLnlk3QJ9zEF7aMvaZndsqbvV6uEs
-         I4wiSf6dEh/iTByoiMbQwZ47v9XX1YFx+PJNMKbwd4ecdELZUizuUZKJ8Z054GmDgJ6P
-         1oG9JEz/lMherLX2XYYLVO3JsXtNvHn9eJLjDqskWsFvPArAJFklR+WwkgiJw0Xr3QOl
-         kX5tXXU54+STbCPepodQxMZ5h7jpXuTabQhwdqpdjE92bbENCZj+6BBihZj7T3K16nmg
-         PyrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+FWS0S6MIFKcLijSc7gkDfW5vqGQ+TSuTXybIpZdRMM=;
-        b=HSdZUw3s+V6p/TYZPMay1xX+6dRKBrF5cv7+tDThB4v2rt2UyIsbO0LQ/amKMxPQ7Y
-         ulJiH9ScdcmwByZO6hNBUnQzz3VJCZIp1iAPVICml1YmYY6GqUdPxdMXJo6t3TjDv+2t
-         miW98wRsIcbm87pr1HAvFjNVZscz2+PEgu5Gyl5aXpaKuLNKjVNXyrCVH6Kxts7uq7J0
-         s83IiskqLFdBDRuIGNoIhwFOkFxcX4B5+EhJaeNd8cAe0/AYkRKKFyrhLcvmte5Y9nkH
-         JS8WbU2MIzLp7en3aR9W6+bscvQ72GKkHMSQzrgoCtLPKxeKfio1OivaHJgLv+SpBYNS
-         pS2w==
-X-Gm-Message-State: AOAM532TmSY9s+4o2JbUOdLcZ0+3Y0mP0ua/dJo9Wp0XqJJzTLtIhjYO
-        o2kLowVsdKnxgSzjFnZbzUU=
-X-Google-Smtp-Source: ABdhPJzGaeGIOPm+AtI62wEckRRiQ5oECNA4GiOIyluui8NcQ3e4Q9po3VBw98gG8y/9oPHRAS49AQ==
-X-Received: by 2002:a02:c546:: with SMTP id g6mr3628348jaj.126.1606315080139;
-        Wed, 25 Nov 2020 06:38:00 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([2601:284:8203:54f0:b920:c7b8:6a02:a6c0])
-        by smtp.googlemail.com with ESMTPSA id m2sm1445177ilj.24.2020.11.25.06.37.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Nov 2020 06:37:59 -0800 (PST)
-Subject: Re: [PATCH net-next 00/13] Add mlx5 subfunction support
-To:     Parav Pandit <parav@nvidia.com>, Saeed Mahameed <saeed@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jiri Pirko <jiri@nvidia.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>
-References: <20201112192424.2742-1-parav@nvidia.com>
- <20201116145226.27b30b1f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <cdd576ebad038a3a9801e7017b7794e061e3ddcc.camel@kernel.org>
- <20201116175804.15db0b67@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <BY5PR12MB43229F23C101AFBCD2971534DCE20@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20201117091120.0c933a4c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <20201117184954.GV917484@nvidia.com>
- <20201118181423.28f8090e@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <96e59cf0-1423-64af-1da9-bd740b393fa8@gmail.com>
- <29c4d7854faaea6db33136a448a8d2f53d0cfd72.camel@kernel.org>
- <8e6de69c-c979-1f22-067d-24342cfbff52@gmail.com>
- <BY5PR12MB43221CF1FAD99DF931ADE99CDCFA0@BY5PR12MB4322.namprd12.prod.outlook.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <9a5d1d5e-a12c-3cc1-b433-4920fb595fc3@gmail.com>
-Date:   Wed, 25 Nov 2020 07:37:58 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
+        id S1729803AbgKYOmP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Nov 2020 09:42:15 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14611 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726508AbgKYOmP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Nov 2020 09:42:15 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fbe6d4c0000>; Wed, 25 Nov 2020 06:42:20 -0800
+Received: from [172.27.12.45] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 25 Nov
+ 2020 14:42:01 +0000
+Subject: Re: [PATCH rdma-core v2 5/6] tests: Add tests for dma-buf based
+ memory regions
+To:     Jianxin Xiong <jianxin.xiong@intel.com>
+CC:     <linux-rdma@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        "Doug Ledford" <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+References: <1606253934-67181-1-git-send-email-jianxin.xiong@intel.com>
+ <1606253934-67181-6-git-send-email-jianxin.xiong@intel.com>
+From:   Yishai Hadas <yishaih@nvidia.com>
+Message-ID: <6a0572f6-b196-f0e7-46fe-1776e92fa4f0@nvidia.com>
+Date:   Wed, 25 Nov 2020 16:41:58 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <BY5PR12MB43221CF1FAD99DF931ADE99CDCFA0@BY5PR12MB4322.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <1606253934-67181-6-git-send-email-jianxin.xiong@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606315340; bh=V5/MiCa8kRq5NnaCXyoNMC54PDTkXJKOl8PHnjYsR4w=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=TMeXTFK0MNwKUpy/SGUEGtv2MOK+vQDJ4xL/Xzr6gAqwir1cf1fWeGAANm7vdRdmB
+         GOCKjrBI7obxGrhC/Q1KFqpMq7Ac89HecYTMzCBo3aqNK+K3l0DwG/f0MYvvFSO9YD
+         4eiXtOakTMhfQeiWFpTUXttFXj3SV0VAiX1O01TOQkmp2sWjUnITkXvuZzz51Z49od
+         M0HyQCHaHEJ8+C0Vj64T9zZD6D5ae3Au/M7DtX5JIzJls3R6xil/NdXv16bqZO/ceO
+         adgH9d0OkYIxYTFKZ+xmmu9SQLJ2wBIE16UWusTTI4wBpNiLJcUNepAbusAfWNGcfH
+         vWgGV43l078HQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/24/20 11:00 PM, Parav Pandit wrote:
-> Hi David,
-> 
->> From: David Ahern <dsahern@gmail.com>
->> Sent: Wednesday, November 25, 2020 11:04 AM
->>
->> On 11/18/20 10:57 PM, Saeed Mahameed wrote:
->>>
->>> We are not slicing up any queues, from our HW and FW perspective SF ==
->>> VF literally, a full blown HW slice (Function), with isolated control
->>> and data plane of its own, this is very different from VMDq and more
->>> generic and secure. an SF device is exactly like a VF, doesn't steal
->>> or share any HW resources or control/data path with others. SF is
->>> basically SRIOV done right.
->>
->> What does that mean with respect to mac filtering and ntuple rules?
->>
->> Also, Tx is fairly easy to imagine, but how does hardware know how to direct
->> packets for the Rx path? As an example, consider 2 VMs or containers with the
->> same destination ip both using subfunction devices.
-> Since both VM/containers are having same IP, it is better to place them in different L2 domains via vlan, vxlan etc.
+On 11/24/2020 11:38 PM, Jianxin Xiong wrote:
+> Define a full set of tests similar to regular MR tests. Add a utility
+> function to generate access flags for dma-buf based MRs because the
+> set of supported flags is smaller.
 
-ok, so relying on <vlan, dmac> pairs.
 
-> 
->> How does the nic know how to direct the ingress flows to the right queues for
->> the subfunction?
->>
-> Rx steering occurs through tc filters via representor netdev of SF.
-> Exactly same way as VF representor netdev operation.
-> 
-> When devlink eswitch port is created as shown in example in cover letter, and also in patch-12, it creates the representor netdevice.
-> Below is the snippet of it.
-> 
-> Add a devlink port of subfunction flavour:
-> $ devlink port add pci/0000:06:00.0 flavour pcisf pfnum 0 sfnum 88
-> 
-> Configure mac address of the port function:
-> $ devlink port function set ens2f0npf0sf88 hw_addr 00:00:00:00:88:88
->                                                 ^^^^^^^^^^^^^^
-> This is the representor netdevice. It is created by port add command.
-> This name is setup by systemd/udev v245 and higher by utilizing the existing phys_port_name infrastructure already exists for PF and VF representors.
+Looking on the tests, It doesn't seem that the registered dma-buf lkey 
+is used with some RDMA traffic, right ?
 
-hardware ensures only packets with that dmac are sent to the subfunction
-device.
+Let's please use it in some test to cover a real use case of RDMA.
 
-> 
-> Now user can add unicast rx tc rule for example,
-> 
-> $ tc filter add dev ens2f0np0 parent ffff: prio 1 flower dst_mac 00:00:00:00:88:88 action mirred egress redirect dev ens2f0npf0sf88
-> 
-> I didn't cover this tc example in cover letter, to keep it short.
-> But I had a one line description as below in the 'detail' section of cover-letter.
-> Hope it helps.
-> 
-> - A SF supports eswitch representation and tc offload support similar
->   to existing PF and VF representors.
-> 
-> Now above portion answers, how to forward the packet to subfunction.
-> But how to forward to the right rx queue out of multiple rxqueues?
-> This is done by the rss configuration done by the user, number of channels from ethtool.
-> Just like VF and PF.
-> The driver defaults are similar to VF, which user can change via ethtool.
-> 
+>
+> Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+> ---
+>   tests/test_mr.py | 130 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+>   tests/utils.py   |  25 +++++++++++
+>   2 files changed, 154 insertions(+), 1 deletion(-)
+>
+> diff --git a/tests/test_mr.py b/tests/test_mr.py
+> index adc649c..8d7f002 100644
+> --- a/tests/test_mr.py
+> +++ b/tests/test_mr.py
+> @@ -9,9 +9,10 @@ import errno
+>   
+>   from tests.base import PyverbsAPITestCase, RCResources, RDMATestCase
+>   from pyverbs.pyverbs_error import PyverbsRDMAError, PyverbsError
+> -from pyverbs.mr import MR, MW, DMMR, MWBindInfo, MWBind
+> +from pyverbs.mr import MR, MW, DMMR, DmaBufMR, MWBindInfo, MWBind
+>   from pyverbs.qp import QPCap, QPInitAttr, QPAttr, QP
+>   from pyverbs.wr import SendWR
+> +from pyverbs.dmabuf import DmaBuf
+>   import pyverbs.device as d
+>   from pyverbs.pd import PD
+>   import pyverbs.enums as e
+> @@ -366,3 +367,130 @@ class DMMRTest(PyverbsAPITestCase):
+>                           dm_mr = DMMR(pd, dm_mr_len, e.IBV_ACCESS_ZERO_BASED,
+>                                        dm=dm, offset=dm_mr_offset)
+>                           dm_mr.close()
+> +
+> +class DmaBufMRTest(PyverbsAPITestCase):
+> +    """
+> +    Test various functionalities of the DmaBufMR class.
+> +    """
+> +    def test_dmabuf_reg_mr(self):
+> +        """
+> +        Test ibv_reg_dmabuf_mr()
+> +        """
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                flags = u.get_dmabuf_access_flags(ctx)
+> +                for f in flags:
+> +                    len = u.get_mr_length()
+> +                    off = random.randint(0, len//2)
+> +                    with DmaBufMR(pd, len, f, offset=off) as mr:
+> +                        pass
+> +
+> +    def test_dmabuf_dereg_mr(self):
+> +        """
+> +        Test ibv_dereg_mr() with DmaBufMR
+> +        """
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                flags = u.get_dmabuf_access_flags(ctx)
+> +                for f in flags:
+> +                    len = u.get_mr_length()
+> +                    off = random.randint(0, len//2)
+> +                    with DmaBufMR(pd, len, f, offset=off) as mr:
+> +                        mr.close()
+> +
+> +    def test_dmabuf_dereg_mr_twice(self):
+> +        """
+> +        Verify that explicit call to DmaBufMR's close() doesn't fail
+> +        """
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                flags = u.get_dmabuf_access_flags(ctx)
+> +                for f in flags:
+> +                    len = u.get_mr_length()
+> +                    off = random.randint(0, len//2)
+> +                    with DmaBufMR(pd, len, f, offset=off) as mr:
+> +                        # Pyverbs supports multiple destruction of objects,
+> +                        # we are not expecting an exception here.
+> +                        mr.close()
+> +                        mr.close()
+> +
+> +    def test_dmabuf_reg_mr_bad_flags(self):
+> +        """
+> +        Verify that illegal flags combination fails as expected
+> +        """
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                for i in range(5):
+> +                    flags = random.sample([e.IBV_ACCESS_REMOTE_WRITE,
+> +                                           e.IBV_ACCESS_REMOTE_ATOMIC],
+> +                                          random.randint(1, 2))
+> +                    mr_flags = 0
+> +                    for i in flags:
+> +                        mr_flags += i.value
+> +                    try:
+> +                        DmaBufMR(pd, u.get_mr_length(), mr_flags)
+> +                    except PyverbsRDMAError as err:
+> +                        assert 'Failed to register a dma-buf MR' in err.args[0]
+> +                    else:
+> +                        raise PyverbsRDMAError('Registered a dma-buf MR with illegal falgs')
+> +
+> +    def test_dmabuf_write(self):
+> +        """
+> +        Test writing to DmaBufMR's buffer
+> +        """
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                for i in range(10):
+> +                    mr_len = u.get_mr_length()
+> +                    mr_off = random.randint(0, mr_len//2)
+> +                    flags = u.get_dmabuf_access_flags(ctx)
+> +                    for f in flags:
+> +                        with DmaBufMR(pd, mr_len, f, offset=mr_off) as mr:
+> +                            write_len = min(random.randint(1, MAX_IO_LEN),
+> +                                            mr_len)
+> +                            mr.write('a' * write_len, write_len)
+> +
+> +    def test_dmabuf_read(self):
+> +        """
+> +        Test reading from DmaBufMR's buffer
+> +        """
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                for i in range(10):
+> +                    mr_len = u.get_mr_length()
+> +                    mr_off = random.randint(0, mr_len//2)
+> +                    flags = u.get_dmabuf_access_flags(ctx)
+> +                    for f in flags:
+> +                        with DmaBufMR(pd, mr_len, f, offset=mr_off) as mr:
+> +                            write_len = min(random.randint(1, MAX_IO_LEN),
+> +                                            mr_len)
+> +                            write_str = 'a' * write_len
+> +                            mr.write(write_str, write_len)
+> +                            read_len = random.randint(1, write_len)
+> +                            offset = random.randint(0, write_len-read_len)
+> +                            read_str = mr.read(read_len, offset).decode()
+> +                            assert read_str in write_str
+> +
+> +    def test_dmabuf_lkey(self):
+> +        """
+> +        Test reading lkey property
+> +        """
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                length = u.get_mr_length()
+> +                flags = u.get_dmabuf_access_flags(ctx)
+> +                for f in flags:
+> +                    with DmaBufMR(pd, length, f) as mr:
+> +                        mr.lkey
+> +
+> +    def test_dmabuf_rkey(self):
+> +        """
+> +        Test reading rkey property
+> +        """
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                length = u.get_mr_length()
+> +                flags = u.get_dmabuf_access_flags(ctx)
+> +                for f in flags:
+> +                    with DmaBufMR(pd, length, f) as mr:
+> +                        mr.rkey
+> diff --git a/tests/utils.py b/tests/utils.py
+> index 7039f41..0ad7110 100644
+> --- a/tests/utils.py
+> +++ b/tests/utils.py
+> @@ -94,6 +94,31 @@ def get_access_flags(ctx):
+>       return arr
+>   
+>   
+> +def get_dmabuf_access_flags(ctx):
+> +    """
+> +    Similar to get_access_flags, except that dma-buf MR only support
+> +    a subset of the flags.
+> +    :param ctx: Device Context to check capabilities
+> +    :return: A random legal value for MR flags
+> +    """
+> +    attr = ctx.query_device()
+> +    vals = [e.IBV_ACCESS_LOCAL_WRITE, e.IBV_ACCESS_REMOTE_WRITE,
+> +            e.IBV_ACCESS_REMOTE_READ, e.IBV_ACCESS_REMOTE_ATOMIC,
+> +            e.IBV_ACCESS_RELAXED_ORDERING]
+> +    if not attr.atomic_caps & e.IBV_ATOMIC_HCA:
+> +        vals.remove(e.IBV_ACCESS_REMOTE_ATOMIC)
+> +    arr = []
+> +    for i in range(1, len(vals)):
+> +        tmp = list(com(vals, i))
+> +        tmp = filter(filter_illegal_access_flags, tmp)
+> +        for t in tmp:  # Iterate legal combinations and bitwise OR them
+> +            val = 0
+> +            for flag in t:
+> +                val += flag.value
+> +            arr.append(val)
+> +    return arr
+> +
+> +
+>   def get_dm_attrs(dm_len):
+>       """
+>       Initializes an AllocDmAttr member with the given length and random
 
-so users can add flow steering or drop rules to SF devices.
 
-thanks,
