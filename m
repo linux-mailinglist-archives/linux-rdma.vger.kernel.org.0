@@ -2,171 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB922C4845
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 20:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0618B2C4851
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Nov 2020 20:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728285AbgKYT1M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Nov 2020 14:27:12 -0500
-Received: from mga17.intel.com ([192.55.52.151]:8891 "EHLO mga17.intel.com"
+        id S1728493AbgKYT2j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Nov 2020 14:28:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727848AbgKYT1L (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:27:11 -0500
-IronPort-SDR: JCrpNHuu9P0CZIf55ah0x30A/pWHYQghoQFACZIv9BaNIptjSoFKKU9APahUHOap8LOy3EEKVx
- ENRt11Kd6rgw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="152025059"
-X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
-   d="scan'208";a="152025059"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2020 11:27:11 -0800
-IronPort-SDR: M+b2LmzxJOf2GU6Bpoh91aEtRf8ltfUKq152CET0wdA34zi5AdPoSRANimJnJs/DBIYu1uIGc+
- ceY3rvaFHntA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,370,1599548400"; 
-   d="scan'208";a="365530639"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga002.fm.intel.com with ESMTP; 25 Nov 2020 11:27:11 -0800
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 25 Nov 2020 11:27:10 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 25 Nov 2020 11:27:10 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.103)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Wed, 25 Nov 2020 11:27:10 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ftRiyu9V2kyCq/g60b8RP+hI2i2P7DjfxR4Ccco5uGVttf1J107Lf3+2t2r5hPTaSLLJt0BO8TVOGz12CG4jMZpQQzOYgKO/61QXeGAwWAnDbZ6cHTCJX9tXwbtqO2V9XVH/H/l72khAOkNO3ZK/bDV0F/hYkcF7RqGv/mJ4HzJJD6AvSUdk/DJD1dB3KrSNUEU8g2rHHslfasyIrMCGBvy9izLYlRAF3MJzDU5fr9rbeINDD9nZekaXIr8WiLuGA+2kJpnAWvdmBb4nwZLyw2KUI+YI51iavnmaGJ7gp8RWX/iTUrzuqmvw+jM8WgPcpbOlYHku4EUrv/S29Nq2Fg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6P7JnzIkmW+9Ex1vWhoSVZ/46d+7W0uSMcPylvO+lbM=;
- b=T9OLT0lCgmBzK2at+JHWm0P8QoQhHtziaxFsMjRwpfLAqIO17e2zQtyq8Aa/HVKEdG/zLIL2kYm0c0n09pneZHAyOGfPyQC5w4Y5Sz2pFqFlTbl1+3xwesHU2M925ADU6CQiZinVD544ks1uYzQEClOyFw/IqF9PYHeUtnWUxaMCSalwDjzCQ/rDX4plWdMnvkXBQ6IjcKTY7RRJ0g2ItEQqTDw98NNhYfO0IBiRabDPs/EI+bDAjfRFrVBv/VY9V1oVo8rPk2Tg6Za6Kin6GYgSMd1R7uH9zpVfwXsNdW2t5AphTKdcMyuZSChUdcum8hTJNaI3MwxVutP04Nmcfg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6P7JnzIkmW+9Ex1vWhoSVZ/46d+7W0uSMcPylvO+lbM=;
- b=BEx9lAMIR/J1zSO5dI/J7VY9hKfmvYSkVR9AZJhw0LDfkR0Guk0hic2qI+eQx+2CahZcL0BhA2WrJFoiVMFP8SQzkpjM9vhAfe4NGcS9G9ClBHGMN4EEgehdCua9d+099wuAk2UDgHi8AfPh+4jQwDyurrb6cwfvIoglVKZr1G8=
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
- by MW3PR11MB4602.namprd11.prod.outlook.com (2603:10b6:303:52::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20; Wed, 25 Nov
- 2020 19:27:07 +0000
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::7510:71a5:3cfe:ab94]) by MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::7510:71a5:3cfe:ab94%8]) with mapi id 15.20.3589.030; Wed, 25 Nov 2020
- 19:27:07 +0000
-From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Daniel Vetter <daniel@ffwll.ch>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "Vetter, Daniel" <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Subject: RE: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
-Thread-Topic: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
-Thread-Index: AQHWwb+RTBTJqBZYLEWXdlNPeqTq1qnWAtcAgAFjXQCAADV8kIABEnOAgAAXigCAAHeKoA==
-Date:   Wed, 25 Nov 2020 19:27:07 +0000
-Message-ID: <MW3PR11MB4555A91A6CF5D23AD538EF34E5FA0@MW3PR11MB4555.namprd11.prod.outlook.com>
-References: <1606153984-104583-1-git-send-email-jianxin.xiong@intel.com>
- <1606153984-104583-4-git-send-email-jianxin.xiong@intel.com>
- <20201123180504.GA244516@ziepe.ca>
- <20201124151658.GT401619@phenom.ffwll.local>
- <MW3PR11MB45554AAEB1C370A78EB87816E5FB0@MW3PR11MB4555.namprd11.prod.outlook.com>
- <20201125105041.GX401619@phenom.ffwll.local> <20201125121456.GM5487@ziepe.ca>
-In-Reply-To: <20201125121456.GM5487@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: ziepe.ca; dkim=none (message not signed)
- header.d=none;ziepe.ca; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [73.53.14.45]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e88e6a31-0aa2-453b-1547-08d8917818cc
-x-ms-traffictypediagnostic: MW3PR11MB4602:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW3PR11MB46020C9AC5099C4D7842FCD8E5FA0@MW3PR11MB4602.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:248;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DqEcRp2YIigrrjKnKtARxPWRgq1VW+MXiLziogBtNOuiypst+xpaPT6P+7YJkf02R7zPrBMDbjrBDdYrqgYDif+vOUvK8uZYhQcOpv6RSlsJSfcBBWsr6+1YYrPBDRVq3ksIIJpVt/0nuvhi3eKFasYFWuhu3MQQMuDsH6nyRUFgdZ2/FOLKpzBCtmeykRplNwe6nsM8Y+9mWSToFwqHu8hmywEPNHkkVuHWc8maT1BHWWSywiK5GnqJyfNWwNlDfAZZFj7YxV0mNjiA9tuGoBbhrQRUbkysT21HVEshv+OY4klsE+iPWCLNMsZORSDfdk2RCkQwCvY2ejJtiYrZ3A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(366004)(346002)(136003)(396003)(9686003)(186003)(71200400001)(33656002)(66946007)(8676002)(52536014)(316002)(55016002)(76116006)(66446008)(66476007)(83380400001)(66556008)(8936002)(64756008)(2906002)(478600001)(86362001)(7696005)(6506007)(110136005)(4326008)(54906003)(53546011)(26005)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?/8CqosiMjr/MUFDLP81YGJ9fUB8CC7wwHMKQ3lcRcSdsgYtwYQ+cqH02R7ds?=
- =?us-ascii?Q?ufr7SLLmgNvjNqhtgUUFI/VsEsq4FbnWpHb4Pi4fgeTpoClSn/x+70TuFOOO?=
- =?us-ascii?Q?EQKNHNlCIR5Zz307SRKPNNjlgiH4bBa1Fg+AsE8/6IV1y2wChi1IJYZli5Hk?=
- =?us-ascii?Q?Sox7n9kCXtPiGv5KuNmo74JH1OSTWh8dTZJw8hieBVQrIGoH2au4adEqcxg2?=
- =?us-ascii?Q?fae7AVojmZZiaay71I7M4yjxQf4Hrp2XsRvBWUVXxcexY2xLSpMAxtDIXKlw?=
- =?us-ascii?Q?0t12Ban1UIhfb4pEzgp3hSXhHjkDLy/PeW2r45wCySfFJ+p54RhWRrPXljk1?=
- =?us-ascii?Q?jcAIoslWQe8xUrG/wG10UN2uKgXEqByt1ps+qmCkiAcyt+GHCsLSCbAi8uOE?=
- =?us-ascii?Q?XDNOGg6MCyW+0zI2RBs7gFJGbEH2K0bWmZzXnu8Ei68GBk5MpLObG3QVKtME?=
- =?us-ascii?Q?3Rh3Bom9vWU/UdwMRqG4rkFoAaxF7iAKAVYlMyyF//cZ/BhkjOQnVj+4rysi?=
- =?us-ascii?Q?pM5nsLO25+uNHDiTSHlBhqzx5Z4SpVQjc5SK2IYTh4tLVzF8WhXOFg4ow3wT?=
- =?us-ascii?Q?ZXuWi330gD7VZFHjrBuWIBN6Ba3rPHhs5DUOwLrb22/Mzadgzz/01avy3Hsr?=
- =?us-ascii?Q?jIW1KkkQ+k7iOYux3A6Cl5xJ9/VNxKeGCrnJTQaXmXInsENlE4PJpvNM73fd?=
- =?us-ascii?Q?iqKvurJMoBtU0/pdxcDuqAOGHAas3s1pKymIW75twz+EZen+FPI2b0WBuxcV?=
- =?us-ascii?Q?cJuqnJWrFiW+u7EaQjCjmFBDSPS/A/4KV35XYXL7GtdGLKmOnlbJACmOXkw8?=
- =?us-ascii?Q?93DGBBgR5BvBicy+H1IKR+IrEdf1GeE0ARJGJDWNt9YcOjTzOo1uiuHKFoFe?=
- =?us-ascii?Q?9b1nUHCTNicv4m95XgSyq1j9tZa+H14Ad80aj9Ys4mcYn7M+EE3aW7jg8eHX?=
- =?us-ascii?Q?amt18fY7JBjS0JuFTrl/RQimMyQY0UV/AqRTk8mZwlM=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728477AbgKYT2j (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 25 Nov 2020 14:28:39 -0500
+Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D72A206D9;
+        Wed, 25 Nov 2020 19:28:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606332518;
+        bh=S7cLKqUMThvmWL9SOhHBiWWJMLfgLvuvg21Uz7F0790=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=mev3bOTYVxzfh5Ta2trG5+4v+KhyLpvTHbkKqmGIfjEIlY1B7YSWpsTY6ZElgM2JF
+         m0v51uC5d440canr6l+YViab/Rek1xAdqE/vbV6FHRDqFuEap1NZLM4+ZE+8LMN3e8
+         mNG8+YF9jo3qxKK/bGraSG6CwLL9sFl8CCjOszLY=
+Message-ID: <5f540832686c4b062ddbc80f20c9d9d80097e813.camel@kernel.org>
+Subject: Re: [PATCH mlx5-next 11/16] net/mlx5: Add VDPA priority to NIC RX
+ namespace
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Eli Cohen <elic@nvidia.com>, Leon Romanovsky <leonro@mellanox.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Eli Cohen <eli@mellanox.com>, Mark Bloch <mbloch@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>
+Date:   Wed, 25 Nov 2020 11:28:37 -0800
+In-Reply-To: <20201125105422.7f90184c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20201120230339.651609-1-saeedm@nvidia.com>
+         <20201120230339.651609-12-saeedm@nvidia.com>
+         <20201121160155.39d84650@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <20201122064158.GA9749@mtl-vdi-166.wap.labs.mlnx>
+         <20201124091219.5900e7bb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <20201124180210.GJ5487@ziepe.ca>
+         <20201124104106.0b1201b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <20201124194413.GF4800@nvidia.com>
+         <20201125105422.7f90184c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e88e6a31-0aa2-453b-1547-08d8917818cc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2020 19:27:07.0787
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MXQzJHYVBP3j4MyFWiBUIaP/3RNTc2PM15yEyeVdir6FPkgJy9yrX6AYLMe5XBCcw6VemrfHfTdTzRFGK3zvXA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4602
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> -----Original Message-----
-> From: Jason Gunthorpe <jgg@ziepe.ca>
-> Sent: Wednesday, November 25, 2020 4:15 AM
-> To: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Xiong, Jianxin <jianxin.xiong@intel.com>; Leon Romanovsky <leon@kerne=
-l.org>; linux-rdma@vger.kernel.org; dri-
-> devel@lists.freedesktop.org; Doug Ledford <dledford@redhat.com>; Vetter, =
-Daniel <daniel.vetter@intel.com>; Christian Koenig
-> <christian.koenig@amd.com>
-> Subject: Re: [PATCH rdma-core 3/5] pyverbs: Add dma-buf based MR support
->=20
-> On Wed, Nov 25, 2020 at 11:50:41AM +0100, Daniel Vetter wrote:
->=20
-> > Yeah imo makes sense. It's a bunch more code for you to make it work
-> > on
-> > i915 and amd, but it's not terrible. And avoids the dependencies, and
-> > also avoids the abuse of card* and dumb buffers. Plus not really more
-> > complex, you just need a table or something to match from the drm
-> > driver name to the driver-specific buffer create function. Everything
-> > else stays the same.
->=20
-> If it is going to get more complicated please write it in C then. We have=
-n't done it yet, but you can link a C function through cython to the
-> python test script
->=20
-> If you struggle here I can probably work out the build system bits, but i=
-t should not be too terrible
+On Wed, 2020-11-25 at 10:54 -0800, Jakub Kicinski wrote:
+> On Tue, 24 Nov 2020 15:44:13 -0400 Jason Gunthorpe wrote:
+> > On Tue, Nov 24, 2020 at 10:41:06AM -0800, Jakub Kicinski wrote:
+> > > On Tue, 24 Nov 2020 14:02:10 -0400 Jason Gunthorpe wrote:  
 
-Thanks Daniel and Jason. I have started working in this direction. There sh=
-ould be no
-technical obstacle here.=20
+[snip]
+
+> > > > > > 
+> > > > It has been like this for years, it is not some "act".
+> > > > 
+> > > > It is long standing uABI that accelerators like RDMA/etc get to
+> > > > take the traffic before netdev. This cannot be reverted. I
+> > > > don't
+> > > > really understand what you are expecting here?  
+> > > 
+> > > Same. I don't really know what you expect me to do either. I
+> > > don't
+> > > think I can sign-off on kernel changes needed for DPDK.  
+> > 
+> > This patch is fine tuning the shared logic that splits the traffic
+> > to
+> > accelerator subsystems, I don't think netdev should have a veto
+> > here. This needs to be consensus among the various communities and
+> > subsystems that rely on this.
+> > 
+> > Eli did not explain this well in his commit message. When he said
+> > DPDK
+> > he means RDMA which is the owner of the FLOW_NAMESPACE. Each
+> > accelerator subsystem gets hooked into this, so here VPDA is
+> > getting
+> > its own hook because re-using the the same hook between two kernel
+> > subsystems is buggy.
+> 
+> I'm not so sure about this.
+> 
+> The switchdev modeling is supposed to give users control over flow of
+> traffic in a sane, well defined way, as opposed to magic flow
+> filtering
+> of the early SR-IOV implementations which every vendor had their own
+> twist on. 
+> 
+> Now IIUC you're tapping traffic for DPDK/raw QPs _before_ all
+> switching
+> happens in the NIC? That breaks the switchdev model. We're back to
+> per-vendor magic.
+
+No this is after switching, nothing can precede switching!
+after switching and forwarding to the correct function/vport, 
+The HW deumx rdma to rdma and eth(rest) to netdev.
+
+> 
+> And why do you need a separate VDPA table in the first place?
+> Forwarding to a VDPA device has different semantics than forwarding
+> to
+> any other VF/SF?
+
+VDPA is yet another "RDMA" Application, similar to raw qp, it is
+different than VF/SF.
+
+switching can only forward to PF/VF/SF, it doesn't know or care about
+the end point app (netdev/rdma).
+
+Jakub, this is how rdma works and has been working for the past 20
+years :), Jason is well aware of the lack of visibility, and i am sure
+rdma folks will improve this, they have been improving a lot lately,
+take rdma_tool for example.
+
+Bottom line the switching model is not the answer for rdma, another
+model is required, rdma by definition is HW oriented from day one, you
+can't think of it as an offloaded SW model. ( also in a real switch you
+can't define if a port is rdma or eth :) ) 
+
+Anyway you have very valid points that Jason already raised in the
+past, but the challenge is more complicated than the challenges we have
+in netdev, simply because RDMA is RDMA, where the leading model is the
+HW model and the rdma spec and not the SW .. 
+
+
