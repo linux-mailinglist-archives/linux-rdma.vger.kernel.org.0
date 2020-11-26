@@ -2,106 +2,206 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B333A2C5311
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Nov 2020 12:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7816F2C571A
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Nov 2020 15:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389290AbgKZLd6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Nov 2020 06:33:58 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:59452 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389236AbgKZLd6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Nov 2020 06:33:58 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AQBObQ3002535;
-        Thu, 26 Nov 2020 11:33:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=zrkLrbOCOmUi6g0aYCCwIw1QKyzg9b4b1pWlkLM9920=;
- b=0iCyDoOn/Nnr6hlr3P/qmrsByWHMxjv8aWsMnUA3IT//DVp+3dKSejNjMw5X7p8phXjD
- Zv6xOjXYuaHXnhJiYbg5wI62w025bb3tCZulN/BT+kkrn0pe6MxRh5ohmwUlG6+jiEGy
- OMCmeS94jqgCFF3nh8GUZY2sWNrd79MWjhvNlQIlQHx/OBfB3xYLVbMQpc4DiGp8/KK7
- S/vr5DRPF6JNdoL2sU0emt04LaQOzridGY3eeZq+5JLxDXPCsvEgf44almFtbVBUWI4y
- S0pxqi83fHYt+u24ugRfsv8grluqkBrEgFx35YR45Ki6f10TNcoQEFyVMYjN9x4hQc9P Lg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 351kwhnqbt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 26 Nov 2020 11:33:56 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AQBQ6kE060354;
-        Thu, 26 Nov 2020 11:33:55 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 351n2k5vfb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 26 Nov 2020 11:33:55 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AQBXsIg016447;
-        Thu, 26 Nov 2020 11:33:55 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 26 Nov 2020 03:33:54 -0800
-Date:   Thu, 26 Nov 2020 14:33:47 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org
-Subject: [bug report] RDMA/restrack: Store all special QPs in restrack DB
-Message-ID: <20201126113347.GA128957@mwanda>
+        id S2390003AbgKZO2F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Nov 2020 09:28:05 -0500
+Received: from mga06.intel.com ([134.134.136.31]:19961 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389965AbgKZO2E (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 26 Nov 2020 09:28:04 -0500
+IronPort-SDR: DF5Xi1W5hnYwP7k7zlSjRGeUUJlvLYCXRRcxNHpFBXgT5Tv9jTYdPv8QECgbekKQ6Ivs6OUYZc
+ dHiTy0u6x71Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9816"; a="233895325"
+X-IronPort-AV: E=Sophos;i="5.78,372,1599548400"; 
+   d="scan'208";a="233895325"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2020 06:28:04 -0800
+IronPort-SDR: eu6rJipcwVy7UbvNz7mF4d3jmI0x0eHCE/URBYuPkETk/4EhreIPsT3adk9JEs0QOKGdjhrt/7
+ wCrX0nQw8cKg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,372,1599548400"; 
+   d="scan'208";a="314030672"
+Received: from lkp-server02.sh.intel.com (HELO 334d66ce2fbf) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 26 Nov 2020 06:28:03 -0800
+Received: from kbuild by 334d66ce2fbf with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kiIFe-00007M-GX; Thu, 26 Nov 2020 14:28:02 +0000
+Date:   Thu, 26 Nov 2020 22:27:52 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-rc] BUILD SUCCESS
+ 3d2a9d642512c21a12d19b9250e7a835dcb41a79
+Message-ID: <5fbfbb68.tg/CiobIcRl9Y/JI%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9816 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 bulkscore=0
- mlxlogscore=999 spamscore=0 phishscore=0 malwarescore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011260070
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9816 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 priorityscore=1501 suspectscore=3
- bulkscore=0 spamscore=0 mlxlogscore=999 mlxscore=0 clxscore=1011
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011260070
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Leon Romanovsky,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-rc
+branch HEAD: 3d2a9d642512c21a12d19b9250e7a835dcb41a79  IB/hfi1: Ensure correct mm is used at all times
 
-The patch 0413755c95e7: "RDMA/restrack: Store all special QPs in
-restrack DB" from Nov 4, 2020, leads to the following static checker
-warning:
+elapsed time: 721m
 
-	drivers/infiniband/core/restrack.c:235 rdma_restrack_add()
-	warn: right shifting more than type allows 8 vs 8
+configs tested: 142
+configs skipped: 3
 
-drivers/infiniband/core/restrack.c
-   220  void rdma_restrack_add(struct rdma_restrack_entry *res)
-   221  {
-   222          struct ib_device *dev = res_to_dev(res);
-   223          struct rdma_restrack_root *rt;
-   224          int ret;
-   225  
-   226          if (!dev)
-   227                  return;
-   228  
-   229          rt = &dev->res[res->type];
-   230  
-   231          if (res->type == RDMA_RESTRACK_QP) {
-   232                  /* Special case to ensure that LQPN points to right QP */
-   233                  struct ib_qp *qp = container_of(res, struct ib_qp, res);
-   234  
-   235                  WARN_ONCE(qp->qp_num >> 24 || qp->port >> 8,
-                                                      ^^^^^^^^^^^^^
-qp->port is a u8 so this is always going to be zero.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-   236                            "QP number 0x%0X and port 0x%0X", qp->qp_num,
-   237                            qp->port);
-   238                  res->id = qp->qp_num;
-   239                  if (qp->qp_type == IB_QPT_SMI || qp->qp_type == IB_QPT_GSI)
-   240                          res->id |= qp->port << 24;
-   241                  ret = xa_insert(&rt->xa, res->id, res, GFP_KERNEL);
-   242                  if (ret)
-   243                          res->id = 0;
-   244          } else if (res->type == RDMA_RESTRACK_COUNTER) {
-   245                  /* Special case to ensure that cntn points to right counter */
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                  cavium_octeon_defconfig
+mips                        omega2p_defconfig
+ia64                        generic_defconfig
+m68k                          multi_defconfig
+h8300                     edosk2674_defconfig
+sparc                            alldefconfig
+powerpc                     sequoia_defconfig
+mips                    maltaup_xpa_defconfig
+arc                          axs103_defconfig
+sh                          landisk_defconfig
+arm                            pleb_defconfig
+arm                          pcm027_defconfig
+arm                         orion5x_defconfig
+mips                           ip22_defconfig
+mips                     loongson1c_defconfig
+arc                        nsim_700_defconfig
+parisc                generic-32bit_defconfig
+arm                           viper_defconfig
+arc                     haps_hs_smp_defconfig
+arm                        mini2440_defconfig
+powerpc                   currituck_defconfig
+sh                           se7343_defconfig
+powerpc                 canyonlands_defconfig
+h8300                       h8s-sim_defconfig
+arm                         lpc18xx_defconfig
+mips                           ip27_defconfig
+arm                       cns3420vb_defconfig
+arm                        magician_defconfig
+mips                            e55_defconfig
+powerpc                      obs600_defconfig
+arm                        realview_defconfig
+openrisc                 simple_smp_defconfig
+arm                            mps2_defconfig
+openrisc                    or1ksim_defconfig
+m68k                        m5307c3_defconfig
+mips                        maltaup_defconfig
+mips                       rbtx49xx_defconfig
+arm                        trizeps4_defconfig
+arm                          pxa3xx_defconfig
+arm                       netwinder_defconfig
+arm                            dove_defconfig
+mips                        workpad_defconfig
+arm                         at91_dt_defconfig
+powerpc                     tqm8555_defconfig
+s390                             alldefconfig
+powerpc                     mpc512x_defconfig
+sh                           se7705_defconfig
+m68k                       m5249evb_defconfig
+mips                       capcella_defconfig
+arm                   milbeaut_m10v_defconfig
+sh                         ecovec24_defconfig
+arm                             pxa_defconfig
+s390                          debug_defconfig
+sh                          r7785rp_defconfig
+mips                           xway_defconfig
+xtensa                           alldefconfig
+sh                          lboxre2_defconfig
+m68k                         apollo_defconfig
+arm                           h3600_defconfig
+mips                      pic32mzda_defconfig
+m68k                       m5275evb_defconfig
+sh                            shmin_defconfig
+mips                        vocore2_defconfig
+sh                          rsk7203_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                 mpc8272_ads_defconfig
+arm                         lubbock_defconfig
+arm                          pxa168_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20201126
+x86_64               randconfig-a003-20201126
+x86_64               randconfig-a004-20201126
+x86_64               randconfig-a005-20201126
+x86_64               randconfig-a001-20201126
+x86_64               randconfig-a002-20201126
+i386                 randconfig-a004-20201126
+i386                 randconfig-a003-20201126
+i386                 randconfig-a002-20201126
+i386                 randconfig-a005-20201126
+i386                 randconfig-a001-20201126
+i386                 randconfig-a006-20201126
+i386                 randconfig-a012-20201126
+i386                 randconfig-a013-20201126
+i386                 randconfig-a011-20201126
+i386                 randconfig-a016-20201126
+i386                 randconfig-a014-20201126
+i386                 randconfig-a015-20201126
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-regards,
-dan carpenter
+clang tested configs:
+x86_64               randconfig-a015-20201126
+x86_64               randconfig-a011-20201126
+x86_64               randconfig-a014-20201126
+x86_64               randconfig-a016-20201126
+x86_64               randconfig-a012-20201126
+x86_64               randconfig-a013-20201126
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
