@@ -2,105 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D317E2C5C99
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Nov 2020 20:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B82B62C5CAF
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Nov 2020 20:45:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgKZTYi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Nov 2020 14:24:38 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:8939 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728153AbgKZTYh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Nov 2020 14:24:37 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc000f80000>; Thu, 26 Nov 2020 11:24:40 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 26 Nov
- 2020 19:24:32 +0000
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.50) by
- HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 26 Nov 2020 19:24:32 +0000
+        id S2405281AbgKZTox (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Nov 2020 14:44:53 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:50220 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404872AbgKZTox (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 26 Nov 2020 14:44:53 -0500
+Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fc005b30000>; Fri, 27 Nov 2020 03:44:51 +0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 26 Nov
+ 2020 19:44:46 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.170)
+ by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 26 Nov 2020 19:44:45 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cqMceHPlVXsWbaeTXkglQn78ZDxtNLYsOCwON0jLIS0mKF4syMzrxTv6B2QHrHsJSXHqbhVHGF1SkS4Gq9zvHzH+S5KckmIUmavCZYxWzEB52jXrGrzM7z6BtAT8iamtsKbSn9YqZ+pTaNmd9bNO22qnHSP7mHwttyhR+q7xNcrQiz/hnZ5s34W5uYSibZqxirOMFoOvNAbN+3nLDBhAZrs933SFs30VhOajSTgJuostId0SixPC4VLvf71St30f1Xn3lUDFjcE5gEnY43BsjY2PGAlfg4yHipLv0N3HtkfEyg8jInud383dYQhhQKijUaCDRhSB7ZcczlDbPEPWNQ==
+ b=nj84vb9vSwW6l7WVjR3TH9o0y0grYsnbadwkB6zQ0T+WEEwkzx+Q9pRyLSNvjflyH/XS+zWbMj2+Bg8NEWbyfX8Fc5GiEjs19Ge6harsg2zf/n4KPVM58M1lSz0MCperMSOf6w7DFhER2aVEL66iz4PHez+DYHYRaSoZqktkvI+Y5HTJFmXpM+x4h9o5pQsXUtrCqOa8c/rnkQ3tr3M8E/fzo6uuO7+Ntoxx27C1I7Dl8fyVJRstIfvh4EVNW5clpRasgn8gGbieSwpjwlBvZE9AcT4LTgtVoh6MziiNZaDPCjxTvrezfKGaAOM771eDAp3jriqMA5jk/KYvU3fKVA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GNoezosP5UjPV9wkMIRx2NAhSu5zfJRVFbd0StP8coc=;
- b=XvvKghBPgEiILrQcMRlQ9g3q3RMdIvRQsrMt/zUs1lvS6YkvrelvP9zZ0jW8I1RWQT3YRoMmw67KA0jputDUoofRE2L9mFJjymwXKeS3cipi33kBRg6SbmDz0e/856mmVq1N2W2uepDA2EUfOzcKH+X3JKUUfK8f1NKnzO2o2tAKclUt42kVlk++pXWOqHsKACZRD1pg4jGkenKoXsq0GeVJ8s+YjFsS95MJlUU4lhQf8M4im3QPgcdF+iv4CTUWBX05MuaYzbJ6EXbS12ZYMFuNFIWlvoDJkjdxQjGRUsVuYw2i/2r1KbRLMpIC4aMZHX8LB0IzXhBAzLch2osKlw==
+ bh=iZ2QmxqwLrL1oNJk7sSZOQfFi7TWvpwlAlnbOuE6Ap4=;
+ b=NL5tTa8AG2BussfCGmI2u1ot+AqdgDmo0pbGsxNA01m29XvJb8bYs10KDSw265ZqfUOU9ViThUtOvvfGZWg39Vn6oBDZvsgPn9rYsjedaLbm4WzXQknbebG/So7vPHbttO9L0wry1lxeUpQgBRIceJKRMxuAlKWMdK0xo4b4hCf2H3/ZVFCsROB8pd1BqBwWLnSq7ILEHMfaeTpWFJ/7N3Bg1iELQZ4vh84briWn6TxF+uTFoaGcQ8j/WMO9RX+kHzLn+85gnNu1GVFp/EoeOqLATx3mIvw9zAJdVcbPA5FXxO7LvhsqSopDCItXsaC8OpnlIn9ZaY9abAwgiK/fNQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3932.namprd12.prod.outlook.com (2603:10b6:5:1c1::24) with
+ by DM6PR12MB4578.namprd12.prod.outlook.com (2603:10b6:5:2a9::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Thu, 26 Nov
- 2020 19:24:30 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22; Thu, 26 Nov
+ 2020 19:44:44 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3611.024; Thu, 26 Nov 2020
- 19:24:30 +0000
-Date:   Thu, 26 Nov 2020 15:24:28 -0400
+ 19:44:43 +0000
+Date:   Thu, 26 Nov 2020 15:44:41 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     liweihang <liweihang@huawei.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v2 for-next 7/7] RDMA/hns: Add support for UD inline
-Message-ID: <20201126192428.GA547165@nvidia.com>
+To:     Weihang Li <liweihang@huawei.com>
+CC:     <dledford@redhat.com>, <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: Re: [PATCH v2 for-next 0/7] RDMA/hns: Support UD for HIP09
+Message-ID: <20201126194441.GA552360@nvidia.com>
 References: <1605526408-6936-1-git-send-email-liweihang@huawei.com>
- <1605526408-6936-8-git-send-email-liweihang@huawei.com>
- <20201118191051.GL244516@ziepe.ca>
- <7a7ee7427b68488f98ebc18d5b7c4d75@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <7a7ee7427b68488f98ebc18d5b7c4d75@huawei.com>
-X-ClientProxiedBy: BL1PR13CA0117.namprd13.prod.outlook.com
- (2603:10b6:208:2b9::32) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+In-Reply-To: <1605526408-6936-1-git-send-email-liweihang@huawei.com>
+X-ClientProxiedBy: BL0PR01CA0032.prod.exchangelabs.com (2603:10b6:208:71::45)
+ To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0117.namprd13.prod.outlook.com (2603:10b6:208:2b9::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.18 via Frontend Transport; Thu, 26 Nov 2020 19:24:29 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kiMsW-002INb-GR; Thu, 26 Nov 2020 15:24:28 -0400
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR01CA0032.prod.exchangelabs.com (2603:10b6:208:71::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Thu, 26 Nov 2020 19:44:43 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kiNC5-002JiG-OX; Thu, 26 Nov 2020 15:44:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606418680; bh=GNoezosP5UjPV9wkMIRx2NAhSu5zfJRVFbd0StP8coc=;
+        t=1606419891; bh=iZ2QmxqwLrL1oNJk7sSZOQfFi7TWvpwlAlnbOuE6Ap4=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=ICHEu1vG4ijJY2+Hjs3BQR+urOx3IV9R/gSS5niL0xPUskzHPoXsnQOy3qXYFx/BF
-         OLGSYAEnM+YdtGdlS11M9U5XSR1JNseL4EpAlPocjusxfTCQjdaunAIgE3f5/Qtm76
-         EgVfz5n4PyYs+UsjZ5L2jEnJcK+WjQL0BpXC7YRhc0WfmihpTK6OoeRKsLTj1j9Va4
-         bB/5BUmF6rU3x2RtpVkbE+vRNgTRKAsp+qZGfpe6SUsX9c1hSSmzLbH6VZx/wIWXWE
-         MaHykZ+Qeq+Y5AYlSapR0axoYPTRs/xUORqo7f7r6lL1rYNKv7qhTYzNosnvb5LGq/
-         Zw334x2W6KKWg==
+        b=BgG2stmcv0d/4+EofD7k5tvcXt/VK9FqaeDh/qL6uLXRoFUlh8+dqVebjS0SOXk7Q
+         iBedktBDB/+GCLCdhbiKj0J1caqOyoCHY1WODftw1ma0jalzePqezInpSATQdQGBwQ
+         sBw/7yyxD+N+ugFyas+2cdmzDwEEbqeBUQo0qs3OYduOqtuOs8JFTqbn904PvOc87g
+         uRSgHBwkYNiVkTZLGuKuMRcWljUbU88Usy76Au8FC9RGHKQye8mJQ9kEymOYGdJJPu
+         oCR2zU/KQbZNuNStfdazmhfPt6qzGvTaBzIxx1DeKW4bEaOq5dC1qrfU+QMoguwozh
+         YBykwyv0gYbVA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 06:15:42AM +0000, liweihang wrote:
-> On 2020/11/19 3:11, Jason Gunthorpe wrote:
-> > On Mon, Nov 16, 2020 at 07:33:28PM +0800, Weihang Li wrote:
-> >> @@ -503,7 +581,23 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
-> >>  	if (ret)
-> >>  		return ret;
-> >>  
-> >> -	set_extend_sge(qp, wr, &curr_idx, valid_num_sge);
-> >> +	if (wr->send_flags & IB_SEND_INLINE) {
-> >> +		ret = set_ud_inl(qp, wr, ud_sq_wqe, &curr_idx);
-> >> +		if (ret)
-> >> +			return ret;
-> > 
-> > Why are you implementing this in the kernel? No kernel ULP sets this
-> > flag?
+On Mon, Nov 16, 2020 at 07:33:21PM +0800, Weihang Li wrote:
+> This series does cleanups on UD related code at first, including removing
+> dead code, adding necessary check and some refactors. Then the UD feature
+> is enabled on HIP09.
 > 
-> Sorry, I don't understand. Some kernel users may set IB_SEND_INLINE
-> when using UD, some may not, we just check this flag to decide how
-> to fill the data into UD SQ WQE here.
+> Changes since v1:
+> - Don't allow HIP08's user to create AH and UD QP from userspace and add
+>   .create_user_ah in #6.
+> - Drop #4 from the v1 series which needs more discussion about the reserved
+>   sl.
+> link: https://patchwork.kernel.org/project/linux-rdma/cover/1604057975-23388-1-git-send-email-liweihang@huawei.com/
+> 
+> Weihang Li (7):
+>   RDMA/hns: Only record vlan info for HIP08
+>   RDMA/hns: Fix missing fields in address vector
+>   RDMA/hns: Avoid setting loopback indicator when smac is same as dmac
+>   RDMA/hns: Remove the portn field in UD SQ WQE
+>   RDMA/hns: Simplify process of filling UD SQ WQE
+>   RDMA/hns: Add UD support for HIP09
+>   RDMA/hns: Add support for UD inline
 
-I mean if you 'git grep IB_SEND_INLINE' nothing uses it. 
-
-This is all dead code.
-
-How did you test it?
+Applied to for-next, thanks
 
 Jason
