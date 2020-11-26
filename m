@@ -2,119 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4CF2C4BFE
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Nov 2020 01:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 083C92C4C12
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Nov 2020 01:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729074AbgKZAYy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Nov 2020 19:24:54 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:38243 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728502AbgKZAYx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 25 Nov 2020 19:24:53 -0500
-Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fbef5d30000>; Thu, 26 Nov 2020 08:24:51 +0800
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 26 Nov
- 2020 00:24:50 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.174)
- by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 26 Nov 2020 00:24:50 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JkqYdsARjPlMtc+kCVdhWJietu2Tzyd3a1owGTvTcXhPhq8l7t9QUo3PBb80KT4QEH1sY17tZ69pxpvZdS9JjCnfdxGnTck/kyXIZpTFWFLq1pW2E9HX70coqwCBjlJykh67h3YdV87p6dGRGCu72u0DjEBMnguMiwUQu50jucsKiodZJmNA4/wTxrZxSnOJyrxj6ZjtO2+eoSBmOApwJZz7ZPWgPp1Zp2k7wpVYN10uDFjjY0UxPxOiZKqZjYywGuy5sLnsn1VX86xXKnqAfGUasS5+HCbO90eIHXcjtHzcMPg85O2+0ZMIXJGTQIvojr73zAiAID9XuMyRz18f4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EJ6ALnO5MkK7BJFFpElp9tzekyM622rXfmGqhFcvWFs=;
- b=isBQ85m/kmbSDU4v+elMJm4BqcYXEjuh9pzkpmmHtp29sz3IwKpRiwUkccTjyDtJ+ieVicKq5SxYYp82bzrFy1QEswJITjAPLG3W41f6qghd1lhki53wtIgZ/qU0z8X81oC7MdgRyt3YAQGdiZYeAdhWDtqd0lb8RDhSboCkueXrb5AMmUWoVI+2E90z6pZGKm1s2rmMbivoQPzbXjIIBwT/NaKvZhqdIFu6vPqYdXwESI9Tm/8sPj9UeyNsZgrr5XOhMNNfWFYLlWuLesGPZsRwf53sD/vgfrgnDI7Gp4xnC2GxSAH4zhOZfOa78eaFloj8e+df2y08d9hKa0jWpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
- by BYAPR12MB2741.namprd12.prod.outlook.com (2603:10b6:a03:62::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Thu, 26 Nov
- 2020 00:24:48 +0000
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::7503:d9f2:9040:b0d7]) by BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::7503:d9f2:9040:b0d7%7]) with mapi id 15.20.3589.030; Thu, 26 Nov 2020
- 00:24:48 +0000
-Date:   Wed, 25 Nov 2020 20:24:44 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     syzbot <syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com>,
-        <dledford@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <parav@mellanox.com>,
-        <syzkaller-bugs@googlegroups.com>
-Subject: Re: possible deadlock in _destroy_id
-Message-ID: <20201126002444.GA343793@nvidia.com>
-References: <0000000000004129c705b45fa8f2@google.com>
- <20201118133756.GK244516@ziepe.ca> <20201125064832.GB3223@unreal>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201125064832.GB3223@unreal>
-X-ClientProxiedBy: MN2PR12CA0008.namprd12.prod.outlook.com
- (2603:10b6:208:a8::21) To BY5PR12MB3827.namprd12.prod.outlook.com
- (2603:10b6:a03:1ab::16)
+        id S1729711AbgKZAar (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Nov 2020 19:30:47 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:42610 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbgKZAao (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Nov 2020 19:30:44 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 742A42A495;
+        Wed, 25 Nov 2020 19:30:37 -0500 (EST)
+Date:   Thu, 26 Nov 2020 11:30:36 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Jakub Kicinski <kuba@kernel.org>, alsa-devel@alsa-project.org,
+        linux-atm-general@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        linux-fbdev@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-ide@vger.kernel.org, dm-devel@redhat.com,
+        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
+        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
+        linux1394-devel@lists.sourceforge.net,
+        linux-afs@lists.infradead.org,
+        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
+        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-scsi@vger.kernel.org,
+        linux-rdma@vger.kernel.org, oss-drivers@netronome.com,
+        bridge@lists.linux-foundation.org,
+        linux-security-module@vger.kernel.org,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
+        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
+        intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        tipc-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        selinux@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
+        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
+        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-hwmon@vger.kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
+        netfilter-devel@vger.kernel.org,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>, patches@opensource.cirrus.com,
+        linux-integrity@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for
+ Clang
+In-Reply-To: <CAKwvOdna5Zj_O=sB7Q0jHZX0BJSaakX=ZyftwQ_3=L3-ZB54XQ@mail.gmail.com>
+Message-ID: <alpine.LNX.2.23.453.2011261031290.6@nippy.intranet>
+References: <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com> <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
+ <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com> <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com> <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com> <20201123130348.GA3119@embeddedor>
+ <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com> <202011241327.BB28F12F6@keescook> <a841536fe65bb33f1c72ce2455a6eb47a0107565.camel@HansenPartnership.com> <CAKwvOdkGBn7nuWTAqrORMeN1G+w3YwBfCqqaRD2nwvoAXKi=Aw@mail.gmail.com>
+ <alpine.LNX.2.23.453.2011260750300.6@nippy.intranet> <CAKwvOdna5Zj_O=sB7Q0jHZX0BJSaakX=ZyftwQ_3=L3-ZB54XQ@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR12CA0008.namprd12.prod.outlook.com (2603:10b6:208:a8::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Thu, 26 Nov 2020 00:24:46 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ki55Y-001RSW-3t; Wed, 25 Nov 2020 20:24:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606350291; bh=EJ6ALnO5MkK7BJFFpElp9tzekyM622rXfmGqhFcvWFs=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=FCztdZ/aoBfyNsLRxRd5o36WeSHPYe+UCaRmoCp0b63aDP8D62L2Ql+c7IvzrWCDm
-         36kiGX1UVpSSZ1uQcl8H/7C9c2CFsWMw0vEJv+N2Onm5Rwp272MQ8f5SwUe52Te6RJ
-         Hkw+pJ8Wi5cKs2EbkMTjl7cfuFAJR9OvIdHZKe01YvSE6+6Bnb1hnOJLQe1bavkucN
-         0Ab0saSzmX8/SW2ZNT6sJO/cpdipGBpTmdvVRYRgIL72u89kjbWbwGYFPHxGlR75kZ
-         R2Raoa6LvbkmkGWtEiLhKRtHMkK4rLzyOtYSVnGRWj1M2c5TRY7qPWej2Ol1wEFuOG
-         RUa6xxJ6NLVJA==
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 08:48:32AM +0200, Leon Romanovsky wrote:
-> > commit c80a0c52d85c49a910d0dc0e342e8d8898677dc0
-> > Author: Leon Romanovsky <leon@kernel.org>
-> > Date:   Wed Nov 4 16:40:07 2020 +0200
+
+
+On Wed, 25 Nov 2020, Nick Desaulniers wrote:
+
+> On Wed, Nov 25, 2020 at 1:33 PM Finn Thain <fthain@telegraphics.com.au> wrote:
 > >
-> >     RDMA/cma: Add missing error handling of listen_id
-> >
-> >     Don't silently continue if rdma_listen() fails but destroy previously
-> >     created CM_ID and return an error to the caller.
-> >
-> > rdma_destroy_id() can't be called while holding the global lock
-> >
-> > This is quite hard to fix. I came up with this ugly thing:
-> >
-> > From 8e6568f99fbe4bf734cc4e5dcda987e4ae118bdd Mon Sep 17 00:00:00 2001
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Date: Wed, 18 Nov 2020 09:33:23 -0400
-> > Subject: [PATCH] RDMA/cma: Fix deadlock on &lock in rdma_cma_listen_on_all()
-> >  error unwind
-> >
-> > rdma_detroy_id() cannot be called under &lock - we must instead keep the
-> > error'd ID around until &lock can be released, then destory it.
-> >
-> > This is complicated by the usual way listen IDs are destroyed through
-> > cma_process_remove() which can run at any time and will asynchronously
-> > destroy the same ID.
-> >
-> > Remove the ID from visiblity of cma_process_remove() before going down the
-> > destroy path outside the locking.
-> >
-> > Fixes: c80a0c52d85c ("RDMA/cma: Add missing error handling of listen_id")
-> > Reported-by: syzbot+1bc48bf7f78253f664a9@syzkaller.appspotmail.com
-> > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> >  drivers/infiniband/core/cma.c | 25 ++++++++++++++++++-------
-> >  1 file changed, 18 insertions(+), 7 deletions(-)
-> >
+> > Or do you think that a codebase can somehow satisfy multiple checkers 
+> > and their divergent interpretations of the language spec?
 > 
-> Thanks,
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> Have we found any cases yet that are divergent? I don't think so. 
 
-Okay, applied to for-next, thanks
+You mean, aside from -Wimplicit-fallthrough? I'm glad you asked. How about 
+-Wincompatible-pointer-types and -Wframe-larger-than?
 
-Jason
+All of the following files have been affected by divergent diagnostics 
+produced by clang and gcc.
+
+arch/arm64/include/asm/neon-intrinsics.h
+arch/powerpc/xmon/Makefile
+drivers/gpu/drm/i915/Makefile
+drivers/gpu/drm/i915/i915_utils.h
+drivers/staging/media/atomisp/pci/atomisp_subdev.c
+fs/ext4/super.c
+include/trace/events/qla.h
+net/mac80211/rate.c
+tools/lib/string.c
+tools/perf/util/setup.py
+tools/scripts/Makefile.include
+
+And if I searched for 'smatch' or 'coverity' instead of 'clang' I'd 
+probably find more divergence.
+
+Here are some of the relevant commits.
+
+0738c8b5915c7eaf1e6007b441008e8f3b460443
+9c87156cce5a63735d1218f0096a65c50a7a32aa
+babaab2f473817f173a2d08e410c25abf5ed0f6b
+065e5e559555e2f100bc95792a8ef1b609bbe130
+93f56de259376d7e4fff2b2d104082e1fa66e237
+6c4798d3f08b81c2c52936b10e0fa872590c96ae
+b7a313d84e853049062011d78cb04b6decd12f5c
+093b75ef5995ea35d7f6bdb6c7b32a42a1999813
+
+And before you object, "but -Wconstant-logical-operand is a clang-only 
+warning! it can't be divergent with gcc!", consider that the special cases 
+added to deal with clang-only warnings have to be removed when gcc catches 
+up, which is more churn. Now multiply that by the number of checkers you 
+care about.
