@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E752C514B
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Nov 2020 10:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 719B52C5202
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Nov 2020 11:30:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732405AbgKZJb0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Nov 2020 04:31:26 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8595 "EHLO
+        id S1729334AbgKZK16 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Nov 2020 05:27:58 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8041 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732380AbgKZJbY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Nov 2020 04:31:24 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ChXYn4l62zLsNk;
-        Thu, 26 Nov 2020 17:30:53 +0800 (CST)
+        with ESMTP id S1727468AbgKZK16 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Nov 2020 05:27:58 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4ChYqC0lvlzhhck;
+        Thu, 26 Nov 2020 18:27:35 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 26 Nov 2020 17:31:15 +0800
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 26 Nov 2020 18:27:50 +0800
 From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH for-rc] RDMA/hns: Fix retry_cnt and rnr_cnt when querying QP
-Date:   Thu, 26 Nov 2020 17:29:37 +0800
-Message-ID: <1606382977-21431-1-git-send-email-liweihang@huawei.com>
+Subject: [PATCH for-rc] RDMA/hns: Bugfix for memory window mtpt configuration
+Date:   Thu, 26 Nov 2020 18:26:12 +0800
+Message-ID: <1606386372-21094-1-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -33,39 +33,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Wenpeng Liang <liangwenpeng@huawei.com>
+From: Yixian Liu <liuyixian@huawei.com>
 
-The maximum number of retransmission should be returned when querying QP,
-not the value of retransmission counter.
+When a memory window is bound to a memory region, the local write access
+should be set for its mtpt table.
 
-Fixes: 99fcf82521d9 ("RDMA/hns: Fix the wrong value of rnr_retry when querying qp")
-Fixes: 926a01dc000d ("RDMA/hns: Add QP operations support for hip08 SoC")
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+Fixes: c7c28191408b ("RDMA/hns: Add MW support for hip08")
+Signed-off-by: Yixian Liu <liuyixian@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 6d30850..ce4a476 100644
+index 6d30850..3cc0375 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -4989,11 +4989,11 @@ static int hns_roce_v2_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
- 					      V2_QPC_BYTE_28_AT_M,
- 					      V2_QPC_BYTE_28_AT_S);
- 	qp_attr->retry_cnt = roce_get_field(context.byte_212_lsn,
--					    V2_QPC_BYTE_212_RETRY_CNT_M,
--					    V2_QPC_BYTE_212_RETRY_CNT_S);
-+					    V2_QPC_BYTE_212_RETRY_NUM_INIT_M,
-+					    V2_QPC_BYTE_212_RETRY_NUM_INIT_S);
- 	qp_attr->rnr_retry = roce_get_field(context.byte_244_rnr_rxack,
--					    V2_QPC_BYTE_244_RNR_CNT_M,
--					    V2_QPC_BYTE_244_RNR_CNT_S);
-+					    V2_QPC_BYTE_244_RNR_NUM_INIT_M,
-+					    V2_QPC_BYTE_244_RNR_NUM_INIT_S);
+@@ -2936,6 +2936,7 @@ static int hns_roce_v2_mw_write_mtpt(void *mb_buf, struct hns_roce_mw *mw)
  
- done:
- 	qp_attr->cur_qp_state = qp_attr->qp_state;
+ 	roce_set_bit(mpt_entry->byte_8_mw_cnt_en, V2_MPT_BYTE_8_R_INV_EN_S, 1);
+ 	roce_set_bit(mpt_entry->byte_8_mw_cnt_en, V2_MPT_BYTE_8_L_INV_EN_S, 1);
++	roce_set_bit(mpt_entry->byte_8_mw_cnt_en, V2_MPT_BYTE_8_LW_EN_S, 1);
+ 
+ 	roce_set_bit(mpt_entry->byte_12_mw_pa, V2_MPT_BYTE_12_PA_S, 0);
+ 	roce_set_bit(mpt_entry->byte_12_mw_pa, V2_MPT_BYTE_12_MR_MW_S, 1);
 -- 
 2.8.1
 
