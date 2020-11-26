@@ -2,136 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083C92C4C12
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Nov 2020 01:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2732C4C36
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Nov 2020 01:35:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729711AbgKZAar (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Nov 2020 19:30:47 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:42610 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgKZAao (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Nov 2020 19:30:44 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 742A42A495;
-        Wed, 25 Nov 2020 19:30:37 -0500 (EST)
-Date:   Thu, 26 Nov 2020 11:30:36 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Jakub Kicinski <kuba@kernel.org>, alsa-devel@alsa-project.org,
-        linux-atm-general@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        linux-fbdev@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-ide@vger.kernel.org, dm-devel@redhat.com,
-        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
-        GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
-        samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
-        linux1394-devel@lists.sourceforge.net,
-        linux-afs@lists.infradead.org,
-        usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
-        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-scsi@vger.kernel.org,
-        linux-rdma@vger.kernel.org, oss-drivers@netronome.com,
-        bridge@lists.linux-foundation.org,
-        linux-security-module@vger.kernel.org,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
-        linux-acpi@vger.kernel.org, coreteam@netfilter.org,
-        intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        tipc-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        selinux@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        intel-gfx@lists.freedesktop.org, linux-geode@lists.infradead.org,
-        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-gpio@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        linux-mediatek@lists.infradead.org, xen-devel@lists.xenproject.org,
-        nouveau@lists.freedesktop.org, linux-hams@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-hwmon@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
-        netfilter-devel@vger.kernel.org,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>, patches@opensource.cirrus.com,
-        linux-integrity@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [Intel-wired-lan] [PATCH 000/141] Fix fall-through warnings for
- Clang
-In-Reply-To: <CAKwvOdna5Zj_O=sB7Q0jHZX0BJSaakX=ZyftwQ_3=L3-ZB54XQ@mail.gmail.com>
-Message-ID: <alpine.LNX.2.23.453.2011261031290.6@nippy.intranet>
-References: <202011201129.B13FDB3C@keescook> <20201120115142.292999b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <202011220816.8B6591A@keescook> <9b57fd4914b46f38d54087d75e072d6e947cb56d.camel@HansenPartnership.com> <ca071decb87cc7e905411423c05a48f9fd2f58d7.camel@perches.com>
- <0147972a72bc13f3629de8a32dee6f1f308994b5.camel@HansenPartnership.com> <d8d1e9add08cdd4158405e77762d4946037208f8.camel@perches.com> <dbd2cb703ed9eefa7dde9281ea26ab0f7acc8afe.camel@HansenPartnership.com> <20201123130348.GA3119@embeddedor>
- <8f5611bb015e044fa1c0a48147293923c2d904e4.camel@HansenPartnership.com> <202011241327.BB28F12F6@keescook> <a841536fe65bb33f1c72ce2455a6eb47a0107565.camel@HansenPartnership.com> <CAKwvOdkGBn7nuWTAqrORMeN1G+w3YwBfCqqaRD2nwvoAXKi=Aw@mail.gmail.com>
- <alpine.LNX.2.23.453.2011260750300.6@nippy.intranet> <CAKwvOdna5Zj_O=sB7Q0jHZX0BJSaakX=ZyftwQ_3=L3-ZB54XQ@mail.gmail.com>
+        id S1728283AbgKZAdZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Nov 2020 19:33:25 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:7000 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726874AbgKZAdZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Nov 2020 19:33:25 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fbef7d40000>; Wed, 25 Nov 2020 16:33:24 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 26 Nov
+ 2020 00:33:20 +0000
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.174)
+ by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 26 Nov 2020 00:33:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DFsmiznFxLVsfRGqOaSsa+Q4stuLp2wNBiT6xdtnfTRNjVCRT8keiG4GVfDmwgclgBWbsibt/uq1Un4z1C5Md+1a6xCn2FnrDDg15MAVWKrXSxwNGUrMo/l5zE82vSyAv01/kujMvH6Wu1HLxHRsPJkRBqbzUlomA7frshnVtwO6ntl0of/pztInv2W7ugGhOAC3ZhjZUDPuMUtI1M/EByyrwgQT+PhwHjUjioIF9NEE0fTihWY/Y6XqWsHWMytlV0Dn7bz5qE6ua+SmIep+gXnVubOn6MPqRzGwj0+vMmSjYRM19MbNB9wMi+ytd5YuEQBRjjahliEW2sHdrFPQyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J/h95MKHoUwa8Xl2HFvjw3XeUB9yIwlyBbiYUzfSXFc=;
+ b=GJGvIPNeja8cG8Tp/NNwR1jQ24f+Cg0EnTnq/8r1fAZpqrPRtK0awiZVjlOwst/6eauPfe0g9OKpgy1LzjFfKFCwRoYdCMOWC0RjUbwtdkhbye9EdLsX4xMSUOb7vF2eCFBF0HD4C2P9LvJNq5VSzOL8P1VRY3yxuaCKA0VTt3kb7VVS7nWmZkBzKyWX30nUc2OVePpwG1UbHqdMPkQlzgQkjAoVahaCBgbvalxNp335YyEaGYywkJEpkVMi9PTN8BK33Z3uAiObshQuqRIqkJztFonj0zc5XFJTkpclPowFZbPscm0XDGVwpinJZLgSW5hWFZpY5IhyoKEK5Y79rQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
+ by BY5PR12MB4052.namprd12.prod.outlook.com (2603:10b6:a03:209::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Thu, 26 Nov
+ 2020 00:33:18 +0000
+Received: from BY5PR12MB3827.namprd12.prod.outlook.com
+ ([fe80::7503:d9f2:9040:b0d7]) by BY5PR12MB3827.namprd12.prod.outlook.com
+ ([fe80::7503:d9f2:9040:b0d7%7]) with mapi id 15.20.3589.030; Thu, 26 Nov 2020
+ 00:33:18 +0000
+Date:   Wed, 25 Nov 2020 20:33:16 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+CC:     <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        <stable@vger.kernel.org>, <linux-mm@kvack.org>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH for-rc v5] IB/hfi1: Ensure correct mm is used at all times
+Message-ID: <20201126003316.GQ4800@nvidia.com>
+References: <20201125210112.104301.51331.stgit@awfm-01.aw.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201125210112.104301.51331.stgit@awfm-01.aw.intel.com>
+X-ClientProxiedBy: MN2PR13CA0010.namprd13.prod.outlook.com
+ (2603:10b6:208:160::23) To BY5PR12MB3827.namprd12.prod.outlook.com
+ (2603:10b6:a03:1ab::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR13CA0010.namprd13.prod.outlook.com (2603:10b6:208:160::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.6 via Frontend Transport; Thu, 26 Nov 2020 00:33:18 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ki5Do-001Sok-RR; Wed, 25 Nov 2020 20:33:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1606350804; bh=J/h95MKHoUwa8Xl2HFvjw3XeUB9yIwlyBbiYUzfSXFc=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=gzwRoaVw7qIBW5290+k8DolVYflyj3syDkJYyFd6R8CAYa1dey63ef3pIeJyxBb8R
+         iUVWhCxcGphdde5skQ3LtRti4vhgF73pvlUxo9IKwM3AUTbOdOC2dx3e+ggpw/fEh/
+         4gzsow8gJPoqmcHF6xO47OmRaDr7qWVCLbYmuWccbp2YI9rS7qKJiIAXAI5Fs8ylKS
+         mGberNZdpQwYoJv5ohzjQbq45S1rIVX2FRpJQwzjT77azFi5K91Q90T4+Aor3GZmv/
+         weifHJUkuOMcpXsSRmA5wSFoRv/Ehzba+qWc6iQgWLtRbtz9z6tdk9pMaFmTSGegB0
+         VAC5/eWKnyvFg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On Wed, 25 Nov 2020, Nick Desaulniers wrote:
-
-> On Wed, Nov 25, 2020 at 1:33 PM Finn Thain <fthain@telegraphics.com.au> wrote:
-> >
-> > Or do you think that a codebase can somehow satisfy multiple checkers 
-> > and their divergent interpretations of the language spec?
+On Wed, Nov 25, 2020 at 04:01:12PM -0500, Dennis Dalessandro wrote:
+> Two earlier bug fixes have created a security problem in the hfi1
+> driver. One fix aimed to solve an issue where current->mm was not valid
+> when closing the hfi1 cdev. It attempted to do this by saving a cached
+> value of the current->mm pointer at file open time. This is a problem if
+> another process with access to the FD calls in via write() or ioctl() to
+> pin pages via the hfi driver. The other fix tried to solve a use after
+> free by taking a reference on the mm.
 > 
-> Have we found any cases yet that are divergent? I don't think so. 
+> To fix this correctly we use the existing cached value of the mm in the
+> mmu notifier. Now we can check in the insert, evict, etc. routines that
+> current->mm matched what the notifier was registered for. If not, then
+> don't allow access. The register of the mmu notifier will save the mm
+> pointer.
+> 
+> Note the check in the unregister is not needed in the event that
+> current->mm is empty. This means the tear down is happening due to a
+> SigKill or OOM Killer, something along those lines. If current->mm has a
+> value then it must be checked and only the task that did the register
+> can do the unregister.
 
-You mean, aside from -Wimplicit-fallthrough? I'm glad you asked. How about 
--Wincompatible-pointer-types and -Wframe-larger-than?
+I deleted this paragraph, it doesn't apply any more
 
-All of the following files have been affected by divergent diagnostics 
-produced by clang and gcc.
+> Since in do_exit() the exit_mm() is called before exit_files(), which
+> would call our close routine a reference is needed on the mm. We rely on
+> the mmgrab done by the registration of the notifier, whereas before it
+> was explicit. The mmu notifier deregistration happens when the user
+> context is torn down, the creation of which triggered the registration.
+> 
+> Also of note is we do not do any explicit work to protect the interval
+> tree notifier. It doesn't seem that this is going to be needed since we
+> aren't actually doing anything with current->mm. The interval tree
+> notifier stuff still has a FIXME noted from a previous commit that will
+> be addressed in a follow on patch.
+> 
+> Fixes: e0cf75deab81 ("IB/hfi1: Fix mm_struct use after free")
+> Fixes: 3faa3d9a308e ("IB/hfi1: Make use of mm consistent")
+> Cc: <stable@vger.kernel.org>
+> Suggested-by: Jann Horn <jannh@google.com>
+> Reported-by: Jason Gunthorpe <jgg@nvidia.com>
+> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+> Reviewed-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+> Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 
-arch/arm64/include/asm/neon-intrinsics.h
-arch/powerpc/xmon/Makefile
-drivers/gpu/drm/i915/Makefile
-drivers/gpu/drm/i915/i915_utils.h
-drivers/staging/media/atomisp/pci/atomisp_subdev.c
-fs/ext4/super.c
-include/trace/events/qla.h
-net/mac80211/rate.c
-tools/lib/string.c
-tools/perf/util/setup.py
-tools/scripts/Makefile.include
+Applied to for-rc
 
-And if I searched for 'smatch' or 'coverity' instead of 'clang' I'd 
-probably find more divergence.
-
-Here are some of the relevant commits.
-
-0738c8b5915c7eaf1e6007b441008e8f3b460443
-9c87156cce5a63735d1218f0096a65c50a7a32aa
-babaab2f473817f173a2d08e410c25abf5ed0f6b
-065e5e559555e2f100bc95792a8ef1b609bbe130
-93f56de259376d7e4fff2b2d104082e1fa66e237
-6c4798d3f08b81c2c52936b10e0fa872590c96ae
-b7a313d84e853049062011d78cb04b6decd12f5c
-093b75ef5995ea35d7f6bdb6c7b32a42a1999813
-
-And before you object, "but -Wconstant-logical-operand is a clang-only 
-warning! it can't be divergent with gcc!", consider that the special cases 
-added to deal with clang-only warnings have to be removed when gcc catches 
-up, which is more churn. Now multiply that by the number of checkers you 
-care about.
+Thanks,
+Jason
