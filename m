@@ -2,91 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD3B2C5B84
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Nov 2020 19:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D317E2C5C99
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Nov 2020 20:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404743AbgKZSE2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Nov 2020 13:04:28 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1988 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404733AbgKZSE2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Nov 2020 13:04:28 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fbfee330001>; Thu, 26 Nov 2020 10:04:35 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 26 Nov
- 2020 18:04:28 +0000
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.47) by
+        id S1728350AbgKZTYi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Nov 2020 14:24:38 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:8939 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728153AbgKZTYh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Nov 2020 14:24:37 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fc000f80000>; Thu, 26 Nov 2020 11:24:40 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 26 Nov
+ 2020 19:24:32 +0000
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.50) by
  HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 26 Nov 2020 18:04:28 +0000
+ 15.0.1473.3 via Frontend Transport; Thu, 26 Nov 2020 19:24:32 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UZ9+gi0qOF9VVGPVEd3QY1B/ytnEatf0RRi/5xUZqdTPo6vpUdGxIwtLAHsujZe7nlGeglc8juFFEdiCIz8gcBZGZF2LB9Nqtol7XHMDrQPaFFzLz1kd91tyKUZ1KmTgIR7ukWUy8FJGcFmkRUiicaWVeA/caOkTALc13crQckFGUVF6flhj9XV72XDLjdigOwSP1B89mqlLFd5vQycimiKIlA+c/MsDwOtWPRdzhOZ6L4Noqe0oQlzmUFIBTcIM/IE6ku5F1E1i69N3BmA13LnqmbjyO8Iy8gEsN4th94X0Sm7UIs1Zz+gQsDNdXL/w+722Hrxto0q9IvaEDGdZuw==
+ b=cqMceHPlVXsWbaeTXkglQn78ZDxtNLYsOCwON0jLIS0mKF4syMzrxTv6B2QHrHsJSXHqbhVHGF1SkS4Gq9zvHzH+S5KckmIUmavCZYxWzEB52jXrGrzM7z6BtAT8iamtsKbSn9YqZ+pTaNmd9bNO22qnHSP7mHwttyhR+q7xNcrQiz/hnZ5s34W5uYSibZqxirOMFoOvNAbN+3nLDBhAZrs933SFs30VhOajSTgJuostId0SixPC4VLvf71St30f1Xn3lUDFjcE5gEnY43BsjY2PGAlfg4yHipLv0N3HtkfEyg8jInud383dYQhhQKijUaCDRhSB7ZcczlDbPEPWNQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bP/jacIAXara8xVvAyE4gCMNtaSv8jbWtO4yCxGpTEA=;
- b=c0uwrdHisA72WS2d8HqkfSKarAWNl/JZaCwpwbqtMLDhexTrTk5i2YBbuZa+eZq4hgMkaC6IqtJUZOE9uZiZ7F6G456Uitu7vSX1Z3D1WtpjPtanq7FfmsiVn0D7Cv9rVP7nyvXtQ0AxszZ1xXaBaVThp85hsN3zklKANizVxN8lSgYCDBbcx71USE5RzD9lqZLbxlfTQbRdRKTgv3zJrvJm4freCfc1jMEZLG2EgUBI7oVyDvvVtWK4hAn6pahHrWknLqaxP708aN4eBZbyYlgw0AtNCG3iSqEN2+XupRx7BEXe+sa+Ig+jJ/sgBmnZNFFr0EK+tJlAf3SyGDWLVg==
+ bh=GNoezosP5UjPV9wkMIRx2NAhSu5zfJRVFbd0StP8coc=;
+ b=XvvKghBPgEiILrQcMRlQ9g3q3RMdIvRQsrMt/zUs1lvS6YkvrelvP9zZ0jW8I1RWQT3YRoMmw67KA0jputDUoofRE2L9mFJjymwXKeS3cipi33kBRg6SbmDz0e/856mmVq1N2W2uepDA2EUfOzcKH+X3JKUUfK8f1NKnzO2o2tAKclUt42kVlk++pXWOqHsKACZRD1pg4jGkenKoXsq0GeVJ8s+YjFsS95MJlUU4lhQf8M4im3QPgcdF+iv4CTUWBX05MuaYzbJ6EXbS12ZYMFuNFIWlvoDJkjdxQjGRUsVuYw2i/2r1KbRLMpIC4aMZHX8LB0IzXhBAzLch2osKlw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12) with
+ by DM6PR12MB3932.namprd12.prod.outlook.com (2603:10b6:5:1c1::24) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.23; Thu, 26 Nov
- 2020 18:04:20 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Thu, 26 Nov
+ 2020 19:24:30 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3611.024; Thu, 26 Nov 2020
- 18:04:20 +0000
-Date:   Thu, 26 Nov 2020 14:04:18 -0400
+ 19:24:30 +0000
+Date:   Thu, 26 Nov 2020 15:24:28 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH rdma-next 0/2] Enable querying AH for XRC QP types
-Message-ID: <20201126180418.GA541574@nvidia.com>
-References: <20201115121425.139833-1-leon@kernel.org>
+To:     liweihang <liweihang@huawei.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH v2 for-next 7/7] RDMA/hns: Add support for UD inline
+Message-ID: <20201126192428.GA547165@nvidia.com>
+References: <1605526408-6936-1-git-send-email-liweihang@huawei.com>
+ <1605526408-6936-8-git-send-email-liweihang@huawei.com>
+ <20201118191051.GL244516@ziepe.ca>
+ <7a7ee7427b68488f98ebc18d5b7c4d75@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20201115121425.139833-1-leon@kernel.org>
-X-ClientProxiedBy: BL0PR02CA0064.namprd02.prod.outlook.com
- (2603:10b6:207:3d::41) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <7a7ee7427b68488f98ebc18d5b7c4d75@huawei.com>
+X-ClientProxiedBy: BL1PR13CA0117.namprd13.prod.outlook.com
+ (2603:10b6:208:2b9::32) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0064.namprd02.prod.outlook.com (2603:10b6:207:3d::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Thu, 26 Nov 2020 18:04:19 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kiLcw-002Gtk-On; Thu, 26 Nov 2020 14:04:18 -0400
+Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0117.namprd13.prod.outlook.com (2603:10b6:208:2b9::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.18 via Frontend Transport; Thu, 26 Nov 2020 19:24:29 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kiMsW-002INb-GR; Thu, 26 Nov 2020 15:24:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606413875; bh=bP/jacIAXara8xVvAyE4gCMNtaSv8jbWtO4yCxGpTEA=;
+        t=1606418680; bh=GNoezosP5UjPV9wkMIRx2NAhSu5zfJRVFbd0StP8coc=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=pWSQ2wqaSvWRjjT1Ol6sqcTXpcAI9at1F/JaINCzlyVtf11qngxhd9npuxe7cw2Hn
-         Xt9lEryHwom2GuemQniHYdBZCn7qDmyx1ZiCDuBvld+63JH+fODrKnKoVpg6Rj5F0Y
-         6UaM0PK6pwAJSNsBa55b2Ao43+bTuuCk8fm6Y2AHcThbRZMVaZwY56Kk1U73BrLCZO
-         EGrGLdPtZn468xJE432jgIQDYqHpWl9FZILspMGDfRzvq3ThSR6HNF7bXdEAu7mB8n
-         mXUcu9z9r/DFIhw9Ija7XsNyl9zUFv4Mu7l+oT8t37j1g+Hg2h/ojnRvOst1RCyeWo
-         ms22zDq/FN4ug==
+        b=ICHEu1vG4ijJY2+Hjs3BQR+urOx3IV9R/gSS5niL0xPUskzHPoXsnQOy3qXYFx/BF
+         OLGSYAEnM+YdtGdlS11M9U5XSR1JNseL4EpAlPocjusxfTCQjdaunAIgE3f5/Qtm76
+         EgVfz5n4PyYs+UsjZ5L2jEnJcK+WjQL0BpXC7YRhc0WfmihpTK6OoeRKsLTj1j9Va4
+         bB/5BUmF6rU3x2RtpVkbE+vRNgTRKAsp+qZGfpe6SUsX9c1hSSmzLbH6VZx/wIWXWE
+         MaHykZ+Qeq+Y5AYlSapR0axoYPTRs/xUORqo7f7r6lL1rYNKv7qhTYzNosnvb5LGq/
+         Zw334x2W6KKWg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Nov 15, 2020 at 02:14:23PM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Thu, Nov 19, 2020 at 06:15:42AM +0000, liweihang wrote:
+> On 2020/11/19 3:11, Jason Gunthorpe wrote:
+> > On Mon, Nov 16, 2020 at 07:33:28PM +0800, Weihang Li wrote:
+> >> @@ -503,7 +581,23 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
+> >>  	if (ret)
+> >>  		return ret;
+> >>  
+> >> -	set_extend_sge(qp, wr, &curr_idx, valid_num_sge);
+> >> +	if (wr->send_flags & IB_SEND_INLINE) {
+> >> +		ret = set_ud_inl(qp, wr, ud_sq_wqe, &curr_idx);
+> >> +		if (ret)
+> >> +			return ret;
+> > 
+> > Why are you implementing this in the kernel? No kernel ULP sets this
+> > flag?
 > 
-> Update mlx4 and mlx5 drivers to support querying AH for XRC QP types.
-> 
-> Thanks
-> 
-> Avihai Horon (2):
->   RDMA/mlx5: Enable querying AH for XRC QP types
->   RDMA/mlx4: Enable querying AH for XRC QP types
+> Sorry, I don't understand. Some kernel users may set IB_SEND_INLINE
+> when using UD, some may not, we just check this flag to decide how
+> to fill the data into UD SQ WQE here.
 
-Applied to for-next, thanks
+I mean if you 'git grep IB_SEND_INLINE' nothing uses it. 
+
+This is all dead code.
+
+How did you test it?
 
 Jason
