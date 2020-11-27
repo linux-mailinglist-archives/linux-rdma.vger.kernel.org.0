@@ -2,133 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD62D2C67F4
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Nov 2020 15:32:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EADE72C6844
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Nov 2020 15:54:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731056AbgK0Obp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Nov 2020 09:31:45 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:30117 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730827AbgK0Obp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 27 Nov 2020 09:31:45 -0500
-Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc10dd00000>; Fri, 27 Nov 2020 22:31:44 +0800
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 27 Nov
- 2020 14:31:43 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.172)
- by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 27 Nov 2020 14:31:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M05avY5QrT04km/vdN62ri+hOAwXsxuBXQ6I4WoMsx2L0GxLo/x3RDMUFst1TLirfhnqgNy51Dlrz9N6nUpakpEmCbzDJBTqq80tGdYjYSY9v9rF2OHolaDnM/DVyL04eL01bJO5uYFuae6ozKlzM6hkhtxtE4e7UBF39TKu0nmaTXlEz3EB4zmEWGsFt8VfBspEQ68YR086fAJIYIjZuwuDwkKhpPWHR6jn0Jr1NRRhZolJN1aPIbtaoUHes4OS0yR7aVl1DSUUumD8hO8C3S7VLKr87uXU/4macbBU1aCbAj0tmJ9Wno9EAbnEdtBbubwjnTMsqWbUyJy9cH03Gw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wFctz9jWPU1g6fW6ZcqDnZRypO4lvb/9gLq4M5JZYHQ=;
- b=H7SDZyJbMIMA219vlnmqqUXwXvtsC50Wk8HPWuk7Sud9r1MDXwQnbRLJdhpTX+d+et+Wxo8/2YOE/HfglJ7KEyIYad4TyXh3eTCtLwOtDZtb12lY7CwlbRPSjjsEkwpUPT7ZPDpFfJxmN1u3hjh1MJCRfIqscxK14WNu8cjux1juzVcvzGex7tMpffqeqjOUa+BAgucWWk6UuyMCJDh9vIUMgf7fwjxmqTdKTqqxG7GG/4Z4EjGUptSFfS1m2Ufy9iWDSR/DCccYScGS3xjlPlfqtf+qCiqdW9rAs7MGEdAO4YuslRUO86wo1m8WTcJ1uYNK+6i7LRS993Nyy05i1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0204.namprd12.prod.outlook.com (2603:10b6:4:51::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Fri, 27 Nov
- 2020 14:31:40 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3611.025; Fri, 27 Nov 2020
- 14:31:40 +0000
-Date:   Fri, 27 Nov 2020 10:31:38 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-CC:     Sagi Grimberg <sagi@grimberg.me>, Max Gurtovoy <maxg@nvidia.com>,
-        <linux-rdma@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH] IB/iser: Remove in_interrupt() usage.
-Message-ID: <20201127143138.GG552508@nvidia.com>
-References: <20201126202720.2304559-1-bigeasy@linutronix.de>
- <20201126205357.GU5487@ziepe.ca>
- <20201127123455.scnqc7xvuwwofdp2@linutronix.de>
- <20201127130314.GE552508@nvidia.com>
- <20201127141432.z5hqxosugi6uu6i7@linutronix.de>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201127141432.z5hqxosugi6uu6i7@linutronix.de>
-X-ClientProxiedBy: MN2PR04CA0018.namprd04.prod.outlook.com
- (2603:10b6:208:d4::31) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR04CA0018.namprd04.prod.outlook.com (2603:10b6:208:d4::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Fri, 27 Nov 2020 14:31:40 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kiemh-002ibI-0a; Fri, 27 Nov 2020 10:31:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606487504; bh=wFctz9jWPU1g6fW6ZcqDnZRypO4lvb/9gLq4M5JZYHQ=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=a61oN/xrRgaui1qjThGjRPdzAsFvfhaXhjfyRCr5cH8TR4+yijh0vFH4233mg9mr0
-         k9sQg2y++NCVcVQMLL/DiF/5NlYJsPCqu0mHkYXfJZ+GM3onkgqiSiLcEGMCpePAuk
-         zLQTcu9xVTS9f0JnjuPxe8uftNjI+Lm8Mhe23PKujFJ+AGb93axFS68PgT28NhrW8j
-         d8lhyRhOHJ5Ri52apcQPKYsS4OyhYlSXIrjEcWTtMNi3wXEbWa2cEA0YwcAVFQJRkL
-         MTw/JXM8xV3QDA0ShF7OZdB/fkqIf8oNpQDW8mcrWWPZadidBcim9qtb/NF0oDP856
-         4N0J8nDPPtebw==
+        id S1730970AbgK0OyW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Nov 2020 09:54:22 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:46922 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729913AbgK0OyW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Nov 2020 09:54:22 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AREmj8a047039;
+        Fri, 27 Nov 2020 14:54:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=EgG/4ATcW2aRUD5UOhZpTAuhNfcNQDpTYuKs1jC6YVg=;
+ b=DD7B1UX//r0T6plC/ps+j0yPpauZPJuYeF01S34NihiKb6U3JXUkOrPAbmwt2Bj1pI2t
+ JJXj5M8qLGnv4ZSeYGsgaMmB3P0U60PGd8UOY540g7PUhq/oKWOOTR2RPI2dVOsahAv+
+ blmwo25kQyWE9voh4Fw2VEU8Q1RuPYVOzSaP+oVALIlu8JXw82KgDT9cJjEXIoeRjBnP
+ 5ZoLYbzjV0s6jvBTtjTqOe+oh+uUXJs7TAj+AuQmKqw6yMXTbsflG08PGLr7ytO9TdYC
+ 7eea39pMYqX8F2XSPCm3oyEWZgJxTs1x0+ixszd3goT7Hp2nUHTpk5xNhS2hUZqtNClj jQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 351kwhhnjc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 27 Nov 2020 14:54:18 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AREoBfb059559;
+        Fri, 27 Nov 2020 14:52:18 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 351n2mdbp7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 27 Nov 2020 14:52:18 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AREqH39004053;
+        Fri, 27 Nov 2020 14:52:17 GMT
+Received: from dhcp-10-175-160-225.vpn.oracle.com (/10.175.160.225)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 27 Nov 2020 06:52:17 -0800
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: Is there a working cache for path record and lids etc for
+ librdmacm?
+From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
+In-Reply-To: <alpine.DEB.2.22.394.2011251632300.298485@www.lameter.com>
+Date:   Fri, 27 Nov 2020 15:52:14 +0100
+Cc:     Honggang LI <honli@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Mark Haywood <mark.haywood@oracle.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E2349D8B-26AC-469C-8483-A2241B9B649A@oracle.com>
+References: <alpine.DEB.2.22.394.2011170253150.206345@www.lameter.com>
+ <20201117193329.GH244516@ziepe.ca>
+ <alpine.DEB.2.22.394.2011201805000.248138@www.lameter.com>
+ <6F632AE0-7921-4C5F-8455-F8E9390BD071@oracle.com>
+ <alpine.DEB.2.22.394.2011221246230.261606@www.lameter.com>
+ <801AE4A1-7AE8-4756-8F32-5F3BFD189E2B@oracle.com>
+ <alpine.DEB.2.22.394.2011221919240.265127@www.lameter.com>
+ <alpine.DEB.2.22.394.2011231244490.272074@www.lameter.com>
+ <648D2533-E8E8-4248-AF2D-C5F1F60E5BFC@oracle.com>
+ <alpine.DEB.2.22.394.2011241859340.286936@www.lameter.com>
+ <20201125081057.GA547111@dhcp-128-72.nay.redhat.com>
+ <alpine.DEB.2.22.394.2011251632300.298485@www.lameter.com>
+To:     Christopher Lameter <cl@linux.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9817 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 bulkscore=0
+ mlxlogscore=999 spamscore=0 phishscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011270088
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9817 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ lowpriorityscore=0 suspectscore=3 adultscore=0 impostorscore=0 mlxscore=0
+ spamscore=0 phishscore=0 malwarescore=0 clxscore=1011 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011270088
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 03:14:32PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2020-11-27 09:03:14 [-0400], Jason Gunthorpe wrote:
-> > I was able to get the internal bug report that caused the
-> > 7414dde0a6c3a commit.
-> > 
-> > The issue here is that the state_mutex is protecting 
-> > 
-> > This:
-> > 
-> > 	if (unlikely(iser_conn->state != ISER_CONN_UP)) {
-> > 
-> > Which indicates that this:
-> > 
-> >         dma_addr = ib_dma_map_single(device->ib_device, (void *)tx_desc,
-> > 
-> > Won't crash because iser_con->ib_con is invalid. The notes say that
-> > the iSCSI stack is in some state where data traffic won't flow but
-> > management traffic is still possible. I suppose this is some fast path
-> > so it was "optimized" to eliminate the lock for data traffic.
-> > 
-> > A call chain of interest for the lock at least is:
-> > 
-> > Nov  3 12:24:37 rsws10 BUG: unable to handle kernel 
-> > Nov  3 12:24:37 NULL pointer dereference
-> > Nov  3 12:24:37 rsws10 Pid: 5245, comm: scsi_eh_5 Tainted: GF          O 3.8.13-16.2.1.el6uek.x86_64 #1 IBM System x3550 M3 -[7944KEG]-/90Y4784
-> > [..]
-> > Nov  3 12:24:37 rsws10  [<ffffffffa069d628>] iscsi_iser_task_init+0x28/0x70 [ib_iser]
-> > Nov  3 12:24:37 rsws10  [<ffffffffa0610029>] iscsi_prep_mgmt_task+0x129/0x150 [libiscsi]
-> > Nov  3 12:24:37 rsws10  [<ffffffffa061354c>] __iscsi_conn_send_pdu+0x23c/0x310 [libiscsi]
-> > Nov  3 12:24:37 rsws10  [<ffffffffa0614277>] iscsi_exec_task_mgmt_fn+0x37/0x290 [libiscsi]
-> > Nov  3 12:24:37 rsws10  [<ffffffffa061497b>] iscsi_eh_device_reset+0x1bb/0x2d0 [libiscsi]
-> 
-> preemptible until here and this function has:
-> 
-> |	mutex_lock(&session->eh_mutex);
-> |	spin_lock_bh(&session->frwd_lock);
-> 
-> I don't see the lock dropped between here and iscsi_iser_task_init().
 
-Hmm, nor do I
 
-This whole thing does look broken.
+> On 25 Nov 2020, at 17:43, Christopher Lameter <cl@linux.com> wrote:
+>=20
+> On Wed, 25 Nov 2020, Honggang LI wrote:
+>=20
+>>> How do I figure out why ibacm is not talking to the subnet manager?
+>>=20
+>> No, you can't talking to subnet manager, if you resolve IPoIB IP =
+address
+>> or hostname to PathRecord. The query MAD packets will be send to one
+>> multicast group all ibacm service attached.
+>=20
+> Huh? When does it talk to a subnet manager (or the SA)?
 
-So.. it looks like the "fix" in 7414dde0a6c3a was adding the:
+When resolving the route AND the option "route_prot" is set to "sa". If =
+set to "acm", what Hong describes above applies.
 
-+       if (unlikely(iser_conn->state != ISER_CONN_UP)) {
+> If its get an IP address of an IB node that does not have ibacm then =
+it
+> fails with a timeout ..... ? And leaves hanging kernel threads around =
+by
+> design?
 
-Without any locking. Which is a pretty typical mistake :\
+Nop, the kernel falls back and uses the neighbour cache instead.
 
-> Sure, I would do that but as noted above, it the `frwd_lock' is acquired
-> so you can't acquire the mutex here.
+> So it only populates the cache from its local node information?
 
-Ok, well, I'm thinking this patch is OK as is. Lets wait for Max and Sagi
+No, if you use ibacm for address resolution the only protocol it has is =
+"acm", which means the information comes from a peer ibacm.
 
-Jason
+If you talk about the cache for routes, it comes either from the SA or a =
+peer ibacm, depending on the "route_prot" setting.
+
+>> To resolve IPoIB address to PathRecord, you must:
+>> 1) The IPoIB interface must UP and RUNNING on the client and target
+>> side.
+>> 2) The ibacm service must RUNNING on the client and target.
+>=20
+> That is working if you want to resolve only the IP addresses of the IB
+> interfaces on the client and target. None else.
+
+That is why it is called IBacm, right?
+
+> Here is the description of ibacms function from the sources:
+>=20
+> "Conceptually, the ibacm service implements an ARP like protocol and
+> either uses IB multicast records to construct path record data or =
+queries
+> the SA directly, depending on the selected route protocol. By default, =
+the
+> ibacm services uses and caches SA path record queries."
+>=20
+> SA queries dont work. So its broken and cannot talk to the SM.
+
+Why do you say that? It works all the time for me which uses "sa" as =
+"route_prot".
+
+
+Thxs, H=C3=A5kon
+
