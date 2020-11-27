@@ -2,74 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B88F92C6CAC
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Nov 2020 21:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F32552C6CEC
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Nov 2020 22:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731223AbgK0Um5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Nov 2020 15:42:57 -0500
-Received: from mga03.intel.com ([134.134.136.65]:6740 "EHLO mga03.intel.com"
+        id S1731224AbgK0Vc7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Nov 2020 16:32:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732603AbgK0UmM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 27 Nov 2020 15:42:12 -0500
-IronPort-SDR: EViHgpyzo574qXvv4zxXHmSJAlLPphU3LSser+84IhFE6/cXf23c2jwufl6wQvxB1f5/m+91JN
- mRBsIL/x1ubw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9818"; a="172533992"
-X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; 
-   d="scan'208";a="172533992"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2020 12:41:46 -0800
-IronPort-SDR: Wc1zIXwYZpgFX60xYMUGZLpE+idLiGZ8wESqFR0ystpYiMXgHlPj9MGUnmKhnDoQ3VkQkAz3xv
- nL59Zu+tVZ3A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; 
-   d="scan'208";a="537737695"
-Received: from cst-dev.jf.intel.com ([10.23.221.69])
-  by fmsmga005.fm.intel.com with ESMTP; 27 Nov 2020 12:41:46 -0800
-From:   Jianxin Xiong <jianxin.xiong@intel.com>
-To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH rdma-core v3 6/6] tests: Bug fix for get_access_flags()
-Date:   Fri, 27 Nov 2020 12:55:43 -0800
-Message-Id: <1606510543-45567-7-git-send-email-jianxin.xiong@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1606510543-45567-1-git-send-email-jianxin.xiong@intel.com>
-References: <1606510543-45567-1-git-send-email-jianxin.xiong@intel.com>
+        id S1729796AbgK0VWC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 27 Nov 2020 16:22:02 -0500
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606512112;
+        bh=a7/vPjZtYXMiC6pf660DUsi+yrWCfgWf3VKXcHUqL2A=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=iRrBCWIGBVJgGT7VMoxEGYoG9tiRnTwiz2GA6zYrHyy/Nrluv96jQNqMnMDcKMW17
+         /nYM56UdDsJzQ3d4YVXxqmcHezwiGNAO5I24Rg2clCd/AMYes1BTcqLbDSsrHrb1/W
+         3wvLhKsLo72glpgAV92NWU+i/2fI3nfDRXS0Usdc=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201127140052.GA644971@nvidia.com>
+References: <20201127140052.GA644971@nvidia.com>
+X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201127140052.GA644971@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: 17475e104dcb74217c282781817f8f52b46130d3
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d41e9b22eb871a7a7060964db9ce1ceb1c6e5b57
+Message-Id: <160651211232.4351.4971679892065189966.pr-tracker-bot@kernel.org>
+Date:   Fri, 27 Nov 2020 21:21:52 +0000
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The filter definition is wrong and causes get_access_flags() always
-returning empty list. As the result the MR tests using this function
-are effectively skipped (but report success).
+The pull request you sent on Fri, 27 Nov 2020 10:00:52 -0400:
 
-Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
----
- tests/utils.py | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-diff --git a/tests/utils.py b/tests/utils.py
-index d3d5c16..8bd0c16 100644
---- a/tests/utils.py
-+++ b/tests/utils.py
-@@ -56,8 +56,8 @@ def filter_illegal_access_flags(element):
-     :param element: A list of access flags to check
-     :return: True if this list is legal, else False
-     """
--    if e.IBV_ACCESS_REMOTE_ATOMIC in element or e.IBV_ACCESS_REMOTE_WRITE:
--        if e.IBV_ACCESS_LOCAL_WRITE:
-+    if e.IBV_ACCESS_REMOTE_ATOMIC in element or e.IBV_ACCESS_REMOTE_WRITE in element:
-+        if not e.IBV_ACCESS_LOCAL_WRITE in element:
-             return False
-     return True
- 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d41e9b22eb871a7a7060964db9ce1ceb1c6e5b57
+
+Thank you!
+
 -- 
-1.8.3.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
