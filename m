@@ -2,91 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A15C2C615F
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Nov 2020 10:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 477102C6245
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Nov 2020 10:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgK0JJM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Nov 2020 04:09:12 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:38408 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726342AbgK0JJL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:09:11 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0AR90riE013660;
-        Fri, 27 Nov 2020 01:09:01 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=KBJ8saTS4DVFd3+vhSIw78hK4zyk2IrRwvg+G2pFTvo=;
- b=A3FgAB0HZppPAXFxYwQwFmthhqU/Luk4HV/T4duLoxQZwfk0B8LGIiWLAwpy/j/Cj87w
- XAhlV+SUrfCkKMWTzttfNd6GYC0G5099QrK6maBUYvZyasicncsP/xFFFUNIhoFFttNl
- 9TSZZCXjy+A2wl/JmrzDulzW974aa25gKYQ659XTuWaoJqWk4RmapTZk+zHoJB6oED8S
- D+B3QkcU2Sgr6UV+Rwvfxeq7K1MDfldFDoM3WFDcDqWfQOXUuxiMhBBfTeGqCZ6u332b
- 5WFgdDZXxRlHSP6EWySbwM0WcmkhaaocdnDdIGm93fY3xA8DJqZeku6VhfpDkd4wpSyE LQ== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0b-0016f401.pphosted.com with ESMTP id 34y39rmjcx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 27 Nov 2020 01:09:01 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 27 Nov
- 2020 01:08:58 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 27 Nov 2020 01:08:59 -0800
-Received: from alpha-dell-r720.punelab.qlogic.com032qlogic.org032qlogic.com032mv.qlogic.com032av.na032marvell.com (unknown [10.30.45.91])
-        by maili.marvell.com (Postfix) with ESMTP id 64A623F7041;
-        Fri, 27 Nov 2020 01:08:56 -0800 (PST)
-From:   Alok Prasad <palok@marvell.com>
-To:     <jgg@ziepe.ca>, <dledford@redhat.com>
-CC:     <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>,
-        <linux-rdma@vger.kernel.org>, Alok Prasad <palok@marvell.com>,
-        "Michal Kalderon" <mkalderon@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>
-Subject: [PATCH for-rc] RDMA/qedr: iWARP invalid(zero) doorbell address fix.
-Date:   Fri, 27 Nov 2020 09:08:32 +0000
-Message-ID: <20201127090832.11191-1-palok@marvell.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726392AbgK0JzS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 27 Nov 2020 04:55:18 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2447 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725865AbgK0JzR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Nov 2020 04:55:17 -0500
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Cj92y67pFz4yvx;
+        Fri, 27 Nov 2020 17:54:50 +0800 (CST)
+Received: from dggema704-chm.china.huawei.com (10.3.20.68) by
+ DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Fri, 27 Nov 2020 17:55:12 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema704-chm.china.huawei.com (10.3.20.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Fri, 27 Nov 2020 17:55:11 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
+ Fri, 27 Nov 2020 17:55:11 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH v2 for-next 7/7] RDMA/hns: Add support for UD inline
+Thread-Topic: [PATCH v2 for-next 7/7] RDMA/hns: Add support for UD inline
+Thread-Index: AQHWvAyZ1U9I9yddukaFoH2luFPjtw==
+Date:   Fri, 27 Nov 2020 09:55:11 +0000
+Message-ID: <35582a7f2b924a6980403f2901e7bf31@huawei.com>
+References: <1605526408-6936-1-git-send-email-liweihang@huawei.com>
+ <1605526408-6936-8-git-send-email-liweihang@huawei.com>
+ <20201118191051.GL244516@ziepe.ca>
+ <7a7ee7427b68488f98ebc18d5b7c4d75@huawei.com>
+ <20201126192428.GA547165@nvidia.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-27_05:2020-11-26,2020-11-27 signatures=0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch fixes issue introduced by a previous commit
-where iWARP doorbell address wasn't initialized, causing
-call trace when any RDMA application wants to use this
-interface.
+On 2020/11/27 3:24, Jason Gunthorpe wrote:
+> On Thu, Nov 19, 2020 at 06:15:42AM +0000, liweihang wrote:
+>> On 2020/11/19 3:11, Jason Gunthorpe wrote:
+>>> On Mon, Nov 16, 2020 at 07:33:28PM +0800, Weihang Li wrote:
+>>>> @@ -503,7 +581,23 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
+>>>>  	if (ret)
+>>>>  		return ret;
+>>>>  
+>>>> -	set_extend_sge(qp, wr, &curr_idx, valid_num_sge);
+>>>> +	if (wr->send_flags & IB_SEND_INLINE) {
+>>>> +		ret = set_ud_inl(qp, wr, ud_sq_wqe, &curr_idx);
+>>>> +		if (ret)
+>>>> +			return ret;
+>>>
+>>> Why are you implementing this in the kernel? No kernel ULP sets this
+>>> flag?
+>>
+>> Sorry, I don't understand. Some kernel users may set IB_SEND_INLINE
+>> when using UD, some may not, we just check this flag to decide how
+>> to fill the data into UD SQ WQE here.
+> 
+> I mean if you 'git grep IB_SEND_INLINE' nothing uses it. 
+> 
+> This is all dead code.
+> 
+> How did you test it?
+> 
+> Jason
+> 
 
-Fixes: 06e8d1df46ed ("RDMA/qedr: Add support for user mode XRC-SRQ's")
-Signed-off-by: Michal Kalderon <mkalderon@marvell.com>
-Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
-Signed-off-by: Alok Prasad <palok@marvell.com>
----
- drivers/infiniband/hw/qedr/verbs.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Hi Jason,
 
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 019642ff24a7..511c95bb3d01 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -1936,6 +1936,15 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 	}
- 
- 	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
-+		qp->urq.db_rec_db2_addr = ctx->dpi_addr + uresp.rq_db2_offset;
-+
-+		/* calculate the db_rec_db2 data since it is constant so no
-+		 * need to reflect from user
-+		 */
-+		qp->urq.db_rec_db2_data.data.icid = cpu_to_le16(qp->icid);
-+		qp->urq.db_rec_db2_data.data.value =
-+			cpu_to_le16(DQ_TCM_IWARP_POST_RQ_CF_CMD);
-+
- 		rc = qedr_db_recovery_add(dev, qp->urq.db_rec_db2_addr,
- 					  &qp->urq.db_rec_db2_data,
- 					  DB_REC_WIDTH_32B,
--- 
-2.27.0
+We have tested it with our own tools. After running 'git grep IB_SEND_INLINE',
+I found following drivers refer to this flag:
 
+bnxt_re/cxgb4/i40iw/mlx5/ocrdma/qedr/rxe/siw
+
+So I'm still a bit confused. Do you mean that no kernel ULP uses UD inline or
+the IB_SEND_INLINE flag? Should current related codes be removed?
+
+I also found a very old discussion about removing this flag, but there was no
+futher information:
+
+https://lists.openfabrics.org/pipermail/general/2007-August/039826.html
+
+I will appreciate it if you can give us more detailed suggestions.
+
+Thanks
+Weihang
