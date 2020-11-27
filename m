@@ -2,90 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC82F2C6A1F
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Nov 2020 17:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F332C6CB1
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Nov 2020 21:48:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731364AbgK0Qt0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Nov 2020 11:49:26 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13015 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731556AbgK0Qt0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Nov 2020 11:49:26 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc12e180001>; Fri, 27 Nov 2020 08:49:28 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 27 Nov
- 2020 16:49:21 +0000
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.46) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 27 Nov 2020 16:49:21 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UE8EDQuFZLkbBz5tqdQjn2QkCw5rFlw5y58nSLJtn9Wwqzc8qUMC0BRtuHoqV/t1wcEVl6NNyXlCL23cuuf0xzy3cg/ZsVNlo9bOdmUjY8BBpJKC/1gCWZRdiUug11VGGKZhnt3ncroL+W2TiY+SvBOexCqIPA2VTNn3JyoDh+QFgCZZA8uwRuljnh9GAluBel/bkrjsaU0DaowMmVWPsDEmiLnKCvwpe3qn4bAvM4v/Y06nWBcA5X7XQ7HUdo/+RZilHAJquaaAP6eXUucwksJOYNIjmD47nMy3wO4ut/phzq7QTxI4SnrngbDWETPWUmZmT4VMxZQU++laGym5DA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EVZrGtt3Lgf8BXfRjtRlVcpobfgSwuG2IwgA0ndNzDc=;
- b=M6tngJs7Caejltu9a73LcErpTJyfaOvTmRDv19K1d3m/t+GyVXgWTVYnOwvDYVqsQ4b/+6/eSlKPQI4TYv4V0ELLAxyPoUsmxai22h8pr0Vs3XjhjZiIL+/BK+LFcLn7j/CL5tzF3Sl+GKbsow9+G79ryflWUhlnrT9EZ4v+pJX3qyJzFTVQ0tncYGOnJ0al+gEwl7WAanA9hbocGWcIJgzo+XvXOAS0EueAWcvF+cF6CQYEQGl0UtY3hqsD7IEECCRbkWIZXyP3p9s1KrFgk/MO4ACVQHq6iv9+oyyhgDGunvkEh69cclyC50cDHa8/S8DdLT1NMPmqqzDH0FyAuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4618.namprd12.prod.outlook.com (2603:10b6:5:78::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Fri, 27 Nov
- 2020 16:49:20 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3611.025; Fri, 27 Nov 2020
- 16:49:19 +0000
-Date:   Fri, 27 Nov 2020 12:49:17 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Weihang Li <liweihang@huawei.com>
-CC:     <dledford@redhat.com>, <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: Re: [PATCH v3 for-next] RDMA/hns: Create QP with selected QPN for
- bank load balance
-Message-ID: <20201127164917.GA675120@nvidia.com>
-References: <1606220649-1465-1-git-send-email-liweihang@huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1606220649-1465-1-git-send-email-liweihang@huawei.com>
-X-ClientProxiedBy: MN2PR13CA0023.namprd13.prod.outlook.com
- (2603:10b6:208:160::36) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR13CA0023.namprd13.prod.outlook.com (2603:10b6:208:160::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.9 via Frontend Transport; Fri, 27 Nov 2020 16:49:18 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kigvt-002pdl-JV; Fri, 27 Nov 2020 12:49:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606495768; bh=EVZrGtt3Lgf8BXfRjtRlVcpobfgSwuG2IwgA0ndNzDc=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=kM+DGerXyRyHdFsZwwJJ0tMk9pjXmqZgF+EXS0nR/aMT4l4k5NKs/lky0Qa9TIA6B
-         xF/3poa3YUbAZRmawmv+7lvFXBLiUtoGRFP/DSpPlwyC3vsJ+z6Y2DWSMj8we70Gd5
-         zHNFVJV3FN7tKItwiACjjAGfqYtvRVEIVeaaZ3+0j96HdYesmErG19KHXUv+oTyvot
-         UWDuQWyUXZkin5dhyrdApSpGJX+x2eJsKEeF/+EWv4si2645pLt5yHchFtuiqDt7a0
-         WHDmnHxwfJWnlBeE6NvEKllnUkfclLQQkAe12JFjf/2WjNn9xBVq84djjWfngS67a5
-         FrQfri9Z0afqA==
+        id S1732609AbgK0Uoc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Nov 2020 15:44:32 -0500
+Received: from mga03.intel.com ([134.134.136.65]:6740 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732623AbgK0Uni (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 27 Nov 2020 15:43:38 -0500
+IronPort-SDR: SgV77tcMid5eoYx9I1e4Ebi8JzUffCL2qeX8WWadYAH0kle6w/C5gIT5dylxQcFQjIXhXPoLwF
+ kZlEumkki9IA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9818"; a="172533985"
+X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; 
+   d="scan'208";a="172533985"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2020 12:41:44 -0800
+IronPort-SDR: SV/suYrGoIujcV0Ob+A9kC2cT8oMD8kbNr6ZQX5g4tZlIiM399naXfVfwca9M23NmYp/NjXaEv
+ y5KGk8hitXzA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; 
+   d="scan'208";a="537737677"
+Received: from cst-dev.jf.intel.com ([10.23.221.69])
+  by fmsmga005.fm.intel.com with ESMTP; 27 Nov 2020 12:41:44 -0800
+From:   Jianxin Xiong <jianxin.xiong@intel.com>
+To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: [PATCH rdma-core v3 0/6] Add user space dma-buf support
+Date:   Fri, 27 Nov 2020 12:55:37 -0800
+Message-Id: <1606510543-45567-1-git-send-email-jianxin.xiong@intel.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 08:24:09PM +0800, Weihang Li wrote:
-> From: Yangyang Li <liyangyang20@huawei.com>
-> 
-> In order to improve performance by balancing the load between different
-> banks of cache, the QPC cache is desigend to choose one of 8 banks
-> according to lower 3 bits of QPN. The hns driver needs to count the number
-> of QP on each bank and then assigns the QP being created to the bank with
-> the minimum load first.
-> 
-> Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
-> Signed-off-by: Weihang Li <liweihang@huawei.com>
-> ---
+This is the third version of the patch series. Change log:
 
-Applied to for-next, thanks
+v3:
+* Add parameter 'iova' to the new ibv_reg_dmabuf_mr() API
+* Change the way of allocating dma-buf object - use /dev/dri/renderD*
+  instead of /dev/dri/card* and use GEM object instead of dumb buffer
+* Add cmake function to allow building modules with mixed cython and C
+  source files
+* Add new tests that use dma-buf MRs for send/recv and rdma traffic
+* Skip dma-buf tests on unsupported systems
+* Remove some use of random values in the new tests
+* Add dealloc() and close() methods to the new classes
+* Replace string.format with f-string in python code
+* Fix some coding style issues: spacing, indentation, typo, comments
 
-Jason
+v2: https://www.spinics.net/lists/linux-rdma/msg97936.html
+* Put the kernel header updates into a separate commit
+* Add comments for the data structure used in python ioctl calls
+* Fix issues related to symbol versioning
+* Fix styling issues: extra spaces, unncecessary variable, typo
+* Fix an inproper error code usage
+* Put the new op into ibv_context_ops instead if verbs_context
+
+v1: https://www.spinics.net/lists/linux-rdma/msg97865.html
+* Add user space API for registering dma-buf based memory regions
+* Update pyverbs with the new API
+* Add new tests
+
+This is the user space counter-part of the kernel patch set to add
+dma-buf support to the RDMA subsystem.
+
+This series consists of six patches. The first patch updates the
+kernel headers for dma-buf support. Patch 2 adds the new API function
+and updates the man pages. Patch 3 implements the new API in the mlx5
+provider. Patch 4 adds new class definitions to pyverbs for the new API.
+Patch 5 adds a set of new tests for the new API. Patch 6 fixes bug in
+the utility code of the tests.
+
+Pull request at github: https://github.com/linux-rdma/rdma-core/pull/895
+
+Jianxin Xiong (6):
+  Update kernel headers
+  verbs: Support dma-buf based memory region
+  mlx5: Support dma-buf based memory region
+  pyverbs: Add dma-buf based MR support
+  tests: Add tests for dma-buf based memory regions
+  tests: Bug fix for get_access_flags()
+
+ buildlib/pyverbs_functions.cmake         |  52 ++++++
+ debian/libibverbs1.symbols               |   2 +
+ kernel-headers/rdma/ib_user_ioctl_cmds.h |  14 ++
+ kernel-headers/rdma/ib_user_verbs.h      |  14 --
+ libibverbs/CMakeLists.txt                |   2 +-
+ libibverbs/cmd_mr.c                      |  38 ++++
+ libibverbs/driver.h                      |   7 +
+ libibverbs/dummy_ops.c                   |  11 ++
+ libibverbs/libibverbs.map.in             |   6 +
+ libibverbs/man/ibv_reg_mr.3              |  27 ++-
+ libibverbs/verbs.c                       |  18 ++
+ libibverbs/verbs.h                       |  11 ++
+ providers/mlx5/mlx5.c                    |   2 +
+ providers/mlx5/mlx5.h                    |   3 +
+ providers/mlx5/verbs.c                   |  22 +++
+ pyverbs/CMakeLists.txt                   |   7 +
+ pyverbs/dmabuf.pxd                       |  15 ++
+ pyverbs/dmabuf.pyx                       |  72 ++++++++
+ pyverbs/dmabuf_alloc.c                   | 296 +++++++++++++++++++++++++++++++
+ pyverbs/dmabuf_alloc.h                   |  19 ++
+ pyverbs/libibverbs.pxd                   |   2 +
+ pyverbs/mr.pxd                           |   6 +
+ pyverbs/mr.pyx                           | 103 ++++++++++-
+ tests/test_mr.py                         | 239 ++++++++++++++++++++++++-
+ tests/utils.py                           |  30 +++-
+ 25 files changed, 996 insertions(+), 22 deletions(-)
+ create mode 100644 pyverbs/dmabuf.pxd
+ create mode 100644 pyverbs/dmabuf.pyx
+ create mode 100644 pyverbs/dmabuf_alloc.c
+ create mode 100644 pyverbs/dmabuf_alloc.h
+
+-- 
+1.8.3.1
+
