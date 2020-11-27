@@ -2,103 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477102C6245
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Nov 2020 10:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2682C65C7
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Nov 2020 13:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgK0JzS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 27 Nov 2020 04:55:18 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2447 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgK0JzR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Nov 2020 04:55:17 -0500
-Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Cj92y67pFz4yvx;
-        Fri, 27 Nov 2020 17:54:50 +0800 (CST)
-Received: from dggema704-chm.china.huawei.com (10.3.20.68) by
- DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Fri, 27 Nov 2020 17:55:12 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema704-chm.china.huawei.com (10.3.20.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Fri, 27 Nov 2020 17:55:11 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
- Fri, 27 Nov 2020 17:55:11 +0800
-From:   liweihang <liweihang@huawei.com>
+        id S1728340AbgK0Me6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Nov 2020 07:34:58 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:34346 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727455AbgK0Me6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Nov 2020 07:34:58 -0500
+Date:   Fri, 27 Nov 2020 13:34:55 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1606480496;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oDWbnRd+f/JZr3bfd4uAWaFJ6D4EoJsadC7HxpQ3oOc=;
+        b=FD3pSQV4ChqFogZtSWr3du9JYPtfPi3uwyS0Up3Q00W1KvhBf7PPeVLWTXtQVzRAwXnEnt
+        iUneLnlChoJdfafVK5vPiVnY7jT8E2vKyCxM6EXzTzlz0icqupfson62tum7Y7ijojgWY+
+        WTCc3kzobuOg6l8sRBuU8iJrhD/kFQUsXZZC2x4yrxewjBjzfFNEMn8SQRQQn6+x+6LYSP
+        fhddo5ewYpwAnfZt1Fd8/jffNrgEtFM1A6ebE4C1IbUoOvz2WUr/iZa9HBIOK/UJUjLxd4
+        cL+PSjCq9lKTDL/XKvXqsynJ13goxEQ1h56o4sJdkX28yZu/HJIm07ImHw7WCQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1606480496;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oDWbnRd+f/JZr3bfd4uAWaFJ6D4EoJsadC7HxpQ3oOc=;
+        b=jZdYIYxpmaORVDDUQ47OS6Gq/OQpZe8uNaBCKh0QxUOXXyjUbHl/lh5whto+6t2JVc/5DB
+        Er22jD0gqF02xSDQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v2 for-next 7/7] RDMA/hns: Add support for UD inline
-Thread-Topic: [PATCH v2 for-next 7/7] RDMA/hns: Add support for UD inline
-Thread-Index: AQHWvAyZ1U9I9yddukaFoH2luFPjtw==
-Date:   Fri, 27 Nov 2020 09:55:11 +0000
-Message-ID: <35582a7f2b924a6980403f2901e7bf31@huawei.com>
-References: <1605526408-6936-1-git-send-email-liweihang@huawei.com>
- <1605526408-6936-8-git-send-email-liweihang@huawei.com>
- <20201118191051.GL244516@ziepe.ca>
- <7a7ee7427b68488f98ebc18d5b7c4d75@huawei.com>
- <20201126192428.GA547165@nvidia.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Cc:     Sagi Grimberg <sagi@grimberg.me>, Max Gurtovoy <maxg@nvidia.com>,
+        linux-rdma@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Doug Ledford <dledford@redhat.com>
+Subject: Re: [PATCH] IB/iser: Remove in_interrupt() usage.
+Message-ID: <20201127123455.scnqc7xvuwwofdp2@linutronix.de>
+References: <20201126202720.2304559-1-bigeasy@linutronix.de>
+ <20201126205357.GU5487@ziepe.ca>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201126205357.GU5487@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/11/27 3:24, Jason Gunthorpe wrote:
-> On Thu, Nov 19, 2020 at 06:15:42AM +0000, liweihang wrote:
->> On 2020/11/19 3:11, Jason Gunthorpe wrote:
->>> On Mon, Nov 16, 2020 at 07:33:28PM +0800, Weihang Li wrote:
->>>> @@ -503,7 +581,23 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
->>>>  	if (ret)
->>>>  		return ret;
->>>>  
->>>> -	set_extend_sge(qp, wr, &curr_idx, valid_num_sge);
->>>> +	if (wr->send_flags & IB_SEND_INLINE) {
->>>> +		ret = set_ud_inl(qp, wr, ud_sq_wqe, &curr_idx);
->>>> +		if (ret)
->>>> +			return ret;
->>>
->>> Why are you implementing this in the kernel? No kernel ULP sets this
->>> flag?
->>
->> Sorry, I don't understand. Some kernel users may set IB_SEND_INLINE
->> when using UD, some may not, we just check this flag to decide how
->> to fill the data into UD SQ WQE here.
-> 
-> I mean if you 'git grep IB_SEND_INLINE' nothing uses it. 
-> 
-> This is all dead code.
-> 
-> How did you test it?
-> 
+On 2020-11-26 16:53:57 [-0400], Jason Gunthorpe wrote:
+> > --- a/drivers/infiniband/ulp/iser/iscsi_iser.c
+> > +++ b/drivers/infiniband/ulp/iser/iscsi_iser.c
+> > @@ -187,12 +187,8 @@ iser_initialize_task_headers(struct iscsi_task *ta=
+sk,
+> >  	struct iser_device *device =3D iser_conn->ib_conn.device;
+> >  	struct iscsi_iser_task *iser_task =3D task->dd_data;
+> >  	u64 dma_addr;
+> > -	const bool mgmt_task =3D !task->sc && !in_interrupt();
+> >  	int ret =3D 0;
+>=20
+> Why do you think the task->sc doesn't matter?
+
+Based on the call paths I checked, there was no evidence that
+state_mutex can be acquired. If I remove locking here then `mgmt_task'
+is no longer needed.
+How should task->sc matter?
+
+> > -	if (unlikely(mgmt_task))
+> > -		mutex_lock(&iser_conn->state_mutex);
+> > -
+> >  	if (unlikely(iser_conn->state !=3D ISER_CONN_UP)) {
+> >  		ret =3D -ENODEV;
+> >  		goto out;
+=E2=80=A6
 > Jason
-> 
 
-Hi Jason,
-
-We have tested it with our own tools. After running 'git grep IB_SEND_INLINE',
-I found following drivers refer to this flag:
-
-bnxt_re/cxgb4/i40iw/mlx5/ocrdma/qedr/rxe/siw
-
-So I'm still a bit confused. Do you mean that no kernel ULP uses UD inline or
-the IB_SEND_INLINE flag? Should current related codes be removed?
-
-I also found a very old discussion about removing this flag, but there was no
-futher information:
-
-https://lists.openfabrics.org/pipermail/general/2007-August/039826.html
-
-I will appreciate it if you can give us more detailed suggestions.
-
-Thanks
-Weihang
+Sebastian
