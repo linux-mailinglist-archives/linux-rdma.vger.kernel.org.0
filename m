@@ -2,83 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757C12C663E
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Nov 2020 14:07:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A822C6642
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Nov 2020 14:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729820AbgK0NFY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Nov 2020 08:05:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48444 "EHLO
+        id S1729746AbgK0NGV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Nov 2020 08:06:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729650AbgK0NFY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Nov 2020 08:05:24 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003FEC0613D4
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Nov 2020 05:05:23 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id q22so4232921qkq.6
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Nov 2020 05:05:23 -0800 (PST)
+        with ESMTP id S1729742AbgK0NGV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Nov 2020 08:06:21 -0500
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8635EC0613D1
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Nov 2020 05:06:19 -0800 (PST)
+Received: by mail-qv1-xf43.google.com with SMTP id cv2so2249701qvb.9
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Nov 2020 05:06:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=0Yf2SSd1C2wSWPwt5DssVFCCkFk2g3a7M55pr0bzd44=;
-        b=FRKcZfqhbBGYtkE6CJKRlf7kPdkklbori2H2ODXk4mlAM2/hriEcdg+yBE83vHnJOD
-         gtYQKwc/UbG9Wc6WDNm4G/2BNQV1+YwnPDYHMd0po6p1s2UiPFRJIdWN6rJ7q7OKoD6c
-         V9avJ/KjIdwL2CNJDtF3AS9Su+j4sSfpzal+PJbCxaJwDZEcIu5QeLoIpGIt6Pg8ewmd
-         C+U+iRyH3YE9qW/rUwcEmjTi4LM9n42pLGTNarF84H+HIfwyIWe7MEFtyvAE+E+dlAyV
-         2gC2XTMzxRPXX5catjoNcG8kjFHr42xTeo0u0XitR9uGCEJdi2rl/FLZv1azY3NqwqJi
-         WrCg==
+        bh=LO3EsDTeAKWTGXo2YsDbNijBZ7GT3knSApI/s3TLwHY=;
+        b=Gtu827c93e07ptKxA66BNacsv3XJPonCMbBHNhdNiE1eSrePbmVLeuHMUdhxKG75nS
+         ZuRd7fLFl+Rsp9a9NPOnMl1fTZ+J2fwXRzXgsiizzr8r3/Mf1r0+HOvXcrRR8znYRUrC
+         fVQtAvyOCv4Kgd04pRl1FLKpdVdtG2sdl9bboeAikH9asV+acQ+FgLdweq38EtAnNzsw
+         0yRKTEQkO2Km9JP8KL0zmI3EHj/WSEiAuYivqbrfNahYsxS/U9hIyhK2mMvLsZ9k6jkn
+         9rPPae/XjzuE6RHdT+7Hc7Tw/yvPbWs3jXMu6ErhWzVvqZZCFF+tNXx3aNJP7WdDYrfa
+         bYvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=0Yf2SSd1C2wSWPwt5DssVFCCkFk2g3a7M55pr0bzd44=;
-        b=U/86uOJgaS/AubcTucgyg9zWX9QjsZEYlvr0UEOL6XNckDpVHlis8Wpbooxh9MkQf5
-         W/92+NSVY+RfnPMkRTGX2JT/2ap6rNbrPO58lAc0jbBcRupnVIfY85Qb8z7619xP2zof
-         IGDDuQOCVT7IchCxg8C1KbAo4j6bcHFF/gs/xtvLU5L+jJhGwYVDaXXTVBuGREaPrzHn
-         arNQbYGjPAm8v1ZaWuJgsFLKW6kzQIiEnQKHg3HaqbC8mqEE8O7/Aj3KzOE2oDBbN5a7
-         BWwTY/RfczGC3rjadYm+Kfyk65AMzHdzIO5t8p+bUvMxRaQEeDYSzTq+uWCxwSA9whj1
-         Ix6Q==
-X-Gm-Message-State: AOAM531Xn4pLUZs4dnIt4aOaiHYKuQ+GNOiB2CnSzVKig7t6NV7jwfc+
-        IDGHZED0dnYCFgHu6VKP93bYH8dQlID1Tv3N
-X-Google-Smtp-Source: ABdhPJw4GB7wH/RB7Ds/QJZ3iZG4iZ8MA034v381ThdT18RvsYNUTgA9xqDEJgHuSNFSAJ18HEMUuA==
-X-Received: by 2002:a37:a4c:: with SMTP id 73mr8342162qkk.451.1606482323145;
-        Fri, 27 Nov 2020 05:05:23 -0800 (PST)
+        bh=LO3EsDTeAKWTGXo2YsDbNijBZ7GT3knSApI/s3TLwHY=;
+        b=aDyCNkkMCXrSnoQZ93ltMGsdoUl1869R3IeiNUma3xTLnk/BsSIIew38CZa1mXZoQg
+         gE+a4SmEOSfrnAVlBrDNNY2VSwBaXJ7JEryzLoHQPGDm9B32Mo0uP9Z088y3rhwYdKRo
+         3fbc+y3KcaQUqxZfPdlA0BJs54j4x2G+nHqosbl0bkBVxT4bqlhZ9YOaDWLvXrGI7nJ4
+         nEfMYf7bt8YFHv4biUbBiAM1vhIvUsiznR9E7qKKTd13YpH1uttidIAHj05h5JJ4vsXP
+         NlhJCkAbqfPxKShMpBX8masR4+tQK5LWasN54EjrJsz1ceWkR6wwytt0utnfjntLFgv6
+         03ew==
+X-Gm-Message-State: AOAM532epPRNEGZoEd5x/v98pNpS3ZpG8fAUhQRZe6n3nPX5ZaB9Az/6
+        j5SFsgtRVXpSs6UY+C5spdrZOpnH9HIPWSNI
+X-Google-Smtp-Source: ABdhPJzeV7CvKldDuWhDimVjL/XQshnGMPxUMTH2qwzRAn3OLVDskNtlWxyPPBzfMATVZ+lPH7Q6mg==
+X-Received: by 2002:a0c:b5a6:: with SMTP id g38mr8144449qve.31.1606482378720;
+        Fri, 27 Nov 2020 05:06:18 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id t126sm5651244qkh.133.2020.11.27.05.05.22
+        by smtp.gmail.com with ESMTPSA id i84sm5866630qke.33.2020.11.27.05.06.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 05:05:22 -0800 (PST)
+        Fri, 27 Nov 2020 05:06:17 -0800 (PST)
 Received: from jgg by mlx with local (Exim 4.94)
         (envelope-from <jgg@ziepe.ca>)
-        id 1kidRB-002XaB-FD; Fri, 27 Nov 2020 09:05:21 -0400
-Date:   Fri, 27 Nov 2020 09:05:21 -0400
+        id 1kidS5-002XbR-91; Fri, 27 Nov 2020 09:06:17 -0400
+Date:   Fri, 27 Nov 2020 09:06:17 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] RDMA/mlx5: Fix a error code in devx_umem_reg_cmd_alloc()
-Message-ID: <20201127130521.GV5487@ziepe.ca>
-References: <20201127074349.GA7391@mwanda>
+To:     Alok Prasad <palok@marvell.com>
+Cc:     dledford@redhat.com, michal.kalderon@marvell.com,
+        ariel.elior@marvell.com, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>
+Subject: Re: [PATCH for-rc] RDMA/qedr: iWARP invalid(zero) doorbell address
+ fix.
+Message-ID: <20201127130617.GW5487@ziepe.ca>
+References: <20201127090832.11191-1-palok@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201127074349.GA7391@mwanda>
+In-Reply-To: <20201127090832.11191-1-palok@marvell.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 10:43:49AM +0300, Dan Carpenter wrote:
-> This code returns PTR_ERR(NULL) which is zero or success but it should
-> return -ENOMEM.
-> 
-> Fixes: 878f7b31c3a7 ("RDMA/mlx5: Use ib_umem_find_best_pgsz() for devx")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/infiniband/hw/mlx5/devx.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Nov 27, 2020 at 09:08:32AM +0000, Alok Prasad wrote:
+> This patch fixes issue introduced by a previous commit
+> where iWARP doorbell address wasn't initialized, causing
+> call trace when any RDMA application wants to use this
+> interface.
 
-Not quite, it is worse, cmd->in is never NULL in the first place
-
-https://lore.kernel.org/linux-rdma/0-v1-4d05ccc1c223+173-devx_err_ptr_jgg@nvidia.com/
+Include the call trace in the commit message
 
 Jason
