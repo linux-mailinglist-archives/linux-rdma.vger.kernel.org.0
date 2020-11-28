@@ -2,52 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32552C6CEC
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Nov 2020 22:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 720AB2C7223
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Nov 2020 23:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731224AbgK0Vc7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Nov 2020 16:32:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729796AbgK0VWC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 27 Nov 2020 16:22:02 -0500
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606512112;
-        bh=a7/vPjZtYXMiC6pf660DUsi+yrWCfgWf3VKXcHUqL2A=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=iRrBCWIGBVJgGT7VMoxEGYoG9tiRnTwiz2GA6zYrHyy/Nrluv96jQNqMnMDcKMW17
-         /nYM56UdDsJzQ3d4YVXxqmcHezwiGNAO5I24Rg2clCd/AMYes1BTcqLbDSsrHrb1/W
-         3wvLhKsLo72glpgAV92NWU+i/2fI3nfDRXS0Usdc=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201127140052.GA644971@nvidia.com>
-References: <20201127140052.GA644971@nvidia.com>
-X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201127140052.GA644971@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: 17475e104dcb74217c282781817f8f52b46130d3
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d41e9b22eb871a7a7060964db9ce1ceb1c6e5b57
-Message-Id: <160651211232.4351.4971679892065189966.pr-tracker-bot@kernel.org>
-Date:   Fri, 27 Nov 2020 21:21:52 +0000
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S1730418AbgK1VuZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 28 Nov 2020 16:50:25 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8162 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730425AbgK1SlC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 28 Nov 2020 13:41:02 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CjnfC0QHFz15LLm;
+        Sat, 28 Nov 2020 18:24:03 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 28 Nov 2020 18:24:18 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH for-next 0/3] RDMA/hns: Fixes for calculation of sge
+Date:   Sat, 28 Nov 2020 18:22:36 +0800
+Message-ID: <1606558959-48510-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.8.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The pull request you sent on Fri, 27 Nov 2020 10:00:52 -0400:
+There are two issues with calculation of extended sge, one is about page
+alignment and another is about the 0-length sges. Then, the path #3
+refactor the code.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+Lang Cheng (1):
+  RDMA/hns: Fix 0-length sge calculation error
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d41e9b22eb871a7a7060964db9ce1ceb1c6e5b57
+Weihang Li (1):
+  RDMA/hns: Refactor process of setting extended sge
 
-Thank you!
+Yangyang Li (1):
+  RDMA/hns: Bugfix for calculation of extended sge
+
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 24 +++++-------
+ drivers/infiniband/hw/hns/hns_roce_qp.c    | 61 +++++++++++++++---------------
+ 2 files changed, 41 insertions(+), 44 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.8.1
+
