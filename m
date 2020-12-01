@@ -2,170 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3952CA3C2
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Dec 2020 14:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C15932CA429
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Dec 2020 14:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387551AbgLAN0T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Dec 2020 08:26:19 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:8484 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbgLAN0T (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Dec 2020 08:26:19 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CljWs35GyzhXwr;
-        Tue,  1 Dec 2020 21:25:13 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 1 Dec 2020 21:25:25 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH for-next] RDMA/hns: Move capability flags of QP and CQ to hns-abi.h
-Date:   Tue, 1 Dec 2020 21:23:44 +0800
-Message-ID: <1606829024-51856-1-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S2391155AbgLANo6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Dec 2020 08:44:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387932AbgLANo6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Dec 2020 08:44:58 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEE7C061A48
+        for <linux-rdma@vger.kernel.org>; Tue,  1 Dec 2020 05:43:44 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id d9so1203074qke.8
+        for <linux-rdma@vger.kernel.org>; Tue, 01 Dec 2020 05:43:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4EnzSAXEWHTYsF6BPwz9L60+Z1H1pY6pU6MCWXt7avA=;
+        b=VyJsSWHWhH5sYC5l7bZ/C++LBI8I2ZbC5v/+7kNCzjhhvoqcD1V9AGenqSP43ZNATx
+         jRxmJQUadydf+zW1NCYeL45vGcTNwVDMtupqcQEToWFAA4xiNxI79PGf2EkIuwe4UJs5
+         D9qeUbBYFWx5ZPiqpO9vts080kWbWfj05pjrY+KsVfbt8Pvmz2tF8LiW7ERdTofLAkkC
+         ehyuLdZpI/fWnBvhPeKEmdSBvY4SLPqmfvhgMoE5ufHYWhlFdEUymGEZn490TLz6l898
+         O42Pkxyg2eNihqFyR3FTcJ+zXGznwxU+Z6USjs85eUvkKBNTjTPCHaW4f20Grvm8hYSU
+         UUuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4EnzSAXEWHTYsF6BPwz9L60+Z1H1pY6pU6MCWXt7avA=;
+        b=s8JbIV6NsOG4QtHZreVJ2N7Y38hmQ2yaotTPiJrROXs3xAsBrFx15CIDmJuC0C0TNn
+         nKvXp2kcjek9BbF4WDGn5RbkjglSM10W9ABPsQA9R7NgrQ6TLTtSNXptSOzDIq+dNIFI
+         F6K6GDF7nr4zzeMHEbhpltE16Rw++p8iihbiscmzADVgooPj0UcSWrpZo/rV36YEkG5v
+         HZ7IyH7oiW2Y4DomzOTQSaf57MWDSaEmZp4M/am6ue0sKO+Giyz7+Uc4K8gahJq2uCZx
+         BpL5O7ligjOKCZTVnsEh+v06yPEPve6xyjb9rqLCUuknxHGwU8mI4J4+JlLuR59yo5JY
+         w/YA==
+X-Gm-Message-State: AOAM531n1KjjOV6HvWY7vtvm/aDKewY/mDVvFWASERMRABkM64dMlMy6
+        d5effV5AME3ZtbdxW/qEm7Y90g==
+X-Google-Smtp-Source: ABdhPJyU0/kslN2z/KDH7YywWtRJapLqnK2o0oilXR0LM+1jsVd1c61SZpIZupgocy7UA0ywbiVkNQ==
+X-Received: by 2002:a05:620a:1655:: with SMTP id c21mr2828950qko.127.1606830223577;
+        Tue, 01 Dec 2020 05:43:43 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id d12sm1953898qtp.77.2020.12.01.05.43.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Dec 2020 05:43:42 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kk5wT-004QZo-R8; Tue, 01 Dec 2020 09:43:41 -0400
+Date:   Tue, 1 Dec 2020 09:43:41 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next] RDMA/hns: Move capability flags of QP and CQ to
+ hns-abi.h
+Message-ID: <20201201134341.GD5487@ziepe.ca>
+References: <1606829024-51856-1-git-send-email-liweihang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1606829024-51856-1-git-send-email-liweihang@huawei.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-These flags will be returned to the userspace through ABI, so they should
-be defined in hns-abi.h. Furthermore, there is no need to include
-hns-abi.h in every source files, it just needs to be included in the
-common header file.
+On Tue, Dec 01, 2020 at 09:23:44PM +0800, Weihang Li wrote:
+> diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
+> index 9ec85f7..2dd5fa07 100644
+> +++ b/include/uapi/rdma/hns-abi.h
+> @@ -43,6 +43,10 @@ struct hns_roce_ib_create_cq {
+>  	__u32 reserved;
+>  };
+>  
+> +enum hns_roce_cq_cap_flags {
+> +	HNS_ROCE_CQ_FLAG_RECORD_DB = BIT(0),
+> +};
+> +
+>  struct hns_roce_ib_create_cq_resp {
+>  	__aligned_u64 cqn; /* Only 32 bits used, 64 for compat */
+>  	__aligned_u64 cap_flags;
+> @@ -69,6 +73,12 @@ struct hns_roce_ib_create_qp {
+>  	__aligned_u64 sdb_addr;
+>  };
+>  
+> +enum hns_roce_qp_cap_flags {
+> +	HNS_ROCE_QP_CAP_RQ_RECORD_DB = BIT(0),
+> +	HNS_ROCE_QP_CAP_SQ_RECORD_DB = BIT(1),
+> +	HNS_ROCE_QP_CAP_OWNER_DB = BIT(2),
+> +};
 
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_cq.c     |  1 -
- drivers/infiniband/hw/hns/hns_roce_device.h | 11 +----------
- drivers/infiniband/hw/hns/hns_roce_main.c   |  1 -
- drivers/infiniband/hw/hns/hns_roce_pd.c     |  1 -
- drivers/infiniband/hw/hns/hns_roce_qp.c     |  1 -
- drivers/infiniband/hw/hns/hns_roce_srq.c    |  1 -
- include/uapi/rdma/hns-abi.h                 | 10 ++++++++++
- 7 files changed, 11 insertions(+), 15 deletions(-)
+Don't use BIT in uapi headers
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-index 68f355f..5e6d688 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-@@ -36,7 +36,6 @@
- #include "hns_roce_device.h"
- #include "hns_roce_cmd.h"
- #include "hns_roce_hem.h"
--#include <rdma/hns-abi.h>
- #include "hns_roce_common.h"
- 
- static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 1c1deb4..6c5d5dd 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -34,6 +34,7 @@
- #define _HNS_ROCE_DEVICE_H
- 
- #include <rdma/ib_verbs.h>
-+#include <rdma/hns-abi.h>
- 
- #define DRV_NAME "hns_roce"
- 
-@@ -129,16 +130,6 @@ enum {
- 	SERV_TYPE_UD,
- };
- 
--enum hns_roce_qp_caps {
--	HNS_ROCE_QP_CAP_RQ_RECORD_DB = BIT(0),
--	HNS_ROCE_QP_CAP_SQ_RECORD_DB = BIT(1),
--	HNS_ROCE_QP_CAP_OWNER_DB = BIT(2),
--};
--
--enum hns_roce_cq_flags {
--	HNS_ROCE_CQ_FLAG_RECORD_DB = BIT(0),
--};
--
- enum hns_roce_qp_state {
- 	HNS_ROCE_QP_STATE_RST,
- 	HNS_ROCE_QP_STATE_INIT,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index f01590d..e8aa807 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -40,7 +40,6 @@
- #include <rdma/ib_cache.h>
- #include "hns_roce_common.h"
- #include "hns_roce_device.h"
--#include <rdma/hns-abi.h>
- #include "hns_roce_hem.h"
- 
- /**
-diff --git a/drivers/infiniband/hw/hns/hns_roce_pd.c b/drivers/infiniband/hw/hns/hns_roce_pd.c
-index 98f6949..45ec91d 100644
---- a/drivers/infiniband/hw/hns/hns_roce_pd.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_pd.c
-@@ -32,7 +32,6 @@
- 
- #include <linux/platform_device.h>
- #include <linux/pci.h>
--#include <uapi/rdma/hns-abi.h>
- #include "hns_roce_device.h"
- 
- static int hns_roce_pd_alloc(struct hns_roce_dev *hr_dev, unsigned long *pdn)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 5e505a3..5a94b20 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -39,7 +39,6 @@
- #include "hns_roce_common.h"
- #include "hns_roce_device.h"
- #include "hns_roce_hem.h"
--#include <rdma/hns-abi.h>
- 
- static void flush_work_handle(struct work_struct *work)
- {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
-index 27646b9..36c6bcb 100644
---- a/drivers/infiniband/hw/hns/hns_roce_srq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
-@@ -4,7 +4,6 @@
-  */
- 
- #include <rdma/ib_umem.h>
--#include <rdma/hns-abi.h>
- #include "hns_roce_device.h"
- #include "hns_roce_cmd.h"
- #include "hns_roce_hem.h"
-diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
-index 9ec85f7..2dd5fa07 100644
---- a/include/uapi/rdma/hns-abi.h
-+++ b/include/uapi/rdma/hns-abi.h
-@@ -43,6 +43,10 @@ struct hns_roce_ib_create_cq {
- 	__u32 reserved;
- };
- 
-+enum hns_roce_cq_cap_flags {
-+	HNS_ROCE_CQ_FLAG_RECORD_DB = BIT(0),
-+};
-+
- struct hns_roce_ib_create_cq_resp {
- 	__aligned_u64 cqn; /* Only 32 bits used, 64 for compat */
- 	__aligned_u64 cap_flags;
-@@ -69,6 +73,12 @@ struct hns_roce_ib_create_qp {
- 	__aligned_u64 sdb_addr;
- };
- 
-+enum hns_roce_qp_cap_flags {
-+	HNS_ROCE_QP_CAP_RQ_RECORD_DB = BIT(0),
-+	HNS_ROCE_QP_CAP_SQ_RECORD_DB = BIT(1),
-+	HNS_ROCE_QP_CAP_OWNER_DB = BIT(2),
-+};
-+
- struct hns_roce_ib_create_qp_resp {
- 	__aligned_u64 cap_flags;
- };
--- 
-2.8.1
-
+Jason
