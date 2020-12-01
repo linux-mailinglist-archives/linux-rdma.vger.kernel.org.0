@@ -2,92 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBC12C9D21
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Dec 2020 10:39:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D892CA1A0
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Dec 2020 12:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389375AbgLAJTd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Dec 2020 04:19:33 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:2852 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387435AbgLAJTS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Dec 2020 04:19:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1606814358; x=1638350358;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=myh7mB1Rd6SFZULOERKkD2JIURItOzgfX2lV6zE2+y8=;
-  b=VI2uY4q9hmbMx/A9ToGWB9VRESU+WiQQ6cERQ+9Bi5HbA19qN7hNDO6+
-   WrMWat7wVlv/zf8SIG+f64W36zr+sIjpPHXu/tE27UVMWF2WCUbMOfSGT
-   xNz+fiAFH1NNf8BbB8RGBeXbMay3Pp2HiPFP14IKJLfP8bjnBi+hwWm7D
-   c=;
-X-IronPort-AV: E=Sophos;i="5.78,384,1599523200"; 
-   d="scan'208";a="68254715"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-16425a8d.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 01 Dec 2020 09:18:27 +0000
-Received: from EX13D13EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-16425a8d.us-east-1.amazon.com (Postfix) with ESMTPS id 171C7101067;
-        Tue,  1 Dec 2020 09:18:25 +0000 (UTC)
-Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
- EX13D13EUB003.ant.amazon.com (10.43.166.55) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 1 Dec 2020 09:18:24 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.1.213.17) by
- mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 1 Dec 2020 09:18:20 +0000
-From:   Gal Pressman <galpress@amazon.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
-CC:     <linux-rdma@vger.kernel.org>, Gal Pressman <galpress@amazon.com>,
-        Firas JahJah <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-Subject: [PATCH for-next] RDMA/efa: Use dma_set_mask_and_coherent to simplify code
-Date:   Tue, 1 Dec 2020 11:18:11 +0200
-Message-ID: <20201201091811.37984-1-galpress@amazon.com>
-X-Mailer: git-send-email 2.29.2
+        id S1730753AbgLALkM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Dec 2020 06:40:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728042AbgLALkM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 1 Dec 2020 06:40:12 -0500
+Received: from coco.lan (ip5f5ad5d9.dynamic.kabel-deutschland.de [95.90.213.217])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4FAA220770;
+        Tue,  1 Dec 2020 11:39:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606822771;
+        bh=PQ9EZbSMFKUHeX+XY1hPlkXxxs7DFScv3x/xqnCA6Ko=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xsE2iYZLZhjhWy8fwKUBv5uNG5IGT6zeeytWsuNR2WK3hzRz4hCkWlmizxAWhYI68
+         oytsPRsNsd86jy/cEo1HdWQi/2upVYfHgs/LjEUEs97agRWt2Jp3aTsemdLpGBydY8
+         bHOmv7o38g/Uaw78EbGbuPnPg3VJR+3BIujLttHI=
+Date:   Tue, 1 Dec 2020 12:39:21 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        =?UTF-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Danit Goldberg <danitg@mellanox.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Divya Indi <divya.indi@oracle.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Moni Shoua <monis@mellanox.com>,
+        "Or Gerlitz" <ogerlitz@mellanox.com>,
+        Parav Pandit <parav@mellanox.com>,
+        "Sagi Grimberg" <sagi@grimberg.me>,
+        Ursula Braun <ubraun@linux.ibm.com>,
+        Xi Wang <wangxi11@huawei.com>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <target-devel@vger.kernel.org>
+Subject: Re: [PATCH v4 07/27] IB: fix kernel-doc markups
+Message-ID: <20201201123921.2009cbea@coco.lan>
+In-Reply-To: <20201123234542.GA142861@nvidia.com>
+References: <cover.1605521731.git.mchehab+huawei@kernel.org>
+        <4983a0c6fe5dbc2c779d2b5950a6f90f81a16d56.1605521731.git.mchehab+huawei@kernel.org>
+        <20201123234542.GA142861@nvidia.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Use dma_set_mask_and_coherent() instead of pci_set_dma_mask() followed
-by a pci_set_consistent_dma_mask().
+Em Mon, 23 Nov 2020 19:45:42 -0400
+Jason Gunthorpe <jgg@nvidia.com> escreveu:
 
-Reviewed-by: Firas JahJah <firasj@amazon.com>
-Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
-Signed-off-by: Gal Pressman <galpress@amazon.com>
----
- drivers/infiniband/hw/efa/efa_main.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+> On Mon, Nov 16, 2020 at 11:18:03AM +0100, Mauro Carvalho Chehab wrote:
+> 
+> > +/**
+> > + * ib_alloc_pd - Allocates an unused protection domain.
+> > + * @device: The device on which to allocate the protection domain.
+> > + * @flags: protection domain flags
+> > + *
+> > + * A protection domain object provides an association between QPs, shared
+> > + * receive queues, address handles, memory regions, and memory windows.
+> > + *
+> > + * Every PD has a local_dma_lkey which can be used as the lkey value for local
+> > + * memory operations.
+> > + */
+> >  #define ib_alloc_pd(device, flags) \
+> >  	__ib_alloc_pd((device), (flags), KBUILD_MODNAME)  
+> 
+> Why this hunk adding a completely new description in this patch?
 
-diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-index cb2f2c647ee5..0f578734bddb 100644
---- a/drivers/infiniband/hw/efa/efa_main.c
-+++ b/drivers/infiniband/hw/efa/efa_main.c
-@@ -384,19 +384,12 @@ static int efa_device_init(struct efa_com_dev *edev, struct pci_dev *pdev)
- 		return err;
- 	}
- 
--	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(dma_width));
-+	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(dma_width));
- 	if (err) {
--		dev_err(&pdev->dev, "pci_set_dma_mask failed %d\n", err);
-+		dev_err(&pdev->dev, "dma_set_mask_and_coherent failed %d\n", err);
- 		return err;
- 	}
- 
--	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(dma_width));
--	if (err) {
--		dev_err(&pdev->dev,
--			"err_pci_set_consistent_dma_mask failed %d\n",
--			err);
--		return err;
--	}
- 	dma_set_max_seg_size(&pdev->dev, UINT_MAX);
- 	return 0;
- }
+In order to document ib_alloc_pd().
 
-base-commit: dd37d2f59eb839d51b988f6668ce5f0d533b23fd
--- 
-2.29.2
+See, currently, verbs.c has this kernel-doc markup:
 
+	/**
+	 * ib_alloc_pd - Allocates an unused protection domain.
+	 * @device: The device on which to allocate the protection domain.
+	 * @flags: protection domain flags
+	 * @caller: caller's build-time module name
+	 *
+	 * A protection domain object provides an association between QPs, shared
+	 * receive queues, address handles, memory regions, and memory windows.
+	 *
+	 * Every PD has a local_dma_lkey which can be used as the lkey value for local
+	 * memory operations.
+	 */
+	struct ib_pd *__ib_alloc_pd(struct ib_device *device, unsigned int flags,
+	                const char *caller)
+
+Which doesn't actually work as expected, as kernel-doc will, instead,
+document __ib_alloc_pd():
+
+	$ ./scripts/kernel-doc -sphinx-version 3.1 -function ib_alloc_pd drivers/infiniband/core/verbs.c 
+	drivers/infiniband/core/verbs.c:1: warning: 'ib_alloc_pd' not found
+
+	$ ./scripts/kernel-doc -sphinx-version 3.1 -function __ib_alloc_pd drivers/infiniband/core/verbs.c 
+	.. c:function:: struct ib_pd * __ib_alloc_pd (struct ib_device *device, unsigned int flags, const char *caller)
+
+	   Allocates an unused protection domain.
+
+	**Parameters**
+
+	``struct ib_device *device``
+	  The device on which to allocate the protection domain.
+
+	``unsigned int flags``
+	  protection domain flags
+	
+	``const char *caller``
+	  caller's build-time module name
+
+	**Description**
+
+	A protection domain object provides an association between QPs, shared
+	receive queues, address handles, memory regions, and memory windows.
+
+	Every PD has a local_dma_lkey which can be used as the lkey value for local
+	memory operations.
+
+So, what this patch does is to fix the kernel-doc markup at verbs.c for
+it to reflect the function that it is documented, adding a new markup for
+ib_alloc_pd(), which is identical to __ib_alloc_pd(), except for the
+@caller field, which is set to KBUILD_MODNAME by this macro.
+
+Thanks,
+Mauro
