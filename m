@@ -2,285 +2,257 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1AF72CB807
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Dec 2020 10:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 596C72CC0C5
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Dec 2020 16:28:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387930AbgLBJC3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Dec 2020 04:02:29 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:8914 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387922AbgLBJC1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Dec 2020 04:02:27 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CmCc91LjCz77By;
-        Wed,  2 Dec 2020 17:00:41 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 2 Dec 2020 17:00:57 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH for-next 11/11] RDMA/hns: Simplify AEQE process for different types of queue
-Date:   Wed, 2 Dec 2020 16:59:13 +0800
-Message-ID: <1606899553-54592-12-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1606899553-54592-1-git-send-email-liweihang@huawei.com>
-References: <1606899553-54592-1-git-send-email-liweihang@huawei.com>
+        id S1728356AbgLBP0b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Dec 2020 10:26:31 -0500
+Received: from mga11.intel.com ([192.55.52.93]:26663 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727920AbgLBP0b (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:26:31 -0500
+IronPort-SDR: VQ3MuZvECJ9fyLosXBWOu8qBflTydYiWdRmsCIaQ1u0QlxmPh6TPYg0E3FWV82pd7lDFxpOiT9
+ wLRGcn4Em0ww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="169528549"
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="169528549"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 07:25:50 -0800
+IronPort-SDR: XN4RVRB5rTvsTWDWL1fjGsdEuxZY51Hys2lTkKolYros+RKGZP6vYuJqvgZ+A4nDYlzDUgpJo2
+ Jy2nAEZSttBA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,387,1599548400"; 
+   d="scan'208";a="316126758"
+Received: from lkp-server01.sh.intel.com (HELO 54133fc185c3) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 02 Dec 2020 07:25:49 -0800
+Received: from kbuild by 54133fc185c3 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kkU0q-0000BR-Gb; Wed, 02 Dec 2020 15:25:48 +0000
+Date:   Wed, 02 Dec 2020 23:25:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
+ 93416ab0f994f6cf16fa0c695577f8b19d30c533
+Message-ID: <5fc7b1f2.OUBfKikI5yFz/PcL%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yixian Liu <liuyixian@huawei.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-rc
+branch HEAD: 93416ab0f994f6cf16fa0c695577f8b19d30c533  RDMA/efa: Use the correct current and new states in modify QP
 
-There is no need to get queue number repeatly for different queues from an
-AEQE entity, as they are the same. Furthermore, redefine the AEQE structure
-to make the codes more readable.
+elapsed time: 830m
 
-In addition, HNS_ROCE_EVENT_TYPE_CEQ_OVERFLOW is removed because the
-hardware never reports this event.
+configs tested: 193
+configs skipped: 2
 
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                         ps3_defconfig
+mips                malta_qemu_32r6_defconfig
+x86_64                           alldefconfig
+mips                          ath25_defconfig
+sh                          rsk7201_defconfig
+openrisc                         alldefconfig
+sh                               j2_defconfig
+mips                       capcella_defconfig
+arm                           viper_defconfig
+c6x                        evmc6474_defconfig
+powerpc                  mpc885_ads_defconfig
+arm                           stm32_defconfig
+powerpc                      pmac32_defconfig
+powerpc                 mpc837x_rdb_defconfig
+arm                          pxa3xx_defconfig
+c6x                        evmc6457_defconfig
+m68k                            q40_defconfig
+arc                        nsim_700_defconfig
+riscv                    nommu_k210_defconfig
+nios2                               defconfig
+mips                malta_kvm_guest_defconfig
+sh                ecovec24-romimage_defconfig
+powerpc                         wii_defconfig
+arm                      integrator_defconfig
+arm                          imote2_defconfig
+mips                           ip28_defconfig
+powerpc                  mpc866_ads_defconfig
+mips                          rm200_defconfig
+arm                              zx_defconfig
+sh                          sdk7786_defconfig
+arm                           u8500_defconfig
+sparc64                          alldefconfig
+m68k                            mac_defconfig
+mips                           gcw0_defconfig
+xtensa                         virt_defconfig
+c6x                        evmc6678_defconfig
+sh                             shx3_defconfig
+mips                  maltasmvp_eva_defconfig
+powerpc                     tqm5200_defconfig
+arc                 nsimosci_hs_smp_defconfig
+powerpc                    mvme5100_defconfig
+s390                                defconfig
+arm                         s3c6400_defconfig
+sparc                               defconfig
+powerpc                     sequoia_defconfig
+powerpc                 canyonlands_defconfig
+arm                         nhk8815_defconfig
+sh                         ap325rxa_defconfig
+m68k                       m5475evb_defconfig
+c6x                                 defconfig
+powerpc                     ep8248e_defconfig
+arm                          pcm027_defconfig
+mips                           ip22_defconfig
+m68k                       m5208evb_defconfig
+m68k                        mvme16x_defconfig
+m68k                          atari_defconfig
+arc                        nsimosci_defconfig
+sh                           se7722_defconfig
+sh                   sh7724_generic_defconfig
+arm                        magician_defconfig
+arm                          exynos_defconfig
+riscv                               defconfig
+powerpc                        fsp2_defconfig
+powerpc                      ppc40x_defconfig
+h8300                               defconfig
+powerpc                      ppc44x_defconfig
+arm                              alldefconfig
+powerpc                     mpc5200_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                       ebony_defconfig
+powerpc                 mpc8313_rdb_defconfig
+sh                           se7343_defconfig
+sh                           se7750_defconfig
+arm                        shmobile_defconfig
+openrisc                            defconfig
+xtensa                  cadence_csp_defconfig
+powerpc                      pasemi_defconfig
+arm                      footbridge_defconfig
+powerpc                mpc7448_hpc2_defconfig
+arm                         lpc18xx_defconfig
+nios2                         10m50_defconfig
+mips                       lemote2f_defconfig
+mips                 decstation_r4k_defconfig
+arm                     davinci_all_defconfig
+powerpc                 mpc834x_itx_defconfig
+sh                        apsh4ad0a_defconfig
+sh                  sh7785lcr_32bit_defconfig
+m68k                        m5407c3_defconfig
+arm                       cns3420vb_defconfig
+powerpc                 linkstation_defconfig
+ia64                          tiger_defconfig
+s390                             alldefconfig
+mips                      fuloong2e_defconfig
+sparc                            allyesconfig
+sparc                       sparc64_defconfig
+arm                        vexpress_defconfig
+powerpc                       eiger_defconfig
+powerpc                  storcenter_defconfig
+parisc                generic-32bit_defconfig
+mips                    maltaup_xpa_defconfig
+mips                            e55_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201201
+i386                 randconfig-a005-20201201
+i386                 randconfig-a001-20201201
+i386                 randconfig-a002-20201201
+i386                 randconfig-a006-20201201
+i386                 randconfig-a003-20201201
+i386                 randconfig-a004-20201202
+i386                 randconfig-a005-20201202
+i386                 randconfig-a001-20201202
+i386                 randconfig-a002-20201202
+i386                 randconfig-a006-20201202
+i386                 randconfig-a003-20201202
+x86_64               randconfig-a016-20201201
+x86_64               randconfig-a012-20201201
+x86_64               randconfig-a014-20201201
+x86_64               randconfig-a013-20201201
+x86_64               randconfig-a015-20201201
+x86_64               randconfig-a011-20201201
+i386                 randconfig-a014-20201202
+i386                 randconfig-a013-20201202
+i386                 randconfig-a011-20201202
+i386                 randconfig-a015-20201202
+i386                 randconfig-a012-20201202
+i386                 randconfig-a016-20201202
+i386                 randconfig-a014-20201201
+i386                 randconfig-a013-20201201
+i386                 randconfig-a011-20201201
+i386                 randconfig-a015-20201201
+i386                 randconfig-a012-20201201
+i386                 randconfig-a016-20201201
+x86_64               randconfig-a004-20201202
+x86_64               randconfig-a006-20201202
+x86_64               randconfig-a001-20201202
+x86_64               randconfig-a002-20201202
+x86_64               randconfig-a005-20201202
+x86_64               randconfig-a003-20201202
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20201201
+x86_64               randconfig-a006-20201201
+x86_64               randconfig-a001-20201201
+x86_64               randconfig-a002-20201201
+x86_64               randconfig-a005-20201201
+x86_64               randconfig-a003-20201201
+x86_64               randconfig-a016-20201202
+x86_64               randconfig-a012-20201202
+x86_64               randconfig-a014-20201202
+x86_64               randconfig-a013-20201202
+x86_64               randconfig-a015-20201202
+x86_64               randconfig-a011-20201202
+
 ---
- drivers/infiniband/hw/hns/hns_roce_device.h | 26 ++---------------
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c  | 12 ++------
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 43 ++++++++++-------------------
- 3 files changed, 21 insertions(+), 60 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 51d8499..ab1516d 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -171,7 +171,6 @@ enum hns_roce_event {
- 	/* 0x10 and 0x11 is unused in currently application case */
- 	HNS_ROCE_EVENT_TYPE_DB_OVERFLOW               = 0x12,
- 	HNS_ROCE_EVENT_TYPE_MB                        = 0x13,
--	HNS_ROCE_EVENT_TYPE_CEQ_OVERFLOW              = 0x14,
- 	HNS_ROCE_EVENT_TYPE_FLR			      = 0x15,
- };
- 
-@@ -647,10 +646,9 @@ enum {
- struct hns_roce_work {
- 	struct hns_roce_dev *hr_dev;
- 	struct work_struct work;
--	u32 qpn;
--	u32 cqn;
- 	int event_type;
- 	int sub_type;
-+	u32 queue_num;
- };
- 
- struct hns_roce_qp {
-@@ -718,28 +716,10 @@ struct hns_roce_aeqe {
- 	__le32 asyn;
- 	union {
- 		struct {
--			__le32 qp;
-+			__le32 num;
- 			u32 rsv0;
- 			u32 rsv1;
--		} qp_event;
--
--		struct {
--			__le32 srq;
--			u32 rsv0;
--			u32 rsv1;
--		} srq_event;
--
--		struct {
--			__le32 cq;
--			u32 rsv0;
--			u32 rsv1;
--		} cq_event;
--
--		struct {
--			__le32 ceqe;
--			u32 rsv0;
--			u32 rsv1;
--		} ce_event;
-+		} queue_event;
- 
- 		struct {
- 			__le64  out_param;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-index b7dd867..0194cf5 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-@@ -3683,10 +3683,10 @@ static void hns_roce_v1_qp_err_handle(struct hns_roce_dev *hr_dev,
- 	int phy_port;
- 	int qpn;
- 
--	qpn = roce_get_field(aeqe->event.qp_event.qp,
-+	qpn = roce_get_field(aeqe->event.queue_event.num,
- 			     HNS_ROCE_AEQE_EVENT_QP_EVENT_QP_QPN_M,
- 			     HNS_ROCE_AEQE_EVENT_QP_EVENT_QP_QPN_S);
--	phy_port = roce_get_field(aeqe->event.qp_event.qp,
-+	phy_port = roce_get_field(aeqe->event.queue_event.num,
- 				  HNS_ROCE_AEQE_EVENT_QP_EVENT_PORT_NUM_M,
- 				  HNS_ROCE_AEQE_EVENT_QP_EVENT_PORT_NUM_S);
- 	if (qpn <= 1)
-@@ -3717,7 +3717,7 @@ static void hns_roce_v1_cq_err_handle(struct hns_roce_dev *hr_dev,
- 	struct device *dev = &hr_dev->pdev->dev;
- 	u32 cqn;
- 
--	cqn = roce_get_field(aeqe->event.cq_event.cq,
-+	cqn = roce_get_field(aeqe->event.queue_event.num,
- 			  HNS_ROCE_AEQE_EVENT_CQ_EVENT_CQ_CQN_M,
- 			  HNS_ROCE_AEQE_EVENT_CQ_EVENT_CQ_CQN_S);
- 
-@@ -3848,12 +3848,6 @@ static int hns_roce_v1_aeq_int(struct hns_roce_dev *hr_dev,
- 		case HNS_ROCE_EVENT_TYPE_DB_OVERFLOW:
- 			hns_roce_v1_db_overflow_handle(hr_dev, aeqe);
- 			break;
--		case HNS_ROCE_EVENT_TYPE_CEQ_OVERFLOW:
--			dev_warn(dev, "CEQ 0x%lx overflow.\n",
--			roce_get_field(aeqe->event.ce_event.ceqe,
--				     HNS_ROCE_AEQE_EVENT_CE_EVENT_CEQE_CEQN_M,
--				     HNS_ROCE_AEQE_EVENT_CE_EVENT_CEQE_CEQN_S));
--			break;
- 		default:
- 			dev_warn(dev, "Unhandled event %d on EQ %d at idx %u.\n",
- 				 event_type, eq->eqn, eq->cons_index);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 2c9a695..c24eec4 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -5447,8 +5447,6 @@ static void hns_roce_irq_work_handle(struct work_struct *work)
- 	struct hns_roce_work *irq_work =
- 				container_of(work, struct hns_roce_work, work);
- 	struct ib_device *ibdev = &irq_work->hr_dev->ib_dev;
--	u32 qpn = irq_work->qpn;
--	u32 cqn = irq_work->cqn;
- 
- 	switch (irq_work->event_type) {
- 	case HNS_ROCE_EVENT_TYPE_PATH_MIG:
-@@ -5464,15 +5462,15 @@ static void hns_roce_irq_work_handle(struct work_struct *work)
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_WQ_CATAS_ERROR:
- 		ibdev_err(ibdev, "Local work queue 0x%x catast error, sub_event type is: %d\n",
--			  qpn, irq_work->sub_type);
-+			  irq_work->queue_num, irq_work->sub_type);
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_INV_REQ_LOCAL_WQ_ERROR:
- 		ibdev_err(ibdev, "Invalid request local work queue 0x%x error.\n",
--			  qpn);
-+			  irq_work->queue_num);
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_LOCAL_WQ_ACCESS_ERROR:
- 		ibdev_err(ibdev, "Local access violation work queue 0x%x error, sub_event type is: %d\n",
--			  qpn, irq_work->sub_type);
-+			  irq_work->queue_num, irq_work->sub_type);
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_SRQ_LIMIT_REACH:
- 		ibdev_warn(ibdev, "SRQ limit reach.\n");
-@@ -5484,10 +5482,10 @@ static void hns_roce_irq_work_handle(struct work_struct *work)
- 		ibdev_err(ibdev, "SRQ catas error.\n");
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_CQ_ACCESS_ERROR:
--		ibdev_err(ibdev, "CQ 0x%x access err.\n", cqn);
-+		ibdev_err(ibdev, "CQ 0x%x access err.\n", irq_work->queue_num);
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_CQ_OVERFLOW:
--		ibdev_warn(ibdev, "CQ 0x%x overflow\n", cqn);
-+		ibdev_warn(ibdev, "CQ 0x%x overflow\n", irq_work->queue_num);
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_DB_OVERFLOW:
- 		ibdev_warn(ibdev, "DB overflow.\n");
-@@ -5503,8 +5501,7 @@ static void hns_roce_irq_work_handle(struct work_struct *work)
- }
- 
- static void hns_roce_v2_init_irq_work(struct hns_roce_dev *hr_dev,
--				      struct hns_roce_eq *eq,
--				      u32 qpn, u32 cqn)
-+				      struct hns_roce_eq *eq, u32 queue_num)
- {
- 	struct hns_roce_work *irq_work;
- 
-@@ -5514,10 +5511,9 @@ static void hns_roce_v2_init_irq_work(struct hns_roce_dev *hr_dev,
- 
- 	INIT_WORK(&(irq_work->work), hns_roce_irq_work_handle);
- 	irq_work->hr_dev = hr_dev;
--	irq_work->qpn = qpn;
--	irq_work->cqn = cqn;
- 	irq_work->event_type = eq->event_type;
- 	irq_work->sub_type = eq->sub_type;
-+	irq_work->queue_num = queue_num;
- 	queue_work(hr_dev->irq_workq, &(irq_work->work));
- }
- 
-@@ -5569,10 +5565,8 @@ static int hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
- 	struct hns_roce_aeqe *aeqe = next_aeqe_sw_v2(eq);
- 	int aeqe_found = 0;
- 	int event_type;
-+	u32 queue_num;
- 	int sub_type;
--	u32 srqn;
--	u32 qpn;
--	u32 cqn;
- 
- 	while (aeqe) {
- 		/* Make sure we read AEQ entry after we have checked the
-@@ -5586,15 +5580,9 @@ static int hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
- 		sub_type = roce_get_field(aeqe->asyn,
- 					  HNS_ROCE_V2_AEQE_SUB_TYPE_M,
- 					  HNS_ROCE_V2_AEQE_SUB_TYPE_S);
--		qpn = roce_get_field(aeqe->event.qp_event.qp,
--				     HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_M,
--				     HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_S);
--		cqn = roce_get_field(aeqe->event.cq_event.cq,
--				     HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_M,
--				     HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_S);
--		srqn = roce_get_field(aeqe->event.srq_event.srq,
--				     HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_M,
--				     HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_S);
-+		queue_num = roce_get_field(aeqe->event.queue_event.num,
-+					   HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_M,
-+					   HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_S);
- 
- 		switch (event_type) {
- 		case HNS_ROCE_EVENT_TYPE_PATH_MIG:
-@@ -5605,15 +5593,15 @@ static int hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
- 		case HNS_ROCE_EVENT_TYPE_SRQ_LAST_WQE_REACH:
- 		case HNS_ROCE_EVENT_TYPE_INV_REQ_LOCAL_WQ_ERROR:
- 		case HNS_ROCE_EVENT_TYPE_LOCAL_WQ_ACCESS_ERROR:
--			hns_roce_qp_event(hr_dev, qpn, event_type);
-+			hns_roce_qp_event(hr_dev, queue_num, event_type);
- 			break;
- 		case HNS_ROCE_EVENT_TYPE_SRQ_LIMIT_REACH:
- 		case HNS_ROCE_EVENT_TYPE_SRQ_CATAS_ERROR:
--			hns_roce_srq_event(hr_dev, srqn, event_type);
-+			hns_roce_srq_event(hr_dev, queue_num, event_type);
- 			break;
- 		case HNS_ROCE_EVENT_TYPE_CQ_ACCESS_ERROR:
- 		case HNS_ROCE_EVENT_TYPE_CQ_OVERFLOW:
--			hns_roce_cq_event(hr_dev, cqn, event_type);
-+			hns_roce_cq_event(hr_dev, queue_num, event_type);
- 			break;
- 		case HNS_ROCE_EVENT_TYPE_MB:
- 			hns_roce_cmd_event(hr_dev,
-@@ -5622,7 +5610,6 @@ static int hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
- 					le64_to_cpu(aeqe->event.cmd.out_param));
- 			break;
- 		case HNS_ROCE_EVENT_TYPE_DB_OVERFLOW:
--		case HNS_ROCE_EVENT_TYPE_CEQ_OVERFLOW:
- 		case HNS_ROCE_EVENT_TYPE_FLR:
- 			break;
- 		default:
-@@ -5639,7 +5626,7 @@ static int hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
- 		if (eq->cons_index > (2 * eq->entries - 1))
- 			eq->cons_index = 0;
- 
--		hns_roce_v2_init_irq_work(hr_dev, eq, qpn, cqn);
-+		hns_roce_v2_init_irq_work(hr_dev, eq, queue_num);
- 
- 		aeqe = next_aeqe_sw_v2(eq);
- 	}
--- 
-2.8.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
