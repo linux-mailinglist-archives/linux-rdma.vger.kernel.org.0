@@ -2,177 +2,223 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9422CB25C
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Dec 2020 02:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6372CB76E
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Dec 2020 09:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727589AbgLBBb6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Dec 2020 20:31:58 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8176 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727533AbgLBBb5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Dec 2020 20:31:57 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cm1d00ykjz15Rhq;
-        Wed,  2 Dec 2020 09:30:44 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 2 Dec 2020 09:31:00 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next] RDMA/hns: Move capability flags of QP and CQ to hns-abi.h
-Date:   Wed, 2 Dec 2020 09:29:20 +0800
-Message-ID: <1606872560-17823-1-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1729128AbgLBInH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Dec 2020 03:43:07 -0500
+Received: from mga12.intel.com ([192.55.52.136]:24950 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728474AbgLBInH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 2 Dec 2020 03:43:07 -0500
+IronPort-SDR: 56TzsOacpLHiIGnHD1yO0aenBuLPWeEaSaJb4tDWIoQ9JiKukZW/DCF6keyekwj1kwaAOlDFB3
+ N0f5VRRqsGGA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="152235506"
+X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
+   d="scan'208";a="152235506"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2020 00:41:54 -0800
+IronPort-SDR: Fk6cek7n9On2wL7T+7js2Xu/FPjfDqJAZ08gpERLcZEcTb9WnaLzF1h1plEOfYVnZp5we23e3n
+ N53L/nGBzgCA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,386,1599548400"; 
+   d="scan'208";a="539589714"
+Received: from lkp-server01.sh.intel.com (HELO 54133fc185c3) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 02 Dec 2020 00:41:52 -0800
+Received: from kbuild by 54133fc185c3 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kkNhw-00002E-3f; Wed, 02 Dec 2020 08:41:52 +0000
+Date:   Wed, 02 Dec 2020 16:41:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ f93c39bc95472dae3b5de71da5c005f47ece3148
+Message-ID: <5fc75332./5IpDH6CtIA9n34W%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-These flags will be returned to the userspace through ABI, so they should
-be defined in hns-abi.h. Furthermore, there is no need to include
-hns-abi.h in every source files, it just needs to be included in the
-common header file.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-next
+branch HEAD: f93c39bc95472dae3b5de71da5c005f47ece3148  RDMA/hns: Add support for QP stash
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
+elapsed time: 723m
+
+configs tested: 159
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                         ps3_defconfig
+mips                malta_qemu_32r6_defconfig
+x86_64                           alldefconfig
+mips                          ath25_defconfig
+sh                          rsk7201_defconfig
+arm                        clps711x_defconfig
+sh                        edosk7760_defconfig
+powerpc                        cell_defconfig
+sh                            hp6xx_defconfig
+mips                          ath79_defconfig
+openrisc                         alldefconfig
+sh                               j2_defconfig
+mips                       capcella_defconfig
+arm                           viper_defconfig
+c6x                        evmc6474_defconfig
+riscv                    nommu_k210_defconfig
+arm                          pxa3xx_defconfig
+c6x                        evmc6457_defconfig
+m68k                            q40_defconfig
+arc                        nsim_700_defconfig
+arc                         haps_hs_defconfig
+mips                         tb0226_defconfig
+m68k                        m5272c3_defconfig
+sh                           se7705_defconfig
+m68k                         apollo_defconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                        realview_defconfig
+microblaze                          defconfig
+s390                       zfcpdump_defconfig
+xtensa                generic_kc705_defconfig
+powerpc                    klondike_defconfig
+mips                     loongson1c_defconfig
+arc                        nsimosci_defconfig
+mips                           gcw0_defconfig
+xtensa                         virt_defconfig
+c6x                        evmc6678_defconfig
+sh                             shx3_defconfig
+mips                  maltasmvp_eva_defconfig
+powerpc                     tqm5200_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                         ap325rxa_defconfig
+m68k                       m5475evb_defconfig
+c6x                                 defconfig
+powerpc                     ep8248e_defconfig
+arm                          pcm027_defconfig
+mips                           ip22_defconfig
+ia64                        generic_defconfig
+sh                        dreamcast_defconfig
+arm                            mps2_defconfig
+sparc                               defconfig
+powerpc                        fsp2_defconfig
+powerpc                      ppc40x_defconfig
+h8300                               defconfig
+powerpc                      ppc44x_defconfig
+arm                              alldefconfig
+powerpc                 mpc834x_itx_defconfig
+mips                          malta_defconfig
+ia64                         bigsur_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                     mpc5200_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                       ebony_defconfig
+powerpc                 mpc8313_rdb_defconfig
+sh                           se7343_defconfig
+arm                          moxart_defconfig
+powerpc                    amigaone_defconfig
+mips                        maltaup_defconfig
+arc                              alldefconfig
+microblaze                      mmu_defconfig
+parisc                           alldefconfig
+arm                           h3600_defconfig
+mips                           jazz_defconfig
+arm                     davinci_all_defconfig
+powerpc                    mvme5100_defconfig
+sh                        apsh4ad0a_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                          imote2_defconfig
+powerpc                      pasemi_defconfig
+powerpc                  storcenter_defconfig
+parisc                generic-32bit_defconfig
+mips                    maltaup_xpa_defconfig
+mips                            e55_defconfig
+mips                           xway_defconfig
+xtensa                  audio_kc705_defconfig
+arm                            dove_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                     skiroot_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201201
+i386                 randconfig-a005-20201201
+i386                 randconfig-a001-20201201
+i386                 randconfig-a002-20201201
+i386                 randconfig-a006-20201201
+i386                 randconfig-a003-20201201
+x86_64               randconfig-a016-20201201
+x86_64               randconfig-a012-20201201
+x86_64               randconfig-a014-20201201
+x86_64               randconfig-a013-20201201
+x86_64               randconfig-a015-20201201
+x86_64               randconfig-a011-20201201
+i386                 randconfig-a014-20201201
+i386                 randconfig-a013-20201201
+i386                 randconfig-a011-20201201
+i386                 randconfig-a015-20201201
+i386                 randconfig-a012-20201201
+i386                 randconfig-a016-20201201
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20201201
+x86_64               randconfig-a006-20201201
+x86_64               randconfig-a001-20201201
+x86_64               randconfig-a002-20201201
+x86_64               randconfig-a005-20201201
+x86_64               randconfig-a003-20201201
+
 ---
-Changes since v1:
-- Replace 'BIT(x)' with '1 << x'.
-
-Previous Version:
-v1: https://patchwork.kernel.org/project/linux-rdma/patch/1606829024-51856-1-git-send-email-liweihang@huawei.com/
-
- drivers/infiniband/hw/hns/hns_roce_cq.c     |  1 -
- drivers/infiniband/hw/hns/hns_roce_device.h | 11 +----------
- drivers/infiniband/hw/hns/hns_roce_main.c   |  1 -
- drivers/infiniband/hw/hns/hns_roce_pd.c     |  1 -
- drivers/infiniband/hw/hns/hns_roce_qp.c     |  1 -
- drivers/infiniband/hw/hns/hns_roce_srq.c    |  1 -
- include/uapi/rdma/hns-abi.h                 | 10 ++++++++++
- 7 files changed, 11 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-index 68f355f..5e6d688 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-@@ -36,7 +36,6 @@
- #include "hns_roce_device.h"
- #include "hns_roce_cmd.h"
- #include "hns_roce_hem.h"
--#include <rdma/hns-abi.h>
- #include "hns_roce_common.h"
- 
- static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 1c1deb4..6c5d5dd 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -34,6 +34,7 @@
- #define _HNS_ROCE_DEVICE_H
- 
- #include <rdma/ib_verbs.h>
-+#include <rdma/hns-abi.h>
- 
- #define DRV_NAME "hns_roce"
- 
-@@ -129,16 +130,6 @@ enum {
- 	SERV_TYPE_UD,
- };
- 
--enum hns_roce_qp_caps {
--	HNS_ROCE_QP_CAP_RQ_RECORD_DB = BIT(0),
--	HNS_ROCE_QP_CAP_SQ_RECORD_DB = BIT(1),
--	HNS_ROCE_QP_CAP_OWNER_DB = BIT(2),
--};
--
--enum hns_roce_cq_flags {
--	HNS_ROCE_CQ_FLAG_RECORD_DB = BIT(0),
--};
--
- enum hns_roce_qp_state {
- 	HNS_ROCE_QP_STATE_RST,
- 	HNS_ROCE_QP_STATE_INIT,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index f01590d..e8aa807 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -40,7 +40,6 @@
- #include <rdma/ib_cache.h>
- #include "hns_roce_common.h"
- #include "hns_roce_device.h"
--#include <rdma/hns-abi.h>
- #include "hns_roce_hem.h"
- 
- /**
-diff --git a/drivers/infiniband/hw/hns/hns_roce_pd.c b/drivers/infiniband/hw/hns/hns_roce_pd.c
-index 98f6949..45ec91d 100644
---- a/drivers/infiniband/hw/hns/hns_roce_pd.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_pd.c
-@@ -32,7 +32,6 @@
- 
- #include <linux/platform_device.h>
- #include <linux/pci.h>
--#include <uapi/rdma/hns-abi.h>
- #include "hns_roce_device.h"
- 
- static int hns_roce_pd_alloc(struct hns_roce_dev *hr_dev, unsigned long *pdn)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 5e505a3..5a94b20 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -39,7 +39,6 @@
- #include "hns_roce_common.h"
- #include "hns_roce_device.h"
- #include "hns_roce_hem.h"
--#include <rdma/hns-abi.h>
- 
- static void flush_work_handle(struct work_struct *work)
- {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
-index 27646b9..36c6bcb 100644
---- a/drivers/infiniband/hw/hns/hns_roce_srq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
-@@ -4,7 +4,6 @@
-  */
- 
- #include <rdma/ib_umem.h>
--#include <rdma/hns-abi.h>
- #include "hns_roce_device.h"
- #include "hns_roce_cmd.h"
- #include "hns_roce_hem.h"
-diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
-index 9ec85f7..90b739d 100644
---- a/include/uapi/rdma/hns-abi.h
-+++ b/include/uapi/rdma/hns-abi.h
-@@ -43,6 +43,10 @@ struct hns_roce_ib_create_cq {
- 	__u32 reserved;
- };
- 
-+enum hns_roce_cq_cap_flags {
-+	HNS_ROCE_CQ_FLAG_RECORD_DB = 1 << 0,
-+};
-+
- struct hns_roce_ib_create_cq_resp {
- 	__aligned_u64 cqn; /* Only 32 bits used, 64 for compat */
- 	__aligned_u64 cap_flags;
-@@ -69,6 +73,12 @@ struct hns_roce_ib_create_qp {
- 	__aligned_u64 sdb_addr;
- };
- 
-+enum hns_roce_qp_cap_flags {
-+	HNS_ROCE_QP_CAP_RQ_RECORD_DB = 1 << 0,
-+	HNS_ROCE_QP_CAP_SQ_RECORD_DB = 1 << 1,
-+	HNS_ROCE_QP_CAP_OWNER_DB = 1 << 2,
-+};
-+
- struct hns_roce_ib_create_qp_resp {
- 	__aligned_u64 cap_flags;
- };
--- 
-2.8.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
