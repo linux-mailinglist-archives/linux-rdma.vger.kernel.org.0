@@ -2,234 +2,177 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEB82CB226
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Dec 2020 02:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9422CB25C
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Dec 2020 02:32:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbgLBBNb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Dec 2020 20:13:31 -0500
-Received: from mga17.intel.com ([192.55.52.151]:34509 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726620AbgLBBNb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 1 Dec 2020 20:13:31 -0500
-IronPort-SDR: Lsq7RwXaYgxzycYlh52wxv9CiazIt94Haz+UE5F9yAgGhGB/fCTm4OpIxoD/UPN7Ua8b/eoL3M
- j5K5PqjNUv3A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9822"; a="152763306"
-X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="152763306"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2020 17:12:48 -0800
-IronPort-SDR: NdnE5iDkKQmUvTgDzXd52242P7wAxuQWGqbr2q/CkV3g4+9q3KvSOgcVuBgVdNFDMf9UEszhoh
- e/NQph1xKpSA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,385,1599548400"; 
-   d="scan'208";a="372990328"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga007.jf.intel.com with ESMTP; 01 Dec 2020 17:12:46 -0800
-Received: from fmsmsx605.amr.corp.intel.com (10.18.126.85) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 1 Dec 2020 17:12:45 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 1 Dec 2020 17:12:45 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.170)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Tue, 1 Dec 2020 17:12:36 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kDK0tH1IaoQY/3F1W15M5vsGxg+lK1kiIxSFNgbcECtU8qHiN/ej99FGBtWbu2CyNXHkIUVmRueVH3XpEGzqrh69CKuvOYmHobbvFLW/TAQcedKG/6LtALXw8eHlMrJOBYyBexP8VZyjelrcLQ9PBl/oGuQnU8nKOiJv1QsBZcyTjB2ddFhdAfrDt1Qcwj8gnf86Z95mLmuVNGG6TD7AITWOTZb7cQYpomgTK4sC/uiR7XkhidU2pcCvKmpHH4qSQi5aBdcYZNAxJsEtPaO2XfuUAq0o1EYmOgA9ZKh/xcTKHViUN05Jk1U6bjqz4CXkSb+aDB8zU+hfkqpF5/DPNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ASbMbTLESEbUKSLiRuSVhZalpIk8cE9DJ2TKSykGWvQ=;
- b=OW2zpH153JcGrYsTlpiSOc53FB12G0cHZR4MM4pVeSn2JugMZaZCQqMbaSapsJ5UebtC6FY+/R7r5AuW1LFKDp4qngdov0ekmHyHSD5pe9LlouBzJFntZan1OVPnQpI4EgipKjf3OXFFN3D/ll1QpDjKHKXc8VOD3fL+wdNG9nO3nMLi+RckhCXhGwVsu4oZll3nawVC8L7mBLrEWzb6mOW+36MW0Al2WcXl4gpS64reqYLrS3gPwxDLbP6t01E8coWNIWzzwYS514JqvPpOmHAmif7pc6Go+uoayNO8UuDL7CnUN9SMHd/sUJrMN4JlP2l/HSVNtTe86B/vD8H2nw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ASbMbTLESEbUKSLiRuSVhZalpIk8cE9DJ2TKSykGWvQ=;
- b=e2VjM3ZWHy/rz/EiytImH11gYEkazPXmI2k79MKaO6R5cB6jEYueoL3FJQ8I5qe7wncpKbIE07ruiTbHCYudRdwaQPzM5Kt2fiCQH3/SXNoFdN7JSkqjIWicnvWKgevEDuqGHuVGzq499IAkaYwfHiIA9ui0pmnY5DhJuaMJfaw=
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
- by MW3PR11MB4554.namprd11.prod.outlook.com (2603:10b6:303:5d::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Wed, 2 Dec
- 2020 01:12:31 +0000
-Received: from MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::7510:71a5:3cfe:ab94]) by MW3PR11MB4555.namprd11.prod.outlook.com
- ([fe80::7510:71a5:3cfe:ab94%9]) with mapi id 15.20.3632.017; Wed, 2 Dec 2020
- 01:12:31 +0000
-From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "Doug Ledford" <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "Sumit Semwal" <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        "Vetter, Daniel" <daniel.vetter@intel.com>
-Subject: RE: [PATCH rdma-core v3 4/6] pyverbs: Add dma-buf based MR support
-Thread-Topic: [PATCH rdma-core v3 4/6] pyverbs: Add dma-buf based MR support
-Thread-Index: AQHWxP3mzzChdz0pgEiMI6YqGjGmSKng3A+AgAAA12CAAiBGgIAAAInQ
-Date:   Wed, 2 Dec 2020 01:12:31 +0000
-Message-ID: <MW3PR11MB4555DAFD7546E762F47F5851E5F30@MW3PR11MB4555.namprd11.prod.outlook.com>
-References: <1606510543-45567-1-git-send-email-jianxin.xiong@intel.com>
- <1606510543-45567-5-git-send-email-jianxin.xiong@intel.com>
- <20201130160821.GB5487@ziepe.ca>
- <MW3PR11MB45556C1BAD4AF795DF0F783EE5F50@MW3PR11MB4555.namprd11.prod.outlook.com>
- <20201202003923.GI5487@ziepe.ca>
-In-Reply-To: <20201202003923.GI5487@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: ziepe.ca; dkim=none (message not signed)
- header.d=none;ziepe.ca; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [73.53.14.45]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 704f6dde-6224-43cf-3b17-08d8965f5826
-x-ms-traffictypediagnostic: MW3PR11MB4554:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW3PR11MB4554DE9D390C7109843EE5AAE5F30@MW3PR11MB4554.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RnDD3rqegGozNXc45BdMElU9fJIHzBANAZ8duFvChHVZh85DP1uep0Wv8OXBIoAtwEC7CtfWXausEM63SXiGg1px6lOJN1d3V3icXQEDnX1sZweWOjAy8NXtR3Y14JWGAHhUfqUMEdAmkYvKj0P6MDxxY+AFd+1WQPW3Ft16bxHX9YkSCusUVF/r/it6q54SPJ8zT6f0c2mwMk0ei3PZxkRxbn34fPZNHB3IlQCpbn4GmrnbADFcRLLoiyIFoMGF/MDBT0LG08vW0nVbB+SWnPn0Pvq57Cm7urxY0WDfsk9EBD1oM9wlVmVbdVISyTAQVE+LGQnTtR1sNxrp7cv9OQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(39860400002)(346002)(376002)(366004)(8936002)(53546011)(26005)(8676002)(186003)(6506007)(107886003)(83380400001)(478600001)(316002)(54906003)(86362001)(7696005)(55016002)(76116006)(5660300002)(33656002)(66946007)(9686003)(71200400001)(66556008)(66476007)(4326008)(6916009)(2906002)(64756008)(52536014)(66446008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ZF0xLRTCgeiF4mtChn35yMzitfrRf4lKbYg0EzKMwxe1GI2JH0XdKhTZ9tiQ?=
- =?us-ascii?Q?M2cVl+55NJdF/GLN4wr3nCZAu1L74ybsqf4i20zh/EMojh2DGzyaqh4B+B3x?=
- =?us-ascii?Q?HAUMEYZQDYkcdTJvmRsHgbnC/2Kg7jfG0es2GmCW0jmmQ809DMKvbcB73x87?=
- =?us-ascii?Q?k2ED3NGfrMchKeOQcQvRZ/ldXs3+Ze5tKLq5pc4vEz0bYe+9Zqt4OHhs0+fp?=
- =?us-ascii?Q?Kk+DDQCGcyIE8jmZpinTmsydZ9445N5olBcEdoLDLTyX2Jx7Mfo5gQEhdPQP?=
- =?us-ascii?Q?n23FEAvmpXdMXkw8OlQgRwowTH/s6XRw5GWAW5dYYVUGQKQWN31caM0hZEnj?=
- =?us-ascii?Q?cR+i3hXVHIlvC5JasIkblPktwz+WzDBnsduYPncnj1+ZSXGxXauJdNkI8LtV?=
- =?us-ascii?Q?rfgADzjFO2wWkEepCpgu7dJCK3Uz18Fu1WkCtsVEjiQLwmvNY+qaw6Am44Uz?=
- =?us-ascii?Q?EDruRU1RaVAwOGxzmbvPoLuLE2nCY/NoMLt0wl/rYZ77mo+IhrWV9J3HBEpf?=
- =?us-ascii?Q?pm9hK+j+SPDyUzQPCzKUxLSEEnLVrBsmSwZYsWbVOw1HpqRlPbYLpxZ7lNxm?=
- =?us-ascii?Q?pQdcFjdmNVIDKPATnmMe9FtsoypA3rEyxrrNg6WGgdWSoa8cdMbMF26ZJH12?=
- =?us-ascii?Q?JL/9Q+9RCaz9NtOvWZgXR8jX0krTPmgfirwz/8FU1wzqXlxOu1vv2bCDQX3V?=
- =?us-ascii?Q?SW+5I5pjTZsZAV2lpUIn3KklsAHQRwDaFC3u11wWgZZPywlcCWzgzHk2uNDx?=
- =?us-ascii?Q?0ODiSITas21xOKUmzu15hiOwwcW92LBZLJJA3q3TIr2MRRLnama/fmlYmnsv?=
- =?us-ascii?Q?E6FVUfcBwdrygpYDXyIPdwKk+OZ4r1zRavPrOEqCWk4e3ardrDXpqnrlPAhe?=
- =?us-ascii?Q?yC+I4ObCb/plX3X4u39MtSz+/+7mqtYeQrqGjE/jM0z8mrfJPrDIWqhRkzm/?=
- =?us-ascii?Q?Vr2qYZ6Zrt35L/OL0Te3WpJvc1TOJZWsfhE6WECsKho=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727589AbgLBBb6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Dec 2020 20:31:58 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8176 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727533AbgLBBb5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Dec 2020 20:31:57 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cm1d00ykjz15Rhq;
+        Wed,  2 Dec 2020 09:30:44 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 2 Dec 2020 09:31:00 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH v2 for-next] RDMA/hns: Move capability flags of QP and CQ to hns-abi.h
+Date:   Wed, 2 Dec 2020 09:29:20 +0800
+Message-ID: <1606872560-17823-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 704f6dde-6224-43cf-3b17-08d8965f5826
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Dec 2020 01:12:31.7317
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2XxHl5LAH6Ep79CGCsWetdn0++40w/jf4ezQXAYT9pYZ8lGonsbY/ThUS+bFEgbV2l2iVXA0lhiw2UoLLUL6Bw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4554
-X-OriginatorOrg: intel.com
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> -----Original Message-----
-> From: Jason Gunthorpe <jgg@ziepe.ca>
-> Sent: Tuesday, December 01, 2020 4:39 PM
-> To: Xiong, Jianxin <jianxin.xiong@intel.com>
-> Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org; Doug Led=
-ford <dledford@redhat.com>; Leon Romanovsky
-> <leon@kernel.org>; Sumit Semwal <sumit.semwal@linaro.org>; Christian Koen=
-ig <christian.koenig@amd.com>; Vetter, Daniel
-> <daniel.vetter@intel.com>
-> Subject: Re: [PATCH rdma-core v3 4/6] pyverbs: Add dma-buf based MR suppo=
-rt
->=20
-> On Mon, Nov 30, 2020 at 05:53:39PM +0000, Xiong, Jianxin wrote:
-> > > From: Jason Gunthorpe <jgg@ziepe.ca>
-> > > Sent: Monday, November 30, 2020 8:08 AM
-> > > To: Xiong, Jianxin <jianxin.xiong@intel.com>
-> > > Cc: linux-rdma@vger.kernel.org; dri-devel@lists.freedesktop.org;
-> > > Doug Ledford <dledford@redhat.com>; Leon Romanovsky
-> > > <leon@kernel.org>; Sumit Semwal <sumit.semwal@linaro.org>; Christian
-> > > Koenig <christian.koenig@amd.com>; Vetter, Daniel
-> > > <daniel.vetter@intel.com>
-> > > Subject: Re: [PATCH rdma-core v3 4/6] pyverbs: Add dma-buf based MR
-> > > support
-> > >
-> > > On Fri, Nov 27, 2020 at 12:55:41PM -0800, Jianxin Xiong wrote:
-> > > >
-> > > > +function(rdma_multifile_module PY_MODULE MODULE_NAME
-> > > > +LINKER_FLAGS)
-> > >
-> > > I think just replace rdma_cython_module with this? No good reason I c=
-an see to have two APIs?
-> >
-> > rdma_cython_module can handle many modules, but this one is for a singl=
-e module.
-> > If you agree, I can merge the two by slightly tweaking the logic: each
-> > module starts with a .pyx file, followed by 0 or more .c and .h files.
->=20
-> Then have rdma_cython_module call some rdam_single_cython_module() multip=
-le times that has this code below?
+These flags will be returned to the userspace through ABI, so they should
+be defined in hns-abi.h. Furthermore, there is no need to include
+hns-abi.h in every source files, it just needs to be included in the
+common header file.
 
-Mostly like that. Here is an outline:
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+---
+Changes since v1:
+- Replace 'BIT(x)' with '1 << x'.
 
-function(build_one_module PY_MODULE MODULE_NAME ALL_CFILES)
-    string(REGEX_REPLACE "\\.so$" "" SONAME ${MODULE_NAME}${CMAKE_PYTHON_SO=
-_SUFFIX}")
-    add_library(......)
-    set_target_properties(......)
-    target_link_libraries(......)
-    install(......)
-endfunction()
+Previous Version:
+v1: https://patchwork.kernel.org/project/linux-rdma/patch/1606829024-51856-1-git-send-email-liweihang@huawei.com/
 
-function(rdma_cython_module .......)
-    foreach(SRC_FILE ${ARGN})
-        ...... # commands to parse file name
-        If (${EXT} STREQAL ".pyx")
-            If (ALL_CFILES AND MODULE_NAME)
-                build_one_module(${PY_MODUE} ${MODULE_NAME} ${ALL_CFILES})
-                set(ALL_CFILES "")
-                set(MODULE_NAME "")
-            endif()
-            ...... # commands to convert .pyx to .c
-            set(ALL_CFILES "${ALL_CFILES};${CFILE}")
-        elseif (${EXT} STREQAL ".c")
-            ......
-            set(ALL_CFILES "${ALL_CFILES};${CFILE}")
-        else()
-            continue()
-        endif()
-    endforeach()
-    If (ALL_CFILES AND MODULE_NAME)
-        build_one_module(${PY_MODULE} ${MODULE_NAME} ${ALL_CFILES})
-     endif()
-endfunction()
+ drivers/infiniband/hw/hns/hns_roce_cq.c     |  1 -
+ drivers/infiniband/hw/hns/hns_roce_device.h | 11 +----------
+ drivers/infiniband/hw/hns/hns_roce_main.c   |  1 -
+ drivers/infiniband/hw/hns/hns_roce_pd.c     |  1 -
+ drivers/infiniband/hw/hns/hns_roce_qp.c     |  1 -
+ drivers/infiniband/hw/hns/hns_roce_srq.c    |  1 -
+ include/uapi/rdma/hns-abi.h                 | 10 ++++++++++
+ 7 files changed, 11 insertions(+), 15 deletions(-)
 
->=20
-> > > Here too? You probably don't need to specify h files at all, at
-> > > worst they should only be used with publish_internal_headers
-> >
-> > Without the .h link, the compiler fail to find the header file (both
-> > dmabuf_alloc.c and the generated "dmabuf.c" contain #include
-> > "dmabuf_alloc.h").
->=20
-> Header files are made 'cross module' using the "publish_internal_headers"=
- command
->=20
-> But we could also hack in a -I directive to fix up the "" include for the=
- cython outupt..
->=20
-> But it should not be handled here in the cython module command
+diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
+index 68f355f..5e6d688 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_cq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
+@@ -36,7 +36,6 @@
+ #include "hns_roce_device.h"
+ #include "hns_roce_cmd.h"
+ #include "hns_roce_hem.h"
+-#include <rdma/hns-abi.h>
+ #include "hns_roce_common.h"
+ 
+ static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 1c1deb4..6c5d5dd 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -34,6 +34,7 @@
+ #define _HNS_ROCE_DEVICE_H
+ 
+ #include <rdma/ib_verbs.h>
++#include <rdma/hns-abi.h>
+ 
+ #define DRV_NAME "hns_roce"
+ 
+@@ -129,16 +130,6 @@ enum {
+ 	SERV_TYPE_UD,
+ };
+ 
+-enum hns_roce_qp_caps {
+-	HNS_ROCE_QP_CAP_RQ_RECORD_DB = BIT(0),
+-	HNS_ROCE_QP_CAP_SQ_RECORD_DB = BIT(1),
+-	HNS_ROCE_QP_CAP_OWNER_DB = BIT(2),
+-};
+-
+-enum hns_roce_cq_flags {
+-	HNS_ROCE_CQ_FLAG_RECORD_DB = BIT(0),
+-};
+-
+ enum hns_roce_qp_state {
+ 	HNS_ROCE_QP_STATE_RST,
+ 	HNS_ROCE_QP_STATE_INIT,
+diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+index f01590d..e8aa807 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_main.c
++++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+@@ -40,7 +40,6 @@
+ #include <rdma/ib_cache.h>
+ #include "hns_roce_common.h"
+ #include "hns_roce_device.h"
+-#include <rdma/hns-abi.h>
+ #include "hns_roce_hem.h"
+ 
+ /**
+diff --git a/drivers/infiniband/hw/hns/hns_roce_pd.c b/drivers/infiniband/hw/hns/hns_roce_pd.c
+index 98f6949..45ec91d 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_pd.c
++++ b/drivers/infiniband/hw/hns/hns_roce_pd.c
+@@ -32,7 +32,6 @@
+ 
+ #include <linux/platform_device.h>
+ #include <linux/pci.h>
+-#include <uapi/rdma/hns-abi.h>
+ #include "hns_roce_device.h"
+ 
+ static int hns_roce_pd_alloc(struct hns_roce_dev *hr_dev, unsigned long *pdn)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 5e505a3..5a94b20 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -39,7 +39,6 @@
+ #include "hns_roce_common.h"
+ #include "hns_roce_device.h"
+ #include "hns_roce_hem.h"
+-#include <rdma/hns-abi.h>
+ 
+ static void flush_work_handle(struct work_struct *work)
+ {
+diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
+index 27646b9..36c6bcb 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_srq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
+@@ -4,7 +4,6 @@
+  */
+ 
+ #include <rdma/ib_umem.h>
+-#include <rdma/hns-abi.h>
+ #include "hns_roce_device.h"
+ #include "hns_roce_cmd.h"
+ #include "hns_roce_hem.h"
+diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
+index 9ec85f7..90b739d 100644
+--- a/include/uapi/rdma/hns-abi.h
++++ b/include/uapi/rdma/hns-abi.h
+@@ -43,6 +43,10 @@ struct hns_roce_ib_create_cq {
+ 	__u32 reserved;
+ };
+ 
++enum hns_roce_cq_cap_flags {
++	HNS_ROCE_CQ_FLAG_RECORD_DB = 1 << 0,
++};
++
+ struct hns_roce_ib_create_cq_resp {
+ 	__aligned_u64 cqn; /* Only 32 bits used, 64 for compat */
+ 	__aligned_u64 cap_flags;
+@@ -69,6 +73,12 @@ struct hns_roce_ib_create_qp {
+ 	__aligned_u64 sdb_addr;
+ };
+ 
++enum hns_roce_qp_cap_flags {
++	HNS_ROCE_QP_CAP_RQ_RECORD_DB = 1 << 0,
++	HNS_ROCE_QP_CAP_SQ_RECORD_DB = 1 << 1,
++	HNS_ROCE_QP_CAP_OWNER_DB = 1 << 2,
++};
++
+ struct hns_roce_ib_create_qp_resp {
+ 	__aligned_u64 cap_flags;
+ };
+-- 
+2.8.1
 
-Sure. That can be fixed.
-
->=20
-> Jason
