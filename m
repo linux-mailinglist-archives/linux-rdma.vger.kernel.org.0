@@ -2,67 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2EF2CD84E
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Dec 2020 14:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F232CD9CD
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Dec 2020 16:07:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728830AbgLCN4v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Dec 2020 08:56:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727065AbgLCN4v (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Dec 2020 08:56:51 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7DCC061A4E
-        for <linux-rdma@vger.kernel.org>; Thu,  3 Dec 2020 05:56:11 -0800 (PST)
-Date:   Thu, 3 Dec 2020 14:56:08 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607003769;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=khU8WSt0/NuEG9i4ym8kcPbGwSac+5D9UTwAgcHm56s=;
-        b=PEi1Uur/JVHN5yCedLthuD2IhsyDJxikmbcL9I2ToL5X/dHsn7DkgTS0vUo6WYq4Hihgg2
-        IljMXpGJv20MkjrE8rSyc9/gWaqgehT82CURz6GBXnmXlqsPm0sFNDTtFt1ZOctLuWOYR3
-        hbbUN70THQ6kWydq+hfh8xZJm+aRtK1IaiC5nFToxCAuMdEf7pfMuz2f4GLIcxnjHBBGNI
-        sVvj0nSDn+N14+R6mRrmdiaCYjPdMn60KsxErxPA8YXi3O2kl/8Th86F2VkystoyvwFKLg
-        zrmzLKF6Hrf3656Dh1FIu0HDDvhhovdbOZRce+rz2q/xSHrHg1TC/xw415jmtw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607003769;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=khU8WSt0/NuEG9i4ym8kcPbGwSac+5D9UTwAgcHm56s=;
-        b=wzbjITy314aby5WjLfcicq/SacRkXfMC+NC6cMqwmfY/tFaCSVypEWPV71jrQMCVfcEPV0
-        VSOTOp3HCNx1ZUCQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Sagi Grimberg <sagi@grimberg.me>, Max Gurtovoy <maxg@nvidia.com>,
-        linux-rdma@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH] IB/iser: Remove in_interrupt() usage.
-Message-ID: <20201203135608.f67bmpopealp7xcm@linutronix.de>
-References: <20201126202720.2304559-1-bigeasy@linutronix.de>
- <20201126205357.GU5487@ziepe.ca>
- <20201127123455.scnqc7xvuwwofdp2@linutronix.de>
- <20201127130314.GE552508@nvidia.com>
- <20201127141432.z5hqxosugi6uu6i7@linutronix.de>
- <20201127143138.GG552508@nvidia.com>
+        id S1728021AbgLCPF6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Dec 2020 10:05:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725899AbgLCPF5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 3 Dec 2020 10:05:57 -0500
+Date:   Thu, 3 Dec 2020 16:06:24 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607007916;
+        bh=/J7gpUERaDM9moTEEEztSBOYPXPY+1XBfrGQKejOuvY=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HX4owR3tVP+i3f7QYdDhUhab7Q8N1/aR087nZ+T3r/vCFu1loWGADTevPSNLXw54N
+         V29cV6+JhrNjwNbTM0z2MLR2nibX9loLE3RFShRdD97WvmNT13YpezMkpCTdCQGxZ8
+         kZZQ2ISElcTQv4wS9gTDn+FvriQ+caA/hx+g5+7w=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     broonie@kernel.org, lgirdwood@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, jgg@nvidia.com,
+        Kiran Patil <kiran.patil@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <X8j+8DRrPeXBaTA7@kroah.com>
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201127143138.GG552508@nvidia.com>
+In-Reply-To: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-11-27 10:31:38 [-0400], Jason Gunthorpe wrote:
-> > Sure, I would do that but as noted above, it the `frwd_lock' is acquired
-> > so you can't acquire the mutex here.
+On Wed, Dec 02, 2020 at 04:54:24PM -0800, Dan Williams wrote:
+> From: Dave Ertman <david.m.ertman@intel.com>
 > 
-> Ok, well, I'm thinking this patch is OK as is. Lets wait for Max and Sagi
+> Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
+> It enables drivers to create an auxiliary_device and bind an
+> auxiliary_driver to it.
+> 
+> The bus supports probe/remove shutdown and suspend/resume callbacks.
+> Each auxiliary_device has a unique string based id; driver binds to
+> an auxiliary_device based on this id through the bus.
+> 
+> Co-developed-by: Kiran Patil <kiran.patil@intel.com>
+> Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> Reviewed-by: Parav Pandit <parav@mellanox.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Reviewed-by: Martin Habets <mhabets@solarflare.com>
+> Link: https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+> This patch is "To:" the maintainers that have a pending backlog of
+> driver updates dependent on this facility, and "Cc:" Greg. Greg, I
+> understand you have asked for more time to fully review this and apply
+> it to driver-core.git, likely for v5.12, but please consider Acking it
+> for v5.11 instead. It looks good to me and several other stakeholders.
+> Namely, stakeholders that have pressure building up behind this facility
+> in particular Mellanox RDMA, but also SOF, Intel Ethernet, and later on
+> Compute Express Link.
+> 
+> I will take the blame for the 2 months of silence that made this awkward
+> to take through driver-core.git, but at the same time I do not want to
+> see that communication mistake inconvenience other parties that
+> reasonably thought this was shaping up to land in v5.11.
+> 
+> I am willing to host this version at:
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/djbw/linux tags/auxiliary-bus-for-5.11
+> 
+> ...for all the independent drivers to have a common commit baseline. It
+> is not there yet pending Greg's Ack.
 
-a gentle ping to Max and Sagi in case we still wait for them here.
+I have been trying to carve out some time to review this.  At my initial
+glance, I still have objections, so please, give me a few more days to
+get this done...
 
-> Jason
+thanks,
 
-Sebastian
+greg k-h
