@@ -2,130 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640652CEE88
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 14:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFF12CEEE2
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 14:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729128AbgLDM6r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Dec 2020 07:58:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58176 "EHLO mail.kernel.org"
+        id S1729039AbgLDNkl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Dec 2020 08:40:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730240AbgLDM6r (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:58:47 -0500
-Date:   Fri, 4 Dec 2020 13:59:22 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607086686;
-        bh=T9P6YNvJNBVRp2cBN+iSfyjc2OXEDnJ1F6QbORkDUkI=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1rOdLUSAyMehMfxu0QGULg7JLrQns9N5Zo8xqMs7B3V9pgcgSrLGxWnbJrmlen4Aq
-         QI9NONPyOonqGM2MxkVNx8AtsibYsF0xqfAWR6VnVyK07RbeYrayQFi8D1/Fxdx6T/
-         Z0hJEsI+dQSG0BVPDXg04jlUW3cr4PdtSryjxgZY=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Leon Romanovsky <leonro@nvidia.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>, broonie@kernel.org,
-        lgirdwood@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        jgg@nvidia.com, Kiran Patil <kiran.patil@intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <X8oyqpxDQ4JV31tj@kroah.com>
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
- <X8ogtmrm7tOzZo+N@kroah.com>
- <20201204123207.GH16543@unreal>
+        id S1728773AbgLDNkk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 4 Dec 2020 08:40:40 -0500
+X-Gm-Message-State: AOAM532wejPURLcvXkvFysRBQ9/M1w90Ob9xwy4bKeVVGI79AQ7N/eDO
+        6ldqvCj012Rd6Jh692+04YLeFzoPzWq4T/xDwXI=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607089200;
+        bh=by+WemB1peGkDQCzG6Dx4fJiZpkp8EyT9CK+EgBPFBY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=P9fqTJYnovZ7CqWKNLPqp3JDvu8xXsPnj8jn7pH6Ug+r6FzupbvR7zlfXpYzya5ML
+         7KZYDSndDV+ef+CoikM2o2unFtRjbLfdufK9+/KzZxjYljiz4wWL/IjWEHAk/jys8l
+         aRSHgr8Uh8xIhFkeeyYYN27zubt95Eo8486/2WJfqU/82Sgk/0tJnHPhx0DznvKKi4
+         MGRAAOeXXyQAzrg45t7PuZdJKIcAFCxgz9MHi6PKEHznUVSyAaedtuVtkUzDuMGAnP
+         qxoGHLfxboturzy9mux7mUlcKbEouhPhHp4AbW+Nz/+UnfHgIcgzTe/Q8DwQRqjW8h
+         FuyUpmicxAUEg==
+X-Google-Smtp-Source: ABdhPJyVvyTGM7IAyI/w7/Qek6izIlhZgoKlo/DKiQITg//JIDtXfBeRI4Dxv4lRMr11iPKdROVTob8oGvClJSg0LxU=
+X-Received: by 2002:a05:6830:22d2:: with SMTP id q18mr3651139otc.305.1607089199092;
+ Fri, 04 Dec 2020 05:39:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204123207.GH16543@unreal>
+References: <20201203232114.1485603-1-arnd@kernel.org> <20201204110331.GA21587@netronome.com>
+In-Reply-To: <20201204110331.GA21587@netronome.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 4 Dec 2020 14:39:42 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0Ncuo6yq2rPpB6wV_r8B87qZ3Ba7to1zdM_BL++j0ksg@mail.gmail.com>
+Message-ID: <CAK8P3a0Ncuo6yq2rPpB6wV_r8B87qZ3Ba7to1zdM_BL++j0ksg@mail.gmail.com>
+Subject: Re: [PATCH] ethernet: select CONFIG_CRC32 as needed
+To:     Simon Horman <simon.horman@netronome.com>
+Cc:     Mark Einon <mark.einon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jiri Pirko <jiri@resnulli.us>, Arnd Bergmann <arnd@arndb.de>,
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        oss-drivers@netronome.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 02:32:07PM +0200, Leon Romanovsky wrote:
-> On Fri, Dec 04, 2020 at 12:42:46PM +0100, Greg KH wrote:
-> > On Wed, Dec 02, 2020 at 04:54:24PM -0800, Dan Williams wrote:
-> > > From: Dave Ertman <david.m.ertman@intel.com>
-> > >
-> > > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
-> > > It enables drivers to create an auxiliary_device and bind an
-> > > auxiliary_driver to it.
-> > >
-> > > The bus supports probe/remove shutdown and suspend/resume callbacks.
-> > > Each auxiliary_device has a unique string based id; driver binds to
-> > > an auxiliary_device based on this id through the bus.
-> > >
-> > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> > > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
-> > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> > > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> > > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > Reviewed-by: Parav Pandit <parav@mellanox.com>
-> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > > Reviewed-by: Martin Habets <mhabets@solarflare.com>
-> > > Link: https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
-> > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > > ---
-> > > This patch is "To:" the maintainers that have a pending backlog of
-> > > driver updates dependent on this facility, and "Cc:" Greg. Greg, I
-> > > understand you have asked for more time to fully review this and apply
-> > > it to driver-core.git, likely for v5.12, but please consider Acking it
-> > > for v5.11 instead. It looks good to me and several other stakeholders.
-> > > Namely, stakeholders that have pressure building up behind this facility
-> > > in particular Mellanox RDMA, but also SOF, Intel Ethernet, and later on
-> > > Compute Express Link.
-> > >
-> > > I will take the blame for the 2 months of silence that made this awkward
-> > > to take through driver-core.git, but at the same time I do not want to
-> > > see that communication mistake inconvenience other parties that
-> > > reasonably thought this was shaping up to land in v5.11.
-> > >
-> > > I am willing to host this version at:
-> > >
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/djbw/linux tags/auxiliary-bus-for-5.11
-> > >
-> > > ...for all the independent drivers to have a common commit baseline. It
-> > > is not there yet pending Greg's Ack.
-> > >
-> > > For example implementations incorporating this patch, see Dave Ertman's
-> > > SOF series:
-> > >
-> > > https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
-> > >
-> > > ...and Leon's mlx5 series:
-> > >
-> > > http://lore.kernel.org/r/20201026111849.1035786-1-leon@kernel.org
-> > >
-> > > PS: Greg I know I promised some review on newcomer patches to help with
-> > > your queue, unfortunately Intel-internal review is keeping my plate
-> > > full. Again, I do not want other stakeholder to be waiting on me to
-> > > resolve that backlog.
-> >
-> > Ok, I spent some hours today playing around with this.  I wrote up a
-> > small test-patch for this (how did anyone test this thing???).
-> 
-> We are running all verifications tests that we have over our
-> mlx5 driver. It includes devices reloads, power failures, FW
-> reconfiguration to emulate different devices with and without error
-> injections and many more. Up till now, no new bugs that are not known
-> to us were found.
+On Fri, Dec 4, 2020 at 12:03 PM Simon Horman <simon.horman@netronome.com> wrote:
+>
+> I'm slightly curious to know how you configured the kernel to build
+> the Netronome NFP driver but not CRC32 but nonetheless I have no
+> objection to this change.
 
-Yes, sorry, I was implying that the authors here had to create _some_
-code to test this with, it would have been nice to include that as well
-here.  We are collecting more and more in-kernel tests, having one for
-this code would be nice to also have so we make sure not to break any
-functionality in the future.
+I ran into one link error on a randconfig build and then tried an 'allyesconfig'
+configuration, turning everything off manually that selects CRC32.
 
-thanks,
+Working through the resulting link errors ended up being more work than I was
+planning for though, so I don't recommend reproducing this. I have another 25
+patches for other subsystems.
 
-greg k-h
+       Arnd
