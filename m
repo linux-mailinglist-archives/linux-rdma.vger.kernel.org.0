@@ -2,118 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B75B2CE5C0
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 03:35:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE77D2CE6A0
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 04:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726898AbgLDCer (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Dec 2020 21:34:47 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9590 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725986AbgLDCeq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Dec 2020 21:34:46 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc9a01e0001>; Thu, 03 Dec 2020 18:34:06 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 4 Dec
- 2020 02:34:02 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.177)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 4 Dec 2020 02:34:02 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=neV6i2rTFJzclmRUvqJMdO3c9WRE7DiSo2JSf0ZyExGe73xdxQap1D+vNPlPTY7WLou8mT5ND0kG7tc2fZe/gwRzOH/11sZL7XaSLxYM5/USyUUr5IbrX9a3tzIV9Xq+NFh+dRnaGKgD/Iy/VzR2IAxWL5YOfTZhCijbtovsUPhdzz8z9eUUR/HoDPkOXvMQf8MQ3ODimoeaUpWUAvkx9JfkfdiX3YtFTe52Q839UeHfGb2fNAzB4ejtaZ0l2gOq9LRXEzCYYJ0gLbGqPeEMJfhyc+rB4GjokKeyJDxMSNX6Y3YO8m8uhJ/ea2rYuzRcKxh3ZJ7qSkelQDyQbH7CpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MDnLOQm/6hPonXigSnC6fjT0LzfVFaR83ws4ovOlwM4=;
- b=KAn83/RBc8LV7BZJg3Vj4iVANe3HBwgSTwePhD2eLiMoFOXgDqR1Inp0svF7a+i/+NP22sEBxFPELEHSvkAw/fxELHPd3zYZhft/bCNUMiWABzv7ZsEbUuZ60MROuwiHNiH9ZTfNkiRaNVBryUNYbUPTO46ZAhBQ9xT7txGraVdjNbuJD+XmZv2r18D8oEfnQFCdeLPH4tNTjKZVBLtOykNtb2GCrZxorLI2CqIoS/ufLepx73XzqGlJ6sokp3omzPGBujsCwpl+3D6xGlRUx3COSI/hMdTwMfy9TWHKWzue9W9jBEddBC1hDTuSD1ox0t9Hbg2rR5XsLUa2oeQBaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
- by BYAPR12MB3254.namprd12.prod.outlook.com (2603:10b6:a03:137::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.19; Fri, 4 Dec
- 2020 02:34:00 +0000
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::8526:bac7:a712:ef8e]) by BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::8526:bac7:a712:ef8e%7]) with mapi id 15.20.3611.025; Fri, 4 Dec 2020
- 02:33:59 +0000
-Date:   Thu, 3 Dec 2020 22:33:57 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     Dan Williams <dan.j.williams@intel.com>, <broonie@kernel.org>,
-        <lgirdwood@gmail.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+        id S1727756AbgLDDhw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Dec 2020 22:37:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727664AbgLDDhw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Dec 2020 22:37:52 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12BEC061A52
+        for <linux-rdma@vger.kernel.org>; Thu,  3 Dec 2020 19:37:11 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id cw27so4398088edb.5
+        for <linux-rdma@vger.kernel.org>; Thu, 03 Dec 2020 19:37:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H7q4vopEbHCewQ+qUf3Z4+KiH74FFIhB3Uhp8jwbeRs=;
+        b=h6lJHRIwp2kfx3tSOHVwfn7ZLGG5UVFD8MKBKp7vUUe6bQP9aSUb2KT6tfLpyXgiUe
+         uO6sK9Zr6nxXuBdVBLOzPIc/ctgN7f8WXi3+IqA+i/l4PUf34JFoUG1MgvdHxb83NkfG
+         992rzEGAkOKMrn7Zk5BdbZcsSSV0ZoYaMre+DOnrBNpMGrfyzstujfH3254xsLfR4B7o
+         NVQrrDevjQHrIX4aoLuzXQrXRgPxWOtr4VWhBU4Frntmabksc0kVn0+NFWDqUXvoLt3v
+         2+74tWrg/Ib+xO/tsR5jl9suTNwsI9fqZibS8HovKAsGg7JFCBbQoUNrxcvtwNjJvDg9
+         SazQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H7q4vopEbHCewQ+qUf3Z4+KiH74FFIhB3Uhp8jwbeRs=;
+        b=OFVkn5WYLtMXQfc+eC/pCGRVtjyX31MFBbyggMMw1tnkMgNYE17xlO0wNYW20b18Gt
+         wPHEGVg5opZxHIDU567WCH6UAlHAsmr7Em28rNkjySN88axg3qOPtRL2/vin6YzBtzR+
+         74BswcMTvoKLWxr+8vUlD6kmw0tLebkUCo1DKxlJ4NJT3OcO5XMjPSrvK79/1Idg2rLS
+         LAm+Ivj3qKTrN5bTsN78rKfXYlIhR776jK5Zc1iDXNkZ0w0taNWcWiQTZwjI6BZ6Kpm5
+         ICRC/QYXOSDuV/2tukZtb9bkGulvd3II9nygHGX/BMUN9g8Nayv6RLRKEa+fWz4LYz2U
+         DQzg==
+X-Gm-Message-State: AOAM5309Hqg2rqRvLGGpnP24XzC1CSlXylekW2itefdtJ+GwtuwyVQag
+        RvOa3uVgAgd6SJ6pd/9rdsmRXiuKQp81+SD79Us9Ag==
+X-Google-Smtp-Source: ABdhPJypzF/zxqPx2JjCtFUbZXdp8DAB6CgTOr6BBeH65H/vxbjhDErMw8S4HuqSooRtOzznLRIL1KkQvJFsw0MnHHY=
+X-Received: by 2002:a50:8a44:: with SMTP id i62mr2924285edi.97.1607053030239;
+ Thu, 03 Dec 2020 19:37:10 -0800 (PST)
+MIME-Version: 1.0
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <X8j+8DRrPeXBaTA7@kroah.com> <20201204023357.GA1337723@nvidia.com>
+In-Reply-To: <20201204023357.GA1337723@nvidia.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 3 Dec 2020 19:37:06 -0800
+Message-ID: <CAPcyv4iDr9RUK_F52mNuO=+ZuFtD4PTpB5QzKA4fnF_RaRoR1w@mail.gmail.com>
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Kiran Patil <kiran.patil@intel.com>,
         Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
         Fred Oh <fred.oh@linux.intel.com>,
-        "Leon Romanovsky" <leonro@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
         Dave Ertman <david.m.ertman@intel.com>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         Shiraz Saleem <shiraz.saleem@intel.com>,
         Parav Pandit <parav@mellanox.com>,
         Martin Habets <mhabets@solarflare.com>,
-        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201204023357.GA1337723@nvidia.com>
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
- <X8j+8DRrPeXBaTA7@kroah.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <X8j+8DRrPeXBaTA7@kroah.com>
-X-ClientProxiedBy: BL1PR13CA0064.namprd13.prod.outlook.com
- (2603:10b6:208:2b8::9) To BY5PR12MB3827.namprd12.prod.outlook.com
- (2603:10b6:a03:1ab::16)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by BL1PR13CA0064.namprd13.prod.outlook.com (2603:10b6:208:2b8::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Fri, 4 Dec 2020 02:33:59 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kl0uz-005hoX-Cv; Thu, 03 Dec 2020 22:33:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607049246; bh=MDnLOQm/6hPonXigSnC6fjT0LzfVFaR83ws4ovOlwM4=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=hkf7wHAUvczFBSrN6qGp9csG5K8wHFSseqryz8oNV2GLgBd2AU1mVFVaBHDn6RQxq
-         FOQ6duy3v+i8Wsof9By2qiSW3DuRGkHnO5amFPB32bNbUw1Ujq3YzRUfnTfPbK7O9i
-         bST2WLBOMuAfFp0zi+izUQXL4uqe4WFTRtVSqrr2FfZD4oysG/JYrYEqaE87nDon2x
-         sVNIs246xOfVc3/9+QBrK5lG6qcMzTkEFTHoeSyQnWdaaZcsjXNQolvS5T0E4IfUcf
-         s61AX1CdQUgcDtiBnjOhJizLrFlq8+nZkE/Q3rHidqESQYmNrFBclYztBtBp62gols
-         mRic3tMOwYDFQ==
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, alsa-devel@alsa-project.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 04:06:24PM +0100, Greg KH wrote:
+On Thu, Dec 3, 2020 at 6:34 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Thu, Dec 03, 2020 at 04:06:24PM +0100, Greg KH wrote:
+>
+> > > ...for all the independent drivers to have a common commit baseline. It
+> > > is not there yet pending Greg's Ack.
+> >
+> > I have been trying to carve out some time to review this.  At my initial
+> > glance, I still have objections, so please, give me a few more days to
+> > get this done...
+>
+> There are still several more days till the merge window, but I am
+> going to ask Leon to get the mlx5 series, and this version of the
+> auxbus patch it depends on, into linux-next with the intention to
+> forward it to Linus if there are no substantive comments.
+>
+> Regardless of fault or reason this whole 1.5 year odyssey seems to have
+> brought misery to everyone involved and it really is time to move on.
+>
+> Leon and his team did a good deed 6 weeks ago to quickly turn around
+> and build another user example. For their efforts they have been
+> rewarded with major merge conflicts and alot of delayed work due to
+> the invasive nature of the mlx5 changes. To continue to push this out
+> is disrespectful to him and his team's efforts.
+>
+> A major part of my time as RDMA maintainer has been to bring things
+> away from vendor trees and into a common opensource community.  Intel
+> shipping a large out of tree RDMA driver and abandoning their intree
+> driver is really harmful. This auxbus is a substantial blocker to them
+> normalizing their operations, thus I view it as important to
+> resolve. Even after this it is going to take a long time and alot of
+> effort to review their new RDMA driver.
 
-> > ...for all the independent drivers to have a common commit baseline. It
-> > is not there yet pending Greg's Ack.
-> 
-> I have been trying to carve out some time to review this.  At my initial
-> glance, I still have objections, so please, give me a few more days to
-> get this done...
-
-There are still several more days till the merge window, but I am
-going to ask Leon to get the mlx5 series, and this version of the
-auxbus patch it depends on, into linux-next with the intention to
-forward it to Linus if there are no substantive comments.
-
-Regardless of fault or reason this whole 1.5 year odyssey seems to have
-brought misery to everyone involved and it really is time to move on.
-
-Leon and his team did a good deed 6 weeks ago to quickly turn around
-and build another user example. For their efforts they have been
-rewarded with major merge conflicts and alot of delayed work due to
-the invasive nature of the mlx5 changes. To continue to push this out
-is disrespectful to him and his team's efforts.
-
-A major part of my time as RDMA maintainer has been to bring things
-away from vendor trees and into a common opensource community.  Intel
-shipping a large out of tree RDMA driver and abandoning their intree
-driver is really harmful. This auxbus is a substantial blocker to them
-normalizing their operations, thus I view it as important to
-resolve. Even after this it is going to take a long time and alot of
-effort to review their new RDMA driver.
-
-Regards,
-Jason
+When you have 3 independent driver teams (mlx5, i40e, sof) across 2
+companies (NVIDIA and Intel), and multiple subsystem maintainers with
+a positive track record of upstream engagement all agreeing on a piece
+of infrastructure, I struggle to imagine a stronger case for merging.
+I did get word of a fixup needed in the shutdown code, I'll get that
+folded. Then, barring a concrete objection, I'll look to publish a
+commit that others can pull in to start building soak time in -next
+this time tomorrow.
