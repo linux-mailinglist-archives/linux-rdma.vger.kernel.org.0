@@ -2,134 +2,182 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAB42CECB1
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 12:05:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ADDF2CECEC
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 12:18:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729744AbgLDLEX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Dec 2020 06:04:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727365AbgLDLEW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Dec 2020 06:04:22 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B898FC061A51
-        for <linux-rdma@vger.kernel.org>; Fri,  4 Dec 2020 03:03:42 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id t8so5326321iov.8
-        for <linux-rdma@vger.kernel.org>; Fri, 04 Dec 2020 03:03:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6Jv+nYTl5ucMhc3yA6kiS/0QAXOSLESFYDG8UMjys/k=;
-        b=sLB3YmNMRt3awTg7ukKbVbdpZyMROx24h6agCLHNLgCMHx1z9CV5+1j1ie4wdKy4Dm
-         nUQrqdxR+Ui9ecQ8J6mG7Eh1gPak5lyFkk/CprpTqaM0OGphhY+3C7sD6ak1633s0+LF
-         2W2/yWRTGNWJ9reYjAfwEDhl+BofuW8P4fDpKfOtC2jDW0saZWfxuHK7F9EEwiH9esq2
-         JzIHIU93bKHRIIDw2bILPfLKrf8Ca3Nx2f7AEGN+2Nk89+bs4W/ZZy1peBALpO0OIHWk
-         0CFtu6IRMIBq8thyIhC+JDWibZLlRPi1g0Q3z3Y3zGHPEeEr+t4D06WPFSqiZ281PUM0
-         76CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6Jv+nYTl5ucMhc3yA6kiS/0QAXOSLESFYDG8UMjys/k=;
-        b=BFLlanOlQvRHDXy9B0zXznFoOECSOA401zpffkxw4rICMdPKTjhpGoyiFvI8JVd96d
-         +Ofjuyi1AQaxBQ9TZ8i/WgMGWEWw7uxghuQWIuyZipXPo6nDRE1mR0uemi39rCWxceRU
-         lkWCaK//n6WX2zF+Dyrv4BBtDg1M3Qm9eZipgIslgOYydPHnF6IFHAW/SngDTls4u9Ym
-         no7t8xwEF4JT7UPoLyAqzaekhjw2dMDFyCxoLu/1C8dBvka4Wd3H33Tm524NvXSTz/Sn
-         IMLD31xjss+j5TZ8pXZwOAbOV/mI1wgvT5YzTgTWYDlYiY4dBgfK9EQF3m2/5sYS05HC
-         KPlg==
-X-Gm-Message-State: AOAM533V1ppF5aBLB0hPQGI72eOHQUD9geO4ZsfEPp6xTe0JKhe64gQj
-        T4YD1Viq4qlXL0f+0d33LnEgqg==
-X-Google-Smtp-Source: ABdhPJxFzHB0Xqk/E6O4AEodvWZzmDBjxeT4tcuhxMAMKl9TKWt2uyxgf2393QWwOJ3cZv7SLvfmVA==
-X-Received: by 2002:a02:7650:: with SMTP id z77mr5628861jab.134.1607079822008;
-        Fri, 04 Dec 2020 03:03:42 -0800 (PST)
-Received: from netronome.com ([2001:982:756:703:d63d:7eff:fe99:ac9d])
-        by smtp.gmail.com with ESMTPSA id x5sm1447299ilm.22.2020.12.04.03.03.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 03:03:41 -0800 (PST)
-Date:   Fri, 4 Dec 2020 12:03:32 +0100
-From:   Simon Horman <simon.horman@netronome.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Mark Einon <mark.einon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jiri Pirko <jiri@resnulli.us>, Arnd Bergmann <arnd@arndb.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, oss-drivers@netronome.com
-Subject: Re: [PATCH] ethernet: select CONFIG_CRC32 as needed
-Message-ID: <20201204110331.GA21587@netronome.com>
-References: <20201203232114.1485603-1-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203232114.1485603-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727591AbgLDLSU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Dec 2020 06:18:20 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:47934 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726841AbgLDLST (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Dec 2020 06:18:19 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B4B9gDb098344;
+        Fri, 4 Dec 2020 11:17:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=w9MDRbe+CdJ7+eSVfuktmP1582RkiqgQSgxDUo8a9Q4=;
+ b=LYO7z95VNfschmFMU7CQI+zPXemUZpiTJvmSEYmGEHo0A77KISj0PL4Y3g7tCGSLwacv
+ +SJt48enB1QTzuPuq+DQTHClhVd4MbQp+w+zKFrcduyMlecLBteO77cDsgSiQjDFMGL6
+ kOcNcZZwcnmFYNLA+8ZLeyTL1ak2fYLMjGcDkH7tbHSEmUhM18AsmdqUnDKm/66O1NCX
+ 6QvNyZH7fEcyhQmDzoOlRo7eSYRzM6BqLvfjMjEyNl5X/bfMuANlElydghDTBvvs0U0e
+ sQBaLmypcCKQgILox4/scMTRElIM/J5zYdGRnf/vlnhZUTret/Cq0R/EF6zLMuRBt9fn DQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 353dyr2s3r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 04 Dec 2020 11:17:35 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B4BAQCh033630;
+        Fri, 4 Dec 2020 11:17:34 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 3540axwt1v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Dec 2020 11:17:34 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B4BHX3t027682;
+        Fri, 4 Dec 2020 11:17:33 GMT
+Received: from [172.20.10.5] (/89.8.147.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 04 Dec 2020 03:17:32 -0800
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
+Subject: Re: Is there a working cache for path record and lids etc for
+ librdmacm?
+From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
+In-Reply-To: <alpine.DEB.2.22.394.2011300811190.336472@www.lameter.com>
+Date:   Fri, 4 Dec 2020 12:17:27 +0100
+Cc:     Honggang LI <honli@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Mark Haywood <mark.haywood@oracle.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <7812B8AB-7D26-4148-8C8C-E1241A1FC8CD@oracle.com>
+References: <alpine.DEB.2.22.394.2011170253150.206345@www.lameter.com>
+ <20201117193329.GH244516@ziepe.ca>
+ <alpine.DEB.2.22.394.2011201805000.248138@www.lameter.com>
+ <6F632AE0-7921-4C5F-8455-F8E9390BD071@oracle.com>
+ <alpine.DEB.2.22.394.2011221246230.261606@www.lameter.com>
+ <801AE4A1-7AE8-4756-8F32-5F3BFD189E2B@oracle.com>
+ <alpine.DEB.2.22.394.2011221919240.265127@www.lameter.com>
+ <alpine.DEB.2.22.394.2011231244490.272074@www.lameter.com>
+ <648D2533-E8E8-4248-AF2D-C5F1F60E5BFC@oracle.com>
+ <alpine.DEB.2.22.394.2011241859340.286936@www.lameter.com>
+ <20201125081057.GA547111@dhcp-128-72.nay.redhat.com>
+ <alpine.DEB.2.22.394.2011251632300.298485@www.lameter.com>
+ <E2349D8B-26AC-469C-8483-A2241B9B649A@oracle.com>
+ <alpine.DEB.2.22.394.2011300811190.336472@www.lameter.com>
+To:     Christopher Lameter <cl@linux.com>
+X-Mailer: Apple Mail (2.3654.20.0.2.21)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9824 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012040068
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9824 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
+ clxscore=1015 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
+ suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012040068
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 12:20:37AM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> A number of ethernet drivers require crc32 functionality to be
-> avaialable in the kernel, causing a link error otherwise:
-> 
-> arm-linux-gnueabi-ld: drivers/net/ethernet/agere/et131x.o: in function `et1310_setup_device_for_multicast':
-> et131x.c:(.text+0x5918): undefined reference to `crc32_le'
-> arm-linux-gnueabi-ld: drivers/net/ethernet/cadence/macb_main.o: in function `macb_start_xmit':
-> macb_main.c:(.text+0x4b88): undefined reference to `crc32_le'
-> arm-linux-gnueabi-ld: drivers/net/ethernet/faraday/ftgmac100.o: in function `ftgmac100_set_rx_mode':
-> ftgmac100.c:(.text+0x2b38): undefined reference to `crc32_le'
-> arm-linux-gnueabi-ld: drivers/net/ethernet/freescale/fec_main.o: in function `set_multicast_list':
-> fec_main.c:(.text+0x6120): undefined reference to `crc32_le'
-> arm-linux-gnueabi-ld: drivers/net/ethernet/freescale/fman/fman_dtsec.o: in function `dtsec_add_hash_mac_address':
-> fman_dtsec.c:(.text+0x830): undefined reference to `crc32_le'
-> arm-linux-gnueabi-ld: drivers/net/ethernet/freescale/fman/fman_dtsec.o:fman_dtsec.c:(.text+0xb68): more undefined references to `crc32_le' follow
-> arm-linux-gnueabi-ld: drivers/net/ethernet/netronome/nfp/nfpcore/nfp_hwinfo.o: in function `nfp_hwinfo_read':
-> nfp_hwinfo.c:(.text+0x250): undefined reference to `crc32_be'
-> arm-linux-gnueabi-ld: nfp_hwinfo.c:(.text+0x288): undefined reference to `crc32_be'
-> arm-linux-gnueabi-ld: drivers/net/ethernet/netronome/nfp/nfpcore/nfp_resource.o: in function `nfp_resource_acquire':
-> nfp_resource.c:(.text+0x144): undefined reference to `crc32_be'
-> arm-linux-gnueabi-ld: nfp_resource.c:(.text+0x158): undefined reference to `crc32_be'
-> arm-linux-gnueabi-ld: drivers/net/ethernet/nxp/lpc_eth.o: in function `lpc_eth_set_multicast_list':
-> lpc_eth.c:(.text+0x1934): undefined reference to `crc32_le'
-> arm-linux-gnueabi-ld: drivers/net/ethernet/rocker/rocker_ofdpa.o: in function `ofdpa_flow_tbl_do':
-> rocker_ofdpa.c:(.text+0x2e08): undefined reference to `crc32_le'
-> arm-linux-gnueabi-ld: drivers/net/ethernet/rocker/rocker_ofdpa.o: in function `ofdpa_flow_tbl_del':
-> rocker_ofdpa.c:(.text+0x3074): undefined reference to `crc32_le'
-> arm-linux-gnueabi-ld: drivers/net/ethernet/rocker/rocker_ofdpa.o: in function `ofdpa_port_fdb':
-> arm-linux-gnueabi-ld: drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste.o: in function `mlx5dr_ste_calc_hash_index':
-> dr_ste.c:(.text+0x354): undefined reference to `crc32_le'
-> arm-linux-gnueabi-ld: drivers/net/ethernet/microchip/lan743x_main.o: in function `lan743x_netdev_set_multicast':
-> lan743x_main.c:(.text+0x5dc4): undefined reference to `crc32_le'
-> 
-> Add the missing 'select CRC32' entries in Kconfig for each of them.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/net/ethernet/agere/Kconfig              | 1 +
->  drivers/net/ethernet/cadence/Kconfig            | 1 +
->  drivers/net/ethernet/faraday/Kconfig            | 1 +
->  drivers/net/ethernet/freescale/Kconfig          | 1 +
->  drivers/net/ethernet/freescale/fman/Kconfig     | 1 +
->  drivers/net/ethernet/mellanox/mlx5/core/Kconfig | 1 +
->  drivers/net/ethernet/microchip/Kconfig          | 1 +
->  drivers/net/ethernet/netronome/Kconfig          | 1 +
->  drivers/net/ethernet/nxp/Kconfig                | 1 +
->  drivers/net/ethernet/rocker/Kconfig             | 1 +
->  10 files changed, 10 insertions(+)
 
-Hi Arnd,
 
-I'm slightly curious to know how you configured the kernel to build
-the Netronome NFP driver but not CRC32 but nonetheless I have no
-objection to this change.
+> On 30 Nov 2020, at 09:24, Christopher Lameter <cl@linux.com> wrote:
+>=20
+> On Fri, 27 Nov 2020, H=C3=A5kon Bugge wrote:
+>=20
+>>> Huh? When does it talk to a subnet manager (or the SA)?
+>>=20
+>> When resolving the route AND the option "route_prot" is set to "sa". =
+If
+>> set to "acm", what Hong describes above applies.
+>=20
+> My config has "route_prot" set to "sa"
+>=20
+>>> If its get an IP address of an IB node that does not have ibacm then =
+it
+>>> fails with a timeout ..... ? And leaves hanging kernel threads =
+around by
+>>> design?
+>>=20
+>> Nop, the kernel falls back and uses the neighbour cache instead.
+>=20
+> But ib_acme hangs? The main issue here is what the user space app =
+does.
+> And we need ibacm to cache user space address resolutions.
 
-For the Netronome portion:
+I got the impression that you are debugging this with Honggang. If you =
+want me to help, I need, to start with, an strace of ib_acme and ditto =
+of ibacm.
 
-Acked-by: Simon Horman <simon.horman@netronome.com>
+>>> So it only populates the cache from its local node information?
+>>=20
+>> No, if you use ibacm for address resolution the only protocol it has =
+is
+>> "acm", which means the information comes from a peer ibacm.
+>>=20
+>> If you talk about the cache for routes, it comes either from the SA =
+or a
+>> peer ibacm, depending on the "route_prot" setting.
+>=20
+> I have always run it with that setting. How can I debug this issue and =
+how
+> can we fix this?
+
+k
+
+
+>=20
+>>=20
+>>>> To resolve IPoIB address to PathRecord, you must:
+>>>> 1) The IPoIB interface must UP and RUNNING on the client and target
+>>>> side.
+>>>> 2) The ibacm service must RUNNING on the client and target.
+>>>=20
+>>> That is working if you want to resolve only the IP addresses of the =
+IB
+>>> interfaces on the client and target. None else.
+>>=20
+>> That is why it is called IBacm, right?
+>=20
+> Huh? IBACM is an address resolution service for IB. Somehow that only
+> includes addresses of hosts running IBACM?
+
+Yes. As Honggang explained, ibacmn's address resolution protocol is =
+based on IB multicast, as such, the peer must have ibacm running in =
+order to send a unicast response back with the L2 addr.
+
+>>> Here is the description of ibacms function from the sources:
+>>>=20
+>>> "Conceptually, the ibacm service implements an ARP like protocol and
+>>> either uses IB multicast records to construct path record data or =
+queries
+>>> the SA directly, depending on the selected route protocol. By =
+default, the
+>>> ibacm services uses and caches SA path record queries."
+>>>=20
+>>> SA queries dont work. So its broken and cannot talk to the SM.
+>>=20
+>> Why do you say that? It works all the time for me which uses "sa" as =
+"route_prot".
+>=20
+> Not here and not in the tests that RH ran to verify the issue.
+>=20
+> "route_prot" set to "sa" is the default config for the Redhat release =
+of
+> IBACM.
+>=20
+> However, the addr_prot is set to  "acm" by default. I set it to "sa" =
+with
+> no effect.
+
+OK. Understood. As stated above, let me know if you want me to debug =
+this.
+
+
+Thxs, H=C3=A5kon
+
