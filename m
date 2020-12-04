@@ -2,68 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFF12CEEE2
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 14:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 037892CF1DB
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 17:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729039AbgLDNkl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Dec 2020 08:40:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35392 "EHLO mail.kernel.org"
+        id S1726788AbgLDQ0l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Dec 2020 11:26:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728773AbgLDNkk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 4 Dec 2020 08:40:40 -0500
-X-Gm-Message-State: AOAM532wejPURLcvXkvFysRBQ9/M1w90Ob9xwy4bKeVVGI79AQ7N/eDO
-        6ldqvCj012Rd6Jh692+04YLeFzoPzWq4T/xDwXI=
+        id S1725923AbgLDQ0k (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 4 Dec 2020 11:26:40 -0500
+Date:   Fri, 4 Dec 2020 08:25:58 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607089200;
-        bh=by+WemB1peGkDQCzG6Dx4fJiZpkp8EyT9CK+EgBPFBY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=P9fqTJYnovZ7CqWKNLPqp3JDvu8xXsPnj8jn7pH6Ug+r6FzupbvR7zlfXpYzya5ML
-         7KZYDSndDV+ef+CoikM2o2unFtRjbLfdufK9+/KzZxjYljiz4wWL/IjWEHAk/jys8l
-         aRSHgr8Uh8xIhFkeeyYYN27zubt95Eo8486/2WJfqU/82Sgk/0tJnHPhx0DznvKKi4
-         MGRAAOeXXyQAzrg45t7PuZdJKIcAFCxgz9MHi6PKEHznUVSyAaedtuVtkUzDuMGAnP
-         qxoGHLfxboturzy9mux7mUlcKbEouhPhHp4AbW+Nz/+UnfHgIcgzTe/Q8DwQRqjW8h
-         FuyUpmicxAUEg==
-X-Google-Smtp-Source: ABdhPJyVvyTGM7IAyI/w7/Qek6izIlhZgoKlo/DKiQITg//JIDtXfBeRI4Dxv4lRMr11iPKdROVTob8oGvClJSg0LxU=
-X-Received: by 2002:a05:6830:22d2:: with SMTP id q18mr3651139otc.305.1607089199092;
- Fri, 04 Dec 2020 05:39:59 -0800 (PST)
+        s=k20201202; t=1607099160;
+        bh=MHHKkmoKjWu0cQa0MJSAx0XzbIRrcNJEsWUXYjQipb8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MLvlA35HN4ohV3iZow6D9YHeAHxFSJ3uPa6MbZFLdDwWj7Zyr58H/PSnExYJOqODJ
+         EfJWAWip59iY29pTqqNIqPGFXN10Iia11P11c9xb/Ln6SHa9G+Slpdy60vJ2bligCR
+         LW7Jh9uEV4sjc0I6m+IJY8uYG4cCeDZrLDhRVK65CeT/lLo3Yq3WouzIdZ25VmIhpK
+         63d75Jb50lFlvPYXyXAfZ2Wdgh9YuYPRZM7gr+at0ocFyndIuSyVe6yz+X4ABBG3y7
+         gJ+Z27Ur7XalOsKughxN9oyVa4LJLeGZdNlTKCS33IZ1vWueF3VN+GCIir5zUDkw9I
+         j6zMFjspjvd3w==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, jgg@nvidia.com,
+        Dan Williams <dan.j.williams@intel.com>, broonie@kernel.org,
+        lgirdwood@gmail.com, davem@davemloft.net,
+        Kiran Patil <kiran.patil@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <20201204082558.4eb8c8c2@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201204125455.GI16543@unreal>
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+        <X8os+X515fxeqefg@kroah.com>
+        <20201204125455.GI16543@unreal>
 MIME-Version: 1.0
-References: <20201203232114.1485603-1-arnd@kernel.org> <20201204110331.GA21587@netronome.com>
-In-Reply-To: <20201204110331.GA21587@netronome.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 4 Dec 2020 14:39:42 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0Ncuo6yq2rPpB6wV_r8B87qZ3Ba7to1zdM_BL++j0ksg@mail.gmail.com>
-Message-ID: <CAK8P3a0Ncuo6yq2rPpB6wV_r8B87qZ3Ba7to1zdM_BL++j0ksg@mail.gmail.com>
-Subject: Re: [PATCH] ethernet: select CONFIG_CRC32 as needed
-To:     Simon Horman <simon.horman@netronome.com>
-Cc:     Mark Einon <mark.einon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jiri Pirko <jiri@resnulli.us>, Arnd Bergmann <arnd@arndb.de>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        oss-drivers@netronome.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 12:03 PM Simon Horman <simon.horman@netronome.com> wrote:
->
-> I'm slightly curious to know how you configured the kernel to build
-> the Netronome NFP driver but not CRC32 but nonetheless I have no
-> objection to this change.
+On Fri, 4 Dec 2020 14:54:55 +0200 Leon Romanovsky wrote:
+> Thanks, pulled to mlx5-next
+> 
+> Jason, Jakob,
+> 
+> Can you please pull that mlx5-next branch to your trees?
+> git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git
 
-I ran into one link error on a randconfig build and then tried an 'allyesconfig'
-configuration, turning everything off manually that selects CRC32.
+Could you post a PR with a proper description and so on?
 
-Working through the resulting link errors ended up being more work than I was
-planning for though, so I don't recommend reproducing this. I have another 25
-patches for other subsystems.
-
-       Arnd
+Thanks!
