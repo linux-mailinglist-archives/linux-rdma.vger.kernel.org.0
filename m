@@ -2,171 +2,173 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609552CF2D7
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 18:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 951862CF34C
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 18:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726173AbgLDRMS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Dec 2020 12:12:18 -0500
-Received: from mga05.intel.com ([192.55.52.43]:16320 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726152AbgLDRMS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 4 Dec 2020 12:12:18 -0500
-IronPort-SDR: lYxAXEnAOKK+z93SOsH9dCYfPxiaZNEqNl2OAQjrQ5C4vWo4vuARSGg49/Wo8MzbfsT+s7jRjN
- Eci49+sifX2g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="258121283"
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="258121283"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 09:10:35 -0800
-IronPort-SDR: Q+kE0BgnPU7r7p9k4wspq1KsSVeTDsFrzsFNtygkwpTILxTTJpT1uFQm7NdtGN+n3JtkEsQNsh
- z4MleMyQy3BQ==
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; 
-   d="scan'208";a="551015315"
-Received: from mwalsh7-mobl1.amr.corp.intel.com ([10.212.248.252])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2020 09:10:34 -0800
-Message-ID: <f8371c36608084144fe6e8ca089901d330a7191f.camel@linux.intel.com>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-From:   Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Leon Romanovsky <leonro@nvidia.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Martin Habets <mhabets@solarflare.com>, lgirdwood@gmail.com,
-        Fred Oh <fred.oh@linux.intel.com>, broonie@kernel.org,
-        jgg@nvidia.com, Dave Ertman <david.m.ertman@intel.com>,
-        kuba@kernel.org, Dan Williams <dan.j.williams@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, Parav Pandit <parav@mellanox.com>
-Date:   Fri, 04 Dec 2020 09:10:34 -0800
-In-Reply-To: <X8oyqpxDQ4JV31tj@kroah.com>
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
-         <X8ogtmrm7tOzZo+N@kroah.com> <20201204123207.GH16543@unreal>
-         <X8oyqpxDQ4JV31tj@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        id S1729127AbgLDRnj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Dec 2020 12:43:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728129AbgLDRnj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Dec 2020 12:43:39 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32438C0613D1
+        for <linux-rdma@vger.kernel.org>; Fri,  4 Dec 2020 09:42:59 -0800 (PST)
+Date:   Fri, 4 Dec 2020 18:42:56 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607103777;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q2nW4HbOQcfOQzFvYyMeEfW0rSTjsj1DM1mV4zkz074=;
+        b=UPob0GtV7W9GcAaS0p5j/w3fE9bVRrAuEAzJpf2SqFkttIKf2aNKL340mmPslFoQxifo5o
+        d3XRNjIV1tzqnprHy7GMoMtvzWkdLmZfsTYeMp9pnc8jMnbXmKa5+r7ghJsT0LX2QAIT30
+        bgm8QAsRtgm6jN7ewtImQGElnwFUtRiTDgARmDlV2lYNdM1Mwnb0BnX62xGBsVSVmr9Lfc
+        ubG799cxpNXrenRmi0pqk9ISP2b23ZzXNHcmhYJoWzwEUv8xmac7VRkuOEO68qGnIc3IvE
+        2Yyp53C6p5NbTh2E+ejJBALgrdiN6LpAvxOJ7ZSJCfNRlNJx29pLVkYkGYiv+g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607103777;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q2nW4HbOQcfOQzFvYyMeEfW0rSTjsj1DM1mV4zkz074=;
+        b=GR9vmdrWnUf1CjbjmwUfO4M827TnH7H8G2oXuxzbc8XVOj7VwFvAzo5kwDBGsQg+TBZhMQ
+        YA8pDA0541lId5BA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, Max Gurtovoy <maxg@nvidia.com>,
+        linux-rdma@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Doug Ledford <dledford@redhat.com>
+Subject: [PATCH v2] IB/iser: Remove in_interrupt() usage.
+Message-ID: <20201204174256.62xfcvudndt7oufl@linutronix.de>
+References: <20201126202720.2304559-1-bigeasy@linutronix.de>
+ <20201126205357.GU5487@ziepe.ca>
+ <20201127123455.scnqc7xvuwwofdp2@linutronix.de>
+ <20201127130314.GE552508@nvidia.com>
+ <20201127141432.z5hqxosugi6uu6i7@linutronix.de>
+ <20201127143138.GG552508@nvidia.com>
+ <20201203135608.f67bmpopealp7xcm@linutronix.de>
+ <3cf15ad5-4c44-f9ca-4a16-1c680d3e265f@grimberg.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <3cf15ad5-4c44-f9ca-4a16-1c680d3e265f@grimberg.me>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, 2020-12-04 at 13:59 +0100, Greg KH wrote:
-> On Fri, Dec 04, 2020 at 02:32:07PM +0200, Leon Romanovsky wrote:
-> > On Fri, Dec 04, 2020 at 12:42:46PM +0100, Greg KH wrote:
-> > > On Wed, Dec 02, 2020 at 04:54:24PM -0800, Dan Williams wrote:
-> > > > From: Dave Ertman <david.m.ertman@intel.com>
-> > > > 
-> > > > Add support for the Auxiliary Bus, auxiliary_device and
-> > > > auxiliary_driver.
-> > > > It enables drivers to create an auxiliary_device and bind an
-> > > > auxiliary_driver to it.
-> > > > 
-> > > > The bus supports probe/remove shutdown and suspend/resume
-> > > > callbacks.
-> > > > Each auxiliary_device has a unique string based id; driver
-> > > > binds to
-> > > > an auxiliary_device based on this id through the bus.
-> > > > 
-> > > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> > > > Co-developed-by: Ranjani Sridharan <
-> > > > ranjani.sridharan@linux.intel.com>
-> > > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> > > > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> > > > Signed-off-by: Ranjani Sridharan <
-> > > > ranjani.sridharan@linux.intel.com>
-> > > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> > > > Reviewed-by: Pierre-Louis Bossart <
-> > > > pierre-louis.bossart@linux.intel.com>
-> > > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > > Reviewed-by: Parav Pandit <parav@mellanox.com>
-> > > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > > > Reviewed-by: Martin Habets <mhabets@solarflare.com>
-> > > > Link: 
-> > > > https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
-> > > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > > > ---
-> > > > This patch is "To:" the maintainers that have a pending backlog
-> > > > of
-> > > > driver updates dependent on this facility, and "Cc:" Greg.
-> > > > Greg, I
-> > > > understand you have asked for more time to fully review this
-> > > > and apply
-> > > > it to driver-core.git, likely for v5.12, but please consider
-> > > > Acking it
-> > > > for v5.11 instead. It looks good to me and several other
-> > > > stakeholders.
-> > > > Namely, stakeholders that have pressure building up behind this
-> > > > facility
-> > > > in particular Mellanox RDMA, but also SOF, Intel Ethernet, and
-> > > > later on
-> > > > Compute Express Link.
-> > > > 
-> > > > I will take the blame for the 2 months of silence that made
-> > > > this awkward
-> > > > to take through driver-core.git, but at the same time I do not
-> > > > want to
-> > > > see that communication mistake inconvenience other parties that
-> > > > reasonably thought this was shaping up to land in v5.11.
-> > > > 
-> > > > I am willing to host this version at:
-> > > > 
-> > > > git://git.kernel.org/pub/scm/linux/kernel/git/djbw/linux
-> > > > tags/auxiliary-bus-for-5.11
-> > > > 
-> > > > ...for all the independent drivers to have a common commit
-> > > > baseline. It
-> > > > is not there yet pending Greg's Ack.
-> > > > 
-> > > > For example implementations incorporating this patch, see Dave
-> > > > Ertman's
-> > > > SOF series:
-> > > > 
-> > > > https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
-> > > > 
-> > > > ...and Leon's mlx5 series:
-> > > > 
-> > > > http://lore.kernel.org/r/20201026111849.1035786-1-leon@kernel.org
-> > > > 
-> > > > PS: Greg I know I promised some review on newcomer patches to
-> > > > help with
-> > > > your queue, unfortunately Intel-internal review is keeping my
-> > > > plate
-> > > > full. Again, I do not want other stakeholder to be waiting on
-> > > > me to
-> > > > resolve that backlog.
-> > > 
-> > > Ok, I spent some hours today playing around with this.  I wrote
-> > > up a
-> > > small test-patch for this (how did anyone test this thing???).
-> > 
-> > We are running all verifications tests that we have over our
-> > mlx5 driver. It includes devices reloads, power failures, FW
-> > reconfiguration to emulate different devices with and without error
-> > injections and many more. Up till now, no new bugs that are not
-> > known
-> > to us were found.
-> 
-> Yes, sorry, I was implying that the authors here had to create _some_
-> code to test this with, it would have been nice to include that as
-> well
-> here.  We are collecting more and more in-kernel tests, having one
-> for
-> this code would be nice to also have so we make sure not to break any
-> functionality in the future.
+iser_initialize_task_headers() uses in_interrupt() to find out if it is
+safe to acquire a mutex.
 
-Hi Greg,
+in_interrupt() is deprecated as it is ill defined and does not provide what
+it suggests. Aside of that it covers only parts of the contexts in which
+a mutex may not be acquired.
 
-Thanks for your patience with this series. The v4 version submitted by
-Dave included the SOF usage code to demonstrate the usage. We have run
-all tests for device registration, module reload, PM etc and have not
-observed any regressions in the SOF audio driver.
+The following callchains exist:
 
-Thanks,
-Ranjani
+iscsi_queuecommand() *locks* iscsi_session::frwd_lock
+-> iscsi_prep_scsi_cmd_pdu()
+   -> session->tt->init_task() (iscsi_iser_task_init())
+      -> iser_initialize_task_headers()
+-> iscsi_iser_task_xmit() (iscsi_transport::xmit_task)
+  -> iscsi_iser_task_xmit_unsol_data()
+    -> iser_send_data_out()
+      -> iser_initialize_task_headers()
+
+iscsi_data_xmit() *locks* iscsi_session::frwd_lock
+-> iscsi_prep_mgmt_task()
+   -> session->tt->init_task() (iscsi_iser_task_init())
+      -> iser_initialize_task_headers()
+-> iscsi_prep_scsi_cmd_pdu()
+   -> session->tt->init_task() (iscsi_iser_task_init())
+      -> iser_initialize_task_headers()
+
+__iscsi_conn_send_pdu() caller has iscsi_session::frwd_lock
+  -> iscsi_prep_mgmt_task()
+     -> session->tt->init_task() (iscsi_iser_task_init())
+        -> iser_initialize_task_headers()
+  -> session->tt->xmit_task() (
+
+The only callchain that is close to be invoked in preemptible context:
+iscsi_xmitworker() worker
+-> iscsi_data_xmit()
+   -> iscsi_xmit_task()
+      -> conn->session->tt->xmit_task() (iscsi_iser_task_xmit()
+
+In iscsi_iser_task_xmit() there is this check:
+   if (!task->sc)
+      return iscsi_iser_mtask_xmit(conn, task);
+
+so it does end up in iser_initialize_task_headers() and
+iser_initialize_task_headers() relies on iscsi_task::sc =3D=3D NULL.
+
+Remove conditional locking of iser_conn::state_mutex because there is no
+call chain to do so. Remove the goto label and return early now that
+there is no clean up needed.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Sagi Grimberg <sagi@grimberg.me>
+Cc: Max Gurtovoy <maxg@nvidia.com>
+Cc: Doug Ledford <dledford@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: linux-rdma@vger.kernel.org
+---
+
+v1=E2=80=A6v2: Remove the goto label and return early. Suggested by Sagi
+       Grimberg.
+
+ drivers/infiniband/ulp/iser/iscsi_iser.c | 22 +++++-----------------
+ 1 file changed, 5 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.c b/drivers/infiniband/=
+ulp/iser/iscsi_iser.c
+index 3690e28cc7ea2..72fcccb459872 100644
+--- a/drivers/infiniband/ulp/iser/iscsi_iser.c
++++ b/drivers/infiniband/ulp/iser/iscsi_iser.c
+@@ -187,23 +187,14 @@ iser_initialize_task_headers(struct iscsi_task *task,
+ 	struct iser_device *device =3D iser_conn->ib_conn.device;
+ 	struct iscsi_iser_task *iser_task =3D task->dd_data;
+ 	u64 dma_addr;
+-	const bool mgmt_task =3D !task->sc && !in_interrupt();
+-	int ret =3D 0;
+=20
+-	if (unlikely(mgmt_task))
+-		mutex_lock(&iser_conn->state_mutex);
+-
+-	if (unlikely(iser_conn->state !=3D ISER_CONN_UP)) {
+-		ret =3D -ENODEV;
+-		goto out;
+-	}
++	if (unlikely(iser_conn->state !=3D ISER_CONN_UP))
++		return -ENODEV;
+=20
+ 	dma_addr =3D ib_dma_map_single(device->ib_device, (void *)tx_desc,
+ 				ISER_HEADERS_LEN, DMA_TO_DEVICE);
+-	if (ib_dma_mapping_error(device->ib_device, dma_addr)) {
+-		ret =3D -ENOMEM;
+-		goto out;
+-	}
++	if (ib_dma_mapping_error(device->ib_device, dma_addr))
++		return -ENOMEM;
+=20
+ 	tx_desc->inv_wr.next =3D NULL;
+ 	tx_desc->reg_wr.wr.next =3D NULL;
+@@ -214,11 +205,8 @@ iser_initialize_task_headers(struct iscsi_task *task,
+ 	tx_desc->tx_sg[0].lkey   =3D device->pd->local_dma_lkey;
+=20
+ 	iser_task->iser_conn =3D iser_conn;
+-out:
+-	if (unlikely(mgmt_task))
+-		mutex_unlock(&iser_conn->state_mutex);
+=20
+-	return ret;
++	return 0;
+ }
+=20
+ /**
+--=20
+2.29.2
 
