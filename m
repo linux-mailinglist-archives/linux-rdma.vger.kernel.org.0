@@ -2,31 +2,23 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7822CED74
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 12:49:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C5E2CEE15
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 13:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727319AbgLDLs7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Dec 2020 06:48:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40480 "EHLO mail.kernel.org"
+        id S1728110AbgLDMcx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Dec 2020 07:32:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726618AbgLDLs7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 4 Dec 2020 06:48:59 -0500
-Date:   Fri, 4 Dec 2020 12:49:28 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607082492;
-        bh=8riUQT9bCbW54dDW4SqSDmsIYyllOic9IBnpv2jP8RY=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A46brJwjdIa872dTM+2vM7n7K9F806vWyhU5xH27mw1GwGZ5jCWn615wnRuCk0ifP
-         aQ3U7L5uYHJDQ36n16uxjcx5LSjr50uszqUtlt8YBWaxj1oAUopkNCgdr3I3mQZTPu
-         q0LaHDbMkjd5a4WnQiS1tSIRdE4kyw7f8vikc8Ck=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     broonie@kernel.org, lgirdwood@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, jgg@nvidia.com,
-        Kiran Patil <kiran.patil@intel.com>,
+        id S1728006AbgLDMcx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 4 Dec 2020 07:32:53 -0500
+Date:   Fri, 4 Dec 2020 14:32:07 +0200
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>, broonie@kernel.org,
+        lgirdwood@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        jgg@nvidia.com, Kiran Patil <kiran.patil@intel.com>,
         Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
         Fred Oh <fred.oh@linux.intel.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
         Dave Ertman <david.m.ertman@intel.com>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         Shiraz Saleem <shiraz.saleem@intel.com>,
@@ -34,169 +26,111 @@ Cc:     broonie@kernel.org, lgirdwood@gmail.com, davem@davemloft.net,
         Martin Habets <mhabets@solarflare.com>,
         linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] driver core: auxiliary bus: minor coding style tweaks
-Message-ID: <X8oiSFTpYHw1xE/o@kroah.com>
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <20201204123207.GH16543@unreal>
 References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
  <X8ogtmrm7tOzZo+N@kroah.com>
- <X8og8xi3WkoYXet9@kroah.com>
- <X8ohB1ks1NK7kPop@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X8ohB1ks1NK7kPop@kroah.com>
+In-Reply-To: <X8ogtmrm7tOzZo+N@kroah.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Fri, Dec 04, 2020 at 12:42:46PM +0100, Greg KH wrote:
+> On Wed, Dec 02, 2020 at 04:54:24PM -0800, Dan Williams wrote:
+> > From: Dave Ertman <david.m.ertman@intel.com>
+> >
+> > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
+> > It enables drivers to create an auxiliary_device and bind an
+> > auxiliary_driver to it.
+> >
+> > The bus supports probe/remove shutdown and suspend/resume callbacks.
+> > Each auxiliary_device has a unique string based id; driver binds to
+> > an auxiliary_device based on this id through the bus.
+> >
+> > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
+> > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
+> > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> > Reviewed-by: Parav Pandit <parav@mellanox.com>
+> > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > Reviewed-by: Martin Habets <mhabets@solarflare.com>
+> > Link: https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > ---
+> > This patch is "To:" the maintainers that have a pending backlog of
+> > driver updates dependent on this facility, and "Cc:" Greg. Greg, I
+> > understand you have asked for more time to fully review this and apply
+> > it to driver-core.git, likely for v5.12, but please consider Acking it
+> > for v5.11 instead. It looks good to me and several other stakeholders.
+> > Namely, stakeholders that have pressure building up behind this facility
+> > in particular Mellanox RDMA, but also SOF, Intel Ethernet, and later on
+> > Compute Express Link.
+> >
+> > I will take the blame for the 2 months of silence that made this awkward
+> > to take through driver-core.git, but at the same time I do not want to
+> > see that communication mistake inconvenience other parties that
+> > reasonably thought this was shaping up to land in v5.11.
+> >
+> > I am willing to host this version at:
+> >
+> > git://git.kernel.org/pub/scm/linux/kernel/git/djbw/linux tags/auxiliary-bus-for-5.11
+> >
+> > ...for all the independent drivers to have a common commit baseline. It
+> > is not there yet pending Greg's Ack.
+> >
+> > For example implementations incorporating this patch, see Dave Ertman's
+> > SOF series:
+> >
+> > https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
+> >
+> > ...and Leon's mlx5 series:
+> >
+> > http://lore.kernel.org/r/20201026111849.1035786-1-leon@kernel.org
+> >
+> > PS: Greg I know I promised some review on newcomer patches to help with
+> > your queue, unfortunately Intel-internal review is keeping my plate
+> > full. Again, I do not want other stakeholder to be waiting on me to
+> > resolve that backlog.
+>
+> Ok, I spent some hours today playing around with this.  I wrote up a
+> small test-patch for this (how did anyone test this thing???).
 
-For some reason, the original aux bus patch had some really long lines
-in a few places, probably due to it being a very long-lived patch in
-development by many different people.  Fix that up so that the two files
-all have the same length lines and function formatting styles.
+We are running all verifications tests that we have over our
+mlx5 driver. It includes devices reloads, power failures, FW
+reconfiguration to emulate different devices with and without error
+injections and many more. Up till now, no new bugs that are not known
+to us were found.
 
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
-v2: include the right files in the patch...
+<...>
 
- drivers/base/auxiliary.c      | 58 +++++++++++++++++++----------------
- include/linux/auxiliary_bus.h |  6 ++--
- 2 files changed, 35 insertions(+), 29 deletions(-)
+> Note, I'm still not comfortable with a few things here.  The
+> documentation feels odd, and didn't really help me out in writing any
+> test code, which doesn't seem right.  Also the use of strings and '.' as
+> part of the api feels awkward, and messy, and of course, totally
+> undocumented.
 
-diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
-index c44e85802b43..f303daadf843 100644
---- a/drivers/base/auxiliary.c
-+++ b/drivers/base/auxiliary.c
-@@ -50,8 +50,8 @@ static int auxiliary_uevent(struct device *dev, struct kobj_uevent_env *env)
- 	name = dev_name(dev);
- 	p = strrchr(name, '.');
- 
--	return add_uevent_var(env, "MODALIAS=%s%.*s", AUXILIARY_MODULE_PREFIX, (int)(p - name),
--			      name);
-+	return add_uevent_var(env, "MODALIAS=%s%.*s", AUXILIARY_MODULE_PREFIX,
-+			      (int)(p - name), name);
- }
- 
- static const struct dev_pm_ops auxiliary_dev_pm_ops = {
-@@ -113,16 +113,18 @@ static struct bus_type auxiliary_bus_type = {
-  * auxiliary_device_init - check auxiliary_device and initialize
-  * @auxdev: auxiliary device struct
-  *
-- * This is the first step in the two-step process to register an auxiliary_device.
-+ * This is the first step in the two-step process to register an
-+ * auxiliary_device.
-  *
-- * When this function returns an error code, then the device_initialize will *not* have
-- * been performed, and the caller will be responsible to free any memory allocated for the
-- * auxiliary_device in the error path directly.
-+ * When this function returns an error code, then the device_initialize will
-+ * *not* have been performed, and the caller will be responsible to free any
-+ * memory allocated for the auxiliary_device in the error path directly.
-  *
-- * It returns 0 on success.  On success, the device_initialize has been performed.  After this
-- * point any error unwinding will need to include a call to auxiliary_device_uninit().
-- * In this post-initialize error scenario, a call to the device's .release callback will be
-- * triggered, and all memory clean-up is expected to be handled there.
-+ * It returns 0 on success.  On success, the device_initialize has been
-+ * performed.  After this point any error unwinding will need to include a call
-+ * to auxiliary_device_uninit().  In this post-initialize error scenario, a call
-+ * to the device's .release callback will be triggered, and all memory clean-up
-+ * is expected to be handled there.
-  */
- int auxiliary_device_init(struct auxiliary_device *auxdev)
- {
-@@ -149,16 +151,19 @@ EXPORT_SYMBOL_GPL(auxiliary_device_init);
-  * @auxdev: auxiliary bus device to add to the bus
-  * @modname: name of the parent device's driver module
-  *
-- * This is the second step in the two-step process to register an auxiliary_device.
-+ * This is the second step in the two-step process to register an
-+ * auxiliary_device.
-  *
-- * This function must be called after a successful call to auxiliary_device_init(), which
-- * will perform the device_initialize.  This means that if this returns an error code, then a
-- * call to auxiliary_device_uninit() must be performed so that the .release callback will
-- * be triggered to free the memory associated with the auxiliary_device.
-+ * This function must be called after a successful call to
-+ * auxiliary_device_init(), which will perform the device_initialize.  This
-+ * means that if this returns an error code, then a call to
-+ * auxiliary_device_uninit() must be performed so that the .release callback
-+ * will be triggered to free the memory associated with the auxiliary_device.
-  *
-- * The expectation is that users will call the "auxiliary_device_add" macro so that the caller's
-- * KBUILD_MODNAME is automatically inserted for the modname parameter.  Only if a user requires
-- * a custom name would this version be called directly.
-+ * The expectation is that users will call the "auxiliary_device_add" macro so
-+ * that the caller's KBUILD_MODNAME is automatically inserted for the modname
-+ * parameter.  Only if a user requires a custom name would this version be
-+ * called directly.
-  */
- int __auxiliary_device_add(struct auxiliary_device *auxdev, const char *modname)
- {
-@@ -166,13 +171,13 @@ int __auxiliary_device_add(struct auxiliary_device *auxdev, const char *modname)
- 	int ret;
- 
- 	if (!modname) {
--		pr_err("auxiliary device modname is NULL\n");
-+		dev_err(dev, "auxiliary device modname is NULL\n");
- 		return -EINVAL;
- 	}
- 
- 	ret = dev_set_name(dev, "%s.%s.%d", modname, auxdev->name, auxdev->id);
- 	if (ret) {
--		pr_err("auxiliary device dev_set_name failed: %d\n", ret);
-+		dev_err(dev, "auxiliary device dev_set_name failed: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -197,9 +202,9 @@ EXPORT_SYMBOL_GPL(__auxiliary_device_add);
-  * if it does.  If the callback returns non-zero, this function will
-  * return to the caller and not iterate over any more devices.
-  */
--struct auxiliary_device *
--auxiliary_find_device(struct device *start, const void *data,
--		      int (*match)(struct device *dev, const void *data))
-+struct auxiliary_device *auxiliary_find_device(struct device *start,
-+					       const void *data,
-+					       int (*match)(struct device *dev, const void *data))
- {
- 	struct device *dev;
- 
-@@ -217,14 +222,15 @@ EXPORT_SYMBOL_GPL(auxiliary_find_device);
-  * @owner: owning module/driver
-  * @modname: KBUILD_MODNAME for parent driver
-  */
--int __auxiliary_driver_register(struct auxiliary_driver *auxdrv, struct module *owner,
--				const char *modname)
-+int __auxiliary_driver_register(struct auxiliary_driver *auxdrv,
-+				struct module *owner, const char *modname)
- {
- 	if (WARN_ON(!auxdrv->probe) || WARN_ON(!auxdrv->id_table))
- 		return -EINVAL;
- 
- 	if (auxdrv->name)
--		auxdrv->driver.name = kasprintf(GFP_KERNEL, "%s.%s", modname, auxdrv->name);
-+		auxdrv->driver.name = kasprintf(GFP_KERNEL, "%s.%s", modname,
-+						auxdrv->name);
- 	else
- 		auxdrv->driver.name = kasprintf(GFP_KERNEL, "%s", modname);
- 	if (!auxdrv->driver.name)
-diff --git a/include/linux/auxiliary_bus.h b/include/linux/auxiliary_bus.h
-index d67b17606210..fc51d45f106b 100644
---- a/include/linux/auxiliary_bus.h
-+++ b/include/linux/auxiliary_bus.h
-@@ -70,8 +70,8 @@ void auxiliary_driver_unregister(struct auxiliary_driver *auxdrv);
- #define module_auxiliary_driver(__auxiliary_driver) \
- 	module_driver(__auxiliary_driver, auxiliary_driver_register, auxiliary_driver_unregister)
- 
--struct auxiliary_device *
--auxiliary_find_device(struct device *start, const void *data,
--		      int (*match)(struct device *dev, const void *data));
-+struct auxiliary_device *auxiliary_find_device(struct device *start,
-+					       const void *data,
-+					       int (*match)(struct device *dev, const void *data));
- 
- #endif /* _AUXILIARY_BUS_H_ */
--- 
-2.29.2
+Agree, I didn't look on the documentation at all when implemented mlx5.
+But from driver perspective the usage is quite straightforward.
 
+<...>
+
+> Thanks for everyone in sticking with this, I know it's been a long slog,
+> hopefully this will help some driver authors move forward with their
+> crazy complex devices :)
+
+Thanks a lot.
+
+>
+> thanks,
+>
+> greg k-h
