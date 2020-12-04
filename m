@@ -2,289 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E96C2CEC67
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 11:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BAB42CECB1
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 12:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387556AbgLDKnx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Dec 2020 05:43:53 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8699 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729419AbgLDKnx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Dec 2020 05:43:53 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CnTlz5x6Lzkkfs;
-        Fri,  4 Dec 2020 18:41:51 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 4 Dec 2020 18:42:21 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next 11/11] RDMA/hns: Simplify AEQE process for different types of queue
-Date:   Fri, 4 Dec 2020 18:40:36 +0800
-Message-ID: <1607078436-26455-12-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1607078436-26455-1-git-send-email-liweihang@huawei.com>
-References: <1607078436-26455-1-git-send-email-liweihang@huawei.com>
+        id S1729744AbgLDLEX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Dec 2020 06:04:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727365AbgLDLEW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Dec 2020 06:04:22 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B898FC061A51
+        for <linux-rdma@vger.kernel.org>; Fri,  4 Dec 2020 03:03:42 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id t8so5326321iov.8
+        for <linux-rdma@vger.kernel.org>; Fri, 04 Dec 2020 03:03:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6Jv+nYTl5ucMhc3yA6kiS/0QAXOSLESFYDG8UMjys/k=;
+        b=sLB3YmNMRt3awTg7ukKbVbdpZyMROx24h6agCLHNLgCMHx1z9CV5+1j1ie4wdKy4Dm
+         nUQrqdxR+Ui9ecQ8J6mG7Eh1gPak5lyFkk/CprpTqaM0OGphhY+3C7sD6ak1633s0+LF
+         2W2/yWRTGNWJ9reYjAfwEDhl+BofuW8P4fDpKfOtC2jDW0saZWfxuHK7F9EEwiH9esq2
+         JzIHIU93bKHRIIDw2bILPfLKrf8Ca3Nx2f7AEGN+2Nk89+bs4W/ZZy1peBALpO0OIHWk
+         0CFtu6IRMIBq8thyIhC+JDWibZLlRPi1g0Q3z3Y3zGHPEeEr+t4D06WPFSqiZ281PUM0
+         76CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6Jv+nYTl5ucMhc3yA6kiS/0QAXOSLESFYDG8UMjys/k=;
+        b=BFLlanOlQvRHDXy9B0zXznFoOECSOA401zpffkxw4rICMdPKTjhpGoyiFvI8JVd96d
+         +Ofjuyi1AQaxBQ9TZ8i/WgMGWEWw7uxghuQWIuyZipXPo6nDRE1mR0uemi39rCWxceRU
+         lkWCaK//n6WX2zF+Dyrv4BBtDg1M3Qm9eZipgIslgOYydPHnF6IFHAW/SngDTls4u9Ym
+         no7t8xwEF4JT7UPoLyAqzaekhjw2dMDFyCxoLu/1C8dBvka4Wd3H33Tm524NvXSTz/Sn
+         IMLD31xjss+j5TZ8pXZwOAbOV/mI1wgvT5YzTgTWYDlYiY4dBgfK9EQF3m2/5sYS05HC
+         KPlg==
+X-Gm-Message-State: AOAM533V1ppF5aBLB0hPQGI72eOHQUD9geO4ZsfEPp6xTe0JKhe64gQj
+        T4YD1Viq4qlXL0f+0d33LnEgqg==
+X-Google-Smtp-Source: ABdhPJxFzHB0Xqk/E6O4AEodvWZzmDBjxeT4tcuhxMAMKl9TKWt2uyxgf2393QWwOJ3cZv7SLvfmVA==
+X-Received: by 2002:a02:7650:: with SMTP id z77mr5628861jab.134.1607079822008;
+        Fri, 04 Dec 2020 03:03:42 -0800 (PST)
+Received: from netronome.com ([2001:982:756:703:d63d:7eff:fe99:ac9d])
+        by smtp.gmail.com with ESMTPSA id x5sm1447299ilm.22.2020.12.04.03.03.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 03:03:41 -0800 (PST)
+Date:   Fri, 4 Dec 2020 12:03:32 +0100
+From:   Simon Horman <simon.horman@netronome.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Mark Einon <mark.einon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jiri Pirko <jiri@resnulli.us>, Arnd Bergmann <arnd@arndb.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, oss-drivers@netronome.com
+Subject: Re: [PATCH] ethernet: select CONFIG_CRC32 as needed
+Message-ID: <20201204110331.GA21587@netronome.com>
+References: <20201203232114.1485603-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203232114.1485603-1-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yixian Liu <liuyixian@huawei.com>
+On Fri, Dec 04, 2020 at 12:20:37AM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> A number of ethernet drivers require crc32 functionality to be
+> avaialable in the kernel, causing a link error otherwise:
+> 
+> arm-linux-gnueabi-ld: drivers/net/ethernet/agere/et131x.o: in function `et1310_setup_device_for_multicast':
+> et131x.c:(.text+0x5918): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/cadence/macb_main.o: in function `macb_start_xmit':
+> macb_main.c:(.text+0x4b88): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/faraday/ftgmac100.o: in function `ftgmac100_set_rx_mode':
+> ftgmac100.c:(.text+0x2b38): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/freescale/fec_main.o: in function `set_multicast_list':
+> fec_main.c:(.text+0x6120): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/freescale/fman/fman_dtsec.o: in function `dtsec_add_hash_mac_address':
+> fman_dtsec.c:(.text+0x830): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/freescale/fman/fman_dtsec.o:fman_dtsec.c:(.text+0xb68): more undefined references to `crc32_le' follow
+> arm-linux-gnueabi-ld: drivers/net/ethernet/netronome/nfp/nfpcore/nfp_hwinfo.o: in function `nfp_hwinfo_read':
+> nfp_hwinfo.c:(.text+0x250): undefined reference to `crc32_be'
+> arm-linux-gnueabi-ld: nfp_hwinfo.c:(.text+0x288): undefined reference to `crc32_be'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/netronome/nfp/nfpcore/nfp_resource.o: in function `nfp_resource_acquire':
+> nfp_resource.c:(.text+0x144): undefined reference to `crc32_be'
+> arm-linux-gnueabi-ld: nfp_resource.c:(.text+0x158): undefined reference to `crc32_be'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/nxp/lpc_eth.o: in function `lpc_eth_set_multicast_list':
+> lpc_eth.c:(.text+0x1934): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/rocker/rocker_ofdpa.o: in function `ofdpa_flow_tbl_do':
+> rocker_ofdpa.c:(.text+0x2e08): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/rocker/rocker_ofdpa.o: in function `ofdpa_flow_tbl_del':
+> rocker_ofdpa.c:(.text+0x3074): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/rocker/rocker_ofdpa.o: in function `ofdpa_port_fdb':
+> arm-linux-gnueabi-ld: drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste.o: in function `mlx5dr_ste_calc_hash_index':
+> dr_ste.c:(.text+0x354): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/ethernet/microchip/lan743x_main.o: in function `lan743x_netdev_set_multicast':
+> lan743x_main.c:(.text+0x5dc4): undefined reference to `crc32_le'
+> 
+> Add the missing 'select CRC32' entries in Kconfig for each of them.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/net/ethernet/agere/Kconfig              | 1 +
+>  drivers/net/ethernet/cadence/Kconfig            | 1 +
+>  drivers/net/ethernet/faraday/Kconfig            | 1 +
+>  drivers/net/ethernet/freescale/Kconfig          | 1 +
+>  drivers/net/ethernet/freescale/fman/Kconfig     | 1 +
+>  drivers/net/ethernet/mellanox/mlx5/core/Kconfig | 1 +
+>  drivers/net/ethernet/microchip/Kconfig          | 1 +
+>  drivers/net/ethernet/netronome/Kconfig          | 1 +
+>  drivers/net/ethernet/nxp/Kconfig                | 1 +
+>  drivers/net/ethernet/rocker/Kconfig             | 1 +
+>  10 files changed, 10 insertions(+)
 
-There is no need to get queue number repeatly for different queues from an
-AEQE entity, as they are the same. Furthermore, redefine the AEQE structure
-to make the codes more readable.
+Hi Arnd,
 
-In addition, HNS_ROCE_EVENT_TYPE_CEQ_OVERFLOW is removed because the
-hardware never reports this event.
+I'm slightly curious to know how you configured the kernel to build
+the Netronome NFP driver but not CRC32 but nonetheless I have no
+objection to this change.
 
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h | 26 ++---------------
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c  | 16 ++++-------
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 43 ++++++++++-------------------
- 3 files changed, 23 insertions(+), 62 deletions(-)
+For the Netronome portion:
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index af73086..42a93c8 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -169,7 +169,6 @@ enum hns_roce_event {
- 	/* 0x10 and 0x11 is unused in currently application case */
- 	HNS_ROCE_EVENT_TYPE_DB_OVERFLOW               = 0x12,
- 	HNS_ROCE_EVENT_TYPE_MB                        = 0x13,
--	HNS_ROCE_EVENT_TYPE_CEQ_OVERFLOW              = 0x14,
- 	HNS_ROCE_EVENT_TYPE_FLR			      = 0x15,
- };
- 
-@@ -645,10 +644,9 @@ enum {
- struct hns_roce_work {
- 	struct hns_roce_dev *hr_dev;
- 	struct work_struct work;
--	u32 qpn;
--	u32 cqn;
- 	int event_type;
- 	int sub_type;
-+	u32 queue_num;
- };
- 
- struct hns_roce_qp {
-@@ -716,28 +714,10 @@ struct hns_roce_aeqe {
- 	__le32 asyn;
- 	union {
- 		struct {
--			__le32 qp;
-+			__le32 num;
- 			u32 rsv0;
- 			u32 rsv1;
--		} qp_event;
--
--		struct {
--			__le32 srq;
--			u32 rsv0;
--			u32 rsv1;
--		} srq_event;
--
--		struct {
--			__le32 cq;
--			u32 rsv0;
--			u32 rsv1;
--		} cq_event;
--
--		struct {
--			__le32 ceqe;
--			u32 rsv0;
--			u32 rsv1;
--		} ce_event;
-+		} queue_event;
- 
- 		struct {
- 			__le64  out_param;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-index b7dd867..cc20231 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-@@ -3683,10 +3683,10 @@ static void hns_roce_v1_qp_err_handle(struct hns_roce_dev *hr_dev,
- 	int phy_port;
- 	int qpn;
- 
--	qpn = roce_get_field(aeqe->event.qp_event.qp,
-+	qpn = roce_get_field(aeqe->event.queue_event.num,
- 			     HNS_ROCE_AEQE_EVENT_QP_EVENT_QP_QPN_M,
- 			     HNS_ROCE_AEQE_EVENT_QP_EVENT_QP_QPN_S);
--	phy_port = roce_get_field(aeqe->event.qp_event.qp,
-+	phy_port = roce_get_field(aeqe->event.queue_event.num,
- 				  HNS_ROCE_AEQE_EVENT_QP_EVENT_PORT_NUM_M,
- 				  HNS_ROCE_AEQE_EVENT_QP_EVENT_PORT_NUM_S);
- 	if (qpn <= 1)
-@@ -3717,9 +3717,9 @@ static void hns_roce_v1_cq_err_handle(struct hns_roce_dev *hr_dev,
- 	struct device *dev = &hr_dev->pdev->dev;
- 	u32 cqn;
- 
--	cqn = roce_get_field(aeqe->event.cq_event.cq,
--			  HNS_ROCE_AEQE_EVENT_CQ_EVENT_CQ_CQN_M,
--			  HNS_ROCE_AEQE_EVENT_CQ_EVENT_CQ_CQN_S);
-+	cqn = roce_get_field(aeqe->event.queue_event.num,
-+			     HNS_ROCE_AEQE_EVENT_CQ_EVENT_CQ_CQN_M,
-+			     HNS_ROCE_AEQE_EVENT_CQ_EVENT_CQ_CQN_S);
- 
- 	switch (event_type) {
- 	case HNS_ROCE_EVENT_TYPE_CQ_ACCESS_ERROR:
-@@ -3848,12 +3848,6 @@ static int hns_roce_v1_aeq_int(struct hns_roce_dev *hr_dev,
- 		case HNS_ROCE_EVENT_TYPE_DB_OVERFLOW:
- 			hns_roce_v1_db_overflow_handle(hr_dev, aeqe);
- 			break;
--		case HNS_ROCE_EVENT_TYPE_CEQ_OVERFLOW:
--			dev_warn(dev, "CEQ 0x%lx overflow.\n",
--			roce_get_field(aeqe->event.ce_event.ceqe,
--				     HNS_ROCE_AEQE_EVENT_CE_EVENT_CEQE_CEQN_M,
--				     HNS_ROCE_AEQE_EVENT_CE_EVENT_CEQE_CEQN_S));
--			break;
- 		default:
- 			dev_warn(dev, "Unhandled event %d on EQ %d at idx %u.\n",
- 				 event_type, eq->eqn, eq->cons_index);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 7f4e725..dca0f60 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -5446,8 +5446,6 @@ static void hns_roce_irq_work_handle(struct work_struct *work)
- 	struct hns_roce_work *irq_work =
- 				container_of(work, struct hns_roce_work, work);
- 	struct ib_device *ibdev = &irq_work->hr_dev->ib_dev;
--	u32 qpn = irq_work->qpn;
--	u32 cqn = irq_work->cqn;
- 
- 	switch (irq_work->event_type) {
- 	case HNS_ROCE_EVENT_TYPE_PATH_MIG:
-@@ -5463,15 +5461,15 @@ static void hns_roce_irq_work_handle(struct work_struct *work)
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_WQ_CATAS_ERROR:
- 		ibdev_err(ibdev, "Local work queue 0x%x catast error, sub_event type is: %d\n",
--			  qpn, irq_work->sub_type);
-+			  irq_work->queue_num, irq_work->sub_type);
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_INV_REQ_LOCAL_WQ_ERROR:
- 		ibdev_err(ibdev, "Invalid request local work queue 0x%x error.\n",
--			  qpn);
-+			  irq_work->queue_num);
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_LOCAL_WQ_ACCESS_ERROR:
- 		ibdev_err(ibdev, "Local access violation work queue 0x%x error, sub_event type is: %d\n",
--			  qpn, irq_work->sub_type);
-+			  irq_work->queue_num, irq_work->sub_type);
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_SRQ_LIMIT_REACH:
- 		ibdev_warn(ibdev, "SRQ limit reach.\n");
-@@ -5483,10 +5481,10 @@ static void hns_roce_irq_work_handle(struct work_struct *work)
- 		ibdev_err(ibdev, "SRQ catas error.\n");
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_CQ_ACCESS_ERROR:
--		ibdev_err(ibdev, "CQ 0x%x access err.\n", cqn);
-+		ibdev_err(ibdev, "CQ 0x%x access err.\n", irq_work->queue_num);
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_CQ_OVERFLOW:
--		ibdev_warn(ibdev, "CQ 0x%x overflow\n", cqn);
-+		ibdev_warn(ibdev, "CQ 0x%x overflow\n", irq_work->queue_num);
- 		break;
- 	case HNS_ROCE_EVENT_TYPE_DB_OVERFLOW:
- 		ibdev_warn(ibdev, "DB overflow.\n");
-@@ -5502,8 +5500,7 @@ static void hns_roce_irq_work_handle(struct work_struct *work)
- }
- 
- static void hns_roce_v2_init_irq_work(struct hns_roce_dev *hr_dev,
--				      struct hns_roce_eq *eq,
--				      u32 qpn, u32 cqn)
-+				      struct hns_roce_eq *eq, u32 queue_num)
- {
- 	struct hns_roce_work *irq_work;
- 
-@@ -5513,10 +5510,9 @@ static void hns_roce_v2_init_irq_work(struct hns_roce_dev *hr_dev,
- 
- 	INIT_WORK(&(irq_work->work), hns_roce_irq_work_handle);
- 	irq_work->hr_dev = hr_dev;
--	irq_work->qpn = qpn;
--	irq_work->cqn = cqn;
- 	irq_work->event_type = eq->event_type;
- 	irq_work->sub_type = eq->sub_type;
-+	irq_work->queue_num = queue_num;
- 	queue_work(hr_dev->irq_workq, &(irq_work->work));
- }
- 
-@@ -5568,10 +5564,8 @@ static int hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
- 	struct hns_roce_aeqe *aeqe = next_aeqe_sw_v2(eq);
- 	int aeqe_found = 0;
- 	int event_type;
-+	u32 queue_num;
- 	int sub_type;
--	u32 srqn;
--	u32 qpn;
--	u32 cqn;
- 
- 	while (aeqe) {
- 		/* Make sure we read AEQ entry after we have checked the
-@@ -5585,15 +5579,9 @@ static int hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
- 		sub_type = roce_get_field(aeqe->asyn,
- 					  HNS_ROCE_V2_AEQE_SUB_TYPE_M,
- 					  HNS_ROCE_V2_AEQE_SUB_TYPE_S);
--		qpn = roce_get_field(aeqe->event.qp_event.qp,
--				     HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_M,
--				     HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_S);
--		cqn = roce_get_field(aeqe->event.cq_event.cq,
--				     HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_M,
--				     HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_S);
--		srqn = roce_get_field(aeqe->event.srq_event.srq,
--				     HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_M,
--				     HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_S);
-+		queue_num = roce_get_field(aeqe->event.queue_event.num,
-+					   HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_M,
-+					   HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_S);
- 
- 		switch (event_type) {
- 		case HNS_ROCE_EVENT_TYPE_PATH_MIG:
-@@ -5604,15 +5592,15 @@ static int hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
- 		case HNS_ROCE_EVENT_TYPE_SRQ_LAST_WQE_REACH:
- 		case HNS_ROCE_EVENT_TYPE_INV_REQ_LOCAL_WQ_ERROR:
- 		case HNS_ROCE_EVENT_TYPE_LOCAL_WQ_ACCESS_ERROR:
--			hns_roce_qp_event(hr_dev, qpn, event_type);
-+			hns_roce_qp_event(hr_dev, queue_num, event_type);
- 			break;
- 		case HNS_ROCE_EVENT_TYPE_SRQ_LIMIT_REACH:
- 		case HNS_ROCE_EVENT_TYPE_SRQ_CATAS_ERROR:
--			hns_roce_srq_event(hr_dev, srqn, event_type);
-+			hns_roce_srq_event(hr_dev, queue_num, event_type);
- 			break;
- 		case HNS_ROCE_EVENT_TYPE_CQ_ACCESS_ERROR:
- 		case HNS_ROCE_EVENT_TYPE_CQ_OVERFLOW:
--			hns_roce_cq_event(hr_dev, cqn, event_type);
-+			hns_roce_cq_event(hr_dev, queue_num, event_type);
- 			break;
- 		case HNS_ROCE_EVENT_TYPE_MB:
- 			hns_roce_cmd_event(hr_dev,
-@@ -5621,7 +5609,6 @@ static int hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
- 					le64_to_cpu(aeqe->event.cmd.out_param));
- 			break;
- 		case HNS_ROCE_EVENT_TYPE_DB_OVERFLOW:
--		case HNS_ROCE_EVENT_TYPE_CEQ_OVERFLOW:
- 		case HNS_ROCE_EVENT_TYPE_FLR:
- 			break;
- 		default:
-@@ -5638,7 +5625,7 @@ static int hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
- 		if (eq->cons_index > (2 * eq->entries - 1))
- 			eq->cons_index = 0;
- 
--		hns_roce_v2_init_irq_work(hr_dev, eq, qpn, cqn);
-+		hns_roce_v2_init_irq_work(hr_dev, eq, queue_num);
- 
- 		aeqe = next_aeqe_sw_v2(eq);
- 	}
--- 
-2.8.1
-
+Acked-by: Simon Horman <simon.horman@netronome.com>
