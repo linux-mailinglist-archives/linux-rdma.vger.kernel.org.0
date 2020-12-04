@@ -2,173 +2,166 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 951862CF34C
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 18:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6DC2CF378
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 18:58:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729127AbgLDRnj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Dec 2020 12:43:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728129AbgLDRnj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Dec 2020 12:43:39 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32438C0613D1
-        for <linux-rdma@vger.kernel.org>; Fri,  4 Dec 2020 09:42:59 -0800 (PST)
-Date:   Fri, 4 Dec 2020 18:42:56 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607103777;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q2nW4HbOQcfOQzFvYyMeEfW0rSTjsj1DM1mV4zkz074=;
-        b=UPob0GtV7W9GcAaS0p5j/w3fE9bVRrAuEAzJpf2SqFkttIKf2aNKL340mmPslFoQxifo5o
-        d3XRNjIV1tzqnprHy7GMoMtvzWkdLmZfsTYeMp9pnc8jMnbXmKa5+r7ghJsT0LX2QAIT30
-        bgm8QAsRtgm6jN7ewtImQGElnwFUtRiTDgARmDlV2lYNdM1Mwnb0BnX62xGBsVSVmr9Lfc
-        ubG799cxpNXrenRmi0pqk9ISP2b23ZzXNHcmhYJoWzwEUv8xmac7VRkuOEO68qGnIc3IvE
-        2Yyp53C6p5NbTh2E+ejJBALgrdiN6LpAvxOJ7ZSJCfNRlNJx29pLVkYkGYiv+g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607103777;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q2nW4HbOQcfOQzFvYyMeEfW0rSTjsj1DM1mV4zkz074=;
-        b=GR9vmdrWnUf1CjbjmwUfO4M827TnH7H8G2oXuxzbc8XVOj7VwFvAzo5kwDBGsQg+TBZhMQ
-        YA8pDA0541lId5BA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, Max Gurtovoy <maxg@nvidia.com>,
-        linux-rdma@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Doug Ledford <dledford@redhat.com>
-Subject: [PATCH v2] IB/iser: Remove in_interrupt() usage.
-Message-ID: <20201204174256.62xfcvudndt7oufl@linutronix.de>
-References: <20201126202720.2304559-1-bigeasy@linutronix.de>
- <20201126205357.GU5487@ziepe.ca>
- <20201127123455.scnqc7xvuwwofdp2@linutronix.de>
- <20201127130314.GE552508@nvidia.com>
- <20201127141432.z5hqxosugi6uu6i7@linutronix.de>
- <20201127143138.GG552508@nvidia.com>
- <20201203135608.f67bmpopealp7xcm@linutronix.de>
- <3cf15ad5-4c44-f9ca-4a16-1c680d3e265f@grimberg.me>
+        id S1728508AbgLDR55 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Dec 2020 12:57:57 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:8287 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgLDR54 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Dec 2020 12:57:56 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fca787c0001>; Fri, 04 Dec 2020 09:57:16 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 4 Dec
+ 2020 17:57:13 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.174)
+ by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 4 Dec 2020 17:57:13 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Zpo5ovJ1GBw9JqdAIOtwbq6d2qOdR4izP0VZbLK4MiL5x8ue5CEgDmlvLxfJAUUiK9kUhPjOm3FkgcI8W3SUm9faypzJe2KhHPg+sRD8ILIF31ecBLxiBBtDpAD1Bir/mrX0Zpbq03y25Fe7oWJSqpGzlpRTJuqTAe9kCsTG6n02PiL/vXJLpO/8nD86t5qSTY5i8pvKu0ChDgDHMQayfQWK0vnC+VRT5w/FYhzhDdEAJtiDcWm5q67ezlE/NPfvIm5vbzWe/vlKvOclDSnPZtyarBXXpw4J4QmUMUy7rHQyxTRv89Au74zQJfdwjIjO8Q94o9i6ao0VfAzSDZdutQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GHTsqUbpQObKePLVykPF4YMGN5jRRXULypEl/bZkO04=;
+ b=bR5HkxCgBlfsa7Rbbt/+TXjM6x8qEw+73c2BPjhgnF9+B2woTos6j/NpkgB6t+0sfbSLbvdtz/ms0761PkJengsfMttfndsVFHGv/DzjKt3LDktz1t77+ABea6i8P34Lknydsd7d9CpulbgnISKIU67ezm/V6WRWhLBwP1GA82Ff7WkjlOcqnkGWEHnGeM5DCMthNZI50h27WsuEd62lgLoXL8SvRyzSRrAU1Fxy1uLH95xN0iHIFA14iQzYN5xrheWhVTHP632K5QU4UI7hb1egtfp4YdfiBQtJIC8D6lS/TIP5n/+62oq+CJ/AdMu2OsTum9QOKNxc/FxKZ1Soug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from CH2PR12MB4213.namprd12.prod.outlook.com (2603:10b6:610:a4::24)
+ by CH2PR12MB4261.namprd12.prod.outlook.com (2603:10b6:610:a9::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Fri, 4 Dec
+ 2020 17:57:11 +0000
+Received: from CH2PR12MB4213.namprd12.prod.outlook.com
+ ([fe80::98:4658:724f:a941]) by CH2PR12MB4213.namprd12.prod.outlook.com
+ ([fe80::98:4658:724f:a941%2]) with mapi id 15.20.3611.025; Fri, 4 Dec 2020
+ 17:57:11 +0000
+From:   Saeed Mahameed <saeedm@nvidia.com>
+To:     Leon Romanovsky <leonro@nvidia.com>,
+        "kuba@kernel.org" <kuba@kernel.org>
+CC:     "david.m.ertman@intel.com" <david.m.ertman@intel.com>,
+        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
+        "ranjani.sridharan@linux.intel.com" 
+        <ranjani.sridharan@linux.intel.com>,
+        "mhabets@solarflare.com" <mhabets@solarflare.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "kiran.patil@intel.com" <kiran.patil@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Thread-Topic: [resend/standalone PATCH v4] Add auxiliary bus support
+Thread-Index: AQHWyQ8TNP1v8NEBekWsm06ohs7ZG6nm4aqAgAAFi4CAADr3AIAAGXwA
+Date:   Fri, 4 Dec 2020 17:57:11 +0000
+Message-ID: <3b80200ec25958308d46b643c8434f9a5ce67346.camel@nvidia.com>
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+         <X8os+X515fxeqefg@kroah.com>        <20201204125455.GI16543@unreal>
+         <20201204082558.4eb8c8c2@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201204082558.4eb8c8c2@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [24.6.56.119]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5b59e8cc-b3b3-4b48-86b1-08d8987e06b8
+x-ms-traffictypediagnostic: CH2PR12MB4261:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CH2PR12MB426163768F9C54C6D38D2C03B3F10@CH2PR12MB4261.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: B3rgaU6ztWj/ldH/vDjaEdzgwQaATccc0p98KS5humOrYvM1foDntZNSnhIVvPEM9bkSgo97C8STglbnaFvunxqxepgKPIxmsE0EQNN4N/DpsJgHYlWDzW85BXHZ5guf1+BOqZemlZeHCxqTYXHGdP1+/BizIOaltP+aClBtY8Q66UFpVeVuxnanJfN6VkbQgbYsTHLm5lfSuMiJo370hEyxTPt7Jd8HBHT/lPWnlSPGrrNXD3qXqTn5ni/e+dTQ7dfrIya/4HjwzmkytcOOJohOgjeMVPljtHRBYmEGN6DuU+UDERH2zk/ukpY63HXBkmQ886D56qKUMTSvajYVhQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB4213.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(366004)(346002)(136003)(396003)(91956017)(8676002)(66556008)(6512007)(4326008)(8936002)(86362001)(6506007)(36756003)(5660300002)(2616005)(2906002)(186003)(110136005)(66476007)(7416002)(4744005)(76116006)(6486002)(66946007)(71200400001)(64756008)(54906003)(316002)(26005)(478600001)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?cDc4SXBtbjVCOVAwb0tRemZmTjE2OGMrQlBTVWRNUDdwYWIyN2UzSVB5Z1VH?=
+ =?utf-8?B?YkFtczZRQ2huZXVsaUhTY2FOZkpwME83QktpUzJjTEVjUkdRUHlmYi9QNnUw?=
+ =?utf-8?B?SmpkK0pHNzFBNVZOdVJXSDh1UDZWZFJpV0JMSm5MNGQ0WGxSQkZPeCtYU20w?=
+ =?utf-8?B?d3I2SjJ1SWowaWlSb3loRkRvS1Q5SFpFc2Q5bjF4a1FzOFJ0enNmZ2JsTENX?=
+ =?utf-8?B?TmxBdGdoMlBjR216WDRtNEdFVk5OZWhTSmJWdGhPa0FkSFh4WEpSMjBQQXdF?=
+ =?utf-8?B?blJUdXVvRllIMjBuV2xhVEFrcXE5MG5TbDgrWU9PbUpXRzhXNnJSWmtuWjhL?=
+ =?utf-8?B?a1NrV3BvYTZ0c2ZBejdGdWRzOEVYRU5PZnlubGdZcEtSSngxVllLZ3JueUdX?=
+ =?utf-8?B?RDZ1MHlNeXJtRVpDUHErR25iMm1WVlg0d05hekJNVUJORzZkYjJ4bXZlcHRq?=
+ =?utf-8?B?VXBJQjBYRDB3S1o5ZTI4VjFTMDA2M2tBY0lkRm5XbUVtSFV6WDhlMjhsVHNS?=
+ =?utf-8?B?WnlMMzJtMjVFNTFGTm1oM2pWZS83Zkdzd1JqQzJ2ckhNekZxcXR1Q2VHanFn?=
+ =?utf-8?B?ek9LeTJybzhPNTRpYW8zZld0WXVrMzNRTkFjK1d0R1pNZVhVRTIxM1RKTis3?=
+ =?utf-8?B?dTl6cGIzWG0xZDZIZnJyRzBoREtzR2ZxWUZnN1d2Y0JoNmYxdVNwSDhjSHZo?=
+ =?utf-8?B?V1FTZVVFSnpYai9SbjRkM09MejE5V0tRaXJlNFJQbDhreFVxVVdpOXlCWG1X?=
+ =?utf-8?B?WjN2SCtZNTJ6R0VBeUQvbS9hTzNVYTNsR2ZxRFpjUnFyUE1WeUZZZ1ZpVmNw?=
+ =?utf-8?B?RSt1MFQzV3VSaVF1R1VHOUJuMUVHUldlMXdQNDNiaXF0U3libkZMczR6VkJL?=
+ =?utf-8?B?RVhvbFp1RXluOTEzTkdYNGpQWWJ3V1ZaRzJNZ1M1cFpwcVBySzcreThaaUw1?=
+ =?utf-8?B?Uk1SR1BxSElWRTlVUk5Wb0pZdDlEUEdwOFZPUjZqc0NmNC9qbXBhZWxWV2lv?=
+ =?utf-8?B?czhFMFd0UUk3cHhIenQrK2pic1g4TENhcTl3K2NjUGp4cGhIWHZpZ2lPSXJl?=
+ =?utf-8?B?N2xwRVFXYTdLb0JlcnFuSWVpQi8ybmo0RFdpeUhqeWRONG1KU1JmQU5YMDJr?=
+ =?utf-8?B?dHFkVDNzUW9jTlNBbEVERFp5MHZTdEFJeXZrRU9QbmtuajZDd2taNGQ0bFpT?=
+ =?utf-8?B?NGJHYzd5eEZUU2h6RUR5OE15dG1qakkyT0Y5UDcrRUxzc1F5MEpuYi9vb25W?=
+ =?utf-8?B?aktKNmhHVG0wd0M4RTlOOFpBVjdobVZHdGdvSmJCajJJb2JqemlHM3ZTRXR3?=
+ =?utf-8?Q?Mk2GifThJVqN0eQcEW/nN/QK0Rj4IyyaTb?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F398E237A43BDF48A3613E53FDCD24DA@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <3cf15ad5-4c44-f9ca-4a16-1c680d3e265f@grimberg.me>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB4213.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b59e8cc-b3b3-4b48-86b1-08d8987e06b8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Dec 2020 17:57:11.7957
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uakeNj1BPHIQBGbGLHVohJpLpBXZgHdurw5+otEKc9TP8r7EPxKUi5HkEuG0OzR5ofQvNV33WaRERdule3s6nw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4261
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607104636; bh=GHTsqUbpQObKePLVykPF4YMGN5jRRXULypEl/bZkO04=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
+         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
+         X-MS-TNEF-Correlator:user-agent:authentication-results:
+         x-originating-ip:x-ms-publictraffictype:
+         x-ms-office365-filtering-correlation-id:x-ms-traffictypediagnostic:
+         x-ms-exchange-transport-forked:x-microsoft-antispam-prvs:
+         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
+         x-microsoft-antispam:x-microsoft-antispam-message-info:
+         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
+         Content-Type:Content-ID:Content-Transfer-Encoding:MIME-Version:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-originalarrivaltime:
+         X-MS-Exchange-CrossTenant-fromentityheader:
+         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+         X-MS-Exchange-CrossTenant-userprincipalname:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=UW1JWU32v92IcTlinqDy5ld3en3sdM5JLfxrkFLstbRppcNmQX3fI17tQYUX7zZui
+         yXuYTmJuSwL/EaQ2c0GYUgggNh93Cln49YOlX9mMCDd9k67MBtzR1LoG1WaouAyIzm
+         lGIoCe4tTLC/s9MZ9/jWsY6tu8b4IM1Kh1HVN8dAmCtcDBJHXlmNQggcvbs6oAwxti
+         svCbyi4xMuDaOwJgFgwo1aqUFFJUJsrkA6fua5JGt3BhfoujqeLClzwcm4sgDw7KQn
+         /yCpF0OXV3odTwHiuvw4uvuuCYdAb5sPvNzhfydD6N/y8ZMbevfHRZS5IIR0fPvfXi
+         96ZVeor1yRiVg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-iser_initialize_task_headers() uses in_interrupt() to find out if it is
-safe to acquire a mutex.
-
-in_interrupt() is deprecated as it is ill defined and does not provide what
-it suggests. Aside of that it covers only parts of the contexts in which
-a mutex may not be acquired.
-
-The following callchains exist:
-
-iscsi_queuecommand() *locks* iscsi_session::frwd_lock
--> iscsi_prep_scsi_cmd_pdu()
-   -> session->tt->init_task() (iscsi_iser_task_init())
-      -> iser_initialize_task_headers()
--> iscsi_iser_task_xmit() (iscsi_transport::xmit_task)
-  -> iscsi_iser_task_xmit_unsol_data()
-    -> iser_send_data_out()
-      -> iser_initialize_task_headers()
-
-iscsi_data_xmit() *locks* iscsi_session::frwd_lock
--> iscsi_prep_mgmt_task()
-   -> session->tt->init_task() (iscsi_iser_task_init())
-      -> iser_initialize_task_headers()
--> iscsi_prep_scsi_cmd_pdu()
-   -> session->tt->init_task() (iscsi_iser_task_init())
-      -> iser_initialize_task_headers()
-
-__iscsi_conn_send_pdu() caller has iscsi_session::frwd_lock
-  -> iscsi_prep_mgmt_task()
-     -> session->tt->init_task() (iscsi_iser_task_init())
-        -> iser_initialize_task_headers()
-  -> session->tt->xmit_task() (
-
-The only callchain that is close to be invoked in preemptible context:
-iscsi_xmitworker() worker
--> iscsi_data_xmit()
-   -> iscsi_xmit_task()
-      -> conn->session->tt->xmit_task() (iscsi_iser_task_xmit()
-
-In iscsi_iser_task_xmit() there is this check:
-   if (!task->sc)
-      return iscsi_iser_mtask_xmit(conn, task);
-
-so it does end up in iser_initialize_task_headers() and
-iser_initialize_task_headers() relies on iscsi_task::sc =3D=3D NULL.
-
-Remove conditional locking of iser_conn::state_mutex because there is no
-call chain to do so. Remove the goto label and return early now that
-there is no clean up needed.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Sagi Grimberg <sagi@grimberg.me>
-Cc: Max Gurtovoy <maxg@nvidia.com>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: linux-rdma@vger.kernel.org
----
-
-v1=E2=80=A6v2: Remove the goto label and return early. Suggested by Sagi
-       Grimberg.
-
- drivers/infiniband/ulp/iser/iscsi_iser.c | 22 +++++-----------------
- 1 file changed, 5 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.c b/drivers/infiniband/=
-ulp/iser/iscsi_iser.c
-index 3690e28cc7ea2..72fcccb459872 100644
---- a/drivers/infiniband/ulp/iser/iscsi_iser.c
-+++ b/drivers/infiniband/ulp/iser/iscsi_iser.c
-@@ -187,23 +187,14 @@ iser_initialize_task_headers(struct iscsi_task *task,
- 	struct iser_device *device =3D iser_conn->ib_conn.device;
- 	struct iscsi_iser_task *iser_task =3D task->dd_data;
- 	u64 dma_addr;
--	const bool mgmt_task =3D !task->sc && !in_interrupt();
--	int ret =3D 0;
-=20
--	if (unlikely(mgmt_task))
--		mutex_lock(&iser_conn->state_mutex);
--
--	if (unlikely(iser_conn->state !=3D ISER_CONN_UP)) {
--		ret =3D -ENODEV;
--		goto out;
--	}
-+	if (unlikely(iser_conn->state !=3D ISER_CONN_UP))
-+		return -ENODEV;
-=20
- 	dma_addr =3D ib_dma_map_single(device->ib_device, (void *)tx_desc,
- 				ISER_HEADERS_LEN, DMA_TO_DEVICE);
--	if (ib_dma_mapping_error(device->ib_device, dma_addr)) {
--		ret =3D -ENOMEM;
--		goto out;
--	}
-+	if (ib_dma_mapping_error(device->ib_device, dma_addr))
-+		return -ENOMEM;
-=20
- 	tx_desc->inv_wr.next =3D NULL;
- 	tx_desc->reg_wr.wr.next =3D NULL;
-@@ -214,11 +205,8 @@ iser_initialize_task_headers(struct iscsi_task *task,
- 	tx_desc->tx_sg[0].lkey   =3D device->pd->local_dma_lkey;
-=20
- 	iser_task->iser_conn =3D iser_conn;
--out:
--	if (unlikely(mgmt_task))
--		mutex_unlock(&iser_conn->state_mutex);
-=20
--	return ret;
-+	return 0;
- }
-=20
- /**
---=20
-2.29.2
-
+T24gRnJpLCAyMDIwLTEyLTA0IGF0IDA4OjI1IC0wODAwLCBKYWt1YiBLaWNpbnNraSB3cm90ZToN
+Cj4gT24gRnJpLCA0IERlYyAyMDIwIDE0OjU0OjU1ICswMjAwIExlb24gUm9tYW5vdnNreSB3cm90
+ZToNCj4gPiBUaGFua3MsIHB1bGxlZCB0byBtbHg1LW5leHQNCj4gPiANCj4gPiBKYXNvbiwgSmFr
+b2IsDQo+ID4gDQo+ID4gQ2FuIHlvdSBwbGVhc2UgcHVsbCB0aGF0IG1seDUtbmV4dCBicmFuY2gg
+dG8geW91ciB0cmVlcz8NCj4gPiBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tl
+cm5lbC9naXQvbWVsbGFub3gvbGludXguZ2l0DQo+IA0KPiBDb3VsZCB5b3UgcG9zdCBhIFBSIHdp
+dGggYSBwcm9wZXIgZGVzY3JpcHRpb24gYW5kIHNvIG9uPw0KPiANCj4gVGhhbmtzIQ0KDQpJIHdp
+bGwgZG8gdGhhdC4NCg0KVGhhbmtzIQ0K
