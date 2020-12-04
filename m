@@ -2,182 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADDF2CECEC
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 12:18:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 681632CED4E
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Dec 2020 12:42:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727591AbgLDLSU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Dec 2020 06:18:20 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:47934 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbgLDLST (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Dec 2020 06:18:19 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B4B9gDb098344;
-        Fri, 4 Dec 2020 11:17:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=w9MDRbe+CdJ7+eSVfuktmP1582RkiqgQSgxDUo8a9Q4=;
- b=LYO7z95VNfschmFMU7CQI+zPXemUZpiTJvmSEYmGEHo0A77KISj0PL4Y3g7tCGSLwacv
- +SJt48enB1QTzuPuq+DQTHClhVd4MbQp+w+zKFrcduyMlecLBteO77cDsgSiQjDFMGL6
- kOcNcZZwcnmFYNLA+8ZLeyTL1ak2fYLMjGcDkH7tbHSEmUhM18AsmdqUnDKm/66O1NCX
- 6QvNyZH7fEcyhQmDzoOlRo7eSYRzM6BqLvfjMjEyNl5X/bfMuANlElydghDTBvvs0U0e
- sQBaLmypcCKQgILox4/scMTRElIM/J5zYdGRnf/vlnhZUTret/Cq0R/EF6zLMuRBt9fn DQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 353dyr2s3r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 04 Dec 2020 11:17:35 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B4BAQCh033630;
-        Fri, 4 Dec 2020 11:17:34 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 3540axwt1v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Dec 2020 11:17:34 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B4BHX3t027682;
-        Fri, 4 Dec 2020 11:17:33 GMT
-Received: from [172.20.10.5] (/89.8.147.252)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 04 Dec 2020 03:17:32 -0800
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
-Subject: Re: Is there a working cache for path record and lids etc for
- librdmacm?
-From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
-In-Reply-To: <alpine.DEB.2.22.394.2011300811190.336472@www.lameter.com>
-Date:   Fri, 4 Dec 2020 12:17:27 +0100
-Cc:     Honggang LI <honli@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Mark Haywood <mark.haywood@oracle.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <7812B8AB-7D26-4148-8C8C-E1241A1FC8CD@oracle.com>
-References: <alpine.DEB.2.22.394.2011170253150.206345@www.lameter.com>
- <20201117193329.GH244516@ziepe.ca>
- <alpine.DEB.2.22.394.2011201805000.248138@www.lameter.com>
- <6F632AE0-7921-4C5F-8455-F8E9390BD071@oracle.com>
- <alpine.DEB.2.22.394.2011221246230.261606@www.lameter.com>
- <801AE4A1-7AE8-4756-8F32-5F3BFD189E2B@oracle.com>
- <alpine.DEB.2.22.394.2011221919240.265127@www.lameter.com>
- <alpine.DEB.2.22.394.2011231244490.272074@www.lameter.com>
- <648D2533-E8E8-4248-AF2D-C5F1F60E5BFC@oracle.com>
- <alpine.DEB.2.22.394.2011241859340.286936@www.lameter.com>
- <20201125081057.GA547111@dhcp-128-72.nay.redhat.com>
- <alpine.DEB.2.22.394.2011251632300.298485@www.lameter.com>
- <E2349D8B-26AC-469C-8483-A2241B9B649A@oracle.com>
- <alpine.DEB.2.22.394.2011300811190.336472@www.lameter.com>
-To:     Christopher Lameter <cl@linux.com>
-X-Mailer: Apple Mail (2.3654.20.0.2.21)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9824 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012040068
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9824 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
- clxscore=1015 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
- suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012040068
+        id S1730093AbgLDLmL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Dec 2020 06:42:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725999AbgLDLmL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 4 Dec 2020 06:42:11 -0500
+Date:   Fri, 4 Dec 2020 12:42:46 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607082090;
+        bh=U+D8jQyF2x7hxn+mgXKApvlrbJWVFjxv8aEqAKyetO4=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pgzHwqQII3NRBJIRuBKi8KUHFpoykh2NAC8oAmuATii8kf7GxzUu5WwCliXD1+7KD
+         SLwaG5RKj8YEjSZFdnw97/idOqD3UmftByYTQE+u1gB6pQ6RRVQK/is2uWeoAyR3nd
+         lB+8Q9xv9WeKHfmSB1weOGsoHXMTlFdTgFgW5VJ0=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     broonie@kernel.org, lgirdwood@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, jgg@nvidia.com,
+        Kiran Patil <kiran.patil@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <X8ogtmrm7tOzZo+N@kroah.com>
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Dec 02, 2020 at 04:54:24PM -0800, Dan Williams wrote:
+> From: Dave Ertman <david.m.ertman@intel.com>
+> 
+> Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
+> It enables drivers to create an auxiliary_device and bind an
+> auxiliary_driver to it.
+> 
+> The bus supports probe/remove shutdown and suspend/resume callbacks.
+> Each auxiliary_device has a unique string based id; driver binds to
+> an auxiliary_device based on this id through the bus.
+> 
+> Co-developed-by: Kiran Patil <kiran.patil@intel.com>
+> Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> Reviewed-by: Parav Pandit <parav@mellanox.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Reviewed-by: Martin Habets <mhabets@solarflare.com>
+> Link: https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+> This patch is "To:" the maintainers that have a pending backlog of
+> driver updates dependent on this facility, and "Cc:" Greg. Greg, I
+> understand you have asked for more time to fully review this and apply
+> it to driver-core.git, likely for v5.12, but please consider Acking it
+> for v5.11 instead. It looks good to me and several other stakeholders.
+> Namely, stakeholders that have pressure building up behind this facility
+> in particular Mellanox RDMA, but also SOF, Intel Ethernet, and later on
+> Compute Express Link.
+> 
+> I will take the blame for the 2 months of silence that made this awkward
+> to take through driver-core.git, but at the same time I do not want to
+> see that communication mistake inconvenience other parties that
+> reasonably thought this was shaping up to land in v5.11.
+> 
+> I am willing to host this version at:
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/djbw/linux tags/auxiliary-bus-for-5.11
+> 
+> ...for all the independent drivers to have a common commit baseline. It
+> is not there yet pending Greg's Ack.
+> 
+> For example implementations incorporating this patch, see Dave Ertman's
+> SOF series:
+> 
+> https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
+> 
+> ...and Leon's mlx5 series:
+> 
+> http://lore.kernel.org/r/20201026111849.1035786-1-leon@kernel.org
+> 
+> PS: Greg I know I promised some review on newcomer patches to help with
+> your queue, unfortunately Intel-internal review is keeping my plate
+> full. Again, I do not want other stakeholder to be waiting on me to
+> resolve that backlog.
 
+Ok, I spent some hours today playing around with this.  I wrote up a
+small test-patch for this (how did anyone test this thing???) and while
+it feels awkward in places, and it feels like there is still way too
+much "boilerplate" code that a user has to write and manage, I don't
+have the time myself to fix it up right now.
 
-> On 30 Nov 2020, at 09:24, Christopher Lameter <cl@linux.com> wrote:
->=20
-> On Fri, 27 Nov 2020, H=C3=A5kon Bugge wrote:
->=20
->>> Huh? When does it talk to a subnet manager (or the SA)?
->>=20
->> When resolving the route AND the option "route_prot" is set to "sa". =
-If
->> set to "acm", what Hong describes above applies.
->=20
-> My config has "route_prot" set to "sa"
->=20
->>> If its get an IP address of an IB node that does not have ibacm then =
-it
->>> fails with a timeout ..... ? And leaves hanging kernel threads =
-around by
->>> design?
->>=20
->> Nop, the kernel falls back and uses the neighbour cache instead.
->=20
-> But ib_acme hangs? The main issue here is what the user space app =
-does.
-> And we need ibacm to cache user space address resolutions.
+So I'll go apply this to my tree, and provide a tag for everyone else to
+be able to pull from for their different development trees so they can
+work on.
 
-I got the impression that you are debugging this with Honggang. If you =
-want me to help, I need, to start with, an strace of ib_acme and ditto =
-of ibacm.
+I do have 3 follow-on patches that I will send to the list in response
+to this message that I will be applying on top of this patch.  They do
+some minor code formatting changes, as well as change the return type of
+the remove function to make it more future-proof.  That last change will
+require users of this code to change their implementations, but it will
+be obvious what to do as you will get a build warning.
 
->>> So it only populates the cache from its local node information?
->>=20
->> No, if you use ibacm for address resolution the only protocol it has =
-is
->> "acm", which means the information comes from a peer ibacm.
->>=20
->> If you talk about the cache for routes, it comes either from the SA =
-or a
->> peer ibacm, depending on the "route_prot" setting.
->=20
-> I have always run it with that setting. How can I debug this issue and =
-how
-> can we fix this?
+Note, I'm still not comfortable with a few things here.  The
+documentation feels odd, and didn't really help me out in writing any
+test code, which doesn't seem right.  Also the use of strings and '.' as
+part of the api feels awkward, and messy, and of course, totally
+undocumented.
 
-k
+But, as the use of '.' is undocumented, that means we can change it in
+the future!  Because no driver or device name should ever be a user api
+reliant thing, if we come up with a better way to do all of this in the
+future, that shouldn't be a problem to change existing users over to
+this.  So this is a warning to everyone, you CAN NOT depend on the sysfs
+name of a device or bus name for any tool.  If so, your userspace tool
+is broken.
 
+Thanks for everyone in sticking with this, I know it's been a long slog,
+hopefully this will help some driver authors move forward with their
+crazy complex devices :)
 
->=20
->>=20
->>>> To resolve IPoIB address to PathRecord, you must:
->>>> 1) The IPoIB interface must UP and RUNNING on the client and target
->>>> side.
->>>> 2) The ibacm service must RUNNING on the client and target.
->>>=20
->>> That is working if you want to resolve only the IP addresses of the =
-IB
->>> interfaces on the client and target. None else.
->>=20
->> That is why it is called IBacm, right?
->=20
-> Huh? IBACM is an address resolution service for IB. Somehow that only
-> includes addresses of hosts running IBACM?
+thanks,
 
-Yes. As Honggang explained, ibacmn's address resolution protocol is =
-based on IB multicast, as such, the peer must have ibacm running in =
-order to send a unicast response back with the L2 addr.
-
->>> Here is the description of ibacms function from the sources:
->>>=20
->>> "Conceptually, the ibacm service implements an ARP like protocol and
->>> either uses IB multicast records to construct path record data or =
-queries
->>> the SA directly, depending on the selected route protocol. By =
-default, the
->>> ibacm services uses and caches SA path record queries."
->>>=20
->>> SA queries dont work. So its broken and cannot talk to the SM.
->>=20
->> Why do you say that? It works all the time for me which uses "sa" as =
-"route_prot".
->=20
-> Not here and not in the tests that RH ran to verify the issue.
->=20
-> "route_prot" set to "sa" is the default config for the Redhat release =
-of
-> IBACM.
->=20
-> However, the addr_prot is set to  "acm" by default. I set it to "sa" =
-with
-> no effect.
-
-OK. Understood. As stated above, let me know if you want me to debug =
-this.
-
-
-Thxs, H=C3=A5kon
-
+greg k-h
