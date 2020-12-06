@@ -2,102 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CAA2CFFF3
-	for <lists+linux-rdma@lfdr.de>; Sun,  6 Dec 2020 01:33:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 298F52D0099
+	for <lists+linux-rdma@lfdr.de>; Sun,  6 Dec 2020 06:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgLFAd1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 5 Dec 2020 19:33:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgLFAd0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 5 Dec 2020 19:33:26 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735FEC0613D1
-        for <linux-rdma@vger.kernel.org>; Sat,  5 Dec 2020 16:32:46 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id q16so9801940edv.10
-        for <linux-rdma@vger.kernel.org>; Sat, 05 Dec 2020 16:32:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gsJTnuBIKurvy5/BWkf4XzEJ7IPXfR3rghfxKMIdv5A=;
-        b=XJKdb70pzE/zlzt49Fah0BHTuoQI/1gp0ANorpuSlhGDe5lvKDxwj1nV++iduDrHZO
-         5egN+IeYeOoixDnwHTi+ErwlWJ+Vl+DXaKxjuuG3F/u9C+kgikt9jpCoUPiQQ1mk0GIt
-         pBAXWYgQJ1gEgASRAC53JsKxZYF+LILb7PRheMEEHWH1ulEM1oA7Rc1amBxJiy/fw4JZ
-         neU2YHasQLwYOvA7dz6DDjUocijcqE5kYh3+tTwKzYMoSu3Q35cXR08a5d22e4q4of7L
-         ULTmY6TebcajaaxeAZrLRPeqJTkHVyBHaJyFwu6L6IYSGC272/5HyZK8l8KYXknxFPxa
-         8P7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gsJTnuBIKurvy5/BWkf4XzEJ7IPXfR3rghfxKMIdv5A=;
-        b=nlzyNlh0EcxXMNF1LEuAIdXDnZNYnSjMtSqbC3E3OY6Bu07NQwEAXpxSwKaooULEej
-         0gnfeV+JxkhGdy/A5GFyde+8MNht39sE8kLYMu+dMokuBci1SnzBgZc4Lq+tU/OQM37C
-         OZ7/uxa7Dx1jiU9G/bbU+2dw6ZT9AiybIrGdWN7lSn+2DLCqOHgyXNpuNGQsSMjzRC9e
-         F1c4whOMSBAmREqEYHc9DVC984QHtGcdcETz0lYMeTCgfA2Fpv0P/xVGjjbJg1zIxTCr
-         yjbx3e/yv1rqiWMQHagP6He8f9rJMLxU5StAZs9TupF5kgV+gvOG8LFObKCU46YeKBNW
-         TU1g==
-X-Gm-Message-State: AOAM533zTRfQ20PflAsBJaT8yO8maIUGqMgQieBF3IrZtSlcbg01VgmH
-        DYjN62NkOwWll3TTW/g0duylHzSK03gS8EoR7qowNg==
-X-Google-Smtp-Source: ABdhPJyfTHBvHCXuS7GMkDJKmo6ZL65D889ZDN8Fij1tzRHq9IWIaeeueUQ0KTEr9lBaBh47xr9YPay4K9BanZOMcCg=
-X-Received: by 2002:a50:e0ce:: with SMTP id j14mr14231534edl.18.1607214765241;
- Sat, 05 Dec 2020 16:32:45 -0800 (PST)
-MIME-Version: 1.0
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
- <a24b3044-1379-6331-c171-be8d95f21353@gmail.com>
-In-Reply-To: <a24b3044-1379-6331-c171-be8d95f21353@gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Sat, 5 Dec 2020 16:32:41 -0800
-Message-ID: <CAPcyv4iM=_MhhpKKA9ihWAq_c43kKjRwGKzhvKEYHYJ+FiAVJA@mail.gmail.com>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S1725379AbgLFFEh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 6 Dec 2020 00:04:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgLFFEg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 6 Dec 2020 00:04:36 -0500
+Date:   Sun, 6 Dec 2020 07:03:51 +0200
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
         Jason Gunthorpe <jgg@nvidia.com>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
         Dave Ertman <david.m.ertman@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, alsa-devel@alsa-project.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [pull request][for-next] mlx5-next auxbus support
+Message-ID: <20201206050351.GA210929@unreal>
+References: <20201204182952.72263-1-saeedm@nvidia.com>
+ <20201205153545.3d30536b@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <20201205161921.28d5cb7e@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201205161921.28d5cb7e@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Dec 5, 2020 at 4:24 PM David Ahern <dsahern@gmail.com> wrote:
->
-> On 12/2/20 5:54 PM, Dan Williams wrote:
-> > diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
-> > index 8d7001712062..040be48ce046 100644
-> > --- a/drivers/base/Kconfig
-> > +++ b/drivers/base/Kconfig
-> > @@ -1,6 +1,9 @@
-> >  # SPDX-License-Identifier: GPL-2.0
-> >  menu "Generic Driver Options"
+On Sat, Dec 05, 2020 at 04:19:21PM -0800, Jakub Kicinski wrote:
+> On Sat, 5 Dec 2020 15:35:45 -0800 Jakub Kicinski wrote:
+> > On Fri, 4 Dec 2020 10:29:52 -0800 Saeed Mahameed wrote:
+> > > This pull request is targeting net-next and rdma-next branches.
+> > >
+> > > This series provides mlx5 support for auxiliary bus devices.
+> > >
+> > > It starts with a merge commit of tag 'auxbus-5.11-rc1' from
+> > > gregkh/driver-core into mlx5-next, then the mlx5 patches that will convert
+> > > mlx5 ulp devices (netdev, rdma, vdpa) to use the proper auxbus
+> > > infrastructure instead of the internal mlx5 device and interface management
+> > > implementation, which Leon is deleting at the end of this patchset.
+> > >
+> > > Link: https://lore.kernel.org/alsa-devel/20201026111849.1035786-1-leon@kernel.org/
+> > >
+> > > Thanks to everyone for the joint effort !
 > >
-> > +config AUXILIARY_BUS
-> > +     bool
-> > +
-> >  config UEVENT_HELPER
-> >       bool "Support for uevent helper"
-> >       help
+> > Pulled, thanks! (I'll push out after build finishes so may be an hour)
 >
-> Missing a description and without it does not appear in menuconfig or in
-> the config file.
->
-> Could use a blurb in the help as well.
+> Or not, looks like you didn't adjust to Greg's changes:
 
-It doesn't have a description or help because it is a select-only
-symbol, but a comment to that effect and a pointer to the
-documentation would help.
+Sorry Jakub, It was my mistake.
+
+I'm fixing, folding the changes and pushing new branch now.
+Most likely that Saeed will send new pull request on Monday.
+
+Thanks
