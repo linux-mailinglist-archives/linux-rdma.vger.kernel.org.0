@@ -2,127 +2,261 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CC12D1BB7
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Dec 2020 22:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA22A2D1C9D
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Dec 2020 23:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727218AbgLGVJH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Dec 2020 16:09:07 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:58804 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727094AbgLGVJH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Dec 2020 16:09:07 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7KxKTb158352;
-        Mon, 7 Dec 2020 21:08:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=hb2Fd6RqB2x+11WDtXsB3wXIthnVTGqOEem+hAS2Mr4=;
- b=Na0eJhPCr3CJAcjRwenzKtIWBhlOGmAPrsGs2xbtbA87cNmOIzkzkOG/Y3RJUnbfH99m
- Eqoq1j/ib+Wg6i2NeF6/aZKLCRF61TbBjS/fyPXCBJe8zOG87WTQuB6Sno38DS6ZR2hz
- f7qQB0k8h1PxCjcQl5qNRatpw0Swnm5xOuV98qfl/9qKTFog9yMFZjah1ie+VimMMdDf
- Gc18976H4julit3Nl7Fr4nhdyO5aNLSOsqRjA9yvP5CCDibX83KUoh86AZPr9XrgB3M0
- hfGPCx5b6PzYAPLoOut7RIb6WTRM7mL+BhnDngS/KKecbKduhV0sgnVh7LEtW/Pq2kVq 6g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 357yqbqrfk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 07 Dec 2020 21:08:21 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7L0cK5048403;
-        Mon, 7 Dec 2020 21:08:20 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 358kyrvn0s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 07 Dec 2020 21:08:20 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B7L8J6I025389;
-        Mon, 7 Dec 2020 21:08:19 GMT
-Received: from Marks-Mac-mini-2.local (/10.39.238.118)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 07 Dec 2020 13:08:19 -0800
-Subject: Re: Is there a working cache for path record and lids etc for
- librdmacm?
-To:     Christoph Lameter <cl@linux.com>,
-        =?UTF-8?Q?H=c3=a5kon_Bugge?= <haakon.bugge@oracle.com>
-Cc:     Honggang LI <honli@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        OFED mailing list <linux-rdma@vger.kernel.org>
-References: <alpine.DEB.2.22.394.2011170253150.206345@www.lameter.com>
- <20201117193329.GH244516@ziepe.ca>
- <alpine.DEB.2.22.394.2011201805000.248138@www.lameter.com>
- <6F632AE0-7921-4C5F-8455-F8E9390BD071@oracle.com>
- <alpine.DEB.2.22.394.2011221246230.261606@www.lameter.com>
- <801AE4A1-7AE8-4756-8F32-5F3BFD189E2B@oracle.com>
- <alpine.DEB.2.22.394.2011221919240.265127@www.lameter.com>
- <alpine.DEB.2.22.394.2011231244490.272074@www.lameter.com>
- <648D2533-E8E8-4248-AF2D-C5F1F60E5BFC@oracle.com>
- <alpine.DEB.2.22.394.2011241859340.286936@www.lameter.com>
- <20201125081057.GA547111@dhcp-128-72.nay.redhat.com>
- <alpine.DEB.2.22.394.2011251632300.298485@www.lameter.com>
- <E2349D8B-26AC-469C-8483-A2241B9B649A@oracle.com>
- <alpine.DEB.2.22.394.2011300811190.336472@www.lameter.com>
- <7812B8AB-7D26-4148-8C8C-E1241A1FC8CD@oracle.com>
- <alpine.DEB.2.22.394.2012071021390.53970@www.lameter.com>
-From:   Mark Haywood <mark.haywood@oracle.com>
-Message-ID: <cd066540-1085-62e8-0995-e1fbd12ddd26@oracle.com>
-Date:   Mon, 7 Dec 2020 16:08:17 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
-MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2012071021390.53970@www.lameter.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012070136
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- clxscore=1011 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
- spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012070136
+        id S1727756AbgLGWB1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Dec 2020 17:01:27 -0500
+Received: from mga17.intel.com ([192.55.52.151]:10636 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727366AbgLGWB1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Dec 2020 17:01:27 -0500
+IronPort-SDR: +dJ1dwbEPP23+lhO5oxTqYQ34GzcullKEqb/L8soPnNGTIhxgrT7rB/+ia40KkguFZVc+4cIoh
+ z2z1Md400lCw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="153596066"
+X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
+   d="scan'208";a="153596066"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 14:00:29 -0800
+IronPort-SDR: OwN43gTZLyPQSJ95tyzZM1ittWc7qwGnuiUQHm5Y+MWAZ9PHSIrS8Se6wCsFuXkFBaekJXHb+V
+ SCMCPfr+jjRQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
+   d="scan'208";a="374912725"
+Received: from cst-dev.jf.intel.com ([10.23.221.69])
+  by orsmga007.jf.intel.com with ESMTP; 07 Dec 2020 14:00:29 -0800
+From:   Jianxin Xiong <jianxin.xiong@intel.com>
+To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: [PATCH v13 0/4] RDMA: Add dma-buf support
+Date:   Mon,  7 Dec 2020 14:15:49 -0800
+Message-Id: <1607379353-116215-1-git-send-email-jianxin.xiong@intel.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+This is the thirteenth version of the patch set. Changelog:
 
+v13:
+* Rebase to the latest linux-rdma 'for-next' branch (5.10.0-rc6+)
+* Check for device on-demand paging capability at the entry point of
+  the new verbs command to avoid calling device's reg_user_mr_dmabuf()
+  method when CONFIG_INFINIBAND_ON_DEMAND_PAGING is diabled.
 
-On 12/7/20 5:28 AM, Christoph Lameter wrote:
-> Looking at librdmacm/rdma_getaddrinfo():
->
-> It seems that the call to the IBACM via ucma_ib_resolve() is only done
-> after a regular getaddrinfo() was run. Is IBACM truly able to provide
-> address resolution or is it just some strange after processing if the main
-> resolution attempt fails?
+v12: https://www.spinics.net/lists/linux-rdma/msg97943.html
+* Move the prototype of function ib_umem_dmabuf_release() to ib_umem.h
+  and remove umem_dmabuf.h
+* Break a line that is too long
 
+v11: https://www.spinics.net/lists/linux-rdma/msg97860.html
+* Rework the parameter checking code inside ib_umem_dmabuf_get() 
+* Fix incorrect error handling in the new verbs command handler
+* Put a duplicated code sequence for checking iova and setting page size
+  into a function
+* In the invalidation callback, check for if the buffer has been mapped
+  and thus the presence of a valid driver mr is ensured
+* The patch that checks for dma_virt_ops is dropped because it is no
+  longer needed
+* The patch that documents that dma-buf size is fixed has landed at:
+  https://cgit.freedesktop.org/drm/drm-misc/commit/?id=476b485be03c
+  and thus is no longer included here
+* The matching user space patch set is sent separately
 
+v10: https://www.spinics.net/lists/linux-rdma/msg97483.html
+* Don't map the pages in ib_umem_dmabuf_get(); use the size information
+  of the dma-buf object to validate the umem size instead
+* Use PAGE_SIZE directly instead of use ib_umem_find_best_pgsz() when
+  the MR is created since the pages have not been mapped yet and dma-buf
+  requires PAGE_SIZE anyway
+* Always call mlx5_umem_find_best_pgsz() after mapping the pages to
+  verify that the page size requirement is satisfied
+* Add a patch to document that dma-buf size is fixed
 
-getaddrinfo() is called only if 'node' or 'service' are set. Otherwise, 
-'hints' are set and used.
+v9: https://www.spinics.net/lists/linux-rdma/msg97432.html
+* Clean up the code for sg list in-place modification
+* Prevent dma-buf pages from being mapped multiple times
+* Map the pages in ib_umem_dmabuf_get() so that inproper values of
+  address/length/iova can be caught early
+* Check for unsupported flags in the new uverbs command
+* Add missing uverbs_finalize_uobj_create()
+* Sort uverbs objects by name
+* Fix formating issue -- unnecessary alignment of '='
+* Unmap pages in mlx5_ib_fence_dmabuf_mr()
+* Remove address range checking from pagefault_dmabuf_mr()
 
-ucma_set_ib_route() (called from rdma_resolve_route()) calls 
-rdma_getaddrinfo() with 'hints' set.
+v8: https://www.spinics.net/lists/linux-rdma/msg97370.html
+* Modify the dma-buf sg list in place to get a proper umem sg list and
+  restore it before calling dma_buf_unmap_attachment()
+* Validate the umem sg list with ib_umem_find_best_pgsz()
+* Remove the logic for slicing the sg list at runtime
 
-Increasing the ibacm log level and then using cmtime(1), I see log 
-messages that indicate that ibacm is resolving addresses.
+v7: https://www.spinics.net/lists/linux-rdma/msg97297.html
+* Rebase on top of latest mlx5 MR patch series
+* Slice dma-buf sg list at runtime instead of creating a new list
+* Preload the buffer page mapping when the MR is created
+* Move the 'dma_virt_ops' check into dma_buf_dynamic_attach()
 
+v6: https://www.spinics.net/lists/linux-rdma/msg96923.html
+* Move the dma-buf invalidation callback from the core to the device
+  driver
+* Move mapping update from work queue to pagefault handler
+* Add dma-buf based MRs to the xarray of mmkeys so that the pagefault
+  handler can be reached
+* Update the new driver method and uverbs command signature by changing
+  the paramter 'addr' to 'offset'
+* Modify the sg list returned from dma_buf_map_attachment() based on
+  the parameters 'offset' and 'length'
+* Don't import dma-buf if 'dma_virt_ops' is used by the dma device
+* The patch that clarifies dma-buf sg lists alignment has landed at
+  https://cgit.freedesktop.org/drm/drm-misc/commit/?id=ac80cd17a615
+  and thus is no longer included with this set
 
+v5: https://www.spinics.net/lists/linux-rdma/msg96786.html
+* Fix a few warnings reported by kernel test robot:
+    - no previous prototype for function 'ib_umem_dmabuf_release' 
+    - no previous prototype for function 'ib_umem_dmabuf_map_pages'
+    - comparison of distinct pointer types in 'check_add_overflow'
+* Add comment for the wait between getting the dma-buf sg tagle and
+  updating the NIC page table
 
->
-> AFACIT ucma_resolve() should run before getaddrinfo()?
->
-> Or is there some magic in getaddrinfo() that actually does another call to
-> the IBACM daemon?
->
->
->
-> What is also confusing is that the path record determination is part of
-> getaddrinfo() as well. So both the address and route lookup end up in
-> getaddrinfo(). Is IB therefore using the kernel to do the lookups?
->
->
->
->
+v4: https://www.spinics.net/lists/linux-rdma/msg96767.html
+* Add a new ib_device method reg_user_mr_dmabuf() instead of expanding
+  the existing method reg_user_mr()
+* Use a separate code flow for dma-buf instead of adding special cases
+  to the ODP memory region code path
+* In invalidation callback, new mapping is updated as whole using work
+  queue instead of being updated in page granularity in the page fault
+  handler
+* Use dma_resv_get_excl() and dma_fence_wait() to ensure the content of
+  the pages have been moved to the new location before the new mapping
+  is programmed into the NIC
+* Add code to the ODP page fault handler to check the mapping status
+* The new access flag added in v3 is removed.
+* The checking for on-demand paging support in the new uverbs command
+  is removed because it is implied by implementing the new ib_device
+  method
+* Clarify that dma-buf sg lists are page aligned
+
+v3: https://www.spinics.net/lists/linux-rdma/msg96330.html
+* Use dma_buf_dynamic_attach() instead of dma_buf_attach()
+* Use on-demand paging mechanism to avoid pinning the GPU memory
+* Instead of adding a new parameter to the device method for memory
+  registration, pass all the attributes including the file descriptor
+  as a structure
+* Define a new access flag for dma-buf based memory region
+* Check for on-demand paging support in the new uverbs command
+
+v2: https://www.spinics.net/lists/linux-rdma/msg93643.html
+* The Kconfig option is removed. There is no dependence issue since
+  dma-buf driver is always enabled.
+* The declaration of new data structure and functions is reorganized to
+  minimize the visibility of the changes.
+* The new uverbs command now goes through ioctl() instead of write().
+* The rereg functionality is removed.
+* Instead of adding new device method for dma-buf specific registration,
+  existing method is extended to accept an extra parameter. 
+* The correct function is now used for address range checking. 
+
+v1: https://www.spinics.net/lists/linux-rdma/msg90720.html
+* The initial patch set
+* Implement core functions for importing and mapping dma-buf
+* Use dma-buf static attach interface
+* Add two ib_device methods reg_user_mr_fd() and rereg_user_mr_fd()
+* Add two uverbs commands via the write() interface
+* Add Kconfig option
+* Add dma-buf support to mlx5 device
+
+When enabled, an RDMA capable NIC can perform peer-to-peer transactions
+over PCIe to access the local memory located on another device. This can
+often lead to better performance than using a system memory buffer for
+RDMA and copying data between the buffer and device memory.
+
+Current kernel RDMA stack uses get_user_pages() to pin the physical
+pages backing the user buffer and uses dma_map_sg_attrs() to get the
+dma addresses for memory access. This usually doesn't work for peer
+device memory due to the lack of associated page structures.
+
+Several mechanisms exist today to facilitate device memory access.
+
+ZONE_DEVICE is a new zone for device memory in the memory management
+subsystem. It allows pages from device memory being described with
+specialized page structures, but what can be done with these page
+structures may be different from system memory. ZONE_DEVICE is further
+specialized into multiple memory types, such as one type for PCI
+p2pmem/p2pdma and one type for HMM.
+
+PCI p2pmem/p2pdma uses ZONE_DEVICE to represent device memory residing
+in a PCI BAR and provides a set of calls to publish, discover, allocate,
+and map such memory for peer-to-peer transactions. One feature of the
+API is that the buffer is allocated by the side that does the DMA
+transfer. This works well with the storage usage case, but is awkward
+with GPU-NIC communication, where typically the buffer is allocated by
+the GPU driver rather than the NIC driver.
+
+Heterogeneous Memory Management (HMM) utilizes mmu_interval_notifier
+and ZONE_DEVICE to support shared virtual address space and page
+migration between system memory and device memory. HMM doesn't support
+pinning device memory because pages located on device must be able to
+migrate to system memory when accessed by CPU. Peer-to-peer access
+is currently not supported by HMM.
+
+Dma-buf is a standard mechanism for sharing buffers among different
+device drivers. The buffer to be shared is exported by the owning
+driver and imported by the driver that wants to use it. The exporter
+provides a set of ops that the importer can call to pin and map the
+buffer. In addition, a file descriptor can be associated with a dma-
+buf object as the handle that can be passed to user space.
+
+This patch series adds dma-buf importer role to the RDMA driver in
+attempt to support RDMA using device memory such as GPU VRAM. Dma-buf is
+chosen for a few reasons: first, the API is relatively simple and allows
+a lot of flexibility in implementing the buffer manipulation ops.
+Second, it doesn't require page structure. Third, dma-buf is already
+supported in many GPU drivers. However, we are aware that existing GPU
+drivers don't allow pinning device memory via the dma-buf interface.
+Pinning would simply cause the backing storage to migrate to system RAM.
+True peer-to-peer access is only possible using dynamic attach, which
+requires on-demand paging support from the NIC to work. For this reason,
+this series only works with ODP capable NICs.
+
+This series consists of four patches. The first patch adds the common
+code for importing dma-buf from a file descriptor and mapping the
+dma-buf pages. Patch 2 add the new driver method reg_user_mr_dmabuf().
+Patch 3 adds a new uverbs command for registering dma-buf based memory
+region. Patch 4 adds dma-buf support to the mlx5 driver.
+
+Related user space RDMA library changes are provided as a separate
+patch series.
+
+Jianxin Xiong (4):
+  RDMA/umem: Support importing dma-buf as user memory region
+  RDMA/core: Add device method for registering dma-buf based memory
+    region
+  RDMA/uverbs: Add uverbs command for dma-buf based MR registration
+  RDMA/mlx5: Support dma-buf based userspace memory region
+
+ drivers/infiniband/core/Makefile              |   2 +-
+ drivers/infiniband/core/device.c              |   1 +
+ drivers/infiniband/core/umem.c                |   3 +
+ drivers/infiniband/core/umem_dmabuf.c         | 173 ++++++++++++++++++++++++++
+ drivers/infiniband/core/uverbs_std_types_mr.c | 117 ++++++++++++++++-
+ drivers/infiniband/hw/mlx5/main.c             |   2 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  18 +++
+ drivers/infiniband/hw/mlx5/mr.c               | 128 ++++++++++++++++++-
+ drivers/infiniband/hw/mlx5/odp.c              |  86 ++++++++++++-
+ include/rdma/ib_umem.h                        |  43 ++++++-
+ include/rdma/ib_verbs.h                       |   6 +-
+ include/uapi/rdma/ib_user_ioctl_cmds.h        |  14 +++
+ 12 files changed, 579 insertions(+), 14 deletions(-)
+ create mode 100644 drivers/infiniband/core/umem_dmabuf.c
+
+-- 
+1.8.3.1
 
