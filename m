@@ -2,71 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395A72D1E3C
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Dec 2020 00:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DC62D1F7A
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Dec 2020 01:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725917AbgLGXUh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Dec 2020 18:20:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725887AbgLGXUh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:20:37 -0500
-Date:   Mon, 7 Dec 2020 17:19:54 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607383196;
-        bh=Z9UfPhDcCqOPytbQbnes91S9O1pdSihp8OqIykyElKI=;
-        h=From:To:Cc:Subject:In-Reply-To:From;
-        b=feKrf7cKHxvhybY2y29Mb+73AP11CafAE4e0GMKvicue80oF1o+NhKO3MstK+y8vP
-         aERQDBrZYfzJZC8vH3nXRjpdyzaoKBPH120uF8xjKvOPW/BF1K9zlx/FrUxs4TMInD
-         M4XwsVIR1CcrfKBT5L5jMBoM/q08aB6wpanxlrukmEQrYnKYpLi2alj8K5HMD8re91
-         dL/YFikZZQz6Z0nGTDRrROj981hG2xwlhznY+7zFQCARun7ChZrvIiMhOivM0sy4VR
-         9cikdgOBwU+/Bpultlejc/ugYxPBxiPSWo+iAecJ/XAM4nomREPTtX3G1CgkjiDcaX
-         iW42OZgcl4w5w==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        bjorn@helgaas.com, linux-pci@vger.kernel.org
-Subject: Re: [PATCH] drivers: infiniband: save return value of
- pci_find_capability() in u8
-Message-ID: <20201207231954.GA2311330@bjorn-Precision-5520>
+        id S1728891AbgLHAvl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Dec 2020 19:51:41 -0500
+Received: from vsm-gw.hyogo-dai.ac.jp ([202.244.76.12]:35013 "EHLO
+        vsm-gw.hyogo-dai.ac.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728234AbgLHAvk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Dec 2020 19:51:40 -0500
+X-Greylist: delayed 16991 seconds by postgrey-1.27 at vger.kernel.org; Mon, 07 Dec 2020 19:51:35 EST
+Received: from humans-kc.hyogo-dai.ac.jp (humans-kc.hyogo-dai.ac.jp [202.244.77.11])
+        by vsm-gw.hyogo-dai.ac.jp (Postfix) with ESMTP id DE24F1A606F;
+        Tue,  8 Dec 2020 04:09:26 +0900 (JST)
+Received: from humans-kc.hyogo-dai.ac.jp (humans-kc.hyogo-dai.ac.jp [127.0.0.1])
+        by postfix.imss71 (Postfix) with ESMTP id BC3D8382029;
+        Tue,  8 Dec 2020 04:09:26 +0900 (JST)
+Received: from hyogo-dai.ac.jp (unknown [202.244.77.11])
+        by humans-kc.hyogo-dai.ac.jp (Postfix) with SMTP id 426EA83825B;
+        Tue,  8 Dec 2020 04:09:26 +0900 (JST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201206195120.18413-1-puranjay12@gmail.com>
+Message-ID: <20201207190926.000057A2.0664@hyogo-dai.ac.jp>
+Date:   Tue, 08 Dec 2020 04:09:26 +0900
+From:   "Raymond " <hozumi@hyogo-dai.ac.jp>
+To:     <infocarferw1@aim.com>
+Reply-To: <infocarfer@aim.com>
+Subject: I am Vice Chairman of Hang Seng Bank, Dr. Raymond Chien
+         Kuo Fung I have Important Matter to Discuss with you concerning
+         my late client. Died without a NEXT OF KIN. Send me your private
+         email for full details information.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MAILER: Active! mail
+X-TM-AS-MML: disable
+X-TM-AS-Product-Ver: IMSS-7.1.0.1808-8.2.0.1013-25446.007
+X-TM-AS-Result: No--2.951-5.0-31-10
+X-imss-scan-details: No--2.951-5.0-31-10
+X-TM-AS-User-Approved-Sender: No
+X-TMASE-MatchedRID: X41QhRrT5f5ITndh1lLRASsOycAMAhSTkCM77ifYafsBLhz6t76Ce6P0
+        clhHAFPyJA6GJqxAEzL554DD9nXlqqPFjJEFr+olfeZdJ1XsoriOub3SYcq1hJf7eAx/Ae/AbQo
+        eraIcZBRw7u01FqNA2K1Ia4IbeAdLm9ukrtqhno/rIUidklntLAP5zT0d393cymsk/wUE4hoZaR
+        NzIP3XI5u3uLPgwbAMH5RdHnhWfwyq9gpuf+A6coDeeVSgzszVDx5n520Z3eZyT7DDRtYlKaWBy
+        ZE9nSaC/rhfyjvqkZu/pNa4BidtZEMMprcbiest
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 01:21:20AM +0530, Puranjay Mohan wrote:
-> Callers of pci_find_capability should save the return value in u8.
-> change type of variables from int to u8 to match the specification.
-> 
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->  drivers/infiniband/hw/mthca/mthca_reset.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/mthca/mthca_reset.c b/drivers/infiniband/hw/mthca/mthca_reset.c
-> index 2a6979e4ae1c..1b6ec870bd47 100644
-> --- a/drivers/infiniband/hw/mthca/mthca_reset.c
-> +++ b/drivers/infiniband/hw/mthca/mthca_reset.c
-> @@ -45,9 +45,9 @@ int mthca_reset(struct mthca_dev *mdev)
->  	u32 *hca_header    = NULL;
->  	u32 *bridge_header = NULL;
->  	struct pci_dev *bridge = NULL;
-> -	int bridge_pcix_cap = 0;
-> +	u8 bridge_pcix_cap = 0;
->  	int hca_pcie_cap = 0;
-> -	int hca_pcix_cap = 0;
-> +	u8 hca_pcix_cap = 0;
+email:kraymond75@aol.com
 
-I don't think this is really worth changing.  That mthca_reset() path
-is such a mess that this is the least of the worries there.  This
-patch shouldn't have any risk, but I wouldn't want my fingerprints on
-that function in case somebody else looks at it later ;-)
 
->  	u16 devctl;
->  	u16 linkctl;
-> -- 
-> 2.27.0
-> 
+
