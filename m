@@ -2,86 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38182D19E7
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Dec 2020 20:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 611382D19FA
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Dec 2020 20:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgLGTmf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Dec 2020 14:42:35 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5526 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbgLGTme (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Dec 2020 14:42:34 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fce85820000>; Mon, 07 Dec 2020 11:41:54 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 7 Dec
- 2020 19:41:49 +0000
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.50) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 7 Dec 2020 19:41:49 +0000
+        id S1726819AbgLGTq0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Dec 2020 14:46:26 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18255 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726456AbgLGTq0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Dec 2020 14:46:26 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fce86690002>; Mon, 07 Dec 2020 11:45:45 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 7 Dec
+ 2020 19:45:40 +0000
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.109)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 7 Dec 2020 19:45:40 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AtZ9aPoiaB7Gv2iSE+H4ZA4LEC/zk26inv0m6OdHxt/Z7WD6igBRe18YFvXwPz1VeKg5U8xz1QCf9P7xuJ4r8B524SWLgLRx7R86IdiyQOgN9Pwc8il2ci5y7fzov2Re7AbqwVzeW1Wt4tyY33qvoueVixkpMztbJAdzU8z+VTGi3BGTaolJnUMtnU/0HP13zcjKVcb0IspNK9fhkpVswTRzzcQMnN6bh3hCa0oysxwQ/i37fh1kGXcopU6f8GC7Ywy4H0NrzrxaswfAmbsNoJAvCy9jTVy5TP6mD7XyydBiiGmIg/bWccNC/AoJhUMSt5N1Zf7FEwVYiOIOwCynHA==
+ b=VdTezL3B4zuPm42o0m9M6mPT32uH29iJ8uc8dYeDtrsXsqpUNVizrx1mv+BhGHc5o66QTRTbBqLs6ih3iY3Az+m9V4mcPdipkXr65rn7aIVAOKc/s4GucsvMT/LOSLDgl/8FVyktYbgC+0IQezVnIyNQVhumVie374KASqgR7dnrUYBPVs/WI0Ek0VsRYu+9HaOTh6eVi6dNcwLJdQrijWz0aGf1u/H04WBCdTfL2X6MUoEfWwOl5FDRSXDFYdCpbIV23y/bruklyiez6ycKmgSgQnBopg2MvYnxet2+bjDM+kDe2/mEIgzgNFkYMJ9EDx9iqquzOzKKl1lf8PSOXg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HqTy8dDKl7SjE0J6RfNFvzfdvO9nKXmsOrzBKAZzcws=;
- b=NGWaZRqmICN8bwJsaFwRKcS1kTn279W8+OgS59ek7LFylIEm87hg3UxaUEesqx057YPQU185Wtm8oZ8/myuqdmgoy/1jhHbfpzlWvsIhIPnJsl3rTKwD2OZpFCw5sMQqN9YXITJI9cQJVZzQ7g4hh5qR9BzKNDQfbdyPnLUb6QiE1RmH8cmkZNPRqrso9BAJPrfPa8p6DftkmE8njJV1ln+pCY7FRcpl4ixjEQB6Dak3wthN5Ldqn11qDNhO7plHribOT7mIJoHTDbx9C4T5ZAJzurXF1XH6e4xy3CYzjoA5SB93hhCzT10W3FxhEWrCUCeYLFRLVksv7t6mNy8VmA==
+ bh=GyvblNlLXu9iQJRjEQSCmA5c+aAQ+qKWPNZohcdvZOc=;
+ b=I6E8aMzdzW2O1RN+nGPbH8MojpOnpKUocsH0Arxva9lIcBS/ynoGTghSQe3y7ALjsn0ivv6sIEUmz7/xdlyWCztYpCa9xY7lohzqzyVIAjOnDAOL7QG+z+pYqbx6xXMgWTPTlGyXW9C4kcLf3yvvAev5ov9e/cWoDaQ6znf/tnICKx9xU0gwQ5SL49bio54aWfmA87JXJGh/ZJltkKHbYrsa9FYIoYF+e10Q5EqV8OddOKZYiqD4tfKNLT0TTER3KGpynCW0Qp/vD+5k6AcJUAJQT0NAqA364QQ/G1ETVLKSrnV3WgvcqYHs802D4c0RQM539rCIf7YnFbDG4MJjiQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4010.namprd12.prod.outlook.com (2603:10b6:5:1ce::19) with
+ by DM6PR12MB3018.namprd12.prod.outlook.com (2603:10b6:5:118::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.19; Mon, 7 Dec
- 2020 19:41:47 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Mon, 7 Dec
+ 2020 19:45:37 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3632.023; Mon, 7 Dec 2020
- 19:41:47 +0000
-Date:   Mon, 7 Dec 2020 15:41:45 -0400
+ 19:45:37 +0000
+Date:   Mon, 7 Dec 2020 15:45:35 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yejune Deng <yejune.deng@gmail.com>
-CC:     <faisal.latif@intel.com>, <shiraz.saleem@intel.com>,
-        <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] infiniband: i40iw: replace atomic_add_return()
-Message-ID: <20201207194145.GA1769554@nvidia.com>
-References: <1606726376-7675-1-git-send-email-yejune.deng@gmail.com>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>
+CC:     <linux-rdma@vger.kernel.org>, <dledford@redhat.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>
+Subject: Re: [PATCH] RDMA/bnxt_re: Fix max_qp_wrs reported
+Message-ID: <20201207194535.GA1773945@nvidia.com>
+References: <1606741986-16477-1-git-send-email-selvin.xavier@broadcom.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1606726376-7675-1-git-send-email-yejune.deng@gmail.com>
-X-ClientProxiedBy: MN2PR20CA0064.namprd20.prod.outlook.com
- (2603:10b6:208:235::33) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <1606741986-16477-1-git-send-email-selvin.xavier@broadcom.com>
+X-ClientProxiedBy: BL1PR13CA0304.namprd13.prod.outlook.com
+ (2603:10b6:208:2c1::9) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR20CA0064.namprd20.prod.outlook.com (2603:10b6:208:235::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Mon, 7 Dec 2020 19:41:46 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kmMOH-007QMT-PM; Mon, 07 Dec 2020 15:41:45 -0400
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0304.namprd13.prod.outlook.com (2603:10b6:208:2c1::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.5 via Frontend Transport; Mon, 7 Dec 2020 19:45:36 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kmMRz-007RUY-3i; Mon, 07 Dec 2020 15:45:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607370114; bh=HqTy8dDKl7SjE0J6RfNFvzfdvO9nKXmsOrzBKAZzcws=;
+        t=1607370345; bh=GyvblNlLXu9iQJRjEQSCmA5c+aAQ+qKWPNZohcdvZOc=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=qUoiEuT5KXvtWCQ2XTdfcr25c/4kVJLIZ//HXs44cxUlRJV7G6HC/3XfL0TT0HWjh
-         lfx814mn8DMknwRLUqgvhHe4WJK9d4Yr2+p+FpEGWDdxv9TZaOapTf5aaNKZenD37L
-         aImORiXo9cbYmTVR5KGxIgl/zboTrfmlzhjUg8OhTC5xZeQIysfb+CUe3nFbVxiIFR
-         uCczNIitL8aUMFeC6ohyHJg4zRXxiM/+VDko4E8S6gzQu8TMzWOC3QfqWZrG3Acop+
-         qvBcxSfw5nLLcnnTLaVVj4ypvyaYr7+JektEJLID5m6HzxHAd6ccqLkQ0iQ6s/IAbA
-         8TsW3Y6RW5Mfg==
+        b=cjkFmtOLAyztO84+BouyzVXBIVTUgRI9wMSLJ3LEVHvYWPJstAv91XiXlsBEDnCiW
+         JXHEIxrF9YeCjXbnKti33E2+GqdcbwIANz22t2bC1aTFU79wF7d8D9WzZ4Z76mxdW8
+         w99WYr4jMr7b0HYbAH92ak2u5YaUePArf4sELuekHxHob2wUhkaTmxLIZ9EJOPQHYa
+         pTD+pcVSFMcMHewK5u8HAdrb+8OQP9n9U6+a/m5D+/obtpIb7YkpdG1Z7xRadqiueU
+         qPYqdxy6baeI1LvqyWNu88/XkZ00LiDvguufpI8kDnMUYVHOQ4ZSb0gCmquCccndQv
+         FF3x2Li2Qhsng==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 04:52:56PM +0800, Yejune Deng wrote:
-> atomic_inc_return() is a little neater
+On Mon, Nov 30, 2020 at 05:13:06AM -0800, Selvin Xavier wrote:
+> While creating qps, driver adds one extra entry to the sq size
+> passed by the ULPs in order to avoid queue full condition.
+> When ULPs creates QPs with max_qp_wr reported, driver creates
+> QP with 1 more than the max_wqes supported by HW. Create QP fails
+> in this case. To avoid this error, reduce 1 entry in max_qp_wqes
+> and report it to the stack.
 > 
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 > ---
->  drivers/infiniband/hw/i40iw/i40iw_cm.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  drivers/infiniband/hw/bnxt_re/qplib_sp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied to for-next with the note from Shiraz
+Applied to for-next, thanks
 
-Thanks,
 Jason
