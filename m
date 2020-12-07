@@ -2,89 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 852372D06FD
-	for <lists+linux-rdma@lfdr.de>; Sun,  6 Dec 2020 20:52:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 727D52D093C
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Dec 2020 03:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727375AbgLFTwQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 6 Dec 2020 14:52:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37842 "EHLO
+        id S1726482AbgLGCt2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 6 Dec 2020 21:49:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726780AbgLFTwP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 6 Dec 2020 14:52:15 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506DAC0613D0;
-        Sun,  6 Dec 2020 11:51:35 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id v1so6121051pjr.2;
-        Sun, 06 Dec 2020 11:51:35 -0800 (PST)
+        with ESMTP id S1726258AbgLGCt1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 6 Dec 2020 21:49:27 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0866DC0613D0;
+        Sun,  6 Dec 2020 18:48:47 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id i6so5134091otr.2;
+        Sun, 06 Dec 2020 18:48:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fd5P7q0rI4oDoc+47wcHKFhpJRqmuT+fxaUAHCBA4oA=;
-        b=aQEYGzFX4rTSAZVOV1fMGZBro9GuSiCt2y0iLKiTuFABXuQS+pBn5Z7SrLjJh+0Lht
-         l1vCCPaPT5LssevzCOVWsiOUqJA6805amZ4sKNCV/12XNpZIhNBByyRj1Q7qPCwqRWhQ
-         8xkdkbflYPLx/FdB4lciRI4inpr3DP6twb5lcngjITT5H861RcDq7RFow133gD1xwKmy
-         RtQkxVpU6xJPCkCJImI25iz0BBQD+YpUbxGKgVofGR9TablVv46gLqhz3zi27NebixK5
-         QwFrDldH+qV2hZgNZURgIblo9ruYtifMDcqtc9B61tg1sM03uN1MJ6MtRbMSnssU1wn1
-         8r9Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HHEKxHRp3ZgcW42jBbUIw2jXdfRrwJoBXqbGrhb6jdU=;
+        b=uuRCsTg798AIg9LU8LXMWREd5BUlvPCc2LXiHZMgdMfP0L8Kgbw2n9OgZ6gxJ9dcGf
+         Wp2vyEoHpoPn6CbDUEK4UKnF4JsHKnvHIwGcIXOT8rKhOBwxE4/dxE76zXyDriNROl/X
+         yIaayZLqNj49XREnvsCvE7C8nouawz8ru/hCCgLxSDLRANlEEGXZ83XEyVFp42DS7GWZ
+         3hbkw4M2641sDASw0NrXhMK4yowSzsQw/3Gkbxnfzv7XeQQUnfdUOhyD8P48XEMNSV43
+         aiQPE8dRYHFVR+J0+rSqAAubhxzkd/JTrpQtkXWEiivMLzpDedMKHHwQuJyjpJ69R0wo
+         oz7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=fd5P7q0rI4oDoc+47wcHKFhpJRqmuT+fxaUAHCBA4oA=;
-        b=ABQsfbK4nHBCBzLbqiDLpiN/uzYruU1IFzfJiWqwy9x0hllQsrpntRw+daLeabAM2C
-         tbHo0TTnAkgmAvP7ZNvrsHEc4EN5H6uQYbl7NdPxiYR2rcO7weWC2HTqfIQY1XHpmPBb
-         t+u781nWM89vkjN/AYIJw7flqNT9swGHzpT15wCWDXN+qc7ljn6IBOxbK8vvat1nkViN
-         6WPaKQyE2T1dGLBq+NFncjLUVbGg3MH5GNekcSzHLsbRW3420BZx3fsmC0G6IbdoYu+z
-         H8EtsbIeuSNda4UdcotOXJSYC5DUeRSkr3XHLEGcAR/7TDsWwL++0cKYrO0WGFYBvsDj
-         lokQ==
-X-Gm-Message-State: AOAM530pXX028KelWEiGj04IQ7c7+7ioizoKNIx0Qkb8QuSfcp6VD71t
-        nikjpy+crYtwyKuFlA7zdhs=
-X-Google-Smtp-Source: ABdhPJzPs6oJqrasesO4k/CwvX7Yvh8LCKDdokLNNL1brp7OQ83D7vxznagJ4YTQlnHSJ7o9NsDlCw==
-X-Received: by 2002:a17:90a:e005:: with SMTP id u5mr13315860pjy.64.1607284294612;
-        Sun, 06 Dec 2020 11:51:34 -0800 (PST)
-Received: from localhost.localdomain ([124.253.53.149])
-        by smtp.googlemail.com with ESMTPSA id v22sm11244239pff.48.2020.12.06.11.51.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Dec 2020 11:51:33 -0800 (PST)
-From:   Puranjay Mohan <puranjay12@gmail.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        bjorn@helgaas.com, linux-pci@vger.kernel.org
-Cc:     Puranjay Mohan <puranjay12@gmail.com>
-Subject: [PATCH] drivers: infiniband: save return value of pci_find_capability() in u8
-Date:   Mon,  7 Dec 2020 01:21:20 +0530
-Message-Id: <20201206195120.18413-1-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        bh=HHEKxHRp3ZgcW42jBbUIw2jXdfRrwJoBXqbGrhb6jdU=;
+        b=HKf83aQRNrO2fVuZ/zgJJbzQCsShRTAlyY6jn6iQelzUIfI6Jc/5gflIliFH7layln
+         iMCXXlCXZrTztxzYdDbKLNqdEjYGkgA+NhvR00ezw40tLyrPaLu5t4AwvZaFJHfJCyYy
+         bkRO3mN7eGtfxL85tsjAlBKGOh8dabHwehl63cD3Kj/l3hGuxTEE4A7RC3JkXtiDpjUp
+         PpGphduRx4BheHC64oxZ2GE4nfrwNsRQH7ULVdBQTvR3b/Nx45cqkRIpz+ngA+PmJ6xi
+         qfkBPN8U/T3Vm8s3k+VaTSHgf+UgcR4XDlBE9LgAlg9F49bx7KQRriti3NGYuVPSKtcT
+         fQjA==
+X-Gm-Message-State: AOAM5337GgZ/MVORY0DZFKn4NSE3wptI69bQWwMzWXGTuD+Y+aM/hfZ7
+        k2lUputp8eC2l5gc8Th8Aq8=
+X-Google-Smtp-Source: ABdhPJw5rhD7Ga9bqQbgrXDBRXdOLceoPsG6dZiNO7zgI+ZL/DoStccvv5kQ0nJPuylW0RMxXTX5OQ==
+X-Received: by 2002:a05:6830:1551:: with SMTP id l17mr11418102otp.279.1607309326416;
+        Sun, 06 Dec 2020 18:48:46 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.48.134.51])
+        by smtp.googlemail.com with ESMTPSA id l132sm2574845oia.23.2020.12.06.18.48.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Dec 2020 18:48:45 -0800 (PST)
+Subject: Re: [PATCH net-next 07/13] net/mlx5: SF, Add auxiliary device support
+To:     Parav Pandit <parav@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, gregkh@linuxfoundation.org
+Cc:     jiri@nvidia.com, jgg@nvidia.com, dledford@redhat.com,
+        leonro@nvidia.com, saeedm@nvidia.com, kuba@kernel.org,
+        davem@davemloft.net, Vu Pham <vuhuong@nvidia.com>
+References: <20201112192424.2742-1-parav@nvidia.com>
+ <20201112192424.2742-8-parav@nvidia.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <b9e84fd1-1af4-d979-184d-cbbeedec1aa0@gmail.com>
+Date:   Sun, 6 Dec 2020 19:48:42 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201112192424.2742-8-parav@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Callers of pci_find_capability should save the return value in u8.
-change type of variables from int to u8 to match the specification.
+On 11/12/20 12:24 PM, Parav Pandit wrote:
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+> index 485478979b1a..10dfaf671c90 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+> @@ -202,3 +202,12 @@ config MLX5_SW_STEERING
+>  	default y
+>  	help
+>  	Build support for software-managed steering in the NIC.
+> +
+> +config MLX5_SF
+> +	bool "Mellanox Technologies subfunction device support using auxiliary device"
+> +	depends on MLX5_CORE && MLX5_CORE_EN
+> +	default n
+> +	help
+> +	Build support for subfuction device in the NIC. A Mellanox subfunction
+> +	device can support RDMA, netdevice and vdpa device.
+> +	It is similar to a SRIOV VF but it doesn't require SRIOV support.
 
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
- drivers/infiniband/hw/mthca/mthca_reset.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mthca/mthca_reset.c b/drivers/infiniband/hw/mthca/mthca_reset.c
-index 2a6979e4ae1c..1b6ec870bd47 100644
---- a/drivers/infiniband/hw/mthca/mthca_reset.c
-+++ b/drivers/infiniband/hw/mthca/mthca_reset.c
-@@ -45,9 +45,9 @@ int mthca_reset(struct mthca_dev *mdev)
- 	u32 *hca_header    = NULL;
- 	u32 *bridge_header = NULL;
- 	struct pci_dev *bridge = NULL;
--	int bridge_pcix_cap = 0;
-+	u8 bridge_pcix_cap = 0;
- 	int hca_pcie_cap = 0;
--	int hca_pcix_cap = 0;
-+	u8 hca_pcix_cap = 0;
- 
- 	u16 devctl;
- 	u16 linkctl;
--- 
-2.27.0
-
+per Dan's comment about AUXILIARY_BUS being select only, should this
+config select AUXILIARY_BUS?
