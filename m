@@ -2,113 +2,198 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A486A2D279C
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Dec 2020 10:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCF12D27B7
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Dec 2020 10:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728831AbgLHJ3R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Dec 2020 04:29:17 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:57238 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgLHJ3Q (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Dec 2020 04:29:16 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B89PPfg050410;
-        Tue, 8 Dec 2020 09:28:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=Lc5Szxs68vXm+bagJPI0i3EhbcYOTqkJ/Kgi+tj9dcs=;
- b=UqA9qNaEUghkrmCXBCZjIyBX7Cb+Ksbg5GSFXMNXVFMgRN/gkR/47qZlrBudiq26AMfo
- zEmZiWwmR/Bp8K6jEmEtmkM/4Xorjsu5YB44LmEiJeTbAkEk3O0q7t2jvqAIzRISQ1R8
- nNJOO/bRkeTKZPtC+PBRX/2u/yEC1ixWhj0jev6HwZWriWwLLrDiF5+ORdDjTU+Gq8G6
- Jplc0vprnlrkZOasiEr7diTj+swT641+noOwj5GHceEOcPQvFOeEHsqkEQYhp3gCQRnX
- yYKDjd8ZZD1xfpI1CCbqAFyn/05CzSIONhUfbcpe53extLqSnRhOZSVTxaM2oXuYx9ix Xg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 35825m1qgs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 08 Dec 2020 09:28:28 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B89Oe6J125163;
-        Tue, 8 Dec 2020 09:26:27 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 358kysjxbh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Dec 2020 09:26:27 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B89QQN9026413;
-        Tue, 8 Dec 2020 09:26:26 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Dec 2020 01:26:26 -0800
-Date:   Tue, 8 Dec 2020 12:26:19 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Avihai Horon <avihaih@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next 3/3] RDMA/uverbs: Fix incorrect variable type
-Message-ID: <20201208092619.GB2789@kadam>
-References: <20201208073545.9723-1-leon@kernel.org>
- <20201208073545.9723-4-leon@kernel.org>
- <20201208075539.GA2789@kadam>
- <20201208085405.GH4430@unreal>
+        id S1728956AbgLHJcK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Dec 2020 04:32:10 -0500
+Received: from mga12.intel.com ([192.55.52.136]:18651 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727728AbgLHJcI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:32:08 -0500
+IronPort-SDR: SGCAREeqbnRitne2O0/j1NiEj/2Rz0THixayS/1kCsarpWUxMYoqyxFz75yKXh/zNsyyztYkuI
+ 7zdiODbrFh9w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="153099797"
+X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
+   d="scan'208";a="153099797"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 01:31:26 -0800
+IronPort-SDR: oULJXzDBH9ftkr6RuM3UkYfDxVHnxeBdx8qXpAL/nXuDQ1uHtbR496tKAFpEaCLCnfroAf7pTy
+ ZviafRYyGUeg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
+   d="scan'208";a="375865292"
+Received: from lkp-server01.sh.intel.com (HELO c88bd47c8831) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 08 Dec 2020 01:30:18 -0800
+Received: from kbuild by c88bd47c8831 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kmZK5-00007f-UJ; Tue, 08 Dec 2020 09:30:17 +0000
+Date:   Tue, 08 Dec 2020 17:30:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
+ e432c04c17993011b2a2f59dcb5738e604bd552e
+Message-ID: <5fcf47a5.pDDpJ5n00+BXDo6s%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208085405.GH4430@unreal>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080059
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501 mlxscore=0
- spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080059
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 10:54:05AM +0200, Leon Romanovsky wrote:
-> On Tue, Dec 08, 2020 at 10:55:39AM +0300, Dan Carpenter wrote:
-> > On Tue, Dec 08, 2020 at 09:35:45AM +0200, Leon Romanovsky wrote:
-> > > @@ -336,19 +335,16 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_GID_TABLE)(
-> > >  		attrs, UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES,
-> > >  		user_entry_size);
-> > >  	if (max_entries <= 0)
-> > > -		return -EINVAL;
-> > > +		return max_entries ?: -EINVAL;
-> > >
-> > >  	ucontext = ib_uverbs_get_ucontext(attrs);
-> > >  	if (IS_ERR(ucontext))
-> > >  		return PTR_ERR(ucontext);
-> > >  	ib_dev = ucontext->device;
-> > >
-> > > -	if (check_mul_overflow(max_entries, sizeof(*entries), &num_bytes))
-> > > -		return -EINVAL;
-> > > -
-> > > -	entries = uverbs_zalloc(attrs, num_bytes);
-> > > -	if (!entries)
-> > > -		return -ENOMEM;
-> > > +	entries = uverbs_kcalloc(attrs, max_entries, sizeof(*entries));
-> > > +	if (IS_ERR(entries))
-> > > +		return PTR_ERR(entries);
-> >
-> > This isn't right.  The uverbs_kcalloc() should match every other
-> > kcalloc() function and return NULL on error.  This actually buggy
-> > because it returns both is error pointers and NULL so it will lead to
-> > a NULL dereference.
-> 
-> The actual bug was before, when an error result from uverbs_zalloc()
-> was treated as NULL. The uverbs_kcalloc/uverbs_zalloc will call to
-> _uverbs_alloc() that doesn't return NULL.
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-rc
+branch HEAD: e432c04c17993011b2a2f59dcb5738e604bd552e  RDMA/core: Fix empty gid table for non IB/RoCE devices
 
-Ah....  Thanks.
+elapsed time: 733m
 
-regards,
-dan carpenter
+configs tested: 136
+configs skipped: 2
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                      walnut_defconfig
+arm                         palmz72_defconfig
+arm                          simpad_defconfig
+powerpc                    ge_imp3a_defconfig
+arm                          ep93xx_defconfig
+sh                           se7780_defconfig
+powerpc                     tqm8555_defconfig
+arc                          axs103_defconfig
+powerpc                  mpc885_ads_defconfig
+mips                           ip28_defconfig
+powerpc                     pq2fads_defconfig
+powerpc                 mpc832x_rdb_defconfig
+c6x                         dsk6455_defconfig
+m68k                        m5272c3_defconfig
+m68k                          hp300_defconfig
+s390                          debug_defconfig
+arm                             ezx_defconfig
+mips                            gpr_defconfig
+microblaze                          defconfig
+microblaze                    nommu_defconfig
+powerpc                   motionpro_defconfig
+arm                       imx_v4_v5_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                         wii_defconfig
+mips                         cobalt_defconfig
+m68k                        stmark2_defconfig
+powerpc                 mpc836x_rdk_defconfig
+arc                          axs101_defconfig
+h8300                     edosk2674_defconfig
+sh                          urquell_defconfig
+xtensa                           alldefconfig
+sh                     sh7710voipgw_defconfig
+powerpc                          allyesconfig
+mips                          rm200_defconfig
+arm                          ixp4xx_defconfig
+sh                           se7619_defconfig
+arm                      jornada720_defconfig
+powerpc                     mpc5200_defconfig
+sh                          landisk_defconfig
+alpha                            alldefconfig
+openrisc                            defconfig
+powerpc                      ppc40x_defconfig
+arm                       omap2plus_defconfig
+arm                         lpc18xx_defconfig
+sh                          sdk7780_defconfig
+m68k                       m5275evb_defconfig
+mips                         tb0287_defconfig
+m68k                             alldefconfig
+arm                           omap1_defconfig
+um                            kunit_defconfig
+xtensa                    xip_kc705_defconfig
+m68k                       m5475evb_defconfig
+mips                malta_qemu_32r6_defconfig
+m68k                       m5249evb_defconfig
+powerpc                     kilauea_defconfig
+sh                   sh7770_generic_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201208
+i386                 randconfig-a005-20201208
+i386                 randconfig-a001-20201208
+i386                 randconfig-a002-20201208
+i386                 randconfig-a006-20201208
+i386                 randconfig-a003-20201208
+i386                 randconfig-a005-20201207
+i386                 randconfig-a004-20201207
+i386                 randconfig-a001-20201207
+i386                 randconfig-a002-20201207
+i386                 randconfig-a006-20201207
+i386                 randconfig-a003-20201207
+x86_64               randconfig-a016-20201207
+x86_64               randconfig-a012-20201207
+x86_64               randconfig-a014-20201207
+x86_64               randconfig-a013-20201207
+x86_64               randconfig-a015-20201207
+x86_64               randconfig-a011-20201207
+i386                 randconfig-a014-20201207
+i386                 randconfig-a013-20201207
+i386                 randconfig-a011-20201207
+i386                 randconfig-a015-20201207
+i386                 randconfig-a012-20201207
+i386                 randconfig-a016-20201207
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20201207
+x86_64               randconfig-a006-20201207
+x86_64               randconfig-a002-20201207
+x86_64               randconfig-a001-20201207
+x86_64               randconfig-a005-20201207
+x86_64               randconfig-a003-20201207
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
