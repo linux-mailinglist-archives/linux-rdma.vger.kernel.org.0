@@ -2,70 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226182D2348
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Dec 2020 06:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B488A2D23C7
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Dec 2020 07:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbgLHFnW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Dec 2020 00:43:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37598 "EHLO mail.kernel.org"
+        id S1726445AbgLHGpU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Dec 2020 01:45:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726080AbgLHFnW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 8 Dec 2020 00:43:22 -0500
-Date:   Tue, 8 Dec 2020 07:42:35 +0200
+        id S1725881AbgLHGpU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 8 Dec 2020 01:45:20 -0500
+Date:   Tue, 8 Dec 2020 08:44:32 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607406162;
-        bh=BKtVO+0M7OgRl4NJpQoi97fB4AnB80WBCn18/onclL0=;
+        s=k20201202; t=1607409879;
+        bh=945L8ljNOuFzzRfnEh+kXCUa029xewKJnPnsaYRdk0o=;
         h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pxtpi/8X7RsL2U0okFx4pooas3l42RBXMbZPWfe/k6LFbFdH4I+I8MzbrtdpTPQvd
-         f3R4ycYsIssgN2OiNz2HV4yCPiOuDXgaw5mhWT7/E42iDHSLYeWOe9fBlPrYritOga
-         0X3CtQaK3ojsXeWgzJB4xjh4gZro0br2prhq+41xn6vcgWI3tqXnPmXowKejUGOdjL
-         yQM8Dr44A3aq8ehBihwqYlJ/lS0ML4A+2HvvdGmDRBhMRSn6UG01AAKB5dKFjBUVWj
-         dwuvFZSCEwsW5ngSf1XW1XvCEk6yJL0fpqhEcCFB/Ep1BwEfeYmDra/GT3AWneveRj
-         FIvF9tMU8Gvvw==
+        b=stVnIgDZ45/X9nUWqzxcDFaZlQA5OQ8rk4HX/IWyAjtxT0gh6SpfAynHxRfbk7U3X
+         l45qSeXO9QbsG1sC0vQSQpMi5ydLdwaNgqsXY9utR+Upx6XkZOBZl9KXWOv+2IS1oj
+         QRiT+KV0NO+zWuu0y+YzMjg9Z0eHGdoA7ROT6sIOM+J3VhYENdbt5EhLYycEMmZE8Y
+         I3XfinKzU0N2DrDQF1UsWBYI7fA+UPBw/jafzNW2VNSY3b7uzEO3zUMhwk0EFpTvHM
+         Sm+ED7qeKXAiq7fYSKi9U7tTo+YsvA5ozPuYn5QoOt95NTSgqA4uFicyt4HC36QGTX
+         Ef3imcBLHYJKw==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Ariel Levkovich <lariel@mellanox.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next] RDMA/mlx5: Assign dev to DM MR
-Message-ID: <20201208054235.GA4430@unreal>
-References: <20201203190807.127189-1-leon@kernel.org>
- <20201207200306.GA1790347@nvidia.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH] RDMA/restrack: update kernel documentation for
+ ib_create_named_qp()
+Message-ID: <20201208064432.GD4430@unreal>
+References: <20201207173255.13355-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201207200306.GA1790347@nvidia.com>
+In-Reply-To: <20201207173255.13355-1-lukas.bulwahn@gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 04:03:06PM -0400, Jason Gunthorpe wrote:
-> On Thu, Dec 03, 2020 at 09:08:07PM +0200, Leon Romanovsky wrote:
-> > From: Maor Gottlieb <maorg@nvidia.com>
-> >
-> > Currently, DM MR registration flow doesn't set the mlx5_ib_dev
-> > pointer and can cause NULL pointer dereference.
-> > Fix it by assign the IB device together with the other fields and
-> > remove unessecary reference of mlx5_ib_dev from mlx5_ib_mr.
-> >
-> > Fixes: 6c29f57ea475 ("IB/mlx5: Device memory mr registration support")
-> > Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >  drivers/infiniband/hw/mlx5/mlx5_ib.h  |  6 +++-
-> >  drivers/infiniband/hw/mlx5/mr.c       | 17 ++++++------
-> >  drivers/infiniband/hw/mlx5/odp.c      | 40 ++++++++++++++-------------
-> >  drivers/infiniband/hw/mlx5/restrack.c |  2 +-
-> >  4 files changed, 35 insertions(+), 30 deletions(-)
+On Mon, Dec 07, 2020 at 06:32:55PM +0100, Lukas Bulwahn wrote:
+> Commit 66f57b871efc ("RDMA/restrack: Support all QP types") extends
+> ib_create_qp() to a named ib_create_named_qp(), which takes the caller's
+> name as argument, but it did not add the new argument description to the
+> function's kerneldoc.
 >
-> This really should be backported, an unconditional user triggerable
-> null pointer deref is clearly cc: stable stuff. I've added that.
+> make htmldocs warns:
 >
-> This has all kinds of conflicts with the current rc branch so I'm
-> putting it in for-next, someone will have to make the backport
+>   ./drivers/infiniband/core/verbs.c:1206: warning: Function parameter or
+>   member 'caller' not described in 'ib_create_named_qp'
+>
+> Add a description for this new argument based on the description of the
+> same argument in other related functions.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
 
-Thanks, this is why I sent it to the -next branch.
-
->
-> Jason
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
