@@ -2,136 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E0E2D33EE
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Dec 2020 21:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC032D3464
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Dec 2020 21:52:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728511AbgLHU1f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Dec 2020 15:27:35 -0500
-Received: from mail-vi1eur05on2045.outbound.protection.outlook.com ([40.107.21.45]:1601
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726703AbgLHU1f (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:27:35 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fTzWMDqNiguwm5DczavtZSTg5PKfVYN4oGqUDue/qJguqHBAJ8abdPJXO22SXEQk1/dwRQwlSKTcLr3xVn7QbTsTPXNfbYTtb/Y/7sNxnAsqejTf1Qs3uhRl7/7+Bkvls3uIgt3fxNusko/pHA4TDbgsbcEmRtqSsAzs6kOJFAa+e4SF8/xkTTZtwbmUSbb7tvETkF6EgVIyOCkDsZATqzaQBj0EFGkl9mMatLrsXkGMV7gZ8DQCdET6Zp7yEjBMs4MZ+B/getLjTxvmn68SUrxMYgpH+ZOvqj8YTgfuM3dQ8nP4wUQnYNSPTDwSSHHs5kvxoLw/XVdKa18/ll+1Yw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6Jlh9hGex2MdTf1zUGGW22pdIrtQvjKN/P6PW5Jgxq4=;
- b=HNsI851hIEIGVmZN4uK5CfwZfuDZd4aQsk2q6ldWsLNAnTJrN6AWYhmSHdTjtZyC/xV3Z+yg1TErhz3VXP0+A9nC7aMA2uD5Xi1pcOTNJe1hKMMxhtRds69SH5AMH5cHUkwDjQSMWFxf7NejcpFhH4zJMJ8qIlCr84KXhfcBc3iXIeMhHPMQUgdFS/lD8B96kEK32zGTvdI+CHb+xQkH69D2SPWu4YgDaE7c6KAfOXrMMnDJUMUdmXUdEcnonGnc+TqwtRztByozcFgi3OjrkX5cMPVs8A0ZNeyZGok5Q2JtGT9l83PyqZb5s5b9Jl/yAuw/yO0E6ozA5NKSBxPQwA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6Jlh9hGex2MdTf1zUGGW22pdIrtQvjKN/P6PW5Jgxq4=;
- b=BIGDuqAOFoG1y4QKYD+7EfTPhteLXYkmU41f8YfbUNnMdg2AXuOZzar7JmAL1kZ9N89aHL9gnStMFk2aUEwjApxnnm1jt4hHGw0kuiSZNhMs7AdDXAtX+Obq3Xc8RNqHJSK/meOrg+LeVB1RNcgJo9duBoia/axIEn7OZCJNJNw=
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
- by VI1PR04MB4909.eurprd04.prod.outlook.com (2603:10a6:803:52::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.23; Tue, 8 Dec
- 2020 19:40:08 +0000
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::2dd6:8dc:2da7:ad84]) by VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::2dd6:8dc:2da7:ad84%5]) with mapi id 15.20.3632.021; Tue, 8 Dec 2020
- 19:40:08 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Yishai Hadas <yishaih@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     netdev@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>
-Subject: [PATCH rdma-next] RDMA/mlx4: remove bogus dev_base_lock usage
-Date:   Tue,  8 Dec 2020 21:39:28 +0200
-Message-Id: <20201208193928.1500893-1-vladimir.oltean@nxp.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [188.25.2.120]
-X-ClientProxiedBy: AM0PR02CA0004.eurprd02.prod.outlook.com
- (2603:10a6:208:3e::17) To VI1PR04MB5696.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::13)
+        id S1729085AbgLHUj1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Dec 2020 15:39:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726307AbgLHUj1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 8 Dec 2020 15:39:27 -0500
+Date:   Tue, 8 Dec 2020 11:22:26 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607455347;
+        bh=0hoIplBhL2TPhrhpgcVbMyxg8H17FzeKx+l9ZHZK0r0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AWKrbTQP49oNKAXiA4uPh3YzudRhdOK14Op9O74N37SqW+g9n8py37Fjg9ZcDE9BO
+         BQXmmkCblG5xxZsRRw2dKmrtR74Lad9VCDjL8LDjXJJJ146QpmEeQJ0git1MoPdvx7
+         XyiGgrfsPs+1DgpppxLYzSeIbD02mekyJrsmoqdvA00S/hYdWEeHj58Q3GMV8iVLR9
+         uoPXH5aVRB+3fOz47BK5NP7ZvRCpRnhdM7hae3PrfiEoq9ac3OyDdg8VFRGg3rHuBF
+         QNg9zVqse7kSWdem9XkdflYKxVhVJ6OzcebjrjLGvE+acdPwDwSBirGe5Hgawjlse4
+         3Ue1xNPo9ZraA==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     <saeedm@nvidia.com>, <leon@kernel.org>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] net/mlx5_core: remove unused including
+ <generated/utsrelease.h>
+Message-ID: <20201208112226.1bb31229@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <1607343240-39155-1-git-send-email-zou_wei@huawei.com>
+References: <1607343240-39155-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (188.25.2.120) by AM0PR02CA0004.eurprd02.prod.outlook.com (2603:10a6:208:3e::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Tue, 8 Dec 2020 19:40:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 8dc83516-cfdb-4fff-5369-08d89bb111ba
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4909:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB49094A31B3EE3A4881491726E0CD0@VI1PR04MB4909.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cu5NMY+l1eWjT7es/YXZItqGxp56C6yYd3YzWFkrvyTVUPcxfzCozeLb3C8AMmpy6/9IhEusdGdQ+LoK522VTLtkAt4gsbZnObIgZjav7HTM/+lEBUcvKzBAL4iAY00pO9k9/OXBJ1dum3k4OG3+ZHov0GVQcpHR9M1Zk/Qnxydy0JdXxtu/FbvgDUm8TSKbeYcaEexkYVjiHxYaUBc1gtY67ad3CcSR2IejJEBkas+8LQkwUeCSP/tcqGta8KLy8cxQuAqSr01A91fSRCReX6btEJlW2Dvrq0ttRMXCXbgzeLEc8vKtQuhbuiDetVVQpFJ71yZd48PKiXn3Zwiv2DvCKZSGqkJflT08vuku0H7Xd98EzVBWdzihwrelGErdeedpi1j7BUXajz9Gz5Dl3ot+6ZnGvrobLTZWeJQva1Q=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(44832011)(6506007)(956004)(52116002)(36756003)(83380400001)(4326008)(6666004)(86362001)(69590400008)(508600001)(6512007)(5660300002)(110136005)(26005)(2616005)(66946007)(1076003)(8936002)(8676002)(16526019)(186003)(34490700003)(66476007)(2906002)(66556008)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?r6mxvquJGNchTSs46G2EO5HDTZ/6g6UX4l7Sysz2YaOxabEIEZH+3L0R+965?=
- =?us-ascii?Q?lvGlME2Bx/xuXghavyrJk6nIPVYLSsSN1IVM+VU0riimzOd8/BbhOy28s36N?=
- =?us-ascii?Q?G1WXL+0j9cx5q11G7O+v7HOxHGdW7tIsgmN6Osa4mBxCbaLWvt7bpygevua7?=
- =?us-ascii?Q?gyuKcJDUpy8bZxolNAy9sAw4WHHC0oBOA37d0ll24p6YeFetTXkpkj1aa0ts?=
- =?us-ascii?Q?9E5vUFJ7vn2BmSsJTndyhjjvyuoYN3gQkxaRXXg1Ffq3GRb0zeFBHNXwld/f?=
- =?us-ascii?Q?HNVkQ60FbEna8pNSQr+TDWMlzmYgGIANvRIx4uzgHSLG9QeMYE0BgeFFuiAe?=
- =?us-ascii?Q?putBSmDJW95oSHlMOxOY3clu/ZM+5+CStvhAUh55+DanDcV4V7FpKpW3+suk?=
- =?us-ascii?Q?JeZAjOk1r8orxgEt5SJvpdkOiRrI5heDEr44+v2n/vaKdhP+Y1W+dV6uNVhm?=
- =?us-ascii?Q?S175I4j/PsKBzRQAx7yMz3ewSj16aExt7yAqN7q71atBZRckNmPk79VaiemD?=
- =?us-ascii?Q?rO3cufXCsI9jryZdbFTipJQzh8cAU1fWI7O9mA5cMPvQVbjpDmDAywh6tobq?=
- =?us-ascii?Q?tG450ZdzjwCOKexR1uLcr9zDs5UvRNo/kcXqtvGNbIKLlP6BiUfTOLgVhKm1?=
- =?us-ascii?Q?t5WrQ5EZch+pJTlzv075uvqQPg1jDkRH7/sY6E2bxiTAxI3rAl+Y5zt8vMPh?=
- =?us-ascii?Q?y/1PdSDjaXfvxPeu6mvOsJ02HGte2U72ZGZum6xc00hJd98RXVpVkbLtCJVx?=
- =?us-ascii?Q?X1dYxgHTAgXiB5fNDITnTwKc0FqoxECz/P2LQ+v2zLSx0VDh4XtmYKFe+IA9?=
- =?us-ascii?Q?hSBw5ofYSDXQ7xzo6ZnBNixZ1B72NrIEiF2sXnsJn3dnXzxAJ7XKhk3ukbcT?=
- =?us-ascii?Q?2EpNdgQFk25kc1phpfBAPWTPkHptSIOIXo5tdMs1kpANiKfbEX674EAy7zdZ?=
- =?us-ascii?Q?RDuBNC+c7H8SM7oWEG6yJw4xQuDGrzPQLQjTh7vZdovD1MZUOKsU0OujfO+L?=
- =?us-ascii?Q?o31v?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2020 19:40:08.1145
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8dc83516-cfdb-4fff-5369-08d89bb111ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +7ARIbTRxDhr61ZDv+YNIGjSIb4ilAM5Foh9y5JwZ3W1uvDksAlyWfmPYjQhJU5+b4n1/EAHNJlbAzCHgXf8DQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4909
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-It is not clear what this lock protects. If the authors wanted to ensure
-that "dev" does not disappear, that is impossible, given the following
-code path:
+On Mon, 7 Dec 2020 20:14:00 +0800 Zou Wei wrote:
+> Remove including <generated/utsrelease.h> that don't need it.
+>=20
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 1 -
+>  1 file changed, 1 deletion(-)
+>=20
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/n=
+et/ethernet/mellanox/mlx5/core/en_rep.c
+> index 989c70c..82ecc161 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> @@ -30,7 +30,6 @@
+>   * SOFTWARE.
+>   */
+> =20
+> -#include <generated/utsrelease.h>
+>  #include <linux/mlx5/fs.h>
+>  #include <net/switchdev.h>
+>  #include <net/pkt_cls.h>
 
-mlx4_ib_netdev_event (under RTNL mutex)
--> mlx4_ib_scan_netdevs
-   -> mlx4_ib_update_qps
 
-Also, the dev_base_lock does not protect dev->dev_addr either.
-
-So it serves no purpose here. Remove it.
-
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
----
- drivers/infiniband/hw/mlx4/main.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index f0864f40ea1a..e3cd402c079a 100644
---- a/drivers/infiniband/hw/mlx4/main.c
-+++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -2265,10 +2265,7 @@ static void mlx4_ib_update_qps(struct mlx4_ib_dev *ibdev,
- 	u64 release_mac = MLX4_IB_INVALID_MAC;
- 	struct mlx4_ib_qp *qp;
- 
--	read_lock(&dev_base_lock);
- 	new_smac = mlx4_mac_to_u64(dev->dev_addr);
--	read_unlock(&dev_base_lock);
--
- 	atomic64_set(&ibdev->iboe.mac[port - 1], new_smac);
- 
- 	/* no need for update QP1 and mac registration in non-SRIOV */
--- 
-2.25.1
-
+drivers/net/ethernet/mellanox/mlx5/core/en_rep.c: In function =E2=80=98mlx5=
+e_rep_get_drvinfo=E2=80=99:
+drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:66:28: error: =E2=80=98UTS=
+_RELEASE=E2=80=99 undeclared (first use in this function); did you mean =E2=
+=80=98CSS_RELEASED=E2=80=99?
+   66 |  strlcpy(drvinfo->version, UTS_RELEASE, sizeof(drvinfo->version));
+      |                            ^~~~~~~~~~~
+      |                            CSS_RELEASED
+drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:66:28: note: each undeclar=
+ed identifier is reported only once for each function it appears in
+make[6]: *** [drivers/net/ethernet/mellanox/mlx5/core/en_rep.o] Error 1
+make[5]: *** [drivers/net/ethernet/mellanox/mlx5/core] Error 2
+make[4]: *** [drivers/net/ethernet/mellanox] Error 2
+make[3]: *** [drivers/net/ethernet] Error 2
+make[2]: *** [drivers/net] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [drivers] Error 2
+make: *** [__sub-make] Error 2
