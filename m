@@ -2,110 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1232D2C7C
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Dec 2020 15:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD34D2D2E2D
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Dec 2020 16:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729586AbgLHOBU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Dec 2020 09:01:20 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12282 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728546AbgLHOBT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Dec 2020 09:01:19 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fcf87070001>; Tue, 08 Dec 2020 06:00:39 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 8 Dec
- 2020 14:00:39 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.172)
- by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 8 Dec 2020 14:00:39 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eIeM918w97IzMumuwYli6JLHDSWDuNQPTkxAz5xpSbCQtTqPot9gUWdYbBqEwKxY8SUVv3jMfwWiBY/bxSeMjO92QaDbOMiwqFjN1XeMrR955BYduwFHxxPyR2qQ4U2cGV1G89rylDIwDCwqLr/+ndHcmCPTnkJYvSKaDLPyAIeESjMWKAAB0HWgBDbgga9bRhjkHjmJgmdxfymLRWnsVJECfx+vbZ19wOFv8AhDsbwJQyj2vvNFPXoLBp01usHv0xn47IOtwJJF7WV60FQdwwKThoWIF9jqTnaQELrrNHJm2H24aCtFSLqW5SNQHEn0riLGRud/zzcFlBmi5Bhy/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9cUBxDrPc9UWHdPJoAxK4gcR6EvOVEoCjPlREZTOaWg=;
- b=lv/kNaYIgk/aPEV9MJNKlUMtlqKey8iMZYpYnXyt3TjGxoKtCLYEVCvWnYv16UkZWkhpvGtIC2nyz4t4FwysLu6ctFsS8pojO6hr+NUXz17rcSz1rN5Xea54qtlLa2pr/Kw5xYdaKFSc7gUPZiYUObGAuAh2VMrNJjvPlun+m7JhWx5/KMPgSXyqOHm9W90a9L/jZ9OUC+mp6RCA4gAgg7Yuofbqv+BskaW4Q/0T5Rmxbcpjt+h9g0ZVmRid18dgVdXz1zPbECmfvtmrcIM/6H6lrcDIJNRjcMLltG95WeEAtZOYxcnpXwxGLjSD2LAAJAfXfBtLuBjnnbrgswUtVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4618.namprd12.prod.outlook.com (2603:10b6:5:78::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Tue, 8 Dec
- 2020 14:00:38 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3632.023; Tue, 8 Dec 2020
- 14:00:38 +0000
-Date:   Tue, 8 Dec 2020 10:00:36 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Avihai Horon <avihaih@nvidia.com>, <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 3/3] RDMA/uverbs: Fix incorrect variable type
-Message-ID: <20201208140036.GJ552508@nvidia.com>
-References: <20201208073545.9723-1-leon@kernel.org>
- <20201208073545.9723-4-leon@kernel.org> <20201208075539.GA2789@kadam>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201208075539.GA2789@kadam>
-X-ClientProxiedBy: MN2PR18CA0030.namprd18.prod.outlook.com
- (2603:10b6:208:23c::35) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1729846AbgLHP02 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Dec 2020 10:26:28 -0500
+Received: from p3plsmtpa12-08.prod.phx3.secureserver.net ([68.178.252.237]:42808
+        "EHLO p3plsmtpa12-08.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729386AbgLHP02 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Dec 2020 10:26:28 -0500
+X-Greylist: delayed 528 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Dec 2020 10:26:28 EST
+Received: from [192.168.0.116] ([71.184.94.153])
+        by :SMTPAUTH: with ESMTPSA
+        id mejWkztqS2w3kmejWkKW7F; Tue, 08 Dec 2020 08:16:54 -0700
+X-CMAE-Analysis: v=2.4 cv=beCu7MDB c=1 sm=1 tr=0 ts=5fcf98e6
+ a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
+ a=IkcTkHD0fZMA:10 a=Ikd4Dj_1AAAA:8 a=pGLkceISAAAA:8 a=VwQbUJbxAAAA:8
+ a=VnNF1IyMAAAA:8 a=20KFwNOVAAAA:8 a=Th0kdED2Od4K6tRsu94A:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22
+X-SECURESERVER-ACCT: tom@talpey.com
+Subject: Re: [PATCH for-rc] RDMA/siw: Fix shift-out-of-bounds when call
+ roundup_pow_of_two()
+To:     Bernard Metzler <BMT@zurich.ibm.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Kamal Heib <kamalheib1@gmail.com>, linux-rdma@vger.kernel.org,
+        Doug Ledford <dledford@redhat.com>
+References: <20201207202756.GA1798393@nvidia.com>
+ <20201207093728.428679-1-kamalheib1@gmail.com>
+ <OFA6B3AA67.4315DE52-ON00258638.00350498-00258638.003B2C04@notes.na.collabserv.com>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <3086f623-3c2a-e1f2-b6a1-d892604f7c74@talpey.com>
+Date:   Tue, 8 Dec 2020 10:16:54 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR18CA0030.namprd18.prod.outlook.com (2603:10b6:208:23c::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Tue, 8 Dec 2020 14:00:37 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kmdXg-007umr-IE; Tue, 08 Dec 2020 10:00:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607436039; bh=9cUBxDrPc9UWHdPJoAxK4gcR6EvOVEoCjPlREZTOaWg=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=VP3f89lpFL/H/NJDy+JjUolBFaNEkNul2Vp93/6Eg2dTAu5Kw/HaX9kp2fIt+M238
-         slnZvFhQb7hk00lJVrge5k7usxDAj7k1YVWaWbSPGOp8lVtKbV0i2jrEFnyN6y6EdL
-         JTaOaIhznSgGpdsdZWsmDU9lBq92jX0FzXDzAVh51wUUZPbiQE/oXXHJnMlCgBt2yT
-         03LD/djYTrXpBhgPa0cUXzR2tGcQ9fDFuwPAyHzvmwSJkgIp1/Sp85vE2JVCvDmC9i
-         PXQ148YGLabpMnPbpwTaw1+zxxKPSrisdzQvCOdklHhDlK2g+XREldOWoQ/5YU6SIe
-         5dNsA4/wuxFrw==
+In-Reply-To: <OFA6B3AA67.4315DE52-ON00258638.00350498-00258638.003B2C04@notes.na.collabserv.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfMHlrUWEE6ciNrlXR+OMV/L/RRZsA46lJmvXVi/XTJ7xLuPGD8h0Ca62qohO35Xa9rTmcz7QcFB28GklGUTduhyitfnnZJKjhaoT6PqJboMNwrj6Drne
+ hgPiY6WIRWL2PzZ+LKyoVeGBnlWSWFfo1q9xINNXNPer2gAAY3iqDZ7RSR8lftwpc3JuqPAfjBHpKXzv0KScsHODbbMbhss0e249potqrZLV9/Q1l/lemkal
+ raMjUrNc9QSGkl2k2lxZqImIFzYhfj0qxRnjoyB76liQE0Y0rKc7t9F9GWSRXCoyCGn3EpU8HMbSvJu0nBZjKQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 10:55:39AM +0300, Dan Carpenter wrote:
-> On Tue, Dec 08, 2020 at 09:35:45AM +0200, Leon Romanovsky wrote:
-> > @@ -336,19 +335,16 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QUERY_GID_TABLE)(
-> >  		attrs, UVERBS_ATTR_QUERY_GID_TABLE_RESP_ENTRIES,
-> >  		user_entry_size);
-> >  	if (max_entries <= 0)
-> > -		return -EINVAL;
-> > +		return max_entries ?: -EINVAL;
-> >  
-> >  	ucontext = ib_uverbs_get_ucontext(attrs);
-> >  	if (IS_ERR(ucontext))
-> >  		return PTR_ERR(ucontext);
-> >  	ib_dev = ucontext->device;
-> >  
-> > -	if (check_mul_overflow(max_entries, sizeof(*entries), &num_bytes))
-> > -		return -EINVAL;
-> > -
-> > -	entries = uverbs_zalloc(attrs, num_bytes);
-> > -	if (!entries)
-> > -		return -ENOMEM;
-> > +	entries = uverbs_kcalloc(attrs, max_entries, sizeof(*entries));
-> > +	if (IS_ERR(entries))
-> > +		return PTR_ERR(entries);
+On 12/8/2020 5:46 AM, Bernard Metzler wrote:
+> -----"Jason Gunthorpe" <jgg@nvidia.com> wrote: -----
 > 
-> This isn't right.  The uverbs_kcalloc() should match every other
-> kcalloc() function and return NULL on error.  This actually buggy
-> because it returns both is error pointers and NULL so it will lead to
-> a NULL dereference.
+>> To: "Kamal Heib" <kamalheib1@gmail.com>
+>> From: "Jason Gunthorpe" <jgg@nvidia.com>
+>> Date: 12/07/2020 09:29PM
+>> Cc: <linux-rdma@vger.kernel.org>, "Bernard Metzler"
+>> <bmt@zurich.ibm.com>, "Doug Ledford" <dledford@redhat.com>
+>> Subject: [EXTERNAL] Re: [PATCH for-rc] RDMA/siw: Fix
+>> shift-out-of-bounds when call roundup_pow_of_two()
+>>
+>> On Mon, Dec 07, 2020 at 11:37:28AM +0200, Kamal Heib wrote:
+>>> When running the blktests over siw the following
+>> shift-out-of-bounds is
+>>> reported, this is happening because the passed IRD or ORD from the
+>> ulp
+>>> could be zero which will lead to unexpected behavior when calling
+>>> roundup_pow_of_two(), fix that by blocking zero values of ORD or
+>> IRD.
+>>>
+>>> UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:13
+>>> shift exponent 64 is too large for 64-bit type 'long unsigned int'
+>>> CPU: 20 PID: 3957 Comm: kworker/u64:13 Tainted: G S     5.10.0-rc6
+>> #2
+>>> Hardware name: Dell Inc. PowerEdge R630/02C2CP, BIOS 2.1.5
+>> 04/11/2016
+>>> Workqueue: iw_cm_wq cm_work_handler [iw_cm]
+>>> Call Trace:
+>>>   dump_stack+0x99/0xcb
+>>>   ubsan_epilogue+0x5/0x40
+>>>   __ubsan_handle_shift_out_of_bounds.cold.11+0xb4/0xf3
+>>>   ? down_write+0x183/0x3d0
+>>>   siw_qp_modify.cold.8+0x2d/0x32 [siw]
+>>>   ? __local_bh_enable_ip+0xa5/0xf0
+>>>   siw_accept+0x906/0x1b60 [siw]
+>>>   ? xa_load+0x147/0x1f0
+>>>   ? siw_connect+0x17a0/0x17a0 [siw]
+>>>   ? lock_downgrade+0x700/0x700
+>>>   ? siw_get_base_qp+0x1c2/0x340 [siw]
+>>>   ? _raw_spin_unlock_irqrestore+0x39/0x40
+>>>   iw_cm_accept+0x1f4/0x430 [iw_cm]
+>>>   rdma_accept+0x3fa/0xb10 [rdma_cm]
+>>>   ? check_flush_dependency+0x410/0x410
+>>>   ? cma_rep_recv+0x570/0x570 [rdma_cm]
+>>>   nvmet_rdma_queue_connect+0x1a62/0x2680 [nvmet_rdma]
+>>>   ? nvmet_rdma_alloc_cmds+0xce0/0xce0 [nvmet_rdma]
+>>>   ? lock_release+0x56e/0xcc0
+>>>   ? lock_downgrade+0x700/0x700
+>>>   ? lock_downgrade+0x700/0x700
+>>>   ? __xa_alloc_cyclic+0xef/0x350
+>>>   ? __xa_alloc+0x2d0/0x2d0
+>>>   ? rdma_restrack_add+0xbe/0x2c0 [ib_core]
+>>>   ? __ww_mutex_die+0x190/0x190
+>>>   cma_cm_event_handler+0xf2/0x500 [rdma_cm]
+>>>   iw_conn_req_handler+0x910/0xcb0 [rdma_cm]
+>>>   ? _raw_spin_unlock_irqrestore+0x39/0x40
+>>>   ? trace_hardirqs_on+0x1c/0x150
+>>>   ? cma_ib_handler+0x8a0/0x8a0 [rdma_cm]
+>>>   ? __kasan_kmalloc.constprop.7+0xc1/0xd0
+>>>   cm_work_handler+0x121c/0x17a0 [iw_cm]
+>>>   ? iw_cm_reject+0x190/0x190 [iw_cm]
+>>>   ? trace_hardirqs_on+0x1c/0x150
+>>>   process_one_work+0x8fb/0x16c0
+>>>   ? pwq_dec_nr_in_flight+0x320/0x320
+>>>   worker_thread+0x87/0xb40
+>>>   ? __kthread_parkme+0xd1/0x1a0
+>>>   ? process_one_work+0x16c0/0x16c0
+>>>   kthread+0x35f/0x430
+>>>   ? kthread_mod_delayed_work+0x180/0x180
+>>>   ret_from_fork+0x22/0x30
+>>>
+>>> Fixes: 6c52fdc244b5 ("rdma/siw: connection management")
+>>> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+>>>   drivers/infiniband/sw/siw/siw_cm.c | 3 ++-
+>>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/infiniband/sw/siw/siw_cm.c
+>> b/drivers/infiniband/sw/siw/siw_cm.c
+>>> index 66764f7ef072..dff0b00cc55d 100644
+>>> +++ b/drivers/infiniband/sw/siw/siw_cm.c
+>>> @@ -1571,7 +1571,8 @@ int siw_accept(struct iw_cm_id *id, struct
+>> iw_cm_conn_param *params)
+>>>   		qp->tx_ctx.gso_seg_limit = 0;
+>>>   	}
+>>>   	if (params->ord > sdev->attrs.max_ord ||
+>>> -	    params->ird > sdev->attrs.max_ird) {
+>>> +	    params->ird > sdev->attrs.max_ird ||
+>>> +	    !params->ord || !params->ird) {
+>>>   		siw_dbg_cep(
+>>
+>> Are you sure this is the right place for this? Why not higher up? It
+>> looks like the other iwarp drivers have the same problem
+>>
+>> Jason
+>>
+> 1) Good question. Do we want to allow applications to zero-size
+> rdma READ capabilities? Maybe we want, if it is recognized as a
+> security feature?
 
-It is abnormal, but returing the EOVERFLOW to the caller vs ENOMEM
-does seem somewhat relevant for debuggability..
+Do you mean zero-size RDMA Read, as in, an RDMA Read of zero bytes?
+This is a valid operation specifically mentioned in the protocols.
 
-If anything on the uverbs_*alloc* path returns NULL it is a bug.
+Although it transfers no data, it does require a region protection
+check at the responder, and it's something that requesting applications
+may issue.
 
-Jason
+OTOH, if you mean is a zero IRD or ORD valid, yes, that too is true.
+
+The NFS/RDMA client actually did this, because the rpcrdma protocol
+permits only the server to issue RDMA operations. Therefore to reduce
+resources, the client would set IRD to zero, and ORD to some small
+number. The server would do the opposite (IRD=n and ORD=0)
+
+> 2) In any case, siw currently does not correctly handle the case
+> of zero sized ORD/IRD. If we want to go with 1), some fixes to siw
+> are to be done. If we do not want 1), Kamal's patch is half of the
+> story. It handles the response side only. Initiator would have to
+> be fixed as well.
+> 
+> I'd propose allowing 1). I'd fix siw accordingly. Opinions?
+
+Definitely allow both aspects of #1, and fix #2.
+
+Tom.
