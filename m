@@ -2,60 +2,411 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B488A2D23C7
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Dec 2020 07:45:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDD22D240C
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Dec 2020 08:06:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgLHGpU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Dec 2020 01:45:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57062 "EHLO mail.kernel.org"
+        id S1725917AbgLHHGV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Dec 2020 02:06:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725881AbgLHGpU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 8 Dec 2020 01:45:20 -0500
-Date:   Tue, 8 Dec 2020 08:44:32 +0200
+        id S1725789AbgLHHGU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 8 Dec 2020 02:06:20 -0500
+Date:   Tue, 8 Dec 2020 09:05:32 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607409879;
-        bh=945L8ljNOuFzzRfnEh+kXCUa029xewKJnPnsaYRdk0o=;
+        s=k20201202; t=1607411139;
+        bh=/7ZGiUT83vpr+AYE7iOeMqQBysq+rMzZJTcw+kUy6Nc=;
         h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=stVnIgDZ45/X9nUWqzxcDFaZlQA5OQ8rk4HX/IWyAjtxT0gh6SpfAynHxRfbk7U3X
-         l45qSeXO9QbsG1sC0vQSQpMi5ydLdwaNgqsXY9utR+Upx6XkZOBZl9KXWOv+2IS1oj
-         QRiT+KV0NO+zWuu0y+YzMjg9Z0eHGdoA7ROT6sIOM+J3VhYENdbt5EhLYycEMmZE8Y
-         I3XfinKzU0N2DrDQF1UsWBYI7fA+UPBw/jafzNW2VNSY3b7uzEO3zUMhwk0EFpTvHM
-         Sm+ED7qeKXAiq7fYSKi9U7tTo+YsvA5ozPuYn5QoOt95NTSgqA4uFicyt4HC36QGTX
-         Ef3imcBLHYJKw==
+        b=aKd04aYN5M84ur8Ci7wg628+wXqTgb2niUckKe4hfSPfT3RwEzLDws5QqCMEf0mg4
+         jZQWBdMLopxPNPRmImSkiUzFSzhaM9KzqCWXL7h6t12XEi2c0s61EzbiTr8hv0Sc6d
+         x/arB66fVTnAzmXk975nRJ99O8RXEftlCjm+w4AqFRiBOi4uSr53K2jyu/c4LIc156
+         BFVZpJDdoJIhFTk95ZgGA71mG0WrddGOXr5yjzwKyK4htK2qfGzrrKY0V2bEDxtsQz
+         FPwQOkVYV44NzzvH0JF99dIf7FW0b88Qkx3AESYEdc6c/602+HAH42b29KI2SmXqGd
+         uqkTHn3HDLKoA==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] RDMA/restrack: update kernel documentation for
- ib_create_named_qp()
-Message-ID: <20201208064432.GD4430@unreal>
-References: <20201207173255.13355-1-lukas.bulwahn@gmail.com>
+To:     Jianxin Xiong <jianxin.xiong@intel.com>
+Cc:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: Re: [PATCH v13 1/4] RDMA/umem: Support importing dma-buf as user
+ memory region
+Message-ID: <20201208070532.GE4430@unreal>
+References: <1607379353-116215-1-git-send-email-jianxin.xiong@intel.com>
+ <1607379353-116215-2-git-send-email-jianxin.xiong@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201207173255.13355-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <1607379353-116215-2-git-send-email-jianxin.xiong@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 06:32:55PM +0100, Lukas Bulwahn wrote:
-> Commit 66f57b871efc ("RDMA/restrack: Support all QP types") extends
-> ib_create_qp() to a named ib_create_named_qp(), which takes the caller's
-> name as argument, but it did not add the new argument description to the
-> function's kerneldoc.
+On Mon, Dec 07, 2020 at 02:15:50PM -0800, Jianxin Xiong wrote:
+> Dma-buf is a standard cross-driver buffer sharing mechanism that can be
+> used to support peer-to-peer access from RDMA devices.
 >
-> make htmldocs warns:
+> Device memory exported via dma-buf is associated with a file descriptor.
+> This is passed to the user space as a property associated with the
+> buffer allocation. When the buffer is registered as a memory region,
+> the file descriptor is passed to the RDMA driver along with other
+> parameters.
 >
->   ./drivers/infiniband/core/verbs.c:1206: warning: Function parameter or
->   member 'caller' not described in 'ib_create_named_qp'
+> Implement the common code for importing dma-buf object and mapping
+> dma-buf pages.
 >
-> Add a description for this new argument based on the description of the
-> same argument in other related functions.
+> Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+> Reviewed-by: Sean Hefty <sean.hefty@intel.com>
+> Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+> Acked-by: Christian Koenig <christian.koenig@amd.com>
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 >
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
+> Conflicts:
+> 	include/rdma/ib_umem.h
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+This probably leftover from rebase, am I right?
+
+> ---
+>  drivers/infiniband/core/Makefile      |   2 +-
+>  drivers/infiniband/core/umem.c        |   3 +
+>  drivers/infiniband/core/umem_dmabuf.c | 173 ++++++++++++++++++++++++++++++++++
+>  include/rdma/ib_umem.h                |  43 ++++++++-
+>  4 files changed, 219 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/infiniband/core/umem_dmabuf.c
+>
+> diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
+> index ccf2670..8ab4eea 100644
+> --- a/drivers/infiniband/core/Makefile
+> +++ b/drivers/infiniband/core/Makefile
+> @@ -40,5 +40,5 @@ ib_uverbs-y :=			uverbs_main.o uverbs_cmd.o uverbs_marshall.o \
+>  				uverbs_std_types_srq.o \
+>  				uverbs_std_types_wq.o \
+>  				uverbs_std_types_qp.o
+> -ib_uverbs-$(CONFIG_INFINIBAND_USER_MEM) += umem.o
+> +ib_uverbs-$(CONFIG_INFINIBAND_USER_MEM) += umem.o umem_dmabuf.o
+>  ib_uverbs-$(CONFIG_INFINIBAND_ON_DEMAND_PAGING) += umem_odp.o
+> diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+> index 7ca4112..cc131f8 100644
+> --- a/drivers/infiniband/core/umem.c
+> +++ b/drivers/infiniband/core/umem.c
+> @@ -2,6 +2,7 @@
+>   * Copyright (c) 2005 Topspin Communications.  All rights reserved.
+>   * Copyright (c) 2005 Cisco Systems.  All rights reserved.
+>   * Copyright (c) 2005 Mellanox Technologies. All rights reserved.
+> + * Copyright (c) 2020 Intel Corporation. All rights reserved.
+>   *
+>   * This software is available to you under a choice of one of two
+>   * licenses.  You may choose to be licensed under the terms of the GNU
+> @@ -278,6 +279,8 @@ void ib_umem_release(struct ib_umem *umem)
+>  {
+>  	if (!umem)
+>  		return;
+> +	if (umem->is_dmabuf)
+> +		return ib_umem_dmabuf_release(to_ib_umem_dmabuf(umem));
+>  	if (umem->is_odp)
+>  		return ib_umem_odp_release(to_ib_umem_odp(umem));
+>
+> diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
+> new file mode 100644
+> index 0000000..e50b955
+> --- /dev/null
+> +++ b/drivers/infiniband/core/umem_dmabuf.c
+> @@ -0,0 +1,173 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+> +/*
+> + * Copyright (c) 2020 Intel Corporation. All rights reserved.
+> + */
+> +
+> +#include <linux/dma-buf.h>
+> +#include <linux/dma-resv.h>
+> +#include <linux/dma-mapping.h>
+> +
+> +#include "uverbs.h"
+> +
+> +int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
+> +{
+> +	struct sg_table *sgt;
+> +	struct scatterlist *sg;
+> +	struct dma_fence *fence;
+> +	unsigned long start, end, cur;
+> +	unsigned int nmap;
+> +	int i;
+> +
+> +	dma_resv_assert_held(umem_dmabuf->attach->dmabuf->resv);
+> +
+> +	if (umem_dmabuf->sgt)
+> +		return 0;
+> +
+> +	sgt = dma_buf_map_attachment(umem_dmabuf->attach, DMA_BIDIRECTIONAL);
+> +	if (IS_ERR(sgt))
+> +		return PTR_ERR(sgt);
+> +
+> +	/* modify the sg list in-place to match umem address and length */
+> +
+> +	start = ALIGN_DOWN(umem_dmabuf->umem.address, PAGE_SIZE);
+> +	end = ALIGN(umem_dmabuf->umem.address + umem_dmabuf->umem.length,
+> +		    PAGE_SIZE);
+> +	cur = 0;
+> +	nmap = 0;
+
+Better to put as part of variable initialization.
+
+> +	for_each_sgtable_dma_sg(sgt, sg, i) {
+> +		if (start < cur + sg_dma_len(sg) && cur < end)
+> +			nmap++;
+> +		if (cur <= start && start < cur + sg_dma_len(sg)) {
+> +			unsigned long offset = start - cur;
+> +
+> +			umem_dmabuf->first_sg = sg;
+> +			umem_dmabuf->first_sg_offset = offset;
+> +			sg_dma_address(sg) += offset;
+> +			sg_dma_len(sg) -= offset;
+> +			cur += offset;
+> +		}
+> +		if (cur < end && end <= cur + sg_dma_len(sg)) {
+> +			unsigned long trim = cur + sg_dma_len(sg) - end;
+> +
+> +			umem_dmabuf->last_sg = sg;
+> +			umem_dmabuf->last_sg_trim = trim;
+> +			sg_dma_len(sg) -= trim;
+> +			break;
+> +		}
+> +		cur += sg_dma_len(sg);
+> +	}
+> +
+> +	umem_dmabuf->umem.sg_head.sgl = umem_dmabuf->first_sg;
+> +	umem_dmabuf->umem.sg_head.nents = nmap;
+> +	umem_dmabuf->umem.nmap = nmap;
+> +	umem_dmabuf->sgt = sgt;
+> +
+> +	/*
+> +	 * Although the sg list is valid now, the content of the pages
+> +	 * may be not up-to-date. Wait for the exporter to finish
+> +	 * the migration.
+> +	 */
+> +	fence = dma_resv_get_excl(umem_dmabuf->attach->dmabuf->resv);
+> +	if (fence)
+> +		dma_fence_wait(fence, false);
+
+Any reason do not check return result from dma_fence_wait()?
+
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(ib_umem_dmabuf_map_pages);
+> +
+> +void ib_umem_dmabuf_unmap_pages(struct ib_umem_dmabuf *umem_dmabuf)
+> +{
+> +	dma_resv_assert_held(umem_dmabuf->attach->dmabuf->resv);
+> +
+> +	if (!umem_dmabuf->sgt)
+> +		return;
+> +
+> +	/* retore the original sg list */
+> +	if (umem_dmabuf->first_sg) {
+> +		sg_dma_address(umem_dmabuf->first_sg) -=
+> +			umem_dmabuf->first_sg_offset;
+> +		sg_dma_len(umem_dmabuf->first_sg) +=
+> +			umem_dmabuf->first_sg_offset;
+> +		umem_dmabuf->first_sg = NULL;
+> +		umem_dmabuf->first_sg_offset = 0;
+> +	}
+> +	if (umem_dmabuf->last_sg) {
+> +		sg_dma_len(umem_dmabuf->last_sg) +=
+> +			umem_dmabuf->last_sg_trim;
+> +		umem_dmabuf->last_sg = NULL;
+> +		umem_dmabuf->last_sg_trim = 0;
+> +	}
+> +
+> +	dma_buf_unmap_attachment(umem_dmabuf->attach, umem_dmabuf->sgt,
+> +				 DMA_BIDIRECTIONAL);
+> +
+> +	umem_dmabuf->sgt = NULL;
+> +}
+> +EXPORT_SYMBOL(ib_umem_dmabuf_unmap_pages);
+> +
+> +struct ib_umem *ib_umem_dmabuf_get(struct ib_device *device,
+> +				   unsigned long offset, size_t size,
+> +				   int fd, int access,
+> +				   const struct dma_buf_attach_ops *ops)
+> +{
+> +	struct dma_buf *dmabuf;
+> +	struct ib_umem_dmabuf *umem_dmabuf;
+> +	struct ib_umem *umem;
+> +	unsigned long end;
+> +	long ret = -EINVAL;
+
+It is wrong type for the returned value. One of the possible options
+is to declare "struct ib_umem *ret;" and set ret = ERR_PTR(-EINVAL) or
+ret = ERR_CAST(dmabuf);
+
+> +
+> +	if (check_add_overflow(offset, (unsigned long)size, &end))
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	if (unlikely(!ops || !ops->move_notify))
+
+Let's not put likely/unlikely in control paths.
+
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	dmabuf = dma_buf_get(fd);
+> +	if (IS_ERR(dmabuf))
+> +		return (void *)dmabuf;
+
+return ERR_CAST(dmabuf);
+
+> +
+> +	if (dmabuf->size < end)
+> +		goto out_release_dmabuf;
+> +
+> +	umem_dmabuf = kzalloc(sizeof(*umem_dmabuf), GFP_KERNEL);
+> +	if (!umem_dmabuf)
+> +		return ERR_PTR(-ENOMEM);
+
+You are leaking dmabuf here, forgot to call to dma_buf_put();
+
+> +
+> +	umem = &umem_dmabuf->umem;
+> +	umem->ibdev = device;
+> +	umem->length = size;
+> +	umem->address = offset;
+> +	umem->writable = ib_access_writable(access);
+> +	umem->is_dmabuf = 1;
+> +
+> +	if (unlikely(!ib_umem_num_pages(umem)))
+
+There is no advantage in "unlikely" here.
+
+> +		goto out_free_umem;
+> +
+> +	umem_dmabuf->attach = dma_buf_dynamic_attach(
+> +					dmabuf,
+> +					device->dma_device,
+> +					ops,
+> +					umem_dmabuf);
+> +	if (IS_ERR(umem_dmabuf->attach)) {
+> +		ret = PTR_ERR(umem_dmabuf->attach);
+> +		goto out_free_umem;
+> +	}
+> +	return umem;
+> +
+> +out_free_umem:
+> +	kfree(umem_dmabuf);
+> +
+> +out_release_dmabuf:
+> +	dma_buf_put(dmabuf);
+> +	return ERR_PTR(ret);
+> +}
+> +EXPORT_SYMBOL(ib_umem_dmabuf_get);
+> +
+> +void ib_umem_dmabuf_release(struct ib_umem_dmabuf *umem_dmabuf)
+> +{
+> +	struct dma_buf *dmabuf = umem_dmabuf->attach->dmabuf;
+> +
+> +	dma_buf_detach(dmabuf, umem_dmabuf->attach);
+> +	dma_buf_put(dmabuf);
+> +	kfree(umem_dmabuf);
+> +}
+> diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
+> index 7752211..b49a96d 100644
+> --- a/include/rdma/ib_umem.h
+> +++ b/include/rdma/ib_umem.h
+> @@ -1,6 +1,7 @@
+>  /* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
+>  /*
+>   * Copyright (c) 2007 Cisco Systems.  All rights reserved.
+> + * Copyright (c) 2020 Intel Corporation.  All rights reserved.
+>   */
+>
+>  #ifndef IB_UMEM_H
+> @@ -13,6 +14,7 @@
+>
+>  struct ib_ucontext;
+>  struct ib_umem_odp;
+> +struct dma_buf_attach_ops;
+>
+>  struct ib_umem {
+>  	struct ib_device       *ibdev;
+> @@ -22,12 +24,29 @@ struct ib_umem {
+>  	unsigned long		address;
+>  	u32 writable : 1;
+>  	u32 is_odp : 1;
+> +	u32 is_dmabuf : 1;
+>  	struct work_struct	work;
+>  	struct sg_table sg_head;
+>  	int             nmap;
+>  	unsigned int    sg_nents;
+>  };
+>
+> +struct ib_umem_dmabuf {
+> +	struct ib_umem umem;
+> +	struct dma_buf_attachment *attach;
+> +	struct sg_table *sgt;
+> +	struct scatterlist *first_sg;
+> +	struct scatterlist *last_sg;
+> +	unsigned long first_sg_offset;
+> +	unsigned long last_sg_trim;
+> +	void *private;
+> +};
+> +
+> +static inline struct ib_umem_dmabuf *to_ib_umem_dmabuf(struct ib_umem *umem)
+> +{
+> +	return container_of(umem, struct ib_umem_dmabuf, umem);
+> +}
+> +
+>  /* Returns the offset of the umem start relative to the first page. */
+>  static inline int ib_umem_offset(struct ib_umem *umem)
+>  {
+> @@ -86,6 +105,7 @@ int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
+>  unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
+>  				     unsigned long pgsz_bitmap,
+>  				     unsigned long virt);
+> +
+>  /**
+>   * ib_umem_find_best_pgoff - Find best HW page size
+>   *
+> @@ -116,6 +136,14 @@ static inline unsigned long ib_umem_find_best_pgoff(struct ib_umem *umem,
+>  				      dma_addr & pgoff_bitmask);
+>  }
+>
+> +struct ib_umem *ib_umem_dmabuf_get(struct ib_device *device,
+> +				   unsigned long offset, size_t size,
+> +				   int fd, int access,
+> +				   const struct dma_buf_attach_ops *ops);
+> +int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf);
+> +void ib_umem_dmabuf_unmap_pages(struct ib_umem_dmabuf *umem_dmabuf);
+> +void ib_umem_dmabuf_release(struct ib_umem_dmabuf *umem_dmabuf);
+> +
+>  #else /* CONFIG_INFINIBAND_USER_MEM */
+>
+>  #include <linux/err.h>
+> @@ -143,7 +171,20 @@ static inline unsigned long ib_umem_find_best_pgoff(struct ib_umem *umem,
+>  {
+>  	return 0;
+>  }
+> +static inline struct ib_umem *ib_umem_dmabuf_get(struct ib_device *device,
+> +						 unsigned long offset,
+> +						 size_t size, int fd,
+> +						 int access,
+> +						 struct dma_buf_attach_ops *ops)
+> +{
+> +	return ERR_PTR(-EINVAL);
+
+Probably, It should be EOPNOTSUPP and not EINVAL.
+
+> +}
+> +static inline int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
+> +{
+> +	return -EINVAL;
+> +}
+> +static inline void ib_umem_dmabuf_unmap_pages(struct ib_umem_dmabuf *umem_dmabuf) { }
+> +static inline void ib_umem_dmabuf_release(struct ib_umem_dmabuf *umem_dmabuf) { }
+>
+>  #endif /* CONFIG_INFINIBAND_USER_MEM */
+> -
+>  #endif /* IB_UMEM_H */
+> --
+> 1.8.3.1
+>
