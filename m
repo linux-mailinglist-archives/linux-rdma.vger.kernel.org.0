@@ -2,46 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743212D37AE
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Dec 2020 01:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 329F02D3837
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Dec 2020 02:22:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731928AbgLIA0D (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Dec 2020 19:26:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731931AbgLIAZ7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Dec 2020 19:25:59 -0500
-Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6E1C0613CF;
-        Tue,  8 Dec 2020 16:25:19 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id 289F74D248DBF;
-        Tue,  8 Dec 2020 16:25:19 -0800 (PST)
-Date:   Tue, 08 Dec 2020 16:25:18 -0800 (PST)
-Message-Id: <20201208.162518.612024256091904820.davem@davemloft.net>
-To:     zhengyongjun3@huawei.com
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net/mlx5: simplify the return expression of
- mlx5_esw_offloads_pair()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20201208135625.11872-1-zhengyongjun3@huawei.com>
-References: <20201208135625.11872-1-zhengyongjun3@huawei.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Tue, 08 Dec 2020 16:25:19 -0800 (PST)
+        id S1725824AbgLIBU0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Dec 2020 20:20:26 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9398 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725816AbgLIBU0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Dec 2020 20:20:26 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CrK2S1PMZz7BZQ;
+        Wed,  9 Dec 2020 09:19:12 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 9 Dec 2020 09:19:34 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH v2 net-next] net/mlx4: simplify the return expression of mlx4_init_cq_table()
+Date:   Wed, 9 Dec 2020 09:20:02 +0800
+Message-ID: <20201209012002.18766-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zheng Yongjun <zhengyongjun3@huawei.com>
-Date: Tue, 8 Dec 2020 21:56:25 +0800
+Simplify the return expression.
 
-> Simplify the return expression.
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/net/ethernet/mellanox/mlx4/cq.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-Applied.
+diff --git a/drivers/net/ethernet/mellanox/mlx4/cq.c b/drivers/net/ethernet/mellanox/mlx4/cq.c
+index 3b8576b9c2f9..f7053a74e6a8 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/cq.c
++++ b/drivers/net/ethernet/mellanox/mlx4/cq.c
+@@ -462,19 +462,14 @@ EXPORT_SYMBOL_GPL(mlx4_cq_free);
+ int mlx4_init_cq_table(struct mlx4_dev *dev)
+ {
+ 	struct mlx4_cq_table *cq_table = &mlx4_priv(dev)->cq_table;
+-	int err;
+ 
+ 	spin_lock_init(&cq_table->lock);
+ 	INIT_RADIX_TREE(&cq_table->tree, GFP_ATOMIC);
+ 	if (mlx4_is_slave(dev))
+ 		return 0;
+ 
+-	err = mlx4_bitmap_init(&cq_table->bitmap, dev->caps.num_cqs,
+-			       dev->caps.num_cqs - 1, dev->caps.reserved_cqs, 0);
+-	if (err)
+-		return err;
+-
+-	return 0;
++	return mlx4_bitmap_init(&cq_table->bitmap, dev->caps.num_cqs,
++				dev->caps.num_cqs - 1, dev->caps.reserved_cqs, 0);
+ }
+ 
+ void mlx4_cleanup_cq_table(struct mlx4_dev *dev)
+-- 
+2.22.0
 
