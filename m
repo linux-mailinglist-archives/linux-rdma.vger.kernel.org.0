@@ -2,137 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED98C2D3B75
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Dec 2020 07:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DEC2D3B9C
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Dec 2020 07:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgLIGbX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Dec 2020 01:31:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726437AbgLIGbX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 9 Dec 2020 01:31:23 -0500
-Date:   Wed, 9 Dec 2020 08:30:38 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607495442;
-        bh=FCsXHnNBphQDu3Pwh35xnOWUUwZUXkHuwg7GMeSSsC8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hzoWDHMVS2zLSVQHe1Xe5JCFfO02oyBK3+pUWT3hMKF47u2CTTVIpp0BETkNlhFlS
-         90q1j6VIRrc2f3pF7T9Rb23Dd67dohHs1FV2XFxcmqDJEv1eI4DOHvRbJOiimz9Euv
-         LTT7EJqmBVc4lzC08ldQ+3Nyp/OV5n3wtndaf/8dAfpxtXa3UvRCrEVrThvT19a3mU
-         97AKuABAgi9ejrtu/27ikjVB7+/TDA6BZUj2X5w75ZVo02GPrBOWTv91JVyqJcaH4r
-         hMBytzvP+I+fsjsJ0NffNFwWweMhj36PUeJAoKN3YRD09h+6xY9COpcpJP+fbES5M4
-         tkkjOVTmuiwGA==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jianxin Xiong <jianxin.xiong@intel.com>
-Cc:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: Re: [PATCH v14 1/4] RDMA/umem: Support importing dma-buf as user
- memory region
-Message-ID: <20201209063038.GL4430@unreal>
-References: <1607467155-92725-1-git-send-email-jianxin.xiong@intel.com>
- <1607467155-92725-2-git-send-email-jianxin.xiong@intel.com>
+        id S1728097AbgLIGni (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Dec 2020 01:43:38 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2474 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgLIGni (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Dec 2020 01:43:38 -0500
+Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4CrSCL2XBfz53HR;
+        Wed,  9 Dec 2020 14:42:22 +0800 (CST)
+Received: from dggemi760-chm.china.huawei.com (10.1.198.146) by
+ DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Wed, 9 Dec 2020 14:42:53 +0800
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemi760-chm.china.huawei.com (10.1.198.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Wed, 9 Dec 2020 14:42:53 +0800
+Received: from dggemi762-chm.china.huawei.com ([10.1.198.148]) by
+ dggemi762-chm.china.huawei.com ([10.1.198.148]) with mapi id 15.01.1913.007;
+ Wed, 9 Dec 2020 14:42:53 +0800
+From:   "Zouwei (Samuel)" <zou_wei@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>, Jakub Kicinski <kuba@kernel.org>
+CC:     "saeedm@nvidia.com" <saeedm@nvidia.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggLW5leHRdIG5ldC9tbHg1X2NvcmU6IHJlbW92ZSB1?=
+ =?utf-8?Q?nused_including_<generated/utsrelease.h>?=
+Thread-Topic: [PATCH -next] net/mlx5_core: remove unused including
+ <generated/utsrelease.h>
+Thread-Index: AQHWzJDaljzX6seqXUWx/HXxe0lIeantD64AgAC4AACAAIv7sA==
+Date:   Wed, 9 Dec 2020 06:42:53 +0000
+Message-ID: <2cea626052e7430bbc39c3ba14bf8fe2@huawei.com>
+References: <1607343240-39155-1-git-send-email-zou_wei@huawei.com>
+ <20201208112226.1bb31229@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <20201209062100.GK4430@unreal>
+In-Reply-To: <20201209062100.GK4430@unreal>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.178.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1607467155-92725-2-git-send-email-jianxin.xiong@intel.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 02:39:12PM -0800, Jianxin Xiong wrote:
-> Dma-buf is a standard cross-driver buffer sharing mechanism that can be
-> used to support peer-to-peer access from RDMA devices.
->
-> Device memory exported via dma-buf is associated with a file descriptor.
-> This is passed to the user space as a property associated with the
-> buffer allocation. When the buffer is registered as a memory region,
-> the file descriptor is passed to the RDMA driver along with other
-> parameters.
->
-> Implement the common code for importing dma-buf object and mapping
-> dma-buf pages.
->
-> Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
-> Reviewed-by: Sean Hefty <sean.hefty@intel.com>
-> Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
-> Acked-by: Christian Koenig <christian.koenig@amd.com>
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> ---
->  drivers/infiniband/core/Makefile      |   2 +-
->  drivers/infiniband/core/umem.c        |   3 +
->  drivers/infiniband/core/umem_dmabuf.c | 174 ++++++++++++++++++++++++++++++++++
->  include/rdma/ib_umem.h                |  47 ++++++++-
->  4 files changed, 222 insertions(+), 4 deletions(-)
->  create mode 100644 drivers/infiniband/core/umem_dmabuf.c
-
-<...>
-
-> +int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
-> +{
-> +	struct sg_table *sgt;
-> +	struct scatterlist *sg;
-> +	struct dma_fence *fence;
-> +	unsigned long start, end, cur = 0;
-> +	unsigned int nmap = 0;
-> +	int i;
-> +
-> +	dma_resv_assert_held(umem_dmabuf->attach->dmabuf->resv);
-> +
-> +	if (umem_dmabuf->sgt)
-> +		goto wait_fence;
-> +
-> +	sgt = dma_buf_map_attachment(umem_dmabuf->attach, DMA_BIDIRECTIONAL);
-> +	if (IS_ERR(sgt))
-> +		return PTR_ERR(sgt);
-> +
-> +	/* modify the sg list in-place to match umem address and length */
-> +
-> +	start = ALIGN_DOWN(umem_dmabuf->umem.address, PAGE_SIZE);
-> +	end = ALIGN(umem_dmabuf->umem.address + umem_dmabuf->umem.length,
-> +		    PAGE_SIZE);
-> +	for_each_sgtable_dma_sg(sgt, sg, i) {
-> +		if (start < cur + sg_dma_len(sg) && cur < end)
-> +			nmap++;
-> +		if (cur <= start && start < cur + sg_dma_len(sg)) {
-> +			unsigned long offset = start - cur;
-> +
-> +			umem_dmabuf->first_sg = sg;
-> +			umem_dmabuf->first_sg_offset = offset;
-> +			sg_dma_address(sg) += offset;
-> +			sg_dma_len(sg) -= offset;
-> +			cur += offset;
-> +		}
-> +		if (cur < end && end <= cur + sg_dma_len(sg)) {
-> +			unsigned long trim = cur + sg_dma_len(sg) - end;
-> +
-> +			umem_dmabuf->last_sg = sg;
-> +			umem_dmabuf->last_sg_trim = trim;
-> +			sg_dma_len(sg) -= trim;
-> +			break;
-> +		}
-> +		cur += sg_dma_len(sg);
-> +	}
-> +
-> +	umem_dmabuf->umem.sg_head.sgl = umem_dmabuf->first_sg;
-> +	umem_dmabuf->umem.sg_head.nents = nmap;
-> +	umem_dmabuf->umem.nmap = nmap;
-> +	umem_dmabuf->sgt = sgt;
-> +
-> +wait_fence:
-> +	/*
-> +	 * Although the sg list is valid now, the content of the pages
-> +	 * may be not up-to-date. Wait for the exporter to finish
-> +	 * the migration.
-> +	 */
-> +	fence = dma_resv_get_excl(umem_dmabuf->attach->dmabuf->resv);
-> +	if (fence)
-> +		return dma_fence_wait(fence, false);
-
-You called to dma_buf_map_attachment() earlier in this function, so if
-you return an error here, the dma_buf won't be unmapped in pagefault_dmabuf_mr()
-
-Thanks
+b2ssIEkgd2lsbCBhZGQgdGhlIEZpeGVzIGxpbmUgYW5kIHNlbmQgdGhlIHYyIHNvb24uDQoNCi0t
+LS0t6YKu5Lu25Y6f5Lu2LS0tLS0NCuWPkeS7tuS6ujogTGVvbiBSb21hbm92c2t5IFttYWlsdG86
+bGVvbkBrZXJuZWwub3JnXSANCuWPkemAgeaXtumXtDogMjAyMOW5tDEy5pyIOeaXpSAxNDoyMQ0K
+5pS25Lu25Lq6OiBKYWt1YiBLaWNpbnNraSA8a3ViYUBrZXJuZWwub3JnPg0K5oqE6YCBOiBab3V3
+ZWkgKFNhbXVlbCkgPHpvdV93ZWlAaHVhd2VpLmNvbT47IHNhZWVkbUBudmlkaWEuY29tOyBkYXZl
+bUBkYXZlbWxvZnQubmV0OyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1yZG1hQHZnZXIu
+a2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0K5Li76aKYOiBSZTogW1BB
+VENIIC1uZXh0XSBuZXQvbWx4NV9jb3JlOiByZW1vdmUgdW51c2VkIGluY2x1ZGluZyA8Z2VuZXJh
+dGVkL3V0c3JlbGVhc2UuaD4NCg0KT24gVHVlLCBEZWMgMDgsIDIwMjAgYXQgMTE6MjI6MjZBTSAt
+MDgwMCwgSmFrdWIgS2ljaW5za2kgd3JvdGU6DQo+IE9uIE1vbiwgNyBEZWMgMjAyMCAyMDoxNDow
+MCArMDgwMCBab3UgV2VpIHdyb3RlOg0KPiA+IFJlbW92ZSBpbmNsdWRpbmcgPGdlbmVyYXRlZC91
+dHNyZWxlYXNlLmg+IHRoYXQgZG9uJ3QgbmVlZCBpdC4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6
+IFpvdSBXZWkgPHpvdV93ZWlAaHVhd2VpLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9uZXQv
+ZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX3JlcC5jIHwgMSAtDQo+ID4gIDEgZmlsZSBj
+aGFuZ2VkLCAxIGRlbGV0aW9uKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQv
+ZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX3JlcC5jIA0KPiA+IGIvZHJpdmVycy9uZXQv
+ZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX3JlcC5jDQo+ID4gaW5kZXggOTg5YzcwYy4u
+ODJlY2MxNjEgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gv
+bWx4NS9jb3JlL2VuX3JlcC5jDQo+ID4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFu
+b3gvbWx4NS9jb3JlL2VuX3JlcC5jDQo+ID4gQEAgLTMwLDcgKzMwLDYgQEANCj4gPiAgICogU09G
+VFdBUkUuDQo+ID4gICAqLw0KPiA+DQo+ID4gLSNpbmNsdWRlIDxnZW5lcmF0ZWQvdXRzcmVsZWFz
+ZS5oPg0KPiA+ICAjaW5jbHVkZSA8bGludXgvbWx4NS9mcy5oPg0KPiA+ICAjaW5jbHVkZSA8bmV0
+L3N3aXRjaGRldi5oPg0KPiA+ICAjaW5jbHVkZSA8bmV0L3BrdF9jbHMuaD4NCg0KSmFrdWIsDQoN
+CllvdSBwcm9iYWJseSBkb2Vzbid0IGhhdmUgbGF0ZXN0IG5ldC1uZXh0Lg0KDQpJbiB0aGUgY29t
+bWl0IDE3YTc2MTJiOTllNiAoIm5ldC9tbHg1X2NvcmU6IENsZWFuIGRyaXZlciB2ZXJzaW9uIGFu
+ZCBuYW1lIiksIEkgcmVtb3ZlZCAic3RybGNweShkcnZpbmZvLT52ZXJzaW9uLCBVVFNfUkVMRUFT
+RSwgc2l6ZW9mKGRydmluZm8tPnZlcnNpb24pKTsiIGxpbmUuDQoNClRoZSBwYXRjaCBpcyBvaywg
+YnV0IHNob3VsZCBoYXZlIEZpeGVzIGxpbmUuDQpGaXhlczogMTdhNzYxMmI5OWU2ICgibmV0L21s
+eDVfY29yZTogQ2xlYW4gZHJpdmVyIHZlcnNpb24gYW5kIG5hbWUiKQ0KDQpUaGFua3MNCg0KPg0K
+Pg0KPiBkcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW5fcmVwLmM6IElu
+IGZ1bmN0aW9uIOKAmG1seDVlX3JlcF9nZXRfZHJ2aW5mb+KAmToNCj4gZHJpdmVycy9uZXQvZXRo
+ZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX3JlcC5jOjY2OjI4OiBlcnJvcjog4oCYVVRTX1JF
+TEVBU0XigJkgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pOyBkaWQgeW91
+IG1lYW4g4oCYQ1NTX1JFTEVBU0VE4oCZPw0KPiAgICA2NiB8ICBzdHJsY3B5KGRydmluZm8tPnZl
+cnNpb24sIFVUU19SRUxFQVNFLCBzaXplb2YoZHJ2aW5mby0+dmVyc2lvbikpOw0KPiAgICAgICB8
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+DQo+ICAgICAgIHwgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgQ1NTX1JFTEVBU0VEDQo+IGRyaXZlcnMvbmV0L2V0aGVybmV0
+L21lbGxhbm94L21seDUvY29yZS9lbl9yZXAuYzo2NjoyODogbm90ZTogZWFjaCANCj4gdW5kZWNs
+YXJlZCBpZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9ubHkgb25jZSBmb3IgZWFjaCBmdW5jdGlvbiBp
+dCANCj4gYXBwZWFycyBpbg0KPiBtYWtlWzZdOiAqKiogW2RyaXZlcnMvbmV0L2V0aGVybmV0L21l
+bGxhbm94L21seDUvY29yZS9lbl9yZXAub10gRXJyb3IgDQo+IDENCj4gbWFrZVs1XTogKioqIFtk
+cml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmVdIEVycm9yIDINCj4gbWFrZVs0
+XTogKioqIFtkcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veF0gRXJyb3IgMg0KPiBtYWtlWzNd
+OiAqKiogW2RyaXZlcnMvbmV0L2V0aGVybmV0XSBFcnJvciAyDQo+IG1ha2VbMl06ICoqKiBbZHJp
+dmVycy9uZXRdIEVycm9yIDINCj4gbWFrZVsyXTogKioqIFdhaXRpbmcgZm9yIHVuZmluaXNoZWQg
+am9icy4uLi4NCj4gbWFrZVsxXTogKioqIFtkcml2ZXJzXSBFcnJvciAyDQo+IG1ha2U6ICoqKiBb
+X19zdWItbWFrZV0gRXJyb3IgMg0K
