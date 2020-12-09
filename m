@@ -2,277 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF05E2D3C4D
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Dec 2020 08:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 517D82D3E69
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Dec 2020 10:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbgLIHbq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Dec 2020 02:31:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60640 "EHLO mail.kernel.org"
+        id S1727273AbgLIJTE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Dec 2020 04:19:04 -0500
+Received: from mga05.intel.com ([192.55.52.43]:61728 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727844AbgLIHbn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 9 Dec 2020 02:31:43 -0500
-From:   saeed@kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, David Ahern <dsahern@kernel.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        david.m.ertman@intel.com, dan.j.williams@intel.com,
-        kiran.patil@intel.com, gregkh@linuxfoundation.org,
-        Parav Pandit <parav@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH net-next v2 14/14] net/mlx5: Add devlink subfunction port documentation
-Date:   Tue,  8 Dec 2020 23:29:34 -0800
-Message-Id: <20201209072934.1272819-15-saeed@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201209072934.1272819-1-saeed@kernel.org>
-References: <20201209072934.1272819-1-saeed@kernel.org>
+        id S1728264AbgLIJTB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 9 Dec 2020 04:19:01 -0500
+IronPort-SDR: 1fQ6RBtfd+af7pwdMPPRB9BntrrZ0wRS2iYFkf0UjwdnRu3iGCRCHVVaHdy2aE9T8k3tXlrdLz
+ f88GKRdDllrg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="258755377"
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="258755377"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 01:18:16 -0800
+IronPort-SDR: ztL5sBazXDD7ixuWK7L6Q1Q1G4Mtq6vglNlxuvtw9oZQMTNCMLMK26LckT2vvpKR+LHt/JLBvP
+ ijzRZnwBO75A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="332865269"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+  by orsmga003.jf.intel.com with ESMTP; 09 Dec 2020 01:18:13 -0800
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 9 Dec 2020 01:18:13 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 9 Dec 2020 01:18:13 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Wed, 9 Dec 2020 01:18:11 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QFVm3TUYhtVnSsMwU8jlQJY29YqoEPRZ6l5s86y9ShjbW5ByuUjnS51HEZtsWW/WdDTGPKj5Mu4E3pIYEFdBrhHMYhvuXH5l2w9JDORILsLGLJmGJMv4+BGhRr/FuXsjRtTeHM0tNEUQrHRbFQNHlWqf5LK82a6FCpZXdzxAOW+A7FYZeaN2TF948l2jLKEZnCsgERJPDI3plj4111wCkcfaGVZ8TY94J3TpOv7MVwGhesUxDUZs74TtVgpqLZ+AiCXC0nbguP28m8sQH6539j+mdSXj5P603fj7ZojSEaOrD+Ypyz75y9UflLOgfGnRDSAlW2/bPZGSTdieyR2ZCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VpEdvYD2S0sPpUsJaqzFfjba3maACAJD5ZuuBRpPyT4=;
+ b=PkA/7T4APHS1lDj83uaqlaimSmwhmyntDkuMbO4313e6oThh4myoC0/XW7ouguD5x2qIXb4sovNpXuhJ1KlD80NhTJPhmL7HwzNnjk0FHhuq6DtZOdrBfL8sKBccHatXfFNg76OKFoKz5LTw3t6hXf+VNhiZ+HJm0XRgOe5vpRU32nyh6qvuMs86e/pt0alg16zzU3XshGCDOgPC2WBVc+t9KxduvmjksTARYsoVry//VPxT8zeKZZCIUiq95442d9hKwGJE6c+WmLU3BJhTEEN9y+YViAApcPf/n9hhlP02E8hLMB/B+K8C235DIkKb79Gz7EmxwejGD1z7U3v69w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VpEdvYD2S0sPpUsJaqzFfjba3maACAJD5ZuuBRpPyT4=;
+ b=Pff/iECp1G+mhqc+bCdmEfC8lkP47xs5V2kyU/8AfxwLdi4YJ6NHf7GXHrO0Dy8ldtpnkdBQTsX3VRN1C5P5BbSkviLjAJVoH7WlyYvYXV5sc+p14/O4w7iwNL9h5j2Y0tIVDuiudXyMAJmwwCMAlczQvtMOmI+EW6bLQ6uVmUw=
+Received: from MWHPR11MB1392.namprd11.prod.outlook.com (2603:10b6:300:24::14)
+ by CO1PR11MB4929.namprd11.prod.outlook.com (2603:10b6:303:6d::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Wed, 9 Dec
+ 2020 09:18:10 +0000
+Received: from MWHPR11MB1392.namprd11.prod.outlook.com
+ ([fe80::b825:191:f494:c4e5]) by MWHPR11MB1392.namprd11.prod.outlook.com
+ ([fe80::b825:191:f494:c4e5%8]) with mapi id 15.20.3632.023; Wed, 9 Dec 2020
+ 09:18:10 +0000
+From:   "Wang, Long1" <long1.wang@intel.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     "Wang, Long1" <long1.wang@intel.com>
+Subject: possible rdma-core memory leak issues
+Thread-Topic: possible rdma-core memory leak issues
+Thread-Index: AdbODB1lFvSGUPntQbqerwlcKqKHHg==
+Date:   Wed, 9 Dec 2020 09:18:10 +0000
+Message-ID: <MWHPR11MB13924162ECC06D1883E3F9B2C5CC0@MWHPR11MB1392.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.147.214]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: dfe80816-69f8-4a49-bb28-08d89c2358da
+x-ms-traffictypediagnostic: CO1PR11MB4929:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CO1PR11MB4929E23EEE370282616DE0ECC5CC0@CO1PR11MB4929.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: enSMi8A3YEF8L6mJ8aLkQNHHkKCDL5uQg4Jvk5NN3XEyuzNZn7JfqWrhsJcSCfQ4zoBeiw3oBFeyHt2UpijNTgpl0Uyhr9AuJoLX7R+P07/WzJAGH/b0VsEvu7sif0fVsExiqG+p4jOxb3PPjlce8+Lc56HDaOPRJVE90lGgUvt/2mZjKax9sM9vR9n5nktRBpaPKAcW4m/9/k/2Yowpxw483L8SLwyaFB9SlgdykGSneO8ttJ1gUMAH9OqUMjC+bgJJ6DIl7S3m0+wzDCQ0JtUiW3SQEIagSU9FYxxmTYadidWwU2y9YlSzidytVkwZUaMGvkyeQI1u2WeNEt9/Sg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(376002)(71200400001)(66946007)(66446008)(8936002)(5660300002)(66556008)(2906002)(64756008)(8676002)(66476007)(83380400001)(508600001)(76116006)(86362001)(33656002)(52536014)(4326008)(7696005)(26005)(107886003)(186003)(55016002)(6916009)(9686003)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ISdPegg0JqctHZh93AAQc8B7IjdEzL088PeYWVKrvCU7q4wG9C0LbMKp1pOD?=
+ =?us-ascii?Q?5PRaTicUlaQFQGEjjVgSPSspCX6NB3JFftSB8iuSP58eyB1eeqm8OGEJdfuJ?=
+ =?us-ascii?Q?5qA/cq/aVEuoSpHOkvnJNdknNNw4JLueccwn29aycEENvFHTkeD69A94ivT2?=
+ =?us-ascii?Q?0qfhD80GhAVaesFHCvjtFPrdXPu0gr+R9Vdkasta9kqmtBnKlN4hTDKtdjah?=
+ =?us-ascii?Q?GLaKHkhG9S1kGWgmIEcpwjGgGORFvlWNFul/ZhqU/eX8LBqf5e+vyRmHcszb?=
+ =?us-ascii?Q?tQXYvoyJABa4mpxedrG2lOAta7qOsX5h3ZPTXwEpctv6qDr8MzjNSVCtZ5Hx?=
+ =?us-ascii?Q?n1VsNQWcQu9+ofhE2ueE7rJtbYs/Mq62eOZCfnm30Zmdq3s+S1sWmNHpXB4m?=
+ =?us-ascii?Q?hOkgELdEKxyjkkzT+z8kn2/GWWIUx8W313njDiTTA8+MBmdFzW1Y5ujZlffv?=
+ =?us-ascii?Q?WaUitFsHvdOaCxBFcr3K5zRcfBwrxaz84OEPXMIjlN9etkWrqlCYJcKYiGXf?=
+ =?us-ascii?Q?cGHBYAz43YKNwePnL9GjWEgo/v2hWvQviBW+YDmgmPQyu+0ILL9CULXPDyxE?=
+ =?us-ascii?Q?yCSfcAnITJmGJ6mYox1guhg0dGiz4zRridp15Sm5okwnTg5bZ6yqwew6XetW?=
+ =?us-ascii?Q?d19A8d7IsNWMDoFWI6Pr8+F4PPhZrD/lrhh7ARiaOvhmapKJDJ6FU+h8Xogm?=
+ =?us-ascii?Q?H9IdUmjj6k40jesh5sU70aZ7MczDNo6bNPtX73MTgXNypytP5/BTEkSWZQcM?=
+ =?us-ascii?Q?Oc+JIeHheQqoTF2D/OEonSJBppgroJe9Dox+C8duVRGSq3j2+nq42q7RJV+O?=
+ =?us-ascii?Q?fA+plUsp2BS+FWMZrCURIcEICH/6LYpW2WsMCCDkDCl4pc7JNGdzkbVNNaI4?=
+ =?us-ascii?Q?ogpICYgnMxhzEkGah+9m/E5fh5cqtzK6LHoZYbEFK+hq6taUCZA3kmHE1FKs?=
+ =?us-ascii?Q?hfRyw/dL74yv2Be4jfBOMWUIEmNEVrWbMoyfXfu/tX0=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1392.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dfe80816-69f8-4a49-bb28-08d89c2358da
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Dec 2020 09:18:10.1053
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: K638w1ptnMeilh4Y0SbQNEx2CyGPHdghbjp76El1j7H+YDRXuCWWEaHVe1wAJLanmxuqJsNopdMQihGdfoU/BA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4929
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Parav Pandit <parav@nvidia.com>
+When running valgrind memory leak test, there are a few possible lost warni=
+ng reported from rdma-core/librdmacm library.=20
+It could be real memory leak? Please see below print-out for one item withi=
+n them.
 
-Add documentation for subfunction management using devlink
-port.
+=3D=3D26556=3D=3D 1 bytes in 1 blocks are possibly lost in loss record 1 of=
+ 14
+=3D=3D26556=3D=3D    at 0x483A755: malloc (vg_replace_malloc.c:309)
+=3D=3D26556=3D=3D    by 0x4A5E3FE: ucma_init_device.part.0 (cma.c:447)
+=3D=3D26556=3D=3D    by 0x4A5EA6F: ucma_init_device (cma.c:628)
+=3D=3D26556=3D=3D    by 0x4A5EA6F: ucma_get_device (cma.c:631)
+=3D=3D26556=3D=3D    by 0x4A5EBD8: ucma_query_addr (cma.c:888)
+=3D=3D26556=3D=3D    by 0x4A611D8: ucma_process_addr_resolved (cma.c:2245)
+=3D=3D26556=3D=3D    by 0x4A611D8: rdma_get_cm_event (cma.c:2532)
+=3D=3D26556=3D=3D    by 0x4A61AFE: ucma_complete (cma.c:1111)
+=3D=3D26556=3D=3D    by 0x4A61BFA: rdma_resolve_addr2 (cma.c:1148)
+=3D=3D26556=3D=3D    by 0x484E57E: rpma_info_resolve_addr (info.c:113)
+=3D=3D26556=3D=3D    by 0x48507E3: rpma_utils_get_ibv_context (rpma.c:57)
+=3D=3D26556=3D=3D    by 0x4012BD: main (client.c:45)
 
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
----
-Changelog:
-v1->v2:
- - new patch
----
- .../device_drivers/ethernet/mellanox/mlx5.rst | 204 ++++++++++++++++++
- 1 file changed, 204 insertions(+)
-
-diff --git a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
-index a5eb22793bb9..07e38c044355 100644
---- a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
-+++ b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
-@@ -12,6 +12,8 @@ Contents
- - `Enabling the driver and kconfig options`_
- - `Devlink info`_
- - `Devlink parameters`_
-+- `mlx5 subfunction`_
-+- `mlx5 port function`_
- - `Devlink health reporters`_
- - `mlx5 tracepoints`_
- 
-@@ -181,6 +183,208 @@ User command examples:
-       values:
-          cmode driverinit value true
- 
-+mlx5 subfunction
-+================
-+mlx5 supports subfunctions management using devlink port (see :ref:`Documentation/networking/devlink/devlink-port.rst <devlink_port>`) interface.
-+
-+A Subfunction has its own function capabilities and its own resources. This
-+means a subfunction has its own dedicated queues(txq, rxq, cq, eq). These queues
-+are neither shared nor stealed from the parent PCI function.
-+
-+When subfunction is RDMA capable, it has its own QP1, GID table and rdma
-+resources neither shared nor stealed from the parent PCI function.
-+
-+A subfunction has dedicated window in PCI BAR space that is not shared
-+with ther other subfunctions or parent PCI function. This ensures that all
-+class devices of the subfunction accesses only assigned PCI BAR space.
-+
-+A Subfunction supports eswitch representation through which it supports tc
-+offloads. User must configure eswitch to send/receive packets from/to
-+subfunction port.
-+
-+Subfunctions share PCI level resources such as PCI MSI-X IRQs with
-+ther other subfunctions and/or with its parent PCI function.
-+
-+Example mlx5 software, system and device view::
-+
-+       _______
-+      | admin |
-+      | user  |----------
-+      |_______|         |
-+          |             |
-+      ____|____       __|______            _________________
-+     |         |     |         |          |                 |
-+     | devlink |     | tc tool |          |    user         |
-+     | tool    |     |_________|          | applications    |
-+     |_________|         |                |_________________|
-+           |             |                   |          |
-+           |             |                   |          |         Userspace
-+ +---------|-------------|-------------------|----------|--------------------+
-+           |             |           +----------+   +----------+   Kernel
-+           |             |           |  netdev  |   | rdma dev |
-+           |             |           +----------+   +----------+
-+   (devlink port add/del |              ^               ^
-+    port function set)   |              |               |
-+           |             |              +---------------|
-+      _____|___          |              |        _______|_______
-+     |         |         |              |       | mlx5 class    |
-+     | devlink |   +------------+       |       |   drivers     |
-+     | kernel  |   | rep netdev |       |       |(mlx5_core,ib) |
-+     |_________|   +------------+       |       |_______________|
-+           |             |              |               ^
-+   (devlink ops)         |              |          (probe/remove)
-+  _________|________     |              |           ____|________
-+ | subfunction      |    |     +---------------+   | subfunction |
-+ | management driver|-----     | subfunction   |---|  driver     |
-+ | (mlx5_core)      |          | auxiliary dev |   | (mlx5_core) |
-+ |__________________|          +---------------+   |_____________|
-+           |                                            ^
-+  (sf add/del, vhca events)                             |
-+           |                                      (device add/del)
-+      _____|____                                    ____|________
-+     |          |                                  | subfunction |
-+     |  PCI NIC |---- activate/deactive events---->| host driver |
-+     |__________|                                  | (mlx5_core) |
-+                                                   |_____________|
-+
-+Subfunction is created using devlink port interface.
-+
-+- Change device to switchdev mode::
-+
-+    $ devlink dev eswitch set pci/0000:06:00.0 mode switchdev
-+
-+- Add a devlink port of subfunction flaovur::
-+
-+    $ devlink port add pci/0000:06:00.0 flavour pcisf pfnum 0 sfnum 88
-+
-+- Show a devlink port of the subfunction::
-+
-+    $ devlink port show pci/0000:06:00.0/32768
-+    pci/0000:06:00.0/32768: type eth netdev enp6s0pf0sf88 flavour pcisf pfnum 0 sfnum 88
-+      function:
-+        hw_addr 00:00:00:00:00:00
-+
-+- Delete a devlink port of subfunction after use::
-+
-+    $ devlink port del pci/0000:06:00.0 flavour pcisf pfnum 0 sfnum 88
-+
-+mlx5 port function
-+==================
-+mlx5 driver provides mechanism to setup PCI VF/SF port function
-+attributes in unified way for smartnic and non-smartnic NICs.
-+
-+This is supported only when eswitch mode is set to switchdev. Port function
-+configuration of the PCI VF/SF is supported through devlink eswitch port.
-+
-+Port function attributes should be set before PCI VF/SF is enumerated by the
-+driver.
-+
-+MAC address setup
-+-----------------
-+mlx5 driver provides mechanism to setup the MAC address of the PCI VF/SF.
-+
-+Configured MAC address of the PCI VF/SF will be used by netdevice and rdma
-+device created for the PCI VF/SF.
-+
-+- Get MAC address of the VF identified by its unique devlink port index::
-+
-+    $ devlink port show pci/0000:06:00.0/2
-+    pci/0000:06:00.0/2: type eth netdev enp6s0pf0vf1 flavour pcivf pfnum 0 vfnum 1
-+      function:
-+        hw_addr 00:00:00:00:00:00
-+
-+- Set MAC address of the VF identified by its unique devlink port index::
-+
-+    $ devlink port function set pci/0000:06:00.0/2 hw_addr 00:11:22:33:44:55
-+
-+    $ devlink port show pci/0000:06:00.0/2
-+    pci/0000:06:00.0/2: type eth netdev enp6s0pf0vf1 flavour pcivf pfnum 0 vfnum 1
-+      function:
-+        hw_addr 00:11:22:33:44:55
-+
-+- Get MAC address of the SF identified by its unique devlink port index::
-+
-+    $ devlink port show pci/0000:06:00.0/32768
-+    pci/0000:06:00.0/32768: type eth netdev enp6s0pf0sf88 flavour pcisf pfnum 0 sfnum 88
-+      function:
-+        hw_addr 00:00:00:00:00:00
-+
-+- Set MAC address of the VF identified by its unique devlink port index::
-+
-+    $ devlink port function set pci/0000:06:00.0/32768 hw_addr 00:00:00:00:88:88
-+
-+    $ devlink port show pci/0000:06:00.0/32768
-+    pci/0000:06:00.0/32768: type eth netdev enp6s0pf0sf88 flavour pcivf pfnum 0 sfnum 88
-+      function:
-+        hw_addr 00:00:00:00:88:88
-+
-+SF state setup
-+--------------
-+To use the SF, user must active the SF using SF port function state attribute.
-+
-+- Get state of the SF identified by its unique devlink port index::
-+
-+   $ devlink port show ens2f0npf0sf88
-+   pci/0000:06:00.0/32768: type eth netdev ens2f0npf0sf88 flavour pcisf controller 0 pfnum 0 sfnum 88 external false splittable false
-+     function:
-+       hw_addr 00:00:00:00:88:88 state inactive opstate detached
-+
-+- Activate the function and verify its state is active::
-+
-+   $ devlink port function set ens2f0npf0sf88 state active
-+
-+   $ devlink port show ens2f0npf0sf88
-+   pci/0000:06:00.0/32768: type eth netdev ens2f0npf0sf88 flavour pcisf controller 0 pfnum 0 sfnum 88 external false splittable false
-+     function:
-+       hw_addr 00:00:00:00:88:88 state active opstate detached
-+
-+Upon function activation, PF driver instance gets the event from the device that
-+particular SF was activated. It's the cue to put the device on bus, probe it and
-+instantiate devlink instance and class specific auxiliary devices for it.
-+
-+- Show the auxiliary device and port of the subfunction::
-+
-+    $ devlink dev show
-+    devlink dev show auxiliary/mlx5_core.sf.4
-+
-+    $ devlink port show auxiliary/mlx5_core.sf.4/1
-+    auxiliary/mlx5_core.sf.4/1: type eth netdev p0sf88 flavour virtual port 0 splittable false
-+
-+    $ rdma link show mlx5_0/1
-+    link mlx5_0/1 state ACTIVE physical_state LINK_UP netdev p0sf88
-+
-+    $ rdma dev show
-+    8: rocep6s0f1: node_type ca fw 16.29.0550 node_guid 248a:0703:00b3:d113 sys_image_guid 248a:0703:00b3:d112
-+    13: mlx5_0: node_type ca fw 16.29.0550 node_guid 0000:00ff:fe00:8888 sys_image_guid 248a:0703:00b3:d112
-+
-+- Subfunction auxilary device and class device hierarchy::
-+
-+                 mlx5_core.sf.4
-+          (subfunction auxilary device)
-+                       /\
-+                      /  \
-+                     /    \
-+                    /      \
-+                   /        \
-+      mlx5_core.eth.4     mlx5_core.rdma.4
-+     (sf eth aux dev)     (sf rdma aux dev)
-+         |                      |
-+         |                      |
-+      p0sf88                  mlx5_0
-+     (sf netdev)          (sf rdma device)
-+
-+Additionally SF port also gets the event when the driver attaches to the
-+auxiliary device of the subfunction. This results in changing the operational
-+state of the function. This provides visiblity to user to decide when it is
-+safe to delete the SF port for graceful termination of the subfunction.
-+
-+- Show the SF port operational state::
-+
-+    $ devlink port show ens2f0npf0sf88
-+    pci/0000:06:00.0/32768: type eth netdev ens2f0npf0sf88 flavour pcisf controller 0 pfnum 0 sfnum 88 external false splittable false
-+      function:
-+        hw_addr 00:00:00:00:88:88 state active opstate attached
-+
- Devlink health reporters
- ========================
- 
--- 
-2.26.2
-
+BTW. It is ran from rpma examples, which called rdma-core libraries.
