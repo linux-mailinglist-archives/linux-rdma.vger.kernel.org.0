@@ -2,93 +2,137 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5952D3B60
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Dec 2020 07:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED98C2D3B75
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Dec 2020 07:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727965AbgLIGVp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Dec 2020 01:21:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59228 "EHLO mail.kernel.org"
+        id S1727827AbgLIGbX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Dec 2020 01:31:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726718AbgLIGVp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 9 Dec 2020 01:21:45 -0500
-Date:   Wed, 9 Dec 2020 08:21:00 +0200
+        id S1726437AbgLIGbX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 9 Dec 2020 01:31:23 -0500
+Date:   Wed, 9 Dec 2020 08:30:38 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607494864;
-        bh=/JNDa/e+VUwp3PfZgTT/W850EJGQatfgwghGNsJk2LQ=;
+        s=k20201202; t=1607495442;
+        bh=FCsXHnNBphQDu3Pwh35xnOWUUwZUXkHuwg7GMeSSsC8=;
         h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ji0d8dHw/kMB7xyQ82EN1q6oQoQAasEjgmwq5I6KApROX2vY9gOZlP+if/FvCyTWF
-         rXbBXFTa6zEVoPfMXv8WcD6LL4vHR3nfo5iml9n6N6HqbgTvDMMJfOHKXJ1bFg9AGv
-         LK26PAN/WcWIr8R+X8WpIU4ToKbbQdDNWnsoSjP/b8TXtP948naZJGjt4qEcSYML+j
-         PNmInj2LwZP8tbhzmEtQm71r0DW0TCZqUgD+z5o2ns8MNgsCWGB79atKwHj8yAMspE
-         UtfOTTe7GATdFgRn21B0M1J60Neq7QCUg3H3mk3khw19AnYlZh7VIIaSw94onDNjR/
-         wbljBNs3OX4oQ==
+        b=hzoWDHMVS2zLSVQHe1Xe5JCFfO02oyBK3+pUWT3hMKF47u2CTTVIpp0BETkNlhFlS
+         90q1j6VIRrc2f3pF7T9Rb23Dd67dohHs1FV2XFxcmqDJEv1eI4DOHvRbJOiimz9Euv
+         LTT7EJqmBVc4lzC08ldQ+3Nyp/OV5n3wtndaf/8dAfpxtXa3UvRCrEVrThvT19a3mU
+         97AKuABAgi9ejrtu/27ikjVB7+/TDA6BZUj2X5w75ZVo02GPrBOWTv91JVyqJcaH4r
+         hMBytzvP+I+fsjsJ0NffNFwWweMhj36PUeJAoKN3YRD09h+6xY9COpcpJP+fbES5M4
+         tkkjOVTmuiwGA==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Zou Wei <zou_wei@huawei.com>, saeedm@nvidia.com,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] net/mlx5_core: remove unused including
- <generated/utsrelease.h>
-Message-ID: <20201209062100.GK4430@unreal>
-References: <1607343240-39155-1-git-send-email-zou_wei@huawei.com>
- <20201208112226.1bb31229@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+To:     Jianxin Xiong <jianxin.xiong@intel.com>
+Cc:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: Re: [PATCH v14 1/4] RDMA/umem: Support importing dma-buf as user
+ memory region
+Message-ID: <20201209063038.GL4430@unreal>
+References: <1607467155-92725-1-git-send-email-jianxin.xiong@intel.com>
+ <1607467155-92725-2-git-send-email-jianxin.xiong@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201208112226.1bb31229@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <1607467155-92725-2-git-send-email-jianxin.xiong@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 11:22:26AM -0800, Jakub Kicinski wrote:
-> On Mon, 7 Dec 2020 20:14:00 +0800 Zou Wei wrote:
-> > Remove including <generated/utsrelease.h> that don't need it.
-> >
-> > Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > index 989c70c..82ecc161 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-> > @@ -30,7 +30,6 @@
-> >   * SOFTWARE.
-> >   */
-> >
-> > -#include <generated/utsrelease.h>
-> >  #include <linux/mlx5/fs.h>
-> >  #include <net/switchdev.h>
-> >  #include <net/pkt_cls.h>
+On Tue, Dec 08, 2020 at 02:39:12PM -0800, Jianxin Xiong wrote:
+> Dma-buf is a standard cross-driver buffer sharing mechanism that can be
+> used to support peer-to-peer access from RDMA devices.
+>
+> Device memory exported via dma-buf is associated with a file descriptor.
+> This is passed to the user space as a property associated with the
+> buffer allocation. When the buffer is registered as a memory region,
+> the file descriptor is passed to the RDMA driver along with other
+> parameters.
+>
+> Implement the common code for importing dma-buf object and mapping
+> dma-buf pages.
+>
+> Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+> Reviewed-by: Sean Hefty <sean.hefty@intel.com>
+> Acked-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+> Acked-by: Christian Koenig <christian.koenig@amd.com>
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> ---
+>  drivers/infiniband/core/Makefile      |   2 +-
+>  drivers/infiniband/core/umem.c        |   3 +
+>  drivers/infiniband/core/umem_dmabuf.c | 174 ++++++++++++++++++++++++++++++++++
+>  include/rdma/ib_umem.h                |  47 ++++++++-
+>  4 files changed, 222 insertions(+), 4 deletions(-)
+>  create mode 100644 drivers/infiniband/core/umem_dmabuf.c
 
-Jakub,
+<...>
 
-You probably doesn't have latest net-next.
+> +int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
+> +{
+> +	struct sg_table *sgt;
+> +	struct scatterlist *sg;
+> +	struct dma_fence *fence;
+> +	unsigned long start, end, cur = 0;
+> +	unsigned int nmap = 0;
+> +	int i;
+> +
+> +	dma_resv_assert_held(umem_dmabuf->attach->dmabuf->resv);
+> +
+> +	if (umem_dmabuf->sgt)
+> +		goto wait_fence;
+> +
+> +	sgt = dma_buf_map_attachment(umem_dmabuf->attach, DMA_BIDIRECTIONAL);
+> +	if (IS_ERR(sgt))
+> +		return PTR_ERR(sgt);
+> +
+> +	/* modify the sg list in-place to match umem address and length */
+> +
+> +	start = ALIGN_DOWN(umem_dmabuf->umem.address, PAGE_SIZE);
+> +	end = ALIGN(umem_dmabuf->umem.address + umem_dmabuf->umem.length,
+> +		    PAGE_SIZE);
+> +	for_each_sgtable_dma_sg(sgt, sg, i) {
+> +		if (start < cur + sg_dma_len(sg) && cur < end)
+> +			nmap++;
+> +		if (cur <= start && start < cur + sg_dma_len(sg)) {
+> +			unsigned long offset = start - cur;
+> +
+> +			umem_dmabuf->first_sg = sg;
+> +			umem_dmabuf->first_sg_offset = offset;
+> +			sg_dma_address(sg) += offset;
+> +			sg_dma_len(sg) -= offset;
+> +			cur += offset;
+> +		}
+> +		if (cur < end && end <= cur + sg_dma_len(sg)) {
+> +			unsigned long trim = cur + sg_dma_len(sg) - end;
+> +
+> +			umem_dmabuf->last_sg = sg;
+> +			umem_dmabuf->last_sg_trim = trim;
+> +			sg_dma_len(sg) -= trim;
+> +			break;
+> +		}
+> +		cur += sg_dma_len(sg);
+> +	}
+> +
+> +	umem_dmabuf->umem.sg_head.sgl = umem_dmabuf->first_sg;
+> +	umem_dmabuf->umem.sg_head.nents = nmap;
+> +	umem_dmabuf->umem.nmap = nmap;
+> +	umem_dmabuf->sgt = sgt;
+> +
+> +wait_fence:
+> +	/*
+> +	 * Although the sg list is valid now, the content of the pages
+> +	 * may be not up-to-date. Wait for the exporter to finish
+> +	 * the migration.
+> +	 */
+> +	fence = dma_resv_get_excl(umem_dmabuf->attach->dmabuf->resv);
+> +	if (fence)
+> +		return dma_fence_wait(fence, false);
 
-In the commit 17a7612b99e6 ("net/mlx5_core: Clean driver version and
-name"), I removed "strlcpy(drvinfo->version, UTS_RELEASE,
-sizeof(drvinfo->version));" line.
-
-The patch is ok, but should have Fixes line.
-Fixes: 17a7612b99e6 ("net/mlx5_core: Clean driver version and name")
+You called to dma_buf_map_attachment() earlier in this function, so if
+you return an error here, the dma_buf won't be unmapped in pagefault_dmabuf_mr()
 
 Thanks
-
->
->
-> drivers/net/ethernet/mellanox/mlx5/core/en_rep.c: In function ‘mlx5e_rep_get_drvinfo’:
-> drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:66:28: error: ‘UTS_RELEASE’ undeclared (first use in this function); did you mean ‘CSS_RELEASED’?
->    66 |  strlcpy(drvinfo->version, UTS_RELEASE, sizeof(drvinfo->version));
->       |                            ^~~~~~~~~~~
->       |                            CSS_RELEASED
-> drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:66:28: note: each undeclared identifier is reported only once for each function it appears in
-> make[6]: *** [drivers/net/ethernet/mellanox/mlx5/core/en_rep.o] Error 1
-> make[5]: *** [drivers/net/ethernet/mellanox/mlx5/core] Error 2
-> make[4]: *** [drivers/net/ethernet/mellanox] Error 2
-> make[3]: *** [drivers/net/ethernet] Error 2
-> make[2]: *** [drivers/net] Error 2
-> make[2]: *** Waiting for unfinished jobs....
-> make[1]: *** [drivers] Error 2
-> make: *** [__sub-make] Error 2
