@@ -2,71 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329F02D3837
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Dec 2020 02:22:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F5952D3B60
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Dec 2020 07:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725824AbgLIBU0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Dec 2020 20:20:26 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:9398 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725816AbgLIBU0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Dec 2020 20:20:26 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CrK2S1PMZz7BZQ;
-        Wed,  9 Dec 2020 09:19:12 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 9 Dec 2020 09:19:34 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH v2 net-next] net/mlx4: simplify the return expression of mlx4_init_cq_table()
-Date:   Wed, 9 Dec 2020 09:20:02 +0800
-Message-ID: <20201209012002.18766-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        id S1727965AbgLIGVp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Dec 2020 01:21:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726718AbgLIGVp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 9 Dec 2020 01:21:45 -0500
+Date:   Wed, 9 Dec 2020 08:21:00 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607494864;
+        bh=/JNDa/e+VUwp3PfZgTT/W850EJGQatfgwghGNsJk2LQ=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ji0d8dHw/kMB7xyQ82EN1q6oQoQAasEjgmwq5I6KApROX2vY9gOZlP+if/FvCyTWF
+         rXbBXFTa6zEVoPfMXv8WcD6LL4vHR3nfo5iml9n6N6HqbgTvDMMJfOHKXJ1bFg9AGv
+         LK26PAN/WcWIr8R+X8WpIU4ToKbbQdDNWnsoSjP/b8TXtP948naZJGjt4qEcSYML+j
+         PNmInj2LwZP8tbhzmEtQm71r0DW0TCZqUgD+z5o2ns8MNgsCWGB79atKwHj8yAMspE
+         UtfOTTe7GATdFgRn21B0M1J60Neq7QCUg3H3mk3khw19AnYlZh7VIIaSw94onDNjR/
+         wbljBNs3OX4oQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Zou Wei <zou_wei@huawei.com>, saeedm@nvidia.com,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] net/mlx5_core: remove unused including
+ <generated/utsrelease.h>
+Message-ID: <20201209062100.GK4430@unreal>
+References: <1607343240-39155-1-git-send-email-zou_wei@huawei.com>
+ <20201208112226.1bb31229@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201208112226.1bb31229@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Simplify the return expression.
+On Tue, Dec 08, 2020 at 11:22:26AM -0800, Jakub Kicinski wrote:
+> On Mon, 7 Dec 2020 20:14:00 +0800 Zou Wei wrote:
+> > Remove including <generated/utsrelease.h> that don't need it.
+> >
+> > Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> > ---
+> >  drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> > index 989c70c..82ecc161 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> > @@ -30,7 +30,6 @@
+> >   * SOFTWARE.
+> >   */
+> >
+> > -#include <generated/utsrelease.h>
+> >  #include <linux/mlx5/fs.h>
+> >  #include <net/switchdev.h>
+> >  #include <net/pkt_cls.h>
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/net/ethernet/mellanox/mlx4/cq.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+Jakub,
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/cq.c b/drivers/net/ethernet/mellanox/mlx4/cq.c
-index 3b8576b9c2f9..f7053a74e6a8 100644
---- a/drivers/net/ethernet/mellanox/mlx4/cq.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/cq.c
-@@ -462,19 +462,14 @@ EXPORT_SYMBOL_GPL(mlx4_cq_free);
- int mlx4_init_cq_table(struct mlx4_dev *dev)
- {
- 	struct mlx4_cq_table *cq_table = &mlx4_priv(dev)->cq_table;
--	int err;
- 
- 	spin_lock_init(&cq_table->lock);
- 	INIT_RADIX_TREE(&cq_table->tree, GFP_ATOMIC);
- 	if (mlx4_is_slave(dev))
- 		return 0;
- 
--	err = mlx4_bitmap_init(&cq_table->bitmap, dev->caps.num_cqs,
--			       dev->caps.num_cqs - 1, dev->caps.reserved_cqs, 0);
--	if (err)
--		return err;
--
--	return 0;
-+	return mlx4_bitmap_init(&cq_table->bitmap, dev->caps.num_cqs,
-+				dev->caps.num_cqs - 1, dev->caps.reserved_cqs, 0);
- }
- 
- void mlx4_cleanup_cq_table(struct mlx4_dev *dev)
--- 
-2.22.0
+You probably doesn't have latest net-next.
 
+In the commit 17a7612b99e6 ("net/mlx5_core: Clean driver version and
+name"), I removed "strlcpy(drvinfo->version, UTS_RELEASE,
+sizeof(drvinfo->version));" line.
+
+The patch is ok, but should have Fixes line.
+Fixes: 17a7612b99e6 ("net/mlx5_core: Clean driver version and name")
+
+Thanks
+
+>
+>
+> drivers/net/ethernet/mellanox/mlx5/core/en_rep.c: In function ‘mlx5e_rep_get_drvinfo’:
+> drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:66:28: error: ‘UTS_RELEASE’ undeclared (first use in this function); did you mean ‘CSS_RELEASED’?
+>    66 |  strlcpy(drvinfo->version, UTS_RELEASE, sizeof(drvinfo->version));
+>       |                            ^~~~~~~~~~~
+>       |                            CSS_RELEASED
+> drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:66:28: note: each undeclared identifier is reported only once for each function it appears in
+> make[6]: *** [drivers/net/ethernet/mellanox/mlx5/core/en_rep.o] Error 1
+> make[5]: *** [drivers/net/ethernet/mellanox/mlx5/core] Error 2
+> make[4]: *** [drivers/net/ethernet/mellanox] Error 2
+> make[3]: *** [drivers/net/ethernet] Error 2
+> make[2]: *** [drivers/net] Error 2
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [drivers] Error 2
+> make: *** [__sub-make] Error 2
