@@ -2,49 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65802D6721
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Dec 2020 20:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3152D67C0
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Dec 2020 20:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404270AbgLJTnE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Dec 2020 14:43:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53194 "EHLO
+        id S2404330AbgLJTnj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Dec 2020 14:43:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393512AbgLJTnC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Dec 2020 14:43:02 -0500
+        with ESMTP id S2393492AbgLJTnb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Dec 2020 14:43:31 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8125FC06179C;
-        Thu, 10 Dec 2020 11:42:22 -0800 (PST)
-Message-Id: <20201210194043.067097663@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915D1C06138C;
+        Thu, 10 Dec 2020 11:42:27 -0800 (PST)
+Message-Id: <20201210194043.454288890@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607629341;
+        s=2020; t=1607629346;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=an/0SlT10gC/rfGB9cofMBAbBc2y8gDRMVN0GHlSQuQ=;
-        b=4P4kE5RTAFQxk4E9p2NZ5tVZaT/fVdqT6FUBVR+n0VlRr8uKLCY6ouByJWK/y9MigmPqnb
-        tesyONzFlkjZdJe1WWdFvx3h+r+GXjLB7sIlmHBZwN8ZTN8764SDWmNv/29J0LI/juCzrG
-        5AR2DIz8iI4y5+WrS2Gk+rZPh543USYMAHoeudVHDJ9Wges2zOPIJ3rC2brtEkqswFGEBV
-        qoEKpCAHt2vMMptUuKRYjL5+zlSE91zw5P4yyaAjNJTKm8BCJhUlMmWxn/QqILbbs/4fJM
-        zRFVwll3IxpXJvkmkahKFPnuLZWACJTleFizSON231iYySZCGseiBRgkWQqHew==
+        bh=d6ZnDp1ZYVpzy4fVKUFFFULYmpUUlcl5sebpJ1aGphc=;
+        b=MSBX3shBH0qoLZgoBaKe5kLbUB8TnsF2wkt/HDprwYNeTCAbd2lA/IPfG5shNVgtErFne6
+        2e7dxedwAVSHA242jzYwEZEDos7nzVn3jxex71TScShSaummfLGCXQPpi9hsC6bxlpki1A
+        PaKHNLN8C0jAcib2U6kKogdFm6aBvAusAl2wzmpxVjN8CVqMhcCswRy3h+4P9laPxunXLd
+        H7LLUzUcw0fvfesHPPxL0uK/nLdCXiS7KyYQy2gAPBMvgGCcbyREn+oK+jObT1BhRalalZ
+        V5Nn3/fVSWTJibiL01V8QA9WbzxTf/xt6yFIPqkmLVhG809hQRqJj+6eoADqiw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607629341;
+        s=2020e; t=1607629346;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=an/0SlT10gC/rfGB9cofMBAbBc2y8gDRMVN0GHlSQuQ=;
-        b=0D9iZlJLFfBnhtOaF8MIaZu0T6LGBg7Mhm2UH/Vr6qq568TJA8295HDu2RHkjE+w+f0eVZ
-        +xYpdmSgjdKynXCQ==
-Date:   Thu, 10 Dec 2020 20:25:41 +0100
+        bh=d6ZnDp1ZYVpzy4fVKUFFFULYmpUUlcl5sebpJ1aGphc=;
+        b=/jZEQ2YP5EiBLPFVPa41DzeVlkA22cUlEXVQ4rLDBt8Dt9AhsUKkU1UyqJF1WyN4nzOpZY
+        l36XkFlXpQQTzpDg==
+Date:   Thu, 10 Dec 2020 20:25:45 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Marc Zyngier <maz@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
         "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
         Helge Deller <deller@gmx.de>,
         afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
+        linux-parisc@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
         Christian Borntraeger <borntraeger@de.ibm.com>,
@@ -80,7 +80,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Juergen Gross <jgross@suse.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
         xen-devel@lists.xenproject.org
-Subject: [patch 05/30] genirq: Annotate irq stats data races
+Subject: [patch 09/30] ARM: smp: Use irq_desc_kstat_cpu() in show_ipi_list()
 References: <20201210192536.118432146@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -89,44 +89,25 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Both the per cpu stats and the accumulated count are accessed lockless and
-can be concurrently modified. That's intentional and the stats are a rough
-estimate anyway. Annotate them with data_race().
+The irq descriptor is already there, no need to look it up again.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-arm-kernel@lists.infradead.org
 ---
- kernel/irq/irqdesc.c |    4 ++--
- kernel/irq/proc.c    |    5 +++--
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ arch/arm/kernel/smp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -943,10 +943,10 @@ unsigned int kstat_irqs(unsigned int irq
- 	if (!irq_settings_is_per_cpu_devid(desc) &&
- 	    !irq_settings_is_per_cpu(desc) &&
- 	    !irq_is_nmi(desc))
--	    return desc->tot_count;
-+		return data_race(desc->tot_count);
+--- a/arch/arm/kernel/smp.c
++++ b/arch/arm/kernel/smp.c
+@@ -550,7 +550,7 @@ void show_ipi_list(struct seq_file *p, i
+ 		seq_printf(p, "%*s%u: ", prec - 1, "IPI", i);
  
- 	for_each_possible_cpu(cpu)
--		sum += *per_cpu_ptr(desc->kstat_irqs, cpu);
-+		sum += data_race(*per_cpu_ptr(desc->kstat_irqs, cpu));
- 	return sum;
- }
+ 		for_each_online_cpu(cpu)
+-			seq_printf(p, "%10u ", kstat_irqs_cpu(irq, cpu));
++			seq_printf(p, "%10u ", irq_desc_kstat_cpu(ipi_desc[i], cpu));
  
---- a/kernel/irq/proc.c
-+++ b/kernel/irq/proc.c
-@@ -488,9 +488,10 @@ int show_interrupts(struct seq_file *p,
- 	if (!desc || irq_settings_is_hidden(desc))
- 		goto outsparse;
- 
--	if (desc->kstat_irqs)
-+	if (desc->kstat_irqs) {
- 		for_each_online_cpu(j)
--			any_count |= *per_cpu_ptr(desc->kstat_irqs, j);
-+			any_count |= data_race(*per_cpu_ptr(desc->kstat_irqs, j));
-+	}
- 
- 	if ((!desc->action || irq_desc_is_chained(desc)) && !any_count)
- 		goto outsparse;
+ 		seq_printf(p, " %s\n", ipi_types[i]);
+ 	}
 
