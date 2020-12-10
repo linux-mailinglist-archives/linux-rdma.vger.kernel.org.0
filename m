@@ -2,101 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6D52D6BBA
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Dec 2020 00:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1416F2D6BD5
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Dec 2020 00:39:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725789AbgLJXPE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Dec 2020 18:15:04 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:7054 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393087AbgLJXOt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 10 Dec 2020 18:14:49 -0500
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fd2abbe0001>; Fri, 11 Dec 2020 07:14:06 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Dec
- 2020 23:14:06 +0000
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (104.47.46.52) by
- HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 10 Dec 2020 23:14:06 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GO576VMKRVLrSWkADBVc4N/P1Or1bAAAeUwOO12t9whwjF5NMNJK6W6UDPIiv/ponWySv9m2kDPFimLPis7gaqTJmUZVyA5VQynnwAHieXaGm5E7SeWKv2YvlNNjXvlf6BJwZsa1hmwg3hV/KCn/jbuLcHaLhJofxKMBUu+AmWd3GDz9Vz0SpxXEAk+eQNsvsyXnWJ7lQgyQT6IQwnQhwKypCZFYbejA9RByoKsbTk3Y48hdEMDnscLNbaJm9rTaovg9fPY0ee5mpGDUmBVOYkFoJvT+5rfLbwjvUhQSer9i3jwsjMYmyaeyN7SrhVFHIvExER1kLVIZuVo+EF63fg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7qbtO4vxst9IHdsTAD0AiE+cAnTtxaqNxTOGX8eLOLY=;
- b=hoFIeUMEM+bixP37KLNMW40HU5ZGgyxKqnz8rgBY5RZnkRwgVDvs3NxppbPynAghfZ0veb80MNfgv+z3KX3CKgvNao42LanwuFbZShWogqL+eywjOIKs1jiAyvfI7c0p9eHhAJazj8eQ5NXYWAwJrjxfT8kpp1pyBDkERp4hv+SOhH8Bp8juBkqUw9r3dVU986aWyWAyCKpzOb5jipwg8YUYa2D9Uuuy/1qgmlYa0TTJPGv2nfE//mk7bgW1MFeXKieRI5g9lvoxHfWcA9RHPmE4wF1Viw6MOb5NBQELg86RMIgsDd3wYcPzmchK42kEpl3A4rp2J490Z86GQf1z8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3836.namprd12.prod.outlook.com (2603:10b6:5:1c3::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Thu, 10 Dec
- 2020 23:14:02 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3632.023; Thu, 10 Dec 2020
- 23:14:02 +0000
-Date:   Thu, 10 Dec 2020 19:14:00 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-CC:     <zyjzyj2000@gmail.com>, <linux-rdma@vger.kernel.org>,
-        Bob Pearson <rpearson@hpe.com>
-Subject: Re: [PATCH v2] RDMA/rxe: Use acquire/release for memory ordering
-Message-ID: <20201210231400.GZ552508@nvidia.com>
-References: <20201210174258.5234-1-rpearson@hpe.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201210174258.5234-1-rpearson@hpe.com>
-X-ClientProxiedBy: BL1PR13CA0428.namprd13.prod.outlook.com
- (2603:10b6:208:2c3::13) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S2394245AbgLJXXE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Dec 2020 18:23:04 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:55024 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394234AbgLJXWj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Dec 2020 18:22:39 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BANJcXS003074;
+        Thu, 10 Dec 2020 23:19:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=+7Mm8NoMJp9j52xNSSS3U0SBEUJij5+TbHj/sEGWvTc=;
+ b=u+3l3VwFE77ZdGsGjRddFE+dCehz5qrVKsbBnhGV+nhEsQXQr4wsZggjHTDzlgab5HWW
+ W5egKIrrmhPu4ceJfalySBs8+I9FL0posNnaW9CbqbQrGVA0xg9R6RUkmEkz2s2No81L
+ nPNXJeIgpYDvFxFB/WQZYYVQRZ8i2VKbURSVU2FxkTzOHIYKNUfXXIo5pBMOc10Am1by
+ BIehnBSdx++jQOQE0Sqhoje+VUsTyicTJHRPdgx7QaW/te4Rwue+wm7tniYwBY8WiOcJ
+ un2QEN6snEEYNGv5arjms4I4Cg54F0bI7f25KRnMCWmobnf82SR6SJhov103IcOkf0u5 8g== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 357yqc85cd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Dec 2020 23:19:38 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BAMxr2o074450;
+        Thu, 10 Dec 2020 23:19:32 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 358m52xf7m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Dec 2020 23:19:32 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BANJPdu022291;
+        Thu, 10 Dec 2020 23:19:25 GMT
+Received: from [10.39.227.125] (/10.39.227.125)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 10 Dec 2020 15:19:24 -0800
+Subject: Re: [patch 24/30] xen/events: Remove unused
+ bind_evtchn_to_irq_lateeoi()
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-pci@vger.kernel.org,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>
+References: <20201210192536.118432146@linutronix.de>
+ <20201210194044.972064156@linutronix.de>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <748d8d81-ac0f-aee2-1a56-ba9c40fee52f@oracle.com>
+Date:   Thu, 10 Dec 2020 18:19:19 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0428.namprd13.prod.outlook.com (2603:10b6:208:2c3::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.10 via Frontend Transport; Thu, 10 Dec 2020 23:14:02 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1knV8K-0091AF-UO; Thu, 10 Dec 2020 19:14:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607642046; bh=7qbtO4vxst9IHdsTAD0AiE+cAnTtxaqNxTOGX8eLOLY=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=cSsYtR0Uj+yTQfD3YifTODfqRP+YZVp4u+wlnSY6LRWIN+ZXbYgnJTJJojUk2fEwd
-         uU34PSKy505heliJGnuN871oDWNUCglBvtIp8F1+y4qrVeIH8O6TA8IkG5ivqgdXlM
-         HzLGeIGNIPSO8JuNCCQVDn0iWr4LPKgZbbs4QswbVyFWOz8ZscCi1IXctrfgpYrWPv
-         8BFuLBMWUUEF0C20FTPGnMwj3KH9gwFECtG10CaWxfPSCachaowRMQfKFQMJd5/QTG
-         aYaePsiVavkze0ZK5ZQFEy/XZ3qqpWKmnTw1SCfHCNIiTi8pJv1HBamDZoAwsZcn2m
-         p4NwS8gfaw8sQ==
+In-Reply-To: <20201210194044.972064156@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012100148
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ clxscore=1011 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012100149
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 11:42:59AM -0600, Bob Pearson wrote:
 
-> @@ -76,26 +56,56 @@ static inline int next_index(struct rxe_queue *q, int index)
+On 12/10/20 2:26 PM, Thomas Gleixner wrote:
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: Juergen Gross <jgross@suse.com>
+> Cc: Stefano Stabellini <sstabellini@kernel.org>
+> Cc: xen-devel@lists.xenproject.org
+> ---
+>  drivers/xen/events/events_base.c |    6 ------
+>  1 file changed, 6 deletions(-)
+>
+> --- a/drivers/xen/events/events_base.c
+> +++ b/drivers/xen/events/events_base.c
+> @@ -1132,12 +1132,6 @@ int bind_evtchn_to_irq(evtchn_port_t evt
+>  }
+>  EXPORT_SYMBOL_GPL(bind_evtchn_to_irq);
 >  
->  static inline int queue_empty(struct rxe_queue *q)
->  {
-> -	return ((q->buf->producer_index - q->buf->consumer_index)
-> -			& q->index_mask) == 0;
-> +	u32 prod;
-> +	u32 cons;
-> +
-> +	/* make sure all changes to queue complete before
-> +	 * testing queue empty
-> +	 */
-> +	prod = smp_load_acquire(&q->buf->producer_index);
-> +	/* same */
-> +	cons = smp_load_acquire(&q->buf->consumer_index);
+> -int bind_evtchn_to_irq_lateeoi(evtchn_port_t evtchn)
+> -{
+> -	return bind_evtchn_to_irq_chip(evtchn, &xen_lateeoi_chip);
+> -}
+> -EXPORT_SYMBOL_GPL(bind_evtchn_to_irq_lateeoi);
 
-This is not so sensible. The one written by the kernel should be just
-a normal load and there must be some lock held here to protect that
 
-The one written by user space should be just READ_ONCE
 
-acquire only has meaning if you go on to read additional data based on
-the result of the acquire - then acquire ensures the additional reads
-can't cross writes that occured before the matching release.
+include/xen/events.h also needs to be updated (and in the next patch for xen_set_affinity_evtchn() as well).
 
-Jason
+
+-boris
+
