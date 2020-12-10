@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D99702D5BA8
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Dec 2020 14:25:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F25072D5BA6
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Dec 2020 14:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389197AbgLJNZ3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Dec 2020 08:25:29 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9584 "EHLO
+        id S2388480AbgLJNZ2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Dec 2020 08:25:28 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9585 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732977AbgLJNZ3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Dec 2020 08:25:29 -0500
+        with ESMTP id S2389225AbgLJNZ2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Dec 2020 08:25:28 -0500
 Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CsF4L47rPzM1XV;
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CsF4L4TZfzM2y5;
         Thu, 10 Dec 2020 21:24:02 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH v3 for-next 04/11] RDMA/hns: Avoid filling sl in high 3 bits of vlan_id
-Date:   Thu, 10 Dec 2020 21:22:45 +0800
-Message-ID: <1607606572-11968-5-git-send-email-liweihang@huawei.com>
+Subject: [PATCH v3 for-next 05/11] RDMA/hns: WARN_ON if get a reserved sl from users
+Date:   Thu, 10 Dec 2020 21:22:46 +0800
+Message-ID: <1607606572-11968-6-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1607606572-11968-1-git-send-email-liweihang@huawei.com>
 References: <1607606572-11968-1-git-send-email-liweihang@huawei.com>
@@ -35,50 +35,31 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Only the low 12 bits of vlan_id is valid, and service level has been filled
-in Address Vector. So there is no need to fill sl in vlan_id in Address
-Vector.
+According to the RoCE v1 specification, the sl (service level) 0-7 are
+mapped directly to priorities 0-7 respectively, sl 8-15 are reserved. The
+driver should verify whether the value of sl is larger than 7, if so, an
+exception should be returned.
 
-Fixes: 7406c0036f85 ("RDMA/hns: Only record vlan info for HIP08")
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_ah.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_ah.c b/drivers/infiniband/hw/hns/hns_roce_ah.c
-index c9a44db..cc258ed 100644
---- a/drivers/infiniband/hw/hns/hns_roce_ah.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_ah.c
-@@ -36,9 +36,6 @@
- #include <rdma/ib_cache.h>
- #include "hns_roce_device.h"
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 7a0c1ab..b2b8052 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -433,6 +433,10 @@ static int fill_ud_av(struct hns_roce_v2_ud_send_wqe *ud_sq_wqe,
+ 		       V2_UD_SEND_WQE_BYTE_36_TCLASS_S, ah->av.tclass);
+ 	roce_set_field(ud_sq_wqe->byte_40, V2_UD_SEND_WQE_BYTE_40_FLOW_LABEL_M,
+ 		       V2_UD_SEND_WQE_BYTE_40_FLOW_LABEL_S, ah->av.flowlabel);
++
++	if (WARN_ON(ah->av.sl > MAX_SERVICE_LEVEL))
++		return -EINVAL;
++
+ 	roce_set_field(ud_sq_wqe->byte_40, V2_UD_SEND_WQE_BYTE_40_SL_M,
+ 		       V2_UD_SEND_WQE_BYTE_40_SL_S, ah->av.sl);
  
--#define VLAN_SL_MASK 7
--#define VLAN_SL_SHIFT 13
--
- static inline u16 get_ah_udp_sport(const struct rdma_ah_attr *ah_attr)
- {
- 	u32 fl = ah_attr->grh.flow_label;
-@@ -84,18 +81,12 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
- 
- 	/* HIP08 needs to record vlan info in Address Vector */
- 	if (hr_dev->pci_dev->revision <= PCI_REVISION_ID_HIP08) {
--		ah->av.vlan_en = 0;
--
- 		ret = rdma_read_gid_l2_fields(ah_attr->grh.sgid_attr,
- 					      &ah->av.vlan_id, NULL);
- 		if (ret)
- 			return ret;
- 
--		if (ah->av.vlan_id < VLAN_N_VID) {
--			ah->av.vlan_en = 1;
--			ah->av.vlan_id |= (rdma_ah_get_sl(ah_attr) & VLAN_SL_MASK) <<
--					  VLAN_SL_SHIFT;
--		}
-+		ah->av.vlan_en = ah->av.vlan_id < VLAN_N_VID;
- 	}
- 
- 	return ret;
 -- 
 2.8.1
 
