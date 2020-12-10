@@ -2,109 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD662D6B44
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Dec 2020 00:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6D52D6BBA
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Dec 2020 00:39:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387771AbgLJW6O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Dec 2020 17:58:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43430 "EHLO mail.kernel.org"
+        id S1725789AbgLJXPE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Dec 2020 18:15:04 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:7054 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387782AbgLJW5t (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 10 Dec 2020 17:57:49 -0500
-X-Gm-Message-State: AOAM5300VO9rbiSmIm4FekveiHzSSL8IjCfyZjJ8pYgSRuW45jWqTCFH
-        bUsDMRhiVpglneUKcnyPHByEGU5qd8+lNiK8Cg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607641028;
-        bh=CumYBB9xVU4mI+ysFQ9GC3xvipGC4R7OnFI2Gfa5FNQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IENA755C1/rgN0w8w2Z2W86pSCNpqQVdsIn6hGM3SHpMOEjpkwGZtsgL0hRxLES5J
-         GN69vLvpVngVt+noJivc35dT928cbXAlG4h3cswLCydXRYUgIxoqvWvZqpS8aiOmMt
-         05Ld+Z78+akIY5HGQHCAOlr0AaROFROMPYtjN+KD7+S/KXuaWg0xL6AO0iLiPlice4
-         iZANjFb7GSIlf67hQvw0Y9hSU5e2T/JFuteUXmOg3uHY1Ii/HhED2bYqVL2OdaPsEh
-         TPV4vxeX7oyFvjtBzj9WAWsfNEkX/EEF2pxlVmb7f9vuUC3ehG96CfByyDyOuWBqr1
-         447X7kFWCVCJA==
-X-Google-Smtp-Source: ABdhPJyKMB0fAO5ccR1ON7eKp3wop/g844H0Em6KIAw65vcwOioEZudsqFxyo2xMX2ascC0HxcRxz5ivmcQz5wtwB24=
-X-Received: by 2002:a17:906:c20f:: with SMTP id d15mr8477099ejz.341.1607641026526;
- Thu, 10 Dec 2020 14:57:06 -0800 (PST)
+        id S2393087AbgLJXOt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 10 Dec 2020 18:14:49 -0500
+Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fd2abbe0001>; Fri, 11 Dec 2020 07:14:06 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Dec
+ 2020 23:14:06 +0000
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (104.47.46.52) by
+ HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 10 Dec 2020 23:14:06 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GO576VMKRVLrSWkADBVc4N/P1Or1bAAAeUwOO12t9whwjF5NMNJK6W6UDPIiv/ponWySv9m2kDPFimLPis7gaqTJmUZVyA5VQynnwAHieXaGm5E7SeWKv2YvlNNjXvlf6BJwZsa1hmwg3hV/KCn/jbuLcHaLhJofxKMBUu+AmWd3GDz9Vz0SpxXEAk+eQNsvsyXnWJ7lQgyQT6IQwnQhwKypCZFYbejA9RByoKsbTk3Y48hdEMDnscLNbaJm9rTaovg9fPY0ee5mpGDUmBVOYkFoJvT+5rfLbwjvUhQSer9i3jwsjMYmyaeyN7SrhVFHIvExER1kLVIZuVo+EF63fg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7qbtO4vxst9IHdsTAD0AiE+cAnTtxaqNxTOGX8eLOLY=;
+ b=hoFIeUMEM+bixP37KLNMW40HU5ZGgyxKqnz8rgBY5RZnkRwgVDvs3NxppbPynAghfZ0veb80MNfgv+z3KX3CKgvNao42LanwuFbZShWogqL+eywjOIKs1jiAyvfI7c0p9eHhAJazj8eQ5NXYWAwJrjxfT8kpp1pyBDkERp4hv+SOhH8Bp8juBkqUw9r3dVU986aWyWAyCKpzOb5jipwg8YUYa2D9Uuuy/1qgmlYa0TTJPGv2nfE//mk7bgW1MFeXKieRI5g9lvoxHfWcA9RHPmE4wF1Viw6MOb5NBQELg86RMIgsDd3wYcPzmchK42kEpl3A4rp2J490Z86GQf1z8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3836.namprd12.prod.outlook.com (2603:10b6:5:1c3::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Thu, 10 Dec
+ 2020 23:14:02 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3632.023; Thu, 10 Dec 2020
+ 23:14:02 +0000
+Date:   Thu, 10 Dec 2020 19:14:00 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+CC:     <zyjzyj2000@gmail.com>, <linux-rdma@vger.kernel.org>,
+        Bob Pearson <rpearson@hpe.com>
+Subject: Re: [PATCH v2] RDMA/rxe: Use acquire/release for memory ordering
+Message-ID: <20201210231400.GZ552508@nvidia.com>
+References: <20201210174258.5234-1-rpearson@hpe.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201210174258.5234-1-rpearson@hpe.com>
+X-ClientProxiedBy: BL1PR13CA0428.namprd13.prod.outlook.com
+ (2603:10b6:208:2c3::13) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20201210192536.118432146@linutronix.de> <20201210194044.473308721@linutronix.de>
-In-Reply-To: <20201210194044.473308721@linutronix.de>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 10 Dec 2020 16:56:55 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqK4bVyqyT9ip9A5P7gQQwDt1HMksjkCe6bwHrBCGrZYug@mail.gmail.com>
-Message-ID: <CAL_JsqK4bVyqyT9ip9A5P7gQQwDt1HMksjkCe6bwHrBCGrZYug@mail.gmail.com>
-Subject: Re: [patch 19/30] PCI: mobiveil: Use irq_data_get_irq_chip_data()
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        Michal Simek <michal.simek@xilinx.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0428.namprd13.prod.outlook.com (2603:10b6:208:2c3::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.10 via Frontend Transport; Thu, 10 Dec 2020 23:14:02 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1knV8K-0091AF-UO; Thu, 10 Dec 2020 19:14:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607642046; bh=7qbtO4vxst9IHdsTAD0AiE+cAnTtxaqNxTOGX8eLOLY=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=cSsYtR0Uj+yTQfD3YifTODfqRP+YZVp4u+wlnSY6LRWIN+ZXbYgnJTJJojUk2fEwd
+         uU34PSKy505heliJGnuN871oDWNUCglBvtIp8F1+y4qrVeIH8O6TA8IkG5ivqgdXlM
+         HzLGeIGNIPSO8JuNCCQVDn0iWr4LPKgZbbs4QswbVyFWOz8ZscCi1IXctrfgpYrWPv
+         8BFuLBMWUUEF0C20FTPGnMwj3KH9gwFECtG10CaWxfPSCachaowRMQfKFQMJd5/QTG
+         aYaePsiVavkze0ZK5ZQFEy/XZ3qqpWKmnTw1SCfHCNIiTi8pJv1HBamDZoAwsZcn2m
+         p4NwS8gfaw8sQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 1:42 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Going through a full irq descriptor lookup instead of just using the proper
-> helper function which provides direct access is suboptimal.
->
-> In fact it _is_ wrong because the chip callback needs to get the chip data
-> which is relevant for the chip while using the irq descriptor variant
-> returns the irq chip data of the top level chip of a hierarchy. It does not
-> matter in this case because the chip is the top level chip, but that
-> doesn't make it more correct.
->
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>
-> Cc: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: linux-pci@vger.kernel.org
-> ---
->  drivers/pci/controller/mobiveil/pcie-mobiveil-host.c |    8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
+On Thu, Dec 10, 2020 at 11:42:59AM -0600, Bob Pearson wrote:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> @@ -76,26 +56,56 @@ static inline int next_index(struct rxe_queue *q, int index)
+>  
+>  static inline int queue_empty(struct rxe_queue *q)
+>  {
+> -	return ((q->buf->producer_index - q->buf->consumer_index)
+> -			& q->index_mask) == 0;
+> +	u32 prod;
+> +	u32 cons;
+> +
+> +	/* make sure all changes to queue complete before
+> +	 * testing queue empty
+> +	 */
+> +	prod = smp_load_acquire(&q->buf->producer_index);
+> +	/* same */
+> +	cons = smp_load_acquire(&q->buf->consumer_index);
+
+This is not so sensible. The one written by the kernel should be just
+a normal load and there must be some lock held here to protect that
+
+The one written by user space should be just READ_ONCE
+
+acquire only has meaning if you go on to read additional data based on
+the result of the acquire - then acquire ensures the additional reads
+can't cross writes that occured before the matching release.
+
+Jason
