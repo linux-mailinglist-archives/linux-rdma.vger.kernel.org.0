@@ -2,136 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A3B2D68CF
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Dec 2020 21:36:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7362D6977
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Dec 2020 22:09:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393797AbgLJUfm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Dec 2020 15:35:42 -0500
-Received: from ale.deltatee.com ([204.191.154.188]:48742 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393790AbgLJUf0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Dec 2020 15:35:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=noa+454Phd4GD+cflUApEkbCBzQWdQM9xVdZ/BdtqiE=; b=ommLdATmScZCO3Nr0B0IKtaBD0
-        EKrjnXBUtbfueazgUtm6VU6b3S0wYy6KVx4WAtwNJ/AqnjHK72Gy9Jsmxppzw/gnUhc4xUowZeQ7A
-        VcHLuqMKttCxw8ez7I7uwmRr5QxGnTAmGxi8uXmfqMPsZhh7JjrJm5C+6KJYTWYREg/IlUxXKnLyU
-        oiYCxI5xB8TP98NfY73pg38uPmgt4JkWMiii1mD9wV9ZT2fBKdzZ4FLSmo62RegEoh6XSnUbSd6AH
-        TQacvQpLTj7RMyXxinaZaJU5rRKy+bJdREoJnd68m2upWyg2kGwzuZR1wf8InfiqQYZmWP3SPWvYA
-        gjpGnwDw==;
-Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1knSdJ-0002Fm-25; Thu, 10 Dec 2020 13:33:50 -0700
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-pci@vger.kernel.org,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org
-References: <20201210192536.118432146@linutronix.de>
- <20201210194044.255887860@linutronix.de>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <3526d997-a629-9843-7060-78d9e0a487c5@deltatee.com>
-Date:   Thu, 10 Dec 2020 13:33:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S2392173AbgLJVJB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Dec 2020 16:09:01 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:24097 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730214AbgLJVJB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 10 Dec 2020 16:09:01 -0500
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fd28e420000>; Fri, 11 Dec 2020 05:08:18 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Dec
+ 2020 21:08:17 +0000
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 10 Dec 2020 21:08:17 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iPKcguxc4qZEmqi2ooojh5jfbY0pv7mji6bYzcOxLIsrifG4Y1Dsm9i2Xr2ESP9qu0wcNC5OkFwO1TLsbLBCRzb706IwIzD2UDunFHb3oCVNWhZDx9wYWUlYDZKFAJV0nGq7TDoo8/B4QbvxMtFbm2WMzNocMYxiQBi3PY0IniIMat8ZG5R+4AaHVontfmgZpYJbmA1fd8vpiqPsp+Q4RFPXRxAyDl994fpvpfndCwtgwQinuBGBcIerxuK59bVBbI2/jZdSnqfTWH8NuFHdwH10O/ftOG7PVwqy9G6CjaZXuyyPBZtpYFnLOjkhIy+G0geGpXV+G3BoRk6+LrVcEw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OOKFQErysvoX13N4rm5tbwbTbzAzlUzzMIF7kbg3Fx0=;
+ b=Rb5MGCRAMPOv85M3TXZLCtYvLSQo4o161y1SzWm4XqIsA26kpLSviN/sMCZdbh73N/80noGSK1BBydg2gkRdAlyE08sKm2zmpF/bfdkglvRoXkFcExVSe1Ych8xUCTtx6+b399gPF53BhTr4LFQP2VSYXA+cIJ5eSMcJHOAoBrjz/5Q5qEExoKHd2HMG0hSfL4mfxHkndB1IuKvuwIe58ksaeLNCfqS5yfceuq1KLlt2Vs4AIYvHKzHcc88f56cp1bQGo42A9EUyf5+879VOyPFJqCLBZievHV0gi0u9us775ZOMr/bipkTXvNLKiFouVQP+AXIzx41zQGLflNjBVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4402.namprd12.prod.outlook.com (2603:10b6:5:2a5::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Thu, 10 Dec
+ 2020 21:08:15 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3632.023; Thu, 10 Dec 2020
+ 21:08:14 +0000
+Date:   Thu, 10 Dec 2020 17:08:13 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+CC:     Yishai Hadas <yishaih@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, Leon Romanovsky <leonro@nvidia.com>
+Subject: Re: [PATCH rdma-next] RDMA/mlx4: remove bogus dev_base_lock usage
+Message-ID: <20201210210813.GA2143210@nvidia.com>
+References: <20201208193928.1500893-1-vladimir.oltean@nxp.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201208193928.1500893-1-vladimir.oltean@nxp.com>
+X-ClientProxiedBy: BL1PR13CA0064.namprd13.prod.outlook.com
+ (2603:10b6:208:2b8::9) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <20201210194044.255887860@linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.145.4
-X-SA-Exim-Rcpt-To: xen-devel@lists.xenproject.org, sstabellini@kernel.org, jgross@suse.com, boris.ostrovsky@oracle.com, leon@kernel.org, saeedm@nvidia.com, linux-rdma@vger.kernel.org, netdev@vger.kernel.org, kuba@kernel.org, davem@davemloft.net, tariqt@nvidia.com, Zhiqiang.Hou@nxp.com, m.karthikeyan@mobiveil.co.in, linux-pci@vger.kernel.org, michal.simek@xilinx.com, bhelgaas@google.com, robh@kernel.org, lorenzo.pieralisi@arm.com, lee.jones@linaro.org, linux-gpio@vger.kernel.org, linus.walleij@linaro.org, tvrtko.ursulin@linux.intel.com, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, wambui.karugax@gmail.com, chris@chris-wilson.co.uk, pankaj.laxminarayan.bharadiya@intel.com, daniel@ffwll.ch, airlied@linux.ie, rodrigo.vivi@intel.com, joonas.lahtinen@linux.intel.com, jani.nikula@linux.intel.com, linux-s390@vger.kernel.org, hca@linux.ibm.com, borntraeger@de.ibm.com, will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk, linux-parisc@vger.kernel.org, afzal.mohd.ma@gmail.com, deller@gmx.de, James.Bottomley@HansenPartnership.com, linux-ntb@googlegroups.com, allenbh@gmail.com, dave.jiang@intel.com, jdmason@kudzu.us, maz@kernel.org, peterz@infradead.org, linux-kernel@vger.kernel.org, tglx@linutronix.de
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [patch 17/30] NTB/msi: Use irq_has_action()
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0064.namprd13.prod.outlook.com (2603:10b6:208:2b8::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Thu, 10 Dec 2020 21:08:14 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1knTAb-008zYb-4f; Thu, 10 Dec 2020 17:08:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607634498; bh=OOKFQErysvoX13N4rm5tbwbTbzAzlUzzMIF7kbg3Fx0=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=hxyoZDyg9lgkHi5QkvtRCPRbhwtF4DoTFI4YmumnDt6c1yLsyHMHuYLxqJ/z9Ljtx
+         docSkQuXkut97yhaGkWTU+UIwLMwPRG7Gvl/su8zMN8AIe6hjj9HITj7h87GD/lUk2
+         lUgOOh6yYRPqwdL9dmNNojlITvfcCTPjkgZNGiM7QbeCcQECmlbE9Zj2VKcAUtuwWQ
+         aTEPPITgjmPpxdfii4/nNEL6zFYGtbPxA/GHuL0bODNoG4uYXxqg329v4sF0FVy5g/
+         uMsdMf7li+40C9DP7JVjmK44s+pCw8wkra2HCV8koQYj2lJw7pf7DTN1QVsQEL3szt
+         UzcoTvY4V1eEA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 2020-12-10 12:25 p.m., Thomas Gleixner wrote:
-> Use the proper core function.
+On Tue, Dec 08, 2020 at 09:39:28PM +0200, Vladimir Oltean wrote:
+> It is not clear what this lock protects. If the authors wanted to ensure
+> that "dev" does not disappear, that is impossible, given the following
+> code path:
 > 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Jon Mason <jdmason@kudzu.us>
-> Cc: Dave Jiang <dave.jiang@intel.com>
-> Cc: Allen Hubbe <allenbh@gmail.com>
-> Cc: linux-ntb@googlegroups.com
-
-Looks good to me.
-
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-
+> mlx4_ib_netdev_event (under RTNL mutex)
+> -> mlx4_ib_scan_netdevs
+>    -> mlx4_ib_update_qps
+> 
+> Also, the dev_base_lock does not protect dev->dev_addr either.
+> 
+> So it serves no purpose here. Remove it.
+> 
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 > ---
->  drivers/ntb/msi.c |    4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> --- a/drivers/ntb/msi.c
-> +++ b/drivers/ntb/msi.c
-> @@ -282,15 +282,13 @@ int ntbm_msi_request_threaded_irq(struct
->  				  struct ntb_msi_desc *msi_desc)
->  {
->  	struct msi_desc *entry;
-> -	struct irq_desc *desc;
->  	int ret;
->  
->  	if (!ntb->msi)
->  		return -EINVAL;
->  
->  	for_each_pci_msi_entry(entry, ntb->pdev) {
-> -		desc = irq_to_desc(entry->irq);
-> -		if (desc->action)
-> +		if (irq_has_action(entry->irq))
->  			continue;
->  
->  		ret = devm_request_threaded_irq(&ntb->dev, entry->irq, handler,
-> 
+>  drivers/infiniband/hw/mlx4/main.c | 3 ---
+>  1 file changed, 3 deletions(-)
+
+Applied to for-next, thanks
+
+Jason
