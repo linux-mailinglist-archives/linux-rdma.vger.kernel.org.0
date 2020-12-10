@@ -2,126 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541D82D5C7D
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Dec 2020 14:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EAD2D5ECA
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Dec 2020 15:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732380AbgLJN4B convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 10 Dec 2020 08:56:01 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2525 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728238AbgLJNzy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Dec 2020 08:55:54 -0500
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4CsFlk3z8GzQq73;
-        Thu, 10 Dec 2020 21:54:42 +0800 (CST)
-Received: from dggema751-chm.china.huawei.com (10.1.198.193) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Thu, 10 Dec 2020 21:55:11 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema751-chm.china.huawei.com (10.1.198.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Thu, 10 Dec 2020 21:55:11 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.1913.007;
- Thu, 10 Dec 2020 21:55:11 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v2 for-next 05/11] RDMA/hns: WARN_ON if get a reserved sl
- from users
-Thread-Topic: [PATCH v2 for-next 05/11] RDMA/hns: WARN_ON if get a reserved sl
- from users
-Thread-Index: AQHWyiqFeUZ8XkvfE0u5Kq9Tx0pz1w==
-Date:   Thu, 10 Dec 2020 13:55:11 +0000
-Message-ID: <54849771e0724e8eb05757996dca9716@huawei.com>
-References: <1607078436-26455-1-git-send-email-liweihang@huawei.com>
- <1607078436-26455-6-git-send-email-liweihang@huawei.com>
- <20201209210902.GA2001139@nvidia.com>
- <29da177187e44ffd98a9b834ff3dc5ed@huawei.com>
- <20201210134516.GY5487@ziepe.ca>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1725947AbgLJO62 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Dec 2020 09:58:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726931AbgLJO53 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Dec 2020 09:57:29 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2C0C0613CF
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Dec 2020 06:56:49 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id u19so5808593edx.2
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Dec 2020 06:56:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZL5eMnJUZR33II2tRNEvHV28YGyV0efiJaemSe8WAL8=;
+        b=akIU4qVngXp7tUxsTpmsploSNjsFnVTgliaKCHs2wM5h2N2p5Xd+m9mEqSPvN0u8GF
+         4Ng44A0bv8WlQdrthC9XeSLV5M9krm9sRVWDqeeSDKz5ezOMoyecZ4m5zF0sP1GMcUaB
+         LMgLx8LqDYrw8TIf9jlQsyDfK63qvpDFPYCETvNt5GHpiNN/jhEPgMLlsNEPrZqxT8aB
+         nrDcJCT1Ac6HTVxf7qvmysQv+WhvqnV3gvGGy2DHM9cL83tJ6XzIpNgDcaNxki17Erus
+         yibBkCqzFSZJwpaIMWGOwaLMytZHDKLwBA41xV/vVpX1tSUnrdnsrvW+IiVbbHBS9bUY
+         xglA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZL5eMnJUZR33II2tRNEvHV28YGyV0efiJaemSe8WAL8=;
+        b=Wp0LUBTRIjTRz8BR7ThJCQ+ufjl0rJjD2/isUSZQFRfm/RGaPDrSrCtiZLheJammCW
+         xPxKfGoSrwXzUOj+mzirOsKX+bnfU0gssUlSl6J6c9lpOXxkHAV67674+Y1emc6znP6/
+         0Ov6+3pe/j+oUhnYt7zvCIreSyBa+nqabfPg7HFueO9O0vq/sp7ErXsBn7dczysLi3M8
+         7gZlzdp0G/f9CQLHf4CjYXZuqB9ZvJaWSEHdvs7Hsa2Y4G+l1p/XRMru7k5HRe2s80M/
+         Qwq7OYsC2ewHeqyNUleOjb6Px3LjHeQg+QJvekFTPlwEWAxz1X9Q+F5cQNQqRGERs36g
+         VJ9g==
+X-Gm-Message-State: AOAM531j9B4rXRCZJwBsPu/fBYvXlsS9GKRAej2OfonCpxiClYpHx3xj
+        5Y/ecfljoqnkGWRginb2qbNLMhaLwVMk//7Kzlls+70ttxbc2Q==
+X-Google-Smtp-Source: ABdhPJw5auWCqQHSJm24bEJ2kXtOw4b4XpqDDSCaH0x+ylCi8syeGkKj4TMOwTEOtK/X5cOUD5/hLMvmLVUl/5xZDCs=
+X-Received: by 2002:a05:6402:a53:: with SMTP id bt19mr7282780edb.104.1607612207423;
+ Thu, 10 Dec 2020 06:56:47 -0800 (PST)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20201209164542.61387-1-jinpu.wang@cloud.ionos.com> <20201209164542.61387-3-jinpu.wang@cloud.ionos.com>
+In-Reply-To: <20201209164542.61387-3-jinpu.wang@cloud.ionos.com>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Thu, 10 Dec 2020 15:56:15 +0100
+Message-ID: <CAMGffE=_axtHU=pAV3qx5FVY2pB786z3kffQwDzinOaH=yS5Ag@mail.gmail.com>
+Subject: Re: [PATCH for-next 02/18] RMDA/rtrs-srv: Occasionally flush ongoing
+ session closing
+To:     linux-rdma@vger.kernel.org
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/12/10 21:45, Jason Gunthorpe wrote:
-> On Thu, Dec 10, 2020 at 04:00:16AM +0000, liweihang wrote:
->> On 2020/12/10 5:09, Jason Gunthorpe wrote:
->>> On Fri, Dec 04, 2020 at 06:40:30PM +0800, Weihang Li wrote:
->>>> According to the RoCE v1 specification, the sl (service level) 0-7 are
->>>> mapped directly to priorities 0-7 respectively, sl 8-15 are reserved. The
->>>> driver should verify whether the value of sl is larger than 7, if so, an
->>>> exception should be returned.
->>>>
->>>> Fixes: 172505cfa3a8 ("RDMA/hns: Add check for the validity of sl configuration")
->>>> Fixes: d6a3627e311c ("RDMA/hns: Optimize wqe buffer set flow for post send")
->>>> Signed-off-by: Weihang Li <liweihang@huawei.com>
->>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 10 +++++-----
->>>>  1 file changed, 5 insertions(+), 5 deletions(-)
->>>>
->>>> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->>>> index 7a0c1ab..15e1313 100644
->>>> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->>>> @@ -433,6 +433,10 @@ static int fill_ud_av(struct hns_roce_v2_ud_send_wqe *ud_sq_wqe,
->>>>  		       V2_UD_SEND_WQE_BYTE_36_TCLASS_S, ah->av.tclass);
->>>>  	roce_set_field(ud_sq_wqe->byte_40, V2_UD_SEND_WQE_BYTE_40_FLOW_LABEL_M,
->>>>  		       V2_UD_SEND_WQE_BYTE_40_FLOW_LABEL_S, ah->av.flowlabel);
->>>> +
->>>> +	if (WARN_ON(ah->av.sl > MAX_SERVICE_LEVEL))
->>>> +		return -EINVAL;
->>>> +
->>>>  	roce_set_field(ud_sq_wqe->byte_40, V2_UD_SEND_WQE_BYTE_40_SL_M,
->>>>  		       V2_UD_SEND_WQE_BYTE_40_SL_S, ah->av.sl);
->>>>  
->>>> @@ -4609,12 +4613,8 @@ static int hns_roce_v2_set_path(struct ib_qp *ibqp,
->>>>  	memset(qpc_mask->dgid, 0, sizeof(grh->dgid.raw));
->>>>  
->>>>  	hr_qp->sl = rdma_ah_get_sl(&attr->ah_attr);
->>>> -	if (unlikely(hr_qp->sl > MAX_SERVICE_LEVEL)) {
->>>> -		ibdev_err(ibdev,
->>>> -			  "failed to fill QPC, sl (%d) shouldn't be larger than %d.\n",
->>>> -			  hr_qp->sl, MAX_SERVICE_LEVEL);
->>>> +	if (WARN_ON(hr_qp->sl > MAX_SERVICE_LEVEL))
->>>>  		return -EINVAL;
->>>> -	}
->>>>  
->>>>  	roce_set_field(context->byte_28_at_fl, V2_QPC_BYTE_28_SL_M,
->>>>  		       V2_QPC_BYTE_28_SL_S, hr_qp->sl);
->>>
->>> Can any of these warn_on's be triggered by user space? That would not
->>> be OK
->>>
->>> Jason
->>>
->>
->> Hi Jason,
->>
->> Thanks for your comments, I understand that error that can be triggered by
->> userspace shouldn't use WARN_ON(). So I shouldn't use WARN_ON() in
->> hns_roce_v2_set_path().
->>
->> As for the error in process of post_send, you suggested me to warn_on if
->> a kernel user try to pass in an illegal opcode. So I guess I should use
->> WARN_ON() too in sl's check when filling a UD WQE. Am I right?
-> 
-> Userspace should not be able to trigger warn_on
-> 
-> Bad kernel ULPs are OK to trigger warn_on
-> 
-> Jason
-> 
+On Wed, Dec 9, 2020 at 5:45 PM Jack Wang <jinpu.wang@cloud.ionos.com> wrote:
+>
+> If there are many establishments/teardowns, we need to make sure
+> we do not consume too much system memory. Thus let on going
+> session closing to finish before accepting new connection.
+>
+> Inspired by commit 777dc82395de ("nvmet-rdma: occasionally flush ongoing controller teardown")
+> Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+> Reviewed-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Please ignore this one, it could lead to deadlock, due to the fact
+cma_ib_req_handler is holding
+mutex_lock(&listen_id->handler_mutex) when calling into
+rtrs_rdma_connect, we call close_work which will call rdma_destroy_id,
+which
+could try to hold the same handler_mutex, so deadlock.
 
-I see, Thank you.
+Sorry & thanks!
 
-Weihang
+Jack
+
+> ---
+>  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> index ed4628f032bb..0a2202c28b54 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> @@ -1791,6 +1791,10 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
+>                 err = -ENOMEM;
+>                 goto reject_w_err;
+>         }
+> +       if (!cid) {
+> +               /* Let inflight session teardown complete */
+> +               flush_workqueue(rtrs_wq);
+> +       }
+>         mutex_lock(&srv->paths_mutex);
+>         sess = __find_sess(srv, &msg->sess_uuid);
+>         if (sess) {
+> --
+> 2.25.1
+>
