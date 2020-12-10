@@ -2,99 +2,306 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2F72D6399
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Dec 2020 18:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E3F2D63F6
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Dec 2020 18:48:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392712AbgLJRbj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Dec 2020 12:31:39 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11569 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392714AbgLJRab (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Dec 2020 12:30:31 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fd25b090000>; Thu, 10 Dec 2020 09:29:45 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Dec
- 2020 17:29:45 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.171)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 10 Dec 2020 17:29:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mCbr7wogg5X+Yd539Igho5jaJXYSYQWv8zTaHjJDT5iRfqljmNbAVmwquVV4A0IDsTuskNJXMGsRlI1oa/x9otIF4w1ZFJYL2eyUGazqdibHUxorFWAtrWg8bCUsyG1Tjd97nFzkFKLXl6VOTAAHMlbx83lLX23lyx/8cs8OVef5Keb6yZinqYXvoE4tBvC19GyLBe5eETW5MzTcgO0a2Q/3icFoY84BfXJ9HmubG1I/I9AkiqRbqvsPK7M7yO2105I6aD96iK2fNDc1Kax7vfbAnTmk/46R6LCqpD7sDnN7kdqvykTDB/FBdTKxfKPaKC6alTXJGWT3FldzuXMayA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ijhB3/xMnWFMU6pv3I+YOoyRHDzZS6DgitkxaOu5XE8=;
- b=mF4wVkMK07m35pJ/mwaeQqd7jkhTwAYA+cc6TC+rycwQvZVN/uDZh85nmn4JLsgx8oMRrzpCNytGZKK1qdZuphqjxmDnEN+boQEEvotXU9X3L+NBV9hWrXSS65LS429+ieMCGY3swe2ylAluMAC2pDPeL2Zu8HuV9LeHOTP4YKau93Rg0gCZej6j281u0dO3Z60LKoU9s9kWYroiceKph/qqpPx9p1scMJrP6wPwgkVurQ/KbZR3loOFMzdvUMkrze1v+psq4S84aPQimeBbVQtCK1J5I5VnwqMvwTcbXjIL5udnHgEBqo+j4HiNSPI7hHsJNTntVcx5nEk/ikvvHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0107.namprd12.prod.outlook.com (2603:10b6:4:55::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.20; Thu, 10 Dec
- 2020 17:29:43 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3632.023; Thu, 10 Dec 2020
- 17:29:43 +0000
-Date:   Thu, 10 Dec 2020 13:29:41 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] RDMA/restrack: update kernel documentation for
- ib_create_named_qp()
-Message-ID: <20201210172941.GC2117013@nvidia.com>
-References: <20201207173255.13355-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201207173255.13355-1-lukas.bulwahn@gmail.com>
-X-ClientProxiedBy: MN2PR01CA0064.prod.exchangelabs.com (2603:10b6:208:23f::33)
- To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+        id S2392031AbgLJRrS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Dec 2020 12:47:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392914AbgLJRrK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Dec 2020 12:47:10 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF1BC0613D6
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Dec 2020 09:46:29 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id o11so5677296ote.4
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Dec 2020 09:46:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8k2Y6/Lh2y+Dzs/feqtDWzrRnjTqxnC+Yo6ftaLiYlc=;
+        b=SOKGOMKucL90wD5OzGbewPUu+GcsBKicApgLkRwPDW6oRb1epoNBBxAm3VP8DJmVRX
+         P5aDyob2gOup4+E87dkwC9XMvA/QaOQUX5ajz3KbZAUN8JjTpFSkQxrbRgNen0H/ZHao
+         8LCesd/+Q7c8m2XpQ5iBgYNgEw/kvHH9annHJ/YA/S8NhXUJaT3io3PsUnenVyltNK7N
+         Nb8VcC5Toc/dllCScgUe7mxJW8qjEdoRuFUrLI5StDDVxl93nYHEkjM8ySOICMWilYDY
+         xRo7fJog0VH1zzvkKkOHWd5tsx6N3Uq9rZAVN+xUdGtTkFfsgWmMMFV+pfXScBb0IPmQ
+         FRQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8k2Y6/Lh2y+Dzs/feqtDWzrRnjTqxnC+Yo6ftaLiYlc=;
+        b=Qquc7cOBZ3dgUwAzPSm4mVfymSe1064cwOmuhxv3VxBmDghrr7r7xeU4tspIzpiuMB
+         3GjW3sqJdhLRUsTcwpZv6Qj5M/vGLZbaKRaeYLbK00OI90fkO5+YaDWOrN0kYhdmHN2s
+         QWQkDaw/6oaA8ZejU1dqW7XYXjFty49pUO/XykFvmL2YPBeTazcDu/bkdl+c08dcX7cH
+         EmZfP8JL9f9t1ctqMit41JeDcIeIziIqUnlttiJSZf73Hy2APksva2saUgjYfjYuRNgT
+         cv56BeDZbMvclWdIbRJlJUmj75A27AEddX9QapxHjOQaPG4AyBJW/X8u+HQSelpBx/fw
+         eaSQ==
+X-Gm-Message-State: AOAM533N7Uz1s6Idd1rYbLvQRox/W65zJs4V71OPRBIfGUj8E3AW1l6m
+        FGRjnB1DqFkVmEhU8A9QLCF8OHlfJyQ=
+X-Google-Smtp-Source: ABdhPJyC1tdHduC0x3c55SK7zFC/KE9eeIVgc3vY1iWSHOnPRF0VC5NEBMU2EgKJizfTrfiFmqja4Q==
+X-Received: by 2002:a05:6830:22eb:: with SMTP id t11mr7041892otc.114.1607622389061;
+        Thu, 10 Dec 2020 09:46:29 -0800 (PST)
+Received: from localhost (2603-8081-140c-1a00-f558-d5e5-8ab9-02b7.res6.spectrum.com. [2603:8081:140c:1a00:f558:d5e5:8ab9:2b7])
+        by smtp.gmail.com with ESMTPSA id s26sm1220790otd.8.2020.12.10.09.46.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 09:46:28 -0800 (PST)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearson@hpe.com>
+Subject: [PATCH v2] RDMA/rxe: Use acquire/release for memory ordering
+Date:   Thu, 10 Dec 2020 11:42:59 -0600
+Message-Id: <20201210174258.5234-1-rpearson@hpe.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR01CA0064.prod.exchangelabs.com (2603:10b6:208:23f::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Thu, 10 Dec 2020 17:29:42 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1knPl7-008slJ-ND; Thu, 10 Dec 2020 13:29:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607621385; bh=ijhB3/xMnWFMU6pv3I+YOoyRHDzZS6DgitkxaOu5XE8=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=cawpmPkB6QKhHtOu7b4VSHF1zZpcmhJ7vu/RAZmL6K+BBO3wFzKnWZicAU00ZM+9b
-         TIxX2OtRvk5S5j+16vj19c1exo42/AR4RhY6gd+d+LowLIeX5XoMFkHmB4z+GKTIVp
-         /q9ciTKa1h9WYqR6aafV9JcIRrItmQrJh0hRkMS1sm9uT8Tixqregq9Avi8SfRfsmK
-         9wnijmUL/pmC2PNOu4ztKL04l6oZ28+M2z+/16HNlxJ+tFkNeqQnR8HDa6o3PRUNMz
-         lpJGXaAr4htqdiYKVLtN9eKtq3pyxIsExWCy52ie+sid1C5ps1bAq+qwBZGVwj18jT
-         o00mHnCKWVsqg==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 06:32:55PM +0100, Lukas Bulwahn wrote:
-> Commit 66f57b871efc ("RDMA/restrack: Support all QP types") extends
-> ib_create_qp() to a named ib_create_named_qp(), which takes the caller's
-> name as argument, but it did not add the new argument description to the
-> function's kerneldoc.
-> 
-> make htmldocs warns:
-> 
->   ./drivers/infiniband/core/verbs.c:1206: warning: Function parameter or
->   member 'caller' not described in 'ib_create_named_qp'
-> 
-> Add a description for this new argument based on the description of the
-> same argument in other related functions.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/core/verbs.c | 1 +
->  1 file changed, 1 insertion(+)
+Changed work and completion queues to use smp_load_acquire() and
+smp_store_release() to synchronize between driver and users.
+This commit goes with a matching series of commits in the rxe user
+space provider.
 
-Applies to for-next, thanks
+v2: Addressed same issue for kernel ULPs which use rxe_post_send/recv().
 
-Jason
+Signed-off-by: Bob Pearson <rpearson@hpe.com>
+---
+ drivers/infiniband/sw/rxe/rxe_cq.c    |  5 --
+ drivers/infiniband/sw/rxe/rxe_queue.h | 94 +++++++++++++++++----------
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 11 ----
+ include/uapi/rdma/rdma_user_rxe.h     | 21 ++++++
+ 4 files changed, 81 insertions(+), 50 deletions(-)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
+index 43394c3f29d4..b315ebf041ac 100644
+--- a/drivers/infiniband/sw/rxe/rxe_cq.c
++++ b/drivers/infiniband/sw/rxe/rxe_cq.c
+@@ -123,11 +123,6 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
+ 
+ 	memcpy(producer_addr(cq->queue), cqe, sizeof(*cqe));
+ 
+-	/* make sure all changes to the CQ are written before we update the
+-	 * producer pointer
+-	 */
+-	smp_wmb();
+-
+ 	advance_producer(cq->queue);
+ 	spin_unlock_irqrestore(&cq->cq_lock, flags);
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe_queue.h b/drivers/infiniband/sw/rxe/rxe_queue.h
+index 7d434a6837a7..2902ca7b288c 100644
+--- a/drivers/infiniband/sw/rxe/rxe_queue.h
++++ b/drivers/infiniband/sw/rxe/rxe_queue.h
+@@ -7,9 +7,11 @@
+ #ifndef RXE_QUEUE_H
+ #define RXE_QUEUE_H
+ 
++/* for definition of shared struct rxe_queue_buf */
++#include <uapi/rdma/rdma_user_rxe.h>
++
+ /* implements a simple circular buffer that can optionally be
+  * shared between user space and the kernel and can be resized
+-
+  * the requested element size is rounded up to a power of 2
+  * and the number of elements in the buffer is also rounded
+  * up to a power of 2. Since the queue is empty when the
+@@ -17,28 +19,6 @@
+  * of the queue is one less than the number of element slots
+  */
+ 
+-/* this data structure is shared between user space and kernel
+- * space for those cases where the queue is shared. It contains
+- * the producer and consumer indices. Is also contains a copy
+- * of the queue size parameters for user space to use but the
+- * kernel must use the parameters in the rxe_queue struct
+- * this MUST MATCH the corresponding librxe struct
+- * for performance reasons arrange to have producer and consumer
+- * pointers in separate cache lines
+- * the kernel should always mask the indices to avoid accessing
+- * memory outside of the data area
+- */
+-struct rxe_queue_buf {
+-	__u32			log2_elem_size;
+-	__u32			index_mask;
+-	__u32			pad_1[30];
+-	__u32			producer_index;
+-	__u32			pad_2[31];
+-	__u32			consumer_index;
+-	__u32			pad_3[31];
+-	__u8			data[];
+-};
+-
+ struct rxe_queue {
+ 	struct rxe_dev		*rxe;
+ 	struct rxe_queue_buf	*buf;
+@@ -46,7 +26,7 @@ struct rxe_queue {
+ 	size_t			buf_size;
+ 	size_t			elem_size;
+ 	unsigned int		log2_elem_size;
+-	unsigned int		index_mask;
++	u32			index_mask;
+ };
+ 
+ int do_mmap_info(struct rxe_dev *rxe, struct mminfo __user *outbuf,
+@@ -76,26 +56,56 @@ static inline int next_index(struct rxe_queue *q, int index)
+ 
+ static inline int queue_empty(struct rxe_queue *q)
+ {
+-	return ((q->buf->producer_index - q->buf->consumer_index)
+-			& q->index_mask) == 0;
++	u32 prod;
++	u32 cons;
++
++	/* make sure all changes to queue complete before
++	 * testing queue empty
++	 */
++	prod = smp_load_acquire(&q->buf->producer_index);
++	/* same */
++	cons = smp_load_acquire(&q->buf->consumer_index);
++
++	return ((prod - cons) & q->index_mask) == 0;
+ }
+ 
+ static inline int queue_full(struct rxe_queue *q)
+ {
+-	return ((q->buf->producer_index + 1 - q->buf->consumer_index)
+-			& q->index_mask) == 0;
++	u32 prod;
++	u32 cons;
++
++	/* make sure all changes to queue complete before
++	 * testing queue full
++	 */
++	prod = smp_load_acquire(&q->buf->producer_index);
++	/* same */
++	cons = smp_load_acquire(&q->buf->consumer_index);
++
++	return ((prod + 1 - cons) & q->index_mask) == 0;
+ }
+ 
+ static inline void advance_producer(struct rxe_queue *q)
+ {
+-	q->buf->producer_index = (q->buf->producer_index + 1)
+-			& q->index_mask;
++	u32 prod;
++
++	prod = (q->buf->producer_index + 1) & q->index_mask;
++
++	/* make sure all changes to queue complete before
++	 * changing producer index
++	 */
++	smp_store_release(&q->buf->producer_index, prod);
+ }
+ 
+ static inline void advance_consumer(struct rxe_queue *q)
+ {
+-	q->buf->consumer_index = (q->buf->consumer_index + 1)
+-			& q->index_mask;
++	u32 cons;
++
++	cons = (q->buf->consumer_index + 1) & q->index_mask;
++
++	/* make sure all changes to queue complete before
++	 * changing consumer index
++	 */
++	smp_store_release(&q->buf->consumer_index, cons);
+ }
+ 
+ static inline void *producer_addr(struct rxe_queue *q)
+@@ -112,12 +122,28 @@ static inline void *consumer_addr(struct rxe_queue *q)
+ 
+ static inline unsigned int producer_index(struct rxe_queue *q)
+ {
+-	return q->buf->producer_index;
++	u32 index;
++
++	/* make sure all changes to queue
++	 * complete before getting producer index
++	 */
++	index = smp_load_acquire(&q->buf->producer_index);
++	index &= q->index_mask;
++
++	return index;
+ }
+ 
+ static inline unsigned int consumer_index(struct rxe_queue *q)
+ {
+-	return q->buf->consumer_index;
++	u32 index;
++
++	/* make sure all changes to queue
++	 * complete before getting consumer index
++	 */
++	index = smp_load_acquire(&q->buf->consumer_index);
++	index &= q->index_mask;
++
++	return index;
+ }
+ 
+ static inline void *addr_from_index(struct rxe_queue *q, unsigned int index)
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index 2fbea2b2d72a..a031514e2f41 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -244,11 +244,6 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
+ 	recv_wqe->dma.cur_sge		= 0;
+ 	recv_wqe->dma.sge_offset	= 0;
+ 
+-	/* make sure all changes to the work queue are written before we
+-	 * update the producer pointer
+-	 */
+-	smp_wmb();
+-
+ 	advance_producer(rq->queue);
+ 	return 0;
+ 
+@@ -633,12 +628,6 @@ static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
+ 	if (unlikely(err))
+ 		goto err1;
+ 
+-	/*
+-	 * make sure all changes to the work queue are
+-	 * written before we update the producer pointer
+-	 */
+-	smp_wmb();
+-
+ 	advance_producer(sq->queue);
+ 	spin_unlock_irqrestore(&qp->sq.sq_lock, flags);
+ 
+diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
+index e591d8c1f3cf..068433e2229d 100644
+--- a/include/uapi/rdma/rdma_user_rxe.h
++++ b/include/uapi/rdma/rdma_user_rxe.h
+@@ -181,4 +181,25 @@ struct rxe_modify_srq_cmd {
+ 	__aligned_u64 mmap_info_addr;
+ };
+ 
++/* This data structure is stored at the base of work and
++ * completion queues shared between user space and kernel space.
++ * It contains the producer and consumer indices. Is also
++ * contains a copy of the queue size parameters for user space
++ * to use but the kernel must use the parameters in the
++ * rxe_queue struct. For performance reasons arrange to have
++ * producer and consumer indices in separate cache lines
++ * the kernel should always mask the indices to avoid accessing
++ * memory outside of the data area
++ */
++struct rxe_queue_buf {
++	__u32			log2_elem_size;
++	__u32			index_mask;
++	__u32			pad_1[30];
++	__u32			producer_index;
++	__u32			pad_2[31];
++	__u32			consumer_index;
++	__u32			pad_3[31];
++	__u8			data[];
++};
++
+ #endif /* RDMA_USER_RXE_H */
+-- 
+2.27.0
+
