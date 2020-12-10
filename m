@@ -2,97 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7362D6977
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Dec 2020 22:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBC92D6B38
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Dec 2020 00:38:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392173AbgLJVJB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Dec 2020 16:09:01 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:24097 "EHLO nat-hk.nvidia.com"
+        id S1731564AbgLJW51 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Dec 2020 17:57:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730214AbgLJVJB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 10 Dec 2020 16:09:01 -0500
-Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fd28e420000>; Fri, 11 Dec 2020 05:08:18 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Dec
- 2020 21:08:17 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 10 Dec 2020 21:08:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iPKcguxc4qZEmqi2ooojh5jfbY0pv7mji6bYzcOxLIsrifG4Y1Dsm9i2Xr2ESP9qu0wcNC5OkFwO1TLsbLBCRzb706IwIzD2UDunFHb3oCVNWhZDx9wYWUlYDZKFAJV0nGq7TDoo8/B4QbvxMtFbm2WMzNocMYxiQBi3PY0IniIMat8ZG5R+4AaHVontfmgZpYJbmA1fd8vpiqPsp+Q4RFPXRxAyDl994fpvpfndCwtgwQinuBGBcIerxuK59bVBbI2/jZdSnqfTWH8NuFHdwH10O/ftOG7PVwqy9G6CjaZXuyyPBZtpYFnLOjkhIy+G0geGpXV+G3BoRk6+LrVcEw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OOKFQErysvoX13N4rm5tbwbTbzAzlUzzMIF7kbg3Fx0=;
- b=Rb5MGCRAMPOv85M3TXZLCtYvLSQo4o161y1SzWm4XqIsA26kpLSviN/sMCZdbh73N/80noGSK1BBydg2gkRdAlyE08sKm2zmpF/bfdkglvRoXkFcExVSe1Ych8xUCTtx6+b399gPF53BhTr4LFQP2VSYXA+cIJ5eSMcJHOAoBrjz/5Q5qEExoKHd2HMG0hSfL4mfxHkndB1IuKvuwIe58ksaeLNCfqS5yfceuq1KLlt2Vs4AIYvHKzHcc88f56cp1bQGo42A9EUyf5+879VOyPFJqCLBZievHV0gi0u9us775ZOMr/bipkTXvNLKiFouVQP+AXIzx41zQGLflNjBVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4402.namprd12.prod.outlook.com (2603:10b6:5:2a5::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Thu, 10 Dec
- 2020 21:08:15 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3632.023; Thu, 10 Dec 2020
- 21:08:14 +0000
-Date:   Thu, 10 Dec 2020 17:08:13 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-CC:     Yishai Hadas <yishaih@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [PATCH rdma-next] RDMA/mlx4: remove bogus dev_base_lock usage
-Message-ID: <20201210210813.GA2143210@nvidia.com>
-References: <20201208193928.1500893-1-vladimir.oltean@nxp.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201208193928.1500893-1-vladimir.oltean@nxp.com>
-X-ClientProxiedBy: BL1PR13CA0064.namprd13.prod.outlook.com
- (2603:10b6:208:2b8::9) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1729324AbgLJW5Q (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 10 Dec 2020 17:57:16 -0500
+X-Gm-Message-State: AOAM531VI4K5ScDHtgx08n2sIxdeOym6/PE+oGo/QaMpVCk+Ldwct148
+        wrC2B2QpSGaMXBVb6ICV60v6FdcIMXBZx27ZTg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607640995;
+        bh=HILNalL3GlPRV+ztE2WnCsMQWzjgnQh5F8d+VjxfhHA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DkCyyeuvJy4iU5hGrhY5rvXdNF/XDEltkcaXCK6XvpomHZn/eMfi17cIpcRiI5UTN
+         kSgVM0+4jjhPCNQ75+n/cgaon9liXs7woUDnE8yttzk1aQDmv4io7aucoYzyAtdNG0
+         I2wUawkxulB5pG6A0oOdXuJ1alyYKqoFx6TvAWl9grEpRA2evfntb2Y6XvyL5UXgjx
+         TzZURk/yteTpMNwsMgcPKMcKwqol/ljrllpmoEMc4onPQTbPEpHiroGdwkcCe99aWN
+         MqaDFHEFOoTW4rWfDNURprjhGlC5XlkkOBsq9Gva6ntmAVZmR6ksXaR9lV2TA1APi2
+         jOgUDjBhrO9bg==
+X-Google-Smtp-Source: ABdhPJxCdEkGcUPgqgCmU+hGdc9mjJz2mo+m7nRBlZJj4NBRvD8ZfcoTXioyfo8/Gn48VrKyiwGC/1HmZUK4DbzvCWk=
+X-Received: by 2002:a17:906:d784:: with SMTP id pj4mr8261525ejb.360.1607640993261;
+ Thu, 10 Dec 2020 14:56:33 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0064.namprd13.prod.outlook.com (2603:10b6:208:2b8::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Thu, 10 Dec 2020 21:08:14 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1knTAb-008zYb-4f; Thu, 10 Dec 2020 17:08:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607634498; bh=OOKFQErysvoX13N4rm5tbwbTbzAzlUzzMIF7kbg3Fx0=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=hxyoZDyg9lgkHi5QkvtRCPRbhwtF4DoTFI4YmumnDt6c1yLsyHMHuYLxqJ/z9Ljtx
-         docSkQuXkut97yhaGkWTU+UIwLMwPRG7Gvl/su8zMN8AIe6hjj9HITj7h87GD/lUk2
-         lUgOOh6yYRPqwdL9dmNNojlITvfcCTPjkgZNGiM7QbeCcQECmlbE9Zj2VKcAUtuwWQ
-         aTEPPITgjmPpxdfii4/nNEL6zFYGtbPxA/GHuL0bODNoG4uYXxqg329v4sF0FVy5g/
-         uMsdMf7li+40C9DP7JVjmK44s+pCw8wkra2HCV8koQYj2lJw7pf7DTN1QVsQEL3szt
-         UzcoTvY4V1eEA==
+References: <20201210192536.118432146@linutronix.de> <20201210194044.364211860@linutronix.de>
+In-Reply-To: <20201210194044.364211860@linutronix.de>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 10 Dec 2020 16:56:21 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKCGkyk9whiGQ0hPyWjSYXnC-TSbot85k7=bwVd0rwC=A@mail.gmail.com>
+Message-ID: <CAL_JsqKCGkyk9whiGQ0hPyWjSYXnC-TSbot85k7=bwVd0rwC=A@mail.gmail.com>
+Subject: Re: [patch 18/30] PCI: xilinx-nwl: Use irq_data_get_irq_chip_data()
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 09:39:28PM +0200, Vladimir Oltean wrote:
-> It is not clear what this lock protects. If the authors wanted to ensure
-> that "dev" does not disappear, that is impossible, given the following
-> code path:
-> 
-> mlx4_ib_netdev_event (under RTNL mutex)
-> -> mlx4_ib_scan_netdevs
->    -> mlx4_ib_update_qps
-> 
-> Also, the dev_base_lock does not protect dev->dev_addr either.
-> 
-> So it serves no purpose here. Remove it.
-> 
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+On Thu, Dec 10, 2020 at 1:42 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Going through a full irq descriptor lookup instead of just using the proper
+> helper function which provides direct access is suboptimal.
+>
+> In fact it _is_ wrong because the chip callback needs to get the chip data
+> which is relevant for the chip while using the irq descriptor variant
+> returns the irq chip data of the top level chip of a hierarchy. It does not
+> matter in this case because the chip is the top level chip, but that
+> doesn't make it more correct.
+>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Michal Simek <michal.simek@xilinx.com>
+> Cc: linux-pci@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
 > ---
->  drivers/infiniband/hw/mlx4/main.c | 3 ---
->  1 file changed, 3 deletions(-)
+>  drivers/pci/controller/pcie-xilinx-nwl.c |    8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
 
-Applied to for-next, thanks
-
-Jason
+Reviewed-by: Rob Herring <robh@kernel.org>
