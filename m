@@ -2,111 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E102D76D7
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Dec 2020 14:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E62092D77AF
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Dec 2020 15:22:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727077AbgLKNqs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 11 Dec 2020 08:46:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732259AbgLKNq0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Dec 2020 08:46:26 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FDC2C0613CF
-        for <linux-rdma@vger.kernel.org>; Fri, 11 Dec 2020 05:45:46 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id a6so6385701qtw.6
-        for <linux-rdma@vger.kernel.org>; Fri, 11 Dec 2020 05:45:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vSt2SsNlWFXsX9I97ohoMymmKvj2//PHey09huy6uo0=;
-        b=MPyvoghPtZPdN073/KR+AU9kTYiB+PSv88O7Z5QuOjFGgPYR2ATSujiqdq6sVCfWD4
-         qhbdcJ4UGwtFYRzhYOgLYLYn+DG61ignGi3KwyvAE1KLvEP5ksuuyFYr7C0o9YgJUoSC
-         vU1TyFsxyXZUBBh06Y9z6GRJY9SwyDCQuzthOkTwtT1oS0Et0ImE4d94/sG5ENhycnuW
-         ULd561NbyJeUnkS5rPtwNKABDmLom1WCNlDDts9cEXywzOfqsDwUR5u+U88NS0K1vCRR
-         EKXiX5kOdaZHA9jXp9vzm+HP2J//zhiPUOcqcdue9+vwHXsSZMDf6moV0wtHrUsc9SdY
-         gknQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vSt2SsNlWFXsX9I97ohoMymmKvj2//PHey09huy6uo0=;
-        b=L5z275Rnmff2iPPz3qK/fvp4/VIsLcc/OFUP6yuxd3ynDMWDQPK1eZDhNxbfE4AaMO
-         jqb4s7olXZVprKAmhrI/xf5mWBM3Z9kVwZ+pbx2a1K3UDGO0gB8ssQSb5nOy9VY1AblZ
-         mZRAvqkDhQ7I/iA6wH0sSdwZdf4kiN3IQjZiXRO4tCD6bpK/RuFdcdW+o+ZL0VVaYYzL
-         lyO5jDQyEGEWPqKlreqrRH07Ih8VDMsbRs4km6usZTyQklGLwdrNYFQ0ziaImGtGlYiZ
-         hOPtSXQkxowSzN2LJWbLOZP6c8jOgLS91nJTzbDgfHwZjAdrHzCcelynfgNlXfmhyxob
-         nOZQ==
-X-Gm-Message-State: AOAM531MIWwLVTLnPgA3G6pgXWeWYNhUL3z8jllAuPBsDUfFcE2orEY8
-        a4Amwi2PDoq8ztMrtmztafYUsw==
-X-Google-Smtp-Source: ABdhPJy33m9G5ZzJ/u+kn6MsBh8JqyE3bGCr+pGWletyrd0PX8+hEn/SKjgFO5dIa5vb2aq9B38/Bg==
-X-Received: by 2002:ac8:5a8c:: with SMTP id c12mr15483732qtc.97.1607694345797;
-        Fri, 11 Dec 2020 05:45:45 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id r14sm7125076qte.27.2020.12.11.05.45.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 05:45:44 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1knijv-009DWW-LI; Fri, 11 Dec 2020 09:45:43 -0400
-Date:   Fri, 11 Dec 2020 09:45:43 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        linux-rdma@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Subject: Re: [PATCH for-next 02/18] RMDA/rtrs-srv: Occasionally flush ongoing
- session closing
-Message-ID: <20201211134543.GB5487@ziepe.ca>
-References: <20201209164542.61387-1-jinpu.wang@cloud.ionos.com>
- <20201209164542.61387-3-jinpu.wang@cloud.ionos.com>
- <CAMGffE=_axtHU=pAV3qx5FVY2pB786z3kffQwDzinOaH=yS5Ag@mail.gmail.com>
- <e841a2c3-2774-ca8f-302a-cd43c3b3161e@cloud.ionos.com>
- <CAMGffEmKAzy3dXVKhoZDAqLpZ6DiQiaYNQn8_0Fd+MQUXbn_eA@mail.gmail.com>
- <20201211072600.GA192848@unreal>
- <CAMGffEn4fbTud3qrrwnrS6bqxcpF6sueKb=Qke8N9yLvDeEWpA@mail.gmail.com>
- <CAMGffEnuNHacxqqdZsF0JMk3kTUqT9KdzNK_QzBF_FWjPWLN8Q@mail.gmail.com>
+        id S2406179AbgLKOU5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 11 Dec 2020 09:20:57 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:26649 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406027AbgLKOUr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 11 Dec 2020 09:20:47 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-53-s0AncPC_O7qxZEyLU7X13A-1; Fri, 11 Dec 2020 14:19:07 +0000
+X-MC-Unique: s0AncPC_O7qxZEyLU7X13A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 11 Dec 2020 14:19:05 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 11 Dec 2020 14:19:05 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Thomas Gleixner' <tglx@linutronix.de>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        "linux-ntb@googlegroups.com" <linux-ntb@googlegroups.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Michal Simek" <michal.simek@xilinx.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        "Tariq Toukan" <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+Subject: RE: [patch 14/30] drm/i915/pmu: Replace open coded kstat_irqs() copy
+Thread-Topic: [patch 14/30] drm/i915/pmu: Replace open coded kstat_irqs() copy
+Thread-Index: AQHWz72qwjNpP0n0UkWT70W8RrLS8qnx7xrw
+Date:   Fri, 11 Dec 2020 14:19:05 +0000
+Message-ID: <d6cbfa118490459bb0671394f00323fc@AcuMS.aculab.com>
+References: <20201210192536.118432146@linutronix.de>
+ <20201210194043.957046529@linutronix.de>
+ <ad05af1a-5463-2a80-0887-7629721d6863@linux.intel.com>
+ <87y2i4h54i.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87y2i4h54i.fsf@nanos.tec.linutronix.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMGffEnuNHacxqqdZsF0JMk3kTUqT9KdzNK_QzBF_FWjPWLN8Q@mail.gmail.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 08:58:09AM +0100, Jinpu Wang wrote:
-> > > > No, I was wrong. I rechecked the code, it's not a valid deadlock, in
-> > > > cma_ib_req_handler, the conn_id is newly created in
-> > > > https://elixir.bootlin.com/linux/latest/source/drivers/infiniband/core/cma.c#L2185.
-> > > >
-> > > > Flush_workqueue will only flush close_work for any other cm_id, but
-> > > > not the newly created one conn_id, it has not associated with anything
-> > > > yet.
-> > > >
-> > > > The same applies to nvme-rdma. so it's a false alarm by lockdep.
-> > >
-> > > Leaving this without fix (proper lock annotation) is not right thing to
-> > > do, because everyone who runs rtrs code with LOCKDEP on will have same
-> > > "false alarm".
-> > >
-> > > So I recommend or not to take this patch or write it without LOCKDEP warning.
-> > Hi Leon,
-> >
-> > I'm thinking about the same, do you have a suggestion on how to teach
-> > LOCKDEP this is not really a deadlock,
-> > I do not know LOCKDEP well.
-> Found it myself, we can use lockdep_off
+From: Thomas Gleixner
+> Sent: 11 December 2020 12:58
+..
+> > After my failed hasty sketch from last night I had a different one which
+> > was kind of heuristics based (re-reading the upper dword and retrying if
+> > it changed on 32-bit).
 > 
-> https://elixir.bootlin.com/linux/latest/source/drivers/virtio/virtio_mem.c#L699
+> The problem is that there will be two seperate modifications for the low
+> and high word. Several ways how the compiler can translate this, but the
+> problem is the same for all of them:
+> 
+> CPU 0                           CPU 1
+>         load low
+>         load high
+>         add  low, 1
+>         addc high, 0
+>         store low               load high
+> --> NMI                         load low
+>                                 load high and compare
+>         store high
+> 
+> You can't catch that. If this really becomes an issue you need a
+> sequence counter around it.
 
-Gah, that is horrible.
+Or just two copies of the high word.
+Provided the accesses are sequenced:
+writer:
+	load high:low
+	add small_value,high:low
+	store high
+	store low
+	store high_copy
+reader:
+	load high_copy
+	load low
+	load high
+	if (high != high_copy)
+		low = 0;
 
-I'm not completely sure it is false either, at this point two
-handler_mutex's are locked (listening ID and the new ID) and there may
-be locking cycles that end up back on the listening ID, certainly it
-is not so simple.
+The read value is always stale, so it probably doesn't
+matter that the value you have is one that is between the
+value when you started and that when you finished.
 
-Jason
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
