@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A496B2D6DB4
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Dec 2020 02:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F328F2D6DAD
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Dec 2020 02:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390336AbgLKBlk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Dec 2020 20:41:40 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:8983 "EHLO
+        id S2390029AbgLKBl0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Dec 2020 20:41:26 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:8984 "EHLO
         szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390278AbgLKBk6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Dec 2020 20:40:58 -0500
+        with ESMTP id S2390521AbgLKBk5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Dec 2020 20:40:57 -0500
 Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CsYNT2ZM9zhqT1;
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CsYNT2KtyzhqSs;
         Fri, 11 Dec 2020 09:39:05 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH v5 for-next 09/11] RDMA/hns: Fix incorrect symbol types
-Date:   Fri, 11 Dec 2020 09:37:35 +0800
-Message-ID: <1607650657-35992-10-git-send-email-liweihang@huawei.com>
+Subject: [PATCH v5 for-next 10/11] RDMA/hns: Fix inaccurate prints
+Date:   Fri, 11 Dec 2020 09:37:36 +0800
+Message-ID: <1607650657-35992-11-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1607650657-35992-1-git-send-email-liweihang@huawei.com>
 References: <1607650657-35992-1-git-send-email-liweihang@huawei.com>
@@ -35,564 +35,759 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Wenpeng Liang <liangwenpeng@huawei.com>
+From: Yixing Liu <liuyixing1@huawei.com>
 
-Types of some fields, variables and parameters of some functions should be
-unsigned.
+Some %d in print format string should be %u, and some prints miss the
+useful errno or are in nonstandard format. Just fix above issues.
 
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_cmd.c    | 10 +++---
- drivers/infiniband/hw/hns/hns_roce_cmd.h    |  2 +-
- drivers/infiniband/hw/hns/hns_roce_common.h | 14 ++++----
- drivers/infiniband/hw/hns/hns_roce_db.c     |  8 ++---
- drivers/infiniband/hw/hns/hns_roce_device.h | 53 +++++++++++++++--------------
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c  |  8 ++---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 30 ++++++++--------
- drivers/infiniband/hw/hns/hns_roce_main.c   |  2 +-
- drivers/infiniband/hw/hns/hns_roce_mr.c     | 11 +++---
- drivers/infiniband/hw/hns/hns_roce_qp.c     |  8 ++---
- 10 files changed, 73 insertions(+), 73 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_alloc.c |  4 +-
+ drivers/infiniband/hw/hns/hns_roce_cq.c    | 35 ++++++++---------
+ drivers/infiniband/hw/hns/hns_roce_hem.c   | 18 ++++-----
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 30 +++++++--------
+ drivers/infiniband/hw/hns/hns_roce_mr.c    | 10 ++---
+ drivers/infiniband/hw/hns/hns_roce_pd.c    |  2 +-
+ drivers/infiniband/hw/hns/hns_roce_qp.c    | 61 +++++++++++++++++-------------
+ drivers/infiniband/hw/hns/hns_roce_srq.c   | 37 ++++++++++--------
+ 8 files changed, 107 insertions(+), 90 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.c b/drivers/infiniband/hw/hns/hns_roce_cmd.c
-index c493d76..339e3fd 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cmd.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cmd.c
-@@ -60,7 +60,7 @@ static int hns_roce_cmd_mbox_post_hw(struct hns_roce_dev *hr_dev, u64 in_param,
- static int __hns_roce_cmd_mbox_poll(struct hns_roce_dev *hr_dev, u64 in_param,
- 				    u64 out_param, unsigned long in_modifier,
- 				    u8 op_modifier, u16 op,
--				    unsigned long timeout)
-+				    unsigned int timeout)
- {
- 	struct device *dev = hr_dev->dev;
- 	int ret;
-@@ -78,7 +78,7 @@ static int __hns_roce_cmd_mbox_poll(struct hns_roce_dev *hr_dev, u64 in_param,
- 
- static int hns_roce_cmd_mbox_poll(struct hns_roce_dev *hr_dev, u64 in_param,
- 				  u64 out_param, unsigned long in_modifier,
--				  u8 op_modifier, u16 op, unsigned long timeout)
-+				  u8 op_modifier, u16 op, unsigned int timeout)
- {
- 	int ret;
- 
-@@ -108,7 +108,7 @@ void hns_roce_cmd_event(struct hns_roce_dev *hr_dev, u16 token, u8 status,
- static int __hns_roce_cmd_mbox_wait(struct hns_roce_dev *hr_dev, u64 in_param,
- 				    u64 out_param, unsigned long in_modifier,
- 				    u8 op_modifier, u16 op,
--				    unsigned long timeout)
-+				    unsigned int timeout)
- {
- 	struct hns_roce_cmdq *cmd = &hr_dev->cmd;
- 	struct hns_roce_cmd_context *context;
-@@ -159,7 +159,7 @@ static int __hns_roce_cmd_mbox_wait(struct hns_roce_dev *hr_dev, u64 in_param,
- 
- static int hns_roce_cmd_mbox_wait(struct hns_roce_dev *hr_dev, u64 in_param,
- 				  u64 out_param, unsigned long in_modifier,
--				  u8 op_modifier, u16 op, unsigned long timeout)
-+				  u8 op_modifier, u16 op, unsigned int timeout)
- {
- 	int ret;
- 
-@@ -173,7 +173,7 @@ static int hns_roce_cmd_mbox_wait(struct hns_roce_dev *hr_dev, u64 in_param,
- 
- int hns_roce_cmd_mbox(struct hns_roce_dev *hr_dev, u64 in_param, u64 out_param,
- 		      unsigned long in_modifier, u8 op_modifier, u16 op,
--		      unsigned long timeout)
-+		      unsigned int timeout)
- {
- 	int ret;
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.h b/drivers/infiniband/hw/hns/hns_roce_cmd.h
-index 8e63b82..8025e7f 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cmd.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_cmd.h
-@@ -141,7 +141,7 @@ enum {
- 
- int hns_roce_cmd_mbox(struct hns_roce_dev *hr_dev, u64 in_param, u64 out_param,
- 		      unsigned long in_modifier, u8 op_modifier, u16 op,
--		      unsigned long timeout);
-+		      unsigned int timeout);
- 
- struct hns_roce_cmd_mailbox *
- hns_roce_alloc_cmd_mailbox(struct hns_roce_dev *hr_dev);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_common.h b/drivers/infiniband/hw/hns/hns_roce_common.h
-index 29469e1..5afee04 100644
---- a/drivers/infiniband/hw/hns/hns_roce_common.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_common.h
-@@ -38,19 +38,19 @@
- #define roce_raw_write(value, addr) \
- 	__raw_writel((__force u32)cpu_to_le32(value), (addr))
- 
--#define roce_get_field(origin, mask, shift) \
--	(((le32_to_cpu(origin)) & (mask)) >> (shift))
-+#define roce_get_field(origin, mask, shift)                                    \
-+	((le32_to_cpu(origin) & (mask)) >> (u32)(shift))
- 
- #define roce_get_bit(origin, shift) \
- 	roce_get_field((origin), (1ul << (shift)), (shift))
- 
--#define roce_set_field(origin, mask, shift, val) \
--	do { \
--		(origin) &= ~cpu_to_le32(mask); \
--		(origin) |= cpu_to_le32(((u32)(val) << (shift)) & (mask)); \
-+#define roce_set_field(origin, mask, shift, val)                               \
-+	do {                                                                   \
-+		(origin) &= ~cpu_to_le32(mask);                                \
-+		(origin) |= cpu_to_le32(((u32)(val) << (u32)(shift)) & (mask));     \
- 	} while (0)
- 
--#define roce_set_bit(origin, shift, val) \
-+#define roce_set_bit(origin, shift, val)                                       \
- 	roce_set_field((origin), (1ul << (shift)), (shift), (val))
- 
- #define FIELD_LOC(field_type, field_h, field_l) field_type, field_h, field_l
-diff --git a/drivers/infiniband/hw/hns/hns_roce_db.c b/drivers/infiniband/hw/hns/hns_roce_db.c
-index bff6abd..5cb7376c 100644
---- a/drivers/infiniband/hw/hns/hns_roce_db.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_db.c
-@@ -95,8 +95,8 @@ static struct hns_roce_db_pgdir *hns_roce_alloc_db_pgdir(
- static int hns_roce_alloc_db_from_pgdir(struct hns_roce_db_pgdir *pgdir,
- 					struct hns_roce_db *db, int order)
- {
--	int o;
--	int i;
-+	unsigned long o;
-+	unsigned long i;
- 
- 	for (o = order; o <= 1; ++o) {
- 		i = find_first_bit(pgdir->bits[o], HNS_ROCE_DB_PER_PAGE >> o);
-@@ -154,8 +154,8 @@ int hns_roce_alloc_db(struct hns_roce_dev *hr_dev, struct hns_roce_db *db,
- 
- void hns_roce_free_db(struct hns_roce_dev *hr_dev, struct hns_roce_db *db)
- {
--	int o;
--	int i;
-+	unsigned long o;
-+	unsigned long i;
- 
- 	mutex_lock(&hr_dev->pgdir_mutex);
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 4ba6ff5..89c0c74 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -311,7 +311,7 @@ struct hns_roce_hem_table {
- };
- 
- struct hns_roce_buf_region {
--	int offset; /* page offset */
-+	u32 offset; /* page offset */
- 	u32 count; /* page count */
- 	int hopnum; /* addressing hop num */
- };
-@@ -331,10 +331,10 @@ struct hns_roce_buf_attr {
- 		size_t	size;  /* region size */
- 		int	hopnum; /* multi-hop addressing hop num */
- 	} region[HNS_ROCE_MAX_BT_REGION];
--	int region_count; /* valid region count */
-+	unsigned int region_count; /* valid region count */
- 	unsigned int page_shift;  /* buffer page shift */
- 	bool fixed_page; /* decide page shift is fixed-size or maximum size */
--	int user_access; /* umem access flag */
-+	unsigned int user_access; /* umem access flag */
- 	bool mtt_only; /* only alloc buffer-required MTT memory */
- };
- 
-@@ -345,7 +345,7 @@ struct hns_roce_hem_cfg {
- 	unsigned int	buf_pg_shift; /* buffer page shift */
- 	unsigned int	buf_pg_count;  /* buffer page count */
- 	struct hns_roce_buf_region region[HNS_ROCE_MAX_BT_REGION];
--	int		region_count;
-+	unsigned int	region_count;
- };
- 
- /* memory translate region */
-@@ -393,7 +393,7 @@ struct hns_roce_wq {
- 	u64		*wrid;     /* Work request ID */
- 	spinlock_t	lock;
- 	u32		wqe_cnt;  /* WQE num */
--	int		max_gs;
-+	u32		max_gs;
- 	int		offset;
- 	int		wqe_shift;	/* WQE size */
- 	u32		head;
-@@ -459,8 +459,8 @@ struct hns_roce_db {
- 	} u;
- 	dma_addr_t	dma;
- 	void		*virt_addr;
--	int		index;
--	int		order;
-+	unsigned long	index;
-+	unsigned long	order;
- };
- 
- struct hns_roce_cq {
-@@ -508,8 +508,8 @@ struct hns_roce_srq {
- 	u64		       *wrid;
- 	struct hns_roce_idx_que idx_que;
- 	spinlock_t		lock;
--	int			head;
--	int			tail;
-+	u16			head;
-+	u16			tail;
- 	struct mutex		mutex;
- 	void (*event)(struct hns_roce_srq *srq, enum hns_roce_event event);
- };
-@@ -747,11 +747,11 @@ struct hns_roce_eq {
- 	int				type_flag; /* Aeq:1 ceq:0 */
- 	int				eqn;
- 	u32				entries;
--	int				log_entries;
-+	u32				log_entries;
- 	int				eqe_size;
- 	int				irq;
- 	int				log_page_size;
--	int				cons_index;
-+	u32				cons_index;
- 	struct hns_roce_buf_list	*buf_list;
- 	int				over_ignore;
- 	int				coalesce;
-@@ -759,7 +759,7 @@ struct hns_roce_eq {
- 	int				hop_num;
- 	struct hns_roce_mtr		mtr;
- 	u16				eq_max_cnt;
--	int				eq_period;
-+	u32				eq_period;
- 	int				shift;
- 	int				event_type;
- 	int				sub_type;
-@@ -782,8 +782,8 @@ struct hns_roce_caps {
- 	u32		max_sq_inline;
- 	u32		max_rq_sg;
- 	u32		max_extend_sg;
--	int		num_qps;
--	u32             reserved_qps;
-+	u32		num_qps;
-+	u32		reserved_qps;
- 	int		num_qpc_timer;
- 	int		num_cqc_timer;
- 	int		num_srqs;
-@@ -795,7 +795,7 @@ struct hns_roce_caps {
- 	u32		max_srq_desc_sz;
- 	int		max_qp_init_rdma;
- 	int		max_qp_dest_rdma;
--	int		num_cqs;
-+	u32		num_cqs;
- 	u32		max_cqes;
- 	u32		min_cqes;
- 	u32		min_wqes;
-@@ -804,7 +804,7 @@ struct hns_roce_caps {
- 	int		num_aeq_vectors;
- 	int		num_comp_vectors;
- 	int		num_other_vectors;
--	int		num_mtpts;
-+	u32		num_mtpts;
- 	u32		num_mtt_segs;
- 	u32		num_cqe_segs;
- 	u32		num_srqwqe_segs;
-@@ -921,7 +921,7 @@ struct hns_roce_hw {
- 	int (*post_mbox)(struct hns_roce_dev *hr_dev, u64 in_param,
- 			 u64 out_param, u32 in_modifier, u8 op_modifier, u16 op,
- 			 u16 token, int event);
--	int (*chk_mbox)(struct hns_roce_dev *hr_dev, unsigned long timeout);
-+	int (*chk_mbox)(struct hns_roce_dev *hr_dev, unsigned int timeout);
- 	int (*rst_prc_mbox)(struct hns_roce_dev *hr_dev);
- 	int (*set_gid)(struct hns_roce_dev *hr_dev, u8 port, int gid_index,
- 		       const union ib_gid *gid, const struct ib_gid_attr *attr);
-@@ -1096,15 +1096,16 @@ static inline struct hns_roce_qp
- 	return xa_load(&hr_dev->qp_table_xa, qpn & (hr_dev->caps.num_qps - 1));
- }
- 
--static inline void *hns_roce_buf_offset(struct hns_roce_buf *buf, int offset)
-+static inline void *hns_roce_buf_offset(struct hns_roce_buf *buf,
-+					unsigned int offset)
- {
- 	return (char *)(buf->trunk_list[offset >> buf->trunk_shift].buf) +
- 			(offset & ((1 << buf->trunk_shift) - 1));
- }
- 
--static inline dma_addr_t hns_roce_buf_page(struct hns_roce_buf *buf, int idx)
-+static inline dma_addr_t hns_roce_buf_page(struct hns_roce_buf *buf, u32 idx)
- {
--	int offset = idx << buf->page_shift;
-+	unsigned int offset = idx << buf->page_shift;
- 
- 	return buf->trunk_list[offset >> buf->trunk_shift].map +
- 			(offset & ((1 << buf->trunk_shift) - 1));
-@@ -1179,7 +1180,7 @@ int hns_roce_mtr_create(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
- void hns_roce_mtr_destroy(struct hns_roce_dev *hr_dev,
- 			  struct hns_roce_mtr *mtr);
- int hns_roce_mtr_map(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
--		     dma_addr_t *pages, int page_cnt);
-+		     dma_addr_t *pages, unsigned int page_cnt);
- 
- int hns_roce_init_pd_table(struct hns_roce_dev *hr_dev);
- int hns_roce_init_mr_table(struct hns_roce_dev *hr_dev);
-@@ -1263,10 +1264,10 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *ib_pd,
- int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 		       int attr_mask, struct ib_udata *udata);
- void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp);
--void *hns_roce_get_recv_wqe(struct hns_roce_qp *hr_qp, int n);
--void *hns_roce_get_send_wqe(struct hns_roce_qp *hr_qp, int n);
--void *hns_roce_get_extend_sge(struct hns_roce_qp *hr_qp, int n);
--bool hns_roce_wq_overflow(struct hns_roce_wq *hr_wq, int nreq,
-+void *hns_roce_get_recv_wqe(struct hns_roce_qp *hr_qp, unsigned int n);
-+void *hns_roce_get_send_wqe(struct hns_roce_qp *hr_qp, unsigned int n);
-+void *hns_roce_get_extend_sge(struct hns_roce_qp *hr_qp, unsigned int n);
-+bool hns_roce_wq_overflow(struct hns_roce_wq *hr_wq, u32 nreq,
- 			  struct ib_cq *ib_cq);
- enum hns_roce_qp_state to_hns_roce_state(enum ib_qp_state state);
- void hns_roce_lock_cqs(struct hns_roce_cq *send_cq,
-@@ -1296,7 +1297,7 @@ void hns_roce_cq_completion(struct hns_roce_dev *hr_dev, u32 cqn);
- void hns_roce_cq_event(struct hns_roce_dev *hr_dev, u32 cqn, int event_type);
- void hns_roce_qp_event(struct hns_roce_dev *hr_dev, u32 qpn, int event_type);
- void hns_roce_srq_event(struct hns_roce_dev *hr_dev, u32 srqn, int event_type);
--int hns_get_gid_index(struct hns_roce_dev *hr_dev, u8 port, int gid_index);
-+u8 hns_get_gid_index(struct hns_roce_dev *hr_dev, u8 port, int gid_index);
- void hns_roce_handle_device_err(struct hns_roce_dev *hr_dev);
- int hns_roce_init(struct hns_roce_dev *hr_dev);
- void hns_roce_exit(struct hns_roce_dev *hr_dev);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-index 0f4273d..9c69742 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-@@ -288,7 +288,7 @@ static int hns_roce_v1_post_send(struct ib_qp *ibqp,
- 					ret = -EINVAL;
- 					*bad_wr = wr;
- 					dev_err(dev, "inline len(1-%d)=%d, illegal",
--						ctrl->msg_length,
-+						le32_to_cpu(ctrl->msg_length),
- 						hr_dev->caps.max_sq_inline);
- 					goto out;
- 				}
-@@ -1639,7 +1639,7 @@ static int hns_roce_v1_post_mbox(struct hns_roce_dev *hr_dev, u64 in_param,
- }
- 
- static int hns_roce_v1_chk_mbox(struct hns_roce_dev *hr_dev,
--				unsigned long timeout)
-+				unsigned int timeout)
- {
- 	u8 __iomem *hcr = hr_dev->reg_base + ROCEE_MB1_REG;
- 	unsigned long end;
-@@ -3600,10 +3600,10 @@ static int hns_roce_v1_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
- 	return 0;
- }
- 
--static void set_eq_cons_index_v1(struct hns_roce_eq *eq, int req_not)
-+static void set_eq_cons_index_v1(struct hns_roce_eq *eq, u32 req_not)
- {
- 	roce_raw_write((eq->cons_index & HNS_ROCE_V1_CONS_IDX_M) |
--		      (req_not << eq->log_entries), eq->doorbell);
-+		       (req_not << eq->log_entries), eq->doorbell);
- }
- 
- static void hns_roce_v1_wq_catas_err_handle(struct hns_roce_dev *hr_dev,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 941a70b..6bd83f2 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -656,7 +656,7 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 	unsigned int sge_idx;
- 	unsigned int wqe_idx;
- 	void *wqe = NULL;
--	int nreq;
-+	u32 nreq;
- 	int ret;
- 
- 	spin_lock_irqsave(&qp->sq.lock, flags);
-@@ -834,7 +834,7 @@ static void *get_srq_wqe(struct hns_roce_srq *srq, int n)
- 	return hns_roce_buf_offset(srq->buf_mtr.kmem, n << srq->wqe_shift);
- }
- 
--static void *get_idx_buf(struct hns_roce_idx_que *idx_que, int n)
-+static void *get_idx_buf(struct hns_roce_idx_que *idx_que, unsigned int n)
- {
- 	return hns_roce_buf_offset(idx_que->mtr.kmem,
- 				   n << idx_que->entry_shift);
-@@ -875,12 +875,12 @@ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
- 	struct hns_roce_v2_wqe_data_seg *dseg;
- 	struct hns_roce_v2_db srq_db;
- 	unsigned long flags;
-+	unsigned int ind;
- 	__le32 *srq_idx;
- 	int ret = 0;
- 	int wqe_idx;
- 	void *wqe;
- 	int nreq;
--	int ind;
- 	int i;
- 
- 	spin_lock_irqsave(&srq->lock, flags);
-@@ -1125,7 +1125,7 @@ static void hns_roce_cmq_init_regs(struct hns_roce_dev *hr_dev, bool ring_type)
- 		roce_write(hr_dev, ROCEE_TX_CMQ_BASEADDR_H_REG,
- 			   upper_32_bits(dma));
- 		roce_write(hr_dev, ROCEE_TX_CMQ_DEPTH_REG,
--			   ring->desc_num >> HNS_ROCE_CMQ_DESC_NUM_S);
-+			   (u32)ring->desc_num >> HNS_ROCE_CMQ_DESC_NUM_S);
- 		roce_write(hr_dev, ROCEE_TX_CMQ_HEAD_REG, 0);
- 		roce_write(hr_dev, ROCEE_TX_CMQ_TAIL_REG, 0);
- 	} else {
-@@ -1133,7 +1133,7 @@ static void hns_roce_cmq_init_regs(struct hns_roce_dev *hr_dev, bool ring_type)
- 		roce_write(hr_dev, ROCEE_RX_CMQ_BASEADDR_H_REG,
- 			   upper_32_bits(dma));
- 		roce_write(hr_dev, ROCEE_RX_CMQ_DEPTH_REG,
--			   ring->desc_num >> HNS_ROCE_CMQ_DESC_NUM_S);
-+			   (u32)ring->desc_num >> HNS_ROCE_CMQ_DESC_NUM_S);
- 		roce_write(hr_dev, ROCEE_RX_CMQ_HEAD_REG, 0);
- 		roce_write(hr_dev, ROCEE_RX_CMQ_TAIL_REG, 0);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_alloc.c b/drivers/infiniband/hw/hns/hns_roce_alloc.c
+index dad2b9b..4bcaaa05 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_alloc.c
++++ b/drivers/infiniband/hw/hns/hns_roce_alloc.c
+@@ -260,7 +260,7 @@ int hns_roce_get_kmem_bufs(struct hns_roce_dev *hr_dev, dma_addr_t *bufs,
+ 	end = start + buf_cnt;
+ 	if (end > buf->npages) {
+ 		dev_err(hr_dev->dev,
+-			"Failed to check kmem bufs, end %d + %d total %d!\n",
++			"failed to check kmem bufs, end %d + %d total %u!\n",
+ 			start, buf_cnt, buf->npages);
+ 		return -EINVAL;
  	}
-@@ -1919,8 +1919,8 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
+@@ -282,7 +282,7 @@ int hns_roce_get_umem_bufs(struct hns_roce_dev *hr_dev, dma_addr_t *bufs,
+ 	u64 addr;
+ 
+ 	if (page_shift < HNS_HW_PAGE_SHIFT) {
+-		dev_err(hr_dev->dev, "Failed to check umem page shift %d!\n",
++		dev_err(hr_dev->dev, "failed to check umem page shift %u!\n",
+ 			page_shift);
+ 		return -EINVAL;
  	}
- }
+diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
+index f25e535..8533fc2 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_cq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
+@@ -49,29 +49,29 @@ static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
  
--static void calc_pg_sz(int obj_num, int obj_size, int hop_num, int ctx_bt_num,
--		       int *buf_page_size, int *bt_page_size, u32 hem_type)
-+static void calc_pg_sz(u32 obj_num, u32 obj_size, u32 hop_num, u32 ctx_bt_num,
-+		       u32 *buf_page_size, u32 *bt_page_size, u32 hem_type)
- {
- 	u64 obj_per_chunk;
- 	u64 bt_chunk_size = PAGE_SIZE;
-@@ -2399,10 +2399,10 @@ static int hns_roce_init_link_table(struct hns_roce_dev *hr_dev,
- 	u32 buf_chk_sz;
- 	dma_addr_t t;
- 	int func_num = 1;
--	int pg_num_a;
--	int pg_num_b;
--	int pg_num;
--	int size;
-+	u32 pg_num_a;
-+	u32 pg_num_b;
-+	u32 pg_num;
-+	u32 size;
- 	int i;
- 
- 	switch (type) {
-@@ -2598,7 +2598,7 @@ static int hns_roce_query_mbox_status(struct hns_roce_dev *hr_dev)
- 	struct hns_roce_cmq_desc desc;
- 	struct hns_roce_mbox_status *mb_st =
- 				       (struct hns_roce_mbox_status *)desc.data;
--	enum hns_roce_cmd_return_status status;
-+	int status;
- 
- 	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_QUERY_MB_ST, true);
- 
-@@ -2669,7 +2669,7 @@ static int hns_roce_v2_post_mbox(struct hns_roce_dev *hr_dev, u64 in_param,
- }
- 
- static int hns_roce_v2_chk_mbox(struct hns_roce_dev *hr_dev,
--				unsigned long timeout)
-+				unsigned int timeout)
- {
- 	struct device *dev = hr_dev->dev;
- 	unsigned long end;
-@@ -3067,7 +3067,7 @@ static void *get_cqe_v2(struct hns_roce_cq *hr_cq, int n)
- 	return hns_roce_buf_offset(hr_cq->mtr.kmem, n * hr_cq->cqe_size);
- }
- 
--static void *get_sw_cqe_v2(struct hns_roce_cq *hr_cq, int n)
-+static void *get_sw_cqe_v2(struct hns_roce_cq *hr_cq, unsigned int n)
- {
- 	struct hns_roce_v2_cqe *cqe = get_cqe_v2(hr_cq, n & hr_cq->ib_cq.cqe);
- 
-@@ -3414,7 +3414,7 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 	int is_send;
- 	u16 wqe_ctr;
- 	u32 opcode;
--	int qpn;
-+	u32 qpn;
- 	int ret;
- 
- 	/* Find cqe according to consumer index */
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index 3f3de32..d9179ba 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -53,7 +53,7 @@
-  *		GID[0][0], GID[1][0],.....GID[N - 1][0],
-  *		And so on
-  */
--int hns_get_gid_index(struct hns_roce_dev *hr_dev, u8 port, int gid_index)
-+u8 hns_get_gid_index(struct hns_roce_dev *hr_dev, u8 port, int gid_index)
- {
- 	return gid_index * hr_dev->caps.num_ports + port;
- }
-diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index b9a7e73..f807ece 100644
---- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-@@ -510,7 +510,7 @@ int hns_roce_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
- 		ibdev_err(ibdev, "failed to map sg mtr, ret = %d.\n", ret);
- 		ret = 0;
- 	} else {
--		mr->pbl_mtr.hem_cfg.buf_pg_shift = ilog2(ibmr->page_size);
-+		mr->pbl_mtr.hem_cfg.buf_pg_shift = (u32)ilog2(ibmr->page_size);
- 		ret = mr->npages;
+ 	ret = hns_roce_mtr_find(hr_dev, &hr_cq->mtr, 0, mtts, ARRAY_SIZE(mtts),
+ 				&dma_handle);
+-	if (ret < 1) {
+-		ibdev_err(ibdev, "Failed to find CQ mtr\n");
++	if (!ret) {
++		ibdev_err(ibdev, "failed to find CQ mtr, ret = %d.\n", ret);
+ 		return -EINVAL;
  	}
  
-@@ -829,12 +829,12 @@ static int mtr_get_pages(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
- }
+ 	cq_table = &hr_dev->cq_table;
+ 	ret = hns_roce_bitmap_alloc(&cq_table->bitmap, &hr_cq->cqn);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to alloc CQ bitmap, err %d\n", ret);
++		ibdev_err(ibdev, "failed to alloc CQ bitmap, ret = %d.\n", ret);
+ 		return ret;
+ 	}
  
- int hns_roce_mtr_map(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
--		     dma_addr_t *pages, int page_cnt)
-+		     dma_addr_t *pages, unsigned int page_cnt)
+ 	/* Get CQC memory HEM(Hardware Entry Memory) table */
+ 	ret = hns_roce_table_get(hr_dev, &cq_table->table, hr_cq->cqn);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to get CQ(0x%lx) context, err %d\n",
++		ibdev_err(ibdev, "failed to get CQ(0x%lx) context, ret = %d.\n",
+ 			  hr_cq->cqn, ret);
+ 		goto err_out;
+ 	}
+ 
+ 	ret = xa_err(xa_store(&cq_table->array, hr_cq->cqn, hr_cq, GFP_KERNEL));
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to xa_store CQ\n");
++		ibdev_err(ibdev, "failed to xa_store CQ, ret = %d.\n", ret);
+ 		goto err_put;
+ 	}
+ 
+@@ -90,7 +90,7 @@ static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
+ 	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
+ 	if (ret) {
+ 		ibdev_err(ibdev,
+-			  "Failed to send create cmd for CQ(0x%lx), err %d\n",
++			  "failed to send create cmd for CQ(0x%lx), ret = %d.\n",
+ 			  hr_cq->cqn, ret);
+ 		goto err_xa;
+ 	}
+@@ -146,7 +146,7 @@ static int alloc_cq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq,
  {
  	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	struct hns_roce_buf_region *r;
-+	unsigned int i;
- 	int err;
--	int i;
+ 	struct hns_roce_buf_attr buf_attr = {};
+-	int err;
++	int ret;
  
- 	/*
- 	 * Only use the first page address as root ba when hopnum is 0, this
-@@ -871,13 +871,12 @@ int hns_roce_mtr_find(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
- 		      int offset, u64 *mtt_buf, int mtt_max, u64 *base_addr)
- {
- 	struct hns_roce_hem_cfg *cfg = &mtr->hem_cfg;
-+	int mtt_count, left;
- 	int start_index;
--	int mtt_count;
- 	int total = 0;
- 	__le64 *mtts;
--	int npage;
-+	u32 npage;
- 	u64 addr;
--	int left;
+ 	buf_attr.page_shift = hr_dev->caps.cqe_buf_pg_sz + HNS_HW_PAGE_SHIFT;
+ 	buf_attr.region[0].size = hr_cq->cq_depth * hr_cq->cqe_size;
+@@ -154,13 +154,13 @@ static int alloc_cq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq,
+ 	buf_attr.region_count = 1;
+ 	buf_attr.fixed_page = true;
  
- 	if (!mtt_buf || mtt_max < 1)
- 		goto done;
+-	err = hns_roce_mtr_create(hr_dev, &hr_cq->mtr, &buf_attr,
++	ret = hns_roce_mtr_create(hr_dev, &hr_cq->mtr, &buf_attr,
+ 				  hr_dev->caps.cqe_ba_pg_sz + HNS_HW_PAGE_SHIFT,
+ 				  udata, addr);
+-	if (err)
+-		ibdev_err(ibdev, "Failed to alloc CQ mtr, err %d\n", err);
++	if (ret)
++		ibdev_err(ibdev, "failed to alloc CQ mtr, ret = %d.\n", ret);
+ 
+-	return err;
++	return ret;
+ }
+ 
+ static void free_cq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
+@@ -254,13 +254,13 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
+ 		return -EOPNOTSUPP;
+ 
+ 	if (cq_entries < 1 || cq_entries > hr_dev->caps.max_cqes) {
+-		ibdev_err(ibdev, "Failed to check CQ count %d max=%d\n",
++		ibdev_err(ibdev, "failed to check CQ count %u, max = %u.\n",
+ 			  cq_entries, hr_dev->caps.max_cqes);
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (vector >= hr_dev->caps.num_comp_vectors) {
+-		ibdev_err(ibdev, "Failed to check CQ vector=%d max=%d\n",
++		ibdev_err(ibdev, "failed to check CQ vector = %d, max = %d.\n",
+ 			  vector, hr_dev->caps.num_comp_vectors);
+ 		return -EINVAL;
+ 	}
+@@ -278,7 +278,7 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
+ 		ret = ib_copy_from_udata(&ucmd, udata,
+ 					 min(udata->inlen, sizeof(ucmd)));
+ 		if (ret) {
+-			ibdev_err(ibdev, "Failed to copy CQ udata, err %d\n",
++			ibdev_err(ibdev, "failed to copy CQ udata, ret = %d.\n",
+ 				  ret);
+ 			return ret;
+ 		}
+@@ -288,19 +288,20 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
+ 
+ 	ret = alloc_cq_buf(hr_dev, hr_cq, udata, ucmd.buf_addr);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to alloc CQ buf, err %d\n", ret);
++		ibdev_err(ibdev, "failed to alloc CQ buf, ret = %d.\n", ret);
+ 		return ret;
+ 	}
+ 
+ 	ret = alloc_cq_db(hr_dev, hr_cq, udata, ucmd.db_addr, &resp);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to alloc CQ db, err %d\n", ret);
++		ibdev_err(ibdev, "failed to alloc CQ db, ret = %d.\n", ret);
+ 		goto err_cq_buf;
+ 	}
+ 
+ 	ret = alloc_cqc(hr_dev, hr_cq);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to alloc CQ context, err %d\n", ret);
++		ibdev_err(ibdev,
++			  "failed to alloc CQ context, ret = %d.\n", ret);
+ 		goto err_cq_db;
+ 	}
+ 
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
+index f19bbcc..edc9d6b 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hem.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
+@@ -195,7 +195,7 @@ static int get_hem_table_config(struct hns_roce_dev *hr_dev,
+ 		mhop->hop_num = hr_dev->caps.gmv_hop_num;
+ 		break;
+ 	default:
+-		dev_err(dev, "Table %d not support multi-hop addressing!\n",
++		dev_err(dev, "table %u not support multi-hop addressing!\n",
+ 			type);
+ 		return -EINVAL;
+ 	}
+@@ -243,8 +243,8 @@ int hns_roce_calc_hem_mhop(struct hns_roce_dev *hr_dev,
+ 		mhop->l0_idx = table_idx;
+ 		break;
+ 	default:
+-		dev_err(dev, "Table %d not support hop_num = %d!\n",
+-			     table->type, mhop->hop_num);
++		dev_err(dev, "table %u not support hop_num = %u!\n",
++			table->type, mhop->hop_num);
+ 		return -EINVAL;
+ 	}
+ 	if (mhop->l0_idx >= mhop->ba_l0_num)
+@@ -449,13 +449,13 @@ static int calc_hem_config(struct hns_roce_dev *hr_dev,
+ 		index->buf = l0_idx;
+ 		break;
+ 	default:
+-		ibdev_err(ibdev, "Table %d not support mhop.hop_num = %d!\n",
++		ibdev_err(ibdev, "table %u not support mhop.hop_num = %u!\n",
+ 			  table->type, mhop->hop_num);
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (unlikely(index->buf >= table->num_hem)) {
+-		ibdev_err(ibdev, "Table %d exceed hem limt idx %llu,max %lu!\n",
++		ibdev_err(ibdev, "table %u exceed hem limt idx %llu, max %lu!\n",
+ 			  table->type, index->buf, table->num_hem);
+ 		return -EINVAL;
+ 	}
+@@ -725,15 +725,15 @@ static void clear_mhop_hem(struct hns_roce_dev *hr_dev,
+ 			step_idx = hop_num;
+ 
+ 		if (hr_dev->hw->clear_hem(hr_dev, table, obj, step_idx))
+-			ibdev_warn(ibdev, "Clear hop%d HEM failed.\n", hop_num);
++			ibdev_warn(ibdev, "failed to clear hop%u HEM.\n", hop_num);
+ 
+ 		if (index->inited & HEM_INDEX_L1)
+ 			if (hr_dev->hw->clear_hem(hr_dev, table, obj, 1))
+-				ibdev_warn(ibdev, "Clear HEM step 1 failed.\n");
++				ibdev_warn(ibdev, "failed to clear HEM step 1.\n");
+ 
+ 		if (index->inited & HEM_INDEX_L0)
+ 			if (hr_dev->hw->clear_hem(hr_dev, table, obj, 0))
+-				ibdev_warn(ibdev, "Clear HEM step 0 failed.\n");
++				ibdev_warn(ibdev, "failed to clear HEM step 0.\n");
+ 	}
+ }
+ 
+@@ -1249,7 +1249,7 @@ static int hem_list_alloc_mid_bt(struct hns_roce_dev *hr_dev,
+ 	}
+ 
+ 	if (offset < r->offset) {
+-		dev_err(hr_dev->dev, "invalid offset %d,min %d!\n",
++		dev_err(hr_dev->dev, "invalid offset %d, min %u!\n",
+ 			offset, r->offset);
+ 		return -EINVAL;
+ 	}
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 6bd83f2..a91c54c 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -361,7 +361,7 @@ static int check_send_valid(struct hns_roce_dev *hr_dev,
+ 	} else if (unlikely(hr_qp->state == IB_QPS_RESET ||
+ 		   hr_qp->state == IB_QPS_INIT ||
+ 		   hr_qp->state == IB_QPS_RTR)) {
+-		ibdev_err(ibdev, "failed to post WQE, QP state %d!\n",
++		ibdev_err(ibdev, "failed to post WQE, QP state %hhu!\n",
+ 			  hr_qp->state);
+ 		return -EINVAL;
+ 	} else if (unlikely(hr_dev->state >= HNS_ROCE_DEVICE_STATE_RST_DOWN)) {
+@@ -680,7 +680,7 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
+ 		wqe_idx = (qp->sq.head + nreq) & (qp->sq.wqe_cnt - 1);
+ 
+ 		if (unlikely(wr->num_sge > qp->sq.max_gs)) {
+-			ibdev_err(ibdev, "num_sge=%d > qp->sq.max_gs=%d\n",
++			ibdev_err(ibdev, "num_sge = %d > qp->sq.max_gs = %u.\n",
+ 				  wr->num_sge, qp->sq.max_gs);
+ 			ret = -EINVAL;
+ 			*bad_wr = wr;
+@@ -765,7 +765,7 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
+ 		wqe_idx = (hr_qp->rq.head + nreq) & (hr_qp->rq.wqe_cnt - 1);
+ 
+ 		if (unlikely(wr->num_sge > hr_qp->rq.max_gs)) {
+-			ibdev_err(ibdev, "rq:num_sge=%d >= qp->sq.max_gs=%d\n",
++			ibdev_err(ibdev, "num_sge = %d >= max_sge = %u.\n",
+ 				  wr->num_sge, hr_qp->rq.max_gs);
+ 			ret = -EINVAL;
+ 			*bad_wr = wr;
+@@ -1950,8 +1950,8 @@ static void calc_pg_sz(u32 obj_num, u32 obj_size, u32 hop_num, u32 ctx_bt_num,
+ 		obj_per_chunk = ctx_bt_num * obj_per_chunk_default;
+ 		break;
+ 	default:
+-		pr_err("Table %d not support hop_num = %d!\n", hem_type,
+-			hop_num);
++		pr_err("table %u not support hop_num = %u!\n", hem_type,
++		       hop_num);
+ 		return;
+ 	}
+ 
+@@ -3683,7 +3683,7 @@ static int get_op_for_set_hem(struct hns_roce_dev *hr_dev, u32 type,
+ 		break;
+ 	default:
+ 		dev_warn(hr_dev->dev,
+-			 "Table %d not to be written by mailbox!\n", type);
++			 "table %u not to be written by mailbox!\n", type);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -3819,7 +3819,7 @@ static int hns_roce_v2_clear_hem(struct hns_roce_dev *hr_dev,
+ 	case HEM_TYPE_GMV:
+ 		return 0;
+ 	default:
+-		dev_warn(dev, "Table %d not to be destroyed by mailbox!\n",
++		dev_warn(dev, "table %u not to be destroyed by mailbox!\n",
+ 			 table->type);
+ 		return 0;
+ 	}
+@@ -4411,7 +4411,7 @@ static int modify_qp_rtr_to_rts(struct ib_qp *ibqp,
+ 
+ 	ret = config_qp_sq_buf(hr_dev, hr_qp, context, qpc_mask);
+ 	if (ret) {
+-		ibdev_err(ibdev, "failed to config sq buf, ret %d\n", ret);
++		ibdev_err(ibdev, "failed to config sq buf, ret = %d.\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -4902,7 +4902,7 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
+ 	/* SW pass context to HW */
+ 	ret = hns_roce_v2_qp_modify(hr_dev, context, qpc_mask, hr_qp);
+ 	if (ret) {
+-		ibdev_err(ibdev, "failed to modify QP, ret = %d\n", ret);
++		ibdev_err(ibdev, "failed to modify QP, ret = %d.\n", ret);
+ 		goto out;
+ 	}
+ 
+@@ -4995,7 +4995,7 @@ static int hns_roce_v2_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
+ 
+ 	ret = hns_roce_v2_query_qpc(hr_dev, hr_qp, &context);
+ 	if (ret) {
+-		ibdev_err(ibdev, "failed to query QPC, ret = %d\n", ret);
++		ibdev_err(ibdev, "failed to query QPC, ret = %d.\n", ret);
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
+@@ -5118,7 +5118,7 @@ static int hns_roce_v2_destroy_qp_common(struct hns_roce_dev *hr_dev,
+ 					    hr_qp->state, IB_QPS_RESET);
+ 		if (ret)
+ 			ibdev_err(ibdev,
+-				  "failed to modify QP to RST, ret = %d\n",
++				  "failed to modify QP to RST, ret = %d.\n",
+ 				  ret);
+ 	}
+ 
+@@ -5157,7 +5157,7 @@ static int hns_roce_v2_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ 	ret = hns_roce_v2_destroy_qp_common(hr_dev, hr_qp, udata);
+ 	if (ret)
+ 		ibdev_err(&hr_dev->ib_dev,
+-			  "failed to destroy QP 0x%06lx, ret = %d\n",
++			  "failed to destroy QP, QPN = 0x%06lx, ret = %d.\n",
+ 			  hr_qp->qpn, ret);
+ 
+ 	hns_roce_qp_destroy(hr_dev, hr_qp, udata);
+@@ -5180,7 +5180,7 @@ static int hns_roce_v2_qp_flow_control_init(struct hns_roce_dev *hr_dev,
+ 	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_RESET_SCCC, false);
+ 	ret =  hns_roce_cmq_send(hr_dev, &desc, 1);
+ 	if (ret) {
+-		ibdev_err(ibdev, "failed to reset SCC ctx, ret = %d\n", ret);
++		ibdev_err(ibdev, "failed to reset SCC ctx, ret = %d.\n", ret);
+ 		goto out;
+ 	}
+ 
+@@ -5190,7 +5190,7 @@ static int hns_roce_v2_qp_flow_control_init(struct hns_roce_dev *hr_dev,
+ 	clr->qpn = cpu_to_le32(hr_qp->qpn);
+ 	ret =  hns_roce_cmq_send(hr_dev, &desc, 1);
+ 	if (ret) {
+-		ibdev_err(ibdev, "failed to clear SCC ctx, ret = %d\n", ret);
++		ibdev_err(ibdev, "failed to clear SCC ctx, ret = %d.\n", ret);
+ 		goto out;
+ 	}
+ 
+@@ -5439,7 +5439,7 @@ static int hns_roce_v2_modify_cq(struct ib_cq *cq, u16 cq_count, u16 cq_period)
+ 	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
+ 	if (ret)
+ 		ibdev_err(&hr_dev->ib_dev,
+-			  "failed to process cmd when modifying CQ, ret = %d\n",
++			  "failed to process cmd when modifying CQ, ret = %d.\n",
+ 			  ret);
+ 
+ 	return ret;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+index f807ece..1bcffd9 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_mr.c
++++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+@@ -185,14 +185,14 @@ static int hns_roce_mr_enable(struct hns_roce_dev *hr_dev,
+ 	else
+ 		ret = hr_dev->hw->frmr_write_mtpt(hr_dev, mailbox->buf, mr);
+ 	if (ret) {
+-		dev_err(dev, "Write mtpt fail!\n");
++		dev_err(dev, "failed to write mtpt, ret = %d.\n", ret);
+ 		goto err_page;
+ 	}
+ 
+ 	ret = hns_roce_hw_create_mpt(hr_dev, mailbox,
+ 				     mtpt_idx & (hr_dev->caps.num_mtpts - 1));
+ 	if (ret) {
+-		dev_err(dev, "CREATE_MPT failed (%d)\n", ret);
++		dev_err(dev, "failed to create mpt, ret = %d.\n", ret);
+ 		goto err_page;
+ 	}
+ 
+@@ -496,7 +496,7 @@ int hns_roce_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
+ 
+ 	ret = ib_sg_to_pages(ibmr, sg, sg_nents, sg_offset, hns_roce_set_page);
+ 	if (ret < 1) {
+-		ibdev_err(ibdev, "failed to store sg pages %d %d, cnt = %d.\n",
++		ibdev_err(ibdev, "failed to store sg pages %u %u, cnt = %d.\n",
+ 			  mr->npages, mr->pbl_mtr.hem_cfg.buf_pg_count, ret);
+ 		goto err_page_list;
+ 	}
+@@ -850,7 +850,7 @@ int hns_roce_mtr_map(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
+ 		if (r->offset + r->count > page_cnt) {
+ 			err = -EINVAL;
+ 			ibdev_err(ibdev,
+-				  "Failed to check mtr%d end %d + %d, max %d\n",
++				  "failed to check mtr%u end %u + %u, max %u.\n",
+ 				  i, r->offset, r->count, page_cnt);
+ 			return err;
+ 		}
+@@ -858,7 +858,7 @@ int hns_roce_mtr_map(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
+ 		err = mtr_map_region(hr_dev, mtr, &pages[r->offset], r);
+ 		if (err) {
+ 			ibdev_err(ibdev,
+-				  "Failed to map mtr%d offset %d, err %d\n",
++				  "failed to map mtr%u offset %u, ret = %d.\n",
+ 				  i, r->offset, err);
+ 			return err;
+ 		}
+diff --git a/drivers/infiniband/hw/hns/hns_roce_pd.c b/drivers/infiniband/hw/hns/hns_roce_pd.c
+index 8dccb6e..cca818d 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_pd.c
++++ b/drivers/infiniband/hw/hns/hns_roce_pd.c
+@@ -64,7 +64,7 @@ int hns_roce_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+ 
+ 	ret = hns_roce_pd_alloc(to_hr_dev(ib_dev), &pd->pdn);
+ 	if (ret) {
+-		ibdev_err(ib_dev, "failed to alloc pd, ret = %d\n", ret);
++		ibdev_err(ib_dev, "failed to alloc pd, ret = %d.\n", ret);
+ 		return ret;
+ 	}
+ 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index f89c52b..9a0851f 100644
+index 9a0851f..d8e2fe5 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -1322,22 +1322,22 @@ static inline void *get_wqe(struct hns_roce_qp *hr_qp, int offset)
- 	return hns_roce_buf_offset(hr_qp->mtr.kmem, offset);
- }
+@@ -513,12 +513,12 @@ static int check_sq_size_with_integrity(struct hns_roce_dev *hr_dev,
+ 	/* Sanity check SQ size before proceeding */
+ 	if (ucmd->log_sq_stride > max_sq_stride ||
+ 	    ucmd->log_sq_stride < HNS_ROCE_IB_MIN_SQ_STRIDE) {
+-		ibdev_err(&hr_dev->ib_dev, "Failed to check SQ stride size\n");
++		ibdev_err(&hr_dev->ib_dev, "failed to check SQ stride size.\n");
+ 		return -EINVAL;
+ 	}
  
--void *hns_roce_get_recv_wqe(struct hns_roce_qp *hr_qp, int n)
-+void *hns_roce_get_recv_wqe(struct hns_roce_qp *hr_qp, unsigned int n)
- {
- 	return get_wqe(hr_qp, hr_qp->rq.offset + (n << hr_qp->rq.wqe_shift));
- }
+ 	if (cap->max_send_sge > hr_dev->caps.max_sq_sg) {
+-		ibdev_err(&hr_dev->ib_dev, "Failed to check SQ SGE size %d\n",
++		ibdev_err(&hr_dev->ib_dev, "failed to check SQ SGE size %u.\n",
+ 			  cap->max_send_sge);
+ 		return -EINVAL;
+ 	}
+@@ -621,7 +621,7 @@ static int set_kernel_sq_size(struct hns_roce_dev *hr_dev,
  
--void *hns_roce_get_send_wqe(struct hns_roce_qp *hr_qp, int n)
-+void *hns_roce_get_send_wqe(struct hns_roce_qp *hr_qp, unsigned int n)
- {
- 	return get_wqe(hr_qp, hr_qp->sq.offset + (n << hr_qp->sq.wqe_shift));
- }
+ 	cnt = roundup_pow_of_two(max(cap->max_send_wr, hr_dev->caps.min_wqes));
+ 	if (cnt > hr_dev->caps.max_wqes) {
+-		ibdev_err(ibdev, "failed to check WQE num, WQE num = %d.\n",
++		ibdev_err(ibdev, "failed to check WQE num, WQE num = %u.\n",
+ 			  cnt);
+ 		return -EINVAL;
+ 	}
+@@ -795,7 +795,8 @@ static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 						   &hr_qp->sdb);
+ 			if (ret) {
+ 				ibdev_err(ibdev,
+-					  "Failed to map user SQ doorbell\n");
++					  "failed to map user SQ doorbell, ret = %d.\n",
++					  ret);
+ 				goto err_out;
+ 			}
+ 			hr_qp->en_flags |= HNS_ROCE_QP_CAP_SQ_RECORD_DB;
+@@ -807,7 +808,8 @@ static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 						   &hr_qp->rdb);
+ 			if (ret) {
+ 				ibdev_err(ibdev,
+-					  "Failed to map user RQ doorbell\n");
++					  "failed to map user RQ doorbell, ret = %d.\n",
++					  ret);
+ 				goto err_sdb;
+ 			}
+ 			hr_qp->en_flags |= HNS_ROCE_QP_CAP_RQ_RECORD_DB;
+@@ -824,7 +826,8 @@ static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 			ret = hns_roce_alloc_db(hr_dev, &hr_qp->rdb, 0);
+ 			if (ret) {
+ 				ibdev_err(ibdev,
+-					  "Failed to alloc kernel RQ doorbell\n");
++					  "failed to alloc kernel RQ doorbell, ret = %d.\n",
++					  ret);
+ 				goto err_out;
+ 			}
+ 			*hr_qp->rdb.db_record = 0;
+@@ -867,14 +870,14 @@ static int alloc_kernel_wrid(struct hns_roce_dev *hr_dev,
  
--void *hns_roce_get_extend_sge(struct hns_roce_qp *hr_qp, int n)
-+void *hns_roce_get_extend_sge(struct hns_roce_qp *hr_qp, unsigned int n)
- {
- 	return get_wqe(hr_qp, hr_qp->sge.offset + (n << hr_qp->sge.sge_shift));
- }
+ 	sq_wrid = kcalloc(hr_qp->sq.wqe_cnt, sizeof(u64), GFP_KERNEL);
+ 	if (ZERO_OR_NULL_PTR(sq_wrid)) {
+-		ibdev_err(ibdev, "Failed to alloc SQ wrid\n");
++		ibdev_err(ibdev, "failed to alloc SQ wrid.\n");
+ 		return -ENOMEM;
+ 	}
  
--bool hns_roce_wq_overflow(struct hns_roce_wq *hr_wq, int nreq,
-+bool hns_roce_wq_overflow(struct hns_roce_wq *hr_wq, u32 nreq,
- 			  struct ib_cq *ib_cq)
- {
- 	struct hns_roce_cq *hr_cq;
+ 	if (hr_qp->rq.wqe_cnt) {
+ 		rq_wrid = kcalloc(hr_qp->rq.wqe_cnt, sizeof(u64), GFP_KERNEL);
+ 		if (ZERO_OR_NULL_PTR(rq_wrid)) {
+-			ibdev_err(ibdev, "Failed to alloc RQ wrid\n");
++			ibdev_err(ibdev, "failed to alloc RQ wrid.\n");
+ 			ret = -ENOMEM;
+ 			goto err_sq;
+ 		}
+@@ -934,11 +937,15 @@ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 
+ 		ret = set_user_sq_size(hr_dev, &init_attr->cap, hr_qp, ucmd);
+ 		if (ret)
+-			ibdev_err(ibdev, "Failed to set user SQ size\n");
++			ibdev_err(ibdev,
++				  "failed to set user SQ size, ret = %d.\n",
++				  ret);
+ 	} else {
+ 		ret = set_kernel_sq_size(hr_dev, &init_attr->cap, hr_qp);
+ 		if (ret)
+-			ibdev_err(ibdev, "Failed to set kernel SQ size\n");
++			ibdev_err(ibdev,
++				  "failed to set kernel SQ size, ret = %d.\n",
++				  ret);
+ 	}
+ 
+ 	return ret;
+@@ -967,45 +974,48 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
+ 
+ 	ret = set_qp_param(hr_dev, hr_qp, init_attr, udata, &ucmd);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to set QP param\n");
++		ibdev_err(ibdev, "failed to set QP param, ret = %d.\n", ret);
+ 		return ret;
+ 	}
+ 
+ 	if (!udata) {
+ 		ret = alloc_kernel_wrid(hr_dev, hr_qp);
+ 		if (ret) {
+-			ibdev_err(ibdev, "Failed to alloc wrid\n");
++			ibdev_err(ibdev, "failed to alloc wrid, ret = %d.\n",
++				  ret);
+ 			return ret;
+ 		}
+ 	}
+ 
+ 	ret = alloc_qp_db(hr_dev, hr_qp, init_attr, udata, &ucmd, &resp);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to alloc QP doorbell\n");
++		ibdev_err(ibdev, "failed to alloc QP doorbell, ret = %d.\n",
++			  ret);
+ 		goto err_wrid;
+ 	}
+ 
+ 	ret = alloc_qp_buf(hr_dev, hr_qp, init_attr, udata, ucmd.buf_addr);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to alloc QP buffer\n");
++		ibdev_err(ibdev, "failed to alloc QP buffer, ret = %d.\n", ret);
+ 		goto err_db;
+ 	}
+ 
+ 	ret = alloc_qpn(hr_dev, hr_qp);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to alloc QPN\n");
++		ibdev_err(ibdev, "failed to alloc QPN, ret = %d.\n", ret);
+ 		goto err_buf;
+ 	}
+ 
+ 	ret = alloc_qpc(hr_dev, hr_qp);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to alloc QP context\n");
++		ibdev_err(ibdev, "failed to alloc QP context, ret = %d.\n",
++			  ret);
+ 		goto err_qpn;
+ 	}
+ 
+ 	ret = hns_roce_qp_store(hr_dev, hr_qp, init_attr);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to store QP\n");
++		ibdev_err(ibdev, "failed to store QP, ret = %d.\n", ret);
+ 		goto err_qpc;
+ 	}
+ 
+@@ -1169,9 +1179,8 @@ static int hns_roce_check_qp_attr(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 
+ 	if ((attr_mask & IB_QP_PORT) &&
+ 	    (attr->port_num == 0 || attr->port_num > hr_dev->caps.num_ports)) {
+-		ibdev_err(&hr_dev->ib_dev,
+-			"attr port_num invalid.attr->port_num=%d\n",
+-			attr->port_num);
++		ibdev_err(&hr_dev->ib_dev, "invalid attr, port_num = %u.\n",
++			  attr->port_num);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1179,8 +1188,8 @@ static int hns_roce_check_qp_attr(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 		p = attr_mask & IB_QP_PORT ? (attr->port_num - 1) : hr_qp->port;
+ 		if (attr->pkey_index >= hr_dev->caps.pkey_table_len[p]) {
+ 			ibdev_err(&hr_dev->ib_dev,
+-				"attr pkey_index invalid.attr->pkey_index=%d\n",
+-				attr->pkey_index);
++				  "invalid attr, pkey_index = %u.\n",
++				  attr->pkey_index);
+ 			return -EINVAL;
+ 		}
+ 	}
+@@ -1188,16 +1197,16 @@ static int hns_roce_check_qp_attr(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 	if (attr_mask & IB_QP_MAX_QP_RD_ATOMIC &&
+ 	    attr->max_rd_atomic > hr_dev->caps.max_qp_init_rdma) {
+ 		ibdev_err(&hr_dev->ib_dev,
+-			"attr max_rd_atomic invalid.attr->max_rd_atomic=%d\n",
+-			attr->max_rd_atomic);
++			  "invalid attr, max_rd_atomic = %u.\n",
++			  attr->max_rd_atomic);
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (attr_mask & IB_QP_MAX_DEST_RD_ATOMIC &&
+ 	    attr->max_dest_rd_atomic > hr_dev->caps.max_qp_dest_rdma) {
+ 		ibdev_err(&hr_dev->ib_dev,
+-			"attr max_dest_rd_atomic invalid.attr->max_dest_rd_atomic=%d\n",
+-			attr->max_dest_rd_atomic);
++			  "invalid attr, max_dest_rd_atomic = %u.\n",
++			  attr->max_dest_rd_atomic);
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
+index e2e77873..c4ae57e 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_srq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
+@@ -92,7 +92,8 @@ static int alloc_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
+ 	ret = hns_roce_mtr_find(hr_dev, &srq->buf_mtr, 0, mtts_wqe,
+ 				ARRAY_SIZE(mtts_wqe), &dma_handle_wqe);
+ 	if (ret < 1) {
+-		ibdev_err(ibdev, "Failed to find mtr for SRQ WQE\n");
++		ibdev_err(ibdev, "failed to find mtr for SRQ WQE, ret = %d.\n",
++			  ret);
+ 		return -ENOBUFS;
+ 	}
+ 
+@@ -100,32 +101,34 @@ static int alloc_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
+ 	ret = hns_roce_mtr_find(hr_dev, &srq->idx_que.mtr, 0, mtts_idx,
+ 				ARRAY_SIZE(mtts_idx), &dma_handle_idx);
+ 	if (ret < 1) {
+-		ibdev_err(ibdev, "Failed to find mtr for SRQ idx\n");
++		ibdev_err(ibdev, "failed to find mtr for SRQ idx, ret = %d.\n",
++			  ret);
+ 		return -ENOBUFS;
+ 	}
+ 
+ 	ret = hns_roce_bitmap_alloc(&srq_table->bitmap, &srq->srqn);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to alloc SRQ number, err %d\n", ret);
++		ibdev_err(ibdev,
++			  "failed to alloc SRQ number, ret = %d.\n", ret);
+ 		return -ENOMEM;
+ 	}
+ 
+ 	ret = hns_roce_table_get(hr_dev, &srq_table->table, srq->srqn);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to get SRQC table, err %d\n", ret);
++		ibdev_err(ibdev, "failed to get SRQC table, ret = %d.\n", ret);
+ 		goto err_out;
+ 	}
+ 
+ 	ret = xa_err(xa_store(&srq_table->xa, srq->srqn, srq, GFP_KERNEL));
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to store SRQC, err %d\n", ret);
++		ibdev_err(ibdev, "failed to store SRQC, ret = %d.\n", ret);
+ 		goto err_put;
+ 	}
+ 
+ 	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
+ 	if (IS_ERR_OR_NULL(mailbox)) {
+ 		ret = -ENOMEM;
+-		ibdev_err(ibdev, "Failed to alloc mailbox for SRQC\n");
++		ibdev_err(ibdev, "failed to alloc mailbox for SRQC.\n");
+ 		goto err_xa;
+ 	}
+ 
+@@ -136,7 +139,7 @@ static int alloc_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
+ 	ret = hns_roce_hw_create_srq(hr_dev, mailbox, srq->srqn);
+ 	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to config SRQC, err %d\n", ret);
++		ibdev_err(ibdev, "failed to config SRQC, ret = %d.\n", ret);
+ 		goto err_xa;
+ 	}
+ 
+@@ -197,7 +200,8 @@ static int alloc_srq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
+ 				  hr_dev->caps.srqwqe_ba_pg_sz +
+ 				  HNS_HW_PAGE_SHIFT, udata, addr);
+ 	if (err)
+-		ibdev_err(ibdev, "Failed to alloc SRQ buf mtr, err %d\n", err);
++		ibdev_err(ibdev,
++			  "failed to alloc SRQ buf mtr, ret = %d.\n", err);
+ 
+ 	return err;
+ }
+@@ -228,14 +232,15 @@ static int alloc_srq_idx(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
+ 				  hr_dev->caps.idx_ba_pg_sz + HNS_HW_PAGE_SHIFT,
+ 				  udata, addr);
+ 	if (err) {
+-		ibdev_err(ibdev, "Failed to alloc SRQ idx mtr, err %d\n", err);
++		ibdev_err(ibdev,
++			  "failed to alloc SRQ idx mtr, ret = %d.\n", err);
+ 		return err;
+ 	}
+ 
+ 	if (!udata) {
+ 		idx_que->bitmap = bitmap_zalloc(srq->wqe_cnt, GFP_KERNEL);
+ 		if (!idx_que->bitmap) {
+-			ibdev_err(ibdev, "Failed to alloc SRQ idx bitmap\n");
++			ibdev_err(ibdev, "failed to alloc SRQ idx bitmap.\n");
+ 			err = -ENOMEM;
+ 			goto err_idx_mtr;
+ 		}
+@@ -305,7 +310,7 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 		ret = ib_copy_from_udata(&ucmd, udata,
+ 					 min(udata->inlen, sizeof(ucmd)));
+ 		if (ret) {
+-			ibdev_err(ibdev, "Failed to copy SRQ udata, err %d\n",
++			ibdev_err(ibdev, "failed to copy SRQ udata, ret = %d.\n",
+ 				  ret);
+ 			return ret;
+ 		}
+@@ -313,20 +318,21 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 
+ 	ret = alloc_srq_buf(hr_dev, srq, udata, ucmd.buf_addr);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to alloc SRQ buffer, err %d\n", ret);
++		ibdev_err(ibdev,
++			  "failed to alloc SRQ buffer, ret = %d.\n", ret);
+ 		return ret;
+ 	}
+ 
+ 	ret = alloc_srq_idx(hr_dev, srq, udata, ucmd.que_addr);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to alloc SRQ idx, err %d\n", ret);
++		ibdev_err(ibdev, "failed to alloc SRQ idx, ret = %d.\n", ret);
+ 		goto err_buf_alloc;
+ 	}
+ 
+ 	if (!udata) {
+ 		ret = alloc_srq_wrid(hr_dev, srq);
+ 		if (ret) {
+-			ibdev_err(ibdev, "Failed to alloc SRQ wrid, err %d\n",
++			ibdev_err(ibdev, "failed to alloc SRQ wrid, ret = %d.\n",
+ 				  ret);
+ 			goto err_idx_alloc;
+ 		}
+@@ -338,7 +344,8 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 
+ 	ret = alloc_srqc(hr_dev, srq, to_hr_pd(ib_srq->pd)->pdn, cqn, 0, 0);
+ 	if (ret) {
+-		ibdev_err(ibdev, "Failed to alloc SRQ context, err %d\n", ret);
++		ibdev_err(ibdev,
++			  "failed to alloc SRQ context, ret = %d.\n", ret);
+ 		goto err_wrid_alloc;
+ 	}
+ 
 -- 
 2.8.1
 
