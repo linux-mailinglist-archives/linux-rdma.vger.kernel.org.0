@@ -2,183 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084192D762A
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Dec 2020 14:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B74A2D76A4
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Dec 2020 14:35:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406040AbgLKM6q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 11 Dec 2020 07:58:46 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34750 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406014AbgLKM6d (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Dec 2020 07:58:33 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607691469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JI1elAtJ+5DtZ6K623jhzzi7pTI2yY5tK5xHv6JaNRg=;
-        b=IsUihC8x41gfVuZ56mJpZCBvWH6AGSSnlAtCqFu+Y6vHBUWXmKQx9YvU5B8lrG6utDrQMP
-        8canZDEEsNDVhNNdoKfnFOQzTFOpz9W+psXaARAvFsUFtyOebsqoT9kLX8kBnNz5EacFR5
-        rK53uTCJCAI+CQzV9BLaBuU/gNEQZy9UASonSM4NSF0ZsDg2qgrh9flw6frSO8WIrRyHsw
-        fF1cIAuhmb0wJbfH0peqshua47BZpnwfG0pDc4EWPJORiwGLQuagVjgVxqHnf+tQ9+0hUT
-        H0SNNDNOI9Tui6mw4dUpmVwGgPTgPo14TX1s4jNlbb7LIWdUurk9RmWQuaaNkw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607691469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JI1elAtJ+5DtZ6K623jhzzi7pTI2yY5tK5xHv6JaNRg=;
-        b=9Ep94KYblAfQy2iSeDDH/NSIpD2gqoyh3N3s+6g4ZgyvdTP4pfDpIIp6ve3zDE8y9b1XGh
-        NoOqscBMvs3mS3Bw==
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-pci@vger.kernel.org,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [patch 14/30] drm/i915/pmu: Replace open coded kstat_irqs() copy
-In-Reply-To: <ad05af1a-5463-2a80-0887-7629721d6863@linux.intel.com>
-References: <20201210192536.118432146@linutronix.de> <20201210194043.957046529@linutronix.de> <ad05af1a-5463-2a80-0887-7629721d6863@linux.intel.com>
-Date:   Fri, 11 Dec 2020 13:57:49 +0100
-Message-ID: <87y2i4h54i.fsf@nanos.tec.linutronix.de>
+        id S1728462AbgLKNec (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 11 Dec 2020 08:34:32 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:37130 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726313AbgLKNea (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 11 Dec 2020 08:34:30 -0500
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fd3753b0000>; Fri, 11 Dec 2020 21:33:47 +0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 11 Dec
+ 2020 13:33:47 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.171)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 11 Dec 2020 13:33:47 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DFHw7HDpZYPyXDX51wCkEGBTEBv3n/sYmYY1j6yF9bjRyFUtYmfWcwpXXNx6AjkjVn/RMYC4Lda6S3hAk78AdQybIhHo0blb8JD5AQ9n5Dpl0ATjp+NdmJnZRSY8b7hjWQA5ctYclvKhw70yLAyZOkxrSkR/kULKvGg62rd0G9MGAiH073ddYItYJ6JozTdkjRjWrqd2kp1sePpLrpJDKPz3ci4S+AXvvriNqTl60MSm4aI5pnsxUga0T3067e0j9T+gSvjVOI5wWz0FoWvEjjFfy3N9EVwGScW3jbDMcvzC2WjjwKOdyHoiDdd8uLl489UV9cudFHvMlShlAZjXPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uGZymeefkB2nkR9tJCfwsf0k9ITtMbXnzJz7olLe7CE=;
+ b=RNxg8ccOQKUDOdwk6+NbURum0X8lxJX8m+SrYku2LF9q6PrerlelbxqIOJ1FjzGxPva7z4GM80qP2QefjLnGPz+OGRG8vXAiu9YmB7ebC8MXE9xoPQfhVAogaphXUQnBtM8yxAq0WEx8MQNk0SsvuT5JWOSUQquLn1DUkgwMd/tu5vW52sDRgwq48iskznWk/dFoeYbyqoa7zbQzeWkWhzcgsqBgt0WuvFA78yBHUyQcsPy9qCvLD12ddMpIOExW19pRdup18YLyXp3lXO6KDitpTKUoyeMxeh44GVabH6dgyzFXeYMO+HIzpep37RTonXDzwOZC49zZg8CGhdx1UA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB2440.namprd12.prod.outlook.com (2603:10b6:4:b6::39) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Fri, 11 Dec
+ 2020 13:33:46 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3654.018; Fri, 11 Dec 2020
+ 13:33:45 +0000
+Date:   Fri, 11 Dec 2020 09:33:44 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     <linux-rdma@vger.kernel.org>
+Subject: Holiday Schedule
+Message-ID: <20201211133344.GA5487@ziepe.ca>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: BL0PR03CA0009.namprd03.prod.outlook.com
+ (2603:10b6:208:2d::22) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR03CA0009.namprd03.prod.outlook.com (2603:10b6:208:2d::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Fri, 11 Dec 2020 13:33:45 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kniYK-009DF2-G1     for linux-rdma@vger.kernel.org; Fri, 11 Dec 2020 09:33:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607693627; bh=uGZymeefkB2nkR9tJCfwsf0k9ITtMbXnzJz7olLe7CE=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:Subject:Message-ID:Content-Type:Content-Disposition:
+         X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=WejOUrcTLTnS5JjbvD+B6gfrEjOVwBWGZR4qUwZS6Mi+Ude9QNktMoXJXl7YhHaL2
+         TlPXGxl+PlyD6PJQBv+6+LconzLycjLEv8eJCB7e6WWdL3vP2LE3HWmtiLkiIEJfV+
+         vWPPT/BeMdTs2yRf2U2yEbWzSXI/HDWbOuUh4/I70oxKPi99ic7txYNJYmkQd3ss5K
+         L+HsYZzwWM7gWPKTDdu90HSMBAkRI9guCqpvx2iRVdNCBzGltzGsUjuCbC5mbXPoR8
+         F+u7t5ndl85qAGFIFsZ3McoqYTqlpMn7Ny9sN6LZDVMOofaUqH87E/R+brYPp3Y6uc
+         Oxb/iLejwgPNg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Dec 11 2020 at 10:13, Tvrtko Ursulin wrote:
-> On 10/12/2020 19:25, Thomas Gleixner wrote:
+Just a FYI,
 
->> 
->> Aside of that the count is per interrupt line and therefore takes
->> interrupts from other devices into account which share the interrupt line
->> and are not handled by the graphics driver.
->> 
->> Replace it with a pmu private count which only counts interrupts which
->> originate from the graphics card.
->> 
->> To avoid atomics or heuristics of some sort make the counter field
->> 'unsigned long'. That limits the count to 4e9 on 32bit which is a lot and
->> postprocessing can easily deal with the occasional wraparound.
->
-> After my failed hasty sketch from last night I had a different one which 
-> was kind of heuristics based (re-reading the upper dword and retrying if 
-> it changed on 32-bit).
+The merge window will open next week and as usual I will stop taking
+patches for the next two weeks. Additionally I plan to take the third
+week off so things will not return to normal till January 4th
 
-The problem is that there will be two seperate modifications for the low
-and high word. Several ways how the compiler can translate this, but the
-problem is the same for all of them:
+Happy holidays to all
 
-CPU 0                           CPU 1
-        load low
-        load high
-        add  low, 1
-        addc high, 0            
-        store low               load high
---> NMI                         load low
-                                load high and compare
-        store high
-
-You can't catch that. If this really becomes an issue you need a
-sequence counter around it.
-      
-
-> But you are right - it is okay to at least start 
-> like this today and if later there is a need we can either do that or 
-> deal with wrap at PMU read time.
-
-Right.
-
->> +/*
->> + * Interrupt statistic for PMU. Increments the counter only if the
->> + * interrupt originated from the the GPU so interrupts from a device which
->> + * shares the interrupt line are not accounted.
->> + */
->> +static inline void pmu_irq_stats(struct drm_i915_private *priv,
->
-> We never use priv as a local name, it should be either i915 or
-> dev_priv.
-
-Sure, will fix.
-
->> +	/*
->> +	 * A clever compiler translates that into INC. A not so clever one
->> +	 * should at least prevent store tearing.
->> +	 */
->> +	WRITE_ONCE(priv->pmu.irq_count, priv->pmu.irq_count + 1);
->
-> Curious, probably more educational for me - given x86_32 and x86_64, and 
-> the context of it getting called, what is the difference from just doing 
-> irq_count++?
-
-Several reasons:
-
-    1) The compiler can pretty much do what it wants with cnt++
-       including tearing and whatever. https://lwn.net/Articles/816850/
-       for the full set of insanities.
-
-       Not really a problem here, but
-
-    2) It's annotating the reader and the writer side and documenting
-       that this is subject to concurrency
-
-    3) It will prevent KCSAN to complain about the data race,
-       i.e. concurrent modification while reading.
-
-Thanks,
-
-        tglx
-
->> --- a/drivers/gpu/drm/i915/i915_pmu.c
->> +++ b/drivers/gpu/drm/i915/i915_pmu.c
->> @@ -423,22 +423,6 @@ static enum hrtimer_restart i915_sample(
->>   	return HRTIMER_RESTART;
->>   }
->
-> In this file you can also drop the #include <linux/irq.h> line.
-
-Indeed.
-
-Thanks,
-
-        tglx
+Regards,
+Jason
