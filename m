@@ -2,282 +2,286 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3B92D6F09
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Dec 2020 05:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A222D2D7014
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Dec 2020 07:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395308AbgLKENA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Dec 2020 23:13:00 -0500
-Received: from mga06.intel.com ([134.134.136.31]:18503 "EHLO mga06.intel.com"
+        id S2390150AbgLKGS5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 11 Dec 2020 01:18:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48760 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395306AbgLKEMi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 10 Dec 2020 23:12:38 -0500
-IronPort-SDR: Z4lOh+2b9Al0CT7Q2DncAbO+WTZNdgG6G3c0rtyq92cSqRIps1nphWTQU5DPG65TXyJG+uRb1z
- s3ITPMOTj8pw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="235972191"
-X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
-   d="scan'208";a="235972191"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 20:11:53 -0800
-IronPort-SDR: fRLNf9VF8K+WtaaKmXn5n2eqmNOgQ4/5JhBlZbkJ7nIO/+3U7YzsWqNMZkhufOaUV0SQRRqQQL
- mLVXs/JtLgqA==
-X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
-   d="scan'208";a="365237715"
-Received: from samudral-mobl.amr.corp.intel.com (HELO [10.212.44.3]) ([10.212.44.3])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 20:11:52 -0800
-From:   "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
-Subject: Re: [PATCH net-next v2 00/14] Add mlx5 subfunction support
-To:     saeed@kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, David Ahern <dsahern@kernel.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        david.m.ertman@intel.com, dan.j.williams@intel.com,
-        kiran.patil@intel.com, gregkh@linuxfoundation.org,
-        Parav Pandit <parav@nvidia.com>
-References: <20201209072934.1272819-1-saeed@kernel.org>
-Message-ID: <f720c3fb-7401-4f3a-7de2-25309c2570f5@intel.com>
-Date:   Thu, 10 Dec 2020 20:11:42 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S2388934AbgLKGSi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 11 Dec 2020 01:18:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607667469; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0Hqvh2FmQdxs+E1P/+UvffdZOKFlLtbSz3sTxGcARMo=;
+        b=LBVJx6W5F4URqC3X64ehrowu5YRikB8/j/vxRSbcQ3IL9ZnU1EhEzYDoZmjik7Ss9AAF9k
+        VbJCYa9d4uXocu0FLUSMKEjfe+DRohzwZKmTlPFzKcaaj/1KN/wjUDbns5LbsUhpaSTxU7
+        2cbe908PI5Up5se8cqa9SOITXkOZdgE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 13F15AF2C;
+        Fri, 11 Dec 2020 06:17:49 +0000 (UTC)
+Subject: Re: [patch 27/30] xen/events: Only force affinity mask for percpu
+ interrupts
+To:     boris.ostrovsky@oracle.com, Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-pci@vger.kernel.org,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>
+References: <20201210192536.118432146@linutronix.de>
+ <20201210194045.250321315@linutronix.de>
+ <7f7af60f-567f-cdef-f8db-8062a44758ce@oracle.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <a4bce428-4420-6064-c7cc-7136a7544a52@suse.com>
+Date:   Fri, 11 Dec 2020 07:17:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201209072934.1272819-1-saeed@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <7f7af60f-567f-cdef-f8db-8062a44758ce@oracle.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="bInmAjsEBwVQG9mgj6zMfi4a5q7thbvRq"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 12/8/2020 11:29 PM, saeed@kernel.org wrote:
-> From: Parav Pandit <parav@nvidia.com>
->
-> Hi Dave, Jakub, Jason,
->
-> This series form Parav was the theme of this mlx5 release cycle,
-> we've been waiting anxiously for the auxbus infrastructure to make it into
-> the kernel, and now as the auxbus is in and all the stars are aligned, I
-> can finally submit this V2 of the devlink and mlx5 subfunction support.
->
-> Subfunctions came to solve the scaling issue of virtualization
-> and switchdev environments, where SRIOV failed to deliver and users ran
-> out of VFs very quickly as SRIOV demands huge amount of physical resources
-> in both of the servers and the NIC.
->
-> Subfunction provide the same functionality as SRIOV but in a very
-> lightweight manner, please see the thorough and detailed
-> documentation from Parav below, in the commit messages and the
-> Networking documentation patches at the end of this series.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--bInmAjsEBwVQG9mgj6zMfi4a5q7thbvRq
+Content-Type: multipart/mixed; boundary="z0MmiO2yT7oWPERWG97Qa1OHWGxwVFKEb";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: boris.ostrovsky@oracle.com, Thomas Gleixner <tglx@linutronix.de>,
+ LKML <linux-kernel@vger.kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Marc Zyngier <maz@kernel.org>,
+ Stefano Stabellini <sstabellini@kernel.org>, xen-devel@lists.xenproject.org,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, afzal mohammed <afzal.mohd.ma@gmail.com>,
+ linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Christian Borntraeger <borntraeger@de.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+ Jani Nikula <jani.nikula@linux.intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+ Chris Wilson <chris@chris-wilson.co.uk>,
+ Wambui Karuga <wambui.karugax@gmail.com>, intel-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org,
+ Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org,
+ Lee Jones <lee.jones@linaro.org>, Jon Mason <jdmason@kudzu.us>,
+ Dave Jiang <dave.jiang@intel.com>, Allen Hubbe <allenbh@gmail.com>,
+ linux-ntb@googlegroups.com, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Michal Simek <michal.simek@xilinx.com>, linux-pci@vger.kernel.org,
+ Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+ Hou Zhiqiang <Zhiqiang.Hou@nxp.com>, Tariq Toukan <tariqt@nvidia.com>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>
+Message-ID: <a4bce428-4420-6064-c7cc-7136a7544a52@suse.com>
+Subject: Re: [patch 27/30] xen/events: Only force affinity mask for percpu
+ interrupts
+References: <20201210192536.118432146@linutronix.de>
+ <20201210194045.250321315@linutronix.de>
+ <7f7af60f-567f-cdef-f8db-8062a44758ce@oracle.com>
+In-Reply-To: <7f7af60f-567f-cdef-f8db-8062a44758ce@oracle.com>
 
-What is the mechanism for assigning these subfunctions to VMs?
-OR is this only targeted for container usecases at this time?
+--z0MmiO2yT7oWPERWG97Qa1OHWGxwVFKEb
+Content-Type: multipart/mixed;
+ boundary="------------4E00B26896755A3BF8CF5A38"
+Content-Language: en-US
 
->
-> Sending V2 as a continuation to V1 that was sent Last month [0],
-> Parav has provided full change-log in the commit message of each patch.
-> [0] https://lore.kernel.org/linux-rdma/20201112192424.2742-1-parav@nvidia.com/
->
-> Parav Pandit Says:
-> =================
->
-> This patchset introduces support for mlx5 subfunction (SF).
->
-> A subfunction is a lightweight function that has a parent PCI function on
-> which it is deployed. mlx5 subfunction has its own function capabilities
-> and its own resources. This means a subfunction has its own dedicated
-> queues(txq, rxq, cq, eq). These queues are neither shared nor stealed from
-> the parent PCI function.
->
-> When subfunction is RDMA capable, it has its own QP1, GID table and rdma
-> resources neither shared nor stealed from the parent PCI function.
->
-> A subfunction has dedicated window in PCI BAR space that is not shared
-> with ther other subfunctions or parent PCI function. This ensures that all
-> class devices of the subfunction accesses only assigned PCI BAR space.
->
-> A Subfunction supports eswitch representation through which it supports tc
-> offloads. User must configure eswitch to send/receive packets from/to
-> subfunction port.
->
-> Subfunctions share PCI level resources such as PCI MSI-X IRQs with
-> their other subfunctions and/or with its parent PCI function.
->
-> Patch summary:
-> --------------
-> Patch 1 to 4 prepares devlink
-> patch 5 to 7 mlx5 adds SF device support
-> Patch 8 to 11 mlx5 adds SF devlink port support
-> Patch 12 and 14 adds documentation
->
-> Patch-1 prepares code to handle multiple port function attributes
-> Patch-2 introduces devlink pcisf port flavour similar to pcipf and pcivf
-> Patch-3 adds port add and delete driver callbacks
-> Patch-4 adds port function state get and set callbacks
-> Patch-5 mlx5 vhca event notifier support to distribute subfunction
->          state change notification
-> Patch-6 adds SF auxiliary device
-> Patch-7 adds SF auxiliary driver
-> Patch-8 prepares eswitch to handler SF vport
-> Patch-9 adds eswitch helpers to add/remove SF vport
-> Patch-10 implements devlink port add/del callbacks
-> Patch-11 implements devlink port function get/set callbacks
-> Patch-12 to 14 adds documentation
-> Patch-12 added mlx5 port function documentation
-> Patch-13 adds subfunction documentation
-> Patch-14 adds mlx5 subfunction documentation
->
-> Subfunction support is discussed in detail in RFC [1] and [2].
-> RFC [1] and extension [2] describes requirements, design and proposed
-> plumbing using devlink, auxiliary bus and sysfs for systemd/udev
-> support. Functionality of this patchset is best explained using real
-> examples further below.
->
-> overview:
-> --------
-> A subfunction can be created and deleted by a user using devlink port
-> add/delete interface.
->
-> A subfunction can be configured using devlink port function attribute
-> before its activated.
->
-> When a subfunction is activated, it results in an auxiliary device on
-> the host PCI device where it is deployed. A driver binds to the
-> auxiliary device that further creates supported class devices.
->
-> example subfunction usage sequence:
-> -----------------------------------
-> Change device to switchdev mode:
-> $ devlink dev eswitch set pci/0000:06:00.0 mode switchdev
->
-> Add a devlink port of subfunction flaovur:
-> $ devlink port add pci/0000:06:00.0 flavour pcisf pfnum 0 sfnum 88
-Is there any requirement that subfunctions can be created only when 
-eswitch mode is set to switchdev?
-I think we should not restrict this functionality without switchdev mode .
+This is a multi-part message in MIME format.
+--------------4E00B26896755A3BF8CF5A38
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-After this step, i guess an auxiliary device is created on the auxiliary 
-bus and a devlink port.
-Does "devlink port show" show this port and can we list the auxiliary 
-device.
-> Configure mac address of the port function:
-> $ devlink port function set ens2f0npf0sf88 hw_addr 00:00:00:00:88:88
-What is ens2f0npf0sf88? Is this the port representer netdev? I think we 
-should allow setting
-this by passing the devlink port.
+On 11.12.20 00:20, boris.ostrovsky@oracle.com wrote:
+>=20
+> On 12/10/20 2:26 PM, Thomas Gleixner wrote:
+>> All event channel setups bind the interrupt on CPU0 or the target CPU =
+for
+>> percpu interrupts and overwrite the affinity mask with the correspondi=
+ng
+>> cpumask. That does not make sense.
+>>
+>> The XEN implementation of irqchip::irq_set_affinity() already picks a
+>> single target CPU out of the affinity mask and the actual target is st=
+ored
+>> in the effective CPU mask, so destroying the user chosen affinity mask=
 
-What about other attributes like number of queues, interrupt vectors and 
-port
-capabilities etc? Can we add other attributes via this interface?
->
-> Now activate the function:
-> $ devlink port function set ens2f0npf0sf88 state active
-Is the subfunction netdev created after this step?
-I thought there was a step to bind the auxiliary device to the driver.
-How does the probe routine for the auxiliary device get invoked?
->
-> Now use the auxiliary device and class devices:
-> $ devlink dev show
-> pci/0000:06:00.0
-> auxiliary/mlx5_core.sf.4
->
-> $ ip link show
-> 127: ens2f0np0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
->      link/ether 24:8a:07:b3:d1:12 brd ff:ff:ff:ff:ff:ff
->      altname enp6s0f0np0
-> 129: p0sf88: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
->      link/ether 00:00:00:00:88:88 brd ff:ff:ff:ff:ff:ff
->
-> $ rdma dev show
-> 43: rdmap6s0f0: node_type ca fw 16.29.0550 node_guid 248a:0703:00b3:d112 sys_image_guid 248a:0703:00b3:d112
-> 44: mlx5_0: node_type ca fw 16.29.0550 node_guid 0000:00ff:fe00:8888 sys_image_guid 248a:0703:00b3:d112
->
-> After use inactivate the function:
-> $ devlink port function set ens2f0npf0sf88 state inactive
->
-> Now delete the subfunction port:
-> $ devlink port del ens2f0npf0sf88
->
-> [1] https://lore.kernel.org/netdev/20200519092258.GF4655@nanopsycho/
-> [2] https://marc.info/?l=linux-netdev&m=158555928517777&w=2
->
-> =================
-> ---
-> Changelog:
-> v1->v2:
->   - added documentation for subfunction and its mlx5 implementation
->   - add MLX5_SF config option documentation
->   - rebased
->   - dropped devlink global lock improvement patch as mlx5 doesn't support
->     reload while SFs are allocated
->   - dropped devlink reload lock patch as mlx5 doesn't support reload
->     when SFs are allocated
->   - using updated vhca event from device to add remove auxiliary device
->   - split sf devlink port allocation and sf hardware context allocation
->
-> Parav Pandit (13):
->    devlink: Prepare code to fill multiple port function attributes
->    devlink: Introduce PCI SF port flavour and port attribute
->    devlink: Support add and delete devlink port
->    devlink: Support get and set state of port function
->    net/mlx5: Introduce vhca state event notifier
->    net/mlx5: SF, Add auxiliary device support
->    net/mlx5: SF, Add auxiliary device driver
->    net/mlx5: E-switch, Add eswitch helpers for SF vport
->    net/mlx5: SF, Add port add delete functionality
->    net/mlx5: SF, Port function state change support
->    devlink: Add devlink port documentation
->    devlink: Extend devlink port documentation for subfunctions
->    net/mlx5: Add devlink subfunction port documentation
->
-> Vu Pham (1):
->    net/mlx5: E-switch, Prepare eswitch to handle SF vport
->
->   Documentation/driver-api/auxiliary_bus.rst    |   2 +
->   .../device_drivers/ethernet/mellanox/mlx5.rst | 209 +++++++
->   .../networking/devlink/devlink-port.rst       | 199 +++++++
->   Documentation/networking/devlink/index.rst    |   1 +
->   .../net/ethernet/mellanox/mlx5/core/Kconfig   |  19 +
->   .../net/ethernet/mellanox/mlx5/core/Makefile  |   9 +
->   drivers/net/ethernet/mellanox/mlx5/core/cmd.c |   8 +
->   .../net/ethernet/mellanox/mlx5/core/devlink.c |  19 +
->   drivers/net/ethernet/mellanox/mlx5/core/eq.c  |   5 +-
->   .../mellanox/mlx5/core/esw/acl/egress_ofld.c  |   2 +-
->   .../mellanox/mlx5/core/esw/devlink_port.c     |  41 ++
->   .../net/ethernet/mellanox/mlx5/core/eswitch.c |  48 +-
->   .../net/ethernet/mellanox/mlx5/core/eswitch.h |  78 +++
->   .../mellanox/mlx5/core/eswitch_offloads.c     |  47 +-
->   .../net/ethernet/mellanox/mlx5/core/events.c  |   7 +
->   .../net/ethernet/mellanox/mlx5/core/main.c    |  60 +-
->   .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  12 +
->   .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  20 +
->   .../net/ethernet/mellanox/mlx5/core/sf/cmd.c  |  48 ++
->   .../ethernet/mellanox/mlx5/core/sf/dev/dev.c  | 271 +++++++++
->   .../ethernet/mellanox/mlx5/core/sf/dev/dev.h  |  55 ++
->   .../mellanox/mlx5/core/sf/dev/driver.c        | 101 ++++
->   .../ethernet/mellanox/mlx5/core/sf/devlink.c  | 552 ++++++++++++++++++
->   .../ethernet/mellanox/mlx5/core/sf/hw_table.c | 235 ++++++++
->   .../mlx5/core/sf/mlx5_ifc_vhca_event.h        |  82 +++
->   .../net/ethernet/mellanox/mlx5/core/sf/priv.h |  21 +
->   .../net/ethernet/mellanox/mlx5/core/sf/sf.h   |  92 +++
->   .../mellanox/mlx5/core/sf/vhca_event.c        | 189 ++++++
->   .../mellanox/mlx5/core/sf/vhca_event.h        |  57 ++
->   .../net/ethernet/mellanox/mlx5/core/vport.c   |   3 +-
->   include/linux/mlx5/driver.h                   |  16 +-
->   include/net/devlink.h                         |  79 +++
->   include/uapi/linux/devlink.h                  |  26 +
->   net/core/devlink.c                            | 266 ++++++++-
->   34 files changed, 2832 insertions(+), 47 deletions(-)
->   create mode 100644 Documentation/networking/devlink/devlink-port.rst
->   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/cmd.c
->   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/dev/dev.c
->   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/dev/dev.h
->   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c
->   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
->   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c
->   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/mlx5_ifc_vhca_event.h
->   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/priv.h
->   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/sf.h
->   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/vhca_event.c
->   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/vhca_event.h
->
+>> which might contain more than one CPU is wrong.
+>>
+>> Change the implementation so that the channel is bound to CPU0 at the =
+XEN
+>> level and leave the affinity mask alone. At startup of the interrupt
+>> affinity will be assigned out of the affinity mask and the XEN binding=
+ will
+>> be updated.
+>=20
+>=20
+> If that's the case then I wonder whether we need this call at all and i=
+nstead bind at startup time.
 
+This binding to cpu0 was introduced with commit 97253eeeb792d61ed2
+and I have no reason to believe the underlying problem has been
+eliminated.
+
+
+Juergen
+
+--------------4E00B26896755A3BF8CF5A38
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------4E00B26896755A3BF8CF5A38--
+
+--z0MmiO2yT7oWPERWG97Qa1OHWGxwVFKEb--
+
+--bInmAjsEBwVQG9mgj6zMfi4a5q7thbvRq
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/TDwgFAwAAAAAACgkQsN6d1ii/Ey8h
+xggAkCsUD7isOuCqEaUo01HAUjpM8mZxAWSEsOLkScDlic57fpNsYS+rZOVeFHDluVxb/jn8HPuE
+LR2JRJJAoeDn0oVgoTexsNoc9s8tTVlR9AJDCBkQkfUCyo3m8fjaqh0uWYt8Fq5hiDLYdtopGANt
+SOatxh8szxVT1K7ewdOKYpq/E4LMlP/Ixqp7Vt3sLFUfbO23BK9BAQIN4HjEJ8UhwJmx97xEz4MQ
+3uq2q9YtvtamCfptwByf8jIwqQyfSTBFfng5U6S7cx5rxXjTnWWg2uK1+Yg6YeJ7rKitwBc87VUp
+3/xQ/cnnv/3SzOeVN5mv6RBsdEMDniBwFSlF8BwRpA==
+=wkA2
+-----END PGP SIGNATURE-----
+
+--bInmAjsEBwVQG9mgj6zMfi4a5q7thbvRq--
