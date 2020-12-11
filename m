@@ -2,177 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D28342D827F
-	for <lists+linux-rdma@lfdr.de>; Sat, 12 Dec 2020 00:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C69C22D832F
+	for <lists+linux-rdma@lfdr.de>; Sat, 12 Dec 2020 01:03:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436945AbgLKW57 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 11 Dec 2020 17:57:59 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:38364 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407062AbgLKW5d (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Dec 2020 17:57:33 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607727400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RMdJ5cNpvG94MqmN/2d6QVEWUP/YrLyBgV8MUkzsNlA=;
-        b=0WcDMUhLUE5DmQJjljMHI2zWwird6I5Vzppg/zn6AZ6e1OM3STU+JeGE05b5oqLFOvFfmh
-        CDXWZX+LKXvz41MQk+jw0mabsf/xLxFNSlsc7D+IqZgppXn+tyA6NewoUrmvCeXtmt2AST
-        EViRmHdbhCgpLeje9DpFYTQlqeoEtc+eq14ZwN+Y4G4vhAzpgACbffqabmLR4OWIgQ5TkH
-        0732UhUwEAjs3Gs9iSFScNlfSc9uVrpQKD7eElRAgICAQIyVgSIk6IrtHhKDjUooShlbLw
-        6lnH9jzEFDJiTz3F4zTjotppmf5h8vHSXnbS356QRRnsZMAn1kegUSilRX0RVQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607727400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RMdJ5cNpvG94MqmN/2d6QVEWUP/YrLyBgV8MUkzsNlA=;
-        b=ljcajSXupjVbHPbFKhUP57PPTY2aSW+D5nnua5xYh57kSUlRXkx3yzKeC3jH07q5vSS64l
-        BGsVaGm3g05BhRAQ==
-To:     Andrew Cooper <andrew.cooper3@citrix.com>,
-        boris.ostrovsky@oracle.com,
-        =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-pci@vger.kernel.org,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-Subject: Re: [patch 27/30] xen/events: Only force affinity mask for percpu interrupts
-In-Reply-To: <edbedd7a-4463-d934-73c9-fa046c19cf6d@citrix.com>
-References: <20201210192536.118432146@linutronix.de> <20201210194045.250321315@linutronix.de> <7f7af60f-567f-cdef-f8db-8062a44758ce@oracle.com> <2164a0ce-0e0d-c7dc-ac97-87c8f384ad82@suse.com> <871rfwiknd.fsf@nanos.tec.linutronix.de> <9806692f-24a3-4b6f-ae55-86bd66481271@oracle.com> <877dpoghio.fsf@nanos.tec.linutronix.de> <edbedd7a-4463-d934-73c9-fa046c19cf6d@citrix.com>
-Date:   Fri, 11 Dec 2020 23:56:40 +0100
-Message-ID: <87y2i4eytz.fsf@nanos.tec.linutronix.de>
+        id S2437616AbgLLABb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 11 Dec 2020 19:01:31 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19664 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437568AbgLLAAB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Dec 2020 19:00:01 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fd407d70001>; Fri, 11 Dec 2020 15:59:19 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 11 Dec
+ 2020 23:59:19 +0000
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.175)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 11 Dec 2020 23:59:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dP6kswS+V+1LQ8VnmGFihuuvy34aDqVvwuAWV0P+jgA/TQveD1fcQn2fQPmYQXpUI+tQywQ0/OZgHmUVx1BkM8rhXwtKd8xPrlz80R0yiESbKDS7ily+in+HTKhfWQZ1yiTqx+J5xv4ptzL/GVElfzGWevOfuR/0gSBPWQggqIBwpXHLZ+AEGrl2ZoWC0kVlr0b3TGx2uzb4LM4yWmZYTesasz1OtJJSb5NlMj4AigetXl7Xf0sukUyWbpFCe4GayKy5nMatqiYkpL4AD9MVtOaVNpD9E1pHJ6CBMhwSJBnwin3ffcOnjMZeQmm/GTeGrvpky7PELva6mNoxkSNQ7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n/if1WBxk5r4F0dqVC7ajScoQ40BPyW7UNHiaRzSDW4=;
+ b=B4k3fFdVKFU4xwUmqZONlUblQbloizrlrSKTntGRaXIaKkTx0/t/44PlHPr9nne2rAVj0w/tC3PzkAC7flQ4w51JmbuSejyLLtq9IsstrxqmHdM4aYlkBxQP4Qt3+PQtJPLqMjKQPbW4ThsGIwBdwSrI+7MZ5q7CvFNHLLUe/QT08jxyTCJoHIDhE6WhSAYFLOOk2w93Cz45YWIsZRWXnk0km38OVTeIK25cCa/TrozaCuDLl3eF6uNo5Ij6l3Q1gEgNffqK1pqtxQY7zuY5HPMVoQxgbVxbxG9+yaarVGwHdWBQ1zQ9/0r01uFnFucrnLjygQXzWTlXSbZzzUq3+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4483.namprd12.prod.outlook.com (2603:10b6:5:2a2::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Fri, 11 Dec
+ 2020 23:59:18 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3654.018; Fri, 11 Dec 2020
+ 23:59:18 +0000
+Date:   Fri, 11 Dec 2020 19:59:16 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+CC:     <zyjzyj2000@gmail.com>, <linux-rdma@vger.kernel.org>,
+        Bob Pearson <rpearson@hpe.com>
+Subject: Re: [PATCH v2] RDMA/rxe: Use acquire/release for memory ordering
+Message-ID: <20201211235916.GA2238970@nvidia.com>
+References: <20201210174258.5234-1-rpearson@hpe.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201210174258.5234-1-rpearson@hpe.com>
+X-ClientProxiedBy: BL1PR13CA0090.namprd13.prod.outlook.com
+ (2603:10b6:208:2b8::35) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0090.namprd13.prod.outlook.com (2603:10b6:208:2b8::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.9 via Frontend Transport; Fri, 11 Dec 2020 23:59:17 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1knsJg-009OTi-Aj; Fri, 11 Dec 2020 19:59:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607731159; bh=n/if1WBxk5r4F0dqVC7ajScoQ40BPyW7UNHiaRzSDW4=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=O+JZbxGYOj2JYLqky20yHwky/IwYUe+jizlahv1UnacozAsnIOAToQ6v9/0TUYCcR
+         oSKNGb334R9ua6lpNLfXTO78ND0RVO8g7yFTIt+3PXUXRgU3Oq4ictmDsIM7bj1hCH
+         XnRm/0+rrS+ywJwJwVfXcwqvx2puj9fz2dI8aNbFhvXpGLIMnkPN6wXniGL5YO3mIT
+         qta+hjFFo/frElsJsiJR+3/NuykyI3nBGrJ6W+v8OOQRO7TVIVTNvj/qflM+JuiVKv
+         IOUhKGL31Tm+KGZUOjsIDRXsaiZ4De5060zhJEGLe1Y00TBHGAq7nzCIn7PF+sBU1L
+         oi5tO5EOfJ2Cw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Andrew,
+On Thu, Dec 10, 2020 at 11:42:59AM -0600, Bob Pearson wrote:
+> Changed work and completion queues to use smp_load_acquire() and
+> smp_store_release() to synchronize between driver and users.
+> This commit goes with a matching series of commits in the rxe user
+> space provider.
+> 
+> v2: Addressed same issue for kernel ULPs which use rxe_post_send/recv().
+> 
+> Signed-off-by: Bob Pearson <rpearson@hpe.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_cq.c    |  5 --
+>  drivers/infiniband/sw/rxe/rxe_queue.h | 94 +++++++++++++++++----------
+>  drivers/infiniband/sw/rxe/rxe_verbs.c | 11 ----
+>  include/uapi/rdma/rdma_user_rxe.h     | 21 ++++++
+>  4 files changed, 81 insertions(+), 50 deletions(-)
 
-On Fri, Dec 11 2020 at 22:21, Andrew Cooper wrote:
-> On 11/12/2020 21:27, Thomas Gleixner wrote:
->> It's not any different from the hardware example at least not as far as
->> I understood the code.
->
-> Xen's event channels do have a couple of quirks.
+This really is a lot better than what was here, the extra barriers on
+empty/full can be fine tuned later
 
-Why am I not surprised?
-
-> Binding an event channel always results in one spurious event being
-> delivered.=C2=A0 This is to cover notifications which can get lost during=
- the
-> bidirectional setup, or re-setups in certain configurations.
->
-> Binding an interdomain or pirq event channel always defaults to vCPU0.=C2=
-=A0
-> There is no way to atomically set the affinity while binding.=C2=A0 I bel=
-ieve
-> the API predates SMP guest support in Xen, and noone has fixed it up
-> since.
-
-That's fine. I'm not changing that.
-
-What I'm changing is the unwanted and unnecessary overwriting of the
-actual affinity mask.
-
-We have a similar issue on real hardware where we can only target _one_
-CPU and not all CPUs in the affinity mask. So we still can preserve the
-(user) requested mask and just affine it to one CPU which is reflected
-in the effective affinity mask. This the right thing to do for two
-reasons:
-
-   1) It allows proper interrupt distribution
-
-   2) It does not break (user) requested affinity when the effective
-      target CPU goes offline and the affinity mask still contains
-      online CPUs. If you overwrite it you lost track of the requested
-      broader mask.
-
-> As a consequence, the guest will observe the event raised on vCPU0 as
-> part of setting up the event, even if it attempts to set a different
-> affinity immediately afterwards.=C2=A0 A little bit of care needs to be t=
-aken
-> when binding an event channel on vCPUs other than 0, to ensure that the
-> callback is safe with respect to any remaining state needing
-> initialisation.
-
-That's preserved for all non percpu interrupts. The percpu variant of
-VIRQ and IPIs did binding to vCPU !=3D 0 already before this change.
-
-> Beyond this, there is nothing magic I'm aware of.
->
-> We have seen soft lockups before in certain scenarios, simply due to the
-> quantity of events hitting vCPU0 before irqbalance gets around to
-> spreading the load.=C2=A0 This is why there is an attempt to round-robin =
-the
-> userspace event channel affinities by default, but I still don't see why
-> this would need custom affinity logic itself.
-
-Just the previous attempt makes no sense for the reasons I outlined in
-the changelog. So now with this new spreading mechanics you get the
-distribution for all cases:
-
-  1) Post setup using and respecting the default affinity mask which can
-     be set as a kernel commandline parameter.
-
-  2) Runtime (user) requested affinity change with a mask which contains
-     more than one vCPU. The previous logic always chose the first one
-     in the mask.
-
-     So assume userspace affines 4 irqs to a CPU 0-3 and 4 irqs to CPU
-     4-7 then 4 irqs end up on CPU0 and 4 on CPU4
-
-     The new algorithm which is similar to what we have on x86 (minus
-     the vector space limitation) picks the CPU which has the least
-     number of channels affine to it at that moment. If e.g. all 8 CPUs
-     have the same number of vectors before that change then in the
-     example above the first 4 are spread to CPU0-3 and the second 4 to
-     CPU4-7
+So applied to for-next
 
 Thanks,
-
-        tglx
-=20=20=20
+Jason
