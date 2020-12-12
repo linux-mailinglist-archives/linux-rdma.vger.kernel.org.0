@@ -2,182 +2,248 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA752D86E3
-	for <lists+linux-rdma@lfdr.de>; Sat, 12 Dec 2020 14:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 479992D870E
+	for <lists+linux-rdma@lfdr.de>; Sat, 12 Dec 2020 15:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406455AbgLLNXM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 12 Dec 2020 08:23:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405486AbgLLNXM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 12 Dec 2020 08:23:12 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9548BC0613CF;
-        Sat, 12 Dec 2020 05:22:31 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id e2so9243934pgi.5;
-        Sat, 12 Dec 2020 05:22:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VTZpp0n/Om/Jf11Mz+DqRKpiaIjN4mJ897+taVy59Ug=;
-        b=gs+DafSa6tm6ZhcmtOMAV2zOpZsgVdlfnJO3Cc8h6uZ7zEIkJ//kiGJiG610YJYd9c
-         hi7RAK/gnCn0RzWdwMYCDo5iWNdBQbtvJKYrsQI5ZcoVP15/FlhWsHbcStHoxRpLv5K2
-         7tZggztOJ5OrWHKSc7C0B5gdsPwG3Jh4XQNGDZzJ5uC91i9eb/FOwSgLNZwxuhvbJlm1
-         NZRNGWscN+BvdnS2hdE/2kf8TIOM+A9TYoTVx3z4X0kR366gEuSlj/jqKKPOYQFh4Kj3
-         5afdtXgK8N3xa39LgKIpCZwsKgk5qgska42v8wTbiGBbB+guXeCE2Frkke6P3b+dq3Ir
-         zifA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VTZpp0n/Om/Jf11Mz+DqRKpiaIjN4mJ897+taVy59Ug=;
-        b=pY/+WAanhS/D2gAgGcR3GdmyLEtanMI1ofX81rIjiO5itib6Igqi+GYh2YCVafjMvB
-         KAA4TMxqifgoSyzaKIwzvWK20KePSLT3LdqHKmcmhUuTV5nCkvWS88y02w+jpHCJCEEJ
-         dnGi/VaLM85BOjREX0tDR4pVtzHIBJ36Nd6zcalYq/JPWrVnnMpT5jhsyO/rgvlseWcD
-         Mm0pxRK89U34sdao1QUcClRD4gGKmFk6d07U8qi9Ax7UxwqPW6ftfPiHH2UyOcnwiYYv
-         4yNU9Tpb78BtqNWijRElZGiLzU7W50i1adnsxGE4SNKhyT7eUiuQqg4Ez0Go8u7Mp51p
-         cZxQ==
-X-Gm-Message-State: AOAM530rAyNTuQBGBmDiNJyJaBunFOnxRCjtAcIaPhkXibM51y+jm7r0
-        5Mjix1V4MBfcnYRzsJYLc5qhf4DNC5zMBkS/MaeVfYbxnN89suRR
-X-Google-Smtp-Source: ABdhPJz6qkGZaIbcK80z8oNTbmCmaNucZ+fxbrx52JjiY59cFl32wS2FAI0NK0C4i2f9nCp4IxJVJq78J8uiblnFRTg=
-X-Received: by 2002:a05:6a00:170a:b029:19d:afca:4704 with SMTP id
- h10-20020a056a00170ab029019dafca4704mr15887538pfc.7.1607779350726; Sat, 12
- Dec 2020 05:22:30 -0800 (PST)
+        id S1725966AbgLLOJi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 12 Dec 2020 09:09:38 -0500
+Received: from mga18.intel.com ([134.134.136.126]:15839 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725550AbgLLOJi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 12 Dec 2020 09:09:38 -0500
+IronPort-SDR: AaspYIZBSOPakFqTufcGmhSRNSWSGbAyIBAYKWdmzpUdxFVPUWRAq9Heh6tsN2Db85HCAIml4Y
+ PYbrJDdhTxyQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9832"; a="162306640"
+X-IronPort-AV: E=Sophos;i="5.78,414,1599548400"; 
+   d="scan'208";a="162306640"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2020 06:08:56 -0800
+IronPort-SDR: d3BvWZJFXElxG/jKeVCjwC/7Bn6zbB7CsIZyZyZUb8MVgdmRRPE40Az8OzKooyN0U/PbsAwGxW
+ VnwS6qm+B+MA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,414,1599548400"; 
+   d="scan'208";a="334850491"
+Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 12 Dec 2020 06:08:55 -0800
+Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1ko5Zu-0001Mr-Dl; Sat, 12 Dec 2020 14:08:54 +0000
+Date:   Sat, 12 Dec 2020 22:08:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ d21a1240f5169a07a230d72e0e6d3773b2a088b4
+Message-ID: <5fd4cecf.IjFhhV7+xXqXPrRl%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20201210192536.118432146@linutronix.de> <20201210194042.860029489@linutronix.de>
- <CAHp75Vc-2OjE2uwvNRiyLMQ8GSN3P7SehKD-yf229_7ocaktiw@mail.gmail.com>
- <87h7osgifc.fsf@nanos.tec.linutronix.de> <87360cgfol.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87360cgfol.fsf@nanos.tec.linutronix.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 12 Dec 2020 15:22:14 +0200
-Message-ID: <CAHp75Ve5zzeQw8P2wD083WW5+KGehETTy810wksfpXbj+3GBug@mail.gmail.com>
-Subject: Re: [patch 03/30] genirq: Move irq_set_lockdep_class() to core
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 12:07 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> On Fri, Dec 11 2020 at 22:08, Thomas Gleixner wrote:
->
-> > On Fri, Dec 11 2020 at 19:53, Andy Shevchenko wrote:
-> >
-> >> On Thu, Dec 10, 2020 at 10:14 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >>>
-> >>> irq_set_lockdep_class() is used from modules and requires irq_to_desc() to
-> >>> be exported. Move it into the core code which lifts another requirement for
-> >>> the export.
-> >>
-> >> ...
-> >>
-> >>> +       if (IS_ENABLED(CONFIG_LOCKDEP))
-> >>> +               __irq_set_lockdep_class(irq, lock_class, request_class);
-> >
-> > You are right. Let me fix that.
->
-> No. I have to correct myself. You're wrong.
->
-> The inline is evaluated in the compilation units which include that
-> header and because the function declaration is unconditional it is
-> happy.
->
-> Now the optimizer stage makes the whole thing a NOOP if CONFIG_LOCKDEP=n
-> and thereby drops the reference to the function which makes it not
-> required for linking.
->
-> So in the file where the function is implemented:
->
-> #ifdef CONFIG_LOCKDEP
-> void __irq_set_lockdep_class(....)
-> {
-> }
-> #endif
->
-> The whole block is either discarded because CONFIG_LOCKDEP is not
-> defined or compile if it is defined which makes it available for the
-> linker.
->
-> And in the latter case the optimizer keeps the call in the inline (it
-> optimizes the condition away because it's always true).
->
-> So in both cases the compiler and the linker are happy and everything
-> works as expected.
->
-> It would fail if the header file had the following:
->
-> #ifdef CONFIG_LOCKDEP
-> void __irq_set_lockdep_class(....);
-> #endif
->
-> Because then it would complain about the missing function prototype when
-> it evaluates the inline.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-next
+branch HEAD: d21a1240f5169a07a230d72e0e6d3773b2a088b4  RDMA/rxe: Use acquire/release for memory ordering
 
-I understand that (that's why I put "if even no warning") and what I'm
-talking about is the purpose of IS_ENABLED(). It's usually good for
-compile testing !CONFIG_FOO cases. But here it seems inconsistent.
+elapsed time: 799m
 
-The pattern I usually see in the cases like this is
+configs tested: 186
+configs skipped: 2
 
- #ifdef CONFIG_LOCKDEP
- void __irq_set_lockdep_class(....);
- #else
- static inline void ... {}
- #endif
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-and call it directly in the caller.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                               defconfig
+nios2                         3c120_defconfig
+sh                 kfr2r09-romimage_defconfig
+sh                          r7785rp_defconfig
+mips                             allmodconfig
+powerpc                     tqm8548_defconfig
+m68k                           sun3_defconfig
+openrisc                            defconfig
+arm                            pleb_defconfig
+arm                          collie_defconfig
+arm                           sunxi_defconfig
+parisc                generic-32bit_defconfig
+m68k                       m5275evb_defconfig
+arm                          exynos_defconfig
+sh                           se7343_defconfig
+arm                      integrator_defconfig
+arm                            qcom_defconfig
+sh                          rsk7264_defconfig
+mips                     cu1000-neo_defconfig
+powerpc                        cell_defconfig
+arm                      jornada720_defconfig
+powerpc                     tqm8541_defconfig
+sh                          landisk_defconfig
+powerpc                       holly_defconfig
+s390                                defconfig
+powerpc                 mpc832x_rdb_defconfig
+parisc                              defconfig
+xtensa                    smp_lx200_defconfig
+arm                        mvebu_v7_defconfig
+sh                             shx3_defconfig
+arm                          gemini_defconfig
+sh                          rsk7269_defconfig
+sh                        apsh4ad0a_defconfig
+m68k                        m5272c3_defconfig
+mips                   sb1250_swarm_defconfig
+arm                         socfpga_defconfig
+arm                          moxart_defconfig
+arc                                 defconfig
+arm                         s3c6400_defconfig
+arm                       aspeed_g4_defconfig
+arc                         haps_hs_defconfig
+powerpc                        warp_defconfig
+nios2                         10m50_defconfig
+parisc                generic-64bit_defconfig
+arm                        mvebu_v5_defconfig
+powerpc                      bamboo_defconfig
+powerpc                     ppa8548_defconfig
+riscv                               defconfig
+sh                             sh03_defconfig
+xtensa                generic_kc705_defconfig
+m68k                        mvme147_defconfig
+arm                        multi_v5_defconfig
+arm                          pxa910_defconfig
+nds32                               defconfig
+parisc                           alldefconfig
+ia64                                defconfig
+powerpc                    klondike_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                         assabet_defconfig
+arm                     eseries_pxa_defconfig
+arm                         lubbock_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                         s3c2410_defconfig
+arm                       spear13xx_defconfig
+powerpc                        icon_defconfig
+powerpc                  mpc885_ads_defconfig
+mips                           xway_defconfig
+powerpc                      cm5200_defconfig
+arm                      footbridge_defconfig
+mips                      pistachio_defconfig
+mips                      maltaaprp_defconfig
+s390                          debug_defconfig
+powerpc                    ge_imp3a_defconfig
+mips                      bmips_stb_defconfig
+xtensa                         virt_defconfig
+sparc                            allyesconfig
+powerpc                          g5_defconfig
+m68k                       bvme6000_defconfig
+powerpc                      pasemi_defconfig
+sh                           se7619_defconfig
+xtensa                           allyesconfig
+arm                         mv78xx0_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                          simpad_defconfig
+xtensa                    xip_kc705_defconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                        realview_defconfig
+powerpc                      katmai_defconfig
+xtensa                           alldefconfig
+riscv                    nommu_virt_defconfig
+mips                      maltasmvp_defconfig
+powerpc                      makalu_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20201212
+i386                 randconfig-a004-20201212
+i386                 randconfig-a003-20201212
+i386                 randconfig-a002-20201212
+i386                 randconfig-a005-20201212
+i386                 randconfig-a006-20201212
+i386                 randconfig-a004-20201209
+i386                 randconfig-a005-20201209
+i386                 randconfig-a001-20201209
+i386                 randconfig-a002-20201209
+i386                 randconfig-a006-20201209
+i386                 randconfig-a003-20201209
+x86_64               randconfig-a016-20201209
+x86_64               randconfig-a012-20201209
+x86_64               randconfig-a013-20201209
+x86_64               randconfig-a014-20201209
+x86_64               randconfig-a015-20201209
+x86_64               randconfig-a011-20201209
+x86_64               randconfig-a016-20201212
+x86_64               randconfig-a012-20201212
+x86_64               randconfig-a013-20201212
+x86_64               randconfig-a015-20201212
+x86_64               randconfig-a014-20201212
+x86_64               randconfig-a011-20201212
+i386                 randconfig-a013-20201209
+i386                 randconfig-a014-20201209
+i386                 randconfig-a011-20201209
+i386                 randconfig-a015-20201209
+i386                 randconfig-a012-20201209
+i386                 randconfig-a016-20201209
+i386                 randconfig-a014-20201210
+i386                 randconfig-a013-20201210
+i386                 randconfig-a012-20201210
+i386                 randconfig-a011-20201210
+i386                 randconfig-a016-20201210
+i386                 randconfig-a015-20201210
+i386                 randconfig-a014-20201212
+i386                 randconfig-a013-20201212
+i386                 randconfig-a012-20201212
+i386                 randconfig-a011-20201212
+i386                 randconfig-a016-20201212
+i386                 randconfig-a015-20201212
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-It's not a big deal, so up to you.
+clang tested configs:
+x86_64               randconfig-a003-20201212
+x86_64               randconfig-a006-20201212
+x86_64               randconfig-a002-20201212
+x86_64               randconfig-a005-20201212
+x86_64               randconfig-a004-20201212
+x86_64               randconfig-a001-20201212
+x86_64               randconfig-a004-20201209
+x86_64               randconfig-a006-20201209
+x86_64               randconfig-a005-20201209
+x86_64               randconfig-a001-20201209
+x86_64               randconfig-a002-20201209
+x86_64               randconfig-a003-20201209
 
--- 
-With Best Regards,
-Andy Shevchenko
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
