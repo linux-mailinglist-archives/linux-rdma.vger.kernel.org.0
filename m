@@ -2,118 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B202D8399
-	for <lists+linux-rdma@lfdr.de>; Sat, 12 Dec 2020 01:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 595802D84DE
+	for <lists+linux-rdma@lfdr.de>; Sat, 12 Dec 2020 06:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390332AbgLLAq5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 11 Dec 2020 19:46:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389144AbgLLAqq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Dec 2020 19:46:46 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C55C0613D3
-        for <linux-rdma@vger.kernel.org>; Fri, 11 Dec 2020 16:46:06 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id a9so15906796lfh.2
-        for <linux-rdma@vger.kernel.org>; Fri, 11 Dec 2020 16:46:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1p8BkEtCdcNBP/TpCqa88TfNrEdwTBnXM61elkmQDlU=;
-        b=vPmJzs+nnMzMYiLeSl4C70AwwAUmtSXcRtz7EHFhXOG3+HSYoFdEGzQYdbnIfuLhe1
-         cpLA6/bKDco/ZW56K0yojauLy12p9RMJ4MYQUMAZkQKn1JGQikvuaZfR0PCAwR/VHwqu
-         l8KSlmgfW9XQH81QbMWcZWDg6fTfP5u9gInsHFToPISthtmCvix2Zi4MyAVk8WOEDUbJ
-         6rVaVkrA8lMaHHNzl8tzPLP3FKzwRwCbx4UWePv66IKRrK3BWVszh2/HuHa0/BXzK05/
-         +RmxfJa60vjGUHEMlcdmB6LQFBStfB7tIZX79j1mfET935nYYecl+y81TGJ83zzfgTnD
-         hTzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1p8BkEtCdcNBP/TpCqa88TfNrEdwTBnXM61elkmQDlU=;
-        b=SnNj13nTXXV4X1glrxEqH6tDQxtKLPbpHTs/hm+En0qptuTAhFKxLTcniCaBVjCNSK
-         xXzaGe+pNX88kkJS9C8XMolywJFz+edtlrzl24HbqJ6veFLdu0zxIL3dVe6jSZPc28C4
-         qraX08imwsgRKrN3Dmxym6ou9xBoKAcRM5yUzrpTVK9QsjBqOUYe3wsysj1amB+oYNSx
-         nlxl/2YXG7mZCOh0AlgGNIibbgvIB6FTlJeKFvAgq/ynmduvUN4FCdNXsG5KPuRTuJx4
-         45c5ftNPNkFLFSyqYxeY3Q/f5zT5YoDfjoMkxS314xeSJ+O2LYi0EjVv9oEa+q+8+XIR
-         N5aw==
-X-Gm-Message-State: AOAM533ItDF2yCT/Nt2cSVBHXVDg9FXcUakoUzPHofwy4a38uTbZuoQF
-        9jqjxsON5qN3SanB8HLN9E8wOh4avj7a3c5z+xG3vA==
-X-Google-Smtp-Source: ABdhPJw+G3KfJG3M7IoDnPiDCepv2YgkNV/jArpapqMifWmjCRwgJbTiMDpguzIYWZxJHM0zdf1udksfd+uvUSH+FdI=
-X-Received: by 2002:a05:651c:205b:: with SMTP id t27mr2692550ljo.368.1607733964618;
- Fri, 11 Dec 2020 16:46:04 -0800 (PST)
+        id S2438320AbgLLF0H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 12 Dec 2020 00:26:07 -0500
+Received: from smtprelay0029.hostedemail.com ([216.40.44.29]:35790 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2437153AbgLLFZy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 12 Dec 2020 00:25:54 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 641EF1803A836;
+        Sat, 12 Dec 2020 05:25:03 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1515:1516:1518:1534:1539:1568:1593:1594:1711:1714:1730:1747:1777:1792:2194:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3866:3867:3871:4321:5007:7875:10004:10400:10848:11026:11232:11473:11657:11658:11914:12043:12296:12297:12740:12895:13069:13311:13357:13439:13894:14659:14721:21080:21451:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: linen76_000822627407
+X-Filterd-Recvd-Size: 1608
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 12 Dec 2020 05:25:02 +0000 (UTC)
+Message-ID: <a81975ecafefb7aebd087a97780424d5bb9ba280.camel@perches.com>
+Subject: Re: [PATCH] net/mlx4: Use true,false for bool variable
+From:   Joe Perches <joe@perches.com>
+To:     Vasyl Gomonovych <gomonovych@gmail.com>, tariqt@nvidia.com
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 11 Dec 2020 21:25:01 -0800
+In-Reply-To: <20201211100518.29804-1-gomonovych@gmail.com>
+References: <20201211100518.29804-1-gomonovych@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-References: <20201210192536.118432146@linutronix.de> <20201210194044.065003856@linutronix.de>
-In-Reply-To: <20201210194044.065003856@linutronix.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 12 Dec 2020 01:45:53 +0100
-Message-ID: <CACRpkdbKZzaTq+Am6q38Ya5wuUjiMbLE5g2i8bb_mJEWTkXgCg@mail.gmail.com>
-Subject: Re: [patch 15/30] pinctrl: nomadik: Use irq_has_action()
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 8:42 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Fri, 2020-12-11 at 11:05 +0100, Vasyl Gomonovych wrote:
+> Fix en_rx.c:687:1-17: WARNING: Assignment of 0/1 to bool variable
+> Fix main.c:4465:5-13: WARNING: Comparison of 0/1 to bool variable
+[]
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+[]
+> @@ -4462,7 +4462,7 @@ static int __init mlx4_verify_params(void)
+>  		pr_warn("mlx4_core: log_num_vlan - obsolete module param, using %d\n",
+>  			MLX4_LOG_NUM_VLANS);
+>  
+> 
+> -	if (use_prio != 0)
+> +	if (use_prio != false)
+>  		pr_warn("mlx4_core: use_prio - obsolete module param, ignored\n");
 
-> Let the core code do the fiddling with irq_desc.
->
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-gpio@vger.kernel.org
+Generally, assuming use_prio is bool, this would be written
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+	if (use_prio)
+		pr_warn("etc...")
 
-I suppose you will funnel this directly to Torvalds, else tell me and
-I'll apply it to my tree.
 
-Yours,
-Linus Walleij
