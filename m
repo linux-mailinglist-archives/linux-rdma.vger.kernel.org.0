@@ -2,35 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257902D8885
-	for <lists+linux-rdma@lfdr.de>; Sat, 12 Dec 2020 18:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB0E2D89F5
+	for <lists+linux-rdma@lfdr.de>; Sat, 12 Dec 2020 21:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731237AbgLLRDP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 12 Dec 2020 12:03:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50284 "EHLO mail.kernel.org"
+        id S1726298AbgLLU0F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 12 Dec 2020 15:26:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726496AbgLLRDP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 12 Dec 2020 12:03:15 -0500
-Date:   Sat, 12 Dec 2020 09:02:34 -0800
+        id S1725822AbgLLU0A (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 12 Dec 2020 15:26:00 -0500
+Date:   Sat, 12 Dec 2020 12:25:18 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607792555;
-        bh=WkIReCFLC1vY0LLkvIQiiFkKuPGCsqQUhk409zbMtK0=;
+        s=k20201202; t=1607804720;
+        bh=3TWsNwx2GEMWi7xdXCw9vFSkyKSH9/nDeEWheML+rDk=;
         h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QWYsOKXmHsXOURggudyLKVztfMFW/IlXYz8U2WwL2piFFL8WwPRJ/Nh6K5cSu53GH
-         oLEMOmxPjUch4s1jZJug40awfZ+OkEOd+66ZMJOzZt+w+sWAvlA1ZZoPVQZi1xFTPk
-         fTUSUdW+1Lb0UpdY6Y24Tl7PZYc/Kaz46sTZW2qWNsRDXKTpmOEtoRQKnIU+V94rYr
-         j6npyDwrKSJwjtvhtcX83XeWFx+IEC2rMZKaCWDEUIXJwx+8i7dF07k7DAqY6HELWA
-         2sRX6ZDkPsmrm1FGJN4lIQCyAAztngwq1DAgRBxYGiMYLcNOSHWB5mfKk4++jKnlfp
-         WvFtE2H9HIF+Q==
+        b=U4vpsmG5vRLikMTyfFhseSaeogcp5jADDx0iPz7taOWYFvZQaIY7alQrPabopoVE9
+         xvRJSJjd4SyXwtvYaIz2Lz1T9FLbohM/HylezxN3q/HGIuOUstiFSxcI3icko406zp
+         XEWN8DcukgKOxHA3AKTRP2loZwNSeMaehzVZUeeNOdXXcuH1i8uJ60sdIY1AtQruOS
+         Jx198YQ3ffYg1ErJTX2OkW/rVBbyRqpzXWv48M6jzu7+xo7hE2teFjMb/gZZJhkk6e
+         qZhnEV8RNfJchVRxVpqK22mQRUtIznWWLw/TH53VJCzqIqhQ3r0wPS9DTbPB4XgWcW
+         PFr3knwLYm7zw==
 From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vasyl Gomonovych <gomonovych@gmail.com>
-Cc:     tariqt@nvidia.com, "David S. Miller" <davem@davemloft.net>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/mlx4: Use true,false for bool variable
-Message-ID: <20201212090234.0362d64f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201211100518.29804-1-gomonovych@gmail.com>
-References: <20201211100518.29804-1-gomonovych@gmail.com>
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, David Ahern <dsahern@kernel.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Sridhar Samudrala <sridhar.samudrala@intel.com>,
+        david.m.ertman@intel.com, dan.j.williams@intel.com,
+        kiran.patil@intel.com, gregkh@linuxfoundation.org
+Subject: Re: [net-next v3 00/14] Add mlx5 subfunction support
+Message-ID: <20201212122518.1c09eefe@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201212061225.617337-1-saeed@kernel.org>
+References: <20201212061225.617337-1-saeed@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -38,9 +43,31 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, 11 Dec 2020 11:05:18 +0100 Vasyl Gomonovych wrote:
-> Fix en_rx.c:687:1-17: WARNING: Assignment of 0/1 to bool variable
-> Fix main.c:4465:5-13: WARNING: Comparison of 0/1 to bool variable
+On Fri, 11 Dec 2020 22:12:11 -0800 Saeed Mahameed wrote:
+> Hi Dave, Jakub, Jason,
+> 
+> This series form Parav was the theme of this mlx5 release cycle,
+> we've been waiting anxiously for the auxbus infrastructure to make it into
+> the kernel, and now as the auxbus is in and all the stars are aligned, I
+> can finally submit this V2 of the devlink and mlx5 subfunction support.
+> 
+> Subfunctions came to solve the scaling issue of virtualization
+> and switchdev environments, where SRIOV failed to deliver and users ran
+> out of VFs very quickly as SRIOV demands huge amount of physical resources
+> in both of the servers and the NIC.
+> 
+> Subfunction provide the same functionality as SRIOV but in a very
+> lightweight manner, please see the thorough and detailed
+> documentation from Parav below, in the commit messages and the
+> Networking documentation patches at the end of this series.
+> 
+> Sending V2/V3 as a continuation to V1 that was sent Last month [0],
+> [0] https://lore.kernel.org/linux-rdma/20201112192424.2742-1-parav@nvidia.com/
 
-Apart from addressing Joe's comment please name the tool which produced
-those.
+This adds more and more instances of the 32 bit build warning.
+
+The warning was also reported separately on netdev after the recent
+mlx5-next pull.
+
+Please address that first (or did you already do and I missed it
+somehow?)
