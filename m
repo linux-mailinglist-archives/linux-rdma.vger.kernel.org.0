@@ -2,71 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEF22D8D01
-	for <lists+linux-rdma@lfdr.de>; Sun, 13 Dec 2020 13:09:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B602D8D46
+	for <lists+linux-rdma@lfdr.de>; Sun, 13 Dec 2020 14:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406587AbgLMMJc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 13 Dec 2020 07:09:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59070 "EHLO mail.kernel.org"
+        id S2391674AbgLMNa0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 13 Dec 2020 08:30:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406579AbgLMMJc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 13 Dec 2020 07:09:32 -0500
-Date:   Sun, 13 Dec 2020 14:08:48 +0200
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Saeed Mahameed <saeed@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jason Gunthorpe <jgg@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, David Ahern <dsahern@kernel.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        david.m.ertman@intel.com, dan.j.williams@intel.com,
-        kiran.patil@intel.com, gregkh@linuxfoundation.org
-Subject: Re: [net-next v3 00/14] Add mlx5 subfunction support
-Message-ID: <20201213120848.GB5005@unreal>
-References: <20201212061225.617337-1-saeed@kernel.org>
- <20201212122518.1c09eefe@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1725890AbgLMNa0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 13 Dec 2020 08:30:26 -0500
+From:   Leon Romanovsky <leon@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Daniel Jurgens <danielj@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Shay Drory <shayd@nvidia.com>
+Subject: [PATCH rdma-rc 0/5] Fixes to v5.10
+Date:   Sun, 13 Dec 2020 15:29:35 +0200
+Message-Id: <20201213132940.345554-1-leon@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201212122518.1c09eefe@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 12:25:18PM -0800, Jakub Kicinski wrote:
-> On Fri, 11 Dec 2020 22:12:11 -0800 Saeed Mahameed wrote:
-> > Hi Dave, Jakub, Jason,
-> >
-> > This series form Parav was the theme of this mlx5 release cycle,
-> > we've been waiting anxiously for the auxbus infrastructure to make it into
-> > the kernel, and now as the auxbus is in and all the stars are aligned, I
-> > can finally submit this V2 of the devlink and mlx5 subfunction support.
-> >
-> > Subfunctions came to solve the scaling issue of virtualization
-> > and switchdev environments, where SRIOV failed to deliver and users ran
-> > out of VFs very quickly as SRIOV demands huge amount of physical resources
-> > in both of the servers and the NIC.
-> >
-> > Subfunction provide the same functionality as SRIOV but in a very
-> > lightweight manner, please see the thorough and detailed
-> > documentation from Parav below, in the commit messages and the
-> > Networking documentation patches at the end of this series.
-> >
-> > Sending V2/V3 as a continuation to V1 that was sent Last month [0],
-> > [0] https://lore.kernel.org/linux-rdma/20201112192424.2742-1-parav@nvidia.com/
->
-> This adds more and more instances of the 32 bit build warning.
->
-> The warning was also reported separately on netdev after the recent
-> mlx5-next pull.
->
-> Please address that first (or did you already do and I missed it
-> somehow?)
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Hi Jakub,
+Hi,
 
-I posted a fix from Parav,
-https://lore.kernel.org/netdev/20201213120641.216032-1-leon@kernel.org/T/#u
+This is another series with various fixes that can easily go to -next too.
 
 Thanks
+
+Leon Romanovsky (1):
+  RDMA/cma: Don't overwrite sgid_attr after device is released
+
+Maor Gottlieb (2):
+  RDMA/mlx5: Fix MR cache memory leak
+  RDMA/ucma: Fix memory leak of connection request
+
+Shay Drory (2):
+  IB/umad: Return EIO in case of when device disassociated
+  IB/umad: Return EPOLLERR in case of when device disassociated
+
+ drivers/infiniband/core/cma.c      | 7 ++++---
+ drivers/infiniband/core/ucma.c     | 4 +++-
+ drivers/infiniband/core/user_mad.c | 6 +++++-
+ drivers/infiniband/hw/mlx5/mr.c    | 1 +
+ 4 files changed, 13 insertions(+), 5 deletions(-)
+
+--
+2.29.2
+
