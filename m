@@ -2,101 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F80D2D8D48
-	for <lists+linux-rdma@lfdr.de>; Sun, 13 Dec 2020 14:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 186E72D8D49
+	for <lists+linux-rdma@lfdr.de>; Sun, 13 Dec 2020 14:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725890AbgLMNao (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 13 Dec 2020 08:30:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53516 "EHLO mail.kernel.org"
+        id S2394646AbgLMNau (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 13 Dec 2020 08:30:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394646AbgLMNah (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 13 Dec 2020 08:30:37 -0500
+        id S2394650AbgLMNak (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 13 Dec 2020 08:30:40 -0500
 From:   Leon Romanovsky <leon@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        linux-rdma@vger.kernel.org, Parav Pandit <parav@mellanox.com>
-Subject: [PATCH rdma-rc 4/5] RDMA/cma: Don't overwrite sgid_attr after device is released
-Date:   Sun, 13 Dec 2020 15:29:39 +0200
-Message-Id: <20201213132940.345554-5-leon@kernel.org>
+Cc:     Maor Gottlieb <maorg@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-rc 5/5] RDMA/ucma: Fix memory leak of connection request
+Date:   Sun, 13 Dec 2020 15:29:40 +0200
+Message-Id: <20201213132940.345554-6-leon@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201213132940.345554-1-leon@kernel.org>
 References: <20201213132940.345554-1-leon@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Maor Gottlieb <maorg@nvidia.com>
 
-As part of the cma_dev release, that pointer will be set to NULL.
-In case it happens in rdma_bind_addr() (part of an error flow),
-the next call to addr_handler() will have a call to cma_acquire_dev_by_src_ip()
-which will overwrite sgid_attr without releasing it.
+Add missing call to xa_erase when destroy connection request.
+It fixes the below memory leak.
 
-WARNING: CPU: 2 PID: 108 at drivers/infiniband/core/cma.c:606 cma_bind_sgid_attr drivers/infiniband/core/cma.c:606 [inline]
-WARNING: CPU: 2 PID: 108 at drivers/infiniband/core/cma.c:606 cma_acquire_dev_by_src_ip+0x470/0x4b0 drivers/infiniband/core/cma.c:649
-CPU: 2 PID: 108 Comm: kworker/u8:1 Not tainted 5.10.0-rc6+ #257
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-Workqueue: ib_addr process_one_req
-RIP: 0010:cma_bind_sgid_attr drivers/infiniband/core/cma.c:606 [inline]
-RIP: 0010:cma_acquire_dev_by_src_ip+0x470/0&times;4b0 drivers/infiniband/core/cma.c:649
-Code: 66 d9 4a ff 4d 8b 6e 10 49 8d bd 1c 08 00 00 e8 b6 d6 4a ff 45 0f b6 bd 1c 08 00 00 41 83 e7 01 e9 49 fd ff ff e8 90 c5 29 ff &lt;0f&gt; 0b e9 80 fe ff ff e8 84 c5 29 ff 4c 89 f7 e8 2c d9 4a ff 4d 8b
+unreferenced object 0xffff88812a340490 (size 576):
+comm “kworker/5:0”, pid 96291, jiffies 4296565270 (age 1835.596s)
+hex dump (first 32 bytes):
+00 20 03 00 00 00 00 00 00 00 00 00 00 00 00 00 . …………..
+a0 d3 1a a0 ff ff ff ff a8 04 34 2a 81 88 ff ff ……….4*….
+backtrace:
+[<0000000059399d4c>] xas_alloc+0x94/0xb0
+[<00000000d855673c>] xas_create+0x1f4/0×4c0
+[<00000000336166d1>] xas_store+0x52/0×5e0
+[<000000006b811da0>] __xa_alloc+0xab/0×140
+[<00000000cf0e9936>] ucma_alloc_ctx+0x197/0×1f0 [rdma_ucm]
+[<000000008f99b6bb>] ucma_event_handler+0x17b/0×2e0 [rdma_ucm]
+[<000000000a07fc34>] cma_cm_event_handler+0x6f/0×390 [rdma_cm]
+[<00000000fe05d574>] cma_ib_req_handler+0x1163/0×2370 [rdma_cm]
+[<000000004516baf4>] cm_work_handler+0xeda/0×2340 [ib_cm]
+[<000000008a83945b>] process_one_work+0x27c/0×610
+[<00000000b71b71e2>] worker_thread+0x2d/0×3c0
+[<00000000caab54ff>] kthread+0x125/0×140
+[<000000004303d699>] ret_from_fork+0x1f/0×30
 
-RSP: 0018:ffff8881047c7b40 EFLAGS: 00010293
-RAX: ffff888104789c80 RBX: 0000000000000001 RCX: ffffffff820b8ef8
-RDX: 0000000000000000 RSI: ffffffff820b9080 RDI: ffff88810cd4c998
-RBP: ffff8881047c7c08 R08: ffff888104789c80 R09: ffffed10209f4036
-R10: ffff888104fa01ab R11: ffffed10209f4035 R12: ffff88810cd4c800
-R13: ffff888105750e28 R14: ffff888108f0a100 R15: ffff88810cd4c998
-FS:  0000000000000000(0000) GS:ffff888119c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 0000000104e60005 CR4: 0000000000370ea0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-Call Trace:
- addr_handler+0x266/0&times;350 drivers/infiniband/core/cma.c:3190
- process_one_req+0xa3/0&times;300 drivers/infiniband/core/addr.c:645
- process_one_work+0x54c/0&times;930 kernel/workqueue.c:2272
- worker_thread+0x82/0&times;830 kernel/workqueue.c:2418
- kthread+0x1ca/0&times;220 kernel/kthread.c:292
- ret_from_fork+0x1f/0&times;30 arch/x86/entry/entry_64.S:296
-
-Fixes: ff11c6cd521f ("RDMA/cma: Introduce and use cma_acquire_dev_by_src_ip()")
+Fixes: a1d33b70dbbc ("RDMA/ucma: Rework how new connections are passed through event delivery")
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/cma.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/infiniband/core/ucma.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index bfdc2eaee351..e17ba841e204 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -491,6 +491,10 @@ static void cma_release_dev(struct rdma_id_private *id_priv)
- 	list_del(&id_priv->list);
- 	cma_dev_put(id_priv->cma_dev);
- 	id_priv->cma_dev = NULL;
-+	if (id_priv->id.route.addr.dev_addr.sgid_attr) {
-+		rdma_put_gid_attr(id_priv->id.route.addr.dev_addr.sgid_attr);
-+		id_priv->id.route.addr.dev_addr.sgid_attr = NULL;
-+	}
- 	mutex_unlock(&lock);
- }
+diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
+index 7dab9a27a145..b0b9ea90a27d 100644
+--- a/drivers/infiniband/core/ucma.c
++++ b/drivers/infiniband/core/ucma.c
+@@ -549,8 +549,10 @@ static int ucma_free_ctx(struct ucma_context *ctx)
+ 	list_for_each_entry_safe(uevent, tmp, &list, list) {
+ 		list_del(&uevent->list);
+ 		if (uevent->resp.event == RDMA_CM_EVENT_CONNECT_REQUEST &&
+-		    uevent->conn_req_ctx != ctx)
++		    uevent->conn_req_ctx != ctx) {
++			xa_erase(&ctx_table, uevent->conn_req_ctx->id);
+ 			__destroy_id(uevent->conn_req_ctx);
++		}
+ 		kfree(uevent);
+ 	}
 
-@@ -1877,9 +1881,6 @@ static void _destroy_id(struct rdma_id_private *id_priv,
-
- 	kfree(id_priv->id.route.path_rec);
-
--	if (id_priv->id.route.addr.dev_addr.sgid_attr)
--		rdma_put_gid_attr(id_priv->id.route.addr.dev_addr.sgid_attr);
--
- 	put_net(id_priv->id.route.addr.dev_addr.net);
- 	rdma_restrack_del(&id_priv->res);
- 	kfree(id_priv);
 --
 2.29.2
 
