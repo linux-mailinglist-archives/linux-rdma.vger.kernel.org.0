@@ -2,144 +2,253 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84ACA2DA26C
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Dec 2020 22:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6551F2DA2B2
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Dec 2020 22:47:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503598AbgLNVOF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Dec 2020 16:14:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42014 "EHLO mail.kernel.org"
+        id S2441118AbgLNVpK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Dec 2020 16:45:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728461AbgLNVNv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 14 Dec 2020 16:13:51 -0500
-Message-ID: <0f8eda3bbed1100c1c1f7015dd5c172f8d735c94.camel@kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607980391;
-        bh=Pzvi/5ISTUEc02BC83hB6nniQmkTHPAhNCBBNcfKAUY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Ks3P3xnvXkJSp+uh7CcZoik6MJkEKtx2PvE0VYPE/pepC3FjT65YOm45Ebhka542Q
-         KDRZnMtG6PVk8azMh03nN0D62HLqcKsXaM3NGfl0cnBfDn4M/eCG3Bapi5UEiWJojE
-         Wz5xGjdq/ndTqDY7tNprPuvOQMJrfpTrREHq07hUDedim+JiPcYSm9y/a+CVpdgIGp
-         tK5qViUVIaC1nIaet1VMQYFfwNA6Uv7knO5wHsw+J306Af6r5YPeiXS/tptiFYTABJ
-         2yXmYvRm101qHL41Iu7+0L42D5JI7GLbb235mT9lCcvuGwm/DUlfBNloCq8GKc5F9/
-         KjhGS5BzrCEJg==
-Subject: Re: [patch 22/30] net/mlx5: Replace irq_to_desc() abuse
+        id S2387514AbgLNVop (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 14 Dec 2020 16:44:45 -0500
 From:   Saeed Mahameed <saeed@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-pci@vger.kernel.org,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org
-Date:   Mon, 14 Dec 2020 13:13:07 -0800
-In-Reply-To: <20201210194044.769458162@linutronix.de>
-References: <20201210192536.118432146@linutronix.de>
-         <20201210194044.769458162@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, David Ahern <dsahern@kernel.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Sridhar Samudrala <sridhar.samudrala@intel.com>,
+        david.m.ertman@intel.com, dan.j.williams@intel.com,
+        kiran.patil@intel.com, gregkh@linuxfoundation.org,
+        Saeed Mahameed <saeed@kernel.org>
+Subject: [net-next v4 00/15] Add mlx5 subfunction support
+Date:   Mon, 14 Dec 2020 13:43:37 -0800
+Message-Id: <20201214214352.198172-1-saeed@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 2020-12-10 at 20:25 +0100, Thomas Gleixner wrote:
-> No driver has any business with the internals of an interrupt
-> descriptor. Storing a pointer to it just to use yet another helper at
-> the
-> actual usage site to retrieve the affinity mask is creative at best.
-> Just
-> because C does not allow encapsulation does not mean that the kernel
-> has no
-> limits.
-> 
+Hi Dave, Jakub, Jason,
 
-you can't blame the developers for using stuff from include/linux/
-Not all developers are the same, and sometime we don't read in between
-the lines, you can't assume all driver developers to be expert on irq
-APIs disciplines.
+This series form Parav was the theme of this mlx5 release cycle,
+we've been waiting anxiously for the auxbus infrastructure to make it into
+the kernel, and now as the auxbus is in and all the stars are aligned, I
+can finally submit this V2 of the devlink and mlx5 subfunction support.
 
-your rules must be programmatically expressed, for instance,
-you can just hide struct irq_desc and irq_to_desc() in kernel/irq/ and
-remove them from include/linux/ header files, if you want privacy in
-your subsystem, don't put all your header files on display under
-include/linux.
+Subfunctions came to solve the scaling issue of virtualization
+and switchdev environments, where SRIOV failed to deliver and users ran
+out of VFs very quickly as SRIOV demands huge amount of physical resources
+in both of the servers and the NIC.
 
+Subfunction provide the same functionality as SRIOV but in a very
+lightweight manner, please see the thorough and detailed
+documentation from Parav below, in the commit messages and the
+Networking documentation patches at the end of this series.
 
-> Retrieve a pointer to the affinity mask itself and use that. It's
-> still
-> using an interface which is usually not for random drivers, but
-> definitely
-> less hideous than the previous hack.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en.h      |    2 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en_main.c |    2 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c |    6 +-----
->  3 files changed, 3 insertions(+), 7 deletions(-)
-> 
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-> @@ -669,7 +669,7 @@ struct mlx5e_channel {
->  	spinlock_t                 async_icosq_lock;
->  
->  	/* data path - accessed per napi poll */
-> -	struct irq_desc *irq_desc;
-> +	const struct cpumask	  *aff_mask;
->  	struct mlx5e_ch_stats     *stats;
->  
->  	/* control */
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> @@ -1998,7 +1998,7 @@ static int mlx5e_open_channel(struct mlx
->  	c->num_tc   = params->num_tc;
->  	c->xdp      = !!params->xdp_prog;
->  	c->stats    = &priv->channel_stats[ix].ch;
-> -	c->irq_desc = irq_to_desc(irq);
-> +	c->aff_mask = irq_get_affinity_mask(irq);
+Sending V4 as a continuation to V1 that was sent Last month [0],
+[0] https://lore.kernel.org/linux-rdma/20201112192424.2742-1-parav@nvidia.com/
 
-as long as the affinity mask pointer stays the same for the lifetime of
-the irq vector.
+---
+Changelog:
+v3->v4:
+ - Fix 32bit compilation issue
 
-Assuming that:
-Acked-by: Saeed Mahameed <saeedm@nvidia.com>
+v2->v3:
+ - added header file sf/priv.h to cmd.c to avoid missing prototype warning
+ - made mlx5_sf_table_disable as static function as its used only in one file
 
+v1->v2:
+ - added documentation for subfunction and its mlx5 implementation
+ - add MLX5_SF config option documentation
+ - rebased
+ - dropped devlink global lock improvement patch as mlx5 doesn't support
+   reload while SFs are allocated
+ - dropped devlink reload lock patch as mlx5 doesn't support reload
+   when SFs are allocated
+ - using updated vhca event from device to add remove auxiliary device
+ - split sf devlink port allocation and sf hardware context allocation
+
+Parav Pandit Says:
+=================
+
+This patchset introduces support for mlx5 subfunction (SF).
+
+A subfunction is a lightweight function that has a parent PCI function on
+which it is deployed. mlx5 subfunction has its own function capabilities
+and its own resources. This means a subfunction has its own dedicated
+queues(txq, rxq, cq, eq). These queues are neither shared nor stealed from
+the parent PCI function.
+
+When subfunction is RDMA capable, it has its own QP1, GID table and rdma
+resources neither shared nor stealed from the parent PCI function.
+
+A subfunction has dedicated window in PCI BAR space that is not shared
+with ther other subfunctions or parent PCI function. This ensures that all
+class devices of the subfunction accesses only assigned PCI BAR space.
+
+A Subfunction supports eswitch representation through which it supports tc
+offloads. User must configure eswitch to send/receive packets from/to
+subfunction port.
+
+Subfunctions share PCI level resources such as PCI MSI-X IRQs with
+their other subfunctions and/or with its parent PCI function.
+
+Patch summary:
+--------------
+Patch 1 to 4 prepares devlink
+patch 5 to 7 mlx5 adds SF device support
+Patch 8 to 11 mlx5 adds SF devlink port support
+Patch 12 and 14 adds documentation
+
+Patch-1 prepares code to handle multiple port function attributes
+Patch-2 introduces devlink pcisf port flavour similar to pcipf and pcivf
+Patch-3 adds port add and delete driver callbacks
+Patch-4 adds port function state get and set callbacks
+Patch-5 mlx5 vhca event notifier support to distribute subfunction
+        state change notification
+Patch-6 adds SF auxiliary device
+Patch-7 adds SF auxiliary driver
+Patch-8 prepares eswitch to handler SF vport
+Patch-9 adds eswitch helpers to add/remove SF vport
+Patch-10 implements devlink port add/del callbacks
+Patch-11 implements devlink port function get/set callbacks
+Patch-12 to 14 adds documentation
+Patch-12 added mlx5 port function documentation
+Patch-13 adds subfunction documentation
+Patch-14 adds mlx5 subfunction documentation
+
+Subfunction support is discussed in detail in RFC [1] and [2].
+RFC [1] and extension [2] describes requirements, design and proposed
+plumbing using devlink, auxiliary bus and sysfs for systemd/udev
+support. Functionality of this patchset is best explained using real
+examples further below.
+
+overview:
+--------
+A subfunction can be created and deleted by a user using devlink port
+add/delete interface.
+
+A subfunction can be configured using devlink port function attribute
+before its activated.
+
+When a subfunction is activated, it results in an auxiliary device on
+the host PCI device where it is deployed. A driver binds to the
+auxiliary device that further creates supported class devices.
+
+example subfunction usage sequence:
+-----------------------------------
+Change device to switchdev mode:
+$ devlink dev eswitch set pci/0000:06:00.0 mode switchdev
+
+Add a devlink port of subfunction flaovur:
+$ devlink port add pci/0000:06:00.0 flavour pcisf pfnum 0 sfnum 88
+
+Configure mac address of the port function:
+$ devlink port function set ens2f0npf0sf88 hw_addr 00:00:00:00:88:88
+
+Now activate the function:
+$ devlink port function set ens2f0npf0sf88 state active
+
+Now use the auxiliary device and class devices:
+$ devlink dev show
+pci/0000:06:00.0
+auxiliary/mlx5_core.sf.4
+
+$ ip link show
+127: ens2f0np0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 24:8a:07:b3:d1:12 brd ff:ff:ff:ff:ff:ff
+    altname enp6s0f0np0
+129: p0sf88: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 00:00:00:00:88:88 brd ff:ff:ff:ff:ff:ff
+
+$ rdma dev show
+43: rdmap6s0f0: node_type ca fw 16.29.0550 node_guid 248a:0703:00b3:d112 sys_image_guid 248a:0703:00b3:d112
+44: mlx5_0: node_type ca fw 16.29.0550 node_guid 0000:00ff:fe00:8888 sys_image_guid 248a:0703:00b3:d112
+
+After use inactivate the function:
+$ devlink port function set ens2f0npf0sf88 state inactive
+
+Now delete the subfunction port:
+$ devlink port del ens2f0npf0sf88
+
+[1] https://lore.kernel.org/netdev/20200519092258.GF4655@nanopsycho/
+[2] https://marc.info/?l=linux-netdev&m=158555928517777&w=2
+
+=================
+
+Parav Pandit (14):
+  net/mlx5: Fix compilation warning for 32-bit platform
+  devlink: Prepare code to fill multiple port function attributes
+  devlink: Introduce PCI SF port flavour and port attribute
+  devlink: Support add and delete devlink port
+  devlink: Support get and set state of port function
+  net/mlx5: Introduce vhca state event notifier
+  net/mlx5: SF, Add auxiliary device support
+  net/mlx5: SF, Add auxiliary device driver
+  net/mlx5: E-switch, Add eswitch helpers for SF vport
+  net/mlx5: SF, Add port add delete functionality
+  net/mlx5: SF, Port function state change support
+  devlink: Add devlink port documentation
+  devlink: Extend devlink port documentation for subfunctions
+  net/mlx5: Add devlink subfunction port documentation
+
+Vu Pham (1):
+  net/mlx5: E-switch, Prepare eswitch to handle SF vport
+
+ Documentation/driver-api/auxiliary_bus.rst    |   2 +
+ .../device_drivers/ethernet/mellanox/mlx5.rst | 209 +++++++
+ .../networking/devlink/devlink-port.rst       | 199 +++++++
+ Documentation/networking/devlink/index.rst    |   1 +
+ .../net/ethernet/mellanox/mlx5/core/Kconfig   |  19 +
+ .../net/ethernet/mellanox/mlx5/core/Makefile  |   9 +
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c |   8 +
+ .../net/ethernet/mellanox/mlx5/core/devlink.c |  19 +
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c  |   5 +-
+ .../mellanox/mlx5/core/esw/acl/egress_ofld.c  |   2 +-
+ .../mellanox/mlx5/core/esw/devlink_port.c     |  41 ++
+ .../net/ethernet/mellanox/mlx5/core/eswitch.c |  48 +-
+ .../net/ethernet/mellanox/mlx5/core/eswitch.h |  78 +++
+ .../mellanox/mlx5/core/eswitch_offloads.c     |  47 +-
+ .../net/ethernet/mellanox/mlx5/core/events.c  |   7 +
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  60 +-
+ .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  12 +
+ .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  20 +
+ .../net/ethernet/mellanox/mlx5/core/sf/cmd.c  |  49 ++
+ .../ethernet/mellanox/mlx5/core/sf/dev/dev.c  | 271 +++++++++
+ .../ethernet/mellanox/mlx5/core/sf/dev/dev.h  |  55 ++
+ .../mellanox/mlx5/core/sf/dev/driver.c        | 101 ++++
+ .../ethernet/mellanox/mlx5/core/sf/devlink.c  | 552 ++++++++++++++++++
+ .../ethernet/mellanox/mlx5/core/sf/hw_table.c | 233 ++++++++
+ .../mlx5/core/sf/mlx5_ifc_vhca_event.h        |  82 +++
+ .../net/ethernet/mellanox/mlx5/core/sf/priv.h |  21 +
+ .../net/ethernet/mellanox/mlx5/core/sf/sf.h   |  92 +++
+ .../mellanox/mlx5/core/sf/vhca_event.c        | 189 ++++++
+ .../mellanox/mlx5/core/sf/vhca_event.h        |  57 ++
+ .../net/ethernet/mellanox/mlx5/core/vport.c   |   3 +-
+ include/linux/mlx5/driver.h                   |  16 +-
+ include/linux/mlx5/mlx5_ifc.h                 |   6 +-
+ include/net/devlink.h                         |  79 +++
+ include/uapi/linux/devlink.h                  |  26 +
+ net/core/devlink.c                            | 266 ++++++++-
+ 35 files changed, 2834 insertions(+), 50 deletions(-)
+ create mode 100644 Documentation/networking/devlink/devlink-port.rst
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/cmd.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/dev/dev.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/dev/dev.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/mlx5_ifc_vhca_event.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/priv.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/sf.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/vhca_event.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/vhca_event.h
+
+-- 
+2.26.2
 
