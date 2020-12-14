@@ -2,102 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8351C2DA077
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Dec 2020 20:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AA82DA11C
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Dec 2020 21:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502710AbgLNT2S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Dec 2020 14:28:18 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:5554 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502690AbgLNT2I (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Dec 2020 14:28:08 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fd7bc9d0000>; Mon, 14 Dec 2020 11:27:25 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 14 Dec
- 2020 19:27:24 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.174)
- by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 14 Dec 2020 19:27:24 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G50paN20f5EfSacbjpuG7Z0zDW0tnNT0dfvTn7Eb094DW+oAerLldf9Keh90+nYwcfXVxT11jhBG7kVsgo01yl0LNgE1CP89Tco94SzJ3IYHYvqKdczhE3/A9sREopchgs8/wLuq6tmn9Stisus7ONpW6Cj8L+dkyXrWaRhAefpE35TCRrLmwubL31vmu10P2wJKkZhoZ/DkxpwlHaeFE+7CDwCEQzvR4Tou6v12DJ3Bk39Wt8E/83nLkDgPiPrdDnRNP1sDe2cwFA3og5FG+XNt8e0MzxljFH+BU+qFWIwEkkLGVsFwkJjSC2MGlcCNZfI/bXSid1q4bTSfLBx9LQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NlT77IXDfu+iLZPv52mByUd9SjIeBF7P2b+4lvabqfE=;
- b=g9O6uILKrR64ckHxWAol6akSY+Xm9+OUau/b+PPIccjSz6xx4U6lJOJ71C6T/0QPj7T68zxNNhq1Mwo7MKR5L3Zm8OYeRzdDa2U2Ng5jrRZGodbGB70RUlr/Xaso9mMQDlIPMRFOxQtumjfySto+2kNyUba7K7v12+3PaNaigHkIZARURx0yyzAwlxIlldh4/P0Y1jucaSigPbeegLtPecsQBZmqAOerNEFVA3QB2cM+cgb5lp9fdNJzmQokVZTRY8lhYDsbCAqAlpoSLey6OpwN4IYUsvt5DgNtYBGJSuFeLGTcw7J3rZnsu07cHGCPFW6lt4WdQvDq4Sk5d/R/RA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3513.namprd12.prod.outlook.com (2603:10b6:5:18a::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.18; Mon, 14 Dec
- 2020 19:27:24 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3654.025; Mon, 14 Dec 2020
- 19:27:24 +0000
-Date:   Mon, 14 Dec 2020 15:27:22 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
+        id S2502842AbgLNUHn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Dec 2020 15:07:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502729AbgLNUHm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 14 Dec 2020 15:07:42 -0500
+Message-ID: <b53248b50737f49f78e6919b53d720b8caa7f548.camel@kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607976421;
+        bh=3/wEl1L3wGhIAcG0RBSdE+TJGFwkivmfCtdBCW6bKwM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ZAKGlHMumiwoiULwiY4EcDzVd3aqyXqmtwPEv4voLSLIkBCilLvnaTPW1g3PIsWVf
+         vj37n2sF+RX8+A6gb24tP57i0sJo1J3StBXGEZ5vPyqfJTiqw2FW9yglDNv5IVFdsz
+         vW0ZcOWXh6mIpq/ZSqKuA6YGekHuc8W93r7I3PDcPknr91zl2uC8Uggiwp9Q/iOJ4r
+         JfFgo853rwtR1FnLJXtMniIgJGz+Ux40b7si5xTWWup6ezQKuJU4phskcv15iGCWQt
+         Z2gR4VCuSTOmCNxtnYqPRT2ysMUnVRRYvkSZbhh3ZtGvRIWYWnCV7Bnq9skOAnFSTZ
+         VhtbmiDPHh9Cg==
+Subject: Re: [net-next v3 00/14] Add mlx5 subfunction support
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Parav Pandit <parav@nvidia.com>,
         Leon Romanovsky <leonro@nvidia.com>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Shay Drory <shayd@nvidia.com>
-Subject: Re: [PATCH rdma-rc 0/5] Fixes to v5.10
-Message-ID: <20201214192722.GB2551375@nvidia.com>
-References: <20201213132940.345554-1-leon@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201213132940.345554-1-leon@kernel.org>
-X-ClientProxiedBy: BL0PR1501CA0032.namprd15.prod.outlook.com
- (2603:10b6:207:17::45) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Sridhar Samudrala <sridhar.samudrala@intel.com>,
+        "david.m.ertman@intel.com" <david.m.ertman@intel.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "kiran.patil@intel.com" <kiran.patil@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Date:   Mon, 14 Dec 2020 12:06:59 -0800
+In-Reply-To: <BY5PR12MB43221E39769969BFD554BAADDCC70@BY5PR12MB4322.namprd12.prod.outlook.com>
+References: <20201212061225.617337-1-saeed@kernel.org>
+         <20201212122518.1c09eefe@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <20201213120848.GB5005@unreal>
+         <BY5PR12MB43221E39769969BFD554BAADDCC70@BY5PR12MB4322.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR1501CA0032.namprd15.prod.outlook.com (2603:10b6:207:17::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Mon, 14 Dec 2020 19:27:23 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kotVC-00Ahkf-Ec; Mon, 14 Dec 2020 15:27:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607974045; bh=NlT77IXDfu+iLZPv52mByUd9SjIeBF7P2b+4lvabqfE=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=WU/R8iDcHzJqk1i6KkucaLBGvW9kzvEKI9xT04kMfSnBdV9ga68qlh8Dsa57GknKp
-         wjUM8uSY61db02RyvhP7XTgVpfTMdg/mwx0t9YDzr728pQ5r6oVRKbVtaPTbrkXuTh
-         YLIsGHwoL+CMDZ0vOuKzx31w/bIUsOhI64Sda6MwhwPlTvXXSIba1+tSW+Cu4fMDpK
-         Vbxm0HXCDgNsCRg0n47FahYufTmCurjoN3jDnxYwPIX6GdXZ/nLq25bl9JbY9DxtXz
-         tNAi2w8ylomUBaAj9ZFeS1VerTwA/ywPUhNmfj3FjnSC1RtTpSaj8YoFH6sMWX1jJO
-         uAc8pjpP1SnMQ==
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 03:29:35PM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Mon, 2020-12-14 at 03:25 +0000, Parav Pandit wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > Sent: Sunday, December 13, 2020 5:39 PM
+> > 
+> > On Sat, Dec 12, 2020 at 12:25:18PM -0800, Jakub Kicinski wrote:
+> > > On Fri, 11 Dec 2020 22:12:11 -0800 Saeed Mahameed wrote:
+> > > > Hi Dave, Jakub, Jason,
+> > > > 
+> > > > This series form Parav was the theme of this mlx5 release
+> > > > cycle,
+> > > > we've been waiting anxiously for the auxbus infrastructure to
+> > > > make
+> > > > it into the kernel, and now as the auxbus is in and all the
+> > > > stars
+> > > > are aligned, I can finally submit this V2 of the devlink and
+> > > > mlx5
+> > subfunction support.
+> > > > Subfunctions came to solve the scaling issue of virtualization
+> > > > and
+> > > > switchdev environments, where SRIOV failed to deliver and users
+> > > > ran
+> > > > out of VFs very quickly as SRIOV demands huge amount of
+> > > > physical
+> > > > resources in both of the servers and the NIC.
+> > > > 
+> > > > Subfunction provide the same functionality as SRIOV but in a
+> > > > very
+> > > > lightweight manner, please see the thorough and detailed
+> > > > documentation from Parav below, in the commit messages and the
+> > > > Networking documentation patches at the end of this series.
+> > > > 
+> > > > Sending V2/V3 as a continuation to V1 that was sent Last month
+> > > > [0],
+> > > > [0]
+> > > > https://lore.kernel.org/linux-rdma/20201112192424.2742-1-parav@nvidi
+> > > > a.com/
+> > > 
+> > > This adds more and more instances of the 32 bit build warning.
+> > > 
+> > > The warning was also reported separately on netdev after the
+> > > recent
+> > > mlx5-next pull.
+> > > 
+> > > Please address that first (or did you already do and I missed it
+> > > somehow?)
+> > 
+> > Hi Jakub,
+> > 
+> > I posted a fix from Parav,
+> > https://lore.kernel.org/netdev/20201213120641.216032-1-
+> > leon@kernel.org/T/#u
+> > 
+> > Thanks
 > 
-> Hi,
+> Hi Jakub,
+> This patchset is not added the original warning. Warning got added
+> due to a commit [1].
+> Its not related to subfunction.
+> It will be fixed regardless of this patchset as posted in [2].
 > 
-> This is another series with various fixes that can easily go to -next too.
-> 
-> Thanks
-> 
-> Leon Romanovsky (1):
->   RDMA/cma: Don't overwrite sgid_attr after device is released
-> 
-> Maor Gottlieb (2):
->   RDMA/mlx5: Fix MR cache memory leak
+> [1] 2a2970891647 ("net/mlx5: Add sample offload hardware bits and
+> structures")
+> [2] https://lore.kernel.org/netdev/20201213123620.GC5005@unreal/
 
-Applied these two to for-next, thanks
+I will resend this pr with the fix patch.
 
->   RDMA/ucma: Fix memory leak of connection request
->   IB/umad: Return EIO in case of when device disassociated
->   IB/umad: Return EPOLLERR in case of when device disassociated
+Thanks,
+Saeed.
 
-These ones can wait till next cycle
-
-Jason
