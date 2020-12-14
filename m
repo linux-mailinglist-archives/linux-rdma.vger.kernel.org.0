@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385FE2D9918
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Dec 2020 14:44:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA072D9940
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Dec 2020 14:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406808AbgLNNmU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Dec 2020 08:42:20 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9524 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406772AbgLNNmJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Dec 2020 08:42:09 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CvjFq1hNrzhtfJ;
-        Mon, 14 Dec 2020 21:40:47 +0800 (CST)
+        id S1732513AbgLNNmO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Dec 2020 08:42:14 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9202 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406675AbgLNNmE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Dec 2020 08:42:04 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CvjFb1l3bzkqyJ;
+        Mon, 14 Dec 2020 21:40:35 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 14 Dec 2020 21:41:12 +0800
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 14 Dec 2020 21:41:15 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
 To:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
 Subject: [PATCH -next] ulp/opa_vnic/opa_vnic_vema: convert comma to semicolon
-Date:   Mon, 14 Dec 2020 21:41:42 +0800
-Message-ID: <20201214134142.4406-1-zhengyongjun3@huawei.com>
+Date:   Mon, 14 Dec 2020 21:41:46 +0800
+Message-ID: <20201214134146.4456-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
