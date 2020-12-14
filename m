@@ -2,111 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3F72DA39F
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Dec 2020 23:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1742DA460
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Dec 2020 00:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441209AbgLNWqN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Dec 2020 17:46:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441229AbgLNWqI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 14 Dec 2020 17:46:08 -0500
-Message-ID: <56038d94aa6bcc8f0b386af5e097c7a914a61c34.camel@kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607985927;
-        bh=il0OYWkj2ZMQ2UCy0mvrIHy/2EfNZ/89e+LbPE+5lvI=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=MZCThT+34IpAnxCWtJRYWQSadTFsa4xJ0E+VQheIM7zBJfTJzKQnV1d3NFXz/EW0a
-         JXHdxqbDKEk+uNsQYgppH1wVUPB/ZcpWENSCavzn7CV1cHMKE3JaTZBaBv/I7SqBuu
-         Zy8D6zSCMEHfS8j9bs0d573/w35K+3fLro29FyuTxfwllSA/SU9UneK1KHJ29ubwVc
-         40lUETkc0Q+4Orqx7ur6Sbtcf5rPRY+DunlKb96cutbQLyT0J7Qd2zJLeKTx53U042
-         fmMXON45ZaGXTr6dMx6Db9U+LuOThqVclMixjM/boJcz65A3ZxDtM4venVkQqv25h7
-         f00x8Q3+61zhg==
-Subject: Re: [net-next v4 01/15] net/mlx5: Fix compilation warning for
- 32-bit platform
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        David Ahern <dsahern@kernel.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Parav Pandit <parav@nvidia.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Date:   Mon, 14 Dec 2020 14:45:25 -0800
-In-Reply-To: <CAKgT0UeAaydinMZdfJt_f40eK0xxgEUdTeM7-YJc=pUyqB9-5A@mail.gmail.com>
-References: <20201214214352.198172-1-saeed@kernel.org>
-         <20201214214352.198172-2-saeed@kernel.org>
-         <CAKgT0UeAaydinMZdfJt_f40eK0xxgEUdTeM7-YJc=pUyqB9-5A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1728058AbgLNXuL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Dec 2020 18:50:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbgLNXuJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Dec 2020 18:50:09 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EEBC061793
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Dec 2020 15:49:29 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id p126so21282742oif.7
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Dec 2020 15:49:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rGwb6Vn+SQ80ten1rIk4ibrv0T3kz0SnWjWNA8WAoJ4=;
+        b=KkXRR7ZvoNpGfuzlx104CqkgunPLbU+xNPlsvwna31V5gV0NpDk7ico03RUrXOikvH
+         Bi9KXoDepiYyZrqMzVWjin0NJZk6e847AWw3WtuDNzxnOZW0lkvQoQFqcV05yIXYYawT
+         sncEweFrON6qzHRFRqIcmVGFztJUBcFcQey3sBKt7GMUCoN5WtKySs/5AvEdLTJeSWuS
+         tJf/aMzudZJdvCFxKjLvau5mAIntkMhDEa1ZtabxpkYbamNcnyt1IxlwfmtRouWBQ3Ca
+         tXQLn1dxDrF22V5XHtqG9+7DV6GVl2QDp6b5RbQOh32NkGW/tqZPglhZGf44TdQywlum
+         JuEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rGwb6Vn+SQ80ten1rIk4ibrv0T3kz0SnWjWNA8WAoJ4=;
+        b=ekwsBvPxPiT8KtjQjqriFcINaSE9HVhKvgpg2LzMb/EhY2IhIjYhrvFCUrQ5mMbR2d
+         1lLmnB8vxBgJk06F9/vKaEZL5kyC1AlHRfGZJ4IrCpMrZUWMgd8elt9auFacKs90HHgI
+         sczJGL9SLJwVKijzD70c3JODzEff/p4Xc6ADEXd2upb8iR+NzKfA26sSki48ccNsGRmJ
+         xAsWLOU2MKHMgIQHKvBekai8dOWOwfqMoQxUMZXOuxlUT1um0riNUVTzNwN4iAqhORfz
+         gbrraHoNLsIsTBetOFBDy7NgP4VjED/YHmW1Zy4uVXU/o2/FKDPRp5UPJREA4o6h8i7U
+         a+cQ==
+X-Gm-Message-State: AOAM531uzToWH7ZlbSJTmchaohloIblHP9EFDmomE4bL7y6100KwfJq5
+        oYtWxf6VPEySymAj3CFWybM=
+X-Google-Smtp-Source: ABdhPJxFJT7U63g+KH+UvixW02bVVoP5vH5ezDL6JB86aUikRrkbvEgwJb4yYe6eFN1JmNCKzYkGBg==
+X-Received: by 2002:a54:4413:: with SMTP id k19mr4267944oiw.110.1607989768788;
+        Mon, 14 Dec 2020 15:49:28 -0800 (PST)
+Received: from localhost (2603-8081-140c-1a00-2c18-5865-370f-5fc9.res6.spectrum.com. [2603:8081:140c:1a00:2c18:5865:370f:5fc9])
+        by smtp.gmail.com with ESMTPSA id y84sm4839970oig.36.2020.12.14.15.49.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 15:49:28 -0800 (PST)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearson@hpe.com>
+Subject: [PATCH for-next 0/7] RDMA/rxe: cleanup and extensions
+Date:   Mon, 14 Dec 2020 17:49:12 -0600
+Message-Id: <20201214234919.4639-1-rpearson@hpe.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 2020-12-14 at 14:31 -0800, Alexander Duyck wrote:
-> On Mon, Dec 14, 2020 at 1:49 PM Saeed Mahameed <saeed@kernel.org>
-> wrote:
-> > From: Parav Pandit <parav@nvidia.com>
-> > 
-> > MLX5_GENERAL_OBJECT_TYPES types bitfield is 64-bit field.
-> > 
-> > Defining an enum for such bit fields on 32-bit platform results in
-> > below
-> > warning.
-> > 
-> > ./include/vdso/bits.h:7:26: warning: left shift count >= width of
-> > type [-Wshift-count-overflow]
-> >                          ^
-> > ./include/linux/mlx5/mlx5_ifc.h:10716:46: note: in expansion of
-> > macro ‘BIT’
-> >  MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_SAMPLER = BIT(0x20),
-> >                                              ^~~
-> > Use 32-bit friendly left shift.
-> > 
-> > Fixes: 2a2970891647 ("net/mlx5: Add sample offload hardware bits
-> > and structures")
-> > Signed-off-by: Parav Pandit <parav@nvidia.com>
-> > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > Signed-off-by: Saeed Mahameed <saeed@kernel.org>
-> > ---
-> >  include/linux/mlx5/mlx5_ifc.h | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/include/linux/mlx5/mlx5_ifc.h
-> > b/include/linux/mlx5/mlx5_ifc.h
-> > index 0d6e287d614f..b9f15935dfe5 100644
-> > --- a/include/linux/mlx5/mlx5_ifc.h
-> > +++ b/include/linux/mlx5/mlx5_ifc.h
-> > @@ -10711,9 +10711,9 @@ struct
-> > mlx5_ifc_affiliated_event_header_bits {
-> >  };
-> > 
-> >  enum {
-> > -       MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_ENCRYPTION_KEY =
-> > BIT(0xc),
-> > -       MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_IPSEC = BIT(0x13),
-> > -       MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_SAMPLER = BIT(0x20),
-> > +       MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_ENCRYPTION_KEY = 1ULL <<
-> > 0xc,
-> > +       MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_IPSEC = 1ULL << 0x13,
-> > +       MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_SAMPLER = 1ULL << 0x20,
-> >  };
-> 
-> Why not just use BIT_ULL?
+This patch series makes various cleanups and extensions to the
+object pool core in RDMA/rxe. They are mostly extracted from an
+earlier patch set that implemented memory windows and extended
+verbs APIs but are separated out since they stand on their own.
 
-I was following the file convention where we use 1ULL/1UL in all of the
-places, I will consider changing the whole file to use BIT macros in
-another patch.
+Bob Pearson (7):
+  RDMA/rxe: Remove unneeded RXE_POOL_ATOMIC flag
+  RDMA/rxe: Let pools support both keys and indices
+  RDMA/rxe: Add elem_offset field to rxe_type_info
+  RDMA/rxe: Make pool lookup and alloc APIs type safe
+  RDMA/rxe: Make add/drop key/index APIs type safe
+  RDMA/rxe: Add unlocked versions of pool APIs
+  RDMA/rxe: Fix race in rxe_mcast.c
 
+ drivers/infiniband/sw/rxe/rxe_mcast.c |  64 +++++---
+ drivers/infiniband/sw/rxe/rxe_pool.c  | 226 +++++++++++++++++---------
+ drivers/infiniband/sw/rxe/rxe_pool.h  |  94 ++++++++---
+ drivers/infiniband/sw/rxe/rxe_verbs.c |  16 +-
+ 4 files changed, 268 insertions(+), 132 deletions(-)
+
+-- 
+2.27.0
 
