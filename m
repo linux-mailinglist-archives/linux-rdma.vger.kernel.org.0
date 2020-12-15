@@ -2,128 +2,283 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42682DB5EA
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Dec 2020 22:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFFF52DB5AC
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Dec 2020 22:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729908AbgLOV0X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Dec 2020 16:26:23 -0500
-Received: from mail-co1nam11on2109.outbound.protection.outlook.com ([40.107.220.109]:49450
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729976AbgLOV0N (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 15 Dec 2020 16:26:13 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ldMQv6JWUdYpm1/SUuEybfIk5Z0r79wZon7yxaxGlz6FUq2v7PTvAbPitJJ7qvhBt6hvwaBwzeTvTJYKPUrQf/s2rw4QblJoj7Nvwpt0SZkSIU7hi32bmZ1+EHHJWBiRxFvcp6wHYFy18cneg7ITpUFgjagLxeSH3bFaSTnCjg+FdpfPAqW4251+7cGVHlVWIEXwi3EttcOsCRYUDtMswgzQDdo+t/l5XmHjWW+C0Y/6ua28TJ/VjuHQ1dL9AwiPsFOtvhBp0EhIpdYRN2cr72bEqDz64EFc/mhTc99ewItFYN5FJwDa0w/S0VQpOysiOqbGfw6pJb6Hvj6WjSmHOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UPA5KmKHPo9eFJfXVYfHfCFkUSMKFlX3/slyXxp5RlA=;
- b=OTNsgdA4di8Txa0h730dclQMvi6BGEbYbtiNoiFhR/BqUgvU4C8hPesUyNaUPHuTfEzwtNgsyduGZKC7H1azeHvSunWeFIzO8DxIrjP0McK35MptB1QIVB33oDUw9YSVFYSBbmeCR04tTv2uLgHIMRn560w7fOT/csVFeINYRSDbll0N6XrgCHf0uwyyEBznKhF8VtViHPgPPYNxNoaQxBB6GE3vil7tf8S0cgWN8JTl0B4MmR2Fhr1p2zjhaepiwE1TCo4N1qAbE4GhI4k/7OVQ/ELq1RgCgwqLe18IgL9Adh0++5oXWGcaK0OeKhLTOjqEcwvH2PR7SOmR2cgmnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=CornelisNetworks.onmicrosoft.com;
- s=selector1-CornelisNetworks-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UPA5KmKHPo9eFJfXVYfHfCFkUSMKFlX3/slyXxp5RlA=;
- b=d+zi7aa/zcoBgdE88CfAqi9jP2/DfBpoDyr4EX7xi9r3L3J82gCC1NyeEz9FQ4NOzqPwmJVTqK6L8wq242vs4VsdMasSssy6SmegHyXnoNISUQTbziLHNhWeTWTGlQe/mjwZrASZSmVwWupHSv38+72yGvDVpoFl56QNjs+ixy2SRr8XwrF7e0lMHHjqan1e1xvaxl/5sLQJ8uN9Y0PsdaR1+BdXz/l6x5w0ScgvkPD7ggOig5IUQfpGNt9d0m47N5ekEtDR/2VFQ1hCFHYQUyK5lj3b3COjAiPolCpSmWWiki9P6+A1KsnuElNWorw3MeuOFPx0UGtqcYSblDn3nw==
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=cornelisnetworks.com;
-Received: from DM6PR01MB3817.prod.exchangelabs.com (2603:10b6:5:92::17) by
- DM6PR01MB4025.prod.exchangelabs.com (2603:10b6:5:2b::11) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3654.13; Tue, 15 Dec 2020 21:25:20 +0000
-Received: from DM6PR01MB3817.prod.exchangelabs.com
- ([fe80::80d3:12c5:1173:8cf8]) by DM6PR01MB3817.prod.exchangelabs.com
- ([fe80::80d3:12c5:1173:8cf8%3]) with mapi id 15.20.3654.026; Tue, 15 Dec 2020
- 21:25:19 +0000
-Subject: Re: [PATCH] IB/hfi1: remove h from printk format specifier
-To:     trix@redhat.com, dennis.dalessandro@cornelisnetworks.com,
-        dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201215183509.2072517-1-trix@redhat.com>
-From:   Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Message-ID: <1df6bc53-58ae-b91a-fbd2-57d52483c24a@cornelisnetworks.com>
-Date:   Tue, 15 Dec 2020 16:25:14 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-In-Reply-To: <20201215183509.2072517-1-trix@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [70.15.25.19]
-X-ClientProxiedBy: BYAPR08CA0022.namprd08.prod.outlook.com
- (2603:10b6:a03:100::35) To DM6PR01MB3817.prod.exchangelabs.com
- (2603:10b6:5:92::17)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.103] (70.15.25.19) by BYAPR08CA0022.namprd08.prod.outlook.com (2603:10b6:a03:100::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Tue, 15 Dec 2020 21:25:17 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3e5764e0-9460-4cc4-d9d7-08d8a13fecbe
-X-MS-TrafficTypeDiagnostic: DM6PR01MB4025:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR01MB402532EAA7CD082492767DC0F2C60@DM6PR01MB4025.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K5h1Qd2mPo06l0yBqiuy8meW1HSZs1Za10XATSZZC09nmid0rYiGKuN02xdBG/67F/lpsm2APHr/RMTD0A3hsYy+5I4JvULptDkY9nXhe2INJQui9msZtxpcaCnHwzFUHaVYP4iSpT9c1wYhYu4QuPgTgMrMXLyqNarjzTwtySyNB8lrsGMSHI/ULPzeujKYJL3EaDCvmbAgDfkr5zfR2Ts/nbeaRoFmaTptO1FPtirhjO2MhScbogthasnKfNPYBPXMdS804qu9Sz2oU8IMwQ2ynoHPjgTsMcj3CjEeU/5EZZHrx/NrC817k5zoppfFMiPtwGRwYx2zTnvLJ577yiEcfH5/xx/CPdnwbp8aLsHqxigJB2eGDM5gGVbGz6iZqRXNrz9wUNoizoDUECJrlVNu2CZS9tWkjW6DbILa7M8m9Wr3EhpM3GRiSk0Nt8Du
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB3817.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(346002)(2616005)(34490700003)(66476007)(36756003)(26005)(5660300002)(8936002)(31696002)(186003)(16576012)(8676002)(2906002)(86362001)(4744005)(6666004)(4326008)(44832011)(6486002)(52116002)(83380400001)(53546011)(16526019)(66946007)(508600001)(66556008)(31686004)(956004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NjBBbGlMUmFqRGJISWxmWXZZNlVsSUE4TE5aQlVMbkdrUlNiL1FubzcraTBm?=
- =?utf-8?B?N3ZQTlRXQWdDNGt4SHQ1dXdyOG11VDB4b0owdHZtRU9Xbmg4eXRDZ0ltRUll?=
- =?utf-8?B?WHRWL0tMelE4YlFOeWRtS0pTZnVMSWVOQmttVEFuRTd4aXZKUFlYVEN3WjQ4?=
- =?utf-8?B?a3ZmQ00ybUI5SDdBKzZwSjZvOFR4N08wQUpXYWJnZ0JaVlRHZitucDE2dVUz?=
- =?utf-8?B?cldOYnpuYnRHM2grb0djY0E1a1BiZ3VhWTQ2SHYvQWJ0Z2QreGNtRDVKMWZr?=
- =?utf-8?B?Z2RESVFJd2Via3pLTlRseXk5bWkybGdQRnlGeXZBdkZHN2x2M3NSN0dEN0d4?=
- =?utf-8?B?ZHM3dXBUaFVYenRWNlZuWGtRNlFrQVM4ZkdsS0xNdW5FVFBMMzlsem1BZ0Fv?=
- =?utf-8?B?NTd5bzh1S3ZYVktGT0toUGxJQWc3aDluZi96a2U2WXhnTGcvbmgxR3hRbmJV?=
- =?utf-8?B?elozL1BTaE1OTDhhdlQ4R3l6bW15Vk5XWG5wdWY0Mmg2bk9jRWhrQys2Z01s?=
- =?utf-8?B?cThJM2ZuUDNqcmpKcUNzK3ZNbzBGUkprL3hSNUJmaUh0ejAzR0QvMkhqOXFl?=
- =?utf-8?B?SmEzL0kyYmlMWUsrK2p3ZjVoRHNwRDRQUE5KQXhIcm5ETEg4UFB6UXZuYVU5?=
- =?utf-8?B?aDRGV3k5R0JoNjhLakY5ZDZkaExzeXRUYld1UGlmaWRFcENsV1ZabjdEYnNo?=
- =?utf-8?B?LzFBVjhsRzJWNG5uSXh1TmZ3WXYybkZkVlplRmpkZlVqajlydzk2VFcwL1hJ?=
- =?utf-8?B?N2czZzZka2NxbkxBdE9vNVpFM0ZzbUx0MytMRzRNZ3RhVnpxaHByYUFHNS9j?=
- =?utf-8?B?bDF3VDVuckZuamxsdHBiQjEvZjZlME1Id3FuUUVnMnBmUTdvMVJhak51Vzht?=
- =?utf-8?B?T2dmWExabWJ6L3BySStkMmZvOVRTVStuV1d0V3dxOGdMY3RyM2YzUTh1OERo?=
- =?utf-8?B?Z24xVjNOWURWWnIra09saEtLWG9MRFlJT3Ezb0wreGxEclljeUVlZkU3STYy?=
- =?utf-8?B?b0hFb2IyVW5sYXZpVlY3cmZRbC9mMExoRy9DN1hPV2NDU0ZLazRweXh6UXhI?=
- =?utf-8?B?WFQ3TkpMWDlkdFRIem9OanRUcUZVSEJrQllJeDMxenRYa3p0MGVxNU5FWE45?=
- =?utf-8?B?K1ZvSytUVm5BUXdsT1kweTdNRVpPVUhxTFFPTVA5a2d6VWR0YlMxSndtU2JX?=
- =?utf-8?B?SUNmTGlhVENydFJJcE5zcmZzajBaaFVGcHdOTlh5OXYzTmR5dzgxeTBoMk1R?=
- =?utf-8?B?ZHFjUGRrdXJvdTdMVDZXQ0JJNmV4QTRzTVpIWHVMKzByQkJqakRQQ2I1S3di?=
- =?utf-8?Q?007PAesfnLmMs=3D?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB3817.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2020 21:25:19.9337
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3e5764e0-9460-4cc4-d9d7-08d8a13fecbe
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7+UwjzlssgKM2ZLA2G3Ir4tGPEdU9Ub0ZyjkQrMdu9FMi1PYQXV/FW6SfhkEGraNJYLJLVPH4GJSAn4XhE1hKo8KyW5Aoxlo+SoXdQ1Ulw9vPDO8CljIA0NXfBbl1rxn
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR01MB4025
+        id S1727684AbgLOVM4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Dec 2020 16:12:56 -0500
+Received: from mga09.intel.com ([134.134.136.24]:23884 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729028AbgLOVMu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 15 Dec 2020 16:12:50 -0500
+IronPort-SDR: vbLfj/jnIIC8KvbJxuFdpIuNMSYtUDFZNHveAnsnROYyUK+sx54OPe/iMr+1bFEza8xBzNh0+e
+ Q7FMK/Xqz5cA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="175094858"
+X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; 
+   d="scan'208";a="175094858"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 13:11:52 -0800
+IronPort-SDR: qGHrGaimF/igrgSDx/kI5U8yxPsQH8yzcL/U/9n8phFewtnD/GHC3gnkCwHgzsyLMYU/kg6Tru
+ zJku23Vl/ISQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; 
+   d="scan'208";a="488052986"
+Received: from cst-dev.jf.intel.com ([10.23.221.69])
+  by orsmga004.jf.intel.com with ESMTP; 15 Dec 2020 13:11:51 -0800
+From:   Jianxin Xiong <jianxin.xiong@intel.com>
+To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: [PATCH v16 0/4] RDMA: Add dma-buf support
+Date:   Tue, 15 Dec 2020 13:27:12 -0800
+Message-Id: <1608067636-98073-1-git-send-email-jianxin.xiong@intel.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+This is the sixteenth version of the patch set. Changelog:
 
-On 12/15/2020 1:35 PM, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
->
-> See Documentation/core-api/printk-formats.rst.
-> h should no longer be used in the format specifier for printk.
->
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->   drivers/infiniband/hw/hfi1/sdma.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-Looks ok!
+v16:
+* Add "select DMA_SHARED_BUFFER" to Kconfig when IB UMEM is enabled.
+  This fixes the auto build test error with a random config.
 
-Mike
+v15: https://www.spinics.net/lists/linux-rdma/msg98369.html
+* Rebase to the latest linux-rdma 'for-next' branch (commit 0583531bb9ef)
+  to pick up RDMA core and mlx5 updates
+* Let ib_umem_dmabuf_get() return 'struct ib_umem_dmabuf *' instead of
+  'struct ib_umem *'
+* Move the check of on demand paging support to mlx5_ib_reg_user_mr_dmabuf()
+* Check iova alignment at the entry point of the uverb command so that
+  mlx5_umem_dmabuf_default_pgsz() can always succeed
 
-Acked-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+v14: https://www.spinics.net/lists/linux-rdma/msg98265.html
+* Check return value of dma_fence_wait()
+* Fix a dma-buf leak in ib_umem_dmabuf_get()
+* Fix return value type cast for ib_umem_dmabuf_get()
+* Return -EOPNOTSUPP instead of -EINVAL for unimplemented functions
+* Remove an unnecessary use of unlikely()
+* Remove left-over commit message resulted from rebase
+
+v13: https://www.spinics.net/lists/linux-rdma/msg98227.html
+* Rebase to the latest linux-rdma 'for-next' branch (5.10.0-rc6+)
+* Check for device on-demand paging capability at the entry point of
+  the new verbs command to avoid calling device's reg_user_mr_dmabuf()
+  method when CONFIG_INFINIBAND_ON_DEMAND_PAGING is diabled.
+
+v12: https://www.spinics.net/lists/linux-rdma/msg97943.html
+* Move the prototype of function ib_umem_dmabuf_release() to ib_umem.h
+  and remove umem_dmabuf.h
+* Break a line that is too long
+
+v11: https://www.spinics.net/lists/linux-rdma/msg97860.html
+* Rework the parameter checking code inside ib_umem_dmabuf_get() 
+* Fix incorrect error handling in the new verbs command handler
+* Put a duplicated code sequence for checking iova and setting page size
+  into a function
+* In the invalidation callback, check for if the buffer has been mapped
+  and thus the presence of a valid driver mr is ensured
+* The patch that checks for dma_virt_ops is dropped because it is no
+  longer needed
+* The patch that documents that dma-buf size is fixed has landed at:
+  https://cgit.freedesktop.org/drm/drm-misc/commit/?id=476b485be03c
+  and thus is no longer included here
+* The matching user space patch set is sent separately
+
+v10: https://www.spinics.net/lists/linux-rdma/msg97483.html
+* Don't map the pages in ib_umem_dmabuf_get(); use the size information
+  of the dma-buf object to validate the umem size instead
+* Use PAGE_SIZE directly instead of use ib_umem_find_best_pgsz() when
+  the MR is created since the pages have not been mapped yet and dma-buf
+  requires PAGE_SIZE anyway
+* Always call mlx5_umem_find_best_pgsz() after mapping the pages to
+  verify that the page size requirement is satisfied
+* Add a patch to document that dma-buf size is fixed
+
+v9: https://www.spinics.net/lists/linux-rdma/msg97432.html
+* Clean up the code for sg list in-place modification
+* Prevent dma-buf pages from being mapped multiple times
+* Map the pages in ib_umem_dmabuf_get() so that inproper values of
+  address/length/iova can be caught early
+* Check for unsupported flags in the new uverbs command
+* Add missing uverbs_finalize_uobj_create()
+* Sort uverbs objects by name
+* Fix formating issue -- unnecessary alignment of '='
+* Unmap pages in mlx5_ib_fence_dmabuf_mr()
+* Remove address range checking from pagefault_dmabuf_mr()
+
+v8: https://www.spinics.net/lists/linux-rdma/msg97370.html
+* Modify the dma-buf sg list in place to get a proper umem sg list and
+  restore it before calling dma_buf_unmap_attachment()
+* Validate the umem sg list with ib_umem_find_best_pgsz()
+* Remove the logic for slicing the sg list at runtime
+
+v7: https://www.spinics.net/lists/linux-rdma/msg97297.html
+* Rebase on top of latest mlx5 MR patch series
+* Slice dma-buf sg list at runtime instead of creating a new list
+* Preload the buffer page mapping when the MR is created
+* Move the 'dma_virt_ops' check into dma_buf_dynamic_attach()
+
+v6: https://www.spinics.net/lists/linux-rdma/msg96923.html
+* Move the dma-buf invalidation callback from the core to the device
+  driver
+* Move mapping update from work queue to pagefault handler
+* Add dma-buf based MRs to the xarray of mmkeys so that the pagefault
+  handler can be reached
+* Update the new driver method and uverbs command signature by changing
+  the paramter 'addr' to 'offset'
+* Modify the sg list returned from dma_buf_map_attachment() based on
+  the parameters 'offset' and 'length'
+* Don't import dma-buf if 'dma_virt_ops' is used by the dma device
+* The patch that clarifies dma-buf sg lists alignment has landed at
+  https://cgit.freedesktop.org/drm/drm-misc/commit/?id=ac80cd17a615
+  and thus is no longer included with this set
+
+v5: https://www.spinics.net/lists/linux-rdma/msg96786.html
+* Fix a few warnings reported by kernel test robot:
+    - no previous prototype for function 'ib_umem_dmabuf_release' 
+    - no previous prototype for function 'ib_umem_dmabuf_map_pages'
+    - comparison of distinct pointer types in 'check_add_overflow'
+* Add comment for the wait between getting the dma-buf sg tagle and
+  updating the NIC page table
+
+v4: https://www.spinics.net/lists/linux-rdma/msg96767.html
+* Add a new ib_device method reg_user_mr_dmabuf() instead of expanding
+  the existing method reg_user_mr()
+* Use a separate code flow for dma-buf instead of adding special cases
+  to the ODP memory region code path
+* In invalidation callback, new mapping is updated as whole using work
+  queue instead of being updated in page granularity in the page fault
+  handler
+* Use dma_resv_get_excl() and dma_fence_wait() to ensure the content of
+  the pages have been moved to the new location before the new mapping
+  is programmed into the NIC
+* Add code to the ODP page fault handler to check the mapping status
+* The new access flag added in v3 is removed.
+* The checking for on-demand paging support in the new uverbs command
+  is removed because it is implied by implementing the new ib_device
+  method
+* Clarify that dma-buf sg lists are page aligned
+
+v3: https://www.spinics.net/lists/linux-rdma/msg96330.html
+* Use dma_buf_dynamic_attach() instead of dma_buf_attach()
+* Use on-demand paging mechanism to avoid pinning the GPU memory
+* Instead of adding a new parameter to the device method for memory
+  registration, pass all the attributes including the file descriptor
+  as a structure
+* Define a new access flag for dma-buf based memory region
+* Check for on-demand paging support in the new uverbs command
+
+v2: https://www.spinics.net/lists/linux-rdma/msg93643.html
+* The Kconfig option is removed. There is no dependence issue since
+  dma-buf driver is always enabled.
+* The declaration of new data structure and functions is reorganized to
+  minimize the visibility of the changes.
+* The new uverbs command now goes through ioctl() instead of write().
+* The rereg functionality is removed.
+* Instead of adding new device method for dma-buf specific registration,
+  existing method is extended to accept an extra parameter. 
+* The correct function is now used for address range checking. 
+
+v1: https://www.spinics.net/lists/linux-rdma/msg90720.html
+* The initial patch set
+* Implement core functions for importing and mapping dma-buf
+* Use dma-buf static attach interface
+* Add two ib_device methods reg_user_mr_fd() and rereg_user_mr_fd()
+* Add two uverbs commands via the write() interface
+* Add Kconfig option
+* Add dma-buf support to mlx5 device
+
+When enabled, an RDMA capable NIC can perform peer-to-peer transactions
+over PCIe to access the local memory located on another device. This can
+often lead to better performance than using a system memory buffer for
+RDMA and copying data between the buffer and device memory.
+
+Current kernel RDMA stack uses get_user_pages() to pin the physical
+pages backing the user buffer and uses dma_map_sg_attrs() to get the
+dma addresses for memory access. This usually doesn't work for peer
+device memory due to the lack of associated page structures.
+
+Several mechanisms exist today to facilitate device memory access.
+
+ZONE_DEVICE is a new zone for device memory in the memory management
+subsystem. It allows pages from device memory being described with
+specialized page structures, but what can be done with these page
+structures may be different from system memory. ZONE_DEVICE is further
+specialized into multiple memory types, such as one type for PCI
+p2pmem/p2pdma and one type for HMM.
+
+PCI p2pmem/p2pdma uses ZONE_DEVICE to represent device memory residing
+in a PCI BAR and provides a set of calls to publish, discover, allocate,
+and map such memory for peer-to-peer transactions. One feature of the
+API is that the buffer is allocated by the side that does the DMA
+transfer. This works well with the storage usage case, but is awkward
+with GPU-NIC communication, where typically the buffer is allocated by
+the GPU driver rather than the NIC driver.
+
+Heterogeneous Memory Management (HMM) utilizes mmu_interval_notifier
+and ZONE_DEVICE to support shared virtual address space and page
+migration between system memory and device memory. HMM doesn't support
+pinning device memory because pages located on device must be able to
+migrate to system memory when accessed by CPU. Peer-to-peer access
+is currently not supported by HMM.
+
+Dma-buf is a standard mechanism for sharing buffers among different
+device drivers. The buffer to be shared is exported by the owning
+driver and imported by the driver that wants to use it. The exporter
+provides a set of ops that the importer can call to pin and map the
+buffer. In addition, a file descriptor can be associated with a dma-
+buf object as the handle that can be passed to user space.
+
+This patch series adds dma-buf importer role to the RDMA driver in
+attempt to support RDMA using device memory such as GPU VRAM. Dma-buf is
+chosen for a few reasons: first, the API is relatively simple and allows
+a lot of flexibility in implementing the buffer manipulation ops.
+Second, it doesn't require page structure. Third, dma-buf is already
+supported in many GPU drivers. However, we are aware that existing GPU
+drivers don't allow pinning device memory via the dma-buf interface.
+Pinning would simply cause the backing storage to migrate to system RAM.
+True peer-to-peer access is only possible using dynamic attach, which
+requires on-demand paging support from the NIC to work. For this reason,
+this series only works with ODP capable NICs.
+
+This series consists of four patches. The first patch adds the common
+code for importing dma-buf from a file descriptor and mapping the
+dma-buf pages. Patch 2 add the new driver method reg_user_mr_dmabuf().
+Patch 3 adds a new uverbs command for registering dma-buf based memory
+region. Patch 4 adds dma-buf support to the mlx5 driver.
+
+Related user space RDMA library changes are provided as a separate
+patch series.
+
+Jianxin Xiong (4):
+  RDMA/umem: Support importing dma-buf as user memory region
+  RDMA/core: Add device method for registering dma-buf based memory
+    region
+  RDMA/uverbs: Add uverbs command for dma-buf based MR registration
+  RDMA/mlx5: Support dma-buf based userspace memory region
+
+ drivers/infiniband/Kconfig                    |   1 +
+ drivers/infiniband/core/Makefile              |   2 +-
+ drivers/infiniband/core/device.c              |   1 +
+ drivers/infiniband/core/umem.c                |   3 +
+ drivers/infiniband/core/umem_dmabuf.c         | 174 ++++++++++++++++++++++++++
+ drivers/infiniband/core/uverbs_std_types_mr.c | 117 ++++++++++++++++-
+ drivers/infiniband/hw/mlx5/main.c             |   2 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  18 +++
+ drivers/infiniband/hw/mlx5/mr.c               | 112 ++++++++++++++++-
+ drivers/infiniband/hw/mlx5/odp.c              |  89 ++++++++++++-
+ include/rdma/ib_umem.h                        |  48 ++++++-
+ include/rdma/ib_verbs.h                       |   6 +-
+ include/uapi/rdma/ib_user_ioctl_cmds.h        |  14 +++
+ 13 files changed, 573 insertions(+), 14 deletions(-)
+ create mode 100644 drivers/infiniband/core/umem_dmabuf.c
+
+-- 
+1.8.3.1
 
