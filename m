@@ -2,413 +2,406 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 444252DB4DB
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Dec 2020 21:07:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 000CC2DB518
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Dec 2020 21:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729565AbgLOUGi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Dec 2020 15:06:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729634AbgLOUGi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 15 Dec 2020 15:06:38 -0500
-Message-ID: <21904b4d4cc8eb572ea9a5c0452ecd78a40b2e67.camel@kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608062756;
-        bh=YFkk1gQcRh+VP+3uuN7s7qJy4d88SR1k0vSBcqLiR9M=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=JCLO9tHKEmKH7ClwP6sNXR1CEsScIfnW/ffOsFHld/zRYS2LP1HZ5VP8Cf72oDHIa
-         Q9+ssKGjVwG/F9udK9HhA8ND1P7zuNGJ25eTvUP7eYeIrvYoZX2K3XxOCCW2lVc9xW
-         T17qk4CRk+AihwuYdJV+PbbHXTyrRt303ycx5txKLbZbZRspYbFbYCdXk5YAf/ZmFQ
-         IZEp2vlS36MYzomqjIusKprpCLgtfsqRTsi25gsFXoLCRWVDcctqad4rakzCazxiFP
-         9eD4NSyTwQMLrxTk0ljsWVlM91FOhCGq1f0nQkwcX9KVLJ7p+2q+r/7d4PAKGaE+w6
-         ztmI56mXHUFAA==
-Subject: Re: [net-next v4 00/15] Add mlx5 subfunction support
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Parav Pandit <parav@nvidia.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Netdev <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Date:   Tue, 15 Dec 2020 12:05:55 -0800
-In-Reply-To: <CAKgT0Uf9C5gwVZ1DnkrGYHMUvxe-bqwwcbTo7A0q-trrULJSUg@mail.gmail.com>
-References: <20201214214352.198172-1-saeed@kernel.org>
-         <CAKgT0UejoduCB6nYFV2atJ4fa4=v9-dsxNh4kNJNTtoHFd1DuQ@mail.gmail.com>
-         <BY5PR12MB43221CE397D6310F2B04D9B4DCC60@BY5PR12MB4322.namprd12.prod.outlook.com>
-         <CAKgT0Uf9C5gwVZ1DnkrGYHMUvxe-bqwwcbTo7A0q-trrULJSUg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1727828AbgLOUXd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Dec 2020 15:23:33 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48250 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727664AbgLOUXW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 15 Dec 2020 15:23:22 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BFK2HvY023581;
+        Tue, 15 Dec 2020 15:22:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=zpJ5kY43A33URA/SFwyJ21J55hUUGCH3rbjPW+6tZFI=;
+ b=iZy9wpyN+CltswJLFyXmkwdv4XathDx7yRXl2GI4maACskCCZ74Bd6lGswbzisl8l11e
+ dqexFcb8AlkouN/UgS0Uz736Xw10g7xj1wBv7IxZiIyUiCzEWPedpzl6+9cBHqBa0TC+
+ gt7Sg7je1XldurP7igKWbZfFeBkYDm9SlsCxK1f9FQh7W79lifDKdt0fO9KYPEsEnHts
+ +6TZPHOPEVo8a2ynqOcHeTzmDCyvtQoOMAgl5QJaYOdnCcJ3ajZl32GYHOOrbj2qjUnE
+ XDCx9iDksN3y81mn8ARcHb0PgFB4zSzA5Hp99jLXmtgdEBLAV+7M1ramEQhCAyYSKHvN lw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35f2g1k8as-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Dec 2020 15:22:34 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BFK5Fn7037907;
+        Tue, 15 Dec 2020 15:22:34 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35f2g1k89y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Dec 2020 15:22:33 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BFKDPue017905;
+        Tue, 15 Dec 2020 20:22:31 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 35cng8dbt8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Dec 2020 20:22:31 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BFKJxHY30474592
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Dec 2020 20:19:59 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6AD2211C054;
+        Tue, 15 Dec 2020 20:19:59 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D33BD11C04C;
+        Tue, 15 Dec 2020 20:19:56 +0000 (GMT)
+Received: from Pescara.zurich.ibm.com (unknown [9.163.19.166])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 15 Dec 2020 20:19:56 +0000 (GMT)
+From:   Bernard Metzler <bmt@zurich.ibm.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>, jgg@nvidia.com,
+        linux-nvme@lists.infradead.org, Kamal Heib <kamalheib1@gmail.com>,
+        Yi Zhang <yi.zhang@redhat.com>
+Subject: [PATCH v2] RDMA/siw: Fix handling of zero-sized Read and Receive Queues.
+Date:   Tue, 15 Dec 2020 21:19:18 +0100
+Message-Id: <20201215201918.4050-1-bmt@zurich.ibm.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-15_12:2020-12-15,2020-12-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ mlxlogscore=858 malwarescore=0 clxscore=1015 mlxscore=0 bulkscore=0
+ priorityscore=1501 impostorscore=0 lowpriorityscore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012150130
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 2020-12-15 at 10:47 -0800, Alexander Duyck wrote:
-> On Mon, Dec 14, 2020 at 9:48 PM Parav Pandit <parav@nvidia.com>
-> wrote:
-> > 
-> > > From: Alexander Duyck <alexander.duyck@gmail.com>
-> > > Sent: Tuesday, December 15, 2020 7:24 AM
-> > > 
-> > > On Mon, Dec 14, 2020 at 1:49 PM Saeed Mahameed <saeed@kernel.org>
-> > > wrote:
-> > > > Hi Dave, Jakub, Jason,
-> > > > 
-> > > 
-> > > Just to clarify a few things for myself. You mention
-> > > virtualization and SR-IOV
-> > > in your patch description but you cannot support direct
-> > > assignment with this
-> > > correct?
-> > Correct. it cannot be directly assigned.
-> > 
-> > > The idea here is simply logical partitioning of an existing
-> > > network
-> > > interface, correct?
-> > No. Idea is to spawn multiple functions from a single PCI device.
-> > These functions are not born in PCI device and in OS until they are
-> > created by user.
-> 
-> That is the definition of logical partitioning. You are essentially
-> taking one physical PCIe function and splitting up the resources over
-> multiple logical devices. With something like an MFD driver you would
-> partition the device as soon as the driver loads, but with this you
-> are peeling our resources and defining the devices on demand.
-> 
+During connection setup, the application may choose to zero-size
+inbound and outbound READ queues, as well as the Receive queue.
+This patch fixes handling of zero-sized queues, but not prevents
+it.
 
-Sure, same for SRIOV and same for VMDQ. they are all logical
-partitioning and they are all sharing the same resources of the system.
-our point here is that the SF mechanisms are more similar to SRIOV than
-VMDQ, other than sharing the MSIX vectors and slicing up the BARs,
-everything else works exactly like SRIOV.
+v2 changes:
+- Fix uninitialized variable introduced in siw_qp_rx.c, as
+  Reported-by: kernel test robot <lkp@intel.com>
+- Add initial error report as
+  Reported-by: Kamal Heib <kamalheib1@gmail.com>
 
-> > Jason and Saeed explained this in great detail few weeks back in v0
-> > version of the patchset at [1], [2] and [3].
-> > I better not repeat all of it here again. Please go through it.
-> > If you may want to read precursor to it, RFC from Jiri at [4] is
-> > also explains this in great detail.
-> 
-> I think I have a pretty good idea of how the feature works. My
-> concern
-> is more the use of marketing speak versus actual functionality. The
-> way this is being setup it sounds like it is useful for
-> virtualization
-> and it is not, at least in its current state. It may be at some point
-> in the future but I worry that it is really going to muddy the waters
-> as we end up with yet another way to partition devices.
-> 
+Kamal Heib says in an initial error report:
+When running the blktests over siw the following shift-out-of-bounds is
+reported, this is happening because the passed IRD or ORD from the ulp
+could be zero which will lead to unexpected behavior when calling
+roundup_pow_of_two(), fix that by blocking zero values of ORD or IRD.
 
-Ok, maybe we have different views on the feature and use cases, this is
-useful for visualization for various reasons, take vdpa for an
-instance, but anyway, we can improve documentation to address your
-concerns and at some point in the future when we add the direct
-assignment we can add the necessary documentation.
+UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:13
+shift exponent 64 is too large for 64-bit type 'long unsigned int'
+CPU: 20 PID: 3957 Comm: kworker/u64:13 Tainted: G S     5.10.0-rc6 #2
+Hardware name: Dell Inc. PowerEdge R630/02C2CP, BIOS 2.1.5 04/11/2016
+Workqueue: iw_cm_wq cm_work_handler [iw_cm]
+Call Trace:
+ dump_stack+0x99/0xcb
+ ubsan_epilogue+0x5/0x40
+ __ubsan_handle_shift_out_of_bounds.cold.11+0xb4/0xf3
+ ? down_write+0x183/0x3d0
+ siw_qp_modify.cold.8+0x2d/0x32 [siw]
+ ? __local_bh_enable_ip+0xa5/0xf0
+ siw_accept+0x906/0x1b60 [siw]
+ ? xa_load+0x147/0x1f0
+ ? siw_connect+0x17a0/0x17a0 [siw]
+ ? lock_downgrade+0x700/0x700
+ ? siw_get_base_qp+0x1c2/0x340 [siw]
+ ? _raw_spin_unlock_irqrestore+0x39/0x40
+ iw_cm_accept+0x1f4/0x430 [iw_cm]
+ rdma_accept+0x3fa/0xb10 [rdma_cm]
+ ? check_flush_dependency+0x410/0x410
+ ? cma_rep_recv+0x570/0x570 [rdma_cm]
+ nvmet_rdma_queue_connect+0x1a62/0x2680 [nvmet_rdma]
+ ? nvmet_rdma_alloc_cmds+0xce0/0xce0 [nvmet_rdma]
+ ? lock_release+0x56e/0xcc0
+ ? lock_downgrade+0x700/0x700
+ ? lock_downgrade+0x700/0x700
+ ? __xa_alloc_cyclic+0xef/0x350
+ ? __xa_alloc+0x2d0/0x2d0
+ ? rdma_restrack_add+0xbe/0x2c0 [ib_core]
+ ? __ww_mutex_die+0x190/0x190
+ cma_cm_event_handler+0xf2/0x500 [rdma_cm]
+ iw_conn_req_handler+0x910/0xcb0 [rdma_cm]
+ ? _raw_spin_unlock_irqrestore+0x39/0x40
+ ? trace_hardirqs_on+0x1c/0x150
+ ? cma_ib_handler+0x8a0/0x8a0 [rdma_cm]
+ ? __kasan_kmalloc.constprop.7+0xc1/0xd0
+ cm_work_handler+0x121c/0x17a0 [iw_cm]
+ ? iw_cm_reject+0x190/0x190 [iw_cm]
+ ? trace_hardirqs_on+0x1c/0x150
+ process_one_work+0x8fb/0x16c0
+ ? pwq_dec_nr_in_flight+0x320/0x320
+ worker_thread+0x87/0xb40
+ ? __kthread_parkme+0xd1/0x1a0
+ ? process_one_work+0x16c0/0x16c0
+ kthread+0x35f/0x430
+ ? kthread_mod_delayed_work+0x180/0x180
+ ret_from_fork+0x22/0x30
 
+Fixes: a531975279f3 ("rdma/siw: main include file")
+Fixes: f29dd55b0236 ("rdma/siw: queue pair methods")
+Fixes: 8b6a361b8c48 ("rdma/siw: receive path")
+Fixes: b9be6f18cf9e ("rdma/siw: transmit path")
+Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
+Reported-by: Kamal Heib <kamalheib1@gmail.com>
+Reported-by: Yi Zhang <yi.zhang@redhat.com>
+Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+---
+ drivers/infiniband/sw/siw/siw.h       |  2 +-
+ drivers/infiniband/sw/siw/siw_qp.c    | 54 ++++++++++++++++-----------
+ drivers/infiniband/sw/siw/siw_qp_rx.c | 26 +++++++++----
+ drivers/infiniband/sw/siw/siw_qp_tx.c |  4 +-
+ drivers/infiniband/sw/siw/siw_verbs.c | 18 +++++++--
+ 5 files changed, 68 insertions(+), 36 deletions(-)
 
-> > > So this isn't so much a solution for virtualization, but may
-> > > work better for containers. I view this as an important
-> > > distinction to make as
-> > > the first thing that came to mind when I read this was mediated
-> > > devices
-> > > which is similar, but focused only on the virtualization case:
-> > > https://www.kernel.org/doc/html/v5.9/driver-api/vfio-mediated-
-> > > device.html
-> > > 
-> > Managing subfunction using medicated device is already ruled out
-> > last year at [5] as it is the abuse of the mdev bus for this
-> > purpose + has severe limitations of managing the subfunction
-> > device.
-> 
-> I agree with you on that. My thought was more the fact that the two
-> can be easily confused. If we are going to do this we need to define
-> that for networking devices perhaps that using the mdev interface
-> would be deprecated and we would need to go through devlink. However
-> before we do that we need to make sure we have this completely
-> standardized.
-> 
-
-Then lets keep this discussion for later, when we add the direct
-assignment support :)
-
-> > We are not going back to it anymore.
-> > It will be duplicating lot of the plumbing which exists in devlink,
-> > netlink, auxiliary bus and more.
-> 
-> That is kind of my point. It is already in the kernel. What you are
-> adding is the stuff that is duplicating it. I'm assuming that in
-> order
-> to be able to virtualize your interfaces in the future you are going
-> to have to make use of the same vfio plumbing that the mediated
-> devices do.
-> 
-> > > Rather than calling this a subfunction, would it make more sense
-> > > to call it
-> > > something such as a queue set?
-> > No, queue is just one way to send and receive data/packets.
-> > Jason and Saeed explained and discussed  this piece to you and
-> > others during v0 few weeks back at [1], [2], [3].
-> > Please take a look.
-> 
-> Yeah, I recall that. However I feel like it is being oversold. It
-> isn't "SR-IOV done right" it seems more like "VMDq done better". The
-
-Ok then will improve documentation to not oversell this as "SRIOV done
-right".
-
-> fact that interrupts are shared between the subfunctions is telling.
-> That is exactly how things work for Intel parts when they do VMDq as
-> well. The queues are split up into pools and a block of queues
-> belongs
-> to a specific queue. From what I can can tell the only difference is
-> that there is isolation of the pool into specific pages in the BAR.
-> Which is essentially a requirement for mediated devices so that they
-> can be direct assigned.
-> 
-
-I disagree, this is very dissimilar to VDMQ.
-SF is a VF without a unique PCI function and bar, the BAR is split up
-to give the "SF" access to its own partition in the HW, and then it
-will access the HW exactly like a VF would do, there are no "pools"
-involved here or any PF resource/queue management, from our HW
-architecture perspective there is no difference between SF and VF..
-really.
-
-> > > So in terms of ways to go I would argue this is likely better.
-> > > However one
-> > > downside is that we are going to end up seeing each subfunction
-> > > being
-> > > different from driver to driver and vendor to vendor which I
-> > > would argue
-> > > was also one of the problems with SR-IOV as you end up with a bit
-> > > of vendor
-> > > lock-in as a result of this feature since each vendor will be
-> > > providing a
-> > > different interface.
-> > > 
-> > Each and several vendors provided unified interface for managing
-> > VFs. i.e.
-> > (a) enable/disable was via vendor neutral sysfs
-> > (b) sriov capability exposed via standard pci capability and sysfs
-> > (c) sriov vf config (mac, vlan, rss, tx rate, spoof check trust)
-> > are using vendor agnostic netlink
-> > Even though the driver's internal implementation largely differs on
-> > how trust, spoof, mac, vlan rate etc are enforced.
-> > 
-> > So subfunction feature/attribute/functionality will be implemented
-> > differently internally in the driver matching vendor's device, for
-> > reasonably abstract concept of 'subfunction'.
-> 
-> I think you are missing the point. The biggest issue with SR-IOV
-> adoption was the fact that the drivers all created different VF
-> interfaces and those interfaces didn't support migration. That was
-> the
-> two biggest drawbacks for SR-IOV. I don't really see this approach
-> resolving either of those and so that is one of the reasons why I say
-> this is closer to "VMDq done better"  rather than "SR-IOV done
-> right".
-> Assuming at some point one of the flavours is a virtio-net style
-> interface you could eventually get to the point of something similar
-> to what seems to have been the goal of mdev which was meant to
-> address
-> these two points.
-> 
-
-Improving documentation will address these concerns ? 
-but to be clear it is much easier to solve sriov live migration when
-SFs are involved.
-
-> > > > A Subfunction supports eswitch representation through which it
-> > > > supports tc offloads. User must configure eswitch to
-> > > > send/receive
-> > > > packets from/to subfunction port.
-> > > > 
-> > > > Subfunctions share PCI level resources such as PCI MSI-X IRQs
-> > > > with
-> > > > their other subfunctions and/or with its parent PCI function.
-> > > 
-> > > This piece to the architecture for this has me somewhat
-> > > concerned. If all your
-> > > resources are shared and
-> > All resources are not shared.
-> 
-> Just to clarify, when I say "shared" I mean that they are all coming
-> from the same function. So if for example I were to direct-assign the
-> PF then all the resources for the subfunctions would go with it.
-> 
-> > > you are allowing devices to be created
-> > > incrementally you either have to pre-partition the entire
-> > > function which
-> > > usually results in limited resources for your base setup, or free
-> > > resources
-> > > from existing interfaces and redistribute them as things change.
-> > > I would be
-> > > curious which approach you are taking here? So for example if you
-> > > hit a
-> > > certain threshold will you need to reset the port and rebalance
-> > > the IRQs
-> > > between the various functions?
-> > No. Its works bit differently for mlx5 device.
-> > When base function is started, it started as if it doesn't have any
-> > subfunctions.
-> > When subfunction is instantiated, it spawns new resources in device
-> > (hw, fw, memory) depending on how much a function wants.
-> > 
-> > For example, PCI PF uses BAR 0, while subfunctions uses BAR 2.
-> 
-> In the grand scheme BAR doesn't really matter much. The assumption
-> here is that resources are page aligned so that you can map the pages
-> into a guest eventually.
-> 
-> > For IRQs, subfunction instance shares the IRQ with its
-> > parent/hosting PCI PF.
-> > In future, yes, a dedicated IRQs per SF is likely desired.
-> > Sridhar also talked about limiting number of queues to a
-> > subfunction.
-> > I believe there will be resources/attributes of the function to be
-> > controlled.
-> > devlink already provides rich interface to achieve that using
-> > devlink resources [8].
-> > 
-> > [..]
-> 
-> So it sounds like the device firmware is pre-partitioining the
-> resources and splitting them up between the PCI PF and your
-> subfunctions. Although in your case it sounds like there are
-> significantly more resources than you might find in an ixgbe
-> interface
-> for instance. :)
-> 
-> The point is that we should probably define some sort of standard
-> and/or expectations on what should happen when you spawn a new
-> interface. Would it be acceptable for the PF and existing
-> subfunctions
-> to have to reset if you need to rebalance the IRQ distribution, or
-> should they not be disrupted when you spawn a new interface?
-> 
-> One of the things I prefer about the mediated device setup is the
-> fact
-> that it has essentially pre-partitioned things beforehand and you
-> know
-> how many of each type of interface you can spawn. Is there any
-> information like that provided by this interface?
-> 
-> > > > $ ip link show
-> > > > 127: ens2f0np0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state
-> > > DOWN mode DEFAULT group default qlen 1000
-> > > >     link/ether 24:8a:07:b3:d1:12 brd ff:ff:ff:ff:ff:ff
-> > > >     altname enp6s0f0np0
-> > > > 129: p0sf88: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state
-> > > > DOWN
-> > > mode DEFAULT group default qlen 1000
-> > > >     link/ether 00:00:00:00:88:88 brd ff:ff:ff:ff:ff:ff>
-> > > 
-> > > I assume that p0sf88 is supposed to be the newly created
-> > > subfunction.
-> > > However I thought the naming was supposed to be the same as what
-> > > you are
-> > > referring to in the devlink, or did I miss something?
-> > > 
-> > I believe you are confused with the representor netdevice of
-> > subfuction with devices of subfunction. (netdev, rdma, vdpa etc).
-> > I suggest that please refer to the diagram in patch_15 in [7] to
-> > see the stack, modules, objects.
-> > Hope below description clarifies a bit.
-> > There are two netdevices.
-> > (a) representor netdevice, attached to the devlink port of the
-> > eswitch
-> > (b) netdevice of the SF used by the end application (in your
-> > example, this is assigned to container).
-> 
-> Sorry, that wasn't clear from your example. So in this case you
-> started in a namespace and the new device you created via devlink was
-> spawned in the root namespace?
-> 
-> > Both netdevice follow obviously a different naming scheme.
-> > Representor netdevice follows naming scheme well defined in kernel
-> > + systemd/udev v245 and higher.
-> > It is based on phys_port_name sysfs attribute.
-> > This is same for existing PF and SF representors exist for year+
-> > now. Further used by subfunction.
-> > 
-> > For subfunction netdevice (p0s88), system/udev will be extended. I
-> > put example based on my few lines of udev rule that reads
-> > phys_port_name and user supplied sfnum, so that user exactly knows
-> > which interface to assign to container.
-> 
-> Admittedly I have been out of the loop for the last couple years
-> since
-> I had switched over to memory management work for a while. It would
-> be
-> useful to include something that shows your created network interface
-> in the example in addition to your switchdev port.
-> 
-> > > > After use inactivate the function:
-> > > > $ devlink port function set ens2f0npf0sf88 state inactive
-> > > > 
-> > > > Now delete the subfunction port:
-> > > > $ devlink port del ens2f0npf0sf88
-> > > 
-> > > This seems wrong to me as it breaks the symmetry with the port
-> > > add
-> > > command and
-> > Example of the representor device is only to make life easier for
-> > the user.
-> > Devlink port del command works based on the devlink port index,
-> > just like existing devlink port commands (get,set,split,unsplit).
-> > I explained this in a thread with Sridhar at [6].
-> > In short devlink port del <bus/device_name/port_index command is
-> > just fine.
-> > Port index is unique handle for the devlink instance that user
-> > refers to delete, get, set port and port function attributes post
-> > its creation.
-> > I choose the representor netdev example because it is more
-> > intuitive to related to, but port index is equally fine and
-> > supported.
-> 
-> Okay then, that addresses my concern. I just wanted to make sure we
-> weren't in some situation where you had to have the interface in
-> order
-> to remove it.
-> 
-> > > assumes you have ownership of the interface in the host. I
-> > > would much prefer to to see the same arguments that were passed
-> > > to the
-> > > add command being used to do the teardown as that would allow for
-> > > the
-> > > parent function to create the object, assign it to a container
-> > > namespace, and
-> > > not need to pull it back in order to destroy it.
-> > Parent function will not have same netdevice name as that of
-> > representor netdevice, because both devices exist in single system
-> > for large part of the use cases.
-> > So port delete command works on the port index.
-> > Host doesn't need to pull it back to destroy it. It is destroyed
-> > via port del command.
-> > 
-> > [1] 
-> > https://lore.kernel.org/netdev/20201112192424.2742-1-parav@nvidia.com/
-> > [2] 
-> > https://lore.kernel.org/netdev/421951d99a33d28b91f2b2997409d0c97fa5a98a.camel@kernel.org/
-> > [3] 
-> > https://lore.kernel.org/netdev/20201120161659.GE917484@nvidia.com/
-> > [4] 
-> > https://lore.kernel.org/netdev/20200501091449.GA25211@nanopsycho.orion/
-> > [5] 
-> > https://lore.kernel.org/netdev/20191107160448.20962-1-parav@mellanox.com/
-> > [6] 
-> > https://lore.kernel.org/netdev/BY5PR12MB43227784BB34D929CA64E315DCCA0@BY5PR12MB4322.namprd12.prod.outlook.com/
-> > [7] 
-> > https://lore.kernel.org/netdev/20201214214352.198172-16-saeed@kernel.org/T/#u
-> > [8] https://man7.org/linux/man-pages/man8/devlink-resource.8.html
-> > 
+diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
+index e9753831ac3f..6f17392f975a 100644
+--- a/drivers/infiniband/sw/siw/siw.h
++++ b/drivers/infiniband/sw/siw/siw.h
+@@ -654,7 +654,7 @@ static inline struct siw_sqe *orq_get_free(struct siw_qp *qp)
+ {
+ 	struct siw_sqe *orq_e = orq_get_tail(qp);
+ 
+-	if (orq_e && READ_ONCE(orq_e->flags) == 0)
++	if (READ_ONCE(orq_e->flags) == 0)
+ 		return orq_e;
+ 
+ 	return NULL;
+diff --git a/drivers/infiniband/sw/siw/siw_qp.c b/drivers/infiniband/sw/siw/siw_qp.c
+index 875d36d4b1c6..b686a09a75ae 100644
+--- a/drivers/infiniband/sw/siw/siw_qp.c
++++ b/drivers/infiniband/sw/siw/siw_qp.c
+@@ -199,26 +199,28 @@ void siw_qp_llp_write_space(struct sock *sk)
+ 
+ static int siw_qp_readq_init(struct siw_qp *qp, int irq_size, int orq_size)
+ {
+-	irq_size = roundup_pow_of_two(irq_size);
+-	orq_size = roundup_pow_of_two(orq_size);
+-
+-	qp->attrs.irq_size = irq_size;
+-	qp->attrs.orq_size = orq_size;
+-
+-	qp->irq = vzalloc(irq_size * sizeof(struct siw_sqe));
+-	if (!qp->irq) {
+-		siw_dbg_qp(qp, "irq malloc for %d failed\n", irq_size);
+-		qp->attrs.irq_size = 0;
+-		return -ENOMEM;
++	if (irq_size) {
++		irq_size = roundup_pow_of_two(irq_size);
++		qp->irq = vzalloc(irq_size * sizeof(struct siw_sqe));
++		if (!qp->irq) {
++			siw_dbg_qp(qp, "irq malloc for %d failed\n", irq_size);
++			qp->attrs.irq_size = 0;
++			return -ENOMEM;
++		}
+ 	}
+-	qp->orq = vzalloc(orq_size * sizeof(struct siw_sqe));
+-	if (!qp->orq) {
+-		siw_dbg_qp(qp, "orq malloc for %d failed\n", orq_size);
+-		qp->attrs.orq_size = 0;
+-		qp->attrs.irq_size = 0;
+-		vfree(qp->irq);
+-		return -ENOMEM;
++	if (orq_size) {
++		orq_size = roundup_pow_of_two(orq_size);
++		qp->orq = vzalloc(orq_size * sizeof(struct siw_sqe));
++		if (!qp->orq) {
++			siw_dbg_qp(qp, "orq malloc for %d failed\n", orq_size);
++			qp->attrs.orq_size = 0;
++			qp->attrs.irq_size = 0;
++			vfree(qp->irq);
++			return -ENOMEM;
++		}
+ 	}
++	qp->attrs.irq_size = irq_size;
++	qp->attrs.orq_size = orq_size;
+ 	siw_dbg_qp(qp, "ORD %d, IRD %d\n", orq_size, irq_size);
+ 	return 0;
+ }
+@@ -288,13 +290,14 @@ int siw_qp_mpa_rts(struct siw_qp *qp, enum mpa_v2_ctrl ctrl)
+ 	if (ctrl & MPA_V2_RDMA_WRITE_RTR)
+ 		wqe->sqe.opcode = SIW_OP_WRITE;
+ 	else if (ctrl & MPA_V2_RDMA_READ_RTR) {
+-		struct siw_sqe *rreq;
++		struct siw_sqe *rreq = NULL;
+ 
+ 		wqe->sqe.opcode = SIW_OP_READ;
+ 
+ 		spin_lock(&qp->orq_lock);
+ 
+-		rreq = orq_get_free(qp);
++		if (qp->attrs.orq_size)
++			rreq = orq_get_free(qp);
+ 		if (rreq) {
+ 			siw_read_to_orq(rreq, &wqe->sqe);
+ 			qp->orq_put++;
+@@ -889,6 +892,9 @@ int siw_activate_tx(struct siw_qp *qp)
+ 	struct siw_wqe *wqe = tx_wqe(qp);
+ 	int rv = 1;
+ 
++	if (!qp->attrs.irq_size)
++		goto no_irq;
++
+ 	irqe = &qp->irq[qp->irq_get % qp->attrs.irq_size];
+ 
+ 	if (irqe->flags & SIW_WQE_VALID) {
+@@ -933,6 +939,7 @@ int siw_activate_tx(struct siw_qp *qp)
+ 
+ 		goto out;
+ 	}
++no_irq:
+ 	sqe = sq_get_next(qp);
+ 	if (sqe) {
+ skip_irq:
+@@ -971,7 +978,7 @@ int siw_activate_tx(struct siw_qp *qp)
+ 			}
+ 			spin_lock(&qp->orq_lock);
+ 
+-			if (!siw_orq_empty(qp)) {
++			if (qp->attrs.orq_size && !siw_orq_empty(qp)) {
+ 				qp->tx_ctx.orq_fence = 1;
+ 				rv = 0;
+ 			}
+@@ -981,6 +988,11 @@ int siw_activate_tx(struct siw_qp *qp)
+ 			   wqe->sqe.opcode == SIW_OP_READ_LOCAL_INV) {
+ 			struct siw_sqe *rreq;
+ 
++			if (unlikely(!qp->attrs.orq_size)) {
++				/* We negotiated not to send READ req's */
++				rv = -EINVAL;
++				goto out;
++			}
+ 			wqe->sqe.num_sge = 1;
+ 
+ 			spin_lock(&qp->orq_lock);
+diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
+index 4bd1f1f84057..981e11f31b2d 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_rx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
+@@ -678,6 +678,10 @@ static int siw_init_rresp(struct siw_qp *qp, struct siw_rx_stream *srx)
+ 				   DDP_ECODE_UT_INVALID_MSN_RANGE, 0);
+ 		return -EPROTO;
+ 	}
++	if (unlikely(!qp->attrs.irq_size)) {
++		run_sq = 0;
++		goto error_irq;
++	}
+ 	spin_lock_irqsave(&qp->sq_lock, flags);
+ 
+ 	if (tx_work->wr_status == SIW_WR_IDLE) {
+@@ -712,8 +716,9 @@ static int siw_init_rresp(struct siw_qp *qp, struct siw_rx_stream *srx)
+ 		/* RRESP now valid as current TX wqe or placed into IRQ */
+ 		smp_store_mb(resp->flags, SIW_WQE_VALID);
+ 	} else {
+-		pr_warn("siw: [QP %u]: irq %d exceeded %d\n", qp_id(qp),
+-			qp->irq_put % qp->attrs.irq_size, qp->attrs.irq_size);
++error_irq:
++		pr_warn("siw: [QP %u]: IRQ exceeded or null, size %d\n",
++			qp_id(qp), qp->attrs.irq_size);
+ 
+ 		siw_init_terminate(qp, TERM_ERROR_LAYER_RDMAP,
+ 				   RDMAP_ETYPE_REMOTE_OPERATION,
+@@ -740,6 +745,9 @@ static int siw_orqe_start_rx(struct siw_qp *qp)
+ 	struct siw_sqe *orqe;
+ 	struct siw_wqe *wqe = NULL;
+ 
++	if (unlikely(!qp->attrs.orq_size))
++		return -EPROTO;
++
+ 	/* make sure ORQ indices are current */
+ 	smp_mb();
+ 
+@@ -796,8 +804,8 @@ int siw_proc_rresp(struct siw_qp *qp)
+ 		 */
+ 		rv = siw_orqe_start_rx(qp);
+ 		if (rv) {
+-			pr_warn("siw: [QP %u]: ORQ empty at idx %d\n",
+-				qp_id(qp), qp->orq_get % qp->attrs.orq_size);
++			pr_warn("siw: [QP %u]: ORQ empty, size %d\n",
++				qp_id(qp), qp->attrs.orq_size);
+ 			goto error_term;
+ 		}
+ 		rv = siw_rresp_check_ntoh(srx, frx);
+@@ -1290,11 +1298,13 @@ static int siw_rdmap_complete(struct siw_qp *qp, int error)
+ 					      wc_status);
+ 		siw_wqe_put_mem(wqe, SIW_OP_READ);
+ 
+-		if (!error)
++		if (!error) {
+ 			rv = siw_check_tx_fence(qp);
+-		else
+-			/* Disable current ORQ eleement */
+-			WRITE_ONCE(orq_get_current(qp)->flags, 0);
++		} else {
++			/* Disable current ORQ element */
++			if (qp->attrs.orq_size)
++				WRITE_ONCE(orq_get_current(qp)->flags, 0);
++		}
+ 		break;
+ 
+ 	case RDMAP_RDMA_READ_REQ:
+diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
+index d19d8325588b..7989c4043db4 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+@@ -1107,8 +1107,8 @@ int siw_qp_sq_process(struct siw_qp *qp)
+ 		/*
+ 		 * RREQ may have already been completed by inbound RRESP!
+ 		 */
+-		if (tx_type == SIW_OP_READ ||
+-		    tx_type == SIW_OP_READ_LOCAL_INV) {
++		if ((tx_type == SIW_OP_READ ||
++		     tx_type == SIW_OP_READ_LOCAL_INV) && qp->attrs.orq_size) {
+ 			/* Cleanup pending entry in ORQ */
+ 			qp->orq_put--;
+ 			qp->orq[qp->orq_put % qp->attrs.orq_size].flags = 0;
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index 7cf3242ffb41..95003678cf3f 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -362,13 +362,23 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
+ 	if (rv)
+ 		goto err_out;
+ 
++	num_sqe = attrs->cap.max_send_wr;
++	num_rqe = attrs->cap.max_recv_wr;
++
+ 	/* All queue indices are derived from modulo operations
+ 	 * on a free running 'get' (consumer) and 'put' (producer)
+ 	 * unsigned counter. Having queue sizes at power of two
+ 	 * avoids handling counter wrap around.
+ 	 */
+-	num_sqe = roundup_pow_of_two(attrs->cap.max_send_wr);
+-	num_rqe = roundup_pow_of_two(attrs->cap.max_recv_wr);
++	if (num_sqe)
++		num_sqe = roundup_pow_of_two(num_sqe);
++	else {
++		/* Zero sized SQ is not supported */
++		rv = -EINVAL;
++		goto err_out;
++	}
++	if (num_rqe)
++		num_rqe = roundup_pow_of_two(num_rqe);
+ 
+ 	if (udata)
+ 		qp->sendq = vmalloc_user(num_sqe * sizeof(struct siw_sqe));
+@@ -960,9 +970,9 @@ int siw_post_receive(struct ib_qp *base_qp, const struct ib_recv_wr *wr,
+ 	unsigned long flags;
+ 	int rv = 0;
+ 
+-	if (qp->srq) {
++	if (qp->srq || qp->attrs.rq_size == 0) {
+ 		*bad_wr = wr;
+-		return -EOPNOTSUPP; /* what else from errno.h? */
++		return -EINVAL;
+ 	}
+ 	if (!rdma_is_kernel_res(&qp->base_qp.res)) {
+ 		siw_dbg_qp(qp, "no kernel post_recv for user mapped rq\n");
+-- 
+2.17.2
 
