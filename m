@@ -2,71 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B836B2DA7A9
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Dec 2020 06:28:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3762DA7BE
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Dec 2020 06:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726154AbgLOF0C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Dec 2020 00:26:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725889AbgLOFZs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 15 Dec 2020 00:25:48 -0500
-Date:   Tue, 15 Dec 2020 07:25:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608009908;
-        bh=Emb3sGF05S/A2lHWRBtkjmZWvVz1D5920x/e+pYfvLA=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YJVb9X389Au05JAPp6eg+uRW5H1zKoSwVS+xRkz67nlWUfQX13BdUHAfKem695AUA
-         /vxjXOI/TJWgi02mTDPa7Q4rnilAdb9aO/YVBST71T/vRe6bNFB8Rug+jOxlycvuro
-         TSLDMmkOhY7IRqvY2c+f+WbKmEOflPm3fKfxpZ88ZojFny9ovNXXCiM6CW/EUxSiI+
-         33tZChhVvnpRKofe9IyTn3u5+A79Y19PLi2FtegH/1mwGnlNgMeuz5NGbn3Yvjn0WJ
-         tge7YqRBqCNpVAFPSR9Ff1WlY6+rDxsBqCBDlyCOBSOc+Cv1phBmbVCfZH4bpNsSty
-         j2XrVGnKYYz3A==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Shay Drory <shayd@nvidia.com>
-Subject: Re: [PATCH rdma-rc 0/5] Fixes to v5.10
-Message-ID: <20201215052504.GK5005@unreal>
-References: <20201213132940.345554-1-leon@kernel.org>
- <20201214192722.GB2551375@nvidia.com>
+        id S1725958AbgLOFik (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Dec 2020 00:38:40 -0500
+Received: from smtprelay0245.hostedemail.com ([216.40.44.245]:35184 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725966AbgLOFib (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 15 Dec 2020 00:38:31 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 85076180A8CBE;
+        Tue, 15 Dec 2020 05:37:37 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2731:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:5007:7875:10004:10400:10848:11232:11658:11914:12295:12297:12663:12740:12760:12895:13069:13311:13357:13439:14096:14097:14659:14819:21080:21433:21627:21790:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: wire01_4f04bab27421
+X-Filterd-Recvd-Size: 2020
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf12.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 15 Dec 2020 05:37:36 +0000 (UTC)
+Message-ID: <19198242da4d01804dc20cb41e870b05041bede2.camel@perches.com>
+Subject: Re: [PATCH v2] net/mlx4: Use true,false for bool variable
+From:   Joe Perches <joe@perches.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Vasyl Gomonovych <gomonovych@gmail.com>, tariqt@nvidia.com,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 14 Dec 2020 21:37:34 -0800
+In-Reply-To: <20201215051838.GH5005@unreal>
+References: <20201212090234.0362d64f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <20201214103008.14783-1-gomonovych@gmail.com>
+         <20201214111608.GE5005@unreal>
+         <20201214110351.29ae7abb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <1113d2d634d46adb9384e09c3f70cb8376a815c4.camel@perches.com>
+         <20201215051838.GH5005@unreal>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201214192722.GB2551375@nvidia.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 03:27:22PM -0400, Jason Gunthorpe wrote:
-> On Sun, Dec 13, 2020 at 03:29:35PM +0200, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> >
-> > Hi,
-> >
-> > This is another series with various fixes that can easily go to -next too.
-> >
-> > Thanks
-> >
-> > Leon Romanovsky (1):
-> >   RDMA/cma: Don't overwrite sgid_attr after device is released
-> >
-> > Maor Gottlieb (2):
-> >   RDMA/mlx5: Fix MR cache memory leak
->
-> Applied these two to for-next, thanks
->
-> >   RDMA/ucma: Fix memory leak of connection request
-> >   IB/umad: Return EIO in case of when device disassociated
-> >   IB/umad: Return EPOLLERR in case of when device disassociated
->
-> These ones can wait till next cycle
+On Tue, 2020-12-15 at 07:18 +0200, Leon Romanovsky wrote:
+> On Mon, Dec 14, 2020 at 11:15:01AM -0800, Joe Perches wrote:
+> > I prefer revisions to single patches (as opposed to large patch series)
+> > in the same thread.
+> 
+> It depends which side you are in that game. From the reviewer point of
+> view, such submission breaks flow very badly. It unfolds the already
+> reviewed thread, messes with the order and many more little annoying
+> things.
 
-Thanks
+This is where I disagree with you.  I am a reviewer here.
 
->
-> Jason
+Not having context to be able to inspect vN -> vN+1 is made
+more difficult not having the original patch available and
+having to search history for it.
+
+Almost no one adds URL links to older submissions below the ---.
+
+Were that a standard mechanism below the --- line, then it would
+be OK.
+
