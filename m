@@ -2,98 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE722DA74C
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Dec 2020 06:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD67D2DA770
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Dec 2020 06:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725869AbgLOFAO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Dec 2020 00:00:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34720 "EHLO mail.kernel.org"
+        id S1725854AbgLOFTa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Dec 2020 00:19:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725780AbgLOFAO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 15 Dec 2020 00:00:14 -0500
-Date:   Tue, 15 Dec 2020 06:59:29 +0200
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Saeed Mahameed <saeed@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        David Ahern <dsahern@kernel.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Parav Pandit <parav@nvidia.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [net-next v4 01/15] net/mlx5: Fix compilation warning for 32-bit
- platform
-Message-ID: <20201215045929.GG5005@unreal>
-References: <20201214214352.198172-1-saeed@kernel.org>
- <20201214214352.198172-2-saeed@kernel.org>
- <CAKgT0UeAaydinMZdfJt_f40eK0xxgEUdTeM7-YJc=pUyqB9-5A@mail.gmail.com>
+        id S1725864AbgLOFTW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 15 Dec 2020 00:19:22 -0500
+Date:   Tue, 15 Dec 2020 07:18:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608009522;
+        bh=sYVoD9fQ4iG/h+hSNQcInrv0UeUccJHoIREfTQfxY7c=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LoYz2VkhmecU0TapvJ/75sQjoZEdfvX/S4P55adPRt2I1DmlSA/FEyEi1pVtS4mJ7
+         RZUlxKtZTfFY+wCMdaNBL5bfZ1qPi2QeIxaeMTyo3i8F0yoSLL8auWElbfhQySjuQF
+         LoG/UhPIjgEE4zNWy55kNrt7C+bmitx0RsRRIUNTkzOocCeOjpDrIcc6mLbvdIy9li
+         5cB7x+6EAWKAHLXB4oHAZOAqgdr3dv7gbbC1t86sv7BgXHTs67elMd6JZfaSnf9cQw
+         KxUTRiF0PaltqTsAZQ8xnt6INwHW40Dn0TxBLuMA+xenGgl6QYGCXHcEfNM1rkVWhT
+         cGQR6CdYFWnlQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Vasyl Gomonovych <gomonovych@gmail.com>, tariqt@nvidia.com,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] net/mlx4: Use true,false for bool variable
+Message-ID: <20201215051838.GH5005@unreal>
+References: <20201212090234.0362d64f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201214103008.14783-1-gomonovych@gmail.com>
+ <20201214111608.GE5005@unreal>
+ <20201214110351.29ae7abb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <1113d2d634d46adb9384e09c3f70cb8376a815c4.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKgT0UeAaydinMZdfJt_f40eK0xxgEUdTeM7-YJc=pUyqB9-5A@mail.gmail.com>
+In-Reply-To: <1113d2d634d46adb9384e09c3f70cb8376a815c4.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 02:31:25PM -0800, Alexander Duyck wrote:
-> On Mon, Dec 14, 2020 at 1:49 PM Saeed Mahameed <saeed@kernel.org> wrote:
+On Mon, Dec 14, 2020 at 11:15:01AM -0800, Joe Perches wrote:
+> On Mon, 2020-12-14 at 11:03 -0800, Jakub Kicinski wrote:
+> > On Mon, 14 Dec 2020 13:16:08 +0200 Leon Romanovsky wrote:
+> > > On Mon, Dec 14, 2020 at 11:30:08AM +0100, Vasyl Gomonovych wrote:
+> > > > It is fix for semantic patch warning available in
+> > > > scripts/coccinelle/misc/boolinit.cocci
+> > > > Fix en_rx.c:687:1-17: WARNING: Assignment of 0/1 to bool variable
+> > > > Fix main.c:4465:5-13: WARNING: Comparison of 0/1 to bool variable
+> > > >
+> > > > Signed-off-by: Vasyl Gomonovych <gomonovych@gmail.com>
+> > > > ---
+> > > >  - Add coccicheck script name
+> > > >  - Simplify if condition
+> > > > ---
+> > > >  drivers/net/ethernet/mellanox/mlx4/en_rx.c | 2 +-
+> > > >  drivers/net/ethernet/mellanox/mlx4/main.c  | 2 +-
+> > > >  2 files changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > Please refrain from sending new version of patches as reply-to to
+> > > previous variants. It makes to appear previous patches out-of-order
+> > > while viewing in threaded mode.
 > >
-> > From: Parav Pandit <parav@nvidia.com>
-> >
-> > MLX5_GENERAL_OBJECT_TYPES types bitfield is 64-bit field.
-> >
-> > Defining an enum for such bit fields on 32-bit platform results in below
-> > warning.
-> >
-> > ./include/vdso/bits.h:7:26: warning: left shift count >= width of type [-Wshift-count-overflow]
-> >                          ^
-> > ./include/linux/mlx5/mlx5_ifc.h:10716:46: note: in expansion of macro â€˜BITâ€™
-> >  MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_SAMPLER = BIT(0x20),
-> >                                              ^~~
-> > Use 32-bit friendly left shift.
-> >
-> > Fixes: 2a2970891647 ("net/mlx5: Add sample offload hardware bits and structures")
-> > Signed-off-by: Parav Pandit <parav@nvidia.com>
-> > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > Signed-off-by: Saeed Mahameed <saeed@kernel.org>
-> > ---
-> >  include/linux/mlx5/mlx5_ifc.h | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
-> > index 0d6e287d614f..b9f15935dfe5 100644
-> > --- a/include/linux/mlx5/mlx5_ifc.h
-> > +++ b/include/linux/mlx5/mlx5_ifc.h
-> > @@ -10711,9 +10711,9 @@ struct mlx5_ifc_affiliated_event_header_bits {
-> >  };
-> >
-> >  enum {
-> > -       MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_ENCRYPTION_KEY = BIT(0xc),
-> > -       MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_IPSEC = BIT(0x13),
-> > -       MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_SAMPLER = BIT(0x20),
-> > +       MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_ENCRYPTION_KEY = 1ULL << 0xc,
-> > +       MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_IPSEC = 1ULL << 0x13,
-> > +       MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_SAMPLER = 1ULL << 0x20,
-> >  };
+> > Yes, please! I'm glad I'm not the only one who feels this way! :)
 >
-> Why not just use BIT_ULL?
+> I'm the other way.
+>
+> I prefer revisions to single patches (as opposed to large patch series)
+> in the same thread.
 
-mlx5_ifc.h doesn't include bits.h on-purpose and there are "*.c" files
-that include that ifc header file, but don't include bits.h either.
+It depends which side you are in that game. From the reviewer point of
+view, such submission breaks flow very badly. It unfolds the already
+reviewed thread, messes with the order and many more little annoying
+things.
 
-It can cause to build failures in random builds.
+>
+> There is no other easy way for changes to a patch to be tracked AFAIK.
 
-The mlx5_ifc.h is our main hardware definition file that we are using in
-other projects outside of the kernel (rdma-core) too, so it is preferable
-to keep it as plain-C without any extra dependencies.
+Not really,  I'm using very simple convention to keep tracking of
+changes. The changelog together with lorifier does the trick.
+
+https://github.com/danrue/lorifier
+https://lore.kernel.org/linux-rdma/20201125064628.8431-1-leon@kernel.org/
+
+So I'm simply adding link to the previous version when sending new one.
+
+>
+> Most email clients use both In-Reply-To: and References: headers as
+> the mechanism to thread replies.
+
+Right, and this is exactly what we don't want for vX patches.
+
+>
+> Keeping the latest messages at the bottom of a thread works well
+> to see revision sequences.
+
+I have a different workflow.
 
 Thanks
