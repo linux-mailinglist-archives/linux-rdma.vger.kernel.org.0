@@ -2,245 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F842DB45A
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Dec 2020 20:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DC52DB484
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Dec 2020 20:36:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731922AbgLOTN4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Dec 2020 14:13:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731764AbgLOTNp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Dec 2020 14:13:45 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45210C06179C;
-        Tue, 15 Dec 2020 11:13:01 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id t9so20269797ilf.2;
-        Tue, 15 Dec 2020 11:13:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MjBxeR6iqFs0La2Ze00m0vh6EKN6PVYTPDwtGigmCuA=;
-        b=eElqqEvjfX5kIMcaicWDPOUitkwXijFS/KH8JZ29OBJWXbOWwExoD23KerVe4xUpez
-         Y9ou5ozGwDOM4MEXewgzC0HVg4xezra7I4k89A7c3VqQuf7xRGf0ZbMdHQ2tmDAmOB9k
-         +/4sEmKR/SiVjQq3zbYNhjwGvSubqc9mV8Ga8fFi3GGXQLX2XsSxXiSgS7nUMipVqWxk
-         ya6LHGGUfykAxO7PkTBHUzbmTXI5UOZ3jweD9NJvEfGPbs/hTTzTM7dYHt3gPd46vKjm
-         5CyI6pj6BFBZxtxVgVUdIG1zXWNuh39+YXte//ROAnBPpbGjQQY1RZWXmgTNxGB7J++N
-         A9Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MjBxeR6iqFs0La2Ze00m0vh6EKN6PVYTPDwtGigmCuA=;
-        b=jt36BmdZIyH7HTHek9D2gVcPD2TWVUCJVuUMmTAyWwAwcl2mTsDGwzGQyuZsohOaMI
-         EoNb1/lzgHMMF+cfThQFswdoDd/xSE5H86e+s3Ha6QqjNS0WO3fCxeH6jzovHUTt17ov
-         m0RdmMeXGUVwacnP0c8L/rAWBrJUyeakV7H0fhXVk3NMB0L+xMaEkXKqf/FCCBHc1+pL
-         oWUxUtxyj1Hm2Tlbx2Yw8TPMoEffAsO5lsq4B89gj2bRDOTgyaidzRXe/hW1Mrru/LTc
-         mA6aSAZvL+hwiiCAhQP+DfjT3MMa3OBZ5SZoodLMPMB4SOuUZXh1J+in9JJYqrgqB2TR
-         M1Ag==
-X-Gm-Message-State: AOAM531TBN47av3SizGM+q2wF6n3i1AwGlID142QunENgc8mb3awAHd7
-        mBwFmI1YYKdJxWUSditCH32y+tNjUkqeyMDzbag=
-X-Google-Smtp-Source: ABdhPJwIqjkzI+mADwafbGVWLyJYZkxyGEAg55i7g0Tu1ZaiTn4o2fPy0aqmL5UCUWQMRJZm3Vpz8R6Gr+RVXHsUqSw=
-X-Received: by 2002:a92:730d:: with SMTP id o13mr41230055ilc.95.1608059580455;
- Tue, 15 Dec 2020 11:13:00 -0800 (PST)
+        id S1726022AbgLOTgV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Dec 2020 14:36:21 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37914 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725821AbgLOTgU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 15 Dec 2020 14:36:20 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BFJWlYh070620
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Dec 2020 14:35:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
+ from : to : cc : date : mime-version : references :
+ content-transfer-encoding : content-type : message-id; s=pp1;
+ bh=UKzW9BqnXXwM+6ii7AqIUISXKtJ9gr8ZMMNqd8HV9hQ=;
+ b=H9g1RiMaJWI2UdC9yJCq6n4AYC0sHznVnKq645FQckV65lwktKpuw/b/gkGtQwWz/Qrq
+ gG9YVayTolaud4RePhO7PWWjRngRDwPVToxsuWan2mR0lOBN3hB8oR9g5f0VE8Do831r
+ QlnN3J9JYnlx8rajAB+yMc6buPoKFfovLLSF6ctkxP0MahCY7oDLAB9y6URXXnjwZxeJ
+ ykEg7ngV0AkcxLkhhi8Whk/P/gclZ2aAQbY2cuaODOSWqlyqz4uXwjIeAfMCczULTKUo
+ iIsaivR+/pPqGDYzb1izv2Hrht1h9n66SUR/1Ed4NcLMAsRXbaP7Jg8yJasgRZFOyKw9 XA== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.119])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35f1ar4exh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Dec 2020 14:35:39 -0500
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Tue, 15 Dec 2020 19:35:38 -0000
+Received: from us1b3-smtp01.a3dr.sjc01.isc4sb.com (10.122.7.174)
+        by smtp.notes.na.collabserv.com (10.122.182.123) with smtp.notes.na.collabserv.com ESMTP;
+        Tue, 15 Dec 2020 19:35:36 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp01.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2020121519353576-694740 ;
+          Tue, 15 Dec 2020 19:35:35 +0000 
+In-Reply-To: <20201215174717.GZ552508@nvidia.com>
+Subject: Re: Re: [PATCH] RDMA/siw: Fix handling of zero-sized Read and Receive
+ Queues.
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@nvidia.com>
+Cc:     <linux-rdma@vger.kernel.org>, <kamalheib1@gmail.com>,
+        <yi.zhang@redhat.com>, <linux-nvme@lists.infradead.org>
+Date:   Tue, 15 Dec 2020 19:35:35 +0000
 MIME-Version: 1.0
-References: <20201214214352.198172-1-saeed@kernel.org> <CAKgT0UejoduCB6nYFV2atJ4fa4=v9-dsxNh4kNJNTtoHFd1DuQ@mail.gmail.com>
- <608505778d76b1b01cb3e8d19ecda5b8578f0f79.camel@kernel.org>
-In-Reply-To: <608505778d76b1b01cb3e8d19ecda5b8578f0f79.camel@kernel.org>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Tue, 15 Dec 2020 11:12:49 -0800
-Message-ID: <CAKgT0UfEsd0hS=iJTcVc20gohG0WQwjsGYOw1y0_=DRVbhb1Ng@mail.gmail.com>
-Subject: Re: [net-next v4 00/15] Add mlx5 subfunction support
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        David Ahern <dsahern@kernel.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20201215174717.GZ552508@nvidia.com>,<20201215122306.3886-1-bmt@zurich.ibm.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP65 April 15, 2020 at 09:48
+X-KeepSent: 33B51ADA:D0F7149E-0025863F:00628A52;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 11451
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 20121519-3975-0000-0000-0000036D5596
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.000684
+X-IBM-SpamModules-Versions: BY=3.00014381; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000295; SDB=6.01478589; UDB=6.00796658; IPR=6.01261195;
+ MB=3.00035512; MTD=3.00000008; XFM=3.00000015; UTC=2020-12-15 19:35:37
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2020-12-15 17:42:41 - 6.00012142
+x-cbparentid: 20121519-3976-0000-0000-000077248F3A
+Message-Id: <OF33B51ADA.D0F7149E-ON0025863F.00628A52-0025863F.006BA0D9@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-15_12:2020-12-15,2020-12-15 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 10:15 PM Saeed Mahameed <saeed@kernel.org> wrote:
+-----"Jason Gunthorpe" <jgg@nvidia.com> wrote: -----
+
+>To: "Bernard Metzler" <bmt@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@nvidia.com>
+>Date: 12/15/2020 06:48PM
+>Cc: <linux-rdma@vger.kernel.org>, <kamalheib1@gmail.com>,
+><yi.zhang@redhat.com>, <linux-nvme@lists.infradead.org>
+>Subject: [EXTERNAL] Re: [PATCH] RDMA/siw: Fix handling of zero-sized
+>Read and Receive Queues.
 >
-> On Mon, 2020-12-14 at 17:53 -0800, Alexander Duyck wrote:
-> > On Mon, Dec 14, 2020 at 1:49 PM Saeed Mahameed <saeed@kernel.org>
-> > wrote:
-> > > Hi Dave, Jakub, Jason,
-> > >
-> > > This series form Parav was the theme of this mlx5 release cycle,
-> > > we've been waiting anxiously for the auxbus infrastructure to make
-> > > it into
-> > > the kernel, and now as the auxbus is in and all the stars are
-> > > aligned, I
-> > > can finally submit this V2 of the devlink and mlx5 subfunction
-> > > support.
-> > >
-> > > Subfunctions came to solve the scaling issue of virtualization
-> > > and switchdev environments, where SRIOV failed to deliver and users
-> > > ran
-> > > out of VFs very quickly as SRIOV demands huge amount of physical
-> > > resources
-> > > in both of the servers and the NIC.
-> > >
-> > > Subfunction provide the same functionality as SRIOV but in a very
-> > > lightweight manner, please see the thorough and detailed
-> > > documentation from Parav below, in the commit messages and the
-> > > Networking documentation patches at the end of this series.
-> > >
-> >
-> > Just to clarify a few things for myself. You mention virtualization
-> > and SR-IOV in your patch description but you cannot support direct
-> > assignment with this correct? The idea here is simply logical
-> > partitioning of an existing network interface, correct? So this isn't
-> > so much a solution for virtualization, but may work better for
-> > containers. I view this as an important distinction to make as the
+>On Tue, Dec 15, 2020 at 01:23:06PM +0100, Bernard Metzler wrote:
+>> During connection setup, the application may choose to zero-size
+>> inbound and outbound READ queues, as well as the Receive queue.
+>> This patch fixes handling of zero-sized queues.
 >
-> at the current state yes, but the SF solution can be extended to
-> support direct assignment, so this is why i think SF solution can do
-> better and eventually replace SRIOV.
-
-My only real concern is that this and mediated devices are essentially
-the same thing. When you start making this work for direct-assignment
-the only real difference becomes the switchdev and devlink interfaces.
-Basically this is netdev specific mdev versus the PCIe specific mdev.
-
-> also many customers are currently using SRIOV with containers to get
-> the performance and isolation features since there was no other
-> options.
-
-There were, but you hadn't implemented them. The fact is the approach
-Intel had taken for that was offloaded macvlan.
-
-I think the big thing we really should do if we are going to go this
-route is to look at standardizing what the flavours are that get
-created by the parent netdevice. Otherwise we are just creating the
-same mess we had with SRIOV all over again and muddying the waters of
-mediated devices.
-
-> > first thing that came to mind when I read this was mediated devices
-> > which is similar, but focused only on the virtualization case:
-> > https://www.kernel.org/doc/html/v5.9/driver-api/vfio-mediated-device.html
-> >
-> > > Parav Pandit Says:
-> > > =================
-> > >
-> > > This patchset introduces support for mlx5 subfunction (SF).
-> > >
-> > > A subfunction is a lightweight function that has a parent PCI
-> > > function on
-> > > which it is deployed. mlx5 subfunction has its own function
-> > > capabilities
-> > > and its own resources. This means a subfunction has its own
-> > > dedicated
-> > > queues(txq, rxq, cq, eq). These queues are neither shared nor
-> > > stealed from
-> > > the parent PCI function.
-> >
-> > Rather than calling this a subfunction, would it make more sense to
-> > call it something such as a queue set? It seems like this is exposing
-> > some of the same functionality we did in the Intel drivers such as
-> > ixgbe and i40e via the macvlan offload interface. However the
-> > ixgbe/i40e hardware was somewhat limited in that we were only able to
-> > expose Ethernet interfaces via this sort of VMQ/VMDQ feature, and
-> > even
-> > with that we have seen some limitations to the interface. It sounds
-> > like you are able to break out RDMA capable devices this way as well.
-> > So in terms of ways to go I would argue this is likely better.
+>This fixes a crasher? Copy the fixes line and oops from  Kamal?
 >
-> We've discussed this thoroughly on V0, the SF solutions is closer to a
-> VF than a VMDQ, this is not just a set of queues.
+>Jason
 >
-> https://lore.kernel.org/linux-rdma/421951d99a33d28b91f2b2997409d0c97fa5a98a.camel@kernel.org/
+Yes. it does. Will resend with a small change fixing
+an uninitialized variable I just invented with the patch (uuuhh).
 
-VMDq is more than just a set of queues. The fact is it is a pool of
-resources that get created to handle the requests for a specific VM.
-The extra bits that are added here are essentially stuff that was
-required to support mediated devices.
+I will attach Kamal's oops report, but his fix was
+blocking allowed application behavior (setting some queue
+sizes to zero). The intention of my patch is to fix siw
+to handle that application behavior correctly. So the fixes
+lines will be different.
+=20
 
-> > However
-> > one downside is that we are going to end up seeing each subfunction
-> > being different from driver to driver and vendor to vendor which I
-> > would argue was also one of the problems with SR-IOV as you end up
-> > with a bit of vendor lock-in as a result of this feature since each
-> > vendor will be providing a different interface.
-> >
->
-> I disagree, SFs are tightly coupled with switchdev model and devlink
-> functions port, they are backed with the a well defined model, i can
-> say the same about sriov with switchdev mode, this sort of vendor lock-
-> in issues is eliminated when you migrate to switchdev mode.
+Thanks,
+Bernard.
 
-What you are talking about is the backend. I am talking about what is
-exposed to the user. The user is going to see a Mellanox device having
-to be placed into their container in order to support this. One of the
-advantages of the Intel approach was that the macvlan interface was
-generic so you could have an offloaded interface or not and the user
-wouldn't necessarily know. The offload could be disabled and the user
-would be none the wiser as it is moved from one interface to another.
-I see that as a big thing that is missing in this solution.
-
-> > > When subfunction is RDMA capable, it has its own QP1, GID table and
-> > > rdma
-> > > resources neither shared nor stealed from the parent PCI function.
-> > >
-> > > A subfunction has dedicated window in PCI BAR space that is not
-> > > shared
-> > > with ther other subfunctions or parent PCI function. This ensures
-> > > that all
-> > > class devices of the subfunction accesses only assigned PCI BAR
-> > > space.
-> > >
-> > > A Subfunction supports eswitch representation through which it
-> > > supports tc
-> > > offloads. User must configure eswitch to send/receive packets
-> > > from/to
-> > > subfunction port.
-> > >
-> > > Subfunctions share PCI level resources such as PCI MSI-X IRQs with
-> > > their other subfunctions and/or with its parent PCI function.
-> >
-> > This piece to the architecture for this has me somewhat concerned. If
-> > all your resources are shared and you are allowing devices to be
->
-> not all, only PCI MSIX, for now..
-
-They aren't shared after you partition them but they are coming from
-the same device. Basically you are subdividing the BAR2 in order to
-generate the subfunctions. BAR2 is a shared resource in my point of
-view.
-
-> > created incrementally you either have to pre-partition the entire
-> > function which usually results in limited resources for your base
-> > setup, or free resources from existing interfaces and redistribute
-> > them as things change. I would be curious which approach you are
-> > taking here? So for example if you hit a certain threshold will you
-> > need to reset the port and rebalance the IRQs between the various
-> > functions?
-> >
->
-> Currently SFs will use whatever IRQs the PF has pre-allocated for
-> itself, so there is no IRQ limit issue at the moment, we are
-> considering a dynamic IRQ pool with dynamic balancing, or even better
-> us the IMS approach, which perfectly fits the SF architecture.
-> https://patchwork.kernel.org/project/linux-pci/cover/1568338328-22458-1-git-send-email-megha.dey@linux.intel.com/
-
-When you say you are using the PF's interrupts are you just using that
-as a pool of resources or having the interrupt process interrupts for
-both the PF and SFs? Without IMS you are limited to 2048 interrupts.
-Moving over to that would make sense since SF is similar to mdev in
-the way it partitions up the device and resources.
-
-> for internal resources the are fully isolated (not shared) and
-> they are internally managed by FW exactly like a VF internal resources.
-
-I assume by isolated you mean they are contained within page aligned
-blocks like what was required for mdev?
