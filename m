@@ -2,58 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941492DA76E
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Dec 2020 06:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D10652DA7A3
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Dec 2020 06:25:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgLOFWe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Dec 2020 00:22:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36092 "EHLO mail.kernel.org"
+        id S1725816AbgLOFYu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Dec 2020 00:24:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726220AbgLOFWb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 15 Dec 2020 00:22:31 -0500
-Date:   Tue, 15 Dec 2020 07:21:46 +0200
+        id S1725962AbgLOFYj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 15 Dec 2020 00:24:39 -0500
+Date:   Tue, 15 Dec 2020 07:23:55 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608009710;
-        bh=Z8oeQsr5SkV8XcBZMI23godI/4bZYOxTbXvjXc6i+os=;
+        s=k20201202; t=1608009839;
+        bh=9HIoHrJxXz0UpdUuhYVcnt1M8xokvraD0s52MvVemdA=;
         h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Modzl5JbxlQ6ZnccIBq9i78tBQxOoDIL8kSUCSTJqWwUg+wY4wDae4X8Md6pgRm2D
-         f5JAjnEprRzIImG+06FIZGP0f3jtFuzqnWwmyq7wuQhM8NWTtimPyaeJsNsZcv1hyR
-         Kl1xqZmAK8mJ/ThTpl7Vfp3eJ6Qf2+4hYAYjJkcsBwMOPslrzRDin8ckx/WvT4nAC/
-         boh40KSP5ZxVAlo66N09RPoQdPHsVm0kxK6uC2Ipovjebw3XRPPxTTpBskvWdExdJ7
-         1oKZwsHHlGV+CLfJEGjLdSd6YmZWzgfHpQE0ckFF/VJbNp4YBCtUndIOLLXR8UXhDZ
-         CDf+qMc3QzFqA==
+        b=V66A3+HmaT3qGmtC1UF/KE76h9D3jtVnDPu6DiymNgtFuNqn1HiuHks0jt/rGo3vw
+         a9jhEjpFf0bNd6V3mwq0GfCHFiJI1tfX4J2lj8opXxrp3ty3DFTUVTay/zBm8jKYq+
+         LUGEYrQc/oJ9S0kTBJIzj531KxhuiAbsbf7loxPD/CqodWaJHKsrWyNs8KnxGy0Sno
+         XK63g4H+XYe64CcoCeJFTUgixb13eyYAe2l6mPpIkGxoP2jeJt6u/+wjMLP0860IMo
+         W418RVgpk55AxuVpOp4CFrO+vu8QveGV24eeN9gWOGB+pmN1Kt8A8gbJPtP7+2YFoj
+         KQ2roZTRwvO2w==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
-        Bob Pearson <rpearson@hpe.com>
-Subject: Re: [PATCH for-next 0/7] RDMA/rxe: cleanup and extensions
-Message-ID: <20201215052146.GI5005@unreal>
-References: <20201214234919.4639-1-rpearson@hpe.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Daniel Jurgens <danielj@mellanox.com>,
+        linux-rdma@vger.kernel.org, Parav Pandit <parav@mellanox.com>
+Subject: Re: [PATCH rdma-rc 4/5] RDMA/cma: Don't overwrite sgid_attr after
+ device is released
+Message-ID: <20201215052355.GJ5005@unreal>
+References: <20201213132940.345554-1-leon@kernel.org>
+ <20201213132940.345554-5-leon@kernel.org>
+ <20201214192636.GA2551375@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201214234919.4639-1-rpearson@hpe.com>
+In-Reply-To: <20201214192636.GA2551375@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 05:49:12PM -0600, Bob Pearson wrote:
-> This patch series makes various cleanups and extensions to the
-> object pool core in RDMA/rxe. They are mostly extracted from an
-> earlier patch set that implemented memory windows and extended
-> verbs APIs but are separated out since they stand on their own.
+On Mon, Dec 14, 2020 at 03:26:36PM -0400, Jason Gunthorpe wrote:
+> On Sun, Dec 13, 2020 at 03:29:39PM +0200, Leon Romanovsky wrote:
 >
-> Bob Pearson (7):
->   RDMA/rxe: Remove unneeded RXE_POOL_ATOMIC flag
->   RDMA/rxe: Let pools support both keys and indices
->   RDMA/rxe: Add elem_offset field to rxe_type_info
->   RDMA/rxe: Make pool lookup and alloc APIs type safe
->   RDMA/rxe: Make add/drop key/index APIs type safe
->   RDMA/rxe: Add unlocked versions of pool APIs
->   RDMA/rxe: Fix race in rxe_mcast.c
+> > Call Trace:
+> >  addr_handler+0x266/0&times;350 drivers/infiniband/core/cma.c:3190
+> >  process_one_req+0xa3/0&times;300 drivers/infiniband/core/addr.c:645
+> >  process_one_work+0x54c/0&times;930 kernel/workqueue.c:2272
+> >  worker_thread+0x82/0&times;830 kernel/workqueue.c:2418
+> >  kthread+0x1ca/0&times;220 kernel/kthread.c:292
+> >  ret_from_fork+0x1f/0&times;30 arch/x86/entry/entry_64.S:296
+>
+> Why has this been weirdly HTML escaped??? I fixed it..
 
-I don't see the patches in the ML.
-https://lore.kernel.org/linux-rdma/20201214234919.4639-1-rpearson@hpe.com/
-Did you send them?
+Ahh sorry, I fixed the lines in beginning of the dump, but missed these lines.
 
 Thanks
+
+>
+> Jason
