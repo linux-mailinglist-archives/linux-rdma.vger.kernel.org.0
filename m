@@ -2,225 +2,333 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8652DC15B
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Dec 2020 14:35:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 623F82DC25D
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Dec 2020 15:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgLPNd4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Dec 2020 08:33:56 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3797 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgLPNd4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Dec 2020 08:33:56 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fda0c9b0000>; Wed, 16 Dec 2020 05:33:15 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 16 Dec
- 2020 13:33:13 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 16 Dec 2020 13:33:13 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=agDzzokNabXSGaNcMtgT3pGzQHAI6h97mZGEXNK7B3PbOxNBWxukQXhuwbNGpf/LdM9gIadKm0itI0KnLWUFLW1mJnFZfBhFf99PAtvky851hItlqY22Lnv2WqeZjBy1OLDa29ogwr1f7qfj+q6/Q9h4AOKkn+vpNatbSzSOiTwUIdYDqFyDFWeg6RPQ46HUZkV8Bbs2ZyVK3RzRKn/gY2jw2Efwx8FUcKT8IsU+vR/p9INXPPQmtfg/fChL/j/qSNJU7HI31j7/+VvY6jFVsQ0WKnwdBBT3luOpYZkfFOGnHe8kY0DSPLmCnx7o9aETCYs8hKz7F+NO4HhdYXE6Gg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ynAkTSTOfyObBH759mQ91PYjzmn1dLSOYJQg1Hg+LiQ=;
- b=e6sivgpYCLdDzjURPoFUciJgf8bCMlDeXBQ8tS3U7pAxjOO11K7/FfLHOk+vtsN3jUoeuDOw4MFxnrS72mo2rzbo48UjJoNRe2v8pUUKdjRlMoQtNO+lxwZKMEouV7yvw0YMgVTo65VA1Vyf9m9Tl+wdx4tyGFtpMZnB+3Mqz+h6By2k9Qh+Ide+Z3hcl3Ya2VvJ/xmnoqS+So0jcJBGXxP+Fg4RsnzAfdY6oAstGQenBTKEg3zAWOKOg5gtzmyi+rU3/aNRs26n2VgELTvCM+jK9zBcYncBFLUfe61tqaGwYrIo8XAy1a/6UrjQFE/2lKw3PBtC7MUzpeSrnIsCrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1514.namprd12.prod.outlook.com (2603:10b6:4:f::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3654.12; Wed, 16 Dec 2020 13:33:11 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3654.025; Wed, 16 Dec 2020
- 13:33:11 +0000
-Date:   Wed, 16 Dec 2020 09:33:09 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-CC:     Saeed Mahameed <saeed@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Netdev <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [net-next v4 00/15] Add mlx5 subfunction support
-Message-ID: <20201216133309.GI552508@nvidia.com>
-References: <20201214214352.198172-1-saeed@kernel.org>
- <CAKgT0UejoduCB6nYFV2atJ4fa4=v9-dsxNh4kNJNTtoHFd1DuQ@mail.gmail.com>
- <608505778d76b1b01cb3e8d19ecda5b8578f0f79.camel@kernel.org>
- <CAKgT0UfEsd0hS=iJTcVc20gohG0WQwjsGYOw1y0_=DRVbhb1Ng@mail.gmail.com>
- <ecad34f5c813591713bb59d9c5854148c3d7f291.camel@kernel.org>
- <CAKgT0UfTOqS9PBeQFexyxm7ytQzdj0j8VMG71qv4+Vn6koJ5xQ@mail.gmail.com>
- <20201216001946.GF552508@nvidia.com>
- <CAKgT0UeLBzqh=7gTLtqpOaw7HTSjG+AjXB7EkYBtwA6EJBccbg@mail.gmail.com>
- <20201216030351.GH552508@nvidia.com>
- <CAKgT0UcwP67ihaTWLY1XsVKEgysa3HnjDn_q=Sgvqnt=Uc7YQg@mail.gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAKgT0UcwP67ihaTWLY1XsVKEgysa3HnjDn_q=Sgvqnt=Uc7YQg@mail.gmail.com>
-X-ClientProxiedBy: BL0PR02CA0060.namprd02.prod.outlook.com
- (2603:10b6:207:3d::37) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1726475AbgLPOi2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Dec 2020 09:38:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726472AbgLPOi2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Dec 2020 09:38:28 -0500
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B67C061794;
+        Wed, 16 Dec 2020 06:37:48 -0800 (PST)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id C673367C6; Wed, 16 Dec 2020 09:37:46 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org C673367C6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1608129466;
+        bh=j7LWydzjSuYZxpAKvBq1ShS/WYafbK9TgdHglPE4vFY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lnDgazlxhSpCEEROfWcyCpXSjVGEncgBmfLREHx1+ySUit3xM+WmxHrXM/1VBwVIt
+         Hg52pGFuoQa0ll+czeblwJY151WtaJi2+c+5bl1devlaMMUGYNTzxLwv51TAgxQ936
+         ft/70D1aU+h+k/NgtEuIbM4l/3HHUVA750DFoPOs=
+Date:   Wed, 16 Dec 2020 09:37:46 -0500
+From:   Bruce Fields <bfields@fieldses.org>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Subject: Re: [GIT PULL] nfsd changes for 5.11
+Message-ID: <20201216143746.GA26084@fieldses.org>
+References: <200F1E47-2C8E-42FB-A661-0139F424C0D4@oracle.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR02CA0060.namprd02.prod.outlook.com (2603:10b6:207:3d::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 16 Dec 2020 13:33:10 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kpWvV-00BGmZ-Dt; Wed, 16 Dec 2020 09:33:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1608125595; bh=ynAkTSTOfyObBH759mQ91PYjzmn1dLSOYJQg1Hg+LiQ=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=sGisFtoZXQdqFXSZBcgfFdzT1TwmYLTNVYtmydIIyOsifvpGV4DEL7N4vLxEPvWMF
-         ws3N1gqdkwFAqDv8YAYTIfZYsfya7nUXHcNrBbsPJW/3POSxKws/9OBD7B28MesCU6
-         imtliFmaefGdcMveyx0R3qiYAxdCvsNaHilPcBIsoBT07HOzu73cQgXY0yXd6NMNxV
-         oK5aVLkV+b46kGkvCALEi5RjkV7Lk6MQXTuZfqFlokxjGQG9MHaBM9YyUhUywCyfEl
-         c97q3lPyP+4ZoVYxazxvJ/BoMQkwYBhfLiy6DotmYzFfDpaMpVY0aRj04xZcAkzlhK
-         jwZt5MECtL7Gw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200F1E47-2C8E-42FB-A661-0139F424C0D4@oracle.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 08:13:21PM -0800, Alexander Duyck wrote:
-
-> > > Ugh, don't get me started on switchdev. The biggest issue as I see it
-> > > with switchev is that you have to have a true switch in order to
-> > > really be able to use it.
-> >
-> > That cuts both ways, suggesting HW with a true switch model itself
-> > with VMDq is equally problematic.
+On Mon, Dec 14, 2020 at 03:41:13PM -0500, Chuck Lever wrote:
+> Hi Linus-
 > 
-> Yes and no. For example the macvlan offload I had setup could be
-> configured both ways and it made use of VMDq. I'm not necessarily
-> arguing that we need to do VMDq here, however at the same time saying
-> that this is only meant to replace SR-IOV becomes problematic since we
-> already have SR-IOV so why replace it with something that has many of
-> the same limitations?
-
-Why? Because SR-IOV is the *only* option for many use cases. Still. I
-said this already, something more generic does not magicaly eliminate
-SR-IOV.
-
-The SIOV ADI model is a small refinement to the existing VF scheme, it
-is completely parallel to making more generic things.
-
-It is not "repeating mistakes" it is accepting the limitations of
-SR-IOV because benefits exist and applications need those benefits.
- 
-> That said I understand your argument, however I view the elimination
-> of SR-IOV to be something we do after we get this interface right and
-> can justify doing so. 
-
-Elimination of SR-IOV isn't even a goal here!
-
-> Also it might be useful to call out the flavours and planned flavours
-> in the cover page. Admittedly the description is somewhat lacking in
-> that regard.
-
-This is more of a general switchdev remark though. In the swithdev
-model you have a the switch and a switch port. Each port has a
-swichdev representor on the switch side and a "user port" of some
-kind.
-
-It can be a physical thing:
- - SFP
- - QSFP
- - WiFi Antennae
-
-It could be a semi-physical thing outside the view of the kernel:
- - SmartNIC VF/SF attached to another CPU
-
-It can be a semi-physical thing in view of this kernel:
- - SRIOV VF (struct pci device)
- - SF (struct aux device)
-
-It could be a SW construct in this kernel:
- - netdev (struct net device)
-
-*all* of these different port types are needed. Probably more down the
-road!
-
-Notice I don't have VPDA, VF/SF netdev, or virtio-mdev as a "user
-port" type here. Instead creating the user port pci or aux device
-allows the user to use the Linux driver model to control what happens
-to the pci/aux device next.
-
-> I would argue that is one of the reasons why this keeps being
-> compared to either VMDq or VMQ as it is something that SR-IOV has
-> yet to fully replace and has many features that would be useful in
-> an interface that is a subpartition of an existing interface.
-
-In what sense does switchdev and a VF not fully replace macvlan VMDq?
-
-> The Intel drivers still have the macvlan as the assignable ADI and
-> make use of VMDq to enable it.
-
-Is this in-tree or only in the proprietary driver? AFAIK there is no
-in-tree way to extract the DMA queue from the macvlan netdev into
-userspace..
-
-Remeber all this VF/SF/VDPA stuff results in a HW dataplane, not a SW
-one. It doesn't really make sense to compare a SW dataplane to a HW
-one. HW dataplanes come with limitations and require special driver
-code.
-
-> The limitation as I see it is that the macvlan interface doesn't allow
-> for much in the way of custom offloads and the Intel hardware doesn't
-> support switchdev. As such it is good for a basic interface, but
-> doesn't really do well in terms of supporting advanced vendor-specific
-> features.
-
-I don't know what it is that prevents Intel from modeling their
-selector HW in switchdev, but I think it is on them to work with the
-switchdev folks to figure something out.
-
-I'm a bit surprised HW that can do macvlan can't be modeled with
-switchdev? What is missing?
-
-> > That is goal here. This is not about creating just a netdev, this is
-> > about the whole kit: rdma, netdev, vdpa virtio-net, virtio-mdev.
+> Seasons greetings. tl;dr:
 > 
-> One issue is right now we are only seeing the rdma and netdev. It is
-> kind of backwards as it is using the ADIs on the host when this was
-> really meant to be used for things like mdev.
+> The following changes since commit b65054597872ce3aefbc6a666385eabdf9e288da:
+> 
+>   Linux 5.10-rc6 (2020-11-29 15:50:50 -0800)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.linux-nfs.org/projects/cel/cel-2.6.git tags/nfsd-5.11
+> 
+> for you to fetch changes up to 716a8bc7f706eeef80ab42c99d9f210eda845c81:
+> 
+>   nfsd: Record NFSv4 pre/post-op attributes as non-atomic (2020-12-09 09:39:38 -0500)
+> 
+> ----------------------------------------------------------------
+> 
+> Several substantial changes this time around.
+> 
+> + Previously, exporting an NFS mount via NFSD was considered to be
+>   an unsupported feature. With v5.11, the community has attempted
+>   to make re-exporting a first-class feature of NFSD.
 
-This is second 15 patch series on this path already. It is not
-possible to pack every single thing into this series. This is the
-micro step of introducing the SF idea and using SF==VF to show how the
-driver stack works. The minimal changing to the existing drivers
-implies this can support an ADI as well.
+To be clear: this is work in progress.  I've been keeping notes at
+https://wiki.linux-nfs.org/wiki/index.php/NFS_re-export
 
-Further, this does already show an ADI! vdpa_mlx5 will run on the
-VF/SF and eventually causes qemu to build a virtio-net ADI that
-directly passes HW DMA rings into the guest.
+Remaining issues include reboot recovery, filehandle size limits, and an
+unidentified crash in the nfsd file locking code.
 
-Isn't this exactly the kind of generic SRIOV replacement option you
-have been asking for? Doesn't this completely supersede stuff built on
-macvlan?
+--b.
 
-> expected to work. The swtichdev API puts some restrictions in place
-> but there still ends up being parts without any definition.
-
-I'm curious what you see as needing definition here? 
-
-The SRIOV model has the HW register programming API is device
-specific.
-
-The switchdev model is: no matter what HW register programing is done
-on the VF/SF all the packets tx/rx'd will flow through the switchdev.
-
-The purpose of switchdev/SRIOV/SIOV has never been to define a single
-"one register set to rule them all".
-
-That is the area that VDPA virtio-net and others are covering.
-
-Jason
+>   This would
+>   enable the Linux in-kernel NFS server to be used as an intermediate
+>   cache for a remotely-located primary NFS server, for example, even
+>   with other NFS server implementations, like a NetApp filer, as the
+>   primary.
+> 
+> + A short series of patches brings support for multiple RPC/RDMA
+>   data chunks per RPC transaction to the Linux NFS server's RPC/RDMA
+>   transport implementation. This is a part of the RPC/RDMA spec that
+>   the other premiere NFS/RDMA implementation (Solaris) has had for a
+>   very long time, and completes the implementation of RPC/RDMA
+>   version 1 in the Linux kernel's NFS server.
+> 
+> + Long ago, NFSv4 support was introduced to NFSD using a series of
+>   C macros that hid dprintk's and goto's. Over time, the kernel's
+>   XDR implementation has been greatly improved, but these C macros
+>   have remained and become fallow. A series of patches in this pull
+>   request completely replaces those macros with the use of current
+>   kernel XDR infrastructure. Benefits include:
+> 
+>   - More robust input sanitization in NFSD's NFSv4 XDR decoders.
+>   - Make it easier to use common kernel library functions that use
+>     XDR stream APIs (for example, GSS-API).
+>   - Align the structure of the source code with the RFCs so it is
+>     easier to learn, verify, and maintain our XDR implementation.
+>   - Removal of more than a hundred hidden dprintk() call sites.
+>   - Removal of some explicit manipulation of pages to help make the
+>     eventual transition to xdr->bvec smoother.
+> 
+> + On top of several related fixes in 5.10-rc, there are a few more
+>   fixes to get the Linux NFSD implementation of NFSv4.2 inter-server
+>   copy up to speed.
+> 
+> And as usual, there is a pinch of seasoning in the form of a
+> collection of unrelated minor bug fixes and clean-ups.
+> 
+> Many thanks to all who contributed this time around!
+> 
+> ----------------------------------------------------------------
+> Alex Shi (1):
+>       nfsd/nfs3: remove unused macro nfsd3_fhandleres
+> 
+> Cheng Lin (1):
+>       nfs_common: need lock during iterate through the list
+> 
+> Chuck Lever (112):
+>       svcrdma: Catch another Reply chunk overflow case
+>       SUNRPC: Adjust synopsis of xdr_buf_subsegment()
+>       svcrdma: Const-ify the xdr_buf arguments
+>       svcrdma: Refactor the RDMA Write path
+>       SUNRPC: Rename svc_encode_read_payload()
+>       NFSD: Invoke svc_encode_result_payload() in "read" NFSD encoders
+>       svcrdma: Post RDMA Writes while XDR encoding replies
+>       svcrdma: Clean up svc_rdma_encode_reply_chunk()
+>       svcrdma: Add a "parsed chunk list" data structure
+>       svcrdma: Use parsed chunk lists to derive the inv_rkey
+>       svcrdma: Use parsed chunk lists to detect reverse direction replies
+>       svcrdma: Use parsed chunk lists to construct RDMA Writes
+>       svcrdma: Use parsed chunk lists to encode Reply transport headers
+>       svcrdma: Support multiple write chunks when pulling up
+>       svcrdma: Support multiple Write chunks in svc_rdma_map_reply_msg()
+>       svcrdma: Support multiple Write chunks in svc_rdma_send_reply_chunk
+>       svcrdma: Remove chunk list pointers
+>       svcrdma: Clean up chunk tracepoints
+>       svcrdma: Rename info::ri_chunklen
+>       svcrdma: Use the new parsed chunk list when pulling Read chunks
+>       svcrdma: support multiple Read chunks per RPC
+>       SUNRPC: Move the svc_xdr_recvfrom() tracepoint
+>       NFSD: Clean up the show_nf_may macro
+>       NFSD: Remove extra "0x" in tracepoint format specifier
+>       NFSD: Add SPDX header for fs/nfsd/trace.c
+>       SUNRPC: Add xdr_set_scratch_page() and xdr_reset_scratch_buffer()
+>       SUNRPC: Prepare for xdr_stream-style decoding on the server-side
+>       NFSD: Add common helpers to decode void args and encode void results
+>       NFSD: Add tracepoints in nfsd_dispatch()
+>       NFSD: Add tracepoints in nfsd4_decode/encode_compound()
+>       NFSD: Replace the internals of the READ_BUF() macro
+>       NFSD: Replace READ* macros in nfsd4_decode_access()
+>       NFSD: Replace READ* macros in nfsd4_decode_close()
+>       NFSD: Replace READ* macros in nfsd4_decode_commit()
+>       NFSD: Change the way the expected length of a fattr4 is checked
+>       NFSD: Replace READ* macros that decode the fattr4 size attribute
+>       NFSD: Replace READ* macros that decode the fattr4 acl attribute
+>       NFSD: Replace READ* macros that decode the fattr4 mode attribute
+>       NFSD: Replace READ* macros that decode the fattr4 owner attribute
+>       NFSD: Replace READ* macros that decode the fattr4 owner_group attribute
+>       NFSD: Replace READ* macros that decode the fattr4 time_set attributes
+>       NFSD: Replace READ* macros that decode the fattr4 security label attribute
+>       NFSD: Replace READ* macros that decode the fattr4 umask attribute
+>       NFSD: Replace READ* macros in nfsd4_decode_fattr()
+>       NFSD: Replace READ* macros in nfsd4_decode_create()
+>       NFSD: Replace READ* macros in nfsd4_decode_delegreturn()
+>       NFSD: Replace READ* macros in nfsd4_decode_getattr()
+>       NFSD: Replace READ* macros in nfsd4_decode_link()
+>       NFSD: Relocate nfsd4_decode_opaque()
+>       NFSD: Add helpers to decode a clientid4 and an NFSv4 state owner
+>       NFSD: Add helper for decoding locker4
+>       NFSD: Replace READ* macros in nfsd4_decode_lock()
+>       NFSD: Replace READ* macros in nfsd4_decode_lockt()
+>       NFSD: Replace READ* macros in nfsd4_decode_locku()
+>       NFSD: Replace READ* macros in nfsd4_decode_lookup()
+>       NFSD: Add helper to decode NFSv4 verifiers
+>       NFSD: Add helper to decode OPEN's createhow4 argument
+>       NFSD: Add helper to decode OPEN's openflag4 argument
+>       NFSD: Replace READ* macros in nfsd4_decode_share_access()
+>       NFSD: Replace READ* macros in nfsd4_decode_share_deny()
+>       NFSD: Add helper to decode OPEN's open_claim4 argument
+>       NFSD: Replace READ* macros in nfsd4_decode_open()
+>       NFSD: Replace READ* macros in nfsd4_decode_open_confirm()
+>       NFSD: Replace READ* macros in nfsd4_decode_open_downgrade()
+>       NFSD: Replace READ* macros in nfsd4_decode_putfh()
+>       NFSD: Replace READ* macros in nfsd4_decode_read()
+>       NFSD: Replace READ* macros in nfsd4_decode_readdir()
+>       NFSD: Replace READ* macros in nfsd4_decode_remove()
+>       NFSD: Replace READ* macros in nfsd4_decode_rename()
+>       NFSD: Replace READ* macros in nfsd4_decode_renew()
+>       NFSD: Replace READ* macros in nfsd4_decode_secinfo()
+>       NFSD: Replace READ* macros in nfsd4_decode_setattr()
+>       NFSD: Replace READ* macros in nfsd4_decode_setclientid()
+>       NFSD: Replace READ* macros in nfsd4_decode_setclientid_confirm()
+>       NFSD: Replace READ* macros in nfsd4_decode_verify()
+>       NFSD: Replace READ* macros in nfsd4_decode_write()
+>       NFSD: Replace READ* macros in nfsd4_decode_release_lockowner()
+>       NFSD: Replace READ* macros in nfsd4_decode_cb_sec()
+>       NFSD: Replace READ* macros in nfsd4_decode_backchannel_ctl()
+>       NFSD: Replace READ* macros in nfsd4_decode_bind_conn_to_session()
+>       NFSD: Add a separate decoder to handle state_protect_ops
+>       NFSD: Add a separate decoder for ssv_sp_parms
+>       NFSD: Add a helper to decode state_protect4_a
+>       NFSD: Add a helper to decode nfs_impl_id4
+>       NFSD: Add a helper to decode channel_attrs4
+>       NFSD: Replace READ* macros in nfsd4_decode_create_session()
+>       NFSD: Replace READ* macros in nfsd4_decode_destroy_session()
+>       NFSD: Replace READ* macros in nfsd4_decode_free_stateid()
+>       NFSD: Replace READ* macros in nfsd4_decode_getdeviceinfo()
+>       NFSD: Replace READ* macros in nfsd4_decode_layoutcommit()
+>       NFSD: Replace READ* macros in nfsd4_decode_layoutget()
+>       NFSD: Replace READ* macros in nfsd4_decode_layoutreturn()
+>       NFSD: Replace READ* macros in nfsd4_decode_secinfo_no_name()
+>       NFSD: Replace READ* macros in nfsd4_decode_sequence()
+>       NFSD: Replace READ* macros in nfsd4_decode_test_stateid()
+>       NFSD: Replace READ* macros in nfsd4_decode_destroy_clientid()
+>       NFSD: Replace READ* macros in nfsd4_decode_reclaim_complete()
+>       NFSD: Replace READ* macros in nfsd4_decode_fallocate()
+>       NFSD: Replace READ* macros in nfsd4_decode_nl4_server()
+>       NFSD: Replace READ* macros in nfsd4_decode_copy()
+>       NFSD: Replace READ* macros in nfsd4_decode_copy_notify()
+>       NFSD: Replace READ* macros in nfsd4_decode_offload_status()
+>       NFSD: Replace READ* macros in nfsd4_decode_seek()
+>       NFSD: Replace READ* macros in nfsd4_decode_clone()
+>       NFSD: Replace READ* macros in nfsd4_decode_xattr_name()
+>       NFSD: Replace READ* macros in nfsd4_decode_setxattr()
+>       NFSD: Replace READ* macros in nfsd4_decode_listxattrs()
+>       NFSD: Make nfsd4_ops::opnum a u32
+>       NFSD: Replace READ* macros in nfsd4_decode_compound()
+>       NFSD: Remove macros that are no longer used
+>       SUNRPC: Remove XDRBUF_SPARSE_PAGES flag in gss_proxy upcall
+>       NFSD: Fix sparse warning in nfs4proc.c
+> 
+> Dai Ngo (1):
+>       NFSD: Fix 5 seconds delay when doing inter server copy
+> 
+> Huang Guobin (1):
+>       nfsd: Fix error return code in nfsd_file_cache_init()
+> 
+> J. Bruce Fields (5):
+>       nfsd: only call inode_query_iversion in the I_VERSION case
+>       nfsd: simplify nfsd4_change_info
+>       nfsd: minor nfsd4_change_attribute cleanup
+>       nfsd4: don't query change attribute in v2/v3 case
+>       Revert "nfsd4: support change_attr_type attribute"
+> 
+> Jeff Layton (3):
+>       nfsd: add a new EXPORT_OP_NOWCC flag to struct export_operations
+>       nfsd: allow filesystems to opt out of subtree checking
+>       nfsd: close cached files prior to a REMOVE or RENAME that would replace target
+> 
+> Roberto Bergantinos Corpas (1):
+>       sunrpc: clean-up cache downcall
+> 
+> Tom Rix (1):
+>       NFSD: A semicolon is not needed after a switch statement.
+> 
+> Trond Myklebust (4):
+>       exportfs: Add a function to return the raw output from fh_to_dentry()
+>       nfsd: Fix up nfsd to ensure that timeout errors don't result in ESTALE
+>       nfsd: Set PF_LOCAL_THROTTLE on local filesystems only
+>       nfsd: Record NFSv4 pre/post-op attributes as non-atomic
+> 
+> kazuo ito (1):
+>       nfsd: Fix message level for normal termination
+> 
+>  Documentation/filesystems/nfs/exporting.rst |   52 ++
+>  fs/exportfs/expfs.c                         |   32 +-
+>  fs/nfs/blocklayout/blocklayout.c            |    2 +-
+>  fs/nfs/blocklayout/dev.c                    |    2 +-
+>  fs/nfs/dir.c                                |    2 +-
+>  fs/nfs/export.c                             |    3 +
+>  fs/nfs/filelayout/filelayout.c              |    2 +-
+>  fs/nfs/filelayout/filelayoutdev.c           |    2 +-
+>  fs/nfs/flexfilelayout/flexfilelayout.c      |    2 +-
+>  fs/nfs/flexfilelayout/flexfilelayoutdev.c   |    2 +-
+>  fs/nfs/nfs42xdr.c                           |    2 +-
+>  fs/nfs/nfs4xdr.c                            |    6 +-
+>  fs/nfs_common/grace.c                       |    6 +-
+>  fs/nfsd/export.c                            |    6 +
+>  fs/nfsd/filecache.c                         |    1 +
+>  fs/nfsd/nfs2acl.c                           |   21 +-
+>  fs/nfsd/nfs3acl.c                           |    8 +-
+>  fs/nfsd/nfs3proc.c                          |   11 +-
+>  fs/nfsd/nfs3xdr.c                           |   40 +-
+>  fs/nfsd/nfs4proc.c                          |   35 +-
+>  fs/nfsd/nfs4state.c                         |    3 +-
+>  fs/nfsd/nfs4xdr.c                           | 2665 +++++++++++++++++++++++++++++++++++++++++++++++--------------------------------------------
+>  fs/nfsd/nfsd.h                              |    9 +-
+>  fs/nfsd/nfsfh.c                             |   34 +-
+>  fs/nfsd/nfsfh.h                             |   22 +-
+>  fs/nfsd/nfsproc.c                           |   25 +-
+>  fs/nfsd/nfssvc.c                            |   50 +-
+>  fs/nfsd/nfsxdr.c                            |   16 +-
+>  fs/nfsd/trace.c                             |    1 +
+>  fs/nfsd/trace.h                             |  176 +++++-
+>  fs/nfsd/vfs.c                               |   29 +-
+>  fs/nfsd/xdr.h                               |    2 -
+>  fs/nfsd/xdr3.h                              |    2 -
+>  fs/nfsd/xdr4.h                              |   43 +-
+>  include/linux/exportfs.h                    |   13 +
+>  include/linux/iversion.h                    |   13 +
+>  include/linux/nfs4.h                        |    8 -
+>  include/linux/sunrpc/svc.h                  |   22 +-
+>  include/linux/sunrpc/svc_rdma.h             |   36 +-
+>  include/linux/sunrpc/svc_rdma_pcl.h         |  128 +++++
+>  include/linux/sunrpc/svc_xprt.h             |    4 +-
+>  include/linux/sunrpc/xdr.h                  |   91 +++-
+>  include/trace/events/rpcrdma.h              |  171 +++---
+>  include/trace/events/sunrpc.h               |   24 -
+>  net/sunrpc/auth_gss/gss_rpc_upcall.c        |   15 +-
+>  net/sunrpc/auth_gss/gss_rpc_xdr.c           |    3 +-
+>  net/sunrpc/cache.c                          |   41 +-
+>  net/sunrpc/svc.c                            |   16 +-
+>  net/sunrpc/svc_xprt.c                       |    4 +-
+>  net/sunrpc/svcsock.c                        |    8 +-
+>  net/sunrpc/xdr.c                            |   78 ++-
+>  net/sunrpc/xprtrdma/Makefile                |    2 +-
+>  net/sunrpc/xprtrdma/svc_rdma_backchannel.c  |   14 +-
+>  net/sunrpc/xprtrdma/svc_rdma_pcl.c          |  306 +++++++++++
+>  net/sunrpc/xprtrdma/svc_rdma_recvfrom.c     |  316 ++++++-----
+>  net/sunrpc/xprtrdma/svc_rdma_rw.c           |  608 +++++++++++++++------
+>  net/sunrpc/xprtrdma/svc_rdma_sendto.c       |  560 ++++++++++---------
+>  net/sunrpc/xprtrdma/svc_rdma_transport.c    |    2 +-
+>  58 files changed, 3536 insertions(+), 2261 deletions(-)
+>  create mode 100644 include/linux/sunrpc/svc_rdma_pcl.h
+>  create mode 100644 net/sunrpc/xprtrdma/svc_rdma_pcl.c
+> --
+> Chuck Lever
+> 
+> 
