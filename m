@@ -2,83 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAF42DBC2A
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Dec 2020 08:42:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA322DBC6B
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Dec 2020 09:03:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725287AbgLPHjz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Dec 2020 02:39:55 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:42742 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725710AbgLPHjy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Dec 2020 02:39:54 -0500
-X-IronPort-AV: E=Sophos;i="5.78,423,1599494400"; 
-   d="scan'208";a="102452513"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 16 Dec 2020 15:38:48 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id 162DE4CE600B;
-        Wed, 16 Dec 2020 15:38:45 +0800 (CST)
-Received: from G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) by
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Wed, 16 Dec 2020 15:38:44 +0800
-Received: from Fedora-31.g08.fujitsu.local (10.167.220.31) by
- G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Wed, 16 Dec 2020 15:38:44 +0800
-From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
-To:     <linux-rdma@vger.kernel.org>
-CC:     <leon@kernel.org>, Xiao Yang <yangx.jy@cn.fujitsu.com>
-Subject: [PATCH 2/2] RDMA/rxe: Add check for supported QP types
-Date:   Wed, 16 Dec 2020 15:17:55 +0800
-Message-ID: <20201216071755.149449-2-yangx.jy@cn.fujitsu.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201216071755.149449-1-yangx.jy@cn.fujitsu.com>
-References: <20201216071755.149449-1-yangx.jy@cn.fujitsu.com>
+        id S1725766AbgLPICm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Dec 2020 03:02:42 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9894 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725807AbgLPICm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Dec 2020 03:02:42 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CwndD53SYz7Dbk;
+        Wed, 16 Dec 2020 16:01:20 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 16 Dec 2020 16:01:48 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dledford@redhat.com>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH v2 -next] infiniband: core: Delete useless kfree code
+Date:   Wed, 16 Dec 2020 16:02:19 +0800
+Message-ID: <20201216080219.18184-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 162DE4CE600B.AC2EC
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
-X-Spam-Status: No
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-1) Current rdma_rxe only supports five QP types which always sets recv_cq.
-2) INI QP doesn't set recv_cq(NULL) so creating INI QP over softroce
-   triggers 'missing cq' warning.
+The parameter of kfree function is NULL, so kfree code is useless, delete it.
+Therefore, goto expression is no longer needed, so simplify it.
 
-Avoid the warning by checking supported QP type.
-
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/infiniband/sw/rxe/rxe_qp.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/infiniband/core/cma_configfs.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index 656a5b4be847..65c8df812aeb 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -62,6 +62,17 @@ int rxe_qp_chk_init(struct rxe_dev *rxe, struct ib_qp_init_attr *init)
- 	struct rxe_port *port;
- 	int port_num = init->port_num;
+diff --git a/drivers/infiniband/core/cma_configfs.c b/drivers/infiniband/core/cma_configfs.c
+index 7ec4af2ed87a..51f59ed6916b 100644
+--- a/drivers/infiniband/core/cma_configfs.c
++++ b/drivers/infiniband/core/cma_configfs.c
+@@ -202,7 +202,6 @@ static int make_cma_ports(struct cma_dev_group *cma_dev_group,
+ 	unsigned int i;
+ 	unsigned int ports_num;
+ 	struct cma_dev_port_group *ports;
+-	int err;
  
-+	switch(init->qp_type) {
-+	case IB_QPT_SMI:
-+	case IB_QPT_GSI:
-+	case IB_QPT_RC:
-+	case IB_QPT_UC:
-+	case IB_QPT_UD:
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
- 	if (!init->recv_cq || !init->send_cq) {
- 		pr_warn("missing cq\n");
- 		goto err1;
+ 	ibdev = cma_get_ib_dev(cma_dev);
+ 
+@@ -214,8 +213,8 @@ static int make_cma_ports(struct cma_dev_group *cma_dev_group,
+ 			GFP_KERNEL);
+ 
+ 	if (!ports) {
+-		err = -ENOMEM;
+-		goto free;
++		cma_dev_group->ports = NULL;
++		return -ENOMEM;
+ 	}
+ 
+ 	for (i = 0; i < ports_num; i++) {
+@@ -234,10 +233,6 @@ static int make_cma_ports(struct cma_dev_group *cma_dev_group,
+ 	cma_dev_group->ports = ports;
+ 
+ 	return 0;
+-free:
+-	kfree(ports);
+-	cma_dev_group->ports = NULL;
+-	return err;
+ }
+ 
+ static void release_cma_dev(struct config_item  *item)
 -- 
-2.25.1
-
-
+2.22.0
 
