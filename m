@@ -2,241 +2,283 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F502DB9DE
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Dec 2020 04:56:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BE52DB9F2
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Dec 2020 05:14:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725848AbgLPD4V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Dec 2020 22:56:21 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:50385 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725287AbgLPD4U (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 15 Dec 2020 22:56:20 -0500
-Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fd9853a0000>; Wed, 16 Dec 2020 11:55:38 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 16 Dec
- 2020 03:55:35 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 16 Dec 2020 03:55:35 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kV4wZnuIbwoB6I3KI7XRRji4Yg/+W1Hdmj9vxDWK62PtKP3DEEL+nfAaoHYhZUUANfVKpGrIhWCJL+456QWtfqgYtLcvUJcbqcwcOLHyS8bWBBA1vQNhjAKKkSA5kMnX+av0Zq2rR8QZkFt2yeRTLQQuBA0x5z+effRXNd5PjQ2FBuvBE1ErrG/7QbSjdxs/fBzd7QaWiPiM5HytOtabcv/MEWStS344weyZZeVCJ5GqwHNbBpBfqv8Pv+1BFVUoSlnmUddY9ofhH7ITzucwH4FxJWn7R8WyK3U6lmUo3N0YS+Gw3itpr/cjcf9G0TOJYQF3ptcBA4TmzmqBga/S6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=svboe2p1SnPWY4ncefYQy0xMCQk00Rs8lJwdTkUJY5Y=;
- b=n39zJiIfIEvYi0Ds5GyyCREImHIL7ZpR2seSDeD71Qivxn3K9mJhPUbpo2QMX/xs2auL1ClW/KQBJqcP7tFWO+e2QHXGlaBTJveDf3rmyIFkL5QeYN6kRcfNqKqh18kNvoBZTD4g5T//jo79gtn17bCPofuwt9Z8cHf2puh4C76JfPiHRwyiOt5yfUcUQK8zUsiSS67n+nS6ojWX7HphzPcIUR4JhyUtGpn26rkR2U6n889YXAiT5PNdWeOnfiAEZwfSHc7Z+KoSOszdIQoSZEyi8UVY773K2zX18L1Q9KL/PvYATYtF4crtJlm50+SfkrLmJOBS8O4LQg7/xKZUlg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from BY5PR12MB4322.namprd12.prod.outlook.com (2603:10b6:a03:20a::20)
- by BYAPR12MB3543.namprd12.prod.outlook.com (2603:10b6:a03:130::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.17; Wed, 16 Dec
- 2020 03:55:33 +0000
-Received: from BY5PR12MB4322.namprd12.prod.outlook.com
- ([fe80::a1d2:bfae:116c:2f24]) by BY5PR12MB4322.namprd12.prod.outlook.com
- ([fe80::a1d2:bfae:116c:2f24%6]) with mapi id 15.20.3654.026; Wed, 16 Dec 2020
- 03:55:33 +0000
-From:   Parav Pandit <parav@nvidia.com>
-To:     Jakub Kicinski <kuba@kernel.org>, Saeed Mahameed <saeed@kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        id S1725816AbgLPEOO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Dec 2020 23:14:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgLPEOO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Dec 2020 23:14:14 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09214C0613D6;
+        Tue, 15 Dec 2020 20:13:34 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id p5so21348352iln.8;
+        Tue, 15 Dec 2020 20:13:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1ykBorVfusx0cuuPAmlYNHEakddLnEOiwDswKZ+CpIk=;
+        b=j1bx6dYm0/Cm7QxHBn//s1fPcylVYxw9MdaPFIQpcsZkbj0L6NifePX8PlIFwpWfGb
+         JAjneM/zvkcPzkhQdTRSADSmJq8RXyOaeuTcXlWDA7+gqMi6zz7eLgB2cTzgF/16frkM
+         O9x20THcMrWa14ZCvbKSJLEbs38fz/5w/LtRGnJ81CqMhuxRQEfwqx2HpP0lHKroIFhH
+         uP+tUIvGuL0qHcEo9tXlXFu5GVwmWWJM/FU2IPxlR0fBKPjtB5kuYIMIeNVoVxenjUFS
+         9hsj2NkMoA/aFuumvEmNCLDMpmpMGwPeDR5zrWr4KpibnurHKQMlb+EDdfUua+vfjIFK
+         Q3Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1ykBorVfusx0cuuPAmlYNHEakddLnEOiwDswKZ+CpIk=;
+        b=LUE+jTX8tNfHvV4aUKRfumv3Crc4xlCaslpYVccBy0kiiAlVqKQAelLpb2RXayoC+t
+         nqV0NtlFq0rGjJa74Pbz3W1RFCRfZQ8NPZi+nCAJAaZS5+btT0ihk9cBN3ns98QeOa4P
+         /4coGkgZow1+sIe2y9NwR5pCPPeZjjwDxB8xiSwZy+pLz40UxY/eQPqp8yFBCcXpgq4F
+         ACXf5glXn0IG54+FTHpEiUD1twhXvsxesFjAcfSbZYg6nmiHM308YUQBvBCZPxc7T+Ok
+         vwVznpOjTD2rEHhwh0wouYTiKsbEq+xNoWhHJ5ZdKUhPOtjt6m9TqOGFkeUECn+cd4NZ
+         SMSg==
+X-Gm-Message-State: AOAM5302h9EbyFA8CyWT0lASOWZv6g5hnt/nCYqB6hApcEm/BHUHtQiV
+        rPAnFE8ZqpUsTC6O9pJH70/jB4Nb2ss0uEpqoY4=
+X-Google-Smtp-Source: ABdhPJxwPo9OZiHOugyF4Uj2sATDncprxMwNDyjeOD7xseRulFdGTRLkpol2Lybta2+FPDFOS+bvNACnJdCv+r2KsiA=
+X-Received: by 2002:a92:d8cc:: with SMTP id l12mr43251047ilo.64.1608092013230;
+ Tue, 15 Dec 2020 20:13:33 -0800 (PST)
+MIME-Version: 1.0
+References: <20201214214352.198172-1-saeed@kernel.org> <CAKgT0UejoduCB6nYFV2atJ4fa4=v9-dsxNh4kNJNTtoHFd1DuQ@mail.gmail.com>
+ <608505778d76b1b01cb3e8d19ecda5b8578f0f79.camel@kernel.org>
+ <CAKgT0UfEsd0hS=iJTcVc20gohG0WQwjsGYOw1y0_=DRVbhb1Ng@mail.gmail.com>
+ <ecad34f5c813591713bb59d9c5854148c3d7f291.camel@kernel.org>
+ <CAKgT0UfTOqS9PBeQFexyxm7ytQzdj0j8VMG71qv4+Vn6koJ5xQ@mail.gmail.com>
+ <20201216001946.GF552508@nvidia.com> <CAKgT0UeLBzqh=7gTLtqpOaw7HTSjG+AjXB7EkYBtwA6EJBccbg@mail.gmail.com>
+ <20201216030351.GH552508@nvidia.com>
+In-Reply-To: <20201216030351.GH552508@nvidia.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Tue, 15 Dec 2020 20:13:21 -0800
+Message-ID: <CAKgT0UcwP67ihaTWLY1XsVKEgysa3HnjDn_q=Sgvqnt=Uc7YQg@mail.gmail.com>
+Subject: Re: [net-next v4 00/15] Add mlx5 subfunction support
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Leon Romanovsky <leonro@nvidia.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
         David Ahern <dsahern@kernel.org>,
         Jacob Keller <jacob.e.keller@intel.com>,
         Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        "david.m.ertman@intel.com" <david.m.ertman@intel.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "kiran.patil@intel.com" <kiran.patil@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: RE: [net-next v5 14/15] devlink: Extend devlink port documentation
- for subfunctions
-Thread-Topic: [net-next v5 14/15] devlink: Extend devlink port documentation
- for subfunctions
-Thread-Index: AQHW0sFKQJaY46+MjUegyHtGsMrUb6n46E4AgAAwtjA=
-Date:   Wed, 16 Dec 2020 03:55:32 +0000
-Message-ID: <BY5PR12MB4322938B44400C3071A1A99CDCC50@BY5PR12MB4322.namprd12.prod.outlook.com>
-References: <20201215090358.240365-1-saeed@kernel.org>
-        <20201215090358.240365-15-saeed@kernel.org>
- <20201215170056.6a952e9b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201215170056.6a952e9b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [49.207.199.116]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 86d89fae-dbd1-4ef1-f6c5-08d8a1766ffd
-x-ms-traffictypediagnostic: BYAPR12MB3543:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR12MB35435C401FBB4B38F2D1785BDCC50@BYAPR12MB3543.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ox0MduAHsJbJCrNmarmldu9ypxShpHhQlc7utweKc457InLkdPl86fSTNq6sy2nMdiLIeIs1jtbToI0cvKqFi/370alEY6dpvDphJl1+h8DI53itU2LC08XorGBxHJGrjOaRRmDorEdTqwbNO8GE23HlCiexuZUjVXFAFyERStBz1zwnc5iL3w1mD6mtUbBoqcgVASs4mcrEqOsAv8frzf+PwOxTSRoc+H9VyIVMgz4G4aClRmDk8p6cpKztI+s592foyKf+4onzMwAJWMuXSHnSjTvvPredBcpeeMAV8M5f5NWm9slBGxWUZ5hH6+WrqDsu7ciRGPxa9QwOb2kJQA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4322.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(39850400004)(396003)(346002)(64756008)(66946007)(107886003)(9686003)(110136005)(7696005)(86362001)(54906003)(8936002)(52536014)(55016002)(83380400001)(2906002)(71200400001)(76116006)(316002)(33656002)(8676002)(478600001)(7416002)(186003)(55236004)(26005)(6506007)(4326008)(66556008)(5660300002)(66476007)(66446008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Q+Hvfnkb2dDj0R6h7ZmffmchyWR2MuePA2cIzRa2c7K23AoXaOKG5LqCdtvl?=
- =?us-ascii?Q?qchFfH/JFfZnJW15AgsiC1YkVgeeJXmdAa0t1Cyi4Kvgj8XHJQJb9+XHF5L/?=
- =?us-ascii?Q?wFXnogj+4jNeH+8+pHrEP2D/xUq7+dykGfMBo5tILWIvc9uEazgMrgt5+8UA?=
- =?us-ascii?Q?C3Qh0zcJ5xKKXAfHAEsZuGCPFejIzAVo9T578AL4KdsoBK+SEVgZUqSevruz?=
- =?us-ascii?Q?gBH3aru8z4/b0SwyTBOU1hoS6ZU3rHvRuW1+m/bLyXpXsgKCTZLOtEzpQhui?=
- =?us-ascii?Q?L9RQ5abPy0ibAcyTeL4E68Mx7MqxHn+cDGog48y5psrglLgR6Y3gnSvaxbwg?=
- =?us-ascii?Q?I49JOIk6wEFQOcAOzoMdFgF2ldTCgQNuqXbVmKOs4ubVhnoYCZPBzt7ps2IN?=
- =?us-ascii?Q?47/pR8aCqGPm7SwheYWBzRtAzZDbnDGZCEahQGfjrndEXvLLSx87nl1tb976?=
- =?us-ascii?Q?OM0ttfHr+70g7sHxCy/AY2Dfw1fm0Adu6Jb41NivBVoDY5OL7f6nfr5am+ZH?=
- =?us-ascii?Q?PE6LlWDGLCAVjFvNZXg1ffL434KmYXDtB5XQWiENLDJRbEAiKYjGNZivKE5D?=
- =?us-ascii?Q?c9HtpsqaX+9OQT5jRuNG0s1yPx0AuMvo6t2yXS44svijwPKDSFk0Hp0zeOA2?=
- =?us-ascii?Q?wIjZislKfEE7pmpva2F3cGkSgQBMacfFGoBL7i3iblusIuLQtHOge5FV2Ian?=
- =?us-ascii?Q?tAIxp7pbuTdhmIsTgL7mmBhsftVx7c31x0zk4KnTr4YA500pUqPRj3Sss+nQ?=
- =?us-ascii?Q?hgmQykx9efNUebpJ1og2FP3rHivT56F5W1zfmijhBv9TQrAXFI+HoZL25NAk?=
- =?us-ascii?Q?b9LK7I7xHlFfxVRGSnVj350wncW5oekGdYPwJ7I93w8qtTzuB99rzFwJIroV?=
- =?us-ascii?Q?yFPegQDuK4xhD7VaGeKzWQh1fPhmJqrOf0C8b5hhx95VWXV3QDZWi0VqnzM0?=
- =?us-ascii?Q?57rkJX0EmiUPkE60RwMlmzdCNt9PROsSKw9eQWkgtO0=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4322.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 86d89fae-dbd1-4ef1-f6c5-08d8a1766ffd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2020 03:55:32.9096
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sD/sMGf+EbVwNrybF6Z/c18dnQSbA/o9JEfaDgp2i1JryGVcH+m/fi+nTPRNWFjphBCvxVwgQGhPo0t271jRww==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3543
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1608090938; bh=svboe2p1SnPWY4ncefYQy0xMCQk00Rs8lJwdTkUJY5Y=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
-         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
-         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
-         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
-         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
-         x-ms-traffictypediagnostic:x-ms-exchange-transport-forked:
-         x-microsoft-antispam-prvs:x-ms-oob-tlc-oobclassifiers:
-         x-ms-exchange-senderadcheck:x-microsoft-antispam:
-         x-microsoft-antispam-message-info:x-forefront-antispam-report:
-         x-ms-exchange-antispam-messagedata:Content-Type:
-         Content-Transfer-Encoding:MIME-Version:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-originalarrivaltime:
-         X-MS-Exchange-CrossTenant-fromentityheader:
-         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-         X-MS-Exchange-CrossTenant-userprincipalname:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=AJnAYuCEV8hcVXkUYmIWphsmgPMoPbY05yaBXrE09PSuzyrehvVaDON1zBd8wn1F1
-         pQ5ztNiRIiv5+UlZHPqFm0slYwWhbmfWumummHYRNhWI76b3ZjPsGi6qO60F5G03fl
-         WO+cbH18KQZipye5WP+yGC+cD+6V3ZuFxCSCD+uS1YRRqTReBbFh+v/iRLHIGHSix0
-         Rx5Vl/9CNXkbkEC67nTxOSfCXsESS+7hVwXxv9arUEV00Wxnn9VPxcQfVDTFLfb3F2
-         MTepQgQLmec/ebcWhCt5UQ8Pcn4qoPS5MgzeAhP8p9yoO6X/OY/Q2kV7/hd+ntu1ir
-         IJmx31eYgKYuA==
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kiran Patil <kiran.patil@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Dec 15, 2020 at 7:04 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Tue, Dec 15, 2020 at 06:19:18PM -0800, Alexander Duyck wrote:
+>
+> > > > I would really like to see is a solid standardization of what this is.
+> > > > Otherwise the comparison is going to be made. Especially since a year
+> > > > ago Mellanox was pushing this as an mdev type interface.
+> > >
+> > > mdev was NAK'd too.
+> > >
+> > > mdev is only for creating /dev/vfio/*.
+> >
+> > Agreed. However my worry is that as we start looking to make this
+> > support virtualization it will still end up swinging more toward
+> > mdev.
+>
+> Of course. mdev is also the only way to create a /dev/vfio/* :)
+>
+> So all paths that want to use vfio must end up creating a mdev.
+>
+> Here we would choose to create the mdev on top of the SF aux device.
+> There isn't really anything mlx5 specific about that decision.
+>
+> The SF models the vendor specific ADI in the driver model.
+>
+> > It isn't so much about right or wrong but he use cases. My experience
+> > has been that SR-IOV ends up being used for very niche use cases where
+> > you are direct assigning it into either DPDK or some NFV VM and you
+> > are essentially building the application around the NIC. It is all
+> > well and good, but for general virtualization it never really caught
+> > on.
+>
+> Sure
+>
+> > > So encourage other vendors to support the switchdev model for managing
+> > > VFs and ADIs!
+> >
+> > Ugh, don't get me started on switchdev. The biggest issue as I see it
+> > with switchev is that you have to have a true switch in order to
+> > really be able to use it.
+>
+> That cuts both ways, suggesting HW with a true switch model itself
+> with VMDq is equally problematic.
 
+Yes and no. For example the macvlan offload I had setup could be
+configured both ways and it made use of VMDq. I'm not necessarily
+arguing that we need to do VMDq here, however at the same time saying
+that this is only meant to replace SR-IOV becomes problematic since we
+already have SR-IOV so why replace it with something that has many of
+the same limitations?
 
-> From: Jakub Kicinski <kuba@kernel.org>
-> Sent: Wednesday, December 16, 2020 6:31 AM
->=20
-> On Tue, 15 Dec 2020 01:03:57 -0800 Saeed Mahameed wrote:
-> > +Subfunctions are lightweight functions that has parent PCI function
-> > +on which it is deployed. Subfunctions are created and deployed in
-> > +unit of 1. Unlike SRIOV VFs, they don't require their own PCI virtual
-> > +function. They communicate with the hardware through the parent PCI
-> > +function. Subfunctions can possibly scale better.
-> > +
-> > +To use a subfunction, 3 steps setup sequence is followed.
-> > +(1) create - create a subfunction;
-> > +(2) configure - configure subfunction attributes;
-> > +(3) deploy - deploy the subfunction;
-> > +
-> > +Subfunction management is done using devlink port user interface.
-> > +User performs setup on the subfunction management device.
-> > +
-> > +(1) Create
-> > +----------
-> > +A subfunction is created using a devlink port interface. User adds
-> > +the subfunction by adding a devlink port of subfunction flavour. The
-> > +devlink kernel code calls down to subfunction management driver
-> > +(devlink op) and asks it to create a subfunction devlink port. Driver
-> > +then instantiates the subfunction port and any associated objects
-> > +such as health reporters and representor netdevice.
-> > +
-> > +(2) Configure
-> > +-------------
-> > +Subfunction devlink port is created but it is not active yet. That
-> > +means the entities are created on devlink side, the e-switch port
-> > +representor is created, but the subfunction device itself it not
-> > +created. User might use e-switch port representor to do settings,
-> > +putting it into bridge, adding TC rules, etc. User might as well
-> > +configure the hardware address (such as MAC address) of the subfunctio=
-n
-> while subfunction is inactive.
-> > +
-> > +(3) Deploy
-> > +----------
-> > +Once subfunction is configured, user must activate it to use it. Upon
-> > +activation, subfunction management driver asks the subfunction
-> > +management device to instantiate the actual subfunction device on
-> particular PCI function.
-> > +A subfunction device is created on the
-> > +:ref:`Documentation/driver-api/auxiliary_bus.rst <auxiliary_bus>`. At =
-this
-> point matching subfunction driver binds to the subfunction's auxiliary de=
-vice.
-> > +
-> > +Terms and Definitions
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > +.. list-table:: Terms and Definitions
-> > +   :widths: 22 90
-> > +
-> > +   * - Term
-> > +     - Definitions
-> > +   * - ``PCI device``
-> > +     - A physical PCI device having one or more PCI bus consists of on=
-e or
-> > +       more PCI controllers.
-> > +   * - ``PCI controller``
-> > +     -  A controller consists of potentially multiple physical functio=
-ns,
-> > +        virtual functions and subfunctions.
-> > +   * - ``Port function``
-> > +     -  An object to manage the function of a port.
-> > +   * - ``Subfunction``
-> > +     -  A lightweight function that has parent PCI function on which i=
-t is
-> > +        deployed.
-> > +   * - ``Subfunction device``
-> > +     -  A bus device of the subfunction, usually on a auxiliary bus.
-> > +   * - ``Subfunction driver``
-> > +     -  A device driver for the subfunction auxiliary device.
-> > +   * - ``Subfunction management device``
-> > +     -  A PCI physical function that supports subfunction management.
-> > +   * - ``Subfunction management driver``
-> > +     -  A device driver for PCI physical function that supports
-> > +        subfunction management using devlink port interface.
-> > +   * - ``Subfunction host driver``
-> > +     -  A device driver for PCI physical function that host subfunctio=
-n
-> > +        devices. In most cases it is same as subfunction management dr=
-iver.
-> When
-> > +        subfunction is used on external controller, subfunction manage=
-ment
-> and
-> > +        host drivers are different.
->=20
-> Would be great if someone from Mellanox could proof read this before we
-> spend cycles on correcting spelling in public review.
-Will get it done.
+> > As such dumbed down hardware like the ixgbe for instance cannot use
+> > it since it defaults to outputting anything that doesn't have an
+> > existing rule to the external port. If we could tweak the design to
+> > allow for more dumbed down hardware it would probably be much easier
+> > to get wider adoption.
+>
+> I'd agree with this
+>
+> > interface, but keep the SF interface simple. Then you can back it with
+> > whatever you want, but without having to have a vendor specific
+> > version of the interface being plugged into the guest or container.
+>
+> The entire point *is* to create the vendor version because that serves
+> the niche cases where SRIOV assignment is already being used.
+>
+> Having a general solution that can't do vendor SRIOV is useful for
+> other application, but doesn't eliminate the need for the SRIOV case.
+
+So part of the problem here is we already have SR-IOV. So we don't
+need to repeat the mistakes. Rather, we need to have a solution to the
+existing problems and then we can look at eliminating it.
+
+That said I understand your argument, however I view the elimination
+of SR-IOV to be something we do after we get this interface right and
+can justify doing so. I don't have a problem necessarily with vendor
+specific instances, unless we are only able to get vendor specific
+instances. Thus I would prefer that we have a solution in place before
+we allow the switch over.
+
+> > One of the reasons why virtio-net is being pushed as a common
+> > interface for vendors is for this reason. It is an interface that can
+> > be emulated by software or hardware and it allows the guest to run on
+> > any arbitrary hardware.
+>
+> Yes, and there is mlx5_vdpa to support this usecase, and it binds to
+> the SF. Of course all of that is vendor specific too, the driver to
+> convert HW specifc register programming into a virio-net ADI has to
+> live *somewhere*
+
+Right, but this is more the model I am in favor of. The backend is
+hidden from the guest and lives somewhere on the host.
+
+Also it might be useful to call out the flavours and planned flavours
+in the cover page. Admittedly the description is somewhat lacking in
+that regard.
+
+> > It has plenty to do with this series. This topic has been under
+> > discussion since something like 2017 when Mellanox first brought it up
+> > at Netdev 2.1. At the time I told them they should implement this as a
+> > veth offload.
+>
+> veth doesn't give an ADI, it is useless for these niche cases.
+>
+> veth offload might be interesting for some container case, but feels
+> like writing an enormous amount of code to accomplish nothing new...
+
+My concern is if we are going to start partitioning up a PF on the
+host we might as well make the best use of it. I would argue that it
+would make more sense to have some standardized mechanism in place for
+the PF to communicate and interact with the SFs. I would argue that is
+one of the reasons why this keeps being compared to either VMDq or VMQ
+as it is something that SR-IOV has yet to fully replace and has many
+features that would be useful in an interface that is a subpartition
+of an existing interface.
+
+> > Then it becomes obvious what the fallback becomes as you can place
+> > packets into one end of a veth and it comes out the other, just like
+> > a switchdev representor and the SF in this case. It would make much
+> > more sense to do it this way rather than setting up yet another
+> > vendor proprietary interface pair.
+>
+> I agree it makes sense to have an all SW veth-like option, but I
+> wouldn't try to make that as the entry point for all the HW
+> acceleration or to serve the niche SRIOV use cases, or to represent an
+> ADI.
+>
+> It just can't do that and it would make a huge mess if you tried to
+> force it. Didn't Intel already try this once with trying to use the
+> macvlan netdev and its queue offload to build an ADI?
+
+The Intel drivers still have the macvlan as the assignable ADI and
+make use of VMDq to enable it. Actually I would consider it an example
+of the kind of thing I am talking about. It is capable of doing
+software switching between interfaces, broadcast/multicast replication
+in software, and makes use of the hardware interfaces to allow for
+receiving directly from the driver into the macvlan interface.
+
+The limitation as I see it is that the macvlan interface doesn't allow
+for much in the way of custom offloads and the Intel hardware doesn't
+support switchdev. As such it is good for a basic interface, but
+doesn't really do well in terms of supporting advanced vendor-specific
+features.
+
+> > > Anyhow, if such a thing exists someday it could make sense to
+> > > automatically substitute the HW version using a SF, if available.
+> >
+> > The main problem as I see it is the fact that the SF interface is
+> > bound too tightly to the hardware.
+>
+> That is goal here. This is not about creating just a netdev, this is
+> about the whole kit: rdma, netdev, vdpa virtio-net, virtio-mdev.
+
+One issue is right now we are only seeing the rdma and netdev. It is
+kind of backwards as it is using the ADIs on the host when this was
+really meant to be used for things like mdev.
+
+> The SF has to support all of that completely. Focusing only on the
+> one use case of netdevs in containers misses the bigger picture.
+>
+> Yes, lots of this stuff is niche, but niche stuff needs to be
+> supported too.
+
+I have no problem with niche stuff, however we need to address the
+basics before we move on to the niche stuff.
+
+> > Yes, it is a standard feature set for the control plane. However for
+> > the data-path it is somewhat limited as I feel it only describes what
+> > goes through the switch.
+>
+> Sure, I think that is its main point.
+>
+> > Not the interfaces that are exposed as the endpoints.
+>
+> It came from modeling physical HW so the endports are 'physical'
+> things like actual HW switch ports, or SRIOV VFs, ADI, etc.
+
+The problem is the "physical things" such as the SRIOV VFs and ADI
+aren't really defined in the specification and are left up to the
+implementers interpretation. These specs have always been fuzzy since
+they are essentially PCI specifications and don't explain anything
+about how the network on such a device should be configured or
+expected to work. The swtichdev API puts some restrictions in place
+but there still ends up being parts without any definition.
+
+> > It is the problem of that last bit and how it is handled that can
+> > make things ugly. For example the multicast/broadcast replication
+> > problem that just occurred to me while writing this up.  The fact is
+> > for east-west traffic there has always been a problem with the
+> > switchdev model as it limits everything to PCIe/DMA so there are
+> > cases where software switches can outperform the hardware ones.
+>
+> Yes, but, mixing CPU and DMA in the same packet delivery scheme is
+> very complicated :)
+
+I'm not necessarily saying we need to mix the two. However there are
+cases such as multicast/broadcast where it would make much more sense
+to avoid the duplication of packets and instead simply send one copy
+and have it replicated by the software.
+
+What would probably make sense for now would be to look at splitting
+the netdev into two pieces. The frontend which would provide the
+netdev and be a common driver for subfunction netdevs in this case,
+and a backend which would be a common point for all the subfunctions
+that are being used directly on the host. This is essentially what we
+have with the macvlan model. The idea is that if we wanted to do
+software switching or duplication of traffic we could, but if not then
+we wouldn't.
