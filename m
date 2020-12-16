@@ -2,168 +2,276 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A382DBACC
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Dec 2020 06:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3CF2DBACD
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Dec 2020 06:40:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725287AbgLPFhQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Dec 2020 00:37:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46584 "EHLO mail.kernel.org"
+        id S1725730AbgLPFku (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Dec 2020 00:40:50 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:22998 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725274AbgLPFhQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 16 Dec 2020 00:37:16 -0500
-Date:   Wed, 16 Dec 2020 07:36:31 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608096995;
-        bh=CjMjVWTYxgyh6A2SZJx2Qyu808tu54VGUIKmyU4/b9E=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tU6umlPGBUUcbA63m26SlwHFLSWT7jqzcaGsuMiNKurid4NB+ya4dKFAk4gQzZt0S
-         Lu6QwsAwVCLp1/E950rOKZGZJguBANlVN+7ojpSDnxsRgE9r+77n1fkvZkMwjeeLQA
-         X0eF8rT+J3lh05YFUM7EocjCFtCBvrZBVQIcDkFpzNtbY55Ykdylx13n8ohP9sdt3R
-         biJewms2TQvEJ5ulDDIj+uFpBxEQZPMOVzjKVF8MXMe/efvpmPJVUh4i/lWejBWg63
-         RkOb8u2oTEN21Jx/akeYhYmfjZn9Ftlim/uGjsn1wMuMDiJwUpms0h+CCUaQ3hP5Po
-         vLa/f7ExuBO+g==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Bernard Metzler <bmt@zurich.ibm.com>
-Cc:     linux-rdma@vger.kernel.org, jgg@nvidia.com,
-        linux-nvme@lists.infradead.org, Kamal Heib <kamalheib1@gmail.com>,
-        Yi Zhang <yi.zhang@redhat.com>
-Subject: Re: [PATCH v2] RDMA/siw: Fix handling of zero-sized Read and Receive
- Queues.
-Message-ID: <20201216053631.GP5005@unreal>
-References: <20201215201918.4050-1-bmt@zurich.ibm.com>
+        id S1725274AbgLPFku (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 16 Dec 2020 00:40:50 -0500
+Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fd99db90000>; Wed, 16 Dec 2020 13:40:09 +0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 16 Dec
+ 2020 05:40:08 +0000
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.42) by
+ HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 16 Dec 2020 05:40:08 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lD7jlrhup9kgdl2+R6CmXq5VfoEjSjryL4QQ4LVY7NJSuMHeelbCf6ugjjy0REICLzRJUKKoYAGLWlEDHsyVT+IjbSHX/KDv+hzdGV9Txx1EsMjvYx2i9GvfW07CYsQKWf6GnMWrtlwt2cCSwl+Pk33MY4ejfxI1VkWprE1AW2JTNUylxZEtRy2lrlxdY188xt2MHejToXmQCrXGBd6UQAejDj6uqIa0mey/fkALRNp84xd9k2opQKzILfmy8jWL6ALgYWDh86hdGauj9YWIqd9YZ+7Jz5gZWlstwmugQwoXxPvhYW1aaJZjaf+muth+IhJsNDTJHLxLWsjdLhJMEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J+ttK5TnepA77BsGcXieuKVNfrsDiBKLG0O7ycjwlvc=;
+ b=N+HOh11FN4UDxzDQnuY38NKqqnrdNb0HQ577xmerdE3hlznF4S2wDSOrIJBK8loTTz+u74I4KWkAaUMHDKcdAV4CXn2+qavLyFPflMoyvyR500Bry+f2dL6LfYoeE6zB+yI6t7Ft2jEBcUaZ6OQMsQoR2k0yi9y6EgBF367U+SmDueTHL75TNYjj8veaQhJ+Yv2R6gzGM/ovemobsk0batwuUcJA2qnj9r6LAQkuatEn3upex7q9QpUHB1xK+njVaWVX/3xdH7g2wcSoVW0eS+slT3MUG1HVvgxtRAatQbq6mVAjjPqp1D+Q2885VkgTaXmqKN4n58JFyg2oezsjHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com (2603:10b6:a03:20a::20)
+ by BYAPR12MB4760.namprd12.prod.outlook.com (2603:10b6:a03:9c::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.25; Wed, 16 Dec
+ 2020 05:40:05 +0000
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::a1d2:bfae:116c:2f24]) by BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::a1d2:bfae:116c:2f24%6]) with mapi id 15.20.3654.026; Wed, 16 Dec 2020
+ 05:40:05 +0000
+From:   Parav Pandit <parav@nvidia.com>
+To:     Jakub Kicinski <kuba@kernel.org>, Saeed Mahameed <saeed@kernel.org>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Sridhar Samudrala <sridhar.samudrala@intel.com>,
+        "david.m.ertman@intel.com" <david.m.ertman@intel.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "kiran.patil@intel.com" <kiran.patil@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: RE: [net-next v5 13/15] devlink: Add devlink port documentation
+Thread-Topic: [net-next v5 13/15] devlink: Add devlink port documentation
+Thread-Index: AQHW0sFsX8axjEgXGkSRbUiFh5LRw6n453oAgABMkCA=
+Date:   Wed, 16 Dec 2020 05:40:05 +0000
+Message-ID: <BY5PR12MB4322AC71674FB8DB605404C5DCC50@BY5PR12MB4322.namprd12.prod.outlook.com>
+References: <20201215090358.240365-1-saeed@kernel.org>
+        <20201215090358.240365-14-saeed@kernel.org>
+ <20201215165758.4ff58f85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201215165758.4ff58f85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [49.207.199.116]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 68dcdbad-9498-48a5-163e-08d8a1850aab
+x-ms-traffictypediagnostic: BYAPR12MB4760:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR12MB476072FC882A2A3AF1B9A736DCC50@BYAPR12MB4760.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:935;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mkosjRrw8vHY00i6KyFHTN1pvqtjlDOM0wr4D3dKhR8Xiq5IbFGKSk6CHv75UPgQLhQK6lgTzhPN/ZdsU/5iXSkjilrFd2tClWRk0AAxPrueYt2buUwALkBm/ZrMBS556G3/LMl9Lb31JZ/6txVHCoH/6BibmYQpEVW5po7kpGmvbhMjpo6v+fWtcplWAznKf2iDKESdMw5l5sC9WB3w7ThCq7NyTN2T/e9ncP8cpX7UJ5hDgA+VDdnYJHJck051HeABPBXkBTQ48ULpwVXZ2+qcTPA/6FsCfDLhRR9+0fv3HYlJgn3srCRm+hm9X3nX
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4322.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(346002)(366004)(376002)(396003)(66446008)(5660300002)(52536014)(7416002)(186003)(76116006)(478600001)(107886003)(64756008)(66556008)(66946007)(4326008)(66476007)(86362001)(316002)(8936002)(9686003)(110136005)(33656002)(26005)(55016002)(54906003)(55236004)(6506007)(8676002)(7696005)(2906002)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?MJ9Pt3SGHedlkNSs5fKVWHQJpXo6Knpq2Re/nrtfG/U7PqkT2+7y8Jrr+5UF?=
+ =?us-ascii?Q?Eu5Qtq06x1fI69M9RoK6NNxTeOQyFUnSgXVmRyGs/p1GQWjaYes0cVjxLvBK?=
+ =?us-ascii?Q?9tvJSaTg7o5U/c2s01s8MlAyPvg+bqhQn+ITMgHSDB6+uQ65UcZR/CLpwgMh?=
+ =?us-ascii?Q?KE4xDNEWWPGip0oUvOBLEMhGuvnTQQJkaINgm35FkR1+LzeQO9P/f6kf/On9?=
+ =?us-ascii?Q?7Py4+6qkiRVmjSYMigM/UMrbGUnD+o7fbrrqU1otbnWxXiSoqj5DDfdEZMtp?=
+ =?us-ascii?Q?PZy32NF4f22Nx3BebZgzJKD7pTMO3MdxxPICtCDJi50WFstHtRtMzvgo4lOS?=
+ =?us-ascii?Q?zFhsrXIiy5KTO9J03l9SQlruMZNOIk7sdnZiqEiOubh0HFZQcSr8Dj3eQ0Pu?=
+ =?us-ascii?Q?SPqvQViXDceDulMCDDSiu4as44DpC6s8KB8tyNsZQSs6vgfPn1YMx+AweyoI?=
+ =?us-ascii?Q?+5rpddMGmhv+ngBz/KLRYw80nP9AWR77lc9sWXr+DF0vuQYnReI0du/kN6BK?=
+ =?us-ascii?Q?dtZlNjrqSUP+HkeooUOYeG3Fxe3SxhA6+ZpbeF+1N42C8pJuuoPZ0houGuB0?=
+ =?us-ascii?Q?oKvDmQ4aSc8vcXxtib7S6BqNYBEouwrEPckYCYsMSscZyaCFITYeDzgflgyt?=
+ =?us-ascii?Q?87BomSrpvV141YAwkTPmZuCJpTec1SWV81FAcIP1DM1ljEIwLCMph+jMmNHs?=
+ =?us-ascii?Q?ayb7lC3vAc+2BQhqKuLeYQnwjIGgKudmBiwWjixXu1MN0uuuNHs/8NLSixKk?=
+ =?us-ascii?Q?eBOb3uqXMyKcdBxMXV62R52DbxPPV549F+v3o/YjcNi42K2IGxvoQlBjTJ49?=
+ =?us-ascii?Q?Zbu5IbPchPWHdpjxFI5vZoia6X/EzCDmyfNsHiWK7+tNOz7BCxnJM22npG6g?=
+ =?us-ascii?Q?nMoMLDWEhwx1Dm1ATjydacPBCF8GjRY0tJl29U4nW7rUhea5WJ8FN9V9AqPO?=
+ =?us-ascii?Q?wd6EAARjtk8+rVtwi/GRz2X+obnbMnDzQlfQsQl1YFc=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201215201918.4050-1-bmt@zurich.ibm.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4322.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 68dcdbad-9498-48a5-163e-08d8a1850aab
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2020 05:40:05.3058
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EarhnJA8/oluEsLHg0eAxoI6XTPrFFh5cV/YtNcYaYGXRSUz/KFPSnyChdAhCRHl4h82SEvXoIPHoIHy+GlRVA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB4760
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1608097209; bh=J+ttK5TnepA77BsGcXieuKVNfrsDiBKLG0O7ycjwlvc=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
+         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
+         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
+         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
+         x-ms-traffictypediagnostic:x-ms-exchange-transport-forked:
+         x-microsoft-antispam-prvs:x-ms-oob-tlc-oobclassifiers:
+         x-ms-exchange-senderadcheck:x-microsoft-antispam:
+         x-microsoft-antispam-message-info:x-forefront-antispam-report:
+         x-ms-exchange-antispam-messagedata:Content-Type:
+         Content-Transfer-Encoding:MIME-Version:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-originalarrivaltime:
+         X-MS-Exchange-CrossTenant-fromentityheader:
+         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+         X-MS-Exchange-CrossTenant-userprincipalname:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=mfRPEs9FLPN9Vjm7pmbp8gd1Y/zM714M1ucBwTEE5sljI/6zXGGPFQ7mDGDwj82cb
+         ZiEMT7awPgPoAm4vcoNXRdtTgaTcs6HwNb8YqkhV5JuIWUOEPhhV5JsQquzdqEONJE
+         7UE0jdZ41CpXmWF7UTYXTkEyFDEoPeOGLe/wgSfeo2sj10DYIjfAJu41BCb22JQs3M
+         zvJey43y/hZNc863DUYSANBhOt/jBcudJLC/xkhbkBgUUJDr3J7S0s3tEoZu0G1xqX
+         Po4ytvlDuVeALEQETaky1ywawQYBIF+h6p+5c0D4wE5I3BFf+rz4aCyy2lchhlf61Q
+         u7EeWbc21VZXw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 09:19:18PM +0100, Bernard Metzler wrote:
-> During connection setup, the application may choose to zero-size
-> inbound and outbound READ queues, as well as the Receive queue.
-> This patch fixes handling of zero-sized queues, but not prevents
-> it.
->
-> v2 changes:
-> - Fix uninitialized variable introduced in siw_qp_rx.c, as
->   Reported-by: kernel test robot <lkp@intel.com>
-> - Add initial error report as
->   Reported-by: Kamal Heib <kamalheib1@gmail.com>
 
-Changelog shouldn't be in the commit message and needs to appear after "---",
-because only this version will be applied to the kernel.
+> From: Jakub Kicinski <kuba@kernel.org>
+> Sent: Wednesday, December 16, 2020 6:28 AM
+>=20
+> On Tue, 15 Dec 2020 01:03:56 -0800 Saeed Mahameed wrote:
+> > +PCI controllers
+> > +---------------
+> > +In most cases a PCI device has only one controller. A controller
+> > +consists of potentially multiple physical and virtual functions. Such
+> > +PCI function consists of one or more ports.
+>=20
+> s/Such//
+>
+Ack.
+=20
+> you say consists in two consecutive sentences.
+>=20
+> > This port of the function is represented by the devlink eswitch port.
+>=20
+First sentence describe controller. Second sentence describe function.
+So what is wrong in that?
 
->
-> Kamal Heib says in an initial error report:
-> When running the blktests over siw the following shift-out-of-bounds is
-> reported, this is happening because the passed IRD or ORD from the ulp
-> could be zero which will lead to unexpected behavior when calling
-> roundup_pow_of_two(), fix that by blocking zero values of ORD or IRD.
->
-> UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:13
-> shift exponent 64 is too large for 64-bit type 'long unsigned int'
-> CPU: 20 PID: 3957 Comm: kworker/u64:13 Tainted: G S     5.10.0-rc6 #2
-> Hardware name: Dell Inc. PowerEdge R630/02C2CP, BIOS 2.1.5 04/11/2016
-> Workqueue: iw_cm_wq cm_work_handler [iw_cm]
-> Call Trace:
->  dump_stack+0x99/0xcb
->  ubsan_epilogue+0x5/0x40
->  __ubsan_handle_shift_out_of_bounds.cold.11+0xb4/0xf3
->  ? down_write+0x183/0x3d0
->  siw_qp_modify.cold.8+0x2d/0x32 [siw]
->  ? __local_bh_enable_ip+0xa5/0xf0
->  siw_accept+0x906/0x1b60 [siw]
->  ? xa_load+0x147/0x1f0
->  ? siw_connect+0x17a0/0x17a0 [siw]
->  ? lock_downgrade+0x700/0x700
->  ? siw_get_base_qp+0x1c2/0x340 [siw]
->  ? _raw_spin_unlock_irqrestore+0x39/0x40
->  iw_cm_accept+0x1f4/0x430 [iw_cm]
->  rdma_accept+0x3fa/0xb10 [rdma_cm]
->  ? check_flush_dependency+0x410/0x410
->  ? cma_rep_recv+0x570/0x570 [rdma_cm]
->  nvmet_rdma_queue_connect+0x1a62/0x2680 [nvmet_rdma]
->  ? nvmet_rdma_alloc_cmds+0xce0/0xce0 [nvmet_rdma]
->  ? lock_release+0x56e/0xcc0
->  ? lock_downgrade+0x700/0x700
->  ? lock_downgrade+0x700/0x700
->  ? __xa_alloc_cyclic+0xef/0x350
->  ? __xa_alloc+0x2d0/0x2d0
->  ? rdma_restrack_add+0xbe/0x2c0 [ib_core]
->  ? __ww_mutex_die+0x190/0x190
->  cma_cm_event_handler+0xf2/0x500 [rdma_cm]
->  iw_conn_req_handler+0x910/0xcb0 [rdma_cm]
->  ? _raw_spin_unlock_irqrestore+0x39/0x40
->  ? trace_hardirqs_on+0x1c/0x150
->  ? cma_ib_handler+0x8a0/0x8a0 [rdma_cm]
->  ? __kasan_kmalloc.constprop.7+0xc1/0xd0
->  cm_work_handler+0x121c/0x17a0 [iw_cm]
->  ? iw_cm_reject+0x190/0x190 [iw_cm]
->  ? trace_hardirqs_on+0x1c/0x150
->  process_one_work+0x8fb/0x16c0
->  ? pwq_dec_nr_in_flight+0x320/0x320
->  worker_thread+0x87/0xb40
->  ? __kthread_parkme+0xd1/0x1a0
->  ? process_one_work+0x16c0/0x16c0
->  kthread+0x35f/0x430
->  ? kthread_mod_delayed_work+0x180/0x180
->  ret_from_fork+0x22/0x30
->
-> Fixes: a531975279f3 ("rdma/siw: main include file")
-> Fixes: f29dd55b0236 ("rdma/siw: queue pair methods")
-> Fixes: 8b6a361b8c48 ("rdma/siw: receive path")
-> Fixes: b9be6f18cf9e ("rdma/siw: transmit path")
-> Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
-> Reported-by: Kamal Heib <kamalheib1@gmail.com>
-> Reported-by: Yi Zhang <yi.zhang@redhat.com>
-> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
-> ---
->  drivers/infiniband/sw/siw/siw.h       |  2 +-
->  drivers/infiniband/sw/siw/siw_qp.c    | 54 ++++++++++++++++-----------
->  drivers/infiniband/sw/siw/siw_qp_rx.c | 26 +++++++++----
->  drivers/infiniband/sw/siw/siw_qp_tx.c |  4 +-
->  drivers/infiniband/sw/siw/siw_verbs.c | 18 +++++++--
->  5 files changed, 68 insertions(+), 36 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
-> index e9753831ac3f..6f17392f975a 100644
-> --- a/drivers/infiniband/sw/siw/siw.h
-> +++ b/drivers/infiniband/sw/siw/siw.h
-> @@ -654,7 +654,7 @@ static inline struct siw_sqe *orq_get_free(struct siw_qp *qp)
->  {
->  	struct siw_sqe *orq_e = orq_get_tail(qp);
->
-> -	if (orq_e && READ_ONCE(orq_e->flags) == 0)
-> +	if (READ_ONCE(orq_e->flags) == 0)
->  		return orq_e;
->
->  	return NULL;
-> diff --git a/drivers/infiniband/sw/siw/siw_qp.c b/drivers/infiniband/sw/siw/siw_qp.c
-> index 875d36d4b1c6..b686a09a75ae 100644
-> --- a/drivers/infiniband/sw/siw/siw_qp.c
-> +++ b/drivers/infiniband/sw/siw/siw_qp.c
-> @@ -199,26 +199,28 @@ void siw_qp_llp_write_space(struct sock *sk)
->
->  static int siw_qp_readq_init(struct siw_qp *qp, int irq_size, int orq_size)
->  {
-> -	irq_size = roundup_pow_of_two(irq_size);
-> -	orq_size = roundup_pow_of_two(orq_size);
-> -
-> -	qp->attrs.irq_size = irq_size;
-> -	qp->attrs.orq_size = orq_size;
-> -
-> -	qp->irq = vzalloc(irq_size * sizeof(struct siw_sqe));
-> -	if (!qp->irq) {
-> -		siw_dbg_qp(qp, "irq malloc for %d failed\n", irq_size);
-> -		qp->attrs.irq_size = 0;
-> -		return -ENOMEM;
-> +	if (irq_size) {
-> +		irq_size = roundup_pow_of_two(irq_size);
-> +		qp->irq = vzalloc(irq_size * sizeof(struct siw_sqe));
-> +		if (!qp->irq) {
-> +			siw_dbg_qp(qp, "irq malloc for %d failed\n", irq_size);
+> "This port of the function"? Why not just "Each port"?
+>=20
+That's fine too. Will simplify.
 
-Please don't copy the prints.
+> > +A PCI Device connected to multiple CPUs or multiple PCI root
+> > +complexes or
+>=20
+> Why is device capitalized all of the sudden?
+>
+Will fix.
+=20
+> > +SmartNIC, however, may have multiple controllers. For a device with
+> > +multiple
+>=20
+> a SmartNIC or SmartNICs
+>=20
+> > +controllers, each controller is distinguished by a unique controller
+> number.
+> > +An eswitch on the PCI device support ports of multiple controllers.
+>=20
+> eswitch is on a PCI device?
+>
+Will change.
+=20
+> > +An example view of a system with two controllers::
+> > +
+> > +                 -----------------------------------------------------=
+----
+> > +                 |                                                    =
+   |
+> > +                 |           --------- ---------         ------- -----=
+-- |
+> > +    -----------  |           | vf(s) | | sf(s) |         |vf(s)| |sf(s=
+)| |
+> > +    | server  |  | -------   ----/---- ---/----- ------- ---/--- ---/-=
+-- |
+> > +    | pci rc  |=3D=3D=3D | pf0 |______/________/       | pf1 |___/____=
+___/     |
+> > +    | connect |  | -------                       -------              =
+   |
+> > +    -----------  |     | controller_num=3D1 (no eswitch)              =
+     |
+> > +                 ------|----------------------------------------------=
+----
+> > +                 (internal wire)
+> > +                       |
+> > +                 -----------------------------------------------------=
+----
+> > +                 | devlink eswitch ports and reps                     =
+   |
+> > +                 | ---------------------------------------------------=
+-- |
+> > +                 | |ctrl-0 | ctrl-0 | ctrl-0 | ctrl-0 | ctrl-0 |ctrl-0=
+ | |
+> > +                 | |pf0    | pf0vfN | pf0sfN | pf1    | pf1vfN |pf1sfN=
+ | |
+> > +                 | ---------------------------------------------------=
+-- |
+> > +                 | |ctrl-1 | ctrl-1 | ctrl-1 | ctrl-1 | ctrl-1 |ctrl-1=
+ | |
+> > +                 | |pf0    | pf0vfN | pf0sfN | pf1    | pf1vfN |pf1sfN=
+ | |
+> > +                 | ---------------------------------------------------=
+-- |
+> > +                 |                                                    =
+   |
+> > +                 |                                                    =
+   |
+> > +    -----------  |           --------- ---------         ------- -----=
+-- |
+> > +    | smartNIC|  |           | vf(s) | | sf(s) |         |vf(s)| |sf(s=
+)| |
+> > +    | pci rc  |=3D=3D| -------   ----/---- ---/----- ------- ---/--- -=
+--/--- |
+> > +    | connect |  | | pf0 |______/________/       | pf1 |___/_______/  =
+   |
+> > +    -----------  | -------                       -------              =
+   |
+> > +                 |                                                    =
+   |
+> > +                 |  local controller_num=3D0 (eswitch)                =
+     |
+> > +
+> > + ---------------------------------------------------------
+> > +
+> > +In above example, external controller (identified by controller
+> > +number =3D 1) doesn't have eswitch. Local controller (identified by
+> > +controller number =3D 0) has the eswitch. Devlink instance on local
+> > +controller has eswitch devlink ports representing ports for both the
+> controllers.
+> > +
+> > +Port function configuration
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> > +
+> > +A user can configure the port function attribute before enumerating
+> > +the
+>=20
+> s/A user/User/
+>=20
+> /port function attribute/$something_meaningful/
+>=20
+May be just say function attribute?
 
-Thanks
+> > +PCI function. Usually it means, user should configure port function
+> > +attribute
+>=20
+> attributes, plural
+>=20
+Yes, but at present there is only one i.e. mac address, so didn't use plura=
+l.
