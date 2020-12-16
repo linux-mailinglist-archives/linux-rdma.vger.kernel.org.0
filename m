@@ -2,276 +2,215 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA82D2DC452
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Dec 2020 17:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 906722DC47F
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Dec 2020 17:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725971AbgLPQch (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Dec 2020 11:32:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59276 "EHLO
+        id S1726364AbgLPQnK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Dec 2020 11:43:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgLPQch (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Dec 2020 11:32:37 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB86C061794;
-        Wed, 16 Dec 2020 08:31:56 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id r9so24530109ioo.7;
-        Wed, 16 Dec 2020 08:31:56 -0800 (PST)
+        with ESMTP id S1725939AbgLPQnJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Dec 2020 11:43:09 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6743CC061794
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Dec 2020 08:42:29 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id x16so33677653ejj.7
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Dec 2020 08:42:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZQp5ijXK6KyYcBGlAOyLi4/Gh/VnhNPH4dDbbxSDTDo=;
-        b=SBq+9NaFUaP5iugVwaXPwFSTB6sEJpoCvWoVRYJ3eK1vZCJVVBFNFPuy9ZYyMbSKQ3
-         IxLUDq1z4y2ZV9YDyik4YjbbdQ+Bhj58wPQwp0J4AS+ig1ljjnW0pcky9ZmIGf1PPb7v
-         Ql0gg6kBmhshnKicdAg6hfjzL8GDr0yciF38qYJNhCTzOKlajefpalqWZpUr7MkbAmqF
-         rf8hDPgduM82fNXANDDCVwxNXi4Dql/aLjAAse7tQjve7tNrHE3p4SchRGdh0Y/n6+Bm
-         i9Rcoqc9har+5z26Yq6uqFogZsDG5eSR08ZIRhhCREc7+nROggaBiTxEZO8Q1hc3FZv3
-         l25A==
+         :cc:content-transfer-encoding;
+        bh=+5h6kSWDeYqJvOetnrGGhPnTuRYQnnjgBuQrUdwAxJU=;
+        b=KvX7Zui1BiYATc90ISSe949091SM6NHLWsfKtU/OIRxxLQYQblTB3VvVOn2rHbFe+n
+         KUheXYbCXxjJwsCUf3Du5sn0aXjgL1qce2RIJkVPmtn2XtU6QDs+SCG7MtvcbJ3qHKOw
+         f7eokQAtQToqtJ1Q4ZsSKhhhbJ6cnPVRXAEoFWlAQjOuZ005mMtl9ySXY3EXCaiJ/Iko
+         NRg2aO/BYbYlvZqI1F1aV/fmifO9/IDr0aooZcbDK8HcArfTV7svvriCgYYh7RJocU3U
+         J9aSAUZHMGDvxEht3rwNUStB+8twEWD9G0jo2M+0lP0L2mxuWTi0QNSicXNiZ5qKGE2s
+         tN7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZQp5ijXK6KyYcBGlAOyLi4/Gh/VnhNPH4dDbbxSDTDo=;
-        b=Wf4apZf/DuLdUr3zO88mgUeLuKYUwJKGoO5QPXKUImOFM5DeAF3kkYNowT3cooArsr
-         4dYbCcWbiGmYDEVdp76H49rmdPxURLAU4TcB7jVWGjO9m+3Bcz9j9SCsHGWr3ROzfewX
-         TcIn954ZQ+q24HnzrEZpVA5stylgK1sZE1uhsfpby5mkXx98KvyfTiF2xiviXmxAF1/6
-         vGz0O+gY+R7midfSonvFLHO7NAycRBhdJ3QV/cS/Wk9dTDziYP0JITTjpMhAkNE6JEv0
-         +Z4hvi2Yau7yAiakDM3uxZBdwLpo47oydeWXaZaf/y/LNjrv5Sjb/bsREu+/VBQloaKw
-         Td2g==
-X-Gm-Message-State: AOAM532M7NwJTBY8rJ62yaBxwBY4miMu/yJm+T0YmUzjiOeTUnH+VPy0
-        60bctuI2Xrx9dvW6a9SvtjvWcqAFizObNjfdK24=
-X-Google-Smtp-Source: ABdhPJwAYqYW4YHhzF2Ec+IZHqNwF+ao6AMYUqQEVeGY8STKewvUfQrALFJCitWUYUr7AKbvdcoyPyyZvjtcEAqdMj4=
-X-Received: by 2002:a02:4:: with SMTP id 4mr44086679jaa.121.1608136316013;
- Wed, 16 Dec 2020 08:31:56 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+5h6kSWDeYqJvOetnrGGhPnTuRYQnnjgBuQrUdwAxJU=;
+        b=HER0uKyBPZpCfbCfmLVqah1yBz5yosVPZVMQtOikUPgBy2RRuNl0J5vtjhcFDNsBZb
+         7BPkP0MmQsPcppl5EZHPLpwCXMYr1rvDQ09equsloWVBXZebxkbjgc7z1HMurjAUEFFy
+         ZEAsMwwq11nPh6yUk++IAlCbOQWsyVa6Zg1P87surNVolcs4f2dEYVAfD6uDfyvgeo8m
+         en5lIS6MiLNP0KvwtxcNd5I/NPc7yZTFqCELgeBTeecmBqLYb06heHqb4vh0GGnEKZc2
+         LNXLfkty97uce1FlrrQw0tHPIB1HoY1DJWJbk4gN/VncOa5R+boQyZMrZo2PCl8lO3pL
+         DzEQ==
+X-Gm-Message-State: AOAM530JIL7crTvpIm6aRxHfSQnCCWTK5UB9hO2x3nExTN/HT9Nm8vu1
+        VfYjr6PCcvCa4XFLwGDMjEhuY6TzEV7zdoQo3ax1dg==
+X-Google-Smtp-Source: ABdhPJx/rpoCy8cb52SjwykEe5v280LaDX9NcjMkmohXL2sd+6HmE86n4PnTtF8HUgLDa99Z2mlQqL+VbNBra+BIGbU=
+X-Received: by 2002:a17:906:94ca:: with SMTP id d10mr30193377ejy.62.1608136948004;
+ Wed, 16 Dec 2020 08:42:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20201214214352.198172-1-saeed@kernel.org> <CAKgT0UejoduCB6nYFV2atJ4fa4=v9-dsxNh4kNJNTtoHFd1DuQ@mail.gmail.com>
- <608505778d76b1b01cb3e8d19ecda5b8578f0f79.camel@kernel.org>
- <CAKgT0UfEsd0hS=iJTcVc20gohG0WQwjsGYOw1y0_=DRVbhb1Ng@mail.gmail.com>
- <ecad34f5c813591713bb59d9c5854148c3d7f291.camel@kernel.org>
- <CAKgT0UfTOqS9PBeQFexyxm7ytQzdj0j8VMG71qv4+Vn6koJ5xQ@mail.gmail.com>
- <20201216001946.GF552508@nvidia.com> <CAKgT0UeLBzqh=7gTLtqpOaw7HTSjG+AjXB7EkYBtwA6EJBccbg@mail.gmail.com>
- <20201216030351.GH552508@nvidia.com> <CAKgT0UcwP67ihaTWLY1XsVKEgysa3HnjDn_q=Sgvqnt=Uc7YQg@mail.gmail.com>
- <20201216133309.GI552508@nvidia.com>
-In-Reply-To: <20201216133309.GI552508@nvidia.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Wed, 16 Dec 2020 08:31:44 -0800
-Message-ID: <CAKgT0UcRfB8a61rSWW-NPdbGh3VcX_=LCZ5J+-YjqYNtm+RhVg@mail.gmail.com>
-Subject: Re: [net-next v4 00/15] Add mlx5 subfunction support
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Saeed Mahameed <saeed@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        David Ahern <dsahern@kernel.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
+References: <20201209164542.61387-1-jinpu.wang@cloud.ionos.com>
+ <20201209164542.61387-3-jinpu.wang@cloud.ionos.com> <CAMGffE=_axtHU=pAV3qx5FVY2pB786z3kffQwDzinOaH=yS5Ag@mail.gmail.com>
+ <e841a2c3-2774-ca8f-302a-cd43c3b3161e@cloud.ionos.com> <CAMGffEmKAzy3dXVKhoZDAqLpZ6DiQiaYNQn8_0Fd+MQUXbn_eA@mail.gmail.com>
+ <20201211072600.GA192848@unreal> <CAMGffEn4fbTud3qrrwnrS6bqxcpF6sueKb=Qke8N9yLvDeEWpA@mail.gmail.com>
+ <CAMGffEnuNHacxqqdZsF0JMk3kTUqT9KdzNK_QzBF_FWjPWLN8Q@mail.gmail.com>
+ <20201211134543.GB5487@ziepe.ca> <CAD+HZHXso=S5c=MqgrmDMZpWi10FbPTinWPfLMTkMCCiosihCQ@mail.gmail.com>
+ <20201211162900.GC5487@ziepe.ca>
+In-Reply-To: <20201211162900.GC5487@ziepe.ca>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Wed, 16 Dec 2020 17:42:17 +0100
+Message-ID: <CAMGffEm22sP-oKK0D9=vOw77nbS05iwG7MC3DTVB0CyzVFhtXg@mail.gmail.com>
+Subject: Re: [PATCH for-next 02/18] RMDA/rtrs-srv: Occasionally flush ongoing
+ session closing
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Jack Wang <xjtuwjp@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 5:33 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+On Fri, Dec 11, 2020 at 5:29 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 >
-> On Tue, Dec 15, 2020 at 08:13:21PM -0800, Alexander Duyck wrote:
+> On Fri, Dec 11, 2020 at 05:17:36PM +0100, Jack Wang wrote:
+> >    En, the lockdep was complaining about the new conn_id, I will
+> >    post the full log if needed next week.  let=E2=80=99s skip this patc=
+h for
+> >    now, will double check!
 >
-> > > > Ugh, don't get me started on switchdev. The biggest issue as I see it
-> > > > with switchev is that you have to have a true switch in order to
-> > > > really be able to use it.
-> > >
-> > > That cuts both ways, suggesting HW with a true switch model itself
-> > > with VMDq is equally problematic.
-> >
-> > Yes and no. For example the macvlan offload I had setup could be
-> > configured both ways and it made use of VMDq. I'm not necessarily
-> > arguing that we need to do VMDq here, however at the same time saying
-> > that this is only meant to replace SR-IOV becomes problematic since we
-> > already have SR-IOV so why replace it with something that has many of
-> > the same limitations?
+> That is even more worrysome as the new conn_id already has a different
+> lock class.
 >
-> Why? Because SR-IOV is the *only* option for many use cases. Still. I
-> said this already, something more generic does not magicaly eliminate
-> SR-IOV.
->
-> The SIOV ADI model is a small refinement to the existing VF scheme, it
-> is completely parallel to making more generic things.
->
-> It is not "repeating mistakes" it is accepting the limitations of
-> SR-IOV because benefits exist and applications need those benefits.
+> Jason
+This is the dmesg of the LOCKDEP warning, it's on kernel 5.4.77, but
+the latest 5.10 behaves the same.
 
-If we have two interfaces, both with pretty much the same limitations
-then many would view it as "repeating mistakes". The fact is we
-already have SR-IOV. Why introduce yet another interface that has the
-same functionality?
+[  500.071552] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+[  500.071648] WARNING: possible circular locking dependency detected
+[  500.071869] 5.4.77-storage+ #35 Tainted: G           O
+[  500.071959] ------------------------------------------------------
+[  500.072054] kworker/1:1/28 is trying to acquire lock:
+[  500.072200] ffff99653a624390 (&id_priv->handler_mutex){+.+.}, at:
+rdma_destroy_id+0x55/0x230 [rdma_cm]
+[  500.072837]
+               but task is already holding lock:
+[  500.072938] ffff9d18800f7e80
+((work_completion)(&sess->close_work)){+.+.}, at:
+process_one_work+0x223/0x600
+[  500.075642]
+               which lock already depends on the new lock.
 
-You say this will scale better but I am not even sure about that. The
-fact is SR-IOV could scale to 256 VFs, but for networking I kind of
-doubt the limitation would have been the bus number and would more
-likely be issues with packet replication and PCIe throughput,
-especially when you start dealing with east-west traffic within the
-same system.
+[  500.075759]
+               the existing dependency chain (in reverse order) is:
+[  500.075880]
+               -> #3 ((work_completion)(&sess->close_work)){+.+.}:
+[  500.076062]        process_one_work+0x278/0x600
+[  500.076154]        worker_thread+0x2d/0x3d0
+[  500.076225]        kthread+0x111/0x130
+[  500.076290]        ret_from_fork+0x24/0x30
+[  500.076370]
+               -> #2 ((wq_completion)rtrs_server_wq){+.+.}:
+[  500.076482]        flush_workqueue+0xab/0x4b0
+[  500.076565]        rtrs_srv_rdma_cm_handler+0x71d/0x1500 [rtrs_server]
+[  500.076674]        cma_ib_req_handler+0x8c4/0x14f0 [rdma_cm]
+[  500.076770]        cm_process_work+0x22/0x140 [ib_cm]
+[  500.076857]        cm_req_handler+0x900/0xde0 [ib_cm]
+[  500.076944]        cm_work_handler+0x136/0x1af2 [ib_cm]
+[  500.077025]        process_one_work+0x29f/0x600
+[  500.077097]        worker_thread+0x2d/0x3d0
+[  500.077164]        kthread+0x111/0x130
+[  500.077224]        ret_from_fork+0x24/0x30
+[  500.077294]
+               -> #1 (&id_priv->handler_mutex/1){+.+.}:
+[  500.077409]        __mutex_lock+0x7e/0x950
+[  500.077488]        cma_ib_req_handler+0x787/0x14f0 [rdma_cm]
+[  500.077582]        cm_process_work+0x22/0x140 [ib_cm]
+[  500.077669]        cm_req_handler+0x900/0xde0 [ib_cm]
+[  500.077755]        cm_work_handler+0x136/0x1af2 [ib_cm]
+[  500.077835]        process_one_work+0x29f/0x600
+[  500.077907]        worker_thread+0x2d/0x3d0
+[  500.077973]        kthread+0x111/0x130
+[  500.078034]        ret_from_fork+0x24/0x30
+[  500.078095]
+               -> #0 (&id_priv->handler_mutex){+.+.}:
+[  500.078196]        __lock_acquire+0x1166/0x1440
+[  500.078267]        lock_acquire+0x90/0x170
+[  500.078335]        __mutex_lock+0x7e/0x950
+[  500.078410]        rdma_destroy_id+0x55/0x230 [rdma_cm]
+[  500.078498]        rtrs_srv_close_work+0xf2/0x2d0 [rtrs_server]
+[  500.078586]        process_one_work+0x29f/0x600
+[  500.078662]        worker_thread+0x2d/0x3d0
+[  500.078732]        kthread+0x111/0x130
+[  500.078793]        ret_from_fork+0x24/0x30
+[  500.078859]
+               other info that might help us debug this:
 
-> > That said I understand your argument, however I view the elimination
-> > of SR-IOV to be something we do after we get this interface right and
-> > can justify doing so.
->
-> Elimination of SR-IOV isn't even a goal here!
+[  500.078984] Chain exists of:
+                 &id_priv->handler_mutex -->
+(wq_completion)rtrs_server_wq --> (work_completion)(&sess->close_work)
 
-Sorry you used the word "replace", and my assumption here was that the
-goal is to get something in place that can take the place of SR-IOV so
-that you wouldn't be maintaining the two systems at the same time.
-That is my concern as I don't want us having SR-IOV, and then several
-flavors of SIOV. We need to decide on one thing that will be the way
-forward.
+[  500.079207]  Possible unsafe locking scenario:
 
-> > Also it might be useful to call out the flavours and planned flavours
-> > in the cover page. Admittedly the description is somewhat lacking in
-> > that regard.
->
-> This is more of a general switchdev remark though. In the swithdev
-> model you have a the switch and a switch port. Each port has a
-> swichdev representor on the switch side and a "user port" of some
-> kind.
->
-> It can be a physical thing:
->  - SFP
->  - QSFP
->  - WiFi Antennae
->
-> It could be a semi-physical thing outside the view of the kernel:
->  - SmartNIC VF/SF attached to another CPU
->
-> It can be a semi-physical thing in view of this kernel:
->  - SRIOV VF (struct pci device)
->  - SF (struct aux device)
->
-> It could be a SW construct in this kernel:
->  - netdev (struct net device)
->
-> *all* of these different port types are needed. Probably more down the
-> road!
->
-> Notice I don't have VPDA, VF/SF netdev, or virtio-mdev as a "user
-> port" type here. Instead creating the user port pci or aux device
-> allows the user to use the Linux driver model to control what happens
-> to the pci/aux device next.
+[  500.079293]        CPU0                    CPU1
+[  500.079358]        ----                    ----
+[  500.079358]   lock((work_completion)(&sess->close_work));
+[  500.079358]
+lock((wq_completion)rtrs_server_wq);
+[  500.079358]
+lock((work_completion)(&sess->close_work));
+[  500.079358]   lock(&id_priv->handler_mutex);
+[  500.079358]
+                *** DEADLOCK ***
 
-I get that. That is why I said switchdev isn't a standard for the
-endpoint. One of the biggest issues with SR-IOV that I have seen is
-the fact that the last piece isn't really defined. We never did a good
-job of defining how the ADI should look to the guest and as a result
-it kind of stalled in adoption.
+[  500.079358] 2 locks held by kworker/1:1/28:
+[  500.079358]  #0: ffff99652d281f28
+((wq_completion)rtrs_server_wq){+.+.}, at:
+process_one_work+0x223/0x600
+[  500.079358]  #1: ffff9d18800f7e80
+((work_completion)(&sess->close_work)){+.+.}, at:
+process_one_work+0x223/0x600
+[  500.079358]
+               stack backtrace:
+[  500.079358] CPU: 1 PID: 28 Comm: kworker/1:1 Tainted: G           O
+     5.4.77-storage+ #35
+[  500.079358] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.10.2-1ubuntu1 04/01/2014
+[  500.079358] Workqueue: rtrs_server_wq rtrs_srv_close_work [rtrs_server]
+[  500.079358] Call Trace:
+[  500.079358]  dump_stack+0x71/0x9b
+[  500.079358]  check_noncircular+0x17d/0x1a0
+[  500.079358]  ? __lock_acquire+0x1166/0x1440
+[  500.079358]  __lock_acquire+0x1166/0x1440
+[  500.079358]  lock_acquire+0x90/0x170
+[  500.079358]  ? rdma_destroy_id+0x55/0x230 [rdma_cm]
+[  500.079358]  ? rdma_destroy_id+0x55/0x230 [rdma_cm]
+[  500.079358]  __mutex_lock+0x7e/0x950
+[  500.079358]  ? rdma_destroy_id+0x55/0x230 [rdma_cm]
+[  500.079358]  ? find_held_lock+0x2d/0x90
+[  500.079358]  ? mark_held_locks+0x49/0x70
+[  500.079358]  ? rdma_destroy_id+0x55/0x230 [rdma_cm]
+[  500.079358]  rdma_destroy_id+0x55/0x230 [rdma_cm]
+[  500.079358]  rtrs_srv_close_work+0xf2/0x2d0 [rtrs_server]
+[  500.079358]  process_one_work+0x29f/0x600
+[  500.079358]  worker_thread+0x2d/0x3d0
+[  500.079358]  ? process_one_work+0x600/0x600
+[  500.079358]  kthread+0x111/0x130
+[  500.079358]  ? kthread_park+0x90/0x90
+[  500.079358]  ret_from_fork+0x24/0x30
 
-> > I would argue that is one of the reasons why this keeps being
-> > compared to either VMDq or VMQ as it is something that SR-IOV has
-> > yet to fully replace and has many features that would be useful in
-> > an interface that is a subpartition of an existing interface.
->
-> In what sense does switchdev and a VF not fully replace macvlan VMDq?
+According to my understanding
+in cma_ib_req_handler, the conn_id is newly created in
+https://elixir.bootlin.com/linux/latest/source/drivers/infiniband/core/cma.=
+c#L2222.
+And the rdma_cm_id associated with conn_id is passed to
+rtrs_srv_rdma_cm_handler->rtrs_rdma_connect.
 
-One of the biggest is east-west traffic. You quickly run up against
-the PCIe bandwidth bottleneck and then the performance tanks. I have
-seen a number of cases where peer-to-peer on the same host swamps the
-network interface.
+In rtrs_rdma_connect, we do flush_workqueue will only flush close_work
+for any other cm_id, but
+not the newly created one conn_id, it has not associated with anything yet.
 
-> > The Intel drivers still have the macvlan as the assignable ADI and
-> > make use of VMDq to enable it.
->
-> Is this in-tree or only in the proprietary driver? AFAIK there is no
-> in-tree way to extract the DMA queue from the macvlan netdev into
-> userspace..
->
-> Remeber all this VF/SF/VDPA stuff results in a HW dataplane, not a SW
-> one. It doesn't really make sense to compare a SW dataplane to a HW
-> one. HW dataplanes come with limitations and require special driver
-> code.
+The same applies to nvme-rdma. so it's a false alarm by lockdep.
 
-I get that. At the same time we can mask some of those limitations by
-allowing for the backend to be somewhat abstract so you have the
-possibility of augmenting the hardware dataplane with a software one
-if needed.
-
-> > The limitation as I see it is that the macvlan interface doesn't allow
-> > for much in the way of custom offloads and the Intel hardware doesn't
-> > support switchdev. As such it is good for a basic interface, but
-> > doesn't really do well in terms of supporting advanced vendor-specific
-> > features.
->
-> I don't know what it is that prevents Intel from modeling their
-> selector HW in switchdev, but I think it is on them to work with the
-> switchdev folks to figure something out.
-
-They tried for the ixgbe and i40e. The problem is the hardware
-couldn't conform to what was asked for if I recall. It has been a few
-years since I worked in the Ethernet group at intel so I don't recall
-the exact details.
-
-> I'm a bit surprised HW that can do macvlan can't be modeled with
-> switchdev? What is missing?
-
-If I recall it was the fact that the hardware defaults to transmitting
-everything that doesn't match an existing rule to the external port
-unless it comes from the external port.
-
-> > > That is goal here. This is not about creating just a netdev, this is
-> > > about the whole kit: rdma, netdev, vdpa virtio-net, virtio-mdev.
-> >
-> > One issue is right now we are only seeing the rdma and netdev. It is
-> > kind of backwards as it is using the ADIs on the host when this was
-> > really meant to be used for things like mdev.
->
-> This is second 15 patch series on this path already. It is not
-> possible to pack every single thing into this series. This is the
-> micro step of introducing the SF idea and using SF==VF to show how the
-> driver stack works. The minimal changing to the existing drivers
-> implies this can support an ADI as well.
->
-> Further, this does already show an ADI! vdpa_mlx5 will run on the
-> VF/SF and eventually causes qemu to build a virtio-net ADI that
-> directly passes HW DMA rings into the guest.
->
-> Isn't this exactly the kind of generic SRIOV replacement option you
-> have been asking for? Doesn't this completely supersede stuff built on
-> macvlan?
-
-Something like the vdpa model is more like what I had in mind. Only
-vdpa only works for the userspace networking case.
-
-Basically the idea is to have an assignable device interface that
-isn't directly tied to the hardware. Instead it is making use of a
-slice of it and referencing the PF as the parent leaving the PF as the
-owner of the slice. If at some point in the future we could make
-changes to allow for software to step in and do some switching if
-needed. The key bit is the abstraction of the assignable interface so
-that it is vendor agnostic and could be switched over to pure software
-backing if needed.
-
-> > expected to work. The swtichdev API puts some restrictions in place
-> > but there still ends up being parts without any definition.
->
-> I'm curious what you see as needing definition here?
->
-> The SRIOV model has the HW register programming API is device
-> specific.
->
-> The switchdev model is: no matter what HW register programing is done
-> on the VF/SF all the packets tx/rx'd will flow through the switchdev.
->
-> The purpose of switchdev/SRIOV/SIOV has never been to define a single
-> "one register set to rule them all".
->
-> That is the area that VDPA virtio-net and others are covering.
-
-That is fine and that covers it for direct assigned devices. However
-that doesn't cover the container case. My thought is if we are going
-to partition a PF into multiple netdevices we should have some generic
-interface that can be provided to represent the netdevs so that if
-they are pushed into containers you don't have to rip them out if for
-some reason you need to change the network configuration. For the
-Intel NICs we did that with macvlan in the VMDq case. I see no reason
-why you couldn't do something like that here with the subfunction
-case.
+Regards!
