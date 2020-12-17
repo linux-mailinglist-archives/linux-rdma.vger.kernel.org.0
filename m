@@ -2,60 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABB82DD2D5
+	by mail.lfdr.de (Postfix) with ESMTP id E16142DD2D6
 	for <lists+linux-rdma@lfdr.de>; Thu, 17 Dec 2020 15:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728000AbgLQOUk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1726291AbgLQOUk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 17 Dec 2020 09:20:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34780 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgLQOUj (ORCPT
+        with ESMTP id S1727246AbgLQOUj (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Dec 2020 09:20:39 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C03FC061285
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Dec 2020 06:19:23 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id b2so28834796edm.3
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Dec 2020 06:19:23 -0800 (PST)
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16376C061248
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Dec 2020 06:19:24 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id cm17so28824678edb.4
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Dec 2020 06:19:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Cwr31r9xVs6HYLbvddJ5+hEwG5tfmVS3LWgeJk4fqjQ=;
-        b=PpqAfLHCAvlmnS5JjNrMY/6s1cf+6ltv3fGoq8NU8VYYSBt+qlaNCUdhWk+S4C2yRb
-         rDomAG0aYMvBxDrvWXNO6um+Dn+DKJ0KJeNLeI5IWpLl8smlP7syl3WC6KVunw0ll38s
-         06dj3uMqSVBJJ9AuNqsJztPB/U1kIE52XGC9YciAQ4SBW92X476AJJvL44NaDN552HE5
-         lUk6Bw2GbgJ0KYr8oISf4a+4B2WyqC+mMeltvkblSYkHbIWqQBW//MGcbUusVTbbMBBn
-         062lvUwus/b+PUsr1/voCcrtEEGqpz14yEypuXoDXEvASz7sHga/6zaS9KP9GV11B+Tz
-         elMw==
+        bh=HaKGDnuifTU5L5KLU2Tpj7+tCZ+lTyDwJG4jK//u6Sk=;
+        b=VI+ekysY4Vx41AFO01ZJU5eGxwCcFIAMDyXbUo1DeHj9YKE8C8PHcD6ryt0eKBjqxr
+         TVBDQ6TFrFSenbDgtY/XVFAKi3n0CKBST4AR+hO6YXgoBVMsM7AU4jMbYAbIDCxawZuB
+         BHxb28kt4TW0SEkWQTRi9+beSNJh6vuFXZWwWHmWjjabNFjWSQH7I0ZaSjFqiixP+LHA
+         4Mbn/0cIbV986P65L4+4M3nAtkqRjE/ozfmneguTgjk+DcipcNWqif/cAsVDmq5FFOeP
+         sI1i7kc8lnt/SAt/KlanMr5FAJyfh+eOkhanJ1iEZ1DMOndbExaQkVE7ZBy9oXYVzvGI
+         z9mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Cwr31r9xVs6HYLbvddJ5+hEwG5tfmVS3LWgeJk4fqjQ=;
-        b=ZFYGqbpcXnG787h3vz55+sMGGwpZfbHRoEEFNU9kra8dIhhJ+ianjj2eJZ9sSDcqVM
-         PW+ivMpm7K1OP7iEKpfFJmbAG2tqgVj1204iOQlubKKIGPm11PSADQHivqIalgETm/PB
-         lmK4rM1NqSDKdhEgQnKwjY28R/maAZ+gGr6GqivaWJvQL78EBaR9ekUNvSHdiV7RdZXJ
-         XvfYDASuiewy+jusuypStQywgCZR4jb+pDuwNFTtJe8HkBzV6CLYbGgJy1qus0EsKSHh
-         U7FBAG+xzB4P+HyE6L33VkTFvYoSSt2f6Fzz6ifsbRsASS/38O4N/zD0RAFgihaoQuBd
-         PSrA==
-X-Gm-Message-State: AOAM533DWXDjtUvgCLg/4QAHKpGJYdTA12jkyU4A+Nt5xXR+0mdIAtF8
-        L5/7yKKA0upgj3aLbKFbOFZjctUuOZYKew==
-X-Google-Smtp-Source: ABdhPJyWbYuBdybVbpivKLPJgmTHWoZHfiN6PovzqZ7VSL4Jn93Q74ng9H/xD/b+7jdbax7g5E4S4Q==
-X-Received: by 2002:a50:fc13:: with SMTP id i19mr39777345edr.281.1608214761816;
-        Thu, 17 Dec 2020 06:19:21 -0800 (PST)
+        bh=HaKGDnuifTU5L5KLU2Tpj7+tCZ+lTyDwJG4jK//u6Sk=;
+        b=gijEVexpUjPTKPdcyD/ZtmH9heEbEPFtWsHqtpDo9lL3iGSt0mPlmU+F+B0OsZWVcp
+         SUkiDiDmOOJiFd2QorjLynj4jbnGJ9CXESdIQYoIa/jQ43kwasxNtqnSAI2AGX7OxfpW
+         4bk30RvaC7W0bbmW1BCMGrD+1EZ88m0X0Tq4QkrfXX9HmZce8hO3GWoX1L5TqCnhmZHt
+         LFJGgJye17kVJFf/JDCkYFWK72LZby8u9r6yeZa8GuWE5IzLPEVXxOy5MhIjlF2xfQzr
+         iPLwZfmhgm87aQ5wh3QhgegYaaDe93RAfkFKpfa2ZtjwVAnypgRsHwfaueKSb8ZSsEV/
+         m3pg==
+X-Gm-Message-State: AOAM530m3DG4tSMPn6v+82+DzUEqOEGngfukP74z9V8fbCo+X22OfqQI
+        AfgpbErqm4DsE/8pnERxlFxmQlbl3mtAlg==
+X-Google-Smtp-Source: ABdhPJx3pjmlYhdC7oA9AoMCKKRqBll3MHb4SDGbfUe0roHhv7Tn28oMxB/A0bszVddsNe/IDSLyig==
+X-Received: by 2002:aa7:d485:: with SMTP id b5mr37568150edr.214.1608214762707;
+        Thu, 17 Dec 2020 06:19:22 -0800 (PST)
 Received: from jwang-Latitude-5491.fkb.profitbricks.net ([2001:16b8:4991:de00:e5a4:2f4d:99:ddc5])
         by smtp.gmail.com with ESMTPSA id b14sm18168969edu.3.2020.12.17.06.19.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 06:19:21 -0800 (PST)
+        Thu, 17 Dec 2020 06:19:22 -0800 (PST)
 From:   Jack Wang <jinpu.wang@cloud.ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
         jinpu.wang@cloud.ionos.com,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Subject: [PATCHv2 for-next 05/19] RDMA/rtrs-clt: Set mininum limit when create QP
-Date:   Thu, 17 Dec 2020 15:19:01 +0100
-Message-Id: <20201217141915.56989-6-jinpu.wang@cloud.ionos.com>
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Gioh Kim <gi-oh.kim@cloud.ionos.com>
+Subject: [PATCHv2 for-next 06/19] RDMA/rtrs-srv: Jump to dereg_mr label if allocate iu fails
+Date:   Thu, 17 Dec 2020 15:19:02 +0100
+Message-Id: <20201217141915.56989-7-jinpu.wang@cloud.ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201217141915.56989-1-jinpu.wang@cloud.ionos.com>
 References: <20201217141915.56989-1-jinpu.wang@cloud.ionos.com>
@@ -65,81 +66,40 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Currently rtrs when create_qp use a coarse numbers (bigger in general),
-which leads to hardware create more resources which only waste memory
-with no benefits.
+From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 
-- SERVICE con,
-For max_send_wr/max_recv_wr, it's 2 times SERVICE_CON_QUEUE_DEPTH + 2
+The rtrs_iu_free is called in rtrs_iu_alloc if memory is limited, so we
+don't need to free the same iu again.
 
-- IO con
-For max_send_wr/max_recv_wr, it's sess->queue_depth * 3 + 1
-
-Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
+Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
+Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Reviewed-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Reviewed-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 719254fc83a1..b3fb5fb93815 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1511,7 +1511,7 @@ static void destroy_con(struct rtrs_clt_con *con)
- static int create_con_cq_qp(struct rtrs_clt_con *con)
- {
- 	struct rtrs_clt_sess *sess = to_clt_sess(con->c.sess);
--	u32 wr_queue_size;
-+	u32 max_send_wr, max_recv_wr, cq_size;
- 	int err, cq_vector;
- 	struct rtrs_msg_rkey_rsp *rsp;
- 
-@@ -1523,7 +1523,8 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
- 		 * + 2 for drain and heartbeat
- 		 * in case qp gets into error state
- 		 */
--		wr_queue_size = SERVICE_CON_QUEUE_DEPTH * 3 + 2;
-+		max_send_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
-+		max_recv_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
- 		/* We must be the first here */
- 		if (WARN_ON(sess->s.dev))
- 			return -EINVAL;
-@@ -1555,25 +1556,29 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
- 
- 		/* Shared between connections */
- 		sess->s.dev_ref++;
--		wr_queue_size =
-+		max_send_wr =
- 			min_t(int, sess->s.dev->ib_dev->attrs.max_qp_wr,
- 			      /* QD * (REQ + RSP + FR REGS or INVS) + drain */
- 			      sess->queue_depth * 3 + 1);
-+		max_recv_wr =
-+			min_t(int, sess->s.dev->ib_dev->attrs.max_qp_wr,
-+			      sess->queue_depth * 3 + 1);
- 	}
- 	/* alloc iu to recv new rkey reply when server reports flags set */
- 	if (sess->flags == RTRS_MSG_NEW_RKEY_F || con->c.cid == 0) {
--		con->rsp_ius = rtrs_iu_alloc(wr_queue_size, sizeof(*rsp),
-+		con->rsp_ius = rtrs_iu_alloc(max_recv_wr, sizeof(*rsp),
- 					      GFP_KERNEL, sess->s.dev->ib_dev,
- 					      DMA_FROM_DEVICE,
- 					      rtrs_clt_rdma_done);
- 		if (!con->rsp_ius)
- 			return -ENOMEM;
--		con->queue_size = wr_queue_size;
-+		con->queue_size = max_recv_wr;
- 	}
-+	cq_size = max_send_wr + max_recv_wr;
- 	cq_vector = con->cpu % sess->s.dev->ib_dev->num_comp_vectors;
- 	err = rtrs_cq_qp_create(&sess->s, &con->c, sess->max_send_sge,
--				 cq_vector, wr_queue_size, wr_queue_size,
--				 wr_queue_size, IB_POLL_SOFTIRQ);
-+				 cq_vector, cq_size, max_send_wr,
-+				 max_recv_wr, IB_POLL_SOFTIRQ);
- 	/*
- 	 * In case of error we do not bother to clean previous allocations,
- 	 * since destroy_con_cq_qp() must be called.
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index 6771fb4a1110..89e938a1a4fb 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -651,7 +651,7 @@ static int map_cont_bufs(struct rtrs_srv_sess *sess)
+ 			if (!srv_mr->iu) {
+ 				err = -ENOMEM;
+ 				rtrs_err(ss, "rtrs_iu_alloc(), err: %d\n", err);
+-				goto free_iu;
++				goto dereg_mr;
+ 			}
+ 		}
+ 		/* Eventually dma addr for each chunk can be cached */
+@@ -667,7 +667,6 @@ static int map_cont_bufs(struct rtrs_srv_sess *sess)
+ 			srv_mr = &sess->mrs[mri];
+ 			sgt = &srv_mr->sgt;
+ 			mr = srv_mr->mr;
+-free_iu:
+ 			rtrs_iu_free(srv_mr->iu, sess->s.dev->ib_dev, 1);
+ dereg_mr:
+ 			ib_dereg_mr(mr);
 -- 
 2.25.1
 
