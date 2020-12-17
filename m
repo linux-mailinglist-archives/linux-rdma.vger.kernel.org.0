@@ -2,62 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C5D2DD2D7
+	by mail.lfdr.de (Postfix) with ESMTP id D0EC52DD2D8
 	for <lists+linux-rdma@lfdr.de>; Thu, 17 Dec 2020 15:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727246AbgLQOUk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Dec 2020 09:20:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
+        id S1727260AbgLQOUl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Dec 2020 09:20:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727260AbgLQOUk (ORCPT
+        with ESMTP id S1727889AbgLQOUk (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Dec 2020 09:20:40 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCD1C061257
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E63C0611C5
         for <linux-rdma@vger.kernel.org>; Thu, 17 Dec 2020 06:19:25 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id lt17so38115329ejb.3
+Received: by mail-ed1-x536.google.com with SMTP id q16so28785726edv.10
         for <linux-rdma@vger.kernel.org>; Thu, 17 Dec 2020 06:19:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=995sngWFQB2h3MQ9SRxKgslkNwFLet34t3ZGVlvVkz0=;
-        b=NNq6ry0dEqj1QHy+s5KSp15ReMY5q2MpDsuIpg1YlWhzEBvHMcFZ8LfxNQn6SU9PBf
-         hCUXfIgh1sSAp/vxVFJz+nh4RCwB/TnJil2QNPwtxR5ZYpBAmoM44VdWP0KumhCsJAqS
-         o20or60urEb2Jbmot+knhoLl43Nwd8qq0oQqOzPOSGfsFdcSUYEP5uJ9xUShksqq0yPc
-         2wqHtnEH10EZ/An3/eOexxyEKS461HEyxd3xDV2TZIRS5QZOlABVeKizyAkWmjbLL/3i
-         OuOiP72Sv10R+p/J9RtEaZRb++nPN3rJZ9XT1m7f2G+58/gHeQas3v0b+En5fBC/qyJ3
-         PJ2A==
+        bh=81PSqEKTzeewp1eFw0SkbXHJmtuB6a/3wq15G2WR/5g=;
+        b=UGSJK+TgAS6TFUfzUW4qLPGelqd549ZlCmWX3kFm4sFy5rag8aY17HFo1N/bBygJEQ
+         oqGMwNI0FBwieo3oL3CgSTAGQyzecKrx7CH9sgMB2g4EssKar2Kvc54YiK69uBtSvPTu
+         AjTMtXRpmMAt3DaFpcbQNtJd8864hhHLZ0gyqf4lKJFAHVdudTaxmwHMd2l1/279Py3U
+         fpbtJi5zOlVX3sUbwQilcTxb3UL+MTAuJdLT3UUg/TTwgPkaqJg1Qc+owPIaHBPJdC5s
+         2sQ37jVkRuxYDCcKQcY0/dcxNNoUsxCFtTKm9IS8mvN+Yiwk8ZZiX9bb9c67Sivd4Evo
+         1wFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=995sngWFQB2h3MQ9SRxKgslkNwFLet34t3ZGVlvVkz0=;
-        b=dPLdDJpty9pvmjF8ivxFh1fd+yPWSA5uXk6NhhPQTp8bimFqKxaTSIasKHRV5FhQW0
-         jkuNJfbF7pi+jsezeBVXZ0SiCRNHjywxTITeZ3Ui233P5n6Y3H0BTL+L+O0GE/cNHFts
-         3nnVs1vLN6FDpMe4Muq2wrjGEBjhSWaItgwqXPiTrLMZs+x/W00+tBEJ2q7AW220xWg+
-         /M7+9llbgyNecF/kYEPPueyC15dlv9Vilp8eOTqAEvc5KID5fbNwVV4Xmw+nDyKsJ6Dh
-         QHy/bPBFWUhYWwu/8E4F7yk8EXWu2v3NMcfGrLxVMQ05NSZea10JYWqmO+VFnXafWOSz
-         Wafg==
-X-Gm-Message-State: AOAM530rXjgi1lemp5/zbLc1FRkroPeIKlngL3wmYzVb5ozik8qS0eAd
-        AWPyvWuCAzdPNiVe4+W1XvHbl9b3mgCUDg==
-X-Google-Smtp-Source: ABdhPJx3v8oDv3/66PDAF5Foc1nOoYkSi5hqI9K5oGqnhmkQJDmhsHthgaUAvz7BnnxrvglNIBPIMw==
-X-Received: by 2002:a17:906:3b8b:: with SMTP id u11mr34820735ejf.489.1608214763658;
-        Thu, 17 Dec 2020 06:19:23 -0800 (PST)
+        bh=81PSqEKTzeewp1eFw0SkbXHJmtuB6a/3wq15G2WR/5g=;
+        b=CQ+aKc3iRdiykyYIwMXo9w+FHJBA76vY+RnQQY2ywQpYPIYG/1QUnUs0ege2R5wFkm
+         w6YXKKAJnHMDBmfIwZ04eR2Lo/O24vhYmedjasr7D7O+Y22/L0haTTcIFCk/fyp6BbhH
+         9MYK/WWRHf+QKc7XOrUS42cucvOswu1MUWlCllv60dbYox8hpN5VkS08mzA5WHPrRNPr
+         ljB7q7HZ3JnoOX5KdxJexs4zNnyTozNRRM5fJEkX70UaS3NjmwS9jxar4xI0lcCdd2go
+         eWVuTAgUxuMi8Y4tvSTReW0aBxnHt7f6RkOYQukjA7SR1sLnemQizt0r35MBZyqVx6qz
+         t8Hw==
+X-Gm-Message-State: AOAM532rV1fWIabG39fOl7VEzN/E0h+V3V+3nsNc7ps8ClndjFkrEFEP
+        The9osPEQ/PiDIlpd110zJ274Yomyq+rkg==
+X-Google-Smtp-Source: ABdhPJyJWnpfhlyu5uZtqDnsMoKmZVBbDpnJe72U7OIX55AI7FzVA6/pXfp0zyNY7ZuZzLsAj8/rZQ==
+X-Received: by 2002:a05:6402:310f:: with SMTP id dc15mr38625528edb.225.1608214764515;
+        Thu, 17 Dec 2020 06:19:24 -0800 (PST)
 Received: from jwang-Latitude-5491.fkb.profitbricks.net ([2001:16b8:4991:de00:e5a4:2f4d:99:ddc5])
-        by smtp.gmail.com with ESMTPSA id b14sm18168969edu.3.2020.12.17.06.19.22
+        by smtp.gmail.com with ESMTPSA id b14sm18168969edu.3.2020.12.17.06.19.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 06:19:23 -0800 (PST)
+        Thu, 17 Dec 2020 06:19:24 -0800 (PST)
 From:   Jack Wang <jinpu.wang@cloud.ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
         jinpu.wang@cloud.ionos.com,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Subject: [PATCHv2 for-next 07/19] RDMA/rtrs: Call kobject_put in the failure path
-Date:   Thu, 17 Dec 2020 15:19:03 +0100
-Message-Id: <20201217141915.56989-8-jinpu.wang@cloud.ionos.com>
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Subject: [PATCHv2 for-next 08/19] RDMA/rtrs-clt: Consolidate rtrs_clt_destroy_sysfs_root_{folder,files}
+Date:   Thu, 17 Dec 2020 15:19:04 +0100
+Message-Id: <20201217141915.56989-9-jinpu.wang@cloud.ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201217141915.56989-1-jinpu.wang@cloud.ionos.com>
 References: <20201217141915.56989-1-jinpu.wang@cloud.ionos.com>
@@ -69,62 +67,78 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 
-Per the comment of kobject_init_and_add, we need to free the memory
-by call kobject_put.
+Since the two functions are called together, let's consolidate them in
+a new function rtrs_clt_destroy_sysfs_root.
 
-Fixes: 215378b838df ("RDMA/rtrs: client: sysfs interface functions")
-Fixes: 91b11610af8d ("RDMA/rtrs: server: sysfs interface functions")
 Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Reviewed-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Reviewed-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c | 2 ++
- drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 3 ++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c | 9 +++------
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c       | 6 ++----
+ drivers/infiniband/ulp/rtrs/rtrs-clt.h       | 3 +--
+ 3 files changed, 6 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-index ba00f0de14ca..ad77659800cd 100644
+index ad77659800cd..b6a0abf40589 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-@@ -408,6 +408,7 @@ int rtrs_clt_create_sess_files(struct rtrs_clt_sess *sess)
- 				   "%s", str);
- 	if (err) {
- 		pr_err("kobject_init_and_add: %d\n", err);
-+		kobject_put(&sess->kobj);
- 		return err;
- 	}
- 	err = sysfs_create_group(&sess->kobj, &rtrs_clt_sess_attr_group);
-@@ -419,6 +420,7 @@ int rtrs_clt_create_sess_files(struct rtrs_clt_sess *sess)
- 				   &sess->kobj, "stats");
- 	if (err) {
- 		pr_err("kobject_init_and_add: %d\n", err);
-+		kobject_put(&sess->stats->kobj_stats);
- 		goto remove_group;
- 	}
+@@ -471,15 +471,12 @@ int rtrs_clt_create_sysfs_root_files(struct rtrs_clt *clt)
+ 	return sysfs_create_group(&clt->dev.kobj, &rtrs_clt_attr_group);
+ }
  
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-index cca3a0acbabc..0a3886629cae 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-@@ -236,6 +236,7 @@ static int rtrs_srv_create_stats_files(struct rtrs_srv_sess *sess)
- 				   &sess->kobj, "stats");
- 	if (err) {
- 		rtrs_err(s, "kobject_init_and_add(): %d\n", err);
-+		kobject_put(&sess->stats->kobj_stats);
- 		return err;
+-void rtrs_clt_destroy_sysfs_root_folders(struct rtrs_clt *clt)
++void rtrs_clt_destroy_sysfs_root(struct rtrs_clt *clt)
+ {
++	sysfs_remove_group(&clt->dev.kobj, &rtrs_clt_attr_group);
++
+ 	if (clt->kobj_paths) {
+ 		kobject_del(clt->kobj_paths);
+ 		kobject_put(clt->kobj_paths);
  	}
- 	err = sysfs_create_group(&sess->stats->kobj_stats,
-@@ -292,8 +293,8 @@ int rtrs_srv_create_sess_files(struct rtrs_srv_sess *sess)
- 	sysfs_remove_group(&sess->kobj, &rtrs_srv_sess_attr_group);
- put_kobj:
- 	kobject_del(&sess->kobj);
--	kobject_put(&sess->kobj);
- destroy_root:
-+	kobject_put(&sess->kobj);
- 	rtrs_srv_destroy_once_sysfs_root_folders(sess);
+ }
+-
+-void rtrs_clt_destroy_sysfs_root_files(struct rtrs_clt *clt)
+-{
+-	sysfs_remove_group(&clt->dev.kobj, &rtrs_clt_attr_group);
+-}
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index b3fb5fb93815..99fc34950032 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -2707,8 +2707,7 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
+ 		rtrs_clt_close_conns(sess, true);
+ 		kobject_put(&sess->kobj);
+ 	}
+-	rtrs_clt_destroy_sysfs_root_files(clt);
+-	rtrs_clt_destroy_sysfs_root_folders(clt);
++	rtrs_clt_destroy_sysfs_root(clt);
+ 	free_clt(clt);
  
- 	return err;
+ out:
+@@ -2725,8 +2724,7 @@ void rtrs_clt_close(struct rtrs_clt *clt)
+ 	struct rtrs_clt_sess *sess, *tmp;
+ 
+ 	/* Firstly forbid sysfs access */
+-	rtrs_clt_destroy_sysfs_root_files(clt);
+-	rtrs_clt_destroy_sysfs_root_folders(clt);
++	rtrs_clt_destroy_sysfs_root(clt);
+ 
+ 	/* Now it is safe to iterate over all paths without locks */
+ 	list_for_each_entry_safe(sess, tmp, &clt->paths_list, s.entry) {
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.h b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
+index b8dbd701b3cb..a97a068c4c28 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.h
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
+@@ -243,8 +243,7 @@ ssize_t rtrs_clt_reset_all_help(struct rtrs_clt_stats *stats,
+ /* rtrs-clt-sysfs.c */
+ 
+ int rtrs_clt_create_sysfs_root_files(struct rtrs_clt *clt);
+-void rtrs_clt_destroy_sysfs_root_folders(struct rtrs_clt *clt);
+-void rtrs_clt_destroy_sysfs_root_files(struct rtrs_clt *clt);
++void rtrs_clt_destroy_sysfs_root(struct rtrs_clt *clt);
+ 
+ int rtrs_clt_create_sess_files(struct rtrs_clt_sess *sess);
+ void rtrs_clt_destroy_sess_files(struct rtrs_clt_sess *sess,
 -- 
 2.25.1
 
