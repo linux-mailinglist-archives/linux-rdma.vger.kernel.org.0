@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7EC2DD2DD
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Dec 2020 15:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5DFB2DD2DC
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Dec 2020 15:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728155AbgLQOUn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1728143AbgLQOUn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 17 Dec 2020 09:20:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728338AbgLQOUn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Dec 2020 09:20:43 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66EF7C0611CF
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Dec 2020 06:19:30 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id d17so38116979ejy.9
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Dec 2020 06:19:30 -0800 (PST)
+        with ESMTP id S1728155AbgLQOUm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Dec 2020 09:20:42 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E35C0611D0
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Dec 2020 06:19:31 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id qw4so38044682ejb.12
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Dec 2020 06:19:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rWIBp61eWpeeSiM2PO3HAO/lWFN6/Kggc1TmjydEVeo=;
-        b=GXrCYwsl/ebMrIiNgtWgA2YNVYDGjVnc8eNaOQDZn9qGloPs7a+6gtsZIZYbsZKbf2
-         H6d8BwpFIRlHOJa4dLDfdABUkB0huC8jo4CdX4oJqdeM3cxUecBr5fPO6FjdKMsPG3ND
-         d3kS6E7R+xytWc58PKV8X3iz4l2xz0pWpCr9LlpbZOXcfu1Yaw04TwfZNTENWNOTFxYc
-         IxlpEC9SDbGfn9JiePKWvYouTADsAu3QnmCw0oBBS8FEy0kTCX9mYXI+u1ouRLfXmWyw
-         tNW5tATAsLHe0meK+c57OYDKjOSH8ZzK36zm4NMPDSOKcJanwtxdn1lSjELfFEQB9pVK
-         3d7w==
+        bh=EDx0d7sqRwEf6BTXoENkSiqZnuiDyLvadt8JMtY/Ios=;
+        b=XdMDmPcZRDJH7OX2Iw6FKrSs6Aq1WeNs0wZ7OohyRx0HJMAVmzEgK7nvHu3lU27MfA
+         csvbOJtqDC9I1pvUzrz6NBttCsS1jbQHooDce4KmdFzyqVQYb2Sbby37i9kA4zSv4hcT
+         z7Tdlk+5rqJ6klbgqd0EaFAMWXk/J1XLuO7/3ik7rAxXuOE9T1XncQ/TFztg1RIweKBn
+         A+hwP1yghNOnnib4CwkTH9p6M0Z0IVUjoVAy0+CjUCEZ047YJ5a1x6V95eTbd/lHwUKP
+         j+LHuIb7K5KuW/MxzI5YOkGE0dpsz03LkSwpIxbYypPoa/bo9XzcThiVeHzZl+5hrw4Z
+         18vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rWIBp61eWpeeSiM2PO3HAO/lWFN6/Kggc1TmjydEVeo=;
-        b=I9dmmPKkVjJSh9jdn5wu0/z+egR69WevNPYxjt0dWILhB7UfnQyY3C8wIxF7HSsKlf
-         a2dAImWhpy4Bn2cntcViJfNPksCu5vVS3Z3xxR+zyKzFE+QTJmtGXLxtw3JubtbwR6uj
-         olXjb91vhbNFpPfYBRSNboukxO3yshCp4IK31u5fcHnW2CNWZp5MW7Re3CmNt4ynv0HJ
-         S+n72QBDwh/pykjhLK53ynz+UnWbmjNAQCe4zmE6poj6/xWUmYOLduV37bIY31eYRrR2
-         CwNLPT0AN/I4eXcxg3xGAhsNRGQimWO6N1TJ6AJGc4/+XvzjZ2B1+TLyksR6vL8Cn8m2
-         FSEA==
-X-Gm-Message-State: AOAM531dAfmntyWLe0rh3CttkMWVtAI33gT83pUy1zT4WfVr5YiN2F82
-        SYdLLLuz3bRK/l15sL0FUM0EPPRVIjl8Aw==
-X-Google-Smtp-Source: ABdhPJyJETbT5kqrbW6Bg4/spbywqPs0TZU39duRdspDdkQivSDorFa79yRW6h3cZPT8ZDefaNwwjg==
-X-Received: by 2002:a17:906:924a:: with SMTP id c10mr35159031ejx.113.1608214768996;
-        Thu, 17 Dec 2020 06:19:28 -0800 (PST)
+        bh=EDx0d7sqRwEf6BTXoENkSiqZnuiDyLvadt8JMtY/Ios=;
+        b=lhZVzes7EDAouRR6DmV5dnK2UWP57jlgCp3s/xJh1/gveOa7ub7jzGdjWzGmAr1GdK
+         hdOQc3aT+2xmeiykH+Wl1XA3lPdn6ExSGGNvm0QIPRSMoVbFefLw0xhM6dkzvM/ecjgu
+         wN53ry7ZFglMl2G/vhDOdDaakUAgv41QaYxi5yMAc+9XMRsJ94uEcIDIyXaVmhZLM0HX
+         VdPFtYqRcaXc/WjlRiNk2whxfmeOdhWOGqsu0lZwFT81vdXVzzFzWAoqoIJRQ2+E0Ckc
+         YJuUtRM+dvppnn7AsBHr2RqyuAoUlpYd5dO8pPdT5KGekJ1FPCjciKThnpz8AKPKJQCd
+         BNow==
+X-Gm-Message-State: AOAM532XXkLdheYKC/Jr07IpmEUU32ZoP8Z/u/iWVR0+UFWeF4JP1lmo
+        WxRIi3p0ldgYc0SF6tBXrglaP6cWkdT3EA==
+X-Google-Smtp-Source: ABdhPJxYwIjI2VjAlGzYGT14HI4A5+Wd/IEc/k7afj6pdWIvQD7w9i6HUWmMyiREWiUOC8etDTfKrg==
+X-Received: by 2002:a17:906:71ca:: with SMTP id i10mr17695285ejk.528.1608214769982;
+        Thu, 17 Dec 2020 06:19:29 -0800 (PST)
 Received: from jwang-Latitude-5491.fkb.profitbricks.net ([2001:16b8:4991:de00:e5a4:2f4d:99:ddc5])
-        by smtp.gmail.com with ESMTPSA id b14sm18168969edu.3.2020.12.17.06.19.28
+        by smtp.gmail.com with ESMTPSA id b14sm18168969edu.3.2020.12.17.06.19.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 06:19:28 -0800 (PST)
+        Thu, 17 Dec 2020 06:19:29 -0800 (PST)
 From:   Jack Wang <jinpu.wang@cloud.ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
         jinpu.wang@cloud.ionos.com,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Subject: [PATCHv2 for-next 13/19] RDMA/rtrs-srv: Fix missing wr_cqe
-Date:   Thu, 17 Dec 2020 15:19:09 +0100
-Message-Id: <20201217141915.56989-14-jinpu.wang@cloud.ionos.com>
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+Subject: [PATCHv2 for-next 14/19] RDMA/rtrs-clt: Refactor the failure cases in alloc_clt
+Date:   Thu, 17 Dec 2020 15:19:10 +0100
+Message-Id: <20201217141915.56989-15-jinpu.wang@cloud.ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201217141915.56989-1-jinpu.wang@cloud.ionos.com>
 References: <20201217141915.56989-1-jinpu.wang@cloud.ionos.com>
@@ -66,61 +66,82 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-We had a few places wr_cqe is not set, which could lead to NULL pointer
-deref or GPF in error case.
+From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 
-Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Reviewed-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+Make all failure cases go to the common path to avoid duplicate code.
+And some issued existed before.
+
+1. clt need to be freed to avoid memory leak.
+
+2. return ERR_PTR(-ENOMEM) if kobject_create_and_add fails, because
+   rtrs_clt_open checks the return value of by call "IS_ERR(clt)".
+
+Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
 Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Reviewed-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 25 ++++++++++++-------------
+ 1 file changed, 12 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 89e938a1a4fb..465f20d6b89c 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -267,6 +267,7 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
- 		WARN_ON_ONCE(rkey != wr->rkey);
- 
- 	wr->wr.opcode = IB_WR_RDMA_WRITE;
-+	wr->wr.wr_cqe   = &io_comp_cqe;
- 	wr->wr.ex.imm_data = 0;
- 	wr->wr.send_flags  = 0;
- 
-@@ -294,6 +295,7 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
- 		inv_wr.sg_list = NULL;
- 		inv_wr.num_sge = 0;
- 		inv_wr.opcode = IB_WR_SEND_WITH_INV;
-+		inv_wr.wr_cqe   = &io_comp_cqe;
- 		inv_wr.send_flags = 0;
- 		inv_wr.ex.invalidate_rkey = rkey;
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 3c90718f668d..493f45a33b5e 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -2568,11 +2568,8 @@ static struct rtrs_clt *alloc_clt(const char *sessname, size_t paths_num,
+ 	clt->dev.class = rtrs_clt_dev_class;
+ 	clt->dev.release = rtrs_clt_dev_release;
+ 	err = dev_set_name(&clt->dev, "%s", sessname);
+-	if (err) {
+-		free_percpu(clt->pcpu_path);
+-		kfree(clt);
+-		return ERR_PTR(err);
+-	}
++	if (err)
++		goto err;
+ 	/*
+ 	 * Suppress user space notification until
+ 	 * sysfs files are created
+@@ -2580,29 +2577,31 @@ static struct rtrs_clt *alloc_clt(const char *sessname, size_t paths_num,
+ 	dev_set_uevent_suppress(&clt->dev, true);
+ 	err = device_register(&clt->dev);
+ 	if (err) {
+-		free_percpu(clt->pcpu_path);
+ 		put_device(&clt->dev);
+-		return ERR_PTR(err);
++		goto err;
  	}
-@@ -304,6 +306,7 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
  
- 		srv_mr = &sess->mrs[id->msg_id];
- 		rwr.wr.opcode = IB_WR_REG_MR;
-+		rwr.wr.wr_cqe = &local_reg_cqe;
- 		rwr.wr.num_sge = 0;
- 		rwr.mr = srv_mr->mr;
- 		rwr.wr.send_flags = 0;
-@@ -379,6 +382,7 @@ static int send_io_resp_imm(struct rtrs_srv_con *con, struct rtrs_srv_op *id,
+ 	clt->kobj_paths = kobject_create_and_add("paths", &clt->dev.kobj);
+ 	if (!clt->kobj_paths) {
+-		free_percpu(clt->pcpu_path);
+-		device_unregister(&clt->dev);
+-		return NULL;
++		err = -ENOMEM;
++		goto err_dev;
+ 	}
+ 	err = rtrs_clt_create_sysfs_root_files(clt);
+ 	if (err) {
+-		free_percpu(clt->pcpu_path);
+ 		kobject_del(clt->kobj_paths);
+ 		kobject_put(clt->kobj_paths);
+-		device_unregister(&clt->dev);
+-		return ERR_PTR(err);
++		goto err_dev;
+ 	}
+ 	dev_set_uevent_suppress(&clt->dev, false);
+ 	kobject_uevent(&clt->dev.kobj, KOBJ_ADD);
  
- 		if (need_inval) {
- 			if (likely(sg_cnt)) {
-+				inv_wr.wr_cqe   = &io_comp_cqe;
- 				inv_wr.sg_list = NULL;
- 				inv_wr.num_sge = 0;
- 				inv_wr.opcode = IB_WR_SEND_WITH_INV;
-@@ -421,6 +425,7 @@ static int send_io_resp_imm(struct rtrs_srv_con *con, struct rtrs_srv_op *id,
- 		srv_mr = &sess->mrs[id->msg_id];
- 		rwr.wr.next = &imm_wr;
- 		rwr.wr.opcode = IB_WR_REG_MR;
-+		rwr.wr.wr_cqe = &local_reg_cqe;
- 		rwr.wr.num_sge = 0;
- 		rwr.wr.send_flags = 0;
- 		rwr.mr = srv_mr->mr;
+ 	return clt;
++err_dev:
++	device_unregister(&clt->dev);
++err:
++	free_percpu(clt->pcpu_path);
++	kfree(clt);
++	return ERR_PTR(err);
+ }
+ 
+ static void free_clt(struct rtrs_clt *clt)
 -- 
 2.25.1
 
