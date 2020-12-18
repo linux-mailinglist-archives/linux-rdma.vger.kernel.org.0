@@ -2,159 +2,205 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521CB2DE9B5
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Dec 2020 20:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C459A2DE9EB
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Dec 2020 20:49:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730247AbgLRTXF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Dec 2020 14:23:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730082AbgLRTXE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Dec 2020 14:23:04 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 588EBC0617A7;
-        Fri, 18 Dec 2020 11:22:24 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id r17so3122010ilo.11;
-        Fri, 18 Dec 2020 11:22:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lBAy0stBOkcu8fodY1L3CFnmTdsk4sYtix1WdMWHeV4=;
-        b=aHWHqDQw4RGtaqUqQ6SlKBNyrb87KiMiSHaFFiNd7nGlU+mNn0lKL905I7ocyWxVnN
-         RJLWD8mkuNmB/GkY6ATqApZN3ui82weHujtw0REw2chpSP3agmIR5/XYSl7GPFAUC7ZB
-         C4lJeoV/TAz76F7tQ3XLTPZms8G2F++/dhL0EzQK0zBQPsxnamwzCgk5YXjzfxWeNMNN
-         +MnTzf3nLFCfBnOkRWiMKJs8jopydRmH25EiqIX1JfnxhPf1blWdvp1II7yhNFcJg80e
-         zxs1wlGyxfvqezriV3wbgt3Kdp+Iwv+PSG22EzOt73Mg+GrnkOMQuddjySMsKq/8uqFA
-         to3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lBAy0stBOkcu8fodY1L3CFnmTdsk4sYtix1WdMWHeV4=;
-        b=ndSGypxVwTfl1xVsfXeaX8lcxKdD6ci8k6iNw+TY8vRgLnCG6ii9diXA8uAvEYL4eH
-         zwM1nO6s6P24cf3/fXe+mgfUDOZmDpXUyK9eez/q20D+Nn+rhwX2AzVTz37ym+o8ejea
-         wTZBigNBcW9RnGEXe7nWik9dzu5Yr3q+Hhc7d/C5+Hh0CBl0oVHQXdvWUxOeQ6X2xADR
-         G5urPMAcgMPb2TNrJBwETMJO7nuBKgaxkCDTnx7gcUjqFdYzDKQf9Y6id2iAJbhrtkej
-         NK0vfbBqqSSltMHNhC0hcs42aBGxjLIj5XeWhqy2znBFSUhaO8fBtbr/thh0IgGqt9/1
-         Vx5g==
-X-Gm-Message-State: AOAM532rMwC4ut0PaV+OPXCRkLtpOK88Nm9B1v1dzjDcOnzIKDYa9Bfe
-        wxUDhE8hryyq2D71iTEk97xlABKFsNLX+WwU9do=
-X-Google-Smtp-Source: ABdhPJyLToaHF3ZBbBd7rQ3s0zfjtGFOHbRZI8Ss5kVckmrxjlAfIJKP1D6eEqBBignzB8wWVwWTV+IdNqLr+5krNu8=
-X-Received: by 2002:a92:c682:: with SMTP id o2mr5517065ilg.97.1608319343638;
- Fri, 18 Dec 2020 11:22:23 -0800 (PST)
-MIME-Version: 1.0
-References: <ecad34f5c813591713bb59d9c5854148c3d7f291.camel@kernel.org>
- <CAKgT0UfTOqS9PBeQFexyxm7ytQzdj0j8VMG71qv4+Vn6koJ5xQ@mail.gmail.com>
- <20201216001946.GF552508@nvidia.com> <CAKgT0UeLBzqh=7gTLtqpOaw7HTSjG+AjXB7EkYBtwA6EJBccbg@mail.gmail.com>
- <20201216030351.GH552508@nvidia.com> <CAKgT0UcwP67ihaTWLY1XsVKEgysa3HnjDn_q=Sgvqnt=Uc7YQg@mail.gmail.com>
- <20201216133309.GI552508@nvidia.com> <CAKgT0UcRfB8a61rSWW-NPdbGh3VcX_=LCZ5J+-YjqYNtm+RhVg@mail.gmail.com>
- <20201216175112.GJ552508@nvidia.com> <CAKgT0Uerqg5F5=jrn5Lu33+9Y6pS3=NLnOfvQ0dEZug6Ev5S6A@mail.gmail.com>
- <20201216203537.GM552508@nvidia.com> <CAKgT0UfuSA9PdtR6ftcq0_JO48Yp4N2ggEMiX9zrXkK6tN4Pmw@mail.gmail.com>
- <c737048e-5e65-4b16-ffba-5493da556151@gmail.com> <CAKgT0UdxVytp4+zYh+gOYDOc4+ZNNx3mW+F9f=UTiKxyWuMVbQ@mail.gmail.com>
- <BY5PR12MB43220950B3A93B9E548976C7DCC30@BY5PR12MB4322.namprd12.prod.outlook.com>
- <CAKgT0UdtEJ0Xe5icMOSj0dg-unEgTR8AwDrtdAWTKEH4D-0www@mail.gmail.com> <BY5PR12MB43223E49FF50757D8FD80738DCC30@BY5PR12MB4322.namprd12.prod.outlook.com>
-In-Reply-To: <BY5PR12MB43223E49FF50757D8FD80738DCC30@BY5PR12MB4322.namprd12.prod.outlook.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Fri, 18 Dec 2020 11:22:12 -0800
-Message-ID: <CAKgT0Uetb7_P541Sd5t5Rne=np_+8AzJrv6GWqsFW_2A-kYEFw@mail.gmail.com>
-Subject: Re: [net-next v4 00/15] Add mlx5 subfunction support
-To:     Parav Pandit <parav@nvidia.com>
-Cc:     David Ahern <dsahern@gmail.com>, Jason Gunthorpe <jgg@nvidia.com>,
-        Saeed Mahameed <saeed@kernel.org>,
+        id S1733282AbgLRTsz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Dec 2020 14:48:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733261AbgLRTsz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 18 Dec 2020 14:48:55 -0500
+Date:   Fri, 18 Dec 2020 11:48:12 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608320894;
+        bh=Qh4llrMn/hHqVQmIdxUlhe+2N4zekdVkoAsd89dOM0s=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LposW1O1LVNeCBAcVnKEPJHfQ1VWNPHV637iCLI218ju7AZPhWS6ZsfWQa4gvJIoR
+         eUUHtT8BOhveCJa0nIGR5HLDXN8tAO2k1NJ1QPcKKVxGXZlwp0iSMwQL8fMY/ijmPC
+         HelwgMSXicXYgNu3JgKbMBlqNwz+3THEj7Oe6nC52i6Gq9/GbZT7X1gM5UPN3DGrir
+         k/1g2MqPii37of7vGGt5n6j5tlFghGc3S8e/9ROhJYof+P+87kzyEKVp7evCMwsW/V
+         /Oy1eQ1XyxA+/RkIzlEU3C6keLu7qT+PQWhk6Nf5EPRwZR78yOI8SmXEkx7h7Rbkgk
+         9S8DnEpW4eKUw==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     Parav Pandit <parav@nvidia.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Leon Romanovsky <leonro@nvidia.com>,
-        Netdev <netdev@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         David Ahern <dsahern@kernel.org>,
         Jacob Keller <jacob.e.keller@intel.com>,
         Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        "david.m.ertman@intel.com" <david.m.ertman@intel.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "kiran.patil@intel.com" <kiran.patil@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jiri Pirko <jiri@nvidia.com>, Vu Pham <vuhuong@nvidia.com>
+Subject: Re: [net-next v5 03/15] devlink: Introduce PCI SF port flavour and
+ port attribute
+Message-ID: <20201218114812.28db7084@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <ecc117632ffa36ae374fb05ed4806af2d7d55576.camel@kernel.org>
+References: <20201215090358.240365-1-saeed@kernel.org>
+        <20201215090358.240365-4-saeed@kernel.org>
+        <20201215152740.0b3ed376@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <BY5PR12MB432268C16D118BC435C0EF5CDCC50@BY5PR12MB4322.namprd12.prod.outlook.com>
+        <20201216155945.63f07c80@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <ecc117632ffa36ae374fb05ed4806af2d7d55576.camel@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 10:01 AM Parav Pandit <parav@nvidia.com> wrote:
->
->
-> > From: Alexander Duyck <alexander.duyck@gmail.com>
-> > Sent: Friday, December 18, 2020 9:31 PM
-> >
-> > On Thu, Dec 17, 2020 at 9:20 PM Parav Pandit <parav@nvidia.com> wrote:
-> > >
-> > >
-> > > > From: Alexander Duyck <alexander.duyck@gmail.com>
-> > > > Sent: Friday, December 18, 2020 8:41 AM
-> > > >
-> > > > On Thu, Dec 17, 2020 at 5:30 PM David Ahern <dsahern@gmail.com>
-> > wrote:
-> > > > >
-> > > > > On 12/16/20 3:53 PM, Alexander Duyck wrote:
-> > > > The problem is PCIe DMA wasn't designed to function as a network
-> > > > switch fabric and when we start talking about a 400Gb NIC trying to
-> > > > handle over 256 subfunctions it will quickly reduce the
-> > > > receive/transmit throughput to gigabit or less speeds when encountering
-> > hardware multicast/broadcast replication.
-> > > > With 256 subfunctions a simple 60B ARP could consume more than 19KB
-> > > > of PCIe bandwidth due to the packet having to be duplicated so many
-> > > > times. In my mind it should be simpler to simply clone a single skb
-> > > > 256 times, forward that to the switchdev ports, and have them
-> > > > perform a bypass (if available) to deliver it to the subfunctions.
-> > > > That's why I was thinking it might be a good time to look at addressing it.
-> > > Linux tc framework is rich to address this and already used by openvswich
-> > for years now.
-> > > Today arp broadcasts are not offloaded. They go through software path
-> > and replicated in the L2 domain.
-> > > It is a solved problem for many years now.
-> >
-> > When you say they are replicated in the L2 domain I assume you are talking
-> > about the software switch connected to the switchdev ports.
-> Yes.
->
-> > My question is
-> > what are you doing with them after you have replicated them? I'm assuming
-> > they are being sent to the other switchdev ports which will require a DMA to
-> > transmit them, and another to receive them on the VF/SF, or are you saying
-> > something else is going on here?
-> >
-> Yes, that is correct.
->
-> > My argument is that this cuts into both the transmit and receive DMA
-> > bandwidth of the NIC, and could easily be avoided in the case where SF
-> > exists in the same kernel as the switchdev port by identifying the multicast
-> > bit being set and simply bypassing the device.
-> It probably can be avoided but its probably not worth for occasional ARP packets on neighbor cache miss.
-> If I am not mistaken, even some recent HW can forward such ARP packets to multiple switchdev ports with commit 7ee3f6d2486e without following the above described DMA path.
+On Wed, 16 Dec 2020 20:44:21 -0800 Saeed Mahameed wrote:
+> On Wed, 2020-12-16 at 15:59 -0800, Jakub Kicinski wrote:
+> > On Wed, 16 Dec 2020 03:42:51 +0000 Parav Pandit wrote:  
+> > > > From: Jakub Kicinski <kuba@kernel.org>
+> > > > So subfunctions don't have a VF id but they may have a
+> > > > controller?
+> > > >    
+> > > Right. SF can be on external controller.
+> > >    
+> > > > Can you tell us more about the use cases and deployment models
+> > > > you're
+> > > > intending to support? Let's not add attributes and info which
+> > > > will go unused.
+> > > >     
+> > > External will be used the same way how it is used for PF and VF.
+> > >   
+> > > > How are SFs supposed to be used with SmartNICs? Are you assuming
+> > > > single
+> > > > domain of control?    
+> > > No. it is not assumed. SF can be deployed from smartnic to external
+> > > host.
+> > > A user has to pass appropriate controller number, pf number
+> > > attributes during creation time.  
+> > 
+> > My problem with this series is that I've gotten some real life
+> > application exposure over the last year, and still I have no idea 
+> > who is going to find this feature useful and why.
+> > 
+> > That's the point of my questions in the previous email - what
+> > are the use cases, how are they going to operate.
+> >   
+> 
+> The main focus of this feature is scale-ability we want to run
+> thousands of Containers/VMs, this is useful for both smartnic and
+> baremetal hypervisor worlds, where security and control is exclusive to
+> the eswitch manager may it be the smarnic embedded CPU or the x86
+> Hypervisor.
+> 
+> deployment models is identical to SRIOV, the only difference is the
+> instantiation model of SF, which is the main discussion point of this
+> series (i hope), which to my taste is very modest and minimal.
+> after SF is instantiated from that point nothing is new, the SF is
+> exposing standard linux interfaces netdev/rdma identical to what VF
+> does, most likely you will assign them a namespace and pass them
+> through to a container or assign them (not direct assignment) to a VM
+> via the virt stack, or create a vdpa instance and pass it to a virtio
+> interface.
+> 
+> There are endless usecases for the netdev stack, for customers who want
 
-Even with that it sounds like it will have to DMA the packet to
-multiple Rx destinations even if it is only performing the Tx DMA
-once. The Intel NICs did all this replication in hardware as well so
-that is what I was thinking of when I was talking about the
-replication behavior seen with SR-IOV.
+"endless" :)
 
-Basically what I am getting at is that this could be used as an
-architectural feature for switchdev to avoid creating increased DMA
-overhead for broadcast, multicast and unknown-unicast traffic. I'm not
-saying this is anything mandatory, and I would be perfectly okay with
-something like this being optional and defaulted to off. In my mind
-the setup only has the interfaces handling traffic to single point
-destinations so that at most you are only looking at a 2x bump in PCIe
-bandwidth for those cases where the packet ends up needing to go out
-the physical port. It would essentially be a software offload to avoid
-saturating the PCIe bus.
+> high scale virtualized/containerized environments, with thousands of
+> network functions that can deliver high speed and full offload
+> accelerators, Native XDP, Crypto, encap/decap, and HW filtering and
+> processing pipeline capabilities.
+> 
+> I have a long list of customers with various and different applications
+> and i am not even talking about the rdma and vdpa customers ! those
+> customers just can't wait to leave sriov behind and scale up !
+> 
+> this feature has a lot of value to the netdev users only because of the
+> minimal foot print to the netdev stack (to be honest there is no change
+> in netdev, only a thin API layer in devlink) and the immediate and
+> effortless benefits to deploy multiple (accelerated) netdevs at scale.
 
-This setup would only work if both interfaces are present in the same
-kernel though so that is why I chose now to bring it up as
-historically SR-IOV hasn't normally been associated with containers
-due to the limited number of interfaces that could be created.
+The acceleration can hopefully be plumbed through the software devices.
 
-Also as far as the patch count complaints I have seen in a few threads
-I would be fine with splitting things up so that the devlink and aux
-device creation get handled in one set, and then we work out the
-details of mlx5 attaching to the devices and spawning of the SF
-netdevs in another since that seems to be where the debate is.
+I think your HW is capable of doing large queue sets so I'm curious
+how this actually performs. We're probably talking 1000+ queues here -
+the CPU will have hard time serving so many queues. In my experiments
+basically the more queues the more cache trashing, the more interrupts,
+etc. and the lower the performance.
+
+> > It's hard to review an API without knowing the use of it. iproute2
+> > is low level plumbing.
+> 
+> I don't know how to put this, let me try:
+> A) SRIOV model
+> echo 128 > /sys/class/net/eth0/device/sriov_numvfs
+> ubind vf
+> 
+> ip set vf attribute x
+> configure representor .. 
+> deploy vf/netdev/rdma interface into the container
+
+No, no, my point is that for SR-IOV it's OpenStack, libvirt etc. which
+do this. I understand the manual steps. Often problems pop up when real
+systems try to string the HW objects together, allocated them, learn
+their capabilities, etc.
+
+> B) SF model 
+> you do (every thing under the devlink umbrella/switchdev):
+> for i in {1..1024} ; do
+> devlink port add pci/0000:06:00.0 flavour pcisf pfnum 0 sfnum $i
+> devlink port sf $i set attribute x
+> 
+> # from here on, it is identical to a VF
+> configure representor
+> deply sf/netdev/rdma interfaces into a container 
+> 
+> B is more scale-able and has more visibility and controllability  to
+> the user, after you create the SFs deployment and usecases are
+> identical to SRIOV VF usecases.
+> 
+> See the improvement ? :)
+> 
+> > Here the patch is adding the ability to apparently create a SF on 
+> > a remote controller. If you haven't thought that use case through
+> > just don't allow it until you know how it will work.
+> 
+> We have thought the use case through it is not any different from the 
+> local controller use case. the code is uniform, we need to work hard to
+> block a remote controller :) .. 
+
+So the SF is always created from the eswitch controller side?
+How does the host side look?
+
+I really think that for ease of merging this we should leave 
+the remote controller out at the beginning - only allow local
+creation.
+
+> > > > It seems that the way the industry is moving the major
+> > > > use case for SmartNICs is bare metal.
+> > > > 
+> > > > I always assumed nested eswitches when thinking about SmartNICs,
+> > > > what
+> > > > are you intending to do?
+> > > >    
+> > > Mlx5 doesn't support nested eswitch. SF can be deployed on the
+> > > external controller PCI function.
+> > > But this interface neither limited nor enforcing nested or flat
+> > > eswitch.
+> > >    
+> > > > What are your plans for enabling this feature in user space
+> > > > project?    
+> > > Do you mean K8s plugin or iproute2? Can you please tell us what
+> > > user space project?  
+> > 
+> > That's my question. For SR-IOV it'd be all the virt stacks out there.
+> > But this can't do virt. So what can it do?
+> 
+> you are thinking VF direct assignment. but don't forget
+> virt handles netdev assignment to a vm perfectly fine and SF has a
+> netdev.
+> 
+> And don't get me started on the weird virt handling of SRIOV VF, the
+> whole thing is a big mess :) it shouldn't be a de facto standard that
+> we need to follow.. 
