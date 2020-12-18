@@ -2,155 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A79952DDD46
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Dec 2020 04:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3C92DDD89
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Dec 2020 04:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgLRD1b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Dec 2020 22:27:31 -0500
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:10132 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726796AbgLRD1b (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 17 Dec 2020 22:27:31 -0500
-Received: from pps.filterd (m0150241.ppops.net [127.0.0.1])
-        by mx0a-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BI3OuX5031567;
-        Fri, 18 Dec 2020 03:26:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=pps0720;
- bh=c0eex8cWYwLtQCtk8gTNnu3YlrTPuVf8otX169VsZWk=;
- b=iMCGFrNsu8G88UbiZnAo/vGyHwcszbC2s5mRPnaG/i12VrXbjUUKJTSeAJbDb79lXy9E
- h4RuF2lXdyPqEO6hmemGN09gBL4jjLVKi/b/e+SqozMzxqMhNFGuSZtHKd7Tkrkyl0X5
- wRnb2XIY6gmhsd8EXY8H+3BW5u4SOYYCXNKaiz/gMyqTsgtus6X/c2CrH0D68WrlfJFQ
- i9PfCeqAomGhloyw71w0SxWYktjecEkOnsViDIjbR9W2aFAksE+R5l97Ybosl/BH9Wom
- r71lPpBFgl4b77y1iL2wp3JOaobuHR4VKS2X50xOpXAqXw/N0+GkRjKZMU0xuZ6cfVhQ 6Q== 
-Received: from g4t3425.houston.hpe.com (g4t3425.houston.hpe.com [15.241.140.78])
-        by mx0a-002e3701.pphosted.com with ESMTP id 35f49mn55r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Dec 2020 03:26:49 +0000
-Received: from G2W6310.americas.hpqcorp.net (g2w6310.austin.hp.com [16.197.64.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by g4t3425.houston.hpe.com (Postfix) with ESMTPS id 85459A8;
-        Fri, 18 Dec 2020 03:26:48 +0000 (UTC)
-Received: from G4W9119.americas.hpqcorp.net (2002:10d2:14d6::10d2:14d6) by
- G2W6310.americas.hpqcorp.net (2002:10c5:4034::10c5:4034) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Fri, 18 Dec 2020 03:26:48 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (15.241.52.12) by
- G4W9119.americas.hpqcorp.net (16.210.20.214) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2 via Frontend Transport; Fri, 18 Dec 2020 03:26:48 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kwmJCVsXSATnOx0baArJkRH7rH9LGCaZgbE08p2NlFeoVVR8L0FOiiZA2IvZv4Quqb86TWpc1cn8tM8zcLH19vd9EwyJZuim2Hbqm0pLYfnKOHK+txg/BDru1l0Vr/d7dAaDoLoJbOnNU+hwPlJH0pgsOzhZNjMQv5CuUPd2rMfBCjTBNUTKXLajo8XoSy8RB1e0a+v4tp+ZhW0dovr2gvShh73SPgSUyoX6tp5qGXj85YJrBZ65/gZAVpGVv6q1TgJhVB2Yyptuf+090iWsmkBKZNSoH3XU3I4zd66BLa3AED6NGkbii6E7AIOz5J1inbgudT78602msDckKJgVlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c0eex8cWYwLtQCtk8gTNnu3YlrTPuVf8otX169VsZWk=;
- b=b0wjjwwJh3YbJuVS+Z4tZw6ReBfuDcWU5TyvR0LWFs/4tXVWh0tHElwzFnynH8Df3cOXRx0cTrw9aSNNNAyTEQyvv2+HPFMFx8S+JfcUlQJZYCBg819GhuuUD3jZpmrOouvLQkTDZnXidec+SAcp0oXHKCFP+AxYD8eOktkIefOwsUbd+YZzDa13qhr3RdePLgLvD1s+uG1XxLc+XKBGxKgc1ndxGuextXzfmRVYdrF7uRXDzEsXKF3ahUjm0rDDHUBTOFEm/PPgSePYMdalhqRKz6R6Y/YGS4YOREANnAvUMtm/w3OKZzPcj2ENQXfneGbKmAK7S9rWFMx3uclYtA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hpe.com; dmarc=pass action=none header.from=hpe.com; dkim=pass
- header.d=hpe.com; arc=none
-Received: from CS1PR8401MB0614.NAMPRD84.PROD.OUTLOOK.COM
- (2a01:111:e400:7509::18) by CS1PR8401MB0933.NAMPRD84.PROD.OUTLOOK.COM
- (2a01:111:e400:7513::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.25; Fri, 18 Dec
- 2020 03:26:44 +0000
-Received: from CS1PR8401MB0614.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::99f9:76a1:a58f:3162]) by CS1PR8401MB0614.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::99f9:76a1:a58f:3162%7]) with mapi id 15.20.3676.025; Fri, 18 Dec 2020
- 03:26:44 +0000
-From:   "Manikarnike, Vasuki" <vasuki-ramanujapuram.manikarnike@hpe.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: librdmacm: cleanup/reinit API?
-Thread-Topic: librdmacm: cleanup/reinit API?
-Thread-Index: Adag5Df1zC6SM8fbR1aRdjHCAPFj4gaXad6ABloraIA=
-Date:   Fri, 18 Dec 2020 03:26:44 +0000
-Message-ID: <5F2E4ED3-0391-4CB0-8774-7703FDDEDBA4@hpe.com>
-References: <CS1PR8401MB0614C667E371DC6F8326CE4BD6070@CS1PR8401MB0614.NAMPRD84.PROD.OUTLOOK.COM>
- <20201115112425.GE47002@unreal>
-In-Reply-To: <20201115112425.GE47002@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Microsoft-MacOutlook/16.44.20121301
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=hpe.com;
-x-originating-ip: [73.189.34.135]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 29bed1fb-a76b-42a3-2874-08d8a304bebc
-x-ms-traffictypediagnostic: CS1PR8401MB0933:
-x-microsoft-antispam-prvs: <CS1PR8401MB0933962148AB505659064642D6C30@CS1PR8401MB0933.NAMPRD84.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Rwb2wiguiD8p/iE6gaCxpjfjFqKf8UikSxocmJ8vDbHpKjvQXqFTv2hqDvFlfcZ3IwPDXXCL3CHnG+gpU5smBeNA4LTRqkHPoJAfUHBK/PhqEO0NjuKLjcoHwflLEqTEq/4fwmbZznscRWxefPzV1pw0zfrT2+CD5CNJNgqrHS0ph7HpE5kwou1O3gODejN//oTB89S3jMBq22Is9hkhWe4+zn9QyNkfLyX93/L1/67+FaPrKBUX2YQfSPz5q/M3/Q3d+GnEmFthre8ur/kbyOJBQYWO4lMFIgeLwwJojeAlQCIHbvY0h992/rda9S53v7pV5bl4KLtPQW0IcePAsFG5zQx9xvjYuLVmE3GTN5yNGYrPJlr/q4/hew4ckVg1ImJ5RKBkDTb5OaxTraYSEKseVVyvDvrqK3ObpjG0xaC3mzjMYzlHUMYQhRlpwTmv+svVdFH37vqoNW9c6rhv6dWQXPdmKNLPewivoMvJJk8bgG63URzW9VjUOdw/cCn1Cfq8Gkeim09pAODXcrQRxA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CS1PR8401MB0614.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(376002)(136003)(39860400002)(396003)(346002)(366004)(186003)(316002)(26005)(36756003)(33656002)(5660300002)(91956017)(4326008)(6506007)(2906002)(4744005)(64756008)(2616005)(76116006)(66476007)(66556008)(66446008)(71200400001)(83380400001)(6916009)(6486002)(86362001)(8676002)(6512007)(966005)(478600001)(8936002)(66946007)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?R2xVcmlUSUh1dnRoRG11QkhFQkpOM041NC9MUnkwQlNyRE5pOTl6ZjhaUXZH?=
- =?utf-8?B?UWxUeHU1QTdPZS84SE5QUjEzUVczb1NzRCtObUUvaTN0STg3N21VS0hWUWd1?=
- =?utf-8?B?YVNOcndERkJ2WHovVDFCbk84cTYrNW9ibVRUWDU4QVhVRG1Za1BHM3VMcHZi?=
- =?utf-8?B?T1I2UHlzQi9weEZGM2Juem83WERqZ25uT2t0MXh4clN3b05jRE5DY2pqRWk1?=
- =?utf-8?B?emZWd2NtOUZ5QjkrMCtEWWpFMXQwN3JFeUtsaGQ1L1N0OUY0UzUrVHhFclF4?=
- =?utf-8?B?Q0pNZ0JEbmpCbng5cGtXdDBsSkQ1VE05SXZub0JqSFZhd1lTZ2hvN29RL3J0?=
- =?utf-8?B?RjlIcWFpWmVScE1jVE1XZzkxYXFKdlRiSy80cHpxNlJUKzJaeFE0R1FkV0RU?=
- =?utf-8?B?UDNzTnpDVkx0Y0U4elp0aGNxMDRubEh1Z0NwYkZtNGttNmhYQThhak5NUmJu?=
- =?utf-8?B?UjhvSFR0aGVYQ2FyVElueHBBY2tPbmdLSExlclhuQTdEUHh5NWI4YkFmTEV0?=
- =?utf-8?B?dnpXSnBmb09Yd3pFTEZGR0lScGxScUcxNUVsTG5EYkVBVys3eVRxZURqSHVo?=
- =?utf-8?B?ZExMQTloRGp6a3dSVSt0cWFSR2FORi9UcC9pdkRRSWlQV20zVi9nR2tJZGdP?=
- =?utf-8?B?em5kYVAyak8rZEtrS09kcnh1YnNybjIycFlmUHhRc21uQUtoRk1xbmRyYmJK?=
- =?utf-8?B?QVRnMkttMHoxRXFIYUd5Z0I3bVZlcXpCMGpidERHa2pXYlU1TmhGK3IvdjRs?=
- =?utf-8?B?WFd0aTZ0VFRVU1o5cnJQTWJjZHJScGVGMVNmTU5MQ25LcnZNYjNtQUZTTVY0?=
- =?utf-8?B?QWhxRHBlaDhFZkI1SHlqNExaMmN1Tnc0alBDbWZKTWV6c3JUZkhhRzNxZHZz?=
- =?utf-8?B?RU1DejY5eVMwZmtkWnpweFdUeTlUY2dJcWg0NGpaOEE1eDZscDdNR2VPVVo2?=
- =?utf-8?B?TVR4TG9Tdzl5QTZCN2NNZ0tUaytNVEZFaEdFQ01qZFJsN1o3d1ZLeWcrbzBq?=
- =?utf-8?B?L2o3WkJCVHRhKzltWi9EMXZWbXZtT1NITUxWSXBCeEZXVHN4YjJGZ1pycE1F?=
- =?utf-8?B?UXhtZklhaU1QSy9PUW96ZHJXT2pjVUZjbnVzc1BSay91TGJUd3dJTThiVTJx?=
- =?utf-8?B?ZUp0OTQ1MUMzc2VLeEJoMWhkM2RkY1hFMnJXQ1MvNzlIUWNXcGRQanMzcytY?=
- =?utf-8?B?d0trbERDV1ByRXN0YUFuK2t0alJBMU5hRzdGWHBGMkVMOVRVN3p5aStuY1ds?=
- =?utf-8?B?R1ZDZ3hVZVgyY3UxV0RLWmF3eG5OU2hQWE9Rd0hreG51M1lFWlBKL0RncDZR?=
- =?utf-8?Q?DaWP/MtaiBIGKQYseuFnsffKAmyrkcDBsa?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <770399BB8D761747A753DAF297B17412@NAMPRD84.PROD.OUTLOOK.COM>
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CS1PR8401MB0614.NAMPRD84.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 29bed1fb-a76b-42a3-2874-08d8a304bebc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Dec 2020 03:26:44.6864
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 105b2061-b669-4b31-92ac-24d304d195dc
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: D7YPhfex49cJvjTDj4Yeo1KnlHId0Vwh97IgOjvJNP/vltx3AmA7RuOBtifhC4v90trO/sH+CP0R0fHdoc1VHtdY+Nj5kcpBguFHwvav36D20p6W9upfkIvPOayX+ec+Ny2NIoMDMZab0WWsuc8rYg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CS1PR8401MB0933
-X-OriginatorOrg: hpe.com
-Content-Transfer-Encoding: base64
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S1732731AbgLRDzy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Dec 2020 22:55:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732730AbgLRDzy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Dec 2020 22:55:54 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F93C0617A7;
+        Thu, 17 Dec 2020 19:55:14 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id i6so789735otr.2;
+        Thu, 17 Dec 2020 19:55:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CqJkxa+ayZLdcjAQlsDQgHeYjWHJ3bto7XxZ3HXQUoU=;
+        b=p3nRCDznPod/zXVCuATao6ZgfLEVhmdqDrgqRZ2oxrMM8HHPIlA2nACB8hSCdIOFTp
+         Le5DzFpwB3p877d1Xgy/KSjGI1GoAqNHBFpkck6HkZt2uz14qxcVxQ7uB6CFLHiB6DF/
+         7FaRCZ9Lh2Z3geHvLvrJ2TDpG05ZUjuBhszOLSbNNJlxLJpsy5opjXQFP62kxbyi7cbk
+         Hk1aSA4zBUR+TDmMvXtRk0mll3U/WE8LCx5YczXB5hKl4Ko12FmEXSpZeZn9DcwcSrFK
+         J3iFcBQR43pWglqg8l5Aom30uZV3JUFPQj84NI3ZSsTFHMp6oDwT24LmijEs7DUrcAzn
+         MMzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CqJkxa+ayZLdcjAQlsDQgHeYjWHJ3bto7XxZ3HXQUoU=;
+        b=QTQg/w/SHoD3JEbumON4q3+4bD/Q4bEi7urwzrLQeC72j+2VnBaGSoI3oNxBdwlhVk
+         PENMBpNDYnlflu55u9pyfvXeQz0feuea9PJZV5zA0V3LqmcyqZs2QxN+yIq0kPI8ZeKJ
+         MU1eR8U6COeGr5gKJHT/Tnt8MRvik7HooQ04X0cv8m/70pivl8rCCrd7XgUqYzPe+2MB
+         bsjuM07f+dE6y2kL8sp6tT8aj4/mp90xCR7b9WoxA9wWHtbzJCU+VucRZA4Zt7eF3OTN
+         XH+tNMm6CGH1MV+mCL+5rt7hRqJggrnsPUMlJpK4gdeENOsHu5TevSwC60My9r2hLvUK
+         DpHA==
+X-Gm-Message-State: AOAM530XTo0OW2qaarf1qxDv/i8D/yEfO9FUZ2dRYtunDw8ts9EEf/9F
+        /f2XYRaO8o3HHF2/ID9RRyM=
+X-Google-Smtp-Source: ABdhPJyYH4731PCXESewJtrcSk0WLs2awpOX8rJE0eFMXEKmpwZ+u19rNYp/TyTHOjC9aORAS8IJdQ==
+X-Received: by 2002:a9d:650a:: with SMTP id i10mr1561701otl.341.1608263713597;
+        Thu, 17 Dec 2020 19:55:13 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.48.134.51])
+        by smtp.googlemail.com with ESMTPSA id u3sm1674772otk.31.2020.12.17.19.55.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Dec 2020 19:55:12 -0800 (PST)
+Subject: Re: [net-next v4 00/15] Add mlx5 subfunction support
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        David Ahern <dsahern@kernel.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Sridhar Samudrala <sridhar.samudrala@intel.com>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kiran Patil <kiran.patil@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+References: <ecad34f5c813591713bb59d9c5854148c3d7f291.camel@kernel.org>
+ <CAKgT0UfTOqS9PBeQFexyxm7ytQzdj0j8VMG71qv4+Vn6koJ5xQ@mail.gmail.com>
+ <20201216001946.GF552508@nvidia.com>
+ <CAKgT0UeLBzqh=7gTLtqpOaw7HTSjG+AjXB7EkYBtwA6EJBccbg@mail.gmail.com>
+ <20201216030351.GH552508@nvidia.com>
+ <CAKgT0UcwP67ihaTWLY1XsVKEgysa3HnjDn_q=Sgvqnt=Uc7YQg@mail.gmail.com>
+ <20201216133309.GI552508@nvidia.com>
+ <CAKgT0UcRfB8a61rSWW-NPdbGh3VcX_=LCZ5J+-YjqYNtm+RhVg@mail.gmail.com>
+ <20201216175112.GJ552508@nvidia.com>
+ <CAKgT0Uerqg5F5=jrn5Lu33+9Y6pS3=NLnOfvQ0dEZug6Ev5S6A@mail.gmail.com>
+ <20201216203537.GM552508@nvidia.com>
+ <CAKgT0UfuSA9PdtR6ftcq0_JO48Yp4N2ggEMiX9zrXkK6tN4Pmw@mail.gmail.com>
+ <c737048e-5e65-4b16-ffba-5493da556151@gmail.com>
+ <CAKgT0UdxVytp4+zYh+gOYDOc4+ZNNx3mW+F9f=UTiKxyWuMVbQ@mail.gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <fa864ac9-8a7e-ce42-b93b-1a2762386caf@gmail.com>
+Date:   Thu, 17 Dec 2020 20:55:10 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-18_03:2020-12-17,2020-12-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- spamscore=0 adultscore=0 priorityscore=1501 mlxscore=0 suspectscore=0
- lowpriorityscore=0 mlxlogscore=999 phishscore=0 clxscore=1011
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012180021
+In-Reply-To: <CAKgT0UdxVytp4+zYh+gOYDOc4+ZNNx3mW+F9f=UTiKxyWuMVbQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-VGhhbmtzLg0KDQrvu79PbiAxMS8xNS8yMCwgMzoyNCBBTSwgIkxlb24gUm9tYW5vdnNreSIgPGxl
-b25Aa2VybmVsLm9yZz4gd3JvdGU6DQoNCiAgICBPbiBNb24sIE9jdCAxMiwgMjAyMCBhdCAxMDoz
-ODo1MFBNICswMDAwLCBNYW5pa2FybmlrZSwgVmFzdWtpIHdyb3RlOg0KICAgID4gSGVsbG8sDQog
-ICAgPg0KICAgID4gSSBub3RpY2UgdGhhdCBsaWJyZG1hY20gZG9lcyBub3QgaGF2ZSBhIHJlaW5p
-dC9kZWluaXQvY2xlYW51cCBBUEkuDQogICAgPiBJJ20gbG9va2luZyBmb3IgdWNtYV9jbGVhbnVw
-KCksIHNvcnQgb2YgdGhlIG9wcG9zaXRlIG9mIHVjbWFfaW5pdCgpLg0KICAgID4NCiAgICA+IFRo
-ZSBmaXJzdCBjYWxsIHRvIHJkbWFfZ2V0X2RldmljZXMoKSBmcm9tIHRoZSBhcHBsaWNhdGlvbiBj
-YWxscyB1Y21hX2luaXQoKSBpZiByZXF1aXJlZC4NCiAgICA+IHVjbWFfaW5pdCgpIGJ1aWxkcyB0
-aGUgIGxpc3Qgb2YgZGV2aWNlcywgYW5kIHN1YnNlcXVlbnQgbGlicmFyeSBjYWxscyB1c2UgdGhp
-cyBsaXN0Lg0KICAgID4NCiAgICA+IFdlJ2QgbGlrZSB0byBpc3N1ZSBhIGZ1bGwgY2hpcCByZXNl
-dCBvbiBhIE1lbGxhbm94IENYLTUgYWRhcHRlciBieSB1c2luZyB0aGUgJ21seGZ3cmVzZXQnIHRv
-b2wsDQogICAgPiBhbmQgd2UnZCBsaWtlIHRvIGRvIHRoaXMgd2l0aG91dCByZXF1aXJpbmcgb3Vy
-IGFwcGxpY2F0aW9uIHRvIGJlIHJlc3RhcnRlZC4NCg0KICAgIEl0IGlzIHN1cHBvcnRlZCB3aXRo
-IHRoaXMgYWxyZWFkeSBtZXJnZWQgUFIuDQogICAgaHR0cHM6Ly9naXRodWIuY29tL2xpbnV4LXJk
-bWEvcmRtYS1jb3JlL3B1bGwvNzUwDQoNCiAgICBUaGFua3MNCg0K
+On 12/17/20 8:11 PM, Alexander Duyck wrote:
+> On Thu, Dec 17, 2020 at 5:30 PM David Ahern <dsahern@gmail.com> wrote:
+>>
+>> On 12/16/20 3:53 PM, Alexander Duyck wrote:
+>>> The problem in my case was based on a past experience where east-west
+>>> traffic became a problem and it was easily shown that bypassing the
+>>> NIC for traffic was significantly faster.
+>>
+>> If a deployment expects a lot of east-west traffic *within a host* why
+>> is it using hardware based isolation like a VF. That is a side effect of
+>> a design choice that is remedied by other options.
+> 
+> I am mostly talking about this from past experience as I had seen a
+> few instances when I was at Intel when it became an issue. Sales and
+> marketing people aren't exactly happy when you tell them "don't sell
+> that" in response to them trying to sell a feature into an area where
+
+that's a problem engineers can never solve...
+
+> it doesn't belong. Generally they want a solution. The macvlan offload
+> addressed these issues as the replication and local switching can be
+> handled in software.
+
+well, I guess almost never. :-)
+
+> 
+> The problem is PCIe DMA wasn't designed to function as a network
+> switch fabric and when we start talking about a 400Gb NIC trying to
+> handle over 256 subfunctions it will quickly reduce the
+> receive/transmit throughput to gigabit or less speeds when
+> encountering hardware multicast/broadcast replication. With 256
+> subfunctions a simple 60B ARP could consume more than 19KB of PCIe
+> bandwidth due to the packet having to be duplicated so many times. In
+> my mind it should be simpler to simply clone a single skb 256 times,
+> forward that to the switchdev ports, and have them perform a bypass
+> (if available) to deliver it to the subfunctions. That's why I was
+> thinking it might be a good time to look at addressing it.
+> 
+
+east-west traffic within a host is more than likely the same tenant in
+which case a proper VPC is a better solution than the s/w stack trying
+to detect and guess that a bypass is needed. Guesses cost cycles in the
+fast path which is a net loss - and even more so as speeds increase.
+
