@@ -2,98 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675C42DDCA7
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Dec 2020 02:34:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4F92DDCFC
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Dec 2020 03:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731696AbgLRBbQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Dec 2020 20:31:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53756 "EHLO
+        id S1732063AbgLRCkr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Dec 2020 21:40:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725930AbgLRBbP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Dec 2020 20:31:15 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B8EC061282;
-        Thu, 17 Dec 2020 17:30:35 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id l200so1145299oig.9;
-        Thu, 17 Dec 2020 17:30:35 -0800 (PST)
+        with ESMTP id S1726789AbgLRCkr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Dec 2020 21:40:47 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E810FC0617A7
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Dec 2020 18:40:06 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id lt17so1039362ejb.3
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Dec 2020 18:40:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=P3OTeu7kWnFvQqcA3deigdxkkwkznGURwG/tb4r401Y=;
-        b=Q+99nG0nv35q9MrE9XBnSCKG9HlWfJDKkO3dlssQE/O9k8weODhO/sATNVFBEneToi
-         KKM8txYXChXrW6ixidU6JtqDEvZSibEHd7+b8mGRUlG7JnXlhvZ278L8opZAticJ2FPF
-         UzIUWN/iqDFe7n3+ZkvcABvbMYIIbhbgJJGGvDZi6UPIBK2U72nkSCJlqf/+wKFBVAfU
-         ftzekCBk6ecB2s4Pu9wnho7Vqtl/tuPupCG29AblctXxRWE8E/PGi6XYtZitGMLp9iva
-         zzfdZy1AiAzD5ZPWfRVyy+CgxFLk4ra5K23SGT/HTaZbrcSZqbz2gfQgD25VWnm4w5Rf
-         f1wg==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9dgG7qudFm2M5ITbimg/EWCzHwUSe9U+CunlE6/jL+E=;
+        b=K0iNceVwSaWAQkyefoafIL+r7jjBCygPntMyHwd3POvZ8g7YT3AyjHi/gqQvjRrJPp
+         AQWvJ6QTr8tSOFjOEiKecyu618xXLtEzB37NYJTRWPBWh/iiWfJ5t/SN0pDlfSIXxTnW
+         8XQzV9vnsOMuQsRKnQA5Jq590u5DiEXtzkdJCh1ysSLMrEsG1R56M1pUe8CrRCb+AcvC
+         cnxem06FxnKPRYauImA7ZiEd5hlHlH70gZYuIdvcL9ybSDCFbUcFzjRNwwgZivcciosw
+         8TUurj7TkNKk9PaAy3cONHdKYvZ8nYXBh9cejLzDWsfKSSXwUBWfA9pr0ceTS+6Hcm7W
+         xQxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=P3OTeu7kWnFvQqcA3deigdxkkwkznGURwG/tb4r401Y=;
-        b=NwHf8EY+8LemwbVsC4vm2XT0BIhP8v+yj57y7Wo1yobXantxC/bvuMy3LOFowykDJa
-         KQP+PWHfjGiP8XO6AwB6PZ19i89wqEdHhOZpLZbmM+uccjqeR0+HSK5m4UmOG59qCUpd
-         MsyLYB7pKOFcgTdMc0Fj9fkY9dXqM3BkBEN1jlooRawTME1fET/ZqIvntGysFIJCxdRT
-         0IdS07656haPXqZdhvMxjuzcszAmp/kJcupiyTjV0wJdDLnSsYbQ59D9uIAeeHPDWmAj
-         qe7vRbqrtH5hHXWY9ZsAb+GTYgpC5i5UMvUJPORi2nQxuc6K52mpMNCnQBolQK9cJcsH
-         5Hvg==
-X-Gm-Message-State: AOAM530C81HSj5aHqprER3ZK7tA9mzTS3TFSB6zCDMJlDiodQe2Kk3kb
-        ohY+x6sXtL2FAvdtYBtkWG4=
-X-Google-Smtp-Source: ABdhPJyNh0NjW3II/BpiruwzC0EAVxEhG2D1LeEP4uxUmk91oXbYi8d4fmgthaFQovzyHVDvgIr4hg==
-X-Received: by 2002:aca:c6d7:: with SMTP id w206mr1310540oif.76.1608255035083;
-        Thu, 17 Dec 2020 17:30:35 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([8.48.134.51])
-        by smtp.googlemail.com with ESMTPSA id x20sm1621479oov.33.2020.12.17.17.30.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 17:30:34 -0800 (PST)
-Subject: Re: [net-next v4 00/15] Add mlx5 subfunction support
-To:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Saeed Mahameed <saeed@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        David Ahern <dsahern@kernel.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-References: <ecad34f5c813591713bb59d9c5854148c3d7f291.camel@kernel.org>
- <CAKgT0UfTOqS9PBeQFexyxm7ytQzdj0j8VMG71qv4+Vn6koJ5xQ@mail.gmail.com>
- <20201216001946.GF552508@nvidia.com>
- <CAKgT0UeLBzqh=7gTLtqpOaw7HTSjG+AjXB7EkYBtwA6EJBccbg@mail.gmail.com>
- <20201216030351.GH552508@nvidia.com>
- <CAKgT0UcwP67ihaTWLY1XsVKEgysa3HnjDn_q=Sgvqnt=Uc7YQg@mail.gmail.com>
- <20201216133309.GI552508@nvidia.com>
- <CAKgT0UcRfB8a61rSWW-NPdbGh3VcX_=LCZ5J+-YjqYNtm+RhVg@mail.gmail.com>
- <20201216175112.GJ552508@nvidia.com>
- <CAKgT0Uerqg5F5=jrn5Lu33+9Y6pS3=NLnOfvQ0dEZug6Ev5S6A@mail.gmail.com>
- <20201216203537.GM552508@nvidia.com>
- <CAKgT0UfuSA9PdtR6ftcq0_JO48Yp4N2ggEMiX9zrXkK6tN4Pmw@mail.gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <c737048e-5e65-4b16-ffba-5493da556151@gmail.com>
-Date:   Thu, 17 Dec 2020 18:30:31 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9dgG7qudFm2M5ITbimg/EWCzHwUSe9U+CunlE6/jL+E=;
+        b=cPzd+x0e7D9ooKr2kuzXJxLDO9+g1uW8Ue/shqAtnJNV1EOFZ5XZuH6ptJN3sD16nD
+         NvO/LOgsyUxEEZdLT1bzDcxAzpxHHPP5zAZvIpgvx3fsYhxPyUvOT//vKf6xTDEHte4I
+         Vkhx4Cr0XFlTQ56y+m5zystbyR8iZ3u0vdtpAimxIxwCkFPc5mEuvIXS0qHCIxY3zG2X
+         1xbcoyPfiZd2W6UAq7pkcCTIPLEBEHH2qNSiJYnDu1Y15fhTpxYiZgL4d629oRHU5KEC
+         HhyayDp9ijTtClfn8LQOavbASguj8MQQqtjv2A/d3kyhhs26gv79f3sqA1ZpbSu1QfR/
+         uplg==
+X-Gm-Message-State: AOAM532KU4FTn7xMMArNhWYipm0NigPBGClbAa96wLnvvAcy4wbNO0fj
+        PGcoAtVX2/zyd7Oefr9LxZkX3NBgFeAUhtcPSG4UkQ==
+X-Google-Smtp-Source: ABdhPJySH0QTe8IayfD/c7x3TXLpQyM5fmUjCclwC7NQ12btUfoyVuaLt0jSgr0SOVFRPZFstKr7iq1l+tk4kWBsDWE=
+X-Received: by 2002:a17:906:2707:: with SMTP id z7mr1965646ejc.418.1608259205621;
+ Thu, 17 Dec 2020 18:40:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0UfuSA9PdtR6ftcq0_JO48Yp4N2ggEMiX9zrXkK6tN4Pmw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <X8ogtmrm7tOzZo+N@kroah.com> <CAPcyv4iLG7V9JT34La5PYfyM9378acbLnkShx=6pOmpPK7yg3A@mail.gmail.com>
+ <X8usiKhLCU3PGL9J@kroah.com> <20201217211937.GA3177478@piout.net>
+In-Reply-To: <20201217211937.GA3177478@piout.net>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 17 Dec 2020 18:39:55 -0800
+Message-ID: <CAPcyv4h-jg0dxKZ89yYnHsTEDj7jLWDBhBVTgEC77tLLsz92pw@mail.gmail.com>
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        David Miller <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Parav Pandit <parav@mellanox.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 12/16/20 3:53 PM, Alexander Duyck wrote:
-> The problem in my case was based on a past experience where east-west
-> traffic became a problem and it was easily shown that bypassing the
-> NIC for traffic was significantly faster.
+On Thu, Dec 17, 2020 at 1:20 PM Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
+>
+> Hello,
+>
+> On 05/12/2020 16:51:36+0100, Greg KH wrote:
+> > > To me, the documentation was written, and reviewed, more from the
+> > > perspective of "why not open code a custom bus instead". So I can see
+> > > after the fact how that is a bit too much theory and justification and
+> > > not enough practical application. Before the fact though this was a
+> > > bold mechanism to propose and it was not clear that everyone was
+> > > grokking the "why" and the tradeoffs.
+> >
+> > Understood, I guess I read this from the "of course you should do this,
+> > now how do I use it?" point of view.  Which still needs to be addressed
+> > I feel.
+> >
+> > > I also think it was a bit early to identify consistent design patterns
+> > > across the implementations and codify those. I expect this to evolve
+> > > convenience macros just like other parts of the driver-core gained
+> > > over time. Now that it is in though, another pass through the
+> > > documentation to pull in more examples seems warranted.
+> >
+> > A real, working, example would be great to have, so that people can know
+> > how to use this.  Trying to dig through the sound or IB patches to view
+> > how it is being used is not a trivial thing to do, which is why
+> > reviewing this took so much work.  Having a simple example test module,
+> > that creates a number of devices on a bus, ideally tied into the ktest
+> > framework, would be great.  I'll attach below a .c file that I used for
+> > some basic local testing to verify some of this working, but it does not
+> > implement a aux bus driver, which needs to be also tested.
+> >
+>
+> There is something I don't get from the documentation and it is what is
+> this introducing that couldn't already be done using platform drivers
+> and platform devices?
 
-If a deployment expects a lot of east-west traffic *within a host* why
-is it using hardware based isolation like a VF. That is a side effect of
-a design choice that is remedied by other options.
+There is room for documentation improvement here. I realize reading it
+back now that much of the justification for "why not platform bus?"
+happened on the list, but only a small mention made it into the
+document. It turns out that platform-bus has some special integrations
+and hacks with platform-firmware implementations. For example, the
+ACPI companion magic and specific platform firmware integrations in
+platform_match(). It's also an awkward bus name to use because these
+devices do not belong to the platform. The platform bus is for devices
+that do not have an enumeration mechanism besides board files or
+firmware descriptions.
+
+So while many of the auxiliary device use cases might be able to be
+squeezed into a platform-bus scheme it further overloads what is
+already a wide responsibility.
+
+In comparison, the auxiliary-bus is tailored to the "sub-function of a
+parent device/driver" use case. It lets the host driver be the root of
+a namespace of sub-functionality in a standard template way.
+
+> We already have a bunch of drivers in tree that have to share a state
+> and register other drivers from other subsystems for the same device.
+> How is the auxiliary bus different?
+
+There's also custom subsystem buses that do this. Why not other
+alternatives? They didn't capture the simultaneous mindshare of RDMA,
+SOF, and NETDEV developers. Personally my plans for using
+auxiliary-bus do not map cleanly to anything else in the tree. I want
+to use it for attaching an NPEM driver (Native PCIE Enclosure
+Management) to any PCI device driver that opts-in, but it would be
+overkill to go create an "npem" bus for this.
