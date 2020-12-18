@@ -2,141 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC6E2DE36F
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Dec 2020 14:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D15E2DE3B3
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Dec 2020 15:10:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726695AbgLRNqs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Dec 2020 08:46:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726540AbgLRNqr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Dec 2020 08:46:47 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C65C061282
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Dec 2020 05:46:07 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id r3so2239223wrt.2
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Dec 2020 05:46:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Ka1x3IgXnDKEVbUNgJSUcPN8PzFVanlFrtTuT6E8rts=;
-        b=D86dpjGakhZl+5XAKRbJimghynE7rov8qUJl/t75gAK4y/Fp5ssvHO49HPwJtIaWW7
-         X0ZJnoyYSQEoJHAhiXySsnJJYjhmZB45KowbpkHybNPtkPHbDggsC/oXZOIjNV0OxfIP
-         JtLk8ioNSYQNcBqUgcvb8hGzTjMFok0Z5d20D9TGp+gj3yAWd0tBwAcawAEAoclM3CeV
-         hlVaCtzhQlhb3gLpgfbarf5Mch5uuBb3PuxZXm6+Qk42SmEjVCjqSdKkAl+v/+V8XpWa
-         kzHRKLbBkT4RUsGzpF0vZVjKR15UffhOdqNzvt5OEAGmcdsDkI4BoE2RGEi1CeWWnZHq
-         NPTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Ka1x3IgXnDKEVbUNgJSUcPN8PzFVanlFrtTuT6E8rts=;
-        b=VNg/O3MePaed2L/pKu/Ed/94GoqZEKi+0b7CT4o4DOrYgnf9QAsJCIry4VeZumWzaQ
-         9TWoY5MREafPwC2WOKOt+VBnI5x7GdOu8c5zyOmjzFeUZwqMjZvlNX0At0IsDYgMjgOH
-         pRBdCUFvgLqcWMgjIn7oh48qm3MkrmdKeUZFaoBnAvuLPLFZhDk1jqJMdxP2EJmmo/SN
-         QUqlnWlbVMVcBN3bbMqtENRQPAlSplKqsb5eb5JO0G2BvJbVd1ZXFCdpH+Ro0KQkdVA+
-         0uEm7kvEmiU2fSd86kN9KJHZF9jOcqA+lNvfiirSw1Yc/HJj4Kz0PgrZDDPxKR/0T2V8
-         MxyQ==
-X-Gm-Message-State: AOAM533GwahppmKutY/EgzNyzUgBTTFsj+Drc9l4QONjD1HEVxbcXOhQ
-        sovmi/D3bs+FTANETYNBEvyxeA==
-X-Google-Smtp-Source: ABdhPJzuzueQDnbBnCkvc22NOc11UsjLlpycV2v2yPaJ9/Pn3FrNYBjDBsPM3Sqix1VPGW3J6EwCWQ==
-X-Received: by 2002:a5d:52c1:: with SMTP id r1mr4590809wrv.255.1608299166077;
-        Fri, 18 Dec 2020 05:46:06 -0800 (PST)
-Received: from dell ([91.110.221.216])
-        by smtp.gmail.com with ESMTPSA id l1sm14124574wrq.64.2020.12.18.05.46.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 05:46:05 -0800 (PST)
-Date:   Fri, 18 Dec 2020 13:46:03 +0000
-From:   Lee Jones <lee.jones@linaro.org>
+        id S1726699AbgLROJr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Dec 2020 09:09:47 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:20939 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725982AbgLROJr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 18 Dec 2020 09:09:47 -0500
+Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fdcb7fe0000>; Fri, 18 Dec 2020 22:09:02 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 18 Dec
+ 2020 14:09:00 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 18 Dec 2020 14:09:00 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JoYn5ucAb62TBndhdo+39D7KTtQVPjq+OLzQ4hgrbDlB+EXonyWGYw+vnkxWSNpVVdO88yPUSP1flStOcbrCsB4meeMWJsOdLMXoeVzxWw8z5BvVX2xXDgJ7vXeN0CnxzlqiyCDsNo1Xhu9mRFMeOzLhZyVJvxF7J/t6iDrM/n68dR63JYD7zyiZYzmLsC9vxU3jfv15RFTRjExVFGi8FTBpHIKQtu8MuCe+bAMRgnEXvKIArQwAefd95EQ7Iuykd42g0I/jso4lk2F06+YIPWm4oNHGMpnM4fj9xLaSArOmoFIOu/UJ7r+Vp34S13cy6ZQltfw3ybLhUsoP6xlXLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FqxdLmDnf0NVpgTU0lP9G0CPHgb64TOJPJ/P8z8Dc8U=;
+ b=ltvny34KhEquTQoAFGZJSF7E5cVJxFSTZqvN/nr/GEm0FR353/qZOw1Yo1AEx2xTG9bHu4uxEVTBH3qY+LHOSb6cWFOn+gpPpHhjcZmrIy+ggjUHJEkPDzcxpnlq6z8jKEDPLp6nk/xYVrJJJEM9r/ObRlZgS7Kx6wBpJS+YeUdAiEMJ63ZZa6o3UeT3hky1ma5m2PNvvPqYv2xq2vkt2Nnx1lpyyARe8f2DTVulEn7yIV+TGEA1SavfbKPacx8oq9TmybDfmedRqtwRHWYvU0q+nchWhRYZyJu2IQYsADCoGrBBbR3m2ETWuZJrs7eAdKU5Ybx/oGBR/Qu0cIH5xw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4041.namprd12.prod.outlook.com (2603:10b6:5:210::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Fri, 18 Dec
+ 2020 14:08:55 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3676.025; Fri, 18 Dec 2020
+ 14:08:55 +0000
+Date:   Fri, 18 Dec 2020 10:08:54 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
 To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
+CC:     Greg KH <gregkh@linuxfoundation.org>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Dan Williams <dan.j.williams@intel.com>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
+        <alsa-devel@alsa-project.org>, Kiran Patil <kiran.patil@intel.com>,
         linux-rdma <linux-rdma@vger.kernel.org>,
         Shiraz Saleem <shiraz.saleem@intel.com>,
         Martin Habets <mhabets@solarflare.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
         Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
         Fred Oh <fred.oh@linux.intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
+        "Dave Ertman" <david.m.ertman@intel.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Netdev <netdev@vger.kernel.org>,
         Leon Romanovsky <leonro@nvidia.com>,
         David Miller <davem@davemloft.net>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>
+        Parav Pandit <parav@mellanox.com>, <lee.jones@linaro.org>
 Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201218134603.GS207743@dell>
+Message-ID: <20201218140854.GW552508@nvidia.com>
 References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
  <X8ogtmrm7tOzZo+N@kroah.com>
  <CAPcyv4iLG7V9JT34La5PYfyM9378acbLnkShx=6pOmpPK7yg3A@mail.gmail.com>
- <X8usiKhLCU3PGL9J@kroah.com>
- <20201217211937.GA3177478@piout.net>
- <X9xV+8Mujo4dhfU4@kroah.com>
- <20201218131709.GA5333@sirena.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+ <X8usiKhLCU3PGL9J@kroah.com> <20201217211937.GA3177478@piout.net>
+ <X9xV+8Mujo4dhfU4@kroah.com> <20201218131709.GA5333@sirena.org.uk>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 In-Reply-To: <20201218131709.GA5333@sirena.org.uk>
+X-ClientProxiedBy: BL1PR13CA0392.namprd13.prod.outlook.com
+ (2603:10b6:208:2c2::7) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0392.namprd13.prod.outlook.com (2603:10b6:208:2c2::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.13 via Frontend Transport; Fri, 18 Dec 2020 14:08:55 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kqGRC-00Cg9S-2d; Fri, 18 Dec 2020 10:08:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1608300542; bh=FqxdLmDnf0NVpgTU0lP9G0CPHgb64TOJPJ/P8z8Dc8U=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=P3bQzSnN2N1kR/c2ruQqvBBXyTIAePZxtznSnSZhxZocH22xrPnPMcj0epcAhzBiA
+         D2vmq54B8kq4cn44ri+yJbT/cof450WbIaOnnHoZXAeLrE997aQUbKX2rnnklVGbn1
+         p74dBh7ZBNnLPfXVybBas5TYj/NqNd72EgVNZb5/MP3Ws4P+R1l77WLOMcGEGbEiPd
+         mh0ICzdJRO9rHLkVfkX/ltcd2BMyUwYBYjo1ceYgoVuwBoumn+19eE16OK+7z3/5ia
+         9ZZMYIi6KcCcmBzG1bISAhIox3/suLl/uM/DB2suG9/l+F97CILWWgkAu7O2VZXFvp
+         4lSalwb8Kp8Bg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, 18 Dec 2020, Mark Brown wrote:
+On Fri, Dec 18, 2020 at 01:17:09PM +0000, Mark Brown wrote:
 
-> On Fri, Dec 18, 2020 at 08:10:51AM +0100, Greg KH wrote:
-> > On Thu, Dec 17, 2020 at 10:19:37PM +0100, Alexandre Belloni wrote:
-> 
-> > > There is something I don't get from the documentation and it is what is
-> > > this introducing that couldn't already be done using platform drivers
-> > > and platform devices?
-> 
-> > Because platform drivers and devices should ONLY be for actual platform
-> > devices.  Do NOT use that interface to fake up a non-platform device
-> > (i.e. something that is NOT connected to a cpu through a memory-mapped
-> > or direct-firmware interface).
-> 
-> > Do not abuse the platform code anymore than it currently is, it's bad
-> > enough what has been done to it over time, let's not make it any worse.
-> 
-> I am not clear on why you're giving direct-firmware devices (which I
-> assume means things like ARM SCMI where we're talking directly to some
-> firmware?) a pass here but not for example a GPIO controlled devices.
-> If this is mainly about improving abstractions it seems like the
-> boundary here isn't great.  Or perhaps I'm just missing what
-> direct-firmware is supposed to mean?
-> 
-> In any case, to be clear part of what you're saying here is that all
-> I2C and SPI MFDs should be rewritten to use this new bus - I've just
-> copied Lee in again since he keeps getting missed from these threads.
 > As previously discussed this will need the auxilliary bus extending to
 > support at least interrupts and possibly also general resources.
 
-Thanks Mark.
+I thought the recent LWN article summed it up nicely, auxillary bus is
+for gluing to subsystems together using a driver specific software API
+to connect to the HW, MFD is for splitting a physical HW into disjoint
+regions of HW.
 
-Not entirely sure why this needed an entirely new subsystem to handle
-non-MMIO Multi-Functional Devices (MFD).  Or why I was not approached
-by any of the developers during the process.
+Maybe there is some overlap, but if you want to add HW representations
+to the general auxillary device then I think you are using it for the
+wrong thing.
 
-Having 2 entirely separate subsystems where MFDs can now be registered
-sounds confusing and convoluted at best.  Why not simply extend actual
-MFD to be capable of registering non-pure platform devices via other
-means?  By doing so you keep things bound to a central location
-resulting in less chance of misuse.
-
-I turn away MFD implementation abuses all the time.  Seeing as the 2
-subsystems are totally disjoint, this just unwittingly opened up
-another back-channel opportunity for those abuses to make it into the
-mainline kernel.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Jason
