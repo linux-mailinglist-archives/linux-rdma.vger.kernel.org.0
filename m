@@ -2,125 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7F92DEA0F
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Dec 2020 21:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8E72DEA20
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Dec 2020 21:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgLRUPA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Dec 2020 15:15:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56624 "EHLO
+        id S2387499AbgLRUSu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Dec 2020 15:18:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727892AbgLRUOv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Dec 2020 15:14:51 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91001C061282
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Dec 2020 12:14:11 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id p12so1481632qvj.13
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Dec 2020 12:14:11 -0800 (PST)
+        with ESMTP id S2387497AbgLRUSt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Dec 2020 15:18:49 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D92B7C06138C
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Dec 2020 12:18:06 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id c7so3257240qke.1
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Dec 2020 12:18:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=+6dOcXCZmIRThv69enwRAoT3Ssvc0OhfvILN9vdlg4o=;
-        b=jHvWhOqW9gjdg6bCt0oq8HPNAPiqjsnvVkc2ZUdCGpEZNIdSLT+GDPCECJElwUYAxA
-         Y1pIExXfv/DBr7VTF+bFuxD1/qc48sp4jjZGVoGH32YbTQAwsodVlyqEal+TFhSvUReR
-         bQH7LL5BN51mLTZ7XWLywXYOanGqutzAK76tB+8PuUq+RbgeAnOhwHP+K4O7eHiCyJ6Z
-         PbkZyuovTuop9ttweKxiab8tuHcdQfnii8DrxMLWuGsSk2o7ieWZHMk1nqidqmHDP5kd
-         mRvodxQKAx0bRwGOtG28y4RrryymGsGvvkNhr00Frg6N6/bpTYHvKS3sn6joFWSellTo
-         IV4Q==
+        bh=TN0YKydFOcwaoL0LprOHmYM5z1euEdDwBFvpqdblXvs=;
+        b=UXAPftnZ62lfDQZO6VMuyWluH5OP9yuMUyZvxPCaFLZwji7q8uQx2BfJWYDrWiJkSJ
+         ljf7wkT62mhdorwbCMReuNyHhVFCbjaxshGPm6PAtZkuM2BOpyPRIxaPRhKi83WaPoYT
+         spywgkVUhBYFJLlpOUFnPmzhnifKoS9IdSIXC3m7pmPk5VAwxg/KTSVWsa0IKlqIBy8Y
+         Db2RhAeWVe6NIOIdKwsI6pqwwlj4t8njKOJCZs1/Hqb1ihmSGicwfdC8jKJCb4lb6Grr
+         /8nEpQMo721xvJfD972MCxnEkTbgdx62C5291zCTiBQspPyeLxXQUHts+Tsv/nQJdBWw
+         V5aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=+6dOcXCZmIRThv69enwRAoT3Ssvc0OhfvILN9vdlg4o=;
-        b=M5zKOjeEIPkgf3UqvCQZdd/A2KjFhRocDpZOSbfKTY2HloaLTfqcTQ/7+BDk2cSeR9
-         MarNK56YXjPUJ4vst/ahPMrUgaFX3zBXqkqHzHG9/PWrL9qzachLJ1V70uCL9OeKkz7N
-         Tffsdea9QHrb/mfl/k6yZs5W9cuuA8FvigqdH5VWBx7q+Si+13floUOsSI537J4kJiaK
-         E7HIKm9C5rir56UleLz/co8KySjdk5q0ixfBL+KkACtvjHgSe8Y0w35wpV2JUFJ4ElcB
-         IRSGvBEuZhvFzFHSjNHZucVQGKldWnt6e3jEQZoymTHPpHwWwCeH38Nk4OHNE1NQdgfX
-         2vFA==
-X-Gm-Message-State: AOAM5304E8yHyuahQT06HgAf/TpBjyJOLAc2RNi/46LubWeneepBpYoD
-        PA94jdq8Q4hB14zo0g3hXiX3KQ==
-X-Google-Smtp-Source: ABdhPJz7x65BC/4X9IrtWfhOoatGUO93t2Fz3LqYQnC1yk/9wcYLKCu/MCpGx2+lmEtdYxTq7GxBsw==
-X-Received: by 2002:a05:6214:15c1:: with SMTP id p1mr6432035qvz.8.1608322450319;
-        Fri, 18 Dec 2020 12:14:10 -0800 (PST)
+        bh=TN0YKydFOcwaoL0LprOHmYM5z1euEdDwBFvpqdblXvs=;
+        b=Xvg9twFLvVUsvK7+X5SvzRcAhdsJ1G1vxETlPgT673e5rhR8HLfTQTEKg6DrS8RPGO
+         B6qsweulhyZQ8bvY3Woy7QeTSnMrA4XnLjRsK1SCAcxnocA8CBDGfKEpv5vs4y7KdZBQ
+         SVAveOSQ4Dl5zrWrgiylHS0a263EXbL/Q3wWKsBb2hz+jdzoagrKBoJ/93tp6wq0HIW+
+         5Ulqvqj/hTDlquyhor6xAo/8y3SPNd3mgQB8AYqlS/D1pvaIrnc2iYY7KgWyQSEj2dVy
+         1t89xK2jPtZ4/XW+EqcGRqPGnZ7QDlp4pVzlWDdZrWRErG6mT61GCcx67lR0f/7/CtWZ
+         1VZw==
+X-Gm-Message-State: AOAM533zYXefr+ZC/qWnoJwOQqtFEWhmqKbpTXxqJOPZU7HtSjZBKhJy
+        n1wVC3U5ds06w873mxcoPabjDA==
+X-Google-Smtp-Source: ABdhPJzqt2OVq2gxNomgOEqcAGDJcT+MkbCR1AE0CrFP1EVr8TeDBcLZ4GpnxOxyn/dDv0ApFuP8pA==
+X-Received: by 2002:a37:b82:: with SMTP id 124mr6640244qkl.294.1608322686035;
+        Fri, 18 Dec 2020 12:18:06 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id p15sm6479556qke.11.2020.12.18.12.14.09
+        by smtp.gmail.com with ESMTPSA id 60sm5782291qth.14.2020.12.18.12.18.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Dec 2020 12:14:09 -0800 (PST)
+        Fri, 18 Dec 2020 12:18:05 -0800 (PST)
 Received: from jgg by mlx with local (Exim 4.94)
         (envelope-from <jgg@ziepe.ca>)
-        id 1kqM8e-00CtcB-SK; Fri, 18 Dec 2020 16:14:08 -0400
-Date:   Fri, 18 Dec 2020 16:14:08 -0400
+        id 1kqMCS-00Ctfw-PO; Fri, 18 Dec 2020 16:18:04 -0400
+Date:   Fri, 18 Dec 2020 16:18:04 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Parav Pandit <parav@nvidia.com>, David Ahern <dsahern@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
         Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201218201408.GP5487@ziepe.ca>
-References: <X8usiKhLCU3PGL9J@kroah.com>
- <20201217211937.GA3177478@piout.net>
- <X9xV+8Mujo4dhfU4@kroah.com>
- <20201218131709.GA5333@sirena.org.uk>
- <20201218140854.GW552508@nvidia.com>
- <20201218155204.GC5333@sirena.org.uk>
- <20201218162817.GX552508@nvidia.com>
- <20201218180310.GD5333@sirena.org.uk>
- <20201218184150.GY552508@nvidia.com>
- <20201218190911.GT207743@dell>
+        Netdev <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Sridhar Samudrala <sridhar.samudrala@intel.com>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kiran Patil <kiran.patil@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [net-next v4 00/15] Add mlx5 subfunction support
+Message-ID: <20201218201804.GQ5487@ziepe.ca>
+References: <20201216175112.GJ552508@nvidia.com>
+ <CAKgT0Uerqg5F5=jrn5Lu33+9Y6pS3=NLnOfvQ0dEZug6Ev5S6A@mail.gmail.com>
+ <20201216203537.GM552508@nvidia.com>
+ <CAKgT0UfuSA9PdtR6ftcq0_JO48Yp4N2ggEMiX9zrXkK6tN4Pmw@mail.gmail.com>
+ <c737048e-5e65-4b16-ffba-5493da556151@gmail.com>
+ <CAKgT0UdxVytp4+zYh+gOYDOc4+ZNNx3mW+F9f=UTiKxyWuMVbQ@mail.gmail.com>
+ <BY5PR12MB43220950B3A93B9E548976C7DCC30@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <CAKgT0UdtEJ0Xe5icMOSj0dg-unEgTR8AwDrtdAWTKEH4D-0www@mail.gmail.com>
+ <BY5PR12MB43223E49FF50757D8FD80738DCC30@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <CAKgT0Uetb7_P541Sd5t5Rne=np_+8AzJrv6GWqsFW_2A-kYEFw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201218190911.GT207743@dell>
+In-Reply-To: <CAKgT0Uetb7_P541Sd5t5Rne=np_+8AzJrv6GWqsFW_2A-kYEFw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 07:09:11PM +0000, Lee Jones wrote:
+On Fri, Dec 18, 2020 at 11:22:12AM -0800, Alexander Duyck wrote:
 
-> ACPI, DT and MFD are not busses.  
+> Also as far as the patch count complaints I have seen in a few threads
+> I would be fine with splitting things up so that the devlink and aux
+> device creation get handled in one set, and then we work out the
+> details of mlx5 attaching to the devices and spawning of the SF
+> netdevs in another since that seems to be where the debate is.
 
-And yet ACPI and PNP have a bus:
-  extern struct bus_type acpi_bus_type;
-  extern struct bus_type pnp_bus_type;
+It doesn't work like that. The aux device creates a mlx5_core and
+every mlx5_core can run mlx5_en.
 
-Why? Because in the driver core if you subclass struct device and want
-to bind drivers, as both PNP and ACPI do, you must place those devices
-on a bus with a bus_type matching the device type. Thus subclassing
-the device means subclassing the bus as well.
-
-The purpose of the bus_type is to match drivers to devices and provide
-methods to the driver core. The bus_type also defines the unique name
-space of the device names.
-
-It is confusing because the word bus immediately makes people think of
-physical objects like I2C, PCI, etc, but that is not what bus_type
-does in the object model of the driver core, IMHO.
-
-So, if you subclass struct device for MFD's usage, then you must also
-create a bus_type to handle driver binding. The MFD bus_type. Just
-like auxillary does.
-
-Making a mfd subclass is the logical thing for a subsystem to do,
-co-opting another subsystem's bus_type is just really weird/abusive.
-
-auxillary bus shows how all these parts work, and it is simple enough
-to see the pieces clearly.
+This really isn't the series to raise this feature request. Adding an
+optional short cut path to VF/SF is something that can be done later
+if up to date benchmarks show it has value. There is no blocker in
+this model to doing that.
 
 Jason
