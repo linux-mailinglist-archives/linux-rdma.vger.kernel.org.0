@@ -2,141 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609262DE3E7
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Dec 2020 15:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB892DE525
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Dec 2020 15:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbgLROVE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Dec 2020 09:21:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727404AbgLROVE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 18 Dec 2020 09:21:04 -0500
-Date:   Fri, 18 Dec 2020 14:20:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608301223;
-        bh=Twtxz3CdLx+TMONIubg7E6ojPF7qRVa0EUIUWEAZg2Y=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lqR2VgQmrIuYy0qdUnNvVSdt+33BYqPw/41xKPo1cyRqzCvQXlJ/JtodgYR7ircIL
-         8nRUeE+1kQOYWlil+nxLXQXcV8JU6V0aGGvCaTI4l+ueNJJgFsIYmxV0fgw0MfuL2N
-         rMEw8iiY5v6Z/k+FmYGdJrqSQQs5WZwNFBcFa7T4rOJ6cM5roMaQ8gOtq79Vh8hmu2
-         5csun4QlvrYTAcbQori5UZ7EZfAlsVEeN+rdisvB4v4gVsHSfuinNCams2Yk3+oNrx
-         IlwJPsCsxv/cNb936aK1/TU5jIPUHStg4Q3S0x83xQMsWpSOB/cdJuyjpDgdK+xjpv
-         /fVYRQT0J6DpQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>, lee.jones@linaro.org
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201218142009.GB5333@sirena.org.uk>
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
- <X8ogtmrm7tOzZo+N@kroah.com>
- <CAPcyv4iLG7V9JT34La5PYfyM9378acbLnkShx=6pOmpPK7yg3A@mail.gmail.com>
- <X8usiKhLCU3PGL9J@kroah.com>
- <20201217211937.GA3177478@piout.net>
- <CAPcyv4h-jg0dxKZ89yYnHsTEDj7jLWDBhBVTgEC77tLLsz92pw@mail.gmail.com>
+        id S1727893AbgLROxp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Dec 2020 09:53:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726177AbgLROxp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Dec 2020 09:53:45 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46323C0617A7
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Dec 2020 06:53:05 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id p18so1446383pgm.11
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Dec 2020 06:53:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VPIWdyhhv2p0RK54BfyU00oulzKpVJG7soxRWcanAR4=;
+        b=F02KD6DaV/aPKcjLUlLPP43rCeLPtbxNuUvPp1MEYpUq0w5n17jV+1bRZEY4+qQoXA
+         AOkl7AMKS00RJBlstpvnRhWuSJiI6LZvuhcNrTnEJbcualpbtYXM1ALmw0aLoLodQXQP
+         LiaNJ2cAY4Qku6YUDXG1SYzb007BAwE0fsz4Mh1zqJ8KyiniulqNd7dPcJgjRz39re1b
+         pOl4E9gpua1SH9s13uNImMPWnYl86WXoVA2IkVdVm3CcYmroufHzRzRJZcUqsY3xxjCa
+         5fltazm7+yzzBWlmLCOf1vinzXP5Wv1iSkkL28+xei+g8fKSyBKEl42fuQ8vl6daCmrU
+         nxdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VPIWdyhhv2p0RK54BfyU00oulzKpVJG7soxRWcanAR4=;
+        b=ZibxUu+JBojDaWQ8n4rTYQkWeh+IkfiHe11jJ+Yjq7Fs1N4lhh4lAaANIjgprVADLv
+         6cRjJyCVWtfm8DjfExCjUwwBZS27DICjnv1FZR4PFxG63x1oSdR2Luj/qgnIOzf3osQe
+         3uU1jQbK3WXNz/AB6SLRYNh70zzn2X+hZwrvB8bert2Mnz52aR6TdwYN4dAhXXYgSZzY
+         FAvCR+POO8VNAl5xKsHXRVcg7NbjNE8snJE9mPJv921YfF7Fa9k7H/QMO/INHrOBDMS7
+         UiRhThhwr9mdy/SC8c2VDBUtq1TXmGIf8sR1tTG9+TCAMR0b2rRGHZCQ1jsv1JNthjpe
+         IK7A==
+X-Gm-Message-State: AOAM532pP1R0DmDuX3smxKyxlsf/tAQIkc2UDdROfa6GyddwaOiJ10Jc
+        lvlBLDBKZdZSw8mktu8ZddS+IQ==
+X-Google-Smtp-Source: ABdhPJyG3zp40pY2POLr3CI3iKSHSsS1x1yHuFri50Mu1Kdnc3J5tOOIRHoPXDTmwr6d7IrUrqfnUw==
+X-Received: by 2002:a05:6a00:1344:b029:19d:a886:f0ad with SMTP id k4-20020a056a001344b029019da886f0admr4546691pfu.81.1608303184804;
+        Fri, 18 Dec 2020 06:53:04 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id k14sm8790624pfp.132.2020.12.18.06.53.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Dec 2020 06:53:04 -0800 (PST)
+Subject: Re: [PATCH] block/rnbd: Adding name to the Contributors List
+To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        swapnil ingle <ingleswapnil@gmail.com>,
+        linux-rdma@vger.kernel.org,
+        "open list:RNBD BLOCK DRIVERS" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1606479915-7259-1-git-send-email-ingleswapnil@gmail.com>
+ <CAHg0HuzKb0e21bo3V53zskKtk+zaJXhxkU8m4w6Q2DWoWPkU6w@mail.gmail.com>
+ <CAJCWmDdEPa23XDZ8pdStH=PgMszq4N6mHmNWtUA5Fn4THSNRmw@mail.gmail.com>
+ <CAMGffEm2LVxXJP-HseTqihcCvPeYOkCsaFHVNKXDZAYxCPzwTA@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a36bef5e-f7e3-c29b-8e65-38dc92812850@kernel.dk>
+Date:   Fri, 18 Dec 2020 07:53:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="IiVenqGWf+H9Y6IX"
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4h-jg0dxKZ89yYnHsTEDj7jLWDBhBVTgEC77tLLsz92pw@mail.gmail.com>
-X-Cookie: Password:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAMGffEm2LVxXJP-HseTqihcCvPeYOkCsaFHVNKXDZAYxCPzwTA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 12/17/20 11:46 PM, Jinpu Wang wrote:
+> Hi Jens,
+> 
+> On Thu, Dec 17, 2020 at 6:44 PM swapnil ingle <ingleswapnil@gmail.com> wrote:
+>>
+>> Adding linux-rdma@vger.kernel.org
+>>
+>> On Fri, Nov 27, 2020 at 1:54 PM Danil Kipnis <danil.kipnis@cloud.ionos.com> wrote:
+>>>
+>>> On Fri, Nov 27, 2020 at 1:31 PM Swapnil Ingle <ingleswapnil@gmail.com> wrote:
+>>>>
+>>>> Adding name to the Contributors List
+>>>>
+>>>> Signed-off-by: Swapnil Ingle <ingleswapnil@gmail.com>
+>>>
+>>> Acked-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
+> Can you pick up this patch, or do you need a resend from me or Swapnil?
 
---IiVenqGWf+H9Y6IX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Just include as part of the next series of patches. Though I do question
+why we need such a contributors list to begin with, if you do git log on
+the rnbd/ directory it'd show you anyway.
 
-On Thu, Dec 17, 2020 at 06:39:55PM -0800, Dan Williams wrote:
+I'd also suggest moving the parts of the README that makes sense into a
+proper Documentation/ file, nobody is going to find it deep in the
+kernel source tree as it is.
 
-> There is room for documentation improvement here. I realize reading it
-> back now that much of the justification for "why not platform bus?"
-> happened on the list, but only a small mention made it into the
+-- 
+Jens Axboe
 
-It wasn't clear from the list discussions either TBH, or at least the
-bits I happened to see (I did miss several versions of this).
-
-> document. It turns out that platform-bus has some special integrations
-> and hacks with platform-firmware implementations. For example, the
-> ACPI companion magic
-
-Could you be more specific about the problems that these cause for users
-of the bus?
-
->                      and specific platform firmware integrations in
-> platform_match(). It's also an awkward bus name to use because these
-
-Going through a bunch of possible firmware interfaces is standard for
-buses that can't be enumerated, SPI has almost exactly the same code for
-example.  Again, I'm not clear what problem this causes?
-
-> devices do not belong to the platform. The platform bus is for devices
-> that do not have an enumeration mechanism besides board files or
-> firmware descriptions.
-
-This is the one thing I was getting from what I did see, it was an
-abstraction thing.  I'm still unclear what the abstraction is supposed
-to be - I had thought that it was supposed to be purely for MMIO devices
-but in a parallel reply Greg is suggesting that it applies to at least
-"firmware direct" devices which I guess is things enumerated by board
-files or firmware but that makes things even less clear for me as it's
-kind of random if people try to describe the internals of devices in DT
-or not, and ACPI goes the other way and doesn't really describe some
-things that physically exist.
-
-> > We already have a bunch of drivers in tree that have to share a state
-> > and register other drivers from other subsystems for the same device.
-> > How is the auxiliary bus different?
->=20
-> There's also custom subsystem buses that do this. Why not other
-> alternatives? They didn't capture the simultaneous mindshare of RDMA,
-> SOF, and NETDEV developers. Personally my plans for using
-
-At least in the case of SOF they were getting active pushback from
-somewhere telling them not to use MFD.
-
-> auxiliary-bus do not map cleanly to anything else in the tree. I want
-> to use it for attaching an NPEM driver (Native PCIE Enclosure
-> Management) to any PCI device driver that opts-in, but it would be
-> overkill to go create an "npem" bus for this.
-
-This is why everyone is using platform devices here - people were making
-custom buses but people (including Greg!) pointed out that these were
-just carbon copies of the platform bus.
-
---IiVenqGWf+H9Y6IX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/cupgACgkQJNaLcl1U
-h9D+3Af/cJECsvChdGecO5/0wRbeZDfopKmuaCEBnnT9BfHNPXohXL5Vf/tnSgr1
-+EXf6ehtmxNg/UlEs2l4uqVHQyZ3g8zDX1M1zynfBfHtyLSm5wlW30hxtsPhyeMt
-+VqcRxwWqUC2jLzBD5Aob+3AF5UYnZhh4kqkZ4Ow2UxTcXlDJ5GUn40UvaOkF8Tq
-uzilWabfZOPRyqwVYQ/s4oRqa9NlokjAWkiLOEChZtA9vOsZ0Gpfm+HLC4EC0ajI
-Eu6rfbm5s1YD7zqC2nSaG8ALGMDg/yjrc9aVVM5+nf3vJns3z6U0ityhhR6EaCi1
-9dcy2WqWnZC2M2OdkAaaW4Q27F5tOQ==
-=h7cR
------END PGP SIGNATURE-----
-
---IiVenqGWf+H9Y6IX--
