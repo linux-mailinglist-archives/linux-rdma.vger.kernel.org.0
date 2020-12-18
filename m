@@ -2,29 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B582DE334
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Dec 2020 14:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC6E2DE36F
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Dec 2020 14:47:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgLRNSE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Dec 2020 08:18:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725710AbgLRNSE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 18 Dec 2020 08:18:04 -0500
-Date:   Fri, 18 Dec 2020 13:17:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608297443;
-        bh=v6z69yu84QJf1R6RvlLOXcMX6c+Fwb3zy/Gr6WnNltI=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K8gcgeKnC82VwJ4M0CQaQG76QT5VP10SRDtN8kNVWnNlu9I+CSCB07c6/MlHjQ0Uz
-         UgHPhAhbKPEycfLmxUpE90p2yL9EEcFZB2xNdla2NOTYpt7Dvedq97d45Eke9KATbn
-         P//PsnL7JlZCm5UW3XbqO8BpQots8yJ0Hvw9VmkWLEuVHMQ6ClLaHMe1M9wj523Qms
-         GU5BMD3lgQIiQuNHn6YHpbMwYIjIBH9UAac0IYZo3CXmCZ3+QN0Yaw4Bs1HyzOjDlV
-         e8ctID2YzuRNAFf3XpZ1a5+J+jjnmBAm5sfwb7gAk5F6fnqby1jOCOGCbGHp8OMyXh
-         qm/zJM/YVhnoA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        id S1726695AbgLRNqs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Dec 2020 08:46:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726540AbgLRNqr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Dec 2020 08:46:47 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C65C061282
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Dec 2020 05:46:07 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id r3so2239223wrt.2
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Dec 2020 05:46:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Ka1x3IgXnDKEVbUNgJSUcPN8PzFVanlFrtTuT6E8rts=;
+        b=D86dpjGakhZl+5XAKRbJimghynE7rov8qUJl/t75gAK4y/Fp5ssvHO49HPwJtIaWW7
+         X0ZJnoyYSQEoJHAhiXySsnJJYjhmZB45KowbpkHybNPtkPHbDggsC/oXZOIjNV0OxfIP
+         JtLk8ioNSYQNcBqUgcvb8hGzTjMFok0Z5d20D9TGp+gj3yAWd0tBwAcawAEAoclM3CeV
+         hlVaCtzhQlhb3gLpgfbarf5Mch5uuBb3PuxZXm6+Qk42SmEjVCjqSdKkAl+v/+V8XpWa
+         kzHRKLbBkT4RUsGzpF0vZVjKR15UffhOdqNzvt5OEAGmcdsDkI4BoE2RGEi1CeWWnZHq
+         NPTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Ka1x3IgXnDKEVbUNgJSUcPN8PzFVanlFrtTuT6E8rts=;
+        b=VNg/O3MePaed2L/pKu/Ed/94GoqZEKi+0b7CT4o4DOrYgnf9QAsJCIry4VeZumWzaQ
+         9TWoY5MREafPwC2WOKOt+VBnI5x7GdOu8c5zyOmjzFeUZwqMjZvlNX0At0IsDYgMjgOH
+         pRBdCUFvgLqcWMgjIn7oh48qm3MkrmdKeUZFaoBnAvuLPLFZhDk1jqJMdxP2EJmmo/SN
+         QUqlnWlbVMVcBN3bbMqtENRQPAlSplKqsb5eb5JO0G2BvJbVd1ZXFCdpH+Ro0KQkdVA+
+         0uEm7kvEmiU2fSd86kN9KJHZF9jOcqA+lNvfiirSw1Yc/HJj4Kz0PgrZDDPxKR/0T2V8
+         MxyQ==
+X-Gm-Message-State: AOAM533GwahppmKutY/EgzNyzUgBTTFsj+Drc9l4QONjD1HEVxbcXOhQ
+        sovmi/D3bs+FTANETYNBEvyxeA==
+X-Google-Smtp-Source: ABdhPJzuzueQDnbBnCkvc22NOc11UsjLlpycV2v2yPaJ9/Pn3FrNYBjDBsPM3Sqix1VPGW3J6EwCWQ==
+X-Received: by 2002:a5d:52c1:: with SMTP id r1mr4590809wrv.255.1608299166077;
+        Fri, 18 Dec 2020 05:46:06 -0800 (PST)
+Received: from dell ([91.110.221.216])
+        by smtp.gmail.com with ESMTPSA id l1sm14124574wrq.64.2020.12.18.05.46.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Dec 2020 05:46:05 -0800 (PST)
+Date:   Fri, 18 Dec 2020 13:46:03 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Dan Williams <dan.j.williams@intel.com>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
@@ -41,72 +69,74 @@ Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Leon Romanovsky <leonro@nvidia.com>,
         David Miller <davem@davemloft.net>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>, lee.jones@linaro.org
+        Parav Pandit <parav@mellanox.com>
 Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201218131709.GA5333@sirena.org.uk>
+Message-ID: <20201218134603.GS207743@dell>
 References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
  <X8ogtmrm7tOzZo+N@kroah.com>
  <CAPcyv4iLG7V9JT34La5PYfyM9378acbLnkShx=6pOmpPK7yg3A@mail.gmail.com>
  <X8usiKhLCU3PGL9J@kroah.com>
  <20201217211937.GA3177478@piout.net>
  <X9xV+8Mujo4dhfU4@kroah.com>
+ <20201218131709.GA5333@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <X9xV+8Mujo4dhfU4@kroah.com>
-X-Cookie: Password:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201218131709.GA5333@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Fri, 18 Dec 2020, Mark Brown wrote:
 
---zhXaljGHf11kAtnf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> On Fri, Dec 18, 2020 at 08:10:51AM +0100, Greg KH wrote:
+> > On Thu, Dec 17, 2020 at 10:19:37PM +0100, Alexandre Belloni wrote:
+> 
+> > > There is something I don't get from the documentation and it is what is
+> > > this introducing that couldn't already be done using platform drivers
+> > > and platform devices?
+> 
+> > Because platform drivers and devices should ONLY be for actual platform
+> > devices.  Do NOT use that interface to fake up a non-platform device
+> > (i.e. something that is NOT connected to a cpu through a memory-mapped
+> > or direct-firmware interface).
+> 
+> > Do not abuse the platform code anymore than it currently is, it's bad
+> > enough what has been done to it over time, let's not make it any worse.
+> 
+> I am not clear on why you're giving direct-firmware devices (which I
+> assume means things like ARM SCMI where we're talking directly to some
+> firmware?) a pass here but not for example a GPIO controlled devices.
+> If this is mainly about improving abstractions it seems like the
+> boundary here isn't great.  Or perhaps I'm just missing what
+> direct-firmware is supposed to mean?
+> 
+> In any case, to be clear part of what you're saying here is that all
+> I2C and SPI MFDs should be rewritten to use this new bus - I've just
+> copied Lee in again since he keeps getting missed from these threads.
+> As previously discussed this will need the auxilliary bus extending to
+> support at least interrupts and possibly also general resources.
 
-On Fri, Dec 18, 2020 at 08:10:51AM +0100, Greg KH wrote:
-> On Thu, Dec 17, 2020 at 10:19:37PM +0100, Alexandre Belloni wrote:
+Thanks Mark.
 
-> > There is something I don't get from the documentation and it is what is
-> > this introducing that couldn't already be done using platform drivers
-> > and platform devices?
+Not entirely sure why this needed an entirely new subsystem to handle
+non-MMIO Multi-Functional Devices (MFD).  Or why I was not approached
+by any of the developers during the process.
 
-> Because platform drivers and devices should ONLY be for actual platform
-> devices.  Do NOT use that interface to fake up a non-platform device
-> (i.e. something that is NOT connected to a cpu through a memory-mapped
-> or direct-firmware interface).
+Having 2 entirely separate subsystems where MFDs can now be registered
+sounds confusing and convoluted at best.  Why not simply extend actual
+MFD to be capable of registering non-pure platform devices via other
+means?  By doing so you keep things bound to a central location
+resulting in less chance of misuse.
 
-> Do not abuse the platform code anymore than it currently is, it's bad
-> enough what has been done to it over time, let's not make it any worse.
+I turn away MFD implementation abuses all the time.  Seeing as the 2
+subsystems are totally disjoint, this just unwittingly opened up
+another back-channel opportunity for those abuses to make it into the
+mainline kernel.
 
-I am not clear on why you're giving direct-firmware devices (which I
-assume means things like ARM SCMI where we're talking directly to some
-firmware?) a pass here but not for example a GPIO controlled devices.
-If this is mainly about improving abstractions it seems like the
-boundary here isn't great.  Or perhaps I'm just missing what
-direct-firmware is supposed to mean?
-
-In any case, to be clear part of what you're saying here is that all
-I2C and SPI MFDs should be rewritten to use this new bus - I've just
-copied Lee in again since he keeps getting missed from these threads.
-As previously discussed this will need the auxilliary bus extending to
-support at least interrupts and possibly also general resources.
-
---zhXaljGHf11kAtnf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/cq9QACgkQJNaLcl1U
-h9Cf2wf/V/9ux9B/P6JhOdSp8/cnAt5M1bqV3QMIpBxKfkDzfpIhgCbQHcuTHohO
-GadrjXD1DMJSWcpx/mh1qNjeEYyROMYnVN7UrxVgTgrCD/HN/MqpgvWlLA8ubGTH
-S6/1XPHbMOsHIIXclMzGpmO4jA9hOwKz14gnvnWraHDojOhymTJV9Jl2wQ9UaOV/
-FDPyY3zYA0fUvzSkIDkzHAcjhdpulnxztlYYH73f81R1L1NTdfMn1E4mZMBIBMMD
-94BiLYMhjiFBXH2MkTbSugyxARIgOM9uKM3AIttLQq7l4deMDjvOX85wlcGA6JjM
-/jmS76XyUz+UNO505l7CrvuL0X37jQ==
-=ErBA
------END PGP SIGNATURE-----
-
---zhXaljGHf11kAtnf--
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
