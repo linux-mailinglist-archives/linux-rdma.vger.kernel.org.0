@@ -2,18 +2,19 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6122DFA2B
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Dec 2020 09:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 569912DFB9A
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Dec 2020 12:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727554AbgLUIvo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Dec 2020 03:51:44 -0500
-Received: from spam.zju.edu.cn ([61.164.42.155]:8864 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726168AbgLUIvo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 21 Dec 2020 03:51:44 -0500
+        id S1725771AbgLULh3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Dec 2020 06:37:29 -0500
+Received: from spam.zju.edu.cn ([210.32.2.5]:23398 "EHLO zju.edu.cn"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725791AbgLULh2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 21 Dec 2020 06:37:28 -0500
+X-Greylist: delayed 484 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Dec 2020 06:37:25 EST
 Received: from localhost.localdomain (unknown [10.192.85.18])
-        by mail-app3 (Coremail) with SMTP id cC_KCgA37w7WYeBfFXRhAA--.42123S4;
-        Mon, 21 Dec 2020 16:50:34 +0800 (CST)
+        by mail-app2 (Coremail) with SMTP id by_KCgAnDwKhhuBf2PhfAA--.59381S4;
+        Mon, 21 Dec 2020 19:27:33 +0800 (CST)
 From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
 To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
 Cc:     Saeed Mahameed <saeedm@nvidia.com>,
@@ -21,17 +22,17 @@ Cc:     Saeed Mahameed <saeedm@nvidia.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net/mlx5e: Fix two double free cases
-Date:   Mon, 21 Dec 2020 16:50:31 +0800
-Message-Id: <20201221085031.6591-1-dinghao.liu@zju.edu.cn>
+Subject: [PATCH] net/mlx5e: Fix memleak in mlx5e_create_l2_table_groups
+Date:   Mon, 21 Dec 2020 19:27:31 +0800
+Message-Id: <20201221112731.32545-1-dinghao.liu@zju.edu.cn>
 X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgA37w7WYeBfFXRhAA--.42123S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7uFWDXr1UXFWDKF47Cr18Grg_yoW8GF1Dpa
-        1rCr9FgFyfX34UXayDAFWFqw1rCw4ktay0g3WS934Svr1DGrW0vFyrWrWDAF97GFWUWF4a
-        qw1xAw1UAF4DJa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkI1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
+X-CM-TRANSID: by_KCgAnDwKhhuBf2PhfAA--.59381S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF47XrW3KrW5tFWDur1kuFg_yoWfXwc_Gr
+        y8X3Z5X3yYvr4Ykw1jgrZ8J3yIkrn8ur4SyFZIqFy5Jw1Uur4Uu3yfua4xXF4xGFyUK34D
+        tFZxt3W3A3yjvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2AFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
         jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
         x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
         GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
@@ -40,51 +41,34 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7uFWDXr1UXFWDKF47Cr18Grg_yoW8GF1Dpa
         C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
         MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
         IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUMBlZdtRf+rwANs4
+        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUMBlZdtRf+rwAPs6
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-mlx5e_create_ttc_table_groups() frees ft->g on failure of
-kvzalloc(), but such failure will be caught by its caller
-in mlx5e_create_ttc_table() and ft->g will be freed again
-in mlx5e_destroy_flow_table(). The same issue also occurs
-in mlx5e_create_ttc_table_groups().
+When mlx5_create_flow_group() fails, ft->g should be
+freed just like when kvzalloc() fails. The caller of
+mlx5e_create_l2_table_groups() does not catch this
+issue on failure, which leads to memleak.
 
 Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_fs.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_fs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-index fa8149f6eb08..63323c5b6a50 100644
+index fa8149f6eb08..72de1009b104 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-@@ -940,10 +940,8 @@ static int mlx5e_create_ttc_table_groups(struct mlx5e_ttc_table *ttc,
- 	if (!ft->g)
- 		return -ENOMEM;
- 	in = kvzalloc(inlen, GFP_KERNEL);
--	if (!in) {
--		kfree(ft->g);
-+	if (!in)
- 		return -ENOMEM;
--	}
+@@ -1390,6 +1390,7 @@ static int mlx5e_create_l2_table_groups(struct mlx5e_l2_table *l2_table)
+ 	ft->g[ft->num_groups] = NULL;
+ 	mlx5e_destroy_groups(ft);
+ 	kvfree(in);
++	kfree(ft->g);
  
- 	/* L4 Group */
- 	mc = MLX5_ADDR_OF(create_flow_group_in, in, match_criteria);
-@@ -1085,10 +1083,8 @@ static int mlx5e_create_inner_ttc_table_groups(struct mlx5e_ttc_table *ttc)
- 	if (!ft->g)
- 		return -ENOMEM;
- 	in = kvzalloc(inlen, GFP_KERNEL);
--	if (!in) {
--		kfree(ft->g);
-+	if (!in)
- 		return -ENOMEM;
--	}
- 
- 	/* L4 Group */
- 	mc = MLX5_ADDR_OF(create_flow_group_in, in, match_criteria);
+ 	return err;
+ }
 -- 
 2.17.1
 
