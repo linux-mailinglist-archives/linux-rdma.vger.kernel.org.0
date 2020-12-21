@@ -2,73 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569912DFB9A
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Dec 2020 12:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5C42DFBA0
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Dec 2020 12:43:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725771AbgLULh3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Dec 2020 06:37:29 -0500
-Received: from spam.zju.edu.cn ([210.32.2.5]:23398 "EHLO zju.edu.cn"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725791AbgLULh2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 21 Dec 2020 06:37:28 -0500
-X-Greylist: delayed 484 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Dec 2020 06:37:25 EST
-Received: from localhost.localdomain (unknown [10.192.85.18])
-        by mail-app2 (Coremail) with SMTP id by_KCgAnDwKhhuBf2PhfAA--.59381S4;
-        Mon, 21 Dec 2020 19:27:33 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net/mlx5e: Fix memleak in mlx5e_create_l2_table_groups
-Date:   Mon, 21 Dec 2020 19:27:31 +0800
-Message-Id: <20201221112731.32545-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgAnDwKhhuBf2PhfAA--.59381S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7GF47XrW3KrW5tFWDur1kuFg_yoWfXwc_Gr
-        y8X3Z5X3yYvr4Ykw1jgrZ8J3yIkrn8ur4SyFZIqFy5Jw1Uur4Uu3yfua4xXF4xGFyUK34D
-        tFZxt3W3A3yjvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2AFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
-        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUMBlZdtRf+rwAPs6
+        id S1725942AbgLULnR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Dec 2020 06:43:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725771AbgLULnR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 21 Dec 2020 06:43:17 -0500
+Date:   Mon, 21 Dec 2020 13:42:31 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608550956;
+        bh=I1s82VVqqE9ijzGHoOsceUKjPRaV6rKSG7gj76Bo9X4=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IPVzpUl/M34rcr4oiVOpLdJup0O3I8IZkenPKh17RSXxVAj+puk7sjbaSsL4svBSe
+         ax2htFgjFZSyJPoaZ/dMYAAgXcscEyBDrHHemhtztrOeWzxt/ScfLVW43SJsMd5H8K
+         ujgTafAmyAwgPHmeC2Bz0OEdUqHi8O5luShU426+KhHzH9cHkISTylgVSo0u2DvTnt
+         XEda8nXiQ3ya2sbeAMaCB0lndhUOs71xm4aXxrKufF/C9lCo+ujGJ6as9a0Aaw454f
+         zCkS+j4SL4TJuV2xbh8WF/3z7aYj74CZ1+okgAuxT0E0E9ROzXRxpoQOJwbOHgt172
+         /jnxzsrMlLg1w==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Xiao Yang <yangx.jy@cn.fujitsu.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v2] librdmacm: Make some functions report proper errno
+Message-ID: <20201221114231.GB3128@unreal>
+References: <20201216092252.155110-1-yangx.jy@cn.fujitsu.com>
+ <5FD9D8B2.1020208@cn.fujitsu.com>
+ <20201216095549.GC1060282@unreal>
+ <5FDFF9CA.1060109@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5FDFF9CA.1060109@cn.fujitsu.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When mlx5_create_flow_group() fails, ft->g should be
-freed just like when kvzalloc() fails. The caller of
-mlx5e_create_l2_table_groups() does not catch this
-issue on failure, which leads to memleak.
+On Mon, Dec 21, 2020 at 09:26:34AM +0800, Xiao Yang wrote:
+> On 2020/12/16 17:55, Leon Romanovsky wrote:
+> > On Wed, Dec 16, 2020 at 05:51:46PM +0800, Xiao Yang wrote:
+> > > Hi Leon,
+> > >
+> > > Thanks for your quick reply. :-)
+> > > I have done the same change on three
+> > > functions(ucma_get_device,ucma_create_cqs, rdma_create_qp_ex).
+> > >
+> > > On 2020/12/16 17:22, Xiao Yang wrote:
+> > > > Some functions reports fixed ENOMEM when getting any failure, so
+> > > > it's hard for user to know which actual error happens on them.
+> > > >
+> > > > Fixes(ucma_get_device):
+> > > > 2ffda7f29913 ("librdmacm: Only allocate verbs resources when needed")
+> > > > 191c9346f335 ("librdmacm: Reference count access to verbs context")
+> > > > Fixes(ucma_create_cqs):
+> > > > f8f1335ad8d8 ("librdmacm: make CQs optional for rdma_create_qp")
+> > > > 9e33488e8e50 ("librdmacm: fix all calls to set errno")
+> > > > Fixes(rdma_create_qp_ex):
+> > > > d2efdede11f7 ("r4019: Add support for userspace RDMA connection management abstraction (CMA)")
+> > > > 4e33a4109a62 ("librdmacm: returns errors from the library consistently")
+> > > > 995eb0c90c1a ("rdmacm: Add support for XRC QPs")
+> > > For every function, I am not sure which one is an exact commit so just
+> > > attach all related commits ids.
+> > No problem, I'll try to sort it out now.
+> Hi Leon,
+>
+> Sorry to bother you.
+> Is there anything blocking the patch? :-)
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_fs.c | 1 +
- 1 file changed, 1 insertion(+)
+Nothing, we are in the middle of Christmas vacation here,
+so everything takes more time than usual.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-index fa8149f6eb08..72de1009b104 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-@@ -1390,6 +1390,7 @@ static int mlx5e_create_l2_table_groups(struct mlx5e_l2_table *l2_table)
- 	ft->g[ft->num_groups] = NULL;
- 	mlx5e_destroy_groups(ft);
- 	kvfree(in);
-+	kfree(ft->g);
- 
- 	return err;
- }
--- 
-2.17.1
+Thanks
 
+>
+> Best Regards,
+> Xiao Yang
+> > Thanks
+> >
+> >
+> > .
+> >
+>
+>
+>
