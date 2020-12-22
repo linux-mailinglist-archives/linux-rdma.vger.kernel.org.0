@@ -2,155 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6F82E0076
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Dec 2020 19:54:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BAF2E04D0
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Dec 2020 04:41:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726039AbgLUSwh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Dec 2020 13:52:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725818AbgLUSwh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:52:37 -0500
-Date:   Mon, 21 Dec 2020 18:51:40 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608576716;
-        bh=YkdUJqE0UIpHET+IcPL1+UgnebkbGvIwmn1cUuRAHqw=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PPuUblpLuOc1RSKrGcqCxeAYBiCDVP04QbB2xwERZ46f97Dbr4rG2NHcPg2eWhh+s
-         25fc68oQk+EkXqjdRNXf8d+7OlRu8O0Ba0QIsPur/VgL0jHbF9/lljutpft9IQdqPG
-         9zWT54tu8QKq3QSCLp0RfdMFSG5xj58AXFRDxyiN++cCxXswTLTbBf9rFK1RHMia1Z
-         9ILGRXgag4/cVkVuIAqUcbp4Ahk9FBNyWjrQOhh8YO7oVyaNWMzigv1ZlzIqByTZ+z
-         +KiIelx9q3Rrjz6T9L9whT8X1q/f4MN3iPOYx13C+wfBLu2sUzTbU/WoHXHqNiJNfF
-         0o+63uGLtoe/A==
-From:   Mark Brown <broonie@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>, lee.jones@linaro.org
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <20201221185140.GD4521@sirena.org.uk>
-References: <20201217211937.GA3177478@piout.net>
- <X9xV+8Mujo4dhfU4@kroah.com>
- <20201218131709.GA5333@sirena.org.uk>
- <20201218140854.GW552508@nvidia.com>
- <20201218155204.GC5333@sirena.org.uk>
- <20201218162817.GX552508@nvidia.com>
- <20201218180310.GD5333@sirena.org.uk>
- <20201218184150.GY552508@nvidia.com>
- <20201218203211.GE5333@sirena.org.uk>
- <20201218205856.GZ552508@nvidia.com>
+        id S1725993AbgLVDlN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Dec 2020 22:41:13 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:13633 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725962AbgLVDlN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Dec 2020 22:41:13 -0500
+X-IronPort-AV: E=Sophos;i="5.78,438,1599494400"; 
+   d="scan'208";a="102804810"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 22 Dec 2020 11:40:26 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id 0C3844CE5CF8;
+        Tue, 22 Dec 2020 11:40:21 +0800 (CST)
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) by
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Tue, 22 Dec 2020 11:40:20 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local ([fe80::65fd:3cfa:6c39:98a3])
+ by G08CNEXMBPEKD06.g08.fujitsu.local ([fe80::65fd:3cfa:6c39:98a3%14]) with
+ mapi id 15.00.1497.010; Tue, 22 Dec 2020 11:40:20 +0800
+From:   "Yang, Xiao" <yangx.jy@cn.fujitsu.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIIHYyXSBsaWJyZG1hY206IE1ha2Ugc29tZSBmdW5jdGlv?=
+ =?gb2312?Q?ns_report_proper_errno?=
+Thread-Topic: [PATCH v2] librdmacm: Make some functions report proper errno
+Thread-Index: AQHW04/wkUpdvjlZ6UGG4SbEeUQ+n6n49OUAgAABIoCAB01fAIAArBmAgAGOfwA=
+Date:   Tue, 22 Dec 2020 03:40:20 +0000
+Message-ID: <0d87d07d653d4c9da64532ac322ab4d8@G08CNEXMBPEKD06.g08.fujitsu.local>
+References: <20201216092252.155110-1-yangx.jy@cn.fujitsu.com>
+ <5FD9D8B2.1020208@cn.fujitsu.com> <20201216095549.GC1060282@unreal>
+ <5FDFF9CA.1060109@cn.fujitsu.com> <20201221114231.GB3128@unreal>
+In-Reply-To: <20201221114231.GB3128@unreal>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.167.220.69]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="a2FkP9tdjPU2nyhF"
-Content-Disposition: inline
-In-Reply-To: <20201218205856.GZ552508@nvidia.com>
-X-Cookie: Remember: use logout to logout.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-yoursite-MailScanner-ID: 0C3844CE5CF8.AD9C1
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
---a2FkP9tdjPU2nyhF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Dec 18, 2020 at 04:58:56PM -0400, Jason Gunthorpe wrote:
-> On Fri, Dec 18, 2020 at 08:32:11PM +0000, Mark Brown wrote:
->=20
-> > Historically people did try to create custom bus types, as I have
-> > pointed out before there was then pushback that these were duplicating
-> > the platform bus so everything uses platform bus.
-
-> Yes, I vaugely remember..
-
-> I don't know what to say, it seems Greg doesn't share this view of
-> platform devices as a universal device.
-
-He did at the time, he seems to have changed his mind at some point for
-unclear reasons=20
-
-> Reading between the lines, I suppose things would have been happier
-> with some kind of inheritance scheme where platform device remained as
-> only instantiated directly in board files, while drivers could bind to
-> OF/DT/ACPI/FPGA/etc device instantiations with minimal duplication &
-> boilerplate.
-
-Like I said in my previous message that is essentially what we have now.
-It's not worded in quite that way but it's how all the non-enumerable
-buses work. =20
-
-BTW I did have a bit of a scan through some of the ACPI devices and for
-a good proportion of them it seems fairly clear that they are not
-platform devices at all - they were mostly interacting with ACPI
-firmware functionality rather than hardware, something you can't really
-do with FDT at all.
-
-> > I can't tell the difference between what it's doing and what SOF is
-> > doing, the code I've seen is just looking at the system it's running
-> > on and registering a fixed set of client devices.  It looks slightly
-> > different because it's registering a device at a time with some wrapper
-> > functions involved but that's what the code actually does.
-
-> SOF's aux bus usage in general seems weird to me, but if you think
-> it fits the mfd scheme of primarily describing HW to partition vs
-> describing a SW API then maybe it should use mfd.
-
-> The only problem with mfd as far as SOF is concerned was Greg was not
-> happy when he saw PCI stuff in the MFD subsystem.
-
-This is a huge part of the problem here - there's no clearly articulated
-logic, it's all coming back to these sorts of opinion statements about
-specific cases which aren't really something you can base anything on.
-Personally I'm even struggling to identify a practical problem that
-we're trying to solve here.  Like Alexandre says what would an
-mfd_driver actually buy us?
-
-> MFD still doesn't fit what mlx5 and others in the netdev area are
-> trying to do. Though it could have been soe-horned it would have been
-> really weird to create a platform device with an empty HW resource
-> list. At a certain point the bus type has to mean *something*!
-
-I have some bad news for you about the hardware description problem
-space.  Among other things we have a bunch of platform devices that
-don't have any resources exposed through the resource API but are still
-things like chips on a board, doing some combination of exposing
-resources for other devices (eg, a fixed voltage regulator) and
-consuming things like clocks or GPIOs that don't appear in the resource
-API.  We *could* make a new bus type and move all these things over to
-that but it is not clear what the upside of doing that would be,
-especially given the amount of upheval it would generate and the
-classification issues that will inevitably result.
-
---a2FkP9tdjPU2nyhF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/g7rsACgkQJNaLcl1U
-h9DSKggAhfCDV1DtqQcqFWmEf71EctSZmBw/wFXh4jJLz2YiDQfdfb47IE0G77QQ
-mVgjLvUJc8cnyNASB6688PiDZAs9dbuZtQXSFNHfZ9xUAlLJrBzTln5F2zIb2Al9
-9KdOuFf8ba1yQbSYM0//mj9QOzGqYKijeENExwvY68n8MyZRK1OkZoY450GPkzo2
-A2x7daMtTh7jXg7sSVedM2UYENxmoR9SCZLQWH7iR4rXD7sDGRR2CqT5x6Br45/3
-VPJvjJAn/EkCpIj9EDwICvC5ux6aXTG9yQVB4NfiQ2V7vR5Bm0MjfgHoF3mVdOPH
-p6HNRk3s5haMLHRwy/HCxJkyKJQ4qA==
-=A+iW
------END PGP SIGNATURE-----
-
---a2FkP9tdjPU2nyhF--
+DQoNCi0tLS0t08q8/tStvP4tLS0tLQ0Kt6K8/sjLOiBMZW9uIFJvbWFub3Zz
+a3kgPGxlb25Aa2VybmVsLm9yZz4gDQq3osvNyrG85DogMjAyMMTqMTLUwjIx
+yNUgMTk6NDMNCsrVvP7IyzogWWFuZywgWGlhby/R7iDP/iA8eWFuZ3guanlA
+Y24uZnVqaXRzdS5jb20+DQqzrcvNOiBsaW51eC1yZG1hQHZnZXIua2VybmVs
+Lm9yZw0K1vfM4jogUmU6IFtQQVRDSCB2Ml0gbGlicmRtYWNtOiBNYWtlIHNv
+bWUgZnVuY3Rpb25zIHJlcG9ydCBwcm9wZXIgZXJybm8NCg0KT24gTW9uLCBE
+ZWMgMjEsIDIwMjAgYXQgMDk6MjY6MzRBTSArMDgwMCwgWGlhbyBZYW5nIHdy
+b3RlOg0KPiBPbiAyMDIwLzEyLzE2IDE3OjU1LCBMZW9uIFJvbWFub3Zza3kg
+d3JvdGU6DQo+ID4gT24gV2VkLCBEZWMgMTYsIDIwMjAgYXQgMDU6NTE6NDZQ
+TSArMDgwMCwgWGlhbyBZYW5nIHdyb3RlOg0KPiA+ID4gSGkgTGVvbiwNCj4g
+PiA+DQo+ID4gPiBUaGFua3MgZm9yIHlvdXIgcXVpY2sgcmVwbHkuIDotKQ0K
+PiA+ID4gSSBoYXZlIGRvbmUgdGhlIHNhbWUgY2hhbmdlIG9uIHRocmVlIA0K
+PiA+ID4gZnVuY3Rpb25zKHVjbWFfZ2V0X2RldmljZSx1Y21hX2NyZWF0ZV9j
+cXMsIHJkbWFfY3JlYXRlX3FwX2V4KS4NCj4gPiA+DQo+ID4gPiBPbiAyMDIw
+LzEyLzE2IDE3OjIyLCBYaWFvIFlhbmcgd3JvdGU6DQo+ID4gPiA+IFNvbWUg
+ZnVuY3Rpb25zIHJlcG9ydHMgZml4ZWQgRU5PTUVNIHdoZW4gZ2V0dGluZyBh
+bnkgZmFpbHVyZSwgc28gDQo+ID4gPiA+IGl0J3MgaGFyZCBmb3IgdXNlciB0
+byBrbm93IHdoaWNoIGFjdHVhbCBlcnJvciBoYXBwZW5zIG9uIHRoZW0uDQo+
+ID4gPiA+DQo+ID4gPiA+IEZpeGVzKHVjbWFfZ2V0X2RldmljZSk6DQo+ID4g
+PiA+IDJmZmRhN2YyOTkxMyAoImxpYnJkbWFjbTogT25seSBhbGxvY2F0ZSB2
+ZXJicyByZXNvdXJjZXMgd2hlbiANCj4gPiA+ID4gbmVlZGVkIikNCj4gPiA+
+ID4gMTkxYzkzNDZmMzM1ICgibGlicmRtYWNtOiBSZWZlcmVuY2UgY291bnQg
+YWNjZXNzIHRvIHZlcmJzIA0KPiA+ID4gPiBjb250ZXh0IikNCj4gPiA+ID4g
+Rml4ZXModWNtYV9jcmVhdGVfY3FzKToNCj4gPiA+ID4gZjhmMTMzNWFkOGQ4
+ICgibGlicmRtYWNtOiBtYWtlIENRcyBvcHRpb25hbCBmb3IgcmRtYV9jcmVh
+dGVfcXAiKQ0KPiA+ID4gPiA5ZTMzNDg4ZThlNTAgKCJsaWJyZG1hY206IGZp
+eCBhbGwgY2FsbHMgdG8gc2V0IGVycm5vIikNCj4gPiA+ID4gRml4ZXMocmRt
+YV9jcmVhdGVfcXBfZXgpOg0KPiA+ID4gPiBkMmVmZGVkZTExZjcgKCJyNDAx
+OTogQWRkIHN1cHBvcnQgZm9yIHVzZXJzcGFjZSBSRE1BIGNvbm5lY3Rpb24g
+DQo+ID4gPiA+IG1hbmFnZW1lbnQgYWJzdHJhY3Rpb24gKENNQSkiKQ0KPiA+
+ID4gPiA0ZTMzYTQxMDlhNjIgKCJsaWJyZG1hY206IHJldHVybnMgZXJyb3Jz
+IGZyb20gdGhlIGxpYnJhcnkgDQo+ID4gPiA+IGNvbnNpc3RlbnRseSIpIDk5
+NWViMGM5MGMxYSAoInJkbWFjbTogQWRkIHN1cHBvcnQgZm9yIFhSQyBRUHMi
+KQ0KPiA+ID4gRm9yIGV2ZXJ5IGZ1bmN0aW9uLCBJIGFtIG5vdCBzdXJlIHdo
+aWNoIG9uZSBpcyBhbiBleGFjdCBjb21taXQgc28gDQo+ID4gPiBqdXN0IGF0
+dGFjaCBhbGwgcmVsYXRlZCBjb21taXRzIGlkcy4NCj4gPiBObyBwcm9ibGVt
+LCBJJ2xsIHRyeSB0byBzb3J0IGl0IG91dCBub3cuDQo+IEhpIExlb24sDQo+
+DQo+IFNvcnJ5IHRvIGJvdGhlciB5b3UuDQo+IElzIHRoZXJlIGFueXRoaW5n
+IGJsb2NraW5nIHRoZSBwYXRjaD8gOi0pDQoNCk5vdGhpbmcsIHdlIGFyZSBp
+biB0aGUgbWlkZGxlIG9mIENocmlzdG1hcyB2YWNhdGlvbiBoZXJlLCBzbyBl
+dmVyeXRoaW5nIHRha2VzIG1vcmUgdGltZSB0aGFuIHVzdWFsLg0KDQpUaGFu
+a3MNCg0KSGkgTGVvbiwNCg0KR290IGl0LiAgVGhhbmtzIGZvciB5b3VyIHJl
+cGx5Lg0KDQpCZXN0IFJlZ2FyZHMsDQpYaWFvIFlhbmcNCg0KPg0KPiBCZXN0
+IFJlZ2FyZHMsDQo+IFhpYW8gWWFuZw0KPiA+IFRoYW5rcw0KPiA+DQo+ID4N
+Cj4gPiAuDQo+ID4NCj4NCj4NCj4NCg0KDQoKCg==
