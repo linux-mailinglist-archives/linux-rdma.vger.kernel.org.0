@@ -2,62 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11FA32E073C
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Dec 2020 09:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 317452E1771
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Dec 2020 04:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725807AbgLVIeM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Dec 2020 03:34:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44360 "EHLO mail.kernel.org"
+        id S1728122AbgLWCSc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Dec 2020 21:18:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725782AbgLVIeM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Dec 2020 03:34:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65C9623127;
-        Tue, 22 Dec 2020 08:33:31 +0000 (UTC)
+        id S1727990AbgLWCSb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:18:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FB0922A83;
+        Wed, 23 Dec 2020 02:16:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608626012;
-        bh=md//pfLxBekOda4JZEV74M/jy+hyMopue84JfQiWigA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L9nfZbNjO6FVU0ZuonW0b67UqhI717BH/6pEbyCcMYLAay2Y3C0Xhl+KCKf06KYUu
-         9CeDbnZk+TeMEjHiPXEj972eG/dB6IjDHruBTCZ1HEujiyQ6XZryZJl5+s8NUYpZyZ
-         bKaQH6ji8ScyqhgYbFPOTvjCPWSiUGhFB5OO7/G4Xl02P/aFu1reyJhXjAFjclWjry
-         71xWFiKEpMZSG6t0m3AS/G1UstpdnQinx/EJOC6iRlkTop4WLkHiljywIaAYjgOnWr
-         f7ovg7GTkIuYQDPa1wcKiZTCdw3DfYvsPCvS7OOr23B6uGEE2+UV9cRcMGfrHBNXfB
-         MPhJN9C+HOqYw==
-Date:   Tue, 22 Dec 2020 10:33:27 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Xiao Yang <yangx.jy@cn.fujitsu.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v2] librdmacm: Make some functions report proper errno
-Message-ID: <20201222083327.GD3128@unreal>
-References: <20201216092252.155110-1-yangx.jy@cn.fujitsu.com>
+        s=k20201202; t=1608689808;
+        bh=jUTVGPKaUv0dLokQQNpWd1K4DlKDte1jQwHqFUCqreY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=igB9VK2E0ctLkgo1/UC0P/3yA4JxmS+NB630ZsWGlqMTTY5pVSPV4ruE9bSKijk78
+         2SJ/db2GSKETU40Yhiea8FkOym9dzCACOjajklWfI+K2XX/w16VgPlxWjlZ1Fs6qP0
+         cXGKpLM0s2nXFHjAKdEYZp2qyeNmroge4Fyd3+9ZlNotEKKVk4iq8YdEX09UQMvmAf
+         8Efm7h8EYL6BF5Z9V9XHem95Fuk37QHCR5SYfz5VWlP6gxApSwCJm6CBRQ7ac2blq4
+         2w057e/aYiiy3ir8cQ3o4M7Aavdmw/u3Kz7cnpGo74ZOrRpR99Zf9kwIW1+K4mokGg
+         GUAj+nIWz7IhA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Zhang Qilong <zhangqilong3@huawei.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 017/217] RDMA/siw: Fix typo of EAGAIN not -EAGAIN in siw_cm_work_handler()
+Date:   Tue, 22 Dec 2020 21:13:06 -0500
+Message-Id: <20201223021626.2790791-17-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201223021626.2790791-1-sashal@kernel.org>
+References: <20201223021626.2790791-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216092252.155110-1-yangx.jy@cn.fujitsu.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 05:22:52PM +0800, Xiao Yang wrote:
-> Some functions reports fixed ENOMEM when getting any failure, so
-> it's hard for user to know which actual error happens on them.
->
-> Fixes(ucma_get_device):
-> 2ffda7f29913 ("librdmacm: Only allocate verbs resources when needed")
-> 191c9346f335 ("librdmacm: Reference count access to verbs context")
-> Fixes(ucma_create_cqs):
-> f8f1335ad8d8 ("librdmacm: make CQs optional for rdma_create_qp")
-> 9e33488e8e50 ("librdmacm: fix all calls to set errno")
-> Fixes(rdma_create_qp_ex):
-> d2efdede11f7 ("r4019: Add support for userspace RDMA connection management abstraction (CMA)")
-> 4e33a4109a62 ("librdmacm: returns errors from the library consistently")
-> 995eb0c90c1a ("rdmacm: Add support for XRC QPs")
->
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  librdmacm/cma.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-Thanks, applied.
-https://github.com/linux-rdma/rdma-core/pull/908
+[ Upstream commit 856c2998999958761b6a52208b4edb4d352c4037 ]
+
+The rv cannot be 'EAGAIN' in the previous path, we should use '-EAGAIN' to
+check it. For example:
+
+Call trace:
+ ->siw_cm_work_handler
+	->siw_proc_mpareq
+		->siw_recv_mpa_rr
+
+Link: https://lore.kernel.org/r/20201028122509.47074-1-zhangqilong3@huawei.com
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/sw/siw/siw_cm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+index 66764f7ef072a..1f9e15b715048 100644
+--- a/drivers/infiniband/sw/siw/siw_cm.c
++++ b/drivers/infiniband/sw/siw/siw_cm.c
+@@ -1047,7 +1047,7 @@ static void siw_cm_work_handler(struct work_struct *w)
+ 					    cep->state);
+ 			}
+ 		}
+-		if (rv && rv != EAGAIN)
++		if (rv && rv != -EAGAIN)
+ 			release_cep = 1;
+ 		break;
+ 
+-- 
+2.27.0
+
