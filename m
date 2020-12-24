@@ -2,60 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66562E24CD
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Dec 2020 07:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC732E273C
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Dec 2020 14:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725833AbgLXG1h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 24 Dec 2020 01:27:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725747AbgLXG1h (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 24 Dec 2020 01:27:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B613B22571;
-        Thu, 24 Dec 2020 06:26:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608791216;
-        bh=J5cPf2HCJlp1S19+ZO1iRv1yS7vy1/6LsafEPOCZYTc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GeC2xyY4ZWTsFi9kPysV4kK9ItOXSqFlVNsP6Ygf7MIeNGVKWkLBk18vSqlE5Y2Qs
-         d4j3kdGxeWyJWcaCfB1b0DUFlIuZSsfNQg9VUZzCWc6lDkzfdL3uRz8FG9KuRzRYiL
-         nSCzEaMDJc9n/AngVYASY+kWUCd6LXgN5SytD4QlAj22KiT+GQNDMqoJj5rHfruWBK
-         /MNCa3bG6JSeA8xyJ4yJsrlSENutTrGI4jXDaYHKcfvSKN1RagCJ5DQqAiuhW6RR/g
-         z4R6gG/K5vet8UC8kxAZ6jtQzh68tHFRq98xiXlWGIgcXjZ9E2rbfBA7GY+6c+wB3S
-         25lpF0lImRKxg==
-Date:   Thu, 24 Dec 2020 08:26:52 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     trix@redhat.com
-Cc:     saeedm@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        vladyslavt@nvidia.com, maximmi@mellanox.com, tariqt@nvidia.com,
-        bjorn.topel@intel.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/mlx5e: remove h from printk format specifier
-Message-ID: <20201224062652.GB18357@unreal>
-References: <20201223194512.126231-1-trix@redhat.com>
+        id S1728861AbgLXNXi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 24 Dec 2020 08:23:38 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9989 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728771AbgLXNXi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Dec 2020 08:23:38 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D1rMm1hl6zhxHL;
+        Thu, 24 Dec 2020 21:22:12 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 24 Dec 2020 21:22:46 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <leon@kernel.org>, <dledford@redhat.com>, <jgg@ziepe.ca>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH v2 -next] mlx5: use DEFINE_MUTEX() for mutex lock
+Date:   Thu, 24 Dec 2020 21:23:23 +0800
+Message-ID: <20201224132323.31126-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201223194512.126231-1-trix@redhat.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 11:45:12AM -0800, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
->
-> This change fixes the checkpatch warning described in this commit
-> commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of unnecessary %h[xudi] and %hh[xudi]")
->
-> Standard integer promotion is already done and %hx and %hhx is useless
-> so do not encourage the use of %hh[xudi] or %h[xudi].
->
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en/params.c | 2 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en_main.c   | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
->
+mutex lock can be initialized automatically with DEFINE_MUTEX()
+rather than explicitly calling mutex_init().
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/infiniband/hw/mlx5/main.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 246e3cbe0b2c..8a260773722f 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -79,7 +79,7 @@ static DEFINE_MUTEX(mlx5_ib_multiport_mutex);
+  * doesn't work on kernel modules memory
+  */
+ static unsigned long xlt_emergency_page;
+-static struct mutex xlt_emergency_page_mutex;
++static DEFINE_MUTEX(xlt_emergency_page_mutex);
+ 
+ struct mlx5_ib_dev *mlx5_ib_get_ibdev_from_mpi(struct mlx5_ib_multiport_info *mpi)
+ {
+@@ -4874,8 +4874,6 @@ static int __init mlx5_ib_init(void)
+ 	if (!xlt_emergency_page)
+ 		return -ENOMEM;
+ 
+-	mutex_init(&xlt_emergency_page_mutex);
+-
+ 	mlx5_ib_event_wq = alloc_ordered_workqueue("mlx5_ib_event_wq", 0);
+ 	if (!mlx5_ib_event_wq) {
+ 		free_page(xlt_emergency_page);
+-- 
+2.22.0
+
