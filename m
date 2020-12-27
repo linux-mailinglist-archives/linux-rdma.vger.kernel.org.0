@@ -2,203 +2,186 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016882E308C
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Dec 2020 10:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A282E3291
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Dec 2020 20:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726094AbgL0JCE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 27 Dec 2020 04:02:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725976AbgL0JCE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 27 Dec 2020 04:02:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F69020796;
-        Sun, 27 Dec 2020 09:01:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609059683;
-        bh=TwQp8oH/h/s/E+lcIEL5+GMtgnFtE6sgYCpHGAB3jTU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MZ3SwFHRogGbNJLsjSd83vzXpRc9ma4w2+MT/txyu5tqt5AfC7ApcNnASMYoQkpg1
-         n2qqGq3tc3vrrWVE4m3fIO+hXrC51WaFnoGAsKuRqesxX2ceu17jFg670ElBP7v8Oa
-         l0FhwOv88nBqCDprQFKWcp4w9SPN4YAzqJM+CSpnNpra22V86rGepdatFo3tot/2MU
-         J0Ix+jUeLfibgqZzDEAC0pZZS2Wr2eW5XVTTJC8dQDpiM0N5dwdXKDqH2kWRhrGD9q
-         SkxPD49BYDsqevcvpevmWVZetb3NCfVFTBDiyhNnk+E8oXplgAlcsc3tl/ByOmVpoQ
-         HM3unkDxZ244w==
-Date:   Sun, 27 Dec 2020 11:01:18 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jack Wang <xjtuwjp@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next 02/18] RMDA/rtrs-srv: Occasionally flush ongoing
- session closing
-Message-ID: <20201227090118.GG4457@unreal>
-References: <CAMGffE=_axtHU=pAV3qx5FVY2pB786z3kffQwDzinOaH=yS5Ag@mail.gmail.com>
- <e841a2c3-2774-ca8f-302a-cd43c3b3161e@cloud.ionos.com>
- <CAMGffEmKAzy3dXVKhoZDAqLpZ6DiQiaYNQn8_0Fd+MQUXbn_eA@mail.gmail.com>
- <20201211072600.GA192848@unreal>
- <CAMGffEn4fbTud3qrrwnrS6bqxcpF6sueKb=Qke8N9yLvDeEWpA@mail.gmail.com>
- <CAMGffEnuNHacxqqdZsF0JMk3kTUqT9KdzNK_QzBF_FWjPWLN8Q@mail.gmail.com>
- <20201211134543.GB5487@ziepe.ca>
- <CAD+HZHXso=S5c=MqgrmDMZpWi10FbPTinWPfLMTkMCCiosihCQ@mail.gmail.com>
- <20201211162900.GC5487@ziepe.ca>
- <CAMGffEm22sP-oKK0D9=vOw77nbS05iwG7MC3DTVB0CyzVFhtXg@mail.gmail.com>
+        id S1726337AbgL0TVe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 27 Dec 2020 14:21:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726188AbgL0TVd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 27 Dec 2020 14:21:33 -0500
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E0AC061794;
+        Sun, 27 Dec 2020 11:20:53 -0800 (PST)
+Received: by mail-ot1-x332.google.com with SMTP id j20so7597805otq.5;
+        Sun, 27 Dec 2020 11:20:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0sVC8j/qFLW+R/BiCcbxfbFuWt0QadRRyfbTVS1VwHY=;
+        b=snNRM2UJuxFlYbt0opdNq/Km+jTrugWz+XCv9dvNVL/debD4RiSNjJuvvfbPHP8li7
+         KIhX0/QgOmUeidxtdeZSEin831Gb4MPxK/Nsdy82P6kpVKu6N4Nc/2a1j/rhKSYYtPfM
+         OdujcskdH0zj17962B4EA6DAWt+WbPQDoOQkCV+q0RBuHOc2AwsMveKzxEy1LnZjcBm6
+         WwVaL7EiOv3pK+MmaGP2Q6W+EWp/A0H6XAJ9Sli5mcOq3SMT90MXTM6BUD6s+YNQPnp0
+         3oKuBMFCRu9MNXQfN7PDX/uDAX7jwXSxxMeoGH5bWQ0ZYiFJh6LgmVaIuZavb11TOu03
+         Stkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0sVC8j/qFLW+R/BiCcbxfbFuWt0QadRRyfbTVS1VwHY=;
+        b=baA1JgZfuXDUP0wIGaf/e/J2QAvhQ1W8cBsVUUJKgN3YSDDUVya7ZRWr42nn5BH4xI
+         56Zgb2WI310CDR2BHisVc244/JfSC0nrQ/NcE9enBxBMZOV/VmlcsF+bp/0GvWU7kIUT
+         C8sOUBx8iO+e8biI5IrNRe2Suto5ok3/OHP4MgjzYTny3K67EzCZembfXwtnV63dH+vo
+         f67r1w6MTMzwdPw0GQhgVwJaLPOGE3aZn25d8DlVQk4bxaMmvDIlq6N+7yMgYjn4CT0/
+         HL5lETj3wUdzaTmQUgwRiQKwq3CAhk0+GVXBprwznOZ3tNJ4wpnK4fSeOEw9ISCMwZP+
+         bc8w==
+X-Gm-Message-State: AOAM532RadgU6GulQv36XZyn62JXa+xh84zQcs14GK1DF5NwFkCDvv8V
+        iXYgSOZ/jATNZGcDser//GM=
+X-Google-Smtp-Source: ABdhPJy5MA8pTqBMHg7t7kC9SkPKcTOcLW8SMiIKlPFipG2wn4l5044FI2Bd1WiObQwt+tJVlAueHQ==
+X-Received: by 2002:a05:6830:cf:: with SMTP id x15mr30498943oto.55.1609096852047;
+        Sun, 27 Dec 2020 11:20:52 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v17sm8555011oou.41.2020.12.27.11.20.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 27 Dec 2020 11:20:50 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sun, 27 Dec 2020 11:20:49 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        dri-devel@lists.freedesktop.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-s390@vger.kernel.org,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        xen-devel@lists.xenproject.org, Leon Romanovsky <leon@kernel.org>,
+        linux-rdma@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Helge Deller <deller@gmx.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-pci@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Juergen Gross <jgross@suse.com>,
+        David Airlie <airlied@linux.ie>, linux-gpio@vger.kernel.org,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        linux-parisc@vger.kernel.org,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Tariq Toukan <tariqt@nvidia.com>, Jon Mason <jdmason@kudzu.us>,
+        linux-ntb@googlegroups.com, intel-gfx@lists.freedesktop.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [patch 02/30] genirq: Move status flag checks to core
+Message-ID: <20201227192049.GA195845@roeck-us.net>
+References: <20201210192536.118432146@linutronix.de>
+ <20201210194042.703779349@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMGffEm22sP-oKK0D9=vOw77nbS05iwG7MC3DTVB0CyzVFhtXg@mail.gmail.com>
+In-Reply-To: <20201210194042.703779349@linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 05:42:17PM +0100, Jinpu Wang wrote:
-> On Fri, Dec 11, 2020 at 5:29 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Fri, Dec 11, 2020 at 05:17:36PM +0100, Jack Wang wrote:
-> > >    En, the lockdep was complaining about the new conn_id, I will
-> > >    post the full log if needed next week.  let’s skip this patch for
-> > >    now, will double check!
-> >
-> > That is even more worrysome as the new conn_id already has a different
-> > lock class.
-> >
-> > Jason
-> This is the dmesg of the LOCKDEP warning, it's on kernel 5.4.77, but
-> the latest 5.10 behaves the same.
->
-> [  500.071552] ======================================================
-> [  500.071648] WARNING: possible circular locking dependency detected
-> [  500.071869] 5.4.77-storage+ #35 Tainted: G           O
-> [  500.071959] ------------------------------------------------------
-> [  500.072054] kworker/1:1/28 is trying to acquire lock:
-> [  500.072200] ffff99653a624390 (&id_priv->handler_mutex){+.+.}, at:
-> rdma_destroy_id+0x55/0x230 [rdma_cm]
-> [  500.072837]
->                but task is already holding lock:
-> [  500.072938] ffff9d18800f7e80
-> ((work_completion)(&sess->close_work)){+.+.}, at:
-> process_one_work+0x223/0x600
-> [  500.075642]
->                which lock already depends on the new lock.
->
-> [  500.075759]
->                the existing dependency chain (in reverse order) is:
-> [  500.075880]
->                -> #3 ((work_completion)(&sess->close_work)){+.+.}:
-> [  500.076062]        process_one_work+0x278/0x600
-> [  500.076154]        worker_thread+0x2d/0x3d0
-> [  500.076225]        kthread+0x111/0x130
-> [  500.076290]        ret_from_fork+0x24/0x30
-> [  500.076370]
->                -> #2 ((wq_completion)rtrs_server_wq){+.+.}:
-> [  500.076482]        flush_workqueue+0xab/0x4b0
-> [  500.076565]        rtrs_srv_rdma_cm_handler+0x71d/0x1500 [rtrs_server]
-> [  500.076674]        cma_ib_req_handler+0x8c4/0x14f0 [rdma_cm]
-> [  500.076770]        cm_process_work+0x22/0x140 [ib_cm]
-> [  500.076857]        cm_req_handler+0x900/0xde0 [ib_cm]
-> [  500.076944]        cm_work_handler+0x136/0x1af2 [ib_cm]
-> [  500.077025]        process_one_work+0x29f/0x600
-> [  500.077097]        worker_thread+0x2d/0x3d0
-> [  500.077164]        kthread+0x111/0x130
-> [  500.077224]        ret_from_fork+0x24/0x30
-> [  500.077294]
->                -> #1 (&id_priv->handler_mutex/1){+.+.}:
-> [  500.077409]        __mutex_lock+0x7e/0x950
-> [  500.077488]        cma_ib_req_handler+0x787/0x14f0 [rdma_cm]
-> [  500.077582]        cm_process_work+0x22/0x140 [ib_cm]
-> [  500.077669]        cm_req_handler+0x900/0xde0 [ib_cm]
-> [  500.077755]        cm_work_handler+0x136/0x1af2 [ib_cm]
-> [  500.077835]        process_one_work+0x29f/0x600
-> [  500.077907]        worker_thread+0x2d/0x3d0
-> [  500.077973]        kthread+0x111/0x130
-> [  500.078034]        ret_from_fork+0x24/0x30
-> [  500.078095]
->                -> #0 (&id_priv->handler_mutex){+.+.}:
-> [  500.078196]        __lock_acquire+0x1166/0x1440
-> [  500.078267]        lock_acquire+0x90/0x170
-> [  500.078335]        __mutex_lock+0x7e/0x950
-> [  500.078410]        rdma_destroy_id+0x55/0x230 [rdma_cm]
-> [  500.078498]        rtrs_srv_close_work+0xf2/0x2d0 [rtrs_server]
-> [  500.078586]        process_one_work+0x29f/0x600
-> [  500.078662]        worker_thread+0x2d/0x3d0
-> [  500.078732]        kthread+0x111/0x130
-> [  500.078793]        ret_from_fork+0x24/0x30
-> [  500.078859]
->                other info that might help us debug this:
->
-> [  500.078984] Chain exists of:
->                  &id_priv->handler_mutex -->
-> (wq_completion)rtrs_server_wq --> (work_completion)(&sess->close_work)
->
-> [  500.079207]  Possible unsafe locking scenario:
->
-> [  500.079293]        CPU0                    CPU1
-> [  500.079358]        ----                    ----
-> [  500.079358]   lock((work_completion)(&sess->close_work));
-> [  500.079358]
-> lock((wq_completion)rtrs_server_wq);
-> [  500.079358]
-> lock((work_completion)(&sess->close_work));
-> [  500.079358]   lock(&id_priv->handler_mutex);
-> [  500.079358]
->                 *** DEADLOCK ***
->
-> [  500.079358] 2 locks held by kworker/1:1/28:
-> [  500.079358]  #0: ffff99652d281f28
-> ((wq_completion)rtrs_server_wq){+.+.}, at:
-> process_one_work+0x223/0x600
-> [  500.079358]  #1: ffff9d18800f7e80
-> ((work_completion)(&sess->close_work)){+.+.}, at:
-> process_one_work+0x223/0x600
-> [  500.079358]
->                stack backtrace:
-> [  500.079358] CPU: 1 PID: 28 Comm: kworker/1:1 Tainted: G           O
->      5.4.77-storage+ #35
-> [  500.079358] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> BIOS 1.10.2-1ubuntu1 04/01/2014
-> [  500.079358] Workqueue: rtrs_server_wq rtrs_srv_close_work [rtrs_server]
-> [  500.079358] Call Trace:
-> [  500.079358]  dump_stack+0x71/0x9b
-> [  500.079358]  check_noncircular+0x17d/0x1a0
-> [  500.079358]  ? __lock_acquire+0x1166/0x1440
-> [  500.079358]  __lock_acquire+0x1166/0x1440
-> [  500.079358]  lock_acquire+0x90/0x170
-> [  500.079358]  ? rdma_destroy_id+0x55/0x230 [rdma_cm]
-> [  500.079358]  ? rdma_destroy_id+0x55/0x230 [rdma_cm]
-> [  500.079358]  __mutex_lock+0x7e/0x950
-> [  500.079358]  ? rdma_destroy_id+0x55/0x230 [rdma_cm]
-> [  500.079358]  ? find_held_lock+0x2d/0x90
-> [  500.079358]  ? mark_held_locks+0x49/0x70
-> [  500.079358]  ? rdma_destroy_id+0x55/0x230 [rdma_cm]
-> [  500.079358]  rdma_destroy_id+0x55/0x230 [rdma_cm]
-> [  500.079358]  rtrs_srv_close_work+0xf2/0x2d0 [rtrs_server]
-> [  500.079358]  process_one_work+0x29f/0x600
-> [  500.079358]  worker_thread+0x2d/0x3d0
-> [  500.079358]  ? process_one_work+0x600/0x600
-> [  500.079358]  kthread+0x111/0x130
-> [  500.079358]  ? kthread_park+0x90/0x90
-> [  500.079358]  ret_from_fork+0x24/0x30
->
-> According to my understanding
-> in cma_ib_req_handler, the conn_id is newly created in
-> https://elixir.bootlin.com/linux/latest/source/drivers/infiniband/core/cma.c#L2222.
-> And the rdma_cm_id associated with conn_id is passed to
-> rtrs_srv_rdma_cm_handler->rtrs_rdma_connect.
->
-> In rtrs_rdma_connect, we do flush_workqueue will only flush close_work
-> for any other cm_id, but
-> not the newly created one conn_id, it has not associated with anything yet.
+On Thu, Dec 10, 2020 at 08:25:38PM +0100, Thomas Gleixner wrote:
+> These checks are used by modules and prevent the removal of the export of
+> irq_to_desc(). Move the accessor into the core.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-How did you come to this conclusion that rtrs handler was called before
-cma_cm_event_handler()? I'm not so sure about that and it will explain
-the lockdep.
+Yes, but that means that irq_check_status_bit() may be called from modules,
+but it is not exported, resulting in build errors such as the following.
 
-Thanks
+arm64:allmodconfig:
 
->
-> The same applies to nvme-rdma. so it's a false alarm by lockdep.
->
-> Regards!
+ERROR: modpost: "irq_check_status_bit" [drivers/perf/arm_spe_pmu.ko] undefined!
+
+Guenter
+
+> ---
+>  include/linux/irqdesc.h |   17 +++++------------
+>  kernel/irq/manage.c     |   17 +++++++++++++++++
+>  2 files changed, 22 insertions(+), 12 deletions(-)
+> 
+> --- a/include/linux/irqdesc.h
+> +++ b/include/linux/irqdesc.h
+> @@ -223,28 +223,21 @@ irq_set_chip_handler_name_locked(struct
+>  	data->chip = chip;
+>  }
+>  
+> +bool irq_check_status_bit(unsigned int irq, unsigned int bitmask);
+> +
+>  static inline bool irq_balancing_disabled(unsigned int irq)
+>  {
+> -	struct irq_desc *desc;
+> -
+> -	desc = irq_to_desc(irq);
+> -	return desc->status_use_accessors & IRQ_NO_BALANCING_MASK;
+> +	return irq_check_status_bit(irq, IRQ_NO_BALANCING_MASK);
+>  }
+>  
+>  static inline bool irq_is_percpu(unsigned int irq)
+>  {
+> -	struct irq_desc *desc;
+> -
+> -	desc = irq_to_desc(irq);
+> -	return desc->status_use_accessors & IRQ_PER_CPU;
+> +	return irq_check_status_bit(irq, IRQ_PER_CPU);
+>  }
+>  
+>  static inline bool irq_is_percpu_devid(unsigned int irq)
+>  {
+> -	struct irq_desc *desc;
+> -
+> -	desc = irq_to_desc(irq);
+> -	return desc->status_use_accessors & IRQ_PER_CPU_DEVID;
+> +	return irq_check_status_bit(irq, IRQ_PER_CPU_DEVID);
+>  }
+>  
+>  static inline void
+> --- a/kernel/irq/manage.c
+> +++ b/kernel/irq/manage.c
+> @@ -2769,3 +2769,23 @@ bool irq_has_action(unsigned int irq)
+>  	return res;
+>  }
+>  EXPORT_SYMBOL_GPL(irq_has_action);
+> +
+> +/**
+> + * irq_check_status_bit - Check whether bits in the irq descriptor status are set
+> + * @irq:	The linux irq number
+> + * @bitmask:	The bitmask to evaluate
+> + *
+> + * Returns: True if one of the bits in @bitmask is set
+> + */
+> +bool irq_check_status_bit(unsigned int irq, unsigned int bitmask)
+> +{
+> +	struct irq_desc *desc;
+> +	bool res = false;
+> +
+> +	rcu_read_lock();
+> +	desc = irq_to_desc(irq);
+> +	if (desc)
+> +		res = !!(desc->status_use_accessors & bitmask);
+> +	rcu_read_unlock();
+> +	return res;
+> +}
