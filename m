@@ -2,57 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1949F2E3061
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Dec 2020 08:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7BE2E3077
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Dec 2020 09:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725986AbgL0HZR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 27 Dec 2020 02:25:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33524 "EHLO mail.kernel.org"
+        id S1725989AbgL0Idr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 27 Dec 2020 03:33:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725976AbgL0HZQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 27 Dec 2020 02:25:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D217207FF;
-        Sun, 27 Dec 2020 07:24:35 +0000 (UTC)
+        id S1725976AbgL0Idr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 27 Dec 2020 03:33:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24648207AB;
+        Sun, 27 Dec 2020 08:33:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609053876;
-        bh=BknoFF8QfpYVaK9Sv6S/OlSfiIbQ2n+LKBGIXhYqYsI=;
+        s=k20201202; t=1609057986;
+        bh=wBte6beHPRpjRvAESlVnOERm+wcqSPP76lv0VK7bjb8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wd9JcyeuQ52X3VxgY0sKuRcaAVfco1f4/gVM+s3mRZ5972G0Itxm4Lgnx6Uek7/O9
-         N39kj1HliapNt0ybE8YtPO3EjP4CPzzWpICfCBzWvUM0IDkHV4/MEsgzER9Yw67nz6
-         uKwtUBDhgV7dB0BuRbWj7MUX5rASK5jCMpkxZLoVDu8Nb2GraSFMZnQGdrykzlAiCw
-         DEKACKE9xTRv/PqC/wJmwS+p6NjTgkxlbrHPWp4V6+8orVL3qfImo7klKcLNnn5nce
-         7g9nYORpzaXlfLVM1+ahc4+wQZO7wgOBFatBRYxk7JpboeksN0JM8XkqLFBcLDjioS
-         rtaUGwO2UKUNA==
-Date:   Sun, 27 Dec 2020 09:24:32 +0200
+        b=Pbtv4OxAzXefuY8pMhqUz+S2jO1NwMIlUmRw23lkyLwqgj6bYk3vIvBEzbsmSidTV
+         Eol2/ZBY4yYdlDb0CAx+cdKORPZbdm3RsOj2bFVsRUfClqmjMJlTXuYH9RjuKMDnyC
+         KMYrnto7w8iXZvmIWEDV4IwV5CbkQhMgbnGj1QYx/6DvUWrIdOA7RyjbQUbEYH7Dab
+         7+EH7vaiJSaPq9R/wxX1cRHmINpJwJT/pUKhorNTudR3x1HVH5pOkciIWfRti5tpvN
+         Z6bllFvEvhaj9Jkt1RPOe9SybBxTq+or9HrTIRz2SAU0MTToutYJteo0G9/iplIohv
+         mVRtcajvAWkwg==
+Date:   Sun, 27 Dec 2020 10:33:02 +0200
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/usnic: Fix memleak in find_free_vf_and_create_qp_grp
-Message-ID: <20201227072432.GC4457@unreal>
-References: <20201226074248.2893-1-dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, Saeed Mahameed <saeedm@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/mlx5e: Fix memleak in mlx5e_create_l2_table_groups
+Message-ID: <20201227083302.GD4457@unreal>
+References: <20201221112731.32545-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201226074248.2893-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20201221112731.32545-1-dinghao.liu@zju.edu.cn>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Dec 26, 2020 at 03:42:48PM +0800, Dinghao Liu wrote:
-> If usnic_ib_qp_grp_create() fails at the first call, dev_list
-> will not be freed on error, which leads to memleak.
+On Mon, Dec 21, 2020 at 07:27:31PM +0800, Dinghao Liu wrote:
+> When mlx5_create_flow_group() fails, ft->g should be
+> freed just like when kvzalloc() fails. The caller of
+> mlx5e_create_l2_table_groups() does not catch this
+> issue on failure, which leads to memleak.
 >
 > Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 > ---
->  drivers/infiniband/hw/usnic/usnic_ib_verbs.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  drivers/net/ethernet/mellanox/mlx5/core/en_fs.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
 
-Fixes: e3cf00d0a87f ("IB/usnic: Add Cisco VIC low-level hardware driver")
+Fixes: 33cfaaa8f36f ("net/mlx5e: Split the main flow steering table")
 
 Thanks,
 Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
