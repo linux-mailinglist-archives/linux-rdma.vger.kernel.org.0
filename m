@@ -2,152 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFE92E6CB7
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Dec 2020 01:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF6F2E70E3
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Dec 2020 14:32:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730141AbgL2ABC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Dec 2020 19:01:02 -0500
-Received: from smtp.infotech.no ([82.134.31.41]:59795 "EHLO smtp.infotech.no"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729046AbgL2AAR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 28 Dec 2020 19:00:17 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by smtp.infotech.no (Postfix) with ESMTP id D4C05204238;
-        Tue, 29 Dec 2020 00:50:08 +0100 (CET)
-X-Virus-Scanned: by amavisd-new-2.6.6 (20110518) (Debian) at infotech.no
-Received: from smtp.infotech.no ([127.0.0.1])
-        by localhost (smtp.infotech.no [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id yOsrXQPjSrST; Tue, 29 Dec 2020 00:50:07 +0100 (CET)
-Received: from xtwo70.bingwo.ca (host-104-157-204-209.dyn.295.ca [104.157.204.209])
-        by smtp.infotech.no (Postfix) with ESMTPA id 423E4204237;
-        Tue, 29 Dec 2020 00:50:05 +0100 (CET)
-From:   Douglas Gilbert <dgilbert@interlog.com>
-To:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     martin.petersen@oracle.com, jejb@linux.vnet.ibm.com,
-        bostroesser@gmail.com, bvanassche@acm.org, ddiss@suse.de
-Subject: [PATCH v5 4/4] scatterlist: add sgl_memset()
-Date:   Mon, 28 Dec 2020 18:49:55 -0500
-Message-Id: <20201228234955.190858-5-dgilbert@interlog.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201228234955.190858-1-dgilbert@interlog.com>
-References: <20201228234955.190858-1-dgilbert@interlog.com>
+        id S1726274AbgL2Nc0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 29 Dec 2020 08:32:26 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2348 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725979AbgL2NcZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Dec 2020 08:32:25 -0500
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4D4wJq3hGWz13bV5;
+        Tue, 29 Dec 2020 21:30:19 +0800 (CST)
+Received: from dggema701-chm.china.huawei.com (10.3.20.65) by
+ DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 29 Dec 2020 21:31:39 +0800
+Received: from dggema703-chm.china.huawei.com (10.3.20.67) by
+ dggema701-chm.china.huawei.com (10.3.20.65) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Tue, 29 Dec 2020 21:31:39 +0800
+Received: from dggema703-chm.china.huawei.com ([10.8.64.130]) by
+ dggema703-chm.china.huawei.com ([10.8.64.130]) with mapi id 15.01.1913.007;
+ Tue, 29 Dec 2020 21:31:39 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>
+CC:     "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Is it ok to use debugfs to dump some ucontext-level driver-defined
+ info?
+Thread-Topic: Is it ok to use debugfs to dump some ucontext-level
+ driver-defined info?
+Thread-Index: AQHW3ebw3F8B3O2FE0G2KEXK5NMuLQ==
+Date:   Tue, 29 Dec 2020 13:31:39 +0000
+Message-ID: <d681bc1cad0e4726806aeb46f240d07d@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The existing sg_zero_buffer() function is a bit restrictive. For
-example protection information (PI) blocks are usually initialized
-to 0xff bytes. As its name suggests sgl_memset() is modelled on
-memset(). One difference is the type of the val argument which is
-u8 rather than int. Plus it returns the number of bytes (over)written.
+Hi all,
 
-Change implementation of sg_zero_buffer() to call this new function.
+We want to dump some hns driver-defined information that belongs to a
+process to keep track of current memory usage. For example, there is
+a ucontext-level(process-level) memory pool to store WQE which is
+shared by a lot of QPs, we want to record and query which QPs are using
+this pool and how much space each QP is using.
 
-Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
-Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
----
- include/linux/scatterlist.h |  3 ++
- lib/scatterlist.c           | 65 +++++++++++++++++++++++++------------
- 2 files changed, 48 insertions(+), 20 deletions(-)
+rdmatool don't have a ucontext-level resource tracking currently, is it
+ok to achieve that through debugfs?
 
-diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
-index 71be65f9ebb5..70d3f1f73df1 100644
---- a/include/linux/scatterlist.h
-+++ b/include/linux/scatterlist.h
-@@ -333,6 +333,9 @@ bool sgl_compare_sgl_idx(struct scatterlist *x_sgl, unsigned int x_nents, off_t
- 			 struct scatterlist *y_sgl, unsigned int y_nents, off_t y_skip,
- 			 size_t n_bytes, size_t *miscompare_idx);
- 
-+size_t sgl_memset(struct scatterlist *sgl, unsigned int nents, off_t skip,
-+		  u8 val, size_t n_bytes);
-+
- /*
-  * Maximum number of entries that will be allocated in one piece, if
-  * a list larger than this is required then chaining will be utilized.
-diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-index 9332365e7eb6..f06614a880c8 100644
---- a/lib/scatterlist.c
-+++ b/lib/scatterlist.c
-@@ -1038,26 +1038,7 @@ EXPORT_SYMBOL(sg_pcopy_to_buffer);
- size_t sg_zero_buffer(struct scatterlist *sgl, unsigned int nents,
- 		       size_t buflen, off_t skip)
- {
--	unsigned int offset = 0;
--	struct sg_mapping_iter miter;
--	unsigned int sg_flags = SG_MITER_ATOMIC | SG_MITER_TO_SG;
--
--	sg_miter_start(&miter, sgl, nents, sg_flags);
--
--	if (!sg_miter_skip(&miter, skip))
--		return false;
--
--	while (offset < buflen && sg_miter_next(&miter)) {
--		unsigned int len;
--
--		len = min(miter.length, buflen - offset);
--		memset(miter.addr, 0, len);
--
--		offset += len;
--	}
--
--	sg_miter_stop(&miter);
--	return offset;
-+	return sgl_memset(sgl, nents, skip, 0, buflen);
- }
- EXPORT_SYMBOL(sg_zero_buffer);
- 
-@@ -1243,3 +1224,47 @@ bool sgl_compare_sgl(struct scatterlist *x_sgl, unsigned int x_nents, off_t x_sk
- 	return sgl_compare_sgl_idx(x_sgl, x_nents, x_skip, y_sgl, y_nents, y_skip, n_bytes, NULL);
- }
- EXPORT_SYMBOL(sgl_compare_sgl);
-+
-+/**
-+ * sgl_memset - set byte 'val' up to n_bytes times on SG list
-+ * @sgl:		 The SG list
-+ * @nents:		 Number of SG entries in sgl
-+ * @skip:		 Number of bytes to skip before starting
-+ * @val:		 byte value to write to sgl
-+ * @n_bytes:		 The (maximum) number of bytes to modify
-+ *
-+ * Returns:
-+ *   The number of bytes written.
-+ *
-+ * Notes:
-+ *   Stops writing if either sgl or n_bytes is exhausted. If n_bytes is
-+ *   set SIZE_MAX then val will be written to each byte until the end
-+ *   of sgl.
-+ *
-+ *   The notes in sgl_copy_sgl() about large sgl_s _applies here as well.
-+ *
-+ **/
-+size_t sgl_memset(struct scatterlist *sgl, unsigned int nents, off_t skip,
-+		  u8 val, size_t n_bytes)
-+{
-+	size_t offset = 0;
-+	size_t len;
-+	struct sg_mapping_iter miter;
-+
-+	if (n_bytes == 0)
-+		return 0;
-+	sg_miter_start(&miter, sgl, nents, SG_MITER_ATOMIC | SG_MITER_TO_SG);
-+	if (!sg_miter_skip(&miter, skip))
-+		goto fini;
-+
-+	while ((offset < n_bytes) && sg_miter_next(&miter)) {
-+		len = min(miter.length, n_bytes - offset);
-+		memset(miter.addr, val, len);
-+		offset += len;
-+	}
-+fini:
-+	sg_miter_stop(&miter);
-+	return offset;
-+}
-+EXPORT_SYMBOL(sgl_memset);
-+
--- 
-2.25.1
+This may looks like:
 
+$ echo 1 > <dbgfs_dir>/hns_roce/hns_0/<pid>/qp
+QPN        Total(kB)  SQ(kB)     SGE(kB)    RQ(kB)
+110        6400       256        2048       4096
+118        6400       256        2048       0
+
+Or should it be achieved in rdmatool?
+
+Thanks
+Weihang
