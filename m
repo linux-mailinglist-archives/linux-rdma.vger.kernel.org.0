@@ -2,64 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278542E765D
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Dec 2020 06:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBECF2E7689
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Dec 2020 07:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726161AbgL3FcK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 30 Dec 2020 00:32:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgL3FcJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 30 Dec 2020 00:32:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 773F0207BC;
-        Wed, 30 Dec 2020 05:31:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609306289;
-        bh=3RmqZdf92WJL3eksCJ9qchUxtAnBebaRBAqMTBWQRS0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JGnmWmmrEa5C7wkI3FoGBN5PFWHj4kAs609Mmf4cdr34a4DqW090HZ6XYAYGkGFXk
-         g6+ppzKQxuE124LP9K+8ptdOh2m+v8Amdhq2bKbktp/R42h4jueMVSdEk3dJeAqJxe
-         C0KqSvBiW2mVlPLR/3iemqO3+cTzdk7c+1uouLUP39fM8XzixFf81REsw/2UahTRlS
-         WsVtLp2Whl07q8ZZI/ty/7HcjTQ5nKaefqFZWgleaF/LB1hFj3B9UZaxTIQGf4FC6a
-         5l87XEraftzHnTCVXYyJJ/2QFH2RLyosjV8AFr+ryvYhKIwJSI8Bxbm3I/on5gOtLN
-         LMzTp2S+IgNrg==
-Date:   Wed, 30 Dec 2020 07:31:25 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     trix@redhat.com
-Cc:     selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
-        dledford@redhat.com, jgg@ziepe.ca, maxg@mellanox.com,
-        galpress@amazon.com, michaelgur@nvidia.com, monis@mellanox.com,
-        gustavoars@kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/ocrdma: fix use after free in
- ocrdma_dealloc_ucontext_pd()
-Message-ID: <20201230053125.GB6438@unreal>
-References: <20201230024653.1516495-1-trix@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201230024653.1516495-1-trix@redhat.com>
+        id S1726528AbgL3G3l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 30 Dec 2020 01:29:41 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:45668 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726356AbgL3G3l (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 30 Dec 2020 01:29:41 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UKCbjMc_1609309732;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UKCbjMc_1609309732)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 30 Dec 2020 14:28:59 +0800
+From:   YANG LI <abaci-bugfix@linux.alibaba.com>
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, tariqt@nvidia.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, YANG LI <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] mlx4: style: replace zero-length array with flexible-array member.
+Date:   Wed, 30 Dec 2020 14:28:51 +0800
+Message-Id: <1609309731-70464-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 06:46:53PM -0800, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
->
-> In ocrdma_dealloc_ucontext_pd() uctx->cntxt_pd is assigned to
-> the variable pd and then after uctx->cntxt_pd is freed, the
-> variable pd is passed to function _ocrdma_dealloc_pd() which
-> dereferences pd directly or through its call to
-> ocrdma_mbx_dealloc_pd().
->
-> Reorder the free using the variable pd.
->
-> Fixes: 21a428a019c9 ("RDMA: Handle PD allocations by IB/core")
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/infiniband/hw/ocrdma/ocrdma_verbs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
+There is a regular need in the kernel to provide a way to declare
+having a dynamically sized set of trailing elements in a structure.
+Kernel code should always use "flexible array members"[1] for these
+cases. The older style of one-element or zero-length arrays should
+no longer be used[2].
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.9/process/
+    deprecated.html#zero-length-and-one-element-arrays
+
+Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
+Reported-by: Abaci <abaci@linux.alibaba.com>
+---
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+index e8ed2319..4029a8b 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
++++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+@@ -314,7 +314,7 @@ struct mlx4_en_tx_ring {
+ 
+ struct mlx4_en_rx_desc {
+ 	/* actual number of entries depends on rx ring stride */
+-	struct mlx4_wqe_data_seg data[0];
++	struct mlx4_wqe_data_seg data[];
+ };
+ 
+ struct mlx4_en_rx_ring {
+-- 
+1.8.3.1
+
