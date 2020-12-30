@@ -2,61 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BCF2E7239
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Dec 2020 17:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0BC2E75B6
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Dec 2020 03:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbgL2QSn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Dec 2020 11:18:43 -0500
-Received: from smtprelay0191.hostedemail.com ([216.40.44.191]:38860 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726240AbgL2QSn (ORCPT
+        id S1726178AbgL3Cs3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Dec 2020 21:48:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21185 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726161AbgL3Cs2 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 29 Dec 2020 11:18:43 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id AC7E21802926E;
-        Tue, 29 Dec 2020 16:18:01 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3876:3877:4321:5007:6114:6642:7652:10004:10400:11026:11232:11473:11657:11658:11914:12043:12048:12297:12438:12740:12895:13069:13311:13357:13439:13894:14659:14721:21080:21627:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:22,LUA_SUMMARY:none
-X-HE-Tag: sack33_6103b212749d
-X-Filterd-Recvd-Size: 1550
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 29 Dec 2020 16:18:00 +0000 (UTC)
-Message-ID: <dda4079bc35fa6e0846a94e9c2b91b0c3a224c52.camel@perches.com>
-Subject: Re: [PATCH net-next] net/mlx5: Use kzalloc for allocating only one
- thing
-From:   Joe Perches <joe@perches.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     saeedm@nvidia.com, leon@kernel.org
-Date:   Tue, 29 Dec 2020 08:17:58 -0800
-In-Reply-To: <20201229135318.24195-1-zhengyongjun3@huawei.com>
-References: <20201229135318.24195-1-zhengyongjun3@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Tue, 29 Dec 2020 21:48:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609296422;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Qd6nMabBaDCBXEiCctK4wjRScqdv2pc8J+Ek6ufNcrI=;
+        b=Jxp4gpkHqln+T2GxemWNQiSq2P0nHDPopO635kq5L3uKgzE3HQQ+zW0us13CaXvTs2fhXx
+        mCU6uRUV5WgQ0otMxn8okHX3kVXNXfxGHaP3SC/Juy9Itf+0HUKTXl1R2FcsGF1W2LNImt
+        n7IGZ8+nSPJLezZxAZvGEKFjIHyqSHw=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-409-ZUq54M8FNESDTBFuVMMtXw-1; Tue, 29 Dec 2020 21:47:00 -0500
+X-MC-Unique: ZUq54M8FNESDTBFuVMMtXw-1
+Received: by mail-ot1-f69.google.com with SMTP id x15so11066435otp.8
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Dec 2020 18:47:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Qd6nMabBaDCBXEiCctK4wjRScqdv2pc8J+Ek6ufNcrI=;
+        b=RpL09oqAgory9JKKBFTf6kkirnEy2iZ+w+0FlJXdPW9ZyvBaonF2+wc9alnEgNsHtn
+         WE5zC8PWYiT7R2nLrRDxjG6E7e4gO2smQsJzRqodc0HSttU8NnU8tVo5bWsCjWo8TzPe
+         CL8HUNQH5iVdMZB/dt6ntQJDcawgzXOwxHD7kl6M3shL0AQN1IRtqyGt/wxUh5Va8kIS
+         owSFRn6hUos6GZCqCfrEVXQQCb1Iz81Csto8qwkaSonXBoTM/N+KfDwsPuFkkEgnZ20J
+         nGzlBt8z0F+c0eMpaDhCe/RTMa750/j0nv6XO4zxyvMJxETwsJO3DY9r0vSjgDipK7L5
+         A+fg==
+X-Gm-Message-State: AOAM531UwOEzOdbQnp5LHcGMbzLbmWhgLlXxRClC3eXv8gzUroq4Q2jW
+        qnkeEpj4ZFsLH76e1BpaaNcldzBT3H44et4l2bzFiwlEL41srJFSIN4x7xcmlnrzX3pFhNoROUY
+        Z3j1EUnImArgtROI7bGOu5w==
+X-Received: by 2002:a9d:4793:: with SMTP id b19mr36913695otf.193.1609296419864;
+        Tue, 29 Dec 2020 18:46:59 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyi+KRvLyMyUmLuqPNbTkK+ueMj71floi2LMwHGuN3AywqUKApUEtQilDxkXXDP+Bc+Nc7x8w==
+X-Received: by 2002:a9d:4793:: with SMTP id b19mr36913679otf.193.1609296419647;
+        Tue, 29 Dec 2020 18:46:59 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 94sm10488091otw.41.2020.12.29.18.46.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Dec 2020 18:46:59 -0800 (PST)
+From:   trix@redhat.com
+To:     selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
+        dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
+        maxg@mellanox.com, galpress@amazon.com, michaelgur@nvidia.com,
+        monis@mellanox.com, gustavoars@kernel.org
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] RDMA/ocrdma: fix use after free in ocrdma_dealloc_ucontext_pd()
+Date:   Tue, 29 Dec 2020 18:46:53 -0800
+Message-Id: <20201230024653.1516495-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 2020-12-29 at 21:53 +0800, Zheng Yongjun wrote:
-> Use kzalloc rather than kcalloc(1,...)
-[]
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
-[]
-> @@ -1782,7 +1782,7 @@ static int dr_action_create_modify_action(struct mlx5dr_domain *dmn,
->  	if (!chunk)
->  		return -ENOMEM;
->  
-> 
-> -	hw_actions = kcalloc(1, max_hw_actions * DR_MODIFY_ACTION_SIZE, GFP_KERNEL);
-> +	hw_actions = kzalloc(max_hw_actions * DR_MODIFY_ACTION_SIZE, GFP_KERNEL);
+From: Tom Rix <trix@redhat.com>
 
-Perhaps instead:
+In ocrdma_dealloc_ucontext_pd() uctx->cntxt_pd is assigned to
+the variable pd and then after uctx->cntxt_pd is freed, the
+variable pd is passed to function _ocrdma_dealloc_pd() which
+dereferences pd directly or through its call to
+ocrdma_mbx_dealloc_pd().
 
-	hw_actions = kcalloc(max_hw_actions, DR_MODIFY_ACTION_SIZE, GFP_KERNEL);
+Reorder the free using the variable pd.
 
+Fixes: 21a428a019c9 ("RDMA: Handle PD allocations by IB/core")
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+index bc98bd950d99..3acb5c10b155 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+@@ -434,9 +434,9 @@ static void ocrdma_dealloc_ucontext_pd(struct ocrdma_ucontext *uctx)
+ 		pr_err("%s(%d) Freeing in use pdid=0x%x.\n",
+ 		       __func__, dev->id, pd->id);
+ 	}
+-	kfree(uctx->cntxt_pd);
+ 	uctx->cntxt_pd = NULL;
+ 	_ocrdma_dealloc_pd(dev, pd);
++	kfree(pd);
+ }
+ 
+ static struct ocrdma_pd *ocrdma_get_ucontext_pd(struct ocrdma_ucontext *uctx)
+-- 
+2.27.0
 
