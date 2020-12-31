@@ -2,117 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 114412E7F75
-	for <lists+linux-rdma@lfdr.de>; Thu, 31 Dec 2020 11:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D7A2E8136
+	for <lists+linux-rdma@lfdr.de>; Thu, 31 Dec 2020 17:19:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726218AbgLaKjf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 31 Dec 2020 05:39:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54648 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726155AbgLaKjf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 31 Dec 2020 05:39:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7A8B22262;
-        Thu, 31 Dec 2020 10:38:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609411134;
-        bh=zeHU8xO0LCbwmg1u5yCJ/EvtTmven+9eWLEIXjfbK80=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iTdNu0XNK2wdy+gGoW4DKwaEK8IjxH1t7XtMMYn6H6gP4li+Nrmd7cUWaMud0Ck+R
-         fpJv175aHyeZhzilutKxkX1tp9VQpxwrKd8/4I4Y3wnAoLf2b/svc46cJyUAc6QYve
-         fuc/Rguut9WfITAS0gjg+qy4BIB9q3VrMtvaYClKjUCuJlVTJSIvE/spe9tVDvVIEu
-         YKx8wpNTgwUaTA8cWyzZEUKfhTDSahEODfSu+PlCawU1CduWWHnj6pT7lqr/N06kth
-         dn+fORvA0eRA/cwUZ74IElfZjB96rTcXvOECNc/a2EODCdqU+EwJR5v2yUGlGTTZRr
-         vibpj1ZWGXzUQ==
-Date:   Thu, 31 Dec 2020 12:38:50 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     liweihang <liweihang@huawei.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: Re: Is it ok to use debugfs to dump some ucontext-level
- driver-defined info?
-Message-ID: <20201231103850.GE6438@unreal>
-References: <d681bc1cad0e4726806aeb46f240d07d@huawei.com>
- <20201231075907.GD6438@unreal>
- <f7eb8350a0474532870c5ad2ab940c5a@huawei.com>
+        id S1726632AbgLaQTf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 31 Dec 2020 11:19:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726071AbgLaQTf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 31 Dec 2020 11:19:35 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD3E8C061573;
+        Thu, 31 Dec 2020 08:18:54 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id q25so18317232otn.10;
+        Thu, 31 Dec 2020 08:18:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KJaEUkkAN82+qp8E3MGa7L6IXpBsU6/JywsUxir+y0g=;
+        b=R47AD1qukruthdXPdekyQCq5vZSwTbFQieQiipzBCrSSjC61ua7t2pInAJo8ijcdWz
+         4ylriCQPFCWp4PUzOwYBMexsGxttKrN88TD8LvQc5RdQlhy/WHZwc4Cb76zMQYQjkQHp
+         tuc3RVnhPy+i/l0Sx46aBp8Wd0GLnTYDdDXen5nLwqcrsOMIreAHiok8DKNlEQPsiGIS
+         A8rY1HmidsmxxZ/cpw2lfXSqIo9TB5cr/kIuydLY0tTx/dk5m5I9ybkLDvfeUGybN0iC
+         cc1bjcE9eynYqnQnWQZhh+G7oAnfWoAwRt0EobHe1N5WBh3Nsg/XObdHHvAn6Cu9/vdp
+         X6zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KJaEUkkAN82+qp8E3MGa7L6IXpBsU6/JywsUxir+y0g=;
+        b=NbzSgXPdjTyQe7zdutB6qsuZF3IC45MwQxaZ12fat595xWjBXsSuW0tcEK+503SW7X
+         F8aw9ZnA5Dnq5dF1fDQR6KVBRP5aXfDlsOYYfKWu38nJe53KVr/uSSnsg0b81ArW152y
+         Q5d+mH/lUw+Ns/DtOZaEK+sGDg9C1p3k91bsK6d5sw7soLYQ6YbcAsSrdeyWpOtcPTfI
+         iO/z7CmIPsTDrtGW8YGGz4Kt/sfPrfzyNfBEEkx/OsQRPqxhq61tvhD0k6AYfgy5AdDO
+         8fyQwtPMwxMhjsXS3Pijt/v9bdyA17oxaT+HGjQ+EIKi/Pc0nzUBPf9ZR3CM5qE9vXsV
+         k1xA==
+X-Gm-Message-State: AOAM533MoRLMivcFkxEviRDOgYK+IZk6YUp5raKa2m/nMcrnO/jgAPki
+        9JTWK0nG4S9776GqxB2zA1o5tDrGTKU=
+X-Google-Smtp-Source: ABdhPJzuBm3GVpHoqAChnXq4M1lVKgjAgjx61YYN6tgeYQgciK/6m1oHsL/qJcpOWjWMVaNAXPF5BQ==
+X-Received: by 2002:a05:6830:1aec:: with SMTP id c12mr41328504otd.342.1609431534224;
+        Thu, 31 Dec 2020 08:18:54 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([2601:282:800:dc80:98e1:c150:579a:a69c])
+        by smtp.googlemail.com with ESMTPSA id f25sm11094369oou.39.2020.12.31.08.18.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 31 Dec 2020 08:18:53 -0800 (PST)
+Subject: Re: [PATCH iproute2-next] rdma: Add support for the netlink extack
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Patrisious Haddad <phaddad@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        linux-netdev <netdev@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <20201231054217.372274-1-leon@kernel.org>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <8d59994a-0c08-8c62-d23d-da3f74f57af5@gmail.com>
+Date:   Thu, 31 Dec 2020 09:18:52 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f7eb8350a0474532870c5ad2ab940c5a@huawei.com>
+In-Reply-To: <20201231054217.372274-1-leon@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 09:36:27AM +0000, liweihang wrote:
-> On 2020/12/31 15:59, Leon Romanovsky wrote:
-> > On Tue, Dec 29, 2020 at 01:31:39PM +0000, liweihang wrote:
-> >> Hi all,
-> >>
-> >> We want to dump some hns driver-defined information that belongs to a
-> >> process to keep track of current memory usage. For example, there is
-> >> a ucontext-level(process-level) memory pool to store WQE which is
-> >> shared by a lot of QPs, we want to record and query which QPs are using
-> >> this pool and how much space each QP is using.
-> >>
-> >> rdmatool don't have a ucontext-level resource tracking currently, is it
-> >> ok to achieve that through debugfs?
-> >>
-> >> This may looks like:
-> >>
-> >> $ echo 1 > <dbgfs_dir>/hns_roce/hns_0/<pid>/qp
-> >> QPN        Total(kB)  SQ(kB)     SGE(kB)    RQ(kB)
-> >> 110        6400       256        2048       4096
-> >> 118        6400       256        2048       0
-> >>
-> >> Or should it be achieved in rdmatool?
-> >
-> > I think so, because PID != ucontext. Why can't it be presented as QP
-> > attribute? Can you please send "rdmatool" example?
-> >
-> > Thanks
->
-> Hi Leon,
->
-> Thanks for your response. If we can achieve it in rdmatool, it may
-> looks like:
->
-> 1) We want to get some information of a ucontext (assuming that each
-> ucontext has an ID), for example, the size of a memory pool that belongs
-> to a ucontext as I mentioned above:
->
-> $ rdma res show ucontext
-> uctx_id	1 pid 20 qp_buf_sz 6400 sq_buf_sz 256 sge_buf_sz 2048 rq_buf_sz 4096
-> uctx_id	2 pid 20 qp_buf_sz 4800 sq_buf_sz 128 sge_buf_sz 2048 rq_buf_sz 2048
+On 12/30/20 10:42 PM, Leon Romanovsky wrote:
+> diff --git a/rdma/utils.c b/rdma/utils.c
+> index 2a201aa4..927e2107 100644
+> --- a/rdma/utils.c
+> +++ b/rdma/utils.c
+> @@ -664,7 +664,7 @@ void rd_prepare_msg(struct rd *rd, uint32_t cmd, uint32_t *seq, uint16_t flags)
+> 
+>  int rd_send_msg(struct rd *rd)
+>  {
+> -	int ret;
+> +	int ret, one;
+> 
+>  	rd->nl = mnl_socket_open(NETLINK_RDMA);
+>  	if (!rd->nl) {
+> @@ -672,6 +672,12 @@ int rd_send_msg(struct rd *rd)
+>  		return -ENODEV;
+>  	}
+> 
+> +	ret = mnl_socket_setsockopt(rd->nl, NETLINK_EXT_ACK, &one, sizeof(one));
+> +	if (ret < 0) {
+> +		pr_err("Failed to set socket option with err %d\n", ret);
+> +		goto err;
+> +	}
+> +
+>  	ret = mnl_socket_bind(rd->nl, 0, MNL_SOCKET_AUTOPID);
+>  	if (ret < 0) {
+>  		pr_err("Failed to bind socket with err %d\n", ret);
 
-I have no problems to add "rdma res show ucontext" command, we just need
-to find what should be printed.
+you should be able to use mnlu_socket_open in ./lib/mnl_utils.c
 
->
-> 2) We want to know which ucontext a QP belongs to:
->
-> $ rdma res show qp
-> link hns_0/1 lqpn 1 type GSI ... uctx_id 1
-> link hns_0/1 lqpn 2 type RC ... uctx_id 1
->
-> So the question is, we don't have a ucontext-level restrack currently, and
-> there in no 'id' for each ucontext.
-
-We have IDs for every ucontext, it is called "ctxn" and because QP is
-not connected directly to ucontext, but through PDs, it is visible
-when you check PDs.
-
-[leonro@vm ~]$ ibv_rc_pingpong &
-[leonro@vm ~]$ rdma res show
-0: ibp0s9: pd 4 cq 4 qp 4 cm_id 0 mr 1 ctx 1
-[leonro@vm ~]$ rdma res show qp type RC
-link ibp0s9/1 lqpn 50 rqpn 0 type RC state INIT rq-psn 16777215 sq-psn 0 path-mig-state MIGRATED pdn 3 pid 479 comm ibv_rc_pingpong
-[leonro@vm ~]$ rdma res show pd pdn 3
-ifindex 0 ifname ibp0s9 pdn 3 users 2 ctxn 0 pid 479 comm ibv_rc_pingpong
-                                      ^^^^^^
-
-Thanks
-
->
-> Thanks
-> Weihang
->
