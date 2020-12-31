@@ -2,143 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E77E2E7D05
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Dec 2020 23:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669662E7E47
+	for <lists+linux-rdma@lfdr.de>; Thu, 31 Dec 2020 06:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbgL3WvY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 30 Dec 2020 17:51:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38698 "EHLO mail.kernel.org"
+        id S1726155AbgLaFnF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 31 Dec 2020 00:43:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726247AbgL3WvY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 30 Dec 2020 17:51:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id ADD9E2072E
-        for <linux-rdma@vger.kernel.org>; Wed, 30 Dec 2020 22:50:43 +0000 (UTC)
-Received: by pdx-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-        id A39C28672F; Wed, 30 Dec 2020 22:50:43 +0000 (UTC)
-From:   bugzilla-daemon@bugzilla.kernel.org
-To:     linux-rdma@vger.kernel.org
-Subject: [Bug 210973] New: info leaks in all kernel versions including
- android
-Date:   Wed, 30 Dec 2020 22:50:43 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: new
-X-Bugzilla-Watch-Reason: AssignedTo
- drivers_infiniband-rdma@kernel-bugs.osdl.org
-X-Bugzilla-Product: Drivers
-X-Bugzilla-Component: Infiniband/RDMA
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: high
-X-Bugzilla-Who: fxast243@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: drivers_infiniband-rdma@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_id short_desc product version
- cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
- priority component assigned_to reporter cf_regression
-Message-ID: <bug-210973-11804@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1726139AbgLaFnE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 31 Dec 2020 00:43:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95C1322227;
+        Thu, 31 Dec 2020 05:42:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609393344;
+        bh=ZnULMQMtKVi3bXCP/jJRZEy1isrF8G603e/o/mzya9M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=C5m6ZxGx+VQ6+S9Yw07gIB77YSJRQnCotouG6vGP2QSbXCeg0gZXb9nZObro2zDSB
+         2w58C0Uq4EmTPBmTK+a1c3ZuXaZb02mHp5TOve9YO7s/4RjpcyCUPS/66o39ioyOo/
+         i/XaoGTFHQ8h8t4r90IV0NS+RE41GV9+S9ED0+3bpOYaiqc3uKrnHYm7GUSvdOisXX
+         Ox/mOpEJFGUJhZ5f70xHKIydgJ/Nc60f6vKo2Jc3+u47F9KXXBfO7B1Ji0w5YUihZL
+         mX20t8F2OcDNCoDYY7X5I8Dlqme5Pf3SW/lmUtNwZZOKO8+/Vb2gHKVNzQHVAQq8LL
+         Ftvc4xTkg6D4g==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Patrisious Haddad <phaddad@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        linux-netdev <netdev@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: [PATCH iproute2-next] rdma: Add support for the netlink extack
+Date:   Thu, 31 Dec 2020 07:42:17 +0200
+Message-Id: <20201231054217.372274-1-leon@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=210973
+From: Patrisious Haddad <phaddad@nvidia.com>
 
-            Bug ID: 210973
-           Summary: info leaks in all kernel versions including android
-           Product: Drivers
-           Version: 2.5
-    Kernel Version: latest
-          Hardware: All
-                OS: Linux
-              Tree: Mainline
-            Status: NEW
-          Severity: high
-          Priority: P1
-         Component: Infiniband/RDMA
-          Assignee: drivers_infiniband-rdma@kernel-bugs.osdl.org
-          Reporter: fxast243@gmail.com
-        Regression: No
+Add support in rdma for extack errors to be received
+in userspace when sent from kernel, so now netlink extack
+error messages sent from kernel would be printed for the
+user.
 
-While I audit android kernel source code , I noticed that there is an
-Uninitialized data which could lead to info leak in ib_uverbs_create_ah
-function. I download the source code from here 
-https://android.googlesource.com/kernel/common. Also it exists in the
-linux-masters
+Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+Kernel part:
+https://lore.kernel.org/linux-rdma/20201230130240.180737-1-leon@kernel.org
+---
+ rdma/rdma.h  |  1 +
+ rdma/utils.c | 24 ++++++++++--------------
+ 2 files changed, 11 insertions(+), 14 deletions(-)
 
-https://github.com/torvalds/linux/blob/master/drivers/infiniband/core/uverbs_cmd.c#L2408
+diff --git a/rdma/rdma.h b/rdma/rdma.h
+index fc8bcf09..470e11c8 100644
+--- a/rdma/rdma.h
++++ b/rdma/rdma.h
+@@ -19,6 +19,7 @@
 
+ #include "list.h"
+ #include "utils.h"
++#include "mnl_utils.h"
+ #include "json_print.h"
 
-# BUG
-resp.ah_handle = uobj->id;
-return uverbs_response(attrs, &resp, sizeof(resp));
+ #define pr_err(args...) fprintf(stderr, ##args)
+diff --git a/rdma/utils.c b/rdma/utils.c
+index 2a201aa4..927e2107 100644
+--- a/rdma/utils.c
++++ b/rdma/utils.c
+@@ -664,7 +664,7 @@ void rd_prepare_msg(struct rd *rd, uint32_t cmd, uint32_t *seq, uint16_t flags)
 
+ int rd_send_msg(struct rd *rd)
+ {
+-	int ret;
++	int ret, one;
 
-# 1
-static int ib_uverbs_create_ah(struct uverbs_attr_bundle *attrs)
-{
-        struct ib_uverbs_create_ah       cmd;
-        struct ib_uverbs_create_ah_resp  resp; <== point to ah_handle and
-driver_data
-        struct ib_uobject               *uobj;
-        struct ib_pd                    *pd;
-        struct ib_ah                    *ah;
-        struct rdma_ah_attr             attr = {};
-        int ret;
-        struct ib_device *ib_dev;
+ 	rd->nl = mnl_socket_open(NETLINK_RDMA);
+ 	if (!rd->nl) {
+@@ -672,6 +672,12 @@ int rd_send_msg(struct rd *rd)
+ 		return -ENODEV;
+ 	}
 
-        ret = uverbs_request(attrs, &cmd, sizeof(cmd));
-        if (ret)
-                ret
++	ret = mnl_socket_setsockopt(rd->nl, NETLINK_EXT_ACK, &one, sizeof(one));
++	if (ret < 0) {
++		pr_err("Failed to set socket option with err %d\n", ret);
++		goto err;
++	}
++
+ 	ret = mnl_socket_bind(rd->nl, 0, MNL_SOCKET_AUTOPID);
+ 	if (ret < 0) {
+ 		pr_err("Failed to bind socket with err %d\n", ret);
+@@ -692,23 +698,13 @@ err:
 
-..etc
+ int rd_recv_msg(struct rd *rd, mnl_cb_t callback, void *data, unsigned int seq)
+ {
+-	int ret;
+-	unsigned int portid;
+ 	char buf[MNL_SOCKET_BUFFER_SIZE];
++	int ret;
 
+-	portid = mnl_socket_get_portid(rd->nl);
+-	do {
+-		ret = mnl_socket_recvfrom(rd->nl, buf, sizeof(buf));
+-		if (ret <= 0)
+-			break;
+-
+-		ret = mnl_cb_run(buf, ret, seq, portid, callback, data);
+-	} while (ret > 0);
+-
++	ret = mnlu_socket_recv_run(rd->nl, seq, buf, MNL_SOCKET_BUFFER_SIZE,
++				   callback, data);
+ 	if (ret < 0 && !rd->suppress_errors)
+ 		perror("error");
+-
+-	mnl_socket_close(rd->nl);
+ 	return ret;
+ }
 
+--
+2.29.2
 
-        ah->uobject  = uobj;
-        uobj->user_handle = cmd.user_handle;
-        uobj->object = ah;
-        uobj_put_obj_read(pd);
-        uobj_finalize_uobj_create(uobj, attrs);
-
-        resp.ah_handle = uobj->id; <==
-      //  __u32 driver_data[0];  <== ??? Uninitialized data.
-        return uverbs_response(attrs, &resp, sizeof(resp)); <== memoey leaks
-
-
-
-//include/uapi/rdma/ib_user_verbs.h
-
-
-struct ib_uverbs_create_ah_resp {
-        __u32 ah_handle;
-        __u32 driver_data[0];
-};
-
-
-
-static int uverbs_response(struct uverbs_attr_bundle *attrs, const void *resp,
-                           size_t resp_len)
-{
-        int ret;
-
-        if (uverbs_attr_is_valid(attrs, UVERBS_ATTR_CORE_OUT))
-                return uverbs_copy_to_struct_or_zero(
-                        attrs, UVERBS_ATTR_CORE_OUT, resp, resp_len);
-
-        if (copy_to_user(attrs->ucore.outbuf, resp,
-                         min(attrs->ucore.outlen, resp_len))) <== copy data to
-userspace
-                return -EFAULT;
-
--- 
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.
