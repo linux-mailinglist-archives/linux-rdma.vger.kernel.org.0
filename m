@@ -2,37 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91B22E8B1F
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 Jan 2021 07:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5BF2E8B5B
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 Jan 2021 09:25:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726337AbhACGRx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 3 Jan 2021 01:17:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56548 "EHLO mail.kernel.org"
+        id S1726236AbhACIZ2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 3 Jan 2021 03:25:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726329AbhACGRx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 3 Jan 2021 01:17:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F32662078D;
-        Sun,  3 Jan 2021 06:17:11 +0000 (UTC)
+        id S1725829AbhACIZ1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 3 Jan 2021 03:25:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC6612080D;
+        Sun,  3 Jan 2021 08:24:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609654632;
-        bh=Nwg9ogr39Uv2julf1XzB71dEpJXIEW5QHP5Sui7qAi8=;
+        s=k20201202; t=1609662286;
+        bh=SCUPa5CjLPZTftht/C8AD6ge/LKIqPYJxn5ORp7KbYM=;
         h=From:To:Cc:Subject:Date:From;
-        b=L+YdKR8NqZG3RHfmaXBds01t6+cHt+J2ulYjvY4FTAT9baSsIyA15N4NiEj63dIq3
-         qp4Y6LVxjvw/7UXJTudsl5K4zKGW2XgcqdPdhtztyuhBVv4RShn2gjeYy5xHHZ+gVP
-         TsS2TOQP3e5iti9U/MRPsuD1JOUYqbXD4f234Cy6QY963oszA4wM4rdoLKrtJYsnef
-         XEVWmvvM39kV0HAvZPvol+JfTMC1lGVHWoplGqt0YCyC1vQ5N1nqKdFV9WlWA7VdrG
-         519zlJU6d1ByLVus5SFTINVoy/0FSE5i1XmwPPeahSsaAO4q0XsKWrpXgivNHDgdhC
-         4XOAU4x1Y1DKg==
+        b=hXppJJJb8oMO/IU/WbBnrDq+9iZTjEBUB8OoVfwF80I5BrUXdo4gjDCAGu+mIr8tq
+         r2l5LRbCyqmS3qAr8DP+0J2rThaZ0FvTNox1z7kAm5nX698yd+EQ2GGK8pxqZqCAr9
+         5gwzzHX+KImA5tf3qv8bTs7Ouc8nbBY8ObXRZicTUg6fTno53zAqMTyZUPOigFvpQi
+         LmeawltxWlipUyLHUCHz0YRbrwNRtlp+r9uVyzeewJ1o97JXmUVyOuG8oGtkaLthSF
+         OdFAHwmE6S9OpBefWTwUjT3iz/K6u+s/LnKSz/fteL7BdYZ11GL18gLNnxfvjoMecI
+         SOrhdjmnLbWvw==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Patrisious Haddad <phaddad@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
-        linux-netdev <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: [PATCH iproute2-next v2] rdma: Add support for the netlink extack
-Date:   Sun,  3 Jan 2021 08:17:06 +0200
-Message-Id: <20210103061706.18313-1-leon@kernel.org>
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH mlx5-next 0/4] Dynamically assign MSI-X vectors count
+Date:   Sun,  3 Jan 2021 10:24:36 +0200
+Message-Id: <20210103082440.34994-1-leon@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -40,94 +40,69 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Patrisious Haddad <phaddad@nvidia.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Add support in rdma for extack errors to be received
-in userspace when sent from kernel, so now netlink extack
-error messages sent from kernel would be printed for the
-user.
+Hi,
 
-Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
-David,
+The number of MSI-X vectors is PCI property visible through lspci, that
+field is read-only and configured by the device.
 
-Just as a note, rdmatool is heavily influenced by the devlink and
-general code should probably be applicable for both tools. Most likely
-that any core refactoring/fix in the devlink is needed for rdmatool too.
+The static assignment of an amount of MSI-X vectors doesn't allow utilize
+the newly created VF because it is not known to the device the future load
+and configuration where that VF will be used.
+
+The VFs are created on the hypervisor and forwarded to the VMs that have
+different properties (for example number of CPUs).
+
+To overcome the inefficiency in the spread of such MSI-X vectors, we
+allow the kernel to instruct the device with the needed number of such
+vectors, before VF is initialized and bounded to the driver.
+
+Before this series:
+[root@server ~]# lspci -vs 0000:08:00.2
+08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+....
+	Capabilities: [9c] MSI-X: Enable- Count=12 Masked-
+
+Configuration script:
+1. Start fresh
+echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+modprobe -q -r mlx5_ib mlx5_core
+2. Ensure that driver doesn't run and it is safe to change MSI-X
+echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_drivers_autoprobe
+3. Load driver for the PF
+modprobe mlx5_core
+4. Configure one of the VFs with new number
+echo 2 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+echo 21 > /sys/bus/pci/devices/0000\:08\:00.2/vf_msix_vec
+
+After this series:
+[root@server ~]# lspci -vs 0000:08:00.2
+08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+....
+	Capabilities: [9c] MSI-X: Enable- Count=21 Masked-
+
 
 Thanks
-----
-Changelog:
-v2: Reused already existing function to set extack.
-v1: https://lore.kernel.org/linux-rdma/20201231054217.372274-1-leon@kernel.org
----
- rdma/rdma.h  |  1 +
- rdma/utils.c | 24 ++++--------------------
- 2 files changed, 5 insertions(+), 20 deletions(-)
 
-diff --git a/rdma/rdma.h b/rdma/rdma.h
-index fc8bcf09..470e11c8 100644
---- a/rdma/rdma.h
-+++ b/rdma/rdma.h
-@@ -19,6 +19,7 @@
+Leon Romanovsky (4):
+  PCI: Configure number of MSI-X vectors for SR-IOV VFs
+  net/mlx5: Add dynamic MSI-X capabilities bits
+  net/mlx5: Dynamically assign MSI-X vectors count
+  net/mlx5: Allow to the users to configure number of MSI-X vectors
 
- #include "list.h"
- #include "utils.h"
-+#include "mnl_utils.h"
- #include "json_print.h"
-
- #define pr_err(args...) fprintf(stderr, ##args)
-diff --git a/rdma/utils.c b/rdma/utils.c
-index 2a201aa4..903a544c 100644
---- a/rdma/utils.c
-+++ b/rdma/utils.c
-@@ -666,18 +666,12 @@ int rd_send_msg(struct rd *rd)
- {
- 	int ret;
-
--	rd->nl = mnl_socket_open(NETLINK_RDMA);
-+	rd->nl = mnlu_socket_open(NETLINK_RDMA);
- 	if (!rd->nl) {
- 		pr_err("Failed to open NETLINK_RDMA socket\n");
- 		return -ENODEV;
- 	}
-
--	ret = mnl_socket_bind(rd->nl, 0, MNL_SOCKET_AUTOPID);
--	if (ret < 0) {
--		pr_err("Failed to bind socket with err %d\n", ret);
--		goto err;
--	}
--
- 	ret = mnl_socket_sendto(rd->nl, rd->nlh, rd->nlh->nlmsg_len);
- 	if (ret < 0) {
- 		pr_err("Failed to send to socket with err %d\n", ret);
-@@ -692,23 +686,13 @@ err:
-
- int rd_recv_msg(struct rd *rd, mnl_cb_t callback, void *data, unsigned int seq)
- {
--	int ret;
--	unsigned int portid;
- 	char buf[MNL_SOCKET_BUFFER_SIZE];
-+	int ret;
-
--	portid = mnl_socket_get_portid(rd->nl);
--	do {
--		ret = mnl_socket_recvfrom(rd->nl, buf, sizeof(buf));
--		if (ret <= 0)
--			break;
--
--		ret = mnl_cb_run(buf, ret, seq, portid, callback, data);
--	} while (ret > 0);
--
-+	ret = mnlu_socket_recv_run(rd->nl, seq, buf, MNL_SOCKET_BUFFER_SIZE,
-+				   callback, data);
- 	if (ret < 0 && !rd->suppress_errors)
- 		perror("error");
--
--	mnl_socket_close(rd->nl);
- 	return ret;
- }
+ Documentation/ABI/testing/sysfs-bus-pci       | 16 +++++
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  5 ++
+ .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  6 ++
+ .../net/ethernet/mellanox/mlx5/core/pci_irq.c | 62 +++++++++++++++++++
+ .../net/ethernet/mellanox/mlx5/core/sriov.c   | 49 ++++++++++++++-
+ drivers/pci/iov.c                             | 57 +++++++++++++++++
+ drivers/pci/msi.c                             | 30 +++++++++
+ drivers/pci/pci-sysfs.c                       |  1 +
+ drivers/pci/pci.h                             |  1 +
+ include/linux/mlx5/mlx5_ifc.h                 | 11 +++-
+ include/linux/pci.h                           |  8 +++
+ 11 files changed, 243 insertions(+), 3 deletions(-)
 
 --
 2.29.2
