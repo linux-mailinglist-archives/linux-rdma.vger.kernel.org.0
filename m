@@ -2,40 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05ECB2EB4B3
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Jan 2021 22:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B8A2EB59B
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Jan 2021 00:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbhAEVI2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Jan 2021 16:08:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57068 "EHLO mail.kernel.org"
+        id S1727814AbhAEW7i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Jan 2021 17:59:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725813AbhAEVI2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 5 Jan 2021 16:08:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A031622D5A;
-        Tue,  5 Jan 2021 21:07:46 +0000 (UTC)
+        id S1726052AbhAEW7h (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 5 Jan 2021 17:59:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A93D22E00;
+        Tue,  5 Jan 2021 22:58:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609880867;
-        bh=1x3S9TSA7Ie9Nf+x6eyl/PsTa4hwLKBwLORWus1XB4k=;
+        s=k20201202; t=1609887537;
+        bh=yvJWF3Atmch9FILnbqt/QhYjAjr7OwsXdfUPbuO+iRc=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=FPauxjjmnlgunXp9LMHzn8EZg89V/dKXyhBkxfKJNnciRxhF1jhygNwyJrMlzqrTN
-         Sb6q495THCbHlFO5kZiCwzUFfa6FLN6OPt/CsOndqBHrVjX1uKQQqFQ5DoiiSJQtfl
-         lI94VbLechAWnaFqMaYrtj1/XdaxT6KMoh22WCYX2fPdaU3DihkJl6TiWtPJrkCS+2
-         l0rEjVBg6++YgMwHXEj7UrpqLqoScJxI+KxYwIAHcR/++r15h6rD2CU4ascDVxWJHu
-         KefSyfkp6EDpHFsgIFV7V8U2mBW42CAPw7Vm5DnN+xALY8skkAsADWIoRehn/3iF7P
-         67W/51Hzuqwfw==
-Message-ID: <a8c416b8c3ea6417e909b0dcfe0b6ace97f11053.camel@kernel.org>
-Subject: Re: [PATCH] net/mlx5: fix spelling mistake in Kconfig
- "accelaration" -> "acceleration"
+        b=e1EKylGCYebCczfXcfcJEHEw4BpAEWIsvSBX6o1AfbEKGSIrWDuTUUcWlHT2rnZ4Y
+         izZ812JOdoWRnRuf5vtuKbJicnsSwz28RLURStkW5dWPtuy8kyWaWWulcsYMWIxG6s
+         wH1W+iTWUfE9p2YVvFWrSD3B97fafcDeFVKhhBTY/8g7X5jVLQc+6fd1FQo5K2+GWo
+         myXxj1XXLbYZOyolzq4D5JYqA4j36hsnJDrvRglhmzIBV9HYCUTadl8e/GJ95eIqb6
+         A8uv034Ho9Rsd2oRFT5kir5jz8LCvXNjCFxWpldnVd/x6fEM6XEU8K9MG+wIhLHvr8
+         eWkvZxld8NM2w==
+Message-ID: <84f00137e923162ece24462f56aa204b7a561256.camel@kernel.org>
+Subject: Re: [PATCH] [v2] net/mlx5e: Fix two double free cases
 From:   Saeed Mahameed <saeed@kernel.org>
-To:     Colin King <colin.king@canonical.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 05 Jan 2021 13:07:44 -0800
-In-Reply-To: <20201215144946.204104-1-colin.king@canonical.com>
-References: <20201215144946.204104-1-colin.king@canonical.com>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Gal Pressman <galp@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 05 Jan 2021 14:58:55 -0800
+In-Reply-To: <1c573f4e9cbfac79a959fb978459874f19307328.camel@kernel.org>
+References: <20201228084840.5013-1-dinghao.liu@zju.edu.cn>
+         <1c573f4e9cbfac79a959fb978459874f19307328.camel@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
@@ -44,14 +46,34 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 2020-12-15 at 14:49 +0000, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> There are some spelling mistakes in the Kconfig. Fix these.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> 
+On Tue, 2021-01-05 at 13:02 -0800, Saeed Mahameed wrote:
+> On Mon, 2020-12-28 at 16:48 +0800, Dinghao Liu wrote:
+> > mlx5e_create_ttc_table_groups() frees ft->g on failure of
+> > kvzalloc(), but such failure will be caught by its caller
+> > in mlx5e_create_ttc_table() and ft->g will be freed again
+> > in mlx5e_destroy_flow_table(). The same issue also occurs
+> > in mlx5e_create_ttc_table_groups(). Set ft->g to NULL after
+> > kfree() to avoid double free.
+> > 
+> > Fixes: 7b3722fa9ef64 ("net/mlx5e: Support RSS for GRE tunneled
+                       ^ this is one digit too much..
+Fixes line must start with a 12 char SHA and not 13 :).
 
-applied to net-next-mlx5,
-Thanks!
+I fixed this up, no need to do anything but just FYI.
+
+> > packets")
+> > Fixes: 33cfaaa8f36ff ("net/mlx5e: Split the main flow steering
+> > table")
+> > Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> > ---
+> > 
+> > Changelog:
+> > 
+> > v2: - Set ft->g to NULL after kfree() instead of removing kfree().
+> >       Refine commit message.
+> > 
+> 
+> applied to net-next-mlx5,
+> Thanks!
+> 
 
