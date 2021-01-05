@@ -2,98 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037022EAB04
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Jan 2021 13:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 975E12EAB34
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Jan 2021 13:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbhAEMl3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Jan 2021 07:41:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726189AbhAEMl3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 5 Jan 2021 07:41:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8413A229F0;
-        Tue,  5 Jan 2021 12:40:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609850448;
-        bh=HC9Rjmfsm3jd7AV8BBYgVuzfbob3rCRaZm49+yu/ObE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lImY4MEnl7Eji0fyfIGTQdmgqV8ZqmsGy+Z+SnKbjebecYYuP7Hyn8sSOCmf310hn
-         TY6sxwwVvgvT9Jwwz1WzC5OsyaW8lUktlycxiS9RNE5EikoEnrhP6teTXc1P+ddSY+
-         40kO52V0Zv0+y07xfQHzIPb0yj8LYGGRV4lZj94kMyCnWlpj4jSneF6c96ATvcizbj
-         DXLblh+qfcNj1Z3LX6lO4VpigMPdmUerzXCShjHKJ11gKuCo0u2O9GXnqqYaVwUCwm
-         uevmPq3C+geehd+YLSiJoYolDc/ii+dPZWGAj8vgug1gBIhJYj1UVGTjKfJPVWKxRx
-         seOixoqsb+5/Q==
-Date:   Tue, 5 Jan 2021 14:40:44 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Alexander Matushevsky <matua@amazon.com>,
-        Firas JahJah <firasj@amazon.com>,
-        Leonid Feschuk <lfesch@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-Subject: Re: [PATCH for-next 1/2] RDMA/efa: Move host info set to first
- ucontext allocation
-Message-ID: <20210105124044.GS31158@unreal>
-References: <20210105104326.67895-1-galpress@amazon.com>
- <20210105104326.67895-2-galpress@amazon.com>
- <20210105112150.GR31158@unreal>
- <4f3de61c-55dc-e6e3-6a14-de5be10e3ecd@amazon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1729364AbhAEMus (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Jan 2021 07:50:48 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1458 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725939AbhAEMus (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Jan 2021 07:50:48 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5ff4607f0001>; Tue, 05 Jan 2021 04:50:07 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 5 Jan
+ 2021 12:50:02 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.103)
+ by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 5 Jan 2021 12:50:02 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aLNyKrNB8aAD5y9mWTlUrUwRIxWin6qtP2nc87xh2wdkCVteSYHmMlYZKRI8wZ1oNBnLxla5FlwzUK23uM3wu7Il0MQ/Pm6S769jipDXYWftkD3o320A5Yi+7idpuShSj07bQ0wBY8M0qIykZgECAyFfJ1gzdlg3TGRn+t4nSVt8KyOzmwWDuLok2KtCqF3Jr4TTZm0jtB6lQ64qOOlry3LSnAKedsY2bVln5LH2FAGZa1ZRSR98KdhrSCV22rEDdZMLDmKKiJxJFJZ5bttgU7tdg0fHIBmc0BUR0iYwjuGB6sVWFPLuBKExWzDwc27hBwGMsaiWF5Kiwz+yjCYpFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PpTeUg5BKXmtSQakm3V7AA3QLUAcO6LRjzNTprAUsws=;
+ b=YmxBAeZgE87MzsPJh76MZSPRviJjSuhvWql+7z+irkL8hWywD36sfPIYaq7r5IE5PmPLh8ArYLdCaI02IxBrjeil11ndI5FROa/J6sdrvZLQ7TnTJt4F00nf8+2SF7+h56yfAzLbEknardZ2h1xjDNchqRzt0ymRJvHK13srcScOi6thp8p9GYN0W2mOHYUHsCGKhWwRRPrBC7A6hNd9OkpoAdy7W6QOLxGvgSXQFBL96qE2Kz1jmclbIaTvBIvWc3vjd2s3h4p/VrGDkRA5CqoVFK7RzaASEImlVwukXfpIvfIknyyRTqGoc7MfiiWC5UgPrVVGxWNgf8dILvuJgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4250.namprd12.prod.outlook.com (2603:10b6:5:21a::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Tue, 5 Jan
+ 2021 12:49:59 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3721.024; Tue, 5 Jan 2021
+ 12:49:59 +0000
+Date:   Tue, 5 Jan 2021 08:49:56 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+CC:     Mark Brown <broonie@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        <alsa-devel@alsa-project.org>,
+        "Kiran Patil" <kiran.patil@intel.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        "Ranjani Sridharan" <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        David Miller <davem@davemloft.net>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        Parav Pandit <parav@mellanox.com>,
+        "Lee Jones" <lee.jones@linaro.org>
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <20210105124956.GN552508@nvidia.com>
+References: <20201218184150.GY552508@nvidia.com>
+ <20201218203211.GE5333@sirena.org.uk> <20201218205856.GZ552508@nvidia.com>
+ <20201221185140.GD4521@sirena.org.uk> <20210104180831.GD552508@nvidia.com>
+ <20210104211930.GI5645@sirena.org.uk> <20210105001341.GL552508@nvidia.com>
+ <CAPcyv4gxprMo1LwGTqGDyN-z2TrXLcAvJ3AN9-fbUs6y-LwXeA@mail.gmail.com>
+ <20210105015314.GM552508@nvidia.com>
+ <CAPcyv4jAAC01rktNadUPv9jDRCOcDEO22uAOHXobpJ7TqAbp1w@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <4f3de61c-55dc-e6e3-6a14-de5be10e3ecd@amazon.com>
+In-Reply-To: <CAPcyv4jAAC01rktNadUPv9jDRCOcDEO22uAOHXobpJ7TqAbp1w@mail.gmail.com>
+X-ClientProxiedBy: YT1PR01CA0133.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2f::12) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0133.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2f::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19 via Frontend Transport; Tue, 5 Jan 2021 12:49:58 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kwlme-002FUc-8U; Tue, 05 Jan 2021 08:49:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1609851007; bh=PpTeUg5BKXmtSQakm3V7AA3QLUAcO6LRjzNTprAUsws=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=p40RqElF/LZfDBbX75UPdffKlqCuNT006h6I1yRP5vQ/ird8gl2jezK72+ZdtM0XQ
+         06cIfzAQSfACrpRkuvtKbR2gvsPX763xwipl62r3u+iQ4XVoMxKN54SLxlX9DN7Gj+
+         DmLH3wM7ztGNoi11sh6bnCiIn+r1msJI+ZkGiShhYaCXXZTTf6Hn00xNmNVk3YoH2i
+         7mr9qfBtaMW1mlI793FLt82IgGSq+eFTKZr4tbODeszgVqSoIY8ihPPeOBwxD54O2N
+         Aw4C8MtmPUG7yk7CJwMYH3Li87DwcpNIa8jWSdEM/DDv7vGQEK+I4m/BPnN4kEW+ZB
+         dXj3PbEJOzAiA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 02:22:23PM +0200, Gal Pressman wrote:
-> On 05/01/2021 13:21, Leon Romanovsky wrote:
-> > On Tue, Jan 05, 2021 at 12:43:25PM +0200, Gal Pressman wrote:
-> >> Downstream patch will require the userspace version which is passed as
-> >> part of ucontext allocation. Move the host info set there and make sure
-> >> it's only called once (on the first allocation).
-> >>
-> >> Reviewed-by: Firas JahJah <firasj@amazon.com>
-> >> Reviewed-by: Leonid Feschuk <lfesch@amazon.com>
-> >> Signed-off-by: Gal Pressman <galpress@amazon.com>
-> >> ---
-> >>  drivers/infiniband/hw/efa/efa.h       | 7 +++++++
-> >>  drivers/infiniband/hw/efa/efa_main.c  | 4 +---
-> >>  drivers/infiniband/hw/efa/efa_verbs.c | 3 +++
-> >>  3 files changed, 11 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
-> >> index e5d9712e98c4..9c9cd5867489 100644
-> >> --- a/drivers/infiniband/hw/efa/efa.h
-> >> +++ b/drivers/infiniband/hw/efa/efa.h
-> >> @@ -45,6 +45,11 @@ struct efa_stats {
-> >>       atomic64_t keep_alive_rcvd;
-> >>  };
-> >>
-> >> +enum {
-> >> +     EFA_FLAGS_HOST_INFO_SET_BIT,
-> >> +     EFA_FLAGS_NUM,
-> >> +};
-> >> +
-> >>  struct efa_dev {
-> >>       struct ib_device ibdev;
-> >>       struct efa_com_dev edev;
-> >> @@ -62,6 +67,7 @@ struct efa_dev {
-> >>       struct efa_irq admin_irq;
-> >>
-> >>       struct efa_stats stats;
-> >> +     DECLARE_BITMAP(flags, EFA_FLAGS_NUM);
-> >>  };
-> >
-> > Why do you need such over-engineering?
-> > What is wrong with old school "u8 flag"?
->
-> The main reason is for the atomic test_and_set_bit() usage, otherwise it would
-> be an atomic flag, not u8 flag.
+On Mon, Jan 04, 2021 at 07:12:47PM -0800, Dan Williams wrote:
 
-But efa_dev can be opened with different applications and they can have
-different user space versions, but you are setting this info for the
-first caller only. How will it help for the debug?
+> I get that, but I'm fearing a gigantic bus_ops structure that has
+> narrow helpers like ->gpio_count() that mean nothing to the many other
+> clients of the bus. Maybe I'm overestimating the pressure there will
+> be to widen the ops structure at the bus level.
 
-Thanks
+If we want a 'universal device' then that stuff must live
+someplace.. Open coding the dispatch as is today is also not the end
+of the world, just seeing that is just usually a sign something is not
+ideal with the object model.
+
+Jason
