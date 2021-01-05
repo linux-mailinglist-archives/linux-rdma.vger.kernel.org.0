@@ -2,78 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B8A2EB59B
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Jan 2021 00:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 541C42EB61C
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Jan 2021 00:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbhAEW7i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Jan 2021 17:59:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726052AbhAEW7h (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 5 Jan 2021 17:59:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A93D22E00;
-        Tue,  5 Jan 2021 22:58:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609887537;
-        bh=yvJWF3Atmch9FILnbqt/QhYjAjr7OwsXdfUPbuO+iRc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=e1EKylGCYebCczfXcfcJEHEw4BpAEWIsvSBX6o1AfbEKGSIrWDuTUUcWlHT2rnZ4Y
-         izZ812JOdoWRnRuf5vtuKbJicnsSwz28RLURStkW5dWPtuy8kyWaWWulcsYMWIxG6s
-         wH1W+iTWUfE9p2YVvFWrSD3B97fafcDeFVKhhBTY/8g7X5jVLQc+6fd1FQo5K2+GWo
-         myXxj1XXLbYZOyolzq4D5JYqA4j36hsnJDrvRglhmzIBV9HYCUTadl8e/GJ95eIqb6
-         A8uv034Ho9Rsd2oRFT5kir5jz8LCvXNjCFxWpldnVd/x6fEM6XEU8K9MG+wIhLHvr8
-         eWkvZxld8NM2w==
-Message-ID: <84f00137e923162ece24462f56aa204b7a561256.camel@kernel.org>
-Subject: Re: [PATCH] [v2] net/mlx5e: Fix two double free cases
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Gal Pressman <galp@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 05 Jan 2021 14:58:55 -0800
-In-Reply-To: <1c573f4e9cbfac79a959fb978459874f19307328.camel@kernel.org>
-References: <20201228084840.5013-1-dinghao.liu@zju.edu.cn>
-         <1c573f4e9cbfac79a959fb978459874f19307328.camel@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S1726712AbhAEX0h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Jan 2021 18:26:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726549AbhAEX0g (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Jan 2021 18:26:36 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81FAC061574
+        for <linux-rdma@vger.kernel.org>; Tue,  5 Jan 2021 15:25:56 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id n4so964767iow.12
+        for <linux-rdma@vger.kernel.org>; Tue, 05 Jan 2021 15:25:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=MLdUQ1B14XwNysLC9T1Nzor2Emi6duEEIYb9YGRo1cY=;
+        b=H+iCt1ALgIZzZnPlAi82xIB7nnQqvW30Ph6fxuBV4KFBGBNEum9PzP1Z9G0DX/+5yG
+         k6vwYvlmSPPNdgpEQtt84mwTxjAqbz9ZtvGUpQ/WKI7YoXes237BOyW218WyDqTPrH4U
+         i8f8ujshkRSTtNW0ixfdBG6mbVFxnSGMCRVoJAQupncdFowW1fHAlWXBl1wsX/2O48mE
+         O0ZN8xIeqTY4Tf9t0CSup/1Jz8GuPOyfo6RTJ+KdCM1yKxR+7q2Qx6BmrYyPZwJNFr3b
+         wHllLyBIshp9kjzK+KAQ0lHkXUhhShyLx1+jq+w91MpQfVI9DMeqH1pK8MrInEHqOt54
+         9Osw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=MLdUQ1B14XwNysLC9T1Nzor2Emi6duEEIYb9YGRo1cY=;
+        b=U7bF+1+73ky3XvI3uD+EtBipIc/rND6fuUyQlOmeOQtBJwScfyeLvWFFCtrFADvLuj
+         VWxhtxyLuGA5+aZP45eGJgWSbKzg0F0dNJI/7eruyY5SIp2NXf7jOz/JvgQEM529m2If
+         SsmlWHhukivTs3BAEYqdbOG5aPlQ9rVx/nfEISdtZ1D0bl4v9ZDpkwOFpcorEP3URE6O
+         I9KiStnOLMzcB5he1RrikY1TsT18+gS4+QeKWBuqurmDD+qY3kBnpof1sk/AuuGvSBDC
+         YCz8ICFOHUI7cNZ3qgryuKowrxZSUeaVThoEja7Okk5jnFAB1gB3CkaZl/V6b5a9VpIS
+         XABQ==
+X-Gm-Message-State: AOAM531YY66BXk1aaZOghfmtmLG3+ZSshcxuT9McmamwFznIuHhGyHZ2
+        ZeLApQKU0tn5MpxogH1lEWQuT2eWjoGw+Y2YeaJp2O1gpNU=
+X-Google-Smtp-Source: ABdhPJws1R5M/A/l26rB28r2DOez9zo7jaA75cj2HCuAvXmbiRO6+eXsgRdM5LTsBbv0j0zYSKxPA+WbmB388dOXL8E=
+X-Received: by 2002:a02:6c50:: with SMTP id w77mr1724736jab.68.1609889156041;
+ Tue, 05 Jan 2021 15:25:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Reply-To: zinahamza139@gmail.com
+Sender: salif.akpan661@gmail.com
+Received: by 2002:a05:6e02:1aa1:0:0:0:0 with HTTP; Tue, 5 Jan 2021 15:25:55
+ -0800 (PST)
+From:   Zina Hamza <zinahamza139@gmail.com>
+Date:   Tue, 5 Jan 2021 23:25:55 +0000
+X-Google-Sender-Auth: GjZ1ix3TJAjj9lzSjBD24tV6WQo
+Message-ID: <CAPvCe=0yN70-rHmYrEReQ6Trf++r9SuJx-cVuQ7R=+6SS=oQrg@mail.gmail.com>
+Subject: Hi friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 2021-01-05 at 13:02 -0800, Saeed Mahameed wrote:
-> On Mon, 2020-12-28 at 16:48 +0800, Dinghao Liu wrote:
-> > mlx5e_create_ttc_table_groups() frees ft->g on failure of
-> > kvzalloc(), but such failure will be caught by its caller
-> > in mlx5e_create_ttc_table() and ft->g will be freed again
-> > in mlx5e_destroy_flow_table(). The same issue also occurs
-> > in mlx5e_create_ttc_table_groups(). Set ft->g to NULL after
-> > kfree() to avoid double free.
-> > 
-> > Fixes: 7b3722fa9ef64 ("net/mlx5e: Support RSS for GRE tunneled
-                       ^ this is one digit too much..
-Fixes line must start with a 12 char SHA and not 13 :).
+Hi friend,
 
-I fixed this up, no need to do anything but just FYI.
+How are you today? I feel like communicating with you, my name is Zina
+single marital status. I will send my photo at least for you to see
+who is writing to you. I will give you a full explanation about
+myself, my reasons and purposes to contact you.
 
-> > packets")
-> > Fixes: 33cfaaa8f36ff ("net/mlx5e: Split the main flow steering
-> > table")
-> > Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> > ---
-> > 
-> > Changelog:
-> > 
-> > v2: - Set ft->g to NULL after kfree() instead of removing kfree().
-> >       Refine commit message.
-> > 
-> 
-> applied to net-next-mlx5,
-> Thanks!
-> 
+Feel free to write back to me, please.
 
+Sincerely,
+
+Zina
