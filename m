@@ -2,71 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541C42EB61C
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Jan 2021 00:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6F12EB9A8
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Jan 2021 06:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbhAEX0h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Jan 2021 18:26:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726549AbhAEX0g (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Jan 2021 18:26:36 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81FAC061574
-        for <linux-rdma@vger.kernel.org>; Tue,  5 Jan 2021 15:25:56 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id n4so964767iow.12
-        for <linux-rdma@vger.kernel.org>; Tue, 05 Jan 2021 15:25:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=MLdUQ1B14XwNysLC9T1Nzor2Emi6duEEIYb9YGRo1cY=;
-        b=H+iCt1ALgIZzZnPlAi82xIB7nnQqvW30Ph6fxuBV4KFBGBNEum9PzP1Z9G0DX/+5yG
-         k6vwYvlmSPPNdgpEQtt84mwTxjAqbz9ZtvGUpQ/WKI7YoXes237BOyW218WyDqTPrH4U
-         i8f8ujshkRSTtNW0ixfdBG6mbVFxnSGMCRVoJAQupncdFowW1fHAlWXBl1wsX/2O48mE
-         O0ZN8xIeqTY4Tf9t0CSup/1Jz8GuPOyfo6RTJ+KdCM1yKxR+7q2Qx6BmrYyPZwJNFr3b
-         wHllLyBIshp9kjzK+KAQ0lHkXUhhShyLx1+jq+w91MpQfVI9DMeqH1pK8MrInEHqOt54
-         9Osw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=MLdUQ1B14XwNysLC9T1Nzor2Emi6duEEIYb9YGRo1cY=;
-        b=U7bF+1+73ky3XvI3uD+EtBipIc/rND6fuUyQlOmeOQtBJwScfyeLvWFFCtrFADvLuj
-         VWxhtxyLuGA5+aZP45eGJgWSbKzg0F0dNJI/7eruyY5SIp2NXf7jOz/JvgQEM529m2If
-         SsmlWHhukivTs3BAEYqdbOG5aPlQ9rVx/nfEISdtZ1D0bl4v9ZDpkwOFpcorEP3URE6O
-         I9KiStnOLMzcB5he1RrikY1TsT18+gS4+QeKWBuqurmDD+qY3kBnpof1sk/AuuGvSBDC
-         YCz8ICFOHUI7cNZ3qgryuKowrxZSUeaVThoEja7Okk5jnFAB1gB3CkaZl/V6b5a9VpIS
-         XABQ==
-X-Gm-Message-State: AOAM531YY66BXk1aaZOghfmtmLG3+ZSshcxuT9McmamwFznIuHhGyHZ2
-        ZeLApQKU0tn5MpxogH1lEWQuT2eWjoGw+Y2YeaJp2O1gpNU=
-X-Google-Smtp-Source: ABdhPJws1R5M/A/l26rB28r2DOez9zo7jaA75cj2HCuAvXmbiRO6+eXsgRdM5LTsBbv0j0zYSKxPA+WbmB388dOXL8E=
-X-Received: by 2002:a02:6c50:: with SMTP id w77mr1724736jab.68.1609889156041;
- Tue, 05 Jan 2021 15:25:56 -0800 (PST)
+        id S1726357AbhAFFvf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 Jan 2021 00:51:35 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9646 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725800AbhAFFve (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Jan 2021 00:51:34 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5ff54fbe0000>; Tue, 05 Jan 2021 21:50:54 -0800
+Received: from localhost (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 6 Jan
+ 2021 05:50:53 +0000
+Date:   Wed, 6 Jan 2021 07:50:50 +0200
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+CC:     Saeed Mahameed <saeedm@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH mlx5-next 0/4] Dynamically assign MSI-X vectors count
+Message-ID: <20210106055050.GT31158@unreal>
+References: <20210103082440.34994-1-leon@kernel.org>
 MIME-Version: 1.0
-Reply-To: zinahamza139@gmail.com
-Sender: salif.akpan661@gmail.com
-Received: by 2002:a05:6e02:1aa1:0:0:0:0 with HTTP; Tue, 5 Jan 2021 15:25:55
- -0800 (PST)
-From:   Zina Hamza <zinahamza139@gmail.com>
-Date:   Tue, 5 Jan 2021 23:25:55 +0000
-X-Google-Sender-Auth: GjZ1ix3TJAjj9lzSjBD24tV6WQo
-Message-ID: <CAPvCe=0yN70-rHmYrEReQ6Trf++r9SuJx-cVuQ7R=+6SS=oQrg@mail.gmail.com>
-Subject: Hi friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210103082440.34994-1-leon@kernel.org>
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1609912254; bh=TQxUJmNNZ4DZ0KVJcQg/uVvfTat5TCPZxfDgC+i/lZE=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=MKldL8+iQQ2zj0glQVTLNJF+1dE/Da4jt9qtvvKCrwET6jWs9oWSbwbgzwdqVc6j2
+         nEZ4juVJVAgH0Z22bdw+57J5kmNAP8ra249UWU5lgpUZHxech/w4DR2w3dN0uq/vbH
+         56KGkFuKWoNC4sZPRbXqpA6tAqevleqxcqTtiTpkjI+7TGQSBOgt3fR+6OV2j8uEy9
+         y8LK7jvf9evlXmw7slfgAhR/+/aM4T84X1Gmf4f7pdp+DFXTGvAZ8QKDZAPBcCpkLa
+         BrHa9c4XWt3X2x3vJqLmQEKkjH7BQaAVjuEuWNuksi3WaOSh0KAgWZhjNgHhtHuuxl
+         guUfOlXvXZqHw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi friend,
+On Sun, Jan 03, 2021 at 10:24:36AM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+>
+> Hi,
+>
+> The number of MSI-X vectors is PCI property visible through lspci, that
+> field is read-only and configured by the device.
+>
+> The static assignment of an amount of MSI-X vectors doesn't allow utilize
+> the newly created VF because it is not known to the device the future load
+> and configuration where that VF will be used.
+>
+> The VFs are created on the hypervisor and forwarded to the VMs that have
+> different properties (for example number of CPUs).
+>
+> To overcome the inefficiency in the spread of such MSI-X vectors, we
+> allow the kernel to instruct the device with the needed number of such
+> vectors, before VF is initialized and bounded to the driver.
+>
+> Before this series:
+> [root@server ~]# lspci -vs 0000:08:00.2
+> 08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+> ....
+> 	Capabilities: [9c] MSI-X: Enable- Count=12 Masked-
+>
+> Configuration script:
+> 1. Start fresh
+> echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+> modprobe -q -r mlx5_ib mlx5_core
+> 2. Ensure that driver doesn't run and it is safe to change MSI-X
+> echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_drivers_autoprobe
+> 3. Load driver for the PF
+> modprobe mlx5_core
+> 4. Configure one of the VFs with new number
+> echo 2 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+> echo 21 > /sys/bus/pci/devices/0000\:08\:00.2/vf_msix_vec
+>
+> After this series:
+> [root@server ~]# lspci -vs 0000:08:00.2
+> 08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+> ....
+> 	Capabilities: [9c] MSI-X: Enable- Count=21 Masked-
+>
+>
+> Thanks
+>
+> Leon Romanovsky (4):
+>   PCI: Configure number of MSI-X vectors for SR-IOV VFs
+>   net/mlx5: Add dynamic MSI-X capabilities bits
+>   net/mlx5: Dynamically assign MSI-X vectors count
+>   net/mlx5: Allow to the users to configure number of MSI-X vectors
 
-How are you today? I feel like communicating with you, my name is Zina
-single marital status. I will send my photo at least for you to see
-who is writing to you. I will give you a full explanation about
-myself, my reasons and purposes to contact you.
+Hi Bjorn,
 
-Feel free to write back to me, please.
+I would like to route the PCI patch through mlx5-next tree which will
+be taken to the netdev and rdma trees.
 
-Sincerely,
+This is needed to avoid any possible merge conflicts between three
+subsystems PCI, netdev and RDMA.
 
-Zina
+Is it acceptable by you?
+
+Thanks
