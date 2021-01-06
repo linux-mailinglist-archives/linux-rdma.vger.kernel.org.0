@@ -2,112 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6F12EB9A8
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Jan 2021 06:52:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C442EBD97
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Jan 2021 13:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726357AbhAFFvf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 Jan 2021 00:51:35 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9646 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbhAFFve (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Jan 2021 00:51:34 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ff54fbe0000>; Tue, 05 Jan 2021 21:50:54 -0800
-Received: from localhost (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 6 Jan
- 2021 05:50:53 +0000
-Date:   Wed, 6 Jan 2021 07:50:50 +0200
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-CC:     Saeed Mahameed <saeedm@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH mlx5-next 0/4] Dynamically assign MSI-X vectors count
-Message-ID: <20210106055050.GT31158@unreal>
-References: <20210103082440.34994-1-leon@kernel.org>
+        id S1726009AbhAFMVf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 Jan 2021 07:21:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725906AbhAFMVf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 6 Jan 2021 07:21:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A7922311B;
+        Wed,  6 Jan 2021 12:20:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609935654;
+        bh=5f3A7Dfa81O5zu/6+zqcUHwJ07D8IzaXO5ekqtK0VQw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CoS79aCyX2Td6FFgxScGhAbnKV3QNt/KDUbmi8/Rvr/hdQ7jdxQrEc29QqB8ZF9MT
+         wf8DGXZmPTu2l49PKs+cDsVO7Vp5qD8ZjaSTlxte7zmhHRnRDvRrGcP9v9cSAdzdqI
+         34GeD/O2pUbqx7lskIFwNL1zHweN5LFbOkuzfwwxnURem+sBd/EBmmHr+SNBpSuAZ/
+         pR+nR2yozrH0CSSAxkZULBADdOYVef6gV5iiAnNGykYP/8Ba5x2f8uimY6xOuvAOmr
+         hsgJEqhg6rASYRXw+Y7dL2gb/WtaD9m3+CaA1+Qnf0+3yp2c1dJCVuAQeVo4eZXDBD
+         mqyS3Uj4o2EhQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next] RDMA/umem: Silence build warning on i386 architecture
+Date:   Wed,  6 Jan 2021 14:20:47 +0200
+Message-Id: <20210106122047.498453-1-leon@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210103082440.34994-1-leon@kernel.org>
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1609912254; bh=TQxUJmNNZ4DZ0KVJcQg/uVvfTat5TCPZxfDgC+i/lZE=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=MKldL8+iQQ2zj0glQVTLNJF+1dE/Da4jt9qtvvKCrwET6jWs9oWSbwbgzwdqVc6j2
-         nEZ4juVJVAgH0Z22bdw+57J5kmNAP8ra249UWU5lgpUZHxech/w4DR2w3dN0uq/vbH
-         56KGkFuKWoNC4sZPRbXqpA6tAqevleqxcqTtiTpkjI+7TGQSBOgt3fR+6OV2j8uEy9
-         y8LK7jvf9evlXmw7slfgAhR/+/aM4T84X1Gmf4f7pdp+DFXTGvAZ8QKDZAPBcCpkLa
-         BrHa9c4XWt3X2x3vJqLmQEKkjH7BQaAVjuEuWNuksi3WaOSh0KAgWZhjNgHhtHuuxl
-         guUfOlXvXZqHw==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Jan 03, 2021 at 10:24:36AM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
->
-> Hi,
->
-> The number of MSI-X vectors is PCI property visible through lspci, that
-> field is read-only and configured by the device.
->
-> The static assignment of an amount of MSI-X vectors doesn't allow utilize
-> the newly created VF because it is not known to the device the future load
-> and configuration where that VF will be used.
->
-> The VFs are created on the hypervisor and forwarded to the VMs that have
-> different properties (for example number of CPUs).
->
-> To overcome the inefficiency in the spread of such MSI-X vectors, we
-> allow the kernel to instruct the device with the needed number of such
-> vectors, before VF is initialized and bounded to the driver.
->
-> Before this series:
-> [root@server ~]# lspci -vs 0000:08:00.2
-> 08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
-> ....
-> 	Capabilities: [9c] MSI-X: Enable- Count=12 Masked-
->
-> Configuration script:
-> 1. Start fresh
-> echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
-> modprobe -q -r mlx5_ib mlx5_core
-> 2. Ensure that driver doesn't run and it is safe to change MSI-X
-> echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_drivers_autoprobe
-> 3. Load driver for the PF
-> modprobe mlx5_core
-> 4. Configure one of the VFs with new number
-> echo 2 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
-> echo 21 > /sys/bus/pci/devices/0000\:08\:00.2/vf_msix_vec
->
-> After this series:
-> [root@server ~]# lspci -vs 0000:08:00.2
-> 08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
-> ....
-> 	Capabilities: [9c] MSI-X: Enable- Count=21 Masked-
->
->
-> Thanks
->
-> Leon Romanovsky (4):
->   PCI: Configure number of MSI-X vectors for SR-IOV VFs
->   net/mlx5: Add dynamic MSI-X capabilities bits
->   net/mlx5: Dynamically assign MSI-X vectors count
->   net/mlx5: Allow to the users to configure number of MSI-X vectors
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Hi Bjorn,
+Sacrifice one page in order to silence compilation failure on i386
+architecture.
 
-I would like to route the PCI patch through mlx5-next tree which will
-be taken to the netdev and rdma trees.
+drivers/infiniband/core/umem.c:205 __ib_umem_get() warn: impossible
+			condition '(npages > (~0)) => (0-u32max > u32max)'
 
-This is needed to avoid any possible merge conflicts between three
-subsystems PCI, netdev and RDMA.
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/core/umem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Is it acceptable by you?
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index 313fabb9f4a2..95be8cc75d2e 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -202,7 +202,7 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
+ 	}
+ 
+ 	npages = ib_umem_num_pages(umem);
+-	if (npages == 0 || npages > UINT_MAX) {
++	if (npages == 0 || npages >= UINT_MAX) {
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
+-- 
+2.29.2
 
-Thanks
