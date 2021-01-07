@@ -2,96 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDAB32ED6BC
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Jan 2021 19:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB672EE641
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Jan 2021 20:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727673AbhAGSdE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Jan 2021 13:33:04 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3920 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727177AbhAGSdD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Jan 2021 13:33:03 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ff753b70000>; Thu, 07 Jan 2021 10:32:23 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 7 Jan
- 2021 18:32:23 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.171)
- by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 7 Jan 2021 18:32:22 +0000
+        id S1725944AbhAGTj0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Jan 2021 14:39:26 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:29927 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725903AbhAGTj0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 7 Jan 2021 14:39:26 -0500
+Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5ff763430000>; Fri, 08 Jan 2021 03:38:43 +0800
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 7 Jan
+ 2021 19:38:43 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.103)
+ by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 7 Jan 2021 19:38:42 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I+XU0/6EgiEZs1mXbm3Lg260yX7X5LCVpE+10apIuqaqC80uKHsQZloMiiWBDJbx5Gy6Cpnd259B6IB/n/0N7Ye83wUw4owk7YBmYlpPacTPphIzNjSwo4PiBiEevUbtboYQOsF4E76R/j0JLdEnm/y4gt/bFrbEY9r3dpaA7ZmDR5HKQ0NFT3RHcIMI0KUTKv3gmFp35SwYSQFH7LzhfTsl61gx5aneOhqwe+4aqKa2y4psdbo/tDYzJ8IUs7sbCXvjkMXiwITfpYbY2dGE5MdpE6s7G1lykhIxQfDvI+d3Sgfnx9Av0Y/QiXguBJyVouaHX6zxTR0plTXEE4cOtg==
+ b=X34YTlMgxcC9ejn5lH/D7Dsz4HlLE85UmoR+p9msOaQ8JA5I7JEkJsSA4TBNBTNCUfQUoztJs6BGj7J6dF1Vp1odMm+/h8j0Gw67kCvGsxNyKghMbKkepj/0HLtG8WeL17kmVhe3Zv0VpHLExZ4Z92ZOHkTfHzAQFZGaG/p0H8Vs/Ja/5OcCLspDvqHfEICvfP+0o2iHeuBqkBT5xl88QC7DFZ8kqc+9mQPcPOMFUDNbkOYzdp35d1Ph3APEy6nuWNv0fHVcw2km/IX1BVMFw/bO7FH0C7nQ3+eJFrlZ9Dl4tVaAcHrnePQZpLgETsLlqfCIWkmyircNs0jSFxWlzA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q16VugC6vU6xRfGWLxf7ojWhtDfQ9XdTQsGlckT246w=;
- b=EMM/iffe90rYzYWCFlCDvI6CbGSe/8jDVgaELhXnjdlp1c8xQM8isa9mzyzBK1PAg7r5mg/C2sIqXkgW1LLUL1vsC5tN+Js67j0i+q+PJ7TJJPShXAe6dOh4R+QHBG1pg+mMaud2Q5p7wCFRzcBLgSyxYtmA2bkkMpaSx8WrhGEU38t9pbKY8mmQPOzGPlF2cGAuBWe26wJzWEaUSQQQdtWP+X/snm+QlvL8JMtlq59n1Prza/RSwFkJutFqEtruN+CuUxv/j+3jJEkQnFaPRTkzAXoy+xVGwfjkd+CAxN/ML3K0c4VvrZPp9V9T4muFSIoJnpcvrr5xxTiU2B6aXQ==
+ bh=d19fFuf1Whs+B6ehzCnOa+YJgXMJPQ73bI+xC5dodVY=;
+ b=hxCIEvwijkvxCkTKgAN7xH3Z2UHssvAc0y/AgVTleqrQWJ05mJI3RZJdn7MKiQHWaeCTTeFXV/U6o3tTLgLQP/Aw7I9B1yQE2yKZj3/ITPwo8fDNPWH6mILI/KMxcfC05DEzRih0DAS/vu10N3QFzyUCcYPRar+P6oDjRov0GI7Hv7dgRxgkdTo0Ke1p9yWLrFk5gLxuIZ+Du61qS0rIjtBIANpVCe83eAlt6hVkemtX4ijDOZQGwKM2Gr5B0S4DvvvmHRl2jgyPyd1XCCRLZiY3Akt0oWR9xGrYR7Gjn7ZHXMWlKvJ7j2dFN0o5X6a3iH5Kw4qzpjiKSp7wns16LQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB2486.namprd12.prod.outlook.com (2603:10b6:4:b2::32) with
+ by DM5PR12MB1755.namprd12.prod.outlook.com (2603:10b6:3:107::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.24; Thu, 7 Jan
- 2021 18:32:21 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19; Thu, 7 Jan
+ 2021 19:38:40 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3742.008; Thu, 7 Jan 2021
- 18:32:21 +0000
-Date:   Thu, 7 Jan 2021 14:32:19 -0400
+ 19:38:40 +0000
+Date:   Thu, 7 Jan 2021 15:38:38 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next] RDMA/restrack: Don't treat as an error
- allocation ID wrapping
-Message-ID: <20210107183219.GA916909@nvidia.com>
-References: <20201216100753.1127638-1-leon@kernel.org>
+To:     Bernard Metzler <bmt@zurich.ibm.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
+        <leon@kernel.org>, Kamal Heib <kamalheib1@gmail.com>,
+        Yi Zhang <yi.zhang@redhat.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v3] RDMA/siw: Fix handling of zero-sized Read and Receive
+ Queues.
+Message-ID: <20210107193838.GA921419@nvidia.com>
+References: <20201216110000.611-1-bmt@zurich.ibm.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20201216100753.1127638-1-leon@kernel.org>
-X-ClientProxiedBy: MN2PR12CA0010.namprd12.prod.outlook.com
- (2603:10b6:208:a8::23) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <20201216110000.611-1-bmt@zurich.ibm.com>
+X-ClientProxiedBy: BLAPR03CA0080.namprd03.prod.outlook.com
+ (2603:10b6:208:329::25) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR12CA0010.namprd12.prod.outlook.com (2603:10b6:208:a8::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Thu, 7 Jan 2021 18:32:20 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kxa55-003qXw-Oa; Thu, 07 Jan 2021 14:32:19 -0400
+Received: from mlx.ziepe.ca (142.162.115.133) by BLAPR03CA0080.namprd03.prod.outlook.com (2603:10b6:208:329::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Thu, 7 Jan 2021 19:38:40 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kxb7G-003ris-UQ; Thu, 07 Jan 2021 15:38:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610044343; bh=q16VugC6vU6xRfGWLxf7ojWhtDfQ9XdTQsGlckT246w=;
+        t=1610048323; bh=d19fFuf1Whs+B6ehzCnOa+YJgXMJPQ73bI+xC5dodVY=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=ULaeFOl+1g9XVT0Gjb9cBulSTeXKzBdg2B/EkdoYfmkChPCbQBFKZPJxpTumzoLrX
-         3DmrrRkUK7Sx/QVTozsAst+BMTer0KtoAWrA+bjw1dKpDSHPPSu84JwDhC13XEp8K3
-         dAm/tX4yvvnxGEsa1NL/U9zsfnIeQiiLNgjxQEb+IfnUPH2I+DdRhSTTytHzv2iwK3
-         HygHCPtTigAMhkEkd+WhNr2PWXfhS/ZziQx9B31JeLhu3M+hf9QeIyvK5digL48V+h
-         FcqDBF8LuI/SVYOMx7dvkG9cVve7vgozlYYwHkCxUcpSe0ANQug88AN0Ju35fEQxH8
-         mOzh2M2kfZJ8g==
+        b=l0mXKImGvTQn2GJMlLiQO7Wn9anV9L89MoYNGKBzZOIE1uF8voe5PKtbpCbpVEs4X
+         GJlynBtnbMfLNWsVEnohcYXIo0ZLQz/MSk3TETRhihfKSkzD7nrxxCeFrB1Ag0jJjK
+         RxMxRCJlaNLUdc7ONYwHUTUK2nW6wiTDxwhDXHndUej/0LRh4qtpUBg7PzVb6xaWr5
+         SIDOFLPGL8QV2Kb2TAQH2DoNpISwzmBHaq0YuXCsA5RaLGhT2H0iUna/cYSJf7H3az
+         dWXeqbRsV3CjKjyOudjoQFdSKB3nFLVmmNt6zlp0vNbeVvH6CaOb4dv2C8EHo9r7Y4
+         eQURz7+WwSqLA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 12:07:53PM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> xa_alloc_cyclic() call returns positive number if ID allocation
-> succeeded but wrapped. It is not an error, so normalize the "ret"
-> variable to zero as marker of not-an-error.
-> 
->    drivers/infiniband/core/restrack.c:261 rdma_restrack_add()
->    warn: 'ret' can be either negative or positive
-> 
-> Fixes: fd47c2f99f04 ("RDMA/restrack: Convert internal DB from hash to XArray")
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/core/restrack.c | 1 +
->  1 file changed, 1 insertion(+)
+On Wed, Dec 16, 2020 at 12:00:00PM +0100, Bernard Metzler wrote:
+> @@ -933,6 +937,7 @@ int siw_activate_tx(struct siw_qp *qp)
+>  
+>  		goto out;
+>  	}
+> +no_irq:
+>  	sqe = sq_get_next(qp);
+>  	if (sqe) {
 
-Applied to for-rc, thanks
+Can you please arrange this without the spaghetti goto's? goto is ok
+for error unwind at the tail of the function, but should not be used
+willy nilly. Move some of this into functions, use normal if
+statements, etc.
 
 Jason
