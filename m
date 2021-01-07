@@ -2,320 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B9F2ECBCE
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Jan 2021 09:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BD72ECD53
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Jan 2021 10:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbhAGIjP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Jan 2021 03:39:15 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9722 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725983AbhAGIjP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Jan 2021 03:39:15 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DBKNc3Js9zl0df;
-        Thu,  7 Jan 2021 16:37:20 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 7 Jan 2021 16:38:28 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-Subject: [PATCH v2 for-next] RDMA/hns: Create CQ with selected CQN for bank load balance
-Date:   Thu, 7 Jan 2021 16:36:29 +0800
-Message-ID: <1610008589-35770-1-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+        id S1727905AbhAGJwV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Jan 2021 04:52:21 -0500
+Received: from lpdvacalvio01.broadcom.com ([192.19.229.182]:46318 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727959AbhAGJwU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Jan 2021 04:52:20 -0500
+Received: from dhcp-10-192-206-197.iig.avagotech.net.net (dhcp-10-123-156-76.dhcp.broadcom.net [10.123.156.76])
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 5D7CE7DB2;
+        Thu,  7 Jan 2021 01:43:31 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 5D7CE7DB2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1610012612;
+        bh=uiI0G8/blJuQqTC1YjT/ooHBOoARNDvS4SkmH7pTOyE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MVExLvmuZGNt8BePs+CB3rq2yDoTS2YZdpGJZVhrqL5PkjDy/q1XanJaQD0hBpJdr
+         B2RKePw3kg1b256L9p3Eb+jWRlWMwjxWV0yDQqAjZENqYlfNkAuPsiANatsz6K0GIW
+         2gsZ8ptSQZ6mYMjYItSUZC+lGKkGgLxxSgnpODAA=
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+To:     jgg@ziepe.ca, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v2 0/2] RDMA/bnxt_re: Allow bigger user MRs
+Date:   Thu,  7 Jan 2021 01:43:26 -0800
+Message-Id: <1610012608-14528-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yangyang Li <liyangyang20@huawei.com>
+Refactor user space MR code to handle bigger MRs. Removes couple of checks
+that prevented the bigger MRs.
 
-In order to improve performance by balancing the load between different
-banks of cache, the CQC cache is desigend to choose one of 4 banks
-according to lower 2 bits of CQN. The hns driver needs to count the number
-of CQ on each bank and then assigns the CQ being created to the bank with
-the minimum load first.
+v1->v2:
+ - Fix the build warning
+   Reported-by: kernel test robot <lkp@intel.com>
 
-Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
-Changes since v1:
-- Change GFP_ATOMIC to GFP_KERNEL as there is a chance of memory allocation
-  failure, and change the spin lock to mutex lock because ida_alloc_range()
-  may sleep.
-- Link: https://patchwork.kernel.org/project/linux-rdma/patch/1609742115-47270-1-git-send-email-liweihang@huawei.com/
+Selvin Xavier (2):
+  RDMA/bnxt_re: Code refactor while populating user MRs
+  RDMA/bnxt_re: Allow bigger MR creation
 
- drivers/infiniband/hw/hns/hns_roce_cq.c     | 115 +++++++++++++++++++++++-----
- drivers/infiniband/hw/hns/hns_roce_device.h |  10 ++-
- drivers/infiniband/hw/hns/hns_roce_main.c   |   8 +-
- 3 files changed, 105 insertions(+), 28 deletions(-)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 49 ++++----------------------------
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c | 29 +++++--------------
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h |  2 +-
+ 3 files changed, 14 insertions(+), 66 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-index 8533fc2..ffb7f7e 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-@@ -38,11 +38,74 @@
- #include "hns_roce_hem.h"
- #include "hns_roce_common.h"
- 
-+static u8 get_least_load_bankid_for_cq(struct hns_roce_bank *bank)
-+{
-+	u32 least_load = bank[0].inuse;
-+	u8 bankid = 0;
-+	u32 bankcnt;
-+	u8 i;
-+
-+	for (i = 1; i < HNS_ROCE_CQ_BANK_NUM; i++) {
-+		bankcnt = bank[i].inuse;
-+		if (bankcnt < least_load) {
-+			least_load = bankcnt;
-+			bankid = i;
-+		}
-+	}
-+
-+	return bankid;
-+}
-+
-+static int alloc_cqn(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
-+{
-+	struct hns_roce_cq_table *cq_table = &hr_dev->cq_table;
-+	struct hns_roce_bank *bank;
-+	u8 bankid;
-+	int id;
-+
-+	mutex_lock(&cq_table->bank_mutex);
-+	bankid = get_least_load_bankid_for_cq(cq_table->bank);
-+	bank = &cq_table->bank[bankid];
-+
-+	id = ida_alloc_range(&bank->ida, bank->min, bank->max, GFP_KERNEL);
-+	if (id < 0) {
-+		mutex_unlock(&cq_table->bank_mutex);
-+		return id;
-+	}
-+
-+	/* the lower 2 bits is bankid */
-+	hr_cq->cqn = (id << CQ_BANKID_SHIFT) | bankid;
-+	bank->inuse++;
-+	mutex_unlock(&cq_table->bank_mutex);
-+
-+	return 0;
-+}
-+
-+static inline u8 get_cq_bankid(unsigned long cqn)
-+{
-+	/* The lower 2 bits of CQN are used to hash to different banks */
-+	return (u8)(cqn & GENMASK(1, 0));
-+}
-+
-+static void free_cqn(struct hns_roce_dev *hr_dev, unsigned long cqn)
-+{
-+	struct hns_roce_cq_table *cq_table = &hr_dev->cq_table;
-+	struct hns_roce_bank *bank;
-+
-+	bank = &cq_table->bank[get_cq_bankid(cqn)];
-+
-+	ida_free(&bank->ida, cqn >> CQ_BANKID_SHIFT);
-+
-+	mutex_lock(&cq_table->bank_mutex);
-+	bank->inuse--;
-+	mutex_unlock(&cq_table->bank_mutex);
-+}
-+
- static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- {
-+	struct hns_roce_cq_table *cq_table = &hr_dev->cq_table;
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	struct hns_roce_cmd_mailbox *mailbox;
--	struct hns_roce_cq_table *cq_table;
- 	u64 mtts[MTT_MIN_COUNT] = { 0 };
- 	dma_addr_t dma_handle;
- 	int ret;
-@@ -54,13 +117,6 @@ static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- 		return -EINVAL;
- 	}
- 
--	cq_table = &hr_dev->cq_table;
--	ret = hns_roce_bitmap_alloc(&cq_table->bitmap, &hr_cq->cqn);
--	if (ret) {
--		ibdev_err(ibdev, "failed to alloc CQ bitmap, ret = %d.\n", ret);
--		return ret;
--	}
--
- 	/* Get CQC memory HEM(Hardware Entry Memory) table */
- 	ret = hns_roce_table_get(hr_dev, &cq_table->table, hr_cq->cqn);
- 	if (ret) {
-@@ -110,7 +166,6 @@ static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- 	hns_roce_table_put(hr_dev, &cq_table->table, hr_cq->cqn);
- 
- err_out:
--	hns_roce_bitmap_free(&cq_table->bitmap, hr_cq->cqn, BITMAP_NO_RR);
- 	return ret;
- }
- 
-@@ -138,7 +193,6 @@ static void free_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- 	wait_for_completion(&hr_cq->free);
- 
- 	hns_roce_table_put(hr_dev, &cq_table->table, hr_cq->cqn);
--	hns_roce_bitmap_free(&cq_table->bitmap, hr_cq->cqn, BITMAP_NO_RR);
- }
- 
- static int alloc_cq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq,
-@@ -298,11 +352,17 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
- 		goto err_cq_buf;
- 	}
- 
-+	ret = alloc_cqn(hr_dev, hr_cq);
-+	if (ret) {
-+		ibdev_err(ibdev, "failed to alloc CQN, ret = %d.\n", ret);
-+		goto err_cq_db;
-+	}
-+
- 	ret = alloc_cqc(hr_dev, hr_cq);
- 	if (ret) {
- 		ibdev_err(ibdev,
- 			  "failed to alloc CQ context, ret = %d.\n", ret);
--		goto err_cq_db;
-+		goto err_cqn;
- 	}
- 
- 	/*
-@@ -326,6 +386,8 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
- 
- err_cqc:
- 	free_cqc(hr_dev, hr_cq);
-+err_cqn:
-+	free_cqn(hr_dev, hr_cq->cqn);
- err_cq_db:
- 	free_cq_db(hr_dev, hr_cq, udata);
- err_cq_buf:
-@@ -341,9 +403,11 @@ int hns_roce_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
- 	if (hr_dev->hw->destroy_cq)
- 		hr_dev->hw->destroy_cq(ib_cq, udata);
- 
--	free_cq_buf(hr_dev, hr_cq);
--	free_cq_db(hr_dev, hr_cq, udata);
- 	free_cqc(hr_dev, hr_cq);
-+	free_cqn(hr_dev, hr_cq->cqn);
-+	free_cq_db(hr_dev, hr_cq, udata);
-+	free_cq_buf(hr_dev, hr_cq);
-+
- 	return 0;
- }
- 
-@@ -402,18 +466,33 @@ void hns_roce_cq_event(struct hns_roce_dev *hr_dev, u32 cqn, int event_type)
- 		complete(&hr_cq->free);
- }
- 
--int hns_roce_init_cq_table(struct hns_roce_dev *hr_dev)
-+void hns_roce_init_cq_table(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_cq_table *cq_table = &hr_dev->cq_table;
-+	unsigned int reserved_from_bot;
-+	unsigned int i;
- 
-+	mutex_init(&cq_table->bank_mutex);
- 	xa_init(&cq_table->array);
- 
--	return hns_roce_bitmap_init(&cq_table->bitmap, hr_dev->caps.num_cqs,
--				    hr_dev->caps.num_cqs - 1,
--				    hr_dev->caps.reserved_cqs, 0);
-+	reserved_from_bot = hr_dev->caps.reserved_cqs;
-+
-+	for (i = 0; i < reserved_from_bot; i++) {
-+		cq_table->bank[get_cq_bankid(i)].inuse++;
-+		cq_table->bank[get_cq_bankid(i)].min++;
-+	}
-+
-+	for (i = 0; i < HNS_ROCE_CQ_BANK_NUM; i++) {
-+		ida_init(&cq_table->bank[i].ida);
-+		cq_table->bank[i].max = hr_dev->caps.num_cqs /
-+					HNS_ROCE_CQ_BANK_NUM - 1;
-+	}
- }
- 
- void hns_roce_cleanup_cq_table(struct hns_roce_dev *hr_dev)
- {
--	hns_roce_bitmap_cleanup(&hr_dev->cq_table.bitmap);
-+	int i;
-+
-+	for (i = 0; i < HNS_ROCE_CQ_BANK_NUM; i++)
-+		ida_destroy(&hr_dev->cq_table.bank[i].ida);
- }
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 55d5386..c46b330 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -119,6 +119,9 @@
- #define SRQ_DB_REG				0x230
- 
- #define HNS_ROCE_QP_BANK_NUM 8
-+#define HNS_ROCE_CQ_BANK_NUM 4
-+
-+#define CQ_BANKID_SHIFT 2
- 
- /* The chip implementation of the consumer index is calculated
-  * according to twice the actual EQ depth
-@@ -536,9 +539,10 @@ struct hns_roce_qp_table {
- };
- 
- struct hns_roce_cq_table {
--	struct hns_roce_bitmap		bitmap;
- 	struct xarray			array;
- 	struct hns_roce_hem_table	table;
-+	struct hns_roce_bank bank[HNS_ROCE_CQ_BANK_NUM];
-+	struct mutex			bank_mutex;
- };
- 
- struct hns_roce_srq_table {
-@@ -779,7 +783,7 @@ struct hns_roce_caps {
- 	u32		max_cqes;
- 	u32		min_cqes;
- 	u32		min_wqes;
--	int		reserved_cqs;
-+	u32		reserved_cqs;
- 	int		reserved_srqs;
- 	int		num_aeq_vectors;
- 	int		num_comp_vectors;
-@@ -1164,7 +1168,7 @@ int hns_roce_mtr_map(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
- 
- int hns_roce_init_pd_table(struct hns_roce_dev *hr_dev);
- int hns_roce_init_mr_table(struct hns_roce_dev *hr_dev);
--int hns_roce_init_cq_table(struct hns_roce_dev *hr_dev);
-+void hns_roce_init_cq_table(struct hns_roce_dev *hr_dev);
- int hns_roce_init_qp_table(struct hns_roce_dev *hr_dev);
- int hns_roce_init_srq_table(struct hns_roce_dev *hr_dev);
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index d9179ba..2b78b1f 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -748,11 +748,7 @@ static int hns_roce_setup_hca(struct hns_roce_dev *hr_dev)
- 		goto err_pd_table_free;
- 	}
- 
--	ret = hns_roce_init_cq_table(hr_dev);
--	if (ret) {
--		dev_err(dev, "Failed to init completion queue table.\n");
--		goto err_mr_table_free;
--	}
-+	hns_roce_init_cq_table(hr_dev);
- 
- 	ret = hns_roce_init_qp_table(hr_dev);
- 	if (ret) {
-@@ -777,8 +773,6 @@ static int hns_roce_setup_hca(struct hns_roce_dev *hr_dev)
- 
- err_cq_table_free:
- 	hns_roce_cleanup_cq_table(hr_dev);
--
--err_mr_table_free:
- 	hns_roce_cleanup_mr_table(hr_dev);
- 
- err_pd_table_free:
 -- 
-2.8.1
+2.5.5
 
