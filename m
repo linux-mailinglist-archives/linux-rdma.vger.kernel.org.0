@@ -2,110 +2,344 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4214E2EE7CA
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Jan 2021 22:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD022EEAA1
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Jan 2021 01:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbhAGVpZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Jan 2021 16:45:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51543 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726526AbhAGVpY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Jan 2021 16:45:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610055837;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j1WBhlktToi1vWvZaR5+DgjHLfs7iNt/Cu4S6xB04DU=;
-        b=dkY+2RKlTfAdikxxzIbsxE6HDuBPDzP6vTJd4nYa1iQk2QKZQfqj87xlMTGoWqIbV6leq1
-        5sN8rypCwjZtlXsjqOXz5D5Xtd6wJi1QLbdyue0++fIiH9+6Q+wEO1zVElZWV4DFx/QHyj
-        sVXV5n0CNz75M5k4lbOC6GHgcIdK728=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-RHoWdGwNNI6UgoaRJ_K6pw-1; Thu, 07 Jan 2021 16:43:56 -0500
-X-MC-Unique: RHoWdGwNNI6UgoaRJ_K6pw-1
-Received: by mail-pg1-f199.google.com with SMTP id y2so5766853pgq.23
-        for <linux-rdma@vger.kernel.org>; Thu, 07 Jan 2021 13:43:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=j1WBhlktToi1vWvZaR5+DgjHLfs7iNt/Cu4S6xB04DU=;
-        b=V1+RXTCVsBz2lxu3qnDrdoIS8eqLGxXc8rIh9sU1xHaBWVkFLwiN4BA1lNxHq0hfxW
-         SpxrgWNjpA6t1z1CqHcGAHWg4FIgNpC/c47womnUVr/ob8zHqno7O8ymgvlzk6Vkkgle
-         IJgs2rg0lgG7Nb/dP+AAAGxMLe67bpnisOxgVcsrI7fHW5TDegmvhaRvJ/gV8Yk+u20V
-         b4Y2QNcNHgQ2FfQULNajqIl1sw00UPj+b5EyZDqwwj9wvMRz1N9juCLQ1zlcdwqUUL68
-         zhSKaWmOWnTOTYmPFICQ/1+SsXhjAFBgUxFhv8iWswIYiISTcL6Sh8mr6CJPa+smhm+7
-         FKTA==
-X-Gm-Message-State: AOAM533B5b/GiY42m3cOFXdu0GbbGfxN/CdNNJZaQpdZL6uiKaqDuZvA
-        6zInkZPE27LCByDOGAKXQ7MI5UDKWQYTDFwHLlq/Dk6weSkM7gZwYI/5SZktV8C8QGLIk0/q6PV
-        mkjZYLghH18oqQ6OuqcXnOg==
-X-Received: by 2002:a63:fe13:: with SMTP id p19mr3763090pgh.119.1610055835347;
-        Thu, 07 Jan 2021 13:43:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx5tmk+1kJ7p3tl2fEpGQCVYC3T+sDFUsmhkAMNVSAuIoaB2DY+I7y+Fpp26Kgj3/iCVDzOgg==
-X-Received: by 2002:a63:fe13:: with SMTP id p19mr3763072pgh.119.1610055835113;
-        Thu, 07 Jan 2021 13:43:55 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 11sm6959307pgz.22.2021.01.07.13.43.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 13:43:54 -0800 (PST)
-Subject: Re: [PATCH] RDMA/ocrdma: fix use after free in
- ocrdma_dealloc_ucontext_pd()
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
-        dledford@redhat.com, leon@kernel.org, maxg@mellanox.com,
-        galpress@amazon.com, michaelgur@nvidia.com, monis@mellanox.com,
-        gustavoars@kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201230024653.1516495-1-trix@redhat.com>
- <20210107204102.GA933840@nvidia.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <00c76f8e-4e46-2ab5-772b-ad5db59f8490@redhat.com>
-Date:   Thu, 7 Jan 2021 13:43:53 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1729502AbhAHA6E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Jan 2021 19:58:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727634AbhAHA6E (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 7 Jan 2021 19:58:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2388E23731;
+        Fri,  8 Jan 2021 00:57:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610067443;
+        bh=l5q1r62X0KTV/fGKQgwEiB+79JiRcXwrMc65RhIfXig=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=OxJoKncTIHTE4edrSdXncpDR0NufuBj7UdEI/3i7y6cC/7K7E4WCzwFtfbCNcc7js
+         LzlE1NuRSjtnegpm92Cl0NdBV5hZEzvZcop7sMW4h7BpOYvBsMd/kKg9vtV/eTF+S7
+         tITsczeb1M553eWhHN22kfvgGwzYUv7lYspN5Hk+AktzvudHg+WIBG8q64J4J1A1VL
+         +dRmtaxlXaSbSUfReUetQR+HkkB0ePz1Dm+xMVkn75GQPAK7dStwHT2reyg75yyGpJ
+         v69zn5TLloAV/bpSSSPXEVDgr1CAh4sAjXuce4K3GGrvI3EqgI4I+182Rl+EtnFXDd
+         eS09WjT2fOcoA==
+Date:   Thu, 7 Jan 2021 18:57:21 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Donald Dutile <ddutile@redhat.com>
+Subject: Re: [PATCH mlx5-next 1/4] PCI: Configure number of MSI-X vectors for
+ SR-IOV VFs
+Message-ID: <20210108005721.GA1403391@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210107204102.GA933840@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210103082440.34994-2-leon@kernel.org>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+[+cc Alex, Don]
 
-On 1/7/21 12:41 PM, Jason Gunthorpe wrote:
-> On Tue, Dec 29, 2020 at 06:46:53PM -0800, trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> In ocrdma_dealloc_ucontext_pd() uctx->cntxt_pd is assigned to
->> the variable pd and then after uctx->cntxt_pd is freed, the
->> variable pd is passed to function _ocrdma_dealloc_pd() which
->> dereferences pd directly or through its call to
->> ocrdma_mbx_dealloc_pd().
->>
->> Reorder the free using the variable pd.
->>
->> Fixes: 21a428a019c9 ("RDMA: Handle PD allocations by IB/core")
->> Signed-off-by: Tom Rix <trix@redhat.com>
->>  drivers/infiniband/hw/ocrdma/ocrdma_verbs.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
-> Applied to for-rc
->
-> Is anyone testing ocrdma? Just doing the pyverbs rdma tests with kasn
-> turned on would have instantly caught this, and the change is nearly a
-> year old.
->
-> Is ocrdma obsolete enough we can delete the driver?
+This patch does not actually *configure* the number of vectors, so the
+subject is not quite accurate.  IIUC, this patch adds a sysfs file
+that can be used to configure the number of vectors.  The subject
+should mention the sysfs connection.
 
-I am not an authority on ocrdma, i am fixing treewide, the problems clang static analysis flags.
+On Sun, Jan 03, 2021 at 10:24:37AM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> This function is applicable for SR-IOV VFs because such devices allocate
+> their MSI-X table before they will run on the targeted hardware and they
+> can't guess the right amount of vectors.
 
-Tom
+This sentence doesn't quite have enough context to make sense to me.
+Per PCIe r5.0, sec 9.5.1.2, I think PFs and VFs have independent MSI-X
+Capabilities.  What is the connection between the PF MSI-X and the VF
+MSI-X?
 
->
-> Thanks,
-> Jason
->
+The MSI-X table sizes should be determined by the Table Size in the
+Message Control register.  Apparently we write a VF's Table Size
+before a driver is bound to the VF?  Where does that happen?
 
+"Before they run on the targeted hardware" -- do you mean before the
+VF is passed through to a guest virtual machine?  You mention "target
+VM" below, which makes more sense to me.  VFs don't "run"; they're not
+software.  I apologize for not being an expert in the use of VFs.
+
+Please mention the sysfs path in the commit log.
+
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  Documentation/ABI/testing/sysfs-bus-pci | 16 +++++++
+>  drivers/pci/iov.c                       | 57 +++++++++++++++++++++++++
+>  drivers/pci/msi.c                       | 30 +++++++++++++
+>  drivers/pci/pci-sysfs.c                 |  1 +
+>  drivers/pci/pci.h                       |  1 +
+>  include/linux/pci.h                     |  8 ++++
+>  6 files changed, 113 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> index 25c9c39770c6..30720a9e1386 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-pci
+> +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> @@ -375,3 +375,19 @@ Description:
+>  		The value comes from the PCI kernel device state and can be one
+>  		of: "unknown", "error", "D0", D1", "D2", "D3hot", "D3cold".
+>  		The file is read only.
+> +
+> +What:		/sys/bus/pci/devices/.../vf_msix_vec
+> +Date:		December 2020
+> +Contact:	Leon Romanovsky <leonro@nvidia.com>
+> +Description:
+> +		This file is associated with the SR-IOV VFs. It allows overwrite
+> +		the amount of MSI-X vectors for that VF. This is needed to optimize
+> +		performance of newly bounded devices by allocating the number of
+> +		vectors based on the internal knowledge of targeted VM.
+
+s/allows overwrite/allows configuration of/
+s/for that/for the/
+s/amount of/number of/
+s/bounded/bound/
+
+What "internal knowledge" is this?  AFAICT this would have to be some
+user-space administration knowledge, not anything internal to the
+kernel.
+
+> +		The values accepted are:
+> +		 * > 0 - this will be number reported by the PCI VF's PCIe MSI-X capability.
+
+s/PCI// (it's obvious we're talking about PCI here)
+s/PCIe// (MSI-X is not PCIe-specific, and there's no need to mention
+it at all)
+
+> +		 * < 0 - not valid
+> +		 * = 0 - will reset to the device default value
+> +
+> +		The file is writable if no driver is bounded.
+
+From the code, it looks more like this:
+
+  The file is writable if the PF is bound to a driver that supports
+  the ->sriov_set_msix_vec_count() callback and there is no driver
+  bound to the VF.
+
+Please wrap all of this to fit in 80 columns like the rest of the file.
+
+> diff --git a/drivers/pci/iov.c b/drivers/pci/iov.c
+> index 4afd4ee4f7f0..0f8c570361fc 100644
+> --- a/drivers/pci/iov.c
+> +++ b/drivers/pci/iov.c
+> @@ -31,6 +31,7 @@ int pci_iov_virtfn_devfn(struct pci_dev *dev, int vf_id)
+>  	return (dev->devfn + dev->sriov->offset +
+>  		dev->sriov->stride * vf_id) & 0xff;
+>  }
+> +EXPORT_SYMBOL(pci_iov_virtfn_devfn);
+> 
+>  /*
+>   * Per SR-IOV spec sec 3.3.10 and 3.3.11, First VF Offset and VF Stride may
+> @@ -426,6 +427,62 @@ const struct attribute_group sriov_dev_attr_group = {
+>  	.is_visible = sriov_attrs_are_visible,
+>  };
+> 
+> +#ifdef CONFIG_PCI_MSI
+> +static ssize_t vf_msix_vec_show(struct device *dev,
+> +				struct device_attribute *attr, char *buf)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	int numb = pci_msix_vec_count(pdev);
+> +
+> +	if (numb < 0)
+> +		return numb;
+> +
+> +	return sprintf(buf, "%d\n", numb);
+> +}
+> +
+> +static ssize_t vf_msix_vec_store(struct device *dev,
+> +				 struct device_attribute *attr, const char *buf,
+> +				 size_t count)
+> +{
+> +	struct pci_dev *vf_dev = to_pci_dev(dev);
+> +	int val, ret;
+> +
+> +	ret = kstrtoint(buf, 0, &val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = pci_set_msix_vec_count(vf_dev, val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return count;
+> +}
+> +static DEVICE_ATTR_RW(vf_msix_vec);
+> +#endif
+> +
+> +static struct attribute *sriov_vf_dev_attrs[] = {
+> +#ifdef CONFIG_PCI_MSI
+> +	&dev_attr_vf_msix_vec.attr,
+> +#endif
+> +	NULL,
+> +};
+> +
+> +static umode_t sriov_vf_attrs_are_visible(struct kobject *kobj,
+> +					  struct attribute *a, int n)
+> +{
+> +	struct device *dev = kobj_to_dev(kobj);
+> +
+> +	if (dev_is_pf(dev))
+> +		return 0;
+> +
+> +	return a->mode;
+> +}
+> +
+> +const struct attribute_group sriov_vf_dev_attr_group = {
+> +	.attrs = sriov_vf_dev_attrs,
+> +	.is_visible = sriov_vf_attrs_are_visible,
+> +};
+> +
+>  int __weak pcibios_sriov_enable(struct pci_dev *pdev, u16 num_vfs)
+>  {
+>  	return 0;
+> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+> index 3162f88fe940..0bcd705487d9 100644
+> --- a/drivers/pci/msi.c
+> +++ b/drivers/pci/msi.c
+> @@ -991,6 +991,36 @@ int pci_msix_vec_count(struct pci_dev *dev)
+>  }
+>  EXPORT_SYMBOL(pci_msix_vec_count);
+> 
+> +/**
+> + * pci_set_msix_vec_count - change the reported number of MSI-X vectors.
+
+Drop period at end, as other kernel doc in this file does.
+
+> + * This function is applicable for SR-IOV VFs because such devices allocate
+> + * their MSI-X table before they will run on the targeted hardware and they
+> + * can't guess the right amount of vectors.
+> + * @dev: VF device that is going to be changed.
+> + * @numb: amount of MSI-X vectors.
+
+Rewrite the "such devices allocate..." part based on the questions in
+the commit log.  Same with "targeted hardware."
+
+s/amount of/number of/
+Drop periods at end of parameter descriptions.
+
+> + **/
+> +int pci_set_msix_vec_count(struct pci_dev *dev, int numb)
+> +{
+> +	struct pci_dev *pdev = pci_physfn(dev);
+> +
+> +	if (!dev->msix_cap || !pdev->msix_cap)
+> +		return -EINVAL;
+> +
+> +	if (dev->driver || !pdev->driver ||
+> +	    !pdev->driver->sriov_set_msix_vec_count)
+> +		return -EOPNOTSUPP;
+> +
+> +	if (numb < 0)
+> +		/*
+> +		 * We don't support negative numbers for now,
+> +		 * but maybe in the future it will make sense.
+> +		 */
+> +		return -EINVAL;
+> +
+> +	return pdev->driver->sriov_set_msix_vec_count(dev, numb);
+
+So we write to a VF sysfs file, get here and look up the PF, call a PF
+driver callback with the VF as an argument, the callback (at least for
+mlx5) looks up the PF from the VF, then does some mlx5-specific magic
+to the PF that influences the VF somehow?
+
+Help me connect the dots here.  Is this required because of something
+peculiar to mlx5, or is something like this required for all SR-IOV
+devices because of the way the PCIe spec is written?
+
+> +}
+> +EXPORT_SYMBOL(pci_set_msix_vec_count);
+> +
+>  static int __pci_enable_msix(struct pci_dev *dev, struct msix_entry *entries,
+>  			     int nvec, struct irq_affinity *affd, int flags)
+>  {
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index fb072f4b3176..0af2222643c2 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -1557,6 +1557,7 @@ static const struct attribute_group *pci_dev_attr_groups[] = {
+>  	&pci_dev_hp_attr_group,
+>  #ifdef CONFIG_PCI_IOV
+>  	&sriov_dev_attr_group,
+> +	&sriov_vf_dev_attr_group,
+>  #endif
+>  	&pci_bridge_attr_group,
+>  	&pcie_dev_attr_group,
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 5c59365092fa..46396a5da2d9 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -502,6 +502,7 @@ resource_size_t pci_sriov_resource_alignment(struct pci_dev *dev, int resno);
+>  void pci_restore_iov_state(struct pci_dev *dev);
+>  int pci_iov_bus_range(struct pci_bus *bus);
+>  extern const struct attribute_group sriov_dev_attr_group;
+> +extern const struct attribute_group sriov_vf_dev_attr_group;
+>  #else
+>  static inline int pci_iov_init(struct pci_dev *dev)
+>  {
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index b32126d26997..1acba40a1b1b 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -856,6 +856,8 @@ struct module;
+>   *		e.g. drivers/net/e100.c.
+>   * @sriov_configure: Optional driver callback to allow configuration of
+>   *		number of VFs to enable via sysfs "sriov_numvfs" file.
+> + * @sriov_set_msix_vec_count: Driver callback to change number of MSI-X vectors
+> + *              exposed by the sysfs "vf_msix_vec" entry.
+>   * @err_handler: See Documentation/PCI/pci-error-recovery.rst
+>   * @groups:	Sysfs attribute groups.
+>   * @driver:	Driver model structure.
+> @@ -871,6 +873,7 @@ struct pci_driver {
+>  	int  (*resume)(struct pci_dev *dev);	/* Device woken up */
+>  	void (*shutdown)(struct pci_dev *dev);
+>  	int  (*sriov_configure)(struct pci_dev *dev, int num_vfs); /* On PF */
+> +	int  (*sriov_set_msix_vec_count)(struct pci_dev *vf, int msix_vec_count); /* On PF */
+>  	const struct pci_error_handlers *err_handler;
+>  	const struct attribute_group **groups;
+>  	struct device_driver	driver;
+> @@ -1464,6 +1467,7 @@ struct msix_entry {
+>  int pci_msi_vec_count(struct pci_dev *dev);
+>  void pci_disable_msi(struct pci_dev *dev);
+>  int pci_msix_vec_count(struct pci_dev *dev);
+> +int pci_set_msix_vec_count(struct pci_dev *dev, int numb);
+
+This patch adds the pci_set_msix_vec_count() definition in pci/msi.c
+and a call in pci/iov.c.  It doesn't need to be declared in
+include/linux/pci.h or exported.  It can be declared in
+drivers/pci/pci.h.
+
+>  void pci_disable_msix(struct pci_dev *dev);
+>  void pci_restore_msi_state(struct pci_dev *dev);
+>  int pci_msi_enabled(void);
+> @@ -2402,6 +2406,10 @@ static inline bool pci_is_thunderbolt_attached(struct pci_dev *pdev)
+>  void pci_uevent_ers(struct pci_dev *pdev, enum  pci_ers_result err_type);
+>  #endif
+> 
+> +#ifdef CONFIG_PCI_IOV
+> +int pci_iov_virtfn_devfn(struct pci_dev *dev, int vf_id);
+> +#endif
+
+pci_iov_virtfn_devfn() is already declared in this file.
+
+>  /* Provide the legacy pci_dma_* API */
+>  #include <linux/pci-dma-compat.h>
+> 
+> --
+> 2.29.2
+> 
