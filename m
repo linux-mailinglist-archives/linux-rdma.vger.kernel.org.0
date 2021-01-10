@@ -2,169 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C4F2F07DC
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 Jan 2021 16:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF6A2F08B8
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Jan 2021 18:24:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbhAJPI6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 10 Jan 2021 10:08:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726819AbhAJPI6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 10 Jan 2021 10:08:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66C6C2376F;
-        Sun, 10 Jan 2021 15:07:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610291270;
-        bh=DgJ+DRd9s1+JT9CSIpA0ZmO+Ye6+Ufzeym0pWE+e8V8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NZQLZ5Gh4NpYdvhsCmEyJPaSYHHFrQqyE7TklHuhQjiXGxDJSV6Vij1auwwoMt4CY
-         ofn+avlLghb3wKUVBf1+nmYU10BvheGKJWqkPa7h8k7q+LnoS7UDYHjGt2tREgmS9k
-         5SgiXGcb06unEfmklcpDHJLNiFckHEGY4+Zvg3pnkB3I4HNNFN/mRdqKngKR9Nm/k2
-         R2wP9sgx3eCrm4uC1PunoiBqzZ679Ui/C5ZUz2+EoI6i0/g8Eoofyyv+Im9Qkq/+Gk
-         c6ytsqDBH2rMDMyas88N0SfmJNkb/E8gz9oOudWUGynhoIBKGIJMqq9lu6UzsunNju
-         EK9uNMaeooAtg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        id S1726495AbhAJRXt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 10 Jan 2021 12:23:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726228AbhAJRXt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 Jan 2021 12:23:49 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F87CC061794;
+        Sun, 10 Jan 2021 09:23:09 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id j20so14743747otq.5;
+        Sun, 10 Jan 2021 09:23:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=44c63VzJZUoE1XYcWg7SZWIsmhW5D9dlRHxD0H5iWdw=;
+        b=qaalwv32A6b0wF6G7TUi56EXYkal1fZnGJ12Kp4I1u+CFsVhXG+L3mP/787NopoMBF
+         rGN++mCTr/sy5L8i9GkBM1VyhYyeyuYNtWSiGYWCfv2dv/ntos/89yh+ven4jh2eWIh1
+         aPA7PlFlOyIBvFJGd+mTdjlH5zKQFZj5TnHk+mYMhKbIkFcWSYPWFoDny9WB44Y5cPug
+         WGclWCfLh+QmOex/LC3SBKj/p9rBnsuGQ0+qtArM3Z2iF1pz6LCFPOQsMU+OttjvSGyJ
+         BCcXFGV57NOVAaXbW1wVw85YN5dsqYptwdsgu8+d9/eOLIuxMd1jR55nEN5fvk9YqU71
+         HvfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=44c63VzJZUoE1XYcWg7SZWIsmhW5D9dlRHxD0H5iWdw=;
+        b=ZtgYQjoyD0LktoiBEIawJP+Tm3u72P5pcgLezM9kwmeFx6a4ef5BhfARGla1XEuws/
+         o1BUhmLYjgLXTkZwcx8zl9Eaoeh2QOIfnyImaHV9o//DMK6PGx5IKeb1H6EV17Q4CR6Y
+         QDtXoZc5MGXOkcZfYB40nV7Ing6+om3pVRGY+CurlJFvLMJZI9uqCDQ9hQQfMHRSPBSx
+         Vc4VBKgmrjBs9+bl0Quxc6xz4cUjqVqzuiMFfedpCyYJg+XyLFsE0T5n3Ox1Gwkq8/Om
+         EEYGLvo29JmUDJELseeEj7cD+erg69D5Ef0n9htZCi0114TBK7fOeTropdNkJccb1iLN
+         B9pw==
+X-Gm-Message-State: AOAM532ejvtjTLNHiieXAyF3QqEAHR8Nh3OfR5qnU+HejJ6j5DrRVZ3K
+        KmgULfdbwQz/zTr/6aJcSgxVW6N7an0=
+X-Google-Smtp-Source: ABdhPJz90xzr3TVfJk+CjdpkYm5jnH4n7HFq38Q25TO8Ppr9CRyKN6wnL5+2wNbTuchrvuIq4WvaoQ==
+X-Received: by 2002:a05:6830:2144:: with SMTP id r4mr8471791otd.180.1610299388567;
+        Sun, 10 Jan 2021 09:23:08 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.48.134.51])
+        by smtp.googlemail.com with ESMTPSA id b8sm1336318oia.39.2021.01.10.09.23.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Jan 2021 09:23:07 -0800 (PST)
+Subject: Re: [PATCH iproute2-next v2] rdma: Add support for the netlink extack
+To:     Leon Romanovsky <leon@kernel.org>, David Ahern <dsahern@gmail.com>
+Cc:     Patrisious Haddad <phaddad@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-Subject: [PATCH mlx5-next v1 5/5] net/mlx5: Allow to the users to configure number of MSI-X vectors
-Date:   Sun, 10 Jan 2021 17:07:27 +0200
-Message-Id: <20210110150727.1965295-6-leon@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210110150727.1965295-1-leon@kernel.org>
-References: <20210110150727.1965295-1-leon@kernel.org>
+        linux-netdev <netdev@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <20210103061706.18313-1-leon@kernel.org>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <f2ad7596-b976-aef7-56b7-edfba3a77ba0@gmail.com>
+Date:   Sun, 10 Jan 2021 10:23:06 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210103061706.18313-1-leon@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On 1/2/21 11:17 PM, Leon Romanovsky wrote:
+> From: Patrisious Haddad <phaddad@nvidia.com>
+> 
+> Add support in rdma for extack errors to be received
+> in userspace when sent from kernel, so now netlink extack
+> error messages sent from kernel would be printed for the
+> user.
+> 
+> Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+> David,
+> 
+> Just as a note, rdmatool is heavily influenced by the devlink and
+> general code should probably be applicable for both tools. Most likely
+> that any core refactoring/fix in the devlink is needed for rdmatool too.
+> 
 
-Implement ability to configure MSI-X for the SR-IOV VFs.
+understood and it was not the best model to start with but here we are.
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- .../net/ethernet/mellanox/mlx5/core/main.c    |  1 +
- .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  1 +
- .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  4 +-
- .../net/ethernet/mellanox/mlx5/core/sriov.c   | 38 +++++++++++++++++++
- 4 files changed, 42 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index 8269cfbfc69d..334b3b5077c5 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -1647,6 +1647,7 @@ static struct pci_driver mlx5_core_driver = {
- 	.shutdown	= shutdown,
- 	.err_handler	= &mlx5_err_handler,
- 	.sriov_configure   = mlx5_core_sriov_configure,
-+	.sriov_set_msix_vec_count = mlx5_core_sriov_set_msix_vec_count,
- };
-
- static void mlx5_core_verify_params(void)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-index 5babb4434a87..8a2523d2d43a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-@@ -138,6 +138,7 @@ void mlx5_sriov_cleanup(struct mlx5_core_dev *dev);
- int mlx5_sriov_attach(struct mlx5_core_dev *dev);
- void mlx5_sriov_detach(struct mlx5_core_dev *dev);
- int mlx5_core_sriov_configure(struct pci_dev *dev, int num_vfs);
-+int mlx5_core_sriov_set_msix_vec_count(struct pci_dev *vf, int msix_vec_count);
- int mlx5_core_enable_hca(struct mlx5_core_dev *dev, u16 func_id);
- int mlx5_core_disable_hca(struct mlx5_core_dev *dev, u16 func_id);
- int mlx5_create_scheduling_element_cmd(struct mlx5_core_dev *dev, u8 hierarchy,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-index 135078e8dd55..65a761346385 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-@@ -59,7 +59,7 @@ int mlx5_get_default_msix_vec_count(struct mlx5_core_dev *dev, int num_vfs)
- {
- 	int num_vf_msix, min_msix, max_msix;
-
--	num_vf_msix = MLX5_CAP_GEN(dev, num_total_dynamic_vf_msix);
-+	num_vf_msix = MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix);
- 	if (!num_vf_msix)
- 		return 0;
-
-@@ -83,7 +83,7 @@ int mlx5_set_msix_vec_count(struct mlx5_core_dev *dev, int function_id,
- 	void *hca_cap, *cap;
- 	int ret;
-
--	num_vf_msix = MLX5_CAP_GEN(dev, num_total_dynamic_vf_msix);
-+	num_vf_msix = MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix);
- 	if (!num_vf_msix)
- 		return 0;
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sriov.c b/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-index c59efb1e7a26..88b271ca34c2 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-@@ -145,6 +145,7 @@ mlx5_device_disable_sriov(struct mlx5_core_dev *dev, int num_vfs, bool clear_vf)
- static int mlx5_sriov_enable(struct pci_dev *pdev, int num_vfs)
- {
- 	struct mlx5_core_dev *dev  = pci_get_drvdata(pdev);
-+	int num_vf_msix;
- 	int err;
-
- 	err = mlx5_device_enable_sriov(dev, num_vfs);
-@@ -153,6 +154,8 @@ static int mlx5_sriov_enable(struct pci_dev *pdev, int num_vfs)
- 		return err;
- 	}
-
-+	num_vf_msix = MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix);
-+	pci_sriov_set_vf_total_msix(pdev, num_vf_msix);
- 	err = pci_enable_sriov(pdev, num_vfs);
- 	if (err) {
- 		mlx5_core_warn(dev, "pci_enable_sriov failed : %d\n", err);
-@@ -188,6 +191,41 @@ int mlx5_core_sriov_configure(struct pci_dev *pdev, int num_vfs)
- 	return err ? err : num_vfs;
- }
-
-+int mlx5_core_sriov_set_msix_vec_count(struct pci_dev *vf, int msix_vec_count)
-+{
-+	struct pci_dev *pf = pci_physfn(vf);
-+	struct mlx5_core_sriov *sriov;
-+	struct mlx5_core_dev *dev;
-+	int num_vf_msix, id;
-+
-+	dev = pci_get_drvdata(pf);
-+	num_vf_msix = MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix);
-+	if (!num_vf_msix)
-+		return -EOPNOTSUPP;
-+
-+	if (!msix_vec_count)
-+		msix_vec_count =
-+			mlx5_get_default_msix_vec_count(dev, pci_num_vf(pf));
-+
-+	sriov = &dev->priv.sriov;
-+
-+	/* Reversed translation of PCI VF function number to the internal
-+	 * function_id, which exists in the name of virtfn symlink.
-+	 */
-+	for (id = 0; id < pci_num_vf(pf); id++) {
-+		if (!sriov->vfs_ctx[id].enabled)
-+			continue;
-+
-+		if (vf->devfn == pci_iov_virtfn_devfn(pf, id))
-+			break;
-+	}
-+
-+	if (id == pci_num_vf(pf) || !sriov->vfs_ctx[id].enabled)
-+		return -EINVAL;
-+
-+	return mlx5_set_msix_vec_count(dev, id + 1, msix_vec_count);
-+}
-+
- int mlx5_sriov_attach(struct mlx5_core_dev *dev)
- {
- 	if (!mlx5_core_is_pf(dev) || !pci_num_vf(dev->pdev))
---
-2.29.2
+Petr did a good job of refactoring when he added dcb, but rdma was
+slightly different so the refactoring did not update it.
 
