@@ -2,88 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CC12F0707
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 Jan 2021 13:08:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA232F07CA
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Jan 2021 16:09:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726254AbhAJMIS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 10 Jan 2021 07:08:18 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5078 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726250AbhAJMIR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 Jan 2021 07:08:17 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ffaee070000>; Sun, 10 Jan 2021 04:07:37 -0800
-Received: from [172.27.0.98] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 10 Jan
- 2021 12:07:33 +0000
-Subject: Re: [PATCH 2/3] IB/isert: remove unneeded semicolon
-To:     Leon Romanovsky <leonro@nvidia.com>
-CC:     <linux-rdma@vger.kernel.org>, <dledford@redhat.com>,
-        <jgg@nvidia.com>, <sagi@grimberg.me>, <oren@nvidia.com>,
-        Israel Rukshin <israelr@nvidia.com>
-References: <20210110111903.486681-1-mgurtovoy@nvidia.com>
- <20210110111903.486681-2-mgurtovoy@nvidia.com>
- <20210110113643.GI31158@unreal>
-From:   Max Gurtovoy <mgurtovoy@nvidia.com>
-Message-ID: <290f62a9-12fa-2a1a-298e-2e8d2aa7045c@nvidia.com>
-Date:   Sun, 10 Jan 2021 14:07:30 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726691AbhAJPIR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 10 Jan 2021 10:08:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726612AbhAJPIQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 10 Jan 2021 10:08:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0436F22AAE;
+        Sun, 10 Jan 2021 15:07:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610291255;
+        bh=/KQr93Nb3+WkS9tFMAKpr8ZV8pJbjLYVfQXkHGtQ+YI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IQJRvgztB7F4MGsqrF0FghjP/pJ/YpFO+s5veuGgEto0t2iLr3/dzako6ijctkonG
+         OmiXXiZ+2hYPe4DNKukdr0/WcF/p/whOlkdqJz2T5iDEZ2F1K/auZt6BrjAG8kL73U
+         ym3O/zVIMAAzG4mbjLZbBuGIaKyvAppieGryW/nDL64uovJU9/14Cc4brrF+ECZq5t
+         mxdXDllJMB7k1s5QHBjLvL4nH2NURe5l+SjnAy4Pv4JlLuRMerJN0DLPlEC9fM1S6i
+         c+vFxbC3rIjydLaKDbpta9gYlYA8Ur/t87crjUqb3upk9txFCfUgnpmp6CHn7yVTAd
+         /NYRfNURI5aWA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: [PATCH mlx5-next v1 0/5] Dynamically assign MSI-X vectors count
+Date:   Sun, 10 Jan 2021 17:07:22 +0200
+Message-Id: <20210110150727.1965295-1-leon@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210110113643.GI31158@unreal>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610280457; bh=jczYWmqzwh7Bd5VtA9t+a0NKo3QZz5EuIm+5zhmOyuw=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=fy8bQZV8Jj2HcgeDL2koylgOudqNHJcuN/a7cgWqEdUdsBsntCaZfW0LRjgIythM8
-         sZnf3+QfiflM9/BvhRTOG8jrfR4qLAhMRrOAxZYeLKpyLz0LYEC/wH340UDc4Gj/5o
-         LRx8lg91yf+0l/r4ylM2MxMm6A/8ysIpUXKuxgOqyuIxj4BSsHD1Asvyms/AX4HH9V
-         f0WN5mYnHKwpg5zJr7P8X8G0WUH/ZdkX6mwAp318WMl7kp55q6OaTSyL/I8pIejpN2
-         HS1spWABB27LIKgshd/VGo0THk7to5g74Hbwpg2d0RVM8VRjmvHeNBIuQlcMRbGaax
-         AbP2c6kmgUa7A==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: Leon Romanovsky <leonro@nvidia.com>
 
-On 1/10/2021 1:36 PM, Leon Romanovsky wrote:
-> On Sun, Jan 10, 2021 at 11:19:02AM +0000, Max Gurtovoy wrote:
->> No need to add semicolon after closing bracket.
->>
->> Reviewed-by: Israel Rukshin <israelr@nvidia.com>
->> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
->> ---
->>   drivers/infiniband/ulp/isert/ib_isert.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
->> index 5958929b7dec..96514f675427 100644
->> --- a/drivers/infiniband/ulp/isert/ib_isert.c
->> +++ b/drivers/infiniband/ulp/isert/ib_isert.c
->> @@ -1991,7 +1991,7 @@ isert_set_dif_domain(struct se_cmd *se_cmd, struct ib_sig_domain *domain)
->>   	if (se_cmd->prot_type == TARGET_DIF_TYPE1_PROT ||
->>   	    se_cmd->prot_type == TARGET_DIF_TYPE2_PROT)
->>   		domain->sig.dif.ref_remap = true;
->> -};
->> +}
-> The same goes for iser_set_dif_domain() and iser_cleanup_handler().
+Changelog
+v1:
+ * Improved wording and commit messages of first PCI patch
+ * Added extra PCI patch to provide total number of MSI-X vectors
+ * Prohibited read of vf_msix_vec sysfs file if driver doesn't support write
+ * Removed extra function definition in pci.h
+v0: https://lore.kernel.org/linux-pci/20210103082440.34994-1-leon@kernel.org
 
-Good catch, I'll send iSER fixes in different series.
+--------------------------------------------------------------------
+Hi,
 
-This series is for minor fixes for iSERT.
+The number of MSI-X vectors is PCI property visible through lspci, that
+field is read-only and configured by the device.
 
->
-> Thanks
->
->>   static int
->>   isert_set_sig_attrs(struct se_cmd *se_cmd, struct ib_sig_attrs *sig_attrs)
->> --
->> 2.25.4
->>
+The static assignment of an amount of MSI-X vectors doesn't allow utilize
+the newly created VF because it is not known to the device the future load
+and configuration where that VF will be used.
+
+The VFs are created on the hypervisor and forwarded to the VMs that have
+different properties (for example number of CPUs).
+
+To overcome the inefficiency in the spread of such MSI-X vectors, we
+allow the kernel to instruct the device with the needed number of such
+vectors, before VF is initialized and bounded to the driver.
+
+Before this series:
+[root@server ~]# lspci -vs 0000:08:00.2
+08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+....
+        Capabilities: [9c] MSI-X: Enable- Count=12 Masked-
+
+Configuration script:
+1. Start fresh
+echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+modprobe -q -r mlx5_ib mlx5_core
+2. Ensure that driver doesn't run and it is safe to change MSI-X
+echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_drivers_autoprobe
+3. Load driver for the PF
+modprobe mlx5_core
+4. Configure one of the VFs with new number
+echo 2 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+echo 21 > /sys/bus/pci/devices/0000\:08\:00.2/vf_msix_vec
+
+After this series:
+[root@server ~]# lspci -vs 0000:08:00.2
+08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+....
+        Capabilities: [9c] MSI-X: Enable- Count=21 Masked-
+
+
+Thanks
+
+Leon Romanovsky (5):
+  PCI: Add sysfs callback to allow MSI-X table size change of SR-IOV VFs
+  PCI: Add SR-IOV sysfs entry to read number of MSI-X vectors
+  net/mlx5: Add dynamic MSI-X capabilities bits
+  net/mlx5: Dynamically assign MSI-X vectors count
+  net/mlx5: Allow to the users to configure number of MSI-X vectors
+
+ Documentation/ABI/testing/sysfs-bus-pci       | 34 +++++++
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  5 +
+ .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  6 ++
+ .../net/ethernet/mellanox/mlx5/core/pci_irq.c | 62 +++++++++++++
+ .../net/ethernet/mellanox/mlx5/core/sriov.c   | 52 ++++++++++-
+ drivers/pci/iov.c                             | 93 +++++++++++++++++++
+ drivers/pci/msi.c                             | 29 ++++++
+ drivers/pci/pci-sysfs.c                       |  1 +
+ drivers/pci/pci.h                             |  5 +
+ include/linux/mlx5/mlx5_ifc.h                 | 11 ++-
+ include/linux/pci.h                           | 10 +-
+ 11 files changed, 304 insertions(+), 4 deletions(-)
+
+--
+2.29.2
+
