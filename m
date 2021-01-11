@@ -2,193 +2,353 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A89C2F1D9F
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Jan 2021 19:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1595C2F1F70
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Jan 2021 20:32:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389307AbhAKSK2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 Jan 2021 13:10:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57018 "EHLO
+        id S2403817AbhAKTb0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 Jan 2021 14:31:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389280AbhAKSK2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Jan 2021 13:10:28 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02131C061794
-        for <linux-rdma@vger.kernel.org>; Mon, 11 Jan 2021 10:09:48 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id m10so237247lji.1
-        for <linux-rdma@vger.kernel.org>; Mon, 11 Jan 2021 10:09:47 -0800 (PST)
+        with ESMTP id S1732738AbhAKTbZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Jan 2021 14:31:25 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA4BC061795;
+        Mon, 11 Jan 2021 11:30:44 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id q1so809516ion.8;
+        Mon, 11 Jan 2021 11:30:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=B1m+vqAswpT+Y5qW/QwObwYJF8xQXCE+6GwKXHiUvLE=;
-        b=Olznl+04e16zvsYukk6/J9oyZZResLsoVh0jpu+YeCdAGi5WHZi4OriRPZ6l1YPI6H
-         DRTBsKOxAPhi9fJKYoGkLMkjm7MUr2Cnl9gEAquoXOKQ9CCLl1NueBXUJMD4jFHPiBwg
-         VOZzIe8K5/V+kGpjAhYGpA2zgvBFQuPAkTbqc=
+        bh=1Q3XkyimqmHilM0dZitgB5skrZkbp4Cr6XHZvmlMCF8=;
+        b=kdXxQvAIiRj9PMvPt6e0UVinqvhADDIVmCa2CZHjVVqkH5PAIAkp5wxQq03bmL8FxK
+         zEaWjdTgfY4E9ps9r/bRN9FsDP/vG31RiAy8yirj0MY+YcFUfF8jdoy0Cl/UX1c6nXuW
+         rjoqVs+TFl42uIK6r9dbRK4inRCM+e1o3LoI0n0M+AF1OboP8gQKbkKe2juwfb9AMhJF
+         MbKjZs80VLT0rjfTFmoh7DMBVEW2PrcseyF5BuJUTQUfMY2d9gqNzE8dIp9uGIQCEHlH
+         d/2nW5VDK/chOWv8C0dK+cN0UgjnMVtpTCpaSxcmvKvErNXvcJ7Zb3dDiSp4K/jaYhNZ
+         kAQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=B1m+vqAswpT+Y5qW/QwObwYJF8xQXCE+6GwKXHiUvLE=;
-        b=WR4IhyXmaYEoJrm+HWTbtcHKXhnrauLMN3QFBv1LP+2lwY9bn/uxusZn0Zku/Eeu2z
-         24H1x+JT7ANbEikb4xpjctvJd7kj9NU5Xp0M+sJjzWepRvQ0IrOYLWFKB6Jsl9qNgFfJ
-         InDfdah6XjRDaRBu4LM6shasHIjr8bMpu2+7xmUI0Yo3AFP6wu7/1LJ9Qv4tuRwRmiAj
-         IuzSHbuwXZuqBSOfyhB9pm86qDt87CAwWqQGlGRX1KacdIeo/JFepneizlezTsUbsvVx
-         8nKiamT3BMtuEz5naQrrPBiq2IxgG4o2m5PTsfYqcAIm9ktXsIRj/vHO6Ck92CqVN8m3
-         R0pg==
-X-Gm-Message-State: AOAM532TGMqqTEsmFlWHr5aAcZfgCTq5jJxVILk/JA19+0QOfNnOqDv5
-        OD2prSmloErGpmCwv94+pRZq5rcHlsH//wFDXNU8/NmYW51PoA==
-X-Google-Smtp-Source: ABdhPJzeVlQYCsuwV9Pqis6BBOoUIQtb+MgbCu4rLp2cDpKdkINp25aWl5+FKdNC7rg5k56Fjgg9gm/ONDelvAr0/II=
-X-Received: by 2002:aa7:c886:: with SMTP id p6mr464760eds.352.1610388586018;
- Mon, 11 Jan 2021 10:09:46 -0800 (PST)
+        bh=1Q3XkyimqmHilM0dZitgB5skrZkbp4Cr6XHZvmlMCF8=;
+        b=L+fw86fGowiMpM36Bl9sf9u+xAqkB8KAu2x2sUMopqxBrVvNKhQX+mbgXjkVHGpZsR
+         Zbnn52/mo8+MVmSOLeJ27kbJrwqfR9lU3SHuYKX14G2m3rRlE4T7eqaePKHuzwQo06rD
+         mdWlOiWpeNb0aCjs7nrZBCuMEIAdExLA6fmsD+f14x8savfp5EzCVZwbooU+C2VEfeor
+         7M369ja/+P4ieloe9OI8mEMhlU4K+PcPUW7H98nBILfhJF9QxjwtrYSEc7avrdAGdz/0
+         159mVfM7BQaJ4BetndVWzy7AneNHT9z3EZPyba/+6+g0nydsKE+xmyYcMbMPUkbDqtkH
+         uL4w==
+X-Gm-Message-State: AOAM533gAlCdRLaVI3REMPtu+d4fVl0hn++4ddoio1ZVRP6kAMTJI4Qu
+        fhBGwNH7jRIZDrdvDZraeOvuy4NTHIEyMUrLU3U=
+X-Google-Smtp-Source: ABdhPJwuuC1ylnEZ8pYOqqfAiieC9e+zhkIOiTo5Bc1HzPz97MdiBKC08sr9QDNim8MjskhCPu9NiyU5fbcVxUBC3vE=
+X-Received: by 2002:a05:6638:30f:: with SMTP id w15mr1106035jap.121.1610393444099;
+ Mon, 11 Jan 2021 11:30:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20201230024653.1516495-1-trix@redhat.com> <20210107204102.GA933840@nvidia.com>
- <00c76f8e-4e46-2ab5-772b-ad5db59f8490@redhat.com>
-In-Reply-To: <00c76f8e-4e46-2ab5-772b-ad5db59f8490@redhat.com>
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Mon, 11 Jan 2021 23:39:34 +0530
-Message-ID: <CA+sbYW1_zYv47YV8Btd8+JW=3QcSo4N1yFFDycnTS853UHGGag@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/ocrdma: fix use after free in ocrdma_dealloc_ucontext_pd()
-To:     Tom Rix <trix@redhat.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>, maxg@mellanox.com,
-        Gal Pressman <galpress@amazon.com>, michaelgur@nvidia.com,
-        Moni Shoua <monis@mellanox.com>, gustavoars@kernel.org,
-        linux-rdma@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000a8ca9205b8a3cf47"
+References: <20210110150727.1965295-1-leon@kernel.org> <20210110150727.1965295-2-leon@kernel.org>
+In-Reply-To: <20210110150727.1965295-2-leon@kernel.org>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Mon, 11 Jan 2021 11:30:33 -0800
+Message-ID: <CAKgT0UcJrSNMPAOoniRSnUn+wyRUkL62AfgR3-8QbAkak=pQ=w@mail.gmail.com>
+Subject: Re: [PATCH mlx5-next v1 1/5] PCI: Add sysfs callback to allow MSI-X
+ table size change of SR-IOV VFs
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000a8ca9205b8a3cf47
-Content-Type: text/plain; charset="UTF-8"
-
-On Fri, Jan 8, 2021 at 3:13 AM Tom Rix <trix@redhat.com> wrote:
+On Sun, Jan 10, 2021 at 7:12 AM Leon Romanovsky <leon@kernel.org> wrote:
 >
+> From: Leon Romanovsky <leonro@nvidia.com>
 >
-> On 1/7/21 12:41 PM, Jason Gunthorpe wrote:
-> > On Tue, Dec 29, 2020 at 06:46:53PM -0800, trix@redhat.com wrote:
-> >> From: Tom Rix <trix@redhat.com>
-> >>
-> >> In ocrdma_dealloc_ucontext_pd() uctx->cntxt_pd is assigned to
-> >> the variable pd and then after uctx->cntxt_pd is freed, the
-> >> variable pd is passed to function _ocrdma_dealloc_pd() which
-> >> dereferences pd directly or through its call to
-> >> ocrdma_mbx_dealloc_pd().
-> >>
-> >> Reorder the free using the variable pd.
-> >>
-> >> Fixes: 21a428a019c9 ("RDMA: Handle PD allocations by IB/core")
-> >> Signed-off-by: Tom Rix <trix@redhat.com>
-> >>  drivers/infiniband/hw/ocrdma/ocrdma_verbs.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> > Applied to for-rc
-> >
-> > Is anyone testing ocrdma? Just doing the pyverbs rdma tests with kasn
-> > turned on would have instantly caught this, and the change is nearly a
-> > year old.
-> >
-> > Is ocrdma obsolete enough we can delete the driver?
-
-Broadcom is not doing any active development/testing  with ocrdma now.
-I am checking with other teams to see if this can be deleted
-completely. Will get back asap.
-
-Thanks,
-Selvin
-
+> Extend PCI sysfs interface with a new callback that allows configure
+> the number of MSI-X vectors for specific SR-IO VF. This is needed
+> to optimize the performance of newly bound devices by allocating
+> the number of vectors based on the administrator knowledge of targeted VM.
 >
-> I am not an authority on ocrdma, i am fixing treewide, the problems clang static analysis flags.
+> This function is applicable for SR-IOV VF because such devices allocate
+> their MSI-X table before they will run on the VMs and HW can't guess the
+> right number of vectors, so the HW allocates them statically and equally.
 >
-> Tom
+> The newly added /sys/bus/pci/devices/.../vf_msix_vec file will be seen
+> for the VFs and it is writable as long as a driver is not bounded to the VF.
 >
-> >
-> > Thanks,
-> > Jason
-> >
+> The values accepted are:
+>  * > 0 - this will be number reported by the VF's MSI-X capability
+>  * < 0 - not valid
+>  * = 0 - will reset to the device default value
 >
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  Documentation/ABI/testing/sysfs-bus-pci | 20 ++++++++
+>  drivers/pci/iov.c                       | 62 +++++++++++++++++++++++++
+>  drivers/pci/msi.c                       | 29 ++++++++++++
+>  drivers/pci/pci-sysfs.c                 |  1 +
+>  drivers/pci/pci.h                       |  2 +
+>  include/linux/pci.h                     |  8 +++-
+>  6 files changed, 121 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> index 25c9c39770c6..05e26e5da54e 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-pci
+> +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> @@ -375,3 +375,23 @@ Description:
+>                 The value comes from the PCI kernel device state and can be one
+>                 of: "unknown", "error", "D0", D1", "D2", "D3hot", "D3cold".
+>                 The file is read only.
+> +
+> +What:          /sys/bus/pci/devices/.../vf_msix_vec
 
---000000000000a8ca9205b8a3cf47
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+So the name for this doesn't seem to match existing SR-IOV naming.  It
+seems like this should probably be something like sriov_vf_msix_count
+in order to be closer to the actual naming of what is being dealt
+with.
 
-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
-E57pwqmNNXKez5LsgWg0MCcM26jqs8SBTJIA/6zJgjW8nK8WLLIPfCZO1NGVxIkHTjVy2Du2fAKX
-qPfnml4GF/qROS0CAwEAAaOCAdEwggHNMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEw
-gY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVy
-c29uYWxzaWduMnNoYTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFs
-c2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0
-MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNV
-HRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJz
-b25hbHNpZ24yc2hhMmczLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNv
-bTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAd
-BgNVHQ4EFgQUKr67/GLyV/C27HDAeg3i3tW9facwDQYJKoZIhvcNAQELBQADggEBABQEPPwx33W2
-mW8bSM5/AERxpztkHy4343YTHPsNXO/WrC+SuEQTYhV1eMrJbh1tZduP2rKgvZskl65mPF3qkRWi
-J4J0DABOqmcJmyNoeIeXxcZx9bJqjiQWTT2iV+cCTYuiDrA+JUVKoMnmGwh2aSz6BH9Jsv2PFCNS
-A6WyTEkC5z+3rM1f91ynuoPZCsYw/V1Hm5Nb+8lCB+0vqbUNUU3vlsiCuyym/XpDULrdf+qAGK+z
-fntrEGyEOXbwpxyp5YGNdslhesuWawlpJUy3JSzRI9vx1SS2UaXG1+tsbKMkc1OyML6gl7W2AGPy
-KN/Okg/+FqXwVaCbzR83sc69+FYxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQK
-ExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENB
-IC0gU0hBMjU2IC0gRzMCDCokiEUX3rGKhbywTjANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0B
-CQQxIgQg79KOpUiGMAfmaRdI3C8P+fgFuRovGKKZoR3UDIxRHjIwGAYJKoZIhvcNAQkDMQsGCSqG
-SIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwMTExMTgwOTQ2WjBpBgkqhkiG9w0BCQ8xXDBaMAsG
-CWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3
-DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAFLaEymfLa8/
-E5sGqE26kmoV4CxjUn6sjfqKiFIw1k0GCoutP+ID2QwwDGptvWpSXBeEGWFd5wTQQ60c7dXFJyM6
-+6I83El+pW4JzZqhS26Lj5rIk07CvmRh3m2DqOixywHFN2nHKsQaM3FsKWt5VoDkIPuCXcVj42e8
-AwtMXPEEe+MdNpDNlsCl3m/kS29ZWVsZifkUSYd+WUQwYL/pwz+DAHBrXfQq3SP00yhjcx1PcE3U
-ppH5BBnHtA6DJFki7RMaCH0kLt+AFhcLLMVxA+xm7tHFdNdxln5tjdiZqYzEdcP51f4DCWG1l11e
-ClNNCoBivIhzkZR5eMPm+Hnf34I=
---000000000000a8ca9205b8a3cf47--
+> +Date:          December 2020
+> +Contact:       Leon Romanovsky <leonro@nvidia.com>
+> +Description:
+> +               This file is associated with the SR-IOV VFs.
+> +               It allows configuration of the number of MSI-X vectors for
+> +               the VF. This is needed to optimize performance of newly bound
+> +               devices by allocating the number of vectors based on the
+> +               administrator knowledge of targeted VM.
+> +
+> +               The values accepted are:
+> +                * > 0 - this will be number reported by the VF's MSI-X
+> +                        capability
+> +                * < 0 - not valid
+> +                * = 0 - will reset to the device default value
+> +
+> +               The file is writable if the PF is bound to a driver that
+> +               supports the ->sriov_set_msix_vec_count() callback and there
+> +               is no driver bound to the VF.
+> diff --git a/drivers/pci/iov.c b/drivers/pci/iov.c
+> index 4afd4ee4f7f0..42c0df4158d1 100644
+> --- a/drivers/pci/iov.c
+> +++ b/drivers/pci/iov.c
+> @@ -31,6 +31,7 @@ int pci_iov_virtfn_devfn(struct pci_dev *dev, int vf_id)
+>         return (dev->devfn + dev->sriov->offset +
+>                 dev->sriov->stride * vf_id) & 0xff;
+>  }
+> +EXPORT_SYMBOL(pci_iov_virtfn_devfn);
+>
+>  /*
+>   * Per SR-IOV spec sec 3.3.10 and 3.3.11, First VF Offset and VF Stride may
+> @@ -426,6 +427,67 @@ const struct attribute_group sriov_dev_attr_group = {
+>         .is_visible = sriov_attrs_are_visible,
+>  };
+>
+> +#ifdef CONFIG_PCI_MSI
+> +static ssize_t vf_msix_vec_show(struct device *dev,
+> +                               struct device_attribute *attr, char *buf)
+> +{
+> +       struct pci_dev *pdev = to_pci_dev(dev);
+> +       int numb = pci_msix_vec_count(pdev);
+> +       struct pci_dev *pfdev;
+> +
+> +       if (numb < 0)
+> +               return numb;
+> +
+> +       pfdev = pci_physfn(pdev);
+> +       if (!pfdev->driver || !pfdev->driver->sriov_set_msix_vec_count)
+> +               return -EOPNOTSUPP;
+> +
+
+This doesn't make sense to me. You are getting the vector count for
+the PCI device and reporting that. Are you expecting to call this on
+the PF or the VFs? It seems like this should be a PF attribute and not
+be called on the individual VFs.
+
+If you are calling this on the VFs then it doesn't really make any
+sense anyway since the VF is not a "VF PCI dev representor" and
+shouldn't be treated as such. In my opinion if we are going to be
+doing per-port resource limiting that is something that might make
+more sense as a part of the devlink configuration for the VF since the
+actual change won't be visible to an assigned device.
+
+> +       return sprintf(buf, "%d\n", numb);
+> +}
+> +
+> +static ssize_t vf_msix_vec_store(struct device *dev,
+> +                                struct device_attribute *attr, const char *buf,
+> +                                size_t count)
+> +{
+> +       struct pci_dev *vf_dev = to_pci_dev(dev);
+> +       int val, ret;
+> +
+> +       ret = kstrtoint(buf, 0, &val);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret = pci_set_msix_vec_count(vf_dev, val);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return count;
+> +}
+> +static DEVICE_ATTR_RW(vf_msix_vec);
+> +#endif
+> +
+> +static struct attribute *sriov_vf_dev_attrs[] = {
+> +#ifdef CONFIG_PCI_MSI
+> +       &dev_attr_vf_msix_vec.attr,
+> +#endif
+> +       NULL,
+> +};
+> +
+> +static umode_t sriov_vf_attrs_are_visible(struct kobject *kobj,
+> +                                         struct attribute *a, int n)
+> +{
+> +       struct device *dev = kobj_to_dev(kobj);
+> +
+> +       if (dev_is_pf(dev))
+> +               return 0;
+> +
+> +       return a->mode;
+> +}
+> +
+> +const struct attribute_group sriov_vf_dev_attr_group = {
+> +       .attrs = sriov_vf_dev_attrs,
+> +       .is_visible = sriov_vf_attrs_are_visible,
+> +};
+> +
+>  int __weak pcibios_sriov_enable(struct pci_dev *pdev, u16 num_vfs)
+>  {
+>         return 0;
+> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+> index 3162f88fe940..20705ca94666 100644
+> --- a/drivers/pci/msi.c
+> +++ b/drivers/pci/msi.c
+> @@ -991,6 +991,35 @@ int pci_msix_vec_count(struct pci_dev *dev)
+>  }
+>  EXPORT_SYMBOL(pci_msix_vec_count);
+>
+> +/**
+> + * pci_set_msix_vec_count - change the reported number of MSI-X vectors
+> + * This function is applicable for SR-IOV VF because such devices allocate
+> + * their MSI-X table before they will run on the VMs and HW can't guess the
+> + * right number of vectors, so the HW allocates them statically and equally.
+> + * @dev: VF device that is going to be changed
+> + * @numb: amount of MSI-X vectors
+> + **/
+> +int pci_set_msix_vec_count(struct pci_dev *dev, int numb)
+> +{
+> +       struct pci_dev *pdev = pci_physfn(dev);
+> +
+> +       if (!dev->msix_cap || !pdev->msix_cap)
+> +               return -EINVAL;
+> +
+> +       if (dev->driver || !pdev->driver ||
+> +           !pdev->driver->sriov_set_msix_vec_count)
+> +               return -EOPNOTSUPP;
+> +
+> +       if (numb < 0)
+> +               /*
+> +                * We don't support negative numbers for now,
+> +                * but maybe in the future it will make sense.
+> +                */
+> +               return -EINVAL;
+> +
+> +       return pdev->driver->sriov_set_msix_vec_count(dev, numb);
+> +}
+> +
+
+If you are going to have a set operation for this it would make sense
+to have a get operation. Your show operation seems unbalanced since
+you are expecting to call it on the VF directly which just seems
+wrong.
+
+>  static int __pci_enable_msix(struct pci_dev *dev, struct msix_entry *entries,
+>                              int nvec, struct irq_affinity *affd, int flags)
+>  {
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index fb072f4b3176..0af2222643c2 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -1557,6 +1557,7 @@ static const struct attribute_group *pci_dev_attr_groups[] = {
+>         &pci_dev_hp_attr_group,
+>  #ifdef CONFIG_PCI_IOV
+>         &sriov_dev_attr_group,
+> +       &sriov_vf_dev_attr_group,
+>  #endif
+>         &pci_bridge_attr_group,
+>         &pcie_dev_attr_group,
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 5c59365092fa..1fd273077637 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -183,6 +183,7 @@ extern unsigned int pci_pm_d3hot_delay;
+>
+>  #ifdef CONFIG_PCI_MSI
+>  void pci_no_msi(void);
+> +int pci_set_msix_vec_count(struct pci_dev *dev, int numb);
+>  #else
+>  static inline void pci_no_msi(void) { }
+>  #endif
+> @@ -502,6 +503,7 @@ resource_size_t pci_sriov_resource_alignment(struct pci_dev *dev, int resno);
+>  void pci_restore_iov_state(struct pci_dev *dev);
+>  int pci_iov_bus_range(struct pci_bus *bus);
+>  extern const struct attribute_group sriov_dev_attr_group;
+> +extern const struct attribute_group sriov_vf_dev_attr_group;
+>  #else
+>  static inline int pci_iov_init(struct pci_dev *dev)
+>  {
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index b32126d26997..a17cfc28eb66 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -856,6 +856,8 @@ struct module;
+>   *             e.g. drivers/net/e100.c.
+>   * @sriov_configure: Optional driver callback to allow configuration of
+>   *             number of VFs to enable via sysfs "sriov_numvfs" file.
+> + * @sriov_set_msix_vec_count: Driver callback to change number of MSI-X vectors
+> + *              exposed by the sysfs "vf_msix_vec" entry.
+
+Hopefully it is doing more than just changing the displayed sysfs
+value. What is the effect of changing that value on the actual system
+state? I'm assuming this is some limit that is enforced by the PF or
+the device firmware?
+
+
+>   * @err_handler: See Documentation/PCI/pci-error-recovery.rst
+>   * @groups:    Sysfs attribute groups.
+>   * @driver:    Driver model structure.
+> @@ -871,6 +873,7 @@ struct pci_driver {
+>         int  (*resume)(struct pci_dev *dev);    /* Device woken up */
+>         void (*shutdown)(struct pci_dev *dev);
+>         int  (*sriov_configure)(struct pci_dev *dev, int num_vfs); /* On PF */
+> +       int  (*sriov_set_msix_vec_count)(struct pci_dev *vf, int msix_vec_count); /* On PF */
+>         const struct pci_error_handlers *err_handler;
+>         const struct attribute_group **groups;
+>         struct device_driver    driver;
+> @@ -2057,7 +2060,6 @@ void __iomem *pci_ioremap_wc_bar(struct pci_dev *pdev, int bar);
+>
+>  #ifdef CONFIG_PCI_IOV
+>  int pci_iov_virtfn_bus(struct pci_dev *dev, int id);
+> -int pci_iov_virtfn_devfn(struct pci_dev *dev, int id);
+>
+>  int pci_enable_sriov(struct pci_dev *dev, int nr_virtfn);
+>  void pci_disable_sriov(struct pci_dev *dev);
+> @@ -2402,6 +2404,10 @@ static inline bool pci_is_thunderbolt_attached(struct pci_dev *pdev)
+>  void pci_uevent_ers(struct pci_dev *pdev, enum  pci_ers_result err_type);
+>  #endif
+>
+> +#ifdef CONFIG_PCI_IOV
+> +int pci_iov_virtfn_devfn(struct pci_dev *dev, int vf_id);
+> +#endif
+> +
+>  /* Provide the legacy pci_dma_* API */
+>  #include <linux/pci-dma-compat.h>
+>
+> --
+> 2.29.2
+>
