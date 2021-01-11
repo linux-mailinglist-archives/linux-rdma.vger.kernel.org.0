@@ -2,130 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79A52F0D15
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Jan 2021 08:05:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B582F0EBD
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Jan 2021 10:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725880AbhAKHFN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 Jan 2021 02:05:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbhAKHFM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Jan 2021 02:05:12 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A811C061786
-        for <linux-rdma@vger.kernel.org>; Sun, 10 Jan 2021 23:04:32 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id h16so17638357edt.7
-        for <linux-rdma@vger.kernel.org>; Sun, 10 Jan 2021 23:04:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nd7RBr7nP50a5LSR+6S1jtsrRTvPj53l5Hws2Dj6pyA=;
-        b=efcSWcfiezUvbN4WfjTlnZobo2X+l2c95Pt9TodN8YeTZ9a4d/pZOCZr88F1pLCZOz
-         us3ITFfBKHdSHGYPYLulBWdf81JNmmC06iU+qcfb4ibDFSsyDFhCr+hQMWYq6aJXT1XE
-         Gy4J7qzUB8kStSYmoM+nmTGBjnpxCKBmsPZ6Wv0MzdFN23h6Ucz7xNP6SJ+KFv6B5AOb
-         /ODHb0UTIQddO7CkMY0BVi+knfjvO6hDtwfRq3oLrUlbsb1pcKKi0Ait+nc3utDZf+VD
-         Pt/Tum1agWXsWWqLH/YDO623fO3ZbQhKmhovo7Tt9OEUT1NjCfsoRVijpqfPluDUFoTw
-         /Jsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nd7RBr7nP50a5LSR+6S1jtsrRTvPj53l5Hws2Dj6pyA=;
-        b=O5c0PhuF9j+ZkE5dPTa9DhtXMVNKh81kqwYSgh+LN8yEyxwGIUJML8/eBgKET+2ztv
-         rmss4BDbaCNpoozBBh1zHKW27vD0OJzBDE8kP8Dizu/ASCdxewrb1DRz43o2+/WjCo0N
-         zYw4F5Ap1/sxcPNYRo0xZvKJpfxGna+8ekkolMX8TxrAsBTLAip6Y8XxV0G2SiYnEFxx
-         aDGW53B+nlNYmC3rahw4dOqZye+0IRYxI/3DNXZLlVWjd81nC2vOErOrXOV6nv8ernF2
-         dGOp/A7e/fdKzHFlNo9fNhf+QHnF8ME9UGJqNSD0NJU0fmroxxO+z0fBk/aKYwNpFgbo
-         zmLw==
-X-Gm-Message-State: AOAM5319qqg6+CbEuhwCUEhPDAHkKlx1yuLyFZZJLbBX9zqyegP4F3tO
-        KojDKLho9aJa7/qvpDBhYiueaIwF2BLoKXrACKARcW32xi8=
-X-Google-Smtp-Source: ABdhPJzE9qfvPoTUaXQu/UVlyHWha9qbKIxwJhgRGf5ce5tmO7yeuUkHbDyfAwiAKerwjS3FwAIQQPj32N009FAdlv4=
-X-Received: by 2002:a05:6402:22b4:: with SMTP id cx20mr13171402edb.262.1610348670748;
- Sun, 10 Jan 2021 23:04:30 -0800 (PST)
+        id S1727913AbhAKJI3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 Jan 2021 04:08:29 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:20015 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727884AbhAKJI3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Jan 2021 04:08:29 -0500
+X-IronPort-AV: E=Sophos;i="5.79,338,1602518400"; 
+   d="scan'208";a="103359166"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 11 Jan 2021 17:07:38 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id C735A4CE5CE7;
+        Mon, 11 Jan 2021 17:07:33 +0800 (CST)
+Received: from G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Mon, 11 Jan 2021 17:07:35 +0800
+Received: from Fedora-30.g08.fujitsu.local (10.167.220.106) by
+ G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Mon, 11 Jan 2021 17:07:34 +0800
+From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
+To:     <linux-rdma@vger.kernel.org>
+CC:     <leon@kernel.org>, <leonro@nvidia.com>,
+        Xiao Yang <yangx.jy@cn.fujitsu.com>
+Subject: [rdma-core PATCH] verbs: Update the type of some variables in documents
+Date:   Mon, 11 Jan 2021 16:57:24 +0800
+Message-ID: <20210111085724.27641-1-yangx.jy@cn.fujitsu.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20201217141915.56989-1-jinpu.wang@cloud.ionos.com>
-In-Reply-To: <20201217141915.56989-1-jinpu.wang@cloud.ionos.com>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Mon, 11 Jan 2021 08:04:20 +0100
-Message-ID: <CAMGffEnw3RLQWUP9uZ0P6-Yb0d6_S1ir7KEXF6xaQfTePdfEDg@mail.gmail.com>
-Subject: Re: [PATCHv2 for-next 00/19] Misc update for rtrs
-To:     linux-rdma@vger.kernel.org
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: C735A4CE5CE7.AB369
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 3:19 PM Jack Wang <jinpu.wang@cloud.ionos.com> wrote:
->
-> Hi Jason, hi Doug,
->
-> Please consider to include following changes to the next merge window.
->
-> It contains a few bugfix and cleanup:
-> - Fix memory leak incase of failure in kobj_init_and_add in both clt/srv
-> - reduce memory footprint by set proper limit when create QP
-> - fix missing wr_cqe in a few cases on srv, it could lead to crash in error
->   case.
-> - remove the SIGNAL flag for heartbeat, otherwise it could mess around
-> the send_wr_awail accouting.
-> - flush on going session closing to release the memory presure on server.
-> - other misc fix and cleanup.
->
-> The patches are created based on rdma/for-next.
-Hi Jason,
+The type of some variables has been changed from int to
+unsigned int thus update the corresponding documents.
 
-ping, any comments or do you need a resend/rebase?
+Fixes: 8fe7f12f1723 ("verbs: Bitwise flag values should be unsigned")
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ libibverbs/man/ibv_bind_mw.3      | 4 ++--
+ libibverbs/man/ibv_create_cq_ex.3 | 2 +-
+ libibverbs/man/ibv_modify_qp.3    | 2 +-
+ libibverbs/man/ibv_poll_cq.3      | 2 +-
+ libibverbs/man/ibv_post_send.3    | 4 ++--
+ libibverbs/man/ibv_query_qp.3     | 2 +-
+ 6 files changed, 8 insertions(+), 8 deletions(-)
 
-Thanks!
+diff --git a/libibverbs/man/ibv_bind_mw.3 b/libibverbs/man/ibv_bind_mw.3
+index af309d00..6b995af7 100644
+--- a/libibverbs/man/ibv_bind_mw.3
++++ b/libibverbs/man/ibv_bind_mw.3
+@@ -28,7 +28,7 @@ is an ibv_mw_bind struct, as defined in <infiniband/verbs.h>.
+ struct ibv_mw_bind {
+ .in +8
+ uint64_t                     wr_id;           /* User defined WR ID */
+-int                          send_flags;      /* Use ibv_send_flags */
++unsigned int                 send_flags;      /* Use ibv_send_flags */
+ struct ibv_mw_bind_info      bind_info;       /* MW bind information */
+ .in -8
+ }
+@@ -40,7 +40,7 @@ struct ibv_mw_bind_info {
+ struct ibv_mr                *mr;             /* The MR to bind the MW to */
+ uint64_t                     addr;            /* The address the MW should start at */
+ uint64_t                     length;          /* The length (in bytes) the MW should span */
+-int                          mw_access_flags; /* Access flags to the MW. Use ibv_access_flags */
++unsigned int                 mw_access_flags; /* Access flags to the MW. Use ibv_access_flags */
+ .in -8
+ };
+ .fi
+diff --git a/libibverbs/man/ibv_create_cq_ex.3 b/libibverbs/man/ibv_create_cq_ex.3
+index 0f05693e..81eb37b9 100644
+--- a/libibverbs/man/ibv_create_cq_ex.3
++++ b/libibverbs/man/ibv_create_cq_ex.3
+@@ -122,7 +122,7 @@ Below members and functions are used in order to poll the current completion. Th
+ .BI "uint32_t ibv_wc_read_src_qp(struct ibv_cq_ex " "*cq"); \c
+  Get the source QP number field from the current completion.
+ 
+-.BI "int ibv_wc_read_wc_flags(struct ibv_cq_ex " "*cq"); \c
++.BI "unsigned int ibv_wc_read_wc_flags(struct ibv_cq_ex " "*cq"); \c
+  Get the QP flags field from the current completion.
+ 
+ .BI "uint16_t ibv_wc_read_pkey_index(struct ibv_cq_ex " "*cq"); \c
+diff --git a/libibverbs/man/ibv_modify_qp.3 b/libibverbs/man/ibv_modify_qp.3
+index 52f06c0c..3a6563fd 100644
+--- a/libibverbs/man/ibv_modify_qp.3
++++ b/libibverbs/man/ibv_modify_qp.3
+@@ -32,7 +32,7 @@ uint32_t                qkey;                   /* Q_Key for the QP (valid only
+ uint32_t                rq_psn;                 /* PSN for receive queue (valid only for RC/UC QPs) */
+ uint32_t                sq_psn;                 /* PSN for send queue */
+ uint32_t                dest_qp_num;            /* Destination QP number (valid only for RC/UC QPs) */
+-int                     qp_access_flags;        /* Mask of enabled remote access operations (valid only for RC/UC QPs) */
++unsigned int            qp_access_flags;        /* Mask of enabled remote access operations (valid only for RC/UC QPs) */
+ struct ibv_qp_cap       cap;                    /* QP capabilities (valid if HCA supports QP resizing) */
+ struct ibv_ah_attr      ah_attr;                /* Primary path address vector (valid only for RC/UC QPs) */
+ struct ibv_ah_attr      alt_ah_attr;            /* Alternate path address vector (valid only for RC/UC QPs) */
+diff --git a/libibverbs/man/ibv_poll_cq.3 b/libibverbs/man/ibv_poll_cq.3
+index 957fd151..82386580 100644
+--- a/libibverbs/man/ibv_poll_cq.3
++++ b/libibverbs/man/ibv_poll_cq.3
+@@ -39,7 +39,7 @@ uint32_t                invalidated_rkey; /* Local RKey that was invalidated */
+ };
+ uint32_t                qp_num;         /* Local QP number of completed WR */
+ uint32_t                src_qp;         /* Source QP number (remote QP number) of completed WR (valid only for UD QPs) */
+-int                     wc_flags;       /* Flags of the completed WR */
++unsigned int            wc_flags;       /* Flags of the completed WR */
+ uint16_t                pkey_index;     /* P_Key index (valid only for GSI QPs) */
+ uint16_t                slid;           /* Source LID */
+ uint8_t                 sl;             /* Service Level */
+diff --git a/libibverbs/man/ibv_post_send.3 b/libibverbs/man/ibv_post_send.3
+index 4fb99f7c..2c488b09 100644
+--- a/libibverbs/man/ibv_post_send.3
++++ b/libibverbs/man/ibv_post_send.3
+@@ -34,7 +34,7 @@ struct ibv_send_wr     *next;                   /* Pointer to next WR in list, N
+ struct ibv_sge         *sg_list;                /* Pointer to the s/g array */
+ int                     num_sge;                /* Size of the s/g array */
+ enum ibv_wr_opcode      opcode;                 /* Operation type */
+-int                     send_flags;             /* Flags of the WR properties */
++unsigned int            send_flags;             /* Flags of the WR properties */
+ union {
+ .in +8
+ __be32                  imm_data;               /* Immediate data (in network byte order) */
+@@ -103,7 +103,7 @@ struct ibv_mw_bind_info {
+ struct ibv_mr            *mr;             /* The Memory region (MR) to bind the MW to */
+ uint64_t                 addr;           /* The address the MW should start at */
+ uint64_t                 length;          /* The length (in bytes) the MW should span */
+-int                      mw_access_flags; /* Access flags to the MW. Use ibv_access_flags */
++unsigned int             mw_access_flags; /* Access flags to the MW. Use ibv_access_flags */
+ .in -8
+ };
+ .fi
+diff --git a/libibverbs/man/ibv_query_qp.3 b/libibverbs/man/ibv_query_qp.3
+index e9a596d9..e3eef0aa 100644
+--- a/libibverbs/man/ibv_query_qp.3
++++ b/libibverbs/man/ibv_query_qp.3
+@@ -37,7 +37,7 @@ uint32_t                qkey;                /* Q_Key of the QP (valid only for
+ uint32_t                rq_psn;              /* PSN for receive queue (valid only for RC/UC QPs) */
+ uint32_t                sq_psn;              /* PSN for send queue */
+ uint32_t                dest_qp_num;         /* Destination QP number (valid only for RC/UC QPs) */
+-int                     qp_access_flags;     /* Mask of enabled remote access operations (valid only for RC/UC QPs) */
++unsigned int            qp_access_flags;     /* Mask of enabled remote access operations (valid only for RC/UC QPs) */
+ struct ibv_qp_cap       cap;                 /* QP capabilities */
+ struct ibv_ah_attr      ah_attr;             /* Primary path address vector (valid only for RC/UC QPs) */
+ struct ibv_ah_attr      alt_ah_attr;         /* Alternate path address vector (valid only for RC/UC QPs) */
+-- 
+2.21.0
 
->
-> V2->V1
-> * more descprition for the patches above as requested by Jason, also include
-> Fixes tag for bugfix.
-> * suppress the lockdep warning for PATCH 2 `Occasionally flush ongoing session closing`
-> with comment.
-> * new bugfix PATCH 19 RDMA/rtrs: Fix KASAN: stack-out-of-bounds bug
->
-> Thanks!
->
-> Guoqing Jiang (8):
->   RDMA/rtrs-srv: Jump to dereg_mr label if allocate iu fails
->   RDMA/rtrs: Call kobject_put in the failure path
->   RDMA/rtrs-clt: Consolidate rtrs_clt_destroy_sysfs_root_{folder,files}
->   RDMA/rtrs-clt: Kill wait_for_inflight_permits
->   RDMA/rtrs-clt: Remove unnecessary 'goto out'
->   RDMA/rtrs-clt: Kill rtrs_clt_change_state
->   RDMA/rtrs-clt: Rename __rtrs_clt_change_state to rtrs_clt_change_state
->   RDMA/rtrs-clt: Refactor the failure cases in alloc_clt
->
-> Jack Wang (11):
->   RDMA/rtrs: Extend ibtrs_cq_qp_create
->   RMDA/rtrs-srv: Occasionally flush ongoing session closing
->   RDMA/rtrs-srv: Release lock before call into close_sess
->   RDMA/rtrs-srv: Use sysfs_remove_file_self for disconnect
->   RDMA/rtrs-clt: Set mininum limit when create QP
->   RDMA/rtrs-srv: Fix missing wr_cqe
->   RDMA/rtrs: Do not signal for heatbeat
->   RDMA/rtrs-clt: Use bitmask to check sess->flags
->   RDMA/rtrs-srv: Do not signal REG_MR
->   RDMA/rtrs-srv: Init wr_cnt as 1
->   RDMA/rtrs: Fix KASAN: stack-out-of-bounds bug
->
->  drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c |  11 +-
->  drivers/infiniband/ulp/rtrs/rtrs-clt.c       | 120 +++++++++----------
->  drivers/infiniband/ulp/rtrs/rtrs-clt.h       |   3 +-
->  drivers/infiniband/ulp/rtrs/rtrs-pri.h       |   5 +-
->  drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c |   5 +-
->  drivers/infiniband/ulp/rtrs/rtrs-srv.c       |  34 ++++--
->  drivers/infiniband/ulp/rtrs/rtrs.c           |  32 ++---
->  7 files changed, 110 insertions(+), 100 deletions(-)
->
-> --
-> 2.25.1
->
+
+
