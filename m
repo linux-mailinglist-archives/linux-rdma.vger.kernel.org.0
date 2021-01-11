@@ -2,153 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC372F1889
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Jan 2021 15:44:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F35352F18FC
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Jan 2021 15:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730664AbhAKOnt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 Jan 2021 09:43:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728228AbhAKOns (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Jan 2021 09:43:48 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3B4C061795
-        for <linux-rdma@vger.kernel.org>; Mon, 11 Jan 2021 06:43:08 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id u26so18087273iof.3
-        for <linux-rdma@vger.kernel.org>; Mon, 11 Jan 2021 06:43:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1Uy4dmSh1YXfPmAlEsVIKk8C/onNwMc2Qs5bzKzONEY=;
-        b=IEBc0YK6atXTkF/0ep40Msod91NjmTr9cLAHeYx9ZEwhH9/ioU/Ke/2QaOxLtPTflQ
-         h5+BFBVQYdQNlmztL63yL9yF/DkIS7V2iwlKHqyZ57yiGKFKpE8Z4DHqNwECA+THTqfg
-         KK39n68NS76uYp4WCHPSKGCW/gZCXz8UFs/Nh+z8uxLeMskRR5ScoHWZvxzqV5kAcR7b
-         kNx2p48bUJZM0tuIXW6mjHt+XYdfvQwyHKmb3zBhoNRGX6b2B3g13TphzPcLudJwyQqQ
-         6kgxwhtTkNyxPxSA/XRHBsFC2o9+3zYifBIBE4/wKNhZRjV/bFn2BjQtWPS0J19LWhAh
-         E8tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1Uy4dmSh1YXfPmAlEsVIKk8C/onNwMc2Qs5bzKzONEY=;
-        b=RWANCzoKVd4ce5QDClEwDc50TnRHIIDeip8g5urudDZuTanzA1AdFeVp0btbBSj22k
-         PJUCNO099UhfpfVx0mWFbk0VTQK8gS8DK4G6OnoxOZbpsYBUwNnBy8oOL+GJtv8Ii25A
-         Q+L9wdt0urtViTFE6/0G5G/nt0riQMfqoeEPJqvGmIkl+zmndMAHOUQM0gG53ZXKuMZX
-         IzbIVHLmeMs5l47KPfInp8ZE3cOmEHXsp0N5ZlhZEJbAxH2lpbAJol8oQllNccazHg37
-         qBX0swachY6ooYkO/UNcbIRzieAnErwo575jEtRDFtUInM1/NslieI5qpdAeEuzRZ2Jc
-         pwsQ==
-X-Gm-Message-State: AOAM5339OaAt/IiHaWH5cMyJR+/mLXK0t0bO+4sCY40IXeSuvSOj/6rg
-        +z07TCJ9qm/hN46ehoBAJ4MpEQ==
-X-Google-Smtp-Source: ABdhPJyZ4N4cjirnjDbebnDeZG+f7StyYJS43ntMtcIQPUiYPQbNQdhEnL7AFHNuclaajx6Qc8gFDA==
-X-Received: by 2002:a05:6602:1cb:: with SMTP id w11mr14752467iot.45.1610376188168;
-        Mon, 11 Jan 2021 06:43:08 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id a7sm15427506iln.0.2021.01.11.06.43.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 06:43:07 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kyyPS-005WSa-NT; Mon, 11 Jan 2021 10:43:06 -0400
-Date:   Mon, 11 Jan 2021 10:43:06 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Douglas Gilbert <dgilbert@interlog.com>
-Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, bostroesser@gmail.com, bvanassche@acm.org,
-        ddiss@suse.de
-Subject: Re: [PATCH v5 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
- warning
-Message-ID: <20210111144306.GK504133@ziepe.ca>
-References: <20201228234955.190858-1-dgilbert@interlog.com>
- <20201228234955.190858-2-dgilbert@interlog.com>
- <20210107174410.GB504133@ziepe.ca>
- <76827f07-9484-d2c6-346b-0bdccfdf4a7a@interlog.com>
+        id S1730291AbhAKO6j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 Jan 2021 09:58:39 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:15014 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729688AbhAKO6i (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Jan 2021 09:58:38 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5ffc67760000>; Mon, 11 Jan 2021 06:57:58 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 11 Jan
+ 2021 14:57:58 +0000
+Received: from r-nvmx02.mtr.labs.mlnx (172.20.145.6) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Mon, 11 Jan 2021 14:57:55 +0000
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+To:     <linux-rdma@vger.kernel.org>, <dledford@redhat.com>,
+        <jgg@nvidia.com>, <leonro@nvidia.com>, <sagi@grimberg.me>
+CC:     <oren@nvidia.com>, <nitzanc@nvidia.com>, <sergeygo@nvidia.com>,
+        <ngottlieb@nvidia.com>, Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: [PATCH 0/4] IB/iser cleanups and fixes for 5.11
+Date:   Mon, 11 Jan 2021 14:57:50 +0000
+Message-ID: <20210111145754.56727-1-mgurtovoy@nvidia.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <76827f07-9484-d2c6-346b-0bdccfdf4a7a@interlog.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610377078; bh=sDKfEVbGONAtWTQptc6I5tttb0J4vNxNEdLjwriCgnc=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         Content-Transfer-Encoding:Content-Type;
+        b=XpUyXJmDn0uaJYJt/gkuYM43J/Li2S2YEgJlNpBpFiIPO1jfQ7ZsI1ZHuxp2TJXVu
+         TuJjrK9X5/kIRlvFeMhIoMsPx2JBES2oC9qrn4r6fztmVt38pSMPdI+opewKrCaFYD
+         KiyHBkCP2Vm1vo7ZPavLBMDh8qsX3HrY9LIqcNXaE1g7au2iluaEnTttJ9U1xC8XTF
+         1IeeoEqNTkxMSPwWAYKStv8t26tdwXwnKo2LheqBY8SkdgZAIN+u/4VKTrFAE44Ks8
+         IEpqj+xwPop4jHvTNLiqJHsNCjSgJApT7LVptBs9zYHMDyMnma7JlipB+FfirndZRv
+         uDbpYuigowrLA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Jan 09, 2021 at 05:58:50PM -0500, Douglas Gilbert wrote:
-> On 2021-01-07 12:44 p.m., Jason Gunthorpe wrote:
-> > On Mon, Dec 28, 2020 at 06:49:52PM -0500, Douglas Gilbert wrote:
-> > > diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-> > > index a59778946404..4986545beef9 100644
-> > > +++ b/lib/scatterlist.c
-> > > @@ -554,13 +554,15 @@ EXPORT_SYMBOL(sg_alloc_table_from_pages);
-> > >   #ifdef CONFIG_SGL_ALLOC
-> > >   /**
-> > > - * sgl_alloc_order - allocate a scatterlist and its pages
-> > > + * sgl_alloc_order - allocate a scatterlist with equally sized elements
-> > >    * @length: Length in bytes of the scatterlist. Must be at least one
-> > > - * @order: Second argument for alloc_pages()
-> > > + * @order: Second argument for alloc_pages(). Each sgl element size will
-> > > + *	   be (PAGE_SIZE*2^order) bytes
-> > >    * @chainable: Whether or not to allocate an extra element in the scatterlist
-> > > - *	for scatterlist chaining purposes
-> > > + *	       for scatterlist chaining purposes
-> > >    * @gfp: Memory allocation flags
-> > > - * @nent_p: [out] Number of entries in the scatterlist that have pages
-> > > + * @nent_p: [out] Number of entries in the scatterlist that have pages.
-> > > + *		  Ignored if NULL is given.
-> > >    *
-> > >    * Returns: A pointer to an initialized scatterlist or %NULL upon failure.
-> > >    */
-> > > @@ -574,8 +576,8 @@ struct scatterlist *sgl_alloc_order(unsigned long long length,
-> > >   	u32 elem_len;
-> > >   	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
-> > > -	/* Check for integer overflow */
-> > > -	if (length > (nent << (PAGE_SHIFT + order)))
-> > > +	/* Integer overflow if:  length > nent*2^(PAGE_SHIFT+order) */
-> > > +	if (ilog2(length) > ilog2(nent) + PAGE_SHIFT + order)
-> > >   		return NULL;
-> > >   	nalloc = nent;
-> > >   	if (chainable) {
-> > 
-> > This is a little bit too tortured now, how about this:
-> > 
-> > 	if (length >> (PAGE_SHIFT + order) >= UINT_MAX)
-> > 		return NULL;
-> > 	nent = length >> (PAGE_SHIFT + order);
-> > 	if (length & ((1ULL << (PAGE_SHIFT + order)) - 1))
-> > 		nent++;
-> > 
-> > 	if (chainable) {
-> > 		if (check_add_overflow(nent, 1, &nalloc))
-> > 			return NULL;
-> > 	}
-> > 	else
-> > 		nalloc = nent;
-> > 
-> 
-> And your proposal is less <<tortured>> ?
+Hi Jason/Leon/Sagi,
+This series introduce some minor code conventions cleanups and 1 module
+param fix that can cause the driver to fail in connection establishment
+(if one will set max_sectors =3D 0).
 
-Yes, obviously checking something fits in a variable is less tortured
-than checking the result of math is correct.
+Please consider this for the next 5.11 PR or for 5.12 merge window.
 
-> I'm looking at performance, not elegance and I'm betting that two
-> ilog2() calls [which boil down to ffs()] are faster than two
-> right-shift-by-n_s and one left-shift-by-n . Perhaps an extra comment
-> could help my code by noting that mathematically:
->   /* if n > m for positive n and m then: log(n) > log(m) */
+Max Gurtovoy (4):
+  IB/iser: remove unneeded semicolons
+  IB/iser: protect iscsi_max_lun module param using callback
+  IB/iser: enforce iser_max_sectors to be greater than 0
+  IB/iser: simplify prot_caps setting
 
-One instruction difference seems completely irrelavent here.
+ drivers/infiniband/ulp/iser/iscsi_iser.c  | 53 ++++++++++++++++-------
+ drivers/infiniband/ulp/iser/iser_memory.c |  3 +-
+ drivers/infiniband/ulp/iser/iser_verbs.c  |  2 +-
+ 3 files changed, 39 insertions(+), 19 deletions(-)
 
-If you care about micro-optimizing this then please add a
-check_shr_overflow() just like we have for check_shl_overflow() that
-has all the right tricks.
+--=20
+2.25.4
 
-Probably:
-
-input_type x = arg >> shift;
-if (x != (output_type)x)
-   fail
-return (output_type)x
-
-Is fastest.
-
-Jason
