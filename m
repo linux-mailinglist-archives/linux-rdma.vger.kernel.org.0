@@ -2,74 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA572F0CF8
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Jan 2021 07:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C79A52F0D15
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Jan 2021 08:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbhAKGmJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 Jan 2021 01:42:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbhAKGmI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 11 Jan 2021 01:42:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B38D222573;
-        Mon, 11 Jan 2021 06:41:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610347288;
-        bh=bZAvJzpYwr+i15NCF9KE/xuOvfRt4Sc6Az3w01Sza7M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OZVsZcdH/P2HHCoE2WKMRD/efwFCJaL2t9nraK8E/h/za5c+BhxhiA3F9n/W5Qets
-         MokN2+rSgShlkYZ2O+6bQ0tjExoSBC70Q2XfT5HeTRxQKvMR3Mlelg1tFfcT58zCEJ
-         b9vM5fUMBK3wHMSvVk6nVV/1bMW4oLz1ysd66+B7Z516fy+ylR5plzaCwL/Ogvj96L
-         CQNGlncLgc/5njgL3NbyXQwpfgaVTLkFLxuMuCUiCI9jHqwa6cV6BZxQED7g/mBzQ5
-         sbd+QqLel86mG7OptEX4WP40z4SPkAMByXl7GddXfoqpwjIZullkxtZtixeTAEcxRN
-         LQQ76ob+4nDyQ==
-Date:   Mon, 11 Jan 2021 08:41:24 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next] RDMA/umem: Silence build warning on i386
- architecture
-Message-ID: <20210111064124.GK31158@unreal>
-References: <20210106122047.498453-1-leon@kernel.org>
- <20210108202831.GA1042005@nvidia.com>
+        id S1725880AbhAKHFN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 Jan 2021 02:05:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbhAKHFM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Jan 2021 02:05:12 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A811C061786
+        for <linux-rdma@vger.kernel.org>; Sun, 10 Jan 2021 23:04:32 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id h16so17638357edt.7
+        for <linux-rdma@vger.kernel.org>; Sun, 10 Jan 2021 23:04:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Nd7RBr7nP50a5LSR+6S1jtsrRTvPj53l5Hws2Dj6pyA=;
+        b=efcSWcfiezUvbN4WfjTlnZobo2X+l2c95Pt9TodN8YeTZ9a4d/pZOCZr88F1pLCZOz
+         us3ITFfBKHdSHGYPYLulBWdf81JNmmC06iU+qcfb4ibDFSsyDFhCr+hQMWYq6aJXT1XE
+         Gy4J7qzUB8kStSYmoM+nmTGBjnpxCKBmsPZ6Wv0MzdFN23h6Ucz7xNP6SJ+KFv6B5AOb
+         /ODHb0UTIQddO7CkMY0BVi+knfjvO6hDtwfRq3oLrUlbsb1pcKKi0Ait+nc3utDZf+VD
+         Pt/Tum1agWXsWWqLH/YDO623fO3ZbQhKmhovo7Tt9OEUT1NjCfsoRVijpqfPluDUFoTw
+         /Jsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Nd7RBr7nP50a5LSR+6S1jtsrRTvPj53l5Hws2Dj6pyA=;
+        b=O5c0PhuF9j+ZkE5dPTa9DhtXMVNKh81kqwYSgh+LN8yEyxwGIUJML8/eBgKET+2ztv
+         rmss4BDbaCNpoozBBh1zHKW27vD0OJzBDE8kP8Dizu/ASCdxewrb1DRz43o2+/WjCo0N
+         zYw4F5Ap1/sxcPNYRo0xZvKJpfxGna+8ekkolMX8TxrAsBTLAip6Y8XxV0G2SiYnEFxx
+         aDGW53B+nlNYmC3rahw4dOqZye+0IRYxI/3DNXZLlVWjd81nC2vOErOrXOV6nv8ernF2
+         dGOp/A7e/fdKzHFlNo9fNhf+QHnF8ME9UGJqNSD0NJU0fmroxxO+z0fBk/aKYwNpFgbo
+         zmLw==
+X-Gm-Message-State: AOAM5319qqg6+CbEuhwCUEhPDAHkKlx1yuLyFZZJLbBX9zqyegP4F3tO
+        KojDKLho9aJa7/qvpDBhYiueaIwF2BLoKXrACKARcW32xi8=
+X-Google-Smtp-Source: ABdhPJzE9qfvPoTUaXQu/UVlyHWha9qbKIxwJhgRGf5ce5tmO7yeuUkHbDyfAwiAKerwjS3FwAIQQPj32N009FAdlv4=
+X-Received: by 2002:a05:6402:22b4:: with SMTP id cx20mr13171402edb.262.1610348670748;
+ Sun, 10 Jan 2021 23:04:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108202831.GA1042005@nvidia.com>
+References: <20201217141915.56989-1-jinpu.wang@cloud.ionos.com>
+In-Reply-To: <20201217141915.56989-1-jinpu.wang@cloud.ionos.com>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Mon, 11 Jan 2021 08:04:20 +0100
+Message-ID: <CAMGffEnw3RLQWUP9uZ0P6-Yb0d6_S1ir7KEXF6xaQfTePdfEDg@mail.gmail.com>
+Subject: Re: [PATCHv2 for-next 00/19] Misc update for rtrs
+To:     linux-rdma@vger.kernel.org
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 04:28:31PM -0400, Jason Gunthorpe wrote:
-> On Wed, Jan 06, 2021 at 02:20:47PM +0200, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> >
-> > Sacrifice one page in order to silence compilation failure on i386
-> > architecture.
-> >
-> > drivers/infiniband/core/umem.c:205 __ib_umem_get() warn: impossible
-> > 			condition '(npages > (~0)) => (0-u32max > u32max)'
+On Thu, Dec 17, 2020 at 3:19 PM Jack Wang <jinpu.wang@cloud.ionos.com> wrote:
 >
-> I think I prefer to just leave this warning on 32 bit builds.. 32 bit
-> inherently can't have this overflow so yes the condition should be
-> impossible
+> Hi Jason, hi Doug,
 >
-> Using >= is just confusing
+> Please consider to include following changes to the next merge window.
 >
-> If you really want to fix it then npages and every place that touches
-> it should be made size_t or unsigned long.
+> It contains a few bugfix and cleanup:
+> - Fix memory leak incase of failure in kobj_init_and_add in both clt/srv
+> - reduce memory footprint by set proper limit when create QP
+> - fix missing wr_cqe in a few cases on srv, it could lead to crash in error
+>   case.
+> - remove the SIGNAL flag for heartbeat, otherwise it could mess around
+> the send_wr_awail accouting.
+> - flush on going session closing to release the memory presure on server.
+> - other misc fix and cleanup.
 >
-> This includes __sg_alloc_table_from_pages, which doesn't look so bad
-> actually..
+> The patches are created based on rdma/for-next.
+Hi Jason,
 
-npages is used as "unsigned long" in all places: pin_user_pages_fast()
-and internally in __sg_alloc_table_from_pages().
+ping, any comments or do you need a resend/rebase?
 
-I can't say if it is going to be not bad as you said.
-
-However, let's add rewrite of this patch to my backlog.
-
-Thanks
+Thanks!
 
 >
-> Jason
+> V2->V1
+> * more descprition for the patches above as requested by Jason, also include
+> Fixes tag for bugfix.
+> * suppress the lockdep warning for PATCH 2 `Occasionally flush ongoing session closing`
+> with comment.
+> * new bugfix PATCH 19 RDMA/rtrs: Fix KASAN: stack-out-of-bounds bug
+>
+> Thanks!
+>
+> Guoqing Jiang (8):
+>   RDMA/rtrs-srv: Jump to dereg_mr label if allocate iu fails
+>   RDMA/rtrs: Call kobject_put in the failure path
+>   RDMA/rtrs-clt: Consolidate rtrs_clt_destroy_sysfs_root_{folder,files}
+>   RDMA/rtrs-clt: Kill wait_for_inflight_permits
+>   RDMA/rtrs-clt: Remove unnecessary 'goto out'
+>   RDMA/rtrs-clt: Kill rtrs_clt_change_state
+>   RDMA/rtrs-clt: Rename __rtrs_clt_change_state to rtrs_clt_change_state
+>   RDMA/rtrs-clt: Refactor the failure cases in alloc_clt
+>
+> Jack Wang (11):
+>   RDMA/rtrs: Extend ibtrs_cq_qp_create
+>   RMDA/rtrs-srv: Occasionally flush ongoing session closing
+>   RDMA/rtrs-srv: Release lock before call into close_sess
+>   RDMA/rtrs-srv: Use sysfs_remove_file_self for disconnect
+>   RDMA/rtrs-clt: Set mininum limit when create QP
+>   RDMA/rtrs-srv: Fix missing wr_cqe
+>   RDMA/rtrs: Do not signal for heatbeat
+>   RDMA/rtrs-clt: Use bitmask to check sess->flags
+>   RDMA/rtrs-srv: Do not signal REG_MR
+>   RDMA/rtrs-srv: Init wr_cnt as 1
+>   RDMA/rtrs: Fix KASAN: stack-out-of-bounds bug
+>
+>  drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c |  11 +-
+>  drivers/infiniband/ulp/rtrs/rtrs-clt.c       | 120 +++++++++----------
+>  drivers/infiniband/ulp/rtrs/rtrs-clt.h       |   3 +-
+>  drivers/infiniband/ulp/rtrs/rtrs-pri.h       |   5 +-
+>  drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c |   5 +-
+>  drivers/infiniband/ulp/rtrs/rtrs-srv.c       |  34 ++++--
+>  drivers/infiniband/ulp/rtrs/rtrs.c           |  32 ++---
+>  7 files changed, 110 insertions(+), 100 deletions(-)
+>
+> --
+> 2.25.1
+>
