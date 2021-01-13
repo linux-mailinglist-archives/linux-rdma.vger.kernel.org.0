@@ -2,369 +2,323 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCB32F4CD0
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Jan 2021 15:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8B32F5175
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Jan 2021 18:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbhAMOL5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 Jan 2021 09:11:57 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:47266 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725924AbhAMOL5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Jan 2021 09:11:57 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10DE3sds027905;
-        Wed, 13 Jan 2021 14:09:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=A1ViBcuAE7rNLlE5khF4PRKBNmn+alH7qCPrRj+YvsQ=;
- b=s18ryd99wsKb/B53Ll6ngYUPsilFuM53WmpCRy8KBMWBq2JJAJxZZtihpPilHen8jSZe
- 9Z9Q7UjvuXos6EU/Mg3cPIqi07byPITYBcJy1GY++3DjMuz32nbz0uF2VZaoeLM+e2/q
- nN2u/EUPWJBQcf1EPGf1XDkyEb/meqxLJGoleATcyMQpcd6poOWzfL5QSONu222wV1xQ
- 2TUi46RGhgAwdBUmEnPNUENppBRivNnmqNS2GLG7inrdR7DQ8jhvNuQ36yAnYGM4Epbx
- YkjKXS1ToyFfaILIohE7ye7wUS5xlww9be3b5SVoBlReOQw9FjgR6kh6IoiEMYaPHI0x dA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 360kcyujxe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 14:09:52 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10DE5fj9107959;
-        Wed, 13 Jan 2021 14:07:51 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 360ke8e53r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 14:07:51 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10DE7mtB002393;
-        Wed, 13 Jan 2021 14:07:48 GMT
-Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 13 Jan 2021 06:07:47 -0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: performance regression noted in v5.11-rc after c062db039f40
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <dfd84bd8-37b3-0f7c-6f38-68f68e8f5b0f@linux.intel.com>
-Date:   Wed, 13 Jan 2021 09:07:44 -0500
-Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux-foundation.org,
-        linux-rdma <linux-rdma@vger.kernel.org>, logang@deltatee.com,
-        hch@lst.de, murphyt7@tcd.ie, robin.murphy@arm.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <440CA3AE-BD76-449D-9C66-4A063C8726B2@oracle.com>
-References: <D81314ED-5673-44A6-B597-090E3CB83EB0@oracle.com>
- <20210112143819.GA9689@willie-the-truck>
- <dfd84bd8-37b3-0f7c-6f38-68f68e8f5b0f@linux.intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
- mlxlogscore=948 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101130087
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
- impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 clxscore=1011 mlxlogscore=958 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101130087
+        id S1725843AbhAMRw1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 Jan 2021 12:52:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47700 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727446AbhAMRw1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 13 Jan 2021 12:52:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610560259;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XJ4eBQpZbVGXMxVKRUFfIzF28RtG2WxV81QvTU+zyjc=;
+        b=JQJLXEgfo9eaJYWJzC1/vFrYiwDv/e1ePwWRk3jfyVK/pYHYHLX4VcQqkhISKAMkRdTczY
+        cZWEb/wID/6oUFDT6kPdy9YPC+PM5cMaERuDUFUGk9+MR8nDw0GEOJOHArAQJI5+zmU7P6
+        +pG1j8ysk9Lc8JadCi74NcnuBxiOWrU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-557-Kd0oRvpyNcaV-Oa2TF5egA-1; Wed, 13 Jan 2021 12:50:55 -0500
+X-MC-Unique: Kd0oRvpyNcaV-Oa2TF5egA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2181B107ACF7;
+        Wed, 13 Jan 2021 17:50:54 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6297218A60;
+        Wed, 13 Jan 2021 17:50:53 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 10:50:52 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>
+Subject: Re: [PATCH mlx5-next v1 1/5] PCI: Add sysfs callback to allow MSI-X
+ table size change of SR-IOV VFs
+Message-ID: <20210113105052.43cf3c15@omen.home.shazbot.org>
+In-Reply-To: <20210110150727.1965295-2-leon@kernel.org>
+References: <20210110150727.1965295-1-leon@kernel.org>
+        <20210110150727.1965295-2-leon@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Sun, 10 Jan 2021 17:07:23 +0200
+Leon Romanovsky <leon@kernel.org> wrote:
+
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Extend PCI sysfs interface with a new callback that allows configure
+> the number of MSI-X vectors for specific SR-IO VF. This is needed
+> to optimize the performance of newly bound devices by allocating
+> the number of vectors based on the administrator knowledge of targeted VM.
+> 
+> This function is applicable for SR-IOV VF because such devices allocate
+> their MSI-X table before they will run on the VMs and HW can't guess the
+> right number of vectors, so the HW allocates them statically and equally.
+> 
+> The newly added /sys/bus/pci/devices/.../vf_msix_vec file will be seen
+> for the VFs and it is writable as long as a driver is not bounded to the VF.
+> 
+> The values accepted are:
+>  * > 0 - this will be number reported by the VF's MSI-X capability
+>  * < 0 - not valid
+>  * = 0 - will reset to the device default value
+> 
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  Documentation/ABI/testing/sysfs-bus-pci | 20 ++++++++
+>  drivers/pci/iov.c                       | 62 +++++++++++++++++++++++++
+>  drivers/pci/msi.c                       | 29 ++++++++++++
+>  drivers/pci/pci-sysfs.c                 |  1 +
+>  drivers/pci/pci.h                       |  2 +
+>  include/linux/pci.h                     |  8 +++-
+>  6 files changed, 121 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> index 25c9c39770c6..05e26e5da54e 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-pci
+> +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> @@ -375,3 +375,23 @@ Description:
+>  		The value comes from the PCI kernel device state and can be one
+>  		of: "unknown", "error", "D0", D1", "D2", "D3hot", "D3cold".
+>  		The file is read only.
+> +
+> +What:		/sys/bus/pci/devices/.../vf_msix_vec
+> +Date:		December 2020
+> +Contact:	Leon Romanovsky <leonro@nvidia.com>
+> +Description:
+> +		This file is associated with the SR-IOV VFs.
+> +		It allows configuration of the number of MSI-X vectors for
+> +		the VF. This is needed to optimize performance of newly bound
+> +		devices by allocating the number of vectors based on the
+> +		administrator knowledge of targeted VM.
+> +
+> +		The values accepted are:
+> +		 * > 0 - this will be number reported by the VF's MSI-X
+> +			 capability
+> +		 * < 0 - not valid
+> +		 * = 0 - will reset to the device default value
+> +
+> +		The file is writable if the PF is bound to a driver that
+> +		supports the ->sriov_set_msix_vec_count() callback and there
+> +		is no driver bound to the VF.
+> diff --git a/drivers/pci/iov.c b/drivers/pci/iov.c
+> index 4afd4ee4f7f0..42c0df4158d1 100644
+> --- a/drivers/pci/iov.c
+> +++ b/drivers/pci/iov.c
+> @@ -31,6 +31,7 @@ int pci_iov_virtfn_devfn(struct pci_dev *dev, int vf_id)
+>  	return (dev->devfn + dev->sriov->offset +
+>  		dev->sriov->stride * vf_id) & 0xff;
+>  }
+> +EXPORT_SYMBOL(pci_iov_virtfn_devfn);
+> 
+>  /*
+>   * Per SR-IOV spec sec 3.3.10 and 3.3.11, First VF Offset and VF Stride may
+> @@ -426,6 +427,67 @@ const struct attribute_group sriov_dev_attr_group = {
+>  	.is_visible = sriov_attrs_are_visible,
+>  };
+> 
+> +#ifdef CONFIG_PCI_MSI
+> +static ssize_t vf_msix_vec_show(struct device *dev,
+> +				struct device_attribute *attr, char *buf)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	int numb = pci_msix_vec_count(pdev);
+> +	struct pci_dev *pfdev;
+> +
+> +	if (numb < 0)
+> +		return numb;
+> +
+> +	pfdev = pci_physfn(pdev);
+> +	if (!pfdev->driver || !pfdev->driver->sriov_set_msix_vec_count)
+> +		return -EOPNOTSUPP;
+> +
+> +	return sprintf(buf, "%d\n", numb);
+> +}
+> +
+> +static ssize_t vf_msix_vec_store(struct device *dev,
+> +				 struct device_attribute *attr, const char *buf,
+> +				 size_t count)
+> +{
+> +	struct pci_dev *vf_dev = to_pci_dev(dev);
+> +	int val, ret;
+> +
+> +	ret = kstrtoint(buf, 0, &val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = pci_set_msix_vec_count(vf_dev, val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return count;
+> +}
+> +static DEVICE_ATTR_RW(vf_msix_vec);
+> +#endif
+> +
+> +static struct attribute *sriov_vf_dev_attrs[] = {
+> +#ifdef CONFIG_PCI_MSI
+> +	&dev_attr_vf_msix_vec.attr,
+> +#endif
+> +	NULL,
+> +};
+> +
+> +static umode_t sriov_vf_attrs_are_visible(struct kobject *kobj,
+> +					  struct attribute *a, int n)
+> +{
+> +	struct device *dev = kobj_to_dev(kobj);
+> +
+> +	if (dev_is_pf(dev))
+> +		return 0;
+> +
+> +	return a->mode;
+> +}
+> +
+> +const struct attribute_group sriov_vf_dev_attr_group = {
+> +	.attrs = sriov_vf_dev_attrs,
+> +	.is_visible = sriov_vf_attrs_are_visible,
+> +};
+> +
+>  int __weak pcibios_sriov_enable(struct pci_dev *pdev, u16 num_vfs)
+>  {
+>  	return 0;
+> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+> index 3162f88fe940..20705ca94666 100644
+> --- a/drivers/pci/msi.c
+> +++ b/drivers/pci/msi.c
+> @@ -991,6 +991,35 @@ int pci_msix_vec_count(struct pci_dev *dev)
+>  }
+>  EXPORT_SYMBOL(pci_msix_vec_count);
+> 
+> +/**
+> + * pci_set_msix_vec_count - change the reported number of MSI-X vectors
+> + * This function is applicable for SR-IOV VF because such devices allocate
+> + * their MSI-X table before they will run on the VMs and HW can't guess the
+> + * right number of vectors, so the HW allocates them statically and equally.
+> + * @dev: VF device that is going to be changed
+> + * @numb: amount of MSI-X vectors
+> + **/
+> +int pci_set_msix_vec_count(struct pci_dev *dev, int numb)
+> +{
+> +	struct pci_dev *pdev = pci_physfn(dev);
+> +
+> +	if (!dev->msix_cap || !pdev->msix_cap)
+> +		return -EINVAL;
+> +
+> +	if (dev->driver || !pdev->driver ||
+> +	    !pdev->driver->sriov_set_msix_vec_count)
+> +		return -EOPNOTSUPP;
 
 
-> On Jan 12, 2021, at 9:25 PM, Lu Baolu <baolu.lu@linux.intel.com> =
-wrote:
->=20
-> Hi,
->=20
-> On 1/12/21 10:38 PM, Will Deacon wrote:
->> [Expanding cc list to include DMA-IOMMU and intel IOMMU folks]
->> On Fri, Jan 08, 2021 at 04:18:36PM -0500, Chuck Lever wrote:
->>> Hi-
->>>=20
->>> [ Please cc: me on replies, I'm not currently subscribed to
->>> iommu@lists ].
->>>=20
->>> I'm running NFS performance tests on InfiniBand using CX-3 Pro cards
->>> at 56Gb/s. The test is iozone on an NFSv3/RDMA mount:
->>>=20
->>> /home/cel/bin/iozone -M -+u -i0 -i1 -s1g -r256k -t12 -I
->>>=20
->>> For those not familiar with the way storage protocols use RDMA, The
->>> initiator/client sets up memory regions and the target/server uses
->>> RDMA Read and Write to move data out of and into those regions. The
->>> initiator/client uses only RDMA memory registration and invalidation
->>> operations, and the target/server uses RDMA Read and Write.
->>>=20
->>> My NFS client is a two-socket 12-core x86_64 system with its I/O MMU
->>> enabled using the kernel command line options "intel_iommu=3Don
->>> iommu=3Dstrict".
->>>=20
->>> Recently I've noticed a significant (25-30%) loss in NFS throughput.
->>> I was able to bisect on my client to the following commits.
->>>=20
->>> Here's 65f746e8285f ("iommu: Add quirk for Intel graphic devices in
->>> map_sg"). This is about normal for this test.
->>>=20
->>> 	Children see throughput for 12 initial writers 	=3D 4732581.09 =
-kB/sec
->>>  	Parent sees throughput for 12 initial writers 	=3D 4646810.21 =
-kB/sec
->>>  	Min throughput per process 			=3D  387764.34 =
-kB/sec
->>>  	Max throughput per process 			=3D  399655.47 =
-kB/sec
->>>  	Avg throughput per process 			=3D  394381.76 =
-kB/sec
->>>  	Min xfer 					=3D 1017344.00 =
-kB
->>>  	CPU Utilization: Wall time    2.671    CPU time    1.974    CPU =
-utilization  73.89 %
->>>  	Children see throughput for 12 rewriters 	=3D 4837741.94 =
-kB/sec
->>>  	Parent sees throughput for 12 rewriters 	=3D 4833509.35 =
-kB/sec
->>>  	Min throughput per process 			=3D  398983.72 =
-kB/sec
->>>  	Max throughput per process 			=3D  406199.66 =
-kB/sec
->>>  	Avg throughput per process 			=3D  403145.16 =
-kB/sec
->>>  	Min xfer 					=3D 1030656.00 =
-kB
->>>  	CPU utilization: Wall time    2.584    CPU time    1.959    CPU =
-utilization  75.82 %
->>>  	Children see throughput for 12 readers 		=3D 5921370.94 =
-kB/sec
->>>  	Parent sees throughput for 12 readers 		=3D 5914106.69 =
-kB/sec
->>>  	Min throughput per process 			=3D  491812.38 =
-kB/sec
->>>  	Max throughput per process 			=3D  494777.28 =
-kB/sec
->>>  	Avg throughput per process 			=3D  493447.58 =
-kB/sec
->>>  	Min xfer 					=3D 1042688.00 =
-kB
->>>  	CPU utilization: Wall time    2.122    CPU time    1.968    CPU =
-utilization  92.75 %
->>>  	Children see throughput for 12 re-readers 	=3D 5947985.69 =
-kB/sec
->>>  	Parent sees throughput for 12 re-readers 	=3D 5941348.51 =
-kB/sec
->>>  	Min throughput per process 			=3D  492805.81 =
-kB/sec
->>>  	Max throughput per process 			=3D  497280.19 =
-kB/sec
->>>  	Avg throughput per process 			=3D  495665.47 =
-kB/sec
->>>  	Min xfer 					=3D 1039360.00 =
-kB
->>>  	CPU utilization: Wall time    2.111    CPU time    1.968    CPU =
-utilization  93.22 %
->>>=20
->>> Here's c062db039f40 ("iommu/vt-d: Update domain geometry in
->>> iommu_ops.at(de)tach_dev"). It's losing some steam here.
->>>=20
->>> 	Children see throughput for 12 initial writers 	=3D 4342419.12 =
-kB/sec
->>>  	Parent sees throughput for 12 initial writers 	=3D 4310612.79 =
-kB/sec
->>>  	Min throughput per process 			=3D  359299.06 =
-kB/sec
->>>  	Max throughput per process 			=3D  363866.16 =
-kB/sec
->>>  	Avg throughput per process 			=3D  361868.26 =
-kB/sec
->>>  	Min xfer 					=3D 1035520.00 =
-kB
->>>  	CPU Utilization: Wall time    2.902    CPU time    1.951    CPU =
-utilization  67.22 %
->>>  	Children see throughput for 12 rewriters 	=3D 4408576.66 =
-kB/sec
->>>  	Parent sees throughput for 12 rewriters 	=3D 4404280.87 =
-kB/sec
->>>  	Min throughput per process 			=3D  364553.88 =
-kB/sec
->>>  	Max throughput per process 			=3D  370029.28 =
-kB/sec
->>>  	Avg throughput per process 			=3D  367381.39 =
-kB/sec
->>>  	Min xfer 					=3D 1033216.00 =
-kB
->>>  	CPU utilization: Wall time    2.836    CPU time    1.956    CPU =
-utilization  68.97 %
->>>  	Children see throughput for 12 readers 		=3D 5406879.47 =
-kB/sec
->>>  	Parent sees throughput for 12 readers 		=3D 5401862.78 =
-kB/sec
->>>  	Min throughput per process 			=3D  449583.03 =
-kB/sec
->>>  	Max throughput per process 			=3D  451761.69 =
-kB/sec
->>>  	Avg throughput per process 			=3D  450573.29 =
-kB/sec
->>>  	Min xfer 					=3D 1044224.00 =
-kB
->>>  	CPU utilization: Wall time    2.323    CPU time    1.977    CPU =
-utilization  85.12 %
->>>  	Children see throughput for 12 re-readers 	=3D 5410601.12 =
-kB/sec
->>>  	Parent sees throughput for 12 re-readers 	=3D 5403504.40 =
-kB/sec
->>>  	Min throughput per process 			=3D  449918.12 =
-kB/sec
->>>  	Max throughput per process 			=3D  452489.28 =
-kB/sec
->>>  	Avg throughput per process 			=3D  450883.43 =
-kB/sec
->>>  	Min xfer 					=3D 1043456.00 =
-kB
->>>  	CPU utilization: Wall time    2.321    CPU time    1.978    CPU =
-utilization  85.21 %
->>>=20
->>> And here's c588072bba6b ("iommu/vt-d: Convert intel iommu driver to
->>> the iommu ops"). Significant throughput loss.
->>>=20
->>> 	Children see throughput for 12 initial writers 	=3D 3812036.91 =
-kB/sec
->>>  	Parent sees throughput for 12 initial writers 	=3D 3753683.40 =
-kB/sec
->>>  	Min throughput per process 			=3D  313672.25 =
-kB/sec
->>>  	Max throughput per process 			=3D  321719.44 =
-kB/sec
->>>  	Avg throughput per process 			=3D  317669.74 =
-kB/sec
->>>  	Min xfer 					=3D 1022464.00 =
-kB
->>>  	CPU Utilization: Wall time    3.309    CPU time    1.986    CPU =
-utilization  60.02 %
->>>  	Children see throughput for 12 rewriters 	=3D 3786831.94 =
-kB/sec
->>>  	Parent sees throughput for 12 rewriters 	=3D 3783205.58 =
-kB/sec
->>>  	Min throughput per process 			=3D  313654.44 =
-kB/sec
->>>  	Max throughput per process 			=3D  317844.50 =
-kB/sec
->>>  	Avg throughput per process 			=3D  315569.33 =
-kB/sec
->>>  	Min xfer 					=3D 1035520.00 =
-kB
->>>  	CPU utilization: Wall time    3.302    CPU time    1.945    CPU =
-utilization  58.90 %
->>>  	Children see throughput for 12 readers 		=3D 4265828.28 =
-kB/sec
->>>  	Parent sees throughput for 12 readers 		=3D 4261844.88 =
-kB/sec
->>>  	Min throughput per process 			=3D  352305.00 =
-kB/sec
->>>  	Max throughput per process 			=3D  357726.22 =
-kB/sec
->>>  	Avg throughput per process 			=3D  355485.69 =
-kB/sec
->>>  	Min xfer 					=3D 1032960.00 =
-kB
->>>  	CPU utilization: Wall time    2.934    CPU time    1.942    CPU =
-utilization  66.20 %
->>>  	Children see throughput for 12 re-readers 	=3D 4220651.19 =
-kB/sec
->>>  	Parent sees throughput for 12 re-readers 	=3D 4216096.04 =
-kB/sec
->>>  	Min throughput per process 			=3D  348677.16 =
-kB/sec
->>>  	Max throughput per process 			=3D  353467.44 =
-kB/sec
->>>  	Avg throughput per process 			=3D  351720.93 =
-kB/sec
->>>  	Min xfer 					=3D 1035264.00 =
-kB
->>>  	CPU utilization: Wall time    2.969    CPU time    1.952    CPU =
-utilization  65.74 %
->>>=20
->>> The regression appears to be 100% reproducible.
->=20
-> The commit 65f746e8285f ("iommu: Add quirk for Intel graphic devices =
-in
-> map_sg") is a temporary workaround. We have reverted it recently =
-(5.11-
-> rc3). Can you please try the a kernel version after -rc3?
+This seems racy, don't we need to hold device_lock on both the VF and
+PF to avoid driver {un}binding races?  Does that happen implicitly
+somewhere?  Thanks,
 
-I don't see a change in write results with v5.11-rc3, but read =
-throughput
-appears to improve a little.
+Alex
 
-
-	Children see throughput for 12 initial writers 	=3D 3854295.72 =
-kB/sec
-	Parent sees throughput for 12 initial writers 	=3D 3744064.85 =
-kB/sec
-	Min throughput per process 			=3D  313499.41 =
-kB/sec=20
-	Max throughput per process 			=3D  328151.44 =
-kB/sec
-	Avg throughput per process 			=3D  321191.31 =
-kB/sec
-	Min xfer 					=3D 1001728.00 =
-kB
-	CPU Utilization: Wall time    3.289    CPU time    2.075    CPU =
-utilization  63.10 %
-
-
-	Children see throughput for 12 rewriters 	=3D 3692675.22 =
-kB/sec
-	Parent sees throughput for 12 rewriters 	=3D 3688975.23 =
-kB/sec
-	Min throughput per process 			=3D  304863.84 =
-kB/sec=20
-	Max throughput per process 			=3D  311000.16 =
-kB/sec
-	Avg throughput per process 			=3D  307722.93 =
-kB/sec
-	Min xfer 					=3D 1028096.00 =
-kB
-	CPU utilization: Wall time    3.375    CPU time    2.051    CPU =
-utilization  60.76 %
-
-
-	Children see throughput for 12 readers 		=3D 4521975.69 =
-kB/sec
-	Parent sees throughput for 12 readers 		=3D 4516965.08 =
-kB/sec
-	Min throughput per process 			=3D  372762.16 =
-kB/sec=20
-	Max throughput per process 			=3D  382233.84 =
-kB/sec
-	Avg throughput per process 			=3D  376831.31 =
-kB/sec
-	Min xfer 					=3D 1022720.00 =
-kB
-	CPU utilization: Wall time    2.747    CPU time    1.961    CPU =
-utilization  71.39 %
-
-
-	Children see throughput for 12 re-readers 	=3D 4684127.06 =
-kB/sec
-	Parent sees throughput for 12 re-readers 	=3D 4678990.23 =
-kB/sec
-	Min throughput per process 			=3D  385586.34 =
-kB/sec=20
-	Max throughput per process 			=3D  395542.47 =
-kB/sec
-	Avg throughput per process 			=3D  390343.92 =
-kB/sec
-	Min xfer 					=3D 1022208.00 =
-kB
-	CPU utilization: Wall time    2.653    CPU time    1.941    CPU =
-utilization  73.16 %
-
-
-
---
-Chuck Lever
-
-
+> +
+> +	if (numb < 0)
+> +		/*
+> +		 * We don't support negative numbers for now,
+> +		 * but maybe in the future it will make sense.
+> +		 */
+> +		return -EINVAL;
+> +
+> +	return pdev->driver->sriov_set_msix_vec_count(dev, numb);
+> +}
+> +
+>  static int __pci_enable_msix(struct pci_dev *dev, struct msix_entry *entries,
+>  			     int nvec, struct irq_affinity *affd, int flags)
+>  {
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index fb072f4b3176..0af2222643c2 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -1557,6 +1557,7 @@ static const struct attribute_group *pci_dev_attr_groups[] = {
+>  	&pci_dev_hp_attr_group,
+>  #ifdef CONFIG_PCI_IOV
+>  	&sriov_dev_attr_group,
+> +	&sriov_vf_dev_attr_group,
+>  #endif
+>  	&pci_bridge_attr_group,
+>  	&pcie_dev_attr_group,
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 5c59365092fa..1fd273077637 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -183,6 +183,7 @@ extern unsigned int pci_pm_d3hot_delay;
+> 
+>  #ifdef CONFIG_PCI_MSI
+>  void pci_no_msi(void);
+> +int pci_set_msix_vec_count(struct pci_dev *dev, int numb);
+>  #else
+>  static inline void pci_no_msi(void) { }
+>  #endif
+> @@ -502,6 +503,7 @@ resource_size_t pci_sriov_resource_alignment(struct pci_dev *dev, int resno);
+>  void pci_restore_iov_state(struct pci_dev *dev);
+>  int pci_iov_bus_range(struct pci_bus *bus);
+>  extern const struct attribute_group sriov_dev_attr_group;
+> +extern const struct attribute_group sriov_vf_dev_attr_group;
+>  #else
+>  static inline int pci_iov_init(struct pci_dev *dev)
+>  {
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index b32126d26997..a17cfc28eb66 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -856,6 +856,8 @@ struct module;
+>   *		e.g. drivers/net/e100.c.
+>   * @sriov_configure: Optional driver callback to allow configuration of
+>   *		number of VFs to enable via sysfs "sriov_numvfs" file.
+> + * @sriov_set_msix_vec_count: Driver callback to change number of MSI-X vectors
+> + *              exposed by the sysfs "vf_msix_vec" entry.
+>   * @err_handler: See Documentation/PCI/pci-error-recovery.rst
+>   * @groups:	Sysfs attribute groups.
+>   * @driver:	Driver model structure.
+> @@ -871,6 +873,7 @@ struct pci_driver {
+>  	int  (*resume)(struct pci_dev *dev);	/* Device woken up */
+>  	void (*shutdown)(struct pci_dev *dev);
+>  	int  (*sriov_configure)(struct pci_dev *dev, int num_vfs); /* On PF */
+> +	int  (*sriov_set_msix_vec_count)(struct pci_dev *vf, int msix_vec_count); /* On PF */
+>  	const struct pci_error_handlers *err_handler;
+>  	const struct attribute_group **groups;
+>  	struct device_driver	driver;
+> @@ -2057,7 +2060,6 @@ void __iomem *pci_ioremap_wc_bar(struct pci_dev *pdev, int bar);
+> 
+>  #ifdef CONFIG_PCI_IOV
+>  int pci_iov_virtfn_bus(struct pci_dev *dev, int id);
+> -int pci_iov_virtfn_devfn(struct pci_dev *dev, int id);
+> 
+>  int pci_enable_sriov(struct pci_dev *dev, int nr_virtfn);
+>  void pci_disable_sriov(struct pci_dev *dev);
+> @@ -2402,6 +2404,10 @@ static inline bool pci_is_thunderbolt_attached(struct pci_dev *pdev)
+>  void pci_uevent_ers(struct pci_dev *pdev, enum  pci_ers_result err_type);
+>  #endif
+> 
+> +#ifdef CONFIG_PCI_IOV
+> +int pci_iov_virtfn_devfn(struct pci_dev *dev, int vf_id);
+> +#endif
+> +
+>  /* Provide the legacy pci_dma_* API */
+>  #include <linux/pci-dma-compat.h>
+> 
+> --
+> 2.29.2
+> 
 
