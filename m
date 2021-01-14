@@ -2,42 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDBB2F67FD
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 18:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B58342F6852
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 18:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbhANRnM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Jan 2021 12:43:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36688 "EHLO mail.kernel.org"
+        id S1728702AbhANRwK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Jan 2021 12:52:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726310AbhANRnM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:43:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7AE723B40;
-        Thu, 14 Jan 2021 17:42:31 +0000 (UTC)
+        id S1726730AbhANRwJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 14 Jan 2021 12:52:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBF3823A34;
+        Thu, 14 Jan 2021 17:51:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610646152;
-        bh=qyCgoMQS1q3Gbl/YPa4tVX/MZkl9Rw9Fb3rWjKlYnKQ=;
+        s=k20201202; t=1610646689;
+        bh=uhySbMp0N2pR99EJXI5G1RY9Zc1k9reOUa4yrVzT+ag=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QexCp9ikjfo2fgUELpThJrlfN3qRvRKKeFFKetHH9Si0gW1yJEMGoiXCpxvLbmxbB
-         3Ae5QD/LvXlo1x9wn06oBAE3GtNsag8mY19NoMaipaikTaBdeRJiOAX8KT7Y24qwun
-         +5+J0UzdCjkLdVF0zAi9QYZkwJQVL85W44zvRrBRQAno4Ysro6DrHcI02VuTeLiDlD
-         IwhVNAg4Obct5NgzXcUnnzzY1eNk63NUR3DTFVCj44u5TJZWMn7aselENLT+x/de5h
-         JHnzupfTOmALgG+4p81htYVH+YzIl34rUS0ZNs0ekhEjOqlCvzPliX1E4Nui5Kej9Q
-         iL3izsHBVTCrw==
-Date:   Thu, 14 Jan 2021 09:42:30 -0800
+        b=h3E/jRCT3m1iJiN1Kz6d7DF1QdZgJqc+QgsEcfughzAy9X+gGMg0PHRJ1K9Dzg1Mt
+         dp5XD8+ouRzp9oNivTeC/LF1DXZkLv5ziQrLT95GfOStvQ77AvBDIvQj5bUJRVQ7Zv
+         5lElTwXdO+/zBR5Lmx1Akmqw229AemWGFL7Ymhb+cbgP5N2B5F59mfE0iVIb/gV6gu
+         8xXbk6aJcLmYlXffHdKLcZHAvZKcoNlDHOiR7MfAC7Gk4NompKrb4/s0aLVXTiPGKP
+         VP4+e2uMZJZV+5sRXa8Zms8Ed+UCtrQ0oNYo5r7arfsCk7/80LPN+EZF2XVuciQ//X
+         dY0GOXVQHvFrQ==
+Date:   Thu, 14 Jan 2021 09:51:28 -0800
 From:   Jakub Kicinski <kuba@kernel.org>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jason Gunthorpe <jgg@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
-        Parav Pandit <parav@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-        Vu Pham <vuhuong@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [net-next V6 02/14] devlink: Introduce PCI SF port flavour and
- port attribute
-Message-ID: <20210114094230.67e8bef9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210113192730.280656-3-saeed@kernel.org>
-References: <20210113192730.280656-1-saeed@kernel.org>
-        <20210113192730.280656-3-saeed@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>
+Subject: Re: [PATCH mlx5-next v2 0/5] Dynamically assign MSI-X vectors count
+Message-ID: <20210114095128.0f388f08@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210114103140.866141-1-leon@kernel.org>
+References: <20210114103140.866141-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -45,16 +45,25 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 13 Jan 2021 11:27:18 -0800 Saeed Mahameed wrote:
->  /**
->   * struct devlink_port_attrs - devlink port object
->   * @flavour: flavour of the port
-> @@ -114,6 +126,7 @@ struct devlink_port_attrs {
->  		struct devlink_port_phys_attrs phys;
->  		struct devlink_port_pci_pf_attrs pci_pf;
->  		struct devlink_port_pci_vf_attrs pci_vf;
-> +		struct devlink_port_pci_sf_attrs pci_sf;
->  	};
->  };
+On Thu, 14 Jan 2021 12:31:35 +0200 Leon Romanovsky wrote:
+> The number of MSI-X vectors is PCI property visible through lspci, that
+> field is read-only and configured by the device.
+> 
+> The static assignment of an amount of MSI-X vectors doesn't allow utilize
+> the newly created VF because it is not known to the device the future load
+> and configuration where that VF will be used.
+> 
+> The VFs are created on the hypervisor and forwarded to the VMs that have
+> different properties (for example number of CPUs).
+> 
+> To overcome the inefficiency in the spread of such MSI-X vectors, we
+> allow the kernel to instruct the device with the needed number of such
+> vectors, before VF is initialized and bounded to the driver.
 
-include/net/devlink.h:131: warning: Function parameter or member 'pci_sf' not described in 'devlink_port_attrs'
+
+Hi Leon!
+
+Looks like you got some missing kdoc here, check out the test in
+patchwork so we don't need to worry about this later:
+
+https://patchwork.kernel.org/project/netdevbpf/list/?series=414497
