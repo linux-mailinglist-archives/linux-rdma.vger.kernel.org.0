@@ -2,71 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D20672F616C
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 14:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEDD2F635B
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 15:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbhANNAt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Jan 2021 08:00:49 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:8395 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726066AbhANNAs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Jan 2021 08:00:48 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B600040580001>; Thu, 14 Jan 2021 05:00:08 -0800
-Received: from localhost (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 14 Jan
- 2021 13:00:07 +0000
-Date:   Thu, 14 Jan 2021 15:00:04 +0200
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-CC:     Jason Gunthorpe <jgg@nvidia.com>, Sagi Grimberg <sagi@grimberg.me>,
-        <linux-rdma@vger.kernel.org>, <dledford@redhat.com>,
-        <oren@nvidia.com>, Israel Rukshin <israelr@nvidia.com>
-Subject: Re: [PATCH 3/3] IB/isert: simplify signature cap check
-Message-ID: <20210114130004.GQ4678@unreal>
-References: <20210110111903.486681-1-mgurtovoy@nvidia.com>
- <20210110111903.486681-3-mgurtovoy@nvidia.com>
- <ea24823d-c1e9-d40f-866b-6671a13c08ad@grimberg.me>
- <20210114072938.GM4678@unreal>
- <20210114124939.GG4147@nvidia.com>
- <686825c6-1ec3-4939-edf5-c2dbd47fc8c9@nvidia.com>
+        id S1725961AbhANOn3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Jan 2021 09:43:29 -0500
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:14656 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725878AbhANOn3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 14 Jan 2021 09:43:29 -0500
+X-Greylist: delayed 946 seconds by postgrey-1.27 at vger.kernel.org; Thu, 14 Jan 2021 09:43:28 EST
+Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Thu, 14 Jan 2021 06:26:53 -0800
+Received: from sc-dbc2135.eng.vmware.com (sc-dbc2135.eng.vmware.com [10.182.28.35])
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 0AA5620564;
+        Thu, 14 Jan 2021 06:26:57 -0800 (PST)
+From:   Bryan Tan <bryantan@vmware.com>
+To:     <linux-rdma@vger.kernel.org>
+CC:     <pv-drivers@vmware.com>, Bryan Tan <bryantan@vmware.com>
+Subject: [PATCH for-rc] RDMA/vmw_pvrdma: Fix network_hdr_type reported in WC
+Date:   Thu, 14 Jan 2021 06:26:48 -0800
+Message-ID: <1610634408-31356-1-git-send-email-bryantan@vmware.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <686825c6-1ec3-4939-edf5-c2dbd47fc8c9@nvidia.com>
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610629208; bh=n/OwLn2qSAvXrdbYi6hDFhqLMpUnQeV+fYgPRYZaH5w=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=jq4TS+g7tEHBxb72KyWPhYmy3vwH3trdbTiiXmi2d7Wrah/C+NrW0njKRfwovxJGI
-         vI7ELFIO5ArOQ/RTBSmKcEjGZh5Bf7RiVACrEha7ZsL7i0ChHqHBpo+sOt9WZg8ftx
-         DvDIzbm4ohXUGp2RaEYXr3j9HKMYPxvkoDaRW4+oYPnvmhlD9xzZ5D9IhH4KwX4DeS
-         MHi0x/0dp+5e3+QHMkjxYY62xWKw5VQnV2fdvF3qWqmFhitRQrtai3euifOvCIjZ8t
-         bNRoj7DQxuR+cYfUosw/3qvnsZW/V/6uRsm5C+dlSyF9WZox3fzAo9vzrKbTiKM+Zl
-         9mKZSYbwfBQfw==
+Content-Type: text/plain
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: bryantan@vmware.com does not
+ designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 02:54:29PM +0200, Max Gurtovoy wrote:
->
-> On 1/14/2021 2:49 PM, Jason Gunthorpe wrote:
-> > On Thu, Jan 14, 2021 at 09:29:38AM +0200, Leon Romanovsky wrote:
-> > > On Wed, Jan 13, 2021 at 04:08:29PM -0800, Sagi Grimberg wrote:
-> > > > > Use if/else clause instead of "condition ? val1 : val2" to make the code
-> > > > > cleaner and simpler.
-> > > > Not sure what is cleaner and simpler for a simple condition, but I don't
-> > > > mind either way...
-> > > Agree, probably even more cleaner variant will be:
-> > >   device->pi_capable = !!(ib_dev->attrs.device_cap_flags & IB_DEVICE_INTEGRITY_HANDOVER);
-> > Gah, !! is rarely a sign of something good..
->
-> can we take the series as-is ?
+The PVRDMA device defines network_hdr_type according to an old
+definition of the rdma_network_type enum that has since changed,
+resulting in the wrong rdma_network_type being reported. Fix this by
+explicitly defining the enum used by the PVRDMA device and adding a
+function to convert the pvrdma_network_type to rdma_network_type enum.
 
-Of course :)
+Fixes: 1c15b4f2a42f ("RDMA/core: Modify enum ib_gid_type and enum rdma_network_type")
+Signed-off-by: Bryan Tan <bryantan@vmware.com>
+---
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma.h         | 14 ++++++++++++++
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c      |  2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h |  7 +++++++
+ 3 files changed, 22 insertions(+), 1 deletion(-)
 
-Thanks
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
+index c142f5e7f25f..de57f2fed743 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
+@@ -509,6 +509,20 @@ static inline int ib_send_flags_to_pvrdma(int flags)
+ 	return flags & PVRDMA_MASK(PVRDMA_SEND_FLAGS_MAX);
+ }
+ 
++static inline int pvrdma_network_type_to_ib(enum pvrdma_network_type type)
++{
++	switch (type) {
++	case PVRDMA_NETWORK_ROCE_V1:
++		return RDMA_NETWORK_ROCE_V1;
++	case PVRDMA_NETWORK_IPV4:
++		return RDMA_NETWORK_IPV4;
++	case PVRDMA_NETWORK_IPV6:
++		return RDMA_NETWORK_IPV6;
++	default:
++		return RDMA_NETWORK_IPV6;
++	}
++}
++
+ void pvrdma_qp_cap_to_ib(struct ib_qp_cap *dst,
+ 			 const struct pvrdma_qp_cap *src);
+ void ib_qp_cap_to_pvrdma(struct pvrdma_qp_cap *dst,
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c
+index a119ac3e103c..6aa40bd2fd52 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c
+@@ -367,7 +367,7 @@ static int pvrdma_poll_one(struct pvrdma_cq *cq, struct pvrdma_qp **cur_qp,
+ 	wc->dlid_path_bits = cqe->dlid_path_bits;
+ 	wc->port_num = cqe->port_num;
+ 	wc->vendor_err = cqe->vendor_err;
+-	wc->network_hdr_type = cqe->network_hdr_type;
++	wc->network_hdr_type = pvrdma_network_type_to_ib(cqe->network_hdr_type);
+ 
+ 	/* Update shared ring state */
+ 	pvrdma_idx_ring_inc(&cq->ring_state->rx.cons_head, cq->ibcq.cqe);
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h
+index 86a6c054ea26..637d33944f95 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h
+@@ -201,6 +201,13 @@ enum pvrdma_device_mode {
+ 	PVRDMA_DEVICE_MODE_IB,		/* InfiniBand. */
+ };
+ 
++enum pvrdma_network_type {
++	PVRDMA_NETWORK_IB,
++	PVRDMA_NETWORK_ROCE_V1 = PVRDMA_NETWORK_IB,
++	PVRDMA_NETWORK_IPV4,
++	PVRDMA_NETWORK_IPV6
++};
++
+ struct pvrdma_gos_info {
+ 	u32 gos_bits:2;			/* W: PVRDMA_GOS_BITS_ */
+ 	u32 gos_type:4;			/* W: PVRDMA_GOS_TYPE_ */
+-- 
+2.14.1
+
