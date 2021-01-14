@@ -2,170 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 130A52F5ECF
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 11:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C282F6140
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 13:50:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728537AbhANKcl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Jan 2021 05:32:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59060 "EHLO mail.kernel.org"
+        id S1726175AbhANMu0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Jan 2021 07:50:26 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:35541 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726518AbhANKck (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 14 Jan 2021 05:32:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E88023A53;
-        Thu, 14 Jan 2021 10:31:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610620320;
-        bh=VsVf4idM5BrmgksBO9HleBJBpXijVbXMivAGlcSUC9g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NC21mz0/UZI6v9hfNot36B4RSg2EAFffjHy+vIYgo8P1DOMRMibxh2FY++Wjn3bNR
-         632wwInKE18FXn5gKwvLcWXpnSX8UqneWhylKWi7ZTxQLJGXld0G5Y8xV6FsZ7PxaI
-         ZKo7wy+k4GZCQGCmDkpOQ8DsILUg1uCoZY3GklLsGF2bRrzS2Pa5q9EjfEeDIpWgK/
-         iubS0OveNqHttyKwdiu3/6KpzUjxItLagmaGtDjpN0iUZZ8aQmvlechTMdYgta654P
-         Bg9WjINA4bHC8kK3ZSYvj5IErYgij83ItGeqo3NYypzJTdWQBssjpiroUg5h9j0oTd
-         r7Yr0NVQZWcHw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-Subject: [PATCH mlx5-next v2 5/5] net/mlx5: Allow to the users to configure number of MSI-X vectors
-Date:   Thu, 14 Jan 2021 12:31:40 +0200
-Message-Id: <20210114103140.866141-6-leon@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210114103140.866141-1-leon@kernel.org>
-References: <20210114103140.866141-1-leon@kernel.org>
+        id S1725955AbhANMu0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 14 Jan 2021 07:50:26 -0500
+Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60003de80001>; Thu, 14 Jan 2021 20:49:44 +0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 14 Jan
+ 2021 12:49:44 +0000
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.58) by
+ HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 14 Jan 2021 12:49:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K7qcqrGsk37/LWNs7TR5q10MDnWtzEy3yNsvxaBrtUyMIu3KFpDY8PqAK/9QchLykJSTELNtN1hVCLeiedzhNm5gDy8/xrC/i2mzM8TQ1H6YG1PXEds6v5qx/jtE7U9jP/OnxqRX0PSuHU2LZUjccnHlCtdoEicHKF7i6jd/03AfE2j70vvSVf++IAWozCzTTi3mRGrUjQPkxshllXgt4sje6RRHL5F1O65mM+iTyqwwIfbXFQS62/h8s/8hsxQv8oZuTjvJTQbNc+s0aWJ1Wan1W0I4OtUy04kMvhxSqxFTYMwzpeQSQ356h25ZBQtIX2SB4RUDaXfjbuT8YtE8gQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+AtqhYXgJeIuiy0We2a1wAjoZLB0zBagjpnhG/yqOYE=;
+ b=JNkUfZ29JLwGaa2OMHCkG8aA16ZKsYhLdxLTFGfQiOeE6TWmCdIXxhzwnZxf3UQdvAGVHXVS84er0SwRMxOC0FGDhE6P/m5PXVbmQoFLJ7NnQ31OuiFaRk7Zu1Xnf9fQT2mSnuUG1eQ5mIGwZ05b6S+fL2FvCEt2SpkqD5LCuf97+iqrLv4tbpLHIxKlBGLPrQN1KUZ8KEWLMml9XzHqo/hZ12lgkIkdFZ4CkClcOptE8H7T4EyOpXodiqV6ayUDlCOrUj8G/+GZze2Pu079l7NTXd9ORRn6TVd0twvBxA0eYjsf3E5azBUZt+yXCgriPrstxy6H1MbDBSsCzBzUcQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB2584.namprd12.prod.outlook.com (2603:10b6:4:b0::37) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Thu, 14 Jan
+ 2021 12:49:41 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3742.012; Thu, 14 Jan 2021
+ 12:49:41 +0000
+Date:   Thu, 14 Jan 2021 08:49:39 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leonro@nvidia.com>
+CC:     Sagi Grimberg <sagi@grimberg.me>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        <linux-rdma@vger.kernel.org>, <dledford@redhat.com>,
+        <oren@nvidia.com>, Israel Rukshin <israelr@nvidia.com>
+Subject: Re: [PATCH 3/3] IB/isert: simplify signature cap check
+Message-ID: <20210114124939.GG4147@nvidia.com>
+References: <20210110111903.486681-1-mgurtovoy@nvidia.com>
+ <20210110111903.486681-3-mgurtovoy@nvidia.com>
+ <ea24823d-c1e9-d40f-866b-6671a13c08ad@grimberg.me>
+ <20210114072938.GM4678@unreal>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210114072938.GM4678@unreal>
+X-ClientProxiedBy: CH0PR04CA0023.namprd04.prod.outlook.com
+ (2603:10b6:610:76::28) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by CH0PR04CA0023.namprd04.prod.outlook.com (2603:10b6:610:76::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10 via Frontend Transport; Thu, 14 Jan 2021 12:49:41 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l024J-000sXt-Tt; Thu, 14 Jan 2021 08:49:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610628584; bh=+AtqhYXgJeIuiy0We2a1wAjoZLB0zBagjpnhG/yqOYE=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=Xa1WLAr3KJVLah27anA01jwwkwZk/NsXuBcho6Q41x8mc3VenXcb6Szk6VFQjnYnt
+         HxYQU/ljqBbr3Y/tlulJqVxM+KFe1xRHsDWIlN7O0XWELbkfrfdeOFRJU8G1V3d4FC
+         dIyg4yh9X4L+NWNFDCf5+RSO3L5HmrdFiS2P3DuIgYW/ubpDlEhnpv3jHVbN2AiT5a
+         z7cwqAuGjtWBzAh8MDts6obWWhfK0Ic0w0n8weOAVbkS2nwcsTT/lWAwib6onOZ5dy
+         uS++LYl5ZbAbf3GyjOSQlhVziQHtK/epq0DjvlOjeS832ydslAOIhVLVaVe57w7rOX
+         WX0tk6YLc2psg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Thu, Jan 14, 2021 at 09:29:38AM +0200, Leon Romanovsky wrote:
+> On Wed, Jan 13, 2021 at 04:08:29PM -0800, Sagi Grimberg wrote:
+> >
+> > > Use if/else clause instead of "condition ? val1 : val2" to make the code
+> > > cleaner and simpler.
+> >
+> > Not sure what is cleaner and simpler for a simple condition, but I don't
+> > mind either way...
+> 
+> Agree, probably even more cleaner variant will be:
+>  device->pi_capable = !!(ib_dev->attrs.device_cap_flags & IB_DEVICE_INTEGRITY_HANDOVER);
 
-Implement ability to configure MSI-X for the SR-IOV VFs.
+Gah, !! is rarely a sign of something good..
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- .../net/ethernet/mellanox/mlx5/core/main.c    |  1 +
- .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  1 +
- .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  4 +-
- .../net/ethernet/mellanox/mlx5/core/sriov.c   | 38 +++++++++++++++++++
- 4 files changed, 42 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index 8269cfbfc69d..334b3b5077c5 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -1647,6 +1647,7 @@ static struct pci_driver mlx5_core_driver = {
- 	.shutdown	= shutdown,
- 	.err_handler	= &mlx5_err_handler,
- 	.sriov_configure   = mlx5_core_sriov_configure,
-+	.sriov_set_msix_vec_count = mlx5_core_sriov_set_msix_vec_count,
- };
- 
- static void mlx5_core_verify_params(void)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-index 5babb4434a87..8a2523d2d43a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-@@ -138,6 +138,7 @@ void mlx5_sriov_cleanup(struct mlx5_core_dev *dev);
- int mlx5_sriov_attach(struct mlx5_core_dev *dev);
- void mlx5_sriov_detach(struct mlx5_core_dev *dev);
- int mlx5_core_sriov_configure(struct pci_dev *dev, int num_vfs);
-+int mlx5_core_sriov_set_msix_vec_count(struct pci_dev *vf, int msix_vec_count);
- int mlx5_core_enable_hca(struct mlx5_core_dev *dev, u16 func_id);
- int mlx5_core_disable_hca(struct mlx5_core_dev *dev, u16 func_id);
- int mlx5_create_scheduling_element_cmd(struct mlx5_core_dev *dev, u8 hierarchy,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-index 135078e8dd55..65a761346385 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-@@ -59,7 +59,7 @@ int mlx5_get_default_msix_vec_count(struct mlx5_core_dev *dev, int num_vfs)
- {
- 	int num_vf_msix, min_msix, max_msix;
- 
--	num_vf_msix = MLX5_CAP_GEN(dev, num_total_dynamic_vf_msix);
-+	num_vf_msix = MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix);
- 	if (!num_vf_msix)
- 		return 0;
- 
-@@ -83,7 +83,7 @@ int mlx5_set_msix_vec_count(struct mlx5_core_dev *dev, int function_id,
- 	void *hca_cap, *cap;
- 	int ret;
- 
--	num_vf_msix = MLX5_CAP_GEN(dev, num_total_dynamic_vf_msix);
-+	num_vf_msix = MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix);
- 	if (!num_vf_msix)
- 		return 0;
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sriov.c b/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-index c59efb1e7a26..adc7c8945b9d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-@@ -145,6 +145,7 @@ mlx5_device_disable_sriov(struct mlx5_core_dev *dev, int num_vfs, bool clear_vf)
- static int mlx5_sriov_enable(struct pci_dev *pdev, int num_vfs)
- {
- 	struct mlx5_core_dev *dev  = pci_get_drvdata(pdev);
-+	u32 num_vf_msix;
- 	int err;
- 
- 	err = mlx5_device_enable_sriov(dev, num_vfs);
-@@ -153,6 +154,8 @@ static int mlx5_sriov_enable(struct pci_dev *pdev, int num_vfs)
- 		return err;
- 	}
- 
-+	num_vf_msix = MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix);
-+	pci_sriov_set_vf_total_msix(pdev, num_vf_msix);
- 	err = pci_enable_sriov(pdev, num_vfs);
- 	if (err) {
- 		mlx5_core_warn(dev, "pci_enable_sriov failed : %d\n", err);
-@@ -188,6 +191,41 @@ int mlx5_core_sriov_configure(struct pci_dev *pdev, int num_vfs)
- 	return err ? err : num_vfs;
- }
- 
-+int mlx5_core_sriov_set_msix_vec_count(struct pci_dev *vf, int msix_vec_count)
-+{
-+	struct pci_dev *pf = pci_physfn(vf);
-+	struct mlx5_core_sriov *sriov;
-+	struct mlx5_core_dev *dev;
-+	int num_vf_msix, id;
-+
-+	dev = pci_get_drvdata(pf);
-+	num_vf_msix = MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix);
-+	if (!num_vf_msix)
-+		return -EOPNOTSUPP;
-+
-+	if (!msix_vec_count)
-+		msix_vec_count =
-+			mlx5_get_default_msix_vec_count(dev, pci_num_vf(pf));
-+
-+	sriov = &dev->priv.sriov;
-+
-+	/* Reversed translation of PCI VF function number to the internal
-+	 * function_id, which exists in the name of virtfn symlink.
-+	 */
-+	for (id = 0; id < pci_num_vf(pf); id++) {
-+		if (!sriov->vfs_ctx[id].enabled)
-+			continue;
-+
-+		if (vf->devfn == pci_iov_virtfn_devfn(pf, id))
-+			break;
-+	}
-+
-+	if (id == pci_num_vf(pf) || !sriov->vfs_ctx[id].enabled)
-+		return -EINVAL;
-+
-+	return mlx5_set_msix_vec_count(dev, id + 1, msix_vec_count);
-+}
-+
- int mlx5_sriov_attach(struct mlx5_core_dev *dev)
- {
- 	if (!mlx5_core_is_pf(dev) || !pci_num_vf(dev->pdev))
--- 
-2.29.2
-
+Jason
