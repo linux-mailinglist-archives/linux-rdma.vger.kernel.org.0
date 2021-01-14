@@ -2,62 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95062F5B52
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 08:30:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B412F5BA0
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 08:55:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbhANHaW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Jan 2021 02:30:22 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3117 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726127AbhANHaW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Jan 2021 02:30:22 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ffff2e60002>; Wed, 13 Jan 2021 23:29:42 -0800
-Received: from localhost (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 14 Jan
- 2021 07:29:41 +0000
-Date:   Thu, 14 Jan 2021 09:29:38 +0200
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Sagi Grimberg <sagi@grimberg.me>
-CC:     Max Gurtovoy <mgurtovoy@nvidia.com>, <linux-rdma@vger.kernel.org>,
-        <dledford@redhat.com>, <jgg@nvidia.com>, <oren@nvidia.com>,
-        Israel Rukshin <israelr@nvidia.com>
-Subject: Re: [PATCH 3/3] IB/isert: simplify signature cap check
-Message-ID: <20210114072938.GM4678@unreal>
-References: <20210110111903.486681-1-mgurtovoy@nvidia.com>
- <20210110111903.486681-3-mgurtovoy@nvidia.com>
- <ea24823d-c1e9-d40f-866b-6671a13c08ad@grimberg.me>
+        id S1726204AbhANHxs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Jan 2021 02:53:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56346 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726121AbhANHxr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 14 Jan 2021 02:53:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FEC0233FD;
+        Thu, 14 Jan 2021 07:53:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610610787;
+        bh=0F42U0eZeDZGaae+KfK3OGJANQenBCHUU8rDIk0xLdw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fmXfOt4csLXCahy6nXz2wEKYB9Arb7yGNfdFwYuBBJzXKFsDf2c3SnjS8HBlDXBsO
+         otdENtyDk21AJGUiocwySQel9VqErFBeyy8ZWxROGNaeIoQL+smVuuhP2s9HkdFis8
+         C2i+1z3hFBKqEUWq2f1fk6IVmWdE8Y/IiFtMH1c+EFO+LgmcMHyIq+uS3dgzUhBXAT
+         y8s4crSAGU7hCxm28uLjyDXZiE/KSdnQGc7HTq1NDL0D3p1I8SCvygUqydtrkJh/XF
+         j5BbZMRJWd/I5vIHqGaGXORNldVE4EeNPBHd+60gujIbzW65m39Xb0MGBSOP9AZxcI
+         jzPTUzq1GMghQ==
+Date:   Thu, 14 Jan 2021 09:53:03 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Xiao Yang <yangx.jy@cn.fujitsu.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-core] verbs: Replace SQ with RQ in max_recv_sge's
+ documents
+Message-ID: <20210114075303.GN4678@unreal>
+References: <20210114052337.32316-1-yangx.jy@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ea24823d-c1e9-d40f-866b-6671a13c08ad@grimberg.me>
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610609382; bh=YiMsE+aoYYRmYjcdfpgrowDdBGbib4grlhK5MAqsI7A=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=K1KPTn0zDCwIapSFFPYabQEdzyl6odMPx/4/t7A3zgdhFQKZSSmLB+uf0UjDU6Fl5
-         gTePfWdHAyIXWOY7vIsOxzhMSLjof03gX+jwFUQMNNnL8o7kBGzxI9gBko8WN9y4n2
-         k583LYUWNcvm5TKMJNgiypZsMpPvCyqkqpGyU+lrIANAyZVBpQDG3FIYzccmegVQ+i
-         1igwYspHl2qttmhIAKJEeJaUu7ASHScl2r7L6HWWpkT0QmSJshyfygG93JHktYkRhx
-         TdyRqL6N6uxUtKPY0wyHyduPRHlL37efSnxslEnvmYSmBSZ5etF3NF5NJhkkwyS5dc
-         uyG8O3YQCDTOw==
+In-Reply-To: <20210114052337.32316-1-yangx.jy@cn.fujitsu.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 04:08:29PM -0800, Sagi Grimberg wrote:
+On Thu, Jan 14, 2021 at 01:23:37PM +0800, Xiao Yang wrote:
+> Fixes: 9845a77c8812 ("Add remaining libibverbs manpages")
+> Fixes: 058c67977dad ("XRC man pages")
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  libibverbs/man/ibv_create_qp.3    | 2 +-
+>  libibverbs/man/ibv_create_qp_ex.3 | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 >
-> > Use if/else clause instead of "condition ? val1 : val2" to make the code
-> > cleaner and simpler.
->
-> Not sure what is cleaner and simpler for a simple condition, but I don't
-> mind either way...
 
-Agree, probably even more cleaner variant will be:
- device->pi_capable = !!(ib_dev->attrs.device_cap_flags & IB_DEVICE_INTEGRITY_HANDOVER);
-
-Thanks
+Thanks, merged.
