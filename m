@@ -2,193 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323EC2F671C
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 18:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6EF82F6783
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 18:30:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727703AbhANRNR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Jan 2021 12:13:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56188 "EHLO mail.kernel.org"
+        id S1728014AbhANRYs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Jan 2021 12:24:48 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:50140 "EHLO nat-hk.nvidia.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725946AbhANRNR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:13:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE96623B31;
-        Thu, 14 Jan 2021 17:12:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610644356;
-        bh=Ks55mQXoAeg+ag0q8XZoSvGVsUpHSJCQXqPKpmvWRXs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=szGajKBxFN6BkeKJ8IHP9v3IbJ2c4Bgj2Py/EUopZYESKNeGY2bTXwFxF9azmSt0F
-         27sUo0sO21wBcXZZze2Ysg+ENmdl6ilQGtVj7dMu6Dzx/Ikf6fH9e85tmg2C8YS66y
-         dcrCsG6wVSYIcVkXV0hfx6zzY5BLARe2ohtmyS+xxSkgqZt6GbY8m1iO6h85GG85F8
-         /VK8G60AMnDVAie2oAmePV3BrfUIKgvT+eRrLrUlcNTiPLygiwhWbKxhDuA9l5wlup
-         kx0hBD6FShl+Exq2Da56E7oRtr3mCgBAxGNy4YVVe2iNv2CfES9YvIaC8u8nPFZAAN
-         /KlE+1QZ0SUeg==
-Date:   Thu, 14 Jan 2021 19:12:32 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-Subject: Re: [PATCH mlx5-next v1 1/5] PCI: Add sysfs callback to allow MSI-X
- table size change of SR-IOV VFs
-Message-ID: <20210114171232.GB944463@unreal>
-References: <20210110150727.1965295-1-leon@kernel.org>
- <20210110150727.1965295-2-leon@kernel.org>
- <CAKgT0UcJrSNMPAOoniRSnUn+wyRUkL62AfgR3-8QbAkak=pQ=w@mail.gmail.com>
- <20210112063925.GC4678@unreal>
- <CAKgT0Udxd01agBMruooMi8TfAE+QkMt8n7-a2QrZ7Pj6-oFEAg@mail.gmail.com>
- <20210113060938.GF4678@unreal>
- <CAKgT0UecBX+LTR9GuxFb=P+pcUkjU5RYNNjeynExS-9Pik1Hsg@mail.gmail.com>
- <20210114071649.GL4678@unreal>
- <CAKgT0UdPZvSf0qSsU1NGcVcK_j6rPZQ8YT_UcygU+2FEq_dGpQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1726510AbhANRYs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 14 Jan 2021 12:24:48 -0500
+Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60007e350002>; Fri, 15 Jan 2021 01:24:05 +0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 14 Jan
+ 2021 17:24:05 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.44) by
+ HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 14 Jan 2021 17:24:05 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JlNKIp8ISiUxcGllhlxr46/Aj7jWioI+10P28NWTabeIEoZ/DaFes1hisBg6T6HBTDWoqhHe2XaWJGukuoSXZIKE0V6fdpJqyxX36rnacc7VkFHOwJm7cgOY2fgu1zS6IODLuf5qZRHbbcBzVOxs4l+YAs3/9tTnE7rtVq/aFCP+2p21icxK8u3LylpsK21v7tq8EoTexZ4Hn4R+lRcpaBHMNSrliTW05ln5j5pFQ6rOovraf/+hUr93IpmM+PCq+8zFo4veB833ziOw/Y1U3W1+0RRk4STaERYuDQ4doZWoz5wKlLyC/z/oR3dJD9Ak/sRME3inqrxqrid9c+X0IQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q4SiXvTNQSSwmRqsJYQ8OiBgfSU3oXxGvR4qcjhqxSc=;
+ b=iQGOj+S9W/5EfzzvXTq8ftfpBlUcjDRX1x7xfpaBRkB9MgGiUs521avRvBDjcpBjVL8/eoTrE7tLunPlB4tc02i2TVJ0D/+yGGlVgEcR31TNSaX5SvsyLacVgv6WkTk7pW841omjFSWInQOsXhtFvICuHw9Do6GOrVkADk9X8jULtmlCT0Cq57jMMg03mHHR8gL5ev5+B+dKgJFYyq1+ZoiupqKA3tUrLxKhDeeIjz0QKkFNA0yrVtWmz2uzkjz1bt56pVyxH2r1Jriy+dCooHUEOSa6F1QtuMYKJ097k94Be3RzTnHjB70zXUfu8Ezs2tbuyi9XmWaeBYo1kJ1JxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3017.namprd12.prod.outlook.com (2603:10b6:5:3e::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Thu, 14 Jan
+ 2021 17:24:02 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3742.012; Thu, 14 Jan 2021
+ 17:24:02 +0000
+Date:   Thu, 14 Jan 2021 13:23:59 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bryan Tan <bryantan@vmware.com>
+CC:     <linux-rdma@vger.kernel.org>, <pv-drivers@vmware.com>
+Subject: Re: [PATCH for-rc] RDMA/vmw_pvrdma: Fix network_hdr_type reported in
+ WC
+Message-ID: <20210114172359.GC316809@nvidia.com>
+References: <1610634408-31356-1-git-send-email-bryantan@vmware.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CAKgT0UdPZvSf0qSsU1NGcVcK_j6rPZQ8YT_UcygU+2FEq_dGpQ@mail.gmail.com>
+In-Reply-To: <1610634408-31356-1-git-send-email-bryantan@vmware.com>
+X-ClientProxiedBy: BLAPR03CA0079.namprd03.prod.outlook.com
+ (2603:10b6:208:329::24) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BLAPR03CA0079.namprd03.prod.outlook.com (2603:10b6:208:329::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10 via Frontend Transport; Thu, 14 Jan 2021 17:24:01 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l06Ln-001KrH-Ji; Thu, 14 Jan 2021 13:23:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610645045; bh=Q4SiXvTNQSSwmRqsJYQ8OiBgfSU3oXxGvR4qcjhqxSc=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=d0FazQczAqFTG/86k+XDOD7M2lhLZOEV9Rnu81OInE1iuPDdJWmnVR6uHGSctJ36G
+         CgixCOaDga/nXAv/T6lB00KssdsCy5cyjhOb1zqLfFSHxD/trEdP6XEmellE1kGOPk
+         owcVWjto0BB0mhiQbUc8uRogJ1mHHELoxJr3NcqNo3jsbXeTxyqeNgqECS/Xk/pyoT
+         9wJNy//1a7WWy9slfdXqRoQkjavdir504JKdJb7/uUnOqUrrwNvd+JexkUPg+ZGQR8
+         i0hicsxlnBApnAM2itK9mAY3wtr0u4XEBHm2C2rDhjPn9tHo979Sk78XblhyDC5aR2
+         p7bafQV0/TIKA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 08:51:22AM -0800, Alexander Duyck wrote:
-> On Wed, Jan 13, 2021 at 11:16 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Wed, Jan 13, 2021 at 12:00:00PM -0800, Alexander Duyck wrote:
-> > > On Tue, Jan 12, 2021 at 10:09 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > > >
-> > > > On Tue, Jan 12, 2021 at 01:59:51PM -0800, Alexander Duyck wrote:
-> > > > > On Mon, Jan 11, 2021 at 10:39 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > > > > >
-> > > > > > On Mon, Jan 11, 2021 at 11:30:33AM -0800, Alexander Duyck wrote:
-> > > > > > > On Sun, Jan 10, 2021 at 7:12 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > > > > > > >
-> > > > > > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > > > > >
->
-> <snip>
->
-> > >
-> > > > >
-> > > > > Also I am not a big fan of the VF groping around looking for a PF
-> > > > > interface as it means the interface will likely be exposed in the
-> > > > > guest as well, but it just won't work.
-> > > >
-> > > > If you are referring to VF exposed to the VM, so in this case VF must be
-> > > > bound too vfio driver, or any other driver, and won't allow MSI-X change.
-> > > > If you are referring to PF exposed to the VM, it is very unlikely scenario
-> > > > in real world and reserved for braves among us. Even in this case, the
-> > > > set MSI-X won't work, because PF will be connected to the hypervisor driver
-> > > > that doesn't support set_msix.
-> > > >
-> > > > So both cases are handled.
-> > >
-> > > I get that they are handled. However I am not a huge fan of the sysfs
-> > > attributes for one device being dependent on another device. When you
-> > > have to start searching for another device it just makes things messy.
-> >
-> > This is pretty common way, nothing new here.
->
-> This is how writable fields within the device are handled. I am pretty
-> sure this is the first sysfs entry that is providing a workaround via
-> a device firmware to make the field editable that wasn't intended to
-> be.
->
-> So if in the future I define a device that has an MMIO register that
-> allows me to edit configuration space should I just tie it into the
-> same framework? That is kind of where I am going with my objection to
-> this. It just seems like you are adding a backdoor to allow editing
-> read-only configuration options.
+On Thu, Jan 14, 2021 at 06:26:48AM -0800, Bryan Tan wrote:
+> The PVRDMA device defines network_hdr_type according to an old
+> definition of the rdma_network_type enum that has since changed,
+> resulting in the wrong rdma_network_type being reported. Fix this by
+> explicitly defining the enum used by the PVRDMA device and adding a
+> function to convert the pvrdma_network_type to rdma_network_type enum.
 
-I have no objections as long as your new sysfs will make sense and will
-be acceptable by PCI community.
+How come I can't find anything reading this in rdma-core?
 
->
-> > >
-> > > > >
-> > > > > > >
-> > > > > > > If you are calling this on the VFs then it doesn't really make any
-> > > > > > > sense anyway since the VF is not a "VF PCI dev representor" and
-> > > > > > > shouldn't be treated as such. In my opinion if we are going to be
-> > > > > > > doing per-port resource limiting that is something that might make
-> > > > > > > more sense as a part of the devlink configuration for the VF since the
-> > > > > > > actual change won't be visible to an assigned device.
-> > > > > >
-> > > > > > https://lore.kernel.org/linux-pci/20210112061535.GB4678@unreal/
-> > > > >
-> > > > > So the question I would have is if we are spawning the VFs and
-> > > > > expecting them to have different configs or the same configuration?
-> > > >
-> > > > By default, they have same configuration.
-> > > >
-> > > > > I'm assuming in your case you are looking for a different
-> > > > > configuration per port. Do I have that correct?
-> > > >
-> > > > No, per-VF as represents one device in the PCI world. For example, mlx5
-> > > > can have more than one physical port.
-> > >
-> > > Sorry, I meant per virtual function, not per port.
-> >
-> > Yes, PCI spec is clear, MSI-X vector count is per-device and in our case
-> > it means per-VF.
->
-> I think you overlooked the part about it being "read-only". It isn't
-> really meant to be changed and that is what this patch set is
-> providing.
+$ ~/oss/rdma-core#git grep network_hdr_type
+kernel-headers/rdma/vmw_pvrdma-abi.h:	__u8 network_hdr_type;
 
-We doesn't allow writes to this field, but setting "hint" to the HW on
-the proper resource provisioning.
+??
 
->
-> > >
-> > > > >
-> > > > > Where this gets ugly is that SR-IOV assumes a certain uniformity per
-> > > > > VF so doing a per-VF custom limitation gets ugly pretty quick.
-> > > >
-> > > > I don't find any support for this "uniformity" claim in the PCI spec.
-> > >
-> > > I am referring to the PCI configuration space. Each VF ends up with
-> > > some fixed amount of MMIO resources per function. So typically when
-> > > you spawn VFs we had things setup so that all you do is say how many
-> > > you want.
-> > >
-> > > > > I wonder if it would make more sense if we are going this route to just
-> > > > > define a device-tree like schema that could be fed in to enable VFs
-> > > > > instead of just using echo X > sriov_numvfs and then trying to fix
-> > > > > things afterwards. Then you could define this and other features that
-> > > > > I am sure you would need in the future via json-schema like is done in
-> > > > > device-tree and write it once enabling the set of VFs that you need.
-> > > >
-> > > > Sorry, but this is overkill, it won't give us much and it doesn't fit
-> > > > the VF usage model at all.
-> > > >
-> > > > Right now, all heavy users of SR-IOV are creating many VFs up to the maximum.
-> > > > They do it with autoprobe disabled, because it is too time consuming to wait
-> > > > till all VFs probe themselves and unbind them later.
-> > > >
-> > > > After that, they wait for incoming request to provision VM on VF, they set MAC
-> > > > address, change MSI-X according to VM properties and bind that VF to new VM.
-> > > >
-> > > > So MSI-X change is done after VFs were created.
-> > >
-> > > So if I understand correctly based on your comments below you are
-> > > dynamically changing the VF's MSI-X configuration space then?
-> >
-> > I'm changing "Table Size" from "7.7.2.2 Message Control Register for
-> > MSI-X (Offset 02h)" and nothing more.
-> >
-> > If you do raw PCI read before and after, only this field will be changed.
->
-> I would hope there is much more going on. Otherwise the VF hardware
-> will be exploitable by a malicious driver in the guest since you could
-> read/write to registers beyond the table and see some result. I am
-> assuming the firmware doesn't allow triggering of any interrupts
-> beyond the ones defined as being in the table.
+> Fixes: 1c15b4f2a42f ("RDMA/core: Modify enum ib_gid_type and enum rdma_network_type")
+> Signed-off-by: Bryan Tan <bryantan@vmware.com>
 
-You are talking about internal FW implementation, which is of course
-secure. I'm talking about PCI config space.
+Add Cc: stable@vger.kernel.org # 5.10+
 
-Thanks
+> diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h
+> index 86a6c054ea26..637d33944f95 100644
+> --- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h
+> +++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_dev_api.h
+> @@ -201,6 +201,13 @@ enum pvrdma_device_mode {
+>  	PVRDMA_DEVICE_MODE_IB,		/* InfiniBand. */
+>  };
+>  
+> +enum pvrdma_network_type {
+> +	PVRDMA_NETWORK_IB,
+> +	PVRDMA_NETWORK_ROCE_V1 = PVRDMA_NETWORK_IB,
+> +	PVRDMA_NETWORK_IPV4,
+> +	PVRDMA_NETWORK_IPV6
+> +};
+
+This is in the wrong place, uapi data needs to be in
+includ/ulp/rdma/vmw_pvrdma-abi.h
+
+Jason
