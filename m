@@ -2,41 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673702F6B97
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 20:57:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A71882F6BCD
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 21:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729195AbhANT5C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Jan 2021 14:57:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729114AbhANT5C (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:57:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E18482137B;
-        Thu, 14 Jan 2021 19:56:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610654180;
-        bh=VV6vZ8k5i6UHdaRAucDQBLJ2+45l4TwOQoswwT7zGZY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mc6ux7wQGnQRRNHE39ujX+Lpar+5+XHE/VIv827hjffhAryiOZAo+0tkgZjouY3kZ
-         wUqpsTZ2ysOfECqsxVJqKc7+zQe5cMgQdzPBkGSVrCoRLDvuU+O05cDjgb5+DmbiKu
-         TcB3oEFCJlP2GtF6O5xoPo+pxFpCpipRcjDMYD1zoeqgO8adLvHnLhmSPgiHeOl5X+
-         xtp96bVrNF/mHDDupKqG2omHm8Xpg9qlO8JG2x/BzMEQD5CVLN7J+7VYAQ1890M3zC
-         Kin+ChQ4FScxjHQ1CVlxji8MhJE2dZZPoj9wNpUIZjrIJUddXx6vj2DVDYrIgmd1Pc
-         tdRPehFh3ZiUw==
-Date:   Thu, 14 Jan 2021 21:56:16 +0200
-From:   Leon Romanovsky <leon@kernel.org>
+        id S1726590AbhANUJJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Jan 2021 15:09:09 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2731 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725869AbhANUJJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Jan 2021 15:09:09 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6000a4bc0000>; Thu, 14 Jan 2021 12:08:28 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 14 Jan
+ 2021 20:08:28 +0000
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.176)
+ by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 14 Jan 2021 20:08:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WIXIgjrnJq2n5HZcgY/tT2JMw6ZhD/MTgTO9ZRjraNqplqy/RDbjZXi9bT5HaJZo55/YBKL+mJFMv8Hnk+R3iEPB5SaNMM0ZLvCu+wHHI+qJFbgoMaUgsd01eAbxpR7hHDM6YF6IAVm35KCK02qm1+2eOM1HrX7V6W6set8nD/w73F3siBEnUGvWlTh3K5xIVWe9EhtM4o0TFJaLCdg4Hn6BxPZAmUmBirJp9mwnpyyyr8oMzR1aWLPp03JAFmrwCAaxZ21khBF7SEF1DzNpniH4g3VKREqilvBXikob1XVF4w4ZXQ1+UEhJFLpAQQxmH4/JRbPPwlgpl9Z1UJcwmw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f8cJQO334QpnU3YwY9lpSaLe5gAXLQGzieDEWXFJoOY=;
+ b=Swz2vLY4k41KxJqBCjruRJioEKmBcnOCVq1eSOr/JXL4C9N5IAONWTAwsEYho0KkUblWAYRxjwGq1l5L1HetRKVw43ctPD53QgOuCGEsHkoKroFPDtpA2wzcCqEywXk0iU25IEKJ8uGe/JE4g2GtqzgxmuMJDZK8Kg60HHJL9sb8ET5AcZ13CrY/hv/Dz+xQ9esmosC7yds8sv4jqM7VLPTFYSY2eNfIhQgdIui/xagjpQuTLyKevk3tI4QXN/F4Ia0sEdh9amWIYdWvHXOXq3rVs5MgthMuKfJpoBVHTgWo5lzzTyn6rtwt6GLwCIXFVN42O7AOhTpoMKn4ya24fg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4266.namprd12.prod.outlook.com (2603:10b6:5:21a::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Thu, 14 Jan
+ 2021 20:08:27 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3742.012; Thu, 14 Jan 2021
+ 20:08:27 +0000
+Date:   Thu, 14 Jan 2021 16:08:25 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
 To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+CC:     Leon Romanovsky <leon@kernel.org>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>,
         linux-pci <linux-pci@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
         Don Dutile <ddutile@redhat.com>,
         Alex Williamson <alex.williamson@redhat.com>
 Subject: Re: [PATCH mlx5-next v1 2/5] PCI: Add SR-IOV sysfs entry to read
  number of MSI-X vectors
-Message-ID: <20210114195616.GG944463@unreal>
+Message-ID: <20210114200825.GR4147@nvidia.com>
 References: <20210112065601.GD4678@unreal>
  <CAKgT0UdndGdA3xONBr62hE-_RBdL-fq6rHLy0PrdsuMn1936TA@mail.gmail.com>
  <20210113061909.GG4678@unreal>
@@ -47,208 +62,135 @@ References: <20210112065601.GD4678@unreal>
  <CAKgT0UcKqt=EgE+eitB8-u8LvxqHBDfF+u2ZSi5urP_Aj0Btvg@mail.gmail.com>
  <20210114182945.GO4147@nvidia.com>
  <CAKgT0UcQW+nJjTircZAYs1_GWNrRud=hSTsphfVpsc=xaF7aRQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
 In-Reply-To: <CAKgT0UcQW+nJjTircZAYs1_GWNrRud=hSTsphfVpsc=xaF7aRQ@mail.gmail.com>
+X-ClientProxiedBy: MN2PR22CA0018.namprd22.prod.outlook.com
+ (2603:10b6:208:238::23) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR22CA0018.namprd22.prod.outlook.com (2603:10b6:208:238::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Thu, 14 Jan 2021 20:08:26 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l08uv-001NXw-Up; Thu, 14 Jan 2021 16:08:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610654908; bh=f8cJQO334QpnU3YwY9lpSaLe5gAXLQGzieDEWXFJoOY=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=XtrZ16PNSlECBtpw6sWOQrt9/nomh5wvfMI2PKi9Or/hA0b4xvJhWkPxKzRTOScLt
+         KA2wV2x7Log1dFpiEWycK2RoFj2C86igxi4cK4HAgJHz0Xo9Hp7Fy/8Szwm9XeHjVR
+         rS6qOzQpj9DPeN/d7L3gA9lMPwwfOqzOeYOZasaPnKYZNOy9ArJB2Kjs9/l7QAa73S
+         OMDbQGyEcSImYI9QcOxFOV+WlVxaIz6ky8qay7CUeZ6fh1xbg3l+a5ewasKr7mRIQU
+         ozBdzgoPkK7Np2Z+7/oIva9ZLehBS7FkyhDYBgbI3yB4t0487tLEdO1+J8xOLd0fPR
+         MWAW6YxvMwgwA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On Thu, Jan 14, 2021 at 11:24:12AM -0800, Alexander Duyck wrote:
-> On Thu, Jan 14, 2021 at 10:29 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >
-> > On Thu, Jan 14, 2021 at 09:55:24AM -0800, Alexander Duyck wrote:
-> > > On Thu, Jan 14, 2021 at 8:49 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > > >
-> > > > On Thu, Jan 14, 2021 at 08:40:14AM -0800, Alexander Duyck wrote:
-> > > >
-> > > > > Where I think you and I disagree is that I really think the MSI-X
-> > > > > table size should be fixed at one value for the life of the VF.
-> > > > > Instead of changing the table size it should be the number of vectors
-> > > > > that are functional that should be the limit. Basically there should
-> > > > > be only some that are functional and some that are essentially just
-> > > > > dummy vectors that you can write values into that will never be used.
-> > > >
-> > > > Ignoring the PCI config space to learn the # of available MSI-X
-> > > > vectors is big break on the how the device's programming ABI works.
-> > > >
-> > > > Or stated another way, that isn't compatible with any existing drivers
-> > > > so it is basically not a useful approach as it can't be deployed.
-> > > >
-> > > > I don't know why you think that is better.
-> > > >
-> > > > Jason
-> > >
-> > > First off, this is technically violating the PCIe spec section 7.7.2.2
-> > > because this is the device driver modifying the Message Control
-> > > register for a device, even if it is the PF firmware modifying the VF.
-> > > The table size is something that should be set and fixed at device
-> > > creation and not changed.
-> >
-> > The word "violating" is rather an over-reaction, at worst this is an
-> > extension.
-> >
-> > > The MSI-X table is essentially just an MMIO resource, and I believe it
-> > > should not be resized, just as you wouldn't expect any MMIO BAR to be
-> > > dynamically resized.
-> >
-> > Resizing the BAR is already defined see commit 276b738deb5b ("PCI:
-> > Add resizable BAR infrastructure")
-> >
+
 > > As you say BAR and MSI vector table are not so different, it seems
 > > perfectly in line with current PCI sig thinking to allow resizing the
 > > MSI as well
->
+> 
 > The resizing of a BAR has an extended capability that goes with it and
 > isn't something that the device can just do on a whim. This patch set
 > is not based on implementing some ECN for resizable MSI-X tables. I
 > view it as arbitrarily rewriting the table size for a device after it
 > is created.
->
+
+The only difference is resizing the BAR is backed by an ECN, and this
+is an extension. The device does not "do it on a whim" the OS tells it
+when to change the size, exactly like for BAR resizing.
+
 > In addition Leon still hasn't answered my question on preventing the
 > VF driver from altering entries beyond the ones listed in the table.
-> My concern is that this may just be glossing over things and
-> introducing potential issues in the process if a VF can access
-> resources that don't belong to it.
->
-> > > Many drivers don't make use of the full MSI-X table nor do they
-> > > bother reading the size. We just populate a subset of the table
-> > > based on the number of interrupt causes we will need to associate to
-> > > interrupt handlers.
-> >
-> > This isn't about "many drivers" this is about what mlx5 does in all
-> > the various OS drivers it has, and mlx5 has a sophisticated use of
-> > MSI-X.
->
-> Can you please cite an example for me? The problem here is you are
-> claiming things without any proof. I feel like the requirement for
-> changing the VF MSI-X table size is coming from something outside of
-> Linux and without having any info on that I cannot really understand
-> the issue this is trying to resolve.
->
+
+Of course this is blocked, the FW completely revokes the HW resource
+backing the vectors.
+
 > From what I can tell, the mlx5 Linux driver never reads the MSI-X
 > flags register so it isn't reading the MSI-X size either.
->
-> > > What I see this patch doing is trying to push driver PF policy onto
-> > > the VF PCIe device configuration space dynamically.
-> >
-> > Huh? This is using the PF to dynamically reconfigure a child VF beyond
-> > what the PCI spec defined. This is done safely under Linux because no
-> > driver is bound when it is reconfigured, and any stale config data is
-> > flushed out of any OS caches.
-> >
-> > This is also why there is not a strong desire to standardize an ECN at
-> > PCI-sig, the rules for how resizing can work are complicated and OS
-> > specific.
->
+
+I don't know why you say that. All Linux drivers call into something
+like pci_alloc_irq_vectors() requesting a maximum # of vectors and
+that call returns the actual allocated. Drivers can request more
+vectors than the system provides, which is what mlx5 does.
+
+Under the call chain of pci_alloc_irq_vectors() it calls
+pci_msix_vec_count() which does
+
+	pci_read_config_word(dev, dev->msix_cap + PCI_MSIX_FLAGS, &control);
+	return msix_table_size(control);
+
+And eventually uses that to return the result to the driver.
+
+So, yes, it reads the config space and ensures it doesn't allocate
+more vectors than that.
+
+Every driver using MSI does this in Linux.
+
+Adjusting config space *directly* limits the number of vectors the
+driver allocates.
+
+You should be able to find the call chain in mlx5 based on the above
+guidance.
+
 > At a minimum I really think we need to go through and have a clear
 > definition on when updating the MSI-X table size is okay and when it
 > is not. I am not sure just saying to not update it when a driver isn't
 > attached is enough to guarantee all that.
->
-> On top of that the interface as defined here is rather ugly. It is
-> just providing a sysfs front end for a vendor proprietary
-> circumvention of the fact that the MSI-X table size is read-only. If
-> we are going to do that we might as well allow any vendor that has a
-> backdoor to their PCIe config go through and edit it.
->
-> > > Having some limited number of interrupt causes should really be what
-> > > is limiting things here.
-> >
-> > MSI inherently requires dedicated on-die resources to implement, so
-> > every device has a maximum # of MSI vectors it can currently
-> > expose. This is some consequence of various PCI rules and applies to
-> > all devices.
-> >
-> > To make effective use of this limited pool requires a hard restriction
-> > enforced by the secure domain (hypervisor and FW) onto every
-> > user. Every driver attached to the function needs to be aware of the
-> > hard enforced limit by the secure domain to operate properly. It has
-> > nothing to do with "limited number of interrupt causes".
->
+
+If you know of a real issue then please state it, other don't fear
+monger "maybe" issues that don't exist.
+
 > What we are talking about is the MSI-X table size. Not the number of
 > MSI-X vectors being requested by the device driver. Those are normally
 > two seperate things.
->
-> I can only assume you have some out-of-tree issue or some other OS
-> that is the problem. If you can describe the issue in more detail for
-> me we have something to work with. Otherwise the request so far seems
-> unreasonable to me.
->
+
+Yes, table size is what is critical. The number of entries in that BAR
+memory is what needs to be controlled.
+
 > > The standards based way to communicate that limit is the MSI table cap
 > > size.
->
+> 
 > This only defines the maximum number of entries, not how many have to be used.
->
-> > To complain that changing the MSI table cap size dynamically is
-> > non-standard then offer up a completely non-standard way to operate
-> > MSI instead seems to miss the entire point.
->
+
+A driver can't use entries beyond the cap. We are not trying to
+reclaim vectors that are available but not used by the OS.
+
 > I'm not offering up a non-standard way to do this. Just think about
 > it. If I have a device that defines an MSI-X table size of 2048 but
 > makes use of only one vector how would that be any different than what
 > I am suggesting where you size your VF to whatever the maximum is you
 > need but only make use of some fixed number from the hardware.
->
-> > The important standard is to keep the PCI config space acting per-spec
-> > so all the various consumers can work as-is. The extension is to only
-> > modify the rare hypervisor to support a dynamic MSI resizing extension
-> > for VFs.
->
+
+That is completely different, in the hypervisor there is no idea how
+many vectors a guest OS will create. The FW is told to only permit 1
+vector. How is the guest to know this if we don't update the config
+space *as the standard requires* ?
+
 > I will repeat what I said before. Why can't this be handled via the
-> vfio interface? You just need to add the ability to specify the upper
-> limit on vdev->msix_size so that it is a number between 1 and whatever
-> your max table size is. It sounds like something that probably belongs
-> in the vfio_pci_ioctl somewhere. Then if you have an OS running in a
-> guest that cannot help itself and will allocate an interrupt for every
-> vector, you can simply modify that value so that it puts a cap on the
-> total number of vectors it will try to allocate in the guest.
->
-> > As far as applicability, any device working at high scale with MSI and
-> > VMs is going to need this. Dynamically assigning the limited MSI HW is
-> > really required to support the universe of VM configurations people
-> > want. eg generally I would expect a VM to receive the number of MSI
-> > vectors equal to the number of CPUs the VM gets.
->
-> Again, you are pushing VM requirements on to PCI. That really seems
-> like the realm of vfio rather than PCI. Especially since your answer
-> to the problem is to update a value that is only really being read by
-> vfio on the host. It really just seems like it would make more sense
-> to maybe make this part of the vfio ioctl call so you could limit the
-> use of the MSI-X table in the guest.
->
-> > > I see that being mostly a thing between the firmware and the VF in
-> > > terms of configuration and not something that necessarily has to be
-> > > pushed down onto the PCIe configuration space itself.
-> >
-> > If mlx5 drivers had been designed long ago to never use standard based
-> > MSI and instead did something internal with FW you might have a point,
-> > but they weren't. All the mlx5 drivers use standards based MSI and
-> > expect the config space to be correct.
->
-> Again, from what I can tell you are updating a field that isn't read
-> by the mlx5 driver. It is read/written by the OS and the field itself
-> is only supposed to be updated by the OS according to the PCIe spec.
-> While it is all well and good that the firmware can circumvent this
-> and modify the MMIO space I really feel like it shouldn't be doing
-> that.
->
-> In my mind it sounds a lot like this is something that really should
-> have been configured in the VFIO driver as the problems you have
-> described all seem to be issues either with some unknown userspace app
-> or OSes other than Linux.
+> vfio interface? 
 
-Let me summarize:
-1. Our FW treats this new MSI-X table size value in the same manner as "default" one.
-If user tries to access outside of this table, it will be denied by HW.
-2. This feature is for Linux and OSes based Linux. High performance
-devices needs that that number of CPUs == number of channels == number of MSI-X vectors
-to achieve maximum performance.
-3. Device should be operable after SR-IOV ennoblement, it means lspci
-over newly created VF should present real and working MSI-X table size.
-It can't set to all new VFs some arbitrary max value.
-4. This is not for "decreasing" number of vectors, but for increasing.
-5. The field was read-only and it stays read-only.
+1) The FW has to be told of the limit and everything has to be in sync
+   If the FW is out of sync with the config space then everything
+   breaks if the user makes even a small mistake - for instance
+   forgetting to use the ioctl to override vfio. This is needlessly
+   frail and complicated.
 
-Thanks
+2) VFIO needs to know how to tell the FW the limit so it can override
+   the config space with emulation. This is all device specific and I
+   don't see that adding an extension to vfio is any better than
+   adding one here.
+
+3) VFIO doesn't cover any other driver that binds to the VF, so
+   this "solution" leaves the normal mlx5_core functionally broken on
+   VFs which is a major regression.
+
+Overall the entire idea to have the config space not reflect the
+actual current device configuration seems completely wrong to me - why
+do this? For what gain? It breaks everything.
+
+Jason
