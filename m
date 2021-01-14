@@ -2,63 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79E32F56B6
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 02:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8731C2F5A77
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 06:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbhANBwA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 Jan 2021 20:52:00 -0500
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:37475 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729781AbhANAJS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Jan 2021 19:09:18 -0500
-Received: by mail-wr1-f42.google.com with SMTP id v15so290378wrx.4
-        for <linux-rdma@vger.kernel.org>; Wed, 13 Jan 2021 16:08:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/GCgNA51WuXbHuVgatrvFPHJcyg7zuGxdJstK5KiOo4=;
-        b=j9NE2k2R+RQADDMRpOLyzja+T01EFv1OoXY20VmEZVDiBjUI9WCZaHln8WrTcZ7c5S
-         c7T0KTyHjHGz4GvMG5X2LMuN3E8nrhsTaXje4/S+cNV2PDDnKEai8/uyGw4Cx5M+PHFk
-         9xzWbXDVzfH79h2Pl7gzrNCX+KuIccg87D3a5NkHOiR0rOBILQG7W/GdQpDzBAUkDNty
-         wjAsNATYLuVUJqIuO1LB8ccvwHzTNmR+stpii8PF5/mxlI6pJHNd3ZhtnB39mn9Fg0AV
-         s870JYwNjLV/ijmr6ekeBzAQGaKd/x5u8hULngYmdXtqTc6dnQ8N043gn+xDySC17HPd
-         A95Q==
-X-Gm-Message-State: AOAM530Rn/KTCi/dg5EypmRbRA5Phd+Sgq4PrUPTot1OfPrX8xxYLWb4
-        cgHjtKA6JpQRltWUFTVGvNM=
-X-Google-Smtp-Source: ABdhPJzDK435sYmFZZH6vQaMH2TnjIE9PsgH0F9PdCYt6rUAlss8JEVttlU8xNArIGbhIkkYrquslQ==
-X-Received: by 2002:a05:6000:10c4:: with SMTP id b4mr5109642wrx.170.1610582912641;
-        Wed, 13 Jan 2021 16:08:32 -0800 (PST)
-Received: from ?IPv6:2601:647:4802:9070:e70c:620a:4d8a:b988? ([2601:647:4802:9070:e70c:620a:4d8a:b988])
-        by smtp.gmail.com with ESMTPSA id j59sm7166094wrj.13.2021.01.13.16.08.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 16:08:32 -0800 (PST)
-Subject: Re: [PATCH 3/3] IB/isert: simplify signature cap check
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>, linux-rdma@vger.kernel.org,
-        dledford@redhat.com, jgg@nvidia.com, leonro@nvidia.com
-Cc:     oren@nvidia.com, Israel Rukshin <israelr@nvidia.com>
-References: <20210110111903.486681-1-mgurtovoy@nvidia.com>
- <20210110111903.486681-3-mgurtovoy@nvidia.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <ea24823d-c1e9-d40f-866b-6671a13c08ad@grimberg.me>
-Date:   Wed, 13 Jan 2021 16:08:29 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725844AbhANFep (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Jan 2021 00:34:45 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:33465 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725841AbhANFeo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Jan 2021 00:34:44 -0500
+X-IronPort-AV: E=Sophos;i="5.79,346,1602518400"; 
+   d="scan'208";a="103468559"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 14 Jan 2021 13:33:53 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id C82BC4CE6798;
+        Thu, 14 Jan 2021 13:33:52 +0800 (CST)
+Received: from G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) by
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Thu, 14 Jan 2021 13:33:54 +0800
+Received: from Fedora-30.g08.fujitsu.local (10.167.220.106) by
+ G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Thu, 14 Jan 2021 13:33:53 +0800
+From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
+To:     <linux-rdma@vger.kernel.org>
+CC:     <leon@kernel.org>, <leonro@nvidia.com>,
+        Xiao Yang <yangx.jy@cn.fujitsu.com>
+Subject: [PATCH rdma-core] verbs: Replace SQ with RQ in max_recv_sge's documents
+Date:   Thu, 14 Jan 2021 13:23:37 +0800
+Message-ID: <20210114052337.32316-1-yangx.jy@cn.fujitsu.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20210110111903.486681-3-mgurtovoy@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: C82BC4CE6798.A9AE3
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Fixes: 9845a77c8812 ("Add remaining libibverbs manpages")
+Fixes: 058c67977dad ("XRC man pages")
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ libibverbs/man/ibv_create_qp.3    | 2 +-
+ libibverbs/man/ibv_create_qp_ex.3 | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-> Use if/else clause instead of "condition ? val1 : val2" to make the code
-> cleaner and simpler.
+diff --git a/libibverbs/man/ibv_create_qp.3 b/libibverbs/man/ibv_create_qp.3
+index 1cdf2474..dfbd245f 100644
+--- a/libibverbs/man/ibv_create_qp.3
++++ b/libibverbs/man/ibv_create_qp.3
+@@ -40,7 +40,7 @@ struct ibv_qp_cap {
+ uint32_t                max_send_wr;    /* Requested max number of outstanding WRs in the SQ */
+ uint32_t                max_recv_wr;    /* Requested max number of outstanding WRs in the RQ */
+ uint32_t                max_send_sge;   /* Requested max number of scatter/gather (s/g) elements in a WR in the SQ */
+-uint32_t                max_recv_sge;   /* Requested max number of s/g elements in a WR in the SQ */
++uint32_t                max_recv_sge;   /* Requested max number of s/g elements in a WR in the RQ */
+ uint32_t                max_inline_data;/* Requested max number of data (bytes) that can be posted inline to the SQ, otherwise 0 */
+ .in -8
+ };
+diff --git a/libibverbs/man/ibv_create_qp_ex.3 b/libibverbs/man/ibv_create_qp_ex.3
+index 277e9fa0..30928126 100644
+--- a/libibverbs/man/ibv_create_qp_ex.3
++++ b/libibverbs/man/ibv_create_qp_ex.3
+@@ -49,7 +49,7 @@ struct ibv_qp_cap {
+ uint32_t                max_send_wr;    /* Requested max number of outstanding WRs in the SQ */
+ uint32_t                max_recv_wr;    /* Requested max number of outstanding WRs in the RQ */
+ uint32_t                max_send_sge;   /* Requested max number of scatter/gather (s/g) elements in a WR in the SQ */
+-uint32_t                max_recv_sge;   /* Requested max number of s/g elements in a WR in the SQ */
++uint32_t                max_recv_sge;   /* Requested max number of s/g elements in a WR in the RQ */
+ uint32_t                max_inline_data;/* Requested max number of data (bytes) that can be posted inline to the SQ, otherwise 0 */
+ .in -8
+ };
+-- 
+2.21.0
 
-Not sure what is cleaner and simpler for a simple condition, but I don't
-mind either way...
 
-Acked-by: Sagi Grimberg <sagi@grimberg.me>
+
