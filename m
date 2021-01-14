@@ -2,98 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C89852F5CB8
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 09:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A322F5EC6
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 11:33:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727274AbhANI73 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Jan 2021 03:59:29 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:44775 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726806AbhANI73 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Jan 2021 03:59:29 -0500
-X-IronPort-AV: E=Sophos;i="5.79,346,1602518400"; 
-   d="scan'208";a="103475119"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 14 Jan 2021 16:58:37 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id BAA094CE602D;
-        Thu, 14 Jan 2021 16:58:33 +0800 (CST)
-Received: from [10.167.220.69] (10.167.220.69) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Thu, 14 Jan 2021 16:58:31 +0800
-Message-ID: <600007B6.1070606@cn.fujitsu.com>
-Date:   Thu, 14 Jan 2021 16:58:30 +0800
-From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
-User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
+        id S1727673AbhANKc1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Jan 2021 05:32:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726518AbhANKc0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 14 Jan 2021 05:32:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFE0223A40;
+        Thu, 14 Jan 2021 10:31:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610620305;
+        bh=JgQMe5VQW8Sc0fkd5NJhBQda6O3r+0lLU6OD5uVEKG4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RxxySrGPl7SB79DNlTCkWb6Z7U2TNwOgx/GZC4Id83x/TAdvaj6WJpfoZeeyOo9WG
+         FSRFIH2aEa5oUrf0RMwHYt5W/ESHuBM6k5HidxsxzekuRIzXcxE4ZnL4YRps9/KFMa
+         BYFsWbTGQoOC1bV6hj1wIcwoeRusCTa64vWc8EsvI0SScN34/sK7PCFqZNlTDcbtgX
+         5ntThtMmzd02S4AUHKRCsQtCnZLEuKfGILXNRWkqv3+SlRUyAYvVBqGbPJoC0RCCAh
+         eaXEG0Y97C2u4uCYY/h1k9lEypnX6COlrEf7Zt75zORBATb6bAA9/4QdDNPMr+pC8c
+         dKKuoRQSau6dQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>
+Subject: [PATCH mlx5-next v2 0/5] Dynamically assign MSI-X vectors count
+Date:   Thu, 14 Jan 2021 12:31:35 +0200
+Message-Id: <20210114103140.866141-1-leon@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Yishai Hadas <yishaih@nvidia.com>, <linux-rdma@vger.kernel.org>,
-        <leon@kernel.org>
-Subject: Re: [PATCH 1/2] RDMA/uverbs: Don't set rcq if qp_type is IB_QPT_XRC_INI
-References: <20201216071755.149449-1-yangx.jy@cn.fujitsu.com> <20210112200925.GA20208@nvidia.com>
-In-Reply-To: <20210112200925.GA20208@nvidia.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.167.220.69]
-X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
-X-yoursite-MailScanner-ID: BAA094CE602D.AAA61
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
-X-Spam-Status: No
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/1/13 4:09, Jason Gunthorpe wrote:
-> On Wed, Dec 16, 2020 at 03:17:54PM +0800, Xiao Yang wrote:
->> INI QP doesn't require receive CQ.
->>
->> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
->>   drivers/infiniband/core/uverbs_cmd.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
->> index 418d133a8fb0..d8bc8ea3ad1e 100644
->> +++ b/drivers/infiniband/core/uverbs_cmd.c
->> @@ -1345,7 +1345,7 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
->>   		if (has_sq)
->>   			scq = uobj_get_obj_read(cq, UVERBS_OBJECT_CQ,
->>   						cmd->send_cq_handle, attrs);
->> -		if (!ind_tbl)
->> +		if (!ind_tbl&&  cmd->qp_type != IB_QPT_XRC_INI)
->>   			rcq = rcq ?: scq;
-> Hmm, this does make it consistent with the UVERBS_METHOD_QP_CREATE
-> flow which does set attr.recv_cq to NULL if the user didn't specify one.
->
-> However this has been like this since the beginning - what are you
-> doing that this detail matters?
-Hi Jason,
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Thanks for your comment.
-1) I didn't get any issue for now.
-2) I think it is not meaningful to set rcq for XRC INITIATOR QP, current 
-code has ignores rcq as below:
--------------------------------------------------
-static int create_qp(struct uverbs_attr_bundle *attrs,
-                     struct ib_uverbs_ex_create_qp *cmd)
-...
-                 if (cmd->qp_type == IB_QPT_XRC_INI) {
-                         cmd->max_recv_wr = 0;
-                         cmd->max_recv_sge = 0;
-...
--------------------------------------------------
+Changelog
+v2:
+ * Patch 1:
+  * Renamed vf_msix_vec sysfs knob to be sriov_vf_msix_count
+  * Added PF and VF device locks during set MSI-X call to protect from parallel
+    driver bind/unbind operations.
+  * Removed extra checks when reading sriov_vf_msix, because users will
+    be able to distinguish between supported/not supported by looking on
+    sriov_vf_total_msix count.
+  * Changed all occurrences of "numb" to be "count"
+  * Changed returned error from EOPNOTSUPP to be EBUSY if user tries to set
+    MSI-X count after driver already bound to the VF.
+  * Added extra comment in pci_set_msix_vec_count() to emphasize that driver
+    should not be bound.
+ * Patch 2:
+  * Chaged vf_total_msix from int to be u32 and updated function signatures
+    accordingly.
+  * Improved patch title
+v1: https://lore.kernel.org/linux-pci/20210110150727.1965295-1-leon@kernel.org
+ * Improved wording and commit messages of first PCI patch
+ * Added extra PCI patch to provide total number of MSI-X vectors
+ * Prohibited read of vf_msix_vec sysfs file if driver doesn't support write
+ * Removed extra function definition in pci.h
+v0: https://lore.kernel.org/linux-pci/20210103082440.34994-1-leon@kernel.org
 
-By the way, I have a question:
-Why do we need two kinds of uverbs API?(a: read & write, b: ioctl)
+--------------------------------------------------------------------
+Hi,
 
-Best Regards,
-Xiao Yang
-> Jason
->
->
-> .
->
+The number of MSI-X vectors is PCI property visible through lspci, that
+field is read-only and configured by the device.
 
+The static assignment of an amount of MSI-X vectors doesn't allow utilize
+the newly created VF because it is not known to the device the future load
+and configuration where that VF will be used.
 
+The VFs are created on the hypervisor and forwarded to the VMs that have
+different properties (for example number of CPUs).
+
+To overcome the inefficiency in the spread of such MSI-X vectors, we
+allow the kernel to instruct the device with the needed number of such
+vectors, before VF is initialized and bounded to the driver.
+
+Before this series:
+[root@server ~]# lspci -vs 0000:08:00.2
+08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+....
+        Capabilities: [9c] MSI-X: Enable- Count=12 Masked-
+
+Configuration script:
+1. Start fresh
+echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+modprobe -q -r mlx5_ib mlx5_core
+2. Ensure that driver doesn't run and it is safe to change MSI-X
+echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_drivers_autoprobe
+3. Load driver for the PF
+modprobe mlx5_core
+4. Configure one of the VFs with new number
+echo 2 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+echo 21 > /sys/bus/pci/devices/0000\:08\:00.2/sriov_vf_msix_count
+
+After this series:
+[root@server ~]# lspci -vs 0000:08:00.2
+08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+....
+        Capabilities: [9c] MSI-X: Enable- Count=21 Masked-
+
+Thanks
+
+Leon Romanovsky (5):
+  PCI: Add sysfs callback to allow MSI-X table size change of SR-IOV VFs
+  PCI: Add SR-IOV sysfs entry to read total number of dynamic MSI-X
+    vectors
+  net/mlx5: Add dynamic MSI-X capabilities bits
+  net/mlx5: Dynamically assign MSI-X vectors count
+  net/mlx5: Allow to the users to configure number of MSI-X vectors
+
+ Documentation/ABI/testing/sysfs-bus-pci       | 34 +++++++
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  5 ++
+ .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  6 ++
+ .../net/ethernet/mellanox/mlx5/core/pci_irq.c | 62 +++++++++++++
+ .../net/ethernet/mellanox/mlx5/core/sriov.c   | 52 ++++++++++-
+ drivers/pci/iov.c                             | 89 +++++++++++++++++++
+ drivers/pci/msi.c                             | 47 ++++++++++
+ drivers/pci/pci-sysfs.c                       |  1 +
+ drivers/pci/pci.h                             |  5 ++
+ include/linux/mlx5/mlx5_ifc.h                 | 11 ++-
+ include/linux/pci.h                           |  5 ++
+ 11 files changed, 314 insertions(+), 3 deletions(-)
+
+--
+2.29.2
 
