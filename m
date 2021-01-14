@@ -2,60 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE362F67E6
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 18:41:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDBB2F67FD
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Jan 2021 18:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbhANRho (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Jan 2021 12:37:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34634 "EHLO mail.kernel.org"
+        id S1726730AbhANRnM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Jan 2021 12:43:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726162AbhANRho (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 14 Jan 2021 12:37:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D80FE23B40;
-        Thu, 14 Jan 2021 17:37:02 +0000 (UTC)
+        id S1726310AbhANRnM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 14 Jan 2021 12:43:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7AE723B40;
+        Thu, 14 Jan 2021 17:42:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610645823;
-        bh=BPWuYd+SE+x3vFVizmZN5aSKVhnP0BCCFuXjgdtDn9I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f9KNLSXFbUD0bvYhkC05k4Su+D5SCDsx4dyrLgzXqRajVIh++zba34PxQY3Vm1LXr
-         SaixOYAGJZuzHfO8LM5PUW1Rppdo6LRxZBlMG3xJpNYbiIFk/7z7Y0oaItZ8in7Qrd
-         0olkbY63z1GY2KSXSaPAEvPNa9J8DBTdXmewbWy78LulmOkmnG2O40rLzPRhHJklLG
-         Yhq4gKwHVr7FGCDG+hr5UgpQ4VJsfYwsHbDssFoSgID4vQsN/GOtWcWdBhOFha7J8m
-         ybyLk6iwZruho2gkbHsS5sVSQJg8NE4ZwMwDFzScC1FxNV5xsG3bmIuHvxKPbILLBU
-         eP1EDTe/wf4/Q==
-Date:   Thu, 14 Jan 2021 19:36:59 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Aharon Landau <aharonl@nvidia.com>, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Mark Bloch <mbloch@nvidia.com>, Parav Pandit <parav@nvidia.com>
-Subject: Re: [PATCH rdma-next 0/5] Set of fixes
-Message-ID: <20210114173659.GF944463@unreal>
-References: <20210113121703.559778-1-leon@kernel.org>
- <20210114170411.GA316809@nvidia.com>
+        s=k20201202; t=1610646152;
+        bh=qyCgoMQS1q3Gbl/YPa4tVX/MZkl9Rw9Fb3rWjKlYnKQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QexCp9ikjfo2fgUELpThJrlfN3qRvRKKeFFKetHH9Si0gW1yJEMGoiXCpxvLbmxbB
+         3Ae5QD/LvXlo1x9wn06oBAE3GtNsag8mY19NoMaipaikTaBdeRJiOAX8KT7Y24qwun
+         +5+J0UzdCjkLdVF0zAi9QYZkwJQVL85W44zvRrBRQAno4Ysro6DrHcI02VuTeLiDlD
+         IwhVNAg4Obct5NgzXcUnnzzY1eNk63NUR3DTFVCj44u5TJZWMn7aselENLT+x/de5h
+         JHnzupfTOmALgG+4p81htYVH+YzIl34rUS0ZNs0ekhEjOqlCvzPliX1E4Nui5Kej9Q
+         iL3izsHBVTCrw==
+Date:   Thu, 14 Jan 2021 09:42:30 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jason Gunthorpe <jgg@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Parav Pandit <parav@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+        Vu Pham <vuhuong@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [net-next V6 02/14] devlink: Introduce PCI SF port flavour and
+ port attribute
+Message-ID: <20210114094230.67e8bef9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210113192730.280656-3-saeed@kernel.org>
+References: <20210113192730.280656-1-saeed@kernel.org>
+        <20210113192730.280656-3-saeed@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210114170411.GA316809@nvidia.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 01:04:11PM -0400, Jason Gunthorpe wrote:
-> On Wed, Jan 13, 2021 at 02:16:58PM +0200, Leon Romanovsky wrote:
->
-> >   RDMA/umem: Avoid undefined behavior of rounddown_pow_of_two
-> >   RDMA/mlx5: Fix wrong free of blue flame register on error
-> >   IB/mlx5: Fix error unwinding when set_has_smi_cap fails
->
-> I took these ones to for-rc
+On Wed, 13 Jan 2021 11:27:18 -0800 Saeed Mahameed wrote:
+>  /**
+>   * struct devlink_port_attrs - devlink port object
+>   * @flavour: flavour of the port
+> @@ -114,6 +126,7 @@ struct devlink_port_attrs {
+>  		struct devlink_port_phys_attrs phys;
+>  		struct devlink_port_pci_pf_attrs pci_pf;
+>  		struct devlink_port_pci_vf_attrs pci_vf;
+> +		struct devlink_port_pci_sf_attrs pci_sf;
+>  	};
+>  };
 
-It is your call, personally, I'm sending two types of patches to -rc:
-crashes and "new bugs".
-
-Thanks
-
->
-> Thanks,
-> Jason
+include/net/devlink.h:131: warning: Function parameter or member 'pci_sf' not described in 'devlink_port_attrs'
