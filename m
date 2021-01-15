@@ -2,121 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF2E2F8556
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Jan 2021 20:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E5E2F85B9
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Jan 2021 20:50:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387569AbhAOTYW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Jan 2021 14:24:22 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13908 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732707AbhAOTYW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Jan 2021 14:24:22 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6001ebbd0000>; Fri, 15 Jan 2021 11:23:41 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 15 Jan
- 2021 19:23:40 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 15 Jan 2021 19:23:40 +0000
+        id S1727062AbhAOTtY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 Jan 2021 14:49:24 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5517 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726815AbhAOTtT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Jan 2021 14:49:19 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6001f1970001>; Fri, 15 Jan 2021 11:48:39 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 15 Jan
+ 2021 19:48:39 +0000
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (104.47.45.59) by
+ HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 15 Jan 2021 19:48:39 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=biA28dtwf00hhHpDO74mG8HqjmPDGQCSTM9dveiECntQKXGJi69nmbXsboEZoYXDohGtvot0zrOAwtJ10qmA2rueoo43+nx1t66z6uEFDpEreSDr/9p/KhsoBLHuD9qf9MSNRTCF1YguZ7DcxUgH0HevSJS1CZ2pKUk4a767aem47nSL2ltqlNCtCKIsoJkFhtZPTDOVD5rqs+X2DSGFGlLcn7ljpY4OSq0KWQfCQ8Uc8yCq4R1cawlq1IKUYZlZoQb8277ru1qnngjz7C3LVrflllbteqquC9i7b90jUnbegf30kTy6LUTaT4vpcL0n79n5G+Ai5A/049aJ/OLcEg==
+ b=kAZPiK4cZGxlvGBpO5aqKLgglsRrWPY8sXG69/i5GCEBJ4ghQamvNFGNA41wMZOP+Ec7emq4M7bXswZ/uciLf7VYBK8Tmk0pdRlbi7zS/p5drW+39dqn9ikDDHiFJtb8HTseS4VbBLIO50g7GRVQrHxN+Qih2t5RGf8mV3htxtJiqfhNY7CJY2fjF7Wqi5gDEhq6eQUJVz0ZOKFvSgjvB4PwWQEyBZ/3SMxL58HkTlvaQhJQAWWgNbQU2MO1pePafHldcGGXsXj9gr9erdeoTd8UnGK86vYtbXX8aKhpsYNe0txMJzqXJysj2iD9h29nE/7BPqUNwmXv82ri+8/Jvg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ytRVIqZEn8AhuYHu256myxPvkeAlpbtC3NXH9IPfjzE=;
- b=ePAN86IXP75gTvVfHSm1omhO9pc+ZCMy8CqlpUzvrrPXCd2WlUMHDt6LLhHJao7EDTR9fkJ8uwv3RtEbWBNKVbOZWxPlcoDB8+MD+aLDGbw4ndfyHbtvlucAslmZGkH94Iqk+WZv7658anydkAQFJFMUWAl1RTLkFemV83MJWQ2TEHX1UGeBTb6ZQc1lXdSu2tMokRI31tx22aG53uPoPPSi4O5tvNhFB1glAjjXvFu0C1GKv/uuTfTUnN/2SM9KjU5uhzPfN3abDv0Q+DwUHv6ZNFqnzZ8QsVKDrYy7gJhscPaoRG+qR9nwbvPb5eAG0tcrudr0Jho6LTRLWzeDeQ==
+ bh=vzNOedQxF9f0dZhVGeFBfZ5yPIyMdVHnwQM+jMZUcOw=;
+ b=VpmZhQCw0saZTsflmBMjKawtu7xf9eSm4f6nm+kk/ag7GbCGSe6GfVUj+jeuyKPCWZRXQyEV78/dKUmiJo6J2+hV/YBEL8AGu7rtebqlnm971r5Nw2Z4qIDr99u1qD5G9ibfokv3TcRU4OuOZ607ut3r0MK8oY1i+aSX0BcQgeGzpB9p5PGBSnEt44lrmVMZV6Rj9SEII6ppKydMF5Oodx7HDnx7hjNaMDnP5t1XW/Bd7dC3QHTw8DUVE/uCgi0S2g6Fzgu2O9BebxbSgU3Ho2Q9nOoyxISNSwebOwFJLb/A/Sf9YDkjroPx+nhb2j5wbLphgODzwk8UJfWd5Z3a/w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3931.namprd12.prod.outlook.com (2603:10b6:5:1cb::12) with
+ by DM6PR12MB4057.namprd12.prod.outlook.com (2603:10b6:5:213::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Fri, 15 Jan
- 2021 19:23:38 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9; Fri, 15 Jan
+ 2021 19:48:38 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3742.012; Fri, 15 Jan 2021
- 19:23:38 +0000
-Date:   Fri, 15 Jan 2021 15:23:37 -0400
+ 19:48:38 +0000
+Date:   Fri, 15 Jan 2021 15:48:35 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Xiao Yang <yangx.jy@cn.fujitsu.com>
-CC:     Yishai Hadas <yishaih@nvidia.com>, <linux-rdma@vger.kernel.org>,
-        <leon@kernel.org>
-Subject: Re: [PATCH 1/2] RDMA/uverbs: Don't set rcq if qp_type is
- IB_QPT_XRC_INI
-Message-ID: <20210115192337.GA456993@nvidia.com>
-References: <20201216071755.149449-1-yangx.jy@cn.fujitsu.com>
- <20210112200925.GA20208@nvidia.com> <600007B6.1070606@cn.fujitsu.com>
+To:     Jack Wang <jinpu.wang@cloud.ionos.com>
+CC:     <linux-rdma@vger.kernel.org>, <bvanassche@acm.org>,
+        <leon@kernel.org>, <dledford@redhat.com>,
+        <danil.kipnis@cloud.ionos.com>
+Subject: Re: [PATCHv2 for-next 00/19] Misc update for rtrs
+Message-ID: <20210115194835.GA485446@nvidia.com>
+References: <20201217141915.56989-1-jinpu.wang@cloud.ionos.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <600007B6.1070606@cn.fujitsu.com>
-X-ClientProxiedBy: BL1PR13CA0358.namprd13.prod.outlook.com
- (2603:10b6:208:2c6::33) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <20201217141915.56989-1-jinpu.wang@cloud.ionos.com>
+X-ClientProxiedBy: BL1PR13CA0485.namprd13.prod.outlook.com
+ (2603:10b6:208:2c7::10) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0358.namprd13.prod.outlook.com (2603:10b6:208:2c6::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.7 via Frontend Transport; Fri, 15 Jan 2021 19:23:38 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l0Uh7-001uuN-4A; Fri, 15 Jan 2021 15:23:37 -0400
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0485.namprd13.prod.outlook.com (2603:10b6:208:2c7::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.6 via Frontend Transport; Fri, 15 Jan 2021 19:48:36 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l0V5H-0022Ie-Fb; Fri, 15 Jan 2021 15:48:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610738621; bh=ytRVIqZEn8AhuYHu256myxPvkeAlpbtC3NXH9IPfjzE=;
+        t=1610740119; bh=vzNOedQxF9f0dZhVGeFBfZ5yPIyMdVHnwQM+jMZUcOw=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=iMrIygZjP0gmiYmjERQZhEp9jxl58oBHDSl/ZGO/bnN3AdtAUMxGN+2tGanCT/5Te
-         znM3cUsrQcEn7ogI1usRhhvTFTBZZknsrFy8HEYd+WR7Xna2jZD4NjbStEtLADjp+x
-         2EPDASYK19lEYjqoABTTO1nSA95VcbNK7jcoPUui52wjj8wSsTajctynpJuYEdqBnl
-         +8dYGXClbFc+cvQgBsnZIICRKb6rDVNMOKYij61SpM+tlUAQui006g27zswMsporU2
-         eyryJoHBIipXTVMRfhJTcXnLZXVocqHuq46qsDQq4kT5dZQznNT6T8GgU0mseKmsFh
-         UcXI3BjHLHb1Q==
+        b=Btj1aXq9tKAbf+LI2ikGkHpDPjh6zVXXjq5jsMGMn6p792ZBzv4l/fRInhqM7nIoa
+         sWCQM6rDssU1klB+A8v/umWl73yMg+TZScfWj+MbNSTGeO9gINnmpsXIvawVxwRUf4
+         GB0hZ0vp4IZx3vfkMJgWe+LUGJwFSm5C2nmGOB+93431DT03lY8LkCTfrAU+cB6KsF
+         c31wZg/xEYGk6COKBmnrE2VP5S2s+6528dwu+17jyq7SrALOvpNJrJq2PhTxGJFpHX
+         YF30pDwgPAzoS2n+6+a6xi0gKsajMLZt3HpPdzRdDWoPqT6BKH7LTuqyIQKSUKzxD7
+         RCuuuOKZBgvOQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 04:58:30PM +0800, Xiao Yang wrote:
-> On 2021/1/13 4:09, Jason Gunthorpe wrote:
-> > On Wed, Dec 16, 2020 at 03:17:54PM +0800, Xiao Yang wrote:
-> > > INI QP doesn't require receive CQ.
-> > > 
-> > > Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
-> > >   drivers/infiniband/core/uverbs_cmd.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-> > > index 418d133a8fb0..d8bc8ea3ad1e 100644
-> > > +++ b/drivers/infiniband/core/uverbs_cmd.c
-> > > @@ -1345,7 +1345,7 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
-> > >   		if (has_sq)
-> > >   			scq = uobj_get_obj_read(cq, UVERBS_OBJECT_CQ,
-> > >   						cmd->send_cq_handle, attrs);
-> > > -		if (!ind_tbl)
-> > > +		if (!ind_tbl&&  cmd->qp_type != IB_QPT_XRC_INI)
-> > >   			rcq = rcq ?: scq;
-> > Hmm, this does make it consistent with the UVERBS_METHOD_QP_CREATE
-> > flow which does set attr.recv_cq to NULL if the user didn't specify one.
-> > 
-> > However this has been like this since the beginning - what are you
-> > doing that this detail matters?
-> Hi Jason,
+On Thu, Dec 17, 2020 at 03:18:56PM +0100, Jack Wang wrote:
+> Hi Jason, hi Doug,
 > 
-> Thanks for your comment.
-> 1) I didn't get any issue for now.
-> 2) I think it is not meaningful to set rcq for XRC INITIATOR QP, current
-> code has ignores rcq as below:
-> static int create_qp(struct uverbs_attr_bundle *attrs,
->                     struct ib_uverbs_ex_create_qp *cmd)
-> ...
->                 if (cmd->qp_type == IB_QPT_XRC_INI) {
->                         cmd->max_recv_wr = 0;
->                         cmd->max_recv_sge = 0;
-> ...
+> Please consider to include following changes to the next merge window.
 > 
-> By the way, I have a question:
-> Why do we need two kinds of uverbs API?(a: read & write, b: ioctl)
+> It contains a few bugfix and cleanup:
+> - Fix memory leak incase of failure in kobj_init_and_add in both clt/srv
+> - reduce memory footprint by set proper limit when create QP
+> - fix missing wr_cqe in a few cases on srv, it could lead to crash in error
+>   case.
+> - remove the SIGNAL flag for heartbeat, otherwise it could mess around 
+> the send_wr_awail accouting.
+> - flush on going session closing to release the memory presure on server.
+> - other misc fix and cleanup.
+> 
+> The patches are created based on rdma/for-next.
+> 
+> V2->V1
+> * more descprition for the patches above as requested by Jason, also include
+> Fixes tag for bugfix.
+> * suppress the lockdep warning for PATCH 2 `Occasionally flush ongoing session closing`
+> with comment.
+> * new bugfix PATCH 19 RDMA/rtrs: Fix KASAN: stack-out-of-bounds bug
+> 
+> Thanks!
+> 
+> Guoqing Jiang (8):
+>   RDMA/rtrs-srv: Jump to dereg_mr label if allocate iu fails
+>   RDMA/rtrs: Call kobject_put in the failure path
+>   RDMA/rtrs-clt: Consolidate rtrs_clt_destroy_sysfs_root_{folder,files}
+>   RDMA/rtrs-clt: Kill wait_for_inflight_permits
+>   RDMA/rtrs-clt: Remove unnecessary 'goto out'
+>   RDMA/rtrs-clt: Kill rtrs_clt_change_state
+>   RDMA/rtrs-clt: Rename __rtrs_clt_change_state to rtrs_clt_change_state
+>   RDMA/rtrs-clt: Refactor the failure cases in alloc_clt
+> 
+> Jack Wang (11):
+>   RDMA/rtrs: Extend ibtrs_cq_qp_create
+>   RDMA/rtrs-srv: Release lock before call into close_sess
+>   RDMA/rtrs-srv: Use sysfs_remove_file_self for disconnect
+>   RDMA/rtrs-clt: Set mininum limit when create QP
+>   RDMA/rtrs-srv: Fix missing wr_cqe
+>   RDMA/rtrs: Do not signal for heatbeat
+>   RDMA/rtrs-clt: Use bitmask to check sess->flags
+>   RDMA/rtrs-srv: Do not signal REG_MR
+>   RDMA/rtrs-srv: Init wr_cnt as 1
+>   RDMA/rtrs: Fix KASAN: stack-out-of-bounds bug
 
-The write APIs can't be modified due to how they were
-designed. Whenever someone needs to change something they have to move
-things to ioctl
+Every one except:
+
+>   RMDA/rtrs-srv: Occasionally flush ongoing session closing
+
+Applied to for-next, thanks
 
 Jason
