@@ -2,243 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDABC2F769B
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Jan 2021 11:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 915932F7A93
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Jan 2021 13:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728981AbhAOKZL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Jan 2021 05:25:11 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:10974 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727670AbhAOKZL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Jan 2021 05:25:11 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DHHMZ2Bhmzj6N4;
-        Fri, 15 Jan 2021 18:23:38 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 15 Jan 2021 18:24:24 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-Subject: [PATCH RFC 7/7] RDMA/hns: Add method to query WQE buffer's address
-Date:   Fri, 15 Jan 2021 18:22:18 +0800
-Message-ID: <1610706138-4219-8-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1610706138-4219-1-git-send-email-liweihang@huawei.com>
-References: <1610706138-4219-1-git-send-email-liweihang@huawei.com>
+        id S1729676AbhAOMvU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 Jan 2021 07:51:20 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:49459 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732268AbhAOMvT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 15 Jan 2021 07:51:19 -0500
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60018f9d0000>; Fri, 15 Jan 2021 20:50:37 +0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 15 Jan
+ 2021 12:50:36 +0000
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.170)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 15 Jan 2021 12:50:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=en+qSUjyg5ghnUWr0LouCG5Q60gTr2/rw+OuYrf76tQ9KZZiNa/33Fkz4LA15o2jZM4zkQEPIS3lDGkZUZBm0vLPhTCpSCrDFE1B688M1oUnakFxHl4DU2sFm68itQFTv5yID9ivmLYqjHbvI+w4f0c/GQQLhGIOjjf1BlW/U3qThW0wFmZpkNRXLXwaZzILZ3U9zyk/Hd/dK1QaXjarrE2ApvG7taMZY4Ar4q8bwHEAWqKu1KRqW2sLv0wzXM3xGrN7GVneNKMbSNKQyE5Tpz1subCdmJA3Y2kD9wWMjnwpCN/SwoxDUH52zxEF/JQN9FcpvxWitGErOrB3Uw/jTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U24hrGwf3XZksq03FOy/TgpoDVyi8SC2AbqPjZPGmJw=;
+ b=cFl51ffgeBo8ZAGb/yyBv3Zji9PyVjcrsY2y+5hm/EurVVMfLJimbmaN/VmYtZ3PM/l+XFJOjK9yF/aitlO1RiwllTG1CswUCNImT4bMN/A5wnapaZFCFG0JUp1KTF2oX3VOtAG46b+c5ffIEo1FeW+138xnDx6QaZH4rSVWYL9+QtqE+SmXYXhZGUDkS5tolbmSiiYpM09x9ZjPuWDDspaHBX+7fVDL/Chb4YD+Gz6WtZWoFZ4wnZGnvsNg4vFDYlL4Fbplyg3EQMiUsIxKPDN+aBwGtStwX7keUo34FSDkJIPom927JkKsYgliIcQBt2I8UjGB6r/+ziFHl8OLgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3211.namprd12.prod.outlook.com (2603:10b6:5:15c::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Fri, 15 Jan
+ 2021 12:50:34 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3742.012; Fri, 15 Jan 2021
+ 12:50:34 +0000
+Date:   Fri, 15 Jan 2021 08:50:31 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bryan Tan <bryantan@vmware.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Pv-drivers <Pv-drivers@vmware.com>
+Subject: Re: [PATCH for-rc] RDMA/vmw_pvrdma: Fix network_hdr_type reported in
+ WC
+Message-ID: <20210115125031.GY4147@nvidia.com>
+References: <1610634408-31356-1-git-send-email-bryantan@vmware.com>
+ <20210114172359.GC316809@nvidia.com>
+ <BL0PR05MB501015BAF25CADD722F5A9FCB2A79@BL0PR05MB5010.namprd05.prod.outlook.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <BL0PR05MB501015BAF25CADD722F5A9FCB2A79@BL0PR05MB5010.namprd05.prod.outlook.com>
+X-ClientProxiedBy: BL1PR13CA0368.namprd13.prod.outlook.com
+ (2603:10b6:208:2c0::13) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0368.namprd13.prod.outlook.com (2603:10b6:208:2c0::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.6 via Frontend Transport; Fri, 15 Jan 2021 12:50:33 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l0OYh-001cEq-FQ; Fri, 15 Jan 2021 08:50:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610715037; bh=U24hrGwf3XZksq03FOy/TgpoDVyi8SC2AbqPjZPGmJw=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=BTYeGlqNyF9/4hTw4k8L6kknfPp94xjKmfwrCD+d1oNH6Vz3WE/hdQo3ihhVcIufS
+         nGa/cVwcCwwXmnq953nn7C5hLCWczltjwRvL2QGau0I1U6X49HQkMLT9c/FdmFydtm
+         4QBf+cCb9OfF8+OLyiBQAMcxjO1u6e1GvgreDMUxsXbfNv/ltuSB75SeX46rYpl5+r
+         xy7EasJyE+9b7RuBKuUS7YHbvd7GeG0PKGDjxToNtw67c8FCqqlEUAhNqxDWOkVFUU
+         YeWDZb28QhDIIuZnJY4POsAUvWXN7PbRM9m5fx4P11LBwvTWUdyPwcZq5rv0NeDuiT
+         KKadtRYjeCt2w==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+On Fri, Jan 15, 2021 at 04:58:58AM +0000, Bryan Tan wrote:
+> > From: Jason Gunthorpe <jgg@nvidia.com> 
+> > Sent: Friday, January 15, 2021 1:24 AM
+> > On Thu, Jan 14, 2021 at 06:26:48AM -0800, Bryan Tan wrote:
+> > > The PVRDMA device defines network_hdr_type according to an old
+> > > definition of the rdma_network_type enum that has since changed,
+> > > resulting in the wrong rdma_network_type being reported. Fix this by
+> > > explicitly defining the enum used by the PVRDMA device and adding a
+> > > function to convert the pvrdma_network_type to rdma_network_type enum.
+> > 
+> > How come I can't find anything reading this in rdma-core?
+> > 
+> > $ ~/oss/rdma-core#git grep network_hdr_type
+> > kernel-headers/rdma/vmw_pvrdma-abi.h:  __u8 network_hdr_type;
+> > 
+> > ??
+> 
+> network_hdr_type isn't exposed in the userspace WC ibv_wc.
 
-If a uQP works in DCA mode, the userspace driver need to get the buffer's
-address in DCA memory pool by calling the 'HNS_IB_METHOD_DCA_MEM_QUERY'
-method after the QP was attached by calling the
-'HNS_IB_METHOD_DCA_MEM_ATTACH' method.
+So this is "HW" API then?
 
-This method will return the DCA mem object's key and the offset to let the
-userspace driver get the WQE's virtual address in DCA memory pool.
+> Given that the field is only in the kernel side, it didn't seem like
+> we should add the new enum to vmw_pvrdma-abi.h either.
 
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_dca.c | 112 ++++++++++++++++++++++++++++++-
- drivers/infiniband/hw/hns/hns_roce_dca.h |   6 ++
- include/uapi/rdma/hns-abi.h              |  10 +++
- 3 files changed, 127 insertions(+), 1 deletion(-)
+Well, the struct that holds the value is in a uapi header, so the
+definition should be too. If you are defining HW data in uapi then may
+as well define all of it.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_dca.c b/drivers/infiniband/hw/hns/hns_roce_dca.c
-index 3d1e1b4..dded481 100644
---- a/drivers/infiniband/hw/hns/hns_roce_dca.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_dca.c
-@@ -80,6 +80,14 @@ static inline bool dca_page_is_attached(struct hns_dca_page_state *state,
- 			(HNS_DCA_OWN_MASK & state->buf_id);
- }
- 
-+static inline bool dca_page_is_active(struct hns_dca_page_state *state,
-+				      u32 buf_id)
-+{
-+	/* all buf id bits must be matched */
-+	return (HNS_DCA_ID_MASK & buf_id) == state->buf_id &&
-+		!state->lock && state->active;
-+}
-+
- static inline bool dca_page_is_allocated(struct hns_dca_page_state *state,
- 					 u32 buf_id)
- {
-@@ -792,6 +800,64 @@ static int attach_dca_mem(struct hns_roce_dev *hr_dev,
- 	return 0;
- }
- 
-+struct dca_page_query_active_attr {
-+	u32 buf_id;
-+	u32 curr_index;
-+	u32 start_index;
-+	u32 page_index;
-+	u32 page_count;
-+	u64 mem_key;
-+};
-+
-+static int query_dca_active_pages_proc(struct dca_mem *mem, int index,
-+				       void *param)
-+{
-+	struct hns_dca_page_state *state = &mem->states[index];
-+	struct dca_page_query_active_attr *attr = param;
-+
-+	if (!dca_page_is_active(state, attr->buf_id))
-+		return 0;
-+
-+	if (attr->curr_index < attr->start_index) {
-+		attr->curr_index++;
-+		return 0;
-+	} else if (attr->curr_index > attr->start_index) {
-+		return DCA_MEM_STOP_ITERATE;
-+	}
-+
-+	/* Search first page in DCA mem */
-+	attr->page_index = index;
-+	attr->mem_key = mem->key;
-+	/* Search active pages in continuous addresses */
-+	while (index < mem->page_count) {
-+		state = &mem->states[index];
-+		if (!dca_page_is_active(state, attr->buf_id))
-+			break;
-+
-+		index++;
-+		attr->page_count++;
-+	}
-+
-+	return DCA_MEM_STOP_ITERATE;
-+}
-+
-+static int query_dca_mem(struct hns_roce_qp *hr_qp, u32 page_index,
-+			 struct hns_dca_query_resp *resp)
-+{
-+	struct hns_roce_dca_ctx *ctx = hr_qp_to_dca_ctx(hr_qp);
-+	struct dca_page_query_active_attr attr = {};
-+
-+	attr.buf_id = hr_qp->dca_cfg.buf_id;
-+	attr.start_index = page_index;
-+	travel_dca_pages(ctx, &attr, query_dca_active_pages_proc);
-+
-+	resp->mem_key = attr.mem_key;
-+	resp->mem_ofs = attr.page_index << HNS_HW_PAGE_SHIFT;
-+	resp->page_count = attr.page_count;
-+
-+	return attr.page_count ? 0 : -ENOMEM;
-+}
-+
- struct dca_page_free_buf_attr {
- 	u32 buf_id;
- 	u32 max_pages;
-@@ -1131,13 +1197,57 @@ DECLARE_UVERBS_NAMED_METHOD(
- 	UVERBS_ATTR_PTR_IN(HNS_IB_ATTR_DCA_MEM_DETACH_SQ_INDEX,
- 			   UVERBS_ATTR_TYPE(u32), UA_MANDATORY));
- 
-+static int UVERBS_HANDLER(HNS_IB_METHOD_DCA_MEM_QUERY)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct hns_roce_qp *hr_qp = uverbs_attr_to_hr_qp(attrs);
-+	struct hns_dca_query_resp resp = {};
-+	u32 page_idx;
-+	int ret;
-+
-+	if (!hr_qp)
-+		return -EINVAL;
-+
-+	if (uverbs_copy_from(&page_idx, attrs,
-+			     HNS_IB_ATTR_DCA_MEM_QUERY_PAGE_INDEX))
-+		return -EFAULT;
-+
-+	ret = query_dca_mem(hr_qp, page_idx, &resp);
-+	if (ret)
-+		return ret;
-+
-+	if (uverbs_copy_to(attrs, HNS_IB_ATTR_DCA_MEM_QUERY_OUT_KEY,
-+			   &resp.mem_key, sizeof(resp.mem_key)) ||
-+	    uverbs_copy_to(attrs, HNS_IB_ATTR_DCA_MEM_QUERY_OUT_OFFSET,
-+			   &resp.mem_ofs, sizeof(resp.mem_ofs)) ||
-+	    uverbs_copy_to(attrs, HNS_IB_ATTR_DCA_MEM_QUERY_OUT_PAGE_COUNT,
-+			   &resp.page_count, sizeof(resp.page_count)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+DECLARE_UVERBS_NAMED_METHOD(
-+	HNS_IB_METHOD_DCA_MEM_QUERY,
-+	UVERBS_ATTR_IDR(HNS_IB_ATTR_DCA_MEM_QUERY_HANDLE, UVERBS_OBJECT_QP,
-+			UVERBS_ACCESS_READ, UA_MANDATORY),
-+	UVERBS_ATTR_PTR_IN(HNS_IB_ATTR_DCA_MEM_QUERY_PAGE_INDEX,
-+			   UVERBS_ATTR_TYPE(u32), UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(HNS_IB_ATTR_DCA_MEM_QUERY_OUT_KEY,
-+			    UVERBS_ATTR_TYPE(u64), UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(HNS_IB_ATTR_DCA_MEM_QUERY_OUT_OFFSET,
-+			    UVERBS_ATTR_TYPE(u32), UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(HNS_IB_ATTR_DCA_MEM_QUERY_OUT_PAGE_COUNT,
-+			    UVERBS_ATTR_TYPE(u32), UA_MANDATORY));
-+
- DECLARE_UVERBS_NAMED_OBJECT(HNS_IB_OBJECT_DCA_MEM,
- 			    UVERBS_TYPE_ALLOC_IDR(dca_cleanup),
- 			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_REG),
- 			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_DEREG),
- 			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_SHRINK),
- 			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_ATTACH),
--			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_DETACH));
-+			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_DETACH),
-+			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_QUERY));
- 
- static bool dca_is_supported(struct ib_device *device)
- {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_dca.h b/drivers/infiniband/hw/hns/hns_roce_dca.h
-index 8155903..3e9971a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_dca.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_dca.h
-@@ -50,6 +50,12 @@ struct hns_dca_detach_attr {
- 	u32 sq_idx;
- };
- 
-+struct hns_dca_query_resp {
-+	u64 mem_key;
-+	u32 mem_ofs;
-+	u32 page_count;
-+};
-+
- void hns_roce_register_udca(struct hns_roce_dev *hr_dev,
- 			    struct hns_roce_ucontext *uctx);
- void hns_roce_unregister_udca(struct hns_roce_dev *hr_dev,
-diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
-index e6b01de..4f5ac46 100644
---- a/include/uapi/rdma/hns-abi.h
-+++ b/include/uapi/rdma/hns-abi.h
-@@ -107,6 +107,7 @@ enum hns_ib_dca_mem_methods {
- 	HNS_IB_METHOD_DCA_MEM_SHRINK,
- 	HNS_IB_METHOD_DCA_MEM_ATTACH,
- 	HNS_IB_METHOD_DCA_MEM_DETACH,
-+	HNS_IB_METHOD_DCA_MEM_QUERY,
- };
- 
- enum hns_ib_dca_mem_reg_attrs {
-@@ -142,4 +143,13 @@ enum hns_ib_dca_mem_detach_attrs {
- 	HNS_IB_ATTR_DCA_MEM_DETACH_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
- 	HNS_IB_ATTR_DCA_MEM_DETACH_SQ_INDEX,
- };
-+
-+enum hns_ib_dca_mem_query_attrs {
-+	HNS_IB_ATTR_DCA_MEM_QUERY_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
-+	HNS_IB_ATTR_DCA_MEM_QUERY_PAGE_INDEX,
-+	HNS_IB_ATTR_DCA_MEM_QUERY_OUT_KEY,
-+	HNS_IB_ATTR_DCA_MEM_QUERY_OUT_OFFSET,
-+	HNS_IB_ATTR_DCA_MEM_QUERY_OUT_PAGE_COUNT,
-+};
-+
- #endif /* HNS_ABI_USER_H */
--- 
-2.8.1
-
+Jason
