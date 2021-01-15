@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481B32F7698
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Jan 2021 11:25:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC0B2F7697
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Jan 2021 11:25:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbhAOKZH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1728873AbhAOKZH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Fri, 15 Jan 2021 05:25:07 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11543 "EHLO
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11542 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728862AbhAOKZG (ORCPT
+        with ESMTP id S1726666AbhAOKZG (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Jan 2021 05:25:06 -0500
 Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DHHLv75YXzMKlm;
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DHHLv6JXgzMKkV;
         Fri, 15 Jan 2021 18:23:03 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@nvidia.com>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@openeuler.org>
-Subject: [PATCH RFC 1/7] RDMA/hns: Introduce DCA for RC QP
-Date:   Fri, 15 Jan 2021 18:22:12 +0800
-Message-ID: <1610706138-4219-2-git-send-email-liweihang@huawei.com>
+Subject: [PATCH RFC 2/7] RDMA/hns: Add method for shrinking DCA memory pool
+Date:   Fri, 15 Jan 2021 18:22:13 +0800
+Message-ID: <1610706138-4219-3-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1610706138-4219-1-git-send-email-liweihang@huawei.com>
 References: <1610706138-4219-1-git-send-email-liweihang@huawei.com>
@@ -37,629 +37,248 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Xi Wang <wangxi11@huawei.com>
 
-The hip09 introduces the DCA(Dynamic context attachment) feature which
-supports many RC QPs to share the WQE buffer in a memory pool, this will
-reduce the memory consumption when there are too many QPs are inactive.
+If no QP is using a DCA mem object, the userspace driver can destroy it.
+So add a new method 'HNS_IB_METHOD_DCA_MEM_SHRINK' to allow the userspace
+dirver to remove an object from DCA memory pool.
 
-If a QP enables DCA feature, the WQE's buffer will not be allocated when
-creating. But when the users start to post WRs, the hns driver will
-allocate a buffer from the memory pool and then fill WQEs which tagged with
-this QP's number.
-
-The hns ROCEE will stop accessing the WQE buffer when the user polled all
-of the CQEs for a DCA QP, then the driver will recycle this WQE's buffer
-to the memory pool.
-
-This patch adds a group of methods to support the user space register
-buffers to a memory pool which belongs to the user context. The hns kernel
-driver will update the pages state in this pool when the user calling the
-post/poll methods and the user driver can get the QP's WQE buffer address
-by the key and offset which queried from kernel.
+If a DCA mem object has been shrunk, the userspace driver can destroy it
+by 'HNS_IB_METHOD_DCA_MEM_DEREG' method and free the buffer which is
+allocated in userspace.
 
 Signed-off-by: Xi Wang <wangxi11@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/Makefile          |   2 +-
- drivers/infiniband/hw/hns/hns_roce_dca.c    | 381 ++++++++++++++++++++++++++++
- drivers/infiniband/hw/hns/hns_roce_dca.h    |  22 ++
- drivers/infiniband/hw/hns/hns_roce_device.h |  10 +
- drivers/infiniband/hw/hns/hns_roce_main.c   |  27 +-
- include/uapi/rdma/hns-abi.h                 |  23 ++
- 6 files changed, 462 insertions(+), 3 deletions(-)
- create mode 100644 drivers/infiniband/hw/hns/hns_roce_dca.c
- create mode 100644 drivers/infiniband/hw/hns/hns_roce_dca.h
+ drivers/infiniband/hw/hns/hns_roce_dca.c | 142 ++++++++++++++++++++++++++++++-
+ drivers/infiniband/hw/hns/hns_roce_dca.h |   7 ++
+ include/uapi/rdma/hns-abi.h              |   9 ++
+ 3 files changed, 157 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/hns/Makefile b/drivers/infiniband/hw/hns/Makefile
-index e105945..9962b23 100644
---- a/drivers/infiniband/hw/hns/Makefile
-+++ b/drivers/infiniband/hw/hns/Makefile
-@@ -6,7 +6,7 @@
- ccflags-y :=  -I $(srctree)/drivers/net/ethernet/hisilicon/hns3
- 
- hns-roce-objs := hns_roce_main.o hns_roce_cmd.o hns_roce_pd.o \
--	hns_roce_ah.o hns_roce_hem.o hns_roce_mr.o hns_roce_qp.o \
-+	hns_roce_ah.o hns_roce_hem.o hns_roce_mr.o hns_roce_qp.o hns_roce_dca.o \
- 	hns_roce_cq.o hns_roce_alloc.o hns_roce_db.o hns_roce_srq.o hns_roce_restrack.o
- 
- ifdef CONFIG_INFINIBAND_HNS_HIP06
 diff --git a/drivers/infiniband/hw/hns/hns_roce_dca.c b/drivers/infiniband/hw/hns/hns_roce_dca.c
-new file mode 100644
-index 0000000..872e51a
---- /dev/null
+index 872e51a..72273f0 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_dca.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_dca.c
-@@ -0,0 +1,381 @@
-+// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+/*
-+ * Copyright (c) 2021 Hisilicon Limited. All rights reserved.
-+ */
-+
-+#include <rdma/ib_user_verbs.h>
-+#include <rdma/ib_verbs.h>
-+#include <rdma/uverbs_types.h>
-+#include <rdma/uverbs_ioctl.h>
-+#include <rdma/uverbs_std_types.h>
-+#include <rdma/ib_umem.h>
-+#include "hns_roce_device.h"
-+#include "hns_roce_dca.h"
-+
-+#define UVERBS_MODULE_NAME hns_ib
-+#include <rdma/uverbs_named_ioctl.h>
-+
-+/* DCA memory */
-+struct dca_mem {
-+#define DCA_MEM_FLAGS_ALLOCED BIT(0)
-+#define DCA_MEM_FLAGS_REGISTERED BIT(1)
-+	u32 flags;
-+	struct list_head list; /* link to mem list in dca context */
-+	spinlock_t lock; /* protect the @flags and @list */
-+	int page_count; /* page count in this mem obj */
-+	u64 key; /* register by caller */
-+	u32 size; /* bytes in this mem object */
-+	struct hns_dca_page_state *states; /* record each page's state */
-+	void *pages; /* memory handle for getting dma address */
-+};
-+
-+struct dca_mem_attr {
-+	u64 key;
-+	u64 addr;
-+	u32 size;
-+};
-+
-+static inline bool dca_mem_is_free(struct dca_mem *mem)
+@@ -35,6 +35,11 @@ struct dca_mem_attr {
+ 	u32 size;
+ };
+ 
++static inline bool dca_page_is_free(struct hns_dca_page_state *state)
 +{
-+	return mem->flags == 0;
++	return state->buf_id == HNS_DCA_INVALID_BUF_ID;
 +}
 +
-+static inline void set_dca_mem_free(struct dca_mem *mem)
+ static inline bool dca_mem_is_free(struct dca_mem *mem)
+ {
+ 	return mem->flags == 0;
+@@ -60,6 +65,11 @@ static inline void clr_dca_mem_registered(struct dca_mem *mem)
+ 	mem->flags &= ~DCA_MEM_FLAGS_REGISTERED;
+ }
+ 
++static inline bool dca_mem_is_available(struct dca_mem *mem)
 +{
-+	mem->flags = 0;
++	return mem->flags == (DCA_MEM_FLAGS_ALLOCED | DCA_MEM_FLAGS_REGISTERED);
 +}
 +
-+static inline void set_dca_mem_alloced(struct dca_mem *mem)
-+{
-+	mem->flags |= DCA_MEM_FLAGS_ALLOCED;
-+}
-+
-+static inline void set_dca_mem_registered(struct dca_mem *mem)
-+{
-+	mem->flags |= DCA_MEM_FLAGS_REGISTERED;
-+}
-+
-+static inline void clr_dca_mem_registered(struct dca_mem *mem)
-+{
-+	mem->flags &= ~DCA_MEM_FLAGS_REGISTERED;
-+}
-+
-+static void free_dca_pages(void *pages)
-+{
-+	ib_umem_release(pages);
-+}
-+
-+static void *alloc_dca_pages(struct hns_roce_dev *hr_dev, struct dca_mem *mem,
-+			     struct dca_mem_attr *attr)
-+{
-+	struct ib_device *ibdev = &hr_dev->ib_dev;
-+	struct ib_umem *umem;
-+
-+	umem = ib_umem_get(ibdev, attr->addr, attr->size, 0);
-+	if (IS_ERR(umem)) {
-+		ibdev_err(ibdev, "failed to get uDCA pages, ret = %ld.\n",
-+			  PTR_ERR(umem));
-+		return NULL;
-+	}
-+
-+	mem->page_count = ib_umem_num_dma_blocks(umem, HNS_HW_PAGE_SIZE);
-+
-+	return umem;
-+}
-+
-+static void free_mem_states(struct hns_dca_page_state *states)
-+{
-+	kfree(states);
-+}
-+
-+static void init_dca_umem_states(struct hns_dca_page_state *states, int count,
-+				 struct ib_umem *umem)
-+{
-+	struct ib_block_iter biter;
-+	dma_addr_t cur_addr;
-+	dma_addr_t pre_addr;
-+	int i = 0;
-+
-+	pre_addr = 0;
-+	rdma_for_each_block(umem->sg_head.sgl, &biter, umem->nmap,
-+			    HNS_HW_PAGE_SIZE) {
-+		cur_addr = rdma_block_iter_dma_address(&biter);
-+		if (i < count) {
-+			if (cur_addr - pre_addr != HNS_HW_PAGE_SIZE)
-+				states[i].head = 1;
-+		}
-+
-+		pre_addr = cur_addr;
-+		i++;
-+	}
-+}
-+
-+static struct hns_dca_page_state *alloc_dca_states(void *pages, int count)
-+{
-+	struct hns_dca_page_state *states;
-+
-+	states = kcalloc(count, sizeof(*states), GFP_ATOMIC);
-+	if (!states)
-+		return NULL;
-+
-+	init_dca_umem_states(states, count, pages);
-+
-+	return states;
-+}
-+
-+/* user DCA is managed by ucontext */
-+static inline struct hns_roce_dca_ctx *
-+to_hr_dca_ctx(struct hns_roce_ucontext *uctx)
-+{
-+	return &uctx->dca_ctx;
-+}
-+
-+static void unregister_dca_mem(struct hns_roce_ucontext *uctx,
-+			       struct dca_mem *mem)
-+{
-+	struct hns_roce_dca_ctx *ctx = to_hr_dca_ctx(uctx);
-+	unsigned long flags;
-+	void *states, *pages;
-+
-+	spin_lock_irqsave(&ctx->pool_lock, flags);
-+
-+	spin_lock(&mem->lock);
-+	clr_dca_mem_registered(mem);
-+	mem->page_count = 0;
-+	pages = mem->pages;
-+	mem->pages = NULL;
-+	states = mem->states;
-+	mem->states = NULL;
-+	spin_unlock(&mem->lock);
-+
-+	ctx->free_mems--;
-+	ctx->free_size -= mem->size;
-+
-+	ctx->total_size -= mem->size;
-+	spin_unlock_irqrestore(&ctx->pool_lock, flags);
-+
-+	free_mem_states(states);
-+	free_dca_pages(pages);
-+}
-+
-+static int register_dca_mem(struct hns_roce_dev *hr_dev,
-+			    struct hns_roce_ucontext *uctx,
-+			    struct dca_mem *mem, struct dca_mem_attr *attr)
-+{
-+	struct hns_roce_dca_ctx *ctx = to_hr_dca_ctx(uctx);
-+	void *states, *pages;
-+	unsigned long flags;
-+
-+	pages = alloc_dca_pages(hr_dev, mem, attr);
-+	if (!pages)
-+		return -ENOMEM;
-+
-+	states = alloc_dca_states(pages, mem->page_count);
-+	if (!states) {
-+		free_dca_pages(pages);
-+		return -ENOMEM;
-+	}
-+
-+	spin_lock_irqsave(&ctx->pool_lock, flags);
-+
-+	spin_lock(&mem->lock);
-+	mem->pages = pages;
-+	mem->states = states;
-+	mem->key = attr->key;
-+	mem->size = attr->size;
-+	set_dca_mem_registered(mem);
-+	spin_unlock(&mem->lock);
-+
-+	ctx->free_mems++;
-+	ctx->free_size += attr->size;
-+	ctx->total_size += attr->size;
-+	spin_unlock_irqrestore(&ctx->pool_lock, flags);
-+
-+	return 0;
-+}
-+
-+static void init_dca_context(struct hns_roce_dca_ctx *ctx)
-+{
-+	INIT_LIST_HEAD(&ctx->pool);
-+	spin_lock_init(&ctx->pool_lock);
-+	ctx->total_size = 0;
-+}
-+
-+static void cleanup_dca_context(struct hns_roce_dev *hr_dev,
-+				struct hns_roce_dca_ctx *ctx)
+ static void free_dca_pages(void *pages)
+ {
+ 	ib_umem_release(pages);
+@@ -123,6 +133,41 @@ static struct hns_dca_page_state *alloc_dca_states(void *pages, int count)
+ 	return states;
+ }
+ 
++#define DCA_MEM_STOP_ITERATE -1
++#define DCA_MEM_NEXT_ITERATE -2
++static void travel_dca_pages(struct hns_roce_dca_ctx *ctx, void *param,
++			     int (*cb)(struct dca_mem *, int, void *))
 +{
 +	struct dca_mem *mem, *tmp;
 +	unsigned long flags;
++	bool avail;
++	int ret;
++	int i;
 +
 +	spin_lock_irqsave(&ctx->pool_lock, flags);
 +	list_for_each_entry_safe(mem, tmp, &ctx->pool, list) {
-+		list_del(&mem->list);
-+		set_dca_mem_free(mem);
 +		spin_unlock_irqrestore(&ctx->pool_lock, flags);
 +
-+		free_mem_states(mem->states);
-+		free_dca_pages(mem->pages);
-+		kfree(mem);
-+
-+		spin_lock_irqsave(&ctx->pool_lock, flags);
-+	}
-+	ctx->total_size = 0;
-+	spin_unlock_irqrestore(&ctx->pool_lock, flags);
-+}
-+
-+void hns_roce_register_udca(struct hns_roce_dev *hr_dev,
-+			    struct hns_roce_ucontext *uctx)
-+{
-+	init_dca_context(&uctx->dca_ctx);
-+}
-+
-+void hns_roce_unregister_udca(struct hns_roce_dev *hr_dev,
-+			      struct hns_roce_ucontext *uctx)
-+{
-+	cleanup_dca_context(hr_dev, &uctx->dca_ctx);
-+}
-+
-+static struct dca_mem *alloc_dca_mem(struct hns_roce_dca_ctx *ctx)
-+{
-+	struct dca_mem *mem, *tmp, *found = NULL;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&ctx->pool_lock, flags);
-+	list_for_each_entry_safe(mem, tmp, &ctx->pool, list) {
 +		spin_lock(&mem->lock);
-+		if (dca_mem_is_free(mem)) {
-+			found = mem;
-+			set_dca_mem_alloced(mem);
-+			spin_unlock(&mem->lock);
-+			goto done;
++		avail = dca_mem_is_available(mem);
++		ret = 0;
++		for (i = 0; avail && i < mem->page_count; i++) {
++			ret = cb(mem, i, param);
++			if (ret == DCA_MEM_STOP_ITERATE ||
++			    ret == DCA_MEM_NEXT_ITERATE)
++				break;
 +		}
 +		spin_unlock(&mem->lock);
++		spin_lock_irqsave(&ctx->pool_lock, flags);
++
++		if (ret == DCA_MEM_STOP_ITERATE)
++			goto done;
 +	}
 +
 +done:
 +	spin_unlock_irqrestore(&ctx->pool_lock, flags);
-+
-+	if (found)
-+		return found;
-+
-+	mem = kzalloc(sizeof(*mem), GFP_ATOMIC);
-+	if (!mem)
-+		return NULL;
-+
-+	spin_lock_init(&mem->lock);
-+	INIT_LIST_HEAD(&mem->list);
-+
-+	set_dca_mem_alloced(mem);
-+
-+	spin_lock_irqsave(&ctx->pool_lock, flags);
-+	list_add(&mem->list, &ctx->pool);
-+	spin_unlock_irqrestore(&ctx->pool_lock, flags);
-+	return mem;
 +}
 +
-+static void free_dca_mem(struct dca_mem *mem)
+ /* user DCA is managed by ucontext */
+ static inline struct hns_roce_dca_ctx *
+ to_hr_dca_ctx(struct hns_roce_ucontext *uctx)
+@@ -194,6 +239,63 @@ static int register_dca_mem(struct hns_roce_dev *hr_dev,
+ 	return 0;
+ }
+ 
++struct dca_mem_shrink_attr {
++	u64 shrink_key;
++	u32 shrink_mems;
++};
++
++static int shrink_dca_page_proc(struct dca_mem *mem, int index, void *param)
 +{
-+	/* We cannot hold the whole pool's lock during the DCA is working
-+	 * until cleanup the context in cleanup_dca_context(), so we just
-+	 * set the DCA mem state as free when destroying DCA mem object.
-+	 */
-+	spin_lock(&mem->lock);
-+	set_dca_mem_free(mem);
-+	spin_unlock(&mem->lock);
-+}
++	struct dca_mem_shrink_attr *attr = param;
++	struct hns_dca_page_state *state;
++	int i, free_pages;
 +
-+static inline struct hns_roce_ucontext *
-+uverbs_attr_to_hr_uctx(struct uverbs_attr_bundle *attrs)
-+{
-+	return rdma_udata_to_drv_context(&attrs->driver_udata,
-+					 struct hns_roce_ucontext, ibucontext);
-+}
-+
-+static int UVERBS_HANDLER(HNS_IB_METHOD_DCA_MEM_REG)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct hns_roce_ucontext *uctx = uverbs_attr_to_hr_uctx(attrs);
-+	struct hns_roce_dev *hr_dev = to_hr_dev(uctx->ibucontext.device);
-+	struct ib_uobject *uobj =
-+		uverbs_attr_get_uobject(attrs, HNS_IB_ATTR_DCA_MEM_REG_HANDLE);
-+	struct dca_mem_attr init_attr = {};
-+	struct dca_mem *mem;
-+	int ret;
-+
-+	if (uverbs_copy_from(&init_attr.addr, attrs,
-+			     HNS_IB_ATTR_DCA_MEM_REG_ADDR) ||
-+	    uverbs_copy_from(&init_attr.size, attrs,
-+			     HNS_IB_ATTR_DCA_MEM_REG_LEN) ||
-+	    uverbs_copy_from(&init_attr.key, attrs,
-+			     HNS_IB_ATTR_DCA_MEM_REG_KEY))
-+		return -EFAULT;
-+
-+	mem = alloc_dca_mem(to_hr_dca_ctx(uctx));
-+	if (!mem)
-+		return -ENOMEM;
-+
-+	ret = register_dca_mem(hr_dev, uctx, mem, &init_attr);
-+	if (ret) {
-+		free_dca_mem(mem);
-+		return ret;
++	free_pages = 0;
++	for (i = 0; i < mem->page_count; i++) {
++		state = &mem->states[i];
++		if (dca_page_is_free(state))
++			free_pages++;
 +	}
 +
-+	uobj->object = mem;
++	/* No pages are in use */
++	if (free_pages == mem->page_count) {
++		/* unregister first empty DCA mem */
++		if (!attr->shrink_mems) {
++			clr_dca_mem_registered(mem);
++			attr->shrink_key = mem->key;
++		}
++
++		attr->shrink_mems++;
++	}
++
++	if (attr->shrink_mems > 1)
++		return DCA_MEM_STOP_ITERATE;
++	else
++		return DCA_MEM_NEXT_ITERATE;
++}
++
++static int shrink_dca_mem(struct hns_roce_dev *hr_dev,
++			  struct hns_roce_ucontext *uctx, u64 reserved_size,
++			  struct hns_dca_shrink_resp *resp)
++{
++	struct hns_roce_dca_ctx *ctx = to_hr_dca_ctx(uctx);
++	struct dca_mem_shrink_attr attr = {};
++	unsigned long flags;
++	bool need_shink;
++
++	spin_lock_irqsave(&ctx->pool_lock, flags);
++	need_shink = ctx->free_mems > 0 && ctx->free_size > reserved_size;
++	spin_unlock_irqrestore(&ctx->pool_lock, flags);
++	if (!need_shink)
++		return 0;
++
++	travel_dca_pages(ctx, &attr, shrink_dca_page_proc);
++	resp->free_mems = attr.shrink_mems;
++	resp->free_key = attr.shrink_key;
 +
 +	return 0;
 +}
 +
-+static int dca_cleanup(struct ib_uobject *uobject, enum rdma_remove_reason why,
-+		       struct uverbs_attr_bundle *attrs)
+ static void init_dca_context(struct hns_roce_dca_ctx *ctx)
+ {
+ 	INIT_LIST_HEAD(&ctx->pool);
+@@ -361,10 +463,48 @@ DECLARE_UVERBS_NAMED_METHOD_DESTROY(
+ 	UVERBS_ATTR_IDR(HNS_IB_ATTR_DCA_MEM_DEREG_HANDLE, HNS_IB_OBJECT_DCA_MEM,
+ 			UVERBS_ACCESS_DESTROY, UA_MANDATORY));
+ 
++static int UVERBS_HANDLER(HNS_IB_METHOD_DCA_MEM_SHRINK)(
++	struct uverbs_attr_bundle *attrs)
 +{
 +	struct hns_roce_ucontext *uctx = uverbs_attr_to_hr_uctx(attrs);
-+	struct dca_mem *mem;
++	struct hns_dca_shrink_resp resp = {};
++	u64 reserved_size = 0;
++	int ret;
 +
-+	/* One DCA MEM maybe shared by many QPs, so the DCA mem uobject must
-+	 * be destroyed before all QP uobjects, and we will destroy the DCA
-+	 * uobjects when cleanup DCA context by calling hns_roce_cleanup_dca().
-+	 */
-+	if (why == RDMA_REMOVE_CLOSE || why == RDMA_REMOVE_DRIVER_REMOVE)
-+		return 0;
++	if (uverbs_copy_from(&reserved_size, attrs,
++			     HNS_IB_ATTR_DCA_MEM_SHRINK_RESERVED_SIZE))
++		return -EFAULT;
 +
-+	mem = uobject->object;
-+	unregister_dca_mem(uctx, mem);
-+	free_dca_mem(mem);
++	ret = shrink_dca_mem(to_hr_dev(uctx->ibucontext.device), uctx,
++			     reserved_size, &resp);
++	if (ret)
++		return ret;
++
++	if (uverbs_copy_to(attrs, HNS_IB_ATTR_DCA_MEM_SHRINK_OUT_FREE_KEY,
++			   &resp.free_key, sizeof(resp.free_key)) ||
++	    uverbs_copy_to(attrs, HNS_IB_ATTR_DCA_MEM_SHRINK_OUT_FREE_MEMS,
++			   &resp.free_mems, sizeof(resp.free_mems)))
++		return -EFAULT;
 +
 +	return 0;
 +}
 +
 +DECLARE_UVERBS_NAMED_METHOD(
-+	HNS_IB_METHOD_DCA_MEM_REG,
-+	UVERBS_ATTR_IDR(HNS_IB_ATTR_DCA_MEM_REG_HANDLE, HNS_IB_OBJECT_DCA_MEM,
-+			UVERBS_ACCESS_NEW, UA_MANDATORY),
-+	UVERBS_ATTR_PTR_IN(HNS_IB_ATTR_DCA_MEM_REG_LEN, UVERBS_ATTR_TYPE(u32),
-+			   UA_MANDATORY),
-+	UVERBS_ATTR_PTR_IN(HNS_IB_ATTR_DCA_MEM_REG_ADDR, UVERBS_ATTR_TYPE(u64),
-+			   UA_MANDATORY),
-+	UVERBS_ATTR_PTR_IN(HNS_IB_ATTR_DCA_MEM_REG_KEY, UVERBS_ATTR_TYPE(u64),
-+			   UA_MANDATORY));
-+
-+DECLARE_UVERBS_NAMED_METHOD_DESTROY(
-+	HNS_IB_METHOD_DCA_MEM_DEREG,
-+	UVERBS_ATTR_IDR(HNS_IB_ATTR_DCA_MEM_DEREG_HANDLE, HNS_IB_OBJECT_DCA_MEM,
-+			UVERBS_ACCESS_DESTROY, UA_MANDATORY));
-+
-+DECLARE_UVERBS_NAMED_OBJECT(HNS_IB_OBJECT_DCA_MEM,
-+			    UVERBS_TYPE_ALLOC_IDR(dca_cleanup),
-+			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_REG),
-+			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_DEREG));
-+
-+static bool dca_is_supported(struct ib_device *device)
-+{
-+	struct hns_roce_dev *dev = to_hr_dev(device);
-+
-+	return dev->caps.flags & HNS_ROCE_CAP_FLAG_DCA_MODE;
-+}
-+
-+const struct uapi_definition hns_roce_dca_uapi_defs[] = {
-+	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(
-+		HNS_IB_OBJECT_DCA_MEM,
-+		UAPI_DEF_IS_OBJ_SUPPORTED(dca_is_supported)),
-+	{}
-+};
++	HNS_IB_METHOD_DCA_MEM_SHRINK,
++	UVERBS_ATTR_IDR(HNS_IB_ATTR_DCA_MEM_SHRINK_HANDLE,
++			HNS_IB_OBJECT_DCA_MEM, UVERBS_ACCESS_WRITE,
++			UA_MANDATORY),
++	UVERBS_ATTR_PTR_IN(HNS_IB_ATTR_DCA_MEM_SHRINK_RESERVED_SIZE,
++			   UVERBS_ATTR_TYPE(u64), UA_MANDATORY),
++	UVERBS_ATTR_PTR_OUT(HNS_IB_ATTR_DCA_MEM_SHRINK_OUT_FREE_KEY,
++			    UVERBS_ATTR_TYPE(u64), UA_MANDATORY),
++	UVERBS_ATTR_PTR_OUT(HNS_IB_ATTR_DCA_MEM_SHRINK_OUT_FREE_MEMS,
++			    UVERBS_ATTR_TYPE(u32), UA_MANDATORY));
+ DECLARE_UVERBS_NAMED_OBJECT(HNS_IB_OBJECT_DCA_MEM,
+ 			    UVERBS_TYPE_ALLOC_IDR(dca_cleanup),
+ 			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_REG),
+-			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_DEREG));
++			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_DEREG),
++			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_SHRINK));
+ 
+ static bool dca_is_supported(struct ib_device *device)
+ {
 diff --git a/drivers/infiniband/hw/hns/hns_roce_dca.h b/drivers/infiniband/hw/hns/hns_roce_dca.h
-new file mode 100644
-index 0000000..cb3481f
---- /dev/null
+index cb3481f..97caf03 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_dca.h
 +++ b/drivers/infiniband/hw/hns/hns_roce_dca.h
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
-+/*
-+ * Copyright (c) 2021 Hisilicon Limited. All rights reserved.
-+ */
-+
-+#ifndef __HNS_ROCE_DCA_H
-+#define __HNS_ROCE_DCA_H
-+
-+/* DCA page state (32 bit) */
-+struct hns_dca_page_state {
-+	u32 buf_id : 29; /* If zero, means page can be used by any buffer. */
-+	u32 lock : 1; /* @buf_id locked this page to prepare access. */
-+	u32 active : 1; /* @buf_id is accessing this page. */
-+	u32 head : 1; /* This page is the head in a continuous address range. */
-+};
-+
-+void hns_roce_register_udca(struct hns_roce_dev *hr_dev,
-+			    struct hns_roce_ucontext *uctx);
-+void hns_roce_unregister_udca(struct hns_roce_dev *hr_dev,
-+			      struct hns_roce_ucontext *uctx);
-+
-+#endif
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 55d5386..5524d72 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -215,6 +215,7 @@ enum {
- 	HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL		= BIT(9),
- 	HNS_ROCE_CAP_FLAG_ATOMIC		= BIT(10),
- 	HNS_ROCE_CAP_FLAG_SDI_MODE		= BIT(14),
-+	HNS_ROCE_CAP_FLAG_DCA_MODE		= BIT(15),
- 	HNS_ROCE_CAP_FLAG_STASH			= BIT(17),
+@@ -14,6 +14,13 @@ struct hns_dca_page_state {
+ 	u32 head : 1; /* This page is the head in a continuous address range. */
  };
  
-@@ -266,11 +267,20 @@ struct hns_roce_uar {
- 	unsigned long	logic_idx;
- };
- 
-+struct hns_roce_dca_ctx {
-+	struct list_head pool; /* all DCA mems link to @pool */
-+	spinlock_t pool_lock; /* protect @pool */
-+	unsigned int free_mems; /* free mem num in pool */
-+	size_t free_size; /* free mem size in pool */
-+	size_t total_size; /* total size in pool */
++struct hns_dca_shrink_resp {
++	u64 free_key; /* free buffer's key which registered by the user */
++	u32 free_mems; /* free buffer count which no any QP be using */
 +};
 +
- struct hns_roce_ucontext {
- 	struct ib_ucontext	ibucontext;
- 	struct hns_roce_uar	uar;
- 	struct list_head	page_list;
- 	struct mutex		page_mutex;
-+	struct hns_roce_dca_ctx	dca_ctx;
- };
- 
- struct hns_roce_pd {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index d9179ba..66d0d02d 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -37,10 +37,12 @@
- #include <rdma/ib_addr.h>
- #include <rdma/ib_smi.h>
- #include <rdma/ib_user_verbs.h>
-+#include <rdma/uverbs_ioctl.h>
- #include <rdma/ib_cache.h>
- #include "hns_roce_common.h"
- #include "hns_roce_device.h"
- #include "hns_roce_hem.h"
-+#include "hns_roce_dca.h"
- 
- /**
-  * hns_get_gid_index - Get gid index.
-@@ -306,15 +308,16 @@ static int hns_roce_modify_device(struct ib_device *ib_dev, int mask,
- static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
- 				   struct ib_udata *udata)
- {
--	int ret;
- 	struct hns_roce_ucontext *context = to_hr_ucontext(uctx);
--	struct hns_roce_ib_alloc_ucontext_resp resp = {};
- 	struct hns_roce_dev *hr_dev = to_hr_dev(uctx->device);
-+	struct hns_roce_ib_alloc_ucontext_resp resp = {};
-+	int ret;
- 
- 	if (!hr_dev->active)
- 		return -EAGAIN;
- 
- 	resp.qp_tab_size = hr_dev->caps.num_qps;
-+	resp.cap_flags = (u32)hr_dev->caps.flags;
- 
- 	ret = hns_roce_uar_alloc(hr_dev, &context->uar);
- 	if (ret)
-@@ -325,6 +328,9 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
- 		mutex_init(&context->page_mutex);
- 	}
- 
-+	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_DCA_MODE)
-+		hns_roce_register_udca(hr_dev, context);
++#define HNS_DCA_INVALID_BUF_ID 0UL
 +
- 	resp.cqe_size = hr_dev->caps.cqe_sz;
- 
- 	ret = ib_copy_to_udata(udata, &resp,
-@@ -335,6 +341,9 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
- 	return 0;
- 
- error_fail_copy_to_udata:
-+	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_DCA_MODE)
-+		hns_roce_unregister_udca(hr_dev, context);
-+
- 	hns_roce_uar_free(hr_dev, &context->uar);
- 
- error_fail_uar_alloc:
-@@ -344,8 +353,12 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
- static void hns_roce_dealloc_ucontext(struct ib_ucontext *ibcontext)
- {
- 	struct hns_roce_ucontext *context = to_hr_ucontext(ibcontext);
-+	struct hns_roce_dev *hr_dev = to_hr_dev(ibcontext->device);
- 
- 	hns_roce_uar_free(to_hr_dev(ibcontext->device), &context->uar);
-+
-+	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_DCA_MODE)
-+		hns_roce_unregister_udca(hr_dev, context);
- }
- 
- static int hns_roce_mmap(struct ib_ucontext *context,
-@@ -414,6 +427,12 @@ static void hns_roce_unregister_device(struct hns_roce_dev *hr_dev)
- 	ib_unregister_device(&hr_dev->ib_dev);
- }
- 
-+extern const struct uapi_definition hns_roce_dca_uapi_defs[];
-+static const struct uapi_definition hns_roce_uapi_defs[] = {
-+	UAPI_DEF_CHAIN(hns_roce_dca_uapi_defs),
-+	{}
-+};
-+
- static const struct ib_device_ops hns_roce_dev_ops = {
- 	.owner = THIS_MODULE,
- 	.driver_id = RDMA_DRIVER_HNS,
-@@ -515,6 +534,10 @@ static int hns_roce_register_device(struct hns_roce_dev *hr_dev)
- 
- 	ib_set_device_ops(ib_dev, hr_dev->hw->hns_roce_dev_ops);
- 	ib_set_device_ops(ib_dev, &hns_roce_dev_ops);
-+
-+	if (IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS))
-+		ib_dev->driver_def = hns_roce_uapi_defs;
-+
- 	for (i = 0; i < hr_dev->caps.num_ports; i++) {
- 		if (!hr_dev->iboe.netdevs[i])
- 			continue;
+ void hns_roce_register_udca(struct hns_roce_dev *hr_dev,
+ 			    struct hns_roce_ucontext *uctx);
+ void hns_roce_unregister_udca(struct hns_roce_dev *hr_dev,
 diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
-index 90b739d..f59abc4 100644
+index f59abc4..74fc11a 100644
 --- a/include/uapi/rdma/hns-abi.h
 +++ b/include/uapi/rdma/hns-abi.h
-@@ -86,10 +86,33 @@ struct hns_roce_ib_create_qp_resp {
- struct hns_roce_ib_alloc_ucontext_resp {
- 	__u32	qp_tab_size;
- 	__u32	cqe_size;
-+	__u32	cap_flags;
+@@ -103,6 +103,7 @@ enum hns_ib_objects {
+ enum hns_ib_dca_mem_methods {
+ 	HNS_IB_METHOD_DCA_MEM_REG = (1U << UVERBS_ID_NS_SHIFT),
+ 	HNS_IB_METHOD_DCA_MEM_DEREG,
++	HNS_IB_METHOD_DCA_MEM_SHRINK,
  };
  
- struct hns_roce_ib_alloc_pd_resp {
- 	__u32 pdn;
+ enum hns_ib_dca_mem_reg_attrs {
+@@ -115,4 +116,12 @@ enum hns_ib_dca_mem_reg_attrs {
+ enum hns_ib_dca_mem_dereg_attrs {
+ 	HNS_IB_ATTR_DCA_MEM_DEREG_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
  };
- 
-+#define UVERBS_ID_NS_MASK 0xF000
-+#define UVERBS_ID_NS_SHIFT 12
 +
-+enum hns_ib_objects {
-+	HNS_IB_OBJECT_DCA_MEM = (1U << UVERBS_ID_NS_SHIFT),
++enum hns_ib_dca_mem_shrink_attrs {
++	HNS_IB_ATTR_DCA_MEM_SHRINK_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
++	HNS_IB_ATTR_DCA_MEM_SHRINK_RESERVED_SIZE,
++	HNS_IB_ATTR_DCA_MEM_SHRINK_OUT_FREE_KEY,
++	HNS_IB_ATTR_DCA_MEM_SHRINK_OUT_FREE_MEMS,
 +};
 +
-+enum hns_ib_dca_mem_methods {
-+	HNS_IB_METHOD_DCA_MEM_REG = (1U << UVERBS_ID_NS_SHIFT),
-+	HNS_IB_METHOD_DCA_MEM_DEREG,
-+};
-+
-+enum hns_ib_dca_mem_reg_attrs {
-+	HNS_IB_ATTR_DCA_MEM_REG_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
-+	HNS_IB_ATTR_DCA_MEM_REG_LEN,
-+	HNS_IB_ATTR_DCA_MEM_REG_ADDR,
-+	HNS_IB_ATTR_DCA_MEM_REG_KEY,
-+};
-+
-+enum hns_ib_dca_mem_dereg_attrs {
-+	HNS_IB_ATTR_DCA_MEM_DEREG_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
-+};
  #endif /* HNS_ABI_USER_H */
 -- 
 2.8.1
