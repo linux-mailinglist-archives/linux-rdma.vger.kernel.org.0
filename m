@@ -2,149 +2,182 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DCC2F8B43
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 Jan 2021 05:33:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D19A2F8C35
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 Jan 2021 09:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729799AbhAPEdj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Jan 2021 23:33:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729787AbhAPEdi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Jan 2021 23:33:38 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09811C061798;
-        Fri, 15 Jan 2021 20:32:31 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id u17so22352321iow.1;
-        Fri, 15 Jan 2021 20:32:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IJ2p9Ww5rd/yhMfWY5ZWGoQK8wMPRFoNHSmKhGOMcVI=;
-        b=kmlmIVagRPI+Qb/uDh4n7FNosnYBVV1ClrERDGx7EDOMJudxmJV1gq/N+9ZppOWgdp
-         dpySx0LARDT/HgIwDz0wlmTdLkYgIsU+9n2dyYu+ezM9uy5erP+3S0RogMtFvCdjj5Wj
-         6FU8F5ESDdQU2xrjnaMf/y3yngeXxqUCopZQgNG/yYw8b80SbSaocDhvhMx8sM63mi8L
-         qyMWcsJBV+vINF7XDSZiYqNEfy1CVpbRdcQBB0qceC+S9G0DSPG51pGMPzTrUFaSIcJr
-         3ZUYqdT85Yj95R2Wq4QNNNmxazPrxWFnqnHvPjmpaX1mPNbIl8cRKmyy6aLbW/sTwsCP
-         NgzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IJ2p9Ww5rd/yhMfWY5ZWGoQK8wMPRFoNHSmKhGOMcVI=;
-        b=EKLJWmI4psuIzU1I9WV3hIv1Lpfsuz4QIqNib2XUaunjkjl/H/YDly6oXx8XEfYIMG
-         sG6FQ5vyp3Xq967jekVlTh5WqguEaR4BHHv2qSI5RjnTvJCFMWiB8LCOG6CVQT3nwUok
-         7S9KTTu+oNKXJSdG5AXy9JZ/ZMBEHM/jenpVSphgFb0fMc1Q/VK5HuxqcVMJmCZnD41f
-         fr19TA2ct0Vxqfp6MQ1CO2WMEkYnhBu+ddo1+he/YjQP7MXCaRsDSboiwW5Nm7ewWU08
-         ZvH2aLXBiC6mX0zSnCQGslOpYT+ogTVPMlLtPeKojWJXa27fgL2k0uplKcdQ6I+CbM4Y
-         26TQ==
-X-Gm-Message-State: AOAM531qB7DFwyLLbQgShqoaUGnUrlLoOIlXZBN9lJddy+dU5BM5C3O8
-        z22HWtmX8KSAgMO4Kcfcv8ht5zcUekYoBEBrmi1RUVd8EXQ=
-X-Google-Smtp-Source: ABdhPJxb7fh0nwxA2y9YCqKrj+uTLePU8bhkb6SiUVarA5atGkrZzd0kohK6AyhZBseiryf2KchIX45Jn+h3Fc9BYZE=
-X-Received: by 2002:a02:b38f:: with SMTP id p15mr3632651jan.83.1610771550239;
- Fri, 15 Jan 2021 20:32:30 -0800 (PST)
-MIME-Version: 1.0
-References: <20210114065024.GK4678@unreal> <CAKgT0UeTXMeH24L9=wsPc2oJ=ZJ5jSpJeOqiJvsB2J9TFRFzwQ@mail.gmail.com>
- <20210114164857.GN4147@nvidia.com> <CAKgT0UcKqt=EgE+eitB8-u8LvxqHBDfF+u2ZSi5urP_Aj0Btvg@mail.gmail.com>
- <20210114182945.GO4147@nvidia.com> <CAKgT0UcQW+nJjTircZAYs1_GWNrRud=hSTsphfVpsc=xaF7aRQ@mail.gmail.com>
- <20210114200825.GR4147@nvidia.com> <CAKgT0UcaRgY4XnM0jgWRvwBLj+ufiabFzKPyrf3jkLrF1Z8zEg@mail.gmail.com>
- <20210114162812.268d684a@omen.home.shazbot.org> <CAKgT0Ufe1w4PpZb3NXuSxug+OMcjm1RP3ZqVrJmQqBDt3ByOZQ@mail.gmail.com>
- <20210115140619.GA4147@nvidia.com>
-In-Reply-To: <20210115140619.GA4147@nvidia.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Fri, 15 Jan 2021 20:32:19 -0800
-Message-ID: <CAKgT0UfAoGXQp9C0uL124GZfdhY6vvpk3NmCDqCpLET9dzAdRg@mail.gmail.com>
-Subject: Re: [PATCH mlx5-next v1 2/5] PCI: Add SR-IOV sysfs entry to read
- number of MSI-X vectors
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
+        id S1726807AbhAPIVR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 16 Jan 2021 03:21:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725767AbhAPIVR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 16 Jan 2021 03:21:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 742EA221E2;
+        Sat, 16 Jan 2021 08:20:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610785236;
+        bh=/OMqaqhP24E3ddcv7U8rMRBb7LkJzzz8NXuXj/8AUgc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F9hLPMk05F2tOe3ofixPIFTdQYQ/LNk9nJY36XueQwUhtm7NlfC3ObIIfmdyTv8WG
+         jXRm8s1vWGjCR7fjWi8KOonR5Xxj2q7uRPpF+1pTwIc12KtbDt5kUd3CqLK8+bVwYO
+         Pk3bsuvmpkLpfNgg1fRACQDtyE6F8SirKz52XKMtCNMdUHLRMqquoBCzQyVT0xUGu/
+         +1mdz57+kHLgH7ybAKovtLX/E5sQLIZgwvbFVm025vxyq3xRDCml/3TlE5Hmr2epkh
+         6TgEGmOLd+NsUud/Q4rYEANrk2cQWg2lvdg6eltG/oI11fV3NUQNqjrP7pukIdGO6k
+         NKt4cMsm79VQA==
+Date:   Sat, 16 Jan 2021 10:20:31 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>,
         linux-pci <linux-pci@vger.kernel.org>,
         linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
         Don Dutile <ddutile@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH mlx5-next v1 2/5] PCI: Add SR-IOV sysfs entry to read
+ number of MSI-X vectors
+Message-ID: <20210116082031.GK944463@unreal>
+References: <CAKgT0UcKqt=EgE+eitB8-u8LvxqHBDfF+u2ZSi5urP_Aj0Btvg@mail.gmail.com>
+ <20210114182945.GO4147@nvidia.com>
+ <CAKgT0UcQW+nJjTircZAYs1_GWNrRud=hSTsphfVpsc=xaF7aRQ@mail.gmail.com>
+ <20210114200825.GR4147@nvidia.com>
+ <CAKgT0UcaRgY4XnM0jgWRvwBLj+ufiabFzKPyrf3jkLrF1Z8zEg@mail.gmail.com>
+ <20210114162812.268d684a@omen.home.shazbot.org>
+ <CAKgT0Ufe1w4PpZb3NXuSxug+OMcjm1RP3ZqVrJmQqBDt3ByOZQ@mail.gmail.com>
+ <20210115140619.GA4147@nvidia.com>
+ <20210115155315.GJ944463@unreal>
+ <CAKgT0UdzCqbLwxSnDTtgha+PwTMW5iVb-3VXbwdMNiaAYXyWzQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKgT0UdzCqbLwxSnDTtgha+PwTMW5iVb-3VXbwdMNiaAYXyWzQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 6:06 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Thu, Jan 14, 2021 at 05:56:20PM -0800, Alexander Duyck wrote:
->
-> > That said, it only works at the driver level. So if the firmware is
-> > the one that is having to do this it also occured to me that if this
-> > update happened on FLR that would probably be preferred.
->
-> FLR is not free, I'd prefer not to require it just for some
-> philosophical reason.
-
-It wasn't so much a philosophical thing as the fact that it can sort
-of take the place as a reload. Essentially with an FLR we are
-rewriting the configuration so if the driver were involved it would be
-a good time to pull in the MSI-X table update. However looking over
-the mlx5 code I don't see any handling of FLR in there so I am
-assuming that is handled by the firmware.
-
-> > Since the mlx5 already supports devlink I don't see any reason why the
-> > driver couldn't be extended to also support the devlink resource
-> > interface and apply it to interrupts.
->
-> So you are OK with the PF changing the VF as long as it is devlink not
-> sysfs? Seems rather arbitary?
-
-It is about the setup of things. The sysfs existing in the VF is kind
-of ugly since it is a child device calling up to the parent and
-telling it how it is supposed to be configured. I'm sure in theory we
-could probably even have the VF request something like that itself
-through some sort of mailbox and cut out the middle-man but that would
-be even uglier.
-
-If you take a look at the usage of pci_physfn it is usually in spots
-where the PF is being looked for in order to find the policy that is
-supposed to be applied to the VF. This is one of the first few cases
-where it is being used to set the policy for the VF.
-
-> Leon knows best, but if I recall devlink becomes wonky when the VF
-> driver doesn't provide a devlink instance. How does it do reload of a
-> VF then?
-
-In my mind it was the PF driver providing a devlink instance for the
-VF if a driver isn't loaded. Then if the mlx5 driver was loaded on the
-VF you would replace that instance with one supported by the VF itself
-in order to coordinate with the VF driver. That way if the mlx5 driver
-is loaded on the VF you can still change the settings instead of being
-blocked by your own driver.
-
-As far as a reload the non-driver loaded case would probably look a
-lot like how things are handled now with the taking of the device
-lock, verifying no driver is loaded, notifying the firmware, and
-releasing the lock when it is complete. If the mlx5 driver is loaded
-on the VF it could be a more complete setup that would probably look
-more like your standard driver reinit.
-
-> I think you end up with essentially the same logic as presented here
-> with sysfs.
-
-It is similar, however the big difference is how the control is setup.
-With the VF sysfs file running things it feels sort of like the tail
-wagging the dog. You are having to go through and verify that this is
-a VF, that the PF is present, that the PF supports this operation and
-so on. If the PF is in charge of managing the configuration it should
-be the one registering the interfaces, not the VF. That is my view on
-this anyway as I feel it simplifies this quite a bit as the interface
-won't be there if it isn't supported.:
-
-> > > It is possible for vfio to fake the MSI-X capability and limit what a
-> > > user can access, but I don't think that's what is being done here.
+On Fri, Jan 15, 2021 at 05:48:59PM -0800, Alexander Duyck wrote:
+> On Fri, Jan 15, 2021 at 7:53 AM Leon Romanovsky <leon@kernel.org> wrote:
 > >
-> > Yeah, I am assuming that is what is being done here.
+> > On Fri, Jan 15, 2021 at 10:06:19AM -0400, Jason Gunthorpe wrote:
+> > > On Thu, Jan 14, 2021 at 05:56:20PM -0800, Alexander Duyck wrote:
+> > >
+> > > > That said, it only works at the driver level. So if the firmware is
+> > > > the one that is having to do this it also occured to me that if this
+> > > > update happened on FLR that would probably be preferred.
+> > >
+> > > FLR is not free, I'd prefer not to require it just for some
+> > > philosophical reason.
+> > >
+> > > > Since the mlx5 already supports devlink I don't see any reason why the
+> > > > driver couldn't be extended to also support the devlink resource
+> > > > interface and apply it to interrupts.
+> > >
+> > > So you are OK with the PF changing the VF as long as it is devlink not
+> > > sysfs? Seems rather arbitary?
+> > >
+> > > Leon knows best, but if I recall devlink becomes wonky when the VF
+> > > driver doesn't provide a devlink instance. How does it do reload of a
+> > > VF then?
+> > >
+> > > I think you end up with essentially the same logic as presented here
+> > > with sysfs.
+> >
+> > The reasons why I decided to go with sysfs are:
+> > 1. This MSI-X table size change is applicable to ALL devices in the world,
+> > and not only netdev.
 >
-> Just to be really clear, that assumption is wrong
+> In the PCI world MSI-X table size is a read only value. That is why I
+> am pushing back on this as a PCI interface.
 
-I misspoke and meant to agree with Alex's comment. If you are saying I
-was wrong, then yes, I was wrong. I meant that I was assuming you were
-resizing the actual table in the MMIO region where the MSI-X table and
-PBA bits are present.
+And it stays read-only.
+
+>
+> > 2. This is purely PCI field and apply equally with same logic to all
+> > subsystems and not to netdev only.
+>
+> Again, calling this "purely PCI" is the sort of wording that has me
+> concerned. I would prefer it if we avoid that wording. There is much
+> more to this than just modifying the table size field. The firmware is
+> having to shift resources between devices and this potentially has an
+> effect on the entire part, not just one VF.
+
+It is internal to HW implementation, dumb device can solve it differently.
+
+>
+> > 3. The sysfs interface is the standard way of configuring PCI/core, not
+> > devlink.
+>
+> This isn't PCI core that is being configured. It is the firmware for
+> the device. You are working with resources that are shared between
+> multiple functions.
+
+I'm ensuring that "lspci -vv .." will work correctly after such change.
+It is PCI core responsibility.
+
+>
+> > 4. This is how orchestration software provisioning VFs already. It fits
+> > real world usage of SR-IOV, not the artificial one that is proposed during
+> > the discussion.
+>
+> What do you mean this is how they are doing it already? Do you have
+> something out-of-tree and that is why you are fighting to keep the
+> sysfs? If so that isn't a valid argument.
+
+I have Kubernetes and OpenStack, indeed they are not part of the kernel tree.
+They already use sriov_driver_autoprobe sysfs knob to disable autobind
+before even starting. They configure MACs and bind VFs through sysfs/netlink
+already. For them, the read/write of sysfs that is going to be bound to
+the already created VM with known CPU properties, fits perfectly.
+
+>
+> > So the idea to use devlink just because mlx5 supports it, sound really
+> > wrong to me. If it was other driver from another subsystem without
+> > devlink support, the request to use devlink won't never come.
+> >
+> > Thanks
+>
+> I am suggesting the devlink resources interface because it would be a
+> VERY good fit for something like this. By the definition of it:
+> ``devlink`` provides the ability for drivers to register resources, which
+> can allow administrators to see the device restrictions for a given
+> resource, as well as how much of the given resource is currently
+> in use. Additionally, these resources can optionally have configurable size.
+> This could enable the administrator to limit the number of resources that
+> are used.
+
+It is not resource, but HW objects. The devlink doesn't even see the VFs
+as long as they are not bound to the drivers.
+
+This is an example:
+
+[root@vm ~]# echo 0 > /sys/bus/pci/devices/0000\:01\:00.0/sriov_drivers_autoprobe
+[root@vm ~]# echo 0 > /sys/bus/pci/devices/0000\:01\:00.0/sriov_numvfs
+[ 2370.579711] mlx5_core 0000:01:00.0: E-Switch: Disable: mode(LEGACY), nvfs(2), active vports(3)
+[root@vm ~]# echo 2 > /sys/bus/pci/devices/0000\:01\:00.0/sriov_numvfs
+[ 2377.663666] mlx5_core 0000:01:00.0: E-Switch: Enable: mode(LEGACY), nvfs(2), active vports(3)
+[ 2377.777010] pci 0000:01:00.1: [15b3:101c] type 00 class 0x020000
+[ 2377.784903] pci 0000:01:00.2: [15b3:101c] type 00 class 0x020000
+[root@vm ~]# devlink dev
+pci/0000:01:00.0
+[root@vm ~]# lspci |grep nox
+01:00.0 Ethernet controller: Mellanox Technologies MT28908 Family [ConnectX-6]
+01:00.1 Ethernet controller: Mellanox Technologies MT28908 Family [ConnectX-6 Virtual Function]
+01:00.2 Ethernet controller: Mellanox Technologies MT28908 Family [ConnectX-6 Virtual Function]
+
+So despite us having 2 VFs ready to be given to VMs, administrator doesn't
+see them as devices.
+
+>
+> Even looking over the example usage I don't see there being much to
+> prevent you from applying it to this issue. In addition it has the
+> idea of handling changes that cannot be immediately applied already
+> included. Your current solution doesn't have a good way of handling
+> that and instead just aborts with an error.
+
+Yes, because it is HW resource that should be applied immediately to
+make sure that it is honored, before it is committed to the users.
+
+It is very tempting to use devlink everywhere, but it is really wrong
+tool for this scenario.
+
+Thanks
