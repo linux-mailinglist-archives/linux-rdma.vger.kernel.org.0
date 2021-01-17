@@ -2,132 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6C02F918E
-	for <lists+linux-rdma@lfdr.de>; Sun, 17 Jan 2021 10:27:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CDB2F94C9
+	for <lists+linux-rdma@lfdr.de>; Sun, 17 Jan 2021 20:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726214AbhAQJ1X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 17 Jan 2021 04:27:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726209AbhAQJ1S (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 17 Jan 2021 04:27:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 200C8225AB;
-        Sun, 17 Jan 2021 09:26:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610875597;
-        bh=AtBxoI86DOB/UKR0rgAMcvsjuL2mPJ205h5Yjr7Yzq8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FTi5sH6x6AlZHw0CSHueVrRQcrGnjgyOUb68cvMFKhHxWe3X/iGzVs3MhaVFex4Dk
-         KZTsirWgZ3CJvh5yK2mS/iSJ7teMIBegXAERygIYYFKkDEzUohfoFnyioW5Bhxv/3z
-         khWWg+NA5f6PaiABP4em8MC/KEkb4cRUmYVpN2CYe12mMoCvjuozgAc+GAjr8siClC
-         /t+5X59mF1CA/wR8v6ErceLjjoE3AY4T8+xSqP2mFdPLEHO9Wlg7X1vIQQ77Fuly5F
-         jo8BjQ5uKHWpo95Pn9DgIDzfHfFo97o/1UCx01nLgOF8uDaH2/tRByXQ0a+uhGVxUw
-         wyEL7WjDrTk4w==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Parav Pandit <parav@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH rdma-rc] Revert "RDMA/mlx5: Fix devlink deadlock on net namespace deletion"
-Date:   Sun, 17 Jan 2021 11:26:33 +0200
-Message-Id: <20210117092633.10690-1-leon@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S1729947AbhAQTEp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 17 Jan 2021 14:04:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729570AbhAQTDD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 17 Jan 2021 14:03:03 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE12CC061574
+        for <linux-rdma@vger.kernel.org>; Sun, 17 Jan 2021 11:02:22 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id c12so8883177pfo.10
+        for <linux-rdma@vger.kernel.org>; Sun, 17 Jan 2021 11:02:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=sBsWkGjaLI4ns0nT61e+91kOHbpUWMRH5vWp3GHiSRk=;
+        b=CBUUU7gkDw1FG3PnsDX9IQZBQd6qO0tZof+4xbyTpu30+AkkmBT7f3xsgL1eOzYM7i
+         Y7u8lTIXR2nK3W191r2G21DZO0W3b4Bcd6PD5Gxw9vyDYw1tbwTE1LbfoMnzug3u+b8X
+         JgrDuScT+gh3EelRY28Gk3qvIAt3VY3uIIkNOLGe/dgxldHMjuEcusW2E80SrIKHGUxP
+         BPovd7tiUQmQFjWo7jTaWcfdNK13WmcA2hyZhxzr4HqWYeQ5kHG/d6EgPwy9nJZSonbd
+         AmOwyjOuCGzOKYL/RdHKv3CGY5hiUQZxeDqdfca1kPzlXdWM5Anj14tAE3TguMzq79Mr
+         vHEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=sBsWkGjaLI4ns0nT61e+91kOHbpUWMRH5vWp3GHiSRk=;
+        b=KTsCOHgBbh3rG6xa3ktswgimyekNHaYQCFSQ3EeYdWnujtu1suX9HTJVzrp+nSpho9
+         hxc6BAWumqN+DUOlm2wIkVZEdutkc4JmuswAQwD4uaXO71nZReDqQ+a+l8jBAWTmoA2C
+         LMF/3RUoJRwCjsvqrST3WzxHgb6naqtFpaDhb3og1IfLGNiCUHac7Th4DumF/W73uzN/
+         tRS2N6OZyJjIPa15SsFrVhe3bYgH8AClLLKpxzzM2ngmZdobI+y1x1ek3P7pasIm9IaU
+         2KssVh+cgiHximTg8xe67eTObw710au7MFQVHPtL31zn4cfxkkGHZjlCbDAcBbvqtghS
+         XOrg==
+X-Gm-Message-State: AOAM5318mzJw5UBzQNPQHtPAb7kAVNrIhdGqkq016uIqU/kq3OA1lDnZ
+        H19L6hxgBiVBGnMy4AJPZwS1ISoLoYRE/k/MJFg=
+X-Google-Smtp-Source: ABdhPJx6/U2hosTv0Vbt4TgA5xOER63xwickSPVBFLF6MtcGt6y9FBZD594Wfrm9gdM4peP+G5YQAThb6a5l7Hu6ArI=
+X-Received: by 2002:aa7:95b6:0:b029:1ae:8a7b:59ac with SMTP id
+ a22-20020aa795b60000b02901ae8a7b59acmr22930146pfk.15.1610910142278; Sun, 17
+ Jan 2021 11:02:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6a10:40c5:0:0:0:0 with HTTP; Sun, 17 Jan 2021 11:02:21
+ -0800 (PST)
+Reply-To: tracymedicinemed3@gmail.com
+From:   Dr Tracy William <captraymondjpierce@gmail.com>
+Date:   Sun, 17 Jan 2021 20:02:21 +0100
+Message-ID: <CAAcDt7ENdzM3gqY1TeKn+yPByqBRqSWbzzSMzmW70FkBCWbVGw@mail.gmail.com>
+Subject: From Dr Tracy from United States
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Parav Pandit <parav@nvidia.com>
+-- 
+Hello Dear,
+how are you doing?I hope you are good
+Its my pleasure to contact you for friendship as i have been busy with work
+for so long and i believe this is the right time to find someone.
 
-This reverts commit fbdd0049d98d44914fc57d4b91f867f4996c787b.
+I was just surfing through the Internet when i found your email,i want
+to make a new
+and special friend.
 
-Due to commit in fixes tag, netdevice events were received only
-in one net namespace of mlx5_core_dev. Due to this when netdevice
-events arrive in net namespace other than net namespace of mlx5_core_dev,
-they are missed.
-
-This results in empty GID table due to RDMA device being detached from
-its net device.
-
-Hence, revert back to receive netdevice events in all net namespaces to
-restore back RDMA functionality in non init_net net namespace.
-
-Fixes: fbdd0049d98d ("RDMA/mlx5: Fix devlink deadlock on net namespace deletion")
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/main.c              |  6 ++----
- .../net/ethernet/mellanox/mlx5/core/lib/mlx5.h |  5 +++++
- include/linux/mlx5/driver.h                    | 18 ------------------
- 3 files changed, 7 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index ed13c1bb031e..36f8ae4fe619 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -3335,8 +3335,7 @@ static int mlx5_add_netdev_notifier(struct mlx5_ib_dev *dev, u8 port_num)
- 	int err;
-
- 	dev->port[port_num].roce.nb.notifier_call = mlx5_netdev_event;
--	err = register_netdevice_notifier_net(mlx5_core_net(dev->mdev),
--					      &dev->port[port_num].roce.nb);
-+	err = register_netdevice_notifier(&dev->port[port_num].roce.nb);
- 	if (err) {
- 		dev->port[port_num].roce.nb.notifier_call = NULL;
- 		return err;
-@@ -3348,8 +3347,7 @@ static int mlx5_add_netdev_notifier(struct mlx5_ib_dev *dev, u8 port_num)
- static void mlx5_remove_netdev_notifier(struct mlx5_ib_dev *dev, u8 port_num)
- {
- 	if (dev->port[port_num].roce.nb.notifier_call) {
--		unregister_netdevice_notifier_net(mlx5_core_net(dev->mdev),
--						  &dev->port[port_num].roce.nb);
-+		unregister_netdevice_notifier(&dev->port[port_num].roce.nb);
- 		dev->port[port_num].roce.nb.notifier_call = NULL;
- 	}
- }
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h
-index 3a9fa629503f..d046db7bb047 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h
-@@ -90,4 +90,9 @@ int mlx5_create_encryption_key(struct mlx5_core_dev *mdev,
- 			       u32 key_type, u32 *p_key_id);
- void mlx5_destroy_encryption_key(struct mlx5_core_dev *mdev, u32 key_id);
-
-+static inline struct net *mlx5_core_net(struct mlx5_core_dev *dev)
-+{
-+	return devlink_net(priv_to_devlink(dev));
-+}
-+
- #endif
-diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index 4901b4fadabb..c4939b28ceed 100644
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -1210,22 +1210,4 @@ static inline bool mlx5_is_roce_enabled(struct mlx5_core_dev *dev)
- 	return val.vbool;
- }
-
--/**
-- * mlx5_core_net - Provide net namespace of the mlx5_core_dev
-- * @dev: mlx5 core device
-- *
-- * mlx5_core_net() returns the net namespace of mlx5 core device.
-- * This can be called only in below described limited context.
-- * (a) When a devlink instance for mlx5_core is registered and
-- *     when devlink reload operation is disabled.
-- *     or
-- * (b) during devlink reload reload_down() and reload_up callbacks
-- *     where it is ensured that devlink instance's net namespace is
-- *     stable.
-- */
--static inline struct net *mlx5_core_net(struct mlx5_core_dev *dev)
--{
--	return devlink_net(priv_to_devlink(dev));
--}
--
- #endif /* MLX5_DRIVER_H */
---
-2.29.2
-
+My name is Dr Tracy William,I am from the United States of America.
+Pls respond to my personal email(tracymedicinemed3@gmail.com) and i
+will send my details and pictures upon hearing from you
+bye
+With love
+Tracy
