@@ -2,104 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 462922F9ADC
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 08:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8478B2F9EA8
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 12:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733247AbhARH7L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Jan 2021 02:59:11 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:42919 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1733238AbhARH7J (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jan 2021 02:59:09 -0500
-X-IronPort-AV: E=Sophos;i="5.79,355,1602518400"; 
-   d="scan'208";a="103575172"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 18 Jan 2021 15:58:06 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id 497424CE4B3E;
-        Mon, 18 Jan 2021 15:58:02 +0800 (CST)
-Received: from [10.167.220.69] (10.167.220.69) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Mon, 18 Jan 2021 15:58:01 +0800
-Message-ID: <60053F88.3060302@cn.fujitsu.com>
-Date:   Mon, 18 Jan 2021 15:58:00 +0800
-From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
-User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
-MIME-Version: 1.0
+        id S2390954AbhARLrm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Jan 2021 06:47:42 -0500
+Received: from mail-bn7nam10on2052.outbound.protection.outlook.com ([40.107.92.52]:62361
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389325AbhARLrW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:47:22 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h5VX+Zliwak4cYYmPLHJV9qGw3aBVzkvyTxBAvYsfwbgRGpclUxjMIIjNTVqTFuX+5nNIa+vbf8j0lC/mxfTJkFfD3h/FhYH6a/o+ZMpgpnbVQ46IAhSTo1/XBkthVd/VyCXonkKWAwqZhbY+n5/MWi/qDkiOwwYKprBByS+YqUVymI0axw04CperCBgtoTfUk5kvC8V/JwKLi1n9bQ/7doB+eBP0y0Z4f7H11JhwgjpS3a8+VAZk5zMQrsJDlDGHHF3tkU5IptXtdDdiRMjlD9xck8xRZw5k5y2uIPujfmj2PI3HZTU95hR5Vc/1fU54wut2au0/Q4NKHJao78RlQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H806aZZpex1JXu2T1EdMhfZpQJP/vlLfmR5IDXue+aQ=;
+ b=aUD039hBie9ItX9iX+L8KWj/wAWdWtojhj7IEAlzGXQyxKgYsa2BBVgeRqLQSlOAwpkCM6zVPGXuItjINHFc8dmq2rYP0BGKWIEcHg6k6uxdURffIBa6LKRlCSSL+n3LuRB1E7KjK46dKFGhxJdVQuqA08V70r6ExDnuPP7aUgkOvd8+BO1+eunhvZm0eNkfLmcY3uTpacLfiyGofPcDO0SOAUXUdOD5a5HOVUZAt2jUss4SGz7HSygFKKROczspb4G+Bo6+NzWe+W2NSy+EcuFiEO1+7aG5IkAyhtoJw+y0r5c0xYUXPo1NnMfVYCAv5c1QCHuzbZu4GDWUnC5jFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H806aZZpex1JXu2T1EdMhfZpQJP/vlLfmR5IDXue+aQ=;
+ b=KT+aVVbENWnzM0tWlJBM/OAn+C7nRAWxF0F8Fp7XS/PQsDScbf8yNxwmQsxpz019Xzr4Nlb0HTFcKhwhzhR6kQ6aas27Li58t5S5Fa8O3b6erfPlLoVSdXC1PKwn23ikZjQL8PwVbzy1twC1TXg3v/lyQZmyiNJnSQDqF3pFbEI=
+Received: from BL0PR05MB5010.namprd05.prod.outlook.com (2603:10b6:208:36::17)
+ by BL0PR05MB4946.namprd05.prod.outlook.com (2603:10b6:208:8c::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.2; Mon, 18 Jan
+ 2021 11:46:28 +0000
+Received: from BL0PR05MB5010.namprd05.prod.outlook.com
+ ([fe80::b5a6:c2f0:f5fd:1fce]) by BL0PR05MB5010.namprd05.prod.outlook.com
+ ([fe80::b5a6:c2f0:f5fd:1fce%6]) with mapi id 15.20.3784.006; Mon, 18 Jan 2021
+ 11:46:28 +0000
+From:   Bryan Tan <bryantan@vmware.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Yishai Hadas <yishaih@nvidia.com>, <linux-rdma@vger.kernel.org>,
-        <leon@kernel.org>
-Subject: Re: [PATCH 1/2] RDMA/uverbs: Don't set rcq if qp_type is IB_QPT_XRC_INI
-References: <20201216071755.149449-1-yangx.jy@cn.fujitsu.com> <20210112200925.GA20208@nvidia.com> <600007B6.1070606@cn.fujitsu.com> <20210115192337.GA456993@nvidia.com>
-In-Reply-To: <20210115192337.GA456993@nvidia.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.167.220.69]
-X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
-X-yoursite-MailScanner-ID: 497424CE4B3E.A9E28
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
-X-Spam-Status: No
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Pv-drivers <Pv-drivers@vmware.com>
+Subject: RE: [PATCH for-rc] RDMA/vmw_pvrdma: Fix network_hdr_type reported in
+ WC
+Thread-Topic: [PATCH for-rc] RDMA/vmw_pvrdma: Fix network_hdr_type reported in
+ WC
+Thread-Index: AQHW6oFSgRSBXw4ME0q8w/xESfn7YKonXxSAgADB0RCAAIQbgIAEo9Yw
+Date:   Mon, 18 Jan 2021 11:46:28 +0000
+Message-ID: <BL0PR05MB50108203905E205C6B4D2682B2A49@BL0PR05MB5010.namprd05.prod.outlook.com>
+References: <1610634408-31356-1-git-send-email-bryantan@vmware.com>
+ <20210114172359.GC316809@nvidia.com>
+ <BL0PR05MB501015BAF25CADD722F5A9FCB2A79@BL0PR05MB5010.namprd05.prod.outlook.com>
+ <20210115125031.GY4147@nvidia.com>
+In-Reply-To: <20210115125031.GY4147@nvidia.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=vmware.com;
+x-originating-ip: [208.91.2.1]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ffed4d48-2a8f-490d-bc98-08d8bba6b137
+x-ms-traffictypediagnostic: BL0PR05MB4946:
+x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BL0PR05MB4946601E6DE417938D52A40CB2A40@BL0PR05MB4946.namprd05.prod.outlook.com>
+x-vmwhitelist: True
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: g8scDzWd8Iyh5LydXPyLKjINyyb0X7OqKew1QSc7cZbd7sqcgHmdgjpaujK+HwXB7EGVlXPgfjoCkTzqdj/j0emBpUKUJ1HIGlUX11jp+WtRpnvr63HWD+8pmOIwLOHhomrEo/x94dUgH1At+Xn5iyANdTK0A8cMUinFRdtLkDsuQy5xoabK/mrILT8MbSCs3Dzqyp8vG6FXYFmoPcaoK3AdcJ+1ozV4/t6JIMUu4vTaZziePkph2sYcjcEeq7TKk6ZpFOGN/6WAsIeiw5z6Y3sF1ov+jHMGytd0Up2CMWTsn/Ew0OnNp4qN8YfGEA6y59DYrGsW/hwKtwop3tacC7im2lltuS+lbIQdwu4qoWP2uNZMSlWl2Y/eBKBRye3y
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR05MB5010.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(376002)(366004)(39860400002)(4326008)(55016002)(107886003)(7696005)(478600001)(54906003)(5660300002)(86362001)(8936002)(6916009)(316002)(66556008)(52536014)(66446008)(6506007)(8676002)(66476007)(64756008)(2906002)(71200400001)(33656002)(76116006)(26005)(66946007)(186003)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?1e0wIX/f3KyagXGU+/Azo/EKlh0dZ46QFrd9sqKxDStLrwtT2wJtnY9jdJ?=
+ =?iso-8859-1?Q?Ka2403ScsKMPDuR21uojSxgzhUPCJvofGYcITWq9mmBh0fIeC2AdLVGI34?=
+ =?iso-8859-1?Q?b5mIFXEFfGE0OV8aVhK2XkX3oPBdutm9KWd+pUugyWZa0Qq4Kr7+YD9C/+?=
+ =?iso-8859-1?Q?kZ50TX4vy6Q6J+Lxx7IY6qeCcx4XSqYqT/xhSKW94bc0x1JumBQRUtX/sJ?=
+ =?iso-8859-1?Q?3VA6TQHEyeGc37SRyXY6ZzoFOSn6V8wX2r9vOh2S3hMVKOmj/CEXecnsOc?=
+ =?iso-8859-1?Q?Fo3lFZsk8TWo1nLdSc3LVXk3N0wiXWn2dxQTiFH88QT8H8TKfRkDVeeg0u?=
+ =?iso-8859-1?Q?Qkot0gaIMobbEyOO+jUISI+rEnUncKYbNMd+tIkMK50K+LgPdhe6/91qaV?=
+ =?iso-8859-1?Q?brdPmh6NKhrhbBuafL5AVu6ohvUcvp2EriVLLGGAlurnBlPRJbnMMCLsPh?=
+ =?iso-8859-1?Q?I7uKH/kiKU2u/yA30SoNYZFUfTWHLzlOMGQv7jtedpNXvx16IVxUXqMb7u?=
+ =?iso-8859-1?Q?cnemLzJzmU3EOiPOzhd2h00L+G9jHbZSQoYuq7kbny3rnJ0CfJMkdxImGu?=
+ =?iso-8859-1?Q?oc23mKHgjB2PgUZLWr9vkTxJd4Hfv15+yocQD0Cfo6qk6Foi/dqFmsBtfN?=
+ =?iso-8859-1?Q?2IxRoaLQihdwAzhwnr1x0cyyM1eGO/6bmkDZPwoJ6McW8gwYWWSFrz9D+d?=
+ =?iso-8859-1?Q?H8OSPidxtrWLgs227RdPbc54uugV14wkqKH2I6Z+5n2j1U8prDCMqDBJ7A?=
+ =?iso-8859-1?Q?nMo4ozLRVd81thlOQaiseejkB2daeYjPwtr0WM7egbT26gYDaS2cozb0p+?=
+ =?iso-8859-1?Q?w2V5gsGdZrl7ebROePC12t4SfxqrfLLzDIXIC56gllr1Vu9Wuu7JAz/M2l?=
+ =?iso-8859-1?Q?LSN3ryIuFo1XlqeO3yGyn2XkF5SHApc1DYTN1kDFqZmjFybYxnw59ertuR?=
+ =?iso-8859-1?Q?lFQX3L0j6Ar2vh1LijVHl9HM69aCPBuh5+HtDkmJrqEvvuwU3Yn1QVu2w0?=
+ =?iso-8859-1?Q?8H5Bjc33fRk7OOiE8=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR05MB5010.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ffed4d48-2a8f-490d-bc98-08d8bba6b137
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jan 2021 11:46:28.4690
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wqLnVVjnAuZK9gxDJCY7eO6yWb/sSZCuSEw88SCjOFdVTocCpKu2bNZcj1YSAv7avHiQ73tYXXZAfz0yOfwDrA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR05MB4946
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/1/16 3:23, Jason Gunthorpe wrote:
-> On Thu, Jan 14, 2021 at 04:58:30PM +0800, Xiao Yang wrote:
->> On 2021/1/13 4:09, Jason Gunthorpe wrote:
->>> On Wed, Dec 16, 2020 at 03:17:54PM +0800, Xiao Yang wrote:
->>>> INI QP doesn't require receive CQ.
->>>>
->>>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
->>>>    drivers/infiniband/core/uverbs_cmd.c | 2 +-
->>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
->>>> index 418d133a8fb0..d8bc8ea3ad1e 100644
->>>> +++ b/drivers/infiniband/core/uverbs_cmd.c
->>>> @@ -1345,7 +1345,7 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
->>>>    		if (has_sq)
->>>>    			scq = uobj_get_obj_read(cq, UVERBS_OBJECT_CQ,
->>>>    						cmd->send_cq_handle, attrs);
->>>> -		if (!ind_tbl)
->>>> +		if (!ind_tbl&&   cmd->qp_type != IB_QPT_XRC_INI)
->>>>    			rcq = rcq ?: scq;
->>> Hmm, this does make it consistent with the UVERBS_METHOD_QP_CREATE
->>> flow which does set attr.recv_cq to NULL if the user didn't specify one.
->>>
->>> However this has been like this since the beginning - what are you
->>> doing that this detail matters?
->> Hi Jason,
->>
->> Thanks for your comment.
->> 1) I didn't get any issue for now.
->> 2) I think it is not meaningful to set rcq for XRC INITIATOR QP, current
->> code has ignores rcq as below:
->> static int create_qp(struct uverbs_attr_bundle *attrs,
->>                      struct ib_uverbs_ex_create_qp *cmd)
->> ...
->>                  if (cmd->qp_type == IB_QPT_XRC_INI) {
->>                          cmd->max_recv_wr = 0;
->>                          cmd->max_recv_sge = 0;
->> ...
->>
->> By the way, I have a question:
->> Why do we need two kinds of uverbs API?(a: read&  write, b: ioctl)
-> The write APIs can't be modified due to how they were
-> designed. Whenever someone needs to change something they have to move
-> things to ioctl
-Hi Jason,
+From: Jason Gunthorpe <jgg@nvidia.com>
+Sent: Friday, January 15, 2021 8:51 PM
+> On Fri, Jan 15, 2021 at 04:58:58AM +0000, Bryan Tan wrote:
+> > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > Sent: Friday, January 15, 2021 1:24 AM
+> > > On Thu, Jan 14, 2021 at 06:26:48AM -0800, Bryan Tan wrote:
+> > > > The PVRDMA device defines network_hdr_type according to an old
+> > > > definition of the rdma_network_type enum that has since changed,
+> > > > resulting in the wrong rdma_network_type being reported. Fix this b=
+y
+> > > > explicitly defining the enum used by the PVRDMA device and adding a
+> > > > function to convert the pvrdma_network_type to rdma_network_type en=
+um.
+> > >
+> > > How come I can't find anything reading this in rdma-core?
+> > >
+> > > $ ~/oss/rdma-core#git grep network_hdr_type
+> > > kernel-headers/rdma/vmw_pvrdma-abi.h:=A0__u8 network_hdr_type;
+> > >
+> > > ??
+> >
+> > network_hdr_type isn't exposed in the userspace WC ibv_wc.
+>=20
+> So this is "HW" API then?
+> <snip>
+> Well, the struct that holds the value is in a uapi header, so the
+> definition should be too. If you are defining HW data in uapi then may
+> as well define all of it.
 
-Could you explain that the write APIs can't be modified? :-)
+Yes, the pvrdma_cqe struct is populated by the HW. Both the driver and
+the userspace library use this struct to populate the corresponding WCs.
+That makes sense, let me move them into the uapi header. Apologies if
+this is answered somewhere, couldn't find any info--am I responsible for
+updating the header in rdma-core then?
 
-Best Regards,
-Xiao Yang
-> Jason
->
->
-> .
->
-
-
-
+Bryan
