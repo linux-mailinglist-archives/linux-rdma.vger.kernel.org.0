@@ -2,105 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98F52FAA97
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 20:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A772FAAD2
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 21:03:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437666AbhARTul (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Jan 2021 14:50:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437662AbhARTuL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jan 2021 14:50:11 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8319AC061575
-        for <linux-rdma@vger.kernel.org>; Mon, 18 Jan 2021 11:49:31 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id l14so8066991qvh.2
-        for <linux-rdma@vger.kernel.org>; Mon, 18 Jan 2021 11:49:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JsXrRxwX4Ihy82+cpBIV1dM0HTdGoCQx+Xj3M+InpDQ=;
-        b=golZbkSPtyEEby7hQbkus5qmO8Z/T1CiupAtIFBtNYS9N8VEmlvSIs2kHpT/5evhYL
-         1dQJbVWDQ7euR0A/LRJEyF5PPiuatrULPYtcYmwAw5V1Cj2J6+x2SHg9cGFgZWjGE9dh
-         fu/VdUJq6hXNfQFIDYuHdK64b3x0U0cs7Gijtj0Yvc6U12gb9aeVAKCS92lc2iWNRwwV
-         Acqx9j9bfLQVdiV/umj2+pLUwL05zp+ayg4TApeusgtm5iW7ZbcoBE1E/Rt5ICnmBp1O
-         PGi2T9uSqftYthlujxDhfzjoUW2du97mOGgepdEFAaRXEkJyWj4j715OBaQ22tllK7Li
-         vB1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JsXrRxwX4Ihy82+cpBIV1dM0HTdGoCQx+Xj3M+InpDQ=;
-        b=RYmrC948UZta50fdFLTZ0dXC++o2bTycT5YwisStvuB9BNp8yBwZ416ngRmDzb1Z6j
-         2iafb64BUBIws/r8EGEQExIKEVnYcvLeJarpOdFsVpq8JKL9z/QP6IAcEkonQ3xOyZXw
-         v/mEK4xMSs6vTvn64PeJZAalHHCk/lcdWklIRPcMTlE1gflTekBg7MfCk0piUfvLPPl5
-         q1EQ8Mg3dwA7A7IVfHxELF5DlM724QdMbzbA5nnwu33S1LgB1kqwWKdRg7GG7RZZRhHF
-         KbKtOw/HZUvXzBUSPiSjt7XsvsHWQkXd4Qvtk2bEIFvkcbcxvCgLzMwZtg+agjqTx2e3
-         qmeg==
-X-Gm-Message-State: AOAM5325cvkWd6x6GZRSi/BvA5PJPY3rDDaHLqg7wEGyYEtD+4WGQDNZ
-        +KMwrcO1QLnW5TBni5da8ThSiQ==
-X-Google-Smtp-Source: ABdhPJw7vQbTWWphTJ3i/i69+aC/fxAxYGVWVZ32XVC4uYKN3THDs21AiFcqMy3gLMNF3UDp7L+qBg==
-X-Received: by 2002:a05:6214:14af:: with SMTP id bo15mr981014qvb.19.1610999370705;
-        Mon, 18 Jan 2021 11:49:30 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id l26sm3516622qtr.36.2021.01.18.11.49.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 11:49:30 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l1aWn-0033Im-PE; Mon, 18 Jan 2021 15:49:29 -0400
-Date:   Mon, 18 Jan 2021 15:49:29 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Ryan Stone <rysto32@gmail.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: mad.c appears to use msec_to_jiffies incorrectly
-Message-ID: <20210118194929.GN4605@ziepe.ca>
-References: <CAFMmRNzVPd-3SV=LQb+cKFj4yBB-BEvV1d3bmKeLxjcswZtD0g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S2437765AbhARUBT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Jan 2021 15:01:19 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13193 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437854AbhARUBO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jan 2021 15:01:14 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6005e8e20001>; Mon, 18 Jan 2021 12:00:34 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 18 Jan
+ 2021 20:00:34 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.47) by
+ HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 18 Jan 2021 20:00:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N0IPz84MMI7alz9pL864S2Gp25MfFxfDyK7+VMYiYcsaf8i92ClInSw846dT+I0S2d07bNP8kVsHF1btuidjxCGPDS/ygzSWKvBDMCVPJ+LLT87YNLnJCyfffPOG8KevfKdKK31s0RFKGmXqX7Tnz840Csk0p35KVM79P4w4CvxDg7C5YoINefkF6hU6EBbki+z6LrKB5Fz+Lty+ZaIhBAHZVoYjzg4UAR4cO7769QLZMiblbt7mRm4Y9IgLAxiKhZxhGCY2HtPRVWgdr6Ue6ON62fROLlkMkEnk/7VoaUDkiVhgySK2ftudiYhJ8nZae0P+Y4Sh5rhKGHW6IwyHmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yWLbssit1aGNiPbJqt/5IgfEuHfj5M6ZnEYZ9/LBfRQ=;
+ b=RF9pAD3AveL0hRb0XDxYONcOT7DutGzpQcvQf63Hdjhm6fcJB8mPkQ1bJstYKe71O9sw7oH+CXEGwueAD8J/ZLUF4JyPcYbp2dASWy+RtAHbZQA+7MO1gCi+GgWSoaI54BzWVX0o/4JQr+c5Ens9Aulwzx3kRZYliKW4D9bLGyetJtGmrCv2twCA2zHAc1qFWo2N7717HS2b/9G8+NWaW7aFgoVDjMplbH8RS41vSCwo3Rhg+Jz4MCOWb7Um5+hy2Re+kz2dkQNDEifx658iGF6xGqt7B/iihjVQjDvJGvIQvKvfc6ywrnlO71pH2lv70LTDhUTfuCLYmjTb/qAGKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4266.namprd12.prod.outlook.com (2603:10b6:5:21a::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Mon, 18 Jan
+ 2021 20:00:33 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3763.014; Mon, 18 Jan 2021
+ 20:00:32 +0000
+Date:   Mon, 18 Jan 2021 16:00:31 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        <linux-rdma@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH mlx5-next 0/3] Cleanup around DEVX get/set commands
+Message-ID: <20210118200031.GA729141@nvidia.com>
+References: <20201230130121.180350-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CAFMmRNzVPd-3SV=LQb+cKFj4yBB-BEvV1d3bmKeLxjcswZtD0g@mail.gmail.com>
+In-Reply-To: <20201230130121.180350-1-leon@kernel.org>
+X-ClientProxiedBy: BL1PR13CA0312.namprd13.prod.outlook.com
+ (2603:10b6:208:2c1::17) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0312.namprd13.prod.outlook.com (2603:10b6:208:2c1::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.6 via Frontend Transport; Mon, 18 Jan 2021 20:00:32 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l1ahT-0033gx-4K; Mon, 18 Jan 2021 16:00:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611000034; bh=yWLbssit1aGNiPbJqt/5IgfEuHfj5M6ZnEYZ9/LBfRQ=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=WPPeTTSOeffx74R1Du2HFW+CeShdlY0jXgBNk1PyGJTAZ3ErXQEAL2oNOdDCFflw5
+         K9P01hv1kkqG8VOFh86T3HbFR/rXeCiRv4Qud1yQfod30g4kzAL3q6TVnh81ZjxbEn
+         EMkdfrErj7xYL63d8VTwmaSY/3Qo9pS4oKCKPRf8zcCQriKzwGMDECJL/YHRyFDu+k
+         FLGs8+sSoAgOaBaZfSBhmrm36n9WvPfZ0IyNmyvelBsIU2c78viQ/7leAtKg4oJmHQ
+         Pr3+YkHr692c+hUJQzYHOLXSdLSWsZ2zGgJ+9/VGmpHCHEvFSWspNLqRXXsrPrI+bp
+         EoLgKVby2x3ew==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 04:31:56PM -0500, Ryan Stone wrote:
-> I'm looking at how MADs are timed out in drivers/infiniband/core/mad.c
-> and I think that the timeouts are just implemented incorrectly.  An
-> ib_mad_send_wr_private's timeout value is always initialized like
-> this:
+On Wed, Dec 30, 2020 at 03:01:18PM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> mad_send_wr->timeout = msecs_to_jiffies(send_buf->timeout_ms);
+> Be more strict with DEVX get/set operations for the obj_id.
 > 
-> This converts a timeout value in milliseconds to a relative value in
-> jiffies (e.g. if timeout_ms is 500 and HZ is 100, then msec_to_jiffies
-> returns 5).  However there are a number of places in mad.c that use
-> this as though it's an absolute jiffies value.  For example,
-> timeout_sends() compares the value to the current jiffies counter:
-> 
-> https://code.woboq.org/linux/linux/drivers/infiniband/core/mad.c.html#2853
-> 
-> This doesn't make any sense. In principle it should be fixed by
-> instead initializing timeout as follows:
-> 
-> mad_send_wr->timeout = jiffies + msecs_to_jiffies(send_buf->timeout_ms);
-> 
-> but there are also a number of places that check if timeout > 0 to see
-> if it's active and that needs to be fixed, possibly with a separate
-> active flag.
-> 
-> Am I missing something, or is this just broken?
+> Yishai Hadas (3):
+>   RDMA/mlx5: Use the correct obj_id upon DEVX TIR creation
+>   net/mlx5: Expose ifc bits for query modify header
+>   RDMA/mlx5: Use strict get/set operations for obj_id
 
-I seem to recall there are two flows here that don't overlap re-using
-the timeout field for two different things..
-
-It adjusts from one domain to the other in places like this:
-
-static void wait_for_response(struct ib_mad_send_wr_private *mad_send_wr)
-{
-	mad_send_wr->timeout += jiffies;
-
-It is so convoluted, so who knows if it could be right or not.
+This looks fine, can you update the shared branch with the ifc update
+please
 
 Jason
