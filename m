@@ -2,160 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115D92FAC93
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 22:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8322FAD60
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 23:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437655AbhARVYi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Jan 2021 16:24:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58644 "EHLO
+        id S1731723AbhARWkQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Jan 2021 17:40:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438052AbhARVXq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jan 2021 16:23:46 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D54C061573;
-        Mon, 18 Jan 2021 13:22:59 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id ox12so1321569ejb.2;
-        Mon, 18 Jan 2021 13:22:59 -0800 (PST)
+        with ESMTP id S1731519AbhARWkO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jan 2021 17:40:14 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE43C061574
+        for <linux-rdma@vger.kernel.org>; Mon, 18 Jan 2021 14:39:34 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id y17so17907860wrr.10
+        for <linux-rdma@vger.kernel.org>; Mon, 18 Jan 2021 14:39:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Giv0GJHiR0U7EHzqjMGjtNcbBY4s91RtnAoeLxvrwL4=;
-        b=fqJW2k5L9DSKd2FkqB1VRaQcaE9/yIOY+GHwrsIGzeGPSqi6pAez/9o8N24ga5378M
-         tX8s/np4npMdreeXn0+jUSPr3/nyhMHX7JcQYCx9EgKStEU6extVGTmhBtvDv1/OpGCy
-         z3tZkkDB7HMXR8lIR9gjUPxO3LN9AdxP/gdl4d0Oy/MUmCkLYLBNq7ueX/uSLA95ryxG
-         G+7HTEEJfHJ1QfLjThUwYefr5GYQDkw/cY95YElyTa/rDUJbxVkEsRSrEgr+b3PBfB2n
-         VeQwm/n3XYoUzszQr2hD3S42MjfoXkULKPWOt5PC0tc1zdlBCjoGYrZ4BOcQ7jAUyQT2
-         KeSw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EVxbsDGS3JFaJ0icMQqNqXmkLsPwbgoGgAdrXMuR54g=;
+        b=BJZMd4jgGhrymjBh0jClqc37EWs+BTv++x4YXoKI+zXAPWo2CDsptU8AntH19T6aO6
+         k+iC/V/QCpopJqY5E015+SSGo/DJHDoSXdmPmtbbHLiBlyPghgk0Ygj7mR33aogVPUOI
+         yCeE/hdCD3wfZDBHPTwDdxXvLyPEqmbQLrXJJa8G5VjaU8Vt/cQY2Ocze6e7LuRkx72G
+         3ZGpVAJbIrz7Wb+VVzNfe90pMW3szy44wRvbWk9bZlAj6e6/RnRYl32GmuzhUpwDhvSx
+         Eo04Nj+4wZj7RvxW7kWPBPNTVg2F541Wx7Vdin96nsE6nz3LGEkWGjeHo9M/PrfpX0ms
+         5rFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Giv0GJHiR0U7EHzqjMGjtNcbBY4s91RtnAoeLxvrwL4=;
-        b=Z3qy+aNpC9kjdEbRLoPQCrHaBQaFCe4Gp8VYU4xeFm0H34afuDRFMTQvdY5vzWvpXu
-         txIftvA2kY7ANTZJwpu0s6GR6LwCIaNsbTg4vrD+94BX7mO9HlPIcVTdjrd4IQxwUqeM
-         jiS5ZycMNAuFTY4g4fl8UvhOyc3rLoH1RN6B6nVk4L0zsMMrNYkFVR7xUBR8cL3jybJZ
-         as6d/dL7b1zNjzBML23MgYGny67IamE65l+W38I4Ojy+oEn0tGiQbICxiEgSfRToucT0
-         zVmKbD97VfGIceMHMYkz8r2P+2fHw5gVI71Q2Gppup6Iof3g8RrFnfKZmHS3SULc2hne
-         27aw==
-X-Gm-Message-State: AOAM530t2J8h6065YBtU7aWEzJNksI8aOUBPZLXntz4nw+gD6nomTFKX
-        67NDSrJuU3Jm/y7P3FHpaWs=
-X-Google-Smtp-Source: ABdhPJzUtiGI8cqGbVVsOEIghLaawZpYS1WoHneVMPFuQMBKqIao3ek/l4qpxvvLjkU1v34FnSi3fg==
-X-Received: by 2002:a17:906:7798:: with SMTP id s24mr1012838ejm.19.1611004977974;
-        Mon, 18 Jan 2021 13:22:57 -0800 (PST)
-Received: from [192.168.178.40] (ipbcc06d06.dynamic.kabel-deutschland.de. [188.192.109.6])
-        by smtp.gmail.com with ESMTPSA id h16sm11583847edw.34.2021.01.18.13.22.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 13:22:57 -0800 (PST)
-Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
- warning
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Douglas Gilbert <dgilbert@interlog.com>
-Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
-References: <20210118163006.61659-1-dgilbert@interlog.com>
- <20210118163006.61659-2-dgilbert@interlog.com>
- <20210118182854.GJ4605@ziepe.ca>
- <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
- <20210118202431.GO4605@ziepe.ca>
-From:   Bodo Stroesser <bostroesser@gmail.com>
-Message-ID: <7f443666-b210-6f99-7b50-6c26d87fa7ca@gmail.com>
-Date:   Mon, 18 Jan 2021 22:22:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=EVxbsDGS3JFaJ0icMQqNqXmkLsPwbgoGgAdrXMuR54g=;
+        b=eLROWAWSIlI2EJKjLshtnN0ikDxpMXWcJxeLnFpDqCCdIpvWauaIoCYJEFs4Pb4rKJ
+         4giNLkPwIfwirLKhiXAco3w5ZAiiqQCkHWL463ZaaSYntkQoE9dE/MFmuAmEjgcQeETk
+         O5z+xRN+uHyT8WNLssGuL4g2ExLxabh+TcmgM9CW73pLR/C6Q3aVJTpRf0U9xIJBotEe
+         eeowxWcid5wp3fa1xSdLsCg1rLNWUhdlJLAin+EZBcYHK2XE59qZkGFqFmWlBwFeZync
+         Ruk0+UwkzK4fYkegawy0OZqfydho0LJcCq8nVQW228h4hUZG0oP9edSvGsRvh4z1aNP1
+         JFkw==
+X-Gm-Message-State: AOAM531dH1WOnu6ewlVfZDdziLASdq2LjOOVu3JXIgE7k9XQhoBy3TK9
+        CW20HFEUqQy94C9hL30kK1SzJQ==
+X-Google-Smtp-Source: ABdhPJwELBT80oBdZqfeNka6TZE+mx3kdpah45WiZQjwFSbWKc26sucdfpr3IhnN2x9XQhIN1+SXpA==
+X-Received: by 2002:a5d:6751:: with SMTP id l17mr1440401wrw.73.1611009572864;
+        Mon, 18 Jan 2021 14:39:32 -0800 (PST)
+Received: from dell.default ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id l1sm33255902wrq.64.2021.01.18.14.39.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 14:39:32 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Intel Corporation <e1000-rdma@lists.sourceforge.net>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Taehee Yoo <ap420073@gmail.com>
+Subject: [PATCH 00/20] Rid W=1 warnings from Infinibad
+Date:   Mon, 18 Jan 2021 22:39:09 +0000
+Message-Id: <20210118223929.512175-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210118202431.GO4605@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 18.01.21 21:24, Jason Gunthorpe wrote:
-> On Mon, Jan 18, 2021 at 03:08:51PM -0500, Douglas Gilbert wrote:
->> On 2021-01-18 1:28 p.m., Jason Gunthorpe wrote:
->>> On Mon, Jan 18, 2021 at 11:30:03AM -0500, Douglas Gilbert wrote:
->>>
->>>> After several flawed attempts to detect overflow, take the fastest
->>>> route by stating as a pre-condition that the 'order' function argument
->>>> cannot exceed 16 (2^16 * 4k = 256 MiB).
->>>
->>> That doesn't help, the point of the overflow check is similar to
->>> overflow checks in kcalloc: to prevent the routine from allocating
->>> less memory than the caller might assume.
->>>
->>> For instance ipr_store_update_fw() uses request_firmware() (which is
->>> controlled by userspace) to drive the length argument to
->>> sgl_alloc_order(). If userpace gives too large a value this will
->>> corrupt kernel memory.
->>>
->>> So this math:
->>>
->>>     	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
->>
->> But that check itself overflows if order is too large (e.g. 65).
-> 
-> I don't reall care about order. It is always controlled by the kernel
-> and it is fine to just require it be low enough to not
-> overflow. length is the data under userspace control so math on it
-> must be checked for overflow.
-> 
->> Also note there is another pre-condition statement in that function's
->> definition, namely that length cannot be 0.
-> 
-> I don't see callers checking for that either, if it is true length 0
-> can't be allowed it should be blocked in the function
-> 
-> Jason
-> 
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-A already said, I also think there should be a check for length or
-rather nent overflow.
+This is set 1 of either 2 or 3 sets required to fully clean-up.
 
-I like the easy to understand check in your proposed code:
+Lee Jones (20):
+  RDMA/hw: i40iw_hmc: Fix misspellings of '*idx' args
+  RDMA/core: device: Fix formatting in worthy kernel-doc header and
+    demote another
+  RDMA/hw/i40iw/i40iw_ctrl: Fix a bunch of misspellings and formatting
+    issues
+  RDMA/hw/i40iw/i40iw_cm: Fix a bunch of function documentation issues
+  RDMA/core/cache: Fix some misspellings, missing and superfluous param
+    descriptions
+  RDMA/hw/i40iw/i40iw_hw: Provide description for 'ipv4', remove
+    'user_pri' and fix 'iwcq'
+  RDMA/hw/i40iw/i40iw_main: Rectify some kernel-doc misdemeanours
+  RDMA/core/roce_gid_mgmt: Fix misnaming of 'rdma_roce_rescan_device()'s
+    param 'ib_dev'
+  RDMA/hw/i40iw/i40iw_pble: Provide description for 'dev' and fix
+    formatting issues
+  RDMA/hw/i40iw/i40iw_puda: Fix some misspellings and provide missing
+    descriptions
+  RDMA/core/multicast: Provide description for
+    'ib_init_ah_from_mcmember()'s 'rec' param
+  RDMA/core/sa_query: Demote non-conformant kernel-doc header
+  RDMA/hw/i40iw/i40iw_uk: Clean-up some function documentation headers
+  RDMA/hw/i40iw/i40iw_virtchnl: Fix a bunch of kernel-doc issues
+  RDMA/hw/i40iw/i40iw_utils: Fix some misspellings and missing param
+    descriptions
+  RDMA/core/restrack: Fix kernel-doc formatting issue
+  RDMA/hw/i40iw/i40iw_verbs: Fix worthy function headers and demote some
+    others
+  RDMA/core/counters: Demote non-conformant kernel-doc headers
+  RDMA/core/iwpm_util: Fix some param description misspellings
+  RDMA/core/iwpm_msg: Add proper descriptions for 'skb' param
 
-	if (length >> (PAGE_SHIFT + order) >= UINT_MAX)
-		return NULL;
+ drivers/infiniband/core/cache.c              |  9 ++++----
+ drivers/infiniband/core/counters.c           | 16 +++++++-------
+ drivers/infiniband/core/device.c             |  8 +++----
+ drivers/infiniband/core/iwpm_msg.c           | 16 +++++++-------
+ drivers/infiniband/core/iwpm_util.c          |  6 +++---
+ drivers/infiniband/core/multicast.c          |  1 +
+ drivers/infiniband/core/restrack.c           |  4 ++--
+ drivers/infiniband/core/roce_gid_mgmt.c      |  2 +-
+ drivers/infiniband/core/sa_query.c           |  2 +-
+ drivers/infiniband/hw/i40iw/i40iw_cm.c       | 21 ++++++++++++-------
+ drivers/infiniband/hw/i40iw/i40iw_ctrl.c     | 18 ++++++++--------
+ drivers/infiniband/hw/i40iw/i40iw_hmc.c      |  4 ++--
+ drivers/infiniband/hw/i40iw/i40iw_hw.c       |  4 ++--
+ drivers/infiniband/hw/i40iw/i40iw_main.c     | 13 +++++++-----
+ drivers/infiniband/hw/i40iw/i40iw_pble.c     |  5 +++--
+ drivers/infiniband/hw/i40iw/i40iw_puda.c     | 13 +++++++-----
+ drivers/infiniband/hw/i40iw/i40iw_uk.c       |  5 +++--
+ drivers/infiniband/hw/i40iw/i40iw_utils.c    | 22 +++++++++++---------
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c    | 19 +++++++++--------
+ drivers/infiniband/hw/i40iw/i40iw_virtchnl.c | 19 ++++++++++-------
+ 20 files changed, 113 insertions(+), 94 deletions(-)
 
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Doug Ledford <dledford@redhat.com>
+Cc: Faisal Latif <faisal.latif@intel.com>
+Cc: Intel Corporation <e1000-rdma@lists.sourceforge.net>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org
+Cc: Shiraz Saleem <shiraz.saleem@intel.com>
+Cc: Taehee Yoo <ap420073@gmail.com>
+-- 
+2.25.1
 
-But I don't understand, why you open-coded the nent calculation:
-
-	nent = length >> (PAGE_SHIFT + order);
-	if (length & ((1ULL << (PAGE_SHIFT + order)) - 1))
-		nent++;
-
-Wouldn't it be better to keep the original line instead:
-
-	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
-
-Or maybe even better:
-
-	nent = DIV_ROUND_UP(length, PAGE_SIZE << order);
-
-
-I think, combining the above lines results in short and easily readable code:
-
-
-	u32 elem_len;
-
-	if (length >> (PAGE_SHIFT + order) >= UINT_MAX)
-		return NULL;
-	nent = DIV_ROUND_UP(length, PAGE_SIZE << order);
-
-	if (chainable) {
-		if (check_add_overflow(nent, 1, &nalloc))
-			return NULL;
-	}
-	else
-		nalloc = nent;
-
-
-Thank you,
-Bodo
-
-
-	
