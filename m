@@ -2,400 +2,299 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A96242FAB11
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 21:12:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A7E2FAB54
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 21:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394200AbhARUKd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Jan 2021 15:10:33 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:47088 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394199AbhARUKY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jan 2021 15:10:24 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10IK68Kh062015;
-        Mon, 18 Jan 2021 20:09:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=tQWutOTFsHtF+2kIIjf9PifkBBNjJfcMEorlAwE9r1Y=;
- b=w2jbMElXh2VIM6cuHzUHRAXgwO6l5pGZeoz+KTA8masG0KSHVhlIh392pnWN2i3w6aLX
- DZCNJth/OPIDf/Xyw3nyJNrH9uqAzzwCpfWAkR6H/qJe4avvhUjUv20yWdIIYX61ZYEn
- dsKn5/v+RZZPGgs3giSpTmzfvyQll2B+21nwtaTLVYsJ9DpNsHo7CXux2qTQ/DUnEBZ3
- uS5Z92XNgMBVbuBkfHtuPzgq4+a52Z6yvCBX8f58IC6r/njE1SFIPG74zomOmqnduDkE
- Oqvkc2oAd6PyB7MifbhA9xeydvvtd850y3ab+NyTHmZxz/oJew2bN5SY8OkNxDbN2sbY qg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 363nnaepm6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 18 Jan 2021 20:09:24 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10IK0W3k002335;
-        Mon, 18 Jan 2021 20:09:24 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 364a1ws8ww-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 18 Jan 2021 20:09:24 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10IK9JAZ023190;
-        Mon, 18 Jan 2021 20:09:19 GMT
-Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 18 Jan 2021 12:09:19 -0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: performance regression noted in v5.11-rc after c062db039f40
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <e83eed0d-82cd-c9be-cef1-5fe771de975f@arm.com>
-Date:   Mon, 18 Jan 2021 15:09:18 -0500
-Cc:     iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>, logang@deltatee.com,
-        Christoph Hellwig <hch@lst.de>, murphyt7@tcd.ie
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <D6B45F88-08B7-41B5-AAD2-BFB374A42874@oracle.com>
-References: <D81314ED-5673-44A6-B597-090E3CB83EB0@oracle.com>
- <20210112143819.GA9689@willie-the-truck>
- <607648D8-BF0C-40D6-9B43-2359F45EE74C@oracle.com>
- <e83eed0d-82cd-c9be-cef1-5fe771de975f@arm.com>
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 adultscore=0
- mlxscore=0 spamscore=0 suspectscore=0 mlxlogscore=802 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101180120
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 spamscore=0
- mlxlogscore=814 clxscore=1015 bulkscore=0 adultscore=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101180120
+        id S2437621AbhARUVj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Jan 2021 15:21:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389200AbhARUN2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 18 Jan 2021 15:13:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20B0A22E00;
+        Mon, 18 Jan 2021 20:12:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611000764;
+        bh=iblBGp1E5wS5kw/LNvfD8EWnLRo0YT7wPUOxqMObt58=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UKrqxGjo8NuqwnalCmCvtJ5dqwk3bXLN4N4ByIUDihYr5H4Xv/H9Yt8kUYDGQGz5i
+         6JkmS4hwlvv8ByuIzs74555al14UZJa/JdQrYTU1c2BYz8juZecqfLJ0/BCfkGlY4W
+         jeThEzz4OmYUixzZ8Wyfk/VDQnEcN5pxdxzpb+c1yuL2OhkyIhO6QRUt6AQb52uXaw
+         wSb9iNdWv/XGfFQkrhs5gXxke+KxraD9auxeY/Gnvn4WUcElyL8fYhbE1Z4qg3H9N5
+         tgBXXZojJAPuYS0EQf3RaS8ftZTLCBFmmPExZTowGBULogPcQEFhNTyVPq2L986jGM
+         AgL1DEkudzU8A==
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [pull request][net-next V7 00/14] Add mlx5 subfunction support
+Date:   Mon, 18 Jan 2021 12:12:17 -0800
+Message-Id: <20210118201231.363126-1-saeed@kernel.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: Saeed Mahameed <saeedm@nvidia.com>
+
+Hi Dave, Jakub, Jason,
+
+This series form Parav was the theme of this mlx5 release cycle,
+we've been waiting anxiously for the auxbus infrastructure to make it into
+the kernel, and now as the auxbus is in and all the stars are aligned, I
+can finally submit this patchset of the devlink and mlx5 subfunction support.
+
+For more detailed information about subfunctions please see detailed tag
+log below.
+
+Please pull and let me know if there's any problem.
+
+Thanks,
+Saeed.
+
+---
+Changelog:
+v6-v7:
+ - Resolve new kdoc warning
+
+v5->v6:
+ - update docs and corrected spellings and typos according to previous
+   review
+ - use of shorted macro names
+ - using updated callback to return port index
+ - updated commit message example for add command return fields
+ - driver name suffix corrected from 'mlx5_core' to 'sf'
+ - using MLX5_ADEV_NAME prefix to match with other mlx5 auxiliary devices
+ - fixed sf allocated condition
+ - using 80 characters alignment
+ - shorten the enum type names and enum values from
+   PORT_FUNCTION to PORT_FN
+ - return port attributes of newly created port
+ - moved port add and delete callbacks pointer check before preparing
+   attributes for driver
+ - added comment to clarify that about desired port index during add
+   callback
+ - place SF number attribute only when port flavour is SF
+ - packed the sf attribute structure
+ - removed external flag for sf for initial patchset
+
+v4->v5:
+ - Fix some typos in the documentation
+ 
+v3->v4:
+ - Fix 32bit compilation issue
+
+v2->v3:
+ - added header file sf/priv.h to cmd.c to avoid missing prototype warning
+ - made mlx5_sf_table_disable as static function as its used only in one file
+
+v1->v2:
+ - added documentation for subfunction and its mlx5 implementation
+ - add MLX5_SF config option documentation
+ - rebased
+ - dropped devlink global lock improvement patch as mlx5 doesn't support
+   reload while SFs are allocated
+ - dropped devlink reload lock patch as mlx5 doesn't support reload
+   when SFs are allocated
+ - using updated vhca event from device to add remove auxiliary device
+ - split sf devlink port allocation and sf hardware context allocation
 
 
-> On Jan 18, 2021, at 1:00 PM, Robin Murphy <robin.murphy@arm.com> =
-wrote:
->=20
-> On 2021-01-18 16:18, Chuck Lever wrote:
->>> On Jan 12, 2021, at 9:38 AM, Will Deacon <will@kernel.org> wrote:
->>>=20
->>> [Expanding cc list to include DMA-IOMMU and intel IOMMU folks]
->>>=20
->>> On Fri, Jan 08, 2021 at 04:18:36PM -0500, Chuck Lever wrote:
->>>> Hi-
->>>>=20
->>>> [ Please cc: me on replies, I'm not currently subscribed to
->>>> iommu@lists ].
->>>>=20
->>>> I'm running NFS performance tests on InfiniBand using CX-3 Pro =
-cards
->>>> at 56Gb/s. The test is iozone on an NFSv3/RDMA mount:
->>>>=20
->>>> /home/cel/bin/iozone -M -+u -i0 -i1 -s1g -r256k -t12 -I
->>>>=20
->>>> For those not familiar with the way storage protocols use RDMA, The
->>>> initiator/client sets up memory regions and the target/server uses
->>>> RDMA Read and Write to move data out of and into those regions. The
->>>> initiator/client uses only RDMA memory registration and =
-invalidation
->>>> operations, and the target/server uses RDMA Read and Write.
->>>>=20
->>>> My NFS client is a two-socket 12-core x86_64 system with its I/O =
-MMU
->>>> enabled using the kernel command line options "intel_iommu=3Don
->>>> iommu=3Dstrict".
->>>>=20
->>>> Recently I've noticed a significant (25-30%) loss in NFS =
-throughput.
->>>> I was able to bisect on my client to the following commits.
->>>>=20
->>>> Here's 65f746e8285f ("iommu: Add quirk for Intel graphic devices in
->>>> map_sg"). This is about normal for this test.
->>>>=20
->>>> 	Children see throughput for 12 initial writers 	=3D 4732581.09 =
-kB/sec
->>>> 	Parent sees throughput for 12 initial writers 	=3D 4646810.21 =
-kB/sec
->>>> 	Min throughput per process 			=3D  387764.34 =
-kB/sec
->>>> 	Max throughput per process 			=3D  399655.47 =
-kB/sec
->>>> 	Avg throughput per process 			=3D  394381.76 =
-kB/sec
->>>> 	Min xfer 					=3D 1017344.00 =
-kB
->>>> 	CPU Utilization: Wall time    2.671    CPU time    1.974    CPU =
-utilization  73.89 %
->>>> 	Children see throughput for 12 rewriters 	=3D 4837741.94 =
-kB/sec
->>>> 	Parent sees throughput for 12 rewriters 	=3D 4833509.35 =
-kB/sec
->>>> 	Min throughput per process 			=3D  398983.72 =
-kB/sec
->>>> 	Max throughput per process 			=3D  406199.66 =
-kB/sec
->>>> 	Avg throughput per process 			=3D  403145.16 =
-kB/sec
->>>> 	Min xfer 					=3D 1030656.00 =
-kB
->>>> 	CPU utilization: Wall time    2.584    CPU time    1.959    CPU =
-utilization  75.82 %
->>>> 	Children see throughput for 12 readers 		=3D 5921370.94 =
-kB/sec
->>>> 	Parent sees throughput for 12 readers 		=3D 5914106.69 =
-kB/sec
->>>> 	Min throughput per process 			=3D  491812.38 =
-kB/sec
->>>> 	Max throughput per process 			=3D  494777.28 =
-kB/sec
->>>> 	Avg throughput per process 			=3D  493447.58 =
-kB/sec
->>>> 	Min xfer 					=3D 1042688.00 =
-kB
->>>> 	CPU utilization: Wall time    2.122    CPU time    1.968    CPU =
-utilization  92.75 %
->>>> 	Children see throughput for 12 re-readers 	=3D 5947985.69 =
-kB/sec
->>>> 	Parent sees throughput for 12 re-readers 	=3D 5941348.51 =
-kB/sec
->>>> 	Min throughput per process 			=3D  492805.81 =
-kB/sec
->>>> 	Max throughput per process 			=3D  497280.19 =
-kB/sec
->>>> 	Avg throughput per process 			=3D  495665.47 =
-kB/sec
->>>> 	Min xfer 					=3D 1039360.00 =
-kB
->>>> 	CPU utilization: Wall time    2.111    CPU time    1.968    CPU =
-utilization  93.22 %
->>>>=20
->>>> Here's c062db039f40 ("iommu/vt-d: Update domain geometry in
->>>> iommu_ops.at(de)tach_dev"). It's losing some steam here.
->>>>=20
->>>> 	Children see throughput for 12 initial writers 	=3D 4342419.12 =
-kB/sec
->>>> 	Parent sees throughput for 12 initial writers 	=3D 4310612.79 =
-kB/sec
->>>> 	Min throughput per process 			=3D  359299.06 =
-kB/sec
->>>> 	Max throughput per process 			=3D  363866.16 =
-kB/sec
->>>> 	Avg throughput per process 			=3D  361868.26 =
-kB/sec
->>>> 	Min xfer 					=3D 1035520.00 =
-kB
->>>> 	CPU Utilization: Wall time    2.902    CPU time    1.951    CPU =
-utilization  67.22 %
->>>> 	Children see throughput for 12 rewriters 	=3D 4408576.66 =
-kB/sec
->>>> 	Parent sees throughput for 12 rewriters 	=3D 4404280.87 =
-kB/sec
->>>> 	Min throughput per process 			=3D  364553.88 =
-kB/sec
->>>> 	Max throughput per process 			=3D  370029.28 =
-kB/sec
->>>> 	Avg throughput per process 			=3D  367381.39 =
-kB/sec
->>>> 	Min xfer 					=3D 1033216.00 =
-kB
->>>> 	CPU utilization: Wall time    2.836    CPU time    1.956    CPU =
-utilization  68.97 %
->>>> 	Children see throughput for 12 readers 		=3D 5406879.47 =
-kB/sec
->>>> 	Parent sees throughput for 12 readers 		=3D 5401862.78 =
-kB/sec
->>>> 	Min throughput per process 			=3D  449583.03 =
-kB/sec
->>>> 	Max throughput per process 			=3D  451761.69 =
-kB/sec
->>>> 	Avg throughput per process 			=3D  450573.29 =
-kB/sec
->>>> 	Min xfer 					=3D 1044224.00 =
-kB
->>>> 	CPU utilization: Wall time    2.323    CPU time    1.977    CPU =
-utilization  85.12 %
->>>> 	Children see throughput for 12 re-readers 	=3D 5410601.12 =
-kB/sec
->>>> 	Parent sees throughput for 12 re-readers 	=3D 5403504.40 =
-kB/sec
->>>> 	Min throughput per process 			=3D  449918.12 =
-kB/sec
->>>> 	Max throughput per process 			=3D  452489.28 =
-kB/sec
->>>> 	Avg throughput per process 			=3D  450883.43 =
-kB/sec
->>>> 	Min xfer 					=3D 1043456.00 =
-kB
->>>> 	CPU utilization: Wall time    2.321    CPU time    1.978    CPU =
-utilization  85.21 %
->>>>=20
->>>> And here's c588072bba6b ("iommu/vt-d: Convert intel iommu driver to
->>>> the iommu ops"). Significant throughput loss.
->>>>=20
->>>> 	Children see throughput for 12 initial writers 	=3D 3812036.91 =
-kB/sec
->>>> 	Parent sees throughput for 12 initial writers 	=3D 3753683.40 =
-kB/sec
->>>> 	Min throughput per process 			=3D  313672.25 =
-kB/sec
->>>> 	Max throughput per process 			=3D  321719.44 =
-kB/sec
->>>> 	Avg throughput per process 			=3D  317669.74 =
-kB/sec
->>>> 	Min xfer 					=3D 1022464.00 =
-kB
->>>> 	CPU Utilization: Wall time    3.309    CPU time    1.986    CPU =
-utilization  60.02 %
->>>> 	Children see throughput for 12 rewriters 	=3D 3786831.94 =
-kB/sec
->>>> 	Parent sees throughput for 12 rewriters 	=3D 3783205.58 =
-kB/sec
->>>> 	Min throughput per process 			=3D  313654.44 =
-kB/sec
->>>> 	Max throughput per process 			=3D  317844.50 =
-kB/sec
->>>> 	Avg throughput per process 			=3D  315569.33 =
-kB/sec
->>>> 	Min xfer 					=3D 1035520.00 =
-kB
->>>> 	CPU utilization: Wall time    3.302    CPU time    1.945    CPU =
-utilization  58.90 %
->>>> 	Children see throughput for 12 readers 		=3D 4265828.28 =
-kB/sec
->>>> 	Parent sees throughput for 12 readers 		=3D 4261844.88 =
-kB/sec
->>>> 	Min throughput per process 			=3D  352305.00 =
-kB/sec
->>>> 	Max throughput per process 			=3D  357726.22 =
-kB/sec
->>>> 	Avg throughput per process 			=3D  355485.69 =
-kB/sec
->>>> 	Min xfer 					=3D 1032960.00 =
-kB
->>>> 	CPU utilization: Wall time    2.934    CPU time    1.942    CPU =
-utilization  66.20 %
->>>> 	Children see throughput for 12 re-readers 	=3D 4220651.19 =
-kB/sec
->>>> 	Parent sees throughput for 12 re-readers 	=3D 4216096.04 =
-kB/sec
->>>> 	Min throughput per process 			=3D  348677.16 =
-kB/sec
->>>> 	Max throughput per process 			=3D  353467.44 =
-kB/sec
->>>> 	Avg throughput per process 			=3D  351720.93 =
-kB/sec
->>>> 	Min xfer 					=3D 1035264.00 =
-kB
->>>> 	CPU utilization: Wall time    2.969    CPU time    1.952    CPU =
-utilization  65.74 %
->>>>=20
->>>> The regression appears to be 100% reproducible.
->> Any thoughts?
->> How about some tools to try or debugging advice? I don't know where =
-to start.
->=20
-> I'm not familiar enough with VT-D internals or Infiniband to have a =
-clue why the middle commit makes any difference (the calculation itself =
-is not on a fast path, so AFAICS the worst it could do is change your =
-maximum DMA address size from 48/57 bits to 47/56, and that seems =
-relatively benign).
+Thanks,
+Saeed.
 
-Thanks for your response. Understood that you are not responding
-about the middle commit (c062db039f40).
+---
 
-However, that's a pretty small and straightforward change, so I've
-experimented a bit with that. Commenting out the new code there, I
-get some relief:
+The following changes since commit 213b97b125808aa220ba460a7af09d8f3772f669:
 
-	Children see throughput for 12 initial writers 	=3D 4266621.62 =
-kB/sec
-	Parent sees throughput for 12 initial writers 	=3D 4254756.31 =
-kB/sec
-	Min throughput per process 			=3D  354847.75 =
-kB/sec=20
-	Max throughput per process 			=3D  356167.59 =
-kB/sec
-	Avg throughput per process 			=3D  355551.80 =
-kB/sec
-	Min xfer 					=3D 1044736.00 =
-kB
-	CPU Utilization: Wall time    2.951    CPU time    1.981    CPU =
-utilization  67.11 %
+  Merge branch 'net-fix-the-features-flag-in-sctp_gso_segment' (2021-01-16 19:06:01 -0800)
 
+are available in the Git repository at:
 
-	Children see throughput for 12 rewriters 	=3D 4314827.34 =
-kB/sec
-	Parent sees throughput for 12 rewriters 	=3D 4310347.32 =
-kB/sec
-	Min throughput per process 			=3D  358599.72 =
-kB/sec=20
-	Max throughput per process 			=3D  360319.06 =
-kB/sec
-	Avg throughput per process 			=3D  359568.95 =
-kB/sec
-	Min xfer 					=3D 1043968.00 =
-kB
-	CPU utilization: Wall time    2.912    CPU time    2.057    CPU =
-utilization  70.62 %
+  git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux.git tags/mlx5-updates-2021-01-13
 
+for you to fetch changes up to ec5a852199c92c83413882fd6be3da30ca0de68c:
 
-	Children see throughput for 12 readers 		=3D 4614004.47 =
-kB/sec
-	Parent sees throughput for 12 readers 		=3D 4609014.68 =
-kB/sec
-	Min throughput per process 			=3D  382414.81 =
-kB/sec=20
-	Max throughput per process 			=3D  388519.50 =
-kB/sec
-	Avg throughput per process 			=3D  384500.37 =
-kB/sec
-	Min xfer 					=3D 1032192.00 =
-kB
-	CPU utilization: Wall time    2.701    CPU time    1.900    CPU =
-utilization  70.35 %
+  net/mlx5: Add devlink subfunction port documentation (2021-01-18 12:09:46 -0800)
 
+----------------------------------------------------------------
+mlx5 subfunction support
 
-	Children see throughput for 12 re-readers 	=3D 4653743.81 =
-kB/sec
-	Parent sees throughput for 12 re-readers 	=3D 4647155.31 =
-kB/sec
-	Min throughput per process 			=3D  384995.69 =
-kB/sec=20
-	Max throughput per process 			=3D  390874.09 =
-kB/sec
-	Avg throughput per process 			=3D  387811.98 =
-kB/sec
-	Min xfer 					=3D 1032960.00 =
-kB
-	CPU utilization: Wall time    2.684    CPU time    1.907    CPU =
-utilization  71.06 %
+Parav Pandit Says:
+=================
 
-I instrumented the code to show the "before" and "after" values.
+This patchset introduces support for mlx5 subfunction (SF).
 
-The value of domain->domain.geometry.aperture_end on my system
-before this commit (and before the c062db039f40 code) is:
+A subfunction is a lightweight function that has a parent PCI function on
+which it is deployed. mlx5 subfunction has its own function capabilities
+and its own resources. This means a subfunction has its own dedicated
+queues(txq, rxq, cq, eq). These queues are neither shared nor stolen from
+the parent PCI function.
 
-144,115,188,075,855,871 =3D 2^57
+When subfunction is RDMA capable, it has its own QP1, GID table and rdma
+resources neither shared nor stolen from the parent PCI function.
 
-The c062db039f40 code sets domain->domain.geometry.aperture_end to:
+A subfunction has dedicated window in PCI BAR space that is not shared
+with the other subfunctions or parent PCI function. This ensures that all
+class devices of the subfunction accesses only assigned PCI BAR space.
 
-281,474,976,710,655 =3D 2^48
+A Subfunction supports eswitch representation through which it supports tc
+offloads. User must configure eswitch to send/receive packets from/to
+subfunction port.
 
-Fwiw, this system uses the Intel C612 chipset with Intel(R) Xeon(R)
-E5-2603 v3 @ 1.60GHz CPUs.
+Subfunctions share PCI level resources such as PCI MSI-X IRQs with
+their other subfunctions and/or with its parent PCI function.
 
+Patch summary:
+--------------
+Patch 1 to 4 prepares devlink
+patch 5 to 7 mlx5 adds SF device support
+Patch 8 to 11 mlx5 adds SF devlink port support
+Patch 12 and 14 adds documentation
 
-My sense is that "CPU time" remains about the same because the problem
-isn't manifesting as an increase in instruction path length. Wall time
-goes up, CPU time stays the same, the ratio of those (ie, utilization)
-drops.
+Patch-1 prepares code to handle multiple port function attributes
+Patch-2 introduces devlink pcisf port flavour similar to pcipf and pcivf
+Patch-3 adds port add and delete driver callbacks
+Patch-4 adds port function state get and set callbacks
+Patch-5 mlx5 vhca event notifier support to distribute subfunction
+        state change notification
+Patch-6 adds SF auxiliary device
+Patch-7 adds SF auxiliary driver
+Patch-8 prepares eswitch to handler SF vport
+Patch-9 adds eswitch helpers to add/remove SF vport
+Patch-10 implements devlink port add/del callbacks
+Patch-11 implements devlink port function get/set callbacks
+Patch-12 to 14 adds documentation
+Patch-12 added mlx5 port function documentation
+Patch-13 adds subfunction documentation
+Patch-14 adds mlx5 subfunction documentation
 
+Subfunction support is discussed in detail in RFC [1] and [2].
+RFC [1] and extension [2] describes requirements, design and proposed
+plumbing using devlink, auxiliary bus and sysfs for systemd/udev
+support. Functionality of this patchset is best explained using real
+examples further below.
 
---
-Chuck Lever
+overview:
+--------
+A subfunction can be created and deleted by a user using devlink port
+add/delete interface.
 
+A subfunction can be configured using devlink port function attribute
+before its activated.
 
+When a subfunction is activated, it results in an auxiliary device on
+the host PCI device where it is deployed. A driver binds to the
+auxiliary device that further creates supported class devices.
 
+example subfunction usage sequence:
+-----------------------------------
+Change device to switchdev mode:
+$ devlink dev eswitch set pci/0000:06:00.0 mode switchdev
+
+Add a devlink port of subfunction flavour:
+$ devlink port add pci/0000:06:00.0 flavour pcisf pfnum 0 sfnum 88
+
+Configure mac address of the port function:
+$ devlink port function set ens2f0npf0sf88 hw_addr 00:00:00:00:88:88
+
+Now activate the function:
+$ devlink port function set ens2f0npf0sf88 state active
+
+Now use the auxiliary device and class devices:
+$ devlink dev show
+pci/0000:06:00.0
+auxiliary/mlx5_core.sf.4
+
+$ ip link show
+127: ens2f0np0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 24:8a:07:b3:d1:12 brd ff:ff:ff:ff:ff:ff
+    altname enp6s0f0np0
+129: p0sf88: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 00:00:00:00:88:88 brd ff:ff:ff:ff:ff:ff
+
+$ rdma dev show
+43: rdmap6s0f0: node_type ca fw 16.29.0550 node_guid 248a:0703:00b3:d112 sys_image_guid 248a:0703:00b3:d112
+44: mlx5_0: node_type ca fw 16.29.0550 node_guid 0000:00ff:fe00:8888 sys_image_guid 248a:0703:00b3:d112
+
+After use inactivate the function:
+$ devlink port function set ens2f0npf0sf88 state inactive
+
+Now delete the subfunction port:
+$ devlink port del ens2f0npf0sf88
+
+[1] https://lore.kernel.org/netdev/20200519092258.GF4655@nanopsycho/
+[2] https://marc.info/?l=linux-netdev&m=158555928517777&w=2
+
+=================
+
+----------------------------------------------------------------
+Parav Pandit (13):
+      devlink: Prepare code to fill multiple port function attributes
+      devlink: Introduce PCI SF port flavour and port attribute
+      devlink: Support add and delete devlink port
+      devlink: Support get and set state of port function
+      net/mlx5: Introduce vhca state event notifier
+      net/mlx5: SF, Add auxiliary device support
+      net/mlx5: SF, Add auxiliary device driver
+      net/mlx5: E-switch, Add eswitch helpers for SF vport
+      net/mlx5: SF, Add port add delete functionality
+      net/mlx5: SF, Port function state change support
+      devlink: Add devlink port documentation
+      devlink: Extend devlink port documentation for subfunctions
+      net/mlx5: Add devlink subfunction port documentation
+
+Vu Pham (1):
+      net/mlx5: E-switch, Prepare eswitch to handle SF vport
+
+ Documentation/driver-api/auxiliary_bus.rst         |   2 +
+ .../device_drivers/ethernet/mellanox/mlx5.rst      | 215 ++++++++
+ Documentation/networking/devlink/devlink-port.rst  | 199 ++++++++
+ Documentation/networking/devlink/index.rst         |   1 +
+ drivers/net/ethernet/mellanox/mlx5/core/Kconfig    |  19 +
+ drivers/net/ethernet/mellanox/mlx5/core/Makefile   |   9 +
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c      |   8 +
+ drivers/net/ethernet/mellanox/mlx5/core/devlink.c  |  19 +
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c       |   5 +-
+ .../mellanox/mlx5/core/esw/acl/egress_ofld.c       |   2 +-
+ .../ethernet/mellanox/mlx5/core/esw/devlink_port.c |  41 ++
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.c  |  48 +-
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.h  |  78 +++
+ .../ethernet/mellanox/mlx5/core/eswitch_offloads.c |  47 +-
+ drivers/net/ethernet/mellanox/mlx5/core/events.c   |   7 +
+ drivers/net/ethernet/mellanox/mlx5/core/main.c     |  60 ++-
+ .../net/ethernet/mellanox/mlx5/core/mlx5_core.h    |  12 +
+ drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c  |  20 +
+ drivers/net/ethernet/mellanox/mlx5/core/sf/cmd.c   |  49 ++
+ .../net/ethernet/mellanox/mlx5/core/sf/dev/dev.c   | 275 ++++++++++
+ .../net/ethernet/mellanox/mlx5/core/sf/dev/dev.h   |  55 ++
+ .../ethernet/mellanox/mlx5/core/sf/dev/driver.c    | 101 ++++
+ .../net/ethernet/mellanox/mlx5/core/sf/devlink.c   | 556 +++++++++++++++++++++
+ .../net/ethernet/mellanox/mlx5/core/sf/hw_table.c  | 233 +++++++++
+ .../mellanox/mlx5/core/sf/mlx5_ifc_vhca_event.h    |  82 +++
+ drivers/net/ethernet/mellanox/mlx5/core/sf/priv.h  |  21 +
+ drivers/net/ethernet/mellanox/mlx5/core/sf/sf.h    | 100 ++++
+ .../ethernet/mellanox/mlx5/core/sf/vhca_event.c    | 189 +++++++
+ .../ethernet/mellanox/mlx5/core/sf/vhca_event.h    |  57 +++
+ drivers/net/ethernet/mellanox/mlx5/core/vport.c    |   3 +-
+ include/linux/mlx5/driver.h                        |  16 +-
+ include/net/devlink.h                              |  77 +++
+ include/uapi/linux/devlink.h                       |  25 +
+ net/core/devlink.c                                 | 310 ++++++++++--
+ 34 files changed, 2894 insertions(+), 47 deletions(-)
+ create mode 100644 Documentation/networking/devlink/devlink-port.rst
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/cmd.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/dev/dev.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/dev/dev.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/mlx5_ifc_vhca_event.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/priv.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/sf.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/vhca_event.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/vhca_event.h
