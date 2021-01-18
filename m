@@ -2,94 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C382FA19C
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 14:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9212FA25E
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 15:01:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404246AbhARN2y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Jan 2021 08:28:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392217AbhARN2t (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:28:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E33D206B5;
-        Mon, 18 Jan 2021 13:28:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610976485;
-        bh=UmiixWBNdjkivF9FYr78Zj5u4oftJvSEwMizR+p6/xI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=as5qI4UZlYECI4bU/hA/EeenIP9833ek9zOgEhe1lPCGB7xwMlKJfQ4Ef61KFXywS
-         i74e+Y8dbyCyZlMVyMndjsqDgFAEFCf/XMyFVnEldQC5u/6vQLsJAT9ICyuvXMH9Wk
-         wvIg5i1hy/jBoSODXXzNljfI6dcNYtGucDLihwGohxw28T2l0BVUyWvZzbR7KzdKnd
-         /GXmBbtFDM3jt1+yEYKzGJcv6IozhUzCP4/CXVFKMHu3WyBI3HGbKxyxdGZhpVlJbo
-         V3g/O6ha/Dte4WUIdQsgmqs17j34NRa780/odsZzHf0VnsU1Xof6bWbjURq31CF597
-         fE0n8lkgumeaw==
-Date:   Mon, 18 Jan 2021 15:28:00 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Don Dutile <ddutile@redhat.com>
-Subject: Re: [PATCH mlx5-next v1 2/5] PCI: Add SR-IOV sysfs entry to read
- number of MSI-X vectors
-Message-ID: <20210118132800.GA4835@unreal>
-References: <20210114200825.GR4147@nvidia.com>
- <CAKgT0UcaRgY4XnM0jgWRvwBLj+ufiabFzKPyrf3jkLrF1Z8zEg@mail.gmail.com>
- <20210114162812.268d684a@omen.home.shazbot.org>
- <CAKgT0Ufe1w4PpZb3NXuSxug+OMcjm1RP3ZqVrJmQqBDt3ByOZQ@mail.gmail.com>
- <20210115140619.GA4147@nvidia.com>
- <20210115155315.GJ944463@unreal>
- <CAKgT0UdzCqbLwxSnDTtgha+PwTMW5iVb-3VXbwdMNiaAYXyWzQ@mail.gmail.com>
- <20210116082031.GK944463@unreal>
- <CAKgT0UeKiz=gh+djt83GRBGi8qQWTBzs-qxKj_78N+gx-KtkMQ@mail.gmail.com>
- <20210118072008.GA4843@unreal>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S2388249AbhARN6P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Jan 2021 08:58:15 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16423 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392492AbhARN6B (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jan 2021 08:58:01 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B600593c00000>; Mon, 18 Jan 2021 05:57:20 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 18 Jan
+ 2021 13:57:20 +0000
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.50) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 18 Jan 2021 13:57:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=izNoCFqnGhvtF4rHO6IRH7vxxIQVUebaK/YGHO5a3VbsZ7jqfwB+JQ0wrPZTT2eu2lenjW33ZdqFjhWt4/k2J6shLpgVdfQfHgdgdqyTmtk8h3swrv6YgbpCXHobU5OdLaWEg9wmNCyRfj4ZCk8M6Vy3ERNb/buQVvhivV5NRKSF7ydvDecr9kKMmp+69zEHsf1lNbwMQ9JtgnAYDVHtxl3k5BnJV+bqWerYAujgCaict0Fy7pnY9RIn8Z9qVxLxvmSTegMueRO3PRIaCrAp/gZVcUUl6f2lOtyUQiOVa1XBHDnyE0lCXUcxq3yZpvN6Yf0YUrpwftx/Jz58ehGyog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kWuots7K2mwSVvXQWlJ4gmXulV9QNxfkW/8FZUnCbF8=;
+ b=VveZxtoPR/T6d9FL7/Fc65z5mwG8jOvzZGRBCfE0LA1/NF2pvuIxpXfHKo/GNqEghB4TwlgBwC1EhvguuWWnSq8+u42ctj7ZExchjEjUlAdKbtuuojgQpRdwvPyrsGAUCUZ01G4BMgq5sKnMHRgJQqk6046q4xlFO4aTPb7G9gZSHBSQrhk7R6qsox5Pcjo9swmSNIzy+ErTp0kXicYXGH/KnKB46QmUvfykl131Km0bYt0lx9+Sp0yiqDN9IY8O8vsK5gKptTVGWpA4Rk1Wc4Qjmv0yRllQnkEMNV5Rzj0KZtEyHlqPLq9fwWCh2AxYj8pF+1isfogCJMO6mKJFKQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3113.namprd12.prod.outlook.com (2603:10b6:5:11b::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Mon, 18 Jan
+ 2021 13:57:19 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3763.014; Mon, 18 Jan 2021
+ 13:57:19 +0000
+Date:   Mon, 18 Jan 2021 09:57:17 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bryan Tan <bryantan@vmware.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Pv-drivers <Pv-drivers@vmware.com>
+Subject: Re: [PATCH for-rc] RDMA/vmw_pvrdma: Fix network_hdr_type reported in
+ WC
+Message-ID: <20210118135717.GG4147@nvidia.com>
+References: <1610634408-31356-1-git-send-email-bryantan@vmware.com>
+ <20210114172359.GC316809@nvidia.com>
+ <BL0PR05MB501015BAF25CADD722F5A9FCB2A79@BL0PR05MB5010.namprd05.prod.outlook.com>
+ <20210115125031.GY4147@nvidia.com>
+ <BL0PR05MB50108203905E205C6B4D2682B2A49@BL0PR05MB5010.namprd05.prod.outlook.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210118072008.GA4843@unreal>
+In-Reply-To: <BL0PR05MB50108203905E205C6B4D2682B2A49@BL0PR05MB5010.namprd05.prod.outlook.com>
+X-ClientProxiedBy: BLAPR03CA0075.namprd03.prod.outlook.com
+ (2603:10b6:208:329::20) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BLAPR03CA0075.namprd03.prod.outlook.com (2603:10b6:208:329::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11 via Frontend Transport; Mon, 18 Jan 2021 13:57:18 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l1V1x-002wGA-DS; Mon, 18 Jan 2021 09:57:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610978240; bh=kWuots7K2mwSVvXQWlJ4gmXulV9QNxfkW/8FZUnCbF8=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=JgCctYbZxlZ5Cp/gFRl0TK0KK2yjMwCQUg8A5EdnYHdjzv7z3y1oG9kgEG+42jTkg
+         IIOVWX+wq+hVz1W1rIl9qO6/AnWTHtDhK/Z40teM0GAEEB+l5zyMBXfgyle+GqdyKB
+         VtpGmizh+4zK5eqChkl992KJkp/loOyfKqKAUZ0y5lJslxcDewX9BACtukF1b9qaJN
+         Tr/oSQlsaP0iv4wIwkmCMT5K3I6JrA2a9aaLfDJFl17WzwOu2mTQTOqU1x0/IveYZJ
+         tuKRmFbLEQ00ghkyt0XZGA6xCy69bJJyGsGA6SZdPB0kFhl0c6jSLhq2O0offY+/O6
+         pk7EvtZBsFo0Q==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:20:08AM +0200, Leon Romanovsky wrote:
-> On Sun, Jan 17, 2021 at 07:16:30PM -0800, Alexander Duyck wrote:
-> > On Sat, Jan 16, 2021 at 12:20 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > On Fri, Jan 15, 2021 at 05:48:59PM -0800, Alexander Duyck wrote:
-> > > > On Fri, Jan 15, 2021 at 7:53 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > > > >
-> > > > > On Fri, Jan 15, 2021 at 10:06:19AM -0400, Jason Gunthorpe wrote:
-> > > > > > On Thu, Jan 14, 2021 at 05:56:20PM -0800, Alexander Duyck wrote:
+On Mon, Jan 18, 2021 at 11:46:28AM +0000, Bryan Tan wrote:
 
-<...>
+> Yes, the pvrdma_cqe struct is populated by the HW. Both the driver and
+> the userspace library use this struct to populate the corresponding WCs.
+> That makes sense, let me move them into the uapi header. Apologies if
+> this is answered somewhere, couldn't find any info--am I responsible for
+> updating the header in rdma-core then?
 
-> > If you want yet another compromise I would be much happier with the PF
-> > registering the sysfs interfaces on the VFs rather than the VFs
-> > registering the interface and hoping the PF supports it. At least with
-> > that you are guaranteed the PF will respond to the interface when it
-> > is registered.
->
-> Thanks a lot, I appreciate it, will take a look now.
+It happens automatically unless you need to send a related rdma-core
+github PR, then you should do it in the PR
 
-I found only two solutions to implement it in this way.
-Option 1.
-Allow multi entry write to some new sysfs knob that will receive BDF (or another VF
-identification) and vector count. Something like this:
-
- echo "0000:01:00.2 123" > sriov_vf_msix_count
-
-From one side, that solution is unlikely to be welcomed by Greg KH and from another,
-it will require a lot of boilerplate code to make it safe and correct.
-
-Option 2.
-Create directory under PF device with files writable and organized by VF numbers.
-It is doable, but will cause to code bloat with no gain at all. Cleaner than now,
-it won't be.
-
-Why the current approach with one file per-proper VF device is not good enough?
-
-Thanks
+Jason
