@@ -2,105 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1722FAB0F
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 21:10:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C1A2FAB0B
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 21:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394187AbhARUJm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Jan 2021 15:09:42 -0500
-Received: from mail-1.ca.inter.net ([208.85.220.69]:41946 "EHLO
-        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394185AbhARUJh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jan 2021 15:09:37 -0500
-Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
-        by mail-1.ca.inter.net (Postfix) with ESMTP id 17EE32EA2F1;
-        Mon, 18 Jan 2021 15:08:53 -0500 (EST)
-Received: from mail-1.ca.inter.net ([208.85.220.69])
-        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
-        with ESMTP id 6wxIMQiKLd4y; Mon, 18 Jan 2021 14:55:17 -0500 (EST)
-Received: from [192.168.48.23] (host-104-157-204-209.dyn.295.ca [104.157.204.209])
-        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dgilbert@interlog.com)
-        by mail-1.ca.inter.net (Postfix) with ESMTPSA id 06E792EA2DB;
-        Mon, 18 Jan 2021 15:08:51 -0500 (EST)
-Reply-To: dgilbert@interlog.com
-Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
- warning
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, bostroesser@gmail.com, ddiss@suse.de,
-        bvanassche@acm.org
-References: <20210118163006.61659-1-dgilbert@interlog.com>
- <20210118163006.61659-2-dgilbert@interlog.com>
- <20210118182854.GJ4605@ziepe.ca>
-From:   Douglas Gilbert <dgilbert@interlog.com>
-Message-ID: <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
-Date:   Mon, 18 Jan 2021 15:08:51 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2437743AbhARUJt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Jan 2021 15:09:49 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:31833 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388785AbhARUJn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 18 Jan 2021 15:09:43 -0500
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6005eadc0000>; Tue, 19 Jan 2021 04:09:00 +0800
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 18 Jan
+ 2021 20:08:59 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
+ by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 18 Jan 2021 20:08:59 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Vc+p3rG0L6QgLZCYpTs1RQxZM6mOsJfj3UQ2NwIPvULedHCprOaJjMsjAJI51fk3HGzrGtNn+zhxHfeKuCVuog9nLEp82dm3tEwBJkbyIOTJFr3IMWSW9FW410onrs84t0P6l0qfFvyE9Fobgt9P3M/Th04Yv4JFHfAm20bsVOnSZawMt/OsBp2/lj2wjkbFy5DcD1bA8Qsw0AZLyIOG8ggNy17xBl9s6Mw9Qf+rZOL8Gc0iHf6/cBSIxpYTrmkL7G08ViEl1MZ/qpkLcwK2ganzrMtLiu1nhr9iYiwryP5fUit9ScraaMK6CUboTMbVlMZLn5YcbZmHwlcMAJHi/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GF86lOtaNNU5QezIgjKJ2jM4Ka7DSLXRCN12+eUgMC4=;
+ b=KYqO3y2/Y0n9GzVfWNC3KWWluZTrJGrFfP/kbSnuRM0CFb1kcnzrE31wiunNn78Zf0Joc0f9APrDCyTcDVqMsdmx5Lyz4j+o6xnp3h1AgcSZrB7DZG2g6ffebwOCFGwy7pXWY5esxkiR2+TI8ksR5sj+sjSWdkV9Jz/ShYuVQXUdr6b/xeY2dTMocOtBYTQmUDPjVhRVoJ1TduVim3POVSAoIJJ8LFz+prWJ5nJwtDv5i0Il5kIeVx7vuC7XHO2uykh9oE+/sPTXablOMmgM16HySnm9D+KWyJ/NGl6QZ20UOlDGReDbGW3JeA00wH1AaU8YKH06sSOmyvad4+YIEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4388.namprd12.prod.outlook.com (2603:10b6:5:2a9::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9; Mon, 18 Jan
+ 2021 20:08:56 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3763.014; Mon, 18 Jan 2021
+ 20:08:56 +0000
+Date:   Mon, 18 Jan 2021 16:08:54 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Weihang Li <liweihang@huawei.com>
+CC:     <dledford@redhat.com>, <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@openeuler.org>
+Subject: Re: [PATCH v2 for-next] RDMA/hns: Add caps flag for UD inline of
+ userspace
+Message-ID: <20210118200854.GA778611@nvidia.com>
+References: <1609836423-40069-1-git-send-email-liweihang@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1609836423-40069-1-git-send-email-liweihang@huawei.com>
+X-ClientProxiedBy: BL1PR13CA0065.namprd13.prod.outlook.com
+ (2603:10b6:208:2b8::10) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <20210118182854.GJ4605@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0065.namprd13.prod.outlook.com (2603:10b6:208:2b8::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.6 via Frontend Transport; Mon, 18 Jan 2021 20:08:56 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l1apa-003GZA-VH; Mon, 18 Jan 2021 16:08:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611000540; bh=GF86lOtaNNU5QezIgjKJ2jM4Ka7DSLXRCN12+eUgMC4=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=gQE2r431iPnGuMO9sREEhPeJaC8QmMzqSqk76JqzAxdR6TQOWkX4KSm2vhjXk8Zs4
+         evp0etPflrGxY+DK3jKxP4ZW5BUA2urpHxkznXuYqRQ+X4+01ACX44Bac+IaBg4FIL
+         PNz44EJmJ594dJtmZsyJtcsaS9vMZa4AvoiVC6rYQ28zdFE+H1Ia1iiEEymY+Xq4yC
+         Qt/XcqyQZSUikCotA5z7lnRo3znReR0tQDhrhL0SRx1umdRSgh9eOD9pVRjFOCCDMK
+         t7vJwW2P32R+u9pJHCwtqScQfKCG2wfE0oGF9AT/Mhu7i2f2ZK9RkafMRsm7Xcl2WN
+         hcxC7NlQR0mpg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021-01-18 1:28 p.m., Jason Gunthorpe wrote:
-> On Mon, Jan 18, 2021 at 11:30:03AM -0500, Douglas Gilbert wrote:
-> 
->> After several flawed attempts to detect overflow, take the fastest
->> route by stating as a pre-condition that the 'order' function argument
->> cannot exceed 16 (2^16 * 4k = 256 MiB).
-> 
-> That doesn't help, the point of the overflow check is similar to
-> overflow checks in kcalloc: to prevent the routine from allocating
-> less memory than the caller might assume.
-> 
-> For instance ipr_store_update_fw() uses request_firmware() (which is
-> controlled by userspace) to drive the length argument to
-> sgl_alloc_order(). If userpace gives too large a value this will
-> corrupt kernel memory.
-> 
-> So this math:
-> 
->    	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
+On Tue, Jan 05, 2021 at 04:47:03PM +0800, Weihang Li wrote:
+> diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
+> index 90b739d..79dba94 100644
+> +++ b/include/uapi/rdma/hns-abi.h
+> @@ -77,6 +77,7 @@ enum hns_roce_qp_cap_flags {
+>  	HNS_ROCE_QP_CAP_RQ_RECORD_DB = 1 << 0,
+>  	HNS_ROCE_QP_CAP_SQ_RECORD_DB = 1 << 1,
+>  	HNS_ROCE_QP_CAP_OWNER_DB = 1 << 2,
+> +	HNS_ROCE_QP_CAP_UD_SQ_INL = 1 << 3,
+>  };
 
-But that check itself overflows if order is too large (e.g. 65).
-A pre-condition says that the caller must know or check a value
-is sane, and if the user space can have a hand in the value passed
-the caller _must_ check pre-conditions IMO. A pre-condition also
-implies that the function's implementation will not have code to
-check the pre-condition.
+Where are the rdma-core patches to support this bit? I don't see them
+on github?
 
-My "log of both sides" proposal at least got around the overflowing
-left shift problem. And one reviewer, Bodo Stroesser, liked it.
-
-> Needs to be checked, add a precondition to order does not help. I
-> already proposed a straightforward algorithm you can use.
-
-It does help, it stops your proposed check from being flawed :-)
-
-Giving a false sense of security seems more dangerous than a
-pre-condition statement IMO. Bart's original overflow check (in
-the mainline) limits length to 4GB (due to wrapping inside a 32
-bit unsigned).
-
-Also note there is another pre-condition statement in that function's
-definition, namely that length cannot be 0.
-
-So perhaps you, Bart Van Assche and Bodo Stroesser, should compare
-notes and come up with a solution that you are _all_ happy with.
-The pre-condition works for me and is the fastest. The 'length'
-argument might be large, say > 1 GB [I use 1 GB in testing but
-did try 4GB and found the bug I'm trying to fix] but having
-individual elements greater than say 32 MB each does not
-seem very practical (and fails on the systems that I test with).
-In my testing the largest element size is 4 MB.
-
-
-Doug Gilbert
-
+Jason
