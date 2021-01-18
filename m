@@ -2,157 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01F02FA666
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 17:39:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C83BB2FA669
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 17:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404996AbhARP5r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Jan 2021 10:57:47 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11005 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405890AbhARPrz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jan 2021 10:47:55 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6005ad7d0002>; Mon, 18 Jan 2021 07:47:09 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 18 Jan
- 2021 15:47:09 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 18 Jan 2021 15:47:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MxOdRpP9CBrMYABsvprBuBDX+ne67cdaL6CWgMBggUYEcHtA8McC+ltofD54LG7VW55Aj81WrAt1Y7kpnqPjeJnbU0Pb69O3P3q9r2OzxiqRQG2IGDG6kEsAQs/qRouLWBa71FUqXDJl3raqDpvF9gtpkzbJlX+/WpIYLESxq15xr6fl7qSiyak+I9DRvF0UkiYvw9zmnsHpjD3Z6uTsBy+Iga06D/2zv9RENz3rxxK8jLg+iMkJwaQw+Kutj8m/+Flu+4Pp1p+QAby3Em29nhIJlIEsbG0wwYduKgVSmPZni2BznGH0eEE8JjT9atzJWITrm9sOBDDHujX8XQMvew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YEcQrRC3aVCEMun2EKQCxRLBrYsyH9MspeVeRJbkbcw=;
- b=EDrydWy7BTIAjNd+R1MYXw6PX5dXU35ECXhU3XnMHfu5QEoNrYZhtV3fk0191Sh3Y9Jn+01u3BRO/ngjhi+iOPsZ47ime6+7UYv8E9hycaZsTqB9P+eZgo6oLAIMmpafrG82QILG5zvMqLo8ZJSbMxO0y2tE49oLHCRVkaBvWYXeK+pAX3nt14kFJjt0caBLUF3wi6EGleJiYA0JJxbQuS+6d0KSnnY+dS9Oh29YgrXAbs4dfzQO/UKeGxljPPdeo7QlUtV2saodtzC0RQPYSelIr6CMhOO76VZaK8iIUnPeOtTINSuHqX+ssav2fDHE82rYYuRJSOLDd4rXJldRBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4010.namprd12.prod.outlook.com (2603:10b6:5:1ce::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Mon, 18 Jan
- 2021 15:47:07 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3763.014; Mon, 18 Jan 2021
- 15:47:07 +0000
-Date:   Mon, 18 Jan 2021 11:47:05 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
-        Don Dutile <ddutile@redhat.com>
-Subject: Re: [PATCH mlx5-next v1 2/5] PCI: Add SR-IOV sysfs entry to read
- number of MSI-X vectors
-Message-ID: <20210118154705.GK4147@nvidia.com>
-References: <20210114164857.GN4147@nvidia.com>
- <CAKgT0UcKqt=EgE+eitB8-u8LvxqHBDfF+u2ZSi5urP_Aj0Btvg@mail.gmail.com>
- <20210114182945.GO4147@nvidia.com>
- <CAKgT0UcQW+nJjTircZAYs1_GWNrRud=hSTsphfVpsc=xaF7aRQ@mail.gmail.com>
- <20210114200825.GR4147@nvidia.com>
- <CAKgT0UcaRgY4XnM0jgWRvwBLj+ufiabFzKPyrf3jkLrF1Z8zEg@mail.gmail.com>
- <20210114162812.268d684a@omen.home.shazbot.org>
- <CAKgT0Ufe1w4PpZb3NXuSxug+OMcjm1RP3ZqVrJmQqBDt3ByOZQ@mail.gmail.com>
- <20210115140619.GA4147@nvidia.com>
- <CAKgT0UfAoGXQp9C0uL124GZfdhY6vvpk3NmCDqCpLET9dzAdRg@mail.gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAKgT0UfAoGXQp9C0uL124GZfdhY6vvpk3NmCDqCpLET9dzAdRg@mail.gmail.com>
-X-ClientProxiedBy: BL1PR13CA0141.namprd13.prod.outlook.com
- (2603:10b6:208:2bb::26) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S2406653AbhARQbT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Jan 2021 11:31:19 -0500
+Received: from smtp.infotech.no ([82.134.31.41]:45726 "EHLO smtp.infotech.no"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406723AbhARQbH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 18 Jan 2021 11:31:07 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by smtp.infotech.no (Postfix) with ESMTP id 114222042B4;
+        Mon, 18 Jan 2021 17:30:22 +0100 (CET)
+X-Virus-Scanned: by amavisd-new-2.6.6 (20110518) (Debian) at infotech.no
+Received: from smtp.infotech.no ([127.0.0.1])
+        by localhost (smtp.infotech.no [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fP6VqsNWXjil; Mon, 18 Jan 2021 17:30:14 +0100 (CET)
+Received: from xtwo70.bingwo.ca (host-104-157-204-209.dyn.295.ca [104.157.204.209])
+        by smtp.infotech.no (Postfix) with ESMTPA id E1CBB20416A;
+        Mon, 18 Jan 2021 17:30:10 +0100 (CET)
+From:   Douglas Gilbert <dgilbert@interlog.com>
+To:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     martin.petersen@oracle.com, jejb@linux.vnet.ibm.com,
+        bostroesser@gmail.com, ddiss@suse.de, bvanassche@acm.org,
+        jgg@ziepe.ca
+Subject: [PATCH v6 0/4] scatterlist: add new capabilities
+Date:   Mon, 18 Jan 2021 11:30:02 -0500
+Message-Id: <20210118163006.61659-1-dgilbert@interlog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0141.namprd13.prod.outlook.com (2603:10b6:208:2bb::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.6 via Frontend Transport; Mon, 18 Jan 2021 15:47:07 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l1WkD-002yn2-9y; Mon, 18 Jan 2021 11:47:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610984829; bh=YEcQrRC3aVCEMun2EKQCxRLBrYsyH9MspeVeRJbkbcw=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=Eg5Vj3wMTROKVjlcrEZ+kn064+iDF5M3EJNML+nzVqWp7tJcH9IYubtG7panaLr8s
-         dVnn6v4mIMT+fthsuS6kMhyzWsZlkX360NEEQ83ijiKJDvP9GmYkx5Q4XDgmhUGqGj
-         39kUYTHB8rIRxWZdOxvjVwbioAhzh0BBAgMu9Mc9HmezdklXbGuU6hGSlxxR50z+KZ
-         NJdgwURtKf9so81Ky1uORdQKlawdcHZbBXoFS8ZD6sVMC77jABeovloEupC3Deaefx
-         oudhE0HwPW+cyChjt42bA36w3/53/8BlbVLCItJzK3S7aFd0jdlPl67MXSgXFbKFGk
-         pZYmYUeQsHWUg==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 08:32:19PM -0800, Alexander Duyck wrote:
-> On Fri, Jan 15, 2021 at 6:06 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >
-> > On Thu, Jan 14, 2021 at 05:56:20PM -0800, Alexander Duyck wrote:
-> >
-> > > That said, it only works at the driver level. So if the firmware is
-> > > the one that is having to do this it also occured to me that if this
-> > > update happened on FLR that would probably be preferred.
-> >
-> > FLR is not free, I'd prefer not to require it just for some
-> > philosophical reason.
-> 
-> It wasn't so much a philosophical thing as the fact that it can sort
-> of take the place as a reload. 
+Scatter-gather lists (sgl_s) are frequently used as data carriers in
+the block layer. For example the SCSI and NVMe subsystems interchange
+data with the block layer using sgl_s. The sgl API is declared in
+<linux/scatterlist.h>
 
-Asserting no driver is present and doing some SW-only "FLR" is pretty
-much the same thing.
+The author has extended these transient sgl use cases to a store (i.e.
+a ramdisk) in the scsi_debug driver. Other new potential uses of sgl_s
+could be for the target subsystem. When this extra step is taken, the
+need to copy between sgl_s becomes apparent. The patchset adds
+sgl_copy_sgl(), sgl_compare_sgl() and sgl_memset().
 
-We can't issue FLR unless no driver is present anyhow, so really all
-this does is add a useless step. If some HW needs FLR then it can do
-it in here, but I don't see a value to inject it when not needed. 
+The existing sgl_alloc_order() function can be seen as a replacement
+for vmalloc() for large, long-term allocations.  For what seems like
+no good reason, sgl_alloc_order() currently restricts its total
+allocation to less than or equal to 4 GiB. vmalloc() has no such
+restriction.
 
-Yes, if we were PCI-SIG we'd probably insist that a FLR be done, but
-we are not PCI-SIG, this is just Linux, and asserting there are no
-users of the MSI is sufficient.
+Changes since v5 [posted 20201228]:
+  - incorporate review requests from Jason Gunthorpe
+  - replace integer overflow detection code in sgl_alloc_order()
+    with a pre-condition statement
+  - rebase on lk 5.11.0-rc4
 
-> However looking over the mlx5 code I don't see any handling of FLR
-> in there so I am assuming that is handled by the firmware.
+Changes since v4 [posted 20201105]:
+  - rebase on lk 5.10.0-rc2
 
-The device does the device side of the FLR, the mlx5 driver should
-trigger FLR during error recovery flows.
+Changes since v3 [posted 20201019]:
+  - re-instate check on integer overflow of nent calculation in
+    sgl_alloc_order(). Do it in such a way as to not limit the
+    overall sgl size to 4  GiB
+  - introduce sgl_compare_sgl_idx() helper function that, if
+    requested and if a miscompare is detected, will yield the byte
+    index of the first miscompare.
+  - add Reviewed-by tags from Bodo Stroesser
+  - rebase on lk 5.10.0-rc2 [was on lk 5.9.0]
 
-> It is about the setup of things. The sysfs existing in the VF is kind
-> of ugly since it is a child device calling up to the parent and
-> telling it how it is supposed to be configured. 
+Changes since v2 [posted 20201018]:
+  - remove unneeded lines from sgl_memset() definition.
+  - change sg_zero_buffer() to call sgl_memset() as the former
+    is a subset.
 
-Well, the logical place to put that sysfs file is under the VF,
-otherwise it becomes ugly in a different way. I agree it would be
-nicer if the file only existed when the right driver is loaded, and
-there was a better way to get from the PF to VF.
+Changes since v1 [posted 20201016]:
+  - Bodo Stroesser pointed out a problem with the nesting of
+    kmap_atomic() [called via sg_miter_next()] and kunmap_atomic()
+    calls [called via sg_miter_stop()] and proposed a solution that
+    simplifies the previous code.
 
-> I'm sure in theory we could probably even have the VF request
-> something like that itself through some sort of mailbox and cut out
-> the middle-man but that would be even uglier.
+  - the new implementation of the three functions has shorter periods
+    when pre-emption is disabled (but has more them). This should
+    make operations on large sgl_s more pre-emption "friendly" with
+    a relatively small performance hit.
 
-No, not ever. The VF is in a security domain that can't make those
-kinds of changes to itself.
+  - sgl_memset return type changed from void to size_t and is the
+    number of bytes actually (over)written. That number is needed
+    anyway internally so may as well return it as it may be useful to
+    the caller.
 
-> In my mind it was the PF driver providing a devlink instance for the
-> VF if a driver isn't loaded.
+This patchset is against lk 5.11.0-rc4
 
-I think hacking up devlink to provide dummy devlink objects for VFs
-that otherwise wouldn't exist and then ensuring handover to/from real
-drivers that might want those objects natively, just for the sake of
-using devlink to instead of the existing PCI sysfs is major overkill.
+Douglas Gilbert (4):
+  sgl_alloc_order: remove 4 GiB limit, sgl_free() warning
+  scatterlist: add sgl_copy_sgl() function
+  scatterlist: add sgl_compare_sgl() function
+  scatterlist: add sgl_memset()
 
-If we are even thinking of moving PCI to devlink I'd want to see
-devlink taken out of net and a whole devlink PCI subsystem
-infrastructure created to manage all this sanely.
+ include/linux/scatterlist.h |  33 ++++-
+ lib/scatterlist.c           | 253 +++++++++++++++++++++++++++++++-----
+ 2 files changed, 253 insertions(+), 33 deletions(-)
 
-Hacking a subystem into devlink on the side with some small niche
-feature is not the way to approach such fundamental things.
+-- 
+2.25.1
 
-I also don't know if PCI will get much value from netlinkification, or
-if devlink is even the right netlink representation for PCI in the
-first place.
-
-Jason
