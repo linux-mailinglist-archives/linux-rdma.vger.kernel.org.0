@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D067F2FAD61
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 23:42:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA7A2FAD63
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 23:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731537AbhARWlO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Jan 2021 17:41:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
+        id S2388916AbhARWlU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Jan 2021 17:41:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388883AbhARWk4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jan 2021 17:40:56 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A48C0613D3
-        for <linux-rdma@vger.kernel.org>; Mon, 18 Jan 2021 14:39:37 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id v184so10832080wma.1
-        for <linux-rdma@vger.kernel.org>; Mon, 18 Jan 2021 14:39:37 -0800 (PST)
+        with ESMTP id S2388639AbhARWk5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jan 2021 17:40:57 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49A3C061786
+        for <linux-rdma@vger.kernel.org>; Mon, 18 Jan 2021 14:39:38 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id q18so17936520wrn.1
+        for <linux-rdma@vger.kernel.org>; Mon, 18 Jan 2021 14:39:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=03PX32GpkZFeqKLT+BSfdocA6g5Zox/rBREnRYBnkyU=;
-        b=nOYfyKBkyVqRw+ngdr49tGYEqowAqRUTVdMJ5ZlgJkf09UuaDzKcbYbfpwOPRtQvCR
-         0N3WFMeU/HrAk4ThBZFiWWyfj+cuTcHVBfwpNX7ixpPs6mjN4rgWjP3vD+XmXq+Aex3F
-         eiYSgNxZNQnbXcVdwDCXU/Eue6MGibK2r2o0WMBwEhOPYuE9Sb4vMDvbtfaF48QF6oru
-         M3KHJY/3RfINSrJxmT+aguCuImG8lGPuV5E9LUG8OiteJ3l/vA0IHNyrpG+UTOYQ7nTE
-         rRCwI1/5TiZaLk/PTVzBCDHAdqTP4UW2pZuLYrk6FbgVLHdE7fL9Y7Bqpr63IhxLZX4s
-         LTMQ==
+        bh=2zCFxNxC1849c1rWm6WspmEg7y5zlYGUnMSic9ZfnKc=;
+        b=LflVijOPHoSSIlKgkVZiZW3Hc8wVCelYr3w5fn3OGARaCQRsIGeckBPvOnPvrOWaIk
+         M5sCZrm3fkOqPBHCZUXWk8/h77OxwK0B5zKS5/bqw3ShNpdCbShRIV8i/DwFp7I84Icx
+         OFD2zMxCZNfipwxFt7sz2AzxMxP1l3uCO7yTrw1WMWyPbfUkxaFb7aMqDwwXExd+ejLj
+         Ysn6xEE5Qql9qCeW8HJJRTPpJ3KL5eZA3bf49a54+twBJuk73hnQtH/srwgZ0FLp6zu1
+         D9NtIN1c+/xiYVDpndXgHHjAgN6Z4sdqRW033JPL3Qm7C4U2R7agL17E8XFLWfFhNqd5
+         rOJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=03PX32GpkZFeqKLT+BSfdocA6g5Zox/rBREnRYBnkyU=;
-        b=liqpszjZ9WPErvoewT7D6sBeyLCMQq7XkoP+MyQwggbrKdRI6KnzngotkX9fDIPLbv
-         OIF4oJik99R4ucrGljAP+FfWytyO12JbLQX2mZrXJiNDjf64PasXN/r5aMikrAtpeaxa
-         pyIc1I0lKwXJzM/AI2fqMMbyfOe548x+Ziqgr9oI2uzLAsi3wZ1U2LU5vXnQ6A2hvpbh
-         5vTh3wBgSujewhndpOnciWYlMs8SNjEmgqdmi8mDvLvR+kNMrXjc6g4Js7uGAg9cP+On
-         VVlLdZYgO0TK3/h9kTLb8ssdHQGCNOqcEwNUkjfrQOGEXOwwEfW/+aejiKsMfdqbUx28
-         Ne5A==
-X-Gm-Message-State: AOAM531udoB/uhFiZ8fEv6Xtm7xdIBGfQgsOmrcaaPHD/qaFexEOGEBF
-        688GTykYxgCA3wOABePM7X2PXw==
-X-Google-Smtp-Source: ABdhPJzLSKJxF9qwsXu0/mp+lIyn4CFH2RNvpTazov2Py95UJ+sRH0dWdXWCKm88qErZ4h6Gmw0m0A==
-X-Received: by 2002:a05:600c:24b:: with SMTP id 11mr1225842wmj.17.1611009576534;
-        Mon, 18 Jan 2021 14:39:36 -0800 (PST)
+        bh=2zCFxNxC1849c1rWm6WspmEg7y5zlYGUnMSic9ZfnKc=;
+        b=E0e/bjrcNQBAYjYT1sN0ddZkPTQqzKrJe4KqNhOk6+MaRhtF+XZxkPShLn0r8jYllH
+         WGEGRUfz48i1WRjJ/tO8EZVWfqbBTaLCBEr1BWkm6K9rxIfKq9c52vL6DAMH3QtIm5c3
+         2MWIyi/VT+/yNdkLbPL0dKf3afM73ae4CxKRtVAP/BjQnzrtKyrExvkGmQW6UwilOnvs
+         3jUr4ZyNb1iyGINhQxYvD1dzssZ3GRaatIZ/T5IoBsDJ/XAeu/++lJxcaJcZCCv4G8vA
+         dlQ3ZZuoSiFvxaBqy/GiGE0b6bTpGFtxA7TZmVANQ3SWEZXpqKi8Ad/C+lPz2bBHIRdn
+         aiow==
+X-Gm-Message-State: AOAM532Y9STgki43Orvm22c+ramma+nDmwH5lBBhwjMUDfByCzFVKDZd
+        zz2Qj8h2gm18qB/nrgrUi39z0w==
+X-Google-Smtp-Source: ABdhPJyBs23FfpBTJdohr+eiQsr283xaDs8nkxlG8Zkp1P6jeJLNmfjSumGo/JfYdhy/mcTAR3ilrQ==
+X-Received: by 2002:adf:dc8d:: with SMTP id r13mr1422006wrj.325.1611009577630;
+        Mon, 18 Jan 2021 14:39:37 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id l1sm33255902wrq.64.2021.01.18.14.39.35
+        by smtp.gmail.com with ESMTPSA id l1sm33255902wrq.64.2021.01.18.14.39.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 14:39:35 -0800 (PST)
+        Mon, 18 Jan 2021 14:39:37 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -54,9 +54,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Shiraz Saleem <shiraz.saleem@intel.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 03/20] RDMA/hw/i40iw/i40iw_ctrl: Fix a bunch of misspellings and formatting issues
-Date:   Mon, 18 Jan 2021 22:39:12 +0000
-Message-Id: <20210118223929.512175-4-lee.jones@linaro.org>
+Subject: [PATCH 04/20] RDMA/hw/i40iw/i40iw_cm: Fix a bunch of function documentation issues
+Date:   Mon, 18 Jan 2021 22:39:13 +0000
+Message-Id: <20210118223929.512175-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210118223929.512175-1-lee.jones@linaro.org>
 References: <20210118223929.512175-1-lee.jones@linaro.org>
@@ -68,19 +68,26 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/hw/i40iw/i40iw_ctrl.c:193: warning: Function parameter or member 'obj_info' not described in 'i40iw_sc_decode_fpm_query'
- drivers/infiniband/hw/i40iw/i40iw_ctrl.c:193: warning: Excess function parameter 'info' description in 'i40iw_sc_decode_fpm_query'
- drivers/infiniband/hw/i40iw/i40iw_ctrl.c:218: warning: Function parameter or member 'hmc_info' not described in 'i40iw_sc_parse_fpm_query_buf'
- drivers/infiniband/hw/i40iw/i40iw_ctrl.c:218: warning: Excess function parameter 'info' description in 'i40iw_sc_parse_fpm_query_buf'
- drivers/infiniband/hw/i40iw/i40iw_ctrl.c:784: warning: Function parameter or member 'compl_info' not described in 'i40iw_sc_poll_for_cqp_op_done'
- drivers/infiniband/hw/i40iw/i40iw_ctrl.c:784: warning: Excess function parameter 'info' description in 'i40iw_sc_poll_for_cqp_op_done'
- drivers/infiniband/hw/i40iw/i40iw_ctrl.c:947: warning: Function parameter or member 'commit_fpm_mem' not described in 'i40iw_sc_commit_fpm_values'
- drivers/infiniband/hw/i40iw/i40iw_ctrl.c:1032: warning: Function parameter or member 'dev' not described in 'i40iw_get_rdma_features'
- drivers/infiniband/hw/i40iw/i40iw_ctrl.c:1468: warning: Function parameter or member 'ignore_ref_count' not described in 'i40iw_sc_del_local_mac_ipaddr_entry'
- drivers/infiniband/hw/i40iw/i40iw_ctrl.c:2314: warning: Function parameter or member 'scratch' not described in 'i40iw_sc_cq_modify'
- drivers/infiniband/hw/i40iw/i40iw_ctrl.c:3682: warning: Function parameter or member 'info' not described in 'cqp_sds_wqe_fill'
- drivers/infiniband/hw/i40iw/i40iw_ctrl.c:4894: warning: Function parameter or member 'stats' not described in 'i40iw_hw_stats_read_32'
- drivers/infiniband/hw/i40iw/i40iw_ctrl.c:4894: warning: Excess function parameter 'stat' description in 'i40iw_hw_stats_read_32'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:76: warning: Function parameter or member 'bufp' not described in 'i40iw_free_sqbuf'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:76: warning: Excess function parameter 'buf' description in 'i40iw_free_sqbuf'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:737: warning: Function parameter or member 'start_addr' not described in 'i40iw_build_mpa_v1'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:1059: warning: Function parameter or member 'cm_node' not described in 'i40iw_schedule_cm_timer'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:1211: warning: Function parameter or member 't' not described in 'i40iw_cm_timer_tick'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:1211: warning: Excess function parameter 'pass' description in 'i40iw_cm_timer_tick'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:1475: warning: Function parameter or member 'vlan_id' not described in 'i40iw_find_listener'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:1527: warning: Function parameter or member 'port' not described in 'i40iw_find_port'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:1527: warning: Excess function parameter 'accelerated_list' description in 'i40iw_find_port'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:1843: warning: Function parameter or member 'listener' not described in 'i40iw_dec_refcnt_listen'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:2037: warning: Function parameter or member 'src_addr' not described in 'i40iw_get_dst_ipv6'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:2037: warning: Function parameter or member 'dst_addr' not described in 'i40iw_get_dst_ipv6'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:2061: warning: Function parameter or member 'src' not described in 'i40iw_addr_resolve_neigh_ipv6'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:2061: warning: Function parameter or member 'dest' not described in 'i40iw_addr_resolve_neigh_ipv6'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:2061: warning: Excess function parameter 'dst_ip' description in 'i40iw_addr_resolve_neigh_ipv6'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:3011: warning: Function parameter or member 'pdata' not described in 'i40iw_cm_reject'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:3011: warning: Excess function parameter 'pdate' description in 'i40iw_cm_reject'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:4312: warning: Function parameter or member 'nfo' not described in 'i40iw_cm_teardown_connections'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:4312: warning: Excess function parameter 'ipv4' description in 'i40iw_cm_teardown_connections'
+ drivers/infiniband/hw/i40iw/i40iw_cm.c:4367: warning: Function parameter or member 'netdev' not described in 'i40iw_if_notify'
 
 Cc: Faisal Latif <faisal.latif@intel.com>
 Cc: Shiraz Saleem <shiraz.saleem@intel.com>
@@ -89,94 +96,118 @@ Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/i40iw/i40iw_ctrl.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/infiniband/hw/i40iw/i40iw_cm.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_ctrl.c b/drivers/infiniband/hw/i40iw/i40iw_ctrl.c
-index c943d491b72bd..eaea5d545eb8c 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_ctrl.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_ctrl.c
-@@ -181,7 +181,7 @@ static enum i40iw_status_code i40iw_sc_parse_fpm_commit_buf(
-  * i40iw_sc_decode_fpm_query() - Decode a 64 bit value into max count and size
-  * @buf: ptr to fpm query buffer
-  * @buf_idx: index into buf
-- * @info: ptr to i40iw_hmc_obj_info struct
-+ * @obj_info: ptr to i40iw_hmc_obj_info struct
-  * @rsrc_idx: resource index into info
-  *
-  * Decode a 64 bit value from fpm query buffer into max count and size
-@@ -205,7 +205,7 @@ static u64 i40iw_sc_decode_fpm_query(u64 *buf,
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+index 9acc0ecc9a43e..ac65c8237b2ed 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
+@@ -70,7 +70,7 @@ static void i40iw_disconnect_worker(struct work_struct *work);
  /**
-  * i40iw_sc_parse_fpm_query_buf() - parses fpm query buffer
-  * @buf: ptr to fpm query buffer
-- * @info: ptr to i40iw_hmc_obj_info struct
-+ * @hmc_info: ptr to i40iw_hmc_obj_info struct
-  * @hmc_fpm_misc: ptr to fpm data
-  *
-  * parses fpm query buffer and copy max_cnt and
-@@ -775,7 +775,7 @@ static enum i40iw_status_code i40iw_sc_ccq_get_cqe_info(
-  * i40iw_sc_poll_for_cqp_op_done - Waits for last write to complete in CQP SQ
-  * @cqp: struct for cqp hw
-  * @op_code: cqp opcode for completion
-- * @info: completion q entry to return
-+ * @compl_info: completion q entry to return
+  * i40iw_free_sqbuf - put back puda buffer if refcount = 0
+  * @vsi: pointer to vsi structure
+- * @buf: puda buffer to free
++ * @bufp: puda buffer to free
   */
- static enum i40iw_status_code i40iw_sc_poll_for_cqp_op_done(
- 					struct i40iw_sc_cqp *cqp,
-@@ -933,7 +933,7 @@ static enum i40iw_status_code i40iw_sc_commit_fpm_values_done(struct i40iw_sc_cq
-  * @cqp: struct for cqp hw
-  * @scratch: u64 saved to be used during cqp completion
-  * @hmc_fn_id: hmc function id
-- * @commit_fpm_mem; Memory for fpm values
-+ * @commit_fpm_mem: Memory for fpm values
-  * @post_sq: flag for cqp db to ring
-  * @wait_type: poll ccq or cqp registers for cqp completion
-  */
-@@ -1026,7 +1026,7 @@ i40iw_sc_query_rdma_features(struct i40iw_sc_cqp *cqp,
- 
- /**
-  * i40iw_get_rdma_features - get RDMA features
-- * @dev - sc device struct
-+ * @dev: sc device struct
-  */
- enum i40iw_status_code i40iw_get_rdma_features(struct i40iw_sc_dev *dev)
+ void i40iw_free_sqbuf(struct i40iw_sc_vsi *vsi, void *bufp)
  {
-@@ -1456,7 +1456,7 @@ static enum i40iw_status_code i40iw_sc_add_local_mac_ipaddr_entry(
-  * @cqp: struct for cqp hw
-  * @scratch: u64 saved to be used during cqp completion
-  * @entry_idx: index of mac entry
-- * @ ignore_ref_count: to force mac adde delete
-+ * @ignore_ref_count: to force mac adde delete
-  * @post_sq: flag for cqp db to ring
-  */
- static enum i40iw_status_code i40iw_sc_del_local_mac_ipaddr_entry(
-@@ -2304,7 +2304,7 @@ static enum i40iw_status_code i40iw_sc_cq_destroy(struct i40iw_sc_cq *cq,
-  * i40iw_sc_cq_modify - modify a Completion Queue
-  * @cq: cq struct
-  * @info: modification info struct
-- * @scratch:
-+ * @scratch: u64 saved to be used during cqp completion
-  * @post_sq: flag to post to sq
-  */
- static enum i40iw_status_code i40iw_sc_cq_modify(struct i40iw_sc_cq *cq,
-@@ -3673,7 +3673,7 @@ static enum i40iw_status_code i40iw_sc_configure_iw_fpm(struct i40iw_sc_dev *dev
+@@ -729,6 +729,7 @@ static int i40iw_handle_tcp_options(struct i40iw_cm_node *cm_node,
  /**
-  * cqp_sds_wqe_fill - fill cqp wqe doe sd
-  * @cqp: struct for cqp hw
-- * @info; sd info for wqe
-+ * @info: sd info for wqe
-  * @scratch: u64 saved to be used during cqp completion
+  * i40iw_build_mpa_v1 - build a MPA V1 frame
+  * @cm_node: connection's node
++ * @start_addr: MPA frame start address
+  * @mpa_key: to do read0 or write0
   */
- static enum i40iw_status_code cqp_sds_wqe_fill(struct i40iw_sc_cqp *cqp,
-@@ -4884,7 +4884,7 @@ void i40iw_hw_stats_init(struct i40iw_vsi_pestat *stats, u8 fcn_idx, bool is_pf)
+ static void i40iw_build_mpa_v1(struct i40iw_cm_node *cm_node,
+@@ -1040,7 +1041,7 @@ static int i40iw_parse_mpa(struct i40iw_cm_node *cm_node, u8 *buffer, u32 *type,
  
  /**
-  * i40iw_hw_stats_read_32 - Read 32-bit HW stats counters and accommodates for roll-overs.
-- * @stat: pestat struct
-+ * @stats: pestat struct
-  * @index: index in HW stats table which contains offset reg-addr
-  * @value: hw stats value
+  * i40iw_schedule_cm_timer
+- * @@cm_node: connection's node
++ * @cm_node: connection's node
+  * @sqbuf: buffer to send
+  * @type: if it is send or close
+  * @send_retrans: if rexmits to be done
+@@ -1205,7 +1206,7 @@ static void i40iw_build_timer_list(struct list_head *timer_list,
+ 
+ /**
+  * i40iw_cm_timer_tick - system's timer expired callback
+- * @pass: Pointing to cm_core
++ * @t: Timer instance to fetch the cm_core pointer from
   */
+ static void i40iw_cm_timer_tick(struct timer_list *t)
+ {
+@@ -1463,6 +1464,7 @@ struct i40iw_cm_node *i40iw_find_node(struct i40iw_cm_core *cm_core,
+  * @cm_core: cm's core
+  * @dst_port: listener tcp port num
+  * @dst_addr: listener ip addr
++ * @vlan_id: vlan id for the given address
+  * @listener_state: state to match with listen node's
+  */
+ static struct i40iw_cm_listener *i40iw_find_listener(
+@@ -1521,7 +1523,7 @@ static void i40iw_add_hte_node(struct i40iw_cm_core *cm_core,
+ /**
+  * i40iw_find_port - find port that matches reference port
+  * @hte: ptr to accelerated or non-accelerated list
+- * @accelerated_list: flag for accelerated vs non-accelerated list
++ * @port: port number to locate
+  */
+ static bool i40iw_find_port(struct list_head *hte, u16 port)
+ {
+@@ -1834,6 +1836,7 @@ static enum i40iw_status_code i40iw_add_mqh_4(
+ /**
+  * i40iw_dec_refcnt_listen - delete listener and associated cm nodes
+  * @cm_core: cm's core
++ * @listener: passive connection's listener
+  * @free_hanging_nodes: to free associated cm_nodes
+  * @apbvt_del: flag to delete the apbvt
+  */
+@@ -2029,7 +2032,7 @@ static int i40iw_addr_resolve_neigh(struct i40iw_device *iwdev,
+ 	return rc;
+ }
+ 
+-/**
++/*
+  * i40iw_get_dst_ipv6
+  */
+ static struct dst_entry *i40iw_get_dst_ipv6(struct sockaddr_in6 *src_addr,
+@@ -2051,7 +2054,8 @@ static struct dst_entry *i40iw_get_dst_ipv6(struct sockaddr_in6 *src_addr,
+ /**
+  * i40iw_addr_resolve_neigh_ipv6 - resolve neighbor ipv6 address
+  * @iwdev: iwarp device structure
+- * @dst_ip: remote ip address
++ * @src: source ip address
++ * @dest: remote ip address
+  * @arpindex: if there is an arp entry
+  */
+ static int i40iw_addr_resolve_neigh_ipv6(struct i40iw_device *iwdev,
+@@ -3004,7 +3008,7 @@ static struct i40iw_cm_node *i40iw_create_cm_node(
+ /**
+  * i40iw_cm_reject - reject and teardown a connection
+  * @cm_node: connection's node
+- * @pdate: ptr to private data for reject
++ * @pdata: ptr to private data for reject
+  * @plen: size of private data
+  */
+ static int i40iw_cm_reject(struct i40iw_cm_node *cm_node, const void *pdata, u8 plen)
+@@ -4302,7 +4306,7 @@ static void i40iw_qhash_ctrl(struct i40iw_device *iwdev,
+  * i40iw_cm_teardown_connections - teardown QPs
+  * @iwdev: device pointer
+  * @ipaddr: Pointer to IPv4 or IPv6 address
+- * @ipv4: flag indicating IPv4 when true
++ * @nfo: cm info node
+  * @disconnect_all: flag indicating disconnect all QPs
+  * teardown QPs where source or destination addr matches ip addr
+  */
+@@ -4358,6 +4362,7 @@ void i40iw_cm_teardown_connections(struct i40iw_device *iwdev, u32 *ipaddr,
+ /**
+  * i40iw_ifdown_notify - process an ifdown on an interface
+  * @iwdev: device pointer
++ * @netdev: network interface device structure
+  * @ipaddr: Pointer to IPv4 or IPv6 address
+  * @ipv4: flag indicating IPv4 when true
+  * @ifup: flag indicating interface up when true
 -- 
 2.25.1
 
