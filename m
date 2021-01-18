@@ -2,138 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1C72FABCF
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 21:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 590CB2FAC42
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Jan 2021 22:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387918AbhARUs1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Jan 2021 15:48:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390629AbhARUrZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jan 2021 15:47:25 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C7FC0613C1;
-        Mon, 18 Jan 2021 12:46:45 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id ox12so1207764ejb.2;
-        Mon, 18 Jan 2021 12:46:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ygrJIf/V9fcQY2vP6K2WakhuD9/WSpQGkCDpBWvrw+w=;
-        b=GfNJd8Bome7/jm5mGMRJq/2PGTWvhg5ZCKz66AxPNV2hoSI9nhWQm5G+Q13ESwlBTb
-         Q+fotg9Nu3aoV/y5K56QiFVnmB/x97U6700/bpPqaMsj4xWMFLii82VaQNIx4qUn6uv6
-         lmrgiPS3YEUb+oXg39q5lAS3mAO8lD5BTK4Yy99Y6ZLFMaaPsT90RgSNXBn8fQiLemUK
-         Na+YIBF1+phvg6ZRgTSRjWrgnmQuFyhKzVI+t9WqmjWubB3VyN+itPnVH8U8LzHHoLJy
-         DwTuRN1vk9jmT78vGCk/aCzFq0cIPzE3JXUcyc1pCR1U2PZ9zY71ubAfM40Ec057UXH9
-         fPJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ygrJIf/V9fcQY2vP6K2WakhuD9/WSpQGkCDpBWvrw+w=;
-        b=lFzAXeUmnq1qMYWoQVvSDpYB6SoCO2izUZKgRpf3iBB5N6XVIhhFM0zt+5jltNs1qD
-         eZUNKLQ7Zlb16uNdE6yifRMMDXZVPqklWSqMdHWwYuHq9zxvuDVwT3sy/2NHdEe9Szh+
-         43tfWqzJNb2E2UNZAmiTySUt+nX7xxNymbGxOYyXfKEKf0nW5+2AuH4FnfYzqxs53+g+
-         Jqp/ESoxksyVCMzNpjoQF2fEShbSVRRXJyhEV8ZpuTXGA/qBdv1JX2HFDEYmdg0A9pHx
-         3kYYDUr6KAJmDc7tGuV0ZTht0jHuLjE66vU2Pikv4PZXLl+E7wZTJgmTvNtY5XHipt3C
-         Zp3Q==
-X-Gm-Message-State: AOAM5324PBWy7JlmHlD/CYJ61Sekr8KmVlGYOAWE5vwv3ZA+txBuJeCf
-        U3iDgXGG56zWIRSpuwvIanLL5TSg6Yc=
-X-Google-Smtp-Source: ABdhPJxtZe6bht9xG+8tf8UzqMKs8TtIiE9m2K+EFRJ/KFv/dySA1PlH1NY1AaBwGzX8kw6hUWSDxg==
-X-Received: by 2002:a17:906:2785:: with SMTP id j5mr883728ejc.527.1611002804082;
-        Mon, 18 Jan 2021 12:46:44 -0800 (PST)
-Received: from [192.168.178.40] (ipbcc06d06.dynamic.kabel-deutschland.de. [188.192.109.6])
-        by smtp.gmail.com with ESMTPSA id v9sm1066417ejd.92.2021.01.18.12.46.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 12:46:43 -0800 (PST)
-Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
- warning
-To:     dgilbert@interlog.com, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
-References: <20210118163006.61659-1-dgilbert@interlog.com>
- <20210118163006.61659-2-dgilbert@interlog.com>
- <20210118182854.GJ4605@ziepe.ca>
- <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
-From:   Bodo Stroesser <bostroesser@gmail.com>
-Message-ID: <abee94bf-a6ec-7659-21d2-4253582a1730@gmail.com>
-Date:   Mon, 18 Jan 2021 21:46:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2394109AbhARVKi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Jan 2021 16:10:38 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:6372 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388952AbhARVBn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jan 2021 16:01:43 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6005f7080000>; Mon, 18 Jan 2021 13:00:56 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 18 Jan
+ 2021 21:00:51 +0000
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.40) by
+ HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 18 Jan 2021 21:00:51 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=idxbNQIglTpZ0PqcO0Q/Q778cBNt7vMcmGJsKjU/I06gy9suVBQ73AHtwwldNO4yU/FAYhZR7rLkEmazEGhN2+CmHlVdXkypc6PNdlrytluYW+1TTS90roiTmmd3w7dW2CLR7JeG+FqxSbmi920NXi2yIQCPoAM6RN1crf43NdT5N88RPxKD4RPIFI4gStZNoMnnXbgy264ox8EMyPCJyUTHZOSonfFcrKqy3/fMzJwNE7/ESpJ5KIpbS0S6nb0DRZiyiDLZVmYA8AwIRnRMt1ArJ7Smpmd6XhjHPBFSHgHqmhVvfHP5KuR0KVWXR7hqzY5SChAjp8N3Z5VOlYRGUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i4TSUMRTFgxnk9IHmK5ztL2pWdWAI1PvbBr8+iY0ev8=;
+ b=Kafn9tHth6QS53vnklyfo5w1GUWNZxJyYVbCeU+nQ1pfh4Z9krtQo3kb/V+XM7xQ0ZKbiSRTxJG6U4IrLRq4cQ/98fWDsoMMNZtpxPKeLkKRPCjHxAJWG794Ra7VRXIbhSKCrF5VXhyXK0QVin/RClbe2SyMdVSXR3sAsp4Vr84Jtq3F2o/R2B1hn87XtXGJ4N+sZBNp3SHoghJBN3S5R/VHaN5aB4W7mBVGLwFjfQ+oN43wxwpDjH1R82gM4xSgIdBJr1WMaFzYr0FRuqsA2yYzjhCjAy/aiHJ1/gYGhv+Kf+hkXEURiB9hs0VS1X6rTxD3+n+QO9vfU4iMG2utEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4451.namprd12.prod.outlook.com (2603:10b6:5:2ab::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Mon, 18 Jan
+ 2021 21:00:50 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3763.014; Mon, 18 Jan 2021
+ 21:00:50 +0000
+Date:   Mon, 18 Jan 2021 17:00:48 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Patrisious Haddad <phaddad@nvidia.com>,
+        <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next] RDMA/nldev: Return an error message on failure
+ to turn auto mode
+Message-ID: <20210118210048.GA797553@nvidia.com>
+References: <20201230130240.180737-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201230130240.180737-1-leon@kernel.org>
+X-ClientProxiedBy: BL1PR13CA0535.namprd13.prod.outlook.com
+ (2603:10b6:208:2c5::30) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0535.namprd13.prod.outlook.com (2603:10b6:208:2c5::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.6 via Frontend Transport; Mon, 18 Jan 2021 21:00:49 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l1bdo-003LUY-1U; Mon, 18 Jan 2021 17:00:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611003656; bh=i4TSUMRTFgxnk9IHmK5ztL2pWdWAI1PvbBr8+iY0ev8=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=fYvU91a2k5ZMTMz2aK74ZLEh0D2G6k7WHM4T2v1yFgIMcR87mem+r7NHdh3hNX9vh
+         TF3621YD6U7EU5ihAcAz9L0zvCUENcOwfcOHuYhCPnFkABZfi/Gjys89HnkEuQcBNC
+         a8xe0rZa48Iyo6nka0nIAl3XqTpG5a/DOICF6Lm4xit0PL4mArlEPCMAwh7l9x2IZE
+         9iGh82lOtYeM6JMX+ZSEDUTIGOK9MB2Nq0oqhdhUu94fD9ZgxveomM6ZqSYxDUAHgw
+         Ga/VnRkV6UNkru/vC62/rG/nVMBTPB+S6TsHByBsLU+gjmd3J6z1q5NzFjphuKzoPw
+         Un34W1LTVDx7g==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 18.01.21 21:08, Douglas Gilbert wrote:
-> On 2021-01-18 1:28 p.m., Jason Gunthorpe wrote:
->> On Mon, Jan 18, 2021 at 11:30:03AM -0500, Douglas Gilbert wrote:
->>
->>> After several flawed attempts to detect overflow, take the fastest
->>> route by stating as a pre-condition that the 'order' function argument
->>> cannot exceed 16 (2^16 * 4k = 256 MiB).
->>
->> That doesn't help, the point of the overflow check is similar to
->> overflow checks in kcalloc: to prevent the routine from allocating
->> less memory than the caller might assume.
->>
->> For instance ipr_store_update_fw() uses request_firmware() (which is
->> controlled by userspace) to drive the length argument to
->> sgl_alloc_order(). If userpace gives too large a value this will
->> corrupt kernel memory.
->>
->> So this math:
->>
->>        nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + 
->> order);
+On Wed, Dec 30, 2020 at 03:02:40PM +0200, Leon Romanovsky wrote:
+> From: Patrisious Haddad <phaddad@nvidia.com>
 > 
-> But that check itself overflows if order is too large (e.g. 65).
-> A pre-condition says that the caller must know or check a value
-> is sane, and if the user space can have a hand in the value passed
-> the caller _must_ check pre-conditions IMO. A pre-condition also
-> implies that the function's implementation will not have code to
-> check the pre-condition.
+> The bounded counter can't be reconfigured to be in auto mode,
+> in attempt to do it, the user will get an error, but without any
+> hint why. Update nldev interface to return an error message through
+> extack mechanism.
 > 
-> My "log of both sides" proposal at least got around the overflowing
-> left shift problem. And one reviewer, Bodo Stroesser, liked it.
+> Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/infiniband/core/counters.c | 62 ++++++++++++++++--------------
+>  drivers/infiniband/core/nldev.c    |  4 +-
+>  include/rdma/rdma_counter.h        |  3 +-
+>  3 files changed, 36 insertions(+), 33 deletions(-)
 
-I added my Reviewed-by after you added a working check of nent overflow.
-I did not oppose to the usage of ilog() there. But now I think Jason is
-right that indeed ilog usage is a bit 'indirect'.
+Applied to for-next, thanks
 
-Anyway I still think, there should be a check for nent overflow.
-
-> 
->> Needs to be checked, add a precondition to order does not help. I
->> already proposed a straightforward algorithm you can use.
-> 
-> It does help, it stops your proposed check from being flawed :-)
-> 
-> Giving a false sense of security seems more dangerous than a
-> pre-condition statement IMO. Bart's original overflow check (in
-> the mainline) limits length to 4GB (due to wrapping inside a 32
-> bit unsigned).
-> 
-> Also note there is another pre-condition statement in that function's
-> definition, namely that length cannot be 0.
-> 
-> So perhaps you, Bart Van Assche and Bodo Stroesser, should compare
-> notes and come up with a solution that you are _all_ happy with.
-> The pre-condition works for me and is the fastest. The 'length'
-> argument might be large, say > 1 GB [I use 1 GB in testing but
-> did try 4GB and found the bug I'm trying to fix] but having
-> individual elements greater than say 32 MB each does not
-> seem very practical (and fails on the systems that I test with).
-> In my testing the largest element size is 4 MB.
-> 
-> 
-> Doug Gilbert
-> 
+Jason
