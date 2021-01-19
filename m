@@ -2,211 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A3E2FB892
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 15:31:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AD62FB894
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 15:31:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391715AbhASNOg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Jan 2021 08:14:36 -0500
-Received: from mga14.intel.com ([192.55.52.115]:54049 "EHLO mga14.intel.com"
+        id S2389793AbhASNPo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Jan 2021 08:15:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54228 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387629AbhASJg3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 19 Jan 2021 04:36:29 -0500
-IronPort-SDR: V/8593M7JEdRvkc3rohQ2TPKElS7+KVoPVxixR6AVXSJyaBiEGrDtP4lgtrnOXhSlU2GX0MANp
- mXSMYjdse04A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="178122839"
-X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
-   d="scan'208";a="178122839"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 01:35:40 -0800
-IronPort-SDR: rJ6sPLLEyxtM3gkwZyG0yFOg+V8ZSuZDhLZoYrwaVKH0j2icbcL74JvPAiS+rYVk2v9uzbzcWa
- f0Tx0bZJFx/w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,358,1602572400"; 
-   d="scan'208";a="466625352"
-Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Jan 2021 01:35:37 -0800
-Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l1nQH-0004xd-8O; Tue, 19 Jan 2021 09:35:37 +0000
-Date:   Tue, 19 Jan 2021 17:34:46 +0800
-From:   kernel test robot <lkp@intel.com>
+        id S2387750AbhASK5z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Jan 2021 05:57:55 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611053829; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=tq2K2hspKauN2lFY8J6NnRVVJv56heivyB7kD8V0Vp0=;
+        b=uzOxCB4IvoWdYdE5XlVrIdP1a+K7L/hWJWt/HQ46n8wwmTVvFTvbhC3VSh700Z9Ir+K4Nx
+        P+0iS14v2/I2n0IUjeTMq7tDKEvtR2pKXmEMX7YACj+Am0vIZY8aAmuc5T7scS/KvnUivI
+        3zaLWYxvJa3zlm6zxFjZc7TxYX+/mLA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DB732AE63;
+        Tue, 19 Jan 2021 10:57:08 +0000 (UTC)
+From:   mwilck@suse.com
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- a6dc16b6996388d016df83fb92eae16242ab7ac5
-Message-ID: <6006a7b6.jhh25tdgdz4bwZHo%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+Cc:     linux-rdma@vger.kernel.org, Martin Wilck <mwilck@suse.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Mohammad Heib <goody698@gmail.com>,
+        Vijay Immanuel <vijayi@attalasystems.com>,
+        Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Subject: [PATCH] Revert "RDMA/rxe: Remove VLAN code leftovers from RXE"
+Date:   Tue, 19 Jan 2021 11:56:44 +0100
+Message-Id: <20210119105644.2658-1-mwilck@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: a6dc16b6996388d016df83fb92eae16242ab7ac5  IB/isert: Simplify signature cap check
+From: Martin Wilck <mwilck@suse.com>
 
-elapsed time: 724m
+This reverts commit b2d2440430c0fdd5e0cad3efd6d1c9e3d3d02e5b.
 
-configs tested: 149
-configs skipped: 2
+It's true that creating rxe on top of 802.1q interfaces doesn't work.
+Thus, commit fd49ddaf7e26 ("RDMA/rxe: prevent rxe creation on top of vlan interface")
+was absolutely correct.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+But b2d2440430c0 was incorrect assuming that with this change,
+RDMA and VLAN don't work togehter at all. It just has to be
+set up differently. Rather than creating rxe on top of the VLAN
+interface, rxe must be created on top of the physical interface.
+RDMA then works just fine through VLAN interfaces on top of that
+physical interface, via the "upper device" logic.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 mpc836x_rdk_defconfig
-openrisc                            defconfig
-arm                         lubbock_defconfig
-sh                 kfr2r09-romimage_defconfig
-sparc                            allyesconfig
-sparc64                             defconfig
-arm                          pxa910_defconfig
-powerpc                    amigaone_defconfig
-ia64                                defconfig
-arm                           tegra_defconfig
-arm                          collie_defconfig
-powerpc                 mpc836x_mds_defconfig
-powerpc                 xes_mpc85xx_defconfig
-arm                         s3c6400_defconfig
-arm                         lpc32xx_defconfig
-sh                           sh2007_defconfig
-powerpc                     kmeter1_defconfig
-powerpc                      tqm8xx_defconfig
-sh                          polaris_defconfig
-s390                             allyesconfig
-m68k                        mvme147_defconfig
-arm                          tango4_defconfig
-powerpc                  iss476-smp_defconfig
-nds32                               defconfig
-arm                          gemini_defconfig
-um                           x86_64_defconfig
-arc                     nsimosci_hs_defconfig
-powerpc                      ep88xc_defconfig
-powerpc                      mgcoge_defconfig
-arm                            xcep_defconfig
-powerpc                 mpc837x_rdb_defconfig
-arm                         nhk8815_defconfig
-openrisc                         alldefconfig
-mips                           xway_defconfig
-sparc                       sparc32_defconfig
-mips                       lemote2f_defconfig
-arm                          imote2_defconfig
-arm                       imx_v4_v5_defconfig
-mips                      pic32mzda_defconfig
-sparc                               defconfig
-sh                        sh7763rdp_defconfig
-sh                          rsk7201_defconfig
-powerpc                    sam440ep_defconfig
-powerpc                    mvme5100_defconfig
-powerpc                      ppc64e_defconfig
-arc                              alldefconfig
-mips                        vocore2_defconfig
-arm                      jornada720_defconfig
-arm                            zeus_defconfig
-mips                      bmips_stb_defconfig
-arm                            hisi_defconfig
-arm                     am200epdkit_defconfig
-arm                         vf610m4_defconfig
-arm                        shmobile_defconfig
-arm                       netwinder_defconfig
-parisc                generic-32bit_defconfig
-powerpc                      katmai_defconfig
-powerpc                     tqm8548_defconfig
-h8300                               defconfig
-arm                         shannon_defconfig
-arm                           efm32_defconfig
-arc                      axs103_smp_defconfig
-arm                           sama5_defconfig
-arm                        mvebu_v7_defconfig
-mips                          rm200_defconfig
-arm                        magician_defconfig
-openrisc                 simple_smp_defconfig
-powerpc                 mpc85xx_cds_defconfig
-s390                       zfcpdump_defconfig
-arm                      tct_hammer_defconfig
-mips                           jazz_defconfig
-powerpc                     skiroot_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20210118
-i386                 randconfig-a005-20210118
-i386                 randconfig-a006-20210118
-i386                 randconfig-a001-20210118
-i386                 randconfig-a003-20210118
-i386                 randconfig-a004-20210118
-x86_64               randconfig-a015-20210118
-x86_64               randconfig-a013-20210118
-x86_64               randconfig-a012-20210118
-x86_64               randconfig-a016-20210118
-x86_64               randconfig-a011-20210118
-x86_64               randconfig-a014-20210118
-i386                 randconfig-a011-20210118
-i386                 randconfig-a012-20210118
-i386                 randconfig-a016-20210118
-i386                 randconfig-a015-20210118
-i386                 randconfig-a013-20210118
-i386                 randconfig-a014-20210118
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+I've tested this mainly with NVMe over RDMA and rping, but I don't
+see why it wouldn't work just as well for other protocols. If there
+are real issues, I'd like to know.
 
-clang tested configs:
-x86_64               randconfig-a004-20210118
-x86_64               randconfig-a006-20210118
-x86_64               randconfig-a001-20210118
-x86_64               randconfig-a003-20210118
-x86_64               randconfig-a005-20210118
-x86_64               randconfig-a002-20210118
-x86_64               randconfig-a015-20210119
-x86_64               randconfig-a013-20210119
-x86_64               randconfig-a012-20210119
-x86_64               randconfig-a016-20210119
-x86_64               randconfig-a011-20210119
-x86_64               randconfig-a014-20210119
+b2d2440430c0 broke this setup deliberately and should thus be
+reverted.
+
+Fixes: b2d2440430c0 ("RDMA/rxe: Remove VLAN code leftovers from RXE")
+
+Cc: Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc: Mohammad Heib <goody698@gmail.com>
+Cc: Vijay Immanuel <vijayi@attalasystems.com>
+Cc: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Signed-off-by: Martin Wilck <mwilck@suse.com>
 
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Note: I'm currently not subscribed to linux-rdma.
+
+---
+ drivers/infiniband/sw/rxe/rxe_net.c  | 18 ++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_resp.c |  5 +++++
+ 2 files changed, 23 insertions(+)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index c4b06ced30a7..34bef7d8e6b4 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -8,6 +8,7 @@
+ #include <linux/if_arp.h>
+ #include <linux/netdevice.h>
+ #include <linux/if.h>
++#include <linux/if_vlan.h>
+ #include <net/udp_tunnel.h>
+ #include <net/sch_generic.h>
+ #include <linux/netfilter.h>
+@@ -19,6 +20,18 @@
+ 
+ static struct rxe_recv_sockets recv_sockets;
+ 
++struct device *rxe_dma_device(struct rxe_dev *rxe)
++{
++	struct net_device *ndev;
++
++	ndev = rxe->ndev;
++
++	if (is_vlan_dev(ndev))
++		ndev = vlan_dev_real_dev(ndev);
++
++	return ndev->dev.parent;
++}
++
+ int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid)
+ {
+ 	int err;
+@@ -153,9 +166,14 @@ static int rxe_udp_encap_recv(struct sock *sk, struct sk_buff *skb)
+ {
+ 	struct udphdr *udph;
+ 	struct net_device *ndev = skb->dev;
++	struct net_device *rdev = ndev;
+ 	struct rxe_dev *rxe = rxe_get_dev_from_net(ndev);
+ 	struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
+ 
++	if (!rxe && is_vlan_dev(rdev)) {
++		rdev = vlan_dev_real_dev(ndev);
++		rxe = rxe_get_dev_from_net(rdev);
++	}
+ 	if (!rxe)
+ 		goto drop;
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index 5a098083a9d2..c7e3b6a4af38 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -872,6 +872,11 @@ static enum resp_states do_complete(struct rxe_qp *qp,
+ 			else
+ 				wc->network_hdr_type = RDMA_NETWORK_IPV6;
+ 
++			if (is_vlan_dev(skb->dev)) {
++				wc->wc_flags |= IB_WC_WITH_VLAN;
++				wc->vlan_id = vlan_dev_vlan_id(skb->dev);
++			}
++
+ 			if (pkt->mask & RXE_IMMDT_MASK) {
+ 				wc->wc_flags |= IB_WC_WITH_IMM;
+ 				wc->ex.imm_data = immdt_imm(pkt);
+-- 
+2.29.2
+
