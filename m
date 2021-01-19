@@ -2,86 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520ED2FB24E
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 08:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A82B2FB2BC
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 08:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727860AbhASHC0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 19 Jan 2021 02:02:26 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2864 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730580AbhASHCB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jan 2021 02:02:01 -0500
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4DKffb2Jpqz5Hkt;
-        Tue, 19 Jan 2021 14:59:51 +0800 (CST)
-Received: from dggema703-chm.china.huawei.com (10.3.20.67) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 19 Jan 2021 15:01:14 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema703-chm.china.huawei.com (10.3.20.67) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 19 Jan 2021 15:01:14 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.002;
- Tue, 19 Jan 2021 15:01:14 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Jason Gunthorpe <jgg@nvidia.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: Re: [Linuxarm] Re: [PATCH v2 for-next] RDMA/hns: Add caps flag for UD
- inline of userspace
-Thread-Topic: [Linuxarm] Re: [PATCH v2 for-next] RDMA/hns: Add caps flag for
- UD inline of userspace
-Thread-Index: AQHW7idvPj71VFG9skyUr2jC02wJ6Q==
-Date:   Tue, 19 Jan 2021 07:01:13 +0000
-Message-ID: <aacc6653bd794f2d934ff85d5151d1af@huawei.com>
-References: <1609836423-40069-1-git-send-email-liweihang@huawei.com>
- <20210118200854.GA778611@nvidia.com>
- <180c1cd8489e430eaa99913885356e03@huawei.com> <20210119062705.GE21258@unreal>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726023AbhASHS6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Jan 2021 02:18:58 -0500
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:26099 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728751AbhASHS3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jan 2021 02:18:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1611040710; x=1642576710;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=+JzX/lnJ4B5mRPlvcGIoP2Ln2iA0CUb1UhBnM36P/EM=;
+  b=Hc3rEnX4/od/EB34vVUoOxmsygAeNPYtNY75bYyazEIiY2tMzZOpQbKQ
+   egoo9evHSKeYgdA6Ltp28QGgapoo3sdU5aCYSv6fGZSIblI5A7yFwz2ec
+   KG+q7p0jqtHNQAj5rYgoQYkH8x+mOBtGajfacNwIknJHWDSnaZoqWUXT+
+   E=;
+X-IronPort-AV: E=Sophos;i="5.79,358,1602547200"; 
+   d="scan'208";a="75753295"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-c7c08562.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 19 Jan 2021 07:17:25 +0000
+Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1e-c7c08562.us-east-1.amazon.com (Postfix) with ESMTPS id 546CC240D53;
+        Tue, 19 Jan 2021 07:17:23 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.252) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 19 Jan 2021 07:17:19 +0000
+Subject: Re: [PATCH for-next 0/2] Host information userspace version
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>,
+        Alexander Matushevsky <matua@amazon.com>
+References: <20210105104326.67895-1-galpress@amazon.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <9286e969-09b8-a7d0-ca7e-50b8e3864a11@amazon.com>
+Date:   Tue, 19 Jan 2021 09:17:14 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210105104326.67895-1-galpress@amazon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.252]
+X-ClientProxiedBy: EX13D34UWA001.ant.amazon.com (10.43.160.173) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/1/19 14:27, Leon Romanovsky wrote:
-> On Tue, Jan 19, 2021 at 05:53:40AM +0000, liweihang wrote:
->> On 2021/1/19 4:09, Jason Gunthorpe wrote:
->>> On Tue, Jan 05, 2021 at 04:47:03PM +0800, Weihang Li wrote:
->>>> diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
->>>> index 90b739d..79dba94 100644
->>>> +++ b/include/uapi/rdma/hns-abi.h
->>>> @@ -77,6 +77,7 @@ enum hns_roce_qp_cap_flags {
->>>>  	HNS_ROCE_QP_CAP_RQ_RECORD_DB = 1 << 0,
->>>>  	HNS_ROCE_QP_CAP_SQ_RECORD_DB = 1 << 1,
->>>>  	HNS_ROCE_QP_CAP_OWNER_DB = 1 << 2,
->>>> +	HNS_ROCE_QP_CAP_UD_SQ_INL = 1 << 3,
->>>>  };
->>> Where are the rdma-core patches to support this bit? I don't see them
->>> on github?
->>>
->>> Jason
->> I thought we needed to send the userspace part after the kernel part
->> was merged. I sent the rdma-core patches just now:
->>
->> https://github.com/linux-rdma/rdma-core/pull/934
-> After kernel part will be accessed, you will need to update the patch
-> https://github.com/linux-rdma/rdma-core/pull/934/commits/2877713e1fed29305d04e39dd934ea81082e616e
-> with the correct SHA-1.
+On 05/01/2021 12:43, Gal Pressman wrote:
+> The following two patches add the userspace version to the host
+> information struct reported to the device, used for debugging and
+> troubleshooting purposes.
 > 
-> Thanks
+> PR was sent:
+> https://github.com/linux-rdma/rdma-core/pull/918
 > 
+> Thanks,
+> Gal
 
-OK, I will update it then.
-
-Thanks
-Weihang
+Anything stopping this series from being merged?
