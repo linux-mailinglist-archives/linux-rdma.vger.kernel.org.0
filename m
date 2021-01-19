@@ -2,148 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D1B2FBAAD
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 16:05:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D80A42FBCEE
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 17:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732149AbhASPAh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Jan 2021 10:00:37 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:47414 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390587AbhASOpz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jan 2021 09:45:55 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10JEeH7T034622;
-        Tue, 19 Jan 2021 14:44:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=Xs7XcSPuXtCAy9E1BtGD/cICdsavHCcacyUpBLbq1A4=;
- b=BusxizjtMEoqCd/hKEzruaZv+e0k/XUtX9OAhGd/PhGbFJkCpPGdHYNyk3PYqshrCRLV
- nY7BHY9jJ/SZtYM7oTiXDyxTtg3NYP6fLV6oucSThg5v3QUupYbUpkmumpDLj+ppJz1A
- neH6nKXvevoUCwuebAcQl2wZxGf+dla0Kp0WK7YeqrfOlW6UWbzS/hhxYB7eAJTICmq6
- MuOgx0chYu4up2VlSywtXZLCXIfeNApQ9Apy5smeHq0AOUd87M5d9xi8UPH38+OjMVTS
- ss1ujty/wyK2ifAjwA3X9YdbynKy5ZhxukL22R/XwfD5ATlt5Jd43aI2aW3M6jAK++iV 7Q== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 363r3ksa9y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Jan 2021 14:44:43 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10JEi9CL102060;
-        Tue, 19 Jan 2021 14:44:43 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 3649wrnk6d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Jan 2021 14:44:41 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10JEbmaA001956;
-        Tue, 19 Jan 2021 14:37:49 GMT
-Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 19 Jan 2021 06:37:48 -0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: performance regression noted in v5.11-rc after c062db039f40
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <0f7c344a-00b6-72bc-5c39-c6cdc571211b@linux.intel.com>
-Date:   Tue, 19 Jan 2021 09:37:47 -0500
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>, logang@deltatee.com,
-        Christoph Hellwig <hch@lst.de>, murphyt7@tcd.ie
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <603D10B9-5089-4CC3-B940-5646881BBA89@oracle.com>
-References: <D81314ED-5673-44A6-B597-090E3CB83EB0@oracle.com>
- <20210112143819.GA9689@willie-the-truck>
- <607648D8-BF0C-40D6-9B43-2359F45EE74C@oracle.com>
- <e83eed0d-82cd-c9be-cef1-5fe771de975f@arm.com>
- <D6B45F88-08B7-41B5-AAD2-BFB374A42874@oracle.com>
- <0f7c344a-00b6-72bc-5c39-c6cdc571211b@linux.intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 bulkscore=0
- spamscore=0 phishscore=0 malwarescore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101190089
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9868 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 priorityscore=1501 mlxscore=0
- malwarescore=0 phishscore=0 suspectscore=0 impostorscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101190089
+        id S2390805AbhASQvK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Jan 2021 11:51:10 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5450 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731236AbhASQvB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jan 2021 11:51:01 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60070dc90000>; Tue, 19 Jan 2021 08:50:17 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Jan
+ 2021 16:50:17 +0000
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.47) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 19 Jan 2021 16:50:17 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jjlCO1PHXk4EJRQaUPEgW2DnTfuDVuDePjS4uW64hyNp2R7VjcpkA/2goQVmIT0F6Aq0E784tPFwRMdznX0nD9b4IcZO78hIklTb8hOcNtKXgNELatR4V/sPYTqXH2cL2EPkVCdBPOZyGq3OfRC/llDfeq/2HL4CzLKjjIiEDIDcnsqqFZAB07j8iCbq3Tn7t8WDapOkZyCJi9QFrQt42AZqBWvm4AMno1dOlQuJM7DxWAzf1WqUzpgykHpYlRFTBr5J4Edqthrut/wGaWI/dNaYfCSpHk1s2ribw7IAiEjaZlmAV2t5dV/irHAp3EM59VI4bjXwDszMi3YEmKq4DA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x+JTlu57P9gPnkJ3jUDTwD91tN5ghJrX/iVCJRHHT6E=;
+ b=Kxwin+ycHE1IQDeqEGjpq9VOHtowwK3+S+y/j6hBBsW8AVT11WQPdvbQgu4yJZkoznO5oreBP3p8qY3iCUV2MOMv+j2NNwHM1YrfsOsQNRu6V3hAF+0t/jHiaEMeE1Ji3vWupObizJIigfB6F3++FSIXzp1Yph07hv2QLStS/6OFEYLS/yMalPspOn/fOUzdZiMUUupvFTKndtZMaTMHz3xkgpaHbQ/2P3itdFe6MGt2xuRsL845HNIFYPDM4MriUxz4/0Nt1WHbLbXXtCTmn29JwsTo9cofAfHUvoqNhjyvWq6qoXveN6dgcbFaIEmkeAGEoDxhVTdwT0pXtw26xg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3403.namprd12.prod.outlook.com (2603:10b6:5:11d::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.13; Tue, 19 Jan
+ 2021 16:50:16 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.011; Tue, 19 Jan 2021
+ 16:50:15 +0000
+Date:   Tue, 19 Jan 2021 12:50:12 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        <linux-rdma@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH mlx5-next 0/3] Cleanup around DEVX get/set commands
+Message-ID: <20210119165012.GA906477@nvidia.com>
+References: <20201230130121.180350-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201230130121.180350-1-leon@kernel.org>
+X-ClientProxiedBy: MN2PR04CA0023.namprd04.prod.outlook.com
+ (2603:10b6:208:d4::36) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR04CA0023.namprd04.prod.outlook.com (2603:10b6:208:d4::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Tue, 19 Jan 2021 16:50:14 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l1uCq-003npO-SA; Tue, 19 Jan 2021 12:50:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611075017; bh=x+JTlu57P9gPnkJ3jUDTwD91tN5ghJrX/iVCJRHHT6E=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=oNnlU6ngDh2zgR56XwIfCxljhgAC0B3EiHw7wLoojQe+VOE1UOTNnnLqfk4dFhyDq
+         C7+zgPChJHIoFRNZmu18FLLCDhxHYHjRtL/gdOcxbvhsId9Oo+dT0wNgctszjyV7l+
+         OUJZ/PDoT1DsnKEeUp+xBqDKkYLcvUqSdzeG3F4CnvnNglrKTGIzBCTT8ufbhQoqfM
+         5Z0ti2g27v6Hd/mnoukBn14el0DquD4UNTpuQuD0AdKvfae86yT4uH5ur/k8Sn2HOU
+         GtqozPvQn6ElPT6undG44Xmt9CT2D9kS4iGrbOqzHnOBj7r0hIia4LvRYCd9gQU6Ut
+         uGO06GbI64T0Q==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Dec 30, 2020 at 03:01:18PM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Be more strict with DEVX get/set operations for the obj_id.
+> 
+> Yishai Hadas (3):
+>   RDMA/mlx5: Use the correct obj_id upon DEVX TIR creation
+>   net/mlx5: Expose ifc bits for query modify header
+>   RDMA/mlx5: Use strict get/set operations for obj_id
+> 
+>  drivers/infiniband/hw/mlx5/devx.c | 201 ++++++++++++++++++++++--------
+>  include/linux/mlx5/mlx5_ifc.h     |  12 ++
+>  2 files changed, 160 insertions(+), 53 deletions(-)
 
+Applied to for-next, thanks
 
-> On Jan 18, 2021, at 8:22 PM, Lu Baolu <baolu.lu@linux.intel.com> =
-wrote:
->=20
-> Do you mind posting the cap and ecap of the iommu used by your device?
->=20
-> You can get it via sysfs, for example:
->=20
-> /sys/bus/pci/devices/0000:00:14.0/iommu/intel-iommu# ls
-> address  cap  domains_supported  domains_used  ecap  version
-
-[root@manet intel-iommu]# lspci | grep Mellanox
-03:00.0 Network controller: Mellanox Technologies MT27520 Family =
-[ConnectX-3 Pro]
-[root@manet intel-iommu]# pwd
-/sys/devices/pci0000:00/0000:00:03.0/0000:03:00.0/iommu/intel-iommu
-[root@manet intel-iommu]# for i in *; do   echo -n $i ": ";   cat $i; =
-done
-address : c7ffc000
-cap : d2078c106f0466
-domains_supported : 65536
-domains_used : 62
-ecap : f020de
-version : 1:0
-[root@manet intel-iommu]#
-
-
->> Fwiw, this system uses the Intel C612 chipset with Intel(R) Xeon(R)
->> E5-2603 v3 @ 1.60GHz CPUs.
->=20
-> Can you please also hack a line of code to check the return value of
-> iommu_dma_map_sg()?
-
-diff --git a/net/sunrpc/xprtrdma/frwr_ops.c =
-b/net/sunrpc/xprtrdma/frwr_ops.c
-index baca49fe83af..e811562ead0e 100644
---- a/net/sunrpc/xprtrdma/frwr_ops.c
-+++ b/net/sunrpc/xprtrdma/frwr_ops.c
-@@ -328,6 +328,7 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt =
-*r_xprt,
-=20
-        dma_nents =3D ib_dma_map_sg(ep->re_id->device, mr->mr_sg, =
-mr->mr_nents,
-                                  mr->mr_dir);
-+       trace_printk("ib_dma_map_sg(%d) returns %d\n", mr->mr_nents, =
-dma_nents);
-        if (!dma_nents)
-                goto out_dmamap_err;
-        mr->mr_device =3D ep->re_id->device;
-
-During the 256KB iozone test I used before, this trace log is generated:
-
-   kworker/u28:3-1269  [000]   336.054743: bprint:               =
-frwr_map: ib_dma_map_sg(30) returns 1
-   kworker/u28:3-1269  [000]   336.054835: bprint:               =
-frwr_map: ib_dma_map_sg(30) returns 1
-   kworker/u28:3-1269  [000]   336.055022: bprint:               =
-frwr_map: ib_dma_map_sg(4) returns 1
-   kworker/u28:3-1269  [000]   336.055118: bprint:               =
-frwr_map: ib_dma_map_sg(30) returns 1
-   kworker/u28:3-1269  [000]   336.055312: bprint:               =
-frwr_map: ib_dma_map_sg(30) returns 1
-   kworker/u28:3-1269  [000]   336.055407: bprint:               =
-frwr_map: ib_dma_map_sg(4) returns 1
-
---
-Chuck Lever
-
-
-
+Jason
