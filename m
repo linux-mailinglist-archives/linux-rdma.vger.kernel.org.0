@@ -2,100 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A64732FC236
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 22:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 688B72FC23E
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 22:27:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbhASSpV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Jan 2021 13:45:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43630 "EHLO
+        id S1728661AbhASSqD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Jan 2021 13:46:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727684AbhASSJP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jan 2021 13:09:15 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F17C061573;
-        Tue, 19 Jan 2021 10:08:35 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id g3so10445330ejb.6;
-        Tue, 19 Jan 2021 10:08:35 -0800 (PST)
+        with ESMTP id S1728650AbhASSpS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jan 2021 13:45:18 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482B6C061574
+        for <linux-rdma@vger.kernel.org>; Tue, 19 Jan 2021 10:44:23 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id 186so22869882qkj.3
+        for <linux-rdma@vger.kernel.org>; Tue, 19 Jan 2021 10:44:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QUIebfX8U940ENGHUTnKwYQ6vp3a2I5vmh0z1iwQG5o=;
-        b=b+NjSi8PtAmQc+ZlPq6VTlb/cUTGixdwmfMxQjrNKadr6m31k0f694vi7xBuV+CTTz
-         3gq5WRCHjKUdJQISQdXvV4mrdV1CpNlVKGkQj1JtGnOqKpWUrVuTSq86IutQQSDOLSOc
-         2BG/LjX6OEOR74D9Eso8Z/afSjVVF9zorwjjGbIugB6V7PeuZpT7GIDLTkTCXT9JX+vA
-         ep3Wsf44MjzhookyrMbIECdDhIzQgeQPfplMRVWlKBvuwFF0Ha/dMcPN57aTVa03yfPW
-         iPnkNE9h9HWDEHpCOBypmyJz0KOnLWV7ADgOzdAZFl5u3WvR/ptP1TJbnU1gdEx2g3kw
-         clIA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=26hOmcs1ZFwlV0P5j8AlWS9tixqHW+LF5uegLj5p6b0=;
+        b=b/StF/aIqwvXqCSIC65E7E8JUoyIek0eEPFL6QikaWiRgM6mNIOZmo6s10qWo04UOR
+         jP8KPOZ6cWtf1b/T94Uo9PplRKQ4R9OfCdMBFfIAmCdZ+UsO8q2pSRYfjbQ2SdRqZiOx
+         hy81hcg9f+Z7H7c7igHpYnFhwifmti68635yxxLGlR4jBgSQHXZqo2ZB+CIHAfYNXchK
+         SVDiye6/Bmxh7XF3wvokxanI3uJkwrxcA2u+Jbx9KG6tzR6/beR9EvOZL0x8pDOPbNfP
+         q/mtnTxEa/uNwKwonDVvLQNRk/yTPSMpKi0PQqG5cKeYjrsbFhH/tkwej/IDPQDqyxdX
+         QwJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QUIebfX8U940ENGHUTnKwYQ6vp3a2I5vmh0z1iwQG5o=;
-        b=m8itd4a4G1LySpPDN7lIht4nLtPeDXCx1wf5ec5nJdPKliyXN9fvQTCxwyUINYgYlb
-         NUPv+VJg7oEFP8sJutKuyp7bWI3WHmzIkkpf96DqRlDk+N+LcTuzRHLsU8A2InrIeJHx
-         ZBNFO1tqA6fYg8lJuE9lGCAluhWDk5ycZBk7clfG+e4KNkBREP35/WAbgmz6XAeg18Uz
-         S0SCLRANussjSFc6RZemZiIQTcDhqYnybrgaP9YIJwgOWq0dADNCGwyUjVZ7U+jsFS1a
-         ixO1Pdn5pZKW2X/g5PMQiu45WXaVoK8NLFiyX6mERJGjs3/6rWnAiZa1OdpX9aN3bq+7
-         vi/w==
-X-Gm-Message-State: AOAM532r1tYgFOgr//NZ27rrFcCdQgN97nm1AfP/yNHFcTyssiAlc2ej
-        lNRAxzSA8Hrv7oacTf4avhg=
-X-Google-Smtp-Source: ABdhPJxbPkdPQezctxiD6SZFvmQnmR1KZV4He8vTQy9fMToLOFpgvarG+gK/zrilW2FVZgdv7Grt0g==
-X-Received: by 2002:a17:906:f98f:: with SMTP id li15mr3724800ejb.123.1611079713890;
-        Tue, 19 Jan 2021 10:08:33 -0800 (PST)
-Received: from [192.168.178.40] (ipbcc06d06.dynamic.kabel-deutschland.de. [188.192.109.6])
-        by smtp.gmail.com with ESMTPSA id b101sm4741633edf.49.2021.01.19.10.08.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 10:08:33 -0800 (PST)
-Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
- warning
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Douglas Gilbert <dgilbert@interlog.com>,
-        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
-References: <20210118163006.61659-1-dgilbert@interlog.com>
- <20210118163006.61659-2-dgilbert@interlog.com>
- <20210118182854.GJ4605@ziepe.ca>
- <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
- <20210118202431.GO4605@ziepe.ca>
- <7f443666-b210-6f99-7b50-6c26d87fa7ca@gmail.com>
- <20210118234818.GP4605@ziepe.ca>
- <6faed1e2-13bc-68ba-7726-91924cf21b66@gmail.com>
- <20210119180327.GX4605@ziepe.ca>
-From:   Bodo Stroesser <bostroesser@gmail.com>
-Message-ID: <7ba5bfdf-6bc2-eddb-4c26-133c1bc08a33@gmail.com>
-Date:   Tue, 19 Jan 2021 19:08:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=26hOmcs1ZFwlV0P5j8AlWS9tixqHW+LF5uegLj5p6b0=;
+        b=Q7SwjbZzlpMS/wGfOYNliXKwMmSBGVV3IuABEb7W3gAtCb2XxnLgtjLL1NhS/HB4Ln
+         0QHnDPBb72Z96lR6Z4AkiFf+O1K9YOLVb0lX8ZwXQ14Is9p1tpIb2NEd4YV7MVmwlChV
+         tlvtPyvCdT9bYhvCq3qkhHqfX891yV3GTCN2OqwQ0514Fv+HpF/zzkuhjVyDARd8yPQf
+         WR3ZltsX7tdl1tW7Ju7AX6LG0Ugs08scOOL9VUdMNWBpCDW6NVIWxgW8p4ntN1MKE6op
+         5+RtqCQVHDvEKLrFi3El93DsBJMLT7n1PgEjTNeKWNT4P7lRVWQyIJwpXNOPIMRnmbOl
+         qIrw==
+X-Gm-Message-State: AOAM530B2MNwF91EE3ZNx+lKymxo/bSjA5I6cEKUftiCFZoNhI4Tt3dg
+        xaT5BumUO+bY1JoBM+pIfdUW1Q==
+X-Google-Smtp-Source: ABdhPJyq0pj1DSKim2tiHKCcVLAYKOKzMtvbQ76/G0aVSuKxX7RkufNfnUa1rpUvzeGDlcYmiBZoXQ==
+X-Received: by 2002:a05:620a:1398:: with SMTP id k24mr5751440qki.109.1611081862587;
+        Tue, 19 Jan 2021 10:44:22 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id j66sm679287qkf.78.2021.01.19.10.44.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 10:44:22 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l1vzJ-003pxR-Lq; Tue, 19 Jan 2021 14:44:21 -0400
+Date:   Tue, 19 Jan 2021 14:44:21 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     syzbot <syzbot+ec2fd72374785d0e558e@syzkaller.appspotmail.com>
+Cc:     dledford@redhat.com, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rpearson@hpe.com,
+        rpearsonhpe@gmail.com, syzkaller-bugs@googlegroups.com,
+        zyjzyj2000@gmail.com
+Subject: Re: BUG: sleeping function called from invalid context in
+ rxe_alloc_nl
+Message-ID: <20210119184421.GC4605@ziepe.ca>
+References: <00000000000081830a05b9445165@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210119180327.GX4605@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000081830a05b9445165@google.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 19.01.21 19:03, Jason Gunthorpe wrote:
-> On Tue, Jan 19, 2021 at 06:24:49PM +0100, Bodo Stroesser wrote:
->>
->> I had a second look into math.h, but I don't find any reason why round_up
->> could overflow. Can you give a hint please?
+On Tue, Jan 19, 2021 at 09:39:19AM -0800, syzbot wrote:
+> Hello,
 > 
-> #define round_up(x, y) ((((x)-1) | __round_mask(x, y))+1)
->                                                      ^^^^^
+> syzbot found the following issue on:
 > 
-> That +1 can overflow
+> HEAD commit:    b4bb878f Add linux-next specific files for 20210119
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=12d34e9f500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7b1ca623d7cc5ca3
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ec2fd72374785d0e558e
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148035af500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10eb8494d00000
+> 
+> The issue was bisected to:
+> 
+> commit 3853c35e243d56238159e8365b6aca410bdd4576
+> Author: Bob Pearson <rpearsonhpe@gmail.com>
+> Date:   Wed Dec 16 23:15:49 2020 +0000
+> 
+>     RDMA/rxe: Add unlocked versions of pool APIs
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=126612d0d00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=116612d0d00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=166612d0d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+ec2fd72374785d0e558e@syzkaller.appspotmail.com
+> Fixes: 3853c35e243d ("RDMA/rxe: Add unlocked versions of pool APIs")
+> 
+> netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
+> netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
+> netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
+> infiniband syz2: set active
+> infiniband syz2: added bond_slave_0
+> BUG: sleeping function called from invalid context at drivers/infiniband/sw/rxe/rxe_pool.c:346
+> in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 8459, name: syz-executor401
+> 6 locks held by syz-executor401/8459:
+>  #0: ffffffff8fc4a418 (&rdma_nl_types[idx].sem){.+.+}-{3:3}, at: rdma_nl_rcv_msg+0x161/0x690 drivers/infiniband/core/netlink.c:164
+>  #1: ffffffff8c78ced0 (link_ops_rwsem){++++}-{3:3}, at: nldev_newlink+0x261/0x540 drivers/infiniband/core/nldev.c:1545
+>  #2: ffffffff8c77c470 (devices_rwsem){++++}-{3:3}, at: enable_device_and_get+0xfc/0x3b0 drivers/infiniband/core/device.c:1307
+>  #3: ffffffff8c77c330 (clients_rwsem){++++}-{3:3}, at: enable_device_and_get+0x15b/0x3b0 drivers/infiniband/core/device.c:1315
+>  #4: ffff88802adc8598 (&device->client_data_rwsem){++++}-{3:3}, at: add_client_context+0x3d0/0x5e0 drivers/infiniband/core/device.c:715
+>  #5: ffff88802adc9640 (&pool->pool_lock){....}-{2:2}, at: rxe_alloc+0x1b/0x40 drivers/infiniband/sw/rxe/rxe_pool.c:384
 
-But that would be a unsigned long long overflow. I considered this to
-not be relevant.
+Bob, yes, this is busted up
 
-> 
-> It looks like it would not be so bad to implement some
-> check_round_up_overflow() if people prefer
-> 
-> Jason
-> 
+        read_lock_irqsave(&pool->pool_lock, flags);
+        obj = rxe_alloc_nl(pool);
+        read_unlock_irqrestore(&pool->pool_lock, flags);
+
+Those are spin locks
+
+void *rxe_alloc_nl(struct rxe_pool *pool)
+{
+        obj = kzalloc(info->size, (pool->flags & RXE_POOL_ATOMIC) ?
+                      GFP_ATOMIC : GFP_KERNEL);
+
+And that is always calling GFP_KERNEL inside a spinlock, regardless of
+ATOMIC
+
+No idea how this should be fixed
+
+Jason
