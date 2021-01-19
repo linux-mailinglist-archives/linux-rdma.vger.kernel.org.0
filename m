@@ -2,114 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867972FBE26
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 18:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 039202FBEC7
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 19:21:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726212AbhASRoG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Jan 2021 12:44:06 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:41290 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389766AbhASRkB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jan 2021 12:40:01 -0500
-Received: by mail-io1-f69.google.com with SMTP id x189so18355697iof.8
-        for <linux-rdma@vger.kernel.org>; Tue, 19 Jan 2021 09:39:45 -0800 (PST)
+        id S2389030AbhASST3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Jan 2021 13:19:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392524AbhASSR5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jan 2021 13:17:57 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A705C061794
+        for <linux-rdma@vger.kernel.org>; Tue, 19 Jan 2021 10:17:16 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id p5so9587887qvs.7
+        for <linux-rdma@vger.kernel.org>; Tue, 19 Jan 2021 10:17:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xe5OFFqXJOpZrf1RLwm8O32rAqSG/3wjoFtUA7SKQys=;
+        b=Cu9pQdgkuPmGsFfK1Bhot2GEDj34YX1UgywSUTlAnfjohEWUJcdw+iydHBAK385oP1
+         Aon6yUBiuqKBJyOIdmjXm9R9+pwFK1YM6ancISnFbej5qVTRjaAbtoXHhnSCihZ0idpY
+         SKse4iqkAvOCevShsndb3tq/GBo/VVzIj06N5mXpU32g2HE0TAwRq/I1cpBZ8fPleUsa
+         LtFWoa9cvTJigy1WSHjsTCqUP1WXBPp/oFQ1FmgktRV7Y3nwsRJIaT/QLxF3dAIRsx/H
+         dnBrbBD3QVcioOWh2VJck5oLCvv8jfJ/t5toQlSIr58Wlgkksz0jcLXApcGe9Am4Bjkx
+         aaTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=RvRcnXzmh80CmPwNJc6C/dVPmHxxvZ98wqHvifc9g5g=;
-        b=T3pSVi/YoUMAYW3eFjQiJfpwHol5n19cco9a+Zu6qaSec41R6M355BxqFEaxSZqEzE
-         a3eGyL3B3QHNGlYGkOcUskLo9pP0ejA7GAOWu7zUReMnkIJEFkFHBVow19CYdkJAg+v0
-         JIJwGgmTgI4jXFyFdbjDewx4o9N/KUKdU1rUA658XMbHnf9TewqclL0tH3cwtsVGyMz7
-         tPKVvC1EQq8KHQNCuEUUdOZkWDx19RsKj2Ixxy04fgbu9BppdjVyYyfWDsBfaNSlDiLr
-         Sypy2Cy3LIlMHGC9myPdx/stopxkjtgboUNaUbsUU9MaBI0ETiJJicmML/TQmbYLL4f+
-         oy4w==
-X-Gm-Message-State: AOAM532hRg64SmfenxOk59soy1mxKthfXyvGFlrbuvahO1XwirESUZYV
-        MnZ90Kg8lD8Jhk+zCxu2zHt51IhN7uwy1lEnBg71VBCyxmNT
-X-Google-Smtp-Source: ABdhPJwYONYODzuDw1xHz7CSUoC2704iRqonKVHiCwF3SNls2pRq0v3FvHqr9XRpKmAN7bpfAXO6pPgRV5DlppV8jEjjiRf67p/9
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xe5OFFqXJOpZrf1RLwm8O32rAqSG/3wjoFtUA7SKQys=;
+        b=b1bsuA3D12s/t3Ls1VjEFQr0Rxa1X1waYl/5MQoXgEVP9oG6HZ4HoaXL6OSTQeP+pd
+         RdDR8hVYhtxtXnBWDZ7ZNLjiNYUVYfzRuH9PqcFy9KxPjMNCXM7NJeHUABf9JktsqGAy
+         r7Y6+gS2L4P6jKp68KIKLenFUz9p544VCqMN+wFtRhl6M7H7Me0/gXEOxiK+DkDHerbD
+         StlwBpZKpJVIJ91bHUJGz0+83YPiiZEr2IdGjLxvPA7apT4WkaiN8ER+d6n3Kbm3uQR1
+         j/hBOspZzTOgaWcVjbv1zUqrqsibNq3ECA60RTTi/8VDSNCl+dm8jhnY1EelUh7Rqru+
+         NqmA==
+X-Gm-Message-State: AOAM530h/9ekuL1q9S1ML4ff3zIgsq5CZgyA9t3GlqXHgCI/xfusaDNe
+        YeVADEkNwhqJsDS/LeRyCOIeYw==
+X-Google-Smtp-Source: ABdhPJyeOj0cdYmfZSjIN+M4tTaXUXGkK5bEWqkePXdbU3A+6DIKwM6G35J8cfVSNYvzxhuLPBTc/w==
+X-Received: by 2002:a0c:a525:: with SMTP id y34mr5711355qvy.37.1611080235780;
+        Tue, 19 Jan 2021 10:17:15 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id f134sm13257161qke.23.2021.01.19.10.17.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 10:17:15 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l1vZ4-003pQw-MM; Tue, 19 Jan 2021 14:17:14 -0400
+Date:   Tue, 19 Jan 2021 14:17:14 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bodo Stroesser <bostroesser@gmail.com>
+Cc:     Douglas Gilbert <dgilbert@interlog.com>,
+        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
+        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
+Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
+ warning
+Message-ID: <20210119181714.GA909645@ziepe.ca>
+References: <20210118163006.61659-1-dgilbert@interlog.com>
+ <20210118163006.61659-2-dgilbert@interlog.com>
+ <20210118182854.GJ4605@ziepe.ca>
+ <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
+ <20210118202431.GO4605@ziepe.ca>
+ <7f443666-b210-6f99-7b50-6c26d87fa7ca@gmail.com>
+ <20210118234818.GP4605@ziepe.ca>
+ <6faed1e2-13bc-68ba-7726-91924cf21b66@gmail.com>
+ <20210119180327.GX4605@ziepe.ca>
+ <7ba5bfdf-6bc2-eddb-4c26-133c1bc08a33@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c5d0:: with SMTP id s16mr4079618ilt.223.1611077960353;
- Tue, 19 Jan 2021 09:39:20 -0800 (PST)
-Date:   Tue, 19 Jan 2021 09:39:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000885c1d05b94451f0@google.com>
-Subject: WARNING in kmalloc_array
-From:   syzbot <syzbot+5d578be9b4bfe1b6bbd6@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        rds-devel@oss.oracle.com, santosh.shilimkar@oracle.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7ba5bfdf-6bc2-eddb-4c26-133c1bc08a33@gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+On Tue, Jan 19, 2021 at 07:08:32PM +0100, Bodo Stroesser wrote:
+> On 19.01.21 19:03, Jason Gunthorpe wrote:
+> > On Tue, Jan 19, 2021 at 06:24:49PM +0100, Bodo Stroesser wrote:
+> > > 
+> > > I had a second look into math.h, but I don't find any reason why round_up
+> > > could overflow. Can you give a hint please?
+> > 
+> > #define round_up(x, y) ((((x)-1) | __round_mask(x, y))+1)
+> >                                                      ^^^^^
+> > 
+> > That +1 can overflow
+> 
+> But that would be a unsigned long long overflow. I considered this to
+> not be relevant.
 
-syzbot found the following issue on:
+Why not? It still makes nents 0 and still causes a bad bug
 
-HEAD commit:    0da0a8a0 Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1293e1f7500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ee2266946ed36986
-dashboard link: https://syzkaller.appspot.com/bug?extid=5d578be9b4bfe1b6bbd6
-compiler:       clang version 11.0.1
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5d578be9b4bfe1b6bbd6@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 15540 at mm/page_alloc.c:4977 __alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5021
-Modules linked in:
-CPU: 1 PID: 15540 Comm: syz-executor.2 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__alloc_pages_nodemask+0x4e5/0x5a0 mm/page_alloc.c:5021
-Code: ab 09 00 e9 dd fd ff ff 44 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c eb fd ff ff 4c 89 ef e8 f4 aa 09 00 8b 74 24 18 e9 da fd ff ff <0f> 0b e9 f3 fd ff ff a9 00 00 08 00 75 16 8b 4c 24 1c 89 cb 81 e3
-RSP: 0018:ffffc90016bff620 EFLAGS: 00010246
-RAX: ffffc90016bff6a0 RBX: ffffc90016bff6a0 RCX: 0000000000000000
-RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc90016bff6c8
-RBP: ffffc90016bff758 R08: dffffc0000000000 R09: ffffc90016bff6a0
-R10: fffff52002d7fed9 R11: 0000000000000000 R12: dffffc0000000000
-R13: 0000000000000018 R14: 1ffff92002d7fed0 R15: 0000000000040dc0
-FS:  00007fc7102ae700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000749138 CR3: 0000000025dd7000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-Call Trace:
- alloc_pages include/linux/gfp.h:547 [inline]
- kmalloc_order+0x40/0x130 mm/slab_common.c:837
- kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
- kmalloc_large include/linux/slab.h:481 [inline]
- __kmalloc+0x257/0x330 mm/slub.c:3959
- kmalloc_array+0x2d/0x40 include/linux/slab.h:593
- kcalloc include/linux/slab.h:621 [inline]
- rds_rdma_extra_size+0x84/0x300 net/rds/rdma.c:568
- rds_rm_size net/rds/send.c:928 [inline]
- rds_sendmsg+0xfad/0x3210 net/rds/send.c:1265
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0x5a2/0x900 net/socket.c:2345
- ___sys_sendmsg net/socket.c:2399 [inline]
- __sys_sendmsg+0x319/0x400 net/socket.c:2432
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e219
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fc7102adc68 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e219
-RDX: 0000000000000000 RSI: 0000000020001600 RDI: 0000000000000003
-RBP: 000000000119bfc0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
-R13: 00007ffd4cf1c0cf R14: 00007fc7102ae9c0 R15: 000000000119bf8c
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Jason
