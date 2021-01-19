@@ -2,114 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829F52FAF11
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 04:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3382FB132
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 07:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394868AbhASDRS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Jan 2021 22:17:18 -0500
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:31281 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2394867AbhASDRQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 18 Jan 2021 22:17:16 -0500
-Received: from sc9-mailhost1.vmware.com (10.113.161.71) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Mon, 18 Jan 2021 19:16:27 -0800
-Received: from sc-dbc2135.eng.vmware.com (sc-dbc2135.eng.vmware.com [10.182.28.35])
-        by sc9-mailhost1.vmware.com (Postfix) with ESMTP id CF177202C3;
-        Mon, 18 Jan 2021 19:16:29 -0800 (PST)
-From:   Bryan Tan <bryantan@vmware.com>
-To:     <linux-rdma@vger.kernel.org>
-CC:     <pv-drivers@vmware.com>, <stable@vger.kernel.org>,
-        Bryan Tan <bryantan@vmware.com>
-Subject: [PATCH v1 for-rc] RDMA/vmw_pvrdma: Fix network_hdr_type reported in WC
-Date:   Mon, 18 Jan 2021 19:16:29 -0800
-Message-ID: <1611026189-17943-1-git-send-email-bryantan@vmware.com>
-X-Mailer: git-send-email 2.6.2
+        id S1726685AbhASGOY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Jan 2021 01:14:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387894AbhASFhc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Jan 2021 00:37:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F32B207A0;
+        Tue, 19 Jan 2021 05:36:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611034603;
+        bh=vBIvNQ4pvRcKNaNvSN89j2YjPGarRzFsXCywE520Ws4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UepkQPv/v3JLhMERQOqJbz44DTuJzE+uy9TYk8Ml0b+ivaq5hdiHR7Uvln5bPBGdK
+         5b1zetGz8psiIM7ADnHt989qlzEN99itJWPskoGLxzupZeF2xuHgvfZDL23pUnGM2l
+         Pa+HiLUD1revZPagTG0pJy5gubrg4jVSjk33C/3kdVn1CL69Sys4aBaz4raMYRKqW7
+         tjBJE9j4aJ4C0lVie9qjHUMq1bTjW70ijCxfXHydY+Qh7W+O6/Rwmw97+w7VIWxHp1
+         EZv7VZZE6tB7J4NIvUv9t+HvYqWu4SdyYw6NIjXyz/aA5AODClaPpH2NxLQ01bdBbf
+         81P12aXuW4G2A==
+Date:   Tue, 19 Jan 2021 07:36:39 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH mlx5-next 0/3] Cleanup around DEVX get/set commands
+Message-ID: <20210119053639.GA21258@unreal>
+References: <20201230130121.180350-1-leon@kernel.org>
+ <20210118200031.GA729141@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: bryantan@vmware.com does not
- designate permitted sender hosts)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118200031.GA729141@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The PVRDMA device defines network_hdr_type according to an old
-definition of the rdma_network_type enum that has since changed,
-resulting in the wrong rdma_network_type being reported. Fix this by
-explicitly defining the enum used by the PVRDMA device and adding a
-function to convert the pvrdma_network_type to rdma_network_type enum.
+On Mon, Jan 18, 2021 at 04:00:31PM -0400, Jason Gunthorpe wrote:
+> On Wed, Dec 30, 2020 at 03:01:18PM +0200, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> >
+> > Be more strict with DEVX get/set operations for the obj_id.
+> >
+> > Yishai Hadas (3):
+> >   RDMA/mlx5: Use the correct obj_id upon DEVX TIR creation
+> >   net/mlx5: Expose ifc bits for query modify header
+> >   RDMA/mlx5: Use strict get/set operations for obj_id
+>
+> This looks fine, can you update the shared branch with the ifc update
+> please
 
-Cc: stable@vger.kernel.org # 5.10+
-Fixes: 1c15b4f2a42f ("RDMA/core: Modify enum ib_gid_type and enum rdma_network_type")
-Reviewed-by: Adit Ranadive <aditr@vmware.com>
-Signed-off-by: Bryan Tan <bryantan@vmware.com>
----
+Thanks, I added only one commit ab0da5a57188 ("net/mlx5: Expose ifc bits for query modify header").
+Other two can go through rdma-next tree.
 
-Changelog:
- - v0->v1: Moved new enum to uapi header and added Cc as per Jason.
----
- drivers/infiniband/hw/vmw_pvrdma/pvrdma.h    | 14 ++++++++++++++
- drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c |  2 +-
- include/uapi/rdma/vmw_pvrdma-abi.h           |  7 +++++++
- 3 files changed, 22 insertions(+), 1 deletion(-)
+Thanks
 
-diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
-index c142f5e7f25f..de57f2fed743 100644
---- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
-+++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
-@@ -509,6 +509,20 @@ static inline int ib_send_flags_to_pvrdma(int flags)
- 	return flags & PVRDMA_MASK(PVRDMA_SEND_FLAGS_MAX);
- }
- 
-+static inline int pvrdma_network_type_to_ib(enum pvrdma_network_type type)
-+{
-+	switch (type) {
-+	case PVRDMA_NETWORK_ROCE_V1:
-+		return RDMA_NETWORK_ROCE_V1;
-+	case PVRDMA_NETWORK_IPV4:
-+		return RDMA_NETWORK_IPV4;
-+	case PVRDMA_NETWORK_IPV6:
-+		return RDMA_NETWORK_IPV6;
-+	default:
-+		return RDMA_NETWORK_IPV6;
-+	}
-+}
-+
- void pvrdma_qp_cap_to_ib(struct ib_qp_cap *dst,
- 			 const struct pvrdma_qp_cap *src);
- void ib_qp_cap_to_pvrdma(struct pvrdma_qp_cap *dst,
-diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c
-index a119ac3e103c..6aa40bd2fd52 100644
---- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c
-+++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c
-@@ -367,7 +367,7 @@ static int pvrdma_poll_one(struct pvrdma_cq *cq, struct pvrdma_qp **cur_qp,
- 	wc->dlid_path_bits = cqe->dlid_path_bits;
- 	wc->port_num = cqe->port_num;
- 	wc->vendor_err = cqe->vendor_err;
--	wc->network_hdr_type = cqe->network_hdr_type;
-+	wc->network_hdr_type = pvrdma_network_type_to_ib(cqe->network_hdr_type);
- 
- 	/* Update shared ring state */
- 	pvrdma_idx_ring_inc(&cq->ring_state->rx.cons_head, cq->ibcq.cqe);
-diff --git a/include/uapi/rdma/vmw_pvrdma-abi.h b/include/uapi/rdma/vmw_pvrdma-abi.h
-index f8b638c73371..901a4fd72c09 100644
---- a/include/uapi/rdma/vmw_pvrdma-abi.h
-+++ b/include/uapi/rdma/vmw_pvrdma-abi.h
-@@ -133,6 +133,13 @@ enum pvrdma_wc_flags {
- 	PVRDMA_WC_FLAGS_MAX		= PVRDMA_WC_WITH_NETWORK_HDR_TYPE,
- };
- 
-+enum pvrdma_network_type {
-+	PVRDMA_NETWORK_IB,
-+	PVRDMA_NETWORK_ROCE_V1 = PVRDMA_NETWORK_IB,
-+	PVRDMA_NETWORK_IPV4,
-+	PVRDMA_NETWORK_IPV6
-+};
-+
- struct pvrdma_alloc_ucontext_resp {
- 	__u32 qp_tab_size;
- 	__u32 reserved;
--- 
-2.14.1
-
+>
+> Jason
