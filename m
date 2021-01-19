@@ -2,142 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D1A2FADDC
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 00:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4B32FAE01
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 01:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733092AbhARXtF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Jan 2021 18:49:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730243AbhARXtC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jan 2021 18:49:02 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF92C061575
-        for <linux-rdma@vger.kernel.org>; Mon, 18 Jan 2021 15:48:20 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id j26so12546133qtq.8
-        for <linux-rdma@vger.kernel.org>; Mon, 18 Jan 2021 15:48:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ed3MeSa+vYjkP75JUhCh5CWMiaLqH4Gt6vdQGvVz5Zo=;
-        b=ABDcFgQEdbegUPy03ChL7qFBRZLE4d5RYB+BvpnNp/pVx70pEavdhXOASQkXNf9bQN
-         h0manBPX6V294ymabO4qrgBYp3em+96lwlU6IePwaAXLM+cGvU+mq3yZi0U+QOkYBEKh
-         GIZqnHRjUw3J4Oxh0Wohqs2W5jyVYzok9Xcp/P5luY0VO19KChzM5IUR1OzhOLwTnul6
-         lv5qcdCaKVcNYncXHvXGfKlesNbUSeHMjkX1g12IAXyuaZcKDnYdk9sWIaMIx9qPq/pc
-         jDLIyHwfLFRxUtdkfBM3XowK6nVv/q9p9/UfIwRg4HX6hzpZUgNIM4Vrx0+P8z6v1PVv
-         igrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ed3MeSa+vYjkP75JUhCh5CWMiaLqH4Gt6vdQGvVz5Zo=;
-        b=NDiFT57uQcf8LvUtlEJhuNSu56CvDuLLKoep5Wn5Ql4OtbRgOTq28aYFZLqO9VjeCA
-         +MpNPwoaH137ahfd4tk22Xv8MMk6AO1JW4dCU1OfTSsaEZsZ7pXEeXJVMMAv69rrvI64
-         BFoA6M4KoHMzWNn5h9y73sk/E8uvtO5MCbFmYpmDVXAux+njDckO67b/Z2lAt+MqN+Ia
-         8I9FFubn8wS418dq0DVc5WufRPnbab3MBVYM5n1d3s5vkVN1a8y66sp7pP9mJ3zt5Pfc
-         Y/Sg2VAFhLwFsOP8oea7FvuJ5QQPBiKH4lgW3ew6uqAiMnC8hIqWGiBQvv4lJ7f8BZae
-         ruOA==
-X-Gm-Message-State: AOAM531AoKjimRrTsnl06bnv9qDp06Tk/5/7kEygKd54aodV23QLK9Jw
-        e0sGfqo9ZuJTrhOOejk69F+Vmw==
-X-Google-Smtp-Source: ABdhPJw5OqLaNno2QQkR/cEBquLRW/acdyvWZgzF/G8JhHWsokTQ2HltmhSKqwd7KuQY9PUDGG88qw==
-X-Received: by 2002:ac8:4d4d:: with SMTP id x13mr1910197qtv.385.1611013699444;
-        Mon, 18 Jan 2021 15:48:19 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id p13sm11792293qkg.80.2021.01.18.15.48.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 15:48:18 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l1eFu-003P0N-B4; Mon, 18 Jan 2021 19:48:18 -0400
-Date:   Mon, 18 Jan 2021 19:48:18 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bodo Stroesser <bostroesser@gmail.com>
-Cc:     Douglas Gilbert <dgilbert@interlog.com>,
-        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, ddiss@suse.de, bvanassche@acm.org
-Subject: Re: [PATCH v6 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
- warning
-Message-ID: <20210118234818.GP4605@ziepe.ca>
-References: <20210118163006.61659-1-dgilbert@interlog.com>
- <20210118163006.61659-2-dgilbert@interlog.com>
- <20210118182854.GJ4605@ziepe.ca>
- <59707b66-0b6c-b397-82fe-5ad6a6f99ba1@interlog.com>
- <20210118202431.GO4605@ziepe.ca>
- <7f443666-b210-6f99-7b50-6c26d87fa7ca@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1728956AbhASASM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Jan 2021 19:18:12 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14754 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbhASASM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Jan 2021 19:18:12 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6006251b0000>; Mon, 18 Jan 2021 16:17:31 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Jan
+ 2021 00:17:31 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.175)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 19 Jan 2021 00:17:30 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ErNUAEGn3EtaZaHlxCJHk5anWHdexDZ85ReDBxkpCp0AQFGdvRZjV+Nf1CfERVtEnehb+d8E56STVwjX3WUoOUevNAG4I8JUY24adR/gFNCQYe1DPU0F6Yt4diRoM0nfkW/+0XjOFPnTnO9Cb0iNkAtDYv6s8+ZNz/5x3rzyuWMsSj5nw6M/+/i3D3BZ0tVxqP9sp4IvE/NEu8iezmhoLCEO1uiY2Rp8m5/ptoxd3tormS2VVX/aEn8n+8qm5v9VVf9O5qz05tPQES8VJoOIFgMaQedS/xCc4ZqgQCB8SsTNGimmlr+ypq8GxfBjYdgsIDPL2UTAM/PqWhk78quDXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nxxBTneuvGVaqCWlspPMLz9cNmBoz4EyqLcAD45kvrM=;
+ b=YDJSzuvPcRHeZgvoDYCaHnd7VhPOg8gSgKuAmnG8Cvj4XMEhEuljBFviUpyoPp/ihkIyIqTNVWDnfVz1zR6/+MENH848cnjiPSQXDxBqUXeWiJmjPCCYiI2vsFeMa1oWeq0pC3wF0iwr6gV9ihB3dlWO0gvdKaILszTiyy5L+EJDicEcd8RWFe4t2qh2BssR3FTKgDplM1T4D7IIqJMZecxpeNe+pg44d78P/XX3Y+4vq7c5qZQ7s/DMOpizJB4KQgEjoFEobDVDkA+y5VPKB74tA1+mABrv6Idh0DE/nXG98h5MQ9p5yynjMUiRpbGZTF+f6OvM7uV+GrUYWOuOzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4973.namprd12.prod.outlook.com (2603:10b6:5:1b7::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9; Tue, 19 Jan
+ 2021 00:17:29 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3763.014; Tue, 19 Jan 2021
+ 00:17:29 +0000
+Date:   Mon, 18 Jan 2021 20:17:28 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Kamal Heib <kamalheib1@gmail.com>
+CC:     <linux-rdma@vger.kernel.org>, Doug Ledford <dledford@redhat.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>
+Subject: Re: [PATCH for-rc] RDMA/cxgb4: Fix the reported max_recv_sge value
+Message-ID: <20210119001728.GA801964@nvidia.com>
+References: <20210114191423.423529-1-kamalheib1@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <7f443666-b210-6f99-7b50-6c26d87fa7ca@gmail.com>
+In-Reply-To: <20210114191423.423529-1-kamalheib1@gmail.com>
+X-ClientProxiedBy: MN2PR13CA0003.namprd13.prod.outlook.com
+ (2603:10b6:208:160::16) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR13CA0003.namprd13.prod.outlook.com (2603:10b6:208:160::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.4 via Frontend Transport; Tue, 19 Jan 2021 00:17:29 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l1ei8-003PWe-8k; Mon, 18 Jan 2021 20:17:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611015451; bh=nxxBTneuvGVaqCWlspPMLz9cNmBoz4EyqLcAD45kvrM=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=BKzFXJbecvL5shR9ddOp5lkDHHF1+hX13v8h6UZd8E8ivoSgfLgYqiHUeDzHDThsn
+         0BvkOcViRSTWt4vZZMMKHL2DUwjzXTLl8F90Pwb323At/8l36hcgD/ikGuYvX31C6r
+         T7vb4hQY9RHgmk5wpJoUsrN7yy1e6PDwftcLoM4eYp829VNPLgdh7zp5+yMjzGRsbU
+         QOuRhlKFucUclEsQjFKdUf03psbMlmjuZ6wgrLdoHnsrbPX99STeY2bVReTRgQUEUd
+         p0DWuo6UEVi5GGf7wQ8IeBMVf0XMhdL3769ih/9rwLzF5+NS7X92OPynoGciiSnX8C
+         g21x315doAq1w==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 10:22:56PM +0100, Bodo Stroesser wrote:
-> On 18.01.21 21:24, Jason Gunthorpe wrote:
-> > On Mon, Jan 18, 2021 at 03:08:51PM -0500, Douglas Gilbert wrote:
-> >> On 2021-01-18 1:28 p.m., Jason Gunthorpe wrote:
-> >>> On Mon, Jan 18, 2021 at 11:30:03AM -0500, Douglas Gilbert wrote:
-> >>>
-> >>>> After several flawed attempts to detect overflow, take the fastest
-> >>>> route by stating as a pre-condition that the 'order' function argument
-> >>>> cannot exceed 16 (2^16 * 4k = 256 MiB).
-> >>>
-> >>> That doesn't help, the point of the overflow check is similar to
-> >>> overflow checks in kcalloc: to prevent the routine from allocating
-> >>> less memory than the caller might assume.
-> >>>
-> >>> For instance ipr_store_update_fw() uses request_firmware() (which is
-> >>> controlled by userspace) to drive the length argument to
-> >>> sgl_alloc_order(). If userpace gives too large a value this will
-> >>> corrupt kernel memory.
-> >>>
-> >>> So this math:
-> >>>
-> >>>     	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
-> >>
-> >> But that check itself overflows if order is too large (e.g. 65).
-> > 
-> > I don't reall care about order. It is always controlled by the kernel
-> > and it is fine to just require it be low enough to not
-> > overflow. length is the data under userspace control so math on it
-> > must be checked for overflow.
-> > 
-> >> Also note there is another pre-condition statement in that function's
-> >> definition, namely that length cannot be 0.
-> > 
-> > I don't see callers checking for that either, if it is true length 0
-> > can't be allowed it should be blocked in the function
-> > 
-> > Jason
-> > 
+On Thu, Jan 14, 2021 at 09:14:23PM +0200, Kamal Heib wrote:
+> The max_recv_sge value is wrongly reported when calling query_qp, This
+> is happening due to a typo when assigning the max_recv_sge value, the
+> value of sq_max_sges was assigned instead of rq_max_sges.
 > 
-> A already said, I also think there should be a check for length or
-> rather nent overflow.
-> 
-> I like the easy to understand check in your proposed code:
-> 
-> 	if (length >> (PAGE_SHIFT + order) >= UINT_MAX)
-> 		return NULL;
-> 
-> 
-> But I don't understand, why you open-coded the nent calculation:
-> 
-> 	nent = length >> (PAGE_SHIFT + order);
-> 	if (length & ((1ULL << (PAGE_SHIFT + order)) - 1))
-> 		nent++;
+> Fixes: 3e5c02c9ef9a ("iw_cxgb4: Support query_qp() verb")
+> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> Reviewed-by: Potnuri Bharat Teja <bharat@chelsio.com>
+> ---
+>  drivers/infiniband/hw/cxgb4/qp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-It is necessary to properly check for overflow, because the easy to
-understand check doesn't prove that round_up will work, only that >>
-results in something that fits in an int and that +1 won't overflow
-the int.
-
-> Wouldn't it be better to keep the original line instead:
-> 
-> 	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
-
-This can overflow inside the round_up
+Applied to for-rc, thanks
 
 Jason
