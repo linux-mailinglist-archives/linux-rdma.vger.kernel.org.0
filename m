@@ -2,64 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3382FB132
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 07:25:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C0A2FB133
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 07:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbhASGOY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Jan 2021 01:14:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56458 "EHLO mail.kernel.org"
+        id S1727165AbhASGQR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Jan 2021 01:16:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387894AbhASFhc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 19 Jan 2021 00:37:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F32B207A0;
-        Tue, 19 Jan 2021 05:36:42 +0000 (UTC)
+        id S1728956AbhASFi5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Jan 2021 00:38:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D9C0207B1;
+        Tue, 19 Jan 2021 05:38:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611034603;
-        bh=vBIvNQ4pvRcKNaNvSN89j2YjPGarRzFsXCywE520Ws4=;
+        s=k20201202; t=1611034691;
+        bh=icZxTvui0uXyecHvXQypSINhhAwhfI8fl7Y6Gu74ZsU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UepkQPv/v3JLhMERQOqJbz44DTuJzE+uy9TYk8Ml0b+ivaq5hdiHR7Uvln5bPBGdK
-         5b1zetGz8psiIM7ADnHt989qlzEN99itJWPskoGLxzupZeF2xuHgvfZDL23pUnGM2l
-         Pa+HiLUD1revZPagTG0pJy5gubrg4jVSjk33C/3kdVn1CL69Sys4aBaz4raMYRKqW7
-         tjBJE9j4aJ4C0lVie9qjHUMq1bTjW70ijCxfXHydY+Qh7W+O6/Rwmw97+w7VIWxHp1
-         EZv7VZZE6tB7J4NIvUv9t+HvYqWu4SdyYw6NIjXyz/aA5AODClaPpH2NxLQ01bdBbf
-         81P12aXuW4G2A==
-Date:   Tue, 19 Jan 2021 07:36:39 +0200
+        b=kqhF4JpoZe9r41AtsGL8PsbiLn37goEt/RLJHT0Yzu3GEL/SwoN4l1KPjk9uMKnxF
+         CdTrhvzs1kF/TS/cT4vvlqs+fSyCPHTDWXHIB/gwRN17UpwQmNSnAs/Yeoh8kxSjJI
+         3BedgcLkUiff1yGjcQffaOS2/Cuwsr39CUvZNCdA3MFA0a6fNPCBX0FQITAebvxfk6
+         Fp0G7va5qGTQfRGN/aGafoGOLr9JkRJwilxVoHky480VAb3gTXbtgC8ZzTZiE1GaJp
+         cZU1kZ0FteJqGXkXwRGrvPbvkS9vBdh5W4Zj8+fdwAB7itJejXlCSblgsH3MJGI1kx
+         kw5qIP1QCpnVA==
+Date:   Tue, 19 Jan 2021 07:38:07 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH mlx5-next 0/3] Cleanup around DEVX get/set commands
-Message-ID: <20210119053639.GA21258@unreal>
-References: <20201230130121.180350-1-leon@kernel.org>
- <20210118200031.GA729141@nvidia.com>
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: Re: [PATCH mlx5-next v1 2/5] PCI: Add SR-IOV sysfs entry to read
+ number of MSI-X vectors
+Message-ID: <20210119053807.GB21258@unreal>
+References: <20210110150727.1965295-1-leon@kernel.org>
+ <20210110150727.1965295-3-leon@kernel.org>
+ <YAW/Wtr0thScxvK/@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210118200031.GA729141@nvidia.com>
+In-Reply-To: <YAW/Wtr0thScxvK/@kroah.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 04:00:31PM -0400, Jason Gunthorpe wrote:
-> On Wed, Dec 30, 2020 at 03:01:18PM +0200, Leon Romanovsky wrote:
+On Mon, Jan 18, 2021 at 06:03:22PM +0100, Greg KH wrote:
+> On Sun, Jan 10, 2021 at 05:07:24PM +0200, Leon Romanovsky wrote:
 > > From: Leon Romanovsky <leonro@nvidia.com>
 > >
-> > Be more strict with DEVX get/set operations for the obj_id.
+> > Some SR-IOV capable devices provide an ability to configure specific
+> > number of MSI-X vectors on their VF prior driver is probed on that VF.
 > >
-> > Yishai Hadas (3):
-> >   RDMA/mlx5: Use the correct obj_id upon DEVX TIR creation
-> >   net/mlx5: Expose ifc bits for query modify header
-> >   RDMA/mlx5: Use strict get/set operations for obj_id
+> > In order to make management easy, provide new read-only sysfs file that
+> > returns a total number of possible to configure MSI-X vectors.
+> >
+> > cat /sys/bus/pci/devices/.../sriov_vf_total_msix
+> >   = 0 - feature is not supported
+> >   > 0 - total number of MSI-X vectors to consume by the VFs
+> >
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >  Documentation/ABI/testing/sysfs-bus-pci | 14 +++++++++++
+> >  drivers/pci/iov.c                       | 31 +++++++++++++++++++++++++
+> >  drivers/pci/pci.h                       |  3 +++
+> >  include/linux/pci.h                     |  2 ++
+> >  4 files changed, 50 insertions(+)
+> >
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> > index 05e26e5da54e..64e9b700acc9 100644
+> > --- a/Documentation/ABI/testing/sysfs-bus-pci
+> > +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> > @@ -395,3 +395,17 @@ Description:
+> >  		The file is writable if the PF is bound to a driver that
+> >  		supports the ->sriov_set_msix_vec_count() callback and there
+> >  		is no driver bound to the VF.
+> > +
+> > +What:		/sys/bus/pci/devices/.../sriov_vf_total_msix
+> > +Date:		January 2021
+> > +Contact:	Leon Romanovsky <leonro@nvidia.com>
+> > +Description:
+> > +		This file is associated with the SR-IOV PFs.
+> > +		It returns a total number of possible to configure MSI-X
+> > +		vectors on the enabled VFs.
+> > +
+> > +		The values returned are:
+> > +		 * > 0 - this will be total number possible to consume by VFs,
+> > +		 * = 0 - feature is not supported
+> > +
+> > +		If no SR-IOV VFs are enabled, this value will return 0.
+> > diff --git a/drivers/pci/iov.c b/drivers/pci/iov.c
+> > index 42c0df4158d1..0a6ddf3230fd 100644
+> > --- a/drivers/pci/iov.c
+> > +++ b/drivers/pci/iov.c
+> > @@ -394,12 +394,22 @@ static ssize_t sriov_drivers_autoprobe_store(struct device *dev,
+> >  	return count;
+> >  }
+> >
+> > +static ssize_t sriov_vf_total_msix_show(struct device *dev,
+> > +					struct device_attribute *attr,
+> > +					char *buf)
+> > +{
+> > +	struct pci_dev *pdev = to_pci_dev(dev);
+> > +
+> > +	return sprintf(buf, "%d\n", pdev->sriov->vf_total_msix);
 >
-> This looks fine, can you update the shared branch with the ifc update
-> please
+> Nit, please use sysfs_emit() for new sysfs files.
 
-Thanks, I added only one commit ab0da5a57188 ("net/mlx5: Expose ifc bits for query modify header").
-Other two can go through rdma-next tree.
-
-Thanks
+I'll do, thanks.
 
 >
-> Jason
+> thanks,
+>
+> greg k-h
