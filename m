@@ -2,93 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80A42FBCEE
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 17:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A48792FBD9B
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 18:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390805AbhASQvK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Jan 2021 11:51:10 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5450 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731236AbhASQvB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jan 2021 11:51:01 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60070dc90000>; Tue, 19 Jan 2021 08:50:17 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Jan
- 2021 16:50:17 +0000
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.47) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 19 Jan 2021 16:50:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jjlCO1PHXk4EJRQaUPEgW2DnTfuDVuDePjS4uW64hyNp2R7VjcpkA/2goQVmIT0F6Aq0E784tPFwRMdznX0nD9b4IcZO78hIklTb8hOcNtKXgNELatR4V/sPYTqXH2cL2EPkVCdBPOZyGq3OfRC/llDfeq/2HL4CzLKjjIiEDIDcnsqqFZAB07j8iCbq3Tn7t8WDapOkZyCJi9QFrQt42AZqBWvm4AMno1dOlQuJM7DxWAzf1WqUzpgykHpYlRFTBr5J4Edqthrut/wGaWI/dNaYfCSpHk1s2ribw7IAiEjaZlmAV2t5dV/irHAp3EM59VI4bjXwDszMi3YEmKq4DA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x+JTlu57P9gPnkJ3jUDTwD91tN5ghJrX/iVCJRHHT6E=;
- b=Kxwin+ycHE1IQDeqEGjpq9VOHtowwK3+S+y/j6hBBsW8AVT11WQPdvbQgu4yJZkoznO5oreBP3p8qY3iCUV2MOMv+j2NNwHM1YrfsOsQNRu6V3hAF+0t/jHiaEMeE1Ji3vWupObizJIigfB6F3++FSIXzp1Yph07hv2QLStS/6OFEYLS/yMalPspOn/fOUzdZiMUUupvFTKndtZMaTMHz3xkgpaHbQ/2P3itdFe6MGt2xuRsL845HNIFYPDM4MriUxz4/0Nt1WHbLbXXtCTmn29JwsTo9cofAfHUvoqNhjyvWq6qoXveN6dgcbFaIEmkeAGEoDxhVTdwT0pXtw26xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3403.namprd12.prod.outlook.com (2603:10b6:5:11d::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.13; Tue, 19 Jan
- 2021 16:50:16 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.011; Tue, 19 Jan 2021
- 16:50:15 +0000
-Date:   Tue, 19 Jan 2021 12:50:12 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        <linux-rdma@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH mlx5-next 0/3] Cleanup around DEVX get/set commands
-Message-ID: <20210119165012.GA906477@nvidia.com>
-References: <20201230130121.180350-1-leon@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201230130121.180350-1-leon@kernel.org>
-X-ClientProxiedBy: MN2PR04CA0023.namprd04.prod.outlook.com
- (2603:10b6:208:d4::36) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S2391579AbhASR24 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Jan 2021 12:28:56 -0500
+Received: from smtp.infotech.no ([82.134.31.41]:59521 "EHLO smtp.infotech.no"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389631AbhASRKv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Jan 2021 12:10:51 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by smtp.infotech.no (Postfix) with ESMTP id BF9CE2041AC;
+        Tue, 19 Jan 2021 18:09:39 +0100 (CET)
+X-Virus-Scanned: by amavisd-new-2.6.6 (20110518) (Debian) at infotech.no
+Received: from smtp.infotech.no ([127.0.0.1])
+        by localhost (smtp.infotech.no [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id zpIfBtn7j-PD; Tue, 19 Jan 2021 18:09:33 +0100 (CET)
+Received: from xtwo70.bingwo.ca (host-104-157-204-209.dyn.295.ca [104.157.204.209])
+        by smtp.infotech.no (Postfix) with ESMTPA id B534220418D;
+        Tue, 19 Jan 2021 18:09:31 +0100 (CET)
+From:   Douglas Gilbert <dgilbert@interlog.com>
+To:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     martin.petersen@oracle.com, jejb@linux.vnet.ibm.com,
+        bostroesser@gmail.com, ddiss@suse.de, bvanassche@acm.org
+Subject: [PATCH 0/3] scatterlist: sgl-sgl ops: copy, equal
+Date:   Tue, 19 Jan 2021 12:09:25 -0500
+Message-Id: <20210119170928.79805-1-dgilbert@interlog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR04CA0023.namprd04.prod.outlook.com (2603:10b6:208:d4::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Tue, 19 Jan 2021 16:50:14 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l1uCq-003npO-SA; Tue, 19 Jan 2021 12:50:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611075017; bh=x+JTlu57P9gPnkJ3jUDTwD91tN5ghJrX/iVCJRHHT6E=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=oNnlU6ngDh2zgR56XwIfCxljhgAC0B3EiHw7wLoojQe+VOE1UOTNnnLqfk4dFhyDq
-         C7+zgPChJHIoFRNZmu18FLLCDhxHYHjRtL/gdOcxbvhsId9Oo+dT0wNgctszjyV7l+
-         OUJZ/PDoT1DsnKEeUp+xBqDKkYLcvUqSdzeG3F4CnvnNglrKTGIzBCTT8ufbhQoqfM
-         5Z0ti2g27v6Hd/mnoukBn14el0DquD4UNTpuQuD0AdKvfae86yT4uH5ur/k8Sn2HOU
-         GtqozPvQn6ElPT6undG44Xmt9CT2D9kS4iGrbOqzHnOBj7r0hIia4LvRYCd9gQU6Ut
-         uGO06GbI64T0Q==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 03:01:18PM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> Be more strict with DEVX get/set operations for the obj_id.
-> 
-> Yishai Hadas (3):
->   RDMA/mlx5: Use the correct obj_id upon DEVX TIR creation
->   net/mlx5: Expose ifc bits for query modify header
->   RDMA/mlx5: Use strict get/set operations for obj_id
-> 
->  drivers/infiniband/hw/mlx5/devx.c | 201 ++++++++++++++++++++++--------
->  include/linux/mlx5/mlx5_ifc.h     |  12 ++
->  2 files changed, 160 insertions(+), 53 deletions(-)
+Scatter-gather lists (sgl_s) are frequently used as data carriers in
+the block layer. For example the SCSI and NVMe subsystems interchange
+data with the block layer using sgl_s. The sgl API is declared in
+<linux/scatterlist.h>
 
-Applied to for-next, thanks
+The author has extended these transient sgl use cases to a store (i.e.
+a ramdisk) in the scsi_debug driver. Other new potential uses of sgl_s
+could be for the target subsystem. When this extra step is taken, the
+need to copy between sgl_s becomes apparent. The patchset adds
+sgl_copy_sgl(), sgl_equal_sgl() and sgl_memset().
 
-Jason
+Changes since v6 [posted 20210118]:
+  - restarted with new patchset name, was "scatterlist: add new
+    capabilities"
+  - drop correction patch "sgl_alloc_order: remove 4 GiB limit,
+    sgl_free() warning"; could be sent separately as a fix
+  - rename sgl_compare_sgl() to sg_equal_sgl() and the helper
+    to sg_equal_sgl_idx()
+
+Changes since v5 [posted 20201228]:
+  - incorporate review requests from Jason Gunthorpe
+  - replace integer overflow detection code in sgl_alloc_order()
+    with a pre-condition statement
+  - rebase on lk 5.11.0-rc4
+
+Changes since v4 [posted 20201105]:
+  - rebase on lk 5.10.0-rc2
+
+Changes since v3 [posted 20201019]:
+  - re-instate check on integer overflow of nent calculation in
+    sgl_alloc_order(). Do it in such a way as to not limit the
+    overall sgl size to 4  GiB
+  - introduce sgl_compare_sgl_idx() helper function that, if
+    requested and if a miscompare is detected, will yield the byte
+    index of the first miscompare.
+  - add Reviewed-by tags from Bodo Stroesser
+  - rebase on lk 5.10.0-rc2 [was on lk 5.9.0]
+
+Changes since v2 [posted 20201018]:
+  - remove unneeded lines from sgl_memset() definition.
+  - change sg_zero_buffer() to call sgl_memset() as the former
+    is a subset.
+
+Changes since v1 [posted 20201016]:
+  - Bodo Stroesser pointed out a problem with the nesting of
+    kmap_atomic() [called via sg_miter_next()] and kunmap_atomic()
+    calls [called via sg_miter_stop()] and proposed a solution that
+    simplifies the previous code.
+
+  - the new implementation of the three functions has shorter periods
+    when pre-emption is disabled (but has more them). This should
+    make operations on large sgl_s more pre-emption "friendly" with
+    a relatively small performance hit.
+
+  - sgl_memset return type changed from void to size_t and is the
+    number of bytes actually (over)written. That number is needed
+    anyway internally so may as well return it as it may be useful to
+    the caller.
+
+This patchset is against lk 5.11.0-rc4
+
+Douglas Gilbert (3):
+  scatterlist: add sgl_copy_sgl() function
+  scatterlist: add sgl_equal_sgl() function
+  scatterlist: add sgl_memset()
+
+ include/linux/scatterlist.h |  32 ++++-
+ lib/scatterlist.c           | 233 ++++++++++++++++++++++++++++++++----
+ 2 files changed, 243 insertions(+), 22 deletions(-)
+
+-- 
+2.25.1
+
