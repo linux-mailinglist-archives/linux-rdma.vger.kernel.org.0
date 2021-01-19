@@ -2,100 +2,186 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CBDF2FB89F
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 15:31:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 598402FBAAC
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Jan 2021 16:05:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387522AbhASNXm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Jan 2021 08:23:42 -0500
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:1476 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404454AbhASNUd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jan 2021 08:20:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1611062433; x=1642598433;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=xH3+LA2qNBIbQD4GWagHPEPKbwkKXcR0ynHj5mgkYUY=;
-  b=coG+Fdzc+6aIdyk2PpXJLoMaJu+bHEY7buSehK6kD6rLQPFPCJiuznnQ
-   MKJu7KkonVrdhGR/eGKSc9Ge1L0AqJ28wAyC0RfZou7wiSbSqOKQda9xV
-   MMOAnv5sr/i8g7XeDKT+ML0e2vsRwaQD/sSyqttjumygX76rS2UySZLxz
-   o=;
-X-IronPort-AV: E=Sophos;i="5.79,358,1602547200"; 
-   d="scan'208";a="79996660"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 19 Jan 2021 13:19:26 +0000
-Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com (Postfix) with ESMTPS id 3A49AA2904;
-        Tue, 19 Jan 2021 13:19:25 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.94) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 19 Jan 2021 13:19:21 +0000
-Subject: Re: [PATCH for-next 0/2] Host information userspace version
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        "Leybovich, Yossi" <sleybo@amazon.com>
-References: <20210105104326.67895-1-galpress@amazon.com>
- <9286e969-09b8-a7d0-ca7e-50b8e3864a11@amazon.com>
- <20210119084632.GI21258@unreal>
- <91c354f0-ada7-85d5-8496-122a3a54354a@amazon.com>
- <20210119115808.GJ21258@unreal>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <1cb7058a-0bde-943b-64b7-d2a39337a085@amazon.com>
-Date:   Tue, 19 Jan 2021 15:19:15 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
+        id S1727176AbhASPAb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Jan 2021 10:00:31 -0500
+Received: from mga18.intel.com ([134.134.136.126]:6858 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2395405AbhASOSY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Jan 2021 09:18:24 -0500
+IronPort-SDR: svqlXgVRmczZa98bVoDKhAV59BfOF1ehs+Vc47es0AWiWnVDcGKaERwP+ARWIghN22Au/aoIhg
+ +aqRvAWAXo/g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="166597693"
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
+   d="scan'208";a="166597693"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 06:15:01 -0800
+IronPort-SDR: AK4MZ3YUYlCn63BrXM0JPGNKvikXS7aQKfrik1pbdQ01iAxNcG9ZC7/jOwTBYYHcAT/6QjSVSx
+ HhUMqQyD3Z4w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
+   d="scan'208";a="466712198"
+Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Jan 2021 06:14:59 -0800
+Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l1rmd-00056O-6o; Tue, 19 Jan 2021 14:14:59 +0000
+Date:   Tue, 19 Jan 2021 22:14:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-rc] BUILD SUCCESS
+ a372173bf314d374da4dd1155549d8ca7fc44709
+Message-ID: <6006e92b.zI1vjitV8ecEHL7Q%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210119115808.GJ21258@unreal>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.94]
-X-ClientProxiedBy: EX13D50UWA002.ant.amazon.com (10.43.163.10) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 19/01/2021 13:58, Leon Romanovsky wrote:
-> On Tue, Jan 19, 2021 at 11:10:59AM +0200, Gal Pressman wrote:
->> On 19/01/2021 10:46, Leon Romanovsky wrote:
->>> On Tue, Jan 19, 2021 at 09:17:14AM +0200, Gal Pressman wrote:
->>>> On 05/01/2021 12:43, Gal Pressman wrote:
->>>>> The following two patches add the userspace version to the host
->>>>> information struct reported to the device, used for debugging and
->>>>> troubleshooting purposes.
->>>>>
->>>>> PR was sent:
->>>>> https://github.com/linux-rdma/rdma-core/pull/918
->>>>>
->>>>> Thanks,
->>>>> Gal
->>>>
->>>> Anything stopping this series from being merged?
->>>
->>> It is unclear when this forwarding of non-verbs data to the FW will stop.
->>
->> This was already discussed in the PR. Not everything should be passed through
->> this interface, there should be a limit and it should be examined per case.
->> rdma-core version is clearly related to an RDMA device.
-> 
-> "Clearly or not" - it depends on the observer.
-> 
->>
->> BTW, if you have any concerns about a patch you can state them, you don't have
->> to ignore it and wait for the submitter to ask what's wrong..
-> 
-> Didn't you mistake me with anyone else?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
+branch HEAD: a372173bf314d374da4dd1155549d8ca7fc44709  RDMA/cxgb4: Fix the reported max_recv_sge value
 
-No, you decided to answer my original question :).
+elapsed time: 725m
 
-> I'm reviewer in the kernel exactly like you and it gives me nice thing - ignore patches.
+configs tested: 124
+configs skipped: 2
 
-Don't get me wrong, your review is very appreciated, but this series is 20 LOC
-which you already reviewed two weeks ago, and I replied to all comments.
-Ignoring patches is fine, but please don't review, ignore and wait for the last
-minute to say they shouldn't be merged.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                            allyesconfig
+arm64                               defconfig
+powerpc                    amigaone_defconfig
+ia64                                defconfig
+arm                           tegra_defconfig
+arm                          collie_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                  mpc885_ads_defconfig
+openrisc                         alldefconfig
+arm                           h3600_defconfig
+mips                         tb0226_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                      tqm8xx_defconfig
+sh                          polaris_defconfig
+s390                             allyesconfig
+m68k                        mvme147_defconfig
+arm                          tango4_defconfig
+powerpc                  iss476-smp_defconfig
+s390                       zfcpdump_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                      mgcoge_defconfig
+arm                            xcep_defconfig
+powerpc                 mpc837x_rdb_defconfig
+arm                         nhk8815_defconfig
+h8300                     edosk2674_defconfig
+mips                     decstation_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                         s3c2410_defconfig
+sh                              ul2_defconfig
+m68k                          multi_defconfig
+mips                           xway_defconfig
+sparc                       sparc32_defconfig
+mips                       lemote2f_defconfig
+arm                          imote2_defconfig
+arm                       imx_v4_v5_defconfig
+mips                      pic32mzda_defconfig
+sparc                               defconfig
+sh                        sh7763rdp_defconfig
+sh                          rsk7201_defconfig
+arm                         shannon_defconfig
+arm                           efm32_defconfig
+arc                      axs103_smp_defconfig
+arm                           sama5_defconfig
+arm                        mvebu_v7_defconfig
+mips                          rm200_defconfig
+arm                        magician_defconfig
+h8300                               defconfig
+openrisc                 simple_smp_defconfig
+powerpc                 mpc85xx_cds_defconfig
+powerpc                 xes_mpc85xx_defconfig
+arm                      tct_hammer_defconfig
+mips                           jazz_defconfig
+powerpc                     skiroot_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                               tinyconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20210118
+i386                 randconfig-a005-20210118
+i386                 randconfig-a006-20210118
+i386                 randconfig-a001-20210118
+i386                 randconfig-a003-20210118
+i386                 randconfig-a004-20210118
+x86_64               randconfig-a015-20210118
+x86_64               randconfig-a013-20210118
+x86_64               randconfig-a012-20210118
+x86_64               randconfig-a016-20210118
+x86_64               randconfig-a011-20210118
+x86_64               randconfig-a014-20210118
+i386                 randconfig-a011-20210118
+i386                 randconfig-a012-20210118
+i386                 randconfig-a016-20210118
+i386                 randconfig-a015-20210118
+i386                 randconfig-a013-20210118
+i386                 randconfig-a014-20210118
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                    rhel-7.6-kselftests
+x86_64                      rhel-8.3-kbuiltin
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20210118
+x86_64               randconfig-a006-20210118
+x86_64               randconfig-a001-20210118
+x86_64               randconfig-a003-20210118
+x86_64               randconfig-a005-20210118
+x86_64               randconfig-a002-20210118
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
