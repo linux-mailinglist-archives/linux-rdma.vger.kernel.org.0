@@ -2,122 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA4F2FC5FC
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Jan 2021 01:41:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BACEE2FC7C0
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Jan 2021 03:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729934AbhATAlf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Jan 2021 19:41:35 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9426 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729850AbhATAle (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jan 2021 19:41:34 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60077c150001>; Tue, 19 Jan 2021 16:40:53 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 Jan
- 2021 00:40:51 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 20 Jan 2021 00:40:50 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VkD98D2g4B5Fh0juZxGAktnjnbZQS5pliyVbntxYCOVhXraYgNLZIZSDLINxNbGYo2pwYVIrI+o6j1qDiiVSaagGkbJ0fqd/1Uqu/oI6i2Y7EvPQJLJ8ASlrIYp8DyOtOFwOziAt7/S7lPNEaiwCXfBhVT+s9oBW95KZKTgyqFdcbA3bJWSz//GRzdejc1dK2cjnwhx0biZG7rh4DtFwvb81vswbW1LJKmHrpjnGsekdDUkr1a3BZlYCM0SXrm28kFYkrOJ6d/L3jRp0XmGpueBFkFqEcovhRFP/KFJxmSNldUCpm4EeSb68yPjmSWAQSs+pr4HYa42IZ4mEd6TVBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EpcKyjqLBVUUF0xXDaC2sM/qMgY3677qf4q7YDB8tL4=;
- b=dC+Lnu1huRjY6//go2O9cKt4VPrT7jBxqECqHTTstMeh45ZXBCU9g2/nTCAr3ekdHcf3mGZoJMFEgPU0lmgVydjD9eQ+L1SVGLdQc11NRGYnaY46H6gv7J8ZEWZHqAmWzPcwZHWLYr9WUEdEuZ3DbnrbcmaLxsx2kCtUhgiFOlHrbNR8UXGnk+QWQn9XrP1GaP1bNNxRKPzgcfiqQQluCcL8FroBc48fgBGOXAGK/LjEfzeTpxYz8mbrpVQt/6c/2pop4crSWIGp0ku2dAH5Bm+NT1bc9BfejnDp+eWRRDgM11LewwwZTHsWkgFQ7/mxVJFYRrikVZwfnfqXK/B4EQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3932.namprd12.prod.outlook.com (2603:10b6:5:1c1::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Wed, 20 Jan
- 2021 00:40:48 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.011; Wed, 20 Jan 2021
- 00:40:48 +0000
-Date:   Tue, 19 Jan 2021 20:40:46 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Doug Ledford <dledford@redhat.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Intel Corporation <e1000-rdma@lists.sourceforge.net>,
-        Leon Romanovsky <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Taehee Yoo <ap420073@gmail.com>
-Subject: Re: [PATCH 00/20] Rid W=1 warnings from Infinibad
-Message-ID: <20210120004046.GA1022538@nvidia.com>
-References: <20210118223929.512175-1-lee.jones@linaro.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210118223929.512175-1-lee.jones@linaro.org>
-X-ClientProxiedBy: BL1PR13CA0169.namprd13.prod.outlook.com
- (2603:10b6:208:2bd::24) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1730106AbhATCYA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Jan 2021 21:24:00 -0500
+Received: from mga17.intel.com ([192.55.52.151]:1924 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731437AbhATCVP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Jan 2021 21:21:15 -0500
+IronPort-SDR: +iEjr9p5Pc/SruQHfwhlhdIbb3TYb6a7wqhGcoSxAP/MHMJyuhq8IksABKbg6iVAJhhjAJchLv
+ bRWiEyLx2VDg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="158805844"
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
+   d="scan'208";a="158805844"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 18:19:26 -0800
+IronPort-SDR: KBaqGuVhwUADj+5zuhsRdrgXO822NRFc2xAMPmreV8fFKdt29AdMT+ihcegqFGqVdARj8VPH3z
+ 9AOyCLyrMLrw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
+   d="scan'208";a="466919841"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.28]) ([10.239.159.28])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Jan 2021 18:19:24 -0800
+Cc:     baolu.lu@linux.intel.com, Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>, logang@deltatee.com,
+        Christoph Hellwig <hch@lst.de>, murphyt7@tcd.ie
+Subject: Re: performance regression noted in v5.11-rc after c062db039f40
+To:     Chuck Lever <chuck.lever@oracle.com>
+References: <D81314ED-5673-44A6-B597-090E3CB83EB0@oracle.com>
+ <20210112143819.GA9689@willie-the-truck>
+ <607648D8-BF0C-40D6-9B43-2359F45EE74C@oracle.com>
+ <e83eed0d-82cd-c9be-cef1-5fe771de975f@arm.com>
+ <D6B45F88-08B7-41B5-AAD2-BFB374A42874@oracle.com>
+ <0f7c344a-00b6-72bc-5c39-c6cdc571211b@linux.intel.com>
+ <603D10B9-5089-4CC3-B940-5646881BBA89@oracle.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <1107f22e-c01e-0dbd-4286-3a264b36e4e4@linux.intel.com>
+Date:   Wed, 20 Jan 2021 10:11:12 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0169.namprd13.prod.outlook.com (2603:10b6:208:2bd::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.7 via Frontend Transport; Wed, 20 Jan 2021 00:40:47 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l21YE-004I1W-Kx; Tue, 19 Jan 2021 20:40:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611103253; bh=EpcKyjqLBVUUF0xXDaC2sM/qMgY3677qf4q7YDB8tL4=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=M2OCEUEUw1hDUtrIj/knE9JLDPTghT/n37iZCYJoFLm6oHa4ihwvWCXqrqTF+PNri
-         Zc4R7R5jF/q6QKkMa/NLArDNavXzy9ltdh01dinC3SDrFe6E60nMwvPQa4crcGzcZO
-         asV8AW5tbZKl76V6ON07UuTm6sIpvGEkL5Gq2cvPwqK6RuiagJ5/q4x7o0Bb92hVSC
-         87BhAjxwpUV0R2qzIMWhijWYllGVMxD3pIdgxJRBhHVptxUgGZbx7HbblwEJ61FAkA
-         ay8UVMjeTcK3ixWqtE+5pfmyM3HxGSbBDR6PZUN+KovJk6vTIOJMgPSBrXFVZNcixS
-         Z8CofXWquVQSQ==
+In-Reply-To: <603D10B9-5089-4CC3-B940-5646881BBA89@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 10:39:09PM +0000, Lee Jones wrote:
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
+On 1/19/21 10:37 PM, Chuck Lever wrote:
 > 
-> This is set 1 of either 2 or 3 sets required to fully clean-up.
 > 
-> Lee Jones (20):
->   RDMA/hw: i40iw_hmc: Fix misspellings of '*idx' args
->   RDMA/core: device: Fix formatting in worthy kernel-doc header and
->     demote another
->   RDMA/hw/i40iw/i40iw_ctrl: Fix a bunch of misspellings and formatting
->     issues
->   RDMA/hw/i40iw/i40iw_cm: Fix a bunch of function documentation issues
->   RDMA/core/cache: Fix some misspellings, missing and superfluous param
->     descriptions
->   RDMA/hw/i40iw/i40iw_hw: Provide description for 'ipv4', remove
->     'user_pri' and fix 'iwcq'
->   RDMA/hw/i40iw/i40iw_main: Rectify some kernel-doc misdemeanours
->   RDMA/core/roce_gid_mgmt: Fix misnaming of 'rdma_roce_rescan_device()'s
->     param 'ib_dev'
->   RDMA/hw/i40iw/i40iw_pble: Provide description for 'dev' and fix
->     formatting issues
->   RDMA/hw/i40iw/i40iw_puda: Fix some misspellings and provide missing
->     descriptions
->   RDMA/core/multicast: Provide description for
->     'ib_init_ah_from_mcmember()'s 'rec' param
->   RDMA/core/sa_query: Demote non-conformant kernel-doc header
->   RDMA/hw/i40iw/i40iw_uk: Clean-up some function documentation headers
->   RDMA/hw/i40iw/i40iw_virtchnl: Fix a bunch of kernel-doc issues
->   RDMA/hw/i40iw/i40iw_utils: Fix some misspellings and missing param
->     descriptions
->   RDMA/core/restrack: Fix kernel-doc formatting issue
->   RDMA/hw/i40iw/i40iw_verbs: Fix worthy function headers and demote some
->     others
->   RDMA/core/counters: Demote non-conformant kernel-doc headers
->   RDMA/core/iwpm_util: Fix some param description misspellings
->   RDMA/core/iwpm_msg: Add proper descriptions for 'skb' param
+>> On Jan 18, 2021, at 8:22 PM, Lu Baolu <baolu.lu@linux.intel.com> wrote:
+>>
+>> Do you mind posting the cap and ecap of the iommu used by your device?
+>>
+>> You can get it via sysfs, for example:
+>>
+>> /sys/bus/pci/devices/0000:00:14.0/iommu/intel-iommu# ls
+>> address  cap  domains_supported  domains_used  ecap  version
+> 
+> [root@manet intel-iommu]# lspci | grep Mellanox
+> 03:00.0 Network controller: Mellanox Technologies MT27520 Family [ConnectX-3 Pro]
+> [root@manet intel-iommu]# pwd
+> /sys/devices/pci0000:00/0000:00:03.0/0000:03:00.0/iommu/intel-iommu
+> [root@manet intel-iommu]# for i in *; do   echo -n $i ": ";   cat $i; done
+> address : c7ffc000
+> cap : d2078c106f0466
 
-Looks Ok, applied to for-next, thanks
+MGAW: 101111 (supporting 48-bit address width)
+SAGAW: 00100 (supporting 48-bit 4-level page table)
 
-Jason
+So the calculation of domain->domain.geometry.aperture_end is right.
+
+> domains_supported : 65536
+> domains_used : 62
+> ecap : f020de
+> version : 1:0
+> [root@manet intel-iommu]#
+> 
+> 
+>>> Fwiw, this system uses the Intel C612 chipset with Intel(R) Xeon(R)
+>>> E5-2603 v3 @ 1.60GHz CPUs.
+>>
+>> Can you please also hack a line of code to check the return value of
+>> iommu_dma_map_sg()?
+> 
+> diff --git a/net/sunrpc/xprtrdma/frwr_ops.c b/net/sunrpc/xprtrdma/frwr_ops.c
+> index baca49fe83af..e811562ead0e 100644
+> --- a/net/sunrpc/xprtrdma/frwr_ops.c
+> +++ b/net/sunrpc/xprtrdma/frwr_ops.c
+> @@ -328,6 +328,7 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt *r_xprt,
+>   
+>          dma_nents = ib_dma_map_sg(ep->re_id->device, mr->mr_sg, mr->mr_nents,
+>                                    mr->mr_dir);
+> +       trace_printk("ib_dma_map_sg(%d) returns %d\n", mr->mr_nents, dma_nents);
+>          if (!dma_nents)
+>                  goto out_dmamap_err;
+>          mr->mr_device = ep->re_id->device;
+> 
+> During the 256KB iozone test I used before, this trace log is generated:
+> 
+>     kworker/u28:3-1269  [000]   336.054743: bprint:               frwr_map: ib_dma_map_sg(30) returns 1
+>     kworker/u28:3-1269  [000]   336.054835: bprint:               frwr_map: ib_dma_map_sg(30) returns 1
+>     kworker/u28:3-1269  [000]   336.055022: bprint:               frwr_map: ib_dma_map_sg(4) returns 1
+>     kworker/u28:3-1269  [000]   336.055118: bprint:               frwr_map: ib_dma_map_sg(30) returns 1
+>     kworker/u28:3-1269  [000]   336.055312: bprint:               frwr_map: ib_dma_map_sg(30) returns 1
+>     kworker/u28:3-1269  [000]   336.055407: bprint:               frwr_map: ib_dma_map_sg(4) returns 1
+
+This is the result after commit c062db039f40, right? It also looks good
+to me. Are you using iotlb strict mode (intel_iommu=strict) or lazy mode
+(by default)?
+
+Best regards,
+baolu
