@@ -2,101 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2EF2FC5E4
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Jan 2021 01:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA4F2FC5FC
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Jan 2021 01:41:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728534AbhATAdQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Jan 2021 19:33:16 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:8914 "EHLO
+        id S1729934AbhATAlf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Jan 2021 19:41:35 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9426 "EHLO
         hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbhATAdF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jan 2021 19:33:05 -0500
+        with ESMTP id S1729850AbhATAle (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Jan 2021 19:41:34 -0500
 Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60077a180006>; Tue, 19 Jan 2021 16:32:24 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 Jan
- 2021 00:32:23 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.175)
+        id <B60077c150001>; Tue, 19 Jan 2021 16:40:53 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 Jan
+ 2021 00:40:51 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
  by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 20 Jan 2021 00:32:23 +0000
+ 15.0.1473.3 via Frontend Transport; Wed, 20 Jan 2021 00:40:50 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hLvy9RnyXLjfLSibq0rp0u6N72PYytxFqayRy4CaunpuKcXY4FECKp6Di1g7J7KCKjueAfaQr0suDKncDJs1R1sJZ4aGWX058KnPdH9OzJYBlL2UOnLtzE6GeEJfq9zynb6s1w8IZBhIGTnYrK8MmTJ8u9lEfDUYKggbt008o2UmrbF7P7avwPEW6ni9h+6kzgL8lHmoYscoKm7PAYedFJy6A4uCRj3Z/7/YeuxMGeEnUtkmClVy9XqABOAwNz7HnE2iuEFyOQLrNOh2XiMbPoYxyntY1zLiYKFhIcFnJu0uq4JgzWc8P2m3TwhcsroFAcbCbqP9NXn8+mhNk2ph1A==
+ b=VkD98D2g4B5Fh0juZxGAktnjnbZQS5pliyVbntxYCOVhXraYgNLZIZSDLINxNbGYo2pwYVIrI+o6j1qDiiVSaagGkbJ0fqd/1Uqu/oI6i2Y7EvPQJLJ8ASlrIYp8DyOtOFwOziAt7/S7lPNEaiwCXfBhVT+s9oBW95KZKTgyqFdcbA3bJWSz//GRzdejc1dK2cjnwhx0biZG7rh4DtFwvb81vswbW1LJKmHrpjnGsekdDUkr1a3BZlYCM0SXrm28kFYkrOJ6d/L3jRp0XmGpueBFkFqEcovhRFP/KFJxmSNldUCpm4EeSb68yPjmSWAQSs+pr4HYa42IZ4mEd6TVBg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2FDQpZqc6k44lNzc+h2+vFJGEthCb/krNZCTKdaS2YA=;
- b=GMbUB71jhgMVVA/evo2Yjj8oa6tjNy67M82hLrmUUwjW/PjpPCx2VZ5bBwfLu+rU0K+WnMwDe2NaTebfeEMddbx6jc3a+AlJgVJab8YQ8fTcWDQnHjyWCXpXBWHcMMbsEpTPewN5dErZqfXP5efxsgFt8/IJt0iWY1EQN1JqwYKXL61yLFOHdrOXESrAMLJVL4mUzr7p7H82ilCCDlqveYK9/sGqXhqxLo6Vv7yIpzuFFjekME2PGwgnIH8x/g+VRGtBK3TTMcIw/leFtuC5tSKj/D0sKGVhz/iU3PNQdjXRhUABWH+I+iZhlTmnvrJzZdl7tOdJWfUfrkMqQl7R7A==
+ bh=EpcKyjqLBVUUF0xXDaC2sM/qMgY3677qf4q7YDB8tL4=;
+ b=dC+Lnu1huRjY6//go2O9cKt4VPrT7jBxqECqHTTstMeh45ZXBCU9g2/nTCAr3ekdHcf3mGZoJMFEgPU0lmgVydjD9eQ+L1SVGLdQc11NRGYnaY46H6gv7J8ZEWZHqAmWzPcwZHWLYr9WUEdEuZ3DbnrbcmaLxsx2kCtUhgiFOlHrbNR8UXGnk+QWQn9XrP1GaP1bNNxRKPzgcfiqQQluCcL8FroBc48fgBGOXAGK/LjEfzeTpxYz8mbrpVQt/6c/2pop4crSWIGp0ku2dAH5Bm+NT1bc9BfejnDp+eWRRDgM11LewwwZTHsWkgFQ7/mxVJFYRrikVZwfnfqXK/B4EQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0105.namprd12.prod.outlook.com (2603:10b6:4:54::23) with
+ by DM6PR12MB3932.namprd12.prod.outlook.com (2603:10b6:5:1c1::24) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.14; Wed, 20 Jan
- 2021 00:32:22 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Wed, 20 Jan
+ 2021 00:40:48 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.011; Wed, 20 Jan 2021
- 00:32:21 +0000
-Date:   Tue, 19 Jan 2021 20:32:19 -0400
+ 00:40:48 +0000
+Date:   Tue, 19 Jan 2021 20:40:46 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Joe Perches <joe@perches.com>
-CC:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        "Christian Benvenuti" <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        "Doug Ledford" <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, Greg KH <greg@kroah.com>
-Subject: Re: [PATCH V2] RDMA: usnic: Fix misuse of sysfs_emit_at
-Message-ID: <20210120003219.GA968146@nvidia.com>
-References: <f4ce30f297be4678634b5be4917401767ee6ebc5.camel@perches.com>
- <6af0a6562b67a24e6233ed360189ba8071243035.camel@HansenPartnership.com>
- <5eb794b9c9bca0494d94b2b209f1627fa4e7b555.camel@perches.com>
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Intel Corporation <e1000-rdma@lists.sourceforge.net>,
+        Leon Romanovsky <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Taehee Yoo <ap420073@gmail.com>
+Subject: Re: [PATCH 00/20] Rid W=1 warnings from Infinibad
+Message-ID: <20210120004046.GA1022538@nvidia.com>
+References: <20210118223929.512175-1-lee.jones@linaro.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <5eb794b9c9bca0494d94b2b209f1627fa4e7b555.camel@perches.com>
-X-ClientProxiedBy: BL0PR02CA0126.namprd02.prod.outlook.com
- (2603:10b6:208:35::31) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <20210118223929.512175-1-lee.jones@linaro.org>
+X-ClientProxiedBy: BL1PR13CA0169.namprd13.prod.outlook.com
+ (2603:10b6:208:2bd::24) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR02CA0126.namprd02.prod.outlook.com (2603:10b6:208:35::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10 via Frontend Transport; Wed, 20 Jan 2021 00:32:20 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l21Q3-0043ry-6V; Tue, 19 Jan 2021 20:32:19 -0400
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0169.namprd13.prod.outlook.com (2603:10b6:208:2bd::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.7 via Frontend Transport; Wed, 20 Jan 2021 00:40:47 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l21YE-004I1W-Kx; Tue, 19 Jan 2021 20:40:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611102745; bh=2FDQpZqc6k44lNzc+h2+vFJGEthCb/krNZCTKdaS2YA=;
+        t=1611103253; bh=EpcKyjqLBVUUF0xXDaC2sM/qMgY3677qf4q7YDB8tL4=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=QXvV6ai49oGDuQ2iBFy/DpBgnCKV35azmmrXOPOHV2BaSeaq5rt2ZUDndaYTaFXmS
-         Bzv3wUFZoilYpQpUrUPPQeEFIiknH3Ct/IuD63XXw1oyd40uZfjt2DMzGbigzc5w/E
-         Ml5TNUNShEncr+QKisUrYrtis3wZAI+2gLLoWjS88iC8fSVKPnmV7nnYfL+wUg4yXF
-         6ff3zMZ+wue0jGsVk29uq3lvVwjUZOpSx0+UyovsDcb0K61uqN8F1uj3zsJdkpz1c1
-         sOUwiAycmhNWmC/LiNFZLTSc8cAFySh3WqA9ba0fcxxB9MhlB4YP884a8EOBjJGaXF
-         As/VBGMRZMVgg==
+        b=M2OCEUEUw1hDUtrIj/knE9JLDPTghT/n37iZCYJoFLm6oHa4ihwvWCXqrqTF+PNri
+         Zc4R7R5jF/q6QKkMa/NLArDNavXzy9ltdh01dinC3SDrFe6E60nMwvPQa4crcGzcZO
+         asV8AW5tbZKl76V6ON07UuTm6sIpvGEkL5Gq2cvPwqK6RuiagJ5/q4x7o0Bb92hVSC
+         87BhAjxwpUV0R2qzIMWhijWYllGVMxD3pIdgxJRBhHVptxUgGZbx7HbblwEJ61FAkA
+         ay8UVMjeTcK3ixWqtE+5pfmyM3HxGSbBDR6PZUN+KovJk6vTIOJMgPSBrXFVZNcixS
+         Z8CofXWquVQSQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 04:36:50PM -0800, Joe Perches wrote:
-> In commit e28bf1f03b01 ("RDMA: Convert various random sprintf sysfs _show
-> uses to sysfs_emit") I mistakenly used len = sysfs_emit_at to overwrite
-> the last trailing space of potentially multiple entry output.
+On Mon, Jan 18, 2021 at 10:39:09PM +0000, Lee Jones wrote:
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
 > 
-> Instead use a more common style by removing the trailing space from the
-> output formats and adding a prefixing space to the contination formats and
-> converting the final terminating output newline from the defective
-> 	len = sysfs_emit_at(buf, len, "\n");
-> to the now appropriate and typical
-> 	len += sysfs_emit_at(buf, len, "\n");
+> This is set 1 of either 2 or 3 sets required to fully clean-up.
 > 
-> Fixes: e28bf1f03b01 ("RDMA: Convert various random sprintf sysfs _show uses to sysfs_emit")
-> 
-> Reported-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
->  drivers/infiniband/hw/usnic/usnic_ib_sysfs.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
+> Lee Jones (20):
+>   RDMA/hw: i40iw_hmc: Fix misspellings of '*idx' args
+>   RDMA/core: device: Fix formatting in worthy kernel-doc header and
+>     demote another
+>   RDMA/hw/i40iw/i40iw_ctrl: Fix a bunch of misspellings and formatting
+>     issues
+>   RDMA/hw/i40iw/i40iw_cm: Fix a bunch of function documentation issues
+>   RDMA/core/cache: Fix some misspellings, missing and superfluous param
+>     descriptions
+>   RDMA/hw/i40iw/i40iw_hw: Provide description for 'ipv4', remove
+>     'user_pri' and fix 'iwcq'
+>   RDMA/hw/i40iw/i40iw_main: Rectify some kernel-doc misdemeanours
+>   RDMA/core/roce_gid_mgmt: Fix misnaming of 'rdma_roce_rescan_device()'s
+>     param 'ib_dev'
+>   RDMA/hw/i40iw/i40iw_pble: Provide description for 'dev' and fix
+>     formatting issues
+>   RDMA/hw/i40iw/i40iw_puda: Fix some misspellings and provide missing
+>     descriptions
+>   RDMA/core/multicast: Provide description for
+>     'ib_init_ah_from_mcmember()'s 'rec' param
+>   RDMA/core/sa_query: Demote non-conformant kernel-doc header
+>   RDMA/hw/i40iw/i40iw_uk: Clean-up some function documentation headers
+>   RDMA/hw/i40iw/i40iw_virtchnl: Fix a bunch of kernel-doc issues
+>   RDMA/hw/i40iw/i40iw_utils: Fix some misspellings and missing param
+>     descriptions
+>   RDMA/core/restrack: Fix kernel-doc formatting issue
+>   RDMA/hw/i40iw/i40iw_verbs: Fix worthy function headers and demote some
+>     others
+>   RDMA/core/counters: Demote non-conformant kernel-doc headers
+>   RDMA/core/iwpm_util: Fix some param description misspellings
+>   RDMA/core/iwpm_msg: Add proper descriptions for 'skb' param
 
-Applied to for-rc, thanks
+Looks Ok, applied to for-next, thanks
 
 Jason
