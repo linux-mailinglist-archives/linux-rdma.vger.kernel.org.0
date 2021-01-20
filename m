@@ -2,116 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369C72FCAC6
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Jan 2021 06:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B79C2FCC9B
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Jan 2021 09:22:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbhATFhH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Jan 2021 00:37:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
+        id S1729180AbhATIUD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Jan 2021 03:20:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbhATFef (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Jan 2021 00:34:35 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 167DBC061575
-        for <linux-rdma@vger.kernel.org>; Tue, 19 Jan 2021 21:33:55 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id o11so22307521ote.4
-        for <linux-rdma@vger.kernel.org>; Tue, 19 Jan 2021 21:33:55 -0800 (PST)
+        with ESMTP id S1728996AbhATIBr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Jan 2021 03:01:47 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075ABC061575
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Jan 2021 00:01:02 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id q7so195143wre.13
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Jan 2021 00:01:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=bfE625taTNIabYcxrauV/zKrngHJnfxvyXwAYf/bO7g=;
-        b=Hs+Lv44SNv69MXFA7WxMaj/n2WHrQc19lUWqR9nDDBqelSvB3xh9W9PmYUN9MBZwaL
-         8oHME3Gz47opngLOVGv2JgiSHLrTkDYQhrlR3wXbrdI5zoZ8/1HJW9hzxQ8jVTo/L9nr
-         wi574s92R3tc3pg+ocOItlPIx2qAk4uW6nxKa797PAXjKq/l9N/YHYadTEZK/9Q7Fknk
-         JlK4hUlcYzmDaK2+DZd4Yhr7M/y2WEh9s+ydLa0noSQFblhWSnautydGFMtYqFPJa16s
-         x3gBHrs9kkB/VSHmLPKtGR+YdAFRKd9IjrQCpeZzNkMg3wnvT1CPCgtbLNbx44ugnzqX
-         GMpA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=XIKOfdQ39sGdLT3c6gVEbQNxQnjkeYmR/4PVU+oFEnc=;
+        b=sCYGfWzoNVu8KtENM5iDui+OEStVFvELcOSAZgVmUnzeok+qZ8fnFzMZ3sAt/P5Oba
+         e4RhGsXhfWMKRiq0hjgZ/LDIYxuNrJieoznYirdI7l6SHEdfpQ06J/Tzq/wisXzJbiwN
+         bVJRKmM37foNRY/4GHERf8gvgxN8O2UImScxlwakHZeSlOsrfyss9ZkGXwGtZLHASy+C
+         lROJedl6r4hYLInXTsgZ7g1st+iB400AE9Ffn9DGkbhSUBDxJOXhJAWEchY1FkVs360I
+         l2qBGizxkFQxEBxdE5EH5QvXByeCHd+S+iBRUZF1XD8VMqMO2+HJbPGV+oMKzakWA2TR
+         gnQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=bfE625taTNIabYcxrauV/zKrngHJnfxvyXwAYf/bO7g=;
-        b=I3JAOHwJzYrt9OKCKEw5Um7ymRYJgg42qz0ADnUYK+SPrQHfyNBM7++Gtj4N0G5ztH
-         q8Gb3o4/kNuz3HRV1QFLJd/M6FzxFjLv1ER/9s6xAUAl1zIuXBVXpFE0lpTNL+fd5N77
-         4KNBMMlkRmXxPlP8nBCfcUI6oBXICbDbKnpeAXxmibbTDDX4/VELbAahS6DV/qVv/vu1
-         4lq4akOtoKUMmv70Z/DPSSx15N7YbU5HyHEFyLnFaJeigvKUE7Z7yy5vtbBUTTAfccZb
-         //AMWjKSZrB6LITXLDfQ7HNSdG8++AjOWWT7X+gGtDD6xIKfe+6osyKfR1+NnNLT5/9v
-         k7sg==
-X-Gm-Message-State: AOAM530K//J6YD+AYfPjlU5oYobNU3MRIwXKUMFkg/5LcIOI5yIFy4lM
-        NEputsnyRrcidHjcE2NqO2PUO2/3MZDmcxeQ2cI=
-X-Google-Smtp-Source: ABdhPJxNMsz68dAdWwDDjaY/v91ffIG5Dhd6+QxXE+1ZcPHu2AQjIFXbuSZ7lDfjtSUcU5LIO0PC9ZlEZM3sELXynL4=
-X-Received: by 2002:a9d:3e2:: with SMTP id f89mr5951600otf.278.1611120834545;
- Tue, 19 Jan 2021 21:33:54 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XIKOfdQ39sGdLT3c6gVEbQNxQnjkeYmR/4PVU+oFEnc=;
+        b=WknAT/UAnGMzp4Kyl0FxK+KgR1uC59bjmnRFjNE7wfu5MgcQHlT0wEY/V7eY7OSmKo
+         xclBZ+UzeYEaW7uxtBNfiuSZRFNJBWbEVLcePcCxhvEDJcNBUjlKu5S9mgEfQJTwxaZS
+         U8rurslxCnYQWcgyJ7y+hr3Ef4tCyJkscUOvimTs3fXAdmelg02FgXc7xAdyrLm8r2Cl
+         hbHk86LfT4XNFi/1+7vwrZJINaQQtZIJGVlNUhfnG8i4Nv12IJzwd7yfk6hJ6BDCS9Dj
+         YnmrlzbhPdG6Snsv1NsWzxVU8/awOQvunvEae+LTrJvCoEScycSmcpBJRUudktIq83wf
+         Eg1Q==
+X-Gm-Message-State: AOAM5311ooiAgfgNDaqr5nj45zz+uu0ZLb36A7QxnZg6QsRBVPljhYu4
+        NHHUoppSkhjZxMCt+PzgHTv1bA==
+X-Google-Smtp-Source: ABdhPJyDym/bNUT6yBQUvaB9v6KUo2LO5JOEREhjvHPqEJz0wGuXCnI7RAtQTBczYi9YiPZEurxeIg==
+X-Received: by 2002:a5d:40d2:: with SMTP id b18mr7677245wrq.369.1611129660723;
+        Wed, 20 Jan 2021 00:01:00 -0800 (PST)
+Received: from dell ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id i18sm2469692wrp.74.2021.01.20.00.00.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 00:00:59 -0800 (PST)
+Date:   Wed, 20 Jan 2021 08:00:58 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Intel Corporation <e1000-rdma@lists.sourceforge.net>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Taehee Yoo <ap420073@gmail.com>
+Subject: Re: [PATCH 00/20] Rid W=1 warnings from Infinibad
+Message-ID: <20210120080058.GK4903@dell>
+References: <20210118223929.512175-1-lee.jones@linaro.org>
+ <20210120004046.GA1022538@nvidia.com>
 MIME-Version: 1.0
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Wed, 20 Jan 2021 13:33:43 +0800
-Message-ID: <CAD=hENfPfgZpcs+JER9qijyo-D16n1X0q2oPqF-qo88GLkkBXw@mail.gmail.com>
-Subject: Revert "RDMA/rxe: Remove VLAN code leftovers from RXE"
-To:     mwilck@suse.com, Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leon@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210120004046.GA1022538@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 2021-01-19 at 20:10 +0800, Zhu Yanjun wrote:
-> On Tue, Jan 19, 2021 at 6:57 PM <mwilck@suse.com> wrote:
-> >
-> > From: Martin Wilck <mwilck@suse.com>
-> >
-> > This reverts commit b2d2440430c0fdd5e0cad3efd6d1c9e3d3d02e5b.
-> >
-> > It's true that creating rxe on top of 802.1q interfaces doesn't
-> > work.
-> > Thus, commit fd49ddaf7e26 ("RDMA/rxe: prevent rxe creation on top
-> > of vlan interface")
-> > was absolutely correct.
-> >
-> > But b2d2440430c0 was incorrect assuming that with this change,
-> > RDMA and VLAN don't work togehter at all. It just has to be
-> > set up differently. Rather than creating rxe on top of the VLAN
-> > interface, rxe must be created on top of the physical interface.
-> > RDMA then works just fine through VLAN interfaces on top of that
-> > physical interface, via the "upper device" logic.
->
-> I read this commit log for several times. I can not get you.
-> Can you show me by an example?
+On Tue, 19 Jan 2021, Jason Gunthorpe wrote:
 
-> My test scenario which is broken by your patch uses a script that does
-> roughly the following:
+> On Mon, Jan 18, 2021 at 10:39:09PM +0000, Lee Jones wrote:
+> > This set is part of a larger effort attempting to clean-up W=1
+> > kernel builds, which are currently overwhelmingly riddled with
+> > niggly little warnings.
+> > 
+> > This is set 1 of either 2 or 3 sets required to fully clean-up.
+> > 
+> > Lee Jones (20):
+> >   RDMA/hw: i40iw_hmc: Fix misspellings of '*idx' args
+> >   RDMA/core: device: Fix formatting in worthy kernel-doc header and
+> >     demote another
+> >   RDMA/hw/i40iw/i40iw_ctrl: Fix a bunch of misspellings and formatting
+> >     issues
+> >   RDMA/hw/i40iw/i40iw_cm: Fix a bunch of function documentation issues
+> >   RDMA/core/cache: Fix some misspellings, missing and superfluous param
+> >     descriptions
+> >   RDMA/hw/i40iw/i40iw_hw: Provide description for 'ipv4', remove
+> >     'user_pri' and fix 'iwcq'
+> >   RDMA/hw/i40iw/i40iw_main: Rectify some kernel-doc misdemeanours
+> >   RDMA/core/roce_gid_mgmt: Fix misnaming of 'rdma_roce_rescan_device()'s
+> >     param 'ib_dev'
+> >   RDMA/hw/i40iw/i40iw_pble: Provide description for 'dev' and fix
+> >     formatting issues
+> >   RDMA/hw/i40iw/i40iw_puda: Fix some misspellings and provide missing
+> >     descriptions
+> >   RDMA/core/multicast: Provide description for
+> >     'ib_init_ah_from_mcmember()'s 'rec' param
+> >   RDMA/core/sa_query: Demote non-conformant kernel-doc header
+> >   RDMA/hw/i40iw/i40iw_uk: Clean-up some function documentation headers
+> >   RDMA/hw/i40iw/i40iw_virtchnl: Fix a bunch of kernel-doc issues
+> >   RDMA/hw/i40iw/i40iw_utils: Fix some misspellings and missing param
+> >     descriptions
+> >   RDMA/core/restrack: Fix kernel-doc formatting issue
+> >   RDMA/hw/i40iw/i40iw_verbs: Fix worthy function headers and demote some
+> >     others
+> >   RDMA/core/counters: Demote non-conformant kernel-doc headers
+> >   RDMA/core/iwpm_util: Fix some param description misspellings
+> >   RDMA/core/iwpm_msg: Add proper descriptions for 'skb' param
+> 
+> Looks Ok, applied to for-next, thanks
 
-> # (set up eth0)
-> rdma link add rxe_eth0 type rxe netdev eth0
-> ip link add link eth0 name eth0.10 type vlan id 10
-> ip link set eth0.10 up
-> ip addr add 192.168.10.102/24 dev eth0.10
+Thanks Jason, much obliged.
 
-Thanks a lot.
-It seems that the vlan SKBs also enter RXE.
+I'll get the other set out in the next few days.
 
-There are 3 hunks in the commit b2d2440430c0("RDMA/rxe: Remove VLAN
-code leftovers from RXE").
+Hopefully we can have Infiniband cleaned-up by the end of this cycle.
 
-Can you make more research to find out which hunk causes this problem?
-
-From Jason, vlan is not supported now.
-If you want to make more work, the link
-https://www.spinics.net/lists/linux-rdma/msg94737.html can give some
-tips.
-
-good luck.
-
-Zhu Yanjun
-
-> nvme discover -t rdma -a 192.168.10.101 -s 4420
-
-
-
-> 192.168.10.101 is another host that configures the network
-> and rxe the same way, and has some nvmet targets.
-
->  => fails with your patch applied, works otherwise.
-
-
-> Regards,
-> Martin
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
