@@ -2,119 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BACEE2FC7C0
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Jan 2021 03:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFFF82FC8E3
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Jan 2021 04:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730106AbhATCYA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Jan 2021 21:24:00 -0500
-Received: from mga17.intel.com ([192.55.52.151]:1924 "EHLO mga17.intel.com"
+        id S1726023AbhATD21 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Jan 2021 22:28:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731437AbhATCVP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 19 Jan 2021 21:21:15 -0500
-IronPort-SDR: +iEjr9p5Pc/SruQHfwhlhdIbb3TYb6a7wqhGcoSxAP/MHMJyuhq8IksABKbg6iVAJhhjAJchLv
- bRWiEyLx2VDg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="158805844"
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="158805844"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2021 18:19:26 -0800
-IronPort-SDR: KBaqGuVhwUADj+5zuhsRdrgXO822NRFc2xAMPmreV8fFKdt29AdMT+ihcegqFGqVdARj8VPH3z
- 9AOyCLyrMLrw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; 
-   d="scan'208";a="466919841"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.28]) ([10.239.159.28])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Jan 2021 18:19:24 -0800
-Cc:     baolu.lu@linux.intel.com, Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>, logang@deltatee.com,
-        Christoph Hellwig <hch@lst.de>, murphyt7@tcd.ie
-Subject: Re: performance regression noted in v5.11-rc after c062db039f40
-To:     Chuck Lever <chuck.lever@oracle.com>
-References: <D81314ED-5673-44A6-B597-090E3CB83EB0@oracle.com>
- <20210112143819.GA9689@willie-the-truck>
- <607648D8-BF0C-40D6-9B43-2359F45EE74C@oracle.com>
- <e83eed0d-82cd-c9be-cef1-5fe771de975f@arm.com>
- <D6B45F88-08B7-41B5-AAD2-BFB374A42874@oracle.com>
- <0f7c344a-00b6-72bc-5c39-c6cdc571211b@linux.intel.com>
- <603D10B9-5089-4CC3-B940-5646881BBA89@oracle.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <1107f22e-c01e-0dbd-4286-3a264b36e4e4@linux.intel.com>
-Date:   Wed, 20 Jan 2021 10:11:12 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730611AbhATD2W (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Jan 2021 22:28:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 228F3207CF;
+        Wed, 20 Jan 2021 03:27:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611113261;
+        bh=qwEcfH8ALpqHY4QLfXxIVBaWUbQ0T6hlJaiVM7mRZdU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VyN5nSoXEFapU3Jg30vfsvoVbFxqnjgMOSPghyhGOoJxvWb1QZwmYkiRY4qKK7EHL
+         kgsnI89IxEpOR1vadSvmo54StSfs2IK9WhOQkNMGEHj7oPhVe1RezCxh4ogl3vIZi0
+         n8cVI2LfrHpGToBy5JUupb8i6/uJIzez5MIWMqK3h09EXLMpfBYW0qp2zk7gKP3OlQ
+         g+XcwK5PwrujswPdKhFLy55BCDzdSD7p5cw5/MdWvk4gd/GQswywHkvfJ+KHA9FxfH
+         66Wh3Lkna+5CB6irWR2hEs91EvxE7fK9f+rcoyG2tQAQdHz7LzNzZ9pE4lJkKTddpM
+         SNqluNAMET8gw==
+Date:   Tue, 19 Jan 2021 19:27:39 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Saeed Mahameed <saeed@kernel.org>, Parav Pandit <parav@nvidia.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jason Gunthorpe <jgg@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Vu Pham <vuhuong@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [net-next V7 03/14] devlink: Support add and delete devlink
+ port
+Message-ID: <20210119192739.0b3d8cf4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210118201231.363126-4-saeed@kernel.org>
+References: <20210118201231.363126-1-saeed@kernel.org>
+        <20210118201231.363126-4-saeed@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <603D10B9-5089-4CC3-B940-5646881BBA89@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/19/21 10:37 PM, Chuck Lever wrote:
-> 
-> 
->> On Jan 18, 2021, at 8:22 PM, Lu Baolu <baolu.lu@linux.intel.com> wrote:
->>
->> Do you mind posting the cap and ecap of the iommu used by your device?
->>
->> You can get it via sysfs, for example:
->>
->> /sys/bus/pci/devices/0000:00:14.0/iommu/intel-iommu# ls
->> address  cap  domains_supported  domains_used  ecap  version
-> 
-> [root@manet intel-iommu]# lspci | grep Mellanox
-> 03:00.0 Network controller: Mellanox Technologies MT27520 Family [ConnectX-3 Pro]
-> [root@manet intel-iommu]# pwd
-> /sys/devices/pci0000:00/0000:00:03.0/0000:03:00.0/iommu/intel-iommu
-> [root@manet intel-iommu]# for i in *; do   echo -n $i ": ";   cat $i; done
-> address : c7ffc000
-> cap : d2078c106f0466
+On Mon, 18 Jan 2021 12:12:20 -0800 Saeed Mahameed wrote:
+> From: Parav Pandit <parav@nvidia.com>
 
-MGAW: 101111 (supporting 48-bit address width)
-SAGAW: 00100 (supporting 48-bit 4-level page table)
+Saeed, this is closed to being merged - when you post the next version
+please make sure to CC appropriate folks, in particular anyone who ever
+commented on previous versions. Alex, DSA, Edwin, at a quick look but
+maybe more.
 
-So the calculation of domain->domain.geometry.aperture_end is right.
+> @@ -1362,6 +1373,33 @@ struct devlink_ops {
+>  	int (*port_function_hw_addr_set)(struct devlink *devlink, struct devlink_port *port,
+>  					 const u8 *hw_addr, int hw_addr_len,
+>  					 struct netlink_ext_ack *extack);
+> +	/**
+> +	 * @port_new: Port add function.
+> +	 *
+> +	 * Should be used by device driver to let caller add new port of a
+> +	 * specified flavour with optional attributes.
 
-> domains_supported : 65536
-> domains_used : 62
-> ecap : f020de
-> version : 1:0
-> [root@manet intel-iommu]#
-> 
-> 
->>> Fwiw, this system uses the Intel C612 chipset with Intel(R) Xeon(R)
->>> E5-2603 v3 @ 1.60GHz CPUs.
->>
->> Can you please also hack a line of code to check the return value of
->> iommu_dma_map_sg()?
-> 
-> diff --git a/net/sunrpc/xprtrdma/frwr_ops.c b/net/sunrpc/xprtrdma/frwr_ops.c
-> index baca49fe83af..e811562ead0e 100644
-> --- a/net/sunrpc/xprtrdma/frwr_ops.c
-> +++ b/net/sunrpc/xprtrdma/frwr_ops.c
-> @@ -328,6 +328,7 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt *r_xprt,
->   
->          dma_nents = ib_dma_map_sg(ep->re_id->device, mr->mr_sg, mr->mr_nents,
->                                    mr->mr_dir);
-> +       trace_printk("ib_dma_map_sg(%d) returns %d\n", mr->mr_nents, dma_nents);
->          if (!dma_nents)
->                  goto out_dmamap_err;
->          mr->mr_device = ep->re_id->device;
-> 
-> During the 256KB iozone test I used before, this trace log is generated:
-> 
->     kworker/u28:3-1269  [000]   336.054743: bprint:               frwr_map: ib_dma_map_sg(30) returns 1
->     kworker/u28:3-1269  [000]   336.054835: bprint:               frwr_map: ib_dma_map_sg(30) returns 1
->     kworker/u28:3-1269  [000]   336.055022: bprint:               frwr_map: ib_dma_map_sg(4) returns 1
->     kworker/u28:3-1269  [000]   336.055118: bprint:               frwr_map: ib_dma_map_sg(30) returns 1
->     kworker/u28:3-1269  [000]   336.055312: bprint:               frwr_map: ib_dma_map_sg(30) returns 1
->     kworker/u28:3-1269  [000]   336.055407: bprint:               frwr_map: ib_dma_map_sg(4) returns 1
+I think you missed my suggestion from v5, please replace this sentence
+with:
 
-This is the result after commit c062db039f40, right? It also looks good
-to me. Are you using iotlb strict mode (intel_iommu=strict) or lazy mode
-(by default)?
+	Add a new port of a specified flavor with optional attributes.
 
-Best regards,
-baolu
+Saying that the callback is used by the callee doesn't sound right.
+
+Same below, and also in patch 4.
+
+> +	 * Driver must return -EOPNOTSUPP if it doesn't support port addition
+> +	 * of a specified flavour or specified attributes. Driver should set
+> +	 * extack error message in case of failure. Driver callback is called
+> +	 * without holding the devlink instance lock. Driver must ensure
+> +	 * synchronization when adding or deleting a port. Driver must register
+> +	 * a port with devlink core.
+> +	 */
+> +	int (*port_new)(struct devlink *devlink,
+> +			const struct devlink_port_new_attrs *attrs,
+> +			struct netlink_ext_ack *extack,
+> +			unsigned int *new_port_index);
+> +	/**
+> +	 * @port_del: Port delete function.
+> +	 *
+> +	 * Should be used by device driver to let caller delete port which was
+> +	 * previously created using port_new() callback.
+
+ditto
+
+> +	 * Driver must return -EOPNOTSUPP if it doesn't support port deletion.
+> +	 * Driver should set extack error message in case of failure. Driver
+> +	 * callback is called without holding the devlink instance lock.
+> +	 */
+> +	int (*port_del)(struct devlink *devlink, unsigned int port_index,
+> +			struct netlink_ext_ack *extack);
+>  };
