@@ -2,136 +2,225 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880B32FD392
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Jan 2021 16:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E612FD3BB
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Jan 2021 16:19:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730446AbhATPKf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Jan 2021 10:10:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58020 "EHLO mx2.suse.de"
+        id S1732705AbhATPRo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Jan 2021 10:17:44 -0500
+Received: from mga06.intel.com ([134.134.136.31]:1679 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390970AbhATPFc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:05:32 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611155085; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BH6TNKHuW4gWUAVHtIkPg0PU0n7C2AiGMfwxIRrqI/s=;
-        b=bk6uUIp4tttavYgnV2trr6CIlel0wEALUqNeqq9Io4Z2Hf1J6raZ+U5o4D82TFXwsMoxQ9
-        esRsDedzgAKaIKav7XSxz+IOk/hj9HxvBtyAM9jbE9wRstpGmYzqpAvIDEmbJan2W7F9RP
-        UYJntqmaclLaT0gkZtm0jCxYAC/aaRc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 635ADAC85;
-        Wed, 20 Jan 2021 15:04:45 +0000 (UTC)
-Message-ID: <3c3c52c5a19beb1a22c0b51af8fd14297187e82c.camel@suse.com>
-Subject: Re: Revert "RDMA/rxe: Remove VLAN code leftovers from RXE"
-From:   Martin Wilck <mwilck@suse.com>
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Mohammad Heib <goody698@gmail.com>
-Date:   Wed, 20 Jan 2021 16:04:44 +0100
-In-Reply-To: <CAD=hENfCoW9pqM3ACWyLaZhw9NhRr-yJz6LLqbwW2psz_SuWHw@mail.gmail.com>
-References: <CAD=hENfPfgZpcs+JER9qijyo-D16n1X0q2oPqF-qo88GLkkBXw@mail.gmail.com>
-         <411ad58698ea4fe8a6b80758de0039e98ba6a316.camel@suse.com>
-         <CAD=hENfCoW9pqM3ACWyLaZhw9NhRr-yJz6LLqbwW2psz_SuWHw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.38.2 
+        id S2390429AbhATPRc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 20 Jan 2021 10:17:32 -0500
+IronPort-SDR: Pt+lWrt2vsD92BGK0PsKu3TlThmSKHD7pxgRyUbHV6d78NxAmYXrBJgxN4ol6fmt9gnbkcKAIK
+ CovOapSV0bzA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="240658937"
+X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
+   d="scan'208";a="240658937"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 07:16:22 -0800
+IronPort-SDR: unr0Imr3+vG7dhDoVNWyeNley+ZFlcXSngM8z7otfOegy/fc6Agbp44Uk11w3gEy+r4agbBm2u
+ AHEMCwU0KXPw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
+   d="scan'208";a="501630022"
+Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 20 Jan 2021 07:16:21 -0800
+Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l2FDY-0005ra-PY; Wed, 20 Jan 2021 15:16:20 +0000
+Date:   Wed, 20 Jan 2021 23:15:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ abfa456555f4c2bde191cf12064168a05a2865a1
+Message-ID: <60084923.9kL7jnFgh4WSI6/D%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 2021-01-20 at 22:44 +0800, Zhu Yanjun wrote:
-> On Wed, Jan 20, 2021 at 10:30 PM Martin Wilck <mwilck@suse.com>
-> wrote:
-> > 
-> > On Wed, 2021-01-20 at 13:33 +0800, Zhu Yanjun wrote:
-> > > On Tue, 2021-01-19 at 20:10 +0800, Zhu Yanjun wrote:
-> > > > On Tue, Jan 19, 2021 at 6:57 PM <mwilck@suse.com> wrote:
-> > > > 
-> > > 
-> > > > My test scenario which is broken by your patch uses a script
-> > > > that
-> > > > does
-> > > > roughly the following:
-> > > 
-> > > > # (set up eth0)
-> > > > rdma link add rxe_eth0 type rxe netdev eth0
-> > > > ip link add link eth0 name eth0.10 type vlan id 10
-> > > > ip link set eth0.10 up
-> > > > ip addr add 192.168.10.102/24 dev eth0.10
-> > > 
-> > > Thanks a lot.
-> > > It seems that the vlan SKBs also enter RXE.
-> > > 
-> > > There are 3 hunks in the commit b2d2440430c0("RDMA/rxe: Remove
-> > > VLAN
-> > > code leftovers from RXE").
-> > > 
-> > > Can you make more research to find out which hunk causes this
-> > > problem?
-> > 
-> > I'm positive they all need to be reverted. It's not much code
-> > altogether that is removed, but this much is necessary to make
-> > VLANs
-> 
-> RXE does not support VLAN now.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: abfa456555f4c2bde191cf12064168a05a2865a1  RDMA/core/iwpm_msg: Add proper descriptions for 'skb' param
 
-Yes, because of your patch. What else do you want to tell me with this
-statement?
+elapsed time: 823m
 
-Anyway, Jason seems to agree with you that the way it worked until
-5.10, which was fine as far as I could tell, was wrong. I'd still
-appreciate some hints explaining what exactly was wrong with the old
-code, and how you guys reckon it should work instead. In particular
-considering Mohammad's statement I quoted further down. Was Mohammad
-wrong?
+configs tested: 163
+configs skipped: 3
 
-What I got so far didn't help me much. I'd especially like to
-understand how you think the high-level user experience should be. IOW
-how would it be set up by the user, and what would the semantics be wrt
-permissions, conneting to peers, etc. If I understood that, I might be
-able to address the issues and test myself.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Regards,
-Martin
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                         ap325rxa_defconfig
+c6x                        evmc6678_defconfig
+arc                 nsimosci_hs_smp_defconfig
+mips                          rm200_defconfig
+arm                         s5pv210_defconfig
+sh                              ul2_defconfig
+mips                           gcw0_defconfig
+openrisc                            defconfig
+sh                        sh7763rdp_defconfig
+powerpc                      bamboo_defconfig
+sh                           sh2007_defconfig
+sh                          polaris_defconfig
+powerpc                      pasemi_defconfig
+sparc64                             defconfig
+arc                           tb10x_defconfig
+m68k                        m5272c3_defconfig
+c6x                        evmc6474_defconfig
+powerpc                      mgcoge_defconfig
+powerpc                 mpc8313_rdb_defconfig
+riscv                            alldefconfig
+m68k                            q40_defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+arm                        neponset_defconfig
+sh                   rts7751r2dplus_defconfig
+arm                         cm_x300_defconfig
+powerpc                 xes_mpc85xx_defconfig
+arm                         s3c6400_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                           sunxi_defconfig
+powerpc                       holly_defconfig
+h8300                    h8300h-sim_defconfig
+mips                malta_kvm_guest_defconfig
+m68k                         amcore_defconfig
+mips                  decstation_64_defconfig
+ia64                            zx1_defconfig
+sh                           se7721_defconfig
+xtensa                         virt_defconfig
+sh                         apsh4a3a_defconfig
+m68k                       m5249evb_defconfig
+mips                      loongson3_defconfig
+c6x                        evmc6472_defconfig
+powerpc                 mpc837x_mds_defconfig
+mips                         cobalt_defconfig
+sh                           se7206_defconfig
+powerpc                 mpc8540_ads_defconfig
+arc                    vdk_hs38_smp_defconfig
+mips                        maltaup_defconfig
+powerpc                       ppc64_defconfig
+powerpc                        cell_defconfig
+arm                           corgi_defconfig
+m68k                        m5407c3_defconfig
+m68k                          amiga_defconfig
+powerpc                      cm5200_defconfig
+arm                       omap2plus_defconfig
+powerpc                     pq2fads_defconfig
+powerpc                       eiger_defconfig
+arc                              alldefconfig
+mips                     loongson1b_defconfig
+mips                           jazz_defconfig
+mips                        omega2p_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                      tqm8xx_defconfig
+arm                            lart_defconfig
+mips                     cu1000-neo_defconfig
+arm                       cns3420vb_defconfig
+um                             i386_defconfig
+xtensa                           alldefconfig
+riscv                    nommu_k210_defconfig
+parisc                generic-32bit_defconfig
+arm                             ezx_defconfig
+arm                          pxa168_defconfig
+riscv                          rv32_defconfig
+powerpc                 mpc837x_rdb_defconfig
+arm                           stm32_defconfig
+sh                           se7780_defconfig
+arm                        spear6xx_defconfig
+powerpc                     skiroot_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210120
+i386                 randconfig-a002-20210120
+i386                 randconfig-a004-20210120
+i386                 randconfig-a006-20210120
+i386                 randconfig-a005-20210120
+i386                 randconfig-a003-20210120
+x86_64               randconfig-a012-20210120
+x86_64               randconfig-a015-20210120
+x86_64               randconfig-a016-20210120
+x86_64               randconfig-a011-20210120
+x86_64               randconfig-a013-20210120
+x86_64               randconfig-a014-20210120
+i386                 randconfig-a013-20210120
+i386                 randconfig-a011-20210120
+i386                 randconfig-a012-20210120
+i386                 randconfig-a014-20210120
+i386                 randconfig-a015-20210120
+i386                 randconfig-a016-20210120
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a002-20210120
+x86_64               randconfig-a003-20210120
+x86_64               randconfig-a001-20210120
+x86_64               randconfig-a005-20210120
+x86_64               randconfig-a006-20210120
+x86_64               randconfig-a004-20210120
+x86_64               randconfig-a004-20210118
+x86_64               randconfig-a006-20210118
+x86_64               randconfig-a001-20210118
+x86_64               randconfig-a003-20210118
+x86_64               randconfig-a005-20210118
+x86_64               randconfig-a002-20210118
+x86_64               randconfig-a015-20210119
+x86_64               randconfig-a013-20210119
+x86_64               randconfig-a012-20210119
+x86_64               randconfig-a016-20210119
+x86_64               randconfig-a011-20210119
+x86_64               randconfig-a014-20210119
 
-
-> 
-> > work.
-> > 
-> > > 
-> > > From Jason, vlan is not supported now.
-> > > If you want to make more work, the link
-> > > https://www.spinics.net/lists/linux-rdma/msg94737.html can give
-> > > some
-> > > tips.
-> > 
-> > That's fd49ddaf7e26. Did you notice that I referenced that commit
-> > in my
-> > patch description and actually said it was "absolutely correct"?
-> > 
-> > Anyway, quoting from Mohammad's email: "therefore RXE must behave
-> > the
-> > same like HW-RoCE devices and create rxe device per real device
-> > only".
-> > This is exactly how the code behaved before your patch was applied.
-> > Or what am I missing?
-> > 
-> > I have no experience with HW-RoCE. If it's true that RDMA is setup
-> > only
-> > "per real device only" there, why would the same thing be wrong for
-> > SW-RoCE?
-> > 
-> > 
-> > Martin
-> > 
-> > 
-> 
-
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
