@@ -2,288 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1429D2FE5A6
+	by mail.lfdr.de (Postfix) with ESMTP id 810DE2FE5A7
 	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 09:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728267AbhAUI4Z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jan 2021 03:56:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33800 "EHLO mail.kernel.org"
+        id S1728269AbhAUI42 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jan 2021 03:56:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728330AbhAUIzG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:55:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA48123A1C;
-        Thu, 21 Jan 2021 08:53:01 +0000 (UTC)
+        id S1728329AbhAUIzF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 21 Jan 2021 03:55:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 807E9239FD;
+        Thu, 21 Jan 2021 08:53:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611219182;
-        bh=FZUTy6l6DtkXWDUvMlBb593cpHNCaucfYeLH7pkK/KA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cJJuLc4+9pNiVz6Lb1YeJWhUQTN2f0d0sIbsHePdI5Jk6xd8DgtwwhiQRyiTCutc1
-         +/MhUsyP6EiqS7tfjXfzKA23RG3yum9tREdrmADJC/CoLMDnebXkKd7IR8FWE86uEK
-         3PPNOyV4nJR5wN39fZiHc4xDnzG2TClO8MCYRGgoNyF2Rt9sRpNq9XSMgOxAcM/jRB
-         09ftDCV6vOFY6XBWCaeMj7AoZ5IOuYezHmH2ePKidXT0otsauzLyUjFSuTwwRDrwer
-         c708+hDKQvPLifzIGe2Cj1z21ioqhG25LOGbHWptuKT0XV9jVYWGrhhGrdoCCl3Sem
-         lq/xp1owG7UPA==
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        alexander.duyck@gmail.com, sridhar.samudrala@intel.com,
-        edwin.peer@broadcom.com, dsahern@kernel.org, kiran.patil@intel.com,
-        jacob.e.keller@intel.com, david.m.ertman@intel.com,
-        dan.j.williams@intel.com, Parav Pandit <parav@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: [net-next V9 14/14] net/mlx5: Add devlink subfunction port documentation
-Date:   Thu, 21 Jan 2021 00:52:37 -0800
-Message-Id: <20210121085237.137919-15-saeed@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210121085237.137919-1-saeed@kernel.org>
-References: <20210121085237.137919-1-saeed@kernel.org>
+        s=k20201202; t=1611219211;
+        bh=tw4UYL3pvQMg4DyrGa0MkzZdQZztDObMi56CsNzh2Xo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ubYLJxIXBBOMQZUW7ljvLGbLCHrPrwBMqwfGb74HbD1JyzQuvteo5EWf4vljKt+cb
+         eGokO4UfTF2G5+si4Ys9dNvqBaFsy2Qhe95HO6OR747WUqUcBaL3NUTvPdW0mw+cPr
+         OKiKDWmeXi+Q6IOKRq1uedaxsDTwFxx4BCj1KGUqv27iTCjGxrYapVf9Bd4Vo7GIQN
+         +Z6a/9iEuRv+tBl+LSyBZBQfJsVmh0n0VbYrZDLjwqJk+DdJ7FcBEAUCo4Cy0uA2aP
+         2mmTbRtdr1sTKl8z/Jqhoh1oIuOfcGKG18oBUFUhqDRJDPdkvOiFGL3ggIgNDAOCf2
+         XOjq+P7KUre4g==
+Date:   Thu, 21 Jan 2021 10:53:25 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     liweihang <liweihang@huawei.com>
+Cc:     "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Re: [PATCH RFC 1/7] RDMA/hns: Introduce DCA for RC QP
+Message-ID: <20210121085325.GC320304@unreal>
+References: <1610706138-4219-1-git-send-email-liweihang@huawei.com>
+ <1610706138-4219-2-git-send-email-liweihang@huawei.com>
+ <20210120081025.GA225873@unreal>
+ <8d255812177a4f53becd3c912d00c528@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8d255812177a4f53becd3c912d00c528@huawei.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Parav Pandit <parav@nvidia.com>
+On Thu, Jan 21, 2021 at 07:01:50AM +0000, liweihang wrote:
+> On 2021/1/20 16:10, Leon Romanovsky wrote:
+> > On Fri, Jan 15, 2021 at 06:22:12PM +0800, Weihang Li wrote:
+> >> From: Xi Wang <wangxi11@huawei.com>
+> >>
+> >> The hip09 introduces the DCA(Dynamic context attachment) feature which
+> >> supports many RC QPs to share the WQE buffer in a memory pool, this will
+> >> reduce the memory consumption when there are too many QPs are inactive.
+> >>
+> >> If a QP enables DCA feature, the WQE's buffer will not be allocated when
+> >> creating. But when the users start to post WRs, the hns driver will
+> >> allocate a buffer from the memory pool and then fill WQEs which tagged with
+> >> this QP's number.
+> >>
+> >> The hns ROCEE will stop accessing the WQE buffer when the user polled all
+> >> of the CQEs for a DCA QP, then the driver will recycle this WQE's buffer
+> >> to the memory pool.
+> >>
+> >> This patch adds a group of methods to support the user space register
+> >> buffers to a memory pool which belongs to the user context. The hns kernel
+> >> driver will update the pages state in this pool when the user calling the
+> >> post/poll methods and the user driver can get the QP's WQE buffer address
+> >> by the key and offset which queried from kernel.
+> >>
+> >> Signed-off-by: Xi Wang <wangxi11@huawei.com>
+> >> Signed-off-by: Weihang Li <liweihang@huawei.com>
+> >> ---
+> >>  drivers/infiniband/hw/hns/Makefile          |   2 +-
+> >>  drivers/infiniband/hw/hns/hns_roce_dca.c    | 381 ++++++++++++++++++++++++++++
+> >>  drivers/infiniband/hw/hns/hns_roce_dca.h    |  22 ++
+> >>  drivers/infiniband/hw/hns/hns_roce_device.h |  10 +
+> >>  drivers/infiniband/hw/hns/hns_roce_main.c   |  27 +-
+> >>  include/uapi/rdma/hns-abi.h                 |  23 ++
+> >>  6 files changed, 462 insertions(+), 3 deletions(-)
+> >>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_dca.c
+> >>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_dca.h
+> >
+> > <...>
+> >
+> >> +static struct dca_mem *alloc_dca_mem(struct hns_roce_dca_ctx *ctx)
+> >> +{
+> >> +	struct dca_mem *mem, *tmp, *found = NULL;
+> >> +	unsigned long flags;
+> >> +
+> >> +	spin_lock_irqsave(&ctx->pool_lock, flags);
+> >> +	list_for_each_entry_safe(mem, tmp, &ctx->pool, list) {
+> >> +		spin_lock(&mem->lock);
+> >> +		if (dca_mem_is_free(mem)) {
+> >> +			found = mem;
+> >> +			set_dca_mem_alloced(mem);
+> >> +			spin_unlock(&mem->lock);
+> >> +			goto done;
+> >> +		}
+> >> +		spin_unlock(&mem->lock);
+> >> +	}
+> >> +
+> >> +done:
+> >> +	spin_unlock_irqrestore(&ctx->pool_lock, flags);
+> >> +
+> >> +	if (found)
+> >> +		return found;
+> >> +
+> >> +	mem = kzalloc(sizeof(*mem), GFP_ATOMIC);
+> >
+> > Should it be ATOMIC?
+> >
+>
+> Hi Leon,
+>
+> The current DCA interfaces can be invoked by userspace through ibv_xx_cmd(),
+> but it is expected that it can work in ib_post_xx() in kernel in the future.
+> Since it may work in context of spin_lock, so we use GFP_ATOMIC.
 
-Add documentation for subfunction management using devlink
-port.
+Are you planning to invoke kzalloc in data path?
 
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
----
- .../device_drivers/ethernet/mellanox/mlx5.rst | 210 ++++++++++++++++++
- 1 file changed, 210 insertions(+)
+The GFP_ATOMIC will cause to use special allocation pool that is seen as precious
+resource because it must to succeed.
 
-diff --git a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
-index a5eb22793bb9..a1b32fcd0d76 100644
---- a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
-+++ b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
-@@ -12,6 +12,8 @@ Contents
- - `Enabling the driver and kconfig options`_
- - `Devlink info`_
- - `Devlink parameters`_
-+- `mlx5 subfunction`_
-+- `mlx5 port function`_
- - `Devlink health reporters`_
- - `mlx5 tracepoints`_
- 
-@@ -181,6 +183,214 @@ User command examples:
-       values:
-          cmode driverinit value true
- 
-+mlx5 subfunction
-+================
-+mlx5 supports subfunction management using devlink port (see :ref:`Documentation/networking/devlink/devlink-port.rst <devlink_port>`) interface.
-+
-+A Subfunction has its own function capabilities and its own resources. This
-+means a subfunction has its own dedicated queues (txq, rxq, cq, eq). These
-+queues are neither shared nor stolen from the parent PCI function.
-+
-+When a subfunction is RDMA capable, it has its own QP1, GID table and rdma
-+resources neither shared nor stolen from the parent PCI function.
-+
-+A subfunction has a dedicated window in PCI BAR space that is not shared
-+with ther other subfunctions or the parent PCI function. This ensures that all
-+devices (netdev, rdma, vdpa etc.) of the subfunction accesses only assigned
-+PCI BAR space.
-+
-+A Subfunction supports eswitch representation through which it supports tc
-+offloads. The user configures eswitch to send/receive packets from/to
-+the subfunction port.
-+
-+Subfunctions share PCI level resources such as PCI MSI-X IRQs with
-+other subfunctions and/or with its parent PCI function.
-+
-+Example mlx5 software, system and device view::
-+
-+       _______
-+      | admin |
-+      | user  |----------
-+      |_______|         |
-+          |             |
-+      ____|____       __|______            _________________
-+     |         |     |         |          |                 |
-+     | devlink |     | tc tool |          |    user         |
-+     | tool    |     |_________|          | applications    |
-+     |_________|         |                |_________________|
-+           |             |                   |          |
-+           |             |                   |          |         Userspace
-+ +---------|-------------|-------------------|----------|--------------------+
-+           |             |           +----------+   +----------+   Kernel
-+           |             |           |  netdev  |   | rdma dev |
-+           |             |           +----------+   +----------+
-+   (devlink port add/del |              ^               ^
-+    port function set)   |              |               |
-+           |             |              +---------------|
-+      _____|___          |              |        _______|_______
-+     |         |         |              |       | mlx5 class    |
-+     | devlink |   +------------+       |       |   drivers     |
-+     | kernel  |   | rep netdev |       |       |(mlx5_core,ib) |
-+     |_________|   +------------+       |       |_______________|
-+           |             |              |               ^
-+   (devlink ops)         |              |          (probe/remove)
-+  _________|________     |              |           ____|________
-+ | subfunction      |    |     +---------------+   | subfunction |
-+ | management driver|-----     | subfunction   |---|  driver     |
-+ | (mlx5_core)      |          | auxiliary dev |   | (mlx5_core) |
-+ |__________________|          +---------------+   |_____________|
-+           |                                            ^
-+  (sf add/del, vhca events)                             |
-+           |                                      (device add/del)
-+      _____|____                                    ____|________
-+     |          |                                  | subfunction |
-+     |  PCI NIC |---- activate/deactive events---->| host driver |
-+     |__________|                                  | (mlx5_core) |
-+                                                   |_____________|
-+
-+Subfunction is created using devlink port interface.
-+
-+- Change device to switchdev mode::
-+
-+    $ devlink dev eswitch set pci/0000:06:00.0 mode switchdev
-+
-+- Add a devlink port of subfunction flaovur::
-+
-+    $ devlink port add pci/0000:06:00.0 flavour pcisf pfnum 0 sfnum 88
-+    pci/0000:06:00.0/32768: type eth netdev eth6 flavour pcisf controller 0 pfnum 0 sfnum 88 external false splittable false
-+      function:
-+        hw_addr 00:00:00:00:00:00 state inactive opstate detached
-+
-+- Show a devlink port of the subfunction::
-+
-+    $ devlink port show pci/0000:06:00.0/32768
-+    pci/0000:06:00.0/32768: type eth netdev enp6s0pf0sf88 flavour pcisf pfnum 0 sfnum 88
-+      function:
-+        hw_addr 00:00:00:00:00:00 state inactive opstate detached
-+
-+- Delete a devlink port of subfunction after use::
-+
-+    $ devlink port del pci/0000:06:00.0/32768
-+
-+mlx5 function attributes
-+========================
-+The mlx5 driver provides a mechanism to setup PCI VF/SF function attributes in
-+a unified way for SmartNIC and non-SmartNIC.
-+
-+This is supported only when the eswitch mode is set to switchdev. Port function
-+configuration of the PCI VF/SF is supported through devlink eswitch port.
-+
-+Port function attributes should be set before PCI VF/SF is enumerated by the
-+driver.
-+
-+MAC address setup
-+-----------------
-+mlx5 driver provides mechanism to setup the MAC address of the PCI VF/SF.
-+
-+The configured MAC address of the PCI VF/SF will be used by netdevice and rdma
-+device created for the PCI VF/SF.
-+
-+- Get the MAC address of the VF identified by its unique devlink port index::
-+
-+    $ devlink port show pci/0000:06:00.0/2
-+    pci/0000:06:00.0/2: type eth netdev enp6s0pf0vf1 flavour pcivf pfnum 0 vfnum 1
-+      function:
-+        hw_addr 00:00:00:00:00:00
-+
-+- Set the MAC address of the VF identified by its unique devlink port index::
-+
-+    $ devlink port function set pci/0000:06:00.0/2 hw_addr 00:11:22:33:44:55
-+
-+    $ devlink port show pci/0000:06:00.0/2
-+    pci/0000:06:00.0/2: type eth netdev enp6s0pf0vf1 flavour pcivf pfnum 0 vfnum 1
-+      function:
-+        hw_addr 00:11:22:33:44:55
-+
-+- Get the MAC address of the SF identified by its unique devlink port index::
-+
-+    $ devlink port show pci/0000:06:00.0/32768
-+    pci/0000:06:00.0/32768: type eth netdev enp6s0pf0sf88 flavour pcisf pfnum 0 sfnum 88
-+      function:
-+        hw_addr 00:00:00:00:00:00
-+
-+- Set the MAC address of the VF identified by its unique devlink port index::
-+
-+    $ devlink port function set pci/0000:06:00.0/32768 hw_addr 00:00:00:00:88:88
-+
-+    $ devlink port show pci/0000:06:00.0/32768
-+    pci/0000:06:00.0/32768: type eth netdev enp6s0pf0sf88 flavour pcivf pfnum 0 sfnum 88
-+      function:
-+        hw_addr 00:00:00:00:88:88
-+
-+SF state setup
-+--------------
-+To use the SF, the user must active the SF using the SF function state
-+attribute.
-+
-+- Get the state of the SF identified by its unique devlink port index::
-+
-+   $ devlink port show ens2f0npf0sf88
-+   pci/0000:06:00.0/32768: type eth netdev ens2f0npf0sf88 flavour pcisf controller 0 pfnum 0 sfnum 88 external false splittable false
-+     function:
-+       hw_addr 00:00:00:00:88:88 state inactive opstate detached
-+
-+- Activate the function and verify its state is active::
-+
-+   $ devlink port function set ens2f0npf0sf88 state active
-+
-+   $ devlink port show ens2f0npf0sf88
-+   pci/0000:06:00.0/32768: type eth netdev ens2f0npf0sf88 flavour pcisf controller 0 pfnum 0 sfnum 88 external false splittable false
-+     function:
-+       hw_addr 00:00:00:00:88:88 state active opstate detached
-+
-+Upon function activation, the PF driver instance gets the event from the device
-+that a particular SF was activated. It's the cue to put the device on bus, probe
-+it and instantiate the devlink instance and class specific auxiliary devices
-+for it.
-+
-+- Show the auxiliary device and port of the subfunction::
-+
-+    $ devlink dev show
-+    devlink dev show auxiliary/mlx5_core.sf.4
-+
-+    $ devlink port show auxiliary/mlx5_core.sf.4/1
-+    auxiliary/mlx5_core.sf.4/1: type eth netdev p0sf88 flavour virtual port 0 splittable false
-+
-+    $ rdma link show mlx5_0/1
-+    link mlx5_0/1 state ACTIVE physical_state LINK_UP netdev p0sf88
-+
-+    $ rdma dev show
-+    8: rocep6s0f1: node_type ca fw 16.29.0550 node_guid 248a:0703:00b3:d113 sys_image_guid 248a:0703:00b3:d112
-+    13: mlx5_0: node_type ca fw 16.29.0550 node_guid 0000:00ff:fe00:8888 sys_image_guid 248a:0703:00b3:d112
-+
-+- Subfunction auxiliary device and class device hierarchy::
-+
-+                 mlx5_core.sf.4
-+          (subfunction auxiliary device)
-+                       /\
-+                      /  \
-+                     /    \
-+                    /      \
-+                   /        \
-+      mlx5_core.eth.4     mlx5_core.rdma.4
-+     (sf eth aux dev)     (sf rdma aux dev)
-+         |                      |
-+         |                      |
-+      p0sf88                  mlx5_0
-+     (sf netdev)          (sf rdma device)
-+
-+Additionally, the SF port also gets the event when the driver attaches to the
-+auxiliary device of the subfunction. This results in changing the operational
-+state of the function. This provides visiblity to the user to decide when is it
-+safe to delete the SF port for graceful termination of the subfunction.
-+
-+- Show the SF port operational state::
-+
-+    $ devlink port show ens2f0npf0sf88
-+    pci/0000:06:00.0/32768: type eth netdev ens2f0npf0sf88 flavour pcisf controller 0 pfnum 0 sfnum 88 external false splittable false
-+      function:
-+        hw_addr 00:00:00:00:88:88 state active opstate attached
-+
- Devlink health reporters
- ========================
- 
--- 
-2.26.2
+It is better to avoid this flag if you don't need it.
 
+Thanks
