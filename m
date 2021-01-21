@@ -2,104 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8C52FF33D
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 19:34:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5FB2FF34A
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 19:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728685AbhAUSeb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jan 2021 13:34:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728202AbhAUSeC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jan 2021 13:34:02 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249A8C061756
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 10:33:16 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id c6so3717715ede.0
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 10:33:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=wvIyTN2y9GnFqjJBo3Xh4BAQ1dpPVxWBuZSq790nMNk=;
-        b=dyMpGl/3jg17obT80cLQQyO/hhsqZPZhXNb1J9IAaDLosY2cKKUdrpMlMX96ASQO3D
-         FluW2XYxa6h948hm9p1MTltY0ef3epZ2iR4+jFWBS8rhpprrNdfYWs/6c+WI+XIojAHg
-         6gzdtNrXki+AT/KvCnCaHpwKiYKiGOyEoCiXJG3LbIz5vMjKUotbv6qUPU2a5MlT4egX
-         u/oElj1DidOpSICpQMFhnRDmYrbYaqmvFC2jx18CAlq09yyU3mqj5eaP+6d7d0PKQDMZ
-         mc+GtwyCvxIYmuXH+gD4FH2SV4zAjVOn/e4iS6z3j+Q8tx41ZTj+obKJzpSyjMHHiKoo
-         weyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=wvIyTN2y9GnFqjJBo3Xh4BAQ1dpPVxWBuZSq790nMNk=;
-        b=RObVEE8TyQYuR/oYnTtfvlgtRaDZ69yvbAKSFcZHJ+BgVJFx4fmWBF5fnGiyZN+P1N
-         d4BEPUK4FyJs1ZonL1X8YHZ/zIEEEugwJ/MM0BMlsp/eHQwIdHNsYs/SKDFysfY8FlLq
-         mRD+va5sydyXk13jN+/P42uIUhBFa5mvLsPPww21Zavj8SwkuXkOg0D5d0cpeyYtxBFE
-         YBaGhGH6kRucULnqtzsG70pxxQrxBjXAKh+D+GRr39Di9jInX89n5FB26BLNPHm/0VfM
-         eTrUUCSvKPb7JJXKRisrzy616iahqWIeB86hL5Y3n9qMd3QjEoD7gYWwArByXTbi+3dl
-         s5AQ==
-X-Gm-Message-State: AOAM531AkR8osErRSsXu5EjW5tf3m+XqjM4C3hzRUJZNbeSzpgrrJMT6
-        sVT1t4RwJdu8ZwImIOJzj3jBjDy7CeOWV5wn3YQ=
-X-Google-Smtp-Source: ABdhPJxEaAgA6BzQjWLlPWAuONdpn1xl6I51ezWmhY+PwAQ5Z8iGdxPViGtBCXHgCivvim3kMQcf+Y09ubZcsAeCstU=
-X-Received: by 2002:a05:6402:1155:: with SMTP id g21mr348060edw.279.1611253994895;
- Thu, 21 Jan 2021 10:33:14 -0800 (PST)
+        id S1726073AbhAUShE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jan 2021 13:37:04 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5239 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728889AbhAUSgs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jan 2021 13:36:48 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6009c9630001>; Thu, 21 Jan 2021 10:35:15 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 21 Jan
+ 2021 18:35:15 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.44) by
+ HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 21 Jan 2021 18:35:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aDVAEYV4Agmn6MEj8NM5SasQHdZsekWfNdVvf06X5rLXnx8GdFdBvXQBFzvVXJIoqsJ8SEt3yOZzxoi8jDCOpf7vaQwno5YozEtGUEraFDSArp298Duo5Txp3D+jFGFCDh5i8cvp471fAm4s7qmrBoHnb4hZRf+zVdjvcWXHnhGOsaxBhnZKn9vofbwxCYdQqIu33denBwmS+aCrenJaXNo+6oIgN2zikq4mICkmiljD2LbCCTznjZjUSl5wDpi1ZyikBjrV5NeuIvl0lpsia0EY47zKGlstuvYcHDMFvuNOQjUb8RBET+zb6IrE6v+OIuH93s/6bLEx/I6ht9RRGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qCs/C5l+rHeqd/OtESVisc/BSAKXtCBrHg79u5/NNyk=;
+ b=YVBTsDmXK2MyNiHT2P0CxsB3W6XHxvXsWxH/vkB4+J5oqhRg6m8EKI3rGiUXnoaLvJ2UJ6zpN5f1us51aTKv55MCzysgGT17RagLmlkzJgP+/6B0VG53cWjY0nJ5SmqM9r4URy7UCy0MmPAP1VVadfBrndDs5F31AYcAZhZh8ffFXMjUgkb0jrdspbFCIrQlnbmDbzKrUA4mt0ccTczcQjzXTW5gDSr5LeixMVu5DxXx3XjWXN/yea/ynWkqkzBWI3w4zMSv85fX84Hj5WWl6yTU0U4zWh+nPu148vmElJrEuzp9uMyX3ectb4JK1B26uk6wvxF1aigKOl9ewSUj6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4973.namprd12.prod.outlook.com (2603:10b6:5:1b7::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12; Thu, 21 Jan
+ 2021 18:35:14 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.011; Thu, 21 Jan 2021
+ 18:35:14 +0000
+Date:   Thu, 21 Jan 2021 14:35:12 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Gal Pressman <galpress@amazon.com>
+CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        Alexander Matushevsky <matua@amazon.com>
+Subject: Re: [PATCH for-next 0/2] Host information userspace version
+Message-ID: <20210121183512.GC4147@nvidia.com>
+References: <20210105104326.67895-1-galpress@amazon.com>
+ <9286e969-09b8-a7d0-ca7e-50b8e3864a11@amazon.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <9286e969-09b8-a7d0-ca7e-50b8e3864a11@amazon.com>
+X-ClientProxiedBy: MN2PR20CA0050.namprd20.prod.outlook.com
+ (2603:10b6:208:235::19) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Sender: mrsgloria.carlsen00@gmail.com
-Received: by 2002:a17:906:46d8:0:0:0:0 with HTTP; Thu, 21 Jan 2021 10:33:14
- -0800 (PST)
-From:   Mrs Carlsen monika <carlsen.monika@gmail.com>
-Date:   Thu, 21 Jan 2021 19:33:14 +0100
-X-Google-Sender-Auth: NO3sgxLr6_k791F4JqrZiuqlaNU
-Message-ID: <CAEgYZyrOZyjGV14xX8Q+Mq9xn+2cHLP-Zci9gcxPP0Ni58WzvA@mail.gmail.com>
-Subject: Hello My Dear.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR20CA0050.namprd20.prod.outlook.com (2603:10b6:208:235::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.14 via Frontend Transport; Thu, 21 Jan 2021 18:35:13 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l2enY-0058yt-Ld; Thu, 21 Jan 2021 14:35:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611254115; bh=qCs/C5l+rHeqd/OtESVisc/BSAKXtCBrHg79u5/NNyk=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=rYHNwxokzhxDo6MInOCIRn2leWBNjR1tyyMQrWZHONhVoVy4VoEjAPaYs8Xlcyx1E
+         HCw2Tx3/+zMP6NMtADi14gXdTgo0LKczxoBUogYuZSyXKSc4gOPP47zmWZ0+W21pL7
+         kV4U70C3DnF+pS2C08fK4VqxaFDe2eZ8MbaNpI3VgrwqqgjtQw/LpqFZUGnCIA8cyP
+         Bav1TfFrnQQLdIUKPI45bR0tOE+UZcjc7NS51VJisU5LLl2qI83B3jhGmSSrImj2/m
+         o4U5ENBuDlgBiIp3CxjcfhN6RSFMpLV6koMa4KGUuKjfZiYNKfvLRFBDe+OMzWCFLc
+         VLTTxpM4PZuIw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello My Dear.
+On Tue, Jan 19, 2021 at 09:17:14AM +0200, Gal Pressman wrote:
+> On 05/01/2021 12:43, Gal Pressman wrote:
+> > The following two patches add the userspace version to the host
+> > information struct reported to the device, used for debugging and
+> > troubleshooting purposes.
+> > 
+> > PR was sent:
+> > https://github.com/linux-rdma/rdma-core/pull/918
+> > 
+> > Thanks,
+> > Gal
+> 
+> Anything stopping this series from being merged?
 
-Please do not feel disturbed for contacting  you in this regards, It
-was based on the critical health condition I find mine self.  My names
-  are Mrs. Monika John  Carlsen from Denmark wife, a widow and I=E2=80=99m
-suffering from brain tumor disease and this illness has gotten to a
-very bad stage, I married my husband for Ten years without any family
-members and no child.  My husband died after a brief illness that
-lasted for few   days.
-Since the death of my husband, I decided not to remarry again, When my
-late husband was alive he deposited the sum of  ($11.000.000 Eleven
-million dollars.) with the Bank. Presently this money is still in
-bank. And My  Doctor told me that I don't have much  time to live
-because my illness has gotten to a very bad stage, Having known my
-condition I  decided to entrust over the deposited  fund under your
-custody to take care of the less-privileged ones therein your country
-or position, which i believe that you will utilize this money the way
-I am going to instruct herein.
+Honestly, I'm not very keen on this
 
-However all I need and required from you is your sincerity and ability
-to carry out the transaction successfully and fulfill my final wish in
- implementing the charitable project as it requires absolute trust and
-devotion without any failure and I will be glad to see that the bank
-finally release and transfer the fund into your bank account in your
-country even before I die here in the hospital, because my present
-health condition is very critical at the moment everything needs to be
-process rapidly as soon as possible.
+Why does this have to go through a kernel driver, can't you collect
+OS telemetry some other way?
 
-It will be my pleasure to compensate you as my Investment
-Manager/Partner with 35 % percent of the total fund for your effort in
-  handling the transaction, 5 % percent for any expenses or processing
-charges fee that will involve during this process while 60% of the
-fund will be Invested into the charity project there in your country
-for the mutual benefit of the orphans and the less privileges ones.
-
-Meanwhile I am waiting for your prompt respond, if only you are
-interested for further details of the transaction and execution of
-this   humanitarian project for the glory and honor of God the
-merciful compassionate.
-
-May God bless you and your family.
-Regards,
-Mrs. Monika John  Carlsen
-written from Hospital.
+Jason
