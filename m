@@ -2,185 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC462FF4F2
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 20:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E14312FF4ED
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 20:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbhAUSsH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jan 2021 13:48:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728300AbhAUIyd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:54:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA16D23A05;
-        Thu, 21 Jan 2021 08:53:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611219181;
-        bh=5dYdTSw2bzzwajZvYKSQkTrCxmNTmJIBFGJaGWIYrd8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K79YB7wzSia0MwuuMl4VS5isYwDPnoztReZJ7ZNtCS8YqEFhh6T/9S0t1R9IW0azJ
-         D4AGeShXh+Q4YnEisi+FSR3XHw4ttnd7vYNVRRU5ipp8NFXBR5VIr9u85s61/au1/Z
-         kK0oyDFNtz4UOWbhZwhU2FvYA0I5qNMZloY2w2QSGhIhBSYhivdhxZWUnmRzYRPAZW
-         wJvELGv0iYTQVwp9dzrh3OVeL7wigFJD9HgvjYrlsjdxYi746JcP1Q9TB36wHd/WZ0
-         EEe1IAk9AP0BqDYKC/LqiATQ06x3uFQc6msPBN3+XO4QQt54LawqFtVVU26B45t9o5
-         +ZSmeeIVJUbTA==
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        alexander.duyck@gmail.com, sridhar.samudrala@intel.com,
-        edwin.peer@broadcom.com, dsahern@kernel.org, kiran.patil@intel.com,
-        jacob.e.keller@intel.com, david.m.ertman@intel.com,
-        dan.j.williams@intel.com, Parav Pandit <parav@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: [net-next V9 13/14] devlink: Extend devlink port documentation for subfunctions
-Date:   Thu, 21 Jan 2021 00:52:36 -0800
-Message-Id: <20210121085237.137919-14-saeed@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210121085237.137919-1-saeed@kernel.org>
-References: <20210121085237.137919-1-saeed@kernel.org>
+        id S1726733AbhAUTn3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jan 2021 14:43:29 -0500
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:50914 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726594AbhAUTls (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jan 2021 14:41:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1611258108; x=1642794108;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=qm0mLlqdJI6345iQYOoNxKGhHu4S4D5WpTwQqAFwwio=;
+  b=DnGbHwOgqT+fnoLUXUQd+s3Piyh6e3v/tnxe13uP2fM8xW36neUjVqA9
+   nGPqliSgnhCoPkCUxP8tmdmXg7HydUFv1p9xssqxunKisdTYG8dglZg5l
+   iNnKXTPQc4DJwUvVKNHG3OgfyBKQGZc4b/4p0bn8k1OMPesfCytgNc+BE
+   s=;
+X-IronPort-AV: E=Sophos;i="5.79,365,1602547200"; 
+   d="scan'208";a="105590197"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-cc689b93.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 21 Jan 2021 19:40:59 +0000
+Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-cc689b93.us-west-2.amazon.com (Postfix) with ESMTPS id 01AFD120DE8;
+        Thu, 21 Jan 2021 19:40:58 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.161.68) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 21 Jan 2021 19:40:54 +0000
+Subject: Re: [PATCH for-next 0/2] Host information userspace version
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        Alexander Matushevsky <matua@amazon.com>,
+        "Leybovich, Yossi" <sleybo@amazon.com>
+References: <20210105104326.67895-1-galpress@amazon.com>
+ <9286e969-09b8-a7d0-ca7e-50b8e3864a11@amazon.com>
+ <20210121183512.GC4147@nvidia.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <206d8797-0188-5949-aaaf-57a6901c48d9@amazon.com>
+Date:   Thu, 21 Jan 2021 21:40:49 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210121183512.GC4147@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.68]
+X-ClientProxiedBy: EX13D29UWA004.ant.amazon.com (10.43.160.33) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Parav Pandit <parav@nvidia.com>
+On 21/01/2021 20:35, Jason Gunthorpe wrote:
+> On Tue, Jan 19, 2021 at 09:17:14AM +0200, Gal Pressman wrote:
+>> On 05/01/2021 12:43, Gal Pressman wrote:
+>>> The following two patches add the userspace version to the host
+>>> information struct reported to the device, used for debugging and
+>>> troubleshooting purposes.
+>>>
+>>> PR was sent:
+>>> https://github.com/linux-rdma/rdma-core/pull/918
+>>>
+>>> Thanks,
+>>> Gal
+>>
+>> Anything stopping this series from being merged?
+> 
+> Honestly, I'm not very keen on this
+> 
+> Why does this have to go through a kernel driver, can't you collect
+> OS telemetry some other way?
 
-Add devlink port documentation for subfunction management.
+Hmm, it has to go through rdma-core somehow, what sort of component can
+rdma-core interact with to pass such data? The only one I could think of is the
+RDMA driver :).
 
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
----
- Documentation/driver-api/auxiliary_bus.rst    |  2 +
- .../networking/devlink/devlink-port.rst       | 87 ++++++++++++++++++-
- 2 files changed, 86 insertions(+), 3 deletions(-)
+As I said, I get your concern, I was going on and off about this as well, but
+the userspace version is a very useful piece of information in the context of a
+kernel bypass device. It's just as important as the kernel version.
+I agree that this is not the place to pass things like gcc version, but I don't
+think that's the case here :).
 
-diff --git a/Documentation/driver-api/auxiliary_bus.rst b/Documentation/driver-api/auxiliary_bus.rst
-index 2312506b0674..fff96c7ba7a8 100644
---- a/Documentation/driver-api/auxiliary_bus.rst
-+++ b/Documentation/driver-api/auxiliary_bus.rst
-@@ -1,5 +1,7 @@
- .. SPDX-License-Identifier: GPL-2.0-only
- 
-+.. _auxiliary_bus:
-+
- =============
- Auxiliary Bus
- =============
-diff --git a/Documentation/networking/devlink/devlink-port.rst b/Documentation/networking/devlink/devlink-port.rst
-index c564b557e757..99b475658422 100644
---- a/Documentation/networking/devlink/devlink-port.rst
-+++ b/Documentation/networking/devlink/devlink-port.rst
-@@ -34,6 +34,9 @@ Devlink port flavours are described below.
-    * - ``DEVLINK_PORT_FLAVOUR_PCI_VF``
-      - This indicates an eswitch port representing a port of PCI
-        virtual function (VF).
-+   * - ``DEVLINK_PORT_FLAVOUR_PCI_SF``
-+     - This indicates an eswitch port representing a port of PCI
-+       subfunction (SF).
-    * - ``DEVLINK_PORT_FLAVOUR_VIRTUAL``
-      - This indicates a virtual port for the PCI virtual function.
- 
-@@ -57,8 +60,9 @@ Devlink port can have a different type based on the link layer described below.
- PCI controllers
- ---------------
- In most cases a PCI device has only one controller. A controller consists of
--potentially multiple physical and virtual functions. A function consists
--of one or more ports. This port is represented by the devlink eswitch port.
-+potentially multiple physical, virtual functions and subfunctions. A function
-+consists of one or more ports. This port is represented by the devlink eswitch
-+port.
- 
- A PCI device connected to multiple CPUs or multiple PCI root complexes or a
- SmartNIC, however, may have multiple controllers. For a device with multiple
-@@ -111,8 +115,85 @@ function. Usually it means, user should configure function attribute
- before a bus specific device for the function is created. However, when
- SRIOV is enabled, virtual function devices are created on the PCI bus.
- Hence, function attribute should be configured before binding virtual
--function device to the driver.
-+function device to the driver. For subfunctions, this means user should
-+configure port function attribute before activating the port function.
- 
- A user may set the hardware address of the function using
- 'devlink port function set hw_addr' command. For Ethernet port function
- this means a MAC address.
-+
-+Subfunctions
-+============
-+
-+Subfunctions are lightweight functions that has parent PCI function on which
-+it is deployed. Subfunctions are created and deployed in unit of 1. Unlike
-+SRIOV VFs, they don't require their own PCI virtual function. They communicate
-+with the hardware through the parent PCI function.
-+
-+To use a subfunction, 3 steps setup sequence is followed.
-+(1) create - create a subfunction;
-+(2) configure - configure subfunction attributes;
-+(3) deploy - deploy the subfunction;
-+
-+Subfunction management is done using devlink port user interface.
-+User performs setup on the subfunction management device.
-+
-+(1) Create
-+----------
-+A subfunction is created using a devlink port interface. A user adds the
-+subfunction by adding a devlink port of subfunction flavour. The devlink
-+kernel code calls down to subfunction management driver (devlink ops) and asks
-+it to create a subfunction devlink port. Driver then instantiates the
-+subfunction port and any associated objects such as health reporters and
-+representor netdevice.
-+
-+(2) Configure
-+-------------
-+A subfunction devlink port is created but it is not active yet. That means the
-+entities are created on devlink side, the e-switch port representor is created,
-+but the subfunction device itself it not created. A user might use e-switch port
-+representor to do settings, putting it into bridge, adding TC rules, etc. A user
-+might as well configure the hardware address (such as MAC address) of the
-+subfunction while subfunction is inactive.
-+
-+(3) Deploy
-+----------
-+Once a subfunction is configured, user must activate it to use it. Upon
-+activation, subfunction management driver asks the subfunction management
-+device to instantiate the subfunction device on particular PCI function.
-+A subfunction device is created on the :ref:`Documentation/driver-api/auxiliary_bus.rst <auxiliary_bus>`.
-+At this point a matching subfunction driver binds to the subfunction's auxiliary device.
-+
-+Terms and Definitions
-+=====================
-+
-+.. list-table:: Terms and Definitions
-+   :widths: 22 90
-+
-+   * - Term
-+     - Definitions
-+   * - ``PCI device``
-+     - A physical PCI device having one or more PCI bus consists of one or
-+       more PCI controllers.
-+   * - ``PCI controller``
-+     -  A controller consists of potentially multiple physical functions,
-+        virtual functions and subfunctions.
-+   * - ``Port function``
-+     -  An object to manage the function of a port.
-+   * - ``Subfunction``
-+     -  A lightweight function that has parent PCI function on which it is
-+        deployed.
-+   * - ``Subfunction device``
-+     -  A bus device of the subfunction, usually on a auxiliary bus.
-+   * - ``Subfunction driver``
-+     -  A device driver for the subfunction auxiliary device.
-+   * - ``Subfunction management device``
-+     -  A PCI physical function that supports subfunction management.
-+   * - ``Subfunction management driver``
-+     -  A device driver for PCI physical function that supports
-+        subfunction management using devlink port interface.
-+   * - ``Subfunction host driver``
-+     -  A device driver for PCI physical function that hosts subfunction
-+        devices. In most cases it is same as subfunction management driver. When
-+        subfunction is used on external controller, subfunction management and
-+        host drivers are different.
--- 
-2.26.2
-
+Do you absolutely hate the idea of passing the userspace version, or are you
+worried about what's next to come?
+If it's the latter, we don't really have plans to push anything similar anytime
+soon, and even if we did, I don't think it should block this series.
