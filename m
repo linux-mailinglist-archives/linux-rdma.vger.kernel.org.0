@@ -2,63 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2F62FF300
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 19:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1595A2FF2F3
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 19:11:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728255AbhAUSOh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jan 2021 13:14:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47758 "EHLO
+        id S1733004AbhAUSKy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jan 2021 13:10:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728894AbhAUJq6 (ORCPT
+        with ESMTP id S1728360AbhAUJq6 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jan 2021 04:46:58 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B517C061794
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 01:45:28 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id u14so930803wmq.4
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 01:45:28 -0800 (PST)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0012C06179C
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 01:45:32 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id m1so376950wrq.12
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 01:45:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lBLwu+617zQ07npA6RXz6Tf17IOtHddjN6cfc3yfTCI=;
-        b=dfLuKNzZ3ku/O7QE9b2/0QO9aIwxpb3WHqXtAqE0V52WOktO4jw01QZw73WtJjBr5U
-         5mbmCFDOjUvG7AIVz4lCKaG7O38kTo78KyHCMLwM2hpML1vlVQoxQlfgxPRa2ZpNWiDx
-         djcKyw139NyoRRzxu34PYyn18P55ak47Cnk5UiYhYqTXj1RfRTHlflsQUm44X4yxZG23
-         RK/qDniEwy98Fpwz8UOYSSP2NB0BH/u9Opdh9QvEXlDTxfo3alHKXGU7uUVKhBpqsQiJ
-         oFNwGbIcHfiDH7byUXHl79PkoSsqNnyfLNAKCJPWrfEjYjuGpOFrIRFf5iKjh5QVVtic
-         Rbsw==
+        bh=V7Dz2i0KYPfhUGY0bW4v3Nhy8U/GbOrRWsydmH19RnY=;
+        b=bHnr1u+duI3VWQLf6ohZQMMuc4rLFaL4D3Udr3/9VZK7Wg7PUZ1KmWp0hEbXlXvtCk
+         50ILR2oioMdQVrhb54fFsC6XMvuQsHUu7R2/Y0K420RpiHcqxb3NYHHCGqSmKxX1KB9k
+         s8aC+2im1z27D8J2yp0k/qNoDSaigAW8Q9VYlHVr+C+a0BashY8c490bEBrDjVzpjpLF
+         o3VviIaHRH5CFP2AjlaouNc42bcNgaHqeaopCT3ba1fxt33kzk9JZTYYlCDFFg7qvNTj
+         kZg1kKuyxQ0vpR/Nofrmyq+KtfiL7AyJKOLlAKUMw297lMqaGdVU2UQCnIM0lAKoHPr9
+         HIEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lBLwu+617zQ07npA6RXz6Tf17IOtHddjN6cfc3yfTCI=;
-        b=dEtyQwaeyyU+aiti3MUZ5JAOcSaIh+Yd/mzxLyXtM1Ty4d8NOgubNmE8Nf2cKDx0NB
-         jSPjC1dCGB/+C2+OOY2gBPtL1IQjrlJqXLcDPoPDaDqBlBjDMmSwErL1EAtRzaPSO1gh
-         SkoQ8hL1Hz7+y70bHuPJ+gT7E72jMfRCvaLpMRkN4cE0/uLcElg0PvLz1SQROWIdl2Lz
-         tDIUYym9cDhbeVKD87P2Fi468sSgbRYDNQ96i2FhNbpnGkSwv9nnyfGRE8RB5FQgsAwi
-         zEJCCTiz0kLIXYLlzFdW6oqgYX1QgvIsMHF6QIPEbFWXiku1quvqicA7v7ao7r7YJSul
-         az/Q==
-X-Gm-Message-State: AOAM5332gVi5I1W3GYXR8BbJNDaAZBBYhlDqLTxOZ9L44LCbLjm7n6Ih
-        hQaSGQziS7MTIHcT4yUqOKCgjg==
-X-Google-Smtp-Source: ABdhPJwO5trW2/kFg2672ZAmOG6H9jxxi6HftdC4+xImSiIHF4p72gEqrWXXpradGXLbGc8ASwjlwQ==
-X-Received: by 2002:a05:600c:2249:: with SMTP id a9mr8317598wmm.169.1611222326913;
-        Thu, 21 Jan 2021 01:45:26 -0800 (PST)
+        bh=V7Dz2i0KYPfhUGY0bW4v3Nhy8U/GbOrRWsydmH19RnY=;
+        b=fu1UsHjMcwse0OqTuHNdqDSYv9RNnx+x/O5957f1nm/5Te0OwMxla5P3bULntAsbS4
+         wMBFciuFzxPvqqMDMRS93JkVMALZ7No7iqCU1Inlp5+TnPbu/QkATcW09S/R46jY1SGs
+         mVGHzMUpyv3pzlf9gVNx9Z6o293Pp2av5JMwaBRP3JYrS1clvNkvF+4hINdaKJUVREhd
+         2bOaRdQJvdM715ZXdQF/DV0bXQ/JTLMMYPmakdZiw4pbptmpa21qRmm68fx3TwlncaPC
+         XYIyfL8iYrSlO9LpLPMZysgcrzWQ8tcJT5u7y1fETraPwYidZL4Nan3RdifkDR8m8kyR
+         jnhw==
+X-Gm-Message-State: AOAM5334QjVfdvjIJd4B6QrO3Eix06Z+X0lK7n+xrt7kR5I8SmRAvdoz
+        C6dyQpsnqnm6bcZpto02RUXTbQ==
+X-Google-Smtp-Source: ABdhPJxZBxAkgrWIZFohOrkk6WlUWMvrYdfizqnTD5tJzbCbVEFXrrl439o4R4oXxSa+y8k/grYMWg==
+X-Received: by 2002:a5d:650f:: with SMTP id x15mr13366848wru.332.1611222331635;
+        Thu, 21 Jan 2021 01:45:31 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.25
+        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 01:45:26 -0800 (PST)
+        Thu, 21 Jan 2021 01:45:31 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Lijun Ou <oulijun@huawei.com>,
-        Weihang Li <liweihang@huawei.com>,
+Cc:     linux-kernel@vger.kernel.org,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Wei Hu <xavier.huwei@huawei.com>,
-        Nenglong Zhao <zhaonenglong@hisilicon.com>,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH 04/30] RDMA/hw/hns/hns_roce_hw_v1: Fix doc-rot issue relating to 'rereset'
-Date:   Thu, 21 Jan 2021 09:44:53 +0000
-Message-Id: <20210121094519.2044049-5-lee.jones@linaro.org>
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [PATCH 08/30] RDMA/hw/qib/qib_eeprom: Fix misspelling of 'buff' in 'qib_eeprom_{read,write}()'
+Date:   Thu, 21 Jan 2021 09:44:57 +0000
+Message-Id: <20210121094519.2044049-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210121094519.2044049-1-lee.jones@linaro.org>
 References: <20210121094519.2044049-1-lee.jones@linaro.org>
@@ -70,35 +68,43 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c:1398: warning: Function parameter or member 'dereset' not described in 'hns_roce_v1_reset'
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c:1398: warning: Excess function parameter 'enable' description in 'hns_roce_v1_reset'
+ drivers/infiniband/hw/qib/qib_eeprom.c:55: warning: Function parameter or member 'buff' not described in 'qib_eeprom_read'
+ drivers/infiniband/hw/qib/qib_eeprom.c:55: warning: Excess function parameter 'buffer' description in 'qib_eeprom_read'
+ drivers/infiniband/hw/qib/qib_eeprom.c:102: warning: Function parameter or member 'buff' not described in 'qib_eeprom_write'
+ drivers/infiniband/hw/qib/qib_eeprom.c:102: warning: Excess function parameter 'buffer' description in 'qib_eeprom_write'
 
-Cc: Lijun Ou <oulijun@huawei.com>
-Cc: "Wei Hu
-Cc: Weihang Li <liweihang@huawei.com>
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 Cc: Doug Ledford <dledford@redhat.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Wei Hu <xavier.huwei@huawei.com>
-Cc: Nenglong Zhao <zhaonenglong@hisilicon.com>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/qib/qib_eeprom.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-index f68585ff8e8a5..23fe8e9f61da5 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-@@ -1391,7 +1391,7 @@ static void hns_roce_free_mr_free(struct hns_roce_dev *hr_dev)
- /**
-  * hns_roce_v1_reset - reset RoCE
-  * @hr_dev: RoCE device struct pointer
-- * @enable: true -- drop reset, false -- reset
-+ * @dereset: true -- drop reset, false -- reset
-  * return 0 - success , negative --fail
+diff --git a/drivers/infiniband/hw/qib/qib_eeprom.c b/drivers/infiniband/hw/qib/qib_eeprom.c
+index 5838b3bf34b99..bf660c001b6df 100644
+--- a/drivers/infiniband/hw/qib/qib_eeprom.c
++++ b/drivers/infiniband/hw/qib/qib_eeprom.c
+@@ -47,7 +47,7 @@
+  * qib_eeprom_read - receives bytes from the eeprom via I2C
+  * @dd: the qlogic_ib device
+  * @eeprom_offset: address to read from
+- * @buffer: where to store result
++ * @buff: where to store result
+  * @len: number of bytes to receive
   */
- static int hns_roce_v1_reset(struct hns_roce_dev *hr_dev, bool dereset)
+ int qib_eeprom_read(struct qib_devdata *dd, u8 eeprom_offset,
+@@ -94,7 +94,7 @@ static int eeprom_write_with_enable(struct qib_devdata *dd, u8 offset,
+  * qib_eeprom_write - writes data to the eeprom via I2C
+  * @dd: the qlogic_ib device
+  * @eeprom_offset: where to place data
+- * @buffer: data to write
++ * @buff: data to write
+  * @len: number of bytes to write
+  */
+ int qib_eeprom_write(struct qib_devdata *dd, u8 eeprom_offset,
 -- 
 2.25.1
 
