@@ -2,92 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A81E2FEFDF
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 17:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C71A2FF13D
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 18:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732230AbhAUQMT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jan 2021 11:12:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731699AbhAUQMO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Jan 2021 11:12:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9E7223A1E;
-        Thu, 21 Jan 2021 16:11:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611245488;
-        bh=jjLGdKR5GLsw6DX3wBDygjk1QWEO1wvll3YXwKcdWeY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dojJHgRGEGA/q8skPyr7SHwCCGZx5pucvYfGEmE6d99u/tV8MaoEVrZ72ZqGqq5JL
-         FCfVOzodQN2IHAGUIQYto5BGHrCKFRD9m+bSnoHdf6b9iAps+8GAL+HcTtDcqiBX9k
-         Q05DuxWdEEOhM7gTJJCaXfZ+p/6u5hRc9Z3KvPZmGsdifOFUN/f9RvJMvNYkF7kWar
-         sQObibWRgpQRp2brpOwfmkxPQ7jz6GF6gHHqTydyO5NQAogPE9QLVCqzcKxSoBtvKy
-         08XWX5bAg7XNqYi8HjqR9S+0+RURH1bIgMM0AdR660BjxKbF2isTd2Ly5mn1xLW+KG
-         vdIN1JQDw9GTA==
-Date:   Thu, 21 Jan 2021 18:11:24 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Christoph Lameter <cl@linux.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] Fix sendonly join going away after Reregister event
-Message-ID: <20210121161124.GD320304@unreal>
-References: <alpine.DEB.2.22.394.2101211318530.120233@www.lameter.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S2388048AbhAURAW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jan 2021 12:00:22 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:10084 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388342AbhAURAI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jan 2021 12:00:08 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6009b2e90001>; Thu, 21 Jan 2021 08:59:21 -0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 21 Jan
+ 2021 16:59:21 +0000
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 21 Jan
+ 2021 16:59:14 +0000
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 21 Jan 2021 16:59:13 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UhDtqBuzDQvA0i7uixdE9lRLyH8FXSlkzPRTOyevmvzsRFV1gDBSx1UfugCzoUKchMMlXm6afX9IW7+F7wMWXZsdgmNRFdEHUzHm8GMSwiYKU71VeIf8lL20bJwX4tpeTjrGenVL2w2qufqe4CS/MymfzRJ6zewTyWt8xkTH/AZX5f123gBA0Eu5M85JecAffxsLzJMz0REJ3BbJ7m/5V21Nofb+TvDMMO8OIv6W5E4VQ2BOCedkr+Ns8BpXl1foO6JbAIBTcOfhLVzqSYaQ5gn2qpYPoBVMMlljeY+HJmO4dvFbc9ldYaSIABvZfKy/UTSSI2NFRB9y7cphKNOMqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ySgBPBUcnGhRCLdVhLCCc2WbSy0IU7H6SBuWiaOIui4=;
+ b=CLqH+6WqAGI+sKKUtMEZSlTe0cU+OdyHDN2xwUTqTxjxFdVqbEitCp4coK4zJ0kP3xjmof0XoMVJsZ+u737HlSFgv3Kk9OoCSrfcSHpbIAltT9cKKoj4DHlZN3T182HfDI/DHFRH0XE9i67yP72/hnYotL618t40gF8vjeK+MfT5yOOzb9glVElO8kQmu5JB3mXUHbYwnu0GACU1BSXYgmJ8+5K15/oV7D/xjFkCBb9DD8M1oXrB2Gi85G5QgcEk2GbEZW5QEaCST3Z69YjwmVUccvWd8zs84Ubx9fPnifoy+7IK7omWIdIKTjrgn5Qx70yi0gcV1c1vbnYIzCumNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1434.namprd12.prod.outlook.com (2603:10b6:3:77::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Thu, 21 Jan
+ 2021 16:59:10 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.011; Thu, 21 Jan 2021
+ 16:59:10 +0000
+Date:   Thu, 21 Jan 2021 12:59:08 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jianxin Xiong <jianxin.xiong@intel.com>
+CC:     <linux-rdma@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        "Doug Ledford" <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "Sumit Semwal" <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: Re: [PATCH v16 0/4] RDMA: Add dma-buf support
+Message-ID: <20210121165908.GA1145246@nvidia.com>
+References: <1608067636-98073-1-git-send-email-jianxin.xiong@intel.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2101211318530.120233@www.lameter.com>
+In-Reply-To: <1608067636-98073-1-git-send-email-jianxin.xiong@intel.com>
+X-ClientProxiedBy: BL1PR13CA0535.namprd13.prod.outlook.com
+ (2603:10b6:208:2c5::30) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by BL1PR13CA0535.namprd13.prod.outlook.com (2603:10b6:208:2c5::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.5 via Frontend Transport; Thu, 21 Jan 2021 16:59:10 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l2dIa-0056pd-94; Thu, 21 Jan 2021 12:59:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611248361; bh=ySgBPBUcnGhRCLdVhLCCc2WbSy0IU7H6SBuWiaOIui4=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=EuIzT32YP7C8ZS0pDPNz/sFmTO4qVhk7JBG2tF5S9H/KQjRfGUsgKRD75nk4QeEvp
+         vVW9DrssGx/4nfOiHgVilbocGnJjQIDEmOWhgSx2wTriNCvF6Yy0dVO5XT9D8aFOTe
+         LOyJGDKh+tDhvwxD26lh0D6week6VGBiclsYVjU1G/mh90JcSgCAUyKvb6xQ2Gdpt4
+         S5udfZQm/ZFaj3go+7IihAug4ZATk4Tk1HpFQmXnNME4a6sFdlxr4ZGjQd8E4AWAry
+         gmqXXlIbC3VhAvd6GHW1RY2MaICdbpdIwAFQgQSPGkSR7dnZJNmywvOd2PvOM7PYPt
+         PHrmSPSFZ8nkg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 01:24:43PM +0000, Christoph Lameter wrote:
-> From: Christoph Lameter <cl@linux.com>
-> Subject: [PATCH] Fix sendonly join going away after Reregister event
->
-> When a server receives a REREG event then the SM information in
-> the kernel is marked as invalid and a request is sent to the SM to update
-> the information.
->
-> However, receiving a REREG also occurs in user space applications that
-> are now trying to rejoin the multicast groups.
->
-> If the SM information is invalid then ib_sa_sendonly_fullmem_support()
-> returns false. That is wrong because it just means that we do not know
-> yet if the potentially new SM supports sendonly joins. It does not mean
-> that the SM does not support Sendonly joins.
->
-> This patch simply attempts to waits until the SM information is updated
-> and the determination can be made.
->
-> The code has not been testet but compiles fine.
-> I am not sure if it is good to do an msleep here.
->
-> Signed-off-by: Christoph Lameter <cl@linux.com>
->
-> Index: linux/drivers/infiniband/core/sa_query.c
-> ===================================================================
-> --- linux.orig/drivers/infiniband/core/sa_query.c	2020-12-17 14:51:15.301206041 +0000
-> +++ linux/drivers/infiniband/core/sa_query.c	2021-01-21 12:52:53.577943481 +0000
-> @@ -1963,11 +1963,19 @@ bool ib_sa_sendonly_fullmem_support(stru
->  	if (!sa_dev)
->  		return ret;
->
-> +redo:
->  	port  = &sa_dev->port[port_num - sa_dev->start_port];
->
-> +	while (!port->classport_info.valid)
-> +		msleep(100);
-> +
->  	spin_lock_irqsave(&port->classport_lock, flags);
-> -	if ((port->classport_info.valid) &&
-> -	    (port->classport_info.data.type == RDMA_CLASS_PORT_INFO_IB))
-> +	if (!port->classport_info.valid) {
-> +		/* Need to wait until the SM data is available */
-> +		spin_unlock_irqrestore(&port->classport_lock, flags);
-> +		goto redo;
+On Tue, Dec 15, 2020 at 01:27:12PM -0800, Jianxin Xiong wrote:
+> Jianxin Xiong (4):
+>   RDMA/umem: Support importing dma-buf as user memory region
+>   RDMA/core: Add device method for registering dma-buf based memory
+>     region
+>   RDMA/uverbs: Add uverbs command for dma-buf based MR registration
+>   RDMA/mlx5: Support dma-buf based userspace memory region
 
-We have all potential to loop forever here, if valid doesn't change.
+I applied the below fix for rereg, but otherwise took this to rdma's
+for-next
 
-> +	}
-> +	if ((port->classport_info.data.type == RDMA_CLASS_PORT_INFO_IB))
->  		ret = ib_get_cpi_capmask2(&port->classport_info.data.ib)
->  			& IB_SA_CAP_MASK2_SENDONLY_FULL_MEM_SUPPORT;
->  	spin_unlock_irqrestore(&port->classport_lock, flags);
+Thanks,
+Jason
+
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index f9ca19fa531b45..a63ef7c66e383d 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1825,9 +1825,6 @@ struct ib_mr *mlx5_ib_rereg_user_mr(struct ib_mr *ib_mr, int flags, u64 start,
+ 	if (flags & ~(IB_MR_REREG_TRANS | IB_MR_REREG_PD | IB_MR_REREG_ACCESS))
+ 		return ERR_PTR(-EOPNOTSUPP);
+ 
+-	if (is_dmabuf_mr(mr))
+-		return ERR_PTR(-EOPNOTSUPP);
+-
+ 	if (!(flags & IB_MR_REREG_ACCESS))
+ 		new_access_flags = mr->access_flags;
+ 	if (!(flags & IB_MR_REREG_PD))
+@@ -1844,8 +1841,8 @@ struct ib_mr *mlx5_ib_rereg_user_mr(struct ib_mr *ib_mr, int flags, u64 start,
+ 				return ERR_PTR(err);
+ 			return NULL;
+ 		}
+-		/* DM or ODP MR's don't have a umem so we can't re-use it */
+-		if (!mr->umem || is_odp_mr(mr))
++		/* DM or ODP MR's don't have a normal umem so we can't re-use it */
++		if (!mr->umem || is_odp_mr(mr) || is_dmabuf_mr(mr))
+ 			goto recreate;
+ 
+ 		/*
+@@ -1864,10 +1861,10 @@ struct ib_mr *mlx5_ib_rereg_user_mr(struct ib_mr *ib_mr, int flags, u64 start,
+ 	}
+ 
+ 	/*
+-	 * DM doesn't have a PAS list so we can't re-use it, odp does but the
+-	 * logic around releasing the umem is different
++	 * DM doesn't have a PAS list so we can't re-use it, odp/dmabuf does
++	 * but the logic around releasing the umem is different
+ 	 */
+-	if (!mr->umem || is_odp_mr(mr))
++	if (!mr->umem || is_odp_mr(mr) || is_dmabuf_mr(mr))
+ 		goto recreate;
+ 
+ 	if (!(new_access_flags & IB_ACCESS_ON_DEMAND) &&
