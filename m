@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438952FE74F
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 11:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 877C62FE74C
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 11:16:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728685AbhAUKP2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jan 2021 05:15:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47580 "EHLO
+        id S1725275AbhAUKPW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jan 2021 05:15:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728987AbhAUJro (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jan 2021 04:47:44 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F3AC06138E
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 01:45:56 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id a9so1055907wrt.5
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 01:45:56 -0800 (PST)
+        with ESMTP id S1728811AbhAUJru (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jan 2021 04:47:50 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60CF9C061345
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 01:45:59 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id g10so1072280wrx.1
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 01:45:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/z56S/t3xQgupRDRVcqi9lXvNCrBWFO94RXqxT4CMuQ=;
-        b=qL6bk2OfCaDqiV1dsjLrmXbE3eDhjXTa/paqFHpv6GVUOlLVqfE82X803aM219wIE2
-         UhkS7Ki0YMa7u4BMypzQfBrefVZRSPbJ5sZrSRU2OtValeT3N+LUIJHe85EQfwS5joSC
-         yppbjdBD7Ld5/lsq07E/vIw02sn2+SwyjXAeEqoG6TrYUZvTOuX6xfcYgyalU6CSw1gL
-         Va5A0Gn8FstqbqsA/m0uN9xDFHkX6y1vpUnFK/flTLvyTz2/x6xinjhZAZY6J5rZTAQH
-         OWZXIH1CHqZkaRHfgFIcnsanU6jvg5wRF3ab6kZ9U7BbI0cnGT2clnDDDdcYVNliEL0b
-         Q9mQ==
+        bh=hHWi4XXx2vyVztgjTgAmprH4VRWvHZdCQBx5OVlNKfY=;
+        b=lgfYOvgxTbmldjCfGQVsXLWqgsor7xJTmEgRIw5q8Ks1K+0y2v4FIO6SqDa8zyLRsD
+         8YID8tJA3CvEd/laqfupMqMPV8mKMaBv6DXL9iB6/R+X5sqrPK+BfwRmDsytoG7ulKVD
+         X3GPNKgGxvfxRQL1o0OaAOIYeYy/kd0bAp++V56jgMjzJ6N24JxVKiCc68JqSIi1Hk/z
+         RdMgpxskr2osXM9qKuCxUwBHxbTWF8c34L6P0zxlHH1rLKpK1hkQZBgvNPWaQWbY0GU1
+         YaaWrdeTHGep+huyI4O0zXrq0JiuCewdu1apJ5kLtRRYKxkssPD6UWxUOdWbDJGB+x4+
+         QJ3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/z56S/t3xQgupRDRVcqi9lXvNCrBWFO94RXqxT4CMuQ=;
-        b=uQV6wdnQ2b2hT3zpgzivirpN0hWCPKMBPF7SfcwNaUBl1Tu0dqA26as+sO5iUyl2nA
-         Ot18P70Zj3BMhyLqcrR+SYi6ZIi5yVerZwuAxI6BWRCus09AzC21iXnW2kvY9hDes2VM
-         lgWmepKsCsAJWk105JWVLLeO6AJ7cGPVgZtU2UicJKumMt7Yp/bxT23+1cnbS45nQ8jL
-         8V1hyVOefHAfUx3ye5vCenVH+cDbxrGhUCPqBvQoHdOn//9X5opv0XKFUiJf9dT94gVa
-         0eZLQpMu/bqrOy+ts8kIJ6hLbPaFYi2aVYd1Q8zzI5tqkqzP2KQJkCCIJgWHWOv/QR7M
-         h+SQ==
-X-Gm-Message-State: AOAM530+0aiJMKN2UII4uiLzLHDJuYC0jqq0QJ1fftuodbLGjOZFG6sQ
-        5Exv9d/msCA/MQ6tFPyz1bPsXQ==
-X-Google-Smtp-Source: ABdhPJxP9fP515TxSu/dojg5poCx1LFivE8imReVdPIJ84j5E6L788alyhlX1DaQIBkEcY7GUB3FMg==
-X-Received: by 2002:adf:e54a:: with SMTP id z10mr13580456wrm.1.1611222355700;
-        Thu, 21 Jan 2021 01:45:55 -0800 (PST)
+        bh=hHWi4XXx2vyVztgjTgAmprH4VRWvHZdCQBx5OVlNKfY=;
+        b=ire4qq+4M4EFFxnDLKOe4R/HMt9IiRXPah+Cc7UNcWR+uICQpKbusiwoWzrwHGl3U8
+         jlcTTjMc4Y671IGlugd8dwAP2abjPJrZeMWWkKK2ETPcaWXeDhdJjP05MCxFaECLJsO9
+         qZcMa125hohLHM25cPazkKq+fiUFXRlmaH16VnUQ9X65HjEdztZHKHC45z57SHJkxTul
+         a4RCSB4woUSBmIkTkCm0TSsRLDeQdJnphG+gTSVJ+xG+9ZFngYF570Mhy/ICRam3ONEH
+         ynD6m5IuLGxa3sqYdKL1DEbT/EpAbMSWQnvZBWTnoJyYfSFiFQ+i2s94kVgsmS2teXo9
+         k9bQ==
+X-Gm-Message-State: AOAM533j0GtXJPriXUVSb8IZR+WR+16ED9lXuN0WEgIJSXMEGHnuXKY2
+        Utg+2sxy30qylkDAwEnTFMT2sA==
+X-Google-Smtp-Source: ABdhPJz2zDgq7vJg6Rf0Bfqtm30Oq7JlUDjRPhnw8ZGHxiWVsIkHVD2umFKM+J6YRqF3Kv0ci2cdfg==
+X-Received: by 2002:adf:e7c1:: with SMTP id e1mr1969479wrn.23.1611222358180;
+        Thu, 21 Jan 2021 01:45:58 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.54
+        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 01:45:55 -0800 (PST)
+        Thu, 21 Jan 2021 01:45:57 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -54,9 +54,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 26/30] RDMA/sw/rdmavt/mr: Fix some issues related to formatting and missing descriptions
-Date:   Thu, 21 Jan 2021 09:45:15 +0000
-Message-Id: <20210121094519.2044049-27-lee.jones@linaro.org>
+Subject: [PATCH 28/30] RDMA/hw/qib/qib_verbs: Repair some formatting problems
+Date:   Thu, 21 Jan 2021 09:45:17 +0000
+Message-Id: <20210121094519.2044049-29-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210121094519.2044049-1-lee.jones@linaro.org>
 References: <20210121094519.2044049-1-lee.jones@linaro.org>
@@ -68,17 +68,10 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/sw/rdmavt/mr.c:380: warning: Function parameter or member 'virt_addr' not described in 'rvt_reg_user_mr'
- drivers/infiniband/sw/rdmavt/mr.c:449: warning: Function parameter or member 'qp' not described in 'rvt_dereg_clean_qp_cb'
- drivers/infiniband/sw/rdmavt/mr.c:449: warning: Function parameter or member 'v' not described in 'rvt_dereg_clean_qp_cb'
- drivers/infiniband/sw/rdmavt/mr.c:466: warning: Function parameter or member 'mr' not described in 'rvt_dereg_clean_qps'
- drivers/infiniband/sw/rdmavt/mr.c:484: warning: Function parameter or member 'mr' not described in 'rvt_check_refs'
- drivers/infiniband/sw/rdmavt/mr.c:484: warning: Function parameter or member 't' not described in 'rvt_check_refs'
- drivers/infiniband/sw/rdmavt/mr.c:513: warning: Function parameter or member 'mr' not described in 'rvt_mr_has_lkey'
- drivers/infiniband/sw/rdmavt/mr.c:513: warning: Function parameter or member 'lkey' not described in 'rvt_mr_has_lkey'
- drivers/infiniband/sw/rdmavt/mr.c:526: warning: Function parameter or member 'ss' not described in 'rvt_ss_has_lkey'
- drivers/infiniband/sw/rdmavt/mr.c:526: warning: Function parameter or member 'lkey' not described in 'rvt_ss_has_lkey'
- drivers/infiniband/sw/rdmavt/mr.c:551: warning: Function parameter or member 'udata' not described in 'rvt_dereg_mr'
+ drivers/infiniband/hw/qib/qib_verbs.c:1077: warning: Function parameter or member 'ppd' not described in 'qib_get_counters'
+ drivers/infiniband/hw/qib/qib_verbs.c:1077: warning: Excess function parameter 'dd' description in 'qib_get_counters'
+ drivers/infiniband/hw/qib/qib_verbs.c:1686: warning: Function parameter or member 'qp' not described in '_qib_schedule_send'
+ drivers/infiniband/hw/qib/qib_verbs.c:1703: warning: Function parameter or member 'qp' not described in 'qib_schedule_send'
 
 Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
@@ -87,83 +80,40 @@ Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/sw/rdmavt/mr.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ drivers/infiniband/hw/qib/qib_verbs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rdmavt/mr.c b/drivers/infiniband/sw/rdmavt/mr.c
-index 90fc234f489ac..601d18dda1f5a 100644
---- a/drivers/infiniband/sw/rdmavt/mr.c
-+++ b/drivers/infiniband/sw/rdmavt/mr.c
-@@ -369,6 +369,7 @@ struct ib_mr *rvt_get_dma_mr(struct ib_pd *pd, int acc)
-  * @pd: protection domain for this memory region
-  * @start: starting userspace address
-  * @length: length of region to register
-+ * @virt_addr: associated virtual address
-  * @mr_access_flags: access flags for this memory region
-  * @udata: unused by the driver
-  *
-@@ -438,8 +439,8 @@ struct ib_mr *rvt_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+diff --git a/drivers/infiniband/hw/qib/qib_verbs.c b/drivers/infiniband/hw/qib/qib_verbs.c
+index f6c01bad5a74f..8e0de265ad578 100644
+--- a/drivers/infiniband/hw/qib/qib_verbs.c
++++ b/drivers/infiniband/hw/qib/qib_verbs.c
+@@ -1067,7 +1067,7 @@ int qib_snapshot_counters(struct qib_pportdata *ppd, u64 *swords,
  
  /**
-  * rvt_dereg_clean_qp_cb - callback from iterator
+  * qib_get_counters - get various chip counters
+- * @dd: the qlogic_ib device
++ * @ppd: the qlogic_ib device
+  * @cntrs: counters are placed here
+  *
+  * Return the counters needed by recv_pma_get_portcounters().
+@@ -1675,7 +1675,7 @@ void qib_unregister_ib_device(struct qib_devdata *dd)
+ 
+ /**
+  * _qib_schedule_send - schedule progress
 - * @qp - the qp
-- * @v - the mregion (as u64)
 + * @qp: the qp
-+ * @v: the mregion (as u64)
   *
-  * This routine fields the callback for all QPs and
-  * for QPs in the same PD as the MR will call the
-@@ -457,7 +458,7 @@ static void rvt_dereg_clean_qp_cb(struct rvt_qp *qp, u64 v)
+  * This schedules progress w/o regard to the s_flags.
+  *
+@@ -1694,7 +1694,7 @@ bool _qib_schedule_send(struct rvt_qp *qp)
  
  /**
-  * rvt_dereg_clean_qps - find QPs for reference cleanup
-- * @mr - the MR that is being deregistered
-+ * @mr: the MR that is being deregistered
+  * qib_schedule_send - schedule progress
+- * @qp - the qp
++ * @qp: the qp
   *
-  * This routine iterates RC QPs looking for references
-  * to the lkey noted in mr.
-@@ -471,8 +472,8 @@ static void rvt_dereg_clean_qps(struct rvt_mregion *mr)
- 
- /**
-  * rvt_check_refs - check references
-- * @mr - the megion
-- * @t - the caller identification
-+ * @mr: the megion
-+ * @t: the caller identification
-  *
-  * This routine checks MRs holding a reference during
-  * when being de-registered.
-@@ -506,8 +507,8 @@ static int rvt_check_refs(struct rvt_mregion *mr, const char *t)
- 
- /**
-  * rvt_mr_has_lkey - is MR
-- * @mr - the mregion
-- * @lkey - the lkey
-+ * @mr: the mregion
-+ * @lkey: the lkey
-  */
- bool rvt_mr_has_lkey(struct rvt_mregion *mr, u32 lkey)
- {
-@@ -516,8 +517,8 @@ bool rvt_mr_has_lkey(struct rvt_mregion *mr, u32 lkey)
- 
- /**
-  * rvt_ss_has_lkey - is mr in sge tests
-- * @ss - the sge state
-- * @lkey
-+ * @ss: the sge state
-+ * @lkey: the lkey
-  *
-  * This code tests for an MR in the indicated
-  * sge state.
-@@ -540,7 +541,7 @@ bool rvt_ss_has_lkey(struct rvt_sge_state *ss, u32 lkey)
- /**
-  * rvt_dereg_mr - unregister and free a memory region
-  * @ibmr: the memory region to free
-- *
-+ * @udata: unused by the driver
-  *
-  * Note that this is called to free MRs created by rvt_get_dma_mr()
-  * or rvt_reg_user_mr().
+  * This schedules qp progress.  The s_lock
+  * should be held.
 -- 
 2.25.1
 
