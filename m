@@ -2,33 +2,33 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C71A2FF13D
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 18:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5740A2FF171
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 18:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388048AbhAURAW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jan 2021 12:00:22 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:10084 "EHLO
+        id S2387750AbhAURLI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jan 2021 12:11:08 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11099 "EHLO
         hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388342AbhAURAI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jan 2021 12:00:08 -0500
+        with ESMTP id S2388401AbhAURF7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jan 2021 12:05:59 -0500
 Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6009b2e90001>; Thu, 21 Jan 2021 08:59:21 -0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 21 Jan
- 2021 16:59:21 +0000
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL103.nvidia.com
+        id <B6009b44e0003>; Thu, 21 Jan 2021 09:05:18 -0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 21 Jan
+ 2021 17:05:17 +0000
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL103.nvidia.com
  (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 21 Jan
- 2021 16:59:14 +0000
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 21 Jan 2021 16:59:13 +0000
+ 2021 17:05:15 +0000
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.104)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 21 Jan 2021 17:05:15 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UhDtqBuzDQvA0i7uixdE9lRLyH8FXSlkzPRTOyevmvzsRFV1gDBSx1UfugCzoUKchMMlXm6afX9IW7+F7wMWXZsdgmNRFdEHUzHm8GMSwiYKU71VeIf8lL20bJwX4tpeTjrGenVL2w2qufqe4CS/MymfzRJ6zewTyWt8xkTH/AZX5f123gBA0Eu5M85JecAffxsLzJMz0REJ3BbJ7m/5V21Nofb+TvDMMO8OIv6W5E4VQ2BOCedkr+Ns8BpXl1foO6JbAIBTcOfhLVzqSYaQ5gn2qpYPoBVMMlljeY+HJmO4dvFbc9ldYaSIABvZfKy/UTSSI2NFRB9y7cphKNOMqQ==
+ b=NcIAPt9qG2269VO476dQ0EW3OXXm2c9udD6+SNygGsoAPmrwDnAqgyusnEgGwsBGM2dglNyH/SH/G5q8AXo+i4I3QyNngJx65qcFquayE5M3rCizAvUg2SkUh0HOTcZ1aPaYrJN0nCNsA8get1daQ2Y7uO30HNoETTFogOn1Xpy+kfiQahKya/NJVaUNCHmHb53rTleYvs8t6/evG1DoWeqEE8KQxr2m/dY7Ehy82QXCdNUED9/sHxvBDvkPD81hKveBnjWG/PdnkiLE0wnB1OEpubIrkTj36skCmigUFs1gzAZuEIaJo45I3d0+pQKxpZRFJU8yWp09DEZEZ+Qn7Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ySgBPBUcnGhRCLdVhLCCc2WbSy0IU7H6SBuWiaOIui4=;
- b=CLqH+6WqAGI+sKKUtMEZSlTe0cU+OdyHDN2xwUTqTxjxFdVqbEitCp4coK4zJ0kP3xjmof0XoMVJsZ+u737HlSFgv3Kk9OoCSrfcSHpbIAltT9cKKoj4DHlZN3T182HfDI/DHFRH0XE9i67yP72/hnYotL618t40gF8vjeK+MfT5yOOzb9glVElO8kQmu5JB3mXUHbYwnu0GACU1BSXYgmJ8+5K15/oV7D/xjFkCBb9DD8M1oXrB2Gi85G5QgcEk2GbEZW5QEaCST3Z69YjwmVUccvWd8zs84Ubx9fPnifoy+7IK7omWIdIKTjrgn5Qx70yi0gcV1c1vbnYIzCumNg==
+ bh=lsGOW3AnR2d2OE5vYrGwBGmiO3NtEcRC6XfXSg0Wf6U=;
+ b=jj5x95rdN/n/umR4yLdDEfPAMSS6vWmhu72s/3Niv+aoC8izf3gF/Xwgt5OSNR2w54Ym2RtxFIvtIEUdywZzxr5vLFgH/LvP7KFpBt62pVRmKHOeQLCbBvWAyf2h0jmbbQcORahE3aBcSLxfsGcadMaKuM9OfnHnt1M35YO3SXwSH6a6Tx1lr8B/PQm4YzD55bUxzjhKiGUHHi9rY23JPPXatASwSmO3HfKqMu1jvrlPQRhZtMysLcqPdrjm5AbvHNpuapnUfYNXDjqOQ9hXN5YPaId72tYsKeKc+zgsLnlECMnYBBC4M36/hlni1IFdc4XqouHhRsaTvhIR+nCNeg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
@@ -36,99 +36,53 @@ Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
  by DM5PR12MB1434.namprd12.prod.outlook.com (2603:10b6:3:77::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Thu, 21 Jan
- 2021 16:59:10 +0000
+ 2021 17:05:13 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.011; Thu, 21 Jan 2021
- 16:59:10 +0000
-Date:   Thu, 21 Jan 2021 12:59:08 -0400
+ 17:05:13 +0000
+Date:   Thu, 21 Jan 2021 13:05:11 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jianxin Xiong <jianxin.xiong@intel.com>
-CC:     <linux-rdma@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        "Doug Ledford" <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "Sumit Semwal" <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: Re: [PATCH v16 0/4] RDMA: Add dma-buf support
-Message-ID: <20210121165908.GA1145246@nvidia.com>
-References: <1608067636-98073-1-git-send-email-jianxin.xiong@intel.com>
+To:     Xiao Yang <yangx.jy@cn.fujitsu.com>
+CC:     <linux-rdma@vger.kernel.org>, <leon@kernel.org>
+Subject: Re: [PATCH 1/2] RDMA/uverbs: Don't set rcq if qp_type is
+ IB_QPT_XRC_INI
+Message-ID: <20210121170511.GA1218297@nvidia.com>
+References: <20201216071755.149449-1-yangx.jy@cn.fujitsu.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1608067636-98073-1-git-send-email-jianxin.xiong@intel.com>
-X-ClientProxiedBy: BL1PR13CA0535.namprd13.prod.outlook.com
- (2603:10b6:208:2c5::30) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <20201216071755.149449-1-yangx.jy@cn.fujitsu.com>
+X-ClientProxiedBy: MN2PR03CA0002.namprd03.prod.outlook.com
+ (2603:10b6:208:23a::7) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by BL1PR13CA0535.namprd13.prod.outlook.com (2603:10b6:208:2c5::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.5 via Frontend Transport; Thu, 21 Jan 2021 16:59:10 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l2dIa-0056pd-94; Thu, 21 Jan 2021 12:59:08 -0400
+Received: from mlx.ziepe.ca (206.223.160.26) by MN2PR03CA0002.namprd03.prod.outlook.com (2603:10b6:208:23a::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Thu, 21 Jan 2021 17:05:12 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l2dOR-0056zg-FV; Thu, 21 Jan 2021 13:05:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611248361; bh=ySgBPBUcnGhRCLdVhLCCc2WbSy0IU7H6SBuWiaOIui4=;
+        t=1611248718; bh=lsGOW3AnR2d2OE5vYrGwBGmiO3NtEcRC6XfXSg0Wf6U=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=EuIzT32YP7C8ZS0pDPNz/sFmTO4qVhk7JBG2tF5S9H/KQjRfGUsgKRD75nk4QeEvp
-         vVW9DrssGx/4nfOiHgVilbocGnJjQIDEmOWhgSx2wTriNCvF6Yy0dVO5XT9D8aFOTe
-         LOyJGDKh+tDhvwxD26lh0D6week6VGBiclsYVjU1G/mh90JcSgCAUyKvb6xQ2Gdpt4
-         S5udfZQm/ZFaj3go+7IihAug4ZATk4Tk1HpFQmXnNME4a6sFdlxr4ZGjQd8E4AWAry
-         gmqXXlIbC3VhAvd6GHW1RY2MaICdbpdIwAFQgQSPGkSR7dnZJNmywvOd2PvOM7PYPt
-         PHrmSPSFZ8nkg==
+        b=cwISBctkxW+QB5BTM2LLZ8vmE0VdK3xIX7mAFiHQzK57m8uqg7jyHmM2I9S4ryzKq
+         CvJqx8W9ixQUif2yaeQag+S8EnFPm4fyRajALkGWn4JjbJtaBFEcsbssBU+0G9oD5s
+         J7bIgbgfZJoteART6xGCWiOqrY0mRVXeaUAXaeqQEGVoeqdNeLwbPu8YzGnpMvpohd
+         FF9j3OLuXwGmQDeaYGYsaHYLRAawlkiIMaaNiXx2Tdr9J3snZ66kK/feSeRex2qGq7
+         8AkKoj0Y7ufL4TLx1XFHx9IbEkf33htasd0Ka4N++FmXlz5kfnUhYlrNDQA9+OGbtE
+         uOPzHah6ezgcA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 01:27:12PM -0800, Jianxin Xiong wrote:
-> Jianxin Xiong (4):
->   RDMA/umem: Support importing dma-buf as user memory region
->   RDMA/core: Add device method for registering dma-buf based memory
->     region
->   RDMA/uverbs: Add uverbs command for dma-buf based MR registration
->   RDMA/mlx5: Support dma-buf based userspace memory region
+On Wed, Dec 16, 2020 at 03:17:54PM +0800, Xiao Yang wrote:
+> INI QP doesn't require receive CQ.
+> 
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  drivers/infiniband/core/uverbs_cmd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-I applied the below fix for rereg, but otherwise took this to rdma's
-for-next
+Applied to for-next, thanks
 
-Thanks,
 Jason
-
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index f9ca19fa531b45..a63ef7c66e383d 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -1825,9 +1825,6 @@ struct ib_mr *mlx5_ib_rereg_user_mr(struct ib_mr *ib_mr, int flags, u64 start,
- 	if (flags & ~(IB_MR_REREG_TRANS | IB_MR_REREG_PD | IB_MR_REREG_ACCESS))
- 		return ERR_PTR(-EOPNOTSUPP);
- 
--	if (is_dmabuf_mr(mr))
--		return ERR_PTR(-EOPNOTSUPP);
--
- 	if (!(flags & IB_MR_REREG_ACCESS))
- 		new_access_flags = mr->access_flags;
- 	if (!(flags & IB_MR_REREG_PD))
-@@ -1844,8 +1841,8 @@ struct ib_mr *mlx5_ib_rereg_user_mr(struct ib_mr *ib_mr, int flags, u64 start,
- 				return ERR_PTR(err);
- 			return NULL;
- 		}
--		/* DM or ODP MR's don't have a umem so we can't re-use it */
--		if (!mr->umem || is_odp_mr(mr))
-+		/* DM or ODP MR's don't have a normal umem so we can't re-use it */
-+		if (!mr->umem || is_odp_mr(mr) || is_dmabuf_mr(mr))
- 			goto recreate;
- 
- 		/*
-@@ -1864,10 +1861,10 @@ struct ib_mr *mlx5_ib_rereg_user_mr(struct ib_mr *ib_mr, int flags, u64 start,
- 	}
- 
- 	/*
--	 * DM doesn't have a PAS list so we can't re-use it, odp does but the
--	 * logic around releasing the umem is different
-+	 * DM doesn't have a PAS list so we can't re-use it, odp/dmabuf does
-+	 * but the logic around releasing the umem is different
- 	 */
--	if (!mr->umem || is_odp_mr(mr))
-+	if (!mr->umem || is_odp_mr(mr) || is_dmabuf_mr(mr))
- 		goto recreate;
- 
- 	if (!(new_access_flags & IB_ACCESS_ON_DEMAND) &&
