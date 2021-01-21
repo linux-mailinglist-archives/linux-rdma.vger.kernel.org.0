@@ -2,137 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCF52FEEDE
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 16:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A81E2FEFDF
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 17:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732885AbhAUPbz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jan 2021 10:31:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733021AbhAUPbk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jan 2021 10:31:40 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B1D9C061794
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 07:30:10 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id g10so2162354wrx.1
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 07:30:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Gwp+mti/6unhnftOwEo6BpxjLR5MA6bqIJ8IUPn3cOs=;
-        b=kMtnYpXoQilXJI5sJqSPob2bWQ55p5+duu6yonvEpHwrxCiLYrkz9LoR6T4Y1baDPd
-         FGJf2OlyKMX3Z7fL7ZJe2b1Lapkr2531bNnpViLJ08xVV0OHJYCKwI2R9nwqEwb1t3BP
-         RqQufrhio3x2IOAlgGI4AkmTTAcJHol406C4k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Gwp+mti/6unhnftOwEo6BpxjLR5MA6bqIJ8IUPn3cOs=;
-        b=uc/54z/1gdp3gCQZGQiQF252T+77I6Y2tC4+FXX6y/o2p72QzpRIUi1kW0E1M6Pidq
-         2wf23EuOfNh9Pm7Ch2umxD3N5ecEsUd2o81leTLf9GP+4xDTDlXkI/ZlXEwVoiS2c+6y
-         osvgCwy0Zjs4BeFPsUuKBUyfFU9VKQ0BQF/lvXMqZ2TALsg+yI/W+R8CNlvuRfnzo6zG
-         EDxsjwto8dLENa28r8iaefGPbV3jN4q5Kl+zSw+l9Jt/sMkSPuYtL6OMwT1uRvr+nyc3
-         OwU/YdvTR0wsOpWOXV9xm0IHluQXECLuFR0af3nMySY642k/E4ygq0uy9UCsKi/KyqLT
-         KCrw==
-X-Gm-Message-State: AOAM532iHlh9AbKydbLAY0pySXJHu6bGn7Ed2rVpfpPWv2IL2rz0C0HM
-        0bA/w3nYVCmifV+NOePbEe2DQg==
-X-Google-Smtp-Source: ABdhPJy6GorVysk+oFoqONV7oZt+wQ1tAaWUjwMiKJzGDE0nLgBRPSvxY4+1neq9zorcHYOHV6OOMA==
-X-Received: by 2002:a5d:440a:: with SMTP id z10mr8270wrq.266.1611243008784;
-        Thu, 21 Jan 2021 07:30:08 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id f14sm8269866wre.69.2021.01.21.07.30.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 07:30:08 -0800 (PST)
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-To:     DRI Development <dri-devel@lists.freedesktop.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: [PATCH 03/11] drm/vblank: Annotate with dma-fence signalling section
-Date:   Thu, 21 Jan 2021 16:29:51 +0100
-Message-Id: <20210121152959.1725404-4-daniel.vetter@ffwll.ch>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210121152959.1725404-1-daniel.vetter@ffwll.ch>
-References: <20210121152959.1725404-1-daniel.vetter@ffwll.ch>
+        id S1732230AbhAUQMT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jan 2021 11:12:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731699AbhAUQMO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 21 Jan 2021 11:12:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9E7223A1E;
+        Thu, 21 Jan 2021 16:11:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611245488;
+        bh=jjLGdKR5GLsw6DX3wBDygjk1QWEO1wvll3YXwKcdWeY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dojJHgRGEGA/q8skPyr7SHwCCGZx5pucvYfGEmE6d99u/tV8MaoEVrZ72ZqGqq5JL
+         FCfVOzodQN2IHAGUIQYto5BGHrCKFRD9m+bSnoHdf6b9iAps+8GAL+HcTtDcqiBX9k
+         Q05DuxWdEEOhM7gTJJCaXfZ+p/6u5hRc9Z3KvPZmGsdifOFUN/f9RvJMvNYkF7kWar
+         sQObibWRgpQRp2brpOwfmkxPQ7jz6GF6gHHqTydyO5NQAogPE9QLVCqzcKxSoBtvKy
+         08XWX5bAg7XNqYi8HjqR9S+0+RURH1bIgMM0AdR660BjxKbF2isTd2Ly5mn1xLW+KG
+         vdIN1JQDw9GTA==
+Date:   Thu, 21 Jan 2021 18:11:24 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Christoph Lameter <cl@linux.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] Fix sendonly join going away after Reregister event
+Message-ID: <20210121161124.GD320304@unreal>
+References: <alpine.DEB.2.22.394.2101211318530.120233@www.lameter.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2101211318530.120233@www.lameter.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This is rather overkill since currently all drivers call this from
-hardirq (or at least timers). But maybe in the future we're going to
-have thread irq handlers and what not, doesn't hurt to be prepared.
-Plus this is an easy start for sprinkling these fence annotations into
-shared code.
+On Thu, Jan 21, 2021 at 01:24:43PM +0000, Christoph Lameter wrote:
+> From: Christoph Lameter <cl@linux.com>
+> Subject: [PATCH] Fix sendonly join going away after Reregister event
+>
+> When a server receives a REREG event then the SM information in
+> the kernel is marked as invalid and a request is sent to the SM to update
+> the information.
+>
+> However, receiving a REREG also occurs in user space applications that
+> are now trying to rejoin the multicast groups.
+>
+> If the SM information is invalid then ib_sa_sendonly_fullmem_support()
+> returns false. That is wrong because it just means that we do not know
+> yet if the potentially new SM supports sendonly joins. It does not mean
+> that the SM does not support Sendonly joins.
+>
+> This patch simply attempts to waits until the SM information is updated
+> and the determination can be made.
+>
+> The code has not been testet but compiles fine.
+> I am not sure if it is good to do an msleep here.
+>
+> Signed-off-by: Christoph Lameter <cl@linux.com>
+>
+> Index: linux/drivers/infiniband/core/sa_query.c
+> ===================================================================
+> --- linux.orig/drivers/infiniband/core/sa_query.c	2020-12-17 14:51:15.301206041 +0000
+> +++ linux/drivers/infiniband/core/sa_query.c	2021-01-21 12:52:53.577943481 +0000
+> @@ -1963,11 +1963,19 @@ bool ib_sa_sendonly_fullmem_support(stru
+>  	if (!sa_dev)
+>  		return ret;
+>
+> +redo:
+>  	port  = &sa_dev->port[port_num - sa_dev->start_port];
+>
+> +	while (!port->classport_info.valid)
+> +		msleep(100);
+> +
+>  	spin_lock_irqsave(&port->classport_lock, flags);
+> -	if ((port->classport_info.valid) &&
+> -	    (port->classport_info.data.type == RDMA_CLASS_PORT_INFO_IB))
+> +	if (!port->classport_info.valid) {
+> +		/* Need to wait until the SM data is available */
+> +		spin_unlock_irqrestore(&port->classport_lock, flags);
+> +		goto redo;
 
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
-Cc: linux-rdma@vger.kernel.org
-Cc: amd-gfx@lists.freedesktop.org
-Cc: intel-gfx@lists.freedesktop.org
-Cc: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Christian König <christian.koenig@amd.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
----
- drivers/gpu/drm/drm_vblank.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+We have all potential to loop forever here, if valid doesn't change.
 
-diff --git a/drivers/gpu/drm/drm_vblank.c b/drivers/gpu/drm/drm_vblank.c
-index 30912d8f82a5..f2aeb9bf325f 100644
---- a/drivers/gpu/drm/drm_vblank.c
-+++ b/drivers/gpu/drm/drm_vblank.c
-@@ -24,6 +24,7 @@
-  * OTHER DEALINGS IN THE SOFTWARE.
-  */
- 
-+#include <linux/dma-fence.h>
- #include <linux/export.h>
- #include <linux/kthread.h>
- #include <linux/moduleparam.h>
-@@ -1922,7 +1923,7 @@ bool drm_handle_vblank(struct drm_device *dev, unsigned int pipe)
- {
- 	struct drm_vblank_crtc *vblank = &dev->vblank[pipe];
- 	unsigned long irqflags;
--	bool disable_irq;
-+	bool disable_irq, fence_cookie;
- 
- 	if (drm_WARN_ON_ONCE(dev, !drm_dev_has_vblank(dev)))
- 		return false;
-@@ -1930,6 +1931,8 @@ bool drm_handle_vblank(struct drm_device *dev, unsigned int pipe)
- 	if (drm_WARN_ON(dev, pipe >= dev->num_crtcs))
- 		return false;
- 
-+	fence_cookie = dma_fence_begin_signalling();
-+
- 	spin_lock_irqsave(&dev->event_lock, irqflags);
- 
- 	/* Need timestamp lock to prevent concurrent execution with
-@@ -1942,6 +1945,7 @@ bool drm_handle_vblank(struct drm_device *dev, unsigned int pipe)
- 	if (!vblank->enabled) {
- 		spin_unlock(&dev->vblank_time_lock);
- 		spin_unlock_irqrestore(&dev->event_lock, irqflags);
-+		dma_fence_end_signalling(fence_cookie);
- 		return false;
- 	}
- 
-@@ -1968,6 +1972,8 @@ bool drm_handle_vblank(struct drm_device *dev, unsigned int pipe)
- 	if (disable_irq)
- 		vblank_disable_fn(&vblank->disable_timer);
- 
-+	dma_fence_end_signalling(fence_cookie);
-+
- 	return true;
- }
- EXPORT_SYMBOL(drm_handle_vblank);
--- 
-2.30.0
-
+> +	}
+> +	if ((port->classport_info.data.type == RDMA_CLASS_PORT_INFO_IB))
+>  		ret = ib_get_cpi_capmask2(&port->classport_info.data.ib)
+>  			& IB_SA_CAP_MASK2_SENDONLY_FULL_MEM_SUPPORT;
+>  	spin_unlock_irqrestore(&port->classport_lock, flags);
