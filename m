@@ -2,65 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31F12FF262
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 18:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F122FF26C
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 18:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388246AbhAURta (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jan 2021 12:49:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52828 "EHLO mail.kernel.org"
+        id S2389068AbhAURu1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jan 2021 12:50:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389259AbhAURsc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:48:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA183207C5;
-        Thu, 21 Jan 2021 17:47:50 +0000 (UTC)
+        id S2388179AbhAURuX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 21 Jan 2021 12:50:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18DA7207C5;
+        Thu, 21 Jan 2021 17:49:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611251271;
-        bh=oMiI6DC0wqnDzsVHC7jO/akP9QPC83R9sCcZVqjCxp4=;
+        s=k20201202; t=1611251381;
+        bh=q47TsziiuHREj7VxUa6dHIThjn23RfAisk8X3eojDac=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UggbUS2Vn3Isnolv1iMfwv25UNGmLIIca8pcBkPhRNc5iKb0w1uML9/RDRMXMDq+L
-         2izP0XmyHHd2ry2LNg7UiyVwgparv13fphGyD58cAp8Ush5xXIvbua1s0NuCXXvZWx
-         kNVjXL0tvuCO61jvfT8PYuTI24iNdYxNBNSXjHI4AiJgbyrRCLYDWWJXpWQCcjjfQo
-         uzbZTVTwFO5ouCJMd/zbqoIsdpJngkBgZrvuH3Cz6KV/9GrQtB+4luSfyxzukDZO5r
-         muJJYhQ2DECKCRn8Jhy+bNO2+q0DQXMe7ACYccaDOj4bRVIGzTCPF+YwbxWyT6q0+R
-         /WMV+AodVz46Q==
-Date:   Thu, 21 Jan 2021 19:47:47 +0200
+        b=Fq2MhBjBUSfg/khaKz8XaxgTaHt1FEfg5aQjkg9PftqoTLWHKrvCHSsOPdOB39XBd
+         kDj4m/IqIzFpangxVOnOeQY2ybrLM9TKZ5MXgenmSBmdX/4llLbKmyjke1b+lpgwPp
+         3ChmBj4iVg//8FqL2p/VQ/EHmZ0eu8IBQgmH3g/bxlUg2sav6oNNelDxkrJZqj10it
+         xxiJhfIyVJiah3FygFYRJsDU0Tp59bahmLAgMdcO5BLuuzD/po8eOuYcEwFi9GLP3P
+         vxBAhgajYtrVZRRspOrTgsHArvtiXVJJf3mbDWI6v6IW9hNyPmQl3QMWTAa5NESckZ
+         OXPgTC7yoXj1A==
+Date:   Thu, 21 Jan 2021 19:49:38 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 01/30] RDMA/hw/mlx5/odp: Fix formatting and add missing
- descriptions in 'pagefault_data_segments()'
-Message-ID: <20210121174747.GF320304@unreal>
-References: <20210121094519.2044049-1-lee.jones@linaro.org>
- <20210121094519.2044049-2-lee.jones@linaro.org>
+To:     Pan Bian <bianpan2016@163.com>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Aya Levin <ayal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        Moshe Tal <moshet@mellanox.com>, Joe Perches <joe@perches.com>,
+        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/mlx5e: free page before return
+Message-ID: <20210121174938.GG320304@unreal>
+References: <20210121045830.96928-1-bianpan2016@163.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210121094519.2044049-2-lee.jones@linaro.org>
+In-Reply-To: <20210121045830.96928-1-bianpan2016@163.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 09:44:50AM +0000, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On Wed, Jan 20, 2021 at 08:58:30PM -0800, Pan Bian wrote:
+> Instead of directly return, goto the error handling label to free
+> allocated page.
 >
->  drivers/infiniband/hw/mlx5/odp.c:1062: warning: Function parameter or member 'dev' not described in 'pagefault_data_segments'
->  drivers/infiniband/hw/mlx5/odp.c:1062: warning: Function parameter or member 'pfault' not described in 'pagefault_data_segments'
->  drivers/infiniband/hw/mlx5/odp.c:1062: warning: Function parameter or member 'wqe' not described in 'pagefault_data_segments'
->  drivers/infiniband/hw/mlx5/odp.c:1062: warning: Function parameter or member 'wqe_end' not described in 'pagefault_data_segments'
->  drivers/infiniband/hw/mlx5/odp.c:1062: warning: Function parameter or member 'bytes_mapped' not described in 'pagefault_data_segments'
->  drivers/infiniband/hw/mlx5/odp.c:1062: warning: Function parameter or member 'total_wqe_bytes' not described in 'pagefault_data_segments'
->  drivers/infiniband/hw/mlx5/odp.c:1062: warning: Function parameter or member 'receive_queue' not described in 'pagefault_data_segments'
->
-> Cc: Leon Romanovsky <leon@kernel.org>
-> Cc: Doug Ledford <dledford@redhat.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: linux-rdma@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Fixes: 5f29458b77d5 ("net/mlx5e: Support dump callback in TX reporter")
+> Signed-off-by: Pan Bian <bianpan2016@163.com>
 > ---
->  drivers/infiniband/hw/mlx5/odp.c | 22 ++++++++++++----------
->  1 file changed, 12 insertions(+), 10 deletions(-)
+>  drivers/net/ethernet/mellanox/mlx5/core/en/health.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
 
 Thanks,
-Acked-by: Leon Romanovsky <leonro@nvidia.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
