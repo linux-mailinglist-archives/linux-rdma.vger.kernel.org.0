@@ -2,74 +2,307 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 113AB2FE59E
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 09:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85CC92FE59B
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 09:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728125AbhAUIyR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jan 2021 03:54:17 -0500
-Received: from m12-16.163.com ([220.181.12.16]:39187 "EHLO m12-16.163.com"
+        id S1728268AbhAUIxv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jan 2021 03:53:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727303AbhAUIxw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:53:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=ArBTUuh53jUTPHGj7F
-        B71BEdSOmQokOK+9LhXjG5hec=; b=OArB6ttt/zpOoxfWAVuPD6hqidJXhG54j4
-        Q9UX7cigZln44S067At/CbpQk52Xk8EGLBiJJk1YtrF7GRrkUV0YREg1rtu7Et8W
-        9YUFW9wCY56pKD4zFBSLFI3O8QhnyQzG4DQCK9LoPIYGqRSSn5TDdrAtV488xR3x
-        wQokPDP1A=
-Received: from localhost.localdomain (unknown [119.3.119.20])
-        by smtp12 (Coremail) with SMTP id EMCowACXQy34CQlgDlyOYA--.45434S4;
-        Thu, 21 Jan 2021 12:58:38 +0800 (CST)
-From:   Pan Bian <bianpan2016@163.com>
-To:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Moshe Tal <moshet@mellanox.com>, Joe Perches <joe@perches.com>,
-        Jiri Pirko <jiri@mellanox.com>
+        id S1728261AbhAUIx3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 21 Jan 2021 03:53:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50AB1239A1;
+        Thu, 21 Jan 2021 08:52:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611219168;
+        bh=+773sWkWa637cY2wBYfU007qaF4xdbrHVMZuSls1UZQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bjkf9YjW3DbUBw9EsCwmLW0B56HqonIv5PVtKkoh4Ih4w4te7upNsyjewvgVut/42
+         sUfZBvL3zLUil3/t9fNo3VObhffB9RPZHDIKw8/5BuhteHfQs/TZXFc8AR8VNHNTRf
+         qaHkIYDX83/cYAJh8GroXboOqSDjLzJtiLsrM8S6nSDn2IMygyzN7mmpotgDDzY2cy
+         aWjjnP+uadqOYSgzRnBGG75I/5PA46j5NOi8tTXK2HqAsknYxeYcjV+1QrBvuphYLa
+         mpPI9CvzfA6tPOd8Qt2xN+m0zlXvx3Nek9l/9J0keW3eRYIchTQHw8Iwg33/P9GA/G
+         4S9cvu89bYLAA==
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>
 Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Pan Bian <bianpan2016@163.com>
-Subject: [PATCH] net/mlx5e: free page before return
-Date:   Wed, 20 Jan 2021 20:58:30 -0800
-Message-Id: <20210121045830.96928-1-bianpan2016@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: EMCowACXQy34CQlgDlyOYA--.45434S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKr4kXryDXFWDKr4kWrWkCrg_yoWfuFb_Wr
-        yUX3WfGrs7XF4jk3W3u3yaka4xKw1Durn3AFZagFy5Jw47Wr1kJayUWFyfAryxWrWxZa4D
-        Ga9xta43Z3y5AjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnIoGJUUUUU==
-X-Originating-IP: [119.3.119.20]
-X-CM-SenderInfo: held01tdqsiiqw6rljoofrz/1tbiNh4hclWBlumFIQAAs0
+        alexander.duyck@gmail.com, sridhar.samudrala@intel.com,
+        edwin.peer@broadcom.com, dsahern@kernel.org, kiran.patil@intel.com,
+        jacob.e.keller@intel.com, david.m.ertman@intel.com,
+        dan.j.williams@intel.com, Saeed Mahameed <saeedm@nvidia.com>
+Subject: [pull request][net-next V9 00/14] Add mlx5 subfunction support
+Date:   Thu, 21 Jan 2021 00:52:23 -0800
+Message-Id: <20210121085237.137919-1-saeed@kernel.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Instead of directly return, goto the error handling label to free
-allocated page.
+From: Saeed Mahameed <saeedm@nvidia.com>
 
-Fixes: 5f29458b77d5 ("net/mlx5e: Support dump callback in TX reporter")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
+Hi Dave, Jakub, Jason,
+
+This series form Parav was the theme of this mlx5 release cycle,
+we've been waiting anxiously for the auxbus infrastructure to make it into
+the kernel, and now as the auxbus is in and all the stars are aligned, I
+can finally submit this patchset of the devlink and mlx5 subfunction support.
+
+For more detailed information about subfunctions please see detailed tag
+log below.
+
+Please pull and let me know if there's any problem.
+
+Thanks,
+Saeed.
+
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/health.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changelog:
+v8->v9:
+ - Use proper functions doc in patches #3,#4
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/health.c b/drivers/net/ethernet/mellanox/mlx5/core/en/health.c
-index 718f8c0a4f6b..84e501e057b4 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/health.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/health.c
-@@ -273,7 +273,7 @@ int mlx5e_health_rsc_fmsg_dump(struct mlx5e_priv *priv, struct mlx5_rsc_key *key
+v7->v8:
+ - Address documentation related comments missed on v5, Jakub.
+
+v6-v7:
+ - Resolve new kdoc warning
+
+v5->v6:
+ - update docs and corrected spellings and typos according to previous
+   review
+ - use of shorted macro names
+ - using updated callback to return port index
+ - updated commit message example for add command return fields
+ - driver name suffix corrected from 'mlx5_core' to 'sf'
+ - using MLX5_ADEV_NAME prefix to match with other mlx5 auxiliary devices
+ - fixed sf allocated condition
+ - using 80 characters alignment
+ - shorten the enum type names and enum values from
+   PORT_FUNCTION to PORT_FN
+ - return port attributes of newly created port
+ - moved port add and delete callbacks pointer check before preparing
+   attributes for driver
+ - added comment to clarify that about desired port index during add
+   callback
+ - place SF number attribute only when port flavour is SF
+ - packed the sf attribute structure
+ - removed external flag for sf for initial patchset
+
+v4->v5:
+ - Fix some typos in the documentation
  
- 	err = devlink_fmsg_binary_pair_nest_start(fmsg, "data");
- 	if (err)
--		return err;
-+		goto free_page;
- 
- 	cmd = mlx5_rsc_dump_cmd_create(mdev, key);
- 	if (IS_ERR(cmd)) {
--- 
-2.17.1
+v3->v4:
+ - Fix 32bit compilation issue
+
+v2->v3:
+ - added header file sf/priv.h to cmd.c to avoid missing prototype warning
+ - made mlx5_sf_table_disable as static function as its used only in one file
+
+v1->v2:
+ - added documentation for subfunction and its mlx5 implementation
+ - add MLX5_SF config option documentation
+ - rebased
+ - dropped devlink global lock improvement patch as mlx5 doesn't support
+   reload while SFs are allocated
+ - dropped devlink reload lock patch as mlx5 doesn't support reload
+   when SFs are allocated
+ - using updated vhca event from device to add remove auxiliary device
+ - split sf devlink port allocation and sf hardware context allocation
 
 
+Thanks,
+Saeed.
+
+---
+The following changes since commit 7b8fc0103bb51d1d3e1fb5fd67958612e709f883:
+
+  bonding: add a vlan+srcmac tx hashing option (2021-01-19 19:30:32 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux.git tags/mlx5-updates-2021-01-13
+
+for you to fetch changes up to 008536927ab1443b4ea2d40b8a9bb4e077903884:
+
+  net/mlx5: Add devlink subfunction port documentation (2021-01-21 00:33:01 -0800)
+
+----------------------------------------------------------------
+mlx5 subfunction support
+
+Parav Pandit Says:
+=================
+
+This patchset introduces support for mlx5 subfunction (SF).
+
+A subfunction is a lightweight function that has a parent PCI function on
+which it is deployed. mlx5 subfunction has its own function capabilities
+and its own resources. This means a subfunction has its own dedicated
+queues(txq, rxq, cq, eq). These queues are neither shared nor stolen from
+the parent PCI function.
+
+When subfunction is RDMA capable, it has its own QP1, GID table and rdma
+resources neither shared nor stolen from the parent PCI function.
+
+A subfunction has dedicated window in PCI BAR space that is not shared
+with the other subfunctions or parent PCI function. This ensures that all
+class devices of the subfunction accesses only assigned PCI BAR space.
+
+A Subfunction supports eswitch representation through which it supports tc
+offloads. User must configure eswitch to send/receive packets from/to
+subfunction port.
+
+Subfunctions share PCI level resources such as PCI MSI-X IRQs with
+their other subfunctions and/or with its parent PCI function.
+
+Patch summary:
+--------------
+Patch 1 to 4 prepares devlink
+patch 5 to 7 mlx5 adds SF device support
+Patch 8 to 11 mlx5 adds SF devlink port support
+Patch 12 and 14 adds documentation
+
+Patch-1 prepares code to handle multiple port function attributes
+Patch-2 introduces devlink pcisf port flavour similar to pcipf and pcivf
+Patch-3 adds port add and delete driver callbacks
+Patch-4 adds port function state get and set callbacks
+Patch-5 mlx5 vhca event notifier support to distribute subfunction
+        state change notification
+Patch-6 adds SF auxiliary device
+Patch-7 adds SF auxiliary driver
+Patch-8 prepares eswitch to handler SF vport
+Patch-9 adds eswitch helpers to add/remove SF vport
+Patch-10 implements devlink port add/del callbacks
+Patch-11 implements devlink port function get/set callbacks
+Patch-12 to 14 adds documentation
+Patch-12 added mlx5 port function documentation
+Patch-13 adds subfunction documentation
+Patch-14 adds mlx5 subfunction documentation
+
+Subfunction support is discussed in detail in RFC [1] and [2].
+RFC [1] and extension [2] describes requirements, design and proposed
+plumbing using devlink, auxiliary bus and sysfs for systemd/udev
+support. Functionality of this patchset is best explained using real
+examples further below.
+
+overview:
+--------
+A subfunction can be created and deleted by a user using devlink port
+add/delete interface.
+
+A subfunction can be configured using devlink port function attribute
+before its activated.
+
+When a subfunction is activated, it results in an auxiliary device on
+the host PCI device where it is deployed. A driver binds to the
+auxiliary device that further creates supported class devices.
+
+example subfunction usage sequence:
+-----------------------------------
+Change device to switchdev mode:
+$ devlink dev eswitch set pci/0000:06:00.0 mode switchdev
+
+Add a devlink port of subfunction flavour:
+$ devlink port add pci/0000:06:00.0 flavour pcisf pfnum 0 sfnum 88
+
+Configure mac address of the port function:
+$ devlink port function set ens2f0npf0sf88 hw_addr 00:00:00:00:88:88
+
+Now activate the function:
+$ devlink port function set ens2f0npf0sf88 state active
+
+Now use the auxiliary device and class devices:
+$ devlink dev show
+pci/0000:06:00.0
+auxiliary/mlx5_core.sf.4
+
+$ ip link show
+127: ens2f0np0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 24:8a:07:b3:d1:12 brd ff:ff:ff:ff:ff:ff
+    altname enp6s0f0np0
+129: p0sf88: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 00:00:00:00:88:88 brd ff:ff:ff:ff:ff:ff
+
+$ rdma dev show
+43: rdmap6s0f0: node_type ca fw 16.29.0550 node_guid 248a:0703:00b3:d112 sys_image_guid 248a:0703:00b3:d112
+44: mlx5_0: node_type ca fw 16.29.0550 node_guid 0000:00ff:fe00:8888 sys_image_guid 248a:0703:00b3:d112
+
+After use inactivate the function:
+$ devlink port function set ens2f0npf0sf88 state inactive
+
+Now delete the subfunction port:
+$ devlink port del ens2f0npf0sf88
+
+[1] https://lore.kernel.org/netdev/20200519092258.GF4655@nanopsycho/
+[2] https://marc.info/?l=linux-netdev&m=158555928517777&w=2
+
+=================
+
+----------------------------------------------------------------
+Parav Pandit (13):
+      devlink: Prepare code to fill multiple port function attributes
+      devlink: Introduce PCI SF port flavour and port attribute
+      devlink: Support add and delete devlink port
+      devlink: Support get and set state of port function
+      net/mlx5: Introduce vhca state event notifier
+      net/mlx5: SF, Add auxiliary device support
+      net/mlx5: SF, Add auxiliary device driver
+      net/mlx5: E-switch, Add eswitch helpers for SF vport
+      net/mlx5: SF, Add port add delete functionality
+      net/mlx5: SF, Port function state change support
+      devlink: Add devlink port documentation
+      devlink: Extend devlink port documentation for subfunctions
+      net/mlx5: Add devlink subfunction port documentation
+
+Vu Pham (1):
+      net/mlx5: E-switch, Prepare eswitch to handle SF vport
+
+ Documentation/driver-api/auxiliary_bus.rst         |   2 +
+ .../device_drivers/ethernet/mellanox/mlx5.rst      | 215 ++++++++
+ Documentation/networking/devlink/devlink-port.rst  | 199 ++++++++
+ Documentation/networking/devlink/index.rst         |   1 +
+ drivers/net/ethernet/mellanox/mlx5/core/Kconfig    |  19 +
+ drivers/net/ethernet/mellanox/mlx5/core/Makefile   |   9 +
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c      |   8 +
+ drivers/net/ethernet/mellanox/mlx5/core/devlink.c  |  19 +
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c       |   5 +-
+ .../mellanox/mlx5/core/esw/acl/egress_ofld.c       |   2 +-
+ .../ethernet/mellanox/mlx5/core/esw/devlink_port.c |  41 ++
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.c  |  48 +-
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.h  |  78 +++
+ .../ethernet/mellanox/mlx5/core/eswitch_offloads.c |  47 +-
+ drivers/net/ethernet/mellanox/mlx5/core/events.c   |   7 +
+ drivers/net/ethernet/mellanox/mlx5/core/main.c     |  60 ++-
+ .../net/ethernet/mellanox/mlx5/core/mlx5_core.h    |  12 +
+ drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c  |  20 +
+ drivers/net/ethernet/mellanox/mlx5/core/sf/cmd.c   |  49 ++
+ .../net/ethernet/mellanox/mlx5/core/sf/dev/dev.c   | 275 ++++++++++
+ .../net/ethernet/mellanox/mlx5/core/sf/dev/dev.h   |  55 ++
+ .../ethernet/mellanox/mlx5/core/sf/dev/driver.c    | 101 ++++
+ .../net/ethernet/mellanox/mlx5/core/sf/devlink.c   | 556 +++++++++++++++++++++
+ .../net/ethernet/mellanox/mlx5/core/sf/hw_table.c  | 233 +++++++++
+ .../mellanox/mlx5/core/sf/mlx5_ifc_vhca_event.h    |  82 +++
+ drivers/net/ethernet/mellanox/mlx5/core/sf/priv.h  |  21 +
+ drivers/net/ethernet/mellanox/mlx5/core/sf/sf.h    | 100 ++++
+ .../ethernet/mellanox/mlx5/core/sf/vhca_event.c    | 189 +++++++
+ .../ethernet/mellanox/mlx5/core/sf/vhca_event.h    |  57 +++
+ drivers/net/ethernet/mellanox/mlx5/core/vport.c    |   3 +-
+ include/linux/mlx5/driver.h                        |  16 +-
+ include/net/devlink.h                              | 100 ++++
+ include/uapi/linux/devlink.h                       |  25 +
+ net/core/devlink.c                                 | 310 ++++++++++--
+ 34 files changed, 2917 insertions(+), 47 deletions(-)
+ create mode 100644 Documentation/networking/devlink/devlink-port.rst
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/cmd.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/dev/dev.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/dev/dev.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/mlx5_ifc_vhca_event.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/priv.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/sf.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/vhca_event.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sf/vhca_event.h
