@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3432FE6AC
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 10:47:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B51E2FE6B1
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 10:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728873AbhAUJrE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jan 2021 04:47:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47566 "EHLO
+        id S1728969AbhAUJrf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jan 2021 04:47:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728889AbhAUJq6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jan 2021 04:46:58 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC9B1C0617AA
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 01:45:40 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id v15so1060151wrx.4
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 01:45:40 -0800 (PST)
+        with ESMTP id S1728954AbhAUJr3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jan 2021 04:47:29 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F9CC0617B9
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 01:45:43 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id q7so1036127wre.13
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 01:45:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=l5TP7SOW2qS+epdcMI5v0wC0XhSdnGQZ2H2fkGXdgtw=;
-        b=GHgcG5XwW3b1jiCm5xGS6W9EwgGh2Ytv30roeEV7x4YCdpXWj5wk2VYAFaBBtG30iG
-         cEkBNIoUlCFw0OnJXTjq45+lkursH/CjoS2fGHGeYAfF8XqY6aDuAxZH9MD1VXPR7ycs
-         XletK79gfIi2IZn4t6/4aEPNmzHAHlGvyyQm4BQCsFp4r+/d92YWdkBBIk+/XrM88bud
-         /NV+jJDE1VNWDU27m3wyt96ZIsoNvK8MsOWrkLhkCaamaRtOhznSDJy0ox374zwt7Ydp
-         XK0HlyUwbRq5ol8VjxQmj6gDqIhkwNDwj9mSiRrhfHgDas70bhu1j6l9L6kekyUvbdYi
-         FxcA==
+        bh=p4lWsX1/HMWo9e2h+pWPHWU7/13R9cTAE/+8ZINfLr8=;
+        b=ScRTv9wJ+i/WWqoj5qdXsAVNJgIefZzJ7qKjwF3BXsDzblOmxnzAyBC9JYi1rNS5jH
+         CKZczGXBrR/G63fNlKwXytTljWa8Lqi8dLYjFF710lzxfm1S5GwiVWt5HRMaMpvi5SDJ
+         SC1Nc0fdBor+jNndu1vuhXYY42tH8qbbaTSjw8K+ZWuWqD9D/BBnW7I1u5S/ykBwKUmZ
+         sQie9KA1cXarCU35luoIzbQNiRdDFOswnSE0gQYKrNah6+i0tKpPgVDnPK64pWpsIBwp
+         ZwUtuEoqx5+48c5EIPpff1msG781IGPZiFh2p15nyH5/AEmPtaZjw/B3ph339hVjXK4D
+         mJSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=l5TP7SOW2qS+epdcMI5v0wC0XhSdnGQZ2H2fkGXdgtw=;
-        b=C3yLERrESm149y1yvzsNnZ2tznDkaWBUmp1bZjNEuoGgAvmpIO0W26rxNNwmGko1Z/
-         lgH7o1rqNJxWBw8eyrqnQ0r3c4XkL0grOeoHxUpcUyvExaTJdi2JKlrBTDbNtxonY9Kj
-         AHH5Tpy3sFt8HrKEdIqQ+lxkH2XTdQyQqzALP5UlCfvqgyDs3aC9hHxP/A2CFHKuMxry
-         mEiOaHcLGzSzWMO0c8y1SUbO+dxPAfOPjUbYYEhUOL729AjSJcsr/WBLZnX9NMuFKTtB
-         RwhlnvAb1dQtcGVkc43RKP+4D0rNYxi8BvhzO27cqMVryj7w2TcVxbVnIylxY2mo/cd5
-         11Hw==
-X-Gm-Message-State: AOAM5328xUiVRe2Brhxxnd2Mcck2UfXCLQjumjODzaCwraG88IsL51iK
-        cvu0kHBxGyilm2cr8SXZKSlJcQ==
-X-Google-Smtp-Source: ABdhPJyw5JGcIev6YI1r4Oogk+Z/zXtt6cDAcLCzW8hq8pf6WIY4/7B0GzBugt0neuEHI5VHfZpryg==
-X-Received: by 2002:adf:f512:: with SMTP id q18mr1959752wro.55.1611222339429;
-        Thu, 21 Jan 2021 01:45:39 -0800 (PST)
+        bh=p4lWsX1/HMWo9e2h+pWPHWU7/13R9cTAE/+8ZINfLr8=;
+        b=Mons7vtLdK5gwx5JDpNlxTrj4Xi9ugEY4EWoVvPONrwCMptpNHJE/r9yGIV8PGeaCX
+         pNw97Pg7XbN1yGcLadAX2gcgFRMCjPFmClYMKmFuHxbtLtopQ4vSF2ZedUUunJS1k2E8
+         LTw8KxiEFzCLpmFBIYWjKfePFQHAogK8BMaRiWnGCgIDYHB0Jw2gCr/LuB2Hhm4x6T7v
+         mxFwbz0cBEVOzpPjqOjyvWOfo19WPBYLgX4kCECIpIE2OiDek+XhHmejC5xNzi1IcdXC
+         c5Ppxx/hQtH+gUf99CvmnnSMQY9ztFCZ6uCH06dvX1o0kVjUtWU1dXUHbn8xyOaWpg6L
+         Dudw==
+X-Gm-Message-State: AOAM5336btbBV6Gj+UvpxWTkwjbgruEyRsBkTrLG4kNBK7HYLQx+fCnf
+        KQ0kyH2mx+WT8FV/FX21PFL71A==
+X-Google-Smtp-Source: ABdhPJyEfsOYnrJQ5QY9vXKSK3jdn1xNP/R9pYUB3pJz4ZQIRAiHBZc3WYoVE2GOJnaVWPnTJ+/5CA==
+X-Received: by 2002:adf:ee90:: with SMTP id b16mr13298698wro.221.1611222342589;
+        Thu, 21 Jan 2021 01:45:42 -0800 (PST)
 Received: from dell.default ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.38
+        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 01:45:38 -0800 (PST)
+        Thu, 21 Jan 2021 01:45:41 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -54,9 +54,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 14/30] RDMA/hw/qib/qib_rc: Fix some worthy kernel-docs demote hardly complete one
-Date:   Thu, 21 Jan 2021 09:45:03 +0000
-Message-Id: <20210121094519.2044049-15-lee.jones@linaro.org>
+Subject: [PATCH 16/30] RDMA/hw/qib/qib_twsi: Provide description for missing param 'last'
+Date:   Thu, 21 Jan 2021 09:45:05 +0000
+Message-Id: <20210121094519.2044049-17-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210121094519.2044049-1-lee.jones@linaro.org>
 References: <20210121094519.2044049-1-lee.jones@linaro.org>
@@ -68,12 +68,7 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/hw/qib/qib_rc.c:216: warning: Function parameter or member 'flags' not described in 'qib_make_rc_req'
- drivers/infiniband/hw/qib/qib_rc.c:1008: warning: Function parameter or member 'aeth' not described in 'do_rc_ack'
- drivers/infiniband/hw/qib/qib_rc.c:1008: warning: Function parameter or member 'val' not described in 'do_rc_ack'
- drivers/infiniband/hw/qib/qib_rc.c:1008: warning: Function parameter or member 'rcd' not described in 'do_rc_ack'
- drivers/infiniband/hw/qib/qib_rc.c:1274: warning: Function parameter or member 'rcd' not described in 'qib_rc_rcv_resp'
- drivers/infiniband/hw/qib/qib_rc.c:1497: warning: Function parameter or member 'rcd' not described in 'qib_rc_rcv_error'
+ drivers/infiniband/hw/qib/qib_twsi.c:175: warning: Function parameter or member 'last' not described in 'rd_byte'
 
 Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
@@ -82,46 +77,21 @@ Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/qib/qib_rc.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/qib/qib_twsi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/hw/qib/qib_rc.c b/drivers/infiniband/hw/qib/qib_rc.c
-index 3915e5b4a9bc1..a1c20ffb44903 100644
---- a/drivers/infiniband/hw/qib/qib_rc.c
-+++ b/drivers/infiniband/hw/qib/qib_rc.c
-@@ -207,6 +207,7 @@ static int qib_make_rc_ack(struct qib_ibdev *dev, struct rvt_qp *qp,
+diff --git a/drivers/infiniband/hw/qib/qib_twsi.c b/drivers/infiniband/hw/qib/qib_twsi.c
+index f5698664419b4..97b8a2bf5c696 100644
+--- a/drivers/infiniband/hw/qib/qib_twsi.c
++++ b/drivers/infiniband/hw/qib/qib_twsi.c
+@@ -168,6 +168,7 @@ static void stop_cmd(struct qib_devdata *dd);
  /**
-  * qib_make_rc_req - construct a request packet (SEND, RDMA r/w, ATOMIC)
-  * @qp: a pointer to the QP
-+ * @flags: unused
+  * rd_byte - read a byte, sending STOP on last, else ACK
+  * @dd: the qlogic_ib device
++ * @last: identifies the last read
   *
-  * Assumes the s_lock is held.
-  *
-@@ -992,7 +993,7 @@ static struct rvt_swqe *do_rc_completion(struct rvt_qp *qp,
- 	return wqe;
- }
- 
--/**
-+/*
-  * do_rc_ack - process an incoming RC ACK
-  * @qp: the QP the ACK came in on
-  * @psn: the packet sequence number of the ACK
-@@ -1259,6 +1260,7 @@ static void rdma_seq_err(struct rvt_qp *qp, struct qib_ibport *ibp, u32 psn,
-  * @psn: the packet sequence number for this packet
-  * @hdrsize: the header length
-  * @pmtu: the path MTU
-+ * @rcd: the context pointer
-  *
-  * This is called from qib_rc_rcv() to process an incoming RC response
-  * packet for the given QP.
-@@ -1480,6 +1482,7 @@ static void qib_rc_rcv_resp(struct qib_ibport *ibp,
-  * @opcode: the opcode for this packet
-  * @psn: the packet sequence number for this packet
-  * @diff: the difference between the PSN and the expected PSN
-+ * @rcd: the context pointer
-  *
-  * This is called from qib_rc_rcv() to process an unexpected
-  * incoming RC packet for the given QP.
+  * Returns byte shifted out of device
+  */
 -- 
 2.25.1
 
