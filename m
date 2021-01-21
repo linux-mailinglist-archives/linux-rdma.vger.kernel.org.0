@@ -2,200 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CE42FF387
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 19:50:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3512FF36A
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 19:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbhAUSsU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jan 2021 13:48:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728303AbhAUIye (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:54:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7CA523A21;
-        Thu, 21 Jan 2021 08:52:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611219180;
-        bh=scLCCxJVoGOvT2w5RbwYecYIAeA90dNW03bxA9MWhWA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MAZs1Go4ydZ/MvWH/Rnb0wNOt6nl/RXrmG5DpNfC/SMgDn46j0ETuTEyjtXIzDHnQ
-         oa8lbiY5ebfWTgIB56A7lNtf9xah/uFDSpT+bt4A5A8/ZFbHgy/rT7+1CHLauqGEJC
-         g1VE0voW5fFvpWqkqI5h/JX8Eup5k4TkeMBdvnR+ANy1syQMX/BrS3Nb4HL57ysdIs
-         IJoGXlqIkADcPsrRz09a+Q6bWy9AwdDq5lUtfPCqBXhgaXbRwLJrc7CCAQiEiR3xT8
-         Ae1QMwfqdSZ0fp0riapbEmHFGv+9rEdSM1IGSOvh5Wgbd5cVC0Yye18yk7287g1VVZ
-         valbjKnOelCyA==
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        alexander.duyck@gmail.com, sridhar.samudrala@intel.com,
-        edwin.peer@broadcom.com, dsahern@kernel.org, kiran.patil@intel.com,
-        jacob.e.keller@intel.com, david.m.ertman@intel.com,
-        dan.j.williams@intel.com, Parav Pandit <parav@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: [net-next V9 12/14] devlink: Add devlink port documentation
-Date:   Thu, 21 Jan 2021 00:52:35 -0800
-Message-Id: <20210121085237.137919-13-saeed@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210121085237.137919-1-saeed@kernel.org>
-References: <20210121085237.137919-1-saeed@kernel.org>
+        id S1728915AbhAUSOZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jan 2021 13:14:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727839AbhAUJqD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jan 2021 04:46:03 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBCAC061575
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 01:45:23 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id l12so1067804wry.2
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 01:45:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QDOJVjBvkDH3sAaM+vmNs4WaqlfGHr2TJccVLZYYeLo=;
+        b=kA5ZwtCNuOp/fL/ip4gcHO71xzXDbXy4v+FTtPttbnW1lfY8iizGh7RZM0JIWu5Yit
+         1+CYG+MDseTrqVDbJ5v36cbR7SDQBkA52zl+pFMH1VHClcyHV7V5kZYHZUQ5YgUnJR/+
+         ykXMtmilD4mcljiyTEz41FdXXtqZj3FeMQc7OMxgZR80M/DT1E6zRsKyM49OlHYMnBRk
+         W3E9E9edNegy8iW1yxMO0HsyJgLmBSBM0oCueg4Bzf9q/NA2Xji3yKp78/+nP0uS3DeM
+         vKjlHEs+dJ81zrpJIzv63QhdRvwfa18lF9cvK/ALqyeEyodpP0JK1Mp2F3dr17ygDH+i
+         2TWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QDOJVjBvkDH3sAaM+vmNs4WaqlfGHr2TJccVLZYYeLo=;
+        b=Ie/4JyN1T1iL5aJmfGnFzr3+gZD+ySICeeDDX4Y+v5ZM+6gBAiEpmxkvar925IhSJW
+         HjGFr3s453baTExqTjdYmgFCSy1lf73T7o98X3h5HHw1MxDrOXtHMrv+krOvguTa+brD
+         oA4ArgrVj+nqmxYFvddeHm201vdTgxy1c+nJuwPrAuRRfv3maAVqAe5XUfmMj+N85FTJ
+         p3xk93AFIz6tRrgkE+7gU3jcST+5tWZg8CTUkDUyCO9BE8fMY1fsTz1rqFJHWUCVklSD
+         1FZyMQXtkFqdodZSiprgOivZgdBCRkiDZEqdYI0PuoP725EHIqQ9KJB/RjEJ5Y9xjm4p
+         uqZQ==
+X-Gm-Message-State: AOAM531KO7NUUMq4AfnRWIY0CtIavAUwDOm1L9uLhQdpgv/JcpNPPh6G
+        YKAtO2F+OEQFdmrFgdTfJ70AOQ==
+X-Google-Smtp-Source: ABdhPJyvEpiuR6sbN6/7M9ufq5hAHFT8FS1aClnjo3W98c6z2OUENHpgF2P7gX9oD9f9lqp0qZYy8g==
+X-Received: by 2002:a5d:47ae:: with SMTP id 14mr13046159wrb.378.1611222321921;
+        Thu, 21 Jan 2021 01:45:21 -0800 (PST)
+Received: from dell.default ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id a17sm8185648wrs.20.2021.01.21.01.45.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 01:45:21 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Intel <ibsupport@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Lijun Ou <oulijun@huawei.com>, linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Nenglong Zhao <zhaonenglong@hisilicon.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Wei Hu <xavier.huwei@huawei.com>,
+        Yossi Leybovich <sleybo@amazon.com>
+Subject: [PATCH 00/30] [Set 2] Rid W=1 warnings from Infiniband
+Date:   Thu, 21 Jan 2021 09:44:49 +0000
+Message-Id: <20210121094519.2044049-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Parav Pandit <parav@nvidia.com>
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-Added documentation for devlink port and port function related commands.
+This is set 2 of 3 (hopefully) sets required to fully clean-up.
 
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
----
- .../networking/devlink/devlink-port.rst       | 118 ++++++++++++++++++
- Documentation/networking/devlink/index.rst    |   1 +
- 2 files changed, 119 insertions(+)
- create mode 100644 Documentation/networking/devlink/devlink-port.rst
+Lee Jones (30):
+  RDMA/hw/mlx5/odp: Fix formatting and add missing descriptions in
+    'pagefault_data_segments()'
+  RDMA/hw/mlx5/qp: Demote non-conformant kernel-doc header
+  RDMA/hw/efa/efa_com: Stop using param description notation for
+    non-params
+  RDMA/hw/hns/hns_roce_hw_v1: Fix doc-rot issue relating to 'rereset'
+  RDMA/hw/hns/hns_roce_mr: Add missing description for 'hr_dev' param
+  RDMA/hw/qib/qib_driver: Fix misspelling in 'ppd's param description
+  RDMA/sw/rdmavt/vt: Fix formatting issue and update description for
+    'context'
+  RDMA/hw/qib/qib_eeprom: Fix misspelling of 'buff' in
+    'qib_eeprom_{read,write}()'
+  RDMA/hw/qib/qib_mad: Fix a few misspellings and supply missing
+    descriptions
+  RDMA/hw/qib/qib_intr: Fix a bunch of formatting issues
+  RDMA/hw/qib/qib_pcie: Demote obvious kernel-doc abuse
+  RDMA/hw/qib/qib_qp: Fix some issues in worthy kernel-doc headers and
+    demote another
+  RDMA/sw/rdmavt/cq: Demote hardly complete kernel-doc header
+  RDMA/hw/qib/qib_rc: Fix some worthy kernel-docs demote hardly complete
+    one
+  RDMA/hw/hfi1/chip: Fix a bunch of kernel-doc formatting and spelling
+    issues
+  RDMA/hw/qib/qib_twsi: Provide description for missing param 'last'
+  RDMA/hw/qib/qib_tx: Provide description for
+    'qib_chg_pioavailkernel()'s 'rcd' param
+  RDMA/hw/qib/qib_uc: Provide description for missing 'flags' param
+  RDMA/hw/qib/qib_ud: Provide description for 'qib_make_ud_req's 'flags'
+    param
+  RDMA/sw/rdmavt/mad: Fix 'rvt_process_mad()'s documentation header
+  RDMA/hw/qib/qib_user_pages: Demote non-conformant documentation header
+  RDMA/sw/rdmavt/mcast: Demote incomplete kernel-doc header
+  RDMA/hw/hfi1/exp_rcv: Fix some kernel-doc formatting issues
+  RDMA/hw/qib/qib_iba7220: Fix some kernel-doc issues
+  RDMA/hw/hfi1/file_ops: Fix' manage_rcvq()'s 'arg' param
+  RDMA/sw/rdmavt/mr: Fix some issues related to formatting and missing
+    descriptions
+  RDMA/hw/qib/qib_iba7322: Fix a bunch of copy/paste issues
+  RDMA/hw/qib/qib_verbs: Repair some formatting problems
+  RDMA/hw/qib/qib_iba6120: Fix some repeated (copy/paste) kernel-doc
+    issues
+  RDMA/sw/rdmavt/qp: Fix a bunch of kernel-doc misdemeanours
 
-diff --git a/Documentation/networking/devlink/devlink-port.rst b/Documentation/networking/devlink/devlink-port.rst
-new file mode 100644
-index 000000000000..c564b557e757
---- /dev/null
-+++ b/Documentation/networking/devlink/devlink-port.rst
-@@ -0,0 +1,118 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. _devlink_port:
-+
-+============
-+Devlink Port
-+============
-+
-+``devlink-port`` is a port that exists on the device. It has a logically
-+separate ingress/egress point of the device. A devlink port can be any one
-+of many flavours. A devlink port flavour along with port attributes
-+describe what a port represents.
-+
-+A device driver that intends to publish a devlink port sets the
-+devlink port attributes and registers the devlink port.
-+
-+Devlink port flavours are described below.
-+
-+.. list-table:: List of devlink port flavours
-+   :widths: 33 90
-+
-+   * - Flavour
-+     - Description
-+   * - ``DEVLINK_PORT_FLAVOUR_PHYSICAL``
-+     - Any kind of physical port. This can be an eswitch physical port or any
-+       other physical port on the device.
-+   * - ``DEVLINK_PORT_FLAVOUR_DSA``
-+     - This indicates a DSA interconnect port.
-+   * - ``DEVLINK_PORT_FLAVOUR_CPU``
-+     - This indicates a CPU port applicable only to DSA.
-+   * - ``DEVLINK_PORT_FLAVOUR_PCI_PF``
-+     - This indicates an eswitch port representing a port of PCI
-+       physical function (PF).
-+   * - ``DEVLINK_PORT_FLAVOUR_PCI_VF``
-+     - This indicates an eswitch port representing a port of PCI
-+       virtual function (VF).
-+   * - ``DEVLINK_PORT_FLAVOUR_VIRTUAL``
-+     - This indicates a virtual port for the PCI virtual function.
-+
-+Devlink port can have a different type based on the link layer described below.
-+
-+.. list-table:: List of devlink port types
-+   :widths: 23 90
-+
-+   * - Type
-+     - Description
-+   * - ``DEVLINK_PORT_TYPE_ETH``
-+     - Driver should set this port type when a link layer of the port is
-+       Ethernet.
-+   * - ``DEVLINK_PORT_TYPE_IB``
-+     - Driver should set this port type when a link layer of the port is
-+       InfiniBand.
-+   * - ``DEVLINK_PORT_TYPE_AUTO``
-+     - This type is indicated by the user when driver should detect the port
-+       type automatically.
-+
-+PCI controllers
-+---------------
-+In most cases a PCI device has only one controller. A controller consists of
-+potentially multiple physical and virtual functions. A function consists
-+of one or more ports. This port is represented by the devlink eswitch port.
-+
-+A PCI device connected to multiple CPUs or multiple PCI root complexes or a
-+SmartNIC, however, may have multiple controllers. For a device with multiple
-+controllers, each controller is distinguished by a unique controller number.
-+An eswitch is on the PCI device which supports ports of multiple controllers.
-+
-+An example view of a system with two controllers::
-+
-+                 ---------------------------------------------------------
-+                 |                                                       |
-+                 |           --------- ---------         ------- ------- |
-+    -----------  |           | vf(s) | | sf(s) |         |vf(s)| |sf(s)| |
-+    | server  |  | -------   ----/---- ---/----- ------- ---/--- ---/--- |
-+    | pci rc  |=== | pf0 |______/________/       | pf1 |___/_______/     |
-+    | connect |  | -------                       -------                 |
-+    -----------  |     | controller_num=1 (no eswitch)                   |
-+                 ------|--------------------------------------------------
-+                 (internal wire)
-+                       |
-+                 ---------------------------------------------------------
-+                 | devlink eswitch ports and reps                        |
-+                 | ----------------------------------------------------- |
-+                 | |ctrl-0 | ctrl-0 | ctrl-0 | ctrl-0 | ctrl-0 |ctrl-0 | |
-+                 | |pf0    | pf0vfN | pf0sfN | pf1    | pf1vfN |pf1sfN | |
-+                 | ----------------------------------------------------- |
-+                 | |ctrl-1 | ctrl-1 | ctrl-1 | ctrl-1 | ctrl-1 |ctrl-1 | |
-+                 | |pf0    | pf0vfN | pf0sfN | pf1    | pf1vfN |pf1sfN | |
-+                 | ----------------------------------------------------- |
-+                 |                                                       |
-+                 |                                                       |
-+    -----------  |           --------- ---------         ------- ------- |
-+    | smartNIC|  |           | vf(s) | | sf(s) |         |vf(s)| |sf(s)| |
-+    | pci rc  |==| -------   ----/---- ---/----- ------- ---/--- ---/--- |
-+    | connect |  | | pf0 |______/________/       | pf1 |___/_______/     |
-+    -----------  | -------                       -------                 |
-+                 |                                                       |
-+                 |  local controller_num=0 (eswitch)                     |
-+                 ---------------------------------------------------------
-+
-+In the above example, the external controller (identified by controller number = 1)
-+doesn't have the eswitch. Local controller (identified by controller number = 0)
-+has the eswitch. The Devlink instance on the local controller has eswitch
-+devlink ports for both the controllers.
-+
-+Function configuration
-+======================
-+
-+A user can configure the function attribute before enumerating the PCI
-+function. Usually it means, user should configure function attribute
-+before a bus specific device for the function is created. However, when
-+SRIOV is enabled, virtual function devices are created on the PCI bus.
-+Hence, function attribute should be configured before binding virtual
-+function device to the driver.
-+
-+A user may set the hardware address of the function using
-+'devlink port function set hw_addr' command. For Ethernet port function
-+this means a MAC address.
-diff --git a/Documentation/networking/devlink/index.rst b/Documentation/networking/devlink/index.rst
-index d82874760ae2..aab79667f97b 100644
---- a/Documentation/networking/devlink/index.rst
-+++ b/Documentation/networking/devlink/index.rst
-@@ -18,6 +18,7 @@ general.
-    devlink-info
-    devlink-flash
-    devlink-params
-+   devlink-port
-    devlink-region
-    devlink-resource
-    devlink-reload
+ drivers/infiniband/hw/efa/efa_com.c        |  2 +-
+ drivers/infiniband/hw/hfi1/chip.c          | 46 +++++++++++-----------
+ drivers/infiniband/hw/hfi1/exp_rcv.c       |  8 ++--
+ drivers/infiniband/hw/hfi1/file_ops.c      |  2 +-
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c |  2 +-
+ drivers/infiniband/hw/hns/hns_roce_mr.c    |  1 +
+ drivers/infiniband/hw/mlx5/odp.c           | 22 ++++++-----
+ drivers/infiniband/hw/mlx5/qp.c            |  2 +-
+ drivers/infiniband/hw/qib/qib_driver.c     |  2 +-
+ drivers/infiniband/hw/qib/qib_eeprom.c     |  4 +-
+ drivers/infiniband/hw/qib/qib_iba6120.c    | 18 ++++-----
+ drivers/infiniband/hw/qib/qib_iba7220.c    | 16 ++++----
+ drivers/infiniband/hw/qib/qib_iba7322.c    | 14 +++----
+ drivers/infiniband/hw/qib/qib_intr.c       | 16 ++++----
+ drivers/infiniband/hw/qib/qib_mad.c        | 10 +++--
+ drivers/infiniband/hw/qib/qib_pcie.c       |  2 +-
+ drivers/infiniband/hw/qib/qib_qp.c         | 12 +++---
+ drivers/infiniband/hw/qib/qib_rc.c         |  5 ++-
+ drivers/infiniband/hw/qib/qib_twsi.c       |  1 +
+ drivers/infiniband/hw/qib/qib_tx.c         |  1 +
+ drivers/infiniband/hw/qib/qib_uc.c         |  1 +
+ drivers/infiniband/hw/qib/qib_ud.c         |  1 +
+ drivers/infiniband/hw/qib/qib_user_pages.c |  2 +-
+ drivers/infiniband/hw/qib/qib_verbs.c      |  6 +--
+ drivers/infiniband/sw/rdmavt/cq.c          |  2 +-
+ drivers/infiniband/sw/rdmavt/mad.c         |  7 +++-
+ drivers/infiniband/sw/rdmavt/mcast.c       |  2 +-
+ drivers/infiniband/sw/rdmavt/mr.c          | 21 +++++-----
+ drivers/infiniband/sw/rdmavt/qp.c          | 34 +++++++++-------
+ drivers/infiniband/sw/rdmavt/vt.c          |  2 +-
+ 30 files changed, 143 insertions(+), 121 deletions(-)
+
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Doug Ledford <dledford@redhat.com>
+Cc: Gal Pressman <galpress@amazon.com>
+Cc: Intel <ibsupport@intel.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: Lijun Ou <oulijun@huawei.com>
+Cc: linux-rdma@vger.kernel.org
+Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Cc: Nenglong Zhao <zhaonenglong@hisilicon.com>
+Cc: Weihang Li <liweihang@huawei.com>
+Cc: "Wei Hu
+Cc: Wei Hu <xavier.huwei@huawei.com>
+Cc: Yossi Leybovich <sleybo@amazon.com>
 -- 
-2.26.2
+2.25.1
 
