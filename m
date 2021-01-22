@@ -2,86 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E4D300107
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Jan 2021 12:03:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 421E33005E1
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Jan 2021 15:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727845AbhAVK5z convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 22 Jan 2021 05:57:55 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2870 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727280AbhAVJ2Y (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Jan 2021 04:28:24 -0500
-Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4DMYHK6HXsz5FF4;
-        Fri, 22 Jan 2021 17:04:45 +0800 (CST)
-Received: from dggema703-chm.china.huawei.com (10.3.20.67) by
- DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Fri, 22 Jan 2021 17:06:12 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema703-chm.china.huawei.com (10.3.20.67) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 22 Jan 2021 17:06:11 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.002;
- Fri, 22 Jan 2021 17:06:11 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: Re: [PATCH RFC 1/7] RDMA/hns: Introduce DCA for RC QP
-Thread-Topic: [PATCH RFC 1/7] RDMA/hns: Introduce DCA for RC QP
-Thread-Index: AQHW7/oITeBBndE4CkiFjIHgF/TJug==
-Date:   Fri, 22 Jan 2021 09:06:11 +0000
-Message-ID: <0afb522df2d24fe3be8d7ee2611465ef@huawei.com>
-References: <1610706138-4219-1-git-send-email-liweihang@huawei.com>
- <1610706138-4219-2-git-send-email-liweihang@huawei.com>
- <20210120081025.GA225873@unreal>
- <8d255812177a4f53becd3c912d00c528@huawei.com>
- <20210121085325.GC320304@unreal>
- <96d7fb7db36e4bce8c556d0de5c8f961@huawei.com>
- <20210121133445.GY4147@nvidia.com>
- <14243f680ba6428789b878078f766967@huawei.com>
- <20210121135143.GZ4147@nvidia.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728419AbhAVOrB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Jan 2021 09:47:01 -0500
+Received: from p3plsmtpa12-01.prod.phx3.secureserver.net ([68.178.252.230]:40195
+        "EHLO p3plsmtpa12-01.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728414AbhAVOq6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:46:58 -0500
+X-Greylist: delayed 532 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Jan 2021 09:46:57 EST
+Received: from [192.168.0.116] ([71.184.94.153])
+        by :SMTPAUTH: with ESMTPSA
+        id 2xYdl9f168l7w2xYdlpRAx; Fri, 22 Jan 2021 07:37:04 -0700
+X-CMAE-Analysis: v=2.4 cv=CdzNWJnl c=1 sm=1 tr=0 ts=600ae310
+ a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
+ a=IkcTkHD0fZMA:10 a=yPCof4ZbAAAA:8 a=2kpoKP-xqDkaLSQT8pIA:9 a=QEXdDO2ut3YA:10
+X-SECURESERVER-ACCT: tom@talpey.com
+Subject: Re: [PATCH v1 2/2] svcrdma: DMA-sync the receive buffer in
+ svc_rdma_recvfrom()
+To:     Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+References: <161126216710.8979.7145432546367265892.stgit@klimt.1015granger.net>
+ <161126239239.8979.7995314438640511469.stgit@klimt.1015granger.net>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <75a4edc8-791c-b98e-b943-0ebff8aa4b16@talpey.com>
+Date:   Fri, 22 Jan 2021 09:37:02 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <161126239239.8979.7995314438640511469.stgit@klimt.1015granger.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfPh0Pu4tRy7A9AxbLO66VbWuW2JTaX0Ado1MdjJJkcYgwMTwkucdto7dwHmrqg2Phd45z7WP+3ys8VhTF8Hyps07ZeI39VsH2Glh9S8BDnxfIowdQUFl
+ 4mv+EE9saq+ZQGnZEyVO8DHQy46HNBThL04QC47+lLOgHeXy1Fytn0nvt/E7pR9y8j0lCiDmbF6leViaE+TvewBBZGJCA3piDe4wsOTmTEFqkow79MrgVrNy
+ p3WLjuYL1N80Xuo1gew9Uia6rE37F8WZLo+dmla9EZE=
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/1/21 21:52, Jason Gunthorpe wrote:
-> On Thu, Jan 21, 2021 at 01:48:56PM +0000, liweihang wrote:
->> On 2021/1/21 21:36, Jason Gunthorpe wrote:
->>> On Thu, Jan 21, 2021 at 01:33:42PM +0000, liweihang wrote:
->>>
->>>> We need to allocate memory while spin_lock is hold, how about using GFP_KERNEL or
->>>> GFP_NOWAIT?
->>>
->>> You should try hard not to do that. Convert he spinlock to a mutex,
->>> for instance.
->>>
->>> Jason
->>>
->>
->> But what if some kernel users call ib_post_send() when holding a spinlock?
-> 
-> I doubt extensions like this would be part of kernel verbs..
-> 
-> Does any ULP call ib_post_send under lock? I'm not sure that is valid.
-> 
-> Jason
-> 
+Is there an asynchronous version of ib_dma_sync? Because it flushes
+DMA pipelines, I'm wondering if kicking it off early might improve
+latency, getting it done before svc_rdma_recvfrom() needs to dig
+into the contents.
 
-I didn't find such a ULP calling ib_post_send in a spinlock either. Anyway,
-I will use GFP_NOWAIT instead of GFP_ATOMIC.
+Tom.
 
-Thanks
-Weihang
+On 1/21/2021 3:53 PM, Chuck Lever wrote:
+> The Receive completion handler doesn't look at the contents of the
+> Receive buffer. The DMA sync isn't terribly expensive but it's one
+> less thing that needs to be done by the Receive completion handler,
+> which is single-threaded (per svc_xprt). This helps scalability.
+> 
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
+>   net/sunrpc/xprtrdma/svc_rdma_recvfrom.c |    6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
+> index ab0b7e9777bc..6d28f23ceb35 100644
+> --- a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
+> +++ b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
+> @@ -342,9 +342,6 @@ static void svc_rdma_wc_receive(struct ib_cq *cq, struct ib_wc *wc)
+>   
+>   	/* All wc fields are now known to be valid */
+>   	ctxt->rc_byte_len = wc->byte_len;
+> -	ib_dma_sync_single_for_cpu(rdma->sc_pd->device,
+> -				   ctxt->rc_recv_sge.addr,
+> -				   wc->byte_len, DMA_FROM_DEVICE);
+>   
+>   	spin_lock(&rdma->sc_rq_dto_lock);
+>   	list_add_tail(&ctxt->rc_list, &rdma->sc_rq_dto_q);
+> @@ -851,6 +848,9 @@ int svc_rdma_recvfrom(struct svc_rqst *rqstp)
+>   	spin_unlock(&rdma_xprt->sc_rq_dto_lock);
+>   	percpu_counter_inc(&svcrdma_stat_recv);
+>   
+> +	ib_dma_sync_single_for_cpu(rdma_xprt->sc_pd->device,
+> +				   ctxt->rc_recv_sge.addr, ctxt->rc_byte_len,
+> +				   DMA_FROM_DEVICE);
+>   	svc_rdma_build_arg_xdr(rqstp, ctxt);
+>   
+>   	/* Prevent svc_xprt_release from releasing pages in rq_pages
+> 
+> 
+> 
