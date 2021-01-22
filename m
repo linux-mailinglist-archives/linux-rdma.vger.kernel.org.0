@@ -2,125 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA232FF7F3
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Jan 2021 23:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5232A2FF942
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Jan 2021 01:13:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbhAUWbJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Jan 2021 17:31:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbhAUWbI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jan 2021 17:31:08 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD091C06174A
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 14:30:27 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id e70so3240419ote.11
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Jan 2021 14:30:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KxcAgD5+AXo/pDmDTmgP/cf31qHgZs0eb4obGAFlHCs=;
-        b=FQLZVUjwS0XqMWyM4ZbI3oUgCyM3tLqaXZHLXe1gglogL+pUeZ5zpBsbDA9tWJ9eh9
-         SemjuJtJS8mu//YFAtgy8G2fpAvPLMXVFqFQaqLtQ2frW7b6GR6uihtgI5K69u0YFFyn
-         s9pnRW18sOF8ZHN/spfY9L8GrcVtjYHHw0Doba9HMy2agsgPJTTTmS1C1XIGWkTeiWuj
-         /WYKg5HUUeoH/LrhWRbJjZlgKTbmAc/TzCy/frFiuEe+++yfAlF+is62Pqtq9JdjXi96
-         aUKotTjTbFTIIF6rOCC732sbnDrTs7nP63nNQxjV+5opaBCb2kdscc6qdZr4wxhNYPQw
-         nX7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KxcAgD5+AXo/pDmDTmgP/cf31qHgZs0eb4obGAFlHCs=;
-        b=Je3t+lDmUOEiAhwGGablhL5/EVQZeVa+t47KIeoKmarRcidpY2BVc/HTY/LjjD+dE7
-         8Nlu89FvLUOhtneF8sUZxL3a2/E8o6T9MYegLv4NTEgKWm+qXxczfMt9/G/SsUQ4tUkf
-         AXihjcsL6xjBT2kJb3Y6I970PxTIS+6oXR0vgZ3zVnPKDSWF1f/jf+KY1aSkA6MCViG7
-         vw9bwcSUqCsBGvfeBCIR4C4HY3XnaL+xzq8i6U7U0J2/UyjHZYNtuanV2RVH5BHMW8WF
-         j2NiIK0XM8bEHTZhmRhsGjYvg4uO7y8koW/Tx+DxeXdjLf2kXSWSDHKNqumLyQ4U43SR
-         YDfQ==
-X-Gm-Message-State: AOAM530icatOAoSzy/muaj8/yC5GI3nWasv1Eqmg22rwc7fkZ2pYmS9p
-        MO6o37qMwKO2Ru/ZqFw+/Fo=
-X-Google-Smtp-Source: ABdhPJw9IrrsJmcM+yFMTAnkEAyJq7yYIX5yzBjchpIeDSGcwFUnXq2YD3Jobhw084MLBdHDctDk7A==
-X-Received: by 2002:a9d:6015:: with SMTP id h21mr1034724otj.365.1611268227240;
-        Thu, 21 Jan 2021 14:30:27 -0800 (PST)
-Received: from ?IPv6:2603:8081:140c:1a00:355d:9507:a6cb:314b? (2603-8081-140c-1a00-355d-9507-a6cb-314b.res6.spectrum.com. [2603:8081:140c:1a00:355d:9507:a6cb:314b])
-        by smtp.gmail.com with ESMTPSA id n16sm1313016oop.9.2021.01.21.14.30.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jan 2021 14:30:26 -0800 (PST)
-Subject: Re: [PATCH for-next] RDMA/rxe: Fix bug in rxe_alloc
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
-        Bob Pearson <rpearson@hpe.com>,
-        syzbot+ec2fd72374785d0e558e@syzkaller.appspotmail.com
-References: <20210119214947.3833-1-rpearson@hpe.com>
- <20210121002032.GA1146326@nvidia.com>
- <c92cac5e-9b57-5d68-d4fc-0ddca8cd6814@gmail.com>
-Message-ID: <292488c2-8dc4-a535-49b0-cc159d134b50@gmail.com>
-Date:   Thu, 21 Jan 2021 16:30:25 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1725910AbhAVAMz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Jan 2021 19:12:55 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2307 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbhAVAMy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Jan 2021 19:12:54 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B600a185e0000>; Thu, 21 Jan 2021 16:12:14 -0800
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 Jan
+ 2021 00:12:13 +0000
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 Jan
+ 2021 00:12:02 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.177)
+ by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 22 Jan 2021 00:12:02 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gzBSJ9VecpdGZOYH4i/t6nPK9OxjntWXyqs7SaCogcbY3w8mjUQPZiWXaiQQmE991mSBb0ToItB5BGyNQZ+XXxkjXcrOW+awE/9mKrlaXPBnbpq0kifYdIazC/TI5juxW0Wxt1EBsyNRPowbsmvLMoe2JqxhtBh06Zd1/AC6oKjvFExQz0swEDxW+/UajZ8ZyK0knwmXwLjrZ1F38EpGS34rsV/BNoGUEaTrdMmOsE+tuk71CiEOeIw1L/pWeKlZ6mui81jwyrg0otZ2ovnrR/5F4ofVa3nRG47/01YyLHQWs0RSJhqCsHHUMWRcM7TZN564R2sOow7bc59MauaqQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tg49lyOe4ndxOafM38vTTLJE13SGiijd8pIleDt2BEY=;
+ b=KXxMcA3Q4vFc9Fz9sjIaRgkkHdkK2WLWzBpTeaYJhZg5NJMu7QyV8YmjoT2T0G86h4rIY2Z8rW3sbDh+ChGibI6oTvknGqj7CPeQXQPR45RrwZPvidaLb8iRAEQzWEwrZvUrODULX2X6P7koCHxn0M3xW91KGVWPP4Q8tT8fUiFKWwVNuI9SqLyv7fBbMCDUc6o1cMk2n/sDe6LCFJivr5ggNCjn27fxWZvY7jPLq2LACNAEvgrcRasv+Fv0GnMqieQp1a9opNj2A4zWdME3/hVF4giwDiSikldxRKS1OMSPCC8tvEHajeHTYQITPTuyi6mm3RjveFjhg1MhnGmJmg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB2437.namprd12.prod.outlook.com (2603:10b6:4:ba::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Fri, 22 Jan
+ 2021 00:11:59 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.011; Fri, 22 Jan 2021
+ 00:11:59 +0000
+Date:   Thu, 21 Jan 2021 20:11:57 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
+CC:     Saeed Mahameed <saeed@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <alexander.duyck@gmail.com>,
+        <edwin.peer@broadcom.com>, <dsahern@kernel.org>,
+        <kiran.patil@intel.com>, <jacob.e.keller@intel.com>,
+        <david.m.ertman@intel.com>, <dan.j.williams@intel.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [net-next V9 14/14] net/mlx5: Add devlink subfunction port
+ documentation
+Message-ID: <20210122001157.GE4147@nvidia.com>
+References: <20210121085237.137919-1-saeed@kernel.org>
+ <20210121085237.137919-15-saeed@kernel.org>
+ <d5ef3359-ff3c-0e71-8312-0f24c3af4bce@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <d5ef3359-ff3c-0e71-8312-0f24c3af4bce@intel.com>
+X-ClientProxiedBy: BL0PR03CA0012.namprd03.prod.outlook.com
+ (2603:10b6:208:2d::25) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <c92cac5e-9b57-5d68-d4fc-0ddca8cd6814@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR03CA0012.namprd03.prod.outlook.com (2603:10b6:208:2d::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Fri, 22 Jan 2021 00:11:59 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l2k3R-005EeE-SM; Thu, 21 Jan 2021 20:11:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611274334; bh=tg49lyOe4ndxOafM38vTTLJE13SGiijd8pIleDt2BEY=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=K9P2KHk4yxn82P82PC9L6d2500CeYextiz/7teDdiW9XwR7k91AKIdsVuuy5SRLlS
+         hC6X2IE/lp+wRCWeZG8L5wzrk4WuXCU0LNPWgyW2ryoQZR/tKeEs6M3pQECguufqLh
+         fbPCMsPjxcETprvZ09ooUmmsh8NOrUohd8Vs/mHLULCKEVBtoUgmJh9+iZBITcXUfT
+         eOj9Jq1Hab9TVqfqLuV6fcj6uB/NQrrjkS/E1kUSuanPrbtzF/s10NC1ybP3QsTOWa
+         X/kIWTIThTyT2D2VsG3w78f2JTXGIBMAvKb03hTKgS/XYJhKibXVF5ubkYOvEuBZPu
+         wpzSRGcKIejHg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/21/21 4:06 PM, Bob Pearson wrote:
-> On 1/20/21 6:20 PM, Jason Gunthorpe wrote:
->> On Tue, Jan 19, 2021 at 03:49:47PM -0600, Bob Pearson wrote:
->>
->>>  	read_lock_irqsave(&pool->pool_lock, flags);
->>> -	obj = rxe_alloc_nl(pool);
->>> +	if (pool->state != RXE_POOL_STATE_VALID) {
->>> +		read_unlock_irqrestore(&pool->pool_lock, flags);
->>> +		return NULL;
->>> +	}
->>> +
->>> +	kref_get(&pool->ref_cnt);
->>>  	read_unlock_irqrestore(&pool->pool_lock, flags);
->>
->> What is this lock actually protecting?? Every data read under it is not
->> written under the lock?? Even the memory storing the lock could be kfreed.
->>
->> This should all be fixed by relying on the ib_device kref. Today rxe
->> only frees the pools from ops->dealloc_driver which can only happen
->> once the ib_device_try_get() is all put back
->>
->> So the structure you want is to never call rxe_alloc from anything
->> that is not holding the ib_device_try(), or implicitly under a client.
->>
->> Basically this is already everything in ops - so things work
->> queues/etc internal to rxe need attention.
->>
->> I'm not completely sure why rxe_alloc does a ib_device_try_get()
->> either. Every verbs object is also  guarneteed to be cleaned up before
->> dealloc_driver is called.
->>
->> Most likely thing is all of this can just be deleted.
->>
->> Jason
->>
-> 
-> The pool lock will only get freed if the rxe device struct gets freed and that is
-> after the end of this world.
-> 
-> I had no idea what ib_device_try_get() was about so I didn't touch it.
-> I don't believe that rxe_alloc() ever gets called except from verbs/ops. None of
-> the worker threads ever create new objects. So I will delete those ..._get ..._put.
-> 
-> If you are right then pool->state is not needed either and then the locking is not
-> needed for alloc for races with shutdown. Will still want the lock for things like
-> the mcast bug where we only want to create one instance of an object or two threads
-> looking up an object from a RB tree.
-> 
-> bob
-> 
-[fixed typo in address]
-On looking some more rxe_alloc() takes a reference on the pool for each new object and also takes a reference on the ib_device. These don't really add much value since the pool references are enough to catch counting bugs.
+On Thu, Jan 21, 2021 at 12:59:55PM -0800, Samudrala, Sridhar wrote:
 
+> > +                 mlx5_core.sf.4
+> > +          (subfunction auxiliary device)
+> > +                       /\
+> > +                      /  \
+> > +                     /    \
+> > +                    /      \
+> > +                   /        \
+> > +      mlx5_core.eth.4     mlx5_core.rdma.4
+> > +     (sf eth aux dev)     (sf rdma aux dev)
+> > +         |                      |
+> > +         |                      |
+> > +      p0sf88                  mlx5_0
+> > +     (sf netdev)          (sf rdma device)
+> 
+> This picture seems to indicate that when SF is activated, a sub
+> function auxiliary device is created 
 
+Yes
+
+> and when a driver is bound to that sub function aux device and
+> probed, 2 additional auxiliary devices are created.  
+
+More than two, but yes
+
+> Is this correct? Are all these auxiliary devices seen on the same
+> aux bus?  
+
+Yes
+
+> Why do we need another sf eth aux device?
+
+The first aux device represents the physical HW and mlx5_core binds to it,
+the analog is like a pci_device.
+
+The other aux devices represent the subsystem split of the mlx5 driver
+- mlx5_core creates them and each subsystem in turn binds to the
+mlx5_core driver. This already exists, and Intel will be doing this as
+well whenever the RDMA driver is posted again..
+
+Jason
