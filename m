@@ -2,67 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3AC301034
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Jan 2021 23:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C283010BB
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 Jan 2021 00:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728365AbhAVWnw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Jan 2021 17:43:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730336AbhAVTnu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 22 Jan 2021 14:43:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57B1823A6A;
-        Fri, 22 Jan 2021 19:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611344589;
-        bh=XimOf5HzWmXgSkGk2FLmJHRoZs4EdRWdqlzT9yWj2WA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=jDA5ONXyO1MZAvQbXgumM6RmMwlwCJaRMkc0F0IIWS8yLsgWhzYcCWpgGVDLO5JNh
-         fpjeorTL0bMFgzMYTpZP4W9O8L2iFGpUuvxLGpx2Q+VbsCZFtJuGpjTBrNHLiPjWcj
-         cCMN6+ruwA+OgdJUXq7GqVVKUzCygnu1B2gMUzU89E+jfucZeBdyQtAP57EAjem9mT
-         7CK9zqvh5ps9gPQM1srIuA1qGtPpe3/YywRFsgwt59cDolD7gyHyKUZokdDzpxp1ZN
-         h4RRlva6l0dJbDOKYADhzlF9wioknCJ7oTOBkCS2l3APdxgWGIDc2j3MsKaTe2FZEn
-         z6E/XMUEC99+Q==
-Message-ID: <d166990f4e2e46dab4fccd66b95dad5641a744a2.camel@kernel.org>
-Subject: Re: [PATCH] net/mlx5e: free page before return
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>, Pan Bian <bianpan2016@163.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Moshe Tal <moshet@mellanox.com>, Joe Perches <joe@perches.com>,
-        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 22 Jan 2021 11:43:08 -0800
-In-Reply-To: <20210121174938.GG320304@unreal>
-References: <20210121045830.96928-1-bianpan2016@163.com>
-         <20210121174938.GG320304@unreal>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S1729588AbhAVThj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Jan 2021 14:37:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730667AbhAVTap (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Jan 2021 14:30:45 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F00C06174A
+        for <linux-rdma@vger.kernel.org>; Fri, 22 Jan 2021 11:30:04 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id k8so6193660otr.8
+        for <linux-rdma@vger.kernel.org>; Fri, 22 Jan 2021 11:30:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=StE1txwZLwqU0WVkGzN91XKJ5XfkymFhHwtSz9OoWfs=;
+        b=Jzg4NAlT1xhhe58tUmBeTj2qTbVVK1bsoML8+eNngqBnIrgH1upTDGVBUhBPrRwSqq
+         OPQ9pKZFdCxaWL3ZQui0AwAG57lCb8DytbPvidmXePbBt89ESfDtd3GZoEWTRilzb/u5
+         V2urFM8W8omoAepduu+gTF2fXiIfV5S/U22pfvn6iTrzoBzAveUUML48TTuqbTIIQ+uG
+         6nBHu/KcWFkitP1oNxIRmv4hMbgWWnwiIWx2mehslcLKMAkwDgd+fFhVVPeXpu3iVcqb
+         f6yMdH2iU55wD+vvwl+Jl6jGuY1DC77zQ66QCQsCdR3JFGbj58j9TPLLm3gSFY+hPR7D
+         PZvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=StE1txwZLwqU0WVkGzN91XKJ5XfkymFhHwtSz9OoWfs=;
+        b=HEFXZo6JKCvytiPCPYXm4mivkiOwIzun6+4CkeqffLg6rA2RuJdWkQf8m+3jalrYgq
+         DJHKNbO28P0tifXqYl8B0hru6YcFio0NdUUMtIcDRKgrOmrsZcMiJCXuLTG7q548JPlh
+         9Ts+xCOs3p+laf3fDecdyLI9qcxlPAKB12Fo/vgOh2zAm+7kq5JohbCRloTN38E+w7UK
+         3XvBKHQvOPoexwNS68epWlao6POCXhmXnh6+epVZtJ+Rijs5Nbm1wvvne6G9Ed9/5IQq
+         ZC0VWqh55vUcYUK8XttsSHxk92zgkoIJnU7e437tsUbqO4zBkJrAajDR3wlUC/PzxUye
+         p1WA==
+X-Gm-Message-State: AOAM533WyvpKxEPhpB6W820XdWq6ZDVf/LoOGin0h+2tdgXa7DnPgFY3
+        4VY9Xs3nyzrGVNFmR1DG2Tw=
+X-Google-Smtp-Source: ABdhPJyIRHjHQ9T7eo+54LQf+C+fnC1N6NyzxO2nFEAF6Ti0XyblQS+9qo4xgfEGnP22QxhCbUZ5Og==
+X-Received: by 2002:a9d:20a8:: with SMTP id x37mr4609307ota.62.1611343802356;
+        Fri, 22 Jan 2021 11:30:02 -0800 (PST)
+Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-7fcf-0a74-ddeb-d9b7.res6.spectrum.com. [2603:8081:140c:1a00:7fcf:a74:ddeb:d9b7])
+        by smtp.gmail.com with ESMTPSA id 36sm1835546oty.62.2021.01.22.11.30.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 11:30:01 -0800 (PST)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearson@hpe.com>
+Subject: [PATCH for-next v2 0/6] RDMA/rxe: Misc rxe_pool cleanups
+Date:   Fri, 22 Jan 2021 13:29:37 -0600
+Message-Id: <20210122192943.5538-1-rpearson@hpe.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 2021-01-21 at 19:49 +0200, Leon Romanovsky wrote:
-> On Wed, Jan 20, 2021 at 08:58:30PM -0800, Pan Bian wrote:
-> > Instead of directly return, goto the error handling label to free
-> > allocated page.
-> > 
-> > Fixes: 5f29458b77d5 ("net/mlx5e: Support dump callback in TX
-> > reporter")
-> > Signed-off-by: Pan Bian <bianpan2016@163.com>
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/en/health.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> 
-> Thanks,
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+This series of patches corrects a bug introduced in rxe_pool.c
+by a recent commit and then addresses several issues raised
+during discussion of the bug and the proposed fix.
 
-Applied to net-mlx5,
-Thanks!
+The first patch fixes a real bug but the other five are
+stylistic and cleanup changes.
+
+Signed-off-by: Bob Pearson <rpearson@hpe.com>
+
+Bob Pearson (6):
+  RDMA/rxe: Fix bug in rxe_alloc
+  RDMA/rxe: Fix misleading comments and names
+  RDMA/rxe: Remove RXE_POOL_ATOMIC
+  RDMA/rxe: Remove references to ib_device and pool
+  RDMA/rxe: Remove unneeded pool->state
+  RDMA/rxe: Replace missing rxe_pool_get_index__
+
+ drivers/infiniband/sw/rxe/rxe_mcast.c |   8 +-
+ drivers/infiniband/sw/rxe/rxe_pool.c  | 132 +++++++++-----------------
+ drivers/infiniband/sw/rxe/rxe_pool.h  |  57 ++++++-----
+ 3 files changed, 76 insertions(+), 121 deletions(-)
+
+-- 
+2.27.0
 
