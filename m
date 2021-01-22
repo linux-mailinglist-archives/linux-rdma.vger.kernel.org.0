@@ -2,58 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3762FFE1B
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Jan 2021 09:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CE52FFF0A
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Jan 2021 10:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbhAVIZz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Jan 2021 03:25:55 -0500
-Received: from gentwo.org ([3.19.106.255]:53046 "EHLO gentwo.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726445AbhAVIZy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:25:54 -0500
-Received: by gentwo.org (Postfix, from userid 1002)
-        id 454953F555; Fri, 22 Jan 2021 08:24:57 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.org (Postfix) with ESMTP id 4379A3E86A;
-        Fri, 22 Jan 2021 08:24:57 +0000 (UTC)
-Date:   Fri, 22 Jan 2021 08:24:57 +0000 (UTC)
-From:   Christoph Lameter <cl@linux.com>
-X-X-Sender: cl@www.lameter.com
-To:     Leon Romanovsky <leon@kernel.org>
-cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] Fix sendonly join going away after Reregister event
-In-Reply-To: <20210121161124.GD320304@unreal>
-Message-ID: <alpine.DEB.2.22.394.2101220817050.126441@www.lameter.com>
-References: <alpine.DEB.2.22.394.2101211318530.120233@www.lameter.com> <20210121161124.GD320304@unreal>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1727300AbhAVJCn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 22 Jan 2021 04:02:43 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2986 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727252AbhAVJCV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Jan 2021 04:02:21 -0500
+Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DMYBN145nzR5XM;
+        Fri, 22 Jan 2021 17:00:28 +0800 (CST)
+Received: from dggema701-chm.china.huawei.com (10.3.20.65) by
+ DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 22 Jan 2021 17:01:29 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema701-chm.china.huawei.com (10.3.20.65) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 22 Jan 2021 17:01:29 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.002;
+ Fri, 22 Jan 2021 17:01:29 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Re: [PATCH v2 for-next] RDMA/hns: Add caps flag for UD inline of
+ userspace
+Thread-Topic: [PATCH v2 for-next] RDMA/hns: Add caps flag for UD inline of
+ userspace
+Thread-Index: AQHW8B4yNEZLbyzPPkiYOSj3dqUAaw==
+Date:   Fri, 22 Jan 2021 09:01:29 +0000
+Message-ID: <bed8f16eda944d11b3679f7866fb2dcb@huawei.com>
+References: <1609836423-40069-1-git-send-email-liweihang@huawei.com>
+ <20210121175033.GA1221624@nvidia.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 21 Jan 2021, Leon Romanovsky wrote:
+On 2021/1/22 1:52, Jason Gunthorpe wrote:
+> On Tue, Jan 05, 2021 at 04:47:03PM +0800, Weihang Li wrote:
+>> diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
+>> index 90b739d..79dba94 100644
+>> +++ b/include/uapi/rdma/hns-abi.h
+>> @@ -77,6 +77,7 @@ enum hns_roce_qp_cap_flags {
+>>  	HNS_ROCE_QP_CAP_RQ_RECORD_DB = 1 << 0,
+>>  	HNS_ROCE_QP_CAP_SQ_RECORD_DB = 1 << 1,
+>>  	HNS_ROCE_QP_CAP_OWNER_DB = 1 << 2,
+>> +	HNS_ROCE_QP_CAP_UD_SQ_INL = 1 << 3,
+> 
+> I don't understand why you need this flag.
+> 
+> The # of bytes of inline data should be returned from create_qp in the
+> max_inline_data cap.
+> 
+> If things doesn't support inline data then shouldn't that just return
+> 0?
+> 
+> Jason
+> 
 
-> >  	spin_lock_irqsave(&port->classport_lock, flags);
-> > -	if ((port->classport_info.valid) &&
-> > -	    (port->classport_info.data.type == RDMA_CLASS_PORT_INFO_IB))
-> > +	if (!port->classport_info.valid) {
-> > +		/* Need to wait until the SM data is available */
-> > +		spin_unlock_irqrestore(&port->classport_lock, flags);
-> > +		goto redo;
->
-> We have all potential to loop forever here, if valid doesn't change.
->
+Yes, you are right. Please ignore this patch and I will update the userspace
+part later.
 
-Right. So what is the right solution here? The sendonly check function could return
-an errno instead?
-
-0	= Sendonly join is supported
--EAGAIN = SM information is currently invalid
--ENOSUP = SM does not support sendonly join
-
-Since all SMs out there have had support for sendonly join for years now
-we could just remove the check entirely. If there is an old grizzly SM out
-there then it would not process that join request and would return an
-error.
-
+Thanks
+Weihang
