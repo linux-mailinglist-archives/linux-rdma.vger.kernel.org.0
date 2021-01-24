@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74571301C4F
-	for <lists+linux-rdma@lfdr.de>; Sun, 24 Jan 2021 14:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2BF301CA5
+	for <lists+linux-rdma@lfdr.de>; Sun, 24 Jan 2021 15:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725550AbhAXNqh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 24 Jan 2021 08:46:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48286 "EHLO mail.kernel.org"
+        id S1725768AbhAXOTl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 24 Jan 2021 09:19:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725268AbhAXNqg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 24 Jan 2021 08:46:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57488227BF;
-        Sun, 24 Jan 2021 13:45:54 +0000 (UTC)
+        id S1725290AbhAXOTl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 24 Jan 2021 09:19:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5477222D6E;
+        Sun, 24 Jan 2021 14:18:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611495955;
-        bh=8SKR/G8hww3sahSCUEdv19IP/CnswdwvSZfUon47hoM=;
+        s=k20201202; t=1611497940;
+        bh=WoUImpSEYpTtMEx4LB9LuXLCIxy/ln1cx+nADzMNnU0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PCEuPA0rqStT4mgsklOrINGz3tu50k5eiGiiRbM0D1uu6G78KGX7lFNp15lf2dQq0
-         VcsIycdrcPagT6iuFXkWgfb43+hWGT580cfxhwBqZ+rFAZ/ytu/n+4gbXIK/m616dS
-         tCk4M1ElhKkEhLWhb9tglFyK1/14s8fbfedWpxpPBu9bp/jCBAn0PsKA2nU2vMvcVW
-         UcgXczdBUqhh4szwl+68NU33QMkqVJN3/1Bu9Gqd9kgarlpNCR4wP87NjP2SUutSCV
-         4SBSfn250/WfvHKbRngyKU/nz8o+4nR2YyiUJFpihjD2wRLg4gYtXmoX8RHV9SJRt1
-         fc+gtRVM54Bww==
-Date:   Sun, 24 Jan 2021 15:45:51 +0200
+        b=LrzDXjoTw+fpEUJ4qu+ET6JsGYbPdMI7t3ljgpnE6ql6+gk60F1aAUr2JQud20oDv
+         fxwkybuOXlCLxeIkatCe1qkoApfgXlfiEeX1Y/rbc4Iu/fKB6ynodttly4ZguO9REz
+         lEe5Quwt776PkdwUU09oLXJ9reSZkGTkaCGGdROwGsL4gI/uWCp8hp/6vBL5io3an/
+         A9PwSbwG7KfocuMYcGAuRvue43Y72IhdNlfK09dXvnmIWsq+qDWBdr1XTTZDPDLM54
+         sLWJ3LLqb/OUjXwm7pC6E3rbLVrsyRH5wUUjsDJ0S3ri9Yhf69IKwcmKvZTn/SgJ6o
+         /mCn36VImHjGQ==
+Date:   Sun, 24 Jan 2021 16:18:56 +0200
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Shiraz Saleem <shiraz.saleem@intel.com>
 Cc:     dledford@redhat.com, jgg@nvidia.com, kuba@kernel.org,
@@ -31,151 +31,84 @@ Cc:     dledford@redhat.com, jgg@nvidia.com, kuba@kernel.org,
         gregkh@linuxfoundation.org, netdev@vger.kernel.org,
         david.m.ertman@intel.com, anthony.l.nguyen@intel.com,
         Mustafa Ismail <mustafa.ismail@intel.com>
-Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
- implement private channel OPs
-Message-ID: <20210124134551.GB5038@unreal>
+Subject: Re: [PATCH 15/22] RDMA/irdma: Implement device supported verb APIs
+Message-ID: <20210124141856.GC5038@unreal>
 References: <20210122234827.1353-1-shiraz.saleem@intel.com>
- <20210122234827.1353-8-shiraz.saleem@intel.com>
+ <20210122234827.1353-16-shiraz.saleem@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210122234827.1353-8-shiraz.saleem@intel.com>
+In-Reply-To: <20210122234827.1353-16-shiraz.saleem@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 05:48:12PM -0600, Shiraz Saleem wrote:
+On Fri, Jan 22, 2021 at 05:48:20PM -0600, Shiraz Saleem wrote:
 > From: Mustafa Ismail <mustafa.ismail@intel.com>
 >
-> Register irdma as an auxiliary driver which can attach to auxiliary RDMA
-> devices from Intel PCI netdev drivers i40e and ice. Implement the private
-> channel ops, add basic devlink support in the driver and register net
-> notifiers.
-
-Devlink part in "the RDMA client" is interesting thing.
-
-The idea behind auxiliary bus was that PCI logic will stay at one place
-and devlink considered as the tool to manage that.
-
-In current form every client is going to get independent devlink instance.
+> Implement device supported verb APIs. The supported APIs
+> vary based on the underlying transport the ibdev is
+> registered as (i.e. iWARP or RoCEv2).
+>
+> Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
+> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> ---
+>  drivers/infiniband/hw/irdma/verbs.c     | 4617 +++++++++++++++++++++++++++++++
+>  drivers/infiniband/hw/irdma/verbs.h     |  218 ++
+>  include/uapi/rdma/ib_user_ioctl_verbs.h |    1 +
+>  3 files changed, 4836 insertions(+)
+>  create mode 100644 drivers/infiniband/hw/irdma/verbs.c
+>  create mode 100644 drivers/infiniband/hw/irdma/verbs.h
 
 <...>
 
-> +static int irdma_devlink_rsrc_limits_validate(struct devlink *dl, u32 id,
-> +					      union devlink_param_value val,
-> +					      struct netlink_ext_ack *extack)
-> +{
-> +	u8 value = val.vu8;
+> +	if (req.userspace_ver > IRDMA_ABI_VER)
+> +		goto ver_error;
 > +
-> +	if (value > 7) {
-> +		NL_SET_ERR_MSG_MOD(extack, "resource limits selector range is (0-7)");
-> +		return -ERANGE;
+> +	ucontext->iwdev = iwdev;
+> +	ucontext->abi_ver = req.userspace_ver;
+> +
+> +	uk_attrs = &iwdev->rf->sc_dev.hw_attrs.uk_attrs;
+> +	/* GEN_1 legacy support with libi40iw */
+> +	if (req.userspace_ver <= 5) {
+> +		if (uk_attrs->hw_rev != IRDMA_GEN_1)
+> +			goto ver_error;
+> +
+> +		uresp_gen1.max_qps = iwdev->rf->max_qp;
+> +		uresp_gen1.max_pds = iwdev->rf->sc_dev.hw_attrs.max_hw_pds;
+> +		uresp_gen1.wq_size = iwdev->rf->sc_dev.hw_attrs.max_qp_wr * 2;
+> +		uresp_gen1.kernel_ver = req.userspace_ver;
+> +		if (ib_copy_to_udata(udata, &uresp_gen1,
+> +				     min(sizeof(uresp_gen1), udata->outlen)))
+> +			return -EFAULT;
+> +	} else {
+> +		u64 bar_off =
+> +		    (uintptr_t)iwdev->rf->sc_dev.hw_regs[IRDMA_DB_ADDR_OFFSET];
+> +		ucontext->db_mmap_entry =
+> +			irdma_user_mmap_entry_insert(ucontext, bar_off,
+> +						     IRDMA_MMAP_IO_NC,
+> +						     &uresp.db_mmap_key);
+> +
+> +		if (!ucontext->db_mmap_entry)
+> +			return -ENOMEM;
+> +
+> +		uresp.kernel_ver = IRDMA_ABI_VER;
+> +		uresp.feature_flags = uk_attrs->feature_flags;
+> +		uresp.max_hw_wq_frags = uk_attrs->max_hw_wq_frags;
+> +		uresp.max_hw_read_sges = uk_attrs->max_hw_read_sges;
+> +		uresp.max_hw_inline = uk_attrs->max_hw_inline;
+> +		uresp.max_hw_rq_quanta = uk_attrs->max_hw_rq_quanta;
+> +		uresp.max_hw_wq_quanta = uk_attrs->max_hw_wq_quanta;
+> +		uresp.max_hw_sq_chunk = uk_attrs->max_hw_sq_chunk;
+> +		uresp.max_hw_cq_size = uk_attrs->max_hw_cq_size;
+> +		uresp.min_hw_cq_size = uk_attrs->min_hw_cq_size;
+> +		uresp.hw_rev = uk_attrs->hw_rev;
+> +		if (ib_copy_to_udata(udata, &uresp,
+> +				     min(sizeof(uresp), udata->outlen)))
+> +			return -EFAULT;
 > +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int irdma_devlink_enable_roce_validate(struct devlink *dl, u32 id,
-> +					      union devlink_param_value val,
-> +					      struct netlink_ext_ack *extack)
-> +{
-> +	struct irdma_dl_priv *priv = devlink_priv(dl);
-> +	bool value = val.vbool;
-> +
-> +	if (value && priv->drvdata->hw_ver == IRDMA_GEN_1) {
-> +		NL_SET_ERR_MSG_MOD(extack, "RoCE not supported on device");
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int irdma_devlink_upload_ctx_get(struct devlink *devlink, u32 id,
-> +					struct devlink_param_gset_ctx *ctx)
-> +{
-> +	ctx->val.vbool = irdma_upload_context;
-> +	return 0;
-> +}
-> +
-> +static int irdma_devlink_upload_ctx_set(struct devlink *devlink, u32 id,
-> +					struct devlink_param_gset_ctx *ctx)
-> +{
-> +	irdma_upload_context = ctx->val.vbool;
-> +	return 0;
-> +}
-> +
-> +enum irdma_dl_param_id {
-> +	IRDMA_DEVLINK_PARAM_ID_BASE = DEVLINK_PARAM_GENERIC_ID_MAX,
-> +	IRDMA_DEVLINK_PARAM_ID_LIMITS_SELECTOR,
-> +	IRDMA_DEVLINK_PARAM_ID_UPLOAD_CONTEXT,
-> +};
-> +
-> +static const struct devlink_param irdma_devlink_params[] = {
-> +	DEVLINK_PARAM_DRIVER(IRDMA_DEVLINK_PARAM_ID_LIMITS_SELECTOR,
-> +			     "resource_limits_selector", DEVLINK_PARAM_TYPE_U8,
-> +			      BIT(DEVLINK_PARAM_CMODE_DRIVERINIT),
-> +			      NULL, NULL, irdma_devlink_rsrc_limits_validate),
-> +	DEVLINK_PARAM_DRIVER(IRDMA_DEVLINK_PARAM_ID_UPLOAD_CONTEXT,
-> +			     "upload_context", DEVLINK_PARAM_TYPE_BOOL,
-> +			     BIT(DEVLINK_PARAM_CMODE_RUNTIME),
-> +			     irdma_devlink_upload_ctx_get,
-> +			     irdma_devlink_upload_ctx_set, NULL),
-> +	DEVLINK_PARAM_GENERIC(ENABLE_ROCE, BIT(DEVLINK_PARAM_CMODE_DRIVERINIT),
-> +			      NULL, NULL, irdma_devlink_enable_roce_validate),
-> +};
 
-RoCE enable knob is understandable, but others are not explained.
-
-> +
-> +static int irdma_devlink_reload_down(struct devlink *devlink, bool netns_change,
-> +				     enum devlink_reload_action action,
-> +				     enum devlink_reload_limit limit,
-> +				     struct netlink_ext_ack *extack)
-> +{
-> +	struct irdma_dl_priv *priv = devlink_priv(devlink);
-> +	struct auxiliary_device *aux_dev = to_auxiliary_dev(devlink->dev);
-> +
-> +	if (netns_change) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Namespace change is not supported");
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	priv->drvdata->deinit_dev(aux_dev);
-> +
-> +	return 0;
-> +}
-> +
-> +static int irdma_devlink_reload_up(struct devlink *devlink, enum devlink_reload_action action,
-> +				   enum devlink_reload_limit limit, u32 *actions_performed,
-> +				   struct netlink_ext_ack *extack)
-> +{
-> +	struct irdma_dl_priv *priv = devlink_priv(devlink);
-> +	struct auxiliary_device *aux_dev = to_auxiliary_dev(devlink->dev);
-> +	union devlink_param_value saved_value;
-> +	int ret;
-> +
-> +	*actions_performed = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT);
-> +
-> +	devlink_param_driverinit_value_get(devlink,
-> +				DEVLINK_PARAM_GENERIC_ID_ENABLE_ROCE,
-> +				&saved_value);
-> +	priv->roce_ena = saved_value.vbool;
-> +	devlink_param_driverinit_value_get(devlink,
-> +				IRDMA_DEVLINK_PARAM_ID_LIMITS_SELECTOR,
-> +				&saved_value);
-> +	priv->limits_sel = saved_value.vbool;
-> +
-> +	ret = priv->drvdata->init_dev(aux_dev);
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct devlink_ops irdma_devlink_ops = {
-> +	.reload_up = irdma_devlink_reload_up,
-> +	.reload_down = irdma_devlink_reload_down,
-> +	.reload_actions = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT),
-> +};
-
-So the plan is that every client will implement same devlink reload logic?
+i40iw has different logic here, and in old code, if user supplied "req.userspace_ver < 4",
+he will get an error. In new code, it will pass and probably fail later.
 
 Thanks
