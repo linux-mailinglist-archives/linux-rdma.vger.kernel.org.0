@@ -2,144 +2,192 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B94301D92
-	for <lists+linux-rdma@lfdr.de>; Sun, 24 Jan 2021 17:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0641301E13
+	for <lists+linux-rdma@lfdr.de>; Sun, 24 Jan 2021 19:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726339AbhAXQsn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 24 Jan 2021 11:48:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbhAXQsg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 24 Jan 2021 11:48:36 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD652C061574;
-        Sun, 24 Jan 2021 08:47:55 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id u17so21796841iow.1;
-        Sun, 24 Jan 2021 08:47:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wIgSlR36uyBNzzuWq9sdWAXrQ+VFAY02q13n34GMiSM=;
-        b=aWzlo8XlWowDL6UW6hzzuky+Cj7K5BsI+wau9979rUC3+SjIXpxbZacYsxZ2ixb2UY
-         RzV02XevfUckoJ4SQuqLi0vmYefmr65vYCj1PhMCBAg+YzSF2LsNnWl/s9YZ76w50t5b
-         DiBgE9eo7sJMdJSt3djLYaCnyWATrePUGx+6irGWqRfIhe91k+xZkUuIL8Y91hxlmpZ4
-         AHFTnyYuHJHgEs/Adib2n9YeH6YAqRpM5Mutvyfr1/I3TSliK2TQ/TMmhledl0lnRMNE
-         eowHDZuoy6tEreJD3jU0UnaIWsK6HA7LdKevaYqhyjJO0Z/Rpn2qrwzSs3m4tFE1yPaY
-         OFhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wIgSlR36uyBNzzuWq9sdWAXrQ+VFAY02q13n34GMiSM=;
-        b=tf6Hgxa4bMxCDd/MOqNfKmKl+351f+MA5YhnNf1iVEXgYco8HGcSOoftnSzO+EG4/K
-         4Qyt9QsF8ksGGjEDxrzxwHWUS2TF+OyaDZSbc2cv3/PAV1VyDol5aw3iiTA5+geynYrs
-         PzSH4FAaUfSwMmT6PbLw4+EIhorUzorpuFUoXlO5jLyY+vh3wuzY3buUA7op/8IMNmbN
-         xY5pnnMl5hh1Sg3qpzzxCHeB7N5LthelOaHq1HPi3VlWjgW+uluu9zNIzUfsjKNkn7XY
-         OVPpKzLIYl0S2haCZNRvCxx83uNt1SEduoyY6kX24YUfHiTJZU0lE4Jz8G5ffisN/Dsk
-         n7yA==
-X-Gm-Message-State: AOAM530veX2jJEC1k8x2mCobptNXqLdTXkiTx1KhnH4Ko47qmsTZ7Us+
-        2BWZsTvU5oo5vDmMlMUvaDI92jECfMb58x7R4nk=
-X-Google-Smtp-Source: ABdhPJz5zd6pscp17Ec0e4J7AT8hDTMQ6xbJmMPHGg4ePr1tM5uFVb+7J5TzHS7iTDuJSBTfL6mLIU3D2MfWowmyU2I=
-X-Received: by 2002:a05:6602:2c52:: with SMTP id x18mr568092iov.5.1611506875046;
- Sun, 24 Jan 2021 08:47:55 -0800 (PST)
+        id S1725911AbhAXSO0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 24 Jan 2021 13:14:26 -0500
+Received: from mga18.intel.com ([134.134.136.126]:59007 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725863AbhAXSOZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 24 Jan 2021 13:14:25 -0500
+IronPort-SDR: dUWe6jbtyfBEP/jclwE4SgS6PLMCHeuPkT5t/PQGAkgkjOpEuTHPfp/0T6Ba42Ezo2849XPMEc
+ g/iX89KZfr2w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="167307625"
+X-IronPort-AV: E=Sophos;i="5.79,371,1602572400"; 
+   d="scan'208";a="167307625"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2021 10:13:44 -0800
+IronPort-SDR: ztJHPrbAaNjO9X5trthPfv2E2izJUK48ASCINlPqZZOUPk+i9J8KItk9w/GxuvxAY7xwFv7zrV
+ Ve1ZO8NLOLRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,371,1602572400"; 
+   d="scan'208";a="392990265"
+Received: from lkp-server01.sh.intel.com (HELO 27c4e0a4b6d9) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 24 Jan 2021 10:13:43 -0800
+Received: from kbuild by 27c4e0a4b6d9 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l3jtO-0000P7-Qk; Sun, 24 Jan 2021 18:13:42 +0000
+Date:   Mon, 25 Jan 2021 02:12:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ f8e9a970159c7bd30429b86710397e9914fefbca
+Message-ID: <600db8a3.k4n7RlshA7smhbPI%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210124131119.558563-1-leon@kernel.org> <20210124131119.558563-2-leon@kernel.org>
-In-Reply-To: <20210124131119.558563-2-leon@kernel.org>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Sun, 24 Jan 2021 08:47:44 -0800
-Message-ID: <CAKgT0UcJQ3uy6J_CCLizDLfzGL2saa_PjOYH4nK+RQjfmpNA=w@mail.gmail.com>
-Subject: Re: [PATCH mlx5-next v4 1/4] PCI: Add sysfs callback to allow MSI-X
- table size change of SR-IOV VFs
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 5:11 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> From: Leon Romanovsky <leonro@nvidia.com>
->
-> Extend PCI sysfs interface with a new callback that allows configure
-> the number of MSI-X vectors for specific SR-IO VF. This is needed
-> to optimize the performance of newly bound devices by allocating
-> the number of vectors based on the administrator knowledge of targeted VM.
->
-> This function is applicable for SR-IOV VF because such devices allocate
-> their MSI-X table before they will run on the VMs and HW can't guess the
-> right number of vectors, so the HW allocates them statically and equally.
->
-> 1) The newly added /sys/bus/pci/devices/.../vfs_overlay/sriov_vf_msix_count
-> file will be seen for the VFs and it is writable as long as a driver is not
-> bounded to the VF.
->
-> The values accepted are:
->  * > 0 - this will be number reported by the VF's MSI-X capability
->  * < 0 - not valid
->  * = 0 - will reset to the device default value
->
-> 2) In order to make management easy, provide new read-only sysfs file that
-> returns a total number of possible to configure MSI-X vectors.
->
-> cat /sys/bus/pci/devices/.../vfs_overlay/sriov_vf_total_msix
->   = 0 - feature is not supported
->   > 0 - total number of MSI-X vectors to consume by the VFs
->
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  Documentation/ABI/testing/sysfs-bus-pci |  32 +++++
->  drivers/pci/iov.c                       | 180 ++++++++++++++++++++++++
->  drivers/pci/msi.c                       |  47 +++++++
->  drivers/pci/pci.h                       |   4 +
->  include/linux/pci.h                     |  10 ++
->  5 files changed, 273 insertions(+)
->
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: f8e9a970159c7bd30429b86710397e9914fefbca  RDMA/sw/rdmavt/qp: Fix a bunch of kernel-doc misdemeanours
 
-<snip>
+elapsed time: 727m
 
-> +
-> +static umode_t sriov_pf_attrs_are_visible(struct kobject *kobj,
-> +                                         struct attribute *a, int n)
-> +{
-> +       struct device *dev = kobj_to_dev(kobj);
-> +       struct pci_dev *pdev = to_pci_dev(dev);
-> +
-> +       if (!pdev->msix_cap || !dev_is_pf(dev))
-> +               return 0;
-> +
-> +       return a->mode;
-> +}
-> +
-> +static umode_t sriov_vf_attrs_are_visible(struct kobject *kobj,
-> +                                         struct attribute *a, int n)
-> +{
-> +       struct device *dev = kobj_to_dev(kobj);
-> +       struct pci_dev *pdev = to_pci_dev(dev);
-> +
-> +       if (!pdev->msix_cap || dev_is_pf(dev))
-> +               return 0;
-> +
-> +       return a->mode;
-> +}
-> +
+configs tested: 130
+configs skipped: 3
 
-Given the changes I don't see why we need to add the "visible"
-functions. We are only registering this from the PF if there is a need
-to make use of the interfaces, correct? If so we can just assume that
-the interfaces should always be visible if they are requested.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Also you may want to look at placing a link to the VF folders in the
-PF folder, although I suppose there are already links from the PF PCI
-device to the VF PCI devices so maybe that isn't necessary. It just
-takes a few extra steps to navigate between the two.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                        mvebu_v5_defconfig
+mips                    maltaup_xpa_defconfig
+powerpc                      ppc40x_defconfig
+sh                              ul2_defconfig
+mips                       lemote2f_defconfig
+arm                     davinci_all_defconfig
+powerpc                    amigaone_defconfig
+m68k                       bvme6000_defconfig
+arm                         vf610m4_defconfig
+powerpc                     ppa8548_defconfig
+arm                            lart_defconfig
+mips                        omega2p_defconfig
+powerpc                    gamecube_defconfig
+sh                            migor_defconfig
+powerpc                      ppc44x_defconfig
+mips                         tb0219_defconfig
+powerpc                      pcm030_defconfig
+powerpc                       ebony_defconfig
+sh                             espt_defconfig
+sparc64                             defconfig
+arc                              allyesconfig
+sh                         apsh4a3a_defconfig
+powerpc                      cm5200_defconfig
+sparc                       sparc32_defconfig
+powerpc                mpc7448_hpc2_defconfig
+arm                    vt8500_v6_v7_defconfig
+sh                                  defconfig
+sh                           se7712_defconfig
+arm                        neponset_defconfig
+arm                             pxa_defconfig
+openrisc                         alldefconfig
+mips                            ar7_defconfig
+mips                        qi_lb60_defconfig
+arm                   milbeaut_m10v_defconfig
+mips                         db1xxx_defconfig
+arm                             mxs_defconfig
+powerpc                  storcenter_defconfig
+mips                      pistachio_defconfig
+arm                          lpd270_defconfig
+nios2                            alldefconfig
+arm                          pcm027_defconfig
+mips                       capcella_defconfig
+mips                          ath25_defconfig
+sh                   rts7751r2dplus_defconfig
+arm                          simpad_defconfig
+arm                         shannon_defconfig
+powerpc                        fsp2_defconfig
+arm                         s5pv210_defconfig
+arc                           tb10x_defconfig
+powerpc                 mpc834x_mds_defconfig
+powerpc                   lite5200b_defconfig
+arm                           stm32_defconfig
+arm                        realview_defconfig
+powerpc                     sbc8548_defconfig
+alpha                               defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                        vexpress_defconfig
+arm                        oxnas_v6_defconfig
+mips                           ci20_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210124
+i386                 randconfig-a002-20210124
+i386                 randconfig-a003-20210124
+x86_64               randconfig-a012-20210124
+x86_64               randconfig-a016-20210124
+x86_64               randconfig-a015-20210124
+x86_64               randconfig-a011-20210124
+x86_64               randconfig-a013-20210124
+x86_64               randconfig-a014-20210124
+i386                 randconfig-a013-20210124
+i386                 randconfig-a012-20210124
+i386                 randconfig-a014-20210124
+i386                 randconfig-a016-20210124
+i386                 randconfig-a011-20210124
+i386                 randconfig-a015-20210124
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a003-20210124
+x86_64               randconfig-a002-20210124
+x86_64               randconfig-a001-20210124
+x86_64               randconfig-a005-20210124
+x86_64               randconfig-a006-20210124
+x86_64               randconfig-a004-20210124
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
