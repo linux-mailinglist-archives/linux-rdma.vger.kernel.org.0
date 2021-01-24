@@ -2,113 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2BF301CA5
-	for <lists+linux-rdma@lfdr.de>; Sun, 24 Jan 2021 15:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B94301D92
+	for <lists+linux-rdma@lfdr.de>; Sun, 24 Jan 2021 17:49:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725768AbhAXOTl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 24 Jan 2021 09:19:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725290AbhAXOTl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 24 Jan 2021 09:19:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5477222D6E;
-        Sun, 24 Jan 2021 14:18:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611497940;
-        bh=WoUImpSEYpTtMEx4LB9LuXLCIxy/ln1cx+nADzMNnU0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LrzDXjoTw+fpEUJ4qu+ET6JsGYbPdMI7t3ljgpnE6ql6+gk60F1aAUr2JQud20oDv
-         fxwkybuOXlCLxeIkatCe1qkoApfgXlfiEeX1Y/rbc4Iu/fKB6ynodttly4ZguO9REz
-         lEe5Quwt776PkdwUU09oLXJ9reSZkGTkaCGGdROwGsL4gI/uWCp8hp/6vBL5io3an/
-         A9PwSbwG7KfocuMYcGAuRvue43Y72IhdNlfK09dXvnmIWsq+qDWBdr1XTTZDPDLM54
-         sLWJ3LLqb/OUjXwm7pC6E3rbLVrsyRH5wUUjsDJ0S3ri9Yhf69IKwcmKvZTn/SgJ6o
-         /mCn36VImHjGQ==
-Date:   Sun, 24 Jan 2021 16:18:56 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Shiraz Saleem <shiraz.saleem@intel.com>
-Cc:     dledford@redhat.com, jgg@nvidia.com, kuba@kernel.org,
-        davem@davemloft.net, linux-rdma@vger.kernel.org,
-        gregkh@linuxfoundation.org, netdev@vger.kernel.org,
-        david.m.ertman@intel.com, anthony.l.nguyen@intel.com,
-        Mustafa Ismail <mustafa.ismail@intel.com>
-Subject: Re: [PATCH 15/22] RDMA/irdma: Implement device supported verb APIs
-Message-ID: <20210124141856.GC5038@unreal>
-References: <20210122234827.1353-1-shiraz.saleem@intel.com>
- <20210122234827.1353-16-shiraz.saleem@intel.com>
+        id S1726339AbhAXQsn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 24 Jan 2021 11:48:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726278AbhAXQsg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 24 Jan 2021 11:48:36 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD652C061574;
+        Sun, 24 Jan 2021 08:47:55 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id u17so21796841iow.1;
+        Sun, 24 Jan 2021 08:47:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wIgSlR36uyBNzzuWq9sdWAXrQ+VFAY02q13n34GMiSM=;
+        b=aWzlo8XlWowDL6UW6hzzuky+Cj7K5BsI+wau9979rUC3+SjIXpxbZacYsxZ2ixb2UY
+         RzV02XevfUckoJ4SQuqLi0vmYefmr65vYCj1PhMCBAg+YzSF2LsNnWl/s9YZ76w50t5b
+         DiBgE9eo7sJMdJSt3djLYaCnyWATrePUGx+6irGWqRfIhe91k+xZkUuIL8Y91hxlmpZ4
+         AHFTnyYuHJHgEs/Adib2n9YeH6YAqRpM5Mutvyfr1/I3TSliK2TQ/TMmhledl0lnRMNE
+         eowHDZuoy6tEreJD3jU0UnaIWsK6HA7LdKevaYqhyjJO0Z/Rpn2qrwzSs3m4tFE1yPaY
+         OFhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wIgSlR36uyBNzzuWq9sdWAXrQ+VFAY02q13n34GMiSM=;
+        b=tf6Hgxa4bMxCDd/MOqNfKmKl+351f+MA5YhnNf1iVEXgYco8HGcSOoftnSzO+EG4/K
+         4Qyt9QsF8ksGGjEDxrzxwHWUS2TF+OyaDZSbc2cv3/PAV1VyDol5aw3iiTA5+geynYrs
+         PzSH4FAaUfSwMmT6PbLw4+EIhorUzorpuFUoXlO5jLyY+vh3wuzY3buUA7op/8IMNmbN
+         xY5pnnMl5hh1Sg3qpzzxCHeB7N5LthelOaHq1HPi3VlWjgW+uluu9zNIzUfsjKNkn7XY
+         OVPpKzLIYl0S2haCZNRvCxx83uNt1SEduoyY6kX24YUfHiTJZU0lE4Jz8G5ffisN/Dsk
+         n7yA==
+X-Gm-Message-State: AOAM530veX2jJEC1k8x2mCobptNXqLdTXkiTx1KhnH4Ko47qmsTZ7Us+
+        2BWZsTvU5oo5vDmMlMUvaDI92jECfMb58x7R4nk=
+X-Google-Smtp-Source: ABdhPJz5zd6pscp17Ec0e4J7AT8hDTMQ6xbJmMPHGg4ePr1tM5uFVb+7J5TzHS7iTDuJSBTfL6mLIU3D2MfWowmyU2I=
+X-Received: by 2002:a05:6602:2c52:: with SMTP id x18mr568092iov.5.1611506875046;
+ Sun, 24 Jan 2021 08:47:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210122234827.1353-16-shiraz.saleem@intel.com>
+References: <20210124131119.558563-1-leon@kernel.org> <20210124131119.558563-2-leon@kernel.org>
+In-Reply-To: <20210124131119.558563-2-leon@kernel.org>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Sun, 24 Jan 2021 08:47:44 -0800
+Message-ID: <CAKgT0UcJQ3uy6J_CCLizDLfzGL2saa_PjOYH4nK+RQjfmpNA=w@mail.gmail.com>
+Subject: Re: [PATCH mlx5-next v4 1/4] PCI: Add sysfs callback to allow MSI-X
+ table size change of SR-IOV VFs
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 05:48:20PM -0600, Shiraz Saleem wrote:
-> From: Mustafa Ismail <mustafa.ismail@intel.com>
+On Sun, Jan 24, 2021 at 5:11 AM Leon Romanovsky <leon@kernel.org> wrote:
 >
-> Implement device supported verb APIs. The supported APIs
-> vary based on the underlying transport the ibdev is
-> registered as (i.e. iWARP or RoCEv2).
+> From: Leon Romanovsky <leonro@nvidia.com>
 >
-> Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> Extend PCI sysfs interface with a new callback that allows configure
+> the number of MSI-X vectors for specific SR-IO VF. This is needed
+> to optimize the performance of newly bound devices by allocating
+> the number of vectors based on the administrator knowledge of targeted VM.
+>
+> This function is applicable for SR-IOV VF because such devices allocate
+> their MSI-X table before they will run on the VMs and HW can't guess the
+> right number of vectors, so the HW allocates them statically and equally.
+>
+> 1) The newly added /sys/bus/pci/devices/.../vfs_overlay/sriov_vf_msix_count
+> file will be seen for the VFs and it is writable as long as a driver is not
+> bounded to the VF.
+>
+> The values accepted are:
+>  * > 0 - this will be number reported by the VF's MSI-X capability
+>  * < 0 - not valid
+>  * = 0 - will reset to the device default value
+>
+> 2) In order to make management easy, provide new read-only sysfs file that
+> returns a total number of possible to configure MSI-X vectors.
+>
+> cat /sys/bus/pci/devices/.../vfs_overlay/sriov_vf_total_msix
+>   = 0 - feature is not supported
+>   > 0 - total number of MSI-X vectors to consume by the VFs
+>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 > ---
->  drivers/infiniband/hw/irdma/verbs.c     | 4617 +++++++++++++++++++++++++++++++
->  drivers/infiniband/hw/irdma/verbs.h     |  218 ++
->  include/uapi/rdma/ib_user_ioctl_verbs.h |    1 +
->  3 files changed, 4836 insertions(+)
->  create mode 100644 drivers/infiniband/hw/irdma/verbs.c
->  create mode 100644 drivers/infiniband/hw/irdma/verbs.h
+>  Documentation/ABI/testing/sysfs-bus-pci |  32 +++++
+>  drivers/pci/iov.c                       | 180 ++++++++++++++++++++++++
+>  drivers/pci/msi.c                       |  47 +++++++
+>  drivers/pci/pci.h                       |   4 +
+>  include/linux/pci.h                     |  10 ++
+>  5 files changed, 273 insertions(+)
+>
 
-<...>
+<snip>
 
-> +	if (req.userspace_ver > IRDMA_ABI_VER)
-> +		goto ver_error;
 > +
-> +	ucontext->iwdev = iwdev;
-> +	ucontext->abi_ver = req.userspace_ver;
+> +static umode_t sriov_pf_attrs_are_visible(struct kobject *kobj,
+> +                                         struct attribute *a, int n)
+> +{
+> +       struct device *dev = kobj_to_dev(kobj);
+> +       struct pci_dev *pdev = to_pci_dev(dev);
 > +
-> +	uk_attrs = &iwdev->rf->sc_dev.hw_attrs.uk_attrs;
-> +	/* GEN_1 legacy support with libi40iw */
-> +	if (req.userspace_ver <= 5) {
-> +		if (uk_attrs->hw_rev != IRDMA_GEN_1)
-> +			goto ver_error;
+> +       if (!pdev->msix_cap || !dev_is_pf(dev))
+> +               return 0;
 > +
-> +		uresp_gen1.max_qps = iwdev->rf->max_qp;
-> +		uresp_gen1.max_pds = iwdev->rf->sc_dev.hw_attrs.max_hw_pds;
-> +		uresp_gen1.wq_size = iwdev->rf->sc_dev.hw_attrs.max_qp_wr * 2;
-> +		uresp_gen1.kernel_ver = req.userspace_ver;
-> +		if (ib_copy_to_udata(udata, &uresp_gen1,
-> +				     min(sizeof(uresp_gen1), udata->outlen)))
-> +			return -EFAULT;
-> +	} else {
-> +		u64 bar_off =
-> +		    (uintptr_t)iwdev->rf->sc_dev.hw_regs[IRDMA_DB_ADDR_OFFSET];
-> +		ucontext->db_mmap_entry =
-> +			irdma_user_mmap_entry_insert(ucontext, bar_off,
-> +						     IRDMA_MMAP_IO_NC,
-> +						     &uresp.db_mmap_key);
+> +       return a->mode;
+> +}
 > +
-> +		if (!ucontext->db_mmap_entry)
-> +			return -ENOMEM;
+> +static umode_t sriov_vf_attrs_are_visible(struct kobject *kobj,
+> +                                         struct attribute *a, int n)
+> +{
+> +       struct device *dev = kobj_to_dev(kobj);
+> +       struct pci_dev *pdev = to_pci_dev(dev);
 > +
-> +		uresp.kernel_ver = IRDMA_ABI_VER;
-> +		uresp.feature_flags = uk_attrs->feature_flags;
-> +		uresp.max_hw_wq_frags = uk_attrs->max_hw_wq_frags;
-> +		uresp.max_hw_read_sges = uk_attrs->max_hw_read_sges;
-> +		uresp.max_hw_inline = uk_attrs->max_hw_inline;
-> +		uresp.max_hw_rq_quanta = uk_attrs->max_hw_rq_quanta;
-> +		uresp.max_hw_wq_quanta = uk_attrs->max_hw_wq_quanta;
-> +		uresp.max_hw_sq_chunk = uk_attrs->max_hw_sq_chunk;
-> +		uresp.max_hw_cq_size = uk_attrs->max_hw_cq_size;
-> +		uresp.min_hw_cq_size = uk_attrs->min_hw_cq_size;
-> +		uresp.hw_rev = uk_attrs->hw_rev;
-> +		if (ib_copy_to_udata(udata, &uresp,
-> +				     min(sizeof(uresp), udata->outlen)))
-> +			return -EFAULT;
-> +	}
+> +       if (!pdev->msix_cap || dev_is_pf(dev))
+> +               return 0;
+> +
+> +       return a->mode;
+> +}
+> +
 
-i40iw has different logic here, and in old code, if user supplied "req.userspace_ver < 4",
-he will get an error. In new code, it will pass and probably fail later.
+Given the changes I don't see why we need to add the "visible"
+functions. We are only registering this from the PF if there is a need
+to make use of the interfaces, correct? If so we can just assume that
+the interfaces should always be visible if they are requested.
 
-Thanks
+Also you may want to look at placing a link to the VF folders in the
+PF folder, although I suppose there are already links from the PF PCI
+device to the VF PCI devices so maybe that isn't necessary. It just
+takes a few extra steps to navigate between the two.
