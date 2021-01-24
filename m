@@ -2,200 +2,180 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DC2301C0D
-	for <lists+linux-rdma@lfdr.de>; Sun, 24 Jan 2021 14:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74571301C4F
+	for <lists+linux-rdma@lfdr.de>; Sun, 24 Jan 2021 14:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726987AbhAXNMb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 24 Jan 2021 08:12:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42214 "EHLO mail.kernel.org"
+        id S1725550AbhAXNqh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 24 Jan 2021 08:46:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726929AbhAXNMP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 24 Jan 2021 08:12:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D152B22D0A;
-        Sun, 24 Jan 2021 13:11:33 +0000 (UTC)
+        id S1725268AbhAXNqg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 24 Jan 2021 08:46:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57488227BF;
+        Sun, 24 Jan 2021 13:45:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611493894;
-        bh=LECEB+cDh+iV4QGXRsrdF1G4GB6HAY18qykra5sbqcs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aGJGjud7gl0+DJMXiew+c95XobkH3bIK15ktSBSnWXItEqc3u1zUEt/2d3UonH+IH
-         0jizC1+T1whqBzEudBgjBww00NXKj3F3gpypqjBCvGM0oeiJzuCDOsTf/DZVFJJHhb
-         FF8jNlCa+twhOoDu2YZYmvwu6CLlyBuA4L/JlvWNmaYuZ9xaDf9YrFsStsOUdEqZL1
-         xxEed1i68WqGkzTaM3JAydi49yCq2EU7Y0H8x8qKD2defoeYQGSGgYSqgkJT6vE530
-         BSJzTHzE+eGwl7ewdAUOVjGVuUpXnBtmaHVpADqBZRXcxqvl7ZJn1vaULXtOQbEQpl
-         j/+A5uiA3dB/w==
+        s=k20201202; t=1611495955;
+        bh=8SKR/G8hww3sahSCUEdv19IP/CnswdwvSZfUon47hoM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PCEuPA0rqStT4mgsklOrINGz3tu50k5eiGiiRbM0D1uu6G78KGX7lFNp15lf2dQq0
+         VcsIycdrcPagT6iuFXkWgfb43+hWGT580cfxhwBqZ+rFAZ/ytu/n+4gbXIK/m616dS
+         tCk4M1ElhKkEhLWhb9tglFyK1/14s8fbfedWpxpPBu9bp/jCBAn0PsKA2nU2vMvcVW
+         UcgXczdBUqhh4szwl+68NU33QMkqVJN3/1Bu9Gqd9kgarlpNCR4wP87NjP2SUutSCV
+         4SBSfn250/WfvHKbRngyKU/nz8o+4nR2YyiUJFpihjD2wRLg4gYtXmoX8RHV9SJRt1
+         fc+gtRVM54Bww==
+Date:   Sun, 24 Jan 2021 15:45:51 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH mlx5-next v4 4/4] net/mlx5: Allow to the users to configure number of MSI-X vectors
-Date:   Sun, 24 Jan 2021 15:11:19 +0200
-Message-Id: <20210124131119.558563-5-leon@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210124131119.558563-1-leon@kernel.org>
-References: <20210124131119.558563-1-leon@kernel.org>
+To:     Shiraz Saleem <shiraz.saleem@intel.com>
+Cc:     dledford@redhat.com, jgg@nvidia.com, kuba@kernel.org,
+        davem@davemloft.net, linux-rdma@vger.kernel.org,
+        gregkh@linuxfoundation.org, netdev@vger.kernel.org,
+        david.m.ertman@intel.com, anthony.l.nguyen@intel.com,
+        Mustafa Ismail <mustafa.ismail@intel.com>
+Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
+ implement private channel OPs
+Message-ID: <20210124134551.GB5038@unreal>
+References: <20210122234827.1353-1-shiraz.saleem@intel.com>
+ <20210122234827.1353-8-shiraz.saleem@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210122234827.1353-8-shiraz.saleem@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Fri, Jan 22, 2021 at 05:48:12PM -0600, Shiraz Saleem wrote:
+> From: Mustafa Ismail <mustafa.ismail@intel.com>
+>
+> Register irdma as an auxiliary driver which can attach to auxiliary RDMA
+> devices from Intel PCI netdev drivers i40e and ice. Implement the private
+> channel ops, add basic devlink support in the driver and register net
+> notifiers.
 
-Implement ability to configure MSI-X for the SR-IOV VFs.
+Devlink part in "the RDMA client" is interesting thing.
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- .../net/ethernet/mellanox/mlx5/core/main.c    | 12 +++++
- .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  1 +
- .../net/ethernet/mellanox/mlx5/core/sriov.c   | 46 +++++++++++++++++++
- 3 files changed, 59 insertions(+)
+The idea behind auxiliary bus was that PCI logic will stay at one place
+and devlink considered as the tool to manage that.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index 79cfcc844156..228765c38cf8 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -1395,6 +1395,14 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *id)
- 		goto err_load_one;
- 	}
- 
-+	err = pci_enable_vfs_overlay(pdev);
-+	if (err) {
-+		mlx5_core_err(dev,
-+			      "pci_enable_vfs_overlay failed with error code %d\n",
-+			      err);
-+		goto err_vfs_overlay;
-+	}
-+
- 	err = mlx5_crdump_enable(dev);
- 	if (err)
- 		dev_err(&pdev->dev, "mlx5_crdump_enable failed with error code %d\n", err);
-@@ -1403,6 +1411,8 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *id)
- 	devlink_reload_enable(devlink);
- 	return 0;
- 
-+err_vfs_overlay:
-+	mlx5_unload_one(dev, true);
- err_load_one:
- 	mlx5_pci_close(dev);
- pci_init_err:
-@@ -1422,6 +1432,7 @@ static void remove_one(struct pci_dev *pdev)
- 
- 	devlink_reload_disable(devlink);
- 	mlx5_crdump_disable(dev);
-+	pci_disable_vfs_overlay(pdev);
- 	mlx5_drain_health_wq(dev);
- 	mlx5_unload_one(dev, true);
- 	mlx5_pci_close(dev);
-@@ -1650,6 +1661,7 @@ static struct pci_driver mlx5_core_driver = {
- 	.shutdown	= shutdown,
- 	.err_handler	= &mlx5_err_handler,
- 	.sriov_configure   = mlx5_core_sriov_configure,
-+	.sriov_set_msix_vec_count = mlx5_core_sriov_set_msix_vec_count,
- };
- 
- static void mlx5_core_verify_params(void)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-index 5babb4434a87..8a2523d2d43a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-@@ -138,6 +138,7 @@ void mlx5_sriov_cleanup(struct mlx5_core_dev *dev);
- int mlx5_sriov_attach(struct mlx5_core_dev *dev);
- void mlx5_sriov_detach(struct mlx5_core_dev *dev);
- int mlx5_core_sriov_configure(struct pci_dev *dev, int num_vfs);
-+int mlx5_core_sriov_set_msix_vec_count(struct pci_dev *vf, int msix_vec_count);
- int mlx5_core_enable_hca(struct mlx5_core_dev *dev, u16 func_id);
- int mlx5_core_disable_hca(struct mlx5_core_dev *dev, u16 func_id);
- int mlx5_create_scheduling_element_cmd(struct mlx5_core_dev *dev, u8 hierarchy,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sriov.c b/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-index f0ec86a1c8a6..252aa44ffbe3 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-@@ -144,6 +144,7 @@ mlx5_device_disable_sriov(struct mlx5_core_dev *dev, int num_vfs, bool clear_vf)
- static int mlx5_sriov_enable(struct pci_dev *pdev, int num_vfs)
- {
- 	struct mlx5_core_dev *dev  = pci_get_drvdata(pdev);
-+	u32 num_vf_msix;
- 	int err;
- 
- 	err = mlx5_device_enable_sriov(dev, num_vfs);
-@@ -152,11 +153,20 @@ static int mlx5_sriov_enable(struct pci_dev *pdev, int num_vfs)
- 		return err;
- 	}
- 
-+	num_vf_msix = MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix);
-+	pci_sriov_set_vf_total_msix(pdev, num_vf_msix);
- 	err = pci_enable_sriov(pdev, num_vfs);
- 	if (err) {
- 		mlx5_core_warn(dev, "pci_enable_sriov failed : %d\n", err);
- 		mlx5_device_disable_sriov(dev, num_vfs, true);
- 	}
-+	err = pci_enable_vfs_overlay(pdev);
-+	if (err) {
-+		mlx5_core_warn(dev, "pci_enable_vfs_overlay failed : %d\n",
-+			       err);
-+		pci_disable_sriov(pdev);
-+		mlx5_device_disable_sriov(dev, num_vfs, true);
-+	}
- 	return err;
- }
- 
-@@ -165,6 +175,7 @@ static void mlx5_sriov_disable(struct pci_dev *pdev)
- 	struct mlx5_core_dev *dev  = pci_get_drvdata(pdev);
- 	int num_vfs = pci_num_vf(dev->pdev);
- 
-+	pci_disable_vfs_overlay(pdev);
- 	pci_disable_sriov(pdev);
- 	mlx5_device_disable_sriov(dev, num_vfs, true);
- }
-@@ -187,6 +198,41 @@ int mlx5_core_sriov_configure(struct pci_dev *pdev, int num_vfs)
- 	return err ? err : num_vfs;
- }
- 
-+int mlx5_core_sriov_set_msix_vec_count(struct pci_dev *vf, int msix_vec_count)
-+{
-+	struct pci_dev *pf = pci_physfn(vf);
-+	struct mlx5_core_sriov *sriov;
-+	struct mlx5_core_dev *dev;
-+	int num_vf_msix, id;
-+
-+	dev = pci_get_drvdata(pf);
-+	num_vf_msix = MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix);
-+	if (!num_vf_msix)
-+		return -EOPNOTSUPP;
-+
-+	if (!msix_vec_count)
-+		msix_vec_count =
-+			mlx5_get_default_msix_vec_count(dev, pci_num_vf(pf));
-+
-+	sriov = &dev->priv.sriov;
-+
-+	/* Reversed translation of PCI VF function number to the internal
-+	 * function_id, which exists in the name of virtfn symlink.
-+	 */
-+	for (id = 0; id < pci_num_vf(pf); id++) {
-+		if (!sriov->vfs_ctx[id].enabled)
-+			continue;
-+
-+		if (vf->devfn == pci_iov_virtfn_devfn(pf, id))
-+			break;
-+	}
-+
-+	if (id == pci_num_vf(pf) || !sriov->vfs_ctx[id].enabled)
-+		return -EINVAL;
-+
-+	return mlx5_set_msix_vec_count(dev, id + 1, msix_vec_count);
-+}
-+
- int mlx5_sriov_attach(struct mlx5_core_dev *dev)
- {
- 	if (!mlx5_core_is_pf(dev) || !pci_num_vf(dev->pdev))
--- 
-2.29.2
+In current form every client is going to get independent devlink instance.
 
+<...>
+
+> +static int irdma_devlink_rsrc_limits_validate(struct devlink *dl, u32 id,
+> +					      union devlink_param_value val,
+> +					      struct netlink_ext_ack *extack)
+> +{
+> +	u8 value = val.vu8;
+> +
+> +	if (value > 7) {
+> +		NL_SET_ERR_MSG_MOD(extack, "resource limits selector range is (0-7)");
+> +		return -ERANGE;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int irdma_devlink_enable_roce_validate(struct devlink *dl, u32 id,
+> +					      union devlink_param_value val,
+> +					      struct netlink_ext_ack *extack)
+> +{
+> +	struct irdma_dl_priv *priv = devlink_priv(dl);
+> +	bool value = val.vbool;
+> +
+> +	if (value && priv->drvdata->hw_ver == IRDMA_GEN_1) {
+> +		NL_SET_ERR_MSG_MOD(extack, "RoCE not supported on device");
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int irdma_devlink_upload_ctx_get(struct devlink *devlink, u32 id,
+> +					struct devlink_param_gset_ctx *ctx)
+> +{
+> +	ctx->val.vbool = irdma_upload_context;
+> +	return 0;
+> +}
+> +
+> +static int irdma_devlink_upload_ctx_set(struct devlink *devlink, u32 id,
+> +					struct devlink_param_gset_ctx *ctx)
+> +{
+> +	irdma_upload_context = ctx->val.vbool;
+> +	return 0;
+> +}
+> +
+> +enum irdma_dl_param_id {
+> +	IRDMA_DEVLINK_PARAM_ID_BASE = DEVLINK_PARAM_GENERIC_ID_MAX,
+> +	IRDMA_DEVLINK_PARAM_ID_LIMITS_SELECTOR,
+> +	IRDMA_DEVLINK_PARAM_ID_UPLOAD_CONTEXT,
+> +};
+> +
+> +static const struct devlink_param irdma_devlink_params[] = {
+> +	DEVLINK_PARAM_DRIVER(IRDMA_DEVLINK_PARAM_ID_LIMITS_SELECTOR,
+> +			     "resource_limits_selector", DEVLINK_PARAM_TYPE_U8,
+> +			      BIT(DEVLINK_PARAM_CMODE_DRIVERINIT),
+> +			      NULL, NULL, irdma_devlink_rsrc_limits_validate),
+> +	DEVLINK_PARAM_DRIVER(IRDMA_DEVLINK_PARAM_ID_UPLOAD_CONTEXT,
+> +			     "upload_context", DEVLINK_PARAM_TYPE_BOOL,
+> +			     BIT(DEVLINK_PARAM_CMODE_RUNTIME),
+> +			     irdma_devlink_upload_ctx_get,
+> +			     irdma_devlink_upload_ctx_set, NULL),
+> +	DEVLINK_PARAM_GENERIC(ENABLE_ROCE, BIT(DEVLINK_PARAM_CMODE_DRIVERINIT),
+> +			      NULL, NULL, irdma_devlink_enable_roce_validate),
+> +};
+
+RoCE enable knob is understandable, but others are not explained.
+
+> +
+> +static int irdma_devlink_reload_down(struct devlink *devlink, bool netns_change,
+> +				     enum devlink_reload_action action,
+> +				     enum devlink_reload_limit limit,
+> +				     struct netlink_ext_ack *extack)
+> +{
+> +	struct irdma_dl_priv *priv = devlink_priv(devlink);
+> +	struct auxiliary_device *aux_dev = to_auxiliary_dev(devlink->dev);
+> +
+> +	if (netns_change) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Namespace change is not supported");
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	priv->drvdata->deinit_dev(aux_dev);
+> +
+> +	return 0;
+> +}
+> +
+> +static int irdma_devlink_reload_up(struct devlink *devlink, enum devlink_reload_action action,
+> +				   enum devlink_reload_limit limit, u32 *actions_performed,
+> +				   struct netlink_ext_ack *extack)
+> +{
+> +	struct irdma_dl_priv *priv = devlink_priv(devlink);
+> +	struct auxiliary_device *aux_dev = to_auxiliary_dev(devlink->dev);
+> +	union devlink_param_value saved_value;
+> +	int ret;
+> +
+> +	*actions_performed = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT);
+> +
+> +	devlink_param_driverinit_value_get(devlink,
+> +				DEVLINK_PARAM_GENERIC_ID_ENABLE_ROCE,
+> +				&saved_value);
+> +	priv->roce_ena = saved_value.vbool;
+> +	devlink_param_driverinit_value_get(devlink,
+> +				IRDMA_DEVLINK_PARAM_ID_LIMITS_SELECTOR,
+> +				&saved_value);
+> +	priv->limits_sel = saved_value.vbool;
+> +
+> +	ret = priv->drvdata->init_dev(aux_dev);
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct devlink_ops irdma_devlink_ops = {
+> +	.reload_up = irdma_devlink_reload_up,
+> +	.reload_down = irdma_devlink_reload_down,
+> +	.reload_actions = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT),
+> +};
+
+So the plan is that every client will implement same devlink reload logic?
+
+Thanks
