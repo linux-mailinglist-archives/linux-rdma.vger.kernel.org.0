@@ -2,95 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03CF301A4E
-	for <lists+linux-rdma@lfdr.de>; Sun, 24 Jan 2021 08:19:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D28A301C03
+	for <lists+linux-rdma@lfdr.de>; Sun, 24 Jan 2021 14:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726102AbhAXHS4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 24 Jan 2021 02:18:56 -0500
-Received: from mga04.intel.com ([192.55.52.120]:56604 "EHLO mga04.intel.com"
+        id S1726817AbhAXNMG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 24 Jan 2021 08:12:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726038AbhAXHSz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 24 Jan 2021 02:18:55 -0500
-IronPort-SDR: ZldrTAERNDT3OipNWFaTIyH5V6vm4lRLYeXbrOAIIxTQ4ETwGe1yhIpd0HtLtMGCXLDjVoiwnm
- 0W8IlHuIowGA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9873"; a="177028695"
-X-IronPort-AV: E=Sophos;i="5.79,370,1602572400"; 
-   d="scan'208";a="177028695"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2021 23:17:10 -0800
-IronPort-SDR: Cu+Wa8KxtY0DpZTSBmPG0m8XnB+LFEVb/7ZarXdc6luqLnglI+PtrvbdgyIrMjBtPxR+OOOxeM
- gh4CINFgl9uQ==
-X-IronPort-AV: E=Sophos;i="5.79,370,1602572400"; 
-   d="scan'208";a="386713678"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.255.31.40]) ([10.255.31.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2021 23:17:05 -0800
-Cc:     baolu.lu@linux.intel.com,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "logang@deltatee.com" <logang@deltatee.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "murphyt7@tcd.ie" <murphyt7@tcd.ie>,
-        "isaacm@codeaurora.org" <isaacm@codeaurora.org>
-Subject: Re: performance regression noted in v5.11-rc after c062db039f40
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Chuck Lever <chuck.lever@oracle.com>
-References: <D81314ED-5673-44A6-B597-090E3CB83EB0@oracle.com>
- <20210112143819.GA9689@willie-the-truck>
- <607648D8-BF0C-40D6-9B43-2359F45EE74C@oracle.com>
- <e83eed0d-82cd-c9be-cef1-5fe771de975f@arm.com>
- <3568C74A-A587-4464-8840-24F7A93ABA06@oracle.com>
- <990a7c1e-e8c0-a6a8-f057-03b104cebca3@linux.intel.com>
- <3A4451BB-41BD-429B-BE0C-12AE7D03A99B@oracle.com>
- <f1d38e5a-3136-172f-c792-0bbf59131514@arm.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <463fdf02-3d8e-37d3-c819-4a3c173a4138@linux.intel.com>
-Date:   Sun, 24 Jan 2021 15:17:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1726709AbhAXNMF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 24 Jan 2021 08:12:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B7A722B43;
+        Sun, 24 Jan 2021 13:11:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611493884;
+        bh=IEsyjDY7zSbJ5Aj9oqIKtFHISGfnLynAX6NdFWS/8IQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Tg27ss96WJMdUDNQZjAWlaTnzH3q6uFFdoeQlJkgKNmEcMcPtOrOf3vrTx7b5E8UN
+         15Na8sqE5WvGdP7PR2llUXxLFxWRQ5oxb4D5L6wn94UQkJbSqJpQtjdTvuyxRU2RRc
+         E4DpsDjlQmYN8W12Nf37Y6u15ZVnErkoHRhoYUJm/+1qj5J1TxW1inJuvQBHTd3lwY
+         xDUR4L/OkjmWInEB/E7ljbo7V00u8BoiOb7rd1bPb3Nh/mXLH5eGAzgP6ay2HnqT0Q
+         lykK9E4t2ARHravS0jJork3amZ9ibBVY17WmBmjT2udVXlNMygB5UTomsIROyKjdNV
+         DmHn+Fn/Gkbmw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH mlx5-next v4 0/4] Dynamically assign MSI-X vectors count
+Date:   Sun, 24 Jan 2021 15:11:15 +0200
+Message-Id: <20210124131119.558563-1-leon@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <f1d38e5a-3136-172f-c792-0bbf59131514@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/1/23 1:38, Robin Murphy wrote:
->>> I kind of believe it's due to the indirect calls. This is also reported
->>> on ARM.
->>>
->>> https://lore.kernel.org/linux-iommu/1610376862-927-1-git-send-email-isaacm@codeaurora.org/ 
->>>
->>>
->>> Maybe we can try changing indirect calls to static ones to verify this
->>> problem.
->>
->> I liked the idea of map_sg() enough to try my hand at building a PoC for
->> Intel, based on Isaac's patch series. It's just a cut-and-paste of the
->> generic iommu.c code with the indirect calls to ops->map() replaced.
->>
->> The indirect calls do not seem to be the problem. Calling intel_iommu_map
->> directly appears to be as costly as calling it indirectly.
->>
->> However, perhaps there are other ways map_sg() can be beneficial. In
->> v5.10, __domain_mapping and iommu_flush_write_buffer() appear to be
->> invoked just once for each large map operation, for example.
-> 
-> Oh, if the driver needs to do maintenance beyond just installing PTEs, 
-> that should probably be devolved to iotlb_sync_map anyway. There's a 
-> patch series here generalising that to be more useful, which is 
-> hopefully just waiting to be merged now:
-> 
-> https://lore.kernel.org/linux-iommu/20210107122909.16317-1-yong.wu@mediatek.com/ 
-> 
+From: Leon Romanovsky <leonro@nvidia.com>
 
-The iotlb_sync_map() could help here as far as I can see. I will post a
-call-for-test patch set later.
+Changelog
+v4:
+ * Used sysfs_emit() instead of sprintf() in new sysfs entries.
+ * Changed EXPORT_SYMBOL to be EXPORT_SYMBOL_GPL for pci_iov_virtfn_devfn().
+ * Rewrote sysfs registration code to be driven by PF that wants to enable VF
+   overlay instead of creating to all SR-IOV devices.
+ * Grouped all such functionality under new "vfs_overlay" folder.
+ * Combined two PCI patches into one.
+v3: https://lore.kernel.org/linux-pci/20210117081548.1278992-1-leon@kernel.org
+ * Renamed pci_set_msix_vec_count to be pci_vf_set_msix_vec_count.
+ * Added VF msix_cap check to hide sysfs entry if device doesn't support msix.
+ * Changed "-" to be ":" in the mlx5 patch to silence CI warnings about missing
+   kdoc description.
+ * Split differently error print in mlx5 driver to avoid checkpatch warning.
+v2: https://lore.kernel.org/linux-pci/20210114103140.866141-1-leon@kernel.org
+ * Patch 1:
+  * Renamed vf_msix_vec sysfs knob to be sriov_vf_msix_count
+  * Added PF and VF device locks during set MSI-X call to protect from parallel
+    driver bind/unbind operations.
+  * Removed extra checks when reading sriov_vf_msix, because users will
+    be able to distinguish between supported/not supported by looking on
+    sriov_vf_total_msix count.
+  * Changed all occurrences of "numb" to be "count"
+  * Changed returned error from EOPNOTSUPP to be EBUSY if user tries to set
+    MSI-X count after driver already bound to the VF.
+  * Added extra comment in pci_set_msix_vec_count() to emphasize that driver
+    should not be bound.
+ * Patch 2:
+  * Changed vf_total_msix from int to be u32 and updated function signatures
+    accordingly.
+  * Improved patch title
+v1: https://lore.kernel.org/linux-pci/20210110150727.1965295-1-leon@kernel.org
+ * Improved wording and commit messages of first PCI patch
+ * Added extra PCI patch to provide total number of MSI-X vectors
+ * Prohibited read of vf_msix_vec sysfs file if driver doesn't support write
+ * Removed extra function definition in pci.h
+v0: https://lore.kernel.org/linux-pci/20210103082440.34994-1-leon@kernel.org
 
-> 
-> Robin.
+--------------------------------------------------------------------
+Hi,
 
-Best regards,
-baolu
+The number of MSI-X vectors is PCI property visible through lspci, that
+field is read-only and configured by the device.
+
+The static assignment of an amount of MSI-X vectors doesn't allow utilize
+the newly created VF because it is not known to the device the future load
+and configuration where that VF will be used.
+
+The VFs are created on the hypervisor and forwarded to the VMs that have
+different properties (for example number of CPUs).
+
+To overcome the inefficiency in the spread of such MSI-X vectors, we
+allow the kernel to instruct the device with the needed number of such
+vectors, before VF is initialized and bounded to the driver.
+
+Before this series:
+[root@server ~]# lspci -vs 0000:08:00.2
+08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+....
+        Capabilities: [9c] MSI-X: Enable- Count=12 Masked-
+
+Configuration script:
+1. Start fresh
+echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+modprobe -q -r mlx5_ib mlx5_core
+2. Ensure that driver doesn't run and it is safe to change MSI-X
+echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_drivers_autoprobe
+3. Load driver for the PF
+modprobe mlx5_core
+4. Configure one of the VFs with new number
+echo 2 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+echo 21 > /sys/bus/pci/devices/0000\:08\:00.2/vfs_overlay/sriov_vf_msix_count
+
+After this series:
+[root@server ~]# lspci -vs 0000:08:00.2
+08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+....
+        Capabilities: [9c] MSI-X: Enable- Count=21 Masked-
+
+Thanks
+
+Leon Romanovsky (4):
+  PCI: Add sysfs callback to allow MSI-X table size change of SR-IOV VFs
+  net/mlx5: Add dynamic MSI-X capabilities bits
+  net/mlx5: Dynamically assign MSI-X vectors count
+  net/mlx5: Allow to the users to configure number of MSI-X vectors
+
+ Documentation/ABI/testing/sysfs-bus-pci       |  32 ++++
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  16 ++
+ .../ethernet/mellanox/mlx5/core/mlx5_core.h   |   6 +
+ .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  72 +++++++
+ .../net/ethernet/mellanox/mlx5/core/sriov.c   |  59 +++++-
+ drivers/pci/iov.c                             | 180 ++++++++++++++++++
+ drivers/pci/msi.c                             |  47 +++++
+ drivers/pci/pci.h                             |   4 +
+ include/linux/mlx5/mlx5_ifc.h                 |  11 +-
+ include/linux/pci.h                           |  10 +
+ 10 files changed, 434 insertions(+), 3 deletions(-)
+
+--
+2.29.2
+
