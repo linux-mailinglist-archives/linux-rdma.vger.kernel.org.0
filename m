@@ -2,171 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9126303540
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 06:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDBA303542
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 06:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388028AbhAZFiS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Jan 2021 00:38:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727104AbhAYSgq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 13:36:46 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FE9C061788
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 10:36:05 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id p21so14173704lfu.11
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 10:36:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DhOpRey6EloisNye+3HkTEg5Pu9aaQtatcMwi71hgBg=;
-        b=bhdl8FUY5LnhItcgA29ptNUDktEncN/DwH2cRJo4kr0/L5Pc/+Ljf0VGeFZE+2cNEa
-         7muHJ4aet8KypPGo+ubJtG1N9e92A4snQ3R3hSDTM6Aea/+u7z4jvcs1nBDasMFsN0Oj
-         U7DXBXbaXnLIfKgQT/zHg3PUyV5srlj6X3yzE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DhOpRey6EloisNye+3HkTEg5Pu9aaQtatcMwi71hgBg=;
-        b=WnriKxydSvLhu5k50q4iW4yczOlzx+0oKz0ZMQfKCyQiMGzNJoPELCfloFoxl2PXs/
-         D8k9rx/LfAfUPMYu2y7Dmj9aeqSOtRTY67d2WXtLi6KTz0BXj2pV08LBE+RT8ucz2V3D
-         AtThYutnobHOBz05wGokadZAz9KeKXistyZsZH4Fss2qmdj4jWSTXOAdYMKjKeG0qbN6
-         Qp+g8ElrcBxXmgMhkBZSjOftABKNgEx+Zg8k2MZUzOM8qJxe9IA/dOq+CLEXDfivdk1g
-         yoZWc/5oPG58qQHEcaEjuw9YM2reqs7lJ/Wj7HJJ7FiCh3g6+5Cb+ZGd/sQ4pOi3w3Xk
-         gpPg==
-X-Gm-Message-State: AOAM532bryFM23GnZKrRV5B6OEoUu2drmx5gWBI3QjwJMIxJ8NJSECJD
-        H4XU7Lj/OCldB6aQVS04B25F2whwy0VvYdttxw44IQ==
-X-Google-Smtp-Source: ABdhPJwtqoy676aQQ8tI5803zVLVtj/7TEkuVMOIRu/Ie82JWpQZjeTvm9JLyBSH/T4fiPWm+JcUU2J/rljj8Prhp08=
-X-Received: by 2002:a19:5e1d:: with SMTP id s29mr887106lfb.440.1611599764047;
- Mon, 25 Jan 2021 10:36:04 -0800 (PST)
+        id S1732318AbhAZFi0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Jan 2021 00:38:26 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14828 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728143AbhAYSqN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 13:46:13 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B600f11b90001>; Mon, 25 Jan 2021 10:45:13 -0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
+ 2021 18:45:12 +0000
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
+ 2021 18:45:03 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.174)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 25 Jan 2021 18:45:03 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YV8qDjlr1pKsP9zBIytQYQiheRheqs83z6ekeewoaRYrfxxDXF1gePQfoxkJunSbdAg+wUrEwzoweqrNf6bOsf5ytPxqAFwf9siVQ/kZbK5g4YWS9eVpNO3eSuo6/X14D6i6fuc5MP/Vb7Rpj5EfxyNB3rgplTRjlybv5GBbZ8t0TAxeKET8XDMtAUvidpc6zh6D/0lzLWAi6B/kV7zZwG0a/tYa7Vh4GupKV98hw/ZGjqNBhrdUHCP6n7+kf7OKaC/k3ZHz02pxdr3DRLuto3dUS3Z+V4VfcB7uMSo5q2xVbxlstFGu/M2Ms088VQE2QqHh0kNQeotwtJzV5JL+FA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dSy2yYBC/NjThR93iPuQBSOuGsHdFHqfmT4NoBDJ7oY=;
+ b=VyIUepXciwsYlScZRbI7qv3GUmUwCdIwhby6xS/2//LPhQQ5wNjklLdzHNPDXlsFsEdZ7AsectpmUbn9l9wqZl4Qx9JxU8WtjWvJYMKz3sSedTnZowad3lcXqebCZRrc7cQ9P0bl9w8XYBUW9dqAV0g9/Vnc91aNA+a61ux5oUKezSVC+PSEDD8LPsM2DjcnYCIgY+TkcOH+BbY4LMIMgsFTSkOZbgiYi/fKhHcEKC+KbHrnD/hARiEz2T6O1OdfdLza5l2ELNdCmcD66CBNm8cplxPpJGWb1PJkSKHmbmmYGT6gEQZ9+6VihqIZN4yolQ2KRR4p4MGtiglPBK7Vtg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1882.namprd12.prod.outlook.com (2603:10b6:3:112::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Mon, 25 Jan
+ 2021 18:45:01 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.017; Mon, 25 Jan 2021
+ 18:45:01 +0000
+Date:   Mon, 25 Jan 2021 14:44:59 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Shiraz Saleem <shiraz.saleem@intel.com>
+CC:     <dledford@redhat.com>, <kuba@kernel.org>, <davem@davemloft.net>,
+        <linux-rdma@vger.kernel.org>, <gregkh@linuxfoundation.org>,
+        <netdev@vger.kernel.org>, <david.m.ertman@intel.com>,
+        <anthony.l.nguyen@intel.com>
+Subject: Re: [PATCH 00/22] Add Intel Ethernet Protocol Driver for RDMA (irdma)
+Message-ID: <20210125184459.GT4147@nvidia.com>
+References: <20210122234827.1353-1-shiraz.saleem@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210122234827.1353-1-shiraz.saleem@intel.com>
+X-ClientProxiedBy: MN2PR17CA0006.namprd17.prod.outlook.com
+ (2603:10b6:208:15e::19) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20210122193658.282884-1-saeed@kernel.org> <CAKOOJTxQ8G1krPbRmRHx8N0bsHnT3XXkgkREY6NxCJ26aHH7RQ@mail.gmail.com>
- <BY5PR12MB43229840037E730F884C3356DCBD9@BY5PR12MB4322.namprd12.prod.outlook.com>
-In-Reply-To: <BY5PR12MB43229840037E730F884C3356DCBD9@BY5PR12MB4322.namprd12.prod.outlook.com>
-From:   Edwin Peer <edwin.peer@broadcom.com>
-Date:   Mon, 25 Jan 2021 10:35:27 -0800
-Message-ID: <CAKOOJTw_RfYfFunhHKTD6k73FvFObVb5Xx7hK8uPUUGJpuTzuw@mail.gmail.com>
-Subject: Re: [pull request][net-next V10 00/14] Add mlx5 subfunction support
-To:     Parav Pandit <parav@nvidia.com>
-Cc:     Saeed Mahameed <saeed@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        netdev <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        David Ahern <dsahern@kernel.org>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000007956e605b9bdcf96"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR17CA0006.namprd17.prod.outlook.com (2603:10b6:208:15e::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.15 via Frontend Transport; Mon, 25 Jan 2021 18:45:00 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l46rD-006hBO-Qs; Mon, 25 Jan 2021 14:44:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611600313; bh=dSy2yYBC/NjThR93iPuQBSOuGsHdFHqfmT4NoBDJ7oY=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=QoSROKaRfO6p+TafXU0lNRP3I2Li6ZGzreDaS8z6d7JdVOTEXJcPL5gAUGPEJZW0V
+         PlXHZuKwIWjjaUsOWd5kAzNpa71qS+ZFkMGuPi8uKuNyXYTwF5q8kcTyC0rewO5RvO
+         sXyRf1tGQaiPCMd0PuhEcjFWXWTMMZSLZuswpjeWB6AK3ZKu+KFxdu86QpGhMPOBc9
+         AGEgrV+9Zlej+rhjnoUcmYp8F030Q4ofd7ZzwSZBflSBEHQFELwnBBIQrQAskIoZfh
+         QZ0yL26wnaLP9EEqk4/p2VhmVyxqF/7WZxAd/J7OHgFvwIymVi9A0bMXDAuB/pRSCY
+         ACVYDmRtZ7cBw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000007956e605b9bdcf96
-Content-Type: text/plain; charset="UTF-8"
+On Fri, Jan 22, 2021 at 05:48:05PM -0600, Shiraz Saleem wrote:
+> From: "Shiraz, Saleem" <shiraz.saleem@intel.com>
+> 
+> The following patch series introduces a unified Intel Ethernet Protocol Driver
+> for RDMA (irdma) for the X722 iWARP device and a new E810 device which supports
+> iWARP and RoCEv2. The irdma driver replaces the legacy i40iw driver for X722
+> and extends the ABI already defined for i40iw. It is backward compatible with
+> legacy X722 rdma-core provider (libi40iw).
+> 
+> X722 and E810 are PCI network devices that are RDMA capable. The RDMA block of
+> this parent device is represented via an auxiliary device exported to 'irdma'
+> using the core auxiliary bus infrastructure recently added for 5.11 kernel.
+> The parent PCI netdev drivers 'i40e' and 'ice' register auxiliary RDMA devices
+> with private data/ops encapsulated that bind to an 'irdma' auxiliary driver. 
+> 
+> This series is a follow on to an RFC series [1]. This series was built against
+> rdma for-next and currently includes the netdev patches for ease of review.
+> This include updates to 'ice' driver to provide RDMA support and converts 'i40e'
+> driver to use the auxiliary bus infrastructure .
+> 
+> Once the patches are closer to merging, this series will be split into a
+> netdev-next and rdma-next patch series targeted at their respective subsystems
+> with Patch #1 and Patch #5 included in both. This is the shared header file that
+> will allow each series to independently compile.
+> 
+> [1] https://lore.kernel.org/linux-rdma/20200520070415.3392210-1-jeffrey.t.kirsher@intel.com/
+> 
+> Dave Ertman (4):
+>   iidc: Introduce iidc.h
+>   ice: Initialize RDMA support
+>   ice: Implement iidc operations
+>   ice: Register auxiliary device to provide RDMA
+> 
+> Michael J. Ruhl (1):
+>   RDMA/irdma: Add dynamic tracing for CM
+> 
+> Mustafa Ismail (13):
+>   RDMA/irdma: Register an auxiliary driver and implement private channel
+>     OPs
+>   RDMA/irdma: Implement device initialization definitions
+>   RDMA/irdma: Implement HW Admin Queue OPs
+>   RDMA/irdma: Add HMC backing store setup functions
+>   RDMA/irdma: Add privileged UDA queue implementation
+>   RDMA/irdma: Add QoS definitions
+>   RDMA/irdma: Add connection manager
+>   RDMA/irdma: Add PBLE resource manager
+>   RDMA/irdma: Implement device supported verb APIs
+>   RDMA/irdma: Add RoCEv2 UD OP support
+>   RDMA/irdma: Add user/kernel shared libraries
+>   RDMA/irdma: Add miscellaneous utility definitions
+>   RDMA/irdma: Add ABI definitions
 
-On Mon, Jan 25, 2021 at 2:57 AM Parav Pandit <parav@nvidia.com> wrote:
+I didn't check, but I will remind you to compile with make W=1 and
+ensure this is all clean. Lee is doing good work making RDMA clean for
+W=1.
 
-> > Apologies for the tardy question out of left field, but I've been
-> > thinking about this some more. If I recall, the primary motivation for
-> > this was a means to effectively address more VFs? But, why can't the
-> > device simply expose more bus numbers?
->
-> Several weeks back, Jason already answered this VF scaling question from you at discussion [1].
->
-> [1] https://lore.kernel.org/netdev/20201216023928.GG552508@nvidia.com/
-
-True, although I didn't really consider the full cost argument at the
-time because the core answer was "They can't", however, the fact is,
-PCI can.
-
-Regards,
-Edwin Peer
-
---0000000000007956e605b9bdcf96
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-mbo++PCnVfHaIk6rK1M0CPodEV0uUttmi6Mp/Ha7XmNgWQeQE3qkFIwAlb/kPNmJAMECAwEAAaOC
-Ac4wggHKMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUHMAKGQWh0
-dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNoYTJnM29j
-c3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25h
-bHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRw
-czovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1UdHwQ9MDsw
-OaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczLmNy
-bDAiBgNVHREEGzAZgRdlZHdpbi5wZWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcD
-BDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQU9IOrXBkaTFAmOmjl
-0nu9X2Lzo+0wDQYJKoZIhvcNAQELBQADggEBADL+5FenxoguXoMm8ZG+bsMvN0LibFO75wee8cJI
-3K8dcJ8y6rPc6yvMRqI7CNwjWV5kBT3aQPZCdqOlNLl/HnKJxBt3WJRWGePcE1s/ljK4Kg1rUQAo
-e3Fx6cKh9/q3gqElSPU5pBOsCEy8cbi6UGA+IVifQ2Mrm5tsvYqWSaZ1mKTGz8/z8vxG2kGJZI6W
-wL3owFiCmLmw5R8OH22wqf/7sQFMRpH5IQFLRYdU9uCUy5FlUAgiCEXegph8ytxvo8MgYyQcCOeg
-BMfFgFEHuM2IgsDQyFC6XUViX6BQny67nlrO8pqwNRJ9Bdd7ykLCzCLOuR1znBAc2wAL9OKQe0cx
-ggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMw
-MQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDCXgDAeB
-YW0HGKjSdzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgrBXJBKtaK6KHkBDwqYpA
-7HJLPYwBzzQVefeuZmBLct4wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMjEwMTI1MTgzNjA0WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQME
-ARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJ
-YIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBADkm6BK1p+VAJ8j1SK+qL1Fnh6znGGRGuiIosj9w
-AQAttOwA9Nr/ZedX7IhYup8EOAu7IoJCm0W9qEc/dMYVLpb6YOhaYHznw8zKfVY9js1SY0c+YxFa
-qxwFcae7MV3kS2kZpRSbgQD8vQ6kxDxxal3t8RbO9iYp6ECC/zysI5USdkrSd7h/uSqtZoYI8jZ7
-oQpYO0ga4Gww0gzU+isE/9sxU+De1QK4ReUuedBWu1mC4qUSea6yS02Xsl8CjjlQ2H08qEeUP9Xy
-1kYZanY3Y0w9I7xJWSMbLnkTEWDG+vqs1iAMG2FsPOP+upY8NajpMR1AH/5yKeFFeU9fHXDMGXA=
---0000000000007956e605b9bdcf96--
+Thanks,
+Jason
