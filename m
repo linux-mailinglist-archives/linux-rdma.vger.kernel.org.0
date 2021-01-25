@@ -2,151 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01FC303143
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 02:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2848330319A
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 03:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727066AbhAZB3y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 25 Jan 2021 20:29:54 -0500
-Received: from mga03.intel.com ([134.134.136.65]:50872 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731230AbhAZB1e (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:27:34 -0500
-IronPort-SDR: Volfh2KGnOT8QxXloKeLIjB1bR6cxvq4MflOOrgz8rnVWbzQNSZ6Y5QbDqh43lk+uUH7OwKSd8
- BfXM8Xk5dJ+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="179909629"
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="179909629"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 16:39:21 -0800
-IronPort-SDR: ShCaldHqtzaM8oxJfXsNGxmzh0pNz0/dSvuS2I+C7n1vfg6KUOv1p05e1VXXkRXJ0JPrhsJeBk
- taxpz99OxAnQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="402570112"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga004.fm.intel.com with ESMTP; 25 Jan 2021 16:39:21 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 25 Jan 2021 16:39:21 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 25 Jan 2021 16:39:20 -0800
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.1713.004;
- Mon, 25 Jan 2021 16:39:20 -0800
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>
-Subject: RE: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
- implement private channel OPs
-Thread-Topic: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
- implement private channel OPs
-Thread-Index: AQHW8RlTrNE3qjtLukSnj7NcX24DDao3Ul6AgAFbdYA=
-Date:   Tue, 26 Jan 2021 00:39:20 +0000
-Message-ID: <3de0df06f50541aab9ecf61d035c839a@intel.com>
+        id S1731620AbhAYTKm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Jan 2021 14:10:42 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16688 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727131AbhAYTKQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 14:10:16 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B600f17700000>; Mon, 25 Jan 2021 11:09:36 -0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
+ 2021 19:09:35 +0000
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
+ 2021 19:09:28 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 25 Jan 2021 19:09:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l/4wBZxEjB4zGcP741SuUOuoo6eayOi/RYxrd2DdSUSRI6Knbjsj9V8GRoBaMATCr0x0i+lJSXfaEvwx1rgyWwFtaiKkwHfyuZ9vi9pNcoEBIJyxvyBynf18I94P0V/PE87W6A+as9y10v5LUD5Wig3C6FnStI4ghCM4uWp//wroEiYWjvbbmBWpHBxWIHeATGwt4Wzh/rfnowMIgQcSUHisw9UWYhXx0wiNB4w23M5tgKwCmnLBcXwFfpsDS3u9M7aH+zHtbRHk+CtOp91v7wn7r+y7bEWfpe4NxN81rUR3W/vgup02CVP/DfCuX1e+lmHAt3Av5z+lwle9erEZ1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pABo+Vp1poNCDyyXRHs/mEbDRfxMu5RVsZ3daU61PRk=;
+ b=RFWmVmfLat3fLqGHTneLazroGEnId+33jZsCqcLa++A4ItGGlNrn5whjHfRLyH6LbJdEFulckgft/PYzGn6/ldngRoNaZ3iEupCCEwNrL4PPKhi18JywCE7dwGFFA9u+lzslOZj0ugW1+5ToGoGWLr8J5bdME3Izs+a07dpCCCa0ZTeNpm9/wV8DbEMxQAv3kFiUOkRQk64hM/KH53o6M+ijDhWJVdXWEkqrQSCNa7vwrYhXN7UHdwxO5yPGqv7qcRw9HEtK4khQKcafNApU1rXwOEqUt1zm5SvYnzNejSDkr8pM/quR2b/zGItCy6R76LRMd4SLDGyl7pnTrUwEpw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB2437.namprd12.prod.outlook.com (2603:10b6:4:ba::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Mon, 25 Jan
+ 2021 19:09:25 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.017; Mon, 25 Jan 2021
+ 19:09:25 +0000
+Date:   Mon, 25 Jan 2021 15:09:23 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Shiraz Saleem <shiraz.saleem@intel.com>
+CC:     <dledford@redhat.com>, <kuba@kernel.org>, <davem@davemloft.net>,
+        <linux-rdma@vger.kernel.org>, <gregkh@linuxfoundation.org>,
+        <netdev@vger.kernel.org>, <david.m.ertman@intel.com>,
+        <anthony.l.nguyen@intel.com>
+Subject: Re: [PATCH 04/22] ice: Register auxiliary device to provide RDMA
+Message-ID: <20210125190923.GV4147@nvidia.com>
 References: <20210122234827.1353-1-shiraz.saleem@intel.com>
- <20210122234827.1353-8-shiraz.saleem@intel.com>
- <20210124134551.GB5038@unreal>
-In-Reply-To: <20210124134551.GB5038@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.22.254.132]
+ <20210122234827.1353-5-shiraz.saleem@intel.com>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Disposition: inline
+In-Reply-To: <20210122234827.1353-5-shiraz.saleem@intel.com>
+X-ClientProxiedBy: MN2PR10CA0019.namprd10.prod.outlook.com
+ (2603:10b6:208:120::32) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR10CA0019.namprd10.prod.outlook.com (2603:10b6:208:120::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Mon, 25 Jan 2021 19:09:24 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l47Ep-006i3K-HU; Mon, 25 Jan 2021 15:09:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611601776; bh=pABo+Vp1poNCDyyXRHs/mEbDRfxMu5RVsZ3daU61PRk=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=SqPZezi8ofhtC6cdfI2/rPBJkO2GeIf0fsEYsI5ORMbvuk+G23T6zj/oglQ9Rz5Px
+         UizeUBjHYj7hugLpec5saq82lEdKgzv25gXKPm0y3bn3ICi/PqMlbdfoWW6e5l+jUu
+         S9IJ23qC/X9BpsQDqOIYZ5GZ8aAUQSWbA9PArxQgAX9wUzbY9Cqcy++M9gg/hE+t4R
+         tqxDZSfHn9QkX3kGzRfthWsVvfY3GU4L9s+0slY/iPx2ew9Xs+teWAgDQ8r/yAyFV2
+         MbQMBmSQUS4WcHJwRZtJ0qcq+Q/zLiWPtoPLLfy++Edi8iTWfP7dVHTjGycRR1MYD6
+         wbTaAoDtDLR8g==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
-> implement private channel OPs
-> 
-> 
-> > +static int irdma_devlink_rsrc_limits_validate(struct devlink *dl, u32 id,
-> > +					      union devlink_param_value val,
-> > +					      struct netlink_ext_ack *extack) {
-> > +	u8 value = val.vu8;
-> > +
-> > +	if (value > 7) {
-> > +		NL_SET_ERR_MSG_MOD(extack, "resource limits selector range
-> is (0-7)");
-> > +		return -ERANGE;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int irdma_devlink_enable_roce_validate(struct devlink *dl, u32 id,
-> > +					      union devlink_param_value val,
-> > +					      struct netlink_ext_ack *extack) {
-> > +	struct irdma_dl_priv *priv = devlink_priv(dl);
-> > +	bool value = val.vbool;
-> > +
-> > +	if (value && priv->drvdata->hw_ver == IRDMA_GEN_1) {
-> > +		NL_SET_ERR_MSG_MOD(extack, "RoCE not supported on
-> device");
-> > +		return -EOPNOTSUPP;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int irdma_devlink_upload_ctx_get(struct devlink *devlink, u32 id,
-> > +					struct devlink_param_gset_ctx *ctx) {
-> > +	ctx->val.vbool = irdma_upload_context;
-> > +	return 0;
-> > +}
-> > +
-> > +static int irdma_devlink_upload_ctx_set(struct devlink *devlink, u32 id,
-> > +					struct devlink_param_gset_ctx *ctx) {
-> > +	irdma_upload_context = ctx->val.vbool;
-> > +	return 0;
-> > +}
-> > +
-> > +enum irdma_dl_param_id {
-> > +	IRDMA_DEVLINK_PARAM_ID_BASE =
-> DEVLINK_PARAM_GENERIC_ID_MAX,
-> > +	IRDMA_DEVLINK_PARAM_ID_LIMITS_SELECTOR,
-> > +	IRDMA_DEVLINK_PARAM_ID_UPLOAD_CONTEXT,
-> > +};
-> > +
-> > +static const struct devlink_param irdma_devlink_params[] = {
-> > +
-> 	DEVLINK_PARAM_DRIVER(IRDMA_DEVLINK_PARAM_ID_LIMITS_SELE
-> CTOR,
-> > +			     "resource_limits_selector",
-> DEVLINK_PARAM_TYPE_U8,
-> > +			      BIT(DEVLINK_PARAM_CMODE_DRIVERINIT),
-> > +			      NULL, NULL, irdma_devlink_rsrc_limits_validate),
-> > +
-> 	DEVLINK_PARAM_DRIVER(IRDMA_DEVLINK_PARAM_ID_UPLOAD_CON
-> TEXT,
-> > +			     "upload_context", DEVLINK_PARAM_TYPE_BOOL,
-> > +			     BIT(DEVLINK_PARAM_CMODE_RUNTIME),
-> > +			     irdma_devlink_upload_ctx_get,
-> > +			     irdma_devlink_upload_ctx_set, NULL),
-> > +	DEVLINK_PARAM_GENERIC(ENABLE_ROCE,
-> BIT(DEVLINK_PARAM_CMODE_DRIVERINIT),
-> > +			      NULL, NULL, irdma_devlink_enable_roce_validate),
-> > +};
-> 
-> RoCE enable knob is understandable, but others are not explained.
-> 
+On Fri, Jan 22, 2021 at 05:48:09PM -0600, Shiraz Saleem wrote:
+> +static void ice_peer_adev_release(struct device *dev)
+> +{
+> +	struct iidc_auxiliary_object *abo;
+> +	struct auxiliary_device *adev;
+> +
+> +	adev = container_of(dev, struct auxiliary_device, dev);
+> +	abo = container_of(adev, struct iidc_auxiliary_object, adev);
 
-OK. That can be fixed.
+This is just
+
+ container_of(dev, struct iidc_auxiliary_object, adev.dev);
+
+> @@ -1254,20 +1282,37 @@ int ice_init_peer_devices(struct ice_pf *pf)
+>  		 * |--> iidc_peer_obj
+>  		 * |--> *ice_peer_drv_int
+>  		 *
+> +		 * iidc_auxiliary_object (container_of parent for adev)
+> +		 * |--> auxiliary_device
+> +		 * |--> *iidc_peer_obj (pointer from internal struct)
+> +		 *
+>  		 * ice_peer_drv_int (internal only peer_drv struct)
+>  		 */
+>  		peer_obj_int = kzalloc(sizeof(*peer_obj_int), GFP_KERNEL);
+> -		if (!peer_obj_int)
+> +		if (!peer_obj_int) {
+> +			ida_simple_remove(&ice_peer_ida, id);
+>  			return -ENOMEM;
+> +		}
+
+Why is this allocated memory with a lifetime different from the aux
+device?
+
+This whole peer_dev/aux_dev split needs to go, why on earth does
+peer_obj need an entire state machine for driver binding? This is what
+the aux device and driver core or supposed to provide.
+
+> +		abo = kzalloc(sizeof(*abo), GFP_KERNEL);
+> +		if (!abo) {
+> +			ida_simple_remove(&ice_peer_ida, id);
+> +			kfree(peer_obj_int);
+> +			return -ENOMEM;
+> +		}
+
+Put the auxiliary_device_init() directly after kzalloc.
+
+Even better is to put everything up to the
+kzalloc/auxiliary_device_init() into a function called
+'alloc_aux_device'
+
+Then all the error unwind here doesn't look so bad
+
+Jason
