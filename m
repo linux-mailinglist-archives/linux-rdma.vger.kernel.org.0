@@ -2,155 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA15302A91
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Jan 2021 19:44:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704AE302C22
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Jan 2021 21:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728740AbhAYSnt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Jan 2021 13:43:49 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16818 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727039AbhAYSnn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 13:43:43 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B600f11300001>; Mon, 25 Jan 2021 10:42:56 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
- 2021 18:42:51 +0000
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.59) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 25 Jan 2021 18:42:51 +0000
+        id S1732245AbhAYUBK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Jan 2021 15:01:10 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1162 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732101AbhAYUAC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 15:00:02 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B600f231a0001>; Mon, 25 Jan 2021 11:59:22 -0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
+ 2021 19:59:21 +0000
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
+ 2021 19:59:09 +0000
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
+ by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 25 Jan 2021 19:59:09 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AzqnSrKasQC0vyHcNG2L8aluqHh+6OQWhJU/T92S7q26CTreXlmVqxx6mgJ2hakng9nsfOWahcEgNcIir6+A/ovy2VsheAWF6MyP8ArIaQjCOYz81XrLAcrZFLFKXbnmXlDNckFHLMZdY7Pkbn87LUapHkGSHgaSXcHaVT/H0coDfP1GZOQo5v93BkjVYd3QMWvHJfqLmkR4bvQPqiEnq+S3DquIykUfQvS/+iyjdxFrEkdKg6+wtBgUQ54SxX9kGdPGsL0I/WmpNcORWupU2mPbqGHbAA5S5N46C5kWrk69pvhEdDoVEICtn6OXv9NIRIx62jR9MoZfGmBjIvUAFA==
+ b=MehVQasvtHWct/n9CLc2VvuwyfcWKFVfhUf79UqSmJdLD/vJyoz17IyFvruv6lDE73Pc+Mp/iDNY2Vmogy1XaS5z6ADF6S++a9MjpO8SbExIGapaymWzWZJ5YsrRKaxRpIcOhbGpKwR4xpT/Nk5L1OZPauVwyX5eCC6ieDLW6JWgcgw+/0+6EeH4HTdQNrCkzEy5OjxweMG1K80wwt0PM7W/CPbAVAS4zPdfXrs20v5MDmuH4rH/Mhj9dsRMo+HfwxLK+JgZE8HNunwfIUq8Uz2Fa0V/tIzPeH0CDGO3ilDLrQmBxke9akJJObziOuvCfyjjoBK+KSJLYFn7JafQ2Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bJnlRVQbWUFYtdfJUoAHZBn9iVWDj0a8MHB3apfJZZ4=;
- b=fFqbEQwpcBk6h2e3IznUucGF4Cwah0BwTDYf0W9P7KPlxmKL/BdOtlD44lcc27MlsB4gYJb3Gh8DpHGJDovL8Y9LLPTllZqJPoDpJ6ZP5hxBwxZwfceclTFdXzzssvxCEALdCHrcL5NNZd+h5KIljAqaU3N0cW3U27/skvlp5HyX/rHHH9HAYmVS6UcvGut1UacySWj2U8yvsCqEI4Xuu/MknHQTwqDpzIby6EObV6N9YEumCMUwqPTnsYThi7ElYWApo6EdvepCMGAkSecwvpODlMAkVPzXXb1b3Ft1FN4vhXC/0jScrIUfFd7kMwn6noWLXUhGObhxeR5sXzNSuw==
+ bh=7U3SjgSGJP4ltv0PXCC/4xxdefhqR9yXyDJSdz4bFSM=;
+ b=PZQP4p7F+mz89bN3fRZGDd7btFrUz9McCj3yuGiOdgcCBBNOQJWxGDjWSVVP703HiBDlk04lVnud5A3BXvNKG6asYKT9bry5j7lyu0cKgh8ob+iVfSOzdQ+HbWLChdsDhTVObvXjSFm0ufrfCtfhZ2pVDr7xYNeCLA87SSpL3Es0SdfEiImGsCuHmWjXchON+d0rnWKuA9TnE8gP1zJNP8fakiJBLn70NzYXwuT6IsYplnt/IYzoUIfiiNzlRUll5Droa8cYkPwzPXyA8ht7jTXlLQ2DyzBtJ9G4r3L7DXe8g04bFxCovUFEN/UP//ayojNKbjivOEyEFf76kDw8NA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3308.namprd12.prod.outlook.com (2603:10b6:5:182::31) with
+ by DM5PR12MB2488.namprd12.prod.outlook.com (2603:10b6:4:b5::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Mon, 25 Jan
- 2021 18:42:50 +0000
+ 2021 19:59:07 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.017; Mon, 25 Jan 2021
- 18:42:50 +0000
-Date:   Mon, 25 Jan 2021 14:42:48 -0400
+ 19:59:07 +0000
+Date:   Mon, 25 Jan 2021 15:59:05 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Shiraz Saleem <shiraz.saleem@intel.com>
-CC:     <dledford@redhat.com>, <kuba@kernel.org>, <davem@davemloft.net>,
-        <linux-rdma@vger.kernel.org>, <gregkh@linuxfoundation.org>,
-        <netdev@vger.kernel.org>, <david.m.ertman@intel.com>,
-        <anthony.l.nguyen@intel.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>
-Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
- implement private channel OPs
-Message-ID: <20210125184248.GS4147@nvidia.com>
-References: <20210122234827.1353-1-shiraz.saleem@intel.com>
- <20210122234827.1353-8-shiraz.saleem@intel.com>
+To:     Edwin Peer <edwin.peer@broadcom.com>
+CC:     Parav Pandit <parav@nvidia.com>, Saeed Mahameed <saeed@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Sridhar Samudrala <sridhar.samudrala@intel.com>,
+        David Ahern <dsahern@kernel.org>,
+        Kiran Patil <kiran.patil@intel.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [pull request][net-next V10 00/14] Add mlx5 subfunction support
+Message-ID: <20210125195905.GA4147@nvidia.com>
+References: <20210122193658.282884-1-saeed@kernel.org>
+ <CAKOOJTxQ8G1krPbRmRHx8N0bsHnT3XXkgkREY6NxCJ26aHH7RQ@mail.gmail.com>
+ <BY5PR12MB43229840037E730F884C3356DCBD9@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <CAKOOJTw_RfYfFunhHKTD6k73FvFObVb5Xx7hK8uPUUGJpuTzuw@mail.gmail.com>
+ <CAKOOJTx7ogAvUkT5y8vKYp=KB+VSbe0MgXg5PuvjEiU_dO_5YA@mail.gmail.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210122234827.1353-8-shiraz.saleem@intel.com>
-X-ClientProxiedBy: BL1PR13CA0262.namprd13.prod.outlook.com
- (2603:10b6:208:2ba::27) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <CAKOOJTx7ogAvUkT5y8vKYp=KB+VSbe0MgXg5PuvjEiU_dO_5YA@mail.gmail.com>
+X-ClientProxiedBy: BL0PR05CA0004.namprd05.prod.outlook.com
+ (2603:10b6:208:91::14) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0262.namprd13.prod.outlook.com (2603:10b6:208:2ba::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.5 via Frontend Transport; Mon, 25 Jan 2021 18:42:50 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l46p6-006h4c-Kz; Mon, 25 Jan 2021 14:42:48 -0400
+Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR05CA0004.namprd05.prod.outlook.com (2603:10b6:208:91::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.7 via Frontend Transport; Mon, 25 Jan 2021 19:59:07 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l480w-006ixN-08; Mon, 25 Jan 2021 15:59:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611600176; bh=bJnlRVQbWUFYtdfJUoAHZBn9iVWDj0a8MHB3apfJZZ4=;
+        t=1611604762; bh=7U3SjgSGJP4ltv0PXCC/4xxdefhqR9yXyDJSdz4bFSM=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=H4DbTVjXc5jI4m3U23DWpZp2ySuL8d1OZ/dZ9z/FyNb+PBDEyzSwQMfgwDTTjF6bI
-         Vh06s4MZWBxmBeAZ4XJ9fETo7UQif5UALTXjUyCQWNvQhroO+dZpiRkde45thGK3oH
-         n6jxC7OyAYZc90ZXXIf2uSbrVM3uh0HkkCq3nOySQ+oH75VT3yyDP3c2ZdPTjaJaVa
-         5l7bTQ0unio/H5v52FqtYRRMWy8SVh2V4f9hDev92+TA3+hR+w13Q3vMkk6uzWqoXr
-         mbjTIwsNyNx4yC/AhNNvp58MZKtYI+IAjfTn9zwq57bWCt0t50e2fV3JNLDhsJeg7T
-         q8HdixSSRKz2Q==
+        b=Kpb6tF5OrtY94t2DY8dABNagpG7VAFaUz+Bj/C3cc6thnCxrHt6rjX94SbL9aOAlg
+         XgNROrbQtOdfx2V6dPu//5x33KKQT2TiwFi13IvCnhOkfE5sLZz5XhFseyW7SIMUZd
+         mKS54U5SOn/T12pX2t8ZO3PTEfkbQmC27T9nnNE+8k4/YGb1CRJTsC6LLQAzmkiLAf
+         YOG0zsE4lQfXNOKNlSOLTRfhGh+KU5OoUVyoD8CzygtTY5Nv8lrrC0buWq+nz3OE5v
+         u4ZCevmJTtSy1KsEGPUey70c39zTbMjG9DwninHmpkZDNtHl1uPwNF1LJ4W7OtaxxF
+         pgraLs8kQiPVg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 05:48:12PM -0600, Shiraz Saleem wrote:
-> +/**
-> + * irdma_init_dev - GEN_2 device init
-> + * @aux_dev: auxiliary device
-> + *
-> + * Create device resources, set up queues, pble and hmc objects.
-> + * Return 0 if successful, otherwise return error
-> + */
-> +int irdma_init_dev(struct auxiliary_device *aux_dev)
-> +{
-> +	struct iidc_auxiliary_object *vo = container_of(aux_dev,
-> +							struct iidc_auxiliary_object,
-> +							adev);
-> +	struct iidc_peer_obj *peer_info = vo->peer_obj;
-> +	struct irdma_handler *hdl;
-> +	struct irdma_pci_f *rf;
-> +	struct irdma_sc_dev *dev;
-> +	struct irdma_priv_peer_info *priv_peer_info;
-> +	int err;
-> +
-> +	hdl = irdma_find_handler(peer_info->pdev);
-> +	if (hdl)
-> +		return -EBUSY;
-> +
-> +	hdl = kzalloc(sizeof(*hdl), GFP_KERNEL);
-> +	if (!hdl)
-> +		return -ENOMEM;
-> +
-> +	rf = &hdl->rf;
-> +	priv_peer_info = &rf->priv_peer_info;
-> +	rf->aux_dev = aux_dev;
-> +	rf->hdl = hdl;
-> +	dev = &rf->sc_dev;
-> +	dev->back_dev = rf;
-> +	rf->gen_ops.init_hw = icrdma_init_hw;
-> +	rf->gen_ops.request_reset = icrdma_request_reset;
-> +	rf->gen_ops.register_qset = irdma_lan_register_qset;
-> +	rf->gen_ops.unregister_qset = irdma_lan_unregister_qset;
-> +	priv_peer_info->peer_info = peer_info;
-> +	rf->rdma_ver = IRDMA_GEN_2;
-> +	irdma_set_config_params(rf);
-> +	dev->pci_rev = peer_info->pdev->revision;
-> +	rf->default_vsi.vsi_idx = peer_info->pf_vsi_num;
-> +	/* save information from peer_info to priv_peer_info*/
-> +	priv_peer_info->fn_num = PCI_FUNC(peer_info->pdev->devfn);
-> +	rf->hw.hw_addr = peer_info->hw_addr;
-> +	rf->pcidev = peer_info->pdev;
-> +	rf->netdev = peer_info->netdev;
-> +	priv_peer_info->ftype = peer_info->ftype;
-> +	priv_peer_info->msix_count = peer_info->msix_count;
-> +	priv_peer_info->msix_entries = peer_info->msix_entries;
-> +	irdma_add_handler(hdl);
-> +	if (irdma_ctrl_init_hw(rf)) {
-> +		err = -EIO;
-> +		goto err_ctrl_init;
-> +	}
-> +	peer_info->peer_ops = &irdma_peer_ops;
-> +	peer_info->peer_drv = &irdma_peer_drv;
-> +	err = peer_info->ops->peer_register(peer_info);
-> +	if (err)
-> +		goto err_peer_reg;
+On Mon, Jan 25, 2021 at 11:34:49AM -0800, Edwin Peer wrote:
 
-No to this, I don't want to see aux bus layered on top of another
-management framework in new drivers. When this driver uses aux bus get
-rid of the old i40iw stuff. I already said this in one of the older
-postings of this driver.
+> What do these amount to in practice? Presumably config space is backed
+> by normal memory controlled by firmware. Do VF's need to expose ECAM?
+> Also, don't MSI tables come out of the BAR budget? Is the required BAR
+> space necessarily more than any other addressable unit that can be
+> delegated to a SF?
 
-auxbus probe() for a RDMA driver should call ib_alloc_device() near
-its start and ib_register_device() near the end its end.
+Every writable data mandated by the PCI spec requires very expensive
+on-die SRAM to store it.
 
-drvdata for the aux device should point to the driver struct
-containing the ib_device.
+We've seen Intel drivers that show their SIOV ADIs don't even have a
+register file and the only PCI presence is just a write-only doorbell
+page in the BAR.
 
-Just like any ordinary PCI based rdma driver, look at how something
-like pvrdma_pci_probe() is structued.
+It is hard to argue a write-only register in a BAR page vs all the
+SRIOV trappings when it comes to HW cost.
 
 Jason
