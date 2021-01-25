@@ -2,118 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB42230354A
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 06:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1F430354C
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 06:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731509AbhAZFiv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Jan 2021 00:38:51 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:17675 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731605AbhAYTYS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 14:24:18 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B600f1ab30000>; Mon, 25 Jan 2021 11:23:31 -0800
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
- 2021 19:23:30 +0000
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
- 2021 19:23:24 +0000
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
- by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 25 Jan 2021 19:23:24 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mLzpkqBe1D+ffNoeA8z3pjkh1tTdAYSGnD3clbFtiiPS7Bm4k3lFzPIDpMNjtGKTZvqqMTWPpOBQkhvsphMl9WrmPXlK2yaSxAM/f6c0TBHgIpnAN/ry3mM/5hYN9IO7i6FvmBWRisMTkZLg87X6Zxh8F5ukSPZ2wyxNnwHljogiizw/ZwbGnzS5PdisbSAFj/4U/cp4asS/dg0+NxKTGRphPFk7ABwJ7M2aXAnCok7ZyAMwMukYXx/xMx3HChjfMdYFltiSYprlv84tfB0FwFYnpgNkrK9kx4TAWn9/wgRlGt+2ywC8mWlI2V0pJoet2IwUY5piOO5G1LSZM6hjmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6NfZn8/vgbvXLs39OV5+DLkRYC8rfCgVQ41wEMwYd+4=;
- b=GS9iAedl8mxwMbyD7KIU7tHR9k2zemWV23RZTRIkfna7PDOaImOeEbblPAcfAWyBgZBknAwQvhVMXHEAsm3Ty1WvoI7b+dZQOW05W/3eg7SuaeucDdnpChyDjDBYF36vUuq3u4TTIiHG0pqcKzCdmau8XhCEw7WfGpeJEJu8peliiJl7efeHZ47K5JnuFTMU2pq5iv+IC8cWB6xD9MxP0xYCkycGIv0w+EoGe17Rmbe34SN/c42S0WLq9NFKIlpDaQAWt3XoWrLeRvZqxHIDjiU4Fr6pZvgqjmuFQJ2Zn9KQk18AgyWwaB6nQb0MDVnpRPiqZnR/5G/yFzXQj3Ukwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4137.namprd12.prod.outlook.com (2603:10b6:5:218::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.16; Mon, 25 Jan
- 2021 19:23:21 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.017; Mon, 25 Jan 2021
- 19:23:21 +0000
-Date:   Mon, 25 Jan 2021 15:23:19 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Shiraz Saleem <shiraz.saleem@intel.com>
-CC:     <dledford@redhat.com>, <kuba@kernel.org>, <davem@davemloft.net>,
-        <linux-rdma@vger.kernel.org>, <gregkh@linuxfoundation.org>,
-        <netdev@vger.kernel.org>, <david.m.ertman@intel.com>,
-        <anthony.l.nguyen@intel.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>
-Subject: Re: [PATCH 09/22] RDMA/irdma: Implement HW Admin Queue OPs
-Message-ID: <20210125192319.GW4147@nvidia.com>
-References: <20210122234827.1353-1-shiraz.saleem@intel.com>
- <20210122234827.1353-10-shiraz.saleem@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210122234827.1353-10-shiraz.saleem@intel.com>
-X-ClientProxiedBy: BL0PR03CA0005.namprd03.prod.outlook.com
- (2603:10b6:208:2d::18) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S2388047AbhAZFix (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Jan 2021 00:38:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731564AbhAYTZS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 14:25:18 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D997AC061756
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 11:24:33 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id t8so9396964ljk.10
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 11:24:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=80zqn/aEmD5jm32QluX/bOBLDA+iMcVagJ/R7kW6mdE=;
+        b=YXcSsfZSxjD9Rt7JrhuzmW4Xi1KyYUrPGBdyPm1sVzU2hrcjmGW4ZfvVWzYs/CpeIz
+         +LvaSvugDsqeyouZjYDJy29tFHDkn53YLu9ZO3JMzXwyLNfg/G/DUDnKt8AGyXa5F1XV
+         WMr3XxiyixGjoyuH3g8M6/m2S5Gd8PYEKQ+xU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=80zqn/aEmD5jm32QluX/bOBLDA+iMcVagJ/R7kW6mdE=;
+        b=IEqhqOC6nvoDVN4MIhWHkTGsg3oaOjICmBXKj462nPi+TQPSpXcLyHyiy5tUDHJUlm
+         prYz/7t70q8xl/xz3t642za4OEAyC8sZx1h1pNquh8Quc45NNz7FXf/HqvbHLh8z4Ine
+         g4b6eHcUj5jAbZ2a0FlXnC5iX1HVh2EWN+1aUnjILv2OunS/CSkDhnCzs1AGEl6k32E4
+         CbspLnT83YOHfjUTdZ08hHKCiAHiCDyZNctPqTIT4fVlkl4SJOyMlOwk1bWPW1RDxJfJ
+         +KrFKT7H8J0UzRjkVzb3Inb6LyBu1tjR4qHmxg21VxZBnaX3tJegdeWuQ6v/T7vAKCPf
+         OMNg==
+X-Gm-Message-State: AOAM533GkzHN/gFfR5UByJI5f8ntwu7lPF4lf+VLHfVm4SkTRzlR+A5j
+        WFI4ASNjWHmbO//xzmp2vb1C0K5GGlte1GnlHKg1Kw==
+X-Google-Smtp-Source: ABdhPJwFzHwdFIVIp1VOxaUKNpYmLmrTJxk/9/OvSUAeBFhFe8tn5BFxht+r3qY5Oe5NJwvVx+ovjGcRgE0Mi6zpnnI=
+X-Received: by 2002:a2e:1554:: with SMTP id 20mr879920ljv.404.1611602672323;
+ Mon, 25 Jan 2021 11:24:32 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR03CA0005.namprd03.prod.outlook.com (2603:10b6:208:2d::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Mon, 25 Jan 2021 19:23:20 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l47SJ-006iL3-4P; Mon, 25 Jan 2021 15:23:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611602611; bh=6NfZn8/vgbvXLs39OV5+DLkRYC8rfCgVQ41wEMwYd+4=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=fgl4q9/9432pZu3bMEAOWRFWa0l3cCsDyUx+LpBcWltuLANxLHh8GuX2Pd7plGfod
-         xcGYWHKGGpuyqSICLNv7UMccsFPgJweNda4JD2oLfPAaL45POoU3B7dIdpeMbXa/Jk
-         ZalCray+yrqXCZUY3Ga2QyktYpZhiYrDMiBkIO2fDuArWHYwUflMdvZbGItK2gdn9u
-         v5SucNga1cqeRU1nIGg9mXoeV3ynHf+evL/L4tjC1403GD76q2wERCbqQ2Jpe2v5PF
-         mm2PR3qTnZKGsIBOEeLMOdoH+ZbBZ950Ij9FOi4khqXBQ78/ZDxS6gVgYr5d+S5jwM
-         /nrusPJub7OtQ==
+References: <20210122193658.282884-1-saeed@kernel.org> <CAKOOJTxQ8G1krPbRmRHx8N0bsHnT3XXkgkREY6NxCJ26aHH7RQ@mail.gmail.com>
+ <BY5PR12MB43229840037E730F884C3356DCBD9@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <20210125132210.GJ4147@nvidia.com>
+In-Reply-To: <20210125132210.GJ4147@nvidia.com>
+From:   Edwin Peer <edwin.peer@broadcom.com>
+Date:   Mon, 25 Jan 2021 11:23:56 -0800
+Message-ID: <CAKOOJTx9V328r+TC_Pd0LXQr6aMaiK2eB4Qu77Dw-kc00vg3Bg@mail.gmail.com>
+Subject: Re: [pull request][net-next V10 00/14] Add mlx5 subfunction support
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Parav Pandit <parav@nvidia.com>, Saeed Mahameed <saeed@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Sridhar Samudrala <sridhar.samudrala@intel.com>,
+        David Ahern <dsahern@kernel.org>,
+        Kiran Patil <kiran.patil@intel.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000d1bc2505b9be7cdd"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 05:48:14PM -0600, Shiraz Saleem wrote:
-> +#define LS_64_1(val, bits)	((u64)(uintptr_t)(val) << (bits))
-> +#define RS_64_1(val, bits)	((u64)(uintptr_t)(val) >> (bits))
-> +#define LS_32_1(val, bits)	((u32)((val) << (bits)))
-> +#define RS_32_1(val, bits)	((u32)((val) >> (bits)))
-> +#define LS_64(val, field)	(((u64)(val) << field ## _S) & (field ## _M))
-> +#define RS_64(val, field)	((u64)((val) & field ## _M) >> field ## _S)
-> +#define LS_32(val, field)	(((val) << field ## _S) & (field ## _M))
-> +#define RS_32(val, field)	(((val) & field ## _M) >> field ## _S)
+--000000000000d1bc2505b9be7cdd
+Content-Type: text/plain; charset="UTF-8"
 
-Yikes, why can't this use the normal GENMASK/FIELD_PREP infrastructure
-like the other new drivers are now doing?
+On Mon, Jan 25, 2021 at 5:22 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-EFA is not a perfect example, but EFA_GET/EFA_SET are the macros I
-would expect to see, just without the _MASK thing.
+> SRIOV and SF's require a simple linear lookup to learn the "function"
+> because the BAR space is required to be linear.
 
-IBA_GET/SET shows how to do that pattern
+Isn't this still true even for NumVF's > 256? Wouldn't there still be
+a contiguous VF BAR space? Don't the routing IDs simply carry on
+incrementing by stride, with each being assigned the next slice of the
+shared BAR space?
 
-> +#define FLD_LS_64(dev, val, field)	\
-> +	(((u64)(val) << (dev)->hw_shifts[field ## _S]) & (dev)->hw_masks[field ## _M])
-> +#define FLD_RS_64(dev, val, field)	\
-> +	((u64)((val) & (dev)->hw_masks[field ## _M]) >> (dev)->hw_shifts[field ## _S])
-> +#define FLD_LS_32(dev, val, field)	\
-> +	(((val) << (dev)->hw_shifts[field ## _S]) & (dev)->hw_masks[field ## _M])
-> +#define FLD_RS_32(dev, val, field)	\
-> +	((u64)((val) & (dev)->hw_masks[field ## _M]) >> (dev)->hw_shifts[field ## _S])
+> Scaling a CAM to high sizes is physicaly infeasible, so all approaches
+> to scaling PCI functions go this road of having a single large BAR
+> space.
 
-Is it because the register access is programmable? That shouldn't be a
-significant problem.
+If the above is true, is there really a need to scale up CAM?
 
-> +#define IRDMA_CQPSQ_QHASH_QS_HANDLE_S 0
-> +#define IRDMA_CQPSQ_QHASH_QS_HANDLE_M ((u64)0x3ff << IRDMA_CQPSQ_QHASH_QS_HANDLE_S)
+Regards,
+Edwin Peer
 
-All of this is particularly painful
+--000000000000d1bc2505b9be7cdd
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-A bit of time with coccinelle would probably fix all of this
-
-Jason
+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
+mbo++PCnVfHaIk6rK1M0CPodEV0uUttmi6Mp/Ha7XmNgWQeQE3qkFIwAlb/kPNmJAMECAwEAAaOC
+Ac4wggHKMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUHMAKGQWh0
+dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNoYTJnM29j
+c3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25h
+bHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRw
+czovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1UdHwQ9MDsw
+OaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczLmNy
+bDAiBgNVHREEGzAZgRdlZHdpbi5wZWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcD
+BDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQU9IOrXBkaTFAmOmjl
+0nu9X2Lzo+0wDQYJKoZIhvcNAQELBQADggEBADL+5FenxoguXoMm8ZG+bsMvN0LibFO75wee8cJI
+3K8dcJ8y6rPc6yvMRqI7CNwjWV5kBT3aQPZCdqOlNLl/HnKJxBt3WJRWGePcE1s/ljK4Kg1rUQAo
+e3Fx6cKh9/q3gqElSPU5pBOsCEy8cbi6UGA+IVifQ2Mrm5tsvYqWSaZ1mKTGz8/z8vxG2kGJZI6W
+wL3owFiCmLmw5R8OH22wqf/7sQFMRpH5IQFLRYdU9uCUy5FlUAgiCEXegph8ytxvo8MgYyQcCOeg
+BMfFgFEHuM2IgsDQyFC6XUViX6BQny67nlrO8pqwNRJ9Bdd7ykLCzCLOuR1znBAc2wAL9OKQe0cx
+ggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMw
+MQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDCXgDAeB
+YW0HGKjSdzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgE4UktDpkelZJlb3rmcY0
+OV9wQ7kjkgP4P0REzoKI9X4wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
+DxcNMjEwMTI1MTkyNDMyWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQME
+ARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJ
+YIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAAt+rGThO+4l7QglYeldFkP/wvtXJbBgV+Y/KNMb
+dZwdfCeR39vOJClZZSpwxoHAsw3ovPjAQ02hZrqCzEt7sCGkJ80hx8pLkvw/gRr9YTeeYZvVtUDp
+qwnnROUEWoMp6HI8mpK/kYyvH80fkZHTrrUGsw4iKfK4VU/TBKtUKlsVNDS8Ihdz20M5oP/JHjA+
+Y8pO9RtwDgn2DFViBkwn6tqDXJdjZPgBFqk7JYpOfgOHHkMZ6Gvc7L93kZNDZoDGJh0mfO8wHHnz
+T/A8KbCNPhyKTTMhE7AT8lvs7pPalAddW/MJcX2+QuyCHnqMBXURF8IfWhw3Jz+5Qtr5P2XNcGg=
+--000000000000d1bc2505b9be7cdd--
