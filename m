@@ -2,131 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D126630318C
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 03:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DC030317C
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 02:51:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731378AbhAYTZX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Jan 2021 14:25:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53642 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731574AbhAYTYT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:24:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611602559;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sLaxbldCpmtlUDFodMqs6EtRoH2fJw9kHTicx3mvJQs=;
-        b=hvPyM2X0t8/a1Hl1GHJUJLTZnwM2EAdqO/HQuzPvzyIHHGLuYA1hndLkJWsPQo2SlLMmlx
-        rBSv1bD2J9G58sOhE8Qc4GaQ3RthaZOgz8ExP4ct5PUXHbFNIiwrrzgFcNNNnVjRqdEGvD
-        cM+3mRzbbfYxJEF8RaPDVA8+wiI5oM0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-wbF-Bqt3NsKIoD6ejRlndQ-1; Mon, 25 Jan 2021 14:22:34 -0500
-X-MC-Unique: wbF-Bqt3NsKIoD6ejRlndQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E23E9100C601;
-        Mon, 25 Jan 2021 19:22:30 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 251C960C0F;
-        Mon, 25 Jan 2021 19:22:21 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 20:22:19 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     brouer@redhat.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH net-next 3/3] net: page_pool: simplify page recycling
- condition tests
-Message-ID: <20210125202219.43d3d0f0@carbon>
-In-Reply-To: <20210125164612.243838-4-alobakin@pm.me>
-References: <20210125164612.243838-1-alobakin@pm.me>
-        <20210125164612.243838-4-alobakin@pm.me>
+        id S1731266AbhAZBZD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Jan 2021 20:25:03 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18561 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731432AbhAYTiY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 14:38:24 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B600f1e070000>; Mon, 25 Jan 2021 11:37:43 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
+ 2021 19:37:40 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 25 Jan 2021 19:37:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nMR8j3/H8ATPHgIJ/QQ1nSFTdqw53TXMmjb3I0AuE9oyXPPxzpJaauBHUHHv/UxyiPan7RBX8s1FhAnDmXZ6ZCNvuEhnoTtoHlJmcV6saEjK7MZpIl+kNKjBP9TAhaRnB/V505QZ5SRgJM1O+eJX7Ihwe96p888scokqbWC+t/DaQzCrVe8RAG/8m+wEhV1J1z4hy9YtH9lwu7MLaIEMdz7pXERKtfrVeOUe6mIC6RQPbUL3zojV9pPJx57xyJqXxH/d2RRwFXhTXYi9Hin1pLlZmtW7BXEk2tPc8vJ5mMceeOAN103V4c9hFar2M+nOx4PR7kboTBP8e9xzwZuSVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6WA25YnpRm7sKptpQ72fngj747FrQSSYwJREv921Pro=;
+ b=oOpAl2nITW3jtK4f1G0AWE7WqHgcVjaSiXOSjATUuOPIRZUDw9GhtSj7EwfLb4r2613mIwLxMfvlkmuo5XLb2ZRGWEAC2s/fYzXp1czoBChLygNH5V/5TfHea8+tECwqd9Q+TLrqmdjrQd0C7VoMHBnC6mxWlavGZxNCiZyai2GmIy7E0ifej83UvSUf276+wiGg0xiOtihAAUIj2H+akfqAvspULVTy7RzQPgRbxw6KN7r8kOHrQrrPLuDDQvXGXKPQN6VG+DjgRcfDn0vH0hDziNvZTf2CyWO4rMoSUDAIOQPVi+TmbeSxxknc0REjdPqYCn9WqSs5fk2SiaDvvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4499.namprd12.prod.outlook.com (2603:10b6:5:2ab::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.17; Mon, 25 Jan
+ 2021 19:37:38 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.017; Mon, 25 Jan 2021
+ 19:37:38 +0000
+Date:   Mon, 25 Jan 2021 15:37:37 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Shiraz Saleem <shiraz.saleem@intel.com>
+CC:     <dledford@redhat.com>, <kuba@kernel.org>, <davem@davemloft.net>,
+        <linux-rdma@vger.kernel.org>, <gregkh@linuxfoundation.org>,
+        <netdev@vger.kernel.org>, <david.m.ertman@intel.com>,
+        <anthony.l.nguyen@intel.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>
+Subject: Re: [PATCH 18/22] RDMA/irdma: Add miscellaneous utility definitions
+Message-ID: <20210125193737.GX4147@nvidia.com>
+References: <20210122234827.1353-1-shiraz.saleem@intel.com>
+ <20210122234827.1353-19-shiraz.saleem@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210122234827.1353-19-shiraz.saleem@intel.com>
+X-ClientProxiedBy: BL1PR13CA0456.namprd13.prod.outlook.com
+ (2603:10b6:208:2c4::11) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0456.namprd13.prod.outlook.com (2603:10b6:208:2c4::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.6 via Frontend Transport; Mon, 25 Jan 2021 19:37:38 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l47g9-006iYu-Jo; Mon, 25 Jan 2021 15:37:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611603463; bh=6WA25YnpRm7sKptpQ72fngj747FrQSSYwJREv921Pro=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=qyKEfuCD9SPrqWVVmjsGOM9ZEJtPVWLl3Ja7sj115vIqdjYdX4VXuwiLIuVkGphQH
+         34Ea+WwqpmUX62sKSmF+x8NVUpmMwk6zUmT5LCyfBMApSfnQBDAPjF7Dnrdqvzb9KT
+         sgTI94BJ/90CkYW1dqtchwrcHkf6WLmgVu+AkDaD3x2f1MHcUNC8bEOLgOkRUsQV26
+         SuBTfKVjiYkaVRE5T4iRLY4cTrrZYG5DQFX4m3Qch5ZksRVuOTehFQVUfwPuSFSaSn
+         zYZCW3jQM86H+OMLQwDOtDIiygEYPi/bPUSoYpRBb2OX+Y3TnlaffC3SHo11wZ55rP
+         xRHyl/T2I69dw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 25 Jan 2021 16:47:20 +0000
-Alexander Lobakin <alobakin@pm.me> wrote:
-
-> pool_page_reusable() is a leftover from pre-NUMA-aware times. For now,
-> this function is just a redundant wrapper over page_is_pfmemalloc(),
-> so Inline it into its sole call site.
+On Fri, Jan 22, 2021 at 05:48:23PM -0600, Shiraz Saleem wrote:
+> From: Mustafa Ismail <mustafa.ismail@intel.com>
 > 
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> ---
->  net/core/page_pool.c | 14 ++++----------
->  1 file changed, 4 insertions(+), 10 deletions(-)
-
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-
+> Add miscellaneous utility functions and headers.
 > 
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index f3c690b8c8e3..ad8b0707af04 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -350,14 +350,6 @@ static bool page_pool_recycle_in_cache(struct page *page,
->  	return true;
->  }
->  
-> -/* page is NOT reusable when:
-> - * 1) allocated when system is under some pressure. (page_is_pfmemalloc)
-> - */
-> -static bool pool_page_reusable(struct page_pool *pool, struct page *page)
-> -{
-> -	return !page_is_pfmemalloc(page);
-> -}
-> -
->  /* If the page refcnt == 1, this will try to recycle the page.
->   * if PP_FLAG_DMA_SYNC_DEV is set, we'll try to sync the DMA area for
->   * the configured size min(dma_sync_size, pool->max_len).
-> @@ -373,9 +365,11 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
->  	 * regular page allocator APIs.
->  	 *
->  	 * refcnt == 1 means page_pool owns page, and can recycle it.
-> +	 *
-> +	 * page is NOT reusable when allocated when system is under
-> +	 * some pressure. (page_is_pfmemalloc)
->  	 */
-> -	if (likely(page_ref_count(page) == 1 &&
-> -		   pool_page_reusable(pool, page))) {
-> +	if (likely(page_ref_count(page) == 1 && !page_is_pfmemalloc(page))) {
->  		/* Read barrier done in page_ref_count / READ_ONCE */
->  
->  		if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+> Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
+> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+>  drivers/infiniband/hw/irdma/osdep.h  |   99 ++
+>  drivers/infiniband/hw/irdma/protos.h |  118 ++
+>  drivers/infiniband/hw/irdma/status.h |   70 +
+>  drivers/infiniband/hw/irdma/utils.c  | 2680 ++++++++++++++++++++++++++++++++++
+>  4 files changed, 2967 insertions(+)
+>  create mode 100644 drivers/infiniband/hw/irdma/osdep.h
+>  create mode 100644 drivers/infiniband/hw/irdma/protos.h
+>  create mode 100644 drivers/infiniband/hw/irdma/status.h
+>  create mode 100644 drivers/infiniband/hw/irdma/utils.c
+> 
+> diff --git a/drivers/infiniband/hw/irdma/osdep.h b/drivers/infiniband/hw/irdma/osdep.h
+> new file mode 100644
+> index 0000000..10e2e02
+> +++ b/drivers/infiniband/hw/irdma/osdep.h
 
+> @@ -0,0 +1,99 @@
+> +/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
+> +/* Copyright (c) 2015 - 2021 Intel Corporation */
+> +#ifndef IRDMA_OSDEP_H
+> +#define IRDMA_OSDEP_H
+> +
+> +#include <linux/pci.h>
+> +#include <crypto/hash.h>
+> +#include <rdma/ib_verbs.h>
+> +
+> +#define STATS_TIMER_DELAY	60000
+> +
+> +#define idev_to_dev(ptr) (&((ptr)->hw->pcidev->dev))
+> +#define ihw_to_dev(hw)   (&(hw)->pcidev->dev)
 
+Try to avoid defines like this, it looses the typing information of
+the arguments. These should be static inline functions
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Jason
