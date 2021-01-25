@@ -2,25 +2,25 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A943031EE
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 03:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3757F3031F1
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 03:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730849AbhAYQtp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Jan 2021 11:49:45 -0500
-Received: from mail-03.mail-europe.com ([91.134.188.129]:33870 "EHLO
-        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730923AbhAYQsr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 11:48:47 -0500
-Date:   Mon, 25 Jan 2021 16:46:48 +0000
+        id S1730856AbhAYQtO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Jan 2021 11:49:14 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:24472 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730902AbhAYQsh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 11:48:37 -0500
+Date:   Mon, 25 Jan 2021 16:47:20 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1611593212; bh=O3BWBtVtHnlCsFaJds2EaRRj5UFBxIVItFjF3RQ5foo=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=fyb2kN/4x6ExKBRo9Irg/d1YeJZtuGXCH3KkYYxrwU6bfwqlp8xMWmyHoMUe9wKZ7
-         FE4ZC5fnorwlL/gi5srUrW8gfzuAUandYJdMMJtbd60j7IN3szMPX9rMu49/9ZcFnx
-         mggR925yYUco0rRp1UqPs6oBDI2aUk0GPLTSLnEIzSfFP1cdBPEwguNgJU25afaZoY
-         5lx4EVfbt3/89Iq5QNz7cj/2zToRT9N8KHsxez2Sqd2z6gQsDdV4BKPWnmuayZVa6s
-         voZckv5Kh2OQ1jTDMApFKg4MTPwxYrd2KAWmMNbjJKjcuTkrZ1xfkwA5Jay1YMuCQg
-         rZ+LjQ+WWvz5Q==
+        t=1611593248; bh=PQjqCY1n/n+4wNCpUtWb3rQkV1Ny0cNm6fdbl7f6pik=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=QV6ZOPg0656nfl1DEH/S322UL4+pstgUgCc1D1CKk+HVHLbKEV+ewpATEWp5Q2eyp
+         0lsWNC9+XSddJ1LCqgvTPbHc+S6hYcR8A4hVYiJyLTitAeI7WF+1rsWLslrCAGkOX5
+         jEkHVWyb1P69/EUyfSsZLxVqP0CyMZ7v7Rm68NXplu9W1/G6howkrSHUKDizycGriX
+         bKgyr8xwzvdhUKVpkxSpn5yG1ZaFwioid4sNE2m+1MmTEKHoAbrkxIuQO3CM5rhdD1
+         I/HRYbQNpisrempK/yISGDWXVzxypGSshKmbXw98Hv/d4DeohCAi9HLwK50hsgD7G+
+         YLKFDroD9T46g==
 To:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>
 From:   Alexander Lobakin <alobakin@pm.me>
@@ -46,8 +46,10 @@ Cc:     Yisen Zhuang <yisen.zhuang@huawei.com>,
         linux-rdma@vger.kernel.org, linux-mm@kvack.org,
         Alexander Lobakin <alobakin@pm.me>
 Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH net-next 0/3] net: constify page_is_pfmemalloc() and its users
-Message-ID: <20210125164612.243838-1-alobakin@pm.me>
+Subject: [PATCH net-next 3/3] net: page_pool: simplify page recycling condition tests
+Message-ID: <20210125164612.243838-4-alobakin@pm.me>
+In-Reply-To: <20210125164612.243838-1-alobakin@pm.me>
+References: <20210125164612.243838-1-alobakin@pm.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -60,31 +62,51 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-page_is_pfmemalloc() is used mostly by networking drivers. It doesn't
-write anything to the struct page itself, so constify its argument and
-a bunch of callers and wrappers around this function in drivers.
-In Page Pool core code, it can be simply inlined instead.
+pool_page_reusable() is a leftover from pre-NUMA-aware times. For now,
+this function is just a redundant wrapper over page_is_pfmemalloc(),
+so Inline it into its sole call site.
 
-Alexander Lobakin (3):
-  mm: constify page_is_pfmemalloc() argument
-  net: constify page_is_pfmemalloc() argument at call sites
-  net: page_pool: simplify page recycling condition tests
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ net/core/page_pool.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c   |  2 +-
- drivers/net/ethernet/intel/fm10k/fm10k_main.c     |  2 +-
- drivers/net/ethernet/intel/i40e/i40e_txrx.c       |  2 +-
- drivers/net/ethernet/intel/iavf/iavf_txrx.c       |  2 +-
- drivers/net/ethernet/intel/ice/ice_txrx.c         |  2 +-
- drivers/net/ethernet/intel/igb/igb_main.c         |  2 +-
- drivers/net/ethernet/intel/igc/igc_main.c         |  2 +-
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c     |  2 +-
- drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c |  2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c   |  2 +-
- include/linux/mm.h                                |  2 +-
- include/linux/skbuff.h                            |  4 ++--
- net/core/page_pool.c                              | 14 ++++----------
- 13 files changed, 17 insertions(+), 23 deletions(-)
-
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index f3c690b8c8e3..ad8b0707af04 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -350,14 +350,6 @@ static bool page_pool_recycle_in_cache(struct page *pa=
+ge,
+ =09return true;
+ }
+=20
+-/* page is NOT reusable when:
+- * 1) allocated when system is under some pressure. (page_is_pfmemalloc)
+- */
+-static bool pool_page_reusable(struct page_pool *pool, struct page *page)
+-{
+-=09return !page_is_pfmemalloc(page);
+-}
+-
+ /* If the page refcnt =3D=3D 1, this will try to recycle the page.
+  * if PP_FLAG_DMA_SYNC_DEV is set, we'll try to sync the DMA area for
+  * the configured size min(dma_sync_size, pool->max_len).
+@@ -373,9 +365,11 @@ __page_pool_put_page(struct page_pool *pool, struct pa=
+ge *page,
+ =09 * regular page allocator APIs.
+ =09 *
+ =09 * refcnt =3D=3D 1 means page_pool owns page, and can recycle it.
++=09 *
++=09 * page is NOT reusable when allocated when system is under
++=09 * some pressure. (page_is_pfmemalloc)
+ =09 */
+-=09if (likely(page_ref_count(page) =3D=3D 1 &&
+-=09=09   pool_page_reusable(pool, page))) {
++=09if (likely(page_ref_count(page) =3D=3D 1 && !page_is_pfmemalloc(page)))=
+ {
+ =09=09/* Read barrier done in page_ref_count / READ_ONCE */
+=20
+ =09=09if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
 --=20
 2.30.0
 
