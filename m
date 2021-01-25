@@ -2,53 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086E9302C3D
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Jan 2021 21:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF0E302C7A
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Jan 2021 21:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbhAYUHd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Jan 2021 15:07:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
+        id S1726769AbhAYUX7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Jan 2021 15:23:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731749AbhAYUHP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 15:07:15 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0444EC0613D6
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 12:06:34 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id f2so11666794ljp.11
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 12:06:34 -0800 (PST)
+        with ESMTP id S1732230AbhAYUXc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 15:23:32 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64845C06174A
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 12:22:51 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id h7so19693369lfc.6
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 12:22:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WsmdjB7BTSTxRcNrHUlaicPXAmWGdYkj9QBujcYtmoY=;
-        b=VpfP6msVAFg7bBkQVLWAV3gcshRpwLWlLVkmSX3UkmxPLhhcAVky+dSNlRpoXvZf6U
-         9OPWgw6QaoS3LHwA07eCSSWv0gMAQvapT/D+Pc9FZkdujkCUoeGmwZH6ubmUX8gCfvvZ
-         l0Ekid5XD/pxWLc8riUT3UWgymAtYskIfsXH8=
+        bh=dJpq/TlGZ0HV+h016sPhctqkjMa4DX0F273nd+8b3yc=;
+        b=WyYUw/aSFr1MSlUVSQDIkpVX2nb/bR07JJGfFgPaPks/Rtxm58XENJ50+jWJX+AawP
+         og0eR9vXK6kMDMpYY3OaXmhGxb+A0PlZ5HA4WnZ1Dw5gK/MvgI6MNwSZ310OOdOEOvQ4
+         yjtEOKXoq1epLjJRlX5bqEqCRlkkYFVFnnItU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WsmdjB7BTSTxRcNrHUlaicPXAmWGdYkj9QBujcYtmoY=;
-        b=LgyJiaeI20qEGw2Lig1JOIcfCbYwtDBCHa95Zij0+/1y+rauhKqIo61KWLXOqhu00j
-         sMu4YQSU9tama6AIp/98ecSdbtjdJAENe7RK5AE7YKB0HRX30FtepeuIUryqrHaE2y6Z
-         BRjCPfRHI1dScS6YAreu7TYPPwYGjBgymHhP+DsZqqk9EVvXJ2qUrWrMF2ZrWIRZ1sRd
-         6rOMebmiB3cXXEXTAr1ZGgcz6mko0jX5fVxo1BpMJzdrz7MZdjimS64BuTBOiACgpnEL
-         Q91/XhxIcMiuV42NUrYJkhhbk46Hb/A5BO/nz0efSWdYEeAD2F+gLNDkeu2foX+ffhLZ
-         QRyQ==
-X-Gm-Message-State: AOAM531kC/k1l6Wr1pzJ/pghD080Jk0lFmmU4DVxyqchUTa6NUlM4fIo
-        MFsxhI7JGd+VWtkAZkYfiXGNB1TF0DVGKJ8PkWNpMg==
-X-Google-Smtp-Source: ABdhPJx3vaKBLLUu1xmkfQKlh25z24F1QD88Vxb6T2GWh1ZIOImFG0qKaqEniNDhx1QEIsNr8e5yggAinCZ/xj7yMNA=
-X-Received: by 2002:a2e:9192:: with SMTP id f18mr998356ljg.487.1611605193289;
- Mon, 25 Jan 2021 12:06:33 -0800 (PST)
+        bh=dJpq/TlGZ0HV+h016sPhctqkjMa4DX0F273nd+8b3yc=;
+        b=Mj607u4Zm21ar2AukrF+rhYPtqDSCAE3w9p7xqwPUsNe3EyWouK9n/gs9/c66AlrjZ
+         HvPFe3o9Z/BHwkFpAhNKRUTnY8IqISGNdFxW5qdVuhI9qVFzrfuOX/WH7TSPeRVDwumS
+         M4lrWZqC2QIO0zXl5Pm5lIs2DWEikE2MiDeCFFAuYjGf+H3reUKGs21XLqVtvrWe+eIi
+         ZMCpyptICrYT7wdboYE+Ri5c9Kv8VSIa1A2+RXJ32FBq8O0LagBav2EDESspqcxSgpUt
+         4PYMYUyjWjoM1WIJ8xhzZHAFIhEknd87QwflcjLsln3s2Zlq/n0iAv4riXWllWaQtwgV
+         cssg==
+X-Gm-Message-State: AOAM533mG+wQeykHwMfkMEi4aS4cWmY2jZ2teMAW3KJe2AAqRhomYFXc
+        9864E/6zTjtmMOCO64zTZDqUgYfad7C3mInwlQJJZg==
+X-Google-Smtp-Source: ABdhPJxppek8k+MKygN8hDoW+cn2HFTARntbQjYbW9SLECXv7t4TbCRIWzgwjZdjZTOvP6quSKFgaVwXyprDITe+tYM=
+X-Received: by 2002:ac2:4f88:: with SMTP id z8mr960588lfs.141.1611606169819;
+ Mon, 25 Jan 2021 12:22:49 -0800 (PST)
 MIME-Version: 1.0
 References: <20210122193658.282884-1-saeed@kernel.org> <CAKOOJTxQ8G1krPbRmRHx8N0bsHnT3XXkgkREY6NxCJ26aHH7RQ@mail.gmail.com>
  <BY5PR12MB43229840037E730F884C3356DCBD9@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20210125132210.GJ4147@nvidia.com> <CAKOOJTx9V328r+TC_Pd0LXQr6aMaiK2eB4Qu77Dw-kc00vg3Bg@mail.gmail.com>
- <20210125194941.GZ4147@nvidia.com>
-In-Reply-To: <20210125194941.GZ4147@nvidia.com>
+ <CAKOOJTw_RfYfFunhHKTD6k73FvFObVb5Xx7hK8uPUUGJpuTzuw@mail.gmail.com>
+ <CAKOOJTx7ogAvUkT5y8vKYp=KB+VSbe0MgXg5PuvjEiU_dO_5YA@mail.gmail.com> <20210125195905.GA4147@nvidia.com>
+In-Reply-To: <20210125195905.GA4147@nvidia.com>
 From:   Edwin Peer <edwin.peer@broadcom.com>
-Date:   Mon, 25 Jan 2021 12:05:57 -0800
-Message-ID: <CAKOOJTwuziJWKUFVNMtqbOeMnRx6eJF54zEu7GDaUJr_Tx1Rtw@mail.gmail.com>
+Date:   Mon, 25 Jan 2021 12:22:13 -0800
+Message-ID: <CAKOOJTx_0CxQ27PmB6MfcagGYdeAqEDy4CCr0wNATZOeCBBkTg@mail.gmail.com>
 Subject: Re: [pull request][net-next V10 00/14] Add mlx5 subfunction support
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Parav Pandit <parav@nvidia.com>, Saeed Mahameed <saeed@kernel.org>,
@@ -65,34 +65,41 @@ Cc:     Parav Pandit <parav@nvidia.com>, Saeed Mahameed <saeed@kernel.org>,
         Dan Williams <dan.j.williams@intel.com>,
         Saeed Mahameed <saeedm@nvidia.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000014854705b9bf1333"
+        boundary="000000000000498aa505b9bf4d7f"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000014854705b9bf1333
+--000000000000498aa505b9bf4d7f
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Jan 25, 2021 at 11:49 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+On Mon, Jan 25, 2021 at 11:59 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-> I've never seen someone implement a NumVF > 256 by co-opting the bus
-> number.
+> Every writable data mandated by the PCI spec requires very expensive
+> on-die SRAM to store it.
 
-Usually the VF offset already places the VF routing IDs into a
-different bus number range from the PF. That much at least works
-today.
+That's an implementation decision. Nothing mandates that the state has
+to physically exist in the same structure, only that reads and writes
+are appropriately responded to. Parts that are read only could be
+generated on the fly and writes can be stored more efficiently.
 
-> Can Linux even assign more bus numbers to a port without firmware
-> help? Bus numbers are something that requires the root complex to be
-> aware of to setup routability.
+> We've seen Intel drivers that show their SIOV ADIs don't even have a
+> register file and the only PCI presence is just a write-only doorbell
+> page in the BAR.
 
-I'm not sure, presumably something already infers this for the first
-additional bus number based on the SR-IOV config capability?
+Right, but presumably it still needs to be at least a page. And,
+nothing says your device's VF BAR protocol can't be equally simple.
+
+> It is hard to argue a write-only register in a BAR page vs all the
+> SRIOV trappings when it comes to HW cost.
+
+Say it's double the cost? I don't know that it is, but does that
+warrant the additional complexity of SFs? We should try to quantify.
 
 Regards,
 Edwin Peer
 
---00000000000014854705b9bf1333
+--000000000000498aa505b9bf4d7f
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -162,13 +169,13 @@ wL3owFiCmLmw5R8OH22wqf/7sQFMRpH5IQFLRYdU9uCUy5FlUAgiCEXegph8ytxvo8MgYyQcCOeg
 BMfFgFEHuM2IgsDQyFC6XUViX6BQny67nlrO8pqwNRJ9Bdd7ykLCzCLOuR1znBAc2wAL9OKQe0cx
 ggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMw
 MQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDCXgDAeB
-YW0HGKjSdzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQghWYCuFcNuDItIPxfkp62
-rrup93Z/5dBttlAIbcviNvkwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMjEwMTI1MjAwNjMzWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQME
+YW0HGKjSdzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgk4VGjxOq95czPEy8RnnW
+j6ubxpyaDNmFcGISs6cUewswGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
+DxcNMjEwMTI1MjAyMjUwWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQME
 ARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJ
-YIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAJmUcFoMrMApCFF5z1VELMD1kJEqYgntJ1tdKEFm
-y/cPKuwhfX8g6eVYSPvhevvAqozjq/mGEyp+Kn1tuN8FqX7KCs3sn05wst7wwoYRTB29l7wPRWjj
-rPGORJieoECQxtZCy51d/Y6FLD5S3UShaRH3W+gE9N8sLr9D1N+UjisurSx+JwwbZF+cN/ycwqbj
-mX5+Jh4rErBeqDfsinFeC1VmMxKm11sujjGK4tPXMsVyy6NFnSlySjfamGVAQP8ffDP9WKKD/jnI
-ynt/rZm9TTR9yPun5Tj0WwiDcr+t0OrzQXZrYRIfDx0BmdpPpIB64C+BmkqVVuyR0kk5d4Zdo30=
---00000000000014854705b9bf1333--
+YIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAGcSRNuWOXsUjNoHF7qPfnw2qCkdERvNKTJmTBOc
+oXOnR6bFCF8duYkoiqjtSl8Qo8X2N/OoK6ekCvw5opjMH4MWXLhCtldce6CogXVj5UuS64IeZrK7
+RDujw3n/lF2JfToxpBVaKUyIw7hYN3RmLeKN+jI21y8Wc+MXWgn06B2IHVE+ncWvJFU5zavBTvLx
+IdAu5Ce7FYg2TbYPhrmRMm435M4+jpamMbedAcat4Z4VwVyMIgJdEzBn2M/PjAQRM2Cce63I8ROv
+gc9/0dvAA2X0GgBADu6wLN/ebdTaW3RxngyJXRYn9rgAH8B4wCVOz7b4+5x0SIXeMtNJp/qT5Jo=
+--000000000000498aa505b9bf4d7f--
