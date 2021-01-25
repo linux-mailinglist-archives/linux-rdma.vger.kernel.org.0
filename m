@@ -2,85 +2,173 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F583048DD
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 20:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B62F3048E0
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 20:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728862AbhAZFh6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Jan 2021 00:37:58 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6168 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728854AbhAYN3x (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 08:29:53 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B600ec7a60000>; Mon, 25 Jan 2021 05:29:10 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
- 2021 13:29:06 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.175)
- by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 25 Jan 2021 13:29:06 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TFAAsp6/KgNcqGvIJOtxPpgShhxV1iZIIQxGIGV+zyMFyWjnycWRxRBVHvD2+gqdLoHtu9zVHY19UU2D0ztJOGQPOi0rD/8g+xI5F1HCUGs3IS0yMOpEdXsCPqCtRamRwT2y7bQNyrdHWVmaRZt+8MQZZK1cxPq48h5mW+Oiq8a7+jnfkAX+ucUSWCQkZGnI1vIqpH4Ey8aqtH/B4A1D/rbOzzVoaP+Hqu5RKR4zSk5NnIXMs0bCi/Tsm9A10Zf2y8sjAvymfK57P5rsyEXYKW74NRRRiQ7BAyZJhggSfrvF/e3o9aqNc4j09m1xn3bLWNtlrRTJ9ymljNM1oTYGuA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GKIDghmN9sC2/5PLFz8D2fKZcZwG9pP6TiLX9KKiASc=;
- b=Nqpp1CLPRy3icxBiKjA13HDsHg4cL/raMK7aQwTGOIQ0yka/ooNyU6siYv/KAXlDkCREUcbx+hKU7V/c+1dwY4M3yi8RUUIkBSf4U66Q7FV73QV1NdFHrFBMoNmyad/sdGsyViHMWvw89H4ZjXiYoNmonjCdl+fXlwdJ/PFUsY+PGtPYG6s2Ee7GjNYS0zi6R5RwBzJjQsYDnSSMoX/c/dKLC2ye1BybWIxSnQg7ntrwXDuzyWgA70CmwibR8I6kKDNQPDw9OMY5pTl3CTbR1/kO7ZJz/Vskz/cO2uHfjDHd8cR8CQPT0jV7sXvMjklcfLO++AhBHdPlSMgVHahP0A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2940.namprd12.prod.outlook.com (2603:10b6:5:15f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.15; Mon, 25 Jan
- 2021 13:29:05 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.017; Mon, 25 Jan 2021
- 13:29:05 +0000
-Date:   Mon, 25 Jan 2021 09:29:04 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Shiraz Saleem <shiraz.saleem@intel.com>
-CC:     <dledford@redhat.com>, <kuba@kernel.org>, <davem@davemloft.net>,
-        <linux-rdma@vger.kernel.org>, <gregkh@linuxfoundation.org>,
-        <netdev@vger.kernel.org>, <david.m.ertman@intel.com>,
-        <anthony.l.nguyen@intel.com>
-Subject: Re: [PATCH 00/22] Add Intel Ethernet Protocol Driver for RDMA (irdma)
-Message-ID: <20210125132904.GL4147@nvidia.com>
-References: <20210122234827.1353-1-shiraz.saleem@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210122234827.1353-1-shiraz.saleem@intel.com>
-X-ClientProxiedBy: MN2PR15CA0060.namprd15.prod.outlook.com
- (2603:10b6:208:237::29) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1729289AbhAZFim (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Jan 2021 00:38:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731168AbhAYSvp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 13:51:45 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067F0C061573;
+        Mon, 25 Jan 2021 10:51:05 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id z22so28654083ioh.9;
+        Mon, 25 Jan 2021 10:51:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x6NroVxX2SWf6rFQUodqk2IRulqgxWpNQowIvS6mbio=;
+        b=oNG0YvE6d1+LPMfu8lhs1xh4hDry5O1VQIjxAOxWuDsOvyiW9B4ozbRo3z2QLWEkE1
+         LW1xP471aut6jntxnHI0X4FSJdww6I34spiY5MDXJF4qqnRzYY56lFEwCjEBDFHx8t3e
+         Do7QZAtQsLxdC1gr70T0DiJvPwMPnASpDadWiVn0ljCKsgC30psR1Z5Zo7uhsc2yI7ag
+         ze7McL87eoi/eZgX/3yj4f+t3Wkd1R4YtGR/iiuoF0zhgjMulY2f3jsxq2+6jmVAlHX6
+         1s9LXGpv/8dBLsQqMslDVJae77JRo2RkzhcC5EvoWK4jP5D6U6IsU9fpRLsLBla9WosW
+         sYRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x6NroVxX2SWf6rFQUodqk2IRulqgxWpNQowIvS6mbio=;
+        b=i/IezMBRSkVEuP54ZV9qNy3v6kEVHvdyfEX0o6g01bmXdVAFVYViY6pFziIEq1gRHN
+         qyokK3oGmSb6bc/SZPBxeNc/QYhTH9nKvn4rIvSXAUE9DcizZRUk7ho7Ad65kWNpXWsd
+         /sImHQAZ9x4OT0JgYxmgEl5XicYYQ4aJYdxRBGWAnHxSqIaat88E3dZuWzS5SdfHI/2T
+         csl0+wpIDlFsUIR2E06ZlIXANgOE5s7l4O/6llFIF0zbHDZMNOJ/oHcYOdALfVI8r/DG
+         tQRmeeCpv8LurD738rB4ytAqEg9jX1YjPhTkEzUWR4XYc0jYM+klTrORjpBcaAvg/NRW
+         uvYA==
+X-Gm-Message-State: AOAM531K9UTksVzMU8TIDxi0zIfonok+ye8edlePrXm3EtsSCQ0wyoTA
+        AOBLfIUEEf69J3MRuspMGLvT7eRFdJkf/BDhtHg=
+X-Google-Smtp-Source: ABdhPJyqz9jX4buTPBcsgvEXYJj8K/2dd3DWgeKNmCq9jaLdVt5a/NASGYUXGfPo0E4usHKQd/9lriE/Eq28Z2ikHkY=
+X-Received: by 2002:a05:6638:b12:: with SMTP id a18mr1926735jab.114.1611600664343;
+ Mon, 25 Jan 2021 10:51:04 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR15CA0060.namprd15.prod.outlook.com (2603:10b6:208:237::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Mon, 25 Jan 2021 13:29:05 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l41vU-006UyC-54; Mon, 25 Jan 2021 09:29:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611581350; bh=GKIDghmN9sC2/5PLFz8D2fKZcZwG9pP6TiLX9KKiASc=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=WNQkbLPhTKReRjJMPJ3jkd0pevQJj9cZeJ3cAvjIR/DS3zy6+/uCG/kku+JqWs/vW
-         JJ1BUXDcp+UHSGlHbRNqW51dCGSHOt8Q9hTonlFxX0Y/qGMKE9AE8BhKgnn8165eoo
-         AbnbwMJY06smsrP1HECzXyHeSdYt5+LvMIR0AOTk3ksmAYNn8r8lZZWGl3nsU5xAGu
-         +2x9j0sLrt79eczomKkl6s4G1UrVLtMI4bjb3AHxSHDtOVwrm9/4If92FoFV3AMnpX
-         gTKW7eStw2VOKsSDM5kNTyzw7Pma26TfltMhIh8HvvCPCLVKj0YOHhA4MTtU0QfX0n
-         MZmSTBYnXllNw==
+References: <20210124131119.558563-1-leon@kernel.org> <20210124131119.558563-2-leon@kernel.org>
+ <CAKgT0UcJQ3uy6J_CCLizDLfzGL2saa_PjOYH4nK+RQjfmpNA=w@mail.gmail.com>
+ <20210124190032.GD5038@unreal> <20210125184719.GK579511@unreal>
+In-Reply-To: <20210125184719.GK579511@unreal>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Mon, 25 Jan 2021 10:50:53 -0800
+Message-ID: <CAKgT0UdPMGUax-UbeBK7-iNmsBqU_0w6hGdZ--P5EwfgmdN2ug@mail.gmail.com>
+Subject: Re: [PATCH mlx5-next v4 1/4] PCI: Add sysfs callback to allow MSI-X
+ table size change of SR-IOV VFs
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 05:48:05PM -0600, Shiraz Saleem wrote:
+On Mon, Jan 25, 2021 at 10:47 AM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Sun, Jan 24, 2021 at 09:00:32PM +0200, Leon Romanovsky wrote:
+> > On Sun, Jan 24, 2021 at 08:47:44AM -0800, Alexander Duyck wrote:
+> > > On Sun, Jan 24, 2021 at 5:11 AM Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > From: Leon Romanovsky <leonro@nvidia.com>
+> > > >
+> > > > Extend PCI sysfs interface with a new callback that allows configure
+> > > > the number of MSI-X vectors for specific SR-IO VF. This is needed
+> > > > to optimize the performance of newly bound devices by allocating
+> > > > the number of vectors based on the administrator knowledge of targeted VM.
+> > > >
+> > > > This function is applicable for SR-IOV VF because such devices allocate
+> > > > their MSI-X table before they will run on the VMs and HW can't guess the
+> > > > right number of vectors, so the HW allocates them statically and equally.
+> > > >
+> > > > 1) The newly added /sys/bus/pci/devices/.../vfs_overlay/sriov_vf_msix_count
+> > > > file will be seen for the VFs and it is writable as long as a driver is not
+> > > > bounded to the VF.
+> > > >
+> > > > The values accepted are:
+> > > >  * > 0 - this will be number reported by the VF's MSI-X capability
+> > > >  * < 0 - not valid
+> > > >  * = 0 - will reset to the device default value
+> > > >
+> > > > 2) In order to make management easy, provide new read-only sysfs file that
+> > > > returns a total number of possible to configure MSI-X vectors.
+> > > >
+> > > > cat /sys/bus/pci/devices/.../vfs_overlay/sriov_vf_total_msix
+> > > >   = 0 - feature is not supported
+> > > >   > 0 - total number of MSI-X vectors to consume by the VFs
+> > > >
+> > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > > > ---
+> > > >  Documentation/ABI/testing/sysfs-bus-pci |  32 +++++
+> > > >  drivers/pci/iov.c                       | 180 ++++++++++++++++++++++++
+> > > >  drivers/pci/msi.c                       |  47 +++++++
+> > > >  drivers/pci/pci.h                       |   4 +
+> > > >  include/linux/pci.h                     |  10 ++
+> > > >  5 files changed, 273 insertions(+)
+> > > >
+> > >
+> > > <snip>
+> > >
+> > > > +
+> > > > +static umode_t sriov_pf_attrs_are_visible(struct kobject *kobj,
+> > > > +                                         struct attribute *a, int n)
+> > > > +{
+> > > > +       struct device *dev = kobj_to_dev(kobj);
+> > > > +       struct pci_dev *pdev = to_pci_dev(dev);
+> > > > +
+> > > > +       if (!pdev->msix_cap || !dev_is_pf(dev))
+> > > > +               return 0;
+> > > > +
+> > > > +       return a->mode;
+> > > > +}
+> > > > +
+> > > > +static umode_t sriov_vf_attrs_are_visible(struct kobject *kobj,
+> > > > +                                         struct attribute *a, int n)
+> > > > +{
+> > > > +       struct device *dev = kobj_to_dev(kobj);
+> > > > +       struct pci_dev *pdev = to_pci_dev(dev);
+> > > > +
+> > > > +       if (!pdev->msix_cap || dev_is_pf(dev))
+> > > > +               return 0;
+> > > > +
+> > > > +       return a->mode;
+> > > > +}
+> > > > +
+> > >
+> > > Given the changes I don't see why we need to add the "visible"
+> > > functions. We are only registering this from the PF if there is a need
+> > > to make use of the interfaces, correct? If so we can just assume that
+> > > the interfaces should always be visible if they are requested.
+> >
+> > I added them to make extension of this vfs_overlay interface more easy,
+> > so we won't forget that current fields needs "msix_cap". Also I followed
+> > same style as other attribute_group which has .is_visible.
+> >
+> > >
+> > > Also you may want to look at placing a link to the VF folders in the
+> > > PF folder, although I suppose there are already links from the PF PCI
+> > > device to the VF PCI devices so maybe that isn't necessary. It just
+> > > takes a few extra steps to navigate between the two.
+> >
+> > We already have, I don't think that we need to add extra links, it will
+> > give nothing.
+> >
+> > [leonro@vm ~]$ ls -l /sys/bus/pci/devices/0000\:01\:00.0/
+> > ....
+> > drwxr-xr-x 2 root root        0 Jan 24 14:02 vfs_overlay
+> > lrwxrwxrwx 1 root root        0 Jan 24 14:02 virtfn0 -> ../0000:01:00.1
+> > lrwxrwxrwx 1 root root        0 Jan 24 14:02 virtfn1 -> ../0000:01:00.2
+> > ....
+>
+> Alexander, are we clear here? Do you expect v5 without ".is_visible" from me?
 
-> Once the patches are closer to merging, this series will be split into a
-> netdev-next and rdma-next patch series targeted at their respective subsystems
-> with Patch #1 and Patch #5 included in both. This is the shared header file that
-> will allow each series to independently compile.
+Yeah, I am okay with the .is_visible being left around. It just seems
+redundant is all.
 
-Nope, send a proper shared pull request.
+Thanks.
 
-Jason
+ -Alex
