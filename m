@@ -2,123 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBC0303257
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 04:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 006CE30352F
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 06:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728774AbhAYNYX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Jan 2021 08:24:23 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5689 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728754AbhAYNXS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 08:23:18 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B600ec6110001>; Mon, 25 Jan 2021 05:22:25 -0800
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
- 2021 13:22:24 +0000
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
- 2021 13:22:14 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 25 Jan 2021 13:22:14 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xe5VlSP7opi/D00Kr2C4ITSqlFk8ohK9+q96JPlCcaW7ur/gYj0HnqZ6xc4ImX0eYriQhF0ApzDRh2IrU2p0/Zyt/bU1lVoiJiwLbFc5hZAovYinXr8J/kEtZEjU0K4RA5edHVKUb7pQZOhRd20ZCKOKZht05l9X7FBkkLuYXBFf8OFed5mPpZj3LdwmuKqXJxXAGtC9cFZAwa/tv6RWKEYFN2yOejv+4/vyb12hATiuX7xI+kVkLyCAbBp2F/N88OhSp16hML/bxLtzzjRysHm7Jt8BlM2VIz4qzq1/Y3KNcbvE+T3KfRueS+mAziKdBUNNJNDzQRRbsZm3ZanBRA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N14MOe7zKRarnSVCPHj68Jlgyy0ftSkDvB71RhG3G3o=;
- b=Pkhk4y9KvGzcWQl4T8v8JSZmi4dovERoqRMJWYabE+rFfYifLYXZ5Sr38sFRhPZSPmqt2y3JUuE8J/l7bfvulUTRUSdUZTOx7L5OOPAqvU7URBv7fcbKz6r61xdxgHJ6LeB0Ao+fh80vI4bWSKds1n/LihjMeUETAxlMobokUd4HCI8XPjkWDS1LP0g19ILyvXRPV9fPWNz4LNQMb56Q5+uh+5LCPy1NO+fjW75U3aYy7XZFSET2KXXIk0nOHZjwUDVH1sJlz75K/Y6fzBLyVxIU1+l1j1IGL+W0jeC7VfruKWdHo6bCJngmc7A9fJClp7CXef057j2gcSKQsEGCGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1340.namprd12.prod.outlook.com (2603:10b6:3:76::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Mon, 25 Jan
- 2021 13:22:12 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.017; Mon, 25 Jan 2021
- 13:22:11 +0000
-Date:   Mon, 25 Jan 2021 09:22:10 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Parav Pandit <parav@nvidia.com>
-CC:     Edwin Peer <edwin.peer@broadcom.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        David Ahern <dsahern@kernel.org>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [pull request][net-next V10 00/14] Add mlx5 subfunction support
-Message-ID: <20210125132210.GJ4147@nvidia.com>
-References: <20210122193658.282884-1-saeed@kernel.org>
- <CAKOOJTxQ8G1krPbRmRHx8N0bsHnT3XXkgkREY6NxCJ26aHH7RQ@mail.gmail.com>
- <BY5PR12MB43229840037E730F884C3356DCBD9@BY5PR12MB4322.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <BY5PR12MB43229840037E730F884C3356DCBD9@BY5PR12MB4322.namprd12.prod.outlook.com>
-X-ClientProxiedBy: MN2PR04CA0025.namprd04.prod.outlook.com
- (2603:10b6:208:d4::38) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1731228AbhAZFg7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Jan 2021 00:36:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727505AbhAYKnM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 05:43:12 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656EFC06178C
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 02:41:05 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id d22so14664024edy.1
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 02:41:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=1bVaviaBk5pTj1cHPXjunskc7f+8H2Pg2xYocvwdUK4=;
+        b=kD8FKH8v2tA1KbvULWD5lxIlEzpbjRDsajrpmv6ni0YWd2PSBSmqGDZVr5vcoAA5Ow
+         VVa1E31SkwDPogFu9P6vzM1hFXndK+jGsZ2ewIcKuNiv7/gS9pusx+ouduppwZNs3Y00
+         SApYCEzUSxchgVpEz57hT74loCYp9PiB0ZsPFYM6TimbwPL4IEwwvDtnoxBazNaHhu6h
+         e+gOIZB4547Gf6C61KLpEWxLJF5Nx98sFnLsJ7tDfSRBsFgousdD7JwGeDcN+9uHhhTS
+         hkkt0m27M7VmHxneg8fxvNIDSUaNYugcGN7d/j2PXZzcQN6nHViLe26ZdAM8X5+rUXPQ
+         E4og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=1bVaviaBk5pTj1cHPXjunskc7f+8H2Pg2xYocvwdUK4=;
+        b=AEAkhdELfU0rWVtMw5EJZRMcXam0txgjmdataf1aFMPMXQTWgJ1sH7fog9LOevpIeb
+         FBjevE4aTjMgdf+pEVjsZ+Xkz38+ossmVwxrd3B+adG0Y240fUFO+w1DhWui1M9rmTuj
+         OVFb2wydLE7FOWkEEtYV5WRpUTatS0dCruXRxn0BG8He9zAEqcR/EPKSSuooaBi5nbYG
+         v8AeQ3+wCdiimygT7OVCPdOV5xpgtybvMjCk+D5dVsngUpQrg1nXjz3zgtPMg10RXhum
+         Oc4zOLaCM/mFSy0500tjALguLZj8xQpPMFg0Arg3AJn1YoXdHbicdj4TNdqgzQSB6v3q
+         qH/w==
+X-Gm-Message-State: AOAM533pqPNFpSbLcP/kyinyo3zNbzhLliiz5MwGOUKiA51PYHBMSBd7
+        bfTSXytHbZfRrSqr2+cBcJVkiZJD0eQdZT3Zo/4=
+X-Google-Smtp-Source: ABdhPJw8GztvyIeBzaBk7BK0XXYhIkMXflb6nFkMAcLuNG2Ai2CJZ7NmQMV3nmJmhqeNOB30UXhkfXLJv+SjrOWWOpk=
+X-Received: by 2002:a05:6402:3116:: with SMTP id dc22mr526893edb.325.1611571263350;
+ Mon, 25 Jan 2021 02:41:03 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR04CA0025.namprd04.prod.outlook.com (2603:10b6:208:d4::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.14 via Frontend Transport; Mon, 25 Jan 2021 13:22:11 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l41oo-006Uo3-3T; Mon, 25 Jan 2021 09:22:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611580945; bh=N14MOe7zKRarnSVCPHj68Jlgyy0ftSkDvB71RhG3G3o=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=K1HPy5pmkzjUG8rywT0tpAi2Gj8bZX6sjQiDhIZ/o98DAwI+6RXvxxXq/75tZFFt0
-         wkbq9VYnSPz4nWcud1WdcIEgbyBiOHMbHuY79GOdrvQq1VdITjqQrILUr8bY90GhZV
-         IvVI9OgNIH56rroVKmRynxbCu+uR59XBvbPPSD+UxuEh0Pw5PjfbHSW/GN7/MrvdU+
-         P72BcDZXrEmmLwo/+nZ5M9t0iC6D9+nxYawIfQwFUBUnwDdeckULQYS40SM5JhRhVS
-         Q2Z9hJFhNV/5iyHVbyQiovUvA2Zxz0QA+RcEX0KYPwhYYGikO9kTxdIMrgXHumcJ2j
-         WOA9bPEhdagNg==
+Sender: sandrinejohnpaul30@gmail.com
+Received: by 2002:a54:3d48:0:0:0:0:0 with HTTP; Mon, 25 Jan 2021 02:41:03
+ -0800 (PST)
+From:   Mrs Carlsen Monika <carlsen.monika@gmail.com>
+Date:   Mon, 25 Jan 2021 11:41:03 +0100
+X-Google-Sender-Auth: 38ySeVjss2MsH_wfMbgkwD_7bA0
+Message-ID: <CANWjYXgUoNcx8kWyY9mBjNgQ=iomEp0vM4b=_ZMAOPm3bW_hpw@mail.gmail.com>
+Subject: Hello My Dear.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 10:57:14AM +0000, Parav Pandit wrote:
-> Hi Edwin,
-> 
-> > From: Edwin Peer <edwin.peer@broadcom.com>
-> > Sent: Monday, January 25, 2021 2:17 AM
-> > 
-> > On Fri, Jan 22, 2021 at 11:37 AM Saeed Mahameed <saeed@kernel.org>
-> > wrote:
-> > 
-> > > For more detailed information about subfunctions please see detailed tag
-> > > log below.
-> > 
-> > Apologies for the tardy question out of left field, but I've been
-> > thinking about this some more. If I recall, the primary motivation for
-> > this was a means to effectively address more VFs? But, why can't the
-> > device simply expose more bus numbers?
-> 
-> Several weeks back, Jason already answered this VF scaling question
-> from you at discussion [1].
+Please do not feel disturbed for contacting  you in this regards, It
+was based on the critical health condition I find mine self.  My names
+  are Mrs. Monika John  Carlsen from Denmark wife, a widow and I=E2=80=99m
+suffering from brain tumor disease and this illness has gotten to a
+very bad stage, I married my husband for Ten years without any family
+members and no child.  My husband died after a brief illness that
+lasted for few   days.
+Since the death of my husband, I decided not to remarry again, When my
+late husband was alive he deposited the sum of  ($11.000.000 Eleven
+million dollars.) with the Bank. Presently this money is still in
+bank. And My  Doctor told me that I don't have much  time to live
+because my illness has gotten to a very bad stage, Having known my
+condition I  decided to entrust over the deposited  fund under your
+custody to take care of the less-privileged ones therein your country
+or position, which i believe that you will utilize this money the way
+I am going to instruct herein.
 
-To add a little more colour, the PCI spec design requires a CAM (ie
-search) to figure out which function an incoming address is connected
-to because there are no restrictions on how BAR's of each function
-have to be layed out.
+However all I need and required from you is your sincerity and ability
+to carry out the transaction successfully and fulfill my final wish in
+ implementing the charitable project as it requires absolute trust and
+devotion without any failure and I will be glad to see that the bank
+finally release and transfer the fund into your bank account in your
+country even before I die here in the hospital, because my present
+health condition is very critical at the moment everything needs to be
+process rapidly as soon as possible.
 
-SRIOV and SF's require a simple linear lookup to learn the "function"
-because the BAR space is required to be linear.
+It will be my pleasure to compensate you as my Investment
+Manager/Partner with 35 % percent of the total fund for your effort in
+  handling the transaction, 5 % percent for any expenses or processing
+charges fee that will involve during this process while 60% of the
+fund will be Invested into the charity project there in your country
+for the mutual benefit of the orphans and the less privileges ones.
 
-Scaling a CAM to high sizes is physicaly infeasible, so all approaches
-to scaling PCI functions go this road of having a single large BAR
-space.
+Meanwhile I am waiting for your prompt respond, if only you are
+interested for further details of the transaction and execution of
+this   humanitarian project for the glory and honor of God the
+merciful compassionate.
 
-Jason
+May God bless you and your family.
+Regards,
+Mrs. Monika John  Carlsen
+written from Hospital.
