@@ -2,183 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11106301ECC
-	for <lists+linux-rdma@lfdr.de>; Sun, 24 Jan 2021 21:48:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE093024D3
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Jan 2021 13:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbhAXUs0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 24 Jan 2021 15:48:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726164AbhAXUsZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 24 Jan 2021 15:48:25 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E61C061574
-        for <linux-rdma@vger.kernel.org>; Sun, 24 Jan 2021 12:47:45 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id v67so14894842lfa.0
-        for <linux-rdma@vger.kernel.org>; Sun, 24 Jan 2021 12:47:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OtckoQPcOT8GN3ynOcPT0TdoFntM7SkiESYUJ+CYBSo=;
-        b=VJh18Y/9TQ8HxE8Vk5HwJeDH93Gvmx6zLDWXjReuSw0o7BduvLUQCgynzvO87CCIcd
-         UuMpLyi9U7j0/k/HgrXCk3UGpeC18nWBvr2c6ztQyxAQ5uH7ma/lGqHW8C5hhmXsSBX8
-         up2dYjMS+RGzyMgMYBRLJCXpEbW6L1dmeesC4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OtckoQPcOT8GN3ynOcPT0TdoFntM7SkiESYUJ+CYBSo=;
-        b=cbgplm1/LpIciPLn/JhgSGjKfvnqN7mbAjn9GKeO1m57wDQHqiRYOE/g0c424HxfrX
-         A1r1jVpqlkMK0CyaQtXVPPg4zXlAq7Hzse/56as6iGVH3nvHZ0Y6kpBsbbM9hAM962QW
-         5QOm106nkml2NFJ1/gA4JTA/JXOa1zxT7JNr20F/Znv7HmhQCDd0gNYg8NRBeKkzUJtK
-         hBpfWk1Yq1OYBvRW9P6GvOdy6LsLZOuqM4qQNBOP9aGfytYVyuVZIXcL9XOlawxYf2w9
-         LiIBBHqgR0tm8Opc5U77YEhSmy6iHhuXk4CG2Y6YDd05gctybsXf98WWgJQlMPd9sA/E
-         rVrg==
-X-Gm-Message-State: AOAM533NObdX1qzs1XltjSVJ/0FlM8AzjlhdKPDZC5ubWTXaCH2NYA39
-        PDJY6YYqQfiPVIiuyTaWYz5XMlyLIBcydvl6lm3jVg==
-X-Google-Smtp-Source: ABdhPJz5CmHOdyj+rN+RHjFnDtGfLpDGabC1JacCr75HJDhsLEthd9TW3Y1zk9VbCU5z86Wj7AvLij8wCh91X9S2cwg=
-X-Received: by 2002:a19:c17:: with SMTP id 23mr2111276lfm.464.1611521263420;
- Sun, 24 Jan 2021 12:47:43 -0800 (PST)
+        id S1727907AbhAYMQP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Jan 2021 07:16:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727791AbhAYMPo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:15:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA17322EBD;
+        Mon, 25 Jan 2021 12:13:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611576829;
+        bh=/CON2hpVqugKBbxpJZSqqt+63JfgaQJTc7ojkGR9PFs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=cA0Ji3V+ngyjlJ8GtwHJnPK8cDM/NdgWbFihaMXPsZKV8EXKSlx0S4oa3wmGPrW8A
+         2WZLaac+BxtYB61PefbQocEL34IckgV5+WKEURxSMA8uxL/owYLt3lYUSs1QSOz/HX
+         3zxs3Cm1qtn3yOFfDvSnVuMv2kHpKon8zSFMrEOjx1VDbgcPdXDdHIEskmVfT+PTnt
+         SaRWIKk453tXxVQ6HUeaLCuARgT513qZpJlMaeTDUOQJHskpSa+CYYVmddz+n0UcvU
+         FSnEjYk0KqRgSEJ4Bvh4bKQ3fyZvWEpCyCNsKbUexWKg1iB2/CgId5mLSzyWzSlTtq
+         YXg36D7hGIMUg==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Shay Drory <shayd@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next v1 1/2] IB/umad: Return EIO in case of when device disassociated
+Date:   Mon, 25 Jan 2021 14:13:38 +0200
+Message-Id: <20210125121339.837518-2-leon@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210125121339.837518-1-leon@kernel.org>
+References: <20210125121339.837518-1-leon@kernel.org>
 MIME-Version: 1.0
-References: <20210122193658.282884-1-saeed@kernel.org>
-In-Reply-To: <20210122193658.282884-1-saeed@kernel.org>
-From:   Edwin Peer <edwin.peer@broadcom.com>
-Date:   Sun, 24 Jan 2021 12:47:07 -0800
-Message-ID: <CAKOOJTxQ8G1krPbRmRHx8N0bsHnT3XXkgkREY6NxCJ26aHH7RQ@mail.gmail.com>
-Subject: Re: [pull request][net-next V10 00/14] Add mlx5 subfunction support
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        David Ahern <dsahern@kernel.org>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000007a50a405b9ab8868"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000007a50a405b9ab8868
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From: Shay Drory <shayd@nvidia.com>
 
-On Fri, Jan 22, 2021 at 11:37 AM Saeed Mahameed <saeed@kernel.org> wrote:
+MAD message received by the user has EINVAL error in all flows
+including when the device is disassociated. That makes it impossible
+for the applications to treat such flow differently.
 
-> This series form Parav was the theme of this mlx5 release cycle,
-> we've been waiting anxiously for the auxbus infrastructure to make it int=
-o
-> the kernel, and now as the auxbus is in and all the stars are aligned, I
-> can finally submit this patchset of the devlink and mlx5 subfunction supp=
-ort.
->
-> For more detailed information about subfunctions please see detailed tag
-> log below.
+Change it to return EIO, so the applications will be able to perform
+disassociation recovery.
 
-Apologies for the tardy question out of left field, but I've been
-thinking about this some more. If I recall, the primary motivation for
-this was a means to effectively address more VFs? But, why can't the
-device simply expose more bus numbers?
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Shay Drory <shayd@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/core/user_mad.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-From the PCI spec:
+diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
+index 19104a675691..7ec1918431f7 100644
+--- a/drivers/infiniband/core/user_mad.c
++++ b/drivers/infiniband/core/user_mad.c
+@@ -379,6 +379,11 @@ static ssize_t ib_umad_read(struct file *filp, char __user *buf,
+ 
+ 	mutex_lock(&file->mutex);
+ 
++	if (file->agents_dead) {
++		mutex_unlock(&file->mutex);
++		return -EIO;
++	}
++
+ 	while (list_empty(&file->recv_list)) {
+ 		mutex_unlock(&file->mutex);
+ 
+@@ -524,7 +529,7 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
+ 
+ 	agent = __get_agent(file, packet->mad.hdr.id);
+ 	if (!agent) {
+-		ret = -EINVAL;
++		ret = -EIO;
+ 		goto err_up;
+ 	}
+ 
+-- 
+2.29.2
 
-"SR-IOV Devices may consume more than one Bus Number. A VF can be
-associated with any Bus Number within
-the Device=E2=80=99s Bus Number range - the captured Bus Number plus any
-additional Bus Numbers configured by
-software. See Section 9.2.1.2 for details.
-
-- Use of multiple Bus Numbers enables a device to support a very large
-number of VFs - up to the size
-of the Routing ID space minus the bits used to identify intervening busses"
-
-Regards,
-Edwin Peer
-
---0000000000007a50a405b9ab8868
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-mbo++PCnVfHaIk6rK1M0CPodEV0uUttmi6Mp/Ha7XmNgWQeQE3qkFIwAlb/kPNmJAMECAwEAAaOC
-Ac4wggHKMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUHMAKGQWh0
-dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNoYTJnM29j
-c3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25h
-bHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRw
-czovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1UdHwQ9MDsw
-OaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczLmNy
-bDAiBgNVHREEGzAZgRdlZHdpbi5wZWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcD
-BDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQU9IOrXBkaTFAmOmjl
-0nu9X2Lzo+0wDQYJKoZIhvcNAQELBQADggEBADL+5FenxoguXoMm8ZG+bsMvN0LibFO75wee8cJI
-3K8dcJ8y6rPc6yvMRqI7CNwjWV5kBT3aQPZCdqOlNLl/HnKJxBt3WJRWGePcE1s/ljK4Kg1rUQAo
-e3Fx6cKh9/q3gqElSPU5pBOsCEy8cbi6UGA+IVifQ2Mrm5tsvYqWSaZ1mKTGz8/z8vxG2kGJZI6W
-wL3owFiCmLmw5R8OH22wqf/7sQFMRpH5IQFLRYdU9uCUy5FlUAgiCEXegph8ytxvo8MgYyQcCOeg
-BMfFgFEHuM2IgsDQyFC6XUViX6BQny67nlrO8pqwNRJ9Bdd7ykLCzCLOuR1znBAc2wAL9OKQe0cx
-ggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMw
-MQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDCXgDAeB
-YW0HGKjSdzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgMyV9I2BKDbga/9oUxbgd
-IfhFFCDtcf8efBtoBBewmVwwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMjEwMTI0MjA0NzQzWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQME
-ARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJ
-YIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBALY8ayKtILWozfVVIZNtptuyr2G9C92WyNiy8KlK
-YyWPD/cufC63vLEOs8sb2OPP4/G5X7SdxKV/Jsxt+q1Ykqe4LG+im9KsxdrB7D+vzla8mCuQWuHa
-C56s0W0I8Dn1xY9UhPp6WCDZsw9K+lagaACFwhwMefvyKoPi1xuvphjs60CoNbcrdXERKQzuBkfN
-CdOsAaozQeV1aiPyj1JaqpplFPmntdc2xgaZn/uCQ7WCmxpIp2qBTpl/ndS64zs/7mG/zKQ0eQek
-LusXVyEBh+qw4Tx9Qts74OvNTqf12mdfUvCgNee1w+U9w+os5njk3CF1Y6PTnUl+xfubiqgxX70=
---0000000000007a50a405b9ab8868--
