@@ -2,57 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1F430354C
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 06:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D8830354E
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 06:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388047AbhAZFix (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Jan 2021 00:38:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52958 "EHLO
+        id S2388052AbhAZFiz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Jan 2021 00:38:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731564AbhAYTZS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 14:25:18 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D997AC061756
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 11:24:33 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id t8so9396964ljk.10
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 11:24:33 -0800 (PST)
+        with ESMTP id S1731388AbhAYTgH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 14:36:07 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CF5C061573
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 11:35:27 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id q8so19468785lfm.10
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 11:35:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=80zqn/aEmD5jm32QluX/bOBLDA+iMcVagJ/R7kW6mdE=;
-        b=YXcSsfZSxjD9Rt7JrhuzmW4Xi1KyYUrPGBdyPm1sVzU2hrcjmGW4ZfvVWzYs/CpeIz
-         +LvaSvugDsqeyouZjYDJy29tFHDkn53YLu9ZO3JMzXwyLNfg/G/DUDnKt8AGyXa5F1XV
-         WMr3XxiyixGjoyuH3g8M6/m2S5Gd8PYEKQ+xU=
+        bh=YkwYTu9vBZsLQKBUyHSj9xrXMXCkffCLMUcpJhiZKUc=;
+        b=azZftTHv0mgPYNFISrgG4P6pTXQ9dgd+o6I4bleRaWUhw45KB3D2rzbdUKut+yTbgz
+         GV8vR42F8Qpkbb6+t9H1hnZqOd+cohNO4LhmY3QQmzDXMLCWaVb+x0nA4XlqnZdOZmEw
+         kIXv0hEGnNVHPmrGIbTRhnZm7XSASk2N+q/qA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=80zqn/aEmD5jm32QluX/bOBLDA+iMcVagJ/R7kW6mdE=;
-        b=IEqhqOC6nvoDVN4MIhWHkTGsg3oaOjICmBXKj462nPi+TQPSpXcLyHyiy5tUDHJUlm
-         prYz/7t70q8xl/xz3t642za4OEAyC8sZx1h1pNquh8Quc45NNz7FXf/HqvbHLh8z4Ine
-         g4b6eHcUj5jAbZ2a0FlXnC5iX1HVh2EWN+1aUnjILv2OunS/CSkDhnCzs1AGEl6k32E4
-         CbspLnT83YOHfjUTdZ08hHKCiAHiCDyZNctPqTIT4fVlkl4SJOyMlOwk1bWPW1RDxJfJ
-         +KrFKT7H8J0UzRjkVzb3Inb6LyBu1tjR4qHmxg21VxZBnaX3tJegdeWuQ6v/T7vAKCPf
-         OMNg==
-X-Gm-Message-State: AOAM533GkzHN/gFfR5UByJI5f8ntwu7lPF4lf+VLHfVm4SkTRzlR+A5j
-        WFI4ASNjWHmbO//xzmp2vb1C0K5GGlte1GnlHKg1Kw==
-X-Google-Smtp-Source: ABdhPJwFzHwdFIVIp1VOxaUKNpYmLmrTJxk/9/OvSUAeBFhFe8tn5BFxht+r3qY5Oe5NJwvVx+ovjGcRgE0Mi6zpnnI=
-X-Received: by 2002:a2e:1554:: with SMTP id 20mr879920ljv.404.1611602672323;
- Mon, 25 Jan 2021 11:24:32 -0800 (PST)
+        bh=YkwYTu9vBZsLQKBUyHSj9xrXMXCkffCLMUcpJhiZKUc=;
+        b=Gxpwexy/oG1I9ESyqFQRwVz5Lx7eMDKL35otDoN9fsaTVR4oEwtif9XYgc/8Lu5uY5
+         spLi1eOTnD8stJSN0kbD0Y0HRyc5gy1wx9gToVYyZoP7k8ihnrLnUYFvZ1ef/+i5DOOT
+         r+bAEc5Iwuk/dJk+mkDO5j3a6yqzAKsvwavv71Kg7sdWTkMeGd4YxN1BXkGuTFMqPF7v
+         Z3VZJJUIGbVOR9gZHsPSK9rAgdQDN5u+3EggCeLf1HqbJZmhM3yN4/T5ZRzSF8DM4Yea
+         IXfJggkZfXgp1Kkc6C+BHARw0ojUB67M9e5Y87extw7n4mvCCwZLxBd4qI2GLcXx9JAg
+         5BsA==
+X-Gm-Message-State: AOAM532l09G1gFNQXzpGVeWyzx7JXKAa4hOyPXMyLXky3PUPVj/rX9wB
+        da2oY9geYRoYMUrty4IolFehpZpMJ8gyVm7HIHTBNw==
+X-Google-Smtp-Source: ABdhPJy3PK7Zjz4eoYZSaioYXvByxavhGrSjpqkamkbJcS+jqSI5R7HDNN4XPNpKmXHyt6aL2q81bkFY0mUijOnsW0k=
+X-Received: by 2002:ac2:4e4e:: with SMTP id f14mr895179lfr.7.1611603325527;
+ Mon, 25 Jan 2021 11:35:25 -0800 (PST)
 MIME-Version: 1.0
 References: <20210122193658.282884-1-saeed@kernel.org> <CAKOOJTxQ8G1krPbRmRHx8N0bsHnT3XXkgkREY6NxCJ26aHH7RQ@mail.gmail.com>
  <BY5PR12MB43229840037E730F884C3356DCBD9@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20210125132210.GJ4147@nvidia.com>
-In-Reply-To: <20210125132210.GJ4147@nvidia.com>
+ <CAKOOJTw_RfYfFunhHKTD6k73FvFObVb5Xx7hK8uPUUGJpuTzuw@mail.gmail.com>
+In-Reply-To: <CAKOOJTw_RfYfFunhHKTD6k73FvFObVb5Xx7hK8uPUUGJpuTzuw@mail.gmail.com>
 From:   Edwin Peer <edwin.peer@broadcom.com>
-Date:   Mon, 25 Jan 2021 11:23:56 -0800
-Message-ID: <CAKOOJTx9V328r+TC_Pd0LXQr6aMaiK2eB4Qu77Dw-kc00vg3Bg@mail.gmail.com>
+Date:   Mon, 25 Jan 2021 11:34:49 -0800
+Message-ID: <CAKOOJTx7ogAvUkT5y8vKYp=KB+VSbe0MgXg5PuvjEiU_dO_5YA@mail.gmail.com>
 Subject: Re: [pull request][net-next V10 00/14] Add mlx5 subfunction support
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Parav Pandit <parav@nvidia.com>, Saeed Mahameed <saeed@kernel.org>,
+To:     Parav Pandit <parav@nvidia.com>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         netdev <netdev@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         Alexander Duyck <alexander.duyck@gmail.com>,
@@ -64,34 +65,39 @@ Cc:     Parav Pandit <parav@nvidia.com>, Saeed Mahameed <saeed@kernel.org>,
         Dan Williams <dan.j.williams@intel.com>,
         Saeed Mahameed <saeedm@nvidia.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000d1bc2505b9be7cdd"
+        boundary="000000000000c1781e05b9bea35f"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000d1bc2505b9be7cdd
+--000000000000c1781e05b9bea35f
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Jan 25, 2021 at 5:22 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+On Mon, Jan 25, 2021 at 10:35 AM Edwin Peer <edwin.peer@broadcom.com> wrote:
 
-> SRIOV and SF's require a simple linear lookup to learn the "function"
-> because the BAR space is required to be linear.
+> > Several weeks back, Jason already answered this VF scaling question from you at discussion [1].
+> >
+> > [1] https://lore.kernel.org/netdev/20201216023928.GG552508@nvidia.com/
 
-Isn't this still true even for NumVF's > 256? Wouldn't there still be
-a contiguous VF BAR space? Don't the routing IDs simply carry on
-incrementing by stride, with each being assigned the next slice of the
-shared BAR space?
+Regarding these costs:
 
-> Scaling a CAM to high sizes is physicaly infeasible, so all approaches
-> to scaling PCI functions go this road of having a single large BAR
-> space.
+> A lot of the trappings that PCI-SIG requires to be implemented in HW
+> for a VF, like PCI config space, MSI tables, BAR space, etc. is all
+> just dead weight when scaling up to 1000's of VFs.
 
-If the above is true, is there really a need to scale up CAM?
+What do these amount to in practice? Presumably config space is backed
+by normal memory controlled by firmware. Do VF's need to expose ECAM?
+Also, don't MSI tables come out of the BAR budget? Is the required BAR
+space necessarily more than any other addressable unit that can be
+delegated to a SF?
+
+Whatever the costs, presumably they need to be weighed against the
+complexity costs of the alternative?
 
 Regards,
 Edwin Peer
 
---000000000000d1bc2505b9be7cdd
+--000000000000c1781e05b9bea35f
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -161,13 +167,13 @@ wL3owFiCmLmw5R8OH22wqf/7sQFMRpH5IQFLRYdU9uCUy5FlUAgiCEXegph8ytxvo8MgYyQcCOeg
 BMfFgFEHuM2IgsDQyFC6XUViX6BQny67nlrO8pqwNRJ9Bdd7ykLCzCLOuR1znBAc2wAL9OKQe0cx
 ggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMw
 MQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDCXgDAeB
-YW0HGKjSdzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgE4UktDpkelZJlb3rmcY0
-OV9wQ7kjkgP4P0REzoKI9X4wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMjEwMTI1MTkyNDMyWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQME
+YW0HGKjSdzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgIGEXtCj0A13rCASHnACx
+FJbMCVEima11xuxhy1u+xkQwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
+DxcNMjEwMTI1MTkzNTI1WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQME
 ARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJ
-YIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAAt+rGThO+4l7QglYeldFkP/wvtXJbBgV+Y/KNMb
-dZwdfCeR39vOJClZZSpwxoHAsw3ovPjAQ02hZrqCzEt7sCGkJ80hx8pLkvw/gRr9YTeeYZvVtUDp
-qwnnROUEWoMp6HI8mpK/kYyvH80fkZHTrrUGsw4iKfK4VU/TBKtUKlsVNDS8Ihdz20M5oP/JHjA+
-Y8pO9RtwDgn2DFViBkwn6tqDXJdjZPgBFqk7JYpOfgOHHkMZ6Gvc7L93kZNDZoDGJh0mfO8wHHnz
-T/A8KbCNPhyKTTMhE7AT8lvs7pPalAddW/MJcX2+QuyCHnqMBXURF8IfWhw3Jz+5Qtr5P2XNcGg=
---000000000000d1bc2505b9be7cdd--
+YIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAJBII7FJIGUKxdqvQu7VC0rED5ZxJ3h2rindQbm5
+tSuT8uoPLfiPy3Oq8EuxwRkONOGb+R5D7x9ZBh0MJV3b24fetDuNeRQyTnMHlDRhsw6dRV7NTm/H
+Mmll1vWG1GNBaqsCIabHIb3RRlAujx1/HNjtziyXRiulkbsOfdI/RvawrsnJguaJxdsEHVwxLQco
+gTY6nc9t6RXBlBAmEjZ+HE17PWugYfpVaKYQcJs45OEzDJ4LtxWcSD57vOvaLrAk9cgWz0w7jyXE
+JsIT13ylHuhLWaE2Q/fZz5Pg9kfRvBLMQaIliOCBGivHESNOiAcQHYGJK6WquUAI4COw6MOhlsY=
+--000000000000c1781e05b9bea35f--
