@@ -2,221 +2,375 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8584E30306F
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 00:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F1E303126
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 02:25:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732536AbhAYVTE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Jan 2021 16:19:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732575AbhAYVSX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 16:18:23 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8B0C06178B
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 13:16:48 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id n7so4408246oic.11
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Jan 2021 13:16:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tsTol3rhzUxL2jFVkJX/iOKqAbW+O0NXRl4F0Z6OsCw=;
-        b=rQ4NEQuk+PgwD8WI/Vy/TP2ucL9CR4Z2T3ohkZ30Pz2zw1H16h99uhtN105emhE3al
-         xhuEjabdIPvS8UR4D1+hSbJzwzYrrdfQZmMBwZV3VHm+ZzPMPfbOTdq8OfrsDyuYLZ+J
-         0BLKnRoWRnD9GYaleLzl59bO2lxR5vfW+GRP0M61OTSrd9n0SSQMs7PGrjP6n2nLPxKs
-         R/V/5DP/LdfDuASZs0ZHSfax3tGcqCz9UVq9KVDc6fPTnOTjKbh0NZAbW5O1K7JKxYJE
-         LqoBunVEPBFdIaW+WZSZc0j6h97LU6W3OsNdspXIy0yTUFuou1z4XY9Sm9QVRVFyaNNO
-         xf+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tsTol3rhzUxL2jFVkJX/iOKqAbW+O0NXRl4F0Z6OsCw=;
-        b=MUYfW+x2dqSWeG/jK4LvTD/OZIYwx4CQ+iQ9bPNtKv/cLWfji4jY1znkS53p6JmIBM
-         q5IkT0YkNDZrBpEnGs8eCYtx6YGZ8lTQorpd9p/YrY+uKZQ4ARhloJEKT2fbVQ0BndLc
-         LSWApuYPOpophe/zKDUaqpMkPYGQbyQhsv9LdmP8spvWeEHZKkBturYO3gru9jjG+OIJ
-         zHisi9TGDhBYMmY618VUMYnAyeYNvoOR20VwfO4gWcwFDbAOKquVQ5AAO88438dVQIgx
-         VHInDVIGBXmjYyj+p/wlugtXipmKU1QzieCTClXxj3aA7bFP+HoG63D3jgk65ft0JQ+k
-         ro5g==
-X-Gm-Message-State: AOAM530MOnf4dqHQfOMlIQEkFZjjI/A4hQ+1K2JphvdtBY3XZccfaMFa
-        7DDm3yebXAj4jBqwMM67ycU=
-X-Google-Smtp-Source: ABdhPJxliPQZKlf+Ud3tXg/1cSBA/NET5jw7rBWQr1RCRbndvYudbzol+0TBiPTcRPhEn2DqepaPTg==
-X-Received: by 2002:aca:a844:: with SMTP id r65mr1282430oie.35.1611609408275;
-        Mon, 25 Jan 2021 13:16:48 -0800 (PST)
-Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-8baa-bb83-cd49-4ca4.res6.spectrum.com. [2603:8081:140c:1a00:8baa:bb83:cd49:4ca4])
-        by smtp.gmail.com with ESMTPSA id w11sm3722564otg.58.2021.01.25.13.16.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 13:16:47 -0800 (PST)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearson@hpe.com>, zyjzyj2000@gmail.c
-Subject: [PATCH for-next v3 5/6] RDMA/rxe: Remove unneeded pool->state
-Date:   Mon, 25 Jan 2021 15:16:40 -0600
-Message-Id: <20210125211641.2694-6-rpearson@hpe.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210125211641.2694-1-rpearson@hpe.com>
-References: <20210125211641.2694-1-rpearson@hpe.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1729263AbhAZBZP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Jan 2021 20:25:15 -0500
+Received: from mga09.intel.com ([134.134.136.24]:29052 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726480AbhAYTnJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 25 Jan 2021 14:43:09 -0500
+IronPort-SDR: G7arAfL0QKbgV8x4I2hrs9nWBEZ22U/HtqZGP/5RmiDWx+6rhfnJqKJe3z+J+9SwsRF2/ER55c
+ LKDhLfREP1Uw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="179937092"
+X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
+   d="scan'208";a="179937092"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 11:41:58 -0800
+IronPort-SDR: 7+JfBqgnSxFDKM8OXqAJdfPF9eD8VyaYrDKXruoyDx/iuKEXOPeWPQOleOQJu9VxpCCn9+NQz/
+ PuZGvX5eTEvA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
+   d="scan'208";a="402468951"
+Received: from cst-dev.jf.intel.com ([10.23.221.69])
+  by fmsmga004.fm.intel.com with ESMTP; 25 Jan 2021 11:41:58 -0800
+From:   Jianxin Xiong <jianxin.xiong@intel.com>
+To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Edward Srouji <edwards@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: [PATCH rdma-core v7 2/6] verbs: Support dma-buf based memory region
+Date:   Mon, 25 Jan 2021 11:56:58 -0800
+Message-Id: <1611604622-86968-3-git-send-email-jianxin.xiong@intel.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1611604622-86968-1-git-send-email-jianxin.xiong@intel.com>
+References: <1611604622-86968-1-git-send-email-jianxin.xiong@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-[v3]
-Fixed spelling error.
+Add new API function and new provider method for registering dma-buf
+based memory region. Update the man page and bump the API version.
 
-rxe_pool.c uses the field pool->state to mark a pool as invalid
-when it is shut down and checks it in several pool APIs to verify
-that the pool has not been shut down. This is unneeded because the
-pools are not marked invalid unless the entire driver is being
-removed at which point no functional APIs should or could be
-executing. This patch removes this field and associated code.
-
-Suggested-by: zyjzyj2000@gmail.c
-Signed-off-by: Bob Pearson <rpearson@hpe.com>
+Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
 ---
- drivers/infiniband/sw/rxe/rxe_pool.c | 38 +---------------------------
- drivers/infiniband/sw/rxe/rxe_pool.h |  6 -----
- 2 files changed, 1 insertion(+), 43 deletions(-)
+ debian/libibverbs1.symbols   |  2 ++
+ libibverbs/CMakeLists.txt    |  2 +-
+ libibverbs/cmd_mr.c          | 38 ++++++++++++++++++++++++++++++++++++++
+ libibverbs/driver.h          |  8 ++++++++
+ libibverbs/dummy_ops.c       | 11 +++++++++++
+ libibverbs/libibverbs.map.in |  6 ++++++
+ libibverbs/man/ibv_reg_mr.3  | 27 +++++++++++++++++++++++++--
+ libibverbs/verbs.c           | 19 +++++++++++++++++++
+ libibverbs/verbs.h           |  7 +++++++
+ 9 files changed, 117 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-index 5f85a90e5a5a..5aa835028460 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.c
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-@@ -157,24 +157,16 @@ int rxe_pool_init(
- 		pool->key.key_size = rxe_type_info[type].key_size;
- 	}
+diff --git a/debian/libibverbs1.symbols b/debian/libibverbs1.symbols
+index 7f59d0a..6cf5c2f 100644
+--- a/debian/libibverbs1.symbols
++++ b/debian/libibverbs1.symbols
+@@ -9,6 +9,7 @@ libibverbs.so.1 libibverbs1 #MINVER#
+  IBVERBS_1.9@IBVERBS_1.9 30
+  IBVERBS_1.10@IBVERBS_1.10 31
+  IBVERBS_1.11@IBVERBS_1.11 32
++ IBVERBS_1.12@IBVERBS_1.12 34
+  (symver)IBVERBS_PRIVATE_34 34
+  _ibv_query_gid_ex@IBVERBS_1.11 32
+  _ibv_query_gid_table@IBVERBS_1.11 32
+@@ -99,6 +100,7 @@ libibverbs.so.1 libibverbs1 #MINVER#
+  ibv_rate_to_mbps@IBVERBS_1.1 1.1.8
+  ibv_rate_to_mult@IBVERBS_1.0 1.1.6
+  ibv_read_sysfs_file@IBVERBS_1.0 1.1.6
++ ibv_reg_dmabuf_mr@IBVERBS_1.12 34
+  ibv_reg_mr@IBVERBS_1.0 1.1.6
+  ibv_reg_mr@IBVERBS_1.1 1.1.6
+  ibv_reg_mr_iova@IBVERBS_1.7 25
+diff --git a/libibverbs/CMakeLists.txt b/libibverbs/CMakeLists.txt
+index 0fe4256..d075225 100644
+--- a/libibverbs/CMakeLists.txt
++++ b/libibverbs/CMakeLists.txt
+@@ -21,7 +21,7 @@ configure_file("libibverbs.map.in"
  
--	pool->state = RXE_POOL_STATE_VALID;
--
- out:
- 	return err;
+ rdma_library(ibverbs "${CMAKE_CURRENT_BINARY_DIR}/libibverbs.map"
+   # See Documentation/versioning.md
+-  1 1.11.${PACKAGE_VERSION}
++  1 1.12.${PACKAGE_VERSION}
+   all_providers.c
+   cmd.c
+   cmd_ah.c
+diff --git a/libibverbs/cmd_mr.c b/libibverbs/cmd_mr.c
+index 42dbe42..af0fad7 100644
+--- a/libibverbs/cmd_mr.c
++++ b/libibverbs/cmd_mr.c
+@@ -1,5 +1,6 @@
+ /*
+  * Copyright (c) 2018 Mellanox Technologies, Ltd.  All rights reserved.
++ * Copyright (c) 2020 Intel Corporation.  All rights reserved.
+  *
+  * This software is available to you under a choice of one of two
+  * licenses.  You may choose to be licensed under the terms of the GNU
+@@ -116,3 +117,40 @@ int ibv_cmd_query_mr(struct ibv_pd *pd, struct verbs_mr *vmr,
+ 	return 0;
  }
  
- void rxe_pool_cleanup(struct rxe_pool *pool)
- {
--	unsigned long flags;
--
--	write_lock_irqsave(&pool->pool_lock, flags);
--	pool->state = RXE_POOL_STATE_INVALID;
- 	if (atomic_read(&pool->num_elem) > 0)
- 		pr_warn("%s pool destroyed with unfree'd elem\n",
- 			pool_name(pool));
--	write_unlock_irqrestore(&pool->pool_lock, flags);
- 
--	pool->state = RXE_POOL_STATE_INVALID;
- 	kfree(pool->index.table);
- }
- 
-@@ -328,9 +320,6 @@ void *rxe_alloc_locked(struct rxe_pool *pool)
- 	struct rxe_pool_entry *elem;
- 	u8 *obj;
- 
--	if (pool->state != RXE_POOL_STATE_VALID)
--		return NULL;
--
- 	if (atomic_inc_return(&pool->num_elem) > pool->max_elem)
- 		goto out_cnt;
- 
-@@ -352,19 +341,10 @@ void *rxe_alloc_locked(struct rxe_pool *pool)
- 
- void *rxe_alloc(struct rxe_pool *pool)
- {
--	unsigned long flags;
- 	struct rxe_type_info *info = &rxe_type_info[pool->type];
- 	struct rxe_pool_entry *elem;
- 	u8 *obj;
- 
--	read_lock_irqsave(&pool->pool_lock, flags);
--	if (pool->state != RXE_POOL_STATE_VALID) {
--		read_unlock_irqrestore(&pool->pool_lock, flags);
--		return NULL;
--	}
--
--	read_unlock_irqrestore(&pool->pool_lock, flags);
--
- 	if (atomic_inc_return(&pool->num_elem) > pool->max_elem)
- 		goto out_cnt;
- 
-@@ -386,15 +366,6 @@ void *rxe_alloc(struct rxe_pool *pool)
- 
- int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_entry *elem)
- {
--	unsigned long flags;
--
--	read_lock_irqsave(&pool->pool_lock, flags);
--	if (pool->state != RXE_POOL_STATE_VALID) {
--		read_unlock_irqrestore(&pool->pool_lock, flags);
--		return -EINVAL;
--	}
--	read_unlock_irqrestore(&pool->pool_lock, flags);
--
- 	if (atomic_inc_return(&pool->num_elem) > pool->max_elem)
- 		goto out_cnt;
- 
-@@ -437,9 +408,6 @@ void *rxe_pool_get_index(struct rxe_pool *pool, u32 index)
- 
- 	read_lock_irqsave(&pool->pool_lock, flags);
- 
--	if (pool->state != RXE_POOL_STATE_VALID)
--		goto out;
--
- 	node = pool->index.tree.rb_node;
- 
- 	while (node) {
-@@ -460,8 +428,8 @@ void *rxe_pool_get_index(struct rxe_pool *pool, u32 index)
- 		obj = NULL;
- 	}
- 
--out:
- 	read_unlock_irqrestore(&pool->pool_lock, flags);
++int ibv_cmd_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset, size_t length,
++			  uint64_t iova, int fd, int access,
++			  struct verbs_mr *vmr)
++{
++	DECLARE_COMMAND_BUFFER(cmdb, UVERBS_OBJECT_MR,
++			       UVERBS_METHOD_REG_DMABUF_MR,
++			       9);
++	struct ib_uverbs_attr *handle;
++	uint32_t lkey, rkey;
++	int ret;
 +
- 	return obj;
++	handle = fill_attr_out_obj(cmdb, UVERBS_ATTR_REG_DMABUF_MR_HANDLE);
++	fill_attr_out_ptr(cmdb, UVERBS_ATTR_REG_DMABUF_MR_RESP_LKEY, &lkey);
++	fill_attr_out_ptr(cmdb, UVERBS_ATTR_REG_DMABUF_MR_RESP_RKEY, &rkey);
++
++	fill_attr_in_obj(cmdb, UVERBS_ATTR_REG_DMABUF_MR_PD_HANDLE, pd->handle);
++	fill_attr_in_uint64(cmdb, UVERBS_ATTR_REG_DMABUF_MR_OFFSET, offset);
++	fill_attr_in_uint64(cmdb, UVERBS_ATTR_REG_DMABUF_MR_LENGTH, length);
++	fill_attr_in_uint64(cmdb, UVERBS_ATTR_REG_DMABUF_MR_IOVA, iova);
++	fill_attr_in_uint32(cmdb, UVERBS_ATTR_REG_DMABUF_MR_FD, fd);
++	fill_attr_in_uint32(cmdb, UVERBS_ATTR_REG_DMABUF_MR_ACCESS_FLAGS, access);
++
++	ret = execute_ioctl(pd->context, cmdb);
++	if (ret)
++		return errno;
++
++	vmr->ibv_mr.handle = read_attr_obj(UVERBS_ATTR_REG_DMABUF_MR_HANDLE,
++					   handle);
++	vmr->ibv_mr.context = pd->context;
++	vmr->ibv_mr.lkey = lkey;
++	vmr->ibv_mr.rkey = rkey;
++	vmr->ibv_mr.pd = pd;
++	vmr->ibv_mr.addr = (void *)offset;
++	vmr->ibv_mr.length = length;
++	vmr->mr_type = IBV_MR_TYPE_DMABUF_MR;
++	return 0;
++}
+diff --git a/libibverbs/driver.h b/libibverbs/driver.h
+index 9bbd3b4..3965fa3 100644
+--- a/libibverbs/driver.h
++++ b/libibverbs/driver.h
+@@ -2,6 +2,7 @@
+  * Copyright (c) 2004, 2005 Topspin Communications.  All rights reserved.
+  * Copyright (c) 2005, 2006 Cisco Systems, Inc.  All rights reserved.
+  * Copyright (c) 2005 PathScale, Inc.  All rights reserved.
++ * Copyright (c) 2020 Intel Corporation. All rights reserved.
+  *
+  * This software is available to you under a choice of one of two
+  * licenses.  You may choose to be licensed under the terms of the GNU
+@@ -91,6 +92,7 @@ enum ibv_mr_type {
+ 	IBV_MR_TYPE_MR,
+ 	IBV_MR_TYPE_NULL_MR,
+ 	IBV_MR_TYPE_IMPORTED_MR,
++	IBV_MR_TYPE_DMABUF_MR,
+ };
+ 
+ struct verbs_mr {
+@@ -375,6 +377,9 @@ struct verbs_context_ops {
+ 	struct ibv_mr *(*reg_dm_mr)(struct ibv_pd *pd, struct ibv_dm *dm,
+ 				    uint64_t dm_offset, size_t length,
+ 				    unsigned int access);
++	struct ibv_mr *(*reg_dmabuf_mr)(struct ibv_pd *pd, uint64_t offset,
++					size_t length, uint64_t iova,
++					int fd, int access);
+ 	struct ibv_mr *(*reg_mr)(struct ibv_pd *pd, void *addr, size_t length,
+ 				 uint64_t hca_va, int access);
+ 	int (*req_notify_cq)(struct ibv_cq *cq, int solicited_only);
+@@ -493,6 +498,9 @@ int ibv_cmd_advise_mr(struct ibv_pd *pd,
+ 		      uint32_t flags,
+ 		      struct ibv_sge *sg_list,
+ 		      uint32_t num_sge);
++int ibv_cmd_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset, size_t length,
++			  uint64_t iova, int fd, int access,
++			  struct verbs_mr *vmr);
+ int ibv_cmd_alloc_mw(struct ibv_pd *pd, enum ibv_mw_type type,
+ 		     struct ibv_mw *mw, struct ibv_alloc_mw *cmd,
+ 		     size_t cmd_size,
+diff --git a/libibverbs/dummy_ops.c b/libibverbs/dummy_ops.c
+index b6f272d..a4769ad 100644
+--- a/libibverbs/dummy_ops.c
++++ b/libibverbs/dummy_ops.c
+@@ -1,5 +1,6 @@
+ /*
+  * Copyright (c) 2017 Mellanox Technologies, Inc.  All rights reserved.
++ * Copyright (c) 2020 Intel Corporation.  All rights reserved.
+  *
+  * This software is available to you under a choice of one of two
+  * licenses.  You may choose to be licensed under the terms of the GNU
+@@ -435,6 +436,14 @@ static struct ibv_mr *reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+ 	return NULL;
  }
  
-@@ -473,9 +441,6 @@ void *rxe_pool_get_key_locked(struct rxe_pool *pool, void *key)
- 	u8 *obj = NULL;
- 	int cmp;
++static struct ibv_mr *reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset,
++				    size_t length, uint64_t iova,
++				    int fd, int access)
++{
++	errno = EOPNOTSUPP;
++	return NULL;
++}
++
+ static int req_notify_cq(struct ibv_cq *cq, int solicited_only)
+ {
+ 	return EOPNOTSUPP;
+@@ -542,6 +551,7 @@ const struct verbs_context_ops verbs_dummy_ops = {
+ 	query_srq,
+ 	read_counters,
+ 	reg_dm_mr,
++	reg_dmabuf_mr,
+ 	reg_mr,
+ 	req_notify_cq,
+ 	rereg_mr,
+@@ -663,6 +673,7 @@ void verbs_set_ops(struct verbs_context *vctx,
+ 	SET_OP(vctx, read_counters);
+ 	SET_PRIV_OP(ctx, query_srq);
+ 	SET_OP(vctx, reg_dm_mr);
++	SET_PRIV_OP_IC(vctx, reg_dmabuf_mr);
+ 	SET_PRIV_OP(ctx, reg_mr);
+ 	SET_OP(ctx, req_notify_cq);
+ 	SET_PRIV_OP(ctx, rereg_mr);
+diff --git a/libibverbs/libibverbs.map.in b/libibverbs/libibverbs.map.in
+index d124004..745146d 100644
+--- a/libibverbs/libibverbs.map.in
++++ b/libibverbs/libibverbs.map.in
+@@ -148,6 +148,11 @@ IBVERBS_1.11 {
+ 		_ibv_query_gid_table;
+ } IBVERBS_1.10;
  
--	if (pool->state != RXE_POOL_STATE_VALID)
--		goto out;
--
- 	node = pool->key.tree.rb_node;
++IBVERBS_1.12 {
++	global:
++		ibv_reg_dmabuf_mr;
++} IBVERBS_1.11;
++
+ /* If any symbols in this stanza change ABI then the entire staza gets a new symbol
+    version. See the top level CMakeLists.txt for this setting. */
  
- 	while (node) {
-@@ -499,7 +464,6 @@ void *rxe_pool_get_key_locked(struct rxe_pool *pool, void *key)
- 		obj = NULL;
- 	}
- 
--out:
- 	return obj;
+@@ -211,6 +216,7 @@ IBVERBS_PRIVATE_@IBVERBS_PABI_VERSION@ {
+ 		ibv_cmd_query_srq;
+ 		ibv_cmd_read_counters;
+ 		ibv_cmd_reg_dm_mr;
++		ibv_cmd_reg_dmabuf_mr;
+ 		ibv_cmd_reg_mr;
+ 		ibv_cmd_req_notify_cq;
+ 		ibv_cmd_rereg_mr;
+diff --git a/libibverbs/man/ibv_reg_mr.3 b/libibverbs/man/ibv_reg_mr.3
+index 2bfc955..a522527 100644
+--- a/libibverbs/man/ibv_reg_mr.3
++++ b/libibverbs/man/ibv_reg_mr.3
+@@ -3,7 +3,7 @@
+ .\"
+ .TH IBV_REG_MR 3 2006-10-31 libibverbs "Libibverbs Programmer's Manual"
+ .SH "NAME"
+-ibv_reg_mr, ibv_reg_mr_iova, ibv_dereg_mr \- register or deregister a memory region (MR)
++ibv_reg_mr, ibv_reg_mr_iova, ibv_reg_dmabuf_mr, ibv_dereg_mr \- register or deregister a memory region (MR)
+ .SH "SYNOPSIS"
+ .nf
+ .B #include <infiniband/verbs.h>
+@@ -15,6 +15,10 @@ ibv_reg_mr, ibv_reg_mr_iova, ibv_dereg_mr \- register or deregister a memory reg
+ .BI "                               size_t " "length" ", uint64_t " "hca_va" ,
+ .BI "                               int " "access" );
+ .sp
++.BI "struct ibv_mr *ibv_reg_dmabuf_mr(struct ibv_pd " "*pd" ", uint64_t " "offset" ,
++.BI "                                 size_t " "length" ", uint64_t " "iova" ,
++.BI "                                 int " "fd" ", int " "access" );
++.sp
+ .BI "int ibv_dereg_mr(struct ibv_mr " "*mr" );
+ .fi
+ .SH "DESCRIPTION"
+@@ -71,11 +75,30 @@ a lkey or rkey. The offset in the memory region is computed as 'addr +
+ (iova - hca_va)'. Specifying 0 for hca_va has the same effect as
+ IBV_ACCESS_ZERO_BASED.
+ .PP
++.B ibv_reg_dmabuf_mr()
++registers a dma-buf based memory region (MR) associated with the protection domain
++.I pd\fR.
++The MR starts at
++.I offset
++of the dma-buf and its size is
++.I length\fR.
++The dma-buf is identified by the file descriptor
++.I fd\fR.
++The argument
++.I iova
++specifies the virtual base address of the MR when accessed through a lkey or rkey.
++It must have the same page offset as
++.I offset\fR.
++The argument
++.I access
++describes the desired memory protection attributes; it is similar to the ibv_reg_mr case except that only the following flags are supported:
++.B IBV_ACCESS_LOCAL_WRITE, IBV_ACCESS_REMOTE_WRITE, IBV_ACCESS_REMOTE_READ, IBV_ACCESS_REMOTE_ATOMIC, IBV_ACCESS_RELAXED_ORDERING.
++.PP
+ .B ibv_dereg_mr()
+ deregisters the MR
+ .I mr\fR.
+ .SH "RETURN VALUE"
+-.B ibv_reg_mr() / ibv_reg_mr_iova()
++.B ibv_reg_mr() / ibv_reg_mr_iova() / ibv_reg_dmabuf_mr()
+ returns a pointer to the registered MR, or NULL if the request fails.
+ The local key (\fBL_Key\fR) field
+ .B lkey
+diff --git a/libibverbs/verbs.c b/libibverbs/verbs.c
+index 4fb3893..b93046a 100644
+--- a/libibverbs/verbs.c
++++ b/libibverbs/verbs.c
+@@ -1,6 +1,7 @@
+ /*
+  * Copyright (c) 2005 Topspin Communications.  All rights reserved.
+  * Copyright (c) 2006, 2007 Cisco Systems, Inc.  All rights reserved.
++ * Copyright (c) 2020 Intel Corperation.  All rights reserved.
+  *
+  * This software is available to you under a choice of one of two
+  * licenses.  You may choose to be licensed under the terms of the GNU
+@@ -370,6 +371,24 @@ void ibv_unimport_mr(struct ibv_mr *mr)
+ 	get_ops(mr->context)->unimport_mr(mr);
  }
  
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
-index 8f8de746ca17..61210b300a78 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.h
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.h
-@@ -46,11 +46,6 @@ struct rxe_type_info {
++struct ibv_mr *ibv_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset,
++				 size_t length, uint64_t iova, int fd,
++				 int access)
++{
++	struct ibv_mr *mr;
++
++	mr = get_ops(pd->context)->reg_dmabuf_mr(pd, offset, length, iova,
++						 fd, access);
++	if (!mr)
++		return NULL;
++
++	mr->context = pd->context;
++	mr->pd = pd;
++	mr->addr = (void *)offset;
++	mr->length = length;
++	return mr;
++}
++
+ LATEST_SYMVER_FUNC(ibv_rereg_mr, 1_1, "IBVERBS_1.1",
+ 		   int,
+ 		   struct ibv_mr *mr, int flags,
+diff --git a/libibverbs/verbs.h b/libibverbs/verbs.h
+index da782f2..656b0f9 100644
+--- a/libibverbs/verbs.h
++++ b/libibverbs/verbs.h
+@@ -3,6 +3,7 @@
+  * Copyright (c) 2004, 2011-2012 Intel Corporation.  All rights reserved.
+  * Copyright (c) 2005, 2006, 2007 Cisco Systems, Inc.  All rights reserved.
+  * Copyright (c) 2005 PathScale, Inc.  All rights reserved.
++ * Copyright (c) 2020 Intel Corporation.  All rights reserved.
+  *
+  * This software is available to you under a choice of one of two
+  * licenses.  You may choose to be licensed under the terms of the GNU
+@@ -2536,6 +2537,12 @@ __ibv_reg_mr_iova(struct ibv_pd *pd, void *addr, size_t length, uint64_t iova,
+ 			  __builtin_constant_p(                                \
+ 				  ((access) & IBV_ACCESS_OPTIONAL_RANGE) == 0))
  
- extern struct rxe_type_info rxe_type_info[];
- 
--enum rxe_pool_state {
--	RXE_POOL_STATE_INVALID,
--	RXE_POOL_STATE_VALID,
--};
--
- struct rxe_pool_entry {
- 	struct rxe_pool		*pool;
- 	struct kref		ref_cnt;
-@@ -69,7 +64,6 @@ struct rxe_pool {
- 	rwlock_t		pool_lock; /* protects pool add/del/search */
- 	size_t			elem_size;
- 	void			(*cleanup)(struct rxe_pool_entry *obj);
--	enum rxe_pool_state	state;
- 	enum rxe_pool_flags	flags;
- 	enum rxe_elem_type	type;
- 
++/**
++ * ibv_reg_dmabuf_mr - Register a dambuf-based memory region
++ */
++struct ibv_mr *ibv_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset, size_t length,
++				 uint64_t iova, int fd, int access);
++
+ enum ibv_rereg_mr_err_code {
+ 	/* Old MR is valid, invalid input */
+ 	IBV_REREG_MR_ERR_INPUT = -1,
 -- 
-2.27.0
+1.8.3.1
 
