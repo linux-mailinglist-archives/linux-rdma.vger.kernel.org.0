@@ -2,40 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1952303552
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 06:40:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5923303554
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 06:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731597AbhAZFjP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 26 Jan 2021 00:39:15 -0500
-Received: from mga04.intel.com ([192.55.52.120]:57661 "EHLO mga04.intel.com"
+        id S2388053AbhAZFjS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 26 Jan 2021 00:39:18 -0500
+Received: from mga09.intel.com ([134.134.136.24]:62493 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387444AbhAZBXe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:23:34 -0500
-IronPort-SDR: y6EdSbsaz0j2wzKnucobQ5lGuonX7ogTGphXTKKL0M/sNUlyp6EYet/l+ChfS/zNWiWxK8uDoF
- uT3hdaH+rekQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="177259154"
+        id S1729947AbhAZBZh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 25 Jan 2021 20:25:37 -0500
+IronPort-SDR: TeK1a5Fxp3qDwua5YrFZzv2jviMJPZWu/JIg24LaGRxRHr3Tq8SU1XZsWp78QoXzchMEYtk6Up
+ tmAM1VsHgjwQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="179973518"
 X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="177259154"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 16:39:31 -0800
-IronPort-SDR: UFltnYhMIF/tkSPWoLT+wGl5BHLvhVcaNBCMdw65nOZrNhriQ9mwhV52erjzO9SGre+jE6iQoC
- q0wTSG80CYZg==
+   d="scan'208";a="179973518"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 16:42:17 -0800
+IronPort-SDR: +WLzoT/SZhh9m4E8YZGzc1lPOGb+FkQw6G4F3aPCmon1LBU5YxL6iyF/nJ/PZetzxRb3lXTAJE
+ ud7PX6hy483Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="387603178"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by orsmga008.jf.intel.com with ESMTP; 25 Jan 2021 16:39:30 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+   d="scan'208";a="356532897"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga006.jf.intel.com with ESMTP; 25 Jan 2021 16:42:17 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 25 Jan 2021 16:39:29 -0800
+ 15.1.2106.2; Mon, 25 Jan 2021 16:42:16 -0800
 Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 25 Jan 2021 16:39:28 -0800
+ 15.1.1713.5; Mon, 25 Jan 2021 16:42:16 -0800
 Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
  fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.1713.004;
- Mon, 25 Jan 2021 16:39:28 -0800
+ Mon, 25 Jan 2021 16:42:16 -0800
 From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 CC:     "dledford@redhat.com" <dledford@redhat.com>,
@@ -45,16 +45,19 @@ CC:     "dledford@redhat.com" <dledford@redhat.com>,
         "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "Ertman, David M" <david.m.ertman@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-Subject: RE: [PATCH 00/22] Add Intel Ethernet Protocol Driver for RDMA (irdma)
-Thread-Topic: [PATCH 00/22] Add Intel Ethernet Protocol Driver for RDMA
- (irdma)
-Thread-Index: AQHW8RlOsEzaH1e1e0ivdRpCP+D5nao5OEaA//9+pPA=
-Date:   Tue, 26 Jan 2021 00:39:28 +0000
-Message-ID: <c1dfc28b01014bf3a46cb8acb83bd102@intel.com>
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>
+Subject: RE: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
+ implement private channel OPs
+Thread-Topic: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
+ implement private channel OPs
+Thread-Index: AQHW8RlTrNE3qjtLukSnj7NcX24DDao5N6oA//+n/DA=
+Date:   Tue, 26 Jan 2021 00:42:16 +0000
+Message-ID: <99895f7c10a2473c84a105f46c7ef498@intel.com>
 References: <20210122234827.1353-1-shiraz.saleem@intel.com>
- <20210125184459.GT4147@nvidia.com>
-In-Reply-To: <20210125184459.GT4147@nvidia.com>
+ <20210122234827.1353-8-shiraz.saleem@intel.com>
+ <20210125184248.GS4147@nvidia.com>
+In-Reply-To: <20210125184248.GS4147@nvidia.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -70,68 +73,92 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [PATCH 00/22] Add Intel Ethernet Protocol Driver for RDMA (irdma)
+> Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
+> implement private channel OPs
 > 
-> On Fri, Jan 22, 2021 at 05:48:05PM -0600, Shiraz Saleem wrote:
-> > From: "Shiraz, Saleem" <shiraz.saleem@intel.com>
-> >
-> > The following patch series introduces a unified Intel Ethernet
-> > Protocol Driver for RDMA (irdma) for the X722 iWARP device and a new
-> > E810 device which supports iWARP and RoCEv2. The irdma driver replaces
-> > the legacy i40iw driver for X722 and extends the ABI already defined
-> > for i40iw. It is backward compatible with legacy X722 rdma-core provider
-> (libi40iw).
-> >
-> > X722 and E810 are PCI network devices that are RDMA capable. The RDMA
-> > block of this parent device is represented via an auxiliary device exported to
-> 'irdma'
-> > using the core auxiliary bus infrastructure recently added for 5.11 kernel.
-> > The parent PCI netdev drivers 'i40e' and 'ice' register auxiliary RDMA
-> > devices with private data/ops encapsulated that bind to an 'irdma' auxiliary
-> driver.
-> >
-> > This series is a follow on to an RFC series [1]. This series was built
-> > against rdma for-next and currently includes the netdev patches for ease of
-> review.
-> > This include updates to 'ice' driver to provide RDMA support and converts 'i40e'
-> > driver to use the auxiliary bus infrastructure .
-> >
-> > Once the patches are closer to merging, this series will be split into
-> > a netdev-next and rdma-next patch series targeted at their respective
-> > subsystems with Patch #1 and Patch #5 included in both. This is the
-> > shared header file that will allow each series to independently compile.
-> >
-> > [1]
-> > https://lore.kernel.org/linux-rdma/20200520070415.3392210-1-jeffrey.t.
-> > kirsher@intel.com/
-> >
-> > Dave Ertman (4):
-> >   iidc: Introduce iidc.h
-> >   ice: Initialize RDMA support
-> >   ice: Implement iidc operations
-> >   ice: Register auxiliary device to provide RDMA
-> >
-> > Michael J. Ruhl (1):
-> >   RDMA/irdma: Add dynamic tracing for CM
-> >
-> > Mustafa Ismail (13):
-> >   RDMA/irdma: Register an auxiliary driver and implement private channel
-> >     OPs
-> >   RDMA/irdma: Implement device initialization definitions
-> >   RDMA/irdma: Implement HW Admin Queue OPs
-> >   RDMA/irdma: Add HMC backing store setup functions
-> >   RDMA/irdma: Add privileged UDA queue implementation
-> >   RDMA/irdma: Add QoS definitions
-> >   RDMA/irdma: Add connection manager
-> >   RDMA/irdma: Add PBLE resource manager
-> >   RDMA/irdma: Implement device supported verb APIs
-> >   RDMA/irdma: Add RoCEv2 UD OP support
-> >   RDMA/irdma: Add user/kernel shared libraries
-> >   RDMA/irdma: Add miscellaneous utility definitions
-> >   RDMA/irdma: Add ABI definitions
+> On Fri, Jan 22, 2021 at 05:48:12PM -0600, Shiraz Saleem wrote:
+> > +/**
+> > + * irdma_init_dev - GEN_2 device init
+> > + * @aux_dev: auxiliary device
+> > + *
+> > + * Create device resources, set up queues, pble and hmc objects.
+> > + * Return 0 if successful, otherwise return error  */ int
+> > +irdma_init_dev(struct auxiliary_device *aux_dev) {
+> > +	struct iidc_auxiliary_object *vo = container_of(aux_dev,
+> > +							struct
+> iidc_auxiliary_object,
+> > +							adev);
+> > +	struct iidc_peer_obj *peer_info = vo->peer_obj;
+> > +	struct irdma_handler *hdl;
+> > +	struct irdma_pci_f *rf;
+> > +	struct irdma_sc_dev *dev;
+> > +	struct irdma_priv_peer_info *priv_peer_info;
+> > +	int err;
+> > +
+> > +	hdl = irdma_find_handler(peer_info->pdev);
+> > +	if (hdl)
+> > +		return -EBUSY;
+> > +
+> > +	hdl = kzalloc(sizeof(*hdl), GFP_KERNEL);
+> > +	if (!hdl)
+> > +		return -ENOMEM;
+> > +
+> > +	rf = &hdl->rf;
+> > +	priv_peer_info = &rf->priv_peer_info;
+> > +	rf->aux_dev = aux_dev;
+> > +	rf->hdl = hdl;
+> > +	dev = &rf->sc_dev;
+> > +	dev->back_dev = rf;
+> > +	rf->gen_ops.init_hw = icrdma_init_hw;
+> > +	rf->gen_ops.request_reset = icrdma_request_reset;
+> > +	rf->gen_ops.register_qset = irdma_lan_register_qset;
+> > +	rf->gen_ops.unregister_qset = irdma_lan_unregister_qset;
+> > +	priv_peer_info->peer_info = peer_info;
+> > +	rf->rdma_ver = IRDMA_GEN_2;
+> > +	irdma_set_config_params(rf);
+> > +	dev->pci_rev = peer_info->pdev->revision;
+> > +	rf->default_vsi.vsi_idx = peer_info->pf_vsi_num;
+> > +	/* save information from peer_info to priv_peer_info*/
+> > +	priv_peer_info->fn_num = PCI_FUNC(peer_info->pdev->devfn);
+> > +	rf->hw.hw_addr = peer_info->hw_addr;
+> > +	rf->pcidev = peer_info->pdev;
+> > +	rf->netdev = peer_info->netdev;
+> > +	priv_peer_info->ftype = peer_info->ftype;
+> > +	priv_peer_info->msix_count = peer_info->msix_count;
+> > +	priv_peer_info->msix_entries = peer_info->msix_entries;
+> > +	irdma_add_handler(hdl);
+> > +	if (irdma_ctrl_init_hw(rf)) {
+> > +		err = -EIO;
+> > +		goto err_ctrl_init;
+> > +	}
+> > +	peer_info->peer_ops = &irdma_peer_ops;
+> > +	peer_info->peer_drv = &irdma_peer_drv;
+> > +	err = peer_info->ops->peer_register(peer_info);
+> > +	if (err)
+> > +		goto err_peer_reg;
 > 
-> I didn't check, but I will remind you to compile with make W=1 and ensure this is all
-> clean. Lee is doing good work making RDMA clean for W=1.
+> No to this, I don't want to see aux bus layered on top of another management
+> framework in new drivers. When this driver uses aux bus get rid of the old i40iw
+> stuff. I already said this in one of the older postings of this driver.
+> 
+> auxbus probe() for a RDMA driver should call ib_alloc_device() near its start and
+> ib_register_device() near the end its end.
+> 
+> drvdata for the aux device should point to the driver struct containing the
+> ib_device.
+> 
+> Just like any ordinary PCI based rdma driver, look at how something like
+> pvrdma_pci_probe() is structued.
 > 
 
-Yes. That is done.
+I think this essentially means doing away with .open/.close piece. Or are you saying that is ok?
+Yes we had a discussion in the past and I thought we concluded. But maybe I misunderstood.
+
+https://lore.kernel.org/linux-rdma/9DD61F30A802C4429A01CA4200E302A7DCD4FD03@fmsmsx124.amr.corp.intel.com/
+
+The concern is around losing the resources held for rdma VFs by rdma PF due to underlying config changes which require a de-reg/re-registration of the ibdevice.
+Today such config changes are handled with the netdev PCI driver using the .close() private callback into rdma driver which unregister ibdevice in PF while allowing
+the RDMA VF to survive.
+
+Shiraz
+
