@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BE7303DA7
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 13:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A3C303DDC
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 13:56:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403987AbhAZMu3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Jan 2021 07:50:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
+        id S2403924AbhAZM4B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Jan 2021 07:56:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404108AbhAZMuG (ORCPT
+        with ESMTP id S2404105AbhAZMuG (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Jan 2021 07:50:06 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977EFC08EB30
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:57 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id m13so1882875wro.12
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:57 -0800 (PST)
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1151C08EC28
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:58 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id m13so1882934wro.12
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WpANnWfGT2qFPSHlNEWTmbJ1paMcoIJGvrRr1eRAMJE=;
-        b=elRCoD0E+0EyiixUe4a1EB+4QZXPB3Rc7DM40jZU9+fIbi8dg5nsnJG0nbovfzqy1M
-         csONUjfx2MdwVvhkhkgRD7KhgaJSn/HM1hM7wrhMx+mq3Q+w/pyOVdfLyKyPJThdIyXx
-         tTx7izzkrcjpvF/ybDkHNhY96HYJXm8R49kYKVYM0R8tZF2dAdNwMWxLm+F9Ng8GFViS
-         deXzu9E57xoZRjxcr8LUXfv11flWbtwBhVgedFQzNQ1IE1WxgWsPynNLQOxy5k6bdgj3
-         XQ3D+2IcZJ2f9hM3vnr1DK8sIejTFlPSSpfto7GH7yXeMYWz6Mvfwa9/z7dOt7/KoH/E
-         XK5Q==
+        bh=hpZFRWRMBRyHqA4LFeJIkJ1VyU/15BjqrvkCVLk60G8=;
+        b=DflQqkzq+/EGK2NRxBd+UtoUZey4O18FCOsB6PA4MWcs0g95luUnYoA6knuBlQ5/qp
+         CgvuKM45GRD/OIqwCBbca5ujHMHfRJbTDzmUpXVbXYh4zY0KpMEuAbIzZ1XmYhvTwPap
+         vYjczVegm3Q+G8SIyoUU8+YYzXF7fGtH8lbRsu4Uchkb/WGsFPE5/KJbYRFmt2Yk08hr
+         1GWbwyXOKtbBXbLPHYjlgM8LLjC3UAglmVnuur88kLNR/8kmS4wpSMUeoGsohdeHLrDH
+         u4smr8dfKBuJigXsgKOGFABXrP/IH2m2crw6/yl26Qq+8JiE703LwKdkT4jAav7es7mJ
+         dh+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WpANnWfGT2qFPSHlNEWTmbJ1paMcoIJGvrRr1eRAMJE=;
-        b=J5F6BdXNLGylHDdpyD1+qYaKIrl99WTOgreB/cZYDLNdkkH6/BCFDVWbZWVZsIRfwD
-         vOkuIPLI4k5Yli2+IoiTJIgpJvVl4BtHo0LqEliuLwLKjDCPVmez1ILSXxIwWn7zZJUH
-         uJUTuU5rmnVIJ0EwUskYQNikAghy7NHpnDyXQfKBf+VsHrqsBPtzIt9SCPslZywPos6d
-         qVCfsqBlPSOJInTv/4WVDahpzlvGmRmHJyI5NowLur1xuzeXAJIZsAVCCaCEN8Co6urB
-         gZRhcrAfsssNveYiQmnPDOvJfMBW19WTlV+oPPiFhqn3Tztv4Leus46FTMUjsw7nUnRX
-         sa1w==
-X-Gm-Message-State: AOAM532+XqY26n4QOm3twkZvnKxhQJUleAMqVk3GckyI4nxVSzwl0cB6
-        VcK8PUnTdDlCAn6JQMCvN0h17w==
-X-Google-Smtp-Source: ABdhPJxRSdr8DaSZ3Ha889ki6igIj2ynJ5QQ+X5CFywOPJ1iNvepjcEBe8xUh3/g3cl2uRdPipvcVA==
-X-Received: by 2002:adf:eb4e:: with SMTP id u14mr5939543wrn.99.1611665276345;
-        Tue, 26 Jan 2021 04:47:56 -0800 (PST)
+        bh=hpZFRWRMBRyHqA4LFeJIkJ1VyU/15BjqrvkCVLk60G8=;
+        b=Fd/h5fH2NiFMPFHL05XAR9PCJp/1cpK4W4iJbtctzwu23nKmrzgvcLJnlQKAcf3CXq
+         gDG5dEZn3VoWMvvc60IfkRLKICbgP3TNpWhV0gLHoSodpJjUo/v9TIbJ1s4SddwlZWWx
+         AJMyVGcBHobOE0uH/iQCepX6PBReB4M5FlT3+9/yXvVxihe7mhy959pmVspLa/lLSjIk
+         BnqF2W7eDMlWXCCPwlRfod1uvYGIKpD3HLuKncATLkN58UpJgk+yzgMlA88uvsTSTXmi
+         woWHfdSnkSUNWnQv/8bH6x+JXIFhZTqLTFz+TgWbGY+FqaMXx61oeYSOSxrLItuJLdkD
+         6n7w==
+X-Gm-Message-State: AOAM530q2a2rlrkAODXn//A73mJsc6zg3CyfDV9D+Tz18njNaCP3mDNX
+        sGd5hhwHovqIoBOIghgFrxuXRw==
+X-Google-Smtp-Source: ABdhPJyVPFTqKtMzBmyMdMFKJ4bT4S7ncfaXrWgISj8V3pzak4nLhMepCV/vRlbcIr5IAY+QkkG3/w==
+X-Received: by 2002:adf:e610:: with SMTP id p16mr5842178wrm.169.1611665277555;
+        Tue, 26 Jan 2021 04:47:57 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.55
+        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 04:47:55 -0800 (PST)
+        Tue, 26 Jan 2021 04:47:56 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -54,9 +54,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 18/20] RDMA/hw/hfi1/user_exp_rcv: Demote half-documented and kernel-doc abuses
-Date:   Tue, 26 Jan 2021 12:47:30 +0000
-Message-Id: <20210126124732.3320971-19-lee.jones@linaro.org>
+Subject: [PATCH 19/20] RDMA/hw/hfi1/verbs: Demote non-conforming doc header and fix a misspelling
+Date:   Tue, 26 Jan 2021 12:47:31 +0000
+Message-Id: <20210126124732.3320971-20-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210126124732.3320971-1-lee.jones@linaro.org>
 References: <20210126124732.3320971-1-lee.jones@linaro.org>
@@ -68,14 +68,11 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:174: warning: Function parameter or member 'fd' not described in 'unpin_rcv_pages'
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:174: warning: Function parameter or member 'tidbuf' not described in 'unpin_rcv_pages'
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:174: warning: Function parameter or member 'node' not described in 'unpin_rcv_pages'
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:174: warning: Function parameter or member 'idx' not described in 'unpin_rcv_pages'
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:174: warning: Function parameter or member 'npages' not described in 'unpin_rcv_pages'
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:174: warning: Function parameter or member 'mapped' not described in 'unpin_rcv_pages'
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:196: warning: Function parameter or member 'fd' not described in 'pin_rcv_pages'
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:196: warning: Function parameter or member 'tidbuf' not described in 'pin_rcv_pages'
+ drivers/infiniband/hw/hfi1/verbs.c:741: warning: Function parameter or member 'qp' not described in 'update_tx_opstats'
+ drivers/infiniband/hw/hfi1/verbs.c:1160: warning: Function parameter or member 'pkey' not described in 'egress_pkey_check'
+ drivers/infiniband/hw/hfi1/verbs.c:1160: warning: Excess function parameter 'bkey' description in 'egress_pkey_check'
+ drivers/infiniband/hw/hfi1/verbs.c:1217: warning: Function parameter or member 'qp' not described in 'get_send_routine'
+ drivers/infiniband/hw/hfi1/verbs.c:1217: warning: Function parameter or member 'ps' not described in 'get_send_routine'
 
 Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
@@ -84,39 +81,40 @@ Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/hfi1/user_exp_rcv.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/infiniband/hw/hfi1/verbs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/user_exp_rcv.c b/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-index b94fc7fd75a96..58dcab2679d9d 100644
---- a/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-+++ b/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-@@ -154,12 +154,12 @@ void hfi1_user_exp_rcv_free(struct hfi1_filedata *fd)
- 	fd->entry_to_rb = NULL;
+diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
+index 3591923abebb9..0dd4bb0a5a7e6 100644
+--- a/drivers/infiniband/hw/hfi1/verbs.c
++++ b/drivers/infiniband/hw/hfi1/verbs.c
+@@ -729,7 +729,7 @@ static noinline int build_verbs_ulp_payload(
+ 
+ /**
+  * update_tx_opstats - record stats by opcode
+- * @qp; the qp
++ * @qp: the qp
+  * @ps: transmit packet state
+  * @plen: the plen in dwords
+  *
+@@ -1145,7 +1145,7 @@ static inline int egress_pkey_matches_entry(u16 pkey, u16 ent)
+  * egress_pkey_check - check P_KEY of a packet
+  * @ppd:  Physical IB port data
+  * @slid: SLID for packet
+- * @bkey: PKEY for header
++ * @pkey: PKEY for header
+  * @sc5:  SC for packet
+  * @s_pkey_index: It will be used for look up optimization for kernel contexts
+  * only. If it is negative value, then it means user contexts is calling this
+@@ -1206,7 +1206,7 @@ int egress_pkey_check(struct hfi1_pportdata *ppd, u32 slid, u16 pkey,
+ 	return 1;
  }
  
 -/**
 +/*
-  * Release pinned receive buffer pages.
+  * get_send_routine - choose an egress routine
   *
-- * @mapped - true if the pages have been DMA mapped. false otherwise.
-- * @idx - Index of the first page to unpin.
-- * @npages - No of pages to unpin.
-+ * @mapped: true if the pages have been DMA mapped. false otherwise.
-+ * @idx: Index of the first page to unpin.
-+ * @npages: No of pages to unpin.
-  *
-  * If the pages have been DMA mapped (indicated by mapped parameter), their
-  * info will be passed via a struct tid_rb_node. If they haven't been mapped,
-@@ -189,7 +189,7 @@ static void unpin_rcv_pages(struct hfi1_filedata *fd,
- 	fd->tid_n_pinned -= npages;
- }
- 
--/**
-+/*
-  * Pin receive buffer pages.
-  */
- static int pin_rcv_pages(struct hfi1_filedata *fd, struct tid_user_buf *tidbuf)
+  * Choose an egress routine based on QP type
 -- 
 2.25.1
 
