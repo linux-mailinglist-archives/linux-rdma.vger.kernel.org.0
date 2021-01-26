@@ -2,98 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CB4303E11
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 14:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE9F30445D
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 18:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403966AbhAZMze (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Jan 2021 07:55:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404087AbhAZMte (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Jan 2021 07:49:34 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B22C035438
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:45 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id b5so16308222wrr.10
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=S+DMI0EXUYJJLvmmH2bAEB7JiPLoVbXeT/sw5HJ1UT8=;
-        b=BFvftWxNjJ1f8kZeSk14lsUMun1/l2fh/zf2H/00VdGTMPu6yAgBNrw7KEwZi6M1wS
-         mTWkBcyI8MQqtNZJFTW2FOyW10BxStpDjS71ik/aSVyBT2eYIffwIu2tY+uO1TWDUmlm
-         wkNPljH37Zm3tX8CbgiHUQcguqlyY8aARKGG+27JgQPjbb5VG7PWKilCrUZaS0NOL3xn
-         KSJGvD7Ah0knlmc6gbCugR3iVZaJA+eKz7fqGFmVZavgQZ2j1g/lZxO1iYKLJ/FHD1kV
-         JFREmbuOCnycRzarZqSlPOzfAUp/Nz9SIuUpOWHXI/6PUqKUFh001jcQXvq7eM510Oow
-         DEzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=S+DMI0EXUYJJLvmmH2bAEB7JiPLoVbXeT/sw5HJ1UT8=;
-        b=iq0Zi7BYOeG7UFzAQfngvjyyv0MhlMtnG6mVfjI4qE4MGE/ArNC586b8aH6z9ONteo
-         8dZJKGM2hiBEV5OmBbBWSF8w5fp1z1h9mQ3xSBRE/Qg7dsvSeRMe/BMVruYs5aihu7t9
-         NN06XOcSWJrDvVBvYjv6zCW8uPf6Qrf1HT+SCAOHEUpQl7ferDe5Dn6tXa3POXC3Wu60
-         mHw+96xYzpdyocEe0gtW2RnnPY8L6dUKTqVnndlhUlEjt727e3+ugHZGG9J9CwFrZb23
-         zKTooDFNTN+tP1VTxlg4zG5oBsFa5S3jvpD5Jav5OzWqxNxZksEpdsjptdpjVhQ3zlqZ
-         fBvg==
-X-Gm-Message-State: AOAM531e+Rb6dgj40zomZZ7iMqZrmn73o3JBefKsVNPj/dsrsXUNbZts
-        NnUAiH1vGPuuOCWwi7wbDLm0YQ==
-X-Google-Smtp-Source: ABdhPJwrmxLQr9CLyptuMRo6dOqaAb/sply8hRE70jVFz+f/6LzkND+6LLI0NL6a3EFXnc8j3mCewQ==
-X-Received: by 2002:a5d:470f:: with SMTP id y15mr5872456wrq.187.1611665264670;
-        Tue, 26 Jan 2021 04:47:44 -0800 (PST)
-Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 04:47:44 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 08/20] RDMA/hw/hfi1/netdev_rx: Fix misdocumentation of the 'start_id' param
-Date:   Tue, 26 Jan 2021 12:47:20 +0000
-Message-Id: <20210126124732.3320971-9-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210126124732.3320971-1-lee.jones@linaro.org>
-References: <20210126124732.3320971-1-lee.jones@linaro.org>
+        id S1726314AbhAZRAy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Jan 2021 12:00:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390537AbhAZI6e (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:58:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2FF3230FC;
+        Tue, 26 Jan 2021 08:57:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611651455;
+        bh=JAkZWzoFVc/4aeT+y5JDmRQyFWQ/0bllo+5oGyiqzEg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WDHNyT96TtepU0zetviXWikwpqssSGufbRJTDIquQKujtXkjSAcSPyNGEMJr6x4CA
+         wRmF81QEcdpufg0POGWTPKHfEiVXJCC4j6BT7GvEFES+QsG8f1HCt7atza/HIT9N9Q
+         QRUn6Uc0amo2etDApPt/cERCOobb8V+QMy4DJ/5Q1uoqcYQWeP2tD+mNiTXprZ+FsD
+         mSUoJe8oukhGD9VVgCSjEFkRYNTH7nayeVcdaIqdCMJo0vTfPvRSIBLh/k9asyeTTI
+         dsbGUGpq1dROy7wPUNIDIBbAX0x1P1O6MmxQwv9BBEXAYFQUNi95IqOzTWSgHtiPVC
+         Eu0IDWOxc4mKw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH mlx5-next v5 0/4] Dynamically assign MSI-X vectors count
+Date:   Tue, 26 Jan 2021 10:57:26 +0200
+Message-Id: <20210126085730.1165673-1-leon@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+From: Leon Romanovsky <leonro@nvidia.com>
 
- drivers/infiniband/hw/hfi1/netdev_rx.c:473: warning: Function parameter or member 'start_id' not described in 'hfi1_netdev_get_first_data'
- drivers/infiniband/hw/hfi1/netdev_rx.c:473: warning: Excess function parameter 'id' description in 'hfi1_netdev_get_first_data'
+Changelog
+v5:
+ * Patch 1:
+  * Added forgotten "inline" keyword when declaring empty functions.
+v4: https://lore.kernel.org/linux-pci/20210124131119.558563-1-leon@kernel.org
+ * Used sysfs_emit() instead of sprintf() in new sysfs entries.
+ * Changed EXPORT_SYMBOL to be EXPORT_SYMBOL_GPL for pci_iov_virtfn_devfn().
+ * Rewrote sysfs registration code to be driven by PF that wants to enable VF
+   overlay instead of creating to all SR-IOV devices.
+ * Grouped all such functionality under new "vfs_overlay" folder.
+ * Combined two PCI patches into one.
+v3: https://lore.kernel.org/linux-pci/20210117081548.1278992-1-leon@kernel.org
+ * Renamed pci_set_msix_vec_count to be pci_vf_set_msix_vec_count.
+ * Added VF msix_cap check to hide sysfs entry if device doesn't support msix.
+ * Changed "-" to be ":" in the mlx5 patch to silence CI warnings about missing
+   kdoc description.
+ * Split differently error print in mlx5 driver to avoid checkpatch warning.
+v2: https://lore.kernel.org/linux-pci/20210114103140.866141-1-leon@kernel.org
+ * Patch 1:
+  * Renamed vf_msix_vec sysfs knob to be sriov_vf_msix_count
+  * Added PF and VF device locks during set MSI-X call to protect from parallel
+    driver bind/unbind operations.
+  * Removed extra checks when reading sriov_vf_msix, because users will
+    be able to distinguish between supported/not supported by looking on
+    sriov_vf_total_msix count.
+  * Changed all occurrences of "numb" to be "count"
+  * Changed returned error from EOPNOTSUPP to be EBUSY if user tries to set
+    MSI-X count after driver already bound to the VF.
+  * Added extra comment in pci_set_msix_vec_count() to emphasize that driver
+    should not be bound.
+ * Patch 2:
+  * Changed vf_total_msix from int to be u32 and updated function signatures
+    accordingly.
+  * Improved patch title
+v1: https://lore.kernel.org/linux-pci/20210110150727.1965295-1-leon@kernel.org
+ * Improved wording and commit messages of first PCI patch
+ * Added extra PCI patch to provide total number of MSI-X vectors
+ * Prohibited read of vf_msix_vec sysfs file if driver doesn't support write
+ * Removed extra function definition in pci.h
+v0: https://lore.kernel.org/linux-pci/20210103082440.34994-1-leon@kernel.org
 
-Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: linux-rdma@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/infiniband/hw/hfi1/netdev_rx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--------------------------------------------------------------------
+Hi,
 
-diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c b/drivers/infiniband/hw/hfi1/netdev_rx.c
-index 6d263c9749b36..1fb6e1a0e4e1d 100644
---- a/drivers/infiniband/hw/hfi1/netdev_rx.c
-+++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
-@@ -467,7 +467,7 @@ void *hfi1_netdev_get_data(struct hfi1_devdata *dd, int id)
-  * hfi1_netdev_get_first_dat - Gets first entry with greater or equal id.
-  *
-  * @dd: hfi1 dev data
-- * @id: requested integer id up to INT_MAX
-+ * @start_id: requested integer id up to INT_MAX
-  */
- void *hfi1_netdev_get_first_data(struct hfi1_devdata *dd, int *start_id)
- {
--- 
-2.25.1
+The number of MSI-X vectors is PCI property visible through lspci, that
+field is read-only and configured by the device.
+
+The static assignment of an amount of MSI-X vectors doesn't allow utilize
+the newly created VF because it is not known to the device the future load
+and configuration where that VF will be used.
+
+The VFs are created on the hypervisor and forwarded to the VMs that have
+different properties (for example number of CPUs).
+
+To overcome the inefficiency in the spread of such MSI-X vectors, we
+allow the kernel to instruct the device with the needed number of such
+vectors, before VF is initialized and bounded to the driver.
+
+Before this series:
+[root@server ~]# lspci -vs 0000:08:00.2
+08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+....
+        Capabilities: [9c] MSI-X: Enable- Count=12 Masked-
+
+Configuration script:
+1. Start fresh
+echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+modprobe -q -r mlx5_ib mlx5_core
+2. Ensure that driver doesn't run and it is safe to change MSI-X
+echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_drivers_autoprobe
+3. Load driver for the PF
+modprobe mlx5_core
+4. Configure one of the VFs with new number
+echo 2 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+echo 21 > /sys/bus/pci/devices/0000\:08\:00.2/vfs_overlay/sriov_vf_msix_count
+
+After this series:
+[root@server ~]# lspci -vs 0000:08:00.2
+08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+....
+        Capabilities: [9c] MSI-X: Enable- Count=21 Masked-
+
+Thanks
+
+Leon Romanovsky (4):
+  PCI: Add sysfs callback to allow MSI-X table size change of SR-IOV VFs
+  net/mlx5: Add dynamic MSI-X capabilities bits
+  net/mlx5: Dynamically assign MSI-X vectors count
+  net/mlx5: Allow to the users to configure number of MSI-X vectors
+
+ Documentation/ABI/testing/sysfs-bus-pci       |  32 ++++
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  16 ++
+ .../ethernet/mellanox/mlx5/core/mlx5_core.h   |   6 +
+ .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  72 +++++++
+ .../net/ethernet/mellanox/mlx5/core/sriov.c   |  59 +++++-
+ drivers/pci/iov.c                             | 180 ++++++++++++++++++
+ drivers/pci/msi.c                             |  47 +++++
+ drivers/pci/pci.h                             |   4 +
+ include/linux/mlx5/mlx5_ifc.h                 |  11 +-
+ include/linux/pci.h                           |  10 +
+ 10 files changed, 434 insertions(+), 3 deletions(-)
+
+--
+2.29.2
 
