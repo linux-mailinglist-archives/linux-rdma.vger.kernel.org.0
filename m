@@ -2,200 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6583130479A
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 20:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEA3B304776
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 20:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbhAZRBe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Jan 2021 12:01:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53768 "EHLO mail.kernel.org"
+        id S1727260AbhAZRCA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Jan 2021 12:02:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390607AbhAZI7G (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:59:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34AD2230FF;
-        Tue, 26 Jan 2021 08:57:44 +0000 (UTC)
+        id S2390764AbhAZJ1B (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 26 Jan 2021 04:27:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 152A923104;
+        Tue, 26 Jan 2021 09:26:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611651465;
-        bh=LECEB+cDh+iV4QGXRsrdF1G4GB6HAY18qykra5sbqcs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J0IRpmnMoaZlj5elyaR7XUTLCo+W4UIbEYEtSbGsaJYZ0GhEg6ojkoaWPWfIBFQFo
-         P9DhkbgZCe5B8noFdhz9Lw3vR13VpnERj0/BPn7uCxQf0T9Iz4mnthZjfqZHvvzrA+
-         SkcHOI/8QCJ+DtnZyS4vaTUsHeZq3Bg01h92LvirSVZQn7juxUnJLqIoKHd3r308L1
-         4mNfr54ebc25osj4weDnDg2yXmta3NCznX5pSbzwr/uRQM9t4bwWpo+BpMNS8u6Skn
-         SlDMESnjBRg5Lt20dvRLX2rD7toPnqpxEphjQZ3do0r08EjRRNOe8CvTPTPhBaK3u2
-         mK5Q9SyqzxkyQ==
+        s=k20201202; t=1611653164;
+        bh=n9V/J8e1eqv74S9xZ5fa3DLyRbZIQAOTaxLDUbYwHkc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DVBMX5ML+9cNH7+RQ1EHJQmzJaKeva177oUJz8EmuWGnbv3oAeZAujkGJmJspvJRF
+         KmFTGrQaZu6Px5ryOdwdI09ZSfWFaHXXpMRgVEZC++RsII4J4I9PWr2JXicoqTmo0Q
+         ozc0LYSJX/0F82pMQspLCWl7toeGNv7BEyuao/tSi+OZZ52N229/HSEqTlyZpjZeQI
+         dDRgTUZ858WgBJddsL1m12qrUndGLQWJVt/nK/bsY8btEmxcEpnVC7/QXSP5wMVReQ
+         A6QWXftQTz/4fNWOxBonBK3W/wusiND203Zny9SAJ5XeIGfgGMJdHmlzr46Ak1+yja
+         W8AmBtBlmIdGw==
+Date:   Tue, 26 Jan 2021 11:26:01 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
+To:     Joe Perches <joe@perches.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Alexander Duyck <alexander.duyck@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Don Dutile <ddutile@redhat.com>,
+        linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, Don Dutile <ddutile@redhat.com>,
         Alex Williamson <alex.williamson@redhat.com>,
         "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH mlx5-next v5 4/4] net/mlx5: Allow to the users to configure number of MSI-X vectors
-Date:   Tue, 26 Jan 2021 10:57:30 +0200
-Message-Id: <20210126085730.1165673-5-leon@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210126085730.1165673-1-leon@kernel.org>
-References: <20210126085730.1165673-1-leon@kernel.org>
+Subject: Re: [PATCH mlx5-next v4 1/4] PCI: Add sysfs callback to allow MSI-X
+ table size change of SR-IOV VFs
+Message-ID: <20210126092601.GE1053290@unreal>
+References: <20210124131119.558563-1-leon@kernel.org>
+ <20210124131119.558563-2-leon@kernel.org>
+ <20210125135229.6193f783@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210126060135.GQ579511@unreal>
+ <48c5a16657bb7b6c0f619253e57133137d4e825c.camel@perches.com>
+ <20210126084817.GD1053290@unreal>
+ <cb6dec52b62dd008d20e9de45f1f15341bbde6ad.camel@perches.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cb6dec52b62dd008d20e9de45f1f15341bbde6ad.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Tue, Jan 26, 2021 at 12:57:06AM -0800, Joe Perches wrote:
+> On Tue, 2021-01-26 at 10:48 +0200, Leon Romanovsky wrote:
+> > On Tue, Jan 26, 2021 at 12:20:11AM -0800, Joe Perches wrote:
+> > > On Tue, 2021-01-26 at 08:01 +0200, Leon Romanovsky wrote:
+> > > > On Mon, Jan 25, 2021 at 01:52:29PM -0800, Jakub Kicinski wrote:
+> > > > > On Sun, 24 Jan 2021 15:11:16 +0200 Leon Romanovsky wrote:
+> > > > > > +static int pci_enable_vfs_overlay(struct pci_dev *dev) { return 0; }
+> > > > > > +static void pci_disable_vfs_overlay(struct pci_dev *dev) {}
+> []
+> > > $ ./scripts/checkpatch.pl -f include/linux/*.h --types=static_inline --terse --nosummary
+> > > include/linux/dma-mapping.h:203: WARNING: static function definition might be better as static inline
+> > > include/linux/genl_magic_func.h:55: WARNING: static function definition might be better as static inline
+> > > include/linux/genl_magic_func.h:78: WARNING: static function definition might be better as static inline
+> > > include/linux/kernel.h:670: WARNING: static function definition might be better as static inline
+> > > include/linux/kprobes.h:213: WARNING: static function definition might be better as static inline
+> > > include/linux/kprobes.h:231: WARNING: static function definition might be better as static inline
+> > > include/linux/kprobes.h:511: WARNING: static function definition might be better as static inline
+> > > include/linux/skb_array.h:185: WARNING: static function definition might be better as static inline
+> > > include/linux/slab.h:606: WARNING: static function definition might be better as static inline
+> > > include/linux/stop_machine.h:62: WARNING: static function definition might be better as static inline
+> > > include/linux/vmw_vmci_defs.h:850: WARNING: static function definition might be better as static inline
+> > > include/linux/zstd.h:95: WARNING: static function definition might be better as static inline
+> > > include/linux/zstd.h:106: WARNING: static function definition might be better as static inline
+> > >
+> > > A false positive exists when __must_check is used between
+> > > static and inline.  It's an unusual and IMO not a preferred use.
+> >
+> > Maybe just filter and ignore such functions for now?
+>
+> Not worth it.
+>
+> > Will you send proper patch or do you want me to do it?
+>
+> I'll do it eventually.
 
-Implement ability to configure MSI-X for the SR-IOV VFs.
+Thanks
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- .../net/ethernet/mellanox/mlx5/core/main.c    | 12 +++++
- .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  1 +
- .../net/ethernet/mellanox/mlx5/core/sriov.c   | 46 +++++++++++++++++++
- 3 files changed, 59 insertions(+)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index 79cfcc844156..228765c38cf8 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -1395,6 +1395,14 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *id)
- 		goto err_load_one;
- 	}
- 
-+	err = pci_enable_vfs_overlay(pdev);
-+	if (err) {
-+		mlx5_core_err(dev,
-+			      "pci_enable_vfs_overlay failed with error code %d\n",
-+			      err);
-+		goto err_vfs_overlay;
-+	}
-+
- 	err = mlx5_crdump_enable(dev);
- 	if (err)
- 		dev_err(&pdev->dev, "mlx5_crdump_enable failed with error code %d\n", err);
-@@ -1403,6 +1411,8 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *id)
- 	devlink_reload_enable(devlink);
- 	return 0;
- 
-+err_vfs_overlay:
-+	mlx5_unload_one(dev, true);
- err_load_one:
- 	mlx5_pci_close(dev);
- pci_init_err:
-@@ -1422,6 +1432,7 @@ static void remove_one(struct pci_dev *pdev)
- 
- 	devlink_reload_disable(devlink);
- 	mlx5_crdump_disable(dev);
-+	pci_disable_vfs_overlay(pdev);
- 	mlx5_drain_health_wq(dev);
- 	mlx5_unload_one(dev, true);
- 	mlx5_pci_close(dev);
-@@ -1650,6 +1661,7 @@ static struct pci_driver mlx5_core_driver = {
- 	.shutdown	= shutdown,
- 	.err_handler	= &mlx5_err_handler,
- 	.sriov_configure   = mlx5_core_sriov_configure,
-+	.sriov_set_msix_vec_count = mlx5_core_sriov_set_msix_vec_count,
- };
- 
- static void mlx5_core_verify_params(void)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-index 5babb4434a87..8a2523d2d43a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-@@ -138,6 +138,7 @@ void mlx5_sriov_cleanup(struct mlx5_core_dev *dev);
- int mlx5_sriov_attach(struct mlx5_core_dev *dev);
- void mlx5_sriov_detach(struct mlx5_core_dev *dev);
- int mlx5_core_sriov_configure(struct pci_dev *dev, int num_vfs);
-+int mlx5_core_sriov_set_msix_vec_count(struct pci_dev *vf, int msix_vec_count);
- int mlx5_core_enable_hca(struct mlx5_core_dev *dev, u16 func_id);
- int mlx5_core_disable_hca(struct mlx5_core_dev *dev, u16 func_id);
- int mlx5_create_scheduling_element_cmd(struct mlx5_core_dev *dev, u8 hierarchy,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sriov.c b/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-index f0ec86a1c8a6..252aa44ffbe3 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-@@ -144,6 +144,7 @@ mlx5_device_disable_sriov(struct mlx5_core_dev *dev, int num_vfs, bool clear_vf)
- static int mlx5_sriov_enable(struct pci_dev *pdev, int num_vfs)
- {
- 	struct mlx5_core_dev *dev  = pci_get_drvdata(pdev);
-+	u32 num_vf_msix;
- 	int err;
- 
- 	err = mlx5_device_enable_sriov(dev, num_vfs);
-@@ -152,11 +153,20 @@ static int mlx5_sriov_enable(struct pci_dev *pdev, int num_vfs)
- 		return err;
- 	}
- 
-+	num_vf_msix = MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix);
-+	pci_sriov_set_vf_total_msix(pdev, num_vf_msix);
- 	err = pci_enable_sriov(pdev, num_vfs);
- 	if (err) {
- 		mlx5_core_warn(dev, "pci_enable_sriov failed : %d\n", err);
- 		mlx5_device_disable_sriov(dev, num_vfs, true);
- 	}
-+	err = pci_enable_vfs_overlay(pdev);
-+	if (err) {
-+		mlx5_core_warn(dev, "pci_enable_vfs_overlay failed : %d\n",
-+			       err);
-+		pci_disable_sriov(pdev);
-+		mlx5_device_disable_sriov(dev, num_vfs, true);
-+	}
- 	return err;
- }
- 
-@@ -165,6 +175,7 @@ static void mlx5_sriov_disable(struct pci_dev *pdev)
- 	struct mlx5_core_dev *dev  = pci_get_drvdata(pdev);
- 	int num_vfs = pci_num_vf(dev->pdev);
- 
-+	pci_disable_vfs_overlay(pdev);
- 	pci_disable_sriov(pdev);
- 	mlx5_device_disable_sriov(dev, num_vfs, true);
- }
-@@ -187,6 +198,41 @@ int mlx5_core_sriov_configure(struct pci_dev *pdev, int num_vfs)
- 	return err ? err : num_vfs;
- }
- 
-+int mlx5_core_sriov_set_msix_vec_count(struct pci_dev *vf, int msix_vec_count)
-+{
-+	struct pci_dev *pf = pci_physfn(vf);
-+	struct mlx5_core_sriov *sriov;
-+	struct mlx5_core_dev *dev;
-+	int num_vf_msix, id;
-+
-+	dev = pci_get_drvdata(pf);
-+	num_vf_msix = MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix);
-+	if (!num_vf_msix)
-+		return -EOPNOTSUPP;
-+
-+	if (!msix_vec_count)
-+		msix_vec_count =
-+			mlx5_get_default_msix_vec_count(dev, pci_num_vf(pf));
-+
-+	sriov = &dev->priv.sriov;
-+
-+	/* Reversed translation of PCI VF function number to the internal
-+	 * function_id, which exists in the name of virtfn symlink.
-+	 */
-+	for (id = 0; id < pci_num_vf(pf); id++) {
-+		if (!sriov->vfs_ctx[id].enabled)
-+			continue;
-+
-+		if (vf->devfn == pci_iov_virtfn_devfn(pf, id))
-+			break;
-+	}
-+
-+	if (id == pci_num_vf(pf) || !sriov->vfs_ctx[id].enabled)
-+		return -EINVAL;
-+
-+	return mlx5_set_msix_vec_count(dev, id + 1, msix_vec_count);
-+}
-+
- int mlx5_sriov_attach(struct mlx5_core_dev *dev)
- {
- 	if (!mlx5_core_is_pf(dev) || !pci_num_vf(dev->pdev))
--- 
-2.29.2
-
+>
+>
