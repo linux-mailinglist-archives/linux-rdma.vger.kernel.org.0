@@ -2,84 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4B3303C98
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 13:10:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE55303DD1
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 13:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392421AbhAZMJj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Jan 2021 07:09:39 -0500
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:60464 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392596AbhAZMJV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Jan 2021 07:09:21 -0500
+        id S2392070AbhAZMzT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Jan 2021 07:55:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404036AbhAZMta (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Jan 2021 07:49:30 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F8DC061D7F
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:39 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id m187so2346802wme.2
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1611662962; x=1643198962;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Pqs46+Al2GjlLS1/yjkliOEa5s1UWhZGr+OvYYZgCks=;
-  b=YAgV3j9UkOxEmchrKvt6/y31VHQDN6/s6u0lc07v2pVeqDOM1GGKxBkm
-   w7/J75lv2q4qt2lh25alOBk0LkScnLIlstyZTehfyrGb89mx7LpbsLVEO
-   FVOleamd5l9Y1Ybx9MT7tNAuPJOcgNBRI5thjbqccPHbcvfB5O1gxx5/f
-   k=;
-X-IronPort-AV: E=Sophos;i="5.79,375,1602547200"; 
-   d="scan'208";a="77442493"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-57e1d233.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 26 Jan 2021 12:08:40 +0000
-Received: from EX13D19EUB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1e-57e1d233.us-east-1.amazon.com (Postfix) with ESMTPS id D8AAF14164D;
-        Tue, 26 Jan 2021 12:08:39 +0000 (UTC)
-Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
- EX13D19EUB001.ant.amazon.com (10.43.166.229) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 26 Jan 2021 12:08:38 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.1.213.21) by
- mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 26 Jan 2021 12:08:36 +0000
-From:   Gal Pressman <galpress@amazon.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>
-CC:     <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Firas JahJah <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-Subject: [PATCH for-next 5/5] RDMA/efa: Remove unused syndrome enum values
-Date:   Tue, 26 Jan 2021 14:07:01 +0200
-Message-ID: <20210126120702.9807-6-galpress@amazon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210126120702.9807-1-galpress@amazon.com>
-References: <20210126120702.9807-1-galpress@amazon.com>
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bwZHLBV2JS6GWXnvbYJdRkmpIgp0vHY6q4uz5g/IZE8=;
+        b=xDf2jLJ9BS5w40h7X7toDBe6lSpyuD18tkLth0biAYEu/jMnh/IHrnN3YEosErZa4V
+         Wb/jFaZ4CbEOlf9QH09uP95ZzExw5pmHPpZwC1QRM3YfgUgsaV4vgQeTzahUOMYud4WO
+         6hKX6fT5m1+aGPpxFF/s/zY7526Hil5+/S9JdLJre83GlyoiXaB3YZ5o2XzlYC3kR/DF
+         tI0Out45E9Xzb+ELsEAMjL2/NtsjkbPBfYbwkXMsy/qntjaXZ5foPisOuqeHby7P7B0e
+         coqoc4Q7J4ShMxLzFux29+jMT/o/+yxtggLs/7TqkA6KYknxe2k8V4FxMdM1gSbE/6a2
+         ePCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bwZHLBV2JS6GWXnvbYJdRkmpIgp0vHY6q4uz5g/IZE8=;
+        b=Dz6i9J2BURC6lQ+VzCXQMYBHtlhRx5mWh4E+kuG27YMYcEQcC+Q5nt0uNuQN9Ktzd3
+         MOu+mXraz5tsI+Epd9aT7j/3mrTUOiTTWaIeOVypOkHOh4LV4c9z6OL5iUgx1zZiiBvt
+         fB19tdfPcaflqWpym1LIeVorpOQJ9BK2GjQ0MNRNcNSshs3jzRdbRjd6atRPFVpk6PPR
+         g4YJ/nv51i43kmnuH9KSF8HYnizDFCskTcQZHaiFQnGXvup4/oM+YDv1xSm2kmuh7AW8
+         qKqLcrE/tU7KKokoEBni4VC7rqvImNQPbRS2cqaB5CbYWn88/7cIEa2trosDB85vY1/H
+         Nw/g==
+X-Gm-Message-State: AOAM533guimq5cHuv6auLBfmeJERHpJAkvfyknpjIg3mmP0tSoMHTLwG
+        pHC5Wst305CibUUF2sBDg7aPm1BGlV1r2GLd
+X-Google-Smtp-Source: ABdhPJxKL3WTgee+lBclj1oNmZ13v21vDISRjfCGYU7SJejUQaKhRSDQZQTya/sJpgPivEVDeh7SFQ==
+X-Received: by 2002:a1c:a406:: with SMTP id n6mr4561592wme.53.1611665257845;
+        Tue, 26 Jan 2021 04:47:37 -0800 (PST)
+Received: from dell.default ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 04:47:37 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [PATCH 02/20] RDMA/sw/rdmavt/srq: Fix a couple of kernel-doc issues
+Date:   Tue, 26 Jan 2021 12:47:14 +0000
+Message-Id: <20210126124732.3320971-3-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210126124732.3320971-1-lee.jones@linaro.org>
+References: <20210126124732.3320971-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The notification syndrome enum values are unused, remove them.
+Fixes the following W=1 kernel build warning(s):
 
-Reviewed-by: Firas JahJah <firasj@amazon.com>
-Signed-off-by: Gal Pressman <galpress@amazon.com>
+ drivers/infiniband/sw/rdmavt/srq.c:78: warning: Function parameter or member 'ibsrq' not described in 'rvt_create_srq'
+ drivers/infiniband/sw/rdmavt/srq.c:78: warning: Excess function parameter 'ibpd' description in 'rvt_create_srq'
+ drivers/infiniband/sw/rdmavt/srq.c:336: warning: Function parameter or member 'udata' not described in 'rvt_destroy_srq'
+
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Cc: Doug Ledford <dledford@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: linux-rdma@vger.kernel.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/efa/efa_admin_cmds_defs.h | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/infiniband/sw/rdmavt/srq.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-index 9327d5e3ec62..fa38b34eddb8 100644
---- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-+++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-@@ -819,12 +819,6 @@ enum efa_admin_aenq_group {
- 	EFA_ADMIN_AENQ_GROUPS_NUM                   = 5,
- };
+diff --git a/drivers/infiniband/sw/rdmavt/srq.c b/drivers/infiniband/sw/rdmavt/srq.c
+index 64d98bf238ab0..2a7c2f12d372e 100644
+--- a/drivers/infiniband/sw/rdmavt/srq.c
++++ b/drivers/infiniband/sw/rdmavt/srq.c
+@@ -67,7 +67,7 @@ void rvt_driver_srq_init(struct rvt_dev_info *rdi)
  
--enum efa_admin_aenq_notification_syndrom {
--	EFA_ADMIN_SUSPEND                           = 0,
--	EFA_ADMIN_RESUME                            = 1,
--	EFA_ADMIN_UPDATE_HINTS                      = 2,
--};
--
- struct efa_admin_mmio_req_read_less_resp {
- 	u16 req_id;
+ /**
+  * rvt_create_srq - create a shared receive queue
+- * @ibpd: the protection domain of the SRQ to create
++ * @ibsrq: the protection domain of the SRQ to create
+  * @srq_init_attr: the attributes of the SRQ
+  * @udata: data from libibverbs when creating a user SRQ
+  *
+@@ -311,7 +311,8 @@ int rvt_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
+ 	return ret;
+ }
  
+-/** rvt_query_srq - query srq data
++/**
++ * rvt_query_srq - query srq data
+  * @ibsrq: srq to query
+  * @attr: return info in attr
+  *
+@@ -330,7 +331,7 @@ int rvt_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr)
+ /**
+  * rvt_destroy_srq - destory an srq
+  * @ibsrq: srq object to destroy
+- *
++ * @udata: user data for libibverbs.so
+  */
+ int rvt_destroy_srq(struct ib_srq *ibsrq, struct ib_udata *udata)
+ {
 -- 
-2.30.0
+2.25.1
 
