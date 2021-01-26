@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1341C303DA3
+	by mail.lfdr.de (Postfix) with ESMTP id 841B8303DA4
 	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 13:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391809AbhAZMtz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Jan 2021 07:49:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
+        id S2392140AbhAZMuA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Jan 2021 07:50:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403796AbhAZMtv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Jan 2021 07:49:51 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5F8C08EB22
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:49 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id 6so16315043wri.3
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:49 -0800 (PST)
+        with ESMTP id S2392106AbhAZMt4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Jan 2021 07:49:56 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCD4C08EB24
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:50 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id b5so16308477wrr.10
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rnUOXuaDVhzv+JRzF2N3phcXKpl5z42SkYZrTN+HwL8=;
-        b=MqNVz8RNxX/zGJoBvGZbRzmox2XT2+Oo/kNZZVSP2zXsRlIQkB6mQwDoEBKNS+SK4q
-         Z/4yHb7RqDDLXtoV7Rl536qDZwv7sYfZeavJ9tMpe+Ksv1Ss4RMNynaIgYmnCjSGWGsF
-         3HiYTJDeO+PRz9SVF6G9UzhTAwOJSAWOtGC+eGgr9wfCHNVoNzlL7j9NDn9SUsa5uPbi
-         6YEDTLtk6bftJmna9JYd7xBUpLEzK5bn6EcKNrY6GWQ7h/M1NeyNVZOkfxXt+SMg+Wgh
-         /wOOjdsMNBbmv2tmNmERZuUae9CxU8/Vg3xFbF/Ip/K+RnHJZRZBY7hHLbW0jKAt2bub
-         Kk7A==
+        bh=bWXDn1Q9e79o1Ahbq11jdzTrjLD5igFdf2jngDni798=;
+        b=GPuwh5UMbRYTIAqxWcuNWJoL/UZWeUSNS+EYoNcJ91J1TkfsGI0YNqhubB8RQGeReP
+         neR90OV2gzOy6VqYlffob/ri5kelHkNcePX6VgL5r6gjn53vWKYh1VhkWeVMupGxgm6L
+         Kyk2/aynygYowh/ZUb+kJT+/UzEgzQh8/S39Aj5luzRPazsi5gYNnVxOy25nQ2hIWfrW
+         oEqQPDq0lO6Fu0Mc+7vHtAf6nkQJaDUyF6Lz4A2Ljfwt/JxlLysavqwwH2dYXWr97Er0
+         tP+eCmUz7yoWJoSEEQm/BxcMxpvB5T0xjZLLveUJp5jFyX56K967T7uxSIKonfYu4t1T
+         mj3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rnUOXuaDVhzv+JRzF2N3phcXKpl5z42SkYZrTN+HwL8=;
-        b=jwoTqQ44b/xz7daz+2+TuN3MfCnb7FsNq5//CusZETbpF8nn2hvQmDmnGfeQjJFKJ8
-         eSersBob+TZb6Z/1Sw71pZdWo99ycmDoK9bNX564sfKh7o30m42FLfV0c95TKIC5L8y/
-         o7OK9fcHdRKOdayP5hHjSn/ZzJlr5Ov5t9ewQakjZhpEtKRhUBzxGf3RBgfqqFMPPdqm
-         eMnavNgLYbA1mi2cXFb/j/mi2GGc80vRpyFeEIVl38KQ+AwxjFMIgrCGdEePBDDHrYvx
-         pb19J7JPM5dy2UcJlRjw00U52CdVGgVfFb6Ol/fUr2oL5Q3B68nD9zlSb60YVFF2PpCC
-         Q7Hg==
-X-Gm-Message-State: AOAM533HBs8XWObdmODwTCiHb4KC+uCFvXNsqu7SsZ3giBTNqhb8IIry
-        hGdhN/opCcPbqbL1p6C15J+peA==
-X-Google-Smtp-Source: ABdhPJyLudmPTC3h2iicIMU90/lCacPFTuduSuKUdXae8KM5eDTxCucVccuknk2sFWP6UvfheL9vuA==
-X-Received: by 2002:adf:cd83:: with SMTP id q3mr5883891wrj.225.1611665268097;
-        Tue, 26 Jan 2021 04:47:48 -0800 (PST)
+        bh=bWXDn1Q9e79o1Ahbq11jdzTrjLD5igFdf2jngDni798=;
+        b=H7Rk3lnvBlc+Ald9cK+csH5NoAYD0aKYBoR/zBIC79yeB0iIMbeqE7TSa8tJ44PFo1
+         ajRzZV2mpX0qtVG5Eo7BEuk8UzlP1VcIkawfELJ92YnOSv+0TlFyC7kzkQMGnwmPgvzl
+         mHSkAqFRTcXWa+w3WVa3z8BAge/lng/peDicfdBmFwVJfO85mhV3aD68ojdF40rkZRpq
+         wr/6rEAN4gNU8JsL9YwARKDaV10LqEUMvcYlma++aDzlf2pv2NHhP1sZ008bEuIe9JVy
+         rd2DVeF2v3/+Ao3oLB96ihYgBAQ1kGtHr66cAxEFDcS93TUQIoWHhB0+HTgx7FcbJiD8
+         hVmA==
+X-Gm-Message-State: AOAM5318Pt2AvFEbp+vr5hW2L2sXbq/jtEMYC2iq1BzpN0p/VDVST37q
+        AvGJAGbV+mRGp2Jy31tl1+qqsg==
+X-Google-Smtp-Source: ABdhPJyoqraqYP5Lncuk2TmsiQknmS5tV0xjuVaaRBE6kIXCodS8Icxj6NLW9Dse8QaRWrHHIWGA5g==
+X-Received: by 2002:adf:f403:: with SMTP id g3mr5943566wro.212.1611665269305;
+        Tue, 26 Jan 2021 04:47:49 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.47
+        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 04:47:47 -0800 (PST)
+        Tue, 26 Jan 2021 04:47:48 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -54,9 +54,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 11/20] RDMA/hw/hfi1/rc: Fix a few function documentation issues
-Date:   Tue, 26 Jan 2021 12:47:23 +0000
-Message-Id: <20210126124732.3320971-12-lee.jones@linaro.org>
+Subject: [PATCH 12/20] RDMA/hw/hfi1/qp: Fix some formatting issues and demote kernel-doc abuse
+Date:   Tue, 26 Jan 2021 12:47:24 +0000
+Message-Id: <20210126124732.3320971-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210126124732.3320971-1-lee.jones@linaro.org>
 References: <20210126124732.3320971-1-lee.jones@linaro.org>
@@ -68,14 +68,13 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/hw/hfi1/rc.c:430: warning: Function parameter or member 'ps' not described in 'hfi1_make_rc_req'
- drivers/infiniband/hw/hfi1/rc.c:1387: warning: Function parameter or member 'packet' not described in 'hfi1_send_rc_ack'
- drivers/infiniband/hw/hfi1/rc.c:1387: warning: Function parameter or member 'is_fecn' not described in 'hfi1_send_rc_ack'
- drivers/infiniband/hw/hfi1/rc.c:1387: warning: Excess function parameter 'qp' description in 'hfi1_send_rc_ack'
- drivers/infiniband/hw/hfi1/rc.c:2008: warning: Function parameter or member 'aeth' not described in 'do_rc_ack'
- drivers/infiniband/hw/hfi1/rc.c:2008: warning: Function parameter or member 'val' not described in 'do_rc_ack'
- drivers/infiniband/hw/hfi1/rc.c:2008: warning: Function parameter or member 'rcd' not described in 'do_rc_ack'
- drivers/infiniband/hw/hfi1/rc.c:2554: warning: Function parameter or member 'rcd' not described in 'rc_rcv_error'
+ drivers/infiniband/hw/hfi1/qp.c:195: warning: Function parameter or member 'dev' not described in 'verbs_mtu_enum_to_int'
+ drivers/infiniband/hw/hfi1/qp.c:195: warning: Function parameter or member 'mtu' not described in 'verbs_mtu_enum_to_int'
+ drivers/infiniband/hw/hfi1/qp.c:306: warning: Function parameter or member 'qp' not described in 'hfi1_setup_wqe'
+ drivers/infiniband/hw/hfi1/qp.c:306: warning: Function parameter or member 'wqe' not described in 'hfi1_setup_wqe'
+ drivers/infiniband/hw/hfi1/qp.c:306: warning: Function parameter or member 'call_send' not described in 'hfi1_setup_wqe'
+ drivers/infiniband/hw/hfi1/qp.c:922: warning: Function parameter or member 'qp' not described in 'hfi1_qp_iter_cb'
+ drivers/infiniband/hw/hfi1/qp.c:922: warning: Function parameter or member 'v' not described in 'hfi1_qp_iter_cb'
 
 Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
@@ -84,38 +83,55 @@ Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/hfi1/rc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/hfi1/qp.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/rc.c b/drivers/infiniband/hw/hfi1/rc.c
-index 1bb5f57152d35..7194236aec8fe 100644
---- a/drivers/infiniband/hw/hfi1/rc.c
-+++ b/drivers/infiniband/hw/hfi1/rc.c
-@@ -421,6 +421,7 @@ static int make_rc_ack(struct hfi1_ibdev *dev, struct rvt_qp *qp,
- /**
-  * hfi1_make_rc_req - construct a request packet (SEND, RDMA r/w, ATOMIC)
-  * @qp: a pointer to the QP
-+ * @ps: the current packet state
-  *
-  * Assumes s_lock is held.
-  *
-@@ -1992,7 +1993,7 @@ static void update_qp_retry_state(struct rvt_qp *qp, u32 psn, u32 spsn,
- 	}
+diff --git a/drivers/infiniband/hw/hfi1/qp.c b/drivers/infiniband/hw/hfi1/qp.c
+index 681bb4e918c92..e037df9115127 100644
+--- a/drivers/infiniband/hw/hfi1/qp.c
++++ b/drivers/infiniband/hw/hfi1/qp.c
+@@ -186,7 +186,7 @@ static void flush_iowait(struct rvt_qp *qp)
+ 	write_sequnlock_irqrestore(lock, flags);
  }
  
 -/**
 +/*
-  * do_rc_ack - process an incoming RC ACK
-  * @qp: the QP the ACK came in on
-  * @psn: the packet sequence number of the ACK
-@@ -2541,6 +2542,7 @@ static inline void rc_cancel_ack(struct rvt_qp *qp)
-  * @opcode: the opcode for this packet
-  * @psn: the packet sequence number for this packet
-  * @diff: the difference between the PSN and the expected PSN
-+ * @rcd: the receive context
+  * This function is what we would push to the core layer if we wanted to be a
+  * "first class citizen".  Instead we hide this here and rely on Verbs ULPs
+  * to blindly pass the MTU enum value from the PathRecord to us.
+@@ -289,9 +289,9 @@ void hfi1_modify_qp(struct rvt_qp *qp, struct ib_qp_attr *attr,
+ 
+ /**
+  * hfi1_setup_wqe - set up the wqe
+- * @qp - The qp
+- * @wqe - The built wqe
+- * @call_send - Determine if the send should be posted or scheduled.
++ * @qp: The qp
++ * @wqe: The built wqe
++ * @call_send: Determine if the send should be posted or scheduled.
   *
-  * This is called from hfi1_rc_rcv() to process an unexpected
-  * incoming RC packet for the given QP.
+  * Perform setup of the wqe.  This is called
+  * prior to inserting the wqe into the ring but after
+@@ -595,7 +595,7 @@ struct sdma_engine *qp_to_sdma_engine(struct rvt_qp *qp, u8 sc5)
+ 	return sde;
+ }
+ 
+-/*
++/**
+  * qp_to_send_context - map a qp to a send context
+  * @qp: the QP
+  * @sc5: the 5 bit sc
+@@ -912,8 +912,8 @@ void notify_error_qp(struct rvt_qp *qp)
+ 
+ /**
+  * hfi1_qp_iter_cb - callback for iterator
+- * @qp - the qp
+- * @v - the sl in low bits of v
++ * @qp: the qp
++ * @v: the sl in low bits of v
+  *
+  * This is called from the iterator callback to work
+  * on an individual qp.
 -- 
 2.25.1
 
