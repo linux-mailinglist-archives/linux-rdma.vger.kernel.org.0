@@ -2,74 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF78730316F
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 02:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B01FC303143
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 02:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729502AbhAZBZT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Jan 2021 20:25:19 -0500
-Received: from mga09.intel.com ([134.134.136.24]:28888 "EHLO mga09.intel.com"
+        id S1727066AbhAZB3y convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 25 Jan 2021 20:29:54 -0500
+Received: from mga03.intel.com ([134.134.136.65]:50872 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731557AbhAYTnU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:43:20 -0500
-IronPort-SDR: 3TjHhgR3VYqo2MS20xeaUzZMUBR+LVuJIXzHhpUqY1fMGsxQBxBfKr1Jp9QNXZ3JG1v44wXHvH
- uhRpP5Bs0YvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="179937095"
-X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
-   d="scan'208";a="179937095"
+        id S1731230AbhAZB1e (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 25 Jan 2021 20:27:34 -0500
+IronPort-SDR: Volfh2KGnOT8QxXloKeLIjB1bR6cxvq4MflOOrgz8rnVWbzQNSZ6Y5QbDqh43lk+uUH7OwKSd8
+ BfXM8Xk5dJ+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="179909629"
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="179909629"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 11:42:00 -0800
-IronPort-SDR: 2GeBmKcADVG0ofST3+fLqVnmy7Uc44MaTcO5OE9YHqHojY5cfKHSHFxB5lISXW3/kfwEhCK7Hp
- LeJF8ZHAepTw==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 16:39:21 -0800
+IronPort-SDR: ShCaldHqtzaM8oxJfXsNGxmzh0pNz0/dSvuS2I+C7n1vfg6KUOv1p05e1VXXkRXJ0JPrhsJeBk
+ taxpz99OxAnQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
-   d="scan'208";a="402468971"
-Received: from cst-dev.jf.intel.com ([10.23.221.69])
-  by fmsmga004.fm.intel.com with ESMTP; 25 Jan 2021 11:41:59 -0800
-From:   Jianxin Xiong <jianxin.xiong@intel.com>
-To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Edward Srouji <edwards@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: [PATCH rdma-core v7 6/6] tests: Bug fix for get_access_flags()
-Date:   Mon, 25 Jan 2021 11:57:02 -0800
-Message-Id: <1611604622-86968-7-git-send-email-jianxin.xiong@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1611604622-86968-1-git-send-email-jianxin.xiong@intel.com>
-References: <1611604622-86968-1-git-send-email-jianxin.xiong@intel.com>
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="402570112"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga004.fm.intel.com with ESMTP; 25 Jan 2021 16:39:21 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 25 Jan 2021 16:39:21 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 25 Jan 2021 16:39:20 -0800
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.1713.004;
+ Mon, 25 Jan 2021 16:39:20 -0800
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>
+Subject: RE: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
+ implement private channel OPs
+Thread-Topic: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
+ implement private channel OPs
+Thread-Index: AQHW8RlTrNE3qjtLukSnj7NcX24DDao3Ul6AgAFbdYA=
+Date:   Tue, 26 Jan 2021 00:39:20 +0000
+Message-ID: <3de0df06f50541aab9ecf61d035c839a@intel.com>
+References: <20210122234827.1353-1-shiraz.saleem@intel.com>
+ <20210122234827.1353-8-shiraz.saleem@intel.com>
+ <20210124134551.GB5038@unreal>
+In-Reply-To: <20210124134551.GB5038@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The filter definition is wrong and causes get_access_flags() always
-returning empty list. As the result the MR tests using this function
-are effectively skipped (but report success).
+> Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
+> implement private channel OPs
+> 
+> 
+> > +static int irdma_devlink_rsrc_limits_validate(struct devlink *dl, u32 id,
+> > +					      union devlink_param_value val,
+> > +					      struct netlink_ext_ack *extack) {
+> > +	u8 value = val.vu8;
+> > +
+> > +	if (value > 7) {
+> > +		NL_SET_ERR_MSG_MOD(extack, "resource limits selector range
+> is (0-7)");
+> > +		return -ERANGE;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int irdma_devlink_enable_roce_validate(struct devlink *dl, u32 id,
+> > +					      union devlink_param_value val,
+> > +					      struct netlink_ext_ack *extack) {
+> > +	struct irdma_dl_priv *priv = devlink_priv(dl);
+> > +	bool value = val.vbool;
+> > +
+> > +	if (value && priv->drvdata->hw_ver == IRDMA_GEN_1) {
+> > +		NL_SET_ERR_MSG_MOD(extack, "RoCE not supported on
+> device");
+> > +		return -EOPNOTSUPP;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int irdma_devlink_upload_ctx_get(struct devlink *devlink, u32 id,
+> > +					struct devlink_param_gset_ctx *ctx) {
+> > +	ctx->val.vbool = irdma_upload_context;
+> > +	return 0;
+> > +}
+> > +
+> > +static int irdma_devlink_upload_ctx_set(struct devlink *devlink, u32 id,
+> > +					struct devlink_param_gset_ctx *ctx) {
+> > +	irdma_upload_context = ctx->val.vbool;
+> > +	return 0;
+> > +}
+> > +
+> > +enum irdma_dl_param_id {
+> > +	IRDMA_DEVLINK_PARAM_ID_BASE =
+> DEVLINK_PARAM_GENERIC_ID_MAX,
+> > +	IRDMA_DEVLINK_PARAM_ID_LIMITS_SELECTOR,
+> > +	IRDMA_DEVLINK_PARAM_ID_UPLOAD_CONTEXT,
+> > +};
+> > +
+> > +static const struct devlink_param irdma_devlink_params[] = {
+> > +
+> 	DEVLINK_PARAM_DRIVER(IRDMA_DEVLINK_PARAM_ID_LIMITS_SELE
+> CTOR,
+> > +			     "resource_limits_selector",
+> DEVLINK_PARAM_TYPE_U8,
+> > +			      BIT(DEVLINK_PARAM_CMODE_DRIVERINIT),
+> > +			      NULL, NULL, irdma_devlink_rsrc_limits_validate),
+> > +
+> 	DEVLINK_PARAM_DRIVER(IRDMA_DEVLINK_PARAM_ID_UPLOAD_CON
+> TEXT,
+> > +			     "upload_context", DEVLINK_PARAM_TYPE_BOOL,
+> > +			     BIT(DEVLINK_PARAM_CMODE_RUNTIME),
+> > +			     irdma_devlink_upload_ctx_get,
+> > +			     irdma_devlink_upload_ctx_set, NULL),
+> > +	DEVLINK_PARAM_GENERIC(ENABLE_ROCE,
+> BIT(DEVLINK_PARAM_CMODE_DRIVERINIT),
+> > +			      NULL, NULL, irdma_devlink_enable_roce_validate),
+> > +};
+> 
+> RoCE enable knob is understandable, but others are not explained.
+> 
 
-Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
----
- tests/utils.py | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tests/utils.py b/tests/utils.py
-index 8546329..c41cb3b 100644
---- a/tests/utils.py
-+++ b/tests/utils.py
-@@ -58,8 +58,8 @@ def filter_illegal_access_flags(element):
-     :param element: A list of access flags to check
-     :return: True if this list is legal, else False
-     """
--    if e.IBV_ACCESS_REMOTE_ATOMIC in element or e.IBV_ACCESS_REMOTE_WRITE:
--        if e.IBV_ACCESS_LOCAL_WRITE:
-+    if e.IBV_ACCESS_REMOTE_ATOMIC in element or e.IBV_ACCESS_REMOTE_WRITE in element:
-+        if not e.IBV_ACCESS_LOCAL_WRITE in element:
-             return False
-     return True
- 
--- 
-1.8.3.1
-
+OK. That can be fixed.
