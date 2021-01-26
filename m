@@ -2,143 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C0B303556
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 06:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3823037CA
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 09:23:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388072AbhAZFjU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Jan 2021 00:39:20 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15220 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731411AbhAZCRn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Jan 2021 21:17:43 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B600f6c1f0005>; Mon, 25 Jan 2021 17:10:55 -0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 26 Jan
- 2021 01:10:55 +0000
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 26 Jan
- 2021 01:10:48 +0000
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.58) by
- HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 26 Jan 2021 01:10:48 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kMIV5UsluO3X4t3QrvgbvUNAq05r47cSSO7CPeocq0B2/e2MtLLo58ZlKt7jfQ0EIu0ohgmADW/VNLo9j4pWspNJiqswQbv+SvBvWhXWty2bAlPLZseQm5kgeEqpxU8CnoP0wgrYOdoWkRvi08kWgfIjaTODNc0IuvNCsUdNOv1ErtezwbFPqavCl2SzVNtLrpmVe+jEJS6rhfe5mpJB5zh9w7QjHDrZlPdotUDYjb7G1fyLuFCn47DaW6dXmrdPZkajrHY2Y6fCHB5bkJL9Tp2Yf2cZy6bTCYI2y2t1pq4I1F7Yiep/OmGCXpBtQRl0nFRMH5IV/PtTo/RaZaHztQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bv1m0IqIy+JuqUa83fJ5LkpwhUejXPUQe/Okvn0g/jg=;
- b=bg+tMOhKbKsIOJvda1gEJEuvoGMk9K4cQivOzyJb5wXhjbs/lFWfBELhGEVKhn3RSAsBTCThjrfw9jZZ7xG1PeWemjtS5g0N7a5eFigHLaxkuuNPG+3k2tZvRZ5cPgVeA3o3j7BgI3y9rVn6Aryoe1MX3a+zb4XQrEZaIQFdzqKUhee6iJIR6YBxkk27UXRNm2VlDFixqxjEvVmnvOJGtmaSA4QlqCQwHYRzhWMPDtB+qslz4NtDAZ7hgxrv3F97G0AqfafBBehMNEpoexiBZtm1Bp+oKZ3j/bBGR289qwfNuWbDGFlPIy23AVY71+YBhPH3+676ZgNAzTyTcO6cLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3020.namprd12.prod.outlook.com (2603:10b6:5:11f::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Tue, 26 Jan
- 2021 01:10:46 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.019; Tue, 26 Jan 2021
- 01:10:45 +0000
-Date:   Mon, 25 Jan 2021 21:10:43 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jacob Keller <jacob.e.keller@intel.com>
-CC:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "jiri@nvidia.com" <jiri@nvidia.com>,
-        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>
-Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
- implement private channel OPs
-Message-ID: <20210126011043.GG4147@nvidia.com>
-References: <20210122234827.1353-1-shiraz.saleem@intel.com>
- <20210122234827.1353-8-shiraz.saleem@intel.com>
- <20210124134551.GB5038@unreal> <20210125132834.GK4147@nvidia.com>
- <2072c76154cd4232b78392c650b2b2bf@intel.com>
- <5b3f609d-034a-826f-1e50-0a5f8ad8406e@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <5b3f609d-034a-826f-1e50-0a5f8ad8406e@intel.com>
-X-ClientProxiedBy: BLAPR03CA0168.namprd03.prod.outlook.com
- (2603:10b6:208:32c::23) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S2389817AbhAZIVC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Jan 2021 03:21:02 -0500
+Received: from smtprelay0146.hostedemail.com ([216.40.44.146]:53526 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389809AbhAZIVA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:21:00 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 8742B12C7;
+        Tue, 26 Jan 2021 08:20:14 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2919:3138:3139:3140:3141:3142:3355:3622:3867:3868:3870:3871:3872:3873:3874:4250:4321:5007:7652:8531:10004:10400:10848:10967:11026:11232:11473:11658:11914:12043:12294:12296:12297:12438:12555:12740:12760:12895:12986:13255:13439:14181:14659:14721:21080:21212:21451:21627:21740:21990:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: fire53_3e0904e2758c
+X-Filterd-Recvd-Size: 4553
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 26 Jan 2021 08:20:12 +0000 (UTC)
+Message-ID: <48c5a16657bb7b6c0f619253e57133137d4e825c.camel@perches.com>
+Subject: Re: [PATCH mlx5-next v4 1/4] PCI: Add sysfs callback to allow MSI-X
+ table size change of SR-IOV VFs
+From:   Joe Perches <joe@perches.com>
+To:     Leon Romanovsky <leon@kernel.org>, Jakub Kicinski <kuba@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>
+Date:   Tue, 26 Jan 2021 00:20:11 -0800
+In-Reply-To: <20210126060135.GQ579511@unreal>
+References: <20210124131119.558563-1-leon@kernel.org>
+         <20210124131119.558563-2-leon@kernel.org>
+         <20210125135229.6193f783@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <20210126060135.GQ579511@unreal>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BLAPR03CA0168.namprd03.prod.outlook.com (2603:10b6:208:32c::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Tue, 26 Jan 2021 01:10:44 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l4CsV-006tOB-4u; Mon, 25 Jan 2021 21:10:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611623456; bh=bv1m0IqIy+JuqUa83fJ5LkpwhUejXPUQe/Okvn0g/jg=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=NXcdNM7E30KnqmiclGSzWD7TjPefBZu+AyetuApiL6O2twRBNpQkfcQtGboD3hLGa
-         JwhTQcKtonmCRGERJYqTJFOzQPlFDMnCM9P8fRlWfYiQb5GxLsf0JML8pKEWU6jeQ/
-         zjOBdcKTTkifJZ/Yn8puZh47ntsBJo6yWQlESrW4kMfRhEmwrV1kIDjQfJz2Opf8TJ
-         b2psz0tFQUMMDFpBeeHgAd3Dzdg4YIii+rZUwwlkBKBS1hNbm6aO+PNT+zx72XLc7y
-         KU3BJCJsubtjha2NcHS+PzKRxuXpW96c7qc3KpNKpbEbQAl3lhn44o9g47erY6M+Rz
-         8eGwXfNDNjcQA==
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 05:01:40PM -0800, Jacob Keller wrote:
-> 
-> 
-> On 1/25/2021 4:39 PM, Saleem, Shiraz wrote:
-> >> Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
-> >> implement private channel OPs
-> >>
-> >> On Sun, Jan 24, 2021 at 03:45:51PM +0200, Leon Romanovsky wrote:
-> >>> On Fri, Jan 22, 2021 at 05:48:12PM -0600, Shiraz Saleem wrote:
-> >>>> From: Mustafa Ismail <mustafa.ismail@intel.com>
-> >>>>
-> >>>> Register irdma as an auxiliary driver which can attach to auxiliary
-> >>>> RDMA devices from Intel PCI netdev drivers i40e and ice. Implement
-> >>>> the private channel ops, add basic devlink support in the driver and
-> >>>> register net notifiers.
-> >>>
-> >>> Devlink part in "the RDMA client" is interesting thing.
-> >>>
-> >>> The idea behind auxiliary bus was that PCI logic will stay at one
-> >>> place and devlink considered as the tool to manage that.
-> >>
-> >> Yes, this doesn't seem right, I don't think these auxiliary bus objects should have
-> >> devlink instances, or at least someone from devlink land should approve of the
-> >> idea.
-> >>
+On Tue, 2021-01-26 at 08:01 +0200, Leon Romanovsky wrote:
+> On Mon, Jan 25, 2021 at 01:52:29PM -0800, Jakub Kicinski wrote:
+> > On Sun, 24 Jan 2021 15:11:16 +0200 Leon Romanovsky wrote:
+> > > +static int pci_enable_vfs_overlay(struct pci_dev *dev) { return 0; }
+> > > +static void pci_disable_vfs_overlay(struct pci_dev *dev) {}
 > > 
-> > In our model, we have one auxdev (for RDMA) per PCI device function owned by netdev driver
-> > and one devlink instance per auxdev. Plus there is an Intel netdev driver for each HW generation.
-> > Moving the devlink logic to the PCI netdev driver would mean duplicating the same set of RDMA
-> > params in each Intel netdev driver. Additionally, plumbing RDMA specific params in the netdev
-> > driver sort of seems misplaced to me.
-> > 
+> > s/static /static inline /
 > 
-> I agree that plumbing these parameters at the PCI side in the devlink of
-> the parent device is weird. They don't seem to be parameters that the
-> parent driver cares about.
+> Thanks a lot, I think that we should extend checkpatch.pl to catch such
+> mistakes.
 
-It does, the PCI driver is not supposed to spawn any aux devices for
-RDMA at all if RDMA is disabled.
+Who is this "we" you refer to? ;)
 
-For an iWarp driver I would consider ENABLE_ROCE to really be a
-general ENABLE_RDMA.
+> How hard is it to extend checkpatch.pl to do regexp and warn if in *.h file
+> someone declared function with implementation but didn't add "inline" word?
 
-Are you sure you need to implement this?
+Something like this seems reasonable and catches these instances in
+include/linux/*.h
 
-In any event, you just can't put the generic ENABLE_ROCE flag anyplace
-but the PCI device for devlink, it breaks the expected user API
-established by mlx5
+$ ./scripts/checkpatch.pl -f include/linux/*.h --types=static_inline --terse --nosummary
+include/linux/dma-mapping.h:203: WARNING: static function definition might be better as static inline
+include/linux/genl_magic_func.h:55: WARNING: static function definition might be better as static inline
+include/linux/genl_magic_func.h:78: WARNING: static function definition might be better as static inline
+include/linux/kernel.h:670: WARNING: static function definition might be better as static inline
+include/linux/kprobes.h:213: WARNING: static function definition might be better as static inline
+include/linux/kprobes.h:231: WARNING: static function definition might be better as static inline
+include/linux/kprobes.h:511: WARNING: static function definition might be better as static inline
+include/linux/skb_array.h:185: WARNING: static function definition might be better as static inline
+include/linux/slab.h:606: WARNING: static function definition might be better as static inline
+include/linux/stop_machine.h:62: WARNING: static function definition might be better as static inline
+include/linux/vmw_vmci_defs.h:850: WARNING: static function definition might be better as static inline
+include/linux/zstd.h:95: WARNING: static function definition might be better as static inline
+include/linux/zstd.h:106: WARNING: static function definition might be better as static inline
 
-Jason
+A false positive exists when __must_check is used between
+static and inline.  It's an unusual and IMO not a preferred use.
+---
+ scripts/checkpatch.pl | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 4f8494527139..0ac366481962 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -4451,6 +4451,18 @@ sub process {
+ 			}
+ 		}
+ 
++# check for static function definitions without inline in .h files
++# only works for static in column 1 and avoids multiline macro definitions
++		if ($realfile =~ /\.h$/ &&
++		    defined($stat) &&
++		    $stat =~ /^\+static(?!\s+(?:$Inline|union|struct))\b.*\{.*\}\s*$/s &&
++		    $line =~ /^\+static(?!\s+(?:$Inline|union|struct))\b/ &&
++		    $line !~ /\\$/) {
++			WARN("STATIC_INLINE",
++			     "static function definition might be better as static inline\n" .
++				$herecurr);
++		}
++
+ # check for non-global char *foo[] = {"bar", ...} declarations.
+ 		if ($line =~ /^.\s+(?:static\s+|const\s+)?char\s+\*\s*\w+\s*\[\s*\]\s*=\s*\{/) {
+ 			WARN("STATIC_CONST_CHAR_ARRAY",
+
+
