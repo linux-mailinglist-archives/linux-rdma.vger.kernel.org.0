@@ -2,116 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3823037CA
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 09:23:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31228303CBA
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 13:16:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389817AbhAZIVC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Jan 2021 03:21:02 -0500
-Received: from smtprelay0146.hostedemail.com ([216.40.44.146]:53526 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389809AbhAZIVA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:21:00 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 8742B12C7;
-        Tue, 26 Jan 2021 08:20:14 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2919:3138:3139:3140:3141:3142:3355:3622:3867:3868:3870:3871:3872:3873:3874:4250:4321:5007:7652:8531:10004:10400:10848:10967:11026:11232:11473:11658:11914:12043:12294:12296:12297:12438:12555:12740:12760:12895:12986:13255:13439:14181:14659:14721:21080:21212:21451:21627:21740:21990:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: fire53_3e0904e2758c
-X-Filterd-Recvd-Size: 4553
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf02.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 26 Jan 2021 08:20:12 +0000 (UTC)
-Message-ID: <48c5a16657bb7b6c0f619253e57133137d4e825c.camel@perches.com>
-Subject: Re: [PATCH mlx5-next v4 1/4] PCI: Add sysfs callback to allow MSI-X
- table size change of SR-IOV VFs
-From:   Joe Perches <joe@perches.com>
-To:     Leon Romanovsky <leon@kernel.org>, Jakub Kicinski <kuba@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        id S2392130AbhAZMPL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Jan 2021 07:15:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404915AbhAZLJR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Jan 2021 06:09:17 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2AFC06174A
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 03:08:33 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id a1so15994689wrq.6
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 03:08:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YexESypTZUXGxM0RNYUq5KscUb8ruQBrW1cIhg1mZJ0=;
+        b=bskZDSuMdTWcqASyQOy7OtS5KG6+pzOlrEOQmnZLWuKDog92AwWAC1iTsT88zhd+Ja
+         ZTzLqQWfD+pNGaDtTg9/JwZGrg2jqNk3p00j0Vqeou4Es5qRMXi3/B5C/X8WDGdgvLC8
+         Mj3oB0BD2rnEjNWyqV+6YxFkgxDX0gk7IrTBWoutXmKk+hMV/QjsiqUyNqRK8Iswsc7m
+         L/hxU2h/VFLAZ4DsQP4cuQ7HTUZC0vC1x1KXSwSA/5/55OU/Ep4640dCRmO3bKDGb5Zn
+         HmIQWYUROmzmI+3qbDfiEH9LsEymELXtGaIE2e6Wv5p2XA69vrlDal64gt7vPdqeUPwV
+         TT1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YexESypTZUXGxM0RNYUq5KscUb8ruQBrW1cIhg1mZJ0=;
+        b=bB9+hUSKBtPXQ+/itwRobewJNjhRNYt+qasrm4pNoXwLDObJx4q0pOGc52NNCwEdbJ
+         sM+b/xTHs+Jp3nD3mCs3rWUuGeq/cDdBnF+bgYFdVFXI7oMgsN32RQQ25f9NgiWYOMeG
+         tFBOL5PSWPDqF7/fGQwFvydKfqpoN08DhI0/VVW/k3Xwd5+16j0mbT2lihLoAbOShrqz
+         Do/OERsVjBJWqt5xT+A3EIRM5oF5GSKz0wnvZfTvPyJhFC2lTgPkOP+jIuJa/hwK0MNB
+         vgCXq06qmVBOy98CrgXnfX6KX+/FHF1jwOMRCfgHIoOSJkrBnW6U2tUns4tmWZ9wa5+4
+         vWMA==
+X-Gm-Message-State: AOAM5322W+pBVNXPTXvK9xs9Aj6HadMTR8hE/siCo3BLVmOnzVCcUMN0
+        L5Y+n2iHB5HRn5rhvVdLVxrdwA==
+X-Google-Smtp-Source: ABdhPJyfP85ucHm7H/Dm1TztP6OgLXgNB/BxHatQ80kHkb7XarU2/+PooSiT+4Wl68HlfXcBzEPDXg==
+X-Received: by 2002:a5d:440a:: with SMTP id z10mr5556407wrq.266.1611659312476;
+        Tue, 26 Jan 2021 03:08:32 -0800 (PST)
+Received: from apalos.home (athedsl-376992.home.otenet.gr. [79.131.24.158])
+        by smtp.gmail.com with ESMTPSA id z18sm10610031wro.91.2021.01.26.03.08.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 03:08:31 -0800 (PST)
+Date:   Tue, 26 Jan 2021 13:08:28 +0200
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>
-Date:   Tue, 26 Jan 2021 00:20:11 -0800
-In-Reply-To: <20210126060135.GQ579511@unreal>
-References: <20210124131119.558563-1-leon@kernel.org>
-         <20210124131119.558563-2-leon@kernel.org>
-         <20210125135229.6193f783@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <20210126060135.GQ579511@unreal>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Leon Romanovsky <leon@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH net-next 3/3] net: page_pool: simplify page recycling
+ condition tests
+Message-ID: <YA/4LNJPEQJv++mo@apalos.home>
+References: <20210125164612.243838-1-alobakin@pm.me>
+ <20210125164612.243838-4-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125164612.243838-4-alobakin@pm.me>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 2021-01-26 at 08:01 +0200, Leon Romanovsky wrote:
-> On Mon, Jan 25, 2021 at 01:52:29PM -0800, Jakub Kicinski wrote:
-> > On Sun, 24 Jan 2021 15:11:16 +0200 Leon Romanovsky wrote:
-> > > +static int pci_enable_vfs_overlay(struct pci_dev *dev) { return 0; }
-> > > +static void pci_disable_vfs_overlay(struct pci_dev *dev) {}
-> > 
-> > s/static /static inline /
+On Mon, Jan 25, 2021 at 04:47:20PM +0000, Alexander Lobakin wrote:
+> pool_page_reusable() is a leftover from pre-NUMA-aware times. For now,
+> this function is just a redundant wrapper over page_is_pfmemalloc(),
+> so Inline it into its sole call site.
 > 
-> Thanks a lot, I think that we should extend checkpatch.pl to catch such
-> mistakes.
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> ---
+>  net/core/page_pool.c | 14 ++++----------
+>  1 file changed, 4 insertions(+), 10 deletions(-)
+> 
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index f3c690b8c8e3..ad8b0707af04 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -350,14 +350,6 @@ static bool page_pool_recycle_in_cache(struct page *page,
+>  	return true;
+>  }
+>  
+> -/* page is NOT reusable when:
+> - * 1) allocated when system is under some pressure. (page_is_pfmemalloc)
+> - */
+> -static bool pool_page_reusable(struct page_pool *pool, struct page *page)
+> -{
+> -	return !page_is_pfmemalloc(page);
+> -}
+> -
+>  /* If the page refcnt == 1, this will try to recycle the page.
+>   * if PP_FLAG_DMA_SYNC_DEV is set, we'll try to sync the DMA area for
+>   * the configured size min(dma_sync_size, pool->max_len).
+> @@ -373,9 +365,11 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
+>  	 * regular page allocator APIs.
+>  	 *
+>  	 * refcnt == 1 means page_pool owns page, and can recycle it.
+> +	 *
+> +	 * page is NOT reusable when allocated when system is under
+> +	 * some pressure. (page_is_pfmemalloc)
+>  	 */
+> -	if (likely(page_ref_count(page) == 1 &&
+> -		   pool_page_reusable(pool, page))) {
+> +	if (likely(page_ref_count(page) == 1 && !page_is_pfmemalloc(page))) {
+>  		/* Read barrier done in page_ref_count / READ_ONCE */
+>  
+>  		if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+> -- 
+> 2.30.0
+> 
+> 
 
-Who is this "we" you refer to? ;)
-
-> How hard is it to extend checkpatch.pl to do regexp and warn if in *.h file
-> someone declared function with implementation but didn't add "inline" word?
-
-Something like this seems reasonable and catches these instances in
-include/linux/*.h
-
-$ ./scripts/checkpatch.pl -f include/linux/*.h --types=static_inline --terse --nosummary
-include/linux/dma-mapping.h:203: WARNING: static function definition might be better as static inline
-include/linux/genl_magic_func.h:55: WARNING: static function definition might be better as static inline
-include/linux/genl_magic_func.h:78: WARNING: static function definition might be better as static inline
-include/linux/kernel.h:670: WARNING: static function definition might be better as static inline
-include/linux/kprobes.h:213: WARNING: static function definition might be better as static inline
-include/linux/kprobes.h:231: WARNING: static function definition might be better as static inline
-include/linux/kprobes.h:511: WARNING: static function definition might be better as static inline
-include/linux/skb_array.h:185: WARNING: static function definition might be better as static inline
-include/linux/slab.h:606: WARNING: static function definition might be better as static inline
-include/linux/stop_machine.h:62: WARNING: static function definition might be better as static inline
-include/linux/vmw_vmci_defs.h:850: WARNING: static function definition might be better as static inline
-include/linux/zstd.h:95: WARNING: static function definition might be better as static inline
-include/linux/zstd.h:106: WARNING: static function definition might be better as static inline
-
-A false positive exists when __must_check is used between
-static and inline.  It's an unusual and IMO not a preferred use.
----
- scripts/checkpatch.pl | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 4f8494527139..0ac366481962 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -4451,6 +4451,18 @@ sub process {
- 			}
- 		}
- 
-+# check for static function definitions without inline in .h files
-+# only works for static in column 1 and avoids multiline macro definitions
-+		if ($realfile =~ /\.h$/ &&
-+		    defined($stat) &&
-+		    $stat =~ /^\+static(?!\s+(?:$Inline|union|struct))\b.*\{.*\}\s*$/s &&
-+		    $line =~ /^\+static(?!\s+(?:$Inline|union|struct))\b/ &&
-+		    $line !~ /\\$/) {
-+			WARN("STATIC_INLINE",
-+			     "static function definition might be better as static inline\n" .
-+				$herecurr);
-+		}
-+
- # check for non-global char *foo[] = {"bar", ...} declarations.
- 		if ($line =~ /^.\s+(?:static\s+|const\s+)?char\s+\*\s*\w+\s*\[\s*\]\s*=\s*\{/) {
- 			WARN("STATIC_CONST_CHAR_ARRAY",
-
-
+Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
