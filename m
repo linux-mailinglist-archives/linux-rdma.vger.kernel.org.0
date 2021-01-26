@@ -2,129 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00341303E1A
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 14:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D153F303E14
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Jan 2021 14:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391732AbhAZNGw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Jan 2021 08:06:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51026 "EHLO
+        id S2387832AbhAZMyl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Jan 2021 07:54:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391986AbhAZMtB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Jan 2021 07:49:01 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB577C0611C2
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:36 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id c127so2619867wmf.5
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:36 -0800 (PST)
+        with ESMTP id S2403919AbhAZMt3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Jan 2021 07:49:29 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF9BC061A31
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:37 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id c127so2619921wmf.5
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Jan 2021 04:47:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X8BAzJFz4ZIrpg/Z+DKR2RrLgnadQAJiV/btseJ+HGo=;
-        b=Mhc1dP5lYtWDjM7iP3QCf7se8IPXO5Zpw+dLL5XJ5foEKLkrFsse1ajEsjhcEnlufj
-         K+THdxTRx2NC1k6nHlUU9gJTHgaPOOw+RbLYOlo7U20HVu3rdIzsI1AvQ3P8hFj4T4Uz
-         x6Ruab8R7JXJv66upE2kqHcUlBrzag2mqp+qHZl13tSIoU6fRo0iSrjcpIqmOV71q12V
-         YqO3rCKOoG4LOKOLRax2GuPWaHwl81QxMcX6J1CH8tK637ZoqXSLbhSbdPpevAxoWdud
-         wvQnXQCTT5ZkEyXhOsFrRWHTqdOxgEoH7RTuI2BqrVJJV79CB8oQO3BtL3NK3ckS6EAJ
-         CgsA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=tMPWL4xcF1JuemrxQOYLmhlUXhHVXt9aCwFIvLWAmvg=;
+        b=NPJrLaJ+ieP70+yUH0QEuQwSl/cJVDPNtryk+LPPOU4ry0VjoWJADw8ppN74mpelqa
+         v7DZOil5sBeBMS9JjBEIZySg0hBo4Qkm6npFjH57DCrM2MdPuXoVOMWKVsEOq07C3L1o
+         bFftf5O4HyIWE8HbRhxXrz64hiVWg2MfcYJljZJ8iAyDlKuqFiAJjB+eVnd4EFsXrJaw
+         TDs1+Nqqno78NLwdMDvF8e8D9CZgBVmJP2urdcU8Khx8BIz6Kr+Ch+xifOvLCzKrbfu0
+         u/M4eJPU1Yxiaq/L/Kd+eZFu+rCuTdpmsqXUzKgH12cGzzjU/hJMxVzheaJjLPOLVJLi
+         fCew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X8BAzJFz4ZIrpg/Z+DKR2RrLgnadQAJiV/btseJ+HGo=;
-        b=h0VgE0N/Q6+imD4tHVo0RH7z06VjcI09yTylhjRL+9x9szwd+CxoVOkd0/s++iyTSy
-         /kRVX5/qCOscgMHTcwZmjvEtbp93CCgkkY1OtZb0gR8g9FFzT/QjHcj5iSbldWXd0lxh
-         EpOFZNDotq9n3dOYsnAPt0fyqadtFEBy7l9MJh2DwbxKDczjovOB+FePNoUZhJSpPA2Y
-         NnTTRQ5o1u96BomBzj4fZXQNjF48iqPrqjyLL5SSnKRXK4tmq0fnyAnLus7qy/plfU42
-         Ymn7lbX0wmewmnnUkAI05WCc8rFqkg9ZIul57kmb+EQBLHj8v9igS6KHksic0WqyfbM4
-         hz/A==
-X-Gm-Message-State: AOAM533JB8lwzKvbBNT7uPkIicIJRbAOgSonakavj1agj6Scwlxll4nI
-        0mNjlsvD09EX02zWpzTneuMbxw==
-X-Google-Smtp-Source: ABdhPJxnIr7hKqNIROJ6CQJNvglpa/yGCZFNQOCByUbAhAXURtdmxS5i7pvkN0tgzQ4jq/v90uZ99A==
-X-Received: by 2002:a1c:457:: with SMTP id 84mr4603536wme.148.1611665255554;
-        Tue, 26 Jan 2021 04:47:35 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=tMPWL4xcF1JuemrxQOYLmhlUXhHVXt9aCwFIvLWAmvg=;
+        b=hdp6c/03xMgVl4hMcV4BXJfGy8iIVuDRdc08ZpFGyG5hhCkyHQGKTtKwNmisNUFHyK
+         mv0Rj77Fp7YUNG4yaJfuA4apuRgYCqKtuCGKTCI66xGLZQpJ3aZw+TnUNfFZy4RWqvjc
+         rvgWjCJkoJUo6mKjcjRS5r/KdSNIL6TXBt7pxRdknV8zPFi5L0v6VRxnnKNssCr9ooIS
+         MeY6mlLe0o9P49mZ+p9s6U+XITqjTJ0Mq/k318B6y/6ViLHkYtVoNGTYEFS5gUl0nW46
+         agPD/+sEmnXO8QHU/YFTiv+RY29TohMU6Gmt/0S/LcKW4TprUa9ABxnCm9if34QDGWib
+         ZOSA==
+X-Gm-Message-State: AOAM530rfA7cYboEZ+ILgXWG2a0avPYtNJVNlmQHwcaJ0mA2ZQ5av77o
+        f22OWyQgW19mtvxmPoTvxgnWXg==
+X-Google-Smtp-Source: ABdhPJwHKbeLsVd+Hxqfezp4jl3v4stixH8G3pUHkseIsG2FSuSpZibIrfyILM1amXTlIQK/o8JB/g==
+X-Received: by 2002:a1c:f312:: with SMTP id q18mr4526261wmq.79.1611665256744;
+        Tue, 26 Jan 2021 04:47:36 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.34
+        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 04:47:34 -0800 (PST)
+        Tue, 26 Jan 2021 04:47:36 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Subject: [PATCH 00/20] [Set 3] Rid W=1 warnings from Infiniband
-Date:   Tue, 26 Jan 2021 12:47:12 +0000
-Message-Id: <20210126124732.3320971-1-lee.jones@linaro.org>
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [PATCH 01/20] RDMA/hw/hfi1/intr: Fix some kernel-doc formatting issues
+Date:   Tue, 26 Jan 2021 12:47:13 +0000
+Message-Id: <20210126124732.3320971-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210126124732.3320971-1-lee.jones@linaro.org>
+References: <20210126124732.3320971-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
+Fixes the following W=1 kernel build warning(s):
 
-This is set 3 of 3 sets required to fully clean-up.  All done!
+ drivers/infiniband/hw/hfi1/intr.c:99: warning: Function parameter or member 'msg' not described in 'format_hwmsg'
+ drivers/infiniband/hw/hfi1/intr.c:99: warning: Function parameter or member 'msgl' not described in 'format_hwmsg'
+ drivers/infiniband/hw/hfi1/intr.c:99: warning: Function parameter or member 'hwmsg' not described in 'format_hwmsg'
+ drivers/infiniband/hw/hfi1/intr.c:115: warning: Function parameter or member 'hwerrs' not described in 'hfi1_format_hwerrors'
+ drivers/infiniband/hw/hfi1/intr.c:115: warning: Function parameter or member 'hwerrmsgs' not described in 'hfi1_format_hwerrors'
+ drivers/infiniband/hw/hfi1/intr.c:115: warning: Function parameter or member 'nhwerrmsgs' not described in 'hfi1_format_hwerrors'
+ drivers/infiniband/hw/hfi1/intr.c:115: warning: Function parameter or member 'msg' not described in 'hfi1_format_hwerrors'
+ drivers/infiniband/hw/hfi1/intr.c:115: warning: Function parameter or member 'msgl' not described in 'hfi1_format_hwerrors'
 
-Lee Jones (20):
-  RDMA/hw/hfi1/intr: Fix some kernel-doc formatting issues
-  RDMA/sw/rdmavt/srq: Fix a couple of kernel-doc issues
-  RDMA/hw/hfi1/iowait: Demote half-completed kernel-doc and fix
-    formatting issue in another
-  RDMA/hw/hfi1/mad: Demote half-completed kernel-doc header fix another
-  RDMA/hw/hfi1/msix: Add description for 'name' and remove superfluous
-    param 'idx'
-  RDMA/sw/rdmavt/mad: Fix misspelling of 'rvt_process_mad()'s
-    'in_mad_size' param
-  RDMA/sw/rdmavt/qp: Fix kernel-doc formatting problem
-  RDMA/hw/hfi1/netdev_rx: Fix misdocumentation of the 'start_id' param
-  RDMA/hw/hfi1/pcie: Demote kernel-doc abuses
-  RDMA/hw/hfi1/pio_copy: Provide entry for 'pio_copy()'s 'dd' param
-  RDMA/hw/hfi1/rc: Fix a few function documentation issues
-  RDMA/hw/hfi1/qp: Fix some formatting issues and demote kernel-doc
-    abuse
-  RDMA/hw/hfi1/ruc: Fix a small formatting and description issues
-  RDMA/hw/hfi1/sdma: Fix misnaming of 'sdma_send_txlist()'s 'count_out'
-    param
-  RDMA/hw/hfi1/tid_rdma: Fix a plethora of kernel-doc issues
-  RDMA/hw/hfi1/uc: Fix a little doc-rot
-  RDMA/hw/hfi1/ud: Fix a little more doc-rot
-  RDMA/hw/hfi1/user_exp_rcv: Demote half-documented and kernel-doc
-    abuses
-  RDMA/hw/hfi1/verbs: Demote non-conforming doc header and fix a
-    misspelling
-  RDMA/hw/hfi1/rc: Demote incorrectly populated kernel-doc header
-
- drivers/infiniband/hw/hfi1/intr.c         | 16 ++++----
- drivers/infiniband/hw/hfi1/iowait.c       |  4 +-
- drivers/infiniband/hw/hfi1/mad.c          |  4 +-
- drivers/infiniband/hw/hfi1/msix.c         |  2 +-
- drivers/infiniband/hw/hfi1/netdev_rx.c    |  2 +-
- drivers/infiniband/hw/hfi1/pcie.c         |  4 +-
- drivers/infiniband/hw/hfi1/pio_copy.c     |  1 +
- drivers/infiniband/hw/hfi1/qp.c           | 14 +++----
- drivers/infiniband/hw/hfi1/rc.c           |  7 ++--
- drivers/infiniband/hw/hfi1/ruc.c          |  5 ++-
- drivers/infiniband/hw/hfi1/sdma.c         | 10 ++---
- drivers/infiniband/hw/hfi1/tid_rdma.c     | 47 +++++++++++++----------
- drivers/infiniband/hw/hfi1/uc.c           |  8 +---
- drivers/infiniband/hw/hfi1/ud.c           |  8 +---
- drivers/infiniband/hw/hfi1/user_exp_rcv.c | 10 ++---
- drivers/infiniband/hw/hfi1/verbs.c        |  6 +--
- drivers/infiniband/sw/rdmavt/mad.c        |  2 +-
- drivers/infiniband/sw/rdmavt/qp.c         |  2 +-
- drivers/infiniband/sw/rdmavt/srq.c        |  7 ++--
- 19 files changed, 82 insertions(+), 77 deletions(-)
-
+Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 Cc: Doug Ledford <dledford@redhat.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
-Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/infiniband/hw/hfi1/intr.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/intr.c b/drivers/infiniband/hw/hfi1/intr.c
+index 387305b768e94..5ba5c11459e79 100644
+--- a/drivers/infiniband/hw/hfi1/intr.c
++++ b/drivers/infiniband/hw/hfi1/intr.c
+@@ -91,9 +91,9 @@ static void add_full_mgmt_pkey(struct hfi1_pportdata *ppd)
+ 
+ /**
+  * format_hwmsg - format a single hwerror message
+- * @msg message buffer
+- * @msgl length of message buffer
+- * @hwmsg message to add to message buffer
++ * @msg: message buffer
++ * @msgl: length of message buffer
++ * @hwmsg: message to add to message buffer
+  */
+ static void format_hwmsg(char *msg, size_t msgl, const char *hwmsg)
+ {
+@@ -104,11 +104,11 @@ static void format_hwmsg(char *msg, size_t msgl, const char *hwmsg)
+ 
+ /**
+  * hfi1_format_hwerrors - format hardware error messages for display
+- * @hwerrs hardware errors bit vector
+- * @hwerrmsgs hardware error descriptions
+- * @nhwerrmsgs number of hwerrmsgs
+- * @msg message buffer
+- * @msgl message buffer length
++ * @hwerrs: hardware errors bit vector
++ * @hwerrmsgs: hardware error descriptions
++ * @nhwerrmsgs: number of hwerrmsgs
++ * @msg: message buffer
++ * @msgl: message buffer length
+  */
+ void hfi1_format_hwerrors(u64 hwerrs, const struct hfi1_hwerror_msgs *hwerrmsgs,
+ 			  size_t nhwerrmsgs, char *msg, size_t msgl)
 -- 
 2.25.1
 
