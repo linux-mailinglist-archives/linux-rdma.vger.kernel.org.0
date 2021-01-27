@@ -2,48 +2,43 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB7E305341
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Jan 2021 07:33:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB112305467
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Jan 2021 08:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232321AbhA0Gdd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Jan 2021 01:33:33 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:4424 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232841AbhA0DIx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Jan 2021 22:08:53 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6010d38d0001>; Tue, 26 Jan 2021 18:44:29 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 27 Jan
- 2021 02:44:26 +0000
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.103)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 27 Jan 2021 02:44:26 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m2x5EQpv+D8TL4Av20j4YLUjeNpfGlzadhK5sEWuevfVgMgHA+AIowt9vfqF6bSiNPY+M8cZ5jDUU5SwztJ+YKmeIbPtAc+hqA/oEJNnlEL7/jnObdkP1yo6z9PtKb+QnLLSJx3PH2FdHOvJDo0UBbkqR3JQAw8Du+mNnWdI8Vgx6McRQkHaRsm+jhFkv3amYOFhowpp5loBGrMRWkwCcnrh/pnVgx0WMig2xIfsZjcl/cFJiwtghDtaIhfdtS7vZV8z9YCdldykOtPB90PLoydiy52asjRykeFMzdM6Uh+tOc1hSflJ+apzbMVUPG+s/ywmCi9JtRGa25MAItpLXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F9CSOF88e9CdtCrouUZFAmqN8ZA4YXMuAivyQAbPhCo=;
- b=SzNrlg0Zika6voOnmOe8ErV7MSgHh240QyEEGtNl4BDbuTZGLDdZrJuK9G8CfZ2WbFN149nhMHwKlmleB2jlUU5+48qpiFi5D4Uc3QbgVkujKdXE+wtUahMQkzC+As2ymmPncA5eJdMe/vHZA6hbshNFNunai63yo7TeYMtmbXnei0ldI0NaCr47tq9oT3SALVfb52lnJ0kWelIGBsHeWXIYA66Si0u+D58VQ1T8TDaKi7KZvZoaIZi0MeiIOBmNDffjcFz3Kbt88vz0fUDn8XgloeryYvU+j05tmQsTtMZO9dNmM330gHUMboupNRBQW8GbAqkMNGf5SVZPiadG6g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4513.namprd12.prod.outlook.com (2603:10b6:5:2ad::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Wed, 27 Jan
- 2021 02:44:25 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.019; Wed, 27 Jan 2021
- 02:44:25 +0000
-Date:   Tue, 26 Jan 2021 22:44:23 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-CC:     "Keller, Jacob E" <jacob.e.keller@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
+        id S232917AbhA0HV7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Jan 2021 02:21:59 -0500
+Received: from mga17.intel.com ([192.55.52.151]:38093 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S317496AbhA0Amj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 26 Jan 2021 19:42:39 -0500
+IronPort-SDR: D60GTzJtdhWz6UsN4nmkM+Xsmo2uHVcJ/u3B/1vJ8fub6EubatFMZeUTvdOTPcMhNRa6AIxFK/
+ 2UBlEfuiwqZA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="159771778"
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="159771778"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 16:41:42 -0800
+IronPort-SDR: J0EzfGr4nrEyBRxkNDgQwlFlUu/zzTw0wF3XWkGQxuPp9xy1svW6TKDpym/q60P3qHnSeA9a6A
+ +xQOGj9rst8w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; 
+   d="scan'208";a="402924079"
+Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
+  by fmsmga004.fm.intel.com with ESMTP; 26 Jan 2021 16:41:42 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 26 Jan 2021 16:41:42 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 26 Jan 2021 16:41:41 -0800
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.1713.004;
+ Tue, 26 Jan 2021 16:41:41 -0800
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
         "kuba@kernel.org" <kuba@kernel.org>,
         "davem@davemloft.net" <davem@davemloft.net>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
@@ -51,82 +46,64 @@ CC:     "Keller, Jacob E" <jacob.e.keller@intel.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "Ertman, David M" <david.m.ertman@intel.com>,
         "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "jiri@nvidia.com" <jiri@nvidia.com>,
-        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>
-Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>
+Subject: RE: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
  implement private channel OPs
-Message-ID: <20210127024423.GL4147@nvidia.com>
+Thread-Topic: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
+ implement private channel OPs
+Thread-Index: AQHW8RlTrNE3qjtLukSnj7NcX24DDao5N6oA//+n/DCAAMFCAIAAeSAA
+Date:   Wed, 27 Jan 2021 00:41:41 +0000
+Message-ID: <031c2675aff248bd9c78fada059b5c02@intel.com>
 References: <20210122234827.1353-1-shiraz.saleem@intel.com>
  <20210122234827.1353-8-shiraz.saleem@intel.com>
- <20210124134551.GB5038@unreal> <20210125132834.GK4147@nvidia.com>
- <2072c76154cd4232b78392c650b2b2bf@intel.com>
- <5b3f609d-034a-826f-1e50-0a5f8ad8406e@intel.com>
- <20210126011043.GG4147@nvidia.com>
- <328b9c06a18e48efbcc4121c5d375cb7@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <328b9c06a18e48efbcc4121c5d375cb7@intel.com>
-X-ClientProxiedBy: MN2PR06CA0001.namprd06.prod.outlook.com
- (2603:10b6:208:23d::6) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+ <20210125184248.GS4147@nvidia.com>
+ <99895f7c10a2473c84a105f46c7ef498@intel.com>
+ <20210126005928.GF4147@nvidia.com>
+In-Reply-To: <20210126005928.GF4147@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR06CA0001.namprd06.prod.outlook.com (2603:10b6:208:23d::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Wed, 27 Jan 2021 02:44:25 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l4aoh-007KQu-VC; Tue, 26 Jan 2021 22:44:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611715469; bh=F9CSOF88e9CdtCrouUZFAmqN8ZA4YXMuAivyQAbPhCo=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=cY9dOkMuTu7z0Z0xDcb2AYTP8tm+3C//uJmSHZ9l8/hXe3Ynz4QehO4K6qIleqspz
-         +db6GuKQpHTCFtY8f2IaBgXA9SYES7w1bghuXJyx4xbV51Z2C1MNCsj7pkxRluzWdk
-         1w6XzAKMIwD0jnjI0q/9hj2zYLT4M83KhkVXFmFY8LR2/kc6IDYf/yLgKLOip8TgnU
-         hbEY/PVP3HfXo2jYkU6FCAlRE7Ia3JJ0qyjDlLIVUQoJTHdSAj9aCGOk1gtr6dc+Ka
-         DoMfUBGBmTEWj7qYVmrzZyBfmTuCZW+IcJrgbduwu5+NaD79vAfJ4YRCO8s8/V1ss0
-         P6Lr93O6WEvfg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 12:42:09AM +0000, Saleem, Shiraz wrote:
-
-> > It does, the PCI driver is not supposed to spawn any aux devices for RDMA at all
-> > if RDMA is disabled.
-> > 
-> > For an iWarp driver I would consider ENABLE_ROCE to really be a general
-> > ENABLE_RDMA.
-> 
-> Well the driver supports iWARP and RoCE for E810 device.
-> Are you saying that this generic enable_roce devlink param really
-> is an enable 'rdma' traffic or not param?
-
-I've thought of it that way, that is what it was created for at least.
-
-Overloading it to be a iwarp not roce switch feels wrong
- 
-> > Are you sure you need to implement this?
-> 
-> What we are after is some mechanism for user to switch the protocols iWARP vs RoCE
-> [default the device comes up as an iWARP dev]. The protocol info is really needed early-on
-> in the RDMA driver.probe(). i.e. when the rdma admin queue is created.
-
-This needs to be a pci devlink at least, some kind of mode switch
-seems appropriate
- 
-> The same goes with the other param resource_limits_selector. It's a
-> profile selector that a user can chose to different # of max QP,
-> CQs, MRs etc.
-
-And it must be done at init time? Also seems like pci devlink
-
-Generally speaking anything that requires the rdma driver to be
-reloaded should remove/restore the aux device.
-
-Mode switch from roce to/from iwarp should create aux devices of
-different names which naturally triggers the right kind of sequences
-in the driver core
-
-Jason
+PiBTdWJqZWN0OiBSZTogW1BBVENIIDA3LzIyXSBSRE1BL2lyZG1hOiBSZWdpc3RlciBhbiBhdXhp
+bGlhcnkgZHJpdmVyIGFuZA0KPiBpbXBsZW1lbnQgcHJpdmF0ZSBjaGFubmVsIE9Qcw0KPiANCj4g
+T24gVHVlLCBKYW4gMjYsIDIwMjEgYXQgMTI6NDI6MTZBTSArMDAwMCwgU2FsZWVtLCBTaGlyYXog
+d3JvdGU6DQo+IA0KPiA+IEkgdGhpbmsgdGhpcyBlc3NlbnRpYWxseSBtZWFucyBkb2luZyBhd2F5
+IHdpdGggLm9wZW4vLmNsb3NlIHBpZWNlLg0KPiANCj4gWWVzLCB0aGF0IHRvbywgYW5kIHByb2Jh
+Ymx5IHRoZSBGU00gYXMgd2VsbC4NCj4gDQo+ID4gT3IgYXJlIHlvdSBzYXlpbmcgdGhhdCBpcyBv
+az8gIFllcyB3ZSBoYWQgYSBkaXNjdXNzaW9uIGluIHRoZSBwYXN0IGFuZA0KPiA+IEkgdGhvdWdo
+dCB3ZSBjb25jbHVkZWQuIEJ1dCBtYXliZSBJIG1pc3VuZGVyc3Rvb2QuDQo+ID4NCj4gPiBodHRw
+czovL2xvcmUua2VybmVsLm9yZy9saW51eC1yZG1hLzlERDYxRjMwQTgwMkM0NDI5QTAxQ0E0MjAw
+RTMwMkE3RENEDQo+ID4gNEZEMDNAZm1zbXN4MTI0LmFtci5jb3JwLmludGVsLmNvbS8NCj4gDQo+
+IFdlbGwsIGhhdmluZyBub3cgc2VlbiBob3cgYXV4IGJ1cyBlbmRlZCB1cCBhbmQgdGhlIHdheSBp
+dCBlZmZlY3RlZCB0aGUNCj4gbWx4NSBkcml2ZXIsIEkgYW0gbW9yZSBmaXJtbHkgb2YgdGhlIG9w
+aW5pb24gdGhpcyBuZWVkcyB0byBiZSBmaXhlZC4gSXQgaXMgZXh0cmVtbHkNCj4gaGFyZCB0byBn
+ZXQgZXZlcnl0aGluZyByaWdodCB3aXRoIHR3byBkaWZmZXJlbnQgcmVnaXN0cmF0aW9uIHNjaGVt
+ZXMgcnVubmluZyBhcm91bmQuDQo+IA0KPiBZb3UgbmV2ZXIgYW5zd2VyZWQgbXkgcXVlc3Rpb246
+DQoNClNvcnJ5IEkgbWlzc2VkIGl0Lg0KPiANCj4gPiBTdGlsbCwgeW91IG5lZWQgdG8gYmUgYWJs
+ZSB0byBjb3BlIHdpdGggdGhlIHVzZXIgdW5iaW5kaW5nIHlvdXINCj4gPiBkcml2ZXJzIGluIGFu
+eSBvcmRlciB2aWEgc3lzZnMuIFdoYXQgaGFwcGVucyB0byB0aGUgVkZzIHdoZW4gdGhlIFBGIGlz
+DQo+ID4gdW5ib3VuZCBhbmQgcmVsZWFzZXMgd2hhdGV2ZXIgcmVzb3VyY2VzPyBUaGlzIGlzIHdo
+ZXJlIHRoZSBicm9hZGNvbQ0KPiA+IGRyaXZlciByYW4gaW50byB0cm91Ymxlcy4uDQo+IA0KPiA/
+DQoNCmVjaG8gLW4gImljZS5pbnRlbF9yZG1hLjAiID4gL3N5cy9idXMvYXV4aWxpYXJ5L2RyaXZl
+cnMvaXJkbWEvdW5iaW5kICA/Pz8NCg0KVGhhdCBJIGJlbGlldmUgd2lsbCB0cmlnZ2VyIGEgZHJ2
+LnJlbW92ZSgpIG9uIHRoZSByZG1hIFBGIHNpZGUgd2hpY2ggcmVxdWlyZQ0KdGhlIHJkbWEgVkZz
+IHRvIGdvIGRvd24uDQoNClllcywgd2UgY3VycmVudGx5IGhhdmUgYSByZXF1aXJlbWVudCB0aGUg
+YXV4IHJkbWEgUEYgZHJpdmVyIHJlbWFpbiBpbml0ZWQgYXQgbGVhc3QgdG8gLnByb2JlKCkNCmZv
+ciBWRnMgdG8gc3Vydml2ZS4NCg0KV2UgYXJlIGRvaW5nIGludGVybmFsIHJldmlldywgYnV0IGl0
+IGFwcGVhcnMgd2UgY291bGQgcG90ZW50aWFsbHkgZ2V0IHJpZCBvZiB0aGUgLm9wZW4vLmNsb3Nl
+IGNhbGxiYWNrcy4NCkFuZCBpdHMgYXNzb2NpYXRlZCBGU00gaW4gaWNlLiANCg0KQnV0IGlmIHdl
+IHJlbW92ZSBwZWVyX3JlZ2lzdGVyL3VucmVnaXN0ZXIsIGhvdyBkbyB3ZSBzeW5jaHJvbml6ZSBi
+ZXR3ZWVuIHNheSB1bmxvYWQgb2YgdGhlIHJkbWEgZHJpdmVyIA0KYW5kIG5ldGRldiBkcml2ZXIg
+c3RvcCBhY2Nlc3NpbmcgdGhlIHByaXYgY2hhbm5lbCBpaWRjX3BlZXJfb3BzIHRoYXQgaXQgdXNl
+cyB0byBzZW5kIGV2ZW50cyB0byByZG1hPw0KDQpTaGlyYXoNCg0KDQo=
