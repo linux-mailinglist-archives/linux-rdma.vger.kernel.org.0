@@ -2,111 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4DB8305B24
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Jan 2021 13:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2888D305CFE
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Jan 2021 14:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237790AbhA0MVw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Jan 2021 07:21:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237714AbhA0MTb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 27 Jan 2021 07:19:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DDF320786;
-        Wed, 27 Jan 2021 12:18:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611749931;
-        bh=ELIL2d977fqXx4vmV90BaWWEiEcjry8hWCg6N1O8ZbA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rN0y6E0gHKSCXh7cD0SrPisILsquFwXMME7pOhplLugcd5RGr3rH6JF4bXfjPVMdH
-         RKa4CdUaGqgpBcSSI/ZvRggGxpXWIjHvxbJ5++yvgwRtux9yEScLp0M0dniSTlW6NT
-         udGjLvqIePsIuhuyCc6NnXyzUya50UsEyYuUJascwQB7+eNFSdYBcCmwxLLopwSFLY
-         UIJe4t5EGkBI/eM97xzZAuQAE5xw5DCZGZQI7nLAXp6aGvHMDygQPQPQHQC0YKkiFE
-         +O1gv7WkK9OBvTwCfX7dM/ySCwirqAkirTAPazg9lBq18SdZkUd4e/KptO2g+xBeOj
-         4+SUnY6tK+UOg==
-Date:   Wed, 27 Jan 2021 14:18:47 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>
-Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
- implement private channel OPs
-Message-ID: <20210127121847.GK1053290@unreal>
-References: <20210122234827.1353-1-shiraz.saleem@intel.com>
- <20210122234827.1353-8-shiraz.saleem@intel.com>
- <20210125184248.GS4147@nvidia.com>
- <99895f7c10a2473c84a105f46c7ef498@intel.com>
- <20210126005928.GF4147@nvidia.com>
- <031c2675aff248bd9c78fada059b5c02@intel.com>
+        id S238352AbhA0NXD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Jan 2021 08:23:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238140AbhA0NUr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Jan 2021 08:20:47 -0500
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010EFC061573
+        for <linux-rdma@vger.kernel.org>; Wed, 27 Jan 2021 05:20:07 -0800 (PST)
+Received: by mail-oo1-xc29.google.com with SMTP id n19so499903ooj.11
+        for <linux-rdma@vger.kernel.org>; Wed, 27 Jan 2021 05:20:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ouw/90akwDOjq18NKZvsTeo3DKPGpxpcVhj0DXguCTM=;
+        b=c8t+VJMgA1BVuihHhjBpPCYotY7AlSVlJxeOG+fDu3MCTZN6BkZthGMtKWdNm8on9E
+         Q81H+AEo2/M8wbfd4L340x631LFdzOeBAbvYDUoSLdQ+haoZ1jxR9QNC7cKW4jAV7/UZ
+         Dw98xSz7D2jiYTavFFsgB+nWF+4u2X1eakp0faO/kVdFzAfJ6HHqV0FhcehCamS436v6
+         zv3X2q2fuWIy4m5Uzo8RDicNWWRBTBZO6wcOlDoKKbDlToD2K4j84kb+6vXSMWbD729S
+         BVNtoAi5KHMx/H3MfBchRCsmNfqP9P2H2+760dUjsZ+g426P11T3sxaYHi0Kh0k7CdKz
+         dgbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ouw/90akwDOjq18NKZvsTeo3DKPGpxpcVhj0DXguCTM=;
+        b=RnLZQ+dEMlrq4GWwtrewv+gugZQmGnpGRG++OTs53iqPXeb9ct6IV03vEb4ttb/HMB
+         Hq0/k4sw3uX14Fc/EqL1jfRFaM9c7q2KgW/+qih7KSq0TASvdSRlqLdKkylkERaERgmE
+         bRo0qkjs1k2ua7r8ykpQimX0sCxgJV5QIJd6ZwvoU6sYYGoahyNOJv3CeDx0QJ1D2KDe
+         s1YKzGUpmYcroOoFdLERy8GJNo1AhxTocRJaketjlEeagRBRlztftVQVfuUbObqQttB9
+         sEtEp1Vb5QPXCh/9cBeELrz+DL2WdKYt6Xs/Ao3aqeBpBi+lWCLrh+2R0rAakNEeG6V0
+         fc6Q==
+X-Gm-Message-State: AOAM532H3eJ/czqUsi6iq8Bn0Ta3Ao79MdBupzuFvOiXDB2xcasbj5vt
+        Q+IA9irrdrr+BC9gEcAH4Zto1rhjXZrzUn5uRgA=
+X-Google-Smtp-Source: ABdhPJwNykpqXGPiFyJz1MYRhvoQq4Ug2HvX99DFdvFh/QmRDGwOcuEjDoYIqiWZdBxHQpVjUXLCJwPPeO4lfrgJIa0=
+X-Received: by 2002:a4a:9c01:: with SMTP id y1mr7572750ooj.15.1611753606388;
+ Wed, 27 Jan 2021 05:20:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <031c2675aff248bd9c78fada059b5c02@intel.com>
+References: <20210127082431.2637863-1-yangx.jy@cn.fujitsu.com> <20210127120427.GJ1053290@unreal>
+In-Reply-To: <20210127120427.GJ1053290@unreal>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Wed, 27 Jan 2021 21:19:54 +0800
+Message-ID: <CAD=hENfybo4g_kczrMtS=nwhu=Viw2A0B9JzCfhV3QZx4crQzg@mail.gmail.com>
+Subject: Re: [RFC PATCH] RDMA/rxe: Export imm_data to WC when the related WR
+ with imm_data finished on SQ
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Xiao Yang <yangx.jy@cn.fujitsu.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 12:41:41AM +0000, Saleem, Shiraz wrote:
-> > Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
-> > implement private channel OPs
-> >
-> > On Tue, Jan 26, 2021 at 12:42:16AM +0000, Saleem, Shiraz wrote:
-> >
-> > > I think this essentially means doing away with .open/.close piece.
-> >
-> > Yes, that too, and probably the FSM as well.
-> >
-> > > Or are you saying that is ok?  Yes we had a discussion in the past and
-> > > I thought we concluded. But maybe I misunderstood.
-> > >
-> > > https://lore.kernel.org/linux-rdma/9DD61F30A802C4429A01CA4200E302A7DCD
-> > > 4FD03@fmsmsx124.amr.corp.intel.com/
-> >
-> > Well, having now seen how aux bus ended up and the way it effected the
-> > mlx5 driver, I am more firmly of the opinion this needs to be fixed. It is extremly
-> > hard to get everything right with two different registration schemes running around.
-> >
-> > You never answered my question:
+On Wed, Jan 27, 2021 at 8:10 PM Leon Romanovsky <leon@kernel.org> wrote:
 >
-> Sorry I missed it.
+> On Wed, Jan 27, 2021 at 04:24:31PM +0800, Xiao Yang wrote:
+> > Even if we enable sq_sig_all or IBV_SEND_SIGNALED, current rxe
+> > module cannot set imm_data in WC when the related WR with imm_data
+> > finished on SQ.
 > >
-> > > Still, you need to be able to cope with the user unbinding your
-> > > drivers in any order via sysfs. What happens to the VFs when the PF is
-> > > unbound and releases whatever resources? This is where the broadcom
-> > > driver ran into troubles..
+> > Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> > ---
 > >
-> > ?
+> > Current rxe module and other rdma modules(e.g. mlx5) only set
+> > imm_data in WC when the related WR with imm_data finished on RQ.
+> > I am not sure if it is a expected behavior.
 >
-> echo -n "ice.intel_rdma.0" > /sys/bus/auxiliary/drivers/irdma/unbind  ???
+> This is IBTA behavior.
 >
-> That I believe will trigger a drv.remove() on the rdma PF side which require
-> the rdma VFs to go down.
->
-> Yes, we currently have a requirement the aux rdma PF driver remain inited at least to .probe()
-> for VFs to survive.
->
-> We are doing internal review, but it appears we could potentially get rid of the .open/.close callbacks.
-> And its associated FSM in ice.
->
-> But if we remove peer_register/unregister, how do we synchronize between say unload of the rdma driver
-> and netdev driver stop accessing the priv channel iidc_peer_ops that it uses to send events to rdma?
+> 5.2.11 IMMEDIATE DATA EXTENDED TRANSPORT HEADER (ImmDt) - 4 BYTES
+> "Immediate Data (ImmDt) contains data that is placed in the receive
+>  Completion Queue Element (CQE). The ImmDt is only allowed in SEND or
+>  RDMA WRITE packets with Immediate Data."
 
-And here we are returning to square one of intended usage of aux bus.
-Your driver should be structured to have PCI core logic that will represent
-physical device and many small sub-devices with their respective drivers.
+Cool!
 
-ETH is another sub-device that shouldn't talk directly to the RDMA.
-
-Thanks
+Zhu Yanjun
 
 >
-> Shiraz
+> If I understand the spec, you shouldn't set imm_data in SQ.
 >
->
+> Thanks
