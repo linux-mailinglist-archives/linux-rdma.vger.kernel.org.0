@@ -2,123 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78919305F0F
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Jan 2021 16:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF639305FB8
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Jan 2021 16:35:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235323AbhA0PFY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Jan 2021 10:05:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56148 "EHLO mail.kernel.org"
+        id S229757AbhA0PFO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Jan 2021 10:05:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235441AbhA0PCz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:02:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC39B208B3;
-        Wed, 27 Jan 2021 15:00:29 +0000 (UTC)
+        id S235240AbhA0PA4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 27 Jan 2021 10:00:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B567207D8;
+        Wed, 27 Jan 2021 15:00:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611759630;
-        bh=F++xEC2kbt1gRz9scugUdV9UkbEBJS5JHrs44aGonn4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LJro+EU8J3pLW1dAgejNt/mafpevJefziVIrta0RDIsMYpesJzW5pM/wzPyniOHyt
-         gqcVDKN/g25qfhQ3Q9yHDvT91Rki9uX9LLMXY9D5Qg9F8GLATc1tfoR/qjTmc95fD6
-         IX4bBGZIn2RlE6wFzaJ7KmcODqaR6GsVY1iClr9QiqHHlgTKCaCq6KaAZfdEM6CTa8
-         TA9iMAG1NsGeGxsCyIueMRqD3ji3QfrqM0QH2yC9434tUbD88/GyfVnvcIIAkPCgqM
-         owyhjaMWLI7ArdRs2uD+mxX6bRUGJw9LzuCB7nunCBL5mqKoB5Y02vjcV9WrU9E7no
-         nJGp/os2wqXbw==
+        s=k20201202; t=1611759615;
+        bh=5RrZeRzyyqgONaEurLCI9VSNk2qxED+CmOh7EofRy8I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Gb11+dDZv9vBOt2fnzGmQz28oJgDlnZ32XysNPl2Oi9rAkEcsZs3iMphddErDsQiF
+         1wcs0mq4ltlv6D08gT6x3e7funuKsr/iEEbP8tvcDBVtJWi1hRaWC8ia6kq5cNcUGH
+         EyODeqvYLbrJzMyN/tsNlmgD6jnUqlar4SQllEOY7d7A7lNq2oRjHQvTUZ13zPO3tB
+         tFDZSlSiA/STY16wZm6fesm/XnYT9ZMMWQ35znRcmmYTgOeKN3UDLk3l7jF9T2MLUs
+         GWp080yA1i9L4ImzKtbuUZD2W8z5jGZShLRlhwgaRWs2QTP5eqDHotT3fVZi4VDMlJ
+         u7bOG5xNqfRaw==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Parav Pandit <parav@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 04/10] IB/mlx5: Improve query port for representor port
-Date:   Wed, 27 Jan 2021 17:00:04 +0200
-Message-Id: <20210127150010.1876121-5-leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org,
+        Parav Pandit <parav@nvidia.com>
+Subject: [PATCH rdma-next 00/10] Various cleanups
+Date:   Wed, 27 Jan 2021 17:00:00 +0200
+Message-Id: <20210127150010.1876121-1-leon@kernel.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210127150010.1876121-1-leon@kernel.org>
-References: <20210127150010.1876121-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Parav Pandit <parav@nvidia.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Improve query port functionality for representor port as below.
+Various simple cleanups to mlx4, mlx5 and core.
 
-1. RoCE Qkey violation counters are not applicable for representor
-port.
-2. Avoid setting gid_tbl_len twice for representor port.
-3. Avoid setting ip_gids and IB_PORT_CM_SUP property for representor
-port as GID table is empty and CM support is not present in
-representor mode.
+Parav Pandit (10):
+  IB/mlx5: Move mlx5_port_caps from mlx5_core_dev to mlx5_ib_dev
+  IB/mlx5: Avoid calling query device for reading pkey table length
+  IB/mlx5: Support default partition key for representor port
+  IB/mlx5: Improve query port for representor port
+  RDMA/core: Introduce and use API to read port immutable data
+  IB/mlx5: Use rdma_for_each_port for port iteration
+  IB/mlx5: Return appropriate error code instead of ENOMEM
+  IB/cm: Avoid a loop when device has 255 ports
+  IB/mlx4: Use port iterator and validation APIs
+  IB/core: Use valid port number to check link layer
 
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/main.c | 31 ++++++++++---------------------
- 1 file changed, 10 insertions(+), 21 deletions(-)
+ drivers/infiniband/core/cm.c         |   8 +-
+ drivers/infiniband/core/device.c     |  14 +++
+ drivers/infiniband/core/verbs.c      |   4 +-
+ drivers/infiniband/hw/mlx4/main.c    |   2 +-
+ drivers/infiniband/hw/mlx4/sysfs.c   |   4 +-
+ drivers/infiniband/hw/mlx5/mad.c     |  10 +-
+ drivers/infiniband/hw/mlx5/main.c    | 137 +++++++--------------------
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |   9 +-
+ drivers/infiniband/hw/mlx5/odp.c     |   4 -
+ drivers/infiniband/hw/mlx5/qp.c      |  20 ++--
+ drivers/infiniband/hw/mlx5/wr.c      |   2 +-
+ include/linux/mlx5/driver.h          |   8 --
+ include/rdma/ib_verbs.h              |   3 +
+ 13 files changed, 84 insertions(+), 141 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 6f2c03230c49..5a7f8fa2f452 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -462,7 +462,6 @@ static int mlx5_query_port_roce(struct ib_device *device, u8 port_num,
- 	struct net_device *ndev, *upper;
- 	enum ib_mtu ndev_ib_mtu;
- 	bool put_mdev = true;
--	u16 qkey_viol_cntr;
- 	u32 eth_prot_oper;
- 	u8 mdev_port_num;
- 	bool ext;
-@@ -500,20 +499,22 @@ static int mlx5_query_port_roce(struct ib_device *device, u8 port_num,
- 	translate_eth_proto_oper(eth_prot_oper, &props->active_speed,
- 				 &props->active_width, ext);
-
--	props->port_cap_flags |= IB_PORT_CM_SUP;
--	props->ip_gids = true;
-+	if (!dev->is_rep && mlx5_is_roce_enabled(mdev)) {
-+		u16 qkey_viol_cntr;
-
--	props->gid_tbl_len      = MLX5_CAP_ROCE(dev->mdev,
--						roce_address_table_size);
-+		props->port_cap_flags |= IB_PORT_CM_SUP;
-+		props->ip_gids = true;
-+		props->gid_tbl_len = MLX5_CAP_ROCE(dev->mdev,
-+						   roce_address_table_size);
-+		mlx5_query_nic_vport_qkey_viol_cntr(mdev, &qkey_viol_cntr);
-+		props->qkey_viol_cntr = qkey_viol_cntr;
-+	}
- 	props->max_mtu          = IB_MTU_4096;
- 	props->max_msg_sz       = 1 << MLX5_CAP_GEN(dev->mdev, log_max_msg);
- 	props->pkey_tbl_len     = 1;
- 	props->state            = IB_PORT_DOWN;
- 	props->phys_state       = IB_PORT_PHYS_STATE_DISABLED;
-
--	mlx5_query_nic_vport_qkey_viol_cntr(mdev, &qkey_viol_cntr);
--	props->qkey_viol_cntr = qkey_viol_cntr;
--
- 	/* If this is a stub query for an unaffiliated port stop here */
- 	if (!put_mdev)
- 		goto out;
-@@ -1383,19 +1384,7 @@ int mlx5_ib_query_port(struct ib_device *ibdev, u8 port,
- static int mlx5_ib_rep_query_port(struct ib_device *ibdev, u8 port,
- 				  struct ib_port_attr *props)
- {
--	int ret;
--
--	/* Only link layer == ethernet is valid for representors
--	 * and we always use port 1
--	 */
--	ret = mlx5_query_port_roce(ibdev, port, props);
--	if (ret || !props)
--		return ret;
--
--	/* We don't support GIDS */
--	props->gid_tbl_len = 0;
--
--	return ret;
-+	return mlx5_query_port_roce(ibdev, port, props);
- }
-
- static int mlx5_ib_rep_query_pkey(struct ib_device *ibdev, u8 port, u16 index,
 --
 2.29.2
 
