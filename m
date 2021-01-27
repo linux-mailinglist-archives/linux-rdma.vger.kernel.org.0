@@ -2,100 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A5D306505
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Jan 2021 21:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA5C3066BC
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Jan 2021 22:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232463AbhA0UYi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Jan 2021 15:24:38 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:25434 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231968AbhA0UYg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Jan 2021 15:24:36 -0500
-Date:   Wed, 27 Jan 2021 20:23:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1611779031; bh=3sWElGNGgappUnF5Kd8jNAGLD06GNdAvPcxILY0B8/A=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=aL522TuVAVSb+jpMVRrLVwgiG1dCW9GEbIHyzFs87eJU7GVqp4P8e4F5QHTWm4pw/
-         EBdtAWI6Oz2JqrRSppbIfGq0YFJAiZ5sPqwFTiQSona97bz3spHMzlATmxRxLSe0qM
-         e+X+aOUv8CFYm4aNs0GcX6sIxKx9rzkQ2pJZYDAuIyxDPIcpcOseQSAuPBqfaVxzYj
-         AMqImLK2tiGV1YUEezS2oSOkiofo/MfwTX3Acuc0z9J6kFkmTLpJJFBoiBENXzPo5r
-         lb3ocltvxlyGrb6vH6f9uElRMGhRYQZT2FHflaCI9QauYyEmNYBCh4kVah0mD7j9sN
-         RgutLUDfUQfrQ==
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        Alexander Lobakin <alobakin@pm.me>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH net-next 0/3] net: constify page_is_pfmemalloc() and its users
-Message-ID: <20210127202322.99523-1-alobakin@pm.me>
-In-Reply-To: <20210125164612.243838-1-alobakin@pm.me>
-References: <20210125164612.243838-1-alobakin@pm.me>
+        id S231332AbhA0Vt5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Jan 2021 16:49:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232221AbhA0VsD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Jan 2021 16:48:03 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16AD7C061756
+        for <linux-rdma@vger.kernel.org>; Wed, 27 Jan 2021 13:47:23 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id d7so3228595otf.3
+        for <linux-rdma@vger.kernel.org>; Wed, 27 Jan 2021 13:47:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xqmsYFt0HKnD9CI4LThLQ88mr/7oylX1HlIpZ7mnopM=;
+        b=d9I9g4EMc8bo3WFV3L2aOEIfeH0DtvCcf9eqv+rHboeLGET2onpnQooS+wqWJ2bOWX
+         z540FLh5OosbR8viTTaZLDZh7R6aetjpRYfDqp6dzNdwU6l33OXHEgUhZ1+p8rx70mgH
+         zY/2eaWTl9uLIS5Sd1C8xuettxa0lBtMbY2wbrpn1P0Rrd7X+ja4KtXhkxUbjT21OkAe
+         T2RRY7SdrcqHHNtQOoeWQxB1KBvuBC1GjaJPkMcynuB2hY8/smFiwho7yO54SFSM4+5G
+         rCTStSiBilflTOJqo5Wi1B6iCVscKaFusUZvGCXH5p5GXMamNqrQElgAV8+zptatLBb3
+         V8tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xqmsYFt0HKnD9CI4LThLQ88mr/7oylX1HlIpZ7mnopM=;
+        b=LRUx4sdGHIas5b6rcBJo+7BrRTz0yN+w6UIIeI6PoesRs8zJrO028oe3+YpMw8b1YV
+         buQqdiFOLjIJgisvN9vFiRFE7YFAtNrt1qUY1FjIIS6ZEP2pyAxa6lqxvyZZDxocbNPS
+         shXABjnLbzIgvL+W+fkWkhLJCNUnS115j3Xyww0kW6YbORLX6TEwPcse+0JNT0ja3/VX
+         7ILow5URoPyz38ljSsobgpheX0fIoau1M+dqX8xse/rPSykcfzKNMiHS2tDaOszbxMBX
+         Wfk4vlhfKfXkEKaVtXqbHbpebFisoA0ry3xwru7npL9AhMzp86iPbbjNUKonX5CXlowB
+         CCcw==
+X-Gm-Message-State: AOAM531DR5YHUjx/oVz8/zOYsKaFN7v5dRytKblzNxBJCbfiUrL87Blb
+        uuBThnVLsT5ZEZsatbwwZH8=
+X-Google-Smtp-Source: ABdhPJx4MLx9Ltyn/M9Ym+9EkXbzQUzYsyfk9kLrrgeKD+UNMwNEbJHfQveng51WxidePLvLV0i4ew==
+X-Received: by 2002:a9d:1e7:: with SMTP id e94mr9348668ote.219.1611784042555;
+        Wed, 27 Jan 2021 13:47:22 -0800 (PST)
+Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-c6c9-5eb3-064f-43eb.res6.spectrum.com. [2603:8081:140c:1a00:c6c9:5eb3:64f:43eb])
+        by smtp.gmail.com with ESMTPSA id j11sm630235otl.18.2021.01.27.13.47.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 13:47:21 -0800 (PST)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearson@hpe.com>
+Subject: [PATCH for-next] RDMA/rxe: Fix coding error in rxe_recv.c
+Date:   Wed, 27 Jan 2021 15:45:01 -0600
+Message-Id: <20210127214500.3707-1-rpearson@hpe.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@pm.me>
-Date: Mon, 25 Jan 2021 16:46:48 +0000
+check_type_state() in rxe_recv.c is written as if the type bits in
+the packet opcode were a bit mask which is not correct. This patch
+corrects this code to compare all 3 type bits to the required type.
 
-> page_is_pfmemalloc() is used mostly by networking drivers. It doesn't
-> write anything to the struct page itself, so constify its argument and
-> a bunch of callers and wrappers around this function in drivers.
-> In Page Pool core code, it can be simply inlined instead.
->=20
-> Alexander Lobakin (3):
->   mm: constify page_is_pfmemalloc() argument
->   net: constify page_is_pfmemalloc() argument at call sites
->   net: page_pool: simplify page recycling condition tests
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Signed-off-by: Bob Pearson <rpearson@hpe.com>
+---
+ drivers/infiniband/sw/rxe/rxe_recv.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-Superseded with v2 [0].
-
->  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c   |  2 +-
->  drivers/net/ethernet/intel/fm10k/fm10k_main.c     |  2 +-
->  drivers/net/ethernet/intel/i40e/i40e_txrx.c       |  2 +-
->  drivers/net/ethernet/intel/iavf/iavf_txrx.c       |  2 +-
->  drivers/net/ethernet/intel/ice/ice_txrx.c         |  2 +-
->  drivers/net/ethernet/intel/igb/igb_main.c         |  2 +-
->  drivers/net/ethernet/intel/igc/igc_main.c         |  2 +-
->  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c     |  2 +-
->  drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c |  2 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c   |  2 +-
->  include/linux/mm.h                                |  2 +-
->  include/linux/skbuff.h                            |  4 ++--
->  net/core/page_pool.c                              | 14 ++++----------
->  13 files changed, 17 insertions(+), 23 deletions(-)
->=20
-> --=20
-> 2.30.0
-
-[0] https://lore.kernel.org/netdev/20210127201031.98544-1-alobakin@pm.me
-
-Thanks,
-Al
+diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+index c9984a28eecc..0c9b857194fe 100644
+--- a/drivers/infiniband/sw/rxe/rxe_recv.c
++++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+@@ -9,21 +9,26 @@
+ #include "rxe.h"
+ #include "rxe_loc.h"
+ 
++/* check that QP matches packet opcode type and is in a valid state */
+ static int check_type_state(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
+ 			    struct rxe_qp *qp)
+ {
++	int pkt_type;
++
+ 	if (unlikely(!qp->valid))
+ 		goto err1;
+ 
++	pkt_type = pkt->opcode & 0xe0;
++
+ 	switch (qp_type(qp)) {
+ 	case IB_QPT_RC:
+-		if (unlikely((pkt->opcode & IB_OPCODE_RC) != 0)) {
++		if (unlikely(pkt_type != IB_OPCODE_RC)) {
+ 			pr_warn_ratelimited("bad qp type\n");
+ 			goto err1;
+ 		}
+ 		break;
+ 	case IB_QPT_UC:
+-		if (unlikely(!(pkt->opcode & IB_OPCODE_UC))) {
++		if (unlikely(pkt_type != IB_OPCODE_UC)) {
+ 			pr_warn_ratelimited("bad qp type\n");
+ 			goto err1;
+ 		}
+@@ -31,7 +36,7 @@ static int check_type_state(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
+ 	case IB_QPT_UD:
+ 	case IB_QPT_SMI:
+ 	case IB_QPT_GSI:
+-		if (unlikely(!(pkt->opcode & IB_OPCODE_UD))) {
++		if (unlikely(pkt_type != IB_OPCODE_UD)) {
+ 			pr_warn_ratelimited("bad qp type\n");
+ 			goto err1;
+ 		}
+-- 
+2.27.0
 
