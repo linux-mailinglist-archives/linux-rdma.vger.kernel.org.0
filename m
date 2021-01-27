@@ -2,98 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733F6306472
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Jan 2021 20:53:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 929B23064CF
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Jan 2021 21:12:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhA0TuR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Jan 2021 14:50:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344516AbhA0Tks (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Jan 2021 14:40:48 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D090FC061573
-        for <linux-rdma@vger.kernel.org>; Wed, 27 Jan 2021 11:40:06 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id w8so3457684oie.2
-        for <linux-rdma@vger.kernel.org>; Wed, 27 Jan 2021 11:40:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HTnhwAYgkqhwM343pbYPL8v0Rv0DzQewT8wizJtCiKs=;
-        b=dsY+YEYU9Zq+cYJI0FdT+xChiqXeSrQwbhk7lq8czN3gKKyHPWNFBP20GYIEf8jFSj
-         idS99NsavD3DpoJ+Ghvrt2LNPpBmWuFJNXIP95PTq7LRl667XEZWZX81Jh3M5gOSbeq5
-         Yur7DK+VomzVsMoZELrelXLX+QC1LTrQU0q9izFe9btVOTfWWn/8uE4K7zHNvVXx6jX7
-         qquM7+JU7/oPH6OHc0yfiGVYnhdEFcI3Nz6wbSDnaVJc35chiSwf4Wv0Gx+vDxgwjUVa
-         /v4P0dHC6i6AD46MKfPWwubN+aox6s5WThlzUblVEI/e/UVfqF+uS9w3wdI7k+Uu357/
-         Xuyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HTnhwAYgkqhwM343pbYPL8v0Rv0DzQewT8wizJtCiKs=;
-        b=RJMz0M/eQjfcc1YD6/5Q0yX5JQ2Cutc16Hci82HaCG2oZ3n043nAMbmsnxevN6YX30
-         jYrqU/JsNho44bY1b2G8wjW6/wkmMqjPkK7VxeKjdUHLbsrDXFK0+eRwKO0qB37mU/vm
-         us3+meWayrqXVrEVy6MisHsF2h2UU8ogtk+IO6+m7jmYhAm2RgJcGd5iVYzbdiMpsz2m
-         Q8LywLVTRWImh8+7aZusV2pDmd0sUFbwGvf/qlUzrYMzGscsgDSI9Jo0w4w7aLJvHZEL
-         GZUpnJzcFiSNeTEnbsudDTIs2MoeZuhAsCFtrtTuEP3gSQLIBnWnOHQll8pnQg4LZeHU
-         rPbQ==
-X-Gm-Message-State: AOAM53135WslX3AmruOev4unmhpXQcUgw5DR5wa0dt6nFNX8hweYyq5d
-        9vmcR10jfQgwYlVcOqPm0ck=
-X-Google-Smtp-Source: ABdhPJz1WYoBS0YUywa8TnOuUEhxuldk4bhsElNS70T2D/xxZb93Ap+IsOGKS2yxDLpmhtqblIkXzQ==
-X-Received: by 2002:aca:bd54:: with SMTP id n81mr4226280oif.162.1611776406322;
-        Wed, 27 Jan 2021 11:40:06 -0800 (PST)
-Received: from ?IPv6:2603:8081:140c:1a00:cafb:59e1:a2d3:7bc7? (2603-8081-140c-1a00-cafb-59e1-a2d3-7bc7.res6.spectrum.com. [2603:8081:140c:1a00:cafb:59e1:a2d3:7bc7])
-        by smtp.gmail.com with ESMTPSA id l110sm539593otc.25.2021.01.27.11.40.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 11:40:05 -0800 (PST)
-Subject: Re: [RFC PATCH] RDMA/rxe: Export imm_data to WC when the related WR
- with imm_data finished on SQ
-To:     Leon Romanovsky <leon@kernel.org>,
-        Xiao Yang <yangx.jy@cn.fujitsu.com>
-Cc:     linux-rdma@vger.kernel.org, jgg@nvidia.com
-References: <20210127082431.2637863-1-yangx.jy@cn.fujitsu.com>
- <20210127120427.GJ1053290@unreal>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <b4f0d73c-9624-b971-e56a-f1db02d683e3@gmail.com>
-Date:   Wed, 27 Jan 2021 13:40:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S232455AbhA0ULq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Jan 2021 15:11:46 -0500
+Received: from mail-40133.protonmail.ch ([185.70.40.133]:64726 "EHLO
+        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232442AbhA0ULp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Jan 2021 15:11:45 -0500
+Date:   Wed, 27 Jan 2021 20:10:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1611778257; bh=VdLcOnTLbHfFNHFlN/XjYPHtoWTcOg+AoFdHQrfr7jE=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=Xk5AAUW2hzwHMulLeDd1o8jFMxpHFcNn5Lvyslpc98CPdmGW4hNZNh3OaAbwjkSWF
+         oRIUWJF6XzV3pvfkbhNTHAgvLjD1kCMdekHFzEH3aT3J99QoFSDjRqhaxPk0zkda4E
+         t6ZOnF3hrDrAuzwJf3UsUBN+qukP/a/neSV503kp2b969Qcxk+IxK556S/wA6rijux
+         fPvxxFUbr0ObBC1OXrkGd3Xpr4RzPPRCNiBQ0Gpc3V0F6+CioAvlmc8HKKlahZTVif
+         Lf2ETDXjkBX+TWCVy0ex1AB8YM/aUks2vTia/rjzIUxIRVi1U+zeOL7SuD+exMYml9
+         xhEDv9ixZi3hA==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     David Rientjes <rientjes@google.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v2 net-next 0/4] net: consolidate page_is_pfmemalloc() usage
+Message-ID: <20210127201031.98544-1-alobakin@pm.me>
 MIME-Version: 1.0
-In-Reply-To: <20210127120427.GJ1053290@unreal>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/27/21 6:04 AM, Leon Romanovsky wrote:
-> On Wed, Jan 27, 2021 at 04:24:31PM +0800, Xiao Yang wrote:
->> Even if we enable sq_sig_all or IBV_SEND_SIGNALED, current rxe
->> module cannot set imm_data in WC when the related WR with imm_data
->> finished on SQ.
->>
->> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
->> ---
->>
->> Current rxe module and other rdma modules(e.g. mlx5) only set
->> imm_data in WC when the related WR with imm_data finished on RQ.
->> I am not sure if it is a expected behavior.
-> 
-> This is IBTA behavior.
-> 
-> 5.2.11 IMMEDIATE DATA EXTENDED TRANSPORT HEADER (ImmDt) - 4 BYTES
-> "Immediate Data (ImmDt) contains data that is placed in the receive
->  Completion Queue Element (CQE). The ImmDt is only allowed in SEND or
->  RDMA WRITE packets with Immediate Data."
-> 
-> If I understand the spec, you shouldn't set imm_data in SQ.
-> 
-> Thanks
-> 
+page_is_pfmemalloc() is used mostly by networking drivers to test
+if a page can be considered for reusing/recycling.
+It doesn't write anything to the struct page itself, so its sole
+argument can be constified, as well as the first argument of
+skb_propagate_pfmemalloc().
+In Page Pool core code, it can be simply inlined instead.
+Most of the callers from NIC drivers were just doppelgangers of
+the same condition tests. Derive them into a new common function
+do deduplicate the code.
 
-This seems a little confused to me. wc.imm_data is set in rxe_resp.c in response to an incoming request packet that contains an IMMDT extension header. I.e. a write with immediate or send with immediate opcode from the remote end of the wire. This wc is delivered to the receive completion queue when the message is complete. It should not have anything to do with the local send work queue entries.
+Since v1 [0]:
+ - new: reduce code duplication by introducing a new common function
+   to test if a page can be reused/recycled (David Rientjes);
+ - collect autographs for Page Pool bits (Jesper Dangaard Brouer,
+   Ilias Apalodimas).
 
-Bob Pearson
+[0] https://lore.kernel.org/netdev/20210125164612.243838-1-alobakin@pm.me
+
+Alexander Lobakin (4):
+  mm: constify page_is_pfmemalloc() argument
+  skbuff: constify skb_propagate_pfmemalloc() "page" argument
+  net: introduce common dev_page_is_reserved()
+  net: page_pool: simplify page recycling condition tests
+
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   | 10 ++--------
+ drivers/net/ethernet/intel/fm10k/fm10k_main.c |  9 ++-------
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 15 +--------------
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   | 15 +--------------
+ drivers/net/ethernet/intel/ice/ice_txrx.c     | 11 +----------
+ drivers/net/ethernet/intel/igb/igb_main.c     |  7 +------
+ drivers/net/ethernet/intel/igc/igc_main.c     |  7 +------
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |  7 +------
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |  7 +------
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  7 +------
+ include/linux/mm.h                            |  2 +-
+ include/linux/skbuff.h                        | 19 +++++++++++++++++--
+ net/core/page_pool.c                          | 14 ++++----------
+ 13 files changed, 34 insertions(+), 96 deletions(-)
+
+--=20
+2.30.0
+
+
