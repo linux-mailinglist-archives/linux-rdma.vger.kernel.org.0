@@ -2,102 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25FA830779A
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 Jan 2021 15:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C853077B2
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 Jan 2021 15:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbhA1OEV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 Jan 2021 09:04:21 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16932 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhA1OET (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Jan 2021 09:04:19 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6012c43b0002>; Thu, 28 Jan 2021 06:03:39 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 Jan
- 2021 14:03:38 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.172)
- by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 28 Jan 2021 14:03:38 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zr2Q5qCkUWBUDLZLA057SHzQNk4a6Vth85jd0SOd6bWAHBCNzn/GzG0bwC26euEBEL8OK0mHZO9IZTnVo0xI693F76i24YqtDdbNRx7jbAoaTLiFyeSWFRqOM0g0voCcTiiSu6jkCwqJwapmEIl7LnaVxxfMtAQMFdL3VuBHGo6qp8oL2sqLT14nfx6C7rugWtLfC0uy6fT/Z+9N0qD9bf/Yj/D3lXDeJj+Aqqx2MD/mNZ1braKuY0EY5CMf1J0aIDznr6FYu6qWnVOyVne4ARlMY5t2i6eQzyqq+0AnRg0/VE6ePfUdbH+yJjK90kj8fxkuN5AYOvTm4Fq1VnDvyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H0rPBMeR8sinPoQu/ysCNaPOiwt9CTkOXbDLf7fz4mY=;
- b=Dn825dVzZksx5+INGVivhc00zsq+7jP+oHxPK1JNQVU/p0S6b7m6u1uMk3QP/j80oxTxd3YE29Fp9LfgbBvwxK8J03/Kc4wwJeAkiBFSUcE3w20bAOpjFC9uOevSTTzFEy7USrFcHmHkwaEWc6GkPknsYa0owMM09RfNVqBaqRRQ+AmGOZOb3S3b6unraEufiyJ8D+the9hD6G/O9ZRnaJiJ0njbWV3alqlQiqbk1X+kJSNFawGKt+6cKWSoxM1zvbvihb3gBd4+KyhIN6x8en64FtycI/WCsLQ8bgG1QNuRyWy1ua4W0zMwMQHIQJj22cve0XpOglV2p2xaI/TS/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3737.namprd12.prod.outlook.com (2603:10b6:5:1c5::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Thu, 28 Jan
- 2021 14:03:37 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.019; Thu, 28 Jan 2021
- 14:03:37 +0000
-Date:   Thu, 28 Jan 2021 10:03:35 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christoph Lameter <cl@linux.com>
-CC:     Leon Romanovsky <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH] Fix: Remove racy Subnet Manager sendonly join checks
-Message-ID: <20210128140335.GA13699@nvidia.com>
-References: <alpine.DEB.2.22.394.2101251126090.344695@www.lameter.com>
+        id S229769AbhA1OJZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 28 Jan 2021 09:09:25 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2971 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231148AbhA1OJY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Jan 2021 09:09:24 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DRMjS01p7z5MN2;
+        Thu, 28 Jan 2021 22:07:08 +0800 (CST)
+Received: from dggema751-chm.china.huawei.com (10.1.198.193) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Thu, 28 Jan 2021 22:08:21 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema751-chm.china.huawei.com (10.1.198.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Thu, 28 Jan 2021 22:08:21 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.002;
+ Thu, 28 Jan 2021 22:08:21 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     "dledford@redhat.com" <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+CC:     "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Question about the mechanism of RoCEv2 VLAN validation
+Thread-Topic: Question about the mechanism of RoCEv2 VLAN validation
+Thread-Index: AQHW9X8IxKfQwUKiHkePfWN8w4hMZA==
+Date:   Thu, 28 Jan 2021 14:08:21 +0000
+Message-ID: <ff917571dbae45fe9c9d840bac400404@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2101251126090.344695@www.lameter.com>
-X-ClientProxiedBy: BLAPR03CA0152.namprd03.prod.outlook.com
- (2603:10b6:208:32c::7) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BLAPR03CA0152.namprd03.prod.outlook.com (2603:10b6:208:32c::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Thu, 28 Jan 2021 14:03:36 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l57tX-0003bt-65; Thu, 28 Jan 2021 10:03:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611842619; bh=H0rPBMeR8sinPoQu/ysCNaPOiwt9CTkOXbDLf7fz4mY=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=UcSt48i8yJgFdENWWYSjWZ0f7IQG6Je7EG5W5Z6kG7pFqWY9v4HWuSiUg6fQMS8Xe
-         CMzr2dnQLSc5zXT4SzWWTuT7LHqdVSVrD5ET43i7mag0lxTQt41H2vkUkl6nmCpDGN
-         8JytT63iQhZQNsO6HO6v4+5NDFpvmQaJyID3oxMyHshPkCQOfJpm0dJGwQufemfbsb
-         e2/cDaynVSSkrbm48sAgzwUiBNyhk8BjimTqjkq1Yjgyu9T3j0iFJtXH/YFRAd3MkL
-         pJgaABiR97rpig0ae6tOJTagxpbU5aBdDfhZa728lliuF5JiVFndm734QxkEPAyQ3k
-         FTHJBytRQMsRQ==
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 11:28:57AM +0000, Christoph Lameter wrote:
-> On Sun, 24 Jan 2021, Leon Romanovsky wrote:
-> 
-> > > Since all SMs out there have had support for sendonly join for years now
-> > > we could just remove the check entirely. If there is an old grizzly SM out
-> > > there then it would not process that join request and would return an
-> > > error.
-> >
-> > I have no idea if it possible, if yes, this will be the best solution.
-> 
-> Ok hier ist ein neuer Patch:
-> 
-> From: Christoph Lameter <cl@linux.com>
-> Subject: [PATCH] Fix: Remove racy Subnet Manager sendonly join checks
+Hi All,
 
-I need patches to be sent in a way that shows in patchworks to be
-applied:
+I'm confusing at the VLAN validation mechanism of RoCEv2.
 
-https://patchwork.kernel.org/project/linux-rdma/list/
+Assuming that we have two nodes with an HCA that supports RoCE v2. And we add
+a VLAN (id = 1) on each nodes, but they are of different network segments. The
+IP and VLAN configuration are as follows:
 
-> Index: linux/drivers/infiniband/core/cma.c
-> ===================================================================
-> +++ linux/drivers/infiniband/core/cma.c	2021-01-25 09:39:29.191032891 +0000
-> @@ -4542,17 +4542,6 @@ static int cma_join_ib_multicast(struct
+              NODE_A                                     NODE_B
++--------+---------------+------+          +--------+---------------+------+
+| device |     IP        | VLAN |          | device |     IP        | VLAN |
++--------+---------------+------+          +--------+---------------+------+
+| eth0   | 192.168.97.1  |   0  |     /----| eth0   | 192.168.100.2 |   0  |
++--------+---------------+------+    /     +--------+---------------+------+
+| eth0.1 | 192.168.100.3 |   1  |---/      | eth0.1 | 192.168.98.2  |   1  |
++--------+---------------+------+          +--------+---------------+------+
 
-Also if patches aren't generated with 'git diff' then I won't fix any
-minor conflicts :(
+Now I try to ping eth0 on NODE_B from eth0.1 on NODE_A, of cource it fails
+becauce these devices are using different VLAN ID.
 
-Thanks,
-Jason
+Then I do some tests on RoCE, the first one is a simple RC send test:
+
+NODE_A: ib_send_bw -d mlx5_0 -x 5 (the sgid 5 belongs to eth0.1)
+NODE_B: ib_send_bw -d mlx5_0 -x 3 <server ip> (the sgid 3 belongs to eth0)
+
+The result is as expected, the RoCEv2 packet with unmatched VLAN ID was
+dropped. I think the reason is that for RC service, the VLAN information
+of a QP is recorded in QPC, and the HCA can check it when receiving a packet.
+
+But when I run a simple UD send test:
+
+NODE_A: ib_send_bw -d mlx5_0 -x 5 -c UD (the sgid 5 belongs to eth0.1)
+NODE_B: ib_send_bw -d mlx5_0 -x 3 -c UD  <server ip> (the sgid 3 belongs to eth0)
+
+The test ends without error successfully. So the question is, RoCEv2 is based
+on Ethernet, shouldn't a RoCEv2 node check the VLAN ID of every incoming
+packets?
+
+UD is connectionless-oriented, an UD QP won't record VLAN info in it's QPC,
+so how to achieve the checking mechanism? Or a UD QP should just ignore the
+unmatched VLAN ID?
+
+I didn't find any info from the IB specification, I'd appreciate it if someone
+could help explain it.
+
+Thanks
+Weihang
