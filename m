@@ -2,91 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0DE307730
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 Jan 2021 14:35:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B80B30773C
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 Jan 2021 14:38:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbhA1Nff (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 Jan 2021 08:35:35 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14203 "EHLO
+        id S232032AbhA1NhO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 Jan 2021 08:37:14 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14413 "EHLO
         hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhA1Nfe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Jan 2021 08:35:34 -0500
+        with ESMTP id S232014AbhA1NhN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Jan 2021 08:37:13 -0500
 Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6012bd7e0000>; Thu, 28 Jan 2021 05:34:54 -0800
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HQMAIL105.nvidia.com
+        id <B6012bde10000>; Thu, 28 Jan 2021 05:36:33 -0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HQMAIL105.nvidia.com
  (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 Jan
- 2021 13:34:53 +0000
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 Jan
- 2021 13:34:49 +0000
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.59) by
- HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 28 Jan 2021 13:34:48 +0000
+ 2021 13:36:32 +0000
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 Jan
+ 2021 13:36:28 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
+ by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 28 Jan 2021 13:36:28 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J7STQT/CzWJ7Ax7gC1VCsO1uZKjk3q0wygN8nn343kYqbCRgXBj+ikweWUwVnKMRzI15RdUz0gLuq9CTyQEujaZxGhrp+ol6k8kg5mbUVQI7UuhGu9Ul2p3/CR+xzNxWxh+BAJ+zFukd71EYp9nm+wyRlsb2MB34UoWAR5hEZ9s2tUKuPTRTIIz3docT2Qs6L7R1HnEU55EzogYyr6oMYmJti5XnNOjMjyWmv8REHYyCl0PkjSxWbSIQ0WnmxGftM09uZnd6Yuwbp9Uq+54DbTZP5OFmQ3y+o8sdvX0IqCnBcfzjoPDUmNOXZLhd90K9oDyLN8In/c9m/SJ8Z6pHXg==
+ b=H9j6tDNjuilSGS9rPC4NDdyHdSpvKwVBkR/ftnqNTwhR8cfz9FaAS9Mb5ktoUiTwcfuA7AUUCZpe7AbDDe9Ugugv8TtWxKR+EII82uBvx7s6i779UypLeBuLMns++TiERe1D26EnFpkZ/juGq6uwRy+5ySD73lGmaU18dQMx1IP/DQd14OpfMv+zAfyAdSj1CF2xUA7Q9hcjevF11Uw7f2FFrYe5esg5P+NwYEvS2Evi12OAx7DcjBmVoTY7KL89WoalfA0OnrGy4/pFvTLuqupwj7ARjyLowcFpwruKtTqcqjVCwralySkIplmY4kdH6BLh8Q1GB+kiuHxE4WL3Tw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ASrQlhigP1OmhWI1dY4ajLnBGRvQlhZiFurR8hMhOs8=;
- b=MkOkD3SiRhWvkKsBlXHSuf+IEE3X+JXqDvMbk1SK9RMpu+tkGb1xccJpT31xHVknIMrRMXyh++rODGFqe5FVFNwGOMxS5C0/PJN+ESBbHwq3JBxFYKOpqGM0qskyE7ntv+woJHXWWxup0laJeG9dW4M13+WY5v7M8SvwqTlIS+Cf/eezshMHJgEUdeJuo2/db/WBNQOsxStFIjQSJU9Tld8blTf1oRKgTr3VWf3sgkSs9yBOZn6Ab8FLBx+7TqtBteqyYv+Y/5JM9R/rZt6dc585ZIX5WtYTfRiF469eRHdhrwXZVTXfou4veptH5xQFUi9dGhFMSTF7qqkDm47jcA==
+ bh=KM80dr5HbqUB2XbvKAS5Lt7jpdsrr685jB0+oh9qrzw=;
+ b=Z13Ko40UW5YgiCegTfOUZ98/CkhjwBQWxFVE8DsNwEIKXzRp+wSY+AH13ckbZQr0s4HC88AI7f9mzMwiposLTjdwMKoI8FA6TEFC56c4CaV5SYb7Axy21O8OFS7k1Qr7/GNZW9ALfE9Xh/qvjfFcB07YD6yDZjpsBqC3cvz7nD/yDHCg44UEEF3WSbb7CDBTSZcBLOMuFTOru5rbvcjUraR3TTsnJo6Hdrth79cBipbVV6BZkisi8gil1Ja4LwUXxRYddXbw9JXeT275s2+5q4eHflMirFwUTfI2XMR4UDnGbwo5OHGjdPP3jYAmdksdOx+BQuGUBFn9me3Czl1sHQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4578.namprd12.prod.outlook.com (2603:10b6:5:2a9::22) with
+ by DM5PR12MB1755.namprd12.prod.outlook.com (2603:10b6:3:107::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Thu, 28 Jan
- 2021 13:34:46 +0000
+ 2021 13:36:26 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.019; Thu, 28 Jan 2021
- 13:34:46 +0000
-Date:   Thu, 28 Jan 2021 09:34:44 -0400
+ 13:36:26 +0000
+Date:   Thu, 28 Jan 2021 09:36:24 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
 To:     Tatyana Nikolova <tatyana.e.nikolova@intel.com>
 CC:     <dledford@redhat.com>, <leon@kernel.org>,
         <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-core 4/5] rdma-core/irdma: Add library setup and
- utility definitions
-Message-ID: <20210128133444.GC4247@nvidia.com>
+Subject: Re: [PATCH rdma-core 5/5] rdma-core/irdma: Implement device
+ supported verb APIs
+Message-ID: <20210128133624.GD4247@nvidia.com>
 References: <20210128035704.1781-1-tatyana.e.nikolova@intel.com>
- <20210128035704.1781-5-tatyana.e.nikolova@intel.com>
+ <20210128035704.1781-6-tatyana.e.nikolova@intel.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210128035704.1781-5-tatyana.e.nikolova@intel.com>
-X-ClientProxiedBy: MN2PR20CA0002.namprd20.prod.outlook.com
- (2603:10b6:208:e8::15) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <20210128035704.1781-6-tatyana.e.nikolova@intel.com>
+X-ClientProxiedBy: MN2PR19CA0036.namprd19.prod.outlook.com
+ (2603:10b6:208:178::49) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR20CA0002.namprd20.prod.outlook.com (2603:10b6:208:e8::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Thu, 28 Jan 2021 13:34:46 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l57Rc-000358-Md; Thu, 28 Jan 2021 09:34:44 -0400
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR19CA0036.namprd19.prod.outlook.com (2603:10b6:208:178::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Thu, 28 Jan 2021 13:36:25 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l57TE-000365-LB; Thu, 28 Jan 2021 09:36:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611840894; bh=ASrQlhigP1OmhWI1dY4ajLnBGRvQlhZiFurR8hMhOs8=;
+        t=1611840993; bh=KM80dr5HbqUB2XbvKAS5Lt7jpdsrr685jB0+oh9qrzw=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType;
-        b=ByQYwiVjP+4a8uKSu2JgjKNDgPUlBvUd2dauxLsLBzn9DZ+QLBF9iBiKAHy7Jx+Vv
-         QjWseElNZaLOs2hZBJSHuSDeQz1EQaUTD48i/WDh+BYIeP92M9J45Jf9EsvbUsZSKN
-         QphiIyYVdmdAexTplakpUMi6C4wZuuiZzYotk/iLZ2hthrRo8wKITgZh6E4eDsDcCg
-         coc1k31INWQvtS/5G7uxXrOBmZiRWzkTKT6p0KcIH0ycb8+tLt8bQC44q+0YPlXRtk
-         USXFr09d0E1YK50CzrbReiBXy/v+rT3P10bo0v/7GEkZpV8kBUuSMOj6vHrgJV+Wyy
-         gih1PaIAulB3w==
+        b=rgQ5tI7mK4zDO7G4xEJ8CmXqtWFEUNgYr6SdXX7w1KiX3sziDBMw95hND9YM07Gq+
+         Ikb/5U40DW5xbxKmSlqg2evd2Yd2BuitLiCuJvXZEeV8nsB6gU9GrqeYTgSLziSG7B
+         s1bR0ykSLLyeuJAQ7xMVmzWC/O5QkkaEGu+JiOx6eU1EoDEnHFW/OEbeZMXiAxo4Ht
+         UTwtaZcxSGf/koxyJ+KwASXrue7af7kYkhaUXnooSQsdwfAd2XnfbYdOfwgz+HIHTG
+         YbmeUcw9A8h6NAQ/jYZ9p3V9QEHPVYLdSnO4v96GmTkdBm59/xLb0vhGNmgh+5qtIC
+         lQkRyJLYq5DtA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 09:57:03PM -0600, Tatyana Nikolova wrote:
+On Wed, Jan 27, 2021 at 09:57:04PM -0600, Tatyana Nikolova wrote:
+> +
+> +	attr_ex->cqe = info.cq_size;
+> +	if (ext_cq) {
+> +		struct irdma_ucreate_cq_ex cmd = {};
+> +		struct irdma_ucreate_cq_ex_resp resp = {};
+> +
+> +		cmd.user_cq_buf = (__u64)((uintptr_t)info.cq_base);
+> +		cmd.user_shadow_area = (__u64)((uintptr_t)info.shadow_area);
+> +
+> +		ret = ibv_cmd_create_cq_ex(context, attr_ex, &iwucq->verbs_cq,
+> +					   &cmd.ibv_cmd, sizeof(cmd), &resp.ibv_resp,
+> +					   sizeof(resp));
+> +		if (!ret) {
+> +			irdma_ibvcq_ex_fill_priv_funcs(iwucq, attr_ex);
+> +			info.cq_id = resp.cq_id;
+> +			/* Do not report the cqe's burned by HW */
+> +			iwucq->verbs_cq.cq.cqe = ncqe;
+> +		}
+> +	} else {
+> +		struct irdma_ucreate_cq cmd = {};
+> +		struct irdma_ucreate_cq_resp resp = {};
+> +
+> +		cmd.user_cq_buf = (__u64)((uintptr_t)info.cq_base);
+> +		cmd.user_shadow_area = (__u64)((uintptr_t)info.shadow_area);
+> +
+> +		ret = ibv_cmd_create_cq(context, attr_ex->cqe, attr_ex->channel,
+> +					attr_ex->comp_vector, &iwucq->verbs_cq.cq,
+> +					&cmd.ibv_cmd, sizeof(cmd), &resp.ibv_resp,
+> +					sizeof(resp));
+> +		if (!ret) {
+> +			info.cq_id = resp.cq_id;
+> +			/* Do not report the cqe's burned by HW */
+> +			iwucq->verbs_cq.cq.cqe = ncqe;
+> +		}
+> +	}
 
-> +#define INTEL_HCA(v, d) VERBS_PCI_MATCH(v, d, NULL)
-> +static const struct verbs_match_ent hca_table[] = {
-> +	VERBS_DRIVER_ID(RDMA_DRIVER_IRDMA),
-> +#ifdef ICE_DEV_ID_E823L_BACKPLANE
-> +	INTEL_HCA(PCI_VENDOR_ID_INTEL, ICE_DEV_ID_E823L_BACKPLANE),
-> +#endif
-
-No #ifdefs ike this
+Just always call ibv_cmd_create_cq_ex(), it internally does the right
+thing for all cases.
 
 Jason
-
