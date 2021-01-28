@@ -2,96 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D319307F10
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 Jan 2021 21:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3C0308155
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 Jan 2021 23:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbhA1UC2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 Jan 2021 15:02:28 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15649 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbhA1T66 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Jan 2021 14:58:58 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601317550007>; Thu, 28 Jan 2021 11:58:13 -0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 Jan
- 2021 19:58:13 +0000
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 28 Jan
- 2021 19:58:11 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.173)
- by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 28 Jan 2021 19:58:10 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D7/uR/zU80eyzGt57ixSZQgiAiSQ29tVCtUa7nPgeYBrLpDv2issjQ0kppdbJSa22Td6SlJwLLz8lBz2tpbgxZAZyUJOHK3709GoA3zkIqdZIxSt+A2FsDn6eckT+78juvrNd4fXwpumN6wdATo8pBovX5BpCMHku+7UyXbWEC7zTsm1mMflXZTtGS3M9dEHwgT9jIJKQCbSOahWAUCpknqY5MZuYr8nFErTrq8xc48N6uTdPRxZ6Gq+9VcQ2vQzY2p4N0FwU8hk//1kIq//6/BTVxi/rht6M5PgYfI1FzDGGaVOZVQFC/p1VTg24PdNvoWq+0mF2FDr+N6oa10jjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BIYYi7Jqk6fodZhr0fUGozHYoNeTHs5hAfzXD9FPeTk=;
- b=Or+pOBHEM/dYNldhdWPErLch+MFk+e51WYRJV8yI8Lr26Add0R4JIlXotZWu0hHC6UKpyGtFOwa5J0gWZCLOhy019jFKEudFzQKD/FuEojLB2qFBp48EVA2w3efj89kLQJGjMfZsmdDF4xstyfsLy7Evcf5GDNvE2htJmVP3+6vSszhnPEoxpYcl9QsL4SV4yii1iNYgaCR0tkerWSYsZwvhZdyhiUHjapNEQOiJpj3neqvwJY+KmS7xoZDG0vWhyYvrxkNkFc4011FKjGhY2yZDK+ToePTCNeVG/NfD+XCODusrZh0f6hNpOqLlcUG8F8Ho8hf+G1vUR2F+9THU5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2938.namprd12.prod.outlook.com (2603:10b6:5:18a::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.16; Thu, 28 Jan
- 2021 19:58:08 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.019; Thu, 28 Jan 2021
- 19:58:08 +0000
-Date:   Thu, 28 Jan 2021 15:58:06 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Gal Pressman <galpress@amazon.com>
-CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>
-Subject: Re: [PATCH for-next 0/5] EFA cleanups 2021-01-26
-Message-ID: <20210128195806.GA135851@nvidia.com>
-References: <20210126120702.9807-1-galpress@amazon.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210126120702.9807-1-galpress@amazon.com>
-X-ClientProxiedBy: MN2PR07CA0024.namprd07.prod.outlook.com
- (2603:10b6:208:1a0::34) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S231687AbhA1WqE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 Jan 2021 17:46:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231171AbhA1Wpr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Jan 2021 17:45:47 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC94C061574
+        for <linux-rdma@vger.kernel.org>; Thu, 28 Jan 2021 14:44:59 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id m6so4981782pfk.1
+        for <linux-rdma@vger.kernel.org>; Thu, 28 Jan 2021 14:44:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=QyEif4VyZcju9R1mKoD/tD54DKRTJWeE0Dgl2QjUm3c=;
+        b=E26b/trYarb6KK70wmR2E+OJdxnTogS0ETGiS4abIvOyQHhJ8LxMz2KTBkXLCM/Ivv
+         Z38c7DceiM9rPWg4EbbGD6Ndc94tPNlIyO57WDIxZs4kdZgV97NjdGB3o5Yc6EYFHBS+
+         U3hVoCrWKgtF8D8GyAEm5f79ee+yC8aG/DXgUbcf3HYHiFYYUQ5CGmnWh76CpA+C7kdh
+         3v+fSEyuTVwNSc1mPIqvneBw0dEwM3GsCF44182C+FnDx+qf6IugERbk0zPFcebbc2bV
+         8l3NyThctWYb7ePNlX/3tABBo7cx0nuwxSgaikbyDSHp2llydDsZu3tdNCYcUtBzOvvy
+         Y1QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=QyEif4VyZcju9R1mKoD/tD54DKRTJWeE0Dgl2QjUm3c=;
+        b=j1R9NDTTLOq0XMR9JXL1kR5i1/Fh5o2SZ96eTzIFmtaLKgB2fCwbE6vcgMQa/88mNY
+         vnxFcBIJsUnZp2Rc2E0kC29R2U3NiXF1Fd56+mcVOL25cB35QUNnF0tuP62It4VQqYlx
+         NqSq71EhVrrmEw+BtxwT1bfOftr5NTnqdifbPtlWoZa4uZigDi3lPr7AL/V69T94+++U
+         QA9h1Nbu4lLyLIJbWuhWsCRi97FbIV02HJPnKvJbKtTKCuUDNjlsuanbXZCADhb/cNMF
+         TVadzX2YGFX5VI7qbDQ7F3BbDlG5K0kTGQuY6IIIdtxkY+DWu2kj9b0BNVxGcAP9uCXL
+         CNmw==
+X-Gm-Message-State: AOAM531O1FqX4h5J+T8k9HWmBSBO9gHna9fYcyqhpymxls+o/LRXMDpR
+        nFV1LIdNOrENLRui17AMlK/QNQ==
+X-Google-Smtp-Source: ABdhPJwWaYtvgJm8E+ti9h4XRgK7o9llC19o2oBo8G1fBLSQVe7N3WjmyzApdRZlT+yP8f2GiPEGsw==
+X-Received: by 2002:a63:2259:: with SMTP id t25mr1530428pgm.395.1611873898388;
+        Thu, 28 Jan 2021 14:44:58 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id 6sm6490348pfz.34.2021.01.28.14.44.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 14:44:57 -0800 (PST)
+Date:   Thu, 28 Jan 2021 14:44:56 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Alexander Lobakin <alobakin@pm.me>
+cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2 net-next 1/4] mm: constify page_is_pfmemalloc()
+ argument
+In-Reply-To: <20210127201031.98544-2-alobakin@pm.me>
+Message-ID: <cf211a78-7ce7-90e0-a589-1eb0bdc44222@google.com>
+References: <20210127201031.98544-1-alobakin@pm.me> <20210127201031.98544-2-alobakin@pm.me>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR07CA0024.namprd07.prod.outlook.com (2603:10b6:208:1a0::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Thu, 28 Jan 2021 19:58:07 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l5DQc-000ZLm-Q0; Thu, 28 Jan 2021 15:58:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611863893; bh=BIYYi7Jqk6fodZhr0fUGozHYoNeTHs5hAfzXD9FPeTk=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=B+M5qukvg50I+d47hGDVH1TiXLOoUvfxR47XsYIPH5C8g6nmFzwwhWQwr45Uh33mc
-         nkMON/VxeaKtAvxCQWXy1wJab/mb53kXMv54qaG+XSQF+QNjScA4D+mSgxehA+5qro
-         +irSlQP865SCqmM8I3g17yvgaafn0akunPIv4zp9XHHOxC06CSvARW+p5dTMwRMD6u
-         jFdACD8nfFMznXKlHaLB14yfF5+yD8cm3/TGOtEJQM32w/OarqwmBN6ydnv5uKoGMF
-         7dyg0qoQIQ3HMwnEWbOQsumG6/mRn5zoBkiDbB7HwJ0WS9RFKMdvhsYSIlDAAhdHNK
-         5HI4TFZzVR9pQ==
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 02:06:56PM +0200, Gal Pressman wrote:
-> Hi,
-> 
-> This series contains misc cleanups to the EFA driver and device
-> definitions. Detailed descriptions can be found in the commit messages.
-> 
-> Thanks,
-> Gal
-> 
-> Gal Pressman (5):
->   RDMA/efa: Remove redundant NULL pointer check of CQE
->   RDMA/efa: Remove duplication of upper/lower_32_bits
->   RDMA/efa: Remove unnecessary indentation in defs comments
->   RDMA/efa: Remove unused 'select' field from get/set feature command
->     descriptor
->   RDMA/efa: Remove unused syndrome enum values
+On Wed, 27 Jan 2021, Alexander Lobakin wrote:
 
-Applied to for-next, thanks
+> The function only tests for page->index, so its argument should be
+> const.
+> 
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 
-Jason
+Acked-by: David Rientjes <rientjes@google.com>
