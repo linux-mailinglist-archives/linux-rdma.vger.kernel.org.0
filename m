@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3C0308155
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 Jan 2021 23:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4C2308166
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 Jan 2021 23:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231687AbhA1WqE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 Jan 2021 17:46:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36518 "EHLO
+        id S231534AbhA1Wrz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 Jan 2021 17:47:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbhA1Wpr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Jan 2021 17:45:47 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC94C061574
-        for <linux-rdma@vger.kernel.org>; Thu, 28 Jan 2021 14:44:59 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id m6so4981782pfk.1
-        for <linux-rdma@vger.kernel.org>; Thu, 28 Jan 2021 14:44:59 -0800 (PST)
+        with ESMTP id S231712AbhA1Wqg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Jan 2021 17:46:36 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B0DC0613ED
+        for <linux-rdma@vger.kernel.org>; Thu, 28 Jan 2021 14:45:25 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id s23so4013267pgh.11
+        for <linux-rdma@vger.kernel.org>; Thu, 28 Jan 2021 14:45:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:in-reply-to:message-id:references
          :mime-version;
-        bh=QyEif4VyZcju9R1mKoD/tD54DKRTJWeE0Dgl2QjUm3c=;
-        b=E26b/trYarb6KK70wmR2E+OJdxnTogS0ETGiS4abIvOyQHhJ8LxMz2KTBkXLCM/Ivv
-         Z38c7DceiM9rPWg4EbbGD6Ndc94tPNlIyO57WDIxZs4kdZgV97NjdGB3o5Yc6EYFHBS+
-         U3hVoCrWKgtF8D8GyAEm5f79ee+yC8aG/DXgUbcf3HYHiFYYUQ5CGmnWh76CpA+C7kdh
-         3v+fSEyuTVwNSc1mPIqvneBw0dEwM3GsCF44182C+FnDx+qf6IugERbk0zPFcebbc2bV
-         8l3NyThctWYb7ePNlX/3tABBo7cx0nuwxSgaikbyDSHp2llydDsZu3tdNCYcUtBzOvvy
-         Y1QA==
+        bh=cbREDcYUxdGPWuZgrjmxI5lJSyINoM6pZuP8VJQYcBo=;
+        b=ewjgG2AitYQp4pR9LLq/tqMYwnkFQZMJwHV8dd5+P0lSWU/WAGkDWJkNSkhhHO1LhD
+         yWduDr7ASEWl6p1Gh5LXct/KLCVZRbh1Vz7VPKX6RvOQzaN7p70IOUlTuf5IXKs4Yh87
+         5BgRM1DILAYPL4ZGok0do/GOURwRmcb22SyrNd5SfM/gixVkT8qoX+cyJpEv8fa5m9Ib
+         jprArihDrGfUsIobODolmJ0tGUvqPW98PLhRZX1SdPYWKnUb0eMHVkotno395LYey9rq
+         0v//KPAC4zpmFUMGUIcHUt7amWMNjxhruYpGecyr1o4snnqTuvdYBgDKi75JeHKcplS1
+         lLAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
          :references:mime-version;
-        bh=QyEif4VyZcju9R1mKoD/tD54DKRTJWeE0Dgl2QjUm3c=;
-        b=j1R9NDTTLOq0XMR9JXL1kR5i1/Fh5o2SZ96eTzIFmtaLKgB2fCwbE6vcgMQa/88mNY
-         vnxFcBIJsUnZp2Rc2E0kC29R2U3NiXF1Fd56+mcVOL25cB35QUNnF0tuP62It4VQqYlx
-         NqSq71EhVrrmEw+BtxwT1bfOftr5NTnqdifbPtlWoZa4uZigDi3lPr7AL/V69T94+++U
-         QA9h1Nbu4lLyLIJbWuhWsCRi97FbIV02HJPnKvJbKtTKCuUDNjlsuanbXZCADhb/cNMF
-         TVadzX2YGFX5VI7qbDQ7F3BbDlG5K0kTGQuY6IIIdtxkY+DWu2kj9b0BNVxGcAP9uCXL
-         CNmw==
-X-Gm-Message-State: AOAM531O1FqX4h5J+T8k9HWmBSBO9gHna9fYcyqhpymxls+o/LRXMDpR
-        nFV1LIdNOrENLRui17AMlK/QNQ==
-X-Google-Smtp-Source: ABdhPJwWaYtvgJm8E+ti9h4XRgK7o9llC19o2oBo8G1fBLSQVe7N3WjmyzApdRZlT+yP8f2GiPEGsw==
-X-Received: by 2002:a63:2259:: with SMTP id t25mr1530428pgm.395.1611873898388;
-        Thu, 28 Jan 2021 14:44:58 -0800 (PST)
+        bh=cbREDcYUxdGPWuZgrjmxI5lJSyINoM6pZuP8VJQYcBo=;
+        b=Kqy2rQ8mutad1zAwoNjgYAvDFAY6bHYbXrICEzmeisy4OdHTmJxgbjAKnSnIUcgsf9
+         uyxC0WmuXITkgQLqPI5OSaJ/V/zgQuMA1mgfUHnmf3o95zdQ1KZBQYuCfUsOL59Ipomu
+         e/zucBTXNA+G+qRg+oKS7gMz2QF7eAsMnCzoJWFJ9a0VeEQRjHop/PoJHVbeb/f76tMR
+         FP91fZ17/eqkQ5V6+KWXwVhKhsY2B00RQ0nO7mJunbvErz4MMMZrTCoQflDmBD4OoVCh
+         +sjfdNewFaYdLVS3ubQBCCJNxDLMI42VJctL6vGz9KCupPNZdtkAK+u82ZXi2J7pTC9m
+         wU7Q==
+X-Gm-Message-State: AOAM531Yb2ZJxGtP6ePPXGFAB6FPPoprOg27ZzE3gZqdvGy1GO1OKzsX
+        8jrZf23RSQLS9oDHZlMuwuGbNw==
+X-Google-Smtp-Source: ABdhPJwWjMZAyLfJ0E9B8GRyN2meuwNffp9+5ZYWtwCpfUrwQjj8uej2C7H59DTF1LfNJWBTTZ9/zA==
+X-Received: by 2002:a63:db54:: with SMTP id x20mr1543682pgi.200.1611873925104;
+        Thu, 28 Jan 2021 14:45:25 -0800 (PST)
 Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id 6sm6490348pfz.34.2021.01.28.14.44.57
+        by smtp.gmail.com with ESMTPSA id d21sm6051801pjz.39.2021.01.28.14.45.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 14:44:57 -0800 (PST)
-Date:   Thu, 28 Jan 2021 14:44:56 -0800 (PST)
+        Thu, 28 Jan 2021 14:45:24 -0800 (PST)
+Date:   Thu, 28 Jan 2021 14:45:23 -0800 (PST)
 From:   David Rientjes <rientjes@google.com>
 To:     Alexander Lobakin <alobakin@pm.me>
 cc:     "David S. Miller" <davem@davemloft.net>,
@@ -71,11 +71,11 @@ cc:     "David S. Miller" <davem@davemloft.net>,
         Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
         linux-rdma@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 net-next 1/4] mm: constify page_is_pfmemalloc()
- argument
-In-Reply-To: <20210127201031.98544-2-alobakin@pm.me>
-Message-ID: <cf211a78-7ce7-90e0-a589-1eb0bdc44222@google.com>
-References: <20210127201031.98544-1-alobakin@pm.me> <20210127201031.98544-2-alobakin@pm.me>
+Subject: Re: [PATCH v2 net-next 2/4] skbuff: constify skb_propagate_pfmemalloc()
+ "page" argument
+In-Reply-To: <20210127201031.98544-3-alobakin@pm.me>
+Message-ID: <b1d34275-1564-a46c-601b-a4b9865f50c7@google.com>
+References: <20210127201031.98544-1-alobakin@pm.me> <20210127201031.98544-3-alobakin@pm.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
@@ -84,8 +84,10 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 On Wed, 27 Jan 2021, Alexander Lobakin wrote:
 
-> The function only tests for page->index, so its argument should be
-> const.
+> The function doesn't write anything to the page struct itself,
+> so this argument can be const.
+> 
+> Misc: align second argument to the brace while at it.
 > 
 > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 
