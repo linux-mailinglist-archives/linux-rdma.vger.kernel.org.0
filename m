@@ -2,73 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8B930823F
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Jan 2021 01:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C3D30832C
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Jan 2021 02:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229596AbhA2AMM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 Jan 2021 19:12:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33306 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229530AbhA2AMM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 28 Jan 2021 19:12:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 863B864E00;
-        Fri, 29 Jan 2021 00:11:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611879092;
-        bh=U2G/4+anSuoivbTG6gBrrR2upHQ7Nmu4KR3DvShYR8g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oUhHl8M/O4g8iy2fye2tykA+kNYqh27s8YW7fm2qPgBjZoMfDxfCKE9kn1ETwMxwj
-         vvUDroI9ZxXSIMAE2ppnFweZLE7EJqA3UjYkcUef/J6devwdtht1QX0/jAh1NOtWlE
-         RaisfacJ8mObMaIruGr7/InWp9MpOdCniztWY0JEi2Hf9uhsZz4iBMxdhcPD7lMukD
-         ZjMwZsdxALDvm4crr5BftOjWbPHrxlL+TiBQDcWIZlTCaBF6F+sYSpQriA8G0BWy5T
-         Q9qCi41Jwk575SFd7QvEZn5h2mebsXMRhfOpLpRBvobM4IT3qRvVjchYG4Zn6mzLXm
-         jB7q1k5Rw+o3A==
-Date:   Thu, 28 Jan 2021 16:11:30 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     sridhar.samudrala@intel.com, edwin.peer@broadcom.com,
-        jacob.e.keller@intel.com, "David S. Miller" <davem@davemloft.net>,
-        Jason Gunthorpe <jgg@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, alexander.duyck@gmail.com,
-        dsahern@kernel.org, kiran.patil@intel.com,
-        david.m.ertman@intel.com, dan.j.williams@intel.com
-Subject: Re: [pull request][net-next V10 00/14] Add mlx5 subfunction support
-Message-ID: <20210128161130.73cf3847@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <d6fa72b34eb65e17847463bf7084f5a25c8ad492.camel@kernel.org>
-References: <20210122193658.282884-1-saeed@kernel.org>
-        <20210126173417.3123c8ea@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <d6fa72b34eb65e17847463bf7084f5a25c8ad492.camel@kernel.org>
+        id S229885AbhA2BW0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 28 Jan 2021 20:22:26 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:4593 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhA2BWT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Jan 2021 20:22:19 -0500
+Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DRffP08kkzY3sC;
+        Fri, 29 Jan 2021 09:20:29 +0800 (CST)
+Received: from dggema751-chm.china.huawei.com (10.1.198.193) by
+ DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 29 Jan 2021 09:21:35 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema751-chm.china.huawei.com (10.1.198.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 29 Jan 2021 09:21:35 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.002;
+ Fri, 29 Jan 2021 09:21:35 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Re: Question about the mechanism of RoCEv2 VLAN validation
+Thread-Topic: Question about the mechanism of RoCEv2 VLAN validation
+Thread-Index: AQHW9X8IxKfQwUKiHkePfWN8w4hMZA==
+Date:   Fri, 29 Jan 2021 01:21:35 +0000
+Message-ID: <f65510d97b87414c8c0ddcf608ada862@huawei.com>
+References: <ff917571dbae45fe9c9d840bac400404@huawei.com>
+ <20210128141136.GF4247@nvidia.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 28 Jan 2021 16:03:02 -0800 Saeed Mahameed wrote:
-> On Tue, 2021-01-26 at 17:34 -0800, Jakub Kicinski wrote:
-> > On Fri, 22 Jan 2021 11:36:44 -0800 Saeed Mahameed wrote:  
-> > > This series form Parav was the theme of this mlx5 release cycle,
-> > > we've been waiting anxiously for the auxbus infrastructure to make
-> > > it into
-> > > the kernel, and now as the auxbus is in and all the stars are
-> > > aligned, I
-> > > can finally submit this patchset of the devlink and mlx5
-> > > subfunction support.
-> > > 
-> > > For more detailed information about subfunctions please see
-> > > detailed tag
-> > > log below.  
-> > 
-> > Are there any further comments, objections or actions that need to be
-> > taken on this series, anyone?
-> > 
-> > Looks like the discussion has ended. Not knowing any users who would
-> > need this I'd like to at least make sure we have reasonable consensus
-> > among vendors.  
+On 2021/1/28 22:12, Jason Gunthorpe wrote:
+> On Thu, Jan 28, 2021 at 02:08:21PM +0000, liweihang wrote:
 > 
-> Hey Jakub, sorry to nag, but I need to make some progress, can we move
-> on please ? my submission queue is about to explode :) !
+>> UD is connectionless-oriented, an UD QP won't record VLAN info in it's QPC,
+>> so how to achieve the checking mechanism? Or a UD QP should just ignore the
+>> unmatched VLAN ID?
+> 
+> Right, UD QPs recieve all packets for the entire device that match the
+> UD QPN
+> 
+> They indirectly report the incoming gid table index they were matched
+> with in the completion and the first 40 bytes
+> 
+> If an app only wants to look at certain gid table entries then it is
+> up to the app to filter
+> 
+> Jason
+> 
 
-I'll pull it in by the end of the day, just need to do some backports
-and then it'll be on top of my list.
+Thank you, Jason. It's really helpful.
+
+Weihang
