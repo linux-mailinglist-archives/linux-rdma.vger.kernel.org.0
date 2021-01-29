@@ -2,103 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B42308355
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Jan 2021 02:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBEA530839C
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Jan 2021 03:15:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbhA2BlZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 Jan 2021 20:41:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229757AbhA2BlY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 28 Jan 2021 20:41:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B512964DFB;
-        Fri, 29 Jan 2021 01:40:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611884443;
-        bh=gn0boGo0i6OhzskA+ZetZ2TKZ34mQ79bYIymS4IgZyo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=unZ0WF/3b08K6QFU3ZPAwS7mqU7uGsKgnkU58VuvRmL9bGHRYCKs/gY5kJXqJZR6N
-         PrjkjYtexWBSqRp3BxWoJlfIz70J9NZJzagCjD9CD6iv8DaF/j/9EXXYGWMw4Q0QbD
-         HkGVnk/fBfAgdTG+TXZSxqRrKFZNY4rbMptCc286/+ZSXuyU92jzAsvAeTi4vMQczP
-         GEKzTuysfxVyaB2OuSqLkBsmPuHGprUjU1Og5Ubjk9sBJIKNmb/rM9RcJ9XD/XeX8u
-         pkmzQaZFSFNskwI+fsja1t6rbRQvHCz07SZz9Mfr+O/Dfjm7RKSWM94cLPhdz4WXQq
-         sUIPzgcEHsspg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A0B9F60ABF;
-        Fri, 29 Jan 2021 01:40:43 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229950AbhA2CPY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 Jan 2021 21:15:24 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:39072 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229819AbhA2CPX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Jan 2021 21:15:23 -0500
+X-IronPort-AV: E=Sophos;i="5.79,384,1602518400"; 
+   d="scan'208";a="103962996"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 29 Jan 2021 10:14:35 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id 9F2114CE67AB;
+        Fri, 29 Jan 2021 10:14:35 +0800 (CST)
+Received: from [10.167.220.69] (10.167.220.69) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Fri, 29 Jan 2021 10:14:35 +0800
+Message-ID: <60136F89.4070402@cn.fujitsu.com>
+Date:   Fri, 29 Jan 2021 10:14:33 +0800
+From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next V10 01/14] devlink: Prepare code to fill multiple port
- function attributes
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161188444365.28226.8858255043128755888.git-patchwork-notify@kernel.org>
-Date:   Fri, 29 Jan 2021 01:40:43 +0000
-References: <20210122193658.282884-2-saeed@kernel.org>
-In-Reply-To: <20210122193658.282884-2-saeed@kernel.org>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, jgg@nvidia.com,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        alexander.duyck@gmail.com, sridhar.samudrala@intel.com,
-        edwin.peer@broadcom.com, dsahern@kernel.org, kiran.patil@intel.com,
-        jacob.e.keller@intel.com, david.m.ertman@intel.com,
-        dan.j.williams@intel.com, parav@nvidia.com, jiri@nvidia.com,
-        vuhuong@nvidia.com, saeedm@nvidia.com
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <jgg@nvidia.com>
+Subject: Re: [RFC PATCH] RDMA/rxe: Export imm_data to WC when the related
+ WR with imm_data finished on SQ
+References: <20210127082431.2637863-1-yangx.jy@cn.fujitsu.com> <20210127120427.GJ1053290@unreal> <601259D7.1040207@cn.fujitsu.com> <20210128125421.GC5097@unreal>
+In-Reply-To: <20210128125421.GC5097@unreal>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.167.220.69]
+X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
+X-yoursite-MailScanner-ID: 9F2114CE67AB.AB564
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
+On 2021/1/28 20:54, Leon Romanovsky wrote:
+> On Thu, Jan 28, 2021 at 02:29:43PM +0800, Xiao Yang wrote:
+>> On 2021/1/27 20:04, Leon Romanovsky wrote:
+>>> On Wed, Jan 27, 2021 at 04:24:31PM +0800, Xiao Yang wrote:
+>>>> Even if we enable sq_sig_all or IBV_SEND_SIGNALED, current rxe
+>>>> module cannot set imm_data in WC when the related WR with imm_data
+>>>> finished on SQ.
+>>>>
+>>>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
+>>>> ---
+>>>>
+>>>> Current rxe module and other rdma modules(e.g. mlx5) only set
+>>>> imm_data in WC when the related WR with imm_data finished on RQ.
+>>>> I am not sure if it is a expected behavior.
+>>> This is IBTA behavior.
+>>>
+>>> 5.2.11 IMMEDIATE DATA EXTENDED TRANSPORT HEADER (ImmDt) - 4 BYTES
+>>> "Immediate Data (ImmDt) contains data that is placed in the receive
+>>>    Completion Queue Element (CQE). The ImmDt is only allowed in SEND or
+>>>    RDMA WRITE packets with Immediate Data."
+>>>
+>>> If I understand the spec, you shouldn't set imm_data in SQ.
+>> Hi Leon,
+>>
+>> About the behavior, I have another question:
+>> For send operation with imm_data, we can verify if the delivered imm_data is
+>> correct by CQE on RQ.
+>> For rdma write operation with imm_data, how to verify if the delivered
+>> imm_data is correct? :-)
+> Probably that I didn't understand the question, but the RDMA WRITE is
+> marked with special opcode in the BTH that indicates imm_data.
+Hi Leon,
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+The quesion is about how to get the imm_data in applications(programs in 
+user space)
+1) If client program does send operation with imm_data, server program 
+can get the delivered imm_data by calling ibv_poll_cq(&wc)
+2) If client program does rdma write operation with imm_data, server 
+program cannot get the delivered imm_data by calling ibv_poll_cq(&wc).
+     In this case, how does server program get the delivered imm_data?
 
-On Fri, 22 Jan 2021 11:36:45 -0800 you wrote:
-> From: Parav Pandit <parav@nvidia.com>
-> 
-> Prepare code to fill zero or more port function optional attributes.
-> Subsequent patch makes use of this to fill more port function
-> attributes.
-> 
-> Signed-off-by: Parav Pandit <parav@nvidia.com>
-> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-> Reviewed-by: Vu Pham <vuhuong@nvidia.com>
-> Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-> 
-> [...]
+Best Regards,
+Xiao Yang
+> Thanks
+>
+>> Best Regards,
+>> Xiao Yang
+>>> Thanks
+>>>
+>>>
+>>> .
+>>>
+>>
+>>
+>
+> .
+>
 
-Here is the summary with links:
-  - [net-next,V10,01/14] devlink: Prepare code to fill multiple port function attributes
-    https://git.kernel.org/netdev/net-next/c/1230d94820c9
-  - [net-next,V10,02/14] devlink: Introduce PCI SF port flavour and port attribute
-    https://git.kernel.org/netdev/net-next/c/b8288837ef6b
-  - [net-next,V10,03/14] devlink: Support add and delete devlink port
-    https://git.kernel.org/netdev/net-next/c/cd76dcd68d96
-  - [net-next,V10,04/14] devlink: Support get and set state of port function
-    https://git.kernel.org/netdev/net-next/c/a556dded9c23
-  - [net-next,V10,05/14] net/mlx5: Introduce vhca state event notifier
-    https://git.kernel.org/netdev/net-next/c/f3196bb0f14c
-  - [net-next,V10,06/14] net/mlx5: SF, Add auxiliary device support
-    https://git.kernel.org/netdev/net-next/c/90d010b8634b
-  - [net-next,V10,07/14] net/mlx5: SF, Add auxiliary device driver
-    https://git.kernel.org/netdev/net-next/c/1958fc2f0712
-  - [net-next,V10,08/14] net/mlx5: E-switch, Prepare eswitch to handle SF vport
-    https://git.kernel.org/netdev/net-next/c/d7f33a457bee
-  - [net-next,V10,09/14] net/mlx5: E-switch, Add eswitch helpers for SF vport
-    https://git.kernel.org/netdev/net-next/c/d970812b91d0
-  - [net-next,V10,10/14] net/mlx5: SF, Add port add delete functionality
-    https://git.kernel.org/netdev/net-next/c/8f0105418668
-  - [net-next,V10,11/14] net/mlx5: SF, Port function state change support
-    https://git.kernel.org/netdev/net-next/c/6a3273217469
-  - [net-next,V10,12/14] devlink: Add devlink port documentation
-    https://git.kernel.org/netdev/net-next/c/c736111cf8d5
-  - [net-next,V10,13/14] devlink: Extend devlink port documentation for subfunctions
-    https://git.kernel.org/netdev/net-next/c/6474ce7ecd80
-  - [net-next,V10,14/14] net/mlx5: Add devlink subfunction port documentation
-    https://git.kernel.org/netdev/net-next/c/142d93d12dc1
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
