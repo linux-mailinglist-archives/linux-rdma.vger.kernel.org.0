@@ -2,109 +2,338 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7BC03091C7
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Jan 2021 05:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FE73091C9
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Jan 2021 05:14:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233505AbhA3ENg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 29 Jan 2021 23:13:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36296 "EHLO mail.kernel.org"
+        id S233585AbhA3ENi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 29 Jan 2021 23:13:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233650AbhA3DtC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 29 Jan 2021 22:49:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5F2E64DF5;
-        Sat, 30 Jan 2021 02:26:25 +0000 (UTC)
+        id S233646AbhA3DtD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 29 Jan 2021 22:49:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1344564E06;
+        Sat, 30 Jan 2021 02:26:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611973586;
-        bh=/XlwGQWfNArvuAvbMt/zmmirdIEHc51oN41zEWV5kSg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qgX4h+D5Mdp8ONSs1KMAS7EVNdaX8jwvImQWNGrH1Zzh9rK595Qfe/cnZdCT9FSRK
-         MoNf2/wvHNVlmANvUwwcRt/klm6xomfMayd0Gzq8XaU4yvZeFO2EbQxoz1ta1eM3k8
-         GpXwQkOk5LegbGu+sRUz79nFwY6iXRe4z7mlbcaAxARj0dKHleWw/6Xk/kVzKnMoDj
-         h4gJlYazFkIUzrJvZ6nJCtFZYTK93nPTlJPrUDd2f8n/9YgqRd7MnZreyAoHdzbc5J
-         7KlIlUS0TGgYIRSANCGAK+6omDSxOJBlobiMGYYMG2l+t23STUxT/pXWK4aD53QTH5
-         F2ftcTd1Uqitg==
+        s=k20201202; t=1611973588;
+        bh=kCCwPK8iN8tmNo/+x76rXjiNaPvgT4je+uh7bZxFD4A=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=c85mj9LMPVCHr8AoIINpbPDACm0oA/xgJjq7oHpuaeLX0TWPKHnjwY4NQ4ARIvfoE
+         0FbAr9SnHFTbrlBeOHVJhjxpdhHtuxiuUuXsPY9clLUOb3PBaY+tTrdU9TWN4Z5oZS
+         k6T9/1Ju1ruOZj+mv+IVXfuOmL+JNcqvOF1N6DjnnJXuTdV8k4t2GkhmDrUW6JQgRY
+         nsuueha3bUm6dU4P/ipYUa2Ly2hqtTowQz4UiyD7zxj2ysxWu1ZilCKJrvg/wQ9mB3
+         WnyHXUgt9VOpmxX3bFSgQmhCGZfkP1ih/mbrMkl+MOg2I5h6CluKKFYKfnLckPujbS
+         WbRWblWbrsgYw==
 From:   Saeed Mahameed <saeed@kernel.org>
 To:     Jakub Kicinski <kuba@kernel.org>
 Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Yevgeny Kliteynik <kliteyn@nvidia.com>,
+        Alex Vesker <valex@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>
-Subject: [pull request][net-next 00/11] mlx5 SW steering for ConnectX-6DX
-Date:   Fri, 29 Jan 2021 18:26:07 -0800
-Message-Id: <20210130022618.317351-1-saeed@kernel.org>
+Subject: [net-next 02/11] net/mlx5: DR, Add match STEv1 structs to ifc
+Date:   Fri, 29 Jan 2021 18:26:09 -0800
+Message-Id: <20210130022618.317351-3-saeed@kernel.org>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210130022618.317351-1-saeed@kernel.org>
+References: <20210130022618.317351-1-saeed@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Saeed Mahameed <saeedm@nvidia.com>
+From: Yevgeny Kliteynik <kliteyn@nvidia.com>
 
-Hi Jakub, Dave.
+Add mlx5_ifc_dr_ste_v1.h - a new header with HW specific
+STE structs for version 1.
 
-This series adds support for ConnectX-6DX Software steering.
-For more information please see tag log below.
-
-Please pull and let me know if there is any problem.
-
-Thanks,
-Saeed.
-
+Signed-off-by: Alex Vesker <valex@nvidia.com>
+Signed-off-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 ---
-The following changes since commit 46eb3c108fe1744d0a6abfda69ef8c1d4f0e92d4:
-
-  octeontx2-af: Fix 'physical' typos (2021-01-28 21:24:47 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux.git tags/mlx5-dr-2021-01-29
-
-for you to fetch changes up to 64f45c0fc4c71f577506c5a7a7956ae3bc3388ea:
-
-  net/mlx5: DR, Allow SW steering for sw_owner_v2 devices (2021-01-29 18:13:00 -0800)
-
-----------------------------------------------------------------
-mlx5-dr-2021-01-29
-
-Add support for Connect-X6DX Software steering
-
-This series adds SW Steering support for Connect-X6DX.
-
-Since the STE and actions formats are different on this new HW,
-we implemented the HW specific STEv1 layer on the infrastructure
-implemented in previous mlx5 DR patchset to support all the
-functionalities as previous devices.
-
-Most of the code in this series very is low level HW specific, we
-implement the function pointers for the generic SW steering layer.
-
-----------------------------------------------------------------
-Yevgeny Kliteynik (11):
-      net/mlx5: DR, Fix potential shift wrapping of 32-bit value
-      net/mlx5: DR, Add match STEv1 structs to ifc
-      net/mlx5: DR, Add HW STEv1 match logic
-      net/mlx5: DR, Allow native protocol support for HW STEv1
-      net/mlx5: DR, Add STEv1 setters and getters
-      net/mlx5: DR, Add STEv1 action apply logic
-      net/mlx5: DR, Add STEv1 modify header logic
-      net/mlx5: DR, Use the right size when writing partial STE into HW
-      net/mlx5: DR, Use HW specific logic API when writing STE
-      net/mlx5: DR, Copy all 64B whenever replacing STE in the head of miss-list
-      net/mlx5: DR, Allow SW steering for sw_owner_v2 devices
-
- drivers/net/ethernet/mellanox/mlx5/core/Makefile   |    2 +-
- .../ethernet/mellanox/mlx5/core/steering/dr_cmd.c  |   17 +-
- .../mellanox/mlx5/core/steering/dr_domain.c        |   17 +-
- .../mellanox/mlx5/core/steering/dr_matcher.c       |   12 +-
- .../ethernet/mellanox/mlx5/core/steering/dr_rule.c |   17 +-
- .../ethernet/mellanox/mlx5/core/steering/dr_send.c |   29 +-
- .../ethernet/mellanox/mlx5/core/steering/dr_ste.c  |   30 +-
- .../ethernet/mellanox/mlx5/core/steering/dr_ste.h  |    4 +
- .../mellanox/mlx5/core/steering/dr_ste_v0.c        |    4 +-
- .../mellanox/mlx5/core/steering/dr_ste_v1.c        | 1633 ++++++++++++++++++++
- .../mellanox/mlx5/core/steering/dr_types.h         |    9 +-
- .../mlx5/core/steering/mlx5_ifc_dr_ste_v1.h        |  434 ++++++
- .../ethernet/mellanox/mlx5/core/steering/mlx5dr.h  |    5 +-
- 13 files changed, 2169 insertions(+), 44 deletions(-)
- create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste_v1.c
+ .../mlx5/core/steering/mlx5_ifc_dr_ste_v1.h   | 273 ++++++++++++++++++
+ 1 file changed, 273 insertions(+)
  create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/steering/mlx5_ifc_dr_ste_v1.h
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/mlx5_ifc_dr_ste_v1.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/mlx5_ifc_dr_ste_v1.h
+new file mode 100644
+index 000000000000..6db7b8493fd9
+--- /dev/null
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/mlx5_ifc_dr_ste_v1.h
+@@ -0,0 +1,273 @@
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
++/* Copyright (c) 2020 NVIDIA CORPORATION. All rights reserved. */
++
++#ifndef MLX5_IFC_DR_STE_V1_H
++#define MLX5_IFC_DR_STE_V1_H
++
++struct mlx5_ifc_ste_eth_l2_src_v1_bits {
++	u8         reserved_at_0[0x1];
++	u8         sx_sniffer[0x1];
++	u8         functional_loopback[0x1];
++	u8         ip_fragmented[0x1];
++	u8         qp_type[0x2];
++	u8         encapsulation_type[0x2];
++	u8         port[0x2];
++	u8         l3_type[0x2];
++	u8         l4_type[0x2];
++	u8         first_vlan_qualifier[0x2];
++	u8         first_priority[0x3];
++	u8         first_cfi[0x1];
++	u8         first_vlan_id[0xc];
++
++	u8         smac_47_16[0x20];
++
++	u8         smac_15_0[0x10];
++	u8         l3_ethertype[0x10];
++
++	u8         reserved_at_60[0x6];
++	u8         tcp_syn[0x1];
++	u8         reserved_at_67[0x3];
++	u8         force_loopback[0x1];
++	u8         l2_ok[0x1];
++	u8         l3_ok[0x1];
++	u8         l4_ok[0x1];
++	u8         second_vlan_qualifier[0x2];
++
++	u8         second_priority[0x3];
++	u8         second_cfi[0x1];
++	u8         second_vlan_id[0xc];
++};
++
++struct mlx5_ifc_ste_eth_l2_dst_v1_bits {
++	u8         reserved_at_0[0x1];
++	u8         sx_sniffer[0x1];
++	u8         functional_lb[0x1];
++	u8         ip_fragmented[0x1];
++	u8         qp_type[0x2];
++	u8         encapsulation_type[0x2];
++	u8         port[0x2];
++	u8         l3_type[0x2];
++	u8         l4_type[0x2];
++	u8         first_vlan_qualifier[0x2];
++	u8         first_priority[0x3];
++	u8         first_cfi[0x1];
++	u8         first_vlan_id[0xc];
++
++	u8         dmac_47_16[0x20];
++
++	u8         dmac_15_0[0x10];
++	u8         l3_ethertype[0x10];
++
++	u8         reserved_at_60[0x6];
++	u8         tcp_syn[0x1];
++	u8         reserved_at_67[0x3];
++	u8         force_lb[0x1];
++	u8         l2_ok[0x1];
++	u8         l3_ok[0x1];
++	u8         l4_ok[0x1];
++	u8         second_vlan_qualifier[0x2];
++	u8         second_priority[0x3];
++	u8         second_cfi[0x1];
++	u8         second_vlan_id[0xc];
++};
++
++struct mlx5_ifc_ste_eth_l2_src_dst_v1_bits {
++	u8         dmac_47_16[0x20];
++
++	u8         smac_47_16[0x20];
++
++	u8         dmac_15_0[0x10];
++	u8         reserved_at_50[0x2];
++	u8         functional_lb[0x1];
++	u8         reserved_at_53[0x5];
++	u8         port[0x2];
++	u8         l3_type[0x2];
++	u8         reserved_at_5c[0x2];
++	u8         first_vlan_qualifier[0x2];
++
++	u8         first_priority[0x3];
++	u8         first_cfi[0x1];
++	u8         first_vlan_id[0xc];
++	u8         smac_15_0[0x10];
++};
++
++struct mlx5_ifc_ste_eth_l3_ipv4_5_tuple_v1_bits {
++	u8         source_address[0x20];
++
++	u8         destination_address[0x20];
++
++	u8         source_port[0x10];
++	u8         destination_port[0x10];
++
++	u8         reserved_at_60[0x4];
++	u8         l4_ok[0x1];
++	u8         l3_ok[0x1];
++	u8         fragmented[0x1];
++	u8         tcp_ns[0x1];
++	u8         tcp_cwr[0x1];
++	u8         tcp_ece[0x1];
++	u8         tcp_urg[0x1];
++	u8         tcp_ack[0x1];
++	u8         tcp_psh[0x1];
++	u8         tcp_rst[0x1];
++	u8         tcp_syn[0x1];
++	u8         tcp_fin[0x1];
++	u8         dscp[0x6];
++	u8         ecn[0x2];
++	u8         protocol[0x8];
++};
++
++struct mlx5_ifc_ste_eth_l2_tnl_v1_bits {
++	u8         l2_tunneling_network_id[0x20];
++
++	u8         dmac_47_16[0x20];
++
++	u8         dmac_15_0[0x10];
++	u8         l3_ethertype[0x10];
++
++	u8         reserved_at_60[0x3];
++	u8         ip_fragmented[0x1];
++	u8         reserved_at_64[0x2];
++	u8         encp_type[0x2];
++	u8         reserved_at_68[0x2];
++	u8         l3_type[0x2];
++	u8         l4_type[0x2];
++	u8         first_vlan_qualifier[0x2];
++	u8         first_priority[0x3];
++	u8         first_cfi[0x1];
++	u8         first_vlan_id[0xc];
++};
++
++struct mlx5_ifc_ste_eth_l3_ipv4_misc_v1_bits {
++	u8         identification[0x10];
++	u8         flags[0x3];
++	u8         fragment_offset[0xd];
++
++	u8         total_length[0x10];
++	u8         checksum[0x10];
++
++	u8         version[0x4];
++	u8         ihl[0x4];
++	u8         time_to_live[0x8];
++	u8         reserved_at_50[0x10];
++
++	u8         reserved_at_60[0x1c];
++	u8         voq_internal_prio[0x4];
++};
++
++struct mlx5_ifc_ste_eth_l4_v1_bits {
++	u8         ipv6_version[0x4];
++	u8         reserved_at_4[0x4];
++	u8         dscp[0x6];
++	u8         ecn[0x2];
++	u8         ipv6_hop_limit[0x8];
++	u8         protocol[0x8];
++
++	u8         src_port[0x10];
++	u8         dst_port[0x10];
++
++	u8         first_fragment[0x1];
++	u8         reserved_at_41[0xb];
++	u8         flow_label[0x14];
++
++	u8         tcp_data_offset[0x4];
++	u8         l4_ok[0x1];
++	u8         l3_ok[0x1];
++	u8         fragmented[0x1];
++	u8         tcp_ns[0x1];
++	u8         tcp_cwr[0x1];
++	u8         tcp_ece[0x1];
++	u8         tcp_urg[0x1];
++	u8         tcp_ack[0x1];
++	u8         tcp_psh[0x1];
++	u8         tcp_rst[0x1];
++	u8         tcp_syn[0x1];
++	u8         tcp_fin[0x1];
++	u8         ipv6_paylen[0x10];
++};
++
++struct mlx5_ifc_ste_eth_l4_misc_v1_bits {
++	u8         window_size[0x10];
++	u8         urgent_pointer[0x10];
++
++	u8         ack_num[0x20];
++
++	u8         seq_num[0x20];
++
++	u8         length[0x10];
++	u8         checksum[0x10];
++};
++
++struct mlx5_ifc_ste_mpls_v1_bits {
++	u8         reserved_at_0[0x15];
++	u8         mpls_ok[0x1];
++	u8         mpls4_s_bit[0x1];
++	u8         mpls4_qualifier[0x1];
++	u8         mpls3_s_bit[0x1];
++	u8         mpls3_qualifier[0x1];
++	u8         mpls2_s_bit[0x1];
++	u8         mpls2_qualifier[0x1];
++	u8         mpls1_s_bit[0x1];
++	u8         mpls1_qualifier[0x1];
++	u8         mpls0_s_bit[0x1];
++	u8         mpls0_qualifier[0x1];
++
++	u8         mpls0_label[0x14];
++	u8         mpls0_exp[0x3];
++	u8         mpls0_s_bos[0x1];
++	u8         mpls0_ttl[0x8];
++
++	u8         mpls1_label[0x20];
++
++	u8         mpls2_label[0x20];
++};
++
++struct mlx5_ifc_ste_gre_v1_bits {
++	u8         gre_c_present[0x1];
++	u8         reserved_at_1[0x1];
++	u8         gre_k_present[0x1];
++	u8         gre_s_present[0x1];
++	u8         strict_src_route[0x1];
++	u8         recur[0x3];
++	u8         flags[0x5];
++	u8         version[0x3];
++	u8         gre_protocol[0x10];
++
++	u8         reserved_at_20[0x20];
++
++	u8         gre_key_h[0x18];
++	u8         gre_key_l[0x8];
++
++	u8         reserved_at_60[0x20];
++};
++
++struct mlx5_ifc_ste_src_gvmi_qp_v1_bits {
++	u8         loopback_synd[0x8];
++	u8         reserved_at_8[0x7];
++	u8         functional_lb[0x1];
++	u8         source_gvmi[0x10];
++
++	u8         force_lb[0x1];
++	u8         reserved_at_21[0x1];
++	u8         source_is_requestor[0x1];
++	u8         reserved_at_23[0x5];
++	u8         source_qp[0x18];
++
++	u8         reserved_at_40[0x20];
++
++	u8         reserved_at_60[0x20];
++};
++
++struct mlx5_ifc_ste_icmp_v1_bits {
++	u8         icmp_payload_data[0x20];
++
++	u8         icmp_header_data[0x20];
++
++	u8         icmp_type[0x8];
++	u8         icmp_code[0x8];
++	u8         reserved_at_50[0x10];
++
++	u8         reserved_at_60[0x20];
++};
++
++#endif /* MLX5_IFC_DR_STE_V1_H */
+-- 
+2.29.2
+
