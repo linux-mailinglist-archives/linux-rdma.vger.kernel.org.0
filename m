@@ -2,209 +2,227 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CB43092E5
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Jan 2021 10:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2006F309384
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Jan 2021 10:38:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbhA3JI4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 30 Jan 2021 04:08:56 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11219 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232580AbhA3JIO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 30 Jan 2021 04:08:14 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DSSwz110mzlCrn;
-        Sat, 30 Jan 2021 17:05:55 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 30 Jan 2021 17:07:24 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-Subject: [PATCH v2 for-next] RDMA/hns: Add support of direct wqe
-Date:   Sat, 30 Jan 2021 17:05:13 +0800
-Message-ID: <1611997513-27107-1-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S231764AbhA3JiB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 30 Jan 2021 04:38:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233410AbhA3DKA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 29 Jan 2021 22:10:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 652E964E02;
+        Sat, 30 Jan 2021 02:26:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611973590;
+        bh=EgB8yvui0N7E/Loj1UbhOvwarWawFL5CqU/pk+M5yKA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JW5Z4fhb3CQJ5u2P90+4Gx10cGjTD1f4NDtaadVdgmgkeS+nwFmBamlzplz38Yx1s
+         CqTa6wsvD5gBtQhT1Ub7jMvvrCSu9hjEsAbMubH/7DstBHfH0h3X6EarY3STBvnua+
+         culNCejUTpvq3as72/KLIcrr3DRPz+O6IxNDHUdZ07zRePfqaRa+DXBoNbcs2Dy6m7
+         4Ev2Z5ZdLaHI6b1wkMcId5Qvph2NwYV2pnvK4sFigQ1J69oL8vWONWP9shNvxPAcVv
+         sBHS42VQCA1tysoC/VHTpuK1JbxSP/0jO7G7WToNZ2a+axWv3FufbtQU23mJRYsEGK
+         3LKKJX6qwvuyg==
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Yevgeny Kliteynik <kliteyn@nvidia.com>,
+        Alex Vesker <valex@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [net-next 05/11] net/mlx5: DR, Add STEv1 setters and getters
+Date:   Fri, 29 Jan 2021 18:26:12 -0800
+Message-Id: <20210130022618.317351-6-saeed@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210130022618.317351-1-saeed@kernel.org>
+References: <20210130022618.317351-1-saeed@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yixing Liu <liuyixing1@huawei.com>
+From: Yevgeny Kliteynik <kliteyn@nvidia.com>
 
-Direct wqe is a mechanism to fill wqe directly into the hardware. In the
-case of light load, the wqe will be filled into pcie bar space of the
-hardware, this will reduce one memory access operation and therefore reduce
-the latency.
+Add HW specific setter and getters to STEv1 file.
+Since STEv0 and STEv1 format are different, each version
+should implemented different setters and getters.
 
-Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
-Signed-off-by: Lang Cheng <chenglang@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
+Signed-off-by: Alex Vesker <valex@nvidia.com>
+Signed-off-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 ---
-Changes since v1:
-* Delete an extra blank line.
-* Link: https://patchwork.kernel.org/project/linux-rdma/patch/1611395717-11081-1-git-send-email-liweihang@huawei.com/
+ .../mellanox/mlx5/core/steering/dr_ste_v1.c   | 76 +++++++++++++++++++
+ .../mlx5/core/steering/mlx5_ifc_dr_ste_v1.h   | 57 ++++++++++++++
+ 2 files changed, 133 insertions(+)
 
- drivers/infiniband/hw/hns/hns_roce_device.h |  6 ++++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 44 ++++++++++++++++++++++++++++-
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 13 +++++++++
- 3 files changed, 62 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index f62851f..907bf71 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -90,6 +90,7 @@
- #define HNS_ROCE_MAX_PORTS			6
- #define HNS_ROCE_GID_SIZE			16
- #define HNS_ROCE_SGE_SIZE			16
-+#define HNS_ROCE_DWQE_SIZE			65536
- 
- #define HNS_ROCE_HOP_NUM_0			0xff
- 
-@@ -643,6 +644,10 @@ struct hns_roce_work {
- 	u32 queue_num;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste_v1.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste_v1.c
+index bf3cb189f3bc..522909f1cab6 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste_v1.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste_v1.c
+@@ -55,6 +55,72 @@ enum {
+ 	DR_STE_V1_LU_TYPE_DONT_CARE			= MLX5DR_STE_LU_TYPE_DONT_CARE,
  };
  
-+enum {
-+	HNS_ROCE_QP_CAP_DIRECT_WQE = BIT(5),
-+};
++static void dr_ste_v1_set_miss_addr(u8 *hw_ste_p, u64 miss_addr)
++{
++	u64 index = miss_addr >> 6;
 +
- struct hns_roce_qp {
- 	struct ib_qp		ibqp;
- 	struct hns_roce_wq	rq;
-@@ -984,6 +989,7 @@ struct hns_roce_dev {
- 	struct mutex            pgdir_mutex;
- 	int			irq[HNS_ROCE_MAX_IRQ_NUM];
- 	u8 __iomem		*reg_base;
-+	void __iomem		*mem_base;
- 	struct hns_roce_caps	caps;
- 	struct xarray		qp_table_xa;
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index a5bbfb1..8ae3317 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -503,6 +503,8 @@ static inline int set_ud_wqe(struct hns_roce_qp *qp,
- 	if (ret)
- 		return ret;
- 
-+	qp->sl = to_hr_ah(ud_wr(wr)->ah)->av.sl;
++	MLX5_SET(ste_match_bwc_v1, hw_ste_p, miss_address_39_32, index >> 26);
++	MLX5_SET(ste_match_bwc_v1, hw_ste_p, miss_address_31_6, index);
++}
 +
- 	set_extend_sge(qp, wr->sg_list, &curr_idx, valid_num_sge);
- 
- 	/*
-@@ -635,6 +637,8 @@ static inline void update_sq_db(struct hns_roce_dev *hr_dev,
- 			       V2_DB_BYTE_4_TAG_S, qp->doorbell_qpn);
- 		roce_set_field(sq_db.byte_4, V2_DB_BYTE_4_CMD_M,
- 			       V2_DB_BYTE_4_CMD_S, HNS_ROCE_V2_SQ_DB);
-+		/* indicates data on new BAR, 0 : SQ doorbell, 1 : DWQE */
-+		roce_set_bit(sq_db.byte_4, V2_DB_FLAG_S, 0);
- 		roce_set_field(sq_db.parameter, V2_DB_PARAMETER_IDX_M,
- 			       V2_DB_PARAMETER_IDX_S, qp->sq.head);
- 		roce_set_field(sq_db.parameter, V2_DB_PARAMETER_SL_M,
-@@ -644,6 +648,38 @@ static inline void update_sq_db(struct hns_roce_dev *hr_dev,
- 	}
++static u64 dr_ste_v1_get_miss_addr(u8 *hw_ste_p)
++{
++	u64 index =
++		(MLX5_GET(ste_match_bwc_v1, hw_ste_p, miss_address_31_6) |
++		 MLX5_GET(ste_match_bwc_v1, hw_ste_p, miss_address_39_32) << 26);
++
++	return index << 6;
++}
++
++static void dr_ste_v1_set_byte_mask(u8 *hw_ste_p, u16 byte_mask)
++{
++	MLX5_SET(ste_match_bwc_v1, hw_ste_p, byte_mask, byte_mask);
++}
++
++static u16 dr_ste_v1_get_byte_mask(u8 *hw_ste_p)
++{
++	return MLX5_GET(ste_match_bwc_v1, hw_ste_p, byte_mask);
++}
++
++static void dr_ste_v1_set_lu_type(u8 *hw_ste_p, u16 lu_type)
++{
++	MLX5_SET(ste_match_bwc_v1, hw_ste_p, entry_format, lu_type >> 8);
++	MLX5_SET(ste_match_bwc_v1, hw_ste_p, match_definer_ctx_idx, lu_type & 0xFF);
++}
++
++static void dr_ste_v1_set_next_lu_type(u8 *hw_ste_p, u16 lu_type)
++{
++	MLX5_SET(ste_match_bwc_v1, hw_ste_p, next_entry_format, lu_type >> 8);
++	MLX5_SET(ste_match_bwc_v1, hw_ste_p, hash_definer_ctx_idx, lu_type & 0xFF);
++}
++
++static u16 dr_ste_v1_get_next_lu_type(u8 *hw_ste_p)
++{
++	u8 mode = MLX5_GET(ste_match_bwc_v1, hw_ste_p, next_entry_format);
++	u8 index = MLX5_GET(ste_match_bwc_v1, hw_ste_p, hash_definer_ctx_idx);
++
++	return (mode << 8 | index);
++}
++
++static void dr_ste_v1_set_hit_addr(u8 *hw_ste_p, u64 icm_addr, u32 ht_size)
++{
++	u64 index = (icm_addr >> 5) | ht_size;
++
++	MLX5_SET(ste_match_bwc_v1, hw_ste_p, next_table_base_39_32_size, index >> 27);
++	MLX5_SET(ste_match_bwc_v1, hw_ste_p, next_table_base_31_5_size, index);
++}
++
++static void dr_ste_v1_init(u8 *hw_ste_p, u16 lu_type,
++			   u8 entry_type, u16 gvmi)
++{
++	dr_ste_v1_set_lu_type(hw_ste_p, lu_type);
++	dr_ste_v1_set_next_lu_type(hw_ste_p, MLX5DR_STE_LU_TYPE_DONT_CARE);
++
++	MLX5_SET(ste_match_bwc_v1, hw_ste_p, gvmi, gvmi);
++	MLX5_SET(ste_match_bwc_v1, hw_ste_p, next_table_base_63_48, gvmi);
++	MLX5_SET(ste_match_bwc_v1, hw_ste_p, miss_address_63_48, gvmi);
++}
++
+ static void dr_ste_v1_build_eth_l2_src_dst_bit_mask(struct mlx5dr_match_param *value,
+ 						    bool inner, u8 *bit_mask)
+ {
+@@ -885,6 +951,7 @@ static void dr_ste_v1_build_src_gvmi_qpn_init(struct mlx5dr_ste_build *sb,
  }
  
-+static void hns_roce_write512(struct hns_roce_dev *hr_dev, u64 *val,
-+			      u64 __iomem *dest)
-+{
-+#define HNS_ROCE_WRITE_TIMES 8
-+	struct hns_roce_v2_priv *priv = (struct hns_roce_v2_priv *)hr_dev->priv;
-+	struct hnae3_handle *handle = priv->handle;
-+	const struct hnae3_ae_ops *ops = handle->ae_algo->ops;
-+	int i;
-+
-+	if (!hr_dev->dis_db && !ops->get_hw_reset_stat(handle))
-+		for (i = 0; i < HNS_ROCE_WRITE_TIMES; i++)
-+			writeq_relaxed(*(val + i), dest + i);
-+}
-+
-+static void write_dwqe(struct hns_roce_dev *hr_dev, struct hns_roce_qp *qp,
-+		       void *wqe)
-+{
-+	struct hns_roce_v2_rc_send_wqe *rc_sq_wqe = wqe;
-+
-+	/* All kinds of DirectWQE have the same header field layout */
-+	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_FLAG_S, 1);
-+	roce_set_field(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_DB_SL_L_M,
-+		       V2_RC_SEND_WQE_BYTE_4_DB_SL_L_S, qp->sl);
-+	roce_set_field(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_DB_SL_H_M,
-+		       V2_RC_SEND_WQE_BYTE_4_DB_SL_H_S, qp->sl >> 2);
-+	roce_set_field(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_WQE_INDEX_M,
-+		       V2_RC_SEND_WQE_BYTE_4_WQE_INDEX_S, qp->sq.head);
-+
-+	hns_roce_write512(hr_dev, wqe, hr_dev->mem_base +
-+			  HNS_ROCE_DWQE_SIZE * qp->ibqp.qp_num);
-+}
-+
- static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 				 const struct ib_send_wr *wr,
- 				 const struct ib_send_wr **bad_wr)
-@@ -710,7 +746,12 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 		qp->next_sge = sge_idx;
- 		/* Memory barrier */
- 		wmb();
--		update_sq_db(hr_dev, qp);
-+
-+		if (nreq == 1 && qp->sq.head == qp->sq.tail + 1 &&
-+		    (qp->en_flags & HNS_ROCE_QP_CAP_DIRECT_WQE))
-+			write_dwqe(hr_dev, qp, wqe);
-+		else
-+			update_sq_db(hr_dev, qp);
- 	}
+ struct mlx5dr_ste_ctx ste_ctx_v1 = {
++	/* Builders */
+ 	.build_eth_l2_src_dst_init	= &dr_ste_v1_build_eth_l2_src_dst_init,
+ 	.build_eth_l3_ipv6_src_init	= &dr_ste_v1_build_eth_l3_ipv6_src_init,
+ 	.build_eth_l3_ipv6_dst_init	= &dr_ste_v1_build_eth_l3_ipv6_dst_init,
+@@ -905,4 +972,13 @@ struct mlx5dr_ste_ctx ste_ctx_v1 = {
+ 	.build_register_0_init		= &dr_ste_v1_build_register_0_init,
+ 	.build_register_1_init		= &dr_ste_v1_build_register_1_init,
+ 	.build_src_gvmi_qpn_init	= &dr_ste_v1_build_src_gvmi_qpn_init,
++	/* Getters and Setters */
++	.ste_init			= &dr_ste_v1_init,
++	.set_next_lu_type		= &dr_ste_v1_set_next_lu_type,
++	.get_next_lu_type		= &dr_ste_v1_get_next_lu_type,
++	.set_miss_addr			= &dr_ste_v1_set_miss_addr,
++	.get_miss_addr			= &dr_ste_v1_get_miss_addr,
++	.set_hit_addr			= &dr_ste_v1_set_hit_addr,
++	.set_byte_mask			= &dr_ste_v1_set_byte_mask,
++	.get_byte_mask			= &dr_ste_v1_get_byte_mask,
+ };
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/mlx5_ifc_dr_ste_v1.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/mlx5_ifc_dr_ste_v1.h
+index 6db7b8493fd9..678b048e7022 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/mlx5_ifc_dr_ste_v1.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/mlx5_ifc_dr_ste_v1.h
+@@ -4,6 +4,63 @@
+ #ifndef MLX5_IFC_DR_STE_V1_H
+ #define MLX5_IFC_DR_STE_V1_H
  
- 	spin_unlock_irqrestore(&qp->sq.lock, flags);
-@@ -6273,6 +6314,7 @@ static void hns_roce_hw_v2_get_cfg(struct hns_roce_dev *hr_dev,
- 
- 	/* Get info from NIC driver. */
- 	hr_dev->reg_base = handle->rinfo.roce_io_base;
-+	hr_dev->mem_base = handle->rinfo.roce_mem_base;
- 	hr_dev->caps.num_ports = 1;
- 	hr_dev->iboe.netdevs[0] = handle->rinfo.netdev;
- 	hr_dev->iboe.phy_port[0] = 0;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index 69bc072..add1816 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -1098,6 +1098,8 @@ struct hns_roce_v2_mpt_entry {
- #define	V2_DB_BYTE_4_CMD_S 24
- #define V2_DB_BYTE_4_CMD_M GENMASK(27, 24)
- 
-+#define V2_DB_FLAG_S 31
++struct mlx5_ifc_ste_match_bwc_v1_bits {
++	u8         entry_format[0x8];
++	u8         counter_id[0x18];
 +
- #define V2_DB_PARAMETER_IDX_S 0
- #define V2_DB_PARAMETER_IDX_M GENMASK(15, 0)
- 
-@@ -1194,6 +1196,15 @@ struct hns_roce_v2_rc_send_wqe {
- #define	V2_RC_SEND_WQE_BYTE_4_OPCODE_S 0
- #define V2_RC_SEND_WQE_BYTE_4_OPCODE_M GENMASK(4, 0)
- 
-+#define V2_RC_SEND_WQE_BYTE_4_DB_SL_L_S 5
-+#define V2_RC_SEND_WQE_BYTE_4_DB_SL_L_M GENMASK(6, 5)
++	u8         miss_address_63_48[0x10];
++	u8         match_definer_ctx_idx[0x8];
++	u8         miss_address_39_32[0x8];
 +
-+#define V2_RC_SEND_WQE_BYTE_4_DB_SL_H_S 13
-+#define V2_RC_SEND_WQE_BYTE_4_DB_SL_H_M GENMASK(14, 13)
++	u8         miss_address_31_6[0x1a];
++	u8         reserved_at_5a[0x1];
++	u8         match_polarity[0x1];
++	u8         reparse[0x1];
++	u8         reserved_at_5d[0x3];
 +
-+#define V2_RC_SEND_WQE_BYTE_4_WQE_INDEX_S 15
-+#define V2_RC_SEND_WQE_BYTE_4_WQE_INDEX_M GENMASK(30, 15)
++	u8         next_table_base_63_48[0x10];
++	u8         hash_definer_ctx_idx[0x8];
++	u8         next_table_base_39_32_size[0x8];
 +
- #define V2_RC_SEND_WQE_BYTE_4_OWNER_S 7
- 
- #define V2_RC_SEND_WQE_BYTE_4_CQE_S 8
-@@ -1216,6 +1227,8 @@ struct hns_roce_v2_rc_send_wqe {
- 
- #define V2_RC_FRMR_WQE_BYTE_4_LW_S 23
- 
-+#define V2_RC_SEND_WQE_BYTE_4_FLAG_S 31
++	u8         next_table_base_31_5_size[0x1b];
++	u8         hash_type[0x2];
++	u8         hash_after_actions[0x1];
++	u8         reserved_at_9e[0x2];
 +
- #define	V2_RC_SEND_WQE_BYTE_16_XRC_SRQN_S 0
- #define V2_RC_SEND_WQE_BYTE_16_XRC_SRQN_M GENMASK(23, 0)
- 
++	u8         byte_mask[0x10];
++	u8         next_entry_format[0x1];
++	u8         mask_mode[0x1];
++	u8         gvmi[0xe];
++
++	u8         action[0x40];
++};
++
++struct mlx5_ifc_ste_mask_and_match_v1_bits {
++	u8         entry_format[0x8];
++	u8         counter_id[0x18];
++
++	u8         miss_address_63_48[0x10];
++	u8         match_definer_ctx_idx[0x8];
++	u8         miss_address_39_32[0x8];
++
++	u8         miss_address_31_6[0x1a];
++	u8         reserved_at_5a[0x1];
++	u8         match_polarity[0x1];
++	u8         reparse[0x1];
++	u8         reserved_at_5d[0x3];
++
++	u8         next_table_base_63_48[0x10];
++	u8         hash_definer_ctx_idx[0x8];
++	u8         next_table_base_39_32_size[0x8];
++
++	u8         next_table_base_31_5_size[0x1b];
++	u8         hash_type[0x2];
++	u8         hash_after_actions[0x1];
++	u8         reserved_at_9e[0x2];
++
++	u8         action[0x60];
++};
++
+ struct mlx5_ifc_ste_eth_l2_src_v1_bits {
+ 	u8         reserved_at_0[0x1];
+ 	u8         sx_sniffer[0x1];
 -- 
-2.8.1
+2.29.2
 
