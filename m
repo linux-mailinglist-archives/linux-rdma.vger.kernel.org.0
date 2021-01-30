@@ -2,40 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33E3309429
+	by mail.lfdr.de (Postfix) with ESMTP id 43AE6309428
 	for <lists+linux-rdma@lfdr.de>; Sat, 30 Jan 2021 11:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232294AbhA3KN7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Sat, 30 Jan 2021 05:13:59 -0500
-Received: from mga17.intel.com ([192.55.52.151]:12566 "EHLO mga17.intel.com"
+        id S232095AbhA3KN4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Sat, 30 Jan 2021 05:13:56 -0500
+Received: from mga09.intel.com ([134.134.136.24]:13502 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232997AbhA3BXl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        id S233038AbhA3BXl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
         Fri, 29 Jan 2021 20:23:41 -0500
-IronPort-SDR: JotDG3ZaFip/TXao1gIefvKlsBuTSfe890nA0ULi7+zcpBzI/DmMpO9ecntGQAYFYOAC4My9Zo
- hxOLUhdK+oEA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="160276968"
+IronPort-SDR: XSs1Tp/QCQab94W1HfyT8VJzORkErjvSgJMSgGhdep4bd9ijtGdFScqva+KNWNaM4giM3Bc8/G
+ kUO15KRkLUXQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="180642656"
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="160276968"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 17:19:24 -0800
-IronPort-SDR: WJZvA0QGnMHbFWRsrHykCeaazQRCSxfdhqiJTnzGMzHgjDF1Qeki9OLLpndlowFlTXx1xpBtWF
- 7wtGXLnlW3vQ==
+   d="scan'208";a="180642656"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 17:19:37 -0800
+IronPort-SDR: 30BkePQM2gL3laaQjb3VjBdNDLvJc9Xb0WMoxwfsNhXB5V0MN+lBXWmUjFZWeFsnFkJJ2W1tRB
+ ttNY98Wf3jhA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="411803208"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by FMSMGA003.fm.intel.com with ESMTP; 29 Jan 2021 17:19:24 -0800
+   d="scan'208";a="505918768"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by orsmga004.jf.intel.com with ESMTP; 29 Jan 2021 17:19:37 -0800
 Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 29 Jan 2021 17:19:23 -0800
+ 15.1.2106.2; Fri, 29 Jan 2021 17:19:37 -0800
 Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
  fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 29 Jan 2021 17:19:23 -0800
+ 15.1.2106.2; Fri, 29 Jan 2021 17:19:36 -0800
 Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
  fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2106.002;
- Fri, 29 Jan 2021 17:19:23 -0800
+ Fri, 29 Jan 2021 17:19:36 -0800
 From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
 To:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
 CC:     "dledford@redhat.com" <dledford@redhat.com>,
@@ -51,13 +51,19 @@ Subject: RE: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
  implement private channel OPs
 Thread-Topic: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
  implement private channel OPs
-Thread-Index: AQHW8RlTrNE3qjtLukSnj7NcX24DDao5N6oAgAC2+ACAAms5oA==
-Date:   Sat, 30 Jan 2021 01:19:22 +0000
-Message-ID: <ccf8895d9ac545e1a9f9f73ca1d291bf@intel.com>
+Thread-Index: AQHW8RlTrNE3qjtLukSnj7NcX24DDao5N6oA//+n/DCAAMFCAIAAeSAAgAHXAYD//6CioIABFy+AgABrh4CAAjZjEA==
+Date:   Sat, 30 Jan 2021 01:19:36 +0000
+Message-ID: <d58f341898834170af1bfb6719e17956@intel.com>
 References: <20210122234827.1353-1-shiraz.saleem@intel.com>
  <20210122234827.1353-8-shiraz.saleem@intel.com>
- <20210125184248.GS4147@nvidia.com> <20210126053740.GO579511@unreal>
-In-Reply-To: <20210126053740.GO579511@unreal>
+ <20210125184248.GS4147@nvidia.com>
+ <99895f7c10a2473c84a105f46c7ef498@intel.com>
+ <20210126005928.GF4147@nvidia.com>
+ <031c2675aff248bd9c78fada059b5c02@intel.com>
+ <20210127121847.GK1053290@unreal>
+ <ea62658f01664a6ea9438631c9ddcb6e@intel.com>
+ <20210127231641.GS4147@nvidia.com> <20210128054133.GA1877006@unreal>
+In-Reply-To: <20210128054133.GA1877006@unreal>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -76,87 +82,33 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 > Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
 > implement private channel OPs
 > 
-> On Mon, Jan 25, 2021 at 02:42:48PM -0400, Jason Gunthorpe wrote:
-> > On Fri, Jan 22, 2021 at 05:48:12PM -0600, Shiraz Saleem wrote:
-> > > +/**
-> > > + * irdma_init_dev - GEN_2 device init
-> > > + * @aux_dev: auxiliary device
-> > > + *
-> > > + * Create device resources, set up queues, pble and hmc objects.
-> > > + * Return 0 if successful, otherwise return error  */ int
-> > > +irdma_init_dev(struct auxiliary_device *aux_dev) {
-> > > +	struct iidc_auxiliary_object *vo = container_of(aux_dev,
-> > > +							struct
-> iidc_auxiliary_object,
-> > > +							adev);
-> > > +	struct iidc_peer_obj *peer_info = vo->peer_obj;
-> > > +	struct irdma_handler *hdl;
-> > > +	struct irdma_pci_f *rf;
-> > > +	struct irdma_sc_dev *dev;
-> > > +	struct irdma_priv_peer_info *priv_peer_info;
-> > > +	int err;
-> > > +
-> > > +	hdl = irdma_find_handler(peer_info->pdev);
-> > > +	if (hdl)
-> > > +		return -EBUSY;
-> > > +
-> > > +	hdl = kzalloc(sizeof(*hdl), GFP_KERNEL);
-> > > +	if (!hdl)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	rf = &hdl->rf;
-> > > +	priv_peer_info = &rf->priv_peer_info;
-> > > +	rf->aux_dev = aux_dev;
-> > > +	rf->hdl = hdl;
-> > > +	dev = &rf->sc_dev;
-> > > +	dev->back_dev = rf;
-> > > +	rf->gen_ops.init_hw = icrdma_init_hw;
-> > > +	rf->gen_ops.request_reset = icrdma_request_reset;
-> > > +	rf->gen_ops.register_qset = irdma_lan_register_qset;
-> > > +	rf->gen_ops.unregister_qset = irdma_lan_unregister_qset;
-> > > +	priv_peer_info->peer_info = peer_info;
-> > > +	rf->rdma_ver = IRDMA_GEN_2;
-> > > +	irdma_set_config_params(rf);
-> > > +	dev->pci_rev = peer_info->pdev->revision;
-> > > +	rf->default_vsi.vsi_idx = peer_info->pf_vsi_num;
-> > > +	/* save information from peer_info to priv_peer_info*/
-> > > +	priv_peer_info->fn_num = PCI_FUNC(peer_info->pdev->devfn);
-> > > +	rf->hw.hw_addr = peer_info->hw_addr;
-> > > +	rf->pcidev = peer_info->pdev;
-> > > +	rf->netdev = peer_info->netdev;
-> > > +	priv_peer_info->ftype = peer_info->ftype;
-> > > +	priv_peer_info->msix_count = peer_info->msix_count;
-> > > +	priv_peer_info->msix_entries = peer_info->msix_entries;
-> > > +	irdma_add_handler(hdl);
-> > > +	if (irdma_ctrl_init_hw(rf)) {
-> > > +		err = -EIO;
-> > > +		goto err_ctrl_init;
-> > > +	}
-> > > +	peer_info->peer_ops = &irdma_peer_ops;
-> > > +	peer_info->peer_drv = &irdma_peer_drv;
-> > > +	err = peer_info->ops->peer_register(peer_info);
-> > > +	if (err)
-> > > +		goto err_peer_reg;
+> On Wed, Jan 27, 2021 at 07:16:41PM -0400, Jason Gunthorpe wrote:
+> > On Wed, Jan 27, 2021 at 10:17:56PM +0000, Saleem, Shiraz wrote:
 > >
-> > No to this, I don't want to see aux bus layered on top of another
-> > management framework in new drivers. When this driver uses aux bus get
-> > rid of the old i40iw stuff. I already said this in one of the older
-> > postings of this driver.
+> > > Even with another core PCI driver, there still needs to be private
+> > > communication channel between the aux rdma driver and this PCI
+> > > driver to pass things like QoS updates.
 > >
-> > auxbus probe() for a RDMA driver should call ib_alloc_device() near
-> > its start and ib_register_device() near the end its end.
-> >
-> > drvdata for the aux device should point to the driver struct
-> > containing the ib_device.
+> > Data pushed from the core driver to its aux drivers should either be
+> > done through new callbacks in a struct device_driver or by having a
+> > notifier chain scheme from the core driver.
 > 
-> My other expectation is to see at least two aux_drivers, one for the RoCE and
-> another for the iWARP. It will allow easy management for the users if they decide
-> to disable/enable specific functionality (/sys/bus/auxiliary/device/*). It will simplify
-> code management too.
+> Right, and internal to driver/core device_lock will protect from parallel
+> probe/remove and PCI flows.
 > 
 
-Do you mean 2 different auxiliary device names - one for RoCE and iWARP?
-The drv.probe() and other callbacks will be very similar for gen2, so one gen2 aux driver
-which can bind to iW and RoCE aux device should suffice.
+OK. We will hold the device_lock while issuing the .ops callbacks from core driver.
+This should solve our synchronization issue.
 
-Shiraz
+There have been a few discussions in this thread. And I would like to be clear on what
+to do.
+
+So we will,
+
+1. Remove .open/.close, .peer_register/.peer_unregister
+2. Protect ops callbacks issued from core driver to the aux driver with device_lock
+3. Move the custom iidc_peer_op callbacks to an irdma driver struct that encapsulates the auxiliary driver struct. For core driver to use.
+4. Remove ice FSM around open, close etc...
+5. RDMA aux driver probe will allocate ib_device and register it at the end of probe.
+
+Does this sound acceptable?
