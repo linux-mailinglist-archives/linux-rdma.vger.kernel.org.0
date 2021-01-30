@@ -2,104 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94CB4308E28
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Jan 2021 21:17:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D85309137
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Jan 2021 02:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233118AbhA2UJU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 29 Jan 2021 15:09:20 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:10298 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233183AbhA2UH4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 29 Jan 2021 15:07:56 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60146af10002>; Fri, 29 Jan 2021 12:07:13 -0800
-Received: from [172.27.0.17] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 29 Jan
- 2021 20:07:11 +0000
-Subject: Re: net/mlx5: Maintain separate page trees for ECPF and PF functions
-To:     Colin Ian King <colin.king@canonical.com>,
-        Daniel Jurgens <danielj@nvidia.com>
-CC:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
+        id S233054AbhA3BUY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 29 Jan 2021 20:20:24 -0500
+Received: from mga04.intel.com ([192.55.52.120]:24653 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233066AbhA3BTg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 29 Jan 2021 20:19:36 -0500
+IronPort-SDR: V+AjJQUEkUti5N0YWfgqkssKVhQMw1k4Rsdn43BQwZ/HtFc3Qxf3IN7pG99uUuHfa8SXffoEXc
+ CxVXgZaGoZxw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="177942138"
+X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
+   d="scan'208";a="177942138"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 17:18:38 -0800
+IronPort-SDR: 8gT7A+DUAM5lnwTEX+gzLtmSyRTvcxwj6dNwz6ICzTkFNtS7PQnr+zAUrLh0BUs8xb+LYe9LCI
+ 9A2HrbwuFxrw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
+   d="scan'208";a="365563152"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga008.fm.intel.com with ESMTP; 29 Jan 2021 17:18:38 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 29 Jan 2021 17:18:37 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 29 Jan 2021 17:18:37 -0800
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2106.002;
+ Fri, 29 Jan 2021 17:18:37 -0800
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>
-References: <ce13ef88-37c4-e9b6-891d-13722a4aa098@canonical.com>
-From:   Eran Ben Elisha <eranbe@nvidia.com>
-Message-ID: <86dab3fb-0581-34c3-7b75-9ee809dce66a@nvidia.com>
-Date:   Fri, 29 Jan 2021 22:06:28 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <ce13ef88-37c4-e9b6-891d-13722a4aa098@canonical.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>
+Subject: RE: [PATCH 20/22] RDMA/irdma: Add ABI definitions
+Thread-Topic: [PATCH 20/22] RDMA/irdma: Add ABI definitions
+Thread-Index: AQHW8RlkdRkNgNRDEUiQqAbZnBRzCao5SR2AgAWJrnA=
+Date:   Sat, 30 Jan 2021 01:18:36 +0000
+Message-ID: <04dcd32fcecd4492900f0bde0e45e5dc@intel.com>
+References: <20210122234827.1353-1-shiraz.saleem@intel.com>
+ <20210122234827.1353-21-shiraz.saleem@intel.com>
+ <20210125194515.GY4147@nvidia.com>
+In-Reply-To: <20210125194515.GY4147@nvidia.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611950833; bh=DvGJ0kWzQZiJGCZJOaIKst6Byc8J/ZmRmFLgGuVWcLw=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=ot5p1k8uM2OJd1B6gaZfJLDrEPO9xspJmfvcKu/+hIq6XqaXothmdcjYO/S0q2MV+
-         n10qQQQc1RimLSTSWtPp0WVZLqNpuWHF8Tfyy7FgxwiwPHfdF0j87I3Fg4IAWPDH7F
-         spmE5qtiIRe/OM+keinBjoENm3Yu9ozmFP8Jd4Mv1Tn1P0oa5L6/Ai/fgREchZbwO2
-         Dj2bK+WIw58lVFN0LamENaOsmyyRhKAajxI+w2m7k7qU3KJzQ5kiUYtDD/H4/c8tnn
-         lOKGM0iqGGyaIHIt4hXe0pFmY+J08ceXAvAEhUZav3tDi9w067u5aXkgXvwjHgszvS
-         fvDEF+snmN+cQ==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+> Subject: Re: [PATCH 20/22] RDMA/irdma: Add ABI definitions
+> 
+> On Fri, Jan 22, 2021 at 05:48:25PM -0600, Shiraz Saleem wrote:
+> > From: Mustafa Ismail <mustafa.ismail@intel.com>
+> >
+> > Add ABI definitions for irdma.
+> >
+> > Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
+> > Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> > include/uapi/rdma/irdma-abi.h | 140
+> > ++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 140 insertions(+)
+> >  create mode 100644 include/uapi/rdma/irdma-abi.h
+> >
+> > diff --git a/include/uapi/rdma/irdma-abi.h
+> > b/include/uapi/rdma/irdma-abi.h new file mode 100644 index
+> > 0000000..d9c8ce1
+> > +++ b/include/uapi/rdma/irdma-abi.h
+> > @@ -0,0 +1,140 @@
+> > +/* SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) OR
+> > +Linux-OpenIB) */
+> > +/*
+> > + * Copyright (c) 2006 - 2021 Intel Corporation.  All rights reserved.
+> > + * Copyright (c) 2005 Topspin Communications.  All rights reserved.
+> > + * Copyright (c) 2005 Cisco Systems.  All rights reserved.
+> > + * Copyright (c) 2005 Open Grid Computing, Inc. All rights reserved.
+> > + */
+> > +
+> > +#ifndef IRDMA_ABI_H
+> > +#define IRDMA_ABI_H
+> > +
+> > +#include <linux/types.h>
+> > +
+> > +/* irdma must support legacy GEN_1 i40iw kernel
+> > + * and user-space whose last ABI ver is 5  */ #define IRDMA_ABI_VER 6
+> 
+> I don't want to see this value increase, either this is ABI compatible with i40iw or it
+> is not and should be a new driver_id.
 
+I am not sure I understand how it's possible without a ver. bump.
+We support user-space libirdma with this driver as well as libi40iw. 
 
-On 1/29/2021 2:18 PM, Colin Ian King wrote:
-> Hi,
-> 
-> Static analysis with Coverity has detected an issue with the following
-> commit:
-> 
-> commit 0aa128475d33d2d0095947eeab6b3e4d22dbd578
-> Author: Daniel Jurgens <danielj@nvidia.com>
-> Date:   Fri Jan 22 23:13:53 2021 +0200
-> 
->      net/mlx5: Maintain separate page trees for ECPF and PF functions
-> 
-> The analysis is as follows:
-> 
->   77 static u32 get_function(u16 func_id, bool ec_function)
->   78 {
-> 
-> Operands don't affect result (CONSTANT_EXPRESSION_RESULT)
-> result_independent_of_operands: func_id & (ec_function << 16) is always
-> 0 regardless of the values of its operands. This occurs as a return value.
-> 
->   79        return func_id & (ec_function << 16);
->   80 }
-> 
-> 
-> boolean ec_function is shifted 16 places to the left, so the result is
-> going to be 0x10000 or 0x00000. Bit-wise and'ing this with the 16 bit
-> unsigned int func_id will always result in a zero.  Not sure what the
-> intention is, so I can't fix it.
-> 
-> Either the & operator should be |,  or func_id should be wider than a u16
+libi40iw - legacy support which is ABIv 4 & 5. GEN_1 devices only
+libirdma - replaces libi40iw; supports i40iw (GEN1) driver and irdma
 
-Hi, thanks for the report.
-The u32 return value was supposed to be a concatenation of 16-bit 
-func_id and ec flag.
-Hence, indeed there is a bug here.
-
-it should be
-return (u32)func_id | (ec_function << 16);
-
-Please update if you want to post this fix patch or prefer Me/Daniel to 
-take it.
-
-Eran
 > 
-> Colin
+> This should have a small diff against include/uapi/rdma/i40iw-abi.h that is
+> obviously compatible
 > 
+> > +struct irdma_create_qp_resp {
+> > +	__u32 qp_id;
+> > +	__u32 actual_sq_size;
+> > +	__u32 actual_rq_size;
+> > +	__u32 irdma_drv_opt;
+> > +	__u32 qp_caps;
+> > +	__u16 rsvd1;
+> > +	__u8 lsmm;
+> > +	__u8 rsvd2;
+> > +};
+> 
+> > +struct i40iw_create_qp_resp {
+> > +	__u32 qp_id;
+> > +	__u32 actual_sq_size;
+> > +	__u32 actual_rq_size;
+> > +	__u32 i40iw_drv_opt;
+> > +	__u16 push_idx;
+> > +	__u8 lsmm;
+> > +	__u8 rsvd;
+> > +};
+> 
+> For instance these are almost the same, why put qp_caps in the middle?
+> Add it to the end so the whole thing is properly compatible with a single structure.
+> 
+> Jason
