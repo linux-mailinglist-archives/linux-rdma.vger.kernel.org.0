@@ -2,84 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1970309E61
-	for <lists+linux-rdma@lfdr.de>; Sun, 31 Jan 2021 20:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 976E730CF02
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Feb 2021 23:36:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhAaTrg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 31 Jan 2021 14:47:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhAaTms (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 31 Jan 2021 14:42:48 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5D3C061797
-        for <linux-rdma@vger.kernel.org>; Sun, 31 Jan 2021 11:41:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=hdYHmA5C5Zp3H9TWb7SrRpj4eKyfWbzS7KrTIYuKz08=; b=PL+j/1/Lulul7xckj2qoAysZIx
-        oOPWdHhE6f/G0/fg0IA+16PUcjsUoahtBe3rkWVLNEjE2b4tFXtTgksMSVBR9+q+rtZmGAVIHE+bg
-        aFdu+2GVIwH15FZz+6wGv+HJNAAxGK5rq8NaKFmm4LPmGe9yQRr5G09XfzMS3oQ8xmNrqqd1+rE/Z
-        3k9VhkHsQ/C3eFkr6WecxwlzERNgC0S2FM1nl4M5L2dcNcWgQ3jSMCHY/YfUUQDClKtzvs6UulXMv
-        BI77QPL+4ftS282+BwDDodiu3WQKdqkjsyc5Yg3W451knSTzF1bv1mVwXptiDp/0WvahH6dDgVHBV
-        42bXqsIA==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l6IbE-00029B-9e; Sun, 31 Jan 2021 19:41:32 +0000
-Subject: Re: infiniband Kconfig question
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, Arnd Bergmann <arnd@arndb.de>
-References: <443b76a6-564d-4329-601c-1dec3c3ce428@infradead.org>
-Message-ID: <6cae3fc8-0349-8259-b4ca-af2635928a09@infradead.org>
-Date:   Sun, 31 Jan 2021 11:41:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S235878AbhBBWeb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Feb 2021 17:34:31 -0500
+Received: from [20.39.40.203] ([20.39.40.203]:61037 "EHLO optinix.in"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S230091AbhBBWeU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 2 Feb 2021 17:34:20 -0500
+dkim-signature: v=1; a=rsa-sha256; d=digitalsol.in; s=dkim;
+        c=relaxed/relaxed; q=dns/txt; h=From:Reply-To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=wK2neTcOXNiSQ+RBxrnFed+mRrGUU/ndLGEgvo8IMCc=;
+        b=Z/qoYR5e93G/1E5Uh8tLreepyziGYShILI7fcXozE97A3DqZKBadv9kcBZBcmHZnqAUcLkt0g+COxgI6WqJ5gdfKqksQSW540KJaAE4DNiZ+EZYtErJhsiZnZCgjfp9yI8W2dpgN2EsH5zUvgVY6Bl2MWU8ziaGqy1DCXSk4DXXi+2CTtkJX9uQrf2ohPvP7bhav6zr4dJxTQjQYoopWjV3h9j7RqQq/UIXqX3VBjVDZARoXQTZUB0KN0A
+        F7X8DeijiSCFEdYkkdQwasjHi3K0B6KloKBXegK0TgQ39PHt5t2MVnmtmeZadY0DbdImfujjk25mqjLTG700JJRoTl9A==
+Received: from User (Unknown [52.231.31.5])
+        by optinix.in with ESMTP
+        ; Sat, 30 Jan 2021 02:14:15 +0000
+Message-ID: <B0CC978E-0149-4652-A2D0-17DE1F49BCC1@optinix.in>
+Reply-To: <ms.reem@yandex.com>
+From:   "Ms. Reem" <support@digitalsol.in>
+Subject: Re:read
+Date:   Sat, 30 Jan 2021 02:14:13 -0000
 MIME-Version: 1.0
-In-Reply-To: <443b76a6-564d-4329-601c-1dec3c3ce428@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain;
+        charset="Windows-1251"
 Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/31/21 9:19 AM, Randy Dunlap wrote:
-> Hi,
-> 
-> I happened to notice this Kconfig fragment in drivers/inifiniband/Kconfig:
-> 
-> [from:
-> commit 6fa8f1afd3373c456e556815ebc8cb2330d6c3fe
-> Author: Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
-> Date:   Wed Jan 9 11:15:15 2019 +0200
-> ]
-> 
-> 
-> if INFINIBAND_USER_ACCESS || !INFINIBAND_USER_ACCESS
-> source "drivers/infiniband/hw/mthca/Kconfig"
-> source "drivers/infiniband/hw/qib/Kconfig"
-> source "drivers/infiniband/hw/cxgb4/Kconfig"
-> ...
-> source "drivers/infiniband/hw/qedr/Kconfig"
-> source "drivers/infiniband/sw/rdmavt/Kconfig"
-> source "drivers/infiniband/sw/rxe/Kconfig"
-> source "drivers/infiniband/sw/siw/Kconfig"
-> endif
-> 
-> 
-> and I was hoping that you could explain to me what the "if" line
-> means or does?
-> 
-> From all of my testing, that "if" is always true
-> (when INFINIBAND is enabled).
+Hello,
 
+My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
+and Petroleum" also "Minister of State for International Cooperation"
+in UAE. I write to you on behalf of my other "three (3) colleagues"
+who has approved me to solicit for your "partnership in claiming of
+{us$47=Million}" from a Financial Home in Cambodia on their behalf and
+for our "Mutual Benefits".
 
-Arnd explained this to me (or at least showed me
-what it does).
+The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
+deal with Cambodian/Vietnam Government within 2013/2014, however, we
+don't want our government to know about the fund. If this proposal
+interests you, let me know, by sending me an email and I will send to
+you detailed information on how this business would be successfully
+transacted. Be informed that nobody knows about the secret of this
+fund except us, and we know how to carry out the entire transaction.
+So I am compelled to ask, that you will stand on our behalf and
+receive this fund into any account that is solely controlled by you.
 
-thanks.
--- 
-~Randy
+We will compensate you with 15% of the total amount involved as
+gratification for being our partner in this transaction. Reply to:
+ms.reem@yandex.com
+
+Regards,
+Ms. Reem.
 
