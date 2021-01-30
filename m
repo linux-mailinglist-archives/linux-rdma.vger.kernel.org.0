@@ -2,29 +2,31 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250FD30965D
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Jan 2021 16:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3173097CF
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Jan 2021 20:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232294AbhA3PrZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 30 Jan 2021 10:47:25 -0500
-Received: from mail-03.mail-europe.com ([91.134.188.129]:36878 "EHLO
-        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232236AbhA3Pq7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 30 Jan 2021 10:46:59 -0500
-Date:   Sat, 30 Jan 2021 15:42:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1612021352; bh=SqOOfzeH0noXKgcwnW/E6N5QTvdiF5329lwzLQGnSBA=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=QNesXZCqMsxg9WWq30zTsSxoLyYfcPmwRs7aX304JT8WeHNT2iGeKEibhU43V9vgT
-         OcUNJmqqlVZvquPt6J7MLkmBaKhnUDCH23CFKrtXuP8CIQAzp8bYEWC7Ml27/Xc8Kv
-         f1C/khyFadsGNsXhEO1dzJJ1HgqXdA5r7yJfx+tsRajwQc82BlDqw5ZjlanwRvD1p/
-         Z6/yyOW9dpxawki7sSDlRjQ8u8VXcF1HC/BOx5w/k5QhQxYz3scGwOIxNqXL+3s/5C
-         rCuWxQuQ5OT/DcRqoNddGAAnHcb6UjvmotgX1eW2NpSx7FLK/lnTTT8mb84wIIyEYx
-         YpUaky0ym1igA==
-To:     Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S231686AbhA3THx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 30 Jan 2021 14:07:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229990AbhA3THu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 30 Jan 2021 14:07:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DB3064E11;
+        Sat, 30 Jan 2021 19:07:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612033629;
+        bh=Fzdh9rDGCBTjOe6wgkL8Ejbzqqmt3AuErhjUnt6GaB4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FXcv7/nFC2W4/QcK5la7BT3W/pfJcY5sCGsMxVhMJ5ofFjavYdoxnkh7WgdYLMg/P
+         Bw+3YQis90jZ8Gr1RfBojb2mY8Ba/yuDF/oJklJcFuD2UCFB9pWc0KyyLWeG5HEB3D
+         gftGmLwwhh4oqoQm0zQxYg7pzL0lb2Os0VNZrgDWpb+5ekH1lTfvAvtkBtnZrO+g91
+         VMjzUCX5XsH1pAvau9oVXTt9C1UZuHW4cjHP53tcNK/FpouEYPYm04CmGMaV+ryo4A
+         21gNW6N50sxVx68cJmnY7Klqw2Rq4XcrJOS7R7LlqtunuAI3ffT/n0d0Rh5C9LBJW/
+         TLJlgdBjQUqfw==
+Date:   Sat, 30 Jan 2021 11:07:07 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         David Rientjes <rientjes@google.com>,
         Yisen Zhuang <yisen.zhuang@huawei.com>,
         Salil Mehta <salil.mehta@huawei.com>,
@@ -45,51 +47,48 @@ Cc:     Alexander Lobakin <alobakin@pm.me>,
         Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
         linux-rdma@vger.kernel.org, linux-mm@kvack.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v2 net-next 3/4] net: introduce common dev_page_is_reserved()
-Message-ID: <20210130154149.8107-1-alobakin@pm.me>
-In-Reply-To: <20210129183907.2ae5ca3d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20210127201031.98544-1-alobakin@pm.me> <20210127201031.98544-4-alobakin@pm.me> <20210129183907.2ae5ca3d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Subject: Re: [PATCH v2 net-next 3/4] net: introduce common
+ dev_page_is_reserved()
+Message-ID: <20210130110707.3122a360@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210130154149.8107-1-alobakin@pm.me>
+References: <20210127201031.98544-1-alobakin@pm.me>
+        <20210127201031.98544-4-alobakin@pm.me>
+        <20210129183907.2ae5ca3d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210130154149.8107-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
-Date: Fri, 29 Jan 2021 18:39:07 -0800
+On Sat, 30 Jan 2021 15:42:29 +0000 Alexander Lobakin wrote:
+> > On Wed, 27 Jan 2021 20:11:23 +0000 Alexander Lobakin wrote:  
+> > > + * dev_page_is_reserved - check whether a page can be reused for network Rx
+> > > + * @page: the page to test
+> > > + *
+> > > + * A page shouldn't be considered for reusing/recycling if it was allocated
+> > > + * under memory pressure or at a distant memory node.
+> > > + *
+> > > + * Returns true if this page should be returned to page allocator, false
+> > > + * otherwise.
+> > > + */
+> > > +static inline bool dev_page_is_reserved(const struct page *page)  
+> > 
+> > Am I the only one who feels like "reusable" is a better term than
+> > "reserved".  
+> 
+> I thought about it, but this will need to inverse the conditions in
+> most of the drivers. I decided to keep it as it is.
+> I can redo if "reusable" is preferred.
 
-> On Wed, 27 Jan 2021 20:11:23 +0000 Alexander Lobakin wrote:
-> > + * dev_page_is_reserved - check whether a page can be reused for netwo=
-rk Rx
-> > + * @page: the page to test
-> > + *
-> > + * A page shouldn't be considered for reusing/recycling if it was allo=
-cated
-> > + * under memory pressure or at a distant memory node.
-> > + *
-> > + * Returns true if this page should be returned to page allocator, fal=
-se
-> > + * otherwise.
-> > + */
-> > +static inline bool dev_page_is_reserved(const struct page *page)
->=20
-> Am I the only one who feels like "reusable" is a better term than
-> "reserved".
+Naming is hard. As long as the condition is not a double negative it
+reads fine to me, but that's probably personal preference.
+The thing that doesn't sit well is the fact that there is nothing
+"reserved" about a page from another NUMA node.. But again, if nobody
++1s this it's whatever...
 
-I thought about it, but this will need to inverse the conditions in
-most of the drivers. I decided to keep it as it is.
-I can redo if "reusable" is preferred.
-
-Regarding "no objectives to take patch 1 through net-next": patches
-2-3 depend on it, so I can't put it in a separate series.
-
-Thanks,
-Al
-
+That said can we move the likely()/unlikely() into the helper itself?
+People on the internet may say otherwise but according to my tests 
+using __builtin_expect() on a return value of a static inline helper
+works just fine.
