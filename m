@@ -2,38 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792B43091C8
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Jan 2021 05:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A3A3091F8
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Jan 2021 06:12:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233572AbhA3ENh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 29 Jan 2021 23:13:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36300 "EHLO mail.kernel.org"
+        id S230355AbhA3FMk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 30 Jan 2021 00:12:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233648AbhA3DtC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 29 Jan 2021 22:49:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1935C64E12;
-        Sat, 30 Jan 2021 02:26:34 +0000 (UTC)
+        id S230257AbhA3FJn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 30 Jan 2021 00:09:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1B5B64DE2;
+        Sat, 30 Jan 2021 02:26:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611973594;
-        bh=h9JPR8VxnRfFhQQVCL5oxI2YDswTOIc988xmDb61Eos=;
+        s=k20201202; t=1611973590;
+        bh=oCyKJ1cLNxE/k0y0GraCVl4B+H7EkvSw2dMFBNu8rJM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rqYJSIT+U0FYxLvKbrba2PBsJCQqiL2itEEQW0tCRPWHkjNEKAudTUg6Q4wRD3sez
-         /pG9ALSN4PfDtYk41d0hJpz9h/KbWaaU5hnDFz+nveQPUzBnobfH8mgqbR946Ooenh
-         faMyK2sKheSuboOle4Mgh2tv5hJPJDeuibqWmzA0Ya3ZyYQSOWM/V1ukclcQ8hJRQS
-         RSU0tIPGWIXl4XWKcGrvHV/pgA+K1TzhucApDVtRL2t9/DYN1riVV9/n+3uftbIzGl
-         ee0x3kApk1X20ZQdpN/1YNTc4GrnWvDhMmHY3QV6C4kh8zQxFis2ehR8V4Lc6qhYuR
-         8H76AOLdBB+xw==
+        b=ZnyRAfdkcVyTEhUl1YMYohyLNO9JnvHxQjfBawHpQEZTqFpJL1qumsvZCAC67LVt3
+         nAWfJd0sQ6B4Kkvd6a1X7wP9/9PprSp76GLfWi03t+OXjLBqlUSKWEzxt07/EUn8mI
+         1tNey6m+pJtgrjA+qSfL1Wiqc0cbIizlh8To9gryZUrg16L6Q/2cm8jcj4FLap/mgK
+         Ri7R5z8zvbuamZMaSRXfCpqlCdROyXgSK57Qf2E8BeacjTXwR5n45aQbgEJ48LMrSv
+         k+cEk+FPUi8Z8V2RPOH0Q+I02iRa/lan99HqDpS/flxBOf2a86JQtGLuidVrJ5Xl9r
+         U1n/y7z/LI0yw==
 From:   Saeed Mahameed <saeed@kernel.org>
 To:     Jakub Kicinski <kuba@kernel.org>
 Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
         Yevgeny Kliteynik <kliteyn@nvidia.com>,
-        Erez Shitrit <erezsh@nvidia.com>,
-        Alex Vesker <valex@nvidia.com>,
+        Alex Vesker <valex@mellanox.com>,
         Saeed Mahameed <saeedm@nvidia.com>
-Subject: [net-next 10/11] net/mlx5: DR, Copy all 64B whenever replacing STE in the head of miss-list
-Date:   Fri, 29 Jan 2021 18:26:17 -0800
-Message-Id: <20210130022618.317351-11-saeed@kernel.org>
+Subject: [net-next 04/11] net/mlx5: DR, Allow native protocol support for HW STEv1
+Date:   Fri, 29 Jan 2021 18:26:11 -0800
+Message-Id: <20210130022618.317351-5-saeed@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210130022618.317351-1-saeed@kernel.org>
 References: <20210130022618.317351-1-saeed@kernel.org>
@@ -45,76 +44,57 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Yevgeny Kliteynik <kliteyn@nvidia.com>
 
-Till now the code assumed that need to copy reduced size of the
-ste because the rest is the mask part which shouldn't be changed.
-This is not true for all types of HW (like STEv1).
-Take all 64B from the new STE and write them in the replaced STE place.
-This change will make it easier to handle all STE HW types because we have
-all the data that is about to be written into HW.
+Some flex parser protocols are native as part of STEv1.
+The check for supported protocols was modified to allow this.
 
-Signed-off-by: Erez Shitrit <erezsh@nvidia.com>
-Signed-off-by: Alex Vesker <valex@nvidia.com>
+Signed-off-by: Alex Vesker <valex@mellanox.com>
 Signed-off-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 ---
- .../mellanox/mlx5/core/steering/dr_ste.c      | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ .../mellanox/mlx5/core/steering/dr_matcher.c         | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste.c
-index 8ac3ccdda84c..9cd5c50c5d42 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste.c
-@@ -211,13 +211,17 @@ dr_ste_remove_head_ste(struct mlx5dr_ste_ctx *ste_ctx,
-  * |_ste_| --> |_next_ste_| -->|__| -->|__| -->/0
-  */
- static void
--dr_ste_replace_head_ste(struct mlx5dr_ste *ste, struct mlx5dr_ste *next_ste,
-+dr_ste_replace_head_ste(struct mlx5dr_matcher_rx_tx *nic_matcher,
-+			struct mlx5dr_ste *ste,
-+			struct mlx5dr_ste *next_ste,
- 			struct mlx5dr_ste_send_info *ste_info_head,
- 			struct list_head *send_ste_list,
- 			struct mlx5dr_ste_htbl *stats_tbl)
- 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_matcher.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_matcher.c
+index e3a002983c26..15673cd10039 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_matcher.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_matcher.c
+@@ -113,7 +113,8 @@ dr_mask_is_vxlan_gpe_set(struct mlx5dr_match_misc3 *misc3)
+ static bool
+ dr_matcher_supp_vxlan_gpe(struct mlx5dr_cmd_caps *caps)
  {
- 	struct mlx5dr_ste_htbl *next_miss_htbl;
-+	u8 hw_ste[DR_STE_SIZE] = {};
-+	int sb_idx;
+-	return caps->flex_protocols & MLX5_FLEX_PARSER_VXLAN_GPE_ENABLED;
++	return (caps->sw_format_ver == MLX5_STEERING_FORMAT_CONNECTX_6DX) ||
++	       (caps->flex_protocols & MLX5_FLEX_PARSER_VXLAN_GPE_ENABLED);
+ }
  
- 	next_miss_htbl = next_ste->htbl;
+ static bool
+@@ -135,7 +136,8 @@ static bool dr_mask_is_tnl_geneve_set(struct mlx5dr_match_misc *misc)
+ static bool
+ dr_matcher_supp_tnl_geneve(struct mlx5dr_cmd_caps *caps)
+ {
+-	return caps->flex_protocols & MLX5_FLEX_PARSER_GENEVE_ENABLED;
++	return (caps->sw_format_ver == MLX5_STEERING_FORMAT_CONNECTX_6DX) ||
++	       (caps->flex_protocols & MLX5_FLEX_PARSER_GENEVE_ENABLED);
+ }
  
-@@ -230,13 +234,19 @@ dr_ste_replace_head_ste(struct mlx5dr_ste *ste, struct mlx5dr_ste *next_ste,
- 	/* Move data from next into ste */
- 	dr_ste_replace(ste, next_ste);
+ static bool
+@@ -148,12 +150,14 @@ dr_mask_is_tnl_geneve(struct mlx5dr_match_param *mask,
  
-+	/* Copy all 64 hw_ste bytes */
-+	memcpy(hw_ste, ste->hw_ste, DR_STE_SIZE_REDUCED);
-+	sb_idx = ste->ste_chain_location - 1;
-+	mlx5dr_ste_set_bit_mask(hw_ste,
-+				nic_matcher->ste_builder[sb_idx].bit_mask);
-+
- 	/* Del the htbl that contains the next_ste.
- 	 * The origin htbl stay with the same number of entries.
- 	 */
- 	mlx5dr_htbl_put(next_miss_htbl);
+ static int dr_matcher_supp_icmp_v4(struct mlx5dr_cmd_caps *caps)
+ {
+-	return caps->flex_protocols & MLX5_FLEX_PARSER_ICMP_V4_ENABLED;
++	return (caps->sw_format_ver == MLX5_STEERING_FORMAT_CONNECTX_6DX) ||
++	       (caps->flex_protocols & MLX5_FLEX_PARSER_ICMP_V4_ENABLED);
+ }
  
--	mlx5dr_send_fill_and_append_ste_send_info(ste, DR_STE_SIZE_REDUCED,
--						  0, ste->hw_ste,
-+	mlx5dr_send_fill_and_append_ste_send_info(ste, DR_STE_SIZE,
-+						  0, hw_ste,
- 						  ste_info_head,
- 						  send_ste_list,
- 						  true /* Copy data */);
-@@ -316,7 +326,8 @@ void mlx5dr_ste_free(struct mlx5dr_ste *ste,
- 					       stats_tbl);
- 		} else {
- 			/* First but not only entry in the list */
--			dr_ste_replace_head_ste(ste, next_ste, &ste_info_head,
-+			dr_ste_replace_head_ste(nic_matcher, ste,
-+						next_ste, &ste_info_head,
- 						&send_ste_list, stats_tbl);
- 			put_on_origin_table = false;
- 		}
+ static int dr_matcher_supp_icmp_v6(struct mlx5dr_cmd_caps *caps)
+ {
+-	return caps->flex_protocols & MLX5_FLEX_PARSER_ICMP_V6_ENABLED;
++	return (caps->sw_format_ver == MLX5_STEERING_FORMAT_CONNECTX_6DX) ||
++	       (caps->flex_protocols & MLX5_FLEX_PARSER_ICMP_V6_ENABLED);
+ }
+ 
+ static bool dr_mask_is_icmpv6_set(struct mlx5dr_match_misc3 *misc3)
 -- 
 2.29.2
 
