@@ -2,73 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8784A309C16
-	for <lists+linux-rdma@lfdr.de>; Sun, 31 Jan 2021 13:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB374309CC3
+	for <lists+linux-rdma@lfdr.de>; Sun, 31 Jan 2021 15:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbhAaMk7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 31 Jan 2021 07:40:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231953AbhAaMhF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 31 Jan 2021 07:37:05 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A99C061573;
-        Sun, 31 Jan 2021 04:24:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=R8+JxZSpbHiMxsv5TLCmqmv2hyGPLbx0zPwRvsESoT8=; b=Va5+mSbba56ABTdMGmAv/C++pK
-        /W28Q6TwZmVEZsX8HgZZ/HPOcp3zr1hv4YthleldIqNIt6uZunVSsFBBPx7eVDMAcIxW/UPzjIBK5
-        JzdEItl1XJXViz7h1EG+4LZkx3G5PCgKizGxtld/r8iEXwUUG3e0JVvNMhEfSDlbaT/yh74y4FaJ8
-        QQQnRSuWCRET8KgpOA/4ZSLVJTDpR5loU560WdMG4vfu8TxXuXVk3Rol1BRuFWcMico3hLQmcDDsg
-        oMCrWMWO9JPD3DrPG2o6sr2SJtf2cN0pjPpXTlIBrnkM+qtkIE0xt/2OAwNKiOgwxuI2ErKOc6zc5
-        R124FSfg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l6Blc-00CQnr-Gg; Sun, 31 Jan 2021 12:23:48 +0000
-Date:   Sun, 31 Jan 2021 12:23:48 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        id S231708AbhAaORt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 31 Jan 2021 09:17:49 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18865 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230153AbhAaNdJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 31 Jan 2021 08:33:09 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6016afa70001>; Sun, 31 Jan 2021 05:24:55 -0800
+Received: from [172.27.1.148] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 31 Jan
+ 2021 13:24:53 +0000
+Subject: Re: [PATCH mlx5-next v1] RDMA/mlx5: Cleanup the synchronize_srcu()
+ from the ODP flow
+To:     Saeed Mahameed <saeed@kernel.org>,
         Leon Romanovsky <leon@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3 net-next 5/5] net: page_pool: simplify page recycling
- condition tests
-Message-ID: <20210131122348.GM308988@casper.infradead.org>
-References: <20210131120844.7529-1-alobakin@pm.me>
- <20210131120844.7529-6-alobakin@pm.me>
+        "Doug Ledford" <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+CC:     Jakub Kicinski <kuba@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <netdev@vger.kernel.org>, Yishai Hadas <yishaih@nvidia.com>
+References: <20210128064812.1921519-1-leon@kernel.org>
+ <c79124a204f2207f5f1fae69cc34fb08d91d3535.camel@kernel.org>
+From:   Yishai Hadas <yishaih@nvidia.com>
+Message-ID: <549b337b-b51e-c984-a4d8-72f9f738be9c@nvidia.com>
+Date:   Sun, 31 Jan 2021 15:24:50 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210131120844.7529-6-alobakin@pm.me>
+In-Reply-To: <c79124a204f2207f5f1fae69cc34fb08d91d3535.camel@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612099495; bh=IkmO/L8zoqUnS9ldzzHqjxMoRQXbJUVj07wmo4M28rg=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=SiSRWx1vhttL/xwwhI4rbg9fJiVB1qzxkgVBvoNt5uwcY0uPpWHZxUNIShJWvtqdY
+         ACqX0VjgTMmjkNZJjbO9LHFcypHfcJmpYig9C4IlcJDauZ5ZMrS5XWKHI5cVpvMfUD
+         BN3xoeex2uAA7kFaduuHVDJ4Rc71eEtfO9tK19mNyFUTLNP++a7eOttvEsNxHWJeIj
+         X+/BLQGYmffqkcGBD6qJ3Pety5ky8bIrG4NzIAA/xB7cPPgZ+EdsxxnW4HuizFL9Sx
+         4foAH49E5JGtcwbMdMlbx/QcvegwySwf4LxQvyU9By7pNZdSTcYn1Sa9/T1q+tn0TS
+         LV5tfdiEettKA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 12:12:11PM +0000, Alexander Lobakin wrote:
-> pool_page_reusable() is a leftover from pre-NUMA-aware times. For now,
-> this function is just a redundant wrapper over page_is_pfmemalloc(),
-> so inline it into its sole call site.
+On 1/29/2021 2:23 PM, Saeed Mahameed wrote:
+>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mr.c
+>> b/drivers/net/ethernet/mellanox/mlx5/core/mr.c
+>> index 9eb51f06d3ae..50af84e76fb6 100644
+>> --- a/drivers/net/ethernet/mellanox/mlx5/core/mr.c
+>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/mr.c
+>> @@ -56,6 +56,7 @@ int mlx5_core_create_mkey(struct mlx5_core_dev
+>> *dev,
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mkey->size =3D MLX5_GET=
+64(mkc, mkc, len);
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mkey->key |=3D mlx5_idx=
+_to_mkey(mkey_index);
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mkey->pd =3D MLX5_GET(m=
+kc, mkc, pd);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0init_waitqueue_head(&mkey->wa=
+it);
+>>
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mlx5_core_dbg(dev, "out=
+ 0x%x, mkey 0x%x\n", mkey_index, mkey-
+>>> key);
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
+>> diff --git a/include/linux/mlx5/driver.h
+>> b/include/linux/mlx5/driver.h
+>> index 4901b4fadabb..f9e7036ae5a5 100644
+>> --- a/include/linux/mlx5/driver.h
+>> +++ b/include/linux/mlx5/driver.h
+>> @@ -373,6 +373,8 @@ struct mlx5_core_mkey {
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0u32=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0key;
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0u32=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pd;
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0u32=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0type;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct wait_queue_head wait;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0refcount_t usecount;
+> mlx5_core_mkey is used everywhere in mlx5_core and we don't care about
+> odp complexity, i would like to keep the core simple and primitive as
+> it is today.
+> please keep the layer separation and find a way to manage refcount and
+> wait queue in mlx5_ib driver..
+>
+The alternative could really be to come with some wrapped mlx5_ib=20
+structure that will hold 'mlx5_core_mkey' and will add those two fields.
 
-Why doesn't this want to use {dev_}page_is_reusable()?
+However,
+
+As ODP is a data path flow we need to minimize any locking scope and=20
+reduce branches, having the above stuff on 'mlx5_core_mkey' allows=20
+direct access from any type of mlx5_ib object that uses it.
+Having it per object (e.g. mlx5_ib_mr, mlx5_ib_mw, mlx5_ib_devx_mr)=20
+increasing locking scope and branches on data path to find the refcount=20
+field per its 'type'.=C2=A0 (see mlx5_core_mkey->type).
+
+Specifically talking, see pagefault_single_data_segment() [1], its mkey=20
+can be from type MR, MW or DEVX, with current patch having the refcount=20
+on the core we increase it immediacy and free the lock rather than do=20
+some lookup based on type and only then increase refcount and=C2=A0 free th=
+e=20
+lock.
+
+In addition,
+
+Wrapping 'mlx5_core_mkey' for this might hit other data path flows as of=20
+UMR, this may require extra memory access to get the=20
+'mlx5_core_mkey->key' field upon building the WR, we prefer to avoid it.
+See mlx5_ib_create_xlt_wr [2].
+
+So, it seems reasonable to have those properties on the raw mkey=20
+structure, usage of the refcount / wait is done in mlx5 ib, so no impact=20
+should be for other users as of that.
+
+[1]=20
+https://elixir.bootlin.com/linux/v5.11-rc5/source/drivers/infiniband/hw/mlx=
+5/odp.c#L893
+
+[2]=20
+https://elixir.bootlin.com/linux/v5.11-rc5/source/drivers/infiniband/hw/mlx=
+5/mr.c#L1092
+
+Yishai
 
