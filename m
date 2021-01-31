@@ -2,121 +2,445 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8301A309875
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Jan 2021 22:25:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F809309B2C
+	for <lists+linux-rdma@lfdr.de>; Sun, 31 Jan 2021 09:46:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhA3VYY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 30 Jan 2021 16:24:24 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2160 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbhA3VYX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 30 Jan 2021 16:24:23 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6015ce5e0002>; Sat, 30 Jan 2021 13:23:42 -0800
-Received: from [10.2.62.101] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 30 Jan
- 2021 21:23:30 +0000
-Subject: Re: [PATCH v2 net-next 3/4] net: introduce common
- dev_page_is_reserved()
-To:     Alexander Lobakin <alobakin@pm.me>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        David Rientjes <rientjes@google.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
-        <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20210127201031.98544-1-alobakin@pm.me>
- <20210127201031.98544-4-alobakin@pm.me>
- <20210129183907.2ae5ca3d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210130154149.8107-1-alobakin@pm.me>
- <20210130110707.3122a360@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210130194459.37837-1-alobakin@pm.me>
+        id S229603AbhAaIpm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 31 Jan 2021 03:45:42 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14910 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229892AbhAaIpb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 31 Jan 2021 03:45:31 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60166dff0001>; Sun, 31 Jan 2021 00:44:47 -0800
+Received: from [10.2.50.90] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 31 Jan
+ 2021 08:44:40 +0000
+Subject: Re: [PATCH rdma-core v7 5/6] tests: Add tests for dma-buf based
+ memory regions
+To:     Jianxin Xiong <jianxin.xiong@intel.com>,
+        <linux-rdma@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
+CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Edward Srouji <edwards@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+References: <1611604622-86968-1-git-send-email-jianxin.xiong@intel.com>
+ <1611604622-86968-6-git-send-email-jianxin.xiong@intel.com>
 From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <752a57a6-3f45-8b9b-e8b1-939bc9450947@nvidia.com>
-Date:   Sat, 30 Jan 2021 13:23:30 -0800
+Message-ID: <b147c3ca-5754-f317-9f3b-5fbd42eaf4c0@nvidia.com>
+Date:   Sun, 31 Jan 2021 00:44:40 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
  Thunderbird/85.0
 MIME-Version: 1.0
-In-Reply-To: <20210130194459.37837-1-alobakin@pm.me>
+In-Reply-To: <1611604622-86968-6-git-send-email-jianxin.xiong@intel.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
  HQMAIL107.nvidia.com (172.20.187.13)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612041822; bh=XdEBWDGTZuiWQxyc+j9VORWv1cft7WIfWK/EqPUa+p4=;
+        t=1612082687; bh=oj3YCe8M1DH9eZT2qTwLLd29vY3WVVNKOYm3laAu++g=;
         h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
          MIME-Version:In-Reply-To:Content-Type:Content-Language:
          Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=CgBuB8hJYU+MIBPQME3YhhtMFWXo3UeYILMxnQGrIaEN3YYevfyNPOUu/2Ox8YS1E
-         ghXmFo3e/yaJuPpXKJXPz+UU5J8mMJpKradqvcIim2gTRnC40Psz8zdWwgxsjsNqLY
-         zagJMVx3lia+GGBPt+o5cF5+iuquSwS72PmYYkY+b0n1WmELYe90cn1qMFDrFW8XH8
-         TSUtIL3EY9vQtb/yfp/1KhVceVxez4JYu8mq/s+XtXkbcA5DMqU34O7/cjmj2AdGge
-         vfGCrA6OmrQksCFUrXOAb9FpY3Pok/3MTu6v9rBgvK4GuxVmA4oIgaS4QVYPO4Vf9A
-         VM7OcNZQarHeQ==
+        b=f2uUIX8s2xTAfq05101SnY2FKQSvUvU5pQNEFmZoMH+DHBWPMYYV94k/isQmrYYLT
+         j/zWNjerBTBpi14zyafjHRQLn5MXegMGBT3uSgESEFN+kcU65sZfBa/czdGJnm7X/E
+         pDcqGJ2YkijTx4QO9mbZaxF+y2XDT4ofkQbYovvzALVazO5uegNiVBr6HIMtEgE5Na
+         TFQgOf/k06gVGmXZ7ukbt4Gh+E2sGRS1+SxQBzgWEp3RyU6Q0Zl//cMI8rXMA7rDQ0
+         +h8mHGDO6WiFzwpudrw0wUP3kNtb80p6aRX7QCA0WVFNAtc5SZnPNJUHYNyLdmIH0+
+         yaKNIIvXf6CoA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 1/30/21 11:45 AM, Alexander Lobakin wrote:
-> From: Jakub Kicinski <kuba@kernel.org>
-> Date: Sat, 30 Jan 2021 11:07:07 -0800
+On 1/25/21 11:57 AM, Jianxin Xiong wrote:
+> Define a set of unit tests similar to regular MR tests and a set of
+> tests for send/recv and rdma traffic using dma-buf MRs. Add a utility
+> function to generate access flags for dma-buf based MRs because the
+> set of supported flags is smaller.
 > 
->> On Sat, 30 Jan 2021 15:42:29 +0000 Alexander Lobakin wrote:
->>>> On Wed, 27 Jan 2021 20:11:23 +0000 Alexander Lobakin wrote:
->>>>> + * dev_page_is_reserved - check whether a page can be reused for network Rx
->>>>> + * @page: the page to test
->>>>> + *
->>>>> + * A page shouldn't be considered for reusing/recycling if it was allocated
->>>>> + * under memory pressure or at a distant memory node.
->>>>> + *
->>>>> + * Returns true if this page should be returned to page allocator, false
->>>>> + * otherwise.
->>>>> + */
->>>>> +static inline bool dev_page_is_reserved(const struct page *page)
->>>>
->>>> Am I the only one who feels like "reusable" is a better term than
->>>> "reserved".
->>>
->>> I thought about it, but this will need to inverse the conditions in
->>> most of the drivers. I decided to keep it as it is.
->>> I can redo if "reusable" is preferred.
->>
->> Naming is hard. As long as the condition is not a double negative it
->> reads fine to me, but that's probably personal preference.
->> The thing that doesn't sit well is the fact that there is nothing
->> "reserved" about a page from another NUMA node.. But again, if nobody
->> +1s this it's whatever...
+> Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+
+Hi Jianxin,
+
+It's awesome to see a GPU to IB test suite here!
+
+> ---
+>   tests/args_parser.py |   4 +
+>   tests/test_mr.py     | 266 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+>   tests/utils.py       |  26 +++++
+>   3 files changed, 295 insertions(+), 1 deletion(-)
 > 
-> Agree on NUMA and naming. I'm a bit surprised that 95% of drivers
-> have this helper called "reserved" (one of the reasons why I finished
-> with this variant).
-> Let's say, if anybody else will vote for "reusable", I'll pick it for
-> v3.
+> diff --git a/tests/args_parser.py b/tests/args_parser.py
+> index 446535a..5bc53b0 100644
+> --- a/tests/args_parser.py
+> +++ b/tests/args_parser.py
+> @@ -19,6 +19,10 @@ class ArgsParser(object):
+>           parser.add_argument('--port',
+>                               help='Use port <port> of RDMA device', type=int,
+>                               default=1)
+> +        parser.add_argument('--gpu', nargs='?', type=int, const=0, default=0,
+> +                            help='GPU unit to allocate dmabuf from')
+> +        parser.add_argument('--gtt', action='store_true', default=False,
+> +                            help='Allocate dmabuf from GTT instead of VRAM')
 
-Definitely "reusable" seems better to me, and especially anything *other*
-than "reserved" is a good idea, IMHO.
+Just to be kind to non-GPU people, how about:
 
+	s/GTT/GTT (Graphics Translation Table)/
+
+
+>           parser.add_argument('-v', '--verbose', dest='verbosity',
+>                               action='store_const',
+>                               const=2, help='Verbose output')
+> diff --git a/tests/test_mr.py b/tests/test_mr.py
+> index b88ad23..03a645f 100644
+> --- a/tests/test_mr.py
+> +++ b/tests/test_mr.py
+> @@ -1,5 +1,6 @@
+>   # SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB)
+>   # Copyright (c) 2019 Mellanox Technologies, Inc. All rights reserved. See COPYING file
+> +# Copyright (c) 2020 Intel Corporation. All rights reserved. See COPYING file
+>   """
+>   Test module for pyverbs' mr module.
+>   """
+> @@ -9,15 +10,18 @@ import errno
+>   
+>   from tests.base import PyverbsAPITestCase, RCResources, RDMATestCase
+>   from pyverbs.pyverbs_error import PyverbsRDMAError, PyverbsError
+> -from pyverbs.mr import MR, MW, DMMR, MWBindInfo, MWBind
+> +from pyverbs.mr import MR, MW, DMMR, DmaBufMR, MWBindInfo, MWBind
+>   from pyverbs.qp import QPCap, QPInitAttr, QPAttr, QP
+>   from pyverbs.mem_alloc import posix_memalign, free
+>   from pyverbs.wr import SendWR
+> +from pyverbs.dmabuf import DmaBuf
+>   import pyverbs.device as d
+>   from pyverbs.pd import PD
+>   import pyverbs.enums as e
+>   import tests.utils as u
+>   
+> +MAX_IO_LEN = 1048576
+> +
+>   
+>   class MRRes(RCResources):
+>       def __init__(self, dev_name, ib_port, gid_index,
+> @@ -423,3 +427,263 @@ class DMMRTest(PyverbsAPITestCase):
+>                           dm_mr = DMMR(pd, dm_mr_len, e.IBV_ACCESS_ZERO_BASED,
+>                                        dm=dm, offset=dm_mr_offset)
+>                           dm_mr.close()
+> +
+> +
+> +def check_dmabuf_support(unit=0):
+> +    """
+> +    Check if dma-buf allocation is supported by the system.
+> +    Skip the test on failure.
+> +    """
+> +    device_num = 128 + unit
+> +    try:
+> +        DmaBuf(1, unit=unit)
+
+unit?? This is a GPU, never anything else! Let's s/unit/gpu/ throughout, yes?
 
 thanks,
 -- 
 John Hubbard
 NVIDIA
+
+> +    except PyverbsRDMAError as ex:
+> +        if ex.error_code == errno.ENOENT:
+> +            raise unittest.SkipTest(f'Device /dev/dri/renderD{device_num} is not present')
+> +        if ex.error_code == errno.EACCES:
+> +            raise unittest.SkipTest(f'Lack of permission to access /dev/dri/renderD{device_num}')
+> +        if ex.error_code == errno.EOPNOTSUPP:
+> +            raise unittest.SkipTest(f'Allocating dmabuf is not supported by /dev/dri/renderD{device_num}')
+> +
+> +
+> +def check_dmabuf_mr_support(pd, unit=0):
+> +    """
+> +    Check if dma-buf MR registration is supported by the driver.
+> +    Skip the test on failure
+> +    """
+> +    try:
+> +        DmaBufMR(pd, 1, 0, unit=unit)
+> +    except PyverbsRDMAError as ex:
+> +        if ex.error_code == errno.EOPNOTSUPP:
+> +            raise unittest.SkipTest('Reg dma-buf MR is not supported by the RDMA driver')
+> +
+> +
+> +class DmaBufMRTest(PyverbsAPITestCase):
+> +    """
+> +    Test various functionalities of the DmaBufMR class.
+> +    """
+> +    def setUp(self):
+> +        super().setUp()
+> +        self.unit = self.config['gpu']
+> +        self.gtt = self.config['gtt']
+> +
+> +    def test_dmabuf_reg_mr(self):
+> +        """
+> +        Test ibv_reg_dmabuf_mr()
+> +        """
+> +        check_dmabuf_support(self.unit)
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                check_dmabuf_mr_support(pd, self.unit)
+> +                flags = u.get_dmabuf_access_flags(ctx)
+> +                for f in flags:
+> +                    len = u.get_mr_length()
+> +                    for off in [0, len//2]:
+> +                        with DmaBufMR(pd, len, f, offset=off, unit=self.unit,
+> +                                      gtt=self.gtt) as mr:
+> +                            pass
+> +
+> +    def test_dmabuf_dereg_mr(self):
+> +        """
+> +        Test ibv_dereg_mr() with DmaBufMR
+> +        """
+> +        check_dmabuf_support(self.unit)
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                check_dmabuf_mr_support(pd, self.unit)
+> +                flags = u.get_dmabuf_access_flags(ctx)
+> +                for f in flags:
+> +                    len = u.get_mr_length()
+> +                    for off in [0, len//2]:
+> +                        with DmaBufMR(pd, len, f, offset=off, unit=self.unit,
+> +                                      gtt=self.gtt) as mr:
+> +                            mr.close()
+> +
+> +    def test_dmabuf_dereg_mr_twice(self):
+> +        """
+> +        Verify that explicit call to DmaBufMR's close() doesn't fail
+> +        """
+> +        check_dmabuf_support(self.unit)
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                check_dmabuf_mr_support(pd, self.unit)
+> +                flags = u.get_dmabuf_access_flags(ctx)
+> +                for f in flags:
+> +                    len = u.get_mr_length()
+> +                    for off in [0, len//2]:
+> +                        with DmaBufMR(pd, len, f, offset=off, unit=self.unit,
+> +                                      gtt=self.gtt) as mr:
+> +                            # Pyverbs supports multiple destruction of objects,
+> +                            # we are not expecting an exception here.
+> +                            mr.close()
+> +                            mr.close()
+> +
+> +    def test_dmabuf_reg_mr_bad_flags(self):
+> +        """
+> +        Verify that illegal flags combination fails as expected
+> +        """
+> +        check_dmabuf_support(self.unit)
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                check_dmabuf_mr_support(pd, self.unit)
+> +                for i in range(5):
+> +                    flags = random.sample([e.IBV_ACCESS_REMOTE_WRITE,
+> +                                           e.IBV_ACCESS_REMOTE_ATOMIC],
+> +                                          random.randint(1, 2))
+> +                    mr_flags = 0
+> +                    for i in flags:
+> +                        mr_flags += i.value
+> +                    try:
+> +                        DmaBufMR(pd, u.get_mr_length(), mr_flags,
+> +                                 unit=self.unit, gtt=self.gtt)
+> +                    except PyverbsRDMAError as err:
+> +                        assert 'Failed to register a dma-buf MR' in err.args[0]
+> +                    else:
+> +                        raise PyverbsRDMAError('Registered a dma-buf MR with illegal falgs')
+> +
+> +    def test_dmabuf_write(self):
+> +        """
+> +        Test writing to DmaBufMR's buffer
+> +        """
+> +        check_dmabuf_support(self.unit)
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                check_dmabuf_mr_support(pd, self.unit)
+> +                for i in range(10):
+> +                    mr_len = u.get_mr_length()
+> +                    flags = u.get_dmabuf_access_flags(ctx)
+> +                    for f in flags:
+> +                        for mr_off in [0, mr_len//2]:
+> +                            with DmaBufMR(pd, mr_len, f, offset=mr_off,
+> +                                          unit=self.unit, gtt=self.gtt) as mr:
+> +                                write_len = min(random.randint(1, MAX_IO_LEN),
+> +                                                mr_len)
+> +                                mr.write('a' * write_len, write_len)
+> +
+> +    def test_dmabuf_read(self):
+> +        """
+> +        Test reading from DmaBufMR's buffer
+> +        """
+> +        check_dmabuf_support(self.unit)
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                check_dmabuf_mr_support(pd, self.unit)
+> +                for i in range(10):
+> +                    mr_len = u.get_mr_length()
+> +                    flags = u.get_dmabuf_access_flags(ctx)
+> +                    for f in flags:
+> +                        for mr_off in [0, mr_len//2]:
+> +                            with DmaBufMR(pd, mr_len, f, offset=mr_off,
+> +                                          unit=self.unit, gtt=self.gtt) as mr:
+> +                                write_len = min(random.randint(1, MAX_IO_LEN),
+> +                                                mr_len)
+> +                                write_str = 'a' * write_len
+> +                                mr.write(write_str, write_len)
+> +                                read_len = random.randint(1, write_len)
+> +                                offset = random.randint(0, write_len-read_len)
+> +                                read_str = mr.read(read_len, offset).decode()
+> +                                assert read_str in write_str
+> +
+> +    def test_dmabuf_lkey(self):
+> +        """
+> +        Test reading lkey property
+> +        """
+> +        check_dmabuf_support(self.unit)
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                check_dmabuf_mr_support(pd, self.unit)
+> +                length = u.get_mr_length()
+> +                flags = u.get_dmabuf_access_flags(ctx)
+> +                for f in flags:
+> +                    with DmaBufMR(pd, length, f, unit=self.unit,
+> +                                  gtt=self.gtt) as mr:
+> +                        mr.lkey
+> +
+> +    def test_dmabuf_rkey(self):
+> +        """
+> +        Test reading rkey property
+> +        """
+> +        check_dmabuf_support(self.unit)
+> +        for ctx, attr, attr_ex in self.devices:
+> +            with PD(ctx) as pd:
+> +                check_dmabuf_mr_support(pd, self.unit)
+> +                length = u.get_mr_length()
+> +                flags = u.get_dmabuf_access_flags(ctx)
+> +                for f in flags:
+> +                    with DmaBufMR(pd, length, f, unit=self.unit,
+> +                                  gtt=self.gtt) as mr:
+> +                        mr.rkey
+> +
+> +
+> +class DmaBufRC(RCResources):
+> +    def __init__(self, dev_name, ib_port, gid_index, unit, gtt):
+> +        """
+> +        Initialize an DmaBufRC object.
+> +        :param dev_name: Device name to be used
+> +        :param ib_port: IB port of the device to use
+> +        :param gid_index: Which GID index to use
+> +        :param unit: GPU unit to allocate dmabuf from
+> +        :gtt: Allocate dmabuf from GTT instead og VRAM
+> +        """
+> +        self.unit = unit
+> +        self.gtt = gtt
+> +        super(DmaBufRC, self).__init__(dev_name=dev_name, ib_port=ib_port,
+> +                                       gid_index=gid_index)
+> +
+> +    def create_mr(self):
+> +        check_dmabuf_support(self.unit)
+> +        check_dmabuf_mr_support(self.pd, self.unit)
+> +        access = e.IBV_ACCESS_LOCAL_WRITE | e.IBV_ACCESS_REMOTE_WRITE
+> +        mr = DmaBufMR(self.pd, self.msg_size, access, unit=self.unit,
+> +                      gtt=self.gtt)
+> +        self.mr = mr
+> +
+> +    def create_qp_attr(self):
+> +        qp_attr = QPAttr(port_num=self.ib_port)
+> +        qp_access = e.IBV_ACCESS_LOCAL_WRITE | e.IBV_ACCESS_REMOTE_WRITE
+> +        qp_attr.qp_access_flags = qp_access
+> +        return qp_attr
+> +
+> +
+> +class DmaBufTestCase(RDMATestCase):
+> +    def setUp(self):
+> +        super(DmaBufTestCase, self).setUp()
+> +        self.iters = 100
+> +        self.unit = self.config['gpu']
+> +        self.gtt = self.config['gtt']
+> +
+> +    def create_players(self, resource, **resource_arg):
+> +        """
+> +        Init dma-buf tests resources.
+> +        :param resource: The RDMA resources to use. A class of type
+> +                         BaseResources.
+> +        :param resource_arg: Dict of args that specify the resource specific
+> +                             attributes.
+> +        :return: The (client, server) resources.
+> +        """
+> +        client = resource(**self.dev_info, **resource_arg)
+> +        server = resource(**self.dev_info, **resource_arg)
+> +        client.pre_run(server.psns, server.qps_num)
+> +        server.pre_run(client.psns, client.qps_num)
+> +        return client, server
+> +
+> +    def test_dmabuf_rc_traffic(self):
+> +        """
+> +        Test send/recv using dma-buf MR over RC
+> +        """
+> +        client, server = self.create_players(DmaBufRC, unit=self.unit,
+> +                                             gtt=self.gtt)
+> +        u.traffic(client, server, self.iters, self.gid_index, self.ib_port)
+> +
+> +    def test_dmabuf_rdma_traffic(self):
+> +        """
+> +        Test rdma write using dma-buf MR
+> +        """
+> +        client, server = self.create_players(DmaBufRC, unit=self.unit,
+> +                                             gtt=self.gtt)
+> +        server.rkey = client.mr.rkey
+> +        server.remote_addr = client.mr.offset
+> +        client.rkey = server.mr.rkey
+> +        client.remote_addr = server.mr.offset
+> +        u.rdma_traffic(client, server, self.iters, self.gid_index, self.ib_port,
+> +                       send_op=e.IBV_WR_RDMA_WRITE)
+> diff --git a/tests/utils.py b/tests/utils.py
+> index e2ab669..8546329 100644
+> --- a/tests/utils.py
+> +++ b/tests/utils.py
+> @@ -1,5 +1,6 @@
+>   # SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB)
+>   # Copyright (c) 2019 Mellanox Technologies, Inc. All rights reserved.  See COPYING file
+> +# Copyright (c) 2020 Intel Corporation. All rights reserved. See COPYING file
+>   """
+>   Provide some useful helper function for pyverbs' tests.
+>   """
+> @@ -96,6 +97,31 @@ def get_access_flags(ctx):
+>       return arr
+>   
+>   
+> +def get_dmabuf_access_flags(ctx):
+> +    """
+> +    Similar to get_access_flags, except that dma-buf MR only support
+> +    a subset of the flags.
+> +    :param ctx: Device Context to check capabilities
+> +    :return: A random legal value for MR flags
+> +    """
+> +    attr = ctx.query_device()
+> +    vals = [e.IBV_ACCESS_LOCAL_WRITE, e.IBV_ACCESS_REMOTE_WRITE,
+> +            e.IBV_ACCESS_REMOTE_READ, e.IBV_ACCESS_REMOTE_ATOMIC,
+> +            e.IBV_ACCESS_RELAXED_ORDERING]
+> +    if not attr.atomic_caps & e.IBV_ATOMIC_HCA:
+> +        vals.remove(e.IBV_ACCESS_REMOTE_ATOMIC)
+> +    arr = []
+> +    for i in range(1, len(vals)):
+> +        tmp = list(com(vals, i))
+> +        tmp = filter(filter_illegal_access_flags, tmp)
+> +        for t in tmp:  # Iterate legal combinations and bitwise OR them
+> +            val = 0
+> +            for flag in t:
+> +                val += flag.value
+> +            arr.append(val)
+> +    return arr
+> +
+> +
+>   def get_dm_attrs(dm_len):
+>       """
+>       Initializes an AllocDmAttr member with the given length and random
+> 
+
