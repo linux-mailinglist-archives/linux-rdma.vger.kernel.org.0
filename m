@@ -2,25 +2,25 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7A3309DBB
-	for <lists+linux-rdma@lfdr.de>; Sun, 31 Jan 2021 16:42:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F77C309DA4
+	for <lists+linux-rdma@lfdr.de>; Sun, 31 Jan 2021 16:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbhAaPlu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 31 Jan 2021 10:41:50 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:41086 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232060AbhAaMtU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 31 Jan 2021 07:49:20 -0500
-Date:   Sun, 31 Jan 2021 12:48:28 +0000
+        id S232058AbhAaPg4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 31 Jan 2021 10:36:56 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:62432 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232252AbhAaM6Q (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 31 Jan 2021 07:58:16 -0500
+Date:   Sun, 31 Jan 2021 12:57:29 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1612097317; bh=y30s5J10nfJ05d+t9ObBLUOEaiYg0NNkaEvHUkJBLzA=;
+        t=1612097850; bh=hy3HTU1Gr4SJ412CK0eDCO6whxGXOGwlEZQ/bHzh0IY=;
         h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=nhDCOWplzmyXPSzZmedhJPQwO/CC5dhY2EAtlfsC7hL96xVl0c+sIejcE+CS/6IpU
-         gKKz74jA72t0iHZmFG4/Vph3vyY8VtWfQ6r65Fm6GYKbXLbfdZe10YKpES2uD/emi8
-         SHz1PtfhWCTcQPkFFde1Xz7YXK4Bf9JUIsyZrdynXJ0OgIbBhvB6oa5SUdPL4/J0RW
-         OXbOAw2zjJyP47AAvJbs6D6KnTLWmMU4i43Sbxw6nbusSdbY+qHSiPn5BRfN/WIU+l
-         YrXmib/7xJ4qSyDdhsroCsfKrCT45hSewfuvdY91s9u3N/tjTddj5YDF4JW17JiqKy
-         VR6FDnyinK+Zw==
+        b=gOF3DQLDOPbnITXBUL2KPwaqec06jg7hgwxBrpixduvxzEnKNGsfv8ItuXKrxv9Ng
+         JiqbWegAiSb0RANpw00MRZt5dHVkVaU/4aT5yLL76tDfJs1aAdwYldD7IWkRc5kxbh
+         1BAJMWanlZQ2JqPkXy6HSIYWPNKbrH0EQAF1HDdchGDHYnALdR6ajs+2btoq67GU9f
+         f5YZ1517Lx6mBTrwwu58TBCcS9IuiaspQ6k7jtFh66w62CLwSumleX42KAPMkjKfzH
+         bHZna372czPrByZznTmm5VyRMiP9VCQ0UQEj/5CLGRQO8Ef03IeNcCrs59678BmNjl
+         NGoTfgARWpgvw==
 To:     Matthew Wilcox <willy@infradead.org>
 From:   Alexander Lobakin <alobakin@pm.me>
 Cc:     Alexander Lobakin <alobakin@pm.me>,
@@ -48,10 +48,10 @@ Cc:     Alexander Lobakin <alobakin@pm.me>,
         linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
         linux-rdma@vger.kernel.org, linux-mm@kvack.org
 Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v3 net-next 5/5] net: page_pool: simplify page recycling condition tests
-Message-ID: <20210131124802.8430-1-alobakin@pm.me>
-In-Reply-To: <20210131122348.GM308988@casper.infradead.org>
-References: <20210131120844.7529-1-alobakin@pm.me> <20210131120844.7529-6-alobakin@pm.me> <20210131122348.GM308988@casper.infradead.org>
+Subject: Re: [PATCH v3 net-next 3/5] net: introduce common dev_page_is_reusable()
+Message-ID: <20210131125713.8710-1-alobakin@pm.me>
+In-Reply-To: <20210131122205.GL308988@casper.infradead.org>
+References: <20210131120844.7529-1-alobakin@pm.me> <20210131120844.7529-4-alobakin@pm.me> <20210131122205.GL308988@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -65,18 +65,58 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Matthew Wilcox <willy@infradead.org>
-Date: Sun, 31 Jan 2021 12:23:48 +0000
+Date: Sun, 31 Jan 2021 12:22:05 +0000
 
-> On Sun, Jan 31, 2021 at 12:12:11PM +0000, Alexander Lobakin wrote:
-> > pool_page_reusable() is a leftover from pre-NUMA-aware times. For now,
-> > this function is just a redundant wrapper over page_is_pfmemalloc(),
-> > so inline it into its sole call site.
+> On Sun, Jan 31, 2021 at 12:11:52PM +0000, Alexander Lobakin wrote:
+> > A bunch of drivers test the page before reusing/recycling for two
+> > common conditions:
+> >  - if a page was allocated under memory pressure (pfmemalloc page);
+> >  - if a page was allocated at a distant memory node (to exclude
+> >    slowdowns).
+> >
+> > Introduce a new common inline for doing this, with likely() already
+> > folded inside to make driver code a bit simpler.
 >=20
-> Why doesn't this want to use {dev_}page_is_reusable()?
+> I don't see the need for the 'dev_' prefix.  That actually confuses me
+> because it makes me think this is tied to ZONE_DEVICE or some such.
 
-Page Pool handles NUMA on its own. Replacing plain page_is_pfmemalloc()
-with dev_page_is_reusable() will only add a completely redundant and
-always-false check on the fastpath.
+Several functions right above this one also use 'dev_' prefix. It's
+a rather old mark that it's about network devices.
+
+> So how about calling it just 'page_is_reusable' and putting it in mm.h
+> with page_is_pfmemalloc() and making the comment a little less network-ce=
+ntric?
+
+This pair of conditions (!pfmemalloc + local memory node) is really
+specific to network drivers. I didn't see any other instances of such
+tests, so I don't see a reason to place it in a more common mm.h.
+
+> Or call it something like skb_page_is_recyclable() since it's only used
+> by networking today.  But I bet it could/should be used more widely.
+
+There's nothing about skb. Tested page is just a memory chunk for DMA
+transaction. It can be used as skb head/frag, for XDP buffer/frame or
+for XSK umem.
+
+> > +/**
+> > + * dev_page_is_reusable - check whether a page can be reused for netwo=
+rk Rx
+> > + * @page: the page to test
+> > + *
+> > + * A page shouldn't be considered for reusing/recycling if it was allo=
+cated
+> > + * under memory pressure or at a distant memory node.
+> > + *
+> > + * Returns false if this page should be returned to page allocator, tr=
+ue
+> > + * otherwise.
+> > + */
+> > +static inline bool dev_page_is_reusable(const struct page *page)
+> > +{
+> > +=09return likely(page_to_nid(page) =3D=3D numa_mem_id() &&
+> > +=09=09      !page_is_pfmemalloc(page));
+> > +}
+> > +
 
 Al
 
