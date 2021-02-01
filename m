@@ -2,64 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976E730CF02
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Feb 2021 23:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E26E130A1F9
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Feb 2021 07:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235878AbhBBWeb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Feb 2021 17:34:31 -0500
-Received: from [20.39.40.203] ([20.39.40.203]:61037 "EHLO optinix.in"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S230091AbhBBWeU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:34:20 -0500
-dkim-signature: v=1; a=rsa-sha256; d=digitalsol.in; s=dkim;
-        c=relaxed/relaxed; q=dns/txt; h=From:Reply-To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=wK2neTcOXNiSQ+RBxrnFed+mRrGUU/ndLGEgvo8IMCc=;
-        b=Z/qoYR5e93G/1E5Uh8tLreepyziGYShILI7fcXozE97A3DqZKBadv9kcBZBcmHZnqAUcLkt0g+COxgI6WqJ5gdfKqksQSW540KJaAE4DNiZ+EZYtErJhsiZnZCgjfp9yI8W2dpgN2EsH5zUvgVY6Bl2MWU8ziaGqy1DCXSk4DXXi+2CTtkJX9uQrf2ohPvP7bhav6zr4dJxTQjQYoopWjV3h9j7RqQq/UIXqX3VBjVDZARoXQTZUB0KN0A
-        F7X8DeijiSCFEdYkkdQwasjHi3K0B6KloKBXegK0TgQ39PHt5t2MVnmtmeZadY0DbdImfujjk25mqjLTG700JJRoTl9A==
-Received: from User (Unknown [52.231.31.5])
-        by optinix.in with ESMTP
-        ; Sat, 30 Jan 2021 02:14:15 +0000
-Message-ID: <B0CC978E-0149-4652-A2D0-17DE1F49BCC1@optinix.in>
-Reply-To: <ms.reem@yandex.com>
-From:   "Ms. Reem" <support@digitalsol.in>
-Subject: Re:read
-Date:   Sat, 30 Jan 2021 02:14:13 -0000
+        id S231987AbhBAGd4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Feb 2021 01:33:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232120AbhBAGK1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 1 Feb 2021 01:10:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBF6764E06;
+        Mon,  1 Feb 2021 06:09:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612159766;
+        bh=UBwxXkczigCj0i40nmBHADQZEPwvhb5D9gS621AOJuE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q7KGuLOKW/tqERGqDdAsWebkkpBhdhtWmsCos1s6732i3mXaHt3ZjvdWbAVqIOidp
+         96EOQThz4u0kURNAEiFjnll6t7OxoqdeISxBWTvocTmPJHOR7P6jnOJcLHs8DoDbAu
+         JtaXZ+NsL53Yx9qiOz77OYIq4GQTLg6FvKvUGFe09IuclCqMuYe2bFKdS+iT1m7rLI
+         Itg35zRUa1rFJoMqYspr2FItdnJOtLnHNr+mJKFjqfDbts8EkJ6TREUQl8iDr95ePI
+         NmpdHMxTZP54wDwkW5rZSP8oDKGk3SFMRa71cUcIJPXtiSvvg2NNziPp9+bXA0neoY
+         +WQ4w7HHGS9Vw==
+Date:   Mon, 1 Feb 2021 08:09:22 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>
+Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
+ implement private channel OPs
+Message-ID: <20210201060922.GB4593@unreal>
+References: <20210122234827.1353-8-shiraz.saleem@intel.com>
+ <20210125184248.GS4147@nvidia.com>
+ <99895f7c10a2473c84a105f46c7ef498@intel.com>
+ <20210126005928.GF4147@nvidia.com>
+ <031c2675aff248bd9c78fada059b5c02@intel.com>
+ <20210127121847.GK1053290@unreal>
+ <ea62658f01664a6ea9438631c9ddcb6e@intel.com>
+ <20210127231641.GS4147@nvidia.com>
+ <20210128054133.GA1877006@unreal>
+ <d58f341898834170af1bfb6719e17956@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d58f341898834170af1bfb6719e17956@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+On Sat, Jan 30, 2021 at 01:19:36AM +0000, Saleem, Shiraz wrote:
+> > Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
+> > implement private channel OPs
+> >
+> > On Wed, Jan 27, 2021 at 07:16:41PM -0400, Jason Gunthorpe wrote:
+> > > On Wed, Jan 27, 2021 at 10:17:56PM +0000, Saleem, Shiraz wrote:
+> > >
+> > > > Even with another core PCI driver, there still needs to be private
+> > > > communication channel between the aux rdma driver and this PCI
+> > > > driver to pass things like QoS updates.
+> > >
+> > > Data pushed from the core driver to its aux drivers should either be
+> > > done through new callbacks in a struct device_driver or by having a
+> > > notifier chain scheme from the core driver.
+> >
+> > Right, and internal to driver/core device_lock will protect from parallel
+> > probe/remove and PCI flows.
+> >
+>
+> OK. We will hold the device_lock while issuing the .ops callbacks from core driver.
+> This should solve our synchronization issue.
+>
+> There have been a few discussions in this thread. And I would like to be clear on what
+> to do.
+>
+> So we will,
+>
+> 1. Remove .open/.close, .peer_register/.peer_unregister
+> 2. Protect ops callbacks issued from core driver to the aux driver with device_lock
+> 3. Move the custom iidc_peer_op callbacks to an irdma driver struct that encapsulates the auxiliary driver struct. For core driver to use.
+> 4. Remove ice FSM around open, close etc...
+> 5. RDMA aux driver probe will allocate ib_device and register it at the end of probe.
+>
+> Does this sound acceptable?
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-and Petroleum" also "Minister of State for International Cooperation"
-in UAE. I write to you on behalf of my other "three (3) colleagues"
-who has approved me to solicit for your "partnership in claiming of
-{us$47=Million}" from a Financial Home in Cambodia on their behalf and
-for our "Mutual Benefits".
+I think that it will be good start, it just hard to say in advance
+without seeing the end result.
 
-The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Cambodian/Vietnam Government within 2013/2014, however, we
-don't want our government to know about the fund. If this proposal
-interests you, let me know, by sending me an email and I will send to
-you detailed information on how this business would be successfully
-transacted. Be informed that nobody knows about the secret of this
-fund except us, and we know how to carry out the entire transaction.
-So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
-
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
-ms.reem@yandex.com
-
-Regards,
-Ms. Reem.
-
+Thanks
