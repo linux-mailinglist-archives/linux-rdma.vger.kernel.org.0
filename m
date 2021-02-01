@@ -2,97 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26E130A1F9
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Feb 2021 07:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D25DF30A1FE
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Feb 2021 07:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231987AbhBAGd4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Feb 2021 01:33:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59230 "EHLO mail.kernel.org"
+        id S232091AbhBAGd7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Feb 2021 01:33:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232120AbhBAGK1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 1 Feb 2021 01:10:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBF6764E06;
-        Mon,  1 Feb 2021 06:09:25 +0000 (UTC)
+        id S232169AbhBAGQt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 1 Feb 2021 01:16:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2201F64E06;
+        Mon,  1 Feb 2021 06:16:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612159766;
-        bh=UBwxXkczigCj0i40nmBHADQZEPwvhb5D9gS621AOJuE=;
+        s=k20201202; t=1612160166;
+        bh=U6U/9YgJ8fjKDahPOgJRNrUzRWZyTJ3dnSycpYl+m8s=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q7KGuLOKW/tqERGqDdAsWebkkpBhdhtWmsCos1s6732i3mXaHt3ZjvdWbAVqIOidp
-         96EOQThz4u0kURNAEiFjnll6t7OxoqdeISxBWTvocTmPJHOR7P6jnOJcLHs8DoDbAu
-         JtaXZ+NsL53Yx9qiOz77OYIq4GQTLg6FvKvUGFe09IuclCqMuYe2bFKdS+iT1m7rLI
-         Itg35zRUa1rFJoMqYspr2FItdnJOtLnHNr+mJKFjqfDbts8EkJ6TREUQl8iDr95ePI
-         NmpdHMxTZP54wDwkW5rZSP8oDKGk3SFMRa71cUcIJPXtiSvvg2NNziPp9+bXA0neoY
-         +WQ4w7HHGS9Vw==
-Date:   Mon, 1 Feb 2021 08:09:22 +0200
+        b=lCEjCtuQjvQSAdqrMKoxNJ/rIPGOaCEa3aBt3+9g1eDIcmsIE3bxXhxe5MUDBNDSs
+         8gJ55aaI9Jpk+buJa+Gk3mEyEuWFIqKAHLVLoHpfduQnS2pShCZ5WJEFg0hcs0CrtO
+         sD4hjJj0wvU097HpuVY72DJMJn9WgP1FdB8I9jzVzFMWo0oEv49e0fkQ8KVm3c8qbq
+         m4T4v9bbj1ZDSGrmGj+LXIgzFEObC/e/UfbJrrD1+Dt/4bwWeOi7dvfud3QPwSLRqF
+         GCRKMwYJM4BmasjtmFdBm8Sia1KN4lQUR6K4Xz/VC59SfHByQaZv0FE++zetExDby6
+         HAPGaP1igdsTA==
+Date:   Mon, 1 Feb 2021 08:16:03 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>
-Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
- implement private channel OPs
-Message-ID: <20210201060922.GB4593@unreal>
-References: <20210122234827.1353-8-shiraz.saleem@intel.com>
- <20210125184248.GS4147@nvidia.com>
- <99895f7c10a2473c84a105f46c7ef498@intel.com>
- <20210126005928.GF4147@nvidia.com>
- <031c2675aff248bd9c78fada059b5c02@intel.com>
- <20210127121847.GK1053290@unreal>
- <ea62658f01664a6ea9438631c9ddcb6e@intel.com>
- <20210127231641.GS4147@nvidia.com>
- <20210128054133.GA1877006@unreal>
- <d58f341898834170af1bfb6719e17956@intel.com>
+To:     Gal Pressman <galpress@amazon.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>
+Cc:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Edward Srouji <edwards@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH rdma-core v7 4/6] pyverbs: Add dma-buf based MR support
+Message-ID: <20210201061603.GC4593@unreal>
+References: <1611604622-86968-1-git-send-email-jianxin.xiong@intel.com>
+ <1611604622-86968-5-git-send-email-jianxin.xiong@intel.com>
+ <137f406b-d3e0-fdeb-18e7-194a2aed927c@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d58f341898834170af1bfb6719e17956@intel.com>
+In-Reply-To: <137f406b-d3e0-fdeb-18e7-194a2aed927c@amazon.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 01:19:36AM +0000, Saleem, Shiraz wrote:
-> > Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
-> > implement private channel OPs
+On Sun, Jan 31, 2021 at 05:31:16PM +0200, Gal Pressman wrote:
+> On 25/01/2021 21:57, Jianxin Xiong wrote:
+> > Define a new sub-class of 'MR' that uses dma-buf object for the memory
+> > region. Define a new class 'DmaBuf' as a wrapper for dma-buf allocation
+> > mechanism implemented in C.
 > >
-> > On Wed, Jan 27, 2021 at 07:16:41PM -0400, Jason Gunthorpe wrote:
-> > > On Wed, Jan 27, 2021 at 10:17:56PM +0000, Saleem, Shiraz wrote:
-> > >
-> > > > Even with another core PCI driver, there still needs to be private
-> > > > communication channel between the aux rdma driver and this PCI
-> > > > driver to pass things like QoS updates.
-> > >
-> > > Data pushed from the core driver to its aux drivers should either be
-> > > done through new callbacks in a struct device_driver or by having a
-> > > notifier chain scheme from the core driver.
+> > Update the cmake function for cython modules to allow building modules
+> > with mixed cython and c source files.
 > >
-> > Right, and internal to driver/core device_lock will protect from parallel
-> > probe/remove and PCI flows.
-> >
->
-> OK. We will hold the device_lock while issuing the .ops callbacks from core driver.
-> This should solve our synchronization issue.
->
-> There have been a few discussions in this thread. And I would like to be clear on what
-> to do.
->
-> So we will,
->
-> 1. Remove .open/.close, .peer_register/.peer_unregister
-> 2. Protect ops callbacks issued from core driver to the aux driver with device_lock
-> 3. Move the custom iidc_peer_op callbacks to an irdma driver struct that encapsulates the auxiliary driver struct. For core driver to use.
-> 4. Remove ice FSM around open, close etc...
-> 5. RDMA aux driver probe will allocate ib_device and register it at the end of probe.
->
-> Does this sound acceptable?
+> > Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+> > ---
+> >  buildlib/pyverbs_functions.cmake |  78 +++++++----
+> >  pyverbs/CMakeLists.txt           |  11 +-
+> >  pyverbs/dmabuf.pxd               |  15 +++
+> >  pyverbs/dmabuf.pyx               |  73 ++++++++++
+> >  pyverbs/dmabuf_alloc.c           | 278 +++++++++++++++++++++++++++++++++++++++
+> >  pyverbs/dmabuf_alloc.h           |  19 +++
+> >  pyverbs/libibverbs.pxd           |   2 +
+> >  pyverbs/mr.pxd                   |   6 +
+> >  pyverbs/mr.pyx                   | 105 ++++++++++++++-
+> >  9 files changed, 557 insertions(+), 30 deletions(-)
+> >  create mode 100644 pyverbs/dmabuf.pxd
+> >  create mode 100644 pyverbs/dmabuf.pyx
+> >  create mode 100644 pyverbs/dmabuf_alloc.c
+> >  create mode 100644 pyverbs/dmabuf_alloc.h
 
-I think that it will be good start, it just hard to say in advance
-without seeing the end result.
+<...>
+
+> > index 0000000..05eae75
+> > --- /dev/null
+> > +++ b/pyverbs/dmabuf_alloc.c
+> > @@ -0,0 +1,278 @@
+> > +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+> > +/*
+> > + * Copyright 2020 Intel Corporation. All rights reserved. See COPYING file
+> > + */
+> > +
+> > +#include <stdio.h>
+> > +#include <stdlib.h>
+> > +#include <stdint.h>
+> > +#include <unistd.h>
+> > +#include <string.h>
+> > +#include <errno.h>
+> > +#include <drm/drm.h>
+> > +#include <drm/i915_drm.h>
+> > +#include <drm/amdgpu_drm.h>
+> > +#include <drm/radeon_drm.h>
+>
+> I assume these should come from the kernel headers package, right?
+
+This is gross, all kernel headers should be placed in kernel-headers/*
+and "update" script needs to be extended to take drm/* files too :(.
+
+Jianxin, are you fixing it?
 
 Thanks
