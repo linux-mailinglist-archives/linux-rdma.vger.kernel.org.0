@@ -2,200 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4737430A53B
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Feb 2021 11:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0843C30A68F
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Feb 2021 12:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232508AbhBAKUl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Feb 2021 05:20:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232924AbhBAKUl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:20:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2ABD864E11;
-        Mon,  1 Feb 2021 10:19:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612174799;
-        bh=lz2Eirzvhpvz/PiT5+Ilc+Q9BewHjBsJ5Hp4Lcc1bxs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gcUZlIj8pxYEpz6VRK2ul662H2S9TY8NNwb8e4hlcvBb136n6hOO8k4Sa2R7594jj
-         yw9X/JZR5mt6biPU2lLw2uwy55bVp6OiAlYlW1f9HvaucdGjfn6FcHPKC7vL8/OpNw
-         ijG7n21rQ5r8YY6bs2HhdlRgXasZDJJT0eGgPinOW2ZPN0BRMpYOnR66XRhlqa19dY
-         HKsiT4gAeVRPxqdniOKUhrLAZXD4qAfmjg+DBJO6M1uDQWoebGlW+/pDCD7dTCgEDs
-         A/Wg9vbn2/W7ISvSH34zBTQewOJqTiwcJDSM4szwfz+eah6hyYFpXdU0JSvAlUQnw1
-         wZPT1Hz+y6aYw==
-Date:   Mon, 1 Feb 2021 12:19:56 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Parav Pandit <parav@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next 02/10] IB/mlx5: Avoid calling query device for
- reading pkey table length
-Message-ID: <20210201101956.GD4593@unreal>
-References: <20210127150010.1876121-1-leon@kernel.org>
- <20210127150010.1876121-3-leon@kernel.org>
+        id S229495AbhBALas (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Feb 2021 06:30:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbhBALah (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Feb 2021 06:30:37 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EBFC061574
+        for <linux-rdma@vger.kernel.org>; Mon,  1 Feb 2021 03:29:54 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id i9so12874129wmq.1
+        for <linux-rdma@vger.kernel.org>; Mon, 01 Feb 2021 03:29:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kwU3gycYpWhx2soRrUEq/AES4Fmg5jvCJzfHjO9KvpU=;
+        b=cmbocREqLw3FYuIk+SnOedNn2dI2OVXbrwqW0NY6PPERqI+ONmlmkjio7QguZFjB7h
+         lQ13VSEZte/gL8eSKdkHKjvRGCTQGBHj6e76LTRV9T05Gz0qeY4OB5QlwForsQxElmxG
+         znMUhI1eLLhdRogV00U7h9W3XNc0uNBVsxVNuXykqTDcaZO7NVklr39gNI07vlQGVlMs
+         ORsnQtuWS+IYc96suzO+BVbvxe7G06fX2yLetMzv2hK8d8uoCrDJebzPcgH6D3K/az6Z
+         MbFv0YeiUoVYOSKAWY9A6yi6nxUNAE2HoKiW2Ok23i/3Co+6lfjKS43CSV0lGuDHPJm8
+         n4vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kwU3gycYpWhx2soRrUEq/AES4Fmg5jvCJzfHjO9KvpU=;
+        b=NUeETluc+42dhkrBgT2/fEBvA5lx8niDxDYruDkAZons8Mo2828ONTd67B6zG10uxm
+         tVpR3T9qdwv1CBvh/TTu2p1e5+TdaJB2heDs1Q0ojhyENRsb1QZGmYJag6DWTr0Rki+W
+         FjIPupjuDfDYOePgdX2WS+m5uw+OXcrjTwcGa+DuH682wt4ViSLtWfyT8ruyMbH4TMke
+         uYf86pZZxkpvFRc6xW6ChbqOCAqhuGwXcS/6S+lDBI0LWBlW94bv7hCEN1Orena8mFIu
+         KoJJ1Bnr9nadYBlpTnyOYy8jgtmB+ntp0xKhPqtnECWh9gIYCZoTVKwXYdbjzJjTTjRR
+         FbhA==
+X-Gm-Message-State: AOAM53232pu3IYWWJH/BOzoSR+9JGy+2I/5LO4OSvFubcHJ/iePjQUGV
+        BD/Bs4AljGANi46jpQVwISJlIygsfuVB2Q==
+X-Google-Smtp-Source: ABdhPJyCyZ0vSGW4JGdt2ZICxWJolGqJoTUs2Xsex37FHzRjQDq69CPzDQ0VD+viKpSX20ekbsJW0g==
+X-Received: by 2002:a7b:c1d7:: with SMTP id a23mr14645217wmj.149.1612178993254;
+        Mon, 01 Feb 2021 03:29:53 -0800 (PST)
+Received: from kheib-workstation.redhat.com ([77.137.152.100])
+        by smtp.gmail.com with ESMTPSA id e11sm26577826wrt.35.2021.02.01.03.29.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 03:29:52 -0800 (PST)
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: [PATCH for-rc] RDMA/siw: Fix calculation of tx_valid_cpus size
+Date:   Mon,  1 Feb 2021 13:29:22 +0200
+Message-Id: <20210201112922.141085-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210127150010.1876121-3-leon@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 05:00:02PM +0200, Leon Romanovsky wrote:
-> From: Parav Pandit <parav@nvidia.com>
->
-> Pkey table length for all the ports of the device is the same.
-> Currently get_ports_cap() reads and stores it for each port by querying
-> the device which reads more than just pkey table length.
->
-> For representor device ports which can be in range of hundreds, it
-> queries is for each such port and end up returning same value for all
-> the ports.
->
-> When in representor mode, modify QP accesses pkey port caps for a port
-> index that can be outside of the port_caps table.
->
-> Hence, simplify the logic to query the max pkey table length only once
-> during device initialization sequence.
->
-> Signed-off-by: Parav Pandit <parav@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/hw/mlx5/mad.c     |  2 +-
->  drivers/infiniband/hw/mlx5/main.c    | 24 ++++++------------------
->  drivers/infiniband/hw/mlx5/mlx5_ib.h |  2 +-
->  drivers/infiniband/hw/mlx5/qp.c      | 12 ++++--------
->  4 files changed, 12 insertions(+), 28 deletions(-)
->
-> diff --git a/drivers/infiniband/hw/mlx5/mad.c b/drivers/infiniband/hw/mlx5/mad.c
-> index e9d0a5269582..cdb47a00e516 100644
-> --- a/drivers/infiniband/hw/mlx5/mad.c
-> +++ b/drivers/infiniband/hw/mlx5/mad.c
-> @@ -549,7 +549,7 @@ int mlx5_query_mad_ifc_port(struct ib_device *ibdev, u8 port,
->  	props->port_cap_flags	= be32_to_cpup((__be32 *)(out_mad->data + 20));
->  	props->gid_tbl_len	= out_mad->data[50];
->  	props->max_msg_sz	= 1 << MLX5_CAP_GEN(mdev, log_max_msg);
-> -	props->pkey_tbl_len	= dev->port_caps[port - 1].pkey_table_len;
-> +	props->pkey_tbl_len	= dev->pkey_table_len;
->  	props->bad_pkey_cntr	= be16_to_cpup((__be16 *)(out_mad->data + 46));
->  	props->qkey_viol_cntr	= be16_to_cpup((__be16 *)(out_mad->data + 48));
->  	props->active_width	= out_mad->data[31] & 0xf;
-> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-> index 979f58ed1de2..5765f30f1788 100644
-> --- a/drivers/infiniband/hw/mlx5/main.c
-> +++ b/drivers/infiniband/hw/mlx5/main.c
-> @@ -816,9 +816,7 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
->  	if (err)
->  		return err;
->
-> -	err = mlx5_query_max_pkeys(ibdev, &props->max_pkeys);
-> -	if (err)
-> -		return err;
-> +	props->max_pkeys = dev->pkey_table_len;
->
->  	err = mlx5_query_vendor_id(ibdev, &props->vendor_id);
->  	if (err)
-> @@ -2993,7 +2991,6 @@ static void get_ext_port_caps(struct mlx5_ib_dev *dev)
->
->  static int __get_port_caps(struct mlx5_ib_dev *dev, u8 port)
->  {
-> -	struct ib_device_attr *dprops = NULL;
->  	struct ib_port_attr *pprops = NULL;
->  	int err = -ENOMEM;
->
-> @@ -3001,16 +2998,6 @@ static int __get_port_caps(struct mlx5_ib_dev *dev, u8 port)
->  	if (!pprops)
->  		goto out;
->
-> -	dprops = kmalloc(sizeof(*dprops), GFP_KERNEL);
-> -	if (!dprops)
-> -		goto out;
-> -
-> -	err = mlx5_ib_query_device(&dev->ib_dev, dprops, NULL);
-> -	if (err) {
-> -		mlx5_ib_warn(dev, "query_device failed %d\n", err);
-> -		goto out;
-> -	}
-> -
->  	err = mlx5_ib_query_port(&dev->ib_dev, port, pprops);
->  	if (err) {
->  		mlx5_ib_warn(dev, "query_port %d failed %d\n",
-> @@ -3018,15 +3005,12 @@ static int __get_port_caps(struct mlx5_ib_dev *dev, u8 port)
->  		goto out;
->  	}
->
-> -	dev->port_caps[port - 1].pkey_table_len = dprops->max_pkeys;
->  	dev->port_caps[port - 1].gid_table_len = pprops->gid_tbl_len;
->  	mlx5_ib_dbg(dev, "port %d: pkey_table_len %d, gid_table_len %d\n",
-> -		    port, dprops->max_pkeys, pprops->gid_tbl_len);
-> +		    port, dev->pkey_table_len, pprops->gid_tbl_len);
->
->  out:
->  	kfree(pprops);
-> -	kfree(dprops);
-> -
->  	return err;
->  }
->
-> @@ -3993,6 +3977,10 @@ static int mlx5_ib_stage_init_init(struct mlx5_ib_dev *dev)
->  	if (err)
->  		goto err_mp;
->
-> +	err = mlx5_query_max_pkeys(&dev->ib_dev, &dev->pkey_table_len);
-> +	if (err)
-> +		goto err_mp;
-> +
->  	if (mlx5_use_mad_ifc(dev))
->  		get_ext_port_caps(dev);
->
-> diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-> index 39ba8e1e9fee..c0c5e0043b3e 100644
-> --- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-> +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-> @@ -1035,7 +1035,6 @@ struct mlx5_var_table {
->
->  struct mlx5_port_caps {
->  	int gid_table_len;
-> -	int pkey_table_len;
->  	bool has_smi;
->  	u8 ext_port_cap;
->  };
-> @@ -1096,6 +1095,7 @@ struct mlx5_ib_dev {
->
->  	struct xarray sig_mrs;
->  	struct mlx5_port_caps port_caps[MLX5_MAX_PORTS];
-> +	u16 pkey_table_len;
->  };
->
->  static inline struct mlx5_ib_cq *to_mibcq(struct mlx5_core_cq *mcq)
-> diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-> index 5822655fe91e..b65720a05a18 100644
-> --- a/drivers/infiniband/hw/mlx5/qp.c
-> +++ b/drivers/infiniband/hw/mlx5/qp.c
-> @@ -4310,14 +4310,10 @@ int mlx5_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
->  		goto out;
->  	}
->
-> -	if (attr_mask & IB_QP_PKEY_INDEX) {
-> -		port = attr_mask & IB_QP_PORT ? attr->port_num : qp->port;
-> -		if (attr->pkey_index >=
-> -		    dev->port_caps[port - 1].pkey_table_len) {
-> -			mlx5_ib_dbg(dev, "invalid pkey index %d\n",
-> -				    attr->pkey_index);
-> -			goto out;
-> -		}
-> +	if ((attr_mask & IB_QP_PKEY_INDEX) &&
-> +	    attr->pkey_index >= dev->pkey_table_len) {
-> +		mlx5_ib_dbg(dev, "invalid pkey index %d\n", attr->pkey_index);
-> +		goto out;
->  	}
+The size of tx_valid_cpus was calculated under the assumption that the
+numa nodes identifiers are continuous, which is not the case in all
+archs as this could lead to the following panic when trying to access an
+invalid tx_valid_cpus index, avoid the following panic by using
+nr_node_ids instead of num_online_nodes() to allocate the tx_valid_cpus
+size.
 
-This hunk made "int port;" in mlx5_ib_modify_qp() obsolete.
+Kernel attempted to read user page (8) - exploit attempt? (uid: 0)
+BUG: Kernel NULL pointer dereference on read at 0x00000008
+Faulting instruction address: 0xc0080000081b4a90
+Oops: Kernel access of bad area, sig: 11 [#1]
+LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA PowerNV
+Modules linked in: siw(+) rfkill rpcrdma ib_isert iscsi_target_mod ib_iser libiscsi scsi_transport_iscsi ib_srpt target_core_mod ib_srp scsi_transport_srp ib_ipoib rdma_ucm sunrpc ib_umad rdma_cm ib_cm iw_cm i40iw ib_uverbs ib_core i40e ses enclosure scsi_transport_sas ipmi_powernv ibmpowernv at24 ofpart ipmi_devintf regmap_i2c ipmi_msghandler powernv_flash uio_pdrv_genirq uio mtd opal_prd zram ip_tables xfs libcrc32c sd_mod t10_pi ast i2c_algo_bit drm_vram_helper drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops cec drm_ttm_helper ttm drm vmx_crypto aacraid drm_panel_orientation_quirks dm_mod
+CPU: 40 PID: 3279 Comm: modprobe Tainted: G        W      X --------- ---  5.11.0-0.rc4.129.eln108.ppc64le #2
+NIP:  c0080000081b4a90 LR: c0080000081b4a2c CTR: c0000000007ce1c0
+REGS: c000000027fa77b0 TRAP: 0300   Tainted: G        W      X --------- ---   (5.11.0-0.rc4.129.eln108.ppc64le)
+MSR:  9000000002009033 <SF,HV,VEC,EE,ME,IR,DR,RI,LE>  CR: 44224882  XER: 00000000
+CFAR: c0000000007ce200 DAR: 0000000000000008 DSISR: 40000000 IRQMASK: 0
+GPR00: c0080000081b4a2c c000000027fa7a50 c0080000081c3900 0000000000000040
+GPR04: c000000002023080 c000000012e1c300 000020072ad70000 0000000000000001
+GPR08: c000000001726068 0000000000000008 0000000000000008 c0080000081b5758
+GPR12: c0000000007ce1c0 c0000007fffc3000 00000001590b1e40 0000000000000000
+GPR16: 0000000000000000 0000000000000001 000000011ad68fc8 00007fffcc09c5c8
+GPR20: 0000000000000008 0000000000000000 00000001590b2850 00000001590b1d30
+GPR24: 0000000000043d68 000000011ad67a80 000000011ad67a80 0000000000100000
+GPR28: c000000012e1c300 c0000000020271c8 0000000000000001 c0080000081bf608
+NIP [c0080000081b4a90] siw_init_cpulist+0x194/0x214 [siw]
+LR [c0080000081b4a2c] siw_init_cpulist+0x130/0x214 [siw]
+Call Trace:
+[c000000027fa7a50] [c0080000081b4a2c] siw_init_cpulist+0x130/0x214 [siw] (unreliable)
+[c000000027fa7a90] [c0080000081b4e68] siw_init_module+0x40/0x2a0 [siw]
+[c000000027fa7b30] [c0000000000124f4] do_one_initcall+0x84/0x2e0
+[c000000027fa7c00] [c000000000267ffc] do_init_module+0x7c/0x350
+[c000000027fa7c90] [c00000000026a180] __do_sys_init_module+0x210/0x250
+[c000000027fa7db0] [c0000000000387e4] system_call_exception+0x134/0x230
+[c000000027fa7e10] [c00000000000d660] system_call_common+0xf0/0x27c
+Instruction dump:
+40810044 3d420000 e8bf0000 e88a82d0 3d420000 e90a82c8 792a1f24 7cc4302a
+7d2642aa 79291f24 7d25482a 7d295214 <7d4048a8> 7d4a3b78 7d4049ad 40c2fff4
+---[ end trace 813d4c362755dcfc ]---
 
-Thanks
+Fixes: bdcf26bf9b3a ("rdma/siw: network and RDMA core interface")
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+---
+ drivers/infiniband/sw/siw/siw_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
->  	if (attr_mask & IB_QP_MAX_QP_RD_ATOMIC &&
-> --
-> 2.29.2
->
+diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
+index ee95cf29179d..41c46dfaebf6 100644
+--- a/drivers/infiniband/sw/siw/siw_main.c
++++ b/drivers/infiniband/sw/siw/siw_main.c
+@@ -135,7 +135,7 @@ static struct {
+ 
+ static int siw_init_cpulist(void)
+ {
+-	int i, num_nodes = num_possible_nodes();
++	int i, num_nodes = nr_node_ids;
+ 
+ 	memset(siw_tx_thread, 0, sizeof(siw_tx_thread));
+ 
+-- 
+2.26.2
+
