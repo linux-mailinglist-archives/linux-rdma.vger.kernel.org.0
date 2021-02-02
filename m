@@ -2,127 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B03E30C23C
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Feb 2021 15:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 953A130C390
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Feb 2021 16:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232802AbhBBOpa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Feb 2021 09:45:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234431AbhBBOn3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:43:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C38A864F49;
-        Tue,  2 Feb 2021 14:42:48 +0000 (UTC)
-Subject: [PATCH v1] xprtrdma: Simplify rpcrdma_convert_kvec() and frwr_map()
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     anna.schumaker@netapp.com
-Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Date:   Tue, 02 Feb 2021 09:42:47 -0500
-Message-ID: <161227696787.3689758.305854118266206775.stgit@manet.1015granger.net>
-User-Agent: StGit/0.23-29-ga622f1
+        id S232759AbhBBPWl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Feb 2021 10:22:41 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12978 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234816AbhBBPWB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Feb 2021 10:22:01 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60196dec0001>; Tue, 02 Feb 2021 07:21:16 -0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Feb
+ 2021 15:21:16 +0000
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Feb
+ 2021 15:21:14 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.109)
+ by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 2 Feb 2021 15:21:13 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Imr8l03ETBN/x4qPi2fl+uO0CIOMt/e6n8Myt5wscrAWs3sDf8/whEJ+/ROifIQ3oiYmuJEaecUNwfiBG1EH6lGoOEkK7QNh+dxARxjjBrjdSGbqknu+1HIT68gO1MC779ilpCptm7Kg/RFxYArAgTVyxtYVMhG+cu/OhEckEMu/3oQOQwlHkLnpYFEkzZ3Ypr0k6B+aHbb6eyM/X68xAi9h9a6nYlQef0iXB+2T+r1DeXNIuXH7XC9glzmRVQRutzdK4ammIGMPpkZsugdAbs6YClzO5YP6tc3pTqA5Q9VpPlH3PWdrhXb+CG/ZMPsa/ucUKiIhwDTRYYJzNqCmMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Et2Gr31MBoQ7d2Nf3+cdQcXOU+/1zCpWMIdjhCH3LwA=;
+ b=TSwz3AxVBSYEVUjuTXmLpiqphM/wv+bV8H/Oou7lbVBGXhTpl1hmH0D+ZRRpelC7lxexR3jOAQf5T/jd7Wej4ODFHcxfN4ifp7zw0DtNGhy1xe0n1I3hOcnQTzeXGMVX6cuI5AkBMnB8JW4DNEYopUQ2WMyxGP38vP7mlq0usTIQkfW+sbCPzi+w+tzVwPlXj3rhEkzjskotjHtq1nLXRXw9mQbogj1w6mI4HqCdlv1pRk0nWbJJvkSKt8lVxO1a1h0HcoyUSaBIqEkHM1dv41NSBr87SHBOBk3pFrjUQt2SfTumkxOJDK2PgAjYFzd0Hpf17xcBpMj9+y9BoILaBg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1516.namprd12.prod.outlook.com (2603:10b6:4:5::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3805.16; Tue, 2 Feb 2021 15:21:10 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3805.025; Tue, 2 Feb 2021
+ 15:21:10 +0000
+Date:   Tue, 2 Feb 2021 11:21:09 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Parav Pandit <parav@nvidia.com>, <linux-rdma@vger.kernel.org>,
+        Mark Bloch <markb@mellanox.com>
+Subject: Re: [PATCH rdma-next 07/10] IB/mlx5: Return appropriate error code
+ instead of ENOMEM
+Message-ID: <20210202152109.GA617190@nvidia.com>
+References: <20210127150010.1876121-1-leon@kernel.org>
+ <20210127150010.1876121-8-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210127150010.1876121-8-leon@kernel.org>
+X-ClientProxiedBy: MN2PR16CA0007.namprd16.prod.outlook.com
+ (2603:10b6:208:134::20) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR16CA0007.namprd16.prod.outlook.com (2603:10b6:208:134::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend Transport; Tue, 2 Feb 2021 15:21:10 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l6xUL-002aZk-CN; Tue, 02 Feb 2021 11:21:09 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612279276; bh=Et2Gr31MBoQ7d2Nf3+cdQcXOU+/1zCpWMIdjhCH3LwA=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=nAXJxr2AxvPAEjM/SuHCCZg5KTS5+DLpL83pFrmv3MM+sbd2jI5sq2G3EmWi1Qcf2
+         hF9roy8bQbwTSml0kn4oAx5+Ww8XISj9Lty10ZOEkE3vnXQYvmEzS0S2iD1n4KUIwH
+         I5UjrPAjWonMOWf48/LKr9q1s2o06DRTenFvAsFi6YtogQNg7wolByqdSckzJARl8W
+         mbq4ZDCojP79m3mgkkQ15waHLxZIVrC+6OPKlFXLujQsSIOvFJCNIYoJ9QQqWfb0L1
+         TojD0vPJwmBsFLE+Ibg2gtKbrb/31KwpDZXDVTlpDo3MWtYAcynMZyNp/wZnf2MoRg
+         YKllGGWbM1CCw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Clean up.
+On Wed, Jan 27, 2021 at 05:00:07PM +0200, Leon Romanovsky wrote:
+> From: Parav Pandit <parav@nvidia.com>
+> 
+> When mlx5_ib_stage_init_init() fails, return the error code related to
+> failure instead of -ENOMEM.
+> 
+> Fixes: 16c1975f1032 ("IB/mlx5: Create profile infrastructure to add and remove stages")
+> Signed-off-by: Parav Pandit <parav@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+>  drivers/infiniband/hw/mlx5/main.c | 3 +--
+>  drivers/infiniband/hw/mlx5/odp.c  | 4 ----
+>  2 files changed, 1 insertion(+), 6 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+> index ad7bb37e501d..9e8b4d591138 100644
+> +++ b/drivers/infiniband/hw/mlx5/main.c
+> @@ -3952,8 +3952,7 @@ static int mlx5_ib_stage_init_init(struct mlx5_ib_dev *dev)
+> 
+>  err_mp:
+>  	mlx5_ib_cleanup_multiport_master(dev);
+> -
+> -	return -ENOMEM;
+> +	return err;
+>  }
+> 
+>  static int mlx5_ib_enable_driver(struct ib_device *dev)
+> diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
+> index f4b82daf1e22..a1be8fb2800e 100644
+> +++ b/drivers/infiniband/hw/mlx5/odp.c
+> @@ -484,10 +484,6 @@ static struct mlx5_ib_mr *implicit_get_child_mr(struct mlx5_ib_mr *imr,
+>  	}
+> 
+>  	xa_lock(&imr->implicit_children);
+> -	/*
+> -	 * Once the store to either xarray completes any error unwind has to
+> -	 * use synchronize_srcu(). Avoid this with xa_reserve()
+> -	 */
 
-Support for FMR was removed by commit ba69cd122ece ("xprtrdma:
-Remove support for FMR memory registration") [Dec 2018]. That means
-the buffer-splitting behavior of rpcrdma_convert_kvec(), added by
-commit 821c791a0bde ("xprtrdma: Segment head and tail XDR buffers
-on page boundaries") [Mar 2016], is no longer necessary. FRWR
-memory registration handles this case with aplomb.
+It is not wrong to remove this comment, but why is it in this patch?
 
-A related simplification removes an extra conditional branch from
-the SGL set-up loop in frwr_map(): Instead of using either
-sg_set_page() or sg_set_buf(), initialize the mr_page field properly
-when rpcrdma_convert_kvec() converts the kvec to an SGL entry.
-frwr_map() can then invoke sg_set_page() unconditionally.
-
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- net/sunrpc/xprtrdma/frwr_ops.c  |   10 ++--------
- net/sunrpc/xprtrdma/rpc_rdma.c  |   21 +++++----------------
- net/sunrpc/xprtrdma/xprt_rdma.h |    2 +-
- 3 files changed, 8 insertions(+), 25 deletions(-)
-
-diff --git a/net/sunrpc/xprtrdma/frwr_ops.c b/net/sunrpc/xprtrdma/frwr_ops.c
-index baca49fe83af..5eb044a5f0be 100644
---- a/net/sunrpc/xprtrdma/frwr_ops.c
-+++ b/net/sunrpc/xprtrdma/frwr_ops.c
-@@ -306,14 +306,8 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt *r_xprt,
- 	if (nsegs > ep->re_max_fr_depth)
- 		nsegs = ep->re_max_fr_depth;
- 	for (i = 0; i < nsegs;) {
--		if (seg->mr_page)
--			sg_set_page(&mr->mr_sg[i],
--				    seg->mr_page,
--				    seg->mr_len,
--				    offset_in_page(seg->mr_offset));
--		else
--			sg_set_buf(&mr->mr_sg[i], seg->mr_offset,
--				   seg->mr_len);
-+		sg_set_page(&mr->mr_sg[i], seg->mr_page,
-+			    seg->mr_len, offset_in_page(seg->mr_offset));
- 
- 		++seg;
- 		++i;
-diff --git a/net/sunrpc/xprtrdma/rpc_rdma.c b/net/sunrpc/xprtrdma/rpc_rdma.c
-index 8f5d0cb68360..529adb6ad4db 100644
---- a/net/sunrpc/xprtrdma/rpc_rdma.c
-+++ b/net/sunrpc/xprtrdma/rpc_rdma.c
-@@ -204,9 +204,7 @@ rpcrdma_alloc_sparse_pages(struct xdr_buf *buf)
- 	return 0;
- }
- 
--/* Split @vec on page boundaries into SGEs. FMR registers pages, not
-- * a byte range. Other modes coalesce these SGEs into a single MR
-- * when they can.
-+/* Convert @vec to a single SGL element.
-  *
-  * Returns pointer to next available SGE, and bumps the total number
-  * of SGEs consumed.
-@@ -215,21 +213,12 @@ static struct rpcrdma_mr_seg *
- rpcrdma_convert_kvec(struct kvec *vec, struct rpcrdma_mr_seg *seg,
- 		     unsigned int *n)
- {
--	u32 remaining, page_offset;
--	char *base;
--
--	base = vec->iov_base;
--	page_offset = offset_in_page(base);
--	remaining = vec->iov_len;
--	while (remaining) {
--		seg->mr_page = NULL;
--		seg->mr_offset = base;
--		seg->mr_len = min_t(u32, PAGE_SIZE - page_offset, remaining);
--		remaining -= seg->mr_len;
--		base += seg->mr_len;
-+	if (vec->iov_len) {
-+		seg->mr_page = virt_to_page(vec->iov_base);
-+		seg->mr_offset = vec->iov_base;
-+		seg->mr_len = vec->iov_len;
- 		++seg;
- 		++(*n);
--		page_offset = 0;
- 	}
- 	return seg;
- }
-diff --git a/net/sunrpc/xprtrdma/xprt_rdma.h b/net/sunrpc/xprtrdma/xprt_rdma.h
-index 94b28657aeeb..4a9fe6592795 100644
---- a/net/sunrpc/xprtrdma/xprt_rdma.h
-+++ b/net/sunrpc/xprtrdma/xprt_rdma.h
-@@ -285,7 +285,7 @@ enum {
- 
- struct rpcrdma_mr_seg {		/* chunk descriptors */
- 	u32		mr_len;		/* length of chunk or segment */
--	struct page	*mr_page;	/* owning page, if any */
-+	struct page	*mr_page;	/* underlying struct page */
- 	char		*mr_offset;	/* kva if no page, else offset */
- };
- 
-
-
+Jason
