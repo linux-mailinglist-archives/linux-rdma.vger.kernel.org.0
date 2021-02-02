@@ -2,170 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D7C30CEBB
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Feb 2021 23:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1877E30CFD1
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Feb 2021 00:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234174AbhBBWWx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Feb 2021 17:22:53 -0500
-Received: from p3plsmtpa08-06.prod.phx3.secureserver.net ([173.201.193.107]:55421
-        "EHLO p3plsmtpa08-06.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235330AbhBBWWU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Feb 2021 17:22:20 -0500
-Received: from [192.168.0.116] ([71.184.94.153])
-        by :SMTPAUTH: with ESMTPSA
-        id 743BldwjJyy0q743BlMOsL; Tue, 02 Feb 2021 15:21:34 -0700
-X-CMAE-Analysis: v=2.4 cv=AskrYMxP c=1 sm=1 tr=0 ts=6019d06e
- a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
- a=IkcTkHD0fZMA:10 a=SEc3moZ4AAAA:8 a=yPCof4ZbAAAA:8 a=YQJfPKivPy9WdbG4OTUA:9
- a=QEXdDO2ut3YA:10 a=5oRCH6oROnRZc2VpWJZ3:22
-X-SECURESERVER-ACCT: tom@talpey.com
-Subject: Re: [PATCH v1] xprtrdma: Simplify rpcrdma_convert_kvec() and
- frwr_map()
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     Anna Schumaker <anna.schumaker@netapp.com>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <161227696787.3689758.305854118266206775.stgit@manet.1015granger.net>
- <e53cc3c2-2209-5f35-c487-9e59b9b9e526@talpey.com>
- <B0EED542-086B-4E76-9348-FAB8EBA612AB@oracle.com>
- <23f6893c-de31-0382-78a4-c09b1ceb2787@talpey.com>
- <4A44C2FF-BFD6-423A-9FE5-F08CD2D75AA4@oracle.com>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <78cd75d4-6fee-3b93-fa13-b5360fe0d45c@talpey.com>
-Date:   Tue, 2 Feb 2021 17:21:34 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S233019AbhBBXTU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Feb 2021 18:19:20 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9465 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232665AbhBBXTS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Feb 2021 18:19:18 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6019ddce0000>; Tue, 02 Feb 2021 15:18:38 -0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Feb
+ 2021 23:18:37 +0000
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Feb
+ 2021 23:17:41 +0000
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.107)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 2 Feb 2021 23:17:41 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MK5n9Kc/MNx61brV6OiIR94ecRQlna5T7Df8Z8D2bOuYuRbO4OkIMNy6cbqfT3PVw7Hw5zcTBnN3wZXdzzV7pn9zfUlHnFWS/oHvJk7xpcOpt71a3IXh3NECUMdRzRnXwJCS5PhOOCuNRjrnq3qFcNtIoqfDZhycciMtsrQ+1TbGOa9hgieY9nsi58kMLnmSkgFoQNhHTy9rM33CCAv+fYhBrdmPMDwOlIL+6cuMHRlBVXncodkHWR+t2fT2juaW8OnA2pgKfu1lLNxV7Og3gjuawkRQsx3goFniyrvdRy+B+Tf0F63q0sWgUTLD6CeYQpI/zjhQxr0IF+/ZK6yptA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nNSD2yBNPfQJBoJyfwPF/8qqTnBVn2S/RZmD/ff2/zs=;
+ b=ndinTjvb5h6J256ys1pFHJ/8jqd+pYEYML6uoB4jRr2GiWe42xT3Xpn94iMy2GDcwta18NRTVsHmISfdx0kGqAO/NObnJkWOs/i4R/makKNNhYImYpLnqLXtPIGHAsybmT2omxJGTP4whN2Ub/o0QUlNBrPtZLZG1+41bpBESCzNLyxpAs51nE2ToPR/BAQJtQBey8k2vP225BJxRxO9gZt3SRVW9K6ZBz9vesM+h2FuSC/ZrLT5lVv/epb8SFg5CWktlJJi3Ct44F2kBEqe1Nmyj3GSDJ6mYam9d0SgiQW0Ou4Gm5luBgr3aTNb5ZWHusf/+RnGpO3xqIavOffVOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3594.namprd12.prod.outlook.com (2603:10b6:5:11f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.27; Tue, 2 Feb
+ 2021 23:17:39 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3805.025; Tue, 2 Feb 2021
+ 23:17:39 +0000
+Date:   Tue, 2 Feb 2021 19:17:37 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
+CC:     "Williams, Dan J" <dan.j.williams@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>
+Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
+ implement private channel OPs
+Message-ID: <20210202231737.GE4247@nvidia.com>
+References: <20210127121847.GK1053290@unreal>
+ <ea62658f01664a6ea9438631c9ddcb6e@intel.com>
+ <20210127231641.GS4147@nvidia.com> <20210128054133.GA1877006@unreal>
+ <d58f341898834170af1bfb6719e17956@intel.com>
+ <20210201191805.GO4247@nvidia.com>
+ <925c33a0b174464898c9fc5651b981ee@intel.com>
+ <CAPcyv4gbW-27ySTmxf97zzcoVA_myM8uLV=ziscMuSKGBz7dqg@mail.gmail.com>
+ <20210202171454.GX4247@nvidia.com>
+ <4720390ef608423dac481d813e8b8a62@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <4720390ef608423dac481d813e8b8a62@intel.com>
+X-ClientProxiedBy: BL1PR13CA0463.namprd13.prod.outlook.com
+ (2603:10b6:208:2c4::18) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <4A44C2FF-BFD6-423A-9FE5-F08CD2D75AA4@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfN9+PzjR6CL+Drphjp8J7QdTU70V8HVdCFkpEXOKa7ltbDLn4SDtdUuZhJ6tXB5JXJFKmRTL9GHTxqA3ogVvG69IVIDZYt/qxLZuuO7WVDHj8OvA2sFq
- zyfGTJgD/JiVXVHXh6qUHHuhw4gPT9UrbfxtZ22jzEjiqPZnrsitZndhWkg9aKK/ehqSi0nLHaFJ/k1mrZLzI1/S587MHFyNc4uuLY0j1GRTqVphkuMSOU9H
- +yM49Wyu93Yjeqy16J6r2pi90K0G+OomOPEp6dSvR+YXf2CjGVU6cEIs7UpsbsBvG5sG9oD34heqWOX7ORTr9Q==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0463.namprd13.prod.outlook.com (2603:10b6:208:2c4::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend Transport; Tue, 2 Feb 2021 23:17:38 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l74vR-002mQG-BW; Tue, 02 Feb 2021 19:17:37 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612307918; bh=nNSD2yBNPfQJBoJyfwPF/8qqTnBVn2S/RZmD/ff2/zs=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=nT8BVt2bDy8FWO1PsesEUf03m+KfB9Cm7ARLw1Ts2WNSFH3qYLMIXRujoJtYQorOn
+         b3tCnHugOlplh074Ldy8ts31EtSNIME3oV2Wd8OfxnmFvcwLH6sAHaTmVbBfWyQ8ur
+         9PiYcY4gOmbb4IpRsV6TtMasBhNdb2F4B+MfiZ3wn4a7f/KS+nCnGpTISr0qJxzjSg
+         H/ckSkKkJ/CwOfQcj5ZT/lPmKyzi1VP/C4wPV63QPDsKt8Ky+wsNeaUpLUKlhRsVCM
+         dZG/Y8zdm4XAIuzRea7qjNp/RGnt6r8hivTAHhUeGWmaIEaY2GqsM9I8ccmMgig+68
+         okR1fW1QF8emA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/2/2021 4:55 PM, Chuck Lever wrote:
-> 
-> 
->> On Feb 2, 2021, at 4:50 PM, Tom Talpey <tom@talpey.com> wrote:
->>
->> On 2/2/2021 2:20 PM, Chuck Lever wrote:
->>>> On Feb 2, 2021, at 2:18 PM, Tom Talpey <tom@talpey.com> wrote:
->>>>
->>>> What's not to like about a log that uses the words "with aplomb"? :)
->>>>
->>>> Minor related comment/question below.
->>>>
->>>> On 2/2/2021 9:42 AM, Chuck Lever wrote:
->>>>> Clean up.
->>>>> Support for FMR was removed by commit ba69cd122ece ("xprtrdma:
->>>>> Remove support for FMR memory registration") [Dec 2018]. That means
->>>>> the buffer-splitting behavior of rpcrdma_convert_kvec(), added by
->>>>> commit 821c791a0bde ("xprtrdma: Segment head and tail XDR buffers
->>>>> on page boundaries") [Mar 2016], is no longer necessary. FRWR
->>>>> memory registration handles this case with aplomb.
->>>>> A related simplification removes an extra conditional branch from
->>>>> the SGL set-up loop in frwr_map(): Instead of using either
->>>>> sg_set_page() or sg_set_buf(), initialize the mr_page field properly
->>>>> when rpcrdma_convert_kvec() converts the kvec to an SGL entry.
->>>>> frwr_map() can then invoke sg_set_page() unconditionally.
->>>>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
->>>>> ---
->>>>>   net/sunrpc/xprtrdma/frwr_ops.c  |   10 ++--------
->>>>>   net/sunrpc/xprtrdma/rpc_rdma.c  |   21 +++++----------------
->>>>>   net/sunrpc/xprtrdma/xprt_rdma.h |    2 +-
->>>>>   3 files changed, 8 insertions(+), 25 deletions(-)
->>>>> diff --git a/net/sunrpc/xprtrdma/frwr_ops.c b/net/sunrpc/xprtrdma/frwr_ops.c
->>>>> index baca49fe83af..5eb044a5f0be 100644
->>>>> --- a/net/sunrpc/xprtrdma/frwr_ops.c
->>>>> +++ b/net/sunrpc/xprtrdma/frwr_ops.c
->>>>> @@ -306,14 +306,8 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt *r_xprt,
->>>>>   	if (nsegs > ep->re_max_fr_depth)
->>>>>   		nsegs = ep->re_max_fr_depth;
->>>>>   	for (i = 0; i < nsegs;) {
->>>>> -		if (seg->mr_page)
->>>>> -			sg_set_page(&mr->mr_sg[i],
->>>>> -				    seg->mr_page,
->>>>> -				    seg->mr_len,
->>>>> -				    offset_in_page(seg->mr_offset));
->>>>> -		else
->>>>> -			sg_set_buf(&mr->mr_sg[i], seg->mr_offset,
->>>>> -				   seg->mr_len);
->>>>> +		sg_set_page(&mr->mr_sg[i], seg->mr_page,
->>>>> +			    seg->mr_len, offset_in_page(seg->mr_offset));
->>>>>     		++seg;
->>>>>   		++i;
->>>>> diff --git a/net/sunrpc/xprtrdma/rpc_rdma.c b/net/sunrpc/xprtrdma/rpc_rdma.c
->>>>> index 8f5d0cb68360..529adb6ad4db 100644
->>>>> --- a/net/sunrpc/xprtrdma/rpc_rdma.c
->>>>> +++ b/net/sunrpc/xprtrdma/rpc_rdma.c
->>>>> @@ -204,9 +204,7 @@ rpcrdma_alloc_sparse_pages(struct xdr_buf *buf)
->>>>>   	return 0;
->>>>>   }
->>>>>   -/* Split @vec on page boundaries into SGEs. FMR registers pages, not
->>>>> - * a byte range. Other modes coalesce these SGEs into a single MR
->>>>> - * when they can.
->>>>> +/* Convert @vec to a single SGL element.
->>>>>    *
->>>>>    * Returns pointer to next available SGE, and bumps the total number
->>>>>    * of SGEs consumed.
->>>>> @@ -215,21 +213,12 @@ static struct rpcrdma_mr_seg *
->>>>>   rpcrdma_convert_kvec(struct kvec *vec, struct rpcrdma_mr_seg *seg,
->>>>>   		     unsigned int *n)
->>>>>   {
->>>>> -	u32 remaining, page_offset;
->>>>> -	char *base;
->>>>> -
->>>>> -	base = vec->iov_base;
->>>>> -	page_offset = offset_in_page(base);
->>>>> -	remaining = vec->iov_len;
->>>>> -	while (remaining) {
->>>>> -		seg->mr_page = NULL;
->>>>> -		seg->mr_offset = base;
->>>>> -		seg->mr_len = min_t(u32, PAGE_SIZE - page_offset, remaining);
->>>>> -		remaining -= seg->mr_len;
->>>>> -		base += seg->mr_len;
->>>>> +	if (vec->iov_len) {
->>>>> +		seg->mr_page = virt_to_page(vec->iov_base);
->>>>> +		seg->mr_offset = vec->iov_base;
->>>>> +		seg->mr_len = vec->iov_len;
->>>>>   		++seg;
->>>>>   		++(*n);
->>>>> -		page_offset = 0;
->>>>>   	}
->>>>>   	return seg;
->>>>>   }
->>>>> diff --git a/net/sunrpc/xprtrdma/xprt_rdma.h b/net/sunrpc/xprtrdma/xprt_rdma.h
->>>>> index 94b28657aeeb..4a9fe6592795 100644
->>>>> --- a/net/sunrpc/xprtrdma/xprt_rdma.h
->>>>> +++ b/net/sunrpc/xprtrdma/xprt_rdma.h
->>>>> @@ -285,7 +285,7 @@ enum {
->>>>>     struct rpcrdma_mr_seg {		/* chunk descriptors */
->>>>>   	u32		mr_len;		/* length of chunk or segment */
->>>>> -	struct page	*mr_page;	/* owning page, if any */
->>>>> +	struct page	*mr_page;	/* underlying struct page */
->>>>>   	char		*mr_offset;	/* kva if no page, else offset */
->>>>
->>>> Is this comment ("kva if no page") actually correct? The hunk just
->>>> above is an example of a case where mr_page is set, yet mr_offset
->>>> is an iov_base. Is iov_base not a kva?
->>> Ah, well the "if no page" part is now obsolete.
->>> I suppose it should be set to "offset_in_page(vec->iov_base)" ?
->>
->> Seems like it, yes. Assuming that only the first element in the sgl
->> has a possibly non-zero offset ("FBO"). All others must be zero for
->> the FRMR.
->>
->> Is it guaranteed that each kvec is at most one physical page? If not,
->> then the length may span into a random physical page, that was not
->> necessarily contiguous in the original KVA-addressed buffer.
-> 
-> IIUC kmalloc'd buffers are backed by physically contiguous pages.
+On Tue, Feb 02, 2021 at 07:42:11PM +0000, Saleem, Shiraz wrote:
 
-Indeed yes, kmalloc is heroic. If the kvec's are based on kmalloc'd
-buffers it's good for any iov_len.
+> > > Only loosely following the arguments here, but one of the requirements
+> > > of the driver-op scheme is that the notifying agent needs to know the
+> > > target device. With the notifier-chain approach the target device
+> > > becomes anonymous to the notifier agent.
+> > 
+> > Yes, and you need to have an aux device in the first place. The netdev side has
+> > neither of this things. 
+> 
+> But we do. The ice PCI driver is thing spawning the aux device. And
+> we are trying to do something directed here specifically between the
+> ice PCI driver and the irdma aux driver.  Seems the notifier chain
+> approach, from the comment above, is less directed and when you want
+> to broadcast events from core driver to multiple registered
+> subscribers.
 
-Tom.
+Yes, generally for good design the net and rdma drivers should be
+peers, using similar interfaces, otherwise there will be trouble
+answering the question what each peice of code is for, and if a net
+change breaks rdma land.
+
+> > I think it would be a bit odd to have extensive callbacks that
+> > are for RDMA only, that suggests something in the core API is not general enough.
+> 
+> Yes there are some domain specific ops. But it is within the
+> boundary of how the aux bus should be used no?
+
+Sure is, but I'm not sure it is a great design of a driver.
+
+In the end I don't care alot about which thing you pick, so long as
+the peer layer is fused with aux bus and there isn't a 2nd
+registration layer for devices.
+
+Jason
