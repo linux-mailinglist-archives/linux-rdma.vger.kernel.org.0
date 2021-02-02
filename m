@@ -2,270 +2,165 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD2430C7AE
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Feb 2021 18:29:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE1630C90A
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Feb 2021 19:10:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237445AbhBBR1x (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Feb 2021 12:27:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45110 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233758AbhBBRZu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:25:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 525F464F86;
-        Tue,  2 Feb 2021 17:25:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612286710;
-        bh=WQY5AvDumycq/ElML3+ROe/hqNmEzEwK8b3q6Dbry9k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=fYcazlak18I761FxGJzqUtfmUf+KiFIKU/JkEU+oOKEKxaK8RkKjKLXxb7JwdobpM
-         NEC4q0d69E7ZIG3YIwDon/dNbdbxbcPj8VxjyT6eNi2KQGBfIhBJjyuFIASXX3zjgB
-         v6FuBy5/ogyiuuyKh5Q94LECgwLZL8XeZiOc3xXMPNnN0JyuaGuCBMcUIRcKZZDDTS
-         ai5j50f1vO6pGSB9xsAVxp5ScPGqpH+re2MtDluvKgRzKi+x0SBJh7pVPGANCl6c5s
-         GTl5sGkHKVQss9JDgIjpTFBjblHUX3CUelFdZSqRVX8cKIP5SrqZsI7m75kuCsV13l
-         o+ALF4cGwk+PA==
-Date:   Tue, 2 Feb 2021 11:25:08 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH mlx5-next v5 3/4] net/mlx5: Dynamically assign MSI-X
- vectors count
-Message-ID: <20210202172508.GA113855@bjorn-Precision-5520>
+        id S238303AbhBBSHy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Feb 2021 13:07:54 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2633 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237338AbhBBSGf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Feb 2021 13:06:35 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601994810000>; Tue, 02 Feb 2021 10:05:53 -0800
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Feb
+ 2021 18:05:52 +0000
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Feb
+ 2021 18:05:50 +0000
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.58) by
+ HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 2 Feb 2021 18:05:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DI4YD3BOe2xgpJPmoEOojgJxO37ikIA/xJ6BFckIfdTP430eUR6x3uZCvNRKAsf9vQd3lb+NB6qIVGwe2FjaHu+KwaBpONWcUC5v8eKXBG/BJYPQCLbi5382iNrpxFrq9R4kcT0DtDRMflR5bjL6ADT2zF84rbBftIWnnjeReLEHF7pl55FA8wcgg+jkkcQWNxvp4XMSC4XRHyVZiLVkGpeK/Z6VdTY8INt/qrFAWOAU1vtouEuq5vNfLdH+lkExiT78Ez1i7NIccRPNL9EvzQ3y0hhid8Ko4RgcW7gsuRiXl6aa2+Q3R6qsR5aPPsUVC8q0SrHt6ywxd9+OjP30rg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GkcilBugdo0HjidB5yEsAMCxZBqAHO+6ag04nYzTOSI=;
+ b=P9O5rwMl/MtYISVPLr6+lTnP3tQb8tC94YjOi5btkmMIxeSzZKqVtWWml/zy7Vs9rzANrEHQbE1yn41CQ/FjUMUxjQnsVijj9e1mgFXR2tlSk6mz3UDayHVeC1n22qJ9VVuaCq92x59y4exH6GNXl0lXkGGbJvtbSW639AKeg95Dw2UASQ8qP8K1UJ3Xd4BHEjMOnJBfgtqLlt9kXxvbbb4gGx5j0zujNhni9ZEvVQMfpNvbvCRsCrqflGVKUg+zads20OrmucA0z/cxEm1fJgyQ0inUXPgITvLAfJBuaIBfxsZHmPx89xpuIKBDZ3dJRdBPeoO4NOweQPHblnuFMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com (2603:10b6:a03:20a::20)
+ by BY5PR12MB4228.namprd12.prod.outlook.com (2603:10b6:a03:20b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Tue, 2 Feb
+ 2021 18:05:48 +0000
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::f9f4:8fdd:8e2a:67a4]) by BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::f9f4:8fdd:8e2a:67a4%3]) with mapi id 15.20.3805.026; Tue, 2 Feb 2021
+ 18:05:48 +0000
+From:   Parav Pandit <parav@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH rdma-next 05/10] RDMA/core: Introduce and use API to read
+ port immutable data
+Thread-Topic: [PATCH rdma-next 05/10] RDMA/core: Introduce and use API to read
+ port immutable data
+Thread-Index: AQHW9L01UOc+cxuk00aRHMnJqKNw26pFHWkAgAAFgIA=
+Date:   Tue, 2 Feb 2021 18:05:48 +0000
+Message-ID: <BY5PR12MB432200DF13C2C7E2F62E947CDCB59@BY5PR12MB4322.namprd12.prod.outlook.com>
+References: <20210127150010.1876121-1-leon@kernel.org>
+ <20210127150010.1876121-6-leon@kernel.org>
+ <20210202165000.GA621786@nvidia.com>
+In-Reply-To: <20210202165000.GA621786@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [122.167.131.74]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 088bc66b-f299-4483-9523-08d8c7a52b37
+x-ms-traffictypediagnostic: BY5PR12MB4228:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR12MB4228E741E87F815B7A0FB86CDCB59@BY5PR12MB4228.namprd12.prod.outlook.com>
+x-header: ProcessedBy-CMR-outbound
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: W7zjjhe+apwWvZ8bY2gbHEUQK+G+oxQxMgSmy5DOL+T98nWXtbW5T81L5mPInTxig0Hch5EH0HQDwXOG2dfGXClaqU53iXVPcQ294k0+Mtn9XmlPX37e0riw6Cx2LU8GKBiXdYUEAD4LtNjOIMmfb10lLTMrUtV286BZFQK0pF7A2RoKgFhY9fecoAPb0JXE9Yh5w9n72JQsU6H2C3MIBwWuVmAcIglEJBhwnWGughFSKihUJTAjZew+zd9J+rONFs/AE0tDie1WPRMPsAOhKS5Caj6X5TlDSj7WwSFnmfBg2ES87pZ7NFb/oLJE+LjeqtiAgY9VydwmAhEclzUndkssBFm1jTfciDyptuaSrAbj26136Cs38s+hRzu4080306Y8loHh1YKoCbzsqtwhXpuwItVTdwB+w5jOdAxxoPMp+eKpb8UXE2LsU1rTgh6Br5XZiK6o2EZpRfdX0aQUb2UXp2aa49UglE1EstvGDPoHNAl9j8wGqLKRrMFlGHoXXsoAyn+zGsBYW1w3duK2zA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4322.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(396003)(39860400002)(366004)(52536014)(6506007)(26005)(8936002)(66556008)(7696005)(86362001)(4326008)(186003)(2906002)(5660300002)(64756008)(66476007)(71200400001)(8676002)(9686003)(66946007)(76116006)(110136005)(55016002)(33656002)(54906003)(4744005)(478600001)(316002)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?93CgIxIyZKsbqcmBlRcePPKIN2Cn2v91SkhsUC1Z6+hdg6SToxMRaf4gdt5G?=
+ =?us-ascii?Q?a0ktnYd5bdnlP6puWPjY6saj7rOeITslPk03ojgn4h4mt2sdwYrs/2BAPRXC?=
+ =?us-ascii?Q?qx4IlcMDYJFftkTYs2vczCOwW1hBNkfA26FYwaQz7/NzeDGyAhSfZStpfg+t?=
+ =?us-ascii?Q?AbbTHplZpAuBuJ/Ja4RFcGFlxw9h55LJ1mzQ8J/FOvWlDbSRAW9UIfDGUsJJ?=
+ =?us-ascii?Q?wfO5C+HCrMUvQ7DaKfdvuZzncApdzJRka85ehT5p13jOCCumgNHPEnU2rbdA?=
+ =?us-ascii?Q?U2gZMUSGquhRFFcLU+vWb6Np/w+17Aa7R2yQJzih1q1N59/XJvju2zAGUX2U?=
+ =?us-ascii?Q?WtNhwaK+WCtckXMKYPIVd3ptbViKGjCc7EwRRmQ1WaGGA6UFXxrBDf7heOBz?=
+ =?us-ascii?Q?pUKloUKqqwVfWDv1DLMa/S8JjOMYbP+nrj93LL9MGLriG2y/vy11KodqtS4M?=
+ =?us-ascii?Q?OE0strIGa8dXc3wZkdslY8NHBik9VLDleXrDEkLl74//I12WYz0QVerACLkK?=
+ =?us-ascii?Q?4BIjD2pLw78SY+IkWdeyUyRGjXFY3/eefcHnLVVNBfDQxo95T0wsQIcLJoM1?=
+ =?us-ascii?Q?BhUnvPt22RgWPhBsOxSuiKgidc5T3qa6lPqR0Z5SriiBQmo+xUuCPeLCtkxK?=
+ =?us-ascii?Q?fPfd50oB8CXiDYMA/j1YQyoib5F5oDvm1zLxLvdAkEIHS84ldk6EPTckxMNp?=
+ =?us-ascii?Q?YPfT6wQiaU3bMZnMo7n4wWUxmIjt/7LJO84NkksHyLqoTHJhXzzirog14gMI?=
+ =?us-ascii?Q?bWU4uaZbo7NuUN7CYGYyUfcda98YbRdj/tXzeyUCopZ7XL2uLDCXi4ye6GA5?=
+ =?us-ascii?Q?J7ZFJR+YaBz0sz7nDtTl2g2XulsxcHIgUHiIGhOEde9JqY16V20NWPDxWSW8?=
+ =?us-ascii?Q?7Z0SvXxhAmtxqFLZfRh4nHyYBDAht7ZT42M6Y4Uu56vh0HFJnXOMTfhU0+Dr?=
+ =?us-ascii?Q?szkLFP27sIpFDiFgAR5iNMPOT7E9vGoX9byHQsu/RdTQvXhYL5VA/bm2haWS?=
+ =?us-ascii?Q?HSrfenkjN7Cqi4Nzg3AuTfyvRFKFuml2pQoaXxZxiNcqR+/f6KLh7nrVLvCc?=
+ =?us-ascii?Q?gOOynILS?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126085730.1165673-4-leon@kernel.org>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4322.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 088bc66b-f299-4483-9523-08d8c7a52b37
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Feb 2021 18:05:48.0643
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7iQEqiUWRD4xUNJ5v0RV4N95RLQgOSSpJIZ1EdjDcaXekx/trHJkpHrRXMAbWEV0cUqsQu2GBUfU5sIlqLI6/w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4228
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612289153; bh=GkcilBugdo0HjidB5yEsAMCxZBqAHO+6ag04nYzTOSI=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
+         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
+         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
+         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
+         x-ms-traffictypediagnostic:x-ms-exchange-transport-forked:
+         x-microsoft-antispam-prvs:x-header:x-ms-oob-tlc-oobclassifiers:
+         x-ms-exchange-senderadcheck:x-microsoft-antispam:
+         x-microsoft-antispam-message-info:x-forefront-antispam-report:
+         x-ms-exchange-antispam-messagedata:Content-Type:
+         Content-Transfer-Encoding:MIME-Version:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-originalarrivaltime:
+         X-MS-Exchange-CrossTenant-fromentityheader:
+         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+         X-MS-Exchange-CrossTenant-userprincipalname:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=G9oS1AQZ45/PUXWAeHSDCdG+ytekH35nRJ7Elue69/iSNR0wXQpuXvGdMN72GSTs3
+         QRc53KauDWfz9iEHO7mmYE0RaeiTFSmKhHIZ56ZKmnYDbOvqNHCSWdxkJ5+U2RRSyQ
+         AadkwJcZPEfHygZCtaU3X4gQJqNQiy9Ptdrrq3Js0suicH3T/O1x18/fcJwfjj/NEf
+         m+8rjYlxPDfPt1QDkiBRaBOga13deaZVbTDhi6d6YvxE2Pc3pDHXJXmyqMVbFOORS1
+         S3twQEfb+bGuE6Xcbk/eMwooHBymQ2P4S9NjnewWVXo4ejAItFAUcylrbX32djugHt
+         OnXgdho24awUw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 10:57:29AM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> The number of MSI-X vectors is PCI property visible through lspci, that
-> field is read-only and configured by the device. The static assignment
-> of an amount of MSI-X vectors doesn't allow utilize the newly created
-> VF because it is not known to the device the future load and configuration
-> where that VF will be used.
-> 
-> To overcome the inefficiency in the spread of such MSI-X vectors, we
-> allow the kernel to instruct the device with the needed number of such
-> vectors.
-> 
-> Such change immediately increases the amount of MSI-X vectors for the
-> system with @ VFs from 12 vectors per-VF, to be 32 vectors per-VF.
 
-Not knowing anything about mlx5, it looks like maybe this gets some
-parameters from firmware on the device, then changes the way MSI-X
-vectors are distributed among VFs?
 
-I don't understand the implications above about "static assignment"
-and "inefficiency in the spread."  I guess maybe this takes advantage
-of the fact that you know how many VFs are enabled, so if NumVFs is
-less that TotalVFs, you can assign more vectors to each VF?
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Tuesday, February 2, 2021 10:20 PM
+>=20
+> On Wed, Jan 27, 2021 at 05:00:05PM +0200, Leon Romanovsky wrote:
+> > + * ib_port_immutable_read() - Read rdma port's immutable data
+> > + * @dev - IB device
+> > + * @port - port number whose immutable data to read. It starts with
+> index 1 and
+> > + *         valid upto including rdma_end_port().
+> > + */
+> > +const struct ib_port_immutable*
+> > +ib_port_immutable_read(struct ib_device *dev, unsigned int port) {
+> > +	WARN_ON(!rdma_is_port_valid(dev, port));
+> > +	return &dev->port_data[port].immutable; }
+> > +EXPORT_SYMBOL(ib_port_immutable_read);
+>=20
+> Why add this function and only call it in one place?
+>=20
+A helper API from core helps
+(a) to cut down mlx5 ib per port data structures and code around it
+(b) it also avoids the need to maintain such driver internal data for large=
+ port count (which is not done today)
 
-If that's the case, spell it out a little bit.  The current text makes
-it sound like you discovered brand new MSI-X vectors somewhere,
-regardless of how many VFs are enabled, which doesn't sound right.
-
-> Before this patch:
-> [root@server ~]# lspci -vs 0000:08:00.2
-> 08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
-> ....
-> 	Capabilities: [9c] MSI-X: Enable- Count=12 Masked-
-> 
-> After this patch:
-> [root@server ~]# lspci -vs 0000:08:00.2
-> 08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
-> ....
-> 	Capabilities: [9c] MSI-X: Enable- Count=32 Masked-
-> 
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  .../net/ethernet/mellanox/mlx5/core/main.c    |  4 ++
->  .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  5 ++
->  .../net/ethernet/mellanox/mlx5/core/pci_irq.c | 72 +++++++++++++++++++
->  .../net/ethernet/mellanox/mlx5/core/sriov.c   | 13 +++-
->  4 files changed, 92 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> index ca6f2fc39ea0..79cfcc844156 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-> @@ -567,6 +567,10 @@ static int handle_hca_cap(struct mlx5_core_dev *dev, void *set_ctx)
->  	if (MLX5_CAP_GEN_MAX(dev, mkey_by_name))
->  		MLX5_SET(cmd_hca_cap, set_hca_cap, mkey_by_name, 1);
->  
-> +	if (MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix))
-> +		MLX5_SET(cmd_hca_cap, set_hca_cap, num_total_dynamic_vf_msix,
-> +			 MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix));
-> +
->  	return set_caps(dev, set_ctx, MLX5_SET_HCA_CAP_OP_MOD_GENERAL_DEVICE);
->  }
->  
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-> index 0a0302ce7144..5babb4434a87 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-> @@ -172,6 +172,11 @@ int mlx5_irq_attach_nb(struct mlx5_irq_table *irq_table, int vecidx,
->  		       struct notifier_block *nb);
->  int mlx5_irq_detach_nb(struct mlx5_irq_table *irq_table, int vecidx,
->  		       struct notifier_block *nb);
-> +
-> +int mlx5_set_msix_vec_count(struct mlx5_core_dev *dev, int devfn,
-> +			    int msix_vec_count);
-> +int mlx5_get_default_msix_vec_count(struct mlx5_core_dev *dev, int num_vfs);
-> +
->  struct cpumask *
->  mlx5_irq_get_affinity_mask(struct mlx5_irq_table *irq_table, int vecidx);
->  struct cpu_rmap *mlx5_irq_get_rmap(struct mlx5_irq_table *table);
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-> index 6fd974920394..2a35888fcff0 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-> @@ -55,6 +55,78 @@ static struct mlx5_irq *mlx5_irq_get(struct mlx5_core_dev *dev, int vecidx)
->  	return &irq_table->irq[vecidx];
->  }
->  
-> +/**
-> + * mlx5_get_default_msix_vec_count() - Get defaults of number of MSI-X vectors
-> + * to be set
-
-s/defaults of number of/default number of/
-s/to be set/to be assigned to each VF/ ?
-
-> + * @dev: PF to work on
-> + * @num_vfs: Number of VFs was asked when SR-IOV was enabled
-
-s/Number of VFs was asked when SR-IOV was enabled/Number of enabled VFs/ ?
-
-> + **/
-
-Documentation/doc-guide/kernel-doc.rst says kernel-doc comments end
-with just "*/" (not "**/").
-
-> +int mlx5_get_default_msix_vec_count(struct mlx5_core_dev *dev, int num_vfs)
-> +{
-> +	int num_vf_msix, min_msix, max_msix;
-> +
-> +	num_vf_msix = MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix);
-> +	if (!num_vf_msix)
-> +		return 0;
-> +
-> +	min_msix = MLX5_CAP_GEN(dev, min_dynamic_vf_msix_table_size);
-> +	max_msix = MLX5_CAP_GEN(dev, max_dynamic_vf_msix_table_size);
-> +
-> +	/* Limit maximum number of MSI-X to leave some of them free in the
-> +	 * pool and ready to be assigned by the users without need to resize
-> +	 * other Vfs.
-
-s/number of MSI-X/number of MSI-X vectors/
-s/Vfs/VFs/
-
-> +	 */
-> +	return max(min(num_vf_msix / num_vfs, max_msix / 2), min_msix);
-> +}
-> +
-> +/**
-> + * mlx5_set_msix_vec_count() - Set dynamically allocated MSI-X to the VF
-> + * @dev: PF to work on
-> + * @function_id: Internal PCI VF function id
-> + * @msix_vec_count: Number of MSI-X to set
-
-s/id/ID/
-s/Number of MSI-X/Number of MSI-X vectors/
-
-> + **/
-> +int mlx5_set_msix_vec_count(struct mlx5_core_dev *dev, int function_id,
-> +			    int msix_vec_count)
-> +{
-> +	int sz = MLX5_ST_SZ_BYTES(set_hca_cap_in);
-> +	int num_vf_msix, min_msix, max_msix;
-> +	void *hca_cap, *cap;
-> +	int ret;
-> +
-> +	num_vf_msix = MLX5_CAP_GEN_MAX(dev, num_total_dynamic_vf_msix);
-> +	if (!num_vf_msix)
-> +		return 0;
-> +
-> +	if (!MLX5_CAP_GEN(dev, vport_group_manager) || !mlx5_core_is_pf(dev))
-> +		return -EOPNOTSUPP;
-> +
-> +	min_msix = MLX5_CAP_GEN(dev, min_dynamic_vf_msix_table_size);
-> +	max_msix = MLX5_CAP_GEN(dev, max_dynamic_vf_msix_table_size);
-> +
-> +	if (msix_vec_count < min_msix)
-> +		return -EINVAL;
-> +
-> +	if (msix_vec_count > max_msix)
-> +		return -EOVERFLOW;
-> +
-> +	hca_cap = kzalloc(sz, GFP_KERNEL);
-> +	if (!hca_cap)
-> +		return -ENOMEM;
-> +
-> +	cap = MLX5_ADDR_OF(set_hca_cap_in, hca_cap, capability);
-> +	MLX5_SET(cmd_hca_cap, cap, dynamic_msix_table_size, msix_vec_count);
-> +
-> +	MLX5_SET(set_hca_cap_in, hca_cap, opcode, MLX5_CMD_OP_SET_HCA_CAP);
-> +	MLX5_SET(set_hca_cap_in, hca_cap, other_function, 1);
-> +	MLX5_SET(set_hca_cap_in, hca_cap, function_id, function_id);
-> +
-> +	MLX5_SET(set_hca_cap_in, hca_cap, op_mod,
-> +		 MLX5_SET_HCA_CAP_OP_MOD_GENERAL_DEVICE << 1);
-> +	ret = mlx5_cmd_exec_in(dev, set_hca_cap, hca_cap);
-> +	kfree(hca_cap);
-> +	return ret;
-> +}
-> +
->  int mlx5_irq_attach_nb(struct mlx5_irq_table *irq_table, int vecidx,
->  		       struct notifier_block *nb)
->  {
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sriov.c b/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-> index 3094d20297a9..f0ec86a1c8a6 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-> @@ -71,8 +71,7 @@ static int sriov_restore_guids(struct mlx5_core_dev *dev, int vf)
->  static int mlx5_device_enable_sriov(struct mlx5_core_dev *dev, int num_vfs)
->  {
->  	struct mlx5_core_sriov *sriov = &dev->priv.sriov;
-> -	int err;
-> -	int vf;
-> +	int err, vf, num_msix_count;
->  
->  	if (!MLX5_ESWITCH_MANAGER(dev))
->  		goto enable_vfs_hca;
-> @@ -85,12 +84,22 @@ static int mlx5_device_enable_sriov(struct mlx5_core_dev *dev, int num_vfs)
->  	}
->  
->  enable_vfs_hca:
-> +	num_msix_count = mlx5_get_default_msix_vec_count(dev, num_vfs);
->  	for (vf = 0; vf < num_vfs; vf++) {
->  		err = mlx5_core_enable_hca(dev, vf + 1);
->  		if (err) {
->  			mlx5_core_warn(dev, "failed to enable VF %d (%d)\n", vf, err);
->  			continue;
->  		}
-> +
-> +		err = mlx5_set_msix_vec_count(dev, vf + 1, num_msix_count);
-> +		if (err) {
-> +			mlx5_core_warn(dev,
-> +				       "failed to set MSI-X vector counts VF %d, err %d\n",
-> +				       vf, err);
-> +			continue;
-> +		}
-> +
->  		sriov->vfs_ctx[vf].enabled = 1;
->  		if (MLX5_CAP_GEN(dev, port_type) == MLX5_CAP_PORT_TYPE_IB) {
->  			err = sriov_restore_guids(dev, vf);
-> -- 
-> 2.29.2
-> 
+May be in future more drivers can use the same APIs.
