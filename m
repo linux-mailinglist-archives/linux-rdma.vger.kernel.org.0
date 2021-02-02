@@ -2,38 +2,29 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200FF30BF2D
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Feb 2021 14:20:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D69830BF7C
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Feb 2021 14:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbhBBNSV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Feb 2021 08:18:21 -0500
-Received: from mail-41103.protonmail.ch ([185.70.41.103]:31881 "EHLO
-        mail-41103.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232108AbhBBNR5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Feb 2021 08:17:57 -0500
-Received: from mail-02.mail-europe.com (mail-02.mail-europe.com [51.89.119.103])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        by mail-41103.protonmail.ch (Postfix) with ESMTPS id 85C682004C74;
-        Tue,  2 Feb 2021 13:17:14 +0000 (UTC)
-Authentication-Results: mail-41103.protonmail.ch;
-        dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="K7qCB1jw"
-Date:   Tue, 02 Feb 2021 13:13:06 +0000
+        id S232455AbhBBNcX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Feb 2021 08:32:23 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:50744 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232359AbhBBNbc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Feb 2021 08:31:32 -0500
+Date:   Tue, 02 Feb 2021 13:30:43 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1612271590; bh=wkrsDsmJrKMWDTAP0CgzaSOfN+12VWFr81Nb1Qb7W0A=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=K7qCB1jwBd70fF7fnDVz7zwMpJCi3aRlkq6AbbrG0dMIDUTBab250VWxXM7d/JBeC
-         imiSnG9/VbWmDCmxV4UOshgzGyFI06qGkOkjCPKDhepiMo/1oMQeS9oWgXTMs+qyXq
-         D2ICe8QN/OKumGGOm2iLXsg0gHJUVLLbKU7F0CCCuB34jgsQAHDShDBtHlNkHppNNn
-         JIKcB4hwUJDpwYyFakZ7zUnxsauJA8AMVC2iJMU7lT/KMC1WvYnzMj00ZtU0KrPxwN
-         jyS8F0rt7d/4XC1FKuoG9uDC1kT6Fi/OnhzOUUiUB32HwX6pgyjODc3AEFyO2DD82t
-         GQ5im5p3D47HQ==
-To:     Jakub Kicinski <kuba@kernel.org>
+        t=1612272649; bh=ZfF+yk2N+NpRKErjKX/1hJfnJ9+R0QZ7qi8wGDkxhLc=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=JC6ZE9YeQdNvI/FWAl8VlGARKHDd6WNRQLAfnfL4TVLDkLkoYE9K8UqDc4M7jBs9N
+         g4khZmUyNszCOHZYqaHjaU1RqnX9uCCZF0Y3556PymK+l2H37MIhyhkEFs7WCZtAvf
+         /Hl5Sa4CK7Wbq+vm2zPcTsYQ/N14xJc0SU2u3qE0h50tEDFvF3J9/2nvuOz0JBKGz6
+         xZAC2RaD1jhAkA2NyOJen4GjnhAl8X5d59limqowBlkzBLf50L8+Mf1dC1+8tMB+uu
+         4uMest71b8Svz4XnAVl5nW2/qzGmvnntUkLJptBBRNzv+DKBcOK9Yi+qsDxeW8DiCK
+         l/UcY02ewA5Bg==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
 From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        John Hubbard <jhubbard@nvidia.com>,
+Cc:     John Hubbard <jhubbard@nvidia.com>,
         David Rientjes <rientjes@google.com>,
         Yisen Zhuang <yisen.zhuang@huawei.com>,
         Salil Mehta <salil.mehta@huawei.com>,
@@ -51,14 +42,13 @@ Cc:     Alexander Lobakin <alobakin@pm.me>,
         Dexuan Cui <decui@microsoft.com>,
         Jakub Sitnicki <jakub@cloudflare.com>,
         Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
         linux-rdma@vger.kernel.org, linux-mm@kvack.org
 Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v3 net-next 0/5] net: consolidate page_is_pfmemalloc() usage
-Message-ID: <20210202131233.4180-1-alobakin@pm.me>
-In-Reply-To: <20210201171835.690558df@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20210131120844.7529-1-alobakin@pm.me> <20210201171835.690558df@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Subject: [PATCH RESEND v3 net-next 0/5] net: consolidate page_is_pfmemalloc() usage
+Message-ID: <20210202133030.5760-1-alobakin@pm.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -71,24 +61,61 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
-Date: Mon, 1 Feb 2021 17:18:35 -0800
+page_is_pfmemalloc() is used mostly by networking drivers to test
+if a page can be considered for reusing/recycling.
+It doesn't write anything to the struct page itself, so its sole
+argument can be constified, as well as the first argument of
+skb_propagate_pfmemalloc().
+In Page Pool core code, it can be simply inlined instead.
+Most of the callers from NIC drivers were just doppelgangers of
+the same condition tests. Derive them into a new common function
+do deduplicate the code.
 
-> On Sun, 31 Jan 2021 12:11:16 +0000 Alexander Lobakin wrote:
-> > page_is_pfmemalloc() is used mostly by networking drivers to test
-> > if a page can be considered for reusing/recycling.
-> > It doesn't write anything to the struct page itself, so its sole
-> > argument can be constified, as well as the first argument of
-> > skb_propagate_pfmemalloc().
-> > In Page Pool core code, it can be simply inlined instead.
-> > Most of the callers from NIC drivers were just doppelgangers of
-> > the same condition tests. Derive them into a new common function
-> > do deduplicate the code.
->=20
-> Please resend, this did not get into patchwork :/
+Resend of v3 [2]:
+ - it missed Patchwork and Netdev archives, probably due to server-side
+   issues.
 
-I suspected it would be so as I got reports about undelivered mails
-due to unavailability of vger.kernel.org for some reasons Will do.
+Since v2 [1]:
+ - use more intuitive name for the new inline function since there's
+   nothing "reserved" in remote pages (Jakub Kicinski, John Hubbard);
+ - fold likely() inside the helper itself to make driver code a bit
+   fancier (Jakub Kicinski);
+ - split function introduction and using into two separate commits;
+ - collect some more tags (Jesse Brandeburg, David Rientjes).
 
-Al
+Since v1 [0]:
+ - new: reduce code duplication by introducing a new common function
+   to test if a page can be reused/recycled (David Rientjes);
+ - collect autographs for Page Pool bits (Jesper Dangaard Brouer,
+   Ilias Apalodimas).
+
+[0] https://lore.kernel.org/netdev/20210125164612.243838-1-alobakin@pm.me
+[1] https://lore.kernel.org/netdev/20210127201031.98544-1-alobakin@pm.me
+[2] https://lore.kernel.org/lkml/20210131120844.7529-1-alobakin@pm.me
+
+Alexander Lobakin (5):
+  mm: constify page_is_pfmemalloc() argument
+  skbuff: constify skb_propagate_pfmemalloc() "page" argument
+  net: introduce common dev_page_is_reusable()
+  net: use the new dev_page_is_reusable() instead of private versions
+  net: page_pool: simplify page recycling condition tests
+
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   | 17 ++++++----------
+ drivers/net/ethernet/intel/fm10k/fm10k_main.c | 13 ++++--------
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 15 +-------------
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   | 15 +-------------
+ drivers/net/ethernet/intel/ice/ice_txrx.c     | 13 ++----------
+ drivers/net/ethernet/intel/igb/igb_main.c     |  9 ++-------
+ drivers/net/ethernet/intel/igc/igc_main.c     |  9 ++-------
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |  9 ++-------
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |  9 ++-------
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  7 +------
+ include/linux/mm.h                            |  2 +-
+ include/linux/skbuff.h                        | 20 +++++++++++++++++--
+ net/core/page_pool.c                          | 14 ++++---------
+ 13 files changed, 46 insertions(+), 106 deletions(-)
+
+--=20
+2.30.0
+
 
