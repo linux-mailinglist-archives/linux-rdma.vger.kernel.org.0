@@ -2,127 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5C130B46A
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Feb 2021 02:08:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A28130B492
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Feb 2021 02:19:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbhBBBHn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Feb 2021 20:07:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhBBBHm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Feb 2021 20:07:42 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5241CC061756
-        for <linux-rdma@vger.kernel.org>; Mon,  1 Feb 2021 17:07:02 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id s5so8190663edw.8
-        for <linux-rdma@vger.kernel.org>; Mon, 01 Feb 2021 17:07:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9O3/Y02mZhKbj+wuFTkx7iygdgd0EBlMv/0Y8SwCYcM=;
-        b=yDEZAxy5uZU3Zn2/yTYJIzBltBGwFyapg1Gz12Fc4WVPuvg3uAOSOgj8oJFIiE7TOq
-         dd8paqsGCEg7UO2JImRphebQPayU1P16KtMOfiDiWGNwCtYqKoiL/1yqUCdzX8bdCDFk
-         8j3Rab9h3njVuuTVlKDqAFO2jIrt4obtbLvVF6fsUjarUkWvugFT+fwUJVrsEGVi4YOV
-         1DWXIb2O33MM8PXZvdny4Q3hr9njQFUWkO5KGWeobOwrr5EfnK8jBcw5NhXaZ1L5LPi3
-         IyAazrzWz6X1n4dYwbRsXWISl5zgTVUUwXEBuCAOcuNMPikvIQ0Fz7Q/IqxMtNXInftz
-         ItlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9O3/Y02mZhKbj+wuFTkx7iygdgd0EBlMv/0Y8SwCYcM=;
-        b=pPq1FhEeqcg7laLB5ZPJzj4RYP5FLIwFhAGgHiSqvJ+EDtVcBCAr+gd2uEcaF1PyBU
-         xLSFOfi4ZoNxxrHsl8zCgIbqxxwbmYpebzKYAN1fIyYMlVWoD+lt001ZLO9x/rFcJrBE
-         gN4THiqa3yK1oR/9UBs1JtTYtaHPnwNatj61OozDbt3akxNxeG5mcome36ergsfp+FnG
-         WwSH1x5PS3HkLMgq5jIiRD0qRCHlNU67bZNHzEvipT6RrlwWpXqg41lPIT+PLSOdG3WN
-         62OTvHPEenWTmotflVajPZNRR3b+iubdAMeRfVNjhOKUnobnAmtWMDuGjMr2yAFq2TOE
-         D5iA==
-X-Gm-Message-State: AOAM532roK05Pupagv3ESe2tC04pW8QnzJUPM+ICg+NWvs5xhkmRzi94
-        DdoYX3fiX8Rrww8/vX3se0pPYwQE59ZsASLsi+1SAw==
-X-Google-Smtp-Source: ABdhPJxQEhSxdterZAsPu/4VOXgqxXAypFKYksNZcfO4OSdKFmAh67tkWxtNCMGghWQ3GZkeiHpDAcUlqttirzai6Z8=
-X-Received: by 2002:aa7:cd87:: with SMTP id x7mr22380537edv.210.1612228020945;
- Mon, 01 Feb 2021 17:07:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20210122234827.1353-8-shiraz.saleem@intel.com>
- <20210125184248.GS4147@nvidia.com> <99895f7c10a2473c84a105f46c7ef498@intel.com>
- <20210126005928.GF4147@nvidia.com> <031c2675aff248bd9c78fada059b5c02@intel.com>
- <20210127121847.GK1053290@unreal> <ea62658f01664a6ea9438631c9ddcb6e@intel.com>
- <20210127231641.GS4147@nvidia.com> <20210128054133.GA1877006@unreal>
- <d58f341898834170af1bfb6719e17956@intel.com> <20210201191805.GO4247@nvidia.com>
- <925c33a0b174464898c9fc5651b981ee@intel.com>
-In-Reply-To: <925c33a0b174464898c9fc5651b981ee@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 1 Feb 2021 17:06:58 -0800
-Message-ID: <CAPcyv4gbW-27ySTmxf97zzcoVA_myM8uLV=ziscMuSKGBz7dqg@mail.gmail.com>
-Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
- implement private channel OPs
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        id S230197AbhBBBTT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Feb 2021 20:19:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230194AbhBBBTS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 1 Feb 2021 20:19:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0A8864DD4;
+        Tue,  2 Feb 2021 01:18:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612228717;
+        bh=nubjV5RxPS9rBe0ST4Of24Ui70x9oAYNdmJ0tl2QhWI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VX5NiTQ9Jubs8sCIFZX5+4/UbBPOEWx5B+HxdzXkfH83BLJ+GDDV7Iksibf8AcKsp
+         YfA7nFsLTTuZuK3Si2se9ublIX2GIHuhQaFxBHQXPQQ7QfAm80uvuUJgoAmb5S6UIT
+         qfQx/CMJCrx2NKU8XM9OUfaY2v3TgsWmnM1DqRTXnyqXM7RcWfxTrWeTyaHcCakoSk
+         bPqIsrVJ17Ex7s0pE+YPcbg7u0V9Xl6yRxHIcjI+OBMKo/BiXzFvUAuiyCt+NIrp66
+         TSTBCwg6hwB5pvt97bywOh1JhP2Qz8xfI2P8BR1756EcewjICgpbewLVGatX5iYTgQ
+         LM90b6lTC+rcw==
+Date:   Mon, 1 Feb 2021 17:18:35 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 net-next 0/5] net: consolidate page_is_pfmemalloc()
+ usage
+Message-ID: <20210201171835.690558df@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210131120844.7529-1-alobakin@pm.me>
+References: <20210131120844.7529-1-alobakin@pm.me>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 4:40 PM Saleem, Shiraz <shiraz.saleem@intel.com> wrote:
->
-> > Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver and
-> > implement private channel OPs
-> >
-> > On Sat, Jan 30, 2021 at 01:19:36AM +0000, Saleem, Shiraz wrote:
-> > > > Subject: Re: [PATCH 07/22] RDMA/irdma: Register an auxiliary driver
-> > > > and implement private channel OPs
-> > > >
-> > > > On Wed, Jan 27, 2021 at 07:16:41PM -0400, Jason Gunthorpe wrote:
-> > > > > On Wed, Jan 27, 2021 at 10:17:56PM +0000, Saleem, Shiraz wrote:
-> > > > >
-> > > > > > Even with another core PCI driver, there still needs to be
-> > > > > > private communication channel between the aux rdma driver and
-> > > > > > this PCI driver to pass things like QoS updates.
-> > > > >
-> > > > > Data pushed from the core driver to its aux drivers should either
-> > > > > be done through new callbacks in a struct device_driver or by
-> > > > > having a notifier chain scheme from the core driver.
-> > > >
-> > > > Right, and internal to driver/core device_lock will protect from
-> > > > parallel probe/remove and PCI flows.
-> > > >
-> > >
-> > > OK. We will hold the device_lock while issuing the .ops callbacks from core
-> > driver.
-> > > This should solve our synchronization issue.
-> > >
-> > > There have been a few discussions in this thread. And I would like to
-> > > be clear on what to do.
-> > >
-> > > So we will,
-> > >
-> > > 1. Remove .open/.close, .peer_register/.peer_unregister 2. Protect ops
-> > > callbacks issued from core driver to the aux driver with device_lock
-> >
-> > A notifier chain is probably better, honestly.
-> >
-> > Especially since you don't want to split the netdev side, a notifier chain can be
-> > used by both cases equally.
-> >
->
-> The device_lock seems to be a simple solution to this synchronization problem.
-> May I ask what makes the notifier scheme better to solve this?
->
+On Sun, 31 Jan 2021 12:11:16 +0000 Alexander Lobakin wrote:
+> page_is_pfmemalloc() is used mostly by networking drivers to test
+> if a page can be considered for reusing/recycling.
+> It doesn't write anything to the struct page itself, so its sole
+> argument can be constified, as well as the first argument of
+> skb_propagate_pfmemalloc().
+> In Page Pool core code, it can be simply inlined instead.
+> Most of the callers from NIC drivers were just doppelgangers of
+> the same condition tests. Derive them into a new common function
+> do deduplicate the code.
 
-Only loosely following the arguments here, but one of the requirements
-of the driver-op scheme is that the notifying agent needs to know the
-target device. With the notifier-chain approach the target device
-becomes anonymous to the notifier agent.
+Please resend, this did not get into patchwork :/
