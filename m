@@ -2,120 +2,165 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953A130C390
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Feb 2021 16:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED40C30C3CE
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Feb 2021 16:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232759AbhBBPWl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Feb 2021 10:22:41 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12978 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234816AbhBBPWB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Feb 2021 10:22:01 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60196dec0001>; Tue, 02 Feb 2021 07:21:16 -0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Feb
- 2021 15:21:16 +0000
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Feb
- 2021 15:21:14 +0000
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.109)
- by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 2 Feb 2021 15:21:13 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Imr8l03ETBN/x4qPi2fl+uO0CIOMt/e6n8Myt5wscrAWs3sDf8/whEJ+/ROifIQ3oiYmuJEaecUNwfiBG1EH6lGoOEkK7QNh+dxARxjjBrjdSGbqknu+1HIT68gO1MC779ilpCptm7Kg/RFxYArAgTVyxtYVMhG+cu/OhEckEMu/3oQOQwlHkLnpYFEkzZ3Ypr0k6B+aHbb6eyM/X68xAi9h9a6nYlQef0iXB+2T+r1DeXNIuXH7XC9glzmRVQRutzdK4ammIGMPpkZsugdAbs6YClzO5YP6tc3pTqA5Q9VpPlH3PWdrhXb+CG/ZMPsa/ucUKiIhwDTRYYJzNqCmMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Et2Gr31MBoQ7d2Nf3+cdQcXOU+/1zCpWMIdjhCH3LwA=;
- b=TSwz3AxVBSYEVUjuTXmLpiqphM/wv+bV8H/Oou7lbVBGXhTpl1hmH0D+ZRRpelC7lxexR3jOAQf5T/jd7Wej4ODFHcxfN4ifp7zw0DtNGhy1xe0n1I3hOcnQTzeXGMVX6cuI5AkBMnB8JW4DNEYopUQ2WMyxGP38vP7mlq0usTIQkfW+sbCPzi+w+tzVwPlXj3rhEkzjskotjHtq1nLXRXw9mQbogj1w6mI4HqCdlv1pRk0nWbJJvkSKt8lVxO1a1h0HcoyUSaBIqEkHM1dv41NSBr87SHBOBk3pFrjUQt2SfTumkxOJDK2PgAjYFzd0Hpf17xcBpMj9+y9BoILaBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1516.namprd12.prod.outlook.com (2603:10b6:4:5::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3805.16; Tue, 2 Feb 2021 15:21:10 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3805.025; Tue, 2 Feb 2021
- 15:21:10 +0000
-Date:   Tue, 2 Feb 2021 11:21:09 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Parav Pandit <parav@nvidia.com>, <linux-rdma@vger.kernel.org>,
-        Mark Bloch <markb@mellanox.com>
-Subject: Re: [PATCH rdma-next 07/10] IB/mlx5: Return appropriate error code
- instead of ENOMEM
-Message-ID: <20210202152109.GA617190@nvidia.com>
-References: <20210127150010.1876121-1-leon@kernel.org>
- <20210127150010.1876121-8-leon@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210127150010.1876121-8-leon@kernel.org>
-X-ClientProxiedBy: MN2PR16CA0007.namprd16.prod.outlook.com
- (2603:10b6:208:134::20) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S231855AbhBBPaD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Feb 2021 10:30:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235462AbhBBPZ3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Feb 2021 10:25:29 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3485FC061573
+        for <linux-rdma@vger.kernel.org>; Tue,  2 Feb 2021 07:24:49 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id c12so20895392wrc.7
+        for <linux-rdma@vger.kernel.org>; Tue, 02 Feb 2021 07:24:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TwF/FQN0ANtWNheBXZd1Sn+c5kPviTuWw/RIN59Nwfs=;
+        b=lJBTkJdB/OLoTTId2yYfjrdTeDwxFPSQBNAzhziVAbfI9FPuFPC1178rWHaPemTlM6
+         tv8VkCwzTP5pBJanRoRte5MpvBkzRaAMHblweJLVh3RzWLU7xuHKE7PlOwE7XNuD47ST
+         i+8aJVUWGpYBWTXe9T26NSO4HErv60/gfdiR4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TwF/FQN0ANtWNheBXZd1Sn+c5kPviTuWw/RIN59Nwfs=;
+        b=j20tyFaQvDOrizU6RTV7/H/Z5dfKAer3ZBXyryVdlg7zy68kWcjiv9Flwv83hG6GVc
+         3Fn67fXy5Xm6vuLwsYWIvZ0frC9bCKXDOg1UhigYAX1ebGzYF2Xtu2t1T0C/3quw+IGM
+         uwKvc6T7G7I1pL5AJcfaQAKSYRJ9YxsRAIR42X+wMiVI7vLbmzBmLMfmM5jB16NBCJ6I
+         44bONL7eq6HyjtEXA30E6Td74bL3/QVWABbMokUu4vpDioiAAWctUblq9DCXco4sAy9t
+         W2HfdZDcITnouPPk8DRiU1V7auOR/uC/0MYkrGGCfkltk/gR849COr4/kKJFy67PeElX
+         yzGQ==
+X-Gm-Message-State: AOAM532n+XFrVLJiQcXldUu0/upARABP9o/r5vD1wta4DH3uYT5PQost
+        I6GNAXw4FQawCW2r11be/qTSYQ==
+X-Google-Smtp-Source: ABdhPJwBF5AMzAudV1juYLGxdLGduE9kr/xSnz8exq5VsaT6rVF/Uv2wR3lLDVdkrXcVwEAiCPeyNg==
+X-Received: by 2002:adf:a2ca:: with SMTP id t10mr24029895wra.370.1612279487922;
+        Tue, 02 Feb 2021 07:24:47 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id j17sm3535169wmc.28.2021.02.02.07.24.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 07:24:47 -0800 (PST)
+Date:   Tue, 2 Feb 2021 16:24:45 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Daniel Vetter <daniel@ffwll.ch>,
+        Leon Romanovsky <leon@kernel.org>,
+        Gal Pressman <galpress@amazon.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Edward Srouji <edwards@nvidia.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>
+Subject: Re: [PATCH rdma-core v7 4/6] pyverbs: Add dma-buf based MR support
+Message-ID: <YBluvZn1orYl7L9/@phenom.ffwll.local>
+References: <1611604622-86968-1-git-send-email-jianxin.xiong@intel.com>
+ <1611604622-86968-5-git-send-email-jianxin.xiong@intel.com>
+ <137f406b-d3e0-fdeb-18e7-194a2aed927c@amazon.com>
+ <20210201061603.GC4593@unreal>
+ <CAKMK7uE0kSC1si0E9D1Spkn9aW2jFJw_SH3hYC6sZL7mG6pzyg@mail.gmail.com>
+ <20210201152922.GC4718@ziepe.ca>
+ <MW3PR11MB455569DF7B795272687669BFE5B69@MW3PR11MB4555.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR16CA0007.namprd16.prod.outlook.com (2603:10b6:208:134::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend Transport; Tue, 2 Feb 2021 15:21:10 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l6xUL-002aZk-CN; Tue, 02 Feb 2021 11:21:09 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612279276; bh=Et2Gr31MBoQ7d2Nf3+cdQcXOU+/1zCpWMIdjhCH3LwA=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=nAXJxr2AxvPAEjM/SuHCCZg5KTS5+DLpL83pFrmv3MM+sbd2jI5sq2G3EmWi1Qcf2
-         hF9roy8bQbwTSml0kn4oAx5+Ww8XISj9Lty10ZOEkE3vnXQYvmEzS0S2iD1n4KUIwH
-         I5UjrPAjWonMOWf48/LKr9q1s2o06DRTenFvAsFi6YtogQNg7wolByqdSckzJARl8W
-         mbq4ZDCojP79m3mgkkQ15waHLxZIVrC+6OPKlFXLujQsSIOvFJCNIYoJ9QQqWfb0L1
-         TojD0vPJwmBsFLE+Ibg2gtKbrb/31KwpDZXDVTlpDo3MWtYAcynMZyNp/wZnf2MoRg
-         YKllGGWbM1CCw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW3PR11MB455569DF7B795272687669BFE5B69@MW3PR11MB4555.namprd11.prod.outlook.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 05:00:07PM +0200, Leon Romanovsky wrote:
-> From: Parav Pandit <parav@nvidia.com>
+On Mon, Feb 01, 2021 at 05:03:44PM +0000, Xiong, Jianxin wrote:
+> > -----Original Message-----
+> > From: Jason Gunthorpe <jgg@ziepe.ca>
+> > Sent: Monday, February 01, 2021 7:29 AM
+> > To: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Leon Romanovsky <leon@kernel.org>; Gal Pressman <galpress@amazon.com>; Xiong, Jianxin <jianxin.xiong@intel.com>; Yishai Hadas
+> > <yishaih@nvidia.com>; linux-rdma <linux-rdma@vger.kernel.org>; Edward Srouji <edwards@nvidia.com>; dri-devel <dri-
+> > devel@lists.freedesktop.org>; Christian Koenig <christian.koenig@amd.com>; Doug Ledford <dledford@redhat.com>; Vetter, Daniel
+> > <daniel.vetter@intel.com>
+> > Subject: Re: [PATCH rdma-core v7 4/6] pyverbs: Add dma-buf based MR support
+> > 
+> > On Mon, Feb 01, 2021 at 03:10:00PM +0100, Daniel Vetter wrote:
+> > > On Mon, Feb 1, 2021 at 7:16 AM Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > On Sun, Jan 31, 2021 at 05:31:16PM +0200, Gal Pressman wrote:
+> > > > > On 25/01/2021 21:57, Jianxin Xiong wrote:
+> > > > > > Define a new sub-class of 'MR' that uses dma-buf object for the
+> > > > > > memory region. Define a new class 'DmaBuf' as a wrapper for
+> > > > > > dma-buf allocation mechanism implemented in C.
+> > > > > >
+> > > > > > Update the cmake function for cython modules to allow building
+> > > > > > modules with mixed cython and c source files.
+> > > > > >
+> > > > > > Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+> > > > > > buildlib/pyverbs_functions.cmake |  78 +++++++----
+> > > > > >  pyverbs/CMakeLists.txt           |  11 +-
+> > > > > >  pyverbs/dmabuf.pxd               |  15 +++
+> > > > > >  pyverbs/dmabuf.pyx               |  73 ++++++++++
+> > > > > >  pyverbs/dmabuf_alloc.c           | 278 +++++++++++++++++++++++++++++++++++++++
+> > > > > >  pyverbs/dmabuf_alloc.h           |  19 +++
+> > > > > >  pyverbs/libibverbs.pxd           |   2 +
+> > > > > >  pyverbs/mr.pxd                   |   6 +
+> > > > > >  pyverbs/mr.pyx                   | 105 ++++++++++++++-
+> > > > > >  9 files changed, 557 insertions(+), 30 deletions(-)  create
+> > > > > > mode 100644 pyverbs/dmabuf.pxd  create mode 100644
+> > > > > > pyverbs/dmabuf.pyx  create mode 100644 pyverbs/dmabuf_alloc.c
+> > > > > > create mode 100644 pyverbs/dmabuf_alloc.h
+> > > >
+> > > > <...>
+> > > >
+> > > > > > index 0000000..05eae75
+> > > > > > +++ b/pyverbs/dmabuf_alloc.c
+> > > > > > @@ -0,0 +1,278 @@
+> > > > > > +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+> > > > > > +/*
+> > > > > > + * Copyright 2020 Intel Corporation. All rights reserved. See
+> > > > > > +COPYING file  */
+> > > > > > +
+> > > > > > +#include <stdio.h>
+> > > > > > +#include <stdlib.h>
+> > > > > > +#include <stdint.h>
+> > > > > > +#include <unistd.h>
+> > > > > > +#include <string.h>
+> > > > > > +#include <errno.h>
+> > > > > > +#include <drm/drm.h>
+> > > > > > +#include <drm/i915_drm.h>
+> > > > > > +#include <drm/amdgpu_drm.h>
+> > > > > > +#include <drm/radeon_drm.h>
+> > > > >
+> > > > > I assume these should come from the kernel headers package, right?
+> > > >
+> > > > This is gross, all kernel headers should be placed in
+> > > > kernel-headers/* and "update" script needs to be extended to take drm/* files too :(.
+> > >
+> > > drm kernel headers are in the libdrm package. You need that anyway for
+> > > doing the ioctls (if you don't hand-roll the restarting yourself).
+> > >
+> > > Also our userspace has gone over to just outright copying the driver
+> > > headers. Not the generic headers, but for the rendering side of gpus,
+> > > which is the topic here, there's really not much generic stuff.
+> > >
+> > > > Jianxin, are you fixing it?
+> > >
+> > > So fix is either to depend upon libdrm for building, or have copies of
+> > > the headers included in the package for the i915/amdgpu/radeon headers
+> > > (drm/drm.h probably not so good idea).
+> > 
+> > We should have a cmake test to not build the drm parts if it can't be built, and pyverbs should skip the tests.
+> > 
 > 
-> When mlx5_ib_stage_init_init() fails, return the error code related to
-> failure instead of -ENOMEM.
-> 
-> Fixes: 16c1975f1032 ("IB/mlx5: Create profile infrastructure to add and remove stages")
-> Signed-off-by: Parav Pandit <parav@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
->  drivers/infiniband/hw/mlx5/main.c | 3 +--
->  drivers/infiniband/hw/mlx5/odp.c  | 4 ----
->  2 files changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-> index ad7bb37e501d..9e8b4d591138 100644
-> +++ b/drivers/infiniband/hw/mlx5/main.c
-> @@ -3952,8 +3952,7 @@ static int mlx5_ib_stage_init_init(struct mlx5_ib_dev *dev)
-> 
->  err_mp:
->  	mlx5_ib_cleanup_multiport_master(dev);
-> -
-> -	return -ENOMEM;
-> +	return err;
->  }
-> 
->  static int mlx5_ib_enable_driver(struct ib_device *dev)
-> diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-> index f4b82daf1e22..a1be8fb2800e 100644
-> +++ b/drivers/infiniband/hw/mlx5/odp.c
-> @@ -484,10 +484,6 @@ static struct mlx5_ib_mr *implicit_get_child_mr(struct mlx5_ib_mr *imr,
->  	}
-> 
->  	xa_lock(&imr->implicit_children);
-> -	/*
-> -	 * Once the store to either xarray completes any error unwind has to
-> -	 * use synchronize_srcu(). Avoid this with xa_reserve()
-> -	 */
+> Yes, I will add a test for that. Also, on SLES, the headers could be under /usr/include/libdrm instead of /usr/include/drm. The make test should check that and use proper path. 
 
-It is not wrong to remove this comment, but why is it in this patch?
-
-Jason
+Please use pkgconfig for this, libdrm installs a .pc file to make sure you
+can find the right headers.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
