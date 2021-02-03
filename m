@@ -2,68 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A51D30E810
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Feb 2021 00:59:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B5530D420
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Feb 2021 08:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234002AbhBCX5p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Feb 2021 18:57:45 -0500
-Received: from 198-20-226-115.unifiedlayer.com ([198.20.226.115]:41668 "EHLO
-        198-20-226-115.unifiedlayer.com" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233315AbhBCX5m (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Feb 2021 18:57:42 -0500
-X-Greylist: delayed 59540 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Feb 2021 18:57:38 EST
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=carnivalassure.com.bd; s=default; h=Content-Transfer-Encoding:Content-Type:
-        Message-ID:Reply-To:Subject:To:From:Date:MIME-Version:Sender:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=miRpAdBSO5eDo01VDX+EK9bqGCmqMjXHS3kO16T6iWw=; b=rgk1ikauAU1hvTn54IcRsZV7jN
-        7ew7UnoHYswDbiAn0BwsDPvi1y7NYnu6spVFzd7wuCzuSXaeHSKXCbOKsfovgDS9G8VDov60T9hnO
-        az+ZrAdd9l4q7KVCSxwWKCfCVJbfHTSf42W46YnBkpxHquHw5LLqdFj5EdNb7huiQ1YCWmqOknYH9
-        SyIGPObfTFO7iFaqVfyi8Xbiiafcx4hzvN/iZIY/q1CFEZM+hVR0h+YPMSL3k9qRCiHtO0Ucth7ip
-        RJzG/T6UUDEki2hIinuZoSZa3/L4hnnytmaQT+A2HqKGkNS4nukEOez1R6NMYmAg56m6DyuuzrLgl
-        lDuKQ5eg==;
-Received: from [127.0.0.1] (port=45986 helo=dot.dotlines.com.sg)
-        by dot.dotlines.com.sg with esmtpa (Exim 4.93)
-        (envelope-from <noreply@carnivalassure.com.bd>)
-        id 1l7CVc-0005Wr-DK; Wed, 03 Feb 2021 01:23:28 -0600
+        id S231922AbhBCHhY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Feb 2021 02:37:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231840AbhBCHhX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Feb 2021 02:37:23 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8702C061573
+        for <linux-rdma@vger.kernel.org>; Tue,  2 Feb 2021 23:36:43 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id j25so25849098oii.0
+        for <linux-rdma@vger.kernel.org>; Tue, 02 Feb 2021 23:36:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=btWGYH50BP9Us5pLKOutEyaoPlXiEbtJQv5paKv0BVM=;
+        b=M4YntCaVSPjnLMm4YcIoOnYIBpkdbDZ3mYZouEmGwoaSA8gmIhLBH1vHA0KHb+/VD3
+         dp81BKv1FpXSHa+eC7D6y5HEH2wq1AomW1uJi2Homf2TgbcdWpqRKyIZ/8iqhl/zVue3
+         UbNzv1P7mAdvR0aEQBI5sWuzVmD6F0TjallKJyZB2DEyOWbgXpuR05SxGsWElYM6a7s2
+         HLnjsGxS7JOPvwQjCcoyNfqQsd2ZpjnVVmzVaPyv5+rXkBIcYjIfNUZBto8etGM2OdJm
+         +1g2b5Tq2UxhlIq3KphWK1xlAbeC3uBV7/KOi34DBX+2wFQlcOY6lJ3F4uxn3h5iFODS
+         Lyyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=btWGYH50BP9Us5pLKOutEyaoPlXiEbtJQv5paKv0BVM=;
+        b=SvItBnDPro0jTjM/OW4xLr668Zw8kK1bVet5GeVYms8+ug6LpjIZIvxBIyheboRO3w
+         z3EcGH1DH82TivI+NlQvEEoI/nk/HXtbU0yld5ZUBBVhl3/UFpAcGAhgeVP12J18GUI4
+         3O2hSJosh8kRHBDNj/G2aDEflShe3Xpq57f6neRi++sv7TfHSVWDx6oAsg3h/Gs2M+g3
+         Aq7YCC4ti60JjalrqMjx+dCQgdYrepZ2+9xpvWuKPCjn9kDfgUhrdbdx4l1rF1gWY47h
+         o2A9DAFlW7CtLFnXLnfLqOrIMX9uKRmw36QFSERnNDl65WvtboGzAz2T7XdGWoe+gQOl
+         ojkQ==
+X-Gm-Message-State: AOAM5324avl6DTsNxptmMmkaJoZFfVCTXdWQUYbMLBhPVHSak8i2dJ4t
+        uH0M/4fZjx7ulgf7u3+9vMKKJKU43bTcEoZMA1ItwbhDVaU=
+X-Google-Smtp-Source: ABdhPJyTcnyrEs08j4cqtssTcLciXUIkfsRtfPAjQ2L2tMpHFnG8+fLB5qG1ppFzOWMTTq9+zi02AFae3e0mcHNjbyI=
+X-Received: by 2002:aca:fcc5:: with SMTP id a188mr1172636oii.169.1612337803161;
+ Tue, 02 Feb 2021 23:36:43 -0800 (PST)
 MIME-Version: 1.0
-Date:   Wed, 03 Feb 2021 01:23:26 -0600
-From:   Francois Pinault <noreply@carnivalassure.com.bd>
-To:     undisclosed-recipients:;
-Subject: Hello/Hallo
-Organization: Donation
-Reply-To: francoispinault1936@outlook.com
-Mail-Reply-To: francoispinault1936@outlook.com
-Message-ID: <1a89ab2763fcfd9504c577b99b1b1baa@carnivalassure.com.bd>
-X-Sender: noreply@carnivalassure.com.bd
-User-Agent: Roundcube Webmail/1.3.15
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - dot.dotlines.com.sg
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - carnivalassure.com.bd
-X-Get-Message-Sender-Via: dot.dotlines.com.sg: authenticated_id: noreply@carnivalassure.com.bd
-X-Authenticated-Sender: dot.dotlines.com.sg: noreply@carnivalassure.com.bd
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+References: <20210127082431.2637863-1-yangx.jy@cn.fujitsu.com>
+ <20210127120427.GJ1053290@unreal> <601259D7.1040207@cn.fujitsu.com>
+ <20210128125421.GC5097@unreal> <60136F89.4070402@cn.fujitsu.com>
+ <CAD=hENcXrLjNbXrpU74GoJn1Kg7TdfWBZRMFK6cw+ON9HHRX7A@mail.gmail.com> <601A336E.9050006@cn.fujitsu.com>
+In-Reply-To: <601A336E.9050006@cn.fujitsu.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Wed, 3 Feb 2021 15:36:32 +0800
+Message-ID: <CAD=hENfLZ3ZzU31XZCyhzPjKVb6MAkN+DR4FRASKD2Nie2utcw@mail.gmail.com>
+Subject: Re: [RFC PATCH] RDMA/rxe: Export imm_data to WC when the related WR
+ with imm_data finished on SQ
+To:     Xiao Yang <yangx.jy@cn.fujitsu.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Feb 3, 2021 at 1:25 PM Xiao Yang <yangx.jy@cn.fujitsu.com> wrote:
+>
+> On 2021/1/29 14:28, Zhu Yanjun wrote:
+> > On Fri, Jan 29, 2021 at 10:16 AM Xiao Yang<yangx.jy@cn.fujitsu.com>  wrote:
+> >> On 2021/1/28 20:54, Leon Romanovsky wrote:
+> >>> On Thu, Jan 28, 2021 at 02:29:43PM +0800, Xiao Yang wrote:
+> >>>> On 2021/1/27 20:04, Leon Romanovsky wrote:
+> >>>>> On Wed, Jan 27, 2021 at 04:24:31PM +0800, Xiao Yang wrote:
+> >>>>>> Even if we enable sq_sig_all or IBV_SEND_SIGNALED, current rxe
+> >>>>>> module cannot set imm_data in WC when the related WR with imm_data
+> >>>>>> finished on SQ.
+> >>>>>>
+> >>>>>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
+> >>>>>> ---
+> >>>>>>
+> >>>>>> Current rxe module and other rdma modules(e.g. mlx5) only set
+> >>>>>> imm_data in WC when the related WR with imm_data finished on RQ.
+> >>>>>> I am not sure if it is a expected behavior.
+> >>>>> This is IBTA behavior.
+> >>>>>
+> >>>>> 5.2.11 IMMEDIATE DATA EXTENDED TRANSPORT HEADER (ImmDt) - 4 BYTES
+> >>>>> "Immediate Data (ImmDt) contains data that is placed in the receive
+> >>>>>     Completion Queue Element (CQE). The ImmDt is only allowed in SEND or
+> >>>>>     RDMA WRITE packets with Immediate Data."
+> >>>>>
+> >>>>> If I understand the spec, you shouldn't set imm_data in SQ.
+> >>>> Hi Leon,
+> >>>>
+> >>>> About the behavior, I have another question:
+> >>>> For send operation with imm_data, we can verify if the delivered imm_data is
+> >>>> correct by CQE on RQ.
+> >>>> For rdma write operation with imm_data, how to verify if the delivered
+> >>>> imm_data is correct? :-)
+> >>> Probably that I didn't understand the question, but the RDMA WRITE is
+> >>> marked with special opcode in the BTH that indicates imm_data.
+> >> Hi Leon,
+> >>
+> >> The quesion is about how to get the imm_data in applications(programs in
+> >> user space)
+> > Any steps or simple method to reproduce this problem?
+> > I want to delve into this problem.
+> Hi Yanjun,
+>
+> Sorry for the wrong question. :-)
+> For rdma write operation with imm_data, I can get the delivered imm_data
+> by CQE on RQ.
 
+Wonderful.
 
--- 
-Hallo, ich bin Herr Francois Pinault, ich habe Ihnen gespendet. Sie 
-können mein Profil auf Wikipedia, Google oder Forbes überprüfen.
-
-Für Ihren Spendenanspruch und weitere Informationen kontaktieren Sie 
-mich umgehend unter francoispinault1936@outlook.com
-
-Mit freundlichen Grüßen,
-Herr Francois Pinault
+Zhu Yanjun
+>
+> Best Regards,
+> Xiao Yang
+> > Thanks a lot.
+> > Zhu Yanjun
+> >
+> >> 1) If client program does send operation with imm_data, server program
+> >> can get the delivered imm_data by calling ibv_poll_cq(&wc)
+> >> 2) If client program does rdma write operation with imm_data, server
+> >> program cannot get the delivered imm_data by calling ibv_poll_cq(&wc).
+> >>       In this case, how does server program get the delivered imm_data?
+> >>
+> >> Best Regards,
+> >> Xiao Yang
+> >>> Thanks
+> >>>
+> >>>> Best Regards,
+> >>>> Xiao Yang
+> >>>>> Thanks
+> >>>>>
+> >>>>>
+> >>>>> .
+> >>>>>
+> >>>>
+> >>> .
+> >>>
+> >>
+> >>
+> >
+> > .
+> >
+>
+>
+>
