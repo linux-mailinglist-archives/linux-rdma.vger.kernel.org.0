@@ -2,137 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04E230E260
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Feb 2021 19:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B062030E3B9
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Feb 2021 21:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232313AbhBCSUL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Feb 2021 13:20:11 -0500
-Received: from p3plsmtpa11-09.prod.phx3.secureserver.net ([68.178.252.110]:60472
-        "EHLO p3plsmtpa11-09.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231941AbhBCSUK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Feb 2021 13:20:10 -0500
-Received: from [192.168.0.116] ([71.184.94.153])
-        by :SMTPAUTH: with ESMTPSA
-        id 7MkMlnlLo4A0U7MkNlwepL; Wed, 03 Feb 2021 11:19:23 -0700
-X-CMAE-Analysis: v=2.4 cv=OKDiYQWB c=1 sm=1 tr=0 ts=601ae92b
- a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
- a=IkcTkHD0fZMA:10 a=SEc3moZ4AAAA:8 a=yPCof4ZbAAAA:8 a=IArbqY7NgdM3mMEZ060A:9
- a=QEXdDO2ut3YA:10 a=5oRCH6oROnRZc2VpWJZ3:22
-X-SECURESERVER-ACCT: tom@talpey.com
-Subject: Re: [PATCH v2 3/6] xprtrdma: Refactor invocations of offset_in_page()
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <161236925476.1030487.10407536259816633879.stgit@manet.1015granger.net>
- <161236944700.1030487.6859398915626711523.stgit@manet.1015granger.net>
- <d0bbab3e-851c-3388-3d1c-cbc6249a6803@talpey.com>
- <A8FD067A-DD97-4A5D-BCB1-83DF3FAB3842@oracle.com>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <fa50ef0d-246b-b5aa-49a7-25a3f8934773@talpey.com>
-Date:   Wed, 3 Feb 2021 13:19:22 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S231735AbhBCUCI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Feb 2021 15:02:08 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11872 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231449AbhBCUCD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Feb 2021 15:02:03 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601b01120001>; Wed, 03 Feb 2021 12:01:22 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 3 Feb
+ 2021 20:01:20 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.174)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 3 Feb 2021 20:01:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=egWls3ZylRdwL3f8zKtblALRvjpiFP1IXrGqjjJGVSu3yKiq+WX5+9afsM79aIi8AeIa+voYDDsj8Ypt0d4Ftybkm9el7BF0NeiVjdxItQc1xHY5TP2e+a8+XKt9GAcn1vJv2pdxlS+k4Km5b5kil6CVQ1xcSB+cBY9E+qiz0EYQK1qYZ5WozluhWBZsx6Q5pRycxi1l7xuwzNstRhLazffNfJoYLQodqV8kvKbfxpv3yJIHLlFsy61a8iWl16GrdaREjLogHu4xi50eW2tCGu5IZEoGHfhbrVP+kthhDGuvoZXwDdRcFE6xd9DMjFPFdnbyg+nVmkGt3hZpCKF/wA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4fGkRFIo/i8HZlwZ318QFExtl1ETCgfMS0jKSzUUtm8=;
+ b=EqAjXTUrpaQ5SmGD5Vj7I3WTdakqemqXRuqz6/8TXBaZY7iQvnAcc/P9YwIzdtVVpFnZnLdfrOZK58b72a2tLHX0NpDHHVNzjVB6C/xFDgutqy9GB1f0B4hDRvYJ7utMjleXUabu0fBSpf4fMBzNHiXhxsROki76QmE8/YjAHxeG3GzcpOy9SXH61V7xf2xF0y12DmSYwRGI3ktu72z32+uy5BlDuS0+Rd49dWvqf+ljUdze1FZxQ9FNs5OCimnHChOdqMYndVH8oEAnTF5PB0f7iCgZQsb0uQA3Y94lTM1M6A011O8EjyQymf934Y//AaRIhtS070EvfNaXZIggFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2603.namprd12.prod.outlook.com (2603:10b6:5:49::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.19; Wed, 3 Feb
+ 2021 20:01:18 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3805.025; Wed, 3 Feb 2021
+ 20:01:18 +0000
+Date:   Wed, 3 Feb 2021 16:01:16 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Amit Matityahu <mitm@nvidia.com>, <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v1] RDMA/ucma: Fix use-after-free bug in
+ ucma_create_uevent
+Message-ID: <20210203200116.GA740542@nvidia.com>
+References: <20210125121556.838290-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210125121556.838290-1-leon@kernel.org>
+X-ClientProxiedBy: MN2PR11CA0026.namprd11.prod.outlook.com
+ (2603:10b6:208:23b::31) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <A8FD067A-DD97-4A5D-BCB1-83DF3FAB3842@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfNQsyu8WTZOp87VcP589lDaZ2hYiU2RSRqu9S0Wgb8ft/qosZdIOiETVTYB22YgiqbhGt/e+CWystIldsbJBtOvB/zcQCzFiVerKBZTs2BwKM+VSRjaH
- Re1b5ff6d3jXosbyPhdqNffnSPk+kxmaiRYSm1+hSagMS8nO3OJZ9PzmkcKrZmVALHVJYgfWKaKDFm+ZHXOEvbQAo7Okf7C67cQL9Fs1LKuTO4GAdgoqdNs0
- AkHi3UHN8+NG7MLKaT1VOJDos5SHEet4Afg1Dpxybt4=
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR11CA0026.namprd11.prod.outlook.com (2603:10b6:208:23b::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20 via Frontend Transport; Wed, 3 Feb 2021 20:01:17 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l7OKy-0036md-Hx; Wed, 03 Feb 2021 16:01:16 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612382482; bh=4fGkRFIo/i8HZlwZ318QFExtl1ETCgfMS0jKSzUUtm8=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=DxywuNKZc54Hrziei2U937vVGOIwp+dmNExaxdrKSqCUBjAahwZtZH+vOHqrhxanj
+         2csPlJIPFBBU9c2vY3qh++XPeOc8Nyj4ybp2/BW/T2WaWR/GcOiY3sKhhc+8xXRRva
+         ctkx6AJ21MPlaUbUSYPv2+TxOMlBPLDh+JdYY7xBs081ZZjibnLCjJ1+vzEG/8+xEZ
+         okb3p11QuABtu64wqM2PA5b197orTvBm0RS5hIQBATN70EGGsboSm0sVp5i+9SGRnc
+         5YACLz2R82Pu5JfjkNatibubX7RQJn1JC0MaM6P96Kdjd/zC5qjzDYV5plBUBPwlFF
+         u7MD5s7OigCYQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/3/2021 1:11 PM, Chuck Lever wrote:
-> 
-> 
->> On Feb 3, 2021, at 1:09 PM, Tom Talpey <tom@talpey.com> wrote:
->>
->> This looks good, but the earlier 1/6 patch depends on the offset_in_page
->> conversion in rpcrdma_convert_kvec.
-> 
-> I don't think it does... sg_set_buf() handles the offset_in_page() calculation
-> in that case.
+On Mon, Jan 25, 2021 at 02:15:56PM +0200, Leon Romanovsky wrote:
+> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+> index e17ba841e204..7ce4d9dea826 100644
+> +++ b/drivers/infiniband/core/cma.c
+> @@ -352,7 +352,13 @@ struct ib_device *cma_get_ib_dev(struct cma_device *cma_dev)
+>  
+>  struct cma_multicast {
+>  	struct rdma_id_private *id_priv;
+> -	struct ib_sa_multicast *sa_mc;
+> +	union {
+> +		struct ib_sa_multicast *sa_mc;
+> +		struct {
+> +			struct work_struct work;
+> +			struct rdma_cm_event event;
+> +		} iboe_join;
+> +	};
+>  	struct list_head	list;
+>  	void			*context;
+>  	struct sockaddr_storage	addr;
+> @@ -1839,6 +1845,12 @@ static void destroy_mc(struct rdma_id_private *id_priv,
+>  			cma_igmp_send(ndev, &mgid, false);
+>  			dev_put(ndev);
+>  		}
+> +
+> +		if (cancel_work_sync(&mc->iboe_join.work))
+> +			/* Compensate for cma_iboe_join_work_handler that
+> +			 * didn't run.
+> +			 */
+> +			cma_id_put(mc->id_priv);
 
-Ah, ok. And offset_in_page can be applied repeatedly, as well.
+Just get rid of the cma_id_get in cma_iboe_join_multicast() and don't
+have this if
 
-Tom.
+>  	}
+>  	kfree(mc);
+>  }
+> @@ -2702,6 +2714,32 @@ static int cma_query_ib_route(struct rdma_id_private *id_priv,
+>  	return (id_priv->query_id < 0) ? id_priv->query_id : 0;
+>  }
+>  
+> +static void cma_iboe_join_work_handler(struct work_struct *work)
+> +{
+> +	struct cma_multicast *mc =
+> +		container_of(work, struct cma_multicast, iboe_join.work);
+> +	struct rdma_cm_event *event = &mc->iboe_join.event;
+> +	struct rdma_id_private *id_priv = mc->id_priv;
+> +
+> +	mutex_lock(&id_priv->handler_mutex);
+> +	if (READ_ONCE(id_priv->state) == RDMA_CM_DESTROYING ||
+> +	    READ_ONCE(id_priv->state) == RDMA_CM_DEVICE_REMOVAL)
+> +		goto out_unlock;
+> +
+> +	if (cma_cm_event_handler(id_priv, event)) {
+> +		cma_id_put(id_priv);
+> +		destroy_id_handler_unlock(id_priv);
 
->> Won't that complicate any bisection?
->>
->> Reviewed-By: Tom Talpey <tom@talpey.com>
->>
->> On 2/3/2021 11:24 AM, Chuck Lever wrote:
->>> Clean up so that offset_in_page() is invoked less often in the
->>> most common case, which is mapping xdr->pages.
->>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
->>> ---
->>>   net/sunrpc/xprtrdma/frwr_ops.c  |    8 +++-----
->>>   net/sunrpc/xprtrdma/rpc_rdma.c  |    4 ++--
->>>   net/sunrpc/xprtrdma/xprt_rdma.h |    2 +-
->>>   3 files changed, 6 insertions(+), 8 deletions(-)
->>> diff --git a/net/sunrpc/xprtrdma/frwr_ops.c b/net/sunrpc/xprtrdma/frwr_ops.c
->>> index 13a50f77dddb..766a1048a48a 100644
->>> --- a/net/sunrpc/xprtrdma/frwr_ops.c
->>> +++ b/net/sunrpc/xprtrdma/frwr_ops.c
->>> @@ -306,16 +306,14 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt *r_xprt,
->>>   	if (nsegs > ep->re_max_fr_depth)
->>>   		nsegs = ep->re_max_fr_depth;
->>>   	for (i = 0; i < nsegs;) {
->>> -		sg_set_page(&mr->mr_sg[i],
->>> -			    seg->mr_page,
->>> -			    seg->mr_len,
->>> -			    offset_in_page(seg->mr_offset));
->>> +		sg_set_page(&mr->mr_sg[i], seg->mr_page,
->>> +			    seg->mr_len, seg->mr_offset);
->>>     		++seg;
->>>   		++i;
->>>   		if (ep->re_mrtype == IB_MR_TYPE_SG_GAPS)
->>>   			continue;
->>> -		if ((i < nsegs && offset_in_page(seg->mr_offset)) ||
->>> +		if ((i < nsegs && seg->mr_offset) ||
->>>   		    offset_in_page((seg-1)->mr_offset + (seg-1)->mr_len))
->>>   			break;
->>>   	}
->>> diff --git a/net/sunrpc/xprtrdma/rpc_rdma.c b/net/sunrpc/xprtrdma/rpc_rdma.c
->>> index 529adb6ad4db..b3e66b8f65ab 100644
->>> --- a/net/sunrpc/xprtrdma/rpc_rdma.c
->>> +++ b/net/sunrpc/xprtrdma/rpc_rdma.c
->>> @@ -215,7 +215,7 @@ rpcrdma_convert_kvec(struct kvec *vec, struct rpcrdma_mr_seg *seg,
->>>   {
->>>   	if (vec->iov_len) {
->>>   		seg->mr_page = virt_to_page(vec->iov_base);
->>> -		seg->mr_offset = vec->iov_base;
->>> +		seg->mr_offset = offset_in_page(vec->iov_base);
->>>   		seg->mr_len = vec->iov_len;
->>>   		++seg;
->>>   		++(*n);
->>> @@ -248,7 +248,7 @@ rpcrdma_convert_iovs(struct rpcrdma_xprt *r_xprt, struct xdr_buf *xdrbuf,
->>>   	page_base = offset_in_page(xdrbuf->page_base);
->>>   	while (len) {
->>>   		seg->mr_page = *ppages;
->>> -		seg->mr_offset = (char *)page_base;
->>> +		seg->mr_offset = page_base;
->>>   		seg->mr_len = min_t(u32, PAGE_SIZE - page_base, len);
->>>   		len -= seg->mr_len;
->>>   		++ppages;
->>> diff --git a/net/sunrpc/xprtrdma/xprt_rdma.h b/net/sunrpc/xprtrdma/xprt_rdma.h
->>> index 02971e183989..ed1c5444fb9d 100644
->>> --- a/net/sunrpc/xprtrdma/xprt_rdma.h
->>> +++ b/net/sunrpc/xprtrdma/xprt_rdma.h
->>> @@ -287,7 +287,7 @@ enum {
->>>   struct rpcrdma_mr_seg {
->>>   	u32		mr_len;		/* length of segment */
->>>   	struct page	*mr_page;	/* underlying struct page */
->>> -	char		*mr_offset;	/* IN: page offset, OUT: iova */
->>> +	u64		mr_offset;	/* IN: page offset, OUT: iova */
->>>   };
->>>     /* The Send SGE array is provisioned to send a maximum size
-> 
-> --
-> Chuck Lever
-> 
-> 
-> 
-> 
+This is a problem, destroy_id_handler_unlock eventually will call
+destroy_mc() which will deadlock. The IB side has the same bug. Since
+multicast isn't use in-kernel and ucma doesn't return anything but 0,
+this is all dead code, lets delete it and just leave a WARN_ON(ret)
+In the IB side too
+
+> +		goto out;
+> +	}
+> +
+> +out_unlock:
+> +	mutex_unlock(&id_priv->handler_mutex);
+> +	cma_id_put(id_priv);
+
+and this put too
+
+Jason
