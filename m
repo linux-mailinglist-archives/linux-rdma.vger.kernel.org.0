@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B6F30DA80
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Feb 2021 14:03:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED9530DA81
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Feb 2021 14:03:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhBCNCf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Feb 2021 08:02:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48692 "EHLO mail.kernel.org"
+        id S231322AbhBCNCo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Feb 2021 08:02:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230043AbhBCNCc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 3 Feb 2021 08:02:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50C2464F8D;
-        Wed,  3 Feb 2021 13:01:49 +0000 (UTC)
+        id S229774AbhBCNCf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 3 Feb 2021 08:02:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D613164F6C;
+        Wed,  3 Feb 2021 13:01:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612357310;
-        bh=m7A0hl1VFou29ei3VbPpUwof8h35uD53qWca6IxV6so=;
+        s=k20201202; t=1612357313;
+        bh=AG7VjtbFK+l3OQzlwFA90MwUUda9Nr5l6ccHTEJQFaU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZKGckMPJQrLv/qlhRHM/xDMZmzbpgVBRVRZe8EX72TVTi4QzYO7/9qYaUEm4u6so3
-         lrbTgPPqinpg464E6/b3uYZMfCAdNpbPLF/4iYSxwSCYcymsJa/lh7l9QEQksfAiex
-         VqmWJ5D3FCPENgQC3EzMonSOt1JZZSoooKN1j7vxSDEU29PDuvETHq9J5J8Uj8XkM4
-         xjkrujB+ViyWwwdOd39viEEwoMVtbbiesp3VH30aIbaxenrtyrkFw4yuw+aXPZFh9/
-         umDPEBj11SwKkll4I82VwwlJiuGlruOsi86a/QUQmGD7HgSKF6OBKntEQqYwYDIQRU
-         WecTZyqPP6xhw==
+        b=Qwcb43abSbfCmK8aATNtb7Q5HlgnDGdboZYgl0JBX4jPtqtPX45neA+gE/kFWNgth
+         YF8+qdjbNSCx80xIo4OSlaiPAF1N+op0pMYW+IJ46kZex38zJKlzqCO00QEqJ6N+Cp
+         8Z21Mcc9fdiRNG1OhZhVt3bnJy9Ia1WxxZUEG+1cmuH2sO7DSkgIrTBLduZeMmXkSw
+         nxVY8ZGvtjfgoefNcDVC63dxND8GZ37wk4aOBWZIa1AJZTYIIk0LU+0RGeuRboyDKI
+         ydRWxykk0F1JlwIaRwZdkRLd2C5cqG1qQmwCiv8P7yGK+tkIDmqzqi8n/EozHL1fbw
+         pBJF0DhwvWiGQ==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Parav Pandit <parav@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v1 3/5] IB/mlx5: Improve query port for representor port
-Date:   Wed,  3 Feb 2021 15:01:31 +0200
-Message-Id: <20210203130133.4057329-4-leon@kernel.org>
+Subject: [PATCH rdma-next v1 4/5] RDMA/core: Introduce and use API to read port immutable data
+Date:   Wed,  3 Feb 2021 15:01:32 +0200
+Message-Id: <20210203130133.4057329-5-leon@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210203130133.4057329-1-leon@kernel.org>
 References: <20210203130133.4057329-1-leon@kernel.org>
@@ -41,84 +41,187 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Parav Pandit <parav@nvidia.com>
 
-Improve query port functionality for representor port as below.
+Currently mlx5 driver caches port GID table length for 2 ports.
+It is also cached by IB core as port immutable data.
 
-1. RoCE Qkey violation counters are not applicable for representor
-port.
-2. Avoid setting gid_tbl_len twice for representor port.
-3. Avoid setting ip_gids and IB_PORT_CM_SUP property for representor
-port as GID table is empty and CM support is not present in
-representor mode.
+When mlx5 representor ports are present, which are usually more than 2,
+invalid access to port_caps array can happen while validating the GID
+table length which is only for 2 ports.
+
+To avoid this, take help of the IB cores port immutable data by exposing
+an API to read the port immutable fields.
+
+Remove mlx5 driver's internal cache, thereby reduce code and data.
 
 Signed-off-by: Parav Pandit <parav@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/main.c | 31 ++++++++++---------------------
- 1 file changed, 10 insertions(+), 21 deletions(-)
+ drivers/infiniband/core/device.c     | 14 +++++++
+ drivers/infiniband/hw/mlx5/main.c    | 55 +---------------------------
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  1 -
+ drivers/infiniband/hw/mlx5/qp.c      |  8 ++--
+ include/rdma/ib_verbs.h              |  3 ++
+ 5 files changed, 23 insertions(+), 58 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 364dc3e6a2de..176f2a866f12 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -462,7 +462,6 @@ static int mlx5_query_port_roce(struct ib_device *device, u8 port_num,
- 	struct net_device *ndev, *upper;
- 	enum ib_mtu ndev_ib_mtu;
- 	bool put_mdev = true;
--	u16 qkey_viol_cntr;
- 	u32 eth_prot_oper;
- 	u8 mdev_port_num;
- 	bool ext;
-@@ -500,20 +499,22 @@ static int mlx5_query_port_roce(struct ib_device *device, u8 port_num,
- 	translate_eth_proto_oper(eth_prot_oper, &props->active_speed,
- 				 &props->active_width, ext);
- 
--	props->port_cap_flags |= IB_PORT_CM_SUP;
--	props->ip_gids = true;
-+	if (!dev->is_rep && mlx5_is_roce_enabled(mdev)) {
-+		u16 qkey_viol_cntr;
- 
--	props->gid_tbl_len      = MLX5_CAP_ROCE(dev->mdev,
--						roce_address_table_size);
-+		props->port_cap_flags |= IB_PORT_CM_SUP;
-+		props->ip_gids = true;
-+		props->gid_tbl_len = MLX5_CAP_ROCE(dev->mdev,
-+						   roce_address_table_size);
-+		mlx5_query_nic_vport_qkey_viol_cntr(mdev, &qkey_viol_cntr);
-+		props->qkey_viol_cntr = qkey_viol_cntr;
-+	}
- 	props->max_mtu          = IB_MTU_4096;
- 	props->max_msg_sz       = 1 << MLX5_CAP_GEN(dev->mdev, log_max_msg);
- 	props->pkey_tbl_len     = 1;
- 	props->state            = IB_PORT_DOWN;
- 	props->phys_state       = IB_PORT_PHYS_STATE_DISABLED;
- 
--	mlx5_query_nic_vport_qkey_viol_cntr(mdev, &qkey_viol_cntr);
--	props->qkey_viol_cntr = qkey_viol_cntr;
--
- 	/* If this is a stub query for an unaffiliated port stop here */
- 	if (!put_mdev)
- 		goto out;
-@@ -1383,19 +1384,7 @@ int mlx5_ib_query_port(struct ib_device *ibdev, u8 port,
- static int mlx5_ib_rep_query_port(struct ib_device *ibdev, u8 port,
- 				  struct ib_port_attr *props)
- {
--	int ret;
--
--	/* Only link layer == ethernet is valid for representors
--	 * and we always use port 1
--	 */
--	ret = mlx5_query_port_roce(ibdev, port, props);
--	if (ret || !props)
--		return ret;
--
--	/* We don't support GIDS */
--	props->gid_tbl_len = 0;
--
--	return ret;
-+	return mlx5_query_port_roce(ibdev, port, props);
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index c895d7bfa512..051c018fb73c 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -848,6 +848,20 @@ static int setup_port_data(struct ib_device *device)
+ 	return 0;
  }
  
- static int mlx5_ib_rep_query_pkey(struct ib_device *ibdev, u8 port, u16 index,
++/**
++ * ib_port_immutable_read() - Read rdma port's immutable data
++ * @dev - IB device
++ * @port - port number whose immutable data to read. It starts with index 1 and
++ *         valid upto including rdma_end_port().
++ */
++const struct ib_port_immutable*
++ib_port_immutable_read(struct ib_device *dev, unsigned int port)
++{
++	WARN_ON(!rdma_is_port_valid(dev, port));
++	return &dev->port_data[port].immutable;
++}
++EXPORT_SYMBOL(ib_port_immutable_read);
++
+ void ib_get_device_fw_str(struct ib_device *dev, char *str)
+ {
+ 	if (dev->ops.get_dev_fw_str)
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 176f2a866f12..1e1e3edcb1d5 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -2964,41 +2964,6 @@ static void get_ext_port_caps(struct mlx5_ib_dev *dev)
+ 		mlx5_query_ext_port_caps(dev, port);
+ }
+ 
+-static int __get_port_caps(struct mlx5_ib_dev *dev, u8 port)
+-{
+-	struct ib_port_attr *pprops = NULL;
+-	int err = -ENOMEM;
+-
+-	pprops = kzalloc(sizeof(*pprops), GFP_KERNEL);
+-	if (!pprops)
+-		goto out;
+-
+-	err = mlx5_ib_query_port(&dev->ib_dev, port, pprops);
+-	if (err) {
+-		mlx5_ib_warn(dev, "query_port %d failed %d\n",
+-			     port, err);
+-		goto out;
+-	}
+-
+-	dev->port_caps[port - 1].gid_table_len = pprops->gid_tbl_len;
+-	mlx5_ib_dbg(dev, "port %d: pkey_table_len %d, gid_table_len %d\n",
+-		    port, dev->pkey_table_len, pprops->gid_tbl_len);
+-
+-out:
+-	kfree(pprops);
+-	return err;
+-}
+-
+-static int get_port_caps(struct mlx5_ib_dev *dev, u8 port)
+-{
+-	/* For representors use port 1, is this is the only native
+-	 * port
+-	 */
+-	if (dev->is_rep)
+-		return __get_port_caps(dev, 1);
+-	return __get_port_caps(dev, port);
+-}
+-
+ static u8 mlx5_get_umr_fence(u8 umr_fence_cap)
+ {
+ 	switch (umr_fence_cap) {
+@@ -3472,10 +3437,6 @@ static bool mlx5_ib_bind_slave_port(struct mlx5_ib_dev *ibdev,
+ 	if (err)
+ 		goto unbind;
+ 
+-	err = get_port_caps(ibdev, mlx5_core_native_port_num(mpi->mdev));
+-	if (err)
+-		goto unbind;
+-
+ 	err = mlx5_add_netdev_notifier(ibdev, port_num);
+ 	if (err) {
+ 		mlx5_ib_err(ibdev, "failed adding netdev notifier for port %u\n",
+@@ -3553,11 +3514,9 @@ static int mlx5_ib_init_multiport_master(struct mlx5_ib_dev *dev)
+ 				break;
+ 			}
+ 		}
+-		if (!bound) {
+-			get_port_caps(dev, i + 1);
++		if (!bound)
+ 			mlx5_ib_dbg(dev, "no free port found for port %d\n",
+ 				    i + 1);
+-		}
+ 	}
+ 
+ 	list_add_tail(&dev->ib_dev_list, &mlx5_ib_dev_list);
+@@ -3940,18 +3899,6 @@ static int mlx5_ib_stage_init_init(struct mlx5_ib_dev *dev)
+ 	if (err)
+ 		goto err_mp;
+ 
+-	if (!mlx5_core_mp_enabled(mdev)) {
+-		for (i = 1; i <= dev->num_ports; i++) {
+-			err = get_port_caps(dev, i);
+-			if (err)
+-				break;
+-		}
+-	} else {
+-		err = get_port_caps(dev, mlx5_core_native_port_num(mdev));
+-	}
+-	if (err)
+-		goto err_mp;
+-
+ 	err = mlx5_query_max_pkeys(&dev->ib_dev, &dev->pkey_table_len);
+ 	if (err)
+ 		goto err_mp;
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index 36a92f3c29e3..0f567d570230 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -1037,7 +1037,6 @@ struct mlx5_var_table {
+ };
+ 
+ struct mlx5_port_caps {
+-	int gid_table_len;
+ 	bool has_smi;
+ 	u8 ext_port_cap;
+ };
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 475470237e0b..358c44c5a8fc 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -3176,11 +3176,13 @@ static int mlx5_set_path(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
+ 			 alt ? attr->alt_pkey_index : attr->pkey_index);
+ 
+ 	if (ah_flags & IB_AH_GRH) {
+-		if (grh->sgid_index >=
+-		    dev->port_caps[port - 1].gid_table_len) {
++		const struct ib_port_immutable *immutable;
++
++		immutable = ib_port_immutable_read(&dev->ib_dev, port);
++		if (grh->sgid_index >= immutable->gid_tbl_len) {
+ 			pr_err("sgid_index (%u) too large. max is %d\n",
+ 			       grh->sgid_index,
+-			       dev->port_caps[port - 1].gid_table_len);
++			       immutable->gid_tbl_len);
+ 			return -EINVAL;
+ 		}
+ 	}
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 62e574c50555..ca28fca5736b 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -4674,4 +4674,7 @@ static inline u32 rdma_calc_flow_label(u32 lqpn, u32 rqpn)
+ 
+ 	return (u32)(v & IB_GRH_FLOWLABEL_MASK);
+ }
++
++const struct ib_port_immutable*
++ib_port_immutable_read(struct ib_device *dev, unsigned int port);
+ #endif /* IB_VERBS_H */
 -- 
 2.29.2
 
