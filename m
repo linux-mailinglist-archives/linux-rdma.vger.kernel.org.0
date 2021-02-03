@@ -2,169 +2,217 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540F930DFB2
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Feb 2021 17:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB8630E062
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Feb 2021 18:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbhBCQ0j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Feb 2021 11:26:39 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:50398 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231673AbhBCQ0h (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Feb 2021 11:26:37 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 113GEjcB113192;
-        Wed, 3 Feb 2021 16:25:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : references : in-reply-to : content-type : content-id :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=m30P8DcyfQCT6/wiDJSLpfBkC43HWwu5rPGhI7c8k+4=;
- b=Me66ZkzWK6Ko0VAi5M6HVgbamKC5ILi8f2HXAeAI9N4Xk3LIPNRKEMx5hxp6CnW6umjt
- 8h1xnFGZ4YRFWgWo/THZTgwctkPq21rLKmJdDXJl30TSFHBHTEfdKN1fquXBhFAHrcb0
- WvtZtIYtIJDNGuvya22h7Wjf3AQk5D9WOIhYWh/xlgKwMi429BALpmgyqSrUW4+aqFdm
- N39nKrhq1Vi/zRB8L7ICM4M5fqs0VFwJ4FOeWTmTodpGFQKdO7VpqcYHAMBQtrseRidg
- QK/IKjdsLR+aiqSR5xuM8+Op3rW5IsE3x/9PFJZ5HNC4sj0sZ5swyhHJgjIqjAXzLKLq Tg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 36cxvr3ksq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Feb 2021 16:25:52 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 113GGGwM111462;
-        Wed, 3 Feb 2021 16:25:52 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2174.outbound.protection.outlook.com [104.47.57.174])
-        by userp3020.oracle.com with ESMTP id 36dh7tr65s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Feb 2021 16:25:52 +0000
+        id S231836AbhBCRAo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Feb 2021 12:00:44 -0500
+Received: from mga05.intel.com ([192.55.52.43]:38401 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231145AbhBCQ5u (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 3 Feb 2021 11:57:50 -0500
+IronPort-SDR: hLaUoap989X9HgH98e5uGSZzdzJsNg0VldIYeK3j/dGcKcD40irjMfzF+2Jt3xLn9sYjzpfRG5
+ l+xWf5hZo5wQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="265907680"
+X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
+   d="scan'208";a="265907680"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 08:57:08 -0800
+IronPort-SDR: aIVRhy/2Ik26GDnHvdhSyaXr3xVw2Umx0/LZHwmgWt3zuNO6wNJDfSu/Ipj4ltw2+GypgMl4os
+ rk6bWGyOnGhg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,398,1602572400"; 
+   d="scan'208";a="579509425"
+Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
+  by fmsmga006.fm.intel.com with ESMTP; 03 Feb 2021 08:57:07 -0800
+Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
+ ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 3 Feb 2021 08:57:07 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Wed, 3 Feb 2021 08:57:07 -0800
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.51) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Wed, 3 Feb 2021 08:57:06 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fJVRUf2hohWIe4Mtv9Hw8kbSagrg3zkzTr3UiwaTJDXPrIAH+hr3w2D1Jono9RmRSOMDZV0CwoS4at0TUIkP+CPwEIGM3/lvB3lF+wKV5Y5Cu7peOo3PwBGQPDQ9KQKeKairqEolE0WfVR2uWMijBJttJhCyhZCTUubHB7bygXDe3z/Y8br3fnfgpzAvCiReBlukn6MXDATfyPEF/DRnoE45Id35Tzc3sEOa3tLs/1M4iHAkb4mvnUrPaGxWg2BayRRpAn9iCGCVvbSkv3gUT+F82A9LsSy2ukDEJYak0URCarIyMnP/aFDorH7rrYt7cfqHgI712ClhRi/I6QkYpg==
+ b=mKiUrvXQWts5dtXOBsp4o7SZrQ0g2a7WyXnxmPdv/dsyDeBTmvay30RVOYXkBZXgSVEezhGxe9hTbSkY47ble8fxIOrzTehDxxuU3koHDuUA8UivqeT5+cMUo40dEp0dYaZLzV25krXIFS1ugAhfjA4zlv4UD97BqFSnVV+pp0ZTRXfWJPB9lY+g2YjZ/S9HtRyIFcpyNGk6DlmIi2q2HB20qZdMAl5p+jRD2bbCDNiQRFqU66gcylISQ3Jda3bFFoQhBfDlU9iKf4K6QKSpAvH1Me70dhX9yAshaznE27+HFkDBloQd7GcFcBZU60uQOrkC43xrF4k9M1KmRB+Sjg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m30P8DcyfQCT6/wiDJSLpfBkC43HWwu5rPGhI7c8k+4=;
- b=cEiktYOwcV5KArpzpwMx2Q3aVgx9JoX3qls947iDa+306Kd5bqiuv+Yx8ohMQ5AN9uLdF4Hai5Kev4Tb2TBLkkbSau7v8lyidfhykGEhK42cNAaOiAjdMHu3qaIQJuNMj/7ONN+VJdwdKE9nk9cy48yJFOMzUPHowQ28N2m4roX0ThrdrEyACjw5oRlJv12qZrO/8A2wTrNDQVIiZ4Og+/G0zM2LnZq/qvawtJfpQnakhajbmYzau0eIrMA+2sMvENK/amYnHterTvFPxhlublz3CWwUWUvH8ueHBUUBjg9d3trTV9eP0JOieF52MpTP8IrUG3dIMTY1lfo7eaLqtg==
+ bh=tjzBpHX+qpnIU0X8ZBmXG/wroi0tvfxmkmjV/btKviY=;
+ b=YIYOO8q96ZFvGqderPxPRelsO1UY9WsI3nCjCTfyDe8K+QWphQyRXSVHtJfRFIqvmPx890k1IiRsuQhwLfh3REFzX/JaTUvoHnvmtFgUL4tqqhMDr7Dss/d4qp8tw4Guil8OQfA6u0A6InSCCPUj0+KlEbZmpu2T2jGuaPXXjM7tB4+giKKeWQb+QoAyl1QkEMLKDXupalysx9qnfU0EytMbIQe/1POZaTANXl62SAyt9LSXlCkLf6Nj4ehsiKnySnlYtHPO4PYxuJOWkpCmINOOTiJJa/qEsl3TEnY+ahLlMOQVgcFpx0PZkY/cJSU85sR1UopB1i45Q12trvUKuQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m30P8DcyfQCT6/wiDJSLpfBkC43HWwu5rPGhI7c8k+4=;
- b=rMENvaN5IW53oBb50+QgELYX9nX4bG+NGi3Mj2ERA7Sy1cJUfH8BOjxMsuBtdGt/s3TxZ3N0OBgf8YlqAWRJHtnEQ98zoPtw6ypGilUThtQirkO1C+AyVnLQKxSaZ1ioa4s+Y9a2Levu7E9K7Qd7OVASaNlfvAzCV4V/+Si+l5s=
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24)
- by BY5PR10MB4164.namprd10.prod.outlook.com (2603:10b6:a03:210::15) with
+ bh=tjzBpHX+qpnIU0X8ZBmXG/wroi0tvfxmkmjV/btKviY=;
+ b=gJKvayx+FhWMknz3gYh2t2DM18xu0qCDdLQYaWVHg+6eAnhbEXuepLBfYfDBqNc4EX/zMUBWH0+jkF36K4HSP3Tnx/KITa/jcDU9UryENBtOoUwaRo/b6rkwkU8LRKIsYEr6oaQ866giO+4HAsKZl7+E8P4IEy1Frgx4CDKOtlY=
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com (2603:10b6:303:2e::24)
+ by CO1PR11MB4961.namprd11.prod.outlook.com (2603:10b6:303:93::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17; Wed, 3 Feb
- 2021 16:25:50 +0000
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::6da8:6d28:b83:702b]) by SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::6da8:6d28:b83:702b%4]) with mapi id 15.20.3805.027; Wed, 3 Feb 2021
- 16:25:50 +0000
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH v2 0/6] Series short description
-Thread-Topic: [PATCH v2 0/6] Series short description
-Thread-Index: AQHW+kjwDDafscgcxkqo/J3By1xHg6pGneSA
-Date:   Wed, 3 Feb 2021 16:25:50 +0000
-Message-ID: <EF605E4A-D9FE-4D63-9572-BA6EC10E8F45@oracle.com>
-References: <161236921379.1030469.17739946617932155431.stgit@manet.1015granger.net>
-In-Reply-To: <161236921379.1030469.17739946617932155431.stgit@manet.1015granger.net>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Wed, 3 Feb
+ 2021 16:57:04 +0000
+Received: from MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::4476:930f:5109:9c28]) by MW3PR11MB4555.namprd11.prod.outlook.com
+ ([fe80::4476:930f:5109:9c28%6]) with mapi id 15.20.3805.026; Wed, 3 Feb 2021
+ 16:57:04 +0000
+From:   "Xiong, Jianxin" <jianxin.xiong@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>, Daniel Vetter <daniel@ffwll.ch>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>, Gal Pressman <galpress@amazon.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Edward Srouji <edwards@nvidia.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "Vetter, Daniel" <daniel.vetter@intel.com>
+Subject: RE: [PATCH rdma-core v7 4/6] pyverbs: Add dma-buf based MR support
+Thread-Topic: [PATCH rdma-core v7 4/6] pyverbs: Add dma-buf based MR support
+Thread-Index: AQHW81IsBXvBf9ch/Ui3XtDALqd1H6pB5ZYAgAD3NICAAIRsAIAAFi0AgAAZeICAAXeSgIAA9XkAgACyvIA=
+Date:   Wed, 3 Feb 2021 16:57:04 +0000
+Message-ID: <MW3PR11MB455563A3F337F789613A9940E5B49@MW3PR11MB4555.namprd11.prod.outlook.com>
+References: <1611604622-86968-1-git-send-email-jianxin.xiong@intel.com>
+ <1611604622-86968-5-git-send-email-jianxin.xiong@intel.com>
+ <137f406b-d3e0-fdeb-18e7-194a2aed927c@amazon.com>
+ <20210201061603.GC4593@unreal>
+ <CAKMK7uE0kSC1si0E9D1Spkn9aW2jFJw_SH3hYC6sZL7mG6pzyg@mail.gmail.com>
+ <20210201152922.GC4718@ziepe.ca>
+ <MW3PR11MB455569DF7B795272687669BFE5B69@MW3PR11MB4555.namprd11.prod.outlook.com>
+ <YBluvZn1orYl7L9/@phenom.ffwll.local> <20210203060320.GK3264866@unreal>
+In-Reply-To: <20210203060320.GK3264866@unreal>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [68.61.232.219]
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [73.53.14.45]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a1031dd4-7163-4ed7-03e5-08d8c8605ee2
-x-ms-traffictypediagnostic: BY5PR10MB4164:
-x-microsoft-antispam-prvs: <BY5PR10MB4164D1974FB01665B611801993B49@BY5PR10MB4164.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2089;
+x-ms-office365-filtering-correlation-id: 8738243e-b02c-405d-588a-08d8c864bb9f
+x-ms-traffictypediagnostic: CO1PR11MB4961:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CO1PR11MB4961BB1F4D55B03624B729C6E5B49@CO1PR11MB4961.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ll3+A2cGXHW+n8kcuFiVlv5S2E0796zaG/ANhtMqXF7p3uLHnUPIP0K1KK8NV9XWWx5bcvtmn2DBOJNkNTNss4j0jk/rE7zMVTzbTHabQ/JAwog8ANnPPdLzBNqEZ/ap7u26RWaaED/Czsf1+0k0LhU6AQZQIBNiE/Z+Qyk1ocKkxKARbbx7Num/zhIX6+Is1KZBhphBODuss+iTrArlgjdlA8lOwtkBRTBu2jpR4LgU5n/ZzMmldJZzfvGk8CfJwq3KCb9U0aPOTSoT8NBL9SMueTZdUvd2V6CZ4d51XGZDo4i74X1zLIG6VydJpYvzeVg4JOVEQ2fRIFbLH5VlWvzKJlDWsEHw13FvxSYBGcpQ05VzFRmwX7OjXf4KE7PqX5hsSHEk3JG6EdE1/f9I4AimcuE48QNj2l51V6ro5PF2sBOG0WDq7TjMtmtuDsaK0tSWoFd+QHZhldba3Mp+ZHIDYpOG2OUduRMCoC2q0nG80wWKC+4kAPBxZkDpqiWEHe/bIigy2vcW24N46cL9HiJWo9tbREphMa6qUX7eLXE4EQYvIubPmwm0iqj9kji3yyaeSZtSET9wyO2+A4NJvA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4688.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(376002)(366004)(346002)(39860400002)(5660300002)(76116006)(91956017)(66946007)(44832011)(478600001)(316002)(71200400001)(64756008)(6512007)(66476007)(2616005)(4744005)(36756003)(450100002)(86362001)(66556008)(53546011)(8676002)(26005)(6486002)(186003)(33656002)(83380400001)(8936002)(66446008)(110136005)(2906002)(6506007)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?NRkKISGJhKJUevNPjFwmnqoIgugHPTH3c46oiGZ4bhTaU0V1rOdUKxJcYNiC?=
- =?us-ascii?Q?e3p3vKp+9O133pJ1K8/ELvhR0kj4qEH7jTc1N/6FW6A/jdS81nvPJ/IPmOvg?=
- =?us-ascii?Q?SubKOIlqIkwrXolDnQOye73KkNb9JNzM6ylpHTdVBROIgFbzAt+uqA0LEIry?=
- =?us-ascii?Q?MjAn+zPM2jeeFS4RfClAOeZB/iFyZYXpOIhRYqILZuOwzGahws7LLVtMnh1S?=
- =?us-ascii?Q?d+wGU3oid4MxY2Xb3jfJ3ndvA8Tyz+r6OQ3+50EfhTJD1WjketCyqdl6tjof?=
- =?us-ascii?Q?ouTJrgj7FRbGri0wSKoEC0hwzwEtFWJqcqdfh+Q5oNESkPqp4vVj83wXGdBa?=
- =?us-ascii?Q?Km8jIhDi8gebJFVwvrgAqc/B9nMokZyXPK2CsJw7a4JI31uyQbTolaZiwVhK?=
- =?us-ascii?Q?d9ZRRgyr90pZrp0rfwl5hXWHh3jakY5l6wrB6XSaSv/5Ex9x/NVztEeW04m0?=
- =?us-ascii?Q?wZIMSgAoxWQqH79hDB0CmUYGB1QgpwgyfcAxe40E6mnAlramdo6MGh0/uj6j?=
- =?us-ascii?Q?AxesksiDP4R2i1bd3ToCjKss4KzcNCXsj3J/Ddxsg+Eo2avQf5yIZDB870P2?=
- =?us-ascii?Q?yGyXDUfNlcALX4gXjv+WHJ1ecjcaIC1HP8O6WSi6uGLZIMbZJ17FENIH1NQA?=
- =?us-ascii?Q?McGI2HMDbFkxdUD+bH/lvbp6wsM2TVbpPtovegWdlWo9QcUeLFzwILwWeMML?=
- =?us-ascii?Q?3u3uITv3nTnT1ka1kX4F8jtQaWheKpJ4NulSPLqiQR31Ub5b9H+jbDrrgiI3?=
- =?us-ascii?Q?Z+5x9CzMVs4TPtamT8/LGVAhgcm82cix/INV+GxvVl3UwczENOM0ynAZrduB?=
- =?us-ascii?Q?4a5gf0Xn1XW5hs8VHbGnKlvtjIqkjWO3Bjf7zCa2doCyaGgEbC8CT3enYGmr?=
- =?us-ascii?Q?c2HefYH5oOKszlHf4HHLOgKpO/6T7u1+nh2RCwAXHBtTNPFmP6qFs7665Oeh?=
- =?us-ascii?Q?fbPeSGwdYIi0rtLCxvwhQyOsqOMUaTodgm27csGjeqgOdIcUTmyaaiqq/vn+?=
- =?us-ascii?Q?jq7ejQjzKxKwjn/Av65ZUORBuE+Jav/FTESwJMlink+5R+lvmndiO3dg6HzT?=
- =?us-ascii?Q?0MAqRV05J0arEtbbZFPC4Vd/Ez/TWA=3D=3D?=
-x-ms-exchange-transport-forked: True
+x-microsoft-antispam-message-info: Vw8WLHLUG+q31ZmVX8CnH+GR9BBV0iqN4nt2toi6wCz+71WcFsoIPMiLbAb2yuSS4zQxJl18eWvDSFA67pnlVQhYuo+gvAv2CCQhzj4Bnz9qEfPlY4EBfKMW4+06Kdoo4m3VhbeefjUdHOLi+uDPtLNwc/0Tad8iA4OBeGsOyAME84Mdcgkf806VKxF0obQx5HkqtieVi7zbvQdOSLKDtfCMpI0sxES/QHMysXHodDlTTYGnQVwLWs7g/RV836su7eMnZfJouadhLDYK9xPGeXJaMgM5ZtQt5Qfm8zl5U4SHyeafqKWrRyCHzrcuUh0NT2mZ7ys9rT+apJN2fFsC9+5cNuEvekGNEfnl89XRoY50CVfnoMpiFfDMWnE4+EWp6CN4cxTDl3tHS4w/Oka0lXOBfsoEHWJlymPVPh/pFnJ3mW9Ti5npYeFqvNYp36jOawRZ4bMmeA7W1+4Rda8KwGJbV+1spmTEJ/V0yIInuEyfzvd1mJ4IUtQeYRPp4xhid+bqLJhPNyHl3tILGjZYsIojqUlisPnBQgmM7Fh7F0ZUobgeibVVv9pj2wXQ5i84630FNEvwLOl3ieRsK7OwRTqoeIsv0MP3Ygm6IXSGsR8MuvF1Zm66+AYDFZQXLC22fQmcHK9sjg1wCOku7OPbQOmR4Afqf6UZ3Ecvdrxi/CQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4555.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(376002)(366004)(396003)(39860400002)(2906002)(7416002)(6506007)(966005)(186003)(52536014)(8676002)(71200400001)(66946007)(53546011)(478600001)(83380400001)(76116006)(66446008)(26005)(86362001)(66476007)(7696005)(4326008)(54906003)(64756008)(8936002)(9686003)(33656002)(55016002)(107886003)(83080400002)(66556008)(110136005)(5660300002)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?lAkXxeVVv4nyL5Tl449Q35K00XvE86qGg13mgX36Id/09J1RzmNXM4QyQ0yf?=
+ =?us-ascii?Q?j3gSNinPAh0SG9vd+qpB4a9H1mnR0xxzQ7+FqH1S1I3yndijfDcMsGQaoiB8?=
+ =?us-ascii?Q?lVCZAbDZIquAbx3zI7RA6To6dEEsihezDct+Pu1vSGXrY1eORPK15bLj3EHY?=
+ =?us-ascii?Q?9Fv7kAItmLOBiCnqEK0/CZ2MEqGeZf6dmUrqY12AHv9i+SS73yAu7/hZf1fZ?=
+ =?us-ascii?Q?PtZBIhGMFz5Q4jiDVKHB/KOpff/nVu3aylmaEqNVWrUxEsrEsf2J0YsXjqOa?=
+ =?us-ascii?Q?THVQmLe3LNa+uDkhRllULJu5Zb7oeHAMdnsKKvvQYq7DkgyXllEw8L0LJ0kN?=
+ =?us-ascii?Q?zvgqQjhhHqImtJbpCWIwaoyc9XpqlaGbiD12Dvmz7b2dI3SJXEvnKdKLMtFw?=
+ =?us-ascii?Q?ZLaYVIDlXKlmVNAIlctsXCJX1hFp9PG2LV9MG7IQf6UUe7n7m2xSmxP0c/in?=
+ =?us-ascii?Q?Mi/23HSouoXcInzj5pk6pfDFG1foG+9D8G94875LBI8rGl5SMZ8Cw4ApiTxj?=
+ =?us-ascii?Q?rtKgigeGBmx/KMD75TkEvlnqwHwkYuoF9K6BL0dGqWgy/wri2LtId43cWJba?=
+ =?us-ascii?Q?wnhh/qGg8ec6jgFGpwrZH3rb7YChcQW4WcDWq6QbCwlfyD52MbtwtYh8NV73?=
+ =?us-ascii?Q?/HDloNn5x5b1pXF/3rgfE9s3jzIRHdNocR421qkPh0WSopSL6ZTjTB7vqcJg?=
+ =?us-ascii?Q?fgeuauRJGeQsd+DY/a1jO27/IqxampaAgwSCLD6RT+mUQ7+rxKeuQnaN5b65?=
+ =?us-ascii?Q?ufWO46qJlGXf2kSW/AXitH8ZpjKcIYdXC/CblWGef/HDTAEBpcXvI16g/cJt?=
+ =?us-ascii?Q?Dd3eFBZESlo8YJUMKdLOZmE/86NQRhF6AR+eBmvxpAFZlU31GMbbqIH6Q2w9?=
+ =?us-ascii?Q?4ppZoLVqxkxIxfxHsRp/hdBrZljtfQhap9oq+qSBZORq0ewlMtZkwysf+98j?=
+ =?us-ascii?Q?GDMJmwSq9ipkVA48QVscqzn5b7ge0KZrsnysv+2sg1OLImEmnlbQSgVW3mU7?=
+ =?us-ascii?Q?0/PzDMU3h4B9ol5ZD2AQKgC61AJOC6ZpHGYRLLjPmlB7/XIHpmAptckiq+ak?=
+ =?us-ascii?Q?2aeHJEcOVUu8pgdhmtyC/nGWTjQZkmbhRfykfDb89J78RDquDwJ/b7m16jkX?=
+ =?us-ascii?Q?PATGlfN7B2Pe5/zN2jKqACA2XAKlw4pP4b68K4jtW4iAockRRgb8Mehth3uW?=
+ =?us-ascii?Q?0p5pBaGYd3trEkJxjhU12uk6Ty+I2u0cNDcaFu5dfvBo0mGBTf9jtadWuwmA?=
+ =?us-ascii?Q?jK3kT7NIInFjXjJKOTjl48NAXzi6htxcCRYLI/8H1dKqBJvJ4FwLaRgyqpUy?=
+ =?us-ascii?Q?FdQ=3D?=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <74B6DB6FF33D744E9AB6A91E0A05F40A@namprd10.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4688.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1031dd4-7163-4ed7-03e5-08d8c8605ee2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Feb 2021 16:25:50.6574
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4555.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8738243e-b02c-405d-588a-08d8c864bb9f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Feb 2021 16:57:04.2325
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hkhy63guQjUDPPcCTR1vXz5UbG4pQFCGWobzbVC+4zlB82Q8Qvu/QkLx2PAnly1s+zCX5LxoeBHjaPrEYS3hIg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4164
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 phishscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102030099
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- mlxscore=0 priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
- suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102030099
+X-MS-Exchange-CrossTenant-userprincipalname: mSiwlgjrlrdJudaMPecJEZBbWDujbyKGBeMJ0y9wM2nMv6vG034/zV+06DR25nN62HRK2qDYKh1K7GS9bWIecA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4961
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Misfire, please ignore.
-
-> On Feb 3, 2021, at 11:20 AM, Chuck Lever <chuck.lever@oracle.com> wrote:
->=20
-> The following series implements...
->=20
-> ---
->=20
-> Chuck Lever (6):
->      xprtrdma: Remove FMR support in rpcrdma_convert_iovs()
->      xprtrdma: Simplify rpcrdma_convert_kvec() and frwr_map()
->      xprtrdma: Refactor invocations of offset_in_page()
->      rpcrdma: Fix comments about reverse-direction operation
->      xprtrdma: Pad optimization, revisited
->      rpcrdma: Capture bytes received in Receive completion tracepoints
->=20
->=20
-> include/trace/events/rpcrdma.h             | 50 +++++++++++++++++++++-
-> net/sunrpc/xprtrdma/backchannel.c          |  4 +-
-> net/sunrpc/xprtrdma/frwr_ops.c             | 12 ++----
-> net/sunrpc/xprtrdma/rpc_rdma.c             | 17 +++-----
-> net/sunrpc/xprtrdma/svc_rdma_backchannel.c |  4 +-
-> net/sunrpc/xprtrdma/xprt_rdma.h            | 15 ++++---
-> 6 files changed, 68 insertions(+), 34 deletions(-)
->=20
-> --
-> Chuck Lever
+> -----Original Message-----
+> From: Leon Romanovsky <leon@kernel.org>
+> Sent: Tuesday, February 02, 2021 10:03 PM
+> To: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Xiong, Jianxin <jianxin.xiong@intel.com>; Jason Gunthorpe <jgg@ziepe.=
+ca>; Gal Pressman <galpress@amazon.com>; Yishai Hadas
+> <yishaih@nvidia.com>; linux-rdma <linux-rdma@vger.kernel.org>; Edward Sro=
+uji <edwards@nvidia.com>; dri-devel <dri-
+> devel@lists.freedesktop.org>; Christian Koenig <christian.koenig@amd.com>=
+; Doug Ledford <dledford@redhat.com>; Vetter, Daniel
+> <daniel.vetter@intel.com>
+> Subject: Re: [PATCH rdma-core v7 4/6] pyverbs: Add dma-buf based MR suppo=
+rt
 >=20
 
---
-Chuck Lever
+<...>
 
+> > > > > > > > +#include <drm/drm.h>
+> > > > > > > > +#include <drm/i915_drm.h> #include <drm/amdgpu_drm.h>
+> > > > > > > > +#include <drm/radeon_drm.h>
+> > > > > > >
+> > > > > > > I assume these should come from the kernel headers package, r=
+ight?
+> > > > > >
+> > > > > > This is gross, all kernel headers should be placed in
+> > > > > > kernel-headers/* and "update" script needs to be extended to ta=
+ke drm/* files too :(.
+> > > > >
+> > > > > drm kernel headers are in the libdrm package. You need that
+> > > > > anyway for doing the ioctls (if you don't hand-roll the restartin=
+g yourself).
+> > > > >
+> > > > > Also our userspace has gone over to just outright copying the
+> > > > > driver headers. Not the generic headers, but for the rendering
+> > > > > side of gpus, which is the topic here, there's really not much ge=
+neric stuff.
+> > > > >
+> > > > > > Jianxin, are you fixing it?
+> > > > >
+> > > > > So fix is either to depend upon libdrm for building, or have
+> > > > > copies of the headers included in the package for the
+> > > > > i915/amdgpu/radeon headers (drm/drm.h probably not so good idea).
+> > > >
+> > > > We should have a cmake test to not build the drm parts if it can't =
+be built, and pyverbs should skip the tests.
+> > > >
+> > >
+> > > Yes, I will add a test for that. Also, on SLES, the headers could be =
+under /usr/include/libdrm instead of /usr/include/drm. The make test
+> should check that and use proper path.
+> >
+> > Please use pkgconfig for this, libdrm installs a .pc file to make sure
+> > you can find the right headers.
+>=20
+> rdma-core uses cmake build system and in our case cmake find_library() is=
+ preferable over pkgconfig.
 
-
+Only the headers are needed, and they could be installed via either the lib=
+drm-devel package or the kernel-headers package. The cmake find_path() comm=
+and is more suitable here.
+=20
+>=20
+> Thanks
+>=20
+> > -Daniel
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
