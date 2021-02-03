@@ -2,115 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8588330E3D3
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Feb 2021 21:08:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 540DC30E4E9
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Feb 2021 22:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbhBCUIL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Feb 2021 15:08:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231710AbhBCUIG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 3 Feb 2021 15:08:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17E1B64F8C;
-        Wed,  3 Feb 2021 20:07:23 +0000 (UTC)
-Subject: [PATCH v3 6/6] rpcrdma: Capture bytes received in Receive completion
- tracepoints
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Date:   Wed, 03 Feb 2021 15:07:22 -0500
-Message-ID: <161238284222.946943.6448113979992092756.stgit@manet.1015granger.net>
-In-Reply-To: <161238257595.946943.6571271028482175652.stgit@manet.1015granger.net>
+        id S229991AbhBCVZZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Feb 2021 16:25:25 -0500
+Received: from p3plsmtpa11-09.prod.phx3.secureserver.net ([68.178.252.110]:33605
+        "EHLO p3plsmtpa11-09.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229973AbhBCVZY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Feb 2021 16:25:24 -0500
+Received: from [192.168.0.116] ([71.184.94.153])
+        by :SMTPAUTH: with ESMTPSA
+        id 7PddloU6S4A0U7PddlwssS; Wed, 03 Feb 2021 14:24:38 -0700
+X-CMAE-Analysis: v=2.4 cv=OKDiYQWB c=1 sm=1 tr=0 ts=601b1496
+ a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
+ a=IkcTkHD0fZMA:10 a=3UT470RhSK1ViTJfi10A:9 a=QEXdDO2ut3YA:10
+X-SECURESERVER-ACCT: tom@talpey.com
+Subject: Re: [PATCH v3 0/6] RPC/RDMA client fixes
+To:     Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org
 References: <161238257595.946943.6571271028482175652.stgit@manet.1015granger.net>
-User-Agent: StGit/0.23-29-ga622f1
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <84c2694b-9c73-0125-4327-098d8e5e9f96@talpey.com>
+Date:   Wed, 3 Feb 2021 16:24:37 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <161238257595.946943.6571271028482175652.stgit@manet.1015granger.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfKGkQpoctO183CwbznssAhlYZ3RJky6HcxAOIu+rgGZmDyqE5nBEHGjEDCxeEqPxuGWRk/9tjA8NGBdDWd2CWMnkKC6r/wPuUr8Iwq3TN3/kG5EN4z5Q
+ GEFWVLzC9na+N7F/+aAztA6iazNj7pVtK7HqtduiCLISe+s7ENN2/QTeTDK6Ykqiho5DcU2m0Eu5c1LGFFmBRlV0iDu44PeqRMVWZOAxNdT4xRsH6hodKzdo
+ /ZJfhZCCV72/4pKJdLXshfuaG+xk0KiWIfU+lrzi79s=
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Make it easier to spot messages of an unusual size.
+On 2/3/2021 3:06 PM, Chuck Lever wrote:
+> Changes since v2:
+> - Another minor optimization in rpcrdma_convert_kvec()
+> - Some patch description clarifications
+> - Add Reviewed-by (thanks Tom!)
+> 
+> Changes since v1:
+> - Respond to review comments
+> - Split "Remove FMR support" into three patches for clarity
+> - Fix implicit chunk roundup
+> - Improve Receive completion tracepoints
+> 
+> ---
+> 
+> Chuck Lever (6):
+>        xprtrdma: Remove FMR support in rpcrdma_convert_iovs()
+>        xprtrdma: Simplify rpcrdma_convert_kvec() and frwr_map()
+>        xprtrdma: Refactor invocations of offset_in_page()
+>        rpcrdma: Fix comments about reverse-direction operation
+>        xprtrdma: Pad optimization, revisited
+>        rpcrdma: Capture bytes received in Receive completion tracepoints
+> 
+> 
+>   include/trace/events/rpcrdma.h             | 50 +++++++++++++++++++++-
+>   net/sunrpc/xprtrdma/backchannel.c          |  4 +-
+>   net/sunrpc/xprtrdma/frwr_ops.c             | 12 ++----
+>   net/sunrpc/xprtrdma/rpc_rdma.c             | 17 +++-----
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Acked-by: Tom Talpey <tom@talpey.com>
----
- include/trace/events/rpcrdma.h |   50 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 48 insertions(+), 2 deletions(-)
+While reviewing the changes in rpc_rdma.c, I noticed a related minor
+nit, which might be worth cleaning up for clarity.
 
-diff --git a/include/trace/events/rpcrdma.h b/include/trace/events/rpcrdma.h
-index 76e85e16854b..c838e7ac1c2d 100644
---- a/include/trace/events/rpcrdma.h
-+++ b/include/trace/events/rpcrdma.h
-@@ -60,6 +60,51 @@ DECLARE_EVENT_CLASS(rpcrdma_completion_class,
- 				),					\
- 				TP_ARGS(wc, cid))
- 
-+DECLARE_EVENT_CLASS(rpcrdma_receive_completion_class,
-+	TP_PROTO(
-+		const struct ib_wc *wc,
-+		const struct rpc_rdma_cid *cid
-+	),
-+
-+	TP_ARGS(wc, cid),
-+
-+	TP_STRUCT__entry(
-+		__field(u32, cq_id)
-+		__field(int, completion_id)
-+		__field(u32, received)
-+		__field(unsigned long, status)
-+		__field(unsigned int, vendor_err)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->cq_id = cid->ci_queue_id;
-+		__entry->completion_id = cid->ci_completion_id;
-+		__entry->status = wc->status;
-+		if (wc->status) {
-+			__entry->received = 0;
-+			__entry->vendor_err = wc->vendor_err;
-+		} else {
-+			__entry->received = wc->byte_len;
-+			__entry->vendor_err = 0;
-+		}
-+	),
-+
-+	TP_printk("cq.id=%u cid=%d status=%s (%lu/0x%x) received=%u",
-+		__entry->cq_id, __entry->completion_id,
-+		rdma_show_wc_status(__entry->status),
-+		__entry->status, __entry->vendor_err,
-+		__entry->received
-+	)
-+);
-+
-+#define DEFINE_RECEIVE_COMPLETION_EVENT(name)				\
-+		DEFINE_EVENT(rpcrdma_receive_completion_class, name,	\
-+				TP_PROTO(				\
-+					const struct ib_wc *wc,		\
-+					const struct rpc_rdma_cid *cid	\
-+				),					\
-+				TP_ARGS(wc, cid))
-+
- DECLARE_EVENT_CLASS(xprtrdma_reply_class,
- 	TP_PROTO(
- 		const struct rpcrdma_rep *rep
-@@ -838,7 +883,8 @@ TRACE_EVENT(xprtrdma_post_linv_err,
-  ** Completion events
-  **/
- 
--DEFINE_COMPLETION_EVENT(xprtrdma_wc_receive);
-+DEFINE_RECEIVE_COMPLETION_EVENT(xprtrdma_wc_receive);
-+
- DEFINE_COMPLETION_EVENT(xprtrdma_wc_send);
- DEFINE_COMPLETION_EVENT(xprtrdma_wc_fastreg);
- DEFINE_COMPLETION_EVENT(xprtrdma_wc_li);
-@@ -1790,7 +1836,7 @@ TRACE_EVENT(svcrdma_post_recv,
- 	)
- );
- 
--DEFINE_COMPLETION_EVENT(svcrdma_wc_receive);
-+DEFINE_RECEIVE_COMPLETION_EVENT(svcrdma_wc_receive);
- 
- TRACE_EVENT(svcrdma_rq_post_err,
- 	TP_PROTO(
+Toward the end of rpcrdma_convert_iovs, there is no longer any
+need to capture the returned value of rpcrdma_convert_kvec:
+
+	if (xdrbuf->tail[0].iov_len)
+		seg = rpcrdma_convert_kvec(&xdrbuf->tail[0], seg, &n);
+
+                 ^^^^^^ --> (void)?
+out:
+	if (unlikely(n > RPCRDMA_MAX_SEGS))
+		return -EIO;
+	return n;
+
+The two "goto out" statements just above it are getting kinda ugly
+too, but...
+
+Tom.
 
 
+>   net/sunrpc/xprtrdma/svc_rdma_backchannel.c |  4 +-
+>   net/sunrpc/xprtrdma/xprt_rdma.h            | 15 ++++---
+>   6 files changed, 68 insertions(+), 34 deletions(-)
+> 
+> --
+> Chuck Lever
+> 
+> 
