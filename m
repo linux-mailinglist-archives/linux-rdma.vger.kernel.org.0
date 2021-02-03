@@ -2,126 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CB330D308
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Feb 2021 06:28:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A9230D32A
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Feb 2021 06:48:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbhBCFZN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Feb 2021 00:25:13 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:52108 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229539AbhBCFYx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Feb 2021 00:24:53 -0500
-X-IronPort-AV: E=Sophos;i="5.79,397,1602518400"; 
-   d="scan'208";a="104132017"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 03 Feb 2021 13:24:05 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id C94144CE1A08;
-        Wed,  3 Feb 2021 13:24:00 +0800 (CST)
-Received: from [10.167.220.69] (10.167.220.69) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Wed, 3 Feb 2021 13:24:01 +0800
-Message-ID: <601A336E.9050006@cn.fujitsu.com>
-Date:   Wed, 3 Feb 2021 13:23:58 +0800
-From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
-User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
+        id S231348AbhBCFsC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Feb 2021 00:48:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50960 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231301AbhBCFsB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 3 Feb 2021 00:48:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE93F64F41;
+        Wed,  3 Feb 2021 05:47:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612331241;
+        bh=0EIGiGbsZT1uQ909SuZhT8i8yS8RrntqUOcjTPRv2LE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T7rOw2sCrZncu44vHksHhRHmACC0F9VJSFMXoEqx14nVeD52zwN88lm/Dkx3ZQMGS
+         G+YSXwolKnIuVtTCaD5kzKZXU1J6m3p0jiygz99aKRAI2E125/vDKCSx4UYgMxB8QG
+         pZsmlXxXpQJ8XCkSpl/J4wZBUAzbN52LmU7cWR/D2uHO6eF4lN89fiEWH2rW9qJL/m
+         hD1GNfqjU7kBNZYAOuvGFphkKY5AOlSCTyVKBqDxeZrHXemMEC/WdyeC2TPa3FZdLY
+         D1hX5MsWgDhx0zAFbMg9D+ojsRT33WI/TBkDXU0z+IzWh8SPDJTsOtXRNH0oiLR4ZZ
+         i3fFWrUl91JHw==
+Date:   Wed, 3 Feb 2021 07:47:17 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Parav Pandit <parav@nvidia.com>
+Subject: Re: [PATCH rdma-next 00/10] Various cleanups
+Message-ID: <20210203054717.GJ3264866@unreal>
+References: <20210127150010.1876121-1-leon@kernel.org>
+ <20210202233504.GA677751@nvidia.com>
 MIME-Version: 1.0
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [RFC PATCH] RDMA/rxe: Export imm_data to WC when the related
- WR with imm_data finished on SQ
-References: <20210127082431.2637863-1-yangx.jy@cn.fujitsu.com> <20210127120427.GJ1053290@unreal> <601259D7.1040207@cn.fujitsu.com> <20210128125421.GC5097@unreal> <60136F89.4070402@cn.fujitsu.com> <CAD=hENcXrLjNbXrpU74GoJn1Kg7TdfWBZRMFK6cw+ON9HHRX7A@mail.gmail.com>
-In-Reply-To: <CAD=hENcXrLjNbXrpU74GoJn1Kg7TdfWBZRMFK6cw+ON9HHRX7A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.167.220.69]
-X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
-X-yoursite-MailScanner-ID: C94144CE1A08.A8A22
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202233504.GA677751@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/1/29 14:28, Zhu Yanjun wrote:
-> On Fri, Jan 29, 2021 at 10:16 AM Xiao Yang<yangx.jy@cn.fujitsu.com>  wrote:
->> On 2021/1/28 20:54, Leon Romanovsky wrote:
->>> On Thu, Jan 28, 2021 at 02:29:43PM +0800, Xiao Yang wrote:
->>>> On 2021/1/27 20:04, Leon Romanovsky wrote:
->>>>> On Wed, Jan 27, 2021 at 04:24:31PM +0800, Xiao Yang wrote:
->>>>>> Even if we enable sq_sig_all or IBV_SEND_SIGNALED, current rxe
->>>>>> module cannot set imm_data in WC when the related WR with imm_data
->>>>>> finished on SQ.
->>>>>>
->>>>>> Signed-off-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
->>>>>> ---
->>>>>>
->>>>>> Current rxe module and other rdma modules(e.g. mlx5) only set
->>>>>> imm_data in WC when the related WR with imm_data finished on RQ.
->>>>>> I am not sure if it is a expected behavior.
->>>>> This is IBTA behavior.
->>>>>
->>>>> 5.2.11 IMMEDIATE DATA EXTENDED TRANSPORT HEADER (ImmDt) - 4 BYTES
->>>>> "Immediate Data (ImmDt) contains data that is placed in the receive
->>>>>     Completion Queue Element (CQE). The ImmDt is only allowed in SEND or
->>>>>     RDMA WRITE packets with Immediate Data."
->>>>>
->>>>> If I understand the spec, you shouldn't set imm_data in SQ.
->>>> Hi Leon,
->>>>
->>>> About the behavior, I have another question:
->>>> For send operation with imm_data, we can verify if the delivered imm_data is
->>>> correct by CQE on RQ.
->>>> For rdma write operation with imm_data, how to verify if the delivered
->>>> imm_data is correct? :-)
->>> Probably that I didn't understand the question, but the RDMA WRITE is
->>> marked with special opcode in the BTH that indicates imm_data.
->> Hi Leon,
->>
->> The quesion is about how to get the imm_data in applications(programs in
->> user space)
-> Any steps or simple method to reproduce this problem?
-> I want to delve into this problem.
-Hi Yanjun,
-
-Sorry for the wrong question. :-)
-For rdma write operation with imm_data, I can get the delivered imm_data 
-by CQE on RQ.
-
-Best Regards,
-Xiao Yang
-> Thanks a lot.
-> Zhu Yanjun
+On Tue, Feb 02, 2021 at 07:35:04PM -0400, Jason Gunthorpe wrote:
+> On Wed, Jan 27, 2021 at 05:00:00PM +0200, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> >
+> > Various simple cleanups to mlx4, mlx5 and core.
+> >
+> > Parav Pandit (10):
+> >   IB/mlx5: Move mlx5_port_caps from mlx5_core_dev to mlx5_ib_dev
+> >   IB/mlx5: Avoid calling query device for reading pkey table length
+> >   IB/mlx5: Improve query port for representor port
+> >   RDMA/core: Introduce and use API to read port immutable data
+> >   IB/mlx5: Use rdma_for_each_port for port iteration
 >
->> 1) If client program does send operation with imm_data, server program
->> can get the delivered imm_data by calling ibv_poll_cq(&wc)
->> 2) If client program does rdma write operation with imm_data, server
->> program cannot get the delivered imm_data by calling ibv_poll_cq(&wc).
->>       In this case, how does server program get the delivered imm_data?
->>
->> Best Regards,
->> Xiao Yang
->>> Thanks
->>>
->>>> Best Regards,
->>>> Xiao Yang
->>>>> Thanks
->>>>>
->>>>>
->>>>> .
->>>>>
->>>>
->>> .
->>>
->>
->>
+> These didn't want to apply, can you resend them with that other thing
+> fixed?
 >
-> .
+> >   IB/mlx5: Support default partition key for representor port
+> >   IB/mlx5: Return appropriate error code instead of ENOMEM
+> >   IB/cm: Avoid a loop when device has 255 ports
+> >   IB/mlx4: Use port iterator and validation APIs
+> >   IB/core: Use valid port number to check link layer
 >
+> I fixed the misplaced hunk and took these to for-next though
 
+Thanks, I'll resend.
 
-
+>
+> Thanks,
+> Jason
