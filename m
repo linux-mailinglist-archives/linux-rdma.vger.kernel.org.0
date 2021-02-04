@@ -2,97 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6142830FC24
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Feb 2021 20:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 008A730FD3C
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Feb 2021 20:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239498AbhBDTBa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Feb 2021 14:01:30 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13170 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239485AbhBDTBT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Feb 2021 14:01:19 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601c44570001>; Thu, 04 Feb 2021 11:00:39 -0800
-Received: from MacBook-Pro-10.local (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Feb
- 2021 19:00:32 +0000
-Subject: Re: [PATCH v16 0/4] RDMA: Add dma-buf support
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-CC:     Jianxin Xiong <jianxin.xiong@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-References: <1608067636-98073-1-git-send-email-jianxin.xiong@intel.com>
- <5e4ac17d-1654-9abc-9a14-bda223d62866@nvidia.com>
- <CADnq5_M2YuOv16E2DG6sCPtL=z5SDDrN+y7iwD_pHVc7Omyrmw@mail.gmail.com>
- <20210204182923.GL4247@nvidia.com>
- <CADnq5_N9QvgAKQMLeutA7oBo5W5XyttvNOMK_siOc6QL+H07jQ@mail.gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <8e731fce-95c1-4ace-d8bc-dc0df7432d22@nvidia.com>
-Date:   Thu, 4 Feb 2021 11:00:32 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
+        id S238873AbhBDTth (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Feb 2021 14:49:37 -0500
+Received: from mail-ed1-f41.google.com ([209.85.208.41]:34407 "EHLO
+        mail-ed1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238271AbhBDTt0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Feb 2021 14:49:26 -0500
+Received: by mail-ed1-f41.google.com with SMTP id df22so5792128edb.1;
+        Thu, 04 Feb 2021 11:49:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4/GO9sI7Vf7IL7jv4bfvAUUPsx9bL8ZXpsUusT8QVMc=;
+        b=M58dsmEmAWN/lbGs0ATWXikRs2Q+KYp821NysBowJADD4W7usIgui3p4keWqMMyUl+
+         kIM3HeKwzB68EV73T92GGMCIGtUaxDYdPbDgzQEZVlmCymAjGI3Z4fNljawgbxvuxKOA
+         dFFMhxw2eUxpNZCf+TCC4UpPGgwSc13qBEoAqoimZ6TjQMVFT65b0jY/mzYreL0jiYLZ
+         lobVFH3mf0JyCv9WXST7C1PdUuZi+LUqyO7QLqvgD0+xI8n067maNVADGmVaFWj2gtzJ
+         B0u8j0rNA1tSxSqcnZd0RB07zZSzrZL5M7FdQVBl2eKk5wIQd7jhBfH7tTe4fN7b3ok3
+         OmOw==
+X-Gm-Message-State: AOAM530z0Ju4Kr/DTEdZjtOYO7gyjJ9zECRQY9YWPa4axfEIOSr06w2e
+        HJ8jHQ6MMxo5FCm1kslOCXcA6Nwz277wjBp4vNY=
+X-Google-Smtp-Source: ABdhPJxeCtZELHzh/eN+r1H8OvIWuyLlMYRmxN5E7i/PxhJA32jDX9ifKeJvKLA+9S4vUgJyfr3YqD6iuxcdMuevacM=
+X-Received: by 2002:a05:6402:26d5:: with SMTP id x21mr244262edd.50.1612468124243;
+ Thu, 04 Feb 2021 11:48:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CADnq5_N9QvgAKQMLeutA7oBo5W5XyttvNOMK_siOc6QL+H07jQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612465239; bh=ZRwFgdcQ21FKYiVXb0EIKpbgQVH1pjcxmfD2qtvFKCs=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=O62cwUSgaxuiTPjW3XH95lJXxP99XYlZmxq0IbYI/q5iy+lytfttykWVIg4zh/p79
-         YkpTFrnCNfdEc1GoIJB3TUshyMLqt7hPi6IOGykdN1wypmvoj8iCj1TgKFZxaTs9vF
-         DOuntKqUcV+wJjItWIdWvIynHDtrcN5xfNtqc0wMi496zKEuaR0NCb6IhN25JPC9++
-         lfCJjja90iS2hGwus5QNwCGw8isDOytKQsahv/rrnh7J6AP2dyjbyz923gycpufuX7
-         NcPu1IzdGV196RtO1PKnCTXP54JelRD40hEM+HS7qMt5F70KxK3fmRsrPNpdjBCue0
-         /dDRlSSEeqTHA==
+References: <161245786674.737759.8361822825753388908.stgit@manet.1015granger.net>
+In-Reply-To: <161245786674.737759.8361822825753388908.stgit@manet.1015granger.net>
+From:   Anna Schumaker <anna.schumaker@netapp.com>
+Date:   Thu, 4 Feb 2021 14:48:28 -0500
+Message-ID: <CAFX2Jfkovdfj9+OcVkHcUn8v4FP50CYRcyQ=qQiFqD4O+eTrJg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/6] RPC/RDMA client fixes
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        List Linux RDMA Mailing <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/4/21 10:44 AM, Alex Deucher wrote:
-...
->>> The argument is that vram is a scarce resource, but I don't know if
->>> that is really the case these days.  At this point, we often have as
->>> much vram as system ram if not more.
->>
->> I thought the main argument was that GPU memory could move at any time
->> between the GPU and CPU and the DMA buf would always track its current
->> location?
-> 
-> I think the reason for that is that VRAM is scarce so we have to be
-> able to move it around.  We don't enforce the same limitations for
-> buffers in system memory.  We could just support pinning dma-bufs in
-> vram like we do with system ram.  Maybe with some conditions, e.g.,
-> p2p is possible, and the device has a large BAR so you aren't tying up
-> the BAR window.
-> 
+On Thu, Feb 4, 2021 at 2:29 PM Chuck Lever <chuck.lever@oracle.com> wrote:
+>
+> Hi Anna-
+>
+> I think these are ready for you.
 
-Excellent. And yes, we are already building systems in which VRAM is
-definitely not scarce, but on the other hand, those newer systems can
-also handle GPU (and NIC) page faults, so not really an issue. For that,
-we just need to enhance HMM so that it does peer to peer.
+Sounds good! I'll take a look at this version soon, and add it to my
+linux-next for the next merge window.
 
-We also have some older hardware with large BAR1 apertures, specifically
-for this sort of thing.
+Anna
 
-And again, for slightly older hardware, without pinning to VRAM there is
-no way to use this solution here for peer-to-peer. So I'm glad to see that
-so far you're not ruling out the pinning option.
-
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+>
+> Changes since v3:
+> - One minor source code clean up
+>
+> Changes since v2:
+> - Another minor optimization in rpcrdma_convert_kvec()
+> - Some patch description clarifications
+> - Add Reviewed-by (thanks Tom!)
+>
+> Changes since v1:
+> - Respond to review comments
+> - Split "Remove FMR support" into three patches for clarity
+> - Fix implicit chunk roundup
+> - Improve Receive completion tracepoints
+>
+> ---
+>
+> Chuck Lever (6):
+>       xprtrdma: Remove FMR support in rpcrdma_convert_iovs()
+>       xprtrdma: Simplify rpcrdma_convert_kvec() and frwr_map()
+>       xprtrdma: Refactor invocations of offset_in_page()
+>       rpcrdma: Fix comments about reverse-direction operation
+>       xprtrdma: Pad optimization, revisited
+>       rpcrdma: Capture bytes received in Receive completion tracepoints
+>
+>
+>  include/trace/events/rpcrdma.h             | 50 +++++++++++++++++++++-
+>  net/sunrpc/xprtrdma/backchannel.c          |  4 +-
+>  net/sunrpc/xprtrdma/frwr_ops.c             | 12 ++----
+>  net/sunrpc/xprtrdma/rpc_rdma.c             | 17 +++-----
+>  net/sunrpc/xprtrdma/svc_rdma_backchannel.c |  4 +-
+>  net/sunrpc/xprtrdma/xprt_rdma.h            | 15 ++++---
+>  6 files changed, 68 insertions(+), 34 deletions(-)
+>
+> --
+> Chuck Lever
+>
