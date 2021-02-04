@@ -2,116 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196AF30FC9B
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Feb 2021 20:27:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7EB30FC5D
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Feb 2021 20:18:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238172AbhBDRHv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Feb 2021 12:07:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54496 "EHLO mail.kernel.org"
+        id S239229AbhBDTOt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Feb 2021 14:14:49 -0500
+Received: from mga01.intel.com ([192.55.52.88]:43872 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238204AbhBDRAN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 4 Feb 2021 12:00:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 054E064F3C;
-        Thu,  4 Feb 2021 16:59:32 +0000 (UTC)
-Subject: [PATCH v4 6/6] rpcrdma: Capture bytes received in Receive completion
- tracepoints
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     anna.schumaker@netapp.com
-Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Date:   Thu, 04 Feb 2021 11:59:32 -0500
-Message-ID: <161245797223.737759.5121223683890760045.stgit@manet.1015granger.net>
-In-Reply-To: <161245786674.737759.8361822825753388908.stgit@manet.1015granger.net>
-References: <161245786674.737759.8361822825753388908.stgit@manet.1015granger.net>
-User-Agent: StGit/0.23-29-ga622f1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S239224AbhBDShE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 4 Feb 2021 13:37:04 -0500
+IronPort-SDR: xIgkWe/+bTY0EakmZ+xDka/j3E01gH35LJxsp8Szuge0sKgohlM8P5Pn9B7nHWOBWDkUxj10UN
+ 0r0jDXWPImOg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="200296765"
+X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
+   d="scan'208";a="200296765"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 10:35:59 -0800
+IronPort-SDR: j+dRb9PLVBUoh7FJsx0k36EEdQpWEK4QSHXT5iXFkllthevnVUzE+rPT7HKT8lJd0w1ViNuWHs
+ B5VKeC0bLPfA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
+   d="scan'208";a="580383232"
+Received: from cst-dev.jf.intel.com ([10.23.221.69])
+  by fmsmga006.fm.intel.com with ESMTP; 04 Feb 2021 10:35:58 -0800
+From:   Jianxin Xiong <jianxin.xiong@intel.com>
+To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Edward Srouji <edwards@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Ali Alnubani <alialnu@nvidia.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Emil Velikov <emil.l.velikov@gmail.com>
+Subject: [PATCH rdma-core 1/3] verbs: Fix gcc warnings when building for 32bit systems
+Date:   Thu,  4 Feb 2021 10:50:49 -0800
+Message-Id: <1612464651-54073-2-git-send-email-jianxin.xiong@intel.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1612464651-54073-1-git-send-email-jianxin.xiong@intel.com>
+References: <1612464651-54073-1-git-send-email-jianxin.xiong@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Make it easier to spot messages of an unusual size.
+Commit 6b0a3238289f ("verbs: Support dma-buf based memory region") caused
+a build failure when building for 32b systems with gcc:
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Acked-by: Tom Talpey <tom@talpey.com>
+$ mkdir build && cd build && CFLAGS="-m32" cmake -GNinja .. \
+  -DIOCTL_MODE=both -DNO_PYVERBS=1 -DENABLE_WERROR=1 && ninja
+...
+../libibverbs/cmd_mr.c: In function 'ibv_cmd_reg_dmabuf_mr':
+../libibverbs/cmd_mr.c:152:21: error: cast to pointer from integer of
+different size [-Werror=int-to-pointer-cast]
+  vmr->ibv_mr.addr = (void *)offset;
+...
+../libibverbs/verbs.c: In function 'ibv_reg_dmabuf_mr':
+../libibverbs/verbs.c:387:13: error: cast to pointer from integer of
+different size [-Werror=int-to-pointer-cast]
+  mr->addr = (void *)offset;
+...
+
+Reported-by: Ali Alnubani <alialnu@nvidia.com>
+Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
 ---
- include/trace/events/rpcrdma.h |   50 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 48 insertions(+), 2 deletions(-)
+ libibverbs/cmd_mr.c | 2 +-
+ libibverbs/verbs.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/trace/events/rpcrdma.h b/include/trace/events/rpcrdma.h
-index 76e85e16854b..c838e7ac1c2d 100644
---- a/include/trace/events/rpcrdma.h
-+++ b/include/trace/events/rpcrdma.h
-@@ -60,6 +60,51 @@ DECLARE_EVENT_CLASS(rpcrdma_completion_class,
- 				),					\
- 				TP_ARGS(wc, cid))
+diff --git a/libibverbs/cmd_mr.c b/libibverbs/cmd_mr.c
+index af0fad7..736fce0 100644
+--- a/libibverbs/cmd_mr.c
++++ b/libibverbs/cmd_mr.c
+@@ -149,7 +149,7 @@ int ibv_cmd_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset, size_t length,
+ 	vmr->ibv_mr.lkey = lkey;
+ 	vmr->ibv_mr.rkey = rkey;
+ 	vmr->ibv_mr.pd = pd;
+-	vmr->ibv_mr.addr = (void *)offset;
++	vmr->ibv_mr.addr = (void *)(uintptr_t)offset;
+ 	vmr->ibv_mr.length = length;
+ 	vmr->mr_type = IBV_MR_TYPE_DMABUF_MR;
+ 	return 0;
+diff --git a/libibverbs/verbs.c b/libibverbs/verbs.c
+index b93046a..f666695 100644
+--- a/libibverbs/verbs.c
++++ b/libibverbs/verbs.c
+@@ -384,7 +384,7 @@ struct ibv_mr *ibv_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset,
  
-+DECLARE_EVENT_CLASS(rpcrdma_receive_completion_class,
-+	TP_PROTO(
-+		const struct ib_wc *wc,
-+		const struct rpc_rdma_cid *cid
-+	),
-+
-+	TP_ARGS(wc, cid),
-+
-+	TP_STRUCT__entry(
-+		__field(u32, cq_id)
-+		__field(int, completion_id)
-+		__field(u32, received)
-+		__field(unsigned long, status)
-+		__field(unsigned int, vendor_err)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->cq_id = cid->ci_queue_id;
-+		__entry->completion_id = cid->ci_completion_id;
-+		__entry->status = wc->status;
-+		if (wc->status) {
-+			__entry->received = 0;
-+			__entry->vendor_err = wc->vendor_err;
-+		} else {
-+			__entry->received = wc->byte_len;
-+			__entry->vendor_err = 0;
-+		}
-+	),
-+
-+	TP_printk("cq.id=%u cid=%d status=%s (%lu/0x%x) received=%u",
-+		__entry->cq_id, __entry->completion_id,
-+		rdma_show_wc_status(__entry->status),
-+		__entry->status, __entry->vendor_err,
-+		__entry->received
-+	)
-+);
-+
-+#define DEFINE_RECEIVE_COMPLETION_EVENT(name)				\
-+		DEFINE_EVENT(rpcrdma_receive_completion_class, name,	\
-+				TP_PROTO(				\
-+					const struct ib_wc *wc,		\
-+					const struct rpc_rdma_cid *cid	\
-+				),					\
-+				TP_ARGS(wc, cid))
-+
- DECLARE_EVENT_CLASS(xprtrdma_reply_class,
- 	TP_PROTO(
- 		const struct rpcrdma_rep *rep
-@@ -838,7 +883,8 @@ TRACE_EVENT(xprtrdma_post_linv_err,
-  ** Completion events
-  **/
- 
--DEFINE_COMPLETION_EVENT(xprtrdma_wc_receive);
-+DEFINE_RECEIVE_COMPLETION_EVENT(xprtrdma_wc_receive);
-+
- DEFINE_COMPLETION_EVENT(xprtrdma_wc_send);
- DEFINE_COMPLETION_EVENT(xprtrdma_wc_fastreg);
- DEFINE_COMPLETION_EVENT(xprtrdma_wc_li);
-@@ -1790,7 +1836,7 @@ TRACE_EVENT(svcrdma_post_recv,
- 	)
- );
- 
--DEFINE_COMPLETION_EVENT(svcrdma_wc_receive);
-+DEFINE_RECEIVE_COMPLETION_EVENT(svcrdma_wc_receive);
- 
- TRACE_EVENT(svcrdma_rq_post_err,
- 	TP_PROTO(
-
+ 	mr->context = pd->context;
+ 	mr->pd = pd;
+-	mr->addr = (void *)offset;
++	mr->addr = (void *)(uintptr_t)offset;
+ 	mr->length = length;
+ 	return mr;
+ }
+-- 
+1.8.3.1
 
