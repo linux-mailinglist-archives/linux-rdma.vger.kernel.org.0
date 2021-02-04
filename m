@@ -2,23 +2,24 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B10A30F8E3
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Feb 2021 18:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C3D30F927
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Feb 2021 18:11:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238284AbhBDRAL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Feb 2021 12:00:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54412 "EHLO mail.kernel.org"
+        id S237582AbhBDRH6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Feb 2021 12:07:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238258AbhBDRAB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        id S238259AbhBDRAB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
         Thu, 4 Feb 2021 12:00:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE8BF64F74;
-        Thu,  4 Feb 2021 16:59:01 +0000 (UTC)
-Subject: [PATCH v4 1/6] xprtrdma: Remove FMR support in rpcrdma_convert_iovs()
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 047BD64F70;
+        Thu,  4 Feb 2021 16:59:07 +0000 (UTC)
+Subject: [PATCH v4 2/6] xprtrdma: Simplify rpcrdma_convert_kvec() and
+ frwr_map()
 From:   Chuck Lever <chuck.lever@oracle.com>
 To:     anna.schumaker@netapp.com
 Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Date:   Thu, 04 Feb 2021 11:59:01 -0500
-Message-ID: <161245794108.737759.13406954883302279304.stgit@manet.1015granger.net>
+Date:   Thu, 04 Feb 2021 11:59:07 -0500
+Message-ID: <161245794724.737759.7163054588613677023.stgit@manet.1015granger.net>
 In-Reply-To: <161245786674.737759.8361822825753388908.stgit@manet.1015granger.net>
 References: <161245786674.737759.8361822825753388908.stgit@manet.1015granger.net>
 User-Agent: StGit/0.23-29-ga622f1
@@ -29,69 +30,77 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Support for FMR was removed by commit ba69cd122ece ("xprtrdma:
-Remove support for FMR memory registration") [Dec 2018]. That means
-the buffer-splitting behavior of rpcrdma_convert_kvec(), added by
-commit 821c791a0bde ("xprtrdma: Segment head and tail XDR buffers
-on page boundaries") [Mar 2016], is no longer necessary. FRWR
-memory registration handles this case with aplomb.
+Clean up.
+
+Remove a conditional branch from the SGL set-up loop in frwr_map():
+Instead of using either sg_set_page() or sg_set_buf(), initialize
+the mr_page field properly when rpcrdma_convert_kvec() converts the
+kvec to an SGL entry. frwr_map() can then invoke sg_set_page()
+unconditionally.
 
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Reviewed-by: Tom Talpey <tom@talpey.com>
 ---
- net/sunrpc/xprtrdma/rpc_rdma.c |   27 +++++++--------------------
- 1 file changed, 7 insertions(+), 20 deletions(-)
+ net/sunrpc/xprtrdma/frwr_ops.c  |   12 ++++--------
+ net/sunrpc/xprtrdma/rpc_rdma.c  |    2 +-
+ net/sunrpc/xprtrdma/xprt_rdma.h |    9 +++++----
+ 3 files changed, 10 insertions(+), 13 deletions(-)
 
+diff --git a/net/sunrpc/xprtrdma/frwr_ops.c b/net/sunrpc/xprtrdma/frwr_ops.c
+index baca49fe83af..13a50f77dddb 100644
+--- a/net/sunrpc/xprtrdma/frwr_ops.c
++++ b/net/sunrpc/xprtrdma/frwr_ops.c
+@@ -306,14 +306,10 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt *r_xprt,
+ 	if (nsegs > ep->re_max_fr_depth)
+ 		nsegs = ep->re_max_fr_depth;
+ 	for (i = 0; i < nsegs;) {
+-		if (seg->mr_page)
+-			sg_set_page(&mr->mr_sg[i],
+-				    seg->mr_page,
+-				    seg->mr_len,
+-				    offset_in_page(seg->mr_offset));
+-		else
+-			sg_set_buf(&mr->mr_sg[i], seg->mr_offset,
+-				   seg->mr_len);
++		sg_set_page(&mr->mr_sg[i],
++			    seg->mr_page,
++			    seg->mr_len,
++			    offset_in_page(seg->mr_offset));
+ 
+ 		++seg;
+ 		++i;
 diff --git a/net/sunrpc/xprtrdma/rpc_rdma.c b/net/sunrpc/xprtrdma/rpc_rdma.c
-index 8f5d0cb68360..57f9217048d8 100644
+index 57f9217048d8..b36b9aae0588 100644
 --- a/net/sunrpc/xprtrdma/rpc_rdma.c
 +++ b/net/sunrpc/xprtrdma/rpc_rdma.c
-@@ -204,9 +204,7 @@ rpcrdma_alloc_sparse_pages(struct xdr_buf *buf)
- 	return 0;
- }
- 
--/* Split @vec on page boundaries into SGEs. FMR registers pages, not
-- * a byte range. Other modes coalesce these SGEs into a single MR
-- * when they can.
-+/* Convert @vec to a single SGL element.
-  *
-  * Returns pointer to next available SGE, and bumps the total number
-  * of SGEs consumed.
-@@ -215,22 +213,11 @@ static struct rpcrdma_mr_seg *
+@@ -213,7 +213,7 @@ static struct rpcrdma_mr_seg *
  rpcrdma_convert_kvec(struct kvec *vec, struct rpcrdma_mr_seg *seg,
  		     unsigned int *n)
  {
--	u32 remaining, page_offset;
--	char *base;
--
--	base = vec->iov_base;
--	page_offset = offset_in_page(base);
--	remaining = vec->iov_len;
--	while (remaining) {
--		seg->mr_page = NULL;
--		seg->mr_offset = base;
--		seg->mr_len = min_t(u32, PAGE_SIZE - page_offset, remaining);
--		remaining -= seg->mr_len;
--		base += seg->mr_len;
--		++seg;
--		++(*n);
--		page_offset = 0;
--	}
-+	seg->mr_page = NULL;
-+	seg->mr_offset = vec->iov_base;
-+	seg->mr_len = vec->iov_len;
-+	++seg;
-+	++(*n);
- 	return seg;
- }
+-	seg->mr_page = NULL;
++	seg->mr_page = virt_to_page(vec->iov_base);
+ 	seg->mr_offset = vec->iov_base;
+ 	seg->mr_len = vec->iov_len;
+ 	++seg;
+diff --git a/net/sunrpc/xprtrdma/xprt_rdma.h b/net/sunrpc/xprtrdma/xprt_rdma.h
+index 94b28657aeeb..02971e183989 100644
+--- a/net/sunrpc/xprtrdma/xprt_rdma.h
++++ b/net/sunrpc/xprtrdma/xprt_rdma.h
+@@ -283,10 +283,11 @@ enum {
+ 				  RPCRDMA_MAX_IOV_SEGS,
+ };
  
-@@ -283,7 +270,7 @@ rpcrdma_convert_iovs(struct rpcrdma_xprt *r_xprt, struct xdr_buf *xdrbuf,
- 		goto out;
+-struct rpcrdma_mr_seg {		/* chunk descriptors */
+-	u32		mr_len;		/* length of chunk or segment */
+-	struct page	*mr_page;	/* owning page, if any */
+-	char		*mr_offset;	/* kva if no page, else offset */
++/* Arguments for DMA mapping and registration */
++struct rpcrdma_mr_seg {
++	u32		mr_len;		/* length of segment */
++	struct page	*mr_page;	/* underlying struct page */
++	char		*mr_offset;	/* IN: page offset, OUT: iova */
+ };
  
- 	if (xdrbuf->tail[0].iov_len)
--		seg = rpcrdma_convert_kvec(&xdrbuf->tail[0], seg, &n);
-+		rpcrdma_convert_kvec(&xdrbuf->tail[0], seg, &n);
- 
- out:
- 	if (unlikely(n > RPCRDMA_MAX_SEGS))
+ /* The Send SGE array is provisioned to send a maximum size
 
 
