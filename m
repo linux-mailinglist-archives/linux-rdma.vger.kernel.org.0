@@ -2,104 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7EB30FC5D
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Feb 2021 20:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6142830FC24
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Feb 2021 20:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239229AbhBDTOt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Feb 2021 14:14:49 -0500
-Received: from mga01.intel.com ([192.55.52.88]:43872 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239224AbhBDShE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:37:04 -0500
-IronPort-SDR: xIgkWe/+bTY0EakmZ+xDka/j3E01gH35LJxsp8Szuge0sKgohlM8P5Pn9B7nHWOBWDkUxj10UN
- 0r0jDXWPImOg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="200296765"
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="200296765"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 10:35:59 -0800
-IronPort-SDR: j+dRb9PLVBUoh7FJsx0k36EEdQpWEK4QSHXT5iXFkllthevnVUzE+rPT7HKT8lJd0w1ViNuWHs
- B5VKeC0bLPfA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="580383232"
-Received: from cst-dev.jf.intel.com ([10.23.221.69])
-  by fmsmga006.fm.intel.com with ESMTP; 04 Feb 2021 10:35:58 -0800
-From:   Jianxin Xiong <jianxin.xiong@intel.com>
-To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
+        id S239498AbhBDTBa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Feb 2021 14:01:30 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13170 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239485AbhBDTBT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Feb 2021 14:01:19 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601c44570001>; Thu, 04 Feb 2021 11:00:39 -0800
+Received: from MacBook-Pro-10.local (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Feb
+ 2021 19:00:32 +0000
+Subject: Re: [PATCH v16 0/4] RDMA: Add dma-buf support
+To:     Alex Deucher <alexdeucher@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+CC:     Jianxin Xiong <jianxin.xiong@intel.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
         Leon Romanovsky <leon@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
         Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Edward Srouji <edwards@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Ali Alnubani <alialnu@nvidia.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>
-Subject: [PATCH rdma-core 1/3] verbs: Fix gcc warnings when building for 32bit systems
-Date:   Thu,  4 Feb 2021 10:50:49 -0800
-Message-Id: <1612464651-54073-2-git-send-email-jianxin.xiong@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1612464651-54073-1-git-send-email-jianxin.xiong@intel.com>
-References: <1612464651-54073-1-git-send-email-jianxin.xiong@intel.com>
+        Doug Ledford <dledford@redhat.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+References: <1608067636-98073-1-git-send-email-jianxin.xiong@intel.com>
+ <5e4ac17d-1654-9abc-9a14-bda223d62866@nvidia.com>
+ <CADnq5_M2YuOv16E2DG6sCPtL=z5SDDrN+y7iwD_pHVc7Omyrmw@mail.gmail.com>
+ <20210204182923.GL4247@nvidia.com>
+ <CADnq5_N9QvgAKQMLeutA7oBo5W5XyttvNOMK_siOc6QL+H07jQ@mail.gmail.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <8e731fce-95c1-4ace-d8bc-dc0df7432d22@nvidia.com>
+Date:   Thu, 4 Feb 2021 11:00:32 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <CADnq5_N9QvgAKQMLeutA7oBo5W5XyttvNOMK_siOc6QL+H07jQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612465239; bh=ZRwFgdcQ21FKYiVXb0EIKpbgQVH1pjcxmfD2qtvFKCs=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=O62cwUSgaxuiTPjW3XH95lJXxP99XYlZmxq0IbYI/q5iy+lytfttykWVIg4zh/p79
+         YkpTFrnCNfdEc1GoIJB3TUshyMLqt7hPi6IOGykdN1wypmvoj8iCj1TgKFZxaTs9vF
+         DOuntKqUcV+wJjItWIdWvIynHDtrcN5xfNtqc0wMi496zKEuaR0NCb6IhN25JPC9++
+         lfCJjja90iS2hGwus5QNwCGw8isDOytKQsahv/rrnh7J6AP2dyjbyz923gycpufuX7
+         NcPu1IzdGV196RtO1PKnCTXP54JelRD40hEM+HS7qMt5F70KxK3fmRsrPNpdjBCue0
+         /dDRlSSEeqTHA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Commit 6b0a3238289f ("verbs: Support dma-buf based memory region") caused
-a build failure when building for 32b systems with gcc:
-
-$ mkdir build && cd build && CFLAGS="-m32" cmake -GNinja .. \
-  -DIOCTL_MODE=both -DNO_PYVERBS=1 -DENABLE_WERROR=1 && ninja
+On 2/4/21 10:44 AM, Alex Deucher wrote:
 ...
-../libibverbs/cmd_mr.c: In function 'ibv_cmd_reg_dmabuf_mr':
-../libibverbs/cmd_mr.c:152:21: error: cast to pointer from integer of
-different size [-Werror=int-to-pointer-cast]
-  vmr->ibv_mr.addr = (void *)offset;
-...
-../libibverbs/verbs.c: In function 'ibv_reg_dmabuf_mr':
-../libibverbs/verbs.c:387:13: error: cast to pointer from integer of
-different size [-Werror=int-to-pointer-cast]
-  mr->addr = (void *)offset;
-...
+>>> The argument is that vram is a scarce resource, but I don't know if
+>>> that is really the case these days.  At this point, we often have as
+>>> much vram as system ram if not more.
+>>
+>> I thought the main argument was that GPU memory could move at any time
+>> between the GPU and CPU and the DMA buf would always track its current
+>> location?
+> 
+> I think the reason for that is that VRAM is scarce so we have to be
+> able to move it around.  We don't enforce the same limitations for
+> buffers in system memory.  We could just support pinning dma-bufs in
+> vram like we do with system ram.  Maybe with some conditions, e.g.,
+> p2p is possible, and the device has a large BAR so you aren't tying up
+> the BAR window.
+> 
 
-Reported-by: Ali Alnubani <alialnu@nvidia.com>
-Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
----
- libibverbs/cmd_mr.c | 2 +-
- libibverbs/verbs.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Excellent. And yes, we are already building systems in which VRAM is
+definitely not scarce, but on the other hand, those newer systems can
+also handle GPU (and NIC) page faults, so not really an issue. For that,
+we just need to enhance HMM so that it does peer to peer.
 
-diff --git a/libibverbs/cmd_mr.c b/libibverbs/cmd_mr.c
-index af0fad7..736fce0 100644
---- a/libibverbs/cmd_mr.c
-+++ b/libibverbs/cmd_mr.c
-@@ -149,7 +149,7 @@ int ibv_cmd_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset, size_t length,
- 	vmr->ibv_mr.lkey = lkey;
- 	vmr->ibv_mr.rkey = rkey;
- 	vmr->ibv_mr.pd = pd;
--	vmr->ibv_mr.addr = (void *)offset;
-+	vmr->ibv_mr.addr = (void *)(uintptr_t)offset;
- 	vmr->ibv_mr.length = length;
- 	vmr->mr_type = IBV_MR_TYPE_DMABUF_MR;
- 	return 0;
-diff --git a/libibverbs/verbs.c b/libibverbs/verbs.c
-index b93046a..f666695 100644
---- a/libibverbs/verbs.c
-+++ b/libibverbs/verbs.c
-@@ -384,7 +384,7 @@ struct ibv_mr *ibv_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset,
- 
- 	mr->context = pd->context;
- 	mr->pd = pd;
--	mr->addr = (void *)offset;
-+	mr->addr = (void *)(uintptr_t)offset;
- 	mr->length = length;
- 	return mr;
- }
+We also have some older hardware with large BAR1 apertures, specifically
+for this sort of thing.
+
+And again, for slightly older hardware, without pinning to VRAM there is
+no way to use this solution here for peer-to-peer. So I'm glad to see that
+so far you're not ruling out the pinning option.
+
+
+
+thanks,
 -- 
-1.8.3.1
-
+John Hubbard
+NVIDIA
