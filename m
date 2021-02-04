@@ -2,197 +2,458 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2472430E78A
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Feb 2021 00:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0C830E854
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Feb 2021 01:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232458AbhBCXiK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Feb 2021 18:38:10 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12351 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232322AbhBCXiJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Feb 2021 18:38:09 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601b33b80001>; Wed, 03 Feb 2021 15:37:28 -0800
-Received: from [10.2.50.90] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 3 Feb
- 2021 23:37:27 +0000
-Subject: Re: [PATCH 3/4] mm/gup: add a range variant of
- unpin_user_pages_dirty_lock()
-To:     Joao Martins <joao.m.martins@oracle.com>, <linux-mm@kvack.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20210203220025.8568-1-joao.m.martins@oracle.com>
- <20210203220025.8568-4-joao.m.martins@oracle.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <5e372e25-7202-e0b6-0763-d267698db5b6@nvidia.com>
-Date:   Wed, 3 Feb 2021 15:37:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
+        id S233506AbhBDALZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Feb 2021 19:11:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33266 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233331AbhBDALX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 3 Feb 2021 19:11:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3E8164F4C;
+        Thu,  4 Feb 2021 00:10:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612397442;
+        bh=KuL8gT/46wSZPMGk1dXKfNuH3BHVZp8R6sObJbm7utE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=FTDYgvs/HKwBIA3eB89fUbFH5rlzqGznNRsWJJQyZDOpCXXtcOqg8zVA2znJuUF5y
+         UVEbP1ZLn8tHXtt995tlgfN8NcIHj8jn94FzBy4Lfk0sojJVzNTlrT7iG6xM8fqNJ5
+         bn27lwoEApKV3ePH2fw6I0K4hzihqmbJGXhsfieTFDHsptM5x4Wxtp+w4Dr8idO8QW
+         FSaLFMAXVmg6+Na5gU8XYnnaETEz/cSgc3tL2ngbFjmTggf5QDWBDOQcEQVOpjv4xm
+         8G4JvyyB0whExLjsCKtISAeYeylJihw4Uj+vyFQEp+vylw2xAiCjpmsmhvCWFQVHq2
+         cltjmPW/BBQug==
+Date:   Wed, 3 Feb 2021 18:10:39 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH mlx5-next v5 1/4] PCI: Add sysfs callback to allow MSI-X
+ table size change of SR-IOV VFs
+Message-ID: <20210204001039.GA16871@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210203220025.8568-4-joao.m.martins@oracle.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612395448; bh=qmULijZhnU2V5sy1R2oqyUqss+1cKK98EBpQ9ju3bbA=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=sRmiPr89EHkBrP1GmMCoZXLqZ8VNSxITNjBQAusN3GvzxUWFBhrL2lcJWkF2P+kIy
-         9l/L96pp283mqBsKXSdXMP0B7cEfRLetUuITXjeswSnr8XLx0P4/UIvKie54tKU1mf
-         RpmbXU9qWq5buJRRakkHwQhFKSy9loIcIm/yezE7DT0hw6LsMEcHUL4OVD68nONe+4
-         5yc2+k/QQrp9pk3u0lIFjE8/A8jeBAMHka7l5ndPFJtTbRlCzg3Nzc/W6CJBNCIGM6
-         vnm3YQcA8HDupkLPIGStYq25sRtz4qCPmfPCh2wom3KbLqf+xlQhZr8JM0Iq56otyK
-         dKoU440SkQ1xA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202194429.GH3264866@unreal>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/3/21 2:00 PM, Joao Martins wrote:
-> Add a unpin_user_page_range() API which takes a starting page
-> and how many consecutive pages we want to dirty.
+On Tue, Feb 02, 2021 at 09:44:29PM +0200, Leon Romanovsky wrote:
+> On Tue, Feb 02, 2021 at 12:06:09PM -0600, Bjorn Helgaas wrote:
+> > On Tue, Jan 26, 2021 at 10:57:27AM +0200, Leon Romanovsky wrote:
+> > > From: Leon Romanovsky <leonro@nvidia.com>
+> > >
+> > > Extend PCI sysfs interface with a new callback that allows
+> > > configure the number of MSI-X vectors for specific SR-IO VF.
+> > > This is needed to optimize the performance of newly bound
+> > > devices by allocating the number of vectors based on the
+> > > administrator knowledge of targeted VM.
+> >
+> > I'm reading between the lines here, but IIUC the point is that you
+> > have a PF that supports a finite number of MSI-X vectors for use
+> > by all the VFs, and this interface is to control the distribution
+> > of those MSI-X vectors among the VFs.
 > 
-> Given that we won't be iterating on a list of changes, change
-> compound_next() to receive a bool, whether to calculate from the starting
-> page, or walk the page array. Finally add a separate iterator,
-
-A bool arg is sometimes, but not always, a hint that you really just want
-a separate set of routines. Below...
-
-> for_each_compound_range() that just operate in page ranges as opposed
-> to page array.
+> The MSI-X is HW resource, all devices in the world have limitation
+> here.
+>
+> > > This function is applicable for SR-IOV VF because such devices
+> > > allocate their MSI-X table before they will run on the VMs and
+> > > HW can't guess the right number of vectors, so the HW allocates
+> > > them statically and equally.
+> >
+> > This is written in a way that suggests this is behavior required
+> > by the PCIe spec.  If it is indeed related to something in the
+> > spec, please cite it.
 > 
-> For users (like RDMA mr_dereg) where each sg represents a
-> contiguous set of pages, we're able to more efficiently unpin
-> pages without having to supply an array of pages much of what
-> happens today with unpin_user_pages().
+> Spec doesn't say it directly, but you will need to really hurt brain
+> of your users if you decide to do it differently. You have one
+> enable bit to create all VFs at the same time without any option to
+> configure them in advance.
 > 
-> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
-> ---
->   include/linux/mm.h |  2 ++
->   mm/gup.c           | 48 ++++++++++++++++++++++++++++++++++++++--------
->   2 files changed, 42 insertions(+), 8 deletions(-)
+> Of course, you can create some partition map, upload it to FW and
+> create from there.
+
+Of course all devices have limitations.  But let's add some details
+about the way *this* device works.  That will help avoid giving the
+impression that this is the *only* way spec-conforming devices can
+work.
+
+> > "such devices allocate their MSI-X table before they will run on
+> > the VMs": Let's be specific here.  This MSI-X Table allocation
+> > apparently doesn't happen when we set VF Enable in the PF, because
+> > these sysfs files are attached to the VFs, which don't exist yet.
+> > It's not the VF driver binding, because that's a software
+> > construct.  What is the hardware event that triggers the
+> > allocation?
 > 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index a608feb0d42e..b76063f7f18a 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -1265,6 +1265,8 @@ static inline void put_page(struct page *page)
->   void unpin_user_page(struct page *page);
->   void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
->   				 bool make_dirty);
-> +void unpin_user_page_range_dirty_lock(struct page *page, unsigned long npages,
-> +				      bool make_dirty);
->   void unpin_user_pages(struct page **pages, unsigned long npages);
->   
->   /**
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 971a24b4b73f..1b57355d5033 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -215,11 +215,16 @@ void unpin_user_page(struct page *page)
->   }
->   EXPORT_SYMBOL(unpin_user_page);
->   
-> -static inline unsigned int count_ntails(struct page **pages, unsigned long npages)
-> +static inline unsigned int count_ntails(struct page **pages,
-> +					unsigned long npages, bool range)
->   {
-> -	struct page *head = compound_head(pages[0]);
-> +	struct page *page = pages[0], *head = compound_head(page);
->   	unsigned int ntails;
->   
-> +	if (range)
-> +		return (!PageCompound(head) || compound_order(head) <= 1) ? 1 :
-> +		   min_t(unsigned int, (head + compound_nr(head) - page), npages);
+> Write of MSI-X vector count to the FW through PF.
 
-Here, you clearly should use a separate set of _range routines. Because you're basically
-creating two different routines here! Keep it simple.
+This is an example of something that is obviously specific to this
+mlx5 device.  The Table Size field in Message Control is RO per spec,
+and obviously firmware on the device is completely outside the scope
+of the PCIe spec.
 
-Once you're in a separate routine, you might feel more comfortable expanding that to
-a more readable form, too:
+This commit log should describe how *this* device manages this
+allocation and how the PF Table Size and the VF Table Sizes are
+related.  Per PCIe, there is no necessary connection between them.
 
-	if (!PageCompound(head) || compound_order(head) <= 1)
-		return 1;
-
-	return min_t(unsigned int, (head + compound_nr(head) - page), npages);
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
-> +
->   	for (ntails = 1; ntails < npages; ntails++) {
->   		if (compound_head(pages[ntails]) != head)
->   			break;
-> @@ -229,20 +234,32 @@ static inline unsigned int count_ntails(struct page **pages, unsigned long npage
->   }
->   
->   static inline void compound_next(unsigned long i, unsigned long npages,
-> -				 struct page **list, struct page **head,
-> -				 unsigned int *ntails)
-> +				 struct page **list, bool range,
-> +				 struct page **head, unsigned int *ntails)
->   {
-> +	struct page *p, **next = &p;
-> +
->   	if (i >= npages)
->   		return;
->   
-> -	*ntails = count_ntails(list + i, npages - i);
-> -	*head = compound_head(list[i]);
-> +	if (range)
-> +		*next = *list + i;
-> +	else
-> +		next = list + i;
-> +
-> +	*ntails = count_ntails(next, npages - i, range);
-> +	*head = compound_head(*next);
->   }
->   
-> +#define for_each_compound_range(i, list, npages, head, ntails) \
-> +	for (i = 0, compound_next(i, npages, list, true, &head, &ntails); \
-> +	     i < npages; i += ntails, \
-> +	     compound_next(i, npages, list, true,  &head, &ntails))
-> +
->   #define for_each_compound_head(i, list, npages, head, ntails) \
-> -	for (i = 0, compound_next(i, npages, list, &head, &ntails); \
-> +	for (i = 0, compound_next(i, npages, list, false, &head, &ntails); \
->   	     i < npages; i += ntails, \
-> -	     compound_next(i, npages, list, &head, &ntails))
-> +	     compound_next(i, npages, list, false,  &head, &ntails))
->   
->   /**
->    * unpin_user_pages_dirty_lock() - release and optionally dirty gup-pinned pages
-> @@ -306,6 +323,21 @@ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
->   }
->   EXPORT_SYMBOL(unpin_user_pages_dirty_lock);
->   
-> +void unpin_user_page_range_dirty_lock(struct page *page, unsigned long npages,
-> +				      bool make_dirty)
-> +{
-> +	unsigned long index;
-> +	struct page *head;
-> +	unsigned int ntails;
-> +
-> +	for_each_compound_range(index, &page, npages, head, ntails) {
-> +		if (make_dirty && !PageDirty(head))
-> +			set_page_dirty_lock(head);
-> +		put_compound_head(head, ntails, FOLL_PIN);
-> +	}
-> +}
-> +EXPORT_SYMBOL(unpin_user_page_range_dirty_lock);
-> +
->   /**
->    * unpin_user_pages() - release an array of gup-pinned pages.
->    * @pages:  array of pages to be marked dirty and released.
+> > > cat /sys/bus/pci/devices/.../vfs_overlay/sriov_vf_total_msix
+> > >   = 0 - feature is not supported
+> > >   > 0 - total number of MSI-X vectors to consume by the VFs
+> >
+> > "total number of MSI-X vectors available for distribution among the
+> > VFs"?
 > 
+> Users need to be aware of how much vectors exist in the system.
+
+Understood -- if there's an interface to influence the distribution of
+vectors among VFs, one needs to know how many vectors there are to
+work with.
+
+My point was that "number of vectors to consume by VFs" is awkward
+wording, so I suggested an alternative.
+
+> > > +What:            /sys/bus/pci/devices/.../vfs_overlay/sriov_vf_msix_count
+> > > +Date:            January 2021
+> > > +Contact: Leon Romanovsky <leonro@nvidia.com>
+> > > +Description:
+> > > +         This file is associated with the SR-IOV VFs.
+> > > +         It allows configuration of the number of MSI-X vectors for
+> > > +         the VF. This is needed to optimize performance of newly bound
+> > > +         devices by allocating the number of vectors based on the
+> > > +         administrator knowledge of targeted VM.
+> > > +
+> > > +         The values accepted are:
+> > > +          * > 0 - this will be number reported by the VF's MSI-X
+> > > +                  capability
+> > > +          * < 0 - not valid
+> > > +          * = 0 - will reset to the device default value
+> > > +
+> > > +         The file is writable if the PF is bound to a driver that
+> > > +         set sriov_vf_total_msix > 0 and there is no driver bound
+> > > +         to the VF.
+
+Drivers don't actually set "sriov_vf_total_msix".  This should
+probably say something like "the PF is bound to a driver that
+implements ->sriov_set_msix_vec_count()."
+
+> > > +What:		/sys/bus/pci/devices/.../vfs_overlay/sriov_vf_total_msix
+> > > +Date:		January 2021
+> > > +Contact:	Leon Romanovsky <leonro@nvidia.com>
+> > > +Description:
+> > > +		This file is associated with the SR-IOV PFs.
+> > > +		It returns a total number of possible to configure MSI-X
+> > > +		vectors on the enabled VFs.
+> > > +
+> > > +		The values returned are:
+> > > +		 * > 0 - this will be total number possible to consume by VFs,
+> > > +		 * = 0 - feature is not supported
+
+Can you swap the order of these two files in the documentation?
+sriov_vf_total_msix is associated with the PF and logically precedes
+sriov_vf_msix_count, which is associated with VFs.
+
+Not sure the "= 0" description is necessary here.  If the value
+returned is the number of MSI-X vectors available for assignment to
+VFs, "0" is a perfectly legitimate value.  It just means there are
+none.  It doesn't need to be described separately.
+
+> > Do these filenames really need to contain both "sriov" and "vf"?
+> 
+> This is what I was asked at some point. In previous versions the name
+> was without "sriov".
+
+We currently have:
+
+  $ grep DEVICE_ATTR drivers/pci/iov.c
+  static DEVICE_ATTR_RO(sriov_totalvfs);
+  static DEVICE_ATTR_RW(sriov_numvfs);
+  static DEVICE_ATTR_RO(sriov_offset);
+  static DEVICE_ATTR_RO(sriov_stride);
+  static DEVICE_ATTR_RO(sriov_vf_device);
+  static DEVICE_ATTR_RW(sriov_drivers_autoprobe);
+
+If we put them in a new "vfs_overlay" directory, it seems like
+overkill to repeat the "vf" part, but I'm hoping the new files can end
+up next to these existing files.  In that case, I think it makes sense
+to include "sriov".  And it probably does make sense to include "vf"
+as well.
+
+> > Should these be next to the existing SR-IOV sysfs files, i.e., in or
+> > alongside sriov_dev_attr_group?
+> 
+> This was suggestion in previous versions. I didn't hear anyone
+> supporting it.
+
+Pointer to this discussion?  I'm not sure what value is added by a new
+directory.
+
+> > Hmmm, I see pci_enable_vfs_overlay() is called by the driver.  I don't
+> > really like that because then we're dependent on drivers to maintain
+> > the PCI sysfs hierarchy.  E.g., a driver might forget to call
+> > pci_disable_vfs_overlay(), and then a future driver load will fail.
+> > 
+> > Maybe this could be done with .is_visible() functions that call driver
+> > callbacks.
+> 
+> It was in previous versions too, but this solution allows PF to control
+> the VFs overlay dynamically.
+
+See below; I think it might be possible to do this dynamically even
+without pci_enable_vfs_overlay().
+
+> > > +int pci_enable_vfs_overlay(struct pci_dev *dev)
+> > > +{
+> > > +	struct pci_dev *virtfn;
+> > > +	int id, ret;
+> > > +
+> > > +	if (!dev->is_physfn || !dev->sriov->num_VFs)
+> > > +		return 0;
+> > > +
+> > > +	ret = sysfs_create_group(&dev->dev.kobj, &sriov_pf_dev_attr_group);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	for (id = 0; id < dev->sriov->num_VFs; id++) {
+> > > +		virtfn = pci_get_domain_bus_and_slot(
+> > > +			pci_domain_nr(dev->bus), pci_iov_virtfn_bus(dev, id),
+> > > +			pci_iov_virtfn_devfn(dev, id));
+> > > +
+> > > +		if (!virtfn)
+> > > +			continue;
+> > > +
+> > > +		ret = sysfs_create_group(&virtfn->dev.kobj,
+> > > +					 &sriov_vf_dev_attr_group);
+> > > +		if (ret)
+> > > +			goto out;
+> > > +	}
+> > > +	return 0;
+> > > +
+> > > +out:
+> > > +	while (id--) {
+> > > +		virtfn = pci_get_domain_bus_and_slot(
+> > > +			pci_domain_nr(dev->bus), pci_iov_virtfn_bus(dev, id),
+> > > +			pci_iov_virtfn_devfn(dev, id));
+> > > +
+> > > +		if (!virtfn)
+> > > +			continue;
+> > > +
+> > > +		sysfs_remove_group(&virtfn->dev.kobj, &sriov_vf_dev_attr_group);
+> > > +	}
+> > > +	sysfs_remove_group(&dev->dev.kobj, &sriov_pf_dev_attr_group);
+> > > +	return ret;
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(pci_enable_vfs_overlay);
+> > > +
+> > > +void pci_disable_vfs_overlay(struct pci_dev *dev)
+> > > +{
+> > > +	struct pci_dev *virtfn;
+> > > +	int id;
+> > > +
+> > > +	if (!dev->is_physfn || !dev->sriov->num_VFs)
+> > > +		return;
+> > > +
+> > > +	id = dev->sriov->num_VFs;
+> > > +	while (id--) {
+> > > +		virtfn = pci_get_domain_bus_and_slot(
+> > > +			pci_domain_nr(dev->bus), pci_iov_virtfn_bus(dev, id),
+> > > +			pci_iov_virtfn_devfn(dev, id));
+> > > +
+> > > +		if (!virtfn)
+> > > +			continue;
+> > > +
+> > > +		sysfs_remove_group(&virtfn->dev.kobj, &sriov_vf_dev_attr_group);
+> > > +	}
+> > > +	sysfs_remove_group(&dev->dev.kobj, &sriov_pf_dev_attr_group);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(pci_disable_vfs_overlay);
+> >
+> > I'm not convinced all this sysfs wrangling is necessary.  If it is,
+> > add a hint in a comment about why this is special and can't use
+> > something like sriov_dev_attr_group.
+> 
+> This makes the overlay to be PF-driven. Alexander insisted on this flow.
+
+If you're referring to [1], I think "insisted on this flow" might be
+an overstatement of what Alex was looking for.  IIUC Alex wants the
+sysfs files to be visible only when they're useful, i.e., when a
+driver implements ->sriov_set_msix_vec_count().
+
+That seems reasonable and also seems like something a smarter
+.is_visible() function could accomplish without having drivers call
+pci_enable_vfs_overlay(), e.g., maybe some variation of this:
+
+  static umode_t sriov_vf_attrs_are_visible(...)
+  {
+    if (!pdev->msix_cap || dev_is_pf(dev))
+      return 0;
+
+    pf = pci_physfn(pdev);
+    if (pf->driver && pf->driver->sriov_set_msix_vec_count)
+      return a->mode;
+
+    return 0;
+  }
+
+(Probably needs locking while we look at pf->driver, just like in
+pci_vf_set_msix_vec_count().)
+ 
+pci_enable_vfs_overlay() significantly complicates the code and it's
+the sort of sysfs code we're trying to avoid, so if we really do need
+it, please add a brief comment about *why* we have to do it that way.
+
+> > > +void pci_sriov_set_vf_total_msix(struct pci_dev *dev, u32 count)
+> > > +{
+> > > +	if (!dev->is_physfn)
+> > > +		return;
+> > > +
+> > > +	dev->sriov->vf_total_msix = count;
+> >
+> > The PCI core doesn't use vf_total_msix at all.  The driver, e.g.,
+> > mlx5, calls this, and all the PCI core does is hang onto the value and
+> > expose it via sysfs.  I think I'd rather have a callback in struct
+> > pci_driver and let the driver supply the value when needed.  I.e.,
+> > sriov_vf_total_msix_show() would call the callback instead of looking
+> > at pdev->sriov->vf_total_msix.
+> 
+> It will cause to unnecessary locking to ensure that driver doesn't
+> vanish during sysfs read. I can change, but don't think that it is right
+> decision.
+
+Doesn't sysfs already ensure the driver can't vanish while we're
+executing a DEVICE_ATTR accessor?
+
+> > > +int pci_vf_set_msix_vec_count(struct pci_dev *dev, int count)
+> > > +{
+> > > +	struct pci_dev *pdev = pci_physfn(dev);
+> > > +	int ret;
+> > > +
+> > > +	if (count < 0)
+> > > +		/*
+> > > +		 * We don't support negative numbers for now,
+> > > +		 * but maybe in the future it will make sense.
+> > > +		 */
+> >
+> > Drop the comment; I don't think it adds useful information.
+> >
+> > > +		return -EINVAL;
+> > > +
+> > > +	device_lock(&pdev->dev);
+> > > +	if (!pdev->driver) {
+> > > +		ret = -EOPNOTSUPP;
+> > > +		goto err_pdev;
+> > > +	}
+> > > +
+> > > +	device_lock(&dev->dev);
+> > > +	if (dev->driver) {
+> > > +		/*
+> > > +		 * Driver already probed this VF and configured itself
+> > > +		 * based on previously configured (or default) MSI-X vector
+> > > +		 * count. It is too late to change this field for this
+> > > +		 * specific VF.
+> > > +		 */
+> > > +		ret = -EBUSY;
+> > > +		goto err_dev;
+> > > +	}
+> > > +
+> > > +	ret = pdev->driver->sriov_set_msix_vec_count(dev, count);
+> >
+> > This looks like a NULL pointer dereference.
+> 
+> In current code, it is impossible, the call to pci_vf_set_msix_vec_count()
+> will be only for devices that supports sriov_vf_msix_count which is
+> possible with ->sriov_set_msix_vec_count() only.
+
+OK.  I think you're right, but it takes quite a lot of analysis to
+prove that right now.  If the .is_visible() function for
+sriov_vf_msix_count checked whether the driver implements
+->sriov_set_msix_vec_count(), it would be quite a bit easier,
+and it might even help get rid of pci_enable_vfs_overlay().
+
+Also, pci_vf_set_msix_vec_count() is in pci/msi.c, but AFAICT there's
+no actual *reason* for it to be there other than the fact that it has
+"msix" in the name.  It uses no MSI data structures.  Maybe it could
+be folded into sriov_vf_msix_count_store(), which would make the
+analysis even easier.
+
+> > > @@ -326,6 +327,9 @@ struct pci_sriov {
+> > >  	u16		subsystem_device; /* VF subsystem device */
+> > >  	resource_size_t	barsz[PCI_SRIOV_NUM_BARS];	/* VF BAR size */
+> > >  	bool		drivers_autoprobe; /* Auto probing of VFs by driver */
+> > > +	u32		vf_total_msix;  /* Total number of MSI-X vectors the VFs
+> > > +					 * can consume
+> > > +					 */
+> >
+> >   * can consume */
+> >
+> > Hopefully you can eliminate vf_total_msix altogether.
+> 
+> I think that will be worse from the flow point of view (extra locks)
+> and the memory if you are worried about it. This variable consumes 4
+> bytes, the pointer to the function will take 8 bytes.
+
+I'm not concerned about the space.  The function pointer is in struct
+pci_driver, whereas the variable is in struct pci_sriov, so the
+variable would likely consume more space because there are probably
+more VFs than pci_drivers.
+
+My bigger concern is that vf_total_msix is really *driver* state, not
+PCI core state, and I'd prefer if the PCI core were not responsible
+for it.
+
+> > > +++ b/include/linux/pci.h
+> > > @@ -856,6 +856,8 @@ struct module;
+> > >   *		e.g. drivers/net/e100.c.
+> > >   * @sriov_configure: Optional driver callback to allow configuration of
+> > >   *		number of VFs to enable via sysfs "sriov_numvfs" file.
+> > > + * @sriov_set_msix_vec_count: Driver callback to change number of MSI-X vectors
+> > > + *              exposed by the sysfs "vf_msix_vec" entry.
+> >
+> > "vf_msix_vec" is apparently stale?  There's no other reference in this
+> > patch.
+> >
+> > I think the important part is that this changes the number of vectors
+> > advertised in the VF's MSI-X Message Control register, which will be
+> > read when the VF driver enables MSI-X.
+> >
+> > If that's true, why would we expose this via a sysfs file?  We can
+> > easily read it via lspci.
+> 
+> I did it for feature complete, we don't need read of this sysfs.
+
+If you don't need this sysfs file, just remove it.  If you do need it,
+please update the "vf_msix_vec" so it's correct.  Also, clarify the
+description so we can tell that we're changing the Table Size VFs will
+see in their Message Control registers.
+
+> > > +static inline void pci_sriov_set_vf_total_msix(struct pci_dev *dev, u32 count) {}
+> >
+> > Also here.  Unless removing the space would make this fit in 80
+> > columns.
+> 
+> Yes, it is 80 columns without space.
+
+No, I don't think it is.  In an 80 column window, the result looks
+like:
+
+  static inline void pci_sriov_set_vf_total_msix(...) {
+  }
+
+Please change it so it looks like this so it matches the rest of the
+file:
+
+  static inline void pci_sriov_set_vf_total_msix(...)
+  { }
+
+Bjorn
+
+[1] https://lore.kernel.org/r/CAKgT0UcJQ3uy6J_CCLizDLfzGL2saa_PjOYH4nK+RQjfmpNA=w@mail.gmail.com
