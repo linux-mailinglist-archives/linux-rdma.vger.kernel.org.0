@@ -2,123 +2,204 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28B330FD91
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Feb 2021 21:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5763A30FE37
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Feb 2021 21:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239774AbhBDUBu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Feb 2021 15:01:50 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18224 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239977AbhBDUBS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Feb 2021 15:01:18 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601c52620000>; Thu, 04 Feb 2021 12:00:34 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Feb
- 2021 20:00:34 +0000
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (104.47.45.53) by
- HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 4 Feb 2021 20:00:34 +0000
+        id S239358AbhBDU0L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Feb 2021 15:26:11 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:36724 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240021AbhBDU0F (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Feb 2021 15:26:05 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 114KK2Ij136559;
+        Thu, 4 Feb 2021 20:25:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2020-01-29; bh=z8XNkIOJB3++sM2ChemHCEjB8h4QyKCc45ubyIZXMlI=;
+ b=SDPprUl+6GoJGETxm8v5Ow9fL9U/vndE2p2lRaaiGbd7Q2KL1PWrbO/BKPPQoaJH4tFE
+ GQkbizq72nzC34PttGepfEGN94Ixkni0cF2YYqztjnbXZqGnX4rZTj1lP65XlJm8Ju6f
+ cZjR8dLWEtLq2WEVqXuSLKlSVXySw4Gdj+PiP52diz8qiRecauSDQWJziJV6D1EZO+72
+ reucc8dqIYcGgek3kIL2nsVlvI/P2mk7whyTuwBTDd3QRagLEEYmMlpxw2LerzAbco9S
+ fPp6zDzlH0Nvp5+0/5+d9jjIjN8co4RwZhjGGKNR1Cv+6jgwFbRiZpwf30H8yQHxQ1NW AA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 36cvyb781w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Feb 2021 20:25:12 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 114KF7iA155864;
+        Thu, 4 Feb 2021 20:25:12 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2048.outbound.protection.outlook.com [104.47.66.48])
+        by aserp3020.oracle.com with ESMTP id 36dhc369rn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Feb 2021 20:25:11 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lajgb74IV/h6u+h6hVuXAi7d7n4S2sQf4DGig8OtQ/8P5a46SJZL2HoHrGscK04AeyQ2CYYQb/gQAO2VR69Bp0FjRRHR3O8wkHRerY56dw2YTnEVclkfy/o6oSRdRMnQ+dqS7QuZsVOGxkMJ9nWZtEgLeJlAsFMJL1rbX1Sh/AmZOCQmNvrXoD2S7Zhm2Pw77OBr+i0tJrHCcRylrIt/NZ5HS+dUE2OOQ/HaaE/TXZnGW3c5Z6pDqwpNZEWsOQCTDSYff+6Fg/GaHlF0vmy32BqDIZsVVr/yHrJU1J/FMGnJKo+C7r+JPucKsK6Yy2/8On9kFqT4v8ouvFktgSCZAA==
+ b=d3fCTkIox016spxStxZ1cT8ElB1mXXpdDv8TPx4sQS7FoPV9IFZ8hquV67FnNO4tzxhWdFeZB5LjQOn3Uumrx2ExDL74KaKfgcc0gR3F9SsfFvKfBaDt1aWANUve2DFqdWzYC9KzWLmMKvmuZjO/KbEJsi2SmeZC8fB+ZkpODpOzrv9Tnoe5RU5mLf83HTHgatKLcMAXOZ+gKhfZsGTJS0oGYMkQb48VcRy99Osj/7FLIN2XznKXZrtrMZYYIN1EOHNAW4rVj8UdCkiAfbm3iCb8OVHan73ZptwtYAhTpc25oiI0PnqtChnDNvLPSkM5VyB+PIhZl/HHq/leBcZ9RQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Blxpv9wdIhTHV/SuxJJuCyToGqkciL5tkr9faNzzCsc=;
- b=UZoNTTaUry0hBJJI6kUFZhMG1TAhKWMXPCEia3zDXarBVWbiEN7BHAu6qu7EgqtRHP9eyJdej/TsE/3PRYLBE0Xa/X0Nv5uDumAbK4FoMbIsKcXFLUWwwD5242oBFnC6zc6W/0V+UbdXbpUgrEvqgQQ1tj8IFF4tHsbgCUmxQlbpJbgCLj/AjdfihJ+lpKTzWFli8Cs01aeae6p4ZNdUUndSziLVgKypDQ/j9QkgwLU/dy0WIBW2vzFd6Jg4az46HdXnfErCiVnfrA5w12CB1ERH4lgx8CP5KLEZBBC7+rmHEyS7HyRMDqs7VBsoMu8HRP73LrBdV2bJMDM+9LWBMw==
+ bh=z8XNkIOJB3++sM2ChemHCEjB8h4QyKCc45ubyIZXMlI=;
+ b=Z4alHHLiZDlVR52z7G59T3gl/KsZa3v+p4wF0XCD2OKM3nvu3fS20sYsNUBlmsI+U/c/nd4BTw2FqD+/wNORDqdeDXBWmPAwK+TVGVkEpNa+MbIHI8wTc0dQzf4Xs+uyBToGSHwZFKtdS0VqIpdFtl7ffjGX93XbSqghunQKCnG9sGwnfMdbCm9nFtVC8saVOgTBmDfyBeJpoE/ex/Q+z9EHEQonWuc5dP3dPumJHMWLmOjerHxDyJjZmpG5lVUPgejVcyduTpxvQkZ2C0Ze0bJhAuBoqrlnX+zg91Jvy8FVudMCTpd1nPeJpuQWxjWxql9KGVeGfDGS81NIAFWXLg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3402.namprd12.prod.outlook.com (2603:10b6:5:3b::11) with
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z8XNkIOJB3++sM2ChemHCEjB8h4QyKCc45ubyIZXMlI=;
+ b=gYTsCWRXDwTOHJyhJpxBWYupOSM3RgthOV8i4QrrHHGaIBI1xOqq6SnkMg/Qli5geRVKqoOT69aSiYUSKtO0L/mjNZxPKZnVht/OcHx7eDxj/MPj81KbbKsdBceAycV9YsRsR7q49irMo0nVfn0hdOGQd3Ejex+0Shue93OQdXs=
+Authentication-Results: kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB3077.namprd10.prod.outlook.com (2603:10b6:a03:8c::12)
+ by BY5PR10MB4114.namprd10.prod.outlook.com (2603:10b6:a03:211::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17; Thu, 4 Feb
- 2021 20:00:28 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3805.033; Thu, 4 Feb 2021
- 20:00:28 +0000
-Date:   Thu, 4 Feb 2021 16:00:26 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-CC:     Joao Martins <joao.m.martins@oracle.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.19; Thu, 4 Feb
+ 2021 20:25:09 +0000
+Received: from BYAPR10MB3077.namprd10.prod.outlook.com
+ ([fe80::74a8:8649:e20b:d571]) by BYAPR10MB3077.namprd10.prod.outlook.com
+ ([fe80::74a8:8649:e20b:d571%7]) with mapi id 15.20.3805.024; Thu, 4 Feb 2021
+ 20:25:09 +0000
+From:   Joao Martins <joao.m.martins@oracle.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         Doug Ledford <dledford@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 4/4] RDMA/umem: batch page unpin in __ib_mem_release()
-Message-ID: <20210204200026.GP4247@nvidia.com>
-References: <20210203220025.8568-1-joao.m.martins@oracle.com>
- <20210203220025.8568-5-joao.m.martins@oracle.com>
- <4ed92932-8cf2-97ab-7296-6efee51fc555@nvidia.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <4ed92932-8cf2-97ab-7296-6efee51fc555@nvidia.com>
-X-ClientProxiedBy: BL1PR13CA0432.namprd13.prod.outlook.com
- (2603:10b6:208:2c3::17) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        John Hubbard <jhubbard@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Joao Martins <joao.m.martins@oracle.com>
+Subject: [PATCH v2 0/4] mm/gup: page unpining improvements
+Date:   Thu,  4 Feb 2021 20:24:56 +0000
+Message-Id: <20210204202500.26474-1-joao.m.martins@oracle.com>
+X-Mailer: git-send-email 2.11.0
+Content-Type: text/plain
+X-Originating-IP: [94.61.1.144]
+X-ClientProxiedBy: LO2P123CA0104.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:139::19) To BYAPR10MB3077.namprd10.prod.outlook.com
+ (2603:10b6:a03:8c::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0432.namprd13.prod.outlook.com (2603:10b6:208:2c3::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.16 via Frontend Transport; Thu, 4 Feb 2021 20:00:28 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l7kni-003anf-TF; Thu, 04 Feb 2021 16:00:26 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612468835; bh=Blxpv9wdIhTHV/SuxJJuCyToGqkciL5tkr9faNzzCsc=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=N8qveSKf/BXX6yJw26xBnwqkjkeGd5hqs2FZGtWoZI2ozFgkHBoRMcgm66l/Gt3rj
-         6UdtBcul/9b4dI1k2pMwb8tb+e/mGKkMO3rgwMIsIICxdpyBKj5Ubfa5Q1f1pweLET
-         C+RL66SZo8Xxg6B49fdSqfJ4xwwDx2rfXvhK6/pz9FScCdRJHIpFr4ewoMaCMocs0q
-         tc6LbLTCw4o9Tif5KOq7+NyhnFNKjbEiCaobaHidwkisSx/q3rA2WJLYq0E9YLC3oJ
-         IQBSbHZXQ97Xv8BXsxtZSgY/5o602o1ALd5Xl4qMzmfILqfYXClwFBv5hzKLA9tyIV
-         ZY7WOWR6ninKA==
+Received: from paddy.uk.oracle.com (94.61.1.144) by LO2P123CA0104.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:139::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3825.21 via Frontend Transport; Thu, 4 Feb 2021 20:25:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6cf37526-1ee7-42b6-9184-08d8c94af7e7
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4114:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR10MB41140B00FF4940A90372F87CBBB39@BY5PR10MB4114.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:635;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ulOR6FnaMqKvzZSoJy2j5tx6IrkMbm9huFMIXLDAtvCTEFGwjRON8aIeZng7CuCBpXMO5v6U+bGyjAOoVLZ925OdGNcMEBXSSQzRUaV0ohaNwwA4tntMN7+a8+dEVT2WGSzqz8tklArkiSl8/CpXtyUw17eLUCprZxlllEg/u6E3SRxWFQ3vR94EXdvu4SKQSsZwLatguHLBviTrV4Tih3RyaGhI1z9Hy1JWtgURLx9Iii4nCGNMUTJKG0pTCmOTAl/8qMpquqy2EvXC/NTCESbsaCqKObgYOVn55gBM2VAYpMValLb8DFBve7GrRw9gMRB5vUIbA5wVHvnmhCsc6a3rNLDe/e7ENZzUjqO1Cf2HWqNuobHIeO2I44j37zcqhPxK2REfbJFMNOWHAKBWwtyvLuDP4XZuaXsD61Xt/GASH8Lf33b/9n7QXcUocfhIMcUDrd7HjCmKjm5laV0hNvrAEZH/aM9EE6e5SqSyIrJwTulMuDkiY62Ds/8tTqZd7aiEVQJTCmryjo4ftsQZlpf/nFkTk4gUSRdnFMEI1FKpLjlARS9f8GJwVz2tAZmlh4BtOAycdGHpeG1nP9jTfqVpEIzkkDZq/TQns9ZdrY4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3077.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(39860400002)(136003)(366004)(396003)(83380400001)(6916009)(66476007)(2906002)(316002)(478600001)(8936002)(66946007)(66556008)(107886003)(36756003)(1076003)(966005)(86362001)(2616005)(5660300002)(7696005)(52116002)(186003)(103116003)(6666004)(26005)(16526019)(4326008)(8676002)(54906003)(6486002)(956004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?kSu6mODBTmy1/hMRKw3VxlLHT6Dqyp1ssaeHHMLYVcE79EeDGSUROzy17S3V?=
+ =?us-ascii?Q?s6AXW4/GFaKEAgYegtCJss+C0+I/rzqRkeOiqr/iRyo5tGekAn0sxmpXtKkA?=
+ =?us-ascii?Q?nw4sCRTe1fPXnJs1UFrKGx1RyD3OSkwfWK1MBxXwIlcPFkPbj/WJxzg4DM6o?=
+ =?us-ascii?Q?0s8avXdEPKi76C0EXjulwSN5IXn8DC2jth9or/N6lqhmyCmAqREf2MyPf2te?=
+ =?us-ascii?Q?ETpnP6dSK3UB94OOw+1po0lUK8MzFhQjhFb75TuApEjHmEvDXkDK8l1b35Be?=
+ =?us-ascii?Q?cgvThqq4z0keePVLg5wsYOGZJv8zDBmm5NlvM/MJqd+CH8b1VqhWZk9qTJY5?=
+ =?us-ascii?Q?AdPcOxLKxC+TqNeOfwNsoNLTukRhzwUplrsPv2VXXQ4WNlFVwirx0B0uEMXw?=
+ =?us-ascii?Q?CV+A7xSRQEgNYVAs4hN0Seo7Wmo2LcTaxh5GgDuRIe/FUnjFd5GogOjqxtzn?=
+ =?us-ascii?Q?I7AXa1Qg+LiFwgGIV9K7s09Gu2Tvp5F/2t6t53yadEOxFPnCqlD8VNHz5Zfo?=
+ =?us-ascii?Q?N6kTOrMNBCZJmI3mymhIgvGupFSKTIBYfqXBcEoOLSnC8pBtWFzeGOl0FS83?=
+ =?us-ascii?Q?0cwlv+BMo79SlAabaypGbJzvtrp4ZUzvYLxPalwcvdQ7l2dk7Lza+AQ2jws5?=
+ =?us-ascii?Q?uK7PKqiKftz0OO3pp122V7s40RHmwzUAzNszWR0D7ahNg6l3RH4eFPaiLYI1?=
+ =?us-ascii?Q?LWsppHfPtZ5bt9ilMDZ9xzG1MQtjmXjsg7qZWMxoNnj46ltTXBjT6ya/P46E?=
+ =?us-ascii?Q?kWwKBZHjSnvyduc4fPGg7TaAxtuq8JIGArBxLQLIeWi7WHFtgbO+imSpmgDV?=
+ =?us-ascii?Q?VWxlBvPVrgFTG6Fd/FkYA3nvUz/7Sd/rdQQG/7PYm7xE7KsvHDENpWyaO2J1?=
+ =?us-ascii?Q?0vSk3dPdUFcel//N0MXc8kwmULCPIFjcgqSYqfurr6nnONUKcmAqJQPX2dE4?=
+ =?us-ascii?Q?8DS+uzeHFyGsw8wLz3ZOU001iDBxu2FHBOGypKL9TqYNbvG/6iaP11lZze/5?=
+ =?us-ascii?Q?CCUDYRUGTsmnfJUm5FhGp1fVOnb5zn9pm6wdyiCTIYa5eolJeIrzqCpQ0NsB?=
+ =?us-ascii?Q?limkyWt0?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6cf37526-1ee7-42b6-9184-08d8c94af7e7
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3077.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 20:25:09.8445
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SAzbkEH/mBLpO9ohH7uJtBTv4j6Nq12Iv8yogVBPH/XIZQsrYB4a9YDi0IgW43TNtM94/b6OKPANMXXIJWievjXVaX/uW2xDVlYqkzepCL0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4114
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9885 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ spamscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102040124
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9885 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 impostorscore=0
+ mlxscore=0 spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102040124
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 04:15:53PM -0800, John Hubbard wrote:
-> > diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-> > index 2dde99a9ba07..ea4ebb3261d9 100644
-> > +++ b/drivers/infiniband/core/umem.c
-> > @@ -47,17 +47,17 @@
-> >   static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int dirty)
-> >   {
-> > -	struct sg_page_iter sg_iter;
-> > -	struct page *page;
-> > +	bool make_dirty = umem->writable && dirty;
-> > +	struct scatterlist *sg;
-> > +	int i;
-> 
-> Maybe unsigned int is better, so as to perfectly match the scatterlist.length.
+Hey,
 
-Yes please
+This series improves page unpinning, with an eye on improving MR
+deregistration for big swaths of memory (which is bound by the page
+unpining), particularly:
 
-> >   	if (umem->nmap > 0)
-> >   		ib_dma_unmap_sg(dev, umem->sg_head.sgl, umem->sg_nents,
-> >   				DMA_BIDIRECTIONAL);
-> > -	for_each_sg_page(umem->sg_head.sgl, &sg_iter, umem->sg_nents, 0) {
-> > -		page = sg_page_iter_page(&sg_iter);
-> > -		unpin_user_pages_dirty_lock(&page, 1, umem->writable && dirty);
-> > -	}
-> > +	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i)
-> 
-> The change from umem->sg_nents to umem->nmap looks OK, although we should get
-> IB people to verify that there is not some odd bug or reason to leave it as is.
+ 1) Decrement the head page by @ntails and thus reducing a lot the number of
+atomic operations per compound page. This is done by comparing individual
+tail pages heads, and counting number of consecutive tails on which they 
+match heads and based on that update head page refcount. Should have a
+visible improvement in all page (un)pinners which use compound pages.
 
-No, nmap wouldn't be right here. nmap is the number of dma mapped SGLs
-in the list and should only be used by things doing sg_dma* stuff.
+ 2) Introducing a new API for unpinning page ranges (to avoid the trick in the
+previous item and be based on math), and use that in RDMA ib_mem_release
+(used for mr deregistration).
 
-umem->sg_nents is the number of CPU SGL entries and is the correct
-thing here.
+Performance improvements: unpin_user_pages() for hugetlbfs and THP improves ~3x
+(through gup_test) and RDMA MR dereg improves ~4.5x with the new API.
+See patches 2 and 4 for those.
 
-> > +		unpin_user_page_range_dirty_lock(sg_page(sg),
-> > +			DIV_ROUND_UP(sg->length, PAGE_SIZE), make_dirty);
-> 
-> Is it really OK to refer directly to sg->length? The scatterlist library goes
-> to some effort to avoid having callers directly access the struct member variables.
+These patches used to be in this RFC:
 
-Yes, only the dma length has acessors
+https://lore.kernel.org/linux-mm/20201208172901.17384-1-joao.m.martins@oracle.com/,
+"[PATCH RFC 0/9] mm, sparse-vmemmap: Introduce compound pagemaps"
 
-Jason
+But were moved separately at the suggestion of Jason, given it's applicable
+to page unpinning in general. Thanks for all the comments in the RFC above.
+
+These patches apply on top of linux-next tag next-20210202.
+
+Suggestions, comments, welcomed as usual.
+
+	Joao
+
+Changelog since,
+
+v1 -> v2:
+ * Prefix macro arguments with __ to avoid collisions with other defines (John)
+ * Remove count_tails() and have the logic for the two iterators split into
+   range_next() and compound_next() (John)
+ * Remove the @range boolean from the iterator helpers (John)
+ * Add docs on unpin_user_page_range_dirty_lock() on patch 3 (John)
+ * Use unsigned for @i on patch 4 (John)
+ * Fix subject line of patch 4 (John)
+ * Add John's Reviewed-by on the second patch
+ * Fix incorrect use of @nmap and use @sg_nents instead (Jason)
+
+RFC -> v1:
+ * Introduce a head/ntails iterator and change unpin_*_pages() to use that,
+   inspired by folio iterators (Jason)
+ * Introduce an alternative unpin_user_page_range_dirty_lock() to unpin based
+   on a consecutive page range without having to walk page arrays (Jason)
+ * Use unsigned for number of tails (Jason)
+
+Joao Martins (4):
+  mm/gup: add compound page list iterator
+  mm/gup: decrement head page once for group of subpages
+  mm/gup: add a range variant of unpin_user_pages_dirty_lock()
+  RDMA/umem: batch page unpin in __ib_umem_release()
+
+ drivers/infiniband/core/umem.c |  12 ++--
+ include/linux/mm.h             |   2 +
+ mm/gup.c                       | 122 ++++++++++++++++++++++++++++-----
+ 3 files changed, 112 insertions(+), 24 deletions(-)
+
+-- 
+2.17.1
+
