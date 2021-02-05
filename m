@@ -2,196 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E53A310170
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 01:15:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A22F03102ED
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 03:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbhBEAPh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Feb 2021 19:15:37 -0500
-Received: from mga12.intel.com ([192.55.52.136]:45189 "EHLO mga12.intel.com"
+        id S229681AbhBECkx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Feb 2021 21:40:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231706AbhBEAPg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:15:36 -0500
-IronPort-SDR: y+zu2zxeJUK6xS4dG/PxnLj1W3wfuw1NPCqknLva7FUnDegeTQnvl9/wKfBglc9bEdI6T/peHy
- eYECP2vJuiMw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="160511901"
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="160511901"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 16:14:15 -0800
-IronPort-SDR: D3cvr6pkQle/431HmVHgzGhHpoJT3Vz2APQJe7PHxH3fOZsCNlgczDR8tsEm3SwIQkssOwixBU
- FpPIf90jgEcg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="508326489"
-Received: from cst-dev.jf.intel.com ([10.23.221.69])
-  by orsmga004.jf.intel.com with ESMTP; 04 Feb 2021 16:14:14 -0800
-From:   Jianxin Xiong <jianxin.xiong@intel.com>
-To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Edward Srouji <edwards@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Ali Alnubani <alialnu@nvidia.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>
-Subject: [PATCH rdma-core v2 3/3] configure: Add check for the presence of DRM headers
-Date:   Thu,  4 Feb 2021 16:29:14 -0800
-Message-Id: <1612484954-75514-4-git-send-email-jianxin.xiong@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1612484954-75514-1-git-send-email-jianxin.xiong@intel.com>
-References: <1612484954-75514-1-git-send-email-jianxin.xiong@intel.com>
+        id S229766AbhBECkw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 4 Feb 2021 21:40:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8F47364FB3;
+        Fri,  5 Feb 2021 02:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612492807;
+        bh=s3mrUTF85e0lkblvyy5bYFWLYge2WF7tbsn6bJvLuS0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=X0BKqaPpFTfJ0lSgzu4TKG3CcgL8NeL0YjiM6SROz7PeKVrPijP6rZMnkHA0iG2rQ
+         m6LdkqHRvol1BeAxGz64eQ59UFKiXMP5fVnNxp1gX0a+939QQANNi1DoghK//fTkT2
+         Pydz9emUZ5H6SiD6A+FZs8uDL/2nxpTiuEy7FgjcTJonf12M3k7XBAHnpq/Nbbm3/r
+         80Ke6zJhpqZMMNx/dd0Sq6bNYubhptPpHLDKt1+/0t0tks01lVR/FxQQoy0x8tJff/
+         rwE1z4uviUcCOri+VTWvhtr2xR3Na/L7ak3Lwvv8xhtsABYB8aIphGdH4K7VMFbTQw
+         ZRs21jg4sYoTA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 727A2609F1;
+        Fri,  5 Feb 2021 02:40:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH RESEND v3 net-next 0/5] net: consolidate page_is_pfmemalloc()
+ usage
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161249280746.9463.15568343687164067943.git-patchwork-notify@kernel.org>
+Date:   Fri, 05 Feb 2021 02:40:07 +0000
+References: <20210202133030.5760-1-alobakin@pm.me>
+In-Reply-To: <20210202133030.5760-1-alobakin@pm.me>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     davem@davemloft.net, kuba@kernel.org, jhubbard@nvidia.com,
+        rientjes@google.com, yisen.zhuang@huawei.com,
+        salil.mehta@huawei.com, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, saeedm@nvidia.com, leon@kernel.org,
+        akpm@linux-foundation.org, brouer@redhat.com,
+        ilias.apalodimas@linaro.org, jonathan.lemon@gmail.com,
+        willemb@google.com, rdunlap@infradead.org, pablo@netfilter.org,
+        decui@microsoft.com, jakub@cloudflare.com, elver@google.com,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Compilation of pyverbs/dmabuf_alloc.c depends on a few DRM headers
-that are installed by either the kernel-header or the libdrm package.
-The installation is optional and the location is not unique.
+Hello:
 
-Check the presence of the headers at both the standard locations and
-any location defined by custom libdrm installation. If the headers
-are missing, the dmabuf allocation routines are replaced by stubs that
-return suitable error to allow the related tests to skip.
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
----
- CMakeLists.txt              | 15 +++++++++++++++
- pyverbs/CMakeLists.txt      | 14 ++++++++++++--
- pyverbs/dmabuf_alloc.c      |  8 ++++----
- pyverbs/dmabuf_alloc_stub.c | 39 +++++++++++++++++++++++++++++++++++++++
- 4 files changed, 70 insertions(+), 6 deletions(-)
- create mode 100644 pyverbs/dmabuf_alloc_stub.c
+On Tue, 02 Feb 2021 13:30:43 +0000 you wrote:
+> page_is_pfmemalloc() is used mostly by networking drivers to test
+> if a page can be considered for reusing/recycling.
+> It doesn't write anything to the struct page itself, so its sole
+> argument can be constified, as well as the first argument of
+> skb_propagate_pfmemalloc().
+> In Page Pool core code, it can be simply inlined instead.
+> Most of the callers from NIC drivers were just doppelgangers of
+> the same condition tests. Derive them into a new common function
+> do deduplicate the code.
+> 
+> [...]
 
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 4113423..95aec11 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -515,6 +515,21 @@ find_package(Systemd)
- include_directories(${SYSTEMD_INCLUDE_DIRS})
- RDMA_DoFixup("${SYSTEMD_FOUND}" "systemd/sd-daemon.h")
- 
-+# drm headers
-+
-+# First check the standard locations. The headers could have been installed
-+# by either the kernle-headers package or the libdrm package.
-+find_path(DRM_INCLUDE_DIRS "drm.h" PATH_SUFFIXES "drm" "libdrm")
-+
-+# Then check custom installation of libdrm
-+if (NOT DRM_INCLUDE_DIRS)
-+  pkg_check_modules(DRM libdrm)
-+endif()
-+
-+if (DRM_INCLUDE_DIRS)
-+  include_directories(${DRM_INCLUDE_DIRS})
-+endif()
-+
- #-------------------------
- # Apply fixups
- 
-diff --git a/pyverbs/CMakeLists.txt b/pyverbs/CMakeLists.txt
-index 6fd7625..922253f 100644
---- a/pyverbs/CMakeLists.txt
-+++ b/pyverbs/CMakeLists.txt
-@@ -13,8 +13,6 @@ rdma_cython_module(pyverbs ""
-   cmid.pyx
-   cq.pyx
-   device.pyx
--  dmabuf.pyx
--  dmabuf_alloc.c
-   enums.pyx
-   mem_alloc.pyx
-   mr.pyx
-@@ -25,6 +23,18 @@ rdma_cython_module(pyverbs ""
-   xrcd.pyx
- )
- 
-+if (DRM_INCLUDE_DIRS)
-+rdma_cython_module(pyverbs ""
-+  dmabuf.pyx
-+  dmabuf_alloc.c
-+)
-+else()
-+rdma_cython_module(pyverbs ""
-+  dmabuf.pyx
-+  dmabuf_alloc_stub.c
-+)
-+endif()
-+
- rdma_python_module(pyverbs
-   __init__.py
-   pyverbs_error.py
-diff --git a/pyverbs/dmabuf_alloc.c b/pyverbs/dmabuf_alloc.c
-index 85ffb7a..9978a5b 100644
---- a/pyverbs/dmabuf_alloc.c
-+++ b/pyverbs/dmabuf_alloc.c
-@@ -9,12 +9,12 @@
- #include <unistd.h>
- #include <string.h>
- #include <errno.h>
--#include <drm/drm.h>
--#include <drm/i915_drm.h>
--#include <drm/amdgpu_drm.h>
--#include <drm/radeon_drm.h>
- #include <fcntl.h>
- #include <sys/ioctl.h>
-+#include <drm.h>
-+#include <i915_drm.h>
-+#include <amdgpu_drm.h>
-+#include <radeon_drm.h>
- #include "dmabuf_alloc.h"
- 
- /*
-diff --git a/pyverbs/dmabuf_alloc_stub.c b/pyverbs/dmabuf_alloc_stub.c
-new file mode 100644
-index 0000000..a73a5da
---- /dev/null
-+++ b/pyverbs/dmabuf_alloc_stub.c
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+/*
-+ * Copyright 2021 Intel Corporation. All rights reserved. See COPYING file
-+ */
-+
-+#include <stdio.h>
-+#include <stdint.h>
-+#include <errno.h>
-+#include "dmabuf_alloc.h"
-+
-+struct dmabuf *dmabuf_alloc(uint64_t size, int gpu, int gtt)
-+{
-+	errno = EOPNOTSUPP;
-+	return NULL;
-+}
-+
-+void dmabuf_free(struct dmabuf *dmabuf)
-+{
-+	errno = EOPNOTSUPP;
-+}
-+
-+int dmabuf_get_drm_fd(struct dmabuf *dmabuf)
-+{
-+	errno = EOPNOTSUPP;
-+	return -1;
-+}
-+
-+int dmabuf_get_fd(struct dmabuf *dmabuf)
-+{
-+	errno = EOPNOTSUPP;
-+	return -1;
-+}
-+
-+uint64_t dmabuf_get_offset(struct dmabuf *dmabuf)
-+{
-+	errno = EOPNOTSUPP;
-+	return -1;
-+}
-+
--- 
-1.8.3.1
+Here is the summary with links:
+  - [RESEND,v3,net-next,1/5] mm: constify page_is_pfmemalloc() argument
+    https://git.kernel.org/netdev/net-next/c/1d7bab6a9445
+  - [RESEND,v3,net-next,2/5] skbuff: constify skb_propagate_pfmemalloc() "page" argument
+    https://git.kernel.org/netdev/net-next/c/48f971c9c80a
+  - [RESEND,v3,net-next,3/5] net: introduce common dev_page_is_reusable()
+    https://git.kernel.org/netdev/net-next/c/bc38f30f8dbc
+  - [RESEND,v3,net-next,4/5] net: use the new dev_page_is_reusable() instead of private versions
+    https://git.kernel.org/netdev/net-next/c/a79afa78e625
+  - [RESEND,v3,net-next,5/5] net: page_pool: simplify page recycling condition tests
+    https://git.kernel.org/netdev/net-next/c/05656132a874
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
