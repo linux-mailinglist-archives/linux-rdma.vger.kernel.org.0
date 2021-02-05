@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3DE331016D
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 01:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30CBD31016E
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 01:15:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbhBEAO4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Feb 2021 19:14:56 -0500
+        id S231704AbhBEAPL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Feb 2021 19:15:11 -0500
 Received: from mga12.intel.com ([192.55.52.136]:45136 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231690AbhBEAO4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:14:56 -0500
-IronPort-SDR: Tm6PE1G8xMeYMofZrQfUQDJo4TraUk+tzCNZmlx0ixm3fmeecPH5b01QlWLBLX5HndlLQi4LSI
- 9BHsebfhStCA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="160511898"
+        id S231690AbhBEAPL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 4 Feb 2021 19:15:11 -0500
+IronPort-SDR: Q2HhOZhnX5SeNc8TP9Ydy5NWgWDO++VO+we5VdwkC+SSdgVP6gZsvxxokDB/LFywk4zittY3ey
+ D56Y6DSIF5jw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="160511899"
 X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="160511898"
+   d="scan'208";a="160511899"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 16:14:14 -0800
-IronPort-SDR: Em58YsvkWeHRtvoJS0C7LsMieIWhvViKA3Ys0SNYYfBhmrGjisR4YPcEK2IYInKVX9pWeWpATF
- gvbVX8hDo00w==
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 16:14:15 -0800
+IronPort-SDR: 4NWm1oZ0nuHSdRNWL/ar5oktZ8cBKZnc8obrjPDKfEScgv4/x6Q3Z7BypiGEcfDfjcnX7wTVDu
+ qnerKJzhJq3Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
-   d="scan'208";a="508326481"
+   d="scan'208";a="508326484"
 Received: from cst-dev.jf.intel.com ([10.23.221.69])
   by orsmga004.jf.intel.com with ESMTP; 04 Feb 2021 16:14:14 -0800
 From:   Jianxin Xiong <jianxin.xiong@intel.com>
@@ -40,54 +40,66 @@ Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
         Ali Alnubani <alialnu@nvidia.com>,
         Gal Pressman <galpress@amazon.com>,
         Emil Velikov <emil.l.velikov@gmail.com>
-Subject: [PATCH rdma-core v2 0/3] Dma-buf related fixes
-Date:   Thu,  4 Feb 2021 16:29:11 -0800
-Message-Id: <1612484954-75514-1-git-send-email-jianxin.xiong@intel.com>
+Subject: [PATCH rdma-core v2 1/3] verbs: Fix gcc warnings when building for 32bit systems
+Date:   Thu,  4 Feb 2021 16:29:12 -0800
+Message-Id: <1612484954-75514-2-git-send-email-jianxin.xiong@intel.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1612484954-75514-1-git-send-email-jianxin.xiong@intel.com>
+References: <1612484954-75514-1-git-send-email-jianxin.xiong@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This is the second version of the patch series. Change log:
+Commit 6b0a3238289f ("verbs: Support dma-buf based memory region") caused
+a build failure when building for 32b systems with gcc:
 
-v2:
-* Use pgk_check_modules() to check libdrm configuration instead of calling
-  pkg-config directly
-* Put all the DRM header checking logic in CMakeLists.txt
-* Use a seperate source file for dma-buf allocation stubs
-* Remove the definition of HAVE_DRM_H from config.h
-* Add space between the acronym and the full name
+$ mkdir build && cd build && CFLAGS="-m32" cmake -GNinja .. \
+  -DIOCTL_MODE=both -DNO_PYVERBS=1 -DENABLE_WERROR=1 && ninja
+...
+../libibverbs/cmd_mr.c: In function 'ibv_cmd_reg_dmabuf_mr':
+../libibverbs/cmd_mr.c:152:21: error: cast to pointer from integer of
+different size [-Werror=int-to-pointer-cast]
+  vmr->ibv_mr.addr = (void *)offset;
+...
+../libibverbs/verbs.c: In function 'ibv_reg_dmabuf_mr':
+../libibverbs/verbs.c:387:13: error: cast to pointer from integer of
+different size [-Werror=int-to-pointer-cast]
+  mr->addr = (void *)offset;
+...
 
-v1: https://www.spinics.net/lists/linux-rdma/msg99815.html
-* Fix compilation warnings for 32bit builds
-* Cosmetic improvement for dma-buf allocation routines
-* Add check for DRM headers
+Reported-by: Ali Alnubani <alialnu@nvidia.com>
+Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+---
+ libibverbs/cmd_mr.c | 2 +-
+ libibverbs/verbs.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-This series fixes a few issues related to the dma-buf support. It consists
-of three patches. The first patch fixes a compilation warning for 32-bit
-builds. Patch 2 renames a function parameter and adds full name to an
-acronym. Patch 3 adds check for DRM headers.
-
-Pull request at github: https://github.com/linux-rdma/rdma-core/pull/942
-
-Jianxin Xiong (3):
-  verbs: Fix gcc warnings when building for 32bit systems
-  pyverbs,tests: Cosmetic improvements for dma-buf allocation routines
-  configure: Add check for the presence of DRM headers
-
- CMakeLists.txt              | 15 +++++++++
- libibverbs/cmd_mr.c         |  2 +-
- libibverbs/verbs.c          |  2 +-
- pyverbs/CMakeLists.txt      | 14 ++++++--
- pyverbs/dmabuf.pyx          | 12 +++----
- pyverbs/dmabuf_alloc.c      | 20 ++++++------
- pyverbs/dmabuf_alloc.h      |  2 +-
- pyverbs/dmabuf_alloc_stub.c | 39 +++++++++++++++++++++++
- pyverbs/mr.pyx              |  6 ++--
- tests/test_mr.py            | 78 ++++++++++++++++++++++-----------------------
- 10 files changed, 127 insertions(+), 63 deletions(-)
- create mode 100644 pyverbs/dmabuf_alloc_stub.c
-
+diff --git a/libibverbs/cmd_mr.c b/libibverbs/cmd_mr.c
+index af0fad7..736fce0 100644
+--- a/libibverbs/cmd_mr.c
++++ b/libibverbs/cmd_mr.c
+@@ -149,7 +149,7 @@ int ibv_cmd_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset, size_t length,
+ 	vmr->ibv_mr.lkey = lkey;
+ 	vmr->ibv_mr.rkey = rkey;
+ 	vmr->ibv_mr.pd = pd;
+-	vmr->ibv_mr.addr = (void *)offset;
++	vmr->ibv_mr.addr = (void *)(uintptr_t)offset;
+ 	vmr->ibv_mr.length = length;
+ 	vmr->mr_type = IBV_MR_TYPE_DMABUF_MR;
+ 	return 0;
+diff --git a/libibverbs/verbs.c b/libibverbs/verbs.c
+index b93046a..f666695 100644
+--- a/libibverbs/verbs.c
++++ b/libibverbs/verbs.c
+@@ -384,7 +384,7 @@ struct ibv_mr *ibv_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset,
+ 
+ 	mr->context = pd->context;
+ 	mr->pd = pd;
+-	mr->addr = (void *)offset;
++	mr->addr = (void *)(uintptr_t)offset;
+ 	mr->length = length;
+ 	return mr;
+ }
 -- 
 1.8.3.1
 
