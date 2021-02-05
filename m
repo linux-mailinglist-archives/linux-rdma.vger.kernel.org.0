@@ -2,310 +2,201 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C86C310AC5
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 12:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 253D0310AE6
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 13:09:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbhBEL7Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Feb 2021 06:59:16 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:34704 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232069AbhBEL5E (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 06:57:04 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 115BsOxK195252;
-        Fri, 5 Feb 2021 11:56:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=1Jm2JQE+3y7/rNCr/P3uu9iGPRhA9UjgU3j1vXoz5Bo=;
- b=MjH+wfJLLIYnpj69mbgRhHnZFm1FmL3aGdwclkmggcMSHFbUKoQPCtyZ7U4zxX9sPQr1
- dGLjcEDS/6R/A/bTRN3ZGGSMmNLDuzSS+e/VffBiph3INRJni5WEs1E4TW0No9ZmvRD5
- uJs0Roo4PnXnMWl6/1Q/zxdwMTJpI4Drpvv1LFvyIBWJaT/YE+tyb8lB8w6Y8aFnnfCa
- mmMtcP7bico4yZO935vkS0jcXAlMjDsP1tbLexw6jBXfmTbs3Alpu56XoyZE6DKLd/Zx
- xY6Ua7acX82+X2/09p8HyKY3KUGkxoGG8L6lLqORUHJPSyUb4Jjje3ialJQn8zOTZJOs AA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 36cvyb9mss-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Feb 2021 11:56:10 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 115Bojx9100534;
-        Fri, 5 Feb 2021 11:56:09 GMT
-Received: from nam02-cy1-obe.outbound.protection.outlook.com (mail-cys01nam02lp2057.outbound.protection.outlook.com [104.47.37.57])
-        by userp3030.oracle.com with ESMTP id 36dhd2tbrg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Feb 2021 11:56:09 +0000
+        id S231429AbhBEMHh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 Feb 2021 07:07:37 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2273 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231670AbhBEMF3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 07:05:29 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601d345e0000>; Fri, 05 Feb 2021 04:04:46 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
+ 2021 12:04:46 +0000
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.53) by
+ HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 5 Feb 2021 12:04:45 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Iq/RvCk69KXiCmaKz8h7fI7oqph1wndeMykHmvs87ft4Whcp+dvykaNwA4/NR9krWhWgpkCawZGLas1MzbcbEjvikUiVIzsyAJscVCX3/HaYw/LtWqfs6zKN2Fb/H64st99+Y7srflY3HMZhBRwF/SnGGl27Wo4woeRD40xBx9Cgp5WYTti3ZObtQtd9s321DKAsrmaIqqETWxW1nEcegufrmLv9xB5jf7+F4Vpaah0fVuQf3M8YmeIxgIuB4DYHc8CfnQFdCXuCqV2jZb/pbQN8H8qrhHAM+ERWxbo3x084CqvA6r7zjyxfjPYR3coujjsOd68zHXtfR1QrJW8m/w==
+ b=JMch16aRqcJ+WpxbThHfi2g+B8l5nv496GlSzMp77JFQpp6FnQJzKBOcIyxA2ktXzfKwQRkwLFGm9ZCPw/+aAcJ6dhqWcaZ0vTwGqG1PhmwdSA0cVYkU+1SNM/it+6gm1qahb1CLb0daK0yQTLCiABliHLFBhRVjKBwCVlgWMW8ie48VZulW9tivDSoSF9dZ9ebVjcFsfdR79r0z5E5Xy8jrtkphe9kCbl4yorBfnUm7V+mV+iiO/FK05PFJ/t15XqdIDRjeT2jB3NjMnkJBq9Fh7/BLHmrSeSZKZZBsmLEEByfpDJ0S5MSE5v/kIOuTaHbPTnkjFA4o3s+V1BGevA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1Jm2JQE+3y7/rNCr/P3uu9iGPRhA9UjgU3j1vXoz5Bo=;
- b=NI29AeNlvURZ1rNuR2EcLA5xAPQWCholXIgqiP582DpA2tKrZ5dxrteRWHWYnCnzA1kWXTfQZPKoOL+CjAAo4XCH3DOMNlquR/neB3g8oceCe2vK5vRtzEOK+CuT9uh3rKn1E2lhb+reuUo6DoVtYJu4hr9Pgh1WKzUnHBIegelJ/6/cUb3u62TQ7pZWTvSTPynBZ4zCcd8C6Nljfe0PMUKgJAImG+IYmDe6SATLydbfQT6wrQOXnD7GqgITQBlqL/2jIJiMVaI8QsXK1Det5ORRkfTuhvYb0Cq34f3zk6LUEyfgKnfcU8wVv50rtFw7jhi+12KOGeAByaJJogF2WQ==
+ bh=1fKqLWPNkEIJ8zIL45IrM+RE4JE8ZDqnYpYXZeGKMJo=;
+ b=eSdPfCQvmax3cXBWvugrllhanU0r5RB/IzyzTw8BLupmKkQ2y8p9aahE6jrao5FmEipWl+yyTfEETsq6HCvnthHv7Dd17gWSAYSyfivwGclxmfvz7I+CiOSpPHlTK7gCmi5pZSEMVD0Gns4Wm4V8gqggNNRjzCt/3v+wEvlcSLvC407/WG0qSe9SOi8A/6LBwC/P9I3gWrQ+GaXhMbihS2KMWw3bl6hPLJjxragHur0QH3qw/O2CBQjDCvWXxGoc/3WfSwmIJtsIPzF9VlxRmkK9b7ald5b/Ax0XQ6HW1nWSIZl2qEk0TG4wi4O3MxzmmweG71VUipKO9ajoPqbzww==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1Jm2JQE+3y7/rNCr/P3uu9iGPRhA9UjgU3j1vXoz5Bo=;
- b=gnpG0fhXXfuiWLfKwVL97vNrbF5FwoY0g94tOUTnlNDdJPSJjGA9vN01xIn3Cae4yZyDxCfwwHuPzzQewswNSpVqQHFetIbm64w5/dOSRBaAOII+g4o7mW8W946DgDDWqtpZjrY0tUQUPKaAeZl1AIALgvMro2p3Pj/rpFCgDlA=
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB3077.namprd10.prod.outlook.com (2603:10b6:a03:8c::12)
- by BYAPR10MB3592.namprd10.prod.outlook.com (2603:10b6:a03:11f::31) with
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com (2603:10b6:a03:20a::20)
+ by BYAPR12MB3032.namprd12.prod.outlook.com (2603:10b6:a03:dd::28) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Fri, 5 Feb
- 2021 11:56:07 +0000
-Received: from BYAPR10MB3077.namprd10.prod.outlook.com
- ([fe80::74a8:8649:e20b:d571]) by BYAPR10MB3077.namprd10.prod.outlook.com
- ([fe80::74a8:8649:e20b:d571%7]) with mapi id 15.20.3805.024; Fri, 5 Feb 2021
- 11:56:07 +0000
-Subject: Re: [PATCH v2 3/4] mm/gup: add a range variant of
- unpin_user_pages_dirty_lock()
-To:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20210204202500.26474-1-joao.m.martins@oracle.com>
- <20210204202500.26474-4-joao.m.martins@oracle.com>
- <6376e151-06fc-1e1b-0b30-1592972353ea@nvidia.com>
-From:   Joao Martins <joao.m.martins@oracle.com>
-Message-ID: <3493bfba-c570-6630-62df-1bfd16be7156@oracle.com>
-Date:   Fri, 5 Feb 2021 11:56:00 +0000
-In-Reply-To: <6376e151-06fc-1e1b-0b30-1592972353ea@nvidia.com>
-Content-Type: text/plain; charset=utf-8
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.23; Fri, 5 Feb
+ 2021 12:04:44 +0000
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::f9f4:8fdd:8e2a:67a4]) by BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::f9f4:8fdd:8e2a:67a4%3]) with mapi id 15.20.3805.033; Fri, 5 Feb 2021
+ 12:04:44 +0000
+From:   Parav Pandit <parav@nvidia.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     Leon Romanovsky <leon@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Mauro Carvalho Chehab" <mchehab+huawei@kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] net/mlx5: docs: correct section reference in table of
+ contents
+Thread-Topic: [PATCH] net/mlx5: docs: correct section reference in table of
+ contents
+Thread-Index: AQHW+6UDTeAW+FAc70+05HVqdx779apJdrkQ
+Date:   Fri, 5 Feb 2021 12:04:43 +0000
+Message-ID: <BY5PR12MB432262D2F829A3D14D584AD1DCB29@BY5PR12MB4322.namprd12.prod.outlook.com>
+References: <20210205095506.29146-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210205095506.29146-1-lukas.bulwahn@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [94.61.1.144]
-X-ClientProxiedBy: LO4P123CA0253.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:194::6) To BYAPR10MB3077.namprd10.prod.outlook.com
- (2603:10b6:a03:8c::12)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [122.167.131.74]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ed2c6ce8-93d4-4040-b19e-08d8c9ce39b0
+x-ms-traffictypediagnostic: BYAPR12MB3032:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR12MB303287FA0E147CCAC25A22F0DCB29@BYAPR12MB3032.namprd12.prod.outlook.com>
+x-header: ProcessedBy-CMR-outbound
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: f7i3u3IiNfxtpok3azMHTezKJeevnGIGE9W+qV/PzpnUTx2oiPx9T/Xo+ibkOpG3MfaKb83GPM5C0X40/Mu9jaBbDlQjiXzCH8L2NkPz6Zi19OWpQf6ZUzZEFzfxNjcAU5+f93NpOaEvYYSet/SuIvsFKJAl3+A4ti1GlA/jHJhF5Z8aj6SjcFZy0Q+J7kj3XiC22DLyAdjVX5BevfrWF6yDwFasY3OQ4kJ/3dc5n7iBxFLUxgS5bB+1xn51t85GwIeeOFEaVGEEymd0cU0qxX3ftfEXM78LTzY5konajGHXhDuOK/12wQI/Qr6nuhmLzY1Us1C9WsrIdheRjvx3N699uyDMfv6VsS9jeW/nc+FewcgEIJK9vsgava37xt7kNLdlkHTFCXBiWM4z1c8bWWtQsw6Tr6fUjl563vDq0AbqQYb02Bk9foygCGe/T8sHTjevHBVGktGXyWuc6J+R+msMgmpVWRPfewbhVMqDNURJfQPuK4visALYJRgZn0WiXjRsvjBDtuUbDLhVIJFjuw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4322.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(136003)(39860400002)(346002)(64756008)(66556008)(55016002)(186003)(66476007)(9686003)(8676002)(478600001)(4326008)(86362001)(66946007)(66446008)(52536014)(7696005)(2906002)(5660300002)(6506007)(33656002)(8936002)(316002)(83380400001)(110136005)(71200400001)(76116006)(26005)(54906003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?nAU/dHXHzBXMp+1MSDAHXKSR1pPQ73GLBy+D6e/RXesTYsMg1BtR7BEA7uyt?=
+ =?us-ascii?Q?eURoM4DVscBTqlfBkKDse+lWL8fzKRsH6zfxFelG9jAjVSCt9h5EiYxr/BNQ?=
+ =?us-ascii?Q?Lq0QAHW6GfyxLY531ZGbxI8b3Vk5wnJXCA7n/4R3oR3m7c+JCnvbGnQiNI/K?=
+ =?us-ascii?Q?TFvVMhi+LjaTY8O70BoNbdN+mAa2RQvMeOFYrmfikrr5u6V6FD0e90NgdhoA?=
+ =?us-ascii?Q?wTfderQPa6lEaKcR3fV9MP7KULlUXC1UdxBGVSd0xWuyi5CLOiDjtC7Q1OOJ?=
+ =?us-ascii?Q?S6htGPrJb0TLwVCp5gO6kWgCNwc8Zyjm+hjZwuf4EOCYVLKEtHV7mZBHJePf?=
+ =?us-ascii?Q?13TkvSobX7eAIZluxRpQXi/wF+QLajlN0zuQBsW+SkEuL96JbxUjee6+7J1Y?=
+ =?us-ascii?Q?Kb67kz0ev+MNK0l3d90sCu7L9WlkB12FZrcnlU/K27CbIHC2IaUg4hGNBTD1?=
+ =?us-ascii?Q?Vi/jF/NjI4MKndTQbaoFCemT0WuPia6D1x5zBBclagPRVTGJLD2zg5otNrCK?=
+ =?us-ascii?Q?7Dsyh4w2HTsKvW5dBMUQcfpAlEssPueKpvYTftrV4NSC3n0VuYn0wkoFL3XD?=
+ =?us-ascii?Q?py9q9C3/j+MVbUDRdEUVxhKq7VVy1nyu0Z4u0On1GysKw3kc883xXirIncqq?=
+ =?us-ascii?Q?dkVuuQkh+xeAROignckmZla2TAj9QqSsKYL9R9DmmpS+SdCWWidPpE9RHkcU?=
+ =?us-ascii?Q?RhX93mbLtDoC5gA56Qa01kuPgxIbTjuAkkUptTD+8aykKLQugO8/d6yIBuj0?=
+ =?us-ascii?Q?SmipZV9OrZlrJjCQuRxzgBnni3AHAGiU+ZlUr5qtdjCcxnRvLwzs0Mhbg2fW?=
+ =?us-ascii?Q?E8cPoHbK1YP9o+kWCD0NJ2RoQGkbu68cUaEwlxM1TIdeZsBDeUzGLSiJfHC0?=
+ =?us-ascii?Q?SkotXDeVaWhEUgikX7Pd7KEo0MB66Gq3KK/erMRv5SBrcG9FPE9/niZrFJBE?=
+ =?us-ascii?Q?YWy0BiNFg2MKCiDcfju3+BO8a0eySGnvMdMlD2UEb7f/EPHuIwGoOmKuKriG?=
+ =?us-ascii?Q?DXtMyXW9xR+DZG9QDPMBqfyeZFbCOTQmkRchVue9zsL+MspojNiawDE4RJUB?=
+ =?us-ascii?Q?dV2bmKS/vhivz9ec7urxdjTvv6vgbmLXtJHGQyIpJCFAr/wkYXBUDOxG4oro?=
+ =?us-ascii?Q?xJqCg9dGghpRl0MmGejSHFFLwxkx53nFwcNJl9+UWz65hTTfyvYzXhJwrp0j?=
+ =?us-ascii?Q?rXeDbg7FToqhvNo2HLEM+LVtdhOuD7kOJOizgN60L6vTN8hqmLT0xUvr2qtc?=
+ =?us-ascii?Q?uT03AbXw+8mfJs1rvH7QLE1DFp/kZanKqvg8v8WEewjUQRVE0EXFrbmFfaEi?=
+ =?us-ascii?Q?qoO7AZtwxIK68zcf3gy5Bcml?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.67] (94.61.1.144) by LO4P123CA0253.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:194::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Fri, 5 Feb 2021 11:56:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c95af1d3-4042-4062-5bd3-08d8c9cd05c4
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3592:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB3592EC700060C396C32185D2BBB29@BYAPR10MB3592.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2089;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: F8I0hf0bEtgXXN+cXMR9TCM5VPMprYojMfcLMTb3vg6mbktI5jn56BwT6BhdpDvolQ6rpBQuC9zn8k4S4FhRArhiuy/H6/nBPdktM6hLB6TmG+AdyKN2qeLu0pYhyBWi/eAgcyBx0Sfarue6gcAWNvnalFDegbsU6q1gM1naqHC4Axsk9o4CAABSo0rj9xVz7fQNOP8r2/3V1v1D+j3cChSodA0o/iJkHUi3PyGZz/NBRiKGkgo2NT2zYsirCcU26xWYnbuD9tZwYXN6TpZoiO0vpCiYK5xa7fihEqt5FffhDAaw23tVSbn11qgQ0RAapBZTMSwsPrIqBlcLAFklwn+JHQZIvpEGihGanWQIEYCXb1ZuaS7uFSw25eHWtu9BRg4Hgd92DOb27UVqQqZYWRTRwDRuZESKxFZZ+/EegVVIb3UPHtfCNLxu7SPR34J6DSzdPZbOHkDNrV/ZT5oLpZCkoDCFatQUKHv1Ny5D7nGdS9RHxLy0VZ71oVX+q4RqxOzO6kHteFY+k25L/FpSpAIUVwfyq/bYjLWcnPaW4IKgQQ9FNyml6BUoqF29miriIoX8yvwseUKtxbm7p+BneD76g6lsuXH6z1AOsfxIgb4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3077.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(39860400002)(376002)(366004)(346002)(2616005)(186003)(66556008)(316002)(6666004)(86362001)(31696002)(8936002)(53546011)(956004)(16526019)(66476007)(4326008)(66946007)(5660300002)(6486002)(16576012)(31686004)(83380400001)(478600001)(36756003)(26005)(54906003)(8676002)(2906002)(14143004)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cTl0QUtxN25XdjBiMG04dWc3dldnS2gxZGxGN29SUFN2a0xMZHM5OVBGK2gy?=
- =?utf-8?B?SldoRkd0Q0loL0ovb2FQU3hOaCtPTGp0WUV5VVUvSURma3hQK0xNOXVwQ3Fx?=
- =?utf-8?B?eWV0VDQxb2szMmp4K0dFbktyTHFLL3BJZnVzN3BOVXUraHV4MGluRlk1YjFo?=
- =?utf-8?B?UnRHc1VrYkxIQ3ZXVi9LdjFDWkw3T2lwOXlFQ2dRU3VNVHlGcEhkSWNHL1NS?=
- =?utf-8?B?OGZRUDJJd2I5YnZBMmVydTltZkI1RHlhR21OSE04YXUyNWlDSmlMZGdXWGVF?=
- =?utf-8?B?WHRWVlFDOXhzem1Cd2xtbWFYZzR5VjJ2TmxPb250dDRmL3orZ0VPS2s4WHBN?=
- =?utf-8?B?a3g3WnRBTnl0ZUNPOTAxWmYybWd0OWFxYUdRWTdubXFYQXBVamlwSTYrdlhY?=
- =?utf-8?B?aW1ZQVhBNHYrREdQNDkxc0lZdCtkREVhcGJFYWM3a1N1M1o0ZTlJNEN5U2th?=
- =?utf-8?B?dmNVTHJ1aUhrS3JqZ01hZnZ2ZnlabzBkWS9EWTBmVGlJN0t5RnJYZUdqWVIv?=
- =?utf-8?B?dGJIQ2JPVzMrd09BREhTWUMxZ2MwbXFuYXh2Z25tN3FFMUk0cW00MXBrU00v?=
- =?utf-8?B?ZHNwVUFORWpUWXNIeG8wVjRvVHZTaGZRYWIzTytNK25FYkZUUFpXWlF1TkJD?=
- =?utf-8?B?dTh4T2FrR3ZPS1V2VStOUE12clUwNVdObVNCZ0YrN0ZSYmpvQTZkc2VRZ3Rl?=
- =?utf-8?B?Nnc1MHFpcS9Lc2lpMWE3WDJLMHoxZVlxc2xHbUZJc1V5a1p4M1pURFVHMU9h?=
- =?utf-8?B?ZEc5dnVST2hNVkp2SVpzTnRKdENUYlhGK1M3SXYrYTNVQzBDUENOcWoydGhZ?=
- =?utf-8?B?aDI4Z3dKUFU2RmoyL3FhMmNrcHNjQk5JUFdIVFRsaTgzWnp6K0lYWWt4bExm?=
- =?utf-8?B?eDVZVGZ4a3djMnZjbUlKTWJLWU5rN1NFc0tabzhqY2xvYi9KMHQ2allsZGFC?=
- =?utf-8?B?cHNZbExvSThVbDdtMEh0dlVSQmN5dWhGSGhoVG0wdjI1WFcwQmUwVFRUeUl2?=
- =?utf-8?B?RzE4MEs3TUNnTzFvRVNzTFdxcUY0dloyUGx2emgybUtFZ3dIYlpRYlN5cFdr?=
- =?utf-8?B?TTFHZWZ5VFVNbW04MWNSOXUrTFkwUEhoWmtzTGhYS2MwSUV6Qy9JYXozS1Ir?=
- =?utf-8?B?eml0eWVCc2lBc1c1UnNmaGRCQUhTSUtZSERtMUY2dVdmV1MyQ1FVMEhscE5T?=
- =?utf-8?B?M1FrR2FMc3dXbHU2Q1R2SlJwSUhCNENETnVtYUVobHE1b1RuWVpuVkRONDU3?=
- =?utf-8?B?SWg4Um1oQlhCenhrT1ZlSEptY0YwanA3MG5PUDUrS3dvVEU1bFlhNmZrUFZV?=
- =?utf-8?B?b0xpWXUrQk5oRTZLT0xJZlJQckRNd0trajB2cDRXMTVyamtHem9sWFFuTUV2?=
- =?utf-8?B?VWZNZG5KcTlFdjNwVml2anpoZHQ3WHExNjFuYnkzN3BLWldCbitNNVppK0FP?=
- =?utf-8?B?SXZYUGd3MmZkVmNzNkZLTG1zVUFRUWFLRkREc2hTRWZ6WXhLMVlLd09Id2d6?=
- =?utf-8?B?VFJDV1UzRkNhTndtNGFlVU1VM1cwdlJtdXA5TWM3VVE2OTJKUHpVa0l4a1Yz?=
- =?utf-8?B?NmpIQ3UwY2dNayt4MlFsUHltZC9jc0dNcVZSeWVsVmJVSk9rS1EzWGptb1hH?=
- =?utf-8?B?VlNtOUpPUlllYjJuRmJEZ01PSFdUK0p4RnN2SW5HMlpscFJhMFRaV2tOejFN?=
- =?utf-8?B?V1dXQUs0d1RFRTJIREVhTnZocUJHeWNWb2g5cm8vUVlXcG14M3hIeVROelNY?=
- =?utf-8?Q?DG5it3YrtAaRv0WKuFF9qUZYnLPJDu/IRlTQcC7?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c95af1d3-4042-4062-5bd3-08d8c9cd05c4
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3077.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2021 11:56:07.6897
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4322.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ed2c6ce8-93d4-4040-b19e-08d8c9ce39b0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Feb 2021 12:04:44.0037
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: B6WJM148OQ5vUQPmsMqUvbpCZDbPKnFRXPJz9pJBSm3WODOgDNbv+jQXdcS5BcYPZ8kgrjqyzvkb0LecLacPK7Xy6kt6VdaPzHONRyxl53g=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3592
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9885 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 phishscore=0
- spamscore=0 suspectscore=0 malwarescore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102050079
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9885 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 impostorscore=0
- mlxscore=0 spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102050079
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WukvqJ1ZALvBXWT+w0hT9cZWNMYd2WVSF14c4MwDAB4s9aLvBdP24q7/mbMp2TLl4Rdc1vlh8BCPag29PbIohw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3032
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612526686; bh=1fKqLWPNkEIJ8zIL45IrM+RE4JE8ZDqnYpYXZeGKMJo=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
+         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
+         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
+         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
+         x-ms-traffictypediagnostic:x-ms-exchange-transport-forked:
+         x-microsoft-antispam-prvs:x-header:x-ms-oob-tlc-oobclassifiers:
+         x-ms-exchange-senderadcheck:x-microsoft-antispam:
+         x-microsoft-antispam-message-info:x-forefront-antispam-report:
+         x-ms-exchange-antispam-messagedata:Content-Type:
+         Content-Transfer-Encoding:MIME-Version:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-originalarrivaltime:
+         X-MS-Exchange-CrossTenant-fromentityheader:
+         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+         X-MS-Exchange-CrossTenant-userprincipalname:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=E0Q7UH90YVKtwKsQQdvYUIijGV1EYuWiQ3SnQ4xrtrZ4Jm7qDVZE32KVyjbF5rUVk
+         PJNT2ph5UGKpEwugATx9JIHya8otlJexfEKRUrli66Fe8I9gvOeULdWlLNkycss4q2
+         iQYfSxzwJEEEcc3XHwzJLD3kU8ldPs5KJViC93KRJ6du0cnwDhdZj0PhoxPOsiV8VG
+         9aZ8h25bUf5xJ2fVq13/Opt7GxDCaX4Jzf6qNiUy6uw/zIFWJ1EMEpnfavO/HxTAG/
+         IrMXNOLTKgY96Tmdxs088c3RuWxyLRlSVUFXjUPLadk+bvmMljJ2lSm5MbdUtXY84C
+         hCGoPPpqIXtlw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/5/21 4:49 AM, John Hubbard wrote:
-> On 2/4/21 12:24 PM, Joao Martins wrote:
->> Add a unpin_user_page_range_dirty_lock() API which takes a starting page
->> and how many consecutive pages we want to unpin and optionally dirty.
->>
->> Given that we won't be iterating on a list of changes, change
->> compound_next() to receive a bool, whether to calculate from the starting
-> 
-> Thankfully, that claim is stale and can now be removed from this commit
-> description.
-> 
-Yes, I'll delete it.
 
->> page, or walk the page array. Finally add a separate iterator,
->> for_each_compound_range() that just operate in page ranges as opposed
->> to page array.
->>
->> For users (like RDMA mr_dereg) where each sg represents a
->> contiguous set of pages, we're able to more efficiently unpin
->> pages without having to supply an array of pages much of what
->> happens today with unpin_user_pages().
->>
->> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
->> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
->> ---
->>   include/linux/mm.h |  2 ++
->>   mm/gup.c           | 64 ++++++++++++++++++++++++++++++++++++++++++++++
->>   2 files changed, 66 insertions(+)
->>
->> diff --git a/include/linux/mm.h b/include/linux/mm.h
->> index a608feb0d42e..b76063f7f18a 100644
->> --- a/include/linux/mm.h
->> +++ b/include/linux/mm.h
->> @@ -1265,6 +1265,8 @@ static inline void put_page(struct page *page)
->>   void unpin_user_page(struct page *page);
->>   void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
->>   				 bool make_dirty);
->> +void unpin_user_page_range_dirty_lock(struct page *page, unsigned long npages,
->> +				      bool make_dirty);
->>   void unpin_user_pages(struct page **pages, unsigned long npages);
->>   
->>   /**
->> diff --git a/mm/gup.c b/mm/gup.c
->> index 5a3dd235017a..3426736a01b2 100644
->> --- a/mm/gup.c
->> +++ b/mm/gup.c
->> @@ -215,6 +215,34 @@ void unpin_user_page(struct page *page)
->>   }
->>   EXPORT_SYMBOL(unpin_user_page);
->>   
->> +static inline void range_next(unsigned long i, unsigned long npages,
->> +			      struct page **list, struct page **head,
->> +			      unsigned int *ntails)
-> 
-> Would compound_range_next() be a better name?
-> 
-Yeah, will change to that instead. range_next() might actually get confused for operations
-done on struct range *.
 
-One other thing about my naming is that unpin_user_page_range_dirty_lock() is *huge*. But
-it seems to adhere to the rest of unpin_* family of functions naming. Couldn't find a
-better alternative :/
+> From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Sent: Friday, February 5, 2021 3:25 PM
+>=20
+> Commit 142d93d12dc1 ("net/mlx5: Add devlink subfunction port
+> documentation") refers to a section 'mlx5 port function' in the table of
+> contents, but includes a section 'mlx5 function attributes' instead.
+>=20
+> Hence, make htmldocs warns:
+>=20
+>   mlx5.rst:16: WARNING: Unknown target name: "mlx5 port function".
+>=20
+> Correct the section reference in table of contents to the actual name of
+> section in the documentation.
+>=20
+> Also, tune another section underline while visiting this document.
+>=20
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> Saeed, please pick this patch for your -next tree on top of the commit ab=
+ove.
+>=20
+>  .../networking/device_drivers/ethernet/mellanox/mlx5.rst      | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git
+> a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
+> b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
+> index a1b32fcd0d76..1b7e32d8a61b 100644
+> --- a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
+> +++
+> b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
+> @@ -13,12 +13,12 @@ Contents
+>  - `Devlink info`_
+>  - `Devlink parameters`_
+>  - `mlx5 subfunction`_
+> -- `mlx5 port function`_
+> +- `mlx5 function attributes`_
+>  - `Devlink health reporters`_
+>  - `mlx5 tracepoints`_
+>=20
+>  Enabling the driver and kconfig options -
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+>  | mlx5 core is modular and most of the major mlx5 core driver features c=
+an
+> be selected (compiled in/out)  | at build time via kernel Kconfig flags.
+> --
+> 2.17.1
 
->> +{
->> +	struct page *next, *page;
->> +	unsigned int nr = 1;
->> +
->> +	if (i >= npages)
->> +		return;
->> +
->> +	npages -= i;
-
-I will remove this @npages subtraction into the min_t() calculation as it's the only
-placed that's used.
-
->> +	next = *list + i;
->> +
->> +	page = compound_head(next);
->> +	if (PageCompound(page) && compound_order(page) > 1)
-
-I am not handling compound_order == 1 so will change to >= in the condition above.
-@compound_nr is placed on the second page.
-
->> +		nr = min_t(unsigned int,
->> +			   page + compound_nr(page) - next, npages);
-> 
-> This pointer arithmetic will involve division. Which may be unnecessarily
-> expensive, if there is a way to calculate this with indices instead of
-> pointer arithmetic. I'm not sure if there is, off hand, but thought it
-> worth mentioning because the point is sometimes overlooked.
-> 
-Sadly, can't think of :( hence had to adhere to what seems to be the pattern today.
-
-Any conversion to PFNs (page_to_pfn) will do same said arithmetic, and
-I don't think we can reliably use page_index (and even that is only available on the
-head page).
-
->> +
->> +	*head = page;
->> +	*ntails = nr;
->> +}
->> +
->> +#define for_each_compound_range(__i, __list, __npages, __head, __ntails) \
->> +	for (__i = 0, \
->> +	     range_next(__i, __npages, __list, &(__head), &(__ntails)); \
->> +	     __i < __npages; __i += __ntails, \
->> +	     range_next(__i, __npages, __list, &(__head), &(__ntails)))
->> +
->>   static inline void compound_next(unsigned long i, unsigned long npages,
->>   				 struct page **list, struct page **head,
->>   				 unsigned int *ntails)
->> @@ -306,6 +334,42 @@ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
->>   }
->>   EXPORT_SYMBOL(unpin_user_pages_dirty_lock);
->>   
->> +/**
->> + * unpin_user_page_range_dirty_lock() - release and optionally dirty
->> + * gup-pinned page range
->> + *
->> + * @page:  the starting page of a range maybe marked dirty, and definitely released.
->> + * @npages: number of consecutive pages to release.
->> + * @make_dirty: whether to mark the pages dirty
->> + *
->> + * "gup-pinned page range" refers to a range of pages that has had one of the
->> + * get_user_pages() variants called on that page.
->> + *
->> + * For the page ranges defined by [page .. page+npages], make that range (or
->> + * its head pages, if a compound page) dirty, if @make_dirty is true, and if the
->> + * page range was previously listed as clean.
->> + *
->> + * set_page_dirty_lock() is used internally. If instead, set_page_dirty() is
->> + * required, then the caller should a) verify that this is really correct,
->> + * because _lock() is usually required, and b) hand code it:
->> + * set_page_dirty_lock(), unpin_user_page().
->> + *
->> + */
->> +void unpin_user_page_range_dirty_lock(struct page *page, unsigned long npages,
->> +				      bool make_dirty)
->> +{
->> +	unsigned long index;
->> +	struct page *head;
->> +	unsigned int ntails;
->> +
->> +	for_each_compound_range(index, &page, npages, head, ntails) {
->> +		if (make_dirty && !PageDirty(head))
->> +			set_page_dirty_lock(head);
->> +		put_compound_head(head, ntails, FOLL_PIN);
->> +	}
->> +}
->> +EXPORT_SYMBOL(unpin_user_page_range_dirty_lock);
->> +
->>   /**
->>    * unpin_user_pages() - release an array of gup-pinned pages.
->>    * @pages:  array of pages to be marked dirty and released.
->>
-> 
-> Didn't spot any actual problems with how this works.
-
-/me nods
+Thanks.
+Reviewed-by: Parav Pandit <parav@nvidia.com>
