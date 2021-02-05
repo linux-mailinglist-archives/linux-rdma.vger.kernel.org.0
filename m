@@ -2,180 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504FD310C50
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 14:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBCD310D7A
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 16:57:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhBEN5h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Feb 2021 08:57:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45832 "EHLO
+        id S232076AbhBEORT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 Feb 2021 09:17:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbhBENyx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 08:54:53 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45AFC06178C
-        for <linux-rdma@vger.kernel.org>; Fri,  5 Feb 2021 05:54:12 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id h6so7471946oie.5
-        for <linux-rdma@vger.kernel.org>; Fri, 05 Feb 2021 05:54:12 -0800 (PST)
+        with ESMTP id S232178AbhBEOPE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 09:15:04 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7BFC061BC3
+        for <linux-rdma@vger.kernel.org>; Fri,  5 Feb 2021 07:53:08 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id j21so3568330wmj.0
+        for <linux-rdma@vger.kernel.org>; Fri, 05 Feb 2021 07:53:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j6v1VGSVATY+hRCrnnT7AY/QYNm5+/40mYg+pzQl86A=;
-        b=A6iq2KXrFahtB4cr3kBPqnqyo0XAzdmKOQhEnAbZD+/KssOkXDwz6IJ0qo8ox1WLvf
-         8UGkL/qfkfkl6uMou7uXvK/1sI/u1c+soMpQE/MjNXBtluQs7cCAxhy28nieGmGPq1A+
-         KL9fKX4IKHeAbDqPcytAyykKTpjzrV4nYRQeA=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8Ir4+6jXeWF96O1JJUoPM2tro7HgHzmtgfQxRaavk4k=;
+        b=GG4/X4vfqGxHf+FcSU1m0HfMF3nZHr/JkWja0qFhQnEm4oNaQ4Ne1XqdW2nY85/nNu
+         c32RcEEvul0N+mNo54y/xEeLO0m9B9bp3ksBZlm1QSFP0fJYnnh2EWf4+vIxtgV3TEr5
+         ugFftl0I++sc6DjOP/rSWFANYqFl18yBXjwpc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j6v1VGSVATY+hRCrnnT7AY/QYNm5+/40mYg+pzQl86A=;
-        b=gDhmXTAnqxesj+Z43KhXvDpXup7/S5feNWuVlk6x4T+4UsUg7Ge886lW8wabkNCuvv
-         9i2S8ELQz3MpJaHjd1CJkB4CAeXPkvDHx8lFw4RkGF4WpSaGchooIk4aiBjFtXuWGwvd
-         5CyEh3vJtVwb4tQPg73alnlEnFebU0YVgpdJviBOGcEZ8As5qO/dROm6UrK5IVtEheHz
-         n3Z3wPgLkWZvjEFdfqZTBWNZD5DK6DjiJ1K8PL4XsORKd++LAicdW5BR2jNMy54yXdy9
-         ybL2hRO34mqt6f3LPjZXBEijil0L8oTGCSbWj7TORp6JiUIiQa+AoT8prJ3ICib0FZXq
-         G5ng==
-X-Gm-Message-State: AOAM531RDzo951jEK5SAp69HBtxOv4AawZ71aGYKvnr/r7pfjmJ4GtYk
-        4ThiOdjGFPwucgNWKhbMri7uNxohw3A1AunQj4dXiq6zyYKzgw==
-X-Google-Smtp-Source: ABdhPJz9685+eI3NdzBDb5abkOxLpUI3dgTqppxo5J29WG/YfwXVsL5gNZKnX3HBnOyiivnkPOk/JQIaVu1Zrp1aNTo=
-X-Received: by 2002:aca:df42:: with SMTP id w63mr3045004oig.128.1612533252354;
- Fri, 05 Feb 2021 05:54:12 -0800 (PST)
-MIME-Version: 1.0
-References: <1612484954-75514-1-git-send-email-jianxin.xiong@intel.com>
- <1612484954-75514-4-git-send-email-jianxin.xiong@intel.com> <20210205132224.GK4718@ziepe.ca>
-In-Reply-To: <20210205132224.GK4718@ziepe.ca>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8Ir4+6jXeWF96O1JJUoPM2tro7HgHzmtgfQxRaavk4k=;
+        b=PQ2MewZ3aRFV57nWYlgOsSpV+sjnpjK4YeSNzCyTmnqPEHTg898Ub/l+ukLmlY0J7t
+         1TMEASKqf8BrxmLYJzVC5jjdHIJkmtS50Q2j71NO56iwX1cbQxchg5OkPH602iEubHc6
+         hMwk2OMIskueS7W4tYNXBSb/RYXfTyhN2VX3wWbLyrsR5uc8YO9Ybv+S1WjQOMid5ayR
+         J2M49Cf7X54CGdXEp73PAwGs5dYU6ekFWI+ilHLaxk40ugVYPpW9y3cuxIzBYoNTYQs1
+         //m75HAeY5btDIDWSPrRSaG1LUKyYkz2YTDqgQMVNcGfxEm1Tn34UYyOvE1oTE+tQQl/
+         kq7w==
+X-Gm-Message-State: AOAM530quAKxXW6IVDlntt2Xn+enTY1E2b1OlpK/7lhNarIMk9IXeVd4
+        DTxNoDKpoh6+duhKsb8ZibWkCw==
+X-Google-Smtp-Source: ABdhPJyHjupniXZffmsHLQ5vfS77YrHpoNGLCS1sGwzhA+NN8PKI/ovT3ResDGrVha19lSn77gFBig==
+X-Received: by 2002:a1c:cc19:: with SMTP id h25mr4151508wmb.124.1612540387688;
+        Fri, 05 Feb 2021 07:53:07 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id f14sm9338758wmj.30.2021.02.05.07.53.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 07:53:06 -0800 (PST)
+Date:   Fri, 5 Feb 2021 16:53:04 +0100
 From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Fri, 5 Feb 2021 14:54:01 +0100
-Message-ID: <CAKMK7uG4M3vBVB_gH4gJOOATdCk9HfUWEWAP5g87mDVM78P23A@mail.gmail.com>
-Subject: Re: [PATCH rdma-core v2 3/3] configure: Add check for the presence of
- DRM headers
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alex Deucher <alexdeucher@gmail.com>,
         Leon Romanovsky <leon@kernel.org>,
         linux-rdma <linux-rdma@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Edward Srouji <edwards@nvidia.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Gal Pressman <galpress@amazon.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
         Doug Ledford <dledford@redhat.com>,
-        Ali Alnubani <alialnu@nvidia.com>,
         Daniel Vetter <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+        Christian Koenig <christian.koenig@amd.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>
+Subject: Re: [PATCH v16 0/4] RDMA: Add dma-buf support
+Message-ID: <YB1p4Bpmz0yFcbEf@phenom.ffwll.local>
+References: <1608067636-98073-1-git-send-email-jianxin.xiong@intel.com>
+ <5e4ac17d-1654-9abc-9a14-bda223d62866@nvidia.com>
+ <CADnq5_M2YuOv16E2DG6sCPtL=z5SDDrN+y7iwD_pHVc7Omyrmw@mail.gmail.com>
+ <20210204182923.GL4247@nvidia.com>
+ <CADnq5_N9QvgAKQMLeutA7oBo5W5XyttvNOMK_siOc6QL+H07jQ@mail.gmail.com>
+ <8e731fce-95c1-4ace-d8bc-dc0df7432d22@nvidia.com>
+ <YB1mw/uYwueFwUdh@phenom.ffwll.local>
+ <20210205154319.GT4247@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205154319.GT4247@nvidia.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 2:22 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Thu, Feb 04, 2021 at 04:29:14PM -0800, Jianxin Xiong wrote:
-> > Compilation of pyverbs/dmabuf_alloc.c depends on a few DRM headers
-> > that are installed by either the kernel-header or the libdrm package.
-> > The installation is optional and the location is not unique.
-> >
-> > Check the presence of the headers at both the standard locations and
-> > any location defined by custom libdrm installation. If the headers
-> > are missing, the dmabuf allocation routines are replaced by stubs that
-> > return suitable error to allow the related tests to skip.
-> >
-> > Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
-> >  CMakeLists.txt              | 15 +++++++++++++++
-> >  pyverbs/CMakeLists.txt      | 14 ++++++++++++--
-> >  pyverbs/dmabuf_alloc.c      |  8 ++++----
-> >  pyverbs/dmabuf_alloc_stub.c | 39 +++++++++++++++++++++++++++++++++++++++
-> >  4 files changed, 70 insertions(+), 6 deletions(-)
-> >  create mode 100644 pyverbs/dmabuf_alloc_stub.c
-> >
-> > diff --git a/CMakeLists.txt b/CMakeLists.txt
-> > index 4113423..95aec11 100644
-> > +++ b/CMakeLists.txt
-> > @@ -515,6 +515,21 @@ find_package(Systemd)
-> >  include_directories(${SYSTEMD_INCLUDE_DIRS})
-> >  RDMA_DoFixup("${SYSTEMD_FOUND}" "systemd/sd-daemon.h")
-> >
-> > +# drm headers
-> > +
-> > +# First check the standard locations. The headers could have been installed
-> > +# by either the kernle-headers package or the libdrm package.
-> > +find_path(DRM_INCLUDE_DIRS "drm.h" PATH_SUFFIXES "drm" "libdrm")
->
-> Is there a reason not to just always call pkg_check_modules?
+On Fri, Feb 05, 2021 at 11:43:19AM -0400, Jason Gunthorpe wrote:
+> On Fri, Feb 05, 2021 at 04:39:47PM +0100, Daniel Vetter wrote:
+> 
+> > > And again, for slightly older hardware, without pinning to VRAM there is
+> > > no way to use this solution here for peer-to-peer. So I'm glad to see that
+> > > so far you're not ruling out the pinning option.
+> > 
+> > Since HMM and ZONE_DEVICE came up, I'm kinda tempted to make ZONE_DEVICE
+> > ZONE_MOVEABLE (at least if you don't have a pinned vram contigent in your
+> > cgroups) or something like that, so we could benefit from the work to make
+> > sure pin_user_pages and all these never end up in there?
+> 
+> ZONE_DEVICE should already not be returned from GUP.
+> 
+> I've understood in the hmm casse the idea was a CPU touch of some
+> ZONE_DEVICE pages would trigger a migration to CPU memory, GUP would
+> want to follow the same logic, presumably it comes for free with the
+> fault handler somehow
 
-Note that the gpu-specific libraries are split out, so I'd also check
-for those just to be sure - I don't know whether all distros package
-the uapi headers consistently in libdrm or sometimes also in one of
-the libdrm-$vendor packages.
--Daniel
+Oh I didn't know this, I thought the proposed p2p direct i/o patches would
+just use the fact that underneath ZONE_DEVICE there's "normal" struct
+pages. And so I got worried that maybe also pin_user_pages can creep in.
+But I didn't read the patches in full detail:
 
->
-> > +# Then check custom installation of libdrm
-> > +if (NOT DRM_INCLUDE_DIRS)
-> > +  pkg_check_modules(DRM libdrm)
-> > +endif()
-> > +
-> > +if (DRM_INCLUDE_DIRS)
-> > +  include_directories(${DRM_INCLUDE_DIRS})
-> > +endif()
->
-> This needs a hunk at the end:
->
-> if (NOT DRM_INCLUDE_DIRS)
->   message(STATUS " DMABUF NOT supported (disabling some tests)")
-> endif()
->
-> >  #-------------------------
-> >  # Apply fixups
-> >
-> > diff --git a/pyverbs/CMakeLists.txt b/pyverbs/CMakeLists.txt
-> > index 6fd7625..922253f 100644
-> > +++ b/pyverbs/CMakeLists.txt
-> > @@ -13,8 +13,6 @@ rdma_cython_module(pyverbs ""
-> >    cmid.pyx
-> >    cq.pyx
-> >    device.pyx
-> > -  dmabuf.pyx
-> > -  dmabuf_alloc.c
-> >    enums.pyx
-> >    mem_alloc.pyx
-> >    mr.pyx
-> > @@ -25,6 +23,18 @@ rdma_cython_module(pyverbs ""
-> >    xrcd.pyx
-> >  )
-> >
-> > +if (DRM_INCLUDE_DIRS)
-> > +rdma_cython_module(pyverbs ""
-> > +  dmabuf.pyx
-> > +  dmabuf_alloc.c
-> > +)
-> > +else()
-> > +rdma_cython_module(pyverbs ""
-> > +  dmabuf.pyx
-> > +  dmabuf_alloc_stub.c
-> > +)
-> > +endif()
->
-> Like this:
->
-> if (DRM_INCLUDE_DIRS)
->   set(DMABUF_ALLOC dmabuf_alloc.c)
-> else()
->   set(DMABUF_ALLOC dmabuf_alloc_stbub.c)
-> endif()
-> rdma_cython_module(pyverbs ""
->   dmabuf.pyx
->   $(DMABUF_ALLOC)
-> )
->
-> Jason
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+https://lore.kernel.org/linux-block/20201106170036.18713-12-logang@deltatee.com/
 
+But if you're saying that this all needs specific code and all the gup/pup
+code we have is excluded, I think we can make sure that we're not ever
+building features that requiring time-unlimited pinning of ZONE_DEVICE.
+Which I think we want.
 
-
+Cheers, Daniel
 -- 
 Daniel Vetter
 Software Engineer, Intel Corporation
