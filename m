@@ -2,110 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14846311275
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 21:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0090431129D
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 21:37:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232869AbhBESpo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Feb 2021 13:45:44 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13408 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233182AbhBESnD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 13:43:03 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601da9900000>; Fri, 05 Feb 2021 12:24:48 -0800
-Received: from MacBook-Pro-10.local (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
- 2021 20:24:39 +0000
-Subject: Re: [PATCH v16 0/4] RDMA: Add dma-buf support
-To:     Daniel Vetter <daniel@ffwll.ch>, Jason Gunthorpe <jgg@nvidia.com>
-CC:     Alex Deucher <alexdeucher@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "Daniel Vetter" <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>
-References: <1608067636-98073-1-git-send-email-jianxin.xiong@intel.com>
- <5e4ac17d-1654-9abc-9a14-bda223d62866@nvidia.com>
- <CADnq5_M2YuOv16E2DG6sCPtL=z5SDDrN+y7iwD_pHVc7Omyrmw@mail.gmail.com>
- <20210204182923.GL4247@nvidia.com>
- <CADnq5_N9QvgAKQMLeutA7oBo5W5XyttvNOMK_siOc6QL+H07jQ@mail.gmail.com>
- <8e731fce-95c1-4ace-d8bc-dc0df7432d22@nvidia.com>
- <YB1mw/uYwueFwUdh@phenom.ffwll.local> <20210205154319.GT4247@nvidia.com>
- <YB1p4Bpmz0yFcbEf@phenom.ffwll.local>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <4c339fc3-087b-1008-fb99-7117bf326470@nvidia.com>
-Date:   Fri, 5 Feb 2021 12:24:38 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
+        id S229702AbhBESwp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 Feb 2021 13:52:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233088AbhBEPEk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 5 Feb 2021 10:04:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A87864E92;
+        Fri,  5 Feb 2021 16:31:35 +0000 (UTC)
+Subject: [PATCH v1] xprtrdma: Clean up rpcrdma_prepare_readch()
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     anna.schumaker@netapp.com
+Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
+Date:   Fri, 05 Feb 2021 11:31:34 -0500
+Message-ID: <161254265485.1728.15776929905868209914.stgit@manet.1015granger.net>
+User-Agent: StGit/0.23-29-ga622f1
 MIME-Version: 1.0
-In-Reply-To: <YB1p4Bpmz0yFcbEf@phenom.ffwll.local>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612556688; bh=ZGMznwvj1qqDWeGew4C5B7fXOw8LwrqPvnzl+1M1wGQ=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=rac3tdz3hfQn/kJ44D4FHG4dUgYb1x7VFyiTFED7lB0vBsz4wdruqNLy6TqpIKZzZ
-         FuxJ2cvW0K5DIjQvbDxVDFFooDwpuB+gguVFVBCPa9wEiCOySBq5dE00BQ9+Ryxhld
-         TideXe2p+NkD1PCv+2Vkubwrf4CZkV9L4mzt8G22XWpqE4iTGb7YUJIfyDohqi7GbX
-         NgRnxnAzHu+r2w5ZTj9aCrHZj9dOoi8nX6ml5G9IXchHw5zc34KNF5Pby5nD56gPxf
-         xv31Sc5X60lbGuIqYmbd3T/KX5xUYO0dXB9oGZhXubEu01JTKyID6NZXX47I7counu
-         rTp2/jZhjO3iw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/5/21 7:53 AM, Daniel Vetter wrote:
-> On Fri, Feb 05, 2021 at 11:43:19AM -0400, Jason Gunthorpe wrote:
->> On Fri, Feb 05, 2021 at 04:39:47PM +0100, Daniel Vetter wrote:
->>
->>>> And again, for slightly older hardware, without pinning to VRAM there is
->>>> no way to use this solution here for peer-to-peer. So I'm glad to see that
->>>> so far you're not ruling out the pinning option.
->>>
->>> Since HMM and ZONE_DEVICE came up, I'm kinda tempted to make ZONE_DEVICE
->>> ZONE_MOVEABLE (at least if you don't have a pinned vram contigent in your
->>> cgroups) or something like that, so we could benefit from the work to make
->>> sure pin_user_pages and all these never end up in there?
->>
->> ZONE_DEVICE should already not be returned from GUP.
->>
->> I've understood in the hmm casse the idea was a CPU touch of some
->> ZONE_DEVICE pages would trigger a migration to CPU memory, GUP would
->> want to follow the same logic, presumably it comes for free with the
->> fault handler somehow
-> 
-> Oh I didn't know this, I thought the proposed p2p direct i/o patches would
-> just use the fact that underneath ZONE_DEVICE there's "normal" struct
-> pages. And so I got worried that maybe also pin_user_pages can creep in.
-> But I didn't read the patches in full detail:
-> 
-> https://lore.kernel.org/linux-block/20201106170036.18713-12-logang@deltatee.com/
-> 
-> But if you're saying that this all needs specific code and all the gup/pup
-> code we have is excluded, I think we can make sure that we're not ever
-> building features that requiring time-unlimited pinning of ZONE_DEVICE.
-> Which I think we want.
-> 
+Since commit 9ed5af268e88 ("SUNRPC: Clean up the handling of page
+padding in rpc_prepare_reply_pages()") [Dec 2020] the NFS client
+passes payload data to the transport with the padding in xdr->pages
+instead of in the send buffer's tail kvec. There's no need for the
+extra logic to advance the base of the tail kvec because the upper
+layer no longer places XDR padding there.
 
- From an HMM perspective, the above sounds about right. HMM relies on the
-GPU/device memory being ZONE_DEVICE, *and* on that memory *not* being pinned.
-(HMM's mmu notifier callbacks act as a sort of virtual pin, but not a refcount
-pin.)
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+---
+ net/sunrpc/xprtrdma/rpc_rdma.c |   27 +++++++++------------------
+ 1 file changed, 9 insertions(+), 18 deletions(-)
 
-It's a nice clean design point that we need to preserve, and fortunately it
-doesn't conflict with anything I'm seeing here. But I want to say this out
-loud because I see some doubt about it creeping into the discussion.
+Hi Anna-
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+Found one more clean-up related to the series I sent yesterday.
+
+
+diff --git a/net/sunrpc/xprtrdma/rpc_rdma.c b/net/sunrpc/xprtrdma/rpc_rdma.c
+index 1c3e377272e0..292f066d006e 100644
+--- a/net/sunrpc/xprtrdma/rpc_rdma.c
++++ b/net/sunrpc/xprtrdma/rpc_rdma.c
+@@ -628,9 +628,8 @@ static bool rpcrdma_prepare_pagelist(struct rpcrdma_req *req,
+ 	return false;
+ }
+ 
+-/* The tail iovec may include an XDR pad for the page list,
+- * as well as additional content, and may not reside in the
+- * same page as the head iovec.
++/* The tail iovec might not reside in the same page as the
++ * head iovec.
+  */
+ static bool rpcrdma_prepare_tail_iov(struct rpcrdma_req *req,
+ 				     struct xdr_buf *xdr,
+@@ -748,27 +747,19 @@ static bool rpcrdma_prepare_readch(struct rpcrdma_xprt *r_xprt,
+ 				   struct rpcrdma_req *req,
+ 				   struct xdr_buf *xdr)
+ {
++	struct kvec *tail = &xdr->tail[0];
++
+ 	if (!rpcrdma_prepare_head_iov(r_xprt, req, xdr->head[0].iov_len))
+ 		return false;
+ 
+-	/* If there is a Read chunk, the page list is being handled
++	/* If there is a Read chunk, the page list is handled
+ 	 * via explicit RDMA, and thus is skipped here.
+ 	 */
+ 
+-	/* Do not include the tail if it is only an XDR pad */
+-	if (xdr->tail[0].iov_len > 3) {
+-		unsigned int page_base, len;
+-
+-		/* If the content in the page list is an odd length,
+-		 * xdr_write_pages() adds a pad at the beginning of
+-		 * the tail iovec. Force the tail's non-pad content to
+-		 * land at the next XDR position in the Send message.
+-		 */
+-		page_base = offset_in_page(xdr->tail[0].iov_base);
+-		len = xdr->tail[0].iov_len;
+-		page_base += len & 3;
+-		len -= len & 3;
+-		if (!rpcrdma_prepare_tail_iov(req, xdr, page_base, len))
++	if (tail->iov_len) {
++		if (!rpcrdma_prepare_tail_iov(req, xdr,
++					      offset_in_page(tail->iov_base),
++					      tail->iov_len))
+ 			return false;
+ 		kref_get(&req->rl_kref);
+ 	}
+
+
