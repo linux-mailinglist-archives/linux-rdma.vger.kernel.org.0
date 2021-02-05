@@ -2,136 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C4C31150D
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 23:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D357311614
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 23:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbhBEWWz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Feb 2021 17:22:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232631AbhBEO26 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 09:28:58 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59035C061797
-        for <linux-rdma@vger.kernel.org>; Fri,  5 Feb 2021 08:06:47 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id v15so8275545wrx.4
-        for <linux-rdma@vger.kernel.org>; Fri, 05 Feb 2021 08:06:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3OSZRC12f3q/J6xvpmjxkYtxd8Kjl+PfZ12MCmFyNTs=;
-        b=bYXMPhnRMDnWNLg3owU/iy8WI3TbNcpN0GVSP5459+nS10U0XMpOTznWSNv/myvTnO
-         KfxK93fxhG2u7Ura35Me9qKW50VlJ2+swQ01+GIT9Oe8cw0kdtkNOd/LbHWPPDDOtZXf
-         ZKZnHo5aFIIiuH5xeRO5eg9jfpcDgyJe94qos=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3OSZRC12f3q/J6xvpmjxkYtxd8Kjl+PfZ12MCmFyNTs=;
-        b=kFEdmK+P2CDW0UZdhPFXV4IfMQOVbzpS0a9ztn+Zf259AkBK584GYPDmEcMkAXyVzs
-         jC6iqOZLkEr6rgv5QdrcShTGvNfAjCm2w36mKmxfWe240MxIEbhBq+qnGWdg6R6H8k0C
-         ITg9zJKe67aqwXoA9W5t/uLO4WZ+mmvd7JCce5CY1rnWJG9libx+ErwLZLKy8bPpavLM
-         4G0+CWHZd2efPBV5GsroDfD+0cEZ1Uy+1ez0AopZUR3iX6XBE4pg/gn85wDqye9UFYz1
-         9+/yzM7AJFQitM7AFoeBK4gw/NV+kPPkVvPrQS7GsPpV+IuL4LdBnVvsT1SBQzkojPi4
-         xbSA==
-X-Gm-Message-State: AOAM5306OuJ1CPFzKkw8WgQ0mim5wbRf8gqaQjzhf/OgNlM7L8KjGARL
-        BRZd8uh4udv6UoJsZNz3KAisZw==
-X-Google-Smtp-Source: ABdhPJxZ2wdJ6quTErZl6d8W+xMqeQz+RNxGJkRMmNGfC01VLq/Z0PeyUo/lOZrBhMLQvh9lWULc3Q==
-X-Received: by 2002:adf:e7c1:: with SMTP id e1mr5816296wrn.23.1612541206152;
-        Fri, 05 Feb 2021 08:06:46 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id e4sm12452422wrw.96.2021.02.05.08.06.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 08:06:45 -0800 (PST)
-Date:   Fri, 5 Feb 2021 17:06:43 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alex Deucher <alexdeucher@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>
-Subject: Re: [PATCH v16 0/4] RDMA: Add dma-buf support
-Message-ID: <YB1tE0WKUOBaO03x@phenom.ffwll.local>
-References: <1608067636-98073-1-git-send-email-jianxin.xiong@intel.com>
- <5e4ac17d-1654-9abc-9a14-bda223d62866@nvidia.com>
- <CADnq5_M2YuOv16E2DG6sCPtL=z5SDDrN+y7iwD_pHVc7Omyrmw@mail.gmail.com>
- <20210204182923.GL4247@nvidia.com>
- <CADnq5_N9QvgAKQMLeutA7oBo5W5XyttvNOMK_siOc6QL+H07jQ@mail.gmail.com>
- <8e731fce-95c1-4ace-d8bc-dc0df7432d22@nvidia.com>
- <YB1mw/uYwueFwUdh@phenom.ffwll.local>
- <20210205154319.GT4247@nvidia.com>
- <YB1p4Bpmz0yFcbEf@phenom.ffwll.local>
- <20210205160003.GU4247@nvidia.com>
+        id S230058AbhBEWuV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 Feb 2021 17:50:21 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:60110 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232400AbhBENDx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 08:03:53 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 115CTTnv115438;
+        Fri, 5 Feb 2021 13:03:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=LgzNwtVrPCHQ+X8++9CaF64ugRzfuLVv6tZF9PdDXH8=;
+ b=bUmawfdmWCY7B6M4RdQaMNSXMOcMa1rPHhd/3lCHbxtIOyplFoql/OvdSR1P1Amvmhpp
+ 5d5oaIsVHfiJugmdhV+F7dyIQUyErjknIHGxQnHJFJwZaF5QXZ4BwKugm6wqboh5X7bR
+ tNKeHPbYEA7rufTsrWVolzc5tagUkB0bs+LxsCQhGrSQqkbZOgxpkKUeTXTFwKJKD+5u
+ 0tMrCyunsD9bso9PFiXEiFwcE0WzJAPeWTyRGSKOUxi/u6yn1XZPIca9Soy9LUvAJATS
+ /nz2VHAS2luM1l5bJPXnsR9kd3eb3GAqW+dCea/Uynb4+6doRhrCqbtLr6qRlS4oCHzC tw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 36gfw8sqv5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 05 Feb 2021 13:03:07 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 115CxeSo023736;
+        Fri, 5 Feb 2021 13:03:05 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 36dh1tvpd8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 05 Feb 2021 13:03:05 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 115D33SV027207;
+        Fri, 5 Feb 2021 13:03:03 GMT
+Received: from mwanda (/41.210.143.249)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 05 Feb 2021 05:03:02 -0800
+Date:   Fri, 5 Feb 2021 16:02:54 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kliteyn@nvidia.com
+Cc:     Yevgeny Kliteynik <kliteyn@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: [bug report] net/mlx5: DR, Add STEv1 setters and getters
+Message-ID: <YB1B/iHMlHHnOWCh@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210205160003.GU4247@nvidia.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9885 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=852 bulkscore=0 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102050084
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9885 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 bulkscore=0
+ impostorscore=0 clxscore=1011 mlxscore=0 mlxlogscore=796 malwarescore=0
+ suspectscore=0 lowpriorityscore=0 priorityscore=1501 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102050083
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 12:00:03PM -0400, Jason Gunthorpe wrote:
-> On Fri, Feb 05, 2021 at 04:53:04PM +0100, Daniel Vetter wrote:
-> > On Fri, Feb 05, 2021 at 11:43:19AM -0400, Jason Gunthorpe wrote:
-> > > On Fri, Feb 05, 2021 at 04:39:47PM +0100, Daniel Vetter wrote:
-> > > 
-> > > > > And again, for slightly older hardware, without pinning to VRAM there is
-> > > > > no way to use this solution here for peer-to-peer. So I'm glad to see that
-> > > > > so far you're not ruling out the pinning option.
-> > > > 
-> > > > Since HMM and ZONE_DEVICE came up, I'm kinda tempted to make ZONE_DEVICE
-> > > > ZONE_MOVEABLE (at least if you don't have a pinned vram contigent in your
-> > > > cgroups) or something like that, so we could benefit from the work to make
-> > > > sure pin_user_pages and all these never end up in there?
-> > > 
-> > > ZONE_DEVICE should already not be returned from GUP.
-> > > 
-> > > I've understood in the hmm casse the idea was a CPU touch of some
-> > > ZONE_DEVICE pages would trigger a migration to CPU memory, GUP would
-> > > want to follow the same logic, presumably it comes for free with the
-> > > fault handler somehow
-> > 
-> > Oh I didn't know this, I thought the proposed p2p direct i/o patches would
-> > just use the fact that underneath ZONE_DEVICE there's "normal" struct
-> > pages. 
-> 
-> So, if that every happens, it would be some special FOLL_ALLOW_P2P
-> flag to get the behavior.
-> 
-> > And so I got worried that maybe also pin_user_pages can creep in.
-> > But I didn't read the patches in full detail:
-> 
-> And yes, you might want to say that you can't longterm pin certain
-> kinds of zone_device pages, but if that is the common operating mode
-> then we'd probably never create a FOLL_ALLOW_P2P
-> 
-> > But if you're saying that this all needs specific code and all the gup/pup
-> > code we have is excluded, I think we can make sure that we're not ever
-> > building features that requiring time-unlimited pinning of
-> > ZONE_DEVICE.
-> 
-> Well, it is certainly a useful idea of some uses of ZONE_DEVICE, GPU
-> vram is not the whole world.
+Hello Yevgeny Kliteynik,
 
-Yeah non-volatile RAM can probably pin whatever it wants :-)
+The patch a6098129c781: "net/mlx5: DR, Add STEv1 setters and getters"
+from Sep 22, 2020, leads to the following static checker warning:
 
-From the other thread, I think if we can get some cgroups going for
-accounting pinned memory, then pinning gpu memory should also not be any
-real issue. Might be somewhat tricky to glue that into a FOLL_ALLOW_P2P
-flag, maybe through zone-awareness or something like that. With the right
-accounting in place I'm happy to let userspace pin whatever they want
-really.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+	drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste_v1.c:268 dr_ste_v1_get_miss_addr()
+	warn: potential shift truncation.  '0xff (0-255) << 26'
+
+drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste_v1.c
+   264  static u64 dr_ste_v1_get_miss_addr(u8 *hw_ste_p)
+   265  {
+   266          u64 index =
+   267                  (MLX5_GET(ste_match_bwc_v1, hw_ste_p, miss_address_31_6) |
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   268                   MLX5_GET(ste_match_bwc_v1, hw_ste_p, miss_address_39_32) << 26);
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+index is a u64 but the right side is a two u32s.  The << 26 can shift
+wrap potentially according to Smatch.
+
+   269  
+   270          return index << 6;
+   271  }
+
+regards,
+dan carpenter
