@@ -2,130 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D745D310B58
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 13:51:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22153310BC5
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 14:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232314AbhBEMtt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Feb 2021 07:49:49 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:54226 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231921AbhBEMrP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 07:47:15 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 115CTUit115488;
-        Fri, 5 Feb 2021 12:46:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=NJrBfpgCjUiEfZr94zJbyL1bQyu5MTHNs/temhe54wc=;
- b=lTv5549OETIVSUeL+QMuSRKA0n77HTclVDPDooO+d7TkY4LCokYKvS+YNm0Om2i2Y4TY
- kP2N2Wz+yfJ4J8kdrppeIM68JMSeiVyPNidCMvTYAp+XCEVbj9wY98JN4GQDeb5Z84Ek
- fjHsLAF73stfCfpOW/iaL7lqtrlH1loPDHGQEzy8cNBcX3nVnvWk/yvMmjbEjQ6FuGdf
- hpUKGEOApqTz1Ruys8wtgQa+pAD8skCZozE7Shu3iJ5bk2ACe9hGUufMQBis5Bzftf5t
- 8zQdd/rhtAIB9oop5hJSCUNqGsqf143I1Rr3yU1B49YHRipDmetz+7nhRLb/3UTsPTq3 Yw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 36gfw8snvu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Feb 2021 12:46:07 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 115CUdgr077914;
-        Fri, 5 Feb 2021 12:46:05 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 36dh7wnhhm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Feb 2021 12:46:05 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 115Ck4vc006594;
-        Fri, 5 Feb 2021 12:46:04 GMT
-Received: from mwanda (/41.210.143.249)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 05 Feb 2021 04:46:03 -0800
-Date:   Fri, 5 Feb 2021 15:45:54 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     saeedm@nvidia.com, Feras Daoud <ferasda@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: [bug report] net/mxl5e: Add change profile method
-Message-ID: <YBz2CSKUBlUCRxsZ@mwanda>
+        id S229581AbhBENZ1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 Feb 2021 08:25:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhBENXH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 08:23:07 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BEB0C0617A7
+        for <linux-rdma@vger.kernel.org>; Fri,  5 Feb 2021 05:22:26 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id l11so3395777qvt.1
+        for <linux-rdma@vger.kernel.org>; Fri, 05 Feb 2021 05:22:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jQUIp9niz/uOgL5mmbfjBwhGvI5VU8KjTGU8DMkCJHY=;
+        b=axFVMjNvflN4c5MmnvPMBQOovQ410sbVVkUEoKwCzSPZ39cUveXsub7rPwEIQLdUNI
+         yXXXicSW4D/9CbIEG8P/qOAqHVqPvfgTvefUOVA5H75U3lNc6hfUVH95Nnl7lhk+jm1b
+         ceo0dCVL6UL3wmbTLv8yXGjd+YsA6wI7ql+8da3Ygm1xBJKpnxTjpU5amkEbNA3McUWw
+         csfgtDYxuuGjUM1v52Z2Gbh9JPLNWQWjogPrn5VUN4RqElhxnN2ePgjFYp6EjAaGmP7J
+         IA3+GijkY63qUHTAESC/ONI48qv65lq2JMADqTB8K7v9M/Y1XyqbhXns2bj5Zqi/5mY3
+         GXSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jQUIp9niz/uOgL5mmbfjBwhGvI5VU8KjTGU8DMkCJHY=;
+        b=OGxaf/1FaDFoDvI/xX8wdBclUb9X4ObpEgOt0ap/2WhMoWYr8jXFFTdCjJrDuVuNJf
+         TGaU6j/zouo44eOQMe+eF03iK2/qP0a+K9mfaQVVuMUSu0Ho/4BXRTHJznU1s+7NweDw
+         Sb4lJMlKEx7x31poZ5ufYL8xHVYYublYDJP6xOIONHwgpKbJu/zfSUPCiI6ArjY/Z61I
+         GeLah16Wa/ikmx2A3xImkLvNTh5Ut5wRb/IBB1pTtlBdrQd13MfWWngywoygX0kEtXmQ
+         kYK73fhThoYzz88ncYi01PG1yH58kOpUN1NpCeqbI1wmtQOHKbPTVas4qY7awG0zEhoN
+         0FNw==
+X-Gm-Message-State: AOAM533nh95euWZVad25njzV/TpmkfEHoyjBawSalC4yw5yK0NCGAWyb
+        RYvf5FqlhPS5XYVkQfMoK77oPg==
+X-Google-Smtp-Source: ABdhPJw3RA9vBcmfXBOlbNYqYZ2+IIALUDcInGmWO9yQ0P8R/Ss6/JzAqsIz/4qywP43kMcRTS314g==
+X-Received: by 2002:a05:6214:725:: with SMTP id c5mr4095464qvz.27.1612531345671;
+        Fri, 05 Feb 2021 05:22:25 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id k90sm6612703qtd.0.2021.02.05.05.22.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 05:22:25 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l8144-003pvy-Kf; Fri, 05 Feb 2021 09:22:24 -0400
+Date:   Fri, 5 Feb 2021 09:22:24 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jianxin Xiong <jianxin.xiong@intel.com>
+Cc:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Edward Srouji <edwards@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Ali Alnubani <alialnu@nvidia.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Emil Velikov <emil.l.velikov@gmail.com>
+Subject: Re: [PATCH rdma-core v2 3/3] configure: Add check for the presence
+ of DRM headers
+Message-ID: <20210205132224.GK4718@ziepe.ca>
+References: <1612484954-75514-1-git-send-email-jianxin.xiong@intel.com>
+ <1612484954-75514-4-git-send-email-jianxin.xiong@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9885 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 phishscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102050083
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9885 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 bulkscore=0
- impostorscore=0 clxscore=1011 mlxscore=0 mlxlogscore=999 malwarescore=0
- suspectscore=0 lowpriorityscore=0 priorityscore=1501 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102050083
+In-Reply-To: <1612484954-75514-4-git-send-email-jianxin.xiong@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Saeed Mahameed and Feras Daoud,
+On Thu, Feb 04, 2021 at 04:29:14PM -0800, Jianxin Xiong wrote:
+> Compilation of pyverbs/dmabuf_alloc.c depends on a few DRM headers
+> that are installed by either the kernel-header or the libdrm package.
+> The installation is optional and the location is not unique.
+> 
+> Check the presence of the headers at both the standard locations and
+> any location defined by custom libdrm installation. If the headers
+> are missing, the dmabuf allocation routines are replaced by stubs that
+> return suitable error to allow the related tests to skip.
+> 
+> Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+>  CMakeLists.txt              | 15 +++++++++++++++
+>  pyverbs/CMakeLists.txt      | 14 ++++++++++++--
+>  pyverbs/dmabuf_alloc.c      |  8 ++++----
+>  pyverbs/dmabuf_alloc_stub.c | 39 +++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 70 insertions(+), 6 deletions(-)
+>  create mode 100644 pyverbs/dmabuf_alloc_stub.c
+> 
+> diff --git a/CMakeLists.txt b/CMakeLists.txt
+> index 4113423..95aec11 100644
+> +++ b/CMakeLists.txt
+> @@ -515,6 +515,21 @@ find_package(Systemd)
+>  include_directories(${SYSTEMD_INCLUDE_DIRS})
+>  RDMA_DoFixup("${SYSTEMD_FOUND}" "systemd/sd-daemon.h")
+>  
+> +# drm headers
+> +
+> +# First check the standard locations. The headers could have been installed
+> +# by either the kernle-headers package or the libdrm package.
+> +find_path(DRM_INCLUDE_DIRS "drm.h" PATH_SUFFIXES "drm" "libdrm")
 
-I'm not exactly sure if I should blame commit c4d7eb57687f: "net/mxl5e:
-Add change profile method" fomr Mar 22, 2020 or commit 182570b26223
-("net/mlx5e: Gather common netdev init/cleanup functionality in one
-place") from Oct 2, 2018.
+Is there a reason not to just always call pkg_check_modules?
 
-drivers/net/ethernet/mellanox/mlx5/core/en_main.c:5658 mlx5e_netdev_change_profile() warn: 'priv->htb.qos_sq_stats' double freed
-drivers/net/ethernet/mellanox/mlx5/core/en_main.c:5658 mlx5e_netdev_change_profile() warn: 'priv->scratchpad.cpumask' double freed
-drivers/net/ethernet/mellanox/mlx5/core/en_main.c:5789 mlx5e_probe() warn: 'priv->htb.qos_sq_stats' double freed
-drivers/net/ethernet/mellanox/mlx5/core/en_main.c:5789 mlx5e_probe() warn: 'priv->scratchpad.cpumask' double freed
-drivers/net/ethernet/mellanox/mlx5/core/en_main.c:5802 mlx5e_remove() warn: 'priv->htb.qos_sq_stats' double freed
-drivers/net/ethernet/mellanox/mlx5/core/en_main.c:5802 mlx5e_remove() warn: 'priv->scratchpad.cpumask' double freed
-drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:1317 mlx5e_vport_rep_unload() warn: 'priv->htb.qos_sq_stats' double freed
-drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:1317 mlx5e_vport_rep_unload() warn: 'priv->scratchpad.cpumask' double freed
+> +# Then check custom installation of libdrm
+> +if (NOT DRM_INCLUDE_DIRS)
+> +  pkg_check_modules(DRM libdrm)
+> +endif()
+> +
+> +if (DRM_INCLUDE_DIRS)
+> +  include_directories(${DRM_INCLUDE_DIRS})
+> +endif()
 
-drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-  5639  int mlx5e_netdev_change_profile(struct mlx5e_priv *priv,
-  5640                                  const struct mlx5e_profile *new_profile, void *new_ppriv)
-  5641  {
-  5642          unsigned int new_max_nch = mlx5e_calc_max_nch(priv, new_profile);
-  5643          const struct mlx5e_profile *orig_profile = priv->profile;
-  5644          void *orig_ppriv = priv->ppriv;
-  5645          int err, rollback_err;
-  5646  
-  5647          /* sanity */
-  5648          if (new_max_nch != priv->max_nch) {
-  5649                  netdev_warn(priv->netdev,
-  5650                              "%s: Replacing profile with different max channles\n",
-  5651                              __func__);
-  5652                  return -EINVAL;
-  5653          }
-  5654  
-  5655          /* cleanup old profile */
-  5656          mlx5e_detach_netdev(priv);
-  5657          priv->profile->cleanup(priv);
+This needs a hunk at the end:
 
-The problem is that mlx5i_pkey_cleanup() calls mlx5e_priv_cleanup().
+if (NOT DRM_INCLUDE_DIRS)
+  message(STATUS " DMABUF NOT supported (disabling some tests)")
+endif()
 
-  5658          mlx5e_priv_cleanup(priv);
-                ^^^^^^^^^^^^^^^^^^^^^^^^
-And then it gets called again here.
+>  #-------------------------
+>  # Apply fixups
+>  
+> diff --git a/pyverbs/CMakeLists.txt b/pyverbs/CMakeLists.txt
+> index 6fd7625..922253f 100644
+> +++ b/pyverbs/CMakeLists.txt
+> @@ -13,8 +13,6 @@ rdma_cython_module(pyverbs ""
+>    cmid.pyx
+>    cq.pyx
+>    device.pyx
+> -  dmabuf.pyx
+> -  dmabuf_alloc.c
+>    enums.pyx
+>    mem_alloc.pyx
+>    mr.pyx
+> @@ -25,6 +23,18 @@ rdma_cython_module(pyverbs ""
+>    xrcd.pyx
+>  )
+>  
+> +if (DRM_INCLUDE_DIRS)
+> +rdma_cython_module(pyverbs ""
+> +  dmabuf.pyx
+> +  dmabuf_alloc.c
+> +)
+> +else()
+> +rdma_cython_module(pyverbs ""
+> +  dmabuf.pyx
+> +  dmabuf_alloc_stub.c
+> +)
+> +endif()
 
-  5659  
-  5660          err = mlx5e_netdev_attach_profile(priv, new_profile, new_ppriv);
-  5661          if (err) { /* roll back to original profile */
-  5662                  netdev_warn(priv->netdev, "%s: new profile init failed, %d\n",
-  5663                              __func__, err);
-  5664                  goto rollback;
-  5665          }
-  5666  
-  5667          return 0;
-  5668  
-  5669  rollback:
-  5670          rollback_err = mlx5e_netdev_attach_profile(priv, orig_profile, orig_ppriv);
-  5671          if (rollback_err) {
-  5672                  netdev_err(priv->netdev,
-  5673                             "%s: failed to rollback to orig profile, %d\n",
-  5674                             __func__, rollback_err);
-  5675          }
-  5676          return err;
-  5677  }
+Like this:
 
-regards,
-dan carpenter
+if (DRM_INCLUDE_DIRS)
+  set(DMABUF_ALLOC dmabuf_alloc.c)
+else()
+  set(DMABUF_ALLOC dmabuf_alloc_stbub.c)
+endif()
+rdma_cython_module(pyverbs ""
+  dmabuf.pyx
+  $(DMABUF_ALLOC)
+)
+
+Jason
