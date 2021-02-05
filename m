@@ -2,129 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A3C31081F
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 10:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD07731088C
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 10:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229496AbhBEJo3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Feb 2021 04:44:29 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:12844 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229997AbhBEJmh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 04:42:37 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DX9Q95zKVz7hVV;
-        Fri,  5 Feb 2021 17:40:33 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 5 Feb 2021 17:41:52 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-Subject: [PATCH for-next 12/12] RDMA/hns: Delete redundant judgment when preparing descriptors
-Date:   Fri, 5 Feb 2021 17:39:34 +0800
-Message-ID: <1612517974-31867-13-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1612517974-31867-1-git-send-email-liweihang@huawei.com>
-References: <1612517974-31867-1-git-send-email-liweihang@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+        id S230475AbhBEJ6B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 Feb 2021 04:58:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229815AbhBEJz5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 04:55:57 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBFFC06178C;
+        Fri,  5 Feb 2021 01:55:16 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id 7so7020648wrz.0;
+        Fri, 05 Feb 2021 01:55:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=MT0BlZZFXQ7Pukf17++wQpN4EZiEO2XNbV+qknkfsyA=;
+        b=YN/bcnZoNO4KfXVM+0sV8qqwBK2gJ64YbALf1RXWAcy8Uqxl1TNzBBX9oB56NN1h+B
+         bK0TJMqQT8L/+E4PVEhOvlZz3zDdUOohqMQGFcprGGpRPHTRvzJOOD86nPiyi/y7Y7/r
+         qDqFbPAYlARf0pcr+Mw2IORvdqwd8XFb8I0p+YwjvLzEI0UzC5WEW67HvWcQD3MxBev6
+         Riya5RK2gOpV+GiajE+stCFXjiQ0gi6aN3gmcu6QCn10xUH+jld/WyCqwLawdqjSFu2m
+         CZUl3oQvJKV0o2/OGIARU9+k+/79YSUnsQa+ENMBDWdTfP2PNvZl60H1JGkQ8AycLLNx
+         TAvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=MT0BlZZFXQ7Pukf17++wQpN4EZiEO2XNbV+qknkfsyA=;
+        b=dZhugUt5/OYvjYRJQ6K8gM4MQC+pMBAlWKaXKgx1JudlSCTGIBegjXaU71SuAdkr5J
+         DxyONMlOy0eZZwCn1541QccZCzz4N7I3NETsSwnXssHo+BRUm3n7MKVFoYsM45FberDF
+         rcmSz1FSKjX4fHQOeHIGVbQKXkV4/y+hYSuoTwKAQuH4df0qJ2psjavIHRrTg/adxDEE
+         caN5BXZkPtmphW1VQ8nkqbboxM5rCrYMMItnDXLDBbn6DJzsRBkNyzB2PICcbn6o01ad
+         8Ka/WLvpIoBdkoLPhR71AUgGKb/Dzbrk1kb7d/POyc+Eo8GG3waEnHdGqlsi+A8Y18f0
+         oQow==
+X-Gm-Message-State: AOAM531DrprtiLiABqoX1gCYeuFiWntYECtJqWpl57MSU+ReO85egIcx
+        Kutdt5CeuyJAEw8tQruXqY4=
+X-Google-Smtp-Source: ABdhPJx1/Me3l7tCNW11yyIC3uDqu69f7nvNS8wM0zQOOmPh5Fu5W6GNCNrDtAO8PGTekqBHbSuz0Q==
+X-Received: by 2002:adf:efc8:: with SMTP id i8mr4101524wrp.84.1612518914805;
+        Fri, 05 Feb 2021 01:55:14 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2ded:6500:7c12:49b0:591a:b2bd])
+        by smtp.gmail.com with ESMTPSA id u142sm8690977wmu.3.2021.02.05.01.55.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 01:55:14 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Parav Pandit <parav@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] net/mlx5: docs: correct section reference in table of contents
+Date:   Fri,  5 Feb 2021 10:55:06 +0100
+Message-Id: <20210205095506.29146-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xinhao Liu <liuxinhao5@hisilicon.com>
+Commit 142d93d12dc1 ("net/mlx5: Add devlink subfunction port
+documentation") refers to a section 'mlx5 port function' in the table of
+contents, but includes a section 'mlx5 function attributes' instead.
 
-There is no need to use a for loop to assign values for an array of cmd
-descriptors which has only two elements.
+Hence, make htmldocs warns:
 
-Signed-off-by: Xinhao Liu <liuxinhao5@hisilicon.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
+  mlx5.rst:16: WARNING: Unknown target name: "mlx5 port function".
+
+Correct the section reference in table of contents to the actual name of
+section in the documentation.
+
+Also, tune another section underline while visiting this document.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 40 +++++++++++-------------------
- 1 file changed, 14 insertions(+), 26 deletions(-)
+Saeed, please pick this patch for your -next tree on top of the commit above.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 9c6fe32..1071b3b 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1611,17 +1611,13 @@ static int hns_roce_query_pf_resource(struct hns_roce_dev *hr_dev)
- 	struct hns_roce_pf_res_a *req_a;
- 	struct hns_roce_pf_res_b *req_b;
- 	int ret;
--	int i;
+ .../networking/device_drivers/ethernet/mellanox/mlx5.rst      | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
+index a1b32fcd0d76..1b7e32d8a61b 100644
+--- a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
++++ b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst
+@@ -13,12 +13,12 @@ Contents
+ - `Devlink info`_
+ - `Devlink parameters`_
+ - `mlx5 subfunction`_
+-- `mlx5 port function`_
++- `mlx5 function attributes`_
+ - `Devlink health reporters`_
+ - `mlx5 tracepoints`_
  
--	for (i = 0; i < 2; i++) {
--		hns_roce_cmq_setup_basic_desc(&desc[i],
--					      HNS_ROCE_OPC_QUERY_PF_RES, true);
-+	hns_roce_cmq_setup_basic_desc(&desc[0], HNS_ROCE_OPC_QUERY_PF_RES,
-+				      true);
-+	desc[0].flag |= cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
+ Enabling the driver and kconfig options
+-================================================
++=======================================
  
--		if (i == 0)
--			desc[i].flag |= cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
--		else
--			desc[i].flag &= ~cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
--	}
-+	hns_roce_cmq_setup_basic_desc(&desc[1], HNS_ROCE_OPC_QUERY_PF_RES,
-+				      true);
- 
- 	ret = hns_roce_cmq_send(hr_dev, desc, 2);
- 	if (ret)
-@@ -1714,19 +1710,16 @@ static int hns_roce_alloc_vf_resource(struct hns_roce_dev *hr_dev)
- 	struct hns_roce_cmq_desc desc[2];
- 	struct hns_roce_vf_res_a *req_a;
- 	struct hns_roce_vf_res_b *req_b;
--	int i;
- 
- 	req_a = (struct hns_roce_vf_res_a *)desc[0].data;
- 	req_b = (struct hns_roce_vf_res_b *)desc[1].data;
--	for (i = 0; i < 2; i++) {
--		hns_roce_cmq_setup_basic_desc(&desc[i],
--					      HNS_ROCE_OPC_ALLOC_VF_RES, false);
- 
--		if (i == 0)
--			desc[i].flag |= cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
--		else
--			desc[i].flag &= ~cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
--	}
-+	hns_roce_cmq_setup_basic_desc(&desc[0], HNS_ROCE_OPC_ALLOC_VF_RES,
-+				      false);
-+	desc[0].flag |= cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
-+
-+	hns_roce_cmq_setup_basic_desc(&desc[1], HNS_ROCE_OPC_ALLOC_VF_RES,
-+				      false);
- 
- 	roce_set_field(req_a->vf_qpc_bt_idx_num,
- 		       VF_RES_A_DATA_1_VF_QPC_BT_IDX_M,
-@@ -2407,7 +2400,6 @@ static int hns_roce_config_link_table(struct hns_roce_dev *hr_dev,
- 	struct hns_roce_link_table_entry *entry;
- 	enum hns_roce_opcode_type opcode;
- 	u32 page_num;
--	int i;
- 
- 	switch (type) {
- 	case TSQ_LINK_TABLE:
-@@ -2425,14 +2417,10 @@ static int hns_roce_config_link_table(struct hns_roce_dev *hr_dev,
- 	page_num = link_tbl->npages;
- 	entry = link_tbl->table.buf;
- 
--	for (i = 0; i < 2; i++) {
--		hns_roce_cmq_setup_basic_desc(&desc[i], opcode, false);
-+	hns_roce_cmq_setup_basic_desc(&desc[0], opcode, false);
-+	desc[0].flag |= cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
- 
--		if (i == 0)
--			desc[i].flag |= cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
--		else
--			desc[i].flag &= ~cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
--	}
-+	hns_roce_cmq_setup_basic_desc(&desc[1], opcode, false);
- 
- 	req_a->base_addr_l = cpu_to_le32(link_tbl->table.map & 0xffffffff);
- 	req_a->base_addr_h = cpu_to_le32(link_tbl->table.map >> 32);
+ | mlx5 core is modular and most of the major mlx5 core driver features can be selected (compiled in/out)
+ | at build time via kernel Kconfig flags.
 -- 
-2.8.1
+2.17.1
 
