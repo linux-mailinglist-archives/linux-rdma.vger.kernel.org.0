@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464EB31083B
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 10:50:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E74AC310821
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 10:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhBEJrM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Feb 2021 04:47:12 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:12847 "EHLO
+        id S229753AbhBEJod (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 Feb 2021 04:44:33 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:12843 "EHLO
         szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbhBEJpL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 04:45:11 -0500
+        with ESMTP id S229984AbhBEJmi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 04:42:38 -0500
 Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DX9QB0c1mz7hVt;
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DX9QB069sz7hVp;
         Fri,  5 Feb 2021 17:40:34 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
@@ -21,9 +21,9 @@ From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@nvidia.com>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@openeuler.org>
-Subject: [PATCH for-next 08/12] RDMA/hns: Move HIP06 related definitions into hns_roce_hw_v1.h
-Date:   Fri, 5 Feb 2021 17:39:30 +0800
-Message-ID: <1612517974-31867-9-git-send-email-liweihang@huawei.com>
+Subject: [PATCH for-next 09/12] RDMA/hns: Remove some magic numbers
+Date:   Fri, 5 Feb 2021 17:39:31 +0800
+Message-ID: <1612517974-31867-10-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1612517974-31867-1-git-send-email-liweihang@huawei.com>
 References: <1612517974-31867-1-git-send-email-liweihang@huawei.com>
@@ -35,131 +35,65 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lang Cheng <chenglang@huawei.com>
+From: Xinhao Liu <liuxinhao5@hisilicon.com>
 
-hns_roce_device.h is not specific to hardware, some definitions are only
-used for HIP06, they should be moved into hns_roce_hw_v1.h.
+Use macros instead of magic numbers to represent shift of dma_handle_wqe,
+dma_handle_idx and UDP destination port number of RoCEv2.
 
-Signed-off-by: Lang Cheng <chenglang@huawei.com>
+Signed-off-by: Xinhao Liu <liuxinhao5@hisilicon.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_device.h | 41 ---------------------------
- drivers/infiniband/hw/hns/hns_roce_hw_v1.h  | 43 +++++++++++++++++++++++++++++
- 2 files changed, 43 insertions(+), 41 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 74eb08f..315c013 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -170,44 +170,6 @@ enum hns_roce_event {
- 	HNS_ROCE_EVENT_TYPE_FLR			      = 0x15,
- };
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index a5e304a..1bff432 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -1601,7 +1601,8 @@ static int hns_roce_config_global_param(struct hns_roce_dev *hr_dev)
+ 		       CFG_GLOBAL_PARAM_DATA_0_ROCEE_TIME_1US_CFG_S, 0x3e8);
+ 	roce_set_field(req->time_cfg_udp_port,
+ 		       CFG_GLOBAL_PARAM_DATA_0_ROCEE_UDP_PORT_M,
+-		       CFG_GLOBAL_PARAM_DATA_0_ROCEE_UDP_PORT_S, 0x12b7);
++		       CFG_GLOBAL_PARAM_DATA_0_ROCEE_UDP_PORT_S,
++		       ROCE_V2_UDP_DPORT);
  
--/* Local Work Queue Catastrophic Error,SUBTYPE 0x5 */
--enum {
--	HNS_ROCE_LWQCE_QPC_ERROR		= 1,
--	HNS_ROCE_LWQCE_MTU_ERROR		= 2,
--	HNS_ROCE_LWQCE_WQE_BA_ADDR_ERROR	= 3,
--	HNS_ROCE_LWQCE_WQE_ADDR_ERROR		= 4,
--	HNS_ROCE_LWQCE_SQ_WQE_SHIFT_ERROR	= 5,
--	HNS_ROCE_LWQCE_SL_ERROR			= 6,
--	HNS_ROCE_LWQCE_PORT_ERROR		= 7,
--};
--
--/* Local Access Violation Work Queue Error,SUBTYPE 0x7 */
--enum {
--	HNS_ROCE_LAVWQE_R_KEY_VIOLATION		= 1,
--	HNS_ROCE_LAVWQE_LENGTH_ERROR		= 2,
--	HNS_ROCE_LAVWQE_VA_ERROR		= 3,
--	HNS_ROCE_LAVWQE_PD_ERROR		= 4,
--	HNS_ROCE_LAVWQE_RW_ACC_ERROR		= 5,
--	HNS_ROCE_LAVWQE_KEY_STATE_ERROR		= 6,
--	HNS_ROCE_LAVWQE_MR_OPERATION_ERROR	= 7,
--};
--
--/* DOORBELL overflow subtype */
--enum {
--	HNS_ROCE_DB_SUBTYPE_SDB_OVF		= 1,
--	HNS_ROCE_DB_SUBTYPE_SDB_ALM_OVF		= 2,
--	HNS_ROCE_DB_SUBTYPE_ODB_OVF		= 3,
--	HNS_ROCE_DB_SUBTYPE_ODB_ALM_OVF		= 4,
--	HNS_ROCE_DB_SUBTYPE_SDB_ALM_EMP		= 5,
--	HNS_ROCE_DB_SUBTYPE_ODB_ALM_EMP		= 6,
--};
--
--enum {
--	/* RQ&SRQ related operations */
--	HNS_ROCE_OPCODE_SEND_DATA_RECEIVE	= 0x06,
--	HNS_ROCE_OPCODE_RDMA_WITH_IMM_RECEIVE	= 0x07,
--};
--
- #define HNS_ROCE_CAP_FLAGS_EX_SHIFT 12
+ 	return hns_roce_cmq_send(hr_dev, &desc, 1);
+ }
+@@ -5264,6 +5265,9 @@ static int hns_roce_v2_qp_flow_control_init(struct hns_roce_dev *hr_dev,
+ 	return ret;
+ }
  
- enum {
-@@ -260,9 +222,6 @@ enum {
++#define DMA_IDX_SHIFT 3
++#define DMA_WQE_SHIFT 3
++
+ static int hns_roce_v2_write_srqc_index_queue(struct hns_roce_srq *srq,
+ 					      struct hns_roce_srq_context *ctx)
+ {
+@@ -5286,8 +5290,9 @@ static int hns_roce_v2_write_srqc_index_queue(struct hns_roce_srq *srq,
+ 	hr_reg_write(ctx, SRQC_IDX_HOP_NUM,
+ 		     to_hr_hem_hopnum(hr_dev->caps.idx_hop_num, srq->wqe_cnt));
  
- #define HNS_ROCE_CMD_SUCCESS			1
+-	hr_reg_write(ctx, SRQC_IDX_BT_BA_L, dma_handle_idx >> 3);
+-	hr_reg_write(ctx, SRQC_IDX_BT_BA_H, upper_32_bits(dma_handle_idx >> 3));
++	hr_reg_write(ctx, SRQC_IDX_BT_BA_L, dma_handle_idx >> DMA_IDX_SHIFT);
++	hr_reg_write(ctx, SRQC_IDX_BT_BA_H,
++		     upper_32_bits(dma_handle_idx >> DMA_IDX_SHIFT));
  
--#define HNS_ROCE_PORT_DOWN			0
--#define HNS_ROCE_PORT_UP			1
--
- /* The minimum page size is 4K for hardware */
- #define HNS_HW_PAGE_SHIFT			12
- #define HNS_HW_PAGE_SIZE			(1 << HNS_HW_PAGE_SHIFT)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.h b/drivers/infiniband/hw/hns/hns_roce_hw_v1.h
-index 46ab0a3..8438323 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.h
-@@ -193,6 +193,49 @@
- #define HNS_ROCE_AEQE_EVENT_CE_EVENT_CEQE_CEQN_S 0
- #define HNS_ROCE_AEQE_EVENT_CE_EVENT_CEQE_CEQN_M GENMASK(4, 0)
+ 	hr_reg_write(ctx, SRQC_IDX_BA_PG_SZ,
+ 		     to_hr_hw_page_shift(idx_que->mtr.hem_cfg.ba_pg_shift));
+@@ -5340,8 +5345,9 @@ static int hns_roce_v2_write_srqc(struct hns_roce_srq *srq, void *mb_buf)
+ 		     to_hr_hem_hopnum(hr_dev->caps.srqwqe_hop_num,
+ 				      srq->wqe_cnt));
  
-+/* Local Work Queue Catastrophic Error,SUBTYPE 0x5 */
-+enum {
-+	HNS_ROCE_LWQCE_QPC_ERROR = 1,
-+	HNS_ROCE_LWQCE_MTU_ERROR,
-+	HNS_ROCE_LWQCE_WQE_BA_ADDR_ERROR,
-+	HNS_ROCE_LWQCE_WQE_ADDR_ERROR,
-+	HNS_ROCE_LWQCE_SQ_WQE_SHIFT_ERROR,
-+	HNS_ROCE_LWQCE_SL_ERROR,
-+	HNS_ROCE_LWQCE_PORT_ERROR,
-+};
-+
-+/* Local Access Violation Work Queue Error,SUBTYPE 0x7 */
-+enum {
-+	HNS_ROCE_LAVWQE_R_KEY_VIOLATION = 1,
-+	HNS_ROCE_LAVWQE_LENGTH_ERROR,
-+	HNS_ROCE_LAVWQE_VA_ERROR,
-+	HNS_ROCE_LAVWQE_PD_ERROR,
-+	HNS_ROCE_LAVWQE_RW_ACC_ERROR,
-+	HNS_ROCE_LAVWQE_KEY_STATE_ERROR,
-+	HNS_ROCE_LAVWQE_MR_OPERATION_ERROR,
-+};
-+
-+/* DOORBELL overflow subtype */
-+enum {
-+	HNS_ROCE_DB_SUBTYPE_SDB_OVF = 1,
-+	HNS_ROCE_DB_SUBTYPE_SDB_ALM_OVF,
-+	HNS_ROCE_DB_SUBTYPE_ODB_OVF,
-+	HNS_ROCE_DB_SUBTYPE_ODB_ALM_OVF,
-+	HNS_ROCE_DB_SUBTYPE_SDB_ALM_EMP,
-+	HNS_ROCE_DB_SUBTYPE_ODB_ALM_EMP,
-+};
-+
-+enum {
-+	/* RQ&SRQ related operations */
-+	HNS_ROCE_OPCODE_SEND_DATA_RECEIVE = 0x06,
-+	HNS_ROCE_OPCODE_RDMA_WITH_IMM_RECEIVE,
-+};
-+
-+enum {
-+	HNS_ROCE_PORT_DOWN = 0,
-+	HNS_ROCE_PORT_UP,
-+};
-+
- struct hns_roce_cq_context {
- 	__le32 cqc_byte_4;
- 	__le32 cq_bt_l;
+-	hr_reg_write(ctx, SRQC_WQE_BT_BA_L, dma_handle_wqe >> 3);
+-	hr_reg_write(ctx, SRQC_WQE_BT_BA_H, upper_32_bits(dma_handle_wqe >> 3));
++	hr_reg_write(ctx, SRQC_WQE_BT_BA_L, dma_handle_wqe >> DMA_WQE_SHIFT);
++	hr_reg_write(ctx, SRQC_WQE_BT_BA_H,
++		     upper_32_bits(dma_handle_wqe >> DMA_WQE_SHIFT));
+ 
+ 	hr_reg_write(ctx, SRQC_WQE_BA_PG_SZ,
+ 		     to_hr_hw_page_shift(srq->buf_mtr.hem_cfg.ba_pg_shift));
 -- 
 2.8.1
 
