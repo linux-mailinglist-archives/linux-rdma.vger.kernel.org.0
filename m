@@ -2,125 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E5D31120B
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 21:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14846311275
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 21:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232930AbhBESci convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 5 Feb 2021 13:32:38 -0500
-Received: from mga02.intel.com ([134.134.136.20]:30271 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233425AbhBESas (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 5 Feb 2021 13:30:48 -0500
-IronPort-SDR: r65CiwwIZNTceVn3j8gJb8CBUBxIqOPgZdpaFmZyiwnIz/rbP5hYUM1VEEPgUvVk92sNkDDLht
- co789mVOk1UA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9886"; a="168602584"
-X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="168602584"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 12:12:29 -0800
-IronPort-SDR: yBuA5GxZSnIOMcZSJ9ZhBhg0XusNgdWaahklvnntGxw9SXudXabFzSOFDhx2wTgb/rk0XLT4Qp
- GVYSwml+dKQQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,156,1610438400"; 
-   d="scan'208";a="393998187"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga008.jf.intel.com with ESMTP; 05 Feb 2021 12:12:29 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 5 Feb 2021 12:12:28 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 5 Feb 2021 12:12:28 -0800
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2106.002;
- Fri, 5 Feb 2021 12:12:28 -0800
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>
-Subject: RE: [PATCH 20/22] RDMA/irdma: Add ABI definitions
-Thread-Topic: [PATCH 20/22] RDMA/irdma: Add ABI definitions
-Thread-Index: AQHW8RlkdRkNgNRDEUiQqAbZnBRzCao5SR2AgAWJrnCABW/2gIADKWiQ
-Date:   Fri, 5 Feb 2021 20:12:28 +0000
-Message-ID: <95c86ea5f5e94d068e6e0467ccba33a0@intel.com>
-References: <20210122234827.1353-1-shiraz.saleem@intel.com>
- <20210122234827.1353-21-shiraz.saleem@intel.com>
- <20210125194515.GY4147@nvidia.com>
- <04dcd32fcecd4492900f0bde0e45e5dc@intel.com>
- <20210201192121.GQ4247@nvidia.com>
-In-Reply-To: <20210201192121.GQ4247@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S232869AbhBESpo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 Feb 2021 13:45:44 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13408 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233182AbhBESnD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 13:43:03 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601da9900000>; Fri, 05 Feb 2021 12:24:48 -0800
+Received: from MacBook-Pro-10.local (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 5 Feb
+ 2021 20:24:39 +0000
+Subject: Re: [PATCH v16 0/4] RDMA: Add dma-buf support
+To:     Daniel Vetter <daniel@ffwll.ch>, Jason Gunthorpe <jgg@nvidia.com>
+CC:     Alex Deucher <alexdeucher@gmail.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "Daniel Vetter" <daniel.vetter@intel.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>
+References: <1608067636-98073-1-git-send-email-jianxin.xiong@intel.com>
+ <5e4ac17d-1654-9abc-9a14-bda223d62866@nvidia.com>
+ <CADnq5_M2YuOv16E2DG6sCPtL=z5SDDrN+y7iwD_pHVc7Omyrmw@mail.gmail.com>
+ <20210204182923.GL4247@nvidia.com>
+ <CADnq5_N9QvgAKQMLeutA7oBo5W5XyttvNOMK_siOc6QL+H07jQ@mail.gmail.com>
+ <8e731fce-95c1-4ace-d8bc-dc0df7432d22@nvidia.com>
+ <YB1mw/uYwueFwUdh@phenom.ffwll.local> <20210205154319.GT4247@nvidia.com>
+ <YB1p4Bpmz0yFcbEf@phenom.ffwll.local>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <4c339fc3-087b-1008-fb99-7117bf326470@nvidia.com>
+Date:   Fri, 5 Feb 2021 12:24:38 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <YB1p4Bpmz0yFcbEf@phenom.ffwll.local>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612556688; bh=ZGMznwvj1qqDWeGew4C5B7fXOw8LwrqPvnzl+1M1wGQ=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=rac3tdz3hfQn/kJ44D4FHG4dUgYb1x7VFyiTFED7lB0vBsz4wdruqNLy6TqpIKZzZ
+         FuxJ2cvW0K5DIjQvbDxVDFFooDwpuB+gguVFVBCPa9wEiCOySBq5dE00BQ9+Ryxhld
+         TideXe2p+NkD1PCv+2Vkubwrf4CZkV9L4mzt8G22XWpqE4iTGb7YUJIfyDohqi7GbX
+         NgRnxnAzHu+r2w5ZTj9aCrHZj9dOoi8nX6ml5G9IXchHw5zc34KNF5Pby5nD56gPxf
+         xv31Sc5X60lbGuIqYmbd3T/KX5xUYO0dXB9oGZhXubEu01JTKyID6NZXX47I7counu
+         rTp2/jZhjO3iw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [PATCH 20/22] RDMA/irdma: Add ABI definitions
+On 2/5/21 7:53 AM, Daniel Vetter wrote:
+> On Fri, Feb 05, 2021 at 11:43:19AM -0400, Jason Gunthorpe wrote:
+>> On Fri, Feb 05, 2021 at 04:39:47PM +0100, Daniel Vetter wrote:
+>>
+>>>> And again, for slightly older hardware, without pinning to VRAM there is
+>>>> no way to use this solution here for peer-to-peer. So I'm glad to see that
+>>>> so far you're not ruling out the pinning option.
+>>>
+>>> Since HMM and ZONE_DEVICE came up, I'm kinda tempted to make ZONE_DEVICE
+>>> ZONE_MOVEABLE (at least if you don't have a pinned vram contigent in your
+>>> cgroups) or something like that, so we could benefit from the work to make
+>>> sure pin_user_pages and all these never end up in there?
+>>
+>> ZONE_DEVICE should already not be returned from GUP.
+>>
+>> I've understood in the hmm casse the idea was a CPU touch of some
+>> ZONE_DEVICE pages would trigger a migration to CPU memory, GUP would
+>> want to follow the same logic, presumably it comes for free with the
+>> fault handler somehow
 > 
-> On Sat, Jan 30, 2021 at 01:18:36AM +0000, Saleem, Shiraz wrote:
-> > > Subject: Re: [PATCH 20/22] RDMA/irdma: Add ABI definitions
-> > >
-> > > On Fri, Jan 22, 2021 at 05:48:25PM -0600, Shiraz Saleem wrote:
-> > > > From: Mustafa Ismail <mustafa.ismail@intel.com>
-> > > >
-> > > > Add ABI definitions for irdma.
-> > > >
-> > > > Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-> > > > Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > > include/uapi/rdma/irdma-abi.h | 140
-> > > > ++++++++++++++++++++++++++++++++++++++++++
-> > > >  1 file changed, 140 insertions(+)  create mode 100644
-> > > > include/uapi/rdma/irdma-abi.h
-> > > >
-> > > > diff --git a/include/uapi/rdma/irdma-abi.h
-> > > > b/include/uapi/rdma/irdma-abi.h new file mode 100644 index
-> > > > 0000000..d9c8ce1
-> > > > +++ b/include/uapi/rdma/irdma-abi.h
-> > > > @@ -0,0 +1,140 @@
-> > > > +/* SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) OR
-> > > > +Linux-OpenIB) */
-> > > > +/*
-> > > > + * Copyright (c) 2006 - 2021 Intel Corporation.  All rights reserved.
-> > > > + * Copyright (c) 2005 Topspin Communications.  All rights reserved.
-> > > > + * Copyright (c) 2005 Cisco Systems.  All rights reserved.
-> > > > + * Copyright (c) 2005 Open Grid Computing, Inc. All rights reserved.
-> > > > + */
-> > > > +
-> > > > +#ifndef IRDMA_ABI_H
-> > > > +#define IRDMA_ABI_H
-> > > > +
-> > > > +#include <linux/types.h>
-> > > > +
-> > > > +/* irdma must support legacy GEN_1 i40iw kernel
-> > > > + * and user-space whose last ABI ver is 5  */ #define
-> > > > +IRDMA_ABI_VER 6
-> > >
-> > > I don't want to see this value increase, either this is ABI
-> > > compatible with i40iw or it is not and should be a new driver_id.
-> >
-> > I am not sure I understand how it's possible without a ver. bump.
-> > We support user-space libirdma with this driver as well as libi40iw.
+> Oh I didn't know this, I thought the proposed p2p direct i/o patches would
+> just use the fact that underneath ZONE_DEVICE there's "normal" struct
+> pages. And so I got worried that maybe also pin_user_pages can creep in.
+> But I didn't read the patches in full detail:
 > 
-> Well, start by not making gratuitous changes to the structure layouts and then ask
-> how to handle what you have left over.
+> https://lore.kernel.org/linux-block/20201106170036.18713-12-logang@deltatee.com/
+> 
+> But if you're saying that this all needs specific code and all the gup/pup
+> code we have is excluded, I think we can make sure that we're not ever
+> building features that requiring time-unlimited pinning of ZONE_DEVICE.
+> Which I think we want.
 > 
 
-Took a while but following now. We ll PoC and see how this shapes out. Thanks! 
+ From an HMM perspective, the above sounds about right. HMM relies on the
+GPU/device memory being ZONE_DEVICE, *and* on that memory *not* being pinned.
+(HMM's mmu notifier callbacks act as a sort of virtual pin, but not a refcount
+pin.)
+
+It's a nice clean design point that we need to preserve, and fortunately it
+doesn't conflict with anything I'm seeing here. But I want to say this out
+loud because I see some doubt about it creeping into the discussion.
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
