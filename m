@@ -2,161 +2,249 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9FF31185E
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Feb 2021 03:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A3C3119F6
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Feb 2021 04:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhBFCgA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Feb 2021 21:36:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhBFCdj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 21:33:39 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B9DC08EE25
-        for <linux-rdma@vger.kernel.org>; Fri,  5 Feb 2021 16:25:02 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id v193so3960962oie.8
-        for <linux-rdma@vger.kernel.org>; Fri, 05 Feb 2021 16:25:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aQKQUsK6QMsy4X1oV28tM4z8Ewm0hEDOsXzwdCyisqY=;
-        b=gexGdOH1sm7Hi0CeMn2IaZ6IvAWu5qkCraAlWyLc+xTkTHRts2h1GVGzwMAxdYclLT
-         pxPTUFhq4U8o5e4bDPEN7IyIDRT0jthzfNZ44/2i8aDcYHobp/Kd99CIkqq5ikg0oZPL
-         B/Fy0t5Q7A+lVnMnj6qBPNX0BO4XN/UbpmmsETf1vUE8XZVYyi4Y488OopqXnYYiHceL
-         x/EBzVfRoOh2VBbhbLEY68jhLiILotMbIbRG0EHS7AavLpyN5Foe8/Sq+ju5YgITHdpz
-         a8bKV1kM6bjaraFVtuGR/ir08nf+09siAFNALDCev03Q5OBjf7bgdOchCyyJTk7LUslL
-         k5FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aQKQUsK6QMsy4X1oV28tM4z8Ewm0hEDOsXzwdCyisqY=;
-        b=kteJrB3JsJ08MWvGrp+1CPe/RVM42FpxOq2zQfWMmvuN1tlTsb6Wt1LqhWuD6hZ1/1
-         9qxIEAs6hXZpCVyM1AhYMf2Nm5u258COzNVdgdISYGgF6PV1XzPwNbUctIu1qGZ6iF3b
-         00i2PxvK7mu8mdalZM2dmO5ZPqsr1u/U9/8nWbkK6YXD7G1KhWwDU35W35GDDmkcxpxg
-         yGS4EKNTKqV3N+dwwGrJAfM4rxVKEKTZ5KVWG08tae/EJfUohZIZeKbo7gY8cqU5iunh
-         uRA18NmjSYOVuCAn/LRNVB3HqpCVFyxupXVEJ7XXR2dyUL1gdjzVF7JMRQlgLKQaCRgp
-         S9vA==
-X-Gm-Message-State: AOAM533Rj4/F13QXKgXVUyrhc/S8aWeFwHGkv+HYUkCeazoG6B/N891G
-        C1jRdyAShCWi8VccOJfAkz4=
-X-Google-Smtp-Source: ABdhPJxN3dhQyEKZjX6GIuKwZpyj2jzqxvw+cdp3E3aj/3g06hOSyiXrAP+qmherTkPBaVlw1XQNAA==
-X-Received: by 2002:aca:ba56:: with SMTP id k83mr4804118oif.82.1612571101491;
-        Fri, 05 Feb 2021 16:25:01 -0800 (PST)
-Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-b1e0-6ae3-596c-1850.res6.spectrum.com. [2603:8081:140c:1a00:b1e0:6ae3:596c:1850])
-        by smtp.gmail.com with ESMTPSA id f26sm2131662otq.80.2021.02.05.16.25.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 16:25:00 -0800 (PST)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearson@hpe.com>
-Subject: [PATCH for-next] RDMA/rxe: Cleanup init_send_wqe
-Date:   Fri,  5 Feb 2021 18:24:37 -0600
-Message-Id: <20210206002437.2756-1-rpearson@hpe.com>
-X-Mailer: git-send-email 2.27.0
+        id S231459AbhBFDZB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 Feb 2021 22:25:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230334AbhBFDOq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 5 Feb 2021 22:14:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD1CF64FDB;
+        Fri,  5 Feb 2021 22:57:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612565826;
+        bh=beTYi/eHaZGvu87n/mYxclpTO5XD4POh4Hsclbr4UsI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=twbwCzTRvZa5kyVY9+M2lhdUy721vEk0ixTed2lJAxOI9h+UlNXkF//3JC6oa1/u2
+         vhYiEitqivPF8BKaLKg8M/i4a7IRQ9hF1v1MAQ2lsubnghd2BmkWTLoT1ewGq7u/ve
+         ct7RrEZvR1SwbyDEohCHVb+590hxuzqoB8Dj2KVKwAWEbWadTDJevYRM519rclCZJs
+         Z1I+DbzYbLO7HdVgMz3gfoET6/cCX05hBXLzcr/jllY/mlqBb+lqpglJ5jrbZK+Fxv
+         /TftQyqKPd6SqLCuG1hucYuJQhfiPI2zRdAz9xTdNW4xWbJeSUNvSn9Fde/maBBHyT
+         /hooeNKz9bJcQ==
+Date:   Fri, 5 Feb 2021 16:57:03 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH mlx5-next v5 1/4] PCI: Add sysfs callback to allow MSI-X
+ table size change of SR-IOV VFs
+Message-ID: <20210205225703.GA193188@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205173547.GE93433@unreal>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch changes the type of init_send_wqe in rxe_verbs.c to void
-since it always returns 0. It also separates out the code that copies
-inline data into the send wqe as copy_inline_data_to_wqe().
+On Fri, Feb 05, 2021 at 07:35:47PM +0200, Leon Romanovsky wrote:
+> On Thu, Feb 04, 2021 at 03:12:12PM -0600, Bjorn Helgaas wrote:
+> > On Thu, Feb 04, 2021 at 05:50:48PM +0200, Leon Romanovsky wrote:
+> > > On Wed, Feb 03, 2021 at 06:10:39PM -0600, Bjorn Helgaas wrote:
+> > > > On Tue, Feb 02, 2021 at 09:44:29PM +0200, Leon Romanovsky wrote:
+> > > > > On Tue, Feb 02, 2021 at 12:06:09PM -0600, Bjorn Helgaas wrote:
+> > > > > > On Tue, Jan 26, 2021 at 10:57:27AM +0200, Leon Romanovsky wrote:
+> > > > > > > From: Leon Romanovsky <leonro@nvidia.com>
+> > > > > > >
+> > > > > > > Extend PCI sysfs interface with a new callback that allows
+> > > > > > > configure the number of MSI-X vectors for specific SR-IO VF.
+> > > > > > > This is needed to optimize the performance of newly bound
+> > > > > > > devices by allocating the number of vectors based on the
+> > > > > > > administrator knowledge of targeted VM.
+> > > > > >
+> > > > > > I'm reading between the lines here, but IIUC the point is that you
+> > > > > > have a PF that supports a finite number of MSI-X vectors for use
+> > > > > > by all the VFs, and this interface is to control the distribution
+> > > > > > of those MSI-X vectors among the VFs.
+> >
+> > > > This commit log should describe how *this* device manages this
+> > > > allocation and how the PF Table Size and the VF Table Sizes are
+> > > > related.  Per PCIe, there is no necessary connection between them.
+> > >
+> > > There is no connection in mlx5 devices either. PF is used as a vehicle
+> > > to access VF that doesn't have driver yet. From "table size" perspective
+> > > they completely independent, because PF already probed by driver and
+> > > it is already too late to change it.
+> > >
+> > > So PF table size is static and can be changed through FW utility only.
+> >
+> > This is where description of the device would be useful.
+> >
+> > The fact that you need "sriov_vf_total_msix" to advertise how many
+> > vectors are available and "sriov_vf_msix_count" to influence how they
+> > are distributed across the VFs suggests that these Table Sizes are not
+> > completely independent.
+> >
+> > Can a VF have a bigger Table Size than the PF does?  Can all the VF
+> > Table Sizes added together be bigger than the PF Table Size?  If VF A
+> > has a larger Table Size, does that mean VF B must have a smaller Table
+> > Size?
+> 
+> VFs are completely independent devices and their table size can be
+> bigger than PF. FW has two pools, one for PF and another for all VFs.
+> In real world scenarios, every VF will have more MSI-X vectors than PF,
+> which will be distributed by orchestration software.
 
-Signed-off-by: Bob Pearson <rpearson@hpe.com>
----
- drivers/infiniband/sw/rxe/rxe_verbs.c | 42 ++++++++++++---------------
- 1 file changed, 19 insertions(+), 23 deletions(-)
+Well, if the sum of all the VF Table Sizes cannot exceed the size of
+the FW pool for VFs, I would say the VFs are not completely
+independent.  Increasing the Table Size of one VF reduces it for other
+VFs.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 984909e03b35..dee5e0e919d2 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -555,14 +555,24 @@ static void init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
- 	}
- }
- 
--static int init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
-+static void copy_inline_data_to_wqe(struct rxe_send_wqe *wqe,
-+				    const struct ib_send_wr *ibwr)
-+{
-+	struct ib_sge *sge = ibwr->sg_list;
-+	u8 *p = wqe->dma.inline_data;
-+	int i;
-+
-+	for (i = 0; i < ibwr->num_sge; i++, sge++) {
-+		memcpy(p, (void *)(uintptr_t)sge->addr, sge->length);
-+		p += sge->length;
-+	}
-+}
-+
-+static void init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
- 			 unsigned int mask, unsigned int length,
- 			 struct rxe_send_wqe *wqe)
- {
- 	int num_sge = ibwr->num_sge;
--	struct ib_sge *sge;
--	int i;
--	u8 *p;
- 
- 	init_send_wr(qp, &wqe->wr, ibwr);
- 
-@@ -570,7 +580,7 @@ static int init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
- 	if (unlikely(mask & WR_REG_MASK)) {
- 		wqe->mask = mask;
- 		wqe->state = wqe_state_posted;
--		return 0;
-+		return;
- 	}
- 
- 	if (qp_type(qp) == IB_QPT_UD ||
-@@ -578,20 +588,11 @@ static int init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
- 	    qp_type(qp) == IB_QPT_GSI)
- 		memcpy(&wqe->av, &to_rah(ud_wr(ibwr)->ah)->av, sizeof(wqe->av));
- 
--	if (unlikely(ibwr->send_flags & IB_SEND_INLINE)) {
--		p = wqe->dma.inline_data;
--
--		sge = ibwr->sg_list;
--		for (i = 0; i < num_sge; i++, sge++) {
--			memcpy(p, (void *)(uintptr_t)sge->addr,
--					sge->length);
--
--			p += sge->length;
--		}
--	} else {
-+	if (unlikely(ibwr->send_flags & IB_SEND_INLINE))
-+		copy_inline_data_to_wqe(wqe, ibwr);
-+	else
- 		memcpy(wqe->dma.sge, ibwr->sg_list,
- 		       num_sge * sizeof(struct ib_sge));
--	}
- 
- 	wqe->iova = mask & WR_ATOMIC_MASK ? atomic_wr(ibwr)->remote_addr :
- 		mask & WR_READ_OR_WRITE_MASK ? rdma_wr(ibwr)->remote_addr : 0;
-@@ -603,8 +604,6 @@ static int init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
- 	wqe->dma.sge_offset	= 0;
- 	wqe->state		= wqe_state_posted;
- 	wqe->ssn		= atomic_add_return(1, &qp->ssn);
--
--	return 0;
- }
- 
- static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
-@@ -627,10 +626,7 @@ static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
- 	}
- 
- 	send_wqe = producer_addr(sq->queue);
--
--	err = init_send_wqe(qp, ibwr, mask, length, send_wqe);
--	if (unlikely(err))
--		goto err1;
-+	init_send_wqe(qp, ibwr, mask, length, send_wqe);
- 
- 	advance_producer(sq->queue);
- 	spin_unlock_irqrestore(&qp->sq.sq_lock, flags);
--- 
-2.27.0
+This is an essential detail because it's the whole reason behind this
+interface, so sketching this out in the commit log will make this much
+easier to understand.
 
+> > Here's the sequence as I understand it:
+> >
+> >   1) PF driver binds to PF
+> >   2) PF driver enables VFs
+> >   3) PF driver creates /sys/.../<PF>/sriov_vf_total_msix
+> >   4) PF driver creates /sys/.../<VFn>/sriov_vf_msix_count for each VF
+> >   5) Management app reads sriov_vf_total_msix, writes sriov_vf_msix_count
+> >   6) VF driver binds to VF
+> >   7) VF reads MSI-X Message Control (Table Size)
+> >
+> > Is it true that "lspci VF" at 4.1 and "lspci VF" at 5.1 may read
+> > different Table Sizes?  That would be a little weird.
+> 
+> Yes, this is the flow. I think differently from you and think this
+> is actual good thing that user writes new msix count and it is shown
+> immediately.
+
+Only weird because per spec Table Size is read-only and in this
+scenario it changes, so it may be surprising, but probably not a huge
+deal.
+
+> > I'm also a little concerned about doing 2 before 3 & 4.  That works
+> > for mlx5 because implements the Table Size adjustment in a way that
+> > works *after* the VFs have been enabled.
+> 
+> It is not related to mlx5, but to the PCI spec that requires us to
+> create all VFs at the same time. Before enabling VFs, they don't
+> exist.
+
+Yes.  I can imagine a PF driver that collects characteristics for the
+desired VFs before enabling them, sort of like we already collect the
+*number* of VFs.  But I think your argument for dynamic changes after
+creation below is pretty compelling.
+
+> > But it seems conceivable that a device could implement vector
+> > distribution in a way that would require the VF Table Sizes to be
+> > fixed *before* enabling VFs.  That would be nice in the sense that the
+> > VFs would be created "fully formed" and the VF Table Size would be
+> > completely read-only as documented.
+> 
+> It is not how SR-IOV is used in real world. Cloud providers create many
+> VFs but don't assign those VFs yet. They do it after customer request
+> VM with specific properties (number of CPUs) which means number of MSI-X
+> vectors in our case.
+> 
+> All this is done when other VFs already in use and we can't destroy and
+> recreate them at that point of time.
+
+Makes sense, thanks for this insight.  The need to change the MSI-X
+Table Size dynamically while other VFs are in use would also be useful
+in the commit log because it really helps motivate this design.
+
+> > > > > > > +What:		/sys/bus/pci/devices/.../vfs_overlay/sriov_vf_total_msix
+> > > > > > > +Date:		January 2021
+> > > > > > > +Contact:	Leon Romanovsky <leonro@nvidia.com>
+> > > > > > > +Description:
+> > > > > > > +		This file is associated with the SR-IOV PFs.
+> > > > > > > +		It returns a total number of possible to configure MSI-X
+> > > > > > > +		vectors on the enabled VFs.
+> > > > > > > +
+> > > > > > > +		The values returned are:
+> > > > > > > +		 * > 0 - this will be total number possible to consume by VFs,
+> > > > > > > +		 * = 0 - feature is not supported
+> > >
+> > > > Not sure the "= 0" description is necessary here.  If the value
+> > > > returned is the number of MSI-X vectors available for assignment to
+> > > > VFs, "0" is a perfectly legitimate value.  It just means there are
+> > > > none.  It doesn't need to be described separately.
+> > >
+> > > I wanted to help users and remove ambiguity. For example, mlx5 drivers
+> > > will always implement proper .set_...() callbacks but for some devices
+> > > without needed FW support, the value will be 0. Instead of misleading
+> > > users with wrong promise that feature supported but doesn't have
+> > > available vectors, I decided to be more clear. For the users, 0 means, don't
+> > > try, it is not working.
+> >
+> > Oh, you mean "feature is not supported by the FIRMWARE on some mlx5
+> > devices"?  I totally missed that; I thought you meant "not supported
+> > by the PF driver."  Why not have the PF driver detect that the
+> > firmware doesn't support the feature and just not expose the sysfs
+> > files at all in that case?
+> 
+> I can do it and will do it, but this behavior will be possible because
+> mlx5 is flexible enough. I imagine that other device won't be so flexible,
+> for example they will decide to "close" this feature because of other
+> SW limitation.
+
+What about something like this?
+
+  This file contains the total number of MSI-X vectors available for
+  assignment to all VFs associated with this PF.  It may be zero if
+  the device doesn't support this functionality.
+
+Side question: How does user-space use this?  This file contains a
+constant, and there's no interface to learn how many vectors are still
+available in the pool, right?
+
+I guess the user just has to manage the values written to
+.../VF<n>/sriov_vf_msix_count so the sum of all of them never exceeds
+sriov_vf_total_msix?  If that user app crashes, I guess it can
+reconstruct this state by reading all the
+.../VF<n>/sriov_vf_msix_count files?
+
+> > > > If we put them in a new "vfs_overlay" directory, it seems like
+> > > > overkill to repeat the "vf" part, but I'm hoping the new files can end
+> > > > up next to these existing files.  In that case, I think it makes sense
+> > > > to include "sriov".  And it probably does make sense to include "vf"
+> > > > as well.
+> > >
+> > > I put everything in folder to group any possible future extensions.
+> > > Those extensions are applicable to SR-IOV VFs only, IMHO they deserve
+> > > separate folder.
+> >
+> > I'm not convinced (yet) that the possibility of future extensions is
+> > enough justification for adding the "vfs_overlay" directory.  It
+> > really complicates the code flow -- if we skipped the new directory,
+> > I'm pretty sure we could make .is_visible() work, which would be a
+> > major simplification.
+> 
+> Unfortunately not, is_visible() is not dynamic and called when device
+> creates sysfs and it doesn't rescan it or refresh them. It means that
+> all files from vfs_overlay folder will exist even driver is removed
+> from PF.
+> 
+> Also sysfs is created before driver is probed.
+
+Ah, both excellent points, that makes this much clearer to me, thank
+you!
+
+> > And there's quite a bit of value in the new files being right next to
+> > the existing sriov_* files.
+> 
+> I have no problem to drop folder, just need clear request, should I.
+
+I think we should drop the folder.  I missed the previous discussion
+though, so if somebody has a good objection to dropping it, let me
+know.
+
+Dropping the folder has the potential advantage that we *could* decide
+to expose these files always, and just have them be non-functional if
+the device doesn't support assignment or the PF driver isn't bound.
+Then I think we could use static sysfs attributes without
+pci_enable_vfs_overlay().
+
+Bjorn
