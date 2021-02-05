@@ -2,97 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABEC3100D4
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 00:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DE331016D
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 01:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhBDXkV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Feb 2021 18:40:21 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14856 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230342AbhBDXkR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Feb 2021 18:40:17 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601c85480000>; Thu, 04 Feb 2021 15:37:44 -0800
-Received: from MacBook-Pro-10.local (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 4 Feb
- 2021 23:37:44 +0000
-Subject: Re: [PATCH 1/4] mm/gup: add compound page list iterator
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Joao Martins <joao.m.martins@oracle.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        id S231681AbhBEAO4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Feb 2021 19:14:56 -0500
+Received: from mga12.intel.com ([192.55.52.136]:45136 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231690AbhBEAO4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 4 Feb 2021 19:14:56 -0500
+IronPort-SDR: Tm6PE1G8xMeYMofZrQfUQDJo4TraUk+tzCNZmlx0ixm3fmeecPH5b01QlWLBLX5HndlLQi4LSI
+ 9BHsebfhStCA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="160511898"
+X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
+   d="scan'208";a="160511898"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 16:14:14 -0800
+IronPort-SDR: Em58YsvkWeHRtvoJS0C7LsMieIWhvViKA3Ys0SNYYfBhmrGjisR4YPcEK2IYInKVX9pWeWpATF
+ gvbVX8hDo00w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; 
+   d="scan'208";a="508326481"
+Received: from cst-dev.jf.intel.com ([10.23.221.69])
+  by orsmga004.jf.intel.com with ESMTP; 04 Feb 2021 16:14:14 -0800
+From:   Jianxin Xiong <jianxin.xiong@intel.com>
+To:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     Jianxin Xiong <jianxin.xiong@intel.com>,
         Doug Ledford <dledford@redhat.com>,
-        "Matthew Wilcox" <willy@infradead.org>
-References: <20210203220025.8568-1-joao.m.martins@oracle.com>
- <20210203220025.8568-2-joao.m.martins@oracle.com>
- <955dbe68-7302-a8bc-f0b5-e9032d7f190e@nvidia.com>
- <20210204195355.GO4247@nvidia.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <2919605d-f00f-4a07-8420-6b6d0a42081a@nvidia.com>
-Date:   Thu, 4 Feb 2021 15:37:43 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210204195355.GO4247@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612481864; bh=LZBSTf8xjFioVk+xSfpLI1dtz0FjIjVaquLfChu0CyU=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=Oa17G4uClE/0l17rXVcqb9R0YXdIyNZ6Mbn8DQXHa3eOR3lVtJ5CKZMhg+Nmy9p6Q
-         lKMf0uig/fJ8Hsg9O80poVjSeHBvugVTw+gKnlYoIk7xNVeVcFaKbJ6IKymV3I3KTw
-         h25i1finFISPvrDmje2JnjHU1yBBQhduMygimB4M2ty1j9Y9/BV5CUZ1x6pI+afDR0
-         Jrv11zMX+So1JSPknhcVjX/7uFSzewiLfvqmYnaHxHSFQ4Zf2pWZDTrBgwkLvGg8ae
-         KCpCJ+UqVpnX2DitbizPmjKKKQ1KXUXY7AI1/gypCzg2TklpkSvx5M+XZs1vIxB9qe
-         DzSwtMC3+lx0Q==
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Edward Srouji <edwards@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Ali Alnubani <alialnu@nvidia.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Emil Velikov <emil.l.velikov@gmail.com>
+Subject: [PATCH rdma-core v2 0/3] Dma-buf related fixes
+Date:   Thu,  4 Feb 2021 16:29:11 -0800
+Message-Id: <1612484954-75514-1-git-send-email-jianxin.xiong@intel.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/4/21 11:53 AM, Jason Gunthorpe wrote:
-> On Wed, Feb 03, 2021 at 03:00:01PM -0800, John Hubbard wrote:
->>> +static inline void compound_next(unsigned long i, unsigned long npages,
->>> +				 struct page **list, struct page **head,
->>> +				 unsigned int *ntails)
->>> +{
->>> +	if (i >= npages)
->>> +		return;
->>> +
->>> +	*ntails = count_ntails(list + i, npages - i);
->>> +	*head = compound_head(list[i]);
->>> +}
->>> +
->>> +#define for_each_compound_head(i, list, npages, head, ntails) \
->>
->> When using macros, which are dangerous in general, you have to worry about
->> things like name collisions. I really dislike that C has forced this unsafe
->> pattern upon us, but of course we are stuck with it, for iterator helpers.
->>
->> Given that we're stuck, you should probably use names such as __i, __list, etc,
->> in the the above #define. Otherwise you could stomp on existing variables.
-> 
-> Not this macro, it after cpp gets through with it all the macro names
-> vanish, it can't collide with variables.
-> 
+This is the second version of the patch series. Change log:
 
-Yes, I guess it does just vaporize, because it turns all the args into
-their substituted values. I was just having flashbacks from similar cases
-I guess.
+v2:
+* Use pgk_check_modules() to check libdrm configuration instead of calling
+  pkg-config directly
+* Put all the DRM header checking logic in CMakeLists.txt
+* Use a seperate source file for dma-buf allocation stubs
+* Remove the definition of HAVE_DRM_H from config.h
+* Add space between the acronym and the full name
 
-> The usual worry is you might collide with other #defines, but we don't
-> seem to worry about that in the kernel
-> 
+v1: https://www.spinics.net/lists/linux-rdma/msg99815.html
+* Fix compilation warnings for 32bit builds
+* Cosmetic improvement for dma-buf allocation routines
+* Add check for DRM headers
 
-Well, I worry about it a little anyway. haha :)
+This series fixes a few issues related to the dma-buf support. It consists
+of three patches. The first patch fixes a compilation warning for 32-bit
+builds. Patch 2 renames a function parameter and adds full name to an
+acronym. Patch 3 adds check for DRM headers.
 
+Pull request at github: https://github.com/linux-rdma/rdma-core/pull/942
 
-thanks,
+Jianxin Xiong (3):
+  verbs: Fix gcc warnings when building for 32bit systems
+  pyverbs,tests: Cosmetic improvements for dma-buf allocation routines
+  configure: Add check for the presence of DRM headers
+
+ CMakeLists.txt              | 15 +++++++++
+ libibverbs/cmd_mr.c         |  2 +-
+ libibverbs/verbs.c          |  2 +-
+ pyverbs/CMakeLists.txt      | 14 ++++++--
+ pyverbs/dmabuf.pyx          | 12 +++----
+ pyverbs/dmabuf_alloc.c      | 20 ++++++------
+ pyverbs/dmabuf_alloc.h      |  2 +-
+ pyverbs/dmabuf_alloc_stub.c | 39 +++++++++++++++++++++++
+ pyverbs/mr.pyx              |  6 ++--
+ tests/test_mr.py            | 78 ++++++++++++++++++++++-----------------------
+ 10 files changed, 127 insertions(+), 63 deletions(-)
+ create mode 100644 pyverbs/dmabuf_alloc_stub.c
+
 -- 
-John Hubbard
-NVIDIA
+1.8.3.1
+
