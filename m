@@ -2,91 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D357311614
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 23:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2ABD311574
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Feb 2021 23:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbhBEWuV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Feb 2021 17:50:21 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:60110 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232400AbhBENDx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Feb 2021 08:03:53 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 115CTTnv115438;
-        Fri, 5 Feb 2021 13:03:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=LgzNwtVrPCHQ+X8++9CaF64ugRzfuLVv6tZF9PdDXH8=;
- b=bUmawfdmWCY7B6M4RdQaMNSXMOcMa1rPHhd/3lCHbxtIOyplFoql/OvdSR1P1Amvmhpp
- 5d5oaIsVHfiJugmdhV+F7dyIQUyErjknIHGxQnHJFJwZaF5QXZ4BwKugm6wqboh5X7bR
- tNKeHPbYEA7rufTsrWVolzc5tagUkB0bs+LxsCQhGrSQqkbZOgxpkKUeTXTFwKJKD+5u
- 0tMrCyunsD9bso9PFiXEiFwcE0WzJAPeWTyRGSKOUxi/u6yn1XZPIca9Soy9LUvAJATS
- /nz2VHAS2luM1l5bJPXnsR9kd3eb3GAqW+dCea/Uynb4+6doRhrCqbtLr6qRlS4oCHzC tw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 36gfw8sqv5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Feb 2021 13:03:07 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 115CxeSo023736;
-        Fri, 5 Feb 2021 13:03:05 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 36dh1tvpd8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Feb 2021 13:03:05 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 115D33SV027207;
-        Fri, 5 Feb 2021 13:03:03 GMT
-Received: from mwanda (/41.210.143.249)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 05 Feb 2021 05:03:02 -0800
-Date:   Fri, 5 Feb 2021 16:02:54 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kliteyn@nvidia.com
-Cc:     Yevgeny Kliteynik <kliteyn@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: [bug report] net/mlx5: DR, Add STEv1 setters and getters
-Message-ID: <YB1B/iHMlHHnOWCh@mwanda>
+        id S232129AbhBEWcL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 5 Feb 2021 17:32:11 -0500
+Received: from mga11.intel.com ([192.55.52.93]:61317 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231931AbhBEOQg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 5 Feb 2021 09:16:36 -0500
+IronPort-SDR: 9WbNsnZ+jFrHTvX8zE0fql/tDNOoQ2lxTl7VSede4QiBCxMqNq0xyGR3BO3iP2L25VPSmWS64z
+ p9Y1qpvdaV7g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="177940140"
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="177940140"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 07:23:13 -0800
+IronPort-SDR: tMFdhCynUeam6V8pDza4NKZ6iOW6KRZGzVQSvQ57NOzkf0AYS3jriRTnp0qQgYPDOk+wsscLNg
+ GRR6fRu+twVQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,155,1610438400"; 
+   d="scan'208";a="581184900"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga006.fm.intel.com with ESMTP; 05 Feb 2021 07:23:13 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 5 Feb 2021 07:23:12 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 5 Feb 2021 07:23:12 -0800
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2106.002;
+ Fri, 5 Feb 2021 07:23:12 -0800
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+Subject: RE: [PATCH 04/22] ice: Register auxiliary device to provide RDMA
+Thread-Topic: [PATCH 04/22] ice: Register auxiliary device to provide RDMA
+Thread-Index: AQHW8RnXnqa89naYL0CyeK9hU5Aknao5PxeAgBB++qA=
+Date:   Fri, 5 Feb 2021 15:23:12 +0000
+Message-ID: <ae763e223c0040259c63c1e745faa095@intel.com>
+References: <20210122234827.1353-1-shiraz.saleem@intel.com>
+ <20210122234827.1353-5-shiraz.saleem@intel.com>
+ <20210125190923.GV4147@nvidia.com>
+In-Reply-To: <20210125190923.GV4147@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9885 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- suspectscore=0 mlxlogscore=852 bulkscore=0 mlxscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102050084
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9885 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 bulkscore=0
- impostorscore=0 clxscore=1011 mlxscore=0 mlxlogscore=796 malwarescore=0
- suspectscore=0 lowpriorityscore=0 priorityscore=1501 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102050083
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Yevgeny Kliteynik,
+> Subject: Re: [PATCH 04/22] ice: Register auxiliary device to provide RDMA
+>  
+> > @@ -1254,20 +1282,37 @@ int ice_init_peer_devices(struct ice_pf *pf)
+> >  		 * |--> iidc_peer_obj
+> >  		 * |--> *ice_peer_drv_int
+> >  		 *
+> > +		 * iidc_auxiliary_object (container_of parent for adev)
+> > +		 * |--> auxiliary_device
+> > +		 * |--> *iidc_peer_obj (pointer from internal struct)
+> > +		 *
+> >  		 * ice_peer_drv_int (internal only peer_drv struct)
+> >  		 */
+> >  		peer_obj_int = kzalloc(sizeof(*peer_obj_int), GFP_KERNEL);
+> > -		if (!peer_obj_int)
+> > +		if (!peer_obj_int) {
+> > +			ida_simple_remove(&ice_peer_ida, id);
+> >  			return -ENOMEM;
+> > +		}
+> 
+> Why is this allocated memory with a lifetime different from the aux device?
 
-The patch a6098129c781: "net/mlx5: DR, Add STEv1 setters and getters"
-from Sep 22, 2020, leads to the following static checker warning:
+This ice_peer_obj_int is the PCI driver internal only info about the peer_obj (not exposed externally)
+like the state machine, per PF. But Dave is re-writing all of this with the feedback about getting rid
+of state machine, and this peer_obj_int will likely be culled.
 
-	drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste_v1.c:268 dr_ste_v1_get_miss_addr()
-	warn: potential shift truncation.  '0xff (0-255) << 26'
+I think what we will end up with is an iidc_peer_obj per PF which is exported to aux driver with lifetime as described below.
 
-drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste_v1.c
-   264  static u64 dr_ste_v1_get_miss_addr(u8 *hw_ste_p)
-   265  {
-   266          u64 index =
-   267                  (MLX5_GET(ste_match_bwc_v1, hw_ste_p, miss_address_31_6) |
-                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   268                   MLX5_GET(ste_match_bwc_v1, hw_ste_p, miss_address_39_32) << 26);
-                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/* structure layout needed for container_of's looks like:  
+                  * iidc_auxiliary_dev (container_of parent for adev)
+                  * |--> auxiliary_device
+                  * |--> *iidc_peer_obj (pointer from peer_obj struct)
+                  *
+                  * The iidc_auxiliary device has a lifespan as long as it is
+                  * on the bus.  Once removed it will be freed and a new
+                  * one allocated if needed to re-add.
+                  *
+                  * The peer_obj is tied to the life of the PF, and will
+                  * exist as long as the PF driver is loaded.  It will be
+                  * freed in the remove flow for the PF driver.
+                  */
 
-index is a u64 but the right side is a two u32s.  The << 26 can shift
-wrap potentially according to Smatch.
 
-   269  
-   270          return index << 6;
-   271  }
-
-regards,
-dan carpenter
