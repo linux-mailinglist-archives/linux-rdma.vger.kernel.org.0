@@ -2,69 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647C0311E12
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Feb 2021 15:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2EA9311FE7
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Feb 2021 21:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhBFO4M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 6 Feb 2021 09:56:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhBFO4K (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 6 Feb 2021 09:56:10 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5694BC061356
-        for <linux-rdma@vger.kernel.org>; Sat,  6 Feb 2021 06:55:40 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id hs11so17708806ejc.1
-        for <linux-rdma@vger.kernel.org>; Sat, 06 Feb 2021 06:55:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=sY4fgq/DSyThalwU7QX+pWYKs/8sGH7ZznMUn5qQ1EY=;
-        b=Oj1NooDuJhVNzbfRQae7N/DRxSBhziAtrV2t7sPiuysNSEB1Bq/QL2bQspKuCoVqlf
-         ymBC0IBPQ/EA+JiCrDJsEySghsVWAHVNde56cu02ukG7X2bgzdKxHDuzRQlRcRjA83J7
-         f0ATbGfenBmIau3ag1Ovy0EQ+CNpgVgPlaZHAtGM4/xivVXlY6v6Sd93TdmlNJCU0zet
-         pe1vyNn2OlTNLLya3uEcJmXhJS/JEYBZsMAKlY3nvbVDqFpz7C0Y4CajEQStwcNnpadH
-         tSpI4t+9bDdYitGM8GIP2blS04ueQSvFbETai1f/4oHLASje/RbKPZvGuUSGJdBKpaKl
-         lB2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=sY4fgq/DSyThalwU7QX+pWYKs/8sGH7ZznMUn5qQ1EY=;
-        b=YeO4055ZAQnxchsdMy7AzYBaBs6u+o2ZPAa/YHLGGyUhUt5dvz3q4CLqMT9pN5DbG1
-         bl+iuMvEghbc2gXwYU1wuc409WkPDML4tO9OAo6efOSnNrlx9gDkKHosN5+tRWFp8xps
-         pZHBNezVQQzvXFDKSyx49uwy+oBpF8LWP6Ql47oSjLUWC5gCqLgfFKfSI5YXb8owO6Di
-         aq0jVtOQFkabezduiklfrxieJ2GkBpmvFX3zniuREbz6j9ZQsdXXAw3S1ixo3/6+VpkQ
-         l31bITnGlfS6VfgeNtFTADIzwbr89ueICjrMquR8C3x2fvM81v+84UsIDVLcCAZkX+SO
-         7e+w==
-X-Gm-Message-State: AOAM5333F2KSiOa+tExmcaV29DdZl24Ob6Y1PwkjJrTNF0C90SbAGjQn
-        okZhbSgufyL+Z1jvTKPL9PXcX5oHC1bAbJq8DY0=
-X-Google-Smtp-Source: ABdhPJwsh5dlnVKHm6RqdTZsPMsuU6pr+O7TnPgOdX4i7yJtViP8kB8eciFWsFnQtN2M4NiANbH0ciIAGqNlzVmLOOY=
-X-Received: by 2002:a17:906:442:: with SMTP id e2mr9322413eja.9.1612623339158;
- Sat, 06 Feb 2021 06:55:39 -0800 (PST)
+        id S229626AbhBFUVl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 6 Feb 2021 15:21:41 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19998 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhBFUVk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 6 Feb 2021 15:21:40 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601efa2b0000>; Sat, 06 Feb 2021 12:20:59 -0800
+Received: from [172.27.0.22] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 6 Feb
+ 2021 20:20:58 +0000
+Subject: Re: [bug report] net/mlx5: DR, Add STEv1 setters and getters
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+CC:     <linux-rdma@vger.kernel.org>
+References: <YB1B/iHMlHHnOWCh@mwanda>
+From:   Yevgeny Kliteynik <kliteyn@nvidia.com>
+Message-ID: <35cbffa9-58bc-c2be-2ec7-12339d12547e@nvidia.com>
+Date:   Sat, 6 Feb 2021 22:20:55 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Received: by 2002:a17:906:25d0:0:0:0:0 with HTTP; Sat, 6 Feb 2021 06:55:38
- -0800 (PST)
-Reply-To: lawyer.nba@gmail.com
-From:   Barrister Daven Bango <stephennbada9@gmail.com>
-Date:   Sat, 6 Feb 2021 15:55:38 +0100
-Message-ID: <CAGSHw-A_Ecvpef1mn8vrd6X5NeqSEH1E0rtrFWHdDq+p=G2x9w@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YB1B/iHMlHHnOWCh@mwanda>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612642859; bh=ygsHRKlsdVh1ZbHyntZhTYmXpAk1GS8gL02U5y4K880=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=COMAGuq5j5q2dkB5GHRerDDaalftqeYNblQtr+BbNqOAZUG7YQlcWX3CkMRkLqXAo
+         SN6tj+nXdRRrlZxtCMy7QolAwRycP+RhN7ulS1KZpHpguVcGqpCCFE0IxW7ldgc9dE
+         +FUBt6WEINzxMJtbly6nqDcJw3b7quv11MEsGNkWIOc3Xvtlhx5yHIhmqlRj6cnal4
+         hCenLz8JaZ0nakY5ahq2KAU8oDOk8U+FvuSCp9Ff9VbKYP3MsbDf5CEHLdhLC4NOuT
+         NJAfNuEuIVwdIwAj6OnxjcA9nnuy/htLMS+2jz+YfonpCQH+j/Ha5WKk7E3zfad3Cn
+         d4bG0uHMgWczg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---=20
-Korisnik fonda =C4=8Destitanja, Va=C5=A1a sredstva za naknadu od 850.000,00
-ameri=C4=8Dkih dolara odobrila je Me=C4=91unarodna monetarna organizacija (=
-MMF)
-u suradnji s (FBI) nakon mnogo istraga. =C4=8Cekamo da se obratimo za
-dodatne informacije
 
-Advokat: Daven Bango
-Telefon: +22891667276
-(URED MMF-a LOME TOGO)
+
+On 05-Feb-21 15:02, Dan Carpenter wrote:
+> 
+> Hello Yevgeny Kliteynik,
+> 
+> The patch a6098129c781: "net/mlx5: DR, Add STEv1 setters and getters"
+> from Sep 22, 2020, leads to the following static checker warning:
+> 
+>          drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste_v1.c:268 dr_ste_v1_get_miss_addr()
+>          warn: potential shift truncation.  '0xff (0-255) << 26'
+> 
+> drivers/net/ethernet/mellanox/mlx5/core/steering/dr_ste_v1.c
+>     264  static u64 dr_ste_v1_get_miss_addr(u8 *hw_ste_p)
+>     265  {
+>     266          u64 index =
+>     267                  (MLX5_GET(ste_match_bwc_v1, hw_ste_p, miss_address_31_6) |
+>                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>     268                   MLX5_GET(ste_match_bwc_v1, hw_ste_p, miss_address_39_32) << 26);
+>                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> index is a u64 but the right side is a two u32s.  The << 26 can shift
+> wrap potentially according to Smatch.
+
+Thanks Dan, will send a fix shortly.
+
+-- YK
+
+>     269
+>     270          return index << 6;
+>     271  }
+> 
+> regards,
+> dan carpenter
+> 
