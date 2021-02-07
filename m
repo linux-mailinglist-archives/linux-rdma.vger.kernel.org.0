@@ -2,99 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F2931212E
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Feb 2021 04:35:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE40D312265
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Feb 2021 09:07:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbhBGDe6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Sat, 6 Feb 2021 22:34:58 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4610 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhBGDe5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 6 Feb 2021 22:34:57 -0500
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DYF981hk9zY6WM;
-        Sun,  7 Feb 2021 11:33:00 +0800 (CST)
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Sun, 7 Feb 2021 11:34:13 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Sun, 7 Feb 2021 11:34:13 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.006;
- Sun, 7 Feb 2021 11:34:13 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: Re: [PATCH v2 RFC 0/7] RDMA/hns: Add support for Dynamic Context
- Attachment
-Thread-Topic: [PATCH v2 RFC 0/7] RDMA/hns: Add support for Dynamic Context
- Attachment
-Thread-Index: AQHW8Wy31xOeEU8gmUOPaLZDcNid3A==
-Date:   Sun, 7 Feb 2021 03:34:13 +0000
-Message-ID: <b637b0048f1c4f97aee3b136772270b1@huawei.com>
-References: <1611394994-50363-1-git-send-email-liweihang@huawei.com>
- <20210205180315.GA969245@nvidia.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S229561AbhBGIHf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 7 Feb 2021 03:07:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229445AbhBGIHe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 7 Feb 2021 03:07:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94E8D64E6E;
+        Sun,  7 Feb 2021 08:06:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612685213;
+        bh=mvIXzaF1CNhkIX8fo3RN4AcWUFBnIDlWv72mz/nLshg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=vNglszl+RBkOhlybmBTC2AEJUhrqFNUonr61q89/ooZhAvRzC7lAku1eYKhxfI9iM
+         HfisjbOVMfVpnrpbIPxatATGPZ1WHyrx9N/r4trIR1KZ6/4sP8Cbr2i6XGFu+Bp0Bq
+         LWztd0GyWgcOrIby1jLfw4SWqMSSGeFLpV/gPFOffKi/v1pCXSIcCn4IftXBdx2a1v
+         yx1brG2rwSGzO3NPENnKIwNtJPyJfA0OXC0m9A3Nxf2VUHdQkTW69hQSLiAIGAzbsL
+         LEs3+qhFNSQUIyILLhhbpeSjNI0W4MGXKEH2DV6RGcGVZZh6cgukdkLcqgkgQ33wXC
+         Ht7qZOJ5u+X8Q==
+Date:   Sun, 7 Feb 2021 10:06:49 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Honggang Li <honli@redhat.com>
+Cc:     Itay Aveksis <itayav@nvidia.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Alaa Hleihel <alaa@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>
+Subject: rdma-core spec weird behavior on Fedora
+Message-ID: <20210207080649.GB4656@unreal>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/2/6 2:03, Jason Gunthorpe wrote:
-> On Sat, Jan 23, 2021 at 05:43:07PM +0800, Weihang Li wrote:
->> The hip09 introduces the DCA(Dynamic Context Attachment) feature which
->> supports many RC QPs to share the WQE buffer in a memory pool. If a QP
->> enables DCA feature, the WQE's buffer will not be allocated when creating
->> but when the users start to post WRs. This will reduce the memory
->> consumption when there are too many QPs are inactive.
->>
->> Changes since v1:
->> * Replace all GFP_ATOMIC with GFP_NOWAIT, because the former may use
->>   emergency pool if no regular memory can be found.
->> * Change size of cap_flags of alloc_ucontext_resp from 32 to 64 to avoid
->>   a potential problem when pass it back to the userspace.
->> * Move definition of HNS_ROCE_CAP_FLAG_DCA_MODE to hns-abi.h.
->> * Rename free_mem_states() to free_dca_states() in #1.
->> * Link: https://patchwork.kernel.org/project/linux-rdma/cover/1610706138-4219-1-git-send-email-liweihang@huawei.com/
->>
->> Xi Wang (7):
->>   RDMA/hns: Introduce DCA for RC QP
->>   RDMA/hns: Add method for shrinking DCA memory pool
->>   RDMA/hns: Configure DCA mode for the userspace QP
->>   RDMA/hns: Add method for attaching WQE buffer
->>   RDMA/hns: Setup the configuration of WQE addressing to QPC
->>   RDMA/hns: Add method to detach WQE buffer
->>   RDMA/hns: Add method to query WQE buffer's address
->>
->>  drivers/infiniband/hw/hns/Makefile          |    2 +-
->>  drivers/infiniband/hw/hns/hns_roce_dca.c    | 1264 +++++++++++++++++++++++++++
->>  drivers/infiniband/hw/hns/hns_roce_dca.h    |   68 ++
->>  drivers/infiniband/hw/hns/hns_roce_device.h |   31 +
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  223 ++++-
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |    3 +
->>  drivers/infiniband/hw/hns/hns_roce_main.c   |   27 +-
->>  drivers/infiniband/hw/hns/hns_roce_qp.c     |  119 ++-
->>  include/uapi/rdma/hns-abi.h                 |   64 ++
-> 
-> Where are the rdma-core changes to go with this?
-> 
-> Jason
-> 
+Hi Honggang,
 
-I sent the userspace part just now:
-https://patchwork.kernel.org/project/linux-rdma/cover/1612667574-56673-1-git-send-email-liweihang@huawei.com/
+Your commit b02de521022a ("redhat: Remove base package dependency from all sub-packages")
+removes protection from rdma-core when user performs "dnf autoremove".
+
+Before your patch, systemd was dependent on libibverbs and latter
+required rdma-core. After your patch, the last link is lost and
+rdma-core marked as orphaned package.
+
+Any attempt to install rdma-core as standalone package will have the
+following errors, due to the library dependency of udevadm.
+[leonro@c rdma-core]$ ldd /sbin/udevadm | grep verbs
+	libibverbs.so.1 => not found
+
+[leonro@c rdma-core]$ sudo dnf install /tmp/rdma-core/RPMS/x86_64/rdma-core-34.0-1.fc32.x86_64.rpm
+Last metadata expiration check: 1:29:40 ago on Sun 07 Feb 2021 07:29:13 AM IST.
+Dependencies resolved.
+======================================================================================================================
+ Package                    Architecture            Version                       Repository                     Size
+======================================================================================================================
+Installing:
+ rdma-core                  x86_64                  34.0-1.fc32                   @commandline                   54 k
+
+Transaction Summary
+======================================================================================================================
+Install  1 Package
+
+Total size: 54 k
+Installed size: 121 k
+Is this ok [y/N]: y
+Downloading Packages:
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                        1/1
+  Installing       : rdma-core-34.0-1.fc32.x86_64                                                           1/1
+  Running scriptlet: rdma-core-34.0-1.fc32.x86_64                                                           1/1
+/sbin/udevadm: error while loading shared libraries: libibverbs.so.1: cannot open shared object file: No such file or directory
+/sbin/udevadm: error while loading shared libraries: libibverbs.so.1: cannot open shared object file: No such file or directory
+/sbin/udevadm: error while loading shared libraries: libibverbs.so.1: cannot open shared object file: No such file or directory
+
+/usr/bin/udevadm: error while loading shared libraries: libibverbs.so.1: cannot open shared object file: No such file or directory
+
+/usr/bin/systemctl: error while loading shared libraries: libibverbs.so.1: cannot open shared object file: No such file or directory
+warning: %triggerin(systemd-245.8-2.fc32.x86_64) scriptlet failed, exit status 127
+
+Error in <unknown> scriptlet in rpm package rdma-core
+  Verifying        : rdma-core-34.0-1.fc32.x86_64                                                           1/1
+
+Installed:
+  rdma-core-34.0-1.fc32.x86_64
+
+Complete!
+
+--------------------------------------------------------------------------------------
+I think that the right solution is to make rdma-core meta-package as we
+wanted it from the beginning when created rdma-core repo.
 
 Thanks
-Weihang
