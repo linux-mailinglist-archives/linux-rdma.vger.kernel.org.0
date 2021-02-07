@@ -2,102 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE40D312265
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Feb 2021 09:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C207E31226A
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Feb 2021 09:16:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229561AbhBGIHf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 7 Feb 2021 03:07:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229445AbhBGIHe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 7 Feb 2021 03:07:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94E8D64E6E;
-        Sun,  7 Feb 2021 08:06:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612685213;
-        bh=mvIXzaF1CNhkIX8fo3RN4AcWUFBnIDlWv72mz/nLshg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=vNglszl+RBkOhlybmBTC2AEJUhrqFNUonr61q89/ooZhAvRzC7lAku1eYKhxfI9iM
-         HfisjbOVMfVpnrpbIPxatATGPZ1WHyrx9N/r4trIR1KZ6/4sP8Cbr2i6XGFu+Bp0Bq
-         LWztd0GyWgcOrIby1jLfw4SWqMSSGeFLpV/gPFOffKi/v1pCXSIcCn4IftXBdx2a1v
-         yx1brG2rwSGzO3NPENnKIwNtJPyJfA0OXC0m9A3Nxf2VUHdQkTW69hQSLiAIGAzbsL
-         LEs3+qhFNSQUIyILLhhbpeSjNI0W4MGXKEH2DV6RGcGVZZh6cgukdkLcqgkgQ33wXC
-         Ht7qZOJ5u+X8Q==
-Date:   Sun, 7 Feb 2021 10:06:49 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Honggang Li <honli@redhat.com>
-Cc:     Itay Aveksis <itayav@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Alaa Hleihel <alaa@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>
-Subject: rdma-core spec weird behavior on Fedora
-Message-ID: <20210207080649.GB4656@unreal>
+        id S229510AbhBGIPz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Sun, 7 Feb 2021 03:15:55 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:4611 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbhBGIPx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 7 Feb 2021 03:15:53 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DYMPJ3fZlzY6XJ;
+        Sun,  7 Feb 2021 16:13:56 +0800 (CST)
+Received: from dggema704-chm.china.huawei.com (10.3.20.68) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Sun, 7 Feb 2021 16:15:10 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema704-chm.china.huawei.com (10.3.20.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Sun, 7 Feb 2021 16:15:09 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.006;
+ Sun, 7 Feb 2021 16:15:09 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     chenglang <chenglang@huawei.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>
+CC:     "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Re: [PATCH for-next 2/6] RDMA/hns: Remove unsupported CMDQ mode
+Thread-Topic: [PATCH for-next 2/6] RDMA/hns: Remove unsupported CMDQ mode
+Thread-Index: AQHW+r6puHaBl39fEkSLE9sC8gGRfg==
+Date:   Sun, 7 Feb 2021 08:15:09 +0000
+Message-ID: <11e5e5424ad94e329c11e7a7a77f585e@huawei.com>
+References: <1612419786-39173-1-git-send-email-liweihang@huawei.com>
+ <1612419786-39173-3-git-send-email-liweihang@huawei.com>
+ <aabcf1a1-1cdf-5d05-cc11-daa36f9f10fa@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Honggang,
+On 2021/2/7 15:52, chenglang wrote:
+> 
+> On 2021/2/4 14:23, Weihang Li wrote:
+>> From: Lang Cheng <chenglang@huawei.com>
+>>
+>> HIP08/09 only supports CMDQ in non-interrupt mode, and the firmware always
+>> ignores the flag to indicate the mode. Therefore, remove the dead code.
+>>
+>> Fixes: a04ff739f2a9 ("RDMA/hns: Add command queue support for hip08 RoCE driver")
+>> Signed-off-by: Lang Cheng <chenglang@huawei.com>
+>> Signed-off-by: Weihang Li <liweihang@huawei.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 24 ++++++++----------------
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h |  2 --
+>>  2 files changed, 8 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> index 7a5a41d..260c17c 100644
+>> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> @@ -1197,8 +1197,7 @@ static void hns_roce_cmq_setup_basic_desc(struct hns_roce_cmq_desc *desc,
+>>  {
+>>  	memset((void *)desc, 0, sizeof(struct hns_roce_cmq_desc));
+>>  	desc->opcode = cpu_to_le16(opcode);
+>> -	desc->flag =
+>> -		cpu_to_le16(HNS_ROCE_CMD_FLAG_NO_INTR | HNS_ROCE_CMD_FLAG_IN);
+>> +	desc->flag = cpu_to_le16(HNS_ROCE_CMD_FLAG_IN);
+>>  	if (is_read)
+>>  		desc->flag |= cpu_to_le16(HNS_ROCE_CMD_FLAG_WR);
+>>  	else
+>> @@ -1275,18 +1274,12 @@ static int __hns_roce_cmq_send(struct hns_roce_dev *hr_dev,
+>>  	/* Write to hardware */
+>>  	roce_write(hr_dev, ROCEE_TX_CMQ_TAIL_REG, csq->next_to_use);
+>>  
+>> -	/*
+>> -	 * If the command is sync, wait for the firmware to write back,
+>> -	 * if multi descriptors to be sent, use the first one to check
+>> -	 */
+>> -	if (le16_to_cpu(desc->flag) & HNS_ROCE_CMD_FLAG_NO_INTR) {
+>> -		do {
+>> -			if (hns_roce_cmq_csq_done(hr_dev))
+>> -				break;
+>> -			udelay(1);
+>> -			timeout++;
+>> -		} while (timeout < priv->cmq.tx_timeout);
+>> -	}
+>> +	do {
+>> +		if (hns_roce_cmq_csq_done(hr_dev))
+>> +			break;
+>> +		udelay(1);
+>> +		timeout++;
+>> +	} while (timeout < priv->cmq.tx_timeout);
+>>  
+>>  	if (hns_roce_cmq_csq_done(hr_dev)) {
+>>  		handle = 0;
+>> @@ -1626,8 +1619,7 @@ static int hns_roce_set_vf_switch_param(struct hns_roce_dev *hr_dev, int vf_id)
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> -	desc.flag =
+>> -		cpu_to_le16(HNS_ROCE_CMD_FLAG_NO_INTR | HNS_ROCE_CMD_FLAG_IN);
+> 
+> The old firmware needs this redundant flag, it is best cleaned up after the
+> firmware version is released.
+> 
+> Thanks.
 
-Your commit b02de521022a ("redhat: Remove base package dependency from all sub-packages")
-removes protection from rdma-core when user performs "dnf autoremove".
-
-Before your patch, systemd was dependent on libibverbs and latter
-required rdma-core. After your patch, the last link is lost and
-rdma-core marked as orphaned package.
-
-Any attempt to install rdma-core as standalone package will have the
-following errors, due to the library dependency of udevadm.
-[leonro@c rdma-core]$ ldd /sbin/udevadm | grep verbs
-	libibverbs.so.1 => not found
-
-[leonro@c rdma-core]$ sudo dnf install /tmp/rdma-core/RPMS/x86_64/rdma-core-34.0-1.fc32.x86_64.rpm
-Last metadata expiration check: 1:29:40 ago on Sun 07 Feb 2021 07:29:13 AM IST.
-Dependencies resolved.
-======================================================================================================================
- Package                    Architecture            Version                       Repository                     Size
-======================================================================================================================
-Installing:
- rdma-core                  x86_64                  34.0-1.fc32                   @commandline                   54 k
-
-Transaction Summary
-======================================================================================================================
-Install  1 Package
-
-Total size: 54 k
-Installed size: 121 k
-Is this ok [y/N]: y
-Downloading Packages:
-Running transaction check
-Transaction check succeeded.
-Running transaction test
-Transaction test succeeded.
-Running transaction
-  Preparing        :                                                                                        1/1
-  Installing       : rdma-core-34.0-1.fc32.x86_64                                                           1/1
-  Running scriptlet: rdma-core-34.0-1.fc32.x86_64                                                           1/1
-/sbin/udevadm: error while loading shared libraries: libibverbs.so.1: cannot open shared object file: No such file or directory
-/sbin/udevadm: error while loading shared libraries: libibverbs.so.1: cannot open shared object file: No such file or directory
-/sbin/udevadm: error while loading shared libraries: libibverbs.so.1: cannot open shared object file: No such file or directory
-
-/usr/bin/udevadm: error while loading shared libraries: libibverbs.so.1: cannot open shared object file: No such file or directory
-
-/usr/bin/systemctl: error while loading shared libraries: libibverbs.so.1: cannot open shared object file: No such file or directory
-warning: %triggerin(systemd-245.8-2.fc32.x86_64) scriptlet failed, exit status 127
-
-Error in <unknown> scriptlet in rpm package rdma-core
-  Verifying        : rdma-core-34.0-1.fc32.x86_64                                                           1/1
-
-Installed:
-  rdma-core-34.0-1.fc32.x86_64
-
-Complete!
-
---------------------------------------------------------------------------------------
-I think that the right solution is to make rdma-core meta-package as we
-wanted it from the beginning when created rdma-core repo.
+Got it, I will drop this one from the series.
 
 Thanks
+Weihang
+
+> 
+>> +	desc.flag = cpu_to_le16(HNS_ROCE_CMD_FLAG_IN);
+>>  	desc.flag &= cpu_to_le16(~HNS_ROCE_CMD_FLAG_WR);
+>>  	roce_set_bit(swt->cfg, VF_SWITCH_DATA_CFG_ALW_LPBK_S, 1);
+>>  	roce_set_bit(swt->cfg, VF_SWITCH_DATA_CFG_ALW_LCL_LPBK_S, 0);
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+>> index 9f97e32..986a287 100644
+>> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+>> @@ -128,14 +128,12 @@
+>>  #define HNS_ROCE_CMD_FLAG_OUT_VALID_SHIFT	1
+>>  #define HNS_ROCE_CMD_FLAG_NEXT_SHIFT		2
+>>  #define HNS_ROCE_CMD_FLAG_WR_OR_RD_SHIFT	3
+>> -#define HNS_ROCE_CMD_FLAG_NO_INTR_SHIFT		4
+>>  #define HNS_ROCE_CMD_FLAG_ERR_INTR_SHIFT	5
+>>  
+>>  #define HNS_ROCE_CMD_FLAG_IN		BIT(HNS_ROCE_CMD_FLAG_IN_VALID_SHIFT)
+>>  #define HNS_ROCE_CMD_FLAG_OUT		BIT(HNS_ROCE_CMD_FLAG_OUT_VALID_SHIFT)
+>>  #define HNS_ROCE_CMD_FLAG_NEXT		BIT(HNS_ROCE_CMD_FLAG_NEXT_SHIFT)
+>>  #define HNS_ROCE_CMD_FLAG_WR		BIT(HNS_ROCE_CMD_FLAG_WR_OR_RD_SHIFT)
+>> -#define HNS_ROCE_CMD_FLAG_NO_INTR	BIT(HNS_ROCE_CMD_FLAG_NO_INTR_SHIFT)
+>>  #define HNS_ROCE_CMD_FLAG_ERR_INTR	BIT(HNS_ROCE_CMD_FLAG_ERR_INTR_SHIFT)
+>>  
+>>  #define HNS_ROCE_CMQ_DESC_NUM_S		3
+
