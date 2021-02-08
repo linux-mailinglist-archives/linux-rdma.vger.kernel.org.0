@@ -2,116 +2,30 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8623138C0
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Feb 2021 17:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1005E313B5B
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Feb 2021 18:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234147AbhBHQBY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Feb 2021 11:01:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231720AbhBHQAG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 8 Feb 2021 11:00:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AC0C64E6D;
-        Mon,  8 Feb 2021 15:59:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612799954;
-        bh=2nIR5YtEn6137+JOb2wirDSu341PpZx00Fi1bAU7oF8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WJHw8SSn4Lg8BwSyY2eGSQNYnvNLWjoL+6D2MCWj+z+i4kwiR/GjKLjdzB8RirmHX
-         GLLS4LgY5/S9k5PIZNFbt6wAuKkw1yi6HTvi8DJRBwFRD5mPwPf7BUSsl1qyJzGaSB
-         4+ONQVQznjOFTiH3zedgC8rhCsRsJ91DrBSlM0TPm5ZatDkJbCFBAn3BfOaAQvIGzv
-         Rbo/kub1FdP0AkjyUWsqHeJBkQpgfAs6U96VJQGKIADEOu2yYYmAzPRy0UQA2AtwqC
-         pP37VG2Ughn1OuAwgrp2n8VwT+lGA1RiYf17hcZKtlr5d+2VCtfIx/16JdmnUOeYAY
-         2pv1oLt3mNodg==
-Date:   Mon, 8 Feb 2021 17:59:11 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Honggang Li <honli@redhat.com>, Itay Aveksis <itayav@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Alaa Hleihel <alaa@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: rdma-core spec weird behavior on Fedora
-Message-ID: <20210208155911.GG20265@unreal>
-References: <20210207080649.GB4656@unreal>
- <20210208125900.GX4247@nvidia.com>
- <20210208131053.GC20265@unreal>
- <20210208132115.GY4247@nvidia.com>
- <20210208133137.GE20265@unreal>
- <20210208140824.GC4247@nvidia.com>
- <20210208143100.GF20265@unreal>
- <20210208153531.GD4247@nvidia.com>
+        id S234995AbhBHRqe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 8 Feb 2021 12:46:34 -0500
+Received: from [45.145.185.74] ([45.145.185.74]:60659 "EHLO willseal.com"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234920AbhBHRoZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 8 Feb 2021 12:44:25 -0500
+X-Greylist: delayed 12082 seconds by postgrey-1.27 at vger.kernel.org; Mon, 08 Feb 2021 12:44:23 EST
+Reply-To: brianiske@willseal.com
+From:   Bitcoin Guru <brianiske@willseal.com>
+To:     linux-rdma@vger.kernel.org
+Subject: Bitcoin Investment
+Date:   08 Feb 2021 09:42:50 -0800
+Message-ID: <20210208094250.B254E308051023FD@willseal.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208153531.GD4247@nvidia.com>
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 11:35:31AM -0400, Jason Gunthorpe wrote:
-> On Mon, Feb 08, 2021 at 04:31:00PM +0200, Leon Romanovsky wrote:
-> > On Mon, Feb 08, 2021 at 10:08:24AM -0400, Jason Gunthorpe wrote:
-> > > On Mon, Feb 08, 2021 at 03:31:37PM +0200, Leon Romanovsky wrote:
-> > > > On Mon, Feb 08, 2021 at 09:21:15AM -0400, Jason Gunthorpe wrote:
-> > > > > On Mon, Feb 08, 2021 at 03:10:53PM +0200, Leon Romanovsky wrote:
-> > > > > > On Mon, Feb 08, 2021 at 08:59:00AM -0400, Jason Gunthorpe wrote:
-> > > > > > > On Sun, Feb 07, 2021 at 10:06:49AM +0200, Leon Romanovsky wrote:
-> > > > > > > > Hi Honggang,
-> > > > > > > >
-> > > > > > > > Your commit b02de521022a ("redhat: Remove base package dependency from all sub-packages")
-> > > > > > > > removes protection from rdma-core when user performs "dnf autoremove".
-> > > > > > > >
-> > > > > > > > Before your patch, systemd was dependent on libibverbs and latter
-> > > > > > > > required rdma-core. After your patch, the last link is lost and
-> > > > > > > > rdma-core marked as orphaned package.
-> > > > > > > >
-> > > > > > > > Any attempt to install rdma-core as standalone package will have the
-> > > > > > > > following errors, due to the library dependency of udevadm.
-> > > > > > > > [leonro@c rdma-core]$ ldd /sbin/udevadm | grep verbs
-> > > > > > > > 	libibverbs.so.1 => not found
-> > > > > > >
-> > > > > > > well that makes no sense, since when is udevadm connected to
-> > > > > > > libibverbs?
-> > > > > > >
-> > > > > > > $ ldd `which udevadm`
-> > > > > > > 	linux-vdso.so.1 (0x00007ffcc09ef000)
-> > > > > > > 	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f394bec3000)
-> > > > > > > 	libkmod.so.2 => /lib/x86_64-linux-gnu/libkmod.so.2 (0x00007f394bea8000)
-> > > > > > > 	libacl.so.1 => /lib/x86_64-linux-gnu/libacl.so.1 (0x00007f394be9d000)
-> > > > > > > 	libblkid.so.1 => /lib/x86_64-linux-gnu/libblkid.so.1 (0x00007f394be46000)
-> > > > > > > 	libselinux.so.1 => /lib/x86_64-linux-gnu/libselinux.so.1 (0x00007f394be1b000)
-> > > > > > > 	libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f394bdf8000)
-> > > > > > > 	/lib64/ld-linux-x86-64.so.2 (0x00007f394c1b6000)
-> > > > > > > 	liblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007f394bdcd000)
-> > > > > > > 	libcrypto.so.1.1 => /lib/x86_64-linux-gnu/libcrypto.so.1.1 (0x00007f394baf7000)
-> > > > > > > 	libpcre2-8.so.0 => /lib/x86_64-linux-gnu/libpcre2-8.so.0 (0x00007f394ba67000)
-> > > > > > > 	libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f394ba61000)
-> > > > > >
-> > > > > > This is from my laptop and it is connected:
-> > > > >
-> > > > > Well, that is crazy, udevadm uses libpcap on Fedora which is linked to verbs
-> > > > >
-> > > > > But it still doesn't make sense, how did you get a in a situation
-> > > > > where this is no libibverbs installed even though there should be
-> > > > > dependencies from udevadm preventing that?
-> > > >
-> > > > It was part of my experiments and it is not the issue which we need to solve.
-> > > >
-> > > > Our two problems are that "dnf autoremove" removes rdma-core and you can't
-> > > > install it separately after Honggang's patch.
-> > >
-> > > why not? libibverbs should not be removed by autoremoved?
-> >
-> > During installation of rdma-core, DNF throws errors if libibverbs
-> > doesn't exist, which was in my case when I wanted to reinstall rdma-core
-> > to something new.
->
-> dnf shouldn't let you remove libibvebs, so how did it get removed?
-
-I built rdma-core RPM with latest code, issued "dnf install rdma-core
-...", which passed with error and left system with "unknown" library.
-
-Thanks
-
->
-> Jason
+Do you want 20% Daily Profit ?
+You can invest in Bitcoin now
+Kindly give me your response 
