@@ -2,191 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284B3314535
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Feb 2021 02:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E863149D0
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Feb 2021 08:59:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbhBIBDv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Feb 2021 20:03:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhBIBDu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 8 Feb 2021 20:03:50 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247A4C061786
-        for <linux-rdma@vger.kernel.org>; Mon,  8 Feb 2021 17:03:10 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id i3so6846341oif.1
-        for <linux-rdma@vger.kernel.org>; Mon, 08 Feb 2021 17:03:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bAgWGKZc6ZWuADVc7xrYFrpbTjSH7Jgogicrn2KeZwE=;
-        b=uQg1Ho830052vUhj3KfUwG05eAKoi9ja6/jhM/Dk0ZGW5RSggQ/hWB8UUFNzRHEu3I
-         UUPSt8PMCUQ5/pnA036Jzz2Ae4o0OuzGt5kS8xbfVPB289Ji63saTeHCr0f+gc9qDCW1
-         0TlTc7BxwmMO1QKuBwFOkGMwnK+n18MZ9AKRE20ULDedfn4I3rETVE8jQLYMmmXUYYUx
-         xU/tuYws+H0OiNISAyZ3RAR2g92AlIgL5pEhzazXI8AgJyJCXEAZYDx7yBcDd7DkWd7R
-         P5Gr5JQzZgCt7uQJLTit4ILOuqbpqhRvSF4xzSkK84w1d8LGR1MgyixmzjJiKE6RrhAG
-         qpug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bAgWGKZc6ZWuADVc7xrYFrpbTjSH7Jgogicrn2KeZwE=;
-        b=WrzFHaKPi++ImhOkg46RP8x2dpYfoa8HYcZC+nCbQ01X3hCeVk9p5tQpBuSIsKE8tF
-         +LNzAIHvWIBWmbQCVbZ23T9O8TftoF/6eXAu3ARyDt+34EHMXROpdVXEWU/XTXwuUaBi
-         4tCd8hizvARnY7SOYz/3s2k3G9Zg7joqlmevZ5ixM+9ZPLRILJdx/t3iRI2zn4UgC5rg
-         NF2gcyVTPiYLnJHdGJ9wQn1fBsKJDo6uVl7i0NyLsGMoURqqfsK4zBjqINsk1nlewhDv
-         hpzhfaISLqIyB0H999A++/bhs8jGu1DwLSL0xFynYP8Rko8cV7jL602vMHfKUDLfB5Yn
-         sYHQ==
-X-Gm-Message-State: AOAM532Jj3ul0pyH1Kpgjkbqm/eCOw0xmGUsjQIIvD+vwVmvGaGjr/R1
-        Uedlm3vS43SozFNpEqz++RmY782UWpJf7U56jVA=
-X-Google-Smtp-Source: ABdhPJzNBhPdbQlek/niR9hkhfFFz8tMMvt08YMfIdSZP+ct4uQXGA5HXiTXy8h/Ee3ARHh1n/Eun+llcOJOJi2AH+k=
-X-Received: by 2002:aca:5c54:: with SMTP id q81mr866337oib.163.1612832589612;
- Mon, 08 Feb 2021 17:03:09 -0800 (PST)
+        id S229601AbhBIH5e convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 9 Feb 2021 02:57:34 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:4616 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229690AbhBIH5c (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Feb 2021 02:57:32 -0500
+Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DZZvB0tv7zY782;
+        Tue,  9 Feb 2021 15:55:34 +0800 (CST)
+Received: from dggema751-chm.china.huawei.com (10.1.198.193) by
+ DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 9 Feb 2021 15:56:49 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema751-chm.china.huawei.com (10.1.198.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 9 Feb 2021 15:56:49 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.006;
+ Tue, 9 Feb 2021 15:56:48 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Re: [PATCH for-next 05/12] RDMA/hns: Adjust definition of FRMR fields
+Thread-Topic: [PATCH for-next 05/12] RDMA/hns: Adjust definition of FRMR
+ fields
+Thread-Index: AQHW+6Pkhjju0EYvxk+CH6ulVXL1wQ==
+Date:   Tue, 9 Feb 2021 07:56:48 +0000
+Message-ID: <46d3f3d647744440aecb0b333975c7cb@huawei.com>
+References: <1612517974-31867-1-git-send-email-liweihang@huawei.com>
+ <1612517974-31867-6-git-send-email-liweihang@huawei.com>
+ <20210209002327.GA1233507@nvidia.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20210206002437.2756-1-rpearson@hpe.com> <CAD=hENfXTKfZQ9ip7jWbtSjj8KPq58E5uRbcjieTA=TFXgovkw@mail.gmail.com>
- <CS1PR8401MB08219C191399F7E5A266FFBBBC8F9@CS1PR8401MB0821.NAMPRD84.PROD.OUTLOOK.COM>
-In-Reply-To: <CS1PR8401MB08219C191399F7E5A266FFBBBC8F9@CS1PR8401MB0821.NAMPRD84.PROD.OUTLOOK.COM>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Tue, 9 Feb 2021 09:02:58 +0800
-Message-ID: <CAD=hENcEkusa3476kL++OWyx+cKRDMZwVCaJ8YmNvEj1tSjTgA@mail.gmail.com>
-Subject: Re: [PATCH for-next] RDMA/rxe: Cleanup init_send_wqe
-To:     "Pearson, Robert B" <robert.pearson2@hpe.com>
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 1:46 AM Pearson, Robert B
-<robert.pearson2@hpe.com> wrote:
->
-> Sorry for the confusion. There was a previous patch sent the same day that fixed some checkpatch warnings. It has to be installed first. There must be some way to indicate this type of dependency.
+On 2021/2/9 8:24, Jason Gunthorpe wrote:
+> On Fri, Feb 05, 2021 at 05:39:27PM +0800, Weihang Li wrote:
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+>> index f29438c..1da980c 100644
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+>> @@ -1255,15 +1255,15 @@ struct hns_roce_v2_rc_send_wqe {
+>>  
+>>  #define V2_RC_SEND_WQE_BYTE_4_INLINE_S 12
+>>  
+>> -#define V2_RC_FRMR_WQE_BYTE_4_BIND_EN_S 19
+>> +#define V2_RC_FRMR_WQE_BYTE_40_BIND_EN_S 10
+>>  
+>> -#define V2_RC_FRMR_WQE_BYTE_4_ATOMIC_S 20
+>> +#define V2_RC_FRMR_WQE_BYTE_40_ATOMIC_S 11
+>>  
+>> -#define V2_RC_FRMR_WQE_BYTE_4_RR_S 21
+>> +#define V2_RC_FRMR_WQE_BYTE_40_RR_S 12
+>>  
+>> -#define V2_RC_FRMR_WQE_BYTE_4_RW_S 22
+>> +#define V2_RC_FRMR_WQE_BYTE_40_RW_S 13
+>>  
+>> -#define V2_RC_FRMR_WQE_BYTE_4_LW_S 23
+>> +#define V2_RC_FRMR_WQE_BYTE_40_LW_S 14
+>>  
+>>  #define V2_RC_SEND_WQE_BYTE_4_FLAG_S 31
+>>  
+>> @@ -1280,7 +1280,7 @@ struct hns_roce_v2_rc_send_wqe {
+>>  
+>>  struct hns_roce_wqe_frmr_seg {
+>>  	__le32	pbl_size;
+>> -	__le32	mode_buf_pg_sz;
+>> +	__le32	byte_40;
+>>  };
+> 
+> This stuff is HW API isn't it?
+> 
+> I didn't see anything to negotiate compatability with existing HW?
+> What happens if the kernel is updated and run on old HW/FW?
+> 
+> If you tightly couple you still need to check and refuse to load the
+> driver.
+> 
+> Jason
+> 
 
-It had better make this patch and the pervious patch as a patch
-series. So this problem will not occur again.
+Thank you, FRMR is not well-supported on HIP08, so we re-design it on
+HIP09. I will add a check to avoid ULPs using FRMR on HIP08.
 
-Thanks.
+Weihang
 
-Zhu Yanjun
->
-> bob
->
-> -----Original Message-----
-> From: Zhu Yanjun <zyjzyj2000@gmail.com>
-> Sent: Sunday, February 7, 2021 9:09 PM
-> To: Bob Pearson <rpearsonhpe@gmail.com>
-> Cc: Jason Gunthorpe <jgg@nvidia.com>; RDMA mailing list <linux-rdma@vger.kernel.org>; Pearson, Robert B <robert.pearson2@hpe.com>
-> Subject: Re: [PATCH for-next] RDMA/rxe: Cleanup init_send_wqe
->
-> On Sat, Feb 6, 2021 at 8:25 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
-> >
-> > This patch changes the type of init_send_wqe in rxe_verbs.c to void
-> > since it always returns 0. It also separates out the code that copies
-> > inline data into the send wqe as copy_inline_data_to_wqe().
-> >
-> > Signed-off-by: Bob Pearson <rpearson@hpe.com>
-> > ---
-> >  drivers/infiniband/sw/rxe/rxe_verbs.c | 42
-> > ++++++++++++---------------
-> >  1 file changed, 19 insertions(+), 23 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c
-> > b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> > index 984909e03b35..dee5e0e919d2 100644
-> > --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-> > +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> > @@ -555,14 +555,24 @@ static void init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
-> >         }
-> >  }
-> >
-> > -static int init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr
-> > *ibwr,
-> > +static void copy_inline_data_to_wqe(struct rxe_send_wqe *wqe,
-> > +                                   const struct ib_send_wr *ibwr) {
-> > +       struct ib_sge *sge = ibwr->sg_list;
-> > +       u8 *p = wqe->dma.inline_data;
-> > +       int i;
-> > +
-> > +       for (i = 0; i < ibwr->num_sge; i++, sge++) {
-> > +               memcpy(p, (void *)(uintptr_t)sge->addr, sge->length);
-> > +               p += sge->length;
-> > +       }
-> > +}
-> > +
-> > +static void init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr
-> > +*ibwr,
-> >                          unsigned int mask, unsigned int length,
-> >                          struct rxe_send_wqe *wqe)  {
-> >         int num_sge = ibwr->num_sge;
-> > -       struct ib_sge *sge;
-> > -       int i;
-> > -       u8 *p;
-> >
-> >         init_send_wr(qp, &wqe->wr, ibwr);
-> >
-> > @@ -570,7 +580,7 @@ static int init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
-> >         if (unlikely(mask & WR_REG_MASK)) {
-> >                 wqe->mask = mask;
-> >                 wqe->state = wqe_state_posted;
-> > -               return 0;
-> > +               return;
-> >         }
-> >
-> >         if (qp_type(qp) == IB_QPT_UD || @@ -578,20 +588,11 @@ static
-> > int init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
-> >             qp_type(qp) == IB_QPT_GSI)
-> >                 memcpy(&wqe->av, &to_rah(ud_wr(ibwr)->ah)->av,
-> > sizeof(wqe->av));
-> >
-> > -       if (unlikely(ibwr->send_flags & IB_SEND_INLINE)) {
-> > -               p = wqe->dma.inline_data;
-> > -
-> > -               sge = ibwr->sg_list;
-> > -               for (i = 0; i < num_sge; i++, sge++) {
-> > -                       memcpy(p, (void *)(uintptr_t)sge->addr,
-> > -                                       sge->length);
-> > -
-> > -                       p += sge->length;
-> > -               }
-> > -       } else {
-> > +       if (unlikely(ibwr->send_flags & IB_SEND_INLINE))
-> > +               copy_inline_data_to_wqe(wqe, ibwr);
-> > +       else
-> >                 memcpy(wqe->dma.sge, ibwr->sg_list,
-> >                        num_sge * sizeof(struct ib_sge));
-> > -       }
->
-> I git clone  https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git,
-> But this commit can not be applied successfully.
->
-> Zhu Yanjun
-> >
-> >         wqe->iova = mask & WR_ATOMIC_MASK ? atomic_wr(ibwr)->remote_addr :
-> >                 mask & WR_READ_OR_WRITE_MASK ?
-> > rdma_wr(ibwr)->remote_addr : 0; @@ -603,8 +604,6 @@ static int init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
-> >         wqe->dma.sge_offset     = 0;
-> >         wqe->state              = wqe_state_posted;
-> >         wqe->ssn                = atomic_add_return(1, &qp->ssn);
-> > -
-> > -       return 0;
-> >  }
-> >
-> >  static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr
-> > *ibwr, @@ -627,10 +626,7 @@ static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
-> >         }
-> >
-> >         send_wqe = producer_addr(sq->queue);
-> > -
-> > -       err = init_send_wqe(qp, ibwr, mask, length, send_wqe);
-> > -       if (unlikely(err))
-> > -               goto err1;
-> > +       init_send_wqe(qp, ibwr, mask, length, send_wqe);
-> >
-> >         advance_producer(sq->queue);
-> >         spin_unlock_irqrestore(&qp->sq.sq_lock, flags);
-> > --
-> > 2.27.0
-> >
