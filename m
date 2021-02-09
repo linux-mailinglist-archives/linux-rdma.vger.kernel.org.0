@@ -2,138 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65C931571C
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Feb 2021 20:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 897A2315725
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Feb 2021 20:49:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233039AbhBITq2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Feb 2021 14:46:28 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16046 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233267AbhBITkJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Feb 2021 14:40:09 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6022df680002>; Tue, 09 Feb 2021 11:15:52 -0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb
- 2021 19:15:45 +0000
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb
- 2021 19:15:21 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.173)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 9 Feb 2021 19:15:21 +0000
+        id S233032AbhBITr0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Feb 2021 14:47:26 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5245 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233723AbhBITpH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Feb 2021 14:45:07 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6022e47e0000>; Tue, 09 Feb 2021 11:37:34 -0800
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb
+ 2021 19:37:33 +0000
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb
+ 2021 19:37:27 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.177)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 9 Feb 2021 19:37:26 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zn6bAlTqOvdXTOSq+t6N0hLgQ8Erz8wd03TGhOZ8xqbZ6oXjjdtiRUz3a97HoL/WHEy9VqYeAGcvFJAAJ9Iac2XKCQzKHqO15DbXKsgKnsRIC02eiWIp+7jOBL0tyG8N85MFxNBmSEcR9uUO52XiwBCAxP+lb0q+8TTkRTehvXuheKtguwl4S9tlp1+mem/ONJl+uv/cyeIXERwmO+huG+E50NSSb20eyzL3TSXfc4i6SOOimCj863QiMVs+BZY5Nixjx0flL52tflBiw8D8jDUSufiVxO5+Bg3atFzce9XoHVnChvCrecE8s6qOctjkTCj2ob1UpwB2nam5hr4Zew==
+ b=TTER7JNY1PqusPXVDf+7A4QTVcqxq2NiMGwqQlJmCNwAvs0aFlWIdlowl4pJAIDgxIkGQe5bSn6AG7EPeOVphryb8VVe0jtfNR0EIRlWrag56H32uwLTYTfipU7a9fKhdKUKrBgBJE45BTjJPy9tMgEv1lbM14ntLiayrlLVS+zZ5kwQ8Y21ok8OEz7XftplGZc6Kgp76VzwETLaXLB2fpA2kiPl2rnnup2JxmZ1ldJASMg7NdncCysqQ/UlIt+BLNZDG3ZI0pcFyChAMbGag4+6r7yJZAqk0B/IQ4y5o+T0cVohJXuKMGL8sccwoVHsNkoYFS3cBfkb0ruoiS8PBw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DduRABcZAFWpd9QhqW2UfphcHGj2rNCUWCmTmo5tegQ=;
- b=BnZRFkiKK+GE/7cLSsTf//pg+USkF3JPQ3nEyJ7o7Yqu3nvzzsRWBWu9m5FQRZEvH2S//Ejcl7aUxSl2rUQDXqaeiqIU3AukRn91r/G/dlTj5C6YAEJBrj/S3zufXuDEf3etEoQk+Y4M1KQWMoOnre5Zv1fU1+Ba+pjt1wmY3H/cdacH4Pv4ye60pO2dK2kGdhIdpBEUYQSZIP04MtUd4gmKfz3coUtyZdpa16v21OcdH4AGpW1gUtyCLorQkyU6hSANH1M3Dy2dl2rWHJ+QT9gU66nGEplG4Lf990UPJ9mtoG/D9DSPq/0nVqJlqkap7nWPsxSjbX6pZwLT7l2jiQ==
+ bh=EKS3mUK4K20hym2ByaGQIgasnROXIM3uCl1l+oi+MuY=;
+ b=KKZZ2FzpqmEUbgo6rgc53VKS2q4sBC7Rve0aoZZNEmxvzd61jdusmxbAqp6qtTWG3NJJ/GEcQ0NazisvyQgttcb8h+TdPjsz7tsL7ZGjr+nx43W6jvMyB63+qOKPjGXCZqT2PVl/0eQbJRfFopaBbW72NBCybkCOS88s6tJyMKF+hVOMuPQbgj5BS/4M8pw1AZs8FC7E9bi8Nbb09MCHOxQcD37zTnBd8+tPd+J6KJ2Mld/0iqzruzET852NWZ3QSrVNTI4hVO+spIsPIEa3tlyxv4KORuKQm8zkj7YKgr7V/XHNyq7qAXWNabuT1dPjBZrIINuotIC8/i3wa8Imyg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0204.namprd12.prod.outlook.com (2603:10b6:4:51::10) with
+ by DM5PR12MB2581.namprd12.prod.outlook.com (2603:10b6:4:b2::36) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Tue, 9 Feb
- 2021 19:15:18 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Tue, 9 Feb
+ 2021 19:37:24 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3825.030; Tue, 9 Feb 2021
- 19:15:18 +0000
-Date:   Tue, 9 Feb 2021 15:15:17 -0400
+ 19:37:24 +0000
+Date:   Tue, 9 Feb 2021 15:37:22 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christoph Lameter <cl@linux.com>
-CC:     <linux-rdma@vger.kernel.org>, Leon Romanovsky <leon@kernel.org>
-Subject: Re: [PATCH] Fix: Remove racy Subnet Manager sendonly join checks
-Message-ID: <20210209191517.GQ4247@nvidia.com>
-References: <alpine.DEB.2.22.394.2101281845160.13303@www.lameter.com>
+To:     Weihang Li <liweihang@huawei.com>
+CC:     <dledford@redhat.com>, <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@openeuler.org>
+Subject: Re: [PATCH v2 for-next 0/5] RDMA/hns: Fix and refactor CMDQ related
+ code
+Message-ID: <20210209193722.GA1339019@nvidia.com>
+References: <1612688143-28226-1-git-send-email-liweihang@huawei.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2101281845160.13303@www.lameter.com>
-X-ClientProxiedBy: MN2PR20CA0064.namprd20.prod.outlook.com
- (2603:10b6:208:235::33) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <1612688143-28226-1-git-send-email-liweihang@huawei.com>
+X-ClientProxiedBy: BL1PR13CA0031.namprd13.prod.outlook.com
+ (2603:10b6:208:257::6) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR20CA0064.namprd20.prod.outlook.com (2603:10b6:208:235::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Tue, 9 Feb 2021 19:15:18 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l9YTl-005axQ-0e; Tue, 09 Feb 2021 15:15:17 -0400
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0031.namprd13.prod.outlook.com (2603:10b6:208:257::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.15 via Frontend Transport; Tue, 9 Feb 2021 19:37:24 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l9Yp8-005cLs-SL; Tue, 09 Feb 2021 15:37:22 -0400
 X-Header: ProcessedBy-CMR-outbound
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612898152; bh=DduRABcZAFWpd9QhqW2UfphcHGj2rNCUWCmTmo5tegQ=;
+        t=1612899454; bh=EKS3mUK4K20hym2ByaGQIgasnROXIM3uCl1l+oi+MuY=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
          Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=qqEXf0b4WYF9aAYavbOMHKC6ycnD0btX3nd7ExR7wcIftJlA5FGKeAzAxuh8qKxsI
-         x8lsVNUg2HU6nIkwLsqCFTCA4xSno6hrfXZwxvur8RXnagLeh+VJkHVyO0SAVh74W8
-         kWv7SqboE5XTBY22AdkryhPXUJTOixGEd6eBJEHKVgZnrFlQl+Ob/3O+aIKoSqKzXm
-         g4QziJgTZpVugdOAivjY4DrS71IKqOwzd3uuMnLrn4ElauI1vbP0AGVOHrs0F+85iM
-         Q+XYnHilmq7d5xL1beQNYVNbEhV6sBGcBACFQWZfrKmATl8BqTwO/ag/HVQzJydb0l
-         5EgZqA+xIqOew==
+        b=USHAooATTvkhH9NOKtkYlE7of9mPRddGeDoaq+pcFx3/e4KpOm3HpqciqTZ7IDJkf
+         YRPbWEtJT98A9NrWPKzNLViQV7w3+6KWqLZhek7v9neF+sDLsienId0Z6Rppl8xcop
+         KIiYs/mfay/XP6/CSwxYR3krxXe5uf32tEoExYFMm2qfB9WHduBfgYfBj1paHlcqx4
+         9eAcyp05IgeTzJf9wsNCRihRCSxIJfPv+X2EaYDiLqDmIYN0LwxUkcO6NwXGxUyc/D
+         rpXvwY4ZI/iNdpjjYhtU/8mfmLdOGih3WHxICDcJbYInPhGdda2+SZWKuufxNUMLas
+         aOhB8+jSZmwgg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 06:46:47PM +0000, Christoph Lameter wrote:
-> From 64e734c38f509d591073fc1e1db3caa42be3b874 Mon Sep 17 00:00:00 2001
-> From: Christoph Lameter <cl@linux.com>
-> Date: Thu, 28 Jan 2021 14:55:36 +0000
-> Subject: [PATCH] Fix: Remove racy Subnet Manager sendonly join checks
+On Sun, Feb 07, 2021 at 04:55:38PM +0800, Weihang Li wrote:
+> Remove some dead code in process of CMDQ transmission, and fix an issue
+> about missing error code.
 > 
-> When a system receives a REREG event from the SM, then the SM information in
-> the kernel is marked as invalid and a request is sent to the SM to update
-> the information. The SM information is invalid in that time period.
+> Changes since v1:
+> * Drop #2 from the v1 series because the compatibility with the firmware
+>   needs to be considered.
+> * Link: https://patchwork.kernel.org/project/linux-rdma/cover/1612419786-39173-1-git-send-email-liweihang@huawei.com/
 > 
-> However, receiving a REREG also occurs simultaneously in user space
-> applications that are now trying to rejoin the multicast groups. Some of those
-> may be sendonly multicast groups which are then failing.
-> 
-> If the SM information is invalid then ib_sa_sendonly_fullmem_support()
-> returns false. That is wrong because it just means that we do not know
-> yet if the potentially new SM supports sendonly joins.
-> 
-> Sendonly join was introduced in 2015 and all the Subnet managers have
-> supported it ever since. So there is no point in checking if a subnet
-> manager supports it.
-> 
-> Should an old opensm get a request for a sendonly join then the request
-> will fail. The code that is removed here accomodated that situation
-> and fell back to a full join.
-> 
-> Falling back to a full join is problematic in itself. The reason to
-> use the sendonly join was to reduce the traffic on the Infiniband
-> fabric otherwise one could have just stayed with the regular join.
-> So this patch may cause users of very old opensms to discover that
-> lots of traffic needlessly crosses their IB fabrics.
-> 
-> Signed-off-by: Christoph Lameter <cl@linux.com>
-> ---
->  drivers/infiniband/core/cma.c                 | 11 ---------
->  drivers/infiniband/core/sa_query.c            | 24 -------------------
->  drivers/infiniband/ulp/ipoib/ipoib.h          |  1 -
->  drivers/infiniband/ulp/ipoib/ipoib_main.c     |  2 --
->  .../infiniband/ulp/ipoib/ipoib_multicast.c    | 13 +---------
->  5 files changed, 1 insertion(+), 50 deletions(-)
+> Lang Cheng (5):
+>   RDMA/hns: Remove unused member and variable of CMDQ
+>   RDMA/hns: Fixes missing error code of CMDQ
+>   RDMA/hns: Remove redundant operations on CMDQ
+>   RDMA/hns: Adjust fields and variables about CMDQ tail/head
+>   RDMA/hns: Refactor process of posting CMDQ
 
-This one got spam filtered and didn't make it to the list:
-
-Received-SPF: SoftFail (hqemgatev14.nvidia.com: domain of
-        cl@linux.com is inclined to not designate 3.19.106.255 as
-        permitted sender) identity=mailfrom; client-ip=3.19.106.255;
-        receiver=hqemgatev14.nvidia.com;
-        envelope-from="cl@linux.com"; x-sender="cl@linux.com";
-        x-conformance=spf_only; x-record-type="v=spf1"
-
-Also the extra From/Date/Subject ended up in the commit message
-
-I fixed it all up, applied to for-next
-
-It looks like OPA will also suffer this race (opa_pr_query_possible),
-maybe it is a little less likely since it will be driven by PR queries
-not broadcast joins.
-
-But the same logic is likely true there, I'd be surprised if OPA
-fabrics are not running a capable OPA SM at this point.
+Applied to for-next, thanks
 
 Jason
