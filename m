@@ -2,94 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0E3315776
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Feb 2021 21:09:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB9A3158FA
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Feb 2021 22:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233750AbhBIUHh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Feb 2021 15:07:37 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6210 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233351AbhBITyr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Feb 2021 14:54:47 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6022e85e0005>; Tue, 09 Feb 2021 11:54:06 -0800
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb
- 2021 19:54:06 +0000
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 9 Feb
- 2021 19:54:03 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.172)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 9 Feb 2021 19:54:02 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KCgvfKjysIgXie+LjLCOukAbDWmqFH/DxhG8gqUSFJ69fpW+IgR/sJdXjNceoZocExntrjOviJDSpUFpOzKo/p0zSR/iFhDejsLHg17G5Q/kkaVn+rowltLVQwBACMPQQlmqBSK9GoNcLzxBJn8Jt7p0yS5x3u0NXLvwAWyjMFArwvzkGgi530xDSe0+RxdllgZtQvylDx6wv2grJ1I80l4ZxE5UdneOnMotrDBzTlENtUxl7sk2niU+MAWv/eZ1VlQE5+d1mATvNNvVtbedje/1GJ1qjDito8WwF8W7IF3iHylk+R21X37EzSUT4rE4El8NO7diClGaOAeJv/wujg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QPoDyMvfKZrL6Mf4f/K2Vhw8gsG76zx51uuX7QJHdQA=;
- b=OynUvRCniBiYaJiLGCAWvmVedYNsehekmhoiktpgXhmEZBOvqaudHKEfBIb4SIwP9inbSgu4ozfruR0FxK7GGqB05JwGgzxthPqhAb0j6aVkmCt3+0c6KMwvopNjAsKYInk52qWZwbDNhFT69SfSAjachlpIMW3mkrJ150NpQFokWnQl04RdyrS8Rg2I88Qkoq97H7FjUDwhe/ybjUDXQ8kr8ySM9RcnDizunJjkT4WMj7RVkeOWQ2S9vEWsFOPhfu1beZXy22hbHlGyyR/T19XDdETH7Fh4CnlKEPckBDFxl1BT8Ye1lgcxB4eHW4vAlWzFRCxjdbh8P2R9ZlZwAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3739.namprd12.prod.outlook.com (2603:10b6:5:1c4::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.24; Tue, 9 Feb
- 2021 19:54:01 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3825.030; Tue, 9 Feb 2021
- 19:54:00 +0000
-Date:   Tue, 9 Feb 2021 15:53:59 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Weihang Li <liweihang@huawei.com>
-CC:     <leon@kernel.org>, <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@openeuler.org>
-Subject: Re: [PATCH RFC rdma-core 0/5] libhns: Add support for Dynamic
- Context Attachment
-Message-ID: <20210209195359.GT4247@nvidia.com>
-References: <1612667574-56673-1-git-send-email-liweihang@huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1612667574-56673-1-git-send-email-liweihang@huawei.com>
-X-ClientProxiedBy: BL1PR13CA0105.namprd13.prod.outlook.com
- (2603:10b6:208:2b9::20) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S234033AbhBIVvV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Feb 2021 16:51:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234215AbhBIVJB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Feb 2021 16:09:01 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1069CC06174A;
+        Tue,  9 Feb 2021 13:06:37 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id e7so17408210ile.7;
+        Tue, 09 Feb 2021 13:06:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=15OODCihpty0UWi0a0aB28afyJjig1mNPU55XHksU0Y=;
+        b=WGXCYkfG2UPIZGxYCJxQlssPEm1c/IlOG/OKZvuBR+izcGLbqIiFcfuejjz/mGmaXQ
+         OfzIgOqW63BCSbhlSfev2owDbikYinz5IvA+aXtZi8UAmRcKM1JtOTRsxFiDdqbB+rZK
+         cMssXcwgnShvLxiXKNb1af1X6+vePNNgHf71OWkAAWi/LSCIRQgBXyzm3xqfEmBefztI
+         vTJG4RRv71a/763zsXLPjnDxESRZrXyXxXLc9gyOQ3mz3UtI2jkPQY9DyHWsdMQb1OZ/
+         6MvSndL/Mb4iTPgxdOvDg2Yz1PRmd1nCTbcm3mgb2ZyLbJ5qSGTBIrZ/Dp2EcdpoqliJ
+         gUhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=15OODCihpty0UWi0a0aB28afyJjig1mNPU55XHksU0Y=;
+        b=s91Xm145AjTv+qg71k908NZ1gPEnT6GRtM70UVYsXE+Gh/0nwW/NfvQ/+DwXMRkUlB
+         1GOFYanrHOqPgQjNCwZ/hWhAB1ns/Nnm0s8xjg5rtCE55NICrFSdzTYkAlUy/UONVI/X
+         6Zbb8qOja2Xt3LDX8EL0bgmITtCgZcxPtRRrg1SDknDQZdRTlflvir1HCUMz7aUDOVM2
+         2nPpchGlB0z0ocEqBUQkl3I+BdKWlsr5ORoucCYR63VHSzzBRaR38Ikm2uoJwr+uheOu
+         KZ5H1jcMZJPfZ81xpPbTnmCjYzNoTObIuvOqS29wiBuwKnwOUMYTbjgjnFx90z40N8ud
+         mp/A==
+X-Gm-Message-State: AOAM530oK6UePWaMwPGEUUbGzi1crnurqop1u+VgJDPzwlVNVsNSDYV3
+        g7HIaCDD6O9S9mZ1/yulvIKZInIEOMNZeYzXS10=
+X-Google-Smtp-Source: ABdhPJx6CJULSRazipUh8Vc7wnERN3KJ4SipHXstSl2Km+4a0nkeP2kgKY7mN/5Pjmc5k6lp53CnVDwOyTqVCG4rPrQ=
+X-Received: by 2002:a92:cec2:: with SMTP id z2mr2768778ilq.42.1612904796430;
+ Tue, 09 Feb 2021 13:06:36 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0105.namprd13.prod.outlook.com (2603:10b6:208:2b9::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.11 via Frontend Transport; Tue, 9 Feb 2021 19:54:00 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l9Z5D-005cdG-6y; Tue, 09 Feb 2021 15:53:59 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612900446; bh=QPoDyMvfKZrL6Mf4f/K2Vhw8gsG76zx51uuX7QJHdQA=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=cuJUZy9E+QGdHB3i0aFeCXYvVi8WhjXEBYp1N9+1j2gbjymiUBTqoSlCIaeH4/OKY
-         FCd56bvk0xrMUjZX0+TVNTjli3QVO6sDmwx4XOwmutrk0ol3dvA/XVLmSEcHpJda7X
-         xTQMeK2LOjAHM9lVjCYKL23f0flaEEAi41XDiMATvL98WIYysJz8BQIamgoAEkq+C6
-         1isdSfuG2GnocjjjleY4dtQZ3ENYb/GLfAPaiO61XTAA5rwLqt6OuFj4LNNk3qrvi3
-         x8WnFosRhPibEXTWXILztQej9HNeZd7yNUR+p31z+O6m2tJKDE8+lhb0KWUDqfpxym
-         01dyQiyOuF4hA==
+References: <20210209133445.700225-1-leon@kernel.org>
+In-Reply-To: <20210209133445.700225-1-leon@kernel.org>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Tue, 9 Feb 2021 13:06:25 -0800
+Message-ID: <CAKgT0Ud+c6wzo3n_8VgtVBQm-2UPic6U2QFuqqN-P9nEv_Y+JQ@mail.gmail.com>
+Subject: Re: [PATCH mlx5-next v6 0/4] Dynamically assign MSI-X vectors count
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 11:12:49AM +0800, Weihang Li wrote:
-> The HIP09 introduces the DCA(Dynamic Context Attachment) feature which
-> supports many RC QPs to share the WQE buffer in a memory pool. If a QP
-> enables DCA feature, the WQE's buffer will not be allocated when creating
-> but when the users start to post WRs. This will reduce the memory
-> consumption when there are too many QPs are inactive.
+On Tue, Feb 9, 2021 at 5:34 AM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> From: Leon Romanovsky <leonro@nvidia.com>
 
-One a WQE buffer is allocated it still acts as a normal WQE ring
-buffer? So this DCA logic is to remap the send queue buffer based on
-demand for SQEs? How does it interact with the normal max send queue
-entries reported?
+<snip>
 
-Would like to see proper man pages explaining how this all works for
-rdma-core.
+> --------------------------------------------------------------------
+> Hi,
+>
+> The number of MSI-X vectors is PCI property visible through lspci, that
+> field is read-only and configured by the device.
+>
+> The static assignment of an amount of MSI-X vectors doesn't allow utilize
+> the newly created VF because it is not known to the device the future load
+> and configuration where that VF will be used.
+>
+> The VFs are created on the hypervisor and forwarded to the VMs that have
+> different properties (for example number of CPUs).
+>
+> To overcome the inefficiency in the spread of such MSI-X vectors, we
+> allow the kernel to instruct the device with the needed number of such
+> vectors, before VF is initialized and bounded to the driver.
+>
+> Before this series:
+> [root@server ~]# lspci -vs 0000:08:00.2
+> 08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+> ....
+>         Capabilities: [9c] MSI-X: Enable- Count=12 Masked-
+>
+> Configuration script:
+> 1. Start fresh
+> echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+> modprobe -q -r mlx5_ib mlx5_core
+> 2. Ensure that driver doesn't run and it is safe to change MSI-X
+> echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_drivers_autoprobe
+> 3. Load driver for the PF
+> modprobe mlx5_core
+> 4. Configure one of the VFs with new number
+> echo 2 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+> echo 21 > /sys/bus/pci/devices/0000\:08\:00.2/sriov_vf_msix_count
+>
+> After this series:
+> [root@server ~]# lspci -vs 0000:08:00.2
+> 08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+> ....
+>         Capabilities: [9c] MSI-X: Enable- Count=21 Masked-
+>
+> Thanks
+>
+> Leon Romanovsky (4):
+>   PCI: Add sysfs callback to allow MSI-X table size change of SR-IOV VFs
+>   net/mlx5: Add dynamic MSI-X capabilities bits
+>   net/mlx5: Dynamically assign MSI-X vectors count
+>   net/mlx5: Allow to the users to configure number of MSI-X vectors
+>
+>  Documentation/ABI/testing/sysfs-bus-pci       |  28 ++++
+>  .../net/ethernet/mellanox/mlx5/core/main.c    |  17 ++
+>  .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  27 ++++
+>  .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  72 +++++++++
+>  .../net/ethernet/mellanox/mlx5/core/sriov.c   |  58 ++++++-
+>  drivers/pci/iov.c                             | 153 ++++++++++++++++++
+>  include/linux/mlx5/mlx5_ifc.h                 |  11 +-
+>  include/linux/pci.h                           |  12 ++
+>  8 files changed, 375 insertions(+), 3 deletions(-)
+>
 
-Jason
+This seems much improved from the last time I reviewed the patch set.
+I am good with the drop of the folder in favor of using "sriov" in the
+naming of the fields.
+
+For the series:
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
