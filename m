@@ -2,115 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980363166B2
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 13:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9286F316772
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 14:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbhBJMa4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Feb 2021 07:30:56 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:33584 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbhBJM2y (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Feb 2021 07:28:54 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11ACPTsd125196;
-        Wed, 10 Feb 2021 12:28:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=V/QQKYhssb1c/ULhEm/h6VOFSy7PGCdB3QzOc3CmcDM=;
- b=Mm2AbRMfuoTWym75vifiQSy9RG7chLOeEhwfWbtMt8BB6hGztxg4UP1fpQVlv/ayC7lM
- dTLD3SEtixhz1I5EJ1mVJgjQUyVzLNavZXXEf+QTJlFVR51srgX5bxKSW/mNvKqIyDXH
- OaTAvLkbWZzeMayb9HSp8fvDudCJapnqRUp3+zmNxYP30uBAM5kU245NzujqFBWwXxQd
- /13GFkkSURCYkLuygU8xdBZY7huHVIqUcnDNu/bPGokUdpRhXSeax/bP+rLJR1/OjU0L
- zZKG4JqTjtJmhXOSt+3qxsyKU7evzbqehsWoQNdLHByPS72/l1/gPH3w++94iKIJM1GJ VA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 36m4upsphe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Feb 2021 12:28:11 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11ACQgb7111385;
-        Wed, 10 Feb 2021 12:28:09 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 36j4vsr99h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Feb 2021 12:28:09 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11ACS82Y030916;
-        Wed, 10 Feb 2021 12:28:08 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 10 Feb 2021 04:28:07 -0800
-Date:   Wed, 10 Feb 2021 15:28:01 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     vladbu@nvidia.com, linux-rdma@vger.kernel.org,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [bug report] net/mlx5e: E-Switch, Maintain vhca_id to vport_num
- mapping
-Message-ID: <20210210122801.GW20820@kadam>
-References: <YCOep5XDMt5IM/PV@mwanda>
- <20210210114820.GA741034@unreal>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S230322AbhBJNGF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Feb 2021 08:06:05 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12946 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231701AbhBJNEV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Feb 2021 08:04:21 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6023d99b0000>; Wed, 10 Feb 2021 05:03:23 -0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
+ 2021 13:03:22 +0000
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
+ 2021 13:03:16 +0000
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.51) by
+ HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 10 Feb 2021 13:03:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AXdrpo82NB/6M6UR38gTNM4AXTMgiN6eQT312acrnc7XSNY0z4XT2AOWDVMqceXm9bWPtn3ZfbZuHOS/0NTxMOPYBdBFc13qZ8HRmXK51EfXXJq5jvsh/d4HrNbh7+JwSjV4v7TovwiOEwqZ0wspcC7lOnQyRM6zb0AxeXyi+4H+0ThentyKpD45meS+YuWnDc/7tRqf/jFwhif44iHhco/e1O2aTkjoXvZ8500MVzD0Il2OLzX92ebPT/9k4a4/JEUoPS0mvRB0iLWvqhEvoNWMohAbAz6kx5dnEbgXWS+xAzrO434XDkvoy1BZkyeQ4JcbW81k+f5+PVHZoHXn+w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FuydNBDBnFVlT9eomevWQcs7k2bGrZRaEySl/b1bMC0=;
+ b=EiRojtJcz1MnMPZgqdFA4kiakYmfU5gbfpHXwGTIPTkQsRJ0ac7oTB+dsE44cTAcINBjrFX3QlGxKuZXCQzQdRTNQJGDKBwnEcxOjfW5qZSyeUv/mSHK/YQlPrrpCGzZnnvNSm/OXSo2ZrUjTl2EmFIPOsAuJKguGeBi53PMJf0mvZbvFT75YkDkCE9rOgAsZh8Piov052VXP+IxLAWu1d0B9D0pF+8kjw5B3roSrVN7iSiSrD+htZVyYEHQ2jzYGoATxgZuhIMSOESdvx5qhlnb+kGS9nTH51RTwThrltB+JW8DaxZV1pIo7Rgk2akNZnOogRYACqzPI9CX+qaSBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1754.namprd12.prod.outlook.com (2603:10b6:3:10f::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.30; Wed, 10 Feb
+ 2021 13:03:13 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.027; Wed, 10 Feb 2021
+ 13:03:13 +0000
+Date:   Wed, 10 Feb 2021 09:03:11 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christoph Lameter <cl@linux.com>
+CC:     <linux-rdma@vger.kernel.org>, Leon Romanovsky <leon@kernel.org>
+Subject: Re: [PATCH] Fix: Remove racy Subnet Manager sendonly join checks
+Message-ID: <20210210130311.GU4247@nvidia.com>
+References: <alpine.DEB.2.22.394.2101281845160.13303@www.lameter.com>
+ <20210209191517.GQ4247@nvidia.com>
+ <alpine.DEB.2.22.394.2102100925200.172831@www.lameter.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210210114820.GA741034@unreal>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
- mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102100121
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 spamscore=0 impostorscore=0 malwarescore=0 clxscore=1015
- suspectscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102100121
+In-Reply-To: <alpine.DEB.2.22.394.2102100925200.172831@www.lameter.com>
+X-ClientProxiedBy: MN2PR18CA0011.namprd18.prod.outlook.com
+ (2603:10b6:208:23c::16) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR18CA0011.namprd18.prod.outlook.com (2603:10b6:208:23c::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Wed, 10 Feb 2021 13:03:13 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l9p9D-005qgL-Ra; Wed, 10 Feb 2021 09:03:11 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612962203; bh=FuydNBDBnFVlT9eomevWQcs7k2bGrZRaEySl/b1bMC0=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=p3ozZMTfMa5zuC1KkREqnU1LRyYAEabwUO+S24IqD7wF8295VdX5eOLplL1xRiDzu
+         l3EUYQwEsoECxSPsTNS+BNGjHySv340kjFvqtHcLGtNn181+NKfp6PQvFtALwNwk6E
+         IeBcUPW8t9IE0/CA9QVzxajXmobvhMOhFbm64q1xJFf3ryvZkTaA8VwsQtuyeCN5u/
+         A/lE4hLfhRwdDlRs5vJ3gPUnu+HKYEHe2aoDvGNk1cSqo5p/Sb4zc0I241yUPWJsov
+         z7WJAItV0RpSNSaV7VQHjSQ2qAKbiNuRU00CjJdfFeqvb6+1vtL7kERlZ3leynX/0W
+         cVoXmOwY4uP4Q==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 01:48:20PM +0200, Leon Romanovsky wrote:
-> On Wed, Feb 10, 2021 at 11:51:51AM +0300, Dan Carpenter wrote:
-> > Hello Vlad Buslov,
-> >
-> > The patch 84ae9c1f29c0: "net/mlx5e: E-Switch, Maintain vhca_id to
-> > vport_num mapping" from Sep 23, 2020, leads to the following static
-> > checker warning:
-> >
-> > 	drivers/net/ethernet/mellanox/mlx5/core/vport.c:1170 mlx5_vport_get_other_func_cap()
-> > 	warn: odd binop '0x0 & 0x1'
-> >
-> > drivers/net/ethernet/mellanox/mlx5/core/vport.c
-> >   1168  int mlx5_vport_get_other_func_cap(struct mlx5_core_dev *dev, u16 function_id, void *out)
-> >   1169  {
-> >   1170          u16 opmod = (MLX5_CAP_GENERAL << 1) | (HCA_CAP_OPMOD_GET_MAX & 0x01);
-> >
-> > HCA_CAP_OPMOD_GET_MAX is zero.  The 0x01 is a magical number.
-> >
-> >   1171          u8 in[MLX5_ST_SZ_BYTES(query_hca_cap_in)] = {};
-> >   1172
-> >   1173          MLX5_SET(query_hca_cap_in, in, opcode, MLX5_CMD_OP_QUERY_HCA_CAP);
-> >   1174          MLX5_SET(query_hca_cap_in, in, op_mod, opmod);
-> >   1175          MLX5_SET(query_hca_cap_in, in, function_id, function_id);
-> >   1176          MLX5_SET(query_hca_cap_in, in, other_function, true);
-> >   1177          return mlx5_cmd_exec_inout(dev, query_hca_cap, in, out);
-> >   1178  }
+On Wed, Feb 10, 2021 at 09:31:32AM +0000, Christoph Lameter wrote:
+> On Tue, 9 Feb 2021, Jason Gunthorpe wrote:
 > 
-> Dan,
+> > This one got spam filtered and didn't make it to the list:
+> >
+> > Received-SPF: SoftFail (hqemgatev14.nvidia.com: domain of
+> >         cl@linux.com is inclined to not designate 3.19.106.255 as
+> >         permitted sender) identity=mailfrom; client-ip=3.19.106.255;
+> >         receiver=hqemgatev14.nvidia.com;
+> >         envelope-from="cl@linux.com"; x-sender="cl@linux.com";
+> >         x-conformance=spf_only; x-record-type="v=spf1"
+> >
+> > Also the extra From/Date/Subject ended up in the commit message
 > 
-> I'm running smatch which is based on 6193b3b71beb ("extra: fix some error pointer handling")
-> and I don't see this error. Should I run something special?
-> 
+> Yes the Linux Foundation guys are not willing to address this issue in any
+> way. I may have to give up my linux.com email address.
 
-This check is too crap to publish.
+It looks like you have to linux.com emails through their SMTP relay,
+just like kernel.org ?
 
-The heuristic was "a bitwise AND which always results in zero" but a lot
-of code does stuff like:  "data = 0x00 << 0 | 0x04 << 8 | 0x12 << 16;"
-I could never figure out a way to make the check useful enough to
-publish.
+I have an exim config that auto-routes to an authenticated smarthost
+based on the From email address if that would help you
 
-regards,
-dan carpenter
+> There is also another potentially racy check in there for OPA in regards
+> to the support of path records?
 
+Looks like
+
+Jason
