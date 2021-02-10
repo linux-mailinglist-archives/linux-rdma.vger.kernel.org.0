@@ -2,33 +2,30 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E819316E7F
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 19:25:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0AA316E7D
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 19:25:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233517AbhBJSZE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Feb 2021 13:25:04 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6586 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233802AbhBJSWy (ORCPT
+        id S232892AbhBJSZA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Feb 2021 13:25:00 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1201 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234130AbhBJSWy (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Feb 2021 13:22:54 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B602424470000>; Wed, 10 Feb 2021 10:21:59 -0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
- 2021 18:21:58 +0000
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
- 2021 18:21:55 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.173)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 10 Feb 2021 18:21:55 +0000
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B602424500001>; Wed, 10 Feb 2021 10:22:08 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
+ 2021 18:22:08 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
+ by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 10 Feb 2021 18:22:08 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FKHcUstYCRqvqHKYQjdXJeSaBaMEZkhpQ41QVwP4IOsk0L6JeXjdZAIlkOkXa5XeYC/N1g05LdpQoEVTTnnAwZOhCTycCROSKQNVEBV51dDLxxTFPmV7v8r/A43ik32X4TBs40yDXsvn0PmsmHZsab72OCke49HALO3AUFKxKyEoW7pWGD3kBaY51jo6aAh9/4OvUivo5pEh0vtrMvqv2Z+ojiJWIjzfjs7H0+G08bHFHKLcCy5sIpuob6IQusAGDlBApG/JZu2sVKF36Bnn8nYzZgM6/Tw9WWF0gBWTxuAD2H+TIO4dcHjd9TR2YYx58BMEpPPo6DR55HDNIIBKfA==
+ b=N+hypw31tH14dmqoc0dZ1ocU1drRcnTLSYQAGNWXRhfbqnuRlo0XkNNsjIUAM2STW1F0P6qcUQY3J9C2ooCgO9N5N7/1RMQNOtAvfPMbQQ9xWyKFp/rHwy/jgwKftffBiOYl2J0HqIw0coiFbxUEhktl+sbS9wsaRsH/UN59+B82rg2eAvQiXLheM3zSlN5i2qruoAtPVwUEHgL0exjHaK8vrOP63f6qCpEJuvOpPI+zF/wNx5X30OeirbuJk5HdSwSN7DQ+SP5e/x2rSUVOcxtksO8BWjE0Cyhewct43AAmwwdjIKU63+jWU0BRpmfNOt39kzLMHjb3JxAxfzLo1Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HxX7Pzg8y2DsfnPBAhoJgKbINqTpx/eDLSvpdTrGyIw=;
- b=N5rmVutEPgci4aaKfC7TB0dbZnBNtjS2c3zO40BO2YYydK+GyV24uDXJmca/Ik5PVnNmNOafCyo9l6FjaC/7MCxZ1h3oKv6Do6OLNVQMV+/yMbSr/eM9EqDNzvUH4/9oKmZRtOBCBraXQxZ9QJlnuP+EMZyeCdNZEhoImwI/ZPZvkjsXHgW5XrxmHXf5X9aiafEo7mz4mztiYERwacIABltJRcdFM4YCJLg8a6VfuLvZoaWA1nycVGKjInDiWVDU7D8bLwVbiGxY2Naq0Qt0QFPaQ3T3eIKSVDnA7TvHOXJXnX74b8wacorTvZOJ6Az0jwFXbDYn7buv9m82EzWWyQ==
+ bh=0nS0f6ubicUCjDr7N02lYYlUoUzuLW78BwRGVvsgf8A=;
+ b=ePuP5nnUTGG3KG+tXb0kPxn+xk79FFSzT9yex8jP+RpCx+fVWJOKj5qR7TBsTHAsMYraRslPKfPi2XBrVm8Bf4eJLXxYK1++2+MC1E7FZaS347kZC3lD8yd6GhDNkFC9tOx1Mju+UHPTusJ9eaXov31fOjPZUi57F1ZIRXaCK8oXSnl0RYGI1ln2H20kW6KSmuiNEpBS0khbW7l2QDIiiETNsnQaCH2Ded602AWKEVl8yd122NujYSuTp75leimqZXviMwZvM2HuZMglb661sMO679/1VFSMKK12h6NTxQviBfGSWnAzFgopXMDNz833Fd2T/5dT5NZYmq95DiLh4g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
@@ -36,65 +33,61 @@ Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
  by DM6PR12MB4250.namprd12.prod.outlook.com (2603:10b6:5:21a::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26; Wed, 10 Feb
- 2021 18:21:52 +0000
+ 2021 18:22:07 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.027; Wed, 10 Feb 2021
- 18:21:52 +0000
-Date:   Wed, 10 Feb 2021 14:21:50 -0400
+ 18:22:07 +0000
+Date:   Wed, 10 Feb 2021 14:22:05 -0400
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-CC:     <mkalderon@marvell.com>, <aelior@marvell.com>,
-        <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] DMA/qedr: Use true and false for bool variable
-Message-ID: <20210210182150.GB1470084@nvidia.com>
-References: <1612949901-109873-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset="utf-8"
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        <linux-rdma@vger.kernel.org>, Parav Pandit <parav@nvidia.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH rdma-next] RDMA/core: Fix kernel doc warnings
+Message-ID: <20210210182205.GC1470084@nvidia.com>
+References: <20210210151421.1108809-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1612949901-109873-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-ClientProxiedBy: MN2PR02CA0035.namprd02.prod.outlook.com
- (2603:10b6:208:fc::48) To DM6PR12MB3834.namprd12.prod.outlook.com
+In-Reply-To: <20210210151421.1108809-1-leon@kernel.org>
+X-ClientProxiedBy: MN2PR03CA0029.namprd03.prod.outlook.com
+ (2603:10b6:208:23a::34) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR02CA0035.namprd02.prod.outlook.com (2603:10b6:208:fc::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend Transport; Wed, 10 Feb 2021 18:21:51 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l9u7a-006ASR-Oz; Wed, 10 Feb 2021 14:21:50 -0400
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR03CA0029.namprd03.prod.outlook.com (2603:10b6:208:23a::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Wed, 10 Feb 2021 18:22:06 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l9u7p-006ASm-Fy; Wed, 10 Feb 2021 14:22:05 -0400
 X-Header: ProcessedBy-CMR-outbound
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612981319; bh=AWULQz6G59wup+rf+snjWP6zT2Sm19u/cEacDt8bp5o=;
+        t=1612981328; bh=0nS0f6ubicUCjDr7N02lYYlUoUzuLW78BwRGVvsgf8A=;
         h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
          From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:Content-Transfer-Encoding:In-Reply-To:
-         X-ClientProxiedBy:MIME-Version:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
          X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=J2Nju+eAbUCk+1aT9Alfc1P0TLGlzHSnF4JIcQrcXayv98dwm9eKD3QZ/LYY0Ctrz
-         xQ7FxpLsndYFUoZshDjxSAwnnavsXYuaeRqS1tTXJn91otXepuaHpv2YTj85gMMl5E
-         nFgzwP3HTQELf7eCE5cgLHxx/MZQ9A1tyVDViwwr2rRGrGIjacfpXxG2R8XwDKaXER
-         v70647FU77XZ5LPX0oSLhz4oKKlBiUbHvRt/dZ9iFecTJ7iL22ksa3fqu1LTZQiXJG
-         u1DjguyOFq3TW0SuykyHPG2lbEuM9DKBNEfKkJdWAvKYd41SjyO6M+1Yo7EuMdRLA7
-         QWThYrGcYAK9w==
+        b=rzSzvE5lUE+DFjkknVOvBjBPMDtdznM7difGhEcN1u4KYKXfA9J5H/RJcBEoE5g0D
+         twgDQ29gBwlpLJcgjQwrIq7UEjWw4go7ANCgXPD63Q0p+IfkLTfl1mTHclYtwaO/vq
+         DCsPxp17hezB9EwCJ6WJtME0gxRB1yMPV6IxEczhQan62g4NHR2Nj3zsoi61j7IQCi
+         Vq4KeJbOzP5jCRXnsXE6Z/N/fUYvZByBwKRQv465i1C6M2th0NQglHUphbk9S2ccse
+         mEQ02voa3Zl89MOiheGOHdIAxxnBx27uDHZu3NX4GVaKVAZ8AD3WUT6syzM13KNsFw
+         itTiVKxfhtuMw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 05:38:21PM +0800, Jiapeng Chong wrote:
-> Fix the following coccicheck warning:
->=20
-> ./drivers/infiniband/hw/qedr/qedr.h:629:9-10: WARNING: return of 0/1 in
-> function 'qedr_qp_has_rq' with return type bool.
->=20
-> ./drivers/infiniband/hw/qedr/qedr.h:620:9-10: WARNING: return of 0/1 in
-> function 'qedr_qp_has_sq' with return type bool.
->=20
-> Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> Acked-by: Michal Kalderon=C2=A0<michal.kalderon@marvell.com>
+On Wed, Feb 10, 2021 at 05:14:21PM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> drivers/infiniband/core/device.c:859: warning: Function parameter or member 'dev' not described in 'ib_port_immutable_read'
+> drivers/infiniband/core/device.c:859: warning: Function parameter or member 'port' not described in 'ib_port_immutable_read'
+> 
+> Fixes: 7416790e2245 ("RDMA/core: Introduce and use API to read port immutable data")
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 > ---
->  drivers/infiniband/hw/qedr/qedr.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>  drivers/infiniband/core/device.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-Applied to for-next, thanks
+Applied to for-next thanks
 
 Jason
