@@ -2,85 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47238316251
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 10:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24227316287
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 10:41:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbhBJJeq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Feb 2021 04:34:46 -0500
-Received: from gentwo.org ([3.19.106.255]:47804 "EHLO gentwo.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229706AbhBJJcW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 10 Feb 2021 04:32:22 -0500
-Received: by gentwo.org (Postfix, from userid 1002)
-        id 64A123F02E; Wed, 10 Feb 2021 09:31:32 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.org (Postfix) with ESMTP id 614C63EA54;
-        Wed, 10 Feb 2021 09:31:32 +0000 (UTC)
-Date:   Wed, 10 Feb 2021 09:31:32 +0000 (UTC)
-From:   Christoph Lameter <cl@linux.com>
-X-X-Sender: cl@www.lameter.com
-To:     Jason Gunthorpe <jgg@nvidia.com>
-cc:     linux-rdma@vger.kernel.org, Leon Romanovsky <leon@kernel.org>
-Subject: Re: [PATCH] Fix: Remove racy Subnet Manager sendonly join checks
-In-Reply-To: <20210209191517.GQ4247@nvidia.com>
-Message-ID: <alpine.DEB.2.22.394.2102100925200.172831@www.lameter.com>
-References: <alpine.DEB.2.22.394.2101281845160.13303@www.lameter.com> <20210209191517.GQ4247@nvidia.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S229867AbhBJJlW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Feb 2021 04:41:22 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:52950 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229945AbhBJJjT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 10 Feb 2021 04:39:19 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UOLfwUr_1612949902;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UOLfwUr_1612949902)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 10 Feb 2021 17:38:35 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     mkalderon@marvell.com
+Cc:     aelior@marvell.com, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] DMA/qedr: Use true and false for bool variable
+Date:   Wed, 10 Feb 2021 17:38:21 +0800
+Message-Id: <1612949901-109873-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 9 Feb 2021, Jason Gunthorpe wrote:
+Fix the following coccicheck warning:
 
-> This one got spam filtered and didn't make it to the list:
->
-> Received-SPF: SoftFail (hqemgatev14.nvidia.com: domain of
->         cl@linux.com is inclined to not designate 3.19.106.255 as
->         permitted sender) identity=mailfrom; client-ip=3.19.106.255;
->         receiver=hqemgatev14.nvidia.com;
->         envelope-from="cl@linux.com"; x-sender="cl@linux.com";
->         x-conformance=spf_only; x-record-type="v=spf1"
->
-> Also the extra From/Date/Subject ended up in the commit message
+./drivers/infiniband/hw/qedr/qedr.h:629:9-10: WARNING: return of 0/1 in
+function 'qedr_qp_has_rq' with return type bool.
 
-Yes the Linux Foundation guys are not willing to address this issue in any
-way. I may have to give up my linux.com email address.
+./drivers/infiniband/hw/qedr/qedr.h:620:9-10: WARNING: return of 0/1 in
+function 'qedr_qp_has_sq' with return type bool.
 
-> I fixed it all up, applied to for-next
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/infiniband/hw/qedr/qedr.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Thank you.
-
-> It looks like OPA will also suffer this race (opa_pr_query_possible),
-> maybe it is a little less likely since it will be driven by PR queries
-> not broadcast joins.
->
-> But the same logic is likely true there, I'd be surprised if OPA
-> fabrics are not running a capable OPA SM at this point.
-
-There is also another potentially racy check in there for OPA in regards
-to the support of path records?
-
-static bool ib_sa_opa_pathrecord_support(struct ib_sa_client *client,
-                                         struct ib_sa_device *sa_dev,
-                                         u8 port_num)
-{
-        struct ib_sa_port *port;
-        unsigned long flags;
-        bool ret = false;
-
-        port = &sa_dev->port[port_num - sa_dev->start_port];
-        spin_lock_irqsave(&port->classport_lock, flags);
-        if (!port->classport_info.valid)
-                goto ret;
-
-        if (port->classport_info.data.type == RDMA_CLASS_PORT_INFO_OPA)
-                ret = opa_get_cpi_capmask2(&port->classport_info.data.opa)
-&
-                        OPA_CLASS_PORT_INFO_PR_SUPPORT;
-ret:
-        spin_unlock_irqrestore(&port->classport_lock, flags);
-        return ret;
-}
+diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
+index 9dde703..3cb4feb 100644
+--- a/drivers/infiniband/hw/qedr/qedr.h
++++ b/drivers/infiniband/hw/qedr/qedr.h
+@@ -617,18 +617,18 @@ static inline bool qedr_qp_has_srq(struct qedr_qp *qp)
+ static inline bool qedr_qp_has_sq(struct qedr_qp *qp)
+ {
+ 	if (qp->qp_type == IB_QPT_GSI || qp->qp_type == IB_QPT_XRC_TGT)
+-		return 0;
++		return false;
+ 
+-	return 1;
++	return true;
+ }
+ 
+ static inline bool qedr_qp_has_rq(struct qedr_qp *qp)
+ {
+ 	if (qp->qp_type == IB_QPT_GSI || qp->qp_type == IB_QPT_XRC_INI ||
+ 	    qp->qp_type == IB_QPT_XRC_TGT || qedr_qp_has_srq(qp))
+-		return 0;
++		return false;
+ 
+-	return 1;
++	return true;
+ }
+ 
+ static inline struct qedr_user_mmap_entry *
+-- 
+1.8.3.1
 
