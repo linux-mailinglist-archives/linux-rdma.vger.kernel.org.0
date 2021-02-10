@@ -2,93 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56ED831695B
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 15:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83EAC3169D8
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 16:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhBJOor (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Feb 2021 09:44:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40342 "EHLO mail.kernel.org"
+        id S229888AbhBJPPI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Feb 2021 10:15:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231744AbhBJOo1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:44:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8658164E2A;
-        Wed, 10 Feb 2021 14:43:44 +0000 (UTC)
+        id S229789AbhBJPPI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 10 Feb 2021 10:15:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BDFE64DEC;
+        Wed, 10 Feb 2021 15:14:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612968225;
-        bh=+gcJQP3Q3QPLaS1QDZI1mHleedi6QwiLduc28JeZ5Fg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oE+ICw7iLQtppxi3haFaulCSsjIDAToXvQ3Tz1S4IJtdTttOPLRYjo6iC3+E2N2nz
-         2gZzt8jnI0Do4YbxDqG2qDcldfPTW8bSWofVbr1n8A3p5tk9SrrKV5YnGduEQAR9Bb
-         HAVuYwQi++9dyVUKQRHzW7R6l07OofyMkAdaZYDBUc9FxJilncEddDKx9b4xzau61o
-         rcyEniORask6La09v9jcR7/6Z0Kh0mGVI4cXsFNs5tiyu646NVF9LvLqmk0qKeFRd2
-         G4EfUaVRefH1bM9DuZ9YWqLp4NjT3ICMrdOLLOcVlTVU3RcDNQkqiISYmcwLtibFaY
-         x5foW1aN2UoKg==
-Date:   Wed, 10 Feb 2021 16:43:41 +0200
+        s=k20201202; t=1612970066;
+        bh=ii66ci1wwtAsNnZPwdILdOlu6Vs5fajqRL3tNi1hIsE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HCQHFKP1wSd0bXI+KXYZ+uutevvCMWNvfeuBVMljkK7rrfqDqok4OK7TmJQxQ7d2S
+         Ry8KftPp1Ysh4pGsKRe+Ky/XPu3oUpjhq4EaZxkxgMBnl9Gd9gsCGOjKHfx4PaNBQW
+         +6G9i7ASp1nevVttlXYa2aFO6Vh7aUeN6RSnrvOTbnzu9hoaWkuFJH2VkuCZU4z7Hi
+         o24aqgqq7ANY3uR/DMeghYI5Lj2cX0ii6lHB7oocq+IOeME1iOsndR3WP/LCjROLJT
+         yrYzZYUZkLdoWuGbVOOYG+3ShuIjviLT0z7UG8tQJCN3pa/ugS7qaGqLaNQRkm1oNI
+         aGu8ip8oUmeQQ==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     vladbu@nvidia.com, linux-rdma@vger.kernel.org,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [bug report] net/mlx5e: E-Switch, Maintain vhca_id to vport_num
- mapping
-Message-ID: <20210210144341.GC741034@unreal>
-References: <YCOep5XDMt5IM/PV@mwanda>
- <20210210114820.GA741034@unreal>
- <20210210122801.GW20820@kadam>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org,
+        Parav Pandit <parav@nvidia.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH rdma-next] RDMA/core: Fix kernel doc warnings
+Date:   Wed, 10 Feb 2021 17:14:21 +0200
+Message-Id: <20210210151421.1108809-1-leon@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210122801.GW20820@kadam>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 03:28:01PM +0300, Dan Carpenter wrote:
-> On Wed, Feb 10, 2021 at 01:48:20PM +0200, Leon Romanovsky wrote:
-> > On Wed, Feb 10, 2021 at 11:51:51AM +0300, Dan Carpenter wrote:
-> > > Hello Vlad Buslov,
-> > >
-> > > The patch 84ae9c1f29c0: "net/mlx5e: E-Switch, Maintain vhca_id to
-> > > vport_num mapping" from Sep 23, 2020, leads to the following static
-> > > checker warning:
-> > >
-> > > 	drivers/net/ethernet/mellanox/mlx5/core/vport.c:1170 mlx5_vport_get_other_func_cap()
-> > > 	warn: odd binop '0x0 & 0x1'
-> > >
-> > > drivers/net/ethernet/mellanox/mlx5/core/vport.c
-> > >   1168  int mlx5_vport_get_other_func_cap(struct mlx5_core_dev *dev, u16 function_id, void *out)
-> > >   1169  {
-> > >   1170          u16 opmod = (MLX5_CAP_GENERAL << 1) | (HCA_CAP_OPMOD_GET_MAX & 0x01);
-> > >
-> > > HCA_CAP_OPMOD_GET_MAX is zero.  The 0x01 is a magical number.
-> > >
-> > >   1171          u8 in[MLX5_ST_SZ_BYTES(query_hca_cap_in)] = {};
-> > >   1172
-> > >   1173          MLX5_SET(query_hca_cap_in, in, opcode, MLX5_CMD_OP_QUERY_HCA_CAP);
-> > >   1174          MLX5_SET(query_hca_cap_in, in, op_mod, opmod);
-> > >   1175          MLX5_SET(query_hca_cap_in, in, function_id, function_id);
-> > >   1176          MLX5_SET(query_hca_cap_in, in, other_function, true);
-> > >   1177          return mlx5_cmd_exec_inout(dev, query_hca_cap, in, out);
-> > >   1178  }
-> >
-> > Dan,
-> >
-> > I'm running smatch which is based on 6193b3b71beb ("extra: fix some error pointer handling")
-> > and I don't see this error. Should I run something special?
-> >
->
-> This check is too crap to publish.
->
-> The heuristic was "a bitwise AND which always results in zero" but a lot
-> of code does stuff like:  "data = 0x00 << 0 | 0x04 << 8 | 0x12 << 16;"
-> I could never figure out a way to make the check useful enough to
-> publish.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-But you can warn about simple cases like above, which is constant zero
-AND something.
+drivers/infiniband/core/device.c:859: warning: Function parameter or member 'dev' not described in 'ib_port_immutable_read'
+drivers/infiniband/core/device.c:859: warning: Function parameter or member 'port' not described in 'ib_port_immutable_read'
 
-Thanks
+Fixes: 7416790e2245 ("RDMA/core: Introduce and use API to read port immutable data")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/core/device.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
->
-> regards,
-> dan carpenter
->
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 051c018fb73c..aac0fe14e1d9 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -850,9 +850,9 @@ static int setup_port_data(struct ib_device *device)
+
+ /**
+  * ib_port_immutable_read() - Read rdma port's immutable data
+- * @dev - IB device
+- * @port - port number whose immutable data to read. It starts with index 1 and
+- *         valid upto including rdma_end_port().
++ * @dev: IB device
++ * @port: port number whose immutable data to read. It starts with index 1 and
++ *        valid upto including rdma_end_port().
+  */
+ const struct ib_port_immutable*
+ ib_port_immutable_read(struct ib_device *dev, unsigned int port)
+--
+2.29.2
+
