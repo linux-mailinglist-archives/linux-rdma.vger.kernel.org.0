@@ -2,191 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF7D316B27
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 17:27:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17170316E79
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 19:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbhBJQ0w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Feb 2021 11:26:52 -0500
-Received: from mga06.intel.com ([134.134.136.31]:5557 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232292AbhBJQ0t (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 10 Feb 2021 11:26:49 -0500
-IronPort-SDR: VwSw3O5Wv6bMBO3b81XonOpycJPPg227xk5Rl8fWPNGpJy98D8EByzW9K5a09tcnapDaw5D9A0
- Xrnhstax2MUg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="243593690"
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="243593690"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 08:26:07 -0800
-IronPort-SDR: dNy2QH+prF4MnW+8BCjZeg54Xx7wzQvCGCVh6TouXLVwxD2kawtDHoUpps1k5CZRf5BjCnzGUq
- ncsp11ugqIYw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; 
-   d="scan'208";a="413772307"
-Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 10 Feb 2021 08:26:05 -0800
-Received: from kbuild by cd560a204411 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l9sJZ-00038B-92; Wed, 10 Feb 2021 16:26:05 +0000
-Date:   Thu, 11 Feb 2021 00:25:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 3f03ae8e862db6b17b5d60a684ffb1dec61363b6
-Message-ID: <602408fa.cuIjKeoHqcVsDCKP%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234036AbhBJSY5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Feb 2021 13:24:57 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6561 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232892AbhBJSWx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Feb 2021 13:22:53 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B602424330000>; Wed, 10 Feb 2021 10:21:39 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
+ 2021 18:21:36 +0000
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.104)
+ by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 10 Feb 2021 18:21:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fstok6FMI8kGQMe74EAEcaYvLpuymrcn/X7ekRbXXfC+Lv7hFi1DPf0bYBle6tIED3ip4UpM2lRHpBXi4FUKEqykquDK0PZzDrsXeG9zocFcY7oVr33R/n221XKXcBkLQx0j0CCOgI+xpyoxgiDGC35IQl0ICFmCo/o9BIsJ3dVVDO6ZJDsfzrikcvIKyBSdTn7iKE3sMB0DWkBzlek3WeKA6k15aWqkwndlabx2T79b1+PQJTosVwKVmmX2mNW79SICSnD5n/sL+RuazArtuh78iqTu4bgNuqMG3KrkKbtfbb+U/sPXp5hg+nV+gqfytPBKmiuzAL1MGDcVC1LoxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5dfsYfIeZ2KvMygJAQLBDA9dHYxsbCBBnYPWEvFihZE=;
+ b=YheuaSPtbPprPjQDKSpC996w1uSgw9t7jp9eQ7JO+Bw8wTLSqLSOl1fmSMPwCXhSIO/IoLwungd2MEeHwWaDUKex2lSQWB/cdW1jQU3IGgE3ujdZTJeVkSb1ag7o9afcMQchTlXCKObidJnycZ2ymZgqajHPri76K08KiPPKAvgoNtQY2DWFP392AmRr6lgZfXg1x8munkDGt1smNUu8Ez3/sRGzF6vHLJBKQVTkuBZ3NEyl7C3WM/S25jiedsO/gJNG7KL4ujvaIBukPFinUcyaRiV5dNcvMUaQCEe/uYKR4/SJYAiQZ4gmUWEXE1ui8N6BjyrA9H+AcegXAV330w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2937.namprd12.prod.outlook.com (2603:10b6:5:181::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Wed, 10 Feb
+ 2021 18:21:35 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.027; Wed, 10 Feb 2021
+ 18:21:35 +0000
+Date:   Wed, 10 Feb 2021 14:21:33 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Weihang Li <liweihang@huawei.com>
+CC:     <dledford@redhat.com>, <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@openeuler.org>
+Subject: Re: [PATCH v3 for-next] RDMA/hns: Adjust definition of FRMR fields
+Message-ID: <20210210182133.GA1470084@nvidia.com>
+References: <1612924424-28217-1-git-send-email-liweihang@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1612924424-28217-1-git-send-email-liweihang@huawei.com>
+X-ClientProxiedBy: MN2PR03CA0008.namprd03.prod.outlook.com
+ (2603:10b6:208:23a::13) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR03CA0008.namprd03.prod.outlook.com (2603:10b6:208:23a::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Wed, 10 Feb 2021 18:21:35 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l9u7J-006ARl-UP; Wed, 10 Feb 2021 14:21:33 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612981299; bh=5dfsYfIeZ2KvMygJAQLBDA9dHYxsbCBBnYPWEvFihZE=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=RYWTfhufE3X239jM7mjmg+16FUcpB4Mn76Mt/20RlE6HfsCdcSTSy7Sa7wkj2QRl9
+         uZ+uJsTLeiRYZFzPEwpW6IFAVF0asUDt2nJ/jfBISRr9qIWZ/GoS4dtjJc6kNPu/JE
+         34aWBEeev7r4QoiflkvvmsCuU12rcLcOIe0y5CT4hDw5AeRHlyfupRyoC1crFmJxN5
+         VwIrx/8DUKNaWDN0H1v9UC6xv1RkUF2FrrudrEPPtak1um1g4LQYhYzzznExtZmN7N
+         SLORz+xK49YsejRuzvHIH4qp3C1nc+UomDBAT/mwBKGzZ/jW7qb/2QDF/7NwkgmZA9
+         CwiFr73sMg0rw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: 3f03ae8e862db6b17b5d60a684ffb1dec61363b6  RDMA/hns: Refactor process of posting CMDQ
+On Wed, Feb 10, 2021 at 10:33:44AM +0800, Weihang Li wrote:
+> From: Yixing Liu <liuyixing1@huawei.com>
+> 
+> FRMR is not well-supported on HIP08, it is re-designed for HIP09 and the
+> position of related fields is changed. Then the ULPs should be forbidden to
+> use FRMR on older hardwares.
+> 
+> Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
+> Signed-off-by: Weihang Li <liweihang@huawei.com>
+> ---
+> This patch is one of series "RDMA/hns: Updates for 5.12", the others have
+> been applied.
+> 
+> Changes since v2:
+> * Aovid setting IB_DEVICE_MEM_MGT_EXTENSIONS for HIP08 or older hardwares.
+> * Link: https://patchwork.kernel.org/project/linux-rdma/patch/1612859923-44041-1-git-send-email-liweihang@huawei.com/
+> 
+> Changes since v1:
+> * Add check for HW version and rewrite the description.
+> * Link: https://patchwork.kernel.org/project/linux-rdma/patch/1612517974-31867-6-git-send-email-liweihang@huawei.com/
+> 
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 45 +++++++++++++++++-------------
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 12 ++++----
+>  drivers/infiniband/hw/hns/hns_roce_main.c  |  3 +-
+>  3 files changed, 34 insertions(+), 26 deletions(-)
 
-elapsed time: 1023m
+Applied to for-next, thanks
 
-configs tested: 129
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                     davinci_all_defconfig
-s390                          debug_defconfig
-arm                         hackkit_defconfig
-powerpc                    socrates_defconfig
-sh                           se7721_defconfig
-m68k                       m5249evb_defconfig
-sh                   sh7770_generic_defconfig
-c6x                        evmc6472_defconfig
-mips                         cobalt_defconfig
-arc                        nsimosci_defconfig
-sh                         apsh4a3a_defconfig
-sh                ecovec24-romimage_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                       holly_defconfig
-arm                       multi_v4t_defconfig
-mips                      maltasmvp_defconfig
-powerpc                     sbc8548_defconfig
-mips                       rbtx49xx_defconfig
-xtensa                          iss_defconfig
-nios2                         3c120_defconfig
-arc                        vdk_hs38_defconfig
-arm                         s3c6400_defconfig
-arm                         vf610m4_defconfig
-arc                              alldefconfig
-c6x                        evmc6474_defconfig
-openrisc                  or1klitex_defconfig
-powerpc                 linkstation_defconfig
-arm                            xcep_defconfig
-powerpc                mpc7448_hpc2_defconfig
-ia64                             alldefconfig
-sh                               allmodconfig
-xtensa                  audio_kc705_defconfig
-mips                           rs90_defconfig
-powerpc                     sequoia_defconfig
-powerpc                     taishan_defconfig
-alpha                               defconfig
-mips                      maltaaprp_defconfig
-arc                              allyesconfig
-m68k                       m5475evb_defconfig
-arm                           stm32_defconfig
-mips                          malta_defconfig
-m68k                        mvme147_defconfig
-arm                       cns3420vb_defconfig
-alpha                            allyesconfig
-sh                             shx3_defconfig
-arm                          ixp4xx_defconfig
-xtensa                  nommu_kc705_defconfig
-arm                       imx_v4_v5_defconfig
-arm                     am200epdkit_defconfig
-powerpc                        cell_defconfig
-microblaze                      mmu_defconfig
-sh                  sh7785lcr_32bit_defconfig
-arm                           sama5_defconfig
-powerpc                       ppc64_defconfig
-arm                         orion5x_defconfig
-m68k                        stmark2_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210209
-x86_64               randconfig-a001-20210209
-x86_64               randconfig-a005-20210209
-x86_64               randconfig-a004-20210209
-x86_64               randconfig-a002-20210209
-x86_64               randconfig-a003-20210209
-i386                 randconfig-a001-20210209
-i386                 randconfig-a005-20210209
-i386                 randconfig-a003-20210209
-i386                 randconfig-a002-20210209
-i386                 randconfig-a006-20210209
-i386                 randconfig-a004-20210209
-i386                 randconfig-a016-20210209
-i386                 randconfig-a013-20210209
-i386                 randconfig-a012-20210209
-i386                 randconfig-a014-20210209
-i386                 randconfig-a011-20210209
-i386                 randconfig-a015-20210209
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a013-20210209
-x86_64               randconfig-a014-20210209
-x86_64               randconfig-a015-20210209
-x86_64               randconfig-a012-20210209
-x86_64               randconfig-a016-20210209
-x86_64               randconfig-a011-20210209
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Jason
