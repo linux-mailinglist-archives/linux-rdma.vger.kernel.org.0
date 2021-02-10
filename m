@@ -2,93 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22477316187
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 09:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47238316251
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 10:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhBJIzH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Feb 2021 03:55:07 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:48934 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbhBJIw5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Feb 2021 03:52:57 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11A8oU1s175847;
-        Wed, 10 Feb 2021 08:51:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=Jqvy9RDsn07XhpQN7tGZuz3EtBVgYIhd+eG/44NJcnc=;
- b=pKkx0lDAQSc1otQe7C9W9pV7oywqC6CTeHWaf/Tn/ddYcaN+5Jp114FmS+YqMw4utArh
- eO12JM86RNM0e+w3ZdL3BCPWn+4Udo81EIwbuh2TiHMhkBdGMSx79IPpAcNlOHaCYsBK
- w6qM32xiDR25Txllrj3RH55jsI72NbWxjfTa+v2Slico8aUlDvvG008LH7hJqpPg92Pp
- TJxqO6EVXYFcx7RkE9Vf0WhcD2C4QpJrJPN5KW9NW2rQZU2xZVGiII1FlGOh3Z5GEzxq
- vfKcetSlhcTpYDtrbNqaM9IbquzRIclrAHmjhH+576sDHvv6ngTF3K2zh8jdp84D2/FX 5Q== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 36m4ups05k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Feb 2021 08:51:59 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11A8oheF119010;
-        Wed, 10 Feb 2021 08:51:57 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 36j4vsh85j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Feb 2021 08:51:57 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11A8pu4g028885;
-        Wed, 10 Feb 2021 08:51:56 GMT
-Received: from mwanda (/10.175.190.122)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 10 Feb 2021 00:51:56 -0800
-Date:   Wed, 10 Feb 2021 11:51:51 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     vladbu@nvidia.com
-Cc:     linux-rdma@vger.kernel.org
-Subject: [bug report] net/mlx5e: E-Switch, Maintain vhca_id to vport_num
- mapping
-Message-ID: <YCOep5XDMt5IM/PV@mwanda>
+        id S229705AbhBJJeq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Feb 2021 04:34:46 -0500
+Received: from gentwo.org ([3.19.106.255]:47804 "EHLO gentwo.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229706AbhBJJcW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 10 Feb 2021 04:32:22 -0500
+Received: by gentwo.org (Postfix, from userid 1002)
+        id 64A123F02E; Wed, 10 Feb 2021 09:31:32 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.org (Postfix) with ESMTP id 614C63EA54;
+        Wed, 10 Feb 2021 09:31:32 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 09:31:32 +0000 (UTC)
+From:   Christoph Lameter <cl@linux.com>
+X-X-Sender: cl@www.lameter.com
+To:     Jason Gunthorpe <jgg@nvidia.com>
+cc:     linux-rdma@vger.kernel.org, Leon Romanovsky <leon@kernel.org>
+Subject: Re: [PATCH] Fix: Remove racy Subnet Manager sendonly join checks
+In-Reply-To: <20210209191517.GQ4247@nvidia.com>
+Message-ID: <alpine.DEB.2.22.394.2102100925200.172831@www.lameter.com>
+References: <alpine.DEB.2.22.394.2101281845160.13303@www.lameter.com> <20210209191517.GQ4247@nvidia.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
- mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102100090
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 spamscore=0 impostorscore=0 malwarescore=0 clxscore=1011
- suspectscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102100090
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Vlad Buslov,
+On Tue, 9 Feb 2021, Jason Gunthorpe wrote:
 
-The patch 84ae9c1f29c0: "net/mlx5e: E-Switch, Maintain vhca_id to
-vport_num mapping" from Sep 23, 2020, leads to the following static
-checker warning:
+> This one got spam filtered and didn't make it to the list:
+>
+> Received-SPF: SoftFail (hqemgatev14.nvidia.com: domain of
+>         cl@linux.com is inclined to not designate 3.19.106.255 as
+>         permitted sender) identity=mailfrom; client-ip=3.19.106.255;
+>         receiver=hqemgatev14.nvidia.com;
+>         envelope-from="cl@linux.com"; x-sender="cl@linux.com";
+>         x-conformance=spf_only; x-record-type="v=spf1"
+>
+> Also the extra From/Date/Subject ended up in the commit message
 
-	drivers/net/ethernet/mellanox/mlx5/core/vport.c:1170 mlx5_vport_get_other_func_cap()
-	warn: odd binop '0x0 & 0x1'
+Yes the Linux Foundation guys are not willing to address this issue in any
+way. I may have to give up my linux.com email address.
 
-drivers/net/ethernet/mellanox/mlx5/core/vport.c
-  1168  int mlx5_vport_get_other_func_cap(struct mlx5_core_dev *dev, u16 function_id, void *out)
-  1169  {
-  1170          u16 opmod = (MLX5_CAP_GENERAL << 1) | (HCA_CAP_OPMOD_GET_MAX & 0x01);
+> I fixed it all up, applied to for-next
 
-HCA_CAP_OPMOD_GET_MAX is zero.  The 0x01 is a magical number.
+Thank you.
 
-  1171          u8 in[MLX5_ST_SZ_BYTES(query_hca_cap_in)] = {};
-  1172  
-  1173          MLX5_SET(query_hca_cap_in, in, opcode, MLX5_CMD_OP_QUERY_HCA_CAP);
-  1174          MLX5_SET(query_hca_cap_in, in, op_mod, opmod);
-  1175          MLX5_SET(query_hca_cap_in, in, function_id, function_id);
-  1176          MLX5_SET(query_hca_cap_in, in, other_function, true);
-  1177          return mlx5_cmd_exec_inout(dev, query_hca_cap, in, out);
-  1178  }
+> It looks like OPA will also suffer this race (opa_pr_query_possible),
+> maybe it is a little less likely since it will be driven by PR queries
+> not broadcast joins.
+>
+> But the same logic is likely true there, I'd be surprised if OPA
+> fabrics are not running a capable OPA SM at this point.
 
-regards,
-dan carpenter
+There is also another potentially racy check in there for OPA in regards
+to the support of path records?
+
+static bool ib_sa_opa_pathrecord_support(struct ib_sa_client *client,
+                                         struct ib_sa_device *sa_dev,
+                                         u8 port_num)
+{
+        struct ib_sa_port *port;
+        unsigned long flags;
+        bool ret = false;
+
+        port = &sa_dev->port[port_num - sa_dev->start_port];
+        spin_lock_irqsave(&port->classport_lock, flags);
+        if (!port->classport_info.valid)
+                goto ret;
+
+        if (port->classport_info.data.type == RDMA_CLASS_PORT_INFO_OPA)
+                ret = opa_get_cpi_capmask2(&port->classport_info.data.opa)
+&
+                        OPA_CLASS_PORT_INFO_PR_SUPPORT;
+ret:
+        spin_unlock_irqrestore(&port->classport_lock, flags);
+        return ret;
+}
+
