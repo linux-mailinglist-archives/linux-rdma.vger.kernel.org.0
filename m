@@ -2,58 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3490B3168A4
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 15:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9102C3168A8
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 15:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhBJODC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Feb 2021 09:03:02 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:43771 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231947AbhBJOC1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 10 Feb 2021 09:02:27 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 7F3F8C32;
-        Wed, 10 Feb 2021 09:01:20 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 10 Feb 2021 09:01:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=YbXhKy
-        n1szkD0P/rV2pG5sEz2cQTVf4lnrgydyJ+lNA=; b=iZLJMl/EHCmsxaswAlLlVq
-        ujkJPg1NrY4FqF3WIL0GPhW/AamlakmsXV+eiYqVIoUUTc7iJw7Ri6aYHyp/kOvj
-        QXTBrkqPkwYM5fAfpg6tnLD8RMERgvf9QuiEj6zpuE9VdIKDEl8v9XilD9dFkT7O
-        Fxjja6QoL48WA1k8FWSCpwmzBnlYCfj9Ckarc9vCPia258L4e8z7leGqrxhVd8cX
-        efB9YvPuyN3ZsyhzaYm1+ul9ySJw7ZGe/lLbiqI/f0UBJsE4/H31HXXY485aXBb6
-        CYFgFssrboTVh1VApUk52ARwq4wqyiiwg0AYbpmI7ArIopos+K59zGlrtoHaEUow
-        ==
-X-ME-Sender: <xms:L-cjYOb-auFeqgrGAKa-cXL6svKO_QHhK2mIQoXKak4Xwgr7w_kVyg>
-    <xme:L-cjYBZIj9MF54oqxV0B1HaRv1W5yj4BzNI8f187zgfQbww8c0Ld3cvN3nrlKTIhX
-    jSNAnA5b_g5Z00>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheejgdehlecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
-    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
-    hrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudehleet
-    necukfhppeekgedrvddvledrudehfedrgeegnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:L-cjYI_NbU7KAxVYfaKhSGyoiRybvYYZbxZhu8PtI1-9MV18ZZ-usw>
-    <xmx:L-cjYApsJtJT7aJQ-SzvR-Wnoz6LiPUVTmiyQ8inAQfDECKZF_VJ4Q>
-    <xmx:L-cjYJrA6IDUg-DY3gpCiCznHcyh5RIqP46368AuUdJ7UBF0wdH75A>
-    <xmx:MOcjYIRty_3gLz5wyTFJ4pz1EBatItyM_BSP9kvz8v9wtC6QKxSS0A>
-Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D4595108005B;
-        Wed, 10 Feb 2021 09:01:18 -0500 (EST)
-Date:   Wed, 10 Feb 2021 16:01:15 +0200
-From:   Ido Schimmel <idosch@idosch.org>
+        id S231428AbhBJOEo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Feb 2021 09:04:44 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:43784 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230229AbhBJOED (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Feb 2021 09:04:03 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11ADxv5I040543;
+        Wed, 10 Feb 2021 14:03:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=CGNgUEt/ajEOoX2g7nyT8+rxXEQkKZYA7Zbd1MRe12I=;
+ b=OdTOjtNPiwUW+YhnqNJPNEdjDeHJxVhyPP+DN5o+2tzkxCb0iZPCc5IwO91E+LCHMVAn
+ L06mvib5Vqj4bb13j94cYiJWLA+pE1tUvI4XaCn6uNcd2oj6/ZKrlaiZIv1zUzF7s1ai
+ DBSVcFVa7XVOmzmRSsiwt8uoxKz+Yl4XIsomPRhCvmUf6UXKTo6Nqo8U+RPwq7yh7a6/
+ IrgyLWsCsaitgkMhnlHI0wm6Nwk7clazuoqfu4/HHPnoXNCDLOrOTd429cO47RsKiME1
+ vLBbYy3YMwcyDn9MPO8cDovOkjnf15J1h7NRmL7a5LBVi2AgQn7bocC6PT0zBJTvZLAj Uw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 36hkrn3dcr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 14:03:15 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11AE1S2H146030;
+        Wed, 10 Feb 2021 14:03:12 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 36j512pab4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Feb 2021 14:03:12 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11AE3BNQ025565;
+        Wed, 10 Feb 2021 14:03:11 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 10 Feb 2021 06:03:10 -0800
+Date:   Wed, 10 Feb 2021 17:03:01 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
 To:     Vlad Buslov <vladbu@nvidia.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>, jiri@resnulli.us,
+Cc:     Ido Schimmel <idosch@idosch.org>, jiri@resnulli.us,
         linux-rdma@vger.kernel.org
 Subject: Re: [bug report] net/mlx5e: Handle FIB events to update tunnel
  endpoint device
-Message-ID: <20210210140115.GA300383@shredder.lan>
+Message-ID: <20210210140301.GZ20820@kadam>
 References: <YCO+nR+3Zs9jIAfp@mwanda>
  <ygnha6scgms4.fsf@nvidia.com>
  <20210210132137.GA296697@shredder.lan>
@@ -62,6 +56,19 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <ygnh7dngghh0.fsf@nvidia.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102100134
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9890 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102100134
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -124,53 +131,10 @@ On Wed, Feb 10, 2021 at 03:50:03PM +0200, Vlad Buslov wrote:
 > nsim_fib_create() returns pointer and also casts return value of
 > register_fib_notifier() with ERR_PTR.
 > 
-> >
-> > fib6_walk_continue() cannot return a positive value when called from
-> > register_fib_notifier(), but ignoring it means that you will keep
-> > getting the same static analysis error. What about:
-> >
-> > diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
-> > index f43e27555725..ef9d022e693f 100644
-> > --- a/net/ipv6/ip6_fib.c
-> > +++ b/net/ipv6/ip6_fib.c
-> > @@ -499,7 +499,7 @@ int fib6_tables_dump(struct net *net, struct notifier_block *nb,
-> >  
-> >                 hlist_for_each_entry_rcu(tb, head, tb6_hlist) {
-> >                         err = fib6_table_dump(net, tb, w);
-> > -                       if (err < 0)
-> > +                       if (err)
-> >                                 goto out;
-> >                 }
-> >         }
-> > @@ -507,7 +507,8 @@ int fib6_tables_dump(struct net *net, struct notifier_block *nb,
-> >  out:
-> >         kfree(w);
-> >  
-> > -       return err;
-> > +       /* The tree traversal function should never return a positive value. */
-> > +       return err > 0 ? -EINVAL : err;
-> >  }
-> >  
-> >  static int fib6_dump_node(struct fib6_walker *w)
-> >
-> 
-> Makes sense. You want me to send the fix or you will do it?
 
-Can you send to linux-internal and then I will apply it to our
-regression and let you know tomorrow morning?
+Huh.  Smatch prints a warning for nsim_fib_create() but I never
+forwarded the warning to anyone apparently.
 
-> 
-> >> 
-> >> Regards,
-> >> Vlad
-> >> 
-> >> >
-> >> >   1640          }
-> >> >   1641  
-> >> >   1642          return encap;
-> >> >   1643  }
-> >> >
-> >> > regards,
-> >> > dan carpenter
-> >> 
-> 
+regards,
+dan carpenter
+
