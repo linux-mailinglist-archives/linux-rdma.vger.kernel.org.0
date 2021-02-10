@@ -2,107 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9286F316772
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 14:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 732903167F0
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Feb 2021 14:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbhBJNGF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Feb 2021 08:06:05 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12946 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbhBJNEV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Feb 2021 08:04:21 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6023d99b0000>; Wed, 10 Feb 2021 05:03:23 -0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
- 2021 13:03:22 +0000
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 10 Feb
- 2021 13:03:16 +0000
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.51) by
- HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 10 Feb 2021 13:03:15 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AXdrpo82NB/6M6UR38gTNM4AXTMgiN6eQT312acrnc7XSNY0z4XT2AOWDVMqceXm9bWPtn3ZfbZuHOS/0NTxMOPYBdBFc13qZ8HRmXK51EfXXJq5jvsh/d4HrNbh7+JwSjV4v7TovwiOEwqZ0wspcC7lOnQyRM6zb0AxeXyi+4H+0ThentyKpD45meS+YuWnDc/7tRqf/jFwhif44iHhco/e1O2aTkjoXvZ8500MVzD0Il2OLzX92ebPT/9k4a4/JEUoPS0mvRB0iLWvqhEvoNWMohAbAz6kx5dnEbgXWS+xAzrO434XDkvoy1BZkyeQ4JcbW81k+f5+PVHZoHXn+w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FuydNBDBnFVlT9eomevWQcs7k2bGrZRaEySl/b1bMC0=;
- b=EiRojtJcz1MnMPZgqdFA4kiakYmfU5gbfpHXwGTIPTkQsRJ0ac7oTB+dsE44cTAcINBjrFX3QlGxKuZXCQzQdRTNQJGDKBwnEcxOjfW5qZSyeUv/mSHK/YQlPrrpCGzZnnvNSm/OXSo2ZrUjTl2EmFIPOsAuJKguGeBi53PMJf0mvZbvFT75YkDkCE9rOgAsZh8Piov052VXP+IxLAWu1d0B9D0pF+8kjw5B3roSrVN7iSiSrD+htZVyYEHQ2jzYGoATxgZuhIMSOESdvx5qhlnb+kGS9nTH51RTwThrltB+JW8DaxZV1pIo7Rgk2akNZnOogRYACqzPI9CX+qaSBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1754.namprd12.prod.outlook.com (2603:10b6:3:10f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.30; Wed, 10 Feb
- 2021 13:03:13 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.027; Wed, 10 Feb 2021
- 13:03:13 +0000
-Date:   Wed, 10 Feb 2021 09:03:11 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christoph Lameter <cl@linux.com>
-CC:     <linux-rdma@vger.kernel.org>, Leon Romanovsky <leon@kernel.org>
-Subject: Re: [PATCH] Fix: Remove racy Subnet Manager sendonly join checks
-Message-ID: <20210210130311.GU4247@nvidia.com>
-References: <alpine.DEB.2.22.394.2101281845160.13303@www.lameter.com>
- <20210209191517.GQ4247@nvidia.com>
- <alpine.DEB.2.22.394.2102100925200.172831@www.lameter.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2102100925200.172831@www.lameter.com>
-X-ClientProxiedBy: MN2PR18CA0011.namprd18.prod.outlook.com
- (2603:10b6:208:23c::16) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S229917AbhBJNW7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Feb 2021 08:22:59 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:47273 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231891AbhBJNWt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 10 Feb 2021 08:22:49 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id CD8B0B4F;
+        Wed, 10 Feb 2021 08:21:41 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 10 Feb 2021 08:21:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=ub8+UE
+        xvxBQbhQrB+eSohRzu8xeKloYPdYsNqPie1q0=; b=Szu3hkzFlwrrNaNXnO4u5+
+        j8Wv0mIrLV8NKJihMfmpib9Aw5Ualjog6HDQy5b+N7trBUrDcOTk0mFTd4omrSHw
+        d4Qr0Z6Jzo83yhOjr9rB1vF8aJF3Bg0aG7ITCoCJ98iV7Kr8GRDsXB4i6MXB/dpD
+        rW0LClNgS75ZUdrilco5uC9IfNVlnrtLYryN57DKZV2qSfv6QNfQnEcHC1YHvpQS
+        nzKz0nLO9lSk+R4hKweQ8EjuCG4GSTj4qJh+Wluth5SZ8+LvnUtFnWhXnf76Ttm9
+        kB6+HF5HTDlVvvS0ATsnZlOqO8MsKtyZ9jTdjetfrAVjjTTDzCHFTyJGf5queiUw
+        ==
+X-ME-Sender: <xms:5N0jYCgihA4tTRLY8FeTLo5eCFCV0Wa_kENyJNpFusQ6IhBZNJdJsA>
+    <xme:5N0jYFDm9I286ylmbkRgbYT9OaqyRXI3WIw-lntW7ztQJwUAOiTBbdvz0KCOAlfj7
+    imDFWv53PkxgUo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheejgdehtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
+    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
+    hrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudehleet
+    necukfhppeekgedrvddvledrudehfedrgeegnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:5N0jYDdxZ5Jn9IqWpct6obkYof7b9iH8blC1Yf51a-Pr1Z1Lyku2hg>
+    <xmx:5N0jYNeTm_e3zTQwjdrPK7dWawOp7xWMW-BuHXAexMWlM_PlFlmn1Q>
+    <xmx:5N0jYHgJ8LHfbKOQv5ba6udtVUvbcRViATIjqLlWK1Bky2qmXQ8aUQ>
+    <xmx:5d0jYOrePoYyDI4zTn-zDTUUZi1DW9eZV9Dn8JYqCCh86unfk9Oz1g>
+Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 793F5108005C;
+        Wed, 10 Feb 2021 08:21:40 -0500 (EST)
+Date:   Wed, 10 Feb 2021 15:21:37 +0200
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Vlad Buslov <vladbu@nvidia.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>, jiri@resnulli.us,
+        linux-rdma@vger.kernel.org
+Subject: Re: [bug report] net/mlx5e: Handle FIB events to update tunnel
+ endpoint device
+Message-ID: <20210210132137.GA296697@shredder.lan>
+References: <YCO+nR+3Zs9jIAfp@mwanda>
+ <ygnha6scgms4.fsf@nvidia.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR18CA0011.namprd18.prod.outlook.com (2603:10b6:208:23c::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Wed, 10 Feb 2021 13:03:13 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l9p9D-005qgL-Ra; Wed, 10 Feb 2021 09:03:11 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612962203; bh=FuydNBDBnFVlT9eomevWQcs7k2bGrZRaEySl/b1bMC0=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=p3ozZMTfMa5zuC1KkREqnU1LRyYAEabwUO+S24IqD7wF8295VdX5eOLplL1xRiDzu
-         l3EUYQwEsoECxSPsTNS+BNGjHySv340kjFvqtHcLGtNn181+NKfp6PQvFtALwNwk6E
-         IeBcUPW8t9IE0/CA9QVzxajXmobvhMOhFbm64q1xJFf3ryvZkTaA8VwsQtuyeCN5u/
-         A/lE4hLfhRwdDlRs5vJ3gPUnu+HKYEHe2aoDvGNk1cSqo5p/Sb4zc0I241yUPWJsov
-         z7WJAItV0RpSNSaV7VQHjSQ2qAKbiNuRU00CjJdfFeqvb6+1vtL7kERlZ3leynX/0W
-         cVoXmOwY4uP4Q==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ygnha6scgms4.fsf@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 09:31:32AM +0000, Christoph Lameter wrote:
-> On Tue, 9 Feb 2021, Jason Gunthorpe wrote:
-> 
-> > This one got spam filtered and didn't make it to the list:
+On Wed, Feb 10, 2021 at 01:55:23PM +0200, Vlad Buslov wrote:
+> On Wed 10 Feb 2021 at 13:08, Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > Hello Vlad Buslov,
 > >
-> > Received-SPF: SoftFail (hqemgatev14.nvidia.com: domain of
-> >         cl@linux.com is inclined to not designate 3.19.106.255 as
-> >         permitted sender) identity=mailfrom; client-ip=3.19.106.255;
-> >         receiver=hqemgatev14.nvidia.com;
-> >         envelope-from="cl@linux.com"; x-sender="cl@linux.com";
-> >         x-conformance=spf_only; x-record-type="v=spf1"
+> > The patch 8914add2c9e5: "net/mlx5e: Handle FIB events to update
+> > tunnel endpoint device" from Jan 25, 2021, leads to the following
+> > static checker warning:
 > >
-> > Also the extra From/Date/Subject ended up in the commit message
+> > 	drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:1639 mlx5e_tc_tun_init()
+> > 	error: passing non negative 1 to ERR_PTR
+> >
+> > drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
+> >   1622  struct mlx5e_tc_tun_encap *mlx5e_tc_tun_init(struct mlx5e_priv *priv)
+> >   1623  {
+> >   1624          struct mlx5e_tc_tun_encap *encap;
+> >   1625          int err;
+> >   1626  
+> >   1627          encap = kvzalloc(sizeof(*encap), GFP_KERNEL);
+> >   1628          if (!encap)
+> >   1629                  return ERR_PTR(-ENOMEM);
+> >   1630  
+> >   1631          encap->priv = priv;
+> >   1632          encap->fib_nb.notifier_call = mlx5e_tc_tun_fib_event;
+> >   1633          spin_lock_init(&encap->route_lock);
+> >   1634          hash_init(encap->route_tbl);
+> >   1635          err = register_fib_notifier(dev_net(priv->netdev), &encap->fib_nb,
+> >   1636                                      NULL, NULL);
+> >
+> > register_fib_notifier() calls fib_net_dump() which eventually calls
+> > fib6_walk_continue() which can return 1 if "walk is incomplete (i.e.
+> > suspended)".
+> >
+> >   1637          if (err) {
+> >   1638                  kvfree(encap);
+> >   1639                  return ERR_PTR(err);
+> >
+> > If this returns 1 it will eventually lead to an Oops.
 > 
-> Yes the Linux Foundation guys are not willing to address this issue in any
-> way. I may have to give up my linux.com email address.
+> Hi Dan,
+> 
+> Thanks for the bug report!
+> 
+> This looks a bit strange to me because none of the other users of this
+> API handle positive error code in any special way (including reference
+> netdevsim implementation). Maybe API itself should be fixed? Jiri, Ido,
+> what do you think?
 
-It looks like you have to linux.com emails through their SMTP relay,
-just like kernel.org ?
+The other functions that call register_fib_notifier() return an int, but
+mlx5e_tc_tun_init() returns a pointer. I think that's why it was
+flagged: "error: passing non negative 1 to ERR_PTR".
 
-I have an exim config that auto-routes to an authenticated smarthost
-based on the From email address if that would help you
+fib6_walk_continue() cannot return a positive value when called from
+register_fib_notifier(), but ignoring it means that you will keep
+getting the same static analysis error. What about:
 
-> There is also another potentially racy check in there for OPA in regards
-> to the support of path records?
+diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
+index f43e27555725..ef9d022e693f 100644
+--- a/net/ipv6/ip6_fib.c
++++ b/net/ipv6/ip6_fib.c
+@@ -499,7 +499,7 @@ int fib6_tables_dump(struct net *net, struct notifier_block *nb,
+ 
+                hlist_for_each_entry_rcu(tb, head, tb6_hlist) {
+                        err = fib6_table_dump(net, tb, w);
+-                       if (err < 0)
++                       if (err)
+                                goto out;
+                }
+        }
+@@ -507,7 +507,8 @@ int fib6_tables_dump(struct net *net, struct notifier_block *nb,
+ out:
+        kfree(w);
+ 
+-       return err;
++       /* The tree traversal function should never return a positive value. */
++       return err > 0 ? -EINVAL : err;
+ }
+ 
+ static int fib6_dump_node(struct fib6_walker *w)
 
-Looks like
-
-Jason
+> 
+> Regards,
+> Vlad
+> 
+> >
+> >   1640          }
+> >   1641  
+> >   1642          return encap;
+> >   1643  }
+> >
+> > regards,
+> > dan carpenter
+> 
