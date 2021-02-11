@@ -2,59 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5460318577
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Feb 2021 07:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE68318574
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Feb 2021 07:56:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbhBKG4n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Feb 2021 01:56:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56026 "EHLO
+        id S229674AbhBKG4r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Feb 2021 01:56:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbhBKG4L (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Feb 2021 01:56:11 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EA4C061786
-        for <linux-rdma@vger.kernel.org>; Wed, 10 Feb 2021 22:55:31 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id w1so8329395ejf.11
+        with ESMTP id S229758AbhBKG4M (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Feb 2021 01:56:12 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0794CC0613D6
+        for <linux-rdma@vger.kernel.org>; Wed, 10 Feb 2021 22:55:32 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id c6so5858246ede.0
         for <linux-rdma@vger.kernel.org>; Wed, 10 Feb 2021 22:55:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DJb2fsoKJTO3z+iR59FGRhfpTNB+0/SYDQyyxz6omPs=;
-        b=RwyRnJh71gqfjKi89K8dFxn3g4igmk/x/SlQjObbKks5AJty5YrKdPaoqt8fq23xIz
-         bv8APY9qVl3+epm+9K+V5N5TLtLeh+YAE4qy0rc8+1tpKBgkb/PKX+QsHj8YFlKHOyBp
-         LkSf7q8hd2N/gTD1u9LaGs4/5MtAPNv8la8q+ILQOhqaMkFIOa96M9Je0xt7kkzp/ewo
-         JZGFOzP4G1f0/74GgWiwUKGsL80oRP0KKB00wWVUya0cfmn7BBjNQVn9q69h6pejy1QQ
-         bcKGlrtSkHmuFYCUsIYsYpzu8xGBuEdDDZw1MVJyno8Pbg//HBS4qeBwUX6SE5DGPmh0
-         hsUg==
+        bh=WtjHFgJyOAI8CFiugxz8482hixuVZ9qlunYFj8TLiyI=;
+        b=OwP7uEnHZjEhZww+bDIX6/beS5yNrThppGmQsW4MXTqjtJCH+4jRtwL+kki6JAj8Gl
+         0GcH/RMPZshiPbRqd1hTvT700E8HiGWATEh0pVSKYRndSgMmBocfrpNi/xxiktlPs9Wr
+         oqdu9r8lX8I8m14JcNJiNeRvrdwmuOz0DWCqIPXqhNbkT0gWh23pYO64gz28pIS+FVlF
+         OqEB3k4EeQAAdsB4RnyCsC9u6pmKy3sqFsmGWKl7+czEHkMd4nVkvyqDTDYga7InDFix
+         Ko5CwQAG5V3MDx0/jwGrVjgM7gTVg8YUL1Ul/xk9hgRgDhw4SbTt3GaiI77D/Zarm4cp
+         9Svg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DJb2fsoKJTO3z+iR59FGRhfpTNB+0/SYDQyyxz6omPs=;
-        b=f4qbDU67/ZZK38Ua3ViPtyKAJGAZIuYQ4rcGXwL4HwBMjHNLPAaKClL686S+hI6JMG
-         mK8Zz60bQ822l3ZNi4/9mVF93L6TSUabL2TIw7KHhfBgfmM+p3/xkm51P2aUtv91RLuN
-         1Mm+ihjwVErpUyMXxp7cJQ0YZW36rYneIVA7IFmnM+rL3w0gCNWkcrO2URmP9EpDOOh3
-         E07+atO27a7swI76ArPNnwy0JXrT/KtznpxrDzDakHcWPWcJ5pC9w03qQ3PknM4Ddy2h
-         ys2qERaKekHDxnT2ZghaPrdCJ2/Dfqb2RN9vzYYHoKRVDcquq9ZJGMJzNdG6BNqK80yk
-         apAA==
-X-Gm-Message-State: AOAM533jRpmzEuEL9bDfkM3EoCQcUfcTxHw4L/YUDArjs+HZAFq12mPe
-        AuoUCrI/oxpmlgBW/OlGuMDglqayqiBqkA==
-X-Google-Smtp-Source: ABdhPJycEhFj97upDdlsnol7ZKxKqdVjob9UW9CboqOvWZ2Jng8HXhZIRnlHHHS6QEkwsQw1H7jNuA==
-X-Received: by 2002:a17:906:7ca:: with SMTP id m10mr6586008ejc.257.1613026529912;
-        Wed, 10 Feb 2021 22:55:29 -0800 (PST)
+        bh=WtjHFgJyOAI8CFiugxz8482hixuVZ9qlunYFj8TLiyI=;
+        b=C391XeOAFxenRqerRk8P2m4X7VJlbDsAGVgHbiBW4x8qXjbYkSj43tbBQWO09cL350
+         mMTd4gR4W7Ey/xo0MAM69BhqvchG+5Xtoi8rxvHy5Kqx5pqvh6BGgFGYISolu/KrvH/i
+         VLzUk9ilHmhumcOParwAnESJXUgexoQZaKhYserXvTXz4Hi9TCPX8HE7k5fUPxMgcQUG
+         /uk3/kV5qGthPMcngVbKhcYwlMIrKuVBKL5ra3XpBRv7m/p27Ot5cKtlItfU4ld7YQGn
+         4zLqdXzMafy+S+59mhTeWBPQATUbJVCW11FtWLLsWqLUyjoRqSOvVHeP2PUGwZZhW2rk
+         repA==
+X-Gm-Message-State: AOAM53087oEctuppVdKAz6F5LwceufFWTVJlyQfUh7cWCWxCPLIuF+jo
+        hhu4DYp0ZcpxfHJCjJNSE7P8NhBbcp5dkg==
+X-Google-Smtp-Source: ABdhPJz8hszfE/b9grHBG/X81CJccpt/E7kP3is+l2eco3ZjM/KvH4UdHvAUhRadL0oAtKz+ynqmmA==
+X-Received: by 2002:a05:6402:35ca:: with SMTP id z10mr6955525edc.174.1613026530664;
+        Wed, 10 Feb 2021 22:55:30 -0800 (PST)
 Received: from jwang-Latitude-5491.fkb.profitbricks.net ([2001:16b8:49a6:4a00:4d27:617f:73f7:3a8b])
-        by smtp.gmail.com with ESMTPSA id v9sm3241486ejd.92.2021.02.10.22.55.29
+        by smtp.gmail.com with ESMTPSA id v9sm3241486ejd.92.2021.02.10.22.55.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 22:55:29 -0800 (PST)
+        Wed, 10 Feb 2021 22:55:30 -0800 (PST)
 From:   Jack Wang <jinpu.wang@cloud.ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
         jinpu.wang@cloud.ionos.com, Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Subject: [PATCH for-next 3/4] RDMA/rtrs-srv: fix memory leak by missing kobject free
-Date:   Thu, 11 Feb 2021 07:55:25 +0100
-Message-Id: <20210211065526.7510-4-jinpu.wang@cloud.ionos.com>
+Subject: [PATCH for-next 4/4] RDMA/rtrs-srv-sysfs: fix missing put_device
+Date:   Thu, 11 Feb 2021 07:55:26 +0100
+Message-Id: <20210211065526.7510-5-jinpu.wang@cloud.ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210211065526.7510-1-jinpu.wang@cloud.ionos.com>
 References: <20210211065526.7510-1-jinpu.wang@cloud.ionos.com>
@@ -66,19 +66,22 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 
-kmemleak reported an error as below:
+put_device() decreases the ref-count and then the device will
+be cleaned-up, while at is also add missing put_device in
+rtrs_srv_create_once_sysfs_root_folders
 
-unreferenced object 0xffff8880674b7640 (size 64):
-  comm "kworker/4:1H", pid 113, jiffies 4296403507 (age 507.840s)
-  hex dump (first 32 bytes):
-    69 70 3a 31 39 32 2e 31 36 38 2e 31 32 32 2e 31  ip:192.168.122.1
-    31 30 40 69 70 3a 31 39 32 2e 31 36 38 2e 31 32  10@ip:192.168.12
+This patch solves a kmemleak error as below:
+
+unreferenced object 0xffff88809a7a0710 (size 8):
+  comm "kworker/4:1H", pid 113, jiffies 4295833049 (age 6212.380s)
+  hex dump (first 8 bytes):
+    62 6c 61 00 6b 6b 6b a5                          bla.kkk.
   backtrace:
     [<0000000054413611>] kstrdup+0x2e/0x60
     [<0000000078e3120a>] kobject_set_name_vargs+0x2f/0xb0
-    [<00000000ca2be3ee>] kobject_init_and_add+0xb0/0x120
-    [<0000000062ba5e78>] rtrs_srv_create_sess_files+0x14c/0x314 [rtrs_server]
-    [<00000000b45b7217>] rtrs_srv_info_req_done+0x5b1/0x800 [rtrs_server]
+    [<00000000f1a17a6b>] dev_set_name+0xab/0xe0
+    [<00000000d5502e32>] rtrs_srv_create_sess_files+0x2fb/0x314 [rtrs_server]
+    [<00000000ed11a1ef>] rtrs_srv_info_req_done+0x631/0x800 [rtrs_server]
     [<000000008fc5aa8f>] __ib_process_cq+0x94/0x100 [ib_core]
     [<00000000a9599cb4>] ib_cq_poll_work+0x32/0xc0 [ib_core]
     [<00000000cfc376be>] process_one_work+0x4bc/0x980
@@ -86,57 +89,33 @@ unreferenced object 0xffff8880674b7640 (size 64):
     [<00000000c20b8be0>] kthread+0x191/0x1e0
     [<000000006c9c0003>] ret_from_fork+0x3a/0x50
 
-It is caused by the not-freed kobject of rtrs_srv_sess.
-The kobject embedded in rtrs_srv_sess has ref-counter 2 after calling
-process_info_req(). Therefore it must call kobject_put twice.
-Currently it calls kobject_put only once at rtrs_srv_destroy_sess_files
-because kobject_del removes the state_in_sysfs flag and then
-kobject_put in free_sess() is not called.
-
-This patch moves kobject_del() into free_sess() so that the kobject
-of rtrs_srv_sess can be freed. And also this patch adds the missing
-call of sysfs_remove_group() to clean-up the sysfs directory.
-
-Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
+Fixes: baa5b28b7a47 ("RDMA/rtrs-srv: Replace device_register with device_initialize and device_add")
 Signed-off-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 2 +-
- drivers/infiniband/ulp/rtrs/rtrs-srv.c       | 6 ++++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-index 0a3886629cae..94e3f3290500 100644
+index 94e3f3290500..126a96e75c62 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-@@ -305,7 +305,7 @@ void rtrs_srv_destroy_sess_files(struct rtrs_srv_sess *sess)
- 	if (sess->kobj.state_in_sysfs) {
- 		kobject_del(&sess->stats->kobj_stats);
- 		kobject_put(&sess->stats->kobj_stats);
--		kobject_del(&sess->kobj);
-+		sysfs_remove_group(&sess->kobj, &rtrs_srv_sess_attr_group);
- 		kobject_put(&sess->kobj);
- 
- 		rtrs_srv_destroy_once_sysfs_root_folders(sess);
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 2538a84fe5fc..3f1b4ce3c055 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1477,10 +1477,12 @@ static bool __is_path_w_addr_exists(struct rtrs_srv *srv,
- 
- static void free_sess(struct rtrs_srv_sess *sess)
- {
--	if (sess->kobj.state_in_sysfs)
-+	if (sess->kobj.state_in_sysfs) {
-+		kobject_del(&sess->kobj);
- 		kobject_put(&sess->kobj);
--	else
-+	} else {
- 		kfree(sess);
-+	}
- }
- 
- static void rtrs_srv_close_work(struct work_struct *work)
+@@ -183,6 +183,7 @@ static int rtrs_srv_create_once_sysfs_root_folders(struct rtrs_srv_sess *sess)
+ 		err = -ENOMEM;
+ 		pr_err("kobject_create_and_add(): %d\n", err);
+ 		device_del(&srv->dev);
++		put_device(&srv->dev);
+ 		goto unlock;
+ 	}
+ 	dev_set_uevent_suppress(&srv->dev, false);
+@@ -208,6 +209,7 @@ rtrs_srv_destroy_once_sysfs_root_folders(struct rtrs_srv_sess *sess)
+ 		kobject_put(srv->kobj_paths);
+ 		mutex_unlock(&srv->paths_mutex);
+ 		device_del(&srv->dev);
++		put_device(&srv->dev);
+ 	} else {
+ 		mutex_unlock(&srv->paths_mutex);
+ 	}
 -- 
 2.25.1
 
