@@ -2,41 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C21831843F
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Feb 2021 05:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E8231844F
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Feb 2021 05:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbhBKES3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Feb 2021 23:18:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38170 "EHLO mail.kernel.org"
+        id S229874AbhBKEVc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Feb 2021 23:21:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229577AbhBKES2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 10 Feb 2021 23:18:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16CAF64D74;
-        Thu, 11 Feb 2021 04:17:47 +0000 (UTC)
+        id S229845AbhBKEVV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 10 Feb 2021 23:21:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18B3860C40;
+        Thu, 11 Feb 2021 04:20:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613017067;
-        bh=eSjD+9pdm7SNENusCDAKtJYA6Md0ExzGn2FWLqgp1Zw=;
+        s=k20201202; t=1613017241;
+        bh=XftMoFRgLInF8RYbaY1nQOipzUIyvpNiUppk3FPg4Ng=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=K2DuBuYe9yGCbebb+aoj+OybG8SLEIEBbb5U3QtI5+S+SRZzcNlKgQrZeI1izk7R6
-         mo1G1X5inl0A0R9OrSaAS+nDhQvLKnR1JUtwLHkDtKDw3CsCNhgLtPHiZX9CPtrx7S
-         7SuBS+nrb5zMZRUylMGNxtQ0prqGfXyr344OygNQT8F+6lDKyQpuBgmSCo7LX/9YYP
-         h22OLaEtdyv0QhcEgw9NR8ZGFp3DHLFjiSzysH/ooiZH5VvSqtycxXRs04MRZs97To
-         swknSucyLtdPbHDjmGzeX5pugNOebCcvCqeJm3Fz+XUaZjD4JeFu6LgaKB4tgzzf4K
-         mkYWBpiaZwgQw==
-Message-ID: <e31fa9d634fc53ee806f4a59b9c0a5164c76122b.camel@kernel.org>
-Subject: Re: [PATCH net-next] net/mlx5: Fix a NULL vs IS_ERR() check
+        b=TLSo1XnNZX72tbh7XiVqnAckhNhlYXvOaCmx+aL6sP4gDOhovQ114YEUoJg8CtrQ7
+         yylpwu7ebwtOq0Kn3G8pkEblbb5Bu43Fi/9VYIZwm76jJGGQhM8KAOf5O3ZpsUpDrI
+         NmL1Vy4YuKDgejhRd9dOE+klYetC91Y+E50N0Qg9x39HfZRA3KCRxz+2+Urla0l93z
+         Zu2OB1tOqkD0uY6Uhvn1ISIoO/LxgS/KXWskA3D7nGYh5/drJvJUhjD9t8pEuvim2J
+         0zfeP//dIKV2GPkyaRgnsB15sEhy8lWzuX5oGXXVmqnGiO2Wg/vYlYmNaAioe1qacm
+         IY2yjzzx8DEVA==
+Message-ID: <747afa737ab2924a64b5fd5f856c567f2d7dd888.camel@kernel.org>
+Subject: Re: [PATCH net-next] net/mlx5e: Fix error return code in
+ mlx5e_tc_esw_init()
 From:   Saeed Mahameed <saeed@kernel.org>
-To:     Vlad Buslov <vladbu@nvidia.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dmytro Linkin <dlinkin@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
-Date:   Wed, 10 Feb 2021 20:17:46 -0800
-In-Reply-To: <ygnhczx8gngw.fsf@nvidia.com>
-References: <YCO+NCjissLTG1H6@mwanda> <ygnhczx8gngw.fsf@nvidia.com>
+To:     Wei Yongjun <weiyongjun1@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Vlad Buslov <vladbu@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Date:   Wed, 10 Feb 2021 20:20:40 -0800
+In-Reply-To: <20210210074605.867456-1-weiyongjun1@huawei.com>
+References: <20210210074605.867456-1-weiyongjun1@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
 MIME-Version: 1.0
@@ -45,22 +44,20 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 2021-02-10 at 13:40 +0200, Vlad Buslov wrote:
-> On Wed 10 Feb 2021 at 13:06, Dan Carpenter <dan.carpenter@oracle.com>
-> wrote:
-> > The mlx5_chains_get_table() function doesn't return NULL, it
-> > returns
-> > error pointers so we need to fix this condition.
-> > 
-> > Fixes: 34ca65352ddf ("net/mlx5: E-Switch, Indirect table
-> > infrastructure")
-> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+On Wed, 2021-02-10 at 07:46 +0000, Wei Yongjun wrote:
+> Fix to return negative error code from the mlx5e_tc_tun_init() error
+> handling case instead of 0, as done elsewhere in this function.
 > 
-> Thanks, Dan!
+> This commit also using 0 instead of 'ret' when success since it is
+> always equal to 0.
 > 
-> Reviewed-by: Vlad Buslov <vladbu@nvidia.com>
+> Fixes: 8914add2c9e5 ("net/mlx5e: Handle FIB events to update tunnel
+> endpoint device")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 
-Applied to net-next-mlx5
+
+Applied to net-next-mlx5,
 
 Thanks!
 
