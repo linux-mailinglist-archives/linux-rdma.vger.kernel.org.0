@@ -2,174 +2,574 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0221A319331
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Feb 2021 20:36:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B563194D8
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Feb 2021 22:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbhBKTgc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Feb 2021 14:36:32 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:37332 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbhBKTga (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Feb 2021 14:36:30 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BJK2db027022;
-        Thu, 11 Feb 2021 19:35:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-type : content-id :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=N1Rj3P4Bu1ub8yW2DH4xRiAc2J/mELvnvVOm2x8g4mc=;
- b=PkiOGWTf87XDrrTsJ5+e00fEScrhSY7SHNUUOO/Ff0MRzcDHcQmO8t9Hoxylif88W7E7
- OJ3yJmqaM/vrVhi/auMxQWNYg+PQT1pJTDVprBeqdmc9uZpipxmcpJBUeXXjk5VPQeCP
- +WXrlKfAn31wW7x30LD/yLUN1JSqIi6TNbgiA3jQERI+UElD+zt+2gHxGv3nw0jI4P+K
- wGi+y6ZFnH7qDm90WAGMI1yQnjFQ1FJWldfKhMTuQAJpyPYktCILxW06ozdnJNS6cULx
- AOQmEI/tznIH6y0lmdjun3EHGtUOPbpdto3S7m/HH8QbDcHNHplrSrPHczP2qW+sXds0 Fw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 36hgmas02d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Feb 2021 19:35:45 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BJK4V0056179;
-        Thu, 11 Feb 2021 19:35:45 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2106.outbound.protection.outlook.com [104.47.55.106])
-        by aserp3030.oracle.com with ESMTP id 36j4ps0a1t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Feb 2021 19:35:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xc0Htquh4Leus52R1dX892C8w/FGKaSKyMu9O0P0RhWqp0WVPBSAuwvAZCS0mIiAd6PqB7GXV/HbHrkm4J9Gt3FG5OWiZPg4/9Gf+Si84OdHhBZUiYgkxBgap1b4KYJ5Dgkkf8bJ7xxS3vEYjIyCWZpC/7iRCpkXfoyU4WimVGgX7Y5eevDWkqugSGPRaBEYMzRMxKLqBVGGzYs4sfknuZpI1ZKwfVKRSrE9oYpfty1TypSVtd2NZYLQSHsPYKRVZJsJ+s7CLR0aLObcB6SRTmnGAdXwb2a8dk+l5XTKOEKZdy/Pf7up6Q6syJn4sQZe9Z9ho1Spdv4AxSEcyjRTnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N1Rj3P4Bu1ub8yW2DH4xRiAc2J/mELvnvVOm2x8g4mc=;
- b=BpjYeInQg7fqDAYKAjLebRXih2Hn8Yg9BCucerlvOwQFdgp0dt83Y9jcOej1zLYGiS5LTZfY33KoOhpQ2GXEOe69fual410inaZEprfr3ldgKrRhyuM+06fsJ90SB2tnOh7+AivEWorkmqVVlkLUduD7M12oBh/4Nun9X1EODipiIEJoqja9BOHxUHLsBNxBLk5DgAweh73EOP0pUQJa/UvhLjFI+Lkm5eIYZGIhUkkA4dG5iydLgc4GJqHEW45xT/tDqL4mEWd/njidFBR7K8AYgYltZID/pFag2lPBaDxhP4wMXQe0ASY2sBdphyoqDiLAhGU4HqAaATGhmxHxRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        id S229792AbhBKVG5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Feb 2021 16:06:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhBKVGx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Feb 2021 16:06:53 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87502C061574
+        for <linux-rdma@vger.kernel.org>; Thu, 11 Feb 2021 13:06:13 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id e4so6497142ote.5
+        for <linux-rdma@vger.kernel.org>; Thu, 11 Feb 2021 13:06:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N1Rj3P4Bu1ub8yW2DH4xRiAc2J/mELvnvVOm2x8g4mc=;
- b=jfl/ww1muKysakYY+0kT/c+DTHrLlHQqRL9fCF4fmlexInae1Q0e4sqC/HVNBRBQ5kuAc7JUSqg0tAvfCiBPQZqz403g56WAgXmxmrMz3qDgStflWhl7xxwnZPY0UJUKkiyih4WDFi9B0QPxDXg3HNVaRgBQo66E9vJAwEEdXJ0=
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24)
- by BY5PR10MB4257.namprd10.prod.outlook.com (2603:10b6:a03:211::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Thu, 11 Feb
- 2021 19:35:42 +0000
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::6da8:6d28:b83:702b]) by SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::6da8:6d28:b83:702b%4]) with mapi id 15.20.3846.026; Thu, 11 Feb 2021
- 19:35:42 +0000
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     linux-rdma <linux-rdma@vger.kernel.org>
-CC:     Benjamin Coddington <bcodding@redhat.com>
-Subject: directing soft iWARP traffic through a secure tunnel
-Thread-Topic: directing soft iWARP traffic through a secure tunnel
-Thread-Index: AQHXAK0VkdC55BgtrEiwgC8y76HqrQ==
-Date:   Thu, 11 Feb 2021 19:35:42 +0000
-Message-ID: <61EFD7EA-FA16-4AA1-B92F-0B0D4CC697AB@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [68.61.232.219]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 22cdff3a-ac0b-4e77-c63e-08d8cec43833
-x-ms-traffictypediagnostic: BY5PR10MB4257:
-x-microsoft-antispam-prvs: <BY5PR10MB4257491A1B65D63F080BA49A938C9@BY5PR10MB4257.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mTxxeJhQaon1LeOc9XaBEzptC+oVWJHaEc9y3tYTzaBZcbA60ar5hQ+TcW9N+jTWWSec8k0U59BFZQ68czZZbQ3XWea9NkWMDGTTid5FXbRQpYXANak6AEQh3m28yVjXQJYhAZJj2w2kufnaJYblIHM2NyCO9XG27cdeFhKpZoc9sMjXvk07Tps1GMzS1V7RruGBz+SXdcdBjdTiHumMzHkRNYN3CAVfeYKp2cbUbvSkbI/ayazDGZIE1RnqLyFkv2FHIhxUetK0xXyWriNFqQwPGiLtONAKx0VOYyO/SGz65EM6wxGDDvuRaZZNwKxMNbU3evDFtSzZnwczJ/iXRfBvP5UBcCLp2S4bYqOhKewx0Yu8r7iT0jQpmIwrn8CTOKJXKK7j2ak5Ce+HzY1vpQrls6YiGo134sEW4GecoTGGjXtRhmFYXxPyvGVWRI2Qincj0War36HIzwYmfY/Kcp16ILZODreSfNHFIJ1I6YllKc3MizD/w9jxqtV7bQDbvIin1jSKM5RluM5aHJLF1DxA1teu1PPg4mTXvbNXvYfOsI8+QWRtrxSrKVxBtbJ9qdqEcd5WFfpAiGSvY3PeGQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4688.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(366004)(396003)(376002)(136003)(6916009)(66476007)(44832011)(2906002)(33656002)(66946007)(66556008)(8936002)(64756008)(91956017)(71200400001)(83380400001)(26005)(2616005)(6506007)(66446008)(4326008)(316002)(86362001)(8676002)(186003)(36756003)(76116006)(478600001)(6486002)(5660300002)(6512007)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?MxJrfxekrCvrqI5qBpeEXi6t4qfwiPDmF1QvFo42CL4Z/z4E54tzMGksYsiT?=
- =?us-ascii?Q?JNmcHjLi157ympOtyNBqIa8opqbZV1YzDWldljvvqnURDavJZ7ZeWH+irZBc?=
- =?us-ascii?Q?N2vgUEsBXuEdYJd+jWcXj5BmAmj4dZ3SgkFcOy096Wt6HBssIYvjAB4XpqtU?=
- =?us-ascii?Q?h2XsGke1wqrGWIDbJpUqfRDSZn9PA5aPL65cEqyI+YZ6m8WcBIeAy6F8vpcx?=
- =?us-ascii?Q?P/LHpl36lzGP0Sl8JI2WsRKl3J4Fn1YXcFyv29mtXfAp5QpTO0mlVOmgevHP?=
- =?us-ascii?Q?NjICtPcRV5kaPeIv2u1AvdGGnR7rAHAjDA2pq8NIyNHEjrUyWQoCNy97kpIF?=
- =?us-ascii?Q?Apo4+RuawaHt2Dc3kDiSyfCFnCdhdz71BgeL7OruRbupd3NUaKRAchNWGELW?=
- =?us-ascii?Q?Vzg10DZ1Fp/67PV/3BGxXx6L2yrV/bzRABU5iAU5POLNn4Ugf+5vmMYG5/iN?=
- =?us-ascii?Q?mormONscaOP4aH30HNqTIW0qIxeVkyVbUFxkFSf8w+ZyqI5vTx/Omzcp6SiV?=
- =?us-ascii?Q?dO9ETw1Mf60WGr7jLbuSLIDDgXg9uFPGai8UxED3OkymY+MQvQ9n9nlSz0pZ?=
- =?us-ascii?Q?1ZIX5efWtUeJW7eFL8D3TV7ztMV93cC+Bwlv5Zz3wuUzK/Vi/o0NawwocQfK?=
- =?us-ascii?Q?HvE4nd8jKiKthL0xdYzNHSOMCEHcjt2KwJiQeM/RXsc+AKSBVIc0YW6tVL5z?=
- =?us-ascii?Q?DJxeUEG5RXA03HEETB00EveI1wVepsoZH6p1ZKwnkza2gERCETpc8xSJljmg?=
- =?us-ascii?Q?+epk7vWr8axECaGBW6ooEF2RyU6poYW7ShDxLt7UZ8IL4Hqjb7UGSzBbc2rs?=
- =?us-ascii?Q?sjdfft/BO0DwKoUT4K2G7A7zFaf3lw4rOMRkTBFPHIsCP1/8ILbVEh1XjR6o?=
- =?us-ascii?Q?ZfXMNj+s5BclZlfSCXs8F8nx3kmwOP21PPqW5jno88go2Nc99GHmCB8ALYTs?=
- =?us-ascii?Q?dZDGBXDlEMK8Nc5X7rGg4nb0ri0S0+kUtp9iUvUBUvspYb5nvvJJdOlDKBcK?=
- =?us-ascii?Q?hVOzjVnE1MqAj9zSp+C9uuc0HSJtUvrTc58iaPdUsykLrtJrNZ4PfAT11YCG?=
- =?us-ascii?Q?hI+JTSECoz0BJHB4n4r26Zh7PbeAwDgHFKqL3r6s+oeXirTDljbkD3dIc1QL?=
- =?us-ascii?Q?LSo1PBSF2krUSfpE++dC593o48/NBnGLmdMOXLdtPIVnJcXXnE+uamF2b5jh?=
- =?us-ascii?Q?pH/abCUEP60uD2Y86E6SbGmLdktQNq558CMY4Wcc+8LThyZYymFbnyR+UKZR?=
- =?us-ascii?Q?jm6ynn9YQryJ+Wf/UfCKvfzzYPVq53fzP6btLcqWYDVpSmJSYfR+dhNgRx7b?=
- =?us-ascii?Q?VOv15EUQPFDAA1sOFoRwwcRE?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1048774D8589724DB7E7A97B1FAA29D3@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tRRSLq9zww3Sl8+ycjpowDqG3tzrd4GOOlxBdE1MNwA=;
+        b=s+wD+5hEGQKDV/DZYouRW434cHWUYA5liidHLa2S7W7vOoA8a308G642HNMM+/bhqQ
+         O5ei76djZY/kHfbgjcljCxl1zGK9mTBd2UyDBtpFbL8O/bkWJFSB4wQyYBIa9vR0bid+
+         GKGf7eEUsU0cGiS1HiXIfIG1NXw4uZwC9GT5ybBBGIfxtUgnG1lT6fF2JL0/eaCS0eWV
+         jug4Yc/6ofgAgC3Gd0bkYZNYJ873TXy6zHwNTOFg85v5u6V5O3Uz49SdXOXvngvZvSC5
+         WtVWEIf81oKkclFXnluDYuvITyExXVzgm5TC7bOAlxrDrKgNMNfHEEdzBpZPfyQvglSt
+         mg4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tRRSLq9zww3Sl8+ycjpowDqG3tzrd4GOOlxBdE1MNwA=;
+        b=lvU/hs7JAb4KgEOK1B36AYWBvvcfExLcvmanU6sbobMH8ujuS4jftEcL4Fmnb7vFNz
+         xCNvSIU0ZahbQD097vL3web9RCqxqwaxonDHkLgGN+HKxutX1UgYfmcBtAwlgfOumNGr
+         Q1LEFR//+j3adty/+P95rnuYFYUj39DgLP0iH5aoJZdZ7a6JLZ8bqKEMX2g4HY4Yx1lj
+         iXnaLFeYWCN4T4uhWNHaF669Sb4sM81XzyADJb125wbQbdb3A8+9QX04c9LKWM+ql4c8
+         hplkOwKPB4bPEhUuwnVenliSPZA0tAZXelgXODtZPu7cVzyLHYfLTSQFQMmIiN0P2qrn
+         lNgg==
+X-Gm-Message-State: AOAM530lHUFchWRpA1kzWeCJWjelVlZAj4zQE5/iR8KhdmNHIyONnilV
+        i3zPikJUJfDIlRfmP+mbTfU=
+X-Google-Smtp-Source: ABdhPJzlFIjX/vMgONqC/NvAz+FE78St+KKw2C39wsT1s9ZUJy622xjruDLB4wQz3nbySo+v6cOVYQ==
+X-Received: by 2002:a9d:470b:: with SMTP id a11mr6983146otf.327.1613077572917;
+        Thu, 11 Feb 2021 13:06:12 -0800 (PST)
+Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-3fec-3c58-3f7c-f0ec.res6.spectrum.com. [2603:8081:140c:1a00:3fec:3c58:3f7c:f0ec])
+        by smtp.gmail.com with ESMTPSA id y4sm1135329oou.44.2021.02.11.13.06.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 13:06:12 -0800 (PST)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearson@hpe.com>
+Subject: [PATCH for-next] RDMA/rxe: Remove unused pkt->offset
+Date:   Thu, 11 Feb 2021 15:04:56 -0600
+Message-Id: <20210211210455.3274-1-rpearson@hpe.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4688.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22cdff3a-ac0b-4e77-c63e-08d8cec43833
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Feb 2021 19:35:42.3977
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: gJXIE/iMHilgi4INYuXQlWAHoZT4SpHZ8ee80yAke/cgEz9U42LwAJ8GmnYHRi18XCOm1HUMHMZSvOeH/WrSVg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4257
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9892 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102110153
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9892 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- spamscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 impostorscore=0
- suspectscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102110153
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi-
+The pkt->offset field is never used except to assign it to 0.
+But it adds lots of unneeded code. This patch removes the field and
+related code. This causes a measurable improvement in performance.
 
-This might sound crazy, but bear with me.
+Signed-off-by: Bob Pearson <rpearson@hpe.com>
+---
+ drivers/infiniband/sw/rxe/rxe_hdr.h  | 178 +++++++++++++--------------
+ drivers/infiniband/sw/rxe/rxe_recv.c |   4 +-
+ drivers/infiniband/sw/rxe/rxe_req.c  |   1 -
+ drivers/infiniband/sw/rxe/rxe_resp.c |   3 +-
+ 4 files changed, 90 insertions(+), 96 deletions(-)
 
-The NFS community is starting to hold virtual interoperability testing
-events to replace our in-person events that are not feasible due to
-pandemic-related travel restrictions. I'm told other communities have
-started doing the same.
-
-The virtual event is being held on a private network that is set up
-using OpenVPN across a large geographical area. I attach my test
-systems to the VPN to access test systems run by others at other
-companies.
-
-We'd like to continue to include NFS/RDMA testing at these events.
-This means either RoCEv2 or iWARP, since obviously we can't create
-an ad hoc wide-area InfiniBand infrastructure.
-
-Because the VPN is operating over long distances, we've decided to
-start with iWARP. However, we are stumbling when it comes to directing
-the siw driver's traffic onto the tun0 device:
-
-[root@oracle-100 ~]# rdma link add siw0 type siw netdev tun0
-error: Invalid argument
-[root@oracle-100 ~]#
-
-Has anyone else tried to do this, and what was the approach? Or does
-siw not yet have this capability?
-
-Thanks in advance.
-
-
---
-Chuck Lever
-
-
+diff --git a/drivers/infiniband/sw/rxe/rxe_hdr.h b/drivers/infiniband/sw/rxe/rxe_hdr.h
+index 3b483b75dfe3..e432f9e37795 100644
+--- a/drivers/infiniband/sw/rxe/rxe_hdr.h
++++ b/drivers/infiniband/sw/rxe/rxe_hdr.h
+@@ -22,7 +22,6 @@ struct rxe_pkt_info {
+ 	u16			paylen;		/* length of bth - icrc */
+ 	u8			port_num;	/* port pkt received on */
+ 	u8			opcode;		/* bth opcode of packet */
+-	u8			offset;		/* bth offset from pkt->hdr */
+ };
+ 
+ /* Macros should be used only for received skb */
+@@ -280,134 +279,134 @@ static inline void __bth_set_psn(void *arg, u32 psn)
+ 
+ static inline u8 bth_opcode(struct rxe_pkt_info *pkt)
+ {
+-	return __bth_opcode(pkt->hdr + pkt->offset);
++	return __bth_opcode(pkt->hdr);
+ }
+ 
+ static inline void bth_set_opcode(struct rxe_pkt_info *pkt, u8 opcode)
+ {
+-	__bth_set_opcode(pkt->hdr + pkt->offset, opcode);
++	__bth_set_opcode(pkt->hdr, opcode);
+ }
+ 
+ static inline u8 bth_se(struct rxe_pkt_info *pkt)
+ {
+-	return __bth_se(pkt->hdr + pkt->offset);
++	return __bth_se(pkt->hdr);
+ }
+ 
+ static inline void bth_set_se(struct rxe_pkt_info *pkt, int se)
+ {
+-	__bth_set_se(pkt->hdr + pkt->offset, se);
++	__bth_set_se(pkt->hdr, se);
+ }
+ 
+ static inline u8 bth_mig(struct rxe_pkt_info *pkt)
+ {
+-	return __bth_mig(pkt->hdr + pkt->offset);
++	return __bth_mig(pkt->hdr);
+ }
+ 
+ static inline void bth_set_mig(struct rxe_pkt_info *pkt, u8 mig)
+ {
+-	__bth_set_mig(pkt->hdr + pkt->offset, mig);
++	__bth_set_mig(pkt->hdr, mig);
+ }
+ 
+ static inline u8 bth_pad(struct rxe_pkt_info *pkt)
+ {
+-	return __bth_pad(pkt->hdr + pkt->offset);
++	return __bth_pad(pkt->hdr);
+ }
+ 
+ static inline void bth_set_pad(struct rxe_pkt_info *pkt, u8 pad)
+ {
+-	__bth_set_pad(pkt->hdr + pkt->offset, pad);
++	__bth_set_pad(pkt->hdr, pad);
+ }
+ 
+ static inline u8 bth_tver(struct rxe_pkt_info *pkt)
+ {
+-	return __bth_tver(pkt->hdr + pkt->offset);
++	return __bth_tver(pkt->hdr);
+ }
+ 
+ static inline void bth_set_tver(struct rxe_pkt_info *pkt, u8 tver)
+ {
+-	__bth_set_tver(pkt->hdr + pkt->offset, tver);
++	__bth_set_tver(pkt->hdr, tver);
+ }
+ 
+ static inline u16 bth_pkey(struct rxe_pkt_info *pkt)
+ {
+-	return __bth_pkey(pkt->hdr + pkt->offset);
++	return __bth_pkey(pkt->hdr);
+ }
+ 
+ static inline void bth_set_pkey(struct rxe_pkt_info *pkt, u16 pkey)
+ {
+-	__bth_set_pkey(pkt->hdr + pkt->offset, pkey);
++	__bth_set_pkey(pkt->hdr, pkey);
+ }
+ 
+ static inline u32 bth_qpn(struct rxe_pkt_info *pkt)
+ {
+-	return __bth_qpn(pkt->hdr + pkt->offset);
++	return __bth_qpn(pkt->hdr);
+ }
+ 
+ static inline void bth_set_qpn(struct rxe_pkt_info *pkt, u32 qpn)
+ {
+-	__bth_set_qpn(pkt->hdr + pkt->offset, qpn);
++	__bth_set_qpn(pkt->hdr, qpn);
+ }
+ 
+ static inline int bth_fecn(struct rxe_pkt_info *pkt)
+ {
+-	return __bth_fecn(pkt->hdr + pkt->offset);
++	return __bth_fecn(pkt->hdr);
+ }
+ 
+ static inline void bth_set_fecn(struct rxe_pkt_info *pkt, int fecn)
+ {
+-	__bth_set_fecn(pkt->hdr + pkt->offset, fecn);
++	__bth_set_fecn(pkt->hdr, fecn);
+ }
+ 
+ static inline int bth_becn(struct rxe_pkt_info *pkt)
+ {
+-	return __bth_becn(pkt->hdr + pkt->offset);
++	return __bth_becn(pkt->hdr);
+ }
+ 
+ static inline void bth_set_becn(struct rxe_pkt_info *pkt, int becn)
+ {
+-	__bth_set_becn(pkt->hdr + pkt->offset, becn);
++	__bth_set_becn(pkt->hdr, becn);
+ }
+ 
+ static inline u8 bth_resv6a(struct rxe_pkt_info *pkt)
+ {
+-	return __bth_resv6a(pkt->hdr + pkt->offset);
++	return __bth_resv6a(pkt->hdr);
+ }
+ 
+ static inline void bth_set_resv6a(struct rxe_pkt_info *pkt)
+ {
+-	__bth_set_resv6a(pkt->hdr + pkt->offset);
++	__bth_set_resv6a(pkt->hdr);
+ }
+ 
+ static inline int bth_ack(struct rxe_pkt_info *pkt)
+ {
+-	return __bth_ack(pkt->hdr + pkt->offset);
++	return __bth_ack(pkt->hdr);
+ }
+ 
+ static inline void bth_set_ack(struct rxe_pkt_info *pkt, int ack)
+ {
+-	__bth_set_ack(pkt->hdr + pkt->offset, ack);
++	__bth_set_ack(pkt->hdr, ack);
+ }
+ 
+ static inline void bth_set_resv7(struct rxe_pkt_info *pkt)
+ {
+-	__bth_set_resv7(pkt->hdr + pkt->offset);
++	__bth_set_resv7(pkt->hdr);
+ }
+ 
+ static inline u32 bth_psn(struct rxe_pkt_info *pkt)
+ {
+-	return __bth_psn(pkt->hdr + pkt->offset);
++	return __bth_psn(pkt->hdr);
+ }
+ 
+ static inline void bth_set_psn(struct rxe_pkt_info *pkt, u32 psn)
+ {
+-	__bth_set_psn(pkt->hdr + pkt->offset, psn);
++	__bth_set_psn(pkt->hdr, psn);
+ }
+ 
+ static inline void bth_init(struct rxe_pkt_info *pkt, u8 opcode, int se,
+ 			    int mig, int pad, u16 pkey, u32 qpn, int ack_req,
+ 			    u32 psn)
+ {
+-	struct rxe_bth *bth = (struct rxe_bth *)(pkt->hdr + pkt->offset);
++	struct rxe_bth *bth = (struct rxe_bth *)(pkt->hdr);
+ 
+ 	bth->opcode = opcode;
+ 	bth->flags = (pad << 4) & BTH_PAD_MASK;
+@@ -448,14 +447,14 @@ static inline void __rdeth_set_een(void *arg, u32 een)
+ 
+ static inline u8 rdeth_een(struct rxe_pkt_info *pkt)
+ {
+-	return __rdeth_een(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_RDETH]);
++	return __rdeth_een(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_RDETH]);
+ }
+ 
+ static inline void rdeth_set_een(struct rxe_pkt_info *pkt, u32 een)
+ {
+-	__rdeth_set_een(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_RDETH], een);
++	__rdeth_set_een(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_RDETH], een);
+ }
+ 
+ /******************************************************************************
+@@ -499,26 +498,26 @@ static inline void __deth_set_sqp(void *arg, u32 sqp)
+ 
+ static inline u32 deth_qkey(struct rxe_pkt_info *pkt)
+ {
+-	return __deth_qkey(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_DETH]);
++	return __deth_qkey(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_DETH]);
+ }
+ 
+ static inline void deth_set_qkey(struct rxe_pkt_info *pkt, u32 qkey)
+ {
+-	__deth_set_qkey(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_DETH], qkey);
++	__deth_set_qkey(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_DETH], qkey);
+ }
+ 
+ static inline u32 deth_sqp(struct rxe_pkt_info *pkt)
+ {
+-	return __deth_sqp(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_DETH]);
++	return __deth_sqp(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_DETH]);
+ }
+ 
+ static inline void deth_set_sqp(struct rxe_pkt_info *pkt, u32 sqp)
+ {
+-	__deth_set_sqp(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_DETH], sqp);
++	__deth_set_sqp(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_DETH], sqp);
+ }
+ 
+ /******************************************************************************
+@@ -574,38 +573,38 @@ static inline void __reth_set_len(void *arg, u32 len)
+ 
+ static inline u64 reth_va(struct rxe_pkt_info *pkt)
+ {
+-	return __reth_va(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_RETH]);
++	return __reth_va(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_RETH]);
+ }
+ 
+ static inline void reth_set_va(struct rxe_pkt_info *pkt, u64 va)
+ {
+-	__reth_set_va(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_RETH], va);
++	__reth_set_va(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_RETH], va);
+ }
+ 
+ static inline u32 reth_rkey(struct rxe_pkt_info *pkt)
+ {
+-	return __reth_rkey(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_RETH]);
++	return __reth_rkey(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_RETH]);
+ }
+ 
+ static inline void reth_set_rkey(struct rxe_pkt_info *pkt, u32 rkey)
+ {
+-	__reth_set_rkey(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_RETH], rkey);
++	__reth_set_rkey(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_RETH], rkey);
+ }
+ 
+ static inline u32 reth_len(struct rxe_pkt_info *pkt)
+ {
+-	return __reth_len(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_RETH]);
++	return __reth_len(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_RETH]);
+ }
+ 
+ static inline void reth_set_len(struct rxe_pkt_info *pkt, u32 len)
+ {
+-	__reth_set_len(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_RETH], len);
++	__reth_set_len(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_RETH], len);
+ }
+ 
+ /******************************************************************************
+@@ -676,50 +675,50 @@ static inline void __atmeth_set_comp(void *arg, u64 comp)
+ 
+ static inline u64 atmeth_va(struct rxe_pkt_info *pkt)
+ {
+-	return __atmeth_va(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
++	return __atmeth_va(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
+ }
+ 
+ static inline void atmeth_set_va(struct rxe_pkt_info *pkt, u64 va)
+ {
+-	__atmeth_set_va(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_ATMETH], va);
++	__atmeth_set_va(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_ATMETH], va);
+ }
+ 
+ static inline u32 atmeth_rkey(struct rxe_pkt_info *pkt)
+ {
+-	return __atmeth_rkey(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
++	return __atmeth_rkey(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
+ }
+ 
+ static inline void atmeth_set_rkey(struct rxe_pkt_info *pkt, u32 rkey)
+ {
+-	__atmeth_set_rkey(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_ATMETH], rkey);
++	__atmeth_set_rkey(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_ATMETH], rkey);
+ }
+ 
+ static inline u64 atmeth_swap_add(struct rxe_pkt_info *pkt)
+ {
+-	return __atmeth_swap_add(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
++	return __atmeth_swap_add(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
+ }
+ 
+ static inline void atmeth_set_swap_add(struct rxe_pkt_info *pkt, u64 swap_add)
+ {
+-	__atmeth_set_swap_add(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_ATMETH], swap_add);
++	__atmeth_set_swap_add(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_ATMETH], swap_add);
+ }
+ 
+ static inline u64 atmeth_comp(struct rxe_pkt_info *pkt)
+ {
+-	return __atmeth_comp(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
++	return __atmeth_comp(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
+ }
+ 
+ static inline void atmeth_set_comp(struct rxe_pkt_info *pkt, u64 comp)
+ {
+-	__atmeth_set_comp(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_ATMETH], comp);
++	__atmeth_set_comp(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_ATMETH], comp);
+ }
+ 
+ /******************************************************************************
+@@ -780,26 +779,26 @@ static inline void __aeth_set_msn(void *arg, u32 msn)
+ 
+ static inline u8 aeth_syn(struct rxe_pkt_info *pkt)
+ {
+-	return __aeth_syn(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_AETH]);
++	return __aeth_syn(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_AETH]);
+ }
+ 
+ static inline void aeth_set_syn(struct rxe_pkt_info *pkt, u8 syn)
+ {
+-	__aeth_set_syn(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_AETH], syn);
++	__aeth_set_syn(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_AETH], syn);
+ }
+ 
+ static inline u32 aeth_msn(struct rxe_pkt_info *pkt)
+ {
+-	return __aeth_msn(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_AETH]);
++	return __aeth_msn(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_AETH]);
+ }
+ 
+ static inline void aeth_set_msn(struct rxe_pkt_info *pkt, u32 msn)
+ {
+-	__aeth_set_msn(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_AETH], msn);
++	__aeth_set_msn(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_AETH], msn);
+ }
+ 
+ /******************************************************************************
+@@ -825,14 +824,14 @@ static inline void __atmack_set_orig(void *arg, u64 orig)
+ 
+ static inline u64 atmack_orig(struct rxe_pkt_info *pkt)
+ {
+-	return __atmack_orig(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_ATMACK]);
++	return __atmack_orig(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_ATMACK]);
+ }
+ 
+ static inline void atmack_set_orig(struct rxe_pkt_info *pkt, u64 orig)
+ {
+-	__atmack_set_orig(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_ATMACK], orig);
++	__atmack_set_orig(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_ATMACK], orig);
+ }
+ 
+ /******************************************************************************
+@@ -858,14 +857,14 @@ static inline void __immdt_set_imm(void *arg, __be32 imm)
+ 
+ static inline __be32 immdt_imm(struct rxe_pkt_info *pkt)
+ {
+-	return __immdt_imm(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_IMMDT]);
++	return __immdt_imm(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_IMMDT]);
+ }
+ 
+ static inline void immdt_set_imm(struct rxe_pkt_info *pkt, __be32 imm)
+ {
+-	__immdt_set_imm(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_IMMDT], imm);
++	__immdt_set_imm(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_IMMDT], imm);
+ }
+ 
+ /******************************************************************************
+@@ -891,14 +890,14 @@ static inline void __ieth_set_rkey(void *arg, u32 rkey)
+ 
+ static inline u32 ieth_rkey(struct rxe_pkt_info *pkt)
+ {
+-	return __ieth_rkey(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_IETH]);
++	return __ieth_rkey(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_IETH]);
+ }
+ 
+ static inline void ieth_set_rkey(struct rxe_pkt_info *pkt, u32 rkey)
+ {
+-	__ieth_set_rkey(pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_IETH], rkey);
++	__ieth_set_rkey(pkt->hdr +
++		rxe_opcode[pkt->opcode].offset[RXE_IETH], rkey);
+ }
+ 
+ enum rxe_hdr_length {
+@@ -915,13 +914,12 @@ enum rxe_hdr_length {
+ 
+ static inline size_t header_size(struct rxe_pkt_info *pkt)
+ {
+-	return pkt->offset + rxe_opcode[pkt->opcode].length;
++	return rxe_opcode[pkt->opcode].length;
+ }
+ 
+ static inline void *payload_addr(struct rxe_pkt_info *pkt)
+ {
+-	return pkt->hdr + pkt->offset
+-		+ rxe_opcode[pkt->opcode].offset[RXE_PAYLOAD];
++	return pkt->hdr + rxe_opcode[pkt->opcode].offset[RXE_PAYLOAD];
+ }
+ 
+ static inline size_t payload_size(struct rxe_pkt_info *pkt)
+diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+index 8a48a33d587b..45d2f711bce2 100644
+--- a/drivers/infiniband/sw/rxe/rxe_recv.c
++++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+@@ -353,9 +353,7 @@ void rxe_rcv(struct sk_buff *skb)
+ 	__be32 *icrcp;
+ 	u32 calc_icrc, pack_icrc;
+ 
+-	pkt->offset = 0;
+-
+-	if (unlikely(skb->len < pkt->offset + RXE_BTH_BYTES))
++	if (unlikely(skb->len < RXE_BTH_BYTES))
+ 		goto drop;
+ 
+ 	if (rxe_chk_dgid(rxe, skb) < 0) {
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+index d4917646641a..889290793d75 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -375,7 +375,6 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
+ 	pkt->psn	= qp->req.psn;
+ 	pkt->mask	= rxe_opcode[opcode].mask;
+ 	pkt->paylen	= paylen;
+-	pkt->offset	= 0;
+ 	pkt->wqe	= wqe;
+ 
+ 	/* init skb */
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index 5fd26786d79b..1ae94f2cb336 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -586,11 +586,10 @@ static struct sk_buff *prepare_ack_packet(struct rxe_qp *qp,
+ 	ack->qp = qp;
+ 	ack->opcode = opcode;
+ 	ack->mask = rxe_opcode[opcode].mask;
+-	ack->offset = pkt->offset;
+ 	ack->paylen = paylen;
+ 
+ 	/* fill in bth using the request packet headers */
+-	memcpy(ack->hdr, pkt->hdr, pkt->offset + RXE_BTH_BYTES);
++	memcpy(ack->hdr, pkt->hdr, RXE_BTH_BYTES);
+ 
+ 	bth_set_opcode(ack, opcode);
+ 	bth_set_qpn(ack, qp->attr.dest_qp_num);
+-- 
+2.27.0
 
