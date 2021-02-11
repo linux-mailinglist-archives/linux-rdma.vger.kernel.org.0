@@ -2,78 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B75318678
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Feb 2021 09:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD8D31868E
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Feb 2021 09:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbhBKIsW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Feb 2021 03:48:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37386 "EHLO mail.kernel.org"
+        id S229585AbhBKIzN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Feb 2021 03:55:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229648AbhBKIsH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 11 Feb 2021 03:48:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D4C664E66;
-        Thu, 11 Feb 2021 08:48:52 +0000 (UTC)
+        id S229794AbhBKIzI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 11 Feb 2021 03:55:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 620E764E7D;
+        Thu, 11 Feb 2021 08:55:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613033332;
-        bh=lswKxjQZhc6gdOgPjNtf2RkPeuQL4kOEbFeEzfYh/lM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YNHUXMi8OBIh7gC3zYa4N3JruhrsbcL08Lg28FpnrbUvdsH2CDp1bNcplLLqMFly2
-         31glZNXPukcR6lXK1rHXhEBMT1spYNUHYIgVuGHB3GBUlRNURuYIDXjwBOxurk0VfD
-         n18K2eDeGAGIEpkA+9ETbgst/JqQnnxB2pQ5V5SMZAOXCh7M3kxndssrygheolzhG3
-         It4cziflZQlMaB96nJ8GrUsugggoHPsORzI/JtXwu07GLwDuac1AQWtjKqOR5r8onw
-         z6a9ZTb1z9R5Emo1CiEdmXgNU6t+jhM2FFhVA+qQG0W4kqMsssLilXrU+oYvBQaVGi
-         m88ZAyWPgOSUQ==
-Date:   Thu, 11 Feb 2021 10:48:49 +0200
+        s=k20201202; t=1613033754;
+        bh=8NBJxHBxVv0WCKh+7BdNwNIuaByUtC+9YiMRt+ZjXjo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IJMk7wZmj6fvu6Xcu5iZ4FWjWoFKEoOLbFeOriPpNAYo5O3qPVY1uq5mL1jpkpnNu
+         KZxig/47KYCGMJrMBtkXdiIHxKUTytnk60IsVzKtEz33SZxFUB2rNtf5QniIxL0s2/
+         1B1a28vx7uFyWswpJ36CNKqg1fu700gwSksu4AcALJYKbSAvtVnGZiiGfaLLhl0YB+
+         sYiANjHrYWMAIPVBRAsKaLbwxRcAiLfE40o19n+Kout48sxq5dWDWEZoiOgIJUi8T9
+         SKGcAoJSZDmOAFLMJ/oli6ILsJG9Ihg+RhCgad57jdMcz9Mk3SLD6yieUy5WvbLUpL
+         s8ZUyLBSjttlw==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org,
-        dledford@redhat.com, jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Subject: Re: [PATCH for-next 4/4] RDMA/rtrs-srv-sysfs: fix missing put_device
-Message-ID: <20210211084849.GC1275163@unreal>
-References: <20210211065526.7510-1-jinpu.wang@cloud.ionos.com>
- <20210211065526.7510-5-jinpu.wang@cloud.ionos.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Tal Gilboa <talgi@nvidia.com>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH mlx5-next] RDMA/mlx5: Allow CQ creation without attached EQs
+Date:   Thu, 11 Feb 2021 10:55:49 +0200
+Message-Id: <20210211085549.1277674-1-leon@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210211065526.7510-5-jinpu.wang@cloud.ionos.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 07:55:26AM +0100, Jack Wang wrote:
-> From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
->
-> put_device() decreases the ref-count and then the device will
-> be cleaned-up, while at is also add missing put_device in
-> rtrs_srv_create_once_sysfs_root_folders
->
-> This patch solves a kmemleak error as below:
->
-> unreferenced object 0xffff88809a7a0710 (size 8):
->   comm "kworker/4:1H", pid 113, jiffies 4295833049 (age 6212.380s)
->   hex dump (first 8 bytes):
->     62 6c 61 00 6b 6b 6b a5                          bla.kkk.
->   backtrace:
->     [<0000000054413611>] kstrdup+0x2e/0x60
->     [<0000000078e3120a>] kobject_set_name_vargs+0x2f/0xb0
->     [<00000000f1a17a6b>] dev_set_name+0xab/0xe0
->     [<00000000d5502e32>] rtrs_srv_create_sess_files+0x2fb/0x314 [rtrs_server]
->     [<00000000ed11a1ef>] rtrs_srv_info_req_done+0x631/0x800 [rtrs_server]
->     [<000000008fc5aa8f>] __ib_process_cq+0x94/0x100 [ib_core]
->     [<00000000a9599cb4>] ib_cq_poll_work+0x32/0xc0 [ib_core]
->     [<00000000cfc376be>] process_one_work+0x4bc/0x980
->     [<0000000016e5c96a>] worker_thread+0x78/0x5c0
->     [<00000000c20b8be0>] kthread+0x191/0x1e0
->     [<000000006c9c0003>] ret_from_fork+0x3a/0x50
->
-> Fixes: baa5b28b7a47 ("RDMA/rtrs-srv: Replace device_register with device_initialize and device_add")
-> Signed-off-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
-> Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> ---
->  drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 2 ++
->  1 file changed, 2 insertions(+)
->
+From: Tal Gilboa <talgi@nvidia.com>
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+The traditional DevX CQ creation flow goes through mlx5_core_create_cq()
+which checks that the given EQN corresponds to an existing EQ. For some
+mlx5 devices this behaviour is too strict, they expect EQN assignment
+during modify CQ stage.
+
+Allow them to create CQ through general command interface.
+
+Signed-off-by: Tal Gilboa <talgi@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/mlx5/devx.c | 13 ++++++++++++-
+ include/linux/mlx5/mlx5_ifc.h     |  5 +++--
+ 2 files changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+index 526057a33edb..8152d0ddac2d 100644
+--- a/drivers/infiniband/hw/mlx5/devx.c
++++ b/drivers/infiniband/hw/mlx5/devx.c
+@@ -1439,6 +1439,16 @@ static void devx_cq_comp(struct mlx5_core_cq *mcq, struct mlx5_eqe *eqe)
+ 	rcu_read_unlock();
+ }
+
++static bool is_apu_thread_cq(struct mlx5_ib_dev *dev, const void *in)
++{
++	if (!MLX5_CAP_GEN(dev->mdev, apu) ||
++	    !MLX5_GET(cqc, MLX5_ADDR_OF(create_cq_in, in, cq_context),
++		      apu_thread_cq))
++		return false;
++
++	return true;
++}
++
+ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_CREATE)(
+ 	struct uverbs_attr_bundle *attrs)
+ {
+@@ -1492,7 +1502,8 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_CREATE)(
+ 		obj->flags |= DEVX_OBJ_FLAGS_DCT;
+ 		err = mlx5_core_create_dct(dev, &obj->core_dct, cmd_in,
+ 					   cmd_in_len, cmd_out, cmd_out_len);
+-	} else if (opcode == MLX5_CMD_OP_CREATE_CQ) {
++	} else if (opcode == MLX5_CMD_OP_CREATE_CQ &&
++		   !is_apu_thread_cq(dev, cmd_in)) {
+ 		obj->flags |= DEVX_OBJ_FLAGS_CQ;
+ 		obj->core_cq.comp = devx_cq_comp;
+ 		err = mlx5_core_create_cq(dev->mdev, &obj->core_cq,
+diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
+index ffe2c7231ae4..816893f34e79 100644
+--- a/include/linux/mlx5/mlx5_ifc.h
++++ b/include/linux/mlx5/mlx5_ifc.h
+@@ -1659,7 +1659,8 @@ struct mlx5_ifc_cmd_hca_cap_bits {
+ 	u8         sf_set_partition[0x1];
+ 	u8         reserved_at_682[0x1];
+ 	u8         log_max_sf[0x5];
+-	u8         reserved_at_688[0x8];
++	u8         apu[0x1];
++	u8         reserved_at_689[0x7];
+ 	u8         log_min_sf_size[0x8];
+ 	u8         max_num_sf_partitions[0x8];
+
+@@ -3874,7 +3875,7 @@ struct mlx5_ifc_cqc_bits {
+ 	u8         status[0x4];
+ 	u8         reserved_at_4[0x2];
+ 	u8         dbr_umem_valid[0x1];
+-	u8         reserved_at_7[0x1];
++	u8         apu_thread_cq[0x1];
+ 	u8         cqe_sz[0x3];
+ 	u8         cc[0x1];
+ 	u8         reserved_at_c[0x1];
+--
+2.29.2
+
