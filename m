@@ -2,132 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD46319E9D
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Feb 2021 13:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2647B319F6C
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Feb 2021 14:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbhBLMjE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Feb 2021 07:39:04 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26678 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231391AbhBLMh6 (ORCPT
+        id S231599AbhBLNFP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Feb 2021 08:05:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24487 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231845AbhBLNEX (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:37:58 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11CCVqUG073017
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Feb 2021 07:37:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : from : to
- : cc : date : mime-version : references : content-transfer-encoding :
- content-type : message-id : subject; s=pp1;
- bh=Q5c4f+PwF7Kw17ximCNFiTlgFkofeRztMSaSiBm7YqY=;
- b=tU6gVdCz5HPz8hcrloXMtl7gy1tGmtFTLLeWQTuJ9+XM9gVwSuAylNUPlutW4YthvJU2
- M8KUelHc4wfcoNEhPnWbC1B+XWlJufNGroCb/IbW/UOaTph95R6uBWtCTDs2/rGc/UFJ
- 96CO+KcnZIYnUHVnu2CZQMkkFC9SLcEhRtwFtAJzolNifs0Ybsp665+6c9r1lbvvfgIy
- FJxoJx+7IneACikIbbY1dy7AAJv5EqTZpcWD0jDkIk1Bi7zEeCTKqhjjmXjCDa7OCabm
- EWl1aBWbDVXTU2o/VsUg7/Y5sDuTEgBNg/l7NyEIsltZ7Zoe1K2fn55AgEkNbAc8rAtS Ww== 
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.93])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36nsfngtp9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Feb 2021 07:37:16 -0500
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Fri, 12 Feb 2021 12:37:09 -0000
-Received: from us1a3-smtp08.a3.dal06.isc4sb.com (10.146.103.57)
-        by smtp.notes.na.collabserv.com (10.106.227.39) with smtp.notes.na.collabserv.com ESMTP;
-        Fri, 12 Feb 2021 12:37:08 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp08.a3.dal06.isc4sb.com
-          with ESMTP id 2021021212370788-249269 ;
-          Fri, 12 Feb 2021 12:37:07 +0000 
-In-Reply-To: <61EFD7EA-FA16-4AA1-B92F-0B0D4CC697AB@oracle.com>
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Chuck Lever" <chuck.lever@oracle.com>
-Cc:     "linux-rdma" <linux-rdma@vger.kernel.org>,
-        "Benjamin Coddington" <bcodding@redhat.com>
-Date:   Fri, 12 Feb 2021 12:37:07 +0000
-MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
+        Fri, 12 Feb 2021 08:04:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613134963;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sgT2l5Gg/0MlSCIuaxmswGdsvsMJlD6iZHpEEi3D13E=;
+        b=XKzNesYPNNALHE6s5YXmu8UfVWTVvfx1VUoWB2AvKlQ3gze2/DS1k9/QwhtmIDro2kGoYl
+        Edt62xi6t/c/U6T6Wetc85O8cdr3K5FxNExxWwPe6nRDwXCLP6J6gpYrSGOMvVxvp0cifp
+        RJY853wUHMWep7cLZLRc0Hzp+gAQJiY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-9UCnkKlVMY210GelVQXRUg-1; Fri, 12 Feb 2021 08:02:39 -0500
+X-MC-Unique: 9UCnkKlVMY210GelVQXRUg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D1341107ACE4;
+        Fri, 12 Feb 2021 13:02:38 +0000 (UTC)
+Received: from [172.16.176.1] (ovpn-64-2.rdu2.redhat.com [10.10.64.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 712AD1A86C;
+        Fri, 12 Feb 2021 13:02:38 +0000 (UTC)
+From:   "Benjamin Coddington" <bcodding@redhat.com>
+To:     "Bernard Metzler" <BMT@zurich.ibm.com>
+Cc:     "Chuck Lever" <chuck.lever@oracle.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Subject: Re: directing soft iWARP traffic through a secure tunnel
+Date:   Fri, 12 Feb 2021 08:02:37 -0500
+Message-ID: <73A7370E-1709-43C8-929D-AFD1478CFA12@redhat.com>
+In-Reply-To: <OFE25AAD0A.3B8CE2E0-ON0025867A.0043F201-0025867A.00455111@notes.na.collabserv.com>
 References: <61EFD7EA-FA16-4AA1-B92F-0B0D4CC697AB@oracle.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
-X-LLNOutbound: False
-X-Disclaimed: 41667
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 21021212-8889-0000-0000-000004911145
-X-IBM-SpamModules-Scores: BY=0.058223; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.155913
-X-IBM-SpamModules-Versions: BY=3.00014727; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000295; SDB=6.01506700; UDB=6.00813446; IPR=6.01289243;
- MB=3.00036113; MTD=3.00000008; XFM=3.00000015; UTC=2021-02-12 12:37:08
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2021-02-12 07:06:22 - 6.00012296
-x-cbparentid: 21021212-8890-0000-0000-0000AEE74B20
-Message-Id: <OFE25AAD0A.3B8CE2E0-ON0025867A.0043F201-0025867A.00455111@notes.na.collabserv.com>
-Subject: Re:  directing soft iWARP traffic through a secure tunnel
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-12_04:2021-02-12,2021-02-12 signatures=0
-X-Proofpoint-Spam-Reason: orgsafe
+ <OFE25AAD0A.3B8CE2E0-ON0025867A.0043F201-0025867A.00455111@notes.na.collabserv.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Chuck Lever" <chuck.lever@oracle.com> wrote: -----
+On 12 Feb 2021, at 7:37, Bernard Metzler wrote:
 
->To: "linux-rdma" <linux-rdma@vger.kernel.org>
->From: "Chuck Lever" <chuck.lever@oracle.com>
->Date: 02/11/2021 08:38PM
->Cc: "Benjamin Coddington" <bcodding@redhat.com>
->Subject: [EXTERNAL] directing soft iWARP traffic through a secure
->tunnel
+> -----"Chuck Lever" <chuck.lever@oracle.com> wrote: -----
 >
->Hi-
+>> To: "linux-rdma" <linux-rdma@vger.kernel.org>
+>> From: "Chuck Lever" <chuck.lever@oracle.com>
+>> Date: 02/11/2021 08:38PM
+>> Cc: "Benjamin Coddington" <bcodding@redhat.com>
+>> Subject: [EXTERNAL] directing soft iWARP traffic through a secure
+>> tunnel
+>>
+>> Hi-
+>>
+>> This might sound crazy, but bear with me.
+>>
+>> The NFS community is starting to hold virtual interoperability
+>> testing
+>> events to replace our in-person events that are not feasible due to
+>> pandemic-related travel restrictions. I'm told other communities have
+>> started doing the same.
+>>
+>> The virtual event is being held on a private network that is set up
+>> using OpenVPN across a large geographical area. I attach my test
+>> systems to the VPN to access test systems run by others at other
+>> companies.
+>>
+>> We'd like to continue to include NFS/RDMA testing at these events.
+>> This means either RoCEv2 or iWARP, since obviously we can't create
+>> an ad hoc wide-area InfiniBand infrastructure.
+>>
+>> Because the VPN is operating over long distances, we've decided to
+>> start with iWARP. However, we are stumbling when it comes to
+>> directing
+>> the siw driver's traffic onto the tun0 device:
+>>
+>> [root@oracle-100 ~]# rdma link add siw0 type siw netdev tun0
+>> error: Invalid argument
+>> [root@oracle-100 ~]#
+>>
+>> Has anyone else tried to do this, and what was the approach? Or does
+>> siw not yet have this capability?
+>>
 >
->This might sound crazy, but bear with me.
+> Hi Chuck
 >
->The NFS community is starting to hold virtual interoperability
->testing
->events to replace our in-person events that are not feasible due to
->pandemic-related travel restrictions. I'm told other communities have
->started doing the same.
+> right. Attaching siw is currently restricted to some physical
+> device types. This now appears a useless limitation, since
+> it prevents its usage in the given setup, where it would
+> be just useful...
+> Relaxing that limitation is a rather simple code change in siw
+> - but that would not help you asap?
 >
->The virtual event is being held on a private network that is set up
->using OpenVPN across a large geographical area. I attach my test
->systems to the VPN to access test systems run by others at other
->companies.
->
->We'd like to continue to include NFS/RDMA testing at these events.
->This means either RoCEv2 or iWARP, since obviously we can't create
->an ad hoc wide-area InfiniBand infrastructure.
->
->Because the VPN is operating over long distances, we've decided to
->start with iWARP. However, we are stumbling when it comes to
->directing
->the siw driver's traffic onto the tun0 device:
->
->[root@oracle-100 ~]# rdma link add siw0 type siw netdev tun0
->error: Invalid argument
->[root@oracle-100 ~]#
->
->Has anyone else tried to do this, and what was the approach? Or does
->siw not yet have this capability?
->
+> In any case I'd be happy to help with a fix, but participants
+> would have to rebuild the siw module...probably no option?
 
-Hi Chuck
+We can rebuild it and test it for you.
 
-right. Attaching siw is currently restricted to some physical
-device types. This now appears a useless limitation, since
-it prevents its usage in the given setup, where it would
-be just useful...
-Relaxing that limitation is a rather simple code change in siw
-- but that would not help you asap?
-
-In any case I'd be happy to help with a fix, but participants
-would have to rebuild the siw module...probably no option?
-
-Best,
-Bernard.
+Ben
 
