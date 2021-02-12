@@ -2,62 +2,227 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85A33195B0
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Feb 2021 23:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D16319753
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Feb 2021 01:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbhBKWQZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Feb 2021 17:16:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41668 "EHLO mail.kernel.org"
+        id S229623AbhBLAQK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Feb 2021 19:16:10 -0500
+Received: from mga06.intel.com ([134.134.136.31]:61019 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229936AbhBKWQP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 11 Feb 2021 17:16:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43D72601FF;
-        Thu, 11 Feb 2021 22:15:32 +0000 (UTC)
-Subject: [PATCH v1] svcrdma: Hold private mutex while invoking rdma_accept()
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Date:   Thu, 11 Feb 2021 17:15:30 -0500
-Message-ID: <161308170145.1097.4777972218876421176.stgit@klimt.1015granger.net>
-User-Agent: StGit/1.0
+        id S229647AbhBLAQK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 11 Feb 2021 19:16:10 -0500
+IronPort-SDR: 5qxMbeZZrbEFhyfKYBklWtGlaofD+w9aS2m2CBlEHz2R9EYDyNPS3WOQPBFrze0k90t5Pjti6C
+ 783cl0o6igAw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="243830529"
+X-IronPort-AV: E=Sophos;i="5.81,172,1610438400"; 
+   d="scan'208";a="243830529"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 16:15:29 -0800
+IronPort-SDR: DhyJhqtwQp6D74jZqXecUG9UlBNbusQfI4QDGdL8VxUVFuF7BVI5HLZbIaT1GHjX6+IzP3y3Kw
+ 35JsJfShyLJg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,172,1610438400"; 
+   d="scan'208";a="362676996"
+Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 11 Feb 2021 16:15:27 -0800
+Received: from kbuild by cd560a204411 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lAM7K-0004E0-VA; Fri, 12 Feb 2021 00:15:26 +0000
+Date:   Fri, 12 Feb 2021 08:14:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/for-testing] BUILD REGRESSION
+ a8ef74e70f50f10d741bb64757dd205318dfd9c7
+Message-ID: <6025c869.9IC4W01ngzfxHXda%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-RDMA core mutex locking was restructured by d114c6feedfe ("RDMA/cma:
-Add missing locking to rdma_accept()") [Aug 2020]. When lock
-debugging is enabled, the RPC/RDMA server trips over the new lockdep
-assertion in rdma_accept() because it doesn't call rdma_accept()
-from its CM event handler.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/for-testing
+branch HEAD: a8ef74e70f50f10d741bb64757dd205318dfd9c7  Merge branch 'k.o/for-next' into k.o/wip/for-testing
 
-As a temporary fix, have svc_rdma_accept() take the mutex
-explicitly. In the meantime, let's consider how to restructure the
-RPC/RDMA transport to invoke rdma_accept() from the proper context.
+Error/Warning in current branch:
 
-Calls to svc_rdma_accept() are serialized with calls to
-svc_rdma_free() by the generic RPC server layer.
+drivers/infiniband/sw/rxe/rxe_net.c:164:26: error: use of undeclared identifier 'rdev'; did you mean 'ndev'?
 
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Error/Warning ids grouped by kconfigs:
+
+clang_recent_errors
+|-- x86_64-randconfig-a011-20210209
+|   `-- drivers-infiniband-sw-rxe-rxe_net.c:error:use-of-undeclared-identifier-rdev
+|-- x86_64-randconfig-a014-20210209
+|   `-- drivers-infiniband-sw-rxe-rxe_net.c:error:use-of-undeclared-identifier-rdev
+`-- x86_64-randconfig-a015-20210209
+    `-- drivers-infiniband-sw-rxe-rxe_net.c:error:use-of-undeclared-identifier-rdev
+
+elapsed time: 1443m
+
+configs tested: 154
+configs skipped: 3
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                         shannon_defconfig
+sh                          rsk7203_defconfig
+sparc                               defconfig
+mips                      bmips_stb_defconfig
+arm                              alldefconfig
+arm                           sama5_defconfig
+m68k                        mvme147_defconfig
+arm                          badge4_defconfig
+sh                        dreamcast_defconfig
+riscv                    nommu_virt_defconfig
+openrisc                         alldefconfig
+arm                         bcm2835_defconfig
+powerpc                    klondike_defconfig
+mips                          malta_defconfig
+powerpc                        cell_defconfig
+m68k                       m5249evb_defconfig
+powerpc                     sbc8548_defconfig
+sh                            shmin_defconfig
+arm                          pxa168_defconfig
+openrisc                  or1klitex_defconfig
+powerpc                      obs600_defconfig
+powerpc                mpc7448_hpc2_defconfig
+arc                        nsimosci_defconfig
+powerpc                      tqm8xx_defconfig
+mips                      fuloong2e_defconfig
+powerpc                      cm5200_defconfig
+powerpc                         wii_defconfig
+sh                           se7343_defconfig
+powerpc                      mgcoge_defconfig
+mips                  maltasmvp_eva_defconfig
+x86_64                           alldefconfig
+arm                         s5pv210_defconfig
+arm                        cerfcube_defconfig
+mips                         tb0226_defconfig
+powerpc                 mpc834x_itx_defconfig
+arm                         socfpga_defconfig
+mips                         db1xxx_defconfig
+mips                     loongson1c_defconfig
+m68k                           sun3_defconfig
+xtensa                         virt_defconfig
+arm                        magician_defconfig
+mips                           ip32_defconfig
+powerpc                     tqm8540_defconfig
+sh                          kfr2r09_defconfig
+nios2                         10m50_defconfig
+mips                 decstation_r4k_defconfig
+powerpc                  mpc885_ads_defconfig
+arc                         haps_hs_defconfig
+arm                          prima2_defconfig
+powerpc                          g5_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc                      chrp32_defconfig
+um                           x86_64_defconfig
+arm64                            alldefconfig
+powerpc                      bamboo_defconfig
+arm                  colibri_pxa270_defconfig
+sh                             shx3_defconfig
+arm                    vt8500_v6_v7_defconfig
+arm                        realview_defconfig
+mips                         tb0287_defconfig
+powerpc                    socrates_defconfig
+mips                            ar7_defconfig
+powerpc                     tqm8555_defconfig
+powerpc                          allmodconfig
+powerpc                 xes_mpc85xx_defconfig
+m68k                        m5407c3_defconfig
+sh                         apsh4a3a_defconfig
+powerpc                     ep8248e_defconfig
+mips                        omega2p_defconfig
+nios2                            alldefconfig
+mips                           ip27_defconfig
+powerpc                      katmai_defconfig
+arm                           tegra_defconfig
+xtensa                       common_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20210209
+x86_64               randconfig-a001-20210209
+x86_64               randconfig-a005-20210209
+x86_64               randconfig-a004-20210209
+x86_64               randconfig-a002-20210209
+x86_64               randconfig-a003-20210209
+i386                 randconfig-a001-20210209
+i386                 randconfig-a005-20210209
+i386                 randconfig-a003-20210209
+i386                 randconfig-a002-20210209
+i386                 randconfig-a006-20210209
+i386                 randconfig-a004-20210209
+x86_64               randconfig-a016-20210211
+x86_64               randconfig-a013-20210211
+x86_64               randconfig-a012-20210211
+x86_64               randconfig-a015-20210211
+x86_64               randconfig-a014-20210211
+x86_64               randconfig-a011-20210211
+i386                 randconfig-a016-20210209
+i386                 randconfig-a013-20210209
+i386                 randconfig-a012-20210209
+i386                 randconfig-a014-20210209
+i386                 randconfig-a011-20210209
+i386                 randconfig-a015-20210209
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20210209
+x86_64               randconfig-a014-20210209
+x86_64               randconfig-a015-20210209
+x86_64               randconfig-a012-20210209
+x86_64               randconfig-a016-20210209
+x86_64               randconfig-a011-20210209
+
 ---
- net/sunrpc/xprtrdma/svc_rdma_transport.c |    2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c b/net/sunrpc/xprtrdma/svc_rdma_transport.c
-index afba4e9d5425..8d14dbd45418 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
-@@ -498,7 +498,9 @@ static struct svc_xprt *svc_rdma_accept(struct svc_xprt *xprt)
- 	}
- 	conn_param.private_data = &pmsg;
- 	conn_param.private_data_len = sizeof(pmsg);
-+	rdma_lock_handler(newxprt->sc_cm_id);
- 	ret = rdma_accept(newxprt->sc_cm_id, &conn_param);
-+	rdma_unlock_handler(newxprt->sc_cm_id);
- 	if (ret) {
- 		trace_svcrdma_accept_err(newxprt, ret);
- 		goto errout;
-
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
