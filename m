@@ -2,131 +2,199 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6970731A1A5
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Feb 2021 16:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C0331A1E9
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Feb 2021 16:41:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhBLP1T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Feb 2021 10:27:19 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62202 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231865AbhBLP1R (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:27:17 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11CFLFUG017783
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Feb 2021 10:26:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : from : to
- : cc : date : mime-version : references : content-transfer-encoding :
- content-type : message-id : subject; s=pp1;
- bh=ewYpEukUeHO9O7FQh4ZbbipaK8gJRiXpzPE0f62YjA0=;
- b=m+L4l98jaEuTHUB0XcPBsVEpIrWZEUiEHD+sUjO6isM+GJsqVWUzueOzngrv/HsK6L19
- SEEKF9dGpGihl46P6ZFdiBj+OQ+M3MbusNCFb/1wERoYdb7FYxulWvxKZPwt7c2aG8ki
- 79k6xDwfEXJ1GKD/SAhLSlMd2IAhYJ3ucxXCwe9nA6RZwmDLZmPQ18uJuLqFEIqRyDV0
- 9mPvlHvQmVbwSJOVjVYOzqWvgGMHoVYZVE1GkENElVduQsfCvWzQgspgojCGp7GZj8aL
- laubkor0BJjh17UcQXyO7kkunZOp+aJkvzs0d97lYmhtZ+JNHD3MAnik/Rd9bS/cnrLh fw== 
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.114])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36nv8a836x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Feb 2021 10:26:33 -0500
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Fri, 12 Feb 2021 15:26:32 -0000
-Received: from us1b3-smtp05.a3dr.sjc01.isc4sb.com (10.122.203.183)
-        by smtp.notes.na.collabserv.com (10.122.47.58) with smtp.notes.na.collabserv.com ESMTP;
-        Fri, 12 Feb 2021 15:26:30 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp05.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2021021215263012-383032 ;
-          Fri, 12 Feb 2021 15:26:30 +0000 
-In-Reply-To: <42736765-35DA-454E-AF9B-0484D98C821A@redhat.com>
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Benjamin Coddington" <bcodding@redhat.com>
-Cc:     "Chuck Lever" <chuck.lever@oracle.com>,
-        "linux-rdma" <linux-rdma@vger.kernel.org>
-Date:   Fri, 12 Feb 2021 15:26:29 +0000
-MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <42736765-35DA-454E-AF9B-0484D98C821A@redhat.com>,<4B1D8641-3971-409C-B730-012EDE4D3AEB@oracle.com>
- <61EFD7EA-FA16-4AA1-B92F-0B0D4CC697AB@oracle.com>
- <OFE25AAD0A.3B8CE2E0-ON0025867A.0043F201-0025867A.00455111@notes.na.collabserv.com>
- <OFCA489C99.24705C66-ON0025867A.004929F2-0025867A.004929F9@notes.na.collabserv.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
-X-KeepSent: 6479A795:E0C17A4D-0025867A:0054D29B;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 46175
-X-TNEFEvaluated: 1
+        id S229660AbhBLPk7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Feb 2021 10:40:59 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4177 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231753AbhBLPk5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Feb 2021 10:40:57 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6026a15b0000>; Fri, 12 Feb 2021 07:40:11 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Feb
+ 2021 15:40:10 +0000
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.176)
+ by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Fri, 12 Feb 2021 15:40:10 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V/t55ojSADoFGI3oLN34g2r4jc5GdAuDVh11+QJhHCiAUoPxEVIr/ac4kkgbUUKgGy/iepNPk29D8l/LJVRTdIxqOLohwtkRT38C2glf0UcnPBG7IsAsCywKZl7as6JjPMCPtM9KfGHNlyFLRjuKLJrynMYoFgb57iCLpjYg+K6w+/t2SzkUcVZW6Piy6vsktyXfJ0AidJqWoxnLXKIoqLsAsS4Lc4i5A6OYgwC85hAIP+8douVLMjnQDPir5V1Fx17aNsi0yUU/Er8s+Bh2Mu9uNORNroMr7O5F4iFvEjvFClVMiCURPgG4xkIRb9OQ3HJUpR+RsUPKvb8lPyH92A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BNZWp+pGPezV2kER24PezWLFcrWjuOrQjKUYGcAUSBw=;
+ b=CrjvhcQhrsnQeZ3OIcSNOrPqDznwCMrD1krsq/vyatNxcn9uZQNt4pLlAFLNnrczAkn0yFynQCoJxZ/n6wjR+9o7Hn8CrC28MlHlQNsbQnGRYfZvbrGcxvQ6KtfoipdxuaeWZxZfAU0g4xoU+8wZLS3ph4UsUhnIYwrdoQI6ShtWxgGVs2WW7D2a5KQ/0zCKoVe9wCAhvNcT3VnvDNMp4aCCNA4llVmkerJpin8GGRHZRZif1O2ItR3CJL11M2gBhYh2gfl7phmfMcYoUl84D5RVu1QOXgMfpYBIMuezbgM6yGjzMraRn/rOApTxdHByilFN49/XS4xqk+ddW5GM6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2603.namprd12.prod.outlook.com (2603:10b6:5:49::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.23; Fri, 12 Feb
+ 2021 15:40:09 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.030; Fri, 12 Feb 2021
+ 15:40:09 +0000
+Date:   Fri, 12 Feb 2021 11:40:07 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Amit Matityahu <mitm@nvidia.com>, <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v2] RDMA/ucma: Fix use-after-free bug in
+ ucma_create_uevent
+Message-ID: <20210212154007.GA1716976@nvidia.com>
+References: <20210211090517.1278415-1-leon@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 21021215-1639-0000-0000-0000035F262B
-X-IBM-SpamModules-Scores: BY=0.025629; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.012553
-X-IBM-SpamModules-Versions: BY=3.00014728; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000295; SDB=6.01506756; UDB=6.00813480; IPR=6.01289299;
- MB=3.00036114; MTD=3.00000008; XFM=3.00000015; UTC=2021-02-12 15:26:31
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2021-02-12 14:36:07 - 6.00012297
-x-cbparentid: 21021215-1640-0000-0000-0000C8A5ACB8
-Message-Id: <OF6479A795.E0C17A4D-ON0025867A.0054D29B-0025867A.0054D2A4@notes.na.collabserv.com>
-Subject: RE: directing soft iWARP traffic through a secure tunnel
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-12_05:2021-02-12,2021-02-12 signatures=0
-X-Proofpoint-Spam-Reason: orgsafe
+In-Reply-To: <20210211090517.1278415-1-leon@kernel.org>
+X-ClientProxiedBy: BL0PR02CA0095.namprd02.prod.outlook.com
+ (2603:10b6:208:51::36) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR02CA0095.namprd02.prod.outlook.com (2603:10b6:208:51::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Fri, 12 Feb 2021 15:40:08 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lAaYB-007CjL-7g; Fri, 12 Feb 2021 11:40:07 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613144411; bh=yexm+o8z8/lFAwf2GKXchjcUD5avwqko0D+0ELj4Vrs=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:Content-Transfer-Encoding:In-Reply-To:
+         X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=M0+QYghNAZjKpGCx29oO2+Uzc6FCReu1nl4LGlpZlPXGmXpe8E5+BLyShSqai22FH
+         cfm+t5dkm/Iw/R1/2vhCwIjiEad1HImWHmBtYi7QjR+NZ/XcooHRP4U1SAjHTzWnIR
+         OMrK/y9I4rADxrzB5yjbk9Tlic2Sz8XlTe04E2Zaxzrpx9uVJvfwXvz/Q5w7Yz8q5t
+         PAqJp5g+3FyTGBIAKfupdbcvI82BUXu8Xj5dNz1mIx1AjORzwzgpmU96bM0aV1fP0B
+         Pn+bKFUEzrcotQTUlc1d8Ph7JCt+aC7kPxiV5CX7bVcjzpNgwi3z03kTkxdC054xkh
+         UdEt2fdhhA6Bg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Benjamin Coddington" <bcodding@redhat.com> wrote: -----
+On Thu, Feb 11, 2021 at 11:05:17AM +0200, Leon Romanovsky wrote:
+> From: Avihai Horon <avihaih@nvidia.com>
+>=20
+> ucma_process_join() allocates struct ucma_multicast mc and frees it if an
+> error occurs during its run.
+> Specifically, if an error occurs in copy_to_user(), a use-after-free
+> might happen in the following scenario:
+>=20
+> 1. mc struct is allocated.
+> 2. rdma_join_multicast() is called and succeeds. During its run,
+>    cma_iboe_join_multicast() enqueues a work that will later use the
+>    aforementioned mc struct.
+> 3. copy_to_user() is called and fails.
+> 4. mc struct is deallocated.
+> 5. The work that was enqueued by cma_iboe_join_multicast() is run and
+>    calls ucma_create_uevent() which tries to access mc struct (which is
+>    freed by now).
+>=20
+> Fix this bug by cancelling the work enqueued by cma_iboe_join_multicast()=
+.
+> Since cma_work_handler() frees struct cma_work, we don't use it in
+> cma_iboe_join_multicast() so we can safely cancel the work later.
+>=20
+> The following syzkaller report revealed it:
+>=20
+> BUG: KASAN: use-after-free in ucma_create_uevent+0x2dd/0&times;3f0
+> drivers/infiniband/core/ucma.c:272
+> Read of size 8 at addr ffff88810b3ad110 by task kworker/u8:1/108
+> =C2=A0
+> CPU: 1 PID: 108 Comm: kworker/u8:1 Not tainted 5.10.0-rc6+ #257
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+> Workqueue: rdma_cm cma_work_handler
+> Call Trace:
+> __dump_stack lib/dump_stack.c:77 [inline]
+> dump_stack+0xbe/0xf9 lib/dump_stack.c:118
+> print_address_description.constprop.0+0x3e/0=C3=9760 mm/kasan/report.c:38=
+5
+> __kasan_report mm/kasan/report.c:545 [inline]
+> kasan_report.cold+0x1f/0=C3=9737 mm/kasan/report.c:562
+> ucma_create_uevent+0x2dd/0=C3=973f0 drivers/infiniband/core/ucma.c:272
+> ucma_event_handler+0xb7/0=C3=973c0 drivers/infiniband/core/ucma.c:349
+> cma_cm_event_handler+0x5d/0=C3=971c0 drivers/infiniband/core/cma.c:1977
+> cma_work_handler+0xfa/0=C3=97190 drivers/infiniband/core/cma.c:2718
+> process_one_work+0x54c/0=C3=97930 kernel/workqueue.c:2272
+> worker_thread+0x82/0=C3=97830 kernel/workqueue.c:2418
+> kthread+0x1ca/0=C3=97220 kernel/kthread.c:292
+> ret_from_fork+0x1f/0=C3=9730 arch/x86/entry/entry_64.S:296
+>=20
+> Allocated by task 359:
+> kasan_save_stack+0x1b/0=C3=9740 mm/kasan/common.c:48
+> kasan_set_track mm/kasan/common.c:56 [inline]
+> __kasan_kmalloc mm/kasan/common.c:461 [inline]
+> __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:434
+> kmalloc include/linux/slab.h:552 [inline]
+> kzalloc include/linux/slab.h:664 [inline]
+> ucma_process_join+0x16e/0=C3=973f0 drivers/infiniband/core/ucma.c:1453
+> ucma_join_multicast+0xda/0=C3=97140 drivers/infiniband/core/ucma.c:1538
+> ucma_write+0x1f7/0=C3=97280 drivers/infiniband/core/ucma.c:1724
+> vfs_write fs/read_write.c:603 [inline]
+> vfs_write+0x191/0=C3=974c0 fs/read_write.c:585
+> ksys_write+0x1a1/0=C3=971e0 fs/read_write.c:658
+> do_syscall_64+0x2d/0=C3=9740 arch/x86/entry/common.c:46
+> entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>=20
+> Freed by task 359:
+> kasan_save_stack+0x1b/0=C3=9740 mm/kasan/common.c:48
+> kasan_set_track+0x1c/0=C3=9730 mm/kasan/common.c:56
+> kasan_set_free_info+0x1b/0=C3=9730 mm/kasan/generic.c:355
+> __kasan_slab_free+0x112/0=C3=97160 mm/kasan/common.c:422
+> slab_free_hook mm/slub.c:1544 [inline]
+> slab_free_freelist_hook mm/slub.c:1577 [inline]
+> slab_free mm/slub.c:3142 [inline]
+> kfree+0xb3/0=C3=973e0 mm/slub.c:4124
+> ucma_process_join+0x22d/0=C3=973f0 drivers/infiniband/core/ucma.c:1497
+> ucma_join_multicast+0xda/0=C3=97140 drivers/infiniband/core/ucma.c:1538
+> ucma_write+0x1f7/0=C3=97280 drivers/infiniband/core/ucma.c:1724
+> vfs_write fs/read_write.c:603 [inline]
+> vfs_write+0x191/0=C3=974c0 fs/read_write.c:585
+> ksys_write+0x1a1/0=C3=971e0 fs/read_write.c:658
+> do_syscall_64+0x2d/0=C3=9740 arch/x86/entry/common.c:46
+> entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> The buggy address belongs to the object at ffff88810b3ad100
+> which belongs to the cache kmalloc-192 of size 192
+> The buggy address is located 16 bytes inside of
+> 192-byte region [ffff88810b3ad100, ffff88810b3ad1c0)
+>=20
+> The buggy address belongs to the page:
+> page:00000000796da98e refcount:1 mapcount:0 mapping:0000000000000000
+> index:0=C3=970 pfn:0=C3=9710b3ad
+> flags: 0=C3=978000000000000200(slab)
+> raw: 8000000000000200 dead000000000100 dead000000000122 ffff888100043540
+> raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> Memory state around the buggy address:
+> ffff88810b3ad000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> ffff88810b3ad080: 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc fc
+> >ffff88810b3ad100: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> ^
+> ffff88810b3ad180: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+> ffff88810b3ad200: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>=20
+> Fixes: b5de0c60cc30 ("RDMA/cma: Fix use after free race in roce multicast=
+ join")
+> Reported-by: Amit Matityahu <mitm@nvidia.com>
+> Signed-off-by: Avihai Horon <avihaih@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+> Changelog:
+> v2:
+>  * Delete cma_id_get() in cma_iboe_join_multicast.
+>  * Added WARN_ON(ret) checks.
+> v1: https://lore.kernel.org/linux-rdma/20210125121556.838290-1-leon@kerne=
+l.org
+> ---
+>  drivers/infiniband/core/cma.c | 70 ++++++++++++++++++++---------------
+>  1 file changed, 41 insertions(+), 29 deletions(-)
 
->To: "Bernard Metzler" <BMT@zurich.ibm.com>
->From: "Benjamin Coddington" <bcodding@redhat.com>
->Date: 02/12/2021 02:27PM
->Cc: "Chuck Lever" <chuck.lever@oracle.com>, "linux-rdma"
-><linux-rdma@vger.kernel.org>
->Subject: [EXTERNAL] Re: directing soft iWARP traffic through a secure
->tunnel
->
->On 12 Feb 2021, at 8:19, Bernard Metzler wrote:
->
->> How does this tunnel device look like? What does
->> ifconfig or ip show? Probably NOARP and no
->> HW address?
->
->right:
->
-># ip link show tun0
->3: tun0: <POINTOPOINT,MULTICAST,NOARP,UP,LOWER=5FUP> mtu 1500 qdisc=20
->fq=5Fcodel state UNKNOWN mode DEFAULT group default qlen 500
->
-># ifconfig tun0
->tun0: flags=3D4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1500
->         inet6 fe80::6bbf:1def:b134:2eef  prefixlen 64  scopeid=20
->0x20<link>
->         inet6 fd51:5f56:d79b:a64e:64cc:5641:2916:7c4  prefixlen 64 =20
->scopeid 0x0<global>
->         unspec 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00 =20
->txqueuelen 500  (UNSPEC)
->         RX packets 751  bytes 118096 (115.3 KiB)
->         RX errors 0  dropped 0  overruns 0  frame 0
->         TX packets 781  bytes 124142 (121.2 KiB)
->         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
->
->> Or should I better setup a VPN client to your network
->> to see what is needed?
->
->I can provide you with an openvpn config file that you can use to=20
->connect to
->our network under separate cover if you'd like.
->
-great.
-let's take this off the list and come back with a
-proposed 3 lines patch. But, actually, I hope we
-do not see problems with the iwcm regarding address resolution.
+Applied to for-next, thanks
 
-Best,
-Bernard.
-
+Jason
