@@ -2,60 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F6831A005
+	by mail.lfdr.de (Postfix) with ESMTP id 95C6831A006
 	for <lists+linux-rdma@lfdr.de>; Fri, 12 Feb 2021 14:46:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhBLNqK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Feb 2021 08:46:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
+        id S230484AbhBLNqL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Feb 2021 08:46:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbhBLNqJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Feb 2021 08:46:09 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCB5C061756
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Feb 2021 05:45:28 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id b9so15658453ejy.12
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Feb 2021 05:45:28 -0800 (PST)
+        with ESMTP id S231422AbhBLNqK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Feb 2021 08:46:10 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D5EC0613D6
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Feb 2021 05:45:29 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id hs11so15746106ejc.1
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Feb 2021 05:45:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GHTvRlM2/jz/bIw9TFUdKLexYFKdJGzpNqE9ekZEwUc=;
-        b=UrVTh1uxB4DOber/D7h8vtj6A/fhZAD15AxroGCwS3qg+xtZQY2KHa2Ij9J4PUN3dx
-         egAJVKj1eE/CtzQYZkVa7S/ZJHmCIUq87RIpJa8ek5Zjq1e52ct5R6qOndjVYrlgqx6B
-         Lk4tIojEzZnrTYrZHBVimXwCcpggE8s66xs3tUG1Yl+h24E/uPnQEHsMlLf+GVMHWEaG
-         MDEEe6l5rxxVr+tXlA/ZWi32v11RmngUs0WI1f9DFR0pyILCKkd5QRz43fPyvg1P4CLX
-         8VOZJrLLJEOrWjjfbmImTazEKoSzy+45gMmwhP3rgoCAWpWL0kBIqR0spW1pVKKRC5dZ
-         7oMQ==
+        bh=mqgjm/44pTjB7bk1jjk4ULd06LY0GKxoXjhfITjUNKM=;
+        b=KbSXqAPn2etQ8ce4JzY6/XAJJNOP4aTtH2TbW1T7KfBSr9IhDY3kdKAshchE8Ary2r
+         8M0R5l4Z4UXfW2A8/ZuFQVx/vpQ9+B6EeX20Dd5YeOSx2x0vmIk2XtTKw/5uW/YlOwuw
+         /SvcvOcoVSuW08rKOmG8ea5WN7GKqcuxWueDuUlI7kEPD3zWz/IM6LgZBWIs6+NMtFF0
+         XPjqR1k+GIHhqOOtFkZ1zOnHbjSSw6HBBeYof5oXwysYVf2sROCs/+FmNnbw3Xfrr8EQ
+         EktNwRAbfrkxZ8wxLC2T1vL9Jg45FzgYBnOoDdb2/ptDNm9rpLb6ll2+z6w5KweopNnR
+         5zqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GHTvRlM2/jz/bIw9TFUdKLexYFKdJGzpNqE9ekZEwUc=;
-        b=aBli6wULLqHqjU5YcMxtBB4RDByNIHbBuk0wCxSWQ9qUIqbpptLKQ4+FLK4JME5UUp
-         Y5/fqqRtmWfhwm+y2ZDgRLqTkv82CNXbOwm996LC4mvOJ6SIOnJOYXzpwZQ9wpDtaOJp
-         b95c5KX/5jOwo5OW6tghrYJMgLXbovX46kdFeCINLGGyPiVGzc1OxbqZ/NsX6halJVlR
-         PBLMU42L6JSK3Mr9wPWlRbbufw7uqJ86Y6FSQk2Cd+akFbWFbofvh+nv1gtNexYCgtIF
-         mA9an/nlZxy+QxBz7AXMlS1wHqBFJbTmwvb3vhmXAxaSmFYTyvXx0EDx0dihI4czCHMY
-         NItw==
-X-Gm-Message-State: AOAM531oARirD0HsJ1lCYJOfJs6031dwXVhr1vCE0tuj6kLzCR5XDtK/
-        clspNIFhoT/1OU0yDDvuS7UWBxTG0RK8Rg==
-X-Google-Smtp-Source: ABdhPJwBNHGD8+UxRSRjUEMScyzglpLqdWITXcO7BIbqVrU3gCNcAXJ4ca9NAkD+gtn/yOVRjQSt/w==
-X-Received: by 2002:a17:906:c9cc:: with SMTP id hk12mr3206697ejb.134.1613137527344;
-        Fri, 12 Feb 2021 05:45:27 -0800 (PST)
+        bh=mqgjm/44pTjB7bk1jjk4ULd06LY0GKxoXjhfITjUNKM=;
+        b=ekIwu0uOGj8K/l4P+Dt7HYO7nQAxakqxjAg5smQ6dNpa/TjcQtD98qk7wYLCmULf5j
+         FBU5Kn1X4manLDKZFernjb+IsCqzvLy1eiV3AaduhbnLsUiJX9UqYmalDYxc7o+2eFUV
+         6dOlWfiz07KIUwRGqYu3POKRSlwlQLsF1kxDketjWga268E7X8WwBc29rsQIpb6yYl61
+         OlO12qHXgrCHW+LrdS2iF0QIr7qFrik69RjCkLyWtvy4K1QO8NXM+UE27gxxJ+d+H+vf
+         WcoReq4kVtzB2JOykDKM5Yz22a97M3VILeSnaYBLNqrUw+eMonQE63UuZEjwEqF892n9
+         KPiA==
+X-Gm-Message-State: AOAM5318dtgtSvxCE+lq4CDLOGB64sUqtt8OUWGVyX+cGdkvL/1OHe/0
+        h+ZumBUckj4xnzYXGgz+dVZKRGCLnygYmw==
+X-Google-Smtp-Source: ABdhPJycD5nTJVc3FdrcRq3vlTUbxKx5Uc5h+1kw2zZXS1z/xcW99z/AQaeoH1opAvc/pHQ+u7NF/Q==
+X-Received: by 2002:a17:906:f0d0:: with SMTP id dk16mr3041660ejb.533.1613137528193;
+        Fri, 12 Feb 2021 05:45:28 -0800 (PST)
 Received: from jwang-Latitude-5491.fritz.box ([2001:16b8:49fe:3100:e80f:dbb4:eac5:c974])
-        by smtp.gmail.com with ESMTPSA id o4sm5856197edw.78.2021.02.12.05.45.26
+        by smtp.gmail.com with ESMTPSA id o4sm5856197edw.78.2021.02.12.05.45.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 05:45:26 -0800 (PST)
+        Fri, 12 Feb 2021 05:45:27 -0800 (PST)
 From:   Jack Wang <jinpu.wang@cloud.ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
-        jinpu.wang@cloud.ionos.com, Gioh Kim <gi-oh.kim@cloud.ionos.com>,
-        Leon Romanovsky <leonro@nvidia.com>
-Subject: [PATCHv2 for-next 1/4] RDMA/rtrs-srv: Fix BUG: KASAN: stack-out-of-bounds
-Date:   Fri, 12 Feb 2021 14:45:22 +0100
-Message-Id: <20210212134525.103456-2-jinpu.wang@cloud.ionos.com>
+        jinpu.wang@cloud.ionos.com,
+        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
+        Lutz Pogrell <lutz.pogrell@cloud.ionos.com>
+Subject: [PATCHv2 for-next 2/4] RDMA/rtrs: Only allow addition of path to an already established session
+Date:   Fri, 12 Feb 2021 14:45:23 +0100
+Message-Id: <20210212134525.103456-3-jinpu.wang@cloud.ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210212134525.103456-1-jinpu.wang@cloud.ionos.com>
 References: <20210212134525.103456-1-jinpu.wang@cloud.ionos.com>
@@ -65,197 +66,162 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-[  125.352752] ==================================================================
-[  125.353122] BUG: KASAN: stack-out-of-bounds in _mlx4_ib_post_send+0x1bd2/0x2770 [mlx4_ib]
-[  125.353337] Read of size 4 at addr ffff8880d5a7f980 by task kworker/0:1H/565
+From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
 
-[  125.353655] CPU: 0 PID: 565 Comm: kworker/0:1H Tainted: G           O      5.4.84-storage #5.4.84-1+feature+linux+5.4.y+dbg+20201216.1319+b6b887b~deb10
-[  125.353924] Hardware name: Supermicro H8QG6/H8QG6, BIOS 3.00       09/04/2012
-[  125.354144] Workqueue: ib-comp-wq ib_cq_poll_work [ib_core]
-[  125.354317] Call Trace:
-[  125.354531]  dump_stack+0x96/0xe0
-[  125.354715]  print_address_description.constprop.4+0x1f/0x300
-[  125.354943]  ? irq_work_claim+0x2e/0x50
-[  125.355129]  __kasan_report.cold.8+0x78/0x92
-[  125.355334]  ? _mlx4_ib_post_send+0x1bd2/0x2770 [mlx4_ib]
-[  125.355545]  kasan_report+0x10/0x20
-[  125.355730]  _mlx4_ib_post_send+0x1bd2/0x2770 [mlx4_ib]
-[  125.355930]  ? check_chain_key+0x1d7/0x2e0
-[  125.356203]  ? _mlx4_ib_post_recv+0x630/0x630 [mlx4_ib]
-[  125.356399]  ? lockdep_hardirqs_on+0x1a8/0x290
-[  125.356595]  ? stack_depot_save+0x218/0x56e
-[  125.356781]  ? do_profile_hits.isra.6.cold.13+0x1d/0x1d
-[  125.356973]  ? check_chain_key+0x1d7/0x2e0
-[  125.357174]  ? save_stack+0x4d/0x80
-[  125.357374]  ? save_stack+0x19/0x80
-[  125.357547]  ? __kasan_slab_free+0x125/0x170
-[  125.357728]  ? kfree+0xe7/0x3b0
-[  125.357899]  rdma_write_sg+0x5b0/0x950 [rtrs_server]
+While adding a path from the client side to an already established
+session, it was possible to provide the destination IP to a different
+server. This is dangerous.
 
-The problem is when we send imm_wr, the type should be ib_rdma_wr, so
-hw driver like mlx4 can do rdma_wr(wr), so fix it by use the ib_rdma_wr
-as type for imm_wr.
+This commit adds an extra member to the rtrs_msg_conn_req structure, named
+first_conn; which is supposed to notify if the connection request is the
+first for that session or not.
 
+On the server side, if a session does not exist but the first_conn
+received inside the rtrs_msg_conn_req structure is 1, the connection
+request is failed. This signifies that the connection request is for an
+already existing session, and since the server did not find one, it is an
+wrong connection request.
+
+Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
 Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
+Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+Reviewed-by: Lutz Pogrell <lutz.pogrell@cloud.ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Reviewed-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 64 +++++++++++++-------------
- 1 file changed, 33 insertions(+), 31 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c |  7 +++++++
+ drivers/infiniband/ulp/rtrs/rtrs-clt.h |  1 +
+ drivers/infiniband/ulp/rtrs/rtrs-pri.h |  4 +++-
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 21 +++++++++++++++------
+ 4 files changed, 26 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 7644c3f627ca..0a08b4b742a3 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -31,6 +31,8 @@
+  */
+ #define RTRS_RECONNECT_SEED 8
+ 
++#define FIRST_CONN 0x01
++
+ MODULE_DESCRIPTION("RDMA Transport Client");
+ MODULE_LICENSE("GPL");
+ 
+@@ -1660,6 +1662,7 @@ static int rtrs_rdma_route_resolved(struct rtrs_clt_con *con)
+ 		.cid_num = cpu_to_le16(sess->s.con_num),
+ 		.recon_cnt = cpu_to_le16(sess->s.recon_cnt),
+ 	};
++	msg.first_conn = sess->for_new_clt ? FIRST_CONN : 0;
+ 	uuid_copy(&msg.sess_uuid, &sess->s.uuid);
+ 	uuid_copy(&msg.paths_uuid, &clt->paths_uuid);
+ 
+@@ -1745,6 +1748,8 @@ static int rtrs_rdma_conn_established(struct rtrs_clt_con *con,
+ 		scnprintf(sess->hca_name, sizeof(sess->hca_name),
+ 			  sess->s.dev->ib_dev->name);
+ 		sess->s.src_addr = con->c.cm_id->route.addr.src_addr;
++		/* set for_new_clt, to allow future reconnect on any path */
++		sess->for_new_clt = 1;
+ 	}
+ 
+ 	return 0;
+@@ -2662,6 +2667,8 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
+ 			err = PTR_ERR(sess);
+ 			goto close_all_sess;
+ 		}
++		if (!i)
++			sess->for_new_clt = 1;
+ 		list_add_tail_rcu(&sess->s.entry, &clt->paths_list);
+ 
+ 		err = init_sess(sess);
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.h b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
+index a97a068c4c28..692bc83e1f09 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.h
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
+@@ -143,6 +143,7 @@ struct rtrs_clt_sess {
+ 	int			max_send_sge;
+ 	u32			flags;
+ 	struct kobject		kobj;
++	u8			for_new_clt;
+ 	struct rtrs_clt_stats	*stats;
+ 	/* cache hca_port and hca_name to display in sysfs */
+ 	u8			hca_port;
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+index d5621e6fad1b..8caad0a2322b 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
++++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+@@ -188,7 +188,9 @@ struct rtrs_msg_conn_req {
+ 	__le16		recon_cnt;
+ 	uuid_t		sess_uuid;
+ 	uuid_t		paths_uuid;
+-	u8		reserved[12];
++	u8		first_conn : 1;
++	u8		reserved_bits : 7;
++	u8		reserved[11];
+ };
+ 
+ /**
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 918f1cf140cd..e13e91c2a44a 100644
+index e13e91c2a44a..fbe39360ff12 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -222,7 +222,8 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
- 	dma_addr_t dma_addr = sess->dma_addr[id->msg_id];
- 	struct rtrs_srv_mr *srv_mr;
- 	struct rtrs_srv *srv = sess->srv;
--	struct ib_send_wr inv_wr, imm_wr;
-+	struct ib_send_wr inv_wr;
-+	struct ib_rdma_wr imm_wr;
- 	struct ib_rdma_wr *wr = NULL;
- 	enum ib_send_flags flags;
- 	size_t sg_cnt;
-@@ -274,15 +275,15 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
- 	if (need_inval && always_invalidate) {
- 		wr->wr.next = &rwr.wr;
- 		rwr.wr.next = &inv_wr;
--		inv_wr.next = &imm_wr;
-+		inv_wr.next = &imm_wr.wr;
- 	} else if (always_invalidate) {
- 		wr->wr.next = &rwr.wr;
--		rwr.wr.next = &imm_wr;
-+		rwr.wr.next = &imm_wr.wr;
- 	} else if (need_inval) {
- 		wr->wr.next = &inv_wr;
--		inv_wr.next = &imm_wr;
-+		inv_wr.next = &imm_wr.wr;
- 	} else {
--		wr->wr.next = &imm_wr;
-+		wr->wr.next = &imm_wr.wr;
- 	}
- 	/*
- 	 * From time to time we have to post signaled sends,
-@@ -300,7 +301,7 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
- 		inv_wr.ex.invalidate_rkey = rkey;
- 	}
+@@ -1333,7 +1333,8 @@ static void free_srv(struct rtrs_srv *srv)
+ }
  
--	imm_wr.next = NULL;
-+	imm_wr.wr.next = NULL;
- 	if (always_invalidate) {
- 		struct rtrs_msg_rkey_rsp *msg;
- 
-@@ -321,22 +322,22 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
- 		list.addr   = srv_mr->iu->dma_addr;
- 		list.length = sizeof(*msg);
- 		list.lkey   = sess->s.dev->ib_pd->local_dma_lkey;
--		imm_wr.sg_list = &list;
--		imm_wr.num_sge = 1;
--		imm_wr.opcode = IB_WR_SEND_WITH_IMM;
-+		imm_wr.wr.sg_list = &list;
-+		imm_wr.wr.num_sge = 1;
-+		imm_wr.wr.opcode = IB_WR_SEND_WITH_IMM;
- 		ib_dma_sync_single_for_device(sess->s.dev->ib_dev,
- 					      srv_mr->iu->dma_addr,
- 					      srv_mr->iu->size, DMA_TO_DEVICE);
- 	} else {
--		imm_wr.sg_list = NULL;
--		imm_wr.num_sge = 0;
--		imm_wr.opcode = IB_WR_RDMA_WRITE_WITH_IMM;
-+		imm_wr.wr.sg_list = NULL;
-+		imm_wr.wr.num_sge = 0;
-+		imm_wr.wr.opcode = IB_WR_RDMA_WRITE_WITH_IMM;
- 	}
--	imm_wr.send_flags = flags;
--	imm_wr.ex.imm_data = cpu_to_be32(rtrs_to_io_rsp_imm(id->msg_id,
-+	imm_wr.wr.send_flags = flags;
-+	imm_wr.wr.ex.imm_data = cpu_to_be32(rtrs_to_io_rsp_imm(id->msg_id,
- 							     0, need_inval));
- 
--	imm_wr.wr_cqe   = &io_comp_cqe;
-+	imm_wr.wr.wr_cqe   = &io_comp_cqe;
- 	ib_dma_sync_single_for_device(sess->s.dev->ib_dev, dma_addr,
- 				      offset, DMA_BIDIRECTIONAL);
- 
-@@ -363,7 +364,8 @@ static int send_io_resp_imm(struct rtrs_srv_con *con, struct rtrs_srv_op *id,
+ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
+-					   const uuid_t *paths_uuid)
++					  const uuid_t *paths_uuid,
++					  bool first_conn)
  {
- 	struct rtrs_sess *s = con->c.sess;
- 	struct rtrs_srv_sess *sess = to_srv_sess(s);
--	struct ib_send_wr inv_wr, imm_wr, *wr = NULL;
-+	struct ib_send_wr inv_wr, *wr = NULL;
-+	struct ib_rdma_wr imm_wr;
- 	struct ib_reg_wr rwr;
- 	struct rtrs_srv *srv = sess->srv;
- 	struct rtrs_srv_mr *srv_mr;
-@@ -400,15 +402,15 @@ static int send_io_resp_imm(struct rtrs_srv_con *con, struct rtrs_srv_op *id,
- 	if (need_inval && always_invalidate) {
- 		wr = &inv_wr;
- 		inv_wr.next = &rwr.wr;
--		rwr.wr.next = &imm_wr;
-+		rwr.wr.next = &imm_wr.wr;
- 	} else if (always_invalidate) {
- 		wr = &rwr.wr;
--		rwr.wr.next = &imm_wr;
-+		rwr.wr.next = &imm_wr.wr;
- 	} else if (need_inval) {
- 		wr = &inv_wr;
--		inv_wr.next = &imm_wr;
-+		inv_wr.next = &imm_wr.wr;
- 	} else {
--		wr = &imm_wr;
-+		wr = &imm_wr.wr;
+ 	struct rtrs_srv *srv;
+ 	int i;
+@@ -1346,12 +1347,20 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
+ 			return srv;
+ 		}
  	}
++	/*
++	 * If this request is not the first connection request from the
++	 * client for this session then fail and return error.
++	 */
++	if (!first_conn) {
++		mutex_unlock(&ctx->srv_mutex);
++		return ERR_PTR(-ENXIO);
++	}
+ 
+ 	/* need to allocate a new srv */
+ 	srv = kzalloc(sizeof(*srv), GFP_KERNEL);
+ 	if  (!srv) {
+ 		mutex_unlock(&ctx->srv_mutex);
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 	}
+ 
+ 	INIT_LIST_HEAD(&srv->paths_list);
+@@ -1386,7 +1395,7 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
+ 
+ err_free_srv:
+ 	kfree(srv);
+-	return NULL;
++	return ERR_PTR(-ENOMEM);
+ }
+ 
+ static void put_srv(struct rtrs_srv *srv)
+@@ -1787,13 +1796,13 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
+ 		goto reject_w_econnreset;
+ 	}
+ 	recon_cnt = le16_to_cpu(msg->recon_cnt);
+-	srv = get_or_create_srv(ctx, &msg->paths_uuid);
++	srv = get_or_create_srv(ctx, &msg->paths_uuid, msg->first_conn);
  	/*
- 	 * From time to time we have to post signalled sends,
-@@ -417,13 +419,13 @@ static int send_io_resp_imm(struct rtrs_srv_con *con, struct rtrs_srv_op *id,
- 	flags = (atomic_inc_return(&con->wr_cnt) % srv->queue_depth) ?
- 		0 : IB_SEND_SIGNALED;
- 	imm = rtrs_to_io_rsp_imm(id->msg_id, errno, need_inval);
--	imm_wr.next = NULL;
-+	imm_wr.wr.next = NULL;
- 	if (always_invalidate) {
- 		struct ib_sge list;
- 		struct rtrs_msg_rkey_rsp *msg;
- 
- 		srv_mr = &sess->mrs[id->msg_id];
--		rwr.wr.next = &imm_wr;
-+		rwr.wr.next = &imm_wr.wr;
- 		rwr.wr.opcode = IB_WR_REG_MR;
- 		rwr.wr.wr_cqe = &local_reg_cqe;
- 		rwr.wr.num_sge = 0;
-@@ -440,21 +442,21 @@ static int send_io_resp_imm(struct rtrs_srv_con *con, struct rtrs_srv_op *id,
- 		list.addr   = srv_mr->iu->dma_addr;
- 		list.length = sizeof(*msg);
- 		list.lkey   = sess->s.dev->ib_pd->local_dma_lkey;
--		imm_wr.sg_list = &list;
--		imm_wr.num_sge = 1;
--		imm_wr.opcode = IB_WR_SEND_WITH_IMM;
-+		imm_wr.wr.sg_list = &list;
-+		imm_wr.wr.num_sge = 1;
-+		imm_wr.wr.opcode = IB_WR_SEND_WITH_IMM;
- 		ib_dma_sync_single_for_device(sess->s.dev->ib_dev,
- 					      srv_mr->iu->dma_addr,
- 					      srv_mr->iu->size, DMA_TO_DEVICE);
- 	} else {
--		imm_wr.sg_list = NULL;
--		imm_wr.num_sge = 0;
--		imm_wr.opcode = IB_WR_RDMA_WRITE_WITH_IMM;
-+		imm_wr.wr.sg_list = NULL;
-+		imm_wr.wr.num_sge = 0;
-+		imm_wr.wr.opcode = IB_WR_RDMA_WRITE_WITH_IMM;
+ 	 * "refcount == 0" happens if a previous thread calls get_or_create_srv
+ 	 * allocate srv, but chunks of srv are not allocated yet.
+ 	 */
+-	if (!srv || refcount_read(&srv->refcount) == 0) {
+-		err = -ENOMEM;
++	if (IS_ERR(srv) || refcount_read(&srv->refcount) == 0) {
++		err = PTR_ERR(srv);
+ 		goto reject_w_err;
  	}
--	imm_wr.send_flags = flags;
--	imm_wr.wr_cqe   = &io_comp_cqe;
-+	imm_wr.wr.send_flags = flags;
-+	imm_wr.wr.wr_cqe   = &io_comp_cqe;
- 
--	imm_wr.ex.imm_data = cpu_to_be32(imm);
-+	imm_wr.wr.ex.imm_data = cpu_to_be32(imm);
- 
- 	err = ib_post_send(id->con->c.qp, wr, NULL);
- 	if (unlikely(err))
+ 	mutex_lock(&srv->paths_mutex);
 -- 
 2.25.1
 
