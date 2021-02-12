@@ -2,64 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826F3319F88
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Feb 2021 14:12:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64805319F8E
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Feb 2021 14:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbhBLNKq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Feb 2021 08:10:46 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:57128 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231975AbhBLNKE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Feb 2021 08:10:04 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11CCoEBw167872;
-        Fri, 12 Feb 2021 13:09:10 GMT
+        id S232132AbhBLNLI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Feb 2021 08:11:08 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:33736 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232053AbhBLNKK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Feb 2021 08:10:10 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11CD8h39019057;
+        Fri, 12 Feb 2021 13:09:17 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : content-type :
  mime-version; s=corp-2020-01-29;
- bh=QBC+NEiAE4J7sT4BZ6CfLxXlcIQg8NpsGdBzSgXbwdY=;
- b=Wh2XoqNxgTS/nmwij6wDGOxxeP8pDhp4bzMv4N1bq24kj2NI2vju5dlDm3ANImU4QIne
- 9ItcIw62JtYHSY/Xcg+EAdKwAivCpDsT6WMlG2DXqXi8c2UmnYF+BPLtjrN+ei1ntFdF
- EAEeMkty2ByD8dV/UXHk5DwKK05oB6SP/jX/GfNzW6FL3l0D0HYvwZ4t4YF8awLDKkJ0
- 24jYNK55R7riNTOW4plL/gHvaIhj6u/QxHkQP+T6CO4G0XugMdDHAPOFSBSGrHIWzDrR
- SOlKf/jcIn+DY9A8dSf18HOC/cLZFbqpXKXCeG3jXnQgQTyXLBfKnkWOvsWFwOrUfuhE lw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 36hkrnb2g1-1
+ bh=pblMTxugz0sthwIAXE3b5+P7tukiVSJBSWzcnB9s24o=;
+ b=NqKENkFVYalGUvP0sPkhFHX8EzjHBquWqOj/eiVDHCasJqItmsv2ZIZkqZcrLToY8vJg
+ d4Ye3K/WnSPtklDaZKUZor/o/RQOKBCj3RiMup8sDcWzsDCYGEOVKv9khg+kWgHMoWAt
+ AaxeIS+A3itIXq1JL6rBxOxU7oBSnjkYG3V4pUC9kUQM4ZE3NF+Hdf1HnM3R3xEG7O/+
+ ftyzOFGeyH388IPZSH5v/4zR7oEedGCHbuNra9nKX1MoifgOyMd2jfe4kcD2+VStVc4C
+ 6WMyJ6GT8FbOXbTl6dLEmB1WSei/vgPB0Mrn3yP029aihCqVwEI5/PuhjJhdB8CNdNcb iw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 36mv9dwadn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Feb 2021 13:09:09 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11CCnacs184188;
-        Fri, 12 Feb 2021 13:09:09 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-        by aserp3020.oracle.com with ESMTP id 36j515fn3u-1
+        Fri, 12 Feb 2021 13:09:17 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11CCopAr195735;
+        Fri, 12 Feb 2021 13:09:17 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2175.outbound.protection.outlook.com [104.47.58.175])
+        by userp3020.oracle.com with ESMTP id 36j4vvq2mh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Feb 2021 13:09:08 +0000
+        Fri, 12 Feb 2021 13:09:16 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P7nMAxmZmyPiqm2lvl4DO+n4bD9M+7dIvDCaIK7/n9JwmBzSUtwweRkKU9k/JXyO4nUdosp6Geu+IEqs+t8Ph6d6Fh3Y6ErGIwcChcSyfbyhtV5nR25HmQGisuPyJ/fYLNqQ6EzEUUIaOKCNoJcCxZzpIyaZhKOXipb/CLXKfESFuYIVfVsdsJgxhIAxc7KaozANSCkuIqJnldUnHDyNkUyjog6i3lnhFnN2FS1v3wpQSfJ7UI3UcTL/fmfOq9pkW7nm4bQs3J5dNCHebdBFSBIGUrbJrVR77Gyc170Uuthcq7AuOFYwD2/r9ukMy/mjRlEe0GgrHFMC7QKCfTo1Kw==
+ b=MO96dI9+qtmsq6PWfO5qY3G3VQH7RFqRGvdBLfmVUlHACixhl6/y5SvbMTr/Zsxw8P8GgTpenrEwC+WwReaQZ7wIgdUNyZS3n8Kh/SpxcuZ3cgnzbfph2wpN86pM80lFKlm6dLnReGFtDDF9iLSec/hoTmFz5ZrlkaBZ8vn4tBpR9Hs2nUDXR8W7wFmMJgxGympiQOpP2oBDUBb2sjELzLRetdgMtjcmf0XNJP9KDCJHoREx0hZimjOmsfH5gVFE+xv8IZI5V/4fIIBaKPuTUBK+YIkNxKAVZZrOk4TICSNgatG/oNESsu9YHURBj6cIazh1C0ajogMY+XqIPw+Law==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QBC+NEiAE4J7sT4BZ6CfLxXlcIQg8NpsGdBzSgXbwdY=;
- b=dzZuuw+rQLVF1zec0l6r+fYh9mQRQxsUCCGgUpaUwhV4C5JpkgcaHnVwAjbEp2lzVk2yKg1VoGIpO4pZT6/lioQlygqX1OXZKINknNaCCFdGY2qKvdHN5UkM9q353/nkmQRmbxidV1pbVLBJLZSomUVH9XJc+CJ66hWgUrbxUQX+WOVOzw52yFyj08wSx60DMZoPk/h+LcMBJzcMPK5zOha+bFM3ZV9YeoNwluKr32ahPOFciJ/tAoZ+WA+tpnx+7m5PV7PRW5frlvQVbCYWkmjOKxTOHIafiOIeoz2u6i56B/kD4h0qpJg4jvVXQ4VAyvzsm2x4WdhaYlGvVJn5wg==
+ bh=pblMTxugz0sthwIAXE3b5+P7tukiVSJBSWzcnB9s24o=;
+ b=UJxUHHoCIdhsaDGK9aPdijGwPJckskF7uhsivwjhQ04NpMEAz0hl1SRLXrKrzdF7mirvXwmXiWRQ3e227Q15Bmw6fU3MnQO0xzSCAGxKYDxX0pcuS4TbfGVPJd3eslSemASeeu1gPW0N+aoZ8663BPnBtxjQ1aK7IcfuZ5qbB5DO/gl9RBPMiBxcdfePsbMuyeV6YQ6YTefAl6qyTNo6os/b7OGH+9Gm01O0NO4oeum3QX5z98AeMGqYaQo+IlMltliOd6Z/C85NwwqCtU78KYHBKUvwV+6sK0LvvkciucLdqetPpTSckL2xJ1XP740PyRYOb2dPPhlCDH4+PwseyQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QBC+NEiAE4J7sT4BZ6CfLxXlcIQg8NpsGdBzSgXbwdY=;
- b=dYURuKAg32RhEdQOE3yRETebZPhO+2nLRgKLft2G+H8c80F9ijXlkXkUhguVCdyIUuoGW8yzqT1cjxcdw85CQpYcpSVgQKSsmMtgLHSkVC1U1Yvq2jSdOM2YTJFqkyPUaZYrB3VqzaPvE40/9CsrZxC445Tiu8MbTLZfznlz8+k=
+ bh=pblMTxugz0sthwIAXE3b5+P7tukiVSJBSWzcnB9s24o=;
+ b=SJaS5q4Dpwd5n0d4H5xhtwBT2P3wlPfqr7ZFCtZlF/sXqbhog5eqzUgpQcXucI0qRNIv3WhgNi/tgVhvYx25wVJ66SGRneqQT/ZS0lGf0z1781tnMG0vEMRJLvDOJA5zDUEFXokcI4TAR6EWSf+HzKnp0FuyXOpROWTVZ+9jka0=
 Authentication-Results: kvack.org; dkim=none (message not signed)
  header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
 Received: from BYAPR10MB3077.namprd10.prod.outlook.com (2603:10b6:a03:8c::12)
  by SJ0PR10MB4509.namprd10.prod.outlook.com (2603:10b6:a03:2d9::5) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17; Fri, 12 Feb
- 2021 13:09:07 +0000
+ 2021 13:09:09 +0000
 Received: from BYAPR10MB3077.namprd10.prod.outlook.com
  ([fe80::74a8:8649:e20b:d571]) by BYAPR10MB3077.namprd10.prod.outlook.com
  ([fe80::74a8:8649:e20b:d571%7]) with mapi id 15.20.3846.034; Fri, 12 Feb 2021
- 13:09:06 +0000
+ 13:09:09 +0000
 From:   Joao Martins <joao.m.martins@oracle.com>
 To:     linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
@@ -69,9 +69,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
         John Hubbard <jhubbard@nvidia.com>,
         Matthew Wilcox <willy@infradead.org>,
         Joao Martins <joao.m.martins@oracle.com>
-Subject: [PATCH v4 2/4] mm/gup: decrement head page once for group of subpages
-Date:   Fri, 12 Feb 2021 13:08:41 +0000
-Message-Id: <20210212130843.13865-3-joao.m.martins@oracle.com>
+Subject: [PATCH v4 3/4] mm/gup: add a range variant of unpin_user_pages_dirty_lock()
+Date:   Fri, 12 Feb 2021 13:08:42 +0000
+Message-Id: <20210212130843.13865-4-joao.m.martins@oracle.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210212130843.13865-1-joao.m.martins@oracle.com>
 References: <20210212130843.13865-1-joao.m.martins@oracle.com>
@@ -82,160 +82,179 @@ X-ClientProxiedBy: LO4P123CA0347.GBRP123.PROD.OUTLOOK.COM
  (2603:10b6:a03:8c::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from paddy.uk.oracle.com (94.61.1.144) by LO4P123CA0347.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:18d::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3825.17 via Frontend Transport; Fri, 12 Feb 2021 13:09:04 +0000
+Received: from paddy.uk.oracle.com (94.61.1.144) by LO4P123CA0347.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:18d::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3825.17 via Frontend Transport; Fri, 12 Feb 2021 13:09:07 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b490f408-5d16-4f2b-3c81-08d8cf5760cf
+X-MS-Office365-Filtering-Correlation-Id: dc65f803-6005-4089-b9e9-08d8cf57627f
 X-MS-TrafficTypeDiagnostic: SJ0PR10MB4509:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB450992CEBD07D446A79DF0A4BB8B9@SJ0PR10MB4509.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB4509A310B003E8708ACE6C1FBB8B9@SJ0PR10MB4509.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: amGFWmKdQ14t9r+EdHlYeqwXWGs7aYAqm4BvWNypZCtW5E4mOfSZCgC32gXu0dAVaTrEFzpQAJELo4oAzra8kyBynq/VG4cWevv2OxMubvQNTPrZBmw6tPs4UOMsRzs7Ii4CyvuPSH4/3SS4W0tMfAqHa1KtJv2FU1Z+W87D9BRgT8dIMIhTxfQJY3QnX1jMfkfVhmsbopdNFVSsTelvFj1sMM8O2SwPy+RjYQ9p4IBjGmX/BpqXiRkhP3yFJt1nH9cGWudrGcVOSjmRrnJZdtyTFdwyLYa0JI71BpkyKfs4x2QOgdAvK0nbbSh2295hUnEdfFT5uLcYFedoii2wgqbFFhWvMEcszFWoUwqxVHxMkVPMp1YI6UycsemlqIl0lPi77/3CrVcdS1KPC5KoLBt2gMY/3c7Szs2SOB0p39bf8RM3zQ4b8YzUnGqGp93/k0mzCthGriDKnm1/tz5GNQyCR20sCRilDaj7conAzDZZHcclTmQsRxnW3cPSwYNBjVmCFEgEUF+fyA6taHkTBA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3077.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(136003)(39860400002)(366004)(6486002)(2906002)(8676002)(4326008)(52116002)(186003)(26005)(2616005)(1076003)(316002)(8936002)(107886003)(6666004)(478600001)(6916009)(36756003)(66476007)(5660300002)(86362001)(66946007)(103116003)(66556008)(54906003)(956004)(83380400001)(16526019)(7696005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?cGfekFzzr44Je2OluGb/ps0JKO2F5iC+aI59txIbljtuNnoo4dWjUKQRdDP9?=
- =?us-ascii?Q?P/oeyvPFsz2Y+eS8ob8FCVvfdTIM8AlUKUE66mdh1EuuwxTaU6ABU8CfmVpV?=
- =?us-ascii?Q?Y1hYrp/Z5Z86fdrMoDUL5QYH05uCM5QPK78U0yCzU+wQvFEwGQ0oBoTuF/Ci?=
- =?us-ascii?Q?fe5713CWlahye81cUgz6xmXr7DoCgm0rnqT11N8ZRp84yskOCCBZuvKugPJB?=
- =?us-ascii?Q?ahOovQ2Cmoz/jaHbAjqSFJ/OFo+qn62nfBUO4APc4BmSjMD0OVqfeX4o7f6E?=
- =?us-ascii?Q?1kPuEw2fff3abxU+Y7Qugd3oAsUS87JBeTQUV5gYD02ttJkjRXgy4GVNMrK1?=
- =?us-ascii?Q?KworaeudKZBVWmVkQDesBVfTngfNpigx106Arv/nbSM46PmW0Q8oHg5oB2K3?=
- =?us-ascii?Q?49bvgXieldmQKzwaEkJgly/R2WvD40GbQdIBCN3A39L8FcYUm0DFoaN2cfi/?=
- =?us-ascii?Q?L4pxUVDtjV8RxXnR477IeBxZFRWQPtVheByjZv9ZOm91B0CwyiNp/3VLYfBh?=
- =?us-ascii?Q?hxX3huk+YUR+t6EiuKuHUEI753cl3JQbPJKIb1QYEFLxeUKIm+qypPNWIlU4?=
- =?us-ascii?Q?xncb6RVwxMSqkU3LfI5FLANSVktvO7EUYk8mK5EeVUh2zapN3I8Cd9Og3qsa?=
- =?us-ascii?Q?9wvFAstmFJshPXCXEDksx6Z6YAP+cNRpR/yLi7LSMJ5AQljmFU+OPcKSaxWc?=
- =?us-ascii?Q?9xQEWPJIBgatMLwx+1IkwREfLzktGrtqpU65fnRFhSEzL8rdaIFEVcNmbkHp?=
- =?us-ascii?Q?2TsSkm93lbhjKU0fiQq5feI9ina9rHOc03QR+oFiAmZSkvIJysiv/0XnHrjX?=
- =?us-ascii?Q?SIWFl7xHkZayfSqeHFkHZgDfLyRqQtjaxoYF5Gb192u3GLOnv+q3mYSLPwTt?=
- =?us-ascii?Q?jd3sj696JIsbHBIQ00eYImvEBFQUEzDC6mMzDF/gnZtyZuYI7ONt+3zIET27?=
- =?us-ascii?Q?qotvd4lOQN8OzsDa7JmzAO3VqMRCuf/FeOoegGJmQp9lH/7ivo9q+zvRWOEm?=
- =?us-ascii?Q?G3fQucBd34GAomDxMQnPAVA68xbqfMJgqDyv6608htxtfb2zkg+/yFgim/mj?=
- =?us-ascii?Q?LAOFC61jSpqMNi4BjIHTZq7qsY/5uttnRjpFQulECya1cInui6jNPAAJUqio?=
- =?us-ascii?Q?ptofD9N8WVkRQssPhkpdX6sCBN+UNuJ7C5uzBL/2YedvS5rVdERsNtk3wD31?=
- =?us-ascii?Q?q7UQbofmfqEiF0eiEJ8WQf5vouYQH3jVTeTmIu5mR/lHcuKLpFvI+iljh7sk?=
- =?us-ascii?Q?2jEAGTKPByZsiyVmEfGpOqnWwNZF4e42XSC41VY5yDBqRxKPf9K3YQoCd6KU?=
- =?us-ascii?Q?HI3CsH9ayZ4TxY+4iKmTAdQf?=
+X-Microsoft-Antispam-Message-Info: UjQn49ElAuyGDSrCEx7UYykwI3xZDRXTmJQ+Ttl7heqUA+vQmbRL7r34cLIkzMyI5DqO5ZdoHWktEzPlaOuOFM7w14aT7AWr83WIETILiNkT10fIZN0+e7Ft7H4YvSfrf5r5Magot8oJsGJ5z5AAIiZzRP31ed8uDADeF7LX+iFvYFYDTKa0MBy55g6gOiGuC4ztSpxy46fbquPtT+pZpGyiweRxbR/nccg2U2RWdubXIQRdTPnApwToRLuFQ8JkSBubl+24aHaKzOftdpYRk/1LORE2uZM+5OF+2j6iuxPfKzqDVEYPOjAIz4D71LXTksoG0wEY+vbul2oSA+7Q/KdXwBIPixuB759EKe8baMhZdwGPp/lHDujktzvY0wxjkG0xKRpiEaRXWvysyXM4KiDa2lZmxQYrEdN4HzIL5e4iw3M+B+NqvW1ap2eEN3PrUtDs7qrTOYDT+9T6g/IDokRYoxgkk7+0w1Yf+Juz5eklYabHPd1ef0CUBQkTaKc9k5bnfssvXpY1579Jw+gk2mlKfV66UwbUnfXEA4/aiOZ7ZJDHDkcFugOzaYyAWzUv
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3077.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(136003)(39860400002)(366004)(6486002)(2906002)(8676002)(4326008)(52116002)(186003)(26005)(2616005)(1076003)(316002)(8936002)(107886003)(6666004)(478600001)(6916009)(36756003)(66476007)(5660300002)(86362001)(66946007)(103116003)(66556008)(54906003)(956004)(83380400001)(16526019)(7696005)(14143004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?dtPWbyBZAgP6Iy1+EyF8kDi3dYBQPfi/8fw+ABexMWurzoZAeW71NOdIXnFM?=
+ =?us-ascii?Q?Z0JrBlq+J30UMb/SCySSqRQVyW9j83dvqYccLWI7JwoltbUVLiwdXVH4Z873?=
+ =?us-ascii?Q?P+to963w4mCiYOBILudeG1doRElw8bew/WHb+0NJgAFVQErrxSHkYiQTJbJu?=
+ =?us-ascii?Q?YXftcrL06FO3KQyCEgJB+nfP7ePQZ8W50jf+9SW+Bae2p0my1lmFi1wrMWAI?=
+ =?us-ascii?Q?520FRhE3BH0ms3Qc2kYxaa0qN5K7bdVBxqmEcuw3iTTWfVCNZfd2dB4KPpoR?=
+ =?us-ascii?Q?Ky/4kJbtnMHmDdgB00nt8W9ujkM+D2z6TeRbQLoSR1sWW+ab3JG+2ZyE6lfd?=
+ =?us-ascii?Q?x46uMxsn7Okf+0SNmBGqIdzEV0uwN8dnepSYZqVJ5hMtlXhIr1byD9VtSv4g?=
+ =?us-ascii?Q?I7DJnujqK2XVsZIz/UzGjVe6QiCg4NCj/7trlOIbflW/xnj4xarbYRpceaQY?=
+ =?us-ascii?Q?iMMrRvW7fQysjgrwzSs6De6LcMMvy3jDspXQ8gLynx0P4wyreMKoUoSByKEK?=
+ =?us-ascii?Q?5YSXVq2tHthi0Pvh0aB8c3XildoDAi97SSVtlaFRv8k3oUkQoXecURlWhksu?=
+ =?us-ascii?Q?CAHV0NGIh7rejt4Dy1oMqJsN7euqwf34jnNq/Jt49luCxORkYPiw2LCRG/Ll?=
+ =?us-ascii?Q?5wFAbTQiuuXeETQcEE+b82WQYyBpyDniqp23DPA2FEZCJe0ebtE8yfJrVMx5?=
+ =?us-ascii?Q?mDbRG/MX7zJrOCJXnZYLpOPFK726BXOmf79R5AbMc7LXB7qtnvRmb10DAp1K?=
+ =?us-ascii?Q?CQNXnJVYUWGinKTd3TWmqAHZs7+SLzz8wCje+E12rIVym09V8hzdRWB5a+hS?=
+ =?us-ascii?Q?3IgC50qFhj9xmUtoK/P7etT3LQYGTZgYodMhHtoBHmsvc/+dvppeYcMCHOgE?=
+ =?us-ascii?Q?fn6QY55uO7e4o1SOcm5VAeSR40nzaIPsdpV44LvQtEb+gKeUD1QAC3Tkes9S?=
+ =?us-ascii?Q?85WXHkbnmGYDGQ5n9N8vU9dt5pQS6fEkyL6bgN1VyAR87n1iwG06KCotZFog?=
+ =?us-ascii?Q?hmk8mzoAR+jf/LAXUCxn81MlEY9WK0oI7s1tfIDKwFOmnTu580V18TYILTaM?=
+ =?us-ascii?Q?gZ6k9cPIjplNeXlAx+W12J3ltStHr+eGfvQtsDT2/0W5sz7Nxrd2HEvE+1t3?=
+ =?us-ascii?Q?YOX4e8HFgwpCfi3xJW5UMzTW6gwygJmajygat+gauapHuUWDsltstRbw6bBg?=
+ =?us-ascii?Q?IjYDtz9afrnzdRlFPch276cGtFgrMcp6fEzhSMEw4mEzvnc6nci/drsi0i+K?=
+ =?us-ascii?Q?zMVGyQUE8wk7drw02CwIkd/3VkK5wFgxUmkADGrPZFjk39XpQesw875NEGga?=
+ =?us-ascii?Q?PhbIqyk0XS4JcICrNaSmTK84?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b490f408-5d16-4f2b-3c81-08d8cf5760cf
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc65f803-6005-4089-b9e9-08d8cf57627f
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3077.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2021 13:09:06.8282
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2021 13:09:09.6286
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CYcx/FKWnt32Qf4vy5VEiLUc31vGoL+tXNenmnRDFl0vvolhJbr1w520tHjWnXIZN0WKNBmtkZkYfmHM91xkJekNeQEngjIZUwHeP9f2qNc=
+X-MS-Exchange-CrossTenant-UserPrincipalName: PgJIwIhovVEDg1Ilr5xH9mFBDpMY673ljAs9svP57U3ziCtWNAX5Lq+tlosqMPM9Re5NGsav3NNSfEhjK5wwjCT2qBhUD703A2he+Idv5Zo=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4509
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9892 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 spamscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102120101
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9892 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
- priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
- suspectscore=0 mlxlogscore=999 adultscore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2102120101
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9892 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxlogscore=999
+ bulkscore=0 suspectscore=0 phishscore=0 adultscore=0 impostorscore=0
+ mlxscore=0 clxscore=1015 lowpriorityscore=0 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102120102
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Rather than decrementing the head page refcount one by one, we
-walk the page array and checking which belong to the same
-compound_head. Later on we decrement the calculated amount
-of references in a single write to the head page. To that
-end switch to for_each_compound_head() does most of the work.
+Add a unpin_user_page_range_dirty_lock() API which takes a starting page
+and how many consecutive pages we want to unpin and optionally dirty.
 
-set_page_dirty() needs no adjustment as it's a nop for
-non-dirty head pages and it doesn't operate on tail pages.
+To that end, define another iterator for_each_compound_range()
+that operates in page ranges as opposed to page array.
 
-This considerably improves unpinning of pages with THP and
-hugetlbfs:
+For users (like RDMA mr_dereg) where each sg represents a
+contiguous set of pages, we're able to more efficiently unpin
+pages without having to supply an array of pages much of what
+happens today with unpin_user_pages().
 
-- THP
-gup_test -t -m 16384 -r 10 [-L|-a] -S -n 512 -w
-PIN_LONGTERM_BENCHMARK (put values): ~87.6k us -> ~23.2k us
-
-- 16G with 1G huge page size
-gup_test -f /mnt/huge/file -m 16384 -r 10 [-L|-a] -S -n 512 -w
-PIN_LONGTERM_BENCHMARK: (put values): ~87.6k us -> ~27.5k us
-
+Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 ---
- mm/gup.c | 29 +++++++++++------------------
- 1 file changed, 11 insertions(+), 18 deletions(-)
+ include/linux/mm.h |  2 ++
+ mm/gup.c           | 62 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 64 insertions(+)
 
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 89fca443e6f1..43f59e4eb760 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1255,6 +1255,8 @@ static inline void put_page(struct page *page)
+ void unpin_user_page(struct page *page);
+ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
+ 				 bool make_dirty);
++void unpin_user_page_range_dirty_lock(struct page *page, unsigned long npages,
++				      bool make_dirty);
+ void unpin_user_pages(struct page **pages, unsigned long npages);
+ 
+ /**
 diff --git a/mm/gup.c b/mm/gup.c
-index 1a709eae2bfd..384571be2c66 100644
+index 384571be2c66..6b6d861727cf 100644
 --- a/mm/gup.c
 +++ b/mm/gup.c
-@@ -265,20 +265,15 @@ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
- 				 bool make_dirty)
- {
- 	unsigned long index;
--
--	/*
--	 * TODO: this can be optimized for huge pages: if a series of pages is
--	 * physically contiguous and part of the same compound page, then a
--	 * single operation to the head page should suffice.
--	 */
-+	struct page *head;
-+	unsigned int ntails;
+@@ -213,6 +213,32 @@ void unpin_user_page(struct page *page)
+ }
+ EXPORT_SYMBOL(unpin_user_page);
  
- 	if (!make_dirty) {
- 		unpin_user_pages(pages, npages);
- 		return;
- 	}
- 
--	for (index = 0; index < npages; index++) {
--		struct page *page = compound_head(pages[index]);
-+	for_each_compound_head(index, pages, npages, head, ntails) {
- 		/*
- 		 * Checking PageDirty at this point may race with
- 		 * clear_page_dirty_for_io(), but that's OK. Two key
-@@ -299,9 +294,9 @@ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
- 		 * written back, so it gets written back again in the
- 		 * next writeback cycle. This is harmless.
- 		 */
--		if (!PageDirty(page))
--			set_page_dirty_lock(page);
--		unpin_user_page(page);
-+		if (!PageDirty(head))
-+			set_page_dirty_lock(head);
-+		put_compound_head(head, ntails, FOLL_PIN);
- 	}
++static inline void compound_range_next(unsigned long i, unsigned long npages,
++				       struct page **list, struct page **head,
++				       unsigned int *ntails)
++{
++	struct page *next, *page;
++	unsigned int nr = 1;
++
++	if (i >= npages)
++		return;
++
++	next = *list + i;
++	page = compound_head(next);
++	if (PageCompound(page) && compound_order(page) >= 1)
++		nr = min_t(unsigned int,
++			   page + compound_nr(page) - next, npages - i);
++
++	*head = page;
++	*ntails = nr;
++}
++
++#define for_each_compound_range(__i, __list, __npages, __head, __ntails) \
++	for (__i = 0, \
++	     compound_range_next(__i, __npages, __list, &(__head), &(__ntails)); \
++	     __i < __npages; __i += __ntails, \
++	     compound_range_next(__i, __npages, __list, &(__head), &(__ntails)))
++
+ static inline void compound_next(unsigned long i, unsigned long npages,
+ 				 struct page **list, struct page **head,
+ 				 unsigned int *ntails)
+@@ -301,6 +327,42 @@ void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
  }
  EXPORT_SYMBOL(unpin_user_pages_dirty_lock);
-@@ -318,6 +313,8 @@ EXPORT_SYMBOL(unpin_user_pages_dirty_lock);
- void unpin_user_pages(struct page **pages, unsigned long npages)
- {
- 	unsigned long index;
+ 
++/**
++ * unpin_user_page_range_dirty_lock() - release and optionally dirty
++ * gup-pinned page range
++ *
++ * @page:  the starting page of a range maybe marked dirty, and definitely released.
++ * @npages: number of consecutive pages to release.
++ * @make_dirty: whether to mark the pages dirty
++ *
++ * "gup-pinned page range" refers to a range of pages that has had one of the
++ * pin_user_pages() variants called on that page.
++ *
++ * For the page ranges defined by [page .. page+npages], make that range (or
++ * its head pages, if a compound page) dirty, if @make_dirty is true, and if the
++ * page range was previously listed as clean.
++ *
++ * set_page_dirty_lock() is used internally. If instead, set_page_dirty() is
++ * required, then the caller should a) verify that this is really correct,
++ * because _lock() is usually required, and b) hand code it:
++ * set_page_dirty_lock(), unpin_user_page().
++ *
++ */
++void unpin_user_page_range_dirty_lock(struct page *page, unsigned long npages,
++				      bool make_dirty)
++{
++	unsigned long index;
 +	struct page *head;
 +	unsigned int ntails;
- 
- 	/*
- 	 * If this WARN_ON() fires, then the system *might* be leaking pages (by
-@@ -326,13 +323,9 @@ void unpin_user_pages(struct page **pages, unsigned long npages)
- 	 */
- 	if (WARN_ON(IS_ERR_VALUE(npages)))
- 		return;
--	/*
--	 * TODO: this can be optimized for huge pages: if a series of pages is
--	 * physically contiguous and part of the same compound page, then a
--	 * single operation to the head page should suffice.
--	 */
--	for (index = 0; index < npages; index++)
--		unpin_user_page(pages[index]);
 +
-+	for_each_compound_head(index, pages, npages, head, ntails)
++	for_each_compound_range(index, &page, npages, head, ntails) {
++		if (make_dirty && !PageDirty(head))
++			set_page_dirty_lock(head);
 +		put_compound_head(head, ntails, FOLL_PIN);
- }
- EXPORT_SYMBOL(unpin_user_pages);
- 
++	}
++}
++EXPORT_SYMBOL(unpin_user_page_range_dirty_lock);
++
+ /**
+  * unpin_user_pages() - release an array of gup-pinned pages.
+  * @pages:  array of pages to be marked dirty and released.
 -- 
 2.17.1
 
