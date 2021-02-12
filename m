@@ -2,144 +2,181 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E6731A6CE
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Feb 2021 22:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D36C631A760
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Feb 2021 23:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231835AbhBLVWs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Feb 2021 16:22:48 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15699 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhBLVWo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Feb 2021 16:22:44 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6026f1740000>; Fri, 12 Feb 2021 13:21:56 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Feb
- 2021 21:21:56 +0000
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.103)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Fri, 12 Feb 2021 21:21:56 +0000
+        id S229903AbhBLWOv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Feb 2021 17:14:51 -0500
+Received: from mail-bn7nam10on2118.outbound.protection.outlook.com ([40.107.92.118]:10880
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229497AbhBLWOt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 12 Feb 2021 17:14:49 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oJKK1A20OvtIspvj2e0PHu7Ggo1puP66rQVsjgjUK6mTmiOtGlUwTMiTj4+Bj4Ia5fNSddqkGUSBVVHDT6NS0D7T8rjLeiSa3I7iheZQK90tWDfIBVZ6QqXUN7O1Mc1iXE9HUcILjRiN5DgI5FXJicvoe5F6a2MwrKvMdvlahnbMkz3cxDR7Ac+X1iDoTVnkYa65wwzQGQfSgH01/r+zalHR5eyPBnlPDfON+utpvTUXJIlXhCAlvBkdahmKP8LynNlsBKsjAxUjaHgxYwJN9p1gBGZPGh4wXwOPke/9NZbUo4i36zJ+AayBGP7GaTo5m5v2OCEXr5ub4DX9AlaHAQ==
+ b=gG5HmRkRzonPC4rizrWii1oHk5iYPWcHfII10UyNdPE7fhgmXw3cDERNRrtQGR1xG4Cird2Cm7vN5xAX2qco3jU62o9URMZp9Pm1xsq3huySrAytb7sqL/rYOfZwOZ4hRtz0YrkeuO4NDK24F6H5ZPQzaJkipQ4APN22TfXwKheZvq3kVV2BfRM0Q1Py2EGkp3EdeR1K8oG+f2iQ35p/vMku9leSycZZT9D78RGBcOIiVt4QfFLr50AxvrpjrD86rO2Tm9BwIKeZehejOZT0umIoT5V8rYTQweYgHmtbPGO9/5W/wi45fk54rK/0RwremFVLF+TgFHtQClA3l1+i0Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VszTAWIeCU+N7ccOI1hiLhPuJdLAetxbENJstAHF74Y=;
- b=KDoB4ghG385ANzKcT0PypfbT8h+0Qs1+Gz3F5hEuvPqJK5bJ5qEd+GrN+cXVfKdtq9zP2ON9yXOhBU4hMe22jwpZvVvPWR4T2QUdxRB+Xsf0JfRxPbywJ2RYZaX5rnExoNRMM/Y3SAATDskXH0Co0/semlB+96O7Z+iy59jM/+m0q1ZIX6+ioY+Wl5Ac005aEpIvM/RdWgmQ1hxkxhS8eIShPbmW41rBRVMrlKnOVaT8MnbDhfzr1FXIITjwhqd58a+mIQVknMPt6HeVJzRjwk471bTzILAaRnqZXQo4miA1Rc7awpL++XupV3iioA5mx4yzb5nolXYnzf9RgUogrA==
+ bh=G6Kn+49vO+E0+2U7zQHyNeyV8hzCQbQDn+nA/waoMlU=;
+ b=D163pSeKBxZ+gAqL04CWVwUEC1TjA3CAyqOcWlALhU7BVY0riRVTgQK2oEIe0LPYR4+rz0vnmjL8LypZ04GLumsNDyHIt3bJkX+bWFE9y/EtS/yRgCIng0mBZY8p9mxeQ+RrPgTbuJEyQgSPA/vGYfM7r5zaQ4Q24U4OEjxnN2M7VmJj+t6xFJWIQ4Db8fq0FvGE+BlyjB6Vz8wVBhhrcjI8E3d3fwYXVByxgBVe1+5KVQYw/Udb14TEqRztVuC9JUpZg1S7VzLHD9hBRMua6aGKZsoXojWrBn8m8xn+FSTR4zNTZZRNv5DM0h1gtDrlvmI9Ksq+gIV4sVeOqXebWA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3514.namprd12.prod.outlook.com (2603:10b6:5:183::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Fri, 12 Feb
- 2021 21:21:55 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.030; Fri, 12 Feb 2021
- 21:21:55 +0000
-Date:   Fri, 12 Feb 2021 17:21:53 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Saeed Mahameed <saeed@kernel.org>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Aharon Landau <aharonl@nvidia.com>,
-        <linux-rdma@vger.kernel.org>, Maor Gottlieb <maorg@nvidia.com>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 0/2] Real time/free running timestamp support
-Message-ID: <20210212212153.GX4247@nvidia.com>
-References: <20210209131107.698833-1-leon@kernel.org>
- <20210212181056.GB1737478@nvidia.com>
- <5d4731e2394049ca66012f82e1645bdec51aca78.camel@kernel.org>
- <20210212211408.GA1860468@nvidia.com>
- <53a97eb379af167c0221408a07c9bddc6624027d.camel@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <53a97eb379af167c0221408a07c9bddc6624027d.camel@kernel.org>
-X-ClientProxiedBy: BL1PR13CA0070.namprd13.prod.outlook.com
- (2603:10b6:208:2b8::15) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G6Kn+49vO+E0+2U7zQHyNeyV8hzCQbQDn+nA/waoMlU=;
+ b=HO1MjXwc9e3CpdtlWBZoqyUWWPO8s+eVoLJJhiDF+QfUxfq5TvXXV3/Dr8v+lgqYZqqyESEMcxCJpSwvM0KSK/wMkjEiCvOFUNlrWabzhi0ORIN+NwGjs07WvAqXU5BGx9Br4VEHXs2LAydxPQTgCglHKYnoaqhlvtS5OBlsybBJIuKZQLilJIfPu1mErbSeewcprfCezwoa4E+POIjycfVZFqccvQpSwGMB5y7WPt/3RfVAer4WnpkAfV3pWrdhygbGH/3ItQv5vzT/1aW0FgmVKLWu4TL93A4ClOJB3GBmqdi5velCqJgGBBydCjOlfMFQnVF9EpMmbvEwAo66ow==
+Authentication-Results: cornelisnetworks.com; dkim=none (message not signed)
+ header.d=none;cornelisnetworks.com; dmarc=none action=none
+ header.from=cornelisnetworks.com;
+Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
+ PH0PR01MB6246.prod.exchangelabs.com (2603:10b6:510:b::12) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3846.26; Fri, 12 Feb 2021 22:13:54 +0000
+Received: from PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::3dd8:bb32:87f3:7e4e]) by PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::3dd8:bb32:87f3:7e4e%6]) with mapi id 15.20.3846.037; Fri, 12 Feb 2021
+ 22:13:54 +0000
+Subject: Re: [PATCH] Fix: Remove racy Subnet Manager sendonly join checks
+To:     Jason Gunthorpe <jgg@nvidia.com>, Christoph Lameter <cl@linux.com>
+Cc:     linux-rdma@vger.kernel.org, Leon Romanovsky <leon@kernel.org>
+References: <alpine.DEB.2.22.394.2101281845160.13303@www.lameter.com>
+ <20210209191517.GQ4247@nvidia.com>
+From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Message-ID: <fe7ab4a7-db8f-7ad0-23de-7f4d8156ed1f@cornelisnetworks.com>
+Date:   Fri, 12 Feb 2021 17:13:48 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20210209191517.GQ4247@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [24.154.216.5]
+X-ClientProxiedBy: MN2PR15CA0042.namprd15.prod.outlook.com
+ (2603:10b6:208:237::11) To PH0PR01MB6439.prod.exchangelabs.com
+ (2603:10b6:510:d::22)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0070.namprd13.prod.outlook.com (2603:10b6:208:2b8::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.11 via Frontend Transport; Fri, 12 Feb 2021 21:21:55 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lAfsv-007oA6-DV; Fri, 12 Feb 2021 17:21:53 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613164916; bh=waMQ+oR2qEe4LrSLjX8qppaZjsxesXUE53Ckt82bD0Y=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:Content-Transfer-Encoding:In-Reply-To:
-         X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=AULvgVQw7ydhZY4WGvXxdlcIzQpVxoAS4MawKO0QNLOUH07kiz/FEoUnBHdWBIlRR
-         gEunHy/OMEReG8iPOd/C7skOL8ukoNyAlm3MBZjB9luwQyFeet8kZpyPznu4kLUOVB
-         VN0+hkvJ78yhQSkHoP4YG4uvi6pd0s0JO0C3SofwsD56+TKAduZ0ZrJ558EJO3/TMv
-         aHTu+Rm1OE5/J/WGY/Ck3zf4zBFAs3yIQQuWuE4xITMKpttUYXPOeQnKKHzs+G2Lrb
-         L9r6T6ca0VWhekd8v2g/uphGspO3/o0WcQ8jzZpawAsHHi4eKDjQ4J27PEUoYqWG/6
-         IAbCREVxG+ARQ==
+Received: from [192.168.40.159] (24.154.216.5) by MN2PR15CA0042.namprd15.prod.outlook.com (2603:10b6:208:237::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Fri, 12 Feb 2021 22:13:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d619dca4-ff16-4b87-9cf8-08d8cfa37c4d
+X-MS-TrafficTypeDiagnostic: PH0PR01MB6246:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR01MB6246807FC9F4105C627447F9F48B9@PH0PR01MB6246.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VnkEiDaFPktu02lZTHxB23Z1toRi0YjWZX046+CTf0iPq3gFHo0onCTHoo5B4IclzJVsm4+dO5whNIPKUfVXAp3cuOlaEEwYH9pRKHE5PKqn/H9zY90yo7bpAStZ/7tQ/GDGHqKoGCtDemVn8dVXGIlO1a1iPoIsw31h4JFnOvc8KJBixuCeHzd7ecUHtSljr7Pzituoy1ZF4132Q9bj7mJq+9chBGYRbuLSzaphhRbOwSWBorjdxk0FAmT5E1N7KxHhdvXYceuK5HC2blnYbbbBXRsud8FpEKKWgc590Tv5ihgSmjFCxnL/sxYGly9lcrTrdqPzigkSYhavQ5oLbjHvgKNw8QhwOxbr2W3q3HP0AC8lJrY/PVpQ3DVZ24v60YA1ZQS4jJhzwhDO31SRxMqE0vm5IfZ6AsiRyGcDX7uExeZDp2YSRVT7AShFO6CFe4VAyk2qqiIPfSt9wJ5ShU7LxKIPIHI8zbd7VDxsye1tY2hAueA+0nzMM3TSV4sgMa1zdWIn6O98klcQVRZx6n40MzeOSDHIzSAooMoV3fmZShTudqmjKH3NI3BgNTbMDfsG4y6heOqnUdN7LxCGwqfjd4zMns20H4vDVLFieMM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(39840400004)(346002)(366004)(396003)(66476007)(66946007)(66556008)(316002)(5660300002)(52116002)(31696002)(8676002)(110136005)(86362001)(2906002)(4326008)(6486002)(31686004)(186003)(16576012)(26005)(6666004)(83380400001)(8936002)(956004)(478600001)(2616005)(36756003)(44832011)(16526019)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?aHhsRzlucUF0ck42UGgzTlc2Ly9VTnFxN3hPNlhiRzNEYWRrWVM2RjJ6QUpn?=
+ =?utf-8?B?eThoc3E0bnE1akFLelQwZHUxWmdqSG1PY1JGaUNBSHFyQmtFOW9RSkVsVnB1?=
+ =?utf-8?B?VGJ0R2hrN3B1UjRYTitBUlVBT1B4dGtramNyQmdqd0x1d01ybnUyeDJELzg3?=
+ =?utf-8?B?eGhoUllEMHRZdHNQd3c0MWtybzZISVU2UHM5U0xKLys0TUZSYXF2UVBjS1hV?=
+ =?utf-8?B?VzVZVzFyc002b2tvTS9wYjd2M01veGswenR3d2tmUlFXcE5PbU5aeVAvR1dI?=
+ =?utf-8?B?UlNscU1VNGJOQ2FMY0tlUlBMZXJoRzJnM200aHhobWhZQ05uTHpzN0RhWWVa?=
+ =?utf-8?B?VHk2bDJlVldmcEdCV3NuUHdwQjhhaE14anhLNmxTTEFlMk1Hb2k2YWJ2WkVI?=
+ =?utf-8?B?SjBOUG5yM1ByaGRIZEwvYlh0d1l5ZDN0SEJ3bVlVWVYzRFlvTHRQYlJoWXNv?=
+ =?utf-8?B?MmtINzJNcytEZnE5dmsxWHAzcW5yVVNDK3pHRHRLS09laWVQQ0s1Vk55ZkdH?=
+ =?utf-8?B?dExZM0M5VkFKL0o2d0VYZlpXME8xTzRsUlhabm9Vc215M1ZzR091dTZPMlZz?=
+ =?utf-8?B?YUpOeVVERGh6NUhoOUFJQ1IvZkt6UFRnejVxTHUxUWtLd05wZ09NZkNPblFo?=
+ =?utf-8?B?SXZXbHNDcUJuNm5ya2laY0tZWE9rWndFNUoxQ1I4cnRad0dLSXB0NzJINGRa?=
+ =?utf-8?B?UjJOZ2wvOG4raE0wbm95NWE5L3FnWlJsWGdYVjFwVmNYRjY0MTR5RkhIZDBr?=
+ =?utf-8?B?bFhTU2JickJ3VFRxQ3FGWXZtdy9nVHlwdzBSdkxYWFlqelVjcVMvVkZlOHRx?=
+ =?utf-8?B?S25SU2VHdFpCSVo1Y05NVDY1ZUlFTjM2akgwZnVXZW01aEJ4dE9RYUlXUS96?=
+ =?utf-8?B?R2tXKzYwemNQQWxWK0pzZjJGQlBSQkEzS0tSSkk4Z004TncrZjMwNWVkVy9v?=
+ =?utf-8?B?VVpjWFlXNEhZeVpqMGpkWmhpekxGYzBJQlZsS2lsNnVvQ2FvSzZXREU5dm9Y?=
+ =?utf-8?B?NlE4SXVOWUFHWWlqQlQveDBrRXQyL01NNFB6ajNMSkVBMExtRGZuei9sOTMv?=
+ =?utf-8?B?YlFoV2xzMllXOUE0Q3NPeVJ2NXZYSWlkYWhvMm5UUk16WjV5WERFNzVQc2JG?=
+ =?utf-8?B?Y3VUTG9wVFJxc295bjVYMmVXTkRrc3JES2pMa3VObHZ5VmxRbHowdS92QlA3?=
+ =?utf-8?B?d1VTSWM3TnBKMHdzNDJpM3Bic0JrUWJiWjRxYnc1WTA4U1NZeWM4QVFYczky?=
+ =?utf-8?B?OXRjZjEvRGRNNzNmckllVVo5RmlOT3IyVzlFeHlQdmdZWGV6UkFyR2VrOVFt?=
+ =?utf-8?B?MTdqU1lqajF1K0lqMklEQmN1MUFVdk1VV1pMTi8zNXptcHVEMHJVWXdQSENN?=
+ =?utf-8?B?ZzlGK0M2cWRYemk5NVVMbVFFNFNqNkdmL04rQ0VTVVRxUGkxcm0xZlRIeVFW?=
+ =?utf-8?B?QVM0NjN6RnFoeW9xQW4xVUtScDl4d09OS3lrZE95dTI2YW42aWxrUHNSS25t?=
+ =?utf-8?B?blRPUWhLYUs5RDlWL0JjV2lQMkpqdFFZSWw5WEkxYkdWUUN6SXlySTR6L2du?=
+ =?utf-8?B?RlEwRFB1MFVzazh5Y0V6eG5YOVpQWHU3ZWxlVnhQYy9VcGNnaEZZNHNZYzdo?=
+ =?utf-8?B?cjJ6aDZNZEJPZXdqK2RPNXppOVRnWW9Wa2cyWGFPc0RTRDBHYUF6Z3RTb2VR?=
+ =?utf-8?B?T3lVcklHaVh1MWlLOTArZkNBdHZ1YiswTHVmZTRReHJzYTYzVXEyeWpvaUFh?=
+ =?utf-8?Q?AHO7najfw+gQu/NSu94VWBmy0oNmSoMxtNabO7O?=
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d619dca4-ff16-4b87-9cf8-08d8cfa37c4d
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2021 22:13:54.6120
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rnqJejW7RwnddmqFgU8xP0YrS520gCn4/NhpGsNkDtLIw/mhuhyRh2X8XuP5B/tSwdX7fQFdycOBuapPhOjQk3tkgNq3T33cITYz9Ut/J0ZI6Hc9vtHcBWaLLGbPCS1M
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6246
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 01:19:09PM -0800, Saeed Mahameed wrote:
-> On Fri, 2021-02-12 at 17:14 -0400, Jason Gunthorpe wrote:
-> > On Fri, Feb 12, 2021 at 01:09:20PM -0800, Saeed Mahameed wrote:
-> > > On Fri, 2021-02-12 at 14:10 -0400, Jason Gunthorpe wrote:
-> > > > On Tue, Feb 09, 2021 at 03:11:05PM +0200, Leon Romanovsky wrote:
-> > > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > >=20
-> > > > > Add an extra timestamp format for mlx5_ib device.
-> > > > >=20
-> > > > > Thanks
-> > > > >=20
-> > > > > Aharon Landau (2):
-> > > > > =C2=A0 net/mlx5: Add new timestamp mode bits
-> > > > > =C2=A0 RDMA/mlx5: Fail QP creation if the device can not support =
-the
-> > > > > CQE
-> > > > > TS
-> > > > >=20
-> > > > > =C2=A0drivers/infiniband/hw/mlx5/qp.c | 104
-> > > > > +++++++++++++++++++++++++++++---
-> > > > > =C2=A0include/linux/mlx5/mlx5_ifc.h=C2=A0=C2=A0 |=C2=A0 54 ++++++=
-+++++++++--
-> > > > > =C2=A02 files changed, 145 insertions(+), 13 deletions(-)
-> > > >=20
-> > > > Since this is a rdma series, and we are at the end of the cycle,
-> > > > I
-> > > > took the IFC file directly to the rdma tree instead of through
-> > > > the
-> > > > shared branch.
-> > > >=20
-> > > > Applied to for-next, thanks
-> > > >=20
-> > >=20
-> > > mmm, i was planing to resubmit this patch with the netdev real time
-> > > support series, since the uplink representor is getting delayed, I
-> > > thought I could submit the real time stuff today. can you wait on
-> > > the
-> > > ifc patch, i will re-send it today if you will, but it must go
-> > > through
-> > > the shared branch
-> >=20
-> > Friday of rc7 is a bit late to be sending new patches for the first
-> > time, isn't it??
->=20
-> I know, uplink representor last minute mess !
->=20
-> >=20
-> > But sure, if you update the shared branch right now I'll fix up
-> > rdma.git
-> >=20
->=20
-> I can't put it in the shared brach without review, i will post it to
-> the netdev/rdma lists for two days at least for review and feedback.
+On 2/9/2021 2:15 PM, Jason Gunthorpe wrote:
+> On Thu, Jan 28, 2021 at 06:46:47PM +0000, Christoph Lameter wrote:
+>>  From 64e734c38f509d591073fc1e1db3caa42be3b874 Mon Sep 17 00:00:00 2001
+>> From: Christoph Lameter <cl@linux.com>
+>> Date: Thu, 28 Jan 2021 14:55:36 +0000
+>> Subject: [PATCH] Fix: Remove racy Subnet Manager sendonly join checks
+>>
+>> When a system receives a REREG event from the SM, then the SM information in
+>> the kernel is marked as invalid and a request is sent to the SM to update
+>> the information. The SM information is invalid in that time period.
+>>
+>> However, receiving a REREG also occurs simultaneously in user space
+>> applications that are now trying to rejoin the multicast groups. Some of those
+>> may be sendonly multicast groups which are then failing.
+>>
+>> If the SM information is invalid then ib_sa_sendonly_fullmem_support()
+>> returns false. That is wrong because it just means that we do not know
+>> yet if the potentially new SM supports sendonly joins.
+>>
+>> Sendonly join was introduced in 2015 and all the Subnet managers have
+>> supported it ever since. So there is no point in checking if a subnet
+>> manager supports it.
+>>
+>> Should an old opensm get a request for a sendonly join then the request
+>> will fail. The code that is removed here accomodated that situation
+>> and fell back to a full join.
+>>
+>> Falling back to a full join is problematic in itself. The reason to
+>> use the sendonly join was to reduce the traffic on the Infiniband
+>> fabric otherwise one could have just stayed with the regular join.
+>> So this patch may cause users of very old opensms to discover that
+>> lots of traffic needlessly crosses their IB fabrics.
+>>
+>> Signed-off-by: Christoph Lameter <cl@linux.com>
+>> ---
+>>   drivers/infiniband/core/cma.c                 | 11 ---------
+>>   drivers/infiniband/core/sa_query.c            | 24 -------------------
+>>   drivers/infiniband/ulp/ipoib/ipoib.h          |  1 -
+>>   drivers/infiniband/ulp/ipoib/ipoib_main.c     |  2 --
+>>   .../infiniband/ulp/ipoib/ipoib_multicast.c    | 13 +---------
+>>   5 files changed, 1 insertion(+), 50 deletions(-)
+> 
+> This one got spam filtered and didn't make it to the list:
+> 
+> Received-SPF: SoftFail (hqemgatev14.nvidia.com: domain of
+>          cl@linux.com is inclined to not designate 3.19.106.255 as
+>          permitted sender) identity=mailfrom; client-ip=3.19.106.255;
+>          receiver=hqemgatev14.nvidia.com;
+>          envelope-from="cl@linux.com"; x-sender="cl@linux.com";
+>          x-conformance=spf_only; x-record-type="v=spf1"
+> 
+> Also the extra From/Date/Subject ended up in the commit message
+> 
+> I fixed it all up, applied to for-next
+> 
+> It looks like OPA will also suffer this race (opa_pr_query_possible),
+> maybe it is a little less likely since it will be driven by PR queries
+> not broadcast joins.
+> 
+> But the same logic is likely true there, I'd be surprised if OPA
+> fabrics are not running a capable OPA SM at this point.
 
-Well, I'm not going to take any different patches beyond right now
-unless Linus does a rc8??
+OPA supports SENDONLY joins.
 
-Just move this one IFC patch to the shared branch, it is obviously OK
-
-Jason
+-Denny
