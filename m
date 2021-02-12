@@ -2,579 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A2E319C5D
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Feb 2021 11:10:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD46319E9D
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Feb 2021 13:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhBLKJP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Feb 2021 05:09:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhBLKIt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Feb 2021 05:08:49 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92442C061574
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Feb 2021 02:08:09 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id 100so7897767otg.3
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Feb 2021 02:08:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1MiYCPNXQ5DMh90Ux3fUunL9d7kMhvNKr6R60LU584c=;
-        b=onp3E+ztwxOkt7MxjNlDMINmsAFjfHhgaylGQ7aVUY8R9UgwuHGEDupV0Vel2DqD87
-         v0ifQg+XeSS8Pht1QD5uh5kRYdZqfBOZbd83OvOJ0z7pm2Jny2l030BXgveFqAi/vL/n
-         WcNfheoWR9728O5PMIzaS2i/viW1RV9jHZ9OFjKBGvvkSuiXSnlK/0GzNCkfy+cRN7pN
-         r+XqZoNzmCz1PhWxj1wLOvsAgaJekAv4CeS/bUkmQkBhdRKbc0dTR0xoTKNjYfBq7Aos
-         tv+LLzWBy5rtdhOUx3fn8e0nEkWdmA5deT8wFdMkqaR7zURBgHO8C60P9o4S/+8AWpUQ
-         4mIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1MiYCPNXQ5DMh90Ux3fUunL9d7kMhvNKr6R60LU584c=;
-        b=pp78s2mDwLsyg4w34wp6Wp4N1DLq9Yr94fHbITe7VaMM+4DDkxNE+/zXcy/HBKPhxg
-         UgQtVP1+kd3JywN5uZCSJW1LJeRWo0hBHF1ljKIijIPQX0rusKnsAhptLMZFMFy940Do
-         nW9Vlm+2OGpW6BStuWVu21gMkvrGzkBV0E1JtqIvUscLWzUmMiKWAzEa+HP1f1seUd7A
-         7VMhcIz6WZw33MpON9fij4Rtx3EC843WcFYzy0jLuSnQg0q09nH8tbqbs8VZW4vMwsOB
-         QFzxR1tyAlLLXNixQjNJcPIiilK/O0pDKhZDwg0oLjMPxJqtDmcuJMOLdhyh1TElbXQx
-         A7Rw==
-X-Gm-Message-State: AOAM533hBmWradd+lz1SE5CJTaR/yrK6Wke7IQPLpGhpWB5OknHWMRo8
-        vKq4HkcQ1h2HLHmietzXFICn6BAbitHAmOKk3CE=
-X-Google-Smtp-Source: ABdhPJzrVYC3RxmJeiXDRSwf/0nDryJQurxa+AmXHlEYHaBYfBdrVthenp+e0TJom9IUQmpagGY03E0noFDdKYjnN6E=
-X-Received: by 2002:a9d:6c4c:: with SMTP id g12mr1491118otq.53.1613124488800;
- Fri, 12 Feb 2021 02:08:08 -0800 (PST)
+        id S231591AbhBLMjE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Feb 2021 07:39:04 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26678 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231391AbhBLMh6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 12 Feb 2021 07:37:58 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11CCVqUG073017
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Feb 2021 07:37:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : from : to
+ : cc : date : mime-version : references : content-transfer-encoding :
+ content-type : message-id : subject; s=pp1;
+ bh=Q5c4f+PwF7Kw17ximCNFiTlgFkofeRztMSaSiBm7YqY=;
+ b=tU6gVdCz5HPz8hcrloXMtl7gy1tGmtFTLLeWQTuJ9+XM9gVwSuAylNUPlutW4YthvJU2
+ M8KUelHc4wfcoNEhPnWbC1B+XWlJufNGroCb/IbW/UOaTph95R6uBWtCTDs2/rGc/UFJ
+ 96CO+KcnZIYnUHVnu2CZQMkkFC9SLcEhRtwFtAJzolNifs0Ybsp665+6c9r1lbvvfgIy
+ FJxoJx+7IneACikIbbY1dy7AAJv5EqTZpcWD0jDkIk1Bi7zEeCTKqhjjmXjCDa7OCabm
+ EWl1aBWbDVXTU2o/VsUg7/Y5sDuTEgBNg/l7NyEIsltZ7Zoe1K2fn55AgEkNbAc8rAtS Ww== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.93])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36nsfngtp9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Feb 2021 07:37:16 -0500
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Fri, 12 Feb 2021 12:37:09 -0000
+Received: from us1a3-smtp08.a3.dal06.isc4sb.com (10.146.103.57)
+        by smtp.notes.na.collabserv.com (10.106.227.39) with smtp.notes.na.collabserv.com ESMTP;
+        Fri, 12 Feb 2021 12:37:08 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp08.a3.dal06.isc4sb.com
+          with ESMTP id 2021021212370788-249269 ;
+          Fri, 12 Feb 2021 12:37:07 +0000 
+In-Reply-To: <61EFD7EA-FA16-4AA1-B92F-0B0D4CC697AB@oracle.com>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Chuck Lever" <chuck.lever@oracle.com>
+Cc:     "linux-rdma" <linux-rdma@vger.kernel.org>,
+        "Benjamin Coddington" <bcodding@redhat.com>
+Date:   Fri, 12 Feb 2021 12:37:07 +0000
 MIME-Version: 1.0
-References: <20210211210455.3274-1-rpearson@hpe.com>
-In-Reply-To: <20210211210455.3274-1-rpearson@hpe.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Fri, 12 Feb 2021 18:07:57 +0800
-Message-ID: <CAD=hENfWi=xFMmQKrTP-DEShoKTkUKhd_zoNR6mVxBzUEV9r0A@mail.gmail.com>
-Subject: Re: [PATCH for-next] RDMA/rxe: Remove unused pkt->offset
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Bob Pearson <rpearson@hpe.com>
-Content-Type: text/plain; charset="UTF-8"
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <61EFD7EA-FA16-4AA1-B92F-0B0D4CC697AB@oracle.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
+X-LLNOutbound: False
+X-Disclaimed: 41667
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 21021212-8889-0000-0000-000004911145
+X-IBM-SpamModules-Scores: BY=0.058223; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.155913
+X-IBM-SpamModules-Versions: BY=3.00014727; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000295; SDB=6.01506700; UDB=6.00813446; IPR=6.01289243;
+ MB=3.00036113; MTD=3.00000008; XFM=3.00000015; UTC=2021-02-12 12:37:08
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2021-02-12 07:06:22 - 6.00012296
+x-cbparentid: 21021212-8890-0000-0000-0000AEE74B20
+Message-Id: <OFE25AAD0A.3B8CE2E0-ON0025867A.0043F201-0025867A.00455111@notes.na.collabserv.com>
+Subject: Re:  directing soft iWARP traffic through a secure tunnel
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-12_04:2021-02-12,2021-02-12 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 5:06 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->
-> The pkt->offset field is never used except to assign it to 0.
-> But it adds lots of unneeded code. This patch removes the field and
-> related code. This causes a measurable improvement in performance.
+-----"Chuck Lever" <chuck.lever@oracle.com> wrote: -----
 
-Thanks. Can you show us the  measurable improvement in performance?
+>To: "linux-rdma" <linux-rdma@vger.kernel.org>
+>From: "Chuck Lever" <chuck.lever@oracle.com>
+>Date: 02/11/2021 08:38PM
+>Cc: "Benjamin Coddington" <bcodding@redhat.com>
+>Subject: [EXTERNAL] directing soft iWARP traffic through a secure
+>tunnel
+>
+>Hi-
+>
+>This might sound crazy, but bear with me.
+>
+>The NFS community is starting to hold virtual interoperability
+>testing
+>events to replace our in-person events that are not feasible due to
+>pandemic-related travel restrictions. I'm told other communities have
+>started doing the same.
+>
+>The virtual event is being held on a private network that is set up
+>using OpenVPN across a large geographical area. I attach my test
+>systems to the VPN to access test systems run by others at other
+>companies.
+>
+>We'd like to continue to include NFS/RDMA testing at these events.
+>This means either RoCEv2 or iWARP, since obviously we can't create
+>an ad hoc wide-area InfiniBand infrastructure.
+>
+>Because the VPN is operating over long distances, we've decided to
+>start with iWARP. However, we are stumbling when it comes to
+>directing
+>the siw driver's traffic onto the tun0 device:
+>
+>[root@oracle-100 ~]# rdma link add siw0 type siw netdev tun0
+>error: Invalid argument
+>[root@oracle-100 ~]#
+>
+>Has anyone else tried to do this, and what was the approach? Or does
+>siw not yet have this capability?
+>
 
-Zhu Yanjun
+Hi Chuck
 
->
-> Signed-off-by: Bob Pearson <rpearson@hpe.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_hdr.h  | 178 +++++++++++++--------------
->  drivers/infiniband/sw/rxe/rxe_recv.c |   4 +-
->  drivers/infiniband/sw/rxe/rxe_req.c  |   1 -
->  drivers/infiniband/sw/rxe/rxe_resp.c |   3 +-
->  4 files changed, 90 insertions(+), 96 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_hdr.h b/drivers/infiniband/sw/rxe/rxe_hdr.h
-> index 3b483b75dfe3..e432f9e37795 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_hdr.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_hdr.h
-> @@ -22,7 +22,6 @@ struct rxe_pkt_info {
->         u16                     paylen;         /* length of bth - icrc */
->         u8                      port_num;       /* port pkt received on */
->         u8                      opcode;         /* bth opcode of packet */
-> -       u8                      offset;         /* bth offset from pkt->hdr */
->  };
->
->  /* Macros should be used only for received skb */
-> @@ -280,134 +279,134 @@ static inline void __bth_set_psn(void *arg, u32 psn)
->
->  static inline u8 bth_opcode(struct rxe_pkt_info *pkt)
->  {
-> -       return __bth_opcode(pkt->hdr + pkt->offset);
-> +       return __bth_opcode(pkt->hdr);
->  }
->
->  static inline void bth_set_opcode(struct rxe_pkt_info *pkt, u8 opcode)
->  {
-> -       __bth_set_opcode(pkt->hdr + pkt->offset, opcode);
-> +       __bth_set_opcode(pkt->hdr, opcode);
->  }
->
->  static inline u8 bth_se(struct rxe_pkt_info *pkt)
->  {
-> -       return __bth_se(pkt->hdr + pkt->offset);
-> +       return __bth_se(pkt->hdr);
->  }
->
->  static inline void bth_set_se(struct rxe_pkt_info *pkt, int se)
->  {
-> -       __bth_set_se(pkt->hdr + pkt->offset, se);
-> +       __bth_set_se(pkt->hdr, se);
->  }
->
->  static inline u8 bth_mig(struct rxe_pkt_info *pkt)
->  {
-> -       return __bth_mig(pkt->hdr + pkt->offset);
-> +       return __bth_mig(pkt->hdr);
->  }
->
->  static inline void bth_set_mig(struct rxe_pkt_info *pkt, u8 mig)
->  {
-> -       __bth_set_mig(pkt->hdr + pkt->offset, mig);
-> +       __bth_set_mig(pkt->hdr, mig);
->  }
->
->  static inline u8 bth_pad(struct rxe_pkt_info *pkt)
->  {
-> -       return __bth_pad(pkt->hdr + pkt->offset);
-> +       return __bth_pad(pkt->hdr);
->  }
->
->  static inline void bth_set_pad(struct rxe_pkt_info *pkt, u8 pad)
->  {
-> -       __bth_set_pad(pkt->hdr + pkt->offset, pad);
-> +       __bth_set_pad(pkt->hdr, pad);
->  }
->
->  static inline u8 bth_tver(struct rxe_pkt_info *pkt)
->  {
-> -       return __bth_tver(pkt->hdr + pkt->offset);
-> +       return __bth_tver(pkt->hdr);
->  }
->
->  static inline void bth_set_tver(struct rxe_pkt_info *pkt, u8 tver)
->  {
-> -       __bth_set_tver(pkt->hdr + pkt->offset, tver);
-> +       __bth_set_tver(pkt->hdr, tver);
->  }
->
->  static inline u16 bth_pkey(struct rxe_pkt_info *pkt)
->  {
-> -       return __bth_pkey(pkt->hdr + pkt->offset);
-> +       return __bth_pkey(pkt->hdr);
->  }
->
->  static inline void bth_set_pkey(struct rxe_pkt_info *pkt, u16 pkey)
->  {
-> -       __bth_set_pkey(pkt->hdr + pkt->offset, pkey);
-> +       __bth_set_pkey(pkt->hdr, pkey);
->  }
->
->  static inline u32 bth_qpn(struct rxe_pkt_info *pkt)
->  {
-> -       return __bth_qpn(pkt->hdr + pkt->offset);
-> +       return __bth_qpn(pkt->hdr);
->  }
->
->  static inline void bth_set_qpn(struct rxe_pkt_info *pkt, u32 qpn)
->  {
-> -       __bth_set_qpn(pkt->hdr + pkt->offset, qpn);
-> +       __bth_set_qpn(pkt->hdr, qpn);
->  }
->
->  static inline int bth_fecn(struct rxe_pkt_info *pkt)
->  {
-> -       return __bth_fecn(pkt->hdr + pkt->offset);
-> +       return __bth_fecn(pkt->hdr);
->  }
->
->  static inline void bth_set_fecn(struct rxe_pkt_info *pkt, int fecn)
->  {
-> -       __bth_set_fecn(pkt->hdr + pkt->offset, fecn);
-> +       __bth_set_fecn(pkt->hdr, fecn);
->  }
->
->  static inline int bth_becn(struct rxe_pkt_info *pkt)
->  {
-> -       return __bth_becn(pkt->hdr + pkt->offset);
-> +       return __bth_becn(pkt->hdr);
->  }
->
->  static inline void bth_set_becn(struct rxe_pkt_info *pkt, int becn)
->  {
-> -       __bth_set_becn(pkt->hdr + pkt->offset, becn);
-> +       __bth_set_becn(pkt->hdr, becn);
->  }
->
->  static inline u8 bth_resv6a(struct rxe_pkt_info *pkt)
->  {
-> -       return __bth_resv6a(pkt->hdr + pkt->offset);
-> +       return __bth_resv6a(pkt->hdr);
->  }
->
->  static inline void bth_set_resv6a(struct rxe_pkt_info *pkt)
->  {
-> -       __bth_set_resv6a(pkt->hdr + pkt->offset);
-> +       __bth_set_resv6a(pkt->hdr);
->  }
->
->  static inline int bth_ack(struct rxe_pkt_info *pkt)
->  {
-> -       return __bth_ack(pkt->hdr + pkt->offset);
-> +       return __bth_ack(pkt->hdr);
->  }
->
->  static inline void bth_set_ack(struct rxe_pkt_info *pkt, int ack)
->  {
-> -       __bth_set_ack(pkt->hdr + pkt->offset, ack);
-> +       __bth_set_ack(pkt->hdr, ack);
->  }
->
->  static inline void bth_set_resv7(struct rxe_pkt_info *pkt)
->  {
-> -       __bth_set_resv7(pkt->hdr + pkt->offset);
-> +       __bth_set_resv7(pkt->hdr);
->  }
->
->  static inline u32 bth_psn(struct rxe_pkt_info *pkt)
->  {
-> -       return __bth_psn(pkt->hdr + pkt->offset);
-> +       return __bth_psn(pkt->hdr);
->  }
->
->  static inline void bth_set_psn(struct rxe_pkt_info *pkt, u32 psn)
->  {
-> -       __bth_set_psn(pkt->hdr + pkt->offset, psn);
-> +       __bth_set_psn(pkt->hdr, psn);
->  }
->
->  static inline void bth_init(struct rxe_pkt_info *pkt, u8 opcode, int se,
->                             int mig, int pad, u16 pkey, u32 qpn, int ack_req,
->                             u32 psn)
->  {
-> -       struct rxe_bth *bth = (struct rxe_bth *)(pkt->hdr + pkt->offset);
-> +       struct rxe_bth *bth = (struct rxe_bth *)(pkt->hdr);
->
->         bth->opcode = opcode;
->         bth->flags = (pad << 4) & BTH_PAD_MASK;
-> @@ -448,14 +447,14 @@ static inline void __rdeth_set_een(void *arg, u32 een)
->
->  static inline u8 rdeth_een(struct rxe_pkt_info *pkt)
->  {
-> -       return __rdeth_een(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_RDETH]);
-> +       return __rdeth_een(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_RDETH]);
->  }
->
->  static inline void rdeth_set_een(struct rxe_pkt_info *pkt, u32 een)
->  {
-> -       __rdeth_set_een(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_RDETH], een);
-> +       __rdeth_set_een(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_RDETH], een);
->  }
->
->  /******************************************************************************
-> @@ -499,26 +498,26 @@ static inline void __deth_set_sqp(void *arg, u32 sqp)
->
->  static inline u32 deth_qkey(struct rxe_pkt_info *pkt)
->  {
-> -       return __deth_qkey(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_DETH]);
-> +       return __deth_qkey(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_DETH]);
->  }
->
->  static inline void deth_set_qkey(struct rxe_pkt_info *pkt, u32 qkey)
->  {
-> -       __deth_set_qkey(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_DETH], qkey);
-> +       __deth_set_qkey(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_DETH], qkey);
->  }
->
->  static inline u32 deth_sqp(struct rxe_pkt_info *pkt)
->  {
-> -       return __deth_sqp(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_DETH]);
-> +       return __deth_sqp(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_DETH]);
->  }
->
->  static inline void deth_set_sqp(struct rxe_pkt_info *pkt, u32 sqp)
->  {
-> -       __deth_set_sqp(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_DETH], sqp);
-> +       __deth_set_sqp(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_DETH], sqp);
->  }
->
->  /******************************************************************************
-> @@ -574,38 +573,38 @@ static inline void __reth_set_len(void *arg, u32 len)
->
->  static inline u64 reth_va(struct rxe_pkt_info *pkt)
->  {
-> -       return __reth_va(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_RETH]);
-> +       return __reth_va(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_RETH]);
->  }
->
->  static inline void reth_set_va(struct rxe_pkt_info *pkt, u64 va)
->  {
-> -       __reth_set_va(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_RETH], va);
-> +       __reth_set_va(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_RETH], va);
->  }
->
->  static inline u32 reth_rkey(struct rxe_pkt_info *pkt)
->  {
-> -       return __reth_rkey(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_RETH]);
-> +       return __reth_rkey(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_RETH]);
->  }
->
->  static inline void reth_set_rkey(struct rxe_pkt_info *pkt, u32 rkey)
->  {
-> -       __reth_set_rkey(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_RETH], rkey);
-> +       __reth_set_rkey(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_RETH], rkey);
->  }
->
->  static inline u32 reth_len(struct rxe_pkt_info *pkt)
->  {
-> -       return __reth_len(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_RETH]);
-> +       return __reth_len(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_RETH]);
->  }
->
->  static inline void reth_set_len(struct rxe_pkt_info *pkt, u32 len)
->  {
-> -       __reth_set_len(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_RETH], len);
-> +       __reth_set_len(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_RETH], len);
->  }
->
->  /******************************************************************************
-> @@ -676,50 +675,50 @@ static inline void __atmeth_set_comp(void *arg, u64 comp)
->
->  static inline u64 atmeth_va(struct rxe_pkt_info *pkt)
->  {
-> -       return __atmeth_va(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
-> +       return __atmeth_va(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
->  }
->
->  static inline void atmeth_set_va(struct rxe_pkt_info *pkt, u64 va)
->  {
-> -       __atmeth_set_va(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_ATMETH], va);
-> +       __atmeth_set_va(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_ATMETH], va);
->  }
->
->  static inline u32 atmeth_rkey(struct rxe_pkt_info *pkt)
->  {
-> -       return __atmeth_rkey(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
-> +       return __atmeth_rkey(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
->  }
->
->  static inline void atmeth_set_rkey(struct rxe_pkt_info *pkt, u32 rkey)
->  {
-> -       __atmeth_set_rkey(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_ATMETH], rkey);
-> +       __atmeth_set_rkey(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_ATMETH], rkey);
->  }
->
->  static inline u64 atmeth_swap_add(struct rxe_pkt_info *pkt)
->  {
-> -       return __atmeth_swap_add(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
-> +       return __atmeth_swap_add(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
->  }
->
->  static inline void atmeth_set_swap_add(struct rxe_pkt_info *pkt, u64 swap_add)
->  {
-> -       __atmeth_set_swap_add(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_ATMETH], swap_add);
-> +       __atmeth_set_swap_add(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_ATMETH], swap_add);
->  }
->
->  static inline u64 atmeth_comp(struct rxe_pkt_info *pkt)
->  {
-> -       return __atmeth_comp(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
-> +       return __atmeth_comp(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_ATMETH]);
->  }
->
->  static inline void atmeth_set_comp(struct rxe_pkt_info *pkt, u64 comp)
->  {
-> -       __atmeth_set_comp(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_ATMETH], comp);
-> +       __atmeth_set_comp(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_ATMETH], comp);
->  }
->
->  /******************************************************************************
-> @@ -780,26 +779,26 @@ static inline void __aeth_set_msn(void *arg, u32 msn)
->
->  static inline u8 aeth_syn(struct rxe_pkt_info *pkt)
->  {
-> -       return __aeth_syn(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_AETH]);
-> +       return __aeth_syn(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_AETH]);
->  }
->
->  static inline void aeth_set_syn(struct rxe_pkt_info *pkt, u8 syn)
->  {
-> -       __aeth_set_syn(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_AETH], syn);
-> +       __aeth_set_syn(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_AETH], syn);
->  }
->
->  static inline u32 aeth_msn(struct rxe_pkt_info *pkt)
->  {
-> -       return __aeth_msn(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_AETH]);
-> +       return __aeth_msn(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_AETH]);
->  }
->
->  static inline void aeth_set_msn(struct rxe_pkt_info *pkt, u32 msn)
->  {
-> -       __aeth_set_msn(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_AETH], msn);
-> +       __aeth_set_msn(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_AETH], msn);
->  }
->
->  /******************************************************************************
-> @@ -825,14 +824,14 @@ static inline void __atmack_set_orig(void *arg, u64 orig)
->
->  static inline u64 atmack_orig(struct rxe_pkt_info *pkt)
->  {
-> -       return __atmack_orig(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_ATMACK]);
-> +       return __atmack_orig(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_ATMACK]);
->  }
->
->  static inline void atmack_set_orig(struct rxe_pkt_info *pkt, u64 orig)
->  {
-> -       __atmack_set_orig(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_ATMACK], orig);
-> +       __atmack_set_orig(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_ATMACK], orig);
->  }
->
->  /******************************************************************************
-> @@ -858,14 +857,14 @@ static inline void __immdt_set_imm(void *arg, __be32 imm)
->
->  static inline __be32 immdt_imm(struct rxe_pkt_info *pkt)
->  {
-> -       return __immdt_imm(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_IMMDT]);
-> +       return __immdt_imm(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_IMMDT]);
->  }
->
->  static inline void immdt_set_imm(struct rxe_pkt_info *pkt, __be32 imm)
->  {
-> -       __immdt_set_imm(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_IMMDT], imm);
-> +       __immdt_set_imm(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_IMMDT], imm);
->  }
->
->  /******************************************************************************
-> @@ -891,14 +890,14 @@ static inline void __ieth_set_rkey(void *arg, u32 rkey)
->
->  static inline u32 ieth_rkey(struct rxe_pkt_info *pkt)
->  {
-> -       return __ieth_rkey(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_IETH]);
-> +       return __ieth_rkey(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_IETH]);
->  }
->
->  static inline void ieth_set_rkey(struct rxe_pkt_info *pkt, u32 rkey)
->  {
-> -       __ieth_set_rkey(pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_IETH], rkey);
-> +       __ieth_set_rkey(pkt->hdr +
-> +               rxe_opcode[pkt->opcode].offset[RXE_IETH], rkey);
->  }
->
->  enum rxe_hdr_length {
-> @@ -915,13 +914,12 @@ enum rxe_hdr_length {
->
->  static inline size_t header_size(struct rxe_pkt_info *pkt)
->  {
-> -       return pkt->offset + rxe_opcode[pkt->opcode].length;
-> +       return rxe_opcode[pkt->opcode].length;
->  }
->
->  static inline void *payload_addr(struct rxe_pkt_info *pkt)
->  {
-> -       return pkt->hdr + pkt->offset
-> -               + rxe_opcode[pkt->opcode].offset[RXE_PAYLOAD];
-> +       return pkt->hdr + rxe_opcode[pkt->opcode].offset[RXE_PAYLOAD];
->  }
->
->  static inline size_t payload_size(struct rxe_pkt_info *pkt)
-> diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-> index 8a48a33d587b..45d2f711bce2 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_recv.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-> @@ -353,9 +353,7 @@ void rxe_rcv(struct sk_buff *skb)
->         __be32 *icrcp;
->         u32 calc_icrc, pack_icrc;
->
-> -       pkt->offset = 0;
-> -
-> -       if (unlikely(skb->len < pkt->offset + RXE_BTH_BYTES))
-> +       if (unlikely(skb->len < RXE_BTH_BYTES))
->                 goto drop;
->
->         if (rxe_chk_dgid(rxe, skb) < 0) {
-> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-> index d4917646641a..889290793d75 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_req.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-> @@ -375,7 +375,6 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
->         pkt->psn        = qp->req.psn;
->         pkt->mask       = rxe_opcode[opcode].mask;
->         pkt->paylen     = paylen;
-> -       pkt->offset     = 0;
->         pkt->wqe        = wqe;
->
->         /* init skb */
-> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-> index 5fd26786d79b..1ae94f2cb336 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-> @@ -586,11 +586,10 @@ static struct sk_buff *prepare_ack_packet(struct rxe_qp *qp,
->         ack->qp = qp;
->         ack->opcode = opcode;
->         ack->mask = rxe_opcode[opcode].mask;
-> -       ack->offset = pkt->offset;
->         ack->paylen = paylen;
->
->         /* fill in bth using the request packet headers */
-> -       memcpy(ack->hdr, pkt->hdr, pkt->offset + RXE_BTH_BYTES);
-> +       memcpy(ack->hdr, pkt->hdr, RXE_BTH_BYTES);
->
->         bth_set_opcode(ack, opcode);
->         bth_set_qpn(ack, qp->attr.dest_qp_num);
-> --
-> 2.27.0
->
+right. Attaching siw is currently restricted to some physical
+device types. This now appears a useless limitation, since
+it prevents its usage in the given setup, where it would
+be just useful...
+Relaxing that limitation is a rather simple code change in siw
+- but that would not help you asap?
+
+In any case I'd be happy to help with a fix, but participants
+would have to rebuild the siw module...probably no option?
+
+Best,
+Bernard.
+
