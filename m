@@ -2,83 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775A031AF28
-	for <lists+linux-rdma@lfdr.de>; Sun, 14 Feb 2021 06:26:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5566331AF77
+	for <lists+linux-rdma@lfdr.de>; Sun, 14 Feb 2021 07:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbhBNFZb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 14 Feb 2021 00:25:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48950 "EHLO mail.kernel.org"
+        id S229575AbhBNGlt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 14 Feb 2021 01:41:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229494AbhBNFZb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 14 Feb 2021 00:25:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA92D64DCC;
-        Sun, 14 Feb 2021 05:24:49 +0000 (UTC)
+        id S229563AbhBNGls (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 14 Feb 2021 01:41:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E2CE64E43;
+        Sun, 14 Feb 2021 06:41:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613280290;
-        bh=z5Z3JlNpwpUDgDfAYZVeMCMo8ei6ew55eOm/HIEimhk=;
+        s=k20201202; t=1613284867;
+        bh=OBk75GOH8EKHAVV7ouOv6GVYXdFhEWXEH7tNORERk8Y=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g6AeeLTOKwIeat8dkqEPb/4TKT/5+soiw7FDsOE5wuc38fN6Tdv1/H2P6ZNGVIap+
-         oN5CsXgHFLfM2H9q0R91Fo5I4gLsaj822ekK3KughKGCAwwAGKwtkpNcFn95UVKpEd
-         wDKvGWvG0lmsf6ZG1b/lkp0p/oF5zbrufCWgnJy3A76Y4ajgBdCpTWibewYClASsR5
-         te8Z0ppstmAWsdsk4NgIPhTn41uW/BjksNxGGwy3rWXET7AQ7pvBO6CfFue68imEF8
-         ADjWnCOlc6HdS4NUKOSC5PkbQxN6UvetNj+6n4hhICHnE89V0Ci6rQpFzfTbBQFNzo
-         EPVmwyO4e0EdA==
-Date:   Sun, 14 Feb 2021 07:24:46 +0200
+        b=UNkA9xKxcWpD5H5a8xIMT+DpQzio15ccFpxDKcI1T4Cmm173AfNngiza+l+jy38AO
+         n1aRiCXM3KbkcONXeMgH/d4BgA+RuEiM0V804YGz+bqHZhFoIOgQ/GP9Ms51bQFcFp
+         NrzuaFyilGVGtFO6c9CXM9rqppVsXRrTtmLumfKKwNLI5j4OgNgPX3G9QolemTymdd
+         d140PtPcjNIW2VVIOYhpS81d7WxmWgSdHDO1G5qYtjswyUVxgGQkXUdDhac69qzsHw
+         c/+7JkhklnCbNdDctoj9PWkktvSGxcaQtcYLHdsWM8vkDzoxI49wQibRGvvu+JdkU5
+         EfTX96dHqxe+A==
+Date:   Sun, 14 Feb 2021 08:41:03 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH mlx5-next v6 0/4] Dynamically assign MSI-X vectors count
-Message-ID: <YCi0HvqizRp+Nhgh@unreal>
-References: <20210209133445.700225-1-leon@kernel.org>
- <CAKgT0Ud+c6wzo3n_8VgtVBQm-2UPic6U2QFuqqN-P9nEv_Y+JQ@mail.gmail.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Aharon Landau <aharonl@nvidia.com>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>, netdev@vger.kernel.org
+Subject: Re: [PATCH rdma-next 0/2] Real time/free running timestamp support
+Message-ID: <YCjF/xxC3/easKYC@unreal>
+References: <20210209131107.698833-1-leon@kernel.org>
+ <20210212181056.GB1737478@nvidia.com>
+ <5d4731e2394049ca66012f82e1645bdec51aca78.camel@kernel.org>
+ <20210212211408.GA1860468@nvidia.com>
+ <53a97eb379af167c0221408a07c9bddc6624027d.camel@kernel.org>
+ <20210212212153.GX4247@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAKgT0Ud+c6wzo3n_8VgtVBQm-2UPic6U2QFuqqN-P9nEv_Y+JQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210212212153.GX4247@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 01:06:25PM -0800, Alexander Duyck wrote:
-> On Tue, Feb 9, 2021 at 5:34 AM Leon Romanovsky <leon@kernel.org> wrote:
+On Fri, Feb 12, 2021 at 05:21:53PM -0400, Jason Gunthorpe wrote:
+> On Fri, Feb 12, 2021 at 01:19:09PM -0800, Saeed Mahameed wrote:
+> > On Fri, 2021-02-12 at 17:14 -0400, Jason Gunthorpe wrote:
+> > > On Fri, Feb 12, 2021 at 01:09:20PM -0800, Saeed Mahameed wrote:
+> > > > On Fri, 2021-02-12 at 14:10 -0400, Jason Gunthorpe wrote:
+> > > > > On Tue, Feb 09, 2021 at 03:11:05PM +0200, Leon Romanovsky wrote:
+> > > > > > From: Leon Romanovsky <leonro@nvidia.com>
+> > > > > >
+> > > > > > Add an extra timestamp format for mlx5_ib device.
+> > > > > >
+> > > > > > Thanks
+> > > > > >
+> > > > > > Aharon Landau (2):
+> > > > > >   net/mlx5: Add new timestamp mode bits
+> > > > > >   RDMA/mlx5: Fail QP creation if the device can not support the
+> > > > > > CQE
+> > > > > > TS
+> > > > > >
+> > > > > >  drivers/infiniband/hw/mlx5/qp.c | 104
+> > > > > > +++++++++++++++++++++++++++++---
+> > > > > >  include/linux/mlx5/mlx5_ifc.h   |  54 +++++++++++++++--
+> > > > > >  2 files changed, 145 insertions(+), 13 deletions(-)
+> > > > >
+> > > > > Since this is a rdma series, and we are at the end of the cycle,
+> > > > > I
+> > > > > took the IFC file directly to the rdma tree instead of through
+> > > > > the
+> > > > > shared branch.
+> > > > >
+> > > > > Applied to for-next, thanks
+> > > > >
+> > > >
+> > > > mmm, i was planing to resubmit this patch with the netdev real time
+> > > > support series, since the uplink representor is getting delayed, I
+> > > > thought I could submit the real time stuff today. can you wait on
+> > > > the
+> > > > ifc patch, i will re-send it today if you will, but it must go
+> > > > through
+> > > > the shared branch
+> > >
+> > > Friday of rc7 is a bit late to be sending new patches for the first
+> > > time, isn't it??
 > >
-
-<...>
-
-> > Leon Romanovsky (4):
-> >   PCI: Add sysfs callback to allow MSI-X table size change of SR-IOV VFs
-> >   net/mlx5: Add dynamic MSI-X capabilities bits
-> >   net/mlx5: Dynamically assign MSI-X vectors count
-> >   net/mlx5: Allow to the users to configure number of MSI-X vectors
+> > I know, uplink representor last minute mess !
 > >
-> >  Documentation/ABI/testing/sysfs-bus-pci       |  28 ++++
-> >  .../net/ethernet/mellanox/mlx5/core/main.c    |  17 ++
-> >  .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  27 ++++
-> >  .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  72 +++++++++
-> >  .../net/ethernet/mellanox/mlx5/core/sriov.c   |  58 ++++++-
-> >  drivers/pci/iov.c                             | 153 ++++++++++++++++++
-> >  include/linux/mlx5/mlx5_ifc.h                 |  11 +-
-> >  include/linux/pci.h                           |  12 ++
-> >  8 files changed, 375 insertions(+), 3 deletions(-)
+> > >
+> > > But sure, if you update the shared branch right now I'll fix up
+> > > rdma.git
+> > >
 > >
+> > I can't put it in the shared brach without review, i will post it to
+> > the netdev/rdma lists for two days at least for review and feedback.
 >
-> This seems much improved from the last time I reviewed the patch set.
-> I am good with the drop of the folder in favor of using "sriov" in the
-> naming of the fields.
+> Well, I'm not going to take any different patches beyond right now
+> unless Linus does a rc8??
 >
-> For the series:
-> Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+> Just move this one IFC patch to the shared branch, it is obviously OK
 
-Bjorn,
-
-Can I get your Ack too, so we won't miss this merge window?
+OK, I'm curious to see the end result of all this last minute adventure.
 
 Thanks
+
+>
+> Jason
