@@ -2,112 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5566331AF77
-	for <lists+linux-rdma@lfdr.de>; Sun, 14 Feb 2021 07:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E44831AFBE
+	for <lists+linux-rdma@lfdr.de>; Sun, 14 Feb 2021 09:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229575AbhBNGlt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 14 Feb 2021 01:41:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52156 "EHLO mail.kernel.org"
+        id S229730AbhBNIeX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 14 Feb 2021 03:34:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229563AbhBNGls (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 14 Feb 2021 01:41:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E2CE64E43;
-        Sun, 14 Feb 2021 06:41:06 +0000 (UTC)
+        id S229563AbhBNIeV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 14 Feb 2021 03:34:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52E8D64E23;
+        Sun, 14 Feb 2021 08:33:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613284867;
-        bh=OBk75GOH8EKHAVV7ouOv6GVYXdFhEWXEH7tNORERk8Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UNkA9xKxcWpD5H5a8xIMT+DpQzio15ccFpxDKcI1T4Cmm173AfNngiza+l+jy38AO
-         n1aRiCXM3KbkcONXeMgH/d4BgA+RuEiM0V804YGz+bqHZhFoIOgQ/GP9Ms51bQFcFp
-         NrzuaFyilGVGtFO6c9CXM9rqppVsXRrTtmLumfKKwNLI5j4OgNgPX3G9QolemTymdd
-         d140PtPcjNIW2VVIOYhpS81d7WxmWgSdHDO1G5qYtjswyUVxgGQkXUdDhac69qzsHw
-         c/+7JkhklnCbNdDctoj9PWkktvSGxcaQtcYLHdsWM8vkDzoxI49wQibRGvvu+JdkU5
-         EfTX96dHqxe+A==
-Date:   Sun, 14 Feb 2021 08:41:03 +0200
+        s=k20201202; t=1613291621;
+        bh=vXIzBAR96RWOmojxAGhSBdAI4j+TNc+J95m0Q6RhefA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sKgUNqJYyYwTxvtNFF2Ws762u8W1fk4uJmGSuDuOi70y+bK576IngD8g06mpo1kIT
+         fTcfgwjKPTL1NJpXraave90oL3Nx+rOGz6ye9NetWnKgctixSDAVqPfIfsszOppjBk
+         qdo9pH+XI015ibBGlj1J5wXrf3MFDTteGVNR4nebm6KO4db4UzpQsql7ll3aasOHj/
+         i3kMlOafjY16mfQ3/EbwoY77xzv30pTtGJ4b/fdUyMb/Z2+2NGvbOgrBQfm9sGbl0z
+         51HXEf7MMXKmOg7HamdenbBlI5I71Qe2DhJPk2iEQ8p4Deq4t5AXa9koQix3Mb8zm2
+         sv57hJOJjgSQg==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Saeed Mahameed <saeed@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Aharon Landau <aharonl@nvidia.com>, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@nvidia.com>, netdev@vger.kernel.org
-Subject: Re: [PATCH rdma-next 0/2] Real time/free running timestamp support
-Message-ID: <YCjF/xxC3/easKYC@unreal>
-References: <20210209131107.698833-1-leon@kernel.org>
- <20210212181056.GB1737478@nvidia.com>
- <5d4731e2394049ca66012f82e1645bdec51aca78.camel@kernel.org>
- <20210212211408.GA1860468@nvidia.com>
- <53a97eb379af167c0221408a07c9bddc6624027d.camel@kernel.org>
- <20210212212153.GX4247@nvidia.com>
+To:     Stephen Hemminger <stephen@networkplumber.org>
+Cc:     Ido Kalir <idok@nvidia.com>, David Ahern <dsahern@gmail.com>,
+        linux-netdev <netdev@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: [PATCH iproute2-rc] rdma: Fix statistics bind/unbing argument handling
+Date:   Sun, 14 Feb 2021 10:33:35 +0200
+Message-Id: <20210214083335.19558-1-leon@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210212212153.GX4247@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 05:21:53PM -0400, Jason Gunthorpe wrote:
-> On Fri, Feb 12, 2021 at 01:19:09PM -0800, Saeed Mahameed wrote:
-> > On Fri, 2021-02-12 at 17:14 -0400, Jason Gunthorpe wrote:
-> > > On Fri, Feb 12, 2021 at 01:09:20PM -0800, Saeed Mahameed wrote:
-> > > > On Fri, 2021-02-12 at 14:10 -0400, Jason Gunthorpe wrote:
-> > > > > On Tue, Feb 09, 2021 at 03:11:05PM +0200, Leon Romanovsky wrote:
-> > > > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > > >
-> > > > > > Add an extra timestamp format for mlx5_ib device.
-> > > > > >
-> > > > > > Thanks
-> > > > > >
-> > > > > > Aharon Landau (2):
-> > > > > >   net/mlx5: Add new timestamp mode bits
-> > > > > >   RDMA/mlx5: Fail QP creation if the device can not support the
-> > > > > > CQE
-> > > > > > TS
-> > > > > >
-> > > > > >  drivers/infiniband/hw/mlx5/qp.c | 104
-> > > > > > +++++++++++++++++++++++++++++---
-> > > > > >  include/linux/mlx5/mlx5_ifc.h   |  54 +++++++++++++++--
-> > > > > >  2 files changed, 145 insertions(+), 13 deletions(-)
-> > > > >
-> > > > > Since this is a rdma series, and we are at the end of the cycle,
-> > > > > I
-> > > > > took the IFC file directly to the rdma tree instead of through
-> > > > > the
-> > > > > shared branch.
-> > > > >
-> > > > > Applied to for-next, thanks
-> > > > >
-> > > >
-> > > > mmm, i was planing to resubmit this patch with the netdev real time
-> > > > support series, since the uplink representor is getting delayed, I
-> > > > thought I could submit the real time stuff today. can you wait on
-> > > > the
-> > > > ifc patch, i will re-send it today if you will, but it must go
-> > > > through
-> > > > the shared branch
-> > >
-> > > Friday of rc7 is a bit late to be sending new patches for the first
-> > > time, isn't it??
-> >
-> > I know, uplink representor last minute mess !
-> >
-> > >
-> > > But sure, if you update the shared branch right now I'll fix up
-> > > rdma.git
-> > >
-> >
-> > I can't put it in the shared brach without review, i will post it to
-> > the netdev/rdma lists for two days at least for review and feedback.
->
-> Well, I'm not going to take any different patches beyond right now
-> unless Linus does a rc8??
->
-> Just move this one IFC patch to the shared branch, it is obviously OK
+From: Ido Kalir <idok@nvidia.com>
 
-OK, I'm curious to see the end result of all this last minute adventure.
+The dump isn't supported for the statistics bind/unbind commands
+because they operate on specific QP counters. This is different
+from query commands that can operate on many objects at the same
+time.
 
-Thanks
+Let's check the user input and ensure that arguments are valid.
 
->
-> Jason
+Fixes: a6d0773ebecc ("rdma: Add stat manual mode support")
+Signed-off-by: Ido Kalir <idok@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ rdma/rdma.h  |  1 +
+ rdma/stat.c  | 21 +++++++++++++++++++++
+ rdma/utils.c |  7 +++++++
+ 3 files changed, 29 insertions(+)
+
+diff --git a/rdma/rdma.h b/rdma/rdma.h
+index 735b1bf7..7f96c051 100644
+--- a/rdma/rdma.h
++++ b/rdma/rdma.h
+@@ -83,6 +83,7 @@ struct rd_cmd {
+  * Parser interface
+  */
+ bool rd_no_arg(struct rd *rd);
++bool rd_is_multiarg(struct rd *rd);
+ void rd_arg_inc(struct rd *rd);
+
+ char *rd_argv(struct rd *rd);
+diff --git a/rdma/stat.c b/rdma/stat.c
+index 8d4b7a11..a6b6dfbf 100644
+--- a/rdma/stat.c
++++ b/rdma/stat.c
+@@ -455,6 +455,12 @@ static int stat_get_arg(struct rd *rd, const char *arg)
+ 		return -EINVAL;
+
+ 	rd_arg_inc(rd);
++
++	if (rd_is_multiarg(rd)){
++		pr_err("The parameter %s shouldn't include range\n", arg);
++		return -EINVAL;
++	}
++
+ 	value = strtol(rd_argv(rd), &endp, 10);
+ 	rd_arg_inc(rd);
+
+@@ -476,6 +482,8 @@ static int stat_one_qp_bind(struct rd *rd)
+ 		return ret;
+
+ 	lqpn = stat_get_arg(rd, "lqpn");
++	if (lqpn < 0)
++		return lqpn;
+
+ 	rd_prepare_msg(rd, RDMA_NLDEV_CMD_STAT_SET,
+ 		       &seq, (NLM_F_REQUEST | NLM_F_ACK));
+@@ -490,6 +498,9 @@ static int stat_one_qp_bind(struct rd *rd)
+
+ 	if (rd_argc(rd)) {
+ 		cntn = stat_get_arg(rd, "cntn");
++		if (cntn < 0)
++			return cntn;
++
+ 		mnl_attr_put_u32(rd->nlh, RDMA_NLDEV_ATTR_STAT_COUNTER_ID,
+ 				 cntn);
+ 	}
+@@ -560,13 +571,23 @@ static int stat_one_qp_unbind(struct rd *rd)
+ 	unsigned int portid;
+ 	uint32_t seq;
+
++	if (rd_no_arg(rd)) {
++		stat_help(rd);
++		return -EINVAL;
++	}
++
+ 	ret = rd_build_filter(rd, stat_valid_filters);
+ 	if (ret)
+ 		return ret;
+
+ 	cntn = stat_get_arg(rd, "cntn");
++	if (cntn < 0)
++		return cntn;
++
+ 	if (rd_argc(rd)) {
+ 		lqpn = stat_get_arg(rd, "lqpn");
++		if (lqpn < 0)
++			return lqpn;
+ 		return do_stat_qp_unbind_lqpn(rd, cntn, lqpn);
+ 	}
+
+diff --git a/rdma/utils.c b/rdma/utils.c
+index e25c3adf..bbfa23ba 100644
+--- a/rdma/utils.c
++++ b/rdma/utils.c
+@@ -47,6 +47,13 @@ bool rd_no_arg(struct rd *rd)
+ 	return rd_argc(rd) == 0;
+ }
+
++bool rd_is_multiarg(struct rd *rd)
++{
++	if (!rd_argc(rd))
++		return false;
++	return strpbrk(rd_argv(rd), ",-") != NULL;
++}
++
+ /*
+  * Possible input:output
+  * dev/port    | first port | is_dump_all
+--
+2.29.2
+
