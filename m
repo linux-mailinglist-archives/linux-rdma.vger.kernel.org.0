@@ -2,122 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7EB731CB9C
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Feb 2021 15:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D821831CC30
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Feb 2021 15:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhBPOMt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Feb 2021 09:12:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229924AbhBPOMt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:12:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4A5E64DFF;
-        Tue, 16 Feb 2021 14:12:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613484727;
-        bh=VoIJw8IV2XhrWH31y5xWJWmLam8wK4EdSN+YNIWdN1o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TTZpZlQq6dBehVZjmUZ+w7XtEDgI4xaCIIu5EgD5p/b9YKKMcPhYZlKTX6y7CBHUS
-         gusm7fgk6DK1io3RrYGEVr6kGZ08ssCLIO6zxFANjNbEQ7jO4tUrUrwXELRsU95hR9
-         dmU3GBb4+2fx3BMoeEH8oi/0ZV/f4k6EnYwQUfKYjq9Hpgl7e2ba+d0p/UiN5f6HhK
-         5oSYZla7F+4lGZAhzl8mSYITKH3ql0VZ+2tBe1oHqSP6L3zZS5gh+Hk7HnrFwSLU8y
-         UNMADbz0Q9l7BmU0OmNLSqUpyyeSPCEdO0V5/OT6zi7Rxs2njWkZ5BniZ7N/LlKD2P
-         zkM39EvSBIRdg==
-Date:   Tue, 16 Feb 2021 16:12:03 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Saeed Mahameed <saeed@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Aharon Landau <aharonl@nvidia.com>, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@nvidia.com>, netdev@vger.kernel.org
-Subject: Re: [PATCH rdma-next 0/2] Real time/free running timestamp support
-Message-ID: <YCvSs7VKA7s4d4n9@unreal>
-References: <20210209131107.698833-1-leon@kernel.org>
- <20210212181056.GB1737478@nvidia.com>
- <5d4731e2394049ca66012f82e1645bdec51aca78.camel@kernel.org>
- <20210212211408.GA1860468@nvidia.com>
- <53a97eb379af167c0221408a07c9bddc6624027d.camel@kernel.org>
- <20210212212153.GX4247@nvidia.com>
- <YCjF/xxC3/easKYC@unreal>
+        id S230063AbhBPOk1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Feb 2021 09:40:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230048AbhBPOiw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Feb 2021 09:38:52 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95CCC061756
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Feb 2021 06:38:11 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id f14so16902437ejc.8
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Feb 2021 06:38:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IWjrod3tLA4a5r6U0gY+A6F2cUnWdAOzP0CmAkChK5I=;
+        b=FNf2nfByJxzYzRfMjUFw11L/DkxQx4UX1q+l3Iim05hinqqpazdPHfKdXGq7xIivqC
+         REjEUk533YLoCw0savdXuDN51/fGFMH8bRhIYONM+03eZKXPYQQzucWgY8GXEMnMqLjt
+         tv80TXqkJ+vQiNSld+4fUm3/5e69ZnPjtB3nWpkd4BirBYGkiQ6PR/YIh4Vt127UJwtS
+         G4NvbjszxVm7AKLsKNMJRgeGS3pQqJp4Y09GlpT6+jQVLunTEl2VD3zYv6WFwuoBV8dO
+         dFgXzvepxnAqZ3zxgQhsPYtpEd1pHkpP4tv8sVYOZno3RopOAe7F+r/ItT+0jJ86LbP1
+         h5fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IWjrod3tLA4a5r6U0gY+A6F2cUnWdAOzP0CmAkChK5I=;
+        b=KbYSsog4rU9J8hFzC53uHVdEMZwz5OiYteIst9PxcMjf8RaGqgEvsYI89XSBG1w2mv
+         uqNc17Kb8kEmlhcouFWzRNn/jkNfCSLM+yDcDGUphbdi1UOqGnf/DouqJmAvFvEUZpLa
+         LLWQuhFMsudYndUkff5MVXehuNi/szo58t+jxMSSoDtEaYeHcaBO2ahG5O1qy1aFLN18
+         hJg9XZqYaZOTW/yN5yvFhO+vVitmC/FrEoEE+tKvHwbl/wuf7TRmk1sM8mmL07iBdW2t
+         w1C7OiRb5mLLSr4BTgAHBKDR9SZ0HmRO7F9jaIrx1QAvPpExqcwuqUkcAH97FdeB/uX1
+         YNyw==
+X-Gm-Message-State: AOAM530HDYH3GHmSNzTw9IZUfhNhZSnz182FtonuUcphO4s95VoxbHxt
+        oq4Fn+vO6YxTWpxmCkUE6ybJTtgrMMR0sQ==
+X-Google-Smtp-Source: ABdhPJzUs/nQIApwomT0Ogsw5v9DDvjqKb06r1b0+AIqx6mAcJA1+PPlKpj6C2yR2WEayA0LBy06HQ==
+X-Received: by 2002:a17:906:9452:: with SMTP id z18mr18909454ejx.466.1613486288175;
+        Tue, 16 Feb 2021 06:38:08 -0800 (PST)
+Received: from jwang-Latitude-5491.fritz.box ([2001:16b8:495c:7b00:c58d:d927:ec25:bb7b])
+        by smtp.gmail.com with ESMTPSA id z2sm13696909ejd.44.2021.02.16.06.38.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 06:38:07 -0800 (PST)
+From:   Jack Wang <jinpu.wang@cloud.ionos.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
+        jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
+        jinpu.wang@cloud.ionos.com, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] RDMA/rtrs-srv: Suppress warnings passing zero to 'PTR_ERR'
+Date:   Tue, 16 Feb 2021 15:38:07 +0100
+Message-Id: <20210216143807.65923-1-jinpu.wang@cloud.ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YCjF/xxC3/easKYC@unreal>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Feb 14, 2021 at 08:41:03AM +0200, Leon Romanovsky wrote:
-> On Fri, Feb 12, 2021 at 05:21:53PM -0400, Jason Gunthorpe wrote:
-> > On Fri, Feb 12, 2021 at 01:19:09PM -0800, Saeed Mahameed wrote:
-> > > On Fri, 2021-02-12 at 17:14 -0400, Jason Gunthorpe wrote:
-> > > > On Fri, Feb 12, 2021 at 01:09:20PM -0800, Saeed Mahameed wrote:
-> > > > > On Fri, 2021-02-12 at 14:10 -0400, Jason Gunthorpe wrote:
-> > > > > > On Tue, Feb 09, 2021 at 03:11:05PM +0200, Leon Romanovsky wrote:
-> > > > > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > > > >
-> > > > > > > Add an extra timestamp format for mlx5_ib device.
-> > > > > > >
-> > > > > > > Thanks
-> > > > > > >
-> > > > > > > Aharon Landau (2):
-> > > > > > >   net/mlx5: Add new timestamp mode bits
-> > > > > > >   RDMA/mlx5: Fail QP creation if the device can not support the
-> > > > > > > CQE
-> > > > > > > TS
-> > > > > > >
-> > > > > > >  drivers/infiniband/hw/mlx5/qp.c | 104
-> > > > > > > +++++++++++++++++++++++++++++---
-> > > > > > >  include/linux/mlx5/mlx5_ifc.h   |  54 +++++++++++++++--
-> > > > > > >  2 files changed, 145 insertions(+), 13 deletions(-)
-> > > > > >
-> > > > > > Since this is a rdma series, and we are at the end of the cycle,
-> > > > > > I
-> > > > > > took the IFC file directly to the rdma tree instead of through
-> > > > > > the
-> > > > > > shared branch.
-> > > > > >
-> > > > > > Applied to for-next, thanks
-> > > > > >
-> > > > >
-> > > > > mmm, i was planing to resubmit this patch with the netdev real time
-> > > > > support series, since the uplink representor is getting delayed, I
-> > > > > thought I could submit the real time stuff today. can you wait on
-> > > > > the
-> > > > > ifc patch, i will re-send it today if you will, but it must go
-> > > > > through
-> > > > > the shared branch
-> > > >
-> > > > Friday of rc7 is a bit late to be sending new patches for the first
-> > > > time, isn't it??
-> > >
-> > > I know, uplink representor last minute mess !
-> > >
-> > > >
-> > > > But sure, if you update the shared branch right now I'll fix up
-> > > > rdma.git
-> > > >
-> > >
-> > > I can't put it in the shared brach without review, i will post it to
-> > > the netdev/rdma lists for two days at least for review and feedback.
-> >
-> > Well, I'm not going to take any different patches beyond right now
-> > unless Linus does a rc8??
-> >
-> > Just move this one IFC patch to the shared branch, it is obviously OK
->
-> OK, I'm curious to see the end result of all this last minute adventure.
+smatch warnings:
+drivers/infiniband/ulp/rtrs/rtrs-srv.c:1805 rtrs_rdma_connect() warn: passing zero to 'PTR_ERR'
 
-Jason,
+Smatch seems confused by the refcount_read condition, the solution is
+protect move the list_add down after full initilization of rtrs_srv.
+To avoid holding the srv_mutex too long, only hold it during
+the list operation as suggested by Leon.
 
-I took first patch to the shared branch.
-a6a217dddcd5 net/mlx5: Add new timestamp mode bits
+Fixes: f0751419d3a1 ("RDMA/rtrs: Only allow addition of path to an already established session")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+---
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 20 +++++++-------------
+ 1 file changed, 7 insertions(+), 13 deletions(-)
 
-Thanks
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index eb17c3a08810..d071809e3ed2 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -1347,21 +1347,18 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
+ 			return srv;
+ 		}
+ 	}
++	mutex_unlock(&ctx->srv_mutex);
+ 	/*
+ 	 * If this request is not the first connection request from the
+ 	 * client for this session then fail and return error.
+ 	 */
+-	if (!first_conn) {
+-		mutex_unlock(&ctx->srv_mutex);
++	if (!first_conn)
+ 		return ERR_PTR(-ENXIO);
+-	}
+ 
+ 	/* need to allocate a new srv */
+ 	srv = kzalloc(sizeof(*srv), GFP_KERNEL);
+-	if  (!srv) {
+-		mutex_unlock(&ctx->srv_mutex);
++	if  (!srv)
+ 		return ERR_PTR(-ENOMEM);
+-	}
+ 
+ 	INIT_LIST_HEAD(&srv->paths_list);
+ 	mutex_init(&srv->paths_mutex);
+@@ -1371,8 +1368,6 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
+ 	srv->ctx = ctx;
+ 	device_initialize(&srv->dev);
+ 	srv->dev.release = rtrs_srv_dev_release;
+-	list_add(&srv->ctx_list, &ctx->srv_list);
+-	mutex_unlock(&ctx->srv_mutex);
+ 
+ 	srv->chunks = kcalloc(srv->queue_depth, sizeof(*srv->chunks),
+ 			      GFP_KERNEL);
+@@ -1385,6 +1380,9 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
+ 			goto err_free_chunks;
+ 	}
+ 	refcount_set(&srv->refcount, 1);
++	mutex_lock(&ctx->srv_mutex);
++	list_add(&srv->ctx_list, &ctx->srv_list);
++	mutex_unlock(&ctx->srv_mutex);
+ 
+ 	return srv;
+ 
+@@ -1799,11 +1797,7 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
+ 	}
+ 	recon_cnt = le16_to_cpu(msg->recon_cnt);
+ 	srv = get_or_create_srv(ctx, &msg->paths_uuid, msg->first_conn);
+-	/*
+-	 * "refcount == 0" happens if a previous thread calls get_or_create_srv
+-	 * allocate srv, but chunks of srv are not allocated yet.
+-	 */
+-	if (IS_ERR(srv) || refcount_read(&srv->refcount) == 0) {
++	if (IS_ERR(srv)) {
+ 		err = PTR_ERR(srv);
+ 		goto reject_w_err;
+ 	}
+-- 
+2.25.1
 
->
-> Thanks
->
-> >
-> > Jason
