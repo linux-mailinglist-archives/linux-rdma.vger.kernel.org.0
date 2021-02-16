@@ -2,85 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D75631CC68
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Feb 2021 15:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B4031CD29
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Feb 2021 16:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbhBPOur (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Feb 2021 09:50:47 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:51996 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbhBPOup (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Feb 2021 09:50:45 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11GEiHde031910;
-        Tue, 16 Feb 2021 14:49:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=s8E34fpVYOJjv98pQmJAiDJ5VEBMaO0+JOmHubATa4w=;
- b=O0SIVD0hcvGAJN7MIp94S7Z8stdCJsGdMqC3MEB1KM8T+athzHj+JmpdR20Bk7Wj60Za
- Cyfl8ebkaw8KxRyrHC8TIQLmkvVQXf1sKHH1FWiJS9qZhMeSGOIpeR3ta8dOYrnUnKlO
- sZDSz1N/9eIdxhLwLvPmC3dOJ2/TFu+XpCPjkdQCdWWWOnrS1+EySAeRsWkBsnQQhg0Z
- ueHYeR/WDBVj6r8lyGcxo1ooht6VBXLWn2UNH0jHTAOEJnr5ch90UoOHmnhG9DeGOQTf
- //CSoiTmXwfANIGtnVNs48BgW5+rL1CjUeV+GJR+vDJA3rq75rxbQs/GyclWRkfASy21 QQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 36p7dneye0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Feb 2021 14:49:53 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11GEjWUD023419;
-        Tue, 16 Feb 2021 14:49:49 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 36prhrkvh3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Feb 2021 14:49:49 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11GEnkmB026288;
-        Tue, 16 Feb 2021 14:49:46 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 16 Feb 2021 06:49:46 -0800
-Date:   Tue, 16 Feb 2021 17:49:38 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, leon@kernel.org,
-        dledford@redhat.com, jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] RDMA/rtrs-srv: Suppress warnings passing zero to
- 'PTR_ERR'
-Message-ID: <20210216144938.GG2222@kadam>
-References: <20210216143807.65923-1-jinpu.wang@cloud.ionos.com>
+        id S229635AbhBPPtN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Feb 2021 10:49:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230204AbhBPPtJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Feb 2021 10:49:09 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5FF1C061574;
+        Tue, 16 Feb 2021 07:48:26 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id b16so6943345otq.1;
+        Tue, 16 Feb 2021 07:48:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=APA6hwAnvuXF3RbI64Y0Of01r1EHRcUtK6WRrMWbpdo=;
+        b=j5wHba3jekPQRt4pm7L8dP9oq/WBiw0K/IrWjDxzLlC+pr6qLxjVzk7lqMjqwtoVzt
+         +eCm8FGbql0TQACJNAMmm1TQslcDfRayxd/QEEFG+R03SshdlnO21luWMcbzyfbfh4vj
+         D0Zq86WBRj5XRyb2YLStKVPW1C3cAJb7xrQr5aeU/xu/55qJ95rQqoPdA+Qdj8P3YENT
+         1U/eDPcDN6tGesau5c2Ks2K25H96yyjFWV+AQn78gyxWhuXEHVVC4ApXL8yjt7dpuaHB
+         IYu3y2vF8wv4rNoruboZB6hc64QADhcgjZ/EhU2YQSpBz2grGrNagEe4oNeB8caxierm
+         Paxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=APA6hwAnvuXF3RbI64Y0Of01r1EHRcUtK6WRrMWbpdo=;
+        b=pZ9HJbHM+D6wgMLIFgb+rh68U8evDT9oY4gzQI7RWN1WPwAdLIF1qLXGqQ74EE72ls
+         2rINSqDNYd4AetYgmOKpyQ1L93ZtBS2uy6/+h3KHc8lvExkk6aUXHe/rvGH6N3qyad9T
+         EV7DiuNtS76oWgloqNvfOQdnrYIyQIogIt2YjMiQYyW/8bfOPATJuT8vm1l64Pdyj5vl
+         5r0SELUFSuZnR5PdsUFassCD6oJgQmhitrVFyMl4fCNkkMVBzPwEPyUAXHASIKYKTTRY
+         Z3qo1gpk4NCxGLN2tmCzaM9aLgrsmR+vBtcD4xXSMKT5l6waSGY68ssjtwc7hjYCdnbB
+         TppA==
+X-Gm-Message-State: AOAM530W9Sulg60J/gb8UBQxCQItdv6/ypy3qUTnTtLK70EqOG0X47F9
+        QxomvD+poqaKuArz1ra0xEwQw+3UdL8=
+X-Google-Smtp-Source: ABdhPJypDSINLM94ZPi9PJDmgYlqYnZau1VLBcNG6it0kaqS6Oj25LHnHsNiUrb+RiwfyI96yJOxGg==
+X-Received: by 2002:a9d:578a:: with SMTP id q10mr16318869oth.114.1613490506020;
+        Tue, 16 Feb 2021 07:48:26 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.48.134.33])
+        by smtp.googlemail.com with ESMTPSA id h23sm1546967oie.20.2021.02.16.07.48.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Feb 2021 07:48:25 -0800 (PST)
+Subject: Re: [PATCH iproute2-rc] rdma: Fix statistics bind/unbing argument
+ handling
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        Ido Kalir <idok@nvidia.com>,
+        linux-netdev <netdev@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <20210214083335.19558-1-leon@kernel.org>
+ <5e9a8752-24a1-7461-e113-004b014dcde9@gmail.com> <YCoJULID1x2kulQe@unreal>
+ <04d7cd07-c3eb-c39c-bce1-3e9d4d1e4a27@gmail.com> <YCtjO1Q2OnCOlEcu@unreal>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <9217385b-6002-83c2-b386-85650ce101bc@gmail.com>
+Date:   Tue, 16 Feb 2021 08:48:24 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210216143807.65923-1-jinpu.wang@cloud.ionos.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9896 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
- bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102160136
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9896 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 adultscore=0 clxscore=1011 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102160136
+In-Reply-To: <YCtjO1Q2OnCOlEcu@unreal>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 03:38:07PM +0100, Jack Wang wrote:
-> smatch warnings:
-> drivers/infiniband/ulp/rtrs/rtrs-srv.c:1805 rtrs_rdma_connect() warn: passing zero to 'PTR_ERR'
+On 2/15/21 11:16 PM, Leon Romanovsky wrote:
+> On Mon, Feb 15, 2021 at 06:56:26PM -0700, David Ahern wrote:
+>> On 2/14/21 10:40 PM, Leon Romanovsky wrote:
+>>> On Sun, Feb 14, 2021 at 08:26:16PM -0700, David Ahern wrote:
+>>>> what does iproute2-rc mean?
+>>>
+>>> Patch target is iproute2.git:
+>>> https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/
+>>
+>> so you are asking them to be committed for the 5.11 release?
 > 
-> Smatch seems confused by the refcount_read condition, the solution is
-> protect move the list_add down after full initilization of rtrs_srv.
+> This is a Fix to an existing issue (not theoretical one), so I was under
+> impression that it should go to -rc repo and not to -next.
 
-In theory if Smatch had a properly up to date DB then it would print a
-different warning "passing a valid pointer to PTR_ERR()".
+It is assigned to Stephen for iproute2.
 
-regards,
-dan carpenter
+> 
+> Personally, I don't care to which repo will this fix be applied as long
+> as it is applied to one of the two iproute2 official repos.
+> 
+> Do you have clear guidance when should I send patches to iproute2-rc/iproute2-next?
+> 
 
+It's the rc label that needs to be dropped: iproute2 or iproute2-next.
+Just like there is net and net-next.
