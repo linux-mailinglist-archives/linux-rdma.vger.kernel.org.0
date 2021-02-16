@@ -2,100 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D6C31D15B
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Feb 2021 21:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C0331D168
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Feb 2021 21:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbhBPUEY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Feb 2021 15:04:24 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:4757 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhBPUEX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Feb 2021 15:04:23 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B602c25190000>; Tue, 16 Feb 2021 12:03:37 -0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Feb
- 2021 20:03:36 +0000
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Feb
- 2021 20:03:34 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
- by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Tue, 16 Feb 2021 20:03:34 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yw2II3H2ho6/V2r7gGICP6i/UwIKhUwygpHb1qfVonsb2mc0d58LNDHFIdlIg3ZXNy/mVRsh5ENfid9kOCFXcH7UAVCZVE1HTjYWjA2GnrY6NLVNNaXjdQewG6OdMIKDT9hEayCLIj7jTPYnCjiKwB5gEaTDPmPm+NFehlN+6kdXBbsqGEcv8Z5rfmFouklbf91vJftApArI5tj7ZlcRCkv7A1wLdi+6jYO9j7lvOMUsaS0yUQb1NDbuWFGKqyfvORzdGEuy73tIgfVm6wXZAZuhlvwQLkJV8jQZ676acYk+BLL9/7kTooCaYIY/o2iwpkjAJZegNam4MKbArKfh1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jq4fdPxRjAKYGxNX0dfEO2ZWHDnyvEfNESUBump5aCI=;
- b=PaXok+tmXXwgsb7tO1qXDkSmIXrau4cW0djQ4GtghFJXrSPsCpfmKSqRXJccF+zPubPE+wHl/lNUuF8SM9VFc6pgf70N6SsWD/N7a/gpzbRHWsYTvUma9mt1cEs/Y9XaiTqM7dfuFQhSPaLEFZNBNX/M8L/ktgrZ00noFPx/4rKD14fB0tVzeYgAVDwlCoHU87s628D/cpAgWJUVDa/XSx8Ot07aLUOY8nV8ekjt+YLzp/W0Ie5Y2WNx4z6Kd+We8Y5z55vKSt/JcPK1g+ClduKxPuH1Y6YCFwC7c/PCkBd2V6TKxRPnCVKEioPeKV2aEiWY3iHq0/YH0yTlVW0KlA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3305.namprd12.prod.outlook.com (2603:10b6:5:189::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26; Tue, 16 Feb
- 2021 20:03:31 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.041; Tue, 16 Feb 2021
- 20:03:31 +0000
-Date:   Tue, 16 Feb 2021 16:03:29 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Saeed Mahameed <saeed@kernel.org>
-CC:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Aharon Landau <aharonl@nvidia.com>
-Subject: Re: [PATCH mlx5-next 1/6] net/mlx5: Add new timestamp mode bits
-Message-ID: <20210216200329.GA2221694@nvidia.com>
-References: <20210212223042.449816-1-saeed@kernel.org>
- <20210212223042.449816-2-saeed@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210212223042.449816-2-saeed@kernel.org>
-X-ClientProxiedBy: BLAPR03CA0097.namprd03.prod.outlook.com
- (2603:10b6:208:32a::12) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S230020AbhBPUNk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Feb 2021 15:13:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229767AbhBPUNi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Feb 2021 15:13:38 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA86C061574;
+        Tue, 16 Feb 2021 12:12:58 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id do6so8192628ejc.3;
+        Tue, 16 Feb 2021 12:12:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZFY3DWXmxGfZDW5PIinyDoY6VRCpFaPsbuNKCfaklzA=;
+        b=GbKyIBFIcZETvym+2t4xzdEGBhgJxDSaSe/kpCKvbywEB9srrtIOl0Dv9i95ZAmjJQ
+         iw+0K8vmXFF7UYTRzOtQxtIBQQ7LifIRCNYr3hchLMvMfTvLZIzwqm912graWuQJ6p81
+         WdIpzQRaaBtss+AZLDwnpKuSqHhlD4LaQOlZKs+Dzm5Z0EmoDLGFr8s7RScFjXjXJ6C2
+         7/JZyYJ+ljNs0zetS6cUqxzIL2/vAUsdHGXAZiAixHT8+QQYW7fN4x9mTu1AFqpm1/kz
+         k+42bWv8qy+2j0UNp4CR3QMyNN/sKp4b2h3I9gRexXBJjCR8RfjkukyOYidjIZ+qUcn6
+         MjqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZFY3DWXmxGfZDW5PIinyDoY6VRCpFaPsbuNKCfaklzA=;
+        b=HL/NQeskl3ZGHMkhZ6601GP1SGUEWwbCx4s3Xbi4z7NRi50lH3KA+sEBUL5YI70crZ
+         rGjE9LrLg+VRP20E8GDZ//RjD+dgRAdVQEUdm9zfo77PneALv21BoYXTVGCIEOQgyIfH
+         d8eR4y7tFVaSvFFKMJLmSJ6rfoDm9Xg5HAQmRo/yIYfc8aXkO5id2KJrPf2ulI/zxhSz
+         mMgPwY8/doWxBNSfajzBAl2D5PWNk+m2p5Qn72gYor5M1Nv+ssaAiBPsY46GKyiflmpZ
+         4ibrcI2uaGGUPtbtdUMK7jdJI/jB2Wg+Scdyx6UcHnnJM5LVI6snO/TXisTxya6t1UEh
+         DErg==
+X-Gm-Message-State: AOAM532ihpkyQiYHTmyyj5GpoWbmMSsXDQi1knXEXV+wHyUn7vW9e5JG
+        Ts0oIRsbeJ4XwNCLobKQOmes+hhiv5OSMfo94sSy/To9Mnc=
+X-Google-Smtp-Source: ABdhPJziEJe2br4ImstTMlwL/yY6J6hEIIAIVyFFI59+wJEQVk2Mut8aiQuVbWToCGvurcT2co/9Z4WeQv5ipckn2II=
+X-Received: by 2002:a17:907:35ca:: with SMTP id ap10mr22508352ejc.451.1613506377040;
+ Tue, 16 Feb 2021 12:12:57 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BLAPR03CA0097.namprd03.prod.outlook.com (2603:10b6:208:32a::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend Transport; Tue, 16 Feb 2021 20:03:31 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lC6ZG-009Jz0-0B; Tue, 16 Feb 2021 16:03:30 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613505817; bh=Jq4fdPxRjAKYGxNX0dfEO2ZWHDnyvEfNESUBump5aCI=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=WOqkFoyTjNpsVLs3jmc81HpQs++q7MKe7cajTNWN7Dp7hcw/wKGrPG2gHJzl/IpGj
-         wDPJqv2npck1VJtw2y1I+5UQB3sB35jSrV2btL9mRd0MnKDQNGuJu2Ym7NxHu+0bxV
-         R9Fy9qrK/5gv3AvNsf5BQ+dWQ6Kw+kZ16jcShWlM8fpp4FpvxC1qBPbf0DVCigqHHA
-         CuKgnEadgADgiORLCLkOZKxKXrOP7ajI4gnGdHsjTq+NlLW5n56oKHQzp3eeZGB1sk
-         kfLMBPARcSLam4EGQumsum8qFjQ3xMqU8p+zDbnK7ACn+jsIGQUEIw3ssYejo/4sRY
-         JH3dqfSUhj9ug==
+References: <57f67888-160f-891c-6217-69e174d7e42b@rothenpieler.org>
+In-Reply-To: <57f67888-160f-891c-6217-69e174d7e42b@rothenpieler.org>
+From:   Olga Kornievskaia <aglo@umich.edu>
+Date:   Tue, 16 Feb 2021 15:12:45 -0500
+Message-ID: <CAN-5tyE4OyNOZRXGnyONcdGsHaRAF39LSE5416Kj964m-+_C2A@mail.gmail.com>
+Subject: Re: copy_file_range() infinitely hangs on NFSv4.2 over RDMA
+To:     Timo Rothenpieler <timo@rothenpieler.org>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 02:30:37PM -0800, Saeed Mahameed wrote:
-> From: Aharon Landau <aharonl@nvidia.com>
-> 
-> These fields declare which timestamp mode is supported by the device
-> per RQ/SQ/QP.
-> 
-> In addition add the ts_format field to the select the mode for
-> RQ/SQ/QP.
-> 
-> Signed-off-by: Aharon Landau <aharonl@nvidia.com>
-> Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-> ---
->  include/linux/mlx5/mlx5_ifc.h | 54 +++++++++++++++++++++++++++++++----
->  1 file changed, 49 insertions(+), 5 deletions(-)
+Hi Timo,
 
-This is a commit in the shared branch now, so this series will have to
-go as a pull request if it wants to go before the next rc1
+Can you get a network trace? Also, you say that the copy_file_range()
+(after what looks like a successful copy) never returns (and
+application hangs), can you get a sysrq output of what the process's
+stack (echo t > /proc/sysrq-trigger  and see what gets dumped into the
+var log messages and locate your application and report what the stack
+says)?
 
-Jason
+On Sat, Feb 13, 2021 at 10:41 PM Timo Rothenpieler
+<timo@rothenpieler.org> wrote:
+>
+> On our Fileserver, running a few weeks old 5.10, we are running into a
+> weird issue with NFS 4.2 Server-Side Copy and RDMA (and ZFS, though I'm
+> not sure how relevant that is to the issue).
+> The servers are connected via InfiniBand, on a Mellanox ConnectX-4 card,
+> using the mlx5 driver.
+>
+> Anything using the copy_file_range() syscall to copy stuff just hangs.
+> In strace, the syscall never returns.
+>
+> Simple way to reproduce on the client:
+>  > xfs_io -fc "pwrite 0 1M" testfile
+>  > xfs_io -fc "copy_range testfile" testfile.copy
+>
+> The second call just never exits. It sits in S+ state, with no CPU
+> usage, and can easily be killed via Ctrl+C.
+> I let it sit for a couple hours as well, it does not seem to ever complete.
+>
+> Some more observations about it:
+>
+> If I do a fresh reboot of the client, the operation works fine for a
+> short while (like, 10~15 minutes). No load is on the system during that
+> time, it's effectively idle.
+>
+> The operation actually does successfully copy all data. The size and
+> checksum of the target file is as expected. It just never returns.
+>
+> This only happens when mounting via RDMA. Mounting the same NFS share
+> via plain TCP has the operation work reliably.
+>
+> Had this issue with Kernel 5.4 already, and had hoped that 5.10 might
+> have fixed it, but unfortunately it didn't.
+>
+> I tried two server and 30 different client machines, they all exhibit
+> the exact same behaviour. So I'd carefully rule out a hardware issue.
+>
+>
+> Any pointers on how to debug or maybe even fix this?
+>
+>
+>
+> Thanks,
+> Timo
