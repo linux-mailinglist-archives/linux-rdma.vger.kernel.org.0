@@ -2,144 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D821831CC30
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Feb 2021 15:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D75631CC68
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Feb 2021 15:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhBPOk1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Feb 2021 09:40:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhBPOiw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Feb 2021 09:38:52 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95CCC061756
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Feb 2021 06:38:11 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id f14so16902437ejc.8
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Feb 2021 06:38:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IWjrod3tLA4a5r6U0gY+A6F2cUnWdAOzP0CmAkChK5I=;
-        b=FNf2nfByJxzYzRfMjUFw11L/DkxQx4UX1q+l3Iim05hinqqpazdPHfKdXGq7xIivqC
-         REjEUk533YLoCw0savdXuDN51/fGFMH8bRhIYONM+03eZKXPYQQzucWgY8GXEMnMqLjt
-         tv80TXqkJ+vQiNSld+4fUm3/5e69ZnPjtB3nWpkd4BirBYGkiQ6PR/YIh4Vt127UJwtS
-         G4NvbjszxVm7AKLsKNMJRgeGS3pQqJp4Y09GlpT6+jQVLunTEl2VD3zYv6WFwuoBV8dO
-         dFgXzvepxnAqZ3zxgQhsPYtpEd1pHkpP4tv8sVYOZno3RopOAe7F+r/ItT+0jJ86LbP1
-         h5fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IWjrod3tLA4a5r6U0gY+A6F2cUnWdAOzP0CmAkChK5I=;
-        b=KbYSsog4rU9J8hFzC53uHVdEMZwz5OiYteIst9PxcMjf8RaGqgEvsYI89XSBG1w2mv
-         uqNc17Kb8kEmlhcouFWzRNn/jkNfCSLM+yDcDGUphbdi1UOqGnf/DouqJmAvFvEUZpLa
-         LLWQuhFMsudYndUkff5MVXehuNi/szo58t+jxMSSoDtEaYeHcaBO2ahG5O1qy1aFLN18
-         hJg9XZqYaZOTW/yN5yvFhO+vVitmC/FrEoEE+tKvHwbl/wuf7TRmk1sM8mmL07iBdW2t
-         w1C7OiRb5mLLSr4BTgAHBKDR9SZ0HmRO7F9jaIrx1QAvPpExqcwuqUkcAH97FdeB/uX1
-         YNyw==
-X-Gm-Message-State: AOAM530HDYH3GHmSNzTw9IZUfhNhZSnz182FtonuUcphO4s95VoxbHxt
-        oq4Fn+vO6YxTWpxmCkUE6ybJTtgrMMR0sQ==
-X-Google-Smtp-Source: ABdhPJzUs/nQIApwomT0Ogsw5v9DDvjqKb06r1b0+AIqx6mAcJA1+PPlKpj6C2yR2WEayA0LBy06HQ==
-X-Received: by 2002:a17:906:9452:: with SMTP id z18mr18909454ejx.466.1613486288175;
-        Tue, 16 Feb 2021 06:38:08 -0800 (PST)
-Received: from jwang-Latitude-5491.fritz.box ([2001:16b8:495c:7b00:c58d:d927:ec25:bb7b])
-        by smtp.gmail.com with ESMTPSA id z2sm13696909ejd.44.2021.02.16.06.38.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 06:38:07 -0800 (PST)
-From:   Jack Wang <jinpu.wang@cloud.ionos.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
-        jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
-        jinpu.wang@cloud.ionos.com, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] RDMA/rtrs-srv: Suppress warnings passing zero to 'PTR_ERR'
-Date:   Tue, 16 Feb 2021 15:38:07 +0100
-Message-Id: <20210216143807.65923-1-jinpu.wang@cloud.ionos.com>
-X-Mailer: git-send-email 2.25.1
+        id S230077AbhBPOur (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Feb 2021 09:50:47 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:51996 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229956AbhBPOup (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Feb 2021 09:50:45 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11GEiHde031910;
+        Tue, 16 Feb 2021 14:49:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=s8E34fpVYOJjv98pQmJAiDJ5VEBMaO0+JOmHubATa4w=;
+ b=O0SIVD0hcvGAJN7MIp94S7Z8stdCJsGdMqC3MEB1KM8T+athzHj+JmpdR20Bk7Wj60Za
+ Cyfl8ebkaw8KxRyrHC8TIQLmkvVQXf1sKHH1FWiJS9qZhMeSGOIpeR3ta8dOYrnUnKlO
+ sZDSz1N/9eIdxhLwLvPmC3dOJ2/TFu+XpCPjkdQCdWWWOnrS1+EySAeRsWkBsnQQhg0Z
+ ueHYeR/WDBVj6r8lyGcxo1ooht6VBXLWn2UNH0jHTAOEJnr5ch90UoOHmnhG9DeGOQTf
+ //CSoiTmXwfANIGtnVNs48BgW5+rL1CjUeV+GJR+vDJA3rq75rxbQs/GyclWRkfASy21 QQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 36p7dneye0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Feb 2021 14:49:53 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11GEjWUD023419;
+        Tue, 16 Feb 2021 14:49:49 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 36prhrkvh3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Feb 2021 14:49:49 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11GEnkmB026288;
+        Tue, 16 Feb 2021 14:49:46 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 16 Feb 2021 06:49:46 -0800
+Date:   Tue, 16 Feb 2021 17:49:38 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jack Wang <jinpu.wang@cloud.ionos.com>
+Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, leon@kernel.org,
+        dledford@redhat.com, jgg@ziepe.ca, danil.kipnis@cloud.ionos.com,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] RDMA/rtrs-srv: Suppress warnings passing zero to
+ 'PTR_ERR'
+Message-ID: <20210216144938.GG2222@kadam>
+References: <20210216143807.65923-1-jinpu.wang@cloud.ionos.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216143807.65923-1-jinpu.wang@cloud.ionos.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9896 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102160136
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9896 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 spamscore=0 adultscore=0 clxscore=1011 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102160136
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-smatch warnings:
-drivers/infiniband/ulp/rtrs/rtrs-srv.c:1805 rtrs_rdma_connect() warn: passing zero to 'PTR_ERR'
+On Tue, Feb 16, 2021 at 03:38:07PM +0100, Jack Wang wrote:
+> smatch warnings:
+> drivers/infiniband/ulp/rtrs/rtrs-srv.c:1805 rtrs_rdma_connect() warn: passing zero to 'PTR_ERR'
+> 
+> Smatch seems confused by the refcount_read condition, the solution is
+> protect move the list_add down after full initilization of rtrs_srv.
 
-Smatch seems confused by the refcount_read condition, the solution is
-protect move the list_add down after full initilization of rtrs_srv.
-To avoid holding the srv_mutex too long, only hold it during
-the list operation as suggested by Leon.
+In theory if Smatch had a properly up to date DB then it would print a
+different warning "passing a valid pointer to PTR_ERR()".
 
-Fixes: f0751419d3a1 ("RDMA/rtrs: Only allow addition of path to an already established session")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
----
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index eb17c3a08810..d071809e3ed2 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1347,21 +1347,18 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
- 			return srv;
- 		}
- 	}
-+	mutex_unlock(&ctx->srv_mutex);
- 	/*
- 	 * If this request is not the first connection request from the
- 	 * client for this session then fail and return error.
- 	 */
--	if (!first_conn) {
--		mutex_unlock(&ctx->srv_mutex);
-+	if (!first_conn)
- 		return ERR_PTR(-ENXIO);
--	}
- 
- 	/* need to allocate a new srv */
- 	srv = kzalloc(sizeof(*srv), GFP_KERNEL);
--	if  (!srv) {
--		mutex_unlock(&ctx->srv_mutex);
-+	if  (!srv)
- 		return ERR_PTR(-ENOMEM);
--	}
- 
- 	INIT_LIST_HEAD(&srv->paths_list);
- 	mutex_init(&srv->paths_mutex);
-@@ -1371,8 +1368,6 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
- 	srv->ctx = ctx;
- 	device_initialize(&srv->dev);
- 	srv->dev.release = rtrs_srv_dev_release;
--	list_add(&srv->ctx_list, &ctx->srv_list);
--	mutex_unlock(&ctx->srv_mutex);
- 
- 	srv->chunks = kcalloc(srv->queue_depth, sizeof(*srv->chunks),
- 			      GFP_KERNEL);
-@@ -1385,6 +1380,9 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
- 			goto err_free_chunks;
- 	}
- 	refcount_set(&srv->refcount, 1);
-+	mutex_lock(&ctx->srv_mutex);
-+	list_add(&srv->ctx_list, &ctx->srv_list);
-+	mutex_unlock(&ctx->srv_mutex);
- 
- 	return srv;
- 
-@@ -1799,11 +1797,7 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
- 	}
- 	recon_cnt = le16_to_cpu(msg->recon_cnt);
- 	srv = get_or_create_srv(ctx, &msg->paths_uuid, msg->first_conn);
--	/*
--	 * "refcount == 0" happens if a previous thread calls get_or_create_srv
--	 * allocate srv, but chunks of srv are not allocated yet.
--	 */
--	if (IS_ERR(srv) || refcount_read(&srv->refcount) == 0) {
-+	if (IS_ERR(srv)) {
- 		err = PTR_ERR(srv);
- 		goto reject_w_err;
- 	}
--- 
-2.25.1
+regards,
+dan carpenter
 
