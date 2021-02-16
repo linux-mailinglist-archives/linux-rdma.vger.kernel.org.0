@@ -2,122 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A962631C837
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Feb 2021 10:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEE031CA86
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Feb 2021 13:28:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbhBPJlh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Feb 2021 04:41:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbhBPJlg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Feb 2021 04:41:36 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DACEC061756
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Feb 2021 01:40:56 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id lu16so626752ejb.9
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Feb 2021 01:40:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hf+TqxG+BeZ0zpEr8rwyPa4dylBZgTcbuPaZ1LOp5ms=;
-        b=IxgSkQmfYtzxnaFJVVyCtoAMF9siiAXUCJKMyoMtz50q4FXPy9VUmojEG2RfBy4uzy
-         esHb3sOk5uKcFQXvnpthrFhonWDL09rYsEJYDdSW59L4uPYwuzRWB4YnHCYUbNAUQws1
-         dWUKWd7RqBZeBWcCGe/AulrBbILIGDJBXeFmpcxUMkEhtQzKJ8pIusItFdR4bY/O/Wzu
-         IRr+nt7VFXN70IAMIPTmxQDJoAOX3g0yEvFK928yWdcmA49UsnXjdym/1WKqBX3w5Uq9
-         1G3JF8Ae0mgemhEp0F3jnhIpRzCWHTWLP2kXVGH1qJt/mT0u9Hm2e5SyQ7a8jdMCt7od
-         Mp+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hf+TqxG+BeZ0zpEr8rwyPa4dylBZgTcbuPaZ1LOp5ms=;
-        b=ODZgayEf9Kjny/NcCyclsFbUIj3Ani2fmZTAAEELIXC7sWA5bzwK9IVxU/BY81RYrh
-         SYpGmwspgw/srYkvRtyVp4xKLzDglL4UB+zPaAg72sXYtYuVhMKcrf5PDyaB1px5r5Om
-         TPzkOkMW1VVNQBSzEsdaGuxnTXh1QeFVg6n6/tyt5NMMfhZfVzPEkdvqPjUnRdvxDEJQ
-         jthWwvLSMeoQznxli2mWKjO6piilpEfvhcQUdz7NIHHlZ9PgEH/JQAAKcJttFo19Ze6c
-         ei6W+KpRDqONpQMqH0TDKumDSmZP+T4GaE3SP4SlAb+g2fMqTUb3OFOW6uuOW8x8BDg9
-         a1oQ==
-X-Gm-Message-State: AOAM530RNsXFLDTTkj1Ih6fJttf+jPWQ06yhvEFDECKSfdOOOOmMrlst
-        0u60VHSB9m9JBonw+Vfwg503qM7aXomPFpwz+/mApQ==
-X-Google-Smtp-Source: ABdhPJzTsmgW3MdISpN2Qz47D1xOpcIrq7eEr6zGeAiIyI/sF18DfVwd1bgQ/hI/OoE9CkCdOiEpOXJLDZWMzju1s7E=
-X-Received: by 2002:a17:906:d8b5:: with SMTP id qc21mr18927677ejb.62.1613468454669;
- Tue, 16 Feb 2021 01:40:54 -0800 (PST)
+        id S229761AbhBPM2U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Feb 2021 07:28:20 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55648 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229742AbhBPM2T (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 16 Feb 2021 07:28:19 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11GC1kgo068782
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Feb 2021 07:27:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
+ from : to : cc : date : mime-version : references :
+ content-transfer-encoding : content-type : message-id; s=pp1;
+ bh=xKCqcttj1FC3Xs5w20HYn2NKCjJ4xwAPAlu3un4Pczw=;
+ b=L/dexIcIX1NYziZd3t3A2rCoYFX4/wZ49eGMqsGxXUILPXuKdHiVAjzklAWFoNsZ1CaW
+ Pm8j2s2npPVSPNjbEc4SXakxubEPR8Xn3TPHDLbJ3sX5/QzatV6Tv5ASMuFXJ0DpsYuU
+ rRUVm7rZJI/nqFyUUt/wuuHifQO3loM9Wg/y1eXf/+YlhTbbOwFD2++5Ikx0EYXm4oYI
+ WDAEj7ZT3X1zB928FU4Q1hba98FWbcngZ2QeWOQEN0Snx4sJVIKFmqdioOCWY/wdVm6e
+ mVYH+Q98b5vc+w7/Vz7xVMy/RrzYLiLwBK/SvQu+lKr6PORpjZLzEVffihEal7Njf8mh Ng== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.67])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36rdey1cpy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Feb 2021 07:27:38 -0500
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Tue, 16 Feb 2021 12:27:37 -0000
+Received: from us1a3-smtp06.a3.dal06.isc4sb.com (10.146.103.243)
+        by smtp.notes.na.collabserv.com (10.106.227.16) with smtp.notes.na.collabserv.com ESMTP;
+        Tue, 16 Feb 2021 12:27:36 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp06.a3.dal06.isc4sb.com
+          with ESMTP id 2021021612273521-343854 ;
+          Tue, 16 Feb 2021 12:27:35 +0000 
+In-Reply-To: <61EFD7EA-FA16-4AA1-B92F-0B0D4CC697AB@oracle.com>
+Subject: Re: directing soft iWARP traffic through a secure tunnel
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Chuck Lever" <chuck.lever@oracle.com>
+Cc:     "linux-rdma" <linux-rdma@vger.kernel.org>,
+        "Benjamin Coddington" <bcodding@redhat.com>
+Date:   Tue, 16 Feb 2021 12:27:33 +0000
 MIME-Version: 1.0
-References: <20210216073958.13957-1-jinpu.wang@cloud.ionos.com>
- <YCt5Nv+czQtYqQL9@unreal> <CAMGffEmKu4mfWMLUaJeOrkV526rh=FSSns0zfbDvwii33HLAhw@mail.gmail.com>
- <YCt/r3oyOmvXVORn@unreal>
-In-Reply-To: <YCt/r3oyOmvXVORn@unreal>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Tue, 16 Feb 2021 10:40:44 +0100
-Message-ID: <CAMGffE=r=Q4qUbyqW_PQDiFqraJ4WFtRbipbaeALjGLixi_A=A@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/rtrs-srv: suppress warnings passing zero to 'PTR_ERR'
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <61EFD7EA-FA16-4AA1-B92F-0B0D4CC697AB@oracle.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
+X-LLNOutbound: False
+X-Disclaimed: 29067
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 21021612-7279-0000-0000-000004A2174A
+X-IBM-SpamModules-Scores: BY=0.057761; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.045141
+X-IBM-SpamModules-Versions: BY=3.00014751; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000295; SDB=6.01508613; UDB=6.00814582; IPR=6.01291137;
+ MB=3.00036150; MTD=3.00000008; XFM=3.00000015; UTC=2021-02-16 12:27:36
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2021-02-16 07:42:21 - 6.00012306
+x-cbparentid: 21021612-7280-0000-0000-00009BF617A0
+Message-Id: <OFA2194C43.CE483827-ON0025867E.004018CA-0025867E.004470FA@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-16_01:2021-02-16,2021-02-15 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 9:17 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Tue, Feb 16, 2021 at 09:02:03AM +0100, Jinpu Wang wrote:
-> > Hi Leon,
-> > On Tue, Feb 16, 2021 at 8:50 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > On Tue, Feb 16, 2021 at 08:39:58AM +0100, Jack Wang wrote:
-> > > > smatch warnings:
-> > > > drivers/infiniband/ulp/rtrs/rtrs-srv.c:1805 rtrs_rdma_connect() warn: passing zero to 'PTR_ERR'
-> > > >
-> > > > Smatch seems confused by the refcount_read condition, so just
-> > > > treat it seperately.
-> > > >
-> > > > Fixes: f0751419d3a1 ("RDMA/rtrs: Only allow addition of path to an already established session")
-> > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > > > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > > > ---
-> > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 8 ++++++--
-> > > >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > > index eb17c3a08810..2f6d665bea90 100644
-> > > > --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > > @@ -1799,12 +1799,16 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
-> > > >       }
-> > > >       recon_cnt = le16_to_cpu(msg->recon_cnt);
-> > > >       srv = get_or_create_srv(ctx, &msg->paths_uuid, msg->first_conn);
-> > > > +     if (IS_ERR(srv)) {
-> > > > +             err = PTR_ERR(srv);
-> > > > +             goto reject_w_err;
-> > > > +     }
-> > > >       /*
-> > > >        * "refcount == 0" happens if a previous thread calls get_or_create_srv
-> > > >        * allocate srv, but chunks of srv are not allocated yet.
-> > > >        */
-> > > > -     if (IS_ERR(srv) || refcount_read(&srv->refcount) == 0) {
-> > > > -             err = PTR_ERR(srv);
-> > > > +     if (refcount_read(&srv->refcount) == 0) {
-> > >
-> > > I would say that "list_add(&srv->ctx_list, &ctx->srv_list);" line in the
-> > > get_or_create_srv() is performed too early,
-> > Moving list_add down to the end was the initial code, but we noticed
-> > the memory allocation could take quite
-> > some time when system under memory pressure, hence we  changed it in
-> > d715ff8acbd5 ("RDMA/rtrs-srv: Don't guard the whole __alloc_srv with
-> > srv_mutex")
->
-> You don't need to hold lock during allocation, only during search in the list.
-Thanks, I will try and test.
+-----"Chuck Lever" <chuck.lever@oracle.com> wrote: -----
 
+>To: "linux-rdma" <linux-rdma@vger.kernel.org>
+>From: "Chuck Lever" <chuck.lever@oracle.com>
+>Date: 02/11/2021 08:38PM
+>Cc: "Benjamin Coddington" <bcodding@redhat.com>
+>Subject: [EXTERNAL] directing soft iWARP traffic through a secure
+>tunnel
 >
-> Thanks
+>Hi-
 >
-> >
-> > Thanks for the comment.
+>This might sound crazy, but bear with me.
+>
+>The NFS community is starting to hold virtual interoperability
+>testing
+>events to replace our in-person events that are not feasible due to
+>pandemic-related travel restrictions. I'm told other communities have
+>started doing the same.
+>
+>The virtual event is being held on a private network that is set up
+>using OpenVPN across a large geographical area. I attach my test
+>systems to the VPN to access test systems run by others at other
+>companies.
+>
+>We'd like to continue to include NFS/RDMA testing at these events.
+>This means either RoCEv2 or iWARP, since obviously we can't create
+>an ad hoc wide-area InfiniBand infrastructure.
+>
+>Because the VPN is operating over long distances, we've decided to
+>start with iWARP. However, we are stumbling when it comes to
+>directing
+>the siw driver's traffic onto the tun0 device:
+>
+>[root@oracle-100 ~]# rdma link add siw0 type siw netdev tun0
+>error: Invalid argument
+>[root@oracle-100 ~]#
+>
+>Has anyone else tried to do this, and what was the approach? Or does
+>siw not yet have this capability?
+>
+>Thanks in advance.
+>
+>
+
+After some very little ad-hoc patching of siw and RDMA core,
+we get RDMA connectivity over the VPN. For siw, all what is
+needed is to enable attaching to other netdev's than type
+ARPHRD=5FETHER, in particular allowing ARPHRD=5FNONE. It is
+questionable, if software RDMA drivers need any such limitation,
+if running on top of TCP or UDP.
+
+The RDMA core currently does not accept a zero gid, which would
+be the result of attaching to a tunnel w/o hardware address. I
+tentatively disabled that code for tunnel devices (simply by
+allowing a zero gid for device names starting with 'tun'), but
+a serious solution would be different.
+
+I think enabling software RDMA over TUN/TAP devices makes a lot
+of sense, as exemplified by enabling this virtual NFS/RDMA test
+event. If we agree on that, next step would be to come up with
+the right way to do it. Would it make sense to start from the
+rdma=5Flink=5Flayer enum, which already knows type
+IB=5FLINK=5FLAYER=5FUNSPECIFIED ? RDMA drivers can report the link
+type via device->ops.get=5Flink=5Flayer - see
+rdma=5Fport=5Fget=5Flink=5Flayer(). Asking the RDMA core experts -
+would a gid of zero have any side effects or bad implications,
+since that ID is by no means unique?
+
+Many thanks,
+Bernard.
+
