@@ -2,84 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55C531E052
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Feb 2021 21:29:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A5131E2A6
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Feb 2021 23:42:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235046AbhBQU3Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Feb 2021 15:29:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234306AbhBQU3T (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 17 Feb 2021 15:29:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A6A264E6C;
-        Wed, 17 Feb 2021 20:28:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613593717;
-        bh=a6QpZqU55gjL/Q8QuodHxez8YphzyIG5Bvnh/4G8tTw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=ieoQudFwwpQvs5BmFauSnEZg0zrCInvuf/VyTvsvsVyaJ5U/tDzg1ds69gmZejZzN
-         ndjXSjXSPJtfmLNrswe7Ue2BWGTpbYpgdF+qJW/8cu3ccozGcTLD5rRshMYP+WA5Jk
-         Bzr7EowEXop/cU0FdEMt8WgevBGTCbUg2dsdxmZF8l9D6/8a1UiyTKvgo5wWo7Iwjz
-         WPSnT0YyVSnaKIlC4frmlPwPDwhedav02EzHZTg6zNaIJUEWlptY455KWfKA0h+Rot
-         L95ZEe1MfrFuAbazo6h9dKMSVlbqXwS3h3GKBidFFPUicSiS8LMORWC2IUHNooeiMr
-         PHNK8+n/2PIPg==
-Date:   Wed, 17 Feb 2021 14:28:35 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Subject: Re: [PATCH mlx5-next v6 1/4] PCI: Add sysfs callback to allow MSI-X
- table size change of SR-IOV VFs
-Message-ID: <20210217202835.GA906388@bjorn-Precision-5520>
+        id S233927AbhBQWlu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Feb 2021 17:41:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233924AbhBQWij (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Feb 2021 17:38:39 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F47C061574;
+        Wed, 17 Feb 2021 14:37:58 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id h10so14314438edl.6;
+        Wed, 17 Feb 2021 14:37:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KVIoHO4yLgyzmuWH+SOf2f2/4NBVU+UwahR9cFp89G0=;
+        b=gBMuwDwTj8uaEWUe4VLHWhZOehWRGkocdAulowPof2NqCQJ7xS4triz+0uROQYhUfg
+         iOVjBp3Frm5cnLd2jIz5Cihst3x80KvnExQqB+on91GkQysv+1l9hYHJf1v3Vrtizwc/
+         IKx3LZjTp8/DqxoOQGNQgsgcnFFoioG506YcG4ElVTILk4tmoe274DyaOS4wY95/5ggT
+         9H/9S2PMuBurH9d0KT6D5kmUf5VwQyLvZ3nJlIzszmxxWdzuL4DIVZYxW6WD/sSuFYJA
+         q44gKD4oq8axRIdTMPQ5/SedivTm0b6J+R4rpLvQWM5FO4g0wH6Q3rk8PZ6rTrlt9PDd
+         zpOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KVIoHO4yLgyzmuWH+SOf2f2/4NBVU+UwahR9cFp89G0=;
+        b=rGbGm+4f4FN8rsY7r8/NLyOL27na/4mPiHEtHwEUtnNwox30tAv2jtJwKDvogkRZXT
+         4PIEDgM2TZu7z4bUgZZOdcdRgMWzAdZyokJKlc4KiDqtqwOpoj0uXSEaHF1gieSQDgWs
+         o9U6DWf3Y4yeZ/IHpgpTKnlWHqK2gaOY28iARBLZ1lUEfu0DF9WBEQvDmJRd7AR/aB/W
+         GL5HwFKUkSxX57j+iIR6ergBHqLJEejTbR3VXvYalo9Uwvr1Fcq0214oYf8/VVWKnTZ2
+         vhVoLte6oUjjKFOH0LYjaEFaeFgLgdJ6BbdlfW4wRofpy9AJoGuwVhLq1VU+laDXqfd5
+         olsg==
+X-Gm-Message-State: AOAM530XXi4JEVFQcckzaTk6eJjzxv55txuJugaM2DQjQAvjpH1nzgZr
+        McMXD/B/NynLCa3QZ07gcVBLqokRWPLhLcDJ71z66jzTBVg=
+X-Google-Smtp-Source: ABdhPJwR5ek1UbBEt2DjTRvajw5A6WVzQTWu4MPdbpvbfvTWnOc3wy+brBszgdfb5kkGLLFN6b7AJMKVpSm551weorM=
+X-Received: by 2002:a05:6402:10c3:: with SMTP id p3mr1004747edu.67.1613601477532;
+ Wed, 17 Feb 2021 14:37:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217192522.GW4247@nvidia.com>
+References: <57f67888-160f-891c-6217-69e174d7e42b@rothenpieler.org>
+ <CAN-5tyE4OyNOZRXGnyONcdGsHaRAF39LSE5416Kj964m-+_C2A@mail.gmail.com>
+ <81cb9aef-c10d-f11c-42c0-5144ee2608bc@rothenpieler.org> <0e49471c-e640-a331-c7b4-4e0a49a7a967@rothenpieler.org>
+In-Reply-To: <0e49471c-e640-a331-c7b4-4e0a49a7a967@rothenpieler.org>
+From:   Olga Kornievskaia <aglo@umich.edu>
+Date:   Wed, 17 Feb 2021 17:37:46 -0500
+Message-ID: <CAN-5tyG9Ly9tqKxguFNhg_PGXCxE2=Zn6LQPLY59twdVkD3Auw@mail.gmail.com>
+Subject: Re: copy_file_range() infinitely hangs on NFSv4.2 over RDMA
+To:     Timo Rothenpieler <timo@rothenpieler.org>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 03:25:22PM -0400, Jason Gunthorpe wrote:
-> On Wed, Feb 17, 2021 at 12:02:39PM -0600, Bjorn Helgaas wrote:
-> 
-> > > BTW, I asked more than once how these sysfs knobs should be handled
-> > > in the PCI/core.
-> > 
-> > Thanks for the pointers.  This is the first instance I can think of
-> > where we want to create PCI core sysfs files based on a driver
-> > binding, so there really isn't a precedent.
-> 
-> The MSI stuff does it today, doesn't it? eg:
-> 
-> virtblk_probe (this is a driver bind)
->   init_vq
->    virtio_find_vqs
->     vp_modern_find_vqs
->      vp_find_vqs
->       vp_find_vqs_msix
->        vp_request_msix_vectors
->         pci_alloc_irq_vectors_affinity
->          __pci_enable_msi_range
->           msi_capability_init
-> 	   populate_msi_sysfs
-> 	    	ret = sysfs_create_groups(&pdev->dev.kobj, msi_irq_groups);
-> 
-> And the sysfs is removed during pci_disable_msi(), also called by the
-> driver
+On Tue, Feb 16, 2021 at 5:27 PM Timo Rothenpieler <timo@rothenpieler.org> wrote:
+>
+> On 16.02.2021 21:37, Timo Rothenpieler wrote:
+> > I can't get a network (I assume just TCP/20049 is fine, and not also
+> > some RDMA trace?) right now, but I will once a user has finished their
+> > work on the machine.
+>
+> There wasn't any TCP traffic to dump on the NFSoRDMA Port, probably
+> because everything is handled via RDMA/IB.
 
-Yes, you're right, I didn't notice that one.
+Yeah, I'm not sure if tcpdump can snoop on the IB traffic. I know that
+upstream tcpdump can snoop on RDMA mellanox card (but I only know
+about the Roce mode).
 
-I'm not quite convinced that we clean up correctly in all cases --
-pci_disable_msix(), pci_disable_msi(), pci_free_irq_vectors(),
-pcim_release(), etc are called by several drivers, but in my quick
-look I didn't see a guaranteed-to-be-called path to the cleanup during
-driver unbind.  I probably just missed it.
+> But I recorded a trace log of rpcrdma and sunrpc observing the situation.
+>
+> To me it looks like the COPY task (task:15886@7) completes successfully?
+> The compressed trace.dat is attached.
+
+I'm having a hard time reproducing the problem. But I only tried
+"xfs", "btrfs", "ext4" (first two send a CLONE since the file system
+supports it), the last one exercises a copy. In all my tries your
+xfs_io commands succeed. The differences between our environments are
+(1) ZFS vs (xfs, etc) and (2) IB vs RoCE. Question is: does any
+copy_file_range work over RDMA/IB. One thing to try a synchronous
+copy: create a small file 10bytes and do a copy. Is this the case
+where we have copy and the callback racing, so instead do a really
+large copy: create a >=1GB file and do a copy. that will be an async
+copy but will not have a racy condition. Can you try those 2 examples
+for me?
+
+Not sure how useful tracepoints here are. The results of the COPY
+isn't interesting as this is an async copy. The server should have
+sent a CB_COMPOUND with the copy's results. The process stack tells me
+that COPY is waiting for the results (waiting for the callback). So
+the question is there a problem of sending a callback over RDMA/IB? Or
+did the client receive it and missed it somehow? We really do need
+some better tracepoints in the copy (but we don't have them
+currently).
+
+Would you be willing to install the upstream libpcap/tcpdump to see if
+it can capture RDMA/IB traffic or perhaps Chunk knows that it doesn't
+work for sure?
+
+Thank you.
