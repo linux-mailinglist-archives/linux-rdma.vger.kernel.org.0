@@ -2,104 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4913031EE61
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Feb 2021 19:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5745631EFC7
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Feb 2021 20:25:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhBRSdu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Feb 2021 13:33:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42254 "EHLO
+        id S230223AbhBRTYH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Feb 2021 14:24:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233084AbhBRQYO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Feb 2021 11:24:14 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 720B6C061786
-        for <linux-rdma@vger.kernel.org>; Thu, 18 Feb 2021 08:23:31 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id j66so1175339qkf.11
-        for <linux-rdma@vger.kernel.org>; Thu, 18 Feb 2021 08:23:31 -0800 (PST)
+        with ESMTP id S232539AbhBRSdL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Feb 2021 13:33:11 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60EE6C061222;
+        Thu, 18 Feb 2021 10:30:15 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id h10so5584738edl.6;
+        Thu, 18 Feb 2021 10:30:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pYzyNY89k1Ap3RJeEgm46c60vaNPA7+uNZRLbvqNnV4=;
-        b=SFj2tt5RHr9BuOsRY3EToz7ncTv0hsjxcrpH01IzVsc3BM2a12/7Mlc7OwiqvmrDRt
-         VLY1W/DULpxtxmI8ZjF/8Eb/i7gIuZJ0o0eLUd/YGD17HUaDWo9F+bXUwnRF6/oOcCWL
-         1EbBKDOsXWGaRJW66VYEApdSYVMrkMYU1m828Ndi0Q/g2i4jPYuedbSO5KdHdGgonewL
-         GCGPNyp0yRYbOVxFEfiSin+DulasGbvas0Di63YKE+TTJzhLXOkpunaavyu6PJWuwwef
-         t2aSI33K6oB1Mb8i/aUpzQFzBiK0hWVbcOlqfJmFEOhDMn+o+sX3zvuW5ArkasPjxYFM
-         F+iw==
+        d=umich.edu; s=google-2016-06-03;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+smuLYtbr/pzemzJUHohUAfEz52XBhtosdIvQ0wrqg8=;
+        b=p8U5MG0k3+1HciOGF7IZXB+1Wnmt8sThOBtsc0rYJgvhVlKrlqvMVko/Hj/SnS3kEe
+         24LN2WWbsMx6Gj5hNuRh8+s1MOJLrS5ZE5SQHWHY4KC0HX87TXqKVllySxp2JFWU7tbo
+         7vJ0aEW6cAj+vl3AvWqPo67XCbyw4p4dE756IRSZMU5GlF3shHDbJSRMUYASzD/DSqg8
+         zMTo9XCZzxz3rJI8WMzQbZttmjCxZwASkZ/YWB4WcpMr4LSZzuikOwwp5yieJCjbO/LO
+         uJlxFStZ97uy5DynkS739xvrw1hnBBCzOC3cYSE1Nzfb4HfxPTaTCjDnkAseNcaJNRvw
+         2QIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pYzyNY89k1Ap3RJeEgm46c60vaNPA7+uNZRLbvqNnV4=;
-        b=Ngonx9faeFIzhu5GEje4Q3Yz/scGOIPF153ql1W0pxh0GMmY9rhJj/AKhDJ8D7sn9l
-         Rxyqo1GQadqHL1nvWX6mVrKHnFbTXoJcgC4lFG2jSpDtLz6aZj9619aPL9EpMcGbLoaA
-         4kyiewnFkYcpotiPt0+K8c1mN2uLjvv0uh4NryKTVtGyTKGXBZsBRTTylgstO/4ze0Fx
-         fhq64ydS7mPpBA69Gd4+spMD4fx99P73YPkdWIgqoossnbaJw1HWFjxQ1I9fNicaSVRZ
-         fbEzQXZN5Lph47Fh2qq3vndyzluBpq7J/UjkpbhCLrEjC3PaLGNNTeu57zdE9ylXfvXw
-         f54g==
-X-Gm-Message-State: AOAM530qth1/mb/q4yh2A3luhhCJnoW9X/U+Nj+rrrtSz37mpTampcO6
-        MiQnl6YeX+8Ut/q81PqDJEjqug==
-X-Google-Smtp-Source: ABdhPJxA26WzK5V5sE/UKJTJh/XKYF6bxdmU5tPeF2ZesqTSsuwSe/CRHSm7CC/7pDeY4D3FSuVGwA==
-X-Received: by 2002:a37:6547:: with SMTP id z68mr5008446qkb.246.1613665410745;
-        Thu, 18 Feb 2021 08:23:30 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id m2sm3704992qtn.31.2021.02.18.08.23.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 08:23:30 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lCm5R-00B0vf-JP; Thu, 18 Feb 2021 12:23:29 -0400
-Date:   Thu, 18 Feb 2021 12:23:29 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: ibv_req_notify_cq clarification
-Message-ID: <20210218162329.GZ4718@ziepe.ca>
-References: <bd5deec5-8fc6-ccd6-927a-898f6d9ab35b@amazon.com>
- <20210218125339.GY4718@ziepe.ca>
- <5287c059-3d8c-93f4-6be4-a6da07ccdb8a@amazon.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+smuLYtbr/pzemzJUHohUAfEz52XBhtosdIvQ0wrqg8=;
+        b=Q3TJQCaQmeeTPl48B+zYyW8cV7I/OFQBhTp5A7RMBVBAWObJ4lgQSkc8PuwDFe8rIc
+         u625CRS0vCcGfsr73BYLkwu0BifY/OC/jbO6tC7tytYoIjBJTPaCQ/TMpokj0bmCdBJj
+         qdVkCOa/r2DwFzmvSmxU3T87YXqEvhf/gYBqtHZR7PMEXsYUdHeTEbE9Fzxg5sgVSEdG
+         w/jyu78zd1jDCRnE9afIbdZigCCuIjTSLxT2AxJI2/c4XrBnWNwnTaVu5NWZzzqWlyzT
+         9It/Ot+sy/Wp4DRBQZgcOwnBusNRS/tpIF3/55CxnmMjj4Dib3hb6zUzW05IbhuRgbZ5
+         Us7g==
+X-Gm-Message-State: AOAM532lFBtBwpJmcpt1+El+Tl7DmkoveYrMtcBa3KsR3+zhOmjiRZFL
+        61G4zkuhy6seWlkLLFQ59Kbv2L+ZXAOm0dZ0RVk=
+X-Google-Smtp-Source: ABdhPJyf3ejHIWkfPUgk6HLgxVDu8fNZiyGqobWsyDibisA6N7HUoBpBe/cTXXUHsOGb+Ht6+jThj1fg7X72BM8Rpos=
+X-Received: by 2002:a05:6402:10c3:: with SMTP id p3mr5331883edu.67.1613673014085;
+ Thu, 18 Feb 2021 10:30:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5287c059-3d8c-93f4-6be4-a6da07ccdb8a@amazon.com>
+References: <57f67888-160f-891c-6217-69e174d7e42b@rothenpieler.org>
+ <CAN-5tyE4OyNOZRXGnyONcdGsHaRAF39LSE5416Kj964m-+_C2A@mail.gmail.com>
+ <81cb9aef-c10d-f11c-42c0-5144ee2608bc@rothenpieler.org> <0e49471c-e640-a331-c7b4-4e0a49a7a967@rothenpieler.org>
+ <CAN-5tyG9Ly9tqKxguFNhg_PGXCxE2=Zn6LQPLY59twdVkD3Auw@mail.gmail.com>
+ <51a8caa7-52c2-8155-10a7-1e8d21866924@rothenpieler.org> <CAN-5tyFT4+kkqk6E0Jxe-vMYm7q5mHyTeq0Ht7AEYasA30ZaGw@mail.gmail.com>
+ <3f946e6b-6872-641c-8828-35ddd5c8fed0@rothenpieler.org> <e89ab742-7984-6a2c-2f01-402283ba6e89@rothenpieler.org>
+In-Reply-To: <e89ab742-7984-6a2c-2f01-402283ba6e89@rothenpieler.org>
+From:   Olga Kornievskaia <aglo@umich.edu>
+Date:   Thu, 18 Feb 2021 13:30:02 -0500
+Message-ID: <CAN-5tyGhyh0ZF77voaN4TNgMt+jSUG0PMp-KixfTvgUhDdhDUQ@mail.gmail.com>
+Subject: Re: copy_file_range() infinitely hangs on NFSv4.2 over RDMA
+To:     Timo Rothenpieler <timo@rothenpieler.org>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 05:52:16PM +0200, Gal Pressman wrote:
-> On 18/02/2021 14:53, Jason Gunthorpe wrote:
-> > On Thu, Feb 18, 2021 at 11:13:43AM +0200, Gal Pressman wrote:
-> >> I'm a bit confused about the meaning of the ibv_req_notify_cq() verb:
-> >> "Upon the addition of a new CQ entry (CQE) to cq, a completion event will be
-> >> added to the completion channel associated with the CQ."
-> >>
-> >> What is considered a new CQE in this case?
-> >> The next CQE from the user's perspective, i.e. any new CQE that wasn't consumed
-> >> by the user's poll cq?
-> >> Or any new CQE from the device's perspective?
-> > 
-> > new CQE from the device perspective.
-> > 
-> >> For example, if at the time of ibv_req_notify_cq() call the CQ has received 100
-> >> completions, but the user hasn't polled his CQ yet, when should he be notified?
-> >> On the 101 completion or immediately (since there are completions waiting on the
-> >> CQ)?
-> > 
-> > 101 completion
-> > 
-> > It is only meaningful to call it when the CQ is empty.
-> 
-> Thanks, so there's an inherent race between the user's CQ poll and the next arm?
+On Thu, Feb 18, 2021 at 10:55 AM Timo Rothenpieler
+<timo@rothenpieler.org> wrote:
+>
+> On 18.02.2021 14:28, Timo Rothenpieler wrote:
+> > I'll report back once I got a trace log.
+>
+> Find the trace log attached.
+> It also grabbed quite a bit of unrelated noise, but I think it's still
+> helpful:
+>
+> >            nfsd-7226  [025] 2228027.306471: nfsd_compound:        xid=0xbca1d6e9 opcnt=5
+> >             nfsd-7226  [025] 2228027.306472: nfsd_compound_status: op=1/5 OP_SEQUENCE status=0
+> >             nfsd-7226  [025] 2228027.306479: nfsd_compound_status: op=2/5 OP_PUTFH status=0
+> >             nfsd-7226  [025] 2228027.306480: nfsd_compound_status: op=3/5 OP_SAVEFH status=0
+> >             nfsd-7226  [025] 2228027.306483: nfsd_compound_status: op=4/5 OP_PUTFH status=0
+> >             nfsd-7226  [025] 2228027.306590: nfsd_compound_status: op=5/5 OP_COPY status=0
+> >             nfsd-7226  [025] 2228027.306702: nfsd_compound:        xid=0xbda1d6e9 opcnt=2
+> >             nfsd-7226  [025] 2228027.306703: nfsd_compound_status: op=1/2 OP_SEQUENCE status=0
+> >             nfsd-7226  [025] 2228027.306703: nfsd_compound_status: op=2/2 OP_TEST_STATEID status=0
+> >             nfsd-7226  [025] 2228027.306741: nfsd_compound:        xid=0xbea1d6e9 opcnt=2
+> >             nfsd-7226  [025] 2228027.306742: nfsd_compound_status: op=1/2 OP_SEQUENCE status=0
+> >             nfsd-7226  [025] 2228027.306747: nfsd_compound_status: op=2/2 OP_TEST_STATEID status=0
+> >             nfsd-7226  [025] 2228027.306791: nfsd_compound:        xid=0xbfa1d6e9 opcnt=2
+> >             nfsd-7226  [025] 2228027.306792: nfsd_compound_status: op=1/2 OP_SEQUENCE status=0
+> >             nfsd-7226  [025] 2228027.306793: nfsd_compound_status: op=2/2 OP_TEST_STATEID status=0
+> >             nfsd-7226  [025] 2228027.306829: nfsd_compound:        xid=0xc0a1d6e9 opcnt=2
+> >             nfsd-7226  [025] 2228027.306830: nfsd_compound_status: op=1/2 OP_SEQUENCE status=0
+> >             nfsd-7226  [025] 2228027.306831: nfsd_compound_status: op=2/2 OP_TEST_STATEID status=0
+> >             nfsd-7226  [025] 2228027.306865: nfsd_compound:        xid=0xc1a1d6e9 opcnt=2
+> >             nfsd-7226  [025] 2228027.306866: nfsd_compound_status: op=1/2 OP_SEQUENCE status=0
+> >             nfsd-7226  [025] 2228027.306866: nfsd_compound_status: op=2/2 OP_TEST_STATEID status=0
+> >            <...>-2019374 [012] 2228027.307694: nfsd_file_put:        hash=0x275 inode=0x0xffffa0c8c35ab490 ref=4 flags=HASHED|REFERENCED may=READ file=0xffffa0e819758800
+> >            <...>-2019374 [012] 2228027.307694: nfsd_file_put:        hash=0x365 inode=0x0xffffa0d70dd5dec0 ref=5 flags=HASHED|REFERENCED may=READ|WRITE file=0xffffa0e819759000
+> >            <...>-2019374 [012] 2228027.307701: nfsd_file_put:        hash=0x365 inode=0x0xffffa0d70dd5dec0 ref=4 flags=HASHED|REFERENCED may=READ|WRITE file=0xffffa0e819759000
+> >            <...>-2019374 [012] 2228027.307701: nfsd_file_put:        hash=0x275 inode=0x0xffffa0c8c35ab490 ref=3 flags=HASHED|REFERENCED may=READ file=0xffffa0e819758800
+> >            <...>-1885588 [029] 2228027.307725: nfsd_cb_work:         addr=10.110.10.252:0 client 600c8efc:868a6681 procedure=CB_OFFLOAD
+> >            <...>-1885588 [029] 2228027.307746: nfsd_cb_done:         addr=10.110.10.252:0 client 600c8efc:868a6681 status=-107
+> >            <...>-1885588 [029] 2228027.307747: nfsd_cb_state:        addr=10.110.10.252:0 client 600c8efc:868a6681 state=FAULT
 
-I think the specs or man pages talk about this, the application has to
-observe empty, do arm, then poll again then sleep on the cq if empty.
-
-> Do you know what's the purpose of the consumer index in the arm doorbell that's
-> implemented by many providers?
-
-The consumer index is needed by HW to prevent CQ overflow, presumably
-the drivers push to reduce the cases where the HW has to read it from
-PCI
-
-Jason
+Thank you for getting tracepoints from a busy server but can you get
+more? As suspected, the server is having issues sending the callback.
+I'm not sure why. Any chance to turn on the server's sunrpc
+tracespoints, probably both sunrpc and rdmas tracepoints, I wonder if
+we can any more info about why it's failing?
