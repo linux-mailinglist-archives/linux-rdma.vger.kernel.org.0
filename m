@@ -2,204 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EADA31E8B6
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Feb 2021 11:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E7F31EC20
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Feb 2021 17:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231616AbhBRKXY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Feb 2021 05:23:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232129AbhBRKQj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:16:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2552564E68;
-        Thu, 18 Feb 2021 10:15:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613643355;
-        bh=+A0u4OWvJlHCCd+1mVGsnPkG1baTWGmsHt4lXGPL9zY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jIs/LK5V+fEp/BpYZSGmHmxi5J808uJJZGPWH1xfWHaRWpLZjBYW2azc7jnOATZAH
-         I5yWTqR9kHJp4pSqrR9rFvWQ2l+Gcfc71b8HK/dz+Ic2vvUH5xpFJ6CmRuCp+wUjIo
-         +Y/7U2qVqnyIpeSFDtnNcEiwLRjznG3MET4Co+BkyD5CmYW9vHEQnm5UV+YeA0806s
-         VuUIrY9hdGBKSXi1Z5BKt/yiewxBiNbXV6gYyBAeFM6dkNIIA+nRbLMSE9lqG2T+f8
-         Tj4SAdI9ZSJ9ASAhXqGgRvMWNvQhcoVzNe1gsivfwNQMzPE19UUBSccKWlp+4AULR4
-         HIIfYeMGomXmA==
-Date:   Thu, 18 Feb 2021 12:15:51 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Subject: Re: [PATCH mlx5-next v6 1/4] PCI: Add sysfs callback to allow MSI-X
- table size change of SR-IOV VFs
-Message-ID: <YC4+V6W7s7ytwiC6@unreal>
-References: <YCwj4WsrVeklgl7i@unreal>
- <20210217180239.GA896669@bjorn-Precision-5520>
+        id S232852AbhBRQQr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Feb 2021 11:16:47 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56374 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233104AbhBRMjx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 18 Feb 2021 07:39:53 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11IC31vM147447
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Feb 2021 07:38:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
+ from : to : cc : date : mime-version : references :
+ content-transfer-encoding : content-type : message-id; s=pp1;
+ bh=l+uaZt5xszN3MOPHvyrvmrZX4i/kTfZ20q/0RqrlYBc=;
+ b=o5OA+pF/dLB/0YupRsUcYsSthvSxejiCIYjNddUId5GWd9158Xoikvw4zizs4qlSk7gg
+ smZQawcmPgCOEHajJA6mTw5y5wM1bXTXRFd60nLjI4u6uAdlW8FP7RebPZroTAmGyMyq
+ DhlHZTM/adgPRohkQfSVKPncg90oLkBlXfzxjSoeh0w9bPJJ/ousWIhvHqlz0+wz9M7M
+ r2OISAwFr+zEcXeApPuO9DR1vfkVwT3JRLEP6NlGy4PlyJ/rbzKxu1RZoaC6a9vQEQcl
+ uXrWTJs5I4NtIbHyM/Z3Ri5lWr+xppTZz04A1+5II5u8Pnvu+tqCVqXvj2zmI/8oSSmO bQ== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.113])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36sqpf1gbw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Feb 2021 07:38:26 -0500
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Thu, 18 Feb 2021 12:38:26 -0000
+Received: from us1b3-smtp05.a3dr.sjc01.isc4sb.com (10.122.203.183)
+        by smtp.notes.na.collabserv.com (10.122.47.56) with smtp.notes.na.collabserv.com ESMTP;
+        Thu, 18 Feb 2021 12:38:24 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp05.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2021021812382425-318739 ;
+          Thu, 18 Feb 2021 12:38:24 +0000 
+In-Reply-To: <bd5deec5-8fc6-ccd6-927a-898f6d9ab35b@amazon.com>
+Subject: Re: ibv_req_notify_cq clarification
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Gal Pressman" <galpress@amazon.com>
+Cc:     "RDMA mailing list" <linux-rdma@vger.kernel.org>
+Date:   Thu, 18 Feb 2021 12:38:23 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217180239.GA896669@bjorn-Precision-5520>
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <bd5deec5-8fc6-ccd6-927a-898f6d9ab35b@amazon.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
+X-KeepSent: 8421F948:8385A3FA-00258680:00454F8A;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 10111
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 21021812-7691-0000-0000-00000E6F0A54
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.033418
+X-IBM-SpamModules-Versions: BY=3.00014755; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000295; SDB=6.01509572; UDB=6.00815158; IPR=6.01292095;
+ MB=3.00036174; MTD=3.00000008; XFM=3.00000015; UTC=2021-02-18 12:38:25
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2021-02-18 03:19:26 - 6.00012309
+x-cbparentid: 21021812-7692-0000-0000-00002F620BF8
+Message-Id: <OF8421F948.8385A3FA-ON00258680.00454F8A-00258680.00456EC9@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-18_05:2021-02-18,2021-02-18 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 12:02:39PM -0600, Bjorn Helgaas wrote:
-> [+cc Greg in case he wants to chime in on the sysfs discussion.
-> TL;DR: we're trying to add/remove sysfs files when a PCI driver that
-> supports certain callbacks binds or unbinds; series at
-> https://lore.kernel.org/r/20210209133445.700225-1-leon@kernel.org]
->
-> On Tue, Feb 16, 2021 at 09:58:25PM +0200, Leon Romanovsky wrote:
-> > On Tue, Feb 16, 2021 at 10:12:12AM -0600, Bjorn Helgaas wrote:
-> > > On Tue, Feb 16, 2021 at 09:33:44AM +0200, Leon Romanovsky wrote:
-> > > > On Mon, Feb 15, 2021 at 03:01:06PM -0600, Bjorn Helgaas wrote:
-> > > > > On Tue, Feb 09, 2021 at 03:34:42PM +0200, Leon Romanovsky wrote:
-> > > > > > From: Leon Romanovsky <leonro@nvidia.com>
->
-> > > > > > +int pci_enable_vf_overlay(struct pci_dev *dev)
-> > > > > > +{
-> > > > > > +	struct pci_dev *virtfn;
-> > > > > > +	int id, ret;
-> > > > > > +
-> > > > > > +	if (!dev->is_physfn || !dev->sriov->num_VFs)
-> > > > > > +		return 0;
-> > > > > > +
-> > > > > > +	ret = sysfs_create_files(&dev->dev.kobj, sriov_pf_dev_attrs);
-> > > > >
-> > > > > But I still don't like the fact that we're calling
-> > > > > sysfs_create_files() and sysfs_remove_files() directly.  It makes
-> > > > > complication and opportunities for errors.
-> > > >
-> > > > It is not different from any other code that we have in the kernel.
-> > >
-> > > It *is* different.  There is a general rule that drivers should not
-> > > call sysfs_* [1].  The PCI core is arguably not a "driver," but it is
-> > > still true that callers of sysfs_create_files() are very special, and
-> > > I'd prefer not to add another one.
-> >
-> > PCI for me is a bus, and bus is the right place to manage sysfs.
-> > But it doesn't matter, we understand each other positions.
-> >
-> > > > Let's be concrete, can you point to the errors in this code that I
-> > > > should fix?
-> > >
-> > > I'm not saying there are current errors; I'm saying the additional
-> > > code makes errors possible in future code.  For example, we hope that
-> > > other drivers can use these sysfs interfaces, and it's possible they
-> > > may not call pci_enable_vf_overlay() or pci_disable_vfs_overlay()
-> > > correctly.
-> >
-> > If not, we will fix, we just need is to ensure that sysfs name won't
-> > change, everything else is easy to change.
-> >
-> > > Or there may be races in device addition/removal.  We have current
-> > > issues in this area, e.g., [2], and they're fairly subtle.  I'm not
-> > > saying your patches have these issues; only that extra code makes more
-> > > chances for mistakes and it's more work to validate it.
-> > >
-> > > > > I don't see the advantage of creating these files only when
-> > > > > the PF driver supports this.  The management tools have to
-> > > > > deal with sriov_vf_total_msix == 0 and sriov_vf_msix_count ==
-> > > > > 0 anyway.  Having the sysfs files not be present at all might
-> > > > > be slightly prettier to the person running "ls", but I'm not
-> > > > > sure the code complication is worth that.
-> > > >
-> > > > It is more than "ls", right now sriov_numvfs is visible without
-> > > > relation to the driver, even if driver doesn't implement
-> > > > ".sriov_configure", which IMHO bad. We didn't want to repeat.
-> > > >
-> > > > Right now, we have many devices that supports SR-IOV, but small
-> > > > amount of them are capable to rewrite their VF MSI-X table siz.
-> > > > We don't want "to punish" and clatter their sysfs.
-> > >
-> > > I agree, it's clutter, but at least it's just cosmetic clutter
-> > > (but I'm willing to hear discussion about why it's more than
-> > > cosmetic; see below).
-> >
-> > It is more than cosmetic and IMHO it is related to the driver role.
-> > This feature is advertised, managed and configured by PF. It is very
-> > natural request that the PF will view/hide those sysfs files.
->
-> Agreed, it's natural if the PF driver adds/removes those files.  But I
-> don't think it's *essential*, and they *could* be static because of
-> this:
->
-> > > From the management software point of view, I don't think it matters.
-> > > That software already needs to deal with files that don't exist (on
-> > > old kernels) and files that contain zero (feature not supported or no
-> > > vectors are available).
->
-> I wonder if sysfs_update_group() would let us have our cake and eat
-> it, too?  Maybe we could define these files as static attributes and
-> call sysfs_update_group() when the PF driver binds or unbinds?
->
-> Makes me wonder if the device core could call sysfs_update_group()
-> when binding/unbinding drivers.  But there are only a few existing
-> callers, and it looks like none of them are for the bind/unbind
-> situation, so maybe that would be pointless.
+-----"Gal Pressman" <galpress@amazon.com> wrote: -----
 
-Also it will be not an easy task to do it in driver/core. Our attributes need to be
-visible if driver is bound -> we will call to sysfs_update_group() after
-->bind() callback. It means that in uwind, we will call to sysfs_update_group() before
-->unbind() and the driver will be still bound. So the check is is_supported() for driver
-exists/or not won't be possible.
-
-So I tried something similar in bus/pci code and it was super hacky -
-the sriov code in general pci path.
-
-BTW, I found sentence which sent me to do directory layout.
-https://lore.kernel.org/linux-pci/20210110150727.1965295-1-leon@kernel.org/T/#u
--------------------------------------------------------------------------------
-> In addition you could probably even create a directory on the PF with
-> the new control you had added for getting the master count as well as
-> look at adding symlinks to the VF files so that you could manage all
-> of the resources in one spot. That would result in the controls being
-> nicely organized and easy to use.
-
-Thanks, for you inputs.
-
-I'll try offline different variants and will post v4 soon.
----------------------------------------------------------------------------------
+>To: "RDMA mailing list" <linux-rdma@vger.kernel.org>
+>From: "Gal Pressman" <galpress@amazon.com>
+>Date: 02/18/2021 11:26AM
+>Subject: [EXTERNAL] ibv=5Freq=5Fnotify=5Fcq clarification
 >
-> > > From my point of view, pci_enable_vf_overlay() or
-> > > pci_disable_vfs_overlay() are also clutter, at least compared to
-> > > static sysfs attributes.
-> > >
-> > > > > I see a hint that Alex might have requested this "only visible when PF
-> > > > > driver supports it" functionality, but I don't see that email on
-> > > > > linux-pci, so I missed the background.
-> > > >
-> > > > First version of this patch had static files solution.
-> > > > https://lore.kernel.org/linux-pci/20210103082440.34994-2-leon@kernel.org/#Z30drivers:pci:iov.c
-> > >
-> > > Thanks for the pointer to the patch.  Can you point me to the
-> > > discussion about why we should use the "only visible when PF driver
-> > > supports it" model?
-> >
-> > It is hard to pinpoint specific sentence, this discussion is spread
-> > across many emails and I implemented it in v4.
-> >
-> > See this request from Alex:
-> > https://lore.kernel.org/linux-pci/20210114170543.143cce49@omen.home.shazbot.org/
-> > and this is my acknowledge:
-> > https://lore.kernel.org/linux-pci/20210116082331.GL944463@unreal/
-> >
-> > BTW, I asked more than once how these sysfs knobs should be handled
-> > in the PCI/core.
+>I'm a bit confused about the meaning of the ibv=5Freq=5Fnotify=5Fcq() verb:
+>"Upon the addition of a new CQ entry (CQE) to cq, a completion event
+>will be
+>added to the completion channel associated with the CQ."
 >
-> Thanks for the pointers.  This is the first instance I can think of
-> where we want to create PCI core sysfs files based on a driver
-> binding, so there really isn't a precedent.
-
-It is always nice to be first :).
-
+>What is considered a new CQE in this case?
+>The next CQE from the user's perspective, i.e. any new CQE that
+>wasn't consumed
+>by the user's poll cq?
+>Or any new CQE from the device's perspective?
 >
-> > > [1] https://lore.kernel.org/linux-pci/YBmG7qgIDYIveDfX@kroah.com/
-> > > [2] https://lore.kernel.org/linux-pci/20200716110423.xtfyb3n6tn5ixedh@pali/
+>For example, if at the time of ibv=5Freq=5Fnotify=5Fcq() call the CQ has
+>received 100
+>completions, but the user hasn't polled his CQ yet, when should he be
+>notified?
+>On the 101 completion or immediately (since there are completions
+>waiting on the
+>CQ)?
+
+It is from drivers perspective. So notification when 101
+became available and CQ is marked for notification.
+Applications tend to poll the CQ after requesting
+notification, since there might be a race
+from appl perspective...
+
+
+
