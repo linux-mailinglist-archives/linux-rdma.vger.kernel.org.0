@@ -2,108 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5745631EFC7
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Feb 2021 20:25:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 477BA31EFC9
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Feb 2021 20:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhBRTYH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Feb 2021 14:24:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232539AbhBRSdL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Feb 2021 13:33:11 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60EE6C061222;
-        Thu, 18 Feb 2021 10:30:15 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id h10so5584738edl.6;
-        Thu, 18 Feb 2021 10:30:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+smuLYtbr/pzemzJUHohUAfEz52XBhtosdIvQ0wrqg8=;
-        b=p8U5MG0k3+1HciOGF7IZXB+1Wnmt8sThOBtsc0rYJgvhVlKrlqvMVko/Hj/SnS3kEe
-         24LN2WWbsMx6Gj5hNuRh8+s1MOJLrS5ZE5SQHWHY4KC0HX87TXqKVllySxp2JFWU7tbo
-         7vJ0aEW6cAj+vl3AvWqPo67XCbyw4p4dE756IRSZMU5GlF3shHDbJSRMUYASzD/DSqg8
-         zMTo9XCZzxz3rJI8WMzQbZttmjCxZwASkZ/YWB4WcpMr4LSZzuikOwwp5yieJCjbO/LO
-         uJlxFStZ97uy5DynkS739xvrw1hnBBCzOC3cYSE1Nzfb4HfxPTaTCjDnkAseNcaJNRvw
-         2QIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+smuLYtbr/pzemzJUHohUAfEz52XBhtosdIvQ0wrqg8=;
-        b=Q3TJQCaQmeeTPl48B+zYyW8cV7I/OFQBhTp5A7RMBVBAWObJ4lgQSkc8PuwDFe8rIc
-         u625CRS0vCcGfsr73BYLkwu0BifY/OC/jbO6tC7tytYoIjBJTPaCQ/TMpokj0bmCdBJj
-         qdVkCOa/r2DwFzmvSmxU3T87YXqEvhf/gYBqtHZR7PMEXsYUdHeTEbE9Fzxg5sgVSEdG
-         w/jyu78zd1jDCRnE9afIbdZigCCuIjTSLxT2AxJI2/c4XrBnWNwnTaVu5NWZzzqWlyzT
-         9It/Ot+sy/Wp4DRBQZgcOwnBusNRS/tpIF3/55CxnmMjj4Dib3hb6zUzW05IbhuRgbZ5
-         Us7g==
-X-Gm-Message-State: AOAM532lFBtBwpJmcpt1+El+Tl7DmkoveYrMtcBa3KsR3+zhOmjiRZFL
-        61G4zkuhy6seWlkLLFQ59Kbv2L+ZXAOm0dZ0RVk=
-X-Google-Smtp-Source: ABdhPJyf3ejHIWkfPUgk6HLgxVDu8fNZiyGqobWsyDibisA6N7HUoBpBe/cTXXUHsOGb+Ht6+jThj1fg7X72BM8Rpos=
-X-Received: by 2002:a05:6402:10c3:: with SMTP id p3mr5331883edu.67.1613673014085;
- Thu, 18 Feb 2021 10:30:14 -0800 (PST)
+        id S231263AbhBRTYO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Feb 2021 14:24:14 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45474 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230400AbhBRSsm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 18 Feb 2021 13:48:42 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11IIhtPU099674
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Feb 2021 13:48:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
+ from : to : cc : date : mime-version : references :
+ content-transfer-encoding : content-type : message-id; s=pp1;
+ bh=wKtNQSUxlo7nQDCk6cnIKkwK4YL4wz1dK++EVebUXtI=;
+ b=VJSGZy6Qi/RfquaNfkCJpOHQO/mAJLf/tl6T61pWQ+0Xz0jnToCnJnrIo4dIm+bEsRhj
+ zLeigd8SGIJLEt2Eg1Sh4AWW69GaUBTgWKzeqkdKb/COQbmmsruYN7wT9m/OE3HlMEpD
+ MTMkzUWg3sCYUZeGT1k5sY/QdljRsU8WMYUR4tuHJMS64Wle35eTuj0fv0MzhBYUqaeX
+ /vH2Y+WfXSw0EOG7Kyez8cpPnM/9gspyMBOJ3Q6DWdxBnyUQupN6Zg4gt8+isQmJ64wb
+ UzEVxE1MitHdFzqS20wdO5kQC+O0fPqfx834HHe3/6tHSdXNZPvAFAs1aTSIkqK9oH0h eg== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.111])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36sws6g3df-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Feb 2021 13:48:02 -0500
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Thu, 18 Feb 2021 18:48:02 -0000
+Received: from us1b3-smtp01.a3dr.sjc01.isc4sb.com (10.122.7.174)
+        by smtp.notes.na.collabserv.com (10.122.47.52) with smtp.notes.na.collabserv.com ESMTP;
+        Thu, 18 Feb 2021 18:48:00 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp01.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2021021818480004-642108 ;
+          Thu, 18 Feb 2021 18:48:00 +0000 
+In-Reply-To: <20210218162329.GZ4718@ziepe.ca>
+Subject: Re: Re: ibv_req_notify_cq clarification
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     "Gal Pressman" <galpress@amazon.com>,
+        "RDMA mailing list" <linux-rdma@vger.kernel.org>
+Date:   Thu, 18 Feb 2021 18:47:59 +0000
 MIME-Version: 1.0
-References: <57f67888-160f-891c-6217-69e174d7e42b@rothenpieler.org>
- <CAN-5tyE4OyNOZRXGnyONcdGsHaRAF39LSE5416Kj964m-+_C2A@mail.gmail.com>
- <81cb9aef-c10d-f11c-42c0-5144ee2608bc@rothenpieler.org> <0e49471c-e640-a331-c7b4-4e0a49a7a967@rothenpieler.org>
- <CAN-5tyG9Ly9tqKxguFNhg_PGXCxE2=Zn6LQPLY59twdVkD3Auw@mail.gmail.com>
- <51a8caa7-52c2-8155-10a7-1e8d21866924@rothenpieler.org> <CAN-5tyFT4+kkqk6E0Jxe-vMYm7q5mHyTeq0Ht7AEYasA30ZaGw@mail.gmail.com>
- <3f946e6b-6872-641c-8828-35ddd5c8fed0@rothenpieler.org> <e89ab742-7984-6a2c-2f01-402283ba6e89@rothenpieler.org>
-In-Reply-To: <e89ab742-7984-6a2c-2f01-402283ba6e89@rothenpieler.org>
-From:   Olga Kornievskaia <aglo@umich.edu>
-Date:   Thu, 18 Feb 2021 13:30:02 -0500
-Message-ID: <CAN-5tyGhyh0ZF77voaN4TNgMt+jSUG0PMp-KixfTvgUhDdhDUQ@mail.gmail.com>
-Subject: Re: copy_file_range() infinitely hangs on NFSv4.2 over RDMA
-To:     Timo Rothenpieler <timo@rothenpieler.org>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20210218162329.GZ4718@ziepe.ca>,<bd5deec5-8fc6-ccd6-927a-898f6d9ab35b@amazon.com>
+ <20210218125339.GY4718@ziepe.ca>
+ <5287c059-3d8c-93f4-6be4-a6da07ccdb8a@amazon.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
+X-KeepSent: 668C69D2:6FFE9230-00258680:0066C11E;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 479
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 21021818-3633-0000-0000-000003A753C3
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.000061
+X-IBM-SpamModules-Versions: BY=3.00014756; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000295; SDB=6.01509696; UDB=6.00815233; IPR=6.01292219;
+ MB=3.00036175; MTD=3.00000008; XFM=3.00000015; UTC=2021-02-18 18:48:01
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2021-02-18 16:29:43 - 6.00012311
+x-cbparentid: 21021818-3634-0000-0000-00002C7B5A83
+Message-Id: <OF668C69D2.6FFE9230-ON00258680.0066C11E-00258680.0067452D@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-18_09:2021-02-18,2021-02-18 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 10:55 AM Timo Rothenpieler
-<timo@rothenpieler.org> wrote:
->
-> On 18.02.2021 14:28, Timo Rothenpieler wrote:
-> > I'll report back once I got a trace log.
->
-> Find the trace log attached.
-> It also grabbed quite a bit of unrelated noise, but I think it's still
-> helpful:
->
-> >            nfsd-7226  [025] 2228027.306471: nfsd_compound:        xid=0xbca1d6e9 opcnt=5
-> >             nfsd-7226  [025] 2228027.306472: nfsd_compound_status: op=1/5 OP_SEQUENCE status=0
-> >             nfsd-7226  [025] 2228027.306479: nfsd_compound_status: op=2/5 OP_PUTFH status=0
-> >             nfsd-7226  [025] 2228027.306480: nfsd_compound_status: op=3/5 OP_SAVEFH status=0
-> >             nfsd-7226  [025] 2228027.306483: nfsd_compound_status: op=4/5 OP_PUTFH status=0
-> >             nfsd-7226  [025] 2228027.306590: nfsd_compound_status: op=5/5 OP_COPY status=0
-> >             nfsd-7226  [025] 2228027.306702: nfsd_compound:        xid=0xbda1d6e9 opcnt=2
-> >             nfsd-7226  [025] 2228027.306703: nfsd_compound_status: op=1/2 OP_SEQUENCE status=0
-> >             nfsd-7226  [025] 2228027.306703: nfsd_compound_status: op=2/2 OP_TEST_STATEID status=0
-> >             nfsd-7226  [025] 2228027.306741: nfsd_compound:        xid=0xbea1d6e9 opcnt=2
-> >             nfsd-7226  [025] 2228027.306742: nfsd_compound_status: op=1/2 OP_SEQUENCE status=0
-> >             nfsd-7226  [025] 2228027.306747: nfsd_compound_status: op=2/2 OP_TEST_STATEID status=0
-> >             nfsd-7226  [025] 2228027.306791: nfsd_compound:        xid=0xbfa1d6e9 opcnt=2
-> >             nfsd-7226  [025] 2228027.306792: nfsd_compound_status: op=1/2 OP_SEQUENCE status=0
-> >             nfsd-7226  [025] 2228027.306793: nfsd_compound_status: op=2/2 OP_TEST_STATEID status=0
-> >             nfsd-7226  [025] 2228027.306829: nfsd_compound:        xid=0xc0a1d6e9 opcnt=2
-> >             nfsd-7226  [025] 2228027.306830: nfsd_compound_status: op=1/2 OP_SEQUENCE status=0
-> >             nfsd-7226  [025] 2228027.306831: nfsd_compound_status: op=2/2 OP_TEST_STATEID status=0
-> >             nfsd-7226  [025] 2228027.306865: nfsd_compound:        xid=0xc1a1d6e9 opcnt=2
-> >             nfsd-7226  [025] 2228027.306866: nfsd_compound_status: op=1/2 OP_SEQUENCE status=0
-> >             nfsd-7226  [025] 2228027.306866: nfsd_compound_status: op=2/2 OP_TEST_STATEID status=0
-> >            <...>-2019374 [012] 2228027.307694: nfsd_file_put:        hash=0x275 inode=0x0xffffa0c8c35ab490 ref=4 flags=HASHED|REFERENCED may=READ file=0xffffa0e819758800
-> >            <...>-2019374 [012] 2228027.307694: nfsd_file_put:        hash=0x365 inode=0x0xffffa0d70dd5dec0 ref=5 flags=HASHED|REFERENCED may=READ|WRITE file=0xffffa0e819759000
-> >            <...>-2019374 [012] 2228027.307701: nfsd_file_put:        hash=0x365 inode=0x0xffffa0d70dd5dec0 ref=4 flags=HASHED|REFERENCED may=READ|WRITE file=0xffffa0e819759000
-> >            <...>-2019374 [012] 2228027.307701: nfsd_file_put:        hash=0x275 inode=0x0xffffa0c8c35ab490 ref=3 flags=HASHED|REFERENCED may=READ file=0xffffa0e819758800
-> >            <...>-1885588 [029] 2228027.307725: nfsd_cb_work:         addr=10.110.10.252:0 client 600c8efc:868a6681 procedure=CB_OFFLOAD
-> >            <...>-1885588 [029] 2228027.307746: nfsd_cb_done:         addr=10.110.10.252:0 client 600c8efc:868a6681 status=-107
-> >            <...>-1885588 [029] 2228027.307747: nfsd_cb_state:        addr=10.110.10.252:0 client 600c8efc:868a6681 state=FAULT
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
 
-Thank you for getting tracepoints from a busy server but can you get
-more? As suspected, the server is having issues sending the callback.
-I'm not sure why. Any chance to turn on the server's sunrpc
-tracespoints, probably both sunrpc and rdmas tracepoints, I wonder if
-we can any more info about why it's failing?
+>To: "Gal Pressman" <galpress@amazon.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 02/18/2021 07:35PM
+>Cc: "RDMA mailing list" <linux-rdma@vger.kernel.org>
+>Subject: [EXTERNAL] Re: ibv=5Freq=5Fnotify=5Fcq clarification
+>
+>On Thu, Feb 18, 2021 at 05:52:16PM +0200, Gal Pressman wrote:
+>> On 18/02/2021 14:53, Jason Gunthorpe wrote:
+>> > On Thu, Feb 18, 2021 at 11:13:43AM +0200, Gal Pressman wrote:
+>> >> I'm a bit confused about the meaning of the ibv=5Freq=5Fnotify=5Fcq()
+>verb:
+>> >> "Upon the addition of a new CQ entry (CQE) to cq, a completion
+>event will be
+>> >> added to the completion channel associated with the CQ."
+>> >>
+>> >> What is considered a new CQE in this case?
+>> >> The next CQE from the user's perspective, i.e. any new CQE that
+>wasn't consumed
+>> >> by the user's poll cq?
+>> >> Or any new CQE from the device's perspective?
+>> >=20
+>> > new CQE from the device perspective.
+>> >=20
+>> >> For example, if at the time of ibv=5Freq=5Fnotify=5Fcq() call the CQ
+>has received 100
+>> >> completions, but the user hasn't polled his CQ yet, when should
+>he be notified?
+>> >> On the 101 completion or immediately (since there are
+>completions waiting on the
+>> >> CQ)?
+>> >=20
+>> > 101 completion
+>> >=20
+>> > It is only meaningful to call it when the CQ is empty.
+>>=20
+>> Thanks, so there's an inherent race between the user's CQ poll and
+>the next arm?
+>
+>I think the specs or man pages talk about this, the application has
+>to
+>observe empty, do arm, then poll again then sleep on the cq if empty.
+>
+
+I'd love to see the IB=5FCQ=5FREPORT=5FMISSED=5FEVENTS flag mechanics
+available for user land verbs. I learned about this potential
+race the hard way when a well known distributed FS sometimes
+hung ;)=20
+
+
+
+>> Do you know what's the purpose of the consumer index in the arm
+>doorbell that's
+>> implemented by many providers?
+>
+>The consumer index is needed by HW to prevent CQ overflow, presumably
+>the drivers push to reduce the cases where the HW has to read it from
+>PCI
+>
+>Jason
+>
+
