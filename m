@@ -2,77 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CAA931E7BD
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Feb 2021 10:00:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 361FE31E8AD
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Feb 2021 11:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbhBRI7l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Feb 2021 03:59:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231287AbhBRIzz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 18 Feb 2021 03:55:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C49B060238;
-        Thu, 18 Feb 2021 08:44:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613637860;
-        bh=eGvfTLOrgg2KJyQLxhwaK2XJ3im6+ine27HiDNVd8Zg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SzwtObn3A8+/AiNoO/xPHlM0XvOSxmLbWNGUQbmaWWp/brGxw8xw8S+mEkvej98kq
-         Gea1BQKA1L+2cudVg4yeITTU8sCVT/36kWLkaA3M/RnXcjkKJnZ8yGziMDDgM4VxCg
-         Gj4R7XR/yS+FE9cRgrlq1L+/YwEO/+3RFIIUUB/AjTDIU6SFjCiFchuB++oK8fyT2s
-         iHkuJu27MDqcjWl+jztUALUYSReTHoE/VHxMJw/W8uo4+P57LE+4b0AyAAz/AEsHex
-         p3F1oglwxk7k3N28SyKrrzkGjT7lA1dRpNLlw5ZhwO68z7x1sPtYUgcK1mXe8x5mp/
-         +gxOjnvsBhRHA==
-Date:   Thu, 18 Feb 2021 10:44:16 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        Ido Kalir <idok@nvidia.com>,
-        linux-netdev <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH iproute2-rc] rdma: Fix statistics bind/unbing argument
- handling
-Message-ID: <YC4o4L93lGYFQ1ku@unreal>
-References: <20210214083335.19558-1-leon@kernel.org>
- <5e9a8752-24a1-7461-e113-004b014dcde9@gmail.com>
- <YCoJULID1x2kulQe@unreal>
- <04d7cd07-c3eb-c39c-bce1-3e9d4d1e4a27@gmail.com>
- <YCtjO1Q2OnCOlEcu@unreal>
- <9217385b-6002-83c2-b386-85650ce101bc@gmail.com>
+        id S230199AbhBRKS6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Feb 2021 05:18:58 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:3285 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231616AbhBRJOr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Feb 2021 04:14:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1613639687; x=1645175687;
+  h=from:subject:to:message-id:date:mime-version:
+   content-transfer-encoding;
+  bh=4RubAaQ1E+KV+QuTWj1H/R6yiH5PU4XrChvjPS/sLPw=;
+  b=OJFfsL7xSDThhgyQGDuhFOVAddaq3jMTGzsKY3fZuBfDSp76JnQHrpXo
+   uT23pQNqZCYvZ1gZiw7Td90gmTsZ10Q9UOMpQiEkZvrhN984fR9boOHQQ
+   imIdb6n4PlcXeFXSALhwbbGgMy2Qm2eDqwjSdyyXlkzhERVIwm7M1Tomt
+   c=;
+X-IronPort-AV: E=Sophos;i="5.81,186,1610409600"; 
+   d="scan'208";a="87501376"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-87a10be6.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 18 Feb 2021 09:13:52 +0000
+Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2c-87a10be6.us-west-2.amazon.com (Postfix) with ESMTPS id A2257A1FEB
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Feb 2021 09:13:51 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.146) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 18 Feb 2021 09:13:48 +0000
+From:   Gal Pressman <galpress@amazon.com>
+Subject: ibv_req_notify_cq clarification
+To:     RDMA mailing list <linux-rdma@vger.kernel.org>
+Message-ID: <bd5deec5-8fc6-ccd6-927a-898f6d9ab35b@amazon.com>
+Date:   Thu, 18 Feb 2021 11:13:43 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9217385b-6002-83c2-b386-85650ce101bc@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.146]
+X-ClientProxiedBy: EX13D06UWA001.ant.amazon.com (10.43.160.220) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 08:48:24AM -0700, David Ahern wrote:
-> On 2/15/21 11:16 PM, Leon Romanovsky wrote:
-> > On Mon, Feb 15, 2021 at 06:56:26PM -0700, David Ahern wrote:
-> >> On 2/14/21 10:40 PM, Leon Romanovsky wrote:
-> >>> On Sun, Feb 14, 2021 at 08:26:16PM -0700, David Ahern wrote:
-> >>>> what does iproute2-rc mean?
-> >>>
-> >>> Patch target is iproute2.git:
-> >>> https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/
-> >>
-> >> so you are asking them to be committed for the 5.11 release?
-> >
-> > This is a Fix to an existing issue (not theoretical one), so I was under
-> > impression that it should go to -rc repo and not to -next.
->
-> It is assigned to Stephen for iproute2.
->
-> >
-> > Personally, I don't care to which repo will this fix be applied as long
-> > as it is applied to one of the two iproute2 official repos.
-> >
-> > Do you have clear guidance when should I send patches to iproute2-rc/iproute2-next?
-> >
->
-> It's the rc label that needs to be dropped: iproute2 or iproute2-next.
+I'm a bit confused about the meaning of the ibv_req_notify_cq() verb:
+"Upon the addition of a new CQ entry (CQE) to cq, a completion event will be
+added to the completion channel associated with the CQ."
 
-Sure, no problem.
+What is considered a new CQE in this case?
+The next CQE from the user's perspective, i.e. any new CQE that wasn't consumed
+by the user's poll cq?
+Or any new CQE from the device's perspective?
 
-Thanks
+For example, if at the time of ibv_req_notify_cq() call the CQ has received 100
+completions, but the user hasn't polled his CQ yet, when should he be notified?
+On the 101 completion or immediately (since there are completions waiting on the
+CQ)?
+
+Thanks!
