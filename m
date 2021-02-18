@@ -2,249 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4CC31EC24
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Feb 2021 17:19:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7D731EC26
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Feb 2021 17:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbhBRQRV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Feb 2021 11:17:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233556AbhBRN3W (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Feb 2021 08:29:22 -0500
-Received: from btbn.de (btbn.de [IPv6:2a01:4f8:162:63a9::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A367C061786;
-        Thu, 18 Feb 2021 05:28:32 -0800 (PST)
-Received: from [IPv6:2001:16b8:64c0:e200:8477:785d:a559:f590] (200116b864c0e2008477785da559f590.dip.versatel-1u1.de [IPv6:2001:16b8:64c0:e200:8477:785d:a559:f590])
-        by btbn.de (Postfix) with ESMTPSA id A6F4F232304;
-        Thu, 18 Feb 2021 14:28:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rothenpieler.org;
-        s=mail; t=1613654910;
-        bh=wCE2mJK9i2kFyz6QsiB7qfjzNzlJOgbkpJ+ljH8F+hA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=pqCbp70Zfyg57FFsJ4P0vf9f5V0hd43TkWdaEsDl4oEHbTf20dz3Jcc+n2LKoFCTL
-         B0H7A1uUjPKlCZX9KOENEXwRuiGywXnm3sEOMQG28wU+7FtSv/0khgm0vGEI2VXS3c
-         jnLEBUPEPJW78R5ubHaNBvUFJnP546fp9HqTsFoZAaLUGhzAnLNx3ag+jENHx6zXQB
-         VqU8lRys9wp31xq3S65UN7qepDdSHkDKY/ZbMbV7SAob4Xn4+bG5sr2Ruhy/6Y6zU4
-         /n+Apo7UmX1n6n0iIJvNdbuz3b4lvkaK6ew+2rhjXQFgMEV95XvqvKheLTnUNEtyIc
-         1RGmM+37u+9lA==
-Subject: Re: copy_file_range() infinitely hangs on NFSv4.2 over RDMA
-To:     Olga Kornievskaia <aglo@umich.edu>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-References: <57f67888-160f-891c-6217-69e174d7e42b@rothenpieler.org>
- <CAN-5tyE4OyNOZRXGnyONcdGsHaRAF39LSE5416Kj964m-+_C2A@mail.gmail.com>
- <81cb9aef-c10d-f11c-42c0-5144ee2608bc@rothenpieler.org>
- <0e49471c-e640-a331-c7b4-4e0a49a7a967@rothenpieler.org>
- <CAN-5tyG9Ly9tqKxguFNhg_PGXCxE2=Zn6LQPLY59twdVkD3Auw@mail.gmail.com>
- <51a8caa7-52c2-8155-10a7-1e8d21866924@rothenpieler.org>
- <CAN-5tyFT4+kkqk6E0Jxe-vMYm7q5mHyTeq0Ht7AEYasA30ZaGw@mail.gmail.com>
-From:   Timo Rothenpieler <timo@rothenpieler.org>
-Message-ID: <3f946e6b-6872-641c-8828-35ddd5c8fed0@rothenpieler.org>
-Date:   Thu, 18 Feb 2021 14:28:29 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233376AbhBRQR7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Feb 2021 11:17:59 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10608 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231640AbhBROAT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 18 Feb 2021 09:00:19 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11IDUkkl075272
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Feb 2021 08:59:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
+ from : to : cc : date : mime-version : references :
+ content-transfer-encoding : content-type : message-id; s=pp1;
+ bh=Q7rYE/Q0ODn15Gxpt0hhNvXM+ok4+wTc4/qMx5vOeTA=;
+ b=UjbF/hQLTJ3siYrV89WKgVqdXunzXyiej1tIkMrgF/iM30wG6cLAHP0ctsMekm1Cu8yf
+ rgzPc+c3Mc4i24OyX+6BOTu3mQzbfFARUKfoRa4v11cm/TKjDqhLrEcFtRWQJVVYbYlW
+ 1PQkwtCkY+/BfmdeA9tHLUHu4klIYtjKtBAe5L8BxXtHosfnHRlxuJxk/FJz/d/gWMWk
+ ssupUTsFvZz4nJNXWyc8iZxOe5LNKC/Zt/gwljFppxr+dm2FOiRntzsyv2IDTsKJIIhh
+ NgSMGUhLT0ATYF3esbUrjkQdRbZrU14j91boIan2EFHK3TGkfc9AknvTtecdosC0kFZo tg== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.93])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36sqd1cmdn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Thu, 18 Feb 2021 08:59:37 -0500
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Thu, 18 Feb 2021 13:59:37 -0000
+Received: from us1a3-smtp05.a3.dal06.isc4sb.com (10.146.71.159)
+        by smtp.notes.na.collabserv.com (10.106.227.39) with smtp.notes.na.collabserv.com ESMTP;
+        Thu, 18 Feb 2021 13:59:36 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp05.a3.dal06.isc4sb.com
+          with ESMTP id 2021021813593602-386771 ;
+          Thu, 18 Feb 2021 13:59:36 +0000 
+In-Reply-To: <2f01b2b4-f024-d469-7176-aaaca3af9e96@amazon.com>
+Subject: Re: Re: ibv_req_notify_cq clarification
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Gal Pressman" <galpress@amazon.com>
+Cc:     "RDMA mailing list" <linux-rdma@vger.kernel.org>
+Date:   Thu, 18 Feb 2021 13:59:35 +0000
 MIME-Version: 1.0
-In-Reply-To: <CAN-5tyFT4+kkqk6E0Jxe-vMYm7q5mHyTeq0Ht7AEYasA30ZaGw@mail.gmail.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms010405070802040104060008"
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <2f01b2b4-f024-d469-7176-aaaca3af9e96@amazon.com>,<bd5deec5-8fc6-ccd6-927a-898f6d9ab35b@amazon.com>
+ <OF8421F948.8385A3FA-ON00258680.00454F8A-00258680.00456EC9@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
+X-LLNOutbound: False
+X-Disclaimed: 39995
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 21021813-8889-0000-0000-0000049A2A34
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.033196
+X-IBM-SpamModules-Versions: BY=3.00014755; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000295; SDB=6.01509599; UDB=6.00815175; IPR=6.01292123;
+ MB=3.00036174; MTD=3.00000008; XFM=3.00000015; UTC=2021-02-18 13:59:36
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2021-02-18 03:41:58 - 6.00012309
+x-cbparentid: 21021813-8890-0000-0000-0000AEFA2DD5
+Message-Id: <OFC3C0A907.C449E5C5-ON00258680.004AAFCE-00258680.004CDDF7@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-18_05:2021-02-18,2021-02-18 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+-----"Gal Pressman" <galpress@amazon.com> wrote: -----
 
---------------ms010405070802040104060008
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-On 18.02.2021 04:52, Olga Kornievskaia wrote:
-> On Wed, Feb 17, 2021 at 8:12 PM Timo Rothenpieler <timo@rothenpieler.or=
-g> wrote:
->>
->> On 17.02.2021 23:37, Olga Kornievskaia wrote:
->>> On Tue, Feb 16, 2021 at 5:27 PM Timo Rothenpieler <timo@rothenpieler.=
-org> wrote:
->>>>
->>>> On 16.02.2021 21:37, Timo Rothenpieler wrote:
->>>>> I can't get a network (I assume just TCP/20049 is fine, and not als=
-o
->>>>> some RDMA trace?) right now, but I will once a user has finished th=
-eir
->>>>> work on the machine.
->>>>
->>>> There wasn't any TCP traffic to dump on the NFSoRDMA Port, probably
->>>> because everything is handled via RDMA/IB.
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Gal Pressman" <galpress@amazon.com>
+>Date: 02/18/2021 01:47PM
+>Cc: "RDMA mailing list" <linux-rdma@vger.kernel.org>
+>Subject: [EXTERNAL] Re: ibv=5Freq=5Fnotify=5Fcq clarification
+>
+>On 18/02/2021 14:38, Bernard Metzler wrote:
+>> -----"Gal Pressman" <galpress@amazon.com> wrote: -----
+>>=20
+>>> To: "RDMA mailing list" <linux-rdma@vger.kernel.org>
+>>> From: "Gal Pressman" <galpress@amazon.com>
+>>> Date: 02/18/2021 11:26AM
+>>> Subject: [EXTERNAL] ibv=5Freq=5Fnotify=5Fcq clarification
 >>>
->>> Yeah, I'm not sure if tcpdump can snoop on the IB traffic. I know tha=
-t
->>> upstream tcpdump can snoop on RDMA mellanox card (but I only know
->>> about the Roce mode).
->>
->> I managed to get https://github.com/Mellanox/ibdump working. Attached =
-is
->> what it records when I run the xfs_io copy_range command that gets
->> stuck(sniffer.pcap).
->> Additionally, I rebooted the client machine, and captured the traffic
->> when it does a then successful copy during the first few minutes of
->> uptime(sniffer2.pcap).
->>
->> Both those commands were run on a the same 500M file.
->>
->>>> But I recorded a trace log of rpcrdma and sunrpc observing the situa=
-tion.
->>>>
->>>> To me it looks like the COPY task (task:15886@7) completes successfu=
-lly?
->>>> The compressed trace.dat is attached.
+>>> I'm a bit confused about the meaning of the ibv=5Freq=5Fnotify=5Fcq()
+>verb:
+>>> "Upon the addition of a new CQ entry (CQE) to cq, a completion
+>event
+>>> will be
+>>> added to the completion channel associated with the CQ."
 >>>
->>> I'm having a hard time reproducing the problem. But I only tried
->>> "xfs", "btrfs", "ext4" (first two send a CLONE since the file system
->>> supports it), the last one exercises a copy. In all my tries your
->>
->> I can also reproduce this on a test NFS share from an ext4 filesystem.=
+>>> What is considered a new CQE in this case?
+>>> The next CQE from the user's perspective, i.e. any new CQE that
+>>> wasn't consumed
+>>> by the user's poll cq?
+>>> Or any new CQE from the device's perspective?
+>>>
+>>> For example, if at the time of ibv=5Freq=5Fnotify=5Fcq() call the CQ has
+>>> received 100
+>>> completions, but the user hasn't polled his CQ yet, when should he
+>be
+>>> notified?
+>>> On the 101 completion or immediately (since there are completions
+>>> waiting on the
+>>> CQ)?
+>>=20
+>> It is from drivers perspective. So notification when 101
+>> became available and CQ is marked for notification.
+>> Applications tend to poll the CQ after requesting
+>> notification, since there might be a race
+>> from appl perspective...
+>
+>Thanks Bernard,
+>
+>Looking at the implementation of rdma-core providers, most of them
+>pass the CQ
+>consumer index as part of the arm doorbell which made me think it
+>arms the CQ to
+>notify on a completion newer than what the app polled, not on a
+>completion newer
+>than the producer index.
+>Any idea why the consumer index is needed if that's not the case?
+>
+...maybe to do what you suggest - just kicking the completion
+handler if it appears the application has missed CQE's when the
+CQ was not armed? That would be in the gray zone of having
+a provider which wants to be smarter than the application,
+since this feature is not part of the verbs specification.
+I'd suggest applications better to rely on the
+IB=5FCQ=5FREPORT=5FMISSED=5FEVENTS flag if it doesn't want to
+pull unconditionally.
 
->> Have not tested xfs yet.
->>
->>> xfs_io commands succeed. The differences between our environments are=
-
->>> (1) ZFS vs (xfs, etc) and (2) IB vs RoCE. Question is: does any
->>> copy_file_range work over RDMA/IB. One thing to try a synchronous
->>
->> It works, on any size of file, when the client machine is freshly boot=
-ed
->> (within its first 10~30 minutes of uptime).
->=20
-> Reboot of the client or the server machine?
-
-Just the client. The server is in production use, so I can't freely=20
-reboot it without organizing a maintenance window a couple days ahead.
-
->>> copy: create a small file 10bytes and do a copy. Is this the case
->>> where we have copy and the callback racing, so instead do a really
->>> large copy: create a >=3D1GB file and do a copy. that will be an asyn=
-c
->>> copy but will not have a racy condition. Can you try those 2 examples=
-
->>> for me?
->>
->> I have observed in the past, that the xfs_io copy is more likely to
->> succeed the smaller the file is, though I did not make out a definite
->> pattern.
->=20
-> That's because small files are done with a synchronous copy. Your
-> network captures (while not fully decodable by wireshark because the
-> trace lacks the connection establishment needed for the wireshark to
-> parse the RDMA replies) the fact that no callback is sent from the
-> server and thus the client is stuck waiting for it. So the focus
-> should be on the server piece as to why it's not sending it. There are
-> some error conditions on the server that if that happens, it will not
-> be able to send a callback. What springs to mind looking thru the code
-> is that somehow the server thinks there is no callback channel.  Can
-> you turn on nfsd tracepoints please? I wonder if we can see something
-> of interest there.
-
-On the server I guess?
-I'll have to figure out a way to do that while it's not in active use.
-Otherwise the trace log will be enormous and contain a lot of noise from =
-
-the general system use.
-
-I'll report back once I got a trace log.
-
-> The logic for determining whether the copy is sent sync or async
-> depends on server's rsize, if a file smaller than 2 RPC payloads, it's
-> sent synchronously.
-
-
-
---------------ms010405070802040104060008
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-DVkwggXkMIIDzKADAgECAhAI/yx7V5dPIG8WuMetnzcsMA0GCSqGSIb3DQEBCwUAMIGBMQsw
-CQYDVQQGEwJJVDEQMA4GA1UECAwHQmVyZ2FtbzEZMBcGA1UEBwwQUG9udGUgU2FuIFBpZXRy
-bzEXMBUGA1UECgwOQWN0YWxpcyBTLnAuQS4xLDAqBgNVBAMMI0FjdGFsaXMgQ2xpZW50IEF1
-dGhlbnRpY2F0aW9uIENBIEczMB4XDTIxMDIxNDE5MTM0N1oXDTIyMDIxNDE5MTM0N1owIDEe
-MBwGA1UEAwwVdGltb0Byb3RoZW5waWVsZXIub3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
-MIIBCgKCAQEA0WP2SBuRIpVw5O7QPakKoJjg7B4UNAKTyky1XMsievLNGnR4Nxe6kKU+1oW0
-oF5FqMVH9NkT9zhWYJzr5sNwJMKb9t5k8kYC7GXzOM9PxVx3bkLF5bWZrbfelUUwcdiyEYoh
-d29C+PxiNLHvmayWb3NtxpWiax9A4x7dRhhtqB/0BkPix+ZsIFn8vxpCvIChE2YlQWK3i8UX
-uBtqm26zBl3BIjj+bpd+7ePVt60vRx/R3LFHtF6kL/gQvgRcm8CFc8Nj3dCUeR2lfG+DzoTY
-ED6yAi838kRh5JHbqIl/Fo9YRwOYUaq2TFT/fGue87d7duLbckX1aVot+OqE0aeV2QIDAQAB
-o4IBtjCCAbIwDAYDVR0TAQH/BAIwADAfBgNVHSMEGDAWgBS+l6mqhL+AvxBTfQky+eEuMhvP
-dzB+BggrBgEFBQcBAQRyMHAwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jYWNlcnQuYWN0YWxpcy5p
-dC9jZXJ0cy9hY3RhbGlzLWF1dGNsaWczMDEGCCsGAQUFBzABhiVodHRwOi8vb2NzcDA5LmFj
-dGFsaXMuaXQvVkEvQVVUSENMLUczMCAGA1UdEQQZMBeBFXRpbW9Acm90aGVucGllbGVyLm9y
-ZzBHBgNVHSAEQDA+MDwGBiuBHwEYATAyMDAGCCsGAQUFBwIBFiRodHRwczovL3d3dy5hY3Rh
-bGlzLml0L2FyZWEtZG93bmxvYWQwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMEgG
-A1UdHwRBMD8wPaA7oDmGN2h0dHA6Ly9jcmwwOS5hY3RhbGlzLml0L1JlcG9zaXRvcnkvQVVU
-SENMLUczL2dldExhc3RDUkwwHQYDVR0OBBYEFK/aNb0BTZd0BqHgSJnmTftGSlabMA4GA1Ud
-DwEB/wQEAwIFoDANBgkqhkiG9w0BAQsFAAOCAgEAT3W2bBaISi7Utg/WA3U+bBhiouolnROR
-AB0vW4m3igjMcWx5GrPb8CSWNcq0/+BG+bhj6s+q7D1E9h1HO9CZUCfD7ujXj/VT/h7oMAqX
-w3Tf6H92bvHmZCvZmb2HKEnAAa4URjeZyNI1uwsMirF/gC5zYX5pm2ydVGxGYusWq8VRZzgc
-m1a0f3SPtX2dmmqjCzfINsQPs3N7BQo6FO/PfCbCzt22e+9Zm0Lra0Wt2URFTYCKSTjsK2xC
-SkysTfVIrBZCOb83oTMsgYE9dBmK7Tmob/HzHKs0NUOu4TfEpCgFgoXozMqTLFQac7aW26YK
-O8ClFDaauyOC71A+kjrth/gkUNEK+Cd3W52hK2FWvxbG/8LQLDMYviZFKxv/LAHU0fb6omva
-R4dzu9Sagi1z5uI5KHs5SR85lH4Up0dYs+I2xyFb8wZVYa+VuvsJ4W/pL2OaMm0tez+aNprg
-XURytCSPfAlz3JQdEYIiKPlJrz7O6eL2j7RwxMcKFLQl117mhImjdauIjaaS60w92P7v+F7+
-7INJ8g0PFN2vHVCB9e1g4iSYIgiydDLcbs73Jp1yVp97plWZI9oirxvH1/vI05FUJ3gw9qg2
-WfbttAr0AEakAUo3Dv8jB7aQor/5fu8NMOvWjFV7P7GTAgrwil8u6fXa8ae/kWzG/850vgqq
-GM0wggdtMIIFVaADAgECAhAXED7ePYoctcoGUZPnykNrMA0GCSqGSIb3DQEBCwUAMGsxCzAJ
-BgNVBAYTAklUMQ4wDAYDVQQHDAVNaWxhbjEjMCEGA1UECgwaQWN0YWxpcyBTLnAuQS4vMDMz
-NTg1MjA5NjcxJzAlBgNVBAMMHkFjdGFsaXMgQXV0aGVudGljYXRpb24gUm9vdCBDQTAeFw0y
-MDA3MDYwODQ1NDdaFw0zMDA5MjIxMTIyMDJaMIGBMQswCQYDVQQGEwJJVDEQMA4GA1UECAwH
-QmVyZ2FtbzEZMBcGA1UEBwwQUG9udGUgU2FuIFBpZXRybzEXMBUGA1UECgwOQWN0YWxpcyBT
-LnAuQS4xLDAqBgNVBAMMI0FjdGFsaXMgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEczMIIC
-IjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA7eaHlqHBpLbtwkJV9z8PDyJgXxPgpkOI
-hkmReRwbLxpQD9xGAe72ujqGzFFh78QPgAhxKVqtGHzYeq0VJVCzhnCKRBbVX+JwIhL3ULYh
-UAZrViUp952qDB6qTL5sGeJS9F69VPSR5k6pFNw7mHDTTt0voWFg2aVkG3khomzVXoieJGOi
-Q4dH76paCtQbLkt59joAKz2BnwGLQ4wr09nfumJt5AKx2YxHK2XgSPslVZ4z8G00gimsfA7U
-tjT/wiekY6Z0b7ksLrEcvODncHQe9VSrNRA149SE3AlkWaZM/joVei/GYfj9K5jkiReinR4m
-qM353FEceLOeBhSTURpMdQ5wsXLi9DSTGBuNv4aw2Dozb/qBlkhGTvwk92mi0jAecE22Sn3A
-9UfrU2p1w/uRs+TIteQ0xO0B/J2mY2caqocsS9SsriIGlQ8b0LT0o6Ob07KGtPa5/lIvMmx5
-72Dv2v+vDiECByxm1Hdgjp8JtE4mdyYP6GBscJyT71NZw1zXHnFkyCbxReag9qaSR9x4CVVX
-j1BDmNROCqd5NAfIXUXYTFeZ/jukQigkxXGWhEhfLBC4Ha6pwizz9fq1+wwPKcWaF9P/SZOu
-BDrG30MiyCZa66G9mEtF5ZLuh4rGfKqxy4Z5Mxecuzt+MZmrSKfKGeXOeED/iuX5Z02M1o7i
-MS8CAwEAAaOCAfQwggHwMA8GA1UdEwEB/wQFMAMBAf8wHwYDVR0jBBgwFoAUUtiIOsifeGbt
-ifN7OHCUyQICNtAwQQYIKwYBBQUHAQEENTAzMDEGCCsGAQUFBzABhiVodHRwOi8vb2NzcDA1
-LmFjdGFsaXMuaXQvVkEvQVVUSC1ST09UMEUGA1UdIAQ+MDwwOgYEVR0gADAyMDAGCCsGAQUF
-BwIBFiRodHRwczovL3d3dy5hY3RhbGlzLml0L2FyZWEtZG93bmxvYWQwHQYDVR0lBBYwFAYI
-KwYBBQUHAwIGCCsGAQUFBwMEMIHjBgNVHR8EgdswgdgwgZaggZOggZCGgY1sZGFwOi8vbGRh
-cDA1LmFjdGFsaXMuaXQvY24lM2RBY3RhbGlzJTIwQXV0aGVudGljYXRpb24lMjBSb290JTIw
-Q0EsbyUzZEFjdGFsaXMlMjBTLnAuQS4lMmYwMzM1ODUyMDk2NyxjJTNkSVQ/Y2VydGlmaWNh
-dGVSZXZvY2F0aW9uTGlzdDtiaW5hcnkwPaA7oDmGN2h0dHA6Ly9jcmwwNS5hY3RhbGlzLml0
-L1JlcG9zaXRvcnkvQVVUSC1ST09UL2dldExhc3RDUkwwHQYDVR0OBBYEFL6XqaqEv4C/EFN9
-CTL54S4yG893MA4GA1UdDwEB/wQEAwIBBjANBgkqhkiG9w0BAQsFAAOCAgEAJpvnG1kNdLMS
-A+nnVfeEgIXNQsM7YRxXx6bmEt9IIrFlH1qYKeNw4NV8xtop91Rle168wghmYeCTP10FqfuK
-MZsleNkI8/b3PBkZLIKOl9p2Dmz2Gc0I3WvcMbAgd/IuBtx998PJX/bBb5dMZuGV2drNmxfz
-3ar6ytGYLxedfjKCD55Yv8CQcN6e9sW5OUm9TJ3kjt7Wdvd1hcw5s+7bhlND38rWFJBuzump
-5xqm1NSOggOkFSlKnhSz6HUjgwBaid6Ypig9L1/TLrkmtEIpx+wpIj7WTA9JqcMMyLJ0rN6j
-jpetLSGUDk3NCOpQntSy4a8+0O+SepzS/Tec1cGdSN6Ni2/A7ewQNd1Rbmb2SM2qVBlfN0e6
-ZklWo9QYpNZyf0d/d3upsKabE9eNCg1S4eDnp8sJqdlaQQ7hI/UYCAgDtLIm7/J9+/S2zuwE
-WtJMPcvaYIBczdjwF9uW+8NJ/Zu/JKb98971uua7OsJexPFRBzX7/PnJ2/NXcTdwudShJc/p
-d9c3IRU7qw+RxRKchIczv3zEuQJMHkSSM8KM8TbOzi/0v0lU6SSyS9bpGdZZxx19Hd8Qs0cv
-+R6nyt7ohttizwefkYzQ6GzwIwM9gSjH5Bf/r9Kc5/JqqpKKUGicxAGy2zKYEGB0Qo761Mcc
-IyclBW9mfuNFDbTBeDEyu80xggPzMIID7wIBATCBljCBgTELMAkGA1UEBhMCSVQxEDAOBgNV
-BAgMB0JlcmdhbW8xGTAXBgNVBAcMEFBvbnRlIFNhbiBQaWV0cm8xFzAVBgNVBAoMDkFjdGFs
-aXMgUy5wLkEuMSwwKgYDVQQDDCNBY3RhbGlzIENsaWVudCBBdXRoZW50aWNhdGlvbiBDQSBH
-MwIQCP8se1eXTyBvFrjHrZ83LDANBglghkgBZQMEAgEFAKCCAi0wGAYJKoZIhvcNAQkDMQsG
-CSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwMjE4MTMyODI5WjAvBgkqhkiG9w0BCQQx
-IgQgPQsZsDzuiQE58lKQTZCtqD9+0Pag8NYDcwWz/dWuDXQwbAYJKoZIhvcNAQkPMV8wXTAL
-BglghkgBZQMEASowCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDAN
-BggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBpwYJKwYBBAGCNxAEMYGZ
-MIGWMIGBMQswCQYDVQQGEwJJVDEQMA4GA1UECAwHQmVyZ2FtbzEZMBcGA1UEBwwQUG9udGUg
-U2FuIFBpZXRybzEXMBUGA1UECgwOQWN0YWxpcyBTLnAuQS4xLDAqBgNVBAMMI0FjdGFsaXMg
-Q2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEczAhAI/yx7V5dPIG8WuMetnzcsMIGpBgsqhkiG
-9w0BCRACCzGBmaCBljCBgTELMAkGA1UEBhMCSVQxEDAOBgNVBAgMB0JlcmdhbW8xGTAXBgNV
-BAcMEFBvbnRlIFNhbiBQaWV0cm8xFzAVBgNVBAoMDkFjdGFsaXMgUy5wLkEuMSwwKgYDVQQD
-DCNBY3RhbGlzIENsaWVudCBBdXRoZW50aWNhdGlvbiBDQSBHMwIQCP8se1eXTyBvFrjHrZ83
-LDANBgkqhkiG9w0BAQEFAASCAQCgo/GT6m08x9uIGZQuBfvYZP4vGmypAoS/i7WRIt3CGkbz
-2I+8jYa5+Qc98Mn9qihAwFJ98S9GGPeyRbEfiFmL++XUuiJ61xQ28gKg0mYM+JwAs1Fb3XzW
-Uzs8BsS5JeOIu8XERo+D497+Hnh98H5ClGGTS/7RoSVYh/OuF4P2DXhoVCU0ELGWxN3Xwims
-xWTfOAvsYc+7hYihmsUw5oOGhEtOqFCUB8MbOv8hvFFbuRsR+v2hu8FDxGnirYpz7BGkIL9e
-p8G5neBv7mAlWjJU26sX7XtwVI62FZ3N8X5MsOXFpI0s0yp+ypxD3dNXIn+gGhyTllP2jP9z
-fc0zDSvDAAAAAAAA
---------------ms010405070802040104060008--
