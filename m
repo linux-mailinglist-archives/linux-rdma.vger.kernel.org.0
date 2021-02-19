@@ -2,97 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D058D31FAE9
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Feb 2021 15:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDAE631FB03
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Feb 2021 15:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhBSOeW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Feb 2021 09:34:22 -0500
-Received: from p3plsmtpa08-08.prod.phx3.secureserver.net ([173.201.193.109]:48093
-        "EHLO p3plsmtpa08-08.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230309AbhBSOcM (ORCPT
+        id S231250AbhBSOgd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Feb 2021 09:36:33 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32554 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231186AbhBSOfG (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 19 Feb 2021 09:32:12 -0500
-Received: from [192.168.0.116] ([71.184.94.153])
-        by :SMTPAUTH: with ESMTPSA
-        id D6oTlPvfooQmrD6oTl882w; Fri, 19 Feb 2021 07:31:22 -0700
-X-CMAE-Analysis: v=2.4 cv=OPDiYQWB c=1 sm=1 tr=0 ts=602fcbba
- a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
- a=IkcTkHD0fZMA:10 a=CmyDqD1aZkL9LioChD8A:9 a=QEXdDO2ut3YA:10
-X-SECURESERVER-ACCT: tom@talpey.com
-Subject: Re: ibv_req_notify_cq clarification
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Gal Pressman <galpress@amazon.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-References: <bd5deec5-8fc6-ccd6-927a-898f6d9ab35b@amazon.com>
- <20210218125339.GY4718@ziepe.ca>
- <5287c059-3d8c-93f4-6be4-a6da07ccdb8a@amazon.com>
- <20210218162329.GZ4718@ziepe.ca>
- <e0153a6f-b9d9-4cb1-a2f2-a7f1865f3719@talpey.com>
- <20210218225131.GB2643399@ziepe.ca>
- <4b38c6fa-0a18-9f32-4dce-af8e3e39cb8e@talpey.com>
- <20210219004555.GC2643399@ziepe.ca>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <b31d6cdc-7304-d2fc-2e56-1f30f86f5dc4@talpey.com>
-Date:   Fri, 19 Feb 2021 09:31:22 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Fri, 19 Feb 2021 09:35:06 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11JEW14s067784
+        for <linux-rdma@vger.kernel.org>; Fri, 19 Feb 2021 09:34:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
+ from : to : cc : date : mime-version : references :
+ content-transfer-encoding : content-type : message-id; s=pp1;
+ bh=mvmmHTqoQrELtK67aiJ/sLPy/6SLDOzl0nf4NbfK9TA=;
+ b=RZ8bSRn1UKI6CZMxm4rkCI5ty8uuMWuIF4WeySHP7NWWmrCCAkyJcFogzhDK46YLWJGA
+ 0KVeCaD+8Cvzo8GvpWammfIKER3mH5JaNvLhMeRiIjrhw5AqhTCiGSpCC1KmPnwxz67U
+ Lu5HbHFxhkXFYbi9UyZ7m50kz6f42QdtQDUftsenBUbBnPWgPMdZF23wqodPIGFLO1UP
+ xqXR8+QFtLXThSkXZcnEh3/4d2gA1KXaC3xdWxMa5aWjHjvcgG/H9TebN7lqv3m4ID9b
+ tRtPB4kXcdwrUObLAHNyu4JG3PFRO2gvm7imN3qNQCg7xEoQUdvCnsV+KrgyeMfydrhk Yw== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.93])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36tenqhcrb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Fri, 19 Feb 2021 09:34:25 -0500
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Fri, 19 Feb 2021 14:34:25 -0000
+Received: from us1a3-smtp05.a3.dal06.isc4sb.com (10.146.71.159)
+        by smtp.notes.na.collabserv.com (10.106.227.39) with smtp.notes.na.collabserv.com ESMTP;
+        Fri, 19 Feb 2021 14:34:23 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp05.a3.dal06.isc4sb.com
+          with ESMTP id 2021021914342320-412503 ;
+          Fri, 19 Feb 2021 14:34:23 +0000 
+In-Reply-To: <bf7a73c3-ba50-a836-8e01-87c4183f003e@talpey.com>
+Subject: Re: Re: directing soft iWARP traffic through a secure tunnel
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Tom Talpey" <tom@talpey.com>
+Cc:     "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "Chuck Lever" <chuck.lever@oracle.com>,
+        "linux-rdma" <linux-rdma@vger.kernel.org>,
+        "Benjamin Coddington" <bcodding@redhat.com>
+Date:   Fri, 19 Feb 2021 14:34:22 +0000
 MIME-Version: 1.0
-In-Reply-To: <20210219004555.GC2643399@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfFjf5K8pv7txpxnAA2hPI5yYGT5PhNdKwav7dxThU3LhlpiYARx8EVSS4yS/LyOyvlirt5Cf+i1giYJGWp78z6ZXEnBFb/44e+cI6dAYGuY3Q1ZGiWnJ
- gYGbF8kTlOIbAvkgTrJOLAVmbb0RZOB8O+CDZwVOPoX++o1MkhdeNBct/Dg5F+Ti4khkTchCqb3O+wstLOPphXIu8wrVvcOHY3hXqOBpIQhPW4xxwqQLMN3m
- QBfD6aDwlrT5RJb5qV7kmw==
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <bf7a73c3-ba50-a836-8e01-87c4183f003e@talpey.com>,<20210216180946.GV4718@ziepe.ca>
+ <61EFD7EA-FA16-4AA1-B92F-0B0D4CC697AB@oracle.com>
+ <OFA2194C43.CE483827-ON0025867E.004018CA-0025867E.004470FA@notes.na.collabserv.com>
+ <OF3B04E71D.E72E1A4D-ON00258681.004164EA-00258681.00480051@notes.na.collabserv.com>
+ <20210219135728.GD2643399@ziepe.ca>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
+X-LLNOutbound: False
+X-Disclaimed: 8507
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 21021914-8889-0000-0000-0000049C3383
+X-IBM-SpamModules-Scores: BY=0.059465; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.271308
+X-IBM-SpamModules-Versions: BY=3.00014759; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000295; SDB=6.01510090; UDB=6.00815469; IPR=6.01292614;
+ MB=3.00036183; MTD=3.00000008; XFM=3.00000015; UTC=2021-02-19 14:34:24
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2021-02-19 11:06:01 - 6.00012314
+x-cbparentid: 21021914-8890-0000-0000-0000AEFD3F75
+Message-Id: <OF54DF919C.5715D846-ON00258681.004F4160-00258681.00500D35@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-19_05:2021-02-18,2021-02-19 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/18/2021 7:45 PM, Jason Gunthorpe wrote:
-> On Thu, Feb 18, 2021 at 06:07:13PM -0500, Tom Talpey wrote:
->>>> If the consumer doesn't provide a large-enough CQ, then it reaps the
->>>> consequences. Same thing for WQ depth, although I am aware that some
->>>> verbs implementations attempt to return a kind of EAGAIN when posting
->>>> to a send WQ.
->>>>
->>>> What can the provider do if the CQ is "full" anyway? Buffer the CQE
->>>> and go into some type of polling loop attempting to redeliver? Ouch!
->>>
->>> QP goes to error, CQE is discarded, IIRC.
->>
->> What!? There might be many QP's all sharing the same CQ. Put them
->> *all* into error? And for what, because the CQ is trash anyway. This
->> sounds like optimizing the error case. Uselessly.
-> 
-> No, only the QPs that need to push a CQE and can't.
+-----"Tom Talpey" <tom@talpey.com> wrote: -----
 
-Hm. Ok, so QP's will drop unpredictably, and their outstanding WQEs
-will probably be lost as well, but I can see cases where a CQ slot
-might open up while the failed QP is flushing, and CQE's get delivered
-out of order. That might be even worse. It would seem safer to stop
-writing to the CQ altogether - all QPs.
+>To: "Jason Gunthorpe" <jgg@ziepe.ca>, "Bernard Metzler"
+><BMT@zurich.ibm.com>
+>From: "Tom Talpey" <tom@talpey.com>
+>Date: 02/19/2021 03:15PM
+>Cc: "Chuck Lever" <chuck.lever@oracle.com>, "linux-rdma"
+><linux-rdma@vger.kernel.org>, "Benjamin Coddington"
+><bcodding@redhat.com>
+>Subject: [EXTERNAL] Re: directing soft iWARP traffic through a secure
+>tunnel
+>
+>On 2/19/2021 8:57 AM, Jason Gunthorpe wrote:
+>> On Fri, Feb 19, 2021 at 01:06:26PM +0000, Bernard Metzler wrote:
+>>=20
+>>> Actually, all this GID and GUID and friends for iWARP
+>>> CM looks more like squeezing things into InfiniBand terms,
+>>> where we could just rely on plain ARP and IP
+>>> (ARP resolve interface, see if there is an RDMA device
+>>> bound to, done)... or do I miss something?
+>>=20
+>> I don't know how iWarp cM works very well, it would not be
+>surprising
+>> if the gid table code has gained general rocee behaviors that are
+>not
+>> applicable to iwarp modes.
+>
+>iWarp doesn't really need a CM, it is capable of peer-to-peer without
+>any need to assign connection and queuepair ID's. The CM
+>infrastructure
+>basically just implements a state machine to allow upper layers to
+>have
+>a consistent connection API.
 
->>> Wrapping and overflowing the CQ is not acceptable, it would mean
->>> reading CQEs could never be done reliably.
->>
->> But the provider never reads the CQ, only the consumer can read.
->> The provider writes to head, ignoring tail. Consumer reads from
->> tail, and it goes empty when tail == head. And if head overruns
->> tail, that was the consumer's fault for posting too many WQEs.
-> 
-> Yes, but if the app makes a mistake you don't want to trash the whole
-> system. Resiliency says you contain the failure as much as possible
-> and the app at least has some chance to pick up the pieces.
-> 
-> If the HW corrupts the CQEs while the CPU is reading them then the
-> whole machine is toast, high chance the kernel will corrupt memory.
+Well hardware iWarp need someone to organize taking away ports
+from kernel TCP which are bound to RNIC's.
 
-That would be a problem, but it's only true if the provider implements
-the CQ as a circular buffer. That isn't imposed by the Verbs. The CQ
-itself is opaque to the consumer, it's merely a queue with arm and
-dequeue operations - no enqueue, no head/tail or other pointers, etc.
+>
+>I'm with Bernard here, forcing iWarp to use CM is a fairly unnatural
+>act. Assigning a GID/GUID is unnecessary from a protocol perspective.
+>
+>
+>> With Steve gone I don't think there is really anyone left that even
+>> really knows how the iWarp stuff works??
+>>=20
 
-So yeah, a provider that made such a choice will need to be careful.
-But there are other, possibly better, ways.
+Cleaning up the iWarp path of it might be a complex undertaking.
+I don't think going down that path solves the issue soon enough
+for NFS/RDMA folks. But I will spend some time trying to wrap
+my head around it...
 
-Tom.
+Best,
+Bernard.
+
