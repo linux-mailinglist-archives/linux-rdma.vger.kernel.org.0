@@ -2,136 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAE631FB03
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Feb 2021 15:37:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C7831FB04
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Feb 2021 15:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhBSOgd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Feb 2021 09:36:33 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32554 "EHLO
+        id S230455AbhBSOgf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Feb 2021 09:36:35 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40052 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231186AbhBSOfG (ORCPT
+        by vger.kernel.org with ESMTP id S230280AbhBSOfb (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 19 Feb 2021 09:35:06 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11JEW14s067784
-        for <linux-rdma@vger.kernel.org>; Fri, 19 Feb 2021 09:34:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
- from : to : cc : date : mime-version : references :
- content-transfer-encoding : content-type : message-id; s=pp1;
- bh=mvmmHTqoQrELtK67aiJ/sLPy/6SLDOzl0nf4NbfK9TA=;
- b=RZ8bSRn1UKI6CZMxm4rkCI5ty8uuMWuIF4WeySHP7NWWmrCCAkyJcFogzhDK46YLWJGA
- 0KVeCaD+8Cvzo8GvpWammfIKER3mH5JaNvLhMeRiIjrhw5AqhTCiGSpCC1KmPnwxz67U
- Lu5HbHFxhkXFYbi9UyZ7m50kz6f42QdtQDUftsenBUbBnPWgPMdZF23wqodPIGFLO1UP
- xqXR8+QFtLXThSkXZcnEh3/4d2gA1KXaC3xdWxMa5aWjHjvcgG/H9TebN7lqv3m4ID9b
- tRtPB4kXcdwrUObLAHNyu4JG3PFRO2gvm7imN3qNQCg7xEoQUdvCnsV+KrgyeMfydrhk Yw== 
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.93])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36tenqhcrb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Fri, 19 Feb 2021 09:34:25 -0500
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Fri, 19 Feb 2021 14:34:25 -0000
-Received: from us1a3-smtp05.a3.dal06.isc4sb.com (10.146.71.159)
-        by smtp.notes.na.collabserv.com (10.106.227.39) with smtp.notes.na.collabserv.com ESMTP;
-        Fri, 19 Feb 2021 14:34:23 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp05.a3.dal06.isc4sb.com
-          with ESMTP id 2021021914342320-412503 ;
-          Fri, 19 Feb 2021 14:34:23 +0000 
-In-Reply-To: <bf7a73c3-ba50-a836-8e01-87c4183f003e@talpey.com>
-Subject: Re: Re: directing soft iWARP traffic through a secure tunnel
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Tom Talpey" <tom@talpey.com>
-Cc:     "Jason Gunthorpe" <jgg@ziepe.ca>,
-        "Chuck Lever" <chuck.lever@oracle.com>,
-        "linux-rdma" <linux-rdma@vger.kernel.org>,
-        "Benjamin Coddington" <bcodding@redhat.com>
-Date:   Fri, 19 Feb 2021 14:34:22 +0000
+        Fri, 19 Feb 2021 09:35:31 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11JEXMCv026346;
+        Fri, 19 Feb 2021 09:34:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=iWZ0fKme2wbdlR/QlaFVz0SuVsw7wbxPBDvLyiwUAyQ=;
+ b=Zo1UjzU5rvmaktNRpAS8Nxr878aoE9hmrD8d9wpQGC4ddzR9mkCPT7GSJ4vcSSzyaESa
+ UQxWdGf/nxn0AE6JavCQKvJih+at8eACuEeudB0zZqwmAm+0yg4lS6kEqoSF9KxXZtLr
+ 0EKpPZPCRlS2Ib3vGo3VEva6o/DLhgePSBxOqsPTnnlCTXgUurDigcHaHEQC5TD8rMWU
+ ufe4ZPm2XgmWa5KBANUdCoOrtENy1SfXqU2+p4fPKtiTBGq6QxZGBQ0kVNnVYPjrPBmW
+ aNzD+adS01z+fA2xAvZAD0XdfEd/aj4jVmDyD5ejHW+btCAc4TmRRo069DCIehDX+4rV JQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36tehv1h74-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 09:34:50 -0500
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11JEXU9S026986;
+        Fri, 19 Feb 2021 09:34:49 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36tehv1h67-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 09:34:49 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11JEWrcn008968;
+        Fri, 19 Feb 2021 14:34:47 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 36p61hdn2a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 14:34:47 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11JEYXx332964964
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 14:34:33 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DF847A4064;
+        Fri, 19 Feb 2021 14:34:44 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9A642A4066;
+        Fri, 19 Feb 2021 14:34:44 +0000 (GMT)
+Received: from Pescara.zurich.ibm.com (unknown [9.171.85.34])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 19 Feb 2021 14:34:44 +0000 (GMT)
+From:   Bernard Metzler <bmt@zurich.ibm.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     jgg@ziepe.ca, Bernard Metzler <bmt@zurich.ibm.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Benjamin Coddington <bcodding@redhat.com>
+Subject: [PATCH] RDMA/iwcm: Allow AFONLY binding for IPv6 addresses.
+Date:   Fri, 19 Feb 2021 15:34:41 +0100
+Message-Id: <20210219143441.1068-1-bmt@zurich.ibm.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <bf7a73c3-ba50-a836-8e01-87c4183f003e@talpey.com>,<20210216180946.GV4718@ziepe.ca>
- <61EFD7EA-FA16-4AA1-B92F-0B0D4CC697AB@oracle.com>
- <OFA2194C43.CE483827-ON0025867E.004018CA-0025867E.004470FA@notes.na.collabserv.com>
- <OF3B04E71D.E72E1A4D-ON00258681.004164EA-00258681.00480051@notes.na.collabserv.com>
- <20210219135728.GD2643399@ziepe.ca>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
-X-LLNOutbound: False
-X-Disclaimed: 8507
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 21021914-8889-0000-0000-0000049C3383
-X-IBM-SpamModules-Scores: BY=0.059465; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.271308
-X-IBM-SpamModules-Versions: BY=3.00014759; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000295; SDB=6.01510090; UDB=6.00815469; IPR=6.01292614;
- MB=3.00036183; MTD=3.00000008; XFM=3.00000015; UTC=2021-02-19 14:34:24
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2021-02-19 11:06:01 - 6.00012314
-x-cbparentid: 21021914-8890-0000-0000-0000AEFD3F75
-Message-Id: <OF54DF919C.5715D846-ON00258681.004F4160-00258681.00500D35@notes.na.collabserv.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-02-19_05:2021-02-18,2021-02-19 signatures=0
-X-Proofpoint-Spam-Reason: orgsafe
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 clxscore=1015
+ spamscore=0 adultscore=0 mlxscore=0 suspectscore=0 bulkscore=0
+ phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2102190112
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Tom Talpey" <tom@talpey.com> wrote: -----
+Binding IPv6 address/port to AF_INET6 domain only is provided
+via rdma_set_afonly(), but was not signalled to the provider.
+Applications like NFS/RDMA bind the same port to both IPv4
+and IPv6 addresses simultaneously and thus rely on it working
+correctly.
 
->To: "Jason Gunthorpe" <jgg@ziepe.ca>, "Bernard Metzler"
-><BMT@zurich.ibm.com>
->From: "Tom Talpey" <tom@talpey.com>
->Date: 02/19/2021 03:15PM
->Cc: "Chuck Lever" <chuck.lever@oracle.com>, "linux-rdma"
-><linux-rdma@vger.kernel.org>, "Benjamin Coddington"
-><bcodding@redhat.com>
->Subject: [EXTERNAL] Re: directing soft iWARP traffic through a secure
->tunnel
->
->On 2/19/2021 8:57 AM, Jason Gunthorpe wrote:
->> On Fri, Feb 19, 2021 at 01:06:26PM +0000, Bernard Metzler wrote:
->>=20
->>> Actually, all this GID and GUID and friends for iWARP
->>> CM looks more like squeezing things into InfiniBand terms,
->>> where we could just rely on plain ARP and IP
->>> (ARP resolve interface, see if there is an RDMA device
->>> bound to, done)... or do I miss something?
->>=20
->> I don't know how iWarp cM works very well, it would not be
->surprising
->> if the gid table code has gained general rocee behaviors that are
->not
->> applicable to iwarp modes.
->
->iWarp doesn't really need a CM, it is capable of peer-to-peer without
->any need to assign connection and queuepair ID's. The CM
->infrastructure
->basically just implements a state machine to allow upper layers to
->have
->a consistent connection API.
+Tested-by: Chuck Lever <chuck.lever@oracle.com>
+Tested-by: Benjamin Coddington <bcodding@redhat.com>
+Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+---
+ drivers/infiniband/core/cma.c      |  1 +
+ drivers/infiniband/sw/siw/siw_cm.c | 19 +++++++++++++++++--
+ include/rdma/iw_cm.h               |  1 +
+ 3 files changed, 19 insertions(+), 2 deletions(-)
 
-Well hardware iWarp need someone to organize taking away ports
-from kernel TCP which are bound to RNIC's.
-
->
->I'm with Bernard here, forcing iWarp to use CM is a fairly unnatural
->act. Assigning a GID/GUID is unnecessary from a protocol perspective.
->
->
->> With Steve gone I don't think there is really anyone left that even
->> really knows how the iWarp stuff works??
->>=20
-
-Cleaning up the iWarp path of it might be a complex undertaking.
-I don't think going down that path solves the issue soon enough
-for NFS/RDMA folks. But I will spend some time trying to wrap
-my head around it...
-
-Best,
-Bernard.
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index c51b84b2d2f3..046d42c1f8f3 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -2466,6 +2466,7 @@ static int cma_iw_listen(struct rdma_id_private *id_priv, int backlog)
+ 
+ 	id->tos = id_priv->tos;
+ 	id->tos_set = id_priv->tos_set;
++	id->afonly = id_priv->afonly;
+ 	id_priv->cm_id.iw = id;
+ 
+ 	memcpy(&id_priv->cm_id.iw->local_addr, cma_src_addr(id_priv),
+diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+index 1f9e15b71504..8bd0d0785433 100644
+--- a/drivers/infiniband/sw/siw/siw_cm.c
++++ b/drivers/infiniband/sw/siw/siw_cm.c
+@@ -1300,7 +1300,7 @@ static void siw_cm_llp_state_change(struct sock *sk)
+ }
+ 
+ static int kernel_bindconnect(struct socket *s, struct sockaddr *laddr,
+-			      struct sockaddr *raddr)
++			      struct sockaddr *raddr, bool afonly)
+ {
+ 	int rv, flags = 0;
+ 	size_t size = laddr->sa_family == AF_INET ?
+@@ -1311,6 +1311,12 @@ static int kernel_bindconnect(struct socket *s, struct sockaddr *laddr,
+ 	 */
+ 	sock_set_reuseaddr(s->sk);
+ 
++	if (afonly) {
++		rv = ip6_sock_set_v6only(s->sk);
++		if (rv) 
++			return rv;
++	}
++
+ 	rv = s->ops->bind(s, laddr, size);
+ 	if (rv < 0)
+ 		return rv;
+@@ -1371,7 +1377,7 @@ int siw_connect(struct iw_cm_id *id, struct iw_cm_conn_param *params)
+ 	 * mode. Might be reconsidered for async connection setup at
+ 	 * TCP level.
+ 	 */
+-	rv = kernel_bindconnect(s, laddr, raddr);
++	rv = kernel_bindconnect(s, laddr, raddr, id->afonly);
+ 	if (rv != 0) {
+ 		siw_dbg_qp(qp, "kernel_bindconnect: error %d\n", rv);
+ 		goto error;
+@@ -1786,6 +1792,15 @@ int siw_create_listen(struct iw_cm_id *id, int backlog)
+ 	} else {
+ 		struct sockaddr_in6 *laddr = &to_sockaddr_in6(id->local_addr);
+ 
++		if (id->afonly) {
++			rv = ip6_sock_set_v6only(s->sk);
++			if (rv) {
++				siw_dbg(id->device,
++					"ip6_sock_set_v6only erro: %d\n", rv);
++				goto error;
++			}
++		}
++
+ 		/* For wildcard addr, limit binding to current device only */
+ 		if (ipv6_addr_any(&laddr->sin6_addr))
+ 			s->sk->sk_bound_dev_if = sdev->netdev->ifindex;
+diff --git a/include/rdma/iw_cm.h b/include/rdma/iw_cm.h
+index 91975400e1b3..03abd30e6c8c 100644
+--- a/include/rdma/iw_cm.h
++++ b/include/rdma/iw_cm.h
+@@ -70,6 +70,7 @@ struct iw_cm_id {
+ 	u8  tos;
+ 	bool tos_set:1;
+ 	bool mapped:1;
++	bool afonly:1;
+ };
+ 
+ struct iw_cm_conn_param {
+-- 
+2.17.2
 
