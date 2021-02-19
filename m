@@ -2,242 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007A731FD86
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Feb 2021 17:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F0831FE07
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Feb 2021 18:40:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhBSQ7J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Feb 2021 11:59:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58140 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229555AbhBSQ7H (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 19 Feb 2021 11:59:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DF136024A;
-        Fri, 19 Feb 2021 16:58:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613753905;
-        bh=NMo5yhyTlIxLySt+nSwX0SRCkEKanmzR/cCYJOgr3iI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bNOPbzHSaM4/vVw3+4RymgErrpNZfj8y/7buzxo2BkSuoUfn1cxTW1zvwW6Jr5J8N
-         NdYj5KxrzgbVy53zttyqJDHLjUxkzTKya+unKCcFG70MVf35cjEqXyFuV9lgNUSRf8
-         d1xEEXqhTARJIYpzLMQlS6kKlhzVcBZ3CktHc/DqE3YrZCxMRlrc6ozfR/zg26W70Y
-         iX4UOo2let49EMToU1mHhFqkSTAPSRArVTUoCjQW1vKrkxB7UHOw2ZORTS2PfTUutZ
-         AdyNYjkjJxfVd6My+aSZiXhCAzjFtW8bAdnU4B139cO9iF2cppDQgUszMRPfdT04xq
-         L7VbwLFauDCaQ==
-Date:   Fri, 19 Feb 2021 18:58:20 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Subject: Re: [PATCH mlx5-next v6 1/4] PCI: Add sysfs callback to allow MSI-X
- table size change of SR-IOV VFs
-Message-ID: <YC/uLNk2YMPMVL5c@unreal>
-References: <YC4+V6W7s7ytwiC6@unreal>
- <20210218223950.GA1004646@bjorn-Precision-5520>
- <YC9uLDAQJK9KgxbB@unreal>
- <YC90wkwk/CdgcYY6@kroah.com>
+        id S229849AbhBSRjx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Feb 2021 12:39:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhBSRjw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Feb 2021 12:39:52 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FE9C061756;
+        Fri, 19 Feb 2021 09:39:11 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id u20so14238400ejb.7;
+        Fri, 19 Feb 2021 09:39:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OkgIU4hSFcSCqAzQ5o5DHejRV17VOf8Art5rBjH2a3E=;
+        b=HqIwhpR8YAwOi1dMUErTJcL/1fys1z5Y5jIt7YF2PGebKp2vzYOQT2M23RBhB6FgOk
+         fRH2cIEPKkOgNx9qulKY/JL6RrZ4jTkMAilNavqkvcK2UrOgM6PDsp5qjvIdtEOfbP+u
+         BrL0yaLjJVvOYjtG4GU+IWRaKI8T2suN1knZz2stvJIUaqPgXwekG8z/0juZwZnXCPwn
+         cJqH5hcwSQWJMr4YDl+ypZF+ZIGunmBJn7QjZ/JC8qv582R2xCIYpoipX6IYK5ZQ2cop
+         mFv+kdpMbB+Z53S/SxPzZaolZgy1T8/kZZvIAWr9rh5OIeP6YdFZs/ClfSf6U/hWUMyR
+         +x3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OkgIU4hSFcSCqAzQ5o5DHejRV17VOf8Art5rBjH2a3E=;
+        b=rKaEAKmfSrMoER/qgPXtFgN/fsdH+CBoQzQTVIG+KJgeEzqxUY4twhmNKYBvalU7VA
+         u5H4OMZpEu2D1fdJIrsrimEgreV8AbgD9/vYD8NY7lfGqzp/yC/DwZTsIOyVMc2h2kGU
+         fsk5uhGwiVXph+AZOqUCirlQGHTw6wV4H1Jtk5ITClYtfii5VXpBgzn6xUkR9mrTI30Y
+         I3rk4GQRtY0F7k8o7iuYOAa7tPOraIh/4YW605F37g7oy//FM3bZdbkjt/1rCelPuY+Q
+         NkFuVp0PSF15YWtsi4BOUY72zM8po21dWRe7bCLb/lBX1EH/5kYA0QCMeGG1h5bsY00g
+         aBlg==
+X-Gm-Message-State: AOAM532/f4NQToBHCcDwnYivpOB9svUtytMrAEYLCfOP/mW4zjwSLoOT
+        KWJqCfbCq1x2CcB4xgJnNktN4HdYPUlllY8c8c8=
+X-Google-Smtp-Source: ABdhPJxf+62pk2/M9y+O2i3OKhy9ACmOMBP+l7zlqJ9vGXpl4N2tZI48wjBPrYnal8bp53KA8eyXlquPBYwIrKpU66Y=
+X-Received: by 2002:a17:906:c08e:: with SMTP id f14mr10217597ejz.388.1613756349840;
+ Fri, 19 Feb 2021 09:39:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC90wkwk/CdgcYY6@kroah.com>
+References: <57f67888-160f-891c-6217-69e174d7e42b@rothenpieler.org>
+ <CAN-5tyE4OyNOZRXGnyONcdGsHaRAF39LSE5416Kj964m-+_C2A@mail.gmail.com>
+ <81cb9aef-c10d-f11c-42c0-5144ee2608bc@rothenpieler.org> <0e49471c-e640-a331-c7b4-4e0a49a7a967@rothenpieler.org>
+ <CAN-5tyG9Ly9tqKxguFNhg_PGXCxE2=Zn6LQPLY59twdVkD3Auw@mail.gmail.com>
+ <51a8caa7-52c2-8155-10a7-1e8d21866924@rothenpieler.org> <CAN-5tyFT4+kkqk6E0Jxe-vMYm7q5mHyTeq0Ht7AEYasA30ZaGw@mail.gmail.com>
+ <3f946e6b-6872-641c-8828-35ddd5c8fed0@rothenpieler.org> <e89ab742-7984-6a2c-2f01-402283ba6e89@rothenpieler.org>
+ <CAN-5tyGhyh0ZF77voaN4TNgMt+jSUG0PMp-KixfTvgUhDdhDUQ@mail.gmail.com> <def12560-2481-b17d-5a42-7236edbd5392@rothenpieler.org>
+In-Reply-To: <def12560-2481-b17d-5a42-7236edbd5392@rothenpieler.org>
+From:   Olga Kornievskaia <aglo@umich.edu>
+Date:   Fri, 19 Feb 2021 12:38:58 -0500
+Message-ID: <CAN-5tyHLRn4HEs9R291N6Y=boOvQ9-qvKfJzA8Khkqie2kVVWQ@mail.gmail.com>
+Subject: Re: copy_file_range() infinitely hangs on NFSv4.2 over RDMA
+To:     Timo Rothenpieler <timo@rothenpieler.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 09:20:18AM +0100, Greg Kroah-Hartman wrote:
-> On Fri, Feb 19, 2021 at 09:52:12AM +0200, Leon Romanovsky wrote:
-> > On Thu, Feb 18, 2021 at 04:39:50PM -0600, Bjorn Helgaas wrote:
-> > > On Thu, Feb 18, 2021 at 12:15:51PM +0200, Leon Romanovsky wrote:
-> > > > On Wed, Feb 17, 2021 at 12:02:39PM -0600, Bjorn Helgaas wrote:
-> > > > > [+cc Greg in case he wants to chime in on the sysfs discussion.
-> > > > > TL;DR: we're trying to add/remove sysfs files when a PCI driver that
-> > > > > supports certain callbacks binds or unbinds; series at
-> > > > > https://lore.kernel.org/r/20210209133445.700225-1-leon@kernel.org]
-> > > > >
-> > > > > On Tue, Feb 16, 2021 at 09:58:25PM +0200, Leon Romanovsky wrote:
-> > > > > > On Tue, Feb 16, 2021 at 10:12:12AM -0600, Bjorn Helgaas wrote:
-> > > > > > > On Tue, Feb 16, 2021 at 09:33:44AM +0200, Leon Romanovsky wrote:
-> > > > > > > > On Mon, Feb 15, 2021 at 03:01:06PM -0600, Bjorn Helgaas wrote:
-> > > > > > > > > On Tue, Feb 09, 2021 at 03:34:42PM +0200, Leon Romanovsky wrote:
-> > > > > > > > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > >
-> > > > > > > > > > +int pci_enable_vf_overlay(struct pci_dev *dev)
-> > > > > > > > > > +{
-> > > > > > > > > > +	struct pci_dev *virtfn;
-> > > > > > > > > > +	int id, ret;
-> > > > > > > > > > +
-> > > > > > > > > > +	if (!dev->is_physfn || !dev->sriov->num_VFs)
-> > > > > > > > > > +		return 0;
-> > > > > > > > > > +
-> > > > > > > > > > +	ret = sysfs_create_files(&dev->dev.kobj, sriov_pf_dev_attrs);
-> > > > > > > > >
-> > > > > > > > > But I still don't like the fact that we're calling
-> > > > > > > > > sysfs_create_files() and sysfs_remove_files() directly.  It makes
-> > > > > > > > > complication and opportunities for errors.
-> > > > > > > >
-> > > > > > > > It is not different from any other code that we have in the kernel.
-> > > > > > >
-> > > > > > > It *is* different.  There is a general rule that drivers should not
-> > > > > > > call sysfs_* [1].  The PCI core is arguably not a "driver," but it is
-> > > > > > > still true that callers of sysfs_create_files() are very special, and
-> > > > > > > I'd prefer not to add another one.
-> > > > > >
-> > > > > > PCI for me is a bus, and bus is the right place to manage sysfs.
-> > > > > > But it doesn't matter, we understand each other positions.
-> > > > > >
-> > > > > > > > Let's be concrete, can you point to the errors in this code that I
-> > > > > > > > should fix?
-> > > > > > >
-> > > > > > > I'm not saying there are current errors; I'm saying the additional
-> > > > > > > code makes errors possible in future code.  For example, we hope that
-> > > > > > > other drivers can use these sysfs interfaces, and it's possible they
-> > > > > > > may not call pci_enable_vf_overlay() or pci_disable_vfs_overlay()
-> > > > > > > correctly.
-> > > > > >
-> > > > > > If not, we will fix, we just need is to ensure that sysfs name won't
-> > > > > > change, everything else is easy to change.
-> > > > > >
-> > > > > > > Or there may be races in device addition/removal.  We have current
-> > > > > > > issues in this area, e.g., [2], and they're fairly subtle.  I'm not
-> > > > > > > saying your patches have these issues; only that extra code makes more
-> > > > > > > chances for mistakes and it's more work to validate it.
-> > > > > > >
-> > > > > > > > > I don't see the advantage of creating these files only when
-> > > > > > > > > the PF driver supports this.  The management tools have to
-> > > > > > > > > deal with sriov_vf_total_msix == 0 and sriov_vf_msix_count ==
-> > > > > > > > > 0 anyway.  Having the sysfs files not be present at all might
-> > > > > > > > > be slightly prettier to the person running "ls", but I'm not
-> > > > > > > > > sure the code complication is worth that.
-> > > > > > > >
-> > > > > > > > It is more than "ls", right now sriov_numvfs is visible without
-> > > > > > > > relation to the driver, even if driver doesn't implement
-> > > > > > > > ".sriov_configure", which IMHO bad. We didn't want to repeat.
-> > > > > > > >
-> > > > > > > > Right now, we have many devices that supports SR-IOV, but small
-> > > > > > > > amount of them are capable to rewrite their VF MSI-X table siz.
-> > > > > > > > We don't want "to punish" and clatter their sysfs.
-> > > > > > >
-> > > > > > > I agree, it's clutter, but at least it's just cosmetic clutter
-> > > > > > > (but I'm willing to hear discussion about why it's more than
-> > > > > > > cosmetic; see below).
-> > > > > >
-> > > > > > It is more than cosmetic and IMHO it is related to the driver role.
-> > > > > > This feature is advertised, managed and configured by PF. It is very
-> > > > > > natural request that the PF will view/hide those sysfs files.
-> > > > >
-> > > > > Agreed, it's natural if the PF driver adds/removes those files.  But I
-> > > > > don't think it's *essential*, and they *could* be static because of
-> > > > > this:
-> > > > >
-> > > > > > > From the management software point of view, I don't think it matters.
-> > > > > > > That software already needs to deal with files that don't exist (on
-> > > > > > > old kernels) and files that contain zero (feature not supported or no
-> > > > > > > vectors are available).
-> > > > >
-> > > > > I wonder if sysfs_update_group() would let us have our cake and eat
-> > > > > it, too?  Maybe we could define these files as static attributes and
-> > > > > call sysfs_update_group() when the PF driver binds or unbinds?
-> > > > >
-> > > > > Makes me wonder if the device core could call sysfs_update_group()
-> > > > > when binding/unbinding drivers.  But there are only a few existing
-> > > > > callers, and it looks like none of them are for the bind/unbind
-> > > > > situation, so maybe that would be pointless.
-> > > >
-> > > > Also it will be not an easy task to do it in driver/core. Our
-> > > > attributes need to be visible if driver is bound -> we will call to
-> > > > sysfs_update_group() after ->bind() callback. It means that in
-> > > > uwind, we will call to sysfs_update_group() before ->unbind() and
-> > > > the driver will be still bound. So the check is is_supported() for
-> > > > driver exists/or not won't be possible.
-> > >
-> > > Poking around some more, I found .dev_groups, which might be
-> > > applicable?  The test patch below applies to v5.11 and makes the "bh"
-> > > file visible in devices bound to the uhci_hcd driver if the function
-> > > number is odd.
-> >
-> > This solution can be applicable for generic drivers where we can afford
-> > to have custom sysfs files for this driver. In our case, we are talking
-> > about hardware device driver. Both RDMA and netdev are against allowing
-> > for such drivers to create their own sysfs. It will be real nightmare to
-> > have different names/layout/output for the same functionality.
-> >
-> > This .dev_groups moves responsibility over sysfs to the drivers and it
-> > is no-go for us.
+On Thu, Feb 18, 2021 at 3:22 PM Timo Rothenpieler <timo@rothenpieler.org> wrote:
 >
-> But it _is_ the driver's responsibility for sysfs files, right?
-
-It depends on how you declare "responsibility". Direct creating/deletion of
-sysfs files is prohibited in netdev and RDMA subsystems. We want to provide
-to our users and stack uniformed way of interacting with the system.
-
-It is super painful to manage large fleet of NICs and/or HCAs if every device
-driver provides something different for the same feature.
-
+> On 18.02.2021 19:30, Olga Kornievskaia wrote:
+> > Thank you for getting tracepoints from a busy server but can you get
+> > more? As suspected, the server is having issues sending the callback.
+> > I'm not sure why. Any chance to turn on the server's sunrpc
+> > tracespoints, probably both sunrpc and rdmas tracepoints, I wonder if
+> > we can any more info about why it's failing?
 >
-> If not, what exactly are you trying to do here, as I am very confused.
-
-https://lore.kernel.org/linux-rdma/20210216203726.GH4247@nvidia.com/T/#m899d883c8a10d95959ac0cd2833762f93729b8ef
-Please see more details below.
-
+> I isolated out two of the machines on that cluster now, one acting as
+> NFS server from an ext4 mount, the other is the same client as before.
+> That way I managed to capture a trace and ibdump of an entire cycle:
+> mount + successful copy + 5 minutes later a copy that got stuck
 >
-> > Another problem with this approach is addition of VFs, not only every
-> > driver will start to manage its own sysfs, but it will need to iterate
-> > over PCI bus or internal lists to find VFs, because we want to create
-> > .set_msix_vec on VFs after PF is bound.
+> Next to no noise happened during those traces, you can find them attached.
 >
-> What?  I don't understand at all.
+> Another observation made due to this: unmount and re-mounting the NFS
+> share also gets it back into working condition for a while, no reboot
+> necessary.
+> During this trace, I got "lucky", and after just 5 minutes of waiting,
+> it got stuck.
 >
-> > So instead of one, controlled place, we will find ourselves with many
-> > genius implementations of the same thing in the drivers.
->
-> Same _what_ thing?
+> Before that, I had a run of mount + trying to copy every 5 minutes where
+> it ran for 45 minutes without getting stuck. At which point I decided to
+> remount once more.
 
-This thread is part of conversation with Bjorn where he is looking for a
-way to avoid creation of sysfs files in the PCI/core.
-https://lore.kernel.org/linux-rdma/20210216203726.GH4247@nvidia.com/T/#madc000cf04b5246b450f7183a1d80abdf408a949
+Timo, thank you for gathering the debug info.
 
-https://lore.kernel.org/linux-rdma/20210216203726.GH4247@nvidia.com/T/#Z2e.:..:20210209133445.700225-2-leon::40kernel.org:0drivers:pci:iov.c
+Chuck, I need your help. Why would the server lose a callback channel?
 
->
-> > Bjorn, we really do standard enable/disable flow with out overlay thing.
->
-> Ok, can you step back and try to explain what problem you are trying to
-> solve first, before getting bogged down in odd details?  I find it
-> highly unlikely that this is something "unique", but I could be wrong as
-> I do not understand what you are wanting to do here at all.
+           <...>-1461944 [001] 2076465.200151: rpc_request:
+task:57752@6 nfs4_cbv1 CB_OFFLOAD (async)
+           <...>-1461944 [001] 2076465.200151: rpc_task_run_action:
+task:57752@6 flags=ASYNC|DYNAMIC|SOFT|NOCONNECT
+runstate=RUNNING|ACTIVE status=0 action=call_reserve
+           <...>-1461944 [001] 2076465.200154: xprt_reserve:
+task:57752@6 xid=0x00a0aaf9
+           <...>-1461944 [001] 2076465.200155: rpc_task_run_action:
+task:57752@6 flags=ASYNC|DYNAMIC|SOFT|NOCONNECT
+runstate=RUNNING|ACTIVE status=0 action=call_reserveresult
+           <...>-1461944 [001] 2076465.200156: rpc_task_run_action:
+task:57752@6 flags=ASYNC|DYNAMIC|SOFT|NOCONNECT
+runstate=RUNNING|ACTIVE status=0 action=call_refresh
+           <...>-1461944 [001] 2076465.200163: rpc_task_run_action:
+task:57752@6 flags=ASYNC|DYNAMIC|SOFT|NOCONNECT
+runstate=RUNNING|ACTIVE status=0 action=call_refreshresult
+           <...>-1461944 [001] 2076465.200163: rpc_task_run_action:
+task:57752@6 flags=ASYNC|DYNAMIC|SOFT|NOCONNECT
+runstate=RUNNING|ACTIVE status=0 action=call_allocate
+           <...>-1461944 [001] 2076465.200168: rpc_buf_alloc:
+task:57752@6 callsize=548 recvsize=104 status=0
+           <...>-1461944 [001] 2076465.200168: rpc_task_run_action:
+task:57752@6 flags=ASYNC|DYNAMIC|SOFT|NOCONNECT
+runstate=RUNNING|ACTIVE status=0 action=call_encode
+           <...>-1461944 [001] 2076465.200173: rpc_task_run_action:
+task:57752@6 flags=ASYNC|DYNAMIC|SOFT|NOCONNECT
+runstate=RUNNING|ACTIVE|NEED_XMIT|NEED_RECV status=0
+action=call_connect
+           <...>-1461944 [001] 2076465.200174: rpc_call_rpcerror:
+task:57752@6 tk_status=-107 rpc_status=-107
+           <...>-1461944 [001] 2076465.200174: rpc_task_run_action:
+task:57752@6 flags=ASYNC|DYNAMIC|SOFT|NOCONNECT
+runstate=RUNNING|ACTIVE|NEED_XMIT|NEED_RECV status=-107
+action=rpc_exit_task
 
-I don't know if you are familiar with SR-IOV concepts, if yes, just skip
-the following paragraph.
-
-SR-IOV capable devices have two types of their hardware functions which visible
-as PCI devices: physical functions (PF) and virtual functions (VF). Both types
-have PCI BDF and driver which probes them during initialization. The PF has extra
-properties and it is the one who creates (spawns) new VFs (everything according to
-he PCI-SIG).
-
-This series adds new sysfs files to the VFs which are not bound yet (without driver attached)
-while the PF driver is loaded. The change to VFs is needed to be done before their driver is
-loaded because MSI-X table vector size (the property which we are changing) is used very early
-in the initialization sequence.
-https://lore.kernel.org/linux-rdma/20210216203726.GH4247@nvidia.com/T/#m899d883c8a10d95959ac0cd2833762f93729b8ef
-
-We have two different flows for supported devices:
-1. PF starts and initiates VFs.
-2. PF starts and connects to already existing VFs.
-
-So there is nothing "unique" here, as long as this logic is handled by the PCI/core.
-
-Thanks
-
->
-> thanks,
->
-> greg k-h
+It's reporting ENOTCON. I'm not really sure if this is related to copy
+offload but more perhaps doing callbacks over RDMA/IB.
