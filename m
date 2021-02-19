@@ -2,105 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9857E31F6EF
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Feb 2021 11:00:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF6431F71D
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Feb 2021 11:13:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbhBSJ7F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Feb 2021 04:59:05 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:56082 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhBSJ7E (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Feb 2021 04:59:04 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11J9tbCb166173;
-        Fri, 19 Feb 2021 09:58:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=5++COl6nJt2YEvWjOmUxUrRFnGxsjCC/bSCzREpjT6A=;
- b=byHF5qr9i4c//3CdsRIKUBrKdO/NTSKmUtNrqe6gvlFYJAqT7hZWx9nKBXka4TotVqxX
- MoBB5G1PD4w20yjmvqdAB9EP99PA14L4t38NTJvW+DcRdeZWJOQDblxwtoNTSGjdHk1s
- 15ms+/zJTORz80LdooArQ05USbpChQXe+1YLgnWjaFh3+sXZd0xRL68+H/6/AcXzMf5h
- t2x2FT02+pNEoaf1on4BF5EoVDzSPgb4NTp7VTa0qMtrhUwognifrewLumURf7qZYZQp
- g0vkN389fNFscDyyNBCufyDUnWdUeIGILgVxPEOmPbRpVFHS7sKhN0sk7dDHZxSkd33P IQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 36p66r8xtg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 09:58:12 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11J9oVJa034436;
-        Fri, 19 Feb 2021 09:58:10 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 36prbry7td-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 09:58:10 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11J9w3Zm005609;
-        Fri, 19 Feb 2021 09:58:03 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 19 Feb 2021 09:58:02 +0000
-Date:   Fri, 19 Feb 2021 12:57:52 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Saeed Mahameed <saeedm@nvidia.com>, Aya Levin <ayal@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Ariel Levkovich <lariel@mellanox.com>,
-        "Pavel Machek (CIP)" <pavel@denx.de>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH mellanox-tree] net/mlx5: prevent an integer underflow in
- mlx5_perout_configure()
-Message-ID: <YC+LoAcvcQSWLLKX@mwanda>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
- phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102190076
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
- impostorscore=0 priorityscore=1501 clxscore=1011 spamscore=0 mlxscore=0
- phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102190076
+        id S229546AbhBSKKu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Feb 2021 05:10:50 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:54702 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229527AbhBSKKr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 19 Feb 2021 05:10:47 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R551e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UOxmG6p_1613729399;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UOxmG6p_1613729399)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 19 Feb 2021 18:10:03 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     mike.marciniszyn@cornelisnetworks.com
+Cc:     dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] RDMA/hfi1: Remove unnecessary conversion to bool
+Date:   Fri, 19 Feb 2021 18:09:57 +0800
+Message-Id: <1613729397-90467-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The value of "sec" comes from the user.  Negative values will lead to
-shift wrapping inside the perout_conf_real_time() function and triggger
-a UBSan warning.
+Fix the following coccicheck warnings:
 
-Add a check and return -EINVAL to prevent that from happening.
+./drivers/infiniband/hw/hfi1/tid_rdma.c:1111:36-41: WARNING: conversion
+to bool not needed here.
 
-Fixes: 432119de33d9 ("net/mlx5: Add cyc2time HW translation mode support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
-Saeed, I think this goes through your git tree and you will send a pull
-request to the networking?
-
-From static analysis.  Not tested.
-
- drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c | 2 +-
+ drivers/infiniband/hw/hfi1/tid_rdma.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-index b0e129d0f6d8..286824ca62b5 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-@@ -516,7 +516,7 @@ static int mlx5_perout_configure(struct ptp_clock_info *ptp,
- 		nsec = rq->perout.start.nsec;
- 		sec = rq->perout.start.sec;
+diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c b/drivers/infiniband/hw/hfi1/tid_rdma.c
+index 92aa2a9..4da6b6a 100644
+--- a/drivers/infiniband/hw/hfi1/tid_rdma.c
++++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
+@@ -1108,7 +1108,7 @@ static u32 kern_find_pages(struct tid_rdma_flow *flow,
+ 	}
  
--		if (rt_mode && sec > U32_MAX)
-+		if (rt_mode && (sec < 0 || sec > U32_MAX))
- 			return -EINVAL;
+ 	flow->length = flow->req->seg_len - length;
+-	*last = req->isge == ss->num_sge ? false : true;
++	*last = req->isge == !ss->num_sge;
+ 	return i;
+ }
  
- 		time_stamp = rt_mode ? perout_conf_real_time(sec, nsec) :
 -- 
-2.30.0
+1.8.3.1
 
