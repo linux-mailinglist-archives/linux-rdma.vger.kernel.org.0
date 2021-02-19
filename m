@@ -2,194 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54FF931F5C3
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Feb 2021 09:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9857E31F6EF
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Feb 2021 11:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbhBSIVF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Feb 2021 03:21:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229481AbhBSIVF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 19 Feb 2021 03:21:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B95DB64E28;
-        Fri, 19 Feb 2021 08:20:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613722821;
-        bh=xo2VybJ2QTQwD3i2xibyc338CyibLneXq41O43TubqY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c7wTFhvKOl+H8DDZQ2q3KwB7XSbepNgDPUdgL28TKdJ5aetTSbNWAafPLyXlXjTfT
-         hI92aou6PnVxyrgPLv84tGoxJUob5psYB/Bd0PaeIm0+sCruXX4jlFLTuc/7QILONR
-         1NBwc6bnfjMwIT02rhHbw36BBGJJOsm3wH8hzDRM=
-Date:   Fri, 19 Feb 2021 09:20:18 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Subject: Re: [PATCH mlx5-next v6 1/4] PCI: Add sysfs callback to allow MSI-X
- table size change of SR-IOV VFs
-Message-ID: <YC90wkwk/CdgcYY6@kroah.com>
-References: <YC4+V6W7s7ytwiC6@unreal>
- <20210218223950.GA1004646@bjorn-Precision-5520>
- <YC9uLDAQJK9KgxbB@unreal>
+        id S229546AbhBSJ7F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Feb 2021 04:59:05 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:56082 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhBSJ7E (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Feb 2021 04:59:04 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11J9tbCb166173;
+        Fri, 19 Feb 2021 09:58:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=5++COl6nJt2YEvWjOmUxUrRFnGxsjCC/bSCzREpjT6A=;
+ b=byHF5qr9i4c//3CdsRIKUBrKdO/NTSKmUtNrqe6gvlFYJAqT7hZWx9nKBXka4TotVqxX
+ MoBB5G1PD4w20yjmvqdAB9EP99PA14L4t38NTJvW+DcRdeZWJOQDblxwtoNTSGjdHk1s
+ 15ms+/zJTORz80LdooArQ05USbpChQXe+1YLgnWjaFh3+sXZd0xRL68+H/6/AcXzMf5h
+ t2x2FT02+pNEoaf1on4BF5EoVDzSPgb4NTp7VTa0qMtrhUwognifrewLumURf7qZYZQp
+ g0vkN389fNFscDyyNBCufyDUnWdUeIGILgVxPEOmPbRpVFHS7sKhN0sk7dDHZxSkd33P IQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 36p66r8xtg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 09:58:12 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11J9oVJa034436;
+        Fri, 19 Feb 2021 09:58:10 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 36prbry7td-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 09:58:10 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11J9w3Zm005609;
+        Fri, 19 Feb 2021 09:58:03 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 19 Feb 2021 09:58:02 +0000
+Date:   Fri, 19 Feb 2021 12:57:52 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Saeed Mahameed <saeedm@nvidia.com>, Aya Levin <ayal@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        Ariel Levkovich <lariel@mellanox.com>,
+        "Pavel Machek (CIP)" <pavel@denx.de>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH mellanox-tree] net/mlx5: prevent an integer underflow in
+ mlx5_perout_configure()
+Message-ID: <YC+LoAcvcQSWLLKX@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YC9uLDAQJK9KgxbB@unreal>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102190076
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 clxscore=1011 spamscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102190076
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 09:52:12AM +0200, Leon Romanovsky wrote:
-> On Thu, Feb 18, 2021 at 04:39:50PM -0600, Bjorn Helgaas wrote:
-> > On Thu, Feb 18, 2021 at 12:15:51PM +0200, Leon Romanovsky wrote:
-> > > On Wed, Feb 17, 2021 at 12:02:39PM -0600, Bjorn Helgaas wrote:
-> > > > [+cc Greg in case he wants to chime in on the sysfs discussion.
-> > > > TL;DR: we're trying to add/remove sysfs files when a PCI driver that
-> > > > supports certain callbacks binds or unbinds; series at
-> > > > https://lore.kernel.org/r/20210209133445.700225-1-leon@kernel.org]
-> > > >
-> > > > On Tue, Feb 16, 2021 at 09:58:25PM +0200, Leon Romanovsky wrote:
-> > > > > On Tue, Feb 16, 2021 at 10:12:12AM -0600, Bjorn Helgaas wrote:
-> > > > > > On Tue, Feb 16, 2021 at 09:33:44AM +0200, Leon Romanovsky wrote:
-> > > > > > > On Mon, Feb 15, 2021 at 03:01:06PM -0600, Bjorn Helgaas wrote:
-> > > > > > > > On Tue, Feb 09, 2021 at 03:34:42PM +0200, Leon Romanovsky wrote:
-> > > > > > > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > >
-> > > > > > > > > +int pci_enable_vf_overlay(struct pci_dev *dev)
-> > > > > > > > > +{
-> > > > > > > > > +	struct pci_dev *virtfn;
-> > > > > > > > > +	int id, ret;
-> > > > > > > > > +
-> > > > > > > > > +	if (!dev->is_physfn || !dev->sriov->num_VFs)
-> > > > > > > > > +		return 0;
-> > > > > > > > > +
-> > > > > > > > > +	ret = sysfs_create_files(&dev->dev.kobj, sriov_pf_dev_attrs);
-> > > > > > > >
-> > > > > > > > But I still don't like the fact that we're calling
-> > > > > > > > sysfs_create_files() and sysfs_remove_files() directly.  It makes
-> > > > > > > > complication and opportunities for errors.
-> > > > > > >
-> > > > > > > It is not different from any other code that we have in the kernel.
-> > > > > >
-> > > > > > It *is* different.  There is a general rule that drivers should not
-> > > > > > call sysfs_* [1].  The PCI core is arguably not a "driver," but it is
-> > > > > > still true that callers of sysfs_create_files() are very special, and
-> > > > > > I'd prefer not to add another one.
-> > > > >
-> > > > > PCI for me is a bus, and bus is the right place to manage sysfs.
-> > > > > But it doesn't matter, we understand each other positions.
-> > > > >
-> > > > > > > Let's be concrete, can you point to the errors in this code that I
-> > > > > > > should fix?
-> > > > > >
-> > > > > > I'm not saying there are current errors; I'm saying the additional
-> > > > > > code makes errors possible in future code.  For example, we hope that
-> > > > > > other drivers can use these sysfs interfaces, and it's possible they
-> > > > > > may not call pci_enable_vf_overlay() or pci_disable_vfs_overlay()
-> > > > > > correctly.
-> > > > >
-> > > > > If not, we will fix, we just need is to ensure that sysfs name won't
-> > > > > change, everything else is easy to change.
-> > > > >
-> > > > > > Or there may be races in device addition/removal.  We have current
-> > > > > > issues in this area, e.g., [2], and they're fairly subtle.  I'm not
-> > > > > > saying your patches have these issues; only that extra code makes more
-> > > > > > chances for mistakes and it's more work to validate it.
-> > > > > >
-> > > > > > > > I don't see the advantage of creating these files only when
-> > > > > > > > the PF driver supports this.  The management tools have to
-> > > > > > > > deal with sriov_vf_total_msix == 0 and sriov_vf_msix_count ==
-> > > > > > > > 0 anyway.  Having the sysfs files not be present at all might
-> > > > > > > > be slightly prettier to the person running "ls", but I'm not
-> > > > > > > > sure the code complication is worth that.
-> > > > > > >
-> > > > > > > It is more than "ls", right now sriov_numvfs is visible without
-> > > > > > > relation to the driver, even if driver doesn't implement
-> > > > > > > ".sriov_configure", which IMHO bad. We didn't want to repeat.
-> > > > > > >
-> > > > > > > Right now, we have many devices that supports SR-IOV, but small
-> > > > > > > amount of them are capable to rewrite their VF MSI-X table siz.
-> > > > > > > We don't want "to punish" and clatter their sysfs.
-> > > > > >
-> > > > > > I agree, it's clutter, but at least it's just cosmetic clutter
-> > > > > > (but I'm willing to hear discussion about why it's more than
-> > > > > > cosmetic; see below).
-> > > > >
-> > > > > It is more than cosmetic and IMHO it is related to the driver role.
-> > > > > This feature is advertised, managed and configured by PF. It is very
-> > > > > natural request that the PF will view/hide those sysfs files.
-> > > >
-> > > > Agreed, it's natural if the PF driver adds/removes those files.  But I
-> > > > don't think it's *essential*, and they *could* be static because of
-> > > > this:
-> > > >
-> > > > > > From the management software point of view, I don't think it matters.
-> > > > > > That software already needs to deal with files that don't exist (on
-> > > > > > old kernels) and files that contain zero (feature not supported or no
-> > > > > > vectors are available).
-> > > >
-> > > > I wonder if sysfs_update_group() would let us have our cake and eat
-> > > > it, too?  Maybe we could define these files as static attributes and
-> > > > call sysfs_update_group() when the PF driver binds or unbinds?
-> > > >
-> > > > Makes me wonder if the device core could call sysfs_update_group()
-> > > > when binding/unbinding drivers.  But there are only a few existing
-> > > > callers, and it looks like none of them are for the bind/unbind
-> > > > situation, so maybe that would be pointless.
-> > >
-> > > Also it will be not an easy task to do it in driver/core. Our
-> > > attributes need to be visible if driver is bound -> we will call to
-> > > sysfs_update_group() after ->bind() callback. It means that in
-> > > uwind, we will call to sysfs_update_group() before ->unbind() and
-> > > the driver will be still bound. So the check is is_supported() for
-> > > driver exists/or not won't be possible.
-> >
-> > Poking around some more, I found .dev_groups, which might be
-> > applicable?  The test patch below applies to v5.11 and makes the "bh"
-> > file visible in devices bound to the uhci_hcd driver if the function
-> > number is odd.
-> 
-> This solution can be applicable for generic drivers where we can afford
-> to have custom sysfs files for this driver. In our case, we are talking
-> about hardware device driver. Both RDMA and netdev are against allowing
-> for such drivers to create their own sysfs. It will be real nightmare to
-> have different names/layout/output for the same functionality.
-> 
-> This .dev_groups moves responsibility over sysfs to the drivers and it
-> is no-go for us.
+The value of "sec" comes from the user.  Negative values will lead to
+shift wrapping inside the perout_conf_real_time() function and triggger
+a UBSan warning.
 
-But it _is_ the driver's responsibility for sysfs files, right?
+Add a check and return -EINVAL to prevent that from happening.
 
-If not, what exactly are you trying to do here, as I am very confused.
+Fixes: 432119de33d9 ("net/mlx5: Add cyc2time HW translation mode support")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+Saeed, I think this goes through your git tree and you will send a pull
+request to the networking?
 
-> Another problem with this approach is addition of VFs, not only every
-> driver will start to manage its own sysfs, but it will need to iterate
-> over PCI bus or internal lists to find VFs, because we want to create
-> .set_msix_vec on VFs after PF is bound.
+From static analysis.  Not tested.
 
-What?  I don't understand at all.
+ drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> So instead of one, controlled place, we will find ourselves with many
-> genius implementations of the same thing in the drivers.
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+index b0e129d0f6d8..286824ca62b5 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+@@ -516,7 +516,7 @@ static int mlx5_perout_configure(struct ptp_clock_info *ptp,
+ 		nsec = rq->perout.start.nsec;
+ 		sec = rq->perout.start.sec;
+ 
+-		if (rt_mode && sec > U32_MAX)
++		if (rt_mode && (sec < 0 || sec > U32_MAX))
+ 			return -EINVAL;
+ 
+ 		time_stamp = rt_mode ? perout_conf_real_time(sec, nsec) :
+-- 
+2.30.0
 
-Same _what_ thing?
-
-> Bjorn, we really do standard enable/disable flow with out overlay thing.
-
-Ok, can you step back and try to explain what problem you are trying to
-solve first, before getting bogged down in odd details?  I find it
-highly unlikely that this is something "unique", but I could be wrong as
-I do not understand what you are wanting to do here at all.
-
-thanks,
-
-greg k-h
