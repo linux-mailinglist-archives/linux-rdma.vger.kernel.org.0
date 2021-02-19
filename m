@@ -2,216 +2,242 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A27A31FB6F
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Feb 2021 15:55:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 007A731FD86
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Feb 2021 17:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbhBSOzg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Feb 2021 09:55:36 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:53566 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhBSOzf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Feb 2021 09:55:35 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JEsiFx050634;
-        Fri, 19 Feb 2021 14:54:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=8XHacea5/eucD1IcGTN/l2kPhomAYv9cfRFki87qpjY=;
- b=Vij1pOT/OYcpIEoZb5VkiuoLj+fd1UsvUKOBZKSefwbkjwK7SbeCYlCCiOztlzidyDGI
- 0DvkMPS5iAy8ye5QCxTFwrxzcyBB3kGdwN//XQv9dGBghYj3bIsQlPZRRQQxieRUVEkN
- JlytpuXbeKb1jTwxQXsEW5bEaoLEo4abee7SHASWn1Yt97Hp9g1chHaX11fDGYoHPpqs
- kzKLtrMrBnIDCP12P07GPUwZm/5mblHr4yYkmsxwVH2AciWaIOTiIz41FfTL2UJO6Ch8
- z8ahlLdpXjTeLMArna9rYhkeKLG1U95s+O2unDZY/t699oUGhifumOPxZ8Xv/+/J/1yw pQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 36p7dnsnp2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 14:54:46 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JEnnKQ186660;
-        Fri, 19 Feb 2021 14:54:45 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2048.outbound.protection.outlook.com [104.47.66.48])
-        by userp3020.oracle.com with ESMTP id 36prhvquvk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 14:54:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NXGTbZtpIY6FgaLxZhGmEKO2sKo7L1ah8dCOkuoHyeBOUabrO6aRgi48hYSOS9UmOQ76W2a5/Il3aCbrKebM5BzS9VdUQjznmPVVLnZxpa4Io55MANA15c+l9bldC7x7nzniAiJS7PbhCboxb0I5l1cTX/F3C06RY8UficLPC7mazmnCcR4P5Tgw7pFDYW1WyQStVSvf5xgiuA4XTGlyY1s57Jto+aPlrR5a0IgHiMIv6+xJeAe88aGQPQuPacBpnhoovcfAc63cHhO3b4sYuAbQaepYEgsAzcroJxT6VUzEsUXM9ubjeCUMLysin7rpbJZMvaXX/xWC6RnbkMIfcA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8XHacea5/eucD1IcGTN/l2kPhomAYv9cfRFki87qpjY=;
- b=aTrGeVZlaf/UcNFa3PPgnD42nS9qJGKe+TXlgTLL/iqoDqK6PPT0viGJqZdRKv5viuxcl7HPV8ftYKOYR79SC+79sqgKPnyvgQLOl8fgZ9GdeXexyuRuP8EEaPSBH2VcGbfr3CnDBOVh7c8xO5RD7eCBtj4LiGdR4tROqz5a/pEfuHsUjOkK+86Oh0JLMN/8xVgKpQwfxeT5BuC2NKo7CV+Se4TNExerrAhlGgfcv2rQjS+zHs7MEh1+Bpq+92NqZaXgTqPv8gS3x2gG4wvxmqH6jmIUg5bUI7mOtJdKzyRJDISLhz039s5hD/UvUcWIEViHehaVUnM1KSN6g4CCRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8XHacea5/eucD1IcGTN/l2kPhomAYv9cfRFki87qpjY=;
- b=FYLzN+afyW/lfeUmH4hetFUgr9QgyV2uXT8pGex6CFKGOz1XiVVGWot73CJRS5LE4RoeMJuxhlRFv0xLh/032uNGjPmiKxmFkw1qyvze0Q92xsracqI4RYw0x6ZVT+7Y2m1klQDnwvtRpRCxa08hFY1aG0O7vOl6AjYN5zU7Y5o=
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24)
- by BY5PR10MB4162.namprd10.prod.outlook.com (2603:10b6:a03:20c::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Fri, 19 Feb
- 2021 14:54:44 +0000
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::6da8:6d28:b83:702b]) by SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::6da8:6d28:b83:702b%4]) with mapi id 15.20.3846.043; Fri, 19 Feb 2021
- 14:54:44 +0000
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-CC:     Tom Talpey <tom@talpey.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Benjamin Coddington <bcodding@redhat.com>
-Subject: Re: directing soft iWARP traffic through a secure tunnel
-Thread-Topic: directing soft iWARP traffic through a secure tunnel
-Thread-Index: AQHXBs8oc9gabRL9o0m1pbwsh/mUdg==
-Date:   Fri, 19 Feb 2021 14:54:43 +0000
-Message-ID: <287F954B-04DC-4EEA-B810-2BCFF9F8C15D@oracle.com>
-References: <bf7a73c3-ba50-a836-8e01-87c4183f003e@talpey.com>
- <20210216180946.GV4718@ziepe.ca>
- <61EFD7EA-FA16-4AA1-B92F-0B0D4CC697AB@oracle.com>
- <OFA2194C43.CE483827-ON0025867E.004018CA-0025867E.004470FA@notes.na.collabserv.com>
- <OF3B04E71D.E72E1A4D-ON00258681.004164EA-00258681.00480051@notes.na.collabserv.com>
- <20210219135728.GD2643399@ziepe.ca>
- <OF54DF919C.5715D846-ON00258681.004F4160-00258681.00500D35@notes.na.collabserv.com>
-In-Reply-To: <OF54DF919C.5715D846-ON00258681.004F4160-00258681.00500D35@notes.na.collabserv.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: zurich.ibm.com; dkim=none (message not signed)
- header.d=none;zurich.ibm.com; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [68.61.232.219]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 57ffb693-44a4-45ea-599b-08d8d4e64b24
-x-ms-traffictypediagnostic: BY5PR10MB4162:
-x-microsoft-antispam-prvs: <BY5PR10MB4162E96838FBE8DCDFA9166D93849@BY5PR10MB4162.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: l3PzWQRT3ESKpppXoZmAnTQGus8MQ12QMwtJr0PZjguIcV01zMQ6n2rlAShyLr2WgRiPM7OcgUmb/Bqug74QQZVk/BZduApUA+ZBZiCblwU0w3mXAIz3Yot/tWcbwsGg7UFdnnEs20zE/45epOhuQdxoeP+VLDzsloywCBLImI6aD5hNWvuFrD84WvKpBkAuBVuuuu+Nj8DME4EB6NbT1PpuzvszG2A1aj3j13mI5HB1fm5qxQCSH5ApgQFdCvu12FLF1lyjcAuFQuMf4iDZojXvp+Au+m1rsBOmRcwToB/Lxbrv41LtRzYRShf3N/1sg3rSkpzHE2xBWFUn0Im95ePLVH5xJ/4o9UepliYB3aPOccB7rLA1vSPaYEXgYnjthuDMJok92JiyFohYpZtAR/wpxQgnWofI4MwKXnkAEhSZ1IdzweVNi3gkl7o9V0Npu9r8d5aEgJem4Gj/Fv0thrV+6SBJKCG+VEUUBbz25k53SIi4eJu/0HHArCsoYcvZhsH/r7k+sdkAloyLA7LhdGfugFQDUkpBLIdJSUQoS6lz0asZaz/6fwceOBIykX0pTvsmkXmZ00VWNbB6KcgTAw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4688.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(346002)(396003)(376002)(39860400002)(66446008)(8936002)(33656002)(66556008)(26005)(44832011)(4326008)(478600001)(86362001)(6486002)(91956017)(2616005)(54906003)(6512007)(64756008)(36756003)(186003)(6506007)(66946007)(83380400001)(2906002)(8676002)(71200400001)(6916009)(66476007)(76116006)(5660300002)(316002)(53546011)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ViBzmjd5eDezHx8s3tI0AkC8TCxUxOM3IIowdFVxeGEAOenJKJ1Gp1cS0U9x?=
- =?us-ascii?Q?vbwkoN2ZVlad1hgdK0s1K8ZLPrVHjPnjKFDGdRm++jcK7YNegAxATJp20UzB?=
- =?us-ascii?Q?DWp+gI7kbih6hpYV4T5LgZlSAISdfo6+lAPLC2Cpmi/gdwN+Di3sofYd+do3?=
- =?us-ascii?Q?ivL1Z4OwkCXKNrWhhw6e5Vs8PqZpHLuNgBKdlch+5kBhE/qOKuitphjzU8Ec?=
- =?us-ascii?Q?hrl65T2//d/50vEfppz21+woEjDL5HlChhjOll+JNkNgwXH8+f6HJ5rfsSq4?=
- =?us-ascii?Q?cDFz50YoM/mhsanRzvkOMTT9Fbctxz/nQF+Kjrf/dyxnbb2D3mOY/7i4yUkI?=
- =?us-ascii?Q?Tk5ax1rrxBfvKtH6/HGKezjoNVN168TLLdlAhiTA4EDHCOlWZ24g+QB3yUQr?=
- =?us-ascii?Q?A0PB5RsqICgKYta/1fwy1o5hhRlwmJb/pf1Sb2Oi7RQOQuEilkBiPTkc3QSO?=
- =?us-ascii?Q?39hI18jW/fFkLBRaE5b/pzCtumsedqoRnBGP+pnUzBBhjf087o3nQu4dpzEH?=
- =?us-ascii?Q?HpkoD/yEHkVtG5426X5ylr3UvT2BcFfbSbBlf7dU2AOqc0AVBbfsFEzi9uD4?=
- =?us-ascii?Q?VRmJFZ8wLPMR2QE6nkpzEfNjJhIpcBDL2PKkkKyLnBv3TkzVSzX897R1773g?=
- =?us-ascii?Q?TdUF+Vom/tXukBtgAS2ZkWcMWEgKVd7zN1Py56ya3NA5IP1ff6mzyOk1fIY6?=
- =?us-ascii?Q?/ABtrwy+FxDko107sqow/Lb5AV5eBLAenIdaItVsqTWN29meB/OR7RFegoJz?=
- =?us-ascii?Q?EGIRKYoMiHpKcOyv4R0lX+Lsij4jR+xzSZ/f8r71izw/LRjGfsJeza7LkDOo?=
- =?us-ascii?Q?1ET3D2TkBYCMwG5hfffcRz514uKQmCzEv34GhUz9XJd8nizPn+jXdLrYfBGX?=
- =?us-ascii?Q?4WIUvjis/4IV9X4CqCsBtZ1XM45LRoveLpUXEwckqvT8dUdNhoehxyDXtkk1?=
- =?us-ascii?Q?Ri2QA4O7DX3XBI3XjUdYpiKqbdgu032xY1pbO7nnsX2eWsPdeCp5MDV5XVsy?=
- =?us-ascii?Q?sB2uqBWbsp3OU47FrEg5HfqPPjapVbEiZYpS1/u1z+olwhKr1vFoc8d1rcxF?=
- =?us-ascii?Q?Ga6um6iw1j8gHC9ZM1//q6BDDUNmguZdLmynUwMaPf7lsY/E/htdUYjmckw0?=
- =?us-ascii?Q?eC+7vtYaf31h65zXnc1BflEWRGwV8TW8f799QH/BT6etBElNWJt6siGMyca2?=
- =?us-ascii?Q?B5MCc8lBM7UsLjCno6Kygb+bsa0Hd7ojnAvWa6WErrnZzy2sRTsWCdzROz7I?=
- =?us-ascii?Q?Gza8M/lFhztnEHn8MeCzkC9TvE3+IyvT2bqRy1ZWwUloO01vCKdWgfqlpuwV?=
- =?us-ascii?Q?6Oo+FPM3AE5k3WVhIxksGyeZ?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B60475EF8E966B4AA28D60BBBEABAC7F@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S230113AbhBSQ7J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Feb 2021 11:59:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58140 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229555AbhBSQ7H (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 19 Feb 2021 11:59:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DF136024A;
+        Fri, 19 Feb 2021 16:58:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613753905;
+        bh=NMo5yhyTlIxLySt+nSwX0SRCkEKanmzR/cCYJOgr3iI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bNOPbzHSaM4/vVw3+4RymgErrpNZfj8y/7buzxo2BkSuoUfn1cxTW1zvwW6Jr5J8N
+         NdYj5KxrzgbVy53zttyqJDHLjUxkzTKya+unKCcFG70MVf35cjEqXyFuV9lgNUSRf8
+         d1xEEXqhTARJIYpzLMQlS6kKlhzVcBZ3CktHc/DqE3YrZCxMRlrc6ozfR/zg26W70Y
+         iX4UOo2let49EMToU1mHhFqkSTAPSRArVTUoCjQW1vKrkxB7UHOw2ZORTS2PfTUutZ
+         AdyNYjkjJxfVd6My+aSZiXhCAzjFtW8bAdnU4B139cO9iF2cppDQgUszMRPfdT04xq
+         L7VbwLFauDCaQ==
+Date:   Fri, 19 Feb 2021 18:58:20 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Subject: Re: [PATCH mlx5-next v6 1/4] PCI: Add sysfs callback to allow MSI-X
+ table size change of SR-IOV VFs
+Message-ID: <YC/uLNk2YMPMVL5c@unreal>
+References: <YC4+V6W7s7ytwiC6@unreal>
+ <20210218223950.GA1004646@bjorn-Precision-5520>
+ <YC9uLDAQJK9KgxbB@unreal>
+ <YC90wkwk/CdgcYY6@kroah.com>
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4688.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 57ffb693-44a4-45ea-599b-08d8d4e64b24
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Feb 2021 14:54:43.9860
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uJ4Yke9o9TsNN+kgV/yEFq1Bny08ZliRv6WSO4aBV5O29EPZpj3l0/CI6d3okOkHqR28Qs/2krljIJ8vU9RH6w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4162
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
- bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102190120
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 adultscore=0 clxscore=1015 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102190121
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YC90wkwk/CdgcYY6@kroah.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Fri, Feb 19, 2021 at 09:20:18AM +0100, Greg Kroah-Hartman wrote:
+> On Fri, Feb 19, 2021 at 09:52:12AM +0200, Leon Romanovsky wrote:
+> > On Thu, Feb 18, 2021 at 04:39:50PM -0600, Bjorn Helgaas wrote:
+> > > On Thu, Feb 18, 2021 at 12:15:51PM +0200, Leon Romanovsky wrote:
+> > > > On Wed, Feb 17, 2021 at 12:02:39PM -0600, Bjorn Helgaas wrote:
+> > > > > [+cc Greg in case he wants to chime in on the sysfs discussion.
+> > > > > TL;DR: we're trying to add/remove sysfs files when a PCI driver that
+> > > > > supports certain callbacks binds or unbinds; series at
+> > > > > https://lore.kernel.org/r/20210209133445.700225-1-leon@kernel.org]
+> > > > >
+> > > > > On Tue, Feb 16, 2021 at 09:58:25PM +0200, Leon Romanovsky wrote:
+> > > > > > On Tue, Feb 16, 2021 at 10:12:12AM -0600, Bjorn Helgaas wrote:
+> > > > > > > On Tue, Feb 16, 2021 at 09:33:44AM +0200, Leon Romanovsky wrote:
+> > > > > > > > On Mon, Feb 15, 2021 at 03:01:06PM -0600, Bjorn Helgaas wrote:
+> > > > > > > > > On Tue, Feb 09, 2021 at 03:34:42PM +0200, Leon Romanovsky wrote:
+> > > > > > > > > > From: Leon Romanovsky <leonro@nvidia.com>
+> > > > >
+> > > > > > > > > > +int pci_enable_vf_overlay(struct pci_dev *dev)
+> > > > > > > > > > +{
+> > > > > > > > > > +	struct pci_dev *virtfn;
+> > > > > > > > > > +	int id, ret;
+> > > > > > > > > > +
+> > > > > > > > > > +	if (!dev->is_physfn || !dev->sriov->num_VFs)
+> > > > > > > > > > +		return 0;
+> > > > > > > > > > +
+> > > > > > > > > > +	ret = sysfs_create_files(&dev->dev.kobj, sriov_pf_dev_attrs);
+> > > > > > > > >
+> > > > > > > > > But I still don't like the fact that we're calling
+> > > > > > > > > sysfs_create_files() and sysfs_remove_files() directly.  It makes
+> > > > > > > > > complication and opportunities for errors.
+> > > > > > > >
+> > > > > > > > It is not different from any other code that we have in the kernel.
+> > > > > > >
+> > > > > > > It *is* different.  There is a general rule that drivers should not
+> > > > > > > call sysfs_* [1].  The PCI core is arguably not a "driver," but it is
+> > > > > > > still true that callers of sysfs_create_files() are very special, and
+> > > > > > > I'd prefer not to add another one.
+> > > > > >
+> > > > > > PCI for me is a bus, and bus is the right place to manage sysfs.
+> > > > > > But it doesn't matter, we understand each other positions.
+> > > > > >
+> > > > > > > > Let's be concrete, can you point to the errors in this code that I
+> > > > > > > > should fix?
+> > > > > > >
+> > > > > > > I'm not saying there are current errors; I'm saying the additional
+> > > > > > > code makes errors possible in future code.  For example, we hope that
+> > > > > > > other drivers can use these sysfs interfaces, and it's possible they
+> > > > > > > may not call pci_enable_vf_overlay() or pci_disable_vfs_overlay()
+> > > > > > > correctly.
+> > > > > >
+> > > > > > If not, we will fix, we just need is to ensure that sysfs name won't
+> > > > > > change, everything else is easy to change.
+> > > > > >
+> > > > > > > Or there may be races in device addition/removal.  We have current
+> > > > > > > issues in this area, e.g., [2], and they're fairly subtle.  I'm not
+> > > > > > > saying your patches have these issues; only that extra code makes more
+> > > > > > > chances for mistakes and it's more work to validate it.
+> > > > > > >
+> > > > > > > > > I don't see the advantage of creating these files only when
+> > > > > > > > > the PF driver supports this.  The management tools have to
+> > > > > > > > > deal with sriov_vf_total_msix == 0 and sriov_vf_msix_count ==
+> > > > > > > > > 0 anyway.  Having the sysfs files not be present at all might
+> > > > > > > > > be slightly prettier to the person running "ls", but I'm not
+> > > > > > > > > sure the code complication is worth that.
+> > > > > > > >
+> > > > > > > > It is more than "ls", right now sriov_numvfs is visible without
+> > > > > > > > relation to the driver, even if driver doesn't implement
+> > > > > > > > ".sriov_configure", which IMHO bad. We didn't want to repeat.
+> > > > > > > >
+> > > > > > > > Right now, we have many devices that supports SR-IOV, but small
+> > > > > > > > amount of them are capable to rewrite their VF MSI-X table siz.
+> > > > > > > > We don't want "to punish" and clatter their sysfs.
+> > > > > > >
+> > > > > > > I agree, it's clutter, but at least it's just cosmetic clutter
+> > > > > > > (but I'm willing to hear discussion about why it's more than
+> > > > > > > cosmetic; see below).
+> > > > > >
+> > > > > > It is more than cosmetic and IMHO it is related to the driver role.
+> > > > > > This feature is advertised, managed and configured by PF. It is very
+> > > > > > natural request that the PF will view/hide those sysfs files.
+> > > > >
+> > > > > Agreed, it's natural if the PF driver adds/removes those files.  But I
+> > > > > don't think it's *essential*, and they *could* be static because of
+> > > > > this:
+> > > > >
+> > > > > > > From the management software point of view, I don't think it matters.
+> > > > > > > That software already needs to deal with files that don't exist (on
+> > > > > > > old kernels) and files that contain zero (feature not supported or no
+> > > > > > > vectors are available).
+> > > > >
+> > > > > I wonder if sysfs_update_group() would let us have our cake and eat
+> > > > > it, too?  Maybe we could define these files as static attributes and
+> > > > > call sysfs_update_group() when the PF driver binds or unbinds?
+> > > > >
+> > > > > Makes me wonder if the device core could call sysfs_update_group()
+> > > > > when binding/unbinding drivers.  But there are only a few existing
+> > > > > callers, and it looks like none of them are for the bind/unbind
+> > > > > situation, so maybe that would be pointless.
+> > > >
+> > > > Also it will be not an easy task to do it in driver/core. Our
+> > > > attributes need to be visible if driver is bound -> we will call to
+> > > > sysfs_update_group() after ->bind() callback. It means that in
+> > > > uwind, we will call to sysfs_update_group() before ->unbind() and
+> > > > the driver will be still bound. So the check is is_supported() for
+> > > > driver exists/or not won't be possible.
+> > >
+> > > Poking around some more, I found .dev_groups, which might be
+> > > applicable?  The test patch below applies to v5.11 and makes the "bh"
+> > > file visible in devices bound to the uhci_hcd driver if the function
+> > > number is odd.
+> >
+> > This solution can be applicable for generic drivers where we can afford
+> > to have custom sysfs files for this driver. In our case, we are talking
+> > about hardware device driver. Both RDMA and netdev are against allowing
+> > for such drivers to create their own sysfs. It will be real nightmare to
+> > have different names/layout/output for the same functionality.
+> >
+> > This .dev_groups moves responsibility over sysfs to the drivers and it
+> > is no-go for us.
+>
+> But it _is_ the driver's responsibility for sysfs files, right?
 
+It depends on how you declare "responsibility". Direct creating/deletion of
+sysfs files is prohibited in netdev and RDMA subsystems. We want to provide
+to our users and stack uniformed way of interacting with the system.
 
-> On Feb 19, 2021, at 9:34 AM, Bernard Metzler <BMT@zurich.ibm.com> wrote:
->=20
-> -----"Tom Talpey" <tom@talpey.com> wrote: -----
->=20
->> To: "Jason Gunthorpe" <jgg@ziepe.ca>, "Bernard Metzler"
->> <BMT@zurich.ibm.com>
->> From: "Tom Talpey" <tom@talpey.com>
->> Date: 02/19/2021 03:15PM
->> Cc: "Chuck Lever" <chuck.lever@oracle.com>, "linux-rdma"
->> <linux-rdma@vger.kernel.org>, "Benjamin Coddington"
->> <bcodding@redhat.com>
->> Subject: [EXTERNAL] Re: directing soft iWARP traffic through a secure
->> tunnel
->>=20
->> On 2/19/2021 8:57 AM, Jason Gunthorpe wrote:
->>> On Fri, Feb 19, 2021 at 01:06:26PM +0000, Bernard Metzler wrote:
->>>=20
->>>> Actually, all this GID and GUID and friends for iWARP
->>>> CM looks more like squeezing things into InfiniBand terms,
->>>> where we could just rely on plain ARP and IP
->>>> (ARP resolve interface, see if there is an RDMA device
->>>> bound to, done)... or do I miss something?
->>>=20
->>> I don't know how iWarp cM works very well, it would not be
->> surprising
->>> if the gid table code has gained general rocee behaviors that are
->> not
->>> applicable to iwarp modes.
->>=20
->> iWarp doesn't really need a CM, it is capable of peer-to-peer without
->> any need to assign connection and queuepair ID's. The CM
->> infrastructure
->> basically just implements a state machine to allow upper layers to
->> have
->> a consistent connection API.
->=20
-> Well hardware iWarp need someone to organize taking away ports
-> from kernel TCP which are bound to RNIC's.
->=20
->>=20
->> I'm with Bernard here, forcing iWarp to use CM is a fairly unnatural
->> act. Assigning a GID/GUID is unnecessary from a protocol perspective.
->>=20
->>=20
->>> With Steve gone I don't think there is really anyone left that even
->>> really knows how the iWarp stuff works??
->>>=20
->=20
-> Cleaning up the iWarp path of it might be a complex undertaking.
-> I don't think going down that path solves the issue soon enough
-> for NFS/RDMA folks.
+It is super painful to manage large fleet of NICs and/or HCAs if every device
+driver provides something different for the same feature.
 
-We have a temporary solution for the upcoming event. There will
-be more such events in the future.
+>
+> If not, what exactly are you trying to do here, as I am very confused.
 
+https://lore.kernel.org/linux-rdma/20210216203726.GH4247@nvidia.com/T/#m899d883c8a10d95959ac0cd2833762f93729b8ef
+Please see more details below.
 
-> But I will spend some time trying to wrap
-> my head around it...
->=20
-> Best,
-> Bernard.
+>
+> > Another problem with this approach is addition of VFs, not only every
+> > driver will start to manage its own sysfs, but it will need to iterate
+> > over PCI bus or internal lists to find VFs, because we want to create
+> > .set_msix_vec on VFs after PF is bound.
+>
+> What?  I don't understand at all.
+>
+> > So instead of one, controlled place, we will find ourselves with many
+> > genius implementations of the same thing in the drivers.
+>
+> Same _what_ thing?
 
---
-Chuck Lever
+This thread is part of conversation with Bjorn where he is looking for a
+way to avoid creation of sysfs files in the PCI/core.
+https://lore.kernel.org/linux-rdma/20210216203726.GH4247@nvidia.com/T/#madc000cf04b5246b450f7183a1d80abdf408a949
 
+https://lore.kernel.org/linux-rdma/20210216203726.GH4247@nvidia.com/T/#Z2e.:..:20210209133445.700225-2-leon::40kernel.org:0drivers:pci:iov.c
 
+>
+> > Bjorn, we really do standard enable/disable flow with out overlay thing.
+>
+> Ok, can you step back and try to explain what problem you are trying to
+> solve first, before getting bogged down in odd details?  I find it
+> highly unlikely that this is something "unique", but I could be wrong as
+> I do not understand what you are wanting to do here at all.
 
+I don't know if you are familiar with SR-IOV concepts, if yes, just skip
+the following paragraph.
+
+SR-IOV capable devices have two types of their hardware functions which visible
+as PCI devices: physical functions (PF) and virtual functions (VF). Both types
+have PCI BDF and driver which probes them during initialization. The PF has extra
+properties and it is the one who creates (spawns) new VFs (everything according to
+he PCI-SIG).
+
+This series adds new sysfs files to the VFs which are not bound yet (without driver attached)
+while the PF driver is loaded. The change to VFs is needed to be done before their driver is
+loaded because MSI-X table vector size (the property which we are changing) is used very early
+in the initialization sequence.
+https://lore.kernel.org/linux-rdma/20210216203726.GH4247@nvidia.com/T/#m899d883c8a10d95959ac0cd2833762f93729b8ef
+
+We have two different flows for supported devices:
+1. PF starts and initiates VFs.
+2. PF starts and connects to already existing VFs.
+
+So there is nothing "unique" here, as long as this logic is handled by the PCI/core.
+
+Thanks
+
+>
+> thanks,
+>
+> greg k-h
