@@ -2,72 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A91331FEF8
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Feb 2021 19:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D2B31FFED
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Feb 2021 21:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhBSStY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Feb 2021 13:49:24 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:59040 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbhBSStX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Feb 2021 13:49:23 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JImWu2121597;
-        Fri, 19 Feb 2021 18:48:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=pFcKqPfC6goWFJ4oOvMP03muArNy/baGgtPmE9nZxLQ=;
- b=VS+LVUFYnFNtSp54I4HaSHpiEiCpBFpG/pctRi0Seu9+kDuAnRbUvnYrSyOuVbtMY6ur
- Uj3fkJ1slQwuR0/sEJoNqEjiSsEenI1coIwJ2oWgyYUlIS8QnYTuJh/ruGeWejY4oO2R
- C8eqmzxIuS9P+4Y0xChTzzrmfSfJNbPlko+i8cPYSrhGwY7MmUvnTn99zRRh/otvxIrK
- 9vqlMYsUXuXwmm5UHhekyTxQdFMDhAamY7/2dLb0g5tjqLdfC/oukrh08f9jffUtF3SL
- f46SrBE4rTCUEVib4jxTyLc2cg1lA3zqQ3DlM0sIyg4/4yYZ5hIimOol5AXzh0fBl1Gg 7A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 36p49bjmm7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 18:48:32 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JIkVJb083535;
-        Fri, 19 Feb 2021 18:48:32 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2171.outbound.protection.outlook.com [104.47.58.171])
-        by aserp3030.oracle.com with ESMTP id 36prbsemkv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 18:48:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FYkPxJzrJNUy5H1frrKq5sypu8nOhvfyG2RsxLFCEE6qGlXdoq02EfRL9cqyAHiRnosKR80Xb/WFm7QW/DmgNh85THBDDMH1ZynouoJskRzSaKP7D5ySzhRH6FcQzuwPqWkwCTKam3n3Auz2kavnGULo5pLq/OFDtuLahaA64Y8YnlbyrnHD7r9qeKMzFLmqFDcNTIkQm5XDM0Qp/A05N0Em12ybykn7mV4sLimpkHw/8VnxDUQ6+oTQQaGdsLjTGlWm3Ofok75fZ8B44oFofTIkcyJ/HrUAC5EGUdBwucWVW6S0CTAzu+KA6/HnLUZYmcAlY2CtP0MRQbzsxpkGUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pFcKqPfC6goWFJ4oOvMP03muArNy/baGgtPmE9nZxLQ=;
- b=hpepO+6fXLwpvyfKj+jPX+JvPuS6Yolfn4Fcj2oq4y76Z3pdMCehuaYoDnj96NZRci7YhyJiCp0qYyPtmcphjjT+fg6LnXswOF3eYyT0bzROtfZR1j+1+YmIYHttjk1FltLdO6V8IckuVT6MMTmFf1HdfYAosYIpK6PNDvSpYubcnlf6e2TCbBCWqCuZuzr79ZDu4hhxMht/ZUwyY/lHqsgb4NmBC4IaUDXdizKsBSKJsNpE+CsvlZPuneaVm6tf4slOSU/ovVQgJ9BAT8OAuWsar+6GF+wmwR/T8Zxz70yoZHptp+4c2sMwx3FN4lOQZ+2bywV7HhO/POUyLbAIGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pFcKqPfC6goWFJ4oOvMP03muArNy/baGgtPmE9nZxLQ=;
- b=UGdk7n/0BMdn2oKQdUtQl/S+f40YMH68DOrrrqpWCdplEZ8Sz5TjQ6Rk8imBqmLsNkNdrdJv3LCdiJn+MGnvbP8L3q8kNz7wMMFrNhP1krIbVKNQo85kVKrnLsk1ntUWbpAR8ng2hpXNMisrlBIt03lP4XK95i8S+F8fx+6rQbQ=
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24)
- by BY5PR10MB4147.namprd10.prod.outlook.com (2603:10b6:a03:20e::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Fri, 19 Feb
- 2021 18:48:30 +0000
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::6da8:6d28:b83:702b]) by SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::6da8:6d28:b83:702b%4]) with mapi id 15.20.3846.043; Fri, 19 Feb 2021
- 18:48:30 +0000
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     Timo Rothenpieler <timo@rothenpieler.org>,
-        Olga Kornievskaia <aglo@umich.edu>
-CC:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+        id S229743AbhBSUjU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Feb 2021 15:39:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229765AbhBSUic (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Feb 2021 15:38:32 -0500
+Received: from btbn.de (btbn.de [IPv6:2a01:4f8:162:63a9::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FECC06178C;
+        Fri, 19 Feb 2021 12:37:52 -0800 (PST)
+Received: from [IPv6:2001:16b8:6400:f700:299c:fe0e:bef7:4ba] (200116b86400f700299cfe0ebef704ba.dip.versatel-1u1.de [IPv6:2001:16b8:6400:f700:299c:fe0e:bef7:4ba])
+        by btbn.de (Postfix) with ESMTPSA id 62A1C11C718;
+        Fri, 19 Feb 2021 21:37:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rothenpieler.org;
+        s=mail; t=1613767070;
+        bh=rd0YXxM+m/wjZBG7OrqvmWDszIVEDewKAevyoB9HnQk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=OsFbglVPRTVE8Hoo93W0vkYq5ZllJChhBdUWUJBuRIjSswnH1P9fwd8Ll7LUh2BaD
+         kr9OFiZh7rwTgW+IqW5yuaSMY09F0I4GZ1SJSuLsjPckawAf5ZPVJF3AzYpGPnKVRP
+         QJM/POv1PgIgM8NjQwZqG0wG6dDnj7oqKJcdHrK3hWuLeJAMkuvpxU+vJIZxVgEvJV
+         JkdsPNwrdyOpGHxUyeo7yeFUpjJg7FMJMW7axRTaxivDIrlSCw1peZKGHH/eM7TWjK
+         8GofV4qF8eBd0+uUXAH4RO6ewkVSA8jGt0i4+7itFUppOIkwQzDlqCpRNJiskw6MsP
+         vkN6pzooQFwwQ==
 Subject: Re: copy_file_range() infinitely hangs on NFSv4.2 over RDMA
-Thread-Topic: copy_file_range() infinitely hangs on NFSv4.2 over RDMA
-Thread-Index: AQHXAoMfawdRzWrgDkSpe5/TYHEFmapbOyaAgAAHBQCAAB6ZgIABlTwAgAArPQCAACy3AIAA0KWSgAAkhACAAB9zAIABZJ0AgAACxwCAAANsgIAADTqA
-Date:   Fri, 19 Feb 2021 18:48:30 +0000
-Message-ID: <E4BAC726-2FFA-47A8-A1B6-F0D2848ABB98@oracle.com>
+To:     Chuck Lever <chuck.lever@oracle.com>,
+        Olga Kornievskaia <aglo@umich.edu>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
 References: <57f67888-160f-891c-6217-69e174d7e42b@rothenpieler.org>
  <CAN-5tyE4OyNOZRXGnyONcdGsHaRAF39LSE5416Kj964m-+_C2A@mail.gmail.com>
  <81cb9aef-c10d-f11c-42c0-5144ee2608bc@rothenpieler.org>
@@ -82,224 +46,248 @@ References: <57f67888-160f-891c-6217-69e174d7e42b@rothenpieler.org>
  <CAN-5tyHLRn4HEs9R291N6Y=boOvQ9-qvKfJzA8Khkqie2kVVWQ@mail.gmail.com>
  <6478B738-0C33-46DC-B711-B0BF7069FD82@oracle.com>
  <19c74710-bf35-6412-dd06-071331419ab5@rothenpieler.org>
-In-Reply-To: <19c74710-bf35-6412-dd06-071331419ab5@rothenpieler.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: rothenpieler.org; dkim=none (message not signed)
- header.d=none;rothenpieler.org; dmarc=none action=none
- header.from=oracle.com;
-x-originating-ip: [68.61.232.219]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d2783e78-113f-4156-56af-08d8d506f35f
-x-ms-traffictypediagnostic: BY5PR10MB4147:
-x-microsoft-antispam-prvs: <BY5PR10MB41476D9B50104FD89DE3490D93849@BY5PR10MB4147.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: aidAK1bh9M1XBuCpwzo/9Occf2AQFYN3DaqgExdlWgeCUfGBOjVUHgwIG0oIeyOQQ0qTzEOxp8Xmb2RkQc3/E3anPxsMqMacuJInrRNdMlrSFko4EpJBI0F2Z8LiIQoqpKDJZBYp32/6zSCt8rPrY2/SYkF4AkNjyiHBKWAE37v674ryjyQqTXAzgKwPuXdjf3qN07GSiCU8FGiF0U0hKbto6tKz33ejZpKTDo1wwt2u5e+zXXbe6klE4M2xus7UvuqbcSxzYQ1KQ47pyXw1/VRfWYmbGkXlhKtcNChi3uecoWQlNkMfS0EDdZFFewUfXbGIb5UaR/vA4qiaF9ED9EKv75uR0bkiOOhn+Kvfposl2fGxzBCG4ieJc/rbXkr0luoTm/7XJh2M/0Cnak620xD46P52IOEYdfLempKv7ickbpBi+f6T3OieFvS7b397scFH7ZdPIPBmaLw54IK0mnLASOYThJkIvVshQr5ij3Td58FC0tAx7q49gQTb+jhwzKHMr/Lg5oXUkTCKaVk3HthuVFgbVlHupdV3/bYkbShTG5kDohB+3C9Bxuc3ev2sEUkBWH+LCJVGAk0ZfwQcMQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4688.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(396003)(39860400002)(376002)(346002)(26005)(6486002)(4326008)(478600001)(71200400001)(8676002)(6506007)(2906002)(186003)(316002)(83380400001)(84040400003)(2616005)(53546011)(54906003)(66556008)(6512007)(86362001)(91956017)(76116006)(66946007)(36756003)(110136005)(44832011)(8936002)(66476007)(5660300002)(66446008)(33656002)(64756008)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?fV7XP5x6jTLpRJ6DE+Cli7Wpn280TNd33Vi34FuikhRFiwrR1yWD8gJj1ANA?=
- =?us-ascii?Q?Q65rMZKCnIToI7XagN/n11bEONnZQJdBKCjCpa3qUOjTTanppxYZOPf5wyxY?=
- =?us-ascii?Q?QVR/80kK4nBi4DNj0Fb97c1AELX1SU3rPCAsmc2tu8KffdlmKB31FelfuHOX?=
- =?us-ascii?Q?TJ6lmI9z6HipEUXr7/LVVy2YyQDhZdEw1V82tkndSQPeCP0a+FSo5PRVWuqe?=
- =?us-ascii?Q?PkJFXVq/EqP9kVpgY3MuaZaB25EOJAEpCTuxProf0hU1VgD2Xhh2K45FGj30?=
- =?us-ascii?Q?kYktu4hWTe0JBxDc/RwVglyyYhFKcY7ug1/SEiT6i7r2q5ad+TH1eFZVCMrA?=
- =?us-ascii?Q?IOAopneehCzblqou8UPvRoBXOybfwat6XyAyhpq+xuA3zDXyWe7b2tsUfbX4?=
- =?us-ascii?Q?//5U2PpDbwQmnuaisEs6hiH95FezDFBZvn0SKPO2xlFhDWAkKVaGK6+QVdR/?=
- =?us-ascii?Q?AdkpwAimp7MdXC3gWwHKdD6u1xedA+pmsvOPnmJOFPzfHfrVFxMH9pFUlPxT?=
- =?us-ascii?Q?BX8PjW9TddUUiOENwAWnzG0vQuVFeKOsOSVXaEoxav6EGPoiAmDeoUchMtpS?=
- =?us-ascii?Q?tluK+DZKzdiR6h2zgU8w8K+YVI0LBxnZb+4nnNpwffUe8ZHu3nbtWY9vZkbf?=
- =?us-ascii?Q?c8IsWOF1jrFrHNt0uIjGzqnhnBY1IJDsVjeIzZIqsWYOPiHG4aPjDwaJd9tG?=
- =?us-ascii?Q?sgIr5ea55nvFZ6O5pxbGZea9NHLse7jgxyWpoS33JHMjeKprji0PjNPr6HCw?=
- =?us-ascii?Q?QdHZlYnCM/T7mr0mxeoORCEfELK3LhPQb9rZakv415xcwLsNBQH9o1SPERD8?=
- =?us-ascii?Q?hlNDPF8FlsQrp/EM19sbxM+us4SBDl1eDCqMCbhcR7G7J4Z6wkNKTIEb8Vgb?=
- =?us-ascii?Q?WXNef+WPE2mWg1XWn2oB0UjBTvfLf1VOxr/aPUjCNYedTRVneS2WaUrS/kzN?=
- =?us-ascii?Q?yzjcA4Oz1maFyy8m26S9Gfv23q/KTcrpMRhSSzkQSnJX6GKvqY0c+blkhWx1?=
- =?us-ascii?Q?CwItEIuWY5TvrS8hKgeferTddbzAx+LtFxMzQ+WwW5WCjOW/19dMaAf7Dupy?=
- =?us-ascii?Q?0CG1Mxzrt8uEyFbWGyyazyEJVFcPxUVp8Xb+/pLg1R+Z8DGOJ1vl8xbj6TQD?=
- =?us-ascii?Q?idSm9ykOmYc7LtDRok2wtwYte7ibBGOdOQyceBhxESa+vAIzyLpes34hZv4f?=
- =?us-ascii?Q?wnqAiydSN/QPs4WsBB4gQHFHY7Dwcp6lRqlwro/ov+VPCzO5LaYMiDRu5bJ4?=
- =?us-ascii?Q?dhB5tzL1Y8Vbo+bUBRx3kQyS0wSVnkk+uLHT1Pzo1wv8CCHnaMRbn+qgm+/L?=
- =?us-ascii?Q?oUyF2KU0/UrTCbd7X+8TIkfD?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <75A73CDAA780F74FA0F91F17E107996E@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ <E4BAC726-2FFA-47A8-A1B6-F0D2848ABB98@oracle.com>
+From:   Timo Rothenpieler <timo@rothenpieler.org>
+Message-ID: <3fdef46d-ae3e-795b-db7d-0b03f80254cb@rothenpieler.org>
+Date:   Fri, 19 Feb 2021 21:37:49 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4688.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d2783e78-113f-4156-56af-08d8d506f35f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Feb 2021 18:48:30.1531
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xbxrPK4bnJgFXzTNb7loBymGjt9SFSWkur4WpWEd95e29PL7B0ZSYXUBMoHXzekINS+vHM/bIClpcJFQUyGh0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4147
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
- phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102190146
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 phishscore=0 clxscore=1015 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102190146
+In-Reply-To: <E4BAC726-2FFA-47A8-A1B6-F0D2848ABB98@oracle.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms050305000608010705010700"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+This is a cryptographically signed message in MIME format.
 
+--------------ms050305000608010705010700
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> On Feb 19, 2021, at 1:01 PM, Timo Rothenpieler <timo@rothenpieler.org> wr=
-ote:
+On 19.02.2021 19:48, Chuck Lever wrote:
 >=20
-> On 19.02.2021 18:48, Chuck Lever wrote:
->>> On Feb 19, 2021, at 12:38 PM, Olga Kornievskaia <aglo@umich.edu> wrote:
->>>=20
->>> On Thu, Feb 18, 2021 at 3:22 PM Timo Rothenpieler <timo@rothenpieler.or=
-g> wrote:
->>>>=20
->>>> On 18.02.2021 19:30, Olga Kornievskaia wrote:
->>>>> Thank you for getting tracepoints from a busy server but can you get
->>>>> more? As suspected, the server is having issues sending the callback.
->>>>> I'm not sure why. Any chance to turn on the server's sunrpc
->>>>> tracespoints, probably both sunrpc and rdmas tracepoints, I wonder if
->>>>> we can any more info about why it's failing?
->>>>=20
->>>> I isolated out two of the machines on that cluster now, one acting as
->>>> NFS server from an ext4 mount, the other is the same client as before.
->>>> That way I managed to capture a trace and ibdump of an entire cycle:
->>>> mount + successful copy + 5 minutes later a copy that got stuck
->>>>=20
->>>> Next to no noise happened during those traces, you can find them attac=
-hed.
->>>>=20
->>>> Another observation made due to this: unmount and re-mounting the NFS
->>>> share also gets it back into working condition for a while, no reboot
->>>> necessary.
->>>> During this trace, I got "lucky", and after just 5 minutes of waiting,
->>>> it got stuck.
->>>>=20
->>>> Before that, I had a run of mount + trying to copy every 5 minutes whe=
-re
->>>> it ran for 45 minutes without getting stuck. At which point I decided =
-to
->>>> remount once more.
->>>=20
->>> Timo, thank you for gathering the debug info.
->>>=20
->>> Chuck, I need your help. Why would the server lose a callback channel?
->>>=20
->>>           <...>-1461944 [001] 2076465.200151: rpc_request:
->>> task:57752@6 nfs4_cbv1 CB_OFFLOAD (async)
->>>           <...>-1461944 [001] 2076465.200151: rpc_task_run_action:
->>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
->>> runstate=3DRUNNING|ACTIVE status=3D0 action=3Dcall_reserve
->>>           <...>-1461944 [001] 2076465.200154: xprt_reserve:
->>> task:57752@6 xid=3D0x00a0aaf9
->>>           <...>-1461944 [001] 2076465.200155: rpc_task_run_action:
->>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
->>> runstate=3DRUNNING|ACTIVE status=3D0 action=3Dcall_reserveresult
->>>           <...>-1461944 [001] 2076465.200156: rpc_task_run_action:
->>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
->>> runstate=3DRUNNING|ACTIVE status=3D0 action=3Dcall_refresh
->>>           <...>-1461944 [001] 2076465.200163: rpc_task_run_action:
->>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
->>> runstate=3DRUNNING|ACTIVE status=3D0 action=3Dcall_refreshresult
->>>           <...>-1461944 [001] 2076465.200163: rpc_task_run_action:
->>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
->>> runstate=3DRUNNING|ACTIVE status=3D0 action=3Dcall_allocate
->>>           <...>-1461944 [001] 2076465.200168: rpc_buf_alloc:
->>> task:57752@6 callsize=3D548 recvsize=3D104 status=3D0
->>>           <...>-1461944 [001] 2076465.200168: rpc_task_run_action:
->>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
->>> runstate=3DRUNNING|ACTIVE status=3D0 action=3Dcall_encode
->>>           <...>-1461944 [001] 2076465.200173: rpc_task_run_action:
->>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
->>> runstate=3DRUNNING|ACTIVE|NEED_XMIT|NEED_RECV status=3D0
->>> action=3Dcall_connect
->>>           <...>-1461944 [001] 2076465.200174: rpc_call_rpcerror:
->>> task:57752@6 tk_status=3D-107 rpc_status=3D-107
->>>           <...>-1461944 [001] 2076465.200174: rpc_task_run_action:
->>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
->>> runstate=3DRUNNING|ACTIVE|NEED_XMIT|NEED_RECV status=3D-107
->>> action=3Drpc_exit_task
->>>=20
->>> It's reporting ENOTCON. I'm not really sure if this is related to copy
->>> offload but more perhaps doing callbacks over RDMA/IB.
->> If the client is awaiting a COPY notification callback, I can see why
->> a lost CB channel would cause the client to wait indefinitely.
->> The copy mechanism has to deal with this contingency... Perhaps the
->> server could force a disconnect so that the client and server have an
->> opportunity to re-establish the callback channel. <shrug>
->> In any event, the trace log above shows nothing more than "hey, it's
->> not working." Are there any rpcrdma trace events we can look at to
->> determine why the backchannel is getting lost?
 >=20
-> The trace log attached to my previous mail has it enabled, along with nfs=
-d and sunrpc.
-> I'm attaching the two files again here.
+>> On Feb 19, 2021, at 1:01 PM, Timo Rothenpieler <timo@rothenpieler.org>=
+ wrote:
+>>
+>> On 19.02.2021 18:48, Chuck Lever wrote:
+>>>> On Feb 19, 2021, at 12:38 PM, Olga Kornievskaia <aglo@umich.edu> wro=
+te:
+>>>>
+>>>> On Thu, Feb 18, 2021 at 3:22 PM Timo Rothenpieler <timo@rothenpieler=
+=2Eorg> wrote:
+>>>>>
+>>>>> On 18.02.2021 19:30, Olga Kornievskaia wrote:
+>>>>>> Thank you for getting tracepoints from a busy server but can you g=
+et
+>>>>>> more? As suspected, the server is having issues sending the callba=
+ck.
+>>>>>> I'm not sure why. Any chance to turn on the server's sunrpc
+>>>>>> tracespoints, probably both sunrpc and rdmas tracepoints, I wonder=
+ if
+>>>>>> we can any more info about why it's failing?
+>>>>>
+>>>>> I isolated out two of the machines on that cluster now, one acting =
+as
+>>>>> NFS server from an ext4 mount, the other is the same client as befo=
+re.
+>>>>> That way I managed to capture a trace and ibdump of an entire cycle=
+:
+>>>>> mount + successful copy + 5 minutes later a copy that got stuck
+>>>>>
+>>>>> Next to no noise happened during those traces, you can find them at=
+tached.
+>>>>>
+>>>>> Another observation made due to this: unmount and re-mounting the N=
+FS
+>>>>> share also gets it back into working condition for a while, no rebo=
+ot
+>>>>> necessary.
+>>>>> During this trace, I got "lucky", and after just 5 minutes of waiti=
+ng,
+>>>>> it got stuck.
+>>>>>
+>>>>> Before that, I had a run of mount + trying to copy every 5 minutes =
+where
+>>>>> it ran for 45 minutes without getting stuck. At which point I decid=
+ed to
+>>>>> remount once more.
+>>>>
+>>>> Timo, thank you for gathering the debug info.
+>>>>
+>>>> Chuck, I need your help. Why would the server lose a callback channe=
+l?
+>>>>
+>>>>            <...>-1461944 [001] 2076465.200151: rpc_request:
+>>>> task:57752@6 nfs4_cbv1 CB_OFFLOAD (async)
+>>>>            <...>-1461944 [001] 2076465.200151: rpc_task_run_action:
+>>>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
+>>>> runstate=3DRUNNING|ACTIVE status=3D0 action=3Dcall_reserve
+>>>>            <...>-1461944 [001] 2076465.200154: xprt_reserve:
+>>>> task:57752@6 xid=3D0x00a0aaf9
+>>>>            <...>-1461944 [001] 2076465.200155: rpc_task_run_action:
+>>>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
+>>>> runstate=3DRUNNING|ACTIVE status=3D0 action=3Dcall_reserveresult
+>>>>            <...>-1461944 [001] 2076465.200156: rpc_task_run_action:
+>>>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
+>>>> runstate=3DRUNNING|ACTIVE status=3D0 action=3Dcall_refresh
+>>>>            <...>-1461944 [001] 2076465.200163: rpc_task_run_action:
+>>>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
+>>>> runstate=3DRUNNING|ACTIVE status=3D0 action=3Dcall_refreshresult
+>>>>            <...>-1461944 [001] 2076465.200163: rpc_task_run_action:
+>>>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
+>>>> runstate=3DRUNNING|ACTIVE status=3D0 action=3Dcall_allocate
+>>>>            <...>-1461944 [001] 2076465.200168: rpc_buf_alloc:
+>>>> task:57752@6 callsize=3D548 recvsize=3D104 status=3D0
+>>>>            <...>-1461944 [001] 2076465.200168: rpc_task_run_action:
+>>>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
+>>>> runstate=3DRUNNING|ACTIVE status=3D0 action=3Dcall_encode
+>>>>            <...>-1461944 [001] 2076465.200173: rpc_task_run_action:
+>>>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
+>>>> runstate=3DRUNNING|ACTIVE|NEED_XMIT|NEED_RECV status=3D0
+>>>> action=3Dcall_connect
+>>>>            <...>-1461944 [001] 2076465.200174: rpc_call_rpcerror:
+>>>> task:57752@6 tk_status=3D-107 rpc_status=3D-107
+>>>>            <...>-1461944 [001] 2076465.200174: rpc_task_run_action:
+>>>> task:57752@6 flags=3DASYNC|DYNAMIC|SOFT|NOCONNECT
+>>>> runstate=3DRUNNING|ACTIVE|NEED_XMIT|NEED_RECV status=3D-107
+>>>> action=3Drpc_exit_task
+>>>>
+>>>> It's reporting ENOTCON. I'm not really sure if this is related to co=
+py
+>>>> offload but more perhaps doing callbacks over RDMA/IB.
+>>> If the client is awaiting a COPY notification callback, I can see why=
 
-Thanks, Timo.
+>>> a lost CB channel would cause the client to wait indefinitely.
+>>> The copy mechanism has to deal with this contingency... Perhaps the
+>>> server could force a disconnect so that the client and server have an=
 
-The first CB_OFFLOAD callback succeeds:
+>>> opportunity to re-establish the callback channel. <shrug>
+>>> In any event, the trace log above shows nothing more than "hey, it's
+>>> not working." Are there any rpcrdma trace events we can look at to
+>>> determine why the backchannel is getting lost?
+>>
+>> The trace log attached to my previous mail has it enabled, along with =
+nfsd and sunrpc.
+>> I'm attaching the two files again here.
+>=20
+> Thanks, Timo.
+>=20
+> The first CB_OFFLOAD callback succeeds:
+>=20
+> 2076155.216687: nfsd_cb_work:         addr=3D10.110.10.252:0 client 602=
+eb645:daa037ae procedure=3DCB_OFFLOAD
+> 2076155.216704: rpc_request:          task:57746@6 nfs4_cbv1 CB_OFFLOAD=
+ (async)
+>=20
+> 2076155.216975: rpc_stats_latency:    task:57746@6 xid=3D0xff9faaf9 nfs=
+4_cbv1 CB_OFFLOAD backlog=3D33 rtt=3D195 execute=3D282
+> 2076155.216977: nfsd_cb_done:         addr=3D10.110.10.252:0 client 602=
+eb645:daa037ae status=3D0
+>=20
+>=20
+> About 305 seconds later, the autodisconnect timer fires. I'm not sure i=
+f this is the backchannel transport, but it looks suspicious:
 
-2076155.216687: nfsd_cb_work:         addr=3D10.110.10.252:0 client 602eb64=
-5:daa037ae procedure=3DCB_OFFLOAD
-2076155.216704: rpc_request:          task:57746@6 nfs4_cbv1 CB_OFFLOAD (as=
-ync)
+This would also align with what I observed in my first test session.
+In that I mounted the share and then every minute tested if it's getting =
 
-2076155.216975: rpc_stats_latency:    task:57746@6 xid=3D0xff9faaf9 nfs4_cb=
-v1 CB_OFFLOAD backlog=3D33 rtt=3D195 execute=3D282
-2076155.216977: nfsd_cb_done:         addr=3D10.110.10.252:0 client 602eb64=
-5:daa037ae status=3D0
-
-
-About 305 seconds later, the autodisconnect timer fires. I'm not sure if th=
-is is the backchannel transport, but it looks suspicious:
-
-2076460.314954: xprt_disconnect_auto: peer=3D[10.110.10.252]:0 state=3DLOCK=
-ED|CONNECTED|BOUND
-2076460.314957: xprt_disconnect_done: peer=3D[10.110.10.252]:0 state=3DLOCK=
-ED|CONNECTED|BOUND
-
-
-The next CB_OFFLOAD callback fails because the xprt has been marked "discon=
-nected" and the request's NOCONNECT flag is set.
-
-2076465.200136: nfsd_cb_work:         addr=3D10.110.10.252:0 client 602eb64=
-5:daa037ae procedure=3DCB_OFFLOAD
-2076465.200151: rpc_request:          task:57752@6 nfs4_cbv1 CB_OFFLOAD (as=
-ync)
-
-2076465.200168: rpc_task_run_action:  task:57752@6 flags=3DASYNC|DYNAMIC|SO=
-FT|NOCONNECT runstate=3DRUNNING|ACTIVE status=3D0 action=3Dcall_encode
-2076465.200173: rpc_task_run_action:  task:57752@6 flags=3DASYNC|DYNAMIC|SO=
-FT|NOCONNECT runstate=3DRUNNING|ACTIVE|NEED_XMIT|NEED_RECV status=3D0 actio=
-n=3Dcall_connect
-2076465.200174: rpc_call_rpcerror:    task:57752@6 tk_status=3D-107 rpc_sta=
-tus=3D-107
-2076465.200174: rpc_task_run_action:  task:57752@6 flags=3DASYNC|DYNAMIC|SO=
-FT|NOCONNECT runstate=3DRUNNING|ACTIVE|NEED_XMIT|NEED_RECV status=3D-107 ac=
-tion=3Drpc_exit_task
-2076465.200179: nfsd_cb_done:         addr=3D10.110.10.252:0 client 602eb64=
-5:daa037ae status=3D-107
-2076465.200180: nfsd_cb_state:        addr=3D10.110.10.252:0 client 602eb64=
-5:daa037ae state=3DFAULT
+stuck.
+I left it run for almost an hour, and nothing ever got stuck.
+Then I restarted the test run with it testing every 5 minutes, and the=20
+first test after 5 minutes got stuck.
 
 
-Perhaps RPC clients for NFSv4.1+ callback should be created with
-the RPC_CLNT_CREATE_NO_IDLE_TIMEOUT flag.
+--------------ms050305000608010705010700
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-
---
-Chuck Lever
-
-
-
+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
+LnAuQS4xLDAqBgNVBAMMI0FjdGFsaXMgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEczMIIC
+IjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA7eaHlqHBpLbtwkJV9z8PDyJgXxPgpkOI
+hkmReRwbLxpQD9xGAe72ujqGzFFh78QPgAhxKVqtGHzYeq0VJVCzhnCKRBbVX+JwIhL3ULYh
+UAZrViUp952qDB6qTL5sGeJS9F69VPSR5k6pFNw7mHDTTt0voWFg2aVkG3khomzVXoieJGOi
+Q4dH76paCtQbLkt59joAKz2BnwGLQ4wr09nfumJt5AKx2YxHK2XgSPslVZ4z8G00gimsfA7U
+tjT/wiekY6Z0b7ksLrEcvODncHQe9VSrNRA149SE3AlkWaZM/joVei/GYfj9K5jkiReinR4m
+qM353FEceLOeBhSTURpMdQ5wsXLi9DSTGBuNv4aw2Dozb/qBlkhGTvwk92mi0jAecE22Sn3A
+9UfrU2p1w/uRs+TIteQ0xO0B/J2mY2caqocsS9SsriIGlQ8b0LT0o6Ob07KGtPa5/lIvMmx5
+72Dv2v+vDiECByxm1Hdgjp8JtE4mdyYP6GBscJyT71NZw1zXHnFkyCbxReag9qaSR9x4CVVX
+j1BDmNROCqd5NAfIXUXYTFeZ/jukQigkxXGWhEhfLBC4Ha6pwizz9fq1+wwPKcWaF9P/SZOu
+BDrG30MiyCZa66G9mEtF5ZLuh4rGfKqxy4Z5Mxecuzt+MZmrSKfKGeXOeED/iuX5Z02M1o7i
+MS8CAwEAAaOCAfQwggHwMA8GA1UdEwEB/wQFMAMBAf8wHwYDVR0jBBgwFoAUUtiIOsifeGbt
+ifN7OHCUyQICNtAwQQYIKwYBBQUHAQEENTAzMDEGCCsGAQUFBzABhiVodHRwOi8vb2NzcDA1
+LmFjdGFsaXMuaXQvVkEvQVVUSC1ST09UMEUGA1UdIAQ+MDwwOgYEVR0gADAyMDAGCCsGAQUF
+BwIBFiRodHRwczovL3d3dy5hY3RhbGlzLml0L2FyZWEtZG93bmxvYWQwHQYDVR0lBBYwFAYI
+KwYBBQUHAwIGCCsGAQUFBwMEMIHjBgNVHR8EgdswgdgwgZaggZOggZCGgY1sZGFwOi8vbGRh
+cDA1LmFjdGFsaXMuaXQvY24lM2RBY3RhbGlzJTIwQXV0aGVudGljYXRpb24lMjBSb290JTIw
+Q0EsbyUzZEFjdGFsaXMlMjBTLnAuQS4lMmYwMzM1ODUyMDk2NyxjJTNkSVQ/Y2VydGlmaWNh
+dGVSZXZvY2F0aW9uTGlzdDtiaW5hcnkwPaA7oDmGN2h0dHA6Ly9jcmwwNS5hY3RhbGlzLml0
+L1JlcG9zaXRvcnkvQVVUSC1ST09UL2dldExhc3RDUkwwHQYDVR0OBBYEFL6XqaqEv4C/EFN9
+CTL54S4yG893MA4GA1UdDwEB/wQEAwIBBjANBgkqhkiG9w0BAQsFAAOCAgEAJpvnG1kNdLMS
+A+nnVfeEgIXNQsM7YRxXx6bmEt9IIrFlH1qYKeNw4NV8xtop91Rle168wghmYeCTP10FqfuK
+MZsleNkI8/b3PBkZLIKOl9p2Dmz2Gc0I3WvcMbAgd/IuBtx998PJX/bBb5dMZuGV2drNmxfz
+3ar6ytGYLxedfjKCD55Yv8CQcN6e9sW5OUm9TJ3kjt7Wdvd1hcw5s+7bhlND38rWFJBuzump
+5xqm1NSOggOkFSlKnhSz6HUjgwBaid6Ypig9L1/TLrkmtEIpx+wpIj7WTA9JqcMMyLJ0rN6j
+jpetLSGUDk3NCOpQntSy4a8+0O+SepzS/Tec1cGdSN6Ni2/A7ewQNd1Rbmb2SM2qVBlfN0e6
+ZklWo9QYpNZyf0d/d3upsKabE9eNCg1S4eDnp8sJqdlaQQ7hI/UYCAgDtLIm7/J9+/S2zuwE
+WtJMPcvaYIBczdjwF9uW+8NJ/Zu/JKb98971uua7OsJexPFRBzX7/PnJ2/NXcTdwudShJc/p
+d9c3IRU7qw+RxRKchIczv3zEuQJMHkSSM8KM8TbOzi/0v0lU6SSyS9bpGdZZxx19Hd8Qs0cv
++R6nyt7ohttizwefkYzQ6GzwIwM9gSjH5Bf/r9Kc5/JqqpKKUGicxAGy2zKYEGB0Qo761Mcc
+IyclBW9mfuNFDbTBeDEyu80xggPzMIID7wIBATCBljCBgTELMAkGA1UEBhMCSVQxEDAOBgNV
+BAgMB0JlcmdhbW8xGTAXBgNVBAcMEFBvbnRlIFNhbiBQaWV0cm8xFzAVBgNVBAoMDkFjdGFs
+aXMgUy5wLkEuMSwwKgYDVQQDDCNBY3RhbGlzIENsaWVudCBBdXRoZW50aWNhdGlvbiBDQSBH
+MwIQCP8se1eXTyBvFrjHrZ83LDANBglghkgBZQMEAgEFAKCCAi0wGAYJKoZIhvcNAQkDMQsG
+CSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwMjE5MjAzNzUwWjAvBgkqhkiG9w0BCQQx
+IgQgXnzsPT8b+BUd6F/Vz4QAWjXFZuG4zmG2PqroozddkjswbAYJKoZIhvcNAQkPMV8wXTAL
+BglghkgBZQMEASowCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDAN
+BggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBpwYJKwYBBAGCNxAEMYGZ
+MIGWMIGBMQswCQYDVQQGEwJJVDEQMA4GA1UECAwHQmVyZ2FtbzEZMBcGA1UEBwwQUG9udGUg
+U2FuIFBpZXRybzEXMBUGA1UECgwOQWN0YWxpcyBTLnAuQS4xLDAqBgNVBAMMI0FjdGFsaXMg
+Q2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEczAhAI/yx7V5dPIG8WuMetnzcsMIGpBgsqhkiG
+9w0BCRACCzGBmaCBljCBgTELMAkGA1UEBhMCSVQxEDAOBgNVBAgMB0JlcmdhbW8xGTAXBgNV
+BAcMEFBvbnRlIFNhbiBQaWV0cm8xFzAVBgNVBAoMDkFjdGFsaXMgUy5wLkEuMSwwKgYDVQQD
+DCNBY3RhbGlzIENsaWVudCBBdXRoZW50aWNhdGlvbiBDQSBHMwIQCP8se1eXTyBvFrjHrZ83
+LDANBgkqhkiG9w0BAQEFAASCAQCpNz/Uxu6B40BDxH8iDYprlx2iVXQTMVxMx9mB4jPGmkk2
+ClguwYOVzFUYocvkte7E4iMHCT0pdDl2jz2HeiOS0aLjwP/JvL4oMwL9TYIilShlgsxLcbSl
+mI0i69rhMfzAm/3gGs2xphQteQ2a8m9+K/zOh8XbUrBwIB0extSJAdfg0+6wamAqx1FYQcHo
+ogzjkjtVos/Kv/8oDojG8Gp5t319xrkeyWo1gN9SkH6wmVXIeqmaOtZh3iqDEhX/9ZwwjJxh
+ysPS/wZY7QwuT2UnjpMDzbCR5hsoVDuuKeke+igL79U9AVfEB8R/7NT8dl5F/gkHmgJAhPVC
+vpW/Jx+YAAAAAAAA
+--------------ms050305000608010705010700--
