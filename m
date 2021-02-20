@@ -2,97 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFDA3201D4
-	for <lists+linux-rdma@lfdr.de>; Sat, 20 Feb 2021 00:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 621DB320421
+	for <lists+linux-rdma@lfdr.de>; Sat, 20 Feb 2021 07:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhBSXcz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Feb 2021 18:32:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbhBSXcy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Feb 2021 18:32:54 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13B8C061574;
-        Fri, 19 Feb 2021 15:32:28 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id e15so5209995qte.9;
-        Fri, 19 Feb 2021 15:32:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NbsiN2mOIgFrYHoicdtwfPgIlAbigIWiM/ybhi0WMds=;
-        b=DdFaizl54sLru+iLJVV5msd7jTcBPmRjPcoIO7Siisb17Msir48LZeQJfdTyFAsNHp
-         uYeMd2Am9QkntpRCNEI66FN3zQCSwEba58N8ixzNMf4qlm7YpPMpDBAscJqEz7jT/goj
-         o6NDvzSd7rfzBhvdfbDE3JgkObYY2bxnT0QlAjDTqCkdzGva6dbPNadAw4JHKRKQFJL+
-         plLUPgG1vgJjjtIYMOJYJ1FOAwpdlcVR1G5VMAlwl0koraTQ1QnbRTZNxO/9TMBvxgCD
-         xNkKnLhEXRIl9KIHaMIxQ0tNTs9vXwWa3+pAbU3oC+nzy13z3x1lZY4+eCfgGbt8qTLY
-         YdgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=NbsiN2mOIgFrYHoicdtwfPgIlAbigIWiM/ybhi0WMds=;
-        b=JTaTHOCW662++5oVrjbkrm69bKtoeRcACc0i/XVHezHjamRe2W4/ix4j1btRhpjj7e
-         esRvLWyGo1ZC7zueUQnmDGFqhlRt+SjBg/qMG6C0Yospb46w1hjQE3zo0kv2gqSyDZT9
-         NiSSzwMXzstEWg5UISZfH+R3JY7Qo728mJgp3+pGp1L5ypABApHBQxzZ/gfssWrVY43C
-         z66/Dv9PdtKXxJt7dHsJmQNOxaW5o08Cj23cJU5xQVz8MQNghFb2Q/bbLmm0xCOhVcHa
-         iQdUFmDOJmNm8x0rtfYrWN0FSHKZ3sj9EW1fTg/dvehJzY0XMtVqQUBHYiSeiKKXqRbi
-         8jGg==
-X-Gm-Message-State: AOAM5321eHS30a4YgLi8+KviC6Ma+74MwWNWveJyfYzwof8Vg4KajCT6
-        wLELXkPvW5x2FroyDGF+Thg=
-X-Google-Smtp-Source: ABdhPJwFOuVQKvHVIRi+7JqxGldbjMafENc3bpZW4wnTxNZ5b4iWrZYYbiP5t0QGGflSbfS02NGG3g==
-X-Received: by 2002:ac8:6f06:: with SMTP id g6mr11083280qtv.360.1613777547936;
-        Fri, 19 Feb 2021 15:32:27 -0800 (PST)
-Received: from ubuntu-mate-laptop.localnet ([208.64.158.253])
-        by smtp.gmail.com with ESMTPSA id 199sm7761763qkj.9.2021.02.19.15.32.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 15:32:27 -0800 (PST)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers: infiniband: sw: rxe: fix kconfig dependency on CRYPTO
-Date:   Fri, 19 Feb 2021 18:32:26 -0500
-Message-ID: <21525878.NYvzQUHefP@ubuntu-mate-laptop>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+        id S229490AbhBTGNe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Sat, 20 Feb 2021 01:13:34 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3447 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229476AbhBTGNe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 20 Feb 2021 01:13:34 -0500
+Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DjJ3h69zFz5V4S;
+        Sat, 20 Feb 2021 14:11:12 +0800 (CST)
+Received: from dggema702-chm.china.huawei.com (10.3.20.66) by
+ DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Sat, 20 Feb 2021 14:12:44 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema702-chm.china.huawei.com (10.3.20.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Sat, 20 Feb 2021 14:12:45 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.006;
+ Sat, 20 Feb 2021 14:12:44 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "leon@kernel.org" <leon@kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Re: [PATCH RFC rdma-core 2/5] libhns: Introduce DCA for RC QP
+Thread-Topic: [PATCH RFC rdma-core 2/5] libhns: Introduce DCA for RC QP
+Thread-Index: AQHW/P+gFy6BoBRq0kWqgOMQlgE0MA==
+Date:   Sat, 20 Feb 2021 06:12:44 +0000
+Message-ID: <f7c3b09d9607456c8a4b2926fc15407a@huawei.com>
+References: <1612667574-56673-1-git-send-email-liweihang@huawei.com>
+ <1612667574-56673-3-git-send-email-liweihang@huawei.com>
+ <20210209194400.GS4247@nvidia.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-commit 6e61907779ba99af785f5b2397a84077c289888a
-Author: Julian Braha <julianbraha@gmail.com>
-Date:   Fri Feb 19 18:20:57 2021 -0500
+On 2021/2/10 3:44, Jason Gunthorpe wrote:
+> On Sun, Feb 07, 2021 at 11:12:51AM +0800, Weihang Li wrote:
+> 
+>> +static int register_dca_mem(struct hns_roce_context *ctx, uint64_t key,
+>> +			    void *addr, uint32_t size, uint32_t *handle)
+>> +{
+>> +	struct ib_uverbs_attr *attr;
+>> +	int ret;
+>> +
+>> +	DECLARE_COMMAND_BUFFER(cmd, HNS_IB_OBJECT_DCA_MEM,
+>> +			       HNS_IB_METHOD_DCA_MEM_REG, 4);
+>> +	fill_attr_in_uint32(cmd, HNS_IB_ATTR_DCA_MEM_REG_LEN, size);
+>> +	fill_attr_in_uint64(cmd, HNS_IB_ATTR_DCA_MEM_REG_ADDR, (intptr_t)addr);
+> 
+> This should use ioctl_ptr_to_u64(), the place this was copied from
+> should also be fixed
+> 
 
-    drivers: infiniband: sw: rxe: fix kconfig dependency on CRYPTO
-    
-    When RDMA_RXE is enabled and CRYPTO is disabled,
-    Kbuild gives the following warning:
-    
-    WARNING: unmet direct dependencies detected for CRYPTO_CRC32
-      Depends on [n]: CRYPTO [=n]
-      Selected by [y]:
-      - RDMA_RXE [=y] && (INFINIBAND_USER_ACCESS [=y] || !INFINIBAND_USER_ACCESS [=y]) && INET [=y] && PCI [=y] && INFINIBAND [=y] && INFINIBAND_VIRT_DMA [=y]
-    
-    This is because RDMA_RXE selects CRYPTO_CRC32,
-    without depending on or selecting CRYPTO, despite that config option
-    being subordinate to CRYPTO.
-    
-    Signed-off-by: Julian Braha <julianbraha@gmail.com>
+OK, I will fix it. The kernel part has been defined as u64, so it doesn't
+need to be modified.
 
-diff --git a/drivers/infiniband/sw/rxe/Kconfig b/drivers/infiniband/sw/rxe/Kconfig
-index 452149066792..06b8dc5093f7 100644
---- a/drivers/infiniband/sw/rxe/Kconfig
-+++ b/drivers/infiniband/sw/rxe/Kconfig
-@@ -4,6 +4,7 @@ config RDMA_RXE
-        depends on INET && PCI && INFINIBAND
-        depends on INFINIBAND_VIRT_DMA
-        select NET_UDP_TUNNEL
-+      select CRYPTO
-        select CRYPTO_CRC32
-        help
-        This driver implements the InfiniBand RDMA transport over
+> 
+>> +	fill_attr_in_uint64(cmd, HNS_IB_ATTR_DCA_MEM_REG_KEY, key);
+>> +	attr = fill_attr_out_obj(cmd, HNS_IB_ATTR_DCA_MEM_REG_HANDLE);
+>> +
+>> +	ret = execute_ioctl(&ctx->ibv_ctx.context, cmd);
+>> +	if (!ret)
+>> +		*handle = read_attr_obj(HNS_IB_ATTR_DCA_MEM_REG_HANDLE, attr);
+> 
+> Success oriented flow everywhere please
+> > Jason
+> 
+OK, thank you.
 
-
-
+Weihang
