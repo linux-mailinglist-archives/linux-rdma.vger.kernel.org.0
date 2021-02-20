@@ -2,71 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67EA2320556
-	for <lists+linux-rdma@lfdr.de>; Sat, 20 Feb 2021 13:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 965C83206C2
+	for <lists+linux-rdma@lfdr.de>; Sat, 20 Feb 2021 20:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhBTMbs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 20 Feb 2021 07:31:48 -0500
-Received: from mtax.cdmx.gob.mx ([189.240.235.197]:4664 "EHLO mtax.cdmx.gob.mx"
+        id S229803AbhBTTGn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 20 Feb 2021 14:06:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229543AbhBTMbs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 20 Feb 2021 07:31:48 -0500
-X-Greylist: delayed 979 seconds by postgrey-1.27 at vger.kernel.org; Sat, 20 Feb 2021 07:31:47 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cdmx.gob.mx;
-        s=2020J4N146MXCTY; t=1613824310;
-        bh=zlviuf7ooES0qX4KaZyBd0KypJ+5XTxOZdvm/WcExNc=;
-        h=Date:From:Reply-To:Subject;
-        b=R3j29HBrX6fOJlzKOUyeKZhKaS1qzikcfrlZ5TGedJswsYLflpNt+1lPFyN+SxPD1
-         p2/l2gPFJNgYSB808TUtIgSQCEB+erLelsMoWaLKcWwBiWHjjAkNLa4IfhlkU8bLfS
-         +VmFKpXZIyz7HX0LJLNTybZoIcwwJy/QTZ6J0FAc=
-Received: from correo.seciti.cdmx.gob.mx (unknown [10.250.102.17])
-        by Forcepoint Email with ESMTP id 4B190875CBFD6ECFA9DA;
-        Sat, 20 Feb 2021 06:14:49 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by gdf-correo.df.gob.mx (Postfix) with ESMTP id F3806884C;
-        Sat, 20 Feb 2021 06:14:48 -0600 (CST)
-Received: from correo.seciti.cdmx.gob.mx ([127.0.0.1])
-        by localhost (gdf-correo.df.gob.mx [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id pqzNi5w1XeVd; Sat, 20 Feb 2021 06:14:48 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by gdf-correo.df.gob.mx (Postfix) with ESMTP id 60810882F;
-        Sat, 20 Feb 2021 06:14:48 -0600 (CST)
-X-Virus-Scanned: amavisd-new at gdf-correo.df.gob.mx
-Received: from correo.seciti.cdmx.gob.mx ([127.0.0.1])
-        by localhost (gdf-correo.df.gob.mx [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id fyv9FoRaSmTx; Sat, 20 Feb 2021 06:14:48 -0600 (CST)
-Received: from gdf-correo.df.gob.mx (localhost [127.0.0.1])
-        by gdf-correo.df.gob.mx (Postfix) with ESMTP id 99B1B70E6;
-        Sat, 20 Feb 2021 06:14:47 -0600 (CST)
-Date:   Sat, 20 Feb 2021 06:14:47 -0600 (CST)
-From:   Adrien Saif <fvaldesm@caprepol.cdmx.gob.mx>
-Reply-To: Adrien Saif <adriensaiff202@gmail.com>
-Message-ID: <323485336.487363.1613823287464.JavaMail.zimbra@caprepol.cdmx.gob.mx>
-Subject: Please respond back
+        id S229796AbhBTTGm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 20 Feb 2021 14:06:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14DC06023B;
+        Sat, 20 Feb 2021 19:06:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613847962;
+        bh=aksYvv/pbvkBrCrX+SCT6HQfuRBM+wqAG8UH2b1d1bE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=dxnnMLpH67twloA+/vmCSkcKexWZPI8hyNLC3n3FSAcEcTPsjFWLdYkyW17JDhuhg
+         U/qmm8NswdgNacbtUpK/ceW+DlECvmGUjb+serwKwAdcyB3k1dnapq03faEJCUxu9u
+         boA8+aj79+4t0Gye3lKskgWbXWHh4AH3w0as0av+Zfx1eNmDdq9FQxd2HYhPkcXuyF
+         EQV6mLTRSbQSP2gC1dNTUhR85MZy3pApQv1MKI7hKUHnjbxt8Q3shs9xHEuDmQNb9c
+         3hJvFpoazUBznWx3vzMGsmSJrUZAcxtGB/3OJnPTlSXxrPIDXVw82TklvOQwQDIE4J
+         9pj7D003swsAg==
+Date:   Sat, 20 Feb 2021 13:06:00 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Subject: Re: [PATCH mlx5-next v6 1/4] PCI: Add sysfs callback to allow MSI-X
+ table size change of SR-IOV VFs
+Message-ID: <20210220190600.GA1260870@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [197.234.221.124]
-X-Mailer: Zimbra 8.0.6_GA_5922 (zclient/8.0.6_GA_5922)
-Thread-Topic: Please respond back
-Thread-Index: 8FuB8DMJ83YDirkg8O1FKaSNaISBGA==
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YC90wkwk/CdgcYY6@kroah.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Fri, Feb 19, 2021 at 09:20:18AM +0100, Greg Kroah-Hartman wrote:
 
+> Ok, can you step back and try to explain what problem you are trying to
+> solve first, before getting bogged down in odd details?  I find it
+> highly unlikely that this is something "unique", but I could be wrong as
+> I do not understand what you are wanting to do here at all.
 
+We want to add two new sysfs files:
 
---
+  sriov_vf_total_msix, for PF devices
+  sriov_vf_msix_count, for VF devices associated with the PF
 
-
-Hello,
-
-This is attorney Adrien Saif, the legal practitioner to Qatif Oil And Gas Group of Companies,
-Did you receive the proposal we sent to you via email days ago? 
-
-
-
-Best Regards,
-Adrien Saif
+AFAICT it is *acceptable* if they are both present always.  But it
+would be *ideal* if they were only present when a driver that
+implements the ->sriov_get_vf_total_msix() callback is bound to the
+PF.
