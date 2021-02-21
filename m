@@ -2,100 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A26A32095B
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Feb 2021 10:26:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03230320A57
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Feb 2021 14:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbhBUJ0C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 21 Feb 2021 04:26:02 -0500
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:6308 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhBUJZ7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Feb 2021 04:25:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1613899559; x=1645435559;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=bD/dqpgXUyW6ZvN2ottxeox9axwAonJXCC7bvYLk774=;
-  b=M81BokOuqRy6k/1VR+aCJqhdjcfyCE89zMsGLDPYfiVDjUQkeaZ6lY2o
-   x4byKzO1MhoN8/l/NAEDtp/+uLUZMJI49Yyy+OnWrfn8E4lhlwRuCPB8U
-   0h04mvO9yb3xM83c4MAQOwATndPbrWKmeH2fFQvsaYqVt/PwRhk5I1HpP
-   8=;
-X-IronPort-AV: E=Sophos;i="5.81,194,1610409600"; 
-   d="scan'208";a="85966087"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 21 Feb 2021 09:25:12 +0000
-Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id 93E65A2047;
-        Sun, 21 Feb 2021 09:25:10 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.225) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sun, 21 Feb 2021 09:25:07 +0000
-Subject: Re: ibv_req_notify_cq clarification
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     RDMA mailing list <linux-rdma@vger.kernel.org>
-References: <bd5deec5-8fc6-ccd6-927a-898f6d9ab35b@amazon.com>
- <20210218125339.GY4718@ziepe.ca>
- <5287c059-3d8c-93f4-6be4-a6da07ccdb8a@amazon.com>
- <20210218162329.GZ4718@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <51a8fa8c-7529-9ef9-bb52-eccaaef3a666@amazon.com>
-Date:   Sun, 21 Feb 2021 11:25:02 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        id S229844AbhBUNBZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 21 Feb 2021 08:01:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229717AbhBUNBZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 21 Feb 2021 08:01:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77D8E64EEC;
+        Sun, 21 Feb 2021 13:00:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613912444;
+        bh=SvCSMNwWOjD1RuFrrE7KudoLB/8aoqxbB8zypDJjoCM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bi9ddrkqP48OS4okEi3xYoWSm2RFfvovUOX9ntPK+Neer2x3Oy1skfCCqZgnJ3UFt
+         GvI7TQdNBuGSb8nC6sOmqpuP8KWcf42bdCPCJsEc+/QODqDWJSukxvG4a9XDjGaolq
+         Yew1KGyShZA361oAW1HK4NnCpSqav+oXN36aFNhw=
+Date:   Sun, 21 Feb 2021 14:00:41 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Subject: Re: [PATCH mlx5-next v6 1/4] PCI: Add sysfs callback to allow MSI-X
+ table size change of SR-IOV VFs
+Message-ID: <YDJZeWoLna8kQk5L@kroah.com>
+References: <YC90wkwk/CdgcYY6@kroah.com>
+ <20210220190600.GA1260870@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210218162329.GZ4718@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.225]
-X-ClientProxiedBy: EX13D41UWC004.ant.amazon.com (10.43.162.31) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210220190600.GA1260870@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 18/02/2021 18:23, Jason Gunthorpe wrote:
-> On Thu, Feb 18, 2021 at 05:52:16PM +0200, Gal Pressman wrote:
->> On 18/02/2021 14:53, Jason Gunthorpe wrote:
->>> On Thu, Feb 18, 2021 at 11:13:43AM +0200, Gal Pressman wrote:
->>>> I'm a bit confused about the meaning of the ibv_req_notify_cq() verb:
->>>> "Upon the addition of a new CQ entry (CQE) to cq, a completion event will be
->>>> added to the completion channel associated with the CQ."
->>>>
->>>> What is considered a new CQE in this case?
->>>> The next CQE from the user's perspective, i.e. any new CQE that wasn't consumed
->>>> by the user's poll cq?
->>>> Or any new CQE from the device's perspective?
->>>
->>> new CQE from the device perspective.
->>>
->>>> For example, if at the time of ibv_req_notify_cq() call the CQ has received 100
->>>> completions, but the user hasn't polled his CQ yet, when should he be notified?
->>>> On the 101 completion or immediately (since there are completions waiting on the
->>>> CQ)?
->>>
->>> 101 completion
->>>
->>> It is only meaningful to call it when the CQ is empty.
->>
->> Thanks, so there's an inherent race between the user's CQ poll and the next arm?
+On Sat, Feb 20, 2021 at 01:06:00PM -0600, Bjorn Helgaas wrote:
+> On Fri, Feb 19, 2021 at 09:20:18AM +0100, Greg Kroah-Hartman wrote:
 > 
-> I think the specs or man pages talk about this, the application has to
-> observe empty, do arm, then poll again then sleep on the cq if empty.
+> > Ok, can you step back and try to explain what problem you are trying to
+> > solve first, before getting bogged down in odd details?  I find it
+> > highly unlikely that this is something "unique", but I could be wrong as
+> > I do not understand what you are wanting to do here at all.
 > 
->> Do you know what's the purpose of the consumer index in the arm doorbell that's
->> implemented by many providers?
+> We want to add two new sysfs files:
 > 
-> The consumer index is needed by HW to prevent CQ overflow, presumably
-> the drivers push to reduce the cases where the HW has to read it from
-> PCI
+>   sriov_vf_total_msix, for PF devices
+>   sriov_vf_msix_count, for VF devices associated with the PF
+> 
+> AFAICT it is *acceptable* if they are both present always.  But it
+> would be *ideal* if they were only present when a driver that
+> implements the ->sriov_get_vf_total_msix() callback is bound to the
+> PF.
 
-Thanks, that makes sense.
+Ok, so in the pci bus probe function, if the driver that successfully
+binds to the device is of this type, then create the sysfs files.
 
-I found the following sentence in CX PRM:
-"If new CQEs are posted to the CQ after the reporting of a completion event and
-these CQEs are not yet consumed, then an event will be generated immediately
-after the request for notification is executed."
+The driver core will properly emit a KOBJ_BIND message when the driver
+is bound to the device, so userspace knows it is now safe to rescan the
+device to see any new attributes.
 
-Doesn't that contradict the expected behavior?
+Here's some horrible pseudo-patch for where this probably should be
+done:
+
+
+diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
+index ec44a79e951a..5a854a5e3977 100644
+--- a/drivers/pci/pci-driver.c
++++ b/drivers/pci/pci-driver.c
+@@ -307,8 +307,14 @@ static long local_pci_probe(void *_ddi)
+ 	pm_runtime_get_sync(dev);
+ 	pci_dev->driver = pci_drv;
+ 	rc = pci_drv->probe(pci_dev, ddi->id);
+-	if (!rc)
++	if (!rc) {
++		/* If PF or FV driver was bound, let's add some more sysfs files */
++		if (pci_drv->is_pf)
++			device_add_groups(pci_dev->dev, pf_groups);
++		if (pci_drv->is_fv)
++			device_add_groups(pci_dev->dev, fv_groups);
+ 		return rc;
++	}
+ 	if (rc < 0) {
+ 		pci_dev->driver = NULL;
+ 		pm_runtime_put_sync(dev);
+
+
+
+
+Add some proper error handling if device_add_groups() fails, and then do
+the same thing to remove the sysfs files when the device is unbound from
+the driver, and you should be good to go.
+
+Or is this what you all are talking about already and I'm just totally
+confused?
+
+thanks,
+
+greg k-h
