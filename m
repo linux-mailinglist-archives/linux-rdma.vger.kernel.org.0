@@ -2,77 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F09320905
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Feb 2021 08:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A26A32095B
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Feb 2021 10:26:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbhBUHAC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 21 Feb 2021 02:00:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229661AbhBUHAC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 21 Feb 2021 02:00:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52AD064E5C;
-        Sun, 21 Feb 2021 06:59:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613890762;
-        bh=DdlbG/BSpVZo5h0GvsNU+dYWOsmflWmL/oFizWNBOc4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YdvC4nd3lOK03Gk2RW6xLtLcy1Ub6w3Y0zsjc6ROPLCyZeqoO9tNS+HH5TSubL7r9
-         EzLXIFMavxF8ywhvgH15zG6MyhsKxgL8hkwxRcL+FhWRcYzsvaUS7KyMLH1MbB/gkq
-         JHF+GVhYnHPqM7HZP4jhqabx6GTTF8CSHEJBknPRU7MWQS69p1AxP1ywPwifibx576
-         I3Ddpsm+58hVxoRwTmy+rrJK9eqG1+lSrCQHIJbzX3GiPQC+7VwxD5Z/Zh2Lshek0o
-         v+pCmdrnE9K2l5m/C/7H0UJA3sxldUfoI/BaCZwBW8nf2CN9NeiGBfUOp18iTOySIh
-         2Zs2bODpDRJAg==
-Date:   Sun, 21 Feb 2021 08:59:18 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Subject: Re: [PATCH mlx5-next v6 1/4] PCI: Add sysfs callback to allow MSI-X
- table size change of SR-IOV VFs
-Message-ID: <YDIExpismOnU3c4k@unreal>
-References: <YC90wkwk/CdgcYY6@kroah.com>
- <20210220190600.GA1260870@bjorn-Precision-5520>
+        id S229540AbhBUJ0C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 21 Feb 2021 04:26:02 -0500
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:6308 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229502AbhBUJZ7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Feb 2021 04:25:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1613899559; x=1645435559;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=bD/dqpgXUyW6ZvN2ottxeox9axwAonJXCC7bvYLk774=;
+  b=M81BokOuqRy6k/1VR+aCJqhdjcfyCE89zMsGLDPYfiVDjUQkeaZ6lY2o
+   x4byKzO1MhoN8/l/NAEDtp/+uLUZMJI49Yyy+OnWrfn8E4lhlwRuCPB8U
+   0h04mvO9yb3xM83c4MAQOwATndPbrWKmeH2fFQvsaYqVt/PwRhk5I1HpP
+   8=;
+X-IronPort-AV: E=Sophos;i="5.81,194,1610409600"; 
+   d="scan'208";a="85966087"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 21 Feb 2021 09:25:12 +0000
+Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id 93E65A2047;
+        Sun, 21 Feb 2021 09:25:10 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.225) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sun, 21 Feb 2021 09:25:07 +0000
+Subject: Re: ibv_req_notify_cq clarification
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <bd5deec5-8fc6-ccd6-927a-898f6d9ab35b@amazon.com>
+ <20210218125339.GY4718@ziepe.ca>
+ <5287c059-3d8c-93f4-6be4-a6da07ccdb8a@amazon.com>
+ <20210218162329.GZ4718@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <51a8fa8c-7529-9ef9-bb52-eccaaef3a666@amazon.com>
+Date:   Sun, 21 Feb 2021 11:25:02 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210220190600.GA1260870@bjorn-Precision-5520>
+In-Reply-To: <20210218162329.GZ4718@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.225]
+X-ClientProxiedBy: EX13D41UWC004.ant.amazon.com (10.43.162.31) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 01:06:00PM -0600, Bjorn Helgaas wrote:
-> On Fri, Feb 19, 2021 at 09:20:18AM +0100, Greg Kroah-Hartman wrote:
->
-> > Ok, can you step back and try to explain what problem you are trying to
-> > solve first, before getting bogged down in odd details?  I find it
-> > highly unlikely that this is something "unique", but I could be wrong as
-> > I do not understand what you are wanting to do here at all.
->
-> We want to add two new sysfs files:
->
->   sriov_vf_total_msix, for PF devices
->   sriov_vf_msix_count, for VF devices associated with the PF
->
-> AFAICT it is *acceptable* if they are both present always.  But it
-> would be *ideal* if they were only present when a driver that
-> implements the ->sriov_get_vf_total_msix() callback is bound to the
-> PF.
+On 18/02/2021 18:23, Jason Gunthorpe wrote:
+> On Thu, Feb 18, 2021 at 05:52:16PM +0200, Gal Pressman wrote:
+>> On 18/02/2021 14:53, Jason Gunthorpe wrote:
+>>> On Thu, Feb 18, 2021 at 11:13:43AM +0200, Gal Pressman wrote:
+>>>> I'm a bit confused about the meaning of the ibv_req_notify_cq() verb:
+>>>> "Upon the addition of a new CQ entry (CQE) to cq, a completion event will be
+>>>> added to the completion channel associated with the CQ."
+>>>>
+>>>> What is considered a new CQE in this case?
+>>>> The next CQE from the user's perspective, i.e. any new CQE that wasn't consumed
+>>>> by the user's poll cq?
+>>>> Or any new CQE from the device's perspective?
+>>>
+>>> new CQE from the device perspective.
+>>>
+>>>> For example, if at the time of ibv_req_notify_cq() call the CQ has received 100
+>>>> completions, but the user hasn't polled his CQ yet, when should he be notified?
+>>>> On the 101 completion or immediately (since there are completions waiting on the
+>>>> CQ)?
+>>>
+>>> 101 completion
+>>>
+>>> It is only meaningful to call it when the CQ is empty.
+>>
+>> Thanks, so there's an inherent race between the user's CQ poll and the next arm?
+> 
+> I think the specs or man pages talk about this, the application has to
+> observe empty, do arm, then poll again then sleep on the cq if empty.
+> 
+>> Do you know what's the purpose of the consumer index in the arm doorbell that's
+>> implemented by many providers?
+> 
+> The consumer index is needed by HW to prevent CQ overflow, presumably
+> the drivers push to reduce the cases where the HW has to read it from
+> PCI
 
-BTW, we already have all possible combinations: static, static with
-folder, with and without "sriov_" prefix, dynamic with and without
-folders on VFs.
+Thanks, that makes sense.
 
-I need to know on which version I'll get Acked-by and that version I
-will resubmit.
+I found the following sentence in CX PRM:
+"If new CQEs are posted to the CQ after the reporting of a completion event and
+these CQEs are not yet consumed, then an event will be generated immediately
+after the request for notification is executed."
 
-Thanks
+Doesn't that contradict the expected behavior?
