@@ -2,94 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE29320AF4
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Feb 2021 15:37:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BE5320B0B
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Feb 2021 15:47:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbhBUOgv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 21 Feb 2021 09:36:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhBUOgu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Feb 2021 09:36:50 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C22C061574;
-        Sun, 21 Feb 2021 06:36:10 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id e9so6014552plh.3;
-        Sun, 21 Feb 2021 06:36:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0NKlohU11NhDaMLzPFWNpnCD3UlsUYj1N/lz0ikZqEU=;
-        b=unte5hEVeIHbWIlnmFSIky6LLV07dwUI9HCak7zYa6fyGvPNNKaCoM0RYeToLptvNz
-         uiOpXFxkFPEj53cmXnQRg2GbmHWGmxAN0kJSuZ4fgS7OVLsUWzPRq1tu9Y49DDDAa7jJ
-         OqA++CAkcigfdc0vp6o9fRs6YAmiLH3GiH+9QfFcFUjRrL2gBNl31UqDuLWnxyS/Lb7c
-         rNkWE2Ei3xaQh5TdWWyinKkTiZu5E+Z/YFSIliBwjPW+AHOuttKjvwryP2s0GCzCC80a
-         qFaMSy4szmUCE/mJ4bUqpjoAywITS6MSST35bVbaah6hDvVMSKL7xtI4EyLPd9tS+n9p
-         1rUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0NKlohU11NhDaMLzPFWNpnCD3UlsUYj1N/lz0ikZqEU=;
-        b=lzYyLRb2MCzL29IOWCZnEdcVvIFktTcTQ8JPtvomD40HytvouG+Ojx9y56Mbl1SDnr
-         vCybXy7Mwa/Rs2gGVowbTIDxkgI5ocw6KYCd/VFGncWItIQV3nbRZXFIsrGP5RlJRHk5
-         otCNsSVwUYBdavfG7ZXDva71g467SCNPa7cGAvgYQO6nCZz6LoYi2oX7Mvcg5z2D+3MF
-         xu2QAx8K19pV6ui5r3g9dWhBQXDxgl9VyWZrNA5PGWkhcgMbg8d85sNDvwXFd5mU9k3C
-         6KMvJpgot24kXVYkiPi1aHRQgVqEvmRWjAF0s6qYtl9X9GOkz0IVr+rQwRE+SBQnDLuy
-         ekZg==
-X-Gm-Message-State: AOAM531yNLWHDbXPdSQ2AbnZLoR6a6Xm47ula5kbF4lVCO2zPTOBkONs
-        1kuXWuDzJb1+xqbPLCbC0aw=
-X-Google-Smtp-Source: ABdhPJx/3JBAbs1QqHYNQuzH/72GS4CrMvmYREX2IaZalk4T+qmnBdKr18y3/UzCAnPzfq4QS34oVw==
-X-Received: by 2002:a17:90a:1904:: with SMTP id 4mr18658104pjg.212.1613918169730;
-        Sun, 21 Feb 2021 06:36:09 -0800 (PST)
-Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
-        by smtp.gmail.com with ESMTPSA id m16sm16142189pfd.203.2021.02.21.06.36.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 06:36:09 -0800 (PST)
-From:   Chuhong Yuan <hslester96@gmail.com>
-Cc:     Tariq Toukan <tariqt@nvidia.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        Moni Shoua <monis@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chuhong Yuan <hslester96@gmail.com>
-Subject: [PATCH] net/mlx4_core: Add missed mlx4_free_cmd_mailbox()
-Date:   Sun, 21 Feb 2021 22:35:59 +0800
-Message-Id: <20210221143559.390277-1-hslester96@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S229926AbhBUOpU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 21 Feb 2021 09:45:20 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1388 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229958AbhBUOpQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Feb 2021 09:45:16 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B603271d40002>; Sun, 21 Feb 2021 06:44:36 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 21 Feb
+ 2021 14:44:35 +0000
+Received: from dev-l-vrt-092.mtl.labs.mlnx (172.20.145.6) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 21 Feb 2021 14:44:34 +0000
+From:   Alaa Hleihel <alaa@nvidia.com>
+To:     <linux-rdma@vger.kernel.org>
+CC:     <leonro@nvidia.com>, <jgg@nvidia.com>
+Subject: [PATCH rdma-core] kernel-boot: Fix VF lookup
+Date:   Sun, 21 Feb 2021 16:44:19 +0200
+Message-ID: <20210221144419.3265692-1-alaa@nvidia.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613918676; bh=7ZAc8gQd0HxcPYSyZjK8cVBolMOX9ra5Rb9W1VuRA6k=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=BC/8yEEPyKX5sibRbvbnlxunK/USVSvHE7oMKWAkqqh5Diieq5IpAUr08TT90DrX3
+         mLyICuCtl+6y3vd5NFZoOLVl9wiALxksRYwS6DMe/pZ4cC3a9txzb6npM5wQI/T0lw
+         5YccJCyW/QPFDJo+ZbGQGnWJFNyVUIiReNAlfNXNU5NTVQL91v7xDg6mrRS19Da/63
+         ayhIsgznQYMyVJTc1ROPjyx4MpIOFylIVx+kP9IrZriG2BHgqI4Dsw9HDuTZpRHB2l
+         16dIXwJt2sEax4tJL3XF6BOWVEU9D80NOBByLu/intarY3xSTfZ8EmJqZdaqLrqS3M
+         iw+KfvYcRYkGg==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-mlx4_do_mirror_rule() forgets to call mlx4_free_cmd_mailbox() to
-free the memory region allocated by mlx4_alloc_cmd_mailbox() before
-an exit.
-Add the missed call to fix it.
+In function get_virtfn_info() we only compared the PCI function
+number. That is not enough as we can match with wrong device.
+This issue can be seen on systems with a large numbers of VFs.
 
-Fixes: 78efed275117 ("net/mlx4_core: Support mirroring VF DMFS rules on both ports")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Fix it by also comparing the PCI slot numbers.
+
+Fixes: 72f852c72a78 ("kernel-boot: Separate PCI fill function")
+Signed-off-by: Alaa Hleihel <alaa@nvidia.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/net/ethernet/mellanox/mlx4/resource_tracker.c | 1 +
- 1 file changed, 1 insertion(+)
+Pull request at github: https://github.com/linux-rdma/rdma-core/pull/950
+---
+ kernel-boot/rdma_rename.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
-index 394f43add85c..a99e71bc7b3c 100644
---- a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
-@@ -4986,6 +4986,7 @@ static int mlx4_do_mirror_rule(struct mlx4_dev *dev, struct res_fs_rule *fs_rule
- 
- 	if (!fs_rule->mirr_mbox) {
- 		mlx4_err(dev, "rule mirroring mailbox is null\n");
-+		mlx4_free_cmd_mailbox(dev, mailbox);
- 		return -EINVAL;
- 	}
- 	memcpy(mailbox->buf, fs_rule->mirr_mbox, fs_rule->mirr_mbox_size);
--- 
-2.27.0
+diff --git a/kernel-boot/rdma_rename.c b/kernel-boot/rdma_rename.c
+index e1ec8b198780..4af9e4a396f2 100644
+--- a/kernel-boot/rdma_rename.c
++++ b/kernel-boot/rdma_rename.c
+@@ -338,7 +338,8 @@ static int get_virtfn_info(struct data *d, struct pci_i=
+nfo *p)
+ 			ret =3D -ENOMEM;
+ 			goto err_dir;
+ 		}
+-		if (vf.func =3D=3D v.func) {
++		if (vf.func =3D=3D v.func &&
++		    vf.slot =3D=3D v.slot) {
+ 			p->vf =3D atoi(&dent->d_name[6]);
+ 			break;
+ 		}
+--=20
+2.26.2
 
