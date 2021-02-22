@@ -2,60 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDFB322049
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Feb 2021 20:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B0B322246
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Feb 2021 23:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232490AbhBVTia (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Feb 2021 14:38:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231397AbhBVTi2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Feb 2021 14:38:28 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B9BC061574
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Feb 2021 11:37:48 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id z190so13815848qka.9
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Feb 2021 11:37:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FYbFJDhKg60lLbX0Obo0od+A8LWTXpgulppUOUHY5Ws=;
-        b=aCDQL/pH49A9A3sKIAY6ydX1W9f2VecAPEKZmd4apN/l2eAZH8mJ4e25T1o3HzZz+I
-         qhFdFgSIRnQPSNDJIGudD2zC98uhfY6ZMe3SYavmJe+BF6nNQh9/G4aVTBwhNQwroBB+
-         8LgcPbnpkSbjbjG0YN4n8jvfSa2tzvDs3dCzF0Wu8ukC8h05lq+R/aHORc6ewDWIfsS2
-         zKxsuHwlGbKvMcShNrRoyGM5Tmm239plI0f9NDX6K51ekeq0winwqniT0Ct+hcxgAhMI
-         /U7f10XOllLfNziFH+YZXlPFWPT464jud58MfudmCIZe+lY5dbH6CsIQtgDO+H5tvP2U
-         HvfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FYbFJDhKg60lLbX0Obo0od+A8LWTXpgulppUOUHY5Ws=;
-        b=OA2AbafPAJcblqdND8Ste+FNcx+KF+7Md858vlLq5zM5R+pmsYpJ+y2aOe3j9EiFeD
-         /7OFsWxuh1F2AB5MKP01YNiln/yMv4vigaQk84a6ceQJX/dinmchQ8+sKOzVvv/Bc3VK
-         dywa0GuUYoGwTfupe3qhaqi/HLrodC41UGNynuoDqS3m8h0SXNIOxaUjx7RWgCxLL+1/
-         UGIKVNXCGO8cIRajNM7ztHcOgCqzQYdcDFpZmjV4raqNqOlRSBF5jLIp23+dqdliG+KY
-         r2MwPBM28MccFW44Q+t9lcERRn/ahM5Wgr4q+roseEoW4WAeoiQbpmP8H7fm4S1c+K5X
-         MVdQ==
-X-Gm-Message-State: AOAM532kjh5tbmI8A1W83k/IA1URS1zEHIFDjWcbeVXyvtBREzZ9m/fo
-        lnpK2mPm2uGKEftHQy1xv2Uciw==
-X-Google-Smtp-Source: ABdhPJwyP3qxUVzbR8gt94ZjFcCzRaPbDj210qZEn4dSpWf1jL6EiCNZYw99xevRCP3xglPI8vPphg==
-X-Received: by 2002:a05:620a:14af:: with SMTP id x15mr23357916qkj.392.1614022667785;
-        Mon, 22 Feb 2021 11:37:47 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id b191sm5226211qkc.74.2021.02.22.11.37.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 11:37:47 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lEH1e-00EalI-MR; Mon, 22 Feb 2021 15:37:46 -0400
-Date:   Mon, 22 Feb 2021 15:37:46 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: ibv_req_notify_cq clarification
-Message-ID: <20210222193746.GM2643399@ziepe.ca>
+        id S231695AbhBVWlu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Feb 2021 17:41:50 -0500
+Received: from mga05.intel.com ([192.55.52.43]:59966 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231664AbhBVWlt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 22 Feb 2021 17:41:49 -0500
+IronPort-SDR: j8d6pqI2SgbPHN646VFydRDwl9wstqtQGA+nn4BWmKFF6A11aNn3pYlpZj43tdAtoXE2mncsm2
+ DePtg7Fgy37Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="269564395"
+X-IronPort-AV: E=Sophos;i="5.81,198,1610438400"; 
+   d="scan'208";a="269564395"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 14:41:08 -0800
+IronPort-SDR: 5NRVWKBb/0XFB4UixcQwRGMGJ6yFq/DIRr//EaYHYUpzlCM4X93uq6NAhEZPN/SJ6g2pBjCVhf
+ eZdzr3bWrieQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,198,1610438400"; 
+   d="scan'208";a="514965774"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga004.jf.intel.com with ESMTP; 22 Feb 2021 14:41:08 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 22 Feb 2021 14:41:08 -0800
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 22 Feb 2021 14:41:07 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Mon, 22 Feb 2021 14:41:07 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.173)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Mon, 22 Feb 2021 14:41:07 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f2HNaInf2KcdFjDG/efSrvmTNhJCHEmSNXkytYuJzIW7ZZFYDyATUJjGtiyNgabtmhZKgODKdfufzLp+IHsSbIScxMqSbttAkBRuSCsFqrbw8/4zHzeobBOKKDaJiYVO4OZaZHsCLEsk+sslaZ6Od7tXsQJ/yJBHopNAAhKP84IIWu7U/0yhFQZCnS09xY3mgVVwpuyoCt7RFdjkmTqGzDzQYRJbMX68MSY78RZoW/Px97mgHlMeVdew89Rs0hRYo0r37PlAWWsNCfp/4m6D9LlRfejJiJeY6jyjX7obG5bHfxCvjHWh0iLtiRnsHA+FQ6qPysTss1uAUW05vutOPA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9QOJj9RZayLdrVthSSjtuDbtaxTMQjcsLd4cm3g/k7U=;
+ b=jCvYz/PUFBguCThj8fJq+WeZJXVIeEaqv/fuRb4eCi2MpSTY4VW7K7WV0pVSUFwaM7aU3lVEEDBSDpA5uHD7wlun+v4XSxZ1VEibn6+OLM/rlJhi+1yMaePfexyflFaNqEVHfp31S/9mHvsmHrxmQkRIjm1YzOOOhOAn/6qQebVrIn6hpyEuY+dBWGJbt6ywp8HyDE9uZd+n0OpZYKxEz5KAvVtTuXrhKKDONwLsI8woItvfek2q+J4+dEysSS3AZQKFT2NGd1YqnVPz94U7rbrkHC8DAJBcoB3Bg/kILTEeyitp2mscOXzKzeHKBIv/JyFQIrPw2soFSj5C1joA1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9QOJj9RZayLdrVthSSjtuDbtaxTMQjcsLd4cm3g/k7U=;
+ b=FiC2ZggzzQWKTktg0BOlDNxckhMs1IZuEQ1Cdv3ScXAjxeWSB/J3P8/0jL1wFC13FDuSgJMDIRwCtW0Z3EE7iE4IbDQ1tn6wr4bRPBP9rTNBLZ8UDeNdzcfMDOb2gYhdtLQFimuY3uCYQhXaKq5G0NiWoSaJE0oCF+UJXM6V4Sk=
+Received: from MW3PR11MB4651.namprd11.prod.outlook.com (2603:10b6:303:2c::21)
+ by CO1PR11MB5042.namprd11.prod.outlook.com (2603:10b6:303:99::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.32; Mon, 22 Feb
+ 2021 22:41:06 +0000
+Received: from MW3PR11MB4651.namprd11.prod.outlook.com
+ ([fe80::435:317d:1c41:9755]) by MW3PR11MB4651.namprd11.prod.outlook.com
+ ([fe80::435:317d:1c41:9755%6]) with mapi id 15.20.3868.033; Mon, 22 Feb 2021
+ 22:41:06 +0000
+From:   "Hefty, Sean" <sean.hefty@intel.com>
+To:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>
+CC:     RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: RE: ibv_req_notify_cq clarification
+Thread-Topic: ibv_req_notify_cq clarification
+Thread-Index: AQHXBeA7OnmuUcWYc0yznONdEF6dmapd3meAgAAx6ACAAAi4gIAEQhUAgAHbcQCAAB6egIAABYGAgAA6NACAAB8mUA==
+Date:   Mon, 22 Feb 2021 22:41:06 +0000
+Message-ID: <MW3PR11MB46519518F772EAFA758C45229E819@MW3PR11MB4651.namprd11.prod.outlook.com>
 References: <bd5deec5-8fc6-ccd6-927a-898f6d9ab35b@amazon.com>
  <20210218125339.GY4718@ziepe.ca>
  <5287c059-3d8c-93f4-6be4-a6da07ccdb8a@amazon.com>
@@ -65,83 +82,136 @@ References: <bd5deec5-8fc6-ccd6-927a-898f6d9ab35b@amazon.com>
  <e26a3e90-cc8b-d681-5d6b-4e363aa1933c@amazon.com>
  <20210222155559.GH2643399@ziepe.ca>
  <8277bebb-8994-af0f-52fc-972c7f8260dd@amazon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <8277bebb-8994-af0f-52fc-972c7f8260dd@amazon.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: amazon.com; dkim=none (message not signed)
+ header.d=none;amazon.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [73.67.182.137]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ce95e656-ce01-4a74-7c1b-08d8d782f10b
+x-ms-traffictypediagnostic: CO1PR11MB5042:
+x-microsoft-antispam-prvs: <CO1PR11MB5042F2DB9057700A2A5008879E819@CO1PR11MB5042.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AEdJycXcYgTppg9fQejDpvJzR0XG85b3aWQvku28pCZNXcbE+GcYQHGhPSlBsfwPQ4tfvwGJqyti+8R1YyhLLUhx0tEKQk3OXB+bnJt7KyNg5BBSY7u502AqGFVsjLOkiacZI4O3s7XKPsQWwbBFPEqRNvvzeGtNjW5Y6tdizUpWI5b4PBkufEzbTP+SH9RqYd+M5rtiqLZG8kWfhPjOasjAPyluqUKBc4kLWyc8C58bPDTXsZKEY2QwKegj/eVE6Cva6k9c673uijn+ARYm8FurKkiM7NP4W+CikiRAqR0a0Gd+JKhTGUlUkNmoyjibeyeQxw8v4VxMZCoYlo04VtZ8HqJV8lPO5lqMKGkhgQJ+aYaknJ3I64CI15vtnTX288OmLxgfRG0QUDfiqD01hkMjH8In0Cei0hKEct8C6EKZLzWL7SNojyohYLTRvPaSgslQlosk//LvGsE+aqEBb/2GUTpETrYdNdJ0ckpSvp8dtkmxf8AVcT6xdqYYNmQbPR9tVKpH0JpsLNtFAg9qJg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4651.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(136003)(396003)(346002)(366004)(64756008)(66446008)(66946007)(76116006)(7696005)(478600001)(6506007)(186003)(110136005)(26005)(316002)(52536014)(4326008)(5660300002)(2906002)(7116003)(9686003)(55016002)(66556008)(66476007)(71200400001)(86362001)(8936002)(33656002)(83380400001)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?SzVSUzRlQ1FlZE9NRlFPMEd1ZmozS09zZTVoTWY3Mm80dTVMdUlUTHV3NFZy?=
+ =?utf-8?B?T2ZOUXI3OTFRdXBCU2sveXVmMUdVYUFwN01PYUl3UzlnbXNjSkQrSEpKenVn?=
+ =?utf-8?B?bnAramFKNEtMZDNlRllLakJVZVE0Z1pCK3licFFiRFJDRkcwNC96RTMzUmJ0?=
+ =?utf-8?B?ejdwTmtkVVF6Sk9tU3R3YzVoT3R5NFYyRTBxQ0cvOEFESFVJRDZockQzb0ZQ?=
+ =?utf-8?B?dXg5VmcvS25mVUdmdW1PRkxSRnpYRzdwOVNPMlIwNVdLZWVjcmdvK3lhSGNT?=
+ =?utf-8?B?VERYbEdiWk9xMkJrUjV2T250blMrc2pqK0hzb0hyN2JxdVFFVGVvUDFFeXor?=
+ =?utf-8?B?NVdZbFduTHBYOUtzS2d6S2lxbzB4cm1LSlhGblZFSFZYSzZ1SGVaeWhNSDZm?=
+ =?utf-8?B?TzcxbjluMTI2RlJ1TUFVdUtyOGMvclltcDNMRVFOejY4SmZLNC8wWjBDc2dX?=
+ =?utf-8?B?UVVpcXVkNmtPL3R4emxjRnZKRllid2M4UVVSQ09FdFJoaXFKejB5MzU4R0dH?=
+ =?utf-8?B?RWtnNjJLSDBqbENwQ0NTOHdoNUYvVTU2YWdWNnhPRGlzSnlqbGJzVUtmY1dn?=
+ =?utf-8?B?Rll3L0psSXV1LzhXWmZGUHQ3dkxESkRoTDU4YjNMV1MrUHFpTHZSWHEyR3lU?=
+ =?utf-8?B?dFJ5TmJsR05DNzdLdUZvK2JOTXNXZlBMWGtwc0JsY1dUZExDcFZ6bHpPS25F?=
+ =?utf-8?B?UUJtSXhSV2ZqOUlsSFlSTzdhR0JneDdJYkhPL2NBellENXRWZmFiRDBJclE0?=
+ =?utf-8?B?ZFpGTWhYZi84aFJiVGV1bWdBRTNBVm1iY2Q2bkpKcTQxRkdDazVFMGMzcDF2?=
+ =?utf-8?B?QWtPSDlDUFVDeFYvMFJIWXpTZmQxWkI2R0FiY3I3ejZnMlVqUWdScVg0V1hi?=
+ =?utf-8?B?NnQ4RXN1N29ZOGhHSDdzK2FnTEZLNnhCRDZ2VkNmMVE2Mnc4emt2M3dYQUt1?=
+ =?utf-8?B?TXlOcTZFUERMMHBNakhFeEUwYlRMM2puc21vVVZSbHpmR0xobEt6T2FXZUlp?=
+ =?utf-8?B?T043anB4OGl0Y2QvaXlROUVBNVdzdzlUQWJYcjdQcGIyYUFmd3ErNkY0NS9v?=
+ =?utf-8?B?WVNmZDZPSVRhUFlnNFpBUGNNZG9SMVZob0VTUzVBaDJCZG9reXozNWFseUUx?=
+ =?utf-8?B?QjU3RkdRRkVhdmZjeHQrTCtIeXZqcjVraFo2RjFyL1d6cTNGc3VkTTlmYjhh?=
+ =?utf-8?B?bHBvd29ZY3RaVDZlSzFlUnpXY01idmFqMkNPbXZYM01LRmhVWmlMZ20rNUNm?=
+ =?utf-8?B?TGlsdXNKUVVSeW12Q0E0N2w4Y2Jxa2R6ckZnRGJjQUdSSGZvcHZVU2NtaCs3?=
+ =?utf-8?B?YW5VODVGejBmMmRJcDJONEJaN2c3UDV5YUtPWkM1NzNGVS96NHQ3U0lseC83?=
+ =?utf-8?B?UGQ3S0E5bkhjWFM5S0VkcTUxdG5CNkg5Mnl6M1ZEcmtCZXJycTVtLzMvSXpy?=
+ =?utf-8?B?K1lDaW1LeXJUZEFJNmMwazlnVzBvOUhYWUxncFFuVGhjc1N1VWZhUzFuNUVZ?=
+ =?utf-8?B?bU80U0hUSkhpdERxQ2Q4L2xnRVgwRkJYRlZaa25xV0c2dHFDbTJuZWV3T1E3?=
+ =?utf-8?B?QWhWdHpiUzlzNitCWFhKYUZnY3l0MlRieU51MTl5d3NQM0ZPT1BqM3V2WVNW?=
+ =?utf-8?B?QndldmxUQ212YlZyNWNKazJQWmd5UXFYSFd3bmVrSHQwQUJIL0NxOFZPem1v?=
+ =?utf-8?B?ZG1nWGY0VjJ4dWN0R29wY0pIMzR2V2hZOXpabEtIVlowd0hQZTFVMjZZUWg5?=
+ =?utf-8?Q?2wEFRTKAizVUVQTSoYdM3GtZpPlXGO445PUFkSO?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4651.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce95e656-ce01-4a74-7c1b-08d8d782f10b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Feb 2021 22:41:06.1602
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cf2pFTeQ3y5Iw7//uwv9teLzPtjjywHYy/XTHSMVIqNiAjQPxtmQdKa+cjZRVf0ZqCRuj36EHe3FNQuHM1dW9w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5042
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 09:24:18PM +0200, Gal Pressman wrote:
-> On 22/02/2021 17:55, Jason Gunthorpe wrote:
-> > On Mon, Feb 22, 2021 at 05:36:17PM +0200, Gal Pressman wrote:
-> > 
-> >> "Mellanox HCAs keep track of the last index for which the user received an
-> >> event. Using this index, it is guaranteed that an event is generated immediately
-> >> when a request completion notification is performed and a CQE has already been
-> >> reported."
-> > 
-> > I don't think verbs exposes this behavior.
-> 
-> So in theory this hardware could generate events that the user app
-> doesn't expect?
-
-Not really, it shuffles around how race conditions are resolved.
-
-> But looking at ibv_ud_pingpong for example, I don't understand how
-> that could even work.  The test arms the CQ on creation (consumder
-> index 0), calls ibv_get_cq_event(), wakes up and immediately arms
-> the CQ again (before polling, consumer index is still 0).
-
-By IBTA spec this is wrong and racey.
-
-> This means that the next ibv_get_cq_event() will wake up immediately, as the CQ
-> was armed twice with the same consumer index and the first completion already
-> exists. Surely that's not what's meant to happen?
-
-If the driver for this HW stuffs the consumer index then yes, you'd
-get a wakeup as though the new entries were delivered instantly after
-the arm. If it stuffs the current producer index then you get behavior
-like IBTA describes.
-
-I'd say they are both compatible ways to approach this, the app can't
-tell the state of the CQ, so it can't know if the new CQEs were
-delievered before or after it ARM'd it.
-
-> Do you have a way to verify whether this test gets stuck? Maybe I am
-> missing something?
-
-If the mlx5 implementation is doing like you say then it will not get
-stuck on that HW, but it is not to spec
-
-> What do you mean by arming a non-empty CQ?
-
-The arm only has meaning if you know the CQ is empty because then you
-can reliably catch the empty->!empty transition, which is the whole
-point.
-
-If the CQ is non-empty then, by spec, if no new events arrive it will
-never be signaled - the app must re-poll it on its own so why arm it?
-
-> The man pages suggest a scheme where the app should call ibv_get_cq_event()
-> followed by an ibv_req_notify_cq(), the CQ polling/emptying comes after these,
-> so at the time of arm the CQ isn't empty.
-
-It doesn't show how to re-arm it seems
-
-I'm repeating from memory here, I haven't checked the specs, but that
-Sean agrees seems like I'm remembering it right :)
-
-The question you seem to be asking is what happens if you re-arm a
-non-empty CQ, do you immediately get an event or not? It should be
-easy enough to test on siw, rxe and mlx5 and see
-
-I expect by spec arming a non-empty CQ will not generate an event. The
-spec was written to support very simple hardware that would simply
-generate an event the next time it writes a CQE then atomically clear
-the arm.
-
-Does look like a documentation update is in-order though!
-
-Jason
+PiA+IEl0IGVsaW1pbmF0ZXMgcmFjZXMsIGlmIHRoZSBjb25zdW1lciBzYXlzICdJIHJlYWQgdXAg
+dG8gWCBzZW5kIG1lIGFuDQo+ID4gaW50ZXJydXB0IGlmIFgrMSBleGlzdHMnIHdoZW4gWCsxIGFs
+cmVhZHkgZXhpc3RzIGlmIHRoZXJlIGlzIGEgcmFjZQ0KPiA+IHByb2R1Y2VyIGhhcyBhbHJlYWR5
+IHdyaXR0ZW4gaXQuIFNvIHNlbmQgYW4gaW50ZXJydXB0Lg0KPiANCj4gUmlnaHQsIHRoYXQncyB3
+aGF0IEkgd2FzIGdldHRpbmcgYXQgaW4gbXkgZmlyc3QgcXVlc3Rpb24sIHRoaXMgaXNuJ3QgdGhl
+IG5leHQNCj4gY29tcGxldGlvbiBmcm9tIHRoZSBkZXZpY2UncyBwZXJzcGVjdGl2ZS4NCg0KRnJv
+bSB0aGUgc3BlYzoNCg0KUmVxdWVzdHMgdGhlIENRIGV2ZW50IGhhbmRsZXIgYmUgY2FsbGVkIHdo
+ZW4gdGhlIG5leHQgY29tcGxldGlvbg0KZW50cnkgb2YgdGhlIHNwZWNpZmllZCB0eXBlIGlzIGFk
+ZGVkIHRvIHRoZSBzcGVjaWZpZWQgQ1EuIFRoZSBoYW5kbGVyDQppcyBjYWxsZWQgYXQgbW9zdCBv
+bmNlIHBlciBSZXF1ZXN0IENvbXBsZXRpb24gTm90aWZpY2F0aW9uIGNhbGwgZm9yIGENCnBhcnRp
+Y3VsYXIgQ1EuIEFueSBDUSBlbnRyaWVzIHRoYXQgZXhpc3RlZCBiZWZvcmUgdGhlIG5vdGlmeSBp
+cyBlbmFibGVkDQp3aWxsIG5vdCByZXN1bHQgaW4gYSBjYWxsIHRvIHRoZSBoYW5kbGVyLg0KDQpJ
+dCBtYXkgaGVscCB0byB0aGluayBvZiBpdCBpbiB0ZXJtcyBvZiBlZGdlIHZlcnN1cyBsZXZlbCB0
+cmlnZ2VyZWQuICBUaGUgSUIgc3BlYyBkZWZpbmVzIHRoZSBDUSBhcyBiZWhhdmluZyBzaW1pbGFy
+IHRvIGFuIGVkZ2UgdHJpZ2dlcmVkIG9iamVjdC4gIEkgd291bGQgZ3Vlc3MgdGhhdCA5OSUgb2Yg
+ZGV2ZWxvcGVycyB3b3VsZCBzdWNjZXNzZnVsbHkgd3JpdGUgYW4gZWRnZS10cmlnZ2VyZWQgYmFz
+ZWQgYXBwbGljYXRpb24gdGhhdCBoYW5ncy4gIEEgbGV2ZWwgdHJpZ2dlcmVkIHdhaXQgaXMgbXVj
+aCBlYXNpZXIgdG8gZ2V0IGNvcnJlY3QuDQoNCj4gU28gaW4gc3VjaCBjYXNlIHRoZSBjb25zdW1l
+ciBpbmRleCBpbiB0aGUgYXJtIGRvb3JiZWxsIGlzIHVzZWQgdG8gaW5kaWNhdGUgd2hhdA0KPiBz
+aG91bGQgYmUgY29uc2lkZXJlZCBhICJuZXciIGNvbXBsZXRpb24/IFRoaXMgaXMgbmV3IGZyb20g
+dGhlIGFwcCBwZXJzcGVjdGl2ZS4NCg0KVGhlIHZlcmJzIEFQSSBvbmx5IGd1YXJhbnRlZXMgdGhh
+dCB0aGUgQ1Egd2lsbCBiZSBzaWduYWxlZCB3aGVuIGEgbmV3IGNvbXBsZXRpb24gcmVsYXRpdmUg
+dG8gdGhlIEhXIGhhcyBiZWVuIHdyaXR0ZW4uICBJZiB0aGVyZSdzIGEgZHJpdmVyIHRoYXQgY29u
+dmVydHMgdGhlIGJlaGF2aW9yIGludG8gYSBsZXZlbCB0cmlnZ2VyZWQgb3BlcmF0aW9uLCBwcm9w
+cyB0byB0aGVtISAgVGhhdCBpbXBsZW1lbnRhdGlvbiBpcyBmYXIgbW9yZSBsaWtlbHkgdG8gbWFr
+ZSBpbmNvcnJlY3RseSB3cml0dGVuIGFwcGxpY2F0aW9ucyB3b3JrIHRoYW4gZXZlciBicmVhayBh
+IGNvcnJlY3RseSB3cml0dGVuIG9uZS4NCg0KPiBCdXQgbG9va2luZyBhdCBpYnZfdWRfcGluZ3Bv
+bmcgZm9yIGV4YW1wbGUsIEkgZG9uJ3QgdW5kZXJzdGFuZCBob3cgdGhhdCBjb3VsZA0KPiBldmVu
+IHdvcmsuDQo+IFRoZSB0ZXN0IGFybXMgdGhlIENRIG9uIGNyZWF0aW9uIChjb25zdW1kZXIgaW5k
+ZXggMCksIGNhbGxzIGlidl9nZXRfY3FfZXZlbnQoKSwNCj4gd2FrZXMgdXAgYW5kIGltbWVkaWF0
+ZWx5IGFybXMgdGhlIENRIGFnYWluIChiZWZvcmUgcG9sbGluZywgY29uc3VtZXIgaW5kZXggaXMN
+Cj4gc3RpbGwgMCkuDQoNCkluIHRoZSB3b3JzdCBjYXNlLCBhcm1pbmcgdGhlIENRIGp1c3QgcmVz
+dWx0cyBpbiBzZWxlY3QvcG9sbC9lcG9sbCByZXR1cm5pbmcgaW1tZWRpYXRlbHkgdGhlIG5leHQg
+dGltZSBpdCBpcyBjYWxsZWQuICBUaGUgdGhyZWFkIGZpbmRzIHRoZSBDUSBlbXB0eSwgcmVhcm1z
+IHRoZSBDUSBhZ2FpbiwgYW5kIHNlbGVjdC9wb2xsL2Vwb2xsIGZpbmFsbHkgYmxvY2suDQoNCj4g
+Pj4gUnVubmluZyB0aGlzIHdpdGggMzIgaXRlcmF0aW9ucywgdGhlIGNsaWVudCBkb2VzIHNvbWV0
+aGluZyBsaWtlOg0KPiA+PiAtIGFybSBjcQ0KPiA+PiAtIHBvc3Qgc2VuZCB4IDMyDQo+ID4+IC0g
+d2FpdCBmb3IgY3EgZXZlbnQNCj4gPj4gLSBhcm0gY3ENCj4gPj4gLSBwb2xsIGNxIChvbmNlLCB3
+aXRoIGJhdGNoIHNpemUgb2YgMTYpDQo+ID4+IC0gbm8gbW9yZSBwb3N0IHNlbmQgKHJlYWNoZWQg
+dG90X2l0ZXJzKQ0KPiA+PiAtIHdhaXQgZm9yIGNxIGV2ZW50IChidXQgYW4gZXZlbnQgaGFzIGFs
+cmVhZHkgYmVlbiBnZW5lcmF0ZWQ/KQ0KPiA+DQo+ID4gSSBkb24ndCBrbm93IG11Y2ggYWJvdXQg
+cGVyZi10ZXN0LCBidXQgaW4gdmVyYnMgYXJtaW5nIGEgbm9uLWVtcHR5IENRDQo+ID4gaXMgYXNr
+aW5nIGZvciB0cm91YmxlDQo+IA0KPiBEbyB5b3UgaGF2ZSBhIHdheSB0byB2ZXJpZnkgd2hldGhl
+ciB0aGlzIHRlc3QgZ2V0cyBzdHVjaz8gTWF5YmUgSSBhbSBtaXNzaW5nDQo+IHNvbWV0aGluZz8N
+Cg0KTG9va2luZyBhdCB0aGUgY29kZSwgSSBhZ3JlZSB0aGF0IGl0IGxvb2tzIHJhY3kgaW4gYSB3
+YXkgdGhhdCBjb3VsZCBjYXVzZSBpdCB0byBoYW5nLiAgTXkgZ3Vlc3MgaXMgbW9zdCBwZW9wbGUg
+cnVubmluZyBwZXJmdGVzdHMgYXJlIGxvb2tpbmcgZm9yIHRoZSBiZXN0IHBlcmZvcm1hbmNlIG51
+bWJlcnMsIHNvIGJsb2NraW5nIGNvbXBsZXRpb25zIGFyZSByYXJlbHkgZW5hYmxlZC4gIEFuZCBl
+dmVuIGlmIHRoZXkgd2VyZSwgaXQncyBzdGlsbCBhIHJhY2UgY29uZGl0aW9uIGFzIHRvIHdoZXRo
+ZXIgdGhlIHRlc3Qgd291bGQgaGFuZy4NCg0KPiBXaGF0IGRvIHlvdSBtZWFuIGJ5IGFybWluZyBh
+IG5vbi1lbXB0eSBDUT8NCj4gVGhlIG1hbiBwYWdlcyBzdWdnZXN0IGEgc2NoZW1lIHdoZXJlIHRo
+ZSBhcHAgc2hvdWxkIGNhbGwgaWJ2X2dldF9jcV9ldmVudCgpDQo+IGZvbGxvd2VkIGJ5IGFuIGli
+dl9yZXFfbm90aWZ5X2NxKCksIHRoZSBDUSBwb2xsaW5nL2VtcHR5aW5nIGNvbWVzIGFmdGVyIHRo
+ZXNlLA0KPiBzbyBhdCB0aGUgdGltZSBvZiBhcm0gdGhlIENRIGlzbid0IGVtcHR5Lg0KDQpUaGUg
+YXBwIGNhbiBkbzoNCg0KV2FrZXVwDQpXaGlsZSByZWFkIGNxZSBzdWNjZWVkcw0KCVByb2Nlc3Mg
+Y3FlDQpSZWFkIGNxIGV2ZW50DQpBcm0gY3ENCi8qIGNxZSdzIG1heSBoYXZlIGJlZW4gd3JpdHRl
+biBiZXR3ZWVuIHRoZSBsYXN0IHJlYWQgYW5kIGFybWluZyAqLw0KV2hpbGUgcmVhZCBjcWUgc3Vj
+Y2VlZHMNCglQcm9jZXNzIGNxZQ0KU2xlZXANCg0KT3Igc2hvcnRlbiB0aGlzIHRvOg0KDQpXYWtl
+dXANClJlYWQgY3EgZXZlbnQNCkFybSBjcQ0KV2hpbGUgcmVhZCBjcWUgc3VjY2VlZHMNCglQcm9j
+ZXNzIGNxZQ0KU2xlZXANCg0KSW4gYm90aCBjYXNlcywgYWxsIGNxZSdzIG11c3QgYmUgcHJvY2Vz
+c2VkIGFmdGVyIGNhbGxpbmcgYXJtLCBhbmQgaXQncyBwb3NzaWJsZSB0byByZWFkIGEgY3EgZXZl
+bnQgb25seSB0byBmaW5kIHRoZSBjcSBlbXB0eS4gIE9uZSBjb3VsZCBhcmd1ZSB3aGljaCBpcyBt
+b3JlIGVmZmljaWVudCwgYnV0IHdlJ3JlIHRhbGtpbmcgYWJvdXQgYSBzbGVlcGluZyB0aHJlYWQg
+aW4gZWl0aGVyIGNhc2UuDQoNCi0gU2Vhbg0K
