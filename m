@@ -2,120 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D73321C01
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Feb 2021 17:00:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F01E321C18
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Feb 2021 17:03:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230412AbhBVP7g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Feb 2021 10:59:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49888 "EHLO
+        id S230512AbhBVQDI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Feb 2021 11:03:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230411AbhBVP7a (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Feb 2021 10:59:30 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B80C061786
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Feb 2021 07:58:47 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id w1so2730995qto.2
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Feb 2021 07:58:47 -0800 (PST)
+        with ESMTP id S231185AbhBVQDF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Feb 2021 11:03:05 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE28C06121C
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Feb 2021 08:01:45 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id z190so13007006qka.9
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Feb 2021 08:01:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=n07VaxTY0kbB+VdtG9ROy4sSSmPU2dRQLBzVM0ZBz7E=;
-        b=Yqh1ikPAu5/XDu3ob7bxG4ON5Ojvl2kXbVvCYH8A3EXSyCxNXlgTurFsl7mfTra0X4
-         O8wd/nDs2txIH9cGahzAJmgTOApJ4luniDPCNv1PaqGgw2vf6VZ33bO1/YpHbaqowXzK
-         EiBfnce60ipXhW9OI8r/P3xjfbuLK6MpavM+F5k4Fr4ynqNo19p62ZykbRtWyyytjb6N
-         96T0vEmI9qBNlae3pTyJkDyZt20F7aF57Pb5TJWwSujuToukmDfa3joBNW9PM8oVy3kG
-         kPRW5BM+QC00dNZfyDkUMMYyT+spJAOUYvMdkp2P98MaoDFZ67Pp/+DLr0OIleZbNC+p
-         Xzvg==
+        bh=flHoT4LEzKs36kNMC+WTngFW26JQKdMWyWk6b8Lc9YI=;
+        b=gNpwiTZUF56xIEk3UM1YkSF64ykm9KhtuNitUW4dj8aPnIw0upXvNXfUso7iCLGHK+
+         Q0O+r+ffSeofAF3O8cLbmNeSVvvvx7SsqNhgwfqahUeceWx27KrcPx9W5QNIVGvsa9ml
+         qdtQhrlPIJAFkA4ptc/gJU1pvS4prxELhJOhpkyojQypjveGZFUdGn5mkwCsQ7CdEIQq
+         tx70j5PVptd+g8zaO+eTDyc/ZXA20moFGANCKQw8U4JmGNE4pJpfzSuoBemKOXBJdW4d
+         gisrQPiE1/7HCgTEwK8nPNgmXq4IY7X0OlwxBYQ70mnyzFlK9b7DSUTH+8KpwbjpPAs6
+         fHRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=n07VaxTY0kbB+VdtG9ROy4sSSmPU2dRQLBzVM0ZBz7E=;
-        b=H2jjgqwAzO5lGFzo0nH09MG06DmbF3G11RitsxnYG0y6M57jonUuOlF/kiqBe9zafW
-         0zODBRLHjuL8EN3z3HjfuclPV/UHy3ob2iXJ1GTr2x0dHhLyAgAmXDrdnCCVmJituK01
-         b/xw0HIY8M5aLE5wf3ARFBT6aGoGl45Zjmi4DGyeKYki00KYnPbcScJxytUJrL8Rt+yO
-         SLQguYGPLK6ssl7p/AdXjzf8zIe2xWd/eDT/kdokcZEyu02BfjsDkwJNbD5irMgN4CLH
-         d+tPQvPg6kvok43AoX/mNZux6LiPr4jzoQ6DN4Uq3e419G/xwnukrF4MApiLp05fMdi/
-         fXPw==
-X-Gm-Message-State: AOAM531YsobFWFcwnbEuNQJYhIBEN3biaDAu6B1Dbjhwosp6K9j8RIve
-        CnJs2rfyhIlUAWkqZvrZmmdmCQ==
-X-Google-Smtp-Source: ABdhPJyby2lV/pkUjOuAGtzhFcBs3hQo43DMUoohhVtah90nJbhZYkzBQWWSi40FRSmcZMEGzEaHjA==
-X-Received: by 2002:a05:622a:143:: with SMTP id v3mr20662916qtw.363.1614009526850;
-        Mon, 22 Feb 2021 07:58:46 -0800 (PST)
+        bh=flHoT4LEzKs36kNMC+WTngFW26JQKdMWyWk6b8Lc9YI=;
+        b=GJNYTu136wsAqkXqTh+0e1jfs5bOvIoxHxfWsaLg+kDQZlWc+FRABpBeG63hWgI2Sv
+         KZGB3YlG9oZtcfeTP2EaYlbe1hixCgUb+/0P/lVZi4enxFKj7Qi0zDAKHJq3DKh9n5Ez
+         EiaGdOi6rTdadFCkHTLCuQk/FG9lK1bSo8ckgsrkwxQzQetEjVyPhSjsXLANnwrKzJel
+         /mtAI0JJf6uv0TxXHWc3T8V1Hs8CYr0pwX7N1SYARY8Int8RwFkQa7jKgoTH+6TOyt3H
+         cxE0IiVd6a6VZYs2xWMm0rjZ2EVeRjj2Swpk83V89Cllwt4QfxEXf0DWy7lnOrzwWgTg
+         3tVg==
+X-Gm-Message-State: AOAM532TuX+VHz22dI/QuOXpHuYkhvTY7cRQeyuZL9y5IDHH509y6VFC
+        yZfOhv9IvmBMg6V7bFxhdADwb27y9jijcPBS
+X-Google-Smtp-Source: ABdhPJxclYCbHIhKIhazuEWwyaFEgpkv+P61/c8pkTWwKAG3rFDFD4sJjdkBx/SuquN+lv5ibnhlfw==
+X-Received: by 2002:a37:418d:: with SMTP id o135mr18521393qka.293.1614009704261;
+        Mon, 22 Feb 2021 08:01:44 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id x12sm12175675qkj.20.2021.02.22.07.58.46
+        by smtp.gmail.com with ESMTPSA id m9sm4425005qth.40.2021.02.22.08.01.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 07:58:46 -0800 (PST)
+        Mon, 22 Feb 2021 08:01:43 -0800 (PST)
 Received: from jgg by mlx with local (Exim 4.94)
         (envelope-from <jgg@ziepe.ca>)
-        id 1lEDbh-00ERHh-Or; Mon, 22 Feb 2021 11:58:45 -0400
-Date:   Mon, 22 Feb 2021 11:58:45 -0400
+        id 1lEDeZ-00ERKU-8R; Mon, 22 Feb 2021 12:01:43 -0400
+Date:   Mon, 22 Feb 2021 12:01:43 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Julian Braha <julianbraha@gmail.com>,
-        Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drivers: infiniband: sw: rxe: fix kconfig dependency on
- CRYPTO
-Message-ID: <20210222155845.GI2643399@ziepe.ca>
-References: <21525878.NYvzQUHefP@ubuntu-mate-laptop>
- <YDICM3SwwGZfE+Sg@unreal>
- <CAD=hENeCXGtKrXxLof=DEZjxpKyYBFS80pAX20nnJBuP_s-GBA@mail.gmail.com>
- <YDOq060TvAwLgknl@unreal>
+To:     liweihang <liweihang@huawei.com>
+Cc:     "leon@kernel.org" <leon@kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Re: [PATCH RFC rdma-core 0/5] libhns: Add support for Dynamic
+ Context Attachment
+Message-ID: <20210222160143.GJ2643399@ziepe.ca>
+References: <1612667574-56673-1-git-send-email-liweihang@huawei.com>
+ <20210209195359.GT4247@nvidia.com>
+ <fa076ca278504bf58da2c1e521be6748@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YDOq060TvAwLgknl@unreal>
+In-Reply-To: <fa076ca278504bf58da2c1e521be6748@huawei.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 03:00:03PM +0200, Leon Romanovsky wrote:
-> On Mon, Feb 22, 2021 at 10:39:20AM +0800, Zhu Yanjun wrote:
-> > On Sun, Feb 21, 2021 at 2:49 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > On Fri, Feb 19, 2021 at 06:32:26PM -0500, Julian Braha wrote:
-> > > > commit 6e61907779ba99af785f5b2397a84077c289888a
-> > > > Author: Julian Braha <julianbraha@gmail.com>
-> > > > Date:   Fri Feb 19 18:20:57 2021 -0500
-> > > >
-> > > >     drivers: infiniband: sw: rxe: fix kconfig dependency on CRYPTO
-> > > >
-> > > >     When RDMA_RXE is enabled and CRYPTO is disabled,
-> > > >     Kbuild gives the following warning:
-> > > >
-> > > >     WARNING: unmet direct dependencies detected for CRYPTO_CRC32
-> > > >       Depends on [n]: CRYPTO [=n]
-> > > >       Selected by [y]:
-> > > >       - RDMA_RXE [=y] && (INFINIBAND_USER_ACCESS [=y] || !INFINIBAND_USER_ACCESS [=y]) && INET [=y] && PCI [=y] && INFINIBAND [=y] && INFINIBAND_VIRT_DMA [=y]
-> > > >
-> > > >     This is because RDMA_RXE selects CRYPTO_CRC32,
-> > > >     without depending on or selecting CRYPTO, despite that config option
-> > > >     being subordinate to CRYPTO.
-> > > >
-> > > >     Signed-off-by: Julian Braha <julianbraha@gmail.com>
-> > >
-> > > Please use git sent-email to send patches and please fix crypto Kconfig
-> > > to enable CRYPTO if CRYPTO_* selected.
-> > >
-> > > It is a little bit awkward to request all users of CRYPTO_* to request
-> > > select CRYPTO too.
-> >
-> > The same issue and similar patch is in this link:
-> >
-> > https://patchwork.kernel.org/project/linux-rdma/patch/20200915101559.33292-1-fazilyildiran@gmail.com/#23615747
+On Sat, Feb 20, 2021 at 08:40:02AM +0000, liweihang wrote:
+> On 2021/2/10 3:54, Jason Gunthorpe wrote:
+> > On Sun, Feb 07, 2021 at 11:12:49AM +0800, Weihang Li wrote:
+> >> The HIP09 introduces the DCA(Dynamic Context Attachment) feature which
+> >> supports many RC QPs to share the WQE buffer in a memory pool. If a QP
+> >> enables DCA feature, the WQE's buffer will not be allocated when creating
+> >> but when the users start to post WRs. This will reduce the memory
+> >> consumption when there are too many QPs are inactive.
+> >> One a WQE buffer is allocated it still acts as a normal WQE ring
+> > buffer? So this DCA logic is to remap the send queue buffer based on
+> > demand for SQEs? How does it interact with the normal max send queue
+> > entries reported?
+> > 
 > 
-> So what prevents us from fixing CRYPTO Kconfig?
+> Not exactly. If DCA is enabled, we first allocate a memory pool with a
+> default size when opening device. Each time we trying to post WR(s) to a
+> QP, the driver will check if current QP has WQE buffer.
+> 
+> If not, the driver will check whether there is enough free memory in the
+> DCA memory pool. If there is, the QP will get WQE buffer from the
+> pool,
 
-Yes, I would like to see someone deal with this properly, either every
-place doing select CRYPTO_XX needs fixing or something needs to be
-done in the crypto layer.
+Does that mean the QP can have a non-contiguous list of buffers? Ie it
+isn't just a linear ring of memory?
 
-I have no idea about kconfig to give advice, I've added Arnd since he
-always seems to know :)
-
-Thanks,
 Jason
