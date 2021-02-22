@@ -2,106 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE92D322007
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Feb 2021 20:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B1E32201D
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Feb 2021 20:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhBVTWN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Feb 2021 14:22:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232907AbhBVTTw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Feb 2021 14:19:52 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EAC7C061793
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Feb 2021 11:19:02 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id m6so7220980pfk.1
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Feb 2021 11:19:02 -0800 (PST)
+        id S231790AbhBVT2e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Feb 2021 14:28:34 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:20634 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233165AbhBVTZ2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Feb 2021 14:25:28 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=u1Yz+6yxFUR2YFaIiitfuzmwB6FuPozy4hIi547hR20=;
-        b=ohvTM7J9u8GjvBzjWDTkgx90AWiCQ/i//M+PotdIS7G0+MqhnzGaUUUMNBC+NvE/Zu
-         eVpvgcq5khGzLC7dP0bWBHm3fvq/Fys9dlqF0cmzzg7sKQaxN9q8ockyrUbHg3EEOzhR
-         68uVaEgp9ZSOe5yWD3Ks4hRXCTdJ1lSriwsCVB6608ZESLnEdePWuFsbyeSgPDrNOKxu
-         NlNRIMeFc5J9m91KD6wyBKqR2bRMYXKCpG85/DRw+jzqKjQsMwC/lTIKHbPnQCQnO/b+
-         JTcQVmxbx3EcGF/R4dyDAKU9NTJXS1KAmQjBjx9W4QNlK9/t598OQ0M3zMOMycNhlg4k
-         Ytwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=u1Yz+6yxFUR2YFaIiitfuzmwB6FuPozy4hIi547hR20=;
-        b=KhV/1X0cRG4iK3+kbDcDaJfgReIQiioOjiFg4X0+YTt3jFCZWTBUuC+Kv2ggxaGVI4
-         LOv+B12ZtXKkSzaCG08UJ4zlnzltWrBkWthrSTl7quwktx6DiNsiWUCM7B0aK4BBGWIL
-         vWACjUbWuT3qnikOzkzZZkg6ftmzXnAeeAwmqE+zyqmDlHBTrgJKfMu6SILVnclShdpN
-         HKVyr6V6vC5w+UVsVDxpfozNFPYTP/noA/l8XkPOlcRzRUGOwPLvvurvLzsOQawwMq8H
-         YhjaLbthV9etXduCCyLrQixDsyoxqMC8I3K49H9DDjmMKQKgBIegy3bpcJNM+gDJ6jqJ
-         h8Zg==
-X-Gm-Message-State: AOAM531cj4MUHzMN9LaVGo3ZUDK0/Z1GbSSBq+zO5cJiEd7ZtYsjTQ6h
-        lunR6JQ5Ec5uNcNL2AWTwfdQTw==
-X-Google-Smtp-Source: ABdhPJyCaizPJhkS52nsxtmIXWIxjJTGO4Yo5nmBm/qoQvXb0M6U8GD8RBVENzk398QnZKHls4WuQg==
-X-Received: by 2002:a63:1343:: with SMTP id 3mr21043379pgt.166.1614021540237;
-        Mon, 22 Feb 2021 11:19:00 -0800 (PST)
-Received: from hermes.local (mobile-166-176-184-131.mycingular.net. [166.176.184.131])
-        by smtp.gmail.com with ESMTPSA id w187sm19944000pgb.52.2021.02.22.11.18.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 11:18:59 -0800 (PST)
-Date:   Mon, 22 Feb 2021 11:18:51 -0800
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     David Ahern <dsahern@gmail.com>, Ido Kalir <idok@nvidia.com>,
-        linux-netdev <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH iproute2-rc] rdma: Fix statistics bind/unbing argument
- handling
-Message-ID: <20210222111851.710aa045@hermes.local>
-In-Reply-To: <YC4o4L93lGYFQ1ku@unreal>
-References: <20210214083335.19558-1-leon@kernel.org>
-        <5e9a8752-24a1-7461-e113-004b014dcde9@gmail.com>
-        <YCoJULID1x2kulQe@unreal>
-        <04d7cd07-c3eb-c39c-bce1-3e9d4d1e4a27@gmail.com>
-        <YCtjO1Q2OnCOlEcu@unreal>
-        <9217385b-6002-83c2-b386-85650ce101bc@gmail.com>
-        <YC4o4L93lGYFQ1ku@unreal>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1614021927; x=1645557927;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=4AyJaJSGrfKe3PgirUBzJ7ws93qSUHDxncUnquJTXC4=;
+  b=UHDXN0w0oGt/FQ6sH/WT7RQMbtluIF0EEVJU5btjO6senDoFTp/u0fsG
+   rmQBZWynW7FtuUGWw8DFLV6YLDxhjTBLvww3CiR6iN9EWuaJ3joCR9kmj
+   QhK5IWjBkfVU8xBmUHn7EFzHlpcGlbi92+ycdZI9YW4GqHs4QDzCCqFJv
+   Q=;
+X-IronPort-AV: E=Sophos;i="5.81,198,1610409600"; 
+   d="scan'208";a="89368324"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-98acfc19.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 22 Feb 2021 19:24:27 +0000
+Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-98acfc19.us-east-1.amazon.com (Postfix) with ESMTPS id 5F74FA201E;
+        Mon, 22 Feb 2021 19:24:26 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.228) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 22 Feb 2021 19:24:23 +0000
+Subject: Re: ibv_req_notify_cq clarification
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <bd5deec5-8fc6-ccd6-927a-898f6d9ab35b@amazon.com>
+ <20210218125339.GY4718@ziepe.ca>
+ <5287c059-3d8c-93f4-6be4-a6da07ccdb8a@amazon.com>
+ <20210218162329.GZ4718@ziepe.ca>
+ <51a8fa8c-7529-9ef9-bb52-eccaaef3a666@amazon.com>
+ <20210222134642.GG2643399@ziepe.ca>
+ <e26a3e90-cc8b-d681-5d6b-4e363aa1933c@amazon.com>
+ <20210222155559.GH2643399@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <8277bebb-8994-af0f-52fc-972c7f8260dd@amazon.com>
+Date:   Mon, 22 Feb 2021 21:24:18 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210222155559.GH2643399@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.228]
+X-ClientProxiedBy: EX13D41UWC003.ant.amazon.com (10.43.162.30) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 18 Feb 2021 10:44:16 +0200
-Leon Romanovsky <leon@kernel.org> wrote:
-
-> On Tue, Feb 16, 2021 at 08:48:24AM -0700, David Ahern wrote:
-> > On 2/15/21 11:16 PM, Leon Romanovsky wrote:  
-> > > On Mon, Feb 15, 2021 at 06:56:26PM -0700, David Ahern wrote:  
-> > >> On 2/14/21 10:40 PM, Leon Romanovsky wrote:  
-> > >>> On Sun, Feb 14, 2021 at 08:26:16PM -0700, David Ahern wrote:  
-> > >>>> what does iproute2-rc mean?  
-> > >>>
-> > >>> Patch target is iproute2.git:
-> > >>> https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/  
-> > >>
-> > >> so you are asking them to be committed for the 5.11 release?  
-> > >
-> > > This is a Fix to an existing issue (not theoretical one), so I was under
-> > > impression that it should go to -rc repo and not to -next.  
-> >
-> > It is assigned to Stephen for iproute2.
-> >  
-> > >
-> > > Personally, I don't care to which repo will this fix be applied as long
-> > > as it is applied to one of the two iproute2 official repos.
-> > >
-> > > Do you have clear guidance when should I send patches to iproute2-rc/iproute2-next?
-> > >  
-> >
-> > It's the rc label that needs to be dropped: iproute2 or iproute2-next.  
+On 22/02/2021 17:55, Jason Gunthorpe wrote:
+> On Mon, Feb 22, 2021 at 05:36:17PM +0200, Gal Pressman wrote:
 > 
-> Sure, no problem.
+>> "Mellanox HCAs keep track of the last index for which the user received an
+>> event. Using this index, it is guaranteed that an event is generated immediately
+>> when a request completion notification is performed and a CQE has already been
+>> reported."
 > 
-> Thanks
+> I don't think verbs exposes this behavior.
 
-Applied, and fixed a minor whitespace issue reported by checkpatch
+So in theory this hardware could generate events that the user app doesn't expect?
+
+>> This also sounds weird, why is an event generated for a completion that has
+>> already been reported?
+> 
+> It eleminates races, if the consumer says 'I read up to X send me an
+> interrupt if X+1 exists' when X+1 already exists if there is a race
+> producer has already written it. So send an interrupt.
+
+Right, that's what I was getting at in my first question, this isn't the next
+completion from the device's perspective.
+So in such case the consumer index in the arm doorbell is used to indicate what
+should be considered a "new" completion? This is new from the app perspective.
+
+But looking at ibv_ud_pingpong for example, I don't understand how that could
+even work.
+The test arms the CQ on creation (consumder index 0), calls ibv_get_cq_event(),
+wakes up and immediately arms the CQ again (before polling, consumer index is
+still 0).
+This means that the next ibv_get_cq_event() will wake up immediately, as the CQ
+was armed twice with the same consumer index and the first completion already
+exists. Surely that's not what's meant to happen?
+
+>> So from my understanding of how this should work, the following code in perftest
+>> (ib_send_bw test) is buggy?:
+>> https://github.com/linux-rdma/perftest/blob/master/src/perftest_resources.c#L2955
+>>
+>> Running this with 32 iterations, the client does something like:
+>> - arm cq
+>> - post send x 32
+>> - wait for cq event
+>> - arm cq
+>> - poll cq (once, with batch size of 16)
+>> - no more post send (reached tot_iters)
+>> - wait for cq event (but an event has already been generated?)
+> 
+> I don't know much about perf-test, but in verbs arming a non-empty CQ
+> is asking for trouble
+
+Do you have a way to verify whether this test gets stuck? Maybe I am missing
+something?
+
+What do you mean by arming a non-empty CQ?
+The man pages suggest a scheme where the app should call ibv_get_cq_event()
+followed by an ibv_req_notify_cq(), the CQ polling/emptying comes after these,
+so at the time of arm the CQ isn't empty.
