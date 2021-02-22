@@ -2,148 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD66321CA6
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Feb 2021 17:20:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F91321CE8
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Feb 2021 17:29:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230503AbhBVQUK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 22 Feb 2021 11:20:10 -0500
-Received: from thor.rz.uni-duesseldorf.de ([134.99.128.245]:8270 "EHLO
-        thor.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230260AbhBVQUH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:20:07 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by thor.rz.uni-duesseldorf.de (Postfix) with ESMTP id BE8DC700B66B
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Feb 2021 17:19:16 +0100 (CET)
-X-Virus-Scanned: amavisd-new at rz.uni-duesseldorf.de
-Received: from thor.rz.uni-duesseldorf.de ([127.0.0.1])
-        by localhost (thor.rz.uni-duesseldorf.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 0_hBbwdJIJqR for <linux-rdma@vger.kernel.org>;
-        Mon, 22 Feb 2021 17:19:15 +0100 (CET)
-Received: from [192.168.2.126] (aftr-37-201-225-45.unity-media.net [37.201.225.45])
-        (Authenticated sender: krfil100@uni-duesseldorf.de)
-        by thor.rz.uni-duesseldorf.de (Postfix) with ESMTPA id A7164700B66A
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Feb 2021 17:19:15 +0100 (CET)
-To:     linux-rdma <linux-rdma@vger.kernel.org>
-From:   Filip Krakowski <krakowski@hhu.de>
-Subject: ibv_rc_pingpong fails to create a completion queue
-Message-ID: <0fe96275-9413-18a7-8ec0-d6b456dd1f26@hhu.de>
-Date:   Mon, 22 Feb 2021 17:19:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S231126AbhBVQ1R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Feb 2021 11:27:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231694AbhBVQ06 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Feb 2021 11:26:58 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E275C061574;
+        Mon, 22 Feb 2021 08:26:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=4G2c4gsQQ/sKBEI06UU7bCq4rbHSCsZ03J36bIQz7jQ=; b=KRWO+b9m+GnGORV3rM6t+dTy0u
+        CUm/7wmx7aN9QrWQT8eTM7AK+D6YeHn0rlXg5Aec7xpHBCCaeMYVV1iy09W0BnGgxbKvdnvasNDh8
+        0LJ4yXdAntPwF38jORzz3JHDarZDnHBQuC5/liVyiRs2X8ilBa13CT4hx9uiMoDBhuyWBXPdeO7Sk
+        mvCICpxKz3yWHIBBMC8r2DKjolJqWoKhgMJSU1xUTraEbYhVKvcwyYratfSyJHif0vVutX+7MSbsN
+        YXkj0l6hNrgGg2p0ttq/JDgi0baxivScBmUJi++aPmFocG9HR1dKRDAVcK0yktJHJuQh0nF1VX8Q3
+        +s5EcckQ==;
+Received: from [2601:1c0:6280:3f0::d05b]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lEE2I-0002ZX-PP; Mon, 22 Feb 2021 16:26:15 +0000
+Subject: Re: [PATCH] drivers: infiniband: sw: rxe: fix kconfig dependency on
+ CRYPTO
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Julian Braha <julianbraha@gmail.com>,
+        Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <21525878.NYvzQUHefP@ubuntu-mate-laptop> <YDICM3SwwGZfE+Sg@unreal>
+ <CAD=hENeCXGtKrXxLof=DEZjxpKyYBFS80pAX20nnJBuP_s-GBA@mail.gmail.com>
+ <YDOq060TvAwLgknl@unreal> <20210222155845.GI2643399@ziepe.ca>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e1e3bec7-0350-4bdd-50c3-41b21388fc71@infradead.org>
+Date:   Mon, 22 Feb 2021 08:26:10 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210222155845.GI2643399@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi,
+On 2/22/21 7:58 AM, Jason Gunthorpe wrote:
+> On Mon, Feb 22, 2021 at 03:00:03PM +0200, Leon Romanovsky wrote:
+>> On Mon, Feb 22, 2021 at 10:39:20AM +0800, Zhu Yanjun wrote:
+>>> On Sun, Feb 21, 2021 at 2:49 PM Leon Romanovsky <leon@kernel.org> wrote:
+>>>>
+>>>> On Fri, Feb 19, 2021 at 06:32:26PM -0500, Julian Braha wrote:
+>>>>> commit 6e61907779ba99af785f5b2397a84077c289888a
+>>>>> Author: Julian Braha <julianbraha@gmail.com>
+>>>>> Date:   Fri Feb 19 18:20:57 2021 -0500
+>>>>>
+>>>>>     drivers: infiniband: sw: rxe: fix kconfig dependency on CRYPTO
+>>>>>
+>>>>>     When RDMA_RXE is enabled and CRYPTO is disabled,
+>>>>>     Kbuild gives the following warning:
+>>>>>
+>>>>>     WARNING: unmet direct dependencies detected for CRYPTO_CRC32
+>>>>>       Depends on [n]: CRYPTO [=n]
+>>>>>       Selected by [y]:
+>>>>>       - RDMA_RXE [=y] && (INFINIBAND_USER_ACCESS [=y] || !INFINIBAND_USER_ACCESS [=y]) && INET [=y] && PCI [=y] && INFINIBAND [=y] && INFINIBAND_VIRT_DMA [=y]
+>>>>>
+>>>>>     This is because RDMA_RXE selects CRYPTO_CRC32,
+>>>>>     without depending on or selecting CRYPTO, despite that config option
+>>>>>     being subordinate to CRYPTO.
+>>>>>
+>>>>>     Signed-off-by: Julian Braha <julianbraha@gmail.com>
+>>>>
+>>>> Please use git sent-email to send patches and please fix crypto Kconfig
+>>>> to enable CRYPTO if CRYPTO_* selected.
+>>>>
+>>>> It is a little bit awkward to request all users of CRYPTO_* to request
+>>>> select CRYPTO too.
+>>>
+>>> The same issue and similar patch is in this link:
+>>>
+>>> https://patchwork.kernel.org/project/linux-rdma/patch/20200915101559.33292-1-fazilyildiran@gmail.com/#23615747
+>>
+>> So what prevents us from fixing CRYPTO Kconfig?
+> 
+> Yes, I would like to see someone deal with this properly, either every
+> place doing select CRYPTO_XX needs fixing or something needs to be
+> done in the crypto layer.
+> 
+> I have no idea about kconfig to give advice, I've added Arnd since he
+> always seems to know :)
 
-whenever I try to test a reliable connection using "ibv_rc_pingpong -d 
-mlx5_0" to start the server side the test immediately stops with 
-"Couldn't create CQ". Since I couldn't find a solution for this problem 
-in one week I would like to ask if someone has encountered this error 
-before or knows a way of troubleshooting it. Just to be sure I updated 
-the controller to its latest firmware (16.29.2002) today, but the error 
-remained the same.
+I will Ack the original patch in this thread.
 
-System Information
-====
-
-     * CentOS Linux release 8.1.1911 (Core)
-     * Linux 4.18.0-151.el8.x86_64
-     * ConnectX-5 (MCX555A-ECA)
-
-
-Installed Packages
-====
-
-     * rdma-core-32.0-4.el8.x86_64
-     * libibverbs-32.0-4.el8.x86_64
-
-
-Loaded Kernel Modules (lsmod | grep -E 'rdma|mlx')
-====
-
-     rpcrdma               274432  0
-     sunrpc                454656  22 
-rpcrdma,nfsv4,auth_rpcgss,lockd,nfsv3,rpcsec_gss_krb5,nfs_acl,nfs
-     rdma_ucm               32768  0
-     rdma_cm                69632  5 
-rpcrdma,ib_srpt,ib_iser,ib_isert,rdma_ucm
-     iw_cm                  53248  1 rdma_cm
-     ib_cm                  57344  3 rdma_cm,ib_ipoib,ib_srpt
-     mlx5_ib               327680  0
-     ib_uverbs             147456  3 i40iw,rdma_ucm,mlx5_ib
-     ib_core               356352  14 
-rdma_cm,ib_ipoib,rpcrdma,ib_srpt,iw_cm,ib_iser,ib_umad,ib_isert,i40iw,rdma_ucm,ib_uverbs,mlx5_ib,ib_cm
-     mlx5_core             798720  1 mlx5_ib
-     mlxfw                  24576  1 mlx5_core
-
-
-
-Infiniband Device Info (ibv_devinfo)
-====
-
-     hca_id:    i40iw0
-         transport:            iWARP (1)
-         fw_ver:                0.2
-         node_guid:            3cec:ef0d:51c3:0000
-         sys_image_guid:            3cec:ef0d:51c3:0000
-         vendor_id:            0x8086
-         vendor_part_id:            14290
-         hw_ver:                0x0
-         board_id:            I40IW Board ID
-         phys_port_cnt:            1
-             port:    1
-                 state:            PORT_DOWN (1)
-                 max_mtu:        4096 (5)
-                 active_mtu:        1024 (3)
-                 sm_lid:            0
-                 port_lid:        1
-                 port_lmc:        0x00
-                 link_layer:        Ethernet
-
-     hca_id:    i40iw1
-         transport:            iWARP (1)
-         fw_ver:                0.2
-         node_guid:            3cec:ef0d:51c2:0000
-         sys_image_guid:            3cec:ef0d:51c2:0000
-         vendor_id:            0x8086
-         vendor_part_id:            14290
-         hw_ver:                0x0
-         board_id:            I40IW Board ID
-         phys_port_cnt:            1
-             port:    1
-                 state:            PORT_ACTIVE (4)
-                 max_mtu:        4096 (5)
-                 active_mtu:        1024 (3)
-                 sm_lid:            0
-                 port_lid:        1
-                 port_lmc:        0x00
-                 link_layer:        Ethernet
-
-     hca_id:    mlx5_0
-         transport:            InfiniBand (0)
-         fw_ver:                16.29.2002
-         node_guid:            0c42:a103:0054:74ca
-         sys_image_guid:            0c42:a103:0054:74ca
-         vendor_id:            0x02c9
-         vendor_part_id:            4119
-         hw_ver:                0x0
-         board_id:            MT_0000000010
-         phys_port_cnt:            1
-             port:    1
-                 state:            PORT_ACTIVE (4)
-                 max_mtu:        4096 (5)
-                 active_mtu:        4096 (5)
-                 sm_lid:            8
-                 port_lid:        196
-                 port_lmc:        0x00
-                 link_layer:        InfiniBand
+How many Mellanox drivers are you concerned about?
+You don't have to fix any other drivers that have a similar issue.
 
 
-Best regards
-Filip
+-- 
+~Randy
