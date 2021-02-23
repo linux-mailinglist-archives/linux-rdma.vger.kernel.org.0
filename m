@@ -2,95 +2,195 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BE6322AAD
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Feb 2021 13:40:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36ABA322BA4
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Feb 2021 14:47:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhBWMjO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Feb 2021 07:39:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232378AbhBWMjO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Feb 2021 07:39:14 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8FDC061574
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Feb 2021 04:38:33 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id v64so157906qtd.5
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Feb 2021 04:38:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pmQQlKLlZszK4+7R8XJNShIFqVlQjRcSkOrOfXwNwMk=;
-        b=BumIWXFaj3DReVR9lg9J71X0M6WrH1wLGZ/5Dm61yKqAPk8YJG9J3FnU4XASe6gY5B
-         7dqEI5pxcW/u5el0OOO79Nr3rZK3N3uclJIiHgCaqjpfS1MnsGNG80N0Hvi3TVHvWfqt
-         IOIpVqCDdSOFjZ3lmx20GRxdkf2q616LMfi1E5OG6Alcv+tVrtyhK3y+Sb1Ov6o1o5S9
-         nzhVvmCIKSPUkUR+A3BZItphIIhiawhhrsg1DSBd1LW5wwUaLJB6ZfUg94qfUrt74ZOw
-         blbA++Ry6aeagRjm/htrhenaBHpauxwFEZfoBKb11DwH+jm5bD+uL+j63Y04sYR1aypE
-         jOoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pmQQlKLlZszK4+7R8XJNShIFqVlQjRcSkOrOfXwNwMk=;
-        b=Iwi1b7NH3LAVLGjVz63FP+p1pvquNYQ/idnrHRgpaXlHW74Eih4kWg8sT5Y4LcNEJo
-         Uz46Y+7ImN8GarT1vXHyFsl/sCmWtt0LYCVJaEVh4sMyDw0swf6bWDlJFfRoE/DwSJYv
-         uB8BXREGitpcuux/WWRN1Q5w6a9EuGo/rizwQZfAFjZEk2BNF7WuBQAtK1+OUnVvhGBG
-         PVg4otF1TUk0RYE01dtfuEwM3PqBnpffHRZ50fsQUjlKEW+E6qQ7VbXBT8gqs2rciHaJ
-         l3uY6KLZwIhODMvJG/fIPxD14O/v3Jw8R7vPxGySwrUBkZTx53dyohS2DCJf3bScgjvW
-         5OBw==
-X-Gm-Message-State: AOAM533/VS99wbISp0IkA+3Gm110jQ4VKnRzS7QBPiSkoE2pbjTdXUiy
-        Bhz4bR2M6BV+adnHS5+HchBDibqlh4fn0g==
-X-Google-Smtp-Source: ABdhPJx+qyoKFNLH151FGnf/yw6Lu/wIabdNiRg67U2BVuIKXJNveE6kicMqUA52pHJeyIWiiiVHOw==
-X-Received: by 2002:ac8:5881:: with SMTP id t1mr14985166qta.386.1614083912438;
-        Tue, 23 Feb 2021 04:38:32 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id p126sm4350443qkf.110.2021.02.23.04.38.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 04:38:31 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lEWxT-00FMq7-74; Tue, 23 Feb 2021 08:38:31 -0400
-Date:   Tue, 23 Feb 2021 08:38:31 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: ibv_req_notify_cq clarification
-Message-ID: <20210223123831.GN2643399@ziepe.ca>
-References: <20210218125339.GY4718@ziepe.ca>
- <5287c059-3d8c-93f4-6be4-a6da07ccdb8a@amazon.com>
- <20210218162329.GZ4718@ziepe.ca>
- <51a8fa8c-7529-9ef9-bb52-eccaaef3a666@amazon.com>
- <20210222134642.GG2643399@ziepe.ca>
- <e26a3e90-cc8b-d681-5d6b-4e363aa1933c@amazon.com>
- <20210222155559.GH2643399@ziepe.ca>
- <8277bebb-8994-af0f-52fc-972c7f8260dd@amazon.com>
- <20210222193746.GM2643399@ziepe.ca>
- <2fa24ddf-1add-a306-003d-0737b2b9cbba@amazon.com>
+        id S230166AbhBWNq0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Feb 2021 08:46:26 -0500
+Received: from heimdall.rz.uni-duesseldorf.de ([134.99.128.243]:14086 "EHLO
+        heimdall.rz.uni-duesseldorf.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229952AbhBWNqY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 23 Feb 2021 08:46:24 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by heimdall.rz.uni-duesseldorf.de (Postfix) with ESMTP id C5838D005EC4;
+        Tue, 23 Feb 2021 14:45:40 +0100 (CET)
+X-Virus-Scanned: amavisd-new at rz.uni-duesseldorf.de
+Received: from heimdall.rz.uni-duesseldorf.de ([127.0.0.1])
+        by localhost (heimdall.rz.uni-duesseldorf.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 7CcpgZJUr37I; Tue, 23 Feb 2021 14:45:39 +0100 (CET)
+Received: from [192.168.2.126] (aftr-37-201-225-45.unity-media.net [37.201.225.45])
+        (Authenticated sender: krfil100@uni-duesseldorf.de)
+        by heimdall.rz.uni-duesseldorf.de (Postfix) with ESMTPA id 720F2D005EB1;
+        Tue, 23 Feb 2021 14:45:39 +0100 (CET)
+Subject: Re: ibv_rc_pingpong fails to create a completion queue
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>
+References: <0fe96275-9413-18a7-8ec0-d6b456dd1f26@hhu.de>
+ <CAD=hENcBOO3KfH4wHoz1GBz9LPVZ5BOnoyPq8MMtbhB0DA=F5w@mail.gmail.com>
+ <YDTDLd8cvGUgtkqb@unreal>
+ <CAD=hENfGaH00Y52ped7v1uQtiDwaHUFMxMjGMJYLjp_L0hSmEw@mail.gmail.com>
+From:   Filip Krakowski <krakowski@hhu.de>
+Message-ID: <d976bf77-c291-11a5-a8d4-8bbfd149a2d8@hhu.de>
+Date:   Tue, 23 Feb 2021 14:45:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2fa24ddf-1add-a306-003d-0737b2b9cbba@amazon.com>
+In-Reply-To: <CAD=hENfGaH00Y52ped7v1uQtiDwaHUFMxMjGMJYLjp_L0hSmEw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 02:18:31PM +0200, Gal Pressman wrote:
-> > Does look like a documentation update is in-order though!
-> 
-> Looking at libibverbs examples, pyverbs tests and perftest, they all act roughly
-> the same:
-> 
-> 1. arm CQ
-> 2. post send/recv
-> 3. get event
-> 4. arm CQ
-> 5. poll
-> 6. goto step 2
-> 
-> All of these apps always use the same construct of get event followed by an
-> immediate arm. Did all of these apps get it wrong?
+Hi,
 
-Sean is right, this is OK, so long as step 5 polls to empty, it is
-just unwound differently and will take suprious wakeups more often
+"I use the kernel 4.18.0-240.10.1.el8_3.x86_64 to make tests." was the 
+line that solved this problem.
+I never thought I would be stuck with a problem for a week caused by the 
+kernel...
 
-Jason
+That said, updating the kernel to "4.18.0-277.el8.x86_64" solved the 
+problem.
+Thanks for answering this fast and sorry for taking your time 
+considering the trivial solution.
+
+Best regards
+Filip
+
+On 2/23/21 10:50 AM, Zhu Yanjun wrote:
+> On Tue, Feb 23, 2021 at 4:56 PM Leon Romanovsky <leon@kernel.org> wrote:
+>> On Tue, Feb 23, 2021 at 11:08:18AM +0800, Zhu Yanjun wrote:
+>>> On Tue, Feb 23, 2021 at 12:21 AM Filip Krakowski <krakowski@hhu.de> wrote:
+>>>> Hi,
+>>>>
+>>>> whenever I try to test a reliable connection using "ibv_rc_pingpong -d
+>>>> mlx5_0"
+>>> ibv_rc_pingpong -d rxe0 -g 1 > /dev/null &
+>>>
+>>> ibv_rc_pingpong -d rxe0 -g 1 192.168.1.2
+>>>
+>>> I made tests with the above. It can work well.
+>>>
+>>> Normally "-g" is needed.
+>> "-g" is needed because you are running RoCE, while Filip is running IB.
+>>
+>>> Before directly using mlx5, please make tests with softroce firstly.
+>> Are you sure that RXE works in 4.18.0-151.el8.x86_64 kernel?
+> I have no 4.18.0-151.el8.x86_64 kernel at hand.
+> I use the kernel 4.18.0-240.10.1.el8_3.x86_64 to make tests.
+>
+> SoftRoCE can work well.
+>
+> Zhu Yanjun
+>
+>>> Zhu Yanjun
+>>>
+>>>   to start the server side the test immediately stops with
+>>>> "Couldn't create CQ". Since I couldn't find a solution for this problem
+>>>> in one week I would like to ask if someone has encountered this error
+>>>> before or knows a way of troubleshooting it. Just to be sure I updated
+>>>> the controller to its latest firmware (16.29.2002) today, but the error
+>>>> remained the same.
+>>>>
+>>>> System Information
+>>>> ====
+>>>>
+>>>>       * CentOS Linux release 8.1.1911 (Core)
+>>>>       * Linux 4.18.0-151.el8.x86_64
+>>>>       * ConnectX-5 (MCX555A-ECA)
+>>>>
+>>>>
+>>>> Installed Packages
+>>>> ====
+>>>>
+>>>>       * rdma-core-32.0-4.el8.x86_64
+>>>>       * libibverbs-32.0-4.el8.x86_64
+>>>>
+>>>>
+>>>> Loaded Kernel Modules (lsmod | grep -E 'rdma|mlx')
+>>>> ====
+>>>>
+>>>>       rpcrdma               274432  0
+>>>>       sunrpc                454656  22
+>>>> rpcrdma,nfsv4,auth_rpcgss,lockd,nfsv3,rpcsec_gss_krb5,nfs_acl,nfs
+>>>>       rdma_ucm               32768  0
+>>>>       rdma_cm                69632  5
+>>>> rpcrdma,ib_srpt,ib_iser,ib_isert,rdma_ucm
+>>>>       iw_cm                  53248  1 rdma_cm
+>>>>       ib_cm                  57344  3 rdma_cm,ib_ipoib,ib_srpt
+>>>>       mlx5_ib               327680  0
+>>>>       ib_uverbs             147456  3 i40iw,rdma_ucm,mlx5_ib
+>>>>       ib_core               356352  14
+>>>> rdma_cm,ib_ipoib,rpcrdma,ib_srpt,iw_cm,ib_iser,ib_umad,ib_isert,i40iw,rdma_ucm,ib_uverbs,mlx5_ib,ib_cm
+>>>>       mlx5_core             798720  1 mlx5_ib
+>>>>       mlxfw                  24576  1 mlx5_core
+>>>>
+>>>>
+>>>>
+>>>> Infiniband Device Info (ibv_devinfo)
+>>>> ====
+>>>>
+>>>>       hca_id:    i40iw0
+>>>>           transport:            iWARP (1)
+>>>>           fw_ver:                0.2
+>>>>           node_guid:            3cec:ef0d:51c3:0000
+>>>>           sys_image_guid:            3cec:ef0d:51c3:0000
+>>>>           vendor_id:            0x8086
+>>>>           vendor_part_id:            14290
+>>>>           hw_ver:                0x0
+>>>>           board_id:            I40IW Board ID
+>>>>           phys_port_cnt:            1
+>>>>               port:    1
+>>>>                   state:            PORT_DOWN (1)
+>>>>                   max_mtu:        4096 (5)
+>>>>                   active_mtu:        1024 (3)
+>>>>                   sm_lid:            0
+>>>>                   port_lid:        1
+>>>>                   port_lmc:        0x00
+>>>>                   link_layer:        Ethernet
+>>>>
+>>>>       hca_id:    i40iw1
+>>>>           transport:            iWARP (1)
+>>>>           fw_ver:                0.2
+>>>>           node_guid:            3cec:ef0d:51c2:0000
+>>>>           sys_image_guid:            3cec:ef0d:51c2:0000
+>>>>           vendor_id:            0x8086
+>>>>           vendor_part_id:            14290
+>>>>           hw_ver:                0x0
+>>>>           board_id:            I40IW Board ID
+>>>>           phys_port_cnt:            1
+>>>>               port:    1
+>>>>                   state:            PORT_ACTIVE (4)
+>>>>                   max_mtu:        4096 (5)
+>>>>                   active_mtu:        1024 (3)
+>>>>                   sm_lid:            0
+>>>>                   port_lid:        1
+>>>>                   port_lmc:        0x00
+>>>>                   link_layer:        Ethernet
+>>>>
+>>>>       hca_id:    mlx5_0
+>>>>           transport:            InfiniBand (0)
+>>>>           fw_ver:                16.29.2002
+>>>>           node_guid:            0c42:a103:0054:74ca
+>>>>           sys_image_guid:            0c42:a103:0054:74ca
+>>>>           vendor_id:            0x02c9
+>>>>           vendor_part_id:            4119
+>>>>           hw_ver:                0x0
+>>>>           board_id:            MT_0000000010
+>>>>           phys_port_cnt:            1
+>>>>               port:    1
+>>>>                   state:            PORT_ACTIVE (4)
+>>>>                   max_mtu:        4096 (5)
+>>>>                   active_mtu:        4096 (5)
+>>>>                   sm_lid:            8
+>>>>                   port_lid:        196
+>>>>                   port_lmc:        0x00
+>>>>                   link_layer:        InfiniBand
+>>>>
+>>>>
+>>>> Best regards
+>>>> Filip
+
