@@ -2,70 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2776322495
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Feb 2021 04:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFDC3226EA
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Feb 2021 09:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhBWDUx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Feb 2021 22:20:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49788 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229967AbhBWDUt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 22 Feb 2021 22:20:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 28F7860C3D;
-        Tue, 23 Feb 2021 03:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614050409;
-        bh=3mco/nmxZhGO4nSlNaHUVKL9/laVDET5oCK8N9DMqTU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=TisfqqKQtu0iSXtgjxsL42Xr/UcI5vhK7SmqGJqdV0bZq7XVV88OWi7Mwovew7G9Y
-         E6UCIF0yLT1ydR1Jge8lO3VoMHuLz43yWW6J7u3umirgjnG+doeAluwqy3UMfG2HUN
-         7CGYCoOutY+g3phkiQNu7z78V0NnAa9cDTFxqABBOMifzpZmWlPmLVH7CG06G2Ck6m
-         HG+WysnfIykjMGJhVOIj8XUwqFYRLP2T/FqODqatqjHK8T7b+Ea9/Pwoq2hUY1ZzyA
-         YEC7W0OWtb4PYrXIx9HoANBd8mBvhlHCREZ1qjScKimjST7OTSZc3DpgLfh6BpDiv5
-         4EUWOcrNJCzKA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1997E60A16;
-        Tue, 23 Feb 2021 03:20:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232088AbhBWIJq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 23 Feb 2021 03:09:46 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3451 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231152AbhBWIIn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Feb 2021 03:08:43 -0500
+Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DlBTC01wMz5W6B;
+        Tue, 23 Feb 2021 16:06:23 +0800 (CST)
+Received: from dggema754-chm.china.huawei.com (10.1.198.196) by
+ DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 23 Feb 2021 16:07:57 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema754-chm.china.huawei.com (10.1.198.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 23 Feb 2021 16:07:57 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.006;
+ Tue, 23 Feb 2021 16:07:57 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "leon@kernel.org" <leon@kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Re: [PATCH RFC rdma-core 0/5] libhns: Add support for Dynamic Context
+ Attachment
+Thread-Topic: [PATCH RFC rdma-core 0/5] libhns: Add support for Dynamic
+ Context Attachment
+Thread-Index: AQHW/P+g64h4ciCwYkiRw06zMjvQFw==
+Date:   Tue, 23 Feb 2021 08:07:57 +0000
+Message-ID: <fca0b32cea2f41319482192514998178@huawei.com>
+References: <1612667574-56673-1-git-send-email-liweihang@huawei.com>
+ <20210209195359.GT4247@nvidia.com>
+ <fa076ca278504bf58da2c1e521be6748@huawei.com>
+ <20210222160143.GJ2643399@ziepe.ca>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net/mlx4_core: Add missed mlx4_free_cmd_mailbox()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161405040910.12674.6208700420414007006.git-patchwork-notify@kernel.org>
-Date:   Tue, 23 Feb 2021 03:20:09 +0000
-References: <20210221143559.390277-1-hslester96@gmail.com>
-In-Reply-To: <20210221143559.390277-1-hslester96@gmail.com>
-To:     Chuhong Yuan <hslester96@gmail.com>
-Cc:     tariqt@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        ogerlitz@mellanox.com, jackm@dev.mellanox.co.il,
-        monis@mellanox.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Sun, 21 Feb 2021 22:35:59 +0800 you wrote:
-> mlx4_do_mirror_rule() forgets to call mlx4_free_cmd_mailbox() to
-> free the memory region allocated by mlx4_alloc_cmd_mailbox() before
-> an exit.
-> Add the missed call to fix it.
+On 2021/2/23 0:02, Jason Gunthorpe wrote:
+> On Sat, Feb 20, 2021 at 08:40:02AM +0000, liweihang wrote:
+>> On 2021/2/10 3:54, Jason Gunthorpe wrote:
+>>> On Sun, Feb 07, 2021 at 11:12:49AM +0800, Weihang Li wrote:
+>>>> The HIP09 introduces the DCA(Dynamic Context Attachment) feature which
+>>>> supports many RC QPs to share the WQE buffer in a memory pool. If a QP
+>>>> enables DCA feature, the WQE's buffer will not be allocated when creating
+>>>> but when the users start to post WRs. This will reduce the memory
+>>>> consumption when there are too many QPs are inactive.
+>>>> One a WQE buffer is allocated it still acts as a normal WQE ring
+>>> buffer? So this DCA logic is to remap the send queue buffer based on
+>>> demand for SQEs? How does it interact with the normal max send queue
+>>> entries reported?
+>>>
+>>
+>> Not exactly. If DCA is enabled, we first allocate a memory pool with a
+>> default size when opening device. Each time we trying to post WR(s) to a
+>> QP, the driver will check if current QP has WQE buffer.
+>>
+>> If not, the driver will check whether there is enough free memory in the
+>> DCA memory pool. If there is, the QP will get WQE buffer from the
+>> pool,
 > 
-> Fixes: 78efed275117 ("net/mlx4_core: Support mirroring VF DMFS rules on both ports")
-> Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+> Does that mean the QP can have a non-contiguous list of buffers? Ie it
+> isn't just a linear ring of memory?
 > 
-> [...]
+> Jason
+> 
 
-Here is the summary with links:
-  - net/mlx4_core: Add missed mlx4_free_cmd_mailbox()
-    https://git.kernel.org/netdev/net/c/8eb65fda4a6d
+Yes, when using multilevel addressing, the virtual address of QP's buffers
+may be non-contiguous to avoid memory fragmentation.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Weihang
