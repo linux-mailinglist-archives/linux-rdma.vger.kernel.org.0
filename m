@@ -2,91 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B260324428
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Feb 2021 19:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8123245DD
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Feb 2021 22:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235574AbhBXS5M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 24 Feb 2021 13:57:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235781AbhBXS41 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 24 Feb 2021 13:56:27 -0500
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A79AC061574
-        for <linux-rdma@vger.kernel.org>; Wed, 24 Feb 2021 10:55:47 -0800 (PST)
-Received: by mail-qt1-x833.google.com with SMTP id v64so2240174qtd.5
-        for <linux-rdma@vger.kernel.org>; Wed, 24 Feb 2021 10:55:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BqcuDEKf/MVqrKelG9Rf9BsOfxR3pI0bdpSsX09dQvs=;
-        b=dl7MP022tdrjvChQGKvjtDnjyblrIU/z0SO3dvvXca9xDF5bI/RxG1MfLvw4949hhV
-         /xD0yxDhKpbhEFAPc/2JvWvNlTgFYUQ4qk5K5MblVYU7OWBww+/6ZbrefGnEQyNuDjsF
-         y+s5lk9PYqWrnu5AzGg4Lo+wurAhXLlH9GUyS8G0YH+cwyVSASzibsXSUpEvIy7VKASk
-         MWqsvruRoypBeBRk1I+tWEtgRvvOm/KUXzqNmMAY2dM85HDOk/PaffkbQgPxzAHqCqK8
-         AP3if8aFRscPoYJGKxfp31jWMuzKnWR1accZts7KBkoMrWgpm4/dC5sRbN9ISuxXdGdN
-         c+ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BqcuDEKf/MVqrKelG9Rf9BsOfxR3pI0bdpSsX09dQvs=;
-        b=Fi+r7OybBm8fVaM0+zoTav6yKz0lsnGFKma18ir+yKnw0jjSwB9pLJsoq1mHkK5g7T
-         sTIa5O3F6odOkGmyc+KnntBYaVPR/7UznHcdB1KZCsfEB3YKPgz5PaTaL7hTPkBQSiXN
-         8/LT41J8RXy2j0A/B/pGj6sS8N1L+wy5ePKNMSCzK73rynsEEGWPX4LS8dD46hUsbmoP
-         xbfZlyQXl08L4ZtWncW9mIQ5LC8b7Q/DO9yCyw93oiJSeb5LAx91B4Os0mpPN7f+GJOB
-         q1+F5dc67khlab2wcvmHpXAdRTg0yv/fy5rnVI4d/JTqBXkCq7/KBvSDAVdsypcd88qP
-         jnCQ==
-X-Gm-Message-State: AOAM531QqoY2qTpPWbdrj9uEBSC0Nc4sgIUxw3okNH+3elRpXccVsjjE
-        qKXXsgJ3wEXZ1X6d4namxG7sqg==
-X-Google-Smtp-Source: ABdhPJzOjHPVUut/3hYTO2btIoVtaYoak4x+b1T0sksbvk7HS7dWnqJMJ9yHbL1sPcHLGk5ijRBKeg==
-X-Received: by 2002:a05:622a:183:: with SMTP id s3mr31323360qtw.223.1614192945923;
-        Wed, 24 Feb 2021 10:55:45 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id v135sm2170907qka.98.2021.02.24.10.55.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 10:55:45 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lEzK4-00GmRD-PD; Wed, 24 Feb 2021 14:55:44 -0400
-Date:   Wed, 24 Feb 2021 14:55:44 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     liweihang <liweihang@huawei.com>
-Cc:     "leon@kernel.org" <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: Re: [PATCH RFC rdma-core 0/5] libhns: Add support for Dynamic
- Context Attachment
-Message-ID: <20210224185544.GS2643399@ziepe.ca>
-References: <1612667574-56673-1-git-send-email-liweihang@huawei.com>
- <20210209195359.GT4247@nvidia.com>
- <55238899c6574cbe9fd96094ad4cc5e4@huawei.com>
+        id S236011AbhBXVj0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 24 Feb 2021 16:39:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56779 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235969AbhBXVjS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 24 Feb 2021 16:39:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614202672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=r0VVhQgbHXdIHWVEalPSwejZCgGaETPw/01RIXLdloc=;
+        b=VrrQEkaHsPUArR/ieyUsr0jJfFpyGlGdaA9aCQNL6A7j7QtI756rf6usmh64P8VRVO7wVj
+        9Gg6OdJjAG8QhRw4VMtG8Kp8ar+j5ysC8WwzJb9OogpP2X0L6vNsmVJFEbxWyNmlbjdVEu
+        QRlWFY3CKuzuEKalwiBlyJ7qVrzT+Tk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-363-kyVKejzEPj2INF83MbZV4A-1; Wed, 24 Feb 2021 16:37:47 -0500
+X-MC-Unique: kyVKejzEPj2INF83MbZV4A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 56519AFA80;
+        Wed, 24 Feb 2021 21:37:45 +0000 (UTC)
+Received: from [10.3.112.31] (ovpn-112-31.phx2.redhat.com [10.3.112.31])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C9D55D9D3;
+        Wed, 24 Feb 2021 21:37:40 +0000 (UTC)
+Subject: Re: [PATCH mlx5-next v6 1/4] PCI: Add sysfs callback to allow MSI-X
+ table size change of SR-IOV VFs
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84s?= =?UTF-8?Q?ki?= <kw@linux.com>
+References: <YDIExpismOnU3c4k@unreal>
+ <20210223210743.GA1475710@bjorn-Precision-5520> <YDYJpTaxXL4ESwZS@kroah.com>
+From:   Don Dutile <ddutile@redhat.com>
+Message-ID: <f88031ee-699f-458f-c8f5-952f2a24e723@redhat.com>
+Date:   Wed, 24 Feb 2021 16:37:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55238899c6574cbe9fd96094ad4cc5e4@huawei.com>
+In-Reply-To: <YDYJpTaxXL4ESwZS@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 09:48:34AM +0000, liweihang wrote:
+On 2/24/21 3:09 AM, Greg Kroah-Hartman wrote:
+> On Tue, Feb 23, 2021 at 03:07:43PM -0600, Bjorn Helgaas wrote:
+>> On Sun, Feb 21, 2021 at 08:59:18AM +0200, Leon Romanovsky wrote:
+>>> On Sat, Feb 20, 2021 at 01:06:00PM -0600, Bjorn Helgaas wrote:
+>>>> On Fri, Feb 19, 2021 at 09:20:18AM +0100, Greg Kroah-Hartman wrote:
+>>>>
+>>>>> Ok, can you step back and try to explain what problem you are trying to
+>>>>> solve first, before getting bogged down in odd details?  I find it
+>>>>> highly unlikely that this is something "unique", but I could be wrong as
+>>>>> I do not understand what you are wanting to do here at all.
+>>>> We want to add two new sysfs files:
+>>>>
+>>>>    sriov_vf_total_msix, for PF devices
+>>>>    sriov_vf_msix_count, for VF devices associated with the PF
+>>>>
+>>>> AFAICT it is *acceptable* if they are both present always.  But it
+>>>> would be *ideal* if they were only present when a driver that
+>>>> implements the ->sriov_get_vf_total_msix() callback is bound to the
+>>>> PF.
+>>> BTW, we already have all possible combinations: static, static with
+>>> folder, with and without "sriov_" prefix, dynamic with and without
+>>> folders on VFs.
+>>>
+>>> I need to know on which version I'll get Acked-by and that version I
+>>> will resubmit.
+>> I propose that you make static attributes for both files, so
+>> "sriov_vf_total_msix" is visible for *every* PF in the system and
+>> "sriov_vf_msix_count" is visible for *every* VF in the system.
+>>
+>> The PF "sriov_vf_total_msix" show function can return zero if there's
+>> no PF driver or it doesn't support ->sriov_get_vf_total_msix().
+>> (Incidentally, I think the documentation should mention that when it
+>> *is* supported, the contents of this file are *constant*, i.e., it
+>> does not decrease as vectors are assigned to VFs.)
+>>
+>> The "sriov_vf_msix_count" set function can ignore writes if there's no
+>> PF driver or it doesn't support ->sriov_get_vf_total_msix(), or if a
+>> VF driver is bound.
+>>
+>> Any userspace software must be able to deal with those scenarios
+>> anyway, so I don't think the mere presence or absence of the files is
+>> a meaningful signal to that software.
+> Hopefully, good luck with that!
+Management sw is use to dealing with optional sysfs files.
+libvirt does that now with the VF files for a PF -- all PF's don't have VFs.
+The VF files are only created if a VF ext-cfg-hdr exists.
 
-> I'm confused about how to introduce DCA in man pages. Current man pages
-> in rdma-core can be classifed into public and vendor-defined ones.
-> For example, ibv_create_qp.3 in libibverbs/man and mlx5dv.7 in
-> providers/mlx5/man, but most of them is a description for a single
-> interface. If we want to explain how to use DCA and how does it work,
-> should we put a hns_dca.x file in providers/hns/man? 
+So, as Bjorn said, mgmt sw related to optionally tuning PCIe devices are designed to check for file existence.
 
-You could do that, yes
+>> If we figure out a way to make the files visible only when the
+>> appropriate driver is bound, that might be nice and could always be
+>> done later.  But I don't think it's essential.
+> That seems reasonable, feel free to cc: me on the next patch series and
+> I'll try to review it, which should make more sense to me than this
+> email thread :)
+>
+> thanks,
+>
+> greg k-h
+>
 
-> And another question, I know the files with a number suffix like
-> ibv_create_qp.3 is for man pages in linux. What about the markdown files
-> with .md suffix like ibv_fork_init.3.md? If we want to add a new one about
-> DCA, which type should we choose?
-
-Always use the md files for new man pages please
-
-Jason
