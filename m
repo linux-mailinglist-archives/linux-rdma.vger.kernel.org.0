@@ -2,89 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDA53239E5
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Feb 2021 10:52:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 932BB3239F8
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Feb 2021 10:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234786AbhBXJvB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 24 Feb 2021 04:51:01 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4636 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbhBXJtT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 24 Feb 2021 04:49:19 -0500
-Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Dlrfz49gczYCTm;
-        Wed, 24 Feb 2021 17:47:07 +0800 (CST)
-Received: from dggema702-chm.china.huawei.com (10.3.20.66) by
- DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Wed, 24 Feb 2021 17:48:34 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema702-chm.china.huawei.com (10.3.20.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Wed, 24 Feb 2021 17:48:34 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.006;
- Wed, 24 Feb 2021 17:48:34 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "leon@kernel.org" <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: Re: [PATCH RFC rdma-core 0/5] libhns: Add support for Dynamic Context
- Attachment
-Thread-Topic: [PATCH RFC rdma-core 0/5] libhns: Add support for Dynamic
- Context Attachment
-Thread-Index: AQHW/P+g64h4ciCwYkiRw06zMjvQFw==
-Date:   Wed, 24 Feb 2021 09:48:34 +0000
-Message-ID: <55238899c6574cbe9fd96094ad4cc5e4@huawei.com>
-References: <1612667574-56673-1-git-send-email-liweihang@huawei.com>
- <20210209195359.GT4247@nvidia.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S234840AbhBXJyl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 24 Feb 2021 04:54:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234828AbhBXJyP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 24 Feb 2021 04:54:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55AC264DE7;
+        Wed, 24 Feb 2021 09:53:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614160414;
+        bh=yPq43gjzxrgBKpMUKdRA8k7osexf6QroB0Hwxh2xhRM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J47XGjL/RWEgvCjt9OrrAs8q/K4YqViy0nMAZ8p4k1rMcVhwx8ah2cyG7f8MYtTJJ
+         Aa18lAUd3hlWwBwhZFF8MrJ8fxBZw9EF+CuqJhNe+0HGjZJBhl9chcP3AKfX60DiYO
+         Gq9N7GACqILJ74Db5NWffmSrH0/xelPdKBaCYYAIsYQpE4Z6B+ffXvCbQ6/TlWNshd
+         F1y4uO8SzwqkcEcnmqoCqUv+DLdqyhu4KkYEV3dC8uU73UYYEU1C7IPdxph5cmy3oD
+         Ms6S3E6KGOap1wtQovM1ZVzFEHQOWgFkQmocDmq334k7Td6KHIQ0BwtEnpM98k4UVT
+         CNwaO6ZY5Z3/A==
+Date:   Wed, 24 Feb 2021 11:53:30 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Subject: Re: [PATCH mlx5-next v6 1/4] PCI: Add sysfs callback to allow MSI-X
+ table size change of SR-IOV VFs
+Message-ID: <YDYiGmpWDx9I59Qx@unreal>
+References: <YDIExpismOnU3c4k@unreal>
+ <20210223210743.GA1475710@bjorn-Precision-5520>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223210743.GA1475710@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/2/10 3:54, Jason Gunthorpe wrote:
-> On Sun, Feb 07, 2021 at 11:12:49AM +0800, Weihang Li wrote:
->> The HIP09 introduces the DCA(Dynamic Context Attachment) feature which
->> supports many RC QPs to share the WQE buffer in a memory pool. If a QP
->> enables DCA feature, the WQE's buffer will not be allocated when creating
->> but when the users start to post WRs. This will reduce the memory
->> consumption when there are too many QPs are inactive.
-> 
-> One a WQE buffer is allocated it still acts as a normal WQE ring
-> buffer? So this DCA logic is to remap the send queue buffer based on
-> demand for SQEs? How does it interact with the normal max send queue
-> entries reported?
-> 
-> Would like to see proper man pages explaining how this all works for
-> rdma-core.
-> 
-> Jason
-> 
+On Tue, Feb 23, 2021 at 03:07:43PM -0600, Bjorn Helgaas wrote:
+> On Sun, Feb 21, 2021 at 08:59:18AM +0200, Leon Romanovsky wrote:
+> > On Sat, Feb 20, 2021 at 01:06:00PM -0600, Bjorn Helgaas wrote:
+> > > On Fri, Feb 19, 2021 at 09:20:18AM +0100, Greg Kroah-Hartman wrote:
+> > >
+> > > > Ok, can you step back and try to explain what problem you are trying to
+> > > > solve first, before getting bogged down in odd details?  I find it
+> > > > highly unlikely that this is something "unique", but I could be wrong as
+> > > > I do not understand what you are wanting to do here at all.
+> > >
+> > > We want to add two new sysfs files:
+> > >
+> > >   sriov_vf_total_msix, for PF devices
+> > >   sriov_vf_msix_count, for VF devices associated with the PF
+> > >
+> > > AFAICT it is *acceptable* if they are both present always.  But it
+> > > would be *ideal* if they were only present when a driver that
+> > > implements the ->sriov_get_vf_total_msix() callback is bound to the
+> > > PF.
+> >
+> > BTW, we already have all possible combinations: static, static with
+> > folder, with and without "sriov_" prefix, dynamic with and without
+> > folders on VFs.
+> >
+> > I need to know on which version I'll get Acked-by and that version I
+> > will resubmit.
+>
+> I propose that you make static attributes for both files, so
+> "sriov_vf_total_msix" is visible for *every* PF in the system and
+> "sriov_vf_msix_count" is visible for *every* VF in the system.
 
-Hi Jason,
+No problem, this is close to v0/v1.
 
-I'm confused about how to introduce DCA in man pages. Current man pages
-in rdma-core can be classifed into public and vendor-defined ones.
-For example, ibv_create_qp.3 in libibverbs/man and mlx5dv.7 in
-providers/mlx5/man, but most of them is a description for a single
-interface. If we want to explain how to use DCA and how does it work,
-should we put a hns_dca.x file in providers/hns/man? Or add a file
-about hns_dca_open_device() and introduce DCA in it?
+>
+> The PF "sriov_vf_total_msix" show function can return zero if there's
+> no PF driver or it doesn't support ->sriov_get_vf_total_msix().
+> (Incidentally, I think the documentation should mention that when it
+> *is* supported, the contents of this file are *constant*, i.e., it
+> does not decrease as vectors are assigned to VFs.)
+>
+> The "sriov_vf_msix_count" set function can ignore writes if there's no
+> PF driver or it doesn't support ->sriov_get_vf_total_msix(), or if a
+> VF driver is bound.
 
-And another question, I know the files with a number suffix like
-ibv_create_qp.3 is for man pages in linux. What about the markdown files
-with .md suffix like ibv_fork_init.3.md? If we want to add a new one about
-DCA, which type should we choose?
+Just to be clear, why don't we return EINVAL/EOPNOTSUPP instead of
+silently ignore?
 
 Thanks
-Weihang
