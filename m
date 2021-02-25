@@ -2,58 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F945324CD2
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Feb 2021 10:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6808325002
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Feb 2021 13:56:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236346AbhBYJ1I (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Feb 2021 04:27:08 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:41471 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234932AbhBYJ1E (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:27:04 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R961e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UPX1c9T_1614245177;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UPX1c9T_1614245177)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 25 Feb 2021 17:26:22 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     mike.marciniszyn@cornelisnetworks.com
-Cc:     dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] RDMA/hw/hfi1/tid_rdma: remove unnecessary conversion to bool
-Date:   Thu, 25 Feb 2021 17:26:15 +0800
-Message-Id: <1614245175-73043-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S231950AbhBYMzt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Feb 2021 07:55:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52422 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229596AbhBYMzs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 25 Feb 2021 07:55:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6003364EB7;
+        Thu, 25 Feb 2021 12:55:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614257707;
+        bh=u5eRUZXSfVrVHiNGu0vpYTNA/pISHvCVfDY7NxwSxHk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=V8Cc7Gni8ewcfye1sgAqtDO1AoRyS2fHVsthPDK73YIrkQJKkLX7ZmbVpSLssrYKe
+         qoPGRrPrTtd8bu1+pCZLO0vvNauoT3w6BVekXxB0fP9QysqO7/cXlTmdERb6KrEGJQ
+         YNwH+uXy/Uu6C/5tAFQ+OAfAq/jhO7PMWk426CBo5RETi0XDIVpN7IUCtwn2zD6ZGc
+         LmxWykaKRteQUNwIuYGK1q0crhOkYzMMsiEzfjuKRJcN2PW3rlZylE1FYdi41ZjElG
+         U5JkPmHHLFRWF8DBA3SCEaQ5Q14p278z7x7g5J0d41oR3Slq503S6wpc2GcR5HmK+I
+         Wr3HbrnoA+/CA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dmytro Linkin <dlinkin@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>, Roi Dayan <roid@nvidia.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Eli Britstein <elibr@mellanox.com>,
+        Eli Cohen <eli@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net/mlx5e: fix mlx5e_tc_tun_update_header_ipv6 dummy definition
+Date:   Thu, 25 Feb 2021 13:54:54 +0100
+Message-Id: <20210225125501.1792072-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fix the following coccicheck warnings:
+From: Arnd Bergmann <arnd@arndb.de>
 
-./drivers/infiniband/hw/hfi1/tid_rdma.c:1118:36-41: WARNING: conversion
-to bool not needed here.
+The alternative implementation of this function in a header file
+is declared as a global symbol, and gets added to every .c file
+that includes it, which leads to a link error:
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+arm-linux-gnueabi-ld: drivers/net/ethernet/mellanox/mlx5/core/en_rx.o: in function `mlx5e_tc_tun_update_header_ipv6':
+en_rx.c:(.text+0x0): multiple definition of `mlx5e_tc_tun_update_header_ipv6'; drivers/net/ethernet/mellanox/mlx5/core/en_main.o:en_main.c:(.text+0x0): first defined here
+
+Mark it 'static inline' like the other functions here.
+
+Fixes: c7b9038d8af6 ("net/mlx5e: TC preparation refactoring for routing update event")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/infiniband/hw/hfi1/tid_rdma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c b/drivers/infiniband/hw/hfi1/tid_rdma.c
-index 0b1f9e4..8958ea3 100644
---- a/drivers/infiniband/hw/hfi1/tid_rdma.c
-+++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
-@@ -1115,7 +1115,7 @@ static u32 kern_find_pages(struct tid_rdma_flow *flow,
- 	}
- 
- 	flow->length = flow->req->seg_len - length;
--	*last = req->isge == ss->num_sge ? false : true;
-+	*last = req->isge == !ss->num_sge;
- 	return i;
- }
- 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h
+index 67de2bf36861..89d5ca91566e 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h
+@@ -76,10 +76,12 @@ int mlx5e_tc_tun_update_header_ipv6(struct mlx5e_priv *priv,
+ static inline int
+ mlx5e_tc_tun_create_header_ipv6(struct mlx5e_priv *priv,
+ 				struct net_device *mirred_dev,
+-				struct mlx5e_encap_entry *e) { return -EOPNOTSUPP; }
+-int mlx5e_tc_tun_update_header_ipv6(struct mlx5e_priv *priv,
+-				    struct net_device *mirred_dev,
+-				    struct mlx5e_encap_entry *e)
++				struct mlx5e_encap_entry *e)
++{ return -EOPNOTSUPP; }
++static inline int
++mlx5e_tc_tun_update_header_ipv6(struct mlx5e_priv *priv,
++				struct net_device *mirred_dev,
++				struct mlx5e_encap_entry *e)
+ { return -EOPNOTSUPP; }
+ #endif
+ int mlx5e_tc_tun_route_lookup(struct mlx5e_priv *priv,
 -- 
-1.8.3.1
+2.29.2
 
