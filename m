@@ -2,85 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6808325002
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Feb 2021 13:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D16032518B
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Feb 2021 15:34:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbhBYMzt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Feb 2021 07:55:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229596AbhBYMzs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 25 Feb 2021 07:55:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6003364EB7;
-        Thu, 25 Feb 2021 12:55:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614257707;
-        bh=u5eRUZXSfVrVHiNGu0vpYTNA/pISHvCVfDY7NxwSxHk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=V8Cc7Gni8ewcfye1sgAqtDO1AoRyS2fHVsthPDK73YIrkQJKkLX7ZmbVpSLssrYKe
-         qoPGRrPrTtd8bu1+pCZLO0vvNauoT3w6BVekXxB0fP9QysqO7/cXlTmdERb6KrEGJQ
-         YNwH+uXy/Uu6C/5tAFQ+OAfAq/jhO7PMWk426CBo5RETi0XDIVpN7IUCtwn2zD6ZGc
-         LmxWykaKRteQUNwIuYGK1q0crhOkYzMMsiEzfjuKRJcN2PW3rlZylE1FYdi41ZjElG
-         U5JkPmHHLFRWF8DBA3SCEaQ5Q14p278z7x7g5J0d41oR3Slq503S6wpc2GcR5HmK+I
-         Wr3HbrnoA+/CA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dmytro Linkin <dlinkin@nvidia.com>,
-        Vlad Buslov <vladbu@nvidia.com>, Roi Dayan <roid@nvidia.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Eli Britstein <elibr@mellanox.com>,
-        Eli Cohen <eli@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net/mlx5e: fix mlx5e_tc_tun_update_header_ipv6 dummy definition
-Date:   Thu, 25 Feb 2021 13:54:54 +0100
-Message-Id: <20210225125501.1792072-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S232447AbhBYOeA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Feb 2021 09:34:00 -0500
+Received: from p3plsmtpa07-03.prod.phx3.secureserver.net ([173.201.192.232]:59663
+        "EHLO p3plsmtpa07-03.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232000AbhBYOd6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 25 Feb 2021 09:33:58 -0500
+Received: from [192.168.0.116] ([71.184.94.153])
+        by :SMTPAUTH: with ESMTPSA
+        id FHZ1l9SQZKQk4FHZ1lYChe; Thu, 25 Feb 2021 07:24:24 -0700
+X-CMAE-Analysis: v=2.4 cv=W6D96Tak c=1 sm=1 tr=0 ts=6037b318
+ a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
+ a=IkcTkHD0fZMA:10 a=SRrdq9N9AAAA:8 a=lXvwE3LD-PdbJlVjoP8A:9
+ a=APAc10L1BaqvsfqQ:21 a=jEGF4k1KpHUJKy5Q:21 a=QEXdDO2ut3YA:10
+X-SECURESERVER-ACCT: tom@talpey.com
+Subject: Re: [PATCH] RDMA/hw/hfi1/tid_rdma: remove unnecessary conversion to
+ bool
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        mike.marciniszyn@cornelisnetworks.com
+Cc:     dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1614245175-73043-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <aeaa298a-8e62-4f0a-c0fe-72cec3c1ed90@talpey.com>
+Date:   Thu, 25 Feb 2021 09:24:23 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1614245175-73043-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfMfvRsARG1iaHqRBbSLhFxYGvBT444uELJqm4wCVBI1b6vLP1+04IjycYc+r+Z2rDC4JWphHjAr0Y3sTsVm28IUHu4gX1eypmsPigoROViwTiltKOnph
+ J20MtSA4e08gnnOJtz3kzpjbAgjRiEq12SAzvlX2VDyfI7fK6t+aFn+DPKdTPjeJyxnAPtMKJtFMNz2N3/5Of57kh1pVaHOgh4BOPckoXYyL8u3IWBvdx8h7
+ 5scEGjt0JlkMDY+xASFUYbB1blYPbT5QFx4FcSbWJ6LBTlShYepR/F0oUKxxVQlTcDmLOsong0OD2rYZL6lBVGGj5z5KMsWMi0tPtuNNIOv99maRVDUjTFCs
+ 6zLoq7HfnmBKXyw4xC2MU6dJcQl7/WYg+5n3uoQrfbORUNrek9TTw2pFFepWRPgq16JEH00KtFD+Z4onfKsbo139gz4bqQ==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 2/25/2021 4:26 AM, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+> 
+> ./drivers/infiniband/hw/hfi1/tid_rdma.c:1118:36-41: WARNING: conversion
+> to bool not needed here.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>   drivers/infiniband/hw/hfi1/tid_rdma.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c b/drivers/infiniband/hw/hfi1/tid_rdma.c
+> index 0b1f9e4..8958ea3 100644
+> --- a/drivers/infiniband/hw/hfi1/tid_rdma.c
+> +++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
+> @@ -1115,7 +1115,7 @@ static u32 kern_find_pages(struct tid_rdma_flow *flow,
+>   	}
+>   
+>   	flow->length = flow->req->seg_len - length;
+> -	*last = req->isge == ss->num_sge ? false : true;
+> +	*last = req->isge == !ss->num_sge;
 
-The alternative implementation of this function in a header file
-is declared as a global symbol, and gets added to every .c file
-that includes it, which leads to a link error:
+Are you sure this is what you want? The new code seems to compare
+an index to a bool (refactoring)
 
-arm-linux-gnueabi-ld: drivers/net/ethernet/mellanox/mlx5/core/en_rx.o: in function `mlx5e_tc_tun_update_header_ipv6':
-en_rx.c:(.text+0x0): multiple definition of `mlx5e_tc_tun_update_header_ipv6'; drivers/net/ethernet/mellanox/mlx5/core/en_main.o:en_main.c:(.text+0x0): first defined here
+	*last = req->isge == (ss->num_sge != 0);
 
-Mark it 'static inline' like the other functions here.
+Don't you actually want
 
-Fixes: c7b9038d8af6 ("net/mlx5e: TC preparation refactoring for routing update event")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+	*last = req->isge != ss->num_sge;
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h
-index 67de2bf36861..89d5ca91566e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h
-@@ -76,10 +76,12 @@ int mlx5e_tc_tun_update_header_ipv6(struct mlx5e_priv *priv,
- static inline int
- mlx5e_tc_tun_create_header_ipv6(struct mlx5e_priv *priv,
- 				struct net_device *mirred_dev,
--				struct mlx5e_encap_entry *e) { return -EOPNOTSUPP; }
--int mlx5e_tc_tun_update_header_ipv6(struct mlx5e_priv *priv,
--				    struct net_device *mirred_dev,
--				    struct mlx5e_encap_entry *e)
-+				struct mlx5e_encap_entry *e)
-+{ return -EOPNOTSUPP; }
-+static inline int
-+mlx5e_tc_tun_update_header_ipv6(struct mlx5e_priv *priv,
-+				struct net_device *mirred_dev,
-+				struct mlx5e_encap_entry *e)
- { return -EOPNOTSUPP; }
- #endif
- int mlx5e_tc_tun_route_lookup(struct mlx5e_priv *priv,
--- 
-2.29.2
+??
 
+Even then, it seems really hard to read.
+
+>   	return i;
+>   }
+>   
+> 
