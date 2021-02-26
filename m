@@ -2,168 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3AC326A63
-	for <lists+linux-rdma@lfdr.de>; Sat, 27 Feb 2021 00:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4D7326A69
+	for <lists+linux-rdma@lfdr.de>; Sat, 27 Feb 2021 00:33:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhBZX33 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Feb 2021 18:29:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhBZX3Y (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Feb 2021 18:29:24 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC141C06174A
-        for <linux-rdma@vger.kernel.org>; Fri, 26 Feb 2021 15:28:43 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id g8so7048112otk.4
-        for <linux-rdma@vger.kernel.org>; Fri, 26 Feb 2021 15:28:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=M96sqn81EqzVVV7VWvd48XWz6RKrEw2yIs/x7IhfaCI=;
-        b=tuBM0xRpfokgjxACj5lSa9otqAMEsI9+rkbByNsps3OPNrIWWeUPhCsfHkHeS9yegJ
-         tnODaqoZujKI47BFKFEimUZIYpz5ARmejQLPLZCC1+64aQiXU/OpSgJNGFhSO070b250
-         bsLypmg8L1iFpufBiuDbRKvzy6EfV/rxNolLwcRGEknbvJ5xbJLdC/2jEMV43dJUqQiq
-         sJXfc0fJfyg9Y/vqTlONb71F3VfbF8s4r5uVX1CcKdFRF6z/XCx6B8U4eMngeHgY9JGi
-         WunNP5TTZ5ab57wfDEbXYnOSsSMX58GMeKvLjHGHrvAdz/tDm0M98kuJgvdJQeFD1IdF
-         EEUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M96sqn81EqzVVV7VWvd48XWz6RKrEw2yIs/x7IhfaCI=;
-        b=CG2pzKat+d3Jci+iszjrfmT9juqea2UH/x8f+FKx9lhQQ3/WawvqxqrM2Ta6AqTGt8
-         3kaxTJruNcbdNUHk2OBUMCWWyEVMRVbvQ1srqAnGWwQS/JQmDnFaqao9eGy/WwjWjgTW
-         WcWbZ0A5stsN340Fy2JtEeY3uuGcbzxK0kDErCNno2UPs9fXo3GMx4IE60ZZbTbuAIzV
-         XJZAvuHPK+tEUx6v/OEEFwhB1pVuMCZ0KUf/l8B5kz4/ptAqC59rJXNH8QzjYHE9dUun
-         YelyI1L5r/qG8OXxbfjPSkdJqk0WaPLaSiIxMb0Q+0QIuxQe5RJD6cJM8TLj8nKSaMFh
-         mL9g==
-X-Gm-Message-State: AOAM533CiKE4FnXh5HtEmSOXUcqPhkv5zwcJgpDtp8f0jWKxHTkHtR/j
-        tiTnnKjXtIBlyDxsAS9TdAWqXHQmUyNVUQ==
-X-Google-Smtp-Source: ABdhPJxuCrD61d5fh4eBVvZBoykzpcHLhpkvmmHHVqofsDYhsjQbkJLycxiHBwXkFsaJcXgMWewILA==
-X-Received: by 2002:a9d:2247:: with SMTP id o65mr4231038ota.344.1614382122741;
-        Fri, 26 Feb 2021 15:28:42 -0800 (PST)
-Received: from [192.168.0.21] ([97.99.248.255])
-        by smtp.gmail.com with ESMTPSA id 3sm2097365otn.18.2021.02.26.15.28.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 15:28:42 -0800 (PST)
+        id S229769AbhBZXdv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Feb 2021 18:33:51 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9655 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229698AbhBZXdu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Feb 2021 18:33:50 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B603985360000>; Fri, 26 Feb 2021 15:33:10 -0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 26 Feb
+ 2021 23:33:09 +0000
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 26 Feb
+ 2021 23:33:08 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.107)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Fri, 26 Feb 2021 23:33:07 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SMHOF9gnTxeZlVVGOqgMgO951Q3XoYpJLNJIDF5ZIM3FcgQD/lLZ+HB0V+qqDC+9futtzb7RTDM2c8AKGmcMs14OFn4XOzXX1uV6ft/g7vCvCRb+VYv3VR5fjSgf50dSofW+8FzBmEUUq2AQKXEz7fG9S2cbjXaOFm0y7SJrR83v4oceWX4rDc4L9+pVjVTGDZhsX7C5eb07eHyLnX1QwOeZKdVz5XYBLCOPP/xYDcAdfYZcGmcI6uVEhz1DUdj3loLtzZG8Ne7UOv0bEz3oDEGZpzlO+vvA+vpIXJ7OqvrRH2eavr6T1Gi8GfwU6bqxXBFYzaY2cncse7w1IX5ppA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0CHqVbFJXLfeb9MmTHIv3qEQPqsZiwjaowEo5g/3NWE=;
+ b=lO7ILfkdWrPYcNstQk7KYuzUsJr5B0tigH5/T3TUciW5iWVHDT1lVGFn6i7y5+D8kxB7rPJ9tzgXR+I9pW/72xJeXEGTjTF/dGrkJYhjueBbxqFSmrBdEIBPvcel5QMwUrdO6tkup+4PgskktOrWSEIVFLidEJOLH32YdOi2MOFH31ReAFX5Zahh/KFIZjl4WdTNqJG6RH3ckaqPEQJ2qqmnHvKAaeWLouse/1cCMXsN+vDgVub4ZDsjgqB2g+NTT5tJQoc4vfd6tFT3g3zs1FvQqbCJGBzzVtaEFM4nEbbABSA9kSuV0uKauUz3Z+xLjZXLXHjSd4jXvZipiCWhLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1146.namprd12.prod.outlook.com (2603:10b6:3:73::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Fri, 26 Feb
+ 2021 23:33:03 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3868.033; Fri, 26 Feb 2021
+ 23:33:03 +0000
+Date:   Fri, 26 Feb 2021 19:33:01 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+CC:     <zyjzyj2000@gmail.com>, <linux-rdma@vger.kernel.org>
 Subject: Re: [PATCH for-next] RDMA/rxe: Fix ib_device reference counting
  (again)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Message-ID: <20210226233301.GA4247@nvidia.com>
 References: <20210214222630.3901-1-rpearson@hpe.com>
-Message-ID: <48dcbdc5-35a3-2fe3-3e3d-bff37c2d8053@gmail.com>
-Date:   Fri, 26 Feb 2021 17:28:41 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ <48dcbdc5-35a3-2fe3-3e3d-bff37c2d8053@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <48dcbdc5-35a3-2fe3-3e3d-bff37c2d8053@gmail.com>
+X-ClientProxiedBy: YTXPR0101CA0064.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:1::41) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <20210214222630.3901-1-rpearson@hpe.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YTXPR0101CA0064.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:1::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.31 via Frontend Transport; Fri, 26 Feb 2021 23:33:03 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lFmbV-001QGp-Jp; Fri, 26 Feb 2021 19:33:01 -0400
+X-MS-Exchange-MinimumUrlDomainAge: kernel.org#8757
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614382390; bh=0CHqVbFJXLfeb9MmTHIv3qEQPqsZiwjaowEo5g/3NWE=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:
+         X-MS-Exchange-MinimumUrlDomainAge:X-Header;
+        b=Si/whNhsIS4lXQQz1Gz9qEs3nkt8HhUh6zf40VjBBlmOuVi5TnZOGzhlCN6zRDM+3
+         UYqgNl2t3MlKlAm60a4knOwBVySODMU4iGEgtAFARXNlwTWX0zEaOa3PJ63MnMpUPg
+         faQZsRDnvDyKTw+bRTNgtDBX12MOU5PTD0wLPeiAEcfvLNdUetY5ca2GkJxrk6UjaI
+         3T48c1oRWeZLhEbyXsOmQcZ53oiyOD/hA6+236L0NBHc2FIdAquS9/fJOe5mwZFcOm
+         hveF2AKuRKD+RwOt0wpA2futhMPRmAGPF9QyFHQqGPb3v3ejItQudqmvJwfFf2IuU3
+         M5GT58+Iths0Q==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/14/21 4:26 PM, Bob Pearson wrote:
-> Three errors occurred in the fix referenced below.
-> 
-> 1) The on and off again 'if (skb)' got dropped but was really
-> needed in rxe_rcv_mcast_pkt() to prevent calling ib_device_put()
-> on the non-error path.
-> 
-> 2) Extending the reference taken by rxe_get_dev_from_net() in
-> rxe_udp_encap_recv() until each skb is freed was not matched by
-> a reference in the loopback path resulting in underflows.
-> 
-> 3) In rxe_comp.c the function free_pkt() did not clear skb which
-> triggered a warning at done: and could possibly at exit: in
-> rxe_completer(). The WARN_ONCE() calls are not required at done:
-> and only in one place before going to exit.
-> 
-> This patch fixes these errors.
-> 
-> Fixes: 899aba891cab ("RDMA/rxe: Fix FIXME in rxe_udp_encap_recv()")
-> Signed-off-by: Bob Pearson <rpearson@hpe.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_comp.c | 5 +++--
->  drivers/infiniband/sw/rxe/rxe_net.c  | 7 ++++++-
->  drivers/infiniband/sw/rxe/rxe_recv.c | 6 ++++--
->  3 files changed, 13 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-> index a8ac791a1bb9..13fc5a1cced1 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_comp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-> @@ -671,6 +671,9 @@ int rxe_completer(void *arg)
->  			 * it down the road or let it expire
->  			 */
->  
-> +			/* warn if we did receive a packet */
-> +			WARN_ON_ONCE(skb);
-> +
->  			/* there is nothing to retry in this case */
->  			if (!wqe || (wqe->state == wqe_state_posted))
->  				goto exit;
-> @@ -750,7 +753,6 @@ int rxe_completer(void *arg)
->  	/* we come here if we are done with processing and want the task to
->  	 * exit from the loop calling us
->  	 */
-> -	WARN_ON_ONCE(skb);
->  	rxe_drop_ref(qp);
->  	return -EAGAIN;
->  
-> @@ -758,7 +760,6 @@ int rxe_completer(void *arg)
->  	/* we come here if we have processed a packet we want the task to call
->  	 * us again to see if there is anything else to do
->  	 */
-> -	WARN_ON_ONCE(skb);
->  	rxe_drop_ref(qp);
->  	return 0;
->  }
-> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-> index 36d56163afac..8e81df578552 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_net.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
-> @@ -406,12 +406,17 @@ int rxe_send(struct rxe_pkt_info *pkt, struct sk_buff *skb)
->  
->  void rxe_loopback(struct sk_buff *skb)
->  {
-> +	struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
-> +
->  	if (skb->protocol == htons(ETH_P_IP))
->  		skb_pull(skb, sizeof(struct iphdr));
->  	else
->  		skb_pull(skb, sizeof(struct ipv6hdr));
->  
-> -	rxe_rcv(skb);
-> +	if (WARN_ON(!ib_device_try_get(&pkt->rxe->ib_dev)))
-> +		kfree_skb(skb);
-> +	else
-> +		rxe_rcv(skb);
->  }
->  
->  struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
-> diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-> index 8a48a33d587b..a5e330e3bbce 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_recv.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-> @@ -299,8 +299,10 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
->  
->  err1:
->  	/* free skb if not consumed */
-> -	kfree_skb(skb);
-> -	ib_device_put(&rxe->ib_dev);
-> +	if (unlikely(skb)) {
-> +		kfree_skb(skb);
-> +		ib_device_put(&rxe->ib_dev);
-> +	}
->  }
->  
->  /**
-> 
-Just a reminder. rxe in for-next is broken until this gets done.
-thanks
+On Fri, Feb 26, 2021 at 05:28:41PM -0600, Bob Pearson wrote:
+> Just a reminder. rxe in for-next is broken until this gets done.
+> thanks
 
-bob
+I was expecting you to resend it? There seemed to be some changes
+needed
+
+https://patchwork.kernel.org/project/linux-rdma/patch/20210214222630.3901-1-rpearson@hpe.com/
+
+Jason
