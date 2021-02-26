@@ -2,65 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3793262C3
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Feb 2021 13:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F18E3264E5
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Feb 2021 16:49:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhBZMdR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Feb 2021 07:33:17 -0500
-Received: from spam.zju.edu.cn ([61.164.42.155]:47110 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230140AbhBZMdP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 26 Feb 2021 07:33:15 -0500
-Received: by ajax-webmail-mail-app2 (Coremail) ; Fri, 26 Feb 2021 20:32:22
- +0800 (GMT+08:00)
-X-Originating-IP: [10.192.85.18]
-Date:   Fri, 26 Feb 2021 20:32:22 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Bernard Metzler" <BMT@zurich.ibm.com>
-Cc:     kjlu <kjlu@umn.edu>, "Doug Ledford" <dledford@redhat.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: Re:  [PATCH] RDMA/siw: Fix missing check in siw_get_hdr
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20200917(3e19599d)
- Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
-In-Reply-To: <OF56E5E5C1.78489712-ON00258688.0032E2EA-00258688.003301A1@notes.na.collabserv.com>
-References: <20210226075515.21371-1-dinghao.liu@zju.edu.cn>
- <OF56E5E5C1.78489712-ON00258688.0032E2EA-00258688.003301A1@notes.na.collabserv.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S229835AbhBZPtA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Feb 2021 10:49:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32262 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229545AbhBZPtA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 26 Feb 2021 10:49:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614354452;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
+        bh=r5QYCQaVbVi9Ys3ZbI41C5UjH3p581MKTM/x4dJi5jU=;
+        b=i5QuOEvkCC14dzNxlcye1MaP1YUn9Gu82iYUq/AQFbiualgUYaBHzVLHTHImUMrCq5qhvb
+        iXYEhdqRZfjG21lP2x73t6BS43OD6IkVipo7WQBIfZgneCb7Psb23Xt9bE40PiRa9F8HfF
+        x8aIKll5oyD7dr9o5lUJp2/FDHi7iic=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-feWzZiVHMJKTo3uQalfncw-1; Fri, 26 Feb 2021 10:47:30 -0500
+X-MC-Unique: feWzZiVHMJKTo3uQalfncw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2D2D3C295
+        for <linux-rdma@vger.kernel.org>; Fri, 26 Feb 2021 15:47:29 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 273955C23D
+        for <linux-rdma@vger.kernel.org>; Fri, 26 Feb 2021 15:47:29 +0000 (UTC)
+Received: from zmail25.collab.prod.int.phx2.redhat.com (zmail25.collab.prod.int.phx2.redhat.com [10.5.83.31])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 2142718095CA
+        for <linux-rdma@vger.kernel.org>; Fri, 26 Feb 2021 15:47:29 +0000 (UTC)
+Date:   Fri, 26 Feb 2021 10:47:28 -0500 (EST)
+From:   Yi Zhang <yi.zhang@redhat.com>
+To:     linux-rdma@vger.kernel.org
+Message-ID: <1010828157.14107334.1614354448762.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1688338252.14107275.1614354083739.JavaMail.zimbra@redhat.com>
+Subject: modprobe rdma_rxe failed when ipv6 disabled
 MIME-Version: 1.0
-Message-ID: <4ded6c6f.9953b.177de5360ef.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: by_KCgDnrvBW6jhg9mPIAQ--.60326W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgQGBlZdtSfEeAAPss
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW7Jw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.68.5.41, 10.4.195.13]
+Thread-Topic: modprobe rdma_rxe failed when ipv6 disabled
+Thread-Index: sewH6LO4FWHr05gB+4H7dftwbji45Q==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-CgomcXVvdDtCZXJuYXJkIE1ldHpsZXImcXVvdDsgJmx0O0JNVEB6dXJpY2guaWJtLmNvbSZndDvl
-hpnpgZPvvJoKPiAtLS0tLSJEaW5naGFvIExpdSIgPGRpbmdoYW8ubGl1QHpqdS5lZHUuY24+IHdy
-b3RlOiAtLS0tLQo+IAo+ID5UbzogZGluZ2hhby5saXVAemp1LmVkdS5jbiwga2psdUB1bW4uZWR1
-Cj4gPkZyb206ICJEaW5naGFvIExpdSIgPGRpbmdoYW8ubGl1QHpqdS5lZHUuY24+Cj4gPkRhdGU6
-IDAyLzI2LzIwMjEgMDg6NTZBTQo+ID5DYzogIkJlcm5hcmQgTWV0emxlciIgPGJtdEB6dXJpY2gu
-aWJtLmNvbT4sICJEb3VnIExlZGZvcmQiCj4gPjxkbGVkZm9yZEByZWRoYXQuY29tPiwgIkphc29u
-IEd1bnRob3JwZSIgPGpnZ0B6aWVwZS5jYT4sCj4gPmxpbnV4LXJkbWFAdmdlci5rZXJuZWwub3Jn
-LCBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnCj4gPlN1YmplY3Q6IFtFWFRFUk5BTF0gW1BB
-VENIXSBSRE1BL3NpdzogRml4IG1pc3NpbmcgY2hlY2sgaW4KPiA+c2l3X2dldF9oZHIKPiA+Cj4g
-PldlIHNob3VsZCBhbHNvIGNoZWNrIHRoZSByYW5nZSBvZiBvcGNvZGUgYWZ0ZXIgY2FsbGluZwo+
-ID5fX3JkbWFwX2dldF9vcGNvZGUoKSBpbiB0aGUgZWxzZSBicmFuY2ggdG8gcHJldmVudCBwb3Rl
-bnRpYWwKPiA+b3ZlcmZsb3cuCj4gCj4gSGkgRGluZ2hhbywKPiBObyB0aGlzIGlzIG5vdCBuZWVk
-ZWQuIFdlIGFsd2F5cyBmaXJzdCByZWFkIHRoZSBtaW5pbXVtCj4gaGVhZGVyIGluZm9ybWF0aW9u
-IChNUEEgbGVuLCBERFAgZmxhZ3MsIFJETUFQIG9wY29kZSwKPiBTVGFnLCB0YXJnZXQgb2Zmc2V0
-KS4gT25seSBpZiB3ZSBoYXZlIHJlY2VpdmVkIHRoYXQKPiBpbnRvIGxvY2FsIGJ1ZmZlciwgd2Ug
-Y2hlY2sgZm9yIHRoZSBvcGNvZGUgdGhpcyBvbmUgdGltZS4KPiBOb3cgdGhlIG9wY29kZSBkZXRl
-cm1pbmVzIHRoZSByZW1haW5pbmcgbGVuZ3RoIG9mIHRoZQo+IHZhcmlhYmx5IHNpemVkIHBhcnQg
-b2YgdGhlIGhlYWRlciB0byBiZSByZWNlaXZlZC4KPiAKPiBXZSBkbyBub3QgaGF2ZSB0byBjaGVj
-ayB0aGUgb3Bjb2RlIGFnYWluLCBzaW5jZSB3ZQo+IGFscmVhZHkgcmVjZWl2ZWQgYW5kIGNoZWNr
-ZWQgaXQuCj4gCgpJdCdzIGNsZWFyIHRvIG1lLCB0aGFua3MhCgpSZWdhcmRzLApEaW5naGFvCg==
+Hello
+
+I found this failure after ipv6 disabled, is that expected?
+
+# modprobe rdma_rxe
+modprobe: ERROR: could not insert 'rdma_rxe': Operation not permitted
+
+# dmesg
+[  596.783484] rdma_rxe: failed to create udp socket. err = -97
+[  596.789144] rdma_rxe: Failed to create IPv6 UDP tunnel
+
+# uname -r
+5.11.0
+
+
+
+Best Regards,
+  Yi Zhang
+
 
