@@ -2,183 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 494EA327865
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Mar 2021 08:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F933278AC
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Mar 2021 08:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232498AbhCAHmQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Mar 2021 02:42:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232586AbhCAHmE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Mar 2021 02:42:04 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93467C061786
-        for <linux-rdma@vger.kernel.org>; Sun, 28 Feb 2021 23:42:50 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id d9so15552866ote.12
-        for <linux-rdma@vger.kernel.org>; Sun, 28 Feb 2021 23:42:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JwnvZBaeYdZxqvTIAy768N5ZmX/7eWn11v/aHyKaP1U=;
-        b=q6kYnTnrhP3XLfvxdAC4r4WExE9B5BpHEkAJBe7hLDA3F6puMTV6vwL8LVkBBR4H+G
-         9yBLHjqtCQwMiRIVabecLvSV59s4EiXSqHsMWoytusgedprV5pvY0991P71tVcqhwSAz
-         ZCLK51xWhwzGvFk4sclChhumaqxnm0Tziromq7B3w2vNdbiLt+YPvv8RdggP8Zsqf/E3
-         y5HVig1qnibuTPbCS2fkxcQfbKNech0uwTQj1FEg/XdyL3ZxPtXuP9E9aqrKSkGNGaf5
-         ZjnmL+3/NB1IDNZIRisk4DscLEn2FWhofWFMPfhRinBIF00hSD6vapEsHSq4n7Oc4pan
-         I2YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JwnvZBaeYdZxqvTIAy768N5ZmX/7eWn11v/aHyKaP1U=;
-        b=R/t+ccvQt790gKDwnPLVCu226zKq6phXV1S65xpXb19920ENBPE5X8ph20sjaw7J/Y
-         H7dlf+kGElodb47h+Gm1cZq/p5rUg6GUNjJTVNGM21r7NLbV3T5uKl2i7eoXLGeGp0Vu
-         Go2Wi7vxBONdcNMJvlrAIjandq1dSjDu+ujtZhaRf1f6o70kmF8+ffQMLCjaQ9avUMsi
-         CC4lohbRXD2EuOMaFYMG0yYFMLZ3xWOWXVA6+aOBcsq6VcVqnlGPhoAJ72hurXxK3vvC
-         WpNuJPf4R6iPDY/nnWjf9YG1lQ6PR4ZD4dg2TbckJCQkzWQJe3RXnS7iSmjX6/BPabsp
-         Qt4A==
-X-Gm-Message-State: AOAM531sMBBGdsmayXiy1bH4loVQbNCciyzEcB7rwLwIZp8L0evUwTB6
-        +rNzY0hHhVHffwNlsIwe1mW+LJxSAk7kEt9S/lA=
-X-Google-Smtp-Source: ABdhPJzTBuSqF3kp8+y4yNlANSGCKJ8iDeGL1C0vYQUWEtiaVIiagM15SToY/pFxUkzuWoFnDy+BcuV4uBzJX/U3yQg=
-X-Received: by 2002:a05:6830:130d:: with SMTP id p13mr12516380otq.53.1614584569971;
- Sun, 28 Feb 2021 23:42:49 -0800 (PST)
-MIME-Version: 1.0
-References: <20210214222630.3901-1-rpearson@hpe.com> <48dcbdc5-35a3-2fe3-3e3d-bff37c2d8053@gmail.com>
- <20210226233301.GA4247@nvidia.com> <3165add7-518d-9485-fa12-6d7822ed9165@gmail.com>
- <YDoGJIcB6SB/7LPj@unreal> <db406802-25a8-bda8-6add-4b75057eec96@gmail.com>
-In-Reply-To: <db406802-25a8-bda8-6add-4b75057eec96@gmail.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Mon, 1 Mar 2021 15:42:39 +0800
-Message-ID: <CAD=hENdKVD_HUaauXp5ObOuGuL_h8YSG2zsK5sZ9fsp81iraGw@mail.gmail.com>
-Subject: Re: [PATCH for-next] RDMA/rxe: Fix ib_device reference counting (again)
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
+        id S232559AbhCAH4S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Mar 2021 02:56:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232480AbhCAH4R (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 1 Mar 2021 02:56:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EDE164DBD;
+        Mon,  1 Mar 2021 07:55:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614585334;
+        bh=eeHQCvd8UbNO8JIbmuAMLChEtfZ+6ZSQnbzdOgqBwZI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=A89S5Fg+640FyMyslrCMMQ/22J05ojC+rZuqZW759yFfL025YiYpLzgOW5gpVu9aK
+         b8xZN3el+nr+mWlTJjUZUoAj0N1rYRpetFLJ/q4k64ZKBf2tn018yfN+NxAkw0eMlx
+         PBqFa9F4/fyU6GZ3TrdP8aHklJJ/BEtnpJ9BF2EMuNPEb29jjJ63NGNEXT/vk1qtJM
+         ZoQ8vvF96z3YyGtioBok3R2or7l12ihbmrytlh2lx1zty7xP0JaXRbCgo2FJaqQjsx
+         Urjl41kXUXkzn3+Q0ydLDYEBmuW5VkmBRNEXijXe9x9oPSPfzrJUDFOLIctnTZeRG1
+         SA4eg2Z40yHzg==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Frank Zago <frank.zago@hpe.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
+Date:   Mon,  1 Mar 2021 09:55:20 +0200
+Message-Id: <20210301075524.441609-1-leon@kernel.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 1:04 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->
-> On 2/27/21 2:43 AM, Leon Romanovsky wrote:
-> > On Fri, Feb 26, 2021 at 06:02:39PM -0600, Bob Pearson wrote:
-> >> On 2/26/21 5:33 PM, Jason Gunthorpe wrote:
-> >>> On Fri, Feb 26, 2021 at 05:28:41PM -0600, Bob Pearson wrote:
-> >>>> Just a reminder. rxe in for-next is broken until this gets done.
-> >>>> thanks
-> >>>
-> >>> I was expecting you to resend it? There seemed to be some changes
-> >>> needed
-> >>>
-> >>> https://patchwork.kernel.org/project/linux-rdma/patch/20210214222630.=
-3901-1-rpearson@hpe.com/
-> >>>
-> >>> Jason
-> >>>
-> >> OK. I see. I agreed to that complaint when the kfree was the only thin=
-g in the if {} but now I have to call ib_device_put() *only* in the error c=
-ase not if there wasn't an error. So no reason to not put the kfree_skb() i=
-n there too and avoid passing a NULL pointer. It should stay the way it is.
-> >
-> > First, I posted a diff which makes this if() redundant.
-> > Second, the if () before kfree() is checked by coccinelle and your
-> > "should stay the way it is" will be marked as failure in many CIs,
-> > including ours.
-> >
-> > Thanks
-> >
-> >>
-> >> bob
->
-> Leon,
->
-> I am not sure we are talking about the same if statement. You wrote
->
-> ...
-> diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw=
-/rxe/rxe_recv.c
-> index 8a48a33d587b..29cb0125e76f 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_recv.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-> @@ -247,6 +247,11 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, s=
-truct sk_buff *skb)
->         else if (skb->protocol =3D=3D htons(ETH_P_IPV6))
->                 memcpy(&dgid, &ipv6_hdr(skb)->daddr, sizeof(dgid));
->
-> +       if (!ib_device_try_get(&rxe->ib_dev)) {
-> +               kfree_skb(skb);
-> +               return;
-> +       }
-> +
->         /* lookup mcast group corresponding to mgid, takes a ref */
->         mcg =3D rxe_pool_get_key(&rxe->mc_grp_pool, &dgid);
->         if (!mcg)
-> @@ -274,10 +279,6 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, s=
-truct sk_buff *skb)
->                  */
->                 if (mce->qp_list.next !=3D &mcg->qp_list) {
->                         per_qp_skb =3D skb_clone(skb, GFP_ATOMIC);
-> -                       if (WARN_ON(!ib_device_try_get(&rxe->ib_dev))) {
-> -                               kfree_skb(per_qp_skb);
-> -                               continue;
-> -                       }
->                 } else {
->                         per_qp_skb =3D skb;
->                         /* show we have consumed the skb */
-> ...
->
-> which I don't understand.
->
-> When a received packet is delivered to the rxe driver in rxe_net.c in rxe=
-_udp_encap_recv() rxe_get_dev_from_net() is called which gets a pointer to =
-the ib_device (contained in rxe_dev) and also takes a reference on the ib_d=
-evice. This pointer is stored in skb->cb[] so the reference needs to be hel=
-d until the skb is freed. If the skb has a multicast address and there are =
-more than one QPs belonging to the multicast group then new skbs are cloned=
- in rxe_rcv_mcast_pkt() and each has a pointer to the ib_device. Since each=
- skb can have quite different lifetimes they each need to carry a reference=
- to ib_device to protect against having it deleted out from under them. You=
- suggest adding one more reference outside of the loop regardless of how ma=
-ny QPs, if any, belong to the multicast group. I don't see how this can be =
-correct.
->
-> In any case this is *not* the if statement that is under discussion in th=
-e patch. That one has to do with an error which can occur if the last QP in=
- the list (which gets the original skb in the non-error case) doesn't match=
- or isn't ready to receive the packet and it fails either check_type_state(=
-) or check_keys() and falls out of the loop. Now the reference to the ib_de=
-vice needs to be let go and the skb needs to be freed but only if this erro=
-r occurs. In the normal case that all happens when the skb if done being pr=
-ocessed after calling rxe_rcv_pkt().
->
-> So the discussion boils down to whether to type
->
-> ...
-> err1:
->         kfree_skb(skb);
->         if (unlikely(skb))
->                 ib_device_put(&rxe->ib_dev);
->
-> or
->
-> err1:
->         if (unlikely(skb)) {
->                 kfree_skb(skb);
->                 ib_device_put(&rxe->ib_dev);
->         }
->
-> Here the normal non-error path has skb =3D=3D NULL and the error path has=
- skb set to the originally delivered packet. The second choice is much clea=
-rer as it shows the intent and saves the wasted trip to kfree_skb() for eve=
-ry packet.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Placing kfree_skb in a if (skb) test is not good.
+@Alexander Duyck, please update me if I can add your ROB tag again
+to the series, because you liked v6 more.
 
-Zhu Yanjun
->
-> bob
+Thanks
+
+---------------------------------------------------------------------------------
+Changelog
+v7:
+ * Rebase on top v5.12-rc1
+ * More english fixes
+ * Returned to static sysfs creation model as was implemented in v0/v1.
+v6: https://lore.kernel.org/linux-pci/20210209133445.700225-1-leon@kernel.org
+ * Patch 1:
+   * English fixes
+   * Moved pci_vf_set_msix_vec_count() from msi.c to iov.c
+   * Embedded pci_vf_set_msix_vec_count() into sriov_vf_msix_count_store
+   * Deleted sriov_vf_msix_count_show
+   * Deleted vfs_overlay folder
+   * Renamed functions *_vfs_overlay_* to be *_vf_overlay_*
+   * Deleted is_supported and attribute_group because it confused people more than
+     it gave advantage.
+   * Changed vf_total_msix to be callback
+ * Patch 3:
+   * Fixed english as suggested by Bjorn
+   * Added more explanations to the commit message
+ * Patch 4:
+   * Protected enable/disable with capability check
+v5: https://lore.kernel.org/linux-pci/20210126085730.1165673-1-leon@kernel.org
+ * Patch 1:
+  * Added forgotten "inline" keyword when declaring empty functions.
+v4: https://lore.kernel.org/linux-pci/20210124131119.558563-1-leon@kernel.org
+ * Used sysfs_emit() instead of sprintf() in new sysfs entries.
+ * Changed EXPORT_SYMBOL to be EXPORT_SYMBOL_GPL for pci_iov_virtfn_devfn().
+ * Rewrote sysfs registration code to be driven by PF that wants to enable VF
+   overlay instead of creating to all SR-IOV devices.
+ * Grouped all such functionality under new "vfs_overlay" folder.
+ * Combined two PCI patches into one.
+v3: https://lore.kernel.org/linux-pci/20210117081548.1278992-1-leon@kernel.org
+ * Renamed pci_set_msix_vec_count to be pci_vf_set_msix_vec_count.
+ * Added VF msix_cap check to hide sysfs entry if device doesn't support msix.
+ * Changed "-" to be ":" in the mlx5 patch to silence CI warnings about missing
+   kdoc description.
+ * Split differently error print in mlx5 driver to avoid checkpatch warning.
+v2: https://lore.kernel.org/linux-pci/20210114103140.866141-1-leon@kernel.org
+ * Patch 1:
+  * Renamed vf_msix_vec sysfs knob to be sriov_vf_msix_count
+  * Added PF and VF device locks during set MSI-X call to protect from parallel
+    driver bind/unbind operations.
+  * Removed extra checks when reading sriov_vf_msix, because users will
+    be able to distinguish between supported/not supported by looking on
+    sriov_vf_total_msix count.
+  * Changed all occurrences of "numb" to be "count"
+  * Changed returned error from EOPNOTSUPP to be EBUSY if user tries to set
+    MSI-X count after driver already bound to the VF.
+  * Added extra comment in pci_set_msix_vec_count() to emphasize that driver
+    should not be bound.
+ * Patch 2:
+  * Changed vf_total_msix from int to be u32 and updated function signatures
+    accordingly.
+  * Improved patch title
+v1: https://lore.kernel.org/linux-pci/20210110150727.1965295-1-leon@kernel.org
+ * Improved wording and commit messages of first PCI patch
+ * Added extra PCI patch to provide total number of MSI-X vectors
+ * Prohibited read of vf_msix_vec sysfs file if driver doesn't support write
+ * Removed extra function definition in pci.h
+v0: https://lore.kernel.org/linux-pci/20210103082440.34994-1-leon@kernel.org
+
+--------------------------------------------------------------------
+Hi,
+
+The number of MSI-X vectors is PCI property visible through lspci, that
+field is read-only and configured by the device.
+
+The static assignment of an amount of MSI-X vectors doesn't allow utilize
+the newly created VF because it is not known to the device the future load
+and configuration where that VF will be used.
+
+The VFs are created on the hypervisor and forwarded to the VMs that have
+different properties (for example number of CPUs).
+
+To overcome the inefficiency in the spread of such MSI-X vectors, we
+allow the kernel to instruct the device with the needed number of such
+vectors, before VF is initialized and bounded to the driver.
+
+Before this series:
+[root@server ~]# lspci -vs 0000:08:00.2
+08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+....
+        Capabilities: [9c] MSI-X: Enable- Count=12 Masked-
+
+Configuration script:
+1. Start fresh
+echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+modprobe -q -r mlx5_ib mlx5_core
+2. Ensure that driver doesn't run and it is safe to change MSI-X
+echo 0 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_drivers_autoprobe
+3. Load driver for the PF
+modprobe mlx5_core
+4. Configure one of the VFs with new number
+echo 2 > /sys/bus/pci/devices/0000\:08\:00.0/sriov_numvfs
+echo 21 > /sys/bus/pci/devices/0000\:08\:00.2/sriov_vf_msix_count
+
+After this series:
+[root@server ~]# lspci -vs 0000:08:00.2
+08:00.2 Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5 Virtual Function]
+....
+        Capabilities: [9c] MSI-X: Enable- Count=21 Masked-
+
+Thanks
+
+Leon Romanovsky (4):
+  PCI: Add a sysfs file to change the MSI-X table size of SR-IOV VFs
+  net/mlx5: Add dynamic MSI-X capabilities bits
+  net/mlx5: Dynamically assign MSI-X vectors count
+  net/mlx5: Implement sriov_get_vf_total_msix/count() callbacks
+
+ Documentation/ABI/testing/sysfs-bus-pci       |  29 +++++
+ .../net/ethernet/mellanox/mlx5/core/main.c    |   6 ++
+ .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  12 +++
+ .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  73 +++++++++++++
+ .../net/ethernet/mellanox/mlx5/core/sriov.c   |  48 ++++++++-
+ drivers/pci/iov.c                             | 102 ++++++++++++++++--
+ drivers/pci/pci-sysfs.c                       |   3 +-
+ drivers/pci/pci.h                             |   3 +-
+ include/linux/mlx5/mlx5_ifc.h                 |  11 +-
+ include/linux/pci.h                           |   8 ++
+ 10 files changed, 284 insertions(+), 11 deletions(-)
+
+--
+2.29.2
+
