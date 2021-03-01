@@ -2,129 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529AB327C5C
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Mar 2021 11:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C20C327E98
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Mar 2021 13:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234252AbhCAKi4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Mar 2021 05:38:56 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:49344 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234327AbhCAKiF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Mar 2021 05:38:05 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 121AYRqh036884;
-        Mon, 1 Mar 2021 10:36:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=ztTmG0D3FIVh6A0R5PDcmqcRq76aDK1lu61HlH53ZnI=;
- b=lfatlliHMA/tHZ+fZAwWYm7+Q+RKl3OUkW8pz9MYrYeE2/uMJIW9fx3R1S+WGYFVpuSx
- Qc71ygwcmtszA1nKc2tGC00CbfvA+MKx4qOCIoHM0++iKhQQ2QE3v6kDxppfXvuwcXRH
- +6UUnOtsrmTjGCNt8SCCkfozYJqM5H8ARaLkFUkWUeKN+qhjIAzBnp3eeu3UCvJA124K
- NJdzvn/Iw4Df9eQhS/ECXcxU4JLo996oTb7D5smHjFLM4PA7LHCtoNU0Z0v1Is7CqsnO
- QFB6mgeH/cMW0YuAHOG6BroMIGD11Hiz7qnw1iU4Mj6KEzjb/q5cd+Pvo36IYoDpaMb6 MQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 36ye1m39y6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Mar 2021 10:36:46 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 121AYruF100201;
-        Mon, 1 Mar 2021 10:36:45 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 36yynmjavp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Mar 2021 10:36:45 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 121AaeS7011432;
-        Mon, 1 Mar 2021 10:36:41 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 01 Mar 2021 10:36:40 +0000
-Date:   Mon, 1 Mar 2021 13:36:30 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Eran Ben Elisha <eranbe@nvidia.com>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>, Aya Levin <ayal@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Ariel Levkovich <lariel@mellanox.com>,
-        "Pavel Machek (CIP)" <pavel@denx.de>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH mellanox-tree] net/mlx5: prevent an integer underflow in
- mlx5_perout_configure()
-Message-ID: <20210301103630.GP2087@kadam>
-References: <YC+LoAcvcQSWLLKX@mwanda>
- <e9beab47-4f32-4aa4-cdb6-6fa7402e55de@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S235043AbhCAMtq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Mar 2021 07:49:46 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:14724 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235015AbhCAMtp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Mar 2021 07:49:45 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B603ce2c10000>; Mon, 01 Mar 2021 04:49:05 -0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Mar
+ 2021 12:49:04 +0000
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Mar
+ 2021 12:48:39 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Mon, 1 Mar 2021 12:48:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OLV+cKNIUt/6N9PjDxplSb9U1QJ95PelLnVHLaMTHN6k72Rfl8Oyb+ht1gZrKKsvBs/hXrQ+LUMn+Er6oD2IpYDdav5lpV1zPdW649NzNuU55YE325j2D/APhJQzaCtVb+FQqkfrw3mFCY3vm7AJ7AYUnhWw5SKhF4oDU7L5rYbj3Fs38LY62M3E1tBCkKi5UZX5ICR8tPM2VZkjR5yD5jiPIH9quL7lP+CVrh5z+N0jflnlA+KLCr3IPSad2GBjMFWA94KOwQtHGXpQrhF1v/vGX+3nfznvnt24u15GHcp2Mo0SWQ3t2AYJbGNc4ftCLMlzREZSAK2Pg62pJ0krMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ft86/QUvgjKD2y7oXbkkYXKLeR6WF+ZaO733OneUYpI=;
+ b=n8MhrQ4Bu3wA/BK9GFs4BqyKYlzFNUISfKOAx8jwQ67bAckcbYyWA73CNPHkPLfQwDn37yIQrP8twwH0pfzmf5G9Gz2MxD2OW4j2XWBL9r/kSkpBSgz0ZxfRZP+vkE6deuY67T1W5hFogid0Cj64P5u8+ecG4+SGJVjZtPuIZzQzvSxtVOmIt2a0cT2X8DwdfSPakot0gr+9HqtinaBGpG02iQEEtLCz3Q/iZSzLvsoG6y0SfM6fG+9OfrvDufqVHTyDcWeER5PpRpVVAiZ4pDnBRAuPQ5i9vqctBdYjHANUhWRkK2O8Vwxyy1ClWcmsKOR64UlXyp1jb5ere5SIDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4778.namprd12.prod.outlook.com (2603:10b6:5:167::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.26; Mon, 1 Mar
+ 2021 12:48:36 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3890.026; Mon, 1 Mar 2021
+ 12:48:36 +0000
+Date:   Mon, 1 Mar 2021 08:48:34 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>, Mark Bloch <mbloch@nvidia.com>,
+        "Adit Ranadive" <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        "Bart Van Assche" <bvanassche@acm.org>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        "Christian Benvenuti" <benve@cisco.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        "Gal Pressman" <galpress@amazon.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Lijun Ou <oulijun@huawei.com>, <linux-rdma@vger.kernel.org>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>, <netdev@vger.kernel.org>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        "Saeed Mahameed" <saeedm@nvidia.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        <target-devel@vger.kernel.org>,
+        "VMware PV-Drivers" <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "Zhu Yanjun" <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next] RDMA: Support more than 255 rdma ports
+Message-ID: <20210301124834.GE4247@nvidia.com>
+References: <20210301070420.439400-1-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <e9beab47-4f32-4aa4-cdb6-6fa7402e55de@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9909 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 spamscore=0
- bulkscore=0 suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103010088
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9909 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
- mlxlogscore=999 impostorscore=0 suspectscore=0 adultscore=0 malwarescore=0
- mlxscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103010088
+In-Reply-To: <20210301070420.439400-1-leon@kernel.org>
+X-ClientProxiedBy: BL0PR01CA0008.prod.exchangelabs.com (2603:10b6:208:71::21)
+ To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR01CA0008.prod.exchangelabs.com (2603:10b6:208:71::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Mon, 1 Mar 2021 12:48:36 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lGhyU-002UIW-MY; Mon, 01 Mar 2021 08:48:34 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614602945; bh=Ft86/QUvgjKD2y7oXbkkYXKLeR6WF+ZaO733OneUYpI=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=OIpUzU4vBocfj+Fvi/btU4ITRvQF4Sjr7SzA+PAmmmvtIBz58JqbkaseUDWRScVk+
+         7Uc7cpNwoYK2c7z2OUqTw8uHuTsGL00kxACPXpGL76nFwrrpKdCbWfyA7AcfVeVS8Y
+         ESunQul2jgxzLqJA5kQaPciy1G1CBE/bXEkFqOVonUghq6ttuecSJoJcFQxFt29kXz
+         ru7oyL8IxuLkPn9U7IvFdCYEuLHchkTD8wbNNIqgC9J/soaiYmNEGsUCK1iSTyLkLf
+         udz+xFwZ61kEgRzQRbz5PPOuWDGGI9Hipz53vMtvTdSbt8sZrEpkD27EU5pJKPoyid
+         Hbq1PVtcDlEsw==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 12:12:34PM +0200, Eran Ben Elisha wrote:
+On Mon, Mar 01, 2021 at 09:04:20AM +0200, Leon Romanovsky wrote:
+> @@ -884,7 +884,7 @@ static void gid_table_reserve_default(struct ib_device *ib_dev, u8 port,
 > 
+>  static void gid_table_release_one(struct ib_device *ib_dev)
+>  {
+> -	unsigned int p;
+> +	u32 p;
 > 
-> On 2/19/2021 11:57 AM, Dan Carpenter wrote:
-> > The value of "sec" comes from the user.  Negative values will lead to
-> > shift wrapping inside the perout_conf_real_time() function and triggger
-> > a UBSan warning.
-> > 
-> > Add a check and return -EINVAL to prevent that from happening.
-> > 
-> > Fixes: 432119de33d9 ("net/mlx5: Add cyc2time HW translation mode support")
-> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > ---
-> > Saeed, I think this goes through your git tree and you will send a pull
-> > request to the networking?
-> > 
-> >  From static analysis.  Not tested.
-> > 
-> >   drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-> > index b0e129d0f6d8..286824ca62b5 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-> > @@ -516,7 +516,7 @@ static int mlx5_perout_configure(struct ptp_clock_info *ptp,
-> >   		nsec = rq->perout.start.nsec;
-> >   		sec = rq->perout.start.sec;
-> > -		if (rt_mode && sec > U32_MAX)
+>  	rdma_for_each_port (ib_dev, p) {
+>  		release_gid_table(ib_dev, ib_dev->port_data[p].cache.gid);
+> @@ -895,7 +895,7 @@ static void gid_table_release_one(struct ib_device *ib_dev)
+>  static int _gid_table_setup_one(struct ib_device *ib_dev)
+>  {
+>  	struct ib_gid_table *table;
+> -	unsigned int rdma_port;
+> +	u32 rdma_port;
 > 
-> This if clause was set to reject perout time start sec bigger than U32_MAX,
-> as rt mode specifically doesn't support it.
-> 
-> A user negative values protection should be generic for all netdev drivers,
-> inside the caller ioctl func, and not part of any driver code.
-> 
+>  	rdma_for_each_port (ib_dev, rdma_port) {
 
-I'm not a networking expert...  :/  It's easier for me to see that this
-code will trigger a syzbot splat vs saying that there is no valid use
-case for negative seconds any driver.
+Why are we changing this? 'unsigned int' is the right type for port
+numbers
 
-What you're saying sounds reasonable enough to me, but I don't know
-enough about networking to comment one way or the other.  Maybe the
-other drivers have a use for negative seconds?
-
-regards,
-dan carpenter
-
-> > +		if (rt_mode && (sec < 0 || sec > U32_MAX))
-> >   			return -EINVAL;
-> >   		time_stamp = rt_mode ? perout_conf_real_time(sec, nsec) :
-> > 
+Jason
