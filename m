@@ -2,109 +2,291 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312AE32A80E
+	by mail.lfdr.de (Postfix) with ESMTP id A26A332A80F
 	for <lists+linux-rdma@lfdr.de>; Tue,  2 Mar 2021 18:28:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347529AbhCBRBe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Mar 2021 12:01:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1835969AbhCBGb0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 2 Mar 2021 01:31:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C76116186A;
-        Tue,  2 Mar 2021 06:30:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614666645;
-        bh=EPbOnkQQcY42gIMqCP33MRMRht0g1yyJCnfNd6DURw0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Vknkfdwry8Rf7wq+QHyVs59vzLyLPBJ3FNX9in5VQTfCb3VM/6nFmjzbdDSvWMTkh
-         oYO94LgUveAu359jlk/l+Zr/jV8lnufS7eqHP34PR4DS+7YSvFFNlOHBXlgd/lxvxz
-         2kwCJNBLbhOWqVn6t0w6sMS3uh4YPGKDt4LKhrT4VJdsyePQ/mb3xj2PpU0taGvs0j
-         +S9i4V11E1Tvz7lsG6gGrHcRUCAIREE3zpR9eLrlWR+FqjMldQMGe71Hgw5p7Qxu5t
-         I8QLopPfyQBmzcP7sWtiZuNZQGi4K9/bMb+Bu3K1vzwK0MNzNpiySL+gQv7rv4tPnG
-         wRaAowKyT6OCA==
-Message-ID: <df0c36cedb1944cd67563db56dacbee69f226463.camel@kernel.org>
-Subject: Re: [PATCH] net/mlx5e: fix mlx5e_tc_tun_update_header_ipv6 dummy
- definition
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Vlad Buslov <vladbu@nvidia.com>, Arnd Bergmann <arnd@kernel.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dmytro Linkin <dlinkin@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
-        Eli Britstein <elibr@mellanox.com>,
-        Eli Cohen <eli@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 01 Mar 2021 22:30:43 -0800
-In-Reply-To: <ygnho8g3gprp.fsf@nvidia.com>
-References: <20210225125501.1792072-1-arnd@kernel.org>
-         <ygnho8g3gprp.fsf@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S1351010AbhCBRCT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Mar 2021 12:02:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1376401AbhCBH2S (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Mar 2021 02:28:18 -0500
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46137C06178B
+        for <linux-rdma@vger.kernel.org>; Mon,  1 Mar 2021 23:27:08 -0800 (PST)
+Received: by mail-vs1-xe2b.google.com with SMTP id v123so5924827vsv.9
+        for <linux-rdma@vger.kernel.org>; Mon, 01 Mar 2021 23:27:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eG3UtS7M2JQ7jsuc/qWUdgcnFL/2HGiuD8fyfhhMKFg=;
+        b=u/Z4xwt3HVhZkJiJ5SUquOkqbt9bW8MQ22t0W9+IV8JkOppap9j6IHfLfZ7XFu1/Iy
+         wxlYCL910j6n/PAGyJMc03UWo0fcYtIFRoq9D62U1yAJXS7E74hDlNYMtuDZhZN23yZo
+         ZRnGBJ1/+WAPizHQb/kAnhTBcz7fi/0eLo+zo2zEPrh3eTCzz0ejrAcjnBLZgX8SB7Tt
+         LBdMOG5xlOGjmN1N13y1fC+M4p7rfUH8ptrugK6PWTDT271WpSaeZRXSaxpGwdxzmJFP
+         zBuYzfOj7/dGXBBHxHOYyg9KtWvWZBK/2E766cLPwCHvOhHfqVWEfdkQLHXEhw+t4jJx
+         iCTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eG3UtS7M2JQ7jsuc/qWUdgcnFL/2HGiuD8fyfhhMKFg=;
+        b=q676iEddONBVRgfDJ1rkShpxM4Pu1aztyPBlATBnHBee3O6C88YVIM4MsVlsfgsOWN
+         FjONfN34vjhu/ifvMwXolJhV03qRdg4LjKkm3aijtuYZ4GJvu5ZIy8diMCTrf2AOyqz7
+         rEz3NTqrl3CWuThnE+SD7KtKaXYQvQchweheAaPGLoejupOO3WoytoPJQ0Pf+/uX6G/g
+         5g8h1bNALCaLceey8Nb9h7o4HxscB4tK8ssDbaCZJuUVJo6IaHtfpBaKyVUlKMv+kRRR
+         UbNYVhhQgbYQyJNx5DdhpRvJv5usOKk+N+gP2qAXw2S29Z5XiuN2pe8lbTDb/yLNZZdJ
+         kutQ==
+X-Gm-Message-State: AOAM530qvIwv7sVN5rMwtjAFVkBcWb0+13fgbrigzkhuOH9CQjuezvhJ
+        ywyVOv9hIC0yMWARPWMLxihBwcpTqS06mFGVeI4=
+X-Google-Smtp-Source: ABdhPJyNMQBAX0549lhRGKL6dupSQzUl3Sby1z73hp5g95YRHptDyQUK915DpISS56fWWAvRHDJtrT+6Cdg25pgh6Nc=
+X-Received: by 2002:a05:6102:3218:: with SMTP id r24mr10805055vsf.8.1614670027478;
+ Mon, 01 Mar 2021 23:27:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210214222630.3901-1-rpearson@hpe.com> <CAD=hENcDYgbN9N2Wh=+83BqkXw3WwQ_UtSw2i1Ki0h1d+AsBFA@mail.gmail.com>
+In-Reply-To: <CAD=hENcDYgbN9N2Wh=+83BqkXw3WwQ_UtSw2i1Ki0h1d+AsBFA@mail.gmail.com>
+From:   Robert Pearson <rpearsonhpe@gmail.com>
+Date:   Tue, 2 Mar 2021 01:26:56 -0600
+Message-ID: <CAFc_bgb4eH85YF_BPxhm=TyiHxOd85f6Lvs+5WaFD_91h9my1w@mail.gmail.com>
+Subject: Re: [PATCH for-next] RDMA/rxe: Fix ib_device reference counting (again)
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Bob Pearson <rpearson@hpe.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 2021-03-01 at 11:57 +0200, Vlad Buslov wrote:
-> On Thu 25 Feb 2021 at 14:54, Arnd Bergmann <arnd@kernel.org> wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > The alternative implementation of this function in a header file
-> > is declared as a global symbol, and gets added to every .c file
-> > that includes it, which leads to a link error:
-> > 
-> > arm-linux-gnueabi-ld:
-> > drivers/net/ethernet/mellanox/mlx5/core/en_rx.o: in function
-> > `mlx5e_tc_tun_update_header_ipv6':
-> > en_rx.c:(.text+0x0): multiple definition of
-> > `mlx5e_tc_tun_update_header_ipv6';
-> > drivers/net/ethernet/mellanox/mlx5/core/en_main.o:en_main.c:(.text+
-> > 0x0): first defined here
-> > 
-> > Mark it 'static inline' like the other functions here.
-> > 
-> > Fixes: c7b9038d8af6 ("net/mlx5e: TC preparation refactoring for
-> > routing update event")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Resending in plain text (I hope)
+
+Zhu,
+
+You caught a bug of mine. Thanks.
+
+Before the patch there were WARN_ON_ONCE() at exit: and done:
+but almost all the goto done or goto exit followed calls to free_pkt()
+which calls kfree_skb(skb) on the skb but may not
+clear the local variable skb. This part of the patch was trying to
+clean this up by getting rid of the warnings.
+Remember pkt points to skb->cb[] so one can convert between skb and
+pkt. There were two exceptions, one in case COMPST_EXIT
+and one in COMPST_ERROR_RETRY where there is not a call to free_pkt()
+before the goto.
+COMPST_EXIT is returned from get_wqe() but only if pkt == NULL so
+there is no skb in that case. However
+COMPST_ERROR_RETRY is returned from check_psn() and check_ack() and in
+both cases there are response packets
+present!!
+If !wqe || wqe->state != wqe_state_posted the original code went to
+exit where it would have hit the warning so I tried to replace it with
+one there in the code but it is in the wrong place. To match the
+functionality of the original code it should have been in the if.
+It should been
+
+if (!wqe || (wqe->state == wqe_state_posted)) {
+        WARN_ON_ONCE(skb);
+        goto exit;
+}
+
+From the comment above this this looks like they were testing for a
+"spurious" timer firing and just ignoring it. This will
+cause the WARNING but it may not be critical. But since I put the
+WARNING too early it will fire in cases  where that was
+not the intent. If we move the WARN down a line or two it should fix
+your current problem.
+
+Bob
+
+
+On Mon, Mar 1, 2021 at 11:19 PM Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
+>
+> On Mon, Feb 15, 2021 at 6:27 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+> >
+> > Three errors occurred in the fix referenced below.
+> >
+> > 1) The on and off again 'if (skb)' got dropped but was really
+> > needed in rxe_rcv_mcast_pkt() to prevent calling ib_device_put()
+> > on the non-error path.
+> >
+> > 2) Extending the reference taken by rxe_get_dev_from_net() in
+> > rxe_udp_encap_recv() until each skb is freed was not matched by
+> > a reference in the loopback path resulting in underflows.
+> >
+> > 3) In rxe_comp.c the function free_pkt() did not clear skb which
+> > triggered a warning at done: and could possibly at exit: in
+> > rxe_completer(). The WARN_ONCE() calls are not required at done:
+> > and only in one place before going to exit.
+> >
+> > This patch fixes these errors.
+> >
+> > Fixes: 899aba891cab ("RDMA/rxe: Fix FIXME in rxe_udp_encap_recv()")
+> > Signed-off-by: Bob Pearson <rpearson@hpe.com>
 > > ---
-> >  drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h | 10 ++++++---
-> > -
-> >  1 file changed, 6 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h
-> > b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h
-> > index 67de2bf36861..89d5ca91566e 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h
-> > @@ -76,10 +76,12 @@ int mlx5e_tc_tun_update_header_ipv6(struct
-> > mlx5e_priv *priv,
-> >  static inline int
-> >  mlx5e_tc_tun_create_header_ipv6(struct mlx5e_priv *priv,
-> >                                 struct net_device *mirred_dev,
-> > -                               struct mlx5e_encap_entry *e) {
-> > return -EOPNOTSUPP; }
-> > -int mlx5e_tc_tun_update_header_ipv6(struct mlx5e_priv *priv,
-> > -                                   struct net_device *mirred_dev,
-> > -                                   struct mlx5e_encap_entry *e)
-> > +                               struct mlx5e_encap_entry *e)
-> > +{ return -EOPNOTSUPP; }
-> > +static inline int
-> > +mlx5e_tc_tun_update_header_ipv6(struct mlx5e_priv *priv,
-> > +                               struct net_device *mirred_dev,
-> > +                               struct mlx5e_encap_entry *e)
-> >  { return -EOPNOTSUPP; }
-> >  #endif
-> >  int mlx5e_tc_tun_route_lookup(struct mlx5e_priv *priv,
-> 
-> Thanks Arnd!
-> 
-> Reviewed-by: Vlad Buslov <vladbu@nvidia.com>
-
-Applied to net-mlx5, 
-
-Thanks.
-
-
+> >  drivers/infiniband/sw/rxe/rxe_comp.c | 5 +++--
+> >  drivers/infiniband/sw/rxe/rxe_net.c  | 7 ++++++-
+> >  drivers/infiniband/sw/rxe/rxe_recv.c | 6 ++++--
+> >  3 files changed, 13 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+> > index a8ac791a1bb9..13fc5a1cced1 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_comp.c
+> > +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+> > @@ -671,6 +671,9 @@ int rxe_completer(void *arg)
+> >                          * it down the road or let it expire
+> >                          */
+> >
+> > +                       /* warn if we did receive a packet */
+> > +                       WARN_ON_ONCE(skb);
+> > +
+> >                         /* there is nothing to retry in this case */
+> >                         if (!wqe || (wqe->state == wqe_state_posted))
+> >                                 goto exit;
+> > @@ -750,7 +753,6 @@ int rxe_completer(void *arg)
+> >         /* we come here if we are done with processing and want the task to
+> >          * exit from the loop calling us
+> >          */
+> > -       WARN_ON_ONCE(skb);
+> >         rxe_drop_ref(qp);
+> >         return -EAGAIN;
+> >
+> > @@ -758,7 +760,6 @@ int rxe_completer(void *arg)
+> >         /* we come here if we have processed a packet we want the task to call
+> >          * us again to see if there is anything else to do
+> >          */
+> > -       WARN_ON_ONCE(skb);
+>
+> When I keep "WARN_ON_ONCE(skb);", others are applied into -net, then I
+> run "rping " command. I got the followings.
+> It seems that SKBs are not freed.
+>
+> "
+> [ 4068.003830] ------------[ cut here ]------------
+> [ 4068.003833] WARNING: CPU: 10 PID: 4241 at
+> drivers/infiniband/sw/rxe//rxe_comp.c:762 rxe_completer+0x982/0xd60
+> [rdma_rxe]
+> [ 4068.003845] Modules linked in: rdma_rxe(OE) rdma_ucm rdma_cm iw_cm
+> ib_cm ib_uverbs ib_core dm_multipath scsi_dh_rdac scsi_dh_emc
+> scsi_dh_alua intel_rapl_msr intel_rapl_common isst_if_common nfit rapl
+> snd_intel8x0 snd_ac97_codec ac97_bus snd_pcm snd_timer snd soundcore
+> joydev input_leds serio_raw mac_hid sch_fq_codel ip_tables x_tables
+> autofs4 btrfs blake2b_generic zstd_compress raid10 raid456
+> async_raid6_recov async_memcpy async_pq async_xor async_tx xor
+> raid6_pq libcrc32c raid1 raid0 multipath linear hid_generic usbhid hid
+> vmwgfx ttm crct10dif_pclmul crc32_pclmul ghash_clmulni_intel
+> drm_kms_helper syscopyarea sysfillrect aesni_intel sysimgblt
+> fb_sys_fops crypto_simd psmouse cec cryptd ahci drm e1000 i2c_piix4
+> libahci pata_acpi video [last unloaded: rdma_rxe]
+> [ 4068.003898] CPU: 10 PID: 4241 Comm: rping Kdump: loaded Tainted: G
+>       W  OE     5.11.0+ #1
+> [ 4068.003901] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS
+> VirtualBox 12/01/2006
+> [ 4068.003902] RIP: 0010:rxe_completer+0x982/0xd60 [rdma_rxe]
+> [ 4068.003907] Code: 8d 7f 08 e8 70 94 39 de e9 f4 f6 ff ff 39 ca b8
+> 0e 00 00 00 ba 03 00 00 00 0f 44 c2 89 c3 e9 44 f7 ff ff 0f 0b e9 af
+> f9 ff ff <0f> 0b e9 23 f9 ff ff 0f 0b e9 ef f9 ff ff 49 8d 9f 30 08 00
+> 00 48
+> [ 4068.003909] RSP: 0018:ffffb3d7c0bf37f0 EFLAGS: 00010286
+> [ 4068.003911] RAX: 0000000000000008 RBX: 000000000000000e RCX: ffffffff9fa7fee8
+> [ 4068.003912] RDX: 0000000000000507 RSI: ffffffff9ef6e47e RDI: ffff939ace4b0000
+> [ 4068.003913] RBP: ffffb3d7c0bf3850 R08: ffff939ac30f1c00 R09: 0000000000000001
+> [ 4068.003915] R10: ffffb3d7c0bf3888 R11: 0000000000000000 R12: ffffb3d7c0127180
+> [ 4068.003916] R13: ffff939ad166a728 R14: 0000000000000000 R15: ffff939ad0fd8000
+> [ 4068.003917] FS:  00007f1f105b4740(0000) GS:ffff939dcfc80000(0000)
+> knlGS:0000000000000000
+> [ 4068.003919] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 4068.003920] CR2: 00007f9bc63f7fb8 CR3: 000000010e12a002 CR4: 00000000000706e0
+> [ 4068.003923] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [ 4068.003924] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [ 4068.003926] Call Trace:
+> [ 4068.003929]  rxe_do_task+0xa7/0xf0 [rdma_rxe]
+> [ 4068.003934]  rxe_run_task+0x2a/0x40 [rdma_rxe]
+> [ 4068.003938]  rxe_comp_queue_pkt+0x48/0x50 [rdma_rxe]
+> [ 4068.003942]  rxe_rcv+0x339/0x860 [rdma_rxe]
+> [ 4068.003946]  ? prepare_ack_packet+0x1b6/0x250 [rdma_rxe]
+> [ 4068.003951]  rxe_loopback+0x53/0x90 [rdma_rxe]
+> [ 4068.003955]  send_ack+0xac/0x170 [rdma_rxe]
+> [ 4068.003959]  rxe_responder+0x15bf/0x2220 [rdma_rxe]
+> [ 4068.003964]  rxe_do_task+0xa7/0xf0 [rdma_rxe]
+> [ 4068.003968]  rxe_run_task+0x2a/0x40 [rdma_rxe]
+> [ 4068.003972]  rxe_resp_queue_pkt+0x44/0x50 [rdma_rxe]
+> [ 4068.003976]  rxe_rcv+0x286/0x860 [rdma_rxe]
+> [ 4068.003979]  ? copy_data+0xc4/0x2a0 [rdma_rxe]
+> [ 4068.003984]  rxe_loopback+0x53/0x90 [rdma_rxe]
+> [ 4068.003987]  rxe_requester+0x6ec/0x10a0 [rdma_rxe]
+> [ 4068.003991]  ? _raw_spin_unlock_irqrestore+0xe/0x30
+> [ 4068.003996]  rxe_do_task+0xa7/0xf0 [rdma_rxe]
+> [ 4068.004000]  rxe_run_task+0x2a/0x40 [rdma_rxe]
+> [ 4068.004004]  rxe_post_send+0x320/0x530 [rdma_rxe]
+> [ 4068.004008]  ? lookup_get_idr_uobject+0x19/0x30 [ib_uverbs]
+> [ 4068.004016]  ? rdma_lookup_get_uobject+0x47/0x180 [ib_uverbs]
+> [ 4068.004022]  ib_uverbs_post_send+0x64d/0x6e0 [ib_uverbs]
+> [ 4068.004028]  ? __wake_up+0x13/0x20
+> [ 4068.004033]  ib_uverbs_write+0x44f/0x580 [ib_uverbs]
+> [ 4068.004039]  vfs_write+0xb9/0x250
+> [ 4068.004043]  ksys_write+0xb1/0xe0
+> [ 4068.004045]  __x64_sys_write+0x1a/0x20
+> [ 4068.004048]  do_syscall_64+0x38/0x90
+> [ 4068.004052]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [ 4068.004054] RIP: 0033:0x7f1f1087f2cf
+> [ 4068.004056] Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 29 fd
+> ff ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00
+> 00 0f 05 <48> 3d 00 f0 ff ff 77 2d 44 89 c7 48 89 44 24 08 e8 5c fd ff
+> ff 48
+> [ 4068.004058] RSP: 002b:00007ffd14eb1d00 EFLAGS: 00000293 ORIG_RAX:
+> 0000000000000001
+> [ 4068.004060] RAX: ffffffffffffffda RBX: 00007f1f0fcd6180 RCX: 00007f1f1087f2cf
+> [ 4068.004061] RDX: 0000000000000020 RSI: 00007ffd14eb1d60 RDI: 0000000000000004
+> [ 4068.004062] RBP: 0000000000000010 R08: 0000000000000000 R09: 0000000000000027
+> [ 4068.004063] R10: 00000000ffffffff R11: 0000000000000293 R12: 0000000000000001
+> [ 4068.004064] R13: 000055ad34999e80 R14: 0000000000000000 R15: 0000000000000000
+> [ 4068.004066] ---[ end trace 719f4d5687d4ac94 ]---
+> "
+>
+> >         rxe_drop_ref(qp);
+> >         return 0;
+> >  }
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+> > index 36d56163afac..8e81df578552 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_net.c
+> > +++ b/drivers/infiniband/sw/rxe/rxe_net.c
+> > @@ -406,12 +406,17 @@ int rxe_send(struct rxe_pkt_info *pkt, struct sk_buff *skb)
+> >
+> >  void rxe_loopback(struct sk_buff *skb)
+> >  {
+> > +       struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
+> > +
+> >         if (skb->protocol == htons(ETH_P_IP))
+> >                 skb_pull(skb, sizeof(struct iphdr));
+> >         else
+> >                 skb_pull(skb, sizeof(struct ipv6hdr));
+> >
+> > -       rxe_rcv(skb);
+> > +       if (WARN_ON(!ib_device_try_get(&pkt->rxe->ib_dev)))
+> > +               kfree_skb(skb);
+> > +       else
+> > +               rxe_rcv(skb);
+> >  }
+> >
+> >  struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+> > index 8a48a33d587b..a5e330e3bbce 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_recv.c
+> > +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+> > @@ -299,8 +299,10 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
+> >
+> >  err1:
+> >         /* free skb if not consumed */
+> > -       kfree_skb(skb);
+> > -       ib_device_put(&rxe->ib_dev);
+> > +       if (unlikely(skb)) {
+> > +               kfree_skb(skb);
+> > +               ib_device_put(&rxe->ib_dev);
+> > +       }
+> >  }
+> >
+> >  /**
+> > --
+> > 2.27.0
+> >
