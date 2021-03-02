@@ -2,71 +2,161 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8011632A813
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Mar 2021 18:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9221A32A811
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Mar 2021 18:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351522AbhCBRFJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Mar 2021 12:05:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35380 "EHLO mail.kernel.org"
+        id S1351497AbhCBRDW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Mar 2021 12:03:22 -0500
+Received: from mga04.intel.com ([192.55.52.120]:31259 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1376804AbhCBH5c (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 2 Mar 2021 02:57:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E867C64D74;
-        Tue,  2 Mar 2021 07:42:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614670943;
-        bh=Sj3t8PWAHUIXJukhWVhODTADibSIRqXDU8iycU0raZw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o7NcM/F2xy/ZRXnh2jMdH/HUE40g/1gNZ02Bi573FhDO4ax91GXmVN8iyp+PJzJ3f
-         NSZasxRtnGj8FRCEZE0bWdC2bW/FHp0kOKop1ykZhP3icXrvfMbD1ijMKmg3tkBsy5
-         3XvPWs9xvG1i8YZUDueRq/+7zhPyjH1br+XqRF7FKWIYTtsfx1E+dlpnU3P1lzFVRu
-         So18lnSyk4i9pcx/w3MrVAcO7bWwoucM8De4fMKfxYw1NcnLh9gccIfn90yTrHS2iI
-         vBXo02YJOWRdVwDO1l4UOdbSrQwO/rodV3jnJOVkvUNj6CLLf8CPM8cLeADJK4idTz
-         6P0d47FxUjfZg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-rc 2/2] RDMA/uverbs: Fix kernel-doc warning of _uverbs_alloc
-Date:   Tue,  2 Mar 2021 09:42:14 +0200
-Message-Id: <20210302074214.1054299-3-leon@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210302074214.1054299-1-leon@kernel.org>
-References: <20210302074214.1054299-1-leon@kernel.org>
+        id S1837474AbhCBHzd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 2 Mar 2021 02:55:33 -0500
+IronPort-SDR: GAHaKppuNXiz/7oyFrmzMD/frqwvSeYwdgPvqpieQ126mDvaWt1hks0qD8HIu7DtRliSP4r5vL
+ ieRi0ZSlNzEA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="184288361"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="184288361"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 23:54:48 -0800
+IronPort-SDR: ppLi+OamBr9QrBVP+6FE3Gf1ZP1d7i0642mX39zciJaT59oVdWt3+DLUa9AmHFxwDWtTbkRJZ6
+ s0g6YlPcEAwQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="427391539"
+Received: from lkp-server02.sh.intel.com (HELO 2482ff9f8ac0) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 01 Mar 2021 23:54:46 -0800
+Received: from kbuild by 2482ff9f8ac0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lGzri-0000CS-05; Tue, 02 Mar 2021 07:54:46 +0000
+Date:   Tue, 02 Mar 2021 15:54:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
+ 3a9b3d4536e0c25bd3906a28c1f584177e49dd0f
+Message-ID: <603def32.UNsXOqACkHD8M2n9%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
+branch HEAD: 3a9b3d4536e0c25bd3906a28c1f584177e49dd0f  IB/mlx5: Add missing error code
 
-Fix the following W=1 compilation warning:
-drivers/infiniband/core/uverbs_ioctl.c:108: warning: expecting prototype for uverbs_alloc(). Prototype was for _uverbs_alloc() instead
+elapsed time: 722m
 
-Fixes: 461bb2eee4e1 ("IB/uverbs: Add a simple allocator to uverbs_attr_bundle")
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+configs tested: 99
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 mpc8540_ads_defconfig
+mips                      bmips_stb_defconfig
+sparc64                          alldefconfig
+arm                         vf610m4_defconfig
+sparc                       sparc32_defconfig
+sh                        sh7757lcr_defconfig
+arm                    vt8500_v6_v7_defconfig
+m68k                        mvme16x_defconfig
+powerpc                    klondike_defconfig
+mips                         tb0226_defconfig
+powerpc                      pmac32_defconfig
+mips                        bcm63xx_defconfig
+arm                        shmobile_defconfig
+parisc                generic-64bit_defconfig
+x86_64                           alldefconfig
+arm                            hisi_defconfig
+powerpc                    gamecube_defconfig
+powerpc                      mgcoge_defconfig
+mips                           jazz_defconfig
+arm                           omap1_defconfig
+arm                         mv78xx0_defconfig
+riscv             nommu_k210_sdcard_defconfig
+powerpc                 mpc837x_mds_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210301
+i386                 randconfig-a003-20210301
+i386                 randconfig-a002-20210301
+i386                 randconfig-a004-20210301
+i386                 randconfig-a006-20210301
+i386                 randconfig-a001-20210301
+x86_64               randconfig-a013-20210301
+x86_64               randconfig-a016-20210301
+x86_64               randconfig-a015-20210301
+x86_64               randconfig-a014-20210301
+x86_64               randconfig-a012-20210301
+x86_64               randconfig-a011-20210301
+i386                 randconfig-a016-20210301
+i386                 randconfig-a012-20210301
+i386                 randconfig-a014-20210301
+i386                 randconfig-a013-20210301
+i386                 randconfig-a011-20210301
+i386                 randconfig-a015-20210301
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20210301
+x86_64               randconfig-a001-20210301
+x86_64               randconfig-a004-20210301
+x86_64               randconfig-a002-20210301
+x86_64               randconfig-a005-20210301
+x86_64               randconfig-a003-20210301
+
 ---
- drivers/infiniband/core/uverbs_ioctl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/core/uverbs_ioctl.c b/drivers/infiniband/core/uverbs_ioctl.c
-index e47c5949013f..3871049a48f7 100644
---- a/drivers/infiniband/core/uverbs_ioctl.c
-+++ b/drivers/infiniband/core/uverbs_ioctl.c
-@@ -90,8 +90,8 @@ void uapi_compute_bundle_size(struct uverbs_api_ioctl_method *method_elm,
- 	WARN_ON_ONCE(method_elm->bundle_size > PAGE_SIZE);
- }
-
--/**
-- * uverbs_alloc() - Quickly allocate memory for use with a bundle
-+/*
-+ * _uverbs_alloc() - Quickly allocate memory for use with a bundle
-  * @bundle: The bundle
-  * @size: Number of bytes to allocate
-  * @flags: Allocator flags
---
-2.29.2
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
