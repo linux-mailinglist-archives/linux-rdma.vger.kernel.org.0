@@ -2,142 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFF532A7F9
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Mar 2021 18:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2CB32A80C
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Mar 2021 18:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573405AbhCBQtz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Mar 2021 11:49:55 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:19045 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238133AbhCBAEy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Mar 2021 19:04:54 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603d80f80001>; Mon, 01 Mar 2021 16:04:08 -0800
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Mar
- 2021 00:04:07 +0000
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Mar
- 2021 00:04:05 +0000
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.54) by
- HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Tue, 2 Mar 2021 00:04:05 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OBRqZoA6uEws+B/yEqxxckw+W00glX3xHhBut5QevM0AQAEKGMKoiH4izM1s73xIaBic0co66wRsUzWxrKMz1naEdgKEFPgR+/p8YHzl+WYpGZXj5l0qo3SaEYcO9vEM9mdOIKQ4/Vn8RCOrbs5laH1JRRldebBXPTXTMNfUKPKLEW25lYQzLogMrxnQWnUGSNx1Tv98xQgPgV60AzaqR31IcKO4Fip1oZYLmf7MEVnF3gnDf8KQR8FzpQEtSo2E/XnBKupn4vvnIb7tmkU0X9h+JszfBJA6Hn1k+g/ki2BdcZAVi6ZD01ap52i2gHRuKonrES3KYu9ahQwwScv05Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UoqRdjaoLORz2g5MDO+9yfoXQeZzFmFmZ5XLKG2hrSE=;
- b=ZLvVku1f66me2n2J53h0guXNpZEsp95BAxUznESBxRN1KDfS82WGljOVEMPw6THHlp3E4hH6gC4Y5qqTyVAmKAfjL87g1CJ0f+/fm6Qh1QGRSAx6klyBGi4Nr6/8eHxI6KX7Yb1iUfrpGX0JV7LYhgYroQ3834xagdF/XyIxHzJtYJ2nUb+6Cmb10KgmsRmahf+0b/Q+OI/fsta3WaLfgtjV36N14efVpEl1bhW03EbDvPLmnDFzk2kUAFT5k/NZebiTSvB3+Jl8mjpzl0JisENhuw2sLUZAHxHKnDfpuCFvBETE4ansMq9EYiOBTqQV1xVL2R6AjjE8nZEzbOCUOg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4010.namprd12.prod.outlook.com (2603:10b6:5:1ce::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.28; Tue, 2 Mar
- 2021 00:04:02 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3890.026; Tue, 2 Mar 2021
- 00:04:02 +0000
-Date:   Mon, 1 Mar 2021 20:04:00 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Gal Pressman <galpress@amazon.com>
-CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        "Leybovich, Yossi" <sleybo@amazon.com>
-Subject: Re: [PATCH for-next 0/2] Host information userspace version
-Message-ID: <20210302000400.GB4247@nvidia.com>
-References: <20210105104326.67895-1-galpress@amazon.com>
- <9286e969-09b8-a7d0-ca7e-50b8e3864a11@amazon.com>
- <20210121183512.GC4147@nvidia.com>
- <206d8797-0188-5949-aaaf-57a6901c48d9@amazon.com>
- <20210127165734.GQ4147@nvidia.com>
- <41cf157b-d36b-06a2-a204-090848e44175@amazon.com>
- <587c0ea6-97a3-9ced-cb0e-6464986b800d@amazon.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <587c0ea6-97a3-9ced-cb0e-6464986b800d@amazon.com>
-X-ClientProxiedBy: MN2PR20CA0029.namprd20.prod.outlook.com
- (2603:10b6:208:e8::42) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S233253AbhCBRAO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Mar 2021 12:00:14 -0500
+Received: from mail-pg1-f171.google.com ([209.85.215.171]:46775 "EHLO
+        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233254AbhCBEAM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Mar 2021 23:00:12 -0500
+Received: by mail-pg1-f171.google.com with SMTP id h4so12961610pgf.13;
+        Mon, 01 Mar 2021 19:59:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lIWzDiqoJEqo1Bg1QhNKMK2MRYP+ewMQz28y/3y4MQU=;
+        b=hGEDou1ZolrwXnKNpmVmqOl9pNeY8LRJLCj3O6nKnytzrzW+8ynH8JnTfabm+0AkxL
+         vlGlg1klsMMEF97aeGOXrwLmbUbvcD43Jlcu3NdhFJO+A3KSQf1eWCYdj/OXv1zET4ON
+         C+EfQxenhJh4KVkkCUDyTLCNIh39BlaIsqGsjxgWVbzsc2pDIqPFsR8wcNuR/SvJOcVj
+         ZhW98tFOvhftCSh9MSokP9HQ+J3FUqPeo8xeG3QqG6jl1QNxYjXgoxoC2C/ASEYIOdFh
+         rYVZY+SdntkUloEFRJHVZBrwg2Jc3Zsf3mex+G9BgFB43mDCFt1EZ8s3RbMLL1Y2YpEw
+         liHg==
+X-Gm-Message-State: AOAM531nX/ivzXMRxqMlJDSp0i+OfiUttOnYTvn1tItx+5cgOPdBgkX/
+        CD8KKPYDDWv5Ys1gZ2owP/4OkpolfQI=
+X-Google-Smtp-Source: ABdhPJx1DOmeowL8c3tVPEhpocfYiDjRETOJnhQOgDjvcxCxsnWMnsyh4jpCyy17C9lLERVoGN8axA==
+X-Received: by 2002:a63:5962:: with SMTP id j34mr16269769pgm.331.1614657563407;
+        Mon, 01 Mar 2021 19:59:23 -0800 (PST)
+Received: from ?IPv6:2601:647:4000:d7:c6e8:5c02:da81:d405? ([2601:647:4000:d7:c6e8:5c02:da81:d405])
+        by smtp.gmail.com with ESMTPSA id r202sm20492015pfc.10.2021.03.01.19.59.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Mar 2021 19:59:22 -0800 (PST)
+Subject: Re: [bug report]null pointer at scsi_mq_exit_request+0x14 with
+ blktests srp/015
+To:     Yi Zhang <yi.zhang@redhat.com>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>
+References: <418155251.14154941.1614505772200.JavaMail.zimbra@redhat.com>
+ <BYAPR04MB4965FDA9847096508E35FFB9869B9@BYAPR04MB4965.namprd04.prod.outlook.com>
+ <8b1fc0cd-196a-ad78-71c6-a7515ffbb4ad@redhat.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <4d188158-3f18-c801-02ca-97350eb10c1b@acm.org>
+Date:   Mon, 1 Mar 2021 19:59:21 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR20CA0029.namprd20.prod.outlook.com (2603:10b6:208:e8::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Tue, 2 Mar 2021 00:04:01 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lGsW8-003CgD-IF; Mon, 01 Mar 2021 20:04:00 -0400
-X-MS-Exchange-MinimumUrlDomainAge: github.com#4893
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614643448; bh=UoqRdjaoLORz2g5MDO+9yfoXQeZzFmFmZ5XLKG2hrSE=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:
-         X-MS-Exchange-MinimumUrlDomainAge:X-Header;
-        b=f3eN/e3eet+6hzTKAYNSX2dEc4YVZWX0Bs+7MB3avfrfhg0qtjiN9VAI2ZyOMZ+Lm
-         DR9Ot7DpLnmy6h1jss0LfHzPObeZzb69XSyKtyI8DBjoQNYP7kcYx3dyqlaUcOwzHQ
-         2JCDSSJbQRyzXbBETQIZ6rVlUbFmkx2oAtb/wTqyNHRcOmCdUSYDr3nPCXzrKI54xR
-         moVCOPCAbpfoWgq4E7WpxqEpVS7aqrs8NROJHXXP/kdQJDFj4QGePcVusg+OlCL7E7
-         zuVyXqz1V8U94/fsCsHeiF15MohnvSvtdFU/k1vv1+bskKwK85gHcM0jm7ZjQ2yQ9M
-         BNKVOCaJn/4dw==
+In-Reply-To: <8b1fc0cd-196a-ad78-71c6-a7515ffbb4ad@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 11:56:01AM +0200, Gal Pressman wrote:
-> On 27/01/2021 19:53, Gal Pressman wrote:
-> > On 27/01/2021 18:57, Jason Gunthorpe wrote:
-> >> On Thu, Jan 21, 2021 at 09:40:49PM +0200, Gal Pressman wrote:
-> >>> On 21/01/2021 20:35, Jason Gunthorpe wrote:
-> >>>> On Tue, Jan 19, 2021 at 09:17:14AM +0200, Gal Pressman wrote:
-> >>>>> On 05/01/2021 12:43, Gal Pressman wrote:
-> >>>>>> The following two patches add the userspace version to the host
-> >>>>>> information struct reported to the device, used for debugging and
-> >>>>>> troubleshooting purposes.
-> >>>>>>
-> >>>>>> PR was sent:
-> >>>>>> https://github.com/linux-rdma/rdma-core/pull/918
-> >>>>>>
-> >>>>>> Thanks,
-> >>>>>> Gal
-> >>>>>
-> >>>>> Anything stopping this series from being merged?
-> >>>>
-> >>>> Honestly, I'm not very keen on this
-> >>>>
-> >>>> Why does this have to go through a kernel driver, can't you collect
-> >>>> OS telemetry some other way?
-> >>>
-> >>> Hmm, it has to go through rdma-core somehow, what sort of component can
-> >>> rdma-core interact with to pass such data? The only one I could think of is the
-> >>> RDMA driver :).
-> >>>
-> >>> As I said, I get your concern, I was going on and off about this as well, but
-> >>> the userspace version is a very useful piece of information in the context of a
-> >>> kernel bypass device. It's just as important as the kernel version.
-> >>> I agree that this is not the place to pass things like gcc version, but I don't
-> >>> think that's the case here :).
-> >>
-> >> Well, if we were to do this for mlx5 we'd want to pass UCX and maybe
-> >> other stuff, it seems like it gets quickly out of hand.
-> > 
-> > Agree, that's why I think this should be limited to things in rdma-core's reach,
-> > sounds like a reasonable limit to me.
-> > 
-> >> I think telemetry is better done as some telemetry subsystem, not
-> >> integrated all over the place
-> > 
-> > Interesting, but that would still be all over the place as each package would
-> > have to report its version to that telemetry driver.
-> > 
-> > And since this currently doesn't exist, should we stay without a solution?
-> > Specifically talking about rdma-core version, do you think it could be merged?
-> > 
+On 3/1/21 7:36 AM, Yi Zhang wrote:
+> This issue cannot be reproduced on latest 5.12.0-rc1.
 > 
-> Jason?
+> Please ignore this report, sorry for the noise.
 
-I'm not keen on it, it doesn't work well for other use-cases, it seems
-too hacky.
+How about rerunning the same test against v5.11.2, the latest v5.11
+stable kernel? I think your report means that v5.11 can be improved...
 
-Jason
+Thanks,
+
+Bart.
