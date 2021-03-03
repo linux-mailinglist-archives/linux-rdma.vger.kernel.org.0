@@ -2,119 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7CC32C24E
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Mar 2021 01:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB14032C251
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Mar 2021 01:04:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhCCX7n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Mar 2021 18:59:43 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9625 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842503AbhCCIFp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Mar 2021 03:05:45 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603f40d20003>; Tue, 02 Mar 2021 23:54:58 -0800
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Mar
- 2021 07:54:58 +0000
-Received: from [172.27.14.101] (172.20.145.6) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Mar 2021
- 07:54:54 +0000
-Subject: Re: [PATCH] net/mlx5: use kvfree() for memory allocated with
- kvzalloc()
-To:     angkery <angkery@163.com>, <saeedm@nvidia.com>, <leon@kernel.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <vladbu@nvidia.com>,
-        <dlinkin@nvidia.com>, <dan.carpenter@oracle.com>
-CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Junlin Yang <yangjunlin@yulong.com>
-References: <20210303024019.2245-1-angkery@163.com>
-From:   Roi Dayan <roid@nvidia.com>
-Message-ID: <0c195a3a-53cc-dbd2-f656-54a92e5a569b@nvidia.com>
-Date:   Wed, 3 Mar 2021 09:54:52 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231334AbhCCX7o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Mar 2021 18:59:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239419AbhCCMwR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 3 Mar 2021 07:52:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D94DA64E58;
+        Wed,  3 Mar 2021 12:41:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614775271;
+        bh=ZSe/j5/WA5UiIMC7T0QZMRw6rr+csg/HuA4cNNciTHA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ayokwzirasaoCkwQKWdCridG/Qlw1pSksDJnJJ8IzQ82yxHBsAYfTZThxEGHGuDoP
+         nYQCej/vbnv5kuM4HW2cfbR/ojhckU3arNQVGqF7/7+UPSADt9Ba9oDLtb21VnzQuK
+         GHKHoOViKqM0hlh9Yef3SwFbnjXo7j/s711XeIqbLbDAdWJjkv7VXgvQRG1hLSnFWS
+         gXB5zicSQA8gEKPB9MFEwqEiULGqEspwb6Fd2tcq5yn5YuzwdCnX/qww+37v5orE3L
+         8sOWGSG86F5pVketxFL0LOoI0wVq/hD7/mL1HtCEzOkuPF0xsSyKdIg5uhIxR2DvSt
+         Up+xt+8Kjx3/Q==
+Date:   Wed, 3 Mar 2021 14:41:07 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, jgg@nvidia.com, linux-rdma@vger.kernel.org,
+        linuxarm@openeuler.org
+Subject: Re: [PATCH for-next] RDMA/hns: Add support for XRC on HIP09
+Message-ID: <YD+D4zjc1GzHL0bb@unreal>
+References: <1614689298-13601-1-git-send-email-liweihang@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210303024019.2245-1-angkery@163.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614758098; bh=jptEHTTqU5i9Rk44hkt2Xk1fTTxJd4Czd+BJtbXzJQg=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=EmeeFnPDOYL2h8bUEC9Ejsn5cAia9/0b8bJow1firBmPU8Lnu9e2HHmF6j1QKLtsv
-         PL2ecK2g0MXdNSKzUl76YCTYujMMij+nY7Et/seSfa8ObdBrvt87pGFZdmMj7cX10M
-         Fp3H/TklXsfwQRqgKsa27saB7qqZhqwyTtEqfSkso0PolQ2UegYcGYgUuToojwqlSb
-         MKnEtV1eDr4AiUhCxcNNu+prlYGyzeoqOIoR3Tgh4xzZVqLnSKfMtyN7fYOX0InFKS
-         sUikkrI1WERiorGXKfh4ujrXYOdTY18OpfFjY6a/heqDG15FccbG6bHErCeiYlUgel
-         zY3qvb1m95ukQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614689298-13601-1-git-send-email-liweihang@huawei.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 2021-03-03 4:40 AM, angkery wrote:
-> From: Junlin Yang <yangjunlin@yulong.com>
-> 
-> It is allocated with kvzalloc(), the corresponding release function
-> should not be kfree(), use kvfree() instead.
-> 
-> Generated by: scripts/coccinelle/api/kfree_mismatch.cocci
-> 
-> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+On Tue, Mar 02, 2021 at 08:48:18PM +0800, Weihang Li wrote:
+> From: Wenpeng Liang <liangwenpeng@huawei.com>
+>
+> The HIP09 supports XRC transport service, it greatly saves the number of
+> QPs required to connect all processes in a large cluster.
+>
+> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+> Signed-off-by: Weihang Li <liweihang@huawei.com>
 > ---
->   drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
-> index 6f6772b..3da7bec 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
-> @@ -248,7 +248,7 @@ static int mlx5_esw_indir_table_rule_get(struct mlx5_eswitch *esw,
->   err_ethertype:
->   	kfree(rule);
->   out:
-> -	kfree(rule_spec);
-> +	kvfree(rule_spec);
->   	return err;
->   }
->   
-> @@ -328,7 +328,7 @@ static int mlx5_create_indir_recirc_group(struct mlx5_eswitch *esw,
->   	e->recirc_cnt = 0;
->   
->   out:
-> -	kfree(in);
-> +	kvfree(in);
->   	return err;
->   }
->   
-> @@ -347,7 +347,7 @@ static int mlx5_create_indir_fwd_group(struct mlx5_eswitch *esw,
->   
->   	spec = kvzalloc(sizeof(*spec), GFP_KERNEL);
->   	if (!spec) {
-> -		kfree(in);
-> +		kvfree(in);
->   		return -ENOMEM;
->   	}
->   
-> @@ -371,8 +371,8 @@ static int mlx5_create_indir_fwd_group(struct mlx5_eswitch *esw,
->   	}
->   
->   err_out:
-> -	kfree(spec);
-> -	kfree(in);
-> +	kvfree(spec);
-> +	kvfree(in);
->   	return err;
->   }
->   
-> 
+>  drivers/infiniband/hw/hns/hns_roce_alloc.c  |   3 +
+>  drivers/infiniband/hw/hns/hns_roce_device.h |  25 +++++
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 147 +++++++++++++++++++---------
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |   2 +
+>  drivers/infiniband/hw/hns/hns_roce_main.c   |  32 +++++-
+>  drivers/infiniband/hw/hns/hns_roce_pd.c     |  51 ++++++++++
+>  drivers/infiniband/hw/hns/hns_roce_qp.c     |  63 ++++++++----
+>  drivers/infiniband/hw/hns/hns_roce_srq.c    |   3 +
+>  include/uapi/rdma/hns-abi.h                 |   2 +
+>  9 files changed, 258 insertions(+), 70 deletions(-)
 
-thanks!
+<...>
 
-Reviewed-by: Roi Dayan <roid@nvidia.com>
+> +	u32			xrcdn;
 
+<...>
+
+> +	unsigned long		xrcdn;
+
+Can you use the same type (u32) in all structs, please?
+
+Thanks
