@@ -2,71 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB14032C251
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Mar 2021 01:04:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37DA132C3C3
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Mar 2021 01:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbhCCX7o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Mar 2021 18:59:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37142 "EHLO mail.kernel.org"
+        id S231270AbhCCX7m (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Mar 2021 18:59:42 -0500
+Received: from m12-15.163.com ([220.181.12.15]:55473 "EHLO m12-15.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239419AbhCCMwR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:52:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D94DA64E58;
-        Wed,  3 Mar 2021 12:41:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614775271;
-        bh=ZSe/j5/WA5UiIMC7T0QZMRw6rr+csg/HuA4cNNciTHA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ayokwzirasaoCkwQKWdCridG/Qlw1pSksDJnJJ8IzQ82yxHBsAYfTZThxEGHGuDoP
-         nYQCej/vbnv5kuM4HW2cfbR/ojhckU3arNQVGqF7/7+UPSADt9Ba9oDLtb21VnzQuK
-         GHKHoOViKqM0hlh9Yef3SwFbnjXo7j/s711XeIqbLbDAdWJjkv7VXgvQRG1hLSnFWS
-         gXB5zicSQA8gEKPB9MFEwqEiULGqEspwb6Fd2tcq5yn5YuzwdCnX/qww+37v5orE3L
-         8sOWGSG86F5pVketxFL0LOoI0wVq/hD7/mL1HtCEzOkuPF0xsSyKdIg5uhIxR2DvSt
-         Up+xt+8Kjx3/Q==
-Date:   Wed, 3 Mar 2021 14:41:07 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, jgg@nvidia.com, linux-rdma@vger.kernel.org,
-        linuxarm@openeuler.org
-Subject: Re: [PATCH for-next] RDMA/hns: Add support for XRC on HIP09
-Message-ID: <YD+D4zjc1GzHL0bb@unreal>
-References: <1614689298-13601-1-git-send-email-liweihang@huawei.com>
+        id S1355566AbhCCGtM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 3 Mar 2021 01:49:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Y5I94
+        cTExtGaMRThkHngPoCwB3fvdKWQc1AhklMV9I4=; b=Ne5cucJzNtpXb3PgIB1gz
+        /fj3MySWqIocJgPjtNrLbZEX4oEzOYTzuaBLZxvjU0O4sQLG90VPdZ93t0sCCfQB
+        NZx2m8DTDJDW2h8FUcN2Z9DeRBO0SNrN3xKI5x7/mE6XB/gwowtT+t4twomjkcLe
+        L3SLppNhUyIFZ6z5HrLd14=
+Received: from yangjunlin.ccdomain.com (unknown [218.17.89.92])
+        by smtp11 (Coremail) with SMTP id D8CowAAnrAgU+D5g9HhoDg--.49S2;
+        Wed, 03 Mar 2021 10:44:47 +0800 (CST)
+From:   angkery <angkery@163.com>
+To:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, vladbu@nvidia.com, dlinkin@nvidia.com,
+        roid@nvidia.com, dan.carpenter@oracle.com
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Junlin Yang <yangjunlin@yulong.com>
+Subject: [PATCH] net/mlx5: use kvfree() for memory allocated with kvzalloc()
+Date:   Wed,  3 Mar 2021 10:40:19 +0800
+Message-Id: <20210303024019.2245-1-angkery@163.com>
+X-Mailer: git-send-email 2.24.0.windows.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614689298-13601-1-git-send-email-liweihang@huawei.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: D8CowAAnrAgU+D5g9HhoDg--.49S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7WF13Xw1DGr4kAryrtryrWFg_yoW8XrWxpF
+        s8K34jkr1Sqa47X34kA395Xr98Wa1UKayxur92v3yfXrn5Jw18JF1Fkry3uw18ArWxJasx
+        tr4Yyw1fuaykJwUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bO1v3UUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5dqjyvlu16il2tof0z/1tbiLR9KI1SIlJvXtgAAsp
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 08:48:18PM +0800, Weihang Li wrote:
-> From: Wenpeng Liang <liangwenpeng@huawei.com>
->
-> The HIP09 supports XRC transport service, it greatly saves the number of
-> QPs required to connect all processes in a large cluster.
->
-> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
-> Signed-off-by: Weihang Li <liweihang@huawei.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_alloc.c  |   3 +
->  drivers/infiniband/hw/hns/hns_roce_device.h |  25 +++++
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 147 +++++++++++++++++++---------
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |   2 +
->  drivers/infiniband/hw/hns/hns_roce_main.c   |  32 +++++-
->  drivers/infiniband/hw/hns/hns_roce_pd.c     |  51 ++++++++++
->  drivers/infiniband/hw/hns/hns_roce_qp.c     |  63 ++++++++----
->  drivers/infiniband/hw/hns/hns_roce_srq.c    |   3 +
->  include/uapi/rdma/hns-abi.h                 |   2 +
->  9 files changed, 258 insertions(+), 70 deletions(-)
+From: Junlin Yang <yangjunlin@yulong.com>
 
-<...>
+It is allocated with kvzalloc(), the corresponding release function
+should not be kfree(), use kvfree() instead.
 
-> +	u32			xrcdn;
+Generated by: scripts/coccinelle/api/kfree_mismatch.cocci
 
-<...>
+Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-> +	unsigned long		xrcdn;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
+index 6f6772b..3da7bec 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
+@@ -248,7 +248,7 @@ static int mlx5_esw_indir_table_rule_get(struct mlx5_eswitch *esw,
+ err_ethertype:
+ 	kfree(rule);
+ out:
+-	kfree(rule_spec);
++	kvfree(rule_spec);
+ 	return err;
+ }
+ 
+@@ -328,7 +328,7 @@ static int mlx5_create_indir_recirc_group(struct mlx5_eswitch *esw,
+ 	e->recirc_cnt = 0;
+ 
+ out:
+-	kfree(in);
++	kvfree(in);
+ 	return err;
+ }
+ 
+@@ -347,7 +347,7 @@ static int mlx5_create_indir_fwd_group(struct mlx5_eswitch *esw,
+ 
+ 	spec = kvzalloc(sizeof(*spec), GFP_KERNEL);
+ 	if (!spec) {
+-		kfree(in);
++		kvfree(in);
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -371,8 +371,8 @@ static int mlx5_create_indir_fwd_group(struct mlx5_eswitch *esw,
+ 	}
+ 
+ err_out:
+-	kfree(spec);
+-	kfree(in);
++	kvfree(spec);
++	kvfree(in);
+ 	return err;
+ }
+ 
+-- 
+1.9.1
 
-Can you use the same type (u32) in all structs, please?
 
-Thanks
