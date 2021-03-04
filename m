@@ -2,363 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A54932DA54
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Mar 2021 20:25:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C72B132DAB9
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Mar 2021 21:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235474AbhCDTYf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Mar 2021 14:24:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42270 "EHLO
+        id S236297AbhCDT7P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Mar 2021 14:59:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233627AbhCDTYO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Mar 2021 14:24:14 -0500
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871A6C061574
-        for <linux-rdma@vger.kernel.org>; Thu,  4 Mar 2021 11:23:34 -0800 (PST)
-Received: by mail-oo1-xc33.google.com with SMTP id p6so6879168oot.2
-        for <linux-rdma@vger.kernel.org>; Thu, 04 Mar 2021 11:23:34 -0800 (PST)
+        with ESMTP id S236228AbhCDT7N (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Mar 2021 14:59:13 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F2BC061756;
+        Thu,  4 Mar 2021 11:58:33 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id u125so10843007wmg.4;
+        Thu, 04 Mar 2021 11:58:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6BeHSRxljtZ4ijzwjTRbSzPFt4juvQYsAEGcHokC31E=;
-        b=n2Ls10yejC1X+ZscMusBp/jP0KhPhx9wVTS9CFDckwE1IQewwsHUlXrLR4GcMMiIQx
-         UAddExJ1/8Hg5wFXEFR7IcbcuNtRsU/TQG9ZtR7H+Ok62avuGCPc0PFFd3jnWwPQe0eE
-         R8iSHsMHGe/2b3qQnbZ581XBw7U3eeKAddlahJ7WrvtVqICDB34uiwWznIvqowkTr+63
-         QwUOp/z9HW6gu4EnVNPtvoMv8hYUCEgj1sEeAhu8i0n2TT+Ys577JX/Dfjw5jYFv2/NG
-         ehuHaP6NObIe410dise06hxAbS8th3cD8PyP5cOyxTbo8LnLBTdSB2dpyuHOrkGX3yda
-         OMcg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ufO59/K3ib2osgQjLy4qf9rcrYtYFA8DbgdmA9HSULY=;
+        b=LKbzn1c08HAvcPo24SBUhPtBSfAAsG1CJNYoXuZUdp2+xtnXl4pjNE/rpFRyExt6FC
+         cnLiwu5s3AEzZ32fU9q5pLyzMMId0b90TuTMcdO/Ldb3mO3zDNcW+wlohUScoxf0qEY8
+         Xxb6kYy9NGrvUbU+23o8BpaAb6unEcgXvVir6UdS1GeS2HCy4wWmB1ROw2KLW3rsK8LY
+         lp8VvFspCsWder+pUMCFeGF0J23Ltkxco+tBX6AHKkuE0prfO9i8r8omKsdbYjHmi4vg
+         JvE1ImD/mm5qPOzpTAcmpciJnT413Znpxu4Ytrv7f7riR8zHlCOguC+slcF0qTrWBXw4
+         BlkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=6BeHSRxljtZ4ijzwjTRbSzPFt4juvQYsAEGcHokC31E=;
-        b=c83vX49DeRgNnqenwLL9HWwLV5AMrIH2iKJ+zKyeNGeUxmtjkJHvu5qHzuMicN3a7Q
-         13XdoavIe0+gcxYQ5uo8+WuJCdlS8gjRw3zFvOCV1wR4cbg2RMC5nRltUD22J122GhPu
-         rbLkZ9EYBrQPQ9AWx8W0LQSfEV9VlxnBDA1SXYBz0f8CZ5ulbD+kUyCFFPmGIM109nAe
-         GI1kq8QeB9MmHtVlOdkZLlwi8IUMy1BPnuqFLkt0C271Y6hEXPSOszByBKts34wzYXnN
-         5ja73zzi7N+KNZw7R3Y4bBSwqYfU37NfAgIRhfBpEXVMs/KsqH2hx58Rdgj+jXyBqcTb
-         F3ow==
-X-Gm-Message-State: AOAM533gQvu+hxZTsg18L2qZV80b3Y6edvMmtAN/Fxad3CpEzuxSUDLb
-        XvPr15oELJYKVVtniMdB9qE=
-X-Google-Smtp-Source: ABdhPJxV4w0uRo+J5CEJHFa0ecIux12MJm2bJ6qWqyAaF36zMyMDTFHJhWbpMqPPp7/ZeCYNQ9Kz2A==
-X-Received: by 2002:a4a:2:: with SMTP id 2mr4553052ooh.12.1614885813847;
-        Thu, 04 Mar 2021 11:23:33 -0800 (PST)
-Received: from rpearson-X570-AORUS-PRO-WIFI.tx.rr.com (2603-8081-140c-1a00-e679-b501-499d-13c1.res6.spectrum.com. [2603:8081:140c:1a00:e679:b501:499d:13c1])
-        by smtp.gmail.com with ESMTPSA id w7sm24934oie.7.2021.03.04.11.23.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 11:23:33 -0800 (PST)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v3] RDMA/rxe: Fix ib_device reference counting (again)
-Date:   Thu,  4 Mar 2021 13:20:49 -0600
-Message-Id: <20210304192048.2958-1-rpearson@hpe.com>
-X-Mailer: git-send-email 2.27.0
+        bh=ufO59/K3ib2osgQjLy4qf9rcrYtYFA8DbgdmA9HSULY=;
+        b=XSHumuzoax8THHQ1NzSzyilvReVRRL5WlceoUomPFSlxldbbVayybttkQ/LbB8Nex7
+         NIGOi7Fy3rK9yyYfM4wAkgcTBPkPvu6pIwDIpO5MVO+9nopDDGLzxSekX2pDo0txsm6X
+         JDsE8zj85t3Bq2BOQeXf7d37/GBuTFnrjunUroRTwVALH3wngPVtpOOJaE/kiozbZHBp
+         aeX0nvJ587zmSDH31oegbejYgsiACf4Ka7SdYo1kkHEQ7Sv4w7mmYwcAsnqJCzp1neX9
+         j2O7JuFQXm7YWl/sXGCP+ERZOFK3Wsu6t/tPFwCz2bjgyQgh8qXE9ujRuIb/IbEKSXRh
+         /gkw==
+X-Gm-Message-State: AOAM530yWMfvH2bLBdTu1z3HC+cZ7wgyJgYdWSTj1OwUZ+NHPzIE42fW
+        X/XxuT80GioxNW33Z401OFBHXe0HunV1zA==
+X-Google-Smtp-Source: ABdhPJwAERYGeI7ldiKI+/ZMbOlbRXBPJZPsgnfu/H+Fy60UEDvzWdTpT6MlRXS1pu9emJ03pOR8bw==
+X-Received: by 2002:a05:600c:2215:: with SMTP id z21mr5000708wml.86.1614887911924;
+        Thu, 04 Mar 2021 11:58:31 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f1f:bb00:f14c:f8a9:e599:34af? (p200300ea8f1fbb00f14cf8a9e59934af.dip0.t-ipconnect.de. [2003:ea:8f1f:bb00:f14c:f8a9:e599:34af])
+        by smtp.googlemail.com with ESMTPSA id j125sm716630wmb.44.2021.03.04.11.58.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 11:58:31 -0800 (PST)
+Subject: Re: [PATCH] net: mellanox: mlx5: fix error return code in
+ mlx5_fpga_device_start()
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>, borisp@nvidia.com,
+        saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210304141814.8508-1-baijiaju1990@gmail.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <cac36164-c8d3-415e-ca43-20b16b57b3fc@gmail.com>
+Date:   Thu, 4 Mar 2021 20:58:24 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210304141814.8508-1-baijiaju1990@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Bob Pearson <rpearsonhpe@gmail.com>
+On 04.03.2021 15:18, Jia-Ju Bai wrote:
+> When mlx5_is_fpga_lookaside() returns a non-zero value, no error 
+> return code is assigned.
+> To fix this bug, err is assigned with -EINVAL as error return code.
+> 
+To me it looks like the current behavior is intentional.
+Did you verify that it's actually an error condition if the
+function returns true? Please don't blindly trust such code checkers.
 
-Three errors occurred in the fix referenced below.
-
-1) rxe_rcv_mcast_pkt() dropped a reference to ib_device when
-no error occurred causing an underflow on the reference counter.
-This code is cleaned up to be clearer and easier to read.
-
-2) Extending the reference taken by rxe_get_dev_from_net() in
-rxe_udp_encap_recv() until each skb is freed was not matched by
-a reference in the loopback path resulting in underflows.
-
-3) In rxe_comp.c in rxe_completer() the function free_pkt() did
-not clear skb which triggered a warning at done: and could possibly
-at exit: . The WARN_ONCE() calls are not actually needed.
-The call to free_pkt() is moved to the end to clearly show that
-all skbs are freed.
-
-This patch fixes these errors.
-
-Fixes: 899aba891cab ("RDMA/rxe: Fix FIXME in rxe_udp_encap_recv()")
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
-Version 3:
-V2 of this patch had spelling errors and style issues which are
-fixed in this version.
-
-Version 2:
-v1 of this patch incorrectly added a WARN_ON_ONCE in rxe_completer
-where it could be triggered for normal traffic. This version
-replaced that with a pr_warn located correctly.
-
-v1 of this patch placed a call to kfree_skb in an if statement
-that could trigger style warnings. This version cleans that up.
-
- drivers/infiniband/sw/rxe/rxe_comp.c | 55 +++++++++++---------------
- drivers/infiniband/sw/rxe/rxe_net.c  | 10 ++++-
- drivers/infiniband/sw/rxe/rxe_recv.c | 59 +++++++++++++++++-----------
- 3 files changed, 67 insertions(+), 57 deletions(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-index a8ac791a1bb9..17a361b8dbb1 100644
---- a/drivers/infiniband/sw/rxe/rxe_comp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-@@ -547,6 +547,7 @@ int rxe_completer(void *arg)
- 	struct sk_buff *skb = NULL;
- 	struct rxe_pkt_info *pkt = NULL;
- 	enum comp_state state;
-+	int ret = 0;
- 
- 	rxe_add_ref(qp);
- 
-@@ -554,7 +555,8 @@ int rxe_completer(void *arg)
- 	    qp->req.state == QP_STATE_RESET) {
- 		rxe_drain_resp_pkts(qp, qp->valid &&
- 				    qp->req.state == QP_STATE_ERROR);
--		goto exit;
-+		ret = -EAGAIN;
-+		goto done;
- 	}
- 
- 	if (qp->comp.timeout) {
-@@ -564,8 +566,10 @@ int rxe_completer(void *arg)
- 		qp->comp.timeout_retry = 0;
- 	}
- 
--	if (qp->req.need_retry)
--		goto exit;
-+	if (qp->req.need_retry) {
-+		ret = -EAGAIN;
-+		goto done;
-+	}
- 
- 	state = COMPST_GET_ACK;
- 
-@@ -636,8 +640,6 @@ int rxe_completer(void *arg)
- 			break;
- 
- 		case COMPST_DONE:
--			if (pkt)
--				free_pkt(pkt);
- 			goto done;
- 
- 		case COMPST_EXIT:
-@@ -660,7 +662,8 @@ int rxe_completer(void *arg)
- 			    qp->qp_timeout_jiffies)
- 				mod_timer(&qp->retrans_timer,
- 					  jiffies + qp->qp_timeout_jiffies);
--			goto exit;
-+			ret = -EAGAIN;
-+			goto done;
- 
- 		case COMPST_ERROR_RETRY:
- 			/* we come here if the retry timer fired and we did
-@@ -672,18 +675,18 @@ int rxe_completer(void *arg)
- 			 */
- 
- 			/* there is nothing to retry in this case */
--			if (!wqe || (wqe->state == wqe_state_posted))
--				goto exit;
-+			if (!wqe || (wqe->state == wqe_state_posted)) {
-+				pr_warn("Retry attempted without a valid wqe\n");
-+				ret = -EAGAIN;
-+				goto done;
-+			}
- 
- 			/* if we've started a retry, don't start another
- 			 * retry sequence, unless this is a timeout.
- 			 */
- 			if (qp->comp.started_retry &&
--			    !qp->comp.timeout_retry) {
--				if (pkt)
--					free_pkt(pkt);
-+			    !qp->comp.timeout_retry)
- 				goto done;
--			}
- 
- 			if (qp->comp.retry_cnt > 0) {
- 				if (qp->comp.retry_cnt != 7)
-@@ -704,8 +707,6 @@ int rxe_completer(void *arg)
- 					qp->comp.started_retry = 1;
- 					rxe_run_task(&qp->req.task, 0);
- 				}
--				if (pkt)
--					free_pkt(pkt);
- 				goto done;
- 
- 			} else {
-@@ -726,8 +727,8 @@ int rxe_completer(void *arg)
- 				mod_timer(&qp->rnr_nak_timer,
- 					  jiffies + rnrnak_jiffies(aeth_syn(pkt)
- 						& ~AETH_TYPE_MASK));
--				free_pkt(pkt);
--				goto exit;
-+				ret = -EAGAIN;
-+				goto done;
- 			} else {
- 				rxe_counter_inc(rxe,
- 						RXE_CNT_RNR_RETRY_EXCEEDED);
-@@ -740,25 +741,15 @@ int rxe_completer(void *arg)
- 			WARN_ON_ONCE(wqe->status == IB_WC_SUCCESS);
- 			do_complete(qp, wqe);
- 			rxe_qp_error(qp);
--			if (pkt)
--				free_pkt(pkt);
--			goto exit;
-+			ret = -EAGAIN;
-+			goto done;
- 		}
- 	}
- 
--exit:
--	/* we come here if we are done with processing and want the task to
--	 * exit from the loop calling us
--	 */
--	WARN_ON_ONCE(skb);
--	rxe_drop_ref(qp);
--	return -EAGAIN;
--
- done:
--	/* we come here if we have processed a packet we want the task to call
--	 * us again to see if there is anything else to do
--	 */
--	WARN_ON_ONCE(skb);
-+	if (pkt)
-+		free_pkt(pkt);
- 	rxe_drop_ref(qp);
--	return 0;
-+
-+	return ret;
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 0701bd1ffd1a..01662727dca0 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -407,14 +407,22 @@ int rxe_send(struct rxe_pkt_info *pkt, struct sk_buff *skb)
- 	return 0;
- }
- 
-+/* fix up a send packet to match the packets
-+ * received from UDP before looping them back
-+ */
- void rxe_loopback(struct sk_buff *skb)
- {
-+	struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
-+
- 	if (skb->protocol == htons(ETH_P_IP))
- 		skb_pull(skb, sizeof(struct iphdr));
- 	else
- 		skb_pull(skb, sizeof(struct ipv6hdr));
- 
--	rxe_rcv(skb);
-+	if (WARN_ON(!ib_device_try_get(&pkt->rxe->ib_dev)))
-+		kfree_skb(skb);
-+	else
-+		rxe_rcv(skb);
- }
- 
- struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
-diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-index 45d2f711bce2..7a49e27da23a 100644
---- a/drivers/infiniband/sw/rxe/rxe_recv.c
-+++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-@@ -237,8 +237,6 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
- 	struct rxe_mc_elem *mce;
- 	struct rxe_qp *qp;
- 	union ib_gid dgid;
--	struct sk_buff *per_qp_skb;
--	struct rxe_pkt_info *per_qp_pkt;
- 	int err;
- 
- 	if (skb->protocol == htons(ETH_P_IP))
-@@ -250,10 +248,15 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
- 	/* lookup mcast group corresponding to mgid, takes a ref */
- 	mcg = rxe_pool_get_key(&rxe->mc_grp_pool, &dgid);
- 	if (!mcg)
--		goto err1;	/* mcast group not registered */
-+		goto drop;	/* mcast group not registered */
- 
- 	spin_lock_bh(&mcg->mcg_lock);
- 
-+	/* this is unreliable datagram service so we let
-+	 * failures to deliver a multicast packet to a
-+	 * single QP happen and just move on and try
-+	 * the rest of them on the list
-+	 */
- 	list_for_each_entry(mce, &mcg->qp_list, qp_list) {
- 		qp = mce->qp;
- 
-@@ -266,39 +269,47 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
- 		if (err)
- 			continue;
- 
--		/* for all but the last qp create a new clone of the
--		 * skb and pass to the qp. If an error occurs in the
--		 * checks for the last qp in the list we need to
--		 * free the skb since it hasn't been passed on to
--		 * rxe_rcv_pkt() which would free it later.
-+		/* for all but the last QP create a new clone of the
-+		 * skb and pass to the QP. Pass the original skb to
-+		 * the last QP in the list.
- 		 */
- 		if (mce->qp_list.next != &mcg->qp_list) {
--			per_qp_skb = skb_clone(skb, GFP_ATOMIC);
--			if (WARN_ON(!ib_device_try_get(&rxe->ib_dev))) {
--				kfree_skb(per_qp_skb);
-+			struct sk_buff *cskb;
-+			struct rxe_pkt_info *cpkt;
-+
-+			cskb = skb_clone(skb, GFP_ATOMIC);
-+			if (unlikely(!cskb))
- 				continue;
-+
-+			if (WARN_ON(!ib_device_try_get(&rxe->ib_dev))) {
-+				kfree_skb(cskb);
-+				break;
- 			}
-+
-+			cpkt = SKB_TO_PKT(cskb);
-+			cpkt->qp = qp;
-+			rxe_add_ref(qp);
-+			rxe_rcv_pkt(cpkt, cskb);
- 		} else {
--			per_qp_skb = skb;
--			/* show we have consumed the skb */
--			skb = NULL;
-+			pkt->qp = qp;
-+			rxe_add_ref(qp);
-+			rxe_rcv_pkt(pkt, skb);
-+			skb = NULL;	/* mark consumed */
- 		}
--
--		if (unlikely(!per_qp_skb))
--			continue;
--
--		per_qp_pkt = SKB_TO_PKT(per_qp_skb);
--		per_qp_pkt->qp = qp;
--		rxe_add_ref(qp);
--		rxe_rcv_pkt(per_qp_pkt, per_qp_skb);
- 	}
- 
- 	spin_unlock_bh(&mcg->mcg_lock);
- 
- 	rxe_drop_ref(mcg);	/* drop ref from rxe_pool_get_key. */
- 
--err1:
--	/* free skb if not consumed */
-+	if (likely(!skb))
-+		return;
-+
-+	/* This only occurs if one of the checks fails on the last
-+	 * QP in the list above
-+	 */
-+
-+drop:
- 	kfree_skb(skb);
- 	ib_device_put(&rxe->ib_dev);
- }
--- 
-2.27.0
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c b/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
+> index 2ce4241459ce..c9e6da97126f 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
+> @@ -198,8 +198,10 @@ int mlx5_fpga_device_start(struct mlx5_core_dev *mdev)
+>  	mlx5_fpga_info(fdev, "FPGA card %s:%u\n", mlx5_fpga_name(fpga_id), fpga_id);
+>  
+>  	/* No QPs if FPGA does not participate in net processing */
+> -	if (mlx5_is_fpga_lookaside(fpga_id))
+> +	if (mlx5_is_fpga_lookaside(fpga_id)) {
+> +		err = -EINVAL;
+>  		goto out;
+> +	}
+>  
+>  	mlx5_fpga_info(fdev, "%s(%d): image, version %u; SBU %06x:%04x version %d\n",
+>  		       mlx5_fpga_image_name(fdev->last_oper_image),
+> 
 
