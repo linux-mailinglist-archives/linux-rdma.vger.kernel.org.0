@@ -2,53 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A8C32CF2E
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Mar 2021 10:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 395C832CF70
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Mar 2021 10:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237259AbhCDI7m (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Mar 2021 03:59:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48126 "EHLO
+        id S235891AbhCDJPm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Mar 2021 04:15:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237255AbhCDI7a (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Mar 2021 03:59:30 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C667EC061760
-        for <linux-rdma@vger.kernel.org>; Thu,  4 Mar 2021 00:58:49 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id q203so6283008oih.5
-        for <linux-rdma@vger.kernel.org>; Thu, 04 Mar 2021 00:58:49 -0800 (PST)
+        with ESMTP id S235556AbhCDJPk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Mar 2021 04:15:40 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91ACAC061756
+        for <linux-rdma@vger.kernel.org>; Thu,  4 Mar 2021 01:14:59 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id z126so29350384oiz.6
+        for <linux-rdma@vger.kernel.org>; Thu, 04 Mar 2021 01:14:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZJrkrKqv0jMTbTRvONzT26FMLNQ1UuSz2+PWtOaELY4=;
-        b=Cj3BfMlyqAYreGklqfAOnQBT3+LmEmgUMwRxSuyy/8GFPzoTDkIOoxSdPKKLJnd+pq
-         d4dhZOWjgLCO/XO1U9ShasKaCj3u2cP0f/nxoMfkQ/KdoqmCRauoSj/PbiccU6gJuAau
-         s4n9xE9et7exydP3mcaYvHpd4KpNX6P0SAf5aVZzGDnqLnZdcUtf1eRr39MJtYDm0cjT
-         JlREfALSygcuKwv8rwdVc/hs7ox2i3jJxpPB26QSFQmYLK1aSJo6czA/ADtuQWCU8sMm
-         8+t938vV/ApHu6JvRWC7Rit1EAxx1aflDYN/ZDC/iMmb/scsBYYu3N1KhaPM2UiD5Ar5
-         LjaQ==
+        bh=NK6Ip1LmNIJiih9ABz9f3X254FPd4OUZkZANsDP106A=;
+        b=m6jXQ7ia61lqOSJm7/Kk/gklweXOJy7i12INJkHMZWMedyVFwQfYc3foeb2MuaOvku
+         Nere9MCOS9BkIv59jbJSEOZEMi/yHwcb8X4rPAtQFlWB30l/RjghvZzmmB8DrLLvP4lW
+         NLkdy65BqMzlZgbNqapRScsJqd4eGtoviHqeJiIMEGdv3wfxlwMAomV4lJn21ZQZGunC
+         KYSBQDlYnKnBhUWmiNvLvMgXahnA5Cnysl82Ij9kbR5Vd12fq2LMf1TTU7K1icp1Zvs3
+         /wgoOMdx4PvIBgF3ovr4zgHXwUMORy5Q0bXyZ7JhDgUPF4jrGy0YB9rUKHKg7Mt+2VBo
+         6Upw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZJrkrKqv0jMTbTRvONzT26FMLNQ1UuSz2+PWtOaELY4=;
-        b=T/9s1KBAG8a+T29EQB0GcHBZg8Sl04kiQ7/DA/AF3qYAB4M+nqPy4iPIKYT785/gBJ
-         Hila7kxH6fIBPR3e56MyU6qTSdkGJMniYajIGKZBWzYmR5WmJj+AaCTF0dwDyaMqpelF
-         P/05exXxqXxR9HO5Ho3GqU/dEZ3Dij9I59A5WHSYNuAPyPNGcRZtVGQ+lMe/D5lWxSTG
-         f1icD3FhqzEefDMVnM1oHoIYYhmmoPa8x6I+3tk3uB+SsjGovTIZ6grLP+TOPl50xrkI
-         6A6ocLy9p61uVp1YUzrbFw+yYBE7JoYUD4DZqIKllA48au4eT4TnVCtP3W/1alvMlpeK
-         92Zg==
-X-Gm-Message-State: AOAM5322ElIfpThXNzy4dg5+kYbw0QxaUF3cSd5EapDmyh+aH6hlxJ4E
-        P3z7wPikmuIIHO5cHrDvcwym2Sth4etFb+hyHK0=
-X-Google-Smtp-Source: ABdhPJwitCBfjJnGUx7gLKx+NBLoZxiFb2nN7M1DBDmKkDnvJDSwvuH1xlaeHdaLuC2sXTc0mE3wmYF1r79Q64Bh8Mc=
-X-Received: by 2002:aca:3a41:: with SMTP id h62mr2238545oia.89.1614848329159;
- Thu, 04 Mar 2021 00:58:49 -0800 (PST)
+        bh=NK6Ip1LmNIJiih9ABz9f3X254FPd4OUZkZANsDP106A=;
+        b=I4f/JDrYFzvggb0QOAzKPJfHeJKQgEfJXxMAE0lDMjgIrGpaInyE+CbvfplRRME/up
+         ne/71CjFnuYtE7NT2dO0iXzywhwh0aFoMceCncUjgYJFJNnrXhqoB7P3nVnvThM/NhEv
+         Rxf1AY+z8mkkOLLtsdBrMLTYil7VL/JtBCh4Hbn+aR2n5kjcrbA7Y1WhZcgfqMJaxRx0
+         IDJVh+VWkUqM89BUVr3SxTdk08w0xj44Nk77U49zVcrWkApj9rFnePgdDtSynjEm8y3B
+         UpKdfTfyF64P5Ptj2rHBJLhhrywf6DztMYIYczlpZhcwPQHXqwj55DBi5noGyKE9KChU
+         iHYg==
+X-Gm-Message-State: AOAM532V5N2cSb+nqqjceCwZTFJdR43vlSBjYj5nyBwJPeI0vqdWZTKt
+        7GjRK1W6eCUH3qHHIU8XClqZCODzyefKzxuuq4k=
+X-Google-Smtp-Source: ABdhPJwnWhK0AnYwAfENdAV13gmbY1CVRgh8aqYAX+Q7hxfupEd8soz0imAW+4C3F36gbqUW9rJHOy4vaVdYQxU9dFE=
+X-Received: by 2002:a05:6808:5cb:: with SMTP id d11mr2268142oij.169.1614849299010;
+ Thu, 04 Mar 2021 01:14:59 -0800 (PST)
 MIME-Version: 1.0
 References: <20210303225628.2836-1-rpearson@hpe.com>
 In-Reply-To: <20210303225628.2836-1-rpearson@hpe.com>
 From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Thu, 4 Mar 2021 16:58:38 +0800
-Message-ID: <CAD=hENcj91eT0VBQVExPBbg9K8+NNPr6BT_B47Q9cWqUP2KEcw@mail.gmail.com>
+Date:   Thu, 4 Mar 2021 17:14:47 +0800
+Message-ID: <CAD=hENeRc6=FX3K8Vud3ipCgoX4dzMAHck0KDoTwqsN9Q=Ud8w@mail.gmail.com>
 Subject: Re: [PATCH for-next v2] RDMA/rxe: Fix ib_device reference counting (again)
 To:     Bob Pearson <rpearsonhpe@gmail.com>
 Cc:     Jason Gunthorpe <jgg@nvidia.com>,
@@ -114,6 +114,9 @@ On Thu, Mar 4, 2021 at 7:02 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
 >          * exit from the loop calling us
 >          */
 > -       WARN_ON_ONCE(skb);
+
+IMHO, the above "WARN_ON_ONCE(skb);" had better be kept.
+
 >         rxe_drop_ref(qp);
 >         return -EAGAIN;
 >
@@ -123,96 +126,10 @@ On Thu, Mar 4, 2021 at 7:02 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
 >          */
 > -       WARN_ON_ONCE(skb);
 
-With the above line is kept, I made tests with this commit.
-1. git clone  https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
-2. cd rdma && git pull
-3. apply this commit and with "WARN_ON_ONCE(skb);" kept
-make tests with "rping ...."
-The similar problem still occurs.
+The above "WARN_ON_ONCE(skb);" had better also be kept.
 
 Zhu Yanjun
-"
-[  129.220472] ------------[ cut here ]------------
-[  129.220475] WARNING: CPU: 11 PID: 1669 at
-drivers/infiniband/sw/rxe/rxe_comp.c:763 rxe_completer+0x97f/0xd60
-[rdma_rxe]
-[  129.220485] Modules linked in: rdma_ucm rdma_cm iw_cm ib_cm
-rdma_rxe ib_uverbs ip6_udp_tunnel udp_tunnel ib_core dm_multipath
-scsi_dh_rdac scsi_dh_emc scsi_dh_alua intel_rapl_msr intel_rapl_common
-isst_if_common nfit rapl snd_intel8x0 snd_ac97_codec ac97_bus snd_pcm
-snd_timer snd soundcore joydev input_leds mac_hid serio_raw
-sch_fq_codel ip_tables x_tables autofs4 btrfs blake2b_generic
-zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq
-async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 multipath linear
-hid_generic usbhid hid crct10dif_pclmul crc32_pclmul
-ghash_clmulni_intel vmwgfx ttm drm_kms_helper syscopyarea aesni_intel
-sysfillrect sysimgblt fb_sys_fops crypto_simd cec cryptd psmouse drm
-video ahci i2c_piix4 e1000 libahci pata_acpi
-[  129.220537] CPU: 11 PID: 1669 Comm: rping Kdump: loaded Not tainted
-5.12.0-rc1+ #2
-[  129.220539] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS
-VirtualBox 12/01/2006
-[  129.220541] RIP: 0010:rxe_completer+0x97f/0xd60 [rdma_rxe]
-[  129.220545] Code: 8d 7f 08 e8 e3 e8 7d cd e9 f7 f6 ff ff 39 ca b8
-0e 00 00 00 ba 03 00 00 00 0f 44 c2 89 c3 e9 47 f7 ff ff 0f 0b e9 b2
-f9 ff ff <0f> 0b e9 26 f9 ff ff 49 8d 9f 30 08 00 00 48 89 df e8 5b a1
-e0 cd
-[  129.220547] RSP: 0018:ffffb4e3c0def7f0 EFLAGS: 00010286
-[  129.220549] RAX: 0000000000000008 RBX: 000000000000000e RCX: ffffffff8f07feb8
-[  129.220551] RDX: 0000000000000c40 RSI: ffffffff8e56db0e RDI: ffff99b1c2834000
-[  129.220552] RBP: ffffb4e3c0def850 R08: 0000000000000000 R09: 0000000000000001
-[  129.220553] R10: ffffb4e3c0def888 R11: 0000000000000000 R12: ffffb4e3c0bb1180
-[  129.220554] R13: ffff99b1d15f4228 R14: 0000000000000000 R15: ffff99b1c8b66000
-[  129.220555] FS:  00007f306d63b740(0000) GS:ffff99b4cfcc0000(0000)
-knlGS:0000000000000000
-[  129.220557] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  129.220558] CR2: 00007f306cd5bfb8 CR3: 000000011169a002 CR4: 00000000000706e0
-[  129.220561] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  129.220562] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  129.220563] Call Trace:
-[  129.220568]  rxe_do_task+0xa7/0xf0 [rdma_rxe]
-[  129.220574]  rxe_run_task+0x2a/0x40 [rdma_rxe]
-[  129.220578]  rxe_comp_queue_pkt+0x48/0x50 [rdma_rxe]
-[  129.220582]  rxe_rcv+0x339/0x8e0 [rdma_rxe]
-[  129.220586]  ? prepare_ack_packet+0x1b6/0x250 [rdma_rxe]
-[  129.220590]  rxe_loopback+0x53/0x80 [rdma_rxe]
-[  129.220595]  send_ack+0xac/0x170 [rdma_rxe]
-[  129.220599]  rxe_responder+0x15bf/0x2220 [rdma_rxe]
-[  129.220678]  rxe_do_task+0xa7/0xf0 [rdma_rxe]
-[  129.220685]  rxe_run_task+0x2a/0x40 [rdma_rxe]
-[  129.220689]  rxe_resp_queue_pkt+0x44/0x50 [rdma_rxe]
-[  129.220693]  rxe_rcv+0x286/0x8e0 [rdma_rxe]
-[  129.220697]  ? copy_data+0xc4/0x2a0 [rdma_rxe]
-[  129.220701]  rxe_loopback+0x53/0x80 [rdma_rxe]
-[  129.220705]  rxe_requester+0x6ec/0x10a0 [rdma_rxe]
-[  129.220709]  ? _raw_spin_unlock_irqrestore+0xe/0x30
-[  129.220739]  rxe_do_task+0xa7/0xf0 [rdma_rxe]
-[  129.220744]  rxe_run_task+0x2a/0x40 [rdma_rxe]
-[  129.220747]  rxe_post_send+0x320/0x530 [rdma_rxe]
-[  129.220752]  ? lookup_get_idr_uobject+0x19/0x30 [ib_uverbs]
-[  129.220761]  ? rdma_lookup_get_uobject+0x47/0x180 [ib_uverbs]
-[  129.220767]  ib_uverbs_post_send+0x64d/0x6e0 [ib_uverbs]
-[  129.220773]  ? __wake_up+0x13/0x20
-[  129.220779]  ib_uverbs_write+0x44f/0x580 [ib_uverbs]
-[  129.220785]  vfs_write+0xb9/0x250
-[  129.220790]  ksys_write+0xb1/0xe0
-[  129.220792]  __x64_sys_write+0x1a/0x20
-[  129.220794]  do_syscall_64+0x38/0x90
-[  129.220799]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  129.220801] RIP: 0033:0x7f306d9062cf
-[  129.220803] Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 29 fd
-ff ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00
-00 0f 05 <48> 3d 00 f0 ff ff 77 2d 44 89 c7 48 89 44 24 08 e8 5c fd ff
-ff 48
-[  129.220805] RSP: 002b:00007fff81960ae0 EFLAGS: 00000293 ORIG_RAX:
-0000000000000001
-[  129.220807] RAX: ffffffffffffffda RBX: 00007f306cd5d180 RCX: 00007f306d9062cf
-[  129.220808] RDX: 0000000000000020 RSI: 00007fff81960b40 RDI: 0000000000000004
-[  129.220809] RBP: 0000000000000010 R08: 0000000000000000 R09: 0000000000000027
-[  129.220810] R10: 00000000ffffffff R11: 0000000000000293 R12: 0000000000000001
-[  129.220811] R13: 000055cfe2fb64a0 R14: 0000000000000000 R15: 0000000000000000
-[  129.220813] ---[ end trace e6143931678defa3 ]---
-"
+
 >         rxe_drop_ref(qp);
 >         return 0;
 >  }
