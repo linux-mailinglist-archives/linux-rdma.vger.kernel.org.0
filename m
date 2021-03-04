@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75FE32CEDB
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Mar 2021 09:53:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D42432CEE2
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Mar 2021 09:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236847AbhCDIwq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Mar 2021 03:52:46 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:13856 "EHLO
+        id S236861AbhCDIxS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Mar 2021 03:53:18 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:13858 "EHLO
         szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236845AbhCDIwX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Mar 2021 03:52:23 -0500
+        with ESMTP id S236900AbhCDIxE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 4 Mar 2021 03:53:04 -0500
 Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Drl1L3H2Jz7ssV;
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Drl1L3spyz7t3c;
         Thu,  4 Mar 2021 16:49:58 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 4 Mar 2021 16:51:35 +0800
+ 14.3.498.0; Thu, 4 Mar 2021 16:51:36 +0800
 From:   Weihang Li <liweihang@huawei.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@openeuler.org>
-Subject: [PATCH RFC v2 rdma-core 4/6] libhns: Add support for attaching QP's WQE buffer
-Date:   Thu, 4 Mar 2021 16:49:17 +0800
-Message-ID: <1614847759-33139-5-git-send-email-liweihang@huawei.com>
+Subject: [PATCH RFC v2 rdma-core 5/6] libhns: Add direct verb to support config DCA memory pool
+Date:   Thu, 4 Mar 2021 16:49:18 +0800
+Message-ID: <1614847759-33139-6-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1614847759-33139-1-git-send-email-liweihang@huawei.com>
 References: <1614847759-33139-1-git-send-email-liweihang@huawei.com>
@@ -36,560 +36,503 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Xi Wang <wangxi11@huawei.com>
 
-If a uQP works in DCA mode, the WQE's buffer will be split as many blocks
-and be stored into a list. The blocks are allocated from the DCA's memory
-pool before posting WRs and are dropped when the QP's CI is equal to PI
-after polling CQ.
+Add a direct verb 'hnsdv_open_device' to config DCA memory pool, and append
+'IBV_QP_CREATE_DYNAMIC_CONTEXT_ATTACH' for creating a DCA QP.
 
 Signed-off-by: Xi Wang <wangxi11@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- providers/hns/hns_roce_u.h       |  24 +++++-
- providers/hns/hns_roce_u_buf.c   | 156 ++++++++++++++++++++++++++++++++++++++-
- providers/hns/hns_roce_u_hw_v2.c | 131 +++++++++++++++++++++++++++++---
- providers/hns/hns_roce_u_hw_v2.h |   7 ++
- providers/hns/hns_roce_u_verbs.c |  32 ++++++--
- 5 files changed, 332 insertions(+), 18 deletions(-)
+ debian/ibverbs-providers.install           |  1 +
+ debian/ibverbs-providers.lintian-overrides |  4 +-
+ debian/ibverbs-providers.symbols           |  5 +++
+ debian/libibverbs-dev.install              |  4 ++
+ libibverbs/cmd_qp.c                        |  3 +-
+ libibverbs/verbs.h                         |  1 +
+ providers/hns/CMakeLists.txt               |  9 +++-
+ providers/hns/hns_roce_u.c                 | 71 ++++++++++++++++++++++++++----
+ providers/hns/hns_roce_u.h                 |  4 +-
+ providers/hns/hns_roce_u_abi.h             |  1 +
+ providers/hns/hns_roce_u_verbs.c           | 18 ++++++--
+ providers/hns/hnsdv.h                      | 44 ++++++++++++++++++
+ providers/hns/libhns.map                   |  8 ++++
+ redhat/rdma-core.spec                      |  3 ++
+ suse/rdma-core.spec                        | 19 ++++++++
+ 15 files changed, 178 insertions(+), 17 deletions(-)
+ create mode 100644 providers/hns/hnsdv.h
+ create mode 100644 providers/hns/libhns.map
 
-diff --git a/providers/hns/hns_roce_u.h b/providers/hns/hns_roce_u.h
-index 7dc4a1e..ae72709 100644
---- a/providers/hns/hns_roce_u.h
-+++ b/providers/hns/hns_roce_u.h
-@@ -119,6 +119,12 @@ struct hns_roce_device {
- 	int				hw_version;
+diff --git a/debian/ibverbs-providers.install b/debian/ibverbs-providers.install
+index 4f971fb..c6ecbbc 100644
+--- a/debian/ibverbs-providers.install
++++ b/debian/ibverbs-providers.install
+@@ -1,5 +1,6 @@
+ etc/libibverbs.d/
+ usr/lib/*/libefa.so.*
+ usr/lib/*/libibverbs/lib*-rdmav*.so
++usr/lib/*/libhns.so.*
+ usr/lib/*/libmlx4.so.*
+ usr/lib/*/libmlx5.so.*
+diff --git a/debian/ibverbs-providers.lintian-overrides b/debian/ibverbs-providers.lintian-overrides
+index 8a44d54..f6afb70 100644
+--- a/debian/ibverbs-providers.lintian-overrides
++++ b/debian/ibverbs-providers.lintian-overrides
+@@ -1,2 +1,2 @@
+-# libefa, libmlx4 and libmlx5 are ibverbs provider that provides more functions.
+-ibverbs-providers: package-name-doesnt-match-sonames libefa1 libmlx4-1 libmlx5-1
++# libefa, libhns, libmlx4 and libmlx5 are ibverbs provider that provides more functions.
++ibverbs-providers: package-name-doesnt-match-sonames libefa1 libhns-1 libmlx4-1 libmlx5-1
+diff --git a/debian/ibverbs-providers.symbols b/debian/ibverbs-providers.symbols
+index b79bc34..daa5b32 100644
+--- a/debian/ibverbs-providers.symbols
++++ b/debian/ibverbs-providers.symbols
+@@ -132,3 +132,8 @@ libefa.so.1 ibverbs-providers #MINVER#
+  efadv_create_qp_ex@EFA_1.1 26
+  efadv_query_device@EFA_1.1 26
+  efadv_query_ah@EFA_1.1 26
++libhns.so.1 ibverbs-providers #MINVER#
++* Build-Depends-Package: libibverbs-dev
++ HNS_1.0@HNS_1.0 34
++ hnsdv_is_supported@HNS_1.0 34
++ hnsdv_open_device@HNS_1.0 34
+diff --git a/debian/libibverbs-dev.install b/debian/libibverbs-dev.install
+index bc8caa5..7d6e6a2 100644
+--- a/debian/libibverbs-dev.install
++++ b/debian/libibverbs-dev.install
+@@ -1,5 +1,6 @@
+ usr/include/infiniband/arch.h
+ usr/include/infiniband/efadv.h
++usr/include/infiniband/hnsdv.h
+ usr/include/infiniband/ib_user_ioctl_verbs.h
+ usr/include/infiniband/mlx4dv.h
+ usr/include/infiniband/mlx5_api.h
+@@ -14,6 +15,8 @@ usr/include/infiniband/verbs_api.h
+ usr/lib/*/lib*-rdmav*.a
+ usr/lib/*/libefa.a
+ usr/lib/*/libefa.so
++usr/lib/*/libhns.a
++usr/lib/*/libhns.so
+ usr/lib/*/libibverbs*.so
+ usr/lib/*/libibverbs.a
+ usr/lib/*/libmlx4.a
+@@ -21,6 +24,7 @@ usr/lib/*/libmlx4.so
+ usr/lib/*/libmlx5.a
+ usr/lib/*/libmlx5.so
+ usr/lib/*/pkgconfig/libefa.pc
++usr/lib/*/pkgconfig/libhns.pc
+ usr/lib/*/pkgconfig/libibverbs.pc
+ usr/lib/*/pkgconfig/libmlx4.pc
+ usr/lib/*/pkgconfig/libmlx5.pc
+diff --git a/libibverbs/cmd_qp.c b/libibverbs/cmd_qp.c
+index 056f397..f9899ad 100644
+--- a/libibverbs/cmd_qp.c
++++ b/libibverbs/cmd_qp.c
+@@ -38,7 +38,8 @@ enum {
+ 					IBV_QP_CREATE_SCATTER_FCS |
+ 					IBV_QP_CREATE_CVLAN_STRIPPING |
+ 					IBV_QP_CREATE_SOURCE_QPN |
+-					IBV_QP_CREATE_PCI_WRITE_END_PADDING
++					IBV_QP_CREATE_PCI_WRITE_END_PADDING |
++					IBV_QP_CREATE_DYNAMIC_CONTEXT_ATTACH
  };
  
-+struct hns_roce_buf_list {
-+	void **bufs;
-+	unsigned int max_cnt;
-+	unsigned int shift;
-+};
-+
- struct hns_roce_buf {
- 	void				*buf;
- 	unsigned int			length;
-@@ -268,9 +274,20 @@ struct hns_roce_rinl_buf {
- 	unsigned int			wqe_cnt;
+ 
+diff --git a/libibverbs/verbs.h b/libibverbs/verbs.h
+index 656b0f9..db37dce 100644
+--- a/libibverbs/verbs.h
++++ b/libibverbs/verbs.h
+@@ -918,6 +918,7 @@ enum ibv_qp_create_flags {
+ 	IBV_QP_CREATE_CVLAN_STRIPPING		= 1 << 9,
+ 	IBV_QP_CREATE_SOURCE_QPN		= 1 << 10,
+ 	IBV_QP_CREATE_PCI_WRITE_END_PADDING	= 1 << 11,
++	IBV_QP_CREATE_DYNAMIC_CONTEXT_ATTACH	= 1 << 13,
  };
  
-+struct hns_roce_dca_attach_attr {
-+	uint32_t sq_offset;
-+	uint32_t sge_offset;
-+	uint32_t rq_offset;
-+};
+ enum ibv_qp_create_send_ops_flags {
+diff --git a/providers/hns/CMakeLists.txt b/providers/hns/CMakeLists.txt
+index 697dbd7..6e602f6 100644
+--- a/providers/hns/CMakeLists.txt
++++ b/providers/hns/CMakeLists.txt
+@@ -1,4 +1,5 @@
+-rdma_provider(hns
++rdma_shared_provider(hns libhns.map
++  1 1.0.${PACKAGE_VERSION}
+   hns_roce_u.c
+   hns_roce_u_buf.c
+   hns_roce_u_db.c
+@@ -6,3 +7,9 @@ rdma_provider(hns
+   hns_roce_u_hw_v2.c
+   hns_roce_u_verbs.c
+ )
 +
-+struct hns_roce_dca_detach_attr {
-+	uint32_t sq_index;
-+};
++publish_headers(infiniband
++	hnsdv.h
++)
 +
- struct hns_roce_qp {
- 	struct verbs_qp			verbs_qp;
- 	struct hns_roce_buf		buf;
-+	struct hns_roce_buf_list	page_list;
- 	int				max_inline_data;
- 	int				buf_size;
- 	unsigned int			sq_signal_bits;
-@@ -316,6 +333,7 @@ struct hns_roce_u_hw {
-  * minimum page size.
-  */
- #define hr_hw_page_align(x) align(x, HNS_HW_PAGE_SIZE)
-+#define hr_hw_page_count(x) (hr_hw_page_align(x) / HNS_HW_PAGE_SIZE)
++rdma_pkg_config("hns" "libibverbs" "${CMAKE_THREAD_LIBS_INIT}")
+diff --git a/providers/hns/hns_roce_u.c b/providers/hns/hns_roce_u.c
+index 28b1130..58edb17 100644
+--- a/providers/hns/hns_roce_u.c
++++ b/providers/hns/hns_roce_u.c
+@@ -89,22 +89,69 @@ static const struct verbs_context_ops hns_common_ops = {
+ 	.destroy_ah = hns_roce_u_destroy_ah,
+ };
  
- static inline unsigned int to_hr_hem_entries_size(int count, int buf_shift)
- {
-@@ -411,9 +429,13 @@ void hns_roce_free_buf(struct hns_roce_buf *buf);
- 
- void hns_roce_free_qp_buf(struct hns_roce_qp *qp, struct hns_roce_context *ctx);
- 
-+int hns_roce_attach_dca_mem(struct hns_roce_context *ctx, uint32_t handle,
-+			    struct hns_roce_dca_attach_attr *attr,
-+			    uint32_t size, struct hns_roce_buf_list *buf_list);
-+void hns_roce_detach_dca_mem(struct hns_roce_context *ctx, uint32_t handle,
-+			     struct hns_roce_dca_detach_attr *attr);
- void hns_roce_shrink_dca_mem(struct hns_roce_context *ctx);
- void hns_roce_cleanup_dca_mem(struct hns_roce_context *ctx);
--int hns_roce_add_dca_mem(struct hns_roce_context *ctx, uint32_t size);
- 
- void hns_roce_init_qp_indices(struct hns_roce_qp *qp);
- 
-diff --git a/providers/hns/hns_roce_u_buf.c b/providers/hns/hns_roce_u_buf.c
-index 4970eac..d3e90d2 100644
---- a/providers/hns/hns_roce_u_buf.c
-+++ b/providers/hns/hns_roce_u_buf.c
-@@ -180,6 +180,66 @@ static int shrink_dca_mem(struct hns_roce_context *ctx, uint32_t handle,
- 
- 	return execute_ioctl(&ctx->ibv_ctx.context, cmd);
- }
-+
-+struct hns_dca_mem_query_resp {
-+	uint64_t key;
-+	uint32_t offset;
-+	uint32_t page_count;
-+};
-+
-+static int query_dca_mem(struct hns_roce_context *ctx, uint32_t handle,
-+			 uint32_t index, struct hns_dca_mem_query_resp *resp)
+-static int init_dca_context(struct hns_roce_context *ctx, int page_size)
++bool hnsdv_is_supported(struct ibv_device *device)
 +{
-+	DECLARE_COMMAND_BUFFER(cmd, HNS_IB_OBJECT_DCA_MEM,
-+			       HNS_IB_METHOD_DCA_MEM_QUERY, 5);
-+	fill_attr_in_obj(cmd, HNS_IB_ATTR_DCA_MEM_QUERY_HANDLE, handle);
-+	fill_attr_in_uint32(cmd, HNS_IB_ATTR_DCA_MEM_QUERY_PAGE_INDEX, index);
-+	fill_attr_out(cmd, HNS_IB_ATTR_DCA_MEM_QUERY_OUT_KEY,
-+		      &resp->key, sizeof(resp->key));
-+	fill_attr_out(cmd, HNS_IB_ATTR_DCA_MEM_QUERY_OUT_OFFSET,
-+		      &resp->offset, sizeof(resp->offset));
-+	fill_attr_out(cmd, HNS_IB_ATTR_DCA_MEM_QUERY_OUT_PAGE_COUNT,
-+		      &resp->page_count, sizeof(resp->page_count));
-+	return execute_ioctl(&ctx->ibv_ctx.context, cmd);
++	return is_hns_dev(device);
 +}
 +
-+static int detach_dca_mem(struct hns_roce_context *ctx, uint32_t handle,
-+			  struct hns_roce_dca_detach_attr *attr)
++struct ibv_context *hnsdv_open_device(struct ibv_device *device,
++				      struct hnsdv_context_attr *attr)
 +{
-+	DECLARE_COMMAND_BUFFER(cmd, HNS_IB_OBJECT_DCA_MEM,
-+			       HNS_IB_METHOD_DCA_MEM_DETACH, 4);
-+	fill_attr_in_obj(cmd, HNS_IB_ATTR_DCA_MEM_DETACH_HANDLE, handle);
-+	fill_attr_in_uint32(cmd, HNS_IB_ATTR_DCA_MEM_DETACH_SQ_INDEX,
-+			    attr->sq_index);
-+	return execute_ioctl(&ctx->ibv_ctx.context, cmd);
++	if (!is_hns_dev(device)) {
++		errno = EOPNOTSUPP;
++		return NULL;
++	}
++
++	return verbs_open_device(device, attr);
 +}
 +
-+struct hns_dca_mem_attach_resp {
-+#define HNS_DCA_ATTACH_OUT_FLAGS_NEW_BUFFER BIT(0)
-+	uint32_t alloc_flags;
-+	uint32_t alloc_pages;
-+};
-+
-+static int attach_dca_mem(struct hns_roce_context *ctx, uint32_t handle,
-+			  struct hns_roce_dca_attach_attr *attr,
-+			  struct hns_dca_mem_attach_resp *resp)
++static void set_dca_pool_param(struct hnsdv_context_attr *attr, int page_size,
++			       struct hns_roce_dca_ctx *ctx)
 +{
-+	DECLARE_COMMAND_BUFFER(cmd, HNS_IB_OBJECT_DCA_MEM,
-+			       HNS_IB_METHOD_DCA_MEM_ATTACH, 6);
-+	fill_attr_in_obj(cmd, HNS_IB_ATTR_DCA_MEM_ATTACH_HANDLE, handle);
-+	fill_attr_in_uint32(cmd, HNS_IB_ATTR_DCA_MEM_ATTACH_SQ_OFFSET,
-+			    attr->sq_offset);
-+	fill_attr_in_uint32(cmd, HNS_IB_ATTR_DCA_MEM_ATTACH_SGE_OFFSET,
-+			    attr->sge_offset);
-+	fill_attr_in_uint32(cmd, HNS_IB_ATTR_DCA_MEM_ATTACH_RQ_OFFSET,
-+			    attr->rq_offset);
-+	fill_attr_out(cmd, HNS_IB_ATTR_DCA_MEM_ATTACH_OUT_ALLOC_FLAGS,
-+		      &resp->alloc_flags, sizeof(resp->alloc_flags));
-+	fill_attr_out(cmd, HNS_IB_ATTR_DCA_MEM_ATTACH_OUT_ALLOC_PAGES,
-+		      &resp->alloc_pages, sizeof(resp->alloc_pages));
-+	return execute_ioctl(&ctx->ibv_ctx.context, cmd);
++	if (attr->comp_mask & HNSDV_CONTEXT_MASK_DCA_UNIT_SIZE)
++		ctx->unit_size = align(attr->dca_unit_size, page_size);
++	else
++		ctx->unit_size = page_size * HNS_DCA_DEFAULT_UNIT_PAGES;
++
++	/* The memory pool cannot be expanded, only init the DCA context. */
++	if (ctx->unit_size == 0)
++		return;
++
++	/* If not set, the memory pool can be expanded unlimitedly. */
++	if (attr->comp_mask & HNSDV_CONTEXT_MASK_DCA_MAX_SIZE)
++		ctx->max_size = DIV_ROUND_UP(attr->dca_max_size,
++					     ctx->unit_size);
++	else
++		ctx->max_size = HNS_DCA_MAX_MEM_SIZE;
++
++	/* If not set, the memory pool cannot be shrunk. */
++	if (attr->comp_mask & HNSDV_CONTEXT_MASK_DCA_MIN_SIZE)
++		ctx->min_size = DIV_ROUND_UP(attr->dca_min_size,
++					     ctx->unit_size);
++	else
++		ctx->min_size = HNS_DCA_MAX_MEM_SIZE;
 +}
 +
- static bool add_dca_mem_enabled(struct hns_roce_dca_ctx *ctx,
- 				uint32_t alloc_size)
- {
-@@ -199,7 +259,7 @@ static bool add_dca_mem_enabled(struct hns_roce_dca_ctx *ctx,
- 	return enable;
- }
- 
--int hns_roce_add_dca_mem(struct hns_roce_context *ctx, uint32_t size)
-+static int add_dca_mem(struct hns_roce_context *ctx, uint32_t size)
++static int init_dca_context(struct hns_roce_context *ctx, int page_size,
++			    struct hnsdv_context_attr *attr)
  {
  	struct hns_roce_dca_ctx *dca_ctx = &ctx->dca_ctx;
- 	struct hns_roce_dca_mem *mem;
-@@ -293,3 +353,97 @@ void hns_roce_shrink_dca_mem(struct hns_roce_context *ctx)
- 		dca_mem_cnt--;
- 	}
- }
-+
-+static void config_page_list(void *addr, struct hns_roce_buf_list *page_list,
-+			     uint32_t page_index, int page_count)
-+{
-+	void **bufs = &page_list->bufs[page_index];
-+	int page_size = 1 << page_list->shift;
-+	int i;
-+
-+	for (i = 0; i < page_count; i++) {
-+		bufs[i] = addr;
-+		addr += page_size;
-+	}
-+}
-+
-+static int setup_dca_buf_list(struct hns_roce_context *ctx, uint32_t handle,
-+			      struct hns_roce_buf_list *buf_list,
-+			      uint32_t page_count)
-+{
-+	struct hns_roce_dca_ctx *dca_ctx = &ctx->dca_ctx;
-+	struct hns_dca_mem_query_resp resp = {};
-+	struct hns_roce_dca_mem *mem;
-+	uint32_t idx = 0;
-+	int ret;
-+
-+	while (idx < page_count && idx < buf_list->max_cnt) {
-+		resp.page_count = 0;
-+		ret = query_dca_mem(ctx, handle, idx, &resp);
-+		if (ret)
-+			return -ENOMEM;
-+
-+		if (resp.page_count < 1)
-+			break;
-+
-+		pthread_spin_lock(&dca_ctx->lock);
-+		mem = key_to_dca_mem(dca_ctx, resp.key);
-+		if (mem && resp.offset < mem->buf.length) {
-+			config_page_list(dca_mem_addr(mem, resp.offset),
-+					 buf_list, idx, resp.page_count);
-+		} else {
-+			pthread_spin_unlock(&dca_ctx->lock);
-+			break;
-+		}
-+
-+		pthread_spin_unlock(&dca_ctx->lock);
-+
-+		idx += resp.page_count;
-+	}
-+
-+	return (idx >= page_count) ? 0 : ENOMEM;
-+}
-+
-+#define DCA_EXPAND_MEM_TRY_TIMES 3
-+int hns_roce_attach_dca_mem(struct hns_roce_context *ctx, uint32_t handle,
-+			    struct hns_roce_dca_attach_attr *attr,
-+			    uint32_t size, struct hns_roce_buf_list *buf_list)
-+{
-+	uint32_t buf_pages = size >> buf_list->shift;
-+	struct hns_dca_mem_attach_resp resp = {};
-+	bool is_new_buf = true;
-+	int try_times = 0;
-+	int ret;
-+
-+	do {
-+		resp.alloc_pages = 0;
-+		ret = attach_dca_mem(ctx, handle, attr, &resp);
-+		if (ret)
-+			break;
-+
-+		if (resp.alloc_pages >= buf_pages) {
-+			is_new_buf = !!(resp.alloc_flags &
-+				     HNS_DCA_ATTACH_OUT_FLAGS_NEW_BUFFER);
-+			break;
-+		}
-+
-+		ret = add_dca_mem(ctx, size);
-+		if (ret)
-+			break;
-+	} while (try_times++ < DCA_EXPAND_MEM_TRY_TIMES);
-+
-+	if (ret || resp.alloc_pages < buf_pages)
-+		return -ENOMEM;
-+
-+	/* DCA config not changed */
-+	if (!is_new_buf && buf_list->bufs[0])
-+		return 0;
-+
-+	return setup_dca_buf_list(ctx, handle, buf_list, buf_pages);
-+}
-+
-+void hns_roce_detach_dca_mem(struct hns_roce_context *ctx, uint32_t handle,
-+			     struct hns_roce_dca_detach_attr *attr)
-+{
-+	detach_dca_mem(ctx, handle, attr);
-+}
-diff --git a/providers/hns/hns_roce_u_hw_v2.c b/providers/hns/hns_roce_u_hw_v2.c
-index 93f3546..fb065d1 100644
---- a/providers/hns/hns_roce_u_hw_v2.c
-+++ b/providers/hns/hns_roce_u_hw_v2.c
-@@ -230,19 +230,28 @@ static struct hns_roce_v2_cqe *next_cqe_sw_v2(struct hns_roce_cq *cq)
- 	return get_sw_cqe_v2(cq, cq->cons_index);
- }
+ 	int ret;
  
-+static inline void *get_wqe(struct hns_roce_qp *qp, unsigned int offset)
-+{
-+	if (qp->page_list.bufs)
-+		return qp->page_list.bufs[offset >> qp->page_list.shift] +
-+			(offset & ((1 << qp->page_list.shift) - 1));
-+	else
-+		return qp->buf.buf + offset;
-+}
-+
- static void *get_recv_wqe_v2(struct hns_roce_qp *qp, unsigned int n)
- {
--	return qp->buf.buf + qp->rq.offset + (n << qp->rq.wqe_shift);
-+	return get_wqe(qp, qp->rq.offset + (n << qp->rq.wqe_shift));
- }
- 
- static void *get_send_wqe(struct hns_roce_qp *qp, unsigned int n)
- {
--	return qp->buf.buf + qp->sq.offset + (n << qp->sq.wqe_shift);
-+	return get_wqe(qp, qp->sq.offset + (n << qp->sq.wqe_shift));
- }
- 
- static void *get_send_sge_ex(struct hns_roce_qp *qp, unsigned int n)
- {
--	return qp->buf.buf + qp->ex_sge.offset + (n << qp->ex_sge.sge_shift);
-+	return get_wqe(qp, qp->ex_sge.offset + (n << qp->ex_sge.sge_shift));
- }
- 
- static void *get_srq_wqe(struct hns_roce_srq *srq, int n)
-@@ -507,6 +516,62 @@ static int hns_roce_handle_recv_inl_wqe(struct hns_roce_v2_cqe *cqe,
- 	return V2_CQ_OK;
- }
- 
-+static inline bool check_qp_dca_enable(struct hns_roce_qp *qp)
-+{
-+	return !!qp->page_list.bufs && (qp->flags & HNS_ROCE_QP_CAP_DCA);
-+}
-+
-+static int dca_attach_qp_buf(struct hns_roce_context *ctx,
-+			     struct hns_roce_qp *qp)
-+{
-+	struct hns_roce_dca_attach_attr attr = {};
-+	uint32_t idx;
-+
-+	pthread_spin_lock(&qp->sq.lock);
-+	pthread_spin_lock(&qp->rq.lock);
-+
-+	if (qp->sq.wqe_cnt > 0) {
-+		idx = qp->sq.head & (qp->sq.wqe_cnt - 1);
-+		attr.sq_offset = idx << qp->sq.wqe_shift;
-+	}
-+
-+	if (qp->ex_sge.sge_cnt > 0) {
-+		idx = qp->next_sge & (qp->ex_sge.sge_cnt - 1);
-+		attr.sge_offset = idx << qp->ex_sge.sge_shift;
-+	}
-+
-+	if (qp->rq.wqe_cnt > 0) {
-+		idx = qp->rq.head & (qp->rq.wqe_cnt - 1);
-+		attr.rq_offset = idx << qp->rq.wqe_shift;
-+	}
-+
-+	pthread_spin_unlock(&qp->rq.lock);
-+	pthread_spin_unlock(&qp->sq.lock);
-+
-+	return hns_roce_attach_dca_mem(ctx, qp->verbs_qp.qp.handle, &attr,
-+				       qp->buf_size, &qp->page_list);
-+}
-+
-+static void dca_detach_qp_buf(struct hns_roce_context *ctx,
-+			      struct hns_roce_qp *qp)
-+{
-+	struct hns_roce_dca_detach_attr attr;
-+	bool is_empty;
-+
-+	pthread_spin_lock(&qp->sq.lock);
-+	pthread_spin_lock(&qp->rq.lock);
-+
-+	is_empty = qp->sq.head == qp->sq.tail && qp->rq.head == qp->rq.tail;
-+	if (is_empty && qp->sq.wqe_cnt > 0)
-+		attr.sq_index = qp->sq.head & (qp->sq.wqe_cnt - 1);
-+
-+	pthread_spin_unlock(&qp->rq.lock);
-+	pthread_spin_unlock(&qp->sq.lock);
-+
-+	if (is_empty)
-+		hns_roce_detach_dca_mem(ctx, qp->verbs_qp.qp.handle, &attr);
-+}
-+
- static int hns_roce_v2_poll_one(struct hns_roce_cq *cq,
- 				struct hns_roce_qp **cur_qp, struct ibv_wc *wc)
- {
-@@ -636,6 +701,9 @@ static int hns_roce_u_v2_poll_cq(struct ibv_cq *ibvcq, int ne,
- 
- 	for (npolled = 0; npolled < ne; ++npolled) {
- 		err = hns_roce_v2_poll_one(cq, &qp, wc + npolled);
-+		if (qp && check_qp_dca_enable(qp))
-+			dca_detach_qp_buf(ctx, qp);
-+
- 		if (err != V2_CQ_OK)
- 			break;
- 	}
-@@ -1003,6 +1071,16 @@ static int set_rc_inl(struct hns_roce_qp *qp, const struct ibv_send_wr *wr,
- 	return 0;
- }
- 
-+static inline void fill_rc_dca_fields(uint32_t qp_num,
-+				      struct hns_roce_rc_sq_wqe *wqe)
-+{
-+	roce_set_field(wqe->byte_4, RC_SQ_WQE_BYTE_4_SQPN_L_M,
-+		       RC_SQ_WQE_BYTE_4_SQPN_L_S, qp_num);
-+	roce_set_field(wqe->byte_4, RC_SQ_WQE_BYTE_4_SQPN_H_M,
-+		       RC_SQ_WQE_BYTE_4_SQPN_H_S,
-+		       qp_num >> RC_SQ_WQE_BYTE_4_SQPN_L_W);
-+}
-+
- static void set_bind_mw_seg(struct hns_roce_rc_sq_wqe *wqe,
- 			    const struct ibv_send_wr *wr)
- {
-@@ -1120,6 +1198,9 @@ static int set_rc_wqe(void *wqe, struct hns_roce_qp *qp, struct ibv_send_wr *wr,
- 		return ret;
- 
- wqe_valid:
-+	if (check_qp_dca_enable(qp))
-+		fill_rc_dca_fields(qp->verbs_qp.qp.qp_num, rc_sq_wqe);
-+
- 	/*
- 	 * The pipeline can sequentially post all valid WQEs into WQ buffer,
- 	 * including new WQEs waiting for the doorbell to update the PI again.
-@@ -1135,6 +1216,21 @@ wqe_valid:
- 	return 0;
- }
- 
-+static int check_qp_send(struct hns_roce_qp *qp, struct hns_roce_context *ctx)
-+{
-+	struct ibv_qp *ibvqp = &qp->verbs_qp.qp;
-+
-+	/* check that state is OK to post receive */
-+	if (ibvqp->state == IBV_QPS_RESET || ibvqp->state == IBV_QPS_INIT ||
-+	    ibvqp->state == IBV_QPS_RTR)
-+		return -EINVAL;
-+
-+	if (check_qp_dca_enable(qp))
-+		return dca_attach_qp_buf(ctx, qp);
-+
-+	return 0;
-+}
-+
- int hns_roce_u_v2_post_send(struct ibv_qp *ibvqp, struct ibv_send_wr *wr,
- 			    struct ibv_send_wr **bad_wr)
- {
-@@ -1143,14 +1239,14 @@ int hns_roce_u_v2_post_send(struct ibv_qp *ibvqp, struct ibv_send_wr *wr,
- 	struct hns_roce_sge_info sge_info = {};
- 	unsigned int wqe_idx, nreq;
- 	struct ibv_qp_attr attr;
--	int ret = 0;
- 	void *wqe;
-+	int ret;
- 
- 	/* check that state is OK to post send */
--	if (ibvqp->state == IBV_QPS_RESET || ibvqp->state == IBV_QPS_INIT ||
--	    ibvqp->state == IBV_QPS_RTR) {
-+	ret = check_qp_send(qp, ctx);
-+	if (unlikely(ret)) {
- 		*bad_wr = wr;
--		return EINVAL;
-+		return ret;
- 	}
- 
- 	pthread_spin_lock(&qp->sq.lock);
-@@ -1216,6 +1312,20 @@ out:
- 	return ret;
- }
- 
-+static int check_qp_recv(struct hns_roce_qp *qp, struct hns_roce_context *ctx)
-+{
-+	struct ibv_qp *ibvqp = &qp->verbs_qp.qp;
-+
-+	/* check that state is OK to post receive */
-+	if (ibvqp->state == IBV_QPS_RESET)
-+		return -EINVAL;
-+
-+	if (check_qp_dca_enable(qp))
-+		return dca_attach_qp_buf(ctx, qp);
-+
-+	return 0;
-+}
-+
- static void fill_rq_wqe(struct hns_roce_qp *qp, struct ibv_recv_wr *wr,
- 			unsigned int wqe_idx)
- {
-@@ -1253,12 +1363,13 @@ static int hns_roce_u_v2_post_recv(struct ibv_qp *ibvqp, struct ibv_recv_wr *wr,
- 	struct hns_roce_qp *qp = to_hr_qp(ibvqp);
- 	unsigned int wqe_idx, nreq;
- 	struct ibv_qp_attr attr;
--	int ret = 0;
-+	int ret;
- 
- 	/* check that state is OK to post receive */
--	if (ibvqp->state == IBV_QPS_RESET) {
-+	ret = check_qp_recv(qp, ctx);
-+	if (ret) {
- 		*bad_wr = wr;
--		return EINVAL;
-+		return ret;
- 	}
- 
- 	pthread_spin_lock(&qp->rq.lock);
-diff --git a/providers/hns/hns_roce_u_hw_v2.h b/providers/hns/hns_roce_u_hw_v2.h
-index f5e6402..00716c6 100644
---- a/providers/hns/hns_roce_u_hw_v2.h
-+++ b/providers/hns/hns_roce_u_hw_v2.h
-@@ -250,6 +250,13 @@ struct hns_roce_rc_sq_wqe {
- 
- #define RC_SQ_WQE_BYTE_4_RDMA_WRITE_S 22
- 
-+#define RC_SQ_WQE_BYTE_4_SQPN_L_W 2
-+#define RC_SQ_WQE_BYTE_4_SQPN_L_S 5
-+#define RC_SQ_WQE_BYTE_4_SQPN_L_M GENMASK(5, 2)
-+
-+#define RC_SQ_WQE_BYTE_4_SQPN_H_S 13
-+#define RC_SQ_WQE_BYTE_4_SQPN_H_M GENMASK(18, 13)
-+
- #define RC_SQ_WQE_BYTE_16_XRC_SRQN_S 0
- #define RC_SQ_WQE_BYTE_16_XRC_SRQN_M \
- 	(((1UL << 24) - 1) << RC_SQ_WQE_BYTE_16_XRC_SRQN_S)
-diff --git a/providers/hns/hns_roce_u_verbs.c b/providers/hns/hns_roce_u_verbs.c
-index f3d6fc1..6ec8b12 100644
---- a/providers/hns/hns_roce_u_verbs.c
-+++ b/providers/hns/hns_roce_u_verbs.c
-@@ -688,6 +688,14 @@ static int calc_qp_buff_size(struct hns_roce_device *hr_dev,
- 	return 0;
- }
- 
-+static inline bool check_qp_support_dca(bool pool_en, enum ibv_qp_type qp_type)
-+{
-+	if (pool_en && (qp_type == IBV_QPT_RC || qp_type == IBV_QPT_XRC_SEND))
-+		return true;
-+
-+	return false;
-+}
-+
- static void qp_free_wqe(struct hns_roce_qp *qp)
- {
- 	qp_free_recv_inl_buf(qp);
-@@ -699,8 +707,8 @@ static void qp_free_wqe(struct hns_roce_qp *qp)
- 	hns_roce_free_buf(&qp->buf);
- }
- 
--static int qp_alloc_wqe(struct ibv_qp_cap *cap, struct hns_roce_qp *qp,
--			struct hns_roce_context *ctx)
-+static int qp_alloc_wqe(struct ibv_qp_init_attr_ex *attr,
-+			struct hns_roce_qp *qp, struct hns_roce_context *ctx)
- {
- 	struct hns_roce_device *hr_dev = to_hr_dev(ctx->ibv_ctx.context.device);
- 
-@@ -718,12 +726,24 @@ static int qp_alloc_wqe(struct ibv_qp_cap *cap, struct hns_roce_qp *qp,
- 	}
- 
- 	if (qp->rq_rinl_buf.wqe_cnt) {
--		if (qp_alloc_recv_inl_buf(cap, qp))
-+		if (qp_alloc_recv_inl_buf(&attr->cap, qp))
- 			goto err_alloc;
- 	}
- 
--	if (hns_roce_alloc_buf(&qp->buf, qp->buf_size, HNS_HW_PAGE_SIZE))
--		goto err_alloc;
-+	if (check_qp_support_dca(ctx->dca_ctx.max_size != 0, attr->qp_type)) {
-+		/* when DCA is enabled, use a buffer list to store page addr */
-+		qp->buf.buf = NULL;
-+		qp->page_list.max_cnt = hr_hw_page_count(qp->buf_size);
-+		qp->page_list.shift = HNS_HW_PAGE_SHIFT;
-+		qp->page_list.bufs = calloc(qp->page_list.max_cnt,
-+					    sizeof(void *));
-+		if (!qp->page_list.bufs)
-+			goto err_alloc;
-+	} else {
-+		if (hns_roce_alloc_buf(&qp->buf, qp->buf_size,
-+				       HNS_HW_PAGE_SIZE))
-+			goto err_alloc;
-+	}
- 
- 	return 0;
- 
-@@ -928,7 +948,7 @@ static int hns_roce_alloc_qp_buf(struct ibv_qp_init_attr_ex *attr,
- 	    pthread_spin_init(&qp->rq.lock, PTHREAD_PROCESS_PRIVATE))
- 		return -ENOMEM;
- 
--	ret = qp_alloc_wqe(&attr->cap, qp, ctx);
-+	ret = qp_alloc_wqe(attr, qp, ctx);
+-	if (!(ctx->cap_flags & HNS_ROCE_CAP_FLAG_DCA_MODE))
+-		return 0;
+-
++	dca_ctx->unit_size = 0;
++	dca_ctx->mem_cnt = 0;
+ 	list_head_init(&dca_ctx->mem_list);
+ 	ret = pthread_spin_init(&dca_ctx->lock, PTHREAD_PROCESS_PRIVATE);
  	if (ret)
  		return ret;
  
+-	dca_ctx->unit_size = page_size * HNS_DCA_DEFAULT_UNIT_PAGES;
+-	dca_ctx->max_size = HNS_DCA_MAX_MEM_SIZE;
+-	dca_ctx->mem_cnt = 0;
++	if (!attr)
++		return 0;
++
++	if (!(attr->flags & HNSDV_CONTEXT_FLAGS_DCA))
++		return 0;
++
++	set_dca_pool_param(attr, page_size, dca_ctx);
+ 
+ 	return 0;
+ }
+@@ -127,6 +174,7 @@ static struct verbs_context *hns_roce_alloc_context(struct ibv_device *ibdev,
+ 						    int cmd_fd,
+ 						    void *private_data)
+ {
++	struct hnsdv_context_attr *ctx_attr = private_data;
+ 	struct hns_roce_device *hr_dev = to_hr_dev(ibdev);
+ 	struct hns_roce_alloc_ucontext_resp resp = {};
+ 	struct ibv_device_attr dev_attrs;
+@@ -198,7 +246,7 @@ static struct verbs_context *hns_roce_alloc_context(struct ibv_device *ibdev,
+ 	verbs_set_ops(&context->ibv_ctx, &hns_common_ops);
+ 	verbs_set_ops(&context->ibv_ctx, &hr_dev->u_hw->hw_ops);
+ 
+-	if (init_dca_context(context, hr_dev->page_size))
++	if (init_dca_context(context, hr_dev->page_size, ctx_attr))
+ 		goto db_free;
+ 
+ 	return &context->ibv_ctx;
+@@ -258,4 +306,11 @@ static const struct verbs_device_ops hns_roce_dev_ops = {
+ 	.uninit_device = hns_uninit_device,
+ 	.alloc_context = hns_roce_alloc_context,
+ };
++
++bool is_hns_dev(struct ibv_device *device)
++{
++	struct verbs_device *verbs_device = verbs_get_device(device);
++
++	return verbs_device->ops == &hns_roce_dev_ops;
++}
+ PROVIDER_DRIVER(hns, hns_roce_dev_ops);
+diff --git a/providers/hns/hns_roce_u.h b/providers/hns/hns_roce_u.h
+index ae72709..4e86edc 100644
+--- a/providers/hns/hns_roce_u.h
++++ b/providers/hns/hns_roce_u.h
+@@ -154,11 +154,11 @@ struct hns_roce_db_page {
+ struct hns_roce_dca_ctx {
+ 	struct list_head mem_list;
+ 	pthread_spinlock_t lock;
++	uint32_t unit_size;
+ 	uint64_t max_size;
+ 	uint64_t min_size;
+ 	uint64_t curr_size;
+ 	int mem_cnt;
+-	unsigned int unit_size;
+ };
+ 
+ struct hns_roce_context {
+@@ -376,6 +376,8 @@ static inline struct hns_roce_ah *to_hr_ah(struct ibv_ah *ibv_ah)
+ 	return container_of(ibv_ah, struct hns_roce_ah, ibv_ah);
+ }
+ 
++bool is_hns_dev(struct ibv_device *device);
++
+ int hns_roce_u_query_device(struct ibv_context *context,
+ 			    const struct ibv_query_device_ex_input *input,
+ 			    struct ibv_device_attr_ex *attr, size_t attr_size);
+diff --git a/providers/hns/hns_roce_u_abi.h b/providers/hns/hns_roce_u_abi.h
+index 4341207..d87944d 100644
+--- a/providers/hns/hns_roce_u_abi.h
++++ b/providers/hns/hns_roce_u_abi.h
+@@ -36,6 +36,7 @@
+ #include <infiniband/kern-abi.h>
+ #include <rdma/hns-abi.h>
+ #include <kernel-abi/hns-abi.h>
++#include "hnsdv.h"
+ 
+ DECLARE_DRV_CMD(hns_roce_alloc_pd, IB_USER_VERBS_CMD_ALLOC_PD,
+ 		empty, hns_roce_ib_alloc_pd_resp);
+diff --git a/providers/hns/hns_roce_u_verbs.c b/providers/hns/hns_roce_u_verbs.c
+index 6ec8b12..baebd76 100644
+--- a/providers/hns/hns_roce_u_verbs.c
++++ b/providers/hns/hns_roce_u_verbs.c
+@@ -542,7 +542,7 @@ int hns_roce_u_destroy_srq(struct ibv_srq *srq)
+ }
+ 
+ enum {
+-	CREATE_QP_SUP_CREATE_FLAGS = 0,
++	CREATE_QP_SUP_CREATE_FLAGS = IBV_QP_CREATE_DYNAMIC_CONTEXT_ATTACH,
+ };
+ 
+ enum {
+@@ -688,10 +688,11 @@ static int calc_qp_buff_size(struct hns_roce_device *hr_dev,
+ 	return 0;
+ }
+ 
+-static inline bool check_qp_support_dca(bool pool_en, enum ibv_qp_type qp_type)
++static inline bool check_qp_support_dca(bool pool_en, enum ibv_qp_type qp_type,
++					uint32_t create_flags)
+ {
+ 	if (pool_en && (qp_type == IBV_QPT_RC || qp_type == IBV_QPT_XRC_SEND))
+-		return true;
++		return !!(create_flags & IBV_QP_CREATE_DYNAMIC_CONTEXT_ATTACH);
+ 
+ 	return false;
+ }
+@@ -730,7 +731,8 @@ static int qp_alloc_wqe(struct ibv_qp_init_attr_ex *attr,
+ 			goto err_alloc;
+ 	}
+ 
+-	if (check_qp_support_dca(ctx->dca_ctx.max_size != 0, attr->qp_type)) {
++	if (check_qp_support_dca(ctx->dca_ctx.unit_size != 0,
++				 attr->qp_type, attr->create_flags)) {
+ 		/* when DCA is enabled, use a buffer list to store page addr */
+ 		qp->buf.buf = NULL;
+ 		qp->page_list.max_cnt = hr_hw_page_count(qp->buf_size);
+@@ -901,6 +903,14 @@ static int qp_exec_create_cmd(struct ibv_qp_init_attr_ex *attr,
+ 	struct hns_roce_create_qp_ex cmd_ex = {};
+ 	int ret;
+ 
++	/*
++	 * When the kernel driver handling the command , whether to enable the
++	 * DCA mode of the user QP depends on whether the cmd.buf_addr is NULL
++	 * instead of whether the DCA bit of attr->create_flags is set, so
++	 * clear this bit before sending the command.
++	 */
++	attr->create_flags &= ~IBV_QP_CREATE_DYNAMIC_CONTEXT_ATTACH;
++
+ 	cmd_ex.sdb_addr = (uintptr_t)qp->sdb;
+ 	cmd_ex.db_addr = (uintptr_t)qp->rdb;
+ 	cmd_ex.buf_addr = (uintptr_t)qp->buf.buf;
+diff --git a/providers/hns/hnsdv.h b/providers/hns/hnsdv.h
+new file mode 100644
+index 0000000..18b2803
+--- /dev/null
++++ b/providers/hns/hnsdv.h
+@@ -0,0 +1,44 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
++/*
++ * Copyright (c) 2021 Hisilicon Limited.
++ */
++
++#ifndef __HNSDV_H__
++#define __HNSDV_H__
++
++#include <stdio.h>
++#include <sys/types.h>
++
++#include <infiniband/verbs.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++enum hnsdv_context_attr_flags {
++	HNSDV_CONTEXT_FLAGS_DCA = 1 << 0,
++};
++
++enum hnsdv_context_comp_mask {
++	HNSDV_CONTEXT_MASK_DCA_UNIT_SIZE = 1 << 0,
++	HNSDV_CONTEXT_MASK_DCA_MAX_SIZE = 1 << 1,
++	HNSDV_CONTEXT_MASK_DCA_MIN_SIZE = 1 << 2,
++};
++
++struct hnsdv_context_attr {
++	uint32_t flags; /* Use enum hnsdv_context_attr_flags */
++	uint64_t comp_mask; /* Use enum hnsdv_context_comp_mask */
++	uint32_t dca_unit_size;
++	uint64_t dca_max_size;
++	uint64_t dca_min_size;
++};
++
++bool hnsdv_is_supported(struct ibv_device *device);
++struct ibv_context *hnsdv_open_device(struct ibv_device *device,
++				      struct hnsdv_context_attr *attr);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* __HNSDV_H__ */
+diff --git a/providers/hns/libhns.map b/providers/hns/libhns.map
+new file mode 100644
+index 0000000..d03a5e9
+--- /dev/null
++++ b/providers/hns/libhns.map
+@@ -0,0 +1,8 @@
++/* Export symbols should be added below according to
++   Documentation/versioning.md document. */
++HNS_1.0 {
++	global:
++		hnsdv_is_supported;
++		hnsdv_open_device;
++	local: *;
++};
+diff --git a/redhat/rdma-core.spec b/redhat/rdma-core.spec
+index f2bb27f..f4e00c3 100644
+--- a/redhat/rdma-core.spec
++++ b/redhat/rdma-core.spec
+@@ -151,6 +151,8 @@ Provides: libefa = %{version}-%{release}
+ Obsoletes: libefa < %{version}-%{release}
+ Provides: libhfi1 = %{version}-%{release}
+ Obsoletes: libhfi1 < %{version}-%{release}
++Provides: libhns = %{version}-%{release}
++Obsoletes: libhns < %{version}-%{release}
+ Provides: libi40iw = %{version}-%{release}
+ Obsoletes: libi40iw < %{version}-%{release}
+ Provides: libipathverbs = %{version}-%{release}
+@@ -563,6 +565,7 @@ fi
+ %dir %{_sysconfdir}/libibverbs.d
+ %dir %{_libdir}/libibverbs
+ %{_libdir}/libefa.so.*
++%{_libdir}/libhns.so.*
+ %{_libdir}/libibverbs*.so.*
+ %{_libdir}/libibverbs/*.so
+ %{_libdir}/libmlx5.so.*
+diff --git a/suse/rdma-core.spec b/suse/rdma-core.spec
+index 496933f..fd0ed87 100644
+--- a/suse/rdma-core.spec
++++ b/suse/rdma-core.spec
+@@ -30,6 +30,7 @@ License:        GPL-2.0-only OR BSD-2-Clause
+ Group:          Productivity/Networking/Other
+ 
+ %define efa_so_major    1
++%define hns_so_major    1
+ %define verbs_so_major  1
+ %define rdmacm_so_major 1
+ %define umad_so_major   3
+@@ -39,6 +40,7 @@ Group:          Productivity/Networking/Other
+ %define mad_major       5
+ 
+ %define  efa_lname    libefa%{efa_so_major}
++%define  hns_lname    libhns%{hns_so_major}
+ %define  verbs_lname  libibverbs%{verbs_so_major}
+ %define  rdmacm_lname librdmacm%{rdmacm_so_major}
+ %define  umad_lname   libibumad%{umad_so_major}
+@@ -145,6 +147,7 @@ Requires:       %{umad_lname} = %{version}-%{release}
+ Requires:       %{verbs_lname} = %{version}-%{release}
+ %if 0%{?dma_coherent}
+ Requires:       %{efa_lname} = %{version}-%{release}
++Requires:       %{hns_lname} = %{version}-%{release}
+ Requires:       %{mlx4_lname} = %{version}-%{release}
+ Requires:       %{mlx5_lname} = %{version}-%{release}
+ %endif
+@@ -185,6 +188,7 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
+ Obsoletes:      libcxgb4-rdmav2 < %{version}-%{release}
+ Obsoletes:      libefa-rdmav2 < %{version}-%{release}
+ Obsoletes:      libhfi1verbs-rdmav2 < %{version}-%{release}
++Obsoletes:      libhns-rdmav2 < %{version}-%{release}
+ Obsoletes:      libi40iw-rdmav2 < %{version}-%{release}
+ Obsoletes:      libipathverbs-rdmav2 < %{version}-%{release}
+ Obsoletes:      libmlx4-rdmav2 < %{version}-%{release}
+@@ -194,6 +198,7 @@ Obsoletes:      libocrdma-rdmav2 < %{version}-%{release}
+ Obsoletes:      librxe-rdmav2 < %{version}-%{release}
+ %if 0%{?dma_coherent}
+ Requires:       %{efa_lname} = %{version}-%{release}
++Requires:       %{hns_lname} = %{version}-%{release}
+ Requires:       %{mlx4_lname} = %{version}-%{release}
+ Requires:       %{mlx5_lname} = %{version}-%{release}
+ %endif
+@@ -239,6 +244,13 @@ Group:          System/Libraries
+ %description -n %efa_lname
+ This package contains the efa runtime library.
+ 
++%package -n %hns_lname
++Summary:        HNS runtime library
++Group:          System/Libraries
++
++%description -n %hns_lname
++This package contains the hns runtime library.
++
+ %package -n %mlx4_lname
+ Summary:        MLX4 runtime library
+ Group:          System/Libraries
+@@ -477,6 +489,9 @@ rm -rf %{buildroot}/%{_sbindir}/srp_daemon.sh
+ %post -n %efa_lname -p /sbin/ldconfig
+ %postun -n %efa_lname -p /sbin/ldconfig
+ 
++%post -n %hns_lname -p /sbin/ldconfig
++%postun -n %hns_lname -p /sbin/ldconfig
++
+ %post -n %mlx4_lname -p /sbin/ldconfig
+ %postun -n %mlx4_lname -p /sbin/ldconfig
+ 
+@@ -659,6 +674,10 @@ rm -rf %{buildroot}/%{_sbindir}/srp_daemon.sh
+ %defattr(-,root,root)
+ %{_libdir}/libefa*.so.*
+ 
++%files -n %hns_lname
++%defattr(-,root,root)
++%{_libdir}/libhns*.so.*
++
+ %files -n %mlx4_lname
+ %defattr(-,root,root)
+ %{_libdir}/libmlx4*.so.*
 -- 
 2.8.1
 
