@@ -2,63 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D59A32FAF3
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Mar 2021 14:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29AF532FAFA
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Mar 2021 14:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhCFNyS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 6 Mar 2021 08:54:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52660 "EHLO
+        id S230390AbhCFN5A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 6 Mar 2021 08:57:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbhCFNxw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 6 Mar 2021 08:53:52 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B042DC06174A;
-        Sat,  6 Mar 2021 05:53:52 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so655905pjc.2;
-        Sat, 06 Mar 2021 05:53:52 -0800 (PST)
+        with ESMTP id S230259AbhCFN4e (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 6 Mar 2021 08:56:34 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6427C06174A;
+        Sat,  6 Mar 2021 05:56:33 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id h4so3310677pgf.13;
+        Sat, 06 Mar 2021 05:56:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id;
-        bh=FYJi31DX+dhl/A48m98af7vgNMsMwrVQX+PM5e9RccA=;
-        b=khYkvtp0AY6HiqKyREnspfRGRv5Um5sMvkfg3A0KsF6Afq695Ja/L1ALtklIbKdNaG
-         WOCcQnb/fiMN9rgVVRaDpk6gl4tqeW0AIrjUgwk3dXJDzP3INv2fizznkEPqSfF+21fL
-         V9zfllAKL04BsCi2ZT/fz9a+yVdusd8O6yPhK3vHsdeG4S/2CjG3ETgAjk7FumolwBBT
-         Wect+f4cXrkaPPt3aaZ2Pj+lyL0ShxtToz4KjsPIJriXXdvpbdt017ExQw2q8Cg3RXdA
-         3LaRsLk3x+KmaAY9QsS4jNTYjb0P2iZj+2GH+yxWj7ar6YpHJN+C7YqB2rzO2g5tMtZn
-         D0kg==
+        bh=mP/fGr95eJFblYXshsxaEpdCW6F9kKfFIodDDJ+QLn0=;
+        b=ufW8o25oqAIrj9gCsVPfgMlxe09TBHBtjCaflszArCK2qbJ3VvihRJQ4231BTleoQ1
+         Bs1InY3v9BJC7yM7K3Ly4+/3LFnFNFha8iJILzc3FzRcPg3ZGmnzQbJzjMc9IzXhDUQ0
+         012eUci+xtORmTmDs5l7G/idWuMA5/t7SCV6mzGHSR/jmHJ8TqTQJ0LFoHUhKkECRKE3
+         WSJqtftPVjhkj1wY/VjvnGcgkk5U8X+Tg/b6kI7kBxLHTVE1LdNBwB93LPcKlKYaf2OV
+         gk8NtNdQqeBsnOMHb8a35/3/PCs7fHPqx202LT+n3DON2gh4yb248fLDk7k52GDldqvT
+         EYbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=FYJi31DX+dhl/A48m98af7vgNMsMwrVQX+PM5e9RccA=;
-        b=iJVdDRixxJaH2C+Ihv+lqDMu9D6eUhFraUN3ua141orrmss058f/ikNUnSBmM5sHEx
-         9QC4o0YgzG8C9Hn5kTpHhvR5jZU2GDfGyYNOFW77cBq8PHVEfC3t5RAEZRzwQtxsT3Lg
-         2+9VRhAQDCpLnOi1jBxcIvsF5nd3gLSjznaxtQGEebDAUd2t7O+Yk2s8HD7nYLoVzQ4+
-         k4rLq+mpi0cKEo7oGkKpY0Of5Y/Jp5FzVMCGBhlrDnysrDcS7goTo31wn7oa9cv8XwAx
-         +mIMz/mvvRf2xNj3aqxMwO+6JqLZUrTz0hWC8P6b2IV3EQ5Nhfki5Xih8NaUKyAmlma9
-         LV7g==
-X-Gm-Message-State: AOAM530YOTVY9zBm884CCSlCGIFUvtZNeOXL50QUmWyHLOrJWkXbxbDd
-        Z7hEDgtzaOjQCD1e45zPTvQSwsDPFWO9dw==
-X-Google-Smtp-Source: ABdhPJwXEYA+UWCiYUe1LeUfBKpehh44LIfIqEgQUU4YUIbqHQlqylZb/97rlAlGqtJUV9rCvVpAZg==
-X-Received: by 2002:a17:90a:7bce:: with SMTP id d14mr16199470pjl.139.1615038832250;
-        Sat, 06 Mar 2021 05:53:52 -0800 (PST)
+        bh=mP/fGr95eJFblYXshsxaEpdCW6F9kKfFIodDDJ+QLn0=;
+        b=nc48mFF9kz1A0nv/zTU//C9VElB3Wxq1p1JrsWHGviHT/PZ0cM3Co42wCIqxaBKS6Q
+         1LO8BLwJoByD8OphlStjvBKYqPnW80eVD2hzNDj3OlsvaulXUnnpSN5SRAE9DicLa4cR
+         B+TbZLJbvgs3wHMr+ebo4SEXpbQsIaK3K/8BNBti9msRnh9qovSOxocLKxBg2AH3fUlT
+         waRFryCfN+JLXffnIx6d4B3EneB3n3bc8NMS0Oyp/nhjAYHWlDQ1glEd51/n8/eeFrJx
+         Ykd0r/EwPwrUi/aADLqkVFFoFyqG5bhGRqpGxK3gq/BXMZljquMgtzxiEM+GqOtwrFGl
+         FZqA==
+X-Gm-Message-State: AOAM531yNFDz7qMkX46hjfY0uTYQMf1rH56cSfFBtOtD8LWn8rPMv1F3
+        cCeFKGno68VuNs/X67LQlUWsCavQQus6sg==
+X-Google-Smtp-Source: ABdhPJwvYVYfOkpoIcigU94RT5EBC07v2mu9pgglrwD7MIqu8o3+rT9JtVYx/Vy0f1hBjUbD9I+0ng==
+X-Received: by 2002:a62:aa02:0:b029:1ee:3011:114e with SMTP id e2-20020a62aa020000b02901ee3011114emr13795578pff.39.1615038993225;
+        Sat, 06 Mar 2021 05:56:33 -0800 (PST)
 Received: from localhost.localdomain ([45.135.186.66])
-        by smtp.gmail.com with ESMTPSA id z2sm5500739pfa.121.2021.03.06.05.53.48
+        by smtp.gmail.com with ESMTPSA id d7sm5364119pfh.73.2021.03.06.05.56.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 05:53:51 -0800 (PST)
+        Sat, 06 Mar 2021 05:56:32 -0800 (PST)
 From:   Jia-Ju Bai <baijiaju1990@gmail.com>
 To:     bharat@chelsio.com, dledford@redhat.com, jgg@ziepe.ca
 Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] infiniband: hw: cxgb4: fix error return code of pass_open_rpl()
-Date:   Sat,  6 Mar 2021 05:53:17 -0800
-Message-Id: <20210306135317.17803-1-baijiaju1990@gmail.com>
+Subject: [PATCH] infiniband: hw: cxgb4: fix error return code of close_listsrv_rpl()
+Date:   Sat,  6 Mar 2021 05:55:48 -0800
+Message-Id: <20210306135548.17939-1-baijiaju1990@gmail.com>
 X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When ep is NULL, no error code of pass_open_rpl() is returned.
-To fix this bug, pass_open_rpl() returns -EINVAL in this case.
+When ep is NULL, no error code of close_listsrv_rpl() is returned.
+To fix this bug, close_listsrv_rpl() returns -EINVAL in this case.
 
 Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
 Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
@@ -67,18 +67,18 @@ Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-index 8769e7aa097f..773d3805bb25 100644
+index 8769e7aa097f..94492d2dfdc7 100644
 --- a/drivers/infiniband/hw/cxgb4/cm.c
 +++ b/drivers/infiniband/hw/cxgb4/cm.c
-@@ -2382,7 +2382,7 @@ static int pass_open_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
+@@ -2400,7 +2400,7 @@ static int close_listsrv_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
  
  	if (!ep) {
  		pr_warn("%s stid %d lookup failure!\n", __func__, stid);
 -		goto out;
 +		return -EINVAL;
  	}
- 	pr_debug("ep %p status %d error %d\n", ep,
- 		 rpl->status, status2errno(rpl->status));
+ 	pr_debug("ep %p\n", ep);
+ 	c4iw_wake_up_noref(ep->com.wr_waitp, status2errno(rpl->status));
 -- 
 2.17.1
 
