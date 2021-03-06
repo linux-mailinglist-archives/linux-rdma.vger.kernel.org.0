@@ -2,83 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AF532FAFA
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Mar 2021 14:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4490232FB09
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Mar 2021 15:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbhCFN5A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 6 Mar 2021 08:57:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
+        id S230425AbhCFOGS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 6 Mar 2021 09:06:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbhCFN4e (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 6 Mar 2021 08:56:34 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6427C06174A;
-        Sat,  6 Mar 2021 05:56:33 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id h4so3310677pgf.13;
-        Sat, 06 Mar 2021 05:56:33 -0800 (PST)
+        with ESMTP id S230329AbhCFOFv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 6 Mar 2021 09:05:51 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE1FC06174A
+        for <linux-rdma@vger.kernel.org>; Sat,  6 Mar 2021 06:05:51 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id t16so4692812ott.3
+        for <linux-rdma@vger.kernel.org>; Sat, 06 Mar 2021 06:05:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=mP/fGr95eJFblYXshsxaEpdCW6F9kKfFIodDDJ+QLn0=;
-        b=ufW8o25oqAIrj9gCsVPfgMlxe09TBHBtjCaflszArCK2qbJ3VvihRJQ4231BTleoQ1
-         Bs1InY3v9BJC7yM7K3Ly4+/3LFnFNFha8iJILzc3FzRcPg3ZGmnzQbJzjMc9IzXhDUQ0
-         012eUci+xtORmTmDs5l7G/idWuMA5/t7SCV6mzGHSR/jmHJ8TqTQJ0LFoHUhKkECRKE3
-         WSJqtftPVjhkj1wY/VjvnGcgkk5U8X+Tg/b6kI7kBxLHTVE1LdNBwB93LPcKlKYaf2OV
-         gk8NtNdQqeBsnOMHb8a35/3/PCs7fHPqx202LT+n3DON2gh4yb248fLDk7k52GDldqvT
-         EYbA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=3f4u7+LKJOicUKGybe5l4C16IXX9OYBlo1ifNc2N53c=;
+        b=k/fZwcjT0HTrrPuWeOocfix/75s1mMsMxg1GAxYhYWZ0Zh54amUmD+ARVpHNzFcMZ+
+         mX7K+zTcp0WB62i17wruZvX4S/NH+DYRpguMWX/zpg4nsg5Hqx/SrwvwX1pM1TOVph1e
+         aD+iXiKkXeIgL8KMyZjKTs2SDl6CaIBQ1z9p+GcXYYFWQARkYnb2V2QnrrNYY+KybwYV
+         nXS29hXXJWAj78cDQxrHcWF1sznQdv1KEDq70FNNIycEzbbDQpgc01cAmltv5rbRw60j
+         MKQh/bPwdmjNSthyH3SdKQSBzN/MJHuvjURqcL8pwmlJPthtbk+O5F7+Lrp0NmZji/u0
+         2WLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=mP/fGr95eJFblYXshsxaEpdCW6F9kKfFIodDDJ+QLn0=;
-        b=nc48mFF9kz1A0nv/zTU//C9VElB3Wxq1p1JrsWHGviHT/PZ0cM3Co42wCIqxaBKS6Q
-         1LO8BLwJoByD8OphlStjvBKYqPnW80eVD2hzNDj3OlsvaulXUnnpSN5SRAE9DicLa4cR
-         B+TbZLJbvgs3wHMr+ebo4SEXpbQsIaK3K/8BNBti9msRnh9qovSOxocLKxBg2AH3fUlT
-         waRFryCfN+JLXffnIx6d4B3EneB3n3bc8NMS0Oyp/nhjAYHWlDQ1glEd51/n8/eeFrJx
-         Ykd0r/EwPwrUi/aADLqkVFFoFyqG5bhGRqpGxK3gq/BXMZljquMgtzxiEM+GqOtwrFGl
-         FZqA==
-X-Gm-Message-State: AOAM531yNFDz7qMkX46hjfY0uTYQMf1rH56cSfFBtOtD8LWn8rPMv1F3
-        cCeFKGno68VuNs/X67LQlUWsCavQQus6sg==
-X-Google-Smtp-Source: ABdhPJwvYVYfOkpoIcigU94RT5EBC07v2mu9pgglrwD7MIqu8o3+rT9JtVYx/Vy0f1hBjUbD9I+0ng==
-X-Received: by 2002:a62:aa02:0:b029:1ee:3011:114e with SMTP id e2-20020a62aa020000b02901ee3011114emr13795578pff.39.1615038993225;
-        Sat, 06 Mar 2021 05:56:33 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.66])
-        by smtp.gmail.com with ESMTPSA id d7sm5364119pfh.73.2021.03.06.05.56.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Mar 2021 05:56:32 -0800 (PST)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     bharat@chelsio.com, dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] infiniband: hw: cxgb4: fix error return code of close_listsrv_rpl()
-Date:   Sat,  6 Mar 2021 05:55:48 -0800
-Message-Id: <20210306135548.17939-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=3f4u7+LKJOicUKGybe5l4C16IXX9OYBlo1ifNc2N53c=;
+        b=GRfpvqnriRFfjfQ0vuNbF3gGuHQzyYFTd3HU8OLBPRW/9dGiItszL+s8N9aNfxsXKJ
+         GO0nYwZVPTjJHpkw0N7xI5bqYVcKC6uKTAEGPssnd5Xl80GPpALiF5ckEvin5/brgu2D
+         Dt1zt6yXNeQtCxSp/dJ/qC3Le0yZ/zb1Bo7VTUUNZTCLGK3Lp7Z0jxzHDVnxZ5WDhfFg
+         B1D2X8oRKPeKKUsDQEV17REUFUjVBGFjR5jZIEJpIRuhpdTjTLsCQKFsh8s0YP1BaZi8
+         h/849NlPEb8uEsDngAce3GsOxuiX0VEOrMEzfNlGCosyg3kZVtvP/frytQY1T9ldk/jm
+         XX9g==
+X-Gm-Message-State: AOAM53288Kc9hEP6Ye6sdtAcCv6Sc4uqFpNZIwhSLnSXfXHyN5cIefml
+        VFuHcI//VRRsBY0Vbmiz4YcUFDh11pG05Xjqrak=
+X-Google-Smtp-Source: ABdhPJwr0XBS12ifLBnhAG3SrHpxLf4mmfg9fk9j/DqHZA6+ABNARzJ4/rZIlsKw4xfhJpvdwhx2qUKEMu32C4uaSq4=
+X-Received: by 2002:a9d:5c03:: with SMTP id o3mr8841424otk.53.1615039550410;
+ Sat, 06 Mar 2021 06:05:50 -0800 (PST)
+MIME-Version: 1.0
+References: <20210306214804.6849-1-yanjun.zhu@intel.com>
+In-Reply-To: <20210306214804.6849-1-yanjun.zhu@intel.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Sat, 6 Mar 2021 22:05:39 +0800
+Message-ID: <CAD=hENdtK8qvHEnowpUZ+sL-SoB7bu2nMEDrkFjgdbbhxBqaMg@mail.gmail.com>
+Subject: Fwd: [PATCH 1/1] RDMA/rxe: Disable ipv6 features when ipv6.disable
+ set in cmdline
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Yi Zhang <yi.zhang@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When ep is NULL, no error code of close_listsrv_rpl() is returned.
-To fix this bug, close_listsrv_rpl() returns -EINVAL in this case.
+From: Zhu Yanjun <zyjzyj2000@gmail.com>
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+When ipv6.disable=1 is set in cmdline, ipv6 is actually disabled
+in the stack. As such, the operations of ipv6 in RXE will fail.
+So ipv6 features in RXE should also be disabled in RXE.
+
+Reported-by: Yi Zhang <yi.zhang@redhat.com>
+Signed-off-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+Tested-by: Yi Zhang <yi.zhang@redhat.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/cxgb4/cm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/sw/rxe/rxe_net.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-index 8769e7aa097f..94492d2dfdc7 100644
---- a/drivers/infiniband/hw/cxgb4/cm.c
-+++ b/drivers/infiniband/hw/cxgb4/cm.c
-@@ -2400,7 +2400,7 @@ static int close_listsrv_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
- 
- 	if (!ep) {
- 		pr_warn("%s stid %d lookup failure!\n", __func__, stid);
--		goto out;
-+		return -EINVAL;
- 	}
- 	pr_debug("ep %p\n", ep);
- 	c4iw_wake_up_noref(ep->com.wr_waitp, status2errno(rpl->status));
--- 
-2.17.1
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c
+b/drivers/infiniband/sw/rxe/rxe_net.c
+index 0701bd1ffd1a..6ef092cb575e 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -72,6 +72,11 @@ static struct dst_entry *rxe_find_route6(struct
+net_device *ndev,
+        struct dst_entry *ndst;
+        struct flowi6 fl6 = { { 0 } };
 
++       if (!ipv6_mod_enabled()) {
++               pr_info("IPv6 is disabled by ipv6.disable=1 in cmdline");
++               return NULL;
++       }
++
+        memset(&fl6, 0, sizeof(fl6));
+        fl6.flowi6_oif = ndev->ifindex;
+        memcpy(&fl6.saddr, saddr, sizeof(*saddr));
+@@ -608,6 +613,10 @@ static int rxe_net_ipv4_init(void)
+ static int rxe_net_ipv6_init(void)
+ {
+ #if IS_ENABLED(CONFIG_IPV6)
++       if (!ipv6_mod_enabled()) {
++               pr_info("IPv6 is disabled by ipv6.disable=1 in cmdline");
++               return 0;
++       }
+
+        recv_sockets.sk6 = rxe_setup_udp_tunnel(&init_net,
+                                                htons(ROCE_V2_UDP_DPORT), true);
+--
+2.25.1
