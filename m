@@ -2,83 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06566330347
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Mar 2021 18:23:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47149330415
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Mar 2021 20:04:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231735AbhCGRXE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 7 Mar 2021 12:23:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232683AbhCGRWj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 7 Mar 2021 12:22:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15B6764F94;
-        Sun,  7 Mar 2021 17:22:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615137758;
-        bh=/RyyXTJIuknawbpmQjnQ9vaXIVBtWG5RB/RYtgDlwQE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=srTaMNKaSvVCQorG5pekkh7y6e9UTR3xEr6kjR6P6oUkzkE84sxPaDOrUdn7I1aW7
-         cpTudigD+H6Jm+4it67x3bfXNacfei9v7rQA8rr2jT6gl7B0ZODWZzC1agPTxuUNo+
-         8GcdkROB0gJ3qoG6wAz+nEX6MYNE59HXw0wuQEs1Wx0EMZMHdVnI8kmiHDVTGObfXx
-         bBbkGhC21U/edS5OC8Q+zjUlns+taTBU168YGbiUhCdFyyBVH7bzG6yyaW7Io05KUK
-         lopA3z7XRcoZeEVEhJ18ogs5OfFuswdXx0nwx3Tcv6az+15ZOXmxXcVdGGv49XJE7R
-         TNMJUuOLYyKZw==
-Date:   Sun, 7 Mar 2021 19:22:34 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        maorg@nvidia.com
-Subject: Re: Fwd: [PATCH 1/1] RDMA/umem: add back hugepage sg list
-Message-ID: <YEUL2vdlWFEbZqLb@unreal>
-References: <20210307221034.568606-1-yanjun.zhu@intel.com>
- <CAD=hENeqTTmpS5V+G646V0QvJFLVSd3Sq11ffQFcDXU-OSsQEg@mail.gmail.com>
+        id S231962AbhCGSzw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 7 Mar 2021 13:55:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231927AbhCGSzg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 7 Mar 2021 13:55:36 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C04C06174A;
+        Sun,  7 Mar 2021 10:55:36 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id d5so6910108iln.6;
+        Sun, 07 Mar 2021 10:55:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yTMxu6lUFjwpBpsU0zPd/ZeXXHAFde8y4EnRup74iaU=;
+        b=rp5AOs/qAciU0UjvxmMxIjSnqzRdtXAV0asS8mNcqAbEH1X9nQZp3hBG4EtkAT8gIO
+         n26dIl/s6jWAcfPdR+dGug17EG80hL4ixwFVuhF9C8W84pXo3sVCSHZN4nzpY/MpDqBL
+         U2Zdz3fJUiSRsbyx7xLaYOMDlKl7rMduRfsjMnp+Z1MAC9JzghPPAYNdeQap1byxFEHn
+         YkrOIsaxchY7GYnAC+8e/04K56zdFguhf7Qgvia3JS8Tjt8uBBhjdzi+xbczOO0zKSQK
+         NXolUCZX0IgtvwnmhYFlHSkA0ZMuwpPxcjOr6PEF6WdzRMSlKC2tHF9edlZDiDCwUAGq
+         Y1yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yTMxu6lUFjwpBpsU0zPd/ZeXXHAFde8y4EnRup74iaU=;
+        b=IYVXS7XPPqGUlQE1zSyZkFck6vywJPxq0X2taS7Y+TUoMyZwb1HcE++ST7mVP06iZz
+         ysdvu/+xpcXwqMMEnZJUmF679ZvbPwHFHWjqhSO3PMZOimI/+YVECHm2f286m0uk9A8a
+         ea56T5n9CW/OqW9fqmzwv6tjlV5aqVYGF+FLebRXW9wRB3uulhYVKxcP6mPc7ppxfp43
+         ahC/py4plGAi9wmdy3MF/imWBwioARlXIXNIWa8WCjjVxf1Nrmjo54XAadk2/0y2nkxA
+         sbLoA1r8BadWZF7Fn2Ik7OJeUF0b8xFVd5oBYIe64BSMW9lUAdY2GMRHrwS/s95WqoB9
+         Jsfw==
+X-Gm-Message-State: AOAM530YxxH7unmK2jqbyQXq3n07rGgLo2tE24glvLLivW+DW5bHB3qr
+        Fhof541ui7pDaG/Zobe2jTXk4gF470X+o77H/nrNSY7e8rQ=
+X-Google-Smtp-Source: ABdhPJwFEZQBcFSn5AaZYi5rDIruu4ACC7Jsozz+Ur0K/zqBp+QpzlCC9Sn/jz75B+nWm+f2VwCP+GTIAWcYfmvPsBE=
+X-Received: by 2002:a05:6e02:1069:: with SMTP id q9mr17248298ilj.97.1615143335620;
+ Sun, 07 Mar 2021 10:55:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=hENeqTTmpS5V+G646V0QvJFLVSd3Sq11ffQFcDXU-OSsQEg@mail.gmail.com>
+References: <20210301075524.441609-1-leon@kernel.org>
+In-Reply-To: <20210301075524.441609-1-leon@kernel.org>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Sun, 7 Mar 2021 10:55:24 -0800
+Message-ID: <CAKgT0Ue=g+1pZCct8Kd0OnkPEP0qhggBF96s=noDoWHMJTL6FA@mail.gmail.com>
+Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 10:28:33PM +0800, Zhu Yanjun wrote:
-> From: Zhu Yanjun <zyjzyj2000@gmail.com>
+On Sun, Feb 28, 2021 at 11:55 PM Leon Romanovsky <leon@kernel.org> wrote:
 >
-> After the commit ("RDMA/umem: Move to allocate SG table from pages"),
-> the sg list from ib_ume_get is like the following:
-> "
-> sg_dma_address(sg):0x4b3c1ce000
-> sg_dma_address(sg):0x4c3c1cd000
-> sg_dma_address(sg):0x4d3c1cc000
-> sg_dma_address(sg):0x4e3c1cb000
-> "
+> From: Leon Romanovsky <leonro@nvidia.com>
 >
-> But sometimes, we need sg list like the following:
-> "
-> sg_dma_address(sg):0x203b400000
-> sg_dma_address(sg):0x213b200000
-> sg_dma_address(sg):0x223b000000
-> sg_dma_address(sg):0x233ae00000
-> sg_dma_address(sg):0x243ac00000
-> "
-> The function ib_umem_add_sg_table can provide the sg list like the
-> second. And this function is removed in the commit ("RDMA/umem: Move
-> to allocate SG table from pages"). Now I add it back.
+> @Alexander Duyck, please update me if I can add your ROB tag again
+> to the series, because you liked v6 more.
 >
-> The new function is ib_umem_get to ib_umem_hugepage_get that calls
-> ib_umem_add_sg_table.
+> Thanks
 >
-> This function ib_umem_huagepage_get can get 4K, 2M sg list dma address.
->
-> Fixes: 0c16d9635e3a ("RDMA/umem: Move to allocate SG table from pages")
-> Signed-off-by: Zhu Yanjun <zyjzyj2000@gmail.com>
-> ---
->  drivers/infiniband/core/umem.c | 197 +++++++++++++++++++++++++++++++++
->  include/rdma/ib_umem.h         |   3 +
->  2 files changed, 200 insertions(+)
+> ---------------------------------------------------------------------------------
+> Changelog
+> v7:
+>  * Rebase on top v5.12-rc1
+>  * More english fixes
+>  * Returned to static sysfs creation model as was implemented in v0/v1.
 
-You didn't use newly introduced function and didn't really explain why
-it is needed.
+Yeah, so I am not a fan of the series. The problem is there is only
+one driver that supports this, all VFs are going to expose this sysfs,
+and I don't know how likely it is that any others are going to
+implement this functionality. I feel like you threw out all the
+progress from v2-v6.
 
-Thanks
+I really feel like the big issue is that this model is broken as you
+have the VFs exposing sysfs interfaces that make use of the PFs to
+actually implement. Greg's complaint was the PF pushing sysfs onto the
+VFs. My complaint is VFs sysfs files operating on the PF. The trick is
+to find a way to address both issues.
+
+Maybe the compromise is to reach down into the IOV code and have it
+register the sysfs interface at device creation time in something like
+pci_iov_sysfs_link if the PF has the functionality present to support
+it.
+
+Also we might want to double check that the PF cannot be unbound while
+the VF is present. I know for a while there it was possible to remove
+the PF driver while the VF was present. The Mellanox drivers may not
+allow it but it might not hurt to look at taking a reference against
+the PF driver if you are allocating the VF MSI-X configuration sysfs
+file.
