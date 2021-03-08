@@ -2,142 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA94D3315E0
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Mar 2021 19:24:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C6033171D
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Mar 2021 20:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbhCHSYH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Mar 2021 13:24:07 -0500
-Received: from mail-dm6nam11on2076.outbound.protection.outlook.com ([40.107.223.76]:42240
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229775AbhCHSXo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:23:44 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mOApJggLRepivMckRZCbdGWg8PLPQ6G7yfEcQOw8PbfMSl4fC0FrPyKgNtWbg3U1apLscKK4V6MwrbHHFqFiakx17CR95yn0Bf0PMizNvpGrQrHp1W8FCdKPfZYJaSNKA4/vM/BPTx63rZHffePW8UIqeKLl4uCq2qyxyzruH1FTemD+gXYaGd+rpG7gk/z8eeZX+Ub2KHItdfy9tAZiVhJ1EKR+hIXUOYRxhPdE6JRIwyXJ0G9+5yWyhMJ6ZLM9atncwuSfJxVCvEpbuJ//1FiU1l8hKYRhHAzVKsINHHvW3kpsrz1JE0wskPpRHiLovrdrvjQCN5BhhVK503Cxew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BOyjHZzv38LdhpRmhtoifbdS6BFOY3aKVTfUCe1n9Jc=;
- b=mU6cUjWxjgep2mnm1K4x8+wA60FjjE4LIX9KNyDEYqMEqOgicskN8wLISSPULcfHxOl1VWxWG8+ILrVRP85WCOUUQ6e3ThAeULdgcx3d/+iGjQix833+dLkxEOWftAflNqI31d2Ct9W4fJ/m3tykcGPM6184WPTTeOxak/Y/tVcPX6tcyybhWFf5H5cWCZGuv5rcI4TVhuLMfVh3zaJDTSpHOZhTjCkHoihnVlKNRZsrGRRukd6B+mDk+DcTFrSba7gyiLnMrZBmy3zDNBPvs1HCh4mMUdGpiap6UuhDEN3qO3j3iWzlH99lnjMi0by6hxiUlJQMa+Q+WGoasz9PyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BOyjHZzv38LdhpRmhtoifbdS6BFOY3aKVTfUCe1n9Jc=;
- b=ZtqFOjhexK8S/ob2RPWLYRkrPRnWaakv4jshFU/wcLqDSpjG32mQsEBvZ7YqeWt4O4wymYQK6QyDAgUH2TPr1WPgQ2o67IZ1iAkiWTzxPAwrSsJQ09Yqcnmbku93MwAXmkXRZ/vkheWa+zMwHs9WHa3VjmCWHZNuVE2rVmD+E2w=
-Received: from DM6PR12CA0034.namprd12.prod.outlook.com (2603:10b6:5:1c0::47)
- by MWHPR1201MB0205.namprd12.prod.outlook.com (2603:10b6:301:4e::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.26; Mon, 8 Mar
- 2021 18:23:39 +0000
-Received: from DM6NAM11FT066.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:1c0:cafe::42) by DM6PR12CA0034.outlook.office365.com
- (2603:10b6:5:1c0::47) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend
- Transport; Mon, 8 Mar 2021 18:23:39 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT066.mail.protection.outlook.com (10.13.173.179) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3912.17 via Frontend Transport; Mon, 8 Mar 2021 18:23:38 +0000
-Received: from [172.27.13.167] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 8 Mar
- 2021 18:23:35 +0000
-Subject: Re: [PATCH] net/mlx5e: include net/nexthop.h where needed
-To:     Arnd Bergmann <arnd@kernel.org>,
+        id S230517AbhCHTUz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 8 Mar 2021 14:20:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229790AbhCHTUt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 8 Mar 2021 14:20:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 996216529E;
+        Mon,  8 Mar 2021 19:20:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615231249;
+        bh=esK9fkuRMWQjIb5nJglJWhNgHT/wvvo1endmAFKzgWA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M9XShbf/F0QT4XNnppXFxIhDqbxY+3ueSye/Q70v+fQv6HJauRHkLkOkZ/rGoIU4g
+         w15sNA3cIapggePoVAkZP0gpaUipJchpGPP3KSNMWj4DqTznQ8eOZGbAoE0x0QxsEm
+         05m/sfhsa9edv1Mv/Zfqje4bwbg+EPv2nSm5OGWpY5j+s1GQaJcGj0WXqf/de2CLzh
+         NN+/+HCGy193e+qAieWg2E0DIokIWAUtVpBL/tgJC1YUV0Ob7lxHpwrCVn/oIA1iK7
+         2/xypvvHYaQgY4i0l9Sn3zPeYvNik7CyFobBU3Tep5NvOMX73hEVGv7RqZbx21NFJY
+         XfpDoUTDaEFdw==
+Date:   Mon, 8 Mar 2021 21:20:45 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
-        "Leon Romanovsky" <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Dmytro Linkin <dlinkin@nvidia.com>,
-        Vlad Buslov <vladbu@nvidia.com>
-CC:     Arnd Bergmann <arnd@arndb.de>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210308153143.2392122-1-arnd@kernel.org>
-From:   Roi Dayan <roid@nvidia.com>
-Message-ID: <5fd5e630-0db2-f83b-63c8-265c4ac372e8@nvidia.com>
-Date:   Mon, 8 Mar 2021 20:23:32 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
+Message-ID: <YEZ5DRk19Gag06nq@unreal>
+References: <20210301075524.441609-1-leon@kernel.org>
+ <CAKgT0Ue=g+1pZCct8Kd0OnkPEP0qhggBF96s=noDoWHMJTL6FA@mail.gmail.com>
+ <YEUnVcW+lIXBlqT1@unreal>
+ <CAKgT0UdzjeD7fnE6kX2qN6V4ZddSV2ZMnONEwGXhwkSwoUXUug@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210308153143.2392122-1-arnd@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0d62fecb-1a7f-4fd2-392a-08d8e25f4b51
-X-MS-TrafficTypeDiagnostic: MWHPR1201MB0205:
-X-Microsoft-Antispam-PRVS: <MWHPR1201MB0205D244E1491112AC6DDAB6B8939@MWHPR1201MB0205.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:126;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9ttofbVBvnsuMVXoIghk+icP+RRdNnJi8GhsEWhpyu/fYmb1CAWXCG/Ked1WssoHGuyItJjF9a0mbp1uUS2Gn3v9+DJwJzQXl4FYleFQfaR4fVCewRQ55FJDdgZgNvGIh4hC8igvuNq52o8id6hugw86xxm3l1KfZgQR4/ph9OvjsTkiU3iItEo6Sl4u36xJGUydObENhePyvMDjoAudol34PamdcRMz3tKWJ58zgEedOdpXRa7N+vNEgG6ez5pj9w185sAFA/MZaeWaDi8yrI4ObjnbKUzI2NrvvwH+PJvraqabcfc9Z62sApwMX70TikdgI6gFn7JPmfTm+BiTyU6hE3mPmcWn/6Y8/YkwmRfZUWsPQkt9/MW0C5YKsBJUC9DRm1lRFyuAflfowwd9Wn7S27m0MKdxz4IMUbKuO7BPAkkSXSbVUbox7/l+yOXfJscR4EWihRwoQyBN32qfuWvODE7Gg13js9TpjDdamJUap8Q/jpcixjWj3coK31oVLsrx2GtyDw1S8LirG6t5UwBrlwTMjLCcfyIP80o/3/UInTQZcFzZoWeJ2nKUS00nSw1mQmKMEpp2JbP1rSWoNn8a15mPJGp0bTWCgK5Tv8nxFS9h4hfSVTgS+LPl6zZnxleMz8slC7UG/SMWxYA4by7L5m1RO9yXh1+UAhW3vR+ZHTMjDK43PrPCNskc+uPW/2FxD5QhYMe593JEmSmE2+t25YL8hk8ISjUvAZpBruU=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(346002)(376002)(46966006)(36840700001)(426003)(7636003)(6636002)(186003)(16526019)(356005)(53546011)(47076005)(83380400001)(70586007)(31696002)(5660300002)(70206006)(6666004)(34020700004)(82310400003)(36756003)(54906003)(36860700001)(2906002)(26005)(86362001)(8676002)(8936002)(4326008)(478600001)(16576012)(110136005)(2616005)(36906005)(336012)(316002)(82740400003)(31686004)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 18:23:38.5190
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d62fecb-1a7f-4fd2-392a-08d8e25f4b51
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT066.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0205
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKgT0UdzjeD7fnE6kX2qN6V4ZddSV2ZMnONEwGXhwkSwoUXUug@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Mar 08, 2021 at 08:33:03AM -0800, Alexander Duyck wrote:
+> On Sun, Mar 7, 2021 at 11:19 AM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Sun, Mar 07, 2021 at 10:55:24AM -0800, Alexander Duyck wrote:
+> > > On Sun, Feb 28, 2021 at 11:55 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > From: Leon Romanovsky <leonro@nvidia.com>
+> > > >
+> > > > @Alexander Duyck, please update me if I can add your ROB tag again
+> > > > to the series, because you liked v6 more.
+> > > >
+> > > > Thanks
+> > > >
+> > > > ---------------------------------------------------------------------------------
+> > > > Changelog
+> > > > v7:
+> > > >  * Rebase on top v5.12-rc1
+> > > >  * More english fixes
+> > > >  * Returned to static sysfs creation model as was implemented in v0/v1.
+> > >
+> > > Yeah, so I am not a fan of the series. The problem is there is only
+> > > one driver that supports this, all VFs are going to expose this sysfs,
+> > > and I don't know how likely it is that any others are going to
+> > > implement this functionality. I feel like you threw out all the
+> > > progress from v2-v6.
+> >
+> > I'm with you here and tried to present the rationale in v6 when had
+> > a discussion with Bjorn, so it is unfair to say "you threw out".
+> >
+> > Bjorn expressed his preference, and no one came forward to support v6.
+>
+> Sorry, it wasn't my intention to be accusatory. I'm just not a fan of
+> going back to where we were with v1.
+>
+> With that said, if it is what Bjorn wants then you are probably better
+> off going with that. However if that is the direction we are going in
+> then you should probably focus on getting his Reviewed-by or Ack since
+> he will ultimately be the maintainer for the code.
 
+I hope that he will do it soon.
 
-On 2021-03-08 5:31 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:1510:12: error: implicit declaration of function 'fib_info_nh' [-Werror,-Wimplicit-function-declaration]
->          fib_dev = fib_info_nh(fen_info->fi, 0)->fib_nh_dev;
->                    ^
-> drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c:1510:12: note: did you mean 'fib_info_put'?
-> include/net/ip_fib.h:529:20: note: 'fib_info_put' declared here
-> static inline void fib_info_put(struct fib_info *fi)
->                     ^
-> 
-> Fixes: 8914add2c9e5 ("net/mlx5e: Handle FIB events to update tunnel endpoint device")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
-> index 6a116335bb21..32d06fe94acc 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
-> @@ -2,6 +2,7 @@
->   /* Copyright (c) 2021 Mellanox Technologies. */
->   
->   #include <net/fib_notifier.h>
-> +#include <net/nexthop.h>
->   #include "tc_tun_encap.h"
->   #include "en_tc.h"
->   #include "tc_tun.h"
-> 
+>
+> > >
+> > > I really feel like the big issue is that this model is broken as you
+> > > have the VFs exposing sysfs interfaces that make use of the PFs to
+> > > actually implement. Greg's complaint was the PF pushing sysfs onto the
+> > > VFs. My complaint is VFs sysfs files operating on the PF. The trick is
+> > > to find a way to address both issues.
+> >
+> > It is hard to say something meaningful about Greg's complain, he was
+> > added in the middle of the discussion without much chances to get full
+> > picture.
+>
+> Right, but what I am getting at is that the underlying problem is that
+> you either have sysfs being pushed onto a remote device, or sysfs that
+> is having to call into another device. It's not exactly something we
+> have had precedent for enabling before, and either perspective seems a
+> bit ugly.
 
-Hi,
+I don't agree with the word "ugly", but it is not the point. The point
+is that this interface is backed by the ecosystem and must-to-be for the
+right SR-IOV utilization.
 
-I see internally we have a pending commit from Vlad fixing this already,
-with few more fixes. "net/mlx5e: Add missing include"
+>
+> > >
+> > > Maybe the compromise is to reach down into the IOV code and have it
+> > > register the sysfs interface at device creation time in something like
+> > > pci_iov_sysfs_link if the PF has the functionality present to support
+> > > it.
+> >
+> > IMHO, it adds nothing.
+>
+> My thought was to reduce clutter. As I mentioned before with this
+> patch set we are enabling sysfs for functionality that is currently
+> only exposed by one device. I'm not sure it will be used by many
+> others or not. Having these sysfs interfaces instantiated at probe
+> time or at creation time in the case of VFs was preferable to me.
 
-I'll check why it's being held.
+I said that in v6 to Bjorn, that I expect up to 2-3 vendors to support
+this knob. There are not many devices in the market that are comparable
+to the mlx5 both in their complexity and adoption.
 
-Thanks,
-Roi
+Thanks
