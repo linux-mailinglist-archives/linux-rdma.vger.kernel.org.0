@@ -2,96 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D512F3333CC
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Mar 2021 04:24:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4984B33359E
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Mar 2021 06:59:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbhCJDXz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Mar 2021 22:23:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbhCJDXx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Mar 2021 22:23:53 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50148C06174A;
-        Tue,  9 Mar 2021 19:23:53 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id w34so9379806pga.8;
-        Tue, 09 Mar 2021 19:23:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8hA7wtjwuNH7u9wE5uEObveYbpFZk4PFtn0QcrJql60=;
-        b=N9Zebae1FzfVHaSElKX3p7qRNUCBolcLuHG6oIt7iNPhe8IzRI+hDjwQr0tCE99Sw7
-         LXOy7JAPpA60WQdanDKaz8UDkCzQyImsojjx/IPOO3dXBCG1T71fIvZsloLnOkRytEAq
-         YVfeG3ZT744WC7olcHYaQ/ROqZE5jb3r5X5on8pWYbLw4z+mZ0xL7aHq9SfIYklgQjTK
-         y1JYh6s6TEnRWY8tTvVQ15nXbHGXoLwGVLXGSNQrp3/i4yOppLUKAdPSOTpSf46TsBL4
-         VbfMRGmNEZtdz0k6SEgN0quSc19Ktv7Mxq9CD94jdxwMFi2T/zbEsl68xWPh/vEMX/7A
-         IZWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8hA7wtjwuNH7u9wE5uEObveYbpFZk4PFtn0QcrJql60=;
-        b=p8TLotDAllgnQP94/8UJ1tNXWcSmbV0NREhtTGcZJHfYolvSzdDOq8BQVIzCLG8MEY
-         3XWuRnVBeRDtH5X+n+UHCSnp8TEV9uKNS5a8SC0Nik9KnbpkgqIOLPMyUigMsmPedzWR
-         FBm+YoIAQfw+e1MVE+YJoimP1TQMClZkik83QbuvsnpvvqGkOb94s+OAUSBgmIPjkPyV
-         am9MXKxsGxsWxR5wwr10T3p8GE4DZ6lIMlMtgBEBmUk3HMs3NyPvtafz7e0T5JGqobLa
-         6EhoYayXc5DsMA904HR9qur6Kq7CfGZkkJAZq7vjsY24bMGJgvvxz5dtrA7Gz4zSeJ2Z
-         aS7Q==
-X-Gm-Message-State: AOAM533SZILvW2FVZpH4dASEVasvJ/HT+E3U3xiBL9x4G6zV1WNvyb9J
-        1ku1sKc9I5Pk1OT/Ty8z5cY=
-X-Google-Smtp-Source: ABdhPJzRKnJby6GkJhDQWYHW/XdrRCpWIwNdP/Rv6DNdVrvRPEqjeV2Mi58JCL7B+YYqu92Qy2RCyg==
-X-Received: by 2002:a62:38d7:0:b029:1fb:2382:57b0 with SMTP id f206-20020a6238d70000b02901fb238257b0mr1091836pfa.10.1615346632724;
-        Tue, 09 Mar 2021 19:23:52 -0800 (PST)
-Received: from localhost.localdomain ([122.10.161.207])
-        by smtp.gmail.com with ESMTPSA id mu6sm4073456pjb.35.2021.03.09.19.23.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Mar 2021 19:23:52 -0800 (PST)
-From:   Yejune Deng <yejune.deng@gmail.com>
-To:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        yejune.deng@gmail.com
-Subject: [PATCH] net/rds: Drop duplicate sin and sin6 assignments
-Date:   Wed, 10 Mar 2021 11:23:43 +0800
-Message-Id: <20210310032343.101732-1-yejune.deng@gmail.com>
-X-Mailer: git-send-email 2.29.0
+        id S230437AbhCJF6s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Mar 2021 00:58:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230373AbhCJF6e (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 10 Mar 2021 00:58:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BECE64FEF;
+        Wed, 10 Mar 2021 05:58:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615355914;
+        bh=oKAzncBdG8ATSVc9xU+M2M2wid2Yp5AptqtxCYKZt7I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e9hlh0OjilzV7vVhu7KfBVDWN5a+KpzIFgSivBW0Ej1H3h4C7GUykufOavoqAi9Zq
+         zHPcoHudR4265ahRikuTewj0VzZx1a0ADW7xgrPH3jwuFQoL/wFSVcEk30Pd5K6jY7
+         UI7Fbd2grkDRtxDp3prQZc74ZSOayzEQxAovtLfc5IPdIV+5yBigXRlxmp5K3BNQat
+         rbVyDOKIhjFc7RDuCn9G43TUMWt0uz7V4hY8OlRl+i+7BTwCSbYqxvlk4Ld7TwKof2
+         ijniBYokBe8h5oTd8nmRfOtlNYne/zXJAltm8m8Z/99EY2AmjwvTJ4KOpX4lkD0NcD
+         FsOUZtUoBgZLw==
+Date:   Wed, 10 Mar 2021 07:58:30 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
+Message-ID: <YEhgBlWIfxu6Hjl/@unreal>
+References: <20210301075524.441609-1-leon@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210301075524.441609-1-leon@kernel.org>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There is no need to assign the msg->msg_name to sin or sin6,
-because there is DECLARE_SOCKADDR statement.
+On Mon, Mar 01, 2021 at 09:55:20AM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
----
- net/rds/recv.c | 4 ----
- 1 file changed, 4 deletions(-)
+<...>
 
-diff --git a/net/rds/recv.c b/net/rds/recv.c
-index aba4afe4dfed..4db109fb6ec2 100644
---- a/net/rds/recv.c
-+++ b/net/rds/recv.c
-@@ -722,8 +722,6 @@ int rds_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 
- 		if (msg->msg_name) {
- 			if (ipv6_addr_v4mapped(&inc->i_saddr)) {
--				sin = (struct sockaddr_in *)msg->msg_name;
--
- 				sin->sin_family = AF_INET;
- 				sin->sin_port = inc->i_hdr.h_sport;
- 				sin->sin_addr.s_addr =
-@@ -731,8 +729,6 @@ int rds_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 				memset(sin->sin_zero, 0, sizeof(sin->sin_zero));
- 				msg->msg_namelen = sizeof(*sin);
- 			} else {
--				sin6 = (struct sockaddr_in6 *)msg->msg_name;
--
- 				sin6->sin6_family = AF_INET6;
- 				sin6->sin6_port = inc->i_hdr.h_sport;
- 				sin6->sin6_addr = inc->i_saddr;
--- 
-2.29.0
+> Leon Romanovsky (4):
+>   PCI: Add a sysfs file to change the MSI-X table size of SR-IOV VFs
+>   net/mlx5: Add dynamic MSI-X capabilities bits
+>   net/mlx5: Dynamically assign MSI-X vectors count
+>   net/mlx5: Implement sriov_get_vf_total_msix/count() callbacks
 
+Bjorn,
+
+This is gentle reminder, can we please progress with this series?
+
+Thanks
+
+>
+>  Documentation/ABI/testing/sysfs-bus-pci       |  29 +++++
+>  .../net/ethernet/mellanox/mlx5/core/main.c    |   6 ++
+>  .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  12 +++
+>  .../net/ethernet/mellanox/mlx5/core/pci_irq.c |  73 +++++++++++++
+>  .../net/ethernet/mellanox/mlx5/core/sriov.c   |  48 ++++++++-
+>  drivers/pci/iov.c                             | 102 ++++++++++++++++--
+>  drivers/pci/pci-sysfs.c                       |   3 +-
+>  drivers/pci/pci.h                             |   3 +-
+>  include/linux/mlx5/mlx5_ifc.h                 |  11 +-
+>  include/linux/pci.h                           |   8 ++
+>  10 files changed, 284 insertions(+), 11 deletions(-)
+>
+> --
+> 2.29.2
+>
