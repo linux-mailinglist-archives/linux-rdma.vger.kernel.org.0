@@ -2,68 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0475333FCF
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Mar 2021 15:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF7533475D
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Mar 2021 20:04:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbhCJOBj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Mar 2021 09:01:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232714AbhCJOBU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Mar 2021 09:01:20 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01963C061761
-        for <linux-rdma@vger.kernel.org>; Wed, 10 Mar 2021 06:01:20 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id hs11so38917076ejc.1
-        for <linux-rdma@vger.kernel.org>; Wed, 10 Mar 2021 06:01:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=5rh8dKjg0pKk0KNWl2xSO7nhxy+c296f7suB18dXI8U=;
-        b=NRys/JVgIifMs/VJcA3qxZwyt7VHc80TVQPtrFTbXgnYmg8X2NJt4edDx/oy8xJfnH
-         4kEmg4xqymUo4bKVUZW8evb4ZssZYn1ao9fRmO9Ck+QolrGB1zpVvCvr0duPidoqchwp
-         5FWub1ITyXlRu4HialhPIglQCOksUcjnUPeAoyujqqXO0Q6QGB6TQSyfy20nPZTjztiQ
-         FmRJPN3FkWLk5WgQ335YqhGCu2MsIivQcU3lNJinLxDDa0cSv/2C5ccHGH2/lL7Yw7pJ
-         gvMfL+h4VRj8so8S0SkRRWYiz6NWJ6piGdDnyePVglxIMevfIr8276fGtegf2ApQXI8q
-         OCmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=5rh8dKjg0pKk0KNWl2xSO7nhxy+c296f7suB18dXI8U=;
-        b=nEaWdyj4TFZd2bFWea7B2trPBzb+NCut2uIxSLKF4hDesJ3/a31l4214UZWrYbTeqq
-         caLpc0VrFkE/O/yfXCuUPINCZKyjRk786JIH8Ln0kAhuEcdO9s0HqeglhMEhWYY8KD7b
-         Qcx5/2IbtPj829dfEYx6oTlDzSXi3pyvb917BqplsaanQWJOTRmK2iWDbzKqnRgu/pFB
-         S047ePl2HRdn2tvmCoW0inGmATUSLASegWMRhahitezu7wA2uuhk1oMq9ZNDs30qaQkQ
-         qRKP4vwmzyIFQ425rQ+YHrnrHxB9422Jg1GdEOvhw/1iekJAQ9h6Qwtpf84Q80rQztKM
-         UXYQ==
-X-Gm-Message-State: AOAM531SLK1vRXhrHsL3dGd2mzJCgEI3De1HTZQeVA/AoQAHy/SbmVvl
-        9bdDbq7N17ZNDJ90exXD9/bDhvWXIkObtIwlIfU=
-X-Google-Smtp-Source: ABdhPJytB6NSUorcr8eD+98rcO1p2jWS4nnEquxcHuUcQVP4Yz7JOZD4wvG5FyttQxluaKz/5Hl+LY+4JZqDHnAyKfE=
-X-Received: by 2002:a17:906:959:: with SMTP id j25mr3813128ejd.553.1615384874534;
- Wed, 10 Mar 2021 06:01:14 -0800 (PST)
+        id S233658AbhCJTER (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Mar 2021 14:04:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233713AbhCJTDx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 10 Mar 2021 14:03:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0DA564F9F;
+        Wed, 10 Mar 2021 19:03:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615403033;
+        bh=gXP8fqrwmuoJZ8StPMD/bAH+C87Nm40JGzAL18TqZew=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PVknQUbUl0x4gRcTW6+EBJLSTOZdV0R1q+JHetnDZLSOuSg0PEQJg3itZifZizt3B
+         vS1aoQGW7m5khoo1cZE+gY8Jz3JaG1Rb5XNAszinG/mgsFWbXZOOI20mJIfa3FrfZM
+         ydAi1uTfWr0yfkCN7/cKUMtZtVOVt01IbUKvBbmbFS+bdsWycUbsBnc2m/Pawg+Afh
+         qJjaZ9v33pUbV+Fsc796fR7A4umVhFiW2+kbsKfzwrFHJHXBq8sbEBClAiwkihvPK4
+         1Lzy47Do6BE6RKrzOVthXXxp2RvfpnuIB9c3i5pBWfPnCcKrtweiK/dqDjxDgNiYmx
+         2pYcfgI/8rg/A==
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [pull request][net 00/18] mlx5 fixes 2021-03-10
+Date:   Wed, 10 Mar 2021 11:03:24 -0800
+Message-Id: <20210310190342.238957-1-saeed@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Received: by 2002:ab4:92c3:0:0:0:0:0 with HTTP; Wed, 10 Mar 2021 06:01:13
- -0800 (PST)
-From:   JOHN UMAH <pastorjohnumnewaposchurch@gmail.com>
-Date:   Wed, 10 Mar 2021 14:01:13 +0000
-Message-ID: <CANw=0K6gD7r=Jz8gnsZbVAu7YRVEpo9uYzpqYSAnfTz2LtBBFg@mail.gmail.com>
-Subject: Caleb Leo Foundation,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Caleb Leo Foundation
-1501 K St NWWashington DC 20005
-United States of America
-You've received $ 1,300,000 from the Calab Leo Foundation course
-Humanitarian aid / poverty reduction program.
-In the case of claims for this gift, please fill in the following form;
+From: Saeed Mahameed <saeedm@nvidia.com>
 
-Full name:
-Telephone number:
-State:
-Country:
-kindly respond for more details.
-in God We Trust.
+Hi Dave, Jakub
+
+This series introduces some fixes to mlx5 driver.
+Please pull and let me know if there is any problem.
+
+Thanks,
+Saeed.
+
+---
+The following changes since commit 05a59d79793d482f628a31753c671f2e92178a21:
+
+  Merge git://git.kernel.org:/pub/scm/linux/kernel/git/netdev/net (2021-03-09 17:15:56 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux.git tags/mlx5-fixes-2021-03-10
+
+for you to fetch changes up to 84076c4c800d1be77199a139d65b8b136a61422e:
+
+  net/mlx5: DR, Fix potential shift wrapping of 32-bit value in STEv1 getter (2021-03-10 11:01:59 -0800)
+
+----------------------------------------------------------------
+mlx5-fixes-2021-03-10
+
+----------------------------------------------------------------
+Aya Levin (3):
+      net/mlx5e: Accumulate port PTP TX stats with other channels stats
+      net/mlx5e: Set PTP channel pointer explicitly to NULL
+      net/mlx5: Fix turn-off PPS command
+
+Maor Dickman (2):
+      net/mlx5e: Don't match on Geneve options in case option masks are all zero
+      net/mlx5: Disable VF tunnel TX offload if ignore_flow_level isn't supported
+
+Maor Gottlieb (2):
+      net/mlx5: Set QP timestamp mode to default
+      RDMA/mlx5: Fix timestamp default mode
+
+Maxim Mikityanskiy (2):
+      net/mlx5e: When changing XDP program without reset, take refs for XSK RQs
+      net/mlx5e: Revert parameters on errors when changing PTP state without reset
+
+Parav Pandit (2):
+      net/mlx5e: E-switch, Fix rate calculation division
+      net/mlx5: SF, Correct vhca context size
+
+Roi Dayan (2):
+      net/mlx5e: Check correct ip_version in decapsulation route resolution
+      net/mlx5e: Fix error flow in change profile
+
+Shay Drory (2):
+      net/mlx5: SF: Fix memory leak of work item
+      net/mlx5: SF: Fix error flow of SFs allocation flow
+
+Tariq Toukan (2):
+      net/mlx5e: Enforce minimum value check for ICOSQ size
+      net/mlx5e: RX, Mind the MPWQE gaps when calculating offsets
+
+Yevgeny Kliteynik (1):
+      net/mlx5: DR, Fix potential shift wrapping of 32-bit value in STEv1 getter
+
+ drivers/infiniband/hw/mlx5/qp.c                    | 18 ++++--
+ drivers/net/ethernet/mellanox/mlx5/core/en.h       |  7 ++-
+ .../net/ethernet/mellanox/mlx5/core/en/tc_tun.c    |  8 +--
+ .../ethernet/mellanox/mlx5/core/en/tc_tun_encap.c  |  3 +-
+ .../ethernet/mellanox/mlx5/core/en/tc_tun_geneve.c |  4 ++
+ .../net/ethernet/mellanox/mlx5/core/en_ethtool.c   |  5 ++
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c  | 69 ++++++++++++++--------
+ drivers/net/ethernet/mellanox/mlx5/core/en_rx.c    |  4 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c    |  3 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.h    |  1 +
+ .../ethernet/mellanox/mlx5/core/eswitch_offloads.c |  3 +-
+ .../net/ethernet/mellanox/mlx5/core/fpga/conn.c    |  1 +
+ .../net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c  |  4 +-
+ .../net/ethernet/mellanox/mlx5/core/lib/clock.c    |  8 +--
+ .../net/ethernet/mellanox/mlx5/core/sf/hw_table.c  |  2 +-
+ .../mellanox/mlx5/core/sf/mlx5_ifc_vhca_event.h    |  2 +-
+ .../ethernet/mellanox/mlx5/core/sf/vhca_event.c    |  1 +
+ .../ethernet/mellanox/mlx5/core/steering/dr_send.c |  1 +
+ .../mellanox/mlx5/core/steering/dr_ste_v1.c        |  4 +-
+ include/linux/mlx5/qp.h                            |  7 +++
+ 20 files changed, 106 insertions(+), 49 deletions(-)
