@@ -2,209 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E285337CAF
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Mar 2021 19:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E99A337D7C
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Mar 2021 20:17:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhCKScm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Mar 2021 13:32:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33200 "EHLO mail.kernel.org"
+        id S229900AbhCKTQf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Mar 2021 14:16:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230162AbhCKScj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 11 Mar 2021 13:32:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BED564FEF;
-        Thu, 11 Mar 2021 18:32:32 +0000 (UTC)
-Subject: [PATCH] svcrdma: Revert "svcrdma: Reduce Receive doorbell rate"
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Date:   Thu, 11 Mar 2021 13:32:31 -0500
-Message-ID: <161548755089.1565.6879184359338461328.stgit@klimt.1015granger.net>
-User-Agent: StGit/1.0-5-g755c
+        id S229520AbhCKTQH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 11 Mar 2021 14:16:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9FC164EF2;
+        Thu, 11 Mar 2021 19:16:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615490165;
+        bh=nKWwGiGO6+FXiSkDFk2w1sq4arv1V6JlzszSg8Y7QMk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QCTE5HITElA7vkXUnbkkVn25zFyNucD5HJhhQSQBkXcg70gMTjEECxGHBXChGk79g
+         Lm3gzOD8AsvbZ5OMcOgcOED9ANxr2HB18+o11euDlZ9yHps5RflUgDPbD7ZC+3djP1
+         jJxh/ojDT0tXtzdUK0j5tXQ2K4g24gkCN1+ftlMctQg8R/bFRTPCOdK5P+c+/yjcBf
+         UxjoKlGGsp32pXrnTS8W4Je9VbF/S5mFvfDf9pUjuW0W6gRnZrpscoGD8bpcA256MK
+         HFqluwZME3NoLOHpQ/+2aM/qE3CDUZMNuMQFbpAVYJ40ikBbQiagHQa5NW2zB+FqgN
+         +jzD2jkB1MvBQ==
+Date:   Thu, 11 Mar 2021 12:16:02 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
+Message-ID: <20210311191602.GA36893@C02WT3WMHTD6>
+References: <CAKgT0UevrCLSQp=dNiHXWFu=10OiPb5PPgP1ZkPN1uKHfD=zBQ@mail.gmail.com>
+ <20210311181729.GA2148230@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311181729.GA2148230@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-I tested commit 43042b90cae1 ("svcrdma: Reduce Receive doorbell
-rate") with mlx4 (IB) and software iWARP and didn't find any
-issues. However, I recently got my hardware iWARP setup back on
-line (FastLinQ) and it's crashing hard on this commit (confirmed
-via bisect).
+On Thu, Mar 11, 2021 at 12:17:29PM -0600, Bjorn Helgaas wrote:
+> On Wed, Mar 10, 2021 at 03:34:01PM -0800, Alexander Duyck wrote:
+> > 
+> > I'm not so much worried about management software as the fact that
+> > this is a vendor specific implementation detail that is shaping how
+> > the kernel interfaces are meant to work. Other than the mlx5 I don't
+> > know if there are any other vendors really onboard with this sort of
+> > solution.
+> 
+> I know this is currently vendor-specific, but I thought the value
+> proposition of dynamic configuration of VFs for different clients
+> sounded compelling enough that other vendors would do something
+> similar.  But I'm not an SR-IOV guy and have no vendor insight, so
+> maybe that's not the case?
 
-The failure mode is complex.
- - After a connection is established, the first Receive completes
-   normally.
- - But the second and third Receives have garbage in their Receive
-   buffers. The server responds with ERR_VERS as a result.
- - When the client tears down the connection to retry, a couple
-   of posted Receives flush twice, and that corrupts the recv_ctxt
-   free list.
- - __svc_rdma_free then faults or loops infinitely while destroying
-   the xprt's recv_ctxts.
-
-Since 43042b90cae1 ("svcrdma: Reduce Receive doorbell rate") does
-not fix a bug but is a scalability enhancement, it's safe and
-appropriate to revert it while working on a replacement.
-
-Fixes: 43042b90cae1 ("svcrdma: Reduce Receive doorbell rate")
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- include/linux/sunrpc/svc_rdma.h         |    1 
- net/sunrpc/xprtrdma/svc_rdma_recvfrom.c |   82 +++++++++++++++----------------
- 2 files changed, 39 insertions(+), 44 deletions(-)
-
-diff --git a/include/linux/sunrpc/svc_rdma.h b/include/linux/sunrpc/svc_rdma.h
-index 7c693b31965e..1e76ed688044 100644
---- a/include/linux/sunrpc/svc_rdma.h
-+++ b/include/linux/sunrpc/svc_rdma.h
-@@ -104,7 +104,6 @@ struct svcxprt_rdma {
- 
- 	wait_queue_head_t    sc_send_wait;	/* SQ exhaustion waitlist */
- 	unsigned long	     sc_flags;
--	u32		     sc_pending_recvs;
- 	struct list_head     sc_read_complete_q;
- 	struct work_struct   sc_work;
- 
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-index 6d28f23ceb35..7d34290e2ff8 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-@@ -266,46 +266,33 @@ void svc_rdma_release_rqst(struct svc_rqst *rqstp)
- 		svc_rdma_recv_ctxt_put(rdma, ctxt);
- }
- 
--static bool svc_rdma_refresh_recvs(struct svcxprt_rdma *rdma,
--				   unsigned int wanted, bool temp)
-+static int __svc_rdma_post_recv(struct svcxprt_rdma *rdma,
-+				struct svc_rdma_recv_ctxt *ctxt)
- {
--	const struct ib_recv_wr *bad_wr = NULL;
--	struct svc_rdma_recv_ctxt *ctxt;
--	struct ib_recv_wr *recv_chain;
- 	int ret;
- 
--	recv_chain = NULL;
--	while (wanted--) {
--		ctxt = svc_rdma_recv_ctxt_get(rdma);
--		if (!ctxt)
--			break;
--
--		trace_svcrdma_post_recv(ctxt);
--		ctxt->rc_temp = temp;
--		ctxt->rc_recv_wr.next = recv_chain;
--		recv_chain = &ctxt->rc_recv_wr;
--		rdma->sc_pending_recvs++;
--	}
--	if (!recv_chain)
--		return false;
--
--	ret = ib_post_recv(rdma->sc_qp, recv_chain, &bad_wr);
-+	trace_svcrdma_post_recv(ctxt);
-+	ret = ib_post_recv(rdma->sc_qp, &ctxt->rc_recv_wr, NULL);
- 	if (ret)
- 		goto err_post;
--	return true;
-+	return 0;
- 
- err_post:
--	while (bad_wr) {
--		ctxt = container_of(bad_wr, struct svc_rdma_recv_ctxt,
--				    rc_recv_wr);
--		bad_wr = bad_wr->next;
--		svc_rdma_recv_ctxt_put(rdma, ctxt);
--	}
--
- 	trace_svcrdma_rq_post_err(rdma, ret);
--	/* Since we're destroying the xprt, no need to reset
--	 * sc_pending_recvs. */
--	return false;
-+	svc_rdma_recv_ctxt_put(rdma, ctxt);
-+	return ret;
-+}
-+
-+static int svc_rdma_post_recv(struct svcxprt_rdma *rdma)
-+{
-+	struct svc_rdma_recv_ctxt *ctxt;
-+
-+	if (test_bit(XPT_CLOSE, &rdma->sc_xprt.xpt_flags))
-+		return 0;
-+	ctxt = svc_rdma_recv_ctxt_get(rdma);
-+	if (!ctxt)
-+		return -ENOMEM;
-+	return __svc_rdma_post_recv(rdma, ctxt);
- }
- 
- /**
-@@ -316,7 +303,20 @@ static bool svc_rdma_refresh_recvs(struct svcxprt_rdma *rdma,
-  */
- bool svc_rdma_post_recvs(struct svcxprt_rdma *rdma)
- {
--	return svc_rdma_refresh_recvs(rdma, rdma->sc_max_requests, true);
-+	struct svc_rdma_recv_ctxt *ctxt;
-+	unsigned int i;
-+	int ret;
-+
-+	for (i = 0; i < rdma->sc_max_requests; i++) {
-+		ctxt = svc_rdma_recv_ctxt_get(rdma);
-+		if (!ctxt)
-+			return false;
-+		ctxt->rc_temp = true;
-+		ret = __svc_rdma_post_recv(rdma, ctxt);
-+		if (ret)
-+			return false;
-+	}
-+	return true;
- }
- 
- /**
-@@ -324,6 +324,8 @@ bool svc_rdma_post_recvs(struct svcxprt_rdma *rdma)
-  * @cq: Completion Queue context
-  * @wc: Work Completion object
-  *
-+ * NB: The svc_xprt/svcxprt_rdma is pinned whenever it's possible that
-+ * the Receive completion handler could be running.
-  */
- static void svc_rdma_wc_receive(struct ib_cq *cq, struct ib_wc *wc)
- {
-@@ -331,8 +333,6 @@ static void svc_rdma_wc_receive(struct ib_cq *cq, struct ib_wc *wc)
- 	struct ib_cqe *cqe = wc->wr_cqe;
- 	struct svc_rdma_recv_ctxt *ctxt;
- 
--	rdma->sc_pending_recvs--;
--
- 	/* WARNING: Only wc->wr_cqe and wc->status are reliable */
- 	ctxt = container_of(cqe, struct svc_rdma_recv_ctxt, rc_cqe);
- 
-@@ -340,6 +340,9 @@ static void svc_rdma_wc_receive(struct ib_cq *cq, struct ib_wc *wc)
- 	if (wc->status != IB_WC_SUCCESS)
- 		goto flushed;
- 
-+	if (svc_rdma_post_recv(rdma))
-+		goto post_err;
-+
- 	/* All wc fields are now known to be valid */
- 	ctxt->rc_byte_len = wc->byte_len;
- 
-@@ -350,18 +353,11 @@ static void svc_rdma_wc_receive(struct ib_cq *cq, struct ib_wc *wc)
- 	spin_unlock(&rdma->sc_rq_dto_lock);
- 	if (!test_bit(RDMAXPRT_CONN_PENDING, &rdma->sc_flags))
- 		svc_xprt_enqueue(&rdma->sc_xprt);
--
--	if (!test_bit(XPT_CLOSE, &rdma->sc_xprt.xpt_flags) &&
--	    rdma->sc_pending_recvs < rdma->sc_max_requests)
--		if (!svc_rdma_refresh_recvs(rdma, RPCRDMA_MAX_RECV_BATCH,
--					    false))
--			goto post_err;
--
- 	return;
- 
- flushed:
--	svc_rdma_recv_ctxt_put(rdma, ctxt);
- post_err:
-+	svc_rdma_recv_ctxt_put(rdma, ctxt);
- 	set_bit(XPT_CLOSE, &rdma->sc_xprt.xpt_flags);
- 	svc_xprt_enqueue(&rdma->sc_xprt);
- }
-
-
+NVMe has a similar feature defined by the standard where a PF controller can
+dynamically assign MSIx vectors to VFs. The whole thing is managed in user
+space with an ioctl, though. I guess we could wire up the driver to handle it
+through this sysfs interface too, but I think the protocol specific tooling is
+more appropriate for nvme.
