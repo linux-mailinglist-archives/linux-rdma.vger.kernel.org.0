@@ -2,76 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928A8336EB5
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Mar 2021 10:22:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E826A337005
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Mar 2021 11:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbhCKJWV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Mar 2021 04:22:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231965AbhCKJWH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 11 Mar 2021 04:22:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 610A264E5F;
-        Thu, 11 Mar 2021 09:22:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615454527;
-        bh=QRVck+IIsi24TGqXEvxqoBtyhlaKGyxDG/OywFja2Vk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jdq0+S96sulLfadpU8BIgL3NRrGUddU63uusQBKkKf2lVLjDfRuRhb6Ncf1dvrwH2
-         VPPYzO8pW6lzbR0DHD3fMZJweKB5529IOqtEDNAZTTe3AnPWoARCHOdA8eEdRYzQOx
-         xW74JlEURfReF5oKjznIF8hJ7QPQqb80kOE39U/5+qjRPicPtE6moM68/p0I910EGi
-         2TQIWmzY/PZ64ta/JZOuXdUU0ObdgDuwxlSTZrUouXOiSq7bNqSvqFqVjTw59l5Ixx
-         UKEWd9qMyrlaumQ/V95hk/xq1t5mjPNkqWu0glEFedfK3tcqC8LM4F89rRfAMTI3vX
-         Lu6xfOiIHcqlA==
-Date:   Thu, 11 Mar 2021 11:22:03 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+        id S232274AbhCKK3v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Mar 2021 05:29:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232236AbhCKK30 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Mar 2021 05:29:26 -0500
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8EE66C061574;
+        Thu, 11 Mar 2021 02:29:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID; bh=BLNMpQ/qYLIXfz8KYOf4S/wVQmoq4ZxSzAKu
+        seZ1oDQ=; b=J1Pr0UqxFJwz+cpYSuN8v3867CB9JpJDHtzDede0IyiEW8yV3fjt
+        fmnOuFRor0YknrGym+qzz4SXXxoFb1jn0aZpldnM7ERshuyVw0SwMid+gI1wUfka
+        0wecE/OFcD0H1ibiLGUSDRH6EXkcsBkm1m7b3z+pnG82AvQS/zMBjD8=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Thu, 11 Mar
+ 2021 18:29:19 +0800 (GMT+08:00)
+X-Originating-IP: [202.79.170.108]
+Date:   Thu, 11 Mar 2021 18:29:19 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   lyl2019@mail.ustc.edu.cn
+To:     "Leon Romanovsky" <leon@kernel.org>
 Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] infiniband/core: Fix a use after free in cm_work_handler
-Message-ID: <YEnhO9EXgI8pwVD2@unreal>
+Subject: Re: Re: [PATCH] infiniband/core: Fix a use after free in
+ cm_work_handler
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
+In-Reply-To: <YEnhO9EXgI8pwVD2@unreal>
 References: <20210311022153.3757-1-lyl2019@mail.ustc.edu.cn>
+ <YEnhO9EXgI8pwVD2@unreal>
+X-SendMailWithSms: false
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311022153.3757-1-lyl2019@mail.ustc.edu.cn>
+Message-ID: <1149b747.c620.17820d56572.Coremail.lyl2019@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygB3ZGH_8ElgN5oLAA--.0W
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoQBlQhn497xwAOsK
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 06:21:53PM -0800, Lv Yunlong wrote:
-> In cm_work_handler, it calls destory_cm_id() to release
-> the initial reference of cm_id_priv taken by iw_create_cm_id()
-> and free the cm_id_priv. After destory_cm_id(), iwcm_deref_id
-> (cm_id_priv) will be called and cause a use after free.
->
-> Fixes: 59c68ac31e15a ("iw_cm: free cm_id resources on the last deref")
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> ---
->  drivers/infiniband/core/iwcm.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
-> index da8adadf4755..cb6b4ac45e21 100644
-> --- a/drivers/infiniband/core/iwcm.c
-> +++ b/drivers/infiniband/core/iwcm.c
-> @@ -1035,8 +1035,10 @@ static void cm_work_handler(struct work_struct *_work)
->
->  		if (!test_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags)) {
->  			ret = process_event(cm_id_priv, &levent);
-> -			if (ret)
-> +			if (ret) {
->  				destroy_cm_id(&cm_id_priv->id);
-> +				return;
-
-The destroy_cm_id() is called to free ->id and not cm_id_priv. This "return"
-leaks cm_id_priv now and what "a use after free" do you see?
-
-> +			}
->  		} else
->  			pr_debug("dropping event %d\n", levent.event);
->  		if (iwcm_deref_id(cm_id_priv))
-> --
-> 2.25.1
->
->
+SW4gdGhlIGltcGxlbWVudGF0aW9uIG9mIGRlc3RvcnlfY21faWQoKSwgaXQgcmVzdG9yZXMgY21f
+aWRfcHJpdiBieSANCiJjbV9pZF9wcml2ID0gY29udGFpbmVyX29mKGNtX2lkLCBzdHJ1Y3QgaXdj
+bV9pZF9wcml2YXRlLCBpZCk7Ii4NCg0KQW5kIHRoZSBsYXN0IGxpbmUgb2YgZGVzdG9yeV9jbV9p
+ZCgpIGNhbGxzICIodm9pZClpd2NtX2RlcmVmX2lkKGNtX2lkX3ByaXYpOyINCnRvIGZyZWUgdGhl
+IGNtX2lkX3ByaXYuDQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujog
+Ikxlb24gUm9tYW5vdnNreSIgPGxlb25Aa2VybmVsLm9yZz4NCj4g5Y+R6YCB5pe26Ze0OiAyMDIx
+LTAzLTExIDE3OjIyOjAzICjmmJ/mnJ/lm5spDQo+IOaUtuS7tuS6ujogIkx2IFl1bmxvbmciIDxs
+eWwyMDE5QG1haWwudXN0Yy5lZHUuY24+DQo+IOaKhOmAgTogZGxlZGZvcmRAcmVkaGF0LmNvbSwg
+amdnQHppZXBlLmNhLCBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZywgbGludXgta2VybmVsQHZn
+ZXIua2VybmVsLm9yZw0KPiDkuLvpopg6IFJlOiBbUEFUQ0hdIGluZmluaWJhbmQvY29yZTogRml4
+IGEgdXNlIGFmdGVyIGZyZWUgaW4gY21fd29ya19oYW5kbGVyDQo+IA0KPiBPbiBXZWQsIE1hciAx
+MCwgMjAyMSBhdCAwNjoyMTo1M1BNIC0wODAwLCBMdiBZdW5sb25nIHdyb3RlOg0KPiA+IEluIGNt
+X3dvcmtfaGFuZGxlciwgaXQgY2FsbHMgZGVzdG9yeV9jbV9pZCgpIHRvIHJlbGVhc2UNCj4gPiB0
+aGUgaW5pdGlhbCByZWZlcmVuY2Ugb2YgY21faWRfcHJpdiB0YWtlbiBieSBpd19jcmVhdGVfY21f
+aWQoKQ0KPiA+IGFuZCBmcmVlIHRoZSBjbV9pZF9wcml2LiBBZnRlciBkZXN0b3J5X2NtX2lkKCks
+IGl3Y21fZGVyZWZfaWQNCj4gPiAoY21faWRfcHJpdikgd2lsbCBiZSBjYWxsZWQgYW5kIGNhdXNl
+IGEgdXNlIGFmdGVyIGZyZWUuDQo+ID4NCj4gPiBGaXhlczogNTljNjhhYzMxZTE1YSAoIml3X2Nt
+OiBmcmVlIGNtX2lkIHJlc291cmNlcyBvbiB0aGUgbGFzdCBkZXJlZiIpDQo+ID4gU2lnbmVkLW9m
+Zi1ieTogTHYgWXVubG9uZyA8bHlsMjAxOUBtYWlsLnVzdGMuZWR1LmNuPg0KPiA+IC0tLQ0KPiA+
+ICBkcml2ZXJzL2luZmluaWJhbmQvY29yZS9pd2NtLmMgfCA0ICsrKy0NCj4gPiAgMSBmaWxlIGNo
+YW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+DQo+ID4gZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL2l3Y20uYyBiL2RyaXZlcnMvaW5maW5pYmFuZC9j
+b3JlL2l3Y20uYw0KPiA+IGluZGV4IGRhOGFkYWRmNDc1NS4uY2I2YjRhYzQ1ZTIxIDEwMDY0NA0K
+PiA+IC0tLSBhL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL2l3Y20uYw0KPiA+ICsrKyBiL2RyaXZl
+cnMvaW5maW5pYmFuZC9jb3JlL2l3Y20uYw0KPiA+IEBAIC0xMDM1LDggKzEwMzUsMTAgQEAgc3Rh
+dGljIHZvaWQgY21fd29ya19oYW5kbGVyKHN0cnVjdCB3b3JrX3N0cnVjdCAqX3dvcmspDQo+ID4N
+Cj4gPiAgCQlpZiAoIXRlc3RfYml0KElXQ01fRl9EUk9QX0VWRU5UUywgJmNtX2lkX3ByaXYtPmZs
+YWdzKSkgew0KPiA+ICAJCQlyZXQgPSBwcm9jZXNzX2V2ZW50KGNtX2lkX3ByaXYsICZsZXZlbnQp
+Ow0KPiA+IC0JCQlpZiAocmV0KQ0KPiA+ICsJCQlpZiAocmV0KSB7DQo+ID4gIAkJCQlkZXN0cm95
+X2NtX2lkKCZjbV9pZF9wcml2LT5pZCk7DQo+ID4gKwkJCQlyZXR1cm47DQo+IA0KPiBUaGUgZGVz
+dHJveV9jbV9pZCgpIGlzIGNhbGxlZCB0byBmcmVlIC0+aWQgYW5kIG5vdCBjbV9pZF9wcml2LiBU
+aGlzICJyZXR1cm4iDQo+IGxlYWtzIGNtX2lkX3ByaXYgbm93IGFuZCB3aGF0ICJhIHVzZSBhZnRl
+ciBmcmVlIiBkbyB5b3Ugc2VlPw0KPiANCj4gPiArCQkJfQ0KPiA+ICAJCX0gZWxzZQ0KPiA+ICAJ
+CQlwcl9kZWJ1ZygiZHJvcHBpbmcgZXZlbnQgJWRcbiIsIGxldmVudC5ldmVudCk7DQo+ID4gIAkJ
+aWYgKGl3Y21fZGVyZWZfaWQoY21faWRfcHJpdikpDQo+ID4gLS0NCj4gPiAyLjI1LjENCj4gPg0K
+PiA+DQo=
