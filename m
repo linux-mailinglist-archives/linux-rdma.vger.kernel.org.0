@@ -2,105 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB1E334CAF
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Mar 2021 00:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E35C336A27
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Mar 2021 03:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233624AbhCJXkR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Mar 2021 18:40:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231964AbhCJXkM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 10 Mar 2021 18:40:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9EDF064F82;
-        Wed, 10 Mar 2021 23:40:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615419611;
-        bh=Wa80y7JpSfKvTo+Cki3vY4xfCBNl8Z6DFZVhW1yvDT8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=QwMN5DcCGyLqwYPVJuX/ykPWJ7bzy1DzED7XiGg1l44LT7FHro2V0icb6I5CCVIYM
-         AliEarWZeNePYc7fngb6C3qi1LQ48s7KI8mkyQA9rdW2huwwCwJmJAss8AeCHRjDK/
-         pvVNxy2SeZnPogQd0qvqDjrxvo9hN3adq+n1OYm/GWsDyUn9n2QicQ5u4aGxvmWsUc
-         /+Usp9YtUb8o8makFkUus3Q/mcUtLCMYnQYMHyXVYP6ozx+2oHfGWgY7+FBmnr8sFk
-         17z4LBQvW4iUkygDn8auVFFFgr4ngiteH0miIZVGiX+Zj3BoYjTMpH2X/mbzTRCIHc
-         CrJ9xckvaCylA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8A649609D0;
-        Wed, 10 Mar 2021 23:40:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229520AbhCKCaZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Mar 2021 21:30:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229546AbhCKCaB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 10 Mar 2021 21:30:01 -0500
+X-Greylist: delayed 477 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 10 Mar 2021 18:30:00 PST
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5DE9DC061574
+        for <linux-rdma@vger.kernel.org>; Wed, 10 Mar 2021 18:30:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=8vVaM3fkgb
+        ix9fBLTZie1hJ57yzxZgTlG9N1TyuMbkM=; b=A+2p8Is1McTE1BLzFgxDj9dWKJ
+        LEGQB6weqhveNHW5waB7ipZr7kbWvam1f0nKIjpZCyZorF1ZyutmwMKqlmTfEoXV
+        45bu0auzGRv3sIPbs5cnoVVt0cwpuCAvKs/JKjV9wRl0PHHKUnSmA59ciHLVuPY+
+        F2nyPN/JFDQOWOTKg=
+Received: from ubuntu.localdomain (unknown [114.214.226.60])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCHjuLHfklg4IwIAA--.490S4;
+        Thu, 11 Mar 2021 10:21:59 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] infiniband/core: Fix a use after free in cm_work_handler
+Date:   Wed, 10 Mar 2021 18:21:53 -0800
+Message-Id: <20210311022153.3757-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [net 01/18] net/mlx5e: Enforce minimum value check for ICOSQ size
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161541961156.10035.4511466471713524860.git-patchwork-notify@kernel.org>
-Date:   Wed, 10 Mar 2021 23:40:11 +0000
-References: <20210310190342.238957-2-saeed@kernel.org>
-In-Reply-To: <20210310190342.238957-2-saeed@kernel.org>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, tariqt@nvidia.com,
-        maximmi@mellanox.com, saeedm@nvidia.com
+X-CM-TRANSID: LkAmygCHjuLHfklg4IwIAA--.490S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF4DAFWxArWrZF4DXFyxZrb_yoWDuFX_Wr
+        4FgrnrJr1fCF92kr1UuFWxZryS9r4vq3s5u3Wktry5t342krnrCr1xZwsrZw4UXr4Fkanx
+        AF9rJr95Cr1DCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j
+        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbHa0D
+        UUUUU==
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
+In cm_work_handler, it calls destory_cm_id() to release
+the initial reference of cm_id_priv taken by iw_create_cm_id()
+and free the cm_id_priv. After destory_cm_id(), iwcm_deref_id
+(cm_id_priv) will be called and cause a use after free.
 
-This series was applied to netdev/net.git (refs/heads/master):
+Fixes: 59c68ac31e15a ("iw_cm: free cm_id resources on the last deref")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/infiniband/core/iwcm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-On Wed, 10 Mar 2021 11:03:25 -0800 you wrote:
-> From: Tariq Toukan <tariqt@nvidia.com>
-> 
-> The ICOSQ size should not go below MLX5E_PARAMS_MINIMUM_LOG_SQ_SIZE.
-> Enforce this where it's missing.
-> 
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-> Reviewed-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-> Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
-> Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-> 
-> [...]
-
-Here is the summary with links:
-  - [net,01/18] net/mlx5e: Enforce minimum value check for ICOSQ size
-    https://git.kernel.org/netdev/net/c/5115daa675cc
-  - [net,02/18] net/mlx5e: RX, Mind the MPWQE gaps when calculating offsets
-    https://git.kernel.org/netdev/net/c/d5dd03b26ba4
-  - [net,03/18] net/mlx5e: Accumulate port PTP TX stats with other channels stats
-    https://git.kernel.org/netdev/net/c/354521eebd02
-  - [net,04/18] net/mlx5e: Set PTP channel pointer explicitly to NULL
-    https://git.kernel.org/netdev/net/c/1c2cdf0b603a
-  - [net,05/18] net/mlx5e: When changing XDP program without reset, take refs for XSK RQs
-    https://git.kernel.org/netdev/net/c/e5eb01344e9b
-  - [net,06/18] net/mlx5e: Revert parameters on errors when changing PTP state without reset
-    https://git.kernel.org/netdev/net/c/74640f09735f
-  - [net,07/18] net/mlx5e: Don't match on Geneve options in case option masks are all zero
-    https://git.kernel.org/netdev/net/c/385d40b042e6
-  - [net,08/18] net/mlx5: Fix turn-off PPS command
-    https://git.kernel.org/netdev/net/c/55affa97d675
-  - [net,09/18] net/mlx5e: Check correct ip_version in decapsulation route resolution
-    https://git.kernel.org/netdev/net/c/1e74152ed065
-  - [net,10/18] net/mlx5: Disable VF tunnel TX offload if ignore_flow_level isn't supported
-    https://git.kernel.org/netdev/net/c/f574531a0b77
-  - [net,11/18] net/mlx5e: Fix error flow in change profile
-    https://git.kernel.org/netdev/net/c/469549e4778a
-  - [net,12/18] net/mlx5: Set QP timestamp mode to default
-    https://git.kernel.org/netdev/net/c/4806f1e2fee8
-  - [net,13/18] RDMA/mlx5: Fix timestamp default mode
-    https://git.kernel.org/netdev/net/c/8256c69b2d9c
-  - [net,14/18] net/mlx5e: E-switch, Fix rate calculation division
-    https://git.kernel.org/netdev/net/c/8b90d897823b
-  - [net,15/18] net/mlx5: SF, Correct vhca context size
-    https://git.kernel.org/netdev/net/c/6a3717544ce9
-  - [net,16/18] net/mlx5: SF: Fix memory leak of work item
-    https://git.kernel.org/netdev/net/c/6fa37d66ef2d
-  - [net,17/18] net/mlx5: SF: Fix error flow of SFs allocation flow
-    https://git.kernel.org/netdev/net/c/dc694f11a759
-  - [net,18/18] net/mlx5: DR, Fix potential shift wrapping of 32-bit value in STEv1 getter
-    https://git.kernel.org/netdev/net/c/84076c4c800d
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+index da8adadf4755..cb6b4ac45e21 100644
+--- a/drivers/infiniband/core/iwcm.c
++++ b/drivers/infiniband/core/iwcm.c
+@@ -1035,8 +1035,10 @@ static void cm_work_handler(struct work_struct *_work)
+ 
+ 		if (!test_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags)) {
+ 			ret = process_event(cm_id_priv, &levent);
+-			if (ret)
++			if (ret) {
+ 				destroy_cm_id(&cm_id_priv->id);
++				return;
++			}
+ 		} else
+ 			pr_debug("dropping event %d\n", levent.event);
+ 		if (iwcm_deref_id(cm_id_priv))
+-- 
+2.25.1
 
 
