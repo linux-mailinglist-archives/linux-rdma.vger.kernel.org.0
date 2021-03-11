@@ -2,186 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3384337C53
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Mar 2021 19:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F74337C61
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Mar 2021 19:23:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229483AbhCKSSA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Mar 2021 13:18:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229674AbhCKSRb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 11 Mar 2021 13:17:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 179AD64F94;
-        Thu, 11 Mar 2021 18:17:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615486651;
-        bh=yeoiWbOU3bw9D/Q5zhGzs0LucK/FKA5Un0rmRGtK/90=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=TLFip4LsN55AS5P0Bks1thVrAJF/U+FBK/jLpJ2TUASUGajYp32xlamBMxoAT6hOY
-         nnPOyURdiLsnL7X/KesOe3XrsdmAFivL6t28nDI6oG8B3/qBHgsWzZxk3vT062al3z
-         sfH7Qg8boCYrkLat1qQg/OpZQStEFAzVIfZEuFiYvo9veXJvJlVwwBBWHAWI5v0QNA
-         w63gJjGJwCe1/dzoDDvIe4iJdhrNMFvsPsub4/Gjc3HtR8AQzuza7jsvJDNUVnwhET
-         iF3GQ/ru+ZPE/NRtNJwhryEBhMKaHjHURPfbHbQehnN+EQTzFErELdWr3yKbxwSTXZ
-         VcbwQe5Whbeag==
-Date:   Thu, 11 Mar 2021 12:17:29 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
-Message-ID: <20210311181729.GA2148230@bjorn-Precision-5520>
-MIME-Version: 1.0
+        id S229942AbhCKSWc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Mar 2021 13:22:32 -0500
+Received: from mail-mw2nam12on2084.outbound.protection.outlook.com ([40.107.244.84]:60321
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229469AbhCKSWD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 11 Mar 2021 13:22:03 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G8UgQELgaIAGlKN4B7nTa9AkvXmPqltxv9EOkmYBC8SEagiVI+1gU7XRKbgKXrQW+jHfL684nA+0+m7x8tngA/AMdJMYj9/wZdN4bwgM9kXQEMg2GMC38GWUqa/RfGSYUxIXU+kCyGwBsqg8CWybvfPSUZ3gu56vJfzZv0DH14LWWSOzM/jf6nWyvL8t7mffyp2C5ekMuOjONrrrQlkdNbth2AF5N+gg7cuV6r45RRyuFQZhmeHgeh8j02a9qb7NNBisJiVFyVAwQ81riDGi5ewNwAO6FIUjCZ53D+mBo3p0XtmJ9aLYATgXOwP5xhssVJA/0ITZcpvvBRafJhaYDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zaDFYElogILa9dszkzMDmQtw9LIReHEXY6Z/Kz6aY40=;
+ b=MH8c+o/K4VW/s62nfljWVIidbVkZNQrp2IhxMbJ/0+t9L7ic0tjCXYo4zBVNKtkSzBWQIUKBedc8cAzF5NgDlqrIkzn8UjVzR74J5PyWAvNrvhmv9zBt9HKPQjiQXfYRQWfjHPdqPjtqKfxjt56wk3mZkMj+Mj/zWPnZHGJ1Imn79UKCRR6q8I6rHhI2imUEOF3bSTXzZbqXi54zDhyQBjRCxoT0yzg7jxfrqaip+sTb893BFkORBd+WsXmAiMkJzn6l+HOExVPJypEc6B4OpUSfdFzT2M2lK28C1HRRS3QvvaWczPZNqTk2iU/gglUMVoKfDEauKBpjlj57CS9KrA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zaDFYElogILa9dszkzMDmQtw9LIReHEXY6Z/Kz6aY40=;
+ b=uh7VCzp7wUKTlPu2cyLR7L6INBZwjhAbcg7oclYmc29osT5g1U7saFruJKyXVWOsRQP3g4MOD30ZZ/KZRg6nobrvWvLh1jnD35LqiWIgBqrUoludCrEhDoftqJgpZPeNCySzGuze6U11TR3+HGqZF6JxuAwohVLFPFOLOdCCsqVKpFoXKQJvGL/b0dwydnRItaudzRR8KblW0d97uLlaMFVvF1uI2evfcyR1pby3hX9SPwJk6+yF+OrmD0/6P8x+4oBjSqcQG9l8+l+KSkWdsLx9QikkAlueGIfMOczNSLE1wGTPPEwT2O2lJC45setqetObyrCDxRZR9Bo3WEdjAw==
+Authentication-Results: mail.ustc.edu.cn; dkim=none (message not signed)
+ header.d=none;mail.ustc.edu.cn; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4042.namprd12.prod.outlook.com (2603:10b6:5:215::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.28; Thu, 11 Mar
+ 2021 18:21:17 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3933.031; Thu, 11 Mar 2021
+ 18:21:17 +0000
+Date:   Thu, 11 Mar 2021 14:21:14 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>, shiraz.saleem@intel.com
+Cc:     faisal.latif@intel.com, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] infiniband/i40iw: Fix a use after free in
+ i40iw_cm_event_handler
+Message-ID: <20210311182114.GA2733907@nvidia.com>
+References: <20210311031414.5011-1-lyl2019@mail.ustc.edu.cn>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKgT0UevrCLSQp=dNiHXWFu=10OiPb5PPgP1ZkPN1uKHfD=zBQ@mail.gmail.com>
+In-Reply-To: <20210311031414.5011-1-lyl2019@mail.ustc.edu.cn>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: MN2PR11CA0004.namprd11.prod.outlook.com
+ (2603:10b6:208:23b::9) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR11CA0004.namprd11.prod.outlook.com (2603:10b6:208:23b::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Thu, 11 Mar 2021 18:21:15 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lKPvu-00BTIT-A8; Thu, 11 Mar 2021 14:21:14 -0400
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d694e699-30c2-4c8d-f056-08d8e4ba756f
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4042:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4042A97CBA02D0364CFA2103C2909@DM6PR12MB4042.namprd12.prod.outlook.com>
+X-MS-Exchange-Transport-Forked: True
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oF8Uo/ZXH/b2JzU5DUtD8cjXoamnSkU8RPufi25kae0xeI7yWiThsSh0zEaEKCkDkC/kUgUrx7A4+MXWtSUOJFlchnNYFvh2dwGeKs5Xdi4So9WC+zKvHfzlGs7clDugRcxLvKUGxVIqwEYKuoNAZUjWrZPS3AHSA40JntxVT6ZecylG85Uuq02PP+fCXeQ5jXn9l8/ymE/Iv5a2jPpkYjGTsjcyy7NlRg2A0d5buyIZIR7e2Hdb1atpzEkgFGYqDugMQA0lyU8gZE3PGxKA2SC7z+ERmVneVRgCRsEU6visXbyQdRMRm5aYQfJoxGaFHrPgU/YG+cfUz/Sx11RzNp82MF4qumdY4d894Eu3xrS57h/uMeDVEkeS3Cy+0qzCVN/3ekJxKWQ5YX2tCwr7SMQ+jspLmOZsiTnQqYc9uDVPMY1nH9cNvt1OHfzjxEpagm0KPWkqi9nZ8k7QHpjgL9gHoK4n2CSsiDU8WnaOGz0XsNXD2Otfybwom+OPTmhPXpzzsXIqA+2j5dzFD6zhRQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(39860400002)(366004)(396003)(478600001)(66476007)(66556008)(1076003)(4744005)(26005)(36756003)(5660300002)(8676002)(66946007)(186003)(316002)(4326008)(9746002)(83380400001)(426003)(33656002)(2906002)(9786002)(8936002)(2616005)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?5xfDhkYRtxoZbEZGU0mdgfv/qoFROeBzQBS6YsAU2phn6lGuQkdVb8Bz63yK?=
+ =?us-ascii?Q?zh3+EAJan0vrB+GKhs9alheRCeru1hwQMvMjqayih8NIyZADIC1PW+PRM7Tm?=
+ =?us-ascii?Q?Ob8v0VKHTvb/q7GS2jfyOWWfRQ3r5jUx0m5wfTiWp3/JpDVfu0h2zxjMrH+o?=
+ =?us-ascii?Q?51Y9EFMu2De+mECTn0szNn8q8PGw1aAuEGmywzu6RewvQr5CtVB7V6iCkkcs?=
+ =?us-ascii?Q?hmBNa9Z4lwndL98wAQQbooBjReD07asX/23i3f2cDlH4Nz4PNtxa2Dny9MM/?=
+ =?us-ascii?Q?dKztG0qT18km4YJSlo03dPwlNXJx6xmWwX58OrAjn6+gkAOWB9d2nw+4dXOO?=
+ =?us-ascii?Q?yp/ArcIxzUXIUmb2u9dYrQBQEVpuwr4qMW9I9jjXx1cItoT53mh6gSpitqGU?=
+ =?us-ascii?Q?qUDPWzVE7nvQjsmUAtGI2doROasVajkQnT08U9/YaF/JQKg7bS+x2iShGQ+A?=
+ =?us-ascii?Q?VzzxoyCd6SsGff/W0jc8eeCM79FlE3CApd/TFcNXqlUvIXbU6C6ONIDIpDi/?=
+ =?us-ascii?Q?701ghgYnmM6KvthUiBndujTg7FJXt0BZuow09RxlFEq9SBOwSH8M9efRUOmJ?=
+ =?us-ascii?Q?39Bh/LwsU1XbBq3BUEVCz4/QO02H6yN/cRJg2Zk1DLt+196giAQYCEFr7WNr?=
+ =?us-ascii?Q?IEw+kqd8j/vdKztUGkwfW/6H013I3owAFh2tQmeqZ1lyVg/lTRTAFuxwhxDc?=
+ =?us-ascii?Q?rvS1tbEpV2GG7WvMVOX4JVS3tJiTa7mWpzeN6YhtBhtEem/SmqucmlK8MDBW?=
+ =?us-ascii?Q?HXKC/qgrz6oPrBdP5TV9OMzsw1XzAA0H8njQucTnGR5hUviB76poDlCuae94?=
+ =?us-ascii?Q?klSa7cenNzen670vRJmOUXPINl+DEbbH1S2MKnQ6vi1JbgmxiKhkRq3BwRnA?=
+ =?us-ascii?Q?rl/AGI5EBXZQTxr62154pD5v4xlNCI6mnwnOBqQelQB+nkdZI2d7sBW2c1ny?=
+ =?us-ascii?Q?ZI7X3BA0/XS/OCPYMFWYeX/oGw+MT0rFxM3Qu8/owIH/FZCwyNGE2Dv+YP0l?=
+ =?us-ascii?Q?0mG6/Q+uPqE94zOaobHvDAeby5Q6Aw3FYjwZoFmdHpfRMw+CYOhkhvXpd9aX?=
+ =?us-ascii?Q?oGEzgrABg5J61jCyZtrgOcBWpKoiYmkM58kjct2hfH2tJ+WTcF7l5CGX1IEf?=
+ =?us-ascii?Q?ThUB0XeBK9j9iWoOcjYhmIVpRLK65OETBhD6wJWqJs41B2S9W7NU3qzce06E?=
+ =?us-ascii?Q?09gLcUGKQc4g+oPQxBZVns3IgqeoGpAx3k3IDpAsffmCFqqHkEvwEgxoPMST?=
+ =?us-ascii?Q?xZeDBsayvovKRWLtw80HNROYEUvgaqKFSYGx0r2kKO62sdgHBhlnkyEcz32h?=
+ =?us-ascii?Q?wm+q0eJVxKV73HPkc9TMGURNSF5rw6p5e2VmaGvfe3S1fQ=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d694e699-30c2-4c8d-f056-08d8e4ba756f
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2021 18:21:17.1567
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y7sWOP8goWl2xANinIx3H5JPswpM9Vdx/nK7o0S3FbSRBRH8M51R8uiShfbowRqO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4042
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 03:34:01PM -0800, Alexander Duyck wrote:
-> On Wed, Mar 10, 2021 at 11:09 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Sun, Mar 07, 2021 at 10:55:24AM -0800, Alexander Duyck wrote:
-> > > On Sun, Feb 28, 2021 at 11:55 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > >
-> > > > @Alexander Duyck, please update me if I can add your ROB tag again
-> > > > to the series, because you liked v6 more.
-> > > >
-> > > > Thanks
-> > > >
-> > > > ---------------------------------------------------------------------------------
-> > > > Changelog
-> > > > v7:
-> > > >  * Rebase on top v5.12-rc1
-> > > >  * More english fixes
-> > > >  * Returned to static sysfs creation model as was implemented in v0/v1.
-> > >
-> > > Yeah, so I am not a fan of the series. The problem is there is only
-> > > one driver that supports this, all VFs are going to expose this sysfs,
-> > > and I don't know how likely it is that any others are going to
-> > > implement this functionality. I feel like you threw out all the
-> > > progress from v2-v6.
-> >
-> > pci_enable_vfs_overlay() turned up in v4, so I think v0-v3 had static
-> > sysfs files regardless of whether the PF driver was bound.
-> >
-> > > I really feel like the big issue is that this model is broken as you
-> > > have the VFs exposing sysfs interfaces that make use of the PFs to
-> > > actually implement. Greg's complaint was the PF pushing sysfs onto the
-> > > VFs. My complaint is VFs sysfs files operating on the PF. The trick is
-> > > to find a way to address both issues.
-> > >
-> > > Maybe the compromise is to reach down into the IOV code and have it
-> > > register the sysfs interface at device creation time in something like
-> > > pci_iov_sysfs_link if the PF has the functionality present to support
-> > > it.
-> >
-> > IIUC there are two questions on the table:
-> >
-> >   1) Should the sysfs files be visible only when a PF driver that
-> >      supports MSI-X vector assignment is bound?
-> >
-> >      I think this is a cosmetic issue.  The presence of the file is
-> >      not a reliable signal to management software; it must always
-> >      tolerate files that don't exist (e.g., on old kernels) or files
-> >      that are visible but don't work (e.g., vectors may be exhausted).
-> >
-> >      If we start with the files always being visible, we should be
-> >      able to add smarts later to expose them only when the PF driver
-> >      is bound.
-> >
-> >      My concerns with pci_enable_vf_overlay() are that it uses a
-> >      little more sysfs internals than I'd like (although there are
-> >      many callers of sysfs_create_files()) and it uses
-> >      pci_get_domain_bus_and_slot(), which is generally a hack and
-> >      creates refcounting hassles.  Speaking of which, isn't v6 missing
-> >      a pci_dev_put() to match the pci_get_domain_bus_and_slot()?
+On Wed, Mar 10, 2021 at 07:14:14PM -0800, Lv Yunlong wrote:
+> In the case of I40IW_CM_EVENT_ABORTED, i40iw_event_connect_error()
+> could be called to free the event->cm_node. However, event->cm_node
+> will be used after and cause use after free. It needs to add flags
+> to inform that event->cm_node has been freed.
 > 
-> I'm not so much worried about management software as the fact that
-> this is a vendor specific implementation detail that is shaping how
-> the kernel interfaces are meant to work. Other than the mlx5 I don't
-> know if there are any other vendors really onboard with this sort of
-> solution.
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> ---
+>  drivers/infiniband/hw/i40iw/i40iw_cm.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 
-I know this is currently vendor-specific, but I thought the value
-proposition of dynamic configuration of VFs for different clients
-sounded compelling enough that other vendors would do something
-similar.  But I'm not an SR-IOV guy and have no vendor insight, so
-maybe that's not the case?
+This might be OK (though I don't like the free variable), Shiraz??
 
-> In addition it still feels rather hacky to be modifying read-only PCIe
-> configuration space on the fly via a backdoor provided by the PF. It
-> almost feels like this should be some sort of quirk rather than a
-> standard feature for an SR-IOV VF.
-
-I agree, I'm not 100% comfortable with modifying the read-only Table
-Size register.  Maybe there's another approach that would be better?
-It *is* nice that the current approach doesn't require changes in the
-VF driver.
-
-> >   2) Should a VF sysfs file use the PF to implement this?
-> >
-> >      Can you elaborate on your idea here?  I guess
-> >      pci_iov_sysfs_link() makes a "virtfnX" link from the PF to the
-> >      VF, and you're thinking we could also make a "virtfnX_msix_count"
-> >      in the PF directory?  That's a really interesting idea.
-> 
-> I would honestly be more comfortable if the PF owned these files
-> instead of the VFs. One of the things I didn't like about this back
-> during the V1/2 days was the fact that it gave the impression that
-> MSI-X count was something that is meant to be edited. Since then I
-> think at least the naming was changed so that it implies that this is
-> only possible due to SR-IOV.
-> 
-> I also didn't like that it makes the VFs feel like they are port
-> representors rather than being actual PCIe devices. Having
-> functionality that only works when the VF driver is not loaded just
-> feels off. The VF sysfs directory feels like it is being used as a
-> subdirectory of the PF rather than being a device on its own.
-
-Moving "virtfnX_msix_count" to the PF seems like it would mitigate
-this somewhat.  I don't know how to make this work while a VF driver
-is bound without making the VF feel even less like a PCIe device,
-i.e., we won't be able to use the standard MSI-X model.
-
-> > > Also we might want to double check that the PF cannot be unbound while
-> > > the VF is present. I know for a while there it was possible to remove
-> > > the PF driver while the VF was present. The Mellanox drivers may not
-> > > allow it but it might not hurt to look at taking a reference against
-> > > the PF driver if you are allocating the VF MSI-X configuration sysfs
-> > > file.
-> >
-> > Unbinding the PF driver will either remove the *_msix_count files or
-> > make them stop working.  Is that a problem?  I'm not sure we should
-> > add a magic link that prevents driver unbinding.  Seems like it would
-> > be hard for users to figure out why the driver can't be removed.
-> 
-> I checked it again, it will make the *_msix_count files stop working.
-> In order to guarantee it cannot happen in the middle of things though
-> we are sitting on the device locks for both the PF and the VF. I'm not
-> a fan of having to hold 2 locks while we perform a firmware operation
-> for one device, but I couldn't find anything where we would deadlock
-> so it should be fine.
-
-I agree again, it's not ideal to hold two locks.  Is it possible we
-could get by without the VF lock?  If we simply check whether a VF
-driver is bound (without a lock), a VF driver bind can race with the
-PF sriov_set_msix_vec_count().
-
-If the VF driver bind wins, it reads the old Table Size.  If it reads
-a too-small size, it won't use all the vectors.  If it reads a
-too-large size, it will try to use too many vectors and some won't
-work.  But the race would be caused by a bug in the management
-software, and the consequence doesn't seem *terrible*.
-
-Bjorn
+Jason
