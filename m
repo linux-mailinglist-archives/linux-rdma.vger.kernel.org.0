@@ -2,99 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3781336DEB
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Mar 2021 09:37:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB6D336E1E
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Mar 2021 09:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231375AbhCKIh3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Mar 2021 03:37:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231362AbhCKIhI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:37:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB06E64F87;
-        Thu, 11 Mar 2021 08:37:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615451827;
-        bh=WTRYhIbXBuo/t5BkaB+NdSfbK6vNcQ7O2pTkFSkZ2ZE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OFUY4tcN4rgrDUp7yv4hcD2Js8LhS1pItQ8BCFEpxRm8Vp6WuYOhDwCTtbJlDTjMD
-         rEDZvL8W/B7LtpwWh0BxLRQR/3pkBiMcSgE+OAXAa2HScEklnzz2uJDixwJafV2APg
-         ZGCkkNF0Yvf+b+qvkk1ICzRoWP4EEAATWRyyWttOeyb+oUcOhgoIItEM3k2dTc4vh/
-         kZSgjAy4aJ+1U0evadfnEOLq0qHfDGmu2MLFyTcbGM/3UBuUN5zGMzMc24CcNW4vmn
-         FcHPTe7s4dlhZVRknHp6asfa5Ft9VJlPqMVe4uO+eH3+98PZJis0weHCXpLxsT/Qz/
-         iRtNgLEfNtgxQ==
-Date:   Thu, 11 Mar 2021 10:37:03 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
-Message-ID: <YEnWr/xufSXvszIw@unreal>
-References: <CAKgT0Ue=g+1pZCct8Kd0OnkPEP0qhggBF96s=noDoWHMJTL6FA@mail.gmail.com>
- <20210310190906.GA2020121@bjorn-Precision-5520>
- <YEknweta9TXcw1l5@unreal>
- <YEkqY5ZJLXp8dork@kroah.com>
+        id S231278AbhCKIqg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Mar 2021 03:46:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231157AbhCKIq3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Mar 2021 03:46:29 -0500
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 77987C061574;
+        Thu, 11 Mar 2021 00:46:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=2UJb+wsmJ2
+        FcUp6+0rWvkv9WpaHiRbHAp+kj50P9o9U=; b=W6EknMUlXpOxz2ooLVWJL9ds6D
+        dmTiHOpvqNM5cHU40h3qzWhcn4x9Q7++9SxnUkZ9wIhoGxEkocaRgpp5GjV3A6EP
+        OQAjgREHpMzI1z/5ooZfvR7xy5HPyszF1fJ1gIFwHDAY+ZbHS5SQpkeNMHP0bpUg
+        gSVzFnN8HS8mqq0sI=
+Received: from ubuntu.localdomain (unknown [114.214.226.60])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDn7x_a2ElglukKAA--.3103S4;
+        Thu, 11 Mar 2021 16:46:18 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] net/rds: Fix a use after free in rds_message_map_pages
+Date:   Thu, 11 Mar 2021 00:46:16 -0800
+Message-Id: <20210311084616.12356-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YEkqY5ZJLXp8dork@kroah.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygDn7x_a2ElglukKAA--.3103S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrZrW3JF4UCw4DXr4rKw15urg_yoWDGFg_uF
+        WxJrn7W347XFyIkrs7KrsrAw4fZr1kXw18ua42qFn5tryDCFn5Xw48trn8uwnrCFW2vr1x
+        C3yDXr93ua4kZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbx8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j
+        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQZ2
+        3UUUUU=
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 09:21:55PM +0100, Greg Kroah-Hartman wrote:
-> On Wed, Mar 10, 2021 at 10:10:41PM +0200, Leon Romanovsky wrote:
-> > On Wed, Mar 10, 2021 at 01:09:06PM -0600, Bjorn Helgaas wrote:
-> > > On Sun, Mar 07, 2021 at 10:55:24AM -0800, Alexander Duyck wrote:
-> > > > On Sun, Feb 28, 2021 at 11:55 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > >
-> > > > > @Alexander Duyck, please update me if I can add your ROB tag again
-> > > > > to the series, because you liked v6 more.
-> > > > >
-> > > > > Thanks
-> > > > >
-> > > > > ---------------------------------------------------------------------------------
-> > > > > Changelog
-> > > > > v7:
-> > > > >  * Rebase on top v5.12-rc1
-> > > > >  * More english fixes
-> > > > >  * Returned to static sysfs creation model as was implemented in v0/v1.
-> >
-> > <...>
-> >
-> > >   2) Should a VF sysfs file use the PF to implement this?
-> > >
-> > >      Can you elaborate on your idea here?  I guess
-> > >      pci_iov_sysfs_link() makes a "virtfnX" link from the PF to the
-> > >      VF, and you're thinking we could also make a "virtfnX_msix_count"
-> > >      in the PF directory?  That's a really interesting idea.
-> >
-> > I want to remind that we are talking about mlx5 devices that support
-> > upto 255 VFs and they indeed are used to their limits. So seeing 255
-> > links of virtfnX_msix_count in the same directory looks too much unpleasant
-> > to me.
->
-> 255 files are nothing, if that's what the hardware supports, what is the
-> problem?  If it's "unpleasant", go complain to the hardware designers :)
+In rds_message_map_pages, rds_message_put() will free rm.
+Maybe store the value of rm->data.op_sg ahead of rds_message_put()
+is better. Otherwise other threads could allocate the freed chunk
+and may change the value of rm->data.op_sg.
 
-It is 255 same files that every SR-IOV user will see in /sys/bus/pci/devices/*/
-folder, unless we will do dynamic creation of those files and this is something
-that Bjorn didn't like in v7.
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ net/rds/message.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-So instead of complaining to the hardware designers, I will complain here.
-I probably implemented all possible variants already. :)
+diff --git a/net/rds/message.c b/net/rds/message.c
+index 071a261fdaab..392e3a2f41a0 100644
+--- a/net/rds/message.c
++++ b/net/rds/message.c
+@@ -347,8 +347,9 @@ struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned in
+ 	rm->data.op_nents = DIV_ROUND_UP(total_len, PAGE_SIZE);
+ 	rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs);
+ 	if (IS_ERR(rm->data.op_sg)) {
++		struct scatterlist *tmp = rm->data.op_sg;
+ 		rds_message_put(rm);
+-		return ERR_CAST(rm->data.op_sg);
++		return ERR_CAST(tmp);
+ 	}
+ 
+ 	for (i = 0; i < rm->data.op_nents; ++i) {
+-- 
+2.25.1
 
-Thanks
 
->
-> greg k-h
