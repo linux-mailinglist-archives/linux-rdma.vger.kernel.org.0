@@ -2,173 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0455338F21
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Mar 2021 14:50:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55776338F54
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Mar 2021 15:02:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhCLNuO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Mar 2021 08:50:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231625AbhCLNuD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Mar 2021 08:50:03 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A78C061574
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Mar 2021 05:50:03 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id 75so3555137otn.4
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Mar 2021 05:50:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3TYWL9WWIptGS9oyzeybwbNg4Vt5Eci74dXs3GVBz04=;
-        b=WIhr8MI6u1Gwx4zX5WE/sM2HI8gYOY3DoDXKeculnMcPsVKmOfMfsENKhBzlBtKHlR
-         x/hhrvQmESHIqtPHGMk7vXRQTq1Oz76/l5R/Etgc8v/G/Sakr6zGRSSzDGtIe3ITLcKd
-         6MSIxAUtsOgtW9u2vBCDStkjJ0g9SarMnCP9AgU4B+AMl4el2Z7k/CkqzNBHJ89kV1LM
-         VQ2eyRI3E+OBofJlyJ75jhna1kBSj06dM94wIxuIpQTR+CEgJReMrZAjt4s6jeYPsL9K
-         gZwB+gp1q37lAeCykfnhviumAm5A4jO354ZLOucHYrWz4Dc3FXQlWbXJSxUM5+tSmGCF
-         lPdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3TYWL9WWIptGS9oyzeybwbNg4Vt5Eci74dXs3GVBz04=;
-        b=SJbQDtpwYHevE69XMDdSYTe+3C0poyzDCmutu/AGLiBuSY3pNCgQ8dBliTFdF3hpRQ
-         AyB9ZxCxIZLHPxUAPgAWL8A2OFFWukND+s5dLMSpNKL4HXL3WSHvoUu5pgQs59MQcMZZ
-         Dxj5PAKVj9hQFPggg72he6+2OyWcnxgAvlRdOXIRJ+pfO65JFZnW9x0nBsBgJPsnby6a
-         wzbSY6rEPXJ+R6oikLXkBY5erswBCE75FgSJSxJBhZSruYZJHsY5uN6CCMwIVrubOj+l
-         C87cAjIOvLs4IJRbQMUPZzo8ZTqeia9K57BtMGIFGxSMy0DmZW8GOh4u3Qj1MbaPTNtF
-         FGLQ==
-X-Gm-Message-State: AOAM5324cq2xDCDiGVdyJW5UJ6nTSF+mv06JuMM0cYgxGWB9WoJLUse5
-        8s/tx2PHpu+hX3rNifLrrXFjMmPB3N6Aoyu2Oqs=
-X-Google-Smtp-Source: ABdhPJxasl7RVQpZBA0gn2cOvNMMUWUzk+h/26tBz6F/khHC5flw3qPgqvVdED7CWYU9qyWgsvRXy1eSfqUnTMdB18I=
-X-Received: by 2002:a9d:7650:: with SMTP id o16mr3394537otl.278.1615557003256;
- Fri, 12 Mar 2021 05:50:03 -0800 (PST)
-MIME-Version: 1.0
-References: <20210307221034.568606-1-yanjun.zhu@intel.com> <CAD=hENeqTTmpS5V+G646V0QvJFLVSd3Sq11ffQFcDXU-OSsQEg@mail.gmail.com>
- <YEUL2vdlWFEbZqLb@unreal> <CAD=hENcjqtXstsa3bbBCZVGF-XgAhPz-1tom68zm7WNatH2mZw@mail.gmail.com>
- <20210308121615.GW4247@nvidia.com> <CAD=hENdymrkFV-_piiOKL-fK38SQh3sTAfc7+WPSky8mHtJ8DA@mail.gmail.com>
- <20210312002533.GS2356281@nvidia.com> <CAD=hENcb4DAs7hhPLqgqAhLr8xYqxkMhGp=99bfgq1SZN57QHA@mail.gmail.com>
- <20210312130243.GU2356281@nvidia.com> <CAD=hENdqu3v5_PJwQF2=zQ6ifGZD_DUJtUStoiCA5byru5phaA@mail.gmail.com>
-In-Reply-To: <CAD=hENdqu3v5_PJwQF2=zQ6ifGZD_DUJtUStoiCA5byru5phaA@mail.gmail.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Fri, 12 Mar 2021 21:49:52 +0800
-Message-ID: <CAD=hENf07aKBivP93tN9CAR4oZ9jEygmVKowpxGTdAAV9pjpEA@mail.gmail.com>
-Subject: Re: Fwd: [PATCH 1/1] RDMA/umem: add back hugepage sg list
-To:     Jason Gunthorpe <jgg@nvidia.com>
+        id S230388AbhCLOBj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Mar 2021 09:01:39 -0500
+Received: from mail-mw2nam10on2053.outbound.protection.outlook.com ([40.107.94.53]:39520
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229728AbhCLOBO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 12 Mar 2021 09:01:14 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZxY8IddnlQdQFz6IGyagrCpHMcV+6/ATJGlBM7bBJ8VsbSlv3WhT8L0PZYVtCsAF5PZShVoTlrOh99Mt8thvFDBv9iP9xrQelwhxVpveC4+ajWwwFD6uXTCBQOXPbJqT+vMDtIVxODl/bjg9/oIL2g7e0YEfDs63Da+TrcUw/v9HJjxuuHLhagivosrFWro5iacj8JHMNNhSca6cna4frGJodOcT3cNMWstOGxsfVDppk12uRFsQ8XA98w7qo5rN63XH2GAF9I5wN1uQsOtqQP1KgnQ/4aQr/1JaRJobqunlRt+HicstC0zWpQPQpvlVSKCPqB7A9ZiEtRX0AooEFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bxFGkxalSOK/qH2v3iMfrWr1JhSZ6oE+oIbdKxRiTi8=;
+ b=fyBOoz9rw6ObTI8IjPcTlBSGg0okZ7NhZUMTE9qCJy8/Otc/jcnfUGvGI7qJ/BLSmu0rQr3dR+fQYmVdNGJn2nfWLW/ywIyhATj87H4iCu2KlNwqw90HPAkh8U2hGSxd1RSXROWQ/maOwCGn8LyZwLCiUPbrmunkK29gg8wRT3DccxTFrGlnIz/K0Fnm482mPffPn/DFVfD6QgWRJywrSQJ7gK4SXE/8UpKdQYzg5ii+WkYrlY1FVj1vGgVkO7JVyDPDtqDfYU8JbxEhkZVDGcrXdCRJjCoL+eQJcdBR/93je5Ynf7Iu52nJj72tCciJDFR16SlHoTXXK5ongaY86A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bxFGkxalSOK/qH2v3iMfrWr1JhSZ6oE+oIbdKxRiTi8=;
+ b=Vfr11L6ApEAt6EGjmIlLu2yY0+ByZKB389oovPB0JiMJliRqp0eFpe6iqfv8Bj+AapGY6vD5per4oiGX/bagAbh64Z6CMQreyuhP9gBibzMbzBP7QUjhjKNmvvtuZ26ltffpbqamNyWtcSG58IL6ygTFj453HjuVS16q3tju0gPliUfJV5kHwTw5AWl4F8l4GcNJr2c1w+MYrCBU/69YLcNFW0NRqBct3+9fXeZS6g5equ/Z9n4tOk17iYZ5nUQpGXWJdk0tL4CnwXEH9ACp4XX4YmuOF40zO1depBs/KJOJRIKHxQpBnCjpTB7lK+DODoWeCjTd6gffb0F+9hAqCw==
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2602.namprd12.prod.outlook.com (2603:10b6:5:4a::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Fri, 12 Mar
+ 2021 14:01:06 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3933.032; Fri, 12 Mar 2021
+ 14:01:06 +0000
+Date:   Fri, 12 Mar 2021 10:01:04 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
 Cc:     Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         maorg@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: Fwd: [PATCH 1/1] RDMA/umem: add back hugepage sg list
+Message-ID: <20210312140104.GX2356281@nvidia.com>
+References: <CAD=hENeqTTmpS5V+G646V0QvJFLVSd3Sq11ffQFcDXU-OSsQEg@mail.gmail.com>
+ <YEUL2vdlWFEbZqLb@unreal>
+ <CAD=hENcjqtXstsa3bbBCZVGF-XgAhPz-1tom68zm7WNatH2mZw@mail.gmail.com>
+ <20210308121615.GW4247@nvidia.com>
+ <CAD=hENdymrkFV-_piiOKL-fK38SQh3sTAfc7+WPSky8mHtJ8DA@mail.gmail.com>
+ <20210312002533.GS2356281@nvidia.com>
+ <CAD=hENcb4DAs7hhPLqgqAhLr8xYqxkMhGp=99bfgq1SZN57QHA@mail.gmail.com>
+ <20210312130243.GU2356281@nvidia.com>
+ <CAD=hENdqu3v5_PJwQF2=zQ6ifGZD_DUJtUStoiCA5byru5phaA@mail.gmail.com>
+ <CAD=hENf07aKBivP93tN9CAR4oZ9jEygmVKowpxGTdAAV9pjpEA@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=hENf07aKBivP93tN9CAR4oZ9jEygmVKowpxGTdAAV9pjpEA@mail.gmail.com>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: BL1PR13CA0320.namprd13.prod.outlook.com
+ (2603:10b6:208:2c1::25) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0320.namprd13.prod.outlook.com (2603:10b6:208:2c1::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.9 via Frontend Transport; Fri, 12 Mar 2021 14:01:06 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lKiLg-00Bus4-UN; Fri, 12 Mar 2021 10:01:04 -0400
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 62c6c7a2-dadf-4367-ee62-08d8e55f47f7
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2602:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB26029FDB674CAA197A8B157FC26F9@DM6PR12MB2602.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Dic24OVDw7/Is0yCdfUPKnjW+Ra2QvsC0lpJkXJ8s4GquwyO4YQpzeuQTMbK07h2z6G8c2CCh3HcicN3dgYSVtoK9TmplKBm6KmcnsY6ZnuLNfIQCUE48UVfj9m85eoEUFDeJ/4ZAwUgmBzsWFtsrN88Y4xcOcOtmMLYlvZ8a3+64uyCvkLm9eyzgJhmQTxvTlyU6Jx9E7Jw/yykRg0GAPUQAI3AmC3NXvpCJaNEALvXaUBtu9RUDR1AWnA0y4zm9xMy011xmj+bfPPVqNVn3mRv591B6XV5fa9q9hPXnIGh06cTtizxDq9Vpbfi5+scg4eT19EGsqnzp3VY9jcU7Lje3ZQL5YmXgf0mg+up282fm/fBuKfvp3Msqh2Icj8LLi27y5hN7EHriZI2T+VSvT9uu5TgZ6UHP/qNa1EWdFW4N5Xy/PUo+qMjfBuG1ZXD2L5yGGq131zwEn/2p3Q5x75dEInk5Az/OnAqdfVECpMH75wQPZ28vZbunp2ah7mDyAns738PYpV88VDj7Dvx3AuZ5riXoJdW+jyrHrpcPR18nlhFJtY1gnKiHMjKxFZK
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(376002)(396003)(346002)(33656002)(83380400001)(66556008)(66946007)(66476007)(36756003)(478600001)(316002)(2906002)(4744005)(1076003)(5660300002)(426003)(26005)(86362001)(2616005)(8676002)(4326008)(6916009)(107886003)(9786002)(9746002)(54906003)(8936002)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?oaWs4aNukNZ+fVpw6V3+OGRyrNIGj5wQCdVQ1pyMTSiGN64nqwEqmWo9p3Ge?=
+ =?us-ascii?Q?AB0d5R82vPGrhtSAmgaxHpHk2k2S/LKN0OPmw/+f7fI37bdbQHK8TptxrWga?=
+ =?us-ascii?Q?NZTdbEcPyaFC1Bsk/p/Dn1LZhvh8KdAPg/Uk34ll25CF8ufMVCCrhpXRD6Tv?=
+ =?us-ascii?Q?q8ZXV6xD2Mml7tg+u59refoCD4QBE12btyNA15mskjIZ4jUZM9PtDF5Bqncv?=
+ =?us-ascii?Q?EccYoOIL40XvC8rV13EYmrk9yR5G9Fecacg4dW1Ciqh/2eBXbZJOaFZvrV9e?=
+ =?us-ascii?Q?2Jvi5tlUHf/KuepgbbIgJGE2YKUhsCGvWqXvXkh2DrSwyoTZsse9t3iuq6qu?=
+ =?us-ascii?Q?wcLvl8Ew0KnR2YcCkaL9cPgR5KCvW/rQxXAKmAL7bxnYWS7eQPT4c6je1fDu?=
+ =?us-ascii?Q?AM5r866ia1TUIZQw8b+FmKDYmlhdNa2nqh4GPxvGB8iGHLFjZyw02S1tdJ1p?=
+ =?us-ascii?Q?kxQSLvHULF2KvV/y/OXOly+NFadE5BKM4l6QjB/GMQm9dRZnQajchis+GGmU?=
+ =?us-ascii?Q?B6nz6DcbQuy94mLkt2cy90gegYkLhJ0LDgYc52fFPwHsWP+aEk388IHsvhFi?=
+ =?us-ascii?Q?Uw7+OBDwY34NOvpeZ4GtSepnRkh1Yy14qujHDSq+S+GSIN4lpvuJNHvQLZBf?=
+ =?us-ascii?Q?kl3MPuc3Xx9zO0KFFTp1ZPb8JK7DjJ6h4SHkeNR+7PratfW71TZWj9OJg7vR?=
+ =?us-ascii?Q?ajxBf+DTcLVHK1uDGTW+3LtpN37KcLV+SQvwghyYNwuJzzEexnlTuG8khrlL?=
+ =?us-ascii?Q?NwGsvZhQjmjydzUrHt3wbYxra4vF7hjzr82eTbW1AIDg348P2Sf8YN1loV5O?=
+ =?us-ascii?Q?o9rBZMcKLXdKsx2RmEB34XKB74lJKKLLI/kemfgQ2uGIxX6fO1XIAEqyJfkb?=
+ =?us-ascii?Q?KYuMyudT9weCyELhtmxoC15aeBNVkXanCdBRIpgtZuo37ASOPQB8vuisLL1l?=
+ =?us-ascii?Q?qiG65d1I5MqBnpD89ZHz0a+g1SE6WoGXbcoLhjW7V4MJ1jbkDryKMA2SxFpH?=
+ =?us-ascii?Q?8+lmvp2o6EBLc0zxo6adPDdYnFcuR9Spi1E4xjmQygvOCQ6zw2iWtr/Pgj3+?=
+ =?us-ascii?Q?KRviiFmLkkAqIXxhgSi7fvh3S1KAv61N0q+PmroXmidMpLgFN3zxHcnlbPRr?=
+ =?us-ascii?Q?NiZqw5JOlvTcVH6YX1CfcPDcuvBsNH4O8N/XseWrW1Ckf2E7FjuCD4MejUIn?=
+ =?us-ascii?Q?bwPGMTL/dXRlBPTDTPCVRHtpJzw6vfSER2ZWD62wc9f03RUUpQ/nc+chwzgt?=
+ =?us-ascii?Q?J/vm7E0Hy3P19j0NUgDovEq6zE8Ue3Cd1pUYi0gMA5MQgFy2ylbIgGGgT7vG?=
+ =?us-ascii?Q?/tblLsDptXaLhw7uzi58DtEiVMF/gkN2y+GIgQYNiDVuTQ=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 62c6c7a2-dadf-4367-ee62-08d8e55f47f7
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2021 14:01:06.7648
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EYP3GnuoyFEJwD9J2rrnjTDjgoJelv7YlfPyTCR0Iq24kotKeqlttv8pnTeV+2HO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2602
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 9:42 PM Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
->
-> On Fri, Mar 12, 2021 at 9:02 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >
-> > On Fri, Mar 12, 2021 at 04:04:35PM +0800, Zhu Yanjun wrote:
-> > > On Fri, Mar 12, 2021 at 8:25 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > > >
-> > > > On Thu, Mar 11, 2021 at 06:41:43PM +0800, Zhu Yanjun wrote:
-> > > > > On Mon, Mar 8, 2021 at 8:16 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > > > > >
-> > > > > > On Mon, Mar 08, 2021 at 06:13:52PM +0800, Zhu Yanjun wrote:
-> > > > > >
-> > > > > > > And I delved into the source code of __sg_alloc_table_from_pages. I
-> > > > > > > found that this function is related with ib_dma_max_seg_size. So
-> > > > > > > when ib_dma_max_seg_size is set to UINT_MAX, the sg dma address is
-> > > > > > > 4K (one page). When ib_dma_max_seg_size is set to SZ_2M, the sg dma
-> > > > > > > address is 2M now.
-> > > > > >
-> > > > > > That seems like a bug, you should fix it
-> > > > >
-> > > > > Hi, Jason && Leon
-> > > > >
-> > > > > I compared the function __sg_alloc_table_from_pages with ib_umem_add_sg_table.
-> > > > > In __sg_alloc_table_from_pages:
-> > > > >
-> > > > > "
-> > > > >  449         if (prv) {
-> > > > >  450                 unsigned long paddr = (page_to_pfn(sg_page(prv))
-> > > > > * PAGE_SIZE +
-> > > > >  451                                        prv->offset + prv->length) /
-> > > > >  452                                       PAGE_SIZE;
-> > > > >  453
-> > > > >  454                 if (WARN_ON(offset))
-> > > > >  455                         return ERR_PTR(-EINVAL);
-> > > > >  456
-> > > > >  457                 /* Merge contiguous pages into the last SG */
-> > > > >  458                 prv_len = prv->length;
-> > > > >  459                 while (n_pages && page_to_pfn(pages[0]) == paddr) {
-> > > > >  460                         if (prv->length + PAGE_SIZE > max_segment)
-> > > > >  461                                 break;
-> > > > >  462                         prv->length += PAGE_SIZE;
-> > > > >  463                         paddr++;
-> > > > >  464                         pages++;
-> > > > >  465                         n_pages--;
-> > > > >  466                 }
-> > > > >  467                 if (!n_pages)
-> > > > >  468                         goto out;
-> > > > >  469         }
-> > > > >
-> > > > > "
-> > > > > if prv->length + PAGE_SIZE > max_segment, then set another sg.
-> > > > > In the commit "RDMA/umem: Move to allocate SG table from pages",
-> > > > > max_segment is dma_get_max_seg_size.
-> > > > > Normally it is UINT_MAX. So in my host, prv->length + PAGE_SIZE is
-> > > > > usually less than max_segment
-> > > > > since length is unsigned int.
-> > > >
-> > > > I don't understand what you are trying to say
-> > > >
-> > > >   460                         if (prv->length + PAGE_SIZE > max_segment)
-> > > >
-> > > > max_segment should be a very big number and "prv->length + PAGE_SIZE" should
-> > > > always be < max_segment so it should always be increasing the size of
-> > > > prv->length and 'rpv' here is the sgl.
-> > >
-> > > Sure.
-> > >
-> > > When max_segment is UINT_MAX, prv->length is UINT_MAX - PAGE_SIZE.
-> > > It is big. That is, segment size is UINT_MAX - PAGE_SIZE.
-> > >
-> > > But from the function ib_umem_add_sg_table, the prv->length is SZ_2M.
-> > > That is, segment size if SZ_2M.
-> > >
-> > > It is the difference between the 2 functions.
-> >
-> > I still have no idea what you are trying to say. Why would prv->length
-> > be 'UINT - PAGE_SIZE'? That sounds like max_segment
->
-> Sure. whatever, this prv->length from __sg_alloc_table_from_pages
-> is greater than sg->length from the function ib_umem_add_sg_table.
+On Fri, Mar 12, 2021 at 09:49:52PM +0800, Zhu Yanjun wrote:
+> In short, the sg list from __sg_alloc_table_from_pages is different
+> from the sg list from ib_umem_add_sg_table.
 
-In short, the sg list from __sg_alloc_table_from_pages is different
-from the sg list from ib_umem_add_sg_table.
-This difference will make difference on the later behavior.
+I don't care about different. Tell me what is wrong with what we have
+today.
 
-Zhu Yanjun
+I thought your first message said the sgl's were too small, but now
+you seem to say they are too big?
 
->
-> __sg_alloc_table_from_pages:
-> "
->  457                 /* Merge contiguous pages into the last SG */
->  458                 prv_len = prv->length;
->  459                 while (n_pages && page_to_pfn(pages[0]) == paddr) {
->  460                         if (prv->length + PAGE_SIZE >
-> max_segment)  <-------------- prv->length > max_segment - PAGE_SIZE
->  461                                 break;
->  462                         prv->length += PAGE_SIZE;
->  463                         paddr++;
->  464                         pages++;
->  465                         n_pages--;
->  466                 }
->  467                 if (!n_pages)
->  468                         goto out;
-> "
->
-> Zhu Yanjun
-> >
-> > Jason
+I still have no idea what this problem is
+
+Jason
