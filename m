@@ -2,122 +2,160 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A8A339001
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Mar 2021 15:28:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B3C33941D
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Mar 2021 18:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbhCLO2F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Mar 2021 09:28:05 -0500
-Received: from mail-eopbgr690057.outbound.protection.outlook.com ([40.107.69.57]:47595
-        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229959AbhCLO1u (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 12 Mar 2021 09:27:50 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ajBCX61CP+rsydaHrjak2pRGiBI4pHDwjk+Lf+i4AsvXvsJ1We3RVLbch9IEDUQ0UtKmGozU7C35y7C0Cu8qwq+7EZ+ktXiFLmv8yEx4+7Z0qWrvpWp9ZZfOar2sRS8UxmIpjAeP832zLv5V16voubuL9t3L1V9ReL9zVf1RCT3mqRh2rhQ2somqaLNnYpFXGygagW32WTu60l2c0Tn7cYtGsgHPJ+rb46i5Z7mspvwfSeaU6BZYxaoZM/RktV+NtgrrgyQL7kgd+gFOGR7VQbf1HtmIw/2kOg4yn8Y1Z+cbkhC9nkWAlgMu7LxF7pIrYno4eiUG3AYJsF7R5AihVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Bl1ib3SbPysTbZ6t6DHneT2Ri76xDBsNwFFnqV/PUIo=;
- b=Sp3RXTcMu2gPqaSBbf13OWPdLSScgLCVqi06mKG+EOesrdtNzx+NnkI1xNUngy8JXHFGj5ty9KN4Bm4oqYaHL6n9cuTUoKsivD7ARQ9DAqDPspEDqDBktSbiEqEpISBGt83J039qroXB4YTdcSi3FWiW1R8441i0K3Pu7OzzMeVvwvuPG+aaHmipuG/VIGTNMR4ZfZHyRhKirj4UoKsxK7VnvypdyPMcxIQW6D/Mq6mf4Jg/DC6JcfkzOX8OQPPP3ENqPfzOq90mrk3FQAOakO1N/w6dHqYU6H3NNk8S0pef1WWVXdujN2rtrsPwA0S2kP3FGV1f9MzCGlXtHL6inA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Bl1ib3SbPysTbZ6t6DHneT2Ri76xDBsNwFFnqV/PUIo=;
- b=chRcV2q5llMMSzbcgwE8/ebamsS6EBTM5ugvnTjQrIkBQp6D9EUs8HzQjTU0KKbi0Z3Ilp0mWQvmEiZ+Dq5/of/2t0KGIRrWvhRfRtRy6Jo1vvr2O0kDWhK+bB47U5ikXBiv0x5HaVifoDFss5QUxCXGgNHsoy5qcAu33URPxNbUMIWvCDvfXLbi1FDJEhuap3aFKPVmwPZPdovq5ymXFzkURyamjST0lofVNABBx1RLW2UR+ugErme33AOXzdPDWfteU1LC1P1CMXqCXMkynMpgg/lETBWJX7Zh3Z4ln4nQ1qQzW8ahhAlsCUk80NSm5VtVH2MAOqnTwY2u9BbZFw==
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1753.namprd12.prod.outlook.com (2603:10b6:3:10d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.24; Fri, 12 Mar
- 2021 14:27:49 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3933.032; Fri, 12 Mar 2021
- 14:27:49 +0000
-Date:   Fri, 12 Mar 2021 10:27:47 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     leon@kernel.org, linux-rdma@vger.kernel.org, linuxarm@openeuler.org
-Subject: Re: [PATCH RFC v2 rdma-core 5/6] libhns: Add direct verb to support
- config DCA memory pool
-Message-ID: <20210312142747.GB2356281@nvidia.com>
-References: <1614847759-33139-1-git-send-email-liweihang@huawei.com>
- <1614847759-33139-6-git-send-email-liweihang@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614847759-33139-6-git-send-email-liweihang@huawei.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR03CA0012.namprd03.prod.outlook.com
- (2603:10b6:208:23a::17) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S231346AbhCLQ7v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Mar 2021 11:59:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232398AbhCLQ7t (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Mar 2021 11:59:49 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C5AC061574;
+        Fri, 12 Mar 2021 08:59:49 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id c10so3177269ilo.8;
+        Fri, 12 Mar 2021 08:59:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8lyG9mI2+ZJ9STRsO49iQYUUEtp1pPpZxebMdUf5OrU=;
+        b=lOa/pXAUadrrdSUfTfsnb3u9ozA2I3n4dpJYV1nAZQ3IftoPv6nv0MKopf8+HxrPsJ
+         DLugt+E+IRC3GDqzvl6dAtuBVuzGeR2reElxkayv+VhzxT1Eya4mvuxiYjyg6XVbT6iQ
+         1Wwh7YoXz8Rrj7S4jKcthXJ3/qBE+y3kZbccxBs9Ef4XMoILwwvfUSxHi4G+bBspAgXs
+         KYSjQpgYS+l0aseN1WIMVYMChTtZu44Sj/v7IGNhJTtPzLMElIN4V1T9xnXOqr8oT2j4
+         DDBK2GTkN9R4dd1TLAhuhSylTzjop8abB1LeIHc+C8EITCLC/A5hVraS02E4I9gDGb7g
+         +hww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8lyG9mI2+ZJ9STRsO49iQYUUEtp1pPpZxebMdUf5OrU=;
+        b=QSlgiCkBzddeOUH3dXbB8khWS9RNs2vQ9M3aW5L9/WYtNfrlLjFnE4nf1tUeM2Q28g
+         kGCLTc0V0+gegsiid/Hmid5y96zywyO0VGLy8rmGBq5XlBTY5emMDqw9tvWWCgceFhx8
+         WYYSjZG/8bJeE3N+9aWBJOOZiNDWQyBdcq/LRtF+eeWVnRwf4hsDiA3m87FD5l9IsA7h
+         jSytbKHFpp1KrCwM7zzvRw5x8I4HkN23NO9jEEsgUxriz+0CWJgN1MaPwfwDau7XQouo
+         5Y9Ek++N8FpRe1wRNm3Dt70KXaT9TKj8uPqklG21J8gLQ5VX4IF4LRfzEin/6KpG+JVb
+         BwhQ==
+X-Gm-Message-State: AOAM5321/bfXJmqj1NWmMzj+fWFu6szHRNBshBckk69ojsC5l53bI6Bd
+        e3gutdqvGjl2LZERO0/MTuobN+ZtQIwP8kJFfCA=
+X-Google-Smtp-Source: ABdhPJyxhAZqqHgpN7WIcSRLeNGYeqqplMBUXvARRawTxYw/AyadyFWdybe5WkPRPdMigwFmCN6SbgSFFU26kRoUOeI=
+X-Received: by 2002:a92:d18c:: with SMTP id z12mr3132686ilz.95.1615568389141;
+ Fri, 12 Mar 2021 08:59:49 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR03CA0012.namprd03.prod.outlook.com (2603:10b6:208:23a::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Fri, 12 Mar 2021 14:27:48 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lKilX-00BvOn-Uy; Fri, 12 Mar 2021 10:27:47 -0400
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6290a26b-c571-45a4-67d4-08d8e5630316
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1753:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1753BCC5986BAC9894564555C26F9@DM5PR12MB1753.namprd12.prod.outlook.com>
-X-MS-Exchange-Transport-Forked: True
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NiL7weCRyfchPKuKk9TjujwAJcNx1YcArykw3wXaEomDErMgbHobKB6vCWMoJqGCSnU/nn6BWAu5Cxbs5+julZsB4Xr5KkwmNVcay06VxcQqenDDyVHA0Etw6gGg8jJhwAD/dKEWS9RWcdDfMubUnU9/O6T5WbwMX2tE2qp9Br5qpDnHCWDGeIHzwSbJyd19kB5fgpoMeFq0ZpoUQMVRyq9jnCMQdPJu+pDx8z+E1TQDiAKOPh5Co5beOMbHtQ68Ax8lJebIHC2W68ot3CGzHPPdsnro+D1PJkJfCC3zUvrCj68JJYcNw5+2DTC/3/mYf9uLGrzxoNuU+VJrI59o6Xx1F3SnTFSTmUNjhQzXvCrOGknrJgbFX2Z8gHZqizFn0EyruBPgfi0VhzJEfzwQQwgWakh6uF3EzCT65L57uJFzaDMq6TNw0MrhhspgUobyVIkKsJAr8pfbCKo+hrKeNbpVa3PaaZvyY1KBEpmgA7MV6zW3xvbMowooZUvcP4CFT5GjcojArZ0YY1L1s1WiOQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(136003)(346002)(366004)(1076003)(478600001)(2616005)(5660300002)(33656002)(4744005)(9746002)(2906002)(66476007)(66946007)(66556008)(4326008)(8936002)(8676002)(426003)(6916009)(186003)(9786002)(86362001)(36756003)(26005)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?bgbTm4c4QYeCQJxiDrt/JJRgM3R4Ap37txa3ktcUM+tBzi8y7AC7Tv4IaO7M?=
- =?us-ascii?Q?I/1gTWosP6Kv8jSDd97/49aFNHyLFURIahcJ6N0TaGmZxQ55Fah2ffYlP91d?=
- =?us-ascii?Q?jPMM2WV39yGG9nYDBdMPe5wnZRpJzvFWTkUhkG+VZ0RDC22+4eUlGEXFJJV/?=
- =?us-ascii?Q?9B5xvz+nNnsWQm2sI1vedwo+HkEJMgtPmoCpjWCU/DahdHjvVpF77qU9tSK5?=
- =?us-ascii?Q?fQNZKcgb2Yzuc36mLloYFVvH5tVjAMC4P15rfZPHcJowSuxMJT90TyHSnhSc?=
- =?us-ascii?Q?ojIIA1DDBslwSg8PiJfOJZoTlOiCYRWF4UQ0tLWuf7wrmNI3G3SgNJ/PEYYK?=
- =?us-ascii?Q?j65DmGAyjCTTvO+RHdEgDY1gfvW140SKbND30HiFgSzMyFozQnzZBU0sErPe?=
- =?us-ascii?Q?F/9koLtuRAMdua/KoRnQ0+Hh13c3BHeAB7oTps8iDrqQNTC0RtutU4Omcbbd?=
- =?us-ascii?Q?VPAH56umHm+jXFMYLOF2l2LfiW7CGJWJlO8ICLMMggYupbfUsz4ZBnh4JvZG?=
- =?us-ascii?Q?Ywck+XVJDli17ImttA7+dMgc+IUlXjfQ1T7de8tOBNRDrynN14RzehMEoR92?=
- =?us-ascii?Q?OwzhUJ2uz4YMjXu4f0wnr3jdWQopRJUxcc7vQAcSAbtzEIhoPpmFaxbLpa16?=
- =?us-ascii?Q?zm7SB3fNl7dkTtQ4b8G+bUa2tYLPUqhva655jH9UVjkaxPH9XL9qGR80XPXf?=
- =?us-ascii?Q?2u79lbjyDiIfLRnCAH6vtH+bdnlx2vIQfhLTaA1onB1WLP7Mfuaj7jTXh64I?=
- =?us-ascii?Q?jS+GQ80kF0IZnK5qnEVBlooWhMMBRpL6GOYYumNU26NU0Sy3+o70ellAwWVS?=
- =?us-ascii?Q?X4PgX/m6ojQC8U8Ib5oS43cFpz2G/xzEmGAJnb5ygR/T55z+oXf40htjIJ/i?=
- =?us-ascii?Q?4GheQH9JB1+UwPX1H077W2QYCUAtpQ2bsEHMqdHby9TOdUKXajjVUBwXGLBc?=
- =?us-ascii?Q?ku852zEUoZuinGsVKr1yGEQX+opfRlF2kWadnk95osjZxYoiObj5pFsbswTn?=
- =?us-ascii?Q?GeA8bb6FUMLi9iDAB1lcevYPAtuDMImA9Mh1QVGgLHz/ly8GtLsHp1mZ5nxM?=
- =?us-ascii?Q?roER+6e2zzgFlWFJU2Eq/4Nmdef3AXWt7/XKEabcARv1o18wRz9s/x9pVkXX?=
- =?us-ascii?Q?NvUq+rdszVzy+xuVQ9qK+e5Tw5oT2bzqLr3pSw7z01hz7yNsAT9cAAPm+341?=
- =?us-ascii?Q?cznAAGnT0unHhpVmfg1KMfIDo7WdfUoqUv8UEqtHnBD2soBaQdDmiNNZQZmq?=
- =?us-ascii?Q?h3YVc+l4sSVLvJwV7xRiGjG6n0k4JhvgvtTwvr+fisjWa5ftX50Tt02SlyXP?=
- =?us-ascii?Q?o6PTyNHh13NPnerwL5Kt2KyUVLwdyGrO3sqhYhbQfMZpdQ=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6290a26b-c571-45a4-67d4-08d8e5630316
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2021 14:27:49.1796
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vX3pUGO3KTfOwyUG4tDBFAGsy+XeYiFBLknBTr2ueRhQvHoaAfFy/h/iehGL/B66
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1753
+References: <CAKgT0UevrCLSQp=dNiHXWFu=10OiPb5PPgP1ZkPN1uKHfD=zBQ@mail.gmail.com>
+ <20210311181729.GA2148230@bjorn-Precision-5520> <CAKgT0UeprjR8QCQMCV8Le+Br=bQ7j2tCE6k6gxK4zCZML5woAA@mail.gmail.com>
+ <20210311201929.GN2356281@nvidia.com> <CAKgT0Ud1tzpAWO4+5GxiUiHT2wEaLacjC0NEifZ2nfOPPLW0cg@mail.gmail.com>
+ <20210311232059.GR2356281@nvidia.com> <CAKgT0Ud+gnw=W-2U22_iQ671himz8uWkr-DaBnVT9xfAsx6pUg@mail.gmail.com>
+ <YEsK6zoNY+BXfbQ7@unreal>
+In-Reply-To: <YEsK6zoNY+BXfbQ7@unreal>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Fri, 12 Mar 2021 08:59:38 -0800
+Message-ID: <CAKgT0UfsoXayB72KD+H_h14eN7wiYtWCUjxKJxwiNKr44XUPfA@mail.gmail.com>
+Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 04:49:18PM +0800, Weihang Li wrote:
-> diff --git a/libibverbs/verbs.h b/libibverbs/verbs.h
-> index 656b0f9..db37dce 100644
-> +++ b/libibverbs/verbs.h
-> @@ -918,6 +918,7 @@ enum ibv_qp_create_flags {
->  	IBV_QP_CREATE_CVLAN_STRIPPING		= 1 << 9,
->  	IBV_QP_CREATE_SOURCE_QPN		= 1 << 10,
->  	IBV_QP_CREATE_PCI_WRITE_END_PADDING	= 1 << 11,
-> +	IBV_QP_CREATE_DYNAMIC_CONTEXT_ATTACH	= 1 << 13,
->  };
+On Thu, Mar 11, 2021 at 10:32 PM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Thu, Mar 11, 2021 at 06:53:16PM -0800, Alexander Duyck wrote:
+> > On Thu, Mar 11, 2021 at 3:21 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > >
+> > > On Thu, Mar 11, 2021 at 01:49:24PM -0800, Alexander Duyck wrote:
+> > > > > We don't need to invent new locks and new complexity for something
+> > > > > that is trivially solved already.
+> > > >
+> > > > I am not wanting a new lock. What I am wanting is a way to mark the VF
+> > > > as being stale/offline while we are performing the update. With that
+> > > > we would be able to apply similar logic to any changes in the future.
+> > >
+> > > I think we should hold off doing this until someone comes up with HW
+> > > that needs it. The response time here is microseconds, it is not worth
+> > > any complexity
+>
+> <...>
+>
+> > Another way to think of this is that we are essentially pulling a
+> > device back after we have already allocated the VFs and we are
+> > reconfiguring it before pushing it back out for usage. Having a flag
+> > that we could set on the VF device to say it is "under
+> > construction"/modification/"not ready for use" would be quite useful I
+> > would think.
+>
+> It is not simple flag change, but change of PCI state machine, which is
+> far more complex than holding two locks or call to sysfs_create_file in
+> the loop that made Bjorn nervous.
+>
+> I want to remind again that the suggestion here has nothing to do with
+> the real use case of SR-IOV capable devices in the Linux.
+>
+> The flow is:
+> 1. Disable SR-IOV driver autoprobe
+> 2. Create as much as possible VFs
+> 3. Wait for request from the user to get VM
+> 4. Change MSI-X table according to requested in item #3
+> 5. Bind ready to go VF to VM
+> 6. Inform user about VM readiness
+>
+> The destroy flow includes VM destroy and unbind.
+>
+> Let's focus on solutions for real problems instead of trying to solve theoretical
+> cases that are not going to be tested and deployed.
+>
+> Thanks
 
-No, all the stuff related to these kinds of extensions must be in the
-hnsdv.h and can't be used with the normal APIs at all
+So part of the problem with this all along has been that you are only
+focused on how you are going to use this and don't think about how
+somebody else might need to use or implement it. In addition there are
+a number of half measures even within your own flow. In reality if we
+are thinking we are going to have to reconfigure every device it might
+make sense to simply block the driver from being able to load until
+you have configured it. Then the SR-IOV autoprobe would be redundant
+since you could use something like the "offline" flag to avoid that.
 
-Jason
+If you are okay with step 1 where you are setting a flag to prevent
+driver auto probing why is it so much more overhead to set a bit
+blocking drivers from loading entirely while you are changing the
+config space? Sitting on two locks and assuming a synchronous
+operation is assuming a lot about the hardware and how this is going
+to be used.
+
+In addition it seems like the logic is that step 4 will always
+succeed. What happens if for example you send the message to the
+firmware and you don't get a response? Do you just say the request
+failed let the VF be used anyway? This is another reason why I would
+be much more comfortable with the option to offline the device and
+then tinker with it rather than hope that your operation can somehow
+do everything in one shot.
+
+In my mind step 4 really should be 4 steps.
+
+1. Offline VF to reserve it for modification
+2. Submit request for modification
+3. Verify modification has occurred, reset if needed.
+4. Online VF
+
+Doing it in that order allows for handling many more scenarios
+including those where perhaps step 2 actually consists of several
+changes to support any future extensions that are needed. Splitting
+step 2 and 3 allows for an asynchronous event where you can wait if
+firmware takes an excessively long time, or if step 2 somehow fails
+you can then repeat or revert it to get back to a consistent state.
+Lastly by splitting out the onlining step you can avoid potentially
+releasing a broken VF to be reserved if there is some sort of
+unrecoverable error between steps 2 and 3.
