@@ -2,172 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F153733864B
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Mar 2021 08:01:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96900338706
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Mar 2021 09:05:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231214AbhCLHA5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Mar 2021 02:00:57 -0500
-Received: from mga06.intel.com ([134.134.136.31]:10039 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229587AbhCLHAx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 12 Mar 2021 02:00:53 -0500
-IronPort-SDR: K4Wd/wA0QiPR21On4CjpBTEelQ7sBs1pRdEKj0CQKa0a2LcEOXnB+l7wn9rYcys1cP3+s74ImV
- WPaXEc6U8fbg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="250158131"
-X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
-   d="scan'208";a="250158131"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 23:00:52 -0800
-IronPort-SDR: QUAHkzBS/tMBQGZS6vRg1rr3EYaqBxCu5m8Hy7rJuGUiRM5QJYLh4lmdWMM7qXQBpU9JbPP2pn
- pY+rem20eOZw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,242,1610438400"; 
-   d="scan'208";a="603829859"
-Received: from lkp-server02.sh.intel.com (HELO ce64c092ff93) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Mar 2021 23:00:50 -0800
-Received: from kbuild by ce64c092ff93 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lKbn0-0001Db-A2; Fri, 12 Mar 2021 07:00:50 +0000
-Date:   Fri, 12 Mar 2021 15:00:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- 59fd5df537f9a93b706e4ad4fd32bc8bb0eeb5f4
-Message-ID: <604b117c.LGuI99H7eG0Ag1XT%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231889AbhCLIFS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Mar 2021 03:05:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230443AbhCLIEr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Mar 2021 03:04:47 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E010C061574
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Mar 2021 00:04:47 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id m1so3015116ote.10
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Mar 2021 00:04:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=61RBLYpuLkTbNmCdUQspwMiAyejBUwtVN6AGI3SysTs=;
+        b=eec+Y3PhEc3paTyzaxUZpF8hpM21kHyddMozyccYHUxwSRxRpOtQWEcxoLgsyaKixq
+         qYGEmlYEKDsCC1Mik4zdhyc23lBfNwrbPbKUJDie/U8c+bx+noN2RvqFH61QQsi/1zsv
+         50IXkpULexLYk+oxHinHbCF5FgQ7B+oUv84PWAyAB4+G8USfjGnA50D01WzDWR22vKTm
+         w/JxY5vYJawctjAUDUrkF+Zjs+l64jp2GT79F83qxw1LrUR4yRPIMn+d/8mC8DJRwyzS
+         P9j+a3WrrJOs/bInxMTuW1yTpoL3Bt+lYOcydKhFqshfL2y2WhIY0BQvDKZQFJVKqEFq
+         E6SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=61RBLYpuLkTbNmCdUQspwMiAyejBUwtVN6AGI3SysTs=;
+        b=L54RyFkBWDgA4OW4z7ATx6ToIAwTBP4g0WFCxD7rEezXvVa8SOlk0iwFoh3EbC+Q3Z
+         PDs7Sb5c8ix+nQhYDvWbEVm9sb3laTB6iGbd+9v9/Qcct5BR9GnTov98/32qAxMuTxVW
+         lrHBreSJeJkylXm5Gt+MLKI7mw4FcaK5WEPAzw9HiD9UHwMZJa9JX62OltJi0uun1I4d
+         PQOHpTO3eo5jGN4drapYXXH1c6thqkjZcRJ0oqZ4XyIkowG11Wpd/4UW0/2D+VN0LoPV
+         rvyR6Wmu/hCkaxe0zGEaaNp7aA/AWVMB+R02zJlnkVW4pItTFwSSg7iKEVjPCILpwao3
+         QRkQ==
+X-Gm-Message-State: AOAM533nva4l0i/IsJ8WqqzIEerpce3LHRrYh83YLTVVL1A1MKWbPj9Y
+        9ZgxDS5ofzF2uN+DFOOGSHszy0pLZXAOhdsgERDv5CLl5NkYFA==
+X-Google-Smtp-Source: ABdhPJx5+GND0asutSAX3Edgt7lRuOI060Vu/MQsMZUd1ksPIx0xPRIjnj0TNe9w54P5DU5FQnibwJ4rIwJBM+3W8+Q=
+X-Received: by 2002:a05:6830:1c26:: with SMTP id f6mr2438727ote.53.1615536286897;
+ Fri, 12 Mar 2021 00:04:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210307221034.568606-1-yanjun.zhu@intel.com> <CAD=hENeqTTmpS5V+G646V0QvJFLVSd3Sq11ffQFcDXU-OSsQEg@mail.gmail.com>
+ <YEUL2vdlWFEbZqLb@unreal> <CAD=hENcjqtXstsa3bbBCZVGF-XgAhPz-1tom68zm7WNatH2mZw@mail.gmail.com>
+ <20210308121615.GW4247@nvidia.com> <CAD=hENdymrkFV-_piiOKL-fK38SQh3sTAfc7+WPSky8mHtJ8DA@mail.gmail.com>
+ <20210312002533.GS2356281@nvidia.com>
+In-Reply-To: <20210312002533.GS2356281@nvidia.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Fri, 12 Mar 2021 16:04:35 +0800
+Message-ID: <CAD=hENcb4DAs7hhPLqgqAhLr8xYqxkMhGp=99bfgq1SZN57QHA@mail.gmail.com>
+Subject: Re: Fwd: [PATCH 1/1] RDMA/umem: add back hugepage sg list
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        maorg@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
-branch HEAD: 59fd5df537f9a93b706e4ad4fd32bc8bb0eeb5f4  RDMA/mlx5: Fix typo when prepare destroy_mkey inbox
+On Fri, Mar 12, 2021 at 8:25 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Thu, Mar 11, 2021 at 06:41:43PM +0800, Zhu Yanjun wrote:
+> > On Mon, Mar 8, 2021 at 8:16 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > >
+> > > On Mon, Mar 08, 2021 at 06:13:52PM +0800, Zhu Yanjun wrote:
+> > >
+> > > > And I delved into the source code of __sg_alloc_table_from_pages. I
+> > > > found that this function is related with ib_dma_max_seg_size. So
+> > > > when ib_dma_max_seg_size is set to UINT_MAX, the sg dma address is
+> > > > 4K (one page). When ib_dma_max_seg_size is set to SZ_2M, the sg dma
+> > > > address is 2M now.
+> > >
+> > > That seems like a bug, you should fix it
+> >
+> > Hi, Jason && Leon
+> >
+> > I compared the function __sg_alloc_table_from_pages with ib_umem_add_sg_table.
+> > In __sg_alloc_table_from_pages:
+> >
+> > "
+> >  449         if (prv) {
+> >  450                 unsigned long paddr = (page_to_pfn(sg_page(prv))
+> > * PAGE_SIZE +
+> >  451                                        prv->offset + prv->length) /
+> >  452                                       PAGE_SIZE;
+> >  453
+> >  454                 if (WARN_ON(offset))
+> >  455                         return ERR_PTR(-EINVAL);
+> >  456
+> >  457                 /* Merge contiguous pages into the last SG */
+> >  458                 prv_len = prv->length;
+> >  459                 while (n_pages && page_to_pfn(pages[0]) == paddr) {
+> >  460                         if (prv->length + PAGE_SIZE > max_segment)
+> >  461                                 break;
+> >  462                         prv->length += PAGE_SIZE;
+> >  463                         paddr++;
+> >  464                         pages++;
+> >  465                         n_pages--;
+> >  466                 }
+> >  467                 if (!n_pages)
+> >  468                         goto out;
+> >  469         }
+> >
+> > "
+> > if prv->length + PAGE_SIZE > max_segment, then set another sg.
+> > In the commit "RDMA/umem: Move to allocate SG table from pages",
+> > max_segment is dma_get_max_seg_size.
+> > Normally it is UINT_MAX. So in my host, prv->length + PAGE_SIZE is
+> > usually less than max_segment
+> > since length is unsigned int.
+>
+> I don't understand what you are trying to say
+>
+>   460                         if (prv->length + PAGE_SIZE > max_segment)
+>
+> max_segment should be a very big number and "prv->length + PAGE_SIZE" should
+> always be < max_segment so it should always be increasing the size of
+> prv->length and 'rpv' here is the sgl.
 
-elapsed time: 720m
+Sure.
 
-configs tested: 110
-configs skipped: 2
+When max_segment is UINT_MAX, prv->length is UINT_MAX - PAGE_SIZE.
+It is big. That is, segment size is UINT_MAX - PAGE_SIZE.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+But from the function ib_umem_add_sg_table, the prv->length is SZ_2M.
+That is, segment size if SZ_2M.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                                 defconfig
-arm                             mxs_defconfig
-sh                   secureedge5410_defconfig
-ia64                          tiger_defconfig
-arm                           spitz_defconfig
-ia64                             alldefconfig
-mips                         rt305x_defconfig
-arm                         mv78xx0_defconfig
-arm                          exynos_defconfig
-m68k                        m5272c3_defconfig
-arm                         nhk8815_defconfig
-powerpc                 mpc836x_rdk_defconfig
-powerpc                     tqm8555_defconfig
-openrisc                 simple_smp_defconfig
-mips                        qi_lb60_defconfig
-arm                       mainstone_defconfig
-sparc                            allyesconfig
-powerpc                       eiger_defconfig
-mips                      pistachio_defconfig
-arm                         s3c6400_defconfig
-sh                               allmodconfig
-mips                        nlm_xlr_defconfig
-powerpc                    ge_imp3a_defconfig
-arm                          iop32x_defconfig
-sparc                       sparc32_defconfig
-sh                        edosk7705_defconfig
-powerpc                 mpc836x_mds_defconfig
-arm                            qcom_defconfig
-riscv                            alldefconfig
-powerpc                     taishan_defconfig
-arm                        neponset_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arm                           corgi_defconfig
-arm                     eseries_pxa_defconfig
-mips                           rs90_defconfig
-arm                        mini2440_defconfig
-powerpc                     tqm8560_defconfig
-powerpc                  iss476-smp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210311
-x86_64               randconfig-a001-20210311
-x86_64               randconfig-a005-20210311
-x86_64               randconfig-a002-20210311
-x86_64               randconfig-a003-20210311
-x86_64               randconfig-a004-20210311
-i386                 randconfig-a001-20210311
-i386                 randconfig-a005-20210311
-i386                 randconfig-a003-20210311
-i386                 randconfig-a002-20210311
-i386                 randconfig-a004-20210311
-i386                 randconfig-a006-20210311
-i386                 randconfig-a013-20210311
-i386                 randconfig-a016-20210311
-i386                 randconfig-a011-20210311
-i386                 randconfig-a014-20210311
-i386                 randconfig-a015-20210311
-i386                 randconfig-a012-20210311
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+It is the difference between the 2 functions.
 
-clang tested configs:
-x86_64               randconfig-a011-20210311
-x86_64               randconfig-a016-20210311
-x86_64               randconfig-a013-20210311
-x86_64               randconfig-a015-20210311
-x86_64               randconfig-a014-20210311
-x86_64               randconfig-a012-20210311
+Zhu Yanjun
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+>
+> The other loops are the same.
+>
+> Jason
