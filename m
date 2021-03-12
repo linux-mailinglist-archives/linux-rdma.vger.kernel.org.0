@@ -2,381 +2,210 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 871AB338941
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Mar 2021 10:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B358338D4D
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Mar 2021 13:40:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbhCLJvL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Mar 2021 04:51:11 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:13910 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233462AbhCLJuy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Mar 2021 04:50:54 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DxgyB3sMvzkY53;
-        Fri, 12 Mar 2021 17:49:22 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 12 Mar 2021 17:50:47 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-Subject: [PATCH for-next 2/2] RDMA/hns: Support congestion control type selection according to the FW
-Date:   Fri, 12 Mar 2021 17:48:27 +0800
-Message-ID: <1615542507-40018-3-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1615542507-40018-1-git-send-email-liweihang@huawei.com>
-References: <1615542507-40018-1-git-send-email-liweihang@huawei.com>
+        id S229667AbhCLMja (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Mar 2021 07:39:30 -0500
+Received: from mga17.intel.com ([192.55.52.151]:5892 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230127AbhCLMjN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 12 Mar 2021 07:39:13 -0500
+IronPort-SDR: /MTfx8VfLr0JEmva0g64F5uaWCNb1/HDV+5kqVvj4oE3qKaTeVrMEVBD3URT7jMfmtEXFpc9dB
+ PlwxuY0R38Sw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="168741997"
+X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
+   d="scan'208";a="168741997"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2021 04:39:12 -0800
+IronPort-SDR: r8Bhr0zWW9wIbCa6kQp920/4pOBNmVM8fW2NIdYLOGjtMoKBgfv+rOq6qfoWeqqVw8vX5mGJH/
+ lufCzk0LzH5g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,243,1610438400"; 
+   d="scan'208";a="409838465"
+Received: from lkp-server02.sh.intel.com (HELO ce64c092ff93) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 12 Mar 2021 04:39:10 -0800
+Received: from kbuild by ce64c092ff93 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lKh4P-0001Lr-P2; Fri, 12 Mar 2021 12:39:09 +0000
+Date:   Fri, 12 Mar 2021 20:38:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 7610ab57de5616631b664ea31c11bad527810391
+Message-ID: <604b60c5.D5jK6sNEV1kDQ2rn%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yangyang Li <liyangyang20@huawei.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 7610ab57de5616631b664ea31c11bad527810391  RDMA/mlx5: Allow larger pages in DevX umem
 
-The type of congestion control algorithm includes DCQCN, LDCP, HC3 and
-DIP. The driver will select one of them according to the firmware when
-querying PF capabilities, and then set the related configuration fields
-into QPC.
+elapsed time: 726m
 
-Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
-Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
+configs tested: 148
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                            allyesconfig
+arm64                               defconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     stx_gp3_defconfig
+powerpc                      pmac32_defconfig
+powerpc                     mpc512x_defconfig
+powerpc                     kilauea_defconfig
+powerpc                      ppc44x_defconfig
+sh                        edosk7705_defconfig
+nds32                            alldefconfig
+powerpc                    socrates_defconfig
+sh                           se7712_defconfig
+arm                          collie_defconfig
+riscv                               defconfig
+powerpc                    ge_imp3a_defconfig
+sh                             sh03_defconfig
+arm                             mxs_defconfig
+sh                        dreamcast_defconfig
+arm                          ixp4xx_defconfig
+h8300                               defconfig
+arc                          axs101_defconfig
+sh                   sh7724_generic_defconfig
+m68k                         apollo_defconfig
+arm                         lpc32xx_defconfig
+m68k                          multi_defconfig
+powerpc                     mpc5200_defconfig
+mips                  maltasmvp_eva_defconfig
+powerpc                  mpc866_ads_defconfig
+powerpc                      ep88xc_defconfig
+sh                        sh7763rdp_defconfig
+arm                        neponset_defconfig
+sh                 kfr2r09-romimage_defconfig
+ia64                          tiger_defconfig
+arm                       netwinder_defconfig
+arm                        magician_defconfig
+mips                        bcm63xx_defconfig
+powerpc                      tqm8xx_defconfig
+arm                       cns3420vb_defconfig
+arc                        nsim_700_defconfig
+powerpc                 mpc85xx_cds_defconfig
+powerpc                 mpc832x_rdb_defconfig
+arm64                            alldefconfig
+sh                          r7785rp_defconfig
+arc                           tb10x_defconfig
+arm                        keystone_defconfig
+arm                        trizeps4_defconfig
+sparc                               defconfig
+parisc                generic-64bit_defconfig
+mips                          malta_defconfig
+m68k                        mvme147_defconfig
+powerpc                      ppc40x_defconfig
+powerpc                     tqm8548_defconfig
+arm                         s3c6400_defconfig
+mips                        nlm_xlr_defconfig
+arm                          iop32x_defconfig
+sparc                       sparc32_defconfig
+powerpc                 mpc836x_mds_defconfig
+xtensa                generic_kc705_defconfig
+powerpc                     tqm5200_defconfig
+sparc                            allyesconfig
+arc                        nsimosci_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210311
+i386                 randconfig-a005-20210311
+i386                 randconfig-a003-20210311
+i386                 randconfig-a002-20210311
+i386                 randconfig-a004-20210311
+i386                 randconfig-a006-20210311
+x86_64               randconfig-a011-20210312
+x86_64               randconfig-a016-20210312
+x86_64               randconfig-a013-20210312
+x86_64               randconfig-a014-20210312
+x86_64               randconfig-a015-20210312
+x86_64               randconfig-a012-20210312
+i386                 randconfig-a013-20210311
+i386                 randconfig-a016-20210311
+i386                 randconfig-a011-20210311
+i386                 randconfig-a014-20210311
+i386                 randconfig-a015-20210311
+i386                 randconfig-a012-20210311
+i386                 randconfig-a013-20210312
+i386                 randconfig-a016-20210312
+i386                 randconfig-a011-20210312
+i386                 randconfig-a015-20210312
+i386                 randconfig-a014-20210312
+i386                 randconfig-a012-20210312
+x86_64               randconfig-a006-20210311
+x86_64               randconfig-a001-20210311
+x86_64               randconfig-a005-20210311
+x86_64               randconfig-a002-20210311
+x86_64               randconfig-a003-20210311
+x86_64               randconfig-a004-20210311
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20210312
+x86_64               randconfig-a001-20210312
+x86_64               randconfig-a005-20210312
+x86_64               randconfig-a003-20210312
+x86_64               randconfig-a002-20210312
+x86_64               randconfig-a004-20210312
+x86_64               randconfig-a011-20210311
+x86_64               randconfig-a016-20210311
+x86_64               randconfig-a013-20210311
+x86_64               randconfig-a015-20210311
+x86_64               randconfig-a014-20210311
+x86_64               randconfig-a012-20210311
+
 ---
- drivers/infiniband/hw/hns/hns_roce_device.h |  10 ++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 164 ++++++++++++++++++++++++++++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  27 ++++-
- drivers/infiniband/hw/hns/hns_roce_main.c   |   2 +
- 4 files changed, 200 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 869548e..30c2c86 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -735,6 +735,13 @@ struct hns_roce_eq_table {
- 	void __iomem		**eqc_base; /* only for hw v1 */
- };
- 
-+enum cong_type {
-+	CONG_TYPE_DCQCN,
-+	CONG_TYPE_LDCP,
-+	CONG_TYPE_HC3,
-+	CONG_TYPE_DIP,
-+};
-+
- struct hns_roce_caps {
- 	u64		fw_ver;
- 	u8		num_ports;
-@@ -865,6 +872,7 @@ struct hns_roce_caps {
- 	u16		default_aeq_period;
- 	u16		default_aeq_arm_st;
- 	u16		default_ceq_arm_st;
-+	enum cong_type	cong_type;
- };
- 
- struct hns_roce_dfx_hw {
-@@ -959,6 +967,8 @@ struct hns_roce_dev {
- 	enum hns_roce_device_state state;
- 	struct list_head	qp_list; /* list of all qps on this dev */
- 	spinlock_t		qp_list_lock; /* protect qp_list */
-+	struct list_head	dip_list; /* list of all dest ips on this dev */
-+	spinlock_t		dip_list_lock; /* protect dip_list */
- 
- 	struct list_head        pgdir_list;
- 	struct mutex            pgdir_mutex;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 816006d..4f7e05b 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -2099,7 +2099,11 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
- 	caps->num_srqs = 1 << roce_get_field(resp_d->wq_hop_num_max_srqs,
- 					     V2_QUERY_PF_CAPS_D_NUM_SRQS_M,
- 					     V2_QUERY_PF_CAPS_D_NUM_SRQS_S);
-+	caps->cong_type = roce_get_field(resp_d->wq_hop_num_max_srqs,
-+					 V2_QUERY_PF_CAPS_D_CONG_TYPE_M,
-+					 V2_QUERY_PF_CAPS_D_CONG_TYPE_S);
- 	caps->max_srq_wrs = 1 << le16_to_cpu(resp_d->srq_depth);
-+
- 	caps->ceqe_depth = 1 << roce_get_field(resp_d->num_ceqs_ceq_depth,
- 					       V2_QUERY_PF_CAPS_D_CEQ_DEPTH_M,
- 					       V2_QUERY_PF_CAPS_D_CEQ_DEPTH_S);
-@@ -2536,6 +2540,22 @@ static void hns_roce_free_link_table(struct hns_roce_dev *hr_dev,
- 			  link_tbl->table.map);
- }
- 
-+static void free_dip_list(struct hns_roce_dev *hr_dev)
-+{
-+	struct hns_roce_dip *hr_dip;
-+	struct hns_roce_dip *tmp;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&hr_dev->dip_list_lock, flags);
-+
-+	list_for_each_entry_safe(hr_dip, tmp, &hr_dev->dip_list, node) {
-+		list_del(&hr_dip->node);
-+		kfree(hr_dip);
-+	}
-+
-+	spin_unlock_irqrestore(&hr_dev->dip_list_lock, flags);
-+}
-+
- static int get_hem_table(struct hns_roce_dev *hr_dev)
- {
- 	unsigned int qpc_count;
-@@ -2635,6 +2655,9 @@ static void hns_roce_v2_exit(struct hns_roce_dev *hr_dev)
- 
- 	hns_roce_free_link_table(hr_dev, &priv->tpq);
- 	hns_roce_free_link_table(hr_dev, &priv->tsq);
-+
-+	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP09)
-+		free_dip_list(hr_dev);
- }
- 
- static int hns_roce_query_mbox_status(struct hns_roce_dev *hr_dev)
-@@ -4503,6 +4526,143 @@ static inline u16 get_udp_sport(u32 fl, u32 lqpn, u32 rqpn)
- 	return rdma_flow_label_to_udp_sport(fl);
- }
- 
-+static int get_dip_ctx_idx(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
-+			   u32 *dip_idx)
-+{
-+	const struct ib_global_route *grh = rdma_ah_read_grh(&attr->ah_attr);
-+	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
-+	struct hns_roce_dip *hr_dip;
-+	unsigned long flags;
-+	int ret = 0;
-+
-+	spin_lock_irqsave(&hr_dev->dip_list_lock, flags);
-+
-+	list_for_each_entry(hr_dip, &hr_dev->dip_list, node) {
-+		if (!memcmp(grh->dgid.raw, hr_dip->dgid, 16))
-+			goto out;
-+	}
-+
-+	/* If no dgid is found, a new dip and a mapping between dgid and
-+	 * dip_idx will be created.
-+	 */
-+	hr_dip = kzalloc(sizeof(*hr_dip), GFP_KERNEL);
-+	if (!hr_dip) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	memcpy(hr_dip->dgid, grh->dgid.raw, sizeof(grh->dgid.raw));
-+	hr_dip->dip_idx = *dip_idx = ibqp->qp_num;
-+	list_add_tail(&hr_dip->node, &hr_dev->dip_list);
-+
-+out:
-+	spin_unlock_irqrestore(&hr_dev->dip_list_lock, flags);
-+	return ret;
-+}
-+
-+enum {
-+	CONG_DCQCN,
-+	CONG_WINDOW,
-+};
-+
-+enum {
-+	UNSUPPORT_CONG_LEVEL,
-+	SUPPORT_CONG_LEVEL,
-+};
-+
-+enum {
-+	CONG_LDCP,
-+	CONG_HC3,
-+};
-+
-+enum {
-+	DIP_INVALID,
-+	DIP_VALID,
-+};
-+
-+static int check_cong_type(struct ib_qp *ibqp,
-+			   struct hns_roce_congestion_algorithm *cong_alg)
-+{
-+	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
-+
-+	/* different congestion types match different configurations */
-+	switch (hr_dev->caps.cong_type) {
-+	case CONG_TYPE_DCQCN:
-+		cong_alg->alg_sel = CONG_DCQCN;
-+		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
-+		cong_alg->dip_vld = DIP_INVALID;
-+		break;
-+	case CONG_TYPE_LDCP:
-+		cong_alg->alg_sel = CONG_WINDOW;
-+		cong_alg->alg_sub_sel = CONG_LDCP;
-+		cong_alg->dip_vld = DIP_INVALID;
-+		break;
-+	case CONG_TYPE_HC3:
-+		cong_alg->alg_sel = CONG_WINDOW;
-+		cong_alg->alg_sub_sel = CONG_HC3;
-+		cong_alg->dip_vld = DIP_INVALID;
-+		break;
-+	case CONG_TYPE_DIP:
-+		cong_alg->alg_sel = CONG_DCQCN;
-+		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
-+		cong_alg->dip_vld = DIP_VALID;
-+		break;
-+	default:
-+		ibdev_err(&hr_dev->ib_dev,
-+			  "error type(%u) for congestion selection.\n",
-+			  hr_dev->caps.cong_type);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
-+			   struct hns_roce_v2_qp_context *context,
-+			   struct hns_roce_v2_qp_context *qpc_mask)
-+{
-+	const struct ib_global_route *grh = rdma_ah_read_grh(&attr->ah_attr);
-+	struct hns_roce_congestion_algorithm cong_field;
-+	struct ib_device *ibdev = ibqp->device;
-+	struct hns_roce_dev *hr_dev = to_hr_dev(ibdev);
-+	u32 dip_idx = 0;
-+	int ret;
-+
-+	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08 ||
-+	    grh->sgid_attr->gid_type == IB_GID_TYPE_ROCE)
-+		return 0;
-+
-+	ret = check_cong_type(ibqp, &cong_field);
-+	if (ret)
-+		return ret;
-+
-+	hr_reg_write(context, QPC_CONG_ALGO_TMPL_ID, hr_dev->cong_algo_tmpl_id +
-+		     hr_dev->caps.cong_type * HNS_ROCE_CONG_SIZE);
-+	hr_reg_write(qpc_mask, QPC_CONG_ALGO_TMPL_ID, 0);
-+	hr_reg_write(&context->ext, QPCEX_CONG_ALG_SEL, cong_field.alg_sel);
-+	hr_reg_write(&qpc_mask->ext, QPCEX_CONG_ALG_SEL, 0);
-+	hr_reg_write(&context->ext, QPCEX_CONG_ALG_SUB_SEL,
-+		     cong_field.alg_sub_sel);
-+	hr_reg_write(&qpc_mask->ext, QPCEX_CONG_ALG_SUB_SEL, 0);
-+	hr_reg_write(&context->ext, QPCEX_DIP_CTX_IDX_VLD, cong_field.dip_vld);
-+	hr_reg_write(&qpc_mask->ext, QPCEX_DIP_CTX_IDX_VLD, 0);
-+
-+	/* if dip is disabled, there is no need to set dip idx */
-+	if (cong_field.dip_vld == 0)
-+		return 0;
-+
-+	ret = get_dip_ctx_idx(ibqp, attr, &dip_idx);
-+	if (ret) {
-+		ibdev_err(ibdev, "failed to fill cong field, ret = %d.\n", ret);
-+		return ret;
-+	}
-+
-+	hr_reg_write(&context->ext, QPCEX_DIP_CTX_IDX, dip_idx);
-+	hr_reg_write(&qpc_mask->ext, QPCEX_DIP_CTX_IDX, 0);
-+
-+	return 0;
-+}
-+
- static int hns_roce_v2_set_path(struct ib_qp *ibqp,
- 				const struct ib_qp_attr *attr,
- 				int attr_mask,
-@@ -4586,6 +4746,10 @@ static int hns_roce_v2_set_path(struct ib_qp *ibqp,
- 	roce_set_field(qpc_mask->byte_24_mtu_tc, V2_QPC_BYTE_24_HOP_LIMIT_M,
- 		       V2_QPC_BYTE_24_HOP_LIMIT_S, 0);
- 
-+	ret = fill_cong_field(ibqp, attr, context, qpc_mask);
-+	if (ret)
-+		return ret;
-+
- 	roce_set_field(context->byte_24_mtu_tc, V2_QPC_BYTE_24_TC_M,
- 		       V2_QPC_BYTE_24_TC_S, get_tclass(&attr->ah_attr.grh));
- 	roce_set_field(qpc_mask->byte_24_mtu_tc, V2_QPC_BYTE_24_TC_M,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index 74a1c15..7e9b777 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -145,6 +145,8 @@
- 
- #define HNS_ROCE_CMQ_SCC_CLR_DONE_CNT		5
- 
-+#define HNS_ROCE_CONG_SIZE 64
-+
- #define check_whether_last_step(hop_num, step_idx) \
- 	((step_idx == 0 && hop_num == HNS_ROCE_HOP_NUM_0) || \
- 	(step_idx == 1 && hop_num == 1) || \
-@@ -575,6 +577,10 @@ struct hns_roce_v2_qp_context {
- 	struct hns_roce_v2_qp_context_ex ext;
- };
- 
-+#define QPC_FIELD_LOC(h, l) FIELD_LOC(struct hns_roce_v2_qp_context, h, l)
-+
-+#define QPC_CONG_ALGO_TMPL_ID QPC_FIELD_LOC(455, 448)
-+
- #define	V2_QPC_BYTE_4_TST_S 0
- #define V2_QPC_BYTE_4_TST_M GENMASK(2, 0)
- 
-@@ -666,9 +672,6 @@ struct hns_roce_v2_qp_context {
- #define	V2_QPC_BYTE_56_LP_PKTN_INI_S 28
- #define V2_QPC_BYTE_56_LP_PKTN_INI_M GENMASK(31, 28)
- 
--#define	V2_QPC_BYTE_60_TEMPID_S 0
--#define V2_QPC_BYTE_60_TEMPID_M GENMASK(7, 0)
--
- #define V2_QPC_BYTE_60_SCC_TOKEN_S 8
- #define V2_QPC_BYTE_60_SCC_TOKEN_M GENMASK(26, 8)
- 
-@@ -943,6 +946,10 @@ struct hns_roce_v2_qp_context {
- 
- #define QPCEX_FIELD_LOC(h, l) FIELD_LOC(struct hns_roce_v2_qp_context_ex, h, l)
- 
-+#define QPCEX_CONG_ALG_SEL QPCEX_FIELD_LOC(0, 0)
-+#define QPCEX_CONG_ALG_SUB_SEL QPCEX_FIELD_LOC(1, 1)
-+#define QPCEX_DIP_CTX_IDX_VLD QPCEX_FIELD_LOC(2, 2)
-+#define QPCEX_DIP_CTX_IDX QPCEX_FIELD_LOC(22, 3)
- #define QPCEX_STASH QPCEX_FIELD_LOC(82, 82)
- 
- #define	V2_QP_RWE_S 1 /* rdma write enable */
-@@ -1814,6 +1821,14 @@ struct hns_roce_query_pf_caps_d {
- #define V2_QUERY_PF_CAPS_D_SQWQE_HOP_NUM_S 24
- #define V2_QUERY_PF_CAPS_D_SQWQE_HOP_NUM_M GENMASK(25, 24)
- 
-+#define V2_QUERY_PF_CAPS_D_CONG_TYPE_S 26
-+#define V2_QUERY_PF_CAPS_D_CONG_TYPE_M GENMASK(29, 26)
-+
-+struct hns_roce_congestion_algorithm {
-+	u8 alg_sel;
-+	u8 alg_sub_sel;
-+	u8 dip_vld;
-+};
- 
- #define V2_QUERY_PF_CAPS_D_CEQ_DEPTH_S 0
- #define V2_QUERY_PF_CAPS_D_CEQ_DEPTH_M GENMASK(21, 0)
-@@ -1941,6 +1956,12 @@ struct hns_roce_eq_context {
- 	__le32	rsv[5];
- };
- 
-+struct hns_roce_dip {
-+	u8 dgid[GID_LEN_V2];
-+	u8 dip_idx;
-+	struct list_head node;	/* all dips are on a list */
-+};
-+
- #define HNS_ROCE_AEQ_DEFAULT_BURST_NUM	0x0
- #define HNS_ROCE_AEQ_DEFAULT_INTERVAL	0x0
- #define HNS_ROCE_CEQ_DEFAULT_BURST_NUM	0x0
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index 1a747f7..563fc88 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -910,6 +910,8 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
- 
- 	INIT_LIST_HEAD(&hr_dev->qp_list);
- 	spin_lock_init(&hr_dev->qp_list_lock);
-+	INIT_LIST_HEAD(&hr_dev->dip_list);
-+	spin_lock_init(&hr_dev->dip_list_lock);
- 
- 	ret = hns_roce_register_device(hr_dev);
- 	if (ret)
--- 
-2.8.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
