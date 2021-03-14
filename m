@@ -2,41 +2,43 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0D533A507
+	by mail.lfdr.de (Postfix) with ESMTP id AEDA933A508
 	for <lists+linux-rdma@lfdr.de>; Sun, 14 Mar 2021 14:42:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232645AbhCNNjk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 14 Mar 2021 09:39:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52846 "EHLO mail.kernel.org"
+        id S230078AbhCNNjl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 14 Mar 2021 09:39:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230078AbhCNNjR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 14 Mar 2021 09:39:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4A2E64EB3;
-        Sun, 14 Mar 2021 13:39:16 +0000 (UTC)
+        id S230482AbhCNNjV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 14 Mar 2021 09:39:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29B1164EB3;
+        Sun, 14 Mar 2021 13:39:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615729157;
-        bh=yT+j1Q4zKkPqCjzmtG6o8k4merXnzv/mBDjKspZBM8Q=;
+        s=k20201202; t=1615729160;
+        bh=xO4uu3IeJwNnDyXG2LSEeLLAh1qvAkPTvSeqsWCiZKM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OcL95cPBgHs9Du7cdog6XzlJvftIVqR9JNpaJlTs225i0GplnBhDop8kHeiSQcCGn
-         v7d56YtHkD8Gyn1SyK5rmHDGepJpI6r69Q0NPPYB7ooWsPNqPqA+hBjPmImfO2zB5j
-         4gntGeFdLIrt/9PhGLNnqh1M9NOm361CU/AnuPtohC30NbTnruLJDuCFXkEK/VRvWK
-         +kGbymGkKqwi7i85k9VLtTVq0DomkGkUJEXJQ+pvglYRwPvmsb4SpxlApcNYL5CIfI
-         fDS6/vHm2fEH5a3Vkuqcxav8i/FWRY2+W7UfNFAn98MEHU479gzb+KmQWlOKirKmHT
-         ZFPWfnjqT6xuQ==
+        b=H/PdubkQE7At+B5RxCaqvENF/SuQOdXtH4TbpuivaBUduMZd0d/6WtL4iZBVF9e6+
+         XYu+tdb36vbn+pJqUCxGB049H7bpg6yF32NcAgFWjcCWXBEQJVFkprn3t3co19qUMe
+         DDonrjaThILOjnurO3FwUhygUGTBkoQKSFMfpTC1VZQ36rVa/S0U4UUyP8GzMLScnb
+         51IQDgaZtHzAo36Pw3xkVLPiyt9k+o2THAx1462mNTE99seqBtpkTKUJor2CapneNb
+         cwJy5IyE38E8FbI3+XJhtQU4Zv5EDd27VKzRs0D7CGbW+M5R2XosCxDhApGlRhk+MY
+         zSPYiA9vKmATA==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Leon Romanovsky <leonro@nvidia.com>,
         Adit Ranadive <aditr@vmware.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Faisal Latif <faisal.latif@intel.com>,
         linux-rdma@vger.kernel.org,
         Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
         Shiraz Saleem <shiraz.saleem@intel.com>,
         VMware PV-Drivers <pv-drivers@vmware.com>
-Subject: [PATCH rdma-next 1/2] RDMA: Fix kernel-doc compilation warnings
-Date:   Sun, 14 Mar 2021 15:39:07 +0200
-Message-Id: <20210314133908.291945-2-leon@kernel.org>
+Subject: [PATCH rdma-next 2/2] RDMA: Delete not-used static inline functions
+Date:   Sun, 14 Mar 2021 15:39:08 +0200
+Message-Id: <20210314133908.291945-3-leon@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210314133908.291945-1-leon@kernel.org>
 References: <20210314133908.291945-1-leon@kernel.org>
@@ -48,424 +50,423 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-This patch fixes bunch of kernel-doc compilation warnings like below:
-
- drivers/infiniband/hw/i40iw/i40iw_cm.c:4372: warning: expecting
- prototype for i40iw_ifdown_notify(). Prototype was for i40iw_if_notify()
- instead
+Perform mass deletion of static inline functions that are not used.
 
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/hfi1/chip.c            |  4 ++--
- drivers/infiniband/hw/hfi1/driver.c          |  2 +-
- drivers/infiniband/hw/hfi1/exp_rcv.c         |  6 +++---
- drivers/infiniband/hw/hfi1/init.c            |  3 ++-
- drivers/infiniband/hw/hfi1/msix.c            | 12 ++++++------
- drivers/infiniband/hw/hfi1/netdev_rx.c       |  2 +-
- drivers/infiniband/hw/hfi1/sdma.c            |  2 +-
- drivers/infiniband/hw/i40iw/i40iw_cm.c       |  4 ++--
- drivers/infiniband/hw/i40iw/i40iw_hmc.c      |  4 ++--
- drivers/infiniband/hw/i40iw/i40iw_main.c     |  2 +-
- drivers/infiniband/hw/i40iw/i40iw_puda.c     |  2 +-
- drivers/infiniband/hw/i40iw/i40iw_utils.c    |  2 +-
- drivers/infiniband/hw/i40iw/i40iw_verbs.c    |  4 ++--
- drivers/infiniband/hw/i40iw/i40iw_virtchnl.c |  2 +-
- drivers/infiniband/hw/qib/qib_file_ops.c     |  5 +++--
- drivers/infiniband/hw/qib/qib_iba6120.c      |  2 +-
- drivers/infiniband/hw/qib/qib_iba7220.c      |  4 ++--
- drivers/infiniband/hw/qib/qib_iba7322.c      |  4 ++--
- drivers/infiniband/hw/qib/qib_init.c         |  2 +-
- drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c |  2 +-
- 20 files changed, 36 insertions(+), 34 deletions(-)
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h        | 11 ------
+ drivers/infiniband/hw/cxgb4/t4.h              | 33 -----------------
+ drivers/infiniband/hw/hfi1/chip.h             |  5 ---
+ drivers/infiniband/hw/hfi1/hfi.h              |  6 ----
+ drivers/infiniband/hw/hfi1/verbs_txreq.h      |  5 ---
+ drivers/infiniband/hw/i40iw/i40iw.h           |  9 -----
+ drivers/infiniband/hw/i40iw/i40iw_osdep.h     | 22 ------------
+ drivers/infiniband/hw/qib/qib.h               | 26 --------------
+ drivers/infiniband/hw/qib/qib_common.h        |  7 ----
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma.h     | 10 ------
+ .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   | 35 -------------------
+ drivers/infiniband/sw/siw/iwarp.h             | 13 -------
+ drivers/infiniband/sw/siw/siw_mem.h           |  5 ---
+ 13 files changed, 187 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
-index 993cbf37e0b9..a1565223e3a7 100644
---- a/drivers/infiniband/hw/hfi1/chip.c
-+++ b/drivers/infiniband/hw/hfi1/chip.c
-@@ -1322,7 +1322,7 @@ CNTR_ELEM(#name, \
- 	  access_ibp_##cntr)
- 
- /**
-- * hfi_addr_from_offset - return addr for readq/writeq
-+ * hfi1_addr_from_offset - return addr for readq/writeq
-  * @dd: the dd device
-  * @offset: the offset of the CSR within bar0
-  *
-@@ -8316,7 +8316,7 @@ static void is_interrupt(struct hfi1_devdata *dd, unsigned int source)
+diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+index f85477f3b037..cdec5deb37a1 100644
+--- a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
++++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+@@ -341,11 +341,6 @@ static inline struct c4iw_dev *to_c4iw_dev(struct ib_device *ibdev)
+ 	return container_of(ibdev, struct c4iw_dev, ibdev);
  }
  
- /**
-- * gerneral_interrupt() -  General interrupt handler
-+ * general_interrupt -  General interrupt handler
-  * @irq: MSIx IRQ vector
-  * @data: hfi1 devdata
-  *
-diff --git a/drivers/infiniband/hw/hfi1/driver.c b/drivers/infiniband/hw/hfi1/driver.c
-index 0b64aa87ab73..f88bb4af245f 100644
---- a/drivers/infiniband/hw/hfi1/driver.c
-+++ b/drivers/infiniband/hw/hfi1/driver.c
-@@ -1026,7 +1026,7 @@ static bool __set_armed_to_active(struct hfi1_packet *packet)
+-static inline struct c4iw_dev *rdev_to_c4iw_dev(struct c4iw_rdev *rdev)
+-{
+-	return container_of(rdev, struct c4iw_dev, rdev);
+-}
+-
+ static inline struct c4iw_cq *get_chp(struct c4iw_dev *rhp, u32 cqid)
+ {
+ 	return xa_load(&rhp->cqs, cqid);
+@@ -659,12 +654,6 @@ static inline u32 c4iw_ib_to_tpt_access(int a)
+ 	       FW_RI_MEM_ACCESS_LOCAL_READ;
  }
  
- /**
-- * armed to active - the fast path for armed to active
-+ * set_armed_to_active  - the fast path for armed to active
-  * @packet: the packet structure
-  *
-  * Return true if packet processing needs to bail.
-diff --git a/drivers/infiniband/hw/hfi1/exp_rcv.c b/drivers/infiniband/hw/hfi1/exp_rcv.c
-index 91f13140ddf2..a414214f6035 100644
---- a/drivers/infiniband/hw/hfi1/exp_rcv.c
-+++ b/drivers/infiniband/hw/hfi1/exp_rcv.c
-@@ -49,7 +49,7 @@
- #include "trace.h"
+-static inline u32 c4iw_ib_to_tpt_bind_access(int acc)
+-{
+-	return (acc & IB_ACCESS_REMOTE_WRITE ? FW_RI_MEM_ACCESS_REM_WRITE : 0) |
+-	       (acc & IB_ACCESS_REMOTE_READ ? FW_RI_MEM_ACCESS_REM_READ : 0);
+-}
+-
+ enum c4iw_mmid_state {
+ 	C4IW_STAG_STATE_VALID,
+ 	C4IW_STAG_STATE_INVALID
+diff --git a/drivers/infiniband/hw/cxgb4/t4.h b/drivers/infiniband/hw/cxgb4/t4.h
+index b170817b2741..c3b0e2896475 100644
+--- a/drivers/infiniband/hw/cxgb4/t4.h
++++ b/drivers/infiniband/hw/cxgb4/t4.h
+@@ -487,11 +487,6 @@ static inline int t4_rq_empty(struct t4_wq *wq)
+ 	return wq->rq.in_use == 0;
+ }
+ 
+-static inline int t4_rq_full(struct t4_wq *wq)
+-{
+-	return wq->rq.in_use == (wq->rq.size - 1);
+-}
+-
+ static inline u32 t4_rq_avail(struct t4_wq *wq)
+ {
+ 	return wq->rq.size - 1 - wq->rq.in_use;
+@@ -534,11 +529,6 @@ static inline int t4_sq_empty(struct t4_wq *wq)
+ 	return wq->sq.in_use == 0;
+ }
+ 
+-static inline int t4_sq_full(struct t4_wq *wq)
+-{
+-	return wq->sq.in_use == (wq->sq.size - 1);
+-}
+-
+ static inline u32 t4_sq_avail(struct t4_wq *wq)
+ {
+ 	return wq->sq.size - 1 - wq->sq.in_use;
+@@ -679,11 +669,6 @@ static inline void t4_enable_wq_db(struct t4_wq *wq)
+ 	wq->rq.queue[wq->rq.size].status.db_off = 0;
+ }
+ 
+-static inline int t4_wq_db_enabled(struct t4_wq *wq)
+-{
+-	return !wq->rq.queue[wq->rq.size].status.db_off;
+-}
+-
+ enum t4_cq_flags {
+ 	CQ_ARMED	= 1,
+ };
+@@ -817,19 +802,6 @@ static inline int t4_next_hw_cqe(struct t4_cq *cq, struct t4_cqe **cqe)
+ 	return ret;
+ }
+ 
+-static inline struct t4_cqe *t4_next_sw_cqe(struct t4_cq *cq)
+-{
+-	if (cq->sw_in_use == cq->size) {
+-		pr_warn("%s cxgb4 sw cq overflow cqid %u\n",
+-			__func__, cq->cqid);
+-		cq->error = 1;
+-		return NULL;
+-	}
+-	if (cq->sw_in_use)
+-		return &cq->sw_queue[cq->sw_cidx];
+-	return NULL;
+-}
+-
+ static inline int t4_next_cqe(struct t4_cq *cq, struct t4_cqe **cqe)
+ {
+ 	int ret = 0;
+@@ -843,11 +815,6 @@ static inline int t4_next_cqe(struct t4_cq *cq, struct t4_cqe **cqe)
+ 	return ret;
+ }
+ 
+-static inline int t4_cq_in_error(struct t4_cq *cq)
+-{
+-	return *cq->qp_errp;
+-}
+-
+ static inline void t4_set_cq_in_error(struct t4_cq *cq)
+ {
+ 	*cq->qp_errp = 1;
+diff --git a/drivers/infiniband/hw/hfi1/chip.h b/drivers/infiniband/hw/hfi1/chip.h
+index 2c6f2de74d4d..ac26649d4463 100644
+--- a/drivers/infiniband/hw/hfi1/chip.h
++++ b/drivers/infiniband/hw/hfi1/chip.h
+@@ -822,11 +822,6 @@ int acquire_lcb_access(struct hfi1_devdata *dd, int sleep_ok);
+ int release_lcb_access(struct hfi1_devdata *dd, int sleep_ok);
+ #define LCB_START DC_LCB_CSRS
+ #define LCB_END   DC_8051_CSRS /* next block is 8051 */
+-static inline int is_lcb_offset(u32 offset)
+-{
+-	return (offset >= LCB_START && offset < LCB_END);
+-}
+-
+ extern uint num_vls;
+ 
+ extern uint disable_integrity;
+diff --git a/drivers/infiniband/hw/hfi1/hfi.h b/drivers/infiniband/hw/hfi1/hfi.h
+index e17387e0e24c..0b923044761e 100644
+--- a/drivers/infiniband/hw/hfi1/hfi.h
++++ b/drivers/infiniband/hw/hfi1/hfi.h
+@@ -717,12 +717,6 @@ static inline void incr_cntr64(u64 *cntr)
+ 		(*cntr)++;
+ }
+ 
+-static inline void incr_cntr32(u32 *cntr)
+-{
+-	if (*cntr < (u32)-1LL)
+-		(*cntr)++;
+-}
+-
+ #define MAX_NAME_SIZE 64
+ struct hfi1_msix_entry {
+ 	enum irq_type type;
+diff --git a/drivers/infiniband/hw/hfi1/verbs_txreq.h b/drivers/infiniband/hw/hfi1/verbs_txreq.h
+index d2d526c5a756..4bdfc7932376 100644
+--- a/drivers/infiniband/hw/hfi1/verbs_txreq.h
++++ b/drivers/infiniband/hw/hfi1/verbs_txreq.h
+@@ -99,11 +99,6 @@ static inline struct verbs_txreq *get_txreq(struct hfi1_ibdev *dev,
+ 	return tx;
+ }
+ 
+-static inline struct sdma_txreq *get_sdma_txreq(struct verbs_txreq *tx)
+-{
+-	return &tx->txreq;
+-}
+-
+ static inline struct verbs_txreq *get_waiting_verbs_txreq(struct iowait_work *w)
+ {
+ 	struct sdma_txreq *stx;
+diff --git a/drivers/infiniband/hw/i40iw/i40iw.h b/drivers/infiniband/hw/i40iw/i40iw.h
+index 6a79502c8b53..be4094ac4fac 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw.h
++++ b/drivers/infiniband/hw/i40iw/i40iw.h
+@@ -504,15 +504,6 @@ static inline void i40iw_free_resource(struct i40iw_device *iwdev,
+ 	spin_unlock_irqrestore(&iwdev->resource_lock, flags);
+ }
+ 
+-/**
+- * to_iwhdl - Get the handler from the device pointer
+- * @iwdev: device pointer
+- **/
+-static inline struct i40iw_handler *to_iwhdl(struct i40iw_device *iw_dev)
+-{
+-	return container_of(iw_dev, struct i40iw_handler, device);
+-}
+-
+ struct i40iw_handler *i40iw_find_netdev(struct net_device *netdev);
  
  /**
-- * exp_tid_group_init - initialize exp_tid_set
-+ * hfi1_exp_tid_set_init - initialize exp_tid_set
-  * @set: the set
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_osdep.h b/drivers/infiniband/hw/i40iw/i40iw_osdep.h
+index d474aad62a81..d938ccb195b1 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_osdep.h
++++ b/drivers/infiniband/hw/i40iw/i40iw_osdep.h
+@@ -50,17 +50,6 @@ static inline void set_64bit_val(u64 *wqe_words, u32 byte_index, u64 value)
+ 	wqe_words[byte_index >> 3] = value;
+ }
+ 
+-/**
+- * set_32bit_val - set 32 value to hw wqe
+- * @wqe_words: wqe addr to write
+- * @byte_index: index in wqe
+- * @value: value to write
+- **/
+-static inline void set_32bit_val(u32 *wqe_words, u32 byte_index, u32 value)
+-{
+-	wqe_words[byte_index >> 2] = value;
+-}
+-
+ /**
+  * get_64bit_val - read 64 bit value from wqe
+  * @wqe_words: wqe addr
+@@ -72,17 +61,6 @@ static inline void get_64bit_val(u64 *wqe_words, u32 byte_index, u64 *value)
+ 	*value = wqe_words[byte_index >> 3];
+ }
+ 
+-/**
+- * get_32bit_val - read 32 bit value from wqe
+- * @wqe_words: wqe addr
+- * @byte_index: index to reaad from
+- * @value: return 32 bit value
+- **/
+-static inline void get_32bit_val(u32 *wqe_words, u32 byte_index, u32 *value)
+-{
+-	*value = wqe_words[byte_index >> 2];
+-}
+-
+ struct i40iw_dma_mem {
+ 	void *va;
+ 	dma_addr_t pa;
+diff --git a/drivers/infiniband/hw/qib/qib.h b/drivers/infiniband/hw/qib/qib.h
+index 9b13f668b31f..88497739029e 100644
+--- a/drivers/infiniband/hw/qib/qib.h
++++ b/drivers/infiniband/hw/qib/qib.h
+@@ -1303,11 +1303,6 @@ int qib_sdma_verbs_send(struct qib_pportdata *, struct rvt_sge_state *,
+ /* ppd->sdma_lock should be locked before calling this. */
+ int qib_sdma_make_progress(struct qib_pportdata *dd);
+ 
+-static inline int qib_sdma_empty(const struct qib_pportdata *ppd)
+-{
+-	return ppd->sdma_descq_added == ppd->sdma_descq_removed;
+-}
+-
+ /* must be called under qib_sdma_lock */
+ static inline u16 qib_sdma_descq_freecnt(const struct qib_pportdata *ppd)
+ {
+@@ -1364,27 +1359,6 @@ static inline u32 qib_get_rcvhdrtail(const struct qib_ctxtdata *rcd)
+ 		*((volatile __le64 *)rcd->rcvhdrtail_kvaddr)); /* DMA'ed */
+ }
+ 
+-static inline u32 qib_get_hdrqtail(const struct qib_ctxtdata *rcd)
+-{
+-	const struct qib_devdata *dd = rcd->dd;
+-	u32 hdrqtail;
+-
+-	if (dd->flags & QIB_NODMA_RTAIL) {
+-		__le32 *rhf_addr;
+-		u32 seq;
+-
+-		rhf_addr = (__le32 *) rcd->rcvhdrq +
+-			rcd->head + dd->rhf_offset;
+-		seq = qib_hdrget_seq(rhf_addr);
+-		hdrqtail = rcd->head;
+-		if (seq == rcd->seq_cnt)
+-			hdrqtail++;
+-	} else
+-		hdrqtail = qib_get_rcvhdrtail(rcd);
+-
+-	return hdrqtail;
+-}
+-
+ /*
+  * sysfs interface.
   */
- static void hfi1_exp_tid_set_init(struct exp_tid_set *set)
-@@ -70,7 +70,7 @@ void hfi1_exp_tid_group_init(struct hfi1_ctxtdata *rcd)
+diff --git a/drivers/infiniband/hw/qib/qib_common.h b/drivers/infiniband/hw/qib/qib_common.h
+index f91f23e02283..cf652831d8e7 100644
+--- a/drivers/infiniband/hw/qib/qib_common.h
++++ b/drivers/infiniband/hw/qib/qib_common.h
+@@ -795,11 +795,4 @@ static inline __u32 qib_hdrget_use_egr_buf(const __le32 *rbuf)
+ {
+ 	return __le32_to_cpu(rbuf[0]) & QLOGIC_IB_RHF_L_USE_EGR;
+ }
+-
+-static inline __u32 qib_hdrget_qib_ver(__le32 hdrword)
+-{
+-	return (__le32_to_cpu(hdrword) >> QLOGIC_IB_I_VERS_SHIFT) &
+-		QLOGIC_IB_I_VERS_MASK;
+-}
+-
+ #endif                          /* _QIB_COMMON_H */
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
+index de57f2fed743..763ddc6f25d1 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma.h
+@@ -344,11 +344,6 @@ static inline enum ib_port_state pvrdma_port_state_to_ib(
+ 	return (enum ib_port_state)state;
  }
  
- /**
-- * alloc_ctxt_rcv_groups - initialize expected receive groups
-+ * hfi1_alloc_ctxt_rcv_groups - initialize expected receive groups
-  * @rcd: the context to add the groupings to
-  */
- int hfi1_alloc_ctxt_rcv_groups(struct hfi1_ctxtdata *rcd)
-@@ -100,7 +100,7 @@ int hfi1_alloc_ctxt_rcv_groups(struct hfi1_ctxtdata *rcd)
+-static inline int ib_port_cap_flags_to_pvrdma(int flags)
+-{
+-	return flags & PVRDMA_MASK(PVRDMA_PORT_CAP_FLAGS_MAX);
+-}
+-
+ static inline int pvrdma_port_cap_flags_to_ib(int flags)
+ {
+ 	return flags;
+@@ -410,11 +405,6 @@ static inline enum pvrdma_qp_type ib_qp_type_to_pvrdma(enum ib_qp_type type)
+ 	return (enum pvrdma_qp_type)type;
  }
  
- /**
-- * free_ctxt_rcv_groups - free  expected receive groups
-+ * hfi1_free_ctxt_rcv_groups - free  expected receive groups
-  * @rcd: the context to free
-  *
-  * The routine dismantles the expect receive linked
-diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
-index 48e9c8af579a..e84245482e62 100644
---- a/drivers/infiniband/hw/hfi1/init.c
-+++ b/drivers/infiniband/hw/hfi1/init.c
-@@ -1852,7 +1852,8 @@ int hfi1_create_rcvhdrq(struct hfi1_devdata *dd, struct hfi1_ctxtdata *rcd)
+-static inline enum ib_qp_type pvrdma_qp_type_to_ib(enum pvrdma_qp_type type)
+-{
+-	return (enum ib_qp_type)type;
+-}
+-
+ static inline enum pvrdma_qp_state ib_qp_state_to_pvrdma(enum ib_qp_state state)
+ {
+ 	return (enum pvrdma_qp_state)state;
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
+index e28525a8c275..544b94d97c3a 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
+@@ -70,30 +70,6 @@ enum pvrdma_mtu {
+ 	PVRDMA_MTU_4096 = 5,
+ };
+ 
+-static inline int pvrdma_mtu_enum_to_int(enum pvrdma_mtu mtu)
+-{
+-	switch (mtu) {
+-	case PVRDMA_MTU_256:	return  256;
+-	case PVRDMA_MTU_512:	return  512;
+-	case PVRDMA_MTU_1024:	return 1024;
+-	case PVRDMA_MTU_2048:	return 2048;
+-	case PVRDMA_MTU_4096:	return 4096;
+-	default:		return   -1;
+-	}
+-}
+-
+-static inline enum pvrdma_mtu pvrdma_mtu_int_to_enum(int mtu)
+-{
+-	switch (mtu) {
+-	case 256:	return PVRDMA_MTU_256;
+-	case 512:	return PVRDMA_MTU_512;
+-	case 1024:	return PVRDMA_MTU_1024;
+-	case 2048:	return PVRDMA_MTU_2048;
+-	case 4096:
+-	default:	return PVRDMA_MTU_4096;
+-	}
+-}
+-
+ enum pvrdma_port_state {
+ 	PVRDMA_PORT_NOP			= 0,
+ 	PVRDMA_PORT_DOWN		= 1,
+@@ -138,17 +114,6 @@ enum pvrdma_port_width {
+ 	PVRDMA_WIDTH_12X	= 8,
+ };
+ 
+-static inline int pvrdma_width_enum_to_int(enum pvrdma_port_width width)
+-{
+-	switch (width) {
+-	case PVRDMA_WIDTH_1X:	return  1;
+-	case PVRDMA_WIDTH_4X:	return  4;
+-	case PVRDMA_WIDTH_8X:	return  8;
+-	case PVRDMA_WIDTH_12X:	return 12;
+-	default:		return -1;
+-	}
+-}
+-
+ enum pvrdma_port_speed {
+ 	PVRDMA_SPEED_SDR	= 1,
+ 	PVRDMA_SPEED_DDR	= 2,
+diff --git a/drivers/infiniband/sw/siw/iwarp.h b/drivers/infiniband/sw/siw/iwarp.h
+index e8a04d9c89cb..3f1dedb50a0d 100644
+--- a/drivers/infiniband/sw/siw/iwarp.h
++++ b/drivers/infiniband/sw/siw/iwarp.h
+@@ -114,13 +114,6 @@ static inline u8 __ddp_get_version(struct iwarp_ctrl *ctrl)
+ 	return be16_to_cpu(ctrl->ddp_rdmap_ctrl & DDP_MASK_VERSION) >> 8;
  }
  
- /**
-- * allocate eager buffers, both kernel and user contexts.
-+ * hfi1_setup_eagerbufs - llocate eager buffers, both kernel and user
-+ * contexts.
-  * @rcd: the context we are setting up.
-  *
-  * Allocate the eager TID buffers and program them into hip.
-diff --git a/drivers/infiniband/hw/hfi1/msix.c b/drivers/infiniband/hw/hfi1/msix.c
-index cf3040bb177f..57a5f02ebc77 100644
---- a/drivers/infiniband/hw/hfi1/msix.c
-+++ b/drivers/infiniband/hw/hfi1/msix.c
-@@ -206,7 +206,7 @@ int msix_request_rcd_irq(struct hfi1_ctxtdata *rcd)
+-static inline void __ddp_set_version(struct iwarp_ctrl *ctrl, u8 version)
+-{
+-	ctrl->ddp_rdmap_ctrl =
+-		(ctrl->ddp_rdmap_ctrl & ~DDP_MASK_VERSION) |
+-		(cpu_to_be16((u16)version << 8) & DDP_MASK_VERSION);
+-}
+-
+ static inline u8 __rdmap_get_version(struct iwarp_ctrl *ctrl)
+ {
+ 	__be16 ver = ctrl->ddp_rdmap_ctrl & RDMAP_MASK_VERSION;
+@@ -128,12 +121,6 @@ static inline u8 __rdmap_get_version(struct iwarp_ctrl *ctrl)
+ 	return be16_to_cpu(ver) >> 6;
  }
  
- /**
-- * msix_request_rcd_irq() - Helper function for RCVAVAIL IRQs
-+ * msix_netdev_request_rcd_irq  - Helper function for RCVAVAIL IRQs
-  * for netdev context
-  * @rcd: valid netdev contexti
-  */
-@@ -221,7 +221,7 @@ int msix_netdev_request_rcd_irq(struct hfi1_ctxtdata *rcd)
+-static inline void __rdmap_set_version(struct iwarp_ctrl *ctrl, u8 version)
+-{
+-	ctrl->ddp_rdmap_ctrl = (ctrl->ddp_rdmap_ctrl & ~RDMAP_MASK_VERSION) |
+-			       (cpu_to_be16(version << 6) & RDMAP_MASK_VERSION);
+-}
+-
+ static inline u8 __rdmap_get_opcode(struct iwarp_ctrl *ctrl)
+ {
+ 	return be16_to_cpu(ctrl->ddp_rdmap_ctrl & RDMAP_MASK_OPCODE);
+diff --git a/drivers/infiniband/sw/siw/siw_mem.h b/drivers/infiniband/sw/siw/siw_mem.h
+index db138c8423da..f911287576d1 100644
+--- a/drivers/infiniband/sw/siw/siw_mem.h
++++ b/drivers/infiniband/sw/siw/siw_mem.h
+@@ -29,11 +29,6 @@ static inline void siw_mem_put(struct siw_mem *mem)
+ 	kref_put(&mem->ref, siw_free_mem);
  }
  
- /**
-- * msix_request_smda_ira() - Helper for getting SDMA IRQ resources
-+ * msix_request_sdma_irq  - Helper for getting SDMA IRQ resources
-  * @sde: valid sdma engine
-  *
-  */
-@@ -243,7 +243,7 @@ int msix_request_sdma_irq(struct sdma_engine *sde)
- }
- 
- /**
-- * msix_request_general_irq(void) - Helper for getting general IRQ
-+ * msix_request_general_irq - Helper for getting general IRQ
-  * resources
-  * @dd: valid device data
-  */
-@@ -269,7 +269,7 @@ int msix_request_general_irq(struct hfi1_devdata *dd)
- }
- 
- /**
-- * enable_sdma_src() - Helper to enable SDMA IRQ srcs
-+ * enable_sdma_srcs - Helper to enable SDMA IRQ srcs
-  * @dd: valid devdata structure
-  * @i: index of SDMA engine
-  */
-@@ -349,7 +349,7 @@ void msix_free_irq(struct hfi1_devdata *dd, u8 msix_intr)
- }
- 
- /**
-- * hfi1_clean_up_msix_interrupts() - Free all MSIx IRQ resources
-+ * msix_clean_up_interrupts  - Free all MSIx IRQ resources
-  * @dd: valid device data data structure
-  *
-  * Free the MSIx and associated PCI resources, if they have been allocated.
-@@ -372,7 +372,7 @@ void msix_clean_up_interrupts(struct hfi1_devdata *dd)
- }
- 
- /**
-- * msix_netdev_syncrhonize_irq() - netdev IRQ synchronize
-+ * msix_netdev_synchronize_irq - netdev IRQ synchronize
-  * @dd: valid devdata
-  */
- void msix_netdev_synchronize_irq(struct hfi1_devdata *dd)
-diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c b/drivers/infiniband/hw/hfi1/netdev_rx.c
-index 1fb6e1a0e4e1..2c8bc02ef6df 100644
---- a/drivers/infiniband/hw/hfi1/netdev_rx.c
-+++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
-@@ -464,7 +464,7 @@ void *hfi1_netdev_get_data(struct hfi1_devdata *dd, int id)
- }
- 
- /**
-- * hfi1_netdev_get_first_dat - Gets first entry with greater or equal id.
-+ * hfi1_netdev_get_first_data - Gets first entry with greater or equal id.
-  *
-  * @dd: hfi1 dev data
-  * @start_id: requested integer id up to INT_MAX
-diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
-index 46b5290b2839..1fcc6e9666e0 100644
---- a/drivers/infiniband/hw/hfi1/sdma.c
-+++ b/drivers/infiniband/hw/hfi1/sdma.c
-@@ -1285,7 +1285,7 @@ int sdma_map_init(struct hfi1_devdata *dd, u8 port, u8 num_vls, u8 *vl_engines)
- }
- 
- /**
-- * sdma_clean()  Clean up allocated memory
-+ * sdma_clean - Clean up allocated memory
-  * @dd:          struct hfi1_devdata
-  * @num_engines: num sdma engines
-  *
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_cm.c b/drivers/infiniband/hw/i40iw/i40iw_cm.c
-index ac65c8237b2e..2450b7dd51f6 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_cm.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_cm.c
-@@ -905,7 +905,7 @@ static int i40iw_send_mpa_reject(struct i40iw_cm_node *cm_node,
- }
- 
- /**
-- * recv_mpa - process an IETF MPA frame
-+ * i40iw_parse_mpa - process an IETF MPA frame
-  * @cm_node: connection's node
-  * @buffer: Data pointer
-  * @type: to return accept or reject
-@@ -4360,7 +4360,7 @@ void i40iw_cm_teardown_connections(struct i40iw_device *iwdev, u32 *ipaddr,
- }
- 
- /**
-- * i40iw_ifdown_notify - process an ifdown on an interface
-+ * i40iw_if_notify - process an ifdown on an interface
-  * @iwdev: device pointer
-  * @netdev: network interface device structure
-  * @ipaddr: Pointer to IPv4 or IPv6 address
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_hmc.c b/drivers/infiniband/hw/i40iw/i40iw_hmc.c
-index 8bd72af9e099..b44bfc1d239b 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_hmc.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_hmc.c
-@@ -285,7 +285,7 @@ static enum i40iw_status_code i40iw_hmc_finish_add_sd_reg(struct i40iw_sc_dev *d
- }
- 
- /**
-- * i40iw_create_iw_hmc_obj - allocate backing store for hmc objects
-+ * i40iw_sc_create_hmc_obj - allocate backing store for hmc objects
-  * @dev: pointer to the device structure
-  * @info: pointer to i40iw_hmc_iw_create_obj_info struct
-  *
-@@ -434,7 +434,7 @@ static enum i40iw_status_code i40iw_finish_del_sd_reg(struct i40iw_sc_dev *dev,
- }
- 
- /**
-- * i40iw_del_iw_hmc_obj - remove pe hmc objects
-+ * i40iw_sc_del_hmc_obj - remove pe hmc objects
-  * @dev: pointer to the device structure
-  * @info: pointer to i40iw_hmc_del_obj_info struct
-  * @reset: true if called before reset
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_main.c b/drivers/infiniband/hw/i40iw/i40iw_main.c
-index ab4cb11950dc..2ebcbb1ddaa2 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_main.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_main.c
-@@ -251,7 +251,7 @@ static void i40iw_destroy_cqp(struct i40iw_device *iwdev, bool free_hwcqp)
- }
- 
- /**
-- * i40iw_disable_irqs - disable device interrupts
-+ * i40iw_disable_irq - disable device interrupts
-  * @dev: hardware control device structure
-  * @msix_vec: msix vector to disable irq
-  * @dev_id: parameter to pass to free_irq (used during irq setup)
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_puda.c b/drivers/infiniband/hw/i40iw/i40iw_puda.c
-index d1c8cc0a6236..88fb68e866ba 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_puda.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_puda.c
-@@ -1000,7 +1000,7 @@ static void i40iw_ilq_putback_rcvbuf(struct i40iw_sc_qp *qp, u32 wqe_idx)
- }
- 
- /**
-- * i40iw_ieq_get_fpdu - given length return fpdu length
-+ * i40iw_ieq_get_fpdu_length - given length return fpdu length
-  * @length: length if fpdu
-  */
- static u16 i40iw_ieq_get_fpdu_length(u16 length)
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_utils.c b/drivers/infiniband/hw/i40iw/i40iw_utils.c
-index 76f052b12c14..9ff825f7860b 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_utils.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_utils.c
-@@ -890,7 +890,7 @@ void i40iw_terminate_done(struct i40iw_sc_qp *qp, int timeout_occurred)
- }
- 
- /**
-- * i40iw_terminate_imeout - timeout happened
-+ * i40iw_terminate_timeout - timeout happened
-  * @t: points to iwarp qp
-  */
- static void i40iw_terminate_timeout(struct timer_list *t)
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-index 1a88a9e2a785..b876d722fcc8 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-@@ -647,7 +647,7 @@ static struct ib_qp *i40iw_create_qp(struct ib_pd *ibpd,
- }
- 
- /**
-- * i40iw_query - query qp attributes
-+ * i40iw_query_qp - query qp attributes
-  * @ibqp: qp pointer
-  * @attr: attributes pointer
-  * @attr_mask: Not used
-@@ -1846,7 +1846,7 @@ static struct ib_mr *i40iw_get_dma_mr(struct ib_pd *pd, int acc)
- }
- 
- /**
-- * i40iw_del_mem_list - Deleting pbl list entries for CQ/QP
-+ * i40iw_del_memlist - Deleting pbl list entries for CQ/QP
-  * @iwmr: iwmr for IB's user page addresses
-  * @ucontext: ptr to user context
-  */
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_virtchnl.c b/drivers/infiniband/hw/i40iw/i40iw_virtchnl.c
-index aca9061688ae..e34a1522132c 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_virtchnl.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_virtchnl.c
-@@ -333,7 +333,7 @@ static void pf_cqp_get_hmc_fcn_callback(struct i40iw_sc_dev *dev, void *callback
- }
- 
- /**
-- * pf_add_hmc_obj - Callback for Add HMC Object
-+ * pf_add_hmc_obj_callback - Callback for Add HMC Object
-  * @work_vf_dev: pointer to the VF Device
-  */
- static void pf_add_hmc_obj_callback(void *work_vf_dev)
-diff --git a/drivers/infiniband/hw/qib/qib_file_ops.c b/drivers/infiniband/hw/qib/qib_file_ops.c
-index ff87a67dd7b7..c60e79d214a1 100644
---- a/drivers/infiniband/hw/qib/qib_file_ops.c
-+++ b/drivers/infiniband/hw/qib/qib_file_ops.c
-@@ -1758,7 +1758,8 @@ static int qib_do_user_init(struct file *fp,
- }
- 
- /**
-- * unlock_exptid - unlock any expected TID entries context still had in use
-+ * unlock_expected_tids - unlock any expected TID entries context still had
-+ * in use
-  * @rcd: ctxt
-  *
-  * We don't actually update the chip here, because we do a bulk update
-@@ -2247,7 +2248,7 @@ static ssize_t qib_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 
- 	if (!iter_is_iovec(from) || !from->nr_segs || !pq)
- 		return -EINVAL;
--			 
-+
- 	return qib_user_sdma_writev(rcd, pq, from->iov, from->nr_segs);
- }
- 
-diff --git a/drivers/infiniband/hw/qib/qib_iba6120.c b/drivers/infiniband/hw/qib/qib_iba6120.c
-index b35e1174be22..a9b83bc13f4a 100644
---- a/drivers/infiniband/hw/qib/qib_iba6120.c
-+++ b/drivers/infiniband/hw/qib/qib_iba6120.c
-@@ -2609,7 +2609,7 @@ static void qib_chk_6120_errormask(struct qib_devdata *dd)
- }
- 
- /**
-- * qib_get_faststats - get word counters from chip before they overflow
-+ * qib_get_6120_faststats - get word counters from chip before they overflow
-  * @t: contains a pointer to the qlogic_ib device qib_devdata
-  *
-  * This needs more work; in particular, decision on whether we really
-diff --git a/drivers/infiniband/hw/qib/qib_iba7220.c b/drivers/infiniband/hw/qib/qib_iba7220.c
-index 229dcd6ead95..d1c0bc31869f 100644
---- a/drivers/infiniband/hw/qib/qib_iba7220.c
-+++ b/drivers/infiniband/hw/qib/qib_iba7220.c
-@@ -2236,7 +2236,7 @@ static void qib_7220_tidtemplate(struct qib_devdata *dd)
- }
- 
- /**
-- * qib_init_7220_get_base_info - set chip-specific flags for user code
-+ * qib_7220_get_base_info - set chip-specific flags for user code
-  * @rcd: the qlogic_ib ctxt
-  * @kinfo: qib_base_info pointer
-  *
-@@ -4411,7 +4411,7 @@ static void writescratch(struct qib_devdata *dd, u32 val)
- 
- #define VALID_TS_RD_REG_MASK 0xBF
- /**
-- * qib_7220_tempsense_read - read register of temp sensor via TWSI
-+ * qib_7220_tempsense_rd - read register of temp sensor via TWSI
-  * @dd: the qlogic_ib device
-  * @regnum: register to read from
-  *
-diff --git a/drivers/infiniband/hw/qib/qib_iba7322.c b/drivers/infiniband/hw/qib/qib_iba7322.c
-index 9fe6ea75b45e..5240f186feee 100644
---- a/drivers/infiniband/hw/qib/qib_iba7322.c
-+++ b/drivers/infiniband/hw/qib/qib_iba7322.c
-@@ -2513,7 +2513,7 @@ static int qib_7322_bringup_serdes(struct qib_pportdata *ppd)
- }
- 
- /**
-- * qib_7322_quiet_serdes - set serdes to txidle
-+ * qib_7322_mini_quiet_serdes - set serdes to txidle
-  * @ppd: the qlogic_ib device
-  * Called when driver is being unloaded
-  */
-@@ -3859,7 +3859,7 @@ static void qib_7322_tidtemplate(struct qib_devdata *dd)
- }
- 
- /**
-- * qib_init_7322_get_base_info - set chip-specific flags for user code
-+ * qib_7322_get_base_info - set chip-specific flags for user code
-  * @rcd: the qlogic_ib ctxt
-  * @kinfo: qib_base_info pointer
-  *
-diff --git a/drivers/infiniband/hw/qib/qib_init.c b/drivers/infiniband/hw/qib/qib_init.c
-index 43c8ee1f46e0..b5a78576c48b 100644
---- a/drivers/infiniband/hw/qib/qib_init.c
-+++ b/drivers/infiniband/hw/qib/qib_init.c
-@@ -1609,7 +1609,7 @@ int qib_create_rcvhdrq(struct qib_devdata *dd, struct qib_ctxtdata *rcd)
- }
- 
- /**
-- * allocate eager buffers, both kernel and user contexts.
-+ * qib_setup_eagerbufs - allocate eager buffers, both kernel and user contexts.
-  * @rcd: the context we are setting up.
-  *
-  * Allocate the eager TID buffers and program them into hip.
-diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
-index 1d3bdd7bb51d..67769b715126 100644
---- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
-+++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
-@@ -882,7 +882,7 @@ int pvrdma_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- }
- 
- /**
-- * pvrdma_post_receive - post receive work request entries on a QP
-+ * pvrdma_post_recv - post receive work request entries on a QP
-  * @ibqp: the QP
-  * @wr: the work request list to post
-  * @bad_wr: the first bad WR returned
+-static inline struct siw_mr *siw_mem2mr(struct siw_mem *m)
+-{
+-	return container_of(m, struct siw_mr, mem);
+-}
+-
+ static inline void siw_unref_mem_sgl(struct siw_mem **mem, unsigned int num_sge)
+ {
+ 	while (num_sge) {
 -- 
 2.30.2
 
