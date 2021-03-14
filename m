@@ -2,201 +2,161 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8835633A4E5
-	for <lists+linux-rdma@lfdr.de>; Sun, 14 Mar 2021 13:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC36733A4ED
+	for <lists+linux-rdma@lfdr.de>; Sun, 14 Mar 2021 14:06:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbhCNMya (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 14 Mar 2021 08:54:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235428AbhCNMy0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 14 Mar 2021 08:54:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D41D64DE0;
-        Sun, 14 Mar 2021 12:54:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615726466;
-        bh=DKhymGOp0dzcSdtxpB6qUmqguMVl0uZna+/bjOwGxMo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SDL4B7h0jkk2l4cXxBdhEz74WK5vpBSO49A5BHJIdSlPX3rBZMV6qyrFc9YrlGov/
-         K1ijVQzA5zXZlVh289o/A8Hxq9QStyed9SJKmo7mI4Ox3cA9G0QR4kBumbA4LAzuXg
-         f1vZSbN8dRPTNtMTJVipJeqI2yRFtPRzi/A47EuIFimiEQv1tLcfzrgNF4oZnXTjVs
-         1NX8HEfff9CWindFv+PDYF6sPC/dQqU8JrnbF+kc7T891yCk+PuMZegdnRkgNbTCYQ
-         wWQUkmBr9ahVCeV9HIEjn5xvMbrjV3OAsXYAj/k9tYEO6WBrqmB50ZKrEmMt/QN62g
-         MluZTYtIDwYdw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Shay Drory <shayd@nvidia.com>, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@nvidia.com>
-Subject: [PATCH rdma-next v1] RDMA/mlx5: Create ODP EQ only when ODP MR is created
-Date:   Sun, 14 Mar 2021 14:54:18 +0200
-Message-Id: <20210314125418.179716-1-leon@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S235495AbhCNNF2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 14 Mar 2021 09:05:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235460AbhCNNFZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 14 Mar 2021 09:05:25 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E98C061574;
+        Sun, 14 Mar 2021 06:05:25 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id si25so6074054ejb.1;
+        Sun, 14 Mar 2021 06:05:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=2UqgEhkkriIfIz0QLCQzC66SqvUBn0IjNxWs+rZzdjk=;
+        b=FNnIgE7to+L+jyYIV7nObsiwMZrEL40TE3XJCVE05+Ssq7didpgX3WdOMupFAs6iTX
+         R0nzG84vO5i5qV7KMypb1VKKaExElhCPfGIdIQO5kyh9rkZICWLCqxlGFedNB2MsB5Ot
+         KJlFwcPwTx2o1HxXP+/wYj7AXW9QTaULMF8v3FOqspLWiIWHCaIK9V19efvfC5SMAEsc
+         Xe2aOjP7UM6wmJ511+cUDKdjqBydsmOJmNA9lIpG8v0N+y5qNY7mPq08X5BbI5vSrUBt
+         sXI+7XLF7tvqOQ/O8jIf6CXFrp3x9Un6oEjfas6JN+gAtjMdQy0ccRYHuNdSx90XOGWo
+         jnHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=2UqgEhkkriIfIz0QLCQzC66SqvUBn0IjNxWs+rZzdjk=;
+        b=jRkVYFV4+YgE0fkVPdb5sCl2QjzJGX5y+JZZNoNpZhhsHLGogblerTum26NCibIZxZ
+         xbdxEQHwxH11oskXTzxlMGL1BWzvaWwgZ5NMCjee3nzD6P9dhOe3o8yhwxfrFaVy15a4
+         +vyBcAbdZSuPxPAj81ffcaYpglu5Efod6jf2MJkj49KR9qhq9q2bKTS2DBqrtUaDvOxE
+         FdZJjudMo8GUSOJxSogDhob10Jwp/xXwkA7iITql8YKAZDGWztJ+E92K4kGiy3fNVCuc
+         V4KfnZwLAkZ/y2tjbsDAkAN3BJEIIJIWrULiwb9ddAdmfIU8hkmqyotBI1E0MmOsbq2w
+         uanw==
+X-Gm-Message-State: AOAM532KOTyiV709ghUKiu+eTcuOxbBo9EAVnTYULjks8TuDYaCGuZcX
+        JPBiMI4L+hY33xbwadSm9PI=
+X-Google-Smtp-Source: ABdhPJzYhl+GE7DDYpGg5PhZaozD/mp3kztV7ZlfITNOP/wNV9rjeYKjTajlP7Qw7/4uwBQMOzI1ug==
+X-Received: by 2002:a17:906:3849:: with SMTP id w9mr18819720ejc.7.1615727124033;
+        Sun, 14 Mar 2021 06:05:24 -0700 (PDT)
+Received: from TRWS9215 ([88.245.22.54])
+        by smtp.gmail.com with ESMTPSA id u13sm5900762ejn.59.2021.03.14.06.05.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Mar 2021 06:05:23 -0700 (PDT)
+Message-ID: <7fa4fa81235635266e7b83e2c2d5020691079f9c.camel@gmail.com>
+Subject: Re: [BUG] net: rds: rds_send_probe memory leak
+From:   Fatih Yildirim <yildirim.fatih@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Date:   Sun, 14 Mar 2021 16:05:21 +0300
+In-Reply-To: <YE4FO01xILz98/K6@kroah.com>
+References: <a3036ea4ee2a06e4b3acd3b438025754d11f65fc.camel@gmail.com>
+         <YE3K+zeWnJ/hVpQS@kroah.com>
+         <b1b796b48a75b3ef3d6cebac89b0be45c5bf4611.camel@gmail.com>
+         <YE4FO01xILz98/K6@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Shay Drory <shayd@nvidia.com>
+On Sun, 2021-03-14 at 13:44 +0100, Greg KH wrote:
+> On Sun, Mar 14, 2021 at 03:19:05PM +0300, Fatih Yildirim wrote:
+> > On Sun, 2021-03-14 at 09:36 +0100, Greg KH wrote:
+> > > On Sun, Mar 14, 2021 at 11:23:10AM +0300, Fatih Yildirim wrote:
+> > > > Hi Santosh,
+> > > > 
+> > > > I've been working on a memory leak bug reported by syzbot.
+> > > > https://syzkaller.appspot.com/bug?id=39b72114839a6dbd66c1d2104522698a813f9ae2
+> > > > 
+> > > > It seems that memory allocated in rds_send_probe function is
+> > > > not
+> > > > freed.
+> > > > 
+> > > > Let me share my observations.
+> > > > rds_message is allocated at the beginning of rds_send_probe
+> > > > function.
+> > > > Then it is added to cp_send_queue list of rds_conn_path and
+> > > > refcount
+> > > > is increased by one.
+> > > > Next, in rds_send_xmit function it is moved from cp_send_queue
+> > > > list
+> > > > to
+> > > > cp_retrans list, and again refcount is increased by one.
+> > > > Finally in rds_loop_xmit function refcount is increased by one.
+> > > > So, total refcount is 4.
+> > > > However, rds_message_put is called three times, in
+> > > > rds_send_probe,
+> > > > rds_send_remove_from_sock and rds_send_xmit functions. It seems
+> > > > that
+> > > > one more rds_message_put is needed.
+> > > > Would you please check and share your comments on this issue?
+> > > 
+> > > Do you have a proposed patch that syzbot can test to verify if
+> > > this
+> > > is
+> > > correct or not?
+> > > 
+> > > thanks,
+> > > 
+> > > gre gk-h
+> > 
+> > Hi Greg,
+> > 
+> > Actually, using the .config and the C reproducer, syzbot reports
+> > the
+> > memory leak in rds_send_probe function. Also by enabling
+> > CONFIG_RDS_DEBUG=y, the debug messages indicates the similar as I
+> > mentioned above. To give an example, below is the RDS_DEBUG
+> > messages.
+> > Allocated address 000000008a7476e5 has initial ref_count 1. Then
+> > there
+> > are three rds_message_addref calls for the same address making the
+> > refcount 4, but only three rds_message_put calls which leave the
+> > address still allocated.
+> > 
+> > [   60.570681] rds_message_addref(): addref rm 000000008a7476e5 ref
+> > 1
+> > [   60.570707] rds_message_put(): put rm 000000008a7476e5 ref 2
+> > [   60.570845] rds_message_addref(): addref rm 000000008a7476e5 ref
+> > 1
+> > [   60.570870] rds_message_addref(): addref rm 000000008a7476e5 ref
+> > 2
+> > [   60.570960] rds_message_put(): put rm 000000008a7476e5 ref 3
+> > [   60.570995] rds_message_put(): put rm 000000008a7476e5 ref 2
+> > 
+> 
+> Ok, so the next step is to try your proposed change to see if it
+> works
+> or not.  What prevents you from doign that?
+> 
+> No need to ask people if your analysis of an issue is true or not, no
+> maintainer or developer usually has the time to deal with that.  We
+> much
+> rather would like to see patches of things you have tested to resolve
+> issues.
+> 
+> thanks,
+> 
+> greg k-h
 
-There is no need to create the ODP EQ if the user doesn't use ODP MRs.
-Hence, create it only when the first ODP MR is created. This EQ will be
-destroyed only when the device is unloaded.
-This will decrease the number of EQs created per device. for example: If
-we creates 1K devices (SF/VF/etc'), than we will decrease the num of EQs
-by 1K.
+Hi Greg,
 
-Signed-off-by: Shay Drory <shayd@nvidia.com>
-Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- Changelog:
- v1:
- * Delete optimization
----
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  7 +++++++
- drivers/infiniband/hw/mlx5/mr.c      |  3 +++
- drivers/infiniband/hw/mlx5/odp.c     | 29 ++++++++++++++++++----------
- 3 files changed, 29 insertions(+), 10 deletions(-)
+I also would like to come with a patch to resolve the issue as well.
+But couldn't figure out so far. I just would like to have a review or a
+suggestion from an expert in order to move forward.
+Anyway, I'm still working on it and hope to find a solution.
+Will appreciate any comment, suggestion on the issue.
 
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 544a41fec9cd..a31097538dc7 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1080,6 +1080,7 @@ struct mlx5_ib_dev {
- 	struct mutex			slow_path_mutex;
- 	struct ib_odp_caps	odp_caps;
- 	u64			odp_max_size;
-+	struct mutex		odp_eq_mutex;
- 	struct mlx5_ib_pf_eq	odp_pf_eq;
+Thanks,
+Fatih
 
- 	struct xarray		odp_mkeys;
-@@ -1358,6 +1359,7 @@ struct ib_mr *mlx5_ib_reg_dm_mr(struct ib_pd *pd, struct ib_dm *dm,
- #ifdef CONFIG_INFINIBAND_ON_DEMAND_PAGING
- void mlx5_ib_internal_fill_odp_caps(struct mlx5_ib_dev *dev);
- int mlx5_ib_odp_init_one(struct mlx5_ib_dev *ibdev);
-+int mlx5r_odp_create_eq(struct mlx5_ib_dev *dev, struct mlx5_ib_pf_eq *eq);
- void mlx5_ib_odp_cleanup_one(struct mlx5_ib_dev *ibdev);
- int __init mlx5_ib_odp_init(void);
- void mlx5_ib_odp_cleanup(void);
-@@ -1377,6 +1379,11 @@ static inline void mlx5_ib_internal_fill_odp_caps(struct mlx5_ib_dev *dev)
- }
-
- static inline int mlx5_ib_odp_init_one(struct mlx5_ib_dev *ibdev) { return 0; }
-+static inline int mlx5r_odp_create_eq(struct mlx5_ib_dev *dev,
-+				      struct mlx5_ib_pf_eq *eq)
-+{
-+	return 0;
-+}
- static inline void mlx5_ib_odp_cleanup_one(struct mlx5_ib_dev *ibdev) {}
- static inline int mlx5_ib_odp_init(void) { return 0; }
- static inline void mlx5_ib_odp_cleanup(void)				    {}
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 86ffc7e5ef96..6700286cc05a 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -1500,6 +1500,9 @@ static struct ib_mr *create_user_odp_mr(struct ib_pd *pd, u64 start, u64 length,
- 	if (!IS_ENABLED(CONFIG_INFINIBAND_ON_DEMAND_PAGING))
- 		return ERR_PTR(-EOPNOTSUPP);
-
-+	err = mlx5r_odp_create_eq(dev, &dev->odp_pf_eq);
-+	if (err)
-+		return ERR_PTR(err);
- 	if (!start && length == U64_MAX) {
- 		if (iova != 0)
- 			return ERR_PTR(-EINVAL);
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index 3008d1539ad4..a0b9111b508a 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -1531,20 +1531,24 @@ enum {
- 	MLX5_IB_NUM_PF_DRAIN	= 64,
- };
-
--static int
--mlx5_ib_create_pf_eq(struct mlx5_ib_dev *dev, struct mlx5_ib_pf_eq *eq)
-+int mlx5r_odp_create_eq(struct mlx5_ib_dev *dev, struct mlx5_ib_pf_eq *eq)
- {
- 	struct mlx5_eq_param param = {};
--	int err;
-+	int err = 0;
-
-+	mutex_lock(&dev->odp_eq_mutex);
-+	if (eq->core)
-+		goto unlock;
- 	INIT_WORK(&eq->work, mlx5_ib_eq_pf_action);
- 	spin_lock_init(&eq->lock);
- 	eq->dev = dev;
-
- 	eq->pool = mempool_create_kmalloc_pool(MLX5_IB_NUM_PF_DRAIN,
- 					       sizeof(struct mlx5_pagefault));
--	if (!eq->pool)
--		return -ENOMEM;
-+	if (!eq->pool) {
-+		err = -ENOMEM;
-+		goto unlock;
-+	}
-
- 	eq->wq = alloc_workqueue("mlx5_ib_page_fault",
- 				 WQ_HIGHPRI | WQ_UNBOUND | WQ_MEM_RECLAIM,
-@@ -1555,7 +1559,7 @@ mlx5_ib_create_pf_eq(struct mlx5_ib_dev *dev, struct mlx5_ib_pf_eq *eq)
- 	}
-
- 	eq->irq_nb.notifier_call = mlx5_ib_eq_pf_int;
--	param = (struct mlx5_eq_param) {
-+	param = (struct mlx5_eq_param){
- 		.irq_index = 0,
- 		.nent = MLX5_IB_NUM_PF_EQE,
- 	};
-@@ -1571,21 +1575,27 @@ mlx5_ib_create_pf_eq(struct mlx5_ib_dev *dev, struct mlx5_ib_pf_eq *eq)
- 		goto err_eq;
- 	}
-
-+	mutex_unlock(&dev->odp_eq_mutex);
- 	return 0;
- err_eq:
- 	mlx5_eq_destroy_generic(dev->mdev, eq->core);
- err_wq:
-+	eq->core = NULL;
- 	destroy_workqueue(eq->wq);
- err_mempool:
- 	mempool_destroy(eq->pool);
-+unlock:
-+	mutex_unlock(&dev->odp_eq_mutex);
- 	return err;
- }
-
- static int
--mlx5_ib_destroy_pf_eq(struct mlx5_ib_dev *dev, struct mlx5_ib_pf_eq *eq)
-+mlx5_ib_odp_destroy_eq(struct mlx5_ib_dev *dev, struct mlx5_ib_pf_eq *eq)
- {
- 	int err;
-
-+	if (!eq->core)
-+		return 0;
- 	mlx5_eq_disable(dev->mdev, eq->core, &eq->irq_nb);
- 	err = mlx5_eq_destroy_generic(dev->mdev, eq->core);
- 	cancel_work_sync(&eq->work);
-@@ -1642,8 +1652,7 @@ int mlx5_ib_odp_init_one(struct mlx5_ib_dev *dev)
- 		}
- 	}
-
--	ret = mlx5_ib_create_pf_eq(dev, &dev->odp_pf_eq);
--
-+	mutex_init(&dev->odp_eq_mutex);
- 	return ret;
- }
-
-@@ -1652,7 +1661,7 @@ void mlx5_ib_odp_cleanup_one(struct mlx5_ib_dev *dev)
- 	if (!(dev->odp_caps.general_caps & IB_ODP_SUPPORT))
- 		return;
-
--	mlx5_ib_destroy_pf_eq(dev, &dev->odp_pf_eq);
-+	mlx5_ib_odp_destroy_eq(dev, &dev->odp_pf_eq);
- }
-
- int mlx5_ib_odp_init(void)
---
-2.30.2
 
