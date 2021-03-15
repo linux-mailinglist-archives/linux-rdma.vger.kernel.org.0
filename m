@@ -2,94 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7017E33A9FE
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Mar 2021 04:31:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7FB33ACDF
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Mar 2021 08:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbhCODbE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 14 Mar 2021 23:31:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27913 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229488AbhCODao (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 14 Mar 2021 23:30:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615779043;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jJtBr9vTOWvQZ16JQjPGETDhPNwBqit02DMZwKL2LGQ=;
-        b=PmLzvXuQ6PSTwLbJo6LBYvNY9byQmHghL511EOt+SUniNbKuYzs0TbKCdFIebcq+7EBgWQ
-        /wN6JwbM5ldP1hOQK4wz921/P5wH9kq4o8LkB4A8mwlZEqN2FnLpCfamXHoEksKifWUmaX
-        Ej7mPiFzAacNkgB3jkseiEzKN50aI+8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-416-IFiYBgq1MwioN3eVuFw8kA-1; Sun, 14 Mar 2021 23:30:42 -0400
-X-MC-Unique: IFiYBgq1MwioN3eVuFw8kA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B79CE1084D68;
-        Mon, 15 Mar 2021 03:30:40 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-13-12.pek2.redhat.com [10.72.13.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9EEEB5D9CD;
-        Mon, 15 Mar 2021 03:30:38 +0000 (UTC)
-Subject: Re: [PATCH] RDMA/srp: Fix support for unpopulated and unbalanced NUMA
- nodes
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        id S229828AbhCOH47 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 Mar 2021 03:56:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230255AbhCOH4w (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 15 Mar 2021 03:56:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DF2B64E12;
+        Mon, 15 Mar 2021 07:56:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1615795012;
+        bh=Z7qiagatHhIeo2CDOv/v9xCdImTlFYGzIbFM9El/kGQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rVIZfJ1kf1pCS+z2mypv0pDAoak2WfAPUy0tFyEX8oVc2iWNOuLXSptDuUwxfmus3
+         YSNF/qmAIbcSMWyLbYk0jLAsg3Lh8DwqXQnZ7Yl44pHOYSZVy8B9d7G+6u9pXAwyMb
+         BPlD+kGiwx95oqazRQ4x8Gk6wk46OqfImlCnrPV0=
+Date:   Mon, 15 Mar 2021 08:56:50 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Yi Zhang <yi.zhang@redhat.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         bart.vanassche@wdc.com, stable@vger.kernel.org
+Subject: Re: [PATCH] RDMA/srp: Fix support for unpopulated and unbalanced
+ NUMA nodes
+Message-ID: <YE8TQtOlLDBiQmz2@kroah.com>
 References: <9cb4d9d3-30ad-2276-7eff-e85f7ddfb411@suse.com>
  <20210217133740.GA2296847@nvidia.com>
-From:   Yi Zhang <yi.zhang@redhat.com>
-Message-ID: <45c0875e-be7f-d59b-04cf-6e9cb0cb6747@redhat.com>
-Date:   Mon, 15 Mar 2021 11:30:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ <45c0875e-be7f-d59b-04cf-6e9cb0cb6747@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210217133740.GA2296847@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45c0875e-be7f-d59b-04cf-6e9cb0cb6747@redhat.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello
+On Mon, Mar 15, 2021 at 11:30:34AM +0800, Yi Zhang wrote:
+> Hello
+> 
+> I reproduced the issue on 5.11.7-rc1, could we port this patch to stable
+> branch.
 
-I reproduced the issue on 5.11.7-rc1, could we port this patch to stable 
-branch.
+<formletter>
 
-Thanks
-Yi
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
-
-On 2/17/21 9:37 PM, Jason Gunthorpe wrote:
-> On Fri, Feb 05, 2021 at 09:14:28AM +0100, Nicolas Morey-Chaisemartin wrote:
->> The current code computes a number of channels per SRP target and spreads
->> them equally across all online NUMA nodes.
->> Each channel is then assigned a CPU within this node.
->>
->> In the case of unbalanced, or even unpopulated nodes, some channels
->> do not get a CPU associated and thus do not get connected.
->> This causes the SRP connection to fail.
->>
->> This patch solves the issue by rewriting channel computation and allocation:
->> - Drop channel to node/CPU association as it had
->>    no real effect on locality but added unnecessary complexity.
->> - Tweak the number of channels allocated to reduce CPU contention when possible:
->>    - Up to one channel per CPU (instead of up to 4 by node)
->>    - At least 4 channels per node, unless ch_count module parameter is used.
->>
->> Signed-off-by: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
->> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
->> ---
->>   drivers/infiniband/ulp/srp/ib_srp.c | 110 ++++++++++++----------------
->>   1 file changed, 45 insertions(+), 65 deletions(-)
-> Applied to for-next, thanks
->
-> Jason
->
-
+</formletter>
