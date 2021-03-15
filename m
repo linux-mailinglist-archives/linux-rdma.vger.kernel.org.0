@@ -2,56 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7FB33ACDF
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Mar 2021 08:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBEA433B2C6
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Mar 2021 13:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbhCOH47 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 Mar 2021 03:56:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230255AbhCOH4w (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 15 Mar 2021 03:56:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DF2B64E12;
-        Mon, 15 Mar 2021 07:56:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1615795012;
-        bh=Z7qiagatHhIeo2CDOv/v9xCdImTlFYGzIbFM9El/kGQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rVIZfJ1kf1pCS+z2mypv0pDAoak2WfAPUy0tFyEX8oVc2iWNOuLXSptDuUwxfmus3
-         YSNF/qmAIbcSMWyLbYk0jLAsg3Lh8DwqXQnZ7Yl44pHOYSZVy8B9d7G+6u9pXAwyMb
-         BPlD+kGiwx95oqazRQ4x8Gk6wk46OqfImlCnrPV0=
-Date:   Mon, 15 Mar 2021 08:56:50 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Yi Zhang <yi.zhang@redhat.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        bart.vanassche@wdc.com, stable@vger.kernel.org
-Subject: Re: [PATCH] RDMA/srp: Fix support for unpopulated and unbalanced
- NUMA nodes
-Message-ID: <YE8TQtOlLDBiQmz2@kroah.com>
-References: <9cb4d9d3-30ad-2276-7eff-e85f7ddfb411@suse.com>
- <20210217133740.GA2296847@nvidia.com>
- <45c0875e-be7f-d59b-04cf-6e9cb0cb6747@redhat.com>
+        id S229718AbhCOMal (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 Mar 2021 08:30:41 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:32955 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhCOMaJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 Mar 2021 08:30:09 -0400
+Received: from cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net ([80.193.200.194] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lLmMG-0003l3-Uc; Mon, 15 Mar 2021 12:30:05 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] net/mlx5: Fix spelling mistakes in mlx5_core_info message
+Date:   Mon, 15 Mar 2021 12:30:04 +0000
+Message-Id: <20210315123004.9957-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <45c0875e-be7f-d59b-04cf-6e9cb0cb6747@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 11:30:34AM +0800, Yi Zhang wrote:
-> Hello
-> 
-> I reproduced the issue on 5.11.7-rc1, could we port this patch to stable
-> branch.
+From: Colin Ian King <colin.king@canonical.com>
 
-<formletter>
+There are two spelling mistakes in a mlx5_core_info message. Fix them.
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/health.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-</formletter>
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+index a0a851640804..9ff163c5bcde 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+@@ -340,7 +340,7 @@ static int mlx5_health_try_recover(struct mlx5_core_dev *dev)
+ 		return -EIO;
+ 	}
+ 
+-	mlx5_core_info(dev, "health revovery succeded\n");
++	mlx5_core_info(dev, "health recovery succeeded\n");
+ 	return 0;
+ }
+ 
+-- 
+2.30.2
+
