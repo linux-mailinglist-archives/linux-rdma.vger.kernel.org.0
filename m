@@ -2,183 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8954433EB2B
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Mar 2021 09:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8F933EBE0
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Mar 2021 09:55:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229549AbhCQIQL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Mar 2021 04:16:11 -0400
-Received: from lpdvacalvio01.broadcom.com ([192.19.229.182]:45658 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229601AbhCQIPq (ORCPT
+        id S229490AbhCQIyf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Mar 2021 04:54:35 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10794 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229505AbhCQIy1 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 17 Mar 2021 04:15:46 -0400
-Received: from dhcp-10-192-206-197.iig.avagotech.net.net (dhcp-10-123-156-118.dhcp.broadcom.net [10.123.156.118])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 378BA80C3;
-        Wed, 17 Mar 2021 01:15:43 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 378BA80C3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1615968946;
-        bh=dXqeO68FPGE71Zf0vtrgNHiO8cQMV/RyZzMO+yWxRW8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Io/jtsP6X/ZFVB9hBGBj5qpRPPI1IV7K99DLURY0xf+sK8E44b5MC4vqqx3qyTt4Y
-         wUA6mKF2yw7oGWeK++dVjmTQexMSYvOxKIl2UWZ0A45PMDQtP+clUXX8fkTm4qmG65
-         7ZLyBSYidwDY2+1XYooRE+V0JJ0nKF7gqiJriYok=
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [PATCH for-next v2] RDMA/bnxt_re: Move device to error state upon device crash
-Date:   Wed, 17 Mar 2021 01:15:42 -0700
-Message-Id: <1615968942-30970-1-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
+        Wed, 17 Mar 2021 04:54:27 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12H8Wavs082573
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Mar 2021 04:54:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : from : to
+ : cc : date : mime-version : references : content-transfer-encoding :
+ content-type : message-id : subject; s=pp1;
+ bh=ooaJBsWjjz8RZE3VRVf4DS/n2dOUkIfkw+3d0lzQEMc=;
+ b=WaK0G5926lVdrlartdqozSy6d2pvoPhnXpXs8PPy9dFyoDMxsDvWkO8NRh7cKgP7PoDu
+ WyA4iPzb8qujbCap99ISHgZta/W81WVjfILXMbrthP7qVfaEWUJECaTLXRdFCastwToM
+ Es9psjBOXmoPJvPZTsWWzEgLum7/4me2WuGR/vYORzfBLUA38E569UbvMzbgmMp8OdJ1
+ Cn9Hp0UV0kryZJE15ryv2BucjH+P5zdCj4EvX0iX0CcERnBO5aWHy25YgIT+K/mirE8x
+ HMKKJ5lR3gvmCtzjDRpt6oQf4ALNBrjH1LynSizVAkncJhZcprXTEqRXDdmqYPYOiuBu kQ== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.109])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37baj1wwcc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Mar 2021 04:54:26 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Wed, 17 Mar 2021 08:54:25 -0000
+Received: from us1b3-smtp02.a3dr.sjc01.isc4sb.com (10.122.7.175)
+        by smtp.notes.na.collabserv.com (10.122.47.48) with smtp.notes.na.collabserv.com ESMTP;
+        Wed, 17 Mar 2021 08:54:24 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp02.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2021031708542340-189647 ;
+          Wed, 17 Mar 2021 08:54:23 +0000 
+In-Reply-To: <73EEB368-3E02-4BDD-BE16-4AA9A87A3919@oracle.com>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Chuck Lever III" <chuck.lever@oracle.com>
+Cc:     "linux-rdma" <linux-rdma@vger.kernel.org>
+Date:   Wed, 17 Mar 2021 08:54:23 +0000
+MIME-Version: 1.0
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <73EEB368-3E02-4BDD-BE16-4AA9A87A3919@oracle.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
+X-KeepSent: EAF169BA:A8545B4F-0025869B:002EFC4D;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 55455
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 21031708-1429-0000-0000-00000383A167
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0; SC=0;
+ ST=0; TS=0; UL=0; ISC=; MB=0.000001
+X-IBM-SpamModules-Versions: BY=3.00014881; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000296; SDB=6.01521490; UDB=6.00822281; IPR=6.01304004;
+ MB=3.00036388; MTD=3.00000008; XFM=3.00000015; UTC=2021-03-17 08:54:24
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2021-03-12 19:13:53 - 6.00012368
+x-cbparentid: 21031708-1430-0000-0000-000039E6A509
+Message-Id: <OFEAF169BA.A8545B4F-ON0025869B.002EFC4D-0025869B.0030ECF0@notes.na.collabserv.com>
+Subject: Re:  FastLinQ: possible duplicate flush of FastReg and LocalInv
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-17_02:2021-03-17,2021-03-17 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When L2 driver detects a device crash or device undergone
-reset, it invokes a stop callback to recover from error.
-Current RoCE driver doesn't recover the device. So move
-the device to error state and dispatch fatal events to all qps
-Release the MSIx vectors to avoid a crash when  L2 driver
-disables the MSIx.
-Also, check for the device state to avoid posting further
-commands to the HW.
+-----"Chuck Lever III" <chuck.lever@oracle.com> wrote: -----
 
-Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
-Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
-v1->v2:
-Fix the build warning
-Reported-by: kernel test robot <lkp@intel.com>
-
- drivers/infiniband/hw/bnxt_re/bnxt_re.h    |  1 +
- drivers/infiniband/hw/bnxt_re/main.c       | 40 ++++++++++++++++++++++++++++++
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c |  4 +++
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  2 ++
- 4 files changed, 47 insertions(+)
-
-diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-index b930ea3..ba26d8e 100644
---- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-+++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-@@ -138,6 +138,7 @@ struct bnxt_re_dev {
- #define BNXT_RE_FLAG_QOS_WORK_REG		5
- #define BNXT_RE_FLAG_RESOURCES_ALLOCATED	7
- #define BNXT_RE_FLAG_RESOURCES_INITIALIZED	8
-+#define BNXT_RE_FLAG_ERR_DEVICE_DETACHED       17
- #define BNXT_RE_FLAG_ISSUE_ROCE_STATS          29
- 	struct net_device		*netdev;
- 	unsigned int			version, major, minor;
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index fdb8c24..b30d37f 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -81,6 +81,7 @@ static struct workqueue_struct *bnxt_re_wq;
- static void bnxt_re_remove_device(struct bnxt_re_dev *rdev);
- static void bnxt_re_dealloc_driver(struct ib_device *ib_dev);
- static void bnxt_re_stop_irq(void *handle);
-+static void bnxt_re_dev_stop(struct bnxt_re_dev *rdev);
- 
- static void bnxt_re_set_drv_mode(struct bnxt_re_dev *rdev, u8 mode)
- {
-@@ -221,6 +222,37 @@ static void bnxt_re_set_resource_limits(struct bnxt_re_dev *rdev)
- /* for handling bnxt_en callbacks later */
- static void bnxt_re_stop(void *p)
- {
-+	struct bnxt_re_dev *rdev = p;
-+	struct bnxt *bp;
-+
-+	if (!rdev)
-+		return;
-+	ASSERT_RTNL();
-+
-+	/* L2 driver invokes this callback during device error/crash or device
-+	 * reset. Current RoCE driver doesn't recover the device in case of
-+	 * error. Handle the error by dispatching fatal events to all qps
-+	 * ie. by calling bnxt_re_dev_stop and release the MSIx vectors as
-+	 * L2 driver want to modify the MSIx table.
-+	 */
-+	bp = netdev_priv(rdev->netdev);
-+
-+	ibdev_info(&rdev->ibdev, "Handle device stop call from L2 driver");
-+	/* Check the current device state from L2 structure and move the
-+	 * device to detached state if FW_FATAL_COND is set.
-+	 * This prevents more commands to HW during clean-up,
-+	 * in case the device is already in error.
-+	 */
-+	if (test_bit(BNXT_STATE_FW_FATAL_COND, &bp->state))
-+		set_bit(ERR_DEVICE_DETACHED, &rdev->rcfw.cmdq.flags);
-+
-+	bnxt_re_dev_stop(rdev);
-+	bnxt_re_stop_irq(rdev);
-+	/* Move the device states to detached and  avoid sending any more
-+	 * commands to HW
-+	 */
-+	set_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags);
-+	set_bit(ERR_DEVICE_DETACHED, &rdev->rcfw.cmdq.flags);
- }
- 
- static void bnxt_re_start(void *p)
-@@ -234,6 +266,8 @@ static void bnxt_re_sriov_config(void *p, int num_vfs)
- 	if (!rdev)
- 		return;
- 
-+	if (test_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags))
-+		return;
- 	rdev->num_vfs = num_vfs;
- 	if (!bnxt_qplib_is_chip_gen_p5(rdev->chip_ctx)) {
- 		bnxt_re_set_resource_limits(rdev);
-@@ -427,6 +461,9 @@ static int bnxt_re_net_ring_free(struct bnxt_re_dev *rdev,
- 	if (!en_dev)
- 		return rc;
- 
-+	if (test_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags))
-+		return 0;
-+
- 	memset(&fw_msg, 0, sizeof(fw_msg));
- 
- 	bnxt_re_init_hwrm_hdr(rdev, (void *)&req, HWRM_RING_FREE, -1, -1);
-@@ -489,6 +526,9 @@ static int bnxt_re_net_stats_ctx_free(struct bnxt_re_dev *rdev,
- 	if (!en_dev)
- 		return rc;
- 
-+	if (test_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags))
-+		return 0;
-+
- 	memset(&fw_msg, 0, sizeof(fw_msg));
- 
- 	bnxt_re_init_hwrm_hdr(rdev, (void *)&req, HWRM_STAT_CTX_FREE, -1, -1);
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index 441eb42..5d384de 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -212,6 +212,10 @@ int bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
- 	u8 opcode, retry_cnt = 0xFF;
- 	int rc = 0;
- 
-+	/* Prevent posting if f/w is not in a state to process */
-+	if (test_bit(ERR_DEVICE_DETACHED, &rcfw->cmdq.flags))
-+		return 0;
-+
- 	do {
- 		opcode = req->opcode;
- 		rc = __send_message(rcfw, req, resp, sb, is_block);
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-index 5f2f0a5..9474c00 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-@@ -138,6 +138,8 @@ struct bnxt_qplib_qp_node {
- #define FIRMWARE_INITIALIZED_FLAG	(0)
- #define FIRMWARE_FIRST_FLAG		(31)
- #define FIRMWARE_TIMED_OUT		(3)
-+#define ERR_DEVICE_DETACHED             (4)
-+
- struct bnxt_qplib_cmdq_mbox {
- 	struct bnxt_qplib_reg_desc	reg;
- 	void __iomem			*prod;
--- 
-2.5.5
+>To: "linux-rdma" <linux-rdma@vger.kernel.org>
+>From: "Chuck Lever III" <chuck.lever@oracle.com>
+>Date: 03/16/2021 08:59PM
+>Subject: [EXTERNAL] FastLinQ: possible duplicate flush of FastReg and
+>LocalInv
+>
+>Hi-
+>
+>I've been trying to track down some crashes when running NFS/RDMA
+>tests over FastLinQ devices in iWARP mode. To make it stressful,
+>I've enabled disconnect injection, where rpcrdma injects a
+>connection disconnect every so often.
+>
+>As part of a disconnect event, the Receive and Send queues are
+>drained. Sometimes I see a duplicate flush for one or more of
+>memory registration ops. This is not a big deal for FastReq
+>because its completion handler is basically a no-op.
+>
+>But for LocalInv this is a problem. On a flushed completion, the
+>MR is destroyed. If the completion occurs again, of course, all
+>kinds of badness happens because we're DMA-unmapping twice,
+>touching memory that has already been freed, and deleting from a
+>list=5Fhead that is poisonous.
+>
+>The last straw is that wc=5Flocalinv=5Fdone calls the generic RPC layer
+>to indicate that an RPC Reply is ready. The duplicate flush
+>dereferences one or more NULL pointers.
+>
+>Doesn't the verbs API contract stipulate that every posted WR gets
+>exactly one completion? I don't see this behavior with other
+>providers.
+>
+Indeed. Nothing else is defined and applications obviously
+rely on correctness in that respect.
 
