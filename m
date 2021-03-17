@@ -2,170 +2,181 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315F433DE49
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Mar 2021 20:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B1C33E8C7
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Mar 2021 06:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238260AbhCPT6d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Mar 2021 15:58:33 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:38616 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhCPT6F (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Mar 2021 15:58:05 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12GJoXD3161581
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Mar 2021 19:58:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : content-type : content-id : content-transfer-encoding
- : mime-version; s=corp-2020-01-29;
- bh=AoBG+Yocv8rwMSNphL/MlJJUHCEzWtYBI+JOCbMImDk=;
- b=O64u/PQJuXY1HQOTYJgC2h7JpwfnZQAXwUmurq7tRqSn6y5QZ5cUUhNZWyf5+Lv9UO/e
- 6hE6jqk3r0m8q+H2RsbSHTlH0Y+k5jJFl/P1SRVJn3lcEgkt+T68mEWF01zotDYbB8hC
- bdguRsbAKhjls3omL+vJXbp5EMd1LN2ylQRDE/cuNhHvzcKlmayblEuAf3RzWTBPic7u
- t6FN/hby9FyftVINv/A3jaNzEUcrJ8CoFyESL+lRltkwwDMgTJ893BuOXtjhgN6N03fb
- adNN4TsiAvJ7TxMONdFBXN9834rWDD8roUBU34+2KIAdGwnSSFcwCxor/Esm9q48COK9 VQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 37a4ekpscq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Mar 2021 19:58:04 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12GJtJRV094358
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Mar 2021 19:58:03 GMT
-Received: from nam04-co1-obe.outbound.protection.outlook.com (mail-co1nam04lp2058.outbound.protection.outlook.com [104.47.45.58])
-        by userp3020.oracle.com with ESMTP id 37a4etdw3t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Mar 2021 19:58:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MBQ6Ubu8xMaj0arhUEj6muaWaXibaqpvTy+IkHUKrI3vocOSCG+PpCJ97/gPEDVlblxTXdH98WOZV1+advMd94qDubcZJjCg46OJENlUGRNwBAfSuuFlkr5iej2fKiByj3sXfTFic9ph0KN7R2b/M2yRulko6cGTL0cGrY9GmL+R5OSkPmkQdR7KDNk3xWljamd1qO7lsGkLDjccjyL502RfB6Wu+ivBzi2Fl0egpuYDT+p272WzPKzuSEz9u/o2vIo/JErlqvzCmPxAwE9/LRM1iq/UZCl6KeZ24hEtGNXTq3DECW6ZBR/SVr/tyXQFwQdPKb0cUAAtPfyx2kxL8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AoBG+Yocv8rwMSNphL/MlJJUHCEzWtYBI+JOCbMImDk=;
- b=JGFYsslAzL/+tSRyayNf8m6yaVQtNMKSIwYXeL0647MfISuJOxLTZJsfQEJzj2dglCGrK1VAVz+T54QqNqEPCvWAKi5bldSwB0J9N5NfxvZsNnHYwMGdokmpH7cbg+lGVYb96QbEZTWKLXYxoDy/7asVuge9cUkHP4cde9eMpAVL6ODiV+N82gVACO2MRbzZLr5TavxJXh2GWsZXBwRnhPQYIlexGyk5vTP6OwBXD65JDdRNEyqmEgluVuYutC+gYoqff8xAPATmwDZrfMWFMLa9o3lj50r3+JXN2cCRx9NF2mRu+AOCPevSGSr4EtE3PdL/ijiCFWJzFmgufTawSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AoBG+Yocv8rwMSNphL/MlJJUHCEzWtYBI+JOCbMImDk=;
- b=bQZgjeqvv65hSj0R5jRBWzCW4HhIoYVGe0/0NfjUEMidmrsdx4VsfktDJjmaHU5FrN6HtNMMhXCRHGYOfIctz9M275FlpidNljiycyaUWaiISAgE+2Q2gSzpdKSDZaP1JmvMaTfhJDi6nYvcc0tOyC7J8PYv2CtaqbnMSf3lG5o=
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24)
- by SJ0PR10MB4687.namprd10.prod.outlook.com (2603:10b6:a03:2d8::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Tue, 16 Mar
- 2021 19:58:01 +0000
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::50bf:7319:321c:96c9]) by SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::50bf:7319:321c:96c9%4]) with mapi id 15.20.3933.032; Tue, 16 Mar 2021
- 19:58:01 +0000
-From:   Chuck Lever III <chuck.lever@oracle.com>
-To:     linux-rdma <linux-rdma@vger.kernel.org>
-Subject: FastLinQ: possible duplicate flush of FastReg and LocalInv
-Thread-Topic: FastLinQ: possible duplicate flush of FastReg and LocalInv
-Thread-Index: AQHXGp6rKm5pojEmnUqrdHeuFBMMog==
-Date:   Tue, 16 Mar 2021 19:58:01 +0000
-Message-ID: <73EEB368-3E02-4BDD-BE16-4AA9A87A3919@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [68.61.232.219]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 423f3ea7-ba90-4063-aad6-08d8e8b5ce2d
-x-ms-traffictypediagnostic: SJ0PR10MB4687:
-x-microsoft-antispam-prvs: <SJ0PR10MB4687690CA72B0856285ACF70936B9@SJ0PR10MB4687.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3044;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: uUSp1nIP38W4fL/YJHaUYI7NWcArk7u7fn/MhZMJhdHe9iNaeJaDhNg9RshKF8oCAxTsvjsyxS5UvucIYgsrtzV8U4k3NDo+qt3CXUJW36y4vFAnSmGPVyKxdHsKkEo+U4BTG24C/fYgplBbxfQVjr14/hq/iFiG02t087WfycU4wsLGvCfs2dQpJ9XOhbcFWgeV4J51geEuED6Q0yEx4+os+dQOPKnaFD/e8K8w2fJmdRH26sSL8PlOrbesqhEOctiEjgoTWFoGGr3fvhyFyQoH6MDAD42YmlEvDy+LwtWtVNznb3RoUTBFwZMlI9WrGQR+eIgpRDzCZsB/ITcJXRT42TYYH04WzYcS3517H9mZardxDIx419j2S4alSd6gRIHiRZ/TPWD82W6iWTKQmPZ86RKtmBecMJAYvxwr4Tt1Jjath9go13t14uP4KjrVkga3nTrfNkpGJImMzhGa9v9QYIderZ4NOsVF2Q/dxSOd74TbhWWh0c3aKwwbDxUJfQsGVnlX8gULszC7twqMovbe7vFMUMqrCkbZVskEbjg9gL1dfcQZFWOrucNEn2ih0LzZcCAMfsqHFMQrvCeDb0EFcPN+uupnzIj/I64rQF8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4688.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(396003)(136003)(39860400002)(376002)(2616005)(8936002)(8676002)(316002)(36756003)(6506007)(6512007)(71200400001)(6916009)(26005)(86362001)(186003)(76116006)(66556008)(2906002)(66476007)(66446008)(6486002)(66946007)(478600001)(5660300002)(33656002)(91956017)(64756008)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?j/08Xrq1y+DJ2oE5qK4WG4wrmZ3ALHoLfBM+wj1gXFSX6uXOb44dYLhSNf6w?=
- =?us-ascii?Q?A95V8czAbBrQTDmorC8eYafRozcwOkD13XjJ5FWsxIkf8pqLDjCMCn5J/yeu?=
- =?us-ascii?Q?r3VEW1oiZ/hlmKkSo10wKQPN/AiF3rq7caVY5tWeZA50aYgw4PWDVKErXmIR?=
- =?us-ascii?Q?IDRtkYM9N5XEpEJE/GvQ0QXEODNEhdTOY+bV02fXCX1ZFK1mtSyQpJN+1jD8?=
- =?us-ascii?Q?9AnTHxesHSn0yQryhJRbApQHlkbZUAZHVNW9Ortfd+ll6FMwHccY6Zik+xj+?=
- =?us-ascii?Q?MvyOMbOL2dZWUVHssbcK+C5iY0aJKeTuRz0ZaC3p1k4L8GUj3Ist0qz+Fkgr?=
- =?us-ascii?Q?YrRL7sH6yZMwf5gBNtphInxMF1P7dmrJkYa3PGfZvADWHl0amRTEu0jk/AjM?=
- =?us-ascii?Q?gl1ml7ikerns5fhE5R4CSsuJAyg8fZplyV1kSWmPoVUK7SA/DS+spttVIaUN?=
- =?us-ascii?Q?VXwIGEjC4pzd9of6ZOIsee/bELQkehmKNsixbGcVWlzhIcZfQ0vim71EXJ+E?=
- =?us-ascii?Q?iK063sm0RIDb8k2W5Z/ZQAmMh7AFYb2KYOLp3abOKdItz37uuMBzNKO5wcQ0?=
- =?us-ascii?Q?kNC9Mc2DIzhhYSM1oYMMGxUnO4pdlmpVN+oSP3APRNNwamOjWV4qKkJErQGb?=
- =?us-ascii?Q?wrCR9UTpaRPxXfM0Mqq2qxAcOduNcYhXGbQKEx3pEJVlulZqGAaMmiYQJQKw?=
- =?us-ascii?Q?aqGmKm/UdmjxvPmuIOW361oTwaFB/frVoif5flQmDjEGT5x8ij211lmPLrd7?=
- =?us-ascii?Q?Ij6fzyl5bFFWGcXtrjEagpCN2cd/bb48x4u/1KtNcOnvli9dixiBPtg0XQy3?=
- =?us-ascii?Q?m+acF5xS5sf391RdpX2MIqnnRLYsYU9gQBj17CVROUVY3y9cj3zNyO8HF8Sl?=
- =?us-ascii?Q?4ihj9UKTukhWGpV+a43ltz1lOtYr0XqAy2bUJNsJkydsnReh84YwxzPfURab?=
- =?us-ascii?Q?ChMgMxcw9F5mMkXCmSi0IJXgOfCe/qffr4U4MsoFpuRyfewXS0grvYXh+kM+?=
- =?us-ascii?Q?Qnvsc8VO6fx8/y2tnqmQkkxMU25X+nEvvvieVSe7jNJGTepRPKzV84fZwsbB?=
- =?us-ascii?Q?TAMi4EKq6BCi7R0fB9DDUMoDUzR8HpGWDD0C194VAuyIrCqwnAxwm4SS1dh0?=
- =?us-ascii?Q?+GDCw0GEs8+4Zg857zvRLLu+NBnT/XtzrpVxmbJBIlfohV9hIJj0cz/eEWyt?=
- =?us-ascii?Q?jUx2C/WfvZ5jSWLkOtc30L92vVNF0Y0Xt21PSwtqLvuFKWfZmnnlzaoBc2jR?=
- =?us-ascii?Q?6jITezBfWZ1+9sLQfCUuvHjotqCXDc2X+bqMxnttnlK5HO2QnndRzkmvRZaz?=
- =?us-ascii?Q?AZfJ4iDXmcrXULnIywKHIXjU?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <D147E26964629547A8484FD795886964@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4688.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 423f3ea7-ba90-4063-aad6-08d8e8b5ce2d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2021 19:58:01.7255
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HNyjWUjIwKuVOEHLLl72+42dWDYBwK5FKKPVAv0bVpdCoYozY38oyKlEvKkApk8yO8VEgJHWt7kMeu6Bl15WlQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4687
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9925 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0 mlxlogscore=608
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103160125
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9925 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
- impostorscore=0 lowpriorityscore=0 mlxlogscore=855 spamscore=0
- priorityscore=1501 adultscore=0 phishscore=0 suspectscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103160124
+        id S229675AbhCQFKV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Mar 2021 01:10:21 -0400
+Received: from saphodev.broadcom.com ([192.19.232.172]:42610 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229519AbhCQFJy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 17 Mar 2021 01:09:54 -0400
+Received: from dhcp-10-192-206-197.iig.avagotech.net.net (dhcp-10-123-156-118.dhcp.broadcom.net [10.123.156.118])
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id F0F1A7DDA;
+        Tue, 16 Mar 2021 22:09:51 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com F0F1A7DDA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1615957793;
+        bh=qAXmOkH4PjPjgu4zbL5sx+W6KnwLuYqg7hQYXXiPQnU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=l4aAlj20/paVwLIc731M93UtGI+bBoC8voTT8+LdItYNqHGdFZX0666eDn8TVvp9q
+         TZlY7uPfxtXav4GnDj74HgPVkrqSSHdxcWC+Fk9mGmk5pCZLaAnWm0L7xZR+kIvD2Z
+         H72g/IMI8jUIN8hjNoiTQd3P2EhsmsljfC7x8VgY=
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+To:     jgg@ziepe.ca, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>
+Subject: [PATCH for-next] RDMA/bnxt_re: Move device to error state upon device crash
+Date:   Tue, 16 Mar 2021 22:09:49 -0700
+Message-Id: <1615957789-30077-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi-
+When L2 driver detects a device crash or device undergone
+reset, it invokes a stop callback to recover from error.
+Current RoCE driver doesn't recover the device. So move
+the device to error state and dispatch fatal events to all qps.
+Release the MSIx vectors to avoid a crash when  L2 driver
+disables the MSIx.
+Also, check for the device state to avoid posting further
+commands to the HW.
 
-I've been trying to track down some crashes when running NFS/RDMA
-tests over FastLinQ devices in iWARP mode. To make it stressful,
-I've enabled disconnect injection, where rpcrdma injects a
-connection disconnect every so often.
+Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
+Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h    |  1 +
+ drivers/infiniband/hw/bnxt_re/main.c       | 42 ++++++++++++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c |  4 +++
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  2 ++
+ 4 files changed, 49 insertions(+)
 
-As part of a disconnect event, the Receive and Send queues are
-drained. Sometimes I see a duplicate flush for one or more of
-memory registration ops. This is not a big deal for FastReq
-because its completion handler is basically a no-op.
-
-But for LocalInv this is a problem. On a flushed completion, the
-MR is destroyed. If the completion occurs again, of course, all
-kinds of badness happens because we're DMA-unmapping twice,
-touching memory that has already been freed, and deleting from a
-list_head that is poisonous.
-
-The last straw is that wc_localinv_done calls the generic RPC layer
-to indicate that an RPC Reply is ready. The duplicate flush
-dereferences one or more NULL pointers.
-
-Doesn't the verbs API contract stipulate that every posted WR gets
-exactly one completion? I don't see this behavior with other
-providers.
-
-Thanks for any advice.
-
-
---
-Chuck Lever
-
-
+diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+index b930ea3..ba26d8e 100644
+--- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
++++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+@@ -138,6 +138,7 @@ struct bnxt_re_dev {
+ #define BNXT_RE_FLAG_QOS_WORK_REG		5
+ #define BNXT_RE_FLAG_RESOURCES_ALLOCATED	7
+ #define BNXT_RE_FLAG_RESOURCES_INITIALIZED	8
++#define BNXT_RE_FLAG_ERR_DEVICE_DETACHED       17
+ #define BNXT_RE_FLAG_ISSUE_ROCE_STATS          29
+ 	struct net_device		*netdev;
+ 	unsigned int			version, major, minor;
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index fdb8c24..63e7433 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -81,6 +81,7 @@ static struct workqueue_struct *bnxt_re_wq;
+ static void bnxt_re_remove_device(struct bnxt_re_dev *rdev);
+ static void bnxt_re_dealloc_driver(struct ib_device *ib_dev);
+ static void bnxt_re_stop_irq(void *handle);
++static void bnxt_re_dev_stop(struct bnxt_re_dev *rdev);
+ 
+ static void bnxt_re_set_drv_mode(struct bnxt_re_dev *rdev, u8 mode)
+ {
+@@ -221,6 +222,39 @@ static void bnxt_re_set_resource_limits(struct bnxt_re_dev *rdev)
+ /* for handling bnxt_en callbacks later */
+ static void bnxt_re_stop(void *p)
+ {
++	struct bnxt_re_dev *rdev = p;
++	struct bnxt_qplib_rcfw *rcfw;
++	struct bnxt *bp;
++
++	if (!rdev)
++		return;
++	ASSERT_RTNL();
++
++	/* L2 driver invokes this callback during device error/crash or device
++	 * reset. Current RoCE driver doesn't recover the device in case of
++	 * error. Handle the error by dispatching fatal events to all qps
++	 * ie. by calling bnxt_re_dev_stop and release the MSIx vectors as
++	 * L2 driver want to modify the MSIx table.
++	 */
++	bp = netdev_priv(rdev->netdev);
++	rcfw = &rdev->rcfw;
++
++	ibdev_info(&rdev->ibdev, "Handle device stop call from L2 driver");
++	/* Check the current device state from L2 structure and move the
++	 * device to detached state if FW_FATAL_COND is set.
++	 * This prevents more commands to HW during clean-up,
++	 * in case the device is already in error.
++	 */
++	if (test_bit(BNXT_STATE_FW_FATAL_COND, &bp->state))
++		set_bit(ERR_DEVICE_DETACHED, &rdev->rcfw.cmdq.flags);
++
++	bnxt_re_dev_stop(rdev);
++	bnxt_re_stop_irq(rdev);
++	/* Move the device states to detached and  avoid sending any more
++	 * commands to HW
++	 */
++	set_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags);
++	set_bit(ERR_DEVICE_DETACHED, &rdev->rcfw.cmdq.flags);
+ }
+ 
+ static void bnxt_re_start(void *p)
+@@ -234,6 +268,8 @@ static void bnxt_re_sriov_config(void *p, int num_vfs)
+ 	if (!rdev)
+ 		return;
+ 
++	if (test_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags))
++		return;
+ 	rdev->num_vfs = num_vfs;
+ 	if (!bnxt_qplib_is_chip_gen_p5(rdev->chip_ctx)) {
+ 		bnxt_re_set_resource_limits(rdev);
+@@ -427,6 +463,9 @@ static int bnxt_re_net_ring_free(struct bnxt_re_dev *rdev,
+ 	if (!en_dev)
+ 		return rc;
+ 
++	if (test_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags))
++		return 0;
++
+ 	memset(&fw_msg, 0, sizeof(fw_msg));
+ 
+ 	bnxt_re_init_hwrm_hdr(rdev, (void *)&req, HWRM_RING_FREE, -1, -1);
+@@ -489,6 +528,9 @@ static int bnxt_re_net_stats_ctx_free(struct bnxt_re_dev *rdev,
+ 	if (!en_dev)
+ 		return rc;
+ 
++	if (test_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags))
++		return 0;
++
+ 	memset(&fw_msg, 0, sizeof(fw_msg));
+ 
+ 	bnxt_re_init_hwrm_hdr(rdev, (void *)&req, HWRM_STAT_CTX_FREE, -1, -1);
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+index 441eb42..5d384de 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+@@ -212,6 +212,10 @@ int bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
+ 	u8 opcode, retry_cnt = 0xFF;
+ 	int rc = 0;
+ 
++	/* Prevent posting if f/w is not in a state to process */
++	if (test_bit(ERR_DEVICE_DETACHED, &rcfw->cmdq.flags))
++		return 0;
++
+ 	do {
+ 		opcode = req->opcode;
+ 		rc = __send_message(rcfw, req, resp, sb, is_block);
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
+index 5f2f0a5..9474c00 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
+@@ -138,6 +138,8 @@ struct bnxt_qplib_qp_node {
+ #define FIRMWARE_INITIALIZED_FLAG	(0)
+ #define FIRMWARE_FIRST_FLAG		(31)
+ #define FIRMWARE_TIMED_OUT		(3)
++#define ERR_DEVICE_DETACHED             (4)
++
+ struct bnxt_qplib_cmdq_mbox {
+ 	struct bnxt_qplib_reg_desc	reg;
+ 	void __iomem			*prod;
+-- 
+2.5.5
 
