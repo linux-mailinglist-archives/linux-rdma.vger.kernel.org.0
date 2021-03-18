@@ -2,94 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AA53402AF
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Mar 2021 11:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 882113402B8
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Mar 2021 11:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbhCRKDs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Mar 2021 06:03:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230032AbhCRKDe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 18 Mar 2021 06:03:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EEE964F38;
-        Thu, 18 Mar 2021 10:03:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616061813;
-        bh=nnSTKMb/YbVph7iTd0PDi7d0tIkhMbxltIHumsholM8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ca6OPjige6J6oj1Co/dohrR0MB6lAxrKHDAQ26B36EC6rAQrKYNHA1uhgPL0wwgvb
-         3qMgrmcJkfxFwoymy7FrxLp9VmHKL8aEVjyi0NRQ2u3QRy5EKptvgZvrQrZmhTCZjB
-         4/jC9ZW+MRUdNjsyX8Qvw27sp/fnM7lxZzdJxaen9HfPzwnjj7AiAPUXwNzOPc5YWo
-         mTQ3RzDFSg8N4mUjCifYcuEHdrczazKN2wbFTss2Grykn1gJBJnHebgCejmHPK91Wi
-         NMgS3KWaxnJSha0PHlipLRqHvf2ouZbvPSbSmHP9oBFTgmg9Be9FsmmZ5LvtzsmMTA
-         /fXXIw4ZBVtow==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Mark Zhang <markzhang@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 6/6] IB/cm: Initialize av before acquire the spin lock in cm_lap_handler
-Date:   Thu, 18 Mar 2021 12:03:09 +0200
-Message-Id: <20210318100309.670344-7-leon@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210318100309.670344-1-leon@kernel.org>
-References: <20210318100309.670344-1-leon@kernel.org>
+        id S229654AbhCRKHe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Mar 2021 06:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229929AbhCRKHK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Mar 2021 06:07:10 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BC1C06174A;
+        Thu, 18 Mar 2021 03:07:10 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id f124so1377198qkj.5;
+        Thu, 18 Mar 2021 03:07:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ELc6LnMGSIijIid0UDHN3y6THIKo2hcD8fRWSaU7IrM=;
+        b=S+R+4up1j6qe1BtwsNDMxnGOBQ4mi0+0lvMzh5dQhlOMqQzX2BUcADOeOmKjgukeVF
+         dkYEeInXy7MzmtQk6vC8Gm51MXI8SY47lC6YHO0dshgmreXjDcjFPD5UpCRk8IldxaXf
+         h+Byv0MIrnPIWaFAjq/6zt+mYLCsZzi7jWPV/B/3o/PoLocOCjIX0BPrfGq3SlmDDYCj
+         l5CapMtPSMdPHdvdZDHspg0LD1oq/ZjaxCRTYFeS2bNpmQ3aFyOPdTbzDpvF6OlPcDBl
+         zkw+e8wBqcX2dxKhY654WRY1IXZZbLZ5djFfgF7rmlyPAcbbVSKfNj1hBdv//aLUk4MM
+         G9ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ELc6LnMGSIijIid0UDHN3y6THIKo2hcD8fRWSaU7IrM=;
+        b=PHYXROelaqsC/8lYdBs1V0qj3PCYsRRrJcOhA/yzYhnHnr5P4HkFhfgliEVcZzGyne
+         5Y3KdniYsQMjWBvL5BaB1qSZJpdJSuyTvxIh2sxJdDCI68/Hf74JhqFKD9mrKKmPOK7f
+         VEK+Nm0b6KtLQOReIxUgRWXcCS8QLziLxHZ2YM3f03kxVxjx3snYuxf2JLL2l1s+SJ4j
+         hiDlpvwfSrFrsBAbW2uPBfJBPmgYX76LF0Iz+HF+SQDXPdH4wcZtIp2hFvLapyg5ym9n
+         meVtbSBUg0ef8ahOmFBBnUfEWkoNcZMq58badr/HNgrjZsQ99bAIC/MCKMURX/i9K94g
+         xNWw==
+X-Gm-Message-State: AOAM533unhyYy6wrRxc/8Lk1UrQxdmFzAEC4irGML3Od38+DaMtcH2Wb
+        0A0543X9rDkIntdIn5xJGiZx9FBDr8+h0RWT
+X-Google-Smtp-Source: ABdhPJy6ECJ+MnYLfnv24+HT17uA3AiotvC0EK3LZyt6GlbR0I1wBmv2BvDTpL/Yuj96RmGNa/aNAQ==
+X-Received: by 2002:a05:620a:749:: with SMTP id i9mr3627155qki.40.1616062029596;
+        Thu, 18 Mar 2021 03:07:09 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.54.246])
+        by smtp.gmail.com with ESMTPSA id z7sm1332793qkf.136.2021.03.18.03.07.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 03:07:09 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] RDMA/include: Mundane typo fixes throughout the file
+Date:   Thu, 18 Mar 2021 15:34:53 +0530
+Message-Id: <20210318100453.9759-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mark Zhang <markzhang@nvidia.com>
 
-Both cm_init_av_for_lap and cm_init_av_by_path and might sleep and should
-not be called within a spin_lock.
+s/proviee/provide/
+s/undelying/underlying/
+s/quesiton/question/
+s/drivr/driver/
 
-Signed-off-by: Mark Zhang <markzhang@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- drivers/infiniband/core/cm.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ include/rdma/rdma_vt.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 4e6f4c6d7b2a..d4c76c85b3e8 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -3357,6 +3357,17 @@ static int cm_lap_handler(struct cm_work *work)
- 	work->cm_event.private_data =
- 		IBA_GET_MEM_PTR(CM_LAP_PRIVATE_DATA, lap_msg);
+diff --git a/include/rdma/rdma_vt.h b/include/rdma/rdma_vt.h
+index 9fd217b24916..0af89cedfbf5 100644
+--- a/include/rdma/rdma_vt.h
++++ b/include/rdma/rdma_vt.h
+@@ -92,7 +92,7 @@ struct rvt_ibport {
+ 	/*
+ 	 * The pkey table is allocated and maintained by the driver. Drivers
+ 	 * need to have access to this before registering with rdmav. However
+-	 * rdmavt will need access to it so drivers need to proviee this during
++	 * rdmavt will need access to it so drivers need to provide this during
+ 	 * the attach port API call.
+ 	 */
+ 	u16 *pkey_table;
+@@ -230,7 +230,7 @@ struct rvt_driver_provided {
+ 	void (*do_send)(struct rvt_qp *qp);
 
-+	ret = cm_init_av_for_lap(work->port, work->mad_recv_wc->wc,
-+				 work->mad_recv_wc->recv_buf.grh,
-+				 cm_id_priv);
-+	if (ret)
-+		goto deref;
-+
-+	ret = cm_init_av_by_path(param->alternate_path, NULL,
-+				 cm_id_priv, false);
-+	if (ret)
-+		goto deref;
-+
- 	spin_lock_irq(&cm_id_priv->lock);
- 	if (cm_id_priv->id.state != IB_CM_ESTABLISHED)
- 		goto unlock;
-@@ -3391,17 +3402,6 @@ static int cm_lap_handler(struct cm_work *work)
- 		goto unlock;
- 	}
+ 	/*
+-	 * Returns a pointer to the undelying hardware's PCI device. This is
++	 * Returns a pointer to the underlying hardware's PCI device. This is
+ 	 * used to display information as to what hardware is being referenced
+ 	 * in an output message
+ 	 */
+@@ -257,7 +257,7 @@ struct rvt_driver_provided {
+ 	void (*qp_priv_free)(struct rvt_dev_info *rdi, struct rvt_qp *qp);
 
--	ret = cm_init_av_for_lap(work->port, work->mad_recv_wc->wc,
--				 work->mad_recv_wc->recv_buf.grh,
--				 cm_id_priv);
--	if (ret)
--		goto unlock;
--
--	ret = cm_init_av_by_path(param->alternate_path, NULL,
--				 cm_id_priv, false);
--	if (ret)
--		goto unlock;
--
- 	cm_id_priv->id.lap_state = IB_CM_LAP_RCVD;
- 	cm_id_priv->tid = lap_msg->hdr.tid;
- 	cm_queue_work_unlock(cm_id_priv, work);
+ 	/*
+-	 * Inform the driver the particular qp in quesiton has been reset so
++	 * Inform the driver the particular qp in question has been reset so
+ 	 * that it can clean up anything it needs to.
+ 	 */
+ 	void (*notify_qp_reset)(struct rvt_qp *qp);
+@@ -281,7 +281,7 @@ struct rvt_driver_provided {
+ 	void (*stop_send_queue)(struct rvt_qp *qp);
+
+ 	/*
+-	 * Have the drivr drain any in progress operations
++	 * Have the driver drain any in progress operations
+ 	 */
+ 	void (*quiesce_qp)(struct rvt_qp *qp);
+
 --
-2.30.2
+2.26.2
 
