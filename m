@@ -2,87 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE583406A6
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Mar 2021 14:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4BE34072E
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Mar 2021 14:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231279AbhCRNOo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Mar 2021 09:14:44 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:49840 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbhCRNOk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Mar 2021 09:14:40 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12IDC9j5153454;
-        Thu, 18 Mar 2021 13:14:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=Ecwrj8jb1QXZw/9K/vKdjiZiJTx3End40LMKibuERkg=;
- b=g497Wlyj1r6QTz2SePkPCPoaYbX5Oi+lBRSB7JH4FDlpnGC1pXgjQJ7JZtvHqdoY1tc0
- 80CkwxeKHE0Gl/Pc5BV1/0X6n6qUSvhbS+9EVvtP4lPrjmQDooEpNVHwFmfePyIWAu7P
- K55Zyk127SBu8P5aYht3mXK9xoBFm1aXSLVBm/OsP5fF7ALd2OoP8gBtNbNyuxcLmOB/
- 6XnJLdFHqxy3f6O/LP8iKpAgw2BclmLFMZABckDc0BrmqlRZ2/1o8xB499iHxcJYOqZx
- 85wGXMyIzfyk4OY+hTNKTr/cMkZrrYWBET0V/kBpFkCpDRZQC7AQ0f3HV52FBLgU1Xpc rg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 378p1nydbs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Mar 2021 13:14:30 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12ID5xRd103055;
-        Thu, 18 Mar 2021 13:14:28 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 3797a3xmbh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Mar 2021 13:14:28 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12IDERop019064;
-        Thu, 18 Mar 2021 13:14:27 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 18 Mar 2021 06:14:27 -0700
-Date:   Thu, 18 Mar 2021 16:14:21 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     liangwenpeng@huawei.com
-Cc:     linux-rdma@vger.kernel.org
-Subject: [bug report] RDMA/hns: Add support for XRC on HIP09
-Message-ID: <YFM1hQ4p/uL7zyRY@mwanda>
+        id S229745AbhCRNvd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Mar 2021 09:51:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36116 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229917AbhCRNv3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 18 Mar 2021 09:51:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B0E564F1B;
+        Thu, 18 Mar 2021 13:51:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616075489;
+        bh=rqIOb3PcNph7t8Gjocui5datd/b1QIaQxtIU9gJlPhc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OWKk+2cY/aZkTfotbahqGKVxIDlcexBNjlGXJU/OTjUMzoQxmKje6ivZSKEpHHMc4
+         cDiIdsOl981SNHfjSm9T3uEAyjhTNAJ9BJMhqUBylOBh6KKXNQ5fJRslw/4aMx3OnQ
+         d/usRyKFwV33pOvOzcBeui6w+EkaO3ArhiA9UBAuISBS0M7D0bNSY6HsNSIAU/3SWL
+         euMM8rmaCho20EhB260KH/44mo1VoGZ4L8MbAlqlQsCv/u6xUrD9MfjmgqW5zEXLpn
+         AbjSJ855PWjb/xU+kHobeP+gAo9FnshvNGD2G3O58Mfm7lb5AMKO69QcVXnqPqIyiL
+         zUAI1Z4tZcLJQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Maor Gottlieb <maorg@nvidia.com>,
+        Daria Velikovsky <daria@mellanox.com>,
+        linux-rdma@vger.kernel.org, Mark Bloch <markb@nvidia.com>
+Subject: [PATCH rdma-next] RDMA/mlx5: Fix drop packet rule in egress table
+Date:   Thu, 18 Mar 2021 15:51:23 +0200
+Message-Id: <20210318135123.680759-1-leon@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 spamscore=0
- mlxlogscore=820 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103180097
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0 adultscore=0
- spamscore=0 clxscore=1011 phishscore=0 malwarescore=0 priorityscore=1501
- bulkscore=0 mlxlogscore=777 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103180097
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Wenpeng Liang,
+From: Maor Gottlieb <maorg@nvidia.com>
 
-The patch 32548870d438: "RDMA/hns: Add support for XRC on HIP09" from
-Mar 4, 2021, leads to the following static checker warning:
+Initial drop action support missed that drop action can be added to
+egress flow tables as well. Add the missing support.
 
-	drivers/infiniband/hw/hns/hns_roce_pd.c:143 hns_roce_xrcd_alloc()
-	warn: passing casted pointer 'xrcdn' to 'hns_roce_bitmap_alloc()' 32 vs 64.
+This requires making sure that dest_type isn't set to PORT which in
+turn exposes a possibility of passing dst while indicating number of
+dsts as zero. Explicitly check for number of dsts and pass the appropriate
+pointer.
 
-drivers/infiniband/hw/hns/hns_roce_pd.c
-   141  static int hns_roce_xrcd_alloc(struct hns_roce_dev *hr_dev, u32 *xrcdn)
-   142  {
-   143          return hns_roce_bitmap_alloc(&hr_dev->xrcd_bitmap,
-   144                                       (unsigned long *)xrcdn);
+Fixes: f29de9eee782 ("RDMA/mlx5: Add support for drop action in DV steering")
+Reviewed-by: Mark Bloch <markb@nvidia.com>
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/mlx5/fs.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-The hns_roce_bitmap_alloc() is going to write a ulong to &xrcd->xrcdn
-so this will lead to memory corruption.
+diff --git a/drivers/infiniband/hw/mlx5/fs.c b/drivers/infiniband/hw/mlx5/fs.c
+index 25da0b05b4e2..f0af3f1ae039 100644
+--- a/drivers/infiniband/hw/mlx5/fs.c
++++ b/drivers/infiniband/hw/mlx5/fs.c
+@@ -1528,8 +1528,8 @@ static struct mlx5_ib_flow_handler *raw_fs_rule_add(
+ 		dst_num++;
+ 	}
 
-   145  }
-   146  
+-	handler = _create_raw_flow_rule(dev, ft_prio, dst, fs_matcher,
+-					flow_context, flow_act,
++	handler = _create_raw_flow_rule(dev, ft_prio, dst_num ? dst : NULL,
++					fs_matcher, flow_context, flow_act,
+ 					cmd_in, inlen, dst_num);
 
-regards,
-dan carpenter
+ 	if (IS_ERR(handler)) {
+@@ -1885,8 +1885,9 @@ static int get_dests(struct uverbs_attr_bundle *attrs,
+ 		else
+ 			*dest_id = mqp->raw_packet_qp.rq.tirn;
+ 		*dest_type = MLX5_FLOW_DESTINATION_TYPE_TIR;
+-	} else if (fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_EGRESS ||
+-		   fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_TX) {
++	} else if ((fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_EGRESS ||
++		    fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_TX) &&
++		   !(*flags & MLX5_IB_ATTR_CREATE_FLOW_FLAGS_DROP)) {
+ 		*dest_type = MLX5_FLOW_DESTINATION_TYPE_PORT;
+ 	}
+
+--
+2.30.2
+
