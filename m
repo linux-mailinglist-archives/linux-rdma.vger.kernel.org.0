@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C1F341D81
+	by mail.lfdr.de (Postfix) with ESMTP id 6832A341D80
 	for <lists+linux-rdma@lfdr.de>; Fri, 19 Mar 2021 13:57:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhCSM4n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Mar 2021 08:56:43 -0400
+        id S229756AbhCSM4o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Mar 2021 08:56:44 -0400
 Received: from mga01.intel.com ([192.55.52.88]:4853 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229914AbhCSM4l (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:56:41 -0400
-IronPort-SDR: xJo1EpMlxN3Amr46FuKnyF55jHYXR3SR4XZT48R2zfJvX2G4cxdpFouXiDznRor/X4flLUhlRn
- L8Mg/YBIC5qw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="209910281"
+        id S229926AbhCSM4m (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:56:42 -0400
+IronPort-SDR: I0oukAf4WLwwpHV/ayry2/i4Y6y1OSF3K+8pawPvrSQls3ues7PDdAg6ztqnb/4fSl8NJuCOOI
+ 2DimLzkdehJA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="209910283"
 X-IronPort-AV: E=Sophos;i="5.81,261,1610438400"; 
-   d="scan'208";a="209910281"
+   d="scan'208";a="209910283"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 05:56:40 -0700
-IronPort-SDR: KZfsu8nNZlAkshOAZKMSIOJ+EEa+XY7wYIZkNVVsF5ELSNwSlfoxICRUxUwVdq5axDS6z+Z7/0
- PBJVdvoM3E2Q==
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 05:56:41 -0700
+IronPort-SDR: rSJ7jUzYhcVcplYMTEnsmK+Lf2j0tsxyoHFXLyg3frfoyqildTXYlNfYqEULinmJ2fbjAKmjLR
+ +oF7g3BQHJKw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,261,1610438400"; 
-   d="scan'208";a="450851723"
+   d="scan'208";a="450851729"
 Received: from phwfstl014.hd.intel.com ([10.127.241.142])
-  by orsmga001.jf.intel.com with ESMTP; 19 Mar 2021 05:56:39 -0700
+  by orsmga001.jf.intel.com with ESMTP; 19 Mar 2021 05:56:40 -0700
 From:   kaike.wan@intel.com
 To:     dledford@redhat.com, jgg@nvidia.com
 Cc:     linux-rdma@vger.kernel.org, todd.rimmer@intel.com,
         Kaike Wan <kaike.wan@intel.com>
-Subject: [PATCH RFC 3/9] RDMA/rv: Add the rv module
-Date:   Fri, 19 Mar 2021 08:56:29 -0400
-Message-Id: <20210319125635.34492-4-kaike.wan@intel.com>
+Subject: [PATCH RFC 4/9] RDMA/rv: Add functions for memory region cache
+Date:   Fri, 19 Mar 2021 08:56:30 -0400
+Message-Id: <20210319125635.34492-5-kaike.wan@intel.com>
 X-Mailer: git-send-email 2.18.1
 In-Reply-To: <20210319125635.34492-1-kaike.wan@intel.com>
 References: <20210319125635.34492-1-kaike.wan@intel.com>
@@ -41,482 +41,667 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Kaike Wan <kaike.wan@intel.com>
 
-Add the rv module, the Makefile, and Kconfig file.
-
-Also add the functions to manage IB devices.
+The MR cache is implemented through an rb tree. Each node is indexed
+by a simple (address, length, access_flags) tuple, without any
+consideration of buffer overlapping. When a node's refcount goes
+down to 0, it is not removed from the cache. Instead, it is put into
+an LRU list that could be evicted if the cache memory limit is reached.
+However, if the user buffer for the memory region is freed, the node
+will be removed when the MMU notice is received.
 
 Signed-off-by: Todd Rimmer <todd.rimmer@intel.com>
 Signed-off-by: Kaike Wan <kaike.wan@intel.com>
 ---
- MAINTAINERS                           |   6 +
- drivers/infiniband/Kconfig            |   1 +
- drivers/infiniband/ulp/Makefile       |   1 +
- drivers/infiniband/ulp/rv/Kconfig     |  11 ++
- drivers/infiniband/ulp/rv/Makefile    |   9 +
- drivers/infiniband/ulp/rv/rv_main.c   | 266 ++++++++++++++++++++++++++
- drivers/infiniband/ulp/rv/trace.c     |   7 +
- drivers/infiniband/ulp/rv/trace.h     |   5 +
- drivers/infiniband/ulp/rv/trace_dev.h |  82 ++++++++
- 9 files changed, 388 insertions(+)
- create mode 100644 drivers/infiniband/ulp/rv/Kconfig
- create mode 100644 drivers/infiniband/ulp/rv/Makefile
- create mode 100644 drivers/infiniband/ulp/rv/rv_main.c
- create mode 100644 drivers/infiniband/ulp/rv/trace.c
- create mode 100644 drivers/infiniband/ulp/rv/trace.h
- create mode 100644 drivers/infiniband/ulp/rv/trace_dev.h
+ drivers/infiniband/ulp/rv/Makefile         |   2 +-
+ drivers/infiniband/ulp/rv/rv_mr_cache.c    | 428 +++++++++++++++++++++
+ drivers/infiniband/ulp/rv/trace.h          |   1 +
+ drivers/infiniband/ulp/rv/trace_mr_cache.h | 181 +++++++++
+ 4 files changed, 611 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/infiniband/ulp/rv/rv_mr_cache.c
+ create mode 100644 drivers/infiniband/ulp/rv/trace_mr_cache.h
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d92f85ca831d..ba50affec9bc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15547,6 +15547,12 @@ L:	linux-rdma@vger.kernel.org
- S:	Maintained
- F:	drivers/infiniband/ulp/rtrs/
- 
-+RV DRIVER
-+M:	Kaike Wan <kaike.wan@intel.com>
-+L:	linux-rdma@vger.kernel.org
-+S:	Supported
-+F:	drivers/infiniband/ulp/rv
-+
- RXRPC SOCKETS (AF_RXRPC)
- M:	David Howells <dhowells@redhat.com>
- L:	linux-afs@lists.infradead.org
-diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
-index 04a78d9f8fe3..5086164c836f 100644
---- a/drivers/infiniband/Kconfig
-+++ b/drivers/infiniband/Kconfig
-@@ -107,5 +107,6 @@ source "drivers/infiniband/ulp/isert/Kconfig"
- source "drivers/infiniband/ulp/rtrs/Kconfig"
- 
- source "drivers/infiniband/ulp/opa_vnic/Kconfig"
-+source "drivers/infiniband/ulp/rv/Kconfig"
- 
- endif # INFINIBAND
-diff --git a/drivers/infiniband/ulp/Makefile b/drivers/infiniband/ulp/Makefile
-index 4d0004b58377..f925deb9241c 100644
---- a/drivers/infiniband/ulp/Makefile
-+++ b/drivers/infiniband/ulp/Makefile
-@@ -6,3 +6,4 @@ obj-$(CONFIG_INFINIBAND_ISER)		+= iser/
- obj-$(CONFIG_INFINIBAND_ISERT)		+= isert/
- obj-$(CONFIG_INFINIBAND_OPA_VNIC)	+= opa_vnic/
- obj-$(CONFIG_INFINIBAND_RTRS)		+= rtrs/
-+obj-$(CONFIG_INFINIBAND_RV)		+= rv/
-diff --git a/drivers/infiniband/ulp/rv/Kconfig b/drivers/infiniband/ulp/rv/Kconfig
-new file mode 100644
-index 000000000000..32a0523ff8ce
---- /dev/null
-+++ b/drivers/infiniband/ulp/rv/Kconfig
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+#
-+# Copyright(c) 2020 - 2021 Intel Corporation.
-+#
-+config INFINIBAND_RV
-+	tristate "InfiniBand Rendezvous Module"
-+	depends on X86_64 && INFINIBAND
-+	help
-+	  The rendezvous module provides mechanisms for HPC middlewares
-+	  to cache memory region registration, to manage connections
-+	  between nodes, and improve the scability of RDMA transactions.
 diff --git a/drivers/infiniband/ulp/rv/Makefile b/drivers/infiniband/ulp/rv/Makefile
-new file mode 100644
-index 000000000000..07a7a7dd9c3b
---- /dev/null
+index 07a7a7dd9c3b..01e93dc25f1d 100644
+--- a/drivers/infiniband/ulp/rv/Makefile
 +++ b/drivers/infiniband/ulp/rv/Makefile
-@@ -0,0 +1,9 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+#
-+# Copyright(c) 2020 - 2021 Intel Corporation.
-+#
-+obj-$(CONFIG_INFINIBAND_RV) += rv.o
-+
-+rv-y := rv_main.o trace.o
-+
-+CFLAGS_trace.o = -I$(src)
-diff --git a/drivers/infiniband/ulp/rv/rv_main.c b/drivers/infiniband/ulp/rv/rv_main.c
+@@ -4,6 +4,6 @@
+ #
+ obj-$(CONFIG_INFINIBAND_RV) += rv.o
+ 
+-rv-y := rv_main.o trace.o
++rv-y := rv_main.o rv_mr_cache.o trace.o
+ 
+ CFLAGS_trace.o = -I$(src)
+diff --git a/drivers/infiniband/ulp/rv/rv_mr_cache.c b/drivers/infiniband/ulp/rv/rv_mr_cache.c
 new file mode 100644
-index 000000000000..7f81f97a01f0
+index 000000000000..48ea7c958f74
 --- /dev/null
-+++ b/drivers/infiniband/ulp/rv/rv_main.c
-@@ -0,0 +1,266 @@
++++ b/drivers/infiniband/ulp/rv/rv_mr_cache.c
+@@ -0,0 +1,428 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +/*
 + * Copyright(c) 2020 - 2021 Intel Corporation.
 + */
 +
-+/* This file contains the base of the rendezvous RDMA driver */
-+
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/err.h>
-+#include <linux/parser.h>
++#include <linux/types.h>
++#include <linux/list.h>
++#include <linux/mutex.h>
++#include <linux/scatterlist.h>
++#include <linux/debugfs.h>
++#include <linux/interval_tree_generic.h>
 +
 +#include <rdma/ib_user_sa.h>
 +
 +#include "rv.h"
 +#include "trace.h"
 +
-+MODULE_AUTHOR("Kaike Wan");
-+MODULE_DESCRIPTION("Rendezvous Module");
-+MODULE_LICENSE("Dual BSD/GPL");
++static unsigned int mr_cache_size = MAX_RB_SIZE;
 +
-+static int rv_add_one(struct ib_device *device);
-+static void rv_remove_one(struct ib_device *device, void *client_data);
-+static void rv_rename_dev(struct ib_device *device, void *client_data);
++module_param(mr_cache_size, uint, 0444);
++MODULE_PARM_DESC(mr_cache_size, "Size of mr cache (in MB)");
 +
-+static struct ib_client rv_client = {
-+	.name = "rv",
-+	.add = rv_add_one,
-+	.remove = rv_remove_one,
-+	.rename = rv_rename_dev
++static void handle_remove(struct work_struct *work);
++static void do_remove(struct rv_mr_cache *cache, struct list_head *del_list);
++static u32 rv_cache_evict(struct rv_mr_cache *cache, u64 mbytes);
++static int mmu_notifier_range_start(struct mmu_notifier *,
++				    const struct mmu_notifier_range *);
++static struct rv_mr_cached *rv_mr_cache_search(struct rv_mr_cache *cache,
++					       u64 addr, u64 len, u32 acc);
++static void rv_update_mrc_stats_add(struct rv_mr_cache *cache,
++				    struct rv_mr_cached *mrc);
++static void rv_update_mrc_stats_remove(struct rv_mr_cache *cache,
++				       struct rv_mr_cached *mrc);
++
++static const struct mmu_notifier_ops mn_opts = {
++	.invalidate_range_start = mmu_notifier_range_start,
 +};
 +
-+static struct list_head rv_dev_list;	/* list of rv_device */
-+static spinlock_t rv_dev_list_lock;
-+
-+/* get a device reference and add an rv_user to rv_device.user_list */
-+struct rv_device *rv_device_get_add_user(char *dev_name, struct rv_user *rv)
++static u64 mrc_start(struct rv_mr_cached *mrc)
 +{
-+	struct rv_device *dev;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&rv_dev_list_lock, flags);
-+	list_for_each_entry(dev, &rv_dev_list, dev_entry) {
-+		if (strcmp(dev->ib_dev->name, dev_name) == 0) {
-+			if (!kref_get_unless_zero(&dev->kref))
-+				continue; /* skip, going away */
-+			list_add_tail(&rv->user_entry, &dev->user_list);
-+			spin_unlock_irqrestore(&rv_dev_list_lock, flags);
-+			trace_rv_dev_get(dev_name, kref_read(&dev->kref));
-+			return dev;
-+		}
-+	}
-+	spin_unlock_irqrestore(&rv_dev_list_lock, flags);
-+	rv_err(RV_INVALID, "Could not find IB dev %s\n", dev_name);
-+	return NULL;
++	return mrc->addr;
 +}
 +
-+static void rv_device_release(struct kref *kref)
++static u64 mrc_last(struct rv_mr_cached *mrc)
 +{
-+	struct rv_device *dev = container_of(kref, struct rv_device, kref);
-+
-+	ib_unregister_event_handler(&dev->event_handler); /* may need sooner */
-+	kfree(dev);
++	return mrc->addr + mrc->len - 1;
 +}
 +
-+void rv_device_get(struct rv_device *dev)
-+{
-+	kref_get(&dev->kref);
-+}
-+
-+void rv_device_put(struct rv_device *dev)
-+{
-+	trace_rv_dev_put(dev->ib_dev ? dev->ib_dev->name : "nil",
-+			 kref_read(&dev->kref));
-+	kref_put(&dev->kref, rv_device_release);
-+}
++INTERVAL_TREE_DEFINE(struct rv_mr_cached, node, u64, __last,
++		     mrc_start, mrc_last, static, rv_int_rb);
 +
 +/*
-+ * Remove a rv_user from rv_device.user_list
++ * MMU notifier callback
 + *
-+ * @rv - The rv_user to remove
-+ *
-+ * Return:
-+ *   0 - The rv_user is in rv_device.user_list and removed;
-+ *   1 - The rv_user is already not in rv_device.user_list.
++ * If the address range overlaps an MR which is in use (refcount>0)
++ * we refuse to remove it.  Otherwise we remove it from the MR cache
++ * by getting it off the LRU list and RB-tree and schedule the
++ * MR deregistration.
 + */
-+int rv_device_del_user(struct rv_user *rv)
++static int mmu_notifier_range_start(struct mmu_notifier *mn,
++				    const struct mmu_notifier_range *range)
 +{
++	struct rv_mr_cache *cache = container_of(mn, struct rv_mr_cache, mn);
++	struct rb_root_cached *root = &cache->root;
++	struct rv_mr_cached *mrc, *ptr = NULL;
 +	unsigned long flags;
++	bool added = false;
++
++	spin_lock_irqsave(&cache->lock, flags);
++	for (mrc = rv_int_rb_iter_first(root, range->start, range->end - 1);
++	     mrc; mrc = ptr) {
++		ptr = rv_int_rb_iter_next(mrc, range->start, range->end - 1);
++		if (cache->ops->invalidate(cache, cache->ops_arg, mrc)) {
++			trace_rv_mr_cache_notifier(mrc->addr, mrc->len,
++						   mrc->access);
++			rv_int_rb_remove(mrc, root);
++			list_move(&mrc->list, &cache->del_list);
++			cache->stats.remove++;
++			rv_update_mrc_stats_remove(cache, mrc);
++			added = true;
++		}
++	}
++	spin_unlock_irqrestore(&cache->lock, flags);
++
++	if (added)
++		queue_work(cache->wq, &cache->del_work);
++	return 0;
++}
++
++/* MR deregistration is done on a per rv_user work queue.  */
++int rv_mr_cache_init(int rv_inx, struct rv_mr_cache *cache,
++		     const struct rv_mr_cache_ops *ops, void *priv,
++		     struct mm_struct *mm, u32 cache_size)
++{
++	char wq_name[25];
 +	int ret = 0;
 +
-+	spin_lock_irqsave(&rv_dev_list_lock, flags);
-+	if (list_empty(&rv->user_entry))
-+		ret = 1;
-+	else
-+		list_del_init(&rv->user_entry);
-+	spin_unlock_irqrestore(&rv_dev_list_lock, flags);
++	sprintf(wq_name, "rv-%d\n", rv_inx);
++	cache->wq = alloc_workqueue(wq_name,
++				    WQ_SYSFS | WQ_HIGHPRI | WQ_CPU_INTENSIVE
++					| WQ_MEM_RECLAIM,
++				    RV_RB_MAX_ACTIVE_WQ_ENTRIES);
++	if (!cache->wq)
++		return -ENOMEM;
 +
++	trace_rv_mr_cache_wq_alloc(wq_name);
++	cache->root = RB_ROOT_CACHED;
++	cache->ops = ops;
++	cache->ops_arg = priv;
++
++	INIT_HLIST_NODE(&cache->mn.hlist);
++	spin_lock_init(&cache->lock);
++
++	cache->mn.ops = &mn_opts;
++	cache->mm = mm;
++
++	INIT_WORK(&cache->del_work, handle_remove);
++	INIT_LIST_HEAD(&cache->del_list);
++	INIT_LIST_HEAD(&cache->lru_list);
++
++	if (cache_size)
++		cache->max_size = (u64)cache_size * 1024 * 1024;
++	else
++		cache->max_size = (u64)mr_cache_size * 1024 * 1024;
++
++	if (mm) {
++		ret = mmu_notifier_register(&cache->mn, cache->mm);
++		if (ret)
++			goto bail_wq;
++	}
++
++	return ret;
++
++bail_wq:
++	destroy_workqueue(cache->wq);
++	cache->wq = NULL;
 +	return ret;
 +}
 +
-+/* verbs device level async events */
-+static void rv_device_event_handler(struct ib_event_handler *handler,
-+				    struct ib_event *event)
++/* All remaining entries in the cache are deregistered */
++void rv_mr_cache_deinit(int rv_inx, struct rv_mr_cache *cache)
 +{
-+	struct rv_device *dev;
++	struct rv_mr_cached *mrc;
++	struct rb_node *node;
++	unsigned long flags;
++	struct list_head del_list;
 +
-+	dev = ib_get_client_data(event->device, &rv_client);
-+	if (!dev || dev->ib_dev != event->device)
-+		return;
++	if (cache->mm)
++		mmu_notifier_unregister(&cache->mn, cache->mm);
 +
-+	trace_rv_device_event(dev->ib_dev->name, ib_event_msg(event->event));
-+	switch (event->event) {
-+	case IB_EVENT_DEVICE_FATAL:
-+	case IB_EVENT_PORT_ERR:
-+	case IB_EVENT_PORT_ACTIVE:
-+	case IB_EVENT_LID_CHANGE:
-+	case IB_EVENT_PKEY_CHANGE:
-+	case IB_EVENT_SM_CHANGE:
-+	case IB_EVENT_CLIENT_REREGISTER:
-+	case IB_EVENT_GID_CHANGE:
-+	default:
-+		break;
++	INIT_LIST_HEAD(&del_list);
++
++	spin_lock_irqsave(&cache->lock, flags);
++	while ((node = rb_first_cached(&cache->root))) {
++		mrc = rb_entry(node, struct rv_mr_cached, node);
++		trace_rv_mr_cache_deinit(mrc->addr, mrc->len, mrc->access,
++					 atomic_read(&mrc->refcount));
++		rb_erase_cached(node, &cache->root);
++		list_move(&mrc->list, &del_list);
++		cache->stats.remove++;
++		rv_update_mrc_stats_remove(cache, mrc);
 +	}
++	WARN_ON(cache->total_size);
++
++	spin_unlock_irqrestore(&cache->lock, flags);
++
++	do_remove(cache, &del_list);
++
++	if (cache->wq) {
++		char wq_name[25];
++
++		sprintf(wq_name, "rv-%d\n", rv_inx);
++		trace_rv_mr_cache_wq_destroy(wq_name);
++		flush_workqueue(cache->wq);
++		destroy_workqueue(cache->wq);
++	}
++	cache->wq = NULL;
++	cache->mm = NULL;
 +}
 +
-+static int rv_add_one(struct ib_device *device)
++/* called with cache->lock */
++void rv_mr_cache_update_stats_max(struct rv_mr_cache *cache, int refcount)
 +{
-+	struct rv_device *dev;
-+	unsigned long flags;
++	if ((u32)refcount > cache->stats.max_refcount)
++		cache->stats.max_refcount = (u32)refcount;
++	if (cache->stats.inuse > cache->stats.max_inuse)
++		cache->stats.max_inuse = cache->stats.inuse;
++	if (cache->stats.inuse_bytes > cache->stats.max_inuse_bytes)
++		cache->stats.max_inuse_bytes = cache->stats.inuse_bytes;
++	if (cache->stats.count > cache->stats.max_count)
++		cache->stats.max_count = cache->stats.count;
++	if (cache->total_size > cache->stats.max_cache_size)
++		cache->stats.max_cache_size = cache->total_size;
++}
 +
-+	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
-+	if (!dev)
++/* gets a reference to mrc on behalf of caller */
++int rv_mr_cache_insert(struct rv_mr_cache *cache,
++		       struct rv_mr_cached *mrc)
++{
++	struct rv_mr_cached *existing;
++	unsigned long flags;
++	u64 new_len, evict_len;
++	int ret = 0;
++
++again:
++	trace_rv_mr_cache_insert(mrc->addr, mrc->len, mrc->access);
++
++	spin_lock_irqsave(&cache->lock, flags);
++	existing = rv_mr_cache_search(cache, mrc->addr, mrc->len, mrc->access);
++	if (existing) {
++		ret = -EINVAL;
++		goto unlock;
++	}
++	new_len = cache->total_size + mrc->len;
++	if (new_len > cache->max_size) {
++		spin_unlock_irqrestore(&cache->lock, flags);
++
++		trace_rv_mr_cache_cache_full(cache->max_size, cache->total_size,
++					     mrc->len);
++
++		evict_len = new_len - cache->max_size;
++		if (rv_cache_evict(cache, evict_len) >= evict_len)
++			goto again;
++		spin_lock_irqsave(&cache->lock, flags);
++		cache->stats.full++;
++		spin_unlock_irqrestore(&cache->lock, flags);
 +		return -ENOMEM;
-+	dev->ib_dev = device;
-+	kref_init(&dev->kref);
-+	mutex_init(&dev->listener_mutex);
-+	spin_lock_init(&dev->listener_lock);
-+	INIT_LIST_HEAD(&dev->listener_list);
-+	INIT_LIST_HEAD(&dev->user_list);
-+	spin_lock_irqsave(&rv_dev_list_lock, flags);
-+	list_add(&dev->dev_entry, &rv_dev_list);
-+	spin_unlock_irqrestore(&rv_dev_list_lock, flags);
-+	trace_rv_dev_add(device->name, kref_read(&dev->kref));
-+	ib_set_client_data(device, &rv_client, dev);
++	}
 +
-+	INIT_IB_EVENT_HANDLER(&dev->event_handler, device,
-+			      rv_device_event_handler);
-+	ib_register_event_handler(&dev->event_handler);
++	rv_int_rb_insert(mrc, &cache->root);
++	INIT_LIST_HEAD(&mrc->list);
 +
-+	return 0;
++	cache->ops->get(cache, cache->ops_arg, mrc);
++	cache->stats.miss++;
++	rv_update_mrc_stats_add(cache, mrc);
++unlock:
++	spin_unlock_irqrestore(&cache->lock, flags);
++	return ret;
++}
++
++/* Caller must hold cache->lock */
++static struct rv_mr_cached *rv_mr_cache_search(struct rv_mr_cache *cache,
++					       u64 addr, u64 len, u32 acc)
++{
++	struct rv_mr_cached *mrc = NULL;
++
++	trace_rv_mr_cache_search_enter(addr, len, acc);
++
++	if (!cache->ops->filter) {
++		mrc = rv_int_rb_iter_first(&cache->root, addr,
++					   (addr + len) - 1);
++		if (mrc)
++			trace_rv_mr_cache_search_mrc(mrc->addr, mrc->len,
++						     mrc->access);
++	} else {
++		for (mrc = rv_int_rb_iter_first(&cache->root, addr,
++						(addr + len) - 1);
++		     mrc;
++		     mrc = rv_int_rb_iter_next(mrc, addr, (addr + len) - 1)) {
++			trace_rv_mr_cache_search_mrc(mrc->addr, mrc->len,
++						     mrc->access);
++			if (cache->ops->filter(mrc, addr, len, acc))
++				return mrc;
++		}
++	}
++	return mrc;
++}
++
++/* look for a cache hit.  If get a hit, make sure removed from LRU list */
++struct rv_mr_cached *rv_mr_cache_search_get(struct rv_mr_cache *cache,
++					    u64 addr, u64 len, u32 acc,
++					    bool update_hit)
++{
++	unsigned long flags;
++	struct rv_mr_cached *mrc;
++
++	spin_lock_irqsave(&cache->lock, flags);
++	mrc =  rv_mr_cache_search(cache, addr, len, acc);
++	if (mrc) {
++		cache->ops->get(cache, cache->ops_arg, mrc);
++		if (update_hit)
++			cache->stats.hit++;
++		list_del_init(&mrc->list);
++	}
++	spin_unlock_irqrestore(&cache->lock, flags);
++
++	return mrc;
 +}
 +
 +/*
-+ * Called on device removal, gets users off the device
-+ *
-+ * At the same time, applications will get device async events which should
-+ * trigger them to start user space cleanup and close.
-+ *
-+ * We remove the rv_user from the user_list so that the user application knows
-+ * that the remove_one handler is cleaning up this rv_user. After this,
-+ * the rv->user_entry itself is an empty list, an indicator that the
-+ * remove_one handler owns this rv_user.
-+ *
-+ * To comply with lock heirarchy, we must release rv_dev_list_lock so
-+ * rv_detach_user can get rv->mutex.  The empty rv->user_entry will prevent
-+ * a race with rv_user starting its own detach.
++ * release a cache reference by address.
++ * This is called from user ioctl, so we must make sure they don't
++ * dereg twice yielding a negative refcount.
++ * The released entry goes on our LRU list to prioritize evictions.
 + */
-+static void rv_device_detach_users(struct rv_device *dev)
++struct rv_mr_cached *rv_mr_cache_search_put(struct rv_mr_cache *cache,
++					    u64 addr, u64 len, u32 acc)
 +{
 +	unsigned long flags;
-+	struct rv_user *rv;
++	struct rv_mr_cached *mrc;
 +
-+	spin_lock_irqsave(&rv_dev_list_lock, flags);
-+	while (!list_empty(&dev->user_list)) {
-+		rv = list_first_entry(&dev->user_list, struct rv_user,
-+				      user_entry);
-+		list_del_init(&rv->user_entry);
-+
-+		spin_unlock_irqrestore(&rv_dev_list_lock, flags);
-+		/* Detach user here */
-+		spin_lock_irqsave(&rv_dev_list_lock, flags);
++	spin_lock_irqsave(&cache->lock, flags);
++	mrc =  rv_mr_cache_search(cache, addr, len, acc);
++	if (mrc) {
++		if (!atomic_read(&mrc->refcount)) {
++			mrc = NULL;
++			goto unlock;
++		}
++		if (!cache->ops->put(cache, cache->ops_arg, mrc))
++			list_add(&mrc->list, &cache->lru_list);
 +	}
-+	spin_unlock_irqrestore(&rv_dev_list_lock, flags);
++unlock:
++	spin_unlock_irqrestore(&cache->lock, flags);
++
++	return mrc;
++}
++
++/* Simple release, the entry goes on our LRU list to prioritize evictions. */
++void rv_mr_cache_put(struct rv_mr_cache *cache, struct rv_mr_cached *mrc)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&cache->lock, flags);
++	if (!cache->ops->put(cache, cache->ops_arg, mrc))
++		list_add(&mrc->list, &cache->lru_list);
++	spin_unlock_irqrestore(&cache->lock, flags);
 +}
 +
 +/*
-+ * device removal handler
-+ *
-+ * we allow a wait_time of 2 seconds for applications to cleanup themselves
-+ * and close.  Typically they will get an async event and react quickly.
-+ * After which we begin forcibly removing the remaining users and
-+ * then wait for the internal references to get releaseed by their callbacks
++ * evict entries from the cache, least recently used first.
++ * We evict until we reach the goal or LRU_list is empty. Evicted
++ * entries are removed from the cache and deregistered.
 + */
-+static void rv_remove_one(struct ib_device *device, void *client_data)
++void rv_mr_cache_evict(struct rv_mr_cache *cache, void *evict_arg)
 +{
-+	struct rv_device *dev = client_data;
++	struct rv_mr_cached *mrc, *temp;
++	struct list_head del_list;
 +	unsigned long flags;
-+	unsigned long wait_time = 2000; /* 2 seconds */
-+	unsigned long sleep_time = msecs_to_jiffies(100);
-+	unsigned long end;
++	bool stop = false;
 +
-+	trace_rv_dev_remove(device->name, kref_read(&dev->kref));
-+	spin_lock_irqsave(&rv_dev_list_lock, flags);
-+	list_del(&dev->dev_entry);
-+	spin_unlock_irqrestore(&rv_dev_list_lock, flags);
++	INIT_LIST_HEAD(&del_list);
 +
-+	end = jiffies + msecs_to_jiffies(wait_time);
-+	while (time_before(jiffies, end) && !list_empty(&dev->user_list))
-+		schedule_timeout_interruptible(sleep_time);
-+
-+	rv_device_detach_users(dev);
-+
-+	while (kref_read(&dev->kref) > 1)
-+		schedule_timeout_interruptible(sleep_time);
-+
-+	rv_device_put(dev);
-+}
-+
-+static void rv_rename_dev(struct ib_device *device, void *client_data)
-+{
-+}
-+
-+static void rv_init_devices(void)
-+{
-+	spin_lock_init(&rv_dev_list_lock);
-+	INIT_LIST_HEAD(&rv_dev_list);
-+}
-+
-+/* uses syncrhnoize_rcu to ensure previous kfree_rcu of references are done */
-+static void rv_deinit_devices(void)
-+{
-+	struct rv_device *dev, *temp;
-+	unsigned long flags;
-+
-+	synchronize_rcu();
-+	spin_lock_irqsave(&rv_dev_list_lock, flags);
-+	list_for_each_entry_safe(dev, temp, &rv_dev_list, dev_entry) {
-+		list_del(&dev->dev_entry);
-+		rv_device_put(dev);
++	spin_lock_irqsave(&cache->lock, flags);
++	list_for_each_entry_safe_reverse(mrc, temp, &cache->lru_list, list) {
++		if (cache->ops->evict(cache, cache->ops_arg, mrc, evict_arg,
++				      &stop)) {
++			trace_rv_mr_cache_evict_evict(mrc->addr, mrc->len,
++						      mrc->access);
++			rv_int_rb_remove(mrc, &cache->root);
++			list_move(&mrc->list, &del_list);
++			cache->stats.evict++;
++			rv_update_mrc_stats_remove(cache, mrc);
++		} else {
++			trace_rv_mr_cache_evict_keep(mrc->addr, mrc->len,
++						     mrc->access);
++		}
++		if (stop)
++			break;
 +	}
-+	spin_unlock_irqrestore(&rv_dev_list_lock, flags);
++	spin_unlock_irqrestore(&cache->lock, flags);
++
++	do_remove(cache, &del_list);
 +}
 +
-+static int __init rv_init_module(void)
-+{
-+	pr_info("Loading rendezvous module");
-+
-+	rv_init_devices();
-+
-+	if (ib_register_client(&rv_client)) {
-+		rv_err(RV_INVALID, "Failed to register with the IB core\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static void __exit rv_cleanup_module(void)
-+{
-+	ib_unregister_client(&rv_client);
-+	rv_deinit_devices();
-+}
-+
-+module_init(rv_init_module);
-+module_exit(rv_cleanup_module);
-diff --git a/drivers/infiniband/ulp/rv/trace.c b/drivers/infiniband/ulp/rv/trace.c
-new file mode 100644
-index 000000000000..b27536056c60
---- /dev/null
-+++ b/drivers/infiniband/ulp/rv/trace.c
-@@ -0,0 +1,7 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +/*
-+ * Copyright(c) 2020 - 2021 Intel Corporation.
++ * Call the remove function for the given cache and the list.  This
++ * is expected to be called with a delete list extracted from cache.
++ * The caller does NOT need the cache->lock.
 + */
-+#define CREATE_TRACE_POINTS
-+#include <rdma/rv_user_ioctls.h>
-+#include "trace.h"
++static void do_remove(struct rv_mr_cache *cache, struct list_head *del_list)
++{
++	struct rv_mr_cached *mrc;
++
++	while (!list_empty(del_list)) {
++		mrc = list_first_entry(del_list, struct rv_mr_cached, list);
++		list_del(&mrc->list);
++		/* Deregister the mr here */
++		kfree(mrc);
++	}
++}
++
++/*
++ * Work queue function to remove all nodes that have been queued up to
++ * be removed.	The key feature is that mm->mmap_lock is not being held
++ * and the remove callback can sleep while taking it, if needed.
++ */
++static void handle_remove(struct work_struct *work)
++{
++	struct rv_mr_cache *cache = container_of(work, struct rv_mr_cache,
++						 del_work);
++	struct list_head del_list;
++	unsigned long flags;
++
++	spin_lock_irqsave(&cache->lock, flags);
++	list_replace_init(&cache->del_list, &del_list);
++	spin_unlock_irqrestore(&cache->lock, flags);
++
++	do_remove(cache, &del_list);
++}
++
++static u32 rv_cache_evict(struct rv_mr_cache *cache, u64 mbytes)
++{
++	struct evict_data evict_data;
++
++	evict_data.cleared = 0;
++	evict_data.target = mbytes;
++	trace_rv_mr_cache_cache_evict(evict_data.cleared, evict_data.target,
++				      cache->total_size);
++	rv_mr_cache_evict(cache, &evict_data);
++	trace_rv_mr_cache_cache_evict(evict_data.cleared, evict_data.target,
++				      cache->total_size);
++	return evict_data.cleared;
++}
++
++static void rv_update_mrc_stats_add(struct rv_mr_cache *cache,
++				    struct rv_mr_cached *mrc)
++{
++	cache->total_size += mrc->len;
++	cache->stats.count++;
++	rv_mr_cache_update_stats_max(cache, atomic_read(&mrc->refcount));
++}
++
++static void rv_update_mrc_stats_remove(struct rv_mr_cache *cache,
++				       struct rv_mr_cached *mrc)
++{
++	cache->total_size -= mrc->len;
++	cache->stats.count--;
++}
 diff --git a/drivers/infiniband/ulp/rv/trace.h b/drivers/infiniband/ulp/rv/trace.h
-new file mode 100644
-index 000000000000..cb1d1d087e16
---- /dev/null
+index cb1d1d087e16..7a4cc4919693 100644
+--- a/drivers/infiniband/ulp/rv/trace.h
 +++ b/drivers/infiniband/ulp/rv/trace.h
-@@ -0,0 +1,5 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
-+/*
-+ * Copyright(c) 2020 - 2021 Intel Corporation.
-+ */
-+#include "trace_dev.h"
-diff --git a/drivers/infiniband/ulp/rv/trace_dev.h b/drivers/infiniband/ulp/rv/trace_dev.h
+@@ -2,4 +2,5 @@
+ /*
+  * Copyright(c) 2020 - 2021 Intel Corporation.
+  */
++#include "trace_mr_cache.h"
+ #include "trace_dev.h"
+diff --git a/drivers/infiniband/ulp/rv/trace_mr_cache.h b/drivers/infiniband/ulp/rv/trace_mr_cache.h
 new file mode 100644
-index 000000000000..2bfc6b07d518
+index 000000000000..4b1f668d4b87
 --- /dev/null
-+++ b/drivers/infiniband/ulp/rv/trace_dev.h
-@@ -0,0 +1,82 @@
++++ b/drivers/infiniband/ulp/rv/trace_mr_cache.h
+@@ -0,0 +1,181 @@
 +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
 +/*
 + * Copyright(c) 2020 - 2021 Intel Corporation.
 + */
-+#if !defined(__RV_TRACE_DEV_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define __RV_TRACE_DEV_H
++#if !defined(__RV_TRACE_MR_CACHE_H) || defined(TRACE_HEADER_MULTI_READ)
++#define __RV_TRACE_MR_CACHE_H
 +
 +#include <linux/tracepoint.h>
 +#include <linux/trace_seq.h>
 +
 +#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM rv_dev
++#define TRACE_SYSTEM rv_mr_cache
 +
-+DECLARE_EVENT_CLASS(/* dev */
-+	rv_dev_template,
-+	TP_PROTO(const char *dev_name, u32 refcount),
-+	TP_ARGS(dev_name, refcount),
++DECLARE_EVENT_CLASS(/* rv_mr_cache */
++	rv_mr_cache_template,
++	TP_PROTO(u64 addr, u64 len, u32 acc),
++	TP_ARGS(addr, len, acc),
 +	TP_STRUCT__entry(/* entry */
-+		__string(name, dev_name)
-+		__field(u32, refcount)
++		__field(u64, addr)
++		__field(u64, len)
++		__field(u32, acc)
 +	),
 +	TP_fast_assign(/* assign */
-+		__assign_str(name, dev_name);
-+		__entry->refcount = refcount;
++		__entry->addr = addr;
++		__entry->len = len;
++		__entry->acc = acc;
 +	),
 +	TP_printk(/* print */
-+		"name %s, refcount %u",
-+		__get_str(name),
-+		__entry->refcount
++		"addr 0x%llx, len %llu acc 0x%x",
++		__entry->addr,
++		__entry->len,
++		__entry->acc
 +	)
 +);
 +
 +DEFINE_EVENT(/* event */
-+	rv_dev_template, rv_dev_add,
-+	TP_PROTO(const char *dev_name, u32 refcount),
-+	TP_ARGS(dev_name, refcount)
++	rv_mr_cache_template, rv_mr_cache_insert,
++	TP_PROTO(u64 addr, u64 len, u32 acc),
++	TP_ARGS(addr, len, acc)
 +);
 +
 +DEFINE_EVENT(/* event */
-+	rv_dev_template, rv_dev_remove,
-+	TP_PROTO(const char *dev_name, u32 refcount),
-+	TP_ARGS(dev_name, refcount)
++	rv_mr_cache_template, rv_mr_cache_search_enter,
++	TP_PROTO(u64 addr, u64 len, u32 acc),
++	TP_ARGS(addr, len, acc)
 +);
 +
 +DEFINE_EVENT(/* event */
-+	rv_dev_template, rv_dev_get,
-+	TP_PROTO(const char *dev_name, u32 refcount),
-+	TP_ARGS(dev_name, refcount)
++	rv_mr_cache_template, rv_mr_cache_search_mrc,
++	TP_PROTO(u64 addr, u64 len, u32 acc),
++	TP_ARGS(addr, len, acc)
 +);
 +
 +DEFINE_EVENT(/* event */
-+	rv_dev_template, rv_dev_put,
-+	TP_PROTO(const char *dev_name, u32 refcount),
-+	TP_ARGS(dev_name, refcount)
++	rv_mr_cache_template, rv_mr_cache_remove,
++	TP_PROTO(u64 addr, u64 len, u32 acc),
++	TP_ARGS(addr, len, acc)
++);
++
++DEFINE_EVENT(/* event */
++	rv_mr_cache_template, rv_mr_cache_evict_evict,
++	TP_PROTO(u64 addr, u64 len, u32 acc),
++	TP_ARGS(addr, len, acc)
++);
++
++DEFINE_EVENT(/* event */
++	rv_mr_cache_template, rv_mr_cache_evict_keep,
++	TP_PROTO(u64 addr, u64 len, u32 acc),
++	TP_ARGS(addr, len, acc)
++);
++
++DEFINE_EVENT(/* event */
++	rv_mr_cache_template, rv_mr_cache_notifier,
++	TP_PROTO(u64 addr, u64 len, u32 acc),
++	TP_ARGS(addr, len, acc)
 +);
 +
 +TRACE_EVENT(/* event */
-+	rv_device_event,
-+	TP_PROTO(const char *dev_name, const char *evt_name),
-+	TP_ARGS(dev_name, evt_name),
++	rv_mr_cache_cache_full,
++	TP_PROTO(u64 max, u64 total, u64 cur),
++	TP_ARGS(max, total, cur),
 +	TP_STRUCT__entry(/* entry */
-+		__string(device, dev_name)
-+		__string(event, evt_name)
++		__field(u64, max)
++		__field(u64, total)
++		__field(u64, cur)
 +	),
 +	TP_fast_assign(/* assign */
-+		__assign_str(device, dev_name);
-+		__assign_str(event, evt_name);
++		__entry->max = max;
++		__entry->total = total;
++		__entry->cur = cur;
 +	),
 +	TP_printk(/* print */
-+		"Device %s Event %s",
-+		__get_str(device),
-+		__get_str(event)
++		"Cache Full max %llu, total %llu, cur %llu",
++		__entry->max,
++		__entry->total,
++		__entry->cur
 +	)
 +);
 +
-+#endif /* __RV_TRACE_DEV_H */
++TRACE_EVENT(/* event */
++	rv_mr_cache_deinit,
++	TP_PROTO(u64 addr, u64 len, u32 acc, int cnt),
++	TP_ARGS(addr, len, acc, cnt),
++	TP_STRUCT__entry(/* entry */
++		__field(u64, addr)
++		__field(u64, len)
++		__field(u32, acc)
++		__field(int, cnt)
++	),
++	TP_fast_assign(/* assign */
++		__entry->addr = addr;
++		__entry->len = len;
++		__entry->acc = acc;
++		__entry->cnt = cnt;
++	),
++	TP_printk(/* print */
++		"addr 0x%llx, len %llu, acc %u refcnt %d",
++		__entry->addr,
++		__entry->len,
++		__entry->acc,
++		__entry->cnt
++	)
++);
++
++DECLARE_EVENT_CLASS(/* rv_mr_cache_wq */
++	rv_mr_cache_wq_template,
++	TP_PROTO(const char *wq_name),
++	TP_ARGS(wq_name),
++	TP_STRUCT__entry(/* entry */
++		__string(name, wq_name)
++	),
++	TP_fast_assign(/* assign */
++		__assign_str(name, wq_name);
++	),
++	TP_printk(/* print */
++		"Workqueue %s",
++		__get_str(name)
++	)
++);
++
++DEFINE_EVENT(/* event */
++	rv_mr_cache_wq_template, rv_mr_cache_wq_alloc,
++	TP_PROTO(const char *wq_name),
++	TP_ARGS(wq_name)
++);
++
++DEFINE_EVENT(/* event */
++	rv_mr_cache_wq_template, rv_mr_cache_wq_destroy,
++	TP_PROTO(const char *wq_name),
++	TP_ARGS(wq_name)
++);
++
++TRACE_EVENT(/* event */
++	rv_mr_cache_cache_evict,
++	TP_PROTO(u64 cleared, u64 target, u64 total_size),
++	TP_ARGS(cleared, target, total_size),
++	TP_STRUCT__entry(/* entry */
++		__field(u64, cleared)
++		__field(u64, target)
++		__field(u64, total_size)
++	),
++	TP_fast_assign(/* assign */
++		__entry->cleared = cleared;
++		__entry->target = target;
++		__entry->total_size = total_size;
++	),
++	TP_printk(/* print */
++		"cleared 0x%llx target 0x%llx total_size 0x%llx",
++		__entry->cleared,
++		__entry->target,
++		__entry->total_size
++	)
++);
++
++#endif /* __RV_TRACE_MR_CACHE_H */
 +
 +#undef TRACE_INCLUDE_PATH
 +#undef TRACE_INCLUDE_FILE
 +#define TRACE_INCLUDE_PATH .
-+#define TRACE_INCLUDE_FILE trace_dev
++#define TRACE_INCLUDE_FILE trace_mr_cache
 +#include <trace/define_trace.h>
 -- 
 2.18.1
