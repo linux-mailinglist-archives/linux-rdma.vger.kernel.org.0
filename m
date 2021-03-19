@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02DB341D82
+	by mail.lfdr.de (Postfix) with ESMTP id A0C1F341D81
 	for <lists+linux-rdma@lfdr.de>; Fri, 19 Mar 2021 13:57:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbhCSM4n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S229618AbhCSM4n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Fri, 19 Mar 2021 08:56:43 -0400
 Received: from mga01.intel.com ([192.55.52.88]:4853 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229844AbhCSM4k (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:56:40 -0400
-IronPort-SDR: 7jbMiUlKbhM/JY9QYT/dNSTA0DpXNFeOtcWIIQCsKWFbvTcJLdP54Dx5VYuchIE14cv1V44jEb
- XSEn0pzyEXAQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="209910279"
+        id S229914AbhCSM4l (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:56:41 -0400
+IronPort-SDR: xJo1EpMlxN3Amr46FuKnyF55jHYXR3SR4XZT48R2zfJvX2G4cxdpFouXiDznRor/X4flLUhlRn
+ L8Mg/YBIC5qw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="209910281"
 X-IronPort-AV: E=Sophos;i="5.81,261,1610438400"; 
-   d="scan'208";a="209910279"
+   d="scan'208";a="209910281"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2021 05:56:40 -0700
-IronPort-SDR: P4poyl8TviPt0vqwC3tN1g0oLbnL05QZ4MkpWzQTF23o77LDjdgGXi6FAVTcJBiUepu71NWbsL
- CsV04sFUV9rQ==
+IronPort-SDR: KZfsu8nNZlAkshOAZKMSIOJ+EEa+XY7wYIZkNVVsF5ELSNwSlfoxICRUxUwVdq5axDS6z+Z7/0
+ PBJVdvoM3E2Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,261,1610438400"; 
-   d="scan'208";a="450851717"
+   d="scan'208";a="450851723"
 Received: from phwfstl014.hd.intel.com ([10.127.241.142])
-  by orsmga001.jf.intel.com with ESMTP; 19 Mar 2021 05:56:38 -0700
+  by orsmga001.jf.intel.com with ESMTP; 19 Mar 2021 05:56:39 -0700
 From:   kaike.wan@intel.com
 To:     dledford@redhat.com, jgg@nvidia.com
 Cc:     linux-rdma@vger.kernel.org, todd.rimmer@intel.com,
         Kaike Wan <kaike.wan@intel.com>
-Subject: [PATCH RFC 2/9] RDMA/rv: Add the internal header files
-Date:   Fri, 19 Mar 2021 08:56:28 -0400
-Message-Id: <20210319125635.34492-3-kaike.wan@intel.com>
+Subject: [PATCH RFC 3/9] RDMA/rv: Add the rv module
+Date:   Fri, 19 Mar 2021 08:56:29 -0400
+Message-Id: <20210319125635.34492-4-kaike.wan@intel.com>
 X-Mailer: git-send-email 2.18.1
 In-Reply-To: <20210319125635.34492-1-kaike.wan@intel.com>
 References: <20210319125635.34492-1-kaike.wan@intel.com>
@@ -41,1074 +41,483 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Kaike Wan <kaike.wan@intel.com>
 
-The two header files include the defines, structures, MACROs,
-function prototypes, and functions used in the module.
+Add the rv module, the Makefile, and Kconfig file.
+
+Also add the functions to manage IB devices.
 
 Signed-off-by: Todd Rimmer <todd.rimmer@intel.com>
 Signed-off-by: Kaike Wan <kaike.wan@intel.com>
 ---
- drivers/infiniband/ulp/rv/rv.h          | 892 ++++++++++++++++++++++++
- drivers/infiniband/ulp/rv/rv_mr_cache.h | 152 ++++
- 2 files changed, 1044 insertions(+)
- create mode 100644 drivers/infiniband/ulp/rv/rv.h
- create mode 100644 drivers/infiniband/ulp/rv/rv_mr_cache.h
+ MAINTAINERS                           |   6 +
+ drivers/infiniband/Kconfig            |   1 +
+ drivers/infiniband/ulp/Makefile       |   1 +
+ drivers/infiniband/ulp/rv/Kconfig     |  11 ++
+ drivers/infiniband/ulp/rv/Makefile    |   9 +
+ drivers/infiniband/ulp/rv/rv_main.c   | 266 ++++++++++++++++++++++++++
+ drivers/infiniband/ulp/rv/trace.c     |   7 +
+ drivers/infiniband/ulp/rv/trace.h     |   5 +
+ drivers/infiniband/ulp/rv/trace_dev.h |  82 ++++++++
+ 9 files changed, 388 insertions(+)
+ create mode 100644 drivers/infiniband/ulp/rv/Kconfig
+ create mode 100644 drivers/infiniband/ulp/rv/Makefile
+ create mode 100644 drivers/infiniband/ulp/rv/rv_main.c
+ create mode 100644 drivers/infiniband/ulp/rv/trace.c
+ create mode 100644 drivers/infiniband/ulp/rv/trace.h
+ create mode 100644 drivers/infiniband/ulp/rv/trace_dev.h
 
-diff --git a/drivers/infiniband/ulp/rv/rv.h b/drivers/infiniband/ulp/rv/rv.h
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d92f85ca831d..ba50affec9bc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15547,6 +15547,12 @@ L:	linux-rdma@vger.kernel.org
+ S:	Maintained
+ F:	drivers/infiniband/ulp/rtrs/
+ 
++RV DRIVER
++M:	Kaike Wan <kaike.wan@intel.com>
++L:	linux-rdma@vger.kernel.org
++S:	Supported
++F:	drivers/infiniband/ulp/rv
++
+ RXRPC SOCKETS (AF_RXRPC)
+ M:	David Howells <dhowells@redhat.com>
+ L:	linux-afs@lists.infradead.org
+diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
+index 04a78d9f8fe3..5086164c836f 100644
+--- a/drivers/infiniband/Kconfig
++++ b/drivers/infiniband/Kconfig
+@@ -107,5 +107,6 @@ source "drivers/infiniband/ulp/isert/Kconfig"
+ source "drivers/infiniband/ulp/rtrs/Kconfig"
+ 
+ source "drivers/infiniband/ulp/opa_vnic/Kconfig"
++source "drivers/infiniband/ulp/rv/Kconfig"
+ 
+ endif # INFINIBAND
+diff --git a/drivers/infiniband/ulp/Makefile b/drivers/infiniband/ulp/Makefile
+index 4d0004b58377..f925deb9241c 100644
+--- a/drivers/infiniband/ulp/Makefile
++++ b/drivers/infiniband/ulp/Makefile
+@@ -6,3 +6,4 @@ obj-$(CONFIG_INFINIBAND_ISER)		+= iser/
+ obj-$(CONFIG_INFINIBAND_ISERT)		+= isert/
+ obj-$(CONFIG_INFINIBAND_OPA_VNIC)	+= opa_vnic/
+ obj-$(CONFIG_INFINIBAND_RTRS)		+= rtrs/
++obj-$(CONFIG_INFINIBAND_RV)		+= rv/
+diff --git a/drivers/infiniband/ulp/rv/Kconfig b/drivers/infiniband/ulp/rv/Kconfig
 new file mode 100644
-index 000000000000..20ca65387d22
+index 000000000000..32a0523ff8ce
 --- /dev/null
-+++ b/drivers/infiniband/ulp/rv/rv.h
-@@ -0,0 +1,892 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++++ b/drivers/infiniband/ulp/rv/Kconfig
+@@ -0,0 +1,11 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++#
++# Copyright(c) 2020 - 2021 Intel Corporation.
++#
++config INFINIBAND_RV
++	tristate "InfiniBand Rendezvous Module"
++	depends on X86_64 && INFINIBAND
++	help
++	  The rendezvous module provides mechanisms for HPC middlewares
++	  to cache memory region registration, to manage connections
++	  between nodes, and improve the scability of RDMA transactions.
+diff --git a/drivers/infiniband/ulp/rv/Makefile b/drivers/infiniband/ulp/rv/Makefile
+new file mode 100644
+index 000000000000..07a7a7dd9c3b
+--- /dev/null
++++ b/drivers/infiniband/ulp/rv/Makefile
+@@ -0,0 +1,9 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++#
++# Copyright(c) 2020 - 2021 Intel Corporation.
++#
++obj-$(CONFIG_INFINIBAND_RV) += rv.o
++
++rv-y := rv_main.o trace.o
++
++CFLAGS_trace.o = -I$(src)
+diff --git a/drivers/infiniband/ulp/rv/rv_main.c b/drivers/infiniband/ulp/rv/rv_main.c
+new file mode 100644
+index 000000000000..7f81f97a01f0
+--- /dev/null
++++ b/drivers/infiniband/ulp/rv/rv_main.c
+@@ -0,0 +1,266 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +/*
 + * Copyright(c) 2020 - 2021 Intel Corporation.
 + */
 +
-+#ifndef __RV_H__
-+#define __RV_H__
-+#include <linux/types.h>
-+#include <linux/list.h>
-+#include <linux/mutex.h>
-+#include <linux/scatterlist.h>
-+#include <rdma/ib_verbs.h>
-+#include <rdma/ib_sa.h>
-+#include <rdma/ib_cm.h>
-+#include <rdma/rdma_cm.h>
-+#include <linux/mutex.h>
-+#include <linux/socket.h>
-+#include <linux/timer.h>
-+#include <rdma/ib_addr.h>
-+#include <rdma/ib_cm.h>
-+#include <linux/moduleparam.h>
++/* This file contains the base of the rendezvous RDMA driver */
 +
-+#include "rv_mr_cache.h"
-+#include <rdma/rv_user_ioctls.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/err.h>
++#include <linux/parser.h>
 +
-+/*
-+ * Lock Heirachy
-+ * In order that locks can be acquired:
-+ * mm->mmap_lock - held during mmap call and mmu_notifier_register
-+ * rv_user.mutex
-+ * rv_job_dev_list_mutex
-+ * rv_job_dev.conn_list_mutex
-+ * rv_device.listener_mutex
-+ * rv_sconn.mutex - we can never hold this while calling destroy_cm_id
-+ *	because destroy cm_id will wait for handlers via it's mutex and deadlock
-+ * rv_job_dev_list rcu
-+ * rv_dev_list_lock
-+ * rv_job_dev.conn_list rcu - no sub locks
-+ * rv_device.listener_lock - no sub locks
-+ * rv_user.umrs.cache.lock - no sub locks
-+ * rv_job_dev.user_array_lock - no sub locks
-+ * ring.lock - no sub locks
-+ * mr_pd_uobject_lock - no sub locks
-+ * rv_conn.next_lock - no sub locks
-+ * rv_sconn.drain_lock - no sub locks
-+ */
++#include <rdma/ib_user_sa.h>
 +
-+/*
-+ * Our goal is to allocate shared resources, but all processes are equal peers.
-+ * So we use a get_alloc approach where processes attempt to get a resource
-+ * reference (lookup and get) and if it's not on the list, it is allocated and
-+ * added.  This is used for rv_job_dev, rv_listener and rv_conn.
-+ * Each such list is protected by a mutex to prevent duplicate additions
-+ * and an RCU for actual list access.  The mutex also protects
-+ * get_alloc/list_del races.  All get_alloc calls are in premptable
-+ * app ioctl call context.
-+ * rv_listener list is rarely searched, so it simply uses a mutex and spinlock.
-+ */
++#include "rv.h"
++#include "trace.h"
 +
-+/*
-+ * When working with IB CM, Async events and timeouts we can't predict if and
-+ * when their callbacks will occur so they can't have a reference held in
-+ * advance. This presents opportunities for the callback to race with rv_conn
-+ * destruction. To solve this problem, we use rv_conn_get_check to get a
-+ * reference to rv_conn only if rv_conn.kref != 0. rv_conn and rv_sconn
-+ * destruction uses destroy_cm_id and del_timer_sync to stop all callbacks (and
-+ * allow any outstanding handlers to finish) before it proceeds to free rv_conn.
-+ * This ensures the cm_id, etc can remain valid enough for the callback to
-+ * call rv_conn_get_check and decide whether to simply ignore the event.
-+ * It also allows the rv_sconn to be the ib_cm, CQ, QP and timer context and
-+ * avoid searches. Once the callback has the reference, it is protected
-+ * from other threads calling rv_conn_release.
-+ */
++MODULE_AUTHOR("Kaike Wan");
++MODULE_DESCRIPTION("Rendezvous Module");
++MODULE_LICENSE("Dual BSD/GPL");
 +
-+#define DRIVER_NAME "rv"
++static int rv_add_one(struct ib_device *device);
++static void rv_remove_one(struct ib_device *device, void *client_data);
++static void rv_rename_dev(struct ib_device *device, void *client_data);
 +
-+#define RV_INVALID -1
++static struct ib_client rv_client = {
++	.name = "rv",
++	.add = rv_add_one,
++	.remove = rv_remove_one,
++	.rename = rv_rename_dev
++};
 +
-+/* For errors to surface on the console */
-+#define rv_err(idx, fmt, ...) \
-+	pr_err("[%s:%s %d]: " fmt, DRIVER_NAME, __func__, idx, ##__VA_ARGS__)
++static struct list_head rv_dev_list;	/* list of rv_device */
++static spinlock_t rv_dev_list_lock;
 +
-+#define rv_ptr_err(prefix, ptr, fmt, ...) \
-+	pr_err("[%s:%s %s 0x%p]: " fmt, DRIVER_NAME, __func__, prefix, ptr, \
-+	       ##__VA_ARGS__)
-+
-+/* For debugging*/
-+#define rv_dbg(idx, fmt, ...) \
-+	pr_debug("[%s:%s %d]: " fmt, DRIVER_NAME, __func__, idx, ##__VA_ARGS__)
-+
-+/* For general console info */
-+#define rv_info(idx, fmt, ...) \
-+	pr_info("[%s:%s %d]: " fmt, DRIVER_NAME, __func__, idx, ##__VA_ARGS__)
-+
-+/* For debugging with any pointer */
-+#define rv_ptr_dbg(prefix, ptr, fmt, ...) \
-+	pr_debug("[%s:%s %s 0x%p]: " fmt, DRIVER_NAME, __func__, prefix, ptr, \
-+		 ##__VA_ARGS__)
-+
-+#define rv_ptr_info(prefix, ptr, fmt, ...) \
-+	pr_info("[%s:%s %s 0x%p]: " fmt, DRIVER_NAME, __func__, prefix, ptr, \
-+		##__VA_ARGS__)
-+
-+/* For debugging with rv_conn_info */
-+#define rv_conn_err(ptr, fmt, ...) rv_ptr_err("sconn", ptr, fmt, ##__VA_ARGS__)
-+#define rv_conn_info(ptr, fmt, ...) rv_ptr_info("sconn", ptr, fmt,\
-+						##__VA_ARGS__)
-+#define rv_conn_dbg(ptr, fmt, ...) rv_ptr_dbg("sconn", ptr, fmt, ##__VA_ARGS__)
-+
-+/* For debugging with rv_device */
-+#define rv_dev_err(ptr, fmt, ...) rv_ptr_err("dev", ptr, fmt, ##__VA_ARGS__)
-+#define rv_dev_info(ptr, fmt, ...) rv_ptr_info("dev", ptr, fmt, ##__VA_ARGS__)
-+#define rv_dev_dbg(ptr, fmt, ...) rv_ptr_dbg("dev", ptr, fmt, ##__VA_ARGS__)
-+
-+/* For debugging with ib cm id */
-+#define rv_cm_err(ptr, fmt, ...) rv_ptr_err("cm_id", ptr, fmt, ##__VA_ARGS__)
-+#define rv_cm_info(ptr, fmt, ...) rv_ptr_info("cm_id", ptr, fmt, ##__VA_ARGS__)
-+#define rv_cm_dbg(ptr, fmt, ...) rv_ptr_dbg("cm_id", ptr, fmt, ##__VA_ARGS__)
-+
-+struct rv_device;
-+
-+/*
-+ * A listener can handle more than 1 job on a given dev.
-+ * There is a listener for each unique service_id on each dev and
-+ * could be as few as 1 even for multiple jobs.
-+ * For IB, a listener services all ports on a given HCA.
-+ * listener_entry - entry on rv_device.listener_list
-+ * dev - device being listened on
-+ * cm_id - actual IB CM listener, stores service_id here
-+ */
-+struct rv_listener {
-+	struct list_head listener_entry;
++/* get a device reference and add an rv_user to rv_device.user_list */
++struct rv_device *rv_device_get_add_user(char *dev_name, struct rv_user *rv)
++{
 +	struct rv_device *dev;
-+	struct ib_cm_id *cm_id;
-+	struct kref kref;
-+};
-+
-+/*
-+ * For each physical device, RV establishes a single rv_device which
-+ * is shared across all jobs, listeners, etc.
-+ * ib_dev - underlying RDMA device
-+ * dev_entry - entry on rv_dev_list
-+ *
-+ * IB cm listener management:
-+ *	listener_mutex, listener_lock, listener_list
-+ *
-+ * user_list - list of rv_user (protected by rv_dev_list_lock)
-+ */
-+struct rv_device {
-+	struct ib_device *ib_dev;
-+	struct list_head dev_entry;
-+	struct kref kref;
-+	struct ib_event_handler event_handler;
-+
-+	struct mutex listener_mutex; /* avoid duplicate add in get_alloc */
-+	spinlock_t listener_lock; /* protect list search, add, remove */
-+	struct list_head listener_list;
-+
-+	struct list_head user_list;
-+};
-+
-+#define RV_CONN_MAX_ACTIVE_WQ_ENTRIES 100 /* used for conn handling */
-+
-+#define RV_RESOLVER_RETRY 5		/* max retries (0 == try once) */
-+#define RV_RESOLVER_TIMEOUT 10000	/* in milliseconds */
-+
-+/* duration client spends in RV_DELAY before re-attempt reconnect */
-+#define RV_RECONNECT_DELAY msecs_to_jiffies(100)
-+
-+/* private data in REQ and REP is used to negotiate features and exchange
-+ * additional informaton.
-+ * REQ.ver is the version of the sender and defines the priv_data structure.
-+ * Newer versions of struct should be a superset of older versions.
-+ * REP.ver is the version the listener is accepting and defines REP priv_data.
-+ * New client, old listerner:
-+ *	listener accepts REQ >= it's version, responds with it's version in REP
-+ * Old client, new listener:
-+ *	listener accepts REQ, responds with REP matching client's version
-+ * Protocol ver is now 2.  For simplicity protocol 0 and 1 (pre-releases) are
-+ * not accepted.
-+ */
-+
-+#define RV_PRIVATE_DATA_MAGIC 0x00125550534d2121ULL
-+#define RV_PRIVATE_DATA_VER 2
-+
-+/*
-+ * Private data used in CM REQ
-+ * laid out for good alignment of fields without packing
-+ * index indicates index of rv_sconn within it's rv_conn and differentiates
-+ * the multiple connection REQs for num_conn > 1
-+ * The job_key selects the rv_job_dev on receiver side
-+ * uid is 32b
-+ */
-+struct rv_req_priv_data {
-+	u64 magic;
-+	u32 ver;
-+	u16 resv1;
-+	u8 index;
-+	u8 job_key_len;
-+	u8 job_key[RV_MAX_JOB_KEY_LEN];
-+	uid_t uid;
-+};
-+
-+/*
-+ * Private data used in CM REP
-+ * laid out for good alignment of fields without packing
-+ */
-+struct rv_rep_priv_data {
-+	u64 magic;
-+	u32 ver;
-+};
-+
-+/*
-+ * RV_INIT - client side create_conn done
-+ * RV_WAITING - server side create_conn done, listening
-+ * RV_RESOLVING - client side resolving ethernet dmac via ARP
-+ * RV_CONNECTING - client or server side going through CM states
-+ * RV_CONNECTED - connection established
-+ * RV_DISCONNECTING - connection teardown
-+ * RV_DELAY- RV delay before restarting client connection
-+ * RV_ERROR - connection lost or failed
-+ * destroying - ref count == 0
-+ */
-+enum rv_sconn_state {
-+	RV_INIT = 1,
-+	RV_WAITING,
-+	RV_RESOLVING,
-+	RV_CONNECTING,
-+	RV_CONNECTED,
-+	RV_DISCONNECTING,
-+	RV_DELAY,
-+	RV_ERROR,
-+};
-+
-+/*
-+ * Meaning of each state and status of key fields once in state and
-+ * have unlocked mutex.
-+ * In all states (except while destroying) immutable fields in rv_conn valid.
-+ *
-+ * WAS_CONNECTED flag essentially creates a superstate indicating connection
-+ * recovery for WAITING, RESOLVING, and CONNECTING.  During connection
-+ * recovery, conn_timer is running for reconnect_timeout and once it fires,
-+ * the connect recovery is aborted and moved to ERROR
-+ *
-+ * If WAS_CONNECTED, post write in wrong state returns EAGAIN instead of EINVAL
-+ *
-+ * A complication is identifying when a connection is down for a receiving
-+ * end of a traffic pattern.  The receiver may see no packets and can't tell
-+ * a path down from an idle QP.  To address this periodic RDMA Write zero
-+ * can be sent if no traffic has been sent or received for a while.  This
-+ * situation is no worse that user space UD PSM as the job failure may
-+ * occur over an out of band network to kill the job.  A gap is the client side
-+ * of a connection desiring recovery, which requires the heatbeat to recognize.
-+ *
-+ * If the receiver happens to also be the server side of rv_sconn, we may
-+ * get a REQ while in connected because the sender may get a QP timeout
-+ * long before the receiver heartbeat notices.  We treat this as disconnect
-+ * and if appropriate (likely) begin connection recovery.
-+ *
-+ * RV_INIT: initial state for client side connections (after 1st create_conn)
-+ *	cm_id, primary_path are NULL
-+ *	dev_addr, resolver_retry_left  uninitialized
-+ *	qp in RESET state, no outstanding CQEs nor WQEs
-+ *	conn_timer not running (no reconnect_timeout)
-+ *	delay_timer not running
-+ *	hb_timer not running
-+ *	Next States:
-+ *		RESOLVING - user calls cm_connect
-+ *		destroying - user close
-+ * RV_WAITING: initial state for server side connections (after 1st create_conn)
-+ *	a listener exists at rv_job_dev level, rv_cm_server_handler
-+ *	cm_id NULL
-+ *	start_time is set when enter state
-+ *	qp in RESET state, no outstanding CQEs nor WQEs
-+ *	if WAS_CONNECTED, conn_timer is running for reconnect_timeout
-+ *	delay_timer not running
-+ *	hb_timer not running
-+ *	DRAINING, SQ_DRAINED and RQ_DRAINED flags clear
-+ *	Next States:
-+ *		CONNECTING - inbound REQ
-+ *		ERROR - reconnect_timeout expires
-+ *		destroying - user close
-+ * RV_RESOLVING: 1st step in establishing a client connection (ARP)
-+ *	For non-ethernet, this is a brief transient state (only inside mutex)
-+ *	cm_id established (client side), rv_cm_handler
-+ *	resolver_retry_left valid
-+ *	primary_path != NULL, but contents incomplete
-+ *		dmac, route_resolved, hop__limit uninitialized
-+ *	dev_addr undefined
-+ *	start_time is set when enter state
-+ *	a rdma_resolve_ip callback is scheduled
-+ *	qp in RESET state, no outstanding CQEs nor WQEs
-+ *	if WAS_CONNECTED, conn_timer is running for reconnect_timeout
-+ *	delay_timer not running
-+ *	hb_timer not running
-+ *	DRAINING, SQ_DRAINED and RQ_DRAINED flags clear
-+ *	Next States:
-+ *		CONNECTING - resolution successfully complete
-+ *		ERROR - resolving hard fail or retry exceeded or connect timeout
-+ *		RESOLVING - cb error and < retry limit
-+ *		DELAY - cb error > retrylimit and WAS_CONNECTED and reconnect
-+ *		destroying - user close
-+ * RV_CONNECTING: client or server connection in hands of IB CM
-+ *	cm_id established (either side), rv_cm_handler
-+ *	primary_path NULL
-+ *	dev_addr valid on client side
-+ *	resolver_retry_left undefined
-+ *	start_time is set when enter state
-+ *	CM may have a rep or rtu outstanding
-+ *	qp progressing through RESET->INIT->RTR->RTS via IB CM states/events
-+ *	if WAS_CONNECTED, conn_timer is running for reconnect_timeout
-+ *	delay_timer not running
-+ *	hb_timer not running
-+ *	DRAINING, SQ_DRAINED and RQ_DRAINED flags clear
-+ *	Next States:
-+ *		CONNECTED - client gets REP, server gets RTU or Established
-+ *		ERROR - REJ, REQ err, REP err, DREQ, QP event or connect timeout
-+ *		DISCONNECTING - WAS_CONNECTED and REQ err, REJ, REP err, QP evt
-+ *				or REQ
-+ *		destroying - user close
-+ * RV_CONNECTED: client or server connection usable
-+ *	cm_id established (either side), rv_cm_handler
-+ *	primary_path NULL
-+ *	dev_addr valid on client side
-+ *	resolver_retry_left undefined
-+ *	no outbound CM operations outstanding
-+ *	start_time is set when enter state
-+ *	qp in RTS, has recv WQEs posted
-+ *	qp may have outstanding CQEs and WQEs
-+ *	conn_timer not running (no reconnect_timeout)
-+ *	delay_timer not running
-+ *	hb_timer may be running (client side only)
-+ *	WAS_CONNECTED is set on entry
-+ *	DRAINING, SQ_DRAINED and RQ_DRAINED flags clear
-+ *	heartbeat timer running
-+ *		record post SQ and RQ CQE count when start timer
-+ *		when fires, if counts same, send 0 len RDMA Write
-+ *		TBD - set larger than timeout*retry or simply track SQ so
-+ *			don't overflow SQ
-+ *		TBD - stagger heartbeat sends on different sconns
-+ *	Next States:
-+ *		ERROR - no reconnect and get DREQ, QP event, REQ
-+ *		DISCONNECTING - reconnect and get DREQ, QP event (send DREQ),
-+ *				get REQ (remote end reconnecting)
-+ *		destroying - user close
-+ * RV_DISCONNECTING: client or server connection cleanup in prep for reconnect
-+ *	cm_id established (either side), rv_cm_handler
-+ *	primary_path NULL
-+ *	dev_addr valid on client side
-+ *	resolver_retry_left undefined
-+ *	DREP or DREQ outbound CM operations may be outstanding
-+ *	start_time is set when enter state
-+ *	qp in ERROR, SCONN_DRAINING flag set,
-+ *		- waiting for "drain indicator" WQEs' CQEs on RQ and SQ
-+ *		- drain indicator CQEs set SQ_DRAINED or RQ_DRAINED
-+ *	qp may have other outstanding CQEs and WQEs
-+ *	if WAS_CONNECTED, conn_timer may be is running for reconnect_timeout
-+ *	delay_timer not running
-+ *	hb_timer not running
-+ *	Note: we do not depend on DREP and ignore DREQ Err or DREP Err
-+ *		path to remote node may be down
-+ *	Next States:
-+ *		ERROR - unable to queue CM_id destroy or reset QP
-+ *			or connect timeout
-+ *		DELAY - SQ & RQ drain finish for client
-+ *		WAITING - SQ & RQ drain finish for server (reset QP,
-+ *				cm_id NULL and queued for destroy)
-+ *		destroying - user close
-+ * RV_DELAY: client reconnection delay
-+ *	cm_id established, rv_cm_handler
-+ *	primary_path NULL
-+ *	dev_addr valid on client side
-+ *	resolver_retry_left undefined
-+ *	DREP or DREQ outbound CM operations may be outstanding on prior cm_id
-+ *	start_time is set when enter state
-+ *	qp in RESET
-+ *	prior qp has no outstanding CQEs and WQEs
-+ *	if WAS_CONNECTED, conn_timer may be is running for reconnect_timeout
-+ *	delay_timer is running
-+ *	hb_timer not running
-+ *	DRAINING, SQ_DRAINED and RQ_DRAINED flags clear
-+ *	while in this state all other errors are ignored
-+ *	Next States:
-+ *		RESOLVING - timer expires
-+ *		ERROR - reconnect timeout
-+ *		destroying - user close
-+ * RV_ERROR: terminal state for lost/failed connection
-+ *	may enter from any state
-+ *	cm_id may be NULL or established with rv_cm_handler
-+ *	CM may have an outstanding message
-+ *		typically REJ, DREQ or DREP, but could be REQ, REP or RTU
-+ *	primary_path NULL
-+ *	dev_addr, resolver_retry_left undefined
-+ *	no rdma_resolve_ip callback scheduled (cancel when enter RV_ERROR)
-+ *	qp in ERROR, SCONN_DRAINING flag set or qp in RESET or no QP
-+ *	SQ_DRAINED and RQ_DRAINED flags may be progressing on drain
-+ *	qp may have outstanding CQEs and WQEs
-+ *	conn_timer not running (no reconnect_timeout)
-+ *	delay_timer not running
-+ *	hb_timer not running
-+ *	Next States:
-+ *		destroying - user close
-+ * destroying: rv_conn kref is 0
-+ *	may enter from any state
-+ *	on entry:
-+ *		cm_id may be NULL or established with rv_cm_handler
-+ *		a rdma_resolve_ip callback may be scheduled
-+ *		qp may have outstanding CQEs and WQEs and callbacks active
-+ *		conn_timer may be running (reconnect_timeout or reconnect delay)
-+ *	all fields (including immitable) will be released via rv_sconn_deinit
-+ *	no way out other than kfree of parent rv_conn
-+ *	may prempt, does not require mutex (kref==0 protects races with cb)
-+ *	Next States:
-+ *		N/A - conn/sconn freed
-+ *
-+ * typical client side state sequence:
-+ *	RV_INIT->RV_RESOLVING->RV_CONNECTING->RV_CONNECTED->destroying
-+ * typical server side state sequence:
-+ *	RV_WAITING->RV_CONNECTING->RV_CONNECTED->destroying
-+ *
-+ * typical client side recovery state sequence:
-+ *	...->RV_CONNECTED->DISCONNECTING->DELAY->RV_RESOLVING->...
-+ * typical server side recovery state sequence:
-+ *	...->RV_CONNECTED->DISCONNECTING->WAITING->...
-+ */
-+
-+/*
-+ * rv_sconn.flags bit numbers
-+ *	RV_SCONN_SERVER	- server vs client side (immutable)
-+ *	RV_SCONN_WAS_CONNECTED - was RV_CONNECTED at least once
-+ *	RV_SCONN_DRAINING - started draining in DISCONNECTING
-+ *	RV_SCONN_SQ_DRAINED - SQ drained in DISCONNECTING
-+ *	RV_SCONN_RQ_DRAINED - RQ drained in DISCONNECTING
-+ *	RV_SCONN_ASYNC - got async event
-+ */
-+#define RV_SCONN_SERVER		0
-+#define RV_SCONN_WAS_CONNECTED	1
-+#define RV_SCONN_DRAINING	2
-+#define RV_SCONN_SQ_DRAINED	3
-+#define RV_SCONN_RQ_DRAINED	4
-+
-+/*
-+ * rv_sconn.stats.cm_evt_cnt[] classify events > CM_APR_RECEIVED as unexpected.
-+ * Beyond that are only SIDR events
-+ */
-+#define RV_CM_EVENT_MAX IB_CM_APR_RECEIVED
-+#define RV_CM_EVENT_UNEXP ((enum ib_cm_event_type)(RV_CM_EVENT_MAX + 1))
-+
-+/*
-+ * a single QP/connection
-+ * mutex - protects state driven fields
-+ *
-+ * These are set once at create and can be read without lock
-+ *	index - unique index for connection within rv_conn
-+ *	qp, send_cq, recv_cq, max_send_wr (from ib_qp_cap)
-+ *	cqe - for recv completions
-+ *
-+ * Fields below require the mutex and their validity depends on the current
-+ * value of rv_sconn.state and the RV_SCONN_SERVER flag.
-+ *
-+ * Basic fields:
-+ *	state, flags
-+ *	start_time - when started waiting, resolving or connecting
-+ *	cm_id - our actual connection
-+ *	path - from PSM.  Consistency checked on listener, for client connect
-+ *		we use path.dlid != 0 to identify if path has been initialized
-+ *
-+ * Client only fields:
-+ *	resolver_retry_left, primary_path, dev_addr
-+ *	For RoCE our resolver step fills in dev_addr with resolved RoCE HW
-+ *	addresses (aka MAC address)
-+ *
-+ * Async QP Draining,
-+ *	drain_lock -  protects these and enter;test of RC_SCONN_*DRAIN* flags
-+ *	drain_lock, rdrain_cqe, sdrain_cqe, drain_work (for drain done handler)
-+ *	drain_timer - for drain timeout
-+ *	done_wr_list - most recent completed pend_wr's
-+ *	done_wr_count - number of entries on list
-+ *
-+ * reconnect_timeout timer: conn_timer, timer_work
-+ * RV_DELAY timer: delay_timer, delay_work
-+ * Heartbeat: hb_timer, act_count (activity since last hb), hb_cqe, hb_work
-+ *
-+ * Stats:
-+ *	all but atomic CQE stats protected by rv_sconn.mutex
-+ * connection:
-+ *	*_time values are in microseconds
-+ *	max_* is the largest observed for all reconnects on this sconn
-+ *	cm_evt_cnt - extra +1 to include EVENT_MAX and +1 for UNEXP
-+ *	stats for each CM packet explicitly send (req, rep, rtu, dreq, drep)
-+ *	initial connect: wait_time, resolve_time, connect_time
-+ *		connect time does not include wait_time nor resolve_time
-+ *		resolve - attempts, resolve_fail - unexpected local issues
-+ *	connected_time - total time connected (after initial + after recovery)
-+ *	conn_recovery - # times recovered connection
-+ *	connect recovery: rewait_time, reresolve_time, reconnect_time
-+ *		reconnect time does not include wait_time nor resolve_time
-+ *		reresolve - attempts, reresolve_fail - unexpected local issues
-+ * data movement:
-+ *	post_* is SQ posts (success, fail, payload byte count)
-+ *	outstand_send_write - current send writes waiting for CQE
-+ *	send_write_cqe_* is SQ cqes (RDMA Write w/Immediate)
-+ *	recv_write_cqe_* is RQ cqes (RDMA Write w/Immediate)
-+ *	recv_cqe_fail - RQ CQEs with bad status (opcode undefined)
-+ *	*_hb_* - heartbeat
-+ */
-+
-+struct rv_sconn {
-+	struct mutex mutex; /* lock for state driven fields */
-+	u8 index;
-+	struct ib_qp *qp;
-+	struct ib_cq *send_cq;
-+	struct ib_cq *recv_cq;
-+	struct ib_cqe cqe;
-+	struct rv_conn *parent;
-+
 +	unsigned long flags;
-+	enum rv_sconn_state state;
-+	ktime_t start_time;
-+	struct ib_cm_id *cm_id;
-+	struct ib_user_path_rec path;
 +
-+	u32 resolver_retry_left;
-+	struct sa_path_rec *primary_path;
-+	struct rdma_dev_addr dev_addr;
++	spin_lock_irqsave(&rv_dev_list_lock, flags);
++	list_for_each_entry(dev, &rv_dev_list, dev_entry) {
++		if (strcmp(dev->ib_dev->name, dev_name) == 0) {
++			if (!kref_get_unless_zero(&dev->kref))
++				continue; /* skip, going away */
++			list_add_tail(&rv->user_entry, &dev->user_list);
++			spin_unlock_irqrestore(&rv_dev_list_lock, flags);
++			trace_rv_dev_get(dev_name, kref_read(&dev->kref));
++			return dev;
++		}
++	}
++	spin_unlock_irqrestore(&rv_dev_list_lock, flags);
++	rv_err(RV_INVALID, "Could not find IB dev %s\n", dev_name);
++	return NULL;
++}
 +
-+	/* protects these & enter;test RC_SCONN_*DRAIN* flags */
-+	spinlock_t drain_lock;
-+	struct ib_cqe rdrain_cqe;
-+	struct ib_cqe sdrain_cqe;
-+	struct work_struct drain_work;
-+	struct timer_list drain_timer;
++static void rv_device_release(struct kref *kref)
++{
++	struct rv_device *dev = container_of(kref, struct rv_device, kref);
 +
-+	struct timer_list conn_timer;
-+	struct work_struct timer_work;
++	ib_unregister_event_handler(&dev->event_handler); /* may need sooner */
++	kfree(dev);
++}
 +
-+	struct timer_list delay_timer;
-+	struct work_struct delay_work;
++void rv_device_get(struct rv_device *dev)
++{
++	kref_get(&dev->kref);
++}
 +
-+	struct timer_list hb_timer;
-+	u64 act_count;
-+	struct ib_cqe hb_cqe;
-+	struct work_struct hb_work;
-+
-+	struct {
-+		u32 cm_evt_cnt[RV_CM_EVENT_MAX + 2];
-+		u32 req_sent;
-+		u32 rep_sent;
-+		u32 rtu_sent;
-+		u32 rej_sent;
-+		u32 dreq_sent;
-+		u32 drep_sent;
-+		u64 wait_time;
-+		u64 resolve_time;
-+		u64 connect_time;
-+		u64 connected_time;
-+		u32 resolve;
-+		u32 resolve_fail;
-+		u32 conn_recovery;
-+		u64 rewait_time;
-+		u64 reresolve_time;
-+		u64 reconnect_time;
-+		u64 max_rewait_time;
-+		u64 max_reresolve_time;
-+		u64 max_reconnect_time;
-+		u32 reresolve;
-+		u32 reresolve_fail;
-+		u64 post_write;
-+		u64 post_write_fail;
-+		u64 post_write_bytes;
-+		u64 post_hb;
-+		u64 post_hb_fail;
-+
-+		atomic_t outstand_send_write;
-+		atomic64_t send_write_cqe;
-+		atomic64_t send_write_cqe_fail;
-+		atomic64_t recv_write_cqe;
-+		atomic64_t recv_write_bytes;
-+		atomic64_t recv_cqe_fail;
-+		atomic64_t send_hb_cqe;
-+		atomic64_t send_hb_cqe_fail;
-+		atomic64_t recv_hb_cqe;
-+	} stats;
-+};
++void rv_device_put(struct rv_device *dev)
++{
++	trace_rv_dev_put(dev->ib_dev ? dev->ib_dev->name : "nil",
++			 kref_read(&dev->kref));
++	kref_put(&dev->kref, rv_device_release);
++}
 +
 +/*
-+ * A load balanced multi QP connection using multiple underlying connections
-+ * and is shared by multiple rv_user's.
-+ * num_conn, jdev, ah and rem_addr are immutable (set once at create)
-+ * Entry in rv_job_dev.conn_list: conn_entry, rcu
-+ * sconn round robin IO: next_lock, next
-+ *	next_lock also protects read;inc of sconn->stats.outstand_send_write
-+ */
-+struct rv_conn {
-+	u8 num_conn;
-+	struct rv_job_dev *jdev;
-+	struct ib_uverbs_ah_attr ah;
-+	u32 rem_addr;
-+
-+	struct list_head conn_entry;
-+	struct rcu_head rcu;
-+
-+	struct kref kref;
-+	struct work_struct put_work;
-+
-+	spinlock_t next_lock; /* protect rv_conn.next & read;inc outstand_wr */
-+	u8 next;
-+	struct work_struct free_work;
-+
-+	struct rv_sconn sconn_arr[];
-+};
-+
-+/*
-+ * from IBTA 1.4 Vol1 section A3.2.3.4.  Externally Admined Service IDs
-+ * 1h:OUI:OUI:OUI:hh:hh:hh:hh
-+ * using Intel 00:12:55 OUI
-+ */
-+#define RV_DFLT_SERVICE_ID 0x1000125500000001ULL
-+
-+/*
-+ * the set of MRs registered by a single rv_user (on a single NIC)
-+ * These are cached for efficiency.
-+ * When using kernel rendezvous QPs (eg. rv_conn) these MRs are
-+ * registered with the rv_job_dev.pd.
-+ * When using user space QPs, we register with the user supplied pd
-+ * cache has it's own lock
-+ * jdev, rv_inx , CQs, QP set once at alloc
-+ * need parent rv_user.mutex for: cqe, post REG_MR to QP (doit_reg_mem), stats
-+ */
-+struct rv_user_mrs {
-+	struct rv_mr_cache cache;
-+	struct rv_job_dev *jdev;
-+	int rv_inx; /* our creator, for logging */
-+
-+	struct kref kref;
-+	struct work_struct put_work;
-+
-+	struct {
-+		u64 failed;	/* cache miss and failed to register */
-+	} stats;
-+};
-+
-+/*
-+ * Resources shared among all rv_user's using a given NIC port within a job
-+ * for a given kuid.  On the wire we use uid to limit jobs to a single user.
-+ * This approach has similarities to the hfi1 and Omni-Path jkey concept
-+ * but we are not restricted to the 16b HW jkey field here, so we use all
-+ * 32b of uid on the wire.
++ * Remove a rv_user from rv_device.user_list
 + *
-+ * There will typically be 1-8 NICs per node and 1-2 concurrent jobs
-+ * with one rv_user per CPU core per NIC.
++ * @rv - The rv_user to remove
 + *
-+ * kref tracks total jdev references while user_kref is the subset of
-+ * references representing attached rv_user objects. user_kref <= kref.
-+ * To get_alloc a jdev we must successfully get both. Once user_kref
-+ * is zero, the jdev is removed from rv_job_dev_list and future attach
-+ * or inbound REQ processing will not find it anymore.  At this point it is
-+ * destined for destruction as soon as the remaining callbacks with a reference
-+ * occur/finish. jdev get_alloc searches which see (and skip) jdevs with
-+ * user_kref==0 but kfef>0 only happen when a new job starts without a unique
-+ * job key, as the previous job is cleaning up. Such cases are rare.
-+ * By decoupling the jobs into different jdev's the new job may also have
-+ * different attach and connection params.
-+ *
-+ * These fields are immutable and can be accessed without a lock:
-+ *	kuid, uid, dev, pd, dev_name, port_num,
-+ *	num_conn - number of rv_sconn per rv_conn
-+ *	index_bits - number of high bits of RDMA immed data to hold rv index
-+ *	loc_gid_index - SGID - only used on client rv_sconn
-+ *	loc_addr - abstraction of address compared with rem_addr to select
-+ *		client/server mode for each rv_sconn at conn_create time.
-+ *	log_gid - SGID - to double check loc_gid_index still is same GID
-+ *	service_id, q_depth
-+ *	qp_depth - max send and recv WQEs to use (N/A space for drain)
-+ *	reconnect_timeout (seconds), hb_interval (milliseconds),
-+ *	sgid_attr - local NIC gid & address for use by resolver
-+ *	max_users - 1<<index_bits
-+ *
-+ * job_dev_entry, rcu - entry on rv_job_dev_list
-+ * conn_list - list of shared rv_conn, protected by RCU and conn_list_mutex
-+ *	conn_list_mutex prevents duplicate add in get_alloc
-+ * listener - created and shared when 1st server rv_conn is added
-+ * user_array[max_users] - rv_users sharing this jdev. user_array_lock protects
-+ *	rv_user.index - subscript to this array for given rv_user so
-+ *		RDMA recv immediate data can simply index to find which
-+ *		rv_user to deliver the completion to.
-+ *	user_array_next - where to start next search for free slot
++ * Return:
++ *   0 - The rv_user is in rv_device.user_list and removed;
++ *   1 - The rv_user is already not in rv_device.user_list.
 + */
-+struct rv_job_dev {
-+	uid_t uid;
-+	kuid_t kuid;
++int rv_device_del_user(struct rv_user *rv)
++{
++	unsigned long flags;
++	int ret = 0;
++
++	spin_lock_irqsave(&rv_dev_list_lock, flags);
++	if (list_empty(&rv->user_entry))
++		ret = 1;
++	else
++		list_del_init(&rv->user_entry);
++	spin_unlock_irqrestore(&rv_dev_list_lock, flags);
++
++	return ret;
++}
++
++/* verbs device level async events */
++static void rv_device_event_handler(struct ib_event_handler *handler,
++				    struct ib_event *event)
++{
 +	struct rv_device *dev;
-+	struct ib_pd *pd;
-+	char dev_name[RV_MAX_DEV_NAME_LEN];
-+	u8 port_num;
-+	u8 num_conn;
-+	u8 index_bits;
-+	u16 loc_gid_index;
-+	u32 loc_addr;
-+	u8 loc_gid[16];
-+	u8 job_key[RV_MAX_JOB_KEY_LEN];
-+	u8 job_key_len;
-+	u64 service_id;
-+	u32 q_depth;
-+	u32 qp_depth;
-+	u32 reconnect_timeout;
-+	u32 hb_interval;
-+	const struct ib_gid_attr *sgid_attr;
-+	int max_users;
 +
-+	struct kref kref;
-+	struct list_head job_dev_entry;
-+	struct rcu_head rcu;
++	dev = ib_get_client_data(event->device, &rv_client);
++	if (!dev || dev->ib_dev != event->device)
++		return;
 +
-+	struct mutex conn_list_mutex; /* prevent duplicate add in get_alloc */
-+	struct list_head conn_list;
-+	struct rv_listener *listener;
++	trace_rv_device_event(dev->ib_dev->name, ib_event_msg(event->event));
++	switch (event->event) {
++	case IB_EVENT_DEVICE_FATAL:
++	case IB_EVENT_PORT_ERR:
++	case IB_EVENT_PORT_ACTIVE:
++	case IB_EVENT_LID_CHANGE:
++	case IB_EVENT_PKEY_CHANGE:
++	case IB_EVENT_SM_CHANGE:
++	case IB_EVENT_CLIENT_REREGISTER:
++	case IB_EVENT_GID_CHANGE:
++	default:
++		break;
++	}
++}
 +
-+	spinlock_t user_array_lock;/* protects add/remove from user_array */
-+	u32 user_array_next;
-+	struct kref user_kref;
-+	struct rv_user *user_array[];
-+};
++static int rv_add_one(struct ib_device *device)
++{
++	struct rv_device *dev;
++	unsigned long flags;
++
++	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
++	if (!dev)
++		return -ENOMEM;
++	dev->ib_dev = device;
++	kref_init(&dev->kref);
++	mutex_init(&dev->listener_mutex);
++	spin_lock_init(&dev->listener_lock);
++	INIT_LIST_HEAD(&dev->listener_list);
++	INIT_LIST_HEAD(&dev->user_list);
++	spin_lock_irqsave(&rv_dev_list_lock, flags);
++	list_add(&dev->dev_entry, &rv_dev_list);
++	spin_unlock_irqrestore(&rv_dev_list_lock, flags);
++	trace_rv_dev_add(device->name, kref_read(&dev->kref));
++	ib_set_client_data(device, &rv_client, dev);
++
++	INIT_IB_EVENT_HANDLER(&dev->event_handler, device,
++			      rv_device_event_handler);
++	ib_register_event_handler(&dev->event_handler);
++
++	return 0;
++}
 +
 +/*
-+ * rv_user represents a single open fd from a user
-+ * In multi-rail a process may have multiple rv_user (separate open/close)
++ * Called on device removal, gets users off the device
 + *
-+ * mutex - prevents concurrent ATTACH ioctl and protects conn_list
-+ *	also protects doit_reg vs self and vs doit_dreg races
-+ * attached - set last during ATTACH after dev/jdev, rdma_mode and cq_entries
-+ *	have been set.  We have no detach.
-+ * inx - immutable ID assignd to rv_user strictly for logging
-+ * rdma_mode - indicates USER (MRs only) or KERNEL (jdev, conns, etc) attach
-+ *	For rdma_mode KERNEL these are also valid:
-+ *		context, cq_entries
-+ *		index - rv_user index within rv_job_dev.user_array[]
-+ *		cqr - event ring to deliver send and recv RDMA completion
-+ *			events to PSM (only if ATTACH.cq_entries!=0)
-+ * rv_user_mrs  - MRs registered by this rv_user
-+ * conn_xa - ID indexed list of rv_conn (entries assigned on create_conn)
-+ *	ID 0 is reserved, PSM uses this value to indicate uninitialized rv intf
-+ *	rv_user.mutex protects, so no need to use xas_lock.
-+ * user_entry - entry in rv_device.user_list
-+ * compl - completion for detach
-+ */
-+struct rv_user {
-+	struct mutex mutex; /* single thread most actions for a user */
-+
-+	int inx;
-+
-+	u8 rdma_mode;
-+	u8 attached;
-+	u8 was_attached;
-+	union {
-+		struct rv_device *dev;
-+		struct rv_job_dev *jdev;
-+	};
-+
-+	u64 context;
-+	u32 cq_entries;
-+	u16 index;
-+	struct rv_user_ring *cqr;
-+	struct rv_user_mrs *umrs;
-+
-+	struct xarray conn_xa;
-+
-+	struct list_head user_entry;
-+	struct completion compl;
-+};
-+
-+/*
-+ * an event ring for use by a single rv_user
-+ * allows events to be efficiently passed from rv to PSM for PSM polling
-+ * Immutable fields set on alloc:
-+ *	rv_inx - our creator's rv_user.inx (for logging)
-+ *	num_entries, page, order
-+ * lock - protects kernel posting to ring and stats
-+ * hdr - mmapped into PSM
-+ * stats - index for each is rv_event_type excluding RV_TEST_EVENT
-+ */
-+struct rv_user_ring {
-+	int rv_inx;
-+	u32 num_entries;
-+	unsigned long page;
-+	unsigned int order;
-+
-+	spinlock_t lock; /* protects posting to ring and stats*/
-+	struct rv_ring_header *hdr;
-+	struct {
-+		u64 cqe[2];
-+		u64 cqe_fail[2];
-+		u64 bytes[2];
-+	} stats;
-+};
-+
-+/*
-+ * an inflight RDMA write on behalf of an rv_user
++ * At the same time, applications will get device async events which should
++ * trigger them to start user space cleanup and close.
 + *
-+ * user_index - rv_user index within rv_job_dev.user_array[]
-+ * umrs - MR cache holding the local MR
-+ * mrc, loc_addr - local MR (with lkey), source memory address for RDMA Write
-+ * rkey, rem_addr - dest memory address for RDMA Write
-+ * wr_id - for completion event to PSM (supplied by PSM)
-+ * done_wr_entry - Entry in rv_sconn.done_wr_list
++ * We remove the rv_user from the user_list so that the user application knows
++ * that the remove_one handler is cleaning up this rv_user. After this,
++ * the rv->user_entry itself is an empty list, an indicator that the
++ * remove_one handler owns this rv_user.
++ *
++ * To comply with lock heirarchy, we must release rv_dev_list_lock so
++ * rv_detach_user can get rv->mutex.  The empty rv->user_entry will prevent
++ * a race with rv_user starting its own detach.
 + */
-+struct rv_pend_write {
-+	struct ib_cqe cqe;
-+	u16 user_index;
-+	struct rv_user_mrs *umrs;
-+	struct rv_sconn *sconn;
-+
-+	struct rv_mr_cached *mrc;
-+	u64 loc_addr;
-+	u32 rkey;
-+	u64 rem_addr;
-+	size_t length;
-+	u32 immed;
-+	u64 wr_id;
-+};
-+
-+extern unsigned int enable_user_mr;
-+
-+/* Prototypes */
-+struct rv_device *rv_device_get_add_user(char *dev_name, struct rv_user *rv);
-+void rv_device_get(struct rv_device *dev);
-+void rv_device_put(struct rv_device *dev);
-+int rv_device_del_user(struct rv_user *rv);
-+
-+void rv_listener_get(struct rv_listener *listener);
-+void rv_listener_put(struct rv_listener *listener);
-+struct rv_listener *rv_listener_get_alloc(struct rv_device *dev,
-+					  u64 service_id,
-+					  ib_cm_handler handler);
-+
-+int rv_file_init(void);
-+void rv_file_uninit(void);
-+void rv_queue_work(struct work_struct *work);
-+void rv_queue_work2(struct work_struct *work);
-+void rv_flush_work2(void);
-+void rv_queue_work3(struct work_struct *work);
-+
-+int doit_reg_mem(struct rv_user *rv, unsigned long arg);
-+int doit_dereg_mem(struct rv_user *rv, unsigned long arg);
-+void rv_user_mrs_get(struct rv_user_mrs *umrs);
-+void rv_user_mrs_put(struct rv_user_mrs *umrs);
-+struct rv_user_mrs *rv_user_mrs_alloc(struct rv_user *rv, u32 cache_size);
-+void rv_user_mrs_attach(struct rv_user *rv);
-+int rv_drv_api_dereg_mem(struct mr_info *mr);
-+
-+int rv_drv_prepost_recv(struct rv_sconn *sconn);
-+void rv_recv_done(struct ib_cq *cq, struct ib_wc *wc);
-+void rv_report_cqe_error(struct ib_cq *cq, struct ib_wc *wc,
-+			 struct rv_sconn *sconn, const char *opname);
-+int doit_post_rdma_write(struct rv_user *rv, unsigned long arg);
-+
-+static inline struct rv_conn *user_conn_find(struct rv_user *rv, u64 handle)
++static void rv_device_detach_users(struct rv_device *dev)
 +{
-+	return xa_load(&rv->conn_xa, handle);
++	unsigned long flags;
++	struct rv_user *rv;
++
++	spin_lock_irqsave(&rv_dev_list_lock, flags);
++	while (!list_empty(&dev->user_list)) {
++		rv = list_first_entry(&dev->user_list, struct rv_user,
++				      user_entry);
++		list_del_init(&rv->user_entry);
++
++		spin_unlock_irqrestore(&rv_dev_list_lock, flags);
++		/* Detach user here */
++		spin_lock_irqsave(&rv_dev_list_lock, flags);
++	}
++	spin_unlock_irqrestore(&rv_dev_list_lock, flags);
 +}
 +
-+void rv_conn_put(struct rv_conn *conn);
-+int rv_conn_get_check(struct rv_conn *conn);
-+void rv_conn_get(struct rv_conn *conn);
-+int doit_conn_create(struct rv_user *rv, unsigned long arg);
-+int doit_conn_connect(struct rv_user *rv, unsigned long arg);
-+int doit_conn_connected(struct rv_user *rv, unsigned long arg);
-+int doit_conn_get_conn_count(struct rv_user *rv, unsigned long arg);
-+int doit_conn_get_stats(struct rv_user *rv, unsigned long arg);
-+int cmp_gid(const void *gid1, const void *gid2);
-+
-+void rv_job_dev_get(struct rv_job_dev *jdev);
-+void rv_job_dev_put(struct rv_job_dev *jdev);
-+
-+static inline bool rv_job_dev_has_users(struct rv_job_dev *jdev)
++/*
++ * device removal handler
++ *
++ * we allow a wait_time of 2 seconds for applications to cleanup themselves
++ * and close.  Typically they will get an async event and react quickly.
++ * After which we begin forcibly removing the remaining users and
++ * then wait for the internal references to get releaseed by their callbacks
++ */
++static void rv_remove_one(struct ib_device *device, void *client_data)
 +{
-+	return kref_read(&jdev->user_kref);
++	struct rv_device *dev = client_data;
++	unsigned long flags;
++	unsigned long wait_time = 2000; /* 2 seconds */
++	unsigned long sleep_time = msecs_to_jiffies(100);
++	unsigned long end;
++
++	trace_rv_dev_remove(device->name, kref_read(&dev->kref));
++	spin_lock_irqsave(&rv_dev_list_lock, flags);
++	list_del(&dev->dev_entry);
++	spin_unlock_irqrestore(&rv_dev_list_lock, flags);
++
++	end = jiffies + msecs_to_jiffies(wait_time);
++	while (time_before(jiffies, end) && !list_empty(&dev->user_list))
++		schedule_timeout_interruptible(sleep_time);
++
++	rv_device_detach_users(dev);
++
++	while (kref_read(&dev->kref) > 1)
++		schedule_timeout_interruptible(sleep_time);
++
++	rv_device_put(dev);
 +}
 +
-+static inline bool rv_jdev_protocol_roce(const struct rv_job_dev *jdev)
++static void rv_rename_dev(struct ib_device *device, void *client_data)
 +{
-+	return rdma_protocol_roce(jdev->dev->ib_dev, jdev->port_num);
 +}
 +
-+struct rv_sconn *
-+rv_find_sconn_from_req(struct ib_cm_id *id,
-+		       const struct ib_cm_req_event_param *param,
-+		       struct rv_req_priv_data *priv_data);
++static void rv_init_devices(void)
++{
++	spin_lock_init(&rv_dev_list_lock);
++	INIT_LIST_HEAD(&rv_dev_list);
++}
 +
-+void rv_detach_user(struct rv_user *rv);
++/* uses syncrhnoize_rcu to ensure previous kfree_rcu of references are done */
++static void rv_deinit_devices(void)
++{
++	struct rv_device *dev, *temp;
++	unsigned long flags;
 +
-+#endif /* __RV_H__ */
-diff --git a/drivers/infiniband/ulp/rv/rv_mr_cache.h b/drivers/infiniband/ulp/rv/rv_mr_cache.h
++	synchronize_rcu();
++	spin_lock_irqsave(&rv_dev_list_lock, flags);
++	list_for_each_entry_safe(dev, temp, &rv_dev_list, dev_entry) {
++		list_del(&dev->dev_entry);
++		rv_device_put(dev);
++	}
++	spin_unlock_irqrestore(&rv_dev_list_lock, flags);
++}
++
++static int __init rv_init_module(void)
++{
++	pr_info("Loading rendezvous module");
++
++	rv_init_devices();
++
++	if (ib_register_client(&rv_client)) {
++		rv_err(RV_INVALID, "Failed to register with the IB core\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static void __exit rv_cleanup_module(void)
++{
++	ib_unregister_client(&rv_client);
++	rv_deinit_devices();
++}
++
++module_init(rv_init_module);
++module_exit(rv_cleanup_module);
+diff --git a/drivers/infiniband/ulp/rv/trace.c b/drivers/infiniband/ulp/rv/trace.c
 new file mode 100644
-index 000000000000..6d36ff11b5b6
+index 000000000000..b27536056c60
 --- /dev/null
-+++ b/drivers/infiniband/ulp/rv/rv_mr_cache.h
-@@ -0,0 +1,152 @@
++++ b/drivers/infiniband/ulp/rv/trace.c
+@@ -0,0 +1,7 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++/*
++ * Copyright(c) 2020 - 2021 Intel Corporation.
++ */
++#define CREATE_TRACE_POINTS
++#include <rdma/rv_user_ioctls.h>
++#include "trace.h"
+diff --git a/drivers/infiniband/ulp/rv/trace.h b/drivers/infiniband/ulp/rv/trace.h
+new file mode 100644
+index 000000000000..cb1d1d087e16
+--- /dev/null
++++ b/drivers/infiniband/ulp/rv/trace.h
+@@ -0,0 +1,5 @@
 +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
 +/*
 + * Copyright(c) 2020 - 2021 Intel Corporation.
 + */
-+
-+#ifndef __RV_MR_CACHE_H__
-+#define __RV_MR_CACHE_H__
-+
-+#include <linux/types.h>
-+#include <linux/file.h>
-+#include <linux/list.h>
-+#include <linux/rculist.h>
-+#include <linux/mmu_notifier.h>
-+#include <linux/interval_tree_generic.h>
-+
-+#define MAX_RB_SIZE 256 /* This is MB */
-+#define RV_RB_MAX_ACTIVE_WQ_ENTRIES 5
-+
++#include "trace_dev.h"
+diff --git a/drivers/infiniband/ulp/rv/trace_dev.h b/drivers/infiniband/ulp/rv/trace_dev.h
+new file mode 100644
+index 000000000000..2bfc6b07d518
+--- /dev/null
++++ b/drivers/infiniband/ulp/rv/trace_dev.h
+@@ -0,0 +1,82 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
 +/*
-+ * The MR cache holds registered MRs and tracks reference counts for each.
-+ * Entries with a refcount==0 may remain in the cache and on an lru_list.
-+ * If the MMU notifier indicates pages would like to be freed, the entry
-+ * will be removed from the cache if it's refcount==0.  Otherwise there
-+ * are IOs in flight (app should not free memory for buffers with IOs in flight)
-+ * and the MMU notifier is not allowed to free the pages.
-+ * If a new cache entry is needed (cache miss), entries will be evicted, oldest
-+ * to newest based on the lru_list, until there is space for the new entry.
-+ *
-+ * max_size - limit allowed for total_size in bytes, immutable
-+ * ops_arg - owner context for all ops calls, immutable
-+ * mn - MMU notifier
-+ * lock - protects the RB-tree, lru_list, del_list, total_size, and stats
-+ * root - an RB-tree with an interval based lookup
-+ * total_size - current bytes in the cache
-+ * ops - owner callbacks for major cache events
-+ * mm - for MMU notifier
-+ * lru_list - ordered list, most recently used to least recently used
-+ * del_work, del_list, wq - handle deletes on a work queue
-+ *
-+ * Statistics:
-+ *	max_cache_size - max bytes in the cache
-+ *	count - Current number of MRs in the cache
-+ *	max_count - Maximum of count
-+ *	inuse - Current number of MRs with refcount > 0
-+ *	max_inuse - Maximum of inuse
-+ *	inuse_bytes - number of bytes with refcount > 0
-+ *	max_inuse_bytes - of inuse_bytes
-+ *	max_refcount - Maximum of refcount for any MR
-+ *	hit - Cache hit
-+ *	miss - Cache miss and added
-+ *	full - Cache miss and can't add since full
-+ *	evict - Removed due to lack of cache space
-+ *	remove - Refcount==0 & remove by mmu notifier event
++ * Copyright(c) 2020 - 2021 Intel Corporation.
 + */
-+struct rv_mr_cache {
-+	u64 max_size;
-+	void *ops_arg;
-+	struct mmu_notifier mn;
-+	spinlock_t lock; /* See above */
-+	struct rb_root_cached root;
-+	u64 total_size;
-+	const struct rv_mr_cache_ops *ops;
-+	struct mm_struct *mm;
-+	struct list_head lru_list;
-+	struct work_struct del_work;
-+	struct list_head del_list;
-+	struct workqueue_struct *wq;
++#if !defined(__RV_TRACE_DEV_H) || defined(TRACE_HEADER_MULTI_READ)
++#define __RV_TRACE_DEV_H
 +
-+	struct {
-+		u64 max_cache_size;
-+		u32 count;
-+		u32 max_count;
-+		u32 inuse;
-+		u32 max_inuse;
-+		u64 inuse_bytes;
-+		u64 max_inuse_bytes;
-+		u32 max_refcount;
-+		u64 hit;
-+		u64 miss;
-+		u64 full;
-+		u64 evict;
-+		u64 remove;
-+	} stats;
-+};
++#include <linux/tracepoint.h>
++#include <linux/trace_seq.h>
 +
-+/*
-+ * basic info about an MR
-+ * ib_pd - converted from user version
-+ * fd - converted from user provided cmd_fd
-+ */
-+struct mr_info {
-+	struct ib_mr *ib_mr;
-+	struct ib_pd *ib_pd;
-+	struct fd fd;
-+};
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM rv_dev
 +
-+/* an MR entry in the MR cache RB-tree */
-+struct rv_mr_cached {
-+	struct mr_info mr;
-+	u64 addr;
-+	u64 len;
-+	u32 access;
-+	u64 __last;
-+	atomic_t refcount;
-+	struct rb_node node;
-+	struct list_head list;
-+};
++DECLARE_EVENT_CLASS(/* dev */
++	rv_dev_template,
++	TP_PROTO(const char *dev_name, u32 refcount),
++	TP_ARGS(dev_name, refcount),
++	TP_STRUCT__entry(/* entry */
++		__string(name, dev_name)
++		__field(u32, refcount)
++	),
++	TP_fast_assign(/* assign */
++		__assign_str(name, dev_name);
++		__entry->refcount = refcount;
++	),
++	TP_printk(/* print */
++		"name %s, refcount %u",
++		__get_str(name),
++		__entry->refcount
++	)
++);
 +
-+/* callbacks for each major cache event */
-+struct rv_mr_cache_ops {
-+	bool (*filter)(struct rv_mr_cached *mrc, u64 addr, u64 len, u32 acc);
-+	void (*get)(struct rv_mr_cache *cache,
-+		    void *ops_arg, struct rv_mr_cached *mrc);
-+	int (*put)(struct rv_mr_cache *cache,
-+		   void *ops_arg, struct rv_mr_cached *mrc);
-+	int (*invalidate)(struct rv_mr_cache *cache,
-+			  void *ops_arg, struct rv_mr_cached *mrc);
-+	int (*evict)(struct rv_mr_cache *cache,
-+		     void *ops_arg, struct rv_mr_cached *mrc,
-+		     void *evict_arg, bool *stop);
-+};
++DEFINE_EVENT(/* event */
++	rv_dev_template, rv_dev_add,
++	TP_PROTO(const char *dev_name, u32 refcount),
++	TP_ARGS(dev_name, refcount)
++);
 +
-+void rv_mr_cache_update_stats_max(struct rv_mr_cache *cache,
-+				  int refcount);
++DEFINE_EVENT(/* event */
++	rv_dev_template, rv_dev_remove,
++	TP_PROTO(const char *dev_name, u32 refcount),
++	TP_ARGS(dev_name, refcount)
++);
 +
-+int rv_mr_cache_insert(struct rv_mr_cache *cache, struct rv_mr_cached *mrc);
++DEFINE_EVENT(/* event */
++	rv_dev_template, rv_dev_get,
++	TP_PROTO(const char *dev_name, u32 refcount),
++	TP_ARGS(dev_name, refcount)
++);
 +
-+void rv_mr_cache_evict(struct rv_mr_cache *cache, void *evict_arg);
++DEFINE_EVENT(/* event */
++	rv_dev_template, rv_dev_put,
++	TP_PROTO(const char *dev_name, u32 refcount),
++	TP_ARGS(dev_name, refcount)
++);
 +
-+struct rv_mr_cached *rv_mr_cache_search_get(struct rv_mr_cache *cache,
-+					    u64 addr, u64 len, u32 acc,
-+					    bool update_hit);
-+struct rv_mr_cached *rv_mr_cache_search_put(struct rv_mr_cache *cache,
-+					    u64 addr, u64 len, u32 acc);
-+void rv_mr_cache_put(struct rv_mr_cache *cache, struct rv_mr_cached *mrc);
++TRACE_EVENT(/* event */
++	rv_device_event,
++	TP_PROTO(const char *dev_name, const char *evt_name),
++	TP_ARGS(dev_name, evt_name),
++	TP_STRUCT__entry(/* entry */
++		__string(device, dev_name)
++		__string(event, evt_name)
++	),
++	TP_fast_assign(/* assign */
++		__assign_str(device, dev_name);
++		__assign_str(event, evt_name);
++	),
++	TP_printk(/* print */
++		"Device %s Event %s",
++		__get_str(device),
++		__get_str(event)
++	)
++);
 +
-+int rv_mr_cache_init(int rv_inx, struct rv_mr_cache *cache,
-+		     const struct rv_mr_cache_ops *ops, void *priv,
-+		     struct mm_struct *mm, u32 cache_size);
-+void rv_mr_cache_deinit(int rv_inx, struct rv_mr_cache *cache);
++#endif /* __RV_TRACE_DEV_H */
 +
-+/*
-+ * evict operation argument
-+ * cleared - count evicted so far in bytes
-+ * target - target count to evict in bytes
-+ */
-+struct evict_data {
-+	u64 cleared;
-+	u64 target;
-+};
-+
-+#endif /* __RV_MR_CACHE_H__ */
++#undef TRACE_INCLUDE_PATH
++#undef TRACE_INCLUDE_FILE
++#define TRACE_INCLUDE_PATH .
++#define TRACE_INCLUDE_FILE trace_dev
++#include <trace/define_trace.h>
 -- 
 2.18.1
 
