@@ -2,323 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A8C34216B
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Mar 2021 17:01:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF98342170
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Mar 2021 17:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhCSQAn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Mar 2021 12:00:43 -0400
-Received: from mail-bn7nam10on2041.outbound.protection.outlook.com ([40.107.92.41]:32992
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        id S230245AbhCSQCT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Mar 2021 12:02:19 -0400
+Received: from mail-dm6nam08on2061.outbound.protection.outlook.com ([40.107.102.61]:45216
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230225AbhCSQA2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 19 Mar 2021 12:00:28 -0400
+        id S230423AbhCSQCJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 19 Mar 2021 12:02:09 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eLLGtN7jAM/2ngTT9fOorFXJxfIJXgrzVK9vHUShunQNbSpLOcnYWnwaZKH63pNYDDhL6AagXnZwQLPg+yM6g/Ee1Lv4kLN4cJqLafLcuJ4biJz8trPas/Gt1rZIZZc8iqboNZ/9YcrVoVgL6RlowUZYe191F3sctxv9C6eB34tULsjYARC4nsoZGoEyDGU+/kK3aOxDe7USzvT6Q93hndLw8nHW4gyM5dBpejqpwuUC+Hc//AonjmMvWepB+Iroq9OqNu0LsGU5Kx9VLD7bYmE0s/GxmFxKoEaQnLgDX28auTMLCZDoRPR2F4CfPTPAIs05y68PII6RxzEsOiP5MA==
+ b=OuQbArTI/9P/gTKPyTtvt0z9EqhZAb2IVuj46RQ/B8Y3/mLT1B5YfsFlxNNyUmy3BI8fl1erNf/m853WzHscLstXz1VXTOegPAm5ensTfEIPUoe1rI9lzwIaGAMYolU63IWMJFqCZCJm87w7DaS0ePZ4ERr6GZs+NpcjvhO+dURq/qZxGa/4Z/qCaq54cAJ11wLYiydZmVrOwihByMZAaVByM2EmVoEXm9VcCDCTY7wqOb4CjpX2poDmb67k9abkAHtH0xgdGFrwOYxV7lhkRGej9fYzQlASrdZg6Wnb+jY4S5QB7v4Pw8//EwYugpyf0qdaDjh//1jvZT/CL5DeoA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c7gz6rVjuu8fYQKxmrwZ9cMmVKQoTQXeErrhx5XBIAg=;
- b=Y92s83HJOmOWKQiLVnQX4VZNOQAfUETJ3iWNsj/UObL2q4Z9Vr9TmGRA9b03sqrSGVqcMOtRA7CVhCmRWyGbGCbunzevfNOD8thmxA24vXjH1vJNgHhLLr32RErjzcXlkN5+HcBQoeqIULwddaTXdRqJGrK1P7SLZWUyN3Ygw1e4ztu/XyYLzsUWmM5kDMcBQTKGN+OwfqRqO7pNHox07OroVRHqZJq6ujj4tAFXikFFSkiQlrrSG0pEgqKpERqpzrGUBg+MJ1rFbk9eARwfzkZZVtOW2/m5aLKHiu+wNJ5H1P7B4Og500DsCApzO7JUmYCIvmNfvvFSwTZ+3rfy7Q==
+ bh=7tCQpBJ3P2bzL7SsK9jDd18wDzDCMY2o3s/FKcf3ge0=;
+ b=lSnjzrdl/kW1gu7FQuwbOA+XvRr9RiauEMNQ6hDZwsFbdLrmqr4o6uf1Ef0G7OLFcjK7iYhoalXxqsCbG08i2FrUgkO0d17EqysLnAxUZYrrrKfV1gwpoUjW+t9mr/V2kjgbAPbDh1d+1+N2A0/lzajlgV1h0s4xWx1kAkLehlQYrTM10vdRzH6FTLqXVTuGW15mP0f7Cvfcv93oV6sBxieoEHGVwA0X1Up9Pfd8isnzSHPFq4SzSlfAPTPsgEO1m7oQ9rJwikFZiUC4GP+BIuL7Mft8THaFkgm0giQALm14/CURnAoGId1ApVAghv8kJPfqHOa5CYsV5Pv8fvpyPg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c7gz6rVjuu8fYQKxmrwZ9cMmVKQoTQXeErrhx5XBIAg=;
- b=MpH2NiisAXDD4AusQmr8CqTct37eEgixVvH/KQq1AAWqn0SLpxJB8cI/PoFVktePgEb9AI1VjKDEYfbGT01Clj6QoJSF97oRWY+gf4LaOGbgMPZIZ25UXOQ/g/U4HgUf7LzyDHXPRvTw83nOlWJj7fg6vmZJrrWDSt0gkqS2esdB5QHicJECuzI69rgfGqFhg0oYXlU9gKDNeT+IbSAs+p1drVWXWhzsxxvV5d1Fr0p/9v4IKu4CVxdVJY2h7XD0Kd+7eRtMPoEzJnAI/fLcV8BN06qrnzI8QRZSijMvcw8ayzQo+WgCneycxyzsm1B7i4W/V4OVuonMHSkpMiytdg==
+ bh=7tCQpBJ3P2bzL7SsK9jDd18wDzDCMY2o3s/FKcf3ge0=;
+ b=VLIraLZy/3Jjs4uXh7bA3TkmaWagoc215lC9BED2U8xBGCj1xhESiKM0mnNMdoX0nr8/3R53e8pQ+401wKtgcVE7qma2PI4LQl/BcoGI6fZUSPfg5b3PUIWNcfvsCa8UjlOb6bLRbbrN6V/5R0bMxua76PC/HsfdU6y2XqSIweGSSxIOe0q6a5MhoMx7RYxqtbDaDWSEYXsVqngjzimvPCL0tZKbWTlOrTU7ERE2LOg/AILoGKHHau1UUq+mDsTnSsiNa0rlSP2MpwPv/7/xuRkS5I/3RyVRuoQzvZsseq57CPmVU5CTcHO2RKZQKwHeLeUYsJuR678P4+Ymc+6iWA==
 Authentication-Results: intel.com; dkim=none (message not signed)
  header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4267.namprd12.prod.outlook.com (2603:10b6:5:21e::16) with
+ by DM6PR12MB2779.namprd12.prod.outlook.com (2603:10b6:5:4f::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Fri, 19 Mar
- 2021 16:00:25 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Fri, 19 Mar
+ 2021 16:02:08 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3955.018; Fri, 19 Mar 2021
- 16:00:25 +0000
-Date:   Fri, 19 Mar 2021 13:00:24 -0300
+ 16:02:07 +0000
+Date:   Fri, 19 Mar 2021 13:02:06 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
 To:     kaike.wan@intel.com
 Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
         todd.rimmer@intel.com
-Subject: Re: [PATCH RFC 1/9] RDMA/rv: Public interferce for the RDMA
- Rendezvous module
-Message-ID: <20210319160024.GW2356281@nvidia.com>
+Subject: Re: [PATCH RFC 2/9] RDMA/rv: Add the internal header files
+Message-ID: <20210319160206.GX2356281@nvidia.com>
 References: <20210319125635.34492-1-kaike.wan@intel.com>
- <20210319125635.34492-2-kaike.wan@intel.com>
+ <20210319125635.34492-3-kaike.wan@intel.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210319125635.34492-2-kaike.wan@intel.com>
+In-Reply-To: <20210319125635.34492-3-kaike.wan@intel.com>
 X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR19CA0070.namprd19.prod.outlook.com
- (2603:10b6:208:19b::47) To DM6PR12MB3834.namprd12.prod.outlook.com
+X-ClientProxiedBy: BL1PR13CA0118.namprd13.prod.outlook.com
+ (2603:10b6:208:2b9::33) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR19CA0070.namprd19.prod.outlook.com (2603:10b6:208:19b::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 16:00:25 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lNHY0-00HLmN-7s; Fri, 19 Mar 2021 13:00:24 -0300
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0118.namprd13.prod.outlook.com (2603:10b6:208:2b9::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.13 via Frontend Transport; Fri, 19 Mar 2021 16:02:07 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lNHZe-00HLnr-3n; Fri, 19 Mar 2021 13:02:06 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fd0c9f00-40e0-4e8c-de6a-08d8eaf01bf4
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4267:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4267B10329F342876B19E62BC2689@DM6PR12MB4267.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:901;
+X-MS-Office365-Filtering-Correlation-Id: 82a51b0a-77b7-4ed4-0c09-08d8eaf058d6
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2779:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB277982C701A029807F6D4E78C2689@DM6PR12MB2779.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: thAKBD1AYkJQTZGR0HKxZdOj20ebRuiIoBcdhgGg5DkZoCFu/BibKGtb5fVI/FjAxtFj7kn2hrvmP5ZVPgWn2QlOplUHcFrKFFl3TtojlHleQYHitw8F53UDC5PCKTwIQ2YX9GEd1lFy78x1Do0khq6qA/IDto7J6qFAcYs4GPDMeQB3/2qgwWkXOL+t2gp35fk3a1zrITHCFQxIhQtDkZDabwaxis8cNe2xeR8VIkxZHWTDvy9ForcADYNcI9pLeST+Y+z+DRyRrKvYFBIIW1qWNllRGx/aq5qM3kk39o55tbNqxVrndCUDjBfWh9CaZp+9EUgd48Jg15EZyWNepXsuxQjgXGATqX1OzQA+VutYo2Vg5w46Zi3XCc+jXtWXQskWI1irYWR+oKAKVdTk4bmv4OML8Mq+q9A/g7SfR5aBIWGpv1+qK+fbHzJKCXCeguWFooW2AVx7DqNkZHNg5Hu3DhpeBM7VBN5lLVYdVevEmMVEqhp88uOvSw7GJpHrByLxfcPdgh8N337qLSjDSct/yDaqmgQZREUCLfpbHlWiKdpgIkWVY5O4VmXux81fSlMK6We9u5EIMPy+nq55ANfwpcD/fS64NuH0ZeQBBlQmnMDPpB1eOAR81NMFwtKdYI5BYrKNgHBZtKZy6O9AWrGjTeZUIqeilQ3qJS/LLyk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(346002)(396003)(376002)(4326008)(66556008)(2906002)(8676002)(9746002)(5660300002)(1076003)(66476007)(66946007)(86362001)(478600001)(33656002)(186003)(426003)(38100700001)(6916009)(316002)(2616005)(83380400001)(26005)(36756003)(8936002)(9786002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?BHByqJbt0ot8D1GGAuCxxo4bn7KAfiDAL3cHbBaNsYw2U0y8lTMdMEhEM6AF?=
- =?us-ascii?Q?hcd3kkXIH3xhxfl91+kTlv77cloXlDJIN3lBeVhKb9vC2HuzLn/SYA+ClUCn?=
- =?us-ascii?Q?O2dAQIY4vbtY4Ng7NG2JbpC5smLQh9C8UXnXk6ibwzjsHFE7b+aEuXhnY3+W?=
- =?us-ascii?Q?QRuE9UFjqVx1OusuOvrkQNEmpH4SRPEuO8qe9JTHDFttk1jnvXsrwL2vanKD?=
- =?us-ascii?Q?Ij9n9atV5NCxU0ZdHWX+FsgCP6cDMqkxvIF0ZnaxTl3osIdXH4GLz/24hK94?=
- =?us-ascii?Q?Nq5MUcatn4qnL+8AeJso7YhceEgcwvWx6sjVh14g+9pC8HDmTtoStAFZjLqu?=
- =?us-ascii?Q?96uUiKbvNPWmYawby/YLuyOeo72VexsoyJmAPgFIjYE+Go3zSvBa7C2PgjXi?=
- =?us-ascii?Q?YFrvAJikJmD/E8kjPiqjRSFIbuvpGIommMjsLNHpf6Vt3/EE0nmQX/CPs/Ec?=
- =?us-ascii?Q?fH6f6SyWKBsi6q+nd7wc6Eej3q5Dw9Rbwn9IfhdmteR/xaGyIoJHexUohkGS?=
- =?us-ascii?Q?KuRQiJzHSwIiNM1Uh1YvQdhD5K5ZauCx7oU5j4pde55AzlkBBgh8Bh2jVsAY?=
- =?us-ascii?Q?gVwwmeZw+HKRAuYDtTqUk0Mwy8jlLw0g+6Z5XKOfcm2u3uHZsS8T4blJhsvU?=
- =?us-ascii?Q?rL+Ltnq7yOMKn+WvdhoEMudDYw8iAsqy48QOO+3oi8+ioo9FqCWn0N9hv00T?=
- =?us-ascii?Q?7G9iF0/JyeBejZVjel4zVssh/xE+E5PDk76qzHdEFHMweETgkIEumkL4jD+T?=
- =?us-ascii?Q?Xbh6f9BJ0iZ9jyjIplJqbROHdCu+Z0aWyML7UkTmqNdBrge6176AeHqu/yWD?=
- =?us-ascii?Q?C3W43V9QPIYtlgwZCPe4TNVucPb8scSeLfzUGLaicUoPAqhBoeCmiW9kpr5z?=
- =?us-ascii?Q?pPq+UQtfTy385Io3RENDUNZQ8kU+FtDFwhddlRagywsR7RnFYkKl2wjkJChv?=
- =?us-ascii?Q?k2M9L6cdDlUackEEYCbMzI/2UKveN3c2LLzkvI+Ih/f8TEQ1q695rTva89Tg?=
- =?us-ascii?Q?INPB93jVxbk5zI4jJQ97+HIgll7nyMMKV2E5kgHRndgtxk1HP27IsggFsuKj?=
- =?us-ascii?Q?nDEoBzkH4q9yVJuIyW4oUfs11K/HPF4oFqnQchRxeF17m2DE1Lsnx6WomLlW?=
- =?us-ascii?Q?ody4qoPUmUo7l6GeI0uL3Ob8zoMzViBu99lw2/yV61hTUdN7MjrH/niSqCmy?=
- =?us-ascii?Q?DIiRhc8tuKmXyP/IeHuzQQ62bQTd/8auiOw3kQYQoOQO7lUEi7/tklL78if1?=
- =?us-ascii?Q?CUIX1lJ7G/ZyT9LjtXMYbm/2eMGWBQT03VrCH7dwFGp1YB+2XOTzuUpw7uQk?=
- =?us-ascii?Q?k9Xt4GxCXDDmIohXJmDVxLp8IkOzyRtCaOci9UW8TuWP2w=3D=3D?=
+X-Microsoft-Antispam-Message-Info: yunELAroSrGKneDPEAQaMY9/vAiLpjiRG4vF0QLSLxMU6V1xM5dR0PDeEDR1kRyI2lxuRPm118ZrVHSeFY0zexC0bl4nc/+a42ZV1HWuFcu+XY0VKlvIFfveNBbK7VqCAjM/olPvFq74kccYeaz3YM75Y23p1TOerYu8BamfL6x6WTRXGUEdSAMIOaOXZzmzwqkHA//jtZ0pVoFA6jw/B21wRG2vYLJPhMiX3bf1DPeKU/E9qce0BU9kZlDeC6RP6aP9FQxbJDfwopPc6zxdAlLwdGQZpv5la9yiu0oU6j3gXweKfVI6W0Y5IxxxCQdf1kLkfqSmbxutZ1PvIUwsdNVqMB5hFrzi0qjJoArC13gjsHml4DsTdWBpsfqtB2agB5Os4LGdkNBH09ImyX5zH3qEgsJy8TBJyVz9Pn/I/5kKbd9krBnYRIesIADdhZT2ca4VrFJFWq6cy7qTPLWkNje0spS+O1F/4iO0aOQaG7yHrtb33slE6M5AUNCkxd6ZDqmmipsEvP+76iesXjYjFseRsyWsUkoKIVMvN1rWdJOyHK2boBaCrkutvxMwCsEt9Km0QVpaK8YmeEIlDhYasKwP5y66Qlm2277cq7yrG7ZtA8DY1ElrbtrmIKD4fHDbwq62uIkVqwqs7HZI4Tuy9pZNysd9vYN9lJ9iiH9UqRQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(366004)(39860400002)(136003)(186003)(2616005)(66556008)(5660300002)(8936002)(86362001)(38100700001)(6916009)(1076003)(8676002)(33656002)(558084003)(4326008)(66476007)(66946007)(2906002)(426003)(316002)(478600001)(36756003)(9786002)(9746002)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?AoR5D6SRkTAku/2VnHS6CODcGSEvnOurfFlz29MOEYskVRvpZqHrNeBZk42I?=
+ =?us-ascii?Q?wUUoeVEIdtVU3f89Wvfr4/sE+JQhEwJjcJN3tV8fbJTpQdCdOXoVn9JwRsl5?=
+ =?us-ascii?Q?SWLO1ZSX88OX9oFmpPVjkJrBLsC1IGslUM5splNDAmPrliPZhJ5wn1RaeGR1?=
+ =?us-ascii?Q?uAf/LIMxr88UC9w0nSsIsahPkW4C4Uyd+RFeydG8Jz4c/0vWiUr44bkE/UoK?=
+ =?us-ascii?Q?QYHrkUOBwzUDWf1+jrkFbLrHB07lvpnVLf5xvOyIJHWm/MGqreI1zywuNqxB?=
+ =?us-ascii?Q?bhN5pnMftkadqe+vvjqGaF25LxDczukVATseKXVj+dL5oewnbl12Ie+FvNR3?=
+ =?us-ascii?Q?iZgqvc0/wQBPZV95tEnjZ4iu9Ah2cK+VjfNqvrg3kF7bzM7c3WdiwFtYArsY?=
+ =?us-ascii?Q?ZysEjCy/RuaV6cChbkePD25R6XCzx8MlHRWAwOrvcbMmCzQRJ0+bJsQwgdvj?=
+ =?us-ascii?Q?XpSC/0sTTOsxyMJGI/quSBs6o5+oxt72Prb3yYEPVJ9WmcrnYRTH6vsTjIn+?=
+ =?us-ascii?Q?yhagWoZFxP603ePaP32bCcH/0tx4HTaRBgULDcSSYleMQPL5tlNpnq1B0L1h?=
+ =?us-ascii?Q?LH0B8nr1b9jTUB0alZz96hMBMUVh6U481JU5bp0V/V/WQwALHuLXC1vu9DSW?=
+ =?us-ascii?Q?w39UHfzJ71MLZg2gee0cRcTadH/j3tKhZEI5RZEO4Kxk9Pk5+mqkSrRfzC5G?=
+ =?us-ascii?Q?KIqMxEsZiS/mugmlb9ljPjav+vRCrKGrngGEcezlGcaRt5BapnHYysmLmG3D?=
+ =?us-ascii?Q?Lr6ePbw/9vb+k5yX5xCtgWQ7GVoP/WnN2rIoZwFMw6aKtgIDXDQh6xEv3Roq?=
+ =?us-ascii?Q?wnzugCw7BK0q7LYpr6vYKu7sXtYNPmAXTriGHThX+2COrhaLrlCSZlnmkj/D?=
+ =?us-ascii?Q?theKwjCSBDA1uFMiq3LDCtcX6FVZwNLKoSeddrQk6PvWHTWbLMRk9aa1YkOK?=
+ =?us-ascii?Q?R4yQoA5Vzxp3wZLLlPcaVV4XQyyXiHhEapJD049mD7jyB5Ct8QoX2J9YASHE?=
+ =?us-ascii?Q?f+kNWDygA47Ps+s40/kWGfd4v6i6jFi7QKzn8QbP8+0PcqQjLTko1sX5oNQP?=
+ =?us-ascii?Q?HxNduILYu0oKQnNtZCwI92fRhvrYbSIthxYONOAHTYW5ZKD/p7ZUR7gXsFXL?=
+ =?us-ascii?Q?9igw5iyZBoor9g1pFKuRhIV31JsDjiDfF8b/HonSPkzYPWt5I62vvbppex6E?=
+ =?us-ascii?Q?e75UO7zEZWaemzkWJD3vuJpzLI+Pr/hpqziOqkQRrH9/ihE1q8SoSeN709T2?=
+ =?us-ascii?Q?duvnWpIqeV8xTrkhGC4hh/auJJttxf5J8CMps5wTZSDWTaG53ZwPKovY04U2?=
+ =?us-ascii?Q?gYb5rIF8/VPCnTNjOy7DqmWDPVMl0J4oefP1WckqGEObwg=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd0c9f00-40e0-4e8c-de6a-08d8eaf01bf4
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82a51b0a-77b7-4ed4-0c09-08d8eaf058d6
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 16:00:25.7297
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 16:02:07.8347
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dGS99ZmlgCh+RrJUp9iczI3KD/bMDkxALmliVBzUxlX3kzHTLDE1BlrjpOAi2HLS
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4267
+X-MS-Exchange-CrossTenant-UserPrincipalName: jcmFpNDr8lwhy153XKrXaavFplUgxBs5JXFWncOCwE4PNkaDGae7WkLLtjIO23Ol
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2779
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 08:56:27AM -0400, kaike.wan@intel.com wrote:
-> From: Kaike Wan <kaike.wan@intel.com>
-> 
-> The RDMA Rendezvous (rv) module provides an interface for HPC
-> middlewares to improve performance by caching memory region
-> registration, and improve the scalibity of RDMA transaction
-> through connection managements between nodes. This mechanism
-> is implemented through the following ioctl requests:
-> - ATTACH: to attach to an RDMA device.
-> - REG_MEM: to register a user/kernel memory region.
-> - DEREG_MEM: to release application use of MR, allowing it to
->              remain in cache.
-> - GET_CACHE_STATS: to get cache statistics.
-> - CONN_CREATE: to create an RC connection.
-> - CONN_CONNECT: to start the connection.
-> - CONN_GET_CONN_COUNT: to use as part of error recovery from lost
->                        messages in the application.
-> - CONN_GET_STATS: to get connection statistics.
-> - GET_EVENT_STATS: to get the RDMA event statistics.
-> - POST_RDMA_WR_IMMED: to post an RDMA WRITE WITH IMMED request.
-> 
-> Signed-off-by: Todd Rimmer <todd.rimmer@intel.com>
-> Signed-off-by: Kaike Wan <kaike.wan@intel.com>
->  include/uapi/rdma/rv_user_ioctls.h | 558 +++++++++++++++++++++++++++++
->  1 file changed, 558 insertions(+)
->  create mode 100644 include/uapi/rdma/rv_user_ioctls.h
-> 
-> diff --git a/include/uapi/rdma/rv_user_ioctls.h b/include/uapi/rdma/rv_user_ioctls.h
-> new file mode 100644
-> index 000000000000..97e35b722443
-> +++ b/include/uapi/rdma/rv_user_ioctls.h
-> @@ -0,0 +1,558 @@
-> +/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-> +/*
-> + * Copyright(c) 2020 - 2021 Intel Corporation.
-> + */
-> +#ifndef __RV_USER_IOCTL_H__
-> +#define __RV_USER_IOCTL_H__
-> +#include <rdma/rdma_user_ioctl.h>
-> +#include <rdma/ib_user_sa.h>
-> +#include <rdma/ib_user_verbs.h>
-> +
-> +/* Checking /Documentation/userspace-api/ioctl/ioctl-number.rst */
-> +#define RV_MAGIC RDMA_IOCTL_MAGIC
+On Fri, Mar 19, 2021 at 08:56:28AM -0400, kaike.wan@intel.com wrote:
 
-No.
+> +struct rv_mr_cache {
+> +	u64 max_size;
+> +	void *ops_arg;
+> +	struct mmu_notifier mn;
 
-> +#define RV_FILE_NAME "/dev/rv"
-
-No.
-
-> +
-> +/*
-> + * Handles are opaque to application; they are meaningful only to the
-> + * RV driver
-> + */
-> +
-> +/* this version of ABI */
-> +#define RV_ABI_VER_MAJOR 1
-> +#define RV_ABI_VER_MINOR 0
-
-No, see my remarks to your other intel colleagues doing the ioasid
-stuff.
-
-> +struct rv_query_params_out {
-> +		/* ABI version */
-> +	__u16 major_rev;
-> +	__u16 minor_rev;
-> +	__u32 resv1;
-> +	__aligned_u64 capability;
-> +	__aligned_u64 resv2[6];
-
-No pre-adding reserved stuff
-
-> +};
-> +
-> +#define RV_IOCTL_QUERY _IOR(RV_MAGIC, 0xFC, struct rv_query_params_out)
-> +
-> +/* Mode for use of rv module by PSM */
-> +#define RV_RDMA_MODE_USER 0	/* user MR caching only */
-> +#define RV_RDMA_MODE_KERNEL 1	/* + kernel RC QPs with kernel MR caching */
-
-Huh? Mode sounds bad.
-
-> +/*
-> + * mr_cache_size is in MBs and if 0 will use module param as default
-> + * num_conn - number of QPs between each pair of nodes
-> + * loc_addr - used to select client/listen vs rem_addr
-> + * index_bits - num high bits of immed data with rv index
-> + * loc_gid_index - SGID for client connections
-> + * loc_gid[16] - to double check gid_index unchanged
-> + * job_key[RV_MAX_JOB_KEY_LEN] = unique uuid per job
-> + * job_key_len - len, if 0 matches jobs with len==0 only
-> + * q_depth - size of QP and per QP CQs
-> + * reconnect_timeout - in seconds from loss to restoration
-> + * hb_interval - in milliseconds between heartbeats
-> + */
-> +struct rv_attach_params_in {
-> +	char dev_name[RV_MAX_DEV_NAME_LEN];
-
-Guessing this is a no too.
-
-> +	__u32 mr_cache_size;
-> +	__u8 rdma_mode;
-> +
-> +	/* additional information for RV_RDMA_MODE_KERNEL */
-> +	__u8 port_num;
-> +	__u8 num_conn;
-
-Lots of alignment holes, don't do that either.
-
-> +struct rv_attach_params {
-> +	union {
-> +		struct rv_attach_params_in in;
-> +		struct rv_attach_params_out out;
-> +	};
-> +};
-
-Yikes, no
-
-> +/* The buffer is used to register a kernel mr */
-> +#define IBV_ACCESS_KERNEL 0x80000000
-
-Huh? WTF on on many levels
-
-> +/*
-> + * ibv_pd_handle - user space appl allocated pd
-> + * ulen - driver_udata inlen
-> + * *udata - driver_updata inbuf
-> + */
-> +struct rv_mem_params_in {
-> +	__u32 ibv_pd_handle;
-> +	__u32 cmd_fd_int;
-
-Really? You want to reach into the command FD from a ULP and extract
-objects? Double yikes. Did you do this properly, taking care of every
-lifetime rule and handling disassociation?
-
-> +	__aligned_u64 addr;
-> +	__aligned_u64 length;
-> +	__u32 access;
-> +	size_t ulen;
-> +	void *udata;
-
-'void *' is wrong for ioctls.
-
-> +struct rv_conn_get_stats_params_out {
-
-Too many stats, don't you think? Most of the header seems to be stats
-of one thing or another.
-
-> +/*
-> + * events placed on ring buffer for delivery to user space.
-> + * Carefully sized to be a multiple of 64 bytes for cache alignment.
-> + * Must pack to get good field alignment and desired 64B overall size
-> + * Unlike verbs, all rv_event fields are defined even when
-> + * rv_event.wc.status != IB_WC_SUCCESS. Only sent writes can report bad status.
-> + * event_type - enum rv_event_type
-> + * wc - send or recv work completions
-> + *	status - ib_wc_status
-> + *	resv1 - alignment
-> + *	imm_data - for RV_WC_RECV_RDMA_WITH_IMM only
-> + *	wr_id - PSM wr_id for RV_WC_RDMA_WRITE only
-> + *	conn_handle - conn handle. For efficiency in completion processing, this
-> + *		handle is the rv_conn handle, not the rv_user_conn.
-> + *		Main use is sanity checks.  On Recv PSM must use imm_data to
-> + *		efficiently identify source.
-> + *	byte_len - unlike verbs API, this is always valid
-> + *	resv2 - alignment
-> + * cache_align -  not used, but forces overall struct to 64B size
-> + */
-> +struct rv_event {
-> +	__u8		event_type;
-> +	union {
-> +		struct {
-> +			__u8		status;
-> +			__u16	resv1;
-> +			__u32	imm_data;
-> +			__aligned_u64	wr_id;
-> +			__aligned_u64	conn_handle;
-> +			__u32	byte_len;
-> +			__u32	resv2;
-> +		} __attribute__((__packed__)) wc;
-> +		struct {
-> +			__u8 pad[7];
-> +			uint64_t pad2[7];
-> +		} __attribute__((__packed__)) cache_align;
-> +	};
-> +} __attribute__((__packed__));
-
-Uhh, mixing packed and aligned_u64 is pretty silly. I don't think this
-needs to be packed or written in this tortured way.
-
-> +
-> +/*
-> + * head - consumer removes here
-> + * tail - producer adds here
-> + * overflow_cnt - number of times producer overflowed ring and discarded
-> + * pad - 64B cache alignment for entries
-> + */
-> +struct rv_ring_header {
-> +	volatile __u32 head;
-> +	volatile __u32 tail;
-> +	volatile __u64 overflow_cnt;
-
-No on volatile, and missed a __aligned here
-
-This uapi needs to be much better. It looks like the mess from the PSM
-char dev just re-imported here.
-
-At the very least split the caching from the other operations and
-follow normal ioctl design
-
-And you need to rethink the uverbs stuff.
+Nope on using raw mmu_notifier, this code isn't done right in hfi1,
+I'm not looking at it again here. Use the interval notifier.
 
 Jason
