@@ -2,69 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05AE03417AA
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Mar 2021 09:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C1F3417B1
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Mar 2021 09:49:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234227AbhCSInx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 19 Mar 2021 04:43:53 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3491 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234225AbhCSInp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Mar 2021 04:43:45 -0400
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4F1y7B032FzRRd8;
-        Fri, 19 Mar 2021 16:41:58 +0800 (CST)
-Received: from dggema704-chm.china.huawei.com (10.3.20.68) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Fri, 19 Mar 2021 16:43:43 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema704-chm.china.huawei.com (10.3.20.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 19 Mar 2021 16:43:43 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.013;
- Fri, 19 Mar 2021 16:43:43 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     "jianxin.xiong@intel.com" <jianxin.xiong@intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: [rdma-core] Compile issue with DRM headers
-Thread-Topic: [rdma-core] Compile issue with DRM headers
-Thread-Index: AQHXHJv3XGIQP1y/YEuHT1qgEOdOZw==
-Date:   Fri, 19 Mar 2021 08:43:43 +0000
-Message-ID: <d204d1db15844e45b946125a5452ab19@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S234280AbhCSIsb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Mar 2021 04:48:31 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13206 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234368AbhCSIsK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Mar 2021 04:48:10 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F1yCV4fYdzmZbc;
+        Fri, 19 Mar 2021 16:45:42 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 19 Mar 2021 16:47:58 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@nvidia.com>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH for-next] RDMA/hns: Fix memory corruption when allocating XRCDN
+Date:   Fri, 19 Mar 2021 16:45:36 +0800
+Message-ID: <1616143536-24874-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Jianxin,
+It's incorrect to cast the type of pointer to xrcdn from (u32 *) to
+(unsigned long *), then pass it into hns_roce_bitmap_alloc(), this will
+lead to a memory corruption.
 
-I met a compile error with recent version of rdma-core on my server with Ubuntu
-14.04:
+Fixes: 32548870d438 ("RDMA/hns: Add support for XRC on HIP09")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_pd.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-./pyverbs/dmabuf_alloc.c:16:24: fatal error: amdgpu_drm.h: No such file or
-directory
- #include <amdgpu_drm.h>
-                        ^
-compilation terminated.
+diff --git a/drivers/infiniband/hw/hns/hns_roce_pd.c b/drivers/infiniband/hw/hns/hns_roce_pd.c
+index 3ca51ce..16d6b69 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_pd.c
++++ b/drivers/infiniband/hw/hns/hns_roce_pd.c
+@@ -140,8 +140,14 @@ void hns_roce_cleanup_uar_table(struct hns_roce_dev *hr_dev)
+ 
+ static int hns_roce_xrcd_alloc(struct hns_roce_dev *hr_dev, u32 *xrcdn)
+ {
+-	return hns_roce_bitmap_alloc(&hr_dev->xrcd_bitmap,
+-				     (unsigned long *)xrcdn);
++	unsigned long obj;
++	int ret;
++
++	ret = hns_roce_bitmap_alloc(&hr_dev->xrcd_bitmap, &obj);
++
++	*xrcdn = (u32)obj;
++
++	return ret;
+ }
+ 
+ static void hns_roce_xrcd_free(struct hns_roce_dev *hr_dev,
+-- 
+2.8.1
 
-I found it is related with dma-buf based commits. And the commit 3788aa843b4b
-("configure: Add check for DRM headers") adds a check for libdrm headers. I have
-installed it but my version(2.4.67-1ubuntu0.14.04.2) isn't new enough, there is
-no 'amdgpu_drm.h' in DRM_INCLUDE_DIRS(/usr/include/drm).
-
-So I think we may need some check for the the version of libdrm in CMakeList.txt
-or something else :) Could you please give me some suggestions?
-
-Thanks
-Weihang
