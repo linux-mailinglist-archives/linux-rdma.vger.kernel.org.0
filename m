@@ -2,53 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AAAF3433AE
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Mar 2021 18:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5FF4343404
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Mar 2021 19:09:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhCURWE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 21 Mar 2021 13:22:04 -0400
-Received: from mail-eopbgr760109.outbound.protection.outlook.com ([40.107.76.109]:55493
+        id S229897AbhCUSJK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 21 Mar 2021 14:09:10 -0400
+Received: from mail-eopbgr760059.outbound.protection.outlook.com ([40.107.76.59]:25295
         "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230264AbhCURVa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 21 Mar 2021 13:21:30 -0400
+        id S229987AbhCUSI4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 21 Mar 2021 14:08:56 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mmTQeustWWqGkl1U5l7XC59yJdsdzPOeSPyMsAsOk2rLRjqCPcDaYZ5oIFRZAnDikiyUNQTxlG/fkIbHoAoZdDndGkA8CWFAe03qEJB1ZKPDdB1H0/NY5yXl0QJtGpu0r8AiEwEAzIYK+HwI+F4GFvO/Au3bE6sg4x76hjvP3Hm8ZPT+9I1KiBNOXxlY6uiyxtkh3y3nBNJE7DE1bY37K1WVWg4sy2IGMrqBF6aHD2qLWn5khndx9a3sdcb9zl7NFGhGm8xwA6zucP09ufTykrXjpqw8v/FzxW8g5iwu3M5/HuiFkuWPKf8qjfBM5D78JXkUBYJByAYosEv7nNdkpA==
+ b=JZFT2wcCIQbpc+m22Ws0rIY8kFyfS++TaojYNO0bXbG2s3flUHNPTc2pqpZc2j7c+aa0N0EkVLBxG4BdPkjP/d06XwT9oNTXhE4gMT4A8eCpC5oGqg6NXn44GSSzUfzzQNPzNyQIGYli5E7JffCrjg6vYn7zf+QbXYL60ncmakHrWyKmE0wEh+0SLRf4Gu5W9GdvhtmYpNwWbb4houZap2GFvDhMf5MWGsQDv6mG5SWIhiAX5kuKza+eOoysEXlzDYKS5Er2IdfQ2bpw4j11nRpOJNCDdD/k7Y01nV1IlWqbIIi5YidKeqqjqbTkTCmcSGaUD/iBsS3aPIvI03QuBQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C9R4nLHtOW4JYlNKn0FKkdPebuU7aCO4d0gjk/f0Y3w=;
- b=DA5HE0+shw9qMziUYBRfWJ2idUNHBTl1+b70NX9308penMCcXXYxw+2N5bjEtOO7Hj/vTJssgiYGIvBOizZcQyy4/zk7PZT73wsruCKnW5rNsrvCDS2OeBVHvQaW2lVSNvhxovkeNYYnfGkOZYjx5tds+efPaBAvwou0yYjUB5CqCcIJsn8tzT62D1F15a+YenpwJazVaY5T0K18PinMXpSbp06VUE0s1Wxy2scwsg+AXVW3bDKdEM80vH4Huh8nNstLinQ8xDjQyFEkIbK0NNi8AjNO60Odu/DU0EzFLIekWDzHe3hedcho6UMUruHd1NUNXlY9xI1e+oDQ/RV0wA==
+ bh=SsiLK/o5NwIRgSjQ/E2iKsp/N72lFS6C3FnJ+fgh46E=;
+ b=Cqt5KP5pFH1atsmf2T5WqrILYPmf4vpK2rNRT7SppVb/e+zbcTzSOJnh54GcwtyckTRErupvfOxlVsqPIcquoc7uv3qTYRgcSioqLqRB9uR2mqAuoTVJZADDFhYIAVmwgKh+HZQBa8VY4njXX1z1dsZI8h0y1n0j+muoXF0+HtGMG53/uDEOUJhjfJcXOv6qgNrYJPgK/UAb705GInupE7ASnzEQ/qts6jXeALoqHK99BBhgCSbhLchBSVstSGPApHeIpSqlcrOkkQWBxUUsyU4xyirvwdKzOi6FPKwk9sLIirqSSoXz/m8yrGJrxyv7ObqL73NTBCwZCbOJoVfcyg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C9R4nLHtOW4JYlNKn0FKkdPebuU7aCO4d0gjk/f0Y3w=;
- b=O7dYF9+iAJE6sAO+zfW5qdq6Ye/zgxMu9uK97JZ86Ok+j+TjTsDqB0cReZawWyPXqsmlKhqXh+di/UvG2TIyJ/OYuIqH0HmU1DRYnvNh8RC4JkdRC2jS7oMkUcVXgsvelEmRIDkPP2lPn4Y14CrMECqAqwgTnDjJsOF9ubOFmN82wH+Pbw9qQ+vBMIKB6B99vaaMUgAVX6u6NkSMBcu6Oa26K5P32qlg0hR/ydq5T9Shevp8K/ABkB6L5+fi+y3o7AoRuoiJEnnW+ZdqR+sTiVS8CkWFPuAXxtpa33qeVKk6OAscuF0/5dCzQvNLsJ5eZVSIXwbSEkM3erE7gafEfQ==
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=cornelisnetworks.com;
-Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
- PH0PR01MB6134.prod.exchangelabs.com (2603:10b6:510:13::24) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3955.18; Sun, 21 Mar 2021 17:21:27 +0000
-Received: from PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::75a5:79c6:dd14:3860]) by PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::75a5:79c6:dd14:3860%5]) with mapi id 15.20.3955.025; Sun, 21 Mar 2021
- 17:21:22 +0000
-Subject: Re: [PATCH RFC 0/9] A rendezvous module
-To:     Jason Gunthorpe <jgg@nvidia.com>
+ bh=SsiLK/o5NwIRgSjQ/E2iKsp/N72lFS6C3FnJ+fgh46E=;
+ b=byPDgCs+3p+K/Y9o79pvcdplk4rd9oCqOr4H4kMezlJ7sWzne7/7kHZfUoCPT8MDYvL6idIw0aKO48h/1XvFzl3s34lu8/ZfXpivZD3Edd8F5ACW+WOrdeCg6rL5XSLenxb5OauZMay27tNmpdBBpuZML+/JL6EO0AC+13Xt4VCjWnL+YuLpIpPCZflSDPwH4vOwwZl+SM/ogEKTTdv1zPy1NEf/CMamHBN1ZlbWv+/DvBEpj9jzslrR6GLwSvtI/96r3ogVem0+CgipXzXIbXXzDZRtGZ+eUbVDP7jVS+V3DssbYLcSmwQEZpYimpI0oldQsFHM4o5mLpMK8l5iPA==
+Authentication-Results: cornelisnetworks.com; dkim=none (message not signed)
+ header.d=none;cornelisnetworks.com; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4500.namprd12.prod.outlook.com (2603:10b6:5:28f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Sun, 21 Mar
+ 2021 18:08:53 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3955.025; Sun, 21 Mar 2021
+ 18:08:53 +0000
+Date:   Sun, 21 Mar 2021 15:08:50 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 Cc:     Leon Romanovsky <leon@kernel.org>,
         "Rimmer, Todd" <todd.rimmer@intel.com>,
         "Wan, Kaike" <kaike.wan@intel.com>,
         "dledford@redhat.com" <dledford@redhat.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <BL0PR11MB3299928351B241FAAC76E760F6689@BL0PR11MB3299.namprd11.prod.outlook.com>
- <20210319202627.GC2356281@nvidia.com>
- <BL0PR11MB3299C202FCFF25646BFEE9B6F6689@BL0PR11MB3299.namprd11.prod.outlook.com>
+Subject: Re: [PATCH RFC 0/9] A rendezvous module
+Message-ID: <20210321180850.GT2356281@nvidia.com>
+References: <BL0PR11MB3299C202FCFF25646BFEE9B6F6689@BL0PR11MB3299.namprd11.prod.outlook.com>
  <20210319205432.GE2356281@nvidia.com>
  <SN6PR11MB3311F22207FDCA37B3A3C07AF4689@SN6PR11MB3311.namprd11.prod.outlook.com>
  <29607fd4-906d-7d0d-2940-62ff5c8c9ec6@cornelisnetworks.com>
@@ -57,171 +58,137 @@ References: <BL0PR11MB3299928351B241FAAC76E760F6689@BL0PR11MB3299.namprd11.prod.
  <YFcKTjU9JSMBrv0x@unreal>
  <bc56284b-f517-2770-16ec-b98d95caea6f@cornelisnetworks.com>
  <20210321164504.GS2356281@nvidia.com>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Message-ID: <1aaf8fd0-66c5-b804-26dc-c30a427564fa@cornelisnetworks.com>
-Date:   Sun, 21 Mar 2021 13:21:14 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <20210321164504.GS2356281@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [24.154.216.5]
-X-ClientProxiedBy: BLAPR03CA0029.namprd03.prod.outlook.com
- (2603:10b6:208:32b::34) To PH0PR01MB6439.prod.exchangelabs.com
- (2603:10b6:510:d::22)
+ <1aaf8fd0-66c5-b804-26dc-c30a427564fa@cornelisnetworks.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1aaf8fd0-66c5-b804-26dc-c30a427564fa@cornelisnetworks.com>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: BLAPR03CA0042.namprd03.prod.outlook.com
+ (2603:10b6:208:32d::17) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.40.159] (24.154.216.5) by BLAPR03CA0029.namprd03.prod.outlook.com (2603:10b6:208:32b::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Sun, 21 Mar 2021 17:21:21 +0000
+Received: from mlx.ziepe.ca (142.162.115.133) by BLAPR03CA0042.namprd03.prod.outlook.com (2603:10b6:208:32d::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Sun, 21 Mar 2021 18:08:52 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lO2VO-000dir-Vv; Sun, 21 Mar 2021 15:08:51 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 325a8184-5111-4849-d00d-08d8ec8dbf83
-X-MS-TrafficTypeDiagnostic: PH0PR01MB6134:
-X-Microsoft-Antispam-PRVS: <PH0PR01MB61341F1B5F06A68AABC9C823F4669@PH0PR01MB6134.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Office365-Filtering-Correlation-Id: 4e20655d-dc15-4892-ba22-08d8ec94626b
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4500:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB45007C437FE2760203DC0063C2669@DM6PR12MB4500.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lNpME0W0ZdGKW/6AyUlgP+CwtXZJwcuXAtdwa83zFImahQt1uydvX5AlpxEiDwZnWqWQEwuOofEAN6kJBK5Cx5NV6i11lNVUu0PeWzhGQzhNgHc0eFY/zk4NqD+eLqYAvDVaQSgRbYdCmjfJ0NBSckCSvIof0vOiqNdM050zwPrKhgPF2FEC/WEtHFEZzKlsShaZ1AGNNNL2HfjegFXI4FZrP5mqH0/0UdG4Nj8XzKqjKXJ1oLyBCMKlawiu9tutvi9vM8WoHIoJCV98DwLFvZNpt4mmLn6HKEfYfGf+yC3a9kmqKrkJHSCv4DsRcdpXI34JooLuMo13fbZjJorD/4RzIfrw9+d/mM3i7OYzOfkce8rI+RuasrdGtW7Gtcfk4qdWmwh6XRyC64isauITWNYE5NkF3ldBXD1kZIqol5HJkoatng45CdHXw6XsdnCNSHKkzcvLr0XrkQrNoo1VI7OPWz5Q7QPXwpkkMU2RjaKAxdWAHkuBV6y8diexbPwc6jwDbnc7VOtJClPdi35L6H83HNSFD+MlRYr5TcMeC/ZIv/dhtrVST9JvlUeS61PEK7r3XzQwPQAGxXEh90qq8fg0vgOv4uxuRkg23E+cs5ohPy/hKwDyxmEYya80VHgBDWoZ7nClNKpdCvVrUFHpYfidFJRwqmOLGI11v9fBVxH7M9xHjUL3Yzgb3GGVI2ykMEmbDFYiul6OMoj6Jx80DMQG8eOrmmtz7ZfqxXjMTaw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39830400003)(136003)(366004)(376002)(396003)(6486002)(44832011)(31696002)(31686004)(186003)(26005)(2616005)(38100700001)(6666004)(4326008)(956004)(54906003)(478600001)(16576012)(83380400001)(86362001)(316002)(52116002)(66476007)(6916009)(8936002)(8676002)(36756003)(53546011)(2906002)(66946007)(66556008)(16526019)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?d0kwMWVVSmwydnZ1MEswNFoxMnlBeWFvamFNdXNXWmppVGlEVlU1Q3lmQzJ4?=
- =?utf-8?B?Y2w1VXJZZEJUeTkzYzB6a3N6b053MUg3MXY2NjFYTC9NeVV3OTJCQ3BtVEZa?=
- =?utf-8?B?SjI0c3B5cUVlTnNXSm9tb2s3bHlrR0pkb2c5L1h6OHMwaStRY29LcGhHOXcw?=
- =?utf-8?B?aWo0Z1N2U3crN042RHZlQzFpbHdORVV1cWhxNzduSmh5cFZtb3MyUk55bVRI?=
- =?utf-8?B?UUNucmtNeWVHd2VqNmlPaWYwdFlCTDBnTU1NTElJQ0FpNmRpTVBWN2taRDV2?=
- =?utf-8?B?TW5CdGtrQjRMOFJ1QUJMdm5XNGkwelZrWTdvdUNkL3dUcEk3emcvZjVDZmpL?=
- =?utf-8?B?MG1nTjVKb2o4bmFnNys1eE5JaSt4U2hFVVUxR0Q4R0c4R1ZXTmFHVXlUK0NV?=
- =?utf-8?B?VUI4RnF1ZTZLZ3gwdkVkcDM4N1lOOXVjMlpuemxGMGlTSUxFSkdaOUpVcnc3?=
- =?utf-8?B?TG42eSs5eUJCWWZWMkpFU0RDam5YOXBNWHlpU3NPQVc4UDJFNHc2aWhiTHEy?=
- =?utf-8?B?b0tUUnlrZHlBVFZ1TExUMmM0dU5UUFhxQmlFNjhIR2hKdVROSmw5QUpsMGhU?=
- =?utf-8?B?R3NPWG1aWEVFQU42U0h1NUhEY25PSEZISjlyKzFZbW4vZXM4WXJsS3dpVXBI?=
- =?utf-8?B?UWJmck5QZGFxOVRDd04ycEMwWGRHR2pvVm53V0x6aFRBdlg4djRPNXF5YWdn?=
- =?utf-8?B?TXhETHZZN0JJUWZJd3R5OGljbEp4dk1EdThscDlzS2pFb3FXdmZ2OWlRaWo4?=
- =?utf-8?B?WWdBS1lVdzFOakRjU0FRR0tDSDdSc3JQbzUvOXNmdTRnUmhyNUlWaHErNzlk?=
- =?utf-8?B?U08wWFZ0dTM3WE1mb1RXRXZYWEk0NC9NTDN1Rk1wUWVUQjFldTdSUTdNaG1J?=
- =?utf-8?B?bG1NeStyZDcvOXpkb3dqVDVONUtEVnEzcUplUlRESEd6TVBRWTdNTWlxeHdu?=
- =?utf-8?B?OGdjWVdXcHRBaHlBNitXVU90VnllaWVNK0ZBYTBsSUpxaUFEeUhMLy9EVlNp?=
- =?utf-8?B?Ump1cjlCUU9jNHZObm9wTDZwalNtZlllYzVUVk9hYU51ZmVhMVMxYnlIL0Uz?=
- =?utf-8?B?TkZ4U1hocEp0SzJSVzVSSnIwWHNWTXlobHR4NU9jK2dYQUtSUWh6VmRNanZT?=
- =?utf-8?B?ZURabUZnL0VoVE91czJrL0gwcGJBNVJtaE9EbXJzbmlwT0wwS0tYT2ZRUktr?=
- =?utf-8?B?ckQ0Z29CMmFNQmk2d0xzdFl0TlQyNTNrSUJkNFpZdHp2QjFjVzRURHNTZmRw?=
- =?utf-8?B?ZUQrUnk4MEJzQVlPZCtTcUNzMVRvbzBYMlBRNzVaQy9EN0dDYzNCWHZKdzBC?=
- =?utf-8?B?RUZXL0lGMkx2NkNQdENGNFd3STFxVEQrNnBvUUh5ODdXUDVSRVV4YUtYRjNo?=
- =?utf-8?B?UCt2bU5XVVhQUGcvSmp0d2M1N0tIekprTW5DNHFwVmpkR1BZaEF5eEVoZkRM?=
- =?utf-8?B?dkd1eGpqUzV4RVFmR21uaURZckliNVZxcXBvd2lpZzlnSGlaRWN1bTF0S2dR?=
- =?utf-8?B?em5idm8veWZyM0NyVE9aSllEY29FYW5JRWlJTkpJaERpZkVxTVdJamNxdi9w?=
- =?utf-8?B?TzhHc0lPOFd5dVg2Y0E1R3lYMFd6OXE3aUVYZjlEbmRnU2thUk16V25CZExp?=
- =?utf-8?B?eTlrQXBMQkM4VkVOK2JocjdqejlxT3oyTndVb0tYcnR1UG9oNlpmMVU4OWxs?=
- =?utf-8?B?THZENWtycFU1Qi92U2xJUGhyS21QeDdFeDFudkNVc1BlVjBSdnNBMzVoQ28r?=
- =?utf-8?Q?3HY2mq/wyaY3LHTsJUl9Lc10jcsnvwXeZfyB0vz?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 325a8184-5111-4849-d00d-08d8ec8dbf83
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
+X-Microsoft-Antispam-Message-Info: 0nSuFeAerS1FD4liYMu+HoskjSMz/oJ1/CBk+eklAzaRbhzN8jOv1s5g/RJh/tMKwvJCHPReiOBfASOmI2k4SYIpis2PsZnK5xk0kI+KzGqp1PdiEHX7fanIUBikZKtjbR9w+uprzJjriuFbFcarmGIN3PMaRA4mQL22hK9DqQsyXKuQF4E8MooOaajuhWGQK0BWWGUHC3vXihm0nce2MK0J3YMdcFUx36bKX/ckaGmbTqu3+m9dPbo9UE6HZd/bvTnWPDg66+m9BcfztgSapqpyBNPhsfvXbsbnKWPLsDQgkcBLpy0S0xKghBuYeUsjbFRHjJWImbFks7t2kCUO/3OsdSk8duLC33HY0WPPsBSfXeXzbNSI3VXMR35tR1Dan8kKN9zfKBGqqAp1m3oBowWddqv/e8lrGhdwWSkLyESncVWhJnNBGfy1ZuLoKq8720Aa0fLIJQ2d7NiiaTMbiKYnvKpGU1P+mlFbCFNfhtEy+PHI1byELlXqOtpvV3bHtgJLjAzqdNrAXd8ZnHIXJycpzPt1D8ITN9A6XPBczBh5g5DkJEsVlZ2tcezhkNYPNvkHlmKSvJkn5t980fOi5gxR4TYfEebdgU/eQRsBxdflFECWnsymhwyqZUo3AXRnTa5nAKq2Ppj/z4EDJFKTIOSX8S8UdH0zoKP9gkqR0co=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(346002)(366004)(396003)(136003)(9746002)(316002)(2906002)(36756003)(26005)(9786002)(4326008)(8676002)(33656002)(478600001)(426003)(66946007)(38100700001)(2616005)(1076003)(6916009)(8936002)(66476007)(186003)(5660300002)(54906003)(86362001)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ODwO1Sc+Z6CL9JKMfBmFudYBUwncCb9va7/5YC1VRRTZeioDhbITeNEtHert?=
+ =?us-ascii?Q?uTzyhvuJgVSy7AXW8bAm11sCWcM/XVJNk1Ejab2MQzXA4t+8kJs/rcj/JDkd?=
+ =?us-ascii?Q?Oe6ZWOknv4SvVO856pQ8FEhiaG2hhPukyRguI12z1YeXy/KcscsFcMSve2uT?=
+ =?us-ascii?Q?9ph+/m6usWpxRWrJHKJW2yKci3WVmptNP/ag/8+H6Q18gU1sY1Clf5Bdc9k+?=
+ =?us-ascii?Q?bcJlGcyAoLzR1OyFztCXS7XmW3pwjShIpWRv/zOO+JOcyWMKEp0LV0fWLgsC?=
+ =?us-ascii?Q?HD3CMNSYBOMggzZbRHGwmn9wjC09Nq8maCWTFZYl9ujXoYsMybTKU8tu23wR?=
+ =?us-ascii?Q?BM7IxqCSbcJlYBfjMrA+F14MgyFRjjlzktQCHTOqMXpd+jK98emQjPocoK0a?=
+ =?us-ascii?Q?2m9WynIxBLo4ybf6XgTPNP0Eu6S3uDUnZkDxu5rznNN6hjC+kTxz2bvLQlqM?=
+ =?us-ascii?Q?+4/KcW6d/ah+mk+A6kPwQti1eYUgRjSmHsb2RqixHE8ROz5Uu2cXvVvyWen5?=
+ =?us-ascii?Q?dDkqgtdnZyqdKb1X8u5lxwEoquHSD9DOxlypPoGPNsdOZ5sswQ+i7/kn5z5j?=
+ =?us-ascii?Q?sk6uN7y4dPKwUYdqGTqg3In8jRHk1laF4IFtlne2N10Tb4rDdPoD8ekkPX2h?=
+ =?us-ascii?Q?8Tt0TcAaed9gRWi4NCifNifYjffcgb7C2l++QKFLqqt2il7I2zyvVnNHzFeI?=
+ =?us-ascii?Q?7L9BJjqxrtEULZDoQkeRUEmhQvV3RTYHMCOIgN7KWUeV8mCt/Pjmeq51AJyo?=
+ =?us-ascii?Q?WHrx1MwTmF9kwmaH1N4JxLfJ51Kvn/7FIJqPCLIj+eEBFntiSyJaDl4aBTBz?=
+ =?us-ascii?Q?m/92ZAOy5OwQIBwamMI0j7+dqtPLHGVALhA4aI5zU2Gf1y+7D0+zyug/A68M?=
+ =?us-ascii?Q?IfNf5YgCLnteCtmx9PVcTxz39YhXRcTs2faX5nF1yCilEYRqMgaBJ1WNvUOT?=
+ =?us-ascii?Q?XdwxNmOxQLaIjFvzATOkqH54r939tZtbIYcSNg8VX2cYlKS33ibs+o9RtbCp?=
+ =?us-ascii?Q?jbyG6DLx4VaacDG5xl9GtfOKiRIk/CzUwc7bkFZEHQCv2xtGI8xu5vaQ99Hg?=
+ =?us-ascii?Q?IdTXOXEz7tH2EEn68CPvQHwvaZa7dCnfuiVequTYh/psBPAoNaXXor8+Cjyq?=
+ =?us-ascii?Q?2sqH/wb4D8W7ZsIGeEDzW9bf8kI89OCqHkdUt+ASQZs5rCDj1kgU7DAtdG8f?=
+ =?us-ascii?Q?zKs2YqKfHqM62l+Gpi83REmPEzoDqghm81RifHbVSeuk0F34ut6T+rQvZY+y?=
+ =?us-ascii?Q?+ORt6Po3KUS92/5v6n8wv6VMVCtua0Z4s6sXzAesvQKifiKWVZgGUJWtFCj0?=
+ =?us-ascii?Q?9pEzo7FWkjArVyc/c7J00pfhxel0wQvmAqmAErvI2+kgaw=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e20655d-dc15-4892-ba22-08d8ec94626b
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2021 17:21:22.1740
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2021 18:08:53.2732
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uATkz1qXOYp5U89dc5MW2LlibdoSmBsuMrwD/cmNv+c/L5vGKTBVpFXRtC321vjoLXJQz5RmRU5P1Gqga6wHQEzCPQhSHtnFDfi5zoJe3ahjtYXZIj5Ms19Yx/OV/wKA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6134
+X-MS-Exchange-CrossTenant-UserPrincipalName: +ePz31RIkvTmgDup+plssBNvVrjpsiVJg2ErVjjk/avvOD2MwGA/AjRxc6QqUrAO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4500
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/21/2021 12:45 PM, Jason Gunthorpe wrote:
-> On Sun, Mar 21, 2021 at 12:24:39PM -0400, Dennis Dalessandro wrote:
->> On 3/21/2021 4:56 AM, Leon Romanovsky wrote:
->>> On Sat, Mar 20, 2021 at 12:39:46PM -0400, Dennis Dalessandro wrote:
->>>> On 3/19/2021 6:57 PM, Rimmer, Todd wrote:
->>>>>>> [Wan, Kaike] Incorrect. The rv module works with hfi1.
->>>
->>> <...>
->>>
->>>>> We have removed all GPU specific code from the upstream submission, but used both the "alignment holes" and the "reserved"
->>>>> mechanisms to hold places for GPU specific fields which can't be upstreamed.
->>>>
->>>> This problem extends to other drivers as well. I'm also interested in advice
->>>> on the situation. I don't particularly like this either, but we need a way
->>>> to accomplish the goal. We owe it to users to be flexible. Please offer
->>>> suggestions.
->>>
->>> Sorry to interrupt, but it seems that solution was said here [1].
->>> It wasn't said directly, but between the lines it means that you need
->>> two things:
->>> 1. Upstream everything.
->>
->> Completely agree. However the GPU code from nvidia is not upstream. I don't
->> see that issue getting resolved in this code review. Let's move on.
->>
->>> 2. Find another vendor that jumps on this RV bandwagon.
->>
->> That's not a valid argument. Clearly this works over multiple vendors HW.
+On Sun, Mar 21, 2021 at 01:21:14PM -0400, Dennis Dalessandro wrote:
+
+> Maybe that's something that should be explored. Isn't this along the lines
+> of stuff we talked about with the verbs 2.0 stuff, or whatever we ended up
+> calling it.
+
+I think verbs 2.0 turned into the ioctl uapi stuff, I don't remember anymore.
+
+> > > We should be trying to get things upstream, not putting up walls when people
+> > > want to submit new drivers. Calling code "garbage" [1] is not productive.
+> > 
+> > Putting a bunch of misaligned structures and random reserved fields
+> > *is* garbage by the upstream standard and if I send that to Linus I'll
+> > get yelled at.
 > 
-> At a certain point we have to decide if this is a generic code of some
-> kind or a driver-specific thing like HFI has.
-> 
-> There are also obvious technial problems designing it as a ULP, so it
-> is a very important question to answer. If it will only ever be used
-> by one Intel ethernet chip then maybe it isn't really generic code.
+> Not saying you should send this to Linus. I'm saying we should figure out a
+> way to make it better and insulting people and their hard work isn't
+> helping.
 
-Todd/Kaike, is there something in here that is specific to the Intel 
-ethernet chip?
+No - you've missed what happened here. Todd responded very fast and
+explained - Intel *knowingly* sent code that was sub-standard as some
+calculated attempt to make Intel's life maintaining their out of tree
+drivers easier.
 
-> On the other hand it really looks like it overlaps in various ways
-> with both RDS and the qib/hfi1 cdev, so why isn't there any effort to
-> have some commonality??
+This absoultely needs strong language as I can't catch everything and
+people need to understand there are real consequences to violating the
+community trust in this way!
 
-Maybe that's something that should be explored. Isn't this along the 
-lines of stuff we talked about with the verbs 2.0 stuff, or whatever we 
-ended up calling it.
+> No one is suggesting to compromise the upstream world. 
 
->> We should be trying to get things upstream, not putting up walls when people
->> want to submit new drivers. Calling code "garbage" [1] is not productive.
-> 
-> Putting a bunch of misaligned structures and random reserved fields
-> *is* garbage by the upstream standard and if I send that to Linus I'll
-> get yelled at.
+I'm not sure what you mean - what could upstream do to in any way
+change the situation other than compromising on what will be merged?
 
-Not saying you should send this to Linus. I'm saying we should figure 
-out a way to make it better and insulting people and their hard work 
-isn't helping. This is the kind of culture we are trying to get away 
-from in the kernel world.
+> There is a bigger picture here. The answer for this driver may just
+> be take out the reserved stuff. That's pretty simple. The bigger
+> question is how do we deal with non-upstream code. It can't be a
+> problem unique to the RDMA subsystem. How do others deal with it?
 
-> And you certainly can't say "we are already shipping this ABI so we
-> won't change it" either.
-> 
-> You can't square this circle by compromising the upstream world in any
-> way, it is simply not accepted by the overall community.
-> 
-> All of you should know this, I shouldn't have to lecture on this!
+The kernel community consensus is that upstream code is on its own.
 
-No one is suggesting to compromise the upstream world. There is a bigger 
-picture here. The answer for this driver may just be take out the 
-reserved stuff. That's pretty simple. The bigger question is how do we 
-deal with non-upstream code. It can't be a problem unique to the RDMA 
-subsystem. How do others deal with it?
+We don't change the kernel to accomodate out-of-tree code. If the kernel
+changes and out of tree breaks nobody cares.
 
-> Also no, we should not be "trying to get things upstream" as some goal
-> in itself. Upstream is not a trashcan to dump stuff into, someone has
-> to maintain all of this long after it stops being interesting, so
-> there better be good reasons to put it here in the first place.
+Over a long time it has been proven that this methodology is a good
+way to effect business change to align with the community consensus
+development model - eventually the costs of being out of tree have bad
+ROI and companies align.
 
-That is completely not what I meant at all. I mean we should be trying 
-to get rid of the proprietary, and out of tree stuff. It doesn't at all 
-imply to fling crap against the wall and hope it sticks. We should be 
-encouraging vendors to submit their code and work with them to get it in 
-shape. We clearly have a problem with vendor proprietary code not being 
-open. Let's not encourage that behavior. Vendors should say I want to 
-submit my code to the Linux kernel. Not eh, it's too much of a hassle 
-and kernel people are jerks, so we'll just post it on our website.
+> That is completely not what I meant at all. I mean we should be
+> trying to get rid of the proprietary, and out of tree stuff. It
+> doesn't at all imply to fling crap against the wall and hope it
+> sticks. We should be encouraging vendors to submit their code and
+> work with them to get it in shape.
 
-> If it isn't obvious, I'll repeat again: I'm highly annoyed that Intel
-> is sending something like this RV, in the state it is in, to support
-> their own out of tree driver, that they themselves have been dragging
-> their feet on responding to review comments so it can be upstream for
-> *years*.
+Well, I am working on something like 4-5 Intel series right now, and
+it sometimes does feel like flinging. Have you seen Greg KH's remarks
+that he won't even look at Intel patches until they have internal
+expert sign off?
 
-To be fair it is sent as RFC. So to me that says they know it's a ways 
-off from being ready to be included and are starting the process early.
+> not encourage that behavior. Vendors should say I want to submit my code to
+> the Linux kernel. Not eh, it's too much of a hassle and kernel people are
+> jerks, so we'll just post it on our website.
 
--Denny
+There is a very, very fine line between "working with the community"
+and "the community will provide free expert engineering work to our
+staff".
 
+> To be fair it is sent as RFC. So to me that says they know it's a ways off
+> from being ready to be included and are starting the process early.
+
+I'm not sure why it is RFC. It sounds like it is much more than this
+if someone has already made a version with links to the NVIDIA GPU
+driver and has reached a point where they care about ABI stablility?
+
+Jason
