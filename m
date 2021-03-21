@@ -2,75 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CC23431C9
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Mar 2021 09:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4622B34323C
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Mar 2021 13:07:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbhCUI5d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 21 Mar 2021 04:57:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51596 "EHLO mail.kernel.org"
+        id S229854AbhCUMHK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 21 Mar 2021 08:07:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229784AbhCUI4v (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 21 Mar 2021 04:56:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D2AA61924;
-        Sun, 21 Mar 2021 08:56:49 +0000 (UTC)
+        id S229840AbhCUMHA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 21 Mar 2021 08:07:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFA8061939;
+        Sun, 21 Mar 2021 12:06:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616317010;
-        bh=349re/xRmhghhglFb2HVcKulTN/dsCATi50SCN5+e00=;
+        s=k20201202; t=1616328419;
+        bh=GnNSETU6BVrJoL/FwBCOfkzDwU4GMhZ6BeFvNUTFE9A=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T2gfWOhimkDKA5OLq6phBfUawkrZGI3p2yXTNMRvJVtsfM7Leo488iXqHgeM7N7Mw
-         yCxnNNYjLFjzg3F32ZA0fdR8btFPVaeSSRFy2yU6CA0frIYUfHU4LilJ1Ltq5EP/QH
-         13kvmgt/5pyznhuX6lcijugIoCGM+fHE1K/RNtl5TDRCLZRB6goATKzM3fomQqCoIO
-         0b8qDcpKz/xaNcCk0wUO3qlHQnEH6JPdFGwoF3nxTNG5dIaeyVdQ5sR3Dz0MWIrunx
-         pJmOXCfyMiWmRqcytg8/AbhZhbRBi8zIdGDijSslFUnPNsIrt7GcYn72LPYSJ1Ifa9
-         YTGR6S1JN8Lqg==
-Date:   Sun, 21 Mar 2021 10:56:46 +0200
+        b=WuX4fb+y8lkV28hW2hW5qNpJpcndD3qVt7vw+sk/gFo8E+XQKtR9KWUnsuy034w7E
+         V8ODCk1AkXP45V1V9Y3/FQRnmKGe0tPlCdmt7ZWS6FW4sWtRJp3Sm+lFLj4QfCV2yx
+         tit55estOf2GH8UpEf9/Lpy39aedd4pg0fdZO/7AclBunPH2TPSJLpHTZ3H9MLQGSN
+         ouH2rQLfGQ7zZTwYPOwn/u5TVTUizodLpJs72V6Zm/jvOMoNsxR9mcJnoLqfyChaVS
+         iJmPQ98qiY3K54bNxYdCo5iyyPFRkDCdpD6kIVx+7uQ6XmQFZzKN4z2Ow59aoa/cMx
+         viO5kOhEY8jaQ==
+Date:   Sun, 21 Mar 2021 14:06:55 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc:     "Rimmer, Todd" <todd.rimmer@intel.com>,
-        "Wan, Kaike" <kaike.wan@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH RFC 0/9] A rendezvous module
-Message-ID: <YFcKTjU9JSMBrv0x@unreal>
-References: <29061edb-b40c-67a9-c329-3c9446f0f434@cornelisnetworks.com>
- <20210319194446.GA2356281@nvidia.com>
- <BL0PR11MB3299928351B241FAAC76E760F6689@BL0PR11MB3299.namprd11.prod.outlook.com>
- <20210319202627.GC2356281@nvidia.com>
- <BL0PR11MB3299C202FCFF25646BFEE9B6F6689@BL0PR11MB3299.namprd11.prod.outlook.com>
- <20210319205432.GE2356281@nvidia.com>
- <SN6PR11MB3311F22207FDCA37B3A3C07AF4689@SN6PR11MB3311.namprd11.prod.outlook.com>
- <29607fd4-906d-7d0d-2940-62ff5c8c9ec6@cornelisnetworks.com>
- <BL0PR11MB329976F1C41951957E2DBE79F6689@BL0PR11MB3299.namprd11.prod.outlook.com>
- <be96ccbb-17b7-27e3-a4f2-5b2cc4184ecc@cornelisnetworks.com>
+To:     "Xiong, Jianxin" <jianxin.xiong@intel.com>
+Cc:     liweihang <liweihang@huawei.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Linuxarm <linuxarm@huawei.com>
+Subject: Re: [rdma-core] Compile issue with DRM headers
+Message-ID: <YFc2348DwMqm6e3r@unreal>
+References: <d204d1db15844e45b946125a5452ab19@huawei.com>
+ <MW3PR11MB4555FC2C195C0AAB5D804326E5689@MW3PR11MB4555.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <be96ccbb-17b7-27e3-a4f2-5b2cc4184ecc@cornelisnetworks.com>
+In-Reply-To: <MW3PR11MB4555FC2C195C0AAB5D804326E5689@MW3PR11MB4555.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 12:39:46PM -0400, Dennis Dalessandro wrote:
-> On 3/19/2021 6:57 PM, Rimmer, Todd wrote:
-> > > > [Wan, Kaike] Incorrect. The rv module works with hfi1.
-
-<...>
-
-> > We have removed all GPU specific code from the upstream submission, but used both the "alignment holes" and the "reserved"
-> > mechanisms to hold places for GPU specific fields which can't be upstreamed.
+On Fri, Mar 19, 2021 at 04:50:53PM +0000, Xiong, Jianxin wrote:
 > 
-> This problem extends to other drivers as well. I'm also interested in advice
-> on the situation. I don't particularly like this either, but we need a way
-> to accomplish the goal. We owe it to users to be flexible. Please offer
-> suggestions.
+> > -----Original Message-----
+> > From: liweihang <liweihang@huawei.com>
+> > Sent: Friday, March 19, 2021 1:44 AM
+> > To: Xiong, Jianxin <jianxin.xiong@intel.com>; linux-rdma@vger.kernel.org
+> > Cc: Jason Gunthorpe <jgg@ziepe.ca>; Leon Romanovsky <leon@kernel.org>; Linuxarm <linuxarm@huawei.com>
+> > Subject: [rdma-core] Compile issue with DRM headers
+> > 
+> > Hi Jianxin,
+> > 
+> > I met a compile error with recent version of rdma-core on my server with Ubuntu
+> > 14.04:
+> > 
+> > ../pyverbs/dmabuf_alloc.c:16:24: fatal error: amdgpu_drm.h: No such file or directory  #include <amdgpu_drm.h>
+> >                         ^
+> > compilation terminated.
+> > 
+> > I found it is related with dma-buf based commits. And the commit 3788aa843b4b
+> > ("configure: Add check for DRM headers") adds a check for libdrm headers. I have installed it but my version(2.4.67-1ubuntu0.14.04.2) isn't
+> > new enough, there is no 'amdgpu_drm.h' in DRM_INCLUDE_DIRS(/usr/include/drm).
+> > 
+> > So I think we may need some check for the the version of libdrm in CMakeList.txt or something else :) Could you please give me some
+> > suggestions?
+> > 
+> > Thanks
+> > Weihang
+> 
+> Hi Weihang,
+> 
+> The simplest way is to replace the check of "drm.h" with "amdgpu_drm.h". This is 
+> reasonable since dma-buf based MR won't work with old kernel anyway. 
+> 
+> Alternatively, we can add a check for "amdgpu_drm.h" in CMakeLists.txt and add
+> some #ifdef's to dmabuf_alloc.c around the code related to amdgpu.
 
-Sorry to interrupt, but it seems that solution was said here [1].
-It wasn't said directly, but between the lines it means that you need
-two things:
-1. Upstream everything.
-2. Find another vendor that jumps on this RV bandwagon.
-
-[1] https://lore.kernel.org/linux-rdma/20210319230644.GI2356281@nvidia.com
+Let's add compilation test that checks all those files at the same time:
+   14 #include <drm.h>
+   15 #include <i915_drm.h>
+   16 #include <amdgpu_drm.h>
+   17 #include <radeon_drm.h>
 
 Thanks
+
+> 
+> -Jianxin
+> 
