@@ -2,79 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43753436DA
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Mar 2021 03:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E23AB34376B
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Mar 2021 04:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhCVCye (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 21 Mar 2021 22:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbhCVCyT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Mar 2021 22:54:19 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86166C061574;
-        Sun, 21 Mar 2021 19:54:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=LchtIFk89xU4+bvTjczihlQeS2+A0oDJIO4T86TI7/c=; b=RZ/s6ksgaYtj7p+TO5f9seCcQG
-        BMq4dpCNgALtQVBROU5goabiQotB2mVRNwp2ImlFVmh3L1idMsAMG4bP3qScTy6lD5UwT6Bay29Nc
-        PstMsP+uYeNcePvahbCfgWy9+aLuDv96qseFVXrAfC+iarvImt9lZmnjHdeR+40aX3HEpIM9+fdxu
-        h3n+6A5d/yRAN4ddclbxesB4Hk8mo9RRcn4ZcYctt3VK4MSiJOn2zF6vmhdwvC5+b6dsW70wbRaYN
-        0VMKCxAI6bzE2yij7ZqUWjTZTMeVdmltI9wMs4SmhHOi9SHvXt3jLOk/d2dPSP+PhNRHBEEAXvAyJ
-        YUF3pzdg==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOAhm-00AjUJ-BA; Mon, 22 Mar 2021 02:54:13 +0000
-Subject: Re: [PATCH] IB/hns: Fix a spelling
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, oulijun@huawei.com,
-        huwei87@hisilicon.com, liweihang@huawei.com, dledford@redhat.com,
-        jgg@ziepe.ca, dt@kernel.org, linux-rdma@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210322022751.4137205-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d29400f4-32fd-d479-9d8e-7dd91499cce5@infradead.org>
-Date:   Sun, 21 Mar 2021 19:54:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210322022751.4137205-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
+        id S229746AbhCVD3k convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Sun, 21 Mar 2021 23:29:40 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3045 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229854AbhCVD3P (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Mar 2021 23:29:15 -0400
+Received: from DGGEML403-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F3fzG4Wg1zWPBc;
+        Mon, 22 Mar 2021 11:26:02 +0800 (CST)
+Received: from dggema754-chm.china.huawei.com (10.1.198.196) by
+ DGGEML403-HUB.china.huawei.com (10.3.17.33) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Mon, 22 Mar 2021 11:29:09 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema754-chm.china.huawei.com (10.1.198.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Mon, 22 Mar 2021 11:29:09 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.013;
+ Mon, 22 Mar 2021 11:29:09 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH for-next] RDMA/core: Check invalid QP state for
+ ib_modify_qp_is_ok()
+Thread-Topic: [PATCH for-next] RDMA/core: Check invalid QP state for
+ ib_modify_qp_is_ok()
+Thread-Index: AQHXHJ8NNG3a5kWMHUaHioKmCNer6w==
+Date:   Mon, 22 Mar 2021 03:29:09 +0000
+Message-ID: <53ff6a59a9a74443bca58bcaee6292bb@huawei.com>
+References: <1616144545-18159-1-git-send-email-liweihang@huawei.com>
+ <YFXBprYFmFgHu9Z8@unreal>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/21/21 7:27 PM, Bhaskar Chowdhury wrote:
+On 2021/3/20 17:34, Leon Romanovsky wrote:
+> On Fri, Mar 19, 2021 at 05:02:25PM +0800, Weihang Li wrote:
+>> From: Xi Wang <wangxi11@huawei.com>
+>>
+>> Out-of-bounds may occur in 'qp_state_table' when the caller passing wrong
+>> QP state value.
 > 
-> s/wubsytem/subsystem/
+> How is it possible? Do you have call stack to support it?
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  .../devicetree/bindings/infiniband/hisilicon-hns-roce.txt       | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Thanks
 > 
-> diff --git a/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt b/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt
-> index 84f1a1b505d2..c57e09099bcb 100644
-> --- a/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt
-> +++ b/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt
-> @@ -1,7 +1,7 @@
->  Hisilicon RoCE DT description
-> 
->  Hisilicon RoCE engine is a part of network subsystem.
-> -It works depending on other part of network wubsytem, such as, gmac and
-> +It works depending on other part of network subsystem, such as, gmac and
 
-No comma after "such as".
+ib_modify_qp_is_ok() is exported, I think any kernel modules can pass in
+invalid QP state. Should we check it in such case?
 
->  dsa fabric.
-> 
->  Additional properties are described here:
-> --
+Thanks
+Weihang
 
-
--- 
-~Randy
+>>
+>> Signed-off-by: Xi Wang <wangxi11@huawei.com>
+>> Signed-off-by: Weihang Li <liweihang@huawei.com>
+>> ---
+>>  drivers/infiniband/core/verbs.c | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+>> index 28464c5..66ba4e6 100644
+>> --- a/drivers/infiniband/core/verbs.c
+>> +++ b/drivers/infiniband/core/verbs.c
+>> @@ -1613,6 +1613,10 @@ bool ib_modify_qp_is_ok(enum ib_qp_state cur_state, enum ib_qp_state next_state,
+>>  	    cur_state != IB_QPS_SQD && cur_state != IB_QPS_SQE)
+>>  		return false;
+>>  
+>> +	if (cur_state >= ARRAY_SIZE(qp_state_table) ||
+>> +	    next_state >= ARRAY_SIZE(qp_state_table[0]))
+>> +		return false;
+>> +
+>>  	if (!qp_state_table[cur_state][next_state].valid)
+>>  		return false;
+>>  
+>> -- 
+>> 2.8.1
+>>
 
