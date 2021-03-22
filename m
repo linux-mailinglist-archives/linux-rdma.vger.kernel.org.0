@@ -2,99 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED11343675
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Mar 2021 03:02:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 867583436A1
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Mar 2021 03:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbhCVCBZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Sun, 21 Mar 2021 22:01:25 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3912 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhCVCAw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Mar 2021 22:00:52 -0400
-Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4F3d2d5zr2z5gfk;
-        Mon, 22 Mar 2021 09:58:49 +0800 (CST)
-Received: from dggema704-chm.china.huawei.com (10.3.20.68) by
- DGGEML401-HUB.china.huawei.com (10.3.17.32) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Mon, 22 Mar 2021 10:00:46 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema704-chm.china.huawei.com (10.3.20.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Mon, 22 Mar 2021 10:00:46 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.013;
- Mon, 22 Mar 2021 10:00:46 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH for-next] RDMA/hns: Fix memory corruption when allocating
- XRCDN
-Thread-Topic: [PATCH for-next] RDMA/hns: Fix memory corruption when allocating
- XRCDN
-Thread-Index: AQHXHJy+DOVU9nWWokiLWMRKgkKCwQ==
-Date:   Mon, 22 Mar 2021 02:00:46 +0000
-Message-ID: <dd591a4d80154c4390a07edc6409af7e@huawei.com>
-References: <1616143536-24874-1-git-send-email-liweihang@huawei.com>
- <YFXBSyUI/J8uMoxH@unreal>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S229621AbhCVC2M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 21 Mar 2021 22:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229579AbhCVC2G (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Mar 2021 22:28:06 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC32CC061574;
+        Sun, 21 Mar 2021 19:28:05 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id h7so11302677qtx.3;
+        Sun, 21 Mar 2021 19:28:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=saO1mOhIf7L0oN3GcCDcaddpRVRVxtAOjyoGRRBRbWg=;
+        b=sr4rb7/uxmlmTTIWwvTBGaxiSvfTfsLPfh0P6SxzHa17vJ4tBurONWh/Zpkh/kKsd1
+         g9HyXpxeV/3Euo09m/W5YD3u2ByzG90Cet3ZzSNUlsvs5hsEiMo16josuQH2nUFsIH9T
+         0XmwPp+No4L69rFBGatDZnleUPd6+1HpwyQoGT2yKW2zasWaAOH5simlk0xGjxs7jHc6
+         P+JTrXDadyvY0Z2P6s0ie4getSyQnDCLZMZfsDaubgh9OBUWGe74w2KyhgBBQIufSroa
+         1hd4jkvlvItmWizRBHGD/6FKNXuLQsV8Oq+pVF+FoeW87gGpttseeqG7Qb+6uSAPMnQ+
+         C/jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=saO1mOhIf7L0oN3GcCDcaddpRVRVxtAOjyoGRRBRbWg=;
+        b=cc2N2hk0mfnhsIpvOfahEihv/06S/NUxP3dZBgJj9m3QgdCDS1f5UeXBeKhzgUSbAL
+         KXJI3ywTIPFHwfQFbe+UxuGwduB01Pt4eLE+IDZRI21xirs9aFJcGa/Hx7nqqCBEKu9h
+         GwhjvFn0SBaKnPq18okAMiRU3chTKXth47Z3W0HmRIaq/Tf3zMwPXCWAl4eg9n7FPbdg
+         QpMA2pDcg0TVLtv1yUY1aXzSathmg0fvijofn65iYQH44JAO4XovboUbK2QBX9S1AFyE
+         Kw4BW+gSskQ6hUO8CVdl8BpRMJIDOlvsPcGwFz9xeZzE5zKKis/eJtynPts7haEu50B+
+         Imzw==
+X-Gm-Message-State: AOAM530KOVror8VVFulYcYapVjl3qXyqCEPF505BeFyzL5a82ZsEM6j6
+        ynOUFXIJMw8BIFsEEQN0AAY=
+X-Google-Smtp-Source: ABdhPJytXRKIZll0Y4WeNmEdcOFGM51jGcRgmHPys8nM84CK4/HHLUHidrLXk8vXa59OhY+vKCyXMw==
+X-Received: by 2002:ac8:6c4a:: with SMTP id z10mr3869118qtu.229.1616380084907;
+        Sun, 21 Mar 2021 19:28:04 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.54.190])
+        by smtp.gmail.com with ESMTPSA id z6sm8294293qto.70.2021.03.21.19.27.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 19:28:04 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     oulijun@huawei.com, huwei87@hisilicon.com, liweihang@huawei.com,
+        dledford@redhat.com, jgg@ziepe.ca, dt@kernel.org,
+        linux-rdma@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] IB/hns: Fix a spelling
+Date:   Mon, 22 Mar 2021 07:57:51 +0530
+Message-Id: <20210322022751.4137205-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/3/20 17:33, Leon Romanovsky wrote:
-> On Fri, Mar 19, 2021 at 04:45:36PM +0800, Weihang Li wrote:
->> It's incorrect to cast the type of pointer to xrcdn from (u32 *) to
->> (unsigned long *), then pass it into hns_roce_bitmap_alloc(), this will
->> lead to a memory corruption.
->>
->> Fixes: 32548870d438 ("RDMA/hns: Add support for XRC on HIP09")
->> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
->> Signed-off-by: Weihang Li <liweihang@huawei.com>
->> ---
->>  drivers/infiniband/hw/hns/hns_roce_pd.c | 10 ++++++++--
->>  1 file changed, 8 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_pd.c b/drivers/infiniband/hw/hns/hns_roce_pd.c
->> index 3ca51ce..16d6b69 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_pd.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_pd.c
->> @@ -140,8 +140,14 @@ void hns_roce_cleanup_uar_table(struct hns_roce_dev *hr_dev)
->>  
->>  static int hns_roce_xrcd_alloc(struct hns_roce_dev *hr_dev, u32 *xrcdn)
->>  {
->> -	return hns_roce_bitmap_alloc(&hr_dev->xrcd_bitmap,
->> -				     (unsigned long *)xrcdn);
->> +	unsigned long obj;
->> +	int ret;
->> +
->> +	ret = hns_roce_bitmap_alloc(&hr_dev->xrcd_bitmap, &obj);
->> +
->> +	*xrcdn = (u32)obj;
-> 
-> NIT, it will be safer if you don't set set xrcdn after hns_roce_bitmap_alloc() failed.
-> 
-> Thanks
-> 
->> +
->> +	return ret;
->>  }
->>  
->>  static void hns_roce_xrcd_free(struct hns_roce_dev *hr_dev,
->> -- 
->> 2.8.1
->>
 
-Thank you, I will fix it.
+s/wubsytem/subsystem/
 
-Weihang
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ .../devicetree/bindings/infiniband/hisilicon-hns-roce.txt       | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt b/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt
+index 84f1a1b505d2..c57e09099bcb 100644
+--- a/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt
++++ b/Documentation/devicetree/bindings/infiniband/hisilicon-hns-roce.txt
+@@ -1,7 +1,7 @@
+ Hisilicon RoCE DT description
+
+ Hisilicon RoCE engine is a part of network subsystem.
+-It works depending on other part of network wubsytem, such as, gmac and
++It works depending on other part of network subsystem, such as, gmac and
+ dsa fabric.
+
+ Additional properties are described here:
+--
+2.31.0
+
