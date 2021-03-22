@@ -2,156 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92400344942
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Mar 2021 16:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 809053449AF
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Mar 2021 16:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCVPbY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Mar 2021 11:31:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43278 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229665AbhCVPbM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 22 Mar 2021 11:31:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 518196198D;
-        Mon, 22 Mar 2021 15:31:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616427072;
-        bh=QTeCwb79KDXmtdPk8PR3/zJRadw5L3iAmL7vbC+YvBg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=suWjKqKFxJWLKY/0OqlJVAvmG0Nb8Kg/ZVKrYgj1DKiKgtXx696y51TR0YdIpekVV
-         pQvsxgYicIyuNe6uZo4SRiTe6MyB45w7X/vM8iL6tiKGZJT2UV3S3+3r49+umR9Xyy
-         b2V9w9uSseYBaZtlO2NztzKOAVBM9WnrOtEPD+NkwWt0zgMD0fqi+gMcdNlqK7h4tO
-         +771/M2yRlxyTzWMj7FT7f3iH+GNtv036EboTj05waOJmjreLwClKaLvXdMjPjFr5p
-         7HVVtjc5yf470mHaPOZYH4UXtnmiy+Fv2VGtB79XajJ/zPu3bGf7eTe6+ySa/PU2m+
-         V0361Vp8kaDpA==
-Date:   Mon, 22 Mar 2021 17:31:08 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     lyl2019@mail.ustc.edu.cn
+        id S230169AbhCVPuj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Mar 2021 11:50:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230237AbhCVPuT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Mar 2021 11:50:19 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EDF76C061574;
+        Mon, 22 Mar 2021 08:50:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID; bh=B0ELw+2/oqVlbvetG9oyAxWdkWFaLg0RFz7I
+        skwvx+Y=; b=ujz8WXh+sWpvABpb7lhBK/TgN3E++Laya6PIlPgoMO3hd/8zxxba
+        Bs0qK1PpYn5PfVXnNmpxHLeXmn/087ADxO3NNo6QWaYcfLUwdkMwR8Yg7hW2R8Cd
+        4kB/Oz6g6CPzJAVZx42zHViychSmt4EnsAnufPXm8t3lc/sJyeHQfDs=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Mon, 22 Mar
+ 2021 23:50:05 +0800 (GMT+08:00)
+X-Originating-IP: [202.38.69.14]
+Date:   Mon, 22 Mar 2021 23:50:05 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   lyl2019@mail.ustc.edu.cn
+To:     "Leon Romanovsky" <leon@kernel.org>
 Cc:     sagi@grimberg.me, dledford@redhat.com, jgg@ziepe.ca,
         linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] infiniband: Fix a use after free in
+Subject: Re: Re: Re: [PATCH] infiniband: Fix a use after free in
  isert_connect_request
-Message-ID: <YFi4PKJLjMkIXmas@unreal>
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
+In-Reply-To: <YFi4PKJLjMkIXmas@unreal>
 References: <20210322135355.5720-1-lyl2019@mail.ustc.edu.cn>
  <YFipRTHpr8Xqho4V@unreal>
  <1af3e912.b6e4.1785a6b7802.Coremail.lyl2019@mail.ustc.edu.cn>
+ <YFi4PKJLjMkIXmas@unreal>
+X-SendMailWithSms: false
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1af3e912.b6e4.1785a6b7802.Coremail.lyl2019@mail.ustc.edu.cn>
+Message-ID: <748dce35.b904.1785aa104b1.Coremail.lyl2019@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygA3P6etvFhgLpsOAA--.3W
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQsIBlQhn5UKXQADsv
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 10:51:35PM +0800, lyl2019@mail.ustc.edu.cn wrote:
-> 
-> 
-> 
-> > -----原始邮件-----
-> > 发件人: "Leon Romanovsky" <leon@kernel.org>
-> > 发送时间: 2021-03-22 22:27:17 (星期一)
-> > 收件人: "Lv Yunlong" <lyl2019@mail.ustc.edu.cn>
-> > 抄送: sagi@grimberg.me, dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org, target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-> > 主题: Re: [PATCH] infiniband: Fix a use after free in isert_connect_request
-> > 
-> > On Mon, Mar 22, 2021 at 06:53:55AM -0700, Lv Yunlong wrote:
-> > > The device is got by isert_device_get() with refcount is 1,
-> > > and is assigned to isert_conn by isert_conn->device = device.
-> > > When isert_create_qp() failed, device will be freed with
-> > > isert_device_put().
-> > > 
-> > > Later, the device is used in isert_free_login_buf(isert_conn)
-> > > by the isert_conn->device->ib_device statement. My patch
-> > > exchanges the callees order to free the device late.
-> > > 
-> > > Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> > > ---
-> > >  drivers/infiniband/ulp/isert/ib_isert.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > The fix needs to be change of isert_free_login_buf() from
-> > isert_free_login_buf(isert_conn) to be isert_free_login_buf(isert_conn, cma_id->device)
-> > 
-> > Thanks
-> > 
-> > > 
-> > > diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
-> > > index 7305ed8976c2..d8a533e346b0 100644
-> > > --- a/drivers/infiniband/ulp/isert/ib_isert.c
-> > > +++ b/drivers/infiniband/ulp/isert/ib_isert.c
-> > > @@ -473,10 +473,10 @@ isert_connect_request(struct rdma_cm_id *cma_id, struct rdma_cm_event *event)
-> > >  
-> > >  out_destroy_qp:
-> > >  	isert_destroy_qp(isert_conn);
-> > > -out_conn_dev:
-> > > -	isert_device_put(device);
-> > >  out_rsp_dma_map:
-> > >  	isert_free_login_buf(isert_conn);
-> > > +out_conn_dev:
-> > > +	isert_device_put(device);
-> > >  out:
-> > >  	kfree(isert_conn);
-> > >  	rdma_reject(cma_id, NULL, 0, IB_CM_REJ_CONSUMER_DEFINED);
-> > > -- 
-> > > 2.25.1
-> > > 
-> > > 
-> 
-> I see that function isert_free_login_buf(struct isert_conn *isert_conn) has only
-> a parameter,  do you mean i need change the implementation of isert_free_login_buf?
-> 
-> I'm sorry to say that i am unfamilar with this module and afraid of making more mistakes,
-> because this function is being called elsewhere as well.
-> Could you help me to fix this issue? Or just fix it and tell me your commit number?
-
-After checking how isert_connect_release() is implemented, it looks like
-this will fix:
-
-diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
-index 7305ed8976c2..18266f07c58d 100644
---- a/drivers/infiniband/ulp/isert/ib_isert.c
-+++ b/drivers/infiniband/ulp/isert/ib_isert.c
-@@ -438,23 +438,23 @@ isert_connect_request(struct rdma_cm_id *cma_id, struct rdma_cm_event *event)
- 	isert_init_conn(isert_conn);
- 	isert_conn->cm_id = cma_id;
- 
--	ret = isert_alloc_login_buf(isert_conn, cma_id->device);
--	if (ret)
--		goto out;
--
- 	device = isert_device_get(cma_id);
- 	if (IS_ERR(device)) {
- 		ret = PTR_ERR(device);
--		goto out_rsp_dma_map;
-+		goto out;
- 	}
- 	isert_conn->device = device;
- 
-+	ret = isert_alloc_login_buf(isert_conn, cma_id->device);
-+	if (ret)
-+		goto out_conn_dev;
-+
- 	isert_set_nego_params(isert_conn, &event->param.conn);
- 
- 	isert_conn->qp = isert_create_qp(isert_conn, cma_id);
- 	if (IS_ERR(isert_conn->qp)) {
- 		ret = PTR_ERR(isert_conn->qp);
--		goto out_conn_dev;
-+		goto out_rsp_dma_map;
- 	}
- 
- 	ret = isert_login_post_recv(isert_conn);
-@@ -473,10 +473,10 @@ isert_connect_request(struct rdma_cm_id *cma_id, struct rdma_cm_event *event)
- 
- out_destroy_qp:
- 	isert_destroy_qp(isert_conn);
--out_conn_dev:
--	isert_device_put(device);
- out_rsp_dma_map:
- 	isert_free_login_buf(isert_conn);
-+out_conn_dev:
-+	isert_device_put(device);
- out:
- 	kfree(isert_conn);
- 	rdma_reject(cma_id, NULL, 0, IB_CM_REJ_CONSUMER_DEFINED);
+DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIkxlb24gUm9tYW5v
+dnNreSIgPGxlb25Aa2VybmVsLm9yZz4NCj4g5Y+R6YCB5pe26Ze0OiAyMDIxLTAzLTIyIDIzOjMx
+OjA4ICjmmJ/mnJ/kuIApDQo+IOaUtuS7tuS6ujogbHlsMjAxOUBtYWlsLnVzdGMuZWR1LmNuDQo+
+IOaKhOmAgTogc2FnaUBncmltYmVyZy5tZSwgZGxlZGZvcmRAcmVkaGF0LmNvbSwgamdnQHppZXBl
+LmNhLCBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZywgdGFyZ2V0LWRldmVsQHZnZXIua2VybmVs
+Lm9yZywgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiDkuLvpopg6IFJlOiBSZTogW1BB
+VENIXSBpbmZpbmliYW5kOiBGaXggYSB1c2UgYWZ0ZXIgZnJlZSBpbiBpc2VydF9jb25uZWN0X3Jl
+cXVlc3QNCj4gDQo+IE9uIE1vbiwgTWFyIDIyLCAyMDIxIGF0IDEwOjUxOjM1UE0gKzA4MDAsIGx5
+bDIwMTlAbWFpbC51c3RjLmVkdS5jbiB3cm90ZToNCj4gPiANCj4gPiANCj4gPiANCj4gPiA+IC0t
+LS0t5Y6f5aeL6YKu5Lu2LS0tLS0NCj4gPiA+IOWPkeS7tuS6ujogIkxlb24gUm9tYW5vdnNreSIg
+PGxlb25Aa2VybmVsLm9yZz4NCj4gPiA+IOWPkemAgeaXtumXtDogMjAyMS0wMy0yMiAyMjoyNzox
+NyAo5pif5pyf5LiAKQ0KPiA+ID4g5pS25Lu25Lq6OiAiTHYgWXVubG9uZyIgPGx5bDIwMTlAbWFp
+bC51c3RjLmVkdS5jbj4NCj4gPiA+IOaKhOmAgTogc2FnaUBncmltYmVyZy5tZSwgZGxlZGZvcmRA
+cmVkaGF0LmNvbSwgamdnQHppZXBlLmNhLCBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZywgdGFy
+Z2V0LWRldmVsQHZnZXIua2VybmVsLm9yZywgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0K
+PiA+ID4g5Li76aKYOiBSZTogW1BBVENIXSBpbmZpbmliYW5kOiBGaXggYSB1c2UgYWZ0ZXIgZnJl
+ZSBpbiBpc2VydF9jb25uZWN0X3JlcXVlc3QNCj4gPiA+IA0KPiA+ID4gT24gTW9uLCBNYXIgMjIs
+IDIwMjEgYXQgMDY6NTM6NTVBTSAtMDcwMCwgTHYgWXVubG9uZyB3cm90ZToNCj4gPiA+ID4gVGhl
+IGRldmljZSBpcyBnb3QgYnkgaXNlcnRfZGV2aWNlX2dldCgpIHdpdGggcmVmY291bnQgaXMgMSwN
+Cj4gPiA+ID4gYW5kIGlzIGFzc2lnbmVkIHRvIGlzZXJ0X2Nvbm4gYnkgaXNlcnRfY29ubi0+ZGV2
+aWNlID0gZGV2aWNlLg0KPiA+ID4gPiBXaGVuIGlzZXJ0X2NyZWF0ZV9xcCgpIGZhaWxlZCwgZGV2
+aWNlIHdpbGwgYmUgZnJlZWQgd2l0aA0KPiA+ID4gPiBpc2VydF9kZXZpY2VfcHV0KCkuDQo+ID4g
+PiA+IA0KPiA+ID4gPiBMYXRlciwgdGhlIGRldmljZSBpcyB1c2VkIGluIGlzZXJ0X2ZyZWVfbG9n
+aW5fYnVmKGlzZXJ0X2Nvbm4pDQo+ID4gPiA+IGJ5IHRoZSBpc2VydF9jb25uLT5kZXZpY2UtPmli
+X2RldmljZSBzdGF0ZW1lbnQuIE15IHBhdGNoDQo+ID4gPiA+IGV4Y2hhbmdlcyB0aGUgY2FsbGVl
+cyBvcmRlciB0byBmcmVlIHRoZSBkZXZpY2UgbGF0ZS4NCj4gPiA+ID4gDQo+ID4gPiA+IFNpZ25l
+ZC1vZmYtYnk6IEx2IFl1bmxvbmcgPGx5bDIwMTlAbWFpbC51c3RjLmVkdS5jbj4NCj4gPiA+ID4g
+LS0tDQo+ID4gPiA+ICBkcml2ZXJzL2luZmluaWJhbmQvdWxwL2lzZXJ0L2liX2lzZXJ0LmMgfCA0
+ICsrLS0NCj4gPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRp
+b25zKC0pDQo+ID4gPiANCj4gPiA+IFRoZSBmaXggbmVlZHMgdG8gYmUgY2hhbmdlIG9mIGlzZXJ0
+X2ZyZWVfbG9naW5fYnVmKCkgZnJvbQ0KPiA+ID4gaXNlcnRfZnJlZV9sb2dpbl9idWYoaXNlcnRf
+Y29ubikgdG8gYmUgaXNlcnRfZnJlZV9sb2dpbl9idWYoaXNlcnRfY29ubiwgY21hX2lkLT5kZXZp
+Y2UpDQo+ID4gPiANCj4gPiA+IFRoYW5rcw0KPiA+ID4gDQo+ID4gPiA+IA0KPiA+ID4gPiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL3VscC9pc2VydC9pYl9pc2VydC5jIGIvZHJpdmVy
+cy9pbmZpbmliYW5kL3VscC9pc2VydC9pYl9pc2VydC5jDQo+ID4gPiA+IGluZGV4IDczMDVlZDg5
+NzZjMi4uZDhhNTMzZTM0NmIwIDEwMDY0NA0KPiA+ID4gPiAtLS0gYS9kcml2ZXJzL2luZmluaWJh
+bmQvdWxwL2lzZXJ0L2liX2lzZXJ0LmMNCj4gPiA+ID4gKysrIGIvZHJpdmVycy9pbmZpbmliYW5k
+L3VscC9pc2VydC9pYl9pc2VydC5jDQo+ID4gPiA+IEBAIC00NzMsMTAgKzQ3MywxMCBAQCBpc2Vy
+dF9jb25uZWN0X3JlcXVlc3Qoc3RydWN0IHJkbWFfY21faWQgKmNtYV9pZCwgc3RydWN0IHJkbWFf
+Y21fZXZlbnQgKmV2ZW50KQ0KPiA+ID4gPiAgDQo+ID4gPiA+ICBvdXRfZGVzdHJveV9xcDoNCj4g
+PiA+ID4gIAlpc2VydF9kZXN0cm95X3FwKGlzZXJ0X2Nvbm4pOw0KPiA+ID4gPiAtb3V0X2Nvbm5f
+ZGV2Og0KPiA+ID4gPiAtCWlzZXJ0X2RldmljZV9wdXQoZGV2aWNlKTsNCj4gPiA+ID4gIG91dF9y
+c3BfZG1hX21hcDoNCj4gPiA+ID4gIAlpc2VydF9mcmVlX2xvZ2luX2J1Zihpc2VydF9jb25uKTsN
+Cj4gPiA+ID4gK291dF9jb25uX2RldjoNCj4gPiA+ID4gKwlpc2VydF9kZXZpY2VfcHV0KGRldmlj
+ZSk7DQo+ID4gPiA+ICBvdXQ6DQo+ID4gPiA+ICAJa2ZyZWUoaXNlcnRfY29ubik7DQo+ID4gPiA+
+ICAJcmRtYV9yZWplY3QoY21hX2lkLCBOVUxMLCAwLCBJQl9DTV9SRUpfQ09OU1VNRVJfREVGSU5F
+RCk7DQo+ID4gPiA+IC0tIA0KPiA+ID4gPiAyLjI1LjENCj4gPiA+ID4gDQo+ID4gPiA+IA0KPiA+
+IA0KPiA+IEkgc2VlIHRoYXQgZnVuY3Rpb24gaXNlcnRfZnJlZV9sb2dpbl9idWYoc3RydWN0IGlz
+ZXJ0X2Nvbm4gKmlzZXJ0X2Nvbm4pIGhhcyBvbmx5DQo+ID4gYSBwYXJhbWV0ZXIsICBkbyB5b3Ug
+bWVhbiBpIG5lZWQgY2hhbmdlIHRoZSBpbXBsZW1lbnRhdGlvbiBvZiBpc2VydF9mcmVlX2xvZ2lu
+X2J1Zj8NCj4gPiANCj4gPiBJJ20gc29ycnkgdG8gc2F5IHRoYXQgaSBhbSB1bmZhbWlsYXIgd2l0
+aCB0aGlzIG1vZHVsZSBhbmQgYWZyYWlkIG9mIG1ha2luZyBtb3JlIG1pc3Rha2VzLA0KPiA+IGJl
+Y2F1c2UgdGhpcyBmdW5jdGlvbiBpcyBiZWluZyBjYWxsZWQgZWxzZXdoZXJlIGFzIHdlbGwuDQo+
+ID4gQ291bGQgeW91IGhlbHAgbWUgdG8gZml4IHRoaXMgaXNzdWU/IE9yIGp1c3QgZml4IGl0IGFu
+ZCB0ZWxsIG1lIHlvdXIgY29tbWl0IG51bWJlcj8NCj4gDQo+IEFmdGVyIGNoZWNraW5nIGhvdyBp
+c2VydF9jb25uZWN0X3JlbGVhc2UoKSBpcyBpbXBsZW1lbnRlZCwgaXQgbG9va3MgbGlrZQ0KPiB0
+aGlzIHdpbGwgZml4Og0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW5maW5pYmFuZC91bHAv
+aXNlcnQvaWJfaXNlcnQuYyBiL2RyaXZlcnMvaW5maW5pYmFuZC91bHAvaXNlcnQvaWJfaXNlcnQu
+Yw0KPiBpbmRleCA3MzA1ZWQ4OTc2YzIuLjE4MjY2ZjA3YzU4ZCAxMDA2NDQNCj4gLS0tIGEvZHJp
+dmVycy9pbmZpbmliYW5kL3VscC9pc2VydC9pYl9pc2VydC5jDQo+ICsrKyBiL2RyaXZlcnMvaW5m
+aW5pYmFuZC91bHAvaXNlcnQvaWJfaXNlcnQuYw0KPiBAQCAtNDM4LDIzICs0MzgsMjMgQEAgaXNl
+cnRfY29ubmVjdF9yZXF1ZXN0KHN0cnVjdCByZG1hX2NtX2lkICpjbWFfaWQsIHN0cnVjdCByZG1h
+X2NtX2V2ZW50ICpldmVudCkNCj4gIAlpc2VydF9pbml0X2Nvbm4oaXNlcnRfY29ubik7DQo+ICAJ
+aXNlcnRfY29ubi0+Y21faWQgPSBjbWFfaWQ7DQo+ICANCj4gLQlyZXQgPSBpc2VydF9hbGxvY19s
+b2dpbl9idWYoaXNlcnRfY29ubiwgY21hX2lkLT5kZXZpY2UpOw0KPiAtCWlmIChyZXQpDQo+IC0J
+CWdvdG8gb3V0Ow0KPiAtDQo+ICAJZGV2aWNlID0gaXNlcnRfZGV2aWNlX2dldChjbWFfaWQpOw0K
+PiAgCWlmIChJU19FUlIoZGV2aWNlKSkgew0KPiAgCQlyZXQgPSBQVFJfRVJSKGRldmljZSk7DQo+
+IC0JCWdvdG8gb3V0X3JzcF9kbWFfbWFwOw0KPiArCQlnb3RvIG91dDsNCj4gIAl9DQo+ICAJaXNl
+cnRfY29ubi0+ZGV2aWNlID0gZGV2aWNlOw0KPiAgDQo+ICsJcmV0ID0gaXNlcnRfYWxsb2NfbG9n
+aW5fYnVmKGlzZXJ0X2Nvbm4sIGNtYV9pZC0+ZGV2aWNlKTsNCj4gKwlpZiAocmV0KQ0KPiArCQln
+b3RvIG91dF9jb25uX2RldjsNCj4gKw0KPiAgCWlzZXJ0X3NldF9uZWdvX3BhcmFtcyhpc2VydF9j
+b25uLCAmZXZlbnQtPnBhcmFtLmNvbm4pOw0KPiAgDQo+ICAJaXNlcnRfY29ubi0+cXAgPSBpc2Vy
+dF9jcmVhdGVfcXAoaXNlcnRfY29ubiwgY21hX2lkKTsNCj4gIAlpZiAoSVNfRVJSKGlzZXJ0X2Nv
+bm4tPnFwKSkgew0KPiAgCQlyZXQgPSBQVFJfRVJSKGlzZXJ0X2Nvbm4tPnFwKTsNCj4gLQkJZ290
+byBvdXRfY29ubl9kZXY7DQo+ICsJCWdvdG8gb3V0X3JzcF9kbWFfbWFwOw0KPiAgCX0NCj4gIA0K
+PiAgCXJldCA9IGlzZXJ0X2xvZ2luX3Bvc3RfcmVjdihpc2VydF9jb25uKTsNCj4gQEAgLTQ3Mywx
+MCArNDczLDEwIEBAIGlzZXJ0X2Nvbm5lY3RfcmVxdWVzdChzdHJ1Y3QgcmRtYV9jbV9pZCAqY21h
+X2lkLCBzdHJ1Y3QgcmRtYV9jbV9ldmVudCAqZXZlbnQpDQo+ICANCj4gIG91dF9kZXN0cm95X3Fw
+Og0KPiAgCWlzZXJ0X2Rlc3Ryb3lfcXAoaXNlcnRfY29ubik7DQo+IC1vdXRfY29ubl9kZXY6DQo+
+IC0JaXNlcnRfZGV2aWNlX3B1dChkZXZpY2UpOw0KPiAgb3V0X3JzcF9kbWFfbWFwOg0KPiAgCWlz
+ZXJ0X2ZyZWVfbG9naW5fYnVmKGlzZXJ0X2Nvbm4pOw0KPiArb3V0X2Nvbm5fZGV2Og0KPiArCWlz
+ZXJ0X2RldmljZV9wdXQoZGV2aWNlKTsNCj4gIG91dDoNCj4gIAlrZnJlZShpc2VydF9jb25uKTsN
+Cj4gIAlyZG1hX3JlamVjdChjbWFfaWQsIE5VTEwsIDAsIElCX0NNX1JFSl9DT05TVU1FUl9ERUZJ
+TkVEKTsNCg0KT2ssIGkgdGhpbmsgdGhpcyBmaXhlcyB0aGlzIGlzc3VlLiANCg0KSSB3aWxsIGNv
+bW1pdCBhIFBBVENIIHYyIGxhdGVyLiBUaGFuayB5b3UgdmVyeSBtdWNoLg0K
