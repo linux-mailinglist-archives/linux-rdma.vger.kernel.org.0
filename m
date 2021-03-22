@@ -2,97 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23AB34376B
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Mar 2021 04:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA94343825
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Mar 2021 06:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhCVD3k convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Sun, 21 Mar 2021 23:29:40 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3045 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhCVD3P (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 21 Mar 2021 23:29:15 -0400
-Received: from DGGEML403-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F3fzG4Wg1zWPBc;
-        Mon, 22 Mar 2021 11:26:02 +0800 (CST)
-Received: from dggema754-chm.china.huawei.com (10.1.198.196) by
- DGGEML403-HUB.china.huawei.com (10.3.17.33) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Mon, 22 Mar 2021 11:29:09 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema754-chm.china.huawei.com (10.1.198.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Mon, 22 Mar 2021 11:29:09 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.013;
- Mon, 22 Mar 2021 11:29:09 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH for-next] RDMA/core: Check invalid QP state for
- ib_modify_qp_is_ok()
-Thread-Topic: [PATCH for-next] RDMA/core: Check invalid QP state for
- ib_modify_qp_is_ok()
-Thread-Index: AQHXHJ8NNG3a5kWMHUaHioKmCNer6w==
-Date:   Mon, 22 Mar 2021 03:29:09 +0000
-Message-ID: <53ff6a59a9a74443bca58bcaee6292bb@huawei.com>
-References: <1616144545-18159-1-git-send-email-liweihang@huawei.com>
- <YFXBprYFmFgHu9Z8@unreal>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S229771AbhCVFHW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Mar 2021 01:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhCVFHV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Mar 2021 01:07:21 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF76C061574
+        for <linux-rdma@vger.kernel.org>; Sun, 21 Mar 2021 22:07:20 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id i3so11799980oik.7
+        for <linux-rdma@vger.kernel.org>; Sun, 21 Mar 2021 22:07:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AKFj4LRtFKByGih5mwuXygYYcSWHXq6FiyQNztA8Gx8=;
+        b=lpr+ZewwMZm9u+0p5iHLXHzS56u7wuGt1gHDD6jYJ3cv5OI0yZDuYWd+ZVnPkx9vVe
+         yTCg4PpwEPQW0sZI36F9YRJbaVBzel9ZFDuC9V3NXAIk9FCSpCuMgazSENKjPmIbT2Gh
+         JTzgAMxY/UFprFkoCHdejAuTpiB2xH4fCvGrDE46fnnjCfEX1jsT7v39bpPCM4KNPq98
+         Ehe0D/YRnenwyI5y0CvcTJAYne08rA6SSwsYqYNkUhnRq+BRRtLbWi5YGIHSPJvfMOYN
+         q6vCYur+Xnag3FYCt/nBWn6Pu228A331pQVKIjrS8E0lDf80KdH5jesvUFLCoKjUZD2i
+         6Mnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AKFj4LRtFKByGih5mwuXygYYcSWHXq6FiyQNztA8Gx8=;
+        b=NURjhFnTbDOZ6fUbNuOUk+1z3TGudtyM+Up1vQ8zykYNI6axW2Qa4MGaHwAuaUo1Gw
+         kQUp5lo+OiW4UmV+eLw102ejefs6GuoafDp4tSg3kpzIqIlasArICsSE6qhyFyc5B28m
+         FuVHxOvD/4dgpp34rw613xT07frO9aMk3jaLCi8DK0AJU9cpRafBuWGh1BCKg1OTlg6v
+         l6xRxXSFE8DEkpZ6hHrwVL+lWuFtXrOqJzmrb2b6rDUIpj1EWqzZO202dnVdEqeCpZ2b
+         94xKCKs4c1JoN7IbPeFz4KexXHt7AjVozyTN4g740aaVlbCT4F1OTr51JIkH9Nzn6jNW
+         uDTg==
+X-Gm-Message-State: AOAM530NE176ZlgrkWsw3eWinZKOpmLzcHypfrlQsk1HI0LGSeqkvm6+
+        OzCFFLHt+UMRW6N2YKVB9fGNeOta6rdynF1dMCI=
+X-Google-Smtp-Source: ABdhPJzFMHoqjoH0GrKzE0+R8tvrrMbU6O34R58boCa1jMDzpQvKr71YxS1UNBhyf/R7jtFahtCSPwSA3ziVXukXxz8=
+X-Received: by 2002:a05:6808:1cb:: with SMTP id x11mr6330000oic.89.1616389640159;
+ Sun, 21 Mar 2021 22:07:20 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20210319130059.GQ2356281@nvidia.com> <CAD=hENfH6CZ5AFZ4jVTguA75eLFk0w1JVMzu0od_XGQPfxHTtw@mail.gmail.com>
+ <20210319134845.GR2356281@nvidia.com> <CAD=hENcN8dfD9ZGQ-2in2dUeJ9Wzd2+WFWFbhUgovxwCrETL1A@mail.gmail.com>
+ <20210320203832.GJ2356281@nvidia.com> <CAD=hENf2mcmCk+22dt8H_O1FRFUQzcLqiknEzoOma=_VR0fz+g@mail.gmail.com>
+ <20210321120725.GK2356281@nvidia.com> <CAD=hENeP0LNGgZdQ6sc+xVN9OAh2C3RQJFVRcmxKJfKdFoOvPQ@mail.gmail.com>
+ <20210321130315.GN2356281@nvidia.com> <CAD=hENeekUYEGZszMGs5bOHZ9fb4sahkv5Jy4QW1kWzUBLfYSQ@mail.gmail.com>
+ <20210321155207.GR2356281@nvidia.com>
+In-Reply-To: <20210321155207.GR2356281@nvidia.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Mon, 22 Mar 2021 13:07:08 +0800
+Message-ID: <CAD=hENctVhrdgsA2buZs648=PW9+Hb9WrspaeK7GEQrLfXdTxg@mail.gmail.com>
+Subject: Re: Fwd: [PATCH 1/1] RDMA/umem: add back hugepage sg list
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        maorg@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/3/20 17:34, Leon Romanovsky wrote:
-> On Fri, Mar 19, 2021 at 05:02:25PM +0800, Weihang Li wrote:
->> From: Xi Wang <wangxi11@huawei.com>
->>
->> Out-of-bounds may occur in 'qp_state_table' when the caller passing wrong
->> QP state value.
-> 
-> How is it possible? Do you have call stack to support it?
-> 
-> Thanks
-> 
+Got it.  Thanks a lot for your help.
 
-ib_modify_qp_is_ok() is exported, I think any kernel modules can pass in
-invalid QP state. Should we check it in such case?
+Zhu Yanjun
 
-Thanks
-Weihang
-
->>
->> Signed-off-by: Xi Wang <wangxi11@huawei.com>
->> Signed-off-by: Weihang Li <liweihang@huawei.com>
->> ---
->>  drivers/infiniband/core/verbs.c | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
->> index 28464c5..66ba4e6 100644
->> --- a/drivers/infiniband/core/verbs.c
->> +++ b/drivers/infiniband/core/verbs.c
->> @@ -1613,6 +1613,10 @@ bool ib_modify_qp_is_ok(enum ib_qp_state cur_state, enum ib_qp_state next_state,
->>  	    cur_state != IB_QPS_SQD && cur_state != IB_QPS_SQE)
->>  		return false;
->>  
->> +	if (cur_state >= ARRAY_SIZE(qp_state_table) ||
->> +	    next_state >= ARRAY_SIZE(qp_state_table[0]))
->> +		return false;
->> +
->>  	if (!qp_state_table[cur_state][next_state].valid)
->>  		return false;
->>  
->> -- 
->> 2.8.1
->>
-
+On Sun, Mar 21, 2021 at 11:52 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Sun, Mar 21, 2021 at 10:38:45PM +0800, Zhu Yanjun wrote:
+>
+> > No. You suppose n_pages is very big, then prv->length will increase to
+> > reach max_segment.
+> > If n_pages is very small, for example, we suppose n_pages is 1, then
+> > prv->length will
+> > not reach max_segment.
+> >
+> > In fact, in my test case, n_pages is very small.
+>
+> n_pages is an *input* it is the number of pages in the VA range, if it
+> is very small it is not a problem with this algorithm
+>
+> Jason
