@@ -2,197 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CF3346018
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Mar 2021 14:49:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9BB434643D
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Mar 2021 17:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbhCWNsi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Mar 2021 09:48:38 -0400
-Received: from mga12.intel.com ([192.55.52.136]:52640 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229953AbhCWNsL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 23 Mar 2021 09:48:11 -0400
-IronPort-SDR: eFMXzr/NrkN8v3TDH/csewzWa7+6M7N/Kl/8b1bwbMi3D1Jljj03UEGEBvP94YIWVyGfjJrxw5
- K7MVRvAkTBPQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="169811084"
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="169811084"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 06:48:08 -0700
-IronPort-SDR: xveLzAveLUlWkGlWGdzzdFZIuENti8hotTXc5Gd0iNTl9GVhfEjLwXProHKaV+o0UMwZ0krSXJ
- 7kgszcdh66ag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; 
-   d="scan'208";a="513748707"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 23 Mar 2021 06:48:03 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lOhO7-0000dB-7c; Tue, 23 Mar 2021 13:48:03 +0000
-Date:   Tue, 23 Mar 2021 21:47:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 783cf673b05ebf290317f583ee7eb6967ed9c964
-Message-ID: <6059f188.aBmmNVmSnERfHW/z%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232989AbhCWP73 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Mar 2021 11:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232982AbhCWP7Y (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Mar 2021 11:59:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A402C061574
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Mar 2021 08:59:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GZ1xvRQ0+UZZOE62fXJIWDOpjQEoqDksCxNPvm51xhA=; b=J6/6HMKhwKlz79ICzO7O5KzAc+
+        Bx/ErA1+ihU+2HMOwxe/EzSQ3p3xyEY8NV2FzZyEsjMkg1QAoKaPKl35E7DpcWLt/QSgQkh0sPHxN
+        SHQJoVEnLRIEAXk3ZAHVw1Dmv/2c67uj16QfO69pjiUObb9ZjcfioJhDVXMLTZ3RQSwWUybVS2ROQ
+        lsr65K2qyHTtI4+N4THmOx7l7wg6bCO+PBhYenrNj8wVKxd56B4skH12bmX4As3pCj3h+Gc0dAo1J
+        WsihuPw79NpaMi18e4EClS6e3by+efsHZbNjXbHZF0oB+5DCHFkUS14hf5+/ENnyoFFbJkiFaoiTY
+        kcLYSqwQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOizR-00ADxx-Oi; Tue, 23 Mar 2021 15:30:50 +0000
+Date:   Tue, 23 Mar 2021 15:30:41 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Rimmer, Todd" <todd.rimmer@intel.com>
+Cc:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        "Wan, Kaike" <kaike.wan@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH RFC 0/9] A rendezvous module
+Message-ID: <20210323153041.GA2434215@infradead.org>
+References: <20210319154805.GV2356281@nvidia.com>
+ <29061edb-b40c-67a9-c329-3c9446f0f434@cornelisnetworks.com>
+ <20210319194446.GA2356281@nvidia.com>
+ <BL0PR11MB3299928351B241FAAC76E760F6689@BL0PR11MB3299.namprd11.prod.outlook.com>
+ <20210319202627.GC2356281@nvidia.com>
+ <BL0PR11MB3299C202FCFF25646BFEE9B6F6689@BL0PR11MB3299.namprd11.prod.outlook.com>
+ <20210319205432.GE2356281@nvidia.com>
+ <SN6PR11MB3311F22207FDCA37B3A3C07AF4689@SN6PR11MB3311.namprd11.prod.outlook.com>
+ <29607fd4-906d-7d0d-2940-62ff5c8c9ec6@cornelisnetworks.com>
+ <BL0PR11MB329976F1C41951957E2DBE79F6689@BL0PR11MB3299.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <BL0PR11MB329976F1C41951957E2DBE79F6689@BL0PR11MB3299.namprd11.prod.outlook.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: 783cf673b05ebf290317f583ee7eb6967ed9c964  RDMA/hns: Fix memory corruption when allocating XRCDN
+On Fri, Mar 19, 2021 at 10:57:20PM +0000, Rimmer, Todd wrote:
+> We'd like advise on a challenging situation.  Some customers desire NICs to support nVidia GPUs in some environments.
+> Unfortunately the nVidia GPU drivers are not upstream, and have not been for years.  So we are forced to have both out of tree
+> and upstream versions of the code.  We need the same applications to be able to work over both, so we would like the
+> GPU enabled versions of the code to have the same ABI as the upstream code as this greatly simplifies things.
+> We have removed all GPU specific code from the upstream submission, but used both the "alignment holes" and the "reserved"
+> mechanisms to hold places for GPU specific fields which can't be upstreamed.
 
-elapsed time: 723m
-
-configs tested: 135
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-m68k                       m5208evb_defconfig
-arc                         haps_hs_defconfig
-powerpc                      katmai_defconfig
-sh                   rts7751r2dplus_defconfig
-arm                         shannon_defconfig
-powerpc                    adder875_defconfig
-parisc                           alldefconfig
-mips                        omega2p_defconfig
-arm                      pxa255-idp_defconfig
-powerpc                     akebono_defconfig
-powerpc                     redwood_defconfig
-arm                            lart_defconfig
-arm                         palmz72_defconfig
-arm                        mvebu_v7_defconfig
-sh                           se7780_defconfig
-nios2                            alldefconfig
-powerpc                 linkstation_defconfig
-powerpc                    gamecube_defconfig
-arm                           tegra_defconfig
-xtensa                  cadence_csp_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                     rainier_defconfig
-mips                        maltaup_defconfig
-arm                          pxa168_defconfig
-arm                          collie_defconfig
-powerpc                         ps3_defconfig
-sh                           se7750_defconfig
-sh                          urquell_defconfig
-openrisc                         alldefconfig
-parisc                generic-64bit_defconfig
-sh                           se7343_defconfig
-arm                          moxart_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                         wii_defconfig
-mips                        bcm47xx_defconfig
-arc                              alldefconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210323
-x86_64               randconfig-a003-20210323
-x86_64               randconfig-a006-20210323
-x86_64               randconfig-a001-20210323
-x86_64               randconfig-a004-20210323
-x86_64               randconfig-a005-20210323
-i386                 randconfig-a003-20210323
-i386                 randconfig-a004-20210323
-i386                 randconfig-a001-20210323
-i386                 randconfig-a002-20210323
-i386                 randconfig-a006-20210323
-i386                 randconfig-a005-20210323
-i386                 randconfig-a004-20210322
-i386                 randconfig-a003-20210322
-i386                 randconfig-a001-20210322
-i386                 randconfig-a002-20210322
-i386                 randconfig-a006-20210322
-i386                 randconfig-a005-20210322
-x86_64               randconfig-a012-20210322
-x86_64               randconfig-a015-20210322
-x86_64               randconfig-a013-20210322
-x86_64               randconfig-a014-20210322
-x86_64               randconfig-a016-20210322
-x86_64               randconfig-a011-20210322
-i386                 randconfig-a014-20210322
-i386                 randconfig-a011-20210322
-i386                 randconfig-a015-20210322
-i386                 randconfig-a016-20210322
-i386                 randconfig-a012-20210322
-i386                 randconfig-a013-20210322
-i386                 randconfig-a014-20210323
-i386                 randconfig-a011-20210323
-i386                 randconfig-a015-20210323
-i386                 randconfig-a016-20210323
-i386                 randconfig-a012-20210323
-i386                 randconfig-a013-20210323
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a002-20210322
-x86_64               randconfig-a003-20210322
-x86_64               randconfig-a001-20210322
-x86_64               randconfig-a006-20210322
-x86_64               randconfig-a004-20210322
-x86_64               randconfig-a005-20210322
-x86_64               randconfig-a012-20210323
-x86_64               randconfig-a015-20210323
-x86_64               randconfig-a013-20210323
-x86_64               randconfig-a014-20210323
-x86_64               randconfig-a011-20210323
-x86_64               randconfig-a016-20210323
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+NVIDIA GPUs are supported by drivers/gpu/drm/nouveau/, and your are
+encourage to support them just like all the other in-tree GPU drivers.
+Not sure what support a network protocol would need for a specific GPU.
+You're probably trying to do something amazingly stupid here instead of
+relying on proper kernel subsystem use.
