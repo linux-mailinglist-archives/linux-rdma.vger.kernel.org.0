@@ -2,64 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F34345546
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Mar 2021 03:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA942345553
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Mar 2021 03:10:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhCWCGp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Mar 2021 22:06:45 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:60042 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhCWCGX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Mar 2021 22:06:23 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 132D09802C6;
-        Tue, 23 Mar 2021 10:06:20 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Parav Pandit <parav@nvidia.com>, Vu Pham <vuhuong@nvidia.com>,
-        Wan Jiabing <wanjiabing@vivo.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Subject: [PATCH] net: ethernet: Remove duplicate include of vhca_event.h
-Date:   Tue, 23 Mar 2021 10:05:48 +0800
-Message-Id: <20210323020605.139644-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        id S229920AbhCWCKA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 22 Mar 2021 22:10:00 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3315 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230045AbhCWCJ7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 22 Mar 2021 22:09:59 -0400
+Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4F4F9L1wtZz147dm;
+        Tue, 23 Mar 2021 10:06:46 +0800 (CST)
+Received: from dggema752-chm.china.huawei.com (10.1.198.194) by
+ DGGEML402-HUB.china.huawei.com (10.3.17.38) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 23 Mar 2021 10:09:55 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema752-chm.china.huawei.com (10.1.198.194) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 23 Mar 2021 10:09:54 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.013;
+ Tue, 23 Mar 2021 10:09:54 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jianxin Xiong <jianxin.xiong@intel.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Leon Romanovsky" <leon@kernel.org>
+Subject: Re: [PATCH rdma-core] configure: Check the existence of all needed
+ DRM headers
+Thread-Topic: [PATCH rdma-core] configure: Check the existence of all needed
+ DRM headers
+Thread-Index: AQHXH1bFAvSdRMEdmEWebND5jduhBA==
+Date:   Tue, 23 Mar 2021 02:09:54 +0000
+Message-ID: <c4ca032f261840a7a9c59c15caabbfbf@huawei.com>
+References: <1616444421-148423-1-git-send-email-jianxin.xiong@intel.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTkNNHUMYSxoYTxhMVkpNSk1PTU5KQ0tITE9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0JITlVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OU06FSo4DD8IHjocLgs#Vio*
-        SBBPFApVSlVKTUpNT01OSkNLTEhJVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKQktDNwY+
-X-HM-Tid: 0a785cd53689d992kuws132d09802c6
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-vhca_event.h has been included at line 4, so remove the 
-duplicate one at line 8.
+On 2021/3/23 4:05, Jianxin Xiong wrote:
+> Some vendor specific DRM headers may be missing on systems with old
+> kernels. Make sure that all headers needed by pyverbs/dmabuf_alloc.c
+> are present before enabling that module.
+> 
+> Remove unused reference of "radeon_drm.h" from pyverbs/dmabuf_alloc.c.
+> 
+> Signed-off-by: Jianxin Xiong <jianxin.xiong@intel.com>
+> ---
+>  CMakeLists.txt         | 6 +++++-
+>  pyverbs/dmabuf_alloc.c | 1 -
+>  2 files changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/CMakeLists.txt b/CMakeLists.txt
+> index e9a2f49..1208ab6 100644
+> --- a/CMakeLists.txt
+> +++ b/CMakeLists.txt
+> @@ -526,7 +526,11 @@ if (NOT DRM_INCLUDE_DIRS)
+>  endif()
+>  
+>  if (DRM_INCLUDE_DIRS)
+> -  include_directories(${DRM_INCLUDE_DIRS})
+> +  if (EXISTS ${DRM_INCLUDE_DIRS}/i915_drm.h AND EXISTS ${DRM_INCLUDE_DIRS}/amdgpu_drm.h)
+> +    include_directories(${DRM_INCLUDE_DIRS})
+> +  else()
+> +    unset(DRM_INCLUDE_DIRS CACHE)
+> +  endif()
+>  endif()
+>  
+>  #-------------------------
+> diff --git a/pyverbs/dmabuf_alloc.c b/pyverbs/dmabuf_alloc.c
+> index 9978a5b..e3ea0a4 100644
+> --- a/pyverbs/dmabuf_alloc.c
+> +++ b/pyverbs/dmabuf_alloc.c
+> @@ -14,7 +14,6 @@
+>  #include <drm.h>
+>  #include <i915_drm.h>
+>  #include <amdgpu_drm.h>
+> -#include <radeon_drm.h>
+>  #include "dmabuf_alloc.h"
+>  
+>  /*
+> 
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c | 1 -
- 1 file changed, 1 deletion(-)
+Tested-by: Weihang Li <liweihang@huawei.com>
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c b/drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c
-index 58b6be0b03d7..3c8a00dd573a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c
-@@ -5,7 +5,6 @@
- #include "priv.h"
- #include "sf.h"
- #include "mlx5_ifc_vhca_event.h"
--#include "vhca_event.h"
- #include "ecpf.h"
- 
- struct mlx5_sf_hw {
--- 
-2.25.1
+It solves the issue I met on my server with ubuntu 14.04 ,thank you.
 
+Weihang
