@@ -2,86 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F72348104
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Mar 2021 19:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E388A348134
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Mar 2021 20:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237734AbhCXSzN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 24 Mar 2021 14:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237574AbhCXSzF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 24 Mar 2021 14:55:05 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26188C061763;
-        Wed, 24 Mar 2021 11:55:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=c3auAjmZMCQ6FyOffUwC94I5nfuI0sgf1bNCB1g+jl0=; b=Bqk+BHe9Sx8gCO+9mYCg0thvtl
-        n/b0E4QLrlzO0rXyZYcRyrDiiQ1DeRnTLcZ5OQ0AiMPOwkJhIYVnpegr4ftqeXNJxwtKCak43YAWC
-        p4SN8pgzjUU/WP7gAn1ZM5UTYBZJXiPrQ+mOGcHoSiTOTAAn0DAFGF9zoA1a+Gv23A5is9mgwqA3h
-        FmGiKeNqM4VPjuXRzRWsd0WrUXsKvmv2uF8+l1IGpL0YhnUjCSWp81vxF96ndqOSPcF7dMrcJIYrh
-        g8NWBhK/70H7gBRq0EB5Scsp3HQGKK3ubmMEQzsv16+9vDZ93vTvzIKxSumBaZ4Xs0Nc9EjSWVghG
-        fpQGF2EA==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lP8ej-0005O2-LQ; Wed, 24 Mar 2021 18:55:02 +0000
-Subject: Re: [PATCH v2 22/23] RDMA/irdma: Add irdma Kconfig/Makefile and
- remove i40iw
-To:     Shiraz Saleem <shiraz.saleem@intel.com>, dledford@redhat.com,
-        jgg@nvidia.com, kuba@kernel.org, davem@davemloft.net
-Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        david.m.ertman@intel.com, anthony.l.nguyen@intel.com
-References: <20210324000007.1450-1-shiraz.saleem@intel.com>
- <20210324000007.1450-23-shiraz.saleem@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <7fdf6b17-064c-e438-c5c5-6cd6218ee1bd@infradead.org>
-Date:   Wed, 24 Mar 2021 11:54:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S237721AbhCXTFY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 24 Mar 2021 15:05:24 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:38031 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237794AbhCXTFB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 24 Mar 2021 15:05:01 -0400
+Received: from localhost (mehrangarh.blr.asicdesigners.com [10.193.185.169])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 12OJ4tl5007928;
+        Wed, 24 Mar 2021 12:04:56 -0700
+From:   Potnuri Bharat Teja <bharat@chelsio.com>
+To:     jgg@nvidia.com, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org, bharat@chelsio.com
+Subject: [PATCH v2 for-rc] RDMA/cxgb4: Fix adapter LE hash errors while destroying ipv6 listening server
+Date:   Thu, 25 Mar 2021 00:34:53 +0530
+Message-Id: <20210324190453.8171-1-bharat@chelsio.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-In-Reply-To: <20210324000007.1450-23-shiraz.saleem@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/23/21 5:00 PM, Shiraz Saleem wrote:
-> diff --git a/drivers/infiniband/hw/irdma/Kconfig b/drivers/infiniband/hw/irdma/Kconfig
-> new file mode 100644
-> index 00000000..6585842
-> --- /dev/null
-> +++ b/drivers/infiniband/hw/irdma/Kconfig
-> @@ -0,0 +1,11 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +config INFINIBAND_IRDMA
-> +	tristate "Intel(R) Ethernet Protocol Driver for RDMA"
-> +	depends on INET
-> +	depends on IPV6 || !IPV6
-> +	depends on PCI
-> +	select GENERIC_ALLOCATOR
-> +	select CONFIG_AUXILIARY_BUS
-> +	help
-> +	 This is an Intel(R) Ethernet Protocol Driver for RDMA driver
-> +	 that support E810 (iWARP/RoCE) and X722 (iWARP) network devices.
+Not setting ipv6 bit while destroying ipv6 listening servers may result in
+potential fatal adapter errors due to lookup engine memory hash errors.
+Therefore always set ipv6 field while destroying ipv6 listening servers.
 
+Fixes: 830662f6f032 ("RDMA/cxgb4: Add support for active and passive open connection with IPv6 address")
+Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+---
+Changes since v0:
+- modified commit description to inform the severity of patch.
+Changes since v1:
+- removed extra variable as per Leon.
+---
+---
+ drivers/infiniband/hw/cxgb4/cm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-<pseudo bot>
-
-Please follow coding-style for Kconfig files:
-
-from Documentation/process/coding-style.rst, section 10):
-
-For all of the Kconfig* configuration files throughout the source tree,
-the indentation is somewhat different.  Lines under a ``config`` definition
-are indented with one tab, while help text is indented an additional two
-spaces.
-
-
-thanks.
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index 8769e7aa097f..81903749d241 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -3610,13 +3610,13 @@ int c4iw_destroy_listen(struct iw_cm_id *cm_id)
+ 	    ep->com.local_addr.ss_family == AF_INET) {
+ 		err = cxgb4_remove_server_filter(
+ 			ep->com.dev->rdev.lldi.ports[0], ep->stid,
+-			ep->com.dev->rdev.lldi.rxq_ids[0], 0);
++			ep->com.dev->rdev.lldi.rxq_ids[0], false);
+ 	} else {
+ 		struct sockaddr_in6 *sin6;
+ 		c4iw_init_wr_wait(ep->com.wr_waitp);
+ 		err = cxgb4_remove_server(
+ 				ep->com.dev->rdev.lldi.ports[0], ep->stid,
+-				ep->com.dev->rdev.lldi.rxq_ids[0], 0);
++				ep->com.dev->rdev.lldi.rxq_ids[0], true);
+ 		if (err)
+ 			goto done;
+ 		err = c4iw_wait_for_reply(&ep->com.dev->rdev, ep->com.wr_waitp,
 -- 
-~Randy
+2.24.0
 
