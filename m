@@ -2,75 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101E1348473
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Mar 2021 23:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A96C34857E
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Mar 2021 00:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232456AbhCXWSz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 24 Mar 2021 18:18:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49422 "EHLO mail.kernel.org"
+        id S234978AbhCXXr2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 24 Mar 2021 19:47:28 -0400
+Received: from mga18.intel.com ([134.134.136.126]:42147 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232286AbhCXWSm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 24 Mar 2021 18:18:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 885E9619BB;
-        Wed, 24 Mar 2021 22:18:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616624322;
-        bh=iA6i6r2UQHk+W1NdA/U5j6cKVWYnHcV6RQbV8Dze9/o=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=YBwF5E4dK4We9Y28Is1bG5pTcGrlIn0/ahGBonIFARyh8YWrcnXvjag3u3rJH8wrC
-         dOK1YKd97xrLRWRxXgUN3T7qt+j5G1qKqS0MbOZKgMOytN3HmWP5HQNpE8F1QD0v43
-         5z8RJVuDNolFKH0ye/fnROak4HyngjNmvwfOwA7rIetSY8r7q8BmDux+9lbhRMQ4Y/
-         2D6vLqY3Gm558oPtnD8cZOZdjAPY63yERJY3f56ffK5GmSchAMQHjEexhLLy3/jEiS
-         9BxV8k1q8ZN3tUJbCTCrAyYW3zMjp8viDVhmlh/NmTcC/6fGVtG6QXSeBCSvMt+I2j
-         elTuHkEUkg8Fg==
-Message-ID: <ec77b59eefe91545d9aa74d3a19f931a0a23ad8e.camel@kernel.org>
-Subject: Re: [PATCH][next] net/mlx5: Fix spelling mistakes in mlx5_core_info
- message
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Colin King <colin.king@canonical.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 24 Mar 2021 15:18:40 -0700
-In-Reply-To: <20210315123004.9957-1-colin.king@canonical.com>
-References: <20210315123004.9957-1-colin.king@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S234898AbhCXXq5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 24 Mar 2021 19:46:57 -0400
+IronPort-SDR: FYawhP1L8bPQIGFrnlPh1X++U448w3kWNamt6gnf2BswZFHt6COolIF4M317DNtANmx5hal2QA
+ YHfOIPBpmb4w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="178363352"
+X-IronPort-AV: E=Sophos;i="5.81,276,1610438400"; 
+   d="scan'208";a="178363352"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 16:46:43 -0700
+IronPort-SDR: xpoIvy36speLUBKlET1zW6DVnHarpb48WlWjuG3JPOlfp74K3fLmClHswbuFI4qo5ZRTja8ncR
+ eZfQ/ypW3ocw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,276,1610438400"; 
+   d="scan'208";a="413949654"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga007.jf.intel.com with ESMTP; 24 Mar 2021 16:46:43 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 24 Mar 2021 16:46:42 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 24 Mar 2021 16:46:42 -0700
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2106.013;
+ Wed, 24 Mar 2021 16:46:42 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leon@kernel.org>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>
+Subject: RE: [PATCH v2 08/23] RDMA/irdma: Register auxiliary driver and
+ implement private channel OPs
+Thread-Topic: [PATCH v2 08/23] RDMA/irdma: Register auxiliary driver and
+ implement private channel OPs
+Thread-Index: AQHXIEEe8YLi1xzKuUiZSQHXOrFbqaqTnVIAgAADsACAAAShAIAABPuAgAAOWBA=
+Date:   Wed, 24 Mar 2021 23:46:42 +0000
+Message-ID: <cc3dfb411c2248fdb3a5adc042d22893@intel.com>
+References: <20210324000007.1450-1-shiraz.saleem@intel.com>
+ <20210324000007.1450-9-shiraz.saleem@intel.com> <YFtC9hWHYiCR9vIC@unreal>
+ <20210324140046.GA481507@nvidia.com> <YFtJ8EraVBJsYjuT@unreal>
+ <20210324143509.GB481507@nvidia.com>
+In-Reply-To: <20210324143509.GB481507@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 2021-03-15 at 12:30 +0000, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+> Subject: Re: [PATCH v2 08/23] RDMA/irdma: Register auxiliary driver and
+> implement private channel OPs
 > 
-> There are two spelling mistakes in a mlx5_core_info message. Fix
-> them.
+> On Wed, Mar 24, 2021 at 04:17:20PM +0200, Leon Romanovsky wrote:
+> > On Wed, Mar 24, 2021 at 11:00:46AM -0300, Jason Gunthorpe wrote:
+> > > On Wed, Mar 24, 2021 at 03:47:34PM +0200, Leon Romanovsky wrote:
+> > > > On Tue, Mar 23, 2021 at 06:59:52PM -0500, Shiraz Saleem wrote:
+> > > > > From: Mustafa Ismail <mustafa.ismail@intel.com>
+> > > > >
+> > > > > Register auxiliary drivers which can attach to auxiliary RDMA
+> > > > > devices from Intel PCI netdev drivers i40e and ice. Implement
+> > > > > the private channel ops, and register net notifiers.
+> > > > >
+> > > > > Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
+> > > > > Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> > > > > drivers/infiniband/hw/irdma/i40iw_if.c | 229 +++++++++++++
+> > > > >  drivers/infiniband/hw/irdma/main.c     | 382 ++++++++++++++++++++++
+> > > > >  drivers/infiniband/hw/irdma/main.h     | 565
+> +++++++++++++++++++++++++++++++++
+> > > > >  3 files changed, 1176 insertions(+)  create mode 100644
+> > > > > drivers/infiniband/hw/irdma/i40iw_if.c
+> > > > >  create mode 100644 drivers/infiniband/hw/irdma/main.c
+> > > > >  create mode 100644 drivers/infiniband/hw/irdma/main.h
+> > > >
+> > > > <...>
+> > > >
+> > > > > +/* client interface functions */ static const struct
+> > > > > +i40e_client_ops i40e_ops = {
+> > > > > +	.open = i40iw_open,
+> > > > > +	.close = i40iw_close,
+> > > > > +	.l2_param_change = i40iw_l2param_change };
+> > > > > +
+> > > > > +static struct i40e_client i40iw_client = {
+> > > > > +	.ops = &i40e_ops,
+> > > > > +	.type = I40E_CLIENT_IWARP,
+> > > > > +};
+> > > > > +
+> > > > > +static int i40iw_probe(struct auxiliary_device *aux_dev, const
+> > > > > +struct auxiliary_device_id *id) {
+> > > > > +	struct i40e_auxiliary_device *i40e_adev = container_of(aux_dev,
+> > > > > +							       struct
+> i40e_auxiliary_device,
+> > > > > +							       aux_dev);
+> > > > > +	struct i40e_info *cdev_info = i40e_adev->ldev;
+> > > > > +
+> > > > > +	strncpy(i40iw_client.name, "irdma", I40E_CLIENT_STR_LENGTH);
+> > > > > +	cdev_info->client = &i40iw_client;
+> > > > > +	cdev_info->aux_dev = aux_dev;
+> > > > > +
+> > > > > +	return cdev_info->ops->client_device_register(cdev_info);
+> > > >
+> > > > Why do we need all this indirection? I see it as leftover from
+> > > > previous version where you mixed auxdev with your peer registration logic.
+> > >
+> > > I think I said the new stuff has to be done sanely, but the i40iw
+> > > stuff is old and already like this.
+> >
+> > They declared this specific "ops" a couple of lines above and all the
+> > functions are static. At least for the new code, in the irdma, this "ops"
+> > thing is not needed.
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/health.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> It is the code in the 'core' i40iw driver that requries this, AFAICT
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> index a0a851640804..9ff163c5bcde 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> @@ -340,7 +340,7 @@ static int mlx5_health_try_recover(struct
-> mlx5_core_dev *dev)
->                 return -EIO;
->         }
->  
-> -       mlx5_core_info(dev, "health revovery succeded\n");
-> +       mlx5_core_info(dev, "health recovery succeeded\n");
->         return 0;
->  }
->  
-
-Applied to net-next-mlx5, sorry for the delay.
-
-
+ Yes.
