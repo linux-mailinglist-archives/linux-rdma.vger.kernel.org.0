@@ -2,66 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB63B347E2B
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Mar 2021 17:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB2E347E3B
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Mar 2021 17:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236555AbhCXQtL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 24 Mar 2021 12:49:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52136 "EHLO
+        id S236829AbhCXQwY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 24 Mar 2021 12:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236578AbhCXQsp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 24 Mar 2021 12:48:45 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64DBC061763
-        for <linux-rdma@vger.kernel.org>; Wed, 24 Mar 2021 09:48:44 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id m13so21461561oiw.13
-        for <linux-rdma@vger.kernel.org>; Wed, 24 Mar 2021 09:48:44 -0700 (PDT)
+        with ESMTP id S236981AbhCXQwV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 24 Mar 2021 12:52:21 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB3AC061763
+        for <linux-rdma@vger.kernel.org>; Wed, 24 Mar 2021 09:52:21 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id a8so21473471oic.11
+        for <linux-rdma@vger.kernel.org>; Wed, 24 Mar 2021 09:52:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ts1QjusmxDUDn3f170sIz+Q2Qs2Y2ziQq9+B4NUb9J0=;
-        b=N0Rb3e9UTW0wusUWvG+ZKzAKNA7gbZQyruj9iWSbmnoEImKWQCzqb1UlNCAA2Ho5i9
-         +I1nWn6DDgtJ5WEiO4ik7Yhk46ipX1W6+ETN3Iytkqg9U65yNeVAm7dnJeopfBNl7pYI
-         2wtyIgMszUaCIKCSYF2KFgYyWin8vbZySFoox/81D3EMNMbNg0McdGcnAivaTaSSF9bp
-         WGYcuwxupnJ3zCdin1tC4sx/0Tv/e/qOz0O1rkpjFuWY8YVd56QxDU6K5mmcwC/gy8tg
-         dcS8VghJnqtisUfP/kaEV8L2xBpywxcA085sWMwJc6EECwI475sVD1nATkcA+gssx0GT
-         kn2A==
+        bh=WzdTNQdVWb7PmYVA37rQgSTZYBjxbcR2Q7Xd9/tHc84=;
+        b=iegiUTefIwJaI2FkMOtNySPp+h/OJWoj39+Su8DfyqVuLmF2ESP6/XzEdbwX8xykR5
+         El6Fzz6ZGkNDvF4wnAMt4OaLbFGz5hJFj9h221UoX4HG07x9wlg1iRD3TNtNKe8YYIB/
+         3F85bgeLYwMrh3WBmWiNo4yJUVh7axcyS1U/06yClYOgd4wH7gHwjRXn9Bdln/0E/IJC
+         noIglsAq/WZPgRX5WDpxtnvU83J2+duXD5piLDw3ehxx0J5xwTesKBrz0Gokk0ZsLdIZ
+         E0Ztvrzx5LmEGZDHEih5y4FP6aPwehw6q4K/mQOQgYeE2tGOBXo+WBlkU9Qgvz6dEtA9
+         CU2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ts1QjusmxDUDn3f170sIz+Q2Qs2Y2ziQq9+B4NUb9J0=;
-        b=LLeMxHUuAOdvnV48gloZNGhqFbQNyj4Mxwmtoc6ESswqjIRx4oCAt9TvzCPRIHW5nA
-         h/0wsMnaY5MbWRSzHcODHxqYX20NqtSV3PeK8gAl2WEFUZcIPHodEW72itFNyuUfR/m+
-         VTOc6wSSd/aR7K4e2dfFgqGOWb7vFRSd3Z2Lfx4T28e+2OgbI3aZl4CT772ux6vDxkQL
-         iv7dDWm9Zzc3AsdUiglfSxNL1qgkKyEPKjIpoq4njJJSGm2Dq08Q4xAq7AXFANTSE2po
-         18npX62kFAnVygxk+/YHQei4l85cITb02NQHfiO2WvFS7IRs7LU4/RqN4TNiktJ4/Irg
-         Dz2w==
-X-Gm-Message-State: AOAM530PmnjCkr1gS2jZ0GYWpd5fqs3RAQDvZ3EBSRPZknY5Vfdy4254
-        rtfp27E9DLt7V0LHbooYnAg=
-X-Google-Smtp-Source: ABdhPJw55ETg9d79EVPR/LEgaXM4elexhiRdoewfp03RjAeTpnBkOx6sP5MGiMJu4pKE+UoWC7tTgg==
-X-Received: by 2002:a05:6808:8da:: with SMTP id k26mr3048561oij.115.1616604523880;
-        Wed, 24 Mar 2021 09:48:43 -0700 (PDT)
+        bh=WzdTNQdVWb7PmYVA37rQgSTZYBjxbcR2Q7Xd9/tHc84=;
+        b=Xv5RQdqXNYDfFYdDSieVtLty7ptTdLI0KN1bXTYx2bVOAneZ2HzjkHFuDvzMtCtk3a
+         bi5CCOCYeV5XwbpY+F+RSHKJO80DqAE9jh4kXlV1Wc6m5y4dBxAuomvTEMtGxzEB2dgg
+         1Qh7vsBP9268i70j1g4XrvQ+EZQXm9Wx9hcI5K6odFwBc/09j41u/6XkTEf3WNyADnio
+         pjlx0lIFah1NDiZ3e0p1C0HkN+RWQTlT0WVFrtKbTKH6ThrfhW+3/dmI30GUumu3cXh9
+         jMaGKOxvx/o4GoOihYEA3x6t31DPDiLGEHQnemkp+oXcovJ243hDdYfOzg1kUNPjcqEz
+         nObw==
+X-Gm-Message-State: AOAM533WTzr+qWSgf6ys9R9neKxP5aE32A6x6EFgjMAO71PpW0FKHslR
+        +KNGQ0E0YTt8cGTrshb9V2k=
+X-Google-Smtp-Source: ABdhPJyggHbSJfdCsKePy8f7kdQ1skt96+0xANYyTJwqeTV+h7FDl/PgYu28PUiWnY7G8L4zoE+2iQ==
+X-Received: by 2002:a54:4494:: with SMTP id v20mr3058703oiv.147.1616604740421;
+        Wed, 24 Mar 2021 09:52:20 -0700 (PDT)
 Received: from ?IPv6:2603:8081:140c:1a00:3e64:9e65:c6e4:cc20? (2603-8081-140c-1a00-3e64-9e65-c6e4-cc20.res6.spectrum.com. [2603:8081:140c:1a00:3e64:9e65:c6e4:cc20])
-        by smtp.gmail.com with ESMTPSA id f197sm678591oob.38.2021.03.24.09.48.43
+        by smtp.gmail.com with ESMTPSA id j4sm642964oom.11.2021.03.24.09.52.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 09:48:43 -0700 (PDT)
+        Wed, 24 Mar 2021 09:52:20 -0700 (PDT)
 Subject: Re: [PATCH for-next] RDMA/rxe: Split MEM into MR and MW
 To:     Zhu Yanjun <zyjzyj2000@gmail.com>
 Cc:     Jason Gunthorpe <jgg@nvidia.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Bob Pearson <rpearson@hpe.com>
 References: <20210314222612.44728-1-rpearson@hpe.com>
- <CAD=hENf2c6aHvkDEFyMXKk9vjVx_YOWX2q64tGMptLYA8fARqQ@mail.gmail.com>
+ <CAD=hENdyLYLYAyS0Mq_jUb-Vm3P102hiw2Lzmz=hjvgcBn1t-g@mail.gmail.com>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <02c9b25a-73ca-a9e9-a0d2-77852dcfe979@gmail.com>
-Date:   Wed, 24 Mar 2021 11:48:42 -0500
+Message-ID: <c7fd30e5-dfd8-cd95-3b69-ea94432953fd@gmail.com>
+Date:   Wed, 24 Mar 2021 11:52:19 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <CAD=hENf2c6aHvkDEFyMXKk9vjVx_YOWX2q64tGMptLYA8fARqQ@mail.gmail.com>
+In-Reply-To: <CAD=hENdyLYLYAyS0Mq_jUb-Vm3P102hiw2Lzmz=hjvgcBn1t-g@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,41 +69,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/23/21 2:00 AM, Zhu Yanjun wrote:
+On 3/23/21 6:14 AM, Zhu Yanjun wrote:
 > On Mon, Mar 15, 2021 at 6:30 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
 >>
 >> In the original rxe implementation it was intended to use a common
 >> object to represent MRs and MWs but they are different enough to
 >> separate these into two objects.
-> 
-> Can you explain the difference between MR and MW? And why are they
-> different enough to separate these into two objects?
-> 
-> Thanks a lot.
-> Zhu Yanjun
-
-MR (aka memory region) describes a region of a virtual address space. It includes
-SW managed page tables that map tha virtual region to a list of physical pages. This
-allows the driver to respond to network traffic without running in the process
-context that created the MR. [More modern verbs implementations created after rxe
-was written put more emphasis on ODP which is something to explore.]
-
-MW (aka memory window) describes a window into an MR. It is much smaller because it only
-needs a base and length in the IO virtual address space. It references the MR to complete
-the data transfer.
-
-MWs have some properties that are different from MRs. One is that the rkey for an MW can
-change over its lifetime.
-
-If we added enough fields we could use one object type to represent all the objects in rxe
-but it would waste a lot of memory and make the code unreadable. Run the other way by splitting
-mem into mr and mw it saves memory and more importantly makes the code more intuitive and readable.
-All the other types use naming derived from the IBA spec except mem. I think I made up that
-name in the first place and now think it was a mistake.
-
-Bob
-
-> 
 >>
 >> This allows replacing the mem name with mr for MRs which is more
 >> consistent with the style for the other objects and less likely
@@ -957,7 +928,8 @@ Bob
 >>
 >> -       err = rxe_mem_init_user(pd, start, length, iova,
 >> +       err = rxe_mr_init_user(pd, start, length, iova,
->>                                 access, udata, mr);
+>>                                 access, udata, mr);t are different from MRs. One is that the rkey for an MW can
+change over its lifetime.
 >>         if (err)
 >>                 goto err3;
 >> @@ -916,9 +916,9 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
@@ -1119,6 +1091,27 @@ Bob
 >> +       u64                     addr;
 >> +       u64                     length;
 >> +};
+> 
+>  struct rxe_qp           *qp;    /* type 2B only */
+>  struct rxe_mr           *mr;
+>  spinlock_t              lock;
+>  enum rxe_mw_state       state;
+>  u32                     access;
+>  u64                     addr;
+>  u64                     length;
+> 
+> The above member variables are not used in your commit. Why keep them
+> in this struct rxe_mw?
+> 
+> Zhu Yanjun
+> 
+
+There is more to come. The goal here is to implement MW and peeking ahead
+MWs need each of those fields. As soon as this change gets accepted I will start
+adding code to implement the MW verbs APIs.
+
+bob
+
 >> +
 >>  struct rxe_mc_grp {
 >>         struct rxe_pool_entry   pelem;
