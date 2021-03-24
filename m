@@ -2,68 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB9C346E46
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Mar 2021 01:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89881346F17
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Mar 2021 02:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233764AbhCXAaM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Mar 2021 20:30:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233699AbhCXAaJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 23 Mar 2021 20:30:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 10810619E5;
-        Wed, 24 Mar 2021 00:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616545809;
-        bh=Yv6DSkJeCZKdwLbIeklfC/Gkz2mF9S04LMwbHWme2cE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=L/myjKuz0/JNwkcBgkwq1N7vo6lIdJxts+eINjpgNfdUvoTHjBXkzPNFJB1Oujlwv
-         r5gBZzYyws7pMR0fQYKZ5H3sSWy3DFDpZZ1BOAQ6w1IR3A1yFIU7VFVt3tYxVAfi62
-         2wTxRjDO3WkvZ+m3AiNCoWX8W6QANNSFD+YnbT78XZp6KtgxNqgt2IfmPOgqsj/UOI
-         L3tbFzjMoz4avlO2sDzKx9WIeRXnv8G4F+HaP2eHMDXoDkI9XwEZ6U8XcrIJSMOtGZ
-         JaKtPlG8Cw1wqx12+5rZsHLHGuRPwphgvi6XwPMe9M1nCnVCF8sSh3dVwlCE/4phzH
-         iXPwBOq37gVXw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0251D60A3E;
-        Wed, 24 Mar 2021 00:30:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232050AbhCXBye convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 23 Mar 2021 21:54:34 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3048 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232072AbhCXBy0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Mar 2021 21:54:26 -0400
+Received: from dggeml405-hub.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F4rmw2Nt0zWNvQ;
+        Wed, 24 Mar 2021 09:51:12 +0800 (CST)
+Received: from dggema703-chm.china.huawei.com (10.3.20.67) by
+ dggeml405-hub.china.huawei.com (10.3.17.49) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Wed, 24 Mar 2021 09:54:22 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema703-chm.china.huawei.com (10.3.20.67) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Wed, 24 Mar 2021 09:54:22 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.013;
+ Wed, 24 Mar 2021 09:54:22 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Re: [PATCH for-next 1/2] RDMA/hns: Support query information of
+ functions from FW
+Thread-Topic: [PATCH for-next 1/2] RDMA/hns: Support query information of
+ functions from FW
+Thread-Index: AQHXFyVSLcvKaZUM2kuvfESrfUUvaw==
+Date:   Wed, 24 Mar 2021 01:54:22 +0000
+Message-ID: <df637ff2c0dc4d20b2a01c8400c4ed9b@huawei.com>
+References: <1615542507-40018-1-git-send-email-liweihang@huawei.com>
+ <1615542507-40018-2-git-send-email-liweihang@huawei.com>
+ <20210323195627.GA398808@nvidia.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: ethernet: Remove duplicate include of vhca_event.h
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161654580900.18092.16312775969990333697.git-patchwork-notify@kernel.org>
-Date:   Wed, 24 Mar 2021 00:30:09 +0000
-References: <20210323020605.139644-1-wanjiabing@vivo.com>
-In-Reply-To: <20210323020605.139644-1-wanjiabing@vivo.com>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, parav@nvidia.com, vuhuong@nvidia.com,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kael_w@yeah.net
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Tue, 23 Mar 2021 10:05:48 +0800 you wrote:
-> vhca_event.h has been included at line 4, so remove the
-> duplicate one at line 8.
+On 2021/3/24 3:56, Jason Gunthorpe wrote:
+> On Fri, Mar 12, 2021 at 05:48:26PM +0800, Weihang Li wrote:
 > 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c | 1 -
->  1 file changed, 1 deletion(-)
+>> +static int hns_roce_query_func_info(struct hns_roce_dev *hr_dev)
+>> +{
+>> +	struct hns_roce_pf_func_info *resp;
+>> +	struct hns_roce_cmq_desc desc;
+>> +	int ret;
+>> +
+>> +	if (hr_dev->pci_dev->revision < PCI_REVISION_ID_HIP09)
+>> +		return 0;
+>> +
+>> +	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_QUERY_FUNC_INFO,
+>> +				      true);
+>> +	ret = hns_roce_cmq_send(hr_dev, &desc, 1);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	resp = (struct hns_roce_pf_func_info *)desc.data;
+> 
+> WTF is this cast?
+> 
+> struct hns_roce_cmq_desc {
+>         __le16 opcode;
+>         __le16 flag;
+>         __le16 retval;
+>         __le16 rsv;
+>         __le32 data[6];
+> };
+> 
+> Casting __le32 to a pointer is wrong
+> 
+> Jason
+> 
 
-Here is the summary with links:
-  - net: ethernet: Remove duplicate include of vhca_event.h
-    https://git.kernel.org/netdev/net-next/c/4c94fe88cde4
+Hi Jason
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+desc.data is the address of array 'data[6]', it is got from the firmware, we
+cast it to 'struct hns_roce_pf_func_info *' to parse its contents. I think this
+is a cast from '__le32 *' to 'struct hns_roce_pf_func_info *'.
 
+Thanks
+Weihang
 
