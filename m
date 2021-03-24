@@ -2,107 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43545347A75
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Mar 2021 15:18:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4EB347A7D
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Mar 2021 15:20:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236088AbhCXORr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 24 Mar 2021 10:17:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60820 "EHLO mail.kernel.org"
+        id S236081AbhCXOT4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 24 Mar 2021 10:19:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236117AbhCXOR1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:17:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D94A060232;
-        Wed, 24 Mar 2021 14:17:23 +0000 (UTC)
+        id S236029AbhCXOTt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 24 Mar 2021 10:19:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C374C619D5;
+        Wed, 24 Mar 2021 14:19:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616595444;
-        bh=21DLN6zcpHqU2e0nnAHMIAyzk/GbTw2e3TuMQkrOkiM=;
+        s=k20201202; t=1616595589;
+        bh=SqJk8IkxfEpl+NF3dJR2+tt7AFBJle3tFmyyydCRxDU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kosb868gr2mt5xEGIJV2ubVpxKwsu5R2uHyPe6NBJJkWFkX+1e6ICJD5JpATQ4pvo
-         NwV0BM7A9EDk43UM1QXXUbeYEkSv5HXtnur+TvZC31+fJ9k2jpz/ZUUG+SGIroVwQh
-         jVhKO0vnLlAc8yhaU48lFrUivr4HLPDTXuHQ9Qgh+94nxTkx6aFy9dlbj1huL7KCfd
-         xd0rMlIeBgIfrXLm9jIl06H8/ffWrGiwFC2+DXGfx3P5nE17cWIw+sUZKC8BbuvWlB
-         1u5RwJo9XMRofLRqqeui3EcNkj96/lOWBiVlx9XoNd3dB8wYtObpm+Gd2+zyOHDRQg
-         5lOB0PbDadabA==
-Date:   Wed, 24 Mar 2021 16:17:20 +0200
+        b=nsxBwiu820tX1DJ0Kt8I8l8D6Y9bGBu3wL9etC2Puv9mn5tMB/VluzKlms7udel5I
+         NecOfzGbJHCrgxjZGSnliPxEI9eRNbf+FWGwBGllBupQP8w1PYTQeMLKAK/ASVI24U
+         DjAbdn8MZ60wIwzRRJKkJrA1rlSg37yE/9/LpyfBnxqtw+/HOAdxDbGyodmscgRIYa
+         LVctF9egU5hh8BUdgGMxEroBJrMzbOjLK6+H0PqVwHsBCcq2vZ1aEztgdH4crKwwfB
+         5Uo0F3KRh6EZISwWHy7P2E3mUBqvtrrh6loD7rw91dAqOg+oGJlPp2l87ShgPn8vMB
+         WrEbkrz4ehC2A==
+Date:   Wed, 24 Mar 2021 16:19:45 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Shiraz Saleem <shiraz.saleem@intel.com>, dledford@redhat.com,
-        kuba@kernel.org, davem@davemloft.net, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, david.m.ertman@intel.com,
-        anthony.l.nguyen@intel.com,
-        Mustafa Ismail <mustafa.ismail@intel.com>
-Subject: Re: [PATCH v2 08/23] RDMA/irdma: Register auxiliary driver and
- implement private channel OPs
-Message-ID: <YFtJ8EraVBJsYjuT@unreal>
-References: <20210324000007.1450-1-shiraz.saleem@intel.com>
- <20210324000007.1450-9-shiraz.saleem@intel.com>
- <YFtC9hWHYiCR9vIC@unreal>
- <20210324140046.GA481507@nvidia.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     bvanassche@acm.org, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] IB/srpt: Fix passing zero to 'PTR_ERR'
+Message-ID: <YFtKgU17EwK22hdj@unreal>
+References: <20210324140939.7480-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210324140046.GA481507@nvidia.com>
+In-Reply-To: <20210324140939.7480-1-yuehaibing@huawei.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 11:00:46AM -0300, Jason Gunthorpe wrote:
-> On Wed, Mar 24, 2021 at 03:47:34PM +0200, Leon Romanovsky wrote:
-> > On Tue, Mar 23, 2021 at 06:59:52PM -0500, Shiraz Saleem wrote:
-> > > From: Mustafa Ismail <mustafa.ismail@intel.com>
-> > > 
-> > > Register auxiliary drivers which can attach to auxiliary RDMA
-> > > devices from Intel PCI netdev drivers i40e and ice. Implement the private
-> > > channel ops, and register net notifiers.
-> > > 
-> > > Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-> > > Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > >  drivers/infiniband/hw/irdma/i40iw_if.c | 229 +++++++++++++
-> > >  drivers/infiniband/hw/irdma/main.c     | 382 ++++++++++++++++++++++
-> > >  drivers/infiniband/hw/irdma/main.h     | 565 +++++++++++++++++++++++++++++++++
-> > >  3 files changed, 1176 insertions(+)
-> > >  create mode 100644 drivers/infiniband/hw/irdma/i40iw_if.c
-> > >  create mode 100644 drivers/infiniband/hw/irdma/main.c
-> > >  create mode 100644 drivers/infiniband/hw/irdma/main.h
-> > 
-> > <...>
-> > 
-> > > +/* client interface functions */
-> > > +static const struct i40e_client_ops i40e_ops = {
-> > > +	.open = i40iw_open,
-> > > +	.close = i40iw_close,
-> > > +	.l2_param_change = i40iw_l2param_change
-> > > +};
-> > > +
-> > > +static struct i40e_client i40iw_client = {
-> > > +	.ops = &i40e_ops,
-> > > +	.type = I40E_CLIENT_IWARP,
-> > > +};
-> > > +
-> > > +static int i40iw_probe(struct auxiliary_device *aux_dev, const struct auxiliary_device_id *id)
-> > > +{
-> > > +	struct i40e_auxiliary_device *i40e_adev = container_of(aux_dev,
-> > > +							       struct i40e_auxiliary_device,
-> > > +							       aux_dev);
-> > > +	struct i40e_info *cdev_info = i40e_adev->ldev;
-> > > +
-> > > +	strncpy(i40iw_client.name, "irdma", I40E_CLIENT_STR_LENGTH);
-> > > +	cdev_info->client = &i40iw_client;
-> > > +	cdev_info->aux_dev = aux_dev;
-> > > +
-> > > +	return cdev_info->ops->client_device_register(cdev_info);
-> > 
-> > Why do we need all this indirection? I see it as leftover from previous
-> > version where you mixed auxdev with your peer registration logic.
+On Wed, Mar 24, 2021 at 10:09:39PM +0800, YueHaibing wrote:
+> Fix smatch warning:
 > 
-> I think I said the new stuff has to be done sanely, but the i40iw
-> stuff is old and already like this.
+> drivers/infiniband/ulp/srpt/ib_srpt.c:2341 srpt_cm_req_recv() warn: passing zero to 'PTR_ERR'
+> 
+> Use PTR_ERR_OR_ZERO instead of PTR_ERR
+> 
+> Fixes: 847462de3a0a ("IB/srpt: Fix srpt_cm_req_recv() error path (1/2)")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  drivers/infiniband/ulp/srpt/ib_srpt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 6be60aa5ffe2..3ff24b5048ac 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -2338,7 +2338,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>  
+>  	if (IS_ERR_OR_NULL(ch->sess)) {
+>  		WARN_ON_ONCE(ch->sess == NULL);
+> -		ret = PTR_ERR(ch->sess);
+> +		ret = PTR_ERR_OR_ZERO(ch->sess);
 
-They declared this specific "ops" a couple of lines above and all the
-functions are static. At least for the new code, in the irdma, this "ops"
-thing is not needed.
+It is crazy, in first line, we checked ch->sess and allowed it to be NULL,
+later caused to kernel panic and set ret to success.
 
+>  		ch->sess = NULL;
+>  		pr_info("Rejected login for initiator %s: ret = %d.\n",
+>  			ch->sess_name, ret);
+> -- 
+> 2.22.0
 > 
-> Though I would be happy to see this fixed too.
-> 
-> Jason
