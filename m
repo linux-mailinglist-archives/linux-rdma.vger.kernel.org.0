@@ -2,60 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF8A3495AE
+	by mail.lfdr.de (Postfix) with ESMTP id 4E63A3495AD
 	for <lists+linux-rdma@lfdr.de>; Thu, 25 Mar 2021 16:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231476AbhCYPdy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Mar 2021 11:33:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37186 "EHLO
+        id S231479AbhCYPdz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Mar 2021 11:33:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231481AbhCYPdf (ORCPT
+        with ESMTP id S231482AbhCYPdf (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Mar 2021 11:33:35 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC0FC06175F
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 08:33:31 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id z1so2892878edb.8
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 08:33:31 -0700 (PDT)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF81C061763
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 08:33:32 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id dm8so2913065edb.2
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 08:33:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=f4XykaULLm/H2BAHIppcboAz/DEhe60yxW9/E6NuP0o=;
-        b=JddVpOtxcQ9CDcubfF9UMgPq6O9F7Mr0vBiDZ44fStmPbZTtH6CsfhCjsQeGg4Yg4E
-         QPt4Yp5+ZsNDjw7GQe8AnEuIo4/d0vP41n/pT4AQecZwXTKQ9YTplBW6tCifV7klqq7V
-         23crBJJYFdsuHpGN3wWoyNC9PY6ETA3sndC0bO29IZ5MNGHU10jbOFnfovtn9AK0kPrx
-         A4OK0WNH8aCEHc9p+aSqo51aVH4TjzrNVhIvXtrwVxhFgGACUMIxiN847uwY94N7Bd+y
-         oqOaBJkQrqqd4+jzXcq3XEmB6hY6Wyo5WIEXLqjs6awh14VB4BA/AIForwMiS8+KCbrN
-         YArw==
+        bh=aqJG/VYc1YAv4Kt1Bu+GcYBgqhNALjIo7C5+lsoCkt4=;
+        b=DT8ZbPSeZBGEvlBAF24sUsMVgArOn73FihPSMUARWYJaCwNH/Elw28LVLf+psp1ibU
+         eoWwHTh4n2Opd56UI8gnH715fMDGwbhaw8CVTIGo43YjOL0cwQxq3Kdkp3twiNOTbiHR
+         feOA4WLZPJWi2ozI9YuOWgz6waKabraaq7ZqTpLCr+Yr64N03T455XhVNGc8WTAmirTs
+         Ht2rgL8/1oD4D7Vg3nJaMtSlDMxK3rXO4/6PW1GAVGp5JMynB1F+vm3uzKKKnrXWzvLk
+         iY9wMEtjEZQI5gg1nMuMSZlePO6v5KP74hHtbFVoYzNPTtltRJckWSqUbO9LTBQaDqtK
+         u15Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=f4XykaULLm/H2BAHIppcboAz/DEhe60yxW9/E6NuP0o=;
-        b=uGIEJSqBgNM/+yIs6FJAOH1Y+Uq7NKwhPPPNbTJJOwOukyk44TKZSwUkIf2co0hSKc
-         1eDHFRxYprv7daZng3iYJtL3i6ZhqkvcW8CnoYdknCs9PfljkVvZh3oHRUeYXsGn1jBM
-         +mD43/9j1qz0byf1kAcmdY0ReBElYDU/n+c63WqaUgF3s+PdV5ixzWMHkHpwSToPovDU
-         ZCbt0vUmxVjQx9wBLPwOSuNkqT/dGbPpsoWYtHzK7TU3o/8ZoaXz0zoUitmiJ+pMpCmY
-         kq2ugD6w2ksoYzCZVL+j0olSC5kKc3sd1Q469HCYtvE5rFiB41A7vNNEcKQT3YAtOmCp
-         1Xpg==
-X-Gm-Message-State: AOAM533E86AJGFl+XwI9KF5X5VgjHD9tF+lOR6wbMBSYAqqTzZXwjU3w
-        JC0nBOtSPTCXR+pvGGc/Em9PppXLQTmBsfrW
-X-Google-Smtp-Source: ABdhPJwnChj8omwkEWOtliNjhkg+cJV6zpWB1eN1Hq0F8u+xT0aBZMBudWpnokKUfl+Uj5SET8IAPA==
-X-Received: by 2002:aa7:ce1a:: with SMTP id d26mr9687101edv.206.1616686410187;
+        bh=aqJG/VYc1YAv4Kt1Bu+GcYBgqhNALjIo7C5+lsoCkt4=;
+        b=S2QmdygwN3nfeELWSNLnr+OnQHy034KUuYv/+mEKHJtNRaftYxzawxOlxqq8KVbWjD
+         NdJHEHQGvGZv2gb7EnOxckE3N6JWSPxICSXbDev66QeGeDFDgYeZFLwccyheTacxt7W9
+         kHCPAw+YkmOKD5YIwnK7SVJyJRMzCHTwaEM35WEv0h5kZoWNtUqJqllNn5dZljH+SHLo
+         J/MR4OuWNzuAika5p7ZucCQoTqDc48lPKjqZRp4gVWnsIY7iW0gSRCG6SaPwb+bDz8uv
+         qNvalqpIp6ey/w6JZkLzOpg4waQpTlhKngwenBX28rgOqnNosy74SRaFhbJ6YClrbqf4
+         0qDQ==
+X-Gm-Message-State: AOAM533JiUqUpQ3Uy4HeImSuhhFhf/VhsDYW7cP1laRqcfC5ydv5e8ak
+        fkoO/RcDwAhHCGqCl6lBUCamMa3DuT2V9/ga
+X-Google-Smtp-Source: ABdhPJyvoG0pTqKS08k7O0ZJcmAiQTqCVC/9K1+f8F0LyVHVIifDsMPgUFG9BsUkcmYzGE7YsCIq5A==
+X-Received: by 2002:a05:6402:13ca:: with SMTP id a10mr9754866edx.320.1616686410907;
         Thu, 25 Mar 2021 08:33:30 -0700 (PDT)
 Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aeee5.dynamic.kabel-deutschland.de. [95.90.238.229])
-        by smtp.googlemail.com with ESMTPSA id n26sm2854750eds.22.2021.03.25.08.33.29
+        by smtp.googlemail.com with ESMTPSA id n26sm2854750eds.22.2021.03.25.08.33.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 08:33:29 -0700 (PDT)
+        Thu, 25 Mar 2021 08:33:30 -0700 (PDT)
 From:   Gioh Kim <gi-oh.kim@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
         Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCH for-next 21/22] RDMA/rtrs-clt: new sysfs attribute to print the latency of each path
-Date:   Thu, 25 Mar 2021 16:33:07 +0100
-Message-Id: <20210325153308.1214057-22-gi-oh.kim@ionos.com>
+Subject: [PATCH for-next 22/22] Documentation/ABI/rtrs-clt: Add descriptions for min-latency policy
+Date:   Thu, 25 Mar 2021 16:33:08 +0100
+Message-Id: <20210325153308.1214057-23-gi-oh.kim@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210325153308.1214057-1-gi-oh.kim@ionos.com>
 References: <20210325153308.1214057-1-gi-oh.kim@ionos.com>
@@ -65,51 +64,44 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
-
-It shows the latest latency that the client checked when sending
-the heart-beat.
+describe new multipath policy min-latency of the RTRS client.
 
 Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ Documentation/ABI/testing/sysfs-class-rtrs-client | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-index bc46b7a99ba0..fc6de514b328 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-@@ -354,6 +354,21 @@ static ssize_t rtrs_clt_hca_name_show(struct kobject *kobj,
- static struct kobj_attribute rtrs_clt_hca_name_attr =
- 	__ATTR(hca_name, 0444, rtrs_clt_hca_name_show, NULL);
+diff --git a/Documentation/ABI/testing/sysfs-class-rtrs-client b/Documentation/ABI/testing/sysfs-class-rtrs-client
+index 0f7165aab251..49a4157c7bf1 100644
+--- a/Documentation/ABI/testing/sysfs-class-rtrs-client
++++ b/Documentation/ABI/testing/sysfs-class-rtrs-client
+@@ -34,6 +34,9 @@ Description:	Multipath policy specifies which path should be selected on each IO
+ 		min-inflight (1):
+ 		    select path with minimum inflights.
  
-+static ssize_t rtrs_clt_cur_latency_show(struct kobject *kobj,
-+				    struct kobj_attribute *attr,
-+				    char *page)
-+{
-+	struct rtrs_clt_sess *sess;
++		min-latency (2):
++		    select path with minimum latency.
 +
-+	sess = container_of(kobj, struct rtrs_clt_sess, kobj);
-+
-+	return scnprintf(page, PAGE_SIZE, "%lld ns\n",
-+			 ktime_to_ns(sess->s.hb_cur_latency));
-+}
-+
-+static struct kobj_attribute rtrs_clt_cur_latency_attr =
-+	__ATTR(cur_latency, 0444, rtrs_clt_cur_latency_show, NULL);
-+
- static ssize_t rtrs_clt_src_addr_show(struct kobject *kobj,
- 				       struct kobj_attribute *attr,
- 				       char *page)
-@@ -397,6 +412,7 @@ static struct attribute *rtrs_clt_sess_attrs[] = {
- 	&rtrs_clt_reconnect_attr.attr,
- 	&rtrs_clt_disconnect_attr.attr,
- 	&rtrs_clt_remove_path_attr.attr,
-+	&rtrs_clt_cur_latency_attr.attr,
- 	NULL,
- };
+ What:		/sys/class/rtrs-client/<session-name>/paths/
+ Date:		Feb 2020
+ KernelVersion:	5.7
+@@ -95,6 +98,15 @@ KernelVersion:	5.7
+ Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
+ Description:	RO, Contains the destination address of the path
  
++What:		/sys/class/rtrs-client/<session-name>/paths/<src@dst>/cur_latency
++Date:		Feb 2020
++KernelVersion:	5.7
++Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
++Description:	RO, Contains the latency time calculated by the heart-beat messages.
++		Whenever the client sends heart-beat message, it checks the time gap
++		between sending the heart-beat message and receiving the ACK.
++		This value can be changed regularly.
++
+ What:		/sys/class/rtrs-client/<session-name>/paths/<src@dst>/stats/reset_all
+ Date:		Feb 2020
+ KernelVersion:	5.7
 -- 
 2.25.1
 
