@@ -2,115 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5374348A68
+	by mail.lfdr.de (Postfix) with ESMTP id CBAFC348A69
 	for <lists+linux-rdma@lfdr.de>; Thu, 25 Mar 2021 08:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbhCYHtS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S229798AbhCYHtS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 25 Mar 2021 03:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbhCYHs5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Mar 2021 03:48:57 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB62C06174A
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 00:48:57 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id t23-20020a0568301e37b02901b65ab30024so1113130otr.4
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 00:48:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S7naRHTxbsGmtlocJZn7IaHt3bsz5GoRkw0ucEZG2FE=;
-        b=Xhb+r8Ttj8/nhwyz6rp18CFHaqqU0Q702sA4paBIYnrOUMiEFIWSkDLTR6eMHdSkQ9
-         wJb2kbsZlT1YX2o9BxLMdt0tFwFAJIxdWzlYiXrN25IO73rDXaFQRlQT2tvrhapbjDDP
-         S4uNbEQxADANcD7Ss0JHk3+9ypNM+TyXqHWYbN2oVS/SiQGV/eDwbKz+XgRF/bzM4Xuq
-         BRwD883qQcfPzfGVZohGWrDcd6METu1ZodbJObpWlAVry7Dh4o1/etiv7D/Iagspk3Mj
-         XW797mGy4qovkD/E1IRPnrTavLik/GcOTx7+vjxZkCS0MYf/wG307jpNyzTx5zIqQ3pG
-         9YNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S7naRHTxbsGmtlocJZn7IaHt3bsz5GoRkw0ucEZG2FE=;
-        b=Ah/pvD/fzmkGDuFzlLQZ5BVNsiSRG/5HM972guTTas6h/bQZcBpNaDb1oH8u49r0wo
-         tAfvLgWtNNg+EeoL9hdKvGY7Hfw1YFoib+2euf9Yev36/4rxp0AY4bwnlFy7i5VyZTOY
-         udVPuucAffK1KiovjeNEjq21L0BXlQrhpl+2Dl10Zk/ScS3WMGxxIn0gEojB12D4agGw
-         PNcMM6H8DAjGEjQUou15415t9/xMt5ABD2YKMPBJSI3DDO1JhvQVR9ki3cojvk3KwY6n
-         cZtnjcUHJ+Sw7Ni7M4eKInZdIuOnupgK5Qbv+MLS3IEPxx+QRtHE6y1/j5IkqGp1qTzV
-         cocQ==
-X-Gm-Message-State: AOAM531JLuacNzYw7mAi63FDDqCBrXHZaEkThewzmikaTktq7QJmbUKe
-        SsZyi2vJHzGZDLLgwnFrIHhhtPaWdC8HWZZkLmU=
-X-Google-Smtp-Source: ABdhPJzBcSdAivw3SGhEQ+wrOm11BVhnKAbFJ77wNttABNuIVb+y60pwuOU4eRMBXTWG1RiP2YzWGa8DJLZtMmC3ap0=
-X-Received: by 2002:a9d:6c94:: with SMTP id c20mr6428149otr.59.1616658537117;
- Thu, 25 Mar 2021 00:48:57 -0700 (PDT)
+Received: from mail.kernel.org ([198.145.29.99]:41654 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229619AbhCYHtF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 25 Mar 2021 03:49:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8042261574;
+        Thu, 25 Mar 2021 07:49:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616658545;
+        bh=/JQYd6mC27MAlb+cNIvcwb8HZBaUE09MYG3eku/VEL0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r3KBVOwrJFm1qkGhJuO67qMebjRmMNnTa96D0siLaig4BqcpGXil6ua4dJXVlQMdU
+         GwGFduCfgZHs73NLWLlqCvmwzE5ybZrJwjPULaHWp52Eurq6WrqnHy2o9eP8IApguL
+         g//tf4EERHO4irjJM5RD0gMXlZNZlqn4epO7OcMOk6WLmmYwGMzKwVZF6EV17Zekia
+         d5K9lRCQoomXIF4sr7toswd41TpEEDveZGtnQ7lB2LyJKBvprveO9QFa9OrZtriuyL
+         VjpKzQSXxSTDRgD9uBlD0m0FKKG2Nls1qEm7UfWwoHd01oZJwyRLe0FQvFY8uOwu6l
+         pfChPR3UV1LqA==
+Date:   Thu, 25 Mar 2021 09:49:01 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Mark Bloch <mbloch@nvidia.com>, Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Lijun Ou <oulijun@huawei.com>, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>, netdev@vger.kernel.org,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        target-devel@vger.kernel.org,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next] RDMA: Support more than 255 rdma ports
+Message-ID: <YFxAbeGKAuFJYrll@unreal>
+References: <20210301070420.439400-1-leon@kernel.org>
 MIME-Version: 1.0
-References: <20210314222612.44728-1-rpearson@hpe.com> <CAD=hENdyLYLYAyS0Mq_jUb-Vm3P102hiw2Lzmz=hjvgcBn1t-g@mail.gmail.com>
- <c7fd30e5-dfd8-cd95-3b69-ea94432953fd@gmail.com> <20210324170721.GN2356281@nvidia.com>
- <526172c5-b48b-4788-b9d8-7dc37c975033@gmail.com>
-In-Reply-To: <526172c5-b48b-4788-b9d8-7dc37c975033@gmail.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Thu, 25 Mar 2021 15:48:45 +0800
-Message-ID: <CAD=hENcgc5PNzvhqjDmPfSgG89JXzMtt10cfEWos334wAoq6oQ@mail.gmail.com>
-Subject: Re: [PATCH for-next] RDMA/rxe: Split MEM into MR and MW
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Bob Pearson <rpearson@hpe.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210301070420.439400-1-leon@kernel.org>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 1:25 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->
-> On 3/24/21 12:07 PM, Jason Gunthorpe wrote:
-> > On Wed, Mar 24, 2021 at 11:52:19AM -0500, Bob Pearson wrote:
-> >>>> +struct rxe_mw {
-> >>>> +       struct rxe_pool_entry   pelem;
-> >>>> +       struct ib_mw            ibmw;
-> >>>> +       struct rxe_qp           *qp;    /* type 2B only */
-> >>>> +       struct rxe_mr           *mr;
-> >>>> +       spinlock_t              lock;
-> >>>> +       enum rxe_mw_state       state;
-> >>>> +       u32                     access;
-> >>>> +       u64                     addr;
-> >>>> +       u64                     length;
-> >>>> +};
-> >>>
-> >>>  struct rxe_qp           *qp;    /* type 2B only */
-> >>>  struct rxe_mr           *mr;
-> >>>  spinlock_t              lock;
-> >>>  enum rxe_mw_state       state;
-> >>>  u32                     access;
-> >>>  u64                     addr;
-> >>>  u64                     length;
-> >>>
-> >>> The above member variables are not used in your commit. Why keep them
-> >>> in this struct rxe_mw?
-> >>>
-> >>> Zhu Yanjun
-> >>>
-> >>
-> >> There is more to come. The goal here is to implement MW and peeking ahead
-> >> MWs need each of those fields. As soon as this change gets accepted I will start
-> >> adding code to implement the MW verbs APIs.
-> >
-> > The requirement is to add things when you need them, so if these are
-> > unused here they should move to the patch that requires them
-> >
-> > Jason
-> >
-> OK can do. I need to wait another day to see if Zhu is ready to accept the whole idea
-> of renaming these things.
+On Mon, Mar 01, 2021 at 09:04:20AM +0200, Leon Romanovsky wrote:
+> From: Mark Bloch <mbloch@nvidia.com>
+> 
+> Current code uses many different types when dealing with a port of a
+> RDMA device: u8, unsigned int and u32. Switch to u32 to clean up the
+> logic.
+> 
+> This allows us to make (at least) the core view consistent and use the same
+> type. Unfortunately not all places can be converted. Many uverbs functions
+> expect port to be u8 so keep those places in order not to break UAPIs.
+> HW/Spec defined values must also not be changed.
+> 
+> With the switch to u32 we now can support devices with more than 255
+> ports. U32_MAX is reserved to make control logic a bit easier to deal
+> with. As a device with U32_MAX ports probably isn't going to happen any
+> time soon this seems like a non issue.
+> 
+> When a device with more than 255 ports is created uverbs will report
+> the RDMA device as having 255 ports as this is the max currently supported.
+> 
+> The verbs interface is not changed yet because the IBTA spec limits the
+> port size in too many places to be u8 and all applications that relies in
+> verbs won't be able to cope with this change. At this stage, we are
+> extending the interfaces that are using vendor channel solely
+> 
+> Once the limitation is lifted mlx5 in switchdev mode will be able to have
+> thousands of SFs created by the device. As the only instance of an RDMA
+> device that reports more than 255 ports will be a representor device
+> and it exposes itself as a RAW Ethernet only device CM/MAD/IPoIB and other
+> ULPs aren't effected by this change and their sysfs/interfaces that
+> are exposes to userspace can remain unchanged.
+> 
+> While here cleanup some alignment issues and remove unneeded sanity
+> checks (mainly in rdmavt),
+> 
+> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
 
-Thanks. I am fine with the idea of renaming.
+Jason, ping
 
-Zhu Yanjun
-
-> There are two other nits in this patch that I could change.
-> There was one whitespace change that could come separately (n spaces -> tab) and Leon
-> moved the MW into core since the first time I sent this in which requires reversing
-> the order of the ibmw atruct and the pelem struct in mw. It has to change before the
-> mw struct can actually be used. What do you think?
->
-> bob
+Thanks
