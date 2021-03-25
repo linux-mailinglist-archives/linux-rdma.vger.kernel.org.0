@@ -2,64 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D168B349575
+	by mail.lfdr.de (Postfix) with ESMTP id 813BF349574
 	for <lists+linux-rdma@lfdr.de>; Thu, 25 Mar 2021 16:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbhCYPab (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S231184AbhCYPab (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 25 Mar 2021 11:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36346 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231211AbhCYPaI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Mar 2021 11:30:08 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56ADC061761
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 08:30:07 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id u5so3589683ejn.8
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 08:30:07 -0700 (PDT)
+        with ESMTP id S231225AbhCYPaJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Mar 2021 11:30:09 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3534C06174A
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 08:30:08 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id jy13so3623087ejc.2
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 08:30:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+wNTS4XPUWn/jF7E63ntoE+HOXhLVAf70pg15ObO2xg=;
-        b=PhpreFigF0UkWO4Tka15xmBMkCgXUs9EM+pPVizfLYJyOb7FKZ36ZhSLq9Z0q2YeWH
-         e4l9wo55GDTFajCTZC3UkJHnZyPF+i8MiAUSlXoIZ5OPSXGftkDrBcSnPQwJqtEToct4
-         irH1ZLZ5wysG3OpU4EEfumCx4fMRzltRJw0TeVwvpvulAiG1Wq+0bTq0afUHxflEqr1M
-         CiWO0nWzySRarL2m3mKZZfMgq4A/mdER+wBPZYAc5ABoMpMi94l53OvZDMbuIUw4JoPE
-         MqIFq9Zzz+CgbJRJ6UMkBjN05CGzb2Rxg5yV9/FiQsnRecdAE5DpvgcLxSg45neG9Ua8
-         4cqQ==
+        bh=V+oNHeYm6T889iC0TKZ6lC3gbkAN4B7t7g1f3Sr4HFs=;
+        b=JOPuniZD+CLqPzyYsXKM+el3JnnPG5ZSoEgcqp/+gxUBq/QkuSNCuilMI9vZGjNXQd
+         0j6m0SkEXtzxKMUmM8e9kU1S2JEX2JzX/c17Acu3OCV+HI0b3lcbsznOs9iPaIf3T05C
+         0lI6u9AXh7h/69dsGxvncDzm5i6dMs1rxd+S3JHB5NIaVEA9PulHPq7aN+Rss3yVJUZs
+         feZiLQ4Pk2bfUNZxbe1afp3fX28fJlBpbo/qUhKz9zF7Vl4O6nl99dDOto9uovj/GmUD
+         XUWXVE96IAb7/lnM1d1v2ETxa3bblX7/Ry6LPTnXhXvpsoukrYYOWuC/j55u9QmrkjvY
+         OFZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+wNTS4XPUWn/jF7E63ntoE+HOXhLVAf70pg15ObO2xg=;
-        b=UFJbRFi41EShGF+iUqIIVzGziuLr50urNhI78h3Hwj2V78KLS+uW2Lau8AgVa80iou
-         2TRQdVgMFOduqWV6bPfkn2IU+yKo4I8mSCSoPHdyLgQLHINvzNf7QVxHRLprsV8Ulvyj
-         AsK5MG/+L//9if6gs2q5xdSEyWEaeEEmQ/lhixIW51REl2Ly2f9o1t7nKxNabhOkXl8I
-         0We43r7q7dygjHdYRRx8sFOQ/G1LirZwuSSBt1Iz9cUR70LUlXjkM0it7tpr8yYUnfKv
-         a1E1xLrijvNaGICfOutFTHXzw3OMCX+ESBqaaFmcd6C7sXKdBdqqoBIY8PC/UtJUuazU
-         4wAA==
-X-Gm-Message-State: AOAM532VLusI3aQMZnNFXtOIaIbciPyC2HRCw3b1405jAu1TVxoSNbwm
-        5SzKpXxYVnA9r2BY57WSYAXEwg==
-X-Google-Smtp-Source: ABdhPJyW65blJT3YBI+wjtVxTOAd2w+Udic8e8nvfNaJEnmhmxgfVc0ijHAo/KNh1b+udd8RGk6KXA==
-X-Received: by 2002:a17:906:5d05:: with SMTP id g5mr10011179ejt.489.1616686206220;
-        Thu, 25 Mar 2021 08:30:06 -0700 (PDT)
+        bh=V+oNHeYm6T889iC0TKZ6lC3gbkAN4B7t7g1f3Sr4HFs=;
+        b=F3SY4T0YJ3TFH8214Tt6ME26lnMAjaSqYa6kkAyUbhjCiPLnxGdhr9fiY0ZMXkHbpH
+         x/GM2Oz+ZRXtnCvwoFt23c17sQqGYCiWMXYMl9Ao0Xr+l6YlcXUOzmMoZl4VR+AnoJdQ
+         qAHsZ/NHWIpAfndBGznP7xnF+YCswQJ2oX3fJHFCefCXCtJpFo0iDTQx+E6saRZ/tj6x
+         ktj8ZkXM1+EtqMtSri8WBObRdMj7xD6hreRfbamJDKGLHMVGtZQYJxIoBEkpQ0rOoFJ1
+         ZkC/KHbGtPV5009NCF8dBZYfhYBNYoj69djkCggOHxHmfX3cI8MFhBnvS3eIrBevL/Rs
+         4+Cw==
+X-Gm-Message-State: AOAM531W6iaxI5ccU9jE4P6VXietbq5Ph0KIy8aa/8WGyPNwWaxBKoVg
+        lUB8ghDnza7sElhRgeJ3ynq2hg==
+X-Google-Smtp-Source: ABdhPJyI//JwuJ3YcIVEtye7GvX0SjMQPLpbaQ0eKXf362IA/40zdAHYeo7lNfiTrNOn3eU5c94DrA==
+X-Received: by 2002:a17:906:3388:: with SMTP id v8mr10291297eja.278.1616686207671;
+        Thu, 25 Mar 2021 08:30:07 -0700 (PDT)
 Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aeee5.dynamic.kabel-deutschland.de. [95.90.238.229])
-        by smtp.googlemail.com with ESMTPSA id b18sm2574837ejb.77.2021.03.25.08.30.05
+        by smtp.googlemail.com with ESMTPSA id b18sm2574837ejb.77.2021.03.25.08.30.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 08:30:06 -0700 (PDT)
+        Thu, 25 Mar 2021 08:30:07 -0700 (PDT)
 From:   Gioh Kim <gi-oh.kim@ionos.com>
 To:     linux-block@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         bvanassche@acm.org, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Leon Romanovsky <leonro@nvidia.com>,
-        linux-rdma@vger.kernel.org,
-        Aleksei Marov <aleksei.marov@ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCH for-rc 20/24] block/rnbd-srv: Remove unused arguments of rnbd_srv_rdma_ev
-Date:   Thu, 25 Mar 2021 16:29:07 +0100
-Message-Id: <20210325152911.1213627-21-gi-oh.kim@ionos.com>
+        linux-rdma@vger.kernel.org, Gioh Kim <gi-oh.kim@ionos.com>
+Subject: [PATCH for-rc 22/24] block/rnbd-clt: Remove max_segment_size
+Date:   Thu, 25 Mar 2021 16:29:09 +0100
+Message-Id: <20210325152911.1213627-23-gi-oh.kim@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210325152911.1213627-1-gi-oh.kim@ionos.com>
 References: <20210325152911.1213627-1-gi-oh.kim@ionos.com>
@@ -69,163 +67,141 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+From: Jack Wang <jinpu.wang@cloud.ionos.com>
 
-struct rtrs_srv is not used when handling rnbd_srv_rdma_ev messages, so
-cleaned up
-rdma_ev function pointer in rtrs_srv_ops also is changed.
+We always map with SZ_4K, so do not need max_segment_size.
 
-Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Jason Gunthorpe <jgg@mellanox.com>
 Cc: Leon Romanovsky <leonro@nvidia.com>
 Cc: linux-rdma@vger.kernel.org
-Signed-off-by: Aleksei Marov <aleksei.marov@ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Reviewed-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
 ---
- drivers/block/rnbd/rnbd-srv.c          | 39 ++++++++++----------------
- drivers/infiniband/ulp/rtrs/rtrs-srv.c |  4 +--
- drivers/infiniband/ulp/rtrs/rtrs.h     |  3 +-
- 3 files changed, 18 insertions(+), 28 deletions(-)
+ drivers/block/rnbd/rnbd-clt.c          |  1 -
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 15 +++++----------
+ drivers/infiniband/ulp/rtrs/rtrs-clt.h |  1 -
+ drivers/infiniband/ulp/rtrs/rtrs.h     |  1 -
+ 4 files changed, 5 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
-index a71b6f7662f5..78bd0ce0ebf0 100644
---- a/drivers/block/rnbd/rnbd-srv.c
-+++ b/drivers/block/rnbd/rnbd-srv.c
-@@ -119,8 +119,7 @@ rnbd_get_sess_dev(int dev_id, struct rnbd_srv_session *srv_sess)
- 	return sess_dev;
- }
- 
--static int process_rdma(struct rtrs_srv *sess,
--			struct rnbd_srv_session *srv_sess,
-+static int process_rdma(struct rnbd_srv_session *srv_sess,
- 			struct rtrs_srv_op *id, void *data, u32 datalen,
- 			const void *usr, size_t usrlen)
+diff --git a/drivers/block/rnbd/rnbd-clt.c b/drivers/block/rnbd/rnbd-clt.c
+index 60410115c4f4..4e876bceb76f 100644
+--- a/drivers/block/rnbd/rnbd-clt.c
++++ b/drivers/block/rnbd/rnbd-clt.c
+@@ -1295,7 +1295,6 @@ find_and_get_or_create_sess(const char *sessname,
+ 				   paths, path_cnt, port_nr,
+ 				   0, /* Do not use pdu of rtrs */
+ 				   RECONNECT_DELAY, BMAX_SEGMENTS,
+-				   BLK_MAX_SEGMENT_SIZE,
+ 				   MAX_RECONNECTS, nr_poll_queues);
+ 	if (IS_ERR(sess->rtrs)) {
+ 		err = PTR_ERR(sess->rtrs);
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index cf9dbcbc11e7..db15257dc978 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -1400,7 +1400,7 @@ static void rtrs_clt_close_work(struct work_struct *work);
+ static struct rtrs_clt_sess *alloc_sess(struct rtrs_clt *clt,
+ 					 const struct rtrs_addr *path,
+ 					 size_t con_num, u16 max_segments,
+-					 size_t max_segment_size, u32 nr_poll_queues)
++					 u32 nr_poll_queues)
  {
-@@ -350,8 +349,7 @@ void rnbd_srv_sess_dev_force_close(struct rnbd_srv_sess_dev *sess_dev,
- 	mutex_unlock(&sess->lock);
- }
- 
--static int process_msg_close(struct rtrs_srv *rtrs,
--			     struct rnbd_srv_session *srv_sess,
-+static int process_msg_close(struct rnbd_srv_session *srv_sess,
- 			     void *data, size_t datalen, const void *usr,
- 			     size_t usrlen)
+ 	struct rtrs_clt_sess *sess;
+ 	int err = -ENOMEM;
+@@ -1442,7 +1442,7 @@ static struct rtrs_clt_sess *alloc_sess(struct rtrs_clt *clt,
+ 		       rdma_addr_size((struct sockaddr *)path->src));
+ 	strlcpy(sess->s.sessname, clt->sessname, sizeof(sess->s.sessname));
+ 	sess->clt = clt;
+-	sess->max_pages_per_mr = max_segments * max_segment_size >> 12;
++	sess->max_pages_per_mr = max_segments;
+ 	init_waitqueue_head(&sess->state_wq);
+ 	sess->state = RTRS_CLT_CONNECTING;
+ 	atomic_set(&sess->connected_cnt, 0);
+@@ -2538,7 +2538,6 @@ static struct rtrs_clt *alloc_clt(const char *sessname, size_t paths_num,
+ 				  void	(*link_ev)(void *priv,
+ 						   enum rtrs_clt_link_ev ev),
+ 				  unsigned int max_segments,
+-				  size_t max_segment_size,
+ 				  unsigned int reconnect_delay_sec,
+ 				  unsigned int max_reconnect_attempts)
  {
-@@ -370,20 +368,18 @@ static int process_msg_close(struct rtrs_srv *rtrs,
- 	return 0;
- }
- 
--static int process_msg_open(struct rtrs_srv *rtrs,
--			    struct rnbd_srv_session *srv_sess,
-+static int process_msg_open(struct rnbd_srv_session *srv_sess,
- 			    const void *msg, size_t len,
- 			    void *data, size_t datalen);
- 
--static int process_msg_sess_info(struct rtrs_srv *rtrs,
--				 struct rnbd_srv_session *srv_sess,
-+static int process_msg_sess_info(struct rnbd_srv_session *srv_sess,
- 				 const void *msg, size_t len,
- 				 void *data, size_t datalen);
- 
--static int rnbd_srv_rdma_ev(struct rtrs_srv *rtrs, void *priv,
--			     struct rtrs_srv_op *id, int dir,
--			     void *data, size_t datalen, const void *usr,
--			     size_t usrlen)
-+static int rnbd_srv_rdma_ev(void *priv,
-+			    struct rtrs_srv_op *id, int dir,
-+			    void *data, size_t datalen, const void *usr,
-+			    size_t usrlen)
+@@ -2568,7 +2567,6 @@ static struct rtrs_clt *alloc_clt(const char *sessname, size_t paths_num,
+ 	clt->port = port;
+ 	clt->pdu_sz = pdu_sz;
+ 	clt->max_segments = max_segments;
+-	clt->max_segment_size = max_segment_size;
+ 	clt->reconnect_delay_sec = reconnect_delay_sec;
+ 	clt->max_reconnect_attempts = max_reconnect_attempts;
+ 	clt->priv = priv;
+@@ -2638,7 +2636,6 @@ static void free_clt(struct rtrs_clt *clt)
+  * @pdu_sz: Size of extra payload which can be accessed after permit allocation.
+  * @reconnect_delay_sec: time between reconnect tries
+  * @max_segments: Max. number of segments per IO request
+- * @max_segment_size: Max. size of one segment
+  * @max_reconnect_attempts: Number of times to reconnect on error before giving
+  *			    up, 0 for * disabled, -1 for forever
+  * @nr_poll_queues: number of polling mode connection using IB_POLL_DIRECT flag
+@@ -2654,7 +2651,6 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
+ 				 size_t paths_num, u16 port,
+ 				 size_t pdu_sz, u8 reconnect_delay_sec,
+ 				 u16 max_segments,
+-				 size_t max_segment_size,
+ 			         s16 max_reconnect_attempts, u32 nr_poll_queues)
  {
- 	struct rnbd_srv_session *srv_sess = priv;
- 	const struct rnbd_msg_hdr *hdr = usr;
-@@ -397,19 +393,16 @@ static int rnbd_srv_rdma_ev(struct rtrs_srv *rtrs, void *priv,
+ 	struct rtrs_clt_sess *sess, *tmp;
+@@ -2663,7 +2659,7 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
  
- 	switch (type) {
- 	case RNBD_MSG_IO:
--		return process_rdma(rtrs, srv_sess, id, data, datalen, usr,
--				    usrlen);
-+		return process_rdma(srv_sess, id, data, datalen, usr, usrlen);
- 	case RNBD_MSG_CLOSE:
--		ret = process_msg_close(rtrs, srv_sess, data, datalen,
--					usr, usrlen);
-+		ret = process_msg_close(srv_sess, data, datalen, usr, usrlen);
- 		break;
- 	case RNBD_MSG_OPEN:
--		ret = process_msg_open(rtrs, srv_sess, usr, usrlen,
--				       data, datalen);
-+		ret = process_msg_open(srv_sess, usr, usrlen, data, datalen);
- 		break;
- 	case RNBD_MSG_SESS_INFO:
--		ret = process_msg_sess_info(rtrs, srv_sess, usr, usrlen,
--					    data, datalen);
-+		ret = process_msg_sess_info(srv_sess, usr, usrlen, data,
-+					    datalen);
- 		break;
- 	default:
- 		pr_warn("Received unexpected message type %d with dir %d from session %s\n",
-@@ -662,8 +655,7 @@ static char *rnbd_srv_get_full_path(struct rnbd_srv_session *srv_sess,
- 	return full_path;
- }
+ 	clt = alloc_clt(sessname, paths_num, port, pdu_sz, ops->priv,
+ 			ops->link_ev,
+-			max_segments, max_segment_size, reconnect_delay_sec,
++			max_segments, reconnect_delay_sec,
+ 			max_reconnect_attempts);
+ 	if (IS_ERR(clt)) {
+ 		err = PTR_ERR(clt);
+@@ -2673,7 +2669,7 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
+ 		struct rtrs_clt_sess *sess;
  
--static int process_msg_sess_info(struct rtrs_srv *rtrs,
--				 struct rnbd_srv_session *srv_sess,
-+static int process_msg_sess_info(struct rnbd_srv_session *srv_sess,
- 				 const void *msg, size_t len,
- 				 void *data, size_t datalen)
- {
-@@ -704,8 +696,7 @@ find_srv_sess_dev(struct rnbd_srv_session *srv_sess, const char *dev_name)
- 	return NULL;
- }
+ 		sess = alloc_sess(clt, &paths[i], nr_cpu_ids,
+-				  max_segments, max_segment_size, nr_poll_queues);
++				  max_segments, nr_poll_queues);
+ 		if (IS_ERR(sess)) {
+ 			err = PTR_ERR(sess);
+ 			goto close_all_sess;
+@@ -2951,8 +2947,7 @@ int rtrs_clt_create_path_from_sysfs(struct rtrs_clt *clt,
+ 	struct rtrs_clt_sess *sess;
+ 	int err;
  
--static int process_msg_open(struct rtrs_srv *rtrs,
--			    struct rnbd_srv_session *srv_sess,
-+static int process_msg_open(struct rnbd_srv_session *srv_sess,
- 			    const void *msg, size_t len,
- 			    void *data, size_t datalen)
- {
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index d071809e3ed2..f7aa2a7e7442 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -998,7 +998,7 @@ static void process_read(struct rtrs_srv_con *con,
- 	usr_len = le16_to_cpu(msg->usr_len);
- 	data_len = off - usr_len;
- 	data = page_address(srv->chunks[buf_id]);
--	ret = ctx->ops.rdma_ev(srv, srv->priv, id, READ, data, data_len,
-+	ret = ctx->ops.rdma_ev(srv->priv, id, READ, data, data_len,
- 			   data + data_len, usr_len);
+-	sess = alloc_sess(clt, addr, nr_cpu_ids, clt->max_segments,
+-			  clt->max_segment_size, 0);
++	sess = alloc_sess(clt, addr, nr_cpu_ids, clt->max_segments, 0);
+ 	if (IS_ERR(sess))
+ 		return PTR_ERR(sess);
  
- 	if (unlikely(ret)) {
-@@ -1051,7 +1051,7 @@ static void process_write(struct rtrs_srv_con *con,
- 	usr_len = le16_to_cpu(req->usr_len);
- 	data_len = off - usr_len;
- 	data = page_address(srv->chunks[buf_id]);
--	ret = ctx->ops.rdma_ev(srv, srv->priv, id, WRITE, data, data_len,
-+	ret = ctx->ops.rdma_ev(srv->priv, id, WRITE, data, data_len,
- 			   data + data_len, usr_len);
- 	if (unlikely(ret)) {
- 		rtrs_err_rl(s,
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.h b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
+index 692bc83e1f09..98ba5d0a48b8 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.h
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
+@@ -166,7 +166,6 @@ struct rtrs_clt {
+ 	unsigned int		max_reconnect_attempts;
+ 	unsigned int		reconnect_delay_sec;
+ 	unsigned int		max_segments;
+-	size_t			max_segment_size;
+ 	void			*permits;
+ 	unsigned long		*permits_map;
+ 	size_t			queue_depth;
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs.h b/drivers/infiniband/ulp/rtrs/rtrs.h
-index eb050738cda1..c25a0fd8a607 100644
+index c25a0fd8a607..feb76af95e96 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs.h
 +++ b/drivers/infiniband/ulp/rtrs/rtrs.h
-@@ -139,7 +139,6 @@ struct rtrs_srv_ops {
- 	 *			message for the data transfer will be sent to
- 	 *			the client.
+@@ -58,7 +58,6 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
+ 				 size_t path_cnt, u16 port,
+ 				 size_t pdu_sz, u8 reconnect_delay_sec,
+ 				 u16 max_segments,
+-				 size_t max_segment_size,
+ 			         s16 max_reconnect_attempts, u32 nr_poll_queues);
  
--	 *	@sess:		Session
- 	 *	@priv:		Private data set by rtrs_srv_set_sess_priv()
- 	 *	@id:		internal RTRS operation id
- 	 *	@dir:		READ/WRITE
-@@ -153,7 +152,7 @@ struct rtrs_srv_ops {
- 	 *	@usr:		The extra user message sent by the client (%vec)
- 	 *	@usrlen:	Size of the user message
- 	 */
--	int (*rdma_ev)(struct rtrs_srv *sess, void *priv,
-+	int (*rdma_ev)(void *priv,
- 		       struct rtrs_srv_op *id, int dir,
- 		       void *data, size_t datalen, const void *usr,
- 		       size_t usrlen);
+ void rtrs_clt_close(struct rtrs_clt *sess);
 -- 
 2.25.1
 
