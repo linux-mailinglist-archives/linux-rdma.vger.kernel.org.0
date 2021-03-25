@@ -2,218 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1F73497FC
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Mar 2021 18:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E5534983B
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Mar 2021 18:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbhCYR0v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Mar 2021 13:26:51 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:39190 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbhCYR0X (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Mar 2021 13:26:23 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12PHPDhB125691;
-        Thu, 25 Mar 2021 17:26:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=nFOP0K1SEgEH4zgQItHDNqnht7QYGNZeRGRlnK1Cp78=;
- b=UhDrBR2jNNpy4Tyg/B92BEID/+hDbWkFKd9lD+QP8y3IU1gpzvNOZRySi8zQCRfz/97u
- kIORF5sTIyBijBnh05g0JUAo2p+24cBAd2sg/KkAYAR2kmIiMwlYd3pHLh1NDNGWPUXw
- OWJjqZT55hCNFan4eAtCfpuEg73B6/Xveag4us3c4gs542ZQNbsUEgApOBWGj465roj8
- skMyYFo5PP5ZAZbcE+HxOTVlT/FTP3gQ3N42x/EzXirZJjbolczPjh3EI7bXym5Dc3QA
- RfvFKUgQSpeRw8K4rV5CIrSsALhrCPqtbFipqxwbGtivY5GxIS/F1lVak4N8S+YouUTa kQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 37d8frf53u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Mar 2021 17:26:21 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12PHQGCc040616;
-        Thu, 25 Mar 2021 17:26:20 GMT
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2043.outbound.protection.outlook.com [104.47.74.43])
-        by userp3020.oracle.com with ESMTP id 37dttuy6ke-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Mar 2021 17:26:20 +0000
+        id S229989AbhCYRhD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Mar 2021 13:37:03 -0400
+Received: from mail-bn8nam12on2043.outbound.protection.outlook.com ([40.107.237.43]:3040
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229676AbhCYRgx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 25 Mar 2021 13:36:53 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kdrXebO+OHW/nzgIZFGYuvgQIlpNd/6gOxcmqbtbUgyftQvFNlD5hgttxst3sUt7x3KRWDrkBBN9JLFrTEgRTphMqnX6ZoylndlwCloRPXEBkf/3X01y0Q+z1lTcu53rHb1vbGX4T+me0lKkFriIhVySc3viWM9yp6PyNI9jjGfEBMuaEjnYZJ5zME0fQkDXRchBmfN0qRQFqQiEdCq2IZWrlGkJUliq+6uQp9SKoDeIzfZ4tLoa0qCwD8XzK5K78o3vhsBWL/oSq7A/Glj8R75AgBhAipxws+2ZbG9KSSIgwWD1ckCgY4MkWqioUaMJKnkkwj7Fdr1ZXVQpCgDX8Q==
+ b=CkoB5iB8fm+j+jXiPrOvOxQAvVdRqAmMjnWW1UyAhlP6tQYxnTAbIWRegxdlCU3xC7Vpxr9iLsNTyp/qH88Si4Bs4mINLfC10JouZ7YIeeuOD9T0vseKJc8tovJuK9KZiO2N4lwIcirq6C+pw3mFqriRtyvuAltkMHfm5gAQxwItPqp1MWZsfLPW3d0L1XVWWKX2qeyIbZCoci9FPG7VJL3NL30yZPYOgHTE3yjSkh8UoR5J+OR1IUHQeNlCZM7ob26siJhyIVHHj9DvAucJIXSpP8nKjk82jZCOtdbLSFKloCU8YUmzVDbuviXC+rSQ0IRFkLriWtlWFpj8F8TGNg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nFOP0K1SEgEH4zgQItHDNqnht7QYGNZeRGRlnK1Cp78=;
- b=I0vFbwufpbze07CgYTaSHP+qqcpaOz2SbGCrCW0QIfRZAQUouodIcCnzpOZlzUclkU3VfBxr5wknO/gUXkYsKIGL/cwJz55dzunYPhWxfkLmufD+sa01mklTYI6Nydd9h3cy7L8Tx9bGw87aNHtbll5nIJz6frQtOVK9OmzQ4FUInqff/PFQiUd8tNA+Z77zk6PPi6qk7NfyZs1eAOrHO0qfhEsaKDOhz7nRPjNF7tqTiVA32RW7ePLcUb7KXNA8UqGyUGT/yZPDDhE9ryJdXocW6y/wPFPcotNMCVXkgG21SfoRkJQlvLAzmjJlKHOFVi1nAkKRwcq5o26uNlRB0w==
+ bh=C3lGqG6BWvw47EoBsUQ/8ytSaXn6G+HNve4YkBRWZk8=;
+ b=g0qhmCqMvv4RK1/kLf6s4BFnIPh2Lmj7/QTyzlIhauSvGxJlluY/PRdjd20NhGZvzT4B/vEDcovw0GI4Cr7zFlXZ/0zwxSIjUQQ8WnlE3xAYZVCMtSjZX8wiudyh54dLdR1Y7rhNt3I2IKdBqYfA7ryraH/tImULGar4GfzWf/YZTRcpBHrBDOsWZq5g7onVfUkbl8bmzm1kH2Ji7neT5h2YY6dzkuixv+RJ3va7+l5F2fLAmTLb++gbuivz0/H2pLX+JQK3vB3Oj6Kratkx/ilucfa5k8BwPjVMRVJbXhsP6n4/m+nVYb7ODLxbgX02GIcpkdg8EGodtuuPE2iYig==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nFOP0K1SEgEH4zgQItHDNqnht7QYGNZeRGRlnK1Cp78=;
- b=QfkjlJn7gKk2HvDsFAH5fm/BQxmuj+Fh+FBthGYQ1WPpvrRbgqNd+EdBrmFzLgzmCntjGU7zf6MwonhOe9fSxtUF5/aDKQs2bepyrQ1uGSgWf5UZJN/rph46QDwr1kholvGDFUR9B04qSLNk7zvjyh5+yyHXyPe4tiqPGlPpUcw=
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24)
- by BYAPR10MB2965.namprd10.prod.outlook.com (2603:10b6:a03:90::21) with
+ bh=C3lGqG6BWvw47EoBsUQ/8ytSaXn6G+HNve4YkBRWZk8=;
+ b=GyGcBHulzeIH5UM0jPj6mJRmIXK/iRsICrqB+4kI6BAS+X+Z+Ya9If9jyUBEtkUD3Q4TY18alHo3/WAzJbwBm/hMl5h+MLaBn9Hg/CpGNrnSpW4+I1zAO7597/q4uFnJOOV643M6ZuUrb2cb2KQBKT9nnkcs+h/Vcip9wbAVBCy8iN0NfHkFid4Ks/c6QyYZKsODKBZfH41xu6qQ0Hq7asHGcuipISo+DFwijJfQNAtRwph9IEEQQ5wQO5I9UIBLGpmqnb7Fn+kHbBP+Y4QHqas02y3JHpbwBbvxiiHxgX7gbXu6swp3x3XQR2UwyujNElMf53H9jhPIryf6pmv6NQ==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1243.namprd12.prod.outlook.com (2603:10b6:3:74::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Thu, 25 Mar
- 2021 17:26:05 +0000
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::50bf:7319:321c:96c9]) by SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::50bf:7319:321c:96c9%4]) with mapi id 15.20.3955.027; Thu, 25 Mar 2021
- 17:26:05 +0000
-From:   Chuck Lever III <chuck.lever@oracle.com>
-To:     linux-rdma <linux-rdma@vger.kernel.org>
-CC:     Michal Kalderon <mkalderon@marvell.com>,
-        Ariel Elior <aelior@marvell.com>
-Subject: Re: FastLinQ: possible duplicate flush of FastReg and LocalInv
-Thread-Topic: FastLinQ: possible duplicate flush of FastReg and LocalInv
-Thread-Index: AQHXGp6rQmS73ds8r02HG2jW0ooLiaqIS08AgAA5HgCADH40gA==
-Date:   Thu, 25 Mar 2021 17:26:05 +0000
-Message-ID: <832708D9-C956-4777-B904-8CE2114DDA37@oracle.com>
-References: <73EEB368-3E02-4BDD-BE16-4AA9A87A3919@oracle.com>
- <039DFCA1-84BE-4043-8136-423055A12796@oracle.com>
- <b2114710-10d7-eadc-01dd-94d1f862a99e@talpey.com>
-In-Reply-To: <b2114710-10d7-eadc-01dd-94d1f862a99e@talpey.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [68.61.232.219]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 60c72a13-b2b4-49f6-d805-08d8efb31220
-x-ms-traffictypediagnostic: BYAPR10MB2965:
-x-microsoft-antispam-prvs: <BYAPR10MB2965F0A6AFBC9C5F9066E41193629@BYAPR10MB2965.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Y3TQB2Z5VWJKe4DEf9JD2rYgHc0/hvzwF3ofT7VhUL/az7DfxYmE6ZpgZYCSKHvgF5b/J6v0uLqSTFmKLOK+f2iu8HSv7UBUjzinfVc5nEPxBShgNO4cXRgXKRYKZ0CM3htoMyRjv+LUBnOr9JVrug4SxE1wlorqdF2254ZER494kE+1p5rr9xxsTZLCD42s0A6nDnOQC8o8LPGODPCWO/L/LVoA/qEYgPy9NrU6XzcoZR2nvjE3SLLsGzBk/MnLbmd8B7ladHYmiUDbOiAY13iU+EClVYKc7+7OF/XI3E1KqSCiEytSQoRsX2yHLbENwjDdTjLcxI7tk8hSgQ5/unbPfPw7PWYcubtxK88Pojw3PmsgWorHyLSyPf41VMggOaCYCw4AvwnZKUzZ1T4G4ZrT7NuLsbGy+rolijWmHKKV4sUdSvVUXy55TFbjw5z2U2d1LQ4uHd+OlDaQweScQ5Likg36g4R8BCrBQE4sIIrDBy65eOVSbWILQYeZWmhItiuIElm66E96lDU/Dj46PNWuKrB9/FvhQbsvBdOdm8HglOplXZlOEB7s0Rp8pgJeyBbmSwI1QHYzdLLRVxCEIT0KYUbc1cGrKfEDQYsespbF2K4mDtuRDRvIjv/N08Yo57o62SURA9T2swVvfU5ZGTvXzEfQrjxzLETvgAxc8iyuuSPn7MPNUOzZzH90bWXK
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4688.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(396003)(376002)(39860400002)(346002)(4326008)(26005)(6506007)(2616005)(86362001)(8676002)(36756003)(53546011)(8936002)(6512007)(186003)(83380400001)(38100700001)(33656002)(66446008)(2906002)(91956017)(54906003)(5660300002)(66476007)(66556008)(64756008)(71200400001)(76116006)(6486002)(66946007)(6916009)(478600001)(316002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?JbqgeqR/9bOsEHFccVgrvF8TlJf5MkvmLv2FpH7p4Rl9gWT3jZ3fuKYw0lxG?=
- =?us-ascii?Q?g63DiOgwy3z+A4SlD4pOe15C0gw2Q0b5d2B4rrtoOfTTVQGSzJ/BE9CAxiC7?=
- =?us-ascii?Q?6F24eZcLIZiZpDyhtWgnw9/O+qaqmwHGBhaDznG6DyBDJ2ej+nsT2DotgpXf?=
- =?us-ascii?Q?wivBTVq1IOhwn4z82owCOzjAU9GH3cwMwEBF7QPO2jqvf3rBPCv2MZdgYgBm?=
- =?us-ascii?Q?yYf2al3uMSqoTv+4ukyaxzbe00UyM77e3ZHLZqop34x4DyPcPz2UaryJbuaC?=
- =?us-ascii?Q?HCvoN3SVO7Ny5OEFtmQZLfldv/Ib1iq6UAjYVln3nVgx3yJM2jT/Fl5apidq?=
- =?us-ascii?Q?z+g4RFOe+B11Vh+u0WQuoaawUjV2pUDtYCq/EgIeJpTpnsExuJJKR1h6c8f1?=
- =?us-ascii?Q?LZRu17VH2K30mRYg6MMeWwGsr+9ie3R/4eNFA/Cv+VwMoN3rYkxEvKz4b0Pz?=
- =?us-ascii?Q?p877DJYS+iU7QITtML6Nqdu0+E2VrzEK0zYFNtbgnQufEZl8mPykot/RlIFz?=
- =?us-ascii?Q?oAekNJuc4Ccq2rANcIWd8Mc5Hp/cf5yY41YY5ejnEkc7LuQGsx192KISZ0aR?=
- =?us-ascii?Q?Om3ASx5PWvoYpCdmFCYB/43ayiEw3TQ3hyIGlNJGYtFX9cNHvRY7RDGq8zhr?=
- =?us-ascii?Q?orWX5r/vtcUPW18YlLcg9XcLbI/HqAoR2bsYUvRxdBaqNjBYhnI+zPKe6Cjj?=
- =?us-ascii?Q?fxNQb+w2lB+Ujh6llmc5nBZnBT171ELiB0SWpZDTg5rGoSdUy7a8Z+UE7UqH?=
- =?us-ascii?Q?KgVonPPSVOIpxbwIGepnLEldMQ13xDRb16PdX/BKTXpeL+r+utpFDxFqPZQ+?=
- =?us-ascii?Q?Zr4i8Xsuvwph/c7SxmvcSMlG5Cd9YFwMpNnHIZIft5HVwfGxIW+EPxrVzLUD?=
- =?us-ascii?Q?HNPXQjM+t4Tq/6vdzVWFZP0WZj8J72Qfodl2p5L+DXS6Qcx5scphlyg524lR?=
- =?us-ascii?Q?gChsJYtdVX28RXRypjxqEjLM1Azagk4knuyUxsOQK54uYnNueadw9YkrLp+q?=
- =?us-ascii?Q?UKTnB6rBvOB/+epyyeXijnytYZZLNAxgcnAD3j//kDdrkBEmjb+j0Hdwo11l?=
- =?us-ascii?Q?j6+S/k7rXP/5bg91sr5Fsvx4IMkY+47PUAeO4WxeiJTDy6lAJDQ0T6MidZHX?=
- =?us-ascii?Q?jO3RyRVDmD6vncV6bFSLT+KNIywAHXH62J7G+rmsPB56RC3etFp0orZr38lA?=
- =?us-ascii?Q?AizEe0WxAI1lRKHE7PuTLgOFu7RqEC98qKIG/jfDUFV4LWtsQeTkJE8nW+r2?=
- =?us-ascii?Q?W2UbXbRATA5Mju5nkD8fSHDRgXgWVwCm5Yp2+f0nULKEiJ4/eqhIkPdMHN1b?=
- =?us-ascii?Q?LWZApnKwkNnlQK0CMHwlRf39?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2D02B9947369F04BA07591184886C606@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ 2021 17:36:48 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.029; Thu, 25 Mar 2021
+ 17:36:48 +0000
+Date:   Thu, 25 Mar 2021 14:36:46 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Keith Busch <kbusch@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
+Message-ID: <20210325173646.GG2356281@nvidia.com>
+References: <20210311214424.GQ2356281@nvidia.com>
+ <20210325172144.GA696830@bjorn-Precision-5520>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325172144.GA696830@bjorn-Precision-5520>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: CH2PR11CA0017.namprd11.prod.outlook.com
+ (2603:10b6:610:54::27) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR11CA0017.namprd11.prod.outlook.com (2603:10b6:610:54::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Thu, 25 Mar 2021 17:36:48 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lPTuY-002kfy-V0; Thu, 25 Mar 2021 14:36:46 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0a526200-005d-4578-0fd9-08d8efb4911b
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1243:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1243103D8C552975D96F1ACAC2629@DM5PR12MB1243.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZGwF6af37sV7clJNUYfkW7lpwcDV7YvyrmprNqQGpvpnh9m9DMBq1w1xn1dDk3r596uJ67gdbR5yjelMxUZ7xv/J2HAca/mPpr9sf99fnydBzY6FeIp66Ouk1zEW5onP57fS0w6Hoo3ueAPXZeTwfBGXnsAcRkjuUSMdaVxf5y7I5VLuvpuitpd+kT3cKrvwNeqXTvNXF2F/ORHSpp9ggPuHcWswycqIqZ8FxaFxnVvPj3t3L3t+I6ONuUWsMYnP3h9OrBru7Sv9HM47w8bYwo+NuRBGDr7om28nhSsRLY+x7CRcs13BJff0CkoBD+Qq1Sj6PObwnAD+S6464Dcv+G6HSgFZ5H20Nn//o+SVoqmaGx3D6KbXZ5o+uO+gF7scTrFqrjK6btkVUdQi8dtYc5EoF62cmC6OuFMXClVUbYjXHFBnbTRAFmHqJfzcjaHcd2VHfHtkQXi38ORL0yGMgO+OmLSPpvShCh48T4qZVkB5k/cDJz3SBY/HBZTWpngMQ5B7cXGwwuF8Wbbxoz8pbkqaSfTxwBhGXgYZo8D1wEJyBH/yjdHljCfdvIiY5v6sZ7HgMAL0hAzhY9M5CDrjTq2N4pWkLBm3Jivc7yQa/xXHScgv4yIlf6RvrZWe7/y5O+qlh3npOgwwu6Ss7e7ekw/6Y8NGcsWMN9nh4/TZFRc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(366004)(376002)(136003)(38100700001)(426003)(5660300002)(54906003)(7416002)(66476007)(36756003)(8676002)(26005)(6916009)(186003)(8936002)(9746002)(9786002)(2906002)(66946007)(4326008)(2616005)(316002)(478600001)(83380400001)(66556008)(33656002)(1076003)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?VB8hrdCEufVaWa6e+bsNgCnlrmn64JJuR03+LdEpQYCSyue4JUCUQPLHw0Cc?=
+ =?us-ascii?Q?4Ze4f3/0MeFFewjqQM+JWtxVOa+eKQ0d8O6CPbRiWVAsLWsj01PAELmpNzFw?=
+ =?us-ascii?Q?vGEu7K3blxdt9AakA3jDHGAJlAEMc5Mq1IIS4eTqLrzGeZ2EI/tYK+z3zM7+?=
+ =?us-ascii?Q?ae7Z2u+7W+Lpp2P/2liwfshGLvqkzvy5xGMYLjPLz9qInIClRnZDzNZJtpaQ?=
+ =?us-ascii?Q?e3POxDGRt4MVWrkClGCsfQCFqzpMeBeoYiu1WuocXkutfADolITTnkQfVDFi?=
+ =?us-ascii?Q?TDvWiC/aXWTDvcEDZaRS9akrcdp02vOwYZXgFdp6V053u1QEziK2v+SlwTkz?=
+ =?us-ascii?Q?1TPylF7YGwrsSO9B0A//cnPDX9jvEy034Ts7bFwafszXLDksisGYXUAMh4HZ?=
+ =?us-ascii?Q?Zi9Mzi2WWDd6OIDolxOosxan9NkWV9C7PGuQFryZube6Oj8xRsZU0l52btfx?=
+ =?us-ascii?Q?4NeGdpCAnpjueL74R0pW4C9FIwq6cxGMlrE3tKA2YgSIHtgRLYAimoGLtYoo?=
+ =?us-ascii?Q?o0JJ71cuoYnfDqCBu8Ogje5gRL/GBHtYZeeVy9hF7p0R7QqRhGSd9jJtndjW?=
+ =?us-ascii?Q?MSAcTsdx7UOHau3FTK2PEoDs4NsxPKLOBT9yH1yQZHixtsjaEdJCP2yCESz9?=
+ =?us-ascii?Q?d06Sjvzg46mcOL8bdyEJfiKxZzgQqXWnmSLPMueXpsCVa6bajmI5oWWyCRBq?=
+ =?us-ascii?Q?tdwzjkGK9Mo42D6EzxKR8UnvDDJQeW+B3xIEBbEyuWsol63CiJ7MZiO55rfA?=
+ =?us-ascii?Q?VvtgtzaZM4s5W/V0RxX0HZAJQgXthqjTSDW1CYL1+cIf2f3I6PaFiwBiXICd?=
+ =?us-ascii?Q?kPcV+XpC75LmZBBH0YNt89yLKzYE8sof1xShNYnW5zC32AgfFT5JKlJ2rixL?=
+ =?us-ascii?Q?rl3sDuiJq6I9nNYW05IMvH4Qo7jpwPKrPC30mVUlqkHa2Hc4Az8KoJfUMN4D?=
+ =?us-ascii?Q?/jMW+hSiuWYCzFz8OULH41Woh4M0QryVCoQ2YvFYrrWkmH054HcBXBt7Pb7p?=
+ =?us-ascii?Q?iXK0nmX0eHZFztVYkOtBNW7AKoY7665mkwsBCmAB34E2DD80mE0FpEPUiGfu?=
+ =?us-ascii?Q?8GkQnpVXNpPLS6979QNp2c3TEhKqrclBEL/r/4YA9QpYmHOUoBxI5Jg5fbDg?=
+ =?us-ascii?Q?Gbl9gtjhrlogR8w+/h0EyqkfZpddd8UZOb2kNQR0rkhZVJBtLOn7/KU8oI1D?=
+ =?us-ascii?Q?mSQhrAW6ho+4JoJoGrt7S3UjC+f9tC/ms1O/koyv+ViR7Tcj0zZrSbyb78VM?=
+ =?us-ascii?Q?azVISuWSX5twV/IiEoid7tPvmHrnWaZgj0JV6VGlO33AG9ECW81FnUDkHLIq?=
+ =?us-ascii?Q?KFaBbhhx2mvc0TF6y2ZWWxEs?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a526200-005d-4578-0fd9-08d8efb4911b
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4688.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 60c72a13-b2b4-49f6-d805-08d8efb31220
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2021 17:26:05.4435
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 17:36:48.1746
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jncfyxbutaToC0oAfE4MzXIfoKGfZr8l5WYWYejZNHAltzBPn5CsQeogu0p7reK6Ud6rz0MnBgoAZrBOrCEW8A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2965
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 spamscore=0
- mlxscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103250127
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
- impostorscore=0 spamscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999
- phishscore=0 bulkscore=0 adultscore=0 malwarescore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103250127
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wU0Q+MqF+tCdZ9zKhWGO6J6ntefceQKUD2ATTACto3y6A+Hkg9EEjFJy1QWaiVvp
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1243
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Mar 25, 2021 at 12:21:44PM -0500, Bjorn Helgaas wrote:
 
-> On Mar 17, 2021, at 2:39 PM, Tom Talpey <tom@talpey.com> wrote:
->=20
-> On 3/17/2021 11:14 AM, Chuck Lever III wrote:
->>> On Mar 16, 2021, at 3:58 PM, Chuck Lever III <chuck.lever@oracle.com> w=
-rote:
->>>=20
->>> Hi-
->>>=20
->>> I've been trying to track down some crashes when running NFS/RDMA
->>> tests over FastLinQ devices in iWARP mode. To make it stressful,
->>> I've enabled disconnect injection, where rpcrdma injects a
->>> connection disconnect every so often.
->>>=20
->>> As part of a disconnect event, the Receive and Send queues are
->>> drained. Sometimes I see a duplicate flush for one or more of
->>> memory registration ops. This is not a big deal for FastReq
->>> because its completion handler is basically a no-op.
->>>=20
->>> But for LocalInv this is a problem. On a flushed completion, the
->>> MR is destroyed. If the completion occurs again, of course, all
->>> kinds of badness happens because we're DMA-unmapping twice,
->>> touching memory that has already been freed, and deleting from a
->>> list_head that is poisonous.
->>>=20
->>> The last straw is that wc_localinv_done calls the generic RPC layer
->>> to indicate that an RPC Reply is ready. The duplicate flush
->>> dereferences one or more NULL pointers.
->> So this looked to me like a Queue wrap. After sleeping on it, I
->> decided to try disabling xprtrdma's Send signal batching. Setting
->> ep_send_batch to zero causes every Send WR to be signaled, and
->> that makes the problem go away.
->> This is a little surprising. Every LocalInv chain is signaled. The
->> only possible accounting error might be that ep_send_count does
->> not count FastReg WRs, which are always unsignaled.
->=20
-> Well, perhaps you're posting several WRs, and the connection is being
-> dropped before you post them all. Therefore, you bail out with the
-> last one you did post being unsignaled. You had better hope that last
-> one is flushed, because if it completed successfully, you may have a
-> missing interrupt.
->=20
-> It's really tricky to get unsignaled right, when errors occur. It
-> might still be the provider, but there are possibilities on both
-> sides of the API.
+> NVMe and mlx5 have basically identical functionality in this respect.
+> Other devices and vendors will likely implement similar functionality.
+> It would be ideal if we had an interface generic enough to support
+> them all.
+> 
+> Is the mlx5 interface proposed here sufficient to support the NVMe
+> model?  I think it's close, but not quite, because the the NVMe
+> "offline" state isn't explicitly visible in the mlx5 model.
 
-My current theory is that the only duplicate completions occur when
-WRs have been posted after a disconnect. This happens in the window
-where the workload is still active and the connection has been lost,
-but before the DISCONNECTED CM event.
+I thought Keith basically said "offline" wasn't really useful as a
+distinct idea. It is an artifact of nvme being a standards body
+divorced from the operating system.
 
-My expectation was that such a WR would flush through and complete
-once. What I'm seeing is that on occasion one or more WRs that
-were posted in this window complete twice.
+In linux offline and no driver attached are the same thing, you'd
+never want an API to make a nvme device with a driver attached offline
+because it would break the driver.
 
-If I add some logic to block posting in that window, the duplicate
-completion problem seems to go away. The test runs long enough
-without a duplication completion that I hit other bugs.
+So I think it is good as is (well one of the 8 versions anyhow).
 
-I never see duplicate Receive or Send completions.
+Keith didn't go into detail why the queue allocations in nvme were any
+different than the queue allocations in mlx5. I expect they can
+probably work the same where the # of interrupts is an upper bound on
+the # of CPUs that can get queues and the device, once instantiated,
+could be configured for the number of queues to actually operate, if
+it wants.
 
-When a duplicate completion occurs with LocalInv, I typically see
-duplicate completions for all WRs on the same chained post. That
-might be the case for FastReg also, I haven't looked closely, but
-the Send WR these are chained to never sees a duplicate completion
-(could be my duplicate checking logic for Sends doesn't work?).
-
-This is with a QLogic Corp. FastLinQ QL41212HLCU 25GbE Adapter and
-Storm FW 8.42.2.0, Management FW 8.30.18.0 [MBI 8.30.29].
-
-
---
-Chuck Lever
-
-
-
+Jason
