@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25E93495A1
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Mar 2021 16:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 605603495A5
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Mar 2021 16:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhCYPdv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S231301AbhCYPdv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 25 Mar 2021 11:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37118 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231344AbhCYPdW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Mar 2021 11:33:22 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF54C06174A
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 08:33:21 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id o19so2914648edc.3
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 08:33:21 -0700 (PDT)
+        with ESMTP id S231381AbhCYPdX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Mar 2021 11:33:23 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2B9C06174A
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 08:33:22 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id r12so3620984ejr.5
+        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 08:33:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5HhVx1qvpKQuOED1dbX7QsOSHog9nYZgq9x8tGGtbok=;
-        b=CGdxfiJA0/NZDSv69bHhrpYkaSLF7F+C8GJ7Qa1Aq4uJ3BgRnBxPdbTfakgHqKTNYE
-         kBAca/nG3cwIHuCwKRd9WYSIz499ajHauhhnVC88Xg2tjXbwdXmiPR6zYZfUdb1nthmp
-         R+qkmpueXXbyjWTqx/qvPYHLxqOq/d0mkGbTr2P1Hx20Dk1miHkxG2sVbcTIuLaP7QKL
-         Ke7lvDVwDIidzodNVgg3WiB+92dpHJvi14WtunQyS7DeVlgBAhIe3pyty1hDKMZKI19/
-         QuAjrxLONk+WT9aU043lln+EYdSXnzuxLM9S7HpWZ/e3HUOw7kJuy2EA4XxeXuNVbkQf
-         ffvw==
+        bh=nqG/ZKYs7wDVx6d1FSRXmVCq5VuyNsPulySovN98UTs=;
+        b=bzIoWQi2uIeK5xN/1doTzNBij08Vl/iNQYtk6hczm5CucXmI0aBlh4OwHzyilco+0P
+         Ezk72G+TSWSrL6xEZSKUcKi8nvem1qgmNF6Vp86xh9XZTCed4IbhBK30XFHDOxbmnvL+
+         RFfnsrrX1AJXcObXV6suJNXGnrF55Jwn6tcrnJtuUGYpl+waiWmjqD3rdAQX2w4q72we
+         7xtSOA3OVJOWucq5JSOAhz9n2VMGYQ9a6i8au4ICTz2mMIPDdqPUTGAsOanPRwSeR/nc
+         t+gPB8L/nQL926s+6wkJhVFuA7ZdVf54p/nGQks8Z4BtpzLrBfttHJTAltPszVz/+jX+
+         p0pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5HhVx1qvpKQuOED1dbX7QsOSHog9nYZgq9x8tGGtbok=;
-        b=fzDPmK73LRkEwB/ws0vfBhnpVSfIqTjHuuNAzp8aoH+gb0K6qgyS6k8AyA8rkFHqdi
-         UZDEs1wy9hSyeES1fedsgUOpyIHOKhqd4qrF8/0qaB8uj0GDJBLbXHAJZ/FPw0Vha2Mj
-         hLTIO89Mr4q3IPZMA+jToBeUlqwIc/+Y/3Cr5FxyBZE1wdU69SnbsIhD5aIeGcGXbH5E
-         XmfAokP7bAMmM3tyA+YZ9UM4nYKpMJEWbxmXDzsU0hxpP9vylwVo/P/zV5o/8B7++mrX
-         CH63X+Nm2MfftSBIQ6jkPXk75XCLHHqtRrTutQbYi57KZbAZbheXuoPwKOsmMtzKKGkJ
-         eL+g==
-X-Gm-Message-State: AOAM532TpIo7GgJ9FQFWcYoJ0AyEn8lic99mdbjv6CZxZVUOzdoTDR0y
-        678MgpM16T6CVIIf8944gSZenOgJ1mUZaoIR
-X-Google-Smtp-Source: ABdhPJwXFZQbv6c+s0JtrT/HCNVtl9v41YEw1FNL20/KMhTvD++5xweTBZicLU3p1Sm0SbzL1AUsnA==
-X-Received: by 2002:aa7:dd05:: with SMTP id i5mr9688671edv.300.1616686400466;
-        Thu, 25 Mar 2021 08:33:20 -0700 (PDT)
+        bh=nqG/ZKYs7wDVx6d1FSRXmVCq5VuyNsPulySovN98UTs=;
+        b=BEpLRSrweM8yQa0Y0QV4q09ez0XfcaZhW8+V8Tp1uaxLEvZsqoxeddq3apCK46Dmnf
+         Q0XoNBglwo2RTfDw3rO4a/y3Oxo+mWLXJuEisW3+8C7pRCemxYbHWte289Oae4GH6FAd
+         W5VRJqU/FyJ352kvdY9vc0ErjyIiHEXB9X+5tKFxVVp5tvyAIZ74oVsBOM5YFbOccLV4
+         0j9No/F8aJueGbq/buV8eu7TGDSlAp3p6H0AVDMMO7rb5LQdoKHZpIRumX4d/a7DvU3k
+         2tC3JL3Ouv/cwajtBs7gwwsz6DZDT8xNhw97yfU4Y9DKx/nCsvI+zf/P1hOaBDXHIQZw
+         JsIw==
+X-Gm-Message-State: AOAM5320PbN2fK+I343gW1zS/vooLLOazLldAdNpXSnFIYTXJoYWP7IJ
+        AhhH18iNwHPXCStL+KAvlJQdrBAKwixl/18B
+X-Google-Smtp-Source: ABdhPJw2heM9wNxgP6Ztgb0oervugZlk5TMSUWZrxhTlWy0Cbt6e+ISu6bd+Et0+5+ccxZyFPPx2Fw==
+X-Received: by 2002:a17:907:162b:: with SMTP id hb43mr10210520ejc.41.1616686401202;
+        Thu, 25 Mar 2021 08:33:21 -0700 (PDT)
 Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aeee5.dynamic.kabel-deutschland.de. [95.90.238.229])
-        by smtp.googlemail.com with ESMTPSA id n26sm2854750eds.22.2021.03.25.08.33.19
+        by smtp.googlemail.com with ESMTPSA id n26sm2854750eds.22.2021.03.25.08.33.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 08:33:20 -0700 (PDT)
+        Thu, 25 Mar 2021 08:33:21 -0700 (PDT)
 From:   Gioh Kim <gi-oh.kim@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
@@ -55,9 +55,9 @@ Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         Guoqing Jiang <guoqing.jiang@ionos.com>,
         Danil Kipnis <danil.kipnis@ionos.com>,
         Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCH for-next 09/22] RDMA/rtrs: Remove sessname and sess_kobj from rtrs_attrs
-Date:   Thu, 25 Mar 2021 16:32:55 +0100
-Message-Id: <20210325153308.1214057-10-gi-oh.kim@ionos.com>
+Subject: [PATCH for-next 10/22] RDMA/rtrs: Cleanup the code in rtrs_srv_rdma_cm_handler
+Date:   Thu, 25 Mar 2021 16:32:56 +0100
+Message-Id: <20210325153308.1214057-11-gi-oh.kim@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210325153308.1214057-1-gi-oh.kim@ionos.com>
 References: <20210325153308.1214057-1-gi-oh.kim@ionos.com>
@@ -69,43 +69,36 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 
-The two members are not used in the code, so remove them.
+Let these cases share the same path since all of them need to close
+session.
 
 Signed-off-by: Guoqing Jiang <guoqing.jiang@ionos.com>
 Reviewed-by: Danil Kipnis <danil.kipnis@ionos.com>
 Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 2 --
- drivers/infiniband/ulp/rtrs/rtrs.h     | 2 --
- 2 files changed, 4 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index dd841121dc2c..124197e3162f 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -2912,8 +2912,6 @@ int rtrs_clt_query(struct rtrs_clt *clt, struct rtrs_attrs *attr)
- 
- 	attr->queue_depth      = clt->queue_depth;
- 	attr->max_io_size      = clt->max_io_size;
--	attr->sess_kobj	       = &clt->dev.kobj;
--	strlcpy(attr->sessname, clt->sessname, sizeof(attr->sessname));
- 
- 	return 0;
- }
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs.h b/drivers/infiniband/ulp/rtrs/rtrs.h
-index 8738e90e715a..a7e9ae579686 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs.h
-@@ -110,8 +110,6 @@ int rtrs_clt_request(int dir, struct rtrs_clt_req_ops *ops,
- struct rtrs_attrs {
- 	u32		queue_depth;
- 	u32		max_io_size;
--	u8		sessname[NAME_MAX];
--	struct kobject	*sess_kobj;
- };
- 
- int rtrs_clt_query(struct rtrs_clt *sess, struct rtrs_attrs *attr);
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index e9998e40f2f7..c0a65e1e6fda 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -1913,13 +1913,10 @@ static int rtrs_srv_rdma_cm_handler(struct rdma_cm_id *cm_id,
+ 	case RDMA_CM_EVENT_UNREACHABLE:
+ 		rtrs_err(s, "CM error (CM event: %s, err: %d)\n",
+ 			  rdma_event_msg(ev->event), ev->status);
+-		close_sess(sess);
+-		break;
++		fallthrough;
+ 	case RDMA_CM_EVENT_DISCONNECTED:
+ 	case RDMA_CM_EVENT_ADDR_CHANGE:
+ 	case RDMA_CM_EVENT_TIMEWAIT_EXIT:
+-		close_sess(sess);
+-		break;
+ 	case RDMA_CM_EVENT_DEVICE_REMOVAL:
+ 		close_sess(sess);
+ 		break;
 -- 
 2.25.1
 
