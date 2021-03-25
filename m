@@ -2,117 +2,192 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1AB348E72
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Mar 2021 11:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6263492B6
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Mar 2021 14:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhCYK4g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Mar 2021 06:56:36 -0400
-Received: from mail-eopbgr700085.outbound.protection.outlook.com ([40.107.70.85]:45933
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230299AbhCYK4T (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:56:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YOQ6BOFnUPF5a66vnjFvoPzjAP17HxISo7Jq4+3qbvDg5/nEXV1BfPZBLQOtA6cMtuPWwe5y7JFQ4PDMBQAHO+Yy1NKF3DvMU7NQQPGSOjV81EpdTfGZgnkOazXgVjb7Zk/q9PZVBOX0QYpwOmGCw7XlafDE5m3rwhrfEuBr0dhOGHpCCeJGNcPOPprBv0e561SWxtTEqoFlEes0wdpE/YtyGzZbIsNoaavDHy8YC75rZEF6DjScZI6hfPu9Kdrc1XiYSkaK3VS0F2MNMq3/3V+l6S9wERYAxkRgWAsN79YmpJPvIG0B82Ep7vN5XtZkCVKF5cfj7bRkYK/sOoNiJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LedYCvuORPOFHq+8WYlKzMtGus1zR1pWbGhueK7Uagg=;
- b=YUa4NUeRu7xU1aec6ZmLnD69koIGntLZCMr++rspffB55iuSrN6blKSFhhTjHr8FbXJY5PlQH1To55pLuTA+7+NoVq7bu2ldhymceCp/3Le9tMAfup/0uQJDUTTzM8HxTD8L5ZN0i7n6r/ndGeRE+b8HTmvFNHqy4ObgsTFn/oMqYiL1S8MrAXLdPlnsrQE940ocQNwPkt6OMNcksCfBhIHtnbsE32Iwcun+QOHeGFRjZPxS0XgxfQA6vFKoolCHo7V81RxDrb76gejns7yelOVYGd7lPySliX2rnK6ifSJLGOT4k8UgqBiftSfWItmTd58SGnXsu90A6aGEqkxM3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LedYCvuORPOFHq+8WYlKzMtGus1zR1pWbGhueK7Uagg=;
- b=bUHHvUwrDPJtNVbg8MhOiV760ZaEL4wasossClJ+I3qFjnBMC/bJkOlya+pr+eY2VQuIiLrrmQqMBEkNOeMoQEGMC77jbs1MtUPLu7IIAgZKcbYhYKFABst8D6iV2iX3vWAjNxOud00uoZV05f/EegenWDfYpWGquy50AOT9Qxd5pcczFBlEsnJLv+xKJwruAdvY195E47TX1SgTyhypKn/J0kqxWVsQgW4O8eCA6JVKT6yJRYVuQFWWwi1Td84PaTv+bHHChh/L+t4Wuehj+6cXjLXBFXtvtnKu0EleyNjTim8s1oxMwuAvEq/XnBYNcjGI4EaC1lsQKbU98PCtbA==
-Received: from BN9PR03CA0303.namprd03.prod.outlook.com (2603:10b6:408:112::8)
- by CH2PR12MB5018.namprd12.prod.outlook.com (2603:10b6:610:65::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Thu, 25 Mar
- 2021 10:56:17 +0000
-Received: from BN8NAM11FT005.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:112:cafe::7) by BN9PR03CA0303.outlook.office365.com
- (2603:10b6:408:112::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.28 via Frontend
- Transport; Thu, 25 Mar 2021 10:56:17 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT005.mail.protection.outlook.com (10.13.176.69) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3955.18 via Frontend Transport; Thu, 25 Mar 2021 10:56:17 +0000
-Received: from [172.27.0.10] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 25 Mar
- 2021 10:56:15 +0000
-Subject: Re: [PATCH v2] infiniband: Fix a use after free in
- isert_connect_request
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>, <sagi@grimberg.me>,
-        <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <target-devel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210322161325.7491-1-lyl2019@mail.ustc.edu.cn>
-From:   Max Gurtovoy <mgurtovoy@nvidia.com>
-Message-ID: <413a083c-83b3-fcc8-f5e2-d9721874fad5@nvidia.com>
-Date:   Thu, 25 Mar 2021 12:56:12 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230182AbhCYNGd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Mar 2021 09:06:33 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:58806 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230115AbhCYNGC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Mar 2021 09:06:02 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12PD5wLC158214;
+        Thu, 25 Mar 2021 13:05:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=PRJ3vYFOq/D1NhI/hgY3RfSAJGSl8p9/ZIeg2lJQ+SE=;
+ b=OhczP2QjJz/m6jff020k/DaB4tCUeQ4JZmb40TL/fvsLC+mr0tsDHk4TODnRqvz/xNa5
+ 8JkItB7Lz0h2WlmSFSC/KfVNz9YHwtdbn6JOOZJ9zJsmTmkPrhE0crDdu5kbbRMw1aEc
+ 9lAv/vzvKUPGjowZ5kFxFUhIY3B5D5QYwkYCyAOhHMVNq9Jx025bYDRuFE8bhyvYURLs
+ yJm4s0NNxvISdFLwDhYOIrCKALgadCdwaz8TVIAHyNAFRNphS/jHKfSu1lj0F6SWnOxe
+ ODNPayezZazlQcRsoG7MPe6TWdHWrubO/LrHBRlNfWcL6+kWMTPJ8IE8w4CI8aU7WWyC 0w== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 37d90mp5b0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Mar 2021 13:05:58 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12PD0Xwd058284;
+        Thu, 25 Mar 2021 13:05:58 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 37dty1vc9j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Mar 2021 13:05:57 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12PD5vjW023158;
+        Thu, 25 Mar 2021 13:05:57 GMT
+Received: from lab02.no.oracle.com (/10.172.144.56)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 25 Mar 2021 13:05:56 +0000
+From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH for-next] IB/cma: Introduce rdma_set_min_rnr_timer()
+Date:   Thu, 25 Mar 2021 14:05:47 +0100
+Message-Id: <1616677547-22091-1-git-send-email-haakon.bugge@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-In-Reply-To: <20210322161325.7491-1-lyl2019@mail.ustc.edu.cn>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3c96affd-8ce5-4d60-7839-08d8ef7c9e05
-X-MS-TrafficTypeDiagnostic: CH2PR12MB5018:
-X-Microsoft-Antispam-PRVS: <CH2PR12MB50181F14BE77B913B0FF393EDE629@CH2PR12MB5018.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KMAbCAB9qS2DPpkVzNR2CSs7innOdBpZJhBc5KyRywUvbb528M304s2CyNdbGJqc6qcjQ0U24Bs9DU85BdI0eWxrVtupsT4b8VAD3yp6MGtYjorixywgKuaIk+Fn2UhfLTb3WnQy5p3PMGU23Nvf3QrqkdyY+QvOTeG8qAGLdnBNvAfDLE8G21p3gIlgVNLSXNpvSIXqU4W/GK8ZRnDOslU00qKekytoWAsI0pTN53mtFtGj1R1qtqTvCHmmEWkDKzeRTWnRqjNgHqRxb2LgvYspra3eEvmdFHRV19toPi2tP+YduPNMii9SGGdOMSd19/Kfj4wZUkVWVkZakoZKT18R6OJmVsdpb8iOa/L7PYkgGtTDr5SY5Snd3H2otvJ3Qjt8wxRb9dKrmBSRG7g9uyMb9/wPo6WN3ZoaNKR9GJ/ldCMa/GO96E+znvawwqgFcF/EBa3dRVmyrGjPfX6VRcPXt7I4Che+tnNMUyCBImCulRPBnVhrFAWQyCEEEEW/ufc+VRKOi0uPqridQ7wmXvkTU5dQTG1ZcC2tPdVzn1hK08Z+uOH1Pes2sA7L1fZRZa9O5g/H08m0ikCeW2qbpHR8OmAmDP4SwQd7jtYTaIl9xg16vSKhWBO4SxtjcHqmLEm7XaJ2hF7bVFtBLJyOURt28XO+NgzEGKkoQ6Xq6LyIsT3EyfSBCxZ4ZIYT5yQ5
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(346002)(376002)(36840700001)(46966006)(31686004)(4744005)(5660300002)(2616005)(2906002)(83380400001)(16526019)(8676002)(82740400003)(478600001)(82310400003)(53546011)(70586007)(70206006)(8936002)(7636003)(36756003)(426003)(316002)(356005)(186003)(47076005)(86362001)(110136005)(36906005)(54906003)(31696002)(26005)(336012)(4326008)(6666004)(36860700001)(16576012)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 10:56:17.6398
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c96affd-8ce5-4d60-7839-08d8ef7c9e05
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT005.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB5018
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9933 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103250096
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9933 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 bulkscore=0 impostorscore=0 lowpriorityscore=0
+ phishscore=0 mlxlogscore=999 suspectscore=0 clxscore=1015 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103250097
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Introduce the ability for both user-space and kernel ULPs to adjust
+the minimum RNR Retry timer. The INIT -> RTR transition executed by
+RDMA CM will be used for this adjustment. This avoids an additional
+ib_modify_qp() call.
 
-On 3/22/2021 6:13 PM, Lv Yunlong wrote:
-> The device is got by isert_device_get() with refcount is 1,
-> and is assigned to isert_conn by isert_conn->device = device.
-> When isert_create_qp() failed, device will be freed with
-> isert_device_put().
->
-> Later, the device is used in isert_free_login_buf(isert_conn)
-> by the isert_conn->device->ib_device statement. This patch
-> free the device in the correct order.
->
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-> ---
->   drivers/infiniband/ulp/isert/ib_isert.c | 16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+---
+ drivers/infiniband/core/cma.c      | 23 +++++++++++++++++++++++
+ drivers/infiniband/core/cma_priv.h |  2 ++
+ drivers/infiniband/core/ucma.c     |  7 +++++++
+ include/rdma/rdma_cm.h             |  2 ++
+ include/uapi/rdma/rdma_user_cm.h   |  3 ++-
+ 5 files changed, 36 insertions(+), 1 deletion(-)
 
-looks good,
-
-Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 9409651..f50dc30 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -852,6 +852,7 @@ static void cma_id_put(struct rdma_id_private *id_priv)
+ 	id_priv->id.qp_type = qp_type;
+ 	id_priv->tos_set = false;
+ 	id_priv->timeout_set = false;
++	id_priv->min_rnr_timer_set = false;
+ 	id_priv->gid_type = IB_GID_TYPE_IB;
+ 	spin_lock_init(&id_priv->lock);
+ 	mutex_init(&id_priv->qp_mutex);
+@@ -1141,6 +1142,9 @@ int rdma_init_qp_attr(struct rdma_cm_id *id, struct ib_qp_attr *qp_attr,
+ 	if ((*qp_attr_mask & IB_QP_TIMEOUT) && id_priv->timeout_set)
+ 		qp_attr->timeout = id_priv->timeout;
+ 
++	if ((*qp_attr_mask & IB_QP_MIN_RNR_TIMER) && id_priv->min_rnr_timer_set)
++		qp_attr->min_rnr_timer = id_priv->min_rnr_timer;
++
+ 	return ret;
+ }
+ EXPORT_SYMBOL(rdma_init_qp_attr);
+@@ -2615,6 +2619,25 @@ int rdma_set_ack_timeout(struct rdma_cm_id *id, u8 timeout)
+ }
+ EXPORT_SYMBOL(rdma_set_ack_timeout);
+ 
++int rdma_set_min_rnr_timer(struct rdma_cm_id *id, u8 min_rnr_timer)
++{
++	struct rdma_id_private *id_priv;
++
++	/* It is a five-bit value */
++	if (min_rnr_timer & 0xe0)
++		return -EINVAL;
++
++	if (id->qp_type != IB_QPT_RC && id->qp_type != IB_QPT_XRC_TGT)
++		return -EINVAL;
++
++	id_priv = container_of(id, struct rdma_id_private, id);
++	id_priv->min_rnr_timer = min_rnr_timer;
++	id_priv->min_rnr_timer_set = true;
++
++	return 0;
++}
++EXPORT_SYMBOL(rdma_set_min_rnr_timer);
++
+ static void cma_query_handler(int status, struct sa_path_rec *path_rec,
+ 			      void *context)
+ {
+diff --git a/drivers/infiniband/core/cma_priv.h b/drivers/infiniband/core/cma_priv.h
+index caece96..bf83d32 100644
+--- a/drivers/infiniband/core/cma_priv.h
++++ b/drivers/infiniband/core/cma_priv.h
+@@ -86,9 +86,11 @@ struct rdma_id_private {
+ 	u8			tos;
+ 	u8			tos_set:1;
+ 	u8                      timeout_set:1;
++	u8			min_rnr_timer_set:1;
+ 	u8			reuseaddr;
+ 	u8			afonly;
+ 	u8			timeout;
++	u8			min_rnr_timer;
+ 	enum ib_gid_type	gid_type;
+ 
+ 	/*
+diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
+index da2512c..f183ace 100644
+--- a/drivers/infiniband/core/ucma.c
++++ b/drivers/infiniband/core/ucma.c
+@@ -1282,6 +1282,13 @@ static int ucma_set_option_id(struct ucma_context *ctx, int optname,
+ 		}
+ 		ret = rdma_set_ack_timeout(ctx->cm_id, *((u8 *)optval));
+ 		break;
++	case RDMA_OPTION_ID_RNR_RETRY_TIMER:
++		if (optlen != sizeof(u8)) {
++			ret = -EINVAL;
++			break;
++		}
++		ret = rdma_set_min_rnr_timer(ctx->cm_id, *((u8 *)optval));
++		break;
+ 	default:
+ 		ret = -ENOSYS;
+ 	}
+diff --git a/include/rdma/rdma_cm.h b/include/rdma/rdma_cm.h
+index 32a67af..8b0f66e 100644
+--- a/include/rdma/rdma_cm.h
++++ b/include/rdma/rdma_cm.h
+@@ -331,6 +331,8 @@ int rdma_join_multicast(struct rdma_cm_id *id, struct sockaddr *addr,
+ int rdma_set_afonly(struct rdma_cm_id *id, int afonly);
+ 
+ int rdma_set_ack_timeout(struct rdma_cm_id *id, u8 timeout);
++
++int rdma_set_min_rnr_timer(struct rdma_cm_id *id, u8 min_rnr_timer);
+  /**
+  * rdma_get_service_id - Return the IB service ID for a specified address.
+  * @id: Communication identifier associated with the address.
+diff --git a/include/uapi/rdma/rdma_user_cm.h b/include/uapi/rdma/rdma_user_cm.h
+index ed5a514..13b46af 100644
+--- a/include/uapi/rdma/rdma_user_cm.h
++++ b/include/uapi/rdma/rdma_user_cm.h
+@@ -313,7 +313,8 @@ enum {
+ 	RDMA_OPTION_ID_TOS	 = 0,
+ 	RDMA_OPTION_ID_REUSEADDR = 1,
+ 	RDMA_OPTION_ID_AFONLY	 = 2,
+-	RDMA_OPTION_ID_ACK_TIMEOUT = 3
++	RDMA_OPTION_ID_ACK_TIMEOUT = 3,
++	RDMA_OPTION_ID_RNR_RETRY_TIMER = 4,
+ };
+ 
+ enum {
+-- 
+1.8.3.1
 
