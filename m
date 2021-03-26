@@ -2,261 +2,184 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED8234A10F
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Mar 2021 06:31:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E3C34A11B
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Mar 2021 06:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbhCZFbE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Mar 2021 01:31:04 -0400
-Received: from mga01.intel.com ([192.55.52.88]:41786 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhCZFah (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 26 Mar 2021 01:30:37 -0400
-IronPort-SDR: m8mJm8/+uGVUuHOnhBStvQaB7HJoMPmcPGZpB+3rzKnVDpgtBX/G/5QEZWKmp4ce6NNGatcm5s
- I7S9Hgkgw/KQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="211234571"
-X-IronPort-AV: E=Sophos;i="5.81,279,1610438400"; 
-   d="scan'208";a="211234571"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 22:30:37 -0700
-IronPort-SDR: kVAEGU0b3GruQl94GgcByAGBKuIgnm9A/2Jxwx+AOBXPYqK73GHLdJDwY41oakfEy/yvz2qjbn
- BwfPmQs/l04A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,279,1610438400"; 
-   d="scan'208";a="594060107"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 25 Mar 2021 22:30:35 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lPf3K-0002Ww-DN; Fri, 26 Mar 2021 05:30:34 +0000
-Date:   Fri, 26 Mar 2021 13:30:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-rc] BUILD SUCCESS
- 3408be145a5d6418ff955fe5badde652be90e700
-Message-ID: <605d7168.NwU03v8eqQTlZ8EH%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229463AbhCZFmz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Mar 2021 01:42:55 -0400
+Received: from mail-mw2nam10on2061.outbound.protection.outlook.com ([40.107.94.61]:64096
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229446AbhCZFm2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 26 Mar 2021 01:42:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RHbizd6jq2yAO6gS2m9xShcC8D8s+r2uLDKdtMzEq/iD+iKck2nQCUU+ly/whjLmYLsRKacnyG+v8BtAQwTeOQsK8Bhz7TAEtWz4LX8pnk4tQGa7kp7NcY+hCioqUyqqMhiGzlbAjms3IWd7v9O+lew/x5oK5chgIn8xAANFgkLC9iChhG7P5T9370CwFyhhpe0jr8wY3NdzcYMkowarTpqi0ljxo5E44qA5kJHnbaGvO3kJe307nf/uZ7cO/XA6PfLzWgVJ4iAbXTrku1u2JiF4zh2m/MjOvm3Zz1uyFzqE1mpFsDZ7RR4jmf5erXUarjoNBgs0cNd8VkTx+PaIng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0emtyLUkov4AtvUNq3PWOzuc6GiIocfX8uJwn1z1zTM=;
+ b=hD/OQQSX36c/MPB9hNuy+CNwly9R4CBhYrdOuP0AZh0k+LIBFbPdhikmdcNVarF1amnz07J2ihtlrnNQ2Ebdq3lCcaK16lA0HeKrnui9IsHDGzXT72wnRPKxk0eq4Kfm3LJsHAjzQ/bmUI78jcUuhjXxUybnKEB9iraAlm68zSamOqs4jI3ZKwySq/NdXCXuz5vgo/hnwnHbrlvUdhLBnNK4+tES2UHG5e2KFKcu3+9zTqlabenj7DWrzRCHrRcNrSqWBCu47Va9fjA4VHvhEVLp60ED+cL8cAvX+r/hl/lmbcY008BhhUa3rckW3s2enaDzNIecEs7AQbPFbQXfRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0emtyLUkov4AtvUNq3PWOzuc6GiIocfX8uJwn1z1zTM=;
+ b=e0eVMFUhmulM9LX2dAZMfHoLX6D9BW/xr5GawYh5HFgJMw5SdaqjA0AwDpQ1gr6B/SFGWYXbA54pJ/SkbgbFETI3Zq1DZNTkzP7TaZQ1aQKn2CPgSiOZlkyw6x7Le+N74m3b7CDzV+O5lA2Tke8BcSc6G5Mfjgr8ymB12hjRDME+MUvEMzDUMe9VZ9gnHyOI/sXt82eXzwVj2GNQf2gunWJaVTFnZcWyyQ0vC01RZAtjs5opqIw9JYDcDr1yA1lzl3v9iZai5rlWEJ7Y24uH+Lwy2eh0uEAy/y+fiZQPQnOAdiRNMtXhcHb4ErmkA293BQ2lBQ5GQIhOFMQCoPBLOw==
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com (2603:10b6:a03:20a::20)
+ by BYAPR12MB3621.namprd12.prod.outlook.com (2603:10b6:a03:db::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26; Fri, 26 Mar
+ 2021 05:42:27 +0000
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::7cec:a7fa:db2e:3073]) by BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::7cec:a7fa:db2e:3073%8]) with mapi id 15.20.3977.030; Fri, 26 Mar 2021
+ 05:42:26 +0000
+From:   Parav Pandit <parav@nvidia.com>
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+Subject: RE: [PATCH v2 05/23] ice: Add devlink params support
+Thread-Topic: [PATCH v2 05/23] ice: Add devlink params support
+Thread-Index: AQHXIEFD/G8hoBwdlE6ZByD8K/Qg36qSkJoggAKUnYCAAJYyAA==
+Date:   Fri, 26 Mar 2021 05:42:26 +0000
+Message-ID: <BY5PR12MB43226856B588B5666C463A5CDC619@BY5PR12MB4322.namprd12.prod.outlook.com>
+References: <20210324000007.1450-1-shiraz.saleem@intel.com>
+ <20210324000007.1450-6-shiraz.saleem@intel.com>
+ <BY5PR12MB43228B823CA619460AAF2099DC639@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <9ae54c8e60fe4036bd3016cfa0798dac@intel.com>
+In-Reply-To: <9ae54c8e60fe4036bd3016cfa0798dac@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [122.166.131.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6e648177-28fc-4b81-b7c9-08d8f019f041
+x-ms-traffictypediagnostic: BYAPR12MB3621:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR12MB36217974825227EAFCFD6BE1DC619@BYAPR12MB3621.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qR3MKbvh63qkubyYcseojWVgRjCA2ffKgTWYakYyLKPceC7cVjPZrnAVSY81moUIXcbJGew21BzUjJUU4SZbuCQwZ6a+I5t7dgFV/XnaSlw98hGQDALJn/w98iuC3y6LWhdYDB76Gn4dBY23fC7OJWqM8+nmX7EZbv1j5LFVwfVD/35kpB9MUco88F4Jiin4yisN9kJBdpOZFDk6ABK+jJYo7fK4Uj9h9tt1AEMgHyzyc60kwwhvaE9spvKyQEDg6TvUqlqdmiKb/04vQQj2UdAWWxE8jVs/YItVc5fybhpg4Ckwk70QsqCne/nL2eylFfUbwlN95tqTXBmy1AHbLOuEEpyOer2YhNj5JqgOCjcWPQ47jbEVmX9h7kb/N41tnqOqxOFVTZq/BJTBRVSGVFsBzZhabmxWP497BJol5n3qMKLlfrXIwaUUSpxmB54bVV2DPQNRdSNTfG84NF/qW5Dty73dS7lcHqEJkPvabepek7XEqE4z/FDYrRktWw637stawkJEY6Az2R31EeVpX8yYZsmfNJrRPdVx5yIvQSLH65l3DDI2RKz5Ok03HN+3DA0jReALEpJNApDvHgnX/x3g3o2pjP9OgcSfNFIabAn7TFliiYVanno2EzTCN2sRjufihufWiXk0VBOq8sdRe7KQ6HUr+OeovvFiq2KuAtM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4322.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(366004)(396003)(346002)(8676002)(33656002)(478600001)(83380400001)(8936002)(26005)(110136005)(186003)(6506007)(53546011)(4326008)(2906002)(86362001)(64756008)(54906003)(71200400001)(38100700001)(66946007)(7696005)(9686003)(66446008)(52536014)(66556008)(76116006)(66476007)(55016002)(5660300002)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?H3qjb5NTFIE+awGMJ55gnLhCORlzisGQJczqvfxUBZBVuDzpiDO8IbNwowi4?=
+ =?us-ascii?Q?6f4YCCS04TjYhOLfnsOatVOU5nd8duqegKhRsMlIW+AvrlbANfkr0HbUMYoX?=
+ =?us-ascii?Q?LTgi/nMsny95v7EDhnPYtVhm1NJdjtGR4P+3uopBLV9stQAYIAvvmQiADucX?=
+ =?us-ascii?Q?Qhn4WXtZdnZaQme8Kc4jb39MpC4FXo32TTPjV5vOzP38fYpZ51/u10oShH5j?=
+ =?us-ascii?Q?CwiTaPWK4vNTJDmdS7OTXAXKmzBSuJjKkp/zHWXKvRrJA5y4q9OX5MMm6UJa?=
+ =?us-ascii?Q?+rRdwEtgG+EgbSfDVnoZ8E2okmtGffQ7Jz7UaP+xnyL86jRlSwH+lxZFTGI9?=
+ =?us-ascii?Q?Qvs8z1x32G2BhRbVOdmrogkJIVFGPE3KYFimnoLq0pYzuOdJBV910IBDstQD?=
+ =?us-ascii?Q?l1RQTiJFD/zWeyIRN5db9WW9mI/cDaJPJCGgUka0kQvQm2ki66YoG0PNqq2g?=
+ =?us-ascii?Q?ICTsnrCYaeInTOxYdxVP8ZtXN2Yv4tBUt/CKaY5BS8tqXeaZO8mffsshc6vJ?=
+ =?us-ascii?Q?RUlXC/pUS7g7E70puQJcd+rcK4fFcO2vJoezDSTJGkjU/o2q7EFQqRs5617E?=
+ =?us-ascii?Q?wMkNY+r2+5HOX5DV3rawKu3LQvO1ZTakRs3dujl5yl+rkav11/R2pTuCAlrt?=
+ =?us-ascii?Q?N7jONckmMl1nGFKeG6XUKd1O0N7un1K6TuWYnEVMQFyDPHcK/YYpA9RyYQY3?=
+ =?us-ascii?Q?0Us7URSM150Ciz0uXeAkpkFMUvmvP1GBKT6MV747iLr3DH5Cy6hN/whism2o?=
+ =?us-ascii?Q?QyBwWpqkrRmC1F9Tj5OwM8gIeoAfQsWK0djhKm2ek6oR+yOqo81I/uUjQHQC?=
+ =?us-ascii?Q?JAVDUMIFjCduSQtBvixzDBzfdFROtiTbslOgnTKAOBqtUo1Fiwa825RdbPIl?=
+ =?us-ascii?Q?rzimNfxZ8lkC7OiyALwootZb4xhInPRphH8+knnfojJe+sq/KxFS5t9l/3Vm?=
+ =?us-ascii?Q?qOTvpM0n2DPYV2IbwBln4m9yhc7JjObXG9HZkQRy2oXKFRGNpbnOtsCWBRcB?=
+ =?us-ascii?Q?5Ov5AHkUvcG9CImwI6ZUwZqGL4agKXpnhZMdEyq1JVAI9jV642hx/0auANHV?=
+ =?us-ascii?Q?DhTkwoGXW5bBiROeWKXjqBczN1maAdF7Vv9Nfy8UpkpcaPg7Yk2QxB1p2ect?=
+ =?us-ascii?Q?gs2cKTXnj/s/+C4QmnKrzbNKd/5LWzdD5zAawPIvUvZpHBxOzpPmjLvnclgv?=
+ =?us-ascii?Q?FwB7S8QzdWDiEIcDLs1rKCWVnPa5yeaerSlHXtyMpzSCYaqORi+qapi2QlNJ?=
+ =?us-ascii?Q?Pjl+kQwZ+0QOhhOltWZ8wl0IzgJsbVMoBi2AhnJrdqSya6yBxuDR/ftdGJJX?=
+ =?us-ascii?Q?U9rGYcG7n/WEg1DkLUksthG/?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4322.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e648177-28fc-4b81-b7c9-08d8f019f041
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Mar 2021 05:42:26.7557
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 70lshZMLZbo+n8CcVH++cMnf0ei8Ywn00O6OdF8lctYLSjlF4NheB5TXwdFCFwsDx3Y+Ek58HdodN9aX9nG8ZA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3621
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
-branch HEAD: 3408be145a5d6418ff955fe5badde652be90e700  RDMA/cxgb4: Fix adapter LE hash errors while destroying ipv6 listening server
 
-elapsed time: 729m
 
-configs tested: 199
-configs skipped: 2
+> From: Saleem, Shiraz <shiraz.saleem@intel.com>
+> Sent: Friday, March 26, 2021 1:40 AM
+> > Subject: RE: [PATCH v2 05/23] ice: Add devlink params support
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+[..]
+> >
+> > Resources are better represented as devlink resource.
+> > Such as,
+> >
+> > $ devlink resource set pci/0000:06:00.0 /rdma/max_qps 16384 $ devlink
+> > resource set pci/0000:06:00.0 /rdma/max_cqs 8192 $ devlink resource
+> > set pci/0000:06:00.0 /rdma/max_mrs 16384
+> >
+>=20
+> Hi Parav - Thank you for the feedback.
+>=20
+> Maybe I am missing something but I see that a devlink hot reload is requi=
+red
+> to enforce the update?
+It isn't mandatory to reload, but yes either reload or driver unbind/bind i=
+s needed as you suggested below.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-mips                           ip28_defconfig
-powerpc                   lite5200b_defconfig
-arm                         s5pv210_defconfig
-powerpc                   currituck_defconfig
-h8300                            alldefconfig
-powerpc                     ksi8560_defconfig
-powerpc                       maple_defconfig
-powerpc                      obs600_defconfig
-sparc64                             defconfig
-arm                         assabet_defconfig
-xtensa                              defconfig
-sh                         ecovec24_defconfig
-sh                               alldefconfig
-m68k                       m5475evb_defconfig
-sh                   secureedge5410_defconfig
-arm                        cerfcube_defconfig
-powerpc                     mpc5200_defconfig
-arm                          pxa3xx_defconfig
-sh                          rsk7264_defconfig
-csky                                defconfig
-sh                     sh7710voipgw_defconfig
-m68k                        stmark2_defconfig
-powerpc                 mpc836x_rdk_defconfig
-mips                           gcw0_defconfig
-arc                         haps_hs_defconfig
-um                             i386_defconfig
-arm                          badge4_defconfig
-sh                           se7780_defconfig
-um                                allnoconfig
-powerpc64                           defconfig
-mips                      bmips_stb_defconfig
-mips                        maltaup_defconfig
-arm                        mvebu_v7_defconfig
-powerpc                         ps3_defconfig
-parisc                generic-64bit_defconfig
-mips                        qi_lb60_defconfig
-sh                   sh7770_generic_defconfig
-mips                        vocore2_defconfig
-parisc                           alldefconfig
-arm                        shmobile_defconfig
-arm                            pleb_defconfig
-powerpc                       ppc64_defconfig
-arm                           spitz_defconfig
-arm                        keystone_defconfig
-arm                          lpd270_defconfig
-mips                      maltaaprp_defconfig
-arm                        spear3xx_defconfig
-arm                       imx_v6_v7_defconfig
-mips                     loongson1c_defconfig
-powerpc                     sequoia_defconfig
-powerpc                      katmai_defconfig
-arm                        multi_v7_defconfig
-sh                ecovec24-romimage_defconfig
-arm                      pxa255-idp_defconfig
-arm                            mps2_defconfig
-powerpc                      makalu_defconfig
-powerpc                   motionpro_defconfig
-arm                         lpc18xx_defconfig
-mips                     decstation_defconfig
-sh                             espt_defconfig
-mips                        bcm63xx_defconfig
-m68k                                defconfig
-mips                  cavium_octeon_defconfig
-m68k                           sun3_defconfig
-xtensa                  cadence_csp_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                     tqm5200_defconfig
-powerpc                 linkstation_defconfig
-mips                          malta_defconfig
-csky                             alldefconfig
-nds32                            alldefconfig
-riscv                    nommu_k210_defconfig
-powerpc                      ep88xc_defconfig
-xtensa                    xip_kc705_defconfig
-mips                        omega2p_defconfig
-sh                     magicpanelr2_defconfig
-mips                       capcella_defconfig
-powerpc                      ppc6xx_defconfig
-arm                       versatile_defconfig
-arm                           tegra_defconfig
-arm                          pcm027_defconfig
-powerpc                     stx_gp3_defconfig
-mips                           ip22_defconfig
-ia64                             allmodconfig
-m68k                          amiga_defconfig
-arc                            hsdk_defconfig
-arm                          imote2_defconfig
-sh                           se7712_defconfig
-arc                    vdk_hs38_smp_defconfig
-arm                        multi_v5_defconfig
-mips                         cobalt_defconfig
-powerpc                        icon_defconfig
-arm                         axm55xx_defconfig
-ia64                        generic_defconfig
-m68k                            mac_defconfig
-nios2                               defconfig
-m68k                         amcore_defconfig
-arm                         mv78xx0_defconfig
-openrisc                 simple_smp_defconfig
-arm                         orion5x_defconfig
-powerpc                     tqm8548_defconfig
-arm                           u8500_defconfig
-arm                       netwinder_defconfig
-powerpc                       eiger_defconfig
-powerpc                      pasemi_defconfig
-arm64                            alldefconfig
-arm                       multi_v4t_defconfig
-arm                          ixp4xx_defconfig
-arc                        nsimosci_defconfig
-sh                          polaris_defconfig
-mips                       lemote2f_defconfig
-arm                       aspeed_g4_defconfig
-sh                          kfr2r09_defconfig
-mips                             allmodconfig
-mips                           ip32_defconfig
-powerpc                     tqm8541_defconfig
-m68k                            q40_defconfig
-xtensa                    smp_lx200_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                 mpc837x_mds_defconfig
-um                            kunit_defconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210325
-x86_64               randconfig-a003-20210325
-x86_64               randconfig-a006-20210325
-x86_64               randconfig-a001-20210325
-x86_64               randconfig-a005-20210325
-x86_64               randconfig-a004-20210325
-i386                 randconfig-a003-20210325
-i386                 randconfig-a004-20210325
-i386                 randconfig-a001-20210325
-i386                 randconfig-a002-20210325
-i386                 randconfig-a006-20210325
-i386                 randconfig-a005-20210325
-x86_64               randconfig-a012-20210326
-x86_64               randconfig-a015-20210326
-x86_64               randconfig-a014-20210326
-x86_64               randconfig-a013-20210326
-x86_64               randconfig-a016-20210326
-x86_64               randconfig-a011-20210326
-i386                 randconfig-a014-20210325
-i386                 randconfig-a011-20210325
-i386                 randconfig-a015-20210325
-i386                 randconfig-a016-20210325
-i386                 randconfig-a013-20210325
-i386                 randconfig-a012-20210325
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+> There isn't really a de-init required of PCI driver entities in this case=
+ for this
+> rdma param.
+> But only an unplug, plug of the auxdev with new value. Intuitively it fee=
+ls
+> more runtime-ish.
+>=20
+Driver unbind/bind to reflect new limits is ok for cases where it is not ti=
+me sensitive.
+For mlx5 use cases, user expects device to be provisioned in < few msecs.
+And driver unbind/bind are sub-optimal to achieve it from time and memory w=
+ise.
+So mlx5 driver prefers to stay away from driver unbind/bind steps.
+So I am working on series to not create class aux devices by default for SF=
+s.
+Rather to create them on reload.
+Something like,=20
+$ devlink dev param set pci/0000:06:00.0 name pcisf_classes value false cmo=
+de driverinit
+$ devlink dev class set auxiliary/mlx5_core.sf.4 rdma true
+$ devlink resource set auxiliary/mlx5_core.sf.4 path rdma/max_qps size 2000=
+00
+$ devlink dev reload auxiliary/mlx5_core.sf.4
+This last command will create the mlx5_core.rdma.4 aux device and when its =
+bound to driver, it will create IB device with right max_qp.
+So rdma device is created only once, instead of twice using unbind/bind seq=
+uence.
 
-clang tested configs:
-x86_64               randconfig-a012-20210325
-x86_64               randconfig-a015-20210325
-x86_64               randconfig-a014-20210325
-x86_64               randconfig-a013-20210325
-x86_64               randconfig-a011-20210325
-x86_64               randconfig-a016-20210325
+This may not be possible for the PF/VF device due to backward compatibility=
+ and their different usage in system.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> There is also a device powerof2 requirement on the maxqp which I don't se=
+e
+> enforceable as it stands.
+>
+Right, but similar to size_params.size_max, size_granularity, I believe siz=
+e_params can be extended for alignment restriction.
+
+> This is not super-critical for the initial submission but a nice to have.=
+ But I do
+> want to brainstorm options..
+>=20
+If max_qp is truly a dynamic value that doesn't require device recreation,
+extending existing rdma resource command seems more useful to end user than=
+ doing unbind/bind.
