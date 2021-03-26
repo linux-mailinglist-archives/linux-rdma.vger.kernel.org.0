@@ -2,59 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6EC34AEE5
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Mar 2021 20:02:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE36B34AF67
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Mar 2021 20:37:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhCZTCM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Mar 2021 15:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhCZTBv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Mar 2021 15:01:51 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94C5C0613B1
-        for <linux-rdma@vger.kernel.org>; Fri, 26 Mar 2021 12:01:50 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id 30so3448202qva.9
-        for <linux-rdma@vger.kernel.org>; Fri, 26 Mar 2021 12:01:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BAL0m/RHqxQpdmmLPAQhvtUtUkOGClZd+wtpp5eE3NI=;
-        b=e7BHdcfCRu7gzQTQZeMe5siu0dEHGNMUdl5PWrnXSxdwPxWx6GhTKar0U60CJTBeUr
-         KoLT0xWW8jIbV4lsZ5XySyARgV3WePqBpemdS5Lp+XvaL2+P/oBXBXI/egBXpNBVHnTf
-         70HLSuF0eTtQVYDJthloPsId7LIGJ8GwuwDU8SMNv9JJMkTWUg07pZ00ZRChYsLb0Axd
-         lMjJQ7tdF8Ds4Ra6Rpt/vG79i04x2IFiHfZPyBtnmpdQHQCGSGSgnCwgWZtOBert80o6
-         a1KmaESeGe9KKy9AcD1KLsy35zf8LMTiKBoNzkahJ6jWrQ2qafE6hMY5stk3iDxGQ+PA
-         K13w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BAL0m/RHqxQpdmmLPAQhvtUtUkOGClZd+wtpp5eE3NI=;
-        b=cSq8XEs62/wt9btSd6/NpJi+zFd6Hwo/lZNZzOGaDS76+mb9CRAVXIpWUZk8BjSa08
-         gTQofsUP0aMdtVfk5CjgP6S5w9p/pNkEK3MLVt21DIG1y12r8ebN0mdWIpuwI2emNaXC
-         zFPyLWE21FVfkfnXJPQ4/vDIdBKzbDUlvN8c4YUcRtYRP1j1u8cUrPKU/lnO426yYY2X
-         XIc5CK1SJIMv2CBGit4/4ZSkyp1y23nj2MgP6S2A3xqAQE1YU4Z3EbGhw3J2Z/QElC2b
-         gaSaphM/JxeTebCiUfJ1PKIu0zMOi+C2JeT9liILjoIZHl3jtEYWu94DDKkWygIdsXIt
-         IdKA==
-X-Gm-Message-State: AOAM533B8k6Nfi78VetX79LIsNvOnJLTHeikz8cAD4guQkAA6isEusQS
-        I+/tOjD45pNQUto2IG7eeB21qXeVB06e5vfP
-X-Google-Smtp-Source: ABdhPJyPPROj/duhNJKoNUDXx1x3dnnvxm/V4m5aDR//p8MIcbL4trIZyfZVH2nljvSUZ016XrlnTA==
-X-Received: by 2002:a05:6214:12a1:: with SMTP id w1mr15062105qvu.57.1616785310073;
-        Fri, 26 Mar 2021 12:01:50 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id z11sm7442877qkg.52.2021.03.26.12.01.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 12:01:49 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lPriO-003mMa-JQ; Fri, 26 Mar 2021 16:01:48 -0300
-Date:   Fri, 26 Mar 2021 16:01:48 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
+        id S230121AbhCZTg4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Mar 2021 15:36:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53634 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230043AbhCZTge (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 26 Mar 2021 15:36:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D4A4619C9;
+        Fri, 26 Mar 2021 19:36:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616787393;
+        bh=WKtHSyYs4uA1sawyAcaD/5Bn+rSuEjSC1yMpBw9B3qY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=hMuedBKjqktedS+VVHHct+ScCr1GZOL4byGSIF4WHQdgvv6beXDQzf1sEyE43Q+L8
+         3zk8JjV8qI1XxMmQ9y7tsOEqR/pjdk1A0ssb0rXnJrIQUNFNO/MNs4uHgTGRBmYlq2
+         xPKmOdzdtbHGiD+CwVkBzUW+cMohV/cCCVFOU7pkybntHUUZ+eWIHKDY6vo7ANzuVl
+         i3uE75hBhwswe430bQHBrHLD1qO+pdcbhN3qNpVYpvbZdtl1jB+o2hY18uhHesmN37
+         Mk7JnU8UZfmVUdAmoOaZ7JUQKN1czp9xzQGaHsAt/yPgvV2unbcWMXskfE9tWnyhqC
+         d7LvXW7dkyq0g==
+Date:   Fri, 26 Mar 2021 14:36:31 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
 To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Keith Busch <kbusch@kernel.org>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
@@ -66,10 +39,7 @@ Cc:     Bjorn Helgaas <helgaas@kernel.org>,
         "David S . Miller" <davem@davemloft.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
-Message-ID: <20210326190148.GN2710221@ziepe.ca>
-References: <CAKgT0UfK3eTYH+hRRC0FcL0rdncKJi=6h5j6MN0uDA98cHCb9A@mail.gmail.com>
- <20210326170831.GA890834@bjorn-Precision-5520>
- <CAKgT0UcXwNKDSP2ciEjM2AWj2xOZwBxkPCdzkUqDKAMtvTTKPg@mail.gmail.com>
+Message-ID: <20210326193631.GA902426@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -80,36 +50,21 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 On Fri, Mar 26, 2021 at 11:50:44AM -0700, Alexander Duyck wrote:
 
-> My concern would be that we are defining the user space interface.
-> Once we have this working as a single operation I could see us having
-> to support it that way going forward as somebody will script something
-> not expecting an "offline" sysfs file, and the complaint would be that
-> we are breaking userspace if we require the use of an "offline"
-> file.
-
-Well, we wouldn't do that. The semantic we define here is that the
-msix_count interface 'auto-offlines' if that is what is required. If
-we add some formal offline someday then 'auto-offline' would be a NOP
-when the device is offline and do the same online/offline sequence as
-today if it isn't.
-
 > I almost wonder if it wouldn't make sense to just partition this up to
 > handle flexible resources in the future. Maybe something like having
 > the directory setup such that you have "sriov_resources/msix/" and
+> then you could have individual files with one for the total and the
+> rest with the VF BDF naming scheme. Then if we have to, we could add
+> other subdirectories in the future to handle things like queues in the
+> future.
 
-This is supposed to be about PCI properties, that is why we are doing
-it in the PCI layer.
+Subdirectories would be nice, but Greg KH said earlier in a different
+context that there's an issue with them [1].  He went on to say tools
+like udev would miss uevents for the subdirs [2].
 
-If you want to see something that handles non-PCI properties too then
-Leon needs to make the whole thing general so the device driver can
-give a list of properties it wants to configure and the core manages
-the thing.
+I don't know whether that's really a problem in this case -- it
+doesn't seem like we would care about uevents for files that do MSI-X
+vector assignment.
 
-But at that point, why involve the PCI core in the first place? Just
-put the complex configuration in the driver, use configfs or devlink
-or nvmecli or whatever is appropriate.
-
-And we are doing that too, there will also be pre-driver configuration
-in devlink for *non PCI* properties. *shrug*
-
-Jason
+[1] https://lore.kernel.org/linux-pci/20191121211017.GA854512@kroah.com/
+[2] https://lore.kernel.org/linux-pci/20191124170207.GA2267252@kroah.com/
