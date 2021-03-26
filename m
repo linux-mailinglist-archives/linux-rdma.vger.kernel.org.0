@@ -2,64 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A5E34A44E
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Mar 2021 10:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3133834A67C
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Mar 2021 12:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhCZJaQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Mar 2021 05:30:16 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:15319 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhCZJ34 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Mar 2021 05:29:56 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F6Gpq5Fhkz9tvH;
-        Fri, 26 Mar 2021 17:27:47 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.179.202) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 26 Mar 2021 17:29:42 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] net/mlx5: Remove duplicated header file inclusion
-Date:   Fri, 26 Mar 2021 17:29:21 +0800
-Message-ID: <20210326092921.1388-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        id S229463AbhCZLe5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Mar 2021 07:34:57 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:47966 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229573AbhCZLel (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Mar 2021 07:34:41 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id EDF259802E6;
+        Fri, 26 Mar 2021 19:34:38 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Sagi Grimberg <sagi@grimberg.me>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] infiniband: ulp: struct iscsi_iser_task is declared twice
+Date:   Fri, 26 Mar 2021 19:33:46 +0800
+Message-Id: <20210326113347.903976-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.202]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZT0lJSx8YSEoZHkgeVkpNSk1MTkNPTEJKTENVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NhQ6Mww*Sj8PQzxITBg9Skgc
+        AREaCRdVSlVKTUpNTE5DT0xCTkhNVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKTU5ONwY+
+X-HM-Tid: 0a786e5098fcd992kuwsedf259802e6
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The header file "esw/indir_table.h" is already included above and can be
-removed here.
+struct iscsi_iser_task has been declared at 201st line.
+Remove the duplicate.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c | 1 -
+ drivers/infiniband/ulp/iser/iscsi_iser.h | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-index 8694b83968b4c4f..e598a5cda98853f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-@@ -40,7 +40,6 @@
- #include "eswitch.h"
- #include "esw/indir_table.h"
- #include "esw/acl/ofld.h"
--#include "esw/indir_table.h"
- #include "rdma.h"
- #include "en.h"
- #include "fs_core.h"
+diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.h b/drivers/infiniband/ulp/iser/iscsi_iser.h
+index 78ee9445f801..9f6ac0a09a78 100644
+--- a/drivers/infiniband/ulp/iser/iscsi_iser.h
++++ b/drivers/infiniband/ulp/iser/iscsi_iser.h
+@@ -297,7 +297,6 @@ struct iser_login_desc {
+ 
+ struct iser_conn;
+ struct ib_conn;
+-struct iscsi_iser_task;
+ 
+ /**
+  * struct iser_device - iSER device handle
 -- 
-1.8.3
-
+2.25.1
 
