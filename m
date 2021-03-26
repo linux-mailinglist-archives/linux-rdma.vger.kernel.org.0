@@ -2,212 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAB734A173
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Mar 2021 07:11:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 487DB34A21F
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Mar 2021 07:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbhCZGLG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Mar 2021 02:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhCZGKb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Mar 2021 02:10:31 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008D0C0613AA
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 23:10:30 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id x14so4220732qki.10
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Mar 2021 23:10:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ILUiEOjeZnKQyXSApBS7eBitVHNSNOwj0Om/fETmcOU=;
-        b=JjX3ZzXu82QslWn0/pskYR+soqdZcPHa4br4nWZY5WukO+pqEgRjbCLEdD4qvhf3PI
-         E0SqO886DM0lF54N/u/YMPFVGmywwAaIJ7D+Z+5bSXtfVNEJ4xtXMfllFjJJpvNpnvmw
-         e1IAwUkyomv6qNtNQp4nto95bixkeJSrXsGZA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ILUiEOjeZnKQyXSApBS7eBitVHNSNOwj0Om/fETmcOU=;
-        b=FIAGj9HSwyZ5P8VngR0ur72tOagxurQw2SSiHnivuci4FPMGTb40jc5TOh+Dh5G+yb
-         YSvdzDGpSrD2wn3tHiM+WJSpktLi94HwWvsxeI8FudX6KvZuZEvmBsDJ97ewbMbr5TTU
-         UK/m9w0pDW8sQtdQA/9N5l4QDINTo4d0TTZXaKaB/cF8CJfs6EhHsqA+Yz1lwHiiuGQz
-         Frjvul7EKaA9JtNSXHylf74FmsGm9hLSDZrGeF1zKz74qzXZOlJfodsmdli/xc6KLW86
-         7aoNTep1vgn0NIo5L77JSmrLuHv11PevD4rtkGIeTNddZRbFKG8/MuyJyh13oYQ4pqcX
-         wUdg==
-X-Gm-Message-State: AOAM533t+Evs9dFsJxeQEm3jF7OZYLegPeOfyxTFx2zHwPagZ2fzIT/A
-        GQNHvNpGXhBUKujwxrszjQ4rbD2lanVfGQNBIEJB/w==
-X-Google-Smtp-Source: ABdhPJwLD+r/bKBEQ6tiB6qLAPEro6z8l4vajAGhCjtRYtk791J0C6ldyG8n+P1rsqTUe+f/h4lOZd/R53wl0XGg0Uo=
-X-Received: by 2002:a05:620a:142b:: with SMTP id k11mr11441787qkj.46.1616739029616;
- Thu, 25 Mar 2021 23:10:29 -0700 (PDT)
+        id S230046AbhCZGoh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Mar 2021 02:44:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229839AbhCZGoJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 26 Mar 2021 02:44:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E835A61984;
+        Fri, 26 Mar 2021 06:44:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616741048;
+        bh=Hm7sCymXzN0wESAsfhGfW2mVzoE06j6T59EPX8RUXkA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VLWFc6Qb1+k8fn5plwONXJlNYgwj3OifCFFRjkL962F58Nz3F+f9DDfWIm87JpbWV
+         lnTJrWObUItrSxi1yNAr5xp7bC9KzcantBw2Zmus96yFSIDQ7arJG/6CLwbM2k9jB7
+         WR1exkOwmEtsrG/Fy9bien0IgJh0fA5keGeS0W9K3UobBT4HgX/B6QT9nsI/JYZxII
+         35D+eNvhpLu94bDezzphvzVbEQQZQTaP3rOBaKkUCLxDIGHVGetQyqfCl+VqABREkg
+         OyMH98ROxi44wqAYjaQ8Go6hvSIKaoJhXLNM+aF320VFQpRaVJYQPZ8xL/AVUU61VC
+         0L4vajJO17tqQ==
+Date:   Fri, 26 Mar 2021 09:44:04 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Keith Busch <kbusch@kernel.org>
+Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
+Message-ID: <YF2CtFmOxL6Noi96@unreal>
+References: <20210325173646.GG2356281@nvidia.com>
+ <20210325182021.GA795636@bjorn-Precision-5520>
+ <20210325182836.GJ2356281@nvidia.com>
 MIME-Version: 1.0
-References: <20210324142524.1135319-1-leon@kernel.org> <20210324150759.GH2356281@nvidia.com>
- <YFtXw+w7MZFynam0@unreal> <CANjDDBjKbDkbwnWV=kk8m2J_NdwjOir0Uoj2xahwEMVDfu-5CQ@mail.gmail.com>
- <20210324165648.GL2356281@nvidia.com> <CANjDDBh_H1jqQxBJFgu-uO2AmWe4-3Qiuos93vxMPxHOx8md+w@mail.gmail.com>
- <20210324173556.GO2356281@nvidia.com> <YFxMkxtpOMLY3/d3@unreal>
-In-Reply-To: <YFxMkxtpOMLY3/d3@unreal>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Fri, 26 Mar 2021 11:39:53 +0530
-Message-ID: <CANjDDBjDU7L=RtUd+F6wYHf+HxxWOe1Jqn3Uq8tRr79_7836fQ@mail.gmail.com>
-Subject: Re: [PATCH rdma-next] bnxt_re: Rely on Kconfig to keep module dependency
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000009acafb05be6a63c8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325182836.GJ2356281@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000009acafb05be6a63c8
-Content-Type: text/plain; charset="UTF-8"
+On Thu, Mar 25, 2021 at 03:28:36PM -0300, Jason Gunthorpe wrote:
+> On Thu, Mar 25, 2021 at 01:20:21PM -0500, Bjorn Helgaas wrote:
+> > On Thu, Mar 25, 2021 at 02:36:46PM -0300, Jason Gunthorpe wrote:
+> > > On Thu, Mar 25, 2021 at 12:21:44PM -0500, Bjorn Helgaas wrote:
+> > > 
+> > > > NVMe and mlx5 have basically identical functionality in this respect.
+> > > > Other devices and vendors will likely implement similar functionality.
+> > > > It would be ideal if we had an interface generic enough to support
+> > > > them all.
+> > > > 
+> > > > Is the mlx5 interface proposed here sufficient to support the NVMe
+> > > > model?  I think it's close, but not quite, because the the NVMe
+> > > > "offline" state isn't explicitly visible in the mlx5 model.
+> > > 
+> > > I thought Keith basically said "offline" wasn't really useful as a
+> > > distinct idea. It is an artifact of nvme being a standards body
+> > > divorced from the operating system.
+> > > 
+> > > In linux offline and no driver attached are the same thing, you'd
+> > > never want an API to make a nvme device with a driver attached offline
+> > > because it would break the driver.
+> > 
+> > I think the sticky part is that Linux driver attach is not visible to
+> > the hardware device, while the NVMe "offline" state *is*.  An NVMe PF
+> > can only assign resources to a VF when the VF is offline, and the VF
+> > is only usable when it is online.
+> > 
+> > For NVMe, software must ask the PF to make those online/offline
+> > transitions via Secondary Controller Offline and Secondary Controller
+> > Online commands [1].  How would this be integrated into this sysfs
+> > interface?
+> 
+> Either the NVMe PF driver tracks the driver attach state using a bus
+> notifier and mirrors it to the offline state, or it simply
+> offline/onlines as part of the sequence to program the MSI change.
+> 
+> I don't see why we need any additional modeling of this behavior. 
+> 
+> What would be the point of onlining a device without a driver?
 
-On Thu, Mar 25, 2021 at 2:10 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Wed, Mar 24, 2021 at 02:35:56PM -0300, Jason Gunthorpe wrote:
-> > On Wed, Mar 24, 2021 at 10:54:58PM +0530, Devesh Sharma wrote:
-> > > On Wed, Mar 24, 2021 at 10:26 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > > >
-> > > > On Wed, Mar 24, 2021 at 10:00:05PM +0530, Devesh Sharma wrote:
-> > > >
-> > > > > > > > -static void bnxt_re_dev_unprobe(struct net_device *netdev,
-> > > > > > > > -                           struct bnxt_en_dev *en_dev)
-> > > > > > > > -{
-> > > > > > > > -   dev_put(netdev);
-> > > > > > > > -   module_put(en_dev->pdev->driver->driver.owner);
-> > > > > > > > -}
-> > > > > > >
-> > > > > > > And you are right to be wondering WTF is this
-> > > > >
-> > > > > Still trying to understand but what's the big idea here may be I can help.
-> > > >
-> > > > A driver should not have module put things like the above
-> > > >
-> > > > It should not be accessing ->driver without holding the device_lock()
-> > > >
-> > > > Basically it is all nonsense coding, Leon suggests to delete it and he
-> > > > is probably right.
-> > > >
-> > > > Can you explain what it thinks it is doing?
-> > > That F'ed up  code is trying to prevent a situation where someone
-> > > tries to remove the bnxt_en driver while bnxt_re driver is using it.
-> > > All because bnxt_re driver is at the mercy of bnxt_en drive and there
-> > > is not symbole dependence, Do you suggest anything to prevent that
-> > > unload of bnxt_en other than doing this jargon.
-> >
-> > Well, the module put says nothing about the validity of the 'struct
-> > bnxt' and related it extracted from the netdev - you should have a
-> > mechanism that prevents that from going invalid which in turn will
-> > ensure the function pointers you want to touch are still valid
-> > too. (as the struct containing function pointers must become invalid
-> > before the module unloads)
-> >
-> > Probably the netdev refcount does that already but I always forget the
-> > exact point during unregister that it waits on that...
-> >
-> > As far as strict module dependencies go, replace the pointless
-> > brp->ulp_probe function pointer with an actual call to
-> > bnxt_ulp_probe() and you get the same effect as the module_get.
->
-> Yeah, I'll update it.
->
-> Thanks
->
-Yes, making it an exported symbol will help. It needs radical changes
-in the driver load/unload path. Let me as well take this feedback to
-my internal team .
-> >
-> > Jason
+Agree, we should remember that we are talking about Linux kernel model
+and implementation, where _no_driver_ means _offline_.
 
+Thanks
 
-
--- 
--Regards
-Devesh
-
---0000000000009acafb05be6a63c8
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
-Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
-KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
-SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
-PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
-G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
-PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGDOLknImaL84gmabaBFJXg/SClU
-4+gVbdK5kNN/8yaUMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDMyNjA2MTAzMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQAklJ7Rf7EFIwWSLC9YTHFfr79IHQzsMgmKmJMkK9B47bgZ
-c1yHyCSHlAztAqJhybC7LQXU7vjAv+uuQfzA4M12r09B9do8SiWgoYjmr7BtePsiNjZfyZjgwQo3
-P2t0qOuQeYP9PgLfhG6bVw1Gu2i2zjGJXeQ/bcKt6gyO6LVys38qvRuOy2iASP1aBsMJdHrfe2Qq
-4lqTW6/93zSgtmxcFyL9lNF389wywPAY5kBzrVD6SJt/NwgCeRHMDZ9tnaDAvMgG34j6EaMfyedV
-rYckT5rJk64vU7wYh/NoiR1IPaztaeEp5VY7wgzPi6dX10i7aGtUQ3AfLXPZvFGjGvyn
---0000000000009acafb05be6a63c8--
+> 
+> Jason
