@@ -2,48 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C66D34AD5F
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Mar 2021 18:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF8734AEC6
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Mar 2021 19:51:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhCZRbe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Mar 2021 13:31:34 -0400
-Received: from mail-dm6nam11on2086.outbound.protection.outlook.com ([40.107.223.86]:4705
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230046AbhCZRba (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 26 Mar 2021 13:31:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UQQLEJFQDLumMR7fRipKfrBJRa16J57x7FWaAvzZ0OdhwDvFWhKYU4/5QHt4lOgjWcO4gMNH0L8kR5O5qIIq7jb0+OqKWnEwZyR5ehS6KCqjdVoc16s+blkRdlv3stwtj/2jjEr/xbBTB6VEesSzzPEkkdpdEI0tZsxM47kOFdBospwUwwVAcjY4ZBy8Mm4tV3pD4+TXEp6CMTAjjcCWBwRlpIh8yg3YclZ/k71aoY8O9YKn7qH4NrNzaJjsGpX1vUsvcvr/mylIcrlT9h0y7ip364L51sh3oOJkApX+tFsEwLWdfxq5EzVIQlUGkWWg7F7BiRiqVnSKgHJrP/01ZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a69MX+Z0FcRqspSjDgX5qdKG221B0DeFIsf6Ay6XJ3E=;
- b=MMRXLG/zM3B8c4i2emg7A6zOknpByHcM+zRudoXTHzXnAgmX48QBi+qJwRCgC8ETtgO6m1RUcM9soXBTN3OjXgpPE4ZUs7gXsuqj7WrEorpr8fcHVl44k+u2D0a0JUc7p/9AukGCfem5ZD1wd8NIL8Yfdsm4k9inTtfi7Iakopla9XcmogEjA5ICxdcVs7Ph8HKLv4WrtMsxEeDbYeNPFHm771L0gKa6hYSuVjiLpcKtrMUFcArUcSd3/+WW58k3m0RsfPbr4wfFG5XYbqhiRK+QeE6z8uVWXvbx0YgBmL6ZsQhtmCM9IUU4Mxn+ezt6I4b4okZnY/Z+CjwsB26iTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a69MX+Z0FcRqspSjDgX5qdKG221B0DeFIsf6Ay6XJ3E=;
- b=HuEMbzletme26zcQrwRun0tl9PI6yd/YbV8wZgjusAybimqPsfujjupI9P5e4f82kvMKayCzX48497smWPXeb1kvX16nqBD8vp1s5iG3P0MF/xj7DatvpdzQAwpRX7NTzSf0JfXH1XDxMkq45OVgBX3l+LF+vLS5ZZY8WilpRoYxbFL90Ri6yPG+ik/ljNJ29PqDGQubLxf57/8bsIh/mW3EZ2IrDRTkyedITnW3FU/bArCOR6ATVhVRmdWEQfdwMEi5LxBPD4SBC5M8fVEirP8H2bb2LzTVlK36gMV2SptuIziMHOPMA9rlYXA6uppShGtimyvv26WHhAmsf3cFkQ==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4299.namprd12.prod.outlook.com (2603:10b6:5:223::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.30; Fri, 26 Mar
- 2021 17:31:29 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.029; Fri, 26 Mar 2021
- 17:31:29 +0000
-Date:   Fri, 26 Mar 2021 14:31:28 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
+        id S230170AbhCZSvU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Mar 2021 14:51:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230138AbhCZSu4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Mar 2021 14:50:56 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B586C0613AA;
+        Fri, 26 Mar 2021 11:50:56 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id z136so6393840iof.10;
+        Fri, 26 Mar 2021 11:50:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Iu1JNF6SF7oEppHvP+plVN0qFTWdU5EACnfxSAygZtg=;
+        b=kb62XZaX4YZ5qWRcmfvd5q2Gcf9eguV6Xdrv4Hkx+5Q1WWyj3dn2aS/WLvMTjpYEQw
+         1NPs6/vCYIZee9AU99ZWUHD1oQjYCIL4+lGZn8S+yLmltUcqaY/oPWidCo+Fc2xyjhRL
+         KxL5gIjuwj4aEs0x0kZ0gncw0EYeXHEL7Pe/G9GUNo+wW0UhSa364+MW7wUJd/TE4vAs
+         iwXaq9FdJF6IV3AaSVvmmWa5GoS5vA8OZLRa8i8mM339erc/OF4UV1BE+bJ37DFhtT5j
+         gU8L2+zzP7OpjycgSts7ybbeCPOsicsdjjYbITxZan0qrJtDcktfFLVU65FdV/MRnUO8
+         WkGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Iu1JNF6SF7oEppHvP+plVN0qFTWdU5EACnfxSAygZtg=;
+        b=HYjX+ewB6Lm9v4L8k+CbCBM3UdVghDbQYbzCiUXxXOwXwb22b0h98wxkW7MDvOsQ64
+         E+03Jo5TBsbqKOdbX7otjQubJMOKFPqXjFVI9UE2YK6ZtdZ1+6HJWQCWy3Ww0/tCZQUF
+         C0RI6EpYbCm6rg71tdhtuPlXk6U8punDgJJlYrKT6Z9d/d3kAwS6tQr7wlLRze2JZO71
+         Z8wN0q240DdPlOclAZQGA1o7GGjYnrA0dRrfUhoS94fWyNTWNA/jLk7oQNG2GI0NC0qx
+         fZ42Cs8YDH7tn7QnrVLtEhSWKH0tCJgp04TJUNgC4afzSTtj2n9QhvBmglmjZQfzaJ3I
+         1kkw==
+X-Gm-Message-State: AOAM530II3SPARPxkJ59forEI+g818hg/mFReG96lcpEei7FMOVd/5Zv
+        gW7ezDhrQjRgiA1BZ9OJC8cDv3eaoVci5XHHrIc=
+X-Google-Smtp-Source: ABdhPJytGgFcY8iTzhYD7d9LbEm1RzeN+QzWwUM4N7jiyltAzMSUqYm7I0K+eS+vcsEYViOIomiovODA+ea6vLj0K1w=
+X-Received: by 2002:a05:6638:238c:: with SMTP id q12mr13494324jat.114.1616784655635;
+ Fri, 26 Mar 2021 11:50:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAKgT0UfK3eTYH+hRRC0FcL0rdncKJi=6h5j6MN0uDA98cHCb9A@mail.gmail.com>
+ <20210326170831.GA890834@bjorn-Precision-5520>
+In-Reply-To: <20210326170831.GA890834@bjorn-Precision-5520>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Fri, 26 Mar 2021 11:50:44 -0700
+Message-ID: <CAKgT0UcXwNKDSP2ciEjM2AWj2xOZwBxkPCdzkUqDKAMtvTTKPg@mail.gmail.com>
+Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Keith Busch <kbusch@kernel.org>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -53,87 +64,106 @@ Cc:     Bjorn Helgaas <helgaas@kernel.org>,
         Alex Williamson <alex.williamson@redhat.com>,
         "David S . Miller" <davem@davemloft.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
-Message-ID: <20210326173128.GQ2356281@nvidia.com>
-References: <CAKgT0UfK3eTYH+hRRC0FcL0rdncKJi=6h5j6MN0uDA98cHCb9A@mail.gmail.com>
- <20210326170831.GA890834@bjorn-Precision-5520>
- <20210326172900.GA4611@redsun51.ssa.fujisawa.hgst.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326172900.GA4611@redsun51.ssa.fujisawa.hgst.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR05CA0031.namprd05.prod.outlook.com
- (2603:10b6:208:c0::44) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR05CA0031.namprd05.prod.outlook.com (2603:10b6:208:c0::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.16 via Frontend Transport; Fri, 26 Mar 2021 17:31:29 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lPqIy-003flA-2R; Fri, 26 Mar 2021 14:31:28 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1cdebe43-064b-4be2-50a0-08d8f07cfd97
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4299:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB42997F5C41D8FE6F1ED536C8C2619@DM6PR12MB4299.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mdu1rWerzQkwLmxPnfMZLwOenJvOkUOjz16FJaX/qX9cH7yVrhsYxLIUi21fotoc8CfNCTGlmgme95Hiv6+uvTHfMjjfOQqAgSVptzr6lukay0LSCDKlf2ZcrqS7zXcDHlmq01eZaHny6fnHriI8GWPzfCAStNftlKWYa6q/mqESYay605pkQmuVyzQh1DgUYrqUo5hKcg54nSv6QcfxHfZfv71DMpmvqMdrpMmpd+YZm5DWUgNn69xuowMsZgYedWOlCRIDGxy3OEGYWlQN8MxHtf3pOKcZSaetZznzeSyp4xe+fv9Fu2vCfbj3o/HnjpTV5MGXPFL4sNp1kDmrr/Av4W5+d5sFmhBaQzGx7u+76U1vyCwnpI1p6SG7440wtAVROHk0VFVvhfRDY+FMZyjYrT4m31AWaEgUFUVz5fGBIFWWg/9LFIQL3MabUuVeZP7k/aQWJt4qeiM6Unzc7M8SfJvqoegnhCaPNCnSRoT9ckOslb8r3utd0YMXocxt2rHMoA+2mTNnMB2VDHJq5SOLMP7MEvcCeNBcNZ0egvCF93wyUZlrNkNqhPuRV5eGQi2J29FhmERKeKOkaDLaCp8MvfbZuaXkugBlR+eh/Qo/+GR1X9OGft3wo7aZyxiptzVog+jdGMPRqoA2JPxMlwXihXyWRkpedJjHyhgK3vA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(136003)(376002)(39860400002)(9746002)(9786002)(316002)(36756003)(33656002)(54906003)(86362001)(186003)(4326008)(7416002)(2906002)(6916009)(5660300002)(4744005)(1076003)(66946007)(66476007)(8936002)(66556008)(38100700001)(8676002)(2616005)(26005)(478600001)(83380400001)(426003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Om2D2OadXy+7De/63UH/rK1x5D8FHfp9QCONUc5wuLAZDod4nMQ1z2YjHJTv?=
- =?us-ascii?Q?AOiCvUMnrMr3U3IG5c+NQ6tAo7cRxz7DtJc303DDfxJxXVfx3QsRhxqJwcXf?=
- =?us-ascii?Q?HrF7F7Za7RlORxtZAawGys/fMfU53KL5uVABtF4jlVFmboYL75CwE4iheOMR?=
- =?us-ascii?Q?6yXk8ORkssisAbnntug1y7R9JN4luX7gWMe79kw9E18AF4LNf2XqgbgEoft8?=
- =?us-ascii?Q?SHwIapuDx5V+d7ZZtF947BPQGYG8u5o/fWRSjyXvpH9AuytlBUS7Pq98FZZK?=
- =?us-ascii?Q?QL7fbbc4Mg49eetw3J6h61ImWYAGvOUAkf4zKQ9LCp0NAwzIxfRFfnuMhM8e?=
- =?us-ascii?Q?Zc3FxsECgFZWIcDCMiCzsOPojpz5QkV7+eldUts95rg1qPPzD8/DC0iu8Muh?=
- =?us-ascii?Q?mqK+ZjYLB34BJILqWafulZl2VMYez833nN26dTSPCBx2NzTLzh3+he2MgsLU?=
- =?us-ascii?Q?h4bqN6w17VGRzoTkut2x56KjZouGelgufTQypYfxdP1CKICcyK3/L5dGxR3E?=
- =?us-ascii?Q?mec8rGd+J6KTLlOB2XBhOll3oC7c2B+f0SZeWgNfgPvPgWqENprbBjJUAaVC?=
- =?us-ascii?Q?wOEX5rshNpBgOt4I0I/mQHBVl42A1ymAHuBD/SDmLH8XGaMtuBp2fykqmOoT?=
- =?us-ascii?Q?VFHz5iMjSP1dHcXeuuL9eKHdyfrqDzEHBdS0XdmJJPzC7iYEVLJCVIhg4alR?=
- =?us-ascii?Q?i9mTmGqj/lq6Vd8BE4HaZq06b7EzdcwMrN77JJXXqBBNDqqkSsIAVHcbdiND?=
- =?us-ascii?Q?++JQtb7woCTyytd7jNI668LXOT4J4DOitGuC8PsrV9ibc0oRyqxUVtYPyubG?=
- =?us-ascii?Q?CFEWCoVn8sr5u5E8E7Bya+z+MFJEL0jG5KgtiPLGKwVdoJEj+TDVYOtJH6+w?=
- =?us-ascii?Q?5460v84oE6/Te8k9jrThSYWr9D4MXUw5gQjA8jcGkPkjVrzPj0kk+zRfezxQ?=
- =?us-ascii?Q?YFZdjD/4SM70HHs3k5zpPw4pArAvSuDrUN7wB2pBAC7U06iIwvsaul65lwOU?=
- =?us-ascii?Q?y0Os2S7FoLAHZbPKfsE/fYCEtlLlwjsu9hWcHYdlILPEsDnxp5MlUyI+DNbx?=
- =?us-ascii?Q?swl40g5hWkE2QlFb0x9FjqC7fGQ2+6BNGAw2bzrrwV8Lvq0bnvRBhC+JIrAB?=
- =?us-ascii?Q?oCQlNn2XTj8IoN4mY9KZKbE3m/5Dpd6Uw5po+zUNKTrdyQ/Ow9EA7v2IYfEB?=
- =?us-ascii?Q?dJ65KEZK0k++zYPwqsy/NJOpfMvQhz+WlOgGHVgvU7mjsNxFC3gV7sCXR92w?=
- =?us-ascii?Q?Y1dc3fd/JKFtH9PtTblNsAIU5r5W02WpUUOFttDvfncaePFntQmIpDspmWb3?=
- =?us-ascii?Q?iV/7Xbwtbh48TTJUnnW1Yx8LzocBZ2oZ2i3uUpanwanCAw=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1cdebe43-064b-4be2-50a0-08d8f07cfd97
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2021 17:31:29.4937
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 85EvXmUaccbbnP0lEZNL/JGu6QLBpfnv5DikWwQQQEXNQzCxlvU8Y9+KJm8NXN5E
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4299
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Mar 27, 2021 at 02:29:00AM +0900, Keith Busch wrote:
-> On Fri, Mar 26, 2021 at 12:08:31PM -0500, Bjorn Helgaas wrote:
-> > I also want to resurrect your idea of associating
-> > "sriov_vf_msix_count" with the PF instead of the VF.  I really like
-> > that idea, and it better reflects the way both mlx5 and NVMe work.
-> 
-> That is a better match for nvme: we can assign resources to VFs with
-> the PF's "VF Enable" set to '0', so configuring VFs without requiring
-> them be enumerated in sysfs is a plus. 
+On Fri, Mar 26, 2021 at 10:08 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Fri, Mar 26, 2021 at 09:00:50AM -0700, Alexander Duyck wrote:
+> > On Thu, Mar 25, 2021 at 11:44 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > On Thu, Mar 25, 2021 at 03:28:36PM -0300, Jason Gunthorpe wrote:
+> > > > On Thu, Mar 25, 2021 at 01:20:21PM -0500, Bjorn Helgaas wrote:
+> > > > > On Thu, Mar 25, 2021 at 02:36:46PM -0300, Jason Gunthorpe wrote:
+> > > > > > On Thu, Mar 25, 2021 at 12:21:44PM -0500, Bjorn Helgaas wrote:
+> > > > > >
+> > > > > > > NVMe and mlx5 have basically identical functionality in this respect.
+> > > > > > > Other devices and vendors will likely implement similar functionality.
+> > > > > > > It would be ideal if we had an interface generic enough to support
+> > > > > > > them all.
+> > > > > > >
+> > > > > > > Is the mlx5 interface proposed here sufficient to support the NVMe
+> > > > > > > model?  I think it's close, but not quite, because the the NVMe
+> > > > > > > "offline" state isn't explicitly visible in the mlx5 model.
+> > > > > >
+> > > > > > I thought Keith basically said "offline" wasn't really useful as a
+> > > > > > distinct idea. It is an artifact of nvme being a standards body
+> > > > > > divorced from the operating system.
+> > > > > >
+> > > > > > In linux offline and no driver attached are the same thing, you'd
+> > > > > > never want an API to make a nvme device with a driver attached offline
+> > > > > > because it would break the driver.
+> > > > >
+> > > > > I think the sticky part is that Linux driver attach is not visible to
+> > > > > the hardware device, while the NVMe "offline" state *is*.  An NVMe PF
+> > > > > can only assign resources to a VF when the VF is offline, and the VF
+> > > > > is only usable when it is online.
+> > > > >
+> > > > > For NVMe, software must ask the PF to make those online/offline
+> > > > > transitions via Secondary Controller Offline and Secondary Controller
+> > > > > Online commands [1].  How would this be integrated into this sysfs
+> > > > > interface?
+> > > >
+> > > > Either the NVMe PF driver tracks the driver attach state using a bus
+> > > > notifier and mirrors it to the offline state, or it simply
+> > > > offline/onlines as part of the sequence to program the MSI change.
+> > > >
+> > > > I don't see why we need any additional modeling of this behavior.
+> > > >
+> > > > What would be the point of onlining a device without a driver?
+> > >
+> > > Agree, we should remember that we are talking about Linux kernel model
+> > > and implementation, where _no_driver_ means _offline_.
+> >
+> > The only means you have of guaranteeing the driver is "offline" is by
+> > holding on the device lock and checking it. So it is only really
+> > useful for one operation and then you have to release the lock. The
+> > idea behind having an "offline" state would be to allow you to
+> > aggregate multiple potential operations into a single change.
+> >
+> > For example you would place the device offline, then change
+> > interrupts, and then queues, and then you could online it again. The
+> > kernel code could have something in place to prevent driver load on
+> > "offline" devices. What it gives you is more of a transactional model
+> > versus what you have right now which is more of a concurrent model.
+>
+> Thanks, Alex.  Leon currently does enforce the "offline" situation by
+> holding the VF device lock while checking that it has no driver and
+> asking the PF to do the assignment.  I agree this is only useful for a
+> single operation.  Would the current series *prevent* a transactional
+> model from being added later if it turns out to be useful?  I think I
+> can imagine keeping the same sysfs files but changing the
+> implementation to check for the VF being offline, while adding
+> something new to control online/offline.
 
-If the VF is not in sysfs already in the normal place, why would it be
-in the special configuration directory? Do you want the driver to
-somehow provide the configuration directory content?
+My concern would be that we are defining the user space interface.
+Once we have this working as a single operation I could see us having
+to support it that way going forward as somebody will script something
+not expecting an "offline" sysfs file, and the complaint would be that
+we are breaking userspace if we require the use of an "offline" file.
+So my preference would be to just do it that way now rather than wait
+as the behavior will be grandfathered in once we allow the operation
+without it.
 
-I'm confused what you mean
+> I also want to resurrect your idea of associating
+> "sriov_vf_msix_count" with the PF instead of the VF.  I really like
+> that idea, and it better reflects the way both mlx5 and NVMe work.  I
+> don't think there was a major objection to it, but the discussion
+> seems to have petered out after your suggestion of putting the PCI
+> bus/device/funcion in the filename, which I also like [1].
+>
+> Leon has implemented a ton of variations, but I don't think having all
+> the files in the PF directory was one of them.
+>
+> Bjorn
+>
+> [1] https://lore.kernel.org/r/CAKgT0Ue363fZEwqGUa1UAAYotUYH8QpEADW1U5yfNS7XkOLx0Q@mail.gmail.com
 
-As I said to Alex configuring things before they even get plugged in
-sounds like the right direction..
-
-Jason
+I almost wonder if it wouldn't make sense to just partition this up to
+handle flexible resources in the future. Maybe something like having
+the directory setup such that you have "sriov_resources/msix/" and
+then you could have individual files with one for the total and the
+rest with the VF BDF naming scheme. Then if we have to, we could add
+other subdirectories in the future to handle things like queues in the
+future.
