@@ -2,80 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A8634B73E
-	for <lists+linux-rdma@lfdr.de>; Sat, 27 Mar 2021 13:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4986C34BE0E
+	for <lists+linux-rdma@lfdr.de>; Sun, 28 Mar 2021 20:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbhC0Mia (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 27 Mar 2021 08:38:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229627AbhC0Mia (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 27 Mar 2021 08:38:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AF316196C;
-        Sat, 27 Mar 2021 12:38:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616848687;
-        bh=Iy5IFoCV3jFpegN8htE9TCzHt5nX7xsGq2wa29AG4Mo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ziWReXLrV1j5Yjp7ZkGCTqN8eYAezPVe1u5PhFiynFczxHVb3G6SAfgEIZJNzpa6p
-         UqVs/00MPSpVWyPAe0d4iHjtLcUFqNBrGQ9NHEWS8N+XTUul/t6hmSw5H8gTPX4pP3
-         HgNiDe/GfFHofOSACrlbzd6sVu5HYxwLbxgUt24M=
-Date:   Sat, 27 Mar 2021 13:38:05 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
-Message-ID: <YF8nLR3cVOc0y+Rl@kroah.com>
-References: <CAKgT0UcXwNKDSP2ciEjM2AWj2xOZwBxkPCdzkUqDKAMtvTTKPg@mail.gmail.com>
- <20210326193631.GA902426@bjorn-Precision-5520>
+        id S231536AbhC1SHe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 28 Mar 2021 14:07:34 -0400
+Received: from mail.hanoi.gov.vn ([113.160.32.33]:31610 "EHLO
+        mx01.hanoi.gov.vn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229647AbhC1SHR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 28 Mar 2021 14:07:17 -0400
+X-Greylist: delayed 474 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Mar 2021 14:07:01 EDT
+Received: from mx01.hanoi.gov.vn (localhost [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 30259EC3D8;
+        Mon, 29 Mar 2021 00:57:51 +0700 (+07)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hanoi.gov.vn;
+        s=default; t=1616954272;
+        bh=FuW10Z6fSdeNlf/0u/BQ1jcwkjYBw0uHUPQgn0LGo7I=; h=Date:From:To;
+        b=R9blPfqJCHUsZAyZxsyyryS61fl4krmBjYKWM6eGGwB8ZdbTBVPL1mmKOmZXMqNlA
+         7CEqA0MXgUAy+X4oK/wthh4vC9Xoov1Ce8tjf/qJvnL7KGsGNVg9ic0krGeHrdNzGM
+         5cIEKsz0emmHL/izbEfCtadst3HYllOJWdonlm5o=
+X-IMSS-DKIM-Authentication-Result: mx01.hanoi.gov.vn; sigcount=0
+Received: from mx01.hanoi.gov.vn (localhost [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 50FCBEC3DD;
+        Mon, 29 Mar 2021 00:57:49 +0700 (+07)
+Received: from mail.hanoi.gov.vn (mail.hanoi.gov.vn [10.1.1.25])
+        by mx01.hanoi.gov.vn (Postfix) with ESMTPS;
+        Mon, 29 Mar 2021 00:57:49 +0700 (+07)
+Received: from mail.hanoi.gov.vn (localhost [127.0.0.1])
+        by mail.hanoi.gov.vn (Postfix) with ESMTPS id 02AFC7F41B42;
+        Mon, 29 Mar 2021 00:57:44 +0700 (+07)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.hanoi.gov.vn (Postfix) with ESMTP id 08FE47F41B5D;
+        Mon, 29 Mar 2021 00:57:41 +0700 (+07)
+Received: from mail.hanoi.gov.vn ([127.0.0.1])
+        by localhost (mail.hanoi.gov.vn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 1D3oZsOAVsx3; Mon, 29 Mar 2021 00:57:36 +0700 (+07)
+Received: from mail.hanoi.gov.vn (mail.hanoi.gov.vn [10.1.1.25])
+        by mail.hanoi.gov.vn (Postfix) with ESMTP id 478CE7F41B59;
+        Mon, 29 Mar 2021 00:57:33 +0700 (+07)
+Date:   Mon, 29 Mar 2021 00:57:33 +0700 (ICT)
+From:   Mackenzie Scott <ttptqd_thanhoai@hanoi.gov.vn>
+Reply-To: Mackenzie Scott <propack@propck.net>
+Message-ID: <354204758.25920932.1616954253215.JavaMail.zimbra@hanoi.gov.vn>
+Subject: Congratulations ($ 100,800,000.00)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326193631.GA902426@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [185.107.80.217]
+X-Mailer: Zimbra 8.8.15_GA_3894 (zclient/8.8.15_GA_3894)
+Thread-Index: ao/APhyKX+JH1nE2Rn/kAmnh2LEgkw==
+Thread-Topic: Congratulations ($ 100,800,000.00)
+To:     undisclosed-recipients:;
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 02:36:31PM -0500, Bjorn Helgaas wrote:
-> On Fri, Mar 26, 2021 at 11:50:44AM -0700, Alexander Duyck wrote:
-> 
-> > I almost wonder if it wouldn't make sense to just partition this up to
-> > handle flexible resources in the future. Maybe something like having
-> > the directory setup such that you have "sriov_resources/msix/" and
-> > then you could have individual files with one for the total and the
-> > rest with the VF BDF naming scheme. Then if we have to, we could add
-> > other subdirectories in the future to handle things like queues in the
-> > future.
-> 
-> Subdirectories would be nice, but Greg KH said earlier in a different
-> context that there's an issue with them [1].  He went on to say tools
-> like udev would miss uevents for the subdirs [2].
-> 
-> I don't know whether that's really a problem in this case -- it
-> doesn't seem like we would care about uevents for files that do MSI-X
-> vector assignment.
-> 
-> [1] https://lore.kernel.org/linux-pci/20191121211017.GA854512@kroah.com/
-> [2] https://lore.kernel.org/linux-pci/20191124170207.GA2267252@kroah.com/
 
-You can only go "one level deep" on subdirectories tied to a 'struct
-device' and have userspace tools know they are still there.  You can do
-that by giving an attribute group a "name" for the directory.
 
-Anything more than that just gets very very messy very quickly and I do
-not recommend doing that at all.
-
-thanks,
-
-greg k-h
+Hello,i&#39;m Mackenzie Scott,Ex-wife of Amazon founder i&#39;m donating $4 billion to charities,individuals,universities across the Globe from my divorce funds,i&#39;m donating part of it to provide immediate support to people suffering economically during the COVID-19 pandemic,i have a donation worth $100,800,000.00 Dollars for you,you can contact me for more information if you&#39;re interested.
