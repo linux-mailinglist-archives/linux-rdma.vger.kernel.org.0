@@ -2,62 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4986C34BE0E
-	for <lists+linux-rdma@lfdr.de>; Sun, 28 Mar 2021 20:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5046334C0C2
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Mar 2021 03:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbhC1SHe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 28 Mar 2021 14:07:34 -0400
-Received: from mail.hanoi.gov.vn ([113.160.32.33]:31610 "EHLO
-        mx01.hanoi.gov.vn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhC1SHR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 28 Mar 2021 14:07:17 -0400
-X-Greylist: delayed 474 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Mar 2021 14:07:01 EDT
-Received: from mx01.hanoi.gov.vn (localhost [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 30259EC3D8;
-        Mon, 29 Mar 2021 00:57:51 +0700 (+07)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hanoi.gov.vn;
-        s=default; t=1616954272;
-        bh=FuW10Z6fSdeNlf/0u/BQ1jcwkjYBw0uHUPQgn0LGo7I=; h=Date:From:To;
-        b=R9blPfqJCHUsZAyZxsyyryS61fl4krmBjYKWM6eGGwB8ZdbTBVPL1mmKOmZXMqNlA
-         7CEqA0MXgUAy+X4oK/wthh4vC9Xoov1Ce8tjf/qJvnL7KGsGNVg9ic0krGeHrdNzGM
-         5cIEKsz0emmHL/izbEfCtadst3HYllOJWdonlm5o=
-X-IMSS-DKIM-Authentication-Result: mx01.hanoi.gov.vn; sigcount=0
-Received: from mx01.hanoi.gov.vn (localhost [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 50FCBEC3DD;
-        Mon, 29 Mar 2021 00:57:49 +0700 (+07)
-Received: from mail.hanoi.gov.vn (mail.hanoi.gov.vn [10.1.1.25])
-        by mx01.hanoi.gov.vn (Postfix) with ESMTPS;
-        Mon, 29 Mar 2021 00:57:49 +0700 (+07)
-Received: from mail.hanoi.gov.vn (localhost [127.0.0.1])
-        by mail.hanoi.gov.vn (Postfix) with ESMTPS id 02AFC7F41B42;
-        Mon, 29 Mar 2021 00:57:44 +0700 (+07)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.hanoi.gov.vn (Postfix) with ESMTP id 08FE47F41B5D;
-        Mon, 29 Mar 2021 00:57:41 +0700 (+07)
-Received: from mail.hanoi.gov.vn ([127.0.0.1])
-        by localhost (mail.hanoi.gov.vn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 1D3oZsOAVsx3; Mon, 29 Mar 2021 00:57:36 +0700 (+07)
-Received: from mail.hanoi.gov.vn (mail.hanoi.gov.vn [10.1.1.25])
-        by mail.hanoi.gov.vn (Postfix) with ESMTP id 478CE7F41B59;
-        Mon, 29 Mar 2021 00:57:33 +0700 (+07)
-Date:   Mon, 29 Mar 2021 00:57:33 +0700 (ICT)
-From:   Mackenzie Scott <ttptqd_thanhoai@hanoi.gov.vn>
-Reply-To: Mackenzie Scott <propack@propck.net>
-Message-ID: <354204758.25920932.1616954253215.JavaMail.zimbra@hanoi.gov.vn>
-Subject: Congratulations ($ 100,800,000.00)
+        id S231651AbhC2BAr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 28 Mar 2021 21:00:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230252AbhC2BAR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 28 Mar 2021 21:00:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4CADF6193F;
+        Mon, 29 Mar 2021 01:00:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616979611;
+        bh=bSJHnkL0Y6HWWvXB/0i91Ys2z86pDibN1bNO3jpu7g0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Gfm6X4B70RVrxyZgXPVZgyBUN3LitUIBIHEUd2adt7SJNWWk3ICPEpgE4YM4N3vIr
+         uX5GaYSJ1H1zfalfbChqPgXOHXgCSVzpI+zoFiM5pnHtQc6K4c2gqvROhcDWnzBvjq
+         vYwM/y8kuYTb/x9ECns7SK5qkLJnXTpcvelHechjCu2NsD72F2g6OU4kp9wsZxeiaY
+         wW+OmeSuR5QPe/B8e8A6PpE3D0Yw+0Rxs8A71r5gwOuJ8yQaalTaksvC9XyKfOiA+d
+         MEaarF48TX4lF7pyJMdZWhgYl4AIwzq9FGawCVhQaYx8cQ9lAivHlRqRV6DfbJa+CN
+         E5Q8DKyQ5QGvw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3D596609E8;
+        Mon, 29 Mar 2021 01:00:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [185.107.80.217]
-X-Mailer: Zimbra 8.8.15_GA_3894 (zclient/8.8.15_GA_3894)
-Thread-Index: ao/APhyKX+JH1nE2Rn/kAmnh2LEgkw==
-Thread-Topic: Congratulations ($ 100,800,000.00)
-To:     undisclosed-recipients:;
-X-TM-AS-GCONF: 00
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH -next 0/3] Fix some typos
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161697961124.31306.16406247961568026068.git-patchwork-notify@kernel.org>
+Date:   Mon, 29 Mar 2021 01:00:11 +0000
+References: <20210327022724.241376-1-luwei32@huawei.com>
+In-Reply-To: <20210327022724.241376-1-luwei32@huawei.com>
+To:     Lu Wei <luwei32@huawei.com>
+Cc:     vyasevich@gmail.com, nhorman@tuxdriver.com,
+        marcelo.leitner@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sgarzare@redhat.com,
+        jhansen@vmware.com, colin.king@canonical.com, nslusarek@gmx.net,
+        andraprs@amazon.com, alex.popov@linux.com,
+        santosh.shilimkar@oracle.com, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hello:
+
+This series was applied to netdev/net-next.git (refs/heads/master):
+
+On Sat, 27 Mar 2021 10:27:21 +0800 you wrote:
+> Lu Wei (3):
+>   net: rds: Fix a typo
+>   net: sctp: Fix some typos
+>   net: vsock: Fix a typo
+> 
+>  net/rds/send.c           | 2 +-
+>  net/sctp/sm_make_chunk.c | 2 +-
+>  net/sctp/socket.c        | 2 +-
+>  net/vmw_vsock/af_vsock.c | 2 +-
+>  4 files changed, 4 insertions(+), 4 deletions(-)
+
+Here is the summary with links:
+  - [-next,1/3] net: rds: Fix a typo
+    https://git.kernel.org/netdev/net-next/c/ebf893958c13
+  - [-next,2/3] net: sctp: Fix some typos
+    https://git.kernel.org/netdev/net-next/c/21c00a186fac
+  - [-next,3/3] net: vsock: Fix a typo
+    https://git.kernel.org/netdev/net-next/c/9195f06b2d0f
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-Hello,i&#39;m Mackenzie Scott,Ex-wife of Amazon founder i&#39;m donating $4 billion to charities,individuals,universities across the Globe from my divorce funds,i&#39;m donating part of it to provide immediate support to people suffering economically during the COVID-19 pandemic,i have a donation worth $100,800,000.00 Dollars for you,you can contact me for more information if you&#39;re interested.
