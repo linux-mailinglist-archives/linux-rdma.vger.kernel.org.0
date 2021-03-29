@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7D634DA93
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Mar 2021 00:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B0C34DB01
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Mar 2021 00:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbhC2WW6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Mar 2021 18:22:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46638 "EHLO mail.kernel.org"
+        id S231589AbhC2WYf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Mar 2021 18:24:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232127AbhC2WWd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:22:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDF8A61990;
-        Mon, 29 Mar 2021 22:22:27 +0000 (UTC)
+        id S232434AbhC2WXL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 29 Mar 2021 18:23:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C89CB619B4;
+        Mon, 29 Mar 2021 22:23:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617056548;
-        bh=sIoJHMKoV6HLaDmjvZLyzIfA7RozjDKtiz/GTl7s1vg=;
+        s=k20201202; t=1617056589;
+        bh=dW/FEnYEm3JWUcwo0umvqYQf1VrjpyD+saPeoGlJuUc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ViB88pWEiNQVM0KiH5ah5ezobCoJrmMds8XUfbrquzJk+XLw16+tglxjV6qnOr6g+
-         yvYhdKHj/8f4QLGVqGVFrBvv5kVO3xf/vuPPSrJRSoRFGv62+4t5YlFiv2BQ9aLIgL
-         k1Ebvy1v1tJcXe/8yc/F4qXfoT3/G9OX9+YGmFrO3WiPkXBLBFwvWsxh2PQCWCOKa3
-         zFYqhzqAAik8HKZTk+AxjyKZIk+/Ove3AThkW/VWR9M4i0qFpU9BtLlXGx20YvDYnS
-         S8GmTvxUBxCIhRiMYC77nXP4jsoYDBIdg0Edy9b/Guz8P5zKrHbRfE9gJcbhEDnLc7
-         W4Jk38KwOlSew==
+        b=obSF5OixHiFHzHYl6oqE+zTwCb6dyf7vG1wgc9+gxKUUNbs8VVecY6ogljBB3YFt0
+         dGZla62U0eXgdD2abn4xOuyj25mFJnjp+pk+sFuPYgO0hxv9TPlG0E6sn6ZFSd2WVL
+         sLsKjX58NUMwdHxDptfsj5UZ7gOj9b34gV9tWl3NI3cSEhYRvwZxq/gO6HeOReKfuv
+         luT2Ercq2/zj5XqfZh8dATOoARRnw4xaeC8voOWFo9AEw/hc046joGh+J35AAyEPEb
+         QjSShm5u4hk+ybFkbuURUdLfweuSJe28fl/C5WU+DrH+S6axT7C7q1x1Aed8t/iizq
+         ASvAs7ZCZIB1Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Tariq Toukan <tariqt@nvidia.com>,
@@ -30,12 +30,12 @@ Cc:     Tariq Toukan <tariqt@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 05/33] net/mlx5e: Enforce minimum value check for ICOSQ size
-Date:   Mon, 29 Mar 2021 18:21:53 -0400
-Message-Id: <20210329222222.2382987-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 05/19] net/mlx5e: Enforce minimum value check for ICOSQ size
+Date:   Mon, 29 Mar 2021 18:22:48 -0400
+Message-Id: <20210329222303.2383319-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210329222222.2382987-1-sashal@kernel.org>
-References: <20210329222222.2382987-1-sashal@kernel.org>
+In-Reply-To: <20210329222303.2383319-1-sashal@kernel.org>
+References: <20210329222303.2383319-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -61,10 +61,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 6394f9d8c685..508999fa0f65 100644
+index 8b8581f71e79..36b9a364ef26 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -2326,8 +2326,9 @@ static u8 mlx5e_build_icosq_log_wq_sz(struct mlx5e_params *params,
+@@ -2365,8 +2365,9 @@ static u8 mlx5e_build_icosq_log_wq_sz(struct mlx5e_params *params,
  {
  	switch (params->rq_wq_type) {
  	case MLX5_WQ_TYPE_LINKED_LIST_STRIDING_RQ:
