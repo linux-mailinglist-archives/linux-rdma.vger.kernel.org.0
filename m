@@ -2,98 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EDA34D8D6
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Mar 2021 22:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9827534DA3B
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Mar 2021 00:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231911AbhC2UHo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Mar 2021 16:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231908AbhC2UH2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Mar 2021 16:07:28 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2C8C061574
-        for <linux-rdma@vger.kernel.org>; Mon, 29 Mar 2021 13:07:28 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 68-20020a9d0f4a0000b02901b663e6258dso13420015ott.13
-        for <linux-rdma@vger.kernel.org>; Mon, 29 Mar 2021 13:07:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=0r2rO/BRdURc/1jatPUHHm5RXDYyg0DyZ/NuxqiRdy8=;
-        b=fMtzAQv/5ux+8He/xmmUaYyHbbcnkNI2bcKWqUfdRwo12BBj/VGaWH/Gg8p72kQWgC
-         c2cKIF1nKglhwBXPhQnOie1QBz6VB9VAdlI3VIcibGO1Tsdyj7Np4ZWC+KOgpuVAVchr
-         Mnl1F3ZCAWrAtcJzdVXnysNpt2Ss7UlOyEVZ+I7QAvnbWsSTkZUY5pq/Zjw0EPp9qwCT
-         2IF3uKCMxnamSa5mSHEjfbZgNZZln5rUJ0Sp6iafVGH8M2/0vePk31F5raLdWaeQblZT
-         IOOTpYLZZ14WTdKT3w/vCGEYKz1l81zvQu2vAK6IrHD7G4CxQnPYd86H0vL0GvfbJVo4
-         SVcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0r2rO/BRdURc/1jatPUHHm5RXDYyg0DyZ/NuxqiRdy8=;
-        b=DurblIaKgmFTGgwyG+2QwTcsyGqnpo4FBPpZ34I4UFlkfWICPtBFT/QQrBOQs41mEf
-         o+EMgrDJfrbcXPJEjitTDLELKrTgedBDSQiSf9Sp4iGdZpr19tHx8QztunkzVPpzwu2p
-         2WnpmqeR6e7xlJRMJTx3Y51gFnFF4e+qisnxo59/h7KhlHzia4mnARkINSE6/K2+tjzO
-         N0STi474HluDnK6K+lCMy/engM0ibsB3rNobwU8eoNreGk6Tf12Odvhpynvib4xvTHtJ
-         mzyz7ry9fabWuENjTl//DmfxJcFNXuc1rjG9W0uij6sN8n0HN+ReLgsjcn9Ro8DKbky1
-         xWMA==
-X-Gm-Message-State: AOAM530G8Gr5CfRT1HEQzp6u7nYM6N8zuNeGaahTlo5hoGSQZb2KoNPC
-        g2sPwKxPNITo/iZC22ImYlrZlU8AHCg=
-X-Google-Smtp-Source: ABdhPJzTuzwdF3vLZ8bqzcRX2jU2IZxzh7wOyZenns679hJkRma94KnY8xNfmORupQNCDWUryp9ZJw==
-X-Received: by 2002:a9d:5c0f:: with SMTP id o15mr23835637otk.279.1617048447251;
-        Mon, 29 Mar 2021 13:07:27 -0700 (PDT)
-Received: from ?IPv6:2603:8081:140c:1a00:94f8:22f6:1ac1:2329? (2603-8081-140c-1a00-94f8-22f6-1ac1-2329.res6.spectrum.com. [2603:8081:140c:1a00:94f8:22f6:1ac1:2329])
-        by smtp.gmail.com with ESMTPSA id 3sm3946865ood.46.2021.03.29.13.07.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 13:07:26 -0700 (PDT)
-Subject: Possible bug in test_mr_rereg_pd
-To:     Edward Srouji <edwards@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <c143355e-954a-5953-c67c-c7a9bf451b7b@gmail.com>
- <edbf4d3f-08bc-31a0-a214-c098748697b5@gmail.com>
- <c8bf0e78-b2d5-2151-2b32-5386ff4566d2@nvidia.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <4e79ae3d-401a-9ad0-2e7b-89c341e322d3@gmail.com>
-Date:   Mon, 29 Mar 2021 15:07:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231834AbhC2WWO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Mar 2021 18:22:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231670AbhC2WVm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 29 Mar 2021 18:21:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A95D61985;
+        Mon, 29 Mar 2021 22:21:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617056501;
+        bh=hhqLYmnwN7VXWqqcSPRk7rmwKCvHyRit3D6tFWVwE1Q=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Ndc2s5XZesNp6eBpmwwO6e9W8ESl1zNGrGuhsfU9dIEt+en9Dd72RmaKq8AjbyFvK
+         plekwwDF2B2IsEx4zfzRZYp7m2g/Y1XSjt6l2bey8mvFEHs8MturERvVwTCp2Phtjm
+         2IqbkURh83lMpwgvkfYEnsY730KyBaXyr8tvw/CxhGcMLnEGk9i/aDDgVxzOKTE28C
+         XCiOXyo5S/6HCzQ4AeMGTm8WHuEKZ6SJdC4Px0gyaEQufqteWvAqJBUv3LcHJ7Ejdr
+         7HdplgPwPpN6v5tbru4nNqVQPoMdVGCnQxiAanqIlLqrzvgO3h6aNZ4dA01d2LwlKS
+         xTHRa/MZNWAfA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Tariq Toukan <tariqt@nvidia.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 06/38] net/mlx5e: Enforce minimum value check for ICOSQ size
+Date:   Mon, 29 Mar 2021 18:21:01 -0400
+Message-Id: <20210329222133.2382393-6-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210329222133.2382393-1-sashal@kernel.org>
+References: <20210329222133.2382393-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <c8bf0e78-b2d5-2151-2b32-5386ff4566d2@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: Tariq Toukan <tariqt@nvidia.com>
 
+[ Upstream commit 5115daa675ccf70497fe56e8916cf738d8212c10 ]
 
-Edward,
+The ICOSQ size should not go below MLX5E_PARAMS_MINIMUM_LOG_SQ_SIZE.
+Enforce this where it's missing.
 
-In a later test (test_mr_rereg_pd) which is also failing, I get the following
+Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+Reviewed-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-======================================================================
-ERROR: test_mr_rereg_pd (tests.test_mr.MRTest)
-Test that cover rereg MR's PD with this flow:
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/rpearson/src/rdma-core/tests/test_mr.py", line 160, in test_mr_rereg_pd
-    u.traffic(**self.traffic_args)
-  File "/home/rpearson/src/rdma-core/tests/utils.py", line 653, in traffic
-    poll(client.cq)
-  File "/home/rpearson/src/rdma-core/tests/utils.py", line 524, in poll_cq
-    raise PyverbsRDMAError('Completion status is {s}'.
-pyverbs.pyverbs_error.PyverbsRDMAError: Completion status is WR flush error. Errno: 5, Input/output error
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index a2e0b548bf57..4ce3aeb3548f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -2317,8 +2317,9 @@ static u8 mlx5e_build_icosq_log_wq_sz(struct mlx5e_params *params,
+ {
+ 	switch (params->rq_wq_type) {
+ 	case MLX5_WQ_TYPE_LINKED_LIST_STRIDING_RQ:
+-		return order_base_2(MLX5E_UMR_WQEBBS) +
+-			mlx5e_get_rq_log_wq_sz(rqp->rqc);
++		return max_t(u8, MLX5E_PARAMS_MINIMUM_LOG_SQ_SIZE,
++			     order_base_2(MLX5E_UMR_WQEBBS) +
++			     mlx5e_get_rq_log_wq_sz(rqp->rqc));
+ 	default: /* MLX5_WQ_TYPE_CYCLIC */
+ 		return MLX5E_PARAMS_MINIMUM_LOG_SQ_SIZE;
+ 	}
+-- 
+2.30.1
 
-But, adding tracing to the kernel driver I see that that part of the test actually succeeded
-after resetting the two QPs and reregistering the MR back to original PD. However, there were
-some WQEs that got flushed when the QPs were reset but I don't see anything in the test to drain
-the RCQs after the reset. So it is not surprising that the test sees the flush errors when it polls
-the RCQ.
-
-Since CQs are independent of QPs I thought it was correct to show these completions as flushed even
-if the QP is reset.
-
-Bob
