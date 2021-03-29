@@ -2,165 +2,153 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6944334D209
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Mar 2021 16:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E342034D218
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Mar 2021 16:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229479AbhC2OCF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Mar 2021 10:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhC2OB6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Mar 2021 10:01:58 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E178C061756
-        for <linux-rdma@vger.kernel.org>; Mon, 29 Mar 2021 07:01:57 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id x14so12433443qki.10
-        for <linux-rdma@vger.kernel.org>; Mon, 29 Mar 2021 07:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4Yf1q7pMXypmm7UBgIqrUL6hp8sMAhOK9HbBNx5o7M8=;
-        b=TeReqsxuiYb7U1JefH4LPwNY2DXJcZQq6pKTeYrhs8HjpuOetKkjYGfkqUZjx0lL+M
-         v4YFmbxumr0AcDJmuZkODGjrbrZNhTPz2GzA+CwHzOOKjYdjZT+l4IU3KSRJJWM0R5Zb
-         gXFjuAHIxN/h6lDyud+a5OPKNk/qZS6NbTguI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4Yf1q7pMXypmm7UBgIqrUL6hp8sMAhOK9HbBNx5o7M8=;
-        b=snJ9QaNZKSMZhos9g+xvqjwvKCA5PzrcfJ31m6ufw+y4fnzn6OB29zlPLJar+Nq/T1
-         VtjILKh7AB8s4QGnwvPKOO3vitYZzBWeTkbBPzUADZiYGhUNkMIv8VqRwD162w2pqjbr
-         PDrpE00vFNza+gm9jyiuN2+5l3DGMF4/wTfL2Va+OPJspQxs+RGXLZ3mmhV8VtFSIC9Z
-         DyXEjpZ1GYZVa0XMSePcBinSbcNNZBRRxBe4+rGWrUD/AxhRiI+A5CyhRRX3ZrKmhA7m
-         q5cmekMEje1pLu+uiXWZ2ivKkgO8HA+3gSmXVdhXGyQzdZLvHCuauk7hwQASh1zs1UdA
-         IKWw==
-X-Gm-Message-State: AOAM533BRfhIhyBh9MIlJDivl+9EZwnzrRm6HvNanjCcCdfZR3sFYyT6
-        agNTUvSCR0mzdSzsRaxiD3mqSszUnmo/eatiemqLnA==
-X-Google-Smtp-Source: ABdhPJzcGt4a6DENwnsFkgGJUpAjWExRPv5eaoRPWL+M4FlS/AJ2ntSp8kI46inlC0eu3Rpa8PCnTGS0D3o0B90pg2c=
-X-Received: by 2002:a37:a74e:: with SMTP id q75mr25221730qke.165.1617026516517;
- Mon, 29 Mar 2021 07:01:56 -0700 (PDT)
+        id S229861AbhC2OH0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Mar 2021 10:07:26 -0400
+Received: from mail-dm6nam12on2122.outbound.protection.outlook.com ([40.107.243.122]:28775
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229822AbhC2OHI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 29 Mar 2021 10:07:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IZbcWhvifn8bY/+2I6cZpJdBHp63s/8/0LmCmsXOJPZ+vHOrRGLg+VjPGut6rOyJE0hj2H3smzHGvJvf4M5h6KAF1FL1lfjSHlawpxSiTO4MdxCNjdaQ7zIZWbksUqtpE0pjLqaNof3hbMF8S0dzSydal+LhWlgEp0zvYI5EaYMjL7tpoK9hHYxKH/mUNCg26c5FydF/iuwabQBENzuTwumgt2avqOEiS3Bm9M2z5xEQ7+I/TAdh67oUCgAEfK3oaM5GKm5ixfCribsxF4MsTuwf5XM8/oksXlZvsbdMYRSQzUaAlbQPi0nEZEEMcWRl0/QlusJVFGHjo5UdvW5fzA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L1zVsQxI4j/X5FP3zk/2ewDUsYymk7HczKlwEDo9JlU=;
+ b=AuTE2v/vk9QWg1Tt7Nn+9zQRqkH13Cq/cfJIMsxqHu6sr9N+Wrq3UFgXowKqiCIuWUeQe8USH8IumOrMerHDeROBBZeU+S16me5zokxtF0JiiAaFgkskckyhgxBh8nne45uitp3c7O6mLTIGjir4mxxQGfMNp9ayNbI2OMoE2FPhbRcrYopUU8nwAcce0fhfgzUj9h36FXtVMeR2yZ9qTfk3jupKvOE/lTDfC9Re36UmMu38jxb23WQpKh9+TxvYgMM/n9znwzDVYjMWgVlXD6oROi1oesifKp0uqLnfvTI8kEyJr6Y20ID6ttOuyA7iRGgaWDJ5jZirmpOgWBNmWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L1zVsQxI4j/X5FP3zk/2ewDUsYymk7HczKlwEDo9JlU=;
+ b=GfIrun3ssml09WNroTDiTYiZ1UIaJ/rHqQLrf+It2YDAOBhJg5dTSWPQBoYa168qonR1Vo2WDz3A5vRM1Ld7Ao+764gJUCscFpGCApqKTa+QQrx+TIpNbGn9zlZv+/WSdqXdkJrzzK27qh5NgyWIQOucolxLO6oGlDm/1VMIdIVt3L+Pon+vI90EWF3xZsdQ6ZTin7Vp7wNO+y8aBvQncaiG+195maA31Gkp9CLHN4tGfY07BtnRpbhsrYIU1z5pka4+qb71b73bBtDU6/WL7zJmqOabFWjhme2/HWFlRgWCjz/OGnjfcPgnNXEfj2HRDsrDFq0jXoPL6YKGtGFnCQ==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none
+ header.from=cornelisnetworks.com;
+Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
+ PH0PR01MB6761.prod.exchangelabs.com (2603:10b6:510:76::23) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3977.25; Mon, 29 Mar 2021 14:07:06 +0000
+Received: from PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::75a5:79c6:dd14:3860]) by PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::75a5:79c6:dd14:3860%5]) with mapi id 15.20.3977.033; Mon, 29 Mar 2021
+ 14:07:06 +0000
+From:   dennis.dalessandro@cornelisnetworks.com
+To:     dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, Kaike Wan <kaike.wan@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Subject: [PATCH for-next v2 09/10] IB/hfi1: Remove unused function
+Date:   Mon, 29 Mar 2021 10:06:31 -0400
+Message-Id: <1617026791-89997-1-git-send-email-dennis.dalessandro@cornelisnetworks.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1617026056-50483-10-git-send-email-dennis.dalessandro@cornelisnetworks.com>
+References: <1617026056-50483-10-git-send-email-dennis.dalessandro@cornelisnetworks.com>
+Content-Type: text/plain
+X-Originating-IP: [198.175.72.68]
+X-ClientProxiedBy: SJ0PR03CA0218.namprd03.prod.outlook.com
+ (2603:10b6:a03:39f::13) To PH0PR01MB6439.prod.exchangelabs.com
+ (2603:10b6:510:d::22)
 MIME-Version: 1.0
-References: <20210329085212.257771-1-leon@kernel.org> <20210329085212.257771-6-leon@kernel.org>
-In-Reply-To: <20210329085212.257771-6-leon@kernel.org>
-From:   Michael Chan <michael.chan@broadcom.com>
-Date:   Mon, 29 Mar 2021 07:01:44 -0700
-Message-ID: <CACKFLinM5w4Go25et=W7ABi3F9CVuyv=A_eXkOOHVjfCGh7YAw@mail.gmail.com>
-Subject: Re: [PATCH rdma-next v1 5/5] net/bnxt: Use direct API instead of
- useless indirection
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Netdev <netdev@vger.kernel.org>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000024583405bead5315"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from awfm-01.cornelisnetworks.com (198.175.72.68) by SJ0PR03CA0218.namprd03.prod.outlook.com (2603:10b6:a03:39f::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend Transport; Mon, 29 Mar 2021 14:07:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4ddaa41e-9563-44fe-ce22-08d8f2bbef24
+X-MS-TrafficTypeDiagnostic: PH0PR01MB6761:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR01MB67614063C0078D96B81FABB9F47E9@PH0PR01MB6761.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AGAcSZjNs0B8mouZL0DN2UR4dBLo+WjOW8cu4FNAivgwXu197nfKO/cwZ57TdLzKiNVetooIj6AtQaZjNAFAOeBcUTa5ARlQ7NGI+bj9RJJf1/wLYLJOywRJJ/bqAuMG/26q9owMUiIGwQr6/PLdlkJsuaOaHKnFdb7nNirW+gUo5XBREY4ICgREkmRJUS+XY4reDTI4zs0dx4bXeE9Y4RF+XAiJzbg2fa29FWVrPgWviD8BO7VpU3kIiKX4EdNAnLziMRGval6O1GoowtAWeXPDCq9Iy4LLRXRIn28fa5d05TCyKbz15LpMZnaDUoVBS7pPfQ4warHS2oY+o1AcTmmnQufSP8b27SzRqs/2zxLCyHc1W6AuIAAkS8iLSWLRc4PRXhvESJjXJGnS3Dq5Z2A+xTJbP+3UHJ6JiHlR53GFXn0IJKJioR8sCryBHc9nh3tT1RX15xLjBaQESmFJsoN57GT4L52NcqObxmRwEjC9wAlk+OK/S/A9QvikHMaU1oEdiHI3jWBOHpP252+f5KIXy1J5ox9KjV9xS1IsA/dtmGO4IaV0bdn2E7FdX6MaT4qYmGzPhrwYfPHRBoEr0csCLqSNpQoLWWwWGR3wVrPn4yYxlB27DkUe9CjpDnanuIMOZlFJ1uWKrh5ii/lAOgf6rl8ItySS2gY/Upeav0c=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(39840400004)(136003)(396003)(66556008)(66476007)(83380400001)(66946007)(38100700001)(478600001)(6666004)(9686003)(6486002)(26005)(316002)(8936002)(36756003)(8676002)(107886003)(4326008)(2616005)(956004)(52116002)(7696005)(16526019)(86362001)(5660300002)(186003)(54906003)(2906002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?deX0Z67xfCvcqFWdT2EY3tUjcyf7Lp9cGzfx5kIWtijo4suZz5tUH/4SmnRh?=
+ =?us-ascii?Q?uTvqYovGumztsCiz2eHUOLpLtGhMY2oPdO0220jCIbWtrUq0I5MgHSyCGm71?=
+ =?us-ascii?Q?MnqEtFRTnYBO6ad2UFyZB/ttkQVtkCd/PZbrNyuUMI8aIdbciNS4Dz2S+pmD?=
+ =?us-ascii?Q?dYg8i72klxyLPAu0y2yhJ9vVTRPuNbEGypAnvoq5Djvytuy+g4Pxh8/BqE6H?=
+ =?us-ascii?Q?sF9ZAI1vkBNxmpL3+yDt557cT90lN5e4RgBQbIMIRWfBDgf6zOGQCqeFPnTc?=
+ =?us-ascii?Q?2UFs2/Ige1CVcFcPlwFH2IVX9D5vNeJQALXpypGEwNwWuGS78wrafYFR5yRF?=
+ =?us-ascii?Q?zs8pNbj+dnorWEAfNdCxBZ2mUpFdDJcrzvK+wp7oaIThYJnr3ZODIOcGOaod?=
+ =?us-ascii?Q?DuiuN5OLTI33hkyo0jewkcBI0dTI9fyLXN47H/5foBX7q+R/++BnO3rSZugS?=
+ =?us-ascii?Q?5k0UIW2D7a+F5OO++sTZcfCtNSN43TLSwaz5JUa9FGYJKb0MmLj6X3vrR53f?=
+ =?us-ascii?Q?Y+6xkSSRJhgX8+4R3fauuS1x5wK/hXdt2i2/CYyTySgVX3SRUbevmeKXGOp7?=
+ =?us-ascii?Q?UjoJKouriLqg1xh+7zfmZ0MNaZLxThWNT6H7HAID8I2EO5WXU10zerYDmye4?=
+ =?us-ascii?Q?oSmo4XgoR7HcDglAYkSJhHUnjvNz+FdpLbAr8EaU83Q8FfPY8tmaxJrbxFTe?=
+ =?us-ascii?Q?8Q6SWIwcH03BJLfk5JXJYIdKGzyvGqJO0YmXnhnmQgGeISa1hXdYtPLj13IJ?=
+ =?us-ascii?Q?gl9p1tmqjOpza57ci+Ht+zyWDUNOByRX+r1AEqmV/cqwwruyKWK8G5szpaSh?=
+ =?us-ascii?Q?U3Vg/EmvMAI2RLpAtPmKlz7zzHi4gCn7+NWKKzF4qoFJBXSOltCwlbVcLzg6?=
+ =?us-ascii?Q?LR3X4KcD7kmhiaTkTwT3Vgq115DqlF1mH34qe2nRU/LPEF7Qv3cw6h6mF4JH?=
+ =?us-ascii?Q?w5OOS34eKT9E0KRsI2qN9mJdhGSOj2sXfGbenrD67keIVFK7euQMOGOVJx9J?=
+ =?us-ascii?Q?prcszG8HC+iKffEYmVdZks8DcQNjaAASd2QUEHqdy0ZMdwxMPbX5YXd8pZDU?=
+ =?us-ascii?Q?cVmt1uZ1P5U1X4PmweEsSJtjnfOv0WY+MpReo3y3tvYPEUJjCw4nBuWXbkF8?=
+ =?us-ascii?Q?bVh7kcSxEfQf+4SCXMSKQXvjFgndYV5XlD1rV7sIJTrb+akUwY7euPMxdt1I?=
+ =?us-ascii?Q?6trU94QWHdKgg7P89Yoi1U3yVmJvwxjGHaIsie+MPzZSTPq4KdleMc+H8Y5o?=
+ =?us-ascii?Q?1bWtqQJdeA4YNNu5/LVTEm6V6BOnHXy3d22NvSe3sKxQ6f2Bh1gL361SCzaw?=
+ =?us-ascii?Q?qe3GuFh/frv8IvOQgB4HWmsc?=
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4ddaa41e-9563-44fe-ce22-08d8f2bbef24
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2021 14:07:05.9700
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GIWlEyVCDMTDq0FEw4r5xDoEfA+EXYFXi1vU3g6+Y7CTh8sOuQF5v3stmaCoHouDg4xK/X/C4AvJntMhmsfJNBB0morjgDVNtZ/y9pIHZlKpQV4MvJiz5+PxfsQYP9TB
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6761
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000024583405bead5315
-Content-Type: text/plain; charset="UTF-8"
+From: Kaike Wan <kaike.wan@intel.com>
 
-On Mon, Mar 29, 2021 at 1:52 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> From: Leon Romanovsky <leonro@nvidia.com>
->
-> There is no need in any indirection complexity for one ULP user,
-> remove all this complexity in favour of direct calls to the exported
-> symbols. This allows us to greatly simplify the code.
+Remove the unused function sdma_iowait_schedule().
 
-The goal is not to have a hard dependency between the RDMA driver and
-the ethernet driver.  One day, there may be a newer ethernet driver
-for newer devices.  The RDMA driver may be the same because it
-operates at a higher level.  The hard dependency will require the
-older ethernet driver to always be loaded even if it is not needed.
+Fixes: 7724105686e7 ("IB/hfi1: add driver files")
+Reviewed-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Signed-off-by: Kaike Wan <kaike.wan@intel.com>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 
---00000000000024583405bead5315
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+---
+Changes from v0: Fix Kaike's email address
+---
+ drivers/infiniband/hw/hfi1/sdma.h | 18 ------------------
+ 1 file changed, 18 deletions(-)
 
-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
-xV4Em+0wQoEIR2kPG6yiZNtUK0tNCaZejYU/Mf/bzdKSwud3pLgHV8ls83y2OU/ha9xgJMLpRswv
-xucFCxMsPmk0yoVmpbr92kIpLm+TomNZsL++LcDRa2ECAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
-BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
-HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUz2bMvqtXpXM0u3vAvRkalz60
-CjswDQYJKoZIhvcNAQELBQADggEBAGUgeqqI/q2pkETeLr6oS7nnm1bkeNmtnJ2bnybNO/RdrbPj
-DHVSiDCCrWr6xrc+q6OiZDKm0Ieq6BN+Wfr8h5mCkZMUdJikI85WcQTRk6EEF2lzIiaULmFD7U15
-FSWQptLx+kiu63idTII4r3k/7+dJ5AhLRr4WCoXEme2GZkfSbYC3fEL46tb1w7w+25OEFCv1MtDZ
-1CHkODrS2JGwDQxXKmyF64MhJiOutWHmqoGmLJVz1jnDvClsYtgT4zcNtoqKtjpWDYAefncWDPIQ
-DauX1eWVM+KepL7zoSNzVbTipc65WuZFLR8ngOwkpknqvS9n/nKd885m23oIocC+GA4xggJtMIIC
-aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
-EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwQeU+Y6hbenPzRMJsw
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBhP1+yRf/lSYQGDflO/edJFYuZIUc8f
-9DTsPW89r2dgMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDMy
-OTE0MDE1N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
-SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQDFt3aZE3CAa4UuUzm91kIMIJ/F81qOm2Agc5RchHg0P2y+IcMa
-Ox/dirERUF3MU9jyURIK6suz9TuprgzhTMSbhE/ZjKA/VPk9kPtnGzpJtw7cayIOZOsgn0Z3wga4
-9e611mxU3lObfNrfVt0ouaxwZCBcdTQmOHCwOgkzJBum8OZzS625nw9vrxNwEvukYP9W67a+lvwc
-BCDbFVazoxwkPleMVd42z9hiCxGPRujLh6M230D2v2UHBhv46XW5YEFt+Mne47TxXbnLMitGiP95
-VKXanxzzCDe07ofMu7UHvEdSU/dFxVlhYLTW6dlQK624z/O9Q/KsIS5zoUlaZBKG
---00000000000024583405bead5315--
+diff --git a/drivers/infiniband/hw/hfi1/sdma.h b/drivers/infiniband/hw/hfi1/sdma.h
+index 7a85119..f57d552 100644
+--- a/drivers/infiniband/hw/hfi1/sdma.h
++++ b/drivers/infiniband/hw/hfi1/sdma.h
+@@ -907,24 +907,6 @@ static inline unsigned sdma_progress(struct sdma_engine *sde, unsigned seq,
+ 	return 0;
+ }
+ 
+-/**
+- * sdma_iowait_schedule() - initialize wait structure
+- * @sde: sdma_engine to schedule
+- * @wait: wait struct to schedule
+- *
+- * This function initializes the iowait
+- * structure embedded in the QP or PQ.
+- *
+- */
+-static inline void sdma_iowait_schedule(
+-	struct sdma_engine *sde,
+-	struct iowait *wait)
+-{
+-	struct hfi1_pportdata *ppd = sde->dd->pport;
+-
+-	iowait_schedule(wait, ppd->hfi1_wq, sde->cpu);
+-}
+-
+ /* for use by interrupt handling */
+ void sdma_engine_error(struct sdma_engine *sde, u64 status);
+ void sdma_engine_interrupt(struct sdma_engine *sde, u64 status);
+-- 
+1.8.3.1
+
