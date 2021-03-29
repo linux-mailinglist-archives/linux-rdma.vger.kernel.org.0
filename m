@@ -2,114 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8944534D763
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Mar 2021 20:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EDA34D8D6
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Mar 2021 22:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhC2Sgg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Mar 2021 14:36:36 -0400
-Received: from mga11.intel.com ([192.55.52.93]:64377 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230271AbhC2SgK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:36:10 -0400
-IronPort-SDR: pqbggAYU52asxG4W3PuVVULTfG7lw1TM2cIElitJZzeShYeXALnyvnIW30Q5rGlcqBLe0m08mp
- quwVpi2HmNWA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="188339647"
-X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="188339647"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 11:36:09 -0700
-IronPort-SDR: GVmyVYddbTheVlWjv4OmIRFKrpnQj6Tx68zIp33V3ltDHH2AzWWWDci/jUHfPgCeDkxNtJ7mF3
- /CjrAXYbN/aA==
-X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="417794044"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 11:36:09 -0700
-Date:   Mon, 29 Mar 2021 11:36:09 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     dennis.dalessandro@cornelisnetworks.com
-Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH for-rc 4/4] IB/hfi1: Fix regressions in security fix
-Message-ID: <20210329183609.GA3014244@iweiny-DESK2.sc.intel.com>
-References: <1617025700-31865-1-git-send-email-dennis.dalessandro@cornelisnetworks.com>
- <1617025700-31865-5-git-send-email-dennis.dalessandro@cornelisnetworks.com>
+        id S231911AbhC2UHo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Mar 2021 16:07:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231908AbhC2UH2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Mar 2021 16:07:28 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2C8C061574
+        for <linux-rdma@vger.kernel.org>; Mon, 29 Mar 2021 13:07:28 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 68-20020a9d0f4a0000b02901b663e6258dso13420015ott.13
+        for <linux-rdma@vger.kernel.org>; Mon, 29 Mar 2021 13:07:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=0r2rO/BRdURc/1jatPUHHm5RXDYyg0DyZ/NuxqiRdy8=;
+        b=fMtzAQv/5ux+8He/xmmUaYyHbbcnkNI2bcKWqUfdRwo12BBj/VGaWH/Gg8p72kQWgC
+         c2cKIF1nKglhwBXPhQnOie1QBz6VB9VAdlI3VIcibGO1Tsdyj7Np4ZWC+KOgpuVAVchr
+         Mnl1F3ZCAWrAtcJzdVXnysNpt2Ss7UlOyEVZ+I7QAvnbWsSTkZUY5pq/Zjw0EPp9qwCT
+         2IF3uKCMxnamSa5mSHEjfbZgNZZln5rUJ0Sp6iafVGH8M2/0vePk31F5raLdWaeQblZT
+         IOOTpYLZZ14WTdKT3w/vCGEYKz1l81zvQu2vAK6IrHD7G4CxQnPYd86H0vL0GvfbJVo4
+         SVcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0r2rO/BRdURc/1jatPUHHm5RXDYyg0DyZ/NuxqiRdy8=;
+        b=DurblIaKgmFTGgwyG+2QwTcsyGqnpo4FBPpZ34I4UFlkfWICPtBFT/QQrBOQs41mEf
+         o+EMgrDJfrbcXPJEjitTDLELKrTgedBDSQiSf9Sp4iGdZpr19tHx8QztunkzVPpzwu2p
+         2WnpmqeR6e7xlJRMJTx3Y51gFnFF4e+qisnxo59/h7KhlHzia4mnARkINSE6/K2+tjzO
+         N0STi474HluDnK6K+lCMy/engM0ibsB3rNobwU8eoNreGk6Tf12Odvhpynvib4xvTHtJ
+         mzyz7ry9fabWuENjTl//DmfxJcFNXuc1rjG9W0uij6sN8n0HN+ReLgsjcn9Ro8DKbky1
+         xWMA==
+X-Gm-Message-State: AOAM530G8Gr5CfRT1HEQzp6u7nYM6N8zuNeGaahTlo5hoGSQZb2KoNPC
+        g2sPwKxPNITo/iZC22ImYlrZlU8AHCg=
+X-Google-Smtp-Source: ABdhPJzTuzwdF3vLZ8bqzcRX2jU2IZxzh7wOyZenns679hJkRma94KnY8xNfmORupQNCDWUryp9ZJw==
+X-Received: by 2002:a9d:5c0f:: with SMTP id o15mr23835637otk.279.1617048447251;
+        Mon, 29 Mar 2021 13:07:27 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:94f8:22f6:1ac1:2329? (2603-8081-140c-1a00-94f8-22f6-1ac1-2329.res6.spectrum.com. [2603:8081:140c:1a00:94f8:22f6:1ac1:2329])
+        by smtp.gmail.com with ESMTPSA id 3sm3946865ood.46.2021.03.29.13.07.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 13:07:26 -0700 (PDT)
+Subject: Possible bug in test_mr_rereg_pd
+To:     Edward Srouji <edwards@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <c143355e-954a-5953-c67c-c7a9bf451b7b@gmail.com>
+ <edbf4d3f-08bc-31a0-a214-c098748697b5@gmail.com>
+ <c8bf0e78-b2d5-2151-2b32-5386ff4566d2@nvidia.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Message-ID: <4e79ae3d-401a-9ad0-2e7b-89c341e322d3@gmail.com>
+Date:   Mon, 29 Mar 2021 15:07:26 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617025700-31865-5-git-send-email-dennis.dalessandro@cornelisnetworks.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <c8bf0e78-b2d5-2151-2b32-5386ff4566d2@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 09:48:20AM -0400, dennis.dalessandro@cornelisnetworks.com wrote:
-> From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-> 
-> The security code guards for non-current mm in all cases for
-> updating the rb tree.
-> 
-> That is ok for insert, but NOT ok for remove, since the insert
-> has already guarded the node from being inserted and the remove
-> can be called with a different mm because of a segfault other similar
-> "close" issues where current-mm is NULL.
-> 
-> Best case, is we leak pages. worst case we delete items for an lru_list
-> more than once:
-> [20945.911107] list_del corruption, ffffa0cd536bcac8->next is LIST_POISON1 (dead000000000100)
-> 
-> Fix by removing the guard from any functions that remove nodes
-> from the tree assuming the node was entered into the tree as valid since
-> the insert is guarded.
 
-Does this open up a child process being able to remove nodes which the parent
-added?
 
-Ira
+Edward,
 
-> 
-> Fixes: 3d2a9d642512 ("IB/hfi1: Ensure correct mm is used at all times")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-> Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-> ---
->  drivers/infiniband/hw/hfi1/mmu_rb.c | 9 ---------
->  1 file changed, 9 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/hfi1/mmu_rb.c b/drivers/infiniband/hw/hfi1/mmu_rb.c
-> index f3fb28e..375a881 100644
-> --- a/drivers/infiniband/hw/hfi1/mmu_rb.c
-> +++ b/drivers/infiniband/hw/hfi1/mmu_rb.c
-> @@ -210,9 +210,6 @@ bool hfi1_mmu_rb_remove_unless_exact(struct mmu_rb_handler *handler,
->  	unsigned long flags;
->  	bool ret = false;
->  
-> -	if (current->mm != handler->mn.mm)
-> -		return ret;
-> -
->  	spin_lock_irqsave(&handler->lock, flags);
->  	node = __mmu_rb_search(handler, addr, len);
->  	if (node) {
-> @@ -235,9 +232,6 @@ void hfi1_mmu_rb_evict(struct mmu_rb_handler *handler, void *evict_arg)
->  	unsigned long flags;
->  	bool stop = false;
->  
-> -	if (current->mm != handler->mn.mm)
-> -		return;
-> -
->  	INIT_LIST_HEAD(&del_list);
->  
->  	spin_lock_irqsave(&handler->lock, flags);
-> @@ -271,9 +265,6 @@ void hfi1_mmu_rb_remove(struct mmu_rb_handler *handler,
->  {
->  	unsigned long flags;
->  
-> -	if (current->mm != handler->mn.mm)
-> -		return;
-> -
->  	/* Validity of handler and node pointers has been checked by caller. */
->  	trace_hfi1_mmu_rb_remove(node->addr, node->len);
->  	spin_lock_irqsave(&handler->lock, flags);
-> -- 
-> 1.8.3.1
-> 
+In a later test (test_mr_rereg_pd) which is also failing, I get the following
+
+======================================================================
+ERROR: test_mr_rereg_pd (tests.test_mr.MRTest)
+Test that cover rereg MR's PD with this flow:
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rpearson/src/rdma-core/tests/test_mr.py", line 160, in test_mr_rereg_pd
+    u.traffic(**self.traffic_args)
+  File "/home/rpearson/src/rdma-core/tests/utils.py", line 653, in traffic
+    poll(client.cq)
+  File "/home/rpearson/src/rdma-core/tests/utils.py", line 524, in poll_cq
+    raise PyverbsRDMAError('Completion status is {s}'.
+pyverbs.pyverbs_error.PyverbsRDMAError: Completion status is WR flush error. Errno: 5, Input/output error
+
+But, adding tracing to the kernel driver I see that that part of the test actually succeeded
+after resetting the two QPs and reregistering the MR back to original PD. However, there were
+some WQEs that got flushed when the QPs were reset but I don't see anything in the test to drain
+the RCQs after the reset. So it is not surprising that the test sees the flush errors when it polls
+the RCQ.
+
+Since CQs are independent of QPs I thought it was correct to show these completions as flushed even
+if the QP is reset.
+
+Bob
