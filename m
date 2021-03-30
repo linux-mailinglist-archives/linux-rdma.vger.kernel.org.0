@@ -2,1121 +2,295 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD81234E1EC
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Mar 2021 09:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 747B734E24E
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Mar 2021 09:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhC3HOG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Mar 2021 03:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35642 "EHLO
+        id S231138AbhC3Hij (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Mar 2021 03:38:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbhC3HOB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Mar 2021 03:14:01 -0400
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9540BC061762
-        for <linux-rdma@vger.kernel.org>; Tue, 30 Mar 2021 00:14:01 -0700 (PDT)
-Received: by mail-oo1-xc36.google.com with SMTP id 125-20020a4a1a830000b02901b6a144a417so3544221oof.13
-        for <linux-rdma@vger.kernel.org>; Tue, 30 Mar 2021 00:14:01 -0700 (PDT)
+        with ESMTP id S231318AbhC3HiJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Mar 2021 03:38:09 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A762C061764
+        for <linux-rdma@vger.kernel.org>; Tue, 30 Mar 2021 00:38:08 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id bx7so17007925edb.12
+        for <linux-rdma@vger.kernel.org>; Tue, 30 Mar 2021 00:38:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QX0EB+hM+OnbPNdGwWDix6nTJYq9ol/sYs1Ly5Ih3kQ=;
-        b=VCvN08pP9TTAN2TO6SkMBoN520+5Fsq/oOCJ5wlqdieV7//PlRpqi5bCiZHQupmMi7
-         LZisc4wfcv4oZBZn/7Y4PhtdMBmoh3YT0OmxfwQSXyYNaDaFVCikmiY8+wzjhVjHVDGF
-         9HndPNlpcXV2c7b914YpfHGQG2K7O9xX9B8bvrnHsIZqmV1KjsKFlqLMuVdKVi5uiUEo
-         xGvTqQYS2MK+cJbn3JhVcpVpYwp8m9pZyfcCNI8Xim3AVFnD1mAWKc/lcnZhyekG3D2k
-         AqJwqais//b0bjg1DEPsWOttvD0lxhTfXhY9lWYwqRfnzczEKy2aFSUtq3dgkKX0knCg
-         VIpA==
+        d=ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=XRGE6YSZlGMJfheJ34bYryhpSeJn76sa8WGvFZ76Ync=;
+        b=HuKlJmO327uqa1epPSGqfHDDGCQc0R1mSFe295/0D+tgj2E7DYwUYmHsR8ieBJOd1+
+         Gt/MGsW7oIFMuwHlMNgeq+lxvJcnUP1sjKv6WH2xycTJVXfU4zSFRpBzzq8AFQG3vZxp
+         nrm85EEmOe9UkYkKxTUEEBPN5uf4r0b4zkm620p4WaSjfMBXx6EdrmWG7znm4ZDOJtin
+         5CRFuRe2EpyWkrygvUmZ/OMKb4phEYveqgn+EZkH0oLcbEsDjS5Jaqd32YJWyk1rbpAl
+         zaND4V5fDZ7OodR1tFGTs9gPPPR6Dkpu8YbcTQFgrbzmTucksmE0I0W88g49tE/b/0EB
+         C8/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QX0EB+hM+OnbPNdGwWDix6nTJYq9ol/sYs1Ly5Ih3kQ=;
-        b=D0PMIqs1Ed5pXpKMH83DhFPPb5u0Z5ynOtMcTu2DEresyePaTbNlrXa2shJuGWhnr0
-         hh/oAyAMMiQn0LrcBcdcFNTRiheY+uCQaGFXH9MTReu+aJ/A9L4tFgvev4XNyw3wwzkg
-         ksziEX/kzFCF0VLLXQTkLbd5q5ro/4YZLpJ/cEUdqNE2SSkE/rC9CCvdwHZBVaeDY6ob
-         v02c9NunKMV6ZqudOlXs7ekB6OtT3OTVPI1R2iON4032OALktczB9QgLLxCyYfjLQ5iJ
-         BUulzf3i/fGbDtYVypWmL5VEcCUGT3oepXczcfuVUx2S9/IMrhlUhYkZ4YN3mA2pVsPq
-         mGaw==
-X-Gm-Message-State: AOAM532jgZEvA4GKecjl98QzD+47BAqSfLNFrfCvFb+0l4z+1iDdw5+T
-        h37gLa5kYfphsEbVqQ4jSYhGY7l1o20ciYmbL24v2IM+
-X-Google-Smtp-Source: ABdhPJy9h5eZBNIz1y6sZDV9sBbjXUJmkZqNL7vLjylFvUg+5RNoTHltYphJTyGKuvL60/1MUECByzieceNozxsNL4E=
-X-Received: by 2002:a4a:e9a2:: with SMTP id t2mr24370074ood.15.1617088440473;
- Tue, 30 Mar 2021 00:14:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=XRGE6YSZlGMJfheJ34bYryhpSeJn76sa8WGvFZ76Ync=;
+        b=jJN+gwaofJBKmj631iLZK73ccNA22O8a+aGTTtI5VBkULCyQmkRRKZpR3Z2eLRq3nH
+         qMzPA9wCTxQhs6pt3tB2tTB7ywgK/D7X7BM88kS7fOMmPkxbRDnBH07fk4+SPaSu9Mtk
+         rb4d5x1BjsKIE8ehqxv2GJpOGT4myWmw9xKBnAG1VB94DqyIYBAVO9Mw4aSaf67tsfcD
+         LYOBt/tT9Eb6XWlA1XRp8A++AvmkZKmQ4jr6IEiKfVzaDz1isRHp/dl3tfI+ziM4i1Lp
+         zLuOEClmuqVUzrxSD6mcCc9UhSyPrPjNdWUhi2hPOuXWtChwb3opQdocNWjJovCkkFlI
+         28cQ==
+X-Gm-Message-State: AOAM5316+b6fGYlrJvmo5vBprBzhoxFCce6ynhQBy/k2o9XDMxcdq4+S
+        1vUpMJ36fHoPPo0uHwR66exZ4w==
+X-Google-Smtp-Source: ABdhPJyLG+ibtypQgqhve52tSur+fWMfNPHf1Xdf4huK5wMYYs9tiFAdKaX7YiXCgnU5bbKG6HYX8Q==
+X-Received: by 2002:a05:6402:484:: with SMTP id k4mr31989952edv.321.1617089887400;
+        Tue, 30 Mar 2021 00:38:07 -0700 (PDT)
+Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aeee5.dynamic.kabel-deutschland.de. [95.90.238.229])
+        by smtp.googlemail.com with ESMTPSA id a3sm9556180ejv.40.2021.03.30.00.38.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 00:38:07 -0700 (PDT)
+From:   Gioh Kim <gi-oh.kim@ionos.com>
+To:     linux-block@vger.kernel.org
+Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
+        bvanassche@acm.org, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
+        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        linux-rdma@vger.kernel.org,
+        Guoqing Jiang <guoqing.jiang@ionos.com>,
+        Gioh Kim <gi-oh.kim@ionos.com>
+Subject: [PATCHv2 for-next 13/24] block/rnbd-clt: Replace {NO_WAIT,WAIT} with RTRS_PERMIT_{WAIT,NOWAIT}
+Date:   Tue, 30 Mar 2021 09:37:41 +0200
+Message-Id: <20210330073752.1465613-14-gi-oh.kim@ionos.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210330073752.1465613-1-gi-oh.kim@ionos.com>
+References: <20210330073752.1465613-1-gi-oh.kim@ionos.com>
 MIME-Version: 1.0
-References: <20210325212425.2792-1-rpearson@hpe.com>
-In-Reply-To: <20210325212425.2792-1-rpearson@hpe.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Tue, 30 Mar 2021 15:13:48 +0800
-Message-ID: <CAD=hENeUs4kz4diWNM-NAjcaRHHiFmiB8p7+feWGxHUiTRrRTQ@mail.gmail.com>
-Subject: Re: [PATCH for-next v2] RDMA/rxe: Split MEM into MR and MW
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Bob Pearson <rpearson@hpe.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 5:25 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->
-> In the original rxe implementation it was intended to use a common
-> object to represent MRs and MWs but they are different enough to
-> separate these into two objects.
->
-> This allows replacing the mem name with mr for MRs which is more
-> consistent with the style for the other objects and less likely
-> to be confusing. This is a long patch that mostly changes mem to
-> mr where it makes sense and adds a new rxe_mw struct.
->
-> Signed-off-by: Bob Pearson <rpearson@hpe.com>
+From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 
-Thanks.
+They are defined with the same value and similar meaning, let's remove
+one of them, then we can remove {WAIT,NOWAIT}.
 
-Acked-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+Also change the type of 'wait' from 'int' to 'enum wait_type' to make
+it clear.
 
-Zhu Yanjun
+Cc: Jason Gunthorpe <jgg@mellanox.com>
+Cc: Leon Romanovsky <leonro@nvidia.com>
+Cc: linux-rdma@vger.kernel.org
+Signed-off-by: Guoqing Jiang <guoqing.jiang@ionos.com>
+Reviewed-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+---
+ drivers/block/rnbd/rnbd-clt.c          | 42 +++++++++++---------------
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c |  4 +--
+ drivers/infiniband/ulp/rtrs/rtrs.h     |  6 ++--
+ 3 files changed, 22 insertions(+), 30 deletions(-)
 
-> ---
-> v2:
->  v1 of this patch included some fields in the new rxe_mw struct
->  which were not yet needed. They are removed in v2.
->  This patch includes changes needed to address the fact that
->  the ib_mw struct is now being allocated in rdma/core.
->
->  drivers/infiniband/sw/rxe/rxe_comp.c  |   4 +-
->  drivers/infiniband/sw/rxe/rxe_loc.h   |  26 +--
->  drivers/infiniband/sw/rxe/rxe_mr.c    | 256 +++++++++++++-------------
->  drivers/infiniband/sw/rxe/rxe_pool.c  |  14 +-
->  drivers/infiniband/sw/rxe/rxe_req.c   |  10 +-
->  drivers/infiniband/sw/rxe/rxe_resp.c  |  34 ++--
->  drivers/infiniband/sw/rxe/rxe_verbs.c |  21 ++-
->  drivers/infiniband/sw/rxe/rxe_verbs.h |  60 +++---
->  8 files changed, 216 insertions(+), 209 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-> index 17a361b8dbb1..a612b335baa0 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_comp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-> @@ -345,7 +345,7 @@ static inline enum comp_state do_read(struct rxe_qp *qp,
->
->         ret = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE,
->                         &wqe->dma, payload_addr(pkt),
-> -                       payload_size(pkt), to_mem_obj, NULL);
-> +                       payload_size(pkt), to_mr_obj, NULL);
->         if (ret)
->                 return COMPST_ERROR;
->
-> @@ -365,7 +365,7 @@ static inline enum comp_state do_atomic(struct rxe_qp *qp,
->
->         ret = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE,
->                         &wqe->dma, &atomic_orig,
-> -                       sizeof(u64), to_mem_obj, NULL);
-> +                       sizeof(u64), to_mr_obj, NULL);
->         if (ret)
->                 return COMPST_ERROR;
->         else
-> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-> index 0d758760b9ae..9ec6bff6863f 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-> @@ -72,40 +72,40 @@ int rxe_mmap(struct ib_ucontext *context, struct vm_area_struct *vma);
->
->  /* rxe_mr.c */
->  enum copy_direction {
-> -       to_mem_obj,
-> -       from_mem_obj,
-> +       to_mr_obj,
-> +       from_mr_obj,
->  };
->
-> -void rxe_mem_init_dma(struct rxe_pd *pd,
-> -                     int access, struct rxe_mem *mem);
-> +void rxe_mr_init_dma(struct rxe_pd *pd,
-> +                     int access, struct rxe_mr *mr);
->
-> -int rxe_mem_init_user(struct rxe_pd *pd, u64 start,
-> +int rxe_mr_init_user(struct rxe_pd *pd, u64 start,
->                       u64 length, u64 iova, int access, struct ib_udata *udata,
-> -                     struct rxe_mem *mr);
-> +                     struct rxe_mr *mr);
->
-> -int rxe_mem_init_fast(struct rxe_pd *pd,
-> -                     int max_pages, struct rxe_mem *mem);
-> +int rxe_mr_init_fast(struct rxe_pd *pd,
-> +                     int max_pages, struct rxe_mr *mr);
->
-> -int rxe_mem_copy(struct rxe_mem *mem, u64 iova, void *addr,
-> +int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
->                  int length, enum copy_direction dir, u32 *crcp);
->
->  int copy_data(struct rxe_pd *pd, int access,
->               struct rxe_dma_info *dma, void *addr, int length,
->               enum copy_direction dir, u32 *crcp);
->
-> -void *iova_to_vaddr(struct rxe_mem *mem, u64 iova, int length);
-> +void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length);
->
->  enum lookup_type {
->         lookup_local,
->         lookup_remote,
->  };
->
-> -struct rxe_mem *lookup_mem(struct rxe_pd *pd, int access, u32 key,
-> +struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
->                            enum lookup_type type);
->
-> -int mem_check_range(struct rxe_mem *mem, u64 iova, size_t length);
-> +int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length);
->
-> -void rxe_mem_cleanup(struct rxe_pool_entry *arg);
-> +void rxe_mr_cleanup(struct rxe_pool_entry *arg);
->
->  int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> index 6e8c41567ba0..b27aea9638b8 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> @@ -24,16 +24,16 @@ static u8 rxe_get_key(void)
->         return key;
->  }
->
-> -int mem_check_range(struct rxe_mem *mem, u64 iova, size_t length)
-> +int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
->  {
-> -       switch (mem->type) {
-> -       case RXE_MEM_TYPE_DMA:
-> +       switch (mr->type) {
-> +       case RXE_MR_TYPE_DMA:
->                 return 0;
->
-> -       case RXE_MEM_TYPE_MR:
-> -               if (iova < mem->iova ||
-> -                   length > mem->length ||
-> -                   iova > mem->iova + mem->length - length)
-> +       case RXE_MR_TYPE_MR:
-> +               if (iova < mr->iova ||
-> +                   length > mr->length ||
-> +                   iova > mr->iova + mr->length - length)
->                         return -EFAULT;
->                 return 0;
->
-> @@ -46,85 +46,85 @@ int mem_check_range(struct rxe_mem *mem, u64 iova, size_t length)
->                                 | IB_ACCESS_REMOTE_WRITE        \
->                                 | IB_ACCESS_REMOTE_ATOMIC)
->
-> -static void rxe_mem_init(int access, struct rxe_mem *mem)
-> +static void rxe_mr_init(int access, struct rxe_mr *mr)
->  {
-> -       u32 lkey = mem->pelem.index << 8 | rxe_get_key();
-> +       u32 lkey = mr->pelem.index << 8 | rxe_get_key();
->         u32 rkey = (access & IB_ACCESS_REMOTE) ? lkey : 0;
->
-> -       mem->ibmr.lkey          = lkey;
-> -       mem->ibmr.rkey          = rkey;
-> -       mem->state              = RXE_MEM_STATE_INVALID;
-> -       mem->type               = RXE_MEM_TYPE_NONE;
-> -       mem->map_shift          = ilog2(RXE_BUF_PER_MAP);
-> +       mr->ibmr.lkey           = lkey;
-> +       mr->ibmr.rkey           = rkey;
-> +       mr->state               = RXE_MR_STATE_INVALID;
-> +       mr->type                = RXE_MR_TYPE_NONE;
-> +       mr->map_shift           = ilog2(RXE_BUF_PER_MAP);
->  }
->
-> -void rxe_mem_cleanup(struct rxe_pool_entry *arg)
-> +void rxe_mr_cleanup(struct rxe_pool_entry *arg)
->  {
-> -       struct rxe_mem *mem = container_of(arg, typeof(*mem), pelem);
-> +       struct rxe_mr *mr = container_of(arg, typeof(*mr), pelem);
->         int i;
->
-> -       ib_umem_release(mem->umem);
-> +       ib_umem_release(mr->umem);
->
-> -       if (mem->map) {
-> -               for (i = 0; i < mem->num_map; i++)
-> -                       kfree(mem->map[i]);
-> +       if (mr->map) {
-> +               for (i = 0; i < mr->num_map; i++)
-> +                       kfree(mr->map[i]);
->
-> -               kfree(mem->map);
-> +               kfree(mr->map);
->         }
->  }
->
-> -static int rxe_mem_alloc(struct rxe_mem *mem, int num_buf)
-> +static int rxe_mr_alloc(struct rxe_mr *mr, int num_buf)
->  {
->         int i;
->         int num_map;
-> -       struct rxe_map **map = mem->map;
-> +       struct rxe_map **map = mr->map;
->
->         num_map = (num_buf + RXE_BUF_PER_MAP - 1) / RXE_BUF_PER_MAP;
->
-> -       mem->map = kmalloc_array(num_map, sizeof(*map), GFP_KERNEL);
-> -       if (!mem->map)
-> +       mr->map = kmalloc_array(num_map, sizeof(*map), GFP_KERNEL);
-> +       if (!mr->map)
->                 goto err1;
->
->         for (i = 0; i < num_map; i++) {
-> -               mem->map[i] = kmalloc(sizeof(**map), GFP_KERNEL);
-> -               if (!mem->map[i])
-> +               mr->map[i] = kmalloc(sizeof(**map), GFP_KERNEL);
-> +               if (!mr->map[i])
->                         goto err2;
->         }
->
->         BUILD_BUG_ON(!is_power_of_2(RXE_BUF_PER_MAP));
->
-> -       mem->map_shift  = ilog2(RXE_BUF_PER_MAP);
-> -       mem->map_mask   = RXE_BUF_PER_MAP - 1;
-> +       mr->map_shift   = ilog2(RXE_BUF_PER_MAP);
-> +       mr->map_mask    = RXE_BUF_PER_MAP - 1;
->
-> -       mem->num_buf = num_buf;
-> -       mem->num_map = num_map;
-> -       mem->max_buf = num_map * RXE_BUF_PER_MAP;
-> +       mr->num_buf = num_buf;
-> +       mr->num_map = num_map;
-> +       mr->max_buf = num_map * RXE_BUF_PER_MAP;
->
->         return 0;
->
->  err2:
->         for (i--; i >= 0; i--)
-> -               kfree(mem->map[i]);
-> +               kfree(mr->map[i]);
->
-> -       kfree(mem->map);
-> +       kfree(mr->map);
->  err1:
->         return -ENOMEM;
->  }
->
-> -void rxe_mem_init_dma(struct rxe_pd *pd,
-> -                     int access, struct rxe_mem *mem)
-> +void rxe_mr_init_dma(struct rxe_pd *pd,
-> +                     int access, struct rxe_mr *mr)
->  {
-> -       rxe_mem_init(access, mem);
-> +       rxe_mr_init(access, mr);
->
-> -       mem->ibmr.pd            = &pd->ibpd;
-> -       mem->access             = access;
-> -       mem->state              = RXE_MEM_STATE_VALID;
-> -       mem->type               = RXE_MEM_TYPE_DMA;
-> +       mr->ibmr.pd             = &pd->ibpd;
-> +       mr->access              = access;
-> +       mr->state               = RXE_MR_STATE_VALID;
-> +       mr->type                = RXE_MR_TYPE_DMA;
->  }
->
-> -int rxe_mem_init_user(struct rxe_pd *pd, u64 start,
-> +int rxe_mr_init_user(struct rxe_pd *pd, u64 start,
->                       u64 length, u64 iova, int access, struct ib_udata *udata,
-> -                     struct rxe_mem *mem)
-> +                     struct rxe_mr *mr)
->  {
->         struct rxe_map          **map;
->         struct rxe_phys_buf     *buf = NULL;
-> @@ -142,23 +142,23 @@ int rxe_mem_init_user(struct rxe_pd *pd, u64 start,
->                 goto err1;
->         }
->
-> -       mem->umem = umem;
-> +       mr->umem = umem;
->         num_buf = ib_umem_num_pages(umem);
->
-> -       rxe_mem_init(access, mem);
-> +       rxe_mr_init(access, mr);
->
-> -       err = rxe_mem_alloc(mem, num_buf);
-> +       err = rxe_mr_alloc(mr, num_buf);
->         if (err) {
-> -               pr_warn("err %d from rxe_mem_alloc\n", err);
-> +               pr_warn("err %d from rxe_mr_alloc\n", err);
->                 ib_umem_release(umem);
->                 goto err1;
->         }
->
-> -       mem->page_shift         = PAGE_SHIFT;
-> -       mem->page_mask = PAGE_SIZE - 1;
-> +       mr->page_shift          = PAGE_SHIFT;
-> +       mr->page_mask = PAGE_SIZE - 1;
->
->         num_buf                 = 0;
-> -       map                     = mem->map;
-> +       map                     = mr->map;
->         if (length > 0) {
->                 buf = map[0]->buf;
->
-> @@ -185,15 +185,15 @@ int rxe_mem_init_user(struct rxe_pd *pd, u64 start,
->                 }
->         }
->
-> -       mem->ibmr.pd            = &pd->ibpd;
-> -       mem->umem               = umem;
-> -       mem->access             = access;
-> -       mem->length             = length;
-> -       mem->iova               = iova;
-> -       mem->va                 = start;
-> -       mem->offset             = ib_umem_offset(umem);
-> -       mem->state              = RXE_MEM_STATE_VALID;
-> -       mem->type               = RXE_MEM_TYPE_MR;
-> +       mr->ibmr.pd             = &pd->ibpd;
-> +       mr->umem                = umem;
-> +       mr->access              = access;
-> +       mr->length              = length;
-> +       mr->iova                = iova;
-> +       mr->va                  = start;
-> +       mr->offset              = ib_umem_offset(umem);
-> +       mr->state               = RXE_MR_STATE_VALID;
-> +       mr->type                = RXE_MR_TYPE_MR;
->
->         return 0;
->
-> @@ -201,24 +201,24 @@ int rxe_mem_init_user(struct rxe_pd *pd, u64 start,
->         return err;
->  }
->
-> -int rxe_mem_init_fast(struct rxe_pd *pd,
-> -                     int max_pages, struct rxe_mem *mem)
-> +int rxe_mr_init_fast(struct rxe_pd *pd,
-> +                     int max_pages, struct rxe_mr *mr)
->  {
->         int err;
->
-> -       rxe_mem_init(0, mem);
-> +       rxe_mr_init(0, mr);
->
->         /* In fastreg, we also set the rkey */
-> -       mem->ibmr.rkey = mem->ibmr.lkey;
-> +       mr->ibmr.rkey = mr->ibmr.lkey;
->
-> -       err = rxe_mem_alloc(mem, max_pages);
-> +       err = rxe_mr_alloc(mr, max_pages);
->         if (err)
->                 goto err1;
->
-> -       mem->ibmr.pd            = &pd->ibpd;
-> -       mem->max_buf            = max_pages;
-> -       mem->state              = RXE_MEM_STATE_FREE;
-> -       mem->type               = RXE_MEM_TYPE_MR;
-> +       mr->ibmr.pd             = &pd->ibpd;
-> +       mr->max_buf             = max_pages;
-> +       mr->state               = RXE_MR_STATE_FREE;
-> +       mr->type                = RXE_MR_TYPE_MR;
->
->         return 0;
->
-> @@ -227,27 +227,27 @@ int rxe_mem_init_fast(struct rxe_pd *pd,
->  }
->
->  static void lookup_iova(
-> -       struct rxe_mem  *mem,
-> +       struct rxe_mr   *mr,
->         u64                     iova,
->         int                     *m_out,
->         int                     *n_out,
->         size_t                  *offset_out)
->  {
-> -       size_t                  offset = iova - mem->iova + mem->offset;
-> +       size_t                  offset = iova - mr->iova + mr->offset;
->         int                     map_index;
->         int                     buf_index;
->         u64                     length;
->
-> -       if (likely(mem->page_shift)) {
-> -               *offset_out = offset & mem->page_mask;
-> -               offset >>= mem->page_shift;
-> -               *n_out = offset & mem->map_mask;
-> -               *m_out = offset >> mem->map_shift;
-> +       if (likely(mr->page_shift)) {
-> +               *offset_out = offset & mr->page_mask;
-> +               offset >>= mr->page_shift;
-> +               *n_out = offset & mr->map_mask;
-> +               *m_out = offset >> mr->map_shift;
->         } else {
->                 map_index = 0;
->                 buf_index = 0;
->
-> -               length = mem->map[map_index]->buf[buf_index].size;
-> +               length = mr->map[map_index]->buf[buf_index].size;
->
->                 while (offset >= length) {
->                         offset -= length;
-> @@ -257,7 +257,7 @@ static void lookup_iova(
->                                 map_index++;
->                                 buf_index = 0;
->                         }
-> -                       length = mem->map[map_index]->buf[buf_index].size;
-> +                       length = mr->map[map_index]->buf[buf_index].size;
->                 }
->
->                 *m_out = map_index;
-> @@ -266,48 +266,48 @@ static void lookup_iova(
->         }
->  }
->
-> -void *iova_to_vaddr(struct rxe_mem *mem, u64 iova, int length)
-> +void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
->  {
->         size_t offset;
->         int m, n;
->         void *addr;
->
-> -       if (mem->state != RXE_MEM_STATE_VALID) {
-> -               pr_warn("mem not in valid state\n");
-> +       if (mr->state != RXE_MR_STATE_VALID) {
-> +               pr_warn("mr not in valid state\n");
->                 addr = NULL;
->                 goto out;
->         }
->
-> -       if (!mem->map) {
-> +       if (!mr->map) {
->                 addr = (void *)(uintptr_t)iova;
->                 goto out;
->         }
->
-> -       if (mem_check_range(mem, iova, length)) {
-> +       if (mr_check_range(mr, iova, length)) {
->                 pr_warn("range violation\n");
->                 addr = NULL;
->                 goto out;
->         }
->
-> -       lookup_iova(mem, iova, &m, &n, &offset);
-> +       lookup_iova(mr, iova, &m, &n, &offset);
->
-> -       if (offset + length > mem->map[m]->buf[n].size) {
-> +       if (offset + length > mr->map[m]->buf[n].size) {
->                 pr_warn("crosses page boundary\n");
->                 addr = NULL;
->                 goto out;
->         }
->
-> -       addr = (void *)(uintptr_t)mem->map[m]->buf[n].addr + offset;
-> +       addr = (void *)(uintptr_t)mr->map[m]->buf[n].addr + offset;
->
->  out:
->         return addr;
->  }
->
->  /* copy data from a range (vaddr, vaddr+length-1) to or from
-> - * a mem object starting at iova. Compute incremental value of
-> - * crc32 if crcp is not zero. caller must hold a reference to mem
-> + * a mr object starting at iova. Compute incremental value of
-> + * crc32 if crcp is not zero. caller must hold a reference to mr
->   */
-> -int rxe_mem_copy(struct rxe_mem *mem, u64 iova, void *addr, int length,
-> +int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
->                  enum copy_direction dir, u32 *crcp)
->  {
->         int                     err;
-> @@ -323,43 +323,43 @@ int rxe_mem_copy(struct rxe_mem *mem, u64 iova, void *addr, int length,
->         if (length == 0)
->                 return 0;
->
-> -       if (mem->type == RXE_MEM_TYPE_DMA) {
-> +       if (mr->type == RXE_MR_TYPE_DMA) {
->                 u8 *src, *dest;
->
-> -               src  = (dir == to_mem_obj) ?
-> +               src  = (dir == to_mr_obj) ?
->                         addr : ((void *)(uintptr_t)iova);
->
-> -               dest = (dir == to_mem_obj) ?
-> +               dest = (dir == to_mr_obj) ?
->                         ((void *)(uintptr_t)iova) : addr;
->
->                 memcpy(dest, src, length);
->
->                 if (crcp)
-> -                       *crcp = rxe_crc32(to_rdev(mem->ibmr.device),
-> +                       *crcp = rxe_crc32(to_rdev(mr->ibmr.device),
->                                         *crcp, dest, length);
->
->                 return 0;
->         }
->
-> -       WARN_ON_ONCE(!mem->map);
-> +       WARN_ON_ONCE(!mr->map);
->
-> -       err = mem_check_range(mem, iova, length);
-> +       err = mr_check_range(mr, iova, length);
->         if (err) {
->                 err = -EFAULT;
->                 goto err1;
->         }
->
-> -       lookup_iova(mem, iova, &m, &i, &offset);
-> +       lookup_iova(mr, iova, &m, &i, &offset);
->
-> -       map     = mem->map + m;
-> +       map     = mr->map + m;
->         buf     = map[0]->buf + i;
->
->         while (length > 0) {
->                 u8 *src, *dest;
->
->                 va      = (u8 *)(uintptr_t)buf->addr + offset;
-> -               src  = (dir == to_mem_obj) ? addr : va;
-> -               dest = (dir == to_mem_obj) ? va : addr;
-> +               src  = (dir == to_mr_obj) ? addr : va;
-> +               dest = (dir == to_mr_obj) ? va : addr;
->
->                 bytes   = buf->size - offset;
->
-> @@ -369,7 +369,7 @@ int rxe_mem_copy(struct rxe_mem *mem, u64 iova, void *addr, int length,
->                 memcpy(dest, src, bytes);
->
->                 if (crcp)
-> -                       crc = rxe_crc32(to_rdev(mem->ibmr.device),
-> +                       crc = rxe_crc32(to_rdev(mr->ibmr.device),
->                                         crc, dest, bytes);
->
->                 length  -= bytes;
-> @@ -411,7 +411,7 @@ int copy_data(
->         struct rxe_sge          *sge    = &dma->sge[dma->cur_sge];
->         int                     offset  = dma->sge_offset;
->         int                     resid   = dma->resid;
-> -       struct rxe_mem          *mem    = NULL;
-> +       struct rxe_mr           *mr     = NULL;
->         u64                     iova;
->         int                     err;
->
-> @@ -424,8 +424,8 @@ int copy_data(
->         }
->
->         if (sge->length && (offset < sge->length)) {
-> -               mem = lookup_mem(pd, access, sge->lkey, lookup_local);
-> -               if (!mem) {
-> +               mr = lookup_mr(pd, access, sge->lkey, lookup_local);
-> +               if (!mr) {
->                         err = -EINVAL;
->                         goto err1;
->                 }
-> @@ -435,9 +435,9 @@ int copy_data(
->                 bytes = length;
->
->                 if (offset >= sge->length) {
-> -                       if (mem) {
-> -                               rxe_drop_ref(mem);
-> -                               mem = NULL;
-> +                       if (mr) {
-> +                               rxe_drop_ref(mr);
-> +                               mr = NULL;
->                         }
->                         sge++;
->                         dma->cur_sge++;
-> @@ -449,9 +449,9 @@ int copy_data(
->                         }
->
->                         if (sge->length) {
-> -                               mem = lookup_mem(pd, access, sge->lkey,
-> +                               mr = lookup_mr(pd, access, sge->lkey,
->                                                  lookup_local);
-> -                               if (!mem) {
-> +                               if (!mr) {
->                                         err = -EINVAL;
->                                         goto err1;
->                                 }
-> @@ -466,7 +466,7 @@ int copy_data(
->                 if (bytes > 0) {
->                         iova = sge->addr + offset;
->
-> -                       err = rxe_mem_copy(mem, iova, addr, bytes, dir, crcp);
-> +                       err = rxe_mr_copy(mr, iova, addr, bytes, dir, crcp);
->                         if (err)
->                                 goto err2;
->
-> @@ -480,14 +480,14 @@ int copy_data(
->         dma->sge_offset = offset;
->         dma->resid      = resid;
->
-> -       if (mem)
-> -               rxe_drop_ref(mem);
-> +       if (mr)
-> +               rxe_drop_ref(mr);
->
->         return 0;
->
->  err2:
-> -       if (mem)
-> -               rxe_drop_ref(mem);
-> +       if (mr)
-> +               rxe_drop_ref(mr);
->  err1:
->         return err;
->  }
-> @@ -525,31 +525,31 @@ int advance_dma_data(struct rxe_dma_info *dma, unsigned int length)
->         return 0;
->  }
->
-> -/* (1) find the mem (mr or mw) corresponding to lkey/rkey
-> +/* (1) find the mr corresponding to lkey/rkey
->   *     depending on lookup_type
-> - * (2) verify that the (qp) pd matches the mem pd
-> - * (3) verify that the mem can support the requested access
-> - * (4) verify that mem state is valid
-> + * (2) verify that the (qp) pd matches the mr pd
-> + * (3) verify that the mr can support the requested access
-> + * (4) verify that mr state is valid
->   */
-> -struct rxe_mem *lookup_mem(struct rxe_pd *pd, int access, u32 key,
-> +struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
->                            enum lookup_type type)
->  {
-> -       struct rxe_mem *mem;
-> +       struct rxe_mr *mr;
->         struct rxe_dev *rxe = to_rdev(pd->ibpd.device);
->         int index = key >> 8;
->
-> -       mem = rxe_pool_get_index(&rxe->mr_pool, index);
-> -       if (!mem)
-> +       mr = rxe_pool_get_index(&rxe->mr_pool, index);
-> +       if (!mr)
->                 return NULL;
->
-> -       if (unlikely((type == lookup_local && mr_lkey(mem) != key) ||
-> -                    (type == lookup_remote && mr_rkey(mem) != key) ||
-> -                    mr_pd(mem) != pd ||
-> -                    (access && !(access & mem->access)) ||
-> -                    mem->state != RXE_MEM_STATE_VALID)) {
-> -               rxe_drop_ref(mem);
-> -               mem = NULL;
-> +       if (unlikely((type == lookup_local && mr_lkey(mr) != key) ||
-> +                    (type == lookup_remote && mr_rkey(mr) != key) ||
-> +                    mr_pd(mr) != pd ||
-> +                    (access && !(access & mr->access)) ||
-> +                    mr->state != RXE_MR_STATE_VALID)) {
-> +               rxe_drop_ref(mr);
-> +               mr = NULL;
->         }
->
-> -       return mem;
-> +       return mr;
->  }
-> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-> index 307d8986e7c9..d24901f2af3f 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-> @@ -8,8 +8,6 @@
->  #include "rxe_loc.h"
->
->  /* info about object pools
-> - * note that mr and mw share a single index space
-> - * so that one can map an lkey to the correct type of object
->   */
->  struct rxe_type_info rxe_type_info[RXE_NUM_TYPES] = {
->         [RXE_TYPE_UC] = {
-> @@ -56,18 +54,18 @@ struct rxe_type_info rxe_type_info[RXE_NUM_TYPES] = {
->         },
->         [RXE_TYPE_MR] = {
->                 .name           = "rxe-mr",
-> -               .size           = sizeof(struct rxe_mem),
-> -               .elem_offset    = offsetof(struct rxe_mem, pelem),
-> -               .cleanup        = rxe_mem_cleanup,
-> +               .size           = sizeof(struct rxe_mr),
-> +               .elem_offset    = offsetof(struct rxe_mr, pelem),
-> +               .cleanup        = rxe_mr_cleanup,
->                 .flags          = RXE_POOL_INDEX,
->                 .max_index      = RXE_MAX_MR_INDEX,
->                 .min_index      = RXE_MIN_MR_INDEX,
->         },
->         [RXE_TYPE_MW] = {
->                 .name           = "rxe-mw",
-> -               .size           = sizeof(struct rxe_mem),
-> -               .elem_offset    = offsetof(struct rxe_mem, pelem),
-> -               .flags          = RXE_POOL_INDEX,
-> +               .size           = sizeof(struct rxe_mw),
-> +               .elem_offset    = offsetof(struct rxe_mw, pelem),
-> +               .flags          = RXE_POOL_INDEX | RXE_POOL_NO_ALLOC,
->                 .max_index      = RXE_MAX_MW_INDEX,
->                 .min_index      = RXE_MIN_MW_INDEX,
->         },
-> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-> index 889290793d75..3664cdae7e1f 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_req.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-> @@ -464,7 +464,7 @@ static int fill_packet(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
->                 } else {
->                         err = copy_data(qp->pd, 0, &wqe->dma,
->                                         payload_addr(pkt), paylen,
-> -                                       from_mem_obj,
-> +                                       from_mr_obj,
->                                         &crc);
->                         if (err)
->                                 return err;
-> @@ -596,7 +596,7 @@ int rxe_requester(void *arg)
->         if (wqe->mask & WR_REG_MASK) {
->                 if (wqe->wr.opcode == IB_WR_LOCAL_INV) {
->                         struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
-> -                       struct rxe_mem *rmr;
-> +                       struct rxe_mr *rmr;
->
->                         rmr = rxe_pool_get_index(&rxe->mr_pool,
->                                                  wqe->wr.ex.invalidate_rkey >> 8);
-> @@ -607,14 +607,14 @@ int rxe_requester(void *arg)
->                                 wqe->status = IB_WC_MW_BIND_ERR;
->                                 goto exit;
->                         }
-> -                       rmr->state = RXE_MEM_STATE_FREE;
-> +                       rmr->state = RXE_MR_STATE_FREE;
->                         rxe_drop_ref(rmr);
->                         wqe->state = wqe_state_done;
->                         wqe->status = IB_WC_SUCCESS;
->                 } else if (wqe->wr.opcode == IB_WR_REG_MR) {
-> -                       struct rxe_mem *rmr = to_rmr(wqe->wr.wr.reg.mr);
-> +                       struct rxe_mr *rmr = to_rmr(wqe->wr.wr.reg.mr);
->
-> -                       rmr->state = RXE_MEM_STATE_VALID;
-> +                       rmr->state = RXE_MR_STATE_VALID;
->                         rmr->access = wqe->wr.wr.reg.access;
->                         rmr->ibmr.lkey = wqe->wr.wr.reg.key;
->                         rmr->ibmr.rkey = wqe->wr.wr.reg.key;
-> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-> index 142f3d8014d8..e0e9984a3cce 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-> @@ -391,7 +391,7 @@ static enum resp_states check_length(struct rxe_qp *qp,
->  static enum resp_states check_rkey(struct rxe_qp *qp,
->                                    struct rxe_pkt_info *pkt)
->  {
-> -       struct rxe_mem *mem = NULL;
-> +       struct rxe_mr *mr = NULL;
->         u64 va;
->         u32 rkey;
->         u32 resid;
-> @@ -430,18 +430,18 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
->         resid   = qp->resp.resid;
->         pktlen  = payload_size(pkt);
->
-> -       mem = lookup_mem(qp->pd, access, rkey, lookup_remote);
-> -       if (!mem) {
-> +       mr = lookup_mr(qp->pd, access, rkey, lookup_remote);
-> +       if (!mr) {
->                 state = RESPST_ERR_RKEY_VIOLATION;
->                 goto err;
->         }
->
-> -       if (unlikely(mem->state == RXE_MEM_STATE_FREE)) {
-> +       if (unlikely(mr->state == RXE_MR_STATE_FREE)) {
->                 state = RESPST_ERR_RKEY_VIOLATION;
->                 goto err;
->         }
->
-> -       if (mem_check_range(mem, va, resid)) {
-> +       if (mr_check_range(mr, va, resid)) {
->                 state = RESPST_ERR_RKEY_VIOLATION;
->                 goto err;
->         }
-> @@ -469,12 +469,12 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
->
->         WARN_ON_ONCE(qp->resp.mr);
->
-> -       qp->resp.mr = mem;
-> +       qp->resp.mr = mr;
->         return RESPST_EXECUTE;
->
->  err:
-> -       if (mem)
-> -               rxe_drop_ref(mem);
-> +       if (mr)
-> +               rxe_drop_ref(mr);
->         return state;
->  }
->
-> @@ -484,7 +484,7 @@ static enum resp_states send_data_in(struct rxe_qp *qp, void *data_addr,
->         int err;
->
->         err = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE, &qp->resp.wqe->dma,
-> -                       data_addr, data_len, to_mem_obj, NULL);
-> +                       data_addr, data_len, to_mr_obj, NULL);
->         if (unlikely(err))
->                 return (err == -ENOSPC) ? RESPST_ERR_LENGTH
->                                         : RESPST_ERR_MALFORMED_WQE;
-> @@ -499,8 +499,8 @@ static enum resp_states write_data_in(struct rxe_qp *qp,
->         int     err;
->         int data_len = payload_size(pkt);
->
-> -       err = rxe_mem_copy(qp->resp.mr, qp->resp.va, payload_addr(pkt),
-> -                          data_len, to_mem_obj, NULL);
-> +       err = rxe_mr_copy(qp->resp.mr, qp->resp.va, payload_addr(pkt),
-> +                          data_len, to_mr_obj, NULL);
->         if (err) {
->                 rc = RESPST_ERR_RKEY_VIOLATION;
->                 goto out;
-> @@ -522,9 +522,9 @@ static enum resp_states process_atomic(struct rxe_qp *qp,
->         u64 iova = atmeth_va(pkt);
->         u64 *vaddr;
->         enum resp_states ret;
-> -       struct rxe_mem *mr = qp->resp.mr;
-> +       struct rxe_mr *mr = qp->resp.mr;
->
-> -       if (mr->state != RXE_MEM_STATE_VALID) {
-> +       if (mr->state != RXE_MR_STATE_VALID) {
->                 ret = RESPST_ERR_RKEY_VIOLATION;
->                 goto out;
->         }
-> @@ -700,8 +700,8 @@ static enum resp_states read_reply(struct rxe_qp *qp,
->         if (!skb)
->                 return RESPST_ERR_RNR;
->
-> -       err = rxe_mem_copy(res->read.mr, res->read.va, payload_addr(&ack_pkt),
-> -                          payload, from_mem_obj, &icrc);
-> +       err = rxe_mr_copy(res->read.mr, res->read.va, payload_addr(&ack_pkt),
-> +                          payload, from_mr_obj, &icrc);
->         if (err)
->                 pr_err("Failed copying memory\n");
->
-> @@ -883,7 +883,7 @@ static enum resp_states do_complete(struct rxe_qp *qp,
->                         }
->
->                         if (pkt->mask & RXE_IETH_MASK) {
-> -                               struct rxe_mem *rmr;
-> +                               struct rxe_mr *rmr;
->
->                                 wc->wc_flags |= IB_WC_WITH_INVALIDATE;
->                                 wc->ex.invalidate_rkey = ieth_rkey(pkt);
-> @@ -895,7 +895,7 @@ static enum resp_states do_complete(struct rxe_qp *qp,
->                                                wc->ex.invalidate_rkey);
->                                         return RESPST_ERROR;
->                                 }
-> -                               rmr->state = RXE_MEM_STATE_FREE;
-> +                               rmr->state = RXE_MR_STATE_FREE;
->                                 rxe_drop_ref(rmr);
->                         }
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> index dee5e0e919d2..96cf95eeb53e 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> @@ -865,7 +865,7 @@ static struct ib_mr *rxe_get_dma_mr(struct ib_pd *ibpd, int access)
->  {
->         struct rxe_dev *rxe = to_rdev(ibpd->device);
->         struct rxe_pd *pd = to_rpd(ibpd);
-> -       struct rxe_mem *mr;
-> +       struct rxe_mr *mr;
->
->         mr = rxe_alloc(&rxe->mr_pool);
->         if (!mr)
-> @@ -873,7 +873,7 @@ static struct ib_mr *rxe_get_dma_mr(struct ib_pd *ibpd, int access)
->
->         rxe_add_index(mr);
->         rxe_add_ref(pd);
-> -       rxe_mem_init_dma(pd, access, mr);
-> +       rxe_mr_init_dma(pd, access, mr);
->
->         return &mr->ibmr;
->  }
-> @@ -887,7 +887,7 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
->         int err;
->         struct rxe_dev *rxe = to_rdev(ibpd->device);
->         struct rxe_pd *pd = to_rpd(ibpd);
-> -       struct rxe_mem *mr;
-> +       struct rxe_mr *mr;
->
->         mr = rxe_alloc(&rxe->mr_pool);
->         if (!mr) {
-> @@ -899,7 +899,7 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
->
->         rxe_add_ref(pd);
->
-> -       err = rxe_mem_init_user(pd, start, length, iova,
-> +       err = rxe_mr_init_user(pd, start, length, iova,
->                                 access, udata, mr);
->         if (err)
->                 goto err3;
-> @@ -916,9 +916,9 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
->
->  static int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
->  {
-> -       struct rxe_mem *mr = to_rmr(ibmr);
-> +       struct rxe_mr *mr = to_rmr(ibmr);
->
-> -       mr->state = RXE_MEM_STATE_ZOMBIE;
-> +       mr->state = RXE_MR_STATE_ZOMBIE;
->         rxe_drop_ref(mr_pd(mr));
->         rxe_drop_index(mr);
->         rxe_drop_ref(mr);
-> @@ -930,7 +930,7 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
->  {
->         struct rxe_dev *rxe = to_rdev(ibpd->device);
->         struct rxe_pd *pd = to_rpd(ibpd);
-> -       struct rxe_mem *mr;
-> +       struct rxe_mr *mr;
->         int err;
->
->         if (mr_type != IB_MR_TYPE_MEM_REG)
-> @@ -946,7 +946,7 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
->
->         rxe_add_ref(pd);
->
-> -       err = rxe_mem_init_fast(pd, max_num_sg, mr);
-> +       err = rxe_mr_init_fast(pd, max_num_sg, mr);
->         if (err)
->                 goto err2;
->
-> @@ -962,7 +962,7 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
->
->  static int rxe_set_page(struct ib_mr *ibmr, u64 addr)
->  {
-> -       struct rxe_mem *mr = to_rmr(ibmr);
-> +       struct rxe_mr *mr = to_rmr(ibmr);
->         struct rxe_map *map;
->         struct rxe_phys_buf *buf;
->
-> @@ -982,7 +982,7 @@ static int rxe_set_page(struct ib_mr *ibmr, u64 addr)
->  static int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
->                          int sg_nents, unsigned int *sg_offset)
->  {
-> -       struct rxe_mem *mr = to_rmr(ibmr);
-> +       struct rxe_mr *mr = to_rmr(ibmr);
->         int n;
->
->         mr->nbuf = 0;
-> @@ -1110,6 +1110,7 @@ static const struct ib_device_ops rxe_dev_ops = {
->         INIT_RDMA_OBJ_SIZE(ib_pd, rxe_pd, ibpd),
->         INIT_RDMA_OBJ_SIZE(ib_srq, rxe_srq, ibsrq),
->         INIT_RDMA_OBJ_SIZE(ib_ucontext, rxe_ucontext, ibuc),
-> +       INIT_RDMA_OBJ_SIZE(ib_mw, rxe_mw, ibmw),
->  };
->
->  int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> index 79e0a5a878da..1e22225a27f0 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> @@ -156,7 +156,7 @@ struct resp_res {
->                         struct sk_buff  *skb;
->                 } atomic;
->                 struct {
-> -                       struct rxe_mem  *mr;
-> +                       struct rxe_mr   *mr;
->                         u64             va_org;
->                         u32             rkey;
->                         u32             length;
-> @@ -183,7 +183,7 @@ struct rxe_resp_info {
->
->         /* RDMA read / atomic only */
->         u64                     va;
-> -       struct rxe_mem          *mr;
-> +       struct rxe_mr           *mr;
->         u32                     resid;
->         u32                     rkey;
->         u32                     length;
-> @@ -262,18 +262,18 @@ struct rxe_qp {
->         struct execute_work     cleanup_work;
->  };
->
-> -enum rxe_mem_state {
-> -       RXE_MEM_STATE_ZOMBIE,
-> -       RXE_MEM_STATE_INVALID,
-> -       RXE_MEM_STATE_FREE,
-> -       RXE_MEM_STATE_VALID,
-> +enum rxe_mr_state {
-> +       RXE_MR_STATE_ZOMBIE,
-> +       RXE_MR_STATE_INVALID,
-> +       RXE_MR_STATE_FREE,
-> +       RXE_MR_STATE_VALID,
->  };
->
-> -enum rxe_mem_type {
-> -       RXE_MEM_TYPE_NONE,
-> -       RXE_MEM_TYPE_DMA,
-> -       RXE_MEM_TYPE_MR,
-> -       RXE_MEM_TYPE_MW,
-> +enum rxe_mr_type {
-> +       RXE_MR_TYPE_NONE,
-> +       RXE_MR_TYPE_DMA,
-> +       RXE_MR_TYPE_MR,
-> +       RXE_MR_TYPE_MW,
->  };
->
->  #define RXE_BUF_PER_MAP                (PAGE_SIZE / sizeof(struct rxe_phys_buf))
-> @@ -287,17 +287,14 @@ struct rxe_map {
->         struct rxe_phys_buf     buf[RXE_BUF_PER_MAP];
->  };
->
-> -struct rxe_mem {
-> +struct rxe_mr {
->         struct rxe_pool_entry   pelem;
-> -       union {
-> -               struct ib_mr            ibmr;
-> -               struct ib_mw            ibmw;
-> -       };
-> +       struct ib_mr            ibmr;
->
->         struct ib_umem          *umem;
->
-> -       enum rxe_mem_state      state;
-> -       enum rxe_mem_type       type;
-> +       enum rxe_mr_state       state;
-> +       enum rxe_mr_type        type;
->         u64                     va;
->         u64                     iova;
->         size_t                  length;
-> @@ -318,6 +315,17 @@ struct rxe_mem {
->         struct rxe_map          **map;
->  };
->
-> +enum rxe_mw_state {
-> +       RXE_MW_STATE_INVALID    = RXE_MR_STATE_INVALID,
-> +       RXE_MW_STATE_FREE       = RXE_MR_STATE_FREE,
-> +       RXE_MW_STATE_VALID      = RXE_MR_STATE_VALID,
-> +};
-> +
-> +struct rxe_mw {
-> +       struct ib_mw            ibmw;
-> +       struct rxe_pool_entry   pelem;
-> +};
-> +
->  struct rxe_mc_grp {
->         struct rxe_pool_entry   pelem;
->         spinlock_t              mcg_lock; /* guard group */
-> @@ -422,27 +430,27 @@ static inline struct rxe_cq *to_rcq(struct ib_cq *cq)
->         return cq ? container_of(cq, struct rxe_cq, ibcq) : NULL;
->  }
->
-> -static inline struct rxe_mem *to_rmr(struct ib_mr *mr)
-> +static inline struct rxe_mr *to_rmr(struct ib_mr *mr)
->  {
-> -       return mr ? container_of(mr, struct rxe_mem, ibmr) : NULL;
-> +       return mr ? container_of(mr, struct rxe_mr, ibmr) : NULL;
->  }
->
-> -static inline struct rxe_mem *to_rmw(struct ib_mw *mw)
-> +static inline struct rxe_mw *to_rmw(struct ib_mw *mw)
->  {
-> -       return mw ? container_of(mw, struct rxe_mem, ibmw) : NULL;
-> +       return mw ? container_of(mw, struct rxe_mw, ibmw) : NULL;
->  }
->
-> -static inline struct rxe_pd *mr_pd(struct rxe_mem *mr)
-> +static inline struct rxe_pd *mr_pd(struct rxe_mr *mr)
->  {
->         return to_rpd(mr->ibmr.pd);
->  }
->
-> -static inline u32 mr_lkey(struct rxe_mem *mr)
-> +static inline u32 mr_lkey(struct rxe_mr *mr)
->  {
->         return mr->ibmr.lkey;
->  }
->
-> -static inline u32 mr_rkey(struct rxe_mem *mr)
-> +static inline u32 mr_rkey(struct rxe_mr *mr)
->  {
->         return mr->ibmr.rkey;
->  }
-> --
-> 2.27.0
->
+diff --git a/drivers/block/rnbd/rnbd-clt.c b/drivers/block/rnbd/rnbd-clt.c
+index fce0f345f796..6aba7b26f260 100644
+--- a/drivers/block/rnbd/rnbd-clt.c
++++ b/drivers/block/rnbd/rnbd-clt.c
+@@ -312,13 +312,11 @@ static void rnbd_rerun_all_if_idle(struct rnbd_clt_session *sess)
+ 
+ static struct rtrs_permit *rnbd_get_permit(struct rnbd_clt_session *sess,
+ 					     enum rtrs_clt_con_type con_type,
+-					     int wait)
++					     enum wait_type wait)
+ {
+ 	struct rtrs_permit *permit;
+ 
+-	permit = rtrs_clt_get_permit(sess->rtrs, con_type,
+-				      wait ? RTRS_PERMIT_WAIT :
+-				      RTRS_PERMIT_NOWAIT);
++	permit = rtrs_clt_get_permit(sess->rtrs, con_type, wait);
+ 	if (likely(permit))
+ 		/* We have a subtle rare case here, when all permits can be
+ 		 * consumed before busy counter increased.  This is safe,
+@@ -344,7 +342,7 @@ static void rnbd_put_permit(struct rnbd_clt_session *sess,
+ 
+ static struct rnbd_iu *rnbd_get_iu(struct rnbd_clt_session *sess,
+ 				     enum rtrs_clt_con_type con_type,
+-				     int wait)
++				     enum wait_type wait)
+ {
+ 	struct rnbd_iu *iu;
+ 	struct rtrs_permit *permit;
+@@ -354,9 +352,7 @@ static struct rnbd_iu *rnbd_get_iu(struct rnbd_clt_session *sess,
+ 		return NULL;
+ 	}
+ 
+-	permit = rnbd_get_permit(sess, con_type,
+-				  wait ? RTRS_PERMIT_WAIT :
+-				  RTRS_PERMIT_NOWAIT);
++	permit = rnbd_get_permit(sess, con_type, wait);
+ 	if (unlikely(!permit)) {
+ 		kfree(iu);
+ 		return NULL;
+@@ -440,16 +436,11 @@ static void msg_conf(void *priv, int errno)
+ 	schedule_work(&iu->work);
+ }
+ 
+-enum wait_type {
+-	NO_WAIT = 0,
+-	WAIT    = 1
+-};
+-
+ static int send_usr_msg(struct rtrs_clt *rtrs, int dir,
+ 			struct rnbd_iu *iu, struct kvec *vec,
+ 			size_t len, struct scatterlist *sg, unsigned int sg_len,
+ 			void (*conf)(struct work_struct *work),
+-			int *errno, enum wait_type wait)
++			int *errno, int wait)
+ {
+ 	int err;
+ 	struct rtrs_clt_req_ops req_ops;
+@@ -481,7 +472,8 @@ static void msg_close_conf(struct work_struct *work)
+ 	rnbd_clt_put_dev(dev);
+ }
+ 
+-static int send_msg_close(struct rnbd_clt_dev *dev, u32 device_id, bool wait)
++static int send_msg_close(struct rnbd_clt_dev *dev, u32 device_id,
++			  enum wait_type wait)
+ {
+ 	struct rnbd_clt_session *sess = dev->sess;
+ 	struct rnbd_msg_close msg;
+@@ -535,7 +527,7 @@ static void msg_open_conf(struct work_struct *work)
+ 			 * If server thinks its fine, but we fail to process
+ 			 * then be nice and send a close to server.
+ 			 */
+-			(void)send_msg_close(dev, device_id, NO_WAIT);
++			send_msg_close(dev, device_id, RTRS_PERMIT_NOWAIT);
+ 		}
+ 	}
+ 	kfree(rsp);
+@@ -559,7 +551,7 @@ static void msg_sess_info_conf(struct work_struct *work)
+ 	rnbd_clt_put_sess(sess);
+ }
+ 
+-static int send_msg_open(struct rnbd_clt_dev *dev, bool wait)
++static int send_msg_open(struct rnbd_clt_dev *dev, enum wait_type wait)
+ {
+ 	struct rnbd_clt_session *sess = dev->sess;
+ 	struct rnbd_msg_open_rsp *rsp;
+@@ -606,7 +598,7 @@ static int send_msg_open(struct rnbd_clt_dev *dev, bool wait)
+ 	return err;
+ }
+ 
+-static int send_msg_sess_info(struct rnbd_clt_session *sess, bool wait)
++static int send_msg_sess_info(struct rnbd_clt_session *sess, enum wait_type wait)
+ {
+ 	struct rnbd_msg_sess_info_rsp *rsp;
+ 	struct rnbd_msg_sess_info msg;
+@@ -692,7 +684,7 @@ static void remap_devs(struct rnbd_clt_session *sess)
+ 	 * be asynchronous.
+ 	 */
+ 
+-	err = send_msg_sess_info(sess, NO_WAIT);
++	err = send_msg_sess_info(sess, RTRS_PERMIT_NOWAIT);
+ 	if (err) {
+ 		pr_err("send_msg_sess_info(\"%s\"): %d\n", sess->sessname, err);
+ 		return;
+@@ -716,7 +708,7 @@ static void remap_devs(struct rnbd_clt_session *sess)
+ 			continue;
+ 
+ 		rnbd_clt_info(dev, "session reconnected, remapping device\n");
+-		err = send_msg_open(dev, NO_WAIT);
++		err = send_msg_open(dev, RTRS_PERMIT_NOWAIT);
+ 		if (err) {
+ 			rnbd_clt_err(dev, "send_msg_open(): %d\n", err);
+ 			break;
+@@ -1248,7 +1240,7 @@ find_and_get_or_create_sess(const char *sessname,
+ 	if (err)
+ 		goto close_rtrs;
+ 
+-	err = send_msg_sess_info(sess, WAIT);
++	err = send_msg_sess_info(sess, RTRS_PERMIT_WAIT);
+ 	if (err)
+ 		goto close_rtrs;
+ 
+@@ -1531,7 +1523,7 @@ struct rnbd_clt_dev *rnbd_clt_map_device(const char *sessname,
+ 		ret = -EEXIST;
+ 		goto put_dev;
+ 	}
+-	ret = send_msg_open(dev, WAIT);
++	ret = send_msg_open(dev, RTRS_PERMIT_WAIT);
+ 	if (ret) {
+ 		rnbd_clt_err(dev,
+ 			      "map_device: failed, can't open remote device, err: %d\n",
+@@ -1567,7 +1559,7 @@ struct rnbd_clt_dev *rnbd_clt_map_device(const char *sessname,
+ 	return dev;
+ 
+ send_close:
+-	send_msg_close(dev, dev->device_id, WAIT);
++	send_msg_close(dev, dev->device_id, RTRS_PERMIT_WAIT);
+ del_dev:
+ 	delete_dev(dev);
+ put_dev:
+@@ -1636,7 +1628,7 @@ int rnbd_clt_unmap_device(struct rnbd_clt_dev *dev, bool force,
+ 	destroy_sysfs(dev, sysfs_self);
+ 	destroy_gen_disk(dev);
+ 	if (was_mapped && sess->rtrs)
+-		send_msg_close(dev, dev->device_id, WAIT);
++		send_msg_close(dev, dev->device_id, RTRS_PERMIT_WAIT);
+ 
+ 	rnbd_clt_info(dev, "Device is unmapped\n");
+ 
+@@ -1670,7 +1662,7 @@ int rnbd_clt_remap_device(struct rnbd_clt_dev *dev)
+ 	mutex_unlock(&dev->lock);
+ 	if (!err) {
+ 		rnbd_clt_info(dev, "Remapping device.\n");
+-		err = send_msg_open(dev, WAIT);
++		err = send_msg_open(dev, RTRS_PERMIT_WAIT);
+ 		if (err)
+ 			rnbd_clt_err(dev, "remap_device: %d\n", err);
+ 	}
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 0a08b4b742a3..7efd49bdc78c 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -103,11 +103,11 @@ static inline void __rtrs_put_permit(struct rtrs_clt *clt,
+  *    up earlier.
+  *
+  * Context:
+- *    Can sleep if @wait == RTRS_TAG_WAIT
++ *    Can sleep if @wait == RTRS_PERMIT_WAIT
+  */
+ struct rtrs_permit *rtrs_clt_get_permit(struct rtrs_clt *clt,
+ 					  enum rtrs_clt_con_type con_type,
+-					  int can_wait)
++					  enum wait_type can_wait)
+ {
+ 	struct rtrs_permit *permit;
+ 	DEFINE_WAIT(wait);
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs.h b/drivers/infiniband/ulp/rtrs/rtrs.h
+index 8738e90e715a..2db1b5eb3ab0 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs.h
++++ b/drivers/infiniband/ulp/rtrs/rtrs.h
+@@ -63,9 +63,9 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
+ 
+ void rtrs_clt_close(struct rtrs_clt *sess);
+ 
+-enum {
++enum wait_type {
+ 	RTRS_PERMIT_NOWAIT = 0,
+-	RTRS_PERMIT_WAIT   = 1,
++	RTRS_PERMIT_WAIT   = 1
+ };
+ 
+ /**
+@@ -81,7 +81,7 @@ enum rtrs_clt_con_type {
+ 
+ struct rtrs_permit *rtrs_clt_get_permit(struct rtrs_clt *sess,
+ 				    enum rtrs_clt_con_type con_type,
+-				    int wait);
++				    enum wait_type wait);
+ 
+ void rtrs_clt_put_permit(struct rtrs_clt *sess, struct rtrs_permit *permit);
+ 
+-- 
+2.25.1
+
