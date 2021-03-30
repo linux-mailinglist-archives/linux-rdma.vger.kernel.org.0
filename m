@@ -2,73 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D72A34EED4
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Mar 2021 19:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16BA34F092
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Mar 2021 20:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232682AbhC3RBE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Mar 2021 13:01:04 -0400
-Received: from mga04.intel.com ([192.55.52.120]:6414 "EHLO mga04.intel.com"
+        id S232665AbhC3SLB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Mar 2021 14:11:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232579AbhC3RAj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:00:39 -0400
-IronPort-SDR: JBR5oLpywyAnFcBFLn5Dcdukjy+A24nJBTLHLB2Macec4Wv6R2BptuQSXV0J32LWhm4uoROc1H
- NheTnOhqvFUA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="189569403"
-X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="189569403"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 10:00:39 -0700
-IronPort-SDR: bzSzYAC06WSLe9xOI0IeB+FrHdttxPQPLi66jT5X+Sw0vTk56AxMp65WyMvBskNHbs0sKbSYvS
- /Nk4gR4IKo+g==
-X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
-   d="scan'208";a="610174946"
-Received: from ssaleem-mobl.amr.corp.intel.com ([10.209.112.111])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 10:00:38 -0700
-From:   Shiraz Saleem <shiraz.saleem@intel.com>
-To:     dledford@redhat.com, jgg@nvidia.com, kuba@kernel.org,
-        davem@davemloft.net
-Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        david.m.ertman@intel.com, anthony.l.nguyen@intel.com,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: [PATCH v3 23/23] RDMA/irdma: Update MAINTAINERS file
-Date:   Tue, 30 Mar 2021 11:59:22 -0500
-Message-Id: <20210330165922.2006-24-shiraz.saleem@intel.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210330165922.2006-1-shiraz.saleem@intel.com>
-References: <20210330165922.2006-1-shiraz.saleem@intel.com>
+        id S232659AbhC3SKr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 30 Mar 2021 14:10:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70C5B619D1;
+        Tue, 30 Mar 2021 18:10:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617127847;
+        bh=E4CSAOav2miwBccqpWx6Wl4oB6R4c2qqsJVd8NGrcos=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pU90oj8QlnmK3EtLJzLSRK50ZsjvBKKwT+Hljpotn2sk/KlEr5oS2o3mCP2tlf+bh
+         lX4qI5onDRKex/2Db4BTok3V0yfSkh/99x5HRFESSbJH0rVZeZXELeZu/yNWow7axx
+         ZennwI3NBGTbOscxZmECAUhpaIRQJ1WUYGQq7RHNs5TbpDLz79EdTAQ3aY2kdIYYXR
+         43i6a7NcAJJmaA5B9VAppcwA1i25ZtSP6NBf5Ioc5bIMAmx3z1NJvmuXfNcJx3M+PG
+         aMEV4faG8gfbVol7bdb7qS4xGb9+RNJiMRl0Luai9DF4lEBGTCin/SXYJ4vifVGfIP
+         x6MUqJNBmNy0Q==
+Date:   Wed, 31 Mar 2021 03:10:39 +0900
+From:   Keith Busch <kbusch@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
+Message-ID: <20210330181039.GA22898@redsun51.ssa.fujisawa.hgst.com>
+References: <20210326190148.GN2710221@ziepe.ca>
+ <20210330012949.GA1205505@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330012949.GA1205505@bjorn-Precision-5520>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add maintainer entry for irdma driver.
+On Mon, Mar 29, 2021 at 08:29:49PM -0500, Bjorn Helgaas wrote:
+> On Fri, Mar 26, 2021 at 04:01:48PM -0300, Jason Gunthorpe wrote:
+> > On Fri, Mar 26, 2021 at 11:50:44AM -0700, Alexander Duyck wrote:
+> > 
+> > > My concern would be that we are defining the user space interface.
+> > > Once we have this working as a single operation I could see us having
+> > > to support it that way going forward as somebody will script something
+> > > not expecting an "offline" sysfs file, and the complaint would be that
+> > > we are breaking userspace if we require the use of an "offline"
+> > > file.
+> > 
+> > Well, we wouldn't do that. The semantic we define here is that the
+> > msix_count interface 'auto-offlines' if that is what is required. If
+> > we add some formal offline someday then 'auto-offline' would be a NOP
+> > when the device is offline and do the same online/offline sequence as
+> > today if it isn't.
+> 
+> Alexander, Keith, any more thoughts on this?
+> 
+> I think I misunderstood Greg's subdirectory comment.  We already have
+> directories like this:
+> 
+>   /sys/bus/pci/devices/0000:01:00.0/link/
+>   /sys/bus/pci/devices/0000:01:00.0/msi_irqs/
+>   /sys/bus/pci/devices/0000:01:00.0/power/
+> 
+> and aspm_ctrl_attr_group (for "link") is nicely done with static
+> attributes.  So I think we could do something like this:
+> 
+>   /sys/bus/pci/devices/0000:01:00.0/   # PF directory
+>     sriov/                             # SR-IOV related stuff
+>       vf_total_msix
+>       vf_msix_count_BB:DD.F        # includes bus/dev/fn of first VF
+>       ...
+>       vf_msix_count_BB:DD.F        # includes bus/dev/fn of last VF
+> 
+> And I think this could support the mlx5 model as well as the NVMe
+> model.
+> 
+> For NVMe, a write to vf_msix_count_* would have to auto-offline the VF
+> before asking the PF to assign the vectors, as Jason suggests above.
+> Before VF Enable is set, the vf_msix_count_* files wouldn't exist and
+> we wouldn't be able to assign vectors to VFs; IIUC that's a difference
+> from the NVMe interface, but maybe not a terrible one?
 
-Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Yes, that's fine, nvme can handle this flow. It is a little easier to
+avoid nvme user error if we could mainpulate the counts prior to VF Enable,
+but it's really not a problem this way either.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 211fbc4..6b0aeaf 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8958,6 +8958,14 @@ F:	drivers/net/ethernet/intel/*/
- F:	include/linux/avf/virtchnl.h
- F:	include/linux/net/intel/iidc.h
- 
-+INTEL ETHERNET PROTOCOL DRIVER FOR RDMA
-+M:	Mustafa Ismail <mustafa.ismail@intel.com>
-+M:	Shiraz Saleem <shiraz.saleem@intel.com>
-+L:	linux-rdma@vger.kernel.org
-+S:	Supported
-+F:	drivers/infiniband/hw/irdma/
-+F:	include/uapi/rdma/irdma-abi.h
-+
- INTEL FRAMEBUFFER DRIVER (excluding 810 and 815)
- M:	Maik Broemme <mbroemme@libmpq.org>
- L:	linux-fbdev@vger.kernel.org
--- 
-1.8.3.1
-
+I think it's reasonable for nvme to subscribe to this interface, but I
+will have to defer to someone with capable nvme devices to implement it.
