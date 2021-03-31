@@ -2,189 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BBE35053A
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Mar 2021 19:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03C635053E
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Mar 2021 19:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233900AbhCaRHq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 Mar 2021 13:07:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbhCaRHX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 31 Mar 2021 13:07:23 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2126C06174A
-        for <linux-rdma@vger.kernel.org>; Wed, 31 Mar 2021 10:07:22 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id o5so20073192qkb.0
-        for <linux-rdma@vger.kernel.org>; Wed, 31 Mar 2021 10:07:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CBJLgij8JRUpa6bM6F2HzF0AcYEY2HXB4yx3yMAYHWY=;
-        b=I3icD9WkMNJ0dAyK1Wv8cpeBrTixRgfSrUKvPdVhK07yhGUYb5MnZRDMK9Vr0FnEEI
-         Wl6GG1mls7jaG40HUL5BNvQrQNI/K8/HURlFIyAZkh+HHxmKK3YhuUimgRG87npzRwDj
-         xhkgqi9ZQlhHO9MyemttQn9IOX1dUpcLrqMq/AuaN0rDu43guNce+zJyQxCShGZzzhFb
-         O58Ig1j6IPpubs+o37HZv0lUXHJwmL807FrPxwRtygMpaLPyZldw4nxt9UFM0e9/HfNx
-         pDW+A0FeZuPUMGCpITJKXMZir+Vlygh+VHIOqeL76FiFJxqeLN1YJ6IgjS8M08pyDCUO
-         RJhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CBJLgij8JRUpa6bM6F2HzF0AcYEY2HXB4yx3yMAYHWY=;
-        b=nhtF2Exw4I0aS6k+fjaXZcKOHcO1iFyzac/sNaVZY5N2h1LEaphBDC6sGomeAc1lfV
-         fY990ORokHLVIzoe59AEVdbRQok3XQbhFBAhM2HK0nOhSzUGw0JKKm9qeVQm3+rznvC9
-         Vi4Xg9PrxeTcCJNVC2CJuugGsW0K4PMIMaLyC0sXw2ucS4j1sM7olYoopqdBk7qFnCLg
-         67puu8pKjoi8U+rmh8zI5BKFrQXQ2ytMqTdOdHmirlhz21njY2gYRf7PTYFiPvFpL+Py
-         PabI8LQMf8RKJCzgGCC/bmOleKgub0yaV3eZzbO+/YYuL6ZK7Z6wpPqq8X55Sx+eItHf
-         k84g==
-X-Gm-Message-State: AOAM5313BFjm1WZ3CvyAYV2jp4wvHgpk/fNS6gSs0rGBYmj2ucoE6so2
-        dds+2IW8hlP30jIn7nMd0lM9Sg==
-X-Google-Smtp-Source: ABdhPJwAoOIqYtNI2MwGauM5rPZT26vCbcrvCwwOUhjCAPlzbZW+C4ASvagifSG/VZz4tKBdzSM95Q==
-X-Received: by 2002:a37:6348:: with SMTP id x69mr4015891qkb.154.1617210441706;
-        Wed, 31 Mar 2021 10:07:21 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id h75sm1819948qke.80.2021.03.31.10.07.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 10:07:21 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lReJM-006OXG-AR; Wed, 31 Mar 2021 14:07:20 -0300
-Date:   Wed, 31 Mar 2021 14:07:20 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
-Message-ID: <20210331170720.GY2710221@ziepe.ca>
-References: <20210330194716.GV2710221@ziepe.ca>
- <20210330204141.GA1305530@bjorn-Precision-5520>
- <20210330224341.GW2710221@ziepe.ca>
- <YGQY72LnGB6bfIsI@kroah.com>
- <20210331121929.GX2710221@ziepe.ca>
- <YGSPUewD5J+F7ZRe@kroah.com>
+        id S233977AbhCaRJz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Mar 2021 13:09:55 -0400
+Received: from mail-co1nam11on2046.outbound.protection.outlook.com ([40.107.220.46]:50784
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229615AbhCaRJ3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 31 Mar 2021 13:09:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mArW0fXEsNeDVISTQr0H9LGIzJtpUE/n7V/e4m3+C3LaGxR7r82bFfR5pplmD818TKqQXWid+Nyoah9mkOBVp/FZlP9modHtoCA+Jnjm1lfdwN21gB0DElWEmA+AoKdOU160T675+VfKz/JBYlVm4eOLfRiAUBUDfJlK3qkV2Pi10eJIJpKPF2bWnI2zUDSmR59p3Y/cINNjVgHcDTRkSFPIVjZWNTXQX3mr/6iE//y2cMChyn3trswOuBmdgcT+w6Nn2Dac8Rc0vEde1tyGz9fseSMg/vkIFHb+ponOJfPJnso4x4V7oM5SydwnOkvNXdsxbK5s2cVspdbvpDhYEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uryrYNeNThEASQofpqiydyq+vcfoPJqMse0Up/mICB4=;
+ b=mkqcAIyOugvXUzKc1DQoV8jGpUUNw9D2f6J9RNoQJYmMvdi+HVK2jOv0P/umycuuZdKZ2L+OedWxyECqA/GbYdC7voHTeEJdAHmHqOSJ2aRADYg6bJbJ2cPLMs1rIK4M2aUTjIv1OH6XA1evIyEE8a8gNmFuuSw5mrvzbstjkk2Pnv3gTzZh+NmLcwcAPO83enlPAxqZ7wS1GOUGx6nCPSeJEk3+ckRapXeeT99wuqpVDkxxCWFa9BZWs1R709Q8/VOyOBCGDY7aikdPX1PZrCB8nMhGii9vFswgT2hhGLZ4xtV2F0N4+hHmifvudPjKzTGNI4p+r3n6IIZrB6iNyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uryrYNeNThEASQofpqiydyq+vcfoPJqMse0Up/mICB4=;
+ b=JZr3ZeXwtrw+Ea+gSvVIItAmbpg1QVFp484cLsABg4Ntg6lL8N4C6/z0sKmRpSxjCvE+fm8X6+/Isq3XlvZOjCtMeYQTSt4GG3MQWOka8E1HYlXLd6YAUAlGgpeYbj9GSl1WYWI2nBPefUrA7qMOk94luLa165ch8nWzg4IFKmZjhpENsoO+T35Tt4LVPGkIZ/EZu51nP6jz9Oer/VKPW1wWIfxX9iCILbunIN9yW9ong7o1mfBc9CwQWlXUKumQVKcjPcy2ZY9YUxEyqJaNd3IS9//Ebrq6APK9EhYAcuUkAGl/Dcuy3tFyI/eBQ1XGsp/xvzzAdwpOPrOr3p/NJg==
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com (2603:10b6:a03:20a::20)
+ by BY5PR12MB3954.namprd12.prod.outlook.com (2603:10b6:a03:1af::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Wed, 31 Mar
+ 2021 17:09:27 +0000
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::7cec:a7fa:db2e:3073]) by BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::7cec:a7fa:db2e:3073%8]) with mapi id 15.20.3977.033; Wed, 31 Mar 2021
+ 17:09:27 +0000
+From:   Parav Pandit <parav@nvidia.com>
+To:     Haakon Bugge <haakon.bugge@oracle.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+CC:     Doug Ledford <dledford@redhat.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH for-next] IB/cma: Introduce rdma_set_min_rnr_timer()
+Thread-Topic: [PATCH for-next] IB/cma: Introduce rdma_set_min_rnr_timer()
+Thread-Index: AQHXIXfBOPltPxqzRUWWuvVXWh57HaqdMUWAgAC/pQCAABcXgIAAEDWAgAAErYCAAAU4AIAAAFYAgAAUwgCAACZI8A==
+Date:   Wed, 31 Mar 2021 17:09:27 +0000
+Message-ID: <BY5PR12MB4322EB01D0A22E6806B6F195DC7C9@BY5PR12MB4322.namprd12.prod.outlook.com>
+References: <1616677547-22091-1-git-send-email-haakon.bugge@oracle.com>
+ <20210330231207.GA1464058@nvidia.com>
+ <FF7812F0-B346-40A9-AC34-0D87CAB74753@oracle.com>
+ <20210331120041.GB1463678@nvidia.com>
+ <2A5F5B02-4745-4EC1-974A-DE089F9FBE2C@oracle.com>
+ <20210331131525.GH1463678@nvidia.com>
+ <111062EB-22A4-4AE3-A31B-498445D344A7@oracle.com>
+ <20210331133518.GJ1463678@nvidia.com>
+ <E76F07B9-F222-4D0E-889A-712502DE0376@oracle.com>
+In-Reply-To: <E76F07B9-F222-4D0E-889A-712502DE0376@oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [136.185.184.152]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a88fd783-a008-4b81-a095-08d8f467bdc6
+x-ms-traffictypediagnostic: BY5PR12MB3954:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR12MB39542CD73813F909092A6A25DC7C9@BY5PR12MB3954.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Rr2zF8FzxD5v1x+mDmFyi7fdqGySnGszmgn8wKgACTjd6hCOmPuRMtClf6HKouNFER7jAUP/zxM6VykeLt1TiBjvXE/R9ACSTYz+wdUIjpdyMhLO/6bLhomytFTXXBpBA0xF9oszpNTBQStISG5/PkhRIbk0LDHFQ5WJgKJ4MOabuBxUOFubQmi4ZSn/cyfDIWFAkxbNu/FCxvZpyDoMmhUgtEHqQAWnUjBOf9H8iaEwP4CD2Qo6QJhxZCMC3bopkaENGaC1eSZmHcRE4NWEfV/5Xh18d19hr5kcv7AoX1eDvo4B2+Fd/+9PHMONIeCVoLdgKMsc+H9W2cqkjD5xu+hxNUoEFh8Rk/GuXYBKa19zHmtQNvuLw9T0Zug8s7KbGa1NXy/dFfuDJB842QUG14FgVL3LWZxQLAGrtWbU8ClAHzb+MgFfH20nl/EJfpDfWYfWGjLu5buYssvB8zi6o7MxyFhyeyjI8ihirgldhhL6mGf+OVhzJP3RnybdirhmVT6C+kOKHvj3Ed5e1PQlGjKW0Wtz+zuyN3GRrFBK7q07oFHQ4VSWHxH7Svi9QQt2/GmpVfp64nkw56R+R7u+jBxkRfxwczCn4kbNqQogVG1ppJxlBaAqiBRsTIl9dsMg3dcLJlAwfV4WPQz1ZxiRijtG1x1TJ1ChSljJsg3Y/Nc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4322.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(346002)(376002)(396003)(39860400002)(316002)(66476007)(55016002)(9686003)(76116006)(2906002)(110136005)(54906003)(83380400001)(4744005)(478600001)(8676002)(5660300002)(38100700001)(71200400001)(86362001)(64756008)(33656002)(4326008)(52536014)(8936002)(6636002)(6506007)(186003)(53546011)(66946007)(66556008)(7696005)(26005)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?NkxsUkFGQjVJazV5RlhKcmJnOTUreGw4UStwbFRSZ2x3eHVid1c5Ukw5SS9m?=
+ =?utf-8?B?WlhISXZzSEVrQnhmbnIzdXk1NnpxNFhMQUlmdzZuRXo4Zy8yLzFXVGhLYWhh?=
+ =?utf-8?B?V1FoSnNkUDNFMmdqRHQ4MHpRZ3lWUVM1bTMxd1BRNlRiVmlmSDB4ZEcrUHZY?=
+ =?utf-8?B?SWZXUWpIeDh5cjVIOVF2dmtteDh3MllXL0NSdThYSnZBNEFjWG5nem5haDl1?=
+ =?utf-8?B?bXNDUjkwVjZyWGNJZ1RyMmFwcXNlYXdxRE9qdWYzeEM0NmxiQmxrR2tDaG9O?=
+ =?utf-8?B?cE1uczRBbS9mdGhmanlaeXVPZDJGUmNVaEhnektQQ3VmRVJ3MUg3ZTJlY1A1?=
+ =?utf-8?B?eCt1WjJwV0FwN28vQTFabVQwZ2dadEpDVnlUYklzT3JsVVZKd3NUVjE2aC95?=
+ =?utf-8?B?TVdNL05pbDQ5VmZaenZWZFp5WWZKSHlWeElYdmdMWXg5NituTjRVLzFpbjMy?=
+ =?utf-8?B?WndCendRQVM5cEFVeEhFM0dkeDZtNkdNTFlyRnU1YUw4cXJQdlRJbHFsOUsv?=
+ =?utf-8?B?WnRad1lVOXUwaXlBZjNEaHQvREt2NWRqcE9hRitidi9nQWJ5TXV3U3N1VnpO?=
+ =?utf-8?B?Mk44dmFHQzA4R0FQUU1vK0xJdlFBS2ZuYXZxUGR0Q203UDJ0VmY3Q1IvRmJR?=
+ =?utf-8?B?SjNFVWJDd0ZyVFZBR2tWdEd0NmVITmtkQVBDTERhYnordmMrekZaNkhjNGhi?=
+ =?utf-8?B?cWZ4cS9ZN211UTkwWTlwOEJRWGJ3eXViY0lyd3JydjQ3cGQ4eVA4bS83SGU4?=
+ =?utf-8?B?REx6ZG4vaDJLYTRnNlIyNWtkbkZaTWQvQnBPM2Rzdis5NG9GVWlKak9yU1Q4?=
+ =?utf-8?B?NnlmQWMvOUhNOHJJVG5meEZCWkVzcVd1SW1mM1JPMkVpbTJjay9QWnJaS243?=
+ =?utf-8?B?bkhQYWNSUGtSOFAzZDVLb0lSeW8wK1E0bFZxSlorYTB4Vk8wMlhCMlNDSzdP?=
+ =?utf-8?B?TW0yb29Ea1pKcTlmbXFPdUJjSmNRRXppS0E5aklIbW11ZlZ3L1NaanNEdVlm?=
+ =?utf-8?B?cDJCMFlNR3AvOGNJYzQ4S3VtTXdlNXoxdDFkK0hHM2Y3REU2ZDloSnJ3bDRX?=
+ =?utf-8?B?T0gyV01pcEZ3OTZDU3pJL0hwVHRxWUJTWlhqTzRxNGpSRitvOTd3ZTB0Q2F6?=
+ =?utf-8?B?aXFraHV0a3hwdEhyWTd0K1YzRGpqa01iR1d0ZmZqa2QvME9jQlM1WjVwc3ZV?=
+ =?utf-8?B?OFU1Zmg1WG5nNXhQK0NQZjY3OFBKSHhnLy9KL0FOVUdHbGpwNmE5dXJkNG9I?=
+ =?utf-8?B?UC9yTUYwYkxtT2dqc2REZ21PRWR1NHR2U1dFbHNWSXFHd2Q1MEFuMk1sUlk3?=
+ =?utf-8?B?bHUrYzlzbS8vTjIzYjVUay9FRVJkbmpBSmdIWC9WalIrV1BiMzhhWWs0VnBN?=
+ =?utf-8?B?azEvcEtEQllNL3RvTU1ldUtGUzh4VGZOZFFoMjBvaFRyNkR5YUpPYjNIdUZK?=
+ =?utf-8?B?Q3FSZXVRSDdTcGV1SUJCMGNiUlJjN1hGR1FvOXRPNDJPTEdSZWVUeG1FNElu?=
+ =?utf-8?B?WjB5bVl5ckZFUmROYnl5c0FKeGRUcURhYnJOMGJFcFJSQzVxS3J5akVtRGJB?=
+ =?utf-8?B?Qjc0S04rc29kNlRjQ2t4dGx2d2djMmVKeCt4ZUxJMTRvV2tRaDZlWVhQcVRz?=
+ =?utf-8?B?a1V1QVZ5bFBremJwWXBpVUttVmE3aUhmaVJpa0UvY1N2MzQxa3BBNVpnVE5m?=
+ =?utf-8?B?bEFPWm1ZMFZsT09Qa01RaW84eGpabHVWN3BaN2tpMjY4cnBKc0c5amhZNnZQ?=
+ =?utf-8?Q?yW0k3wnKQEjIvPFzAZBxRYfS0aJJySwfeJbfqTp?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGSPUewD5J+F7ZRe@kroah.com>
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4322.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a88fd783-a008-4b81-a095-08d8f467bdc6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Mar 2021 17:09:27.4609
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Ck2BkWR1fLgAhsDfYgv7ZIHbLIFmLouEzTR26v4o1FEnBixSJy9yEaYwX5ieNTnU3VwleEzlLkPJAC9jfwQpIQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3954
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 05:03:45PM +0200, Greg Kroah-Hartman wrote:
-> > It isn't a struct device object at all though, it just organizing
-> > attributes.
-> 
-> That's the point, it really is not.  You are forced to create a real
-> object for that subdirectory, and by doing so, you are "breaking" the
-> driver/device model.  As is evident by userspace not knowing what is
-> going on here.
-
-I'm still not really sure about what this means in practice..
-
-I found an nested attribute in RDMA land so lets see how it behaves.
- 
-   /sys/class/infiniband/ibp0s9/ <-- This is a struct device/ib_device
-
-Then we have 261 'attribute' files under a ports subdirectory, for
-instance:
-
- /sys/class/infiniband/ibp0s9/ports/1/cm_tx_retries/dreq
-
-Open/read works fine, and the specialty userspace that people built on
-this has been working for a long time.
-
-Does udev see the deeply nested attributes? Apparently yes:
-
-$ udevadm info -a /sys/class/infiniband/ibp0s9
-    ATTR{ports/1/cm_rx_duplicates/dreq}=="0"
-    [..]
-
-Given your remarks, I'm surprised, but it seems to work - I assume if
-udevadm shows it then all the rules will work too.
-
-Has udev become confused about what is a struct device? Looks like no:
-
-$ udevadm info -a /sys/class/infiniband/ibp0s9/port
-Unknown device "/sys/class/infiniband/ibp0s9/port": No such device
-
-Can you give an example where things go wrong?
-
-(and I inherited this RDMA stuff. In the last two years we moved it
- all to netlink and modern userspace largely no longer touches sysfs,
- but I can't break in-use uAPI)
-
-> > > Does that help?  The rules are:
-> > > 	- Once you use a 'struct device', all subdirs below that device
-> > > 	  are either an attribute group for that device or a child
-> > > 	  device.
-> > > 	- A struct device can NOT have an attribute group as a parent,
-> > > 	  it can ONLY have another struct device as a parent.
-> > > 
-> > > If you break those rules, the kernel has the ability to get really
-> > > confused unless you are very careful, and userspace will be totally lost
-> > > as you can not do anything special there.
-> > 
-> > The kernel gets confused?
-> 
-> Putting a kobject as a child of a struct device can easily cause
-> confusion as that is NOT what you should be doing.  Especially if you
-> then try to add a device to be a child of that kobject. 
-
-That I've never seen. I've only seen people making extra levels of
-directories for organizing attributes.
-
-> > How do you fix them? It is uAPI at this point so we can't change the
-> > directory names. Can't make them struct devices (userspace would get
-> > confused if we add *more* sysfs files)
-> 
-> How would userspace get confused?  If anything it would suddenly "wake
-> up" and see these attributes properly.
-
-We are talking about specialty userspace that is designed to work with
-the sysfs layout as-is. Not udev. In some of these subdirs the
-userspace does readdir() on - if you start adding random stuff it will
-break it.
-
-> > Since it seems like kind of a big problem can we make this allowed
-> > somehow?
-> 
-> No, not at all.  Please do not do that.  I will look into the existing
-> users and try to see if I can fix them up.  Maybe start annoying people
-> by throwing warnings if you try to register a kobject as a child of a
-> device...
-
-How does that mesh with our don't break userspace ideal?? :(
-
-> > Well, from what I understand, it wont be used because udev can't do
-> > three level deep attributes, and if that hasn't been a problem in that
-> > last 10 years for the existing places, it might not ever be needed in
-> > udev at all.
-> 
-> If userspace is not seeing these attributes then WHY CREATE THEM AT
-> ALL???
-
-*udev* is not the userspace! People expose sysfs attributes and then
-make specialty userspace to consume them! I've seen it many times now.
-
-> Seriously, what is needing to see these in sysfs if not the tools that
-> we have today to use sysfs?  Are you wanting to create new tools instead
-> to handle these new attributes?  Maybe just do not create them in the
-> first place?
-
-This advice is about 10 years too late :(
-
-Regardless, lets not do deeply nested attributes here in PCI. They are
-PITA anyhow.
-
-Jason
+DQoNCj4gRnJvbTogSGFha29uIEJ1Z2dlIDxoYWFrb24uYnVnZ2VAb3JhY2xlLmNvbT4NCj4gU2Vu
+dDogV2VkbmVzZGF5LCBNYXJjaCAzMSwgMjAyMSA4OjIwIFBNDQo+IA0KPiA+IE9uIDMxIE1hciAy
+MDIxLCBhdCAxNTozNSwgSmFzb24gR3VudGhvcnBlIDxqZ2dAbnZpZGlhLmNvbT4gd3JvdGU6DQo+
+ID4NCj4gPiBPbiBXZWQsIE1hciAzMSwgMjAyMSBhdCAwMTozNDowNlBNICswMDAwLCBIYWFrb24g
+QnVnZ2Ugd3JvdGU6DQo+ID4NCj4gPj4+IEFjdHVhbGx5IEkgYmV0IHlvdSBjb3VsZCBkbyB0aGlz
+IHNhbWUgdGhpbmcgZW50aXJlbHkgaW4gdXNlcnNwYWNlIGJ5DQo+ID4+PiBhZGp1c3RpbmcgcmRt
+YV9pbml0X3FwX2F0dHIoKSB0byBjb3B5IHRoZSBkYXRhIHRoYXQgd291bGQgYmUgc3RvcmVkDQo+
+ID4+PiBpbiB0aGUgY21faWQuLiA/Pw0KPiA+Pg0KPiA+PiBUaGlzIHdpbGwgZGVmaW5pdGVseSBu
+b3Qgc29sdmUgdGhlIGlzc3VlIGZvciBrZXJuZWwgVUxQLCBlLmcuLCBSRFMuDQo+ID4NCj4gPiBT
+dXJlLCB0aGF0IG1ha2VzIHNlbnNlIHRvIGhhdmUgc29tZSByZG1hY20gYXBpIGluLWtlcm5lbCBv
+bmx5DQo+IA0KPiBMZXQgbWUgc2VuZCBhIHYyIGRvaW5nIG9ubHkgdGhhdC4NCj4gDQo+ID4+IEZ1
+cnRoZXIsIHdoeSBkbyB3ZSBoYXZlIHJkbWFfc2V0X29wdGlvbigpIHdpdGggb3B0aW9uDQo+IFJE
+TUFfT1BUSU9OX0lEX0FDS19USU1FT1VUID8NCj4gPg0KPiA+IEl0IG1heSBoYXZlIGJlZW4gYSBt
+aXN0YWtlIHRvIGRvIGl0IGxpa2UgdGhhdA0KPiANClRpbWVvdXQgdmFsdWUgZ29lcyBpbiB0aGUg
+Q00gcmVxdWVzdCBtZXNzYWdlIHNvIHNldHRpbmcgaXQgdGhyb3VnaCB0aGUgY21faWQgb2JqZWN0
+IHdhcyBsaWtlbHkgY29ycmVjdC4NClRoaXMgcmVmbGVjdHMgaW50byBjbSBtc2cgYXMgd2VsbCBh
+cyBpbiB0aGUgUVAgb2YgdGhlIGNtX2lkLg0K
