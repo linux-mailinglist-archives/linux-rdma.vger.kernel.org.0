@@ -2,68 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B736D34F654
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Mar 2021 03:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 471DE34F674
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Mar 2021 04:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbhCaBoA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Mar 2021 21:44:00 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14647 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233072AbhCaBno (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Mar 2021 21:43:44 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F98Cz16rnzmbkG;
-        Wed, 31 Mar 2021 09:41:03 +0800 (CST)
-Received: from ubuntu180.huawei.com (10.175.100.227) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 31 Mar 2021 09:43:27 +0800
-From:   Tang Yizhou <tangyizhou@huawei.com>
-To:     <tangyizhou@huawei.com>, Potnuri Bharat Teja <bharat@chelsio.com>,
-        "Doug Ledford" <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next] RDMA/iw_cxgb4: Use DEFINE_SPINLOCK() for spinlock
-Date:   Wed, 31 Mar 2021 10:01:05 +0800
-Message-ID: <20210331020105.4858-1-tangyizhou@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        id S233250AbhCaCDK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Mar 2021 22:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232956AbhCaCDD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Mar 2021 22:03:03 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 28219C061574;
+        Tue, 30 Mar 2021 19:03:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID; bh=DcSskP8B4CWNXBYnK2+AtYODix9KPxwm3sCY
+        rw4gNP0=; b=AeKZgHy2riAm3+brGQVmGiZplE1Rpwyg5HTjlLgDJ14peuBaOPzW
+        xmD3wDXU0sTlSOBd7fhz0TQ2Keo8fVEDQ2CiPR5uESqMPaM/8uy9wiBEBhXfZ0Sg
+        W5ZTt+anrgf5mSzFC+bBytReHQ4F7YsmwH548spFGIQFjxxPxoOW5+c=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Wed, 31 Mar
+ 2021 10:02:57 +0800 (GMT+08:00)
+X-Originating-IP: [202.38.69.14]
+Date:   Wed, 31 Mar 2021 10:02:57 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   lyl2019@mail.ustc.edu.cn
+To:     "David Miller" <davem@davemloft.net>
+Cc:     santosh.shilimkar@oracle.com, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] net/rds: Fix a use after free in
+ rds_message_map_pages
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
+In-Reply-To: <20210330.170228.191449180243560631.davem@davemloft.net>
+References: <20210330101602.22505-1-lyl2019@mail.ustc.edu.cn>
+ <20210330.170228.191449180243560631.davem@davemloft.net>
+X-SendMailWithSms: false
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.100.227]
-X-CFilter-Loop: Reflected
+Message-ID: <3c258c4e.20f4b.1788604fd68.Coremail.lyl2019@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygBnb39R2GNgUL90AA--.5W
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoRBlQhn5kl4AABsr
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-spinlock can be initialized automatically with DEFINE_SPINLOCK()
-rather than explicitly calling spin_lock_init().
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Tang Yizhou <tangyizhou@huawei.com>
----
- drivers/infiniband/hw/cxgb4/cm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-index 81903749d241..c97e84d5db74 100644
---- a/drivers/infiniband/hw/cxgb4/cm.c
-+++ b/drivers/infiniband/hw/cxgb4/cm.c
-@@ -145,7 +145,7 @@ static void connect_reply_upcall(struct c4iw_ep *ep, int status);
- static int sched(struct c4iw_dev *dev, struct sk_buff *skb);
- 
- static LIST_HEAD(timeout_list);
--static spinlock_t timeout_lock;
-+static DEFINE_SPINLOCK(timeout_lock);
- 
- static void deref_cm_id(struct c4iw_ep_common *epc)
- {
-@@ -4451,7 +4451,6 @@ c4iw_handler_func c4iw_handlers[NUM_CPL_CMDS] = {
- 
- int __init c4iw_cm_init(void)
- {
--	spin_lock_init(&timeout_lock);
- 	skb_queue_head_init(&rxq);
- 
- 	workq = alloc_ordered_workqueue("iw_cxgb4", WQ_MEM_RECLAIM);
-
+DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIkRhdmlkIE1pbGxl
+ciIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+DQo+IOWPkemAgeaXtumXtDogMjAyMS0wMy0zMSAwODow
+MjoyOCAo5pif5pyf5LiJKQ0KPiDmlLbku7bkuro6IGx5bDIwMTlAbWFpbC51c3RjLmVkdS5jbg0K
+PiDmioTpgIE6IHNhbnRvc2guc2hpbGlta2FyQG9yYWNsZS5jb20sIGt1YmFAa2VybmVsLm9yZywg
+bmV0ZGV2QHZnZXIua2VybmVsLm9yZywgbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmcsIHJkcy1k
+ZXZlbEBvc3Mub3JhY2xlLmNvbSwgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiDkuLvp
+opg6IFJlOiBbUEFUQ0hdIG5ldC9yZHM6IEZpeCBhIHVzZSBhZnRlciBmcmVlIGluIHJkc19tZXNz
+YWdlX21hcF9wYWdlcw0KPiANCj4gRnJvbTogTHYgWXVubG9uZyA8bHlsMjAxOUBtYWlsLnVzdGMu
+ZWR1LmNuPg0KPiBEYXRlOiBUdWUsIDMwIE1hciAyMDIxIDAzOjE2OjAyIC0wNzAwDQo+IA0KPiA+
+IEBAIC0zNDgsNyArMzQ4LDcgQEAgc3RydWN0IHJkc19tZXNzYWdlICpyZHNfbWVzc2FnZV9tYXBf
+cGFnZXModW5zaWduZWQgbG9uZyAqcGFnZV9hZGRycywgdW5zaWduZWQgaW4NCj4gPiAgCXJtLT5k
+YXRhLm9wX3NnID0gcmRzX21lc3NhZ2VfYWxsb2Nfc2dzKHJtLCBudW1fc2dzKTsNCj4gPiAgCWlm
+IChJU19FUlIocm0tPmRhdGEub3Bfc2cpKSB7DQo+ID4gIAkJcmRzX21lc3NhZ2VfcHV0KHJtKTsN
+Cj4gPiAtCQlyZXR1cm4gRVJSX0NBU1Qocm0tPmRhdGEub3Bfc2cpOw0KPiA+ICsJCXJldHVybiBF
+UlJfUFRSKC1FTk9NRU0pOw0KPiA+ICAJfQ0KPiA+ICANCj4gPiAgCWZvciAoaSA9IDA7IGkgPCBy
+bS0+ZGF0YS5vcF9uZW50czsgKytpKSB7DQo+IA0KPiBNYXliZSBpbnN0ZWFkIGRvOg0KPiANCj4g
+ICAgICAgaW50IGVyciA9IEVSUl9DQVNUKHJtLT5kYXRhLm9wX3NnKTsNCj4gICAgICAgcmRzX21l
+c3NhZ2VfcHV0KHJtKTsNCj4gICAgICAgcmV0dXJuIGVycjsNCj4gDQo+IFRoZW4gaWYgcmRzX21l
+c3NhZ2VfYWxsb2Nfc2dzKCkgc3RhcnRzIHRvIHJldHVybiBvdGhlciBlcnJvcnMsIHRoZXkgd2ls
+bCBwcm9wYWdhdGUuDQo+IA0KPiBUaGFuayB5b3UuDQoNClRoZSB0eXBlIG9mIEVSUl9DQVNUKCkg
+aXMgdm9pZCAqLCBub3QgaW50LiANCkkgdGhpbmsgdGhlIGNvcnJlY3QgcGF0Y2ggaXM6DQoNCiAg
+ICAgICAgdm9pZCAqZXJyID0gRVJSX0NBU1Qocm0tPmRhdGEub3Bfc2cpOw0KICAgICAgICByZHNf
+bWVzc2FnZV9wdXQocm0pOw0KICAgICAgICByZXR1cm4gZXJyOw0KDQpJIGhhdmUgc3VibWl0dGVk
+IHRoZSBQQVRDSCB2MiBmb3IgeW91IHRvIHJldmlldy4NCg0KVGhhbmtzLg0K
