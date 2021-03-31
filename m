@@ -2,84 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 882913507BB
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Mar 2021 22:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393743507C6
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Mar 2021 22:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236325AbhCaUDQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 31 Mar 2021 16:03:16 -0400
-Received: from p3plsmtpa06-04.prod.phx3.secureserver.net ([173.201.192.105]:41590
-        "EHLO p3plsmtpa06-04.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236238AbhCaUCo (ORCPT
+        id S236361AbhCaUGA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 31 Mar 2021 16:06:00 -0400
+Received: from p3plsmtpa06-06.prod.phx3.secureserver.net ([173.201.192.107]:41747
+        "EHLO p3plsmtpa06-06.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236324AbhCaUFj (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 31 Mar 2021 16:02:44 -0400
+        Wed, 31 Mar 2021 16:05:39 -0400
 Received: from [192.168.0.116] ([71.184.94.153])
         by :SMTPAUTH: with ESMTPSA
-        id Rh34lkiXze8QFRh35lc49Y; Wed, 31 Mar 2021 13:02:44 -0700
-X-CMAE-Analysis: v=2.4 cv=JLz+D+Gb c=1 sm=1 tr=0 ts=6064d564
+        id Rh5tlUAzVEYmdRh5ulMGRV; Wed, 31 Mar 2021 13:05:39 -0700
+X-CMAE-Analysis: v=2.4 cv=adukITkt c=1 sm=1 tr=0 ts=6064d613
  a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
- a=IkcTkHD0fZMA:10 a=SEc3moZ4AAAA:8 a=yPCof4ZbAAAA:8 a=C6VLetKAY4Zs1ByzVGIA:9
+ a=IkcTkHD0fZMA:10 a=yPCof4ZbAAAA:8 a=SEc3moZ4AAAA:8 a=98w_-zo1gpfBxod-KXEA:9
  a=QEXdDO2ut3YA:10 a=5oRCH6oROnRZc2VpWJZ3:22
 X-SECURESERVER-ACCT: tom@talpey.com
-Subject: Re: [PATCH v1 3/8] xprtrdma: Put flushed Receives on free list
- instead of destroying them
+Subject: Re: [PATCH v1 1/8] xprtrdma: Avoid Receive Queue wrapping
 To:     Chuck Lever <chuck.lever@oracle.com>, linux-rdma@vger.kernel.org,
         linux-nfs@vger.kernel.org
 References: <161721926778.515226.9805598788670386587.stgit@manet.1015granger.net>
- <161721937732.515226.2170674299158077377.stgit@manet.1015granger.net>
+ <161721936504.515226.14877637433211331378.stgit@manet.1015granger.net>
 From:   Tom Talpey <tom@talpey.com>
-Message-ID: <8dc8bdd3-b006-46ed-cc9f-75fae4df3f40@talpey.com>
-Date:   Wed, 31 Mar 2021 16:02:43 -0400
+Message-ID: <818b4215-d16a-532f-88cf-b65763f50341@talpey.com>
+Date:   Wed, 31 Mar 2021 16:05:38 -0400
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <161721937732.515226.2170674299158077377.stgit@manet.1015granger.net>
+In-Reply-To: <161721936504.515226.14877637433211331378.stgit@manet.1015granger.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfJqm9Y4eYNXtpnh8IVA/QKf/SzRmy01lPLthQ2OhqIKgJDLTTdEpMy4ypk0ZcNjC++7mAs2ym3At+DfmkbHDphmhwDSCCyANiPiivUdpIWEg0Kl6qMoT
- NOXXlVM+Q6k3AQrv0r/nB4a2+KfTIGPhs9Pq2DF/1Eee0h0n8L2yHKmKH5z/waYoXxpe1DMFVwe32d3HYGb/8Mksx8ifnlMdf92Ez9GXFTaFLTLKs3AIDWB4
- GFR4zJ5yF0Ii8K7vFgOvkghDy6ZN7N7Ln3q9/UEdVaM=
+X-CMAE-Envelope: MS4xfDYb9MrwNIASWI1UMiFVC+/YlTvyvRKKOOkEcuQAFCicEuE72i+R4Wh0tSpLcmQ6xQhAZejfbyY7RdFewZ6gYO2egICzRf+T68GMm7ecPM/Blap6caJv
+ q3LlftlpYK1jIWttAHEK3uprXk7h62XgAcfRZXFLhUyhAeHACEJOSqZHMRx1iWXhTPBV42mo9pOI543IMl45XEIUqtuy+8ygsYi/DIbg3ZFzJgQmNwOhnS5P
+ 3fgJUw00QRYC3bLc9YLp2lkDDLSeS3ublflYMNwbXXA=
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 3/31/2021 3:36 PM, Chuck Lever wrote:
-> Defer destruction of an rpcrdma_rep until transport tear-down to
-> avoid races between Receive completion and rpcrdma_reps_unmap().
+> Commit e340c2d6ef2a ("xprtrdma: Reduce the doorbell rate (Receive)")
+> increased the number of Receive WRs that are posted by the client,
+> but did not increase the size of the Receive Queue allocated during
+> transport set-up.
+> 
+> This is usually not an issue because RPCRDMA_BACKWARD_WRS is defined
+> as (32) when SUNRPC_BACKCHANNEL is defined. In cases where it isn't,
+> there is a real risk of Receive Queue wrapping.
+> 
+> Fixes: e340c2d6ef2a ("xprtrdma: Reduce the doorbell rate (Receive)")
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
+>   net/sunrpc/xprtrdma/frwr_ops.c |    1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/net/sunrpc/xprtrdma/frwr_ops.c b/net/sunrpc/xprtrdma/frwr_ops.c
+> index 766a1048a48a..132df9b59ab4 100644
+> --- a/net/sunrpc/xprtrdma/frwr_ops.c
+> +++ b/net/sunrpc/xprtrdma/frwr_ops.c
+> @@ -257,6 +257,7 @@ int frwr_query_device(struct rpcrdma_ep *ep, const struct ib_device *device)
+>   	ep->re_attr.cap.max_send_wr += 1; /* for ib_drain_sq */
+>   	ep->re_attr.cap.max_recv_wr = ep->re_max_requests;
+>   	ep->re_attr.cap.max_recv_wr += RPCRDMA_BACKWARD_WRS;
+> +	ep->re_attr.cap.max_recv_wr += RPCRDMA_MAX_RECV_BATCH;
 
-This seems sketchy, but it's a good approach to destroy in one
-place, and off the hot path. You might restate the description
-in a positive way, not strictly to avoid a race.
+Naively, it seems to me this should be max(BACKWARD, BATCH).
+But, extra WR slots are cheap and safe.
 
 Reviewed-By: Tom Talpey <tom@talpey.com>
 
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> ---
->   net/sunrpc/xprtrdma/verbs.c |    4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
-> index 1d88685badbe..92af272f9cc9 100644
-> --- a/net/sunrpc/xprtrdma/verbs.c
-> +++ b/net/sunrpc/xprtrdma/verbs.c
-> @@ -80,6 +80,8 @@ static void rpcrdma_sendctx_put_locked(struct rpcrdma_xprt *r_xprt,
->   				       struct rpcrdma_sendctx *sc);
->   static int rpcrdma_reqs_setup(struct rpcrdma_xprt *r_xprt);
->   static void rpcrdma_reqs_reset(struct rpcrdma_xprt *r_xprt);
-> +static void rpcrdma_rep_put(struct rpcrdma_buffer *buf,
-> +			    struct rpcrdma_rep *rep);
->   static void rpcrdma_rep_destroy(struct rpcrdma_rep *rep);
->   static void rpcrdma_reps_unmap(struct rpcrdma_xprt *r_xprt);
->   static void rpcrdma_mrs_create(struct rpcrdma_xprt *r_xprt);
-> @@ -205,7 +207,7 @@ static void rpcrdma_wc_receive(struct ib_cq *cq, struct ib_wc *wc)
+>   	ep->re_attr.cap.max_recv_wr += 1; /* for ib_drain_rq */
 >   
->   out_flushed:
->   	rpcrdma_flush_disconnect(r_xprt, wc);
-> -	rpcrdma_rep_destroy(rep);
-> +	rpcrdma_rep_put(&r_xprt->rx_buf, rep);
->   }
->   
->   static void rpcrdma_update_cm_private(struct rpcrdma_ep *ep,
+>   	ep->re_max_rdma_segs =
 > 
 > 
 > 
