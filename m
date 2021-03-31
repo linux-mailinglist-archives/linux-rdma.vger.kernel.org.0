@@ -2,79 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471DE34F674
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Mar 2021 04:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CE834F71A
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Mar 2021 05:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233250AbhCaCDK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Mar 2021 22:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
+        id S233240AbhCaDEf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Mar 2021 23:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232956AbhCaCDD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Mar 2021 22:03:03 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 28219C061574;
-        Tue, 30 Mar 2021 19:03:01 -0700 (PDT)
+        with ESMTP id S233285AbhCaDEM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Mar 2021 23:04:12 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6934C061574
+        for <linux-rdma@vger.kernel.org>; Tue, 30 Mar 2021 20:04:11 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id h6-20020a0568300346b02901b71a850ab4so17624339ote.6
+        for <linux-rdma@vger.kernel.org>; Tue, 30 Mar 2021 20:04:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID; bh=DcSskP8B4CWNXBYnK2+AtYODix9KPxwm3sCY
-        rw4gNP0=; b=AeKZgHy2riAm3+brGQVmGiZplE1Rpwyg5HTjlLgDJ14peuBaOPzW
-        xmD3wDXU0sTlSOBd7fhz0TQ2Keo8fVEDQ2CiPR5uESqMPaM/8uy9wiBEBhXfZ0Sg
-        W5ZTt+anrgf5mSzFC+bBytReHQ4F7YsmwH548spFGIQFjxxPxoOW5+c=
-Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Wed, 31 Mar
- 2021 10:02:57 +0800 (GMT+08:00)
-X-Originating-IP: [202.38.69.14]
-Date:   Wed, 31 Mar 2021 10:02:57 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   lyl2019@mail.ustc.edu.cn
-To:     "David Miller" <davem@davemloft.net>
-Cc:     santosh.shilimkar@oracle.com, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] net/rds: Fix a use after free in
- rds_message_map_pages
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
- 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
-In-Reply-To: <20210330.170228.191449180243560631.davem@davemloft.net>
-References: <20210330101602.22505-1-lyl2019@mail.ustc.edu.cn>
- <20210330.170228.191449180243560631.davem@davemloft.net>
-X-SendMailWithSms: false
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b8omA/YSqx4wTGJFmK0esOSMI5XQV9zFKyIgHeFad04=;
+        b=QS1QE7VSBBicOSGxUZ6vT3TBCAqxZYJCkRasWP2+IsPrhqeZPLWI/obqfVe7KW415P
+         hHEgh6VlTSoVnE+0ByXt7utwuwhVcXTcwTwEY/jex3mu6L4n3ey70U+eiFSQMkpsPJO7
+         XinMezRt9vsBHI+9ItBIU/XqVbRsIJGInY8yJJTSJB0HtHDL+9uuVheU/5KoBAXqdk4A
+         HpNnYft8skCGrxDGofPg2CR1mbVKQHuSidwwTcbWTOXz8Kq2fj2E8BaghynWqdVRtXhp
+         9q8FE1HfJCohdS19EiQaCDf8C5NC75X/PPyBVLNF1MryMljqJH7z0e+KtG0n9WdDOHoZ
+         sJvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b8omA/YSqx4wTGJFmK0esOSMI5XQV9zFKyIgHeFad04=;
+        b=Hj9peL2sDWV4sJ1LbRsfYUMTWiW2TUCUgYJKoOHo4lcXJ28mZdrBb1uAVZSAr2vj+h
+         /E8SN8oPS4UTJmB+S7G+bn/+2DgRStnZdXp5ioBym1Dmm2MaGJYQoahOsOsZBCdoHo9p
+         7y5CbPl1MAHtT3kePGtv8FNqDRdyi+qBcYUf7qCzX6IhJLXm3u1AxtKAWNiSTzXrL2Qa
+         Ky35JoHV1A15IluLIyfAy+slkrdu8zNJcHSXMQ79oobDQlkuNfrJd6PRKReP+wD7OGmz
+         GsBOdllT3Avh23EkGlXhEoRmycyJs2ZBPPcyraQmBjlid1blbH8oQxLSYnmmeN1IEkQB
+         eEvg==
+X-Gm-Message-State: AOAM530lESkmVBC6Da4nXngNe5hiVBW6OzZasNsA5NdONrU/XNmotqMs
+        0bfh0YyEyxRPy8w0pE3125M0nnVLemwmA0obIns=
+X-Google-Smtp-Source: ABdhPJyg92emRJZGF7WQ3vdDVixCIl5Gzq+O0H9r+3B3dBLoWBzLz21GqXSI6GQ+POFwZB0NtgawS8PCVwlNtxI05os=
+X-Received: by 2002:a9d:28d:: with SMTP id 13mr873278otl.278.1617159851417;
+ Tue, 30 Mar 2021 20:04:11 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <3c258c4e.20f4b.1788604fd68.Coremail.lyl2019@mail.ustc.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: LkAmygBnb39R2GNgUL90AA--.5W
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoRBlQhn5kl4AABsr
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+References: <20210326024405.3870-1-yanjun.zhu@intel.com>
+In-Reply-To: <20210326024405.3870-1-yanjun.zhu@intel.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Wed, 31 Mar 2021 11:04:00 +0800
+Message-ID: <CAD=hENcqV+9iTi-EzX7axRwhGXPT0XffzL0tjDv4RrO3_c9A6w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] RDMA/addr: Disable ipv6 features when ipv6.disable
+ set in cmdline
+To:     Zhu Yanjun <yanjun.zhu@intel.com>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIkRhdmlkIE1pbGxl
-ciIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+DQo+IOWPkemAgeaXtumXtDogMjAyMS0wMy0zMSAwODow
-MjoyOCAo5pif5pyf5LiJKQ0KPiDmlLbku7bkuro6IGx5bDIwMTlAbWFpbC51c3RjLmVkdS5jbg0K
-PiDmioTpgIE6IHNhbnRvc2guc2hpbGlta2FyQG9yYWNsZS5jb20sIGt1YmFAa2VybmVsLm9yZywg
-bmV0ZGV2QHZnZXIua2VybmVsLm9yZywgbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmcsIHJkcy1k
-ZXZlbEBvc3Mub3JhY2xlLmNvbSwgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiDkuLvp
-opg6IFJlOiBbUEFUQ0hdIG5ldC9yZHM6IEZpeCBhIHVzZSBhZnRlciBmcmVlIGluIHJkc19tZXNz
-YWdlX21hcF9wYWdlcw0KPiANCj4gRnJvbTogTHYgWXVubG9uZyA8bHlsMjAxOUBtYWlsLnVzdGMu
-ZWR1LmNuPg0KPiBEYXRlOiBUdWUsIDMwIE1hciAyMDIxIDAzOjE2OjAyIC0wNzAwDQo+IA0KPiA+
-IEBAIC0zNDgsNyArMzQ4LDcgQEAgc3RydWN0IHJkc19tZXNzYWdlICpyZHNfbWVzc2FnZV9tYXBf
-cGFnZXModW5zaWduZWQgbG9uZyAqcGFnZV9hZGRycywgdW5zaWduZWQgaW4NCj4gPiAgCXJtLT5k
-YXRhLm9wX3NnID0gcmRzX21lc3NhZ2VfYWxsb2Nfc2dzKHJtLCBudW1fc2dzKTsNCj4gPiAgCWlm
-IChJU19FUlIocm0tPmRhdGEub3Bfc2cpKSB7DQo+ID4gIAkJcmRzX21lc3NhZ2VfcHV0KHJtKTsN
-Cj4gPiAtCQlyZXR1cm4gRVJSX0NBU1Qocm0tPmRhdGEub3Bfc2cpOw0KPiA+ICsJCXJldHVybiBF
-UlJfUFRSKC1FTk9NRU0pOw0KPiA+ICAJfQ0KPiA+ICANCj4gPiAgCWZvciAoaSA9IDA7IGkgPCBy
-bS0+ZGF0YS5vcF9uZW50czsgKytpKSB7DQo+IA0KPiBNYXliZSBpbnN0ZWFkIGRvOg0KPiANCj4g
-ICAgICAgaW50IGVyciA9IEVSUl9DQVNUKHJtLT5kYXRhLm9wX3NnKTsNCj4gICAgICAgcmRzX21l
-c3NhZ2VfcHV0KHJtKTsNCj4gICAgICAgcmV0dXJuIGVycjsNCj4gDQo+IFRoZW4gaWYgcmRzX21l
-c3NhZ2VfYWxsb2Nfc2dzKCkgc3RhcnRzIHRvIHJldHVybiBvdGhlciBlcnJvcnMsIHRoZXkgd2ls
-bCBwcm9wYWdhdGUuDQo+IA0KPiBUaGFuayB5b3UuDQoNClRoZSB0eXBlIG9mIEVSUl9DQVNUKCkg
-aXMgdm9pZCAqLCBub3QgaW50LiANCkkgdGhpbmsgdGhlIGNvcnJlY3QgcGF0Y2ggaXM6DQoNCiAg
-ICAgICAgdm9pZCAqZXJyID0gRVJSX0NBU1Qocm0tPmRhdGEub3Bfc2cpOw0KICAgICAgICByZHNf
-bWVzc2FnZV9wdXQocm0pOw0KICAgICAgICByZXR1cm4gZXJyOw0KDQpJIGhhdmUgc3VibWl0dGVk
-IHRoZSBQQVRDSCB2MiBmb3IgeW91IHRvIHJldmlldy4NCg0KVGhhbmtzLg0K
+On Thu, Mar 25, 2021 at 6:19 PM Zhu Yanjun <yanjun.zhu@intel.com> wrote:
+>
+> From: Zhu Yanjun <zyjzyj2000@gmail.com>
+>
+> When ipv6.disable=1 is set in cmdline, ipv6 is actually disabled
+> in the stack. As such, the operations of ipv6 will fail.
+> So ipv6 features in addr should also be disabled.
+>
+> Fixes: caf1e3ae9fa6 ("RDMA/core Introduce and use rdma_find_ndev_for_src_ip_rcu")
+> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+
+Hi, Jason
+
+Gently ping
+
+> Signed-off-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+> ---
+>  drivers/infiniband/core/addr.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
+> index 0abce004a959..6fa57b83c4b1 100644
+> --- a/drivers/infiniband/core/addr.c
+> +++ b/drivers/infiniband/core/addr.c
+> @@ -257,6 +257,9 @@ rdma_find_ndev_for_src_ip_rcu(struct net *net, const struct sockaddr *src_in)
+>                 break;
+>  #if IS_ENABLED(CONFIG_IPV6)
+>         case AF_INET6:
+> +               if (!ipv6_mod_enabled())
+> +                       return ERR_PTR(-EPFNOSUPPORT);
+> +
+>                 for_each_netdev_rcu(net, dev) {
+>                         if (ipv6_chk_addr(net,
+>                                           &((const struct sockaddr_in6 *)src_in)->sin6_addr,
+> @@ -424,6 +427,9 @@ static int addr6_resolve(struct sockaddr *src_sock,
+>         struct flowi6 fl6;
+>         struct dst_entry *dst;
+>
+> +       if (!ipv6_mod_enabled())
+> +               return -EADDRNOTAVAIL;
+> +
+>         memset(&fl6, 0, sizeof fl6);
+>         fl6.daddr = dst_in->sin6_addr;
+>         fl6.saddr = src_in->sin6_addr;
+> --
+> 2.27.0
+>
