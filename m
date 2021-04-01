@@ -2,344 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C549A351123
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Apr 2021 10:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C294F3513F4
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Apr 2021 12:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbhDAIua (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Apr 2021 04:50:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38082 "EHLO mail.kernel.org"
+        id S233710AbhDAKz1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Apr 2021 06:55:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233742AbhDAIuK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 1 Apr 2021 04:50:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59D0D6100C;
-        Thu,  1 Apr 2021 08:50:09 +0000 (UTC)
+        id S234089AbhDAKy4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 1 Apr 2021 06:54:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47C8D60FE8;
+        Thu,  1 Apr 2021 10:54:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617267010;
-        bh=ERx6+N+ItWtYfWUAaSdxqdHqdkhF41hV078dKGopdcQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SUbcpQelHVgemAjKb2kw0MN06Myz+Gr9m1wwA5GYlcSLbPpYcMlKQiZynxHsR0uwB
-         UeIIcPRnb8nwK32otpP4hXHIs9g0vy2dS+LffT+8hFBmZpiYn78//M41tQPS75uy9D
-         58wc4nSrxEJnROH1UNgGYOumWiFBTVt1PIsUvmf6pw0gAYBb+rg/6thZoOfR3v7cXu
-         UFKc6P8dBnDoqcM4Qpg5uOR+P/ylUJJIT9XzISmJ3bvRQnaax3H/2IsPnVtIcFTiNt
-         6yGQKWWfcc+XL6raV1dno+ZXfZc7Y1y1ysISDQlgLcp97MTYGyPbdK+KKkHawwzl+J
-         bUzS+r/4no4aQ==
+        s=k20201202; t=1617274460;
+        bh=LA75qGjL7UJw7E44jyn84WVVIzJMfOiXhPebs8eNjHc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Yrt3ghRSgrfMP5zoFkZWkHThnDJsyuv8M8M+ts37a+z2kbHroNiO46EExzl5+BAUV
+         Epx+I5nyMf1iBTSqBjBZvGcf75GQm/Ixawn1yBuEi+17gs76xYPAZXq2yHogJNcIBm
+         Rtj0SRlV/JUvfdugX+77+9z7kVoiijjljn6v2PulNaBH4ZA6bedwkrKLv2MS+nyNm5
+         FHd1PTTwluwFE1ikC9r+cwNW8Ijrny7bbBp+CiN/0Vp7VQM01A47aDcpI5uC3MDnCB
+         Zy088J+v91XU4t4JCQF6xIoD7keHV491APyQOKhmczc+2aNcKruXZwXP7ZR944+GXR
+         gLclVDMEFS72w==
+Date:   Thu, 1 Apr 2021 13:54:16 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Mark Bloch <mbloch@nvidia.com>, linux-api@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>
-Subject: [PATCH rdma-next v2] RDMA/mlx5: Expose private query port
-Date:   Thu,  1 Apr 2021 11:50:04 +0300
-Message-Id: <20210401085004.577338-1-leon@kernel.org>
-X-Mailer: git-send-email 2.30.2
+To:     =?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>
+Cc:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org,
+        Parav Pandit <parav@nvidia.com>, netdev@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next v3 1/2] IB/cma: Introduce
+ rdma_set_min_rnr_timer()
+Message-ID: <YGWmWPx71CqNRSKZ@unreal>
+References: <1617216194-12890-1-git-send-email-haakon.bugge@oracle.com>
+ <1617216194-12890-2-git-send-email-haakon.bugge@oracle.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1617216194-12890-2-git-send-email-haakon.bugge@oracle.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mark Bloch <mbloch@nvidia.com>
+On Wed, Mar 31, 2021 at 08:43:13PM +0200, Håkon Bugge wrote:
+> Introduce the ability for kernel ULPs to adjust the minimum RNR Retry
+> timer. The INIT -> RTR transition executed by RDMA CM will be used for
+> this adjustment. This avoids an additional ib_modify_qp() call.
+> 
+> rdma_set_min_rnr_timer() must be called before the call to
+> rdma_connect() on the active side and before the call to rdma_accept()
+> on the passive side.
+> 
+> The default value of RNR Retry timer is zero, which translates to 655
+> ms. When the receiver is not ready to accept a send messages, it
+> encodes the RNR Retry timer value in the NAK. The requestor will then
+> wait at least the specified time value before retrying the send.
+> 
+> The 5-bit value to be supplied to the rdma_set_min_rnr_timer() is
+> documented in IBTA Table 45: "Encoding for RNR NAK Timer Field".
+> 
+> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+> Acked-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  drivers/infiniband/core/cma.c      | 41 ++++++++++++++++++++++++++++++++++++++
+>  drivers/infiniband/core/cma_priv.h |  2 ++
+>  include/rdma/rdma_cm.h             |  2 ++
+>  3 files changed, 45 insertions(+)
+> 
+> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+> index 9409651..5ce097d 100644
+> --- a/drivers/infiniband/core/cma.c
+> +++ b/drivers/infiniband/core/cma.c
+> @@ -852,6 +852,7 @@ static void cma_id_put(struct rdma_id_private *id_priv)
+>  	id_priv->id.qp_type = qp_type;
+>  	id_priv->tos_set = false;
+>  	id_priv->timeout_set = false;
+> +	id_priv->min_rnr_timer_set = false;
+>  	id_priv->gid_type = IB_GID_TYPE_IB;
+>  	spin_lock_init(&id_priv->lock);
+>  	mutex_init(&id_priv->qp_mutex);
+> @@ -1141,6 +1142,9 @@ int rdma_init_qp_attr(struct rdma_cm_id *id, struct ib_qp_attr *qp_attr,
+>  	if ((*qp_attr_mask & IB_QP_TIMEOUT) && id_priv->timeout_set)
+>  		qp_attr->timeout = id_priv->timeout;
+>  
+> +	if ((*qp_attr_mask & IB_QP_MIN_RNR_TIMER) && id_priv->min_rnr_timer_set)
+> +		qp_attr->min_rnr_timer = id_priv->min_rnr_timer;
+> +
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL(rdma_init_qp_attr);
+> @@ -2615,6 +2619,43 @@ int rdma_set_ack_timeout(struct rdma_cm_id *id, u8 timeout)
+>  }
+>  EXPORT_SYMBOL(rdma_set_ack_timeout);
+>  
+> +/**
+> + * rdma_set_min_rnr_timer() - Set the minimum RNR Retry timer of the
+> + *			      QP associated with a connection identifier.
+> + * @id: Communication identifier to associated with service type.
+> + * @min_rnr_timer: 5-bit value encoded as Table 45: "Encoding for RNR NAK
+> + *		   Timer Field" in the IBTA specification.
+> + *
+> + * This function should be called before rdma_connect() on active
+> + * side, and on passive side before rdma_accept(). The timer value
+> + * will be associated with the local QP. When it receives a send it is
+> + * not read to handle, typically if the receive queue is empty, an RNR
+> + * Retry NAK is returned to the requester with the min_rnr_timer
+> + * encoded. The requester will then wait at least the time specified
+> + * in the NAK before retrying. The default is zero, which translates
+> + * to a minimum RNR Timer value of 655 ms.
+> + *
+> + * Return: 0 for success
+> + */
+> +int rdma_set_min_rnr_timer(struct rdma_cm_id *id, u8 min_rnr_timer)
+> +{
+> +	struct rdma_id_private *id_priv;
+> +
+> +	/* It is a five-bit value */
+> +	if (min_rnr_timer & 0xe0)
+> +		return -EINVAL;
+> +
+> +	if (id->qp_type != IB_QPT_RC && id->qp_type != IB_QPT_XRC_TGT)
+> +		return -EINVAL;
 
-Expose a non standard query port via IOCTL that will be used to expose
-port attributes that are specific to mlx5 devices.
+This is in-kernel API and safe to use WARN_ON() instead of returning
+error which RDS is not checking anyway.
 
-The new interface receives a port number to query and returns a
-structure that contains the available attributes for that port.
-This will be used to fill the gap between pure DEVX use cases
-and use cases where a kernel needs to inform userspace about
-various kernel driver configurations that userspace must use
-in order to work correctly.
-
-Flags is used to indicate which fields are valid on return.
-
-MLX5_IB_UAPI_QUERY_PORT_VPORT:
-	The vport number of the queered port.
-
-MLX5_IB_UAPI_QUERY_PORT_VPORT_VHCA_ID:
-	The VHCA ID of the vport of the queered port.
-
-MLX5_IB_UAPI_QUERY_PORT_VPORT_STEERING_ICM_RX:
-	The vport's RX ICM address used for sw steering.
-
-MLX5_IB_UAPI_QUERY_PORT_VPORT_STEERING_ICM_TX:
-	The vport's TX ICM address used for sw steering.
-
-MLX5_IB_UAPI_QUERY_PORT_VPORT_REG_C0:
-	The metadata used to tag egress packets of the vport.
-
-MLX5_IB_UAPI_QUERY_PORT_ESW_OWNER_VHCA_ID:
-	The E-Switch owner vhca id of the vport.
-
-Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Mark Bloch <mbloch@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
-Changelog:
-v2:
- * Changed __u64 to be __aligned_u64 in the uapi header
-v1: https://lore.kernel.org/linux-api/20210322093932.398466-1-leon@kernel.org
- * Missed sw_owner check for CX-6 device, fixed it.
-v0: https://lore.kernel.org/linux-api/20210318135221.681014-1-leon@kernel.org
----
- drivers/infiniband/hw/mlx5/std_types.c    | 177 ++++++++++++++++++++++
- include/uapi/rdma/mlx5_user_ioctl_cmds.h  |   9 ++
- include/uapi/rdma/mlx5_user_ioctl_verbs.h |  25 +++
- 3 files changed, 211 insertions(+)
-
-diff --git a/drivers/infiniband/hw/mlx5/std_types.c b/drivers/infiniband/hw/mlx5/std_types.c
-index 16145fda68d0..655b4bef5dee 100644
---- a/drivers/infiniband/hw/mlx5/std_types.c
-+++ b/drivers/infiniband/hw/mlx5/std_types.c
-@@ -7,6 +7,8 @@
- #include <rdma/mlx5_user_ioctl_cmds.h>
- #include <rdma/mlx5_user_ioctl_verbs.h>
- #include <linux/mlx5/driver.h>
-+#include <linux/mlx5/eswitch.h>
-+#include <linux/mlx5/vport.h>
- #include "mlx5_ib.h"
- 
- #define UVERBS_MODULE_NAME mlx5_ib
-@@ -23,6 +25,178 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_PD_QUERY)(
- 			      &mpd->pdn, sizeof(mpd->pdn));
- }
- 
-+static int fill_vport_icm_addr(struct mlx5_core_dev *mdev, u16 vport,
-+			       struct mlx5_ib_uapi_query_port *info)
-+{
-+	u32 out[MLX5_ST_SZ_DW(query_esw_vport_context_out)] = {};
-+	u32 in[MLX5_ST_SZ_DW(query_esw_vport_context_in)] = {};
-+	bool sw_owner_supp;
-+	u64 icm_rx;
-+	u64 icm_tx;
-+	int err;
-+
-+	sw_owner_supp = MLX5_CAP_ESW_FLOWTABLE_FDB(mdev, sw_owner) ||
-+			MLX5_CAP_ESW_FLOWTABLE_FDB(mdev, sw_owner_v2);
-+
-+	if (vport == MLX5_VPORT_UPLINK) {
-+		icm_rx = MLX5_CAP64_ESW_FLOWTABLE(mdev,
-+			sw_steering_uplink_icm_address_rx);
-+		icm_tx = MLX5_CAP64_ESW_FLOWTABLE(mdev,
-+			sw_steering_uplink_icm_address_tx);
-+	} else {
-+		MLX5_SET(query_esw_vport_context_in, in, opcode,
-+			 MLX5_CMD_OP_QUERY_ESW_VPORT_CONTEXT);
-+		MLX5_SET(query_esw_vport_context_in, in, vport_number, vport);
-+		MLX5_SET(query_esw_vport_context_in, in, other_vport, true);
-+
-+		err = mlx5_cmd_exec_inout(mdev, query_esw_vport_context, in,
-+					  out);
-+
-+		if (err)
-+			return err;
-+
-+		icm_rx = MLX5_GET64(
-+			query_esw_vport_context_out, out,
-+			esw_vport_context.sw_steering_vport_icm_address_rx);
-+
-+		icm_tx = MLX5_GET64(
-+			query_esw_vport_context_out, out,
-+			esw_vport_context.sw_steering_vport_icm_address_tx);
-+	}
-+
-+	if (sw_owner_supp && icm_rx) {
-+		info->vport_steering_icm_rx = icm_rx;
-+		info->flags |=
-+			MLX5_IB_UAPI_QUERY_PORT_VPORT_STEERING_ICM_RX;
-+	}
-+
-+	if (sw_owner_supp && icm_tx) {
-+		info->vport_steering_icm_tx = icm_tx;
-+		info->flags |=
-+			MLX5_IB_UAPI_QUERY_PORT_VPORT_STEERING_ICM_TX;
-+	}
-+
-+	return 0;
-+}
-+
-+static int fill_vport_vhca_id(struct mlx5_core_dev *mdev, u16 vport,
-+			      struct mlx5_ib_uapi_query_port *info)
-+{
-+	size_t out_sz = MLX5_ST_SZ_BYTES(query_hca_cap_out);
-+	u32 in[MLX5_ST_SZ_DW(query_hca_cap_in)] = {};
-+	void *out;
-+	int err;
-+
-+	out = kzalloc(out_sz, GFP_KERNEL);
-+	if (!out)
-+		return -ENOMEM;
-+
-+	MLX5_SET(query_hca_cap_in, in, opcode, MLX5_CMD_OP_QUERY_HCA_CAP);
-+	MLX5_SET(query_hca_cap_in, in, other_function, true);
-+	MLX5_SET(query_hca_cap_in, in, function_id, vport);
-+	MLX5_SET(query_hca_cap_in, in, op_mod,
-+		 MLX5_SET_HCA_CAP_OP_MOD_GENERAL_DEVICE |
-+		 HCA_CAP_OPMOD_GET_CUR);
-+
-+	err = mlx5_cmd_exec(mdev, in, sizeof(in), out, out_sz);
-+	if (err)
-+		goto out;
-+
-+	info->vport_vhca_id = MLX5_GET(query_hca_cap_out, out,
-+				       capability.cmd_hca_cap.vhca_id);
-+
-+	info->flags |= MLX5_IB_UAPI_QUERY_PORT_VPORT_VHCA_ID;
-+out:
-+	kfree(out);
-+	return err;
-+}
-+
-+static int fill_switchdev_info(struct mlx5_ib_dev *dev, u32 port_num,
-+			       struct mlx5_ib_uapi_query_port *info)
-+{
-+	struct mlx5_core_dev *mdev = dev->mdev;
-+	struct mlx5_eswitch_rep *rep;
-+	int err;
-+
-+	rep = dev->port[port_num - 1].rep;
-+	if (!rep)
-+		return -EOPNOTSUPP;
-+
-+	info->vport = rep->vport;
-+	info->flags |= MLX5_IB_UAPI_QUERY_PORT_VPORT;
-+
-+	if (rep->vport != MLX5_VPORT_UPLINK) {
-+		err = fill_vport_vhca_id(mdev, rep->vport, info);
-+		if (err)
-+			return err;
-+	}
-+
-+	info->esw_owner_vhca_id = MLX5_CAP_GEN(mdev, vhca_id);
-+	info->flags |= MLX5_IB_UAPI_QUERY_PORT_ESW_OWNER_VHCA_ID;
-+
-+	err = fill_vport_icm_addr(mdev, rep->vport, info);
-+	if (err)
-+		return err;
-+
-+	if (mlx5_eswitch_vport_match_metadata_enabled(mdev->priv.eswitch)) {
-+		info->reg_c0.value = mlx5_eswitch_get_vport_metadata_for_match(
-+			mdev->priv.eswitch, rep->vport);
-+		info->reg_c0.mask = mlx5_eswitch_get_vport_metadata_mask();
-+		info->flags |= MLX5_IB_UAPI_QUERY_PORT_VPORT_REG_C0;
-+	}
-+
-+	return 0;
-+}
-+
-+static int UVERBS_HANDLER(MLX5_IB_METHOD_QUERY_PORT)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct mlx5_ib_uapi_query_port *info;
-+	struct mlx5_ib_ucontext *c;
-+	struct mlx5_ib_dev *dev;
-+	u32 port_num;
-+	int ret;
-+
-+	if (uverbs_copy_from(&port_num, attrs,
-+			     MLX5_IB_ATTR_QUERY_PORT_PORT_NUM))
-+		return -EFAULT;
-+
-+	c = to_mucontext(ib_uverbs_get_ucontext(attrs));
-+	if (IS_ERR(c))
-+		return PTR_ERR(c);
-+	dev = to_mdev(c->ibucontext.device);
-+
-+	if (!rdma_is_port_valid(&dev->ib_dev, port_num))
-+		return -EINVAL;
-+
-+	info = uverbs_zalloc(attrs, sizeof(*info));
-+	if (IS_ERR(info))
-+		return PTR_ERR(info);
-+
-+	if (mlx5_eswitch_mode(dev->mdev) == MLX5_ESWITCH_OFFLOADS) {
-+		ret = fill_switchdev_info(dev, port_num, info);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return uverbs_copy_to(attrs, MLX5_IB_ATTR_QUERY_PORT, info,
-+			      sizeof(*info));
-+}
-+
-+DECLARE_UVERBS_NAMED_METHOD(
-+	MLX5_IB_METHOD_QUERY_PORT,
-+	UVERBS_ATTR_PTR_IN(MLX5_IB_ATTR_QUERY_PORT_PORT_NUM,
-+			   UVERBS_ATTR_TYPE(u32), UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(
-+		MLX5_IB_ATTR_QUERY_PORT,
-+		UVERBS_ATTR_STRUCT(struct mlx5_ib_uapi_query_port,
-+				   reg_c0),
-+		UA_MANDATORY));
-+
-+ADD_UVERBS_METHODS(mlx5_ib_device,
-+		   UVERBS_OBJECT_DEVICE,
-+		   &UVERBS_METHOD(MLX5_IB_METHOD_QUERY_PORT));
-+
- DECLARE_UVERBS_NAMED_METHOD(
- 	MLX5_IB_METHOD_PD_QUERY,
- 	UVERBS_ATTR_IDR(MLX5_IB_ATTR_QUERY_PD_HANDLE,
-@@ -41,5 +215,8 @@ const struct uapi_definition mlx5_ib_std_types_defs[] = {
- 	UAPI_DEF_CHAIN_OBJ_TREE(
- 		UVERBS_OBJECT_PD,
- 		&mlx5_ib_pd),
-+	UAPI_DEF_CHAIN_OBJ_TREE(
-+		UVERBS_OBJECT_DEVICE,
-+		&mlx5_ib_device),
- 	{},
- };
-diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-index 3798cbcb9021..ca2372864b70 100644
---- a/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-@@ -320,4 +320,13 @@ enum mlx5_ib_pd_methods {
- 
- };
- 
-+enum mlx5_ib_device_methods {
-+	MLX5_IB_METHOD_QUERY_PORT = (1U << UVERBS_ID_NS_SHIFT),
-+};
-+
-+enum mlx5_ib_query_port_attrs {
-+	MLX5_IB_ATTR_QUERY_PORT_PORT_NUM = (1U << UVERBS_ID_NS_SHIFT),
-+	MLX5_IB_ATTR_QUERY_PORT,
-+};
-+
- #endif
-diff --git a/include/uapi/rdma/mlx5_user_ioctl_verbs.h b/include/uapi/rdma/mlx5_user_ioctl_verbs.h
-index 8ac253dc2495..7af9e09ea556 100644
---- a/include/uapi/rdma/mlx5_user_ioctl_verbs.h
-+++ b/include/uapi/rdma/mlx5_user_ioctl_verbs.h
-@@ -84,5 +84,30 @@ enum mlx5_ib_uapi_uar_alloc_type {
- 	MLX5_IB_UAPI_UAR_ALLOC_TYPE_NC = 0x1,
- };
- 
-+enum mlx5_ib_uapi_query_port_flags {
-+	MLX5_IB_UAPI_QUERY_PORT_VPORT			= 1 << 0,
-+	MLX5_IB_UAPI_QUERY_PORT_VPORT_VHCA_ID		= 1 << 1,
-+	MLX5_IB_UAPI_QUERY_PORT_VPORT_STEERING_ICM_RX	= 1 << 2,
-+	MLX5_IB_UAPI_QUERY_PORT_VPORT_STEERING_ICM_TX	= 1 << 3,
-+	MLX5_IB_UAPI_QUERY_PORT_VPORT_REG_C0		= 1 << 4,
-+	MLX5_IB_UAPI_QUERY_PORT_ESW_OWNER_VHCA_ID	= 1 << 5,
-+};
-+
-+struct mlx5_ib_uapi_reg {
-+	__u32 value;
-+	__u32 mask;
-+};
-+
-+struct mlx5_ib_uapi_query_port {
-+	__aligned_u64 flags;
-+	__u16 vport;
-+	__u16 vport_vhca_id;
-+	__u16 esw_owner_vhca_id;
-+	__u16 rsvd0;
-+	__aligned_u64 vport_steering_icm_rx;
-+	__aligned_u64 vport_steering_icm_tx;
-+	struct mlx5_ib_uapi_reg reg_c0;
-+};
-+
- #endif
- 
--- 
-2.30.2
-
+Thanks
