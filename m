@@ -2,226 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C24351855
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Apr 2021 19:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 982DC35186C
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Apr 2021 19:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234541AbhDARpl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Apr 2021 13:45:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234554AbhDARiA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:38:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4156060FE9;
-        Thu,  1 Apr 2021 11:49:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617277761;
-        bh=EPJNwswEK3h3kT/GAaC4gGLGB4JsVi5vkwcbC4qJ+gc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SN6ebFFYdpXC2UgZWgK0FeQoi2POcoYkUGaKApeATMNlqher71O6Z2tPhH38GiHMv
-         TH0avdiy7E3oU4BpD54K0RWVuf4eglisvGF6fEFLNF8a8CweTkKOSmF8ptzNMrfbqc
-         id1fUXBj2TD3UlFlNfj2pOO8DmO1QCXbbs0je+OC6GmT/yyKp+ytJpeu/8yLRnL5Iz
-         mlIHmNx49uctrLSKUoQIawjkdb5STWWS/RXZcAGMIDDeDmNos5lJyJjyXz5nL5WIiA
-         YGxBGMFTnhZ3raBm18sZlucFiYr/y2pjLDz8qU++3vKLE6hE0Wt8vq2ELxlrCdVWBt
-         lFaBAk/DbZiyQ==
-Date:   Thu, 1 Apr 2021 14:49:18 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Don Dutile <ddutile@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
-Message-ID: <YGWzPklSzw97gI3D@unreal>
-References: <YGP1p7KH+/gL4NAU@unreal>
- <20210401012340.GA1423690@bjorn-Precision-5520>
+        id S234856AbhDARpt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Apr 2021 13:45:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234335AbhDARmW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Apr 2021 13:42:22 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDF2C0610D2
+        for <linux-rdma@vger.kernel.org>; Thu,  1 Apr 2021 05:33:18 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id c3so1961798qkc.5
+        for <linux-rdma@vger.kernel.org>; Thu, 01 Apr 2021 05:33:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=p0QqWS0N6IsUJZgRGUR4Cwf5bkhOxI7VHZf3Wl7c1Rc=;
+        b=iM/WVNjfmC1XcS0o4fQrwZGkSArUXWThk7HiT4f8r427ae1btK51gMMX0mpOEzUX2i
+         Bqi3Hz9DBWASaCC9GG0Kqn3NALRn7D4mfkwlZn1oTWSKOogcFbCygtXY65vOsu+o7o/x
+         MHWI9BwMbJS1KARKQvOcqGVtrH9Flb4wr7oB+ul24s+6h1TZ4VZl7tuPdLOhJoDVDDhi
+         rqBUH/UP7J+XKuO9NLAIXUEIWeKV7xBivkRObAjZM4+Jivzmvc81UCMXg2rDhlRVNAXI
+         uvENrF9OdI1mswADwKLJKWyEefOvEXFrQvdn/RL3N1IdDYjSm4B2xHdz9LyRG2DcI6fn
+         1/kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=p0QqWS0N6IsUJZgRGUR4Cwf5bkhOxI7VHZf3Wl7c1Rc=;
+        b=l9cgl+v8CdVkWgwpLyEQRWcboKi7P31heCONN/RKkpmsRL+lpyCnmODxiOP0p/1Q3S
+         d70KxYFgVE5RMwYuc54B3dmsQjpVh81YTmTElckh5bN/PIBa45h/4ERdGwzzImWWMMvj
+         a9QLn3xqAOlIEyIJkl+kTVjLNdh7kDZ+PRlz8pmiBnwSq1P64O1LiYHMRKJ9XtL6AE4T
+         SIe0M4gXUyNeU3VM87FrzOsszP0tPAxVhQMVKK7t2H05tTk2yhSxlSCtoizHZSLURLIg
+         T5cfTnDdh8oTGFiBhGetHsdXHmL3GDTV59Rjup4FHTEw1L/P5npi3IGa5V2b/iBYHCOK
+         FJJA==
+X-Gm-Message-State: AOAM531raKKcyW30JccqR8X73X7pHwa13Cl66byuKRCaBY8IpAqQR2z1
+        +QqODeKebk0LNN/1X1M87zabhQ==
+X-Google-Smtp-Source: ABdhPJz8RR2FBVwxWdXUBMUklh+FsYymZhGFwjnTS0fHHZ2i+1ARHSpFnEmH3vLJyYuUFidgQzmD3Q==
+X-Received: by 2002:a37:a81:: with SMTP id 123mr7936857qkk.144.1617280398033;
+        Thu, 01 Apr 2021 05:33:18 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id o7sm3831635qki.63.2021.04.01.05.33.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 05:33:17 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lRwVh-006jtS-3T; Thu, 01 Apr 2021 09:33:17 -0300
+Date:   Thu, 1 Apr 2021 09:33:17 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        Kaike Wan <kaike.wan@intel.com>, stable@vger.kernel.org
+Subject: Re: [PATCH for-rc 1/4] IB/hfi1: Call xa_destroy before freeing
+ dummy_netdev
+Message-ID: <20210401123317.GC2710221@ziepe.ca>
+References: <1617025700-31865-1-git-send-email-dennis.dalessandro@cornelisnetworks.com>
+ <1617025700-31865-2-git-send-email-dennis.dalessandro@cornelisnetworks.com>
+ <20210329140922.GP2710221@ziepe.ca>
+ <7da1174e-97a6-3933-ae35-166a9dcbf38e@cornelisnetworks.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210401012340.GA1423690@bjorn-Precision-5520>
+In-Reply-To: <7da1174e-97a6-3933-ae35-166a9dcbf38e@cornelisnetworks.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 08:23:40PM -0500, Bjorn Helgaas wrote:
-> [+cc Rafael, in case you're interested in the driver core issue here]
-> 
-> On Wed, Mar 31, 2021 at 07:08:07AM +0300, Leon Romanovsky wrote:
-> > On Tue, Mar 30, 2021 at 03:41:41PM -0500, Bjorn Helgaas wrote:
-> > > On Tue, Mar 30, 2021 at 04:47:16PM -0300, Jason Gunthorpe wrote:
-> > > > On Tue, Mar 30, 2021 at 10:00:19AM -0500, Bjorn Helgaas wrote:
-> > > > > On Tue, Mar 30, 2021 at 10:57:38AM -0300, Jason Gunthorpe wrote:
-> > > > > > On Mon, Mar 29, 2021 at 08:29:49PM -0500, Bjorn Helgaas wrote:
-> > > > > > 
-> > > > > > > I think I misunderstood Greg's subdirectory comment.  We already have
-> > > > > > > directories like this:
-> > > > > > 
-> > > > > > Yes, IIRC, Greg's remark applies if you have to start creating
-> > > > > > directories with manual kobjects.
-> > > > > > 
-> > > > > > > and aspm_ctrl_attr_group (for "link") is nicely done with static
-> > > > > > > attributes.  So I think we could do something like this:
-> > > > > > > 
-> > > > > > >   /sys/bus/pci/devices/0000:01:00.0/   # PF directory
-> > > > > > >     sriov/                             # SR-IOV related stuff
-> > > > > > >       vf_total_msix
-> > > > > > >       vf_msix_count_BB:DD.F        # includes bus/dev/fn of first VF
-> > > > > > >       ...
-> > > > > > >       vf_msix_count_BB:DD.F        # includes bus/dev/fn of last VF
-> > > > > > 
-> > > > > > It looks a bit odd that it isn't a subdirectory, but this seems
-> > > > > > reasonable.
-> > > > > 
-> > > > > Sorry, I missed your point; you'll have to lay it out more explicitly.
-> > > > > I did intend that "sriov" *is* a subdirectory of the 0000:01:00.0
-> > > > > directory.  The full paths would be:
-> > > > >
-> > > > >   /sys/bus/pci/devices/0000:01:00.0/sriov/vf_total_msix
-> > > > >   /sys/bus/pci/devices/0000:01:00.0/sriov/vf_msix_count_BB:DD.F
-> > > > >   ...
-> > > > 
-> > > > Sorry, I was meaning what you first proposed:
-> > > > 
-> > > >    /sys/bus/pci/devices/0000:01:00.0/sriov/BB:DD.F/vf_msix_count
-> > > > 
-> > > > Which has the extra sub directory to organize the child VFs.
-> > > > 
-> > > > Keep in mind there is going to be alot of VFs here, > 1k - so this
-> > > > will be a huge directory.
-> > > 
-> > > With 0000:01:00.0/sriov/vf_msix_count_BB:DD.F, sriov/ will contain
-> > > 1 + 1K files ("vf_total_msix" + 1 per VF).
-> > > 
-> > > With 0000:01:00.0/sriov/BB:DD.F/vf_msix_count, sriov/ will contain
-> > > 1 file and 1K subdirectories.
+On Wed, Mar 31, 2021 at 03:36:14PM -0400, Dennis Dalessandro wrote:
+> On 3/29/2021 10:09 AM, Jason Gunthorpe wrote:
+> > On Mon, Mar 29, 2021 at 09:48:17AM -0400, dennis.dalessandro@cornelisnetworks.com wrote:
 > > 
-> > This is racy by design, in order to add new file and create BB:DD.F
-> > directory, the VF will need to do it after or during it's creation.
-> > During PF creation it is unknown to PF those BB:DD.F values.
+> > > diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c b/drivers/infiniband/hw/hfi1/netdev_rx.c
+> > > index 2c8bc02..cec02e8 100644
+> > > +++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
+> > > @@ -372,7 +372,11 @@ int hfi1_netdev_alloc(struct hfi1_devdata *dd)
+> > >   void hfi1_netdev_free(struct hfi1_devdata *dd)
+> > >   {
+> > >   	if (dd->dummy_netdev) {
+> > > +		struct hfi1_netdev_priv *priv =
+> > > +			hfi1_netdev_priv(dd->dummy_netdev);
+> > > +
+> > >   		dd_dev_info(dd, "hfi1 netdev freed\n");
+> > > +		xa_destroy(&priv->dev_tbl);
+> > >   		kfree(dd->dummy_netdev);
+> > >   		dd->dummy_netdev = NULL;
 > > 
-> > The race here is due to the events of PF,VF directory already sent
-> > but new directory structure is not ready yet.
-> >
-> > From code perspective, we will need to add something similar to
-> > pci_iov_sysfs_link() with the code that you didn't like in previous
-> > variants (the one that messes with sysfs_create_file API).
+> > This is doing kfree() on a struct net_device?? Huh?
 > > 
-> > It looks not good for large SR-IOV systems with >1K VFs with
-> > gazillion subdirectories inside PF, while the more natural is to see
-> > them in VF.
+> > You should have put this in your own struct and used container_of not
+> > co-oped netdev_priv, then free your own struct.
 > > 
-> > So I'm completely puzzled why you want to do these files on PF and
-> > not on VF as v0, v7 and v8 proposed.
+> > It is a bit weird to see a xa_destroy like this, how did things get ot
+> > the point that no concurrent thread can see the xarray but there is
+> > still stuff stored in it?
+> > 
+> > And it is weird this is storing two different types in it too, with no
+> > refcounting..
 > 
-> On both mlx5 and NVMe, the "assign vectors to VF" functionality is
-> implemented by the PF, so I think it's reasonable to explore the idea
-> of "associate the vector assignment sysfs file with the PF."
+> We do rework this stuff in the other patch series.
+> 
+> https://patchwork.kernel.org/project/linux-rdma/patch/1617026056-50483-11-git-send-email-dennis.dalessandro@cornelisnetworks.com/
+> 
+> If we fix it up in the for-next series, what should we do about stable?
 
-As you said, it is our (Linux kernel) implementation, but from user space
-perspective it is seen different. The user "configures" specific VF and
-doesn't need to know that we are routing his requests through PF.
+Well, if you are fixing bugs then order it bug fixes first, but this
+is tagged for rc and you still need to explain what bug it is actually
+fixing.
 
-> 
-> Assume 1K VFs.  Either way we have >1K subdirectories of
-> /sys/devices/pci0000:00/.  I think we should avoid an extra
-> subdirectory level, so I think the choices on the table are:
+xa_destroy is not required if the xarray is already empty, so the
+commit message at least needs to explain how we get to a point where
+it still has something in it.
 
-Right, we already have 1k subdirectories and PF will have 1k virtfnX
-links anyway. So for me it doesn't look appealing to see extra 1K files.
-
-In case someone else will need to add another parameter to this sriov
-overlay directory, we will find an extra 1K files and repeat again for
-any new parameter.
-
-At the end, the discussion here is to make this sysfs feature to be very
-general and 1k files in one folder for every parameter is not nice (IMHO).
-
-In theory, SR-IOV spec allows up-to 64K VFs per-PF.
-
-> 
-> Associate "vf_msix_count" with the PF:
-> 
->   - /sys/.../<PF>/sriov/vf_total_msix    # all on PF
-> 
->   - /sys/.../<PF>/sriov/vf_msix_count_BB:DD.F (1K of these).  Greg
->     says the number of these is not a problem.
-> 
->   - The "vf_total_msix" and "vf_msix_count_*" files are all related
->     and are grouped together in PF/sriov/.
-> 
->   - The "vf_msix_count_*" files operate directly on the PF.  Lock the
->     PF for serialization, lookup and lock the VF to ensure no VF
->     driver, call PF driver callback to assign vectors.
-> 
->   - Requires special sysfs code to create/remove "vf_msix_count_*"
->     files when setting/clearing VF Enable.  This code could create
->     them only when the PF driver actually supports vector assignment.
->     Unavoidable sysfs/uevent race, see below.
-> 
-> Associate "vf_msix_count" with the VF:
-> 
->   - /sys/.../<PF>/sriov_vf_total_msix    # on PF
-> 
->   - /sys/.../<VF>/sriov_vf_msix_count    # on each VF
-> 
->   - The "sriov_vf_msix_count" files enter via the VF.  Lock the VF to
->     ensure no VF driver, lookup and lock the PF for serialization,
->     call PF driver callback to assign vectors.
-> 
->   - Can be done with static sysfs attributes.  This means creating
->     "sriov_vf_msix_count" *always*, even if PF driver doesn't support
->     vector assignment.
-
-The same goes for the next parameter that someone will add.
-
-> 
-> IIUC, putting "vf_msix_count_*" under the PF involves a race.  When we
-> call device_add() for each new VF, it creates the VF sysfs directory
-> and emits the KOBJ_ADD uevent, but the "vf_msix_count_*" file doesn't
-> exist yet.  It can't be created before device_add() because the sysfs
-> directory doesn't exist.  If we create it after device_add(), the "add
-> VF" uevent has already been emitted, so userspace may consume it
-> before "vf_msix_count_*" is created.
-> 
->   sriov_enable
->     <set VF Enable>                     <-- VFs created on PCI
->     sriov_add_vfs
->       for (i = 0; i < num_vfs; i++) {
->         pci_iov_add_virtfn
->           pci_device_add
->             device_initialize
->             device_add
->               device_add_attrs          <-- add VF sysfs attrs
->               kobject_uevent(KOBJ_ADD)  <-- emit uevent
->                                         <-- add "vf_msix_count_*" sysfs attr
->           pci_iov_sysfs_link
->           pci_bus_add_device
->             pci_create_sysfs_dev_files
->             device_attach
->       }
-> 
-> Conceptually, I like having the "vf_total_msix" and "vf_msix_count_*"
-> files associated directly with the PF.  I think that's more natural
-> because they both operate directly on the PF.
-
-And this is where we disagree :)
-
-> 
-> But I don't like the race, and using static attributes seems much
-> cleaner implementation-wise.
-
-Right, so what should be my next steps in order to do not miss this merge
-window?
-
-Thanks
-
-> 
-> Bjorn
+Jason
