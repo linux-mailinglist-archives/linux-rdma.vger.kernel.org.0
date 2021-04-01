@@ -2,131 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C294F3513F4
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Apr 2021 12:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E655351858
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Apr 2021 19:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233710AbhDAKz1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Apr 2021 06:55:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234089AbhDAKy4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 1 Apr 2021 06:54:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47C8D60FE8;
-        Thu,  1 Apr 2021 10:54:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617274460;
-        bh=LA75qGjL7UJw7E44jyn84WVVIzJMfOiXhPebs8eNjHc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Yrt3ghRSgrfMP5zoFkZWkHThnDJsyuv8M8M+ts37a+z2kbHroNiO46EExzl5+BAUV
-         Epx+I5nyMf1iBTSqBjBZvGcf75GQm/Ixawn1yBuEi+17gs76xYPAZXq2yHogJNcIBm
-         Rtj0SRlV/JUvfdugX+77+9z7kVoiijjljn6v2PulNaBH4ZA6bedwkrKLv2MS+nyNm5
-         FHd1PTTwluwFE1ikC9r+cwNW8Ijrny7bbBp+CiN/0Vp7VQM01A47aDcpI5uC3MDnCB
-         Zy088J+v91XU4t4JCQF6xIoD7keHV491APyQOKhmczc+2aNcKruXZwXP7ZR944+GXR
-         gLclVDMEFS72w==
-Date:   Thu, 1 Apr 2021 13:54:16 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     =?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>
-Cc:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org,
-        Parav Pandit <parav@nvidia.com>, netdev@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next v3 1/2] IB/cma: Introduce
- rdma_set_min_rnr_timer()
-Message-ID: <YGWmWPx71CqNRSKZ@unreal>
-References: <1617216194-12890-1-git-send-email-haakon.bugge@oracle.com>
- <1617216194-12890-2-git-send-email-haakon.bugge@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+        id S234397AbhDARpo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Apr 2021 13:45:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234729AbhDARj3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Apr 2021 13:39:29 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on20601.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5b::601])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2705FC05BD2E
+        for <linux-rdma@vger.kernel.org>; Thu,  1 Apr 2021 06:02:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hFyJuvXd9YCJDktJaXE1h+kdcpTAeTY3m5belipPuFiNk4XM8nL941RUOXkBQSPzgwD8m1JX7BEqhHZeLK1smKXdxe2ByS4uVWMD25vDGkt2oxnwkVnpXTxfTVYFn10689VuAfceVkds6P1tSIz5+L6T5q/x6/jbpzkCSMroj2p/2fVdracRcTup1TySndBrzSxGBjQI2U3O0uZOEoKMYJZQUz7xlhmBfMqYoOf73DvthRMA92fDiVHodD5iSPbhX19hPZbQkqveYghsblnIc0e/Xju2uT3E07e+XgQA/5vm7zYPEgwdnHzECC4ovDBlk0o9vtXE737nVIRn6/T3gg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wxBWXaSE+NtKqvTRZ8Mqs04iVQ1RinIvW3t4cq7vh30=;
+ b=YUgp4mZ7s97LTpWrx5JAqt0Qf99KRxIsl5jNSDt7gYa+UBV9WJFW9YfVNjpq//d0f1SqspOkzoxPOq4XRlqaDePBLlsloA1XnzOGDPT6niFQ4Vik4CgIrH9DYcFjvYMauLqaiFgUNcYIOVxHXU58JJ3RlCaNfizlAzRr0wEZK9srWO/5ypHUGZKX+smNdQhisczSy6Yu8scemzl7WaPpiRaBp4PPIjDI/jDNPHqGV8F5BYvV0BSIwcNuv/adrimm2jyHZ4Gtt/+VfIdUbcUA9Iw+8PBsoT5Ex4hOVbeqAD0H3rMAmlyGyL4H/tEpuSIm17GpRl4K2SnD1rnVGZUR2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wxBWXaSE+NtKqvTRZ8Mqs04iVQ1RinIvW3t4cq7vh30=;
+ b=Xnp90Zhg35pPRRL8b0D05KHb/R8nZNG5z0o1y1fuvgmrXdXViB6LoEiHaabspxZy5truqAAQ8K4jHCV5oqRo0If27QTf7K0caxaP/z49qhROD8ZqXfFQK8eDXXhQ5Y4Gt7iC7XgvumPG/w9gUEPuflWwNVNWQLMxL3HC9hewMIbkDV4XWypLpl0VCy2fygUhURnnxnTZVYJn5V5h0RQRjyMYgBkPPfLIW0djpONV9pd3IUUuEWkT9EFMvUXUBoLXTeGZxHGiHePCeObYgEHjiRG2+KwN1GBTmaJvWKpNo18EOfPFs34tJM2SgYKznx9bspqlzMSwgmyETn84Mua/Fw==
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR1201MB0105.namprd12.prod.outlook.com (2603:10b6:4:54::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Thu, 1 Apr
+ 2021 11:31:00 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3999.028; Thu, 1 Apr 2021
+ 11:31:00 +0000
+Date:   Thu, 1 Apr 2021 08:30:58 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
+        Bob Pearson <rpearson@hpe.com>
+Subject: Re: [PATCH for-next v2] RDMA/rxe: Split MEM into MR and MW
+Message-ID: <20210401113058.GW1463678@nvidia.com>
+References: <20210325212425.2792-1-rpearson@hpe.com>
+ <20210330201245.GA1447467@nvidia.com>
+ <54ec9b7c-5c43-2c36-ea51-684fd63368f9@gmail.com>
+ <20210330225437.GD2356281@nvidia.com>
+ <d542977c-54fa-b1e6-8717-616d6c5b5218@gmail.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1617216194-12890-2-git-send-email-haakon.bugge@oracle.com>
+In-Reply-To: <d542977c-54fa-b1e6-8717-616d6c5b5218@gmail.com>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: MN2PR03CA0022.namprd03.prod.outlook.com
+ (2603:10b6:208:23a::27) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR03CA0022.namprd03.prod.outlook.com (2603:10b6:208:23a::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26 via Frontend Transport; Thu, 1 Apr 2021 11:30:59 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lRvXO-006iqq-U5; Thu, 01 Apr 2021 08:30:58 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0260c44c-616a-4770-ea7f-08d8f5019fe0
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB0105:
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB01056FC5F9F4BB7829303220C27B9@DM5PR1201MB0105.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: F6fIQF1TCXvMjDlR/YnXbF4MgBrAillD+C+SH/MGsGKmiTQJe0zHl02m9sTNUXXs587JToIl4oCstHqVn+A87bCtpKKKGkof0FGMoRZlt03UmsgEJFy3QgKTxIW709FoXxa4AZgC10kTm92eLd9sppXv+ZfqAhR6JK9ezAYwu3lqU1FS8ZrOmbwfg2DCHAkZrIj1H6GrK+6SleQuaAxfCUmhK9km6GILFtvzke9ql//hIfeiuzHAyi+xQ2LpEZgCS0Ikt9tyUa2PLVmwBBk0R/2HR6FlT4Kl7wmtOrgyTgBQQDTVlbaCotlcN8l+s5a0KiSd/08/7sz631Vp2EJ56LBZPlsWlf+M7iCQ33MDGRD47z53XEPH3WdhyuI6Foz3o9KjzKjRRxoYU9w4n6q0e6YYXVJReddTpoeZMN1+GZAlB9XFc+UibUQifKUNEZlOmrUvskKSqKDzd+YHv1VWrmLl8OWznwSpkULy8PB4En7JS9CwnuJ/jGjVBNTXFi784/EmBWZ7h72aK3vy4Mz8BqN1eF3BtePn56khmMwZ9sLK5nMBksn1sswCD/BZPGPtm2UWUMnPLWgKV8lWkeSr/oW87DHvBKWbTik7Gq17nok9D1kOsU0Otz9lZfX2nMXEJLSH0M2BYksmFixKca6uWiIb0gK/Tu74ROHAFikbrLk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(376002)(366004)(346002)(36756003)(86362001)(186003)(4326008)(26005)(8936002)(5660300002)(66476007)(8676002)(478600001)(6916009)(38100700001)(83380400001)(9746002)(1076003)(9786002)(316002)(2906002)(66556008)(33656002)(66946007)(2616005)(426003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?241S8/bMDiF2qV23yFWjmuII0CqUMp9rFSuPr/ECTjFKhTKJD1ipLsVShLIi?=
+ =?us-ascii?Q?Z39+XGK5t/maRxMXGQS25i3St3x4yQyR3pKoBx3hxPIdwmbyU8h7MmBu+y9i?=
+ =?us-ascii?Q?NAtRNys9rXIof1rVeeQRqEgCROWznRpOqc6flrLhPTVMUCyI3vgnCui3RA5K?=
+ =?us-ascii?Q?2WGOhy3St2or8lrgEXG3srdkcxS4gMCzRooCI7aPP/P1pPY8qrPCVHt5fu9K?=
+ =?us-ascii?Q?ZBDpYY/War6Kq1JJB/ZwG/GpzOTFK47LB85HwNIzjiKR0RWONH6OTSO3tFVG?=
+ =?us-ascii?Q?QfzyrTQX+xf6pB3pSQsL979+P3gk5CPKhnpvEwso0sdqjauKJgfjhK1vr/oh?=
+ =?us-ascii?Q?m0lgUO3exT60HudyRUzSJhqb3tdrZSnkFjrB+s9Q03jfYeu1ykZl0cSidcL0?=
+ =?us-ascii?Q?MUOw8hTf0FCs+UWC+qfVmlpt325XxK7ruAwqRxcRW17XKd/0l3qL8naPGM9c?=
+ =?us-ascii?Q?RWmqB73TcQ8eH7aGAPLReoDgmOclMnyY5PIQ8L3qqdyZDzJacTqo7tAeZw5/?=
+ =?us-ascii?Q?E4VTwmRzDuyNAjJq+I2H/GCLBLQJ86gplnQMFQ+ONZiASAkrt1lfRGLepCWP?=
+ =?us-ascii?Q?r11dgz+oJ7gr6K1QmAD4wsLxkCKK+wzVCH2Jf7ZpIvG92TkKn4qlZuVygaF6?=
+ =?us-ascii?Q?U6iB6v7CQJaJa8RZOlNUOtUxWKFBLqN012TtsmtkVspI9eUMs1X79GLlP0pq?=
+ =?us-ascii?Q?Qd7v4ZItDOUMqKRnKySjs/zFqaY55tu5Ui9nE2TaWRV7ys9IhboPMLPTZwge?=
+ =?us-ascii?Q?UTbyPvaj6xr2yxGiqcWVpPV9xQJWYG5eZJGAPe3hfOh4U124ZYsMh+075/q0?=
+ =?us-ascii?Q?9bXFQGeoQmT0Hq9tkxs9PhUBfbkbXLkLaNk9X5dtHmZ4XlqzBvHfCPjxqoYo?=
+ =?us-ascii?Q?XewCy8SB79hlwEAhjQ0dtI29hn/lXell7brqcO2FzKzrzGn4jHNsKFGsq/jQ?=
+ =?us-ascii?Q?Uy7cAauiVWCZ/Tqu87ingZXoPqnf8xwJQR2aFkYgtDbGg1Hb05dSnGjCKt0i?=
+ =?us-ascii?Q?YGConnrSc/b0hs2ybt4W5Uer7xSE4IvhOEtCS9dsg6kNZkFrq4L1rUOyBEnK?=
+ =?us-ascii?Q?QDxeqlZhlGdIzcSHOMGvufyKHKsHaBjNz+b6Q1smKFXnsfxmLmE2N2Hj5e9l?=
+ =?us-ascii?Q?aXI+fKJAUL7q/QrX0tt3dtVG/se/guiSIbsmUfrj01K2KMm7p5K0el9fOgsH?=
+ =?us-ascii?Q?dFd/HNmydchxl4X52cixzgD5lPU5jgfMtNU8OGWh0cWfaVpgy8/iDbN70aII?=
+ =?us-ascii?Q?PrtGevUclJ16CR04WNxUF9BHFE3VkAtjsfwX33kS9LtVe4dz8BclN1xRwq+7?=
+ =?us-ascii?Q?dJpZJS48wUe/fdTtpOw5XMyYTNo95/3ZT42fjmfEvEaUMQ=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0260c44c-616a-4770-ea7f-08d8f5019fe0
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 11:31:00.1233
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OfPLj+JHA6GGzkINm4yg3kyk3UomcmwDsK9llSlPnVXrJGtK4dwCCbctFVOgUDhU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0105
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 08:43:13PM +0200, Håkon Bugge wrote:
-> Introduce the ability for kernel ULPs to adjust the minimum RNR Retry
-> timer. The INIT -> RTR transition executed by RDMA CM will be used for
-> this adjustment. This avoids an additional ib_modify_qp() call.
-> 
-> rdma_set_min_rnr_timer() must be called before the call to
-> rdma_connect() on the active side and before the call to rdma_accept()
-> on the passive side.
-> 
-> The default value of RNR Retry timer is zero, which translates to 655
-> ms. When the receiver is not ready to accept a send messages, it
-> encodes the RNR Retry timer value in the NAK. The requestor will then
-> wait at least the specified time value before retrying the send.
-> 
-> The 5-bit value to be supplied to the rdma_set_min_rnr_timer() is
-> documented in IBTA Table 45: "Encoding for RNR NAK Timer Field".
-> 
-> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-> Acked-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->  drivers/infiniband/core/cma.c      | 41 ++++++++++++++++++++++++++++++++++++++
->  drivers/infiniband/core/cma_priv.h |  2 ++
->  include/rdma/rdma_cm.h             |  2 ++
->  3 files changed, 45 insertions(+)
-> 
-> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-> index 9409651..5ce097d 100644
-> --- a/drivers/infiniband/core/cma.c
-> +++ b/drivers/infiniband/core/cma.c
-> @@ -852,6 +852,7 @@ static void cma_id_put(struct rdma_id_private *id_priv)
->  	id_priv->id.qp_type = qp_type;
->  	id_priv->tos_set = false;
->  	id_priv->timeout_set = false;
-> +	id_priv->min_rnr_timer_set = false;
->  	id_priv->gid_type = IB_GID_TYPE_IB;
->  	spin_lock_init(&id_priv->lock);
->  	mutex_init(&id_priv->qp_mutex);
-> @@ -1141,6 +1142,9 @@ int rdma_init_qp_attr(struct rdma_cm_id *id, struct ib_qp_attr *qp_attr,
->  	if ((*qp_attr_mask & IB_QP_TIMEOUT) && id_priv->timeout_set)
->  		qp_attr->timeout = id_priv->timeout;
->  
-> +	if ((*qp_attr_mask & IB_QP_MIN_RNR_TIMER) && id_priv->min_rnr_timer_set)
-> +		qp_attr->min_rnr_timer = id_priv->min_rnr_timer;
-> +
->  	return ret;
->  }
->  EXPORT_SYMBOL(rdma_init_qp_attr);
-> @@ -2615,6 +2619,43 @@ int rdma_set_ack_timeout(struct rdma_cm_id *id, u8 timeout)
->  }
->  EXPORT_SYMBOL(rdma_set_ack_timeout);
->  
-> +/**
-> + * rdma_set_min_rnr_timer() - Set the minimum RNR Retry timer of the
-> + *			      QP associated with a connection identifier.
-> + * @id: Communication identifier to associated with service type.
-> + * @min_rnr_timer: 5-bit value encoded as Table 45: "Encoding for RNR NAK
-> + *		   Timer Field" in the IBTA specification.
-> + *
-> + * This function should be called before rdma_connect() on active
-> + * side, and on passive side before rdma_accept(). The timer value
-> + * will be associated with the local QP. When it receives a send it is
-> + * not read to handle, typically if the receive queue is empty, an RNR
-> + * Retry NAK is returned to the requester with the min_rnr_timer
-> + * encoded. The requester will then wait at least the time specified
-> + * in the NAK before retrying. The default is zero, which translates
-> + * to a minimum RNR Timer value of 655 ms.
-> + *
-> + * Return: 0 for success
-> + */
-> +int rdma_set_min_rnr_timer(struct rdma_cm_id *id, u8 min_rnr_timer)
-> +{
-> +	struct rdma_id_private *id_priv;
-> +
-> +	/* It is a five-bit value */
-> +	if (min_rnr_timer & 0xe0)
-> +		return -EINVAL;
-> +
-> +	if (id->qp_type != IB_QPT_RC && id->qp_type != IB_QPT_XRC_TGT)
-> +		return -EINVAL;
+On Wed, Mar 31, 2021 at 02:51:35PM -0500, Bob Pearson wrote:
 
-This is in-kernel API and safe to use WARN_ON() instead of returning
-error which RDS is not checking anyway.
+> Is the long term goal to take clang-format as the default whitespace format?
 
-Thanks
+Sort of. clang-format is quite close to the accepted kernel standard
+and makes maintaince alot easier, but gets a bunch of stuff wrong.
+
+> If so should I just reformat all the files in rxe now and get it over with?
+
+We try not to do this, just fix egregious errors when you touch the
+code.
+
+There seem to be two camps on this topic:
+
+ - Internal consistency is more important that following the normative
+   style. This is the idea that if one file is insane it should stay
+   consistently isane. This avoids files looking "hard to read"
+
+ - New code should follow the normative style. Old code should be
+   changed when it is touched. Files will become internally inconsistent.
+   This avoids everyone doing maintenance work from having to
+   understand a million different local style convections
+
+I tend to be in the latter group. 
+
+Especially when it comes to the annoying vertical alignment that is so
+common in RDMA.
+
+Jason
