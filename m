@@ -2,140 +2,226 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E655351858
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Apr 2021 19:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C24351855
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Apr 2021 19:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234397AbhDARpo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Apr 2021 13:45:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234729AbhDARj3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Apr 2021 13:39:29 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on20601.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5b::601])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2705FC05BD2E
-        for <linux-rdma@vger.kernel.org>; Thu,  1 Apr 2021 06:02:17 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hFyJuvXd9YCJDktJaXE1h+kdcpTAeTY3m5belipPuFiNk4XM8nL941RUOXkBQSPzgwD8m1JX7BEqhHZeLK1smKXdxe2ByS4uVWMD25vDGkt2oxnwkVnpXTxfTVYFn10689VuAfceVkds6P1tSIz5+L6T5q/x6/jbpzkCSMroj2p/2fVdracRcTup1TySndBrzSxGBjQI2U3O0uZOEoKMYJZQUz7xlhmBfMqYoOf73DvthRMA92fDiVHodD5iSPbhX19hPZbQkqveYghsblnIc0e/Xju2uT3E07e+XgQA/5vm7zYPEgwdnHzECC4ovDBlk0o9vtXE737nVIRn6/T3gg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wxBWXaSE+NtKqvTRZ8Mqs04iVQ1RinIvW3t4cq7vh30=;
- b=YUgp4mZ7s97LTpWrx5JAqt0Qf99KRxIsl5jNSDt7gYa+UBV9WJFW9YfVNjpq//d0f1SqspOkzoxPOq4XRlqaDePBLlsloA1XnzOGDPT6niFQ4Vik4CgIrH9DYcFjvYMauLqaiFgUNcYIOVxHXU58JJ3RlCaNfizlAzRr0wEZK9srWO/5ypHUGZKX+smNdQhisczSy6Yu8scemzl7WaPpiRaBp4PPIjDI/jDNPHqGV8F5BYvV0BSIwcNuv/adrimm2jyHZ4Gtt/+VfIdUbcUA9Iw+8PBsoT5Ex4hOVbeqAD0H3rMAmlyGyL4H/tEpuSIm17GpRl4K2SnD1rnVGZUR2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wxBWXaSE+NtKqvTRZ8Mqs04iVQ1RinIvW3t4cq7vh30=;
- b=Xnp90Zhg35pPRRL8b0D05KHb/R8nZNG5z0o1y1fuvgmrXdXViB6LoEiHaabspxZy5truqAAQ8K4jHCV5oqRo0If27QTf7K0caxaP/z49qhROD8ZqXfFQK8eDXXhQ5Y4Gt7iC7XgvumPG/w9gUEPuflWwNVNWQLMxL3HC9hewMIbkDV4XWypLpl0VCy2fygUhURnnxnTZVYJn5V5h0RQRjyMYgBkPPfLIW0djpONV9pd3IUUuEWkT9EFMvUXUBoLXTeGZxHGiHePCeObYgEHjiRG2+KwN1GBTmaJvWKpNo18EOfPFs34tJM2SgYKznx9bspqlzMSwgmyETn84Mua/Fw==
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0105.namprd12.prod.outlook.com (2603:10b6:4:54::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Thu, 1 Apr
- 2021 11:31:00 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3999.028; Thu, 1 Apr 2021
- 11:31:00 +0000
-Date:   Thu, 1 Apr 2021 08:30:58 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
-        Bob Pearson <rpearson@hpe.com>
-Subject: Re: [PATCH for-next v2] RDMA/rxe: Split MEM into MR and MW
-Message-ID: <20210401113058.GW1463678@nvidia.com>
-References: <20210325212425.2792-1-rpearson@hpe.com>
- <20210330201245.GA1447467@nvidia.com>
- <54ec9b7c-5c43-2c36-ea51-684fd63368f9@gmail.com>
- <20210330225437.GD2356281@nvidia.com>
- <d542977c-54fa-b1e6-8717-616d6c5b5218@gmail.com>
+        id S234541AbhDARpl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Apr 2021 13:45:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40584 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234554AbhDARiA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:38:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4156060FE9;
+        Thu,  1 Apr 2021 11:49:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617277761;
+        bh=EPJNwswEK3h3kT/GAaC4gGLGB4JsVi5vkwcbC4qJ+gc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SN6ebFFYdpXC2UgZWgK0FeQoi2POcoYkUGaKApeATMNlqher71O6Z2tPhH38GiHMv
+         TH0avdiy7E3oU4BpD54K0RWVuf4eglisvGF6fEFLNF8a8CweTkKOSmF8ptzNMrfbqc
+         id1fUXBj2TD3UlFlNfj2pOO8DmO1QCXbbs0je+OC6GmT/yyKp+ytJpeu/8yLRnL5Iz
+         mlIHmNx49uctrLSKUoQIawjkdb5STWWS/RXZcAGMIDDeDmNos5lJyJjyXz5nL5WIiA
+         YGxBGMFTnhZ3raBm18sZlucFiYr/y2pjLDz8qU++3vKLE6hE0Wt8vq2ELxlrCdVWBt
+         lFaBAk/DbZiyQ==
+Date:   Thu, 1 Apr 2021 14:49:18 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH mlx5-next v7 0/4] Dynamically assign MSI-X vectors count
+Message-ID: <YGWzPklSzw97gI3D@unreal>
+References: <YGP1p7KH+/gL4NAU@unreal>
+ <20210401012340.GA1423690@bjorn-Precision-5520>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d542977c-54fa-b1e6-8717-616d6c5b5218@gmail.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR03CA0022.namprd03.prod.outlook.com
- (2603:10b6:208:23a::27) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR03CA0022.namprd03.prod.outlook.com (2603:10b6:208:23a::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26 via Frontend Transport; Thu, 1 Apr 2021 11:30:59 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lRvXO-006iqq-U5; Thu, 01 Apr 2021 08:30:58 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0260c44c-616a-4770-ea7f-08d8f5019fe0
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB0105:
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB01056FC5F9F4BB7829303220C27B9@DM5PR1201MB0105.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: F6fIQF1TCXvMjDlR/YnXbF4MgBrAillD+C+SH/MGsGKmiTQJe0zHl02m9sTNUXXs587JToIl4oCstHqVn+A87bCtpKKKGkof0FGMoRZlt03UmsgEJFy3QgKTxIW709FoXxa4AZgC10kTm92eLd9sppXv+ZfqAhR6JK9ezAYwu3lqU1FS8ZrOmbwfg2DCHAkZrIj1H6GrK+6SleQuaAxfCUmhK9km6GILFtvzke9ql//hIfeiuzHAyi+xQ2LpEZgCS0Ikt9tyUa2PLVmwBBk0R/2HR6FlT4Kl7wmtOrgyTgBQQDTVlbaCotlcN8l+s5a0KiSd/08/7sz631Vp2EJ56LBZPlsWlf+M7iCQ33MDGRD47z53XEPH3WdhyuI6Foz3o9KjzKjRRxoYU9w4n6q0e6YYXVJReddTpoeZMN1+GZAlB9XFc+UibUQifKUNEZlOmrUvskKSqKDzd+YHv1VWrmLl8OWznwSpkULy8PB4En7JS9CwnuJ/jGjVBNTXFi784/EmBWZ7h72aK3vy4Mz8BqN1eF3BtePn56khmMwZ9sLK5nMBksn1sswCD/BZPGPtm2UWUMnPLWgKV8lWkeSr/oW87DHvBKWbTik7Gq17nok9D1kOsU0Otz9lZfX2nMXEJLSH0M2BYksmFixKca6uWiIb0gK/Tu74ROHAFikbrLk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(376002)(366004)(346002)(36756003)(86362001)(186003)(4326008)(26005)(8936002)(5660300002)(66476007)(8676002)(478600001)(6916009)(38100700001)(83380400001)(9746002)(1076003)(9786002)(316002)(2906002)(66556008)(33656002)(66946007)(2616005)(426003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?241S8/bMDiF2qV23yFWjmuII0CqUMp9rFSuPr/ECTjFKhTKJD1ipLsVShLIi?=
- =?us-ascii?Q?Z39+XGK5t/maRxMXGQS25i3St3x4yQyR3pKoBx3hxPIdwmbyU8h7MmBu+y9i?=
- =?us-ascii?Q?NAtRNys9rXIof1rVeeQRqEgCROWznRpOqc6flrLhPTVMUCyI3vgnCui3RA5K?=
- =?us-ascii?Q?2WGOhy3St2or8lrgEXG3srdkcxS4gMCzRooCI7aPP/P1pPY8qrPCVHt5fu9K?=
- =?us-ascii?Q?ZBDpYY/War6Kq1JJB/ZwG/GpzOTFK47LB85HwNIzjiKR0RWONH6OTSO3tFVG?=
- =?us-ascii?Q?QfzyrTQX+xf6pB3pSQsL979+P3gk5CPKhnpvEwso0sdqjauKJgfjhK1vr/oh?=
- =?us-ascii?Q?m0lgUO3exT60HudyRUzSJhqb3tdrZSnkFjrB+s9Q03jfYeu1ykZl0cSidcL0?=
- =?us-ascii?Q?MUOw8hTf0FCs+UWC+qfVmlpt325XxK7ruAwqRxcRW17XKd/0l3qL8naPGM9c?=
- =?us-ascii?Q?RWmqB73TcQ8eH7aGAPLReoDgmOclMnyY5PIQ8L3qqdyZDzJacTqo7tAeZw5/?=
- =?us-ascii?Q?E4VTwmRzDuyNAjJq+I2H/GCLBLQJ86gplnQMFQ+ONZiASAkrt1lfRGLepCWP?=
- =?us-ascii?Q?r11dgz+oJ7gr6K1QmAD4wsLxkCKK+wzVCH2Jf7ZpIvG92TkKn4qlZuVygaF6?=
- =?us-ascii?Q?U6iB6v7CQJaJa8RZOlNUOtUxWKFBLqN012TtsmtkVspI9eUMs1X79GLlP0pq?=
- =?us-ascii?Q?Qd7v4ZItDOUMqKRnKySjs/zFqaY55tu5Ui9nE2TaWRV7ys9IhboPMLPTZwge?=
- =?us-ascii?Q?UTbyPvaj6xr2yxGiqcWVpPV9xQJWYG5eZJGAPe3hfOh4U124ZYsMh+075/q0?=
- =?us-ascii?Q?9bXFQGeoQmT0Hq9tkxs9PhUBfbkbXLkLaNk9X5dtHmZ4XlqzBvHfCPjxqoYo?=
- =?us-ascii?Q?XewCy8SB79hlwEAhjQ0dtI29hn/lXell7brqcO2FzKzrzGn4jHNsKFGsq/jQ?=
- =?us-ascii?Q?Uy7cAauiVWCZ/Tqu87ingZXoPqnf8xwJQR2aFkYgtDbGg1Hb05dSnGjCKt0i?=
- =?us-ascii?Q?YGConnrSc/b0hs2ybt4W5Uer7xSE4IvhOEtCS9dsg6kNZkFrq4L1rUOyBEnK?=
- =?us-ascii?Q?QDxeqlZhlGdIzcSHOMGvufyKHKsHaBjNz+b6Q1smKFXnsfxmLmE2N2Hj5e9l?=
- =?us-ascii?Q?aXI+fKJAUL7q/QrX0tt3dtVG/se/guiSIbsmUfrj01K2KMm7p5K0el9fOgsH?=
- =?us-ascii?Q?dFd/HNmydchxl4X52cixzgD5lPU5jgfMtNU8OGWh0cWfaVpgy8/iDbN70aII?=
- =?us-ascii?Q?PrtGevUclJ16CR04WNxUF9BHFE3VkAtjsfwX33kS9LtVe4dz8BclN1xRwq+7?=
- =?us-ascii?Q?dJpZJS48wUe/fdTtpOw5XMyYTNo95/3ZT42fjmfEvEaUMQ=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0260c44c-616a-4770-ea7f-08d8f5019fe0
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 11:31:00.1233
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OfPLj+JHA6GGzkINm4yg3kyk3UomcmwDsK9llSlPnVXrJGtK4dwCCbctFVOgUDhU
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0105
+In-Reply-To: <20210401012340.GA1423690@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 02:51:35PM -0500, Bob Pearson wrote:
+On Wed, Mar 31, 2021 at 08:23:40PM -0500, Bjorn Helgaas wrote:
+> [+cc Rafael, in case you're interested in the driver core issue here]
+> 
+> On Wed, Mar 31, 2021 at 07:08:07AM +0300, Leon Romanovsky wrote:
+> > On Tue, Mar 30, 2021 at 03:41:41PM -0500, Bjorn Helgaas wrote:
+> > > On Tue, Mar 30, 2021 at 04:47:16PM -0300, Jason Gunthorpe wrote:
+> > > > On Tue, Mar 30, 2021 at 10:00:19AM -0500, Bjorn Helgaas wrote:
+> > > > > On Tue, Mar 30, 2021 at 10:57:38AM -0300, Jason Gunthorpe wrote:
+> > > > > > On Mon, Mar 29, 2021 at 08:29:49PM -0500, Bjorn Helgaas wrote:
+> > > > > > 
+> > > > > > > I think I misunderstood Greg's subdirectory comment.  We already have
+> > > > > > > directories like this:
+> > > > > > 
+> > > > > > Yes, IIRC, Greg's remark applies if you have to start creating
+> > > > > > directories with manual kobjects.
+> > > > > > 
+> > > > > > > and aspm_ctrl_attr_group (for "link") is nicely done with static
+> > > > > > > attributes.  So I think we could do something like this:
+> > > > > > > 
+> > > > > > >   /sys/bus/pci/devices/0000:01:00.0/   # PF directory
+> > > > > > >     sriov/                             # SR-IOV related stuff
+> > > > > > >       vf_total_msix
+> > > > > > >       vf_msix_count_BB:DD.F        # includes bus/dev/fn of first VF
+> > > > > > >       ...
+> > > > > > >       vf_msix_count_BB:DD.F        # includes bus/dev/fn of last VF
+> > > > > > 
+> > > > > > It looks a bit odd that it isn't a subdirectory, but this seems
+> > > > > > reasonable.
+> > > > > 
+> > > > > Sorry, I missed your point; you'll have to lay it out more explicitly.
+> > > > > I did intend that "sriov" *is* a subdirectory of the 0000:01:00.0
+> > > > > directory.  The full paths would be:
+> > > > >
+> > > > >   /sys/bus/pci/devices/0000:01:00.0/sriov/vf_total_msix
+> > > > >   /sys/bus/pci/devices/0000:01:00.0/sriov/vf_msix_count_BB:DD.F
+> > > > >   ...
+> > > > 
+> > > > Sorry, I was meaning what you first proposed:
+> > > > 
+> > > >    /sys/bus/pci/devices/0000:01:00.0/sriov/BB:DD.F/vf_msix_count
+> > > > 
+> > > > Which has the extra sub directory to organize the child VFs.
+> > > > 
+> > > > Keep in mind there is going to be alot of VFs here, > 1k - so this
+> > > > will be a huge directory.
+> > > 
+> > > With 0000:01:00.0/sriov/vf_msix_count_BB:DD.F, sriov/ will contain
+> > > 1 + 1K files ("vf_total_msix" + 1 per VF).
+> > > 
+> > > With 0000:01:00.0/sriov/BB:DD.F/vf_msix_count, sriov/ will contain
+> > > 1 file and 1K subdirectories.
+> > 
+> > This is racy by design, in order to add new file and create BB:DD.F
+> > directory, the VF will need to do it after or during it's creation.
+> > During PF creation it is unknown to PF those BB:DD.F values.
+> > 
+> > The race here is due to the events of PF,VF directory already sent
+> > but new directory structure is not ready yet.
+> >
+> > From code perspective, we will need to add something similar to
+> > pci_iov_sysfs_link() with the code that you didn't like in previous
+> > variants (the one that messes with sysfs_create_file API).
+> > 
+> > It looks not good for large SR-IOV systems with >1K VFs with
+> > gazillion subdirectories inside PF, while the more natural is to see
+> > them in VF.
+> > 
+> > So I'm completely puzzled why you want to do these files on PF and
+> > not on VF as v0, v7 and v8 proposed.
+> 
+> On both mlx5 and NVMe, the "assign vectors to VF" functionality is
+> implemented by the PF, so I think it's reasonable to explore the idea
+> of "associate the vector assignment sysfs file with the PF."
 
-> Is the long term goal to take clang-format as the default whitespace format?
+As you said, it is our (Linux kernel) implementation, but from user space
+perspective it is seen different. The user "configures" specific VF and
+doesn't need to know that we are routing his requests through PF.
 
-Sort of. clang-format is quite close to the accepted kernel standard
-and makes maintaince alot easier, but gets a bunch of stuff wrong.
+> 
+> Assume 1K VFs.  Either way we have >1K subdirectories of
+> /sys/devices/pci0000:00/.  I think we should avoid an extra
+> subdirectory level, so I think the choices on the table are:
 
-> If so should I just reformat all the files in rxe now and get it over with?
+Right, we already have 1k subdirectories and PF will have 1k virtfnX
+links anyway. So for me it doesn't look appealing to see extra 1K files.
 
-We try not to do this, just fix egregious errors when you touch the
-code.
+In case someone else will need to add another parameter to this sriov
+overlay directory, we will find an extra 1K files and repeat again for
+any new parameter.
 
-There seem to be two camps on this topic:
+At the end, the discussion here is to make this sysfs feature to be very
+general and 1k files in one folder for every parameter is not nice (IMHO).
 
- - Internal consistency is more important that following the normative
-   style. This is the idea that if one file is insane it should stay
-   consistently isane. This avoids files looking "hard to read"
+In theory, SR-IOV spec allows up-to 64K VFs per-PF.
 
- - New code should follow the normative style. Old code should be
-   changed when it is touched. Files will become internally inconsistent.
-   This avoids everyone doing maintenance work from having to
-   understand a million different local style convections
+> 
+> Associate "vf_msix_count" with the PF:
+> 
+>   - /sys/.../<PF>/sriov/vf_total_msix    # all on PF
+> 
+>   - /sys/.../<PF>/sriov/vf_msix_count_BB:DD.F (1K of these).  Greg
+>     says the number of these is not a problem.
+> 
+>   - The "vf_total_msix" and "vf_msix_count_*" files are all related
+>     and are grouped together in PF/sriov/.
+> 
+>   - The "vf_msix_count_*" files operate directly on the PF.  Lock the
+>     PF for serialization, lookup and lock the VF to ensure no VF
+>     driver, call PF driver callback to assign vectors.
+> 
+>   - Requires special sysfs code to create/remove "vf_msix_count_*"
+>     files when setting/clearing VF Enable.  This code could create
+>     them only when the PF driver actually supports vector assignment.
+>     Unavoidable sysfs/uevent race, see below.
+> 
+> Associate "vf_msix_count" with the VF:
+> 
+>   - /sys/.../<PF>/sriov_vf_total_msix    # on PF
+> 
+>   - /sys/.../<VF>/sriov_vf_msix_count    # on each VF
+> 
+>   - The "sriov_vf_msix_count" files enter via the VF.  Lock the VF to
+>     ensure no VF driver, lookup and lock the PF for serialization,
+>     call PF driver callback to assign vectors.
+> 
+>   - Can be done with static sysfs attributes.  This means creating
+>     "sriov_vf_msix_count" *always*, even if PF driver doesn't support
+>     vector assignment.
 
-I tend to be in the latter group. 
+The same goes for the next parameter that someone will add.
 
-Especially when it comes to the annoying vertical alignment that is so
-common in RDMA.
+> 
+> IIUC, putting "vf_msix_count_*" under the PF involves a race.  When we
+> call device_add() for each new VF, it creates the VF sysfs directory
+> and emits the KOBJ_ADD uevent, but the "vf_msix_count_*" file doesn't
+> exist yet.  It can't be created before device_add() because the sysfs
+> directory doesn't exist.  If we create it after device_add(), the "add
+> VF" uevent has already been emitted, so userspace may consume it
+> before "vf_msix_count_*" is created.
+> 
+>   sriov_enable
+>     <set VF Enable>                     <-- VFs created on PCI
+>     sriov_add_vfs
+>       for (i = 0; i < num_vfs; i++) {
+>         pci_iov_add_virtfn
+>           pci_device_add
+>             device_initialize
+>             device_add
+>               device_add_attrs          <-- add VF sysfs attrs
+>               kobject_uevent(KOBJ_ADD)  <-- emit uevent
+>                                         <-- add "vf_msix_count_*" sysfs attr
+>           pci_iov_sysfs_link
+>           pci_bus_add_device
+>             pci_create_sysfs_dev_files
+>             device_attach
+>       }
+> 
+> Conceptually, I like having the "vf_total_msix" and "vf_msix_count_*"
+> files associated directly with the PF.  I think that's more natural
+> because they both operate directly on the PF.
 
-Jason
+And this is where we disagree :)
+
+> 
+> But I don't like the race, and using static attributes seems much
+> cleaner implementation-wise.
+
+Right, so what should be my next steps in order to do not miss this merge
+window?
+
+Thanks
+
+> 
+> Bjorn
