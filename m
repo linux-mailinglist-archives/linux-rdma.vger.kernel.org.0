@@ -2,108 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0331F351868
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Apr 2021 19:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 310A2351AE1
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Apr 2021 20:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234825AbhDARps (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Apr 2021 13:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234856AbhDARky (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 1 Apr 2021 13:40:54 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F54C03116E;
-        Thu,  1 Apr 2021 09:56:30 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id u4so2983841ljo.6;
-        Thu, 01 Apr 2021 09:56:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wO8Dojv7wME+ubk+Yh3ZKiafoFd7I1oLkJMSO3Y31sI=;
-        b=F3O2zCAbbReZgeHKtbw0aXK2qQlf7F/t03hUelxOfQugiFwprHSLhgAmndLRyhp1eu
-         xD+huyb1UwBnI2IhJFwFLD6bC3DFEp/nV2VqnXwz4Z+UQ9gPjcwRk/qHtnBWHLf/mAMU
-         27lOxowYfM7hfYr4eaYwmbJFgQXm+U9xHJAhoHR0YQpG46pKHL86lxLTvIRkQHbyP68r
-         E+GCoG8AHmtjN5znoQ1bqMrOapzAotTU4Ieze/dDFVTUmF9lXtwLP0DdTEKHBpgWLksF
-         UDQGQ4y7zcArnQk5FyBtctEj/9vPtSB9cmWmtVjWGRr9hKsl17dWe7xH0XvSuTV5nGs4
-         uE7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wO8Dojv7wME+ubk+Yh3ZKiafoFd7I1oLkJMSO3Y31sI=;
-        b=cteK/QAZMNsuYjC5c5iw6fUc43fgZlIEFFKwQuLbvWdYK9MZBzRR379AJL9Be+K6ZE
-         3WUyuYoNxpiaJu8V/iHxUygJdAkRTS3FSRo4ubUBNMk3ns5iQt1PsLDKyo3F9+WK/UBo
-         Sl6ENjP1BOVAy4qbZtddvH41PeYvoWsBLFllr6LOccBYioUHDXIUBCO1AH0H19N3mfTd
-         6wlGnb4w5lHPePzXSRvBVUyGFat9RElfGfU6SgE9qOCPBRD7UCQUyxFV+sMMnOe9rtCE
-         +fMX2z0+v+IlEY/0yois0tKVgJCuXLIhka+KLN9luiqFXRkuexbmLe8Yo6GqLVOwyNCo
-         mjKQ==
-X-Gm-Message-State: AOAM5329jokitcDXaqKBSuVThIyjb3wuT0T9sec5bJHVluEKrB6Sx7yO
-        VpVBYTIuh8qhJE6Gb8sALkTrco4HnjwSTbtB1V0=
-X-Google-Smtp-Source: ABdhPJzQOEEhimvWy6pd+h2jmQJE81piAskC48n/tc82P3AeVvjS9zpEJwTHf4VvbdGu+F2ZVrpUh6DxCyq/L8TTpnI=
-X-Received: by 2002:a2e:a0cf:: with SMTP id f15mr6281590ljm.29.1617296188589;
- Thu, 01 Apr 2021 09:56:28 -0700 (PDT)
+        id S236703AbhDASDZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Apr 2021 14:03:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236535AbhDAR57 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:57:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C004611CD;
+        Thu,  1 Apr 2021 13:08:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617282490;
+        bh=t2ugAO/Kdxgael7F2cUdb+2cMpZpMNW1DV6ZE+IWeas=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Su8tWzEWYvWSDvMHJmmwtDkrsZ7QI+zhxMuNp6hQQLWLsyOn6w1o5YvHs1Cv8ve3X
+         i6hWhUcd0MW4wfCN5xqsvcnP28QTdmVYnihuf1gVno4NoicX27L6Yr95zStgy/NzuM
+         egbGnhGeKNLCM5QQbZbgUo+/ZmW6aXhaihrWoqUdnT/DHJ/YzBcdH4YYfYtOh80Apm
+         xbXfIyjR5StdyVyQo9TzY/g2DWpg2viXUnrH788sEpWZILQWFi3leE22XTkmLhMNoZ
+         XryKBLJ4ufuEu6dhGhxevr3Guj2SP5MHoJ/XiQ1nzVgCv6Ur1NJP8jjog7D2kv59Zd
+         T0YduYFP9loMw==
+Date:   Thu, 1 Apr 2021 16:08:06 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, jgg@nvidia.com, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next 1/3] RDMA/hns: Enable all CMDQ context
+Message-ID: <YGXFtqbcVGLiKfXD@unreal>
+References: <1617262341-37571-1-git-send-email-liweihang@huawei.com>
+ <1617262341-37571-2-git-send-email-liweihang@huawei.com>
 MIME-Version: 1.0
-References: <161721926778.515226.9805598788670386587.stgit@manet.1015granger.net>
- <161721937122.515226.14731175629421422152.stgit@manet.1015granger.net>
- <4004f56f-3603-f56c-aea9-651230b3181e@talpey.com> <CAFMMQGvortADqgmAzskZKcnyHDzsTEW0FtR501wpP+deUM57FA@mail.gmail.com>
- <b5286b3f-439a-ef7c-cd7c-6cebfbccb02d@talpey.com>
-In-Reply-To: <b5286b3f-439a-ef7c-cd7c-6cebfbccb02d@talpey.com>
-From:   Chuck Lever <chucklever@gmail.com>
-Date:   Thu, 1 Apr 2021 12:56:17 -0400
-Message-ID: <CAFMMQGuo6=Leymd++YBtAwQzptzp+rcynM6EXosu20vG67jrMw@mail.gmail.com>
-Subject: Re: [PATCH v1 2/8] xprtrdma: Do not post Receives after disconnect
-To:     Tom Talpey <tom@talpey.com>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617262341-37571-2-git-send-email-liweihang@huawei.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 5:22 PM Tom Talpey <tom@talpey.com> wrote:
->
-> On 3/31/2021 4:31 PM, Chuck Lever wrote:
-> > On Wed, Mar 31, 2021 at 4:01 PM Tom Talpey <tom@talpey.com> wrote:
-> >>
-> >> On 3/31/2021 3:36 PM, Chuck Lever wrote:
-> >>> Currently the Receive completion handler refreshes the Receive Queue
-> >>> whenever a successful Receive completion occurs.
-> >>>
-> >>> On disconnect, xprtrdma drains the Receive Queue. The first few
-> >>> Receive completions after a disconnect are typically successful,
-> >>> until the first flushed Receive.
-> snip
-> >> Is it not possible to mark the WRs as
-> >> being part of a batch, and allowing them to flush? You could borrow a
-> >> bit in the completion cookie, and check it when the CQE pops out. Maybe.
-> >
-> > It's not an issue with batching, it's an issue with posting Receives from the
-> > Receive completion handler. I'd think that any of the ULPs that post Receives
-> > in their completion handler would have the same issue.
-> >
-> > The purpose of the QP drain in rpcrdma_xprt_disconnect() is to ensure there
-> > are no more WRs in flight so that the hardware resources can be safely
-> > destroyed. If the Receive completion handler continues to post Receive WRs
-> > after the drain sentinel has been posted, leaks and crashes become possible.
+On Thu, Apr 01, 2021 at 03:32:19PM +0800, Weihang Li wrote:
+> From: Lang Cheng <chenglang@huawei.com>
+> 
+> Fix error of cmd's context number calculation algorithm to enable all of
+> 32 cmd entries and support 32 concurrent accesses.
+> 
+> Signed-off-by: Lang Cheng <chenglang@huawei.com>
+> Signed-off-by: Weihang Li <liweihang@huawei.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_cmd.c    | 62 ++++++++++++-----------------
+>  drivers/infiniband/hw/hns/hns_roce_device.h |  6 +--
+>  2 files changed, 27 insertions(+), 41 deletions(-)
 
-> Well, why not do an atomic_set() of a flag just before posting the
-> sentinel, and check it with atomic_get() before any other RQ post?
+<...>
 
-After a couple of private exchanges, Tom and I agree that doing an
-ib_query_qp() in rpcrdma_post_recvs() has some drawbacks and
-does not fully close the race window.
+> -	WARN_ON(cmd->free_head < 0);
+> -	context = &cmd->context[cmd->free_head];
+> -	context->token += cmd->token_mask + 1;
+> -	cmd->free_head = context->next;
+> +
+> +	do {
+> +		context = &cmd->context[cmd->free_head];
+> +		cmd->free_head = context->next;
+> +	} while (context->busy);
+> +
+> +	context->busy = 1;
 
-There is nothing that prevents rpcrdma_xprt_disconnect() from starting
-the RQ drain while rpcrdma_post_recvs is still running. There needs to
-be serialization between ib_drain_rq() and rpcrdma_post_recvs() so
-that the drain sentinel is guaranteed to be the final Receive WR posted
-on the RQ.
+This "busy" flag after do-while together with release in __hns_roce_cmd_mbox_wait()
+is interesting thing. Are you sure that it won't loop forever here?
 
-It would be great if the core ib_drain_rq() API itself could handle the
-exclusion.
-
-
--- 
-"We cannot take our next breath without the exhale."
- -- Ellen Scott Grable
+Thanks
