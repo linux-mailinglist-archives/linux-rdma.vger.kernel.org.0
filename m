@@ -2,79 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764B53510AB
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Apr 2021 10:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA92351109
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Apr 2021 10:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233599AbhDAINC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 1 Apr 2021 04:13:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48538 "EHLO mail.kernel.org"
+        id S233024AbhDAIm4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 1 Apr 2021 04:42:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233527AbhDAIMr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 1 Apr 2021 04:12:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15EFC610A0;
-        Thu,  1 Apr 2021 08:12:45 +0000 (UTC)
+        id S233592AbhDAImr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 1 Apr 2021 04:42:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E6BE610A0;
+        Thu,  1 Apr 2021 08:42:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617264766;
-        bh=fRzP41BaiQHS3n+rjzagFHbLt9hz85fuauhbnUAA9Zg=;
+        s=k20201202; t=1617266566;
+        bh=d6bPen0/230L/AeLRabDytw2IrB/pFzIg03g+mM/KB4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IOquNj24Un07HRSMTKd0dhG7s5sLkwJGM4wDvZVK/SsoVMAZ6Tf2itU0qHmKU16Ef
-         juFpoBMkjijUpaXhaSeIvD+fbv0ehI55MAoAQHO25m8C9j+hZ/nHm4JbX7xyYBiCjd
-         g8EAW1QzsabsZDcyhRXzN3vF80sA29tIXg3/Ae1QGP4Yob5xVPPfjGL5snt2Wh5uqv
-         whJjq/V4hVPfv9FsCJ0ilhh6jpwlTh23fEd7kOq2EE52bKaRlpBcRccsH0lyr/awMo
-         5kKTvAu8gR5wC33CKeP8Lhke290e/jZ4TQsi1ZGNtZ54fboUrv4gAWNCWpGAoWAU61
-         kTS+uctSpcFgQ==
-Date:   Thu, 1 Apr 2021 11:12:43 +0300
+        b=oeMiOyn0dlDDzwyNlSDhXLKr+oBnMQ8NFKKhhqVbCs9p3GTUd9Gq1ll3MMuZBt1UZ
+         4PINs7o55gCy/GwN42zgj6vgr/eeQC7AlIkG1dNuIQw//DegpfAs6V+IWz8F81HsO2
+         TTr4PGxJqCxfuT3tVblw/pxoYTDWckNOSixqM/7zymc6w1Ltxnyx4+4so/xZXXIoBk
+         Nlkg4ECzplASFXHz9rpjqKkx8CqwuqGEuRR9Baegjq8a1p0UvSJfM7yN+JUyBwVbf2
+         FcKOYdx/NOAWuv37IFsLug6EbNx3Qwx6f6BRXeg+D2tyAvy8pTxStgpGL15pRhkwUW
+         GXgTUiR8llbtw==
+Date:   Thu, 1 Apr 2021 11:42:41 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Mark Zhang <markzhang@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next 3/6] IB/cm: Remove "mad_agent" parameter of
- ib_modify_mad
-Message-ID: <YGWAexN7nZx5ac9J@unreal>
-References: <20210318100309.670344-1-leon@kernel.org>
- <20210318100309.670344-4-leon@kernel.org>
- <20210329124101.GA887238@nvidia.com>
+To:     dennis.dalessandro@cornelisnetworks.com
+Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        Kaike Wan <kaike.wan@intel.com>
+Subject: Re: [PATCH for-next 06/10] rdma: Set physical MTU for query_port
+ function
+Message-ID: <YGWHga9RMan2uioD@unreal>
+References: <1617026056-50483-1-git-send-email-dennis.dalessandro@cornelisnetworks.com>
+ <1617026056-50483-7-git-send-email-dennis.dalessandro@cornelisnetworks.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210329124101.GA887238@nvidia.com>
+In-Reply-To: <1617026056-50483-7-git-send-email-dennis.dalessandro@cornelisnetworks.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 09:41:01AM -0300, Jason Gunthorpe wrote:
-> On Thu, Mar 18, 2021 at 12:03:06PM +0200, Leon Romanovsky wrote:
+On Mon, Mar 29, 2021 at 09:54:12AM -0400, dennis.dalessandro@cornelisnetworks.com wrote:
+> From: Kaike Wan <kaike.wan@intel.com>
 > 
-> > +static void cm_send_free_msg(struct ib_mad_send_buf *msg)
-> > +{
-> > +	struct cm_id_private *cm_id_priv;
-> > +
-> > +	cm_id_priv = msg->context[0];
-> > +	if (!cm_id_priv || cm_id_priv->msg != msg) {
-> > +		cm_free_msg(msg);
-> > +		return;
-> > +	}
-> > +
-> > +	spin_lock_irq(&cm_id_priv->lock);
-> > +	cm_free_msg(msg);
-> > +	cm_id_priv->msg = NULL;
-> > +	spin_unlock_irq(&cm_id_priv->lock);
-> > +}
+> This is a follow on patch to add a phys_mtu field to the
+> ib_port_attr structure to indicate the maximum physical MTU
+> the underlying device supports.
 > 
-> Either the whole sequence should be inside the lock or nothing should
-> be in the lock..
+> Extends the following:
+> commit 6d72344cf6c4 ("IB/ipoib: Increase ipoib Datagram mode MTU's upper limit")
+> 
+> Reviewed-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+> Signed-off-by: Kaike Wan <kaike.wan@intel.com>
+> Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+> ---
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c        |  1 +
+>  drivers/infiniband/hw/cxgb4/provider.c          |  1 +
+>  drivers/infiniband/hw/efa/efa_verbs.c           |  1 +
+>  drivers/infiniband/hw/hns/hns_roce_main.c       |  1 +
+>  drivers/infiniband/hw/i40iw/i40iw_verbs.c       |  1 +
+>  drivers/infiniband/hw/mlx4/main.c               |  1 +
+>  drivers/infiniband/hw/mlx5/mad.c                |  1 +
+>  drivers/infiniband/hw/mlx5/main.c               |  2 ++
+>  drivers/infiniband/hw/mthca/mthca_provider.c    |  1 +
+>  drivers/infiniband/hw/ocrdma/ocrdma_verbs.c     |  1 +
+>  drivers/infiniband/hw/qib/qib_verbs.c           |  1 +
+>  drivers/infiniband/hw/usnic/usnic_ib_verbs.c    |  1 +
+>  drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c |  1 +
+>  drivers/infiniband/sw/siw/siw_verbs.c           |  1 +
+>  drivers/infiniband/ulp/ipoib/ipoib_main.c       |  2 +-
+>  include/rdma/ib_verbs.h                         | 17 -----------------
+>  16 files changed, 16 insertions(+), 18 deletions(-)
 
-I see the race now, thanks for pointing it.
-
-> 
-> Oh this is all messed up and needs a big fix. Review and include this
-> in the series and drop the above function.
-> 
-> https://github.com/jgunthorpe/linux/commits/for-markz
-
-We will take a look on it.
+But why? What will it give us that almost all drivers have same 
+props->phys_mtu = ib_mtu_enum_to_int(props->max_mtu); line?
 
 Thanks
-
-> 
-> Jason
