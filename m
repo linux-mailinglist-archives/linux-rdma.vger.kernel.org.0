@@ -2,98 +2,559 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C7E352A5A
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Apr 2021 13:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8BC352A85
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Apr 2021 14:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbhDBLrl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 2 Apr 2021 07:47:41 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:53146 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhDBLrk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Apr 2021 07:47:40 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 132BcklS108604;
-        Fri, 2 Apr 2021 11:47:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=s86nNGXjuQO3BIkeVvSlQRzc9bKAV2oQ8jed6Z2e3HU=;
- b=XizUMFnRdxrvpdhLZZDNaT9Vr14PnUnxWqXc9xaUE8ob/WhP9XBptaWf4WiyKtM0+USM
- HV5pubFSSvTikTyTjnjqaHTdpKjyMiMH+ukDbbe6m4Ols7Bp9MC5JOXaYrGTM7C2ro63
- IDsIM4LEhtFadLDZeTlWavJhKygz631O8NbGLAK/MpWi+0526fvnLUHJSraLiaCiRtwk
- Eq00wVUQm0KYJwotwEhBwy2YfaK/bqIaZ4HRkZx6zd42T/walynPP8wzF01vAzmT8Xj9
- g//r0KY+28WVQeOfgGW6Yx0Aers6RNk9I/roHusQSd3U7hUoe+6nrIGk88VvN36+L4CA xg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 37n33dve46-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Apr 2021 11:47:34 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 132Bdg3a037341;
-        Fri, 2 Apr 2021 11:47:32 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 37n2atyu24-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Apr 2021 11:47:32 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 132BlVAO014148;
-        Fri, 2 Apr 2021 11:47:31 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 02 Apr 2021 11:47:30 +0000
-Date:   Fri, 2 Apr 2021 14:47:23 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Doug Ledford <dledford@redhat.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Mark Bloch <markb@mellanox.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] RDMA/addr: potential uninitialized variable in
- ib_nl_process_good_ip_rsep()
-Message-ID: <YGcES6MsXGnh83qi@mwanda>
+        id S229599AbhDBMRX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 2 Apr 2021 08:17:23 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15536 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229932AbhDBMRW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Apr 2021 08:17:22 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FBfB671ZnzPnj3;
+        Fri,  2 Apr 2021 20:14:38 +0800 (CST)
+Received: from [10.40.203.251] (10.40.203.251) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 2 Apr 2021 20:17:09 +0800
+Subject: Re: [PATCH for-next 1/6] RDMA/hns: Simplify function's resource
+ related command
+To:     Weihang Li <liweihang@huawei.com>, <dledford@redhat.com>,
+        <jgg@nvidia.com>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>, "Xi Wang" <wangxi11@huawei.com>
+References: <1617353896-40727-1-git-send-email-liweihang@huawei.com>
+ <1617353896-40727-2-git-send-email-liweihang@huawei.com>
+From:   Lang Cheng <chenglang@huawei.com>
+Message-ID: <0426cfd3-da56-6ec4-355e-969690b93ab0@huawei.com>
+Date:   Fri, 2 Apr 2021 20:17:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 spamscore=0
- mlxscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104020086
-X-Proofpoint-GUID: x-PxymaAPF3LEccK0jkXjXt0TExl6ZHs
-X-Proofpoint-ORIG-GUID: x-PxymaAPF3LEccK0jkXjXt0TExl6ZHs
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 mlxscore=0
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 phishscore=0
- clxscore=1011 impostorscore=0 malwarescore=0 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104020086
+In-Reply-To: <1617353896-40727-2-git-send-email-liweihang@huawei.com>
+Content-Type: multipart/mixed;
+        boundary="------------0C3CB8CF3EB7604182509650"
+X-Originating-IP: [10.40.203.251]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The nla_len() is less than or equal to 16.  If it's less than 16 then
-end of the "gid" buffer is uninitialized.
+--------------0C3CB8CF3EB7604182509650
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Fixes: ae43f8286730 ("IB/core: Add IP to GID netlink offload")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-I just spotted this in review.  I think it's a bug but I'm not 100%.
 
- drivers/infiniband/core/addr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
-index 0abce004a959..a037ba4424bf 100644
---- a/drivers/infiniband/core/addr.c
-+++ b/drivers/infiniband/core/addr.c
-@@ -98,7 +98,7 @@ static inline bool ib_nl_is_good_ip_resp(const struct nlmsghdr *nlh)
- static void ib_nl_process_good_ip_rsep(const struct nlmsghdr *nlh)
- {
- 	const struct nlattr *head, *curr;
--	union ib_gid gid;
-+	union ib_gid gid = {};
- 	struct addr_req *req;
- 	int len, rem;
- 	int found = 0;
--- 
-2.30.2
+ÔÚ 2021/4/2 16:58, Weihang Li Ð´µÀ:
+> From: Xi Wang <wangxi11@huawei.com>
+> 
+> Use hr_reg_write/read() to simplify codes about configuring function's
+> resource. And because the design of PF/VF fields is same, they can be
+> defined only once.
+> 
+> Signed-off-by: Xi Wang <wangxi11@huawei.com>
+> Signed-off-by: Weihang Li <liweihang@huawei.com>
+> ---
+>   drivers/infiniband/hw/hns/hns_roce_common.h |  11 ++
+>   drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 161 ++++++--------------
+>   drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 223 +++++-----------------------
+>   3 files changed, 90 insertions(+), 305 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_common.h b/drivers/infiniband/hw/hns/hns_roce_common.h
+> index 23c438c..5b5fedf 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_common.h
+> +++ b/drivers/infiniband/hw/hns/hns_roce_common.h
+> @@ -87,6 +87,17 @@
+>   
+>   #define hr_reg_write(ptr, field, val) _hr_reg_write(ptr, field, val)
+>   
+> +#define _hr_reg_read(ptr, field_type, field_h, field_l)                        \
+> +	({                                                                     \
+> +		const field_type *_ptr = ptr;                                  \
+> +		BUILD_BUG_ON(((field_h) / 32) != ((field_l) / 32));            \
+> +		((le32_to_cpu(*((__le32 *)_ptr + (field_h) / 32)) &            \
+> +		  GENMASK((field_h) % 32, (field_l) % 32)) >>                  \
+> +		 ((field_l) % 32));                                            \
+> +	})
 
+I will try this:
+
+#define _hr_reg_read(ptr, field_type, field_h, field_l) 
+
+	({
+		const field_type *_ptr = ptr;
+		FIELD_GET(GENMASK((field_h) % 32, (field_l) % 32),
+			  le32_to_cpu(*((__le32 *)_ptr +(field_h)/32)))
+		+ BUILD_BUG_ON_ZERO(((field_h) / 32) != ((field_l) / 32));
+	})
+
+
+Thanks.
+
+> +
+> +#define hr_reg_read(ptr, field) _hr_reg_read(ptr, field)
+> +
+>   #define ROCEE_GLB_CFG_ROCEE_DB_SQ_MODE_S 3
+>   #define ROCEE_GLB_CFG_ROCEE_DB_OTH_MODE_S 4
+>   
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> index cc334d5c..0695c2c 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> @@ -1623,21 +1623,14 @@ static int hns_roce_query_func_info(struct hns_roce_dev *hr_dev)
+>   
+>   static int hns_roce_config_global_param(struct hns_roce_dev *hr_dev)
+>   {
+> -	struct hns_roce_cfg_global_param *req;
+>   	struct hns_roce_cmq_desc desc;
+> +	struct hns_roce_cmq_req *req = (struct hns_roce_cmq_req *)desc.data;
+>   
+>   	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_CFG_GLOBAL_PARAM,
+>   				      false);
+>   
+> -	req = (struct hns_roce_cfg_global_param *)desc.data;
+> -	memset(req, 0, sizeof(*req));
+> -	roce_set_field(req->time_cfg_udp_port,
+> -		       CFG_GLOBAL_PARAM_DATA_0_ROCEE_TIME_1US_CFG_M,
+> -		       CFG_GLOBAL_PARAM_DATA_0_ROCEE_TIME_1US_CFG_S, 0x3e8);
+> -	roce_set_field(req->time_cfg_udp_port,
+> -		       CFG_GLOBAL_PARAM_DATA_0_ROCEE_UDP_PORT_M,
+> -		       CFG_GLOBAL_PARAM_DATA_0_ROCEE_UDP_PORT_S,
+> -		       ROCE_V2_UDP_DPORT);
+> +	hr_reg_write(req, CFG_GLOBAL_PARAM_1US_CYCLES, 0x3e8);
+> +	hr_reg_write(req, CFG_GLOBAL_PARAM_UDP_PORT, ROCE_V2_UDP_DPORT);
+>   
+>   	return hns_roce_cmq_send(hr_dev, &desc, 1);
+>   }
+> @@ -1645,55 +1638,36 @@ static int hns_roce_config_global_param(struct hns_roce_dev *hr_dev)
+>   static int hns_roce_query_pf_resource(struct hns_roce_dev *hr_dev)
+>   {
+>   	struct hns_roce_cmq_desc desc[2];
+> -	struct hns_roce_pf_res_a *req_a;
+> -	struct hns_roce_pf_res_b *req_b;
+> +	struct hns_roce_cmq_req *r_a = (struct hns_roce_cmq_req *)desc[0].data;
+> +	struct hns_roce_cmq_req *r_b = (struct hns_roce_cmq_req *)desc[1].data;
+> +	enum hns_roce_opcode_type opcode = HNS_ROCE_OPC_QUERY_PF_RES;
+> +	struct hns_roce_caps *caps = &hr_dev->caps;
+>   	int ret;
+>   
+> -	hns_roce_cmq_setup_basic_desc(&desc[0], HNS_ROCE_OPC_QUERY_PF_RES,
+> -				      true);
+> +	hns_roce_cmq_setup_basic_desc(&desc[0], opcode, true);
+>   	desc[0].flag |= cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
+> -
+> -	hns_roce_cmq_setup_basic_desc(&desc[1], HNS_ROCE_OPC_QUERY_PF_RES,
+> -				      true);
+> +	hns_roce_cmq_setup_basic_desc(&desc[1], opcode, true);
+>   
+>   	ret = hns_roce_cmq_send(hr_dev, desc, 2);
+>   	if (ret)
+>   		return ret;
+>   
+> -	req_a = (struct hns_roce_pf_res_a *)desc[0].data;
+> -	req_b = (struct hns_roce_pf_res_b *)desc[1].data;
+> -
+> -	hr_dev->caps.qpc_bt_num = roce_get_field(req_a->qpc_bt_idx_num,
+> -						 PF_RES_DATA_1_PF_QPC_BT_NUM_M,
+> -						 PF_RES_DATA_1_PF_QPC_BT_NUM_S);
+> -	hr_dev->caps.srqc_bt_num = roce_get_field(req_a->srqc_bt_idx_num,
+> -						PF_RES_DATA_2_PF_SRQC_BT_NUM_M,
+> -						PF_RES_DATA_2_PF_SRQC_BT_NUM_S);
+> -	hr_dev->caps.cqc_bt_num = roce_get_field(req_a->cqc_bt_idx_num,
+> -						 PF_RES_DATA_3_PF_CQC_BT_NUM_M,
+> -						 PF_RES_DATA_3_PF_CQC_BT_NUM_S);
+> -	hr_dev->caps.mpt_bt_num = roce_get_field(req_a->mpt_bt_idx_num,
+> -						 PF_RES_DATA_4_PF_MPT_BT_NUM_M,
+> -						 PF_RES_DATA_4_PF_MPT_BT_NUM_S);
+> -
+> -	hr_dev->caps.sl_num = roce_get_field(req_b->qid_idx_sl_num,
+> -					     PF_RES_DATA_3_PF_SL_NUM_M,
+> -					     PF_RES_DATA_3_PF_SL_NUM_S);
+> -	hr_dev->caps.sccc_bt_num = roce_get_field(req_b->sccc_bt_idx_num,
+> -					     PF_RES_DATA_4_PF_SCCC_BT_NUM_M,
+> -					     PF_RES_DATA_4_PF_SCCC_BT_NUM_S);
+> -
+> -	hr_dev->caps.gmv_bt_num = roce_get_field(req_b->gmv_idx_num,
+> -						 PF_RES_DATA_5_PF_GMV_BT_NUM_M,
+> -						 PF_RES_DATA_5_PF_GMV_BT_NUM_S);
+> +	caps->qpc_bt_num = hr_reg_read(r_a, FUNC_RES_A_QPC_BT_NUM);
+> +	caps->srqc_bt_num = hr_reg_read(r_a, FUNC_RES_A_SRQC_BT_NUM);
+> +	caps->cqc_bt_num = hr_reg_read(r_a, FUNC_RES_A_CQC_BT_NUM);
+> +	caps->mpt_bt_num = hr_reg_read(r_a, FUNC_RES_A_MPT_BT_NUM);
+> +	caps->sccc_bt_num = hr_reg_read(r_b, FUNC_RES_B_SCCC_BT_NUM);
+> +	caps->sl_num = hr_reg_read(r_b, FUNC_RES_B_QID_NUM);
+> +	caps->gmv_bt_num = hr_reg_read(r_b, FUNC_RES_B_GMV_BT_NUM);
+>   
+>   	return 0;
+>   }
+>   
+>   static int hns_roce_query_pf_timer_resource(struct hns_roce_dev *hr_dev)
+>   {
+> -	struct hns_roce_pf_timer_res_a *req_a;
+>   	struct hns_roce_cmq_desc desc;
+> +	struct hns_roce_cmq_req *req = (struct hns_roce_cmq_req *)desc.data;
+> +	struct hns_roce_caps *caps = &hr_dev->caps;
+>   	int ret;
+>   
+>   	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_QUERY_PF_TIMER_RES,
+> @@ -1703,16 +1677,8 @@ static int hns_roce_query_pf_timer_resource(struct hns_roce_dev *hr_dev)
+>   	if (ret)
+>   		return ret;
+>   
+> -	req_a = (struct hns_roce_pf_timer_res_a *)desc.data;
+> -
+> -	hr_dev->caps.qpc_timer_bt_num =
+> -		roce_get_field(req_a->qpc_timer_bt_idx_num,
+> -			       PF_RES_DATA_1_PF_QPC_TIMER_BT_NUM_M,
+> -			       PF_RES_DATA_1_PF_QPC_TIMER_BT_NUM_S);
+> -	hr_dev->caps.cqc_timer_bt_num =
+> -		roce_get_field(req_a->cqc_timer_bt_idx_num,
+> -			       PF_RES_DATA_2_PF_CQC_TIMER_BT_NUM_M,
+> -			       PF_RES_DATA_2_PF_CQC_TIMER_BT_NUM_S);
+> +	caps->qpc_timer_bt_num = hr_reg_read(req, PF_TIMER_RES_QPC_ITEM_NUM);
+> +	caps->cqc_timer_bt_num = hr_reg_read(req, PF_TIMER_RES_CQC_ITEM_NUM);
+>   
+>   	return 0;
+>   }
+> @@ -1745,73 +1711,32 @@ static int hns_roce_set_vf_switch_param(struct hns_roce_dev *hr_dev, int vf_id)
+>   static int hns_roce_alloc_vf_resource(struct hns_roce_dev *hr_dev)
+>   {
+>   	struct hns_roce_cmq_desc desc[2];
+> -	struct hns_roce_vf_res_a *req_a;
+> -	struct hns_roce_vf_res_b *req_b;
+> -
+> -	req_a = (struct hns_roce_vf_res_a *)desc[0].data;
+> -	req_b = (struct hns_roce_vf_res_b *)desc[1].data;
+> +	struct hns_roce_cmq_req *r_a = (struct hns_roce_cmq_req *)desc[0].data;
+> +	struct hns_roce_cmq_req *r_b = (struct hns_roce_cmq_req *)desc[1].data;
+> +	enum hns_roce_opcode_type opcode = HNS_ROCE_OPC_ALLOC_VF_RES;
+>   
+> -	hns_roce_cmq_setup_basic_desc(&desc[0], HNS_ROCE_OPC_ALLOC_VF_RES,
+> -				      false);
+> +	hns_roce_cmq_setup_basic_desc(&desc[0], opcode, false);
+>   	desc[0].flag |= cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
+> +	hns_roce_cmq_setup_basic_desc(&desc[1], opcode, false);
+>   
+> -	hns_roce_cmq_setup_basic_desc(&desc[1], HNS_ROCE_OPC_ALLOC_VF_RES,
+> -				      false);
+> -
+> -	roce_set_field(req_a->vf_qpc_bt_idx_num,
+> -		       VF_RES_A_DATA_1_VF_QPC_BT_IDX_M,
+> -		       VF_RES_A_DATA_1_VF_QPC_BT_IDX_S, 0);
+> -	roce_set_field(req_a->vf_qpc_bt_idx_num,
+> -		       VF_RES_A_DATA_1_VF_QPC_BT_NUM_M,
+> -		       VF_RES_A_DATA_1_VF_QPC_BT_NUM_S, HNS_ROCE_VF_QPC_BT_NUM);
+> -
+> -	roce_set_field(req_a->vf_srqc_bt_idx_num,
+> -		       VF_RES_A_DATA_2_VF_SRQC_BT_IDX_M,
+> -		       VF_RES_A_DATA_2_VF_SRQC_BT_IDX_S, 0);
+> -	roce_set_field(req_a->vf_srqc_bt_idx_num,
+> -		       VF_RES_A_DATA_2_VF_SRQC_BT_NUM_M,
+> -		       VF_RES_A_DATA_2_VF_SRQC_BT_NUM_S,
+> -		       HNS_ROCE_VF_SRQC_BT_NUM);
+> -
+> -	roce_set_field(req_a->vf_cqc_bt_idx_num,
+> -		       VF_RES_A_DATA_3_VF_CQC_BT_IDX_M,
+> -		       VF_RES_A_DATA_3_VF_CQC_BT_IDX_S, 0);
+> -	roce_set_field(req_a->vf_cqc_bt_idx_num,
+> -		       VF_RES_A_DATA_3_VF_CQC_BT_NUM_M,
+> -		       VF_RES_A_DATA_3_VF_CQC_BT_NUM_S, HNS_ROCE_VF_CQC_BT_NUM);
+> -
+> -	roce_set_field(req_a->vf_mpt_bt_idx_num,
+> -		       VF_RES_A_DATA_4_VF_MPT_BT_IDX_M,
+> -		       VF_RES_A_DATA_4_VF_MPT_BT_IDX_S, 0);
+> -	roce_set_field(req_a->vf_mpt_bt_idx_num,
+> -		       VF_RES_A_DATA_4_VF_MPT_BT_NUM_M,
+> -		       VF_RES_A_DATA_4_VF_MPT_BT_NUM_S, HNS_ROCE_VF_MPT_BT_NUM);
+> -
+> -	roce_set_field(req_a->vf_eqc_bt_idx_num, VF_RES_A_DATA_5_VF_EQC_IDX_M,
+> -		       VF_RES_A_DATA_5_VF_EQC_IDX_S, 0);
+> -	roce_set_field(req_a->vf_eqc_bt_idx_num, VF_RES_A_DATA_5_VF_EQC_NUM_M,
+> -		       VF_RES_A_DATA_5_VF_EQC_NUM_S, HNS_ROCE_VF_EQC_NUM);
+> -
+> -	roce_set_field(req_b->vf_smac_idx_num, VF_RES_B_DATA_1_VF_SMAC_IDX_M,
+> -		       VF_RES_B_DATA_1_VF_SMAC_IDX_S, 0);
+> -	roce_set_field(req_b->vf_smac_idx_num, VF_RES_B_DATA_1_VF_SMAC_NUM_M,
+> -		       VF_RES_B_DATA_1_VF_SMAC_NUM_S, HNS_ROCE_VF_SMAC_NUM);
+> -
+> -	roce_set_field(req_b->vf_sgid_idx_num, VF_RES_B_DATA_2_VF_SGID_IDX_M,
+> -		       VF_RES_B_DATA_2_VF_SGID_IDX_S, 0);
+> -	roce_set_field(req_b->vf_sgid_idx_num, VF_RES_B_DATA_2_VF_SGID_NUM_M,
+> -		       VF_RES_B_DATA_2_VF_SGID_NUM_S, HNS_ROCE_VF_SGID_NUM);
+> -
+> -	roce_set_field(req_b->vf_qid_idx_sl_num, VF_RES_B_DATA_3_VF_QID_IDX_M,
+> -		       VF_RES_B_DATA_3_VF_QID_IDX_S, 0);
+> -	roce_set_field(req_b->vf_qid_idx_sl_num, VF_RES_B_DATA_3_VF_SL_NUM_M,
+> -		       VF_RES_B_DATA_3_VF_SL_NUM_S, HNS_ROCE_VF_SL_NUM);
+> -
+> -	roce_set_field(req_b->vf_sccc_idx_num, VF_RES_B_DATA_4_VF_SCCC_BT_IDX_M,
+> -		       VF_RES_B_DATA_4_VF_SCCC_BT_IDX_S, 0);
+> -	roce_set_field(req_b->vf_sccc_idx_num, VF_RES_B_DATA_4_VF_SCCC_BT_NUM_M,
+> -		       VF_RES_B_DATA_4_VF_SCCC_BT_NUM_S,
+> -		       HNS_ROCE_VF_SCCC_BT_NUM);
+> +	hr_reg_write(r_a, FUNC_RES_A_QPC_BT_NUM, HNS_ROCE_VF_QPC_BT_NUM);
+> +	hr_reg_write(r_a, FUNC_RES_A_QPC_BT_IDX, 0);
+> +	hr_reg_write(r_a, FUNC_RES_A_SRQC_BT_NUM, HNS_ROCE_VF_SRQC_BT_NUM);
+> +	hr_reg_write(r_a, FUNC_RES_A_SRQC_BT_IDX, 0);
+> +	hr_reg_write(r_a, FUNC_RES_A_CQC_BT_NUM, HNS_ROCE_VF_CQC_BT_NUM);
+> +	hr_reg_write(r_a, FUNC_RES_A_CQC_BT_IDX, 0);
+> +	hr_reg_write(r_a, FUNC_RES_A_MPT_BT_NUM, HNS_ROCE_VF_MPT_BT_NUM);
+> +	hr_reg_write(r_a, FUNC_RES_A_MPT_BT_IDX, 0);
+> +	hr_reg_write(r_a, FUNC_RES_A_EQC_BT_NUM, HNS_ROCE_VF_EQC_NUM);
+> +	hr_reg_write(r_a, FUNC_RES_A_EQC_BT_IDX, 0);
+> +	hr_reg_write(r_b, FUNC_RES_B_SMAC_NUM, HNS_ROCE_VF_SMAC_NUM);
+> +	hr_reg_write(r_b, FUNC_RES_B_SMAC_IDX, 0);
+> +	hr_reg_write(r_b, FUNC_RES_B_SGID_NUM, HNS_ROCE_VF_SGID_NUM);
+> +	hr_reg_write(r_b, FUNC_RES_B_SGID_IDX, 0);
+> +	hr_reg_write(r_b, FUNC_RES_V_QID_NUM, HNS_ROCE_VF_SL_NUM);
+> +	hr_reg_write(r_b, FUNC_RES_B_QID_IDX, 0);
+> +	hr_reg_write(r_b, FUNC_RES_B_SCCC_BT_NUM, HNS_ROCE_VF_SCCC_BT_NUM);
+> +	hr_reg_write(r_b, FUNC_RES_B_SCCC_BT_IDX, 0);
+>   
+>   	return hns_roce_cmq_send(hr_dev, desc, 2);
+>   }
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+> index 44a3abdd..44be39a 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+> @@ -1363,194 +1363,43 @@ struct hns_roce_cfg_llm_b {
+>   #define CFG_LLM_TAIL_PTR_S 0
+>   #define CFG_LLM_TAIL_PTR_M GENMASK(11, 0)
+>   
+> -struct hns_roce_cfg_global_param {
+> -	__le32 time_cfg_udp_port;
+> -	__le32 rsv[5];
+> -};
+> -
+> -#define CFG_GLOBAL_PARAM_DATA_0_ROCEE_TIME_1US_CFG_S 0
+> -#define CFG_GLOBAL_PARAM_DATA_0_ROCEE_TIME_1US_CFG_M GENMASK(9, 0)
+> -
+> -#define CFG_GLOBAL_PARAM_DATA_0_ROCEE_UDP_PORT_S 16
+> -#define CFG_GLOBAL_PARAM_DATA_0_ROCEE_UDP_PORT_M GENMASK(31, 16)
+> -
+> -struct hns_roce_pf_res_a {
+> -	__le32	rsv;
+> -	__le32	qpc_bt_idx_num;
+> -	__le32	srqc_bt_idx_num;
+> -	__le32	cqc_bt_idx_num;
+> -	__le32	mpt_bt_idx_num;
+> -	__le32	eqc_bt_idx_num;
+> -};
+> -
+> -#define PF_RES_DATA_1_PF_QPC_BT_IDX_S 0
+> -#define PF_RES_DATA_1_PF_QPC_BT_IDX_M GENMASK(10, 0)
+> -
+> -#define PF_RES_DATA_1_PF_QPC_BT_NUM_S 16
+> -#define PF_RES_DATA_1_PF_QPC_BT_NUM_M GENMASK(27, 16)
+> -
+> -#define PF_RES_DATA_2_PF_SRQC_BT_IDX_S 0
+> -#define PF_RES_DATA_2_PF_SRQC_BT_IDX_M GENMASK(8, 0)
+> -
+> -#define PF_RES_DATA_2_PF_SRQC_BT_NUM_S 16
+> -#define PF_RES_DATA_2_PF_SRQC_BT_NUM_M GENMASK(25, 16)
+> -
+> -#define PF_RES_DATA_3_PF_CQC_BT_IDX_S 0
+> -#define PF_RES_DATA_3_PF_CQC_BT_IDX_M GENMASK(8, 0)
+> -
+> -#define PF_RES_DATA_3_PF_CQC_BT_NUM_S 16
+> -#define PF_RES_DATA_3_PF_CQC_BT_NUM_M GENMASK(25, 16)
+> -
+> -#define PF_RES_DATA_4_PF_MPT_BT_IDX_S 0
+> -#define PF_RES_DATA_4_PF_MPT_BT_IDX_M GENMASK(8, 0)
+> -
+> -#define PF_RES_DATA_4_PF_MPT_BT_NUM_S 16
+> -#define PF_RES_DATA_4_PF_MPT_BT_NUM_M GENMASK(25, 16)
+> -
+> -#define PF_RES_DATA_5_PF_EQC_BT_IDX_S 0
+> -#define PF_RES_DATA_5_PF_EQC_BT_IDX_M GENMASK(8, 0)
+> -
+> -#define PF_RES_DATA_5_PF_EQC_BT_NUM_S 16
+> -#define PF_RES_DATA_5_PF_EQC_BT_NUM_M GENMASK(25, 16)
+> -
+> -struct hns_roce_pf_res_b {
+> -	__le32	rsv0;
+> -	__le32	smac_idx_num;
+> -	__le32	sgid_idx_num;
+> -	__le32	qid_idx_sl_num;
+> -	__le32	sccc_bt_idx_num;
+> -	__le32	gmv_idx_num;
+> -};
+> -
+> -#define PF_RES_DATA_1_PF_SMAC_IDX_S 0
+> -#define PF_RES_DATA_1_PF_SMAC_IDX_M GENMASK(7, 0)
+> -
+> -#define PF_RES_DATA_1_PF_SMAC_NUM_S 8
+> -#define PF_RES_DATA_1_PF_SMAC_NUM_M GENMASK(16, 8)
+> -
+> -#define PF_RES_DATA_2_PF_SGID_IDX_S 0
+> -#define PF_RES_DATA_2_PF_SGID_IDX_M GENMASK(7, 0)
+> -
+> -#define PF_RES_DATA_2_PF_SGID_NUM_S 8
+> -#define PF_RES_DATA_2_PF_SGID_NUM_M GENMASK(16, 8)
+> -
+> -#define PF_RES_DATA_3_PF_QID_IDX_S 0
+> -#define PF_RES_DATA_3_PF_QID_IDX_M GENMASK(9, 0)
+> -
+> -#define PF_RES_DATA_3_PF_SL_NUM_S 16
+> -#define PF_RES_DATA_3_PF_SL_NUM_M GENMASK(26, 16)
+> -
+> -#define PF_RES_DATA_4_PF_SCCC_BT_IDX_S 0
+> -#define PF_RES_DATA_4_PF_SCCC_BT_IDX_M GENMASK(8, 0)
+> -
+> -#define PF_RES_DATA_4_PF_SCCC_BT_NUM_S 9
+> -#define PF_RES_DATA_4_PF_SCCC_BT_NUM_M GENMASK(17, 9)
+> -
+> -#define PF_RES_DATA_5_PF_GMV_BT_IDX_S 0
+> -#define PF_RES_DATA_5_PF_GMV_BT_IDX_M GENMASK(7, 0)
+> -
+> -#define PF_RES_DATA_5_PF_GMV_BT_NUM_S 8
+> -#define PF_RES_DATA_5_PF_GMV_BT_NUM_M GENMASK(16, 8)
+> -
+> -struct hns_roce_pf_timer_res_a {
+> -	__le32	rsv0;
+> -	__le32	qpc_timer_bt_idx_num;
+> -	__le32	cqc_timer_bt_idx_num;
+> -	__le32	rsv[3];
+> -};
+> +/* Fields of HNS_ROCE_OPC_CFG_GLOBAL_PARAM */
+> +#define CFG_GLOBAL_PARAM_1US_CYCLES CMQ_REQ_FIELD_LOC(9, 0)
+> +#define CFG_GLOBAL_PARAM_UDP_PORT CMQ_REQ_FIELD_LOC(31, 16)
+>   
+> -#define PF_RES_DATA_1_PF_QPC_TIMER_BT_IDX_S 0
+> -#define PF_RES_DATA_1_PF_QPC_TIMER_BT_IDX_M GENMASK(11, 0)
+> -
+> -#define PF_RES_DATA_1_PF_QPC_TIMER_BT_NUM_S 16
+> -#define PF_RES_DATA_1_PF_QPC_TIMER_BT_NUM_M GENMASK(28, 16)
+> -
+> -#define PF_RES_DATA_2_PF_CQC_TIMER_BT_IDX_S 0
+> -#define PF_RES_DATA_2_PF_CQC_TIMER_BT_IDX_M GENMASK(10, 0)
+> -
+> -#define PF_RES_DATA_2_PF_CQC_TIMER_BT_NUM_S 16
+> -#define PF_RES_DATA_2_PF_CQC_TIMER_BT_NUM_M GENMASK(27, 16)
+> -
+> -struct hns_roce_vf_res_a {
+> -	__le32 vf_id;
+> -	__le32 vf_qpc_bt_idx_num;
+> -	__le32 vf_srqc_bt_idx_num;
+> -	__le32 vf_cqc_bt_idx_num;
+> -	__le32 vf_mpt_bt_idx_num;
+> -	__le32 vf_eqc_bt_idx_num;
+> -};
+> -
+> -#define VF_RES_A_DATA_1_VF_QPC_BT_IDX_S 0
+> -#define VF_RES_A_DATA_1_VF_QPC_BT_IDX_M GENMASK(10, 0)
+> -
+> -#define VF_RES_A_DATA_1_VF_QPC_BT_NUM_S 16
+> -#define VF_RES_A_DATA_1_VF_QPC_BT_NUM_M GENMASK(27, 16)
+> -
+> -#define VF_RES_A_DATA_2_VF_SRQC_BT_IDX_S 0
+> -#define VF_RES_A_DATA_2_VF_SRQC_BT_IDX_M GENMASK(8, 0)
+> -
+> -#define VF_RES_A_DATA_2_VF_SRQC_BT_NUM_S 16
+> -#define VF_RES_A_DATA_2_VF_SRQC_BT_NUM_M GENMASK(25, 16)
+> -
+> -#define VF_RES_A_DATA_3_VF_CQC_BT_IDX_S 0
+> -#define VF_RES_A_DATA_3_VF_CQC_BT_IDX_M GENMASK(8, 0)
+> -
+> -#define VF_RES_A_DATA_3_VF_CQC_BT_NUM_S 16
+> -#define VF_RES_A_DATA_3_VF_CQC_BT_NUM_M GENMASK(25, 16)
+> -
+> -#define VF_RES_A_DATA_4_VF_MPT_BT_IDX_S 0
+> -#define VF_RES_A_DATA_4_VF_MPT_BT_IDX_M GENMASK(8, 0)
+> -
+> -#define VF_RES_A_DATA_4_VF_MPT_BT_NUM_S 16
+> -#define VF_RES_A_DATA_4_VF_MPT_BT_NUM_M GENMASK(25, 16)
+> -
+> -#define VF_RES_A_DATA_5_VF_EQC_IDX_S 0
+> -#define VF_RES_A_DATA_5_VF_EQC_IDX_M GENMASK(8, 0)
+> -
+> -#define VF_RES_A_DATA_5_VF_EQC_NUM_S 16
+> -#define VF_RES_A_DATA_5_VF_EQC_NUM_M GENMASK(25, 16)
+> -
+> -struct hns_roce_vf_res_b {
+> -	__le32 rsv0;
+> -	__le32 vf_smac_idx_num;
+> -	__le32 vf_sgid_idx_num;
+> -	__le32 vf_qid_idx_sl_num;
+> -	__le32 vf_sccc_idx_num;
+> -	__le32 vf_gmv_idx_num;
+> -};
+> -
+> -#define VF_RES_B_DATA_0_VF_ID_S 0
+> -#define VF_RES_B_DATA_0_VF_ID_M GENMASK(7, 0)
+> -
+> -#define VF_RES_B_DATA_1_VF_SMAC_IDX_S 0
+> -#define VF_RES_B_DATA_1_VF_SMAC_IDX_M GENMASK(7, 0)
+> -
+> -#define VF_RES_B_DATA_1_VF_SMAC_NUM_S 8
+> -#define VF_RES_B_DATA_1_VF_SMAC_NUM_M GENMASK(16, 8)
+> -
+> -#define VF_RES_B_DATA_2_VF_SGID_IDX_S 0
+> -#define VF_RES_B_DATA_2_VF_SGID_IDX_M GENMASK(7, 0)
+> -
+> -#define VF_RES_B_DATA_2_VF_SGID_NUM_S 8
+> -#define VF_RES_B_DATA_2_VF_SGID_NUM_M GENMASK(16, 8)
+> -
+> -#define VF_RES_B_DATA_3_VF_QID_IDX_S 0
+> -#define VF_RES_B_DATA_3_VF_QID_IDX_M GENMASK(9, 0)
+> -
+> -#define VF_RES_B_DATA_3_VF_SL_NUM_S 16
+> -#define VF_RES_B_DATA_3_VF_SL_NUM_M GENMASK(19, 16)
+> -
+> -#define VF_RES_B_DATA_4_VF_SCCC_BT_IDX_S 0
+> -#define VF_RES_B_DATA_4_VF_SCCC_BT_IDX_M GENMASK(8, 0)
+> -
+> -#define VF_RES_B_DATA_4_VF_SCCC_BT_NUM_S 9
+> -#define VF_RES_B_DATA_4_VF_SCCC_BT_NUM_M GENMASK(17, 9)
+> -
+> -#define VF_RES_B_DATA_5_VF_GMV_BT_IDX_S 0
+> -#define VF_RES_B_DATA_5_VF_GMV_BT_IDX_M GENMASK(7, 0)
+> -
+> -#define VF_RES_B_DATA_5_VF_GMV_BT_NUM_S 16
+> -#define VF_RES_B_DATA_5_VF_GMV_BT_NUM_M GENMASK(24, 16)
+> +/*
+> + * Fields of HNS_ROCE_OPC_QUERY_PF_RES and HNS_ROCE_OPC_ALLOC_VF_RES
+> + */
+> +#define FUNC_RES_A_VF_ID CMQ_REQ_FIELD_LOC(7, 0)
+> +#define FUNC_RES_A_QPC_BT_IDX CMQ_REQ_FIELD_LOC(42, 32)
+> +#define FUNC_RES_A_QPC_BT_NUM CMQ_REQ_FIELD_LOC(59, 48)
+> +#define FUNC_RES_A_SRQC_BT_IDX CMQ_REQ_FIELD_LOC(72, 64)
+> +#define FUNC_RES_A_SRQC_BT_NUM CMQ_REQ_FIELD_LOC(89, 80)
+> +#define FUNC_RES_A_CQC_BT_IDX CMQ_REQ_FIELD_LOC(104, 96)
+> +#define FUNC_RES_A_CQC_BT_NUM CMQ_REQ_FIELD_LOC(121, 112)
+> +#define FUNC_RES_A_MPT_BT_IDX CMQ_REQ_FIELD_LOC(136, 128)
+> +#define FUNC_RES_A_MPT_BT_NUM CMQ_REQ_FIELD_LOC(153, 144)
+> +#define FUNC_RES_A_EQC_BT_IDX CMQ_REQ_FIELD_LOC(168, 160)
+> +#define FUNC_RES_A_EQC_BT_NUM CMQ_REQ_FIELD_LOC(185, 176)
+> +#define FUNC_RES_B_SMAC_IDX CMQ_REQ_FIELD_LOC(39, 32)
+> +#define FUNC_RES_B_SMAC_NUM CMQ_REQ_FIELD_LOC(48, 40)
+> +#define FUNC_RES_B_SGID_IDX CMQ_REQ_FIELD_LOC(71, 64)
+> +#define FUNC_RES_B_SGID_NUM CMQ_REQ_FIELD_LOC(80, 72)
+> +#define FUNC_RES_B_QID_IDX CMQ_REQ_FIELD_LOC(105, 96)
+> +#define FUNC_RES_B_QID_NUM CMQ_REQ_FIELD_LOC(122, 112)
+> +#define FUNC_RES_V_QID_NUM CMQ_REQ_FIELD_LOC(115, 112)
+> +
+> +#define FUNC_RES_B_SCCC_BT_IDX CMQ_REQ_FIELD_LOC(136, 128)
+> +#define FUNC_RES_B_SCCC_BT_NUM CMQ_REQ_FIELD_LOC(145, 137)
+> +#define FUNC_RES_B_GMV_BT_IDX CMQ_REQ_FIELD_LOC(167, 160)
+> +#define FUNC_RES_B_GMV_BT_NUM CMQ_REQ_FIELD_LOC(176, 168)
+> +#define FUNC_RES_V_GMV_BT_NUM CMQ_REQ_FIELD_LOC(184, 176)
+> +
+> +/* Fields of HNS_ROCE_OPC_QUERY_PF_TIMER_RES */
+> +#define PF_TIMER_RES_QPC_ITEM_IDX CMQ_REQ_FIELD_LOC(43, 32)
+> +#define PF_TIMER_RES_QPC_ITEM_NUM CMQ_REQ_FIELD_LOC(60, 48)
+> +#define PF_TIMER_RES_CQC_ITEM_IDX CMQ_REQ_FIELD_LOC(74, 64)
+> +#define PF_TIMER_RES_CQC_ITEM_NUM CMQ_REQ_FIELD_LOC(91, 80)
+>   
+>   struct hns_roce_vf_switch {
+>   	__le32 rocee_sel;
+> 
+
+--------------0C3CB8CF3EB7604182509650
+Content-Type: text/x-vcard; name="chenglang.vcf"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="chenglang.vcf"
+
+bnVsbA==
+--------------0C3CB8CF3EB7604182509650--
