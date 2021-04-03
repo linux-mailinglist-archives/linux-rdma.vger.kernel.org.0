@@ -2,140 +2,200 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7200D353180
-	for <lists+linux-rdma@lfdr.de>; Sat,  3 Apr 2021 01:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 244EB3531BD
+	for <lists+linux-rdma@lfdr.de>; Sat,  3 Apr 2021 02:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234821AbhDBXa2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 2 Apr 2021 19:30:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231406AbhDBXa0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 2 Apr 2021 19:30:26 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84388C0613E6
-        for <linux-rdma@vger.kernel.org>; Fri,  2 Apr 2021 16:30:21 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id y2so4633492qtw.13
-        for <linux-rdma@vger.kernel.org>; Fri, 02 Apr 2021 16:30:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DUrZ26ujqM3QH+AI2fr1q6gmaG6zG9DayC1eq0IxhSk=;
-        b=VC23UchA4J9bfV/sfuT9otlTK2bD8j2XBa0RdA8wXN1iCDY4ehhZfOmbvIvnizSYXz
-         dzQpEFn04N7wmFOzpZPsMZ/mo1/4AoaX9/fX5DCf/MxyRxaXYxJg/z6VMx9ebrtIXIZL
-         Mh0y20k8HZZFmYoAUlCC/CEAa2+HN1ksO+WA8Dp3Y6SzL/auivv3nJWGW3lgdgRoQ4ab
-         82W7LZfjiPO+6rtsaGclwHeChKw6j0vqAy7Ht4pr2LKNgHGqy55PMlhLF9XvxVKwbXF+
-         CeDgl0yoYaQ56Avn9f54CnIcgYg6gSaKEuyQWgi2l5pf9aDorerWwdiSEDTFD2ZP6hwy
-         EV7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DUrZ26ujqM3QH+AI2fr1q6gmaG6zG9DayC1eq0IxhSk=;
-        b=KVcMpqKP45Z1LUXNn5cC5wIZHYLvGoWjW5g97Pq6U0Y/KIPkzCdBDkRFs67wh/Esf7
-         45cMb20GpLGCZS5g8wUTeVT2FvskrJtPjJfsqB96T1133Jc/xQPR0g5FvfiYmHI1NKK0
-         oMpkGMAJamSRaVpPNh6X/ncXCuU3/jwI9bfV75bTzqCWrabYXJAswSJ3WxsLWKdG1hh7
-         fDixi9GBHYutUGOn0UaQ54y0oa3f+tlRiRgm/Pd3yuPsgywOeeM0F45Zbl+TCXcshDJ/
-         ULqmiwzZpses0ze6lp82xC0pIkAE7wcL7rzRdOQ+x9CqHaWLnxIfib0OKSfa8nIOFUSi
-         OhBg==
-X-Gm-Message-State: AOAM5339h2RPn6cWNXDLVcO2uR1Jpxc1DBmCRIyjtnKutEJLMbOWwB/Q
-        c053fBM0w/fv0EQqMLEKEZavTZ9zDWa/UgP6
-X-Google-Smtp-Source: ABdhPJyXq9JJVKh9ZPP03LEYB2MdprlBH5ccTsJoqe+CHuailVTPToie9FqXqBBwvulXgWZ2jd4m4A==
-X-Received: by 2002:ac8:544:: with SMTP id c4mr13510366qth.248.1617406220566;
-        Fri, 02 Apr 2021 16:30:20 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id j6sm8695976qkl.84.2021.04.02.16.30.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 16:30:19 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lSTF4-0003Yk-So; Fri, 02 Apr 2021 20:30:18 -0300
-Date:   Fri, 2 Apr 2021 20:30:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@nvidia.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: CFI violation in drivers/infiniband/core/sysfs.c
-Message-ID: <20210402233018.GA7721@ziepe.ca>
-References: <20210402195241.gahc5w25gezluw7p@archlinux-ax161>
- <202104021555.08B883C7@keescook>
+        id S235228AbhDCAYb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 2 Apr 2021 20:24:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234161AbhDCAYb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 2 Apr 2021 20:24:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E236E61152;
+        Sat,  3 Apr 2021 00:24:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617409469;
+        bh=15v5TUkk6UUr+f7BZtRWWTmH8eBHVd7MCLN4Dz1fqbU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=XYCHvFvpVD0ljoLorcAZ5eRrROUkavhU6127oQfVuCIQ/9Jt4G+z/RVWSdHFR7BSL
+         fBOJgV1AUtT3p2xNFlHZAtHphntq54EUvXNURmz64e1sPqzBqOaZvJbSpcJgKBlUfH
+         z0tpj5XSgupJcvEwHn2G+3H9SO/ejA4QiUJzP8bqDwtoeaSkKV66OcUH3K8wF8lP5a
+         nOI8qcldyoMqDTzoeOW3XNPiA1jw+O3N9qNTZ315Kgq5ihINMH8dzFMbKfxneq7Qj4
+         StPKYuUgfHGCo//qbttrXZ4jQ9az3JCSBVxyDXH8QClgXDNd19Y64IOstkx7alSu7d
+         HRok1Kb9SrDag==
+Date:   Fri, 2 Apr 2021 19:24:26 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH mlx5-next v8 1/4] PCI: Add a sysfs file to change the
+ MSI-X table size of SR-IOV VFs
+Message-ID: <20210403002426.GA1560457@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202104021555.08B883C7@keescook>
+In-Reply-To: <20210314124256.70253-2-leon@kernel.org>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 04:03:30PM -0700, Kees Cook wrote:
+Possible subject, since this adds *two* files, not just "a file":
 
-> > relevant. It seems to me that the hw_counters 'struct attribute_group'
-> > should probably be its own kobj within both of these structures so they
-> > can have their own sysfs ops (unless there is some other way to do this
-> > that I am missing).
+  PCI/IOV: Add sysfs MSI-X vector assignment interface
 
-Err, yes, every subclass of the attribute should be accompanied by a
-distinct kobject type to relay the show methods with typesafety, this
-is how this design pattern is intended to be used.
+On Sun, Mar 14, 2021 at 02:42:53PM +0200, Leon Romanovsky wrote:
+> A typical cloud provider SR-IOV use case is to create many VFs for use by
+> guest VMs. The VFs may not be assigned to a VM until a customer requests a
+> VM of a certain size, e.g., number of CPUs. A VF may need MSI-X vectors
+> proportional to the number of CPUs in the VM, but there is no standard way
+> to change the number of MSI-X vectors supported by a VF.
+> ...
 
-If I understand your report properly the hw_stats_attribute is being
-assigned to a 'port_type' kobject and it only works by pure luck because
-the show/store happens to overlap between port and hsa attributes?
+> +#ifdef CONFIG_PCI_MSI
+> +static ssize_t sriov_vf_msix_count_store(struct device *dev,
+> +					 struct device_attribute *attr,
+> +					 const char *buf, size_t count)
+> +{
+> +	struct pci_dev *vf_dev = to_pci_dev(dev);
+> +	struct pci_dev *pdev = pci_physfn(vf_dev);
+> +	int val, ret;
+> +
+> +	ret = kstrtoint(buf, 0, &val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (val < 0)
+> +		return -EINVAL;
+> +
+> +	device_lock(&pdev->dev);
+> +	if (!pdev->driver || !pdev->driver->sriov_set_msix_vec_count) {
+> +		ret = -EOPNOTSUPP;
+> +		goto err_pdev;
+> +	}
+> +
+> +	device_lock(&vf_dev->dev);
+> +	if (vf_dev->driver) {
+> +		/*
+> +		 * A driver is already attached to this VF and has configured
+> +		 * itself based on the current MSI-X vector count. Changing
+> +		 * the vector size could mess up the driver, so block it.
+> +		 */
+> +		ret = -EBUSY;
+> +		goto err_dev;
+> +	}
+> +
+> +	ret = pdev->driver->sriov_set_msix_vec_count(vf_dev, val);
+> +
+> +err_dev:
+> +	device_unlock(&vf_dev->dev);
+> +err_pdev:
+> +	device_unlock(&pdev->dev);
+> +	return ret ? : count;
+> +}
+> +static DEVICE_ATTR_WO(sriov_vf_msix_count);
+> +
+> +static ssize_t sriov_vf_total_msix_show(struct device *dev,
+> +					struct device_attribute *attr,
+> +					char *buf)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	u32 vf_total_msix = 0;
+> +
+> +	device_lock(dev);
+> +	if (!pdev->driver || !pdev->driver->sriov_get_vf_total_msix)
+> +		goto unlock;
+> +
+> +	vf_total_msix = pdev->driver->sriov_get_vf_total_msix(pdev);
+> +unlock:
+> +	device_unlock(dev);
+> +	return sysfs_emit(buf, "%u\n", vf_total_msix);
+> +}
+> +static DEVICE_ATTR_RO(sriov_vf_total_msix);
 
-> > I would appreciate someone else taking a look and seeing if I am off
-> > base or if there is an easier way to solve this.
+Can you reverse the order of sriov_vf_total_msix_show() and
+sriov_vf_msix_count_store()?  Currently we have:
+
+  VF stuff (msix_count_store)
+  PF stuff (total_msix)
+  more VF stuff related to the above (vf_dev_attrs, are_visible)
+
+so the total_msix bit is mixed in the middle.
+
+> +#endif
+> +
+> +static struct attribute *sriov_vf_dev_attrs[] = {
+> +#ifdef CONFIG_PCI_MSI
+> +	&dev_attr_sriov_vf_msix_count.attr,
+> +#endif
+> +	NULL,
+> +};
+> +
+> +static umode_t sriov_vf_attrs_are_visible(struct kobject *kobj,
+> +					  struct attribute *a, int n)
+> +{
+> +	struct device *dev = kobj_to_dev(kobj);
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +
+> +	if (!pdev->is_virtfn)
+> +		return 0;
+> +
+> +	return a->mode;
+> +}
+> +
+> +const struct attribute_group sriov_vf_dev_attr_group = {
+> +	.attrs = sriov_vf_dev_attrs,
+> +	.is_visible = sriov_vf_attrs_are_visible,
+> +};
+> +
+>  int pci_iov_add_virtfn(struct pci_dev *dev, int id)
+>  {
+>  	int i;
+> @@ -400,18 +487,21 @@ static DEVICE_ATTR_RO(sriov_stride);
+>  static DEVICE_ATTR_RO(sriov_vf_device);
+>  static DEVICE_ATTR_RW(sriov_drivers_autoprobe);
 > 
-> So, it seems that the reason for a custom kobj_type here is to use the
-> .release callback. 
+> -static struct attribute *sriov_dev_attrs[] = {
+> +static struct attribute *sriov_pf_dev_attrs[] = {
 
-Every kobject should be associated with a specific, fixed, attribute
-type. The purpose of the wrappers is to inject type safety so the
-attribute implementations know they are working on the right stuff.
+This and the related sriov_pf_attrs_are_visible change below are nice.
+Would you mind splitting them to a preliminary patch, since they
+really aren't related to the concept of *this* patch?
 
-In turn, an attribute of a specific attribute type can only be
-injected into a kobject that has the matching type.
-
-This code is insane because it does this:
-
-		hsag->attrs[i] = alloc_hsa(i, port_num, stats->names[i]);
-
-		// This is port kobject
-		struct kobject *kobj = &port->kobj;
-		ret = sysfs_create_group(kobj, hsag); 
-[..]
-                // This is a struct device kobject
-		struct kobject *kobj = &device->dev.kobj;
-		ret = sysfs_create_group(kobj, hsag); 
-
-Which is absolutely not allowed, you can't have a generic attribute
-handler and stuff it into two different types! Things MUST use the
-proper attribute subclass for what they are being attached to.
-
-The answer is that the setup_hw_stats_() for port and device must
-be split up and the attribute implementations for each of them have to
-subclass starting from the correct type.
-
-So we'd end up with two attributes for hw_stats
-
-struct port_hw_stats {
-    struct port_attr attr;
-    struct hw_stats_data data;
-};
-
-
-struct device_hw_stats {
-    struct device_attr attr;
-    struct hw_stats_data data;
-};
-
-And then two show/set functions that bounce through the correct types
-to the data.
-
-And so on.
-
-Jason
+>  	&dev_attr_sriov_totalvfs.attr,
+>  	&dev_attr_sriov_numvfs.attr,
+>  	&dev_attr_sriov_offset.attr,
+>  	&dev_attr_sriov_stride.attr,
+>  	&dev_attr_sriov_vf_device.attr,
+>  	&dev_attr_sriov_drivers_autoprobe.attr,
+> +#ifdef CONFIG_PCI_MSI
+> +	&dev_attr_sriov_vf_total_msix.attr,
+> +#endif
+>  	NULL,
+>  };
+> 
+> -static umode_t sriov_attrs_are_visible(struct kobject *kobj,
+> -				       struct attribute *a, int n)
+> +static umode_t sriov_pf_attrs_are_visible(struct kobject *kobj,
+> +					  struct attribute *a, int n)
+>  {
+>  	struct device *dev = kobj_to_dev(kobj);
+> 
+> @@ -421,9 +511,9 @@ static umode_t sriov_attrs_are_visible(struct kobject *kobj,
+>  	return a->mode;
+>  }
+> 
+> -const struct attribute_group sriov_dev_attr_group = {
+> -	.attrs = sriov_dev_attrs,
+> -	.is_visible = sriov_attrs_are_visible,
+> +const struct attribute_group sriov_pf_dev_attr_group = {
+> +	.attrs = sriov_pf_dev_attrs,
+> +	.is_visible = sriov_pf_attrs_are_visible,
+>  };
