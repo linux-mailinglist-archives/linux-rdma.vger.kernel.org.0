@@ -2,90 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B9B353836
-	for <lists+linux-rdma@lfdr.de>; Sun,  4 Apr 2021 15:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4AD35384C
+	for <lists+linux-rdma@lfdr.de>; Sun,  4 Apr 2021 16:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbhDDNPo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 4 Apr 2021 09:15:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229665AbhDDNPn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 4 Apr 2021 09:15:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A63DD61210;
-        Sun,  4 Apr 2021 13:15:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617542139;
-        bh=F5BU3c8ulrHcngMnkVKeevAYqz8+ly+plYwNP3IB6/o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A95bpsJLF1e1zeYJritmas9caa2EDZ7d05RQ62dppYaJzCri14JpYc+j9Yri/VXgF
-         2km8HtKKbQa1D12E4IeAnCcNenUoqC3vsYwiuZ3oppJR8IJBfZQJb41eMpDikQizeH
-         CWPlZTN5fRrT/lCt7ewOV1eGnze5vaqocLgMDCvcW/LRhOsG2jDLQNPQ+eAwmStj7M
-         jyo9oiycs1SwbWLPxVEXi5ZFWWvaaKr4TVGCVotQsRaTMcVr1vCqtgCC4L3xfm3LDS
-         A+q9FssaN9GLk5GTukkAuckzpdOq+WETXuG/c/UkqEaGFcuvtAo6PpcZSI/4P51Lni
-         3B04ALmRsUjvw==
-Date:   Sun, 4 Apr 2021 16:15:35 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Mark Bloch <mbloch@nvidia.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        id S229902AbhDDN5W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 4 Apr 2021 09:57:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhDDN5W (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 4 Apr 2021 09:57:22 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB005C061756
+        for <linux-rdma@vger.kernel.org>; Sun,  4 Apr 2021 06:57:15 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id t16so4452566qvr.12
+        for <linux-rdma@vger.kernel.org>; Sun, 04 Apr 2021 06:57:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0ZjxEGyqxVpobPm/RJ+EZNtUYuEiSg65YJlV16IYPyU=;
+        b=LCW+fT8rx2qHIIP239+nDUBLp+c1282aG2+FqtHvbjuZI6brFk5QP6aCj9eROh0eQI
+         GRfKmrH15iGTQdZFmnmNuDuERSzQR+t0ZlrNKQOngvVotuM5gUxBY0vdDKnJWZgL0kvh
+         03gfu+aLd+hBeopKcIbFZ/vno2nJwwoGDhk/9nXBiG8Myw7/4OPpGRnE7jTdsU7KtzUM
+         eM0ber+/GZWfef/mP3pSG48Qayj1qZc9RhVujD98ljtPjIdpiZXC1cpAhTlmwrDWG0I8
+         Yl1GtgxO8PENZkacmAgZh8+WDdp2GVX+uGCvBkSRb8bkRq+HixHxbCPJosZysNt47uT9
+         KqwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0ZjxEGyqxVpobPm/RJ+EZNtUYuEiSg65YJlV16IYPyU=;
+        b=QhstCHXM4VxEJU0oWUf66d39MNslRLJNdvqUx9yzv6ChmTtFSizwcd40WC1CwmHEgJ
+         K9Y3wbG76S5XfGoXkU5HHYmWADEFO+G6w3B1VflqlmwiZtTTKEjHcOJ3VADN32Vffeo0
+         zykrKATNfezvis9P8ZIjqnY9epGZbLGpSpnMlhmw7P/KJ0sLo2g89cyxcF4dAVAJhJOI
+         B1roCKIWSJq8JdwgbnzrF6G+I6U5u8lSB0vaWqheAYv5K4OY/onvldDxTE6CuD/zABFN
+         ubNF42sM0nvcydPWJOY2Ges5mXcZHI4hFpc71InWpkV+i5350FNSzC9VRSkldsajJHm5
+         Fvsw==
+X-Gm-Message-State: AOAM5309+tLkx11HvSHVcgB5UZLRZJ2qrnhlkzEaXGE/WArrjz7a5Ttw
+        ueAKVLnXIlvIMgI7Fy/RHjlqOxatcZ1PUUtq
+X-Google-Smtp-Source: ABdhPJzKBN066Q7y6DNJFJhqNXnOig4um47v1oV/4zA5WZGlgjJCCnLgb3RbRyV5vXJbxWckMC4JkQ==
+X-Received: by 2002:a0c:f749:: with SMTP id e9mr1900291qvo.14.1617544634869;
+        Sun, 04 Apr 2021 06:57:14 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id d2sm9830886qte.84.2021.04.04.06.57.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Apr 2021 06:57:14 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lT3FZ-000Vay-2X; Sun, 04 Apr 2021 10:57:13 -0300
+Date:   Sun, 4 Apr 2021 10:57:13 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mark Bloch <markb@mellanox.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] RDMA/addr: potential uninitialized variable in
- ib_nl_process_good_ip_rsep()
-Message-ID: <YGm798Im61n+2/mb@unreal>
-References: <YGcES6MsXGnh83qi@mwanda>
- <YGmWB4fT/8IFeiZf@unreal>
- <1b21be94-bf14-9e73-68a3-c503bb79f683@nvidia.com>
+        Leon Romanovsky <leon@kernel.org>,
+        Parav Pandit <parav@nvidia.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: CFI violation in drivers/infiniband/core/sysfs.c
+Message-ID: <20210404135713.GB7721@ziepe.ca>
+References: <20210402195241.gahc5w25gezluw7p@archlinux-ax161>
+ <202104021555.08B883C7@keescook>
+ <20210402233018.GA7721@ziepe.ca>
+ <202104021823.64FA6119@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1b21be94-bf14-9e73-68a3-c503bb79f683@nvidia.com>
+In-Reply-To: <202104021823.64FA6119@keescook>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Apr 04, 2021 at 04:13:17PM +0300, Mark Bloch wrote:
-> On 4/4/21 1:33 PM, Leon Romanovsky wrote:
-> > On Fri, Apr 02, 2021 at 02:47:23PM +0300, Dan Carpenter wrote:
-> >> The nla_len() is less than or equal to 16.  If it's less than 16 then
-> >> end of the "gid" buffer is uninitialized.
-> >>
-> >> Fixes: ae43f8286730 ("IB/core: Add IP to GID netlink offload")
-> >> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> >> ---
-> >> I just spotted this in review.  I think it's a bug but I'm not 100%.
+On Fri, Apr 02, 2021 at 06:29:55PM -0700, Kees Cook wrote:
+> On Fri, Apr 02, 2021 at 08:30:18PM -0300, Jason Gunthorpe wrote:
+> > On Fri, Apr 02, 2021 at 04:03:30PM -0700, Kees Cook wrote:
 > > 
-> > I tend to agree with you, that it is a bug.
+> > > > relevant. It seems to me that the hw_counters 'struct attribute_group'
+> > > > should probably be its own kobj within both of these structures so they
+> > > > can have their own sysfs ops (unless there is some other way to do this
+> > > > that I am missing).
 > > 
-> > LS_NLA_TYPE_DGID is declared as NLA_BINARY which doesn't complain if
-> > data is less than declared ".len". However, the fix needs to be in
-> > ib_nl_is_good_ip_resp(), it shouldn't return "true" if length not equal
-> > to 16.
+> > Err, yes, every subclass of the attribute should be accompanied by a
+> > distinct kobject type to relay the show methods with typesafety, this
+> > is how this design pattern is intended to be used.
+> > 
+> > If I understand your report properly the hw_stats_attribute is being
+> > assigned to a 'port_type' kobject and it only works by pure luck because
+> > the show/store happens to overlap between port and hsa attributes?
 > 
-> What about just updating the policy? The bellow diff should work I believe.
+> "happens to" :) Yeah, they're all like this, unfortunately:
+> https://lore.kernel.org/lkml/202006112217.2E6CE093@keescook/
 
-I didn't know about ".validation_type", but yes this change will be enough.
+All? I think these are all bugs, no?
 
+struct kobj_attribute is only to be used with a kobj_sysfs_ops type
+kobject
+
+To cross it over to a 'struct device' kobj is completely wrong, the
+same basic wrongness being done here.
+ 
+> I'm not convinced that just backing everything off to kobject isn't
+> simpler?
+
+It might be simpler, but isn't right - everything should continue to
+work after a patch like this:
+
+--- a/drivers/infiniband/core/sysfs.c
++++ b/drivers/infiniband/core/sysfs.c
+@@ -67,6 +67,7 @@ struct ib_port {
+ 
+ struct port_attribute {
+ 	struct attribute attr;
++	uu64 pad[2];
+ 	ssize_t (*show)(struct ib_port *, struct port_attribute *, char *buf);
+ 	ssize_t (*store)(struct ib_port *, struct port_attribute *,
+ 			 const char *buf, size_t count);
+
+If it doesn't it is still broken.
+
+Using container_of() with the wrong types is an unconditional
+error. A kasn test to catch this would be very cool (think like RTTI
+and dynamic_cast<>() in C++)
+
+> > And then two show/set functions that bounce through the correct types
+> > to the data.
 > 
-> diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
-> index 0abce004a959..65e3e7df8a4b 100644
-> --- a/drivers/infiniband/core/addr.c
-> +++ b/drivers/infiniband/core/addr.c
-> @@ -76,7 +76,9 @@ static struct workqueue_struct *addr_wq;
->  
->  static const struct nla_policy ib_nl_addr_policy[LS_NLA_TYPE_MAX] = {
->         [LS_NLA_TYPE_DGID] = {.type = NLA_BINARY,
-> -               .len = sizeof(struct rdma_nla_ls_gid)},
-> +               .len = sizeof(struct rdma_nla_ls_gid),
-> +               .validation_type = NLA_VALIDATE_MIN,
-> +               .min = sizeof(struct rdma_nla_ls_gid)},
->  };
->  
->  static inline bool ib_nl_is_good_ip_resp(const struct nlmsghdr *nlh)
-> 
-> > 
-> > Thanks
-> > 
-> 
-> Mark
+> I'd like to make these things compile-time safe (there is not type
+> associated with use the __ATTR() macro, for example). That I haven't
+> really figured out how to do right.
+
+They are in many places, for instance.
+
+int device_create_file(struct device *dev,
+                       const struct device_attribute *attr)
+
+We loose the type safety when working with attribute arrays, and
+people can just bypass the "proper" APIs to raw sysfs ones whenever
+they like.
+
+It is fundamentally completely wrong to attach a 'struct
+kobject_attribute' to a 'struct device' kobject.
+
+Which is what is happening here and the link above.
+
+Jason
