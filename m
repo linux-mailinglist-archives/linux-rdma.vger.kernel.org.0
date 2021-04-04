@@ -2,105 +2,216 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2448D353549
-	for <lists+linux-rdma@lfdr.de>; Sat,  3 Apr 2021 21:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB96353721
+	for <lists+linux-rdma@lfdr.de>; Sun,  4 Apr 2021 09:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236035AbhDCTAq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 3 Apr 2021 15:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236397AbhDCTAn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 3 Apr 2021 15:00:43 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C221EC0613E6
-        for <linux-rdma@vger.kernel.org>; Sat,  3 Apr 2021 12:00:39 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id x207so7996788oif.1
-        for <linux-rdma@vger.kernel.org>; Sat, 03 Apr 2021 12:00:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=e73afFUvslMR6Clox3F/Uz/6VCIoYcJRuqUqyqdrvi4=;
-        b=SLkQ9UOGloLL4crb88/dfG0TVnHya+zT7ez8B/159v/XrZMP1Tip0kvGEtgVoJwTnd
-         GEKuFUJqssBHjmhbSzNL7QaesFCgSYopX3NGB4j2f70kmhkBLRW7Q+vIpEZ74+Knyi5B
-         D8I24/nWUG9795y8KnVg2bVLl5Or7l0/9Oh9Z9FqdgNg12VvafvkHvOpuIaKFeWezNnw
-         ssNMlDhoJjBoY0dbfmcBaponF8pEpKLrGWNBhOndeWRx2dPVwbNqpZDgoVLBOYpgcYTL
-         ukkOSvZNp0qX2cjDMxM0PG9lkj+c/7lqQCMVUT199VbS3cn9I02OhqcwDkUmPagLvZ1k
-         gQOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=e73afFUvslMR6Clox3F/Uz/6VCIoYcJRuqUqyqdrvi4=;
-        b=Bbw5LJKkpB/fSaX8YAYP1QnAAjD6iWELWR+DbH+TcETN+HCm0LJWFcKLkFoGGiM/0F
-         Wr3iHHUlFl+JmwSu1+iY3p3AkTDHvfGzhhQKF/1EOVZRTipnqLRZ3uVbTqRxAHURhKyu
-         52g8IRJdnJ2j5XgsSlOpYIHm7o4ji+QANwHLrJq+yxR2O2sCm977+MNKKItSbsWO6ePY
-         REVCTKB2VdEYCuM26OMrBZJ1geVibsgGA9Rd99p5R8NizPIBzF0fmqzIsAkWC+hhEZDh
-         ki50Pima1Ai/5QKKFIQrKZTt9r9OcJAkLp2BdzpVDh4ugXJNOvuvJ4QwniQvkUPZiIS1
-         g8FA==
-X-Gm-Message-State: AOAM530S+x3++4zfLE1FqLkU3nfPSs9aVpRnJyyHl5Itzh5t3Y630Fd1
-        c+4RjKdJkOS7jhauRg1nZBE=
-X-Google-Smtp-Source: ABdhPJxVYEcU3OyQUpxKfbhieNC2M0K/k+8TYRg/rtwnYiSsjrzKvwUI7nUgLg4qwg15een8LELvqg==
-X-Received: by 2002:a05:6808:2d5:: with SMTP id a21mr13646277oid.88.1617476438532;
-        Sat, 03 Apr 2021 12:00:38 -0700 (PDT)
-Received: from ?IPv6:2603:8081:140c:1a00:d617:9cd:c0c1:f9b2? (2603-8081-140c-1a00-d617-09cd-c0c1-f9b2.res6.spectrum.com. [2603:8081:140c:1a00:d617:9cd:c0c1:f9b2])
-        by smtp.gmail.com with ESMTPSA id a13sm2455325ooj.14.2021.04.03.12.00.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Apr 2021 12:00:37 -0700 (PDT)
-Subject: Re: [PATCH for-next v2] RDMA/rxe: Split MEM into MR and MW
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
-        Bob Pearson <rpearson@hpe.com>
-References: <20210325212425.2792-1-rpearson@hpe.com>
- <20210330201245.GA1447467@nvidia.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <d008b9f1-ba94-725b-2753-d586a4e400bb@gmail.com>
-Date:   Sat, 3 Apr 2021 14:00:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229557AbhDDHCl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 4 Apr 2021 03:02:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229479AbhDDHCl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 4 Apr 2021 03:02:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F1EF6136A;
+        Sun,  4 Apr 2021 07:02:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617519756;
+        bh=wDHeSpp21bHcFsxv+473kLXqepmISuehI5Xc0f2rNoc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rf99YKqZDA/pVCnPCLveICKE7TuEpUn8V2aK5bg0IAoeJxCJjCM2KBz0Tc3qo7CDE
+         WqPcHnnFz27VxNMFPFzIhb1J+4tgHHzTZia/efPu7C6jAcYSxpKUWRZLu4GQ69at4P
+         FK0i+XgLaVHA5Arsz+ix1NE6D4YnivLG+OIYeVtnd5PONvrS9EYFEdwp0wnnR/10xH
+         mb8bTt7Z/5VH5nzvsBzIQLEJK4otZ+JN4bI/Lnz3n0wZgIdXifKiMkkEPW3xh5bjNN
+         56iFi+sdclYnmJxPSVR0RMqQ7CDCkJXv0i+Qc1nKrmhunRg7ygIBX/mCUZwhxROlru
+         c6sLB3+EGVapg==
+Date:   Sun, 4 Apr 2021 10:02:32 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Don Dutile <ddutile@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH mlx5-next v8 1/4] PCI: Add a sysfs file to change the
+ MSI-X table size of SR-IOV VFs
+Message-ID: <YGlkiBpcZwWFdE81@unreal>
+References: <20210314124256.70253-2-leon@kernel.org>
+ <20210403002426.GA1560457@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210330201245.GA1447467@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210403002426.GA1560457@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/30/21 3:12 PM, Jason Gunthorpe wrote:
-> On Thu, Mar 25, 2021 at 04:24:26PM -0500, Bob Pearson wrote:
->> In the original rxe implementation it was intended to use a common
->> object to represent MRs and MWs but they are different enough to
->> separate these into two objects.
->>
->> This allows replacing the mem name with mr for MRs which is more
->> consistent with the style for the other objects and less likely
->> to be confusing. This is a long patch that mostly changes mem to
->> mr where it makes sense and adds a new rxe_mw struct.
->>
->> Signed-off-by: Bob Pearson <rpearson@hpe.com>
->> Acked-by: Zhu Yanjun <zyjzyj2000@gmail.com>
->> ---
->> v2:
->>  v1 of this patch included some fields in the new rxe_mw struct
->>  which were not yet needed. They are removed in v2.
->>  This patch includes changes needed to address the fact that
->>  the ib_mw struct is now being allocated in rdma/core.
+On Fri, Apr 02, 2021 at 07:24:26PM -0500, Bjorn Helgaas wrote:
+> Possible subject, since this adds *two* files, not just "a file":
 > 
-> Applied to for-next
-> 
-> I touched it with clang-format first though, lots of little whitespace
-> issues
-> 
-> Thanks,
-> Jason
-> 
+>   PCI/IOV: Add sysfs MSI-X vector assignment interface
 
-When you apply to for-next where does it go? Until it shows up somewhere
-I need to apply the patch but since you changed it I don't know what it
-ended up as. If I knew which tree contained the patch I could figure it out.
+Sure
 
-Thanks,
+> 
+> On Sun, Mar 14, 2021 at 02:42:53PM +0200, Leon Romanovsky wrote:
+> > A typical cloud provider SR-IOV use case is to create many VFs for use by
+> > guest VMs. The VFs may not be assigned to a VM until a customer requests a
+> > VM of a certain size, e.g., number of CPUs. A VF may need MSI-X vectors
+> > proportional to the number of CPUs in the VM, but there is no standard way
+> > to change the number of MSI-X vectors supported by a VF.
+> > ...
+> 
+> > +#ifdef CONFIG_PCI_MSI
+> > +static ssize_t sriov_vf_msix_count_store(struct device *dev,
+> > +					 struct device_attribute *attr,
+> > +					 const char *buf, size_t count)
+> > +{
+> > +	struct pci_dev *vf_dev = to_pci_dev(dev);
+> > +	struct pci_dev *pdev = pci_physfn(vf_dev);
+> > +	int val, ret;
+> > +
+> > +	ret = kstrtoint(buf, 0, &val);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (val < 0)
+> > +		return -EINVAL;
+> > +
+> > +	device_lock(&pdev->dev);
+> > +	if (!pdev->driver || !pdev->driver->sriov_set_msix_vec_count) {
+> > +		ret = -EOPNOTSUPP;
+> > +		goto err_pdev;
+> > +	}
+> > +
+> > +	device_lock(&vf_dev->dev);
+> > +	if (vf_dev->driver) {
+> > +		/*
+> > +		 * A driver is already attached to this VF and has configured
+> > +		 * itself based on the current MSI-X vector count. Changing
+> > +		 * the vector size could mess up the driver, so block it.
+> > +		 */
+> > +		ret = -EBUSY;
+> > +		goto err_dev;
+> > +	}
+> > +
+> > +	ret = pdev->driver->sriov_set_msix_vec_count(vf_dev, val);
+> > +
+> > +err_dev:
+> > +	device_unlock(&vf_dev->dev);
+> > +err_pdev:
+> > +	device_unlock(&pdev->dev);
+> > +	return ret ? : count;
+> > +}
+> > +static DEVICE_ATTR_WO(sriov_vf_msix_count);
+> > +
+> > +static ssize_t sriov_vf_total_msix_show(struct device *dev,
+> > +					struct device_attribute *attr,
+> > +					char *buf)
+> > +{
+> > +	struct pci_dev *pdev = to_pci_dev(dev);
+> > +	u32 vf_total_msix = 0;
+> > +
+> > +	device_lock(dev);
+> > +	if (!pdev->driver || !pdev->driver->sriov_get_vf_total_msix)
+> > +		goto unlock;
+> > +
+> > +	vf_total_msix = pdev->driver->sriov_get_vf_total_msix(pdev);
+> > +unlock:
+> > +	device_unlock(dev);
+> > +	return sysfs_emit(buf, "%u\n", vf_total_msix);
+> > +}
+> > +static DEVICE_ATTR_RO(sriov_vf_total_msix);
+> 
+> Can you reverse the order of sriov_vf_total_msix_show() and
+> sriov_vf_msix_count_store()?  Currently we have:
+> 
+>   VF stuff (msix_count_store)
+>   PF stuff (total_msix)
+>   more VF stuff related to the above (vf_dev_attrs, are_visible)
+> 
+> so the total_msix bit is mixed in the middle.
 
-Bob
+No problem, I'll do.
+
+> 
+> > +#endif
+> > +
+> > +static struct attribute *sriov_vf_dev_attrs[] = {
+> > +#ifdef CONFIG_PCI_MSI
+> > +	&dev_attr_sriov_vf_msix_count.attr,
+> > +#endif
+> > +	NULL,
+> > +};
+> > +
+> > +static umode_t sriov_vf_attrs_are_visible(struct kobject *kobj,
+> > +					  struct attribute *a, int n)
+> > +{
+> > +	struct device *dev = kobj_to_dev(kobj);
+> > +	struct pci_dev *pdev = to_pci_dev(dev);
+> > +
+> > +	if (!pdev->is_virtfn)
+> > +		return 0;
+> > +
+> > +	return a->mode;
+> > +}
+> > +
+> > +const struct attribute_group sriov_vf_dev_attr_group = {
+> > +	.attrs = sriov_vf_dev_attrs,
+> > +	.is_visible = sriov_vf_attrs_are_visible,
+> > +};
+> > +
+> >  int pci_iov_add_virtfn(struct pci_dev *dev, int id)
+> >  {
+> >  	int i;
+> > @@ -400,18 +487,21 @@ static DEVICE_ATTR_RO(sriov_stride);
+> >  static DEVICE_ATTR_RO(sriov_vf_device);
+> >  static DEVICE_ATTR_RW(sriov_drivers_autoprobe);
+> > 
+> > -static struct attribute *sriov_dev_attrs[] = {
+> > +static struct attribute *sriov_pf_dev_attrs[] = {
+> 
+> This and the related sriov_pf_attrs_are_visible change below are nice.
+> Would you mind splitting them to a preliminary patch, since they
+> really aren't related to the concept of *this* patch?
+
+I don't think so, that prepatch will have only two lines of renames
+from sriov_dev_attrs to be sriov_pf_dev_attrs. It is not worth the
+hassle.
+
+Thanks
+
+> 
+> >  	&dev_attr_sriov_totalvfs.attr,
+> >  	&dev_attr_sriov_numvfs.attr,
+> >  	&dev_attr_sriov_offset.attr,
+> >  	&dev_attr_sriov_stride.attr,
+> >  	&dev_attr_sriov_vf_device.attr,
+> >  	&dev_attr_sriov_drivers_autoprobe.attr,
+> > +#ifdef CONFIG_PCI_MSI
+> > +	&dev_attr_sriov_vf_total_msix.attr,
+> > +#endif
+> >  	NULL,
+> >  };
+> > 
+> > -static umode_t sriov_attrs_are_visible(struct kobject *kobj,
+> > -				       struct attribute *a, int n)
+> > +static umode_t sriov_pf_attrs_are_visible(struct kobject *kobj,
+> > +					  struct attribute *a, int n)
+> >  {
+> >  	struct device *dev = kobj_to_dev(kobj);
+> > 
+> > @@ -421,9 +511,9 @@ static umode_t sriov_attrs_are_visible(struct kobject *kobj,
+> >  	return a->mode;
+> >  }
+> > 
+> > -const struct attribute_group sriov_dev_attr_group = {
+> > -	.attrs = sriov_dev_attrs,
+> > -	.is_visible = sriov_attrs_are_visible,
+> > +const struct attribute_group sriov_pf_dev_attr_group = {
+> > +	.attrs = sriov_pf_dev_attrs,
+> > +	.is_visible = sriov_pf_attrs_are_visible,
+> >  };
