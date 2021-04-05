@@ -2,27 +2,26 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E03354268
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Apr 2021 15:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A5335426E
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Apr 2021 15:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235873AbhDENl3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Apr 2021 09:41:29 -0400
-Received: from verein.lst.de ([213.95.11.211]:50764 "EHLO verein.lst.de"
+        id S237357AbhDENqb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Apr 2021 09:46:31 -0400
+Received: from verein.lst.de ([213.95.11.211]:50801 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235826AbhDENl3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 5 Apr 2021 09:41:29 -0400
+        id S234370AbhDENqa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 5 Apr 2021 09:46:30 -0400
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id C3BD068BEB; Mon,  5 Apr 2021 15:41:15 +0200 (CEST)
-Date:   Mon, 5 Apr 2021 15:41:15 +0200
+        id A472C68BFE; Mon,  5 Apr 2021 15:46:18 +0200 (CEST)
+Date:   Mon, 5 Apr 2021 15:46:18 +0200
 From:   Christoph Hellwig <hch@lst.de>
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
+        Avihai Horon <avihaih@nvidia.com>,
         Adit Ranadive <aditr@vmware.com>,
         Anna Schumaker <anna.schumaker@netapp.com>,
         Ariel Elior <aelior@marvell.com>,
-        Avihai Horon <avihaih@nvidia.com>,
         Bart Van Assche <bvanassche@acm.org>,
         Bernard Metzler <bmt@zurich.ibm.com>,
         Christoph Hellwig <hch@lst.de>,
@@ -61,38 +60,28 @@ Cc:     Doug Ledford <dledford@redhat.com>,
         Weihang Li <liweihang@huawei.com>,
         Yishai Hadas <yishaih@nvidia.com>,
         Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
-Message-ID: <20210405134115.GA22346@lst.de>
-References: <20210405052404.213889-1-leon@kernel.org>
+Subject: Re: [PATCH rdma-next 01/10] RDMA: Add access flags to
+ ib_alloc_mr() and ib_mr_pool_init()
+Message-ID: <20210405134618.GA22895@lst.de>
+References: <20210405052404.213889-1-leon@kernel.org> <20210405052404.213889-2-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210405052404.213889-1-leon@kernel.org>
+In-Reply-To: <20210405052404.213889-2-leon@kernel.org>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 08:23:54AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Mon, Apr 05, 2021 at 08:23:55AM +0300, Leon Romanovsky wrote:
+> From: Avihai Horon <avihaih@nvidia.com>
 > 
-> >From Avihai,
+> Add access flags parameter to ib_alloc_mr() and to ib_mr_pool_init(),
+> and refactor relevant code. This parameter is used to pass MR access
+> flags during MR allocation.
 > 
-> Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
-> imposed on PCI transactions, and thus, can improve performance.
-> 
-> Until now, relaxed ordering could be set only by user space applications
-> for user MRs. The following patch series enables relaxed ordering for the
-> kernel ULPs as well. Relaxed ordering is an optional capability, and as
-> such, it is ignored by vendors that don't support it.
-> 
-> The following test results show the performance improvement achieved
-> with relaxed ordering. The test was performed on a NVIDIA A100 in order
-> to check performance of storage infrastructure over xprtrdma:
+> In the following patches, the new access flags parameter will be used
+> to enable Relaxed Ordering for ib_alloc_mr() and ib_mr_pool_init() users.
 
-Isn't the Nvidia A100 a GPU not actually supported by Linux at all?
-What does that have to do with storage protocols?
-
-Also if you enable this for basically all kernel ULPs, why not have
-an opt-out into strict ordering for the cases that need it (if there are
-any).
+So this weirds up a new RELAXED_ORDERING flag without ever mentioning
+that flag in the commit log, never mind what it actually does.
