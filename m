@@ -2,93 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47CF35423D
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Apr 2021 15:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E03354268
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Apr 2021 15:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235688AbhDENKE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Apr 2021 09:10:04 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:44314 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235677AbhDENKE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Apr 2021 09:10:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1617628199; x=1649164199;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=frEQ7nWUGSpGa2tk3ue7d909+LnYmI8drPXibq4qsL4=;
-  b=erCxdfL5+g2BlhnYHEWFDoEqDO9Ngr+mgxjRmGuUmNLZK+oMwkph9Wgr
-   8ROmnW5IErijDG2Gsho2DE3WQZFYvlti0eDK9ArC2tSiN0ZPtZfXu7cVK
-   y3fSIOeDXPNro0EoB7PG5vAsvHlvcGo8taVEu5xcjhOEjIFjN1NfH8C8n
-   E=;
-X-IronPort-AV: E=Sophos;i="5.81,306,1610409600"; 
-   d="scan'208";a="99183340"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 05 Apr 2021 13:09:51 +0000
-Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id 48EA7A2271;
-        Mon,  5 Apr 2021 13:09:48 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.86) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 5 Apr 2021 13:09:45 +0000
-Subject: Re: [PATCH for-next] RDMA/nldev: Add copy-on-fork attribute to get
- sys command
+        id S235873AbhDENl3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Apr 2021 09:41:29 -0400
+Received: from verein.lst.de ([213.95.11.211]:50764 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235826AbhDENl3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 5 Apr 2021 09:41:29 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id C3BD068BEB; Mon,  5 Apr 2021 15:41:15 +0200 (CEST)
+Date:   Mon, 5 Apr 2021 15:41:15 +0200
+From:   Christoph Hellwig <hch@lst.de>
 To:     Leon Romanovsky <leon@kernel.org>
-CC:     Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-References: <20210405114722.98904-1-galpress@amazon.com>
- <YGr7EajqXvSGyZfy@unreal> <d8ec4f81-25a6-7243-12c4-af4f5b64a27f@amazon.com>
- <YGsFHWU8Hqd5LADT@unreal>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <9c4cda63-f4bb-2e32-d370-983c5722bd12@amazon.com>
-Date:   Mon, 5 Apr 2021 16:09:39 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jens Axboe <axboe@fb.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
+        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
+        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
+        samba-technical@lists.samba.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
+Message-ID: <20210405134115.GA22346@lst.de>
+References: <20210405052404.213889-1-leon@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YGsFHWU8Hqd5LADT@unreal>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.86]
-X-ClientProxiedBy: EX13D08UWC002.ant.amazon.com (10.43.162.168) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405052404.213889-1-leon@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 05/04/2021 15:39, Leon Romanovsky wrote:
-> On Mon, Apr 05, 2021 at 03:15:18PM +0300, Gal Pressman wrote:
->> On 05/04/2021 14:57, Leon Romanovsky wrote:
->>> On Mon, Apr 05, 2021 at 02:47:21PM +0300, Gal Pressman wrote:
->>>> The new attribute indicates that the kernel copies DMA pages on fork,
->>>> hence libibverbs' fork support through madvise and MADV_DONTFORK is not
->>>> needed.
->>>>
->>>> The introduced attribute is always reported as supported since the
->>>> kernel has the patch that added the copy-on-fork behavior. This allows
->>>> the userspace library to identify older vs newer kernel versions.
->>>> Extra care should be taken when backporting this patch as it relies on
->>>> the fact that the copy-on-fork patch is merged, hence no check for
->>>> support is added.
->>>
->>> Please be more specific, add SHA-1 of that patch and wrote the same
->>> comment near "err = nla_put_u8(msg, RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK,
->>> 1);" line.
->>>
->>> Thanks
->>
->> Should I put the original commit here? There were quite a lot of bug fixes and
->> followups that are required.
+On Mon, Apr 05, 2021 at 08:23:54AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> IMHO, the last commit SHA will be enough, the one that has working
-> functionality from your POV.
+> >From Avihai,
+> 
+> Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
+> imposed on PCI transactions, and thus, can improve performance.
+> 
+> Until now, relaxed ordering could be set only by user space applications
+> for user MRs. The following patch series enables relaxed ordering for the
+> kernel ULPs as well. Relaxed ordering is an optional capability, and as
+> such, it is ignored by vendors that don't support it.
+> 
+> The following test results show the performance improvement achieved
+> with relaxed ordering. The test was performed on a NVIDIA A100 in order
+> to check performance of storage infrastructure over xprtrdma:
 
-OK, so that would be:
-4eae4efa2c29 ("hugetlb: do early cow when page pinned on src mm")
+Isn't the Nvidia A100 a GPU not actually supported by Linux at all?
+What does that have to do with storage protocols?
 
-Which I now realize for-next isn't rebased on top of it yet, so these patches
-should be applied after rebasing to v5.12-rc5.
+Also if you enable this for basically all kernel ULPs, why not have
+an opt-out into strict ordering for the cases that need it (if there are
+any).
