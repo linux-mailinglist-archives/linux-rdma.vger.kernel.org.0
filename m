@@ -2,108 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B2F353BF9
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Apr 2021 07:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23CE353BFE
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Apr 2021 07:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbhDEFun (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Apr 2021 01:50:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34774 "EHLO mail.kernel.org"
+        id S231697AbhDEFwv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Apr 2021 01:52:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232255AbhDEFui (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 5 Apr 2021 01:50:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8D1E61393;
-        Mon,  5 Apr 2021 05:50:31 +0000 (UTC)
+        id S231590AbhDEFwv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 5 Apr 2021 01:52:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4F3961393;
+        Mon,  5 Apr 2021 05:52:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617601832;
-        bh=aLTaImJggynKE0fFKmCwvZD8aLmzRiT3oFV9D4hqRH4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SBEl2X9GiSm4UPtHzNNkC4LUzQNdfuB635NeE5hgeOA3mPdYwbgUyhCU6yJd9KUzc
-         VfgQVLZORn20ZxtS98o4tzuUl0E/VQwxgJFPITucrHLeQJVQ3FkPnECqG4iD3MfNTi
-         3eK4gPXB16QStM+0heMrBy+wrOZLHwt2BU4xxnhTIJE3ZOgue1LozQ236iBnz5Kbx4
-         t44Kz+mpwFSYuIK7dFJQGuUsT1f7R+54ASJ25x6DwanfrpRVP6PS03yZ64EO9VOFyr
-         Q5SRb+5La0oxL5Xic6JHxQ3Z3oZS5xPFGyMhqa+UbpDfatKeUNGjmuhQ3yDlmdeToL
-         qOe6+InnDm3jQ==
+        s=k20201202; t=1617601965;
+        bh=1fySX/wpQNMOAvlx875E/VNopNCCqH+BRivsyhOXwi8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qnQVshEVT5SnOo+BZywVVWwoCHQDluQE77pqGDqBzLmPEa6kcO7LwFsBRtAeZo6vr
+         ezETajiFrIH9tslLPHyou0bOaLW9YmS1sYRvYmxFa2gog/MUympm/y4Apy1NFN0tlM
+         Ub84t/G97NlV4ljd+S49I938+XbD8/wSAVlGjTZfy6wIOj9Sm70e91lm0hOw8lsCks
+         bb+Gn3u7dXX4PX+9LFuUuGbQsdzihYPZempudREbedNeiFnaFshkXzg9tLNGG1CjWg
+         EIyhMio0U0qiPLiShl9KhG3nSFTcaGK2f0mR4FdWDjUEAguoitGwTL/lnRc0lhcttH
+         dVmxVI5u95PmQ==
+Date:   Mon, 5 Apr 2021 08:52:41 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Parav Pandit <parav@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Subject: [PATCH rdma-next 8/8] net/rds: Move to client_supported callback
-Date:   Mon,  5 Apr 2021 08:50:00 +0300
-Message-Id: <20210405055000.215792-9-leon@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210405055000.215792-1-leon@kernel.org>
-References: <20210405055000.215792-1-leon@kernel.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Mark Bloch <mbloch@nvidia.com>, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mark Bloch <markb@mellanox.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] RDMA/addr: potential uninitialized variable in
+ ib_nl_process_good_ip_rsep()
+Message-ID: <YGqlqQyhM5kpar9U@unreal>
+References: <YGcES6MsXGnh83qi@mwanda>
+ <YGmWB4fT/8IFeiZf@unreal>
+ <1b21be94-bf14-9e73-68a3-c503bb79f683@nvidia.com>
+ <20210405054140.GY2065@kadam>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210405054140.GY2065@kadam>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Parav Pandit <parav@nvidia.com>
+On Mon, Apr 05, 2021 at 08:41:41AM +0300, Dan Carpenter wrote:
+> Could you send that and give me a reported-by?  I'm going AFK for a
+> week.
 
-Use newly introduced client_supported() callback to avoid client
-additional if the RDMA device is not of IB type or if it doesn't
-support device memory extensions.
+Sure, we will handle it.
 
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- net/rds/ib.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+Thanks for the report.
 
-diff --git a/net/rds/ib.c b/net/rds/ib.c
-index 24c9a9005a6f..bd2ff7d5a718 100644
---- a/net/rds/ib.c
-+++ b/net/rds/ib.c
-@@ -125,18 +125,23 @@ void rds_ib_dev_put(struct rds_ib_device *rds_ibdev)
- 		queue_work(rds_wq, &rds_ibdev->free_work);
- }
- 
--static int rds_ib_add_one(struct ib_device *device)
-+static bool rds_client_supported(struct ib_device *device)
- {
--	struct rds_ib_device *rds_ibdev;
--	int ret;
--
- 	/* Only handle IB (no iWARP) devices */
- 	if (device->node_type != RDMA_NODE_IB_CA)
--		return -EOPNOTSUPP;
-+		return false;
- 
- 	/* Device must support FRWR */
- 	if (!(device->attrs.device_cap_flags & IB_DEVICE_MEM_MGT_EXTENSIONS))
--		return -EOPNOTSUPP;
-+		return false;
-+
-+	return true;
-+}
-+
-+static int rds_ib_add_one(struct ib_device *device)
-+{
-+	struct rds_ib_device *rds_ibdev;
-+	int ret;
- 
- 	rds_ibdev = kzalloc_node(sizeof(struct rds_ib_device), GFP_KERNEL,
- 				 ibdev_to_node(device));
-@@ -288,7 +293,8 @@ static void rds_ib_remove_one(struct ib_device *device, void *client_data)
- struct ib_client rds_ib_client = {
- 	.name   = "rds_ib",
- 	.add    = rds_ib_add_one,
--	.remove = rds_ib_remove_one
-+	.remove = rds_ib_remove_one,
-+	.is_supported = rds_client_supported,
- };
- 
- static int rds_ib_conn_info_visitor(struct rds_connection *conn,
--- 
-2.30.2
-
+> 
+> regards,
+> dan carpenter
+> 
