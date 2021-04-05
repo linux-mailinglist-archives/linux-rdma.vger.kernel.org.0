@@ -2,97 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7704B353C13
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Apr 2021 08:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7335353C37
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Apr 2021 09:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbhDEGVE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Apr 2021 02:21:04 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:14366 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhDEGVD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Apr 2021 02:21:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1617603659; x=1649139659;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=IllAWTlByjnUDMPrbBdicSIRjER11MckY9g1Tlavi8g=;
-  b=hndZNfFtp/TFS1Z+8GWNI6kPThiNTqhGDlLLc/h7NGDMKI6iZ3NxkfSm
-   AnCZVz7FGrsE6HEbQRlGqtqMXsy1irxp3L2zqCNw6WnLmKIAoGmQVx78B
-   F/SJhDT3Zo2wH5zyF62DUJSjVyPueo7r8wmuMp3TYzkdJgcH/dHFcWEAp
-   s=;
-X-IronPort-AV: E=Sophos;i="5.81,305,1610409600"; 
-   d="scan'208";a="99090077"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-821c648d.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 05 Apr 2021 06:20:51 +0000
-Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-821c648d.us-east-1.amazon.com (Postfix) with ESMTPS id 7A7F4A1E03;
-        Mon,  5 Apr 2021 06:20:45 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.239) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 5 Apr 2021 06:20:38 +0000
-Subject: Re: [PATCH rdma-next 1/8] RDMA/core: Check if client supports IB
- device or not
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
+        id S232398AbhDEHoq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Apr 2021 03:44:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231523AbhDEHoq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 5 Apr 2021 03:44:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19B1F61279;
+        Mon,  5 Apr 2021 07:44:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617608680;
+        bh=WdJ6GZIMwNuvuuvXrnwrda5GFONTPH75bo5JtuE/Edg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZFcTQZu00/QYtOhBzpdazVnftIqcWeXKE2dhBb9MQmyjXKvFiggxnOOgTr6QIZPBQ
+         DiM/imL5oEI4DzPMg7KKeXxcnN5zBZfEnRYa+FOpmPuL5rnVid78KnBMndVjwcPztm
+         wQy1ZV58z8gmGqhurrUQzGsq+LfKpXLhngsPDe3W6DQDECX7xOxC8qWJoZsDGlvtlO
+         0Y5bXHFEnsZkeksq+ySFO/JINjJKNw52FGsNjhPR7ZOluktliPVqnZQQk2BbTZNQXm
+         aMaSnqBAQVd7P9XS1+PtgQy7z4yDG037KG0xnDIbBeQ7vC+vHKv+VA+Yr+5rkb1yFR
+         a0aucWmZDMMHg==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-CC:     Parav Pandit <parav@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-s390@vger.kernel.org>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        <netdev@vger.kernel.org>, <rds-devel@oss.oracle.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>
-References: <20210405055000.215792-1-leon@kernel.org>
- <20210405055000.215792-2-leon@kernel.org>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <43f5eb80-55b9-722b-1006-23d823108eb1@amazon.com>
-Date:   Mon, 5 Apr 2021 09:20:32 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>
+Subject: [PATCH rdma-next] RDMA/addr: Be strict with gid size
+Date:   Mon,  5 Apr 2021 10:44:34 +0300
+Message-Id: <20210405074434.264221-1-leon@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210405055000.215792-2-leon@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.239]
-X-ClientProxiedBy: EX13D44UWC004.ant.amazon.com (10.43.162.209) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 05/04/2021 8:49, Leon Romanovsky wrote:
-> From: Parav Pandit <parav@nvidia.com>
-> 
-> RDMA devices are of different transport(iWarp, IB, RoCE) and have
-> different attributes.
-> Not all clients are interested in all type of devices.
-> 
-> Implement a generic callback that each IB client can implement to decide
-> if client add() or remove() should be done by the IB core or not for a
-> given IB device, client combination.
-> 
-> Signed-off-by: Parav Pandit <parav@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/core/device.c | 3 +++
->  include/rdma/ib_verbs.h          | 9 +++++++++
->  2 files changed, 12 insertions(+)
-> 
-> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> index c660cef66ac6..c9af2deba8c1 100644
-> --- a/drivers/infiniband/core/device.c
-> +++ b/drivers/infiniband/core/device.c
-> @@ -691,6 +691,9 @@ static int add_client_context(struct ib_device *device,
->  	if (!device->kverbs_provider && !client->no_kverbs_req)
->  		return 0;
->  
-> +	if (client->is_supported && !client->is_supported(device))
-> +		return 0;
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Isn't it better to remove the kverbs_provider flag (from previous if statement)
-and unify it with this generic support check?
+The nla_len() is less than or equal to 16.  If it's less than 16 then
+end of the "gid" buffer is uninitialized.
+
+Fixes: ae43f8286730 ("IB/core: Add IP to GID netlink offload")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/core/addr.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
+index 0abce004a959..65e3e7df8a4b 100644
+--- a/drivers/infiniband/core/addr.c
++++ b/drivers/infiniband/core/addr.c
+@@ -76,7 +76,9 @@ static struct workqueue_struct *addr_wq;
+ 
+ static const struct nla_policy ib_nl_addr_policy[LS_NLA_TYPE_MAX] = {
+ 	[LS_NLA_TYPE_DGID] = {.type = NLA_BINARY,
+-		.len = sizeof(struct rdma_nla_ls_gid)},
++		.len = sizeof(struct rdma_nla_ls_gid),
++		.validation_type = NLA_VALIDATE_MIN,
++		.min = sizeof(struct rdma_nla_ls_gid)},
+ };
+ 
+ static inline bool ib_nl_is_good_ip_resp(const struct nlmsghdr *nlh)
+-- 
+2.30.2
+
