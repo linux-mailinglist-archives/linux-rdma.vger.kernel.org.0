@@ -2,71 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7335353C37
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Apr 2021 09:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08139353C83
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Apr 2021 10:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232398AbhDEHoq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Apr 2021 03:44:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44322 "EHLO mail.kernel.org"
+        id S232593AbhDEIrC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Apr 2021 04:47:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231523AbhDEHoq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 5 Apr 2021 03:44:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19B1F61279;
-        Mon,  5 Apr 2021 07:44:39 +0000 (UTC)
+        id S232587AbhDEIrB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 5 Apr 2021 04:47:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 112ED61398;
+        Mon,  5 Apr 2021 08:46:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617608680;
-        bh=WdJ6GZIMwNuvuuvXrnwrda5GFONTPH75bo5JtuE/Edg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZFcTQZu00/QYtOhBzpdazVnftIqcWeXKE2dhBb9MQmyjXKvFiggxnOOgTr6QIZPBQ
-         DiM/imL5oEI4DzPMg7KKeXxcnN5zBZfEnRYa+FOpmPuL5rnVid78KnBMndVjwcPztm
-         wQy1ZV58z8gmGqhurrUQzGsq+LfKpXLhngsPDe3W6DQDECX7xOxC8qWJoZsDGlvtlO
-         0Y5bXHFEnsZkeksq+ySFO/JINjJKNw52FGsNjhPR7ZOluktliPVqnZQQk2BbTZNQXm
-         aMaSnqBAQVd7P9XS1+PtgQy7z4yDG037KG0xnDIbBeQ7vC+vHKv+VA+Yr+5rkb1yFR
-         a0aucWmZDMMHg==
+        s=k20201202; t=1617612415;
+        bh=lh5iHkLIHcRhEVH5XgYdg8sTt1UzoPbx65v8pw6Y5os=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VRA/3qDRVrIAhd+CiPu8CKTnPViEofn49SLE9Wa1IaH8nbqg/zQ0rULUpz9NLpkeM
+         NoRFqOHDhmIUR6DDTapE2yJ5AgydustWv8RrKELvfsAxCWqBFqNIPVFBmcQQo+gHeZ
+         dIw/VdNitNAxmCAPgH27T44Jw26gnhoW8z0WWN8m/pzLy4wgFAUh6W4UX0KBE2KnHS
+         lVYFQGqSv4vzzOjH1cCcWvFsteAViL/N/aCgpWnJXyitMan9wD+8/5JfuXX2OLuzHU
+         5Y0yTIR7uoxqErJaN580bgR4+cC2R/iXVqXpmI9VMziEBXKEgItdtDoIQz9QAc9cpa
+         eKCZoO0YPki7w==
+Date:   Mon, 5 Apr 2021 11:46:52 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>
-Subject: [PATCH rdma-next] RDMA/addr: Be strict with gid size
-Date:   Mon,  5 Apr 2021 10:44:34 +0300
-Message-Id: <20210405074434.264221-1-leon@kernel.org>
-X-Mailer: git-send-email 2.30.2
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Parav Pandit <parav@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Subject: Re: [PATCH rdma-next 1/8] RDMA/core: Check if client supports IB
+ device or not
+Message-ID: <YGrOfCjtTLdwsElz@unreal>
+References: <20210405055000.215792-1-leon@kernel.org>
+ <20210405055000.215792-2-leon@kernel.org>
+ <43f5eb80-55b9-722b-1006-23d823108eb1@amazon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <43f5eb80-55b9-722b-1006-23d823108eb1@amazon.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Mon, Apr 05, 2021 at 09:20:32AM +0300, Gal Pressman wrote:
+> On 05/04/2021 8:49, Leon Romanovsky wrote:
+> > From: Parav Pandit <parav@nvidia.com>
+> > 
+> > RDMA devices are of different transport(iWarp, IB, RoCE) and have
+> > different attributes.
+> > Not all clients are interested in all type of devices.
+> > 
+> > Implement a generic callback that each IB client can implement to decide
+> > if client add() or remove() should be done by the IB core or not for a
+> > given IB device, client combination.
+> > 
+> > Signed-off-by: Parav Pandit <parav@nvidia.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >  drivers/infiniband/core/device.c | 3 +++
+> >  include/rdma/ib_verbs.h          | 9 +++++++++
+> >  2 files changed, 12 insertions(+)
+> > 
+> > diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> > index c660cef66ac6..c9af2deba8c1 100644
+> > --- a/drivers/infiniband/core/device.c
+> > +++ b/drivers/infiniband/core/device.c
+> > @@ -691,6 +691,9 @@ static int add_client_context(struct ib_device *device,
+> >  	if (!device->kverbs_provider && !client->no_kverbs_req)
+> >  		return 0;
+> >  
+> > +	if (client->is_supported && !client->is_supported(device))
+> > +		return 0;
+> 
+> Isn't it better to remove the kverbs_provider flag (from previous if statement)
+> and unify it with this generic support check?
 
-The nla_len() is less than or equal to 16.  If it's less than 16 then
-end of the "gid" buffer is uninitialized.
+I thought about it, but didn't find it worth. The kverbs_provider needs
+to be provided by device and all ULPs except uverbs will have the same check.
 
-Fixes: ae43f8286730 ("IB/core: Add IP to GID netlink offload")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Mark Bloch <mbloch@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/addr.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
-index 0abce004a959..65e3e7df8a4b 100644
---- a/drivers/infiniband/core/addr.c
-+++ b/drivers/infiniband/core/addr.c
-@@ -76,7 +76,9 @@ static struct workqueue_struct *addr_wq;
- 
- static const struct nla_policy ib_nl_addr_policy[LS_NLA_TYPE_MAX] = {
- 	[LS_NLA_TYPE_DGID] = {.type = NLA_BINARY,
--		.len = sizeof(struct rdma_nla_ls_gid)},
-+		.len = sizeof(struct rdma_nla_ls_gid),
-+		.validation_type = NLA_VALIDATE_MIN,
-+		.min = sizeof(struct rdma_nla_ls_gid)},
- };
- 
- static inline bool ib_nl_is_good_ip_resp(const struct nlmsghdr *nlh)
--- 
-2.30.2
-
+Thanks
