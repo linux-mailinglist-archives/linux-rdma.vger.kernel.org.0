@@ -2,29 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A5335426E
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Apr 2021 15:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25BA354299
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Apr 2021 16:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237357AbhDENqb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Apr 2021 09:46:31 -0400
-Received: from verein.lst.de ([213.95.11.211]:50801 "EHLO verein.lst.de"
+        id S241264AbhDEOIn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Apr 2021 10:08:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234370AbhDENqa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 5 Apr 2021 09:46:30 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A472C68BFE; Mon,  5 Apr 2021 15:46:18 +0200 (CEST)
-Date:   Mon, 5 Apr 2021 15:46:18 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Leon Romanovsky <leon@kernel.org>
+        id S237431AbhDEOIn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 5 Apr 2021 10:08:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D99C613B1;
+        Mon,  5 Apr 2021 14:08:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617631717;
+        bh=LF0+zRsEi7jGYk/Bg8vQa1eqOiMQAgaqbYGUkXrouMw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I6k7K+GugdLkntOIS/XDUjVAG89FAmzBko1fER7cc3uE9NDtxEXpfu2Xnwtq/0NxL
+         ckDn8FJGtmNFigRJklJ7KJ88kfm6kTIfkzu3K1al8GZ7hrG/NbQzaebZPrLuRPMKeV
+         AptGe6e5kFiM39xIw5oZeLhyTwrYwxKuFNMZKvbh6T+PyVEguwKyGNPBgMTiuZrCtk
+         1J4xCIyRWGlQcLyexllVaPJpVxprEGXSRehfPLV3q2bRKrFBLmzp+wrTu00d0Soctr
+         YYj1Q6Vs4W+Ds4QlJ6sIRBcayMiU899q/lysRyhZ5ut6I4xryD2Pm4kvUfyk5iXnMH
+         E6a7i+TLCgJHQ==
+Date:   Mon, 5 Apr 2021 17:08:33 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
 Cc:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
-        Avihai Horon <avihaih@nvidia.com>,
         Adit Ranadive <aditr@vmware.com>,
         Anna Schumaker <anna.schumaker@netapp.com>,
         Ariel Elior <aelior@marvell.com>,
+        Avihai Horon <avihaih@nvidia.com>,
         Bart Van Assche <bvanassche@acm.org>,
         Bernard Metzler <bmt@zurich.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
         Chuck Lever <chuck.lever@oracle.com>,
         "David S. Miller" <davem@davemloft.net>,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
@@ -60,28 +69,52 @@ Cc:     Doug Ledford <dledford@redhat.com>,
         Weihang Li <liweihang@huawei.com>,
         Yishai Hadas <yishaih@nvidia.com>,
         Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next 01/10] RDMA: Add access flags to
- ib_alloc_mr() and ib_mr_pool_init()
-Message-ID: <20210405134618.GA22895@lst.de>
-References: <20210405052404.213889-1-leon@kernel.org> <20210405052404.213889-2-leon@kernel.org>
+Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
+Message-ID: <YGsZ4Te1+DQODj34@unreal>
+References: <20210405052404.213889-1-leon@kernel.org>
+ <20210405134115.GA22346@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210405052404.213889-2-leon@kernel.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210405134115.GA22346@lst.de>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 08:23:55AM +0300, Leon Romanovsky wrote:
-> From: Avihai Horon <avihaih@nvidia.com>
+On Mon, Apr 05, 2021 at 03:41:15PM +0200, Christoph Hellwig wrote:
+> On Mon, Apr 05, 2021 at 08:23:54AM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > >From Avihai,
+> > 
+> > Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
+> > imposed on PCI transactions, and thus, can improve performance.
+> > 
+> > Until now, relaxed ordering could be set only by user space applications
+> > for user MRs. The following patch series enables relaxed ordering for the
+> > kernel ULPs as well. Relaxed ordering is an optional capability, and as
+> > such, it is ignored by vendors that don't support it.
+> > 
+> > The following test results show the performance improvement achieved
+> > with relaxed ordering. The test was performed on a NVIDIA A100 in order
+> > to check performance of storage infrastructure over xprtrdma:
 > 
-> Add access flags parameter to ib_alloc_mr() and to ib_mr_pool_init(),
-> and refactor relevant code. This parameter is used to pass MR access
-> flags during MR allocation.
-> 
-> In the following patches, the new access flags parameter will be used
-> to enable Relaxed Ordering for ib_alloc_mr() and ib_mr_pool_init() users.
+> Isn't the Nvidia A100 a GPU not actually supported by Linux at all?
+> What does that have to do with storage protocols?
 
-So this weirds up a new RELAXED_ORDERING flag without ever mentioning
-that flag in the commit log, never mind what it actually does.
+This system is in use by our storage oriented customer who performed the
+test. He runs drivers/infiniband/* stack from the upstream, simply backported
+to specific kernel version.
+
+The performance boost is seen in other systems too.
+
+> 
+> Also if you enable this for basically all kernel ULPs, why not have
+> an opt-out into strict ordering for the cases that need it (if there are
+> any).
+
+The RO property is optional, it can only improve. In addition, all in-kernel ULPs
+don't need strict ordering. I can be mistaken here and Jason will correct me, it
+is because of two things: ULP doesn't touch data before CQE and DMA API prohibits it.
+
+Thanks
