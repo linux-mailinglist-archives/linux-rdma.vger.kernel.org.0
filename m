@@ -2,86 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4D0354F4D
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 11:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DAC354F61
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 11:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244724AbhDFJAH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Apr 2021 05:00:07 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15133 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244726AbhDFJAH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 05:00:07 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FF1cT0Y2JzpVMc;
-        Tue,  6 Apr 2021 16:57:13 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.179.202) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 6 Apr 2021 16:59:47 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 1/1] net/mlx5: Remove duplicated header file inclusion
-Date:   Tue, 6 Apr 2021 16:58:54 +0800
-Message-ID: <20210406085854.2424-2-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210406085854.2424-1-thunder.leizhen@huawei.com>
-References: <20210406085854.2424-1-thunder.leizhen@huawei.com>
+        id S234552AbhDFJFD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Apr 2021 05:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233952AbhDFJFD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 05:05:03 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12247C06174A
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Apr 2021 02:04:56 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id o19so15624945edc.3
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Apr 2021 02:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WUgMW5th05dSCUvLlZ8NiEhwtnEiTxyz0x0dwJX6XiM=;
+        b=RxGP9o+Rc3zPyH9fJrjDbw7QBwtiCxt3ISQ45diRCn7DzdbOWeG5WsixH0UdB9iq3g
+         ENrlT8g2wmAETNV4rKtYIs7JQkcZvAI3+Du4ak2xSdNLK8u4fUGdIAx+EmD6P9lyPu6t
+         XkUpXRDk0XpP/WW+oP0O0e6HLobnOpvY9H3Yfu6BqR4w9dp1qzJja9VwRnDx8Eh7O+Z+
+         Q4tvOfF54NaWtCsGO77yI5sJ2Jx8WbzR6TdruNajAPztvSsgZr553zLGy3k9X3tmT1/r
+         1Q/4AAZ+/SYVu65rrShB/+M7jgwBQLWs0oXO9o6R2zNGHHafh2HPcySiSkMviThU7VT2
+         Un1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WUgMW5th05dSCUvLlZ8NiEhwtnEiTxyz0x0dwJX6XiM=;
+        b=Dll8GOtZdGGznOkIAT2BMVIhr5xnDWHq1q5SuKOtfNHtjix35dh8GW6503rcwhQOw+
+         uuSSQ/X0D+hhzrwRA2AzW7YMknOBnSOZH7iUtEx8IyAer0GsC4UB9KubVbgrXm0y4ohj
+         Zh7zuN7ZFr7z2/KvRcAG9F75reHo3yfAYMUmexE/xc8ZWk+CLH+DPBsNVVfvf2ZO8E74
+         Pw5C2kL26vlfLMuf1LzE3NLGxWWva6OAQEx2NcOe8LNPXU9sf5mX9pNvjlSQRamqkQwS
+         6lMlMTb562r6ZQnQn5GNUzJ78EkJ9OjRVcz2ovSvJO0asjwRl7w4R0T/Gyygfekf04jg
+         hCEg==
+X-Gm-Message-State: AOAM531PJE/AyDqNt0+zzvIktBdHMf1WfitngUjciFHXukvrFneUb3ca
+        FOuiwwvvV83yZM/fpHuAzu4UNvBGajznA7Y6L3Hp8fprc5BN8A==
+X-Google-Smtp-Source: ABdhPJyzDfTMhrRP4mnN4Pja6bRadmF/Z2eiluh9234NwhGF6JCQyx6cTOoV/kBUoYT/RM0N7w7+/omkm0dPKxC1p/8=
+X-Received: by 2002:a05:6402:42d3:: with SMTP id i19mr36553214edc.220.1617699894858;
+ Tue, 06 Apr 2021 02:04:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.202]
-X-CFilter-Loop: Reflected
+References: <20210325153308.1214057-1-gi-oh.kim@ionos.com> <20210401190413.GA1652301@nvidia.com>
+In-Reply-To: <20210401190413.GA1652301@nvidia.com>
+From:   Gioh Kim <gi-oh.kim@ionos.com>
+Date:   Tue, 6 Apr 2021 11:04:19 +0200
+Message-ID: <CAJX1Ytb=XYKGeYuEN-2tPv9hx3G+=wnGWMzPk893J__JJFyhGQ@mail.gmail.com>
+Subject: Re: [PATCH for-next 00/22] Misc update for rtrs
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, leon@kernel.org,
+        Doug Ledford <dledford@redhat.com>,
+        Haris Iqbal <haris.iqbal@ionos.com>,
+        Jinpu Wang <jinpu.wang@ionos.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Delete one of the header files "esw/indir_table.h" that are included
-twice, all included header files are then rearranged alphabetically.
+On Thu, Apr 1, 2021 at 9:04 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Thu, Mar 25, 2021 at 04:32:46PM +0100, Gioh Kim wrote:
+> > Hi Jason, hi Doug,
+> >
+> > Please consider to include following changes to the next merge window.
+> >
+> > It contains a few bugfix and cleanup:
+> > - Change maintainer
+> > - Change domain address of maintainers' email: from cloud.ionos.com to ionos.com
+> > - Add some fault-injection points and document update
+> > - New policy for path finding: min-latency and document update
+> > - Code refactoring to remove unused code and better error message
+>
+> >   RDMA/rtrs-clt: Close rtrs client conn before destroying rtrs clt
+> >     session files
+>
+> This one is for RC, and you need to add Ffixes lines when you fix
+> things, I put it there.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+Got it. Thank you.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-index 8694b83968b4c4f..e8307f5eae4cb6a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-@@ -33,21 +33,20 @@
- #include <linux/etherdevice.h>
- #include <linux/idr.h>
- #include <linux/mlx5/driver.h>
-+#include <linux/mlx5/fs.h>
- #include <linux/mlx5/mlx5_ifc.h>
- #include <linux/mlx5/vport.h>
--#include <linux/mlx5/fs.h>
--#include "mlx5_core.h"
--#include "eswitch.h"
--#include "esw/indir_table.h"
-+#include "en.h"
-+#include "en_tc.h"
- #include "esw/acl/ofld.h"
- #include "esw/indir_table.h"
--#include "rdma.h"
--#include "en.h"
-+#include "eswitch.h"
- #include "fs_core.h"
- #include "lib/devcom.h"
- #include "lib/eq.h"
- #include "lib/fs_chains.h"
--#include "en_tc.h"
-+#include "mlx5_core.h"
-+#include "rdma.h"
- 
- /* There are two match-all miss flows, one for unicast dst mac and
-  * one for multicast.
--- 
-1.8.3
+>
+> >   MAINTAINERS: Change maintainer for rtrs module
+>
+> >   RDMA/rtrs: Enable the fault-injection
+> >   RDMA/rtrs-clt: Inject a fault at request processing
+> >   RDMA/rtrs-srv: Inject a fault at heart-beat sending
+> >   docs: fault-injection: Add fault-injection manual of RTRS
+>
+> These should be a series
+Ok, I will split it and send another patch set.
 
 
+>
+> >   RDMA/rtrs-clt: Remove redundant code from rtrs_clt_read_req
+> >   RDMA/rtrs: Kill the put label in
+> >     rtrs_srv_create_once_sysfs_root_folders
+> >   RDMA/rtrs: Remove sessname and sess_kobj from rtrs_attrs
+> >   RDMA/rtrs: Cleanup the code in rtrs_srv_rdma_cm_handler
+> >   RDMA/rtrs: New function converting rtrs_addr to string
+> >   RDMA/rtrs-srv: Report temporary sessname for error message
+> >   RDMA/rtrs: cleanup unused variable
+> >   RDMA/rtrs-clt: Cap max_io_size
+>
+> I applied these trivial patches to for-next. Please pay attention to commit
+> messages, these are becoming hard to understand.
+
+Got it. Thank you.
+
+>
+> >   RDMA/rtrs-srv: More debugging info when fail to send reply
+> >   RDMA/rtrs-clt: Print more info when an error happens
+> >   RDMA/rtrs-clt: Simplify error message
+>
+> This is a reasonble series about improving debugging
+
+Ok, I will send a separate patch set.
+
+>
+> >   RDMA/rtrs-clt: Add a minimum latency multipath policy
+> >   RDMA/rtrs-clt: new sysfs attribute to print the latency of each path
+> >   Documentation/ABI/rtrs-clt: Add descriptions for min-latency policy
+>
+> This is a series
+
+This also will be sent as a separate set.
+
+In summary, I will send 3 patch-sets: fault-injection, improbe
+debugging, min-latency policy.
+Thank you.
