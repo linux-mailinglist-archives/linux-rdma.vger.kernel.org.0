@@ -2,168 +2,200 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE1A3552B8
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 13:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D2C3552CA
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 13:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343514AbhDFLvL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Apr 2021 07:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343511AbhDFLvK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 07:51:10 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F314C061756
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Apr 2021 04:51:03 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id ap14so21491550ejc.0
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Apr 2021 04:51:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hzGzDb6sOnF8N0SPvMe9bIQjSerHc8BoxV7MjmHw1gQ=;
-        b=IL+lXi7Fck9ycEgSFxeRCwY7mk/0gG/lD8v/DGs+ApV4x0yjzBOGKSSj4zh4rsr5L0
-         MTHLdDmCOjeYjooVIIrGBjR7WfByvqIKcZWlDvz7aQ3MhkhCGUhXu7MRcLkmhfbhe4iY
-         qRVGt0qEHm9oSh1cU7lpnPkPqhTr6iA60X8esrx7G0NVOEbGVauQsedlJ9aAJhFS2oPC
-         Geq64csMdLDqXYqQXVb3ZC6SfvDRzYt8sh+IgrTW4r0OifhpVaJ7MsaATNETdPQA6/9M
-         rgCwWphz1yCC9btuEOy1fZlo61OKvRRdhHn1FhYotLMo56rePhwdO6bLRFvKGj/0WTuJ
-         DJSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hzGzDb6sOnF8N0SPvMe9bIQjSerHc8BoxV7MjmHw1gQ=;
-        b=qibMlkXDn7oMZ7ri3CMXF9UbjmRmxW4AkQI5mpJKnRGdOlSCkx4XdveQQv9H2eidDm
-         sSCvZR8TIvK55eDEpp2+CXuvhvFk4VDn8J71/CJ65tP+SniT1T/5gTER46ONCAxxmA5v
-         SBaGDCbKDSilQUIL6l8ABKLp2OM5ppwi47cLdcrdKIFaA+u5H/V9Umczzsz8ub3t2p0/
-         TPoraxzlkG6yWjxJw9mgkxYiuaBKlBhghQwB47CzSyyfNcHQapYArsYIbRUAFwC28/ZZ
-         b9t2X9sGdJSvBQS9pJgusxbmle1UJ/7nGDw3ot+gm6e4JxPKSx6H2Ia+azKau8bsRSMJ
-         /m/A==
-X-Gm-Message-State: AOAM531dZ8aLJRm7Ggq2V1mZqAKbirL2dpshhzYELlWoI1m5GpBV/28e
-        9CIyuyeC+7y1vldN0lA3tHuIyK5yFSPkHNGF
-X-Google-Smtp-Source: ABdhPJxVIkWAfkyagvnr/hajx6i0wdgR6FCHCK48yFCzBoqf60AQFNZf+XxE5V+k5AXr5mNEEcz5lA==
-X-Received: by 2002:a17:906:6c4:: with SMTP id v4mr32866953ejb.198.1617709861716;
-        Tue, 06 Apr 2021 04:51:01 -0700 (PDT)
-Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aeee5.dynamic.kabel-deutschland.de. [95.90.238.229])
-        by smtp.googlemail.com with ESMTPSA id t1sm855964eds.53.2021.04.06.04.51.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 04:51:01 -0700 (PDT)
-From:   Gioh Kim <gi-oh.kim@ionos.com>
-To:     linux-rdma@vger.kernel.org, linux-doc@vger.kernel.org
-Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
-        jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        akinobu.mita@gmail.com, corbet@lwn.net,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Subject: [PATCH 4/4] docs: fault-injection: Add fault-injection manual of RTRS
-Date:   Tue,  6 Apr 2021 13:50:49 +0200
-Message-Id: <20210406115049.196527-5-gi-oh.kim@ionos.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210406115049.196527-1-gi-oh.kim@ionos.com>
-References: <20210406115049.196527-1-gi-oh.kim@ionos.com>
+        id S1343524AbhDFLxf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Apr 2021 07:53:35 -0400
+Received: from mail-bn8nam11on2046.outbound.protection.outlook.com ([40.107.236.46]:7009
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S243320AbhDFLxe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Apr 2021 07:53:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lORtm4RyzVyXCnNxLPfldSbcoBJ2SMZizi445pBu1usUraLNT1yBfKWOK4IeAItxMZ/VWJvRH/J68ZE9geJR/UBhD/TQX+g0aHFoFN1HUDtrAw59x99+8+3jwGA2W390rKyjUOXaSEN8wrRe2bNWSYtcEjDHT0vVYUHFuWEa+K6DasztOYvf7WSG5BBsKTufXAW7W31dKs7N9Ev8bCuKgOZytjHWns72MhtJgstKJ/Q6pk8PU3YIbG0ZDhQkNqiPu3KErC2KFOC/Il9wioc6UhveIb32tCD5pUfhA/sn/7l0gizXnCqDPP4cen9dW6GS8Qhbjnewk1K8WmJE3dEjrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MriZDWx6DlmgwnC2CrOubTx1ie0mcu4xhZx0CPx5q78=;
+ b=RZibWi8OLbLscGi/fOhj0d30ZT7P0MKH3BO319oEy9gkAaxdMVI5/zMGZyUKaxNp3pzFxLwRLlpdLg6UVDxKcwRtXyf2Jb5nPtgh4JFUc0APMb79y6MvTp5UUvqZDhmD7lBah0EQX6vwxak0IU+NcUfdzObiZe3NwqTCDx/2au/zegL+x+b23Nz+yrQdwAgTJ8TgZPYqWo3f+6rGjqpzlTdz9NpWlMDjrU8cgQjcH5lU9+UTDIBplsJHS6pCYGgCUQfaZisYPSSyZDhEFa5KFg16C5JR+JVCeb66UHD0xjeSX5Jg3jiNBN4qZ2KJwnYVCZ5UofWaJCAi9QKY2Hn3OA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MriZDWx6DlmgwnC2CrOubTx1ie0mcu4xhZx0CPx5q78=;
+ b=TAJ12Cj2HBKji+3LrkhkNsn7yaLSbiGdTFb8vBXKIWI180V/Eub3iuHMbjkePy4VTl04w38zD6CA6uZBLIm03HgUDdwRNByL49dXFUE5TESEDeMEfK5C6DEbKhjuc9kFb8GRxV1wcUPdvkALvBSuUguTx2a3xoPu/7zp7Fdxr/s/OEnT8nJ8kDsIC9OPRK1QWi8o80Z6cjYgkBPuj2kdbA5heix6WEjSQbpSVP7UP+Jt0zsE0fgjMBtqbGpf7mG9mXD0v42DgYYQOxvWukK8eukSUdzk/yKJ8RPmMKIKLZh5rCAh1rLp7aFnRlp35Xwlv0BDejp18SDr3Edi3Kx76Q==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4578.namprd12.prod.outlook.com (2603:10b6:5:2a9::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Tue, 6 Apr
+ 2021 11:53:25 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
+ 11:53:25 +0000
+Date:   Tue, 6 Apr 2021 08:53:23 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Honggang LI <honli@redhat.com>, Doug Ledford <dledford@redhat.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jens Axboe <axboe@fb.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
+        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
+        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
+        samba-technical@lists.samba.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
+Message-ID: <20210406115323.GI7405@nvidia.com>
+References: <20210405052404.213889-1-leon@kernel.org>
+ <20210406023738.GB80908@dhcp-128-72.nay.redhat.com>
+ <YGvtFxv1az754/Q5@unreal>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGvtFxv1az754/Q5@unreal>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: MN2PR20CA0053.namprd20.prod.outlook.com
+ (2603:10b6:208:235::22) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR20CA0053.namprd20.prod.outlook.com (2603:10b6:208:235::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28 via Frontend Transport; Tue, 6 Apr 2021 11:53:24 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lTkGp-00169F-BN; Tue, 06 Apr 2021 08:53:23 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 87b0ea3e-1251-4996-100b-08d8f8f29582
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4578:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4578F76557A483D257C5EAEFC2769@DM6PR12MB4578.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +7eGPc/6ienhbDP9Blfc3+ycjw/Gcf18e3ZeQ0qgbfY3wnzmC2FOyjT4z1stPFfrbXMZe2BKwrlxY00YskA4fwfUf8cr4M/VC3cYcgA+Lp9OjLRMUViI1wqx4CXFddghAf+rlzhRE/nAAXeuRWRtnoQYXSfJ+W2tlYl/iJzxa0Sz32Fh5/aJyHYy7KVgI2qTxwB1Xp+lJ+pKkLRREB1T4RIDMlg23sj8XCNtaO+qviSu8aedzf+Bne/S3r2owxNPJsLXUR7jnYpXyrLFg4wETBmUtnXHGZOIcasTKh78iv0zXAknmwTZogx01Q9opuVrVCa7Ig5567im7Qm9Cz1uD2YrZWYFO6coYl9UhQOudkYMDxzK5ShT1zbn/kq8NeJUpeb/Kddplvl34OKHjK4u8ntzk7j4VH7pNe4D03dfQnj0kTpoC0M5QcMktigW3KayK3cJEktJaIhe9X5Ssc2nde9ABZJiHi7gC7WIajdZmmPu3SD3Faj7HQvwE9S5HmQAK+nq3yApJhpeYmpZokIWPt0/0BF9FMiFaI5y/rj8DMzsqPavTnZDKSxi1h4HtlQvkiN/px5Fr1LSZ7mClqF8zUwj8uOeIY04ZPqvybvZaFkThvqlf4djjkPPhR3soEWhXSV35cgI6YJB+CUYwlLjsq2yZSryajYkKPyqL+v3cYL7JICtiDjCPGrOubdnr3CdtXZz/O63gWxyB8omLS+rAY8uYpyyCVetJegpmJuxad9ElD7XdSFQrNk0+bKmE9sv
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(39860400002)(376002)(136003)(346002)(86362001)(2906002)(426003)(2616005)(36756003)(478600001)(33656002)(5660300002)(4326008)(83380400001)(66556008)(966005)(66946007)(9746002)(66476007)(8936002)(186003)(6916009)(1076003)(26005)(7406005)(8676002)(9786002)(316002)(7416002)(54906003)(38100700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?q0lzuMl5Vmr+uc1O7GGb+Ar3o1/uazZi4bHNJG6RfixYAlHyQW1C6VZq/Ejt?=
+ =?us-ascii?Q?1tkNJIwn+OAVQlAcLnzOB0u49rsNJ6ba20Nc+Cd3b6+yCG2ZECgHrAj7su2I?=
+ =?us-ascii?Q?TSHWVN6knMyl+ZYqzM/KnzUcIqzMrHFCMsjeB52aM8oY5vl2iCoPhVA6fdhL?=
+ =?us-ascii?Q?H5HfkoV0pWUspwiz2JzODatY0U80LG8YnFmwnk8G9zxwgnCtjLp7gU07SUi9?=
+ =?us-ascii?Q?VyQ309Ibx7uGfPVMQ2zUXb58gqoHBJUa8clMD+nhvUTUKu1rFdX3l1BUtyAc?=
+ =?us-ascii?Q?qYXI8IC4yejLMPFzCkjX0p2kRiIpK88pdIqNgrUJSVZCsNePKnj9UKOrkiz+?=
+ =?us-ascii?Q?jYXgbbFiGxrpb2u20lPGD+Z+kyV4cYEXzNqCptM4mu+jAkJiZ1Me9s92H/Rr?=
+ =?us-ascii?Q?S5LBxJT0i+dgm1Kf0wkTHkDG7SLNgxsxv3YZ+joUGimEec8lyLVCwkMm7cwC?=
+ =?us-ascii?Q?SnqAzUJSwsC7eqz3PELCqcDrfgLS0UC5MGWt76Wq8T/qG3OImoyjhS+b+9mS?=
+ =?us-ascii?Q?US1lEJZQ4wP31o+lI60TFqhe83dNle/1KNmZyDjYK00VuF2/HI9VC8CXkTLz?=
+ =?us-ascii?Q?I5/Hw5z9fpav2T+2AaVrTegdzkrBnvkyP67oNEpqV5VkU15a0drGmIB68C52?=
+ =?us-ascii?Q?bhLBdw0aGGef34joeT+ewma7VT+x12ym2sISRFrDoBwvuxS39XkPL+08Lmbw?=
+ =?us-ascii?Q?eNKgcIB3xEqtcQTJCHARiK+VgxVEUx/VK8YL8rCeOZbYK2wuH2DRBS0qUM+V?=
+ =?us-ascii?Q?5p2cr79G6N8xn1pXQerKRccXEzOdZ5b5MqWViavBP4kck8ELFsLxyMC8X1e6?=
+ =?us-ascii?Q?EKdkeKttGpxfI1CHzQwZsGQkHMU9JRPb/xfE1IttBKIOOwGQyes8o81vwLXc?=
+ =?us-ascii?Q?FrXlgwNQrK4YV/IKx0zJefc88zAKerJfyPcKs/GdC6CEziSa/qrK+Fbl3QtG?=
+ =?us-ascii?Q?phOo3FMJ7GLDKKdAJEUQqSddCX6JhJPWYMRKCRAKwJdOXQ7uCxjyQ0pXrTnc?=
+ =?us-ascii?Q?PuiiLgOXAm+w4vdvrWSG90f1RoqxiYhp6+3Nb7yeDwbGiFRZUWGx+tSjwN2o?=
+ =?us-ascii?Q?uBZ3W7oHCGZvq27IvtfQIPSf+IwYF1lhEhoX8bEyrntDhBz+P4jkwqDYVCH8?=
+ =?us-ascii?Q?P1B2zZ2DjDsHeKiAGnVrPqPXtPTTSC0QwI+VRcYfdVsRYJcMwRQX+oASI469?=
+ =?us-ascii?Q?5+enlAez87xwqv4HNZ+ss6hFSVa7NTi/7cJDnOdVc1PHQvF2V0GztF/OAvK1?=
+ =?us-ascii?Q?KZ/7BmmRceEGC7DpBBgLb0XfklcwSQjfLbnTxuxrIi1e0zVZa+IoIYSj9faz?=
+ =?us-ascii?Q?NRe9EESGAeBJwBM54GPJXTQ9xf6CZCFzD+mExKB/gA70UA=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 87b0ea3e-1251-4996-100b-08d8f8f29582
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 11:53:25.0156
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jfDGmS3Gq66jcidkaUZ8EnDAPTruQPN5ym8f+mmDb/shHcMgfnVjmd/xGx4sDX+o
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4578
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+On Tue, Apr 06, 2021 at 08:09:43AM +0300, Leon Romanovsky wrote:
+> On Tue, Apr 06, 2021 at 10:37:38AM +0800, Honggang LI wrote:
+> > On Mon, Apr 05, 2021 at 08:23:54AM +0300, Leon Romanovsky wrote:
+> > > From: Leon Romanovsky <leonro@nvidia.com>
+> > > 
+> > > From Avihai,
+> > > 
+> > > Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
+> > > imposed on PCI transactions, and thus, can improve performance.
+> > > 
+> > > Until now, relaxed ordering could be set only by user space applications
+> > > for user MRs. The following patch series enables relaxed ordering for the
+> > > kernel ULPs as well. Relaxed ordering is an optional capability, and as
+> > > such, it is ignored by vendors that don't support it.
+> > > 
+> > > The following test results show the performance improvement achieved
+> > 
+> > Did you test this patchset with CPU does not support relaxed ordering?
+> 
+> I don't think so, the CPUs that don't support RO are Intel's fourth/fifth-generation
+> and they are not interesting from performance point of view.
+> 
+> > 
+> > We observed significantly performance degradation when run perftest with
+> > relaxed ordering enabled over old CPU.
+> > 
+> > https://github.com/linux-rdma/perftest/issues/116
+> 
+> The perftest is slightly different, but you pointed to the valid point.
+> We forgot to call pcie_relaxed_ordering_enabled() before setting RO bit
+> and arguably this was needed to be done in perftest too.
 
-It describes how to use the fault-injection of RTRS.
+No, the PCI device should not have the RO bit set in this situation.
+It is something mlx5_core needs to do. We can't push this into
+applications.
 
-Signed-off-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
----
- .../fault-injection/rtrs-fault-injection.rst  | 83 +++++++++++++++++++
- 1 file changed, 83 insertions(+)
- create mode 100644 Documentation/fault-injection/rtrs-fault-injection.rst
+There should be no performance difference from asking for
+IBV_ACCESS_RELAXED_ORDERING when RO is disabled at the PCI config and
+not asking for it at all.
 
-diff --git a/Documentation/fault-injection/rtrs-fault-injection.rst b/Documentation/fault-injection/rtrs-fault-injection.rst
-new file mode 100644
-index 000000000000..463869877a85
---- /dev/null
-+++ b/Documentation/fault-injection/rtrs-fault-injection.rst
-@@ -0,0 +1,83 @@
-+RTRS (RDMA Transport) Fault Injection
-+=====================================
-+This document introduces how to enable and use the error injection of RTRS
-+via debugfs in the /sys/kernel/debug directory. When enabled, users can
-+enable specific error injection point and change the default status code
-+via the debugfs.
-+
-+Following examples show how to inject an error into the RTRS.
-+
-+First, enable CONFIG_FAULT_INJECTION_DEBUG_FS kernel config,
-+recompile the kernel. After booting up the kernel, map a target device.
-+
-+After mapping, /sys/kernel/debug/<session-name> directory is created
-+on both of the client and the server.
-+
-+Example 1: Inject an error into request processing of rtrs-client
-+-----------------------------------------------------------------
-+
-+Generate an error on one session of rtrs-client::
-+
-+  echo 100 > /sys/kernel/debug/ip\:192.168.123.144@ip\:192.168.123.190/fault_inject/probability
-+  echo 1 > /sys/kernel/debug/ip\:192.168.123.144@ip\:192.168.123.190/fault_inject/times
-+  echo 1 > /sys/kernel/debug/ip\:192.168.123.144@ip\:192.168.123.190/fault_inject/fail-request
-+  dd if=/dev/rnbd0 of=./dd bs=1k count=10
-+
-+Expected Result::
-+
-+  dd succeeds but generates an IO error
-+
-+Message from dmesg::
-+
-+  FAULT_INJECTION: forcing a failure.
-+  name fault_inject, interval 1, probability 100, space 0, times 1
-+  CPU: 0 PID: 799 Comm: dd Tainted: G           O      5.4.77-pserver+ #169
-+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-+  Call Trace:
-+    dump_stack+0x97/0xe0
-+    should_fail.cold+0x5/0x11
-+    rtrs_clt_should_fail_request+0x2f/0x50 [rtrs_client]
-+    rtrs_clt_request+0x223/0x540 [rtrs_client]
-+    rnbd_queue_rq+0x347/0x800 [rnbd_client]
-+    __blk_mq_try_issue_directly+0x268/0x380
-+    blk_mq_request_issue_directly+0x9a/0xe0
-+    blk_mq_try_issue_list_directly+0xa3/0x170
-+    blk_mq_sched_insert_requests+0x1de/0x340
-+    blk_mq_flush_plug_list+0x488/0x620
-+    blk_flush_plug_list+0x20f/0x250
-+    blk_finish_plug+0x3c/0x54
-+    read_pages+0x104/0x2b0
-+    __do_page_cache_readahead+0x28b/0x2b0
-+    ondemand_readahead+0x2cc/0x610
-+    generic_file_read_iter+0xde0/0x11f0
-+    new_sync_read+0x246/0x360
-+    vfs_read+0xc1/0x1b0
-+    ksys_read+0xc3/0x160
-+    do_syscall_64+0x68/0x260
-+    entry_SYSCALL_64_after_hwframe+0x49/0xbe
-+  RIP: 0033:0x7f7ff4296461
-+  Code: fe ff ff 50 48 8d 3d fe d0 09 00 e8 e9 03 02 00 66 0f 1f 84 00 00 00 00 00 48 8d 05 99 62 0d 00 8b 00 85 c0 75 13 31 c0 0f 05 <48> 3d 00 f0 ff ff 77 57 c3 66 0f 1f 44 00 00 41 54 49 89 d4 55 48
-+  RSP: 002b:00007fffdceca5b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-+  RAX: ffffffffffffffda RBX: 000055c5eab6e3e0 RCX: 00007f7ff4296461
-+  RDX: 0000000000000400 RSI: 000055c5ead27000 RDI: 0000000000000000
-+  RBP: 0000000000000400 R08: 0000000000000003 R09: 00007f7ff4368260
-+  R10: ffffffffffffff3b R11: 0000000000000246 R12: 000055c5ead27000
-+  R13: 0000000000000000 R14: 0000000000000000 R15: 000055c5ead27000
-+
-+Example 2: rtrs-server does not send ACK to the heart-beat of rtrs-client
-+-------------------------------------------------------------------------
-+
-+::
-+
-+  echo 100 > /sys/kernel/debug/ip\:192.168.123.190@ip\:192.168.123.144/fault_inject/probability
-+  echo 5 > /sys/kernel/debug/ip\:192.168.123.190@ip\:192.168.123.144/fault_inject/times
-+  echo 1 > /sys/kernel/debug/ip\:192.168.123.190@ip\:192.168.123.144/fault_inject/fail-hb-ack
-+
-+Expected Result::
-+
-+  If rtrs-server does not send ACK more than 5 times, rtrs-client tries reconnection.
-+
-+Check how many times rtrs-client did reconnection::
-+
-+  cat /sys/devices/virtual/rtrs-client/bla/paths/ip\:192.168.122.142@ip\:192.168.122.130/stats/reconnects
-+  1 0
--- 
-2.25.1
+Either the platform has working relaxed ordering that gives a
+performance gain and the RO config spec bit should be set, or it
+doesn't and the bit should be clear.
 
+This is not something to decide in userspace, or in RDMA. At worst it
+becomes another platform specific PCI tunable people have to set.
+
+I thought the old haswell systems were quirked to disable RO globally
+anyhow?
+
+Jason
