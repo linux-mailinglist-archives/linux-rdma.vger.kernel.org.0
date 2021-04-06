@@ -2,46 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C192A3552E7
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 13:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22BF93552ED
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 13:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343552AbhDFL4N convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 6 Apr 2021 07:56:13 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3514 "EHLO
+        id S1343607AbhDFL5E convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 6 Apr 2021 07:57:04 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3515 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243384AbhDFL4M (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 07:56:12 -0400
-Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FF5XW0DT3zRZ5s;
-        Tue,  6 Apr 2021 19:54:03 +0800 (CST)
-Received: from dggpemm100004.china.huawei.com (7.185.36.189) by
- DGGEML401-HUB.china.huawei.com (10.3.17.32) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 6 Apr 2021 19:56:02 +0800
+        with ESMTP id S243397AbhDFL5E (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 07:57:04 -0400
+Received: from DGGEML403-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FF5YW2n2FzRZ6W;
+        Tue,  6 Apr 2021 19:54:55 +0800 (CST)
+Received: from dggema751-chm.china.huawei.com (10.1.198.193) by
+ DGGEML403-HUB.china.huawei.com (10.3.17.33) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 6 Apr 2021 19:56:54 +0800
 Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggpemm100004.china.huawei.com (7.185.36.189) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 19:56:02 +0800
+ dggema751-chm.china.huawei.com (10.1.198.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 6 Apr 2021 19:56:54 +0800
 Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
  dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.013;
- Tue, 6 Apr 2021 19:56:02 +0800
+ Tue, 6 Apr 2021 19:56:55 +0800
 From:   liweihang <liweihang@huawei.com>
-To:     chenglang <chenglang@huawei.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>
-CC:     "leon@kernel.org" <leon@kernel.org>,
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        "wangxi (M)" <wangxi11@huawei.com>
-Subject: Re: [PATCH for-next 1/6] RDMA/hns: Simplify function's resource
- related command
-Thread-Topic: [PATCH for-next 1/6] RDMA/hns: Simplify function's resource
- related command
-Thread-Index: AQHXJ56x1wd7Q3CycEO0m538GDPOKw==
-Date:   Tue, 6 Apr 2021 11:56:02 +0000
-Message-ID: <59c69aa6ff594efe8cf9f04ebd9ea562@huawei.com>
-References: <1617353896-40727-1-git-send-email-liweihang@huawei.com>
- <1617353896-40727-2-git-send-email-liweihang@huawei.com>
- <0426cfd3-da56-6ec4-355e-969690b93ab0@huawei.com>
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH for-next 3/6] RDMA/core: Add necessary spaces
+Thread-Topic: [PATCH for-next 3/6] RDMA/core: Add necessary spaces
+Thread-Index: AQHXKr4Bpg3ag8fmY0ect+O376cbug==
+Date:   Tue, 6 Apr 2021 11:56:54 +0000
+Message-ID: <35a345dba4814345b9a69874c7a61191@huawei.com>
+References: <1617697184-48683-1-git-send-email-liweihang@huawei.com>
+ <1617697184-48683-4-git-send-email-liweihang@huawei.com>
+ <YGwexRBkApaxvnGp@unreal>
 Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -55,39 +51,22 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/4/2 20:17, chenglang wrote:
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_common.h b/drivers/infiniband/hw/hns/hns_roce_common.h
->> index 23c438c..5b5fedf 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_common.h
->> +++ b/drivers/infiniband/hw/hns/hns_roce_common.h
->> @@ -87,6 +87,17 @@
->>   
->>   #define hr_reg_write(ptr, field, val) _hr_reg_write(ptr, field, val)
->>   
->> +#define _hr_reg_read(ptr, field_type, field_h, field_l)                        \
->> +	({                                                                     \
->> +		const field_type *_ptr = ptr;                                  \
->> +		BUILD_BUG_ON(((field_h) / 32) != ((field_l) / 32));            \
->> +		((le32_to_cpu(*((__le32 *)_ptr + (field_h) / 32)) &            \
->> +		  GENMASK((field_h) % 32, (field_l) % 32)) >>                  \
->> +		 ((field_l) % 32));                                            \
->> +	})
-> I will try this:
+On 2021/4/6 16:41, Leon Romanovsky wrote:
+>> diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+>> index da8adad..ee5ab1c 100644
+>> --- a/drivers/infiniband/core/iwcm.c
+>> +++ b/drivers/infiniband/core/iwcm.c
+>> @@ -211,7 +211,7 @@ static void free_cm_id(struct iwcm_id_private *cm_id_priv)
+>>   */
+>>  static int iwcm_deref_id(struct iwcm_id_private *cm_id_priv)
+>>  {
+>> -	BUG_ON(atomic_read(&cm_id_priv->refcount)==0);
+>> +	BUG_ON(atomic_read(&cm_id_priv->refcount) == 0);
+> Simply delete this BUG_ON.
 > 
-> #define _hr_reg_read(ptr, field_type, field_h, field_l) 
-> 
-> 	({
-> 		const field_type *_ptr = ptr;
-> 		FIELD_GET(GENMASK((field_h) % 32, (field_l) % 32),
-> 			  le32_to_cpu(*((__le32 *)_ptr +(field_h)/32)))
-> 		+ BUILD_BUG_ON_ZERO(((field_h) / 32) != ((field_l) / 32));
-> 	})
-> 
-> 
-> Thanks.
+> Thanks
 > 
 
-OK, I will send v2 instead.
+Sure, thank you.
 
-Thanks
 Weihang
