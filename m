@@ -2,33 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF85D354970
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 01:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C8E354AEC
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 04:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242101AbhDEXuU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Apr 2021 19:50:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237601AbhDEXuS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 5 Apr 2021 19:50:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 591AC613AE;
-        Mon,  5 Apr 2021 23:50:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617666611;
-        bh=O0RRvC67wyIxyVI9osywvj0pz7HWCPQTesV6bE2/GW8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XRk/SK45PHxpF77rVTHwvWbgd00Rast4vDP2RUocsZ5/he6DL7tdT33kVGjvQhKJQ
-         OiYhgIwEJ5ocuWrmOwC1kFOGw1Ap3vhzMWKjK/KKJ3sYDWEZRiKHWdN+GtEuGgvvyN
-         CMGh1ihb9ktQaFexK5FYBpsjMIZFH+qFjNZzltlfW+rF/fjiq5WgzECBl85E7xxVzh
-         +I1CAc7Qt49v5ARp2bp5d2SkxQ1UiIIJrA59+CHw4Qxy/MSJH/l2Yxt3gQwWDBlagX
-         tsUxHjhloGV95xz9ou075LzhgdFWO9PGSgnzQnabQLnXjJxUrdq5WArezA7rcQTtc8
-         6XiyY4PobdZhA==
-Date:   Mon, 5 Apr 2021 16:50:06 -0700
-From:   Keith Busch <kbusch@kernel.org>
-To:     Chuck Lever III <chuck.lever@oracle.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
+        id S243415AbhDFCiD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Apr 2021 22:38:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60880 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243412AbhDFCiC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Apr 2021 22:38:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617676675;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J5Y7rI+FtGX0I4XVdEnNnyzKf98zHZb+U6KjZK4yGbc=;
+        b=KrLXRSpQqL5xKRQawQg5vo9gyq6NBhIrI6oWoIZcV0VH8pj2tZQXtnVZ7o3U3DnlLFJ/Bs
+        1GXePdCxfvrPs0swavs3DbdWumZEX07ghFDZJXc7eH/LcPThvKEfT23jKfLCDJHYIgXe13
+        Lc36DzraX89lHBN0IpBGqDQRX9Z3AZQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-SuhA5TQCNkCWqJin6rD1AA-1; Mon, 05 Apr 2021 22:37:51 -0400
+X-MC-Unique: SuhA5TQCNkCWqJin6rD1AA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 468601800D50;
+        Tue,  6 Apr 2021 02:37:45 +0000 (UTC)
+Received: from localhost (unknown [10.66.128.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1E86A690F5;
+        Tue,  6 Apr 2021 02:37:41 +0000 (UTC)
+Date:   Tue, 6 Apr 2021 10:37:38 +0800
+From:   Honggang LI <honli@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Leon Romanovsky <leonro@nvidia.com>,
         Adit Ranadive <aditr@vmware.com>,
         Anna Schumaker <anna.schumaker@netapp.com>,
@@ -36,21 +44,21 @@ Cc:     Jason Gunthorpe <jgg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
         Avihai Horon <avihaih@nvidia.com>,
         Bart Van Assche <bvanassche@acm.org>,
         Bernard Metzler <bmt@zurich.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Chuck Lever <chuck.lever@oracle.com>,
         "David S. Miller" <davem@davemloft.net>,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Devesh Sharma <devesh.sharma@broadcom.com>,
         Faisal Latif <faisal.latif@intel.com>,
         Jack Wang <jinpu.wang@ionos.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Bruce Fields <bfields@fieldses.org>, Jens Axboe <axboe@fb.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jens Axboe <axboe@fb.com>,
         Karsten Graul <kgraul@linux.ibm.com>,
-        Lijun Ou <oulijun@huawei.com>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
+        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
         Max Gurtovoy <maxg@mellanox.com>,
         Max Gurtovoy <mgurtovoy@nvidia.com>,
         "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
@@ -58,11 +66,9 @@ Cc:     Jason Gunthorpe <jgg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
         Michal Kalderon <mkalderon@marvell.com>,
         Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
         Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
+        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
+        samba-technical@lists.samba.org,
         Santosh Shilimkar <santosh.shilimkar@oracle.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>,
         Shiraz Saleem <shiraz.saleem@intel.com>,
@@ -75,54 +81,38 @@ Cc:     Jason Gunthorpe <jgg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
         Yishai Hadas <yishaih@nvidia.com>,
         Zhu Yanjun <zyjzyj2000@gmail.com>
 Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
-Message-ID: <20210405235006.GA2014546@dhcp-10-100-145-180.wdc.com>
+Message-ID: <20210406023738.GB80908@dhcp-128-72.nay.redhat.com>
 References: <20210405052404.213889-1-leon@kernel.org>
- <20210405134115.GA22346@lst.de>
- <20210405200739.GB7405@nvidia.com>
- <C2924F03-11C5-4839-A4F3-36872194EEA8@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <C2924F03-11C5-4839-A4F3-36872194EEA8@oracle.com>
+In-Reply-To: <20210405052404.213889-1-leon@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 11:42:31PM +0000, Chuck Lever III wrote:
-> > On Apr 5, 2021, at 4:07 PM, Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > On Mon, Apr 05, 2021 at 03:41:15PM +0200, Christoph Hellwig wrote:
-> >> On Mon, Apr 05, 2021 at 08:23:54AM +0300, Leon Romanovsky wrote:
-> >>> From: Leon Romanovsky <leonro@nvidia.com>
-> >>> 
-> >>>> From Avihai,
-> >>> 
-> >>> Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
-> >>> imposed on PCI transactions, and thus, can improve performance.
-> >>> 
-> >>> Until now, relaxed ordering could be set only by user space applications
-> >>> for user MRs. The following patch series enables relaxed ordering for the
-> >>> kernel ULPs as well. Relaxed ordering is an optional capability, and as
-> >>> such, it is ignored by vendors that don't support it.
-> >>> 
-> >>> The following test results show the performance improvement achieved
-> >>> with relaxed ordering. The test was performed on a NVIDIA A100 in order
-> >>> to check performance of storage infrastructure over xprtrdma:
-> >> 
-> >> Isn't the Nvidia A100 a GPU not actually supported by Linux at all?
-> >> What does that have to do with storage protocols?
-> > 
-> > I think it is a typo (or at least mit makes no sense to be talking
-> > about NFS with a GPU chip) Probably it should be a DGX A100 which is a
-> > dual socket AMD server with alot of PCIe, and xptrtrdma is a NFS-RDMA
-> > workload.
+On Mon, Apr 05, 2021 at 08:23:54AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> We need to get a better idea what correctness testing has been done,
-> and whether positive correctness testing results can be replicated
-> on a variety of platforms.
+> From Avihai,
 > 
-> I have an old Haswell dual-socket system in my lab, but otherwise
-> I'm not sure I have a platform that would be interesting for such a
-> test.
+> Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
+> imposed on PCI transactions, and thus, can improve performance.
+> 
+> Until now, relaxed ordering could be set only by user space applications
+> for user MRs. The following patch series enables relaxed ordering for the
+> kernel ULPs as well. Relaxed ordering is an optional capability, and as
+> such, it is ignored by vendors that don't support it.
+> 
+> The following test results show the performance improvement achieved
 
-Not sure if Haswell will be useful for such testing. It looks like many
-of those subscribe to 'quirk_relaxedordering_disable'.
+Did you test this patchset with CPU does not support relaxed ordering?
+
+We observed significantly performance degradation when run perftest with
+relaxed ordering enabled over old CPU.
+
+https://github.com/linux-rdma/perftest/issues/116
+
+thanks
+
