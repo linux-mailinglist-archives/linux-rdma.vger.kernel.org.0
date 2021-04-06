@@ -2,64 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D23B354E7C
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 10:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDDD354E82
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 10:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233185AbhDFIY2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Apr 2021 04:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47522 "EHLO
+        id S232791AbhDFIZt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Apr 2021 04:25:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232597AbhDFIY2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 04:24:28 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1129C06174A
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Apr 2021 01:24:20 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id n2so14269656ejy.7
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Apr 2021 01:24:20 -0700 (PDT)
+        with ESMTP id S233333AbhDFIZr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 04:25:47 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA768C06174A
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Apr 2021 01:25:39 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id u5so20549963ejn.8
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Apr 2021 01:25:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=clBGZIZe4sgCSo3K+9SEqmJRY4RiGFqW9mKysDwJGBc=;
-        b=hvyOHrzcUITGY0mGunygF9OIgxJDdgwYjc5Te5/josGQ++xEJZiWQMg0R4vVxlPho8
-         IUi7vuOJMkKxZmsQKjQmK+gIUUfXzeZlnDhdk9uT/yYKAUYuPGwACOqEvTpQFP+pXyjQ
-         xqXvZaXE19ATaYdwGAe8AS1ZFZhK3ThNtoCwNzvGB3xkG60V4CZSUvCBisp2QsqWl1wY
-         wWeoawL4BrbeVXxKabaTjxdf6Bx7lXur/HOjFdDWDdXgpDZMSLesBqypr2bLlkICnNTG
-         DKZ6R+MO5fuOfGF8KJjsAWO3uxQELYo0/UZ2J5xLSGMbkuJ4WNVmcwfAKjAkmwZzqJ6G
-         DBbQ==
+        bh=kPEC7Z0C1S3CtWI0bKM/SzVawZ4wVR7pzA9z9+9Y4iM=;
+        b=TAPlMWUf9wyJ1Ary1eORH0Gp1bNpfZlB8U6NIfCM1dosXsTjrczuqhzvn5ekHLSCTv
+         eb0r6QDRGZibtoVu/pGVkg8JeMGF0mWlEeE2IlL56/hEBjC4f2Nu8XQQvTtgvpfPOhb7
+         kj6SY05e/LDbasYYbIwUfqbqPoCmrQPMTleY6TE+JaKSY0QnergmXj6AlwwdzOxm3EbP
+         nhReUCb2yqFcYaNeIb6XAAQ+Ksp49y/FAqsWXrdBo54BJ67lPoMxXArOJOvrf4rJFq0F
+         +p/et9C9/nQLft64XKI1E1pGbyOqFK+dqneN1Cthz4Nxf3cpyE+FpUL/E38HkaPiqCIo
+         HuEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=clBGZIZe4sgCSo3K+9SEqmJRY4RiGFqW9mKysDwJGBc=;
-        b=hjV1brU1Qmqg+TzPm4u9dGSFAO/NeZvJ8hZ3/p+y2idYyyndsQ7IISievIOcuUHX0/
-         eSE+0kcG5teVeJxAQaamZ0DoWEx0jvICg5PQXg+4oYtPOQwWsZo7mHpItkoo8Oso7MBu
-         komxB6mKH3xWkvDUX8ldXmBTaCN1r4TklbjPeWpEpINPNdfQzUASjkdiQZRUNcZmkmun
-         wKs+CimXHRS9bgW9LixBc8s2plKd4gw1r5wJ7t2Jq0cith7uvfKuql7OixrQisjLHVr0
-         f1D2NJ9yc/GaJo6vtX5BF36mu+zZHUjFPhHQaH2lGDZBan5EYxg5NDc2q8+n1fomOacM
-         pcnQ==
-X-Gm-Message-State: AOAM531d5bp2gwLBO8uZCHGtLKYXRYeguOeTvKfAw8phZilzCTrdBRki
-        ummD/VkHePngq98K+AAmhNd0d2qRgIkKF9i4BtLEGw==
-X-Google-Smtp-Source: ABdhPJwJW+GpRsRr85JTaaKScPttTlGN41rA1wvE4LyxRJagmyi+IikNWNWlsORrIIz4BVyWuOQIs5liRCcnFW3DSY8=
-X-Received: by 2002:a17:907:969e:: with SMTP id hd30mr11204049ejc.5.1617697459545;
- Tue, 06 Apr 2021 01:24:19 -0700 (PDT)
+        bh=kPEC7Z0C1S3CtWI0bKM/SzVawZ4wVR7pzA9z9+9Y4iM=;
+        b=f1yLC1mP3ZYEPs8RnNMLb9mPmfgNBRALS4oVYEULhSsV81z3VzOBM0W+gm/wOE9Ji5
+         f8UrAbo5N1vM9NggvAgYzR8rCgM74MygLxvPgQXW6uHZ+I2KjQTLylftlsU5r465u/in
+         V/vZWOjX7qtQMjA2lC28GjY83IKfO8HiZyBNWJWOl/g8gEgC1Yq/Lw2MOjIlankkhjD5
+         K5ifdUivWJXJZwXgfDBtIfpenPme5B2iZinSPzh2z7G33Tb8iGN6ceOifAdDOZv+Tav7
+         i0ZnVatab2A3A7n3lPxV7gLx6q3gXNwD2gTTCHTSAjAwXnEZ+XN9KyShtHsgSyLhivam
+         ZdLQ==
+X-Gm-Message-State: AOAM533Sc/LenzrNn5Fx/gWWwsVni6yPOovu5gOJ8RFc+svUXi+VTY5S
+        W/bmDQTMHX9FjZJb9Qeo6JASUQEsYTUxluRrkrHEcw==
+X-Google-Smtp-Source: ABdhPJwmE+Rv+h+sBNkMZQXshRB8p3H+2i1cWVJipfBKRd4UYNIZmk0m303Nqzs9u17F5vVs0OJV3jwu7pw3X0xtRqQ=
+X-Received: by 2002:a17:906:190d:: with SMTP id a13mr10839476eje.330.1617697538688;
+ Tue, 06 Apr 2021 01:25:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210406070716.168541-1-gi-oh.kim@ionos.com> <20210406070716.168541-9-gi-oh.kim@ionos.com>
-In-Reply-To: <20210406070716.168541-9-gi-oh.kim@ionos.com>
+References: <20210406070716.168541-1-gi-oh.kim@ionos.com> <20210406070716.168541-16-gi-oh.kim@ionos.com>
+In-Reply-To: <20210406070716.168541-16-gi-oh.kim@ionos.com>
 From:   Gioh Kim <gi-oh.kim@ionos.com>
-Date:   Tue, 6 Apr 2021 10:23:43 +0200
-Message-ID: <CAJX1YtbZB8cXerBWtALNgs5QEezF2xzvgrThGqj0nTgkrJJ5iw@mail.gmail.com>
-Subject: Re: [PATCHv3 for-next 08/19] block/rnbd-clt: Replace {NO_WAIT,WAIT}
- with RTRS_PERMIT_{WAIT,NOWAIT}
+Date:   Tue, 6 Apr 2021 10:25:03 +0200
+Message-ID: <CAJX1YtZLHppqWbgOTneuhQm1jBsKpXqux-1+K5t_GoGZ-SDAJw@mail.gmail.com>
+Subject: Re: [PATCHv3 for-next 15/19] block/rnbd-srv: Remove unused arguments
+ of rnbd_srv_rdma_ev
 To:     linux-block@vger.kernel.org
 Cc:     Jens Axboe <axboe@kernel.dk>, hch@infradead.org, sagi@grimberg.me,
         bvanassche@acm.org, Haris Iqbal <haris.iqbal@ionos.com>,
         Jinpu Wang <jinpu.wang@ionos.com>,
         Gioh Kim <gi-oh.kim@cloud.ionos.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Leon Romanovsky <leonro@nvidia.com>,
         linux-rdma@vger.kernel.org,
-        Guoqing Jiang <guoqing.jiang@ionos.com>,
+        Aleksei Marov <aleksei.marov@ionos.com>,
         Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
@@ -70,17 +70,14 @@ On Tue, Apr 6, 2021 at 9:07 AM Gioh Kim <gi-oh.kim@ionos.com> wrote:
 >
 > From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 >
-> They are defined with the same value and similar meaning, let's remove
-> one of them, then we can remove {WAIT,NOWAIT}.
+> struct rtrs_srv is not used when handling rnbd_srv_rdma_ev messages, so
+> cleaned up
+> rdma_ev function pointer in rtrs_srv_ops also is changed.
 >
-> Also change the type of 'wait' from 'int' to 'enum wait_type' to make
-> it clear.
->
-> Cc: Jason Gunthorpe <jgg@mellanox.com>
+> Cc: Jason Gunthorpe <jgg@nvidia.com>
 > Cc: Leon Romanovsky <leonro@nvidia.com>
 > Cc: linux-rdma@vger.kernel.org
-> Signed-off-by: Guoqing Jiang <guoqing.jiang@ionos.com>
-> Reviewed-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-> Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+> Signed-off-by: Aleksei Marov <aleksei.marov@ionos.com>
 > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+> Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
 + Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
