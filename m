@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D792B355515
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF83355513
 	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 15:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344451AbhDFN2G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Apr 2021 09:28:06 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15999 "EHLO
+        id S233119AbhDFN2F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Apr 2021 09:28:05 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15563 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344453AbhDFN2G (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 09:28:06 -0400
+        with ESMTP id S1344440AbhDFN2E (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 09:28:04 -0400
 Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FF7Yd21k9zPnpX;
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FF7Yd2XYSzPnrr;
         Tue,  6 Apr 2021 21:25:09 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
@@ -23,9 +23,9 @@ CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>, Wei Xu <xuwei5@hisilicon.com>,
         Shengming Shu <shushengming1@huawei.com>,
         Weihang Li <liweihang@huawei.com>
-Subject: [PATCH v2 for-next 3/6] RDMA/hns: Reserve the resource for the VFs
-Date:   Tue, 6 Apr 2021 21:25:11 +0800
-Message-ID: <1617715514-29039-4-git-send-email-liweihang@huawei.com>
+Subject: [PATCH v2 for-next 4/6] RDMA/hns: Set parameters of all the functions belong to a PF
+Date:   Tue, 6 Apr 2021 21:25:12 +0800
+Message-ID: <1617715514-29039-5-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1617715514-29039-1-git-send-email-liweihang@huawei.com>
 References: <1617715514-29039-1-git-send-email-liweihang@huawei.com>
@@ -39,170 +39,59 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Wei Xu <xuwei5@hisilicon.com>
 
-Query the resource including EQC/SMAC/SGID from the firmware in the PF
-and distribute fairly among all the functions belong to the PF.
+Switch parameters of all functions belong to a PF should be set including
+VFs.
 
 Signed-off-by: Wei Xu <xuwei5@hisilicon.com>
 Signed-off-by: Shengming Shu <shushengming1@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_device.h |  3 ++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 83 ++++++++++++++++++++---------
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  2 -
- 3 files changed, 60 insertions(+), 28 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 3a5378e..37d6f01 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -809,6 +809,9 @@ struct hns_roce_caps {
- 	u32		cqc_bt_num;
- 	u32		cqc_timer_bt_num;
- 	u32		mpt_bt_num;
-+	u32		eqc_bt_num;
-+	u32		smac_bt_num;
-+	u32		sgid_bt_num;
- 	u32		sccc_bt_num;
- 	u32		gmv_bt_num;
- 	u32		qpc_ba_pg_sz;
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 5c0d341..4cc08aa 100644
+index 4cc08aa..860e74b 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1647,8 +1647,10 @@ static int hns_roce_query_pf_resource(struct hns_roce_dev *hr_dev)
- 	struct hns_roce_cmq_req *r_b = (struct hns_roce_cmq_req *)desc[1].data;
- 	enum hns_roce_opcode_type opcode = HNS_ROCE_OPC_QUERY_PF_RES;
- 	struct hns_roce_caps *caps = &hr_dev->caps;
-+	u32 func_num;
- 	int ret;
- 
-+	func_num = hr_dev->func_num ? hr_dev->func_num : 1;
- 	hns_roce_cmq_setup_basic_desc(&desc[0], opcode, true);
- 	desc[0].flag |= cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
- 	hns_roce_cmq_setup_basic_desc(&desc[1], opcode, true);
-@@ -1657,13 +1659,16 @@ static int hns_roce_query_pf_resource(struct hns_roce_dev *hr_dev)
- 	if (ret)
- 		return ret;
- 
--	caps->qpc_bt_num = hr_reg_read(r_a, FUNC_RES_A_QPC_BT_NUM);
--	caps->srqc_bt_num = hr_reg_read(r_a, FUNC_RES_A_SRQC_BT_NUM);
--	caps->cqc_bt_num = hr_reg_read(r_a, FUNC_RES_A_CQC_BT_NUM);
--	caps->mpt_bt_num = hr_reg_read(r_a, FUNC_RES_A_MPT_BT_NUM);
--	caps->sccc_bt_num = hr_reg_read(r_b, FUNC_RES_B_SCCC_BT_NUM);
--	caps->sl_num = hr_reg_read(r_b, FUNC_RES_B_QID_NUM);
--	caps->gmv_bt_num = hr_reg_read(r_b, FUNC_RES_B_GMV_BT_NUM);
-+	caps->qpc_bt_num = hr_reg_read(r_a, FUNC_RES_A_QPC_BT_NUM) / func_num;
-+	caps->srqc_bt_num = hr_reg_read(r_a, FUNC_RES_A_SRQC_BT_NUM) / func_num;
-+	caps->cqc_bt_num = hr_reg_read(r_a, FUNC_RES_A_CQC_BT_NUM) / func_num;
-+	caps->mpt_bt_num = hr_reg_read(r_a, FUNC_RES_A_MPT_BT_NUM) / func_num;
-+	caps->eqc_bt_num = hr_reg_read(r_a, FUNC_RES_A_EQC_BT_NUM) / func_num;
-+	caps->smac_bt_num = hr_reg_read(r_b, FUNC_RES_B_SMAC_NUM) / func_num;
-+	caps->sgid_bt_num = hr_reg_read(r_b, FUNC_RES_B_SGID_NUM) / func_num;
-+	caps->sccc_bt_num = hr_reg_read(r_b, FUNC_RES_B_SCCC_BT_NUM) / func_num;
-+	caps->sl_num = hr_reg_read(r_b, FUNC_RES_B_QID_NUM) / func_num;
-+	caps->gmv_bt_num = hr_reg_read(r_b, FUNC_RES_B_GMV_BT_NUM) / func_num;
- 
+@@ -1693,7 +1693,8 @@ static int hns_roce_query_pf_timer_resource(struct hns_roce_dev *hr_dev)
  	return 0;
  }
-@@ -1713,39 +1718,65 @@ static int hns_roce_set_vf_switch_param(struct hns_roce_dev *hr_dev, int vf_id)
+ 
+-static int hns_roce_set_vf_switch_param(struct hns_roce_dev *hr_dev, int vf_id)
++static int __hns_roce_set_vf_switch_param(struct hns_roce_dev *hr_dev,
++					  u32 vf_id)
+ {
+ 	struct hns_roce_cmq_desc desc;
+ 	struct hns_roce_vf_switch *swt;
+@@ -1718,6 +1719,19 @@ static int hns_roce_set_vf_switch_param(struct hns_roce_dev *hr_dev, int vf_id)
  	return hns_roce_cmq_send(hr_dev, &desc, 1);
  }
  
--static int hns_roce_alloc_vf_resource(struct hns_roce_dev *hr_dev)
-+static int __hns_roce_alloc_vf_resource(struct hns_roce_dev *hr_dev, int vf_id)
- {
- 	struct hns_roce_cmq_desc desc[2];
- 	struct hns_roce_cmq_req *r_a = (struct hns_roce_cmq_req *)desc[0].data;
- 	struct hns_roce_cmq_req *r_b = (struct hns_roce_cmq_req *)desc[1].data;
- 	enum hns_roce_opcode_type opcode = HNS_ROCE_OPC_ALLOC_VF_RES;
-+	struct hns_roce_caps *caps = &hr_dev->caps;
- 
- 	hns_roce_cmq_setup_basic_desc(&desc[0], opcode, false);
- 	desc[0].flag |= cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
- 	hns_roce_cmq_setup_basic_desc(&desc[1], opcode, false);
- 
--	hr_reg_write(r_a, FUNC_RES_A_QPC_BT_NUM, HNS_ROCE_VF_QPC_BT_NUM);
--	hr_reg_write(r_a, FUNC_RES_A_QPC_BT_IDX, 0);
--	hr_reg_write(r_a, FUNC_RES_A_SRQC_BT_NUM, HNS_ROCE_VF_SRQC_BT_NUM);
--	hr_reg_write(r_a, FUNC_RES_A_SRQC_BT_IDX, 0);
--	hr_reg_write(r_a, FUNC_RES_A_CQC_BT_NUM, HNS_ROCE_VF_CQC_BT_NUM);
--	hr_reg_write(r_a, FUNC_RES_A_CQC_BT_IDX, 0);
--	hr_reg_write(r_a, FUNC_RES_A_MPT_BT_NUM, HNS_ROCE_VF_MPT_BT_NUM);
--	hr_reg_write(r_a, FUNC_RES_A_MPT_BT_IDX, 0);
--	hr_reg_write(r_a, FUNC_RES_A_EQC_BT_NUM, HNS_ROCE_VF_EQC_NUM);
--	hr_reg_write(r_a, FUNC_RES_A_EQC_BT_IDX, 0);
--	hr_reg_write(r_b, FUNC_RES_B_SMAC_NUM, HNS_ROCE_VF_SMAC_NUM);
--	hr_reg_write(r_b, FUNC_RES_B_SMAC_IDX, 0);
--	hr_reg_write(r_b, FUNC_RES_B_SGID_NUM, HNS_ROCE_VF_SGID_NUM);
--	hr_reg_write(r_b, FUNC_RES_B_SGID_IDX, 0);
--	hr_reg_write(r_b, FUNC_RES_V_QID_NUM, HNS_ROCE_VF_SL_NUM);
--	hr_reg_write(r_b, FUNC_RES_B_QID_IDX, 0);
--	hr_reg_write(r_b, FUNC_RES_B_SCCC_BT_NUM, HNS_ROCE_VF_SCCC_BT_NUM);
--	hr_reg_write(r_b, FUNC_RES_B_SCCC_BT_IDX, 0);
-+	hr_reg_write(r_a, FUNC_RES_A_VF_ID, vf_id);
-+
-+	hr_reg_write(r_a, FUNC_RES_A_QPC_BT_NUM, caps->qpc_bt_num);
-+	hr_reg_write(r_a, FUNC_RES_A_QPC_BT_IDX, vf_id * caps->qpc_bt_num);
-+	hr_reg_write(r_a, FUNC_RES_A_SRQC_BT_NUM, caps->srqc_bt_num);
-+	hr_reg_write(r_a, FUNC_RES_A_SRQC_BT_IDX, vf_id * caps->srqc_bt_num);
-+	hr_reg_write(r_a, FUNC_RES_A_CQC_BT_NUM, caps->cqc_bt_num);
-+	hr_reg_write(r_a, FUNC_RES_A_CQC_BT_IDX, vf_id * caps->cqc_bt_num);
-+	hr_reg_write(r_a, FUNC_RES_A_MPT_BT_NUM, caps->mpt_bt_num);
-+	hr_reg_write(r_a, FUNC_RES_A_MPT_BT_IDX, vf_id * caps->mpt_bt_num);
-+	hr_reg_write(r_a, FUNC_RES_A_EQC_BT_NUM, caps->eqc_bt_num);
-+	hr_reg_write(r_a, FUNC_RES_A_EQC_BT_IDX, vf_id * caps->eqc_bt_num);
-+	hr_reg_write(r_b, FUNC_RES_V_QID_NUM, caps->sl_num);
-+	hr_reg_write(r_b, FUNC_RES_B_QID_IDX, vf_id * caps->sl_num);
-+	hr_reg_write(r_b, FUNC_RES_B_SCCC_BT_NUM, caps->sccc_bt_num);
-+	hr_reg_write(r_b, FUNC_RES_B_SCCC_BT_IDX, vf_id * caps->sccc_bt_num);
-+
-+	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09) {
-+		hr_reg_write(r_b, FUNC_RES_V_GMV_BT_NUM, caps->gmv_bt_num);
-+		hr_reg_write(r_b, FUNC_RES_B_GMV_BT_IDX,
-+			     vf_id * caps->gmv_bt_num);
-+	} else {
-+		hr_reg_write(r_b, FUNC_RES_B_SGID_NUM, caps->sgid_bt_num);
-+		hr_reg_write(r_b, FUNC_RES_B_SGID_IDX,
-+			     vf_id * caps->sgid_bt_num);
-+		hr_reg_write(r_b, FUNC_RES_B_SMAC_NUM, caps->smac_bt_num);
-+		hr_reg_write(r_b, FUNC_RES_B_SMAC_IDX,
-+			     vf_id * caps->smac_bt_num);
-+	}
- 
- 	return hns_roce_cmq_send(hr_dev, desc, 2);
- }
- 
-+static int hns_roce_alloc_vf_resource(struct hns_roce_dev *hr_dev)
++static int hns_roce_set_vf_switch_param(struct hns_roce_dev *hr_dev)
 +{
-+	int vf_id;
++	u32 vf_id;
 +	int ret;
 +
 +	for (vf_id = 0; vf_id < hr_dev->func_num; vf_id++) {
-+		ret = __hns_roce_alloc_vf_resource(hr_dev, vf_id);
++		ret = __hns_roce_set_vf_switch_param(hr_dev, vf_id);
 +		if (ret)
 +			return ret;
 +	}
-+
 +	return 0;
 +}
 +
- static int hns_roce_v2_set_bt(struct hns_roce_dev *hr_dev)
+ static int __hns_roce_alloc_vf_resource(struct hns_roce_dev *hr_dev, int vf_id)
  {
- 	struct hns_roce_cmq_desc desc;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index 535587f..efd33ae 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -40,9 +40,7 @@
- #define HNS_ROCE_VF_SRQC_BT_NUM			64
- #define HNS_ROCE_VF_CQC_BT_NUM			64
- #define HNS_ROCE_VF_MPT_BT_NUM			64
--#define HNS_ROCE_VF_EQC_NUM			64
- #define HNS_ROCE_VF_SMAC_NUM			32
--#define HNS_ROCE_VF_SGID_NUM			32
- #define HNS_ROCE_VF_SL_NUM			8
- #define HNS_ROCE_VF_GMV_BT_NUM			256
+ 	struct hns_roce_cmq_desc desc[2];
+@@ -2319,7 +2333,7 @@ static int hns_roce_v2_profile(struct hns_roce_dev *hr_dev)
+ 		return ret;
+ 	}
  
+-	ret = hns_roce_set_vf_switch_param(hr_dev, 0);
++	ret = hns_roce_set_vf_switch_param(hr_dev);
+ 	if (ret) {
+ 		dev_err(hr_dev->dev,
+ 			"failed to set function switch param, ret = %d.\n",
 -- 
 2.8.1
 
