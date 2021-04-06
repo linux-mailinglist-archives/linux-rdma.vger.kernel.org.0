@@ -2,218 +2,210 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3BE354DB2
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 09:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1442E354E17
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 09:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244220AbhDFHT5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Apr 2021 03:19:57 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4018 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S244223AbhDFHT4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 03:19:56 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13674A8s105105
-        for <linux-rdma@vger.kernel.org>; Tue, 6 Apr 2021 03:19:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : from : to
- : cc : date : mime-version : references : content-transfer-encoding :
- content-type : message-id : subject; s=pp1;
- bh=v7nKUkl58WVMlKA+Qf6vqYDS78QHwm/ZlF8BqPGiIF8=;
- b=iHYrjbXFU6w6Tvg0uyyPFeYmjoKWRRluXtVUZeP7tkV6mqZRYrm9W2mthL9A1KYq/mAE
- YJLbyopyLLPHGSthanNvAWr8zFTLC4wz1X2MPKrPtT0NcacsuuWFtlqzcuZ6eeVaTEs3
- L5Wotu9kK8Cn2QpBhsOWT8t9cEVm1D3JMI6HUzsScHuVqh/5RmQ3B+i9jD2M+jtoN2Ko
- kmfLXlAt3++Pf8niWN0pJJLUXj1CPOO9zGl+qEhsNiONGzQueJeG1tEQ8f1exUvS0pYR
- Ey8xmgGURQUSX7DqMuSBAgnjow+DY0QFkNM0yEPsBRaIgttl3condfKenQGYRZFF3KMt QQ== 
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.109])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37q5tyjn46-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Apr 2021 03:19:48 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Tue, 6 Apr 2021 07:19:46 -0000
-Received: from us1b3-smtp04.a3dr.sjc01.isc4sb.com (10.122.203.161)
-        by smtp.notes.na.collabserv.com (10.122.47.48) with smtp.notes.na.collabserv.com ESMTP;
-        Tue, 6 Apr 2021 07:19:44 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp04.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2021040607194407-116620 ;
-          Tue, 6 Apr 2021 07:19:44 +0000 
-In-Reply-To: <76827202.1204697.1617243535445.JavaMail.zimbra@redhat.com>
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Yi Zhang" <yi.zhang@redhat.com>
-Cc:     "linux-rdma" <linux-rdma@vger.kernel.org>,
-        "linux-nvme" <linux-nvme@lists.infradead.org>,
-        "Bart Van Assche" <bvanassche@acm.org>
-Date:   Tue, 6 Apr 2021 07:19:44 +0000
+        id S239966AbhDFHmP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Apr 2021 03:42:15 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:37458 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244373AbhDFHls (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 03:41:48 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1367dCOC068515;
+        Tue, 6 Apr 2021 07:41:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=jnPPkYnLqdWSiJN7DHao0j/qyxw18ZlMz6KTpCPY/Bs=;
+ b=mcpbgVVb4mKFZ1IPS74wwioB7Z8RVjP6+Q3siOKLn3G83wXom43zZiKmDD+O0fEfzQxf
+ 7pG8mVFzdP3vwyOtyb1NcWuVeHPUW8mI0c12gXLysQVZ4iMeqnXB8Z/V061QTawXty2W
+ JpHXYDb1E+R4vIBVYiW8/zbUwKYh0C7Q4mGbSP3gdILROGqz49EadgEiAKkUgGRcdHj0
+ KJU8B4MB+4KMi7KR7p9k5buvY3uXppb6pUjsDNTZFtaLg2kqkZaWN006Uqha30AL5IGr
+ AHRGkqi7og+r5XZ5bn+klOkdMek36AqVMsoPUhWVBXfmqEB7c8D/zMznNn/l5TzqwtE6 xw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 37q38mmc2x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Apr 2021 07:41:37 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1367fFuK178428;
+        Tue, 6 Apr 2021 07:41:37 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2170.outbound.protection.outlook.com [104.47.56.170])
+        by aserp3020.oracle.com with ESMTP id 37q2px6g5v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Apr 2021 07:41:37 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A56QeVdVrNoWv9JxM/Pv0yI4wf2sgKH2H+c6ZB4ZyBt7nElFggN9yTEELSJ8u1HI8cJzFGQdsFpR42undCDJ5ln6u+n3OZ/1UutfGoJL8iZ6nRFxbGi07sKND33ku+eF5Rx717BrvNxKHqbtK0p2sb46adHlfZfhNUQcZ26pRhIArbovzxKLLQPnAtG6Jc6qY4mDRKFeuYd4hOriiWHMq7MWhdVqJm+IJs+SKqJppaKgth5p5wUWh1ZyrqeKijoxB3rW0i99IXbSm990ijuH3CbKw8vodapWEM9k3YDaj24YGDpzsyr8ZiVN6H2CdCBIF+k9FLNfdwioM+YIL7IAtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jnPPkYnLqdWSiJN7DHao0j/qyxw18ZlMz6KTpCPY/Bs=;
+ b=aczX800lATEMAjCYn7a1hhtnaOXqnAmttKVwnsjxUJD6JMriiKgmhHUEJn2h9J6wlchD8MgMWPzAbg6IZKKidlNNpQ/vGrvbWKDv1F36fHYRtdmhb1I06tQl+arXIhsUSP1gMYHwxz2Ejr4jAY/h8mkkPkGQFBdJOvEIbSxWk8Kq0RJJ+zN89/HkoeMhgRstlxGc9vo8jhW6VI1mR0OgAkBqpyj3wX+m1+TrIOtpKo+wUMwhO09+wjb8o/mG+E5ks54we8MGIlUHvW5q0G/P3Cewigguu/eFiuX1NT1LTnzFV9PexOstG1F6o1ukSls4Pr0AQ7sqL6J8oYNZH/qxtA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jnPPkYnLqdWSiJN7DHao0j/qyxw18ZlMz6KTpCPY/Bs=;
+ b=cq3tNMSCMiVUYNWemNnYHtosU99pDmYQaN4N94MQxKTbZXYEFATq1E0W4kvRuGgWmpFk3Kc0ULxudwgn2qlVkBBGyNa+U+gl91Eu3eY6LpFEJEQBZt7oQqFW0e5jcSIjbj8zWO9a8q+b3UAf0xH+fvcvnlNF4m9UkoMqF2qmVeo=
+Received: from CY4PR10MB1989.namprd10.prod.outlook.com (2603:10b6:903:11a::12)
+ by CY4PR10MB1543.namprd10.prod.outlook.com (2603:10b6:903:2e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Tue, 6 Apr
+ 2021 07:41:35 +0000
+Received: from CY4PR10MB1989.namprd10.prod.outlook.com
+ ([fe80::ad28:97d2:76cf:3fa5]) by CY4PR10MB1989.namprd10.prod.outlook.com
+ ([fe80::ad28:97d2:76cf:3fa5%11]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
+ 07:41:35 +0000
+From:   Haakon Bugge <haakon.bugge@oracle.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Doug Ledford <dledford@redhat.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH for-rc] RDMA/core: Fix corrupted SL on passive side
+Thread-Topic: [PATCH for-rc] RDMA/core: Fix corrupted SL on passive side
+Thread-Index: AQHXHyBjcp8TyH1SzUWnxbuZ1f1Dr6qR/BUAgAE7LgCADJsVgIAHX+6A
+Date:   Tue, 6 Apr 2021 07:41:35 +0000
+Message-ID: <3BB6C757-3DDB-41B8-96D0-88957E6F1DC0@oracle.com>
+References: <1616420132-31005-1-git-send-email-haakon.bugge@oracle.com>
+ <20210323194608.GO2356281@nvidia.com>
+ <BC10B8FD-30F4-44B4-957D-4A4F6A385BF9@oracle.com>
+ <20210401150423.GH1463678@nvidia.com>
+In-Reply-To: <20210401150423.GH1463678@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.60.0.2.21)
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=oracle.com;
+x-originating-ip: [51.175.204.144]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5c30a4dd-52ae-47c9-0f8b-08d8f8cf67b3
+x-ms-traffictypediagnostic: CY4PR10MB1543:
+x-microsoft-antispam-prvs: <CY4PR10MB1543F8A6840923F8EE7351B1FD769@CY4PR10MB1543.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: +dqWA7yxnoTldtJsMHwRxXOvxj+rEQ0/lx2ion1orhyoXzI5q9BNd0GcKvdPjTdlzBEBuvvxEvokdvxbzjfFIvFYqpqZL61CIqLN3Pbot7pi9Ks6N0/B1XxWU9UsW3dxW8vp+5xlf3s7bU1ohGYFvzAn7CK9t4BHlGxYMiRArbuaaF63p03Q9SDMBG9Eq8kyxhINSgZNIjWSuq0sdJ1LX136y9meTeakCM+C7VyCGOt736shaRDdGrmR4FmoiZiyOspNuB7/SXud8zrOHruBYn8PCAM/tjMfTn55UR3Ytg3fQfIWmgvpQuWQw1L4/8hzjhSC2wwwIoz8l9zSF8bGhIvy9CfF3REncDL1iqThHKBHS+zep9bfFpZDAr9ufEmbhpSyaX4Wj3jKZaVMJ4UR1reUNp75GXKw9DpjbQx9VQH0LdHEbZ82igft4uAA1nJiZUqZ+N0owg2s6hVYtS/8GzWvtfA6yjgvhc+iXSccYXwJ/cqOGQl8924tUfHGMbK3apjOe392tTCxtS9CRAUor/Kbr8jM/QWLHI9SVZrSsg8kkQLx5Xrb7XaKEJHepAl0rPdbgqiZDaiwrZzeDL1neAdBU4vsksyctoJGhQuMJeebwBj2M8lde0HPW7yo9TGL6I8PRtXPL552F9lk534lylC/6zHg/UytvTkSmiJ0ikayp8O1SSikE/Fq31B7rFzv
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR10MB1989.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(396003)(346002)(376002)(366004)(4326008)(2906002)(478600001)(26005)(6506007)(53546011)(91956017)(33656002)(6486002)(5660300002)(36756003)(71200400001)(66946007)(66556008)(64756008)(66446008)(66476007)(186003)(76116006)(83380400001)(86362001)(8936002)(2616005)(8676002)(66574015)(38100700001)(44832011)(6512007)(6916009)(316002)(54906003)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?YlhGb1J6TVhQQVYvS1ZMZlBiUWEwRnE0TjRKM3NXQm0vdUIvN2IrZG82ZEho?=
+ =?utf-8?B?OUdvMnlYTHQ5ZWM1TXlmTWZScHBLWnlucEE4bWVqU3U1bEJjNlZKQi9Gb2hR?=
+ =?utf-8?B?bjVZbEphZmVXNzdoK0tmTlgvNGdlUlRlZnM5aHV4Tk5GZkRvdzU3WThLRGdr?=
+ =?utf-8?B?Uk03VVlJdU42bU52cCtzOEZnQ1pmZURRdGsvVHNpc0UxUE1HakF3N0l0TCtQ?=
+ =?utf-8?B?REZyQWwyNW5JTFBsYjlNTHdDaVpMYVdYRUo5Uk9Kdk5zNTNQZFVOVzNEUFY2?=
+ =?utf-8?B?WEJFN1hXMWNuQWY2YUtWV3JFdW9XeGhVT1lBekpINHpaNG9WdkczOWNVZk43?=
+ =?utf-8?B?UzBDeEJLU2RjcGtyZmRvQWtaam9ZK2I0a0tyck1nQTh3SjVzRlEzN1ZmOWZl?=
+ =?utf-8?B?QUdpM3F2SnRYZDRlMHVwalZGQ3V1L0VNVDNpeVZJakhSN3ZaMlFpbjFvLytw?=
+ =?utf-8?B?eWJqdVRvaG52Kzd6dlZvVjJjVmNlem1VZFMzOXlwS2owUHRETjYxU3ZMUTl0?=
+ =?utf-8?B?dFhJZnQ3bXFQWnA0dnU0bGQ2Q0daNmlSTVRSSWlZVkJsbkN3eHk4U2xNajVK?=
+ =?utf-8?B?Rk1HSFJvNW5uaHhXOW8zTnhXQ1hoaUhIN09GamhFYlFxYm1wMjQwWkl0ZHRD?=
+ =?utf-8?B?TnpkZWdndjdrU2VsQnJFY1ViVks3MHFVbjFQUHhqOE4zOTMrcVNFRWphb2lN?=
+ =?utf-8?B?b3hJL0d5SzRmWW01dk95a0lOVlVlcDcrN1BkSGhuUmw2R1VEMzZLR0M5NUZp?=
+ =?utf-8?B?RjhBWDU1Y3BnZ0VpV05sTUVtaUt2amhEN3hITjM2dEFhbnlwdFlsQlArWU50?=
+ =?utf-8?B?MDVtc3BYWkZTREd5c2RScDA3dzRvRG4yRHJ1K1dpWHpsRUg3bFVtOC9aazRX?=
+ =?utf-8?B?cDVxaUJuemp5MnJJOGR6dUZRT3RqQjhJWFFERHNlcFI2WFZIMTUvQWJjakpB?=
+ =?utf-8?B?YkRBRE1uOWVKRTg1VU9iaWR2a3NNWWJrWTc1cjMyZmNFbDJkVjJub2dYRTU2?=
+ =?utf-8?B?ZTc2RzVFOStWMkNIcUpXWFlFU3ZDbWpJa0l3alZwRVV5Y1J3VVh2aUlBUkk0?=
+ =?utf-8?B?dFpBeWFoayswR04zb01lWVM5b0NZUUVxc1FOcXZUMjFvSTRxeGdyZWhOSGNk?=
+ =?utf-8?B?WnUySzBQU05jeWc4QzBYbHRPbXZjVGp6dm4yeDFVS2RuMkNrdGROTkUwUklP?=
+ =?utf-8?B?ZUZQcUp2TDFmazhORFliejRXV0VBK3RBOGtXZHphbXFKTjFYVGxpOERxZW9z?=
+ =?utf-8?B?alI4SklCd2dsQm1VMWprVUFjQklqbGFwc1hBcTdzTjdEcWxXL1B3ZXljeWEv?=
+ =?utf-8?B?VlZ4YVZsL0k4cHdNWHVlSnBVTXF0RlkwZXpuT0llVkxNczJZQ0hPN2JqNGFP?=
+ =?utf-8?B?UFNBbkRsMy9SYVVGZDdJZS9wdWpWNE9waDlUY2NKeTB6MS9kY1Z3ckM4eTBv?=
+ =?utf-8?B?WERZTm5tQTE2OVoycHVFc1ZINXA5RUNFclV6UzVyZzJjbWdML0VsVzlQUFRD?=
+ =?utf-8?B?UmNIQyt4NlFZTVQ2Q1JiWis1czBrWk8zUWhDV2hQL0hrOXFZN2p4Q2NaWmpX?=
+ =?utf-8?B?a2V5ZlB3cUVaYzNtRlBESjBRNDhBL093UHdQc1QvVkNRTUd0Y3ZMVDFtaTR4?=
+ =?utf-8?B?VlhNQTc4QTJvV1FkZXpyRS9xSlRKMmFVajF1Y2IwTzBBNVNkRDhNZENya1Jh?=
+ =?utf-8?B?b0J3dTNqZ09UMGgwb3JZWWVjTGZNeUppalN4TDN3OGlkSmxGZWd0RndrbW1L?=
+ =?utf-8?B?eHA0ZjJjQldhelVFcHBzT3JtcSsyalR0ZGg0dmtnRE1uTFpzaStMd0owSTRk?=
+ =?utf-8?B?dlR4ZzNQeFBlZ25Kbjh3Zz09?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6CF38ED5DC922446917289B49E619F4F@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <76827202.1204697.1617243535445.JavaMail.zimbra@redhat.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
-X-KeepSent: 8D491BC4:3759DF6F-002586AF:002836E5;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 44351
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 21040607-1429-0000-0000-000003A6853E
-X-IBM-SpamModules-Scores: BY=0.019777; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0; ST=0; TS=0; UL=0; ISC=; MB=0.000435
-X-IBM-SpamModules-Versions: BY=3.00014940; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000296; SDB=6.01526390; UDB=6.00825164; IPR=6.01308223;
- MB=3.00036522; MTD=3.00000008; XFM=3.00000015; UTC=2021-04-06 07:19:45
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2021-03-22 13:55:12 - 6.00012377
-x-cbparentid: 21040607-1430-0000-0000-00003A128783
-Message-Id: <OF8D491BC4.3759DF6F-ON002586AF.002836E5-002586AF.00284286@notes.na.collabserv.com>
-X-Proofpoint-ORIG-GUID: MZvgYpEzuBl_x51mP5xBI2PTeFctMvry
-X-Proofpoint-GUID: MZvgYpEzuBl_x51mP5xBI2PTeFctMvry
-Subject: Re:  [bug report]kernel NULL pointer at siw_tx_hdt+0x128/0x978 [siw] with
- blktests nvmeof-mp/002
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-06_01:2021-04-01,2021-04-06 signatures=0
-X-Proofpoint-Spam-Reason: orgsafe
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR10MB1989.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c30a4dd-52ae-47c9-0f8b-08d8f8cf67b3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Apr 2021 07:41:35.3312
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rVmU6ZZb5giScfWAUl0cwfqh2BNHik9Kaug9Xfg4T7WHqA6//CuvbUc+odtIQ6w/twbEQGcB3d1LZ4TjeNgv8g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1543
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9945 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ adultscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104030000 definitions=main-2104060051
+X-Proofpoint-GUID: JhrV0FOKN-I6BnBKAja036XQMQSnOq97
+X-Proofpoint-ORIG-GUID: JhrV0FOKN-I6BnBKAja036XQMQSnOq97
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9945 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 suspectscore=0
+ impostorscore=0 malwarescore=0 priorityscore=1501 spamscore=0 mlxscore=0
+ bulkscore=0 lowpriorityscore=0 adultscore=0 phishscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104030000
+ definitions=main-2104060051
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Yi Zhang" <yi.zhang@redhat.com> wrote: -----
-
->To: linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org
->From: "Yi Zhang" <yi.zhang@redhat.com>
->Date: 04/01/2021 04:20AM
->Cc: "Bart Van Assche" <bvanassche@acm.org>
->Subject: [EXTERNAL] [bug report]kernel NULL pointer at
->siw=5Ftx=5Fhdt+0x128/0x978 [siw] with blktests nvmeof-mp/002
->
->Hello
->
->I reproduced this issue with blktests nvmeof-mp/002 on 5.12.0-rc5
->aarch64, pls help check it and let me know if you need any testing
->for it, thanks.=20
->
->[18381.922840] run blktests nvmeof-mp/002 at 2021-03-31 20:42:40
->[18382.123208] null=5Fblk: module loaded
->[18382.345093] SoftiWARP attached
->[18382.507549] nvmet: adding nsid 1 to subsystem nvme-test
->[18382.536043] iwpm=5Fregister=5Fpid: Unable to send a nlmsg (client =3D 2)
->[18382.542985] nvmet=5Frdma: enabling port 1 (10.19.241.109:7777)
->[18382.703578] nvmet: creating controller 1 for subsystem nvme-test
->for NQN
->nqn.2014-08.org.nvmexpress:uuid:a6ba6b82-f083-4df3-9ee2-cd3f635a8418.
->[18382.717201] nvme nvme0: creating 32 I/O queues.
->[18382.751581] nvme nvme0: mapped 32/0/0 default/read/poll queues.
->[18382.768935] nvme nvme0: new ctrl: NQN "nvme-test", addr
->10.19.241.109:7777
->[18382.811275] device-mapper: multipath service-time: version 0.3.0
->loaded
->[18383.611572] EXT4-fs (dm-3): mounted filesystem without journal.
->Opts: (null). Quota mode: none.
->[18383.620343] ext4 filesystem being mounted at
->/root/blktests/results/tmpdir.nvmeof-mp.002.pnM/mnt0 supports
->timestamps until 2038 (0x7fffffff)
->[18411.156005] Unable to handle kernel NULL pointer dereference at
->virtual address 0000000000000030
->[18411.156046] Unable to handle kernel NULL pointer dereference at
->virtual address 0000000000000030
->[18411.164790] Mem abort info:
->[18411.173564] Mem abort info:
->[18411.173565]   ESR =3D 0x96000006
->[18411.173567]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
->[18411.173569]   SET =3D 0, FnV =3D 0
->[18411.176349]   ESR =3D 0x96000006
->[18411.179129]   EA =3D 0, S1PTW =3D 0
->[18411.182170]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
->[18411.187473] Data abort info:
->[18411.190513]   SET =3D 0, FnV =3D 0
->[18411.193558]   ISV =3D 0, ISS =3D 0x00000006
->[18411.196685]   EA =3D 0, S1PTW =3D 0
->[18411.201982]   CM =3D 0, WnR =3D 0
->[18411.204853] Data abort info:
->[18411.207893] user pgtable: 64k pages, 42-bit VAs,
->pgdp=3D00000009c33b0000
->[18411.211714]   ISV =3D 0, ISS =3D 0x00000006
->[18411.214846] [0000000000000030] pgd=3D0000000000000000
->[18411.217800]   CM =3D 0, WnR =3D 0
->[18411.220666] , p4d=3D0000000000000000
->[18411.227184] user pgtable: 64k pages, 42-bit VAs,
->pgdp=3D00000009c33b0000
->[18411.231005] , pud=3D0000000000000000
->[18411.235873] [0000000000000030] pgd=3D0000000000000000
->[18411.238826] , pmd=3D0000000000000000
->[18411.242214] , p4d=3D0000000000000000
->[18411.248733]=20
->[18411.252120] , pud=3D0000000000000000
->[18411.256990] Internal error: Oops: 96000006 [#1] SMP
->[18411.260376] , pmd=3D0000000000000000
->[18411.263764] Modules linked in: ext4 mbcache jbd2 dm=5Fservice=5Ftime
->nvme=5Frdma
->[18411.265247]=20
->[18411.268634]  nvme=5Ffabrics nvme nvmet=5Frdma nvmet siw null=5Fblk
->dm=5Fmultipath nvme=5Fcore rfkill rpcrdma sunrpc rdma=5Fucm ib=5Fsrpt
->ib=5Fisert iscsi=5Ftarget=5Fmod ib=5Fumad target=5Fcore=5Fmod vfat fat ib=
-=5Fiser
->ib=5Fipoib libiscsi scsi=5Ftransport=5Fiscsi rdma=5Fcm iw=5Fcm ib=5Fcm mlx=
-4=5Fib
->ib=5Fuverbs ib=5Fcore acpi=5Fipmi crct10dif=5Fce ghash=5Fce ipmi=5Fssif sh=
-a1=5Fce
->sbsa=5Fgwdt ipmi=5Fdevintf ipmi=5Fmsghandler xgene=5Fhwmon ip=5Ftables xfs
->libcrc32c mlx4=5Fen sr=5Fmod cdrom sg ast drm=5Fvram=5Fhelper drm=5Fkms=5F=
-helper
->syscopyarea sysfillrect sysimgblt fb=5Fsys=5Ffops drm=5Fttm=5Fhelper ttm d=
-rm
->mlx4=5Fcore igb sha2=5Fce sha256=5Farm64 i2c=5Fdesignware=5Fplatform
->ahci=5Fplatform i2c=5Falgo=5Fbit i2c=5Fdesignware=5Fcore gpio=5Fdwapb
->libahci=5Fplatform i2c=5Fxgene=5Fslimpro uas usb=5Fstorage dm=5Fmirror
->dm=5Fregion=5Fhash dm=5Flog dm=5Fmod [last unloaded: nvme=5Fcore]
->[18411.351792] CPU: 13 PID: 19581 Comm: siw=5Ftx/13 Not tainted
->5.12.0-rc5 #1
->[18411.368293] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=3D--)
->[18411.374287] pc : siw=5Ftx=5Fhdt+0x128/0x978 [siw]
->[18411.378641] lr : siw=5Fqp=5Fsq=5Fprocess+0xc4/0xa80 [siw]
->[18411.383512] sp : fffffe001acafa90
->[18411.386813] x29: fffffe001acafa90 x28: fffffc083f9a4238=20
->[18411.392114] x27: 0000000000000003 x26: 000000000000ef70=20
->[18411.397414] x25: 0000000000000003 x24: 0000000000000000=20
->[18411.402714] x23: 0000000000000000 x22: 0000000000000000=20
->[18411.408014] x21: fffffc083f9a4270 x20: fffffc083f9a41c8=20
->[18411.413313] x19: 0000000000000000 x18: 0000000000000000=20
->[18411.418612] x17: 0000000000000000 x16: 0000000000000000=20
->[18411.423912] x15: 0000000000000000 x14: 0000000000000000=20
->[18411.429211] x13: b6f8a80000001000 x12: fffffc093fe37000=20
->[18411.434511] x11: b6f8a80000000040 x10: 0000000000000001=20
->[18411.439810] x9 : 0000000000000000 x8 : 0000000000000000=20
->[18411.445110] x7 : 0000000000000014 x6 : 000000000000ffc8=20
->[18411.450409] x5 : fffffc083f9a4238 x4 : fffffe001acafc40=20
->[18411.455709] x3 : 0000000000000020 x2 : fffffc083f9a4238=20
->[18411.461009] x1 : fffffc083f9a4248 x0 : 0000000000000000=20
->[18411.466309] Call trace:
->[18411.468743]  siw=5Ftx=5Fhdt+0x128/0x978 [siw]
->[18411.472746]  siw=5Fqp=5Fsq=5Fprocess+0xc4/0xa80 [siw]
->[18411.477270]  siw=5Fsq=5Fresume+0x48/0x168 [siw]
->[18411.481446]  siw=5Frun=5Fsq+0xc8/0x290 [siw]
->[18411.485362]  kthread+0x114/0x118
->[18411.488580]  ret=5Ffrom=5Ffork+0x10/0x18
->[18411.492146] Code: 370800c1 f9403fe1 8b214c41 f9403c37 (f9401ae1)=20
->[18411.498237] ---[ end trace 67f55110d28671a3 ]---
->[18411.502842] Kernel panic - not syncing: Oops: Fatal exception
->[18411.508580] SMP: stopping secondary CPUs
->[18412.537491] SMP: failed to stop secondary CPUs 11,13
->[18412.542445] Kernel Offset: disabled
->[18412.545920] CPU features: 0x00240002,61802008
->[18412.550264] Memory Limit: none
->[18412.553311] ---[ end Kernel panic - not syncing: Oops: Fatal
->exception ]---
->
->
->Best Regards,
->  Yi Zhang
->
-Looks like an siw issue. I will dig into it. Sorry for the late reply.
-
-Many thanks,
-Bernard.
-
+DQoNCj4gT24gMSBBcHIgMjAyMSwgYXQgMTc6MDQsIEphc29uIEd1bnRob3JwZSA8amdnQG52aWRp
+YS5jb20+IHdyb3RlOg0KPiANCj4gT24gV2VkLCBNYXIgMjQsIDIwMjEgYXQgMDI6MzQ6MTNQTSAr
+MDAwMCwgSMOla29uIEJ1Z2dlIHdyb3RlOg0KPj4gDQo+PiANCj4+PiBPbiAyMyBNYXIgMjAyMSwg
+YXQgMjA6NDYsIEphc29uIEd1bnRob3JwZSA8amdnQG52aWRpYS5jb20+IHdyb3RlOg0KPj4+IA0K
+Pj4+IE9uIE1vbiwgTWFyIDIyLCAyMDIxIGF0IDAyOjM1OjMyUE0gKzAxMDAsIEjDpWtvbiBCdWdn
+ZSB3cm90ZToNCj4+Pj4gT24gUm9DRSBzeXN0ZW1zLCBhIENNIFJFUSBjb250YWlucyBhIFByaW1h
+cnkgSG9wIExpbWl0ID4gMSBhbmQgUHJpbWFyeQ0KPj4+PiBTdWJuZXQgTG9jYWwgaXMgemVyby4N
+Cj4+Pj4gDQo+Pj4+IEluIGNtX3JlcV9oYW5kbGVyKCksIHRoZSBjbV9wcm9jZXNzX3JvdXRlZF9y
+ZXEoKSBmdW5jdGlvbiBpcw0KPj4+PiBjYWxsZWQuIFNpbmNlIHRoZSBQcmltYXJ5IFN1Ym5ldCBM
+b2NhbCB2YWx1ZSBpcyB6ZXJvIGluIHRoZSByZXF1ZXN0LA0KPj4+PiBhbmQgc2luY2UgdGhpcyBp
+cyBSb0NFIChQcmltYXJ5IExvY2FsIExJRCBpcyBwZXJtaXNzaXZlKSwgdGhlDQo+Pj4+IGZvbGxv
+d2luZyBzdGF0ZW1lbnQgd2lsbCBiZSBleGVjdXRlZDoNCj4+Pj4gDQo+Pj4+ICAgICBJQkFfU0VU
+KENNX1JFUV9QUklNQVJZX1NMLCByZXFfbXNnLCB3Yy0+c2wpOw0KPj4+PiANCj4+Pj4gVGhpcyBj
+b3JydXB0cyBTTCBpbiByZXFfbXNnIGlmIGl0IHdhcyBkaWZmZXJlbnQgZnJvbSB6ZXJvLiBJbiBv
+dGhlcg0KPj4+PiB3b3JkcywgYSByZXF1ZXN0IHRvIHNldHVwIGEgY29ubmVjdGlvbiB1c2luZyBh
+biBTTCAhPSB6ZXJvLCB3aWxsIG5vdA0KPj4+PiBiZSBob25vcmVkLCBhbmQgYSBjb25uZWN0aW9u
+IHVzaW5nIFNMIHplcm8gd2lsbCBiZSBjcmVhdGVkIGluc3RlYWQuDQo+Pj4+IA0KPj4+PiBGaXhl
+ZCBieSBub3QgY2FsbGluZyBjbV9wcm9jZXNzX3JvdXRlZF9yZXEoKSBvbiBSb0NFIHN5c3RlbXMu
+DQo+Pj4+IA0KPj4+PiBGaXhlczogMzk3MWM5ZjZkYmYyICgiSUIvY206IEFkZCBpbnRlcmltIHN1
+cHBvcnQgZm9yIHJvdXRlZCBwYXRocyIpDQo+Pj4+IFNpZ25lZC1vZmYtYnk6IEjDpWtvbiBCdWdn
+ZSA8aGFha29uLmJ1Z2dlQG9yYWNsZS5jb20+DQo+Pj4+IGRyaXZlcnMvaW5maW5pYmFuZC9jb3Jl
+L2NtLmMgfCAzICsrLQ0KPj4+PiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRl
+bGV0aW9uKC0pDQo+Pj4+IA0KPj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL2Nv
+cmUvY20uYyBiL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL2NtLmMNCj4+Pj4gaW5kZXggM2QxOTRi
+Yi4uNmFkYmFlYSAxMDA2NDQNCj4+Pj4gKysrIGIvZHJpdmVycy9pbmZpbmliYW5kL2NvcmUvY20u
+Yw0KPj4+PiBAQCAtMjEzOCw3ICsyMTM4LDggQEAgc3RhdGljIGludCBjbV9yZXFfaGFuZGxlcihz
+dHJ1Y3QgY21fd29yayAqd29yaykNCj4+Pj4gCQlnb3RvIGRlc3Ryb3k7DQo+Pj4+IAl9DQo+Pj4+
+IA0KPj4+PiAtCWNtX3Byb2Nlc3Nfcm91dGVkX3JlcShyZXFfbXNnLCB3b3JrLT5tYWRfcmVjdl93
+Yy0+d2MpOw0KPj4+PiArCWlmIChjbV9pZF9wcml2LT5hdi5haF9hdHRyLnR5cGUgIT0gUkRNQV9B
+SF9BVFRSX1RZUEVfUk9DRSkNCj4+Pj4gKwkJY21fcHJvY2Vzc19yb3V0ZWRfcmVxKHJlcV9tc2cs
+IHdvcmstPm1hZF9yZWN2X3djLT53Yyk7DQo+Pj4gDQo+Pj4gd2h5IHVzZSBhaF9hdHRyLnR5cGUg
+d2hlbiBhIGZldyBsaW5lcyBiZWxvdyB3ZSBoYXZlOg0KPj4+IA0KPj4+IAlpZiAoZ2lkX2F0dHIg
+JiYNCj4+PiAJICAgIHJkbWFfcHJvdG9jb2xfcm9jZSh3b3JrLT5wb3J0LT5jbV9kZXYtPmliX2Rl
+dmljZSwNCj4+PiAJCQkgICAgICAgd29yay0+cG9ydC0+cG9ydF9udW0pKSB7DQo+Pj4gDQo+Pj4g
+Pw0KPj4+IA0KPj4+IEkgc3VzcGVjdCB5b3UgY2FuIGp1c3QgbW92ZSB0aGlzIGludG8gdGhlIGVs
+c2U/DQo+PiANCj4+IEkgY2FuIGNvdW50ZXIgdGhhdCBieSBzYXlpbmcgYWhfYXR0ci50eXBlIGlz
+IHVzZWQgfjEwIGxpbmVzIGZ1cnRoZXINCj4+IGRvd24gaW4gdGhlIGNvbmRpdGlvbmFsIGNhbGwg
+dG8gc2FfcGF0aF9zZXRfZG1hYygpIDstKQ0KPiANCj4gSHVtLCBPSy4gUGxlYXNlIHNlbmQgYW4g
+YWRkaXRpb25hbCBwYXRjaCB0byB1bmlmeSBldmVyeXRoaW5nIGFyb3VuZA0KPiBhdi5haF9hdHRy
+LnR5cGUNCg0KV2lsbCBkby4NCg0KPj4+IAlpZiAoZ2lkX2F0dHIgJiYNCj4+PiAJICAgIHJkbWFf
+cHJvdG9jb2xfcm9jZSh3b3JrLT5wb3J0LT5jbV9kZXYtPmliX2RldmljZSwNCj4+PiAJCQkgICAg
+ICAgd29yay0+cG9ydC0+cG9ydF9udW0pKSB7DQo+PiANCj4+IEkgY2Fubm90IHJlYWxseSBzZWUg
+aG93IGdpZF9hdHRyIGNvdWxkIGJlIG51bGwuIElmDQo+PiBpYl9pbml0X2FoX2F0dHJfZnJvbV93
+YygpIHN1Y2NlZWRzLCBpdCBpcyBzZXQgYWZ0ZXIgdGhlIGNhbGwgdG8NCj4+IGNtX2luaXRfYXZf
+Zm9yX3Jlc3BvbnNlKCkgYWJvdmUuIE1heSBiZSB1c2luZyBhaF9hdHRyLnR5cGUgaW4gdGhpcw0K
+Pj4gdGVzdCBpbnN0ZWFkLCBmb3IgdW5pZm9ybWl0eSBhbmQgcmVhZGFiaWxpdHk/DQo+IA0KPiBU
+aGUgR1JIIGlzIG9wdGlvbmFsLCBpYl9pbml0X2FoX2F0dHJfZnJvbV93YygpIG9ubHkgc2V0cyBp
+dA0KPiBjb25kaXRpb25hbGx5Lg0KDQpUcnVlLiBCdXQgb25lIG9mIHRoZSBjb25kaXRpb25zIHRv
+IHNldCBzZ2lkX2F0dHIgaXMgcmRtYV9wcm90b2NvbF9yb2NlKCkuIEhlbmNlIHRoZSBmaXJzdCB0
+ZXJtIGluOg0KDQppZiAoZ2lkX2F0dHIgJiYgcmRtYV9wcm90b2NvbF9yb2NlKCkpDQoNCmlzIHN1
+cGVyZmx1b3VzLiBUaGlzIGJlY2F1c2UsIGl0IGNhbm5vdCBiZSBOVUxMIG9uIFJvQ0Ugc3lzdGVt
+cywgYmVjYXVzZSBpdCBpcyBkZXJlZmVyZW5jZWQgaW46DQoNCmNtX2luaXRfYXZfZm9yX3Jlc3Bv
+bnNlKCkNCiAgICBpYl9pbml0X2FoX2F0dHJfZnJvbV93YygpDQogICAgICAgIHJkbWFfbW92ZV9n
+cmhfc2dpZF9hdHRyKCkNCg0KDQpJJ2xsIHNlbmQgdGhlIHBhdGNoIHdpdGggdGhlIGdpZF9hdHRy
+IHRlcm0gYW5kIGxldCB5b3UgY2FuIGRlY2lkZS4NCg0KDQpUaHhzLCBIw6Vrb24NCg0KDQoNCg0K
+DQo+IA0KPiBBcHBsaWVkIHRvIGZvci1uZXh0DQo+IA0KPiBUaGFua3MsDQo+IEphc29uDQoNCg==
