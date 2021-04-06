@@ -2,82 +2,156 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C292035540B
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 14:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFD635540C
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 14:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239546AbhDFMgv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Apr 2021 08:36:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
+        id S1344119AbhDFMgw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Apr 2021 08:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbhDFMgu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 08:36:50 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A6DC06174A
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Apr 2021 05:36:43 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id hq27so21610263ejc.9
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Apr 2021 05:36:42 -0700 (PDT)
+        with ESMTP id S231180AbhDFMgw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 08:36:52 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275B9C06174A
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Apr 2021 05:36:44 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id b7so21698057ejv.1
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Apr 2021 05:36:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6adHqUt9emWHWrwApdCggGYZKb11bki6anbVfcLvftk=;
-        b=JD1Kw7MBkWdYO66HTZjntczU9PvcQY0Kxl3mYKc9BRTgRctceB3kjCwpRPE2LWJE4y
-         9mGlFK2Uony8aEnDFBOGUTuFCtB1WlPQiycd0x9Wgf3ynn5Oh6Z9F9NUavBFAWQHboiP
-         n1VPuMU1/hJirVt0l5XfXdrcqthTpNH/H9ryfYK9Grc+kokfrPQzg7NElamRb0xpTluQ
-         //2UMoB2+b+sQd+7yC/1+R6F0FOkPXabYCaR1nydQW/EONgiRkEiB4byC7pMxzvJ20m2
-         giiO4dl1nirD1Zq9U5jf0M6bYP5/pZYH52u5z7kQ/On5jA8qohNPv5uZyVDW9v/BhzZZ
-         /oCw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=npZjnSXchARg5Ho6L7Qbp5yUii68ZM1o+GIFeR/7Njg=;
+        b=J3nj6AOcgStmQeVX+IcFIl9mr6MaZE7rqyCYyZ25GRC3Gp6Es4VmCW/KBzrxOWiFGi
+         r0fl3Tmfpr8KdlV9aRYA6jqboVLyWYddbG++jV+iLlon6/QDFG24U5yWQwbrkWgo2slc
+         pDciSwTBPZ9GQt3G+aZslNJTJuhPGv+sHg2LWob5Sz4yF71Nt+TAsWnckJdSA00JQD5I
+         Pz403r6bPHZZRhlC+1oRDZpeGHt0g5Cdzq9zVlkP9gFegEX1Exmkdn4UXgjS10BOFD0l
+         KUUq4A1y5W/8D8K6j5q8UKHTdTt3dNfQEg+hk4YTAuea6UFdTG/CtJcrR4x43f0Hi1TX
+         pxJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6adHqUt9emWHWrwApdCggGYZKb11bki6anbVfcLvftk=;
-        b=bJVruhr7xj9UcAmJdD7Wiz7LVxsqCXY8TOf0LJMOSu/VKfUqRtAhc3eqUE7zREQbuF
-         keqJQs7Sx8rGJRcK+3chmdnNLX45ISJtCg3CfIXtbu7FpVVoH5Hq0T8hT0U4HQmj2CfK
-         mwK1I32YA7xRnla3YI8/gJS3LsKsT+X0Y22Hv9AXmPuT1foYZo9qJ1xE02SwguYzcDhn
-         39kqNLT8moP7pJwB+N1g9OkHRVh60vHbh2y2YfiNbnfKhfQ4CwznThQTg+HrnXx4t5YV
-         YniEYWJIgLoqiSh0GxC7j6mqhmFb/L4Pm4mnsBHHEMKwuqb4zqwGnSbvA+nvj7AjgjHe
-         MQ1w==
-X-Gm-Message-State: AOAM5331mEn1i7L5QE2H9rfPlmhL8G8lXLLrULO8BU9MNdqTy3StJIqm
-        Sh8RP5xnR2WMtZpYGIxSZ2vZBIwrR5su2xOL
-X-Google-Smtp-Source: ABdhPJwOBVS8fr3ffUWaNkjK8ppKbeI2Ma7kdsgJZ8em/xdCZbk2y5EcmwEDdWbG0RBitRGS7Cl/iQ==
-X-Received: by 2002:a17:906:130c:: with SMTP id w12mr7315188ejb.169.1617712601556;
-        Tue, 06 Apr 2021 05:36:41 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=npZjnSXchARg5Ho6L7Qbp5yUii68ZM1o+GIFeR/7Njg=;
+        b=Y8kCgKEF1/OEYQqKR42ED/AuPk/NnP1RDKjzrSOIWuyD37Xc0dQZU5yWO0M5qCaE0R
+         9K7nOx7fHCoBNEa1qAGQf75NAXMqnItnVf3DcEjeyED3l1dEgB4eT3mi95nv0+E+yuy+
+         2dsejDHRvZ8OdNSYr6sY7wyFrMlv8g71Y8aqnHFwDtkWtyGxBTFavDu+qGcvouykNUWD
+         Vw++9VgVxmHI1MynHZo09f2h/nVYk7U66TFoY52cbHKSpd79gboevIJSJ0J7Pb+3G3uI
+         YpGTTR7HJrnTtAQCwObWIYNUuN+o49Cm6R57HujUCGLhrSGlgiazxOmvpP1Gtjzon2yT
+         xPvw==
+X-Gm-Message-State: AOAM531T/2TiMnCnW6bSWjsi0UAoBGqrClinv/w7jNlqS8kNtodBrLSW
+        HT9YE2kjlDhdXADzHoKiwjMUs8KQgVojv8VU
+X-Google-Smtp-Source: ABdhPJyyRuuVRNP+ew4kODSr1ricg3tYRS9oesphQLlcO317zT6jzcFqlRwTCEMknjBKP2AUDdfMBQ==
+X-Received: by 2002:a17:906:ae96:: with SMTP id md22mr32513502ejb.409.1617712602780;
+        Tue, 06 Apr 2021 05:36:42 -0700 (PDT)
 Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aeee5.dynamic.kabel-deutschland.de. [95.90.238.229])
-        by smtp.googlemail.com with ESMTPSA id p9sm13738384edu.79.2021.04.06.05.36.40
+        by smtp.googlemail.com with ESMTPSA id p9sm13738384edu.79.2021.04.06.05.36.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 05:36:41 -0700 (PDT)
+        Tue, 06 Apr 2021 05:36:42 -0700 (PDT)
 From:   Gioh Kim <gi-oh.kim@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
+        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
         Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCHv2 for-next 0/3] Improve debugging messages
-Date:   Tue,  6 Apr 2021 14:36:36 +0200
-Message-Id: <20210406123639.202899-1-gi-oh.kim@ionos.com>
+Subject: [PATCHv2 for-next 1/3] RDMA/rtrs-clt: Print more info when an error happens
+Date:   Tue,  6 Apr 2021 14:36:37 +0200
+Message-Id: <20210406123639.202899-2-gi-oh.kim@ionos.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210406123639.202899-1-gi-oh.kim@ionos.com>
+References: <20210406123639.202899-1-gi-oh.kim@ionos.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add more information into the error message for better debugging.
-The old messages was just like "Error happend" without detail
-information. This patch adds more information which session,
-port, HCA name and etc.
+From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 
-V2->V1: add new line after variable block as requested by Jason
+Client prints only error value and it is not enough for debugging.
 
-Gioh Kim (3):
-  RDMA/rtrs-clt: Print more info when an error happens
-  RDMA/rtrs-srv: More debugging info when fail to send reply
-  RDMA/rtrs-clt: Simplify error message
+1. When client receives an error from server:
+the client does not only print the error value but also
+more information of server connection.
 
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 24 ++++++++++++++++++++----
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 12 ++++++++----
- 2 files changed, 28 insertions(+), 8 deletions(-)
+2. When client failes to send IO:
+the client gets an error from RDMA layer. It also
+print more information of server connection.
 
+Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+---
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 33 ++++++++++++++++++++++----
+ 1 file changed, 29 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 5062328ac577..a534b2b09e13 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -437,6 +437,11 @@ static void complete_rdma_req(struct rtrs_clt_io_req *req, int errno,
+ 	req->in_use = false;
+ 	req->con = NULL;
+ 
++	if (unlikely(errno)) {
++		rtrs_err_rl(con->c.sess, "IO request failed: error=%d path=%s [%s:%u]\n",
++			    errno, kobject_name(&sess->kobj), sess->hca_name, sess->hca_port);
++	}
++
+ 	if (notify)
+ 		req->conf(req->priv, errno);
+ }
+@@ -1020,7 +1025,8 @@ static int rtrs_clt_write_req(struct rtrs_clt_io_req *req)
+ 				       req->usr_len + sizeof(*msg),
+ 				       imm);
+ 	if (unlikely(ret)) {
+-		rtrs_err(s, "Write request failed: %d\n", ret);
++		rtrs_err_rl(s, "Write request failed: error=%d path=%s [%s:%u]\n",
++			    ret, kobject_name(&sess->kobj), sess->hca_name, sess->hca_port);
+ 		if (sess->clt->mp_policy == MP_POLICY_MIN_INFLIGHT)
+ 			atomic_dec(&sess->stats->inflight);
+ 		if (req->sg_cnt)
+@@ -1138,7 +1144,8 @@ static int rtrs_clt_read_req(struct rtrs_clt_io_req *req)
+ 	ret = rtrs_post_send_rdma(req->con, req, &sess->rbufs[buf_id],
+ 				   req->data_len, imm, wr);
+ 	if (unlikely(ret)) {
+-		rtrs_err(s, "Read request failed: %d\n", ret);
++		rtrs_err_rl(s, "Read request failed: error=%d path=%s [%s:%u]\n",
++			    ret, kobject_name(&sess->kobj), sess->hca_name, sess->hca_port);
+ 		if (sess->clt->mp_policy == MP_POLICY_MIN_INFLIGHT)
+ 			atomic_dec(&sess->stats->inflight);
+ 		req->need_inv = false;
+@@ -2459,12 +2466,30 @@ static int init_sess(struct rtrs_clt_sess *sess)
+ 	mutex_lock(&sess->init_mutex);
+ 	err = init_conns(sess);
+ 	if (err) {
+-		rtrs_err(sess->clt, "init_conns(), err: %d\n", err);
++		char str[NAME_MAX];
++		int err;
++		struct rtrs_addr path = {
++			.src = &sess->s.src_addr,
++			.dst = &sess->s.dst_addr,
++		};
++
++		rtrs_addr_to_str(&path, str, sizeof(str));
++		rtrs_err(sess->clt, "init_conns() failed: err=%d path=%s [%s:%u]\n",
++			 err, str, sess->hca_name, sess->hca_port);
+ 		goto out;
+ 	}
+ 	err = rtrs_send_sess_info(sess);
+ 	if (err) {
+-		rtrs_err(sess->clt, "rtrs_send_sess_info(), err: %d\n", err);
++		char str[NAME_MAX];
++		int err;
++		struct rtrs_addr path = {
++			.src = &sess->s.src_addr,
++			.dst = &sess->s.dst_addr,
++		};
++
++		rtrs_addr_to_str(&path, str, sizeof(str));
++		rtrs_err(sess->clt, "rtrs_send_sess_info() failed: err=%d path=%s [%s:%u]\n",
++			 err, str, sess->hca_name, sess->hca_port);
+ 		goto out;
+ 	}
+ 	rtrs_clt_sess_up(sess);
 -- 
 2.25.1
 
