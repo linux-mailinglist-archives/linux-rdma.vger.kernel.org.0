@@ -2,98 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D30835537E
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 14:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781EC3553E4
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 14:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343917AbhDFMTZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 6 Apr 2021 08:19:25 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3070 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343904AbhDFMTN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 08:19:13 -0400
-Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FF61M5lTvzWTbK;
-        Tue,  6 Apr 2021 20:15:35 +0800 (CST)
-Received: from dggema704-chm.china.huawei.com (10.3.20.68) by
- dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 6 Apr 2021 20:19:03 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema704-chm.china.huawei.com (10.3.20.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 6 Apr 2021 20:19:03 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.013;
- Tue, 6 Apr 2021 20:19:03 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH for-next 4/6] RDMA/core: Remove redundant spaces
-Thread-Topic: [PATCH for-next 4/6] RDMA/core: Remove redundant spaces
-Thread-Index: AQJmWj7fykGLfs8fpqJfS4UF45jw7w==
-Date:   Tue, 6 Apr 2021 12:19:03 +0000
-Message-ID: <6a873083a6d24735b907e9069d14f875@huawei.com>
-References: <1617697184-48683-1-git-send-email-liweihang@huawei.com>
- <1617697184-48683-5-git-send-email-liweihang@huawei.com>
- <YGwfP0qEDMybR4iZ@unreal>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S238177AbhDFMaz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Apr 2021 08:30:55 -0400
+Received: from verein.lst.de ([213.95.11.211]:54291 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343946AbhDFMau (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Apr 2021 08:30:50 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 4387D68B02; Tue,  6 Apr 2021 14:30:35 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 14:30:34 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jens Axboe <axboe@fb.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
+        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        netdev@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
+        rds-devel@oss.oracle.com, Sagi Grimberg <sagi@grimberg.me>,
+        samba-technical@lists.samba.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next 01/10] RDMA: Add access flags to
+ ib_alloc_mr() and ib_mr_pool_init()
+Message-ID: <20210406123034.GA28930@lst.de>
+References: <20210405052404.213889-1-leon@kernel.org> <20210405052404.213889-2-leon@kernel.org> <c21edd64-396c-4c7c-86f8-79045321a528@acm.org> <YGvwUI022t/rJy5U@unreal> <20210406052717.GA4835@lst.de> <YGv4niuc31WnqpEJ@unreal> <20210406121312.GK7405@nvidia.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406121312.GK7405@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/4/6 16:43, Leon Romanovsky wrote:
-> On Tue, Apr 06, 2021 at 04:19:42PM +0800, Weihang Li wrote:
->> From: Wenpeng Liang <liangwenpeng@huawei.com>
->>
->> Space is not required between function name and '(', after '(', before ')',
->> before ',' and between '*' and symbol name of a definition.
->>
->> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
->> Signed-off-by: Weihang Li <liweihang@huawei.com>
->> ---
->>  drivers/infiniband/core/cache.c       | 10 +++---
->>  drivers/infiniband/core/cm.c          | 31 ++++++++---------
->>  drivers/infiniband/core/cma.c         | 10 +++---
->>  drivers/infiniband/core/device.c      | 64 +++++++++++++++++------------------
->>  drivers/infiniband/core/mad.c         | 20 +++++------
->>  drivers/infiniband/core/mad_rmpp.c    | 10 +++---
->>  drivers/infiniband/core/nldev.c       |  2 +-
->>  drivers/infiniband/core/security.c    | 12 +++----
->>  drivers/infiniband/core/sysfs.c       |  8 ++---
->>  drivers/infiniband/core/user_mad.c    |  6 ++--
->>  drivers/infiniband/core/uverbs_cmd.c  | 20 +++++------
->>  drivers/infiniband/core/uverbs_main.c |  3 +-
->>  drivers/infiniband/core/uverbs_uapi.c | 16 ++++-----
->>  13 files changed, 105 insertions(+), 107 deletions(-)
->>
->> diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
->> index d779590..0b8c410 100644
->> --- a/drivers/infiniband/core/cache.c
->> +++ b/drivers/infiniband/core/cache.c
->> @@ -886,7 +886,7 @@ static void gid_table_release_one(struct ib_device *ib_dev)
->>  {
->>  	u32 p;
->>  
->> -	rdma_for_each_port (ib_dev, p) {
->> +	rdma_for_each_port(ib_dev, p) {
+On Tue, Apr 06, 2021 at 09:13:12AM -0300, Jason Gunthorpe wrote:
+> So we broadly have two choice
+>  1) Diverge the kernel and user interfaces and make the RDMA drivers
+>     special case all the kernel stuff to force
+>     ACCESS_RELAXED_ORDERING when they are building MRs and processing
+>     FMR WQE's
+>  2) Keep the two interfaces the same and push the
+>     ACCESS_RELAXED_ORDERING to a couple of places in the ULPs so the
+>     drivers see a consistent API
 > 
-> This space is an outcome of clang formatter. I would say that we are
-> fine that submitted patches will be with and without space.
-> 
-> Thanks
-> 
+> They are both poor choices, but I think #2 has a greater chance of
+> everyone doing their parts correctly.
 
-I see, I will drop unnecessary changes about xx_for_each() and maybe something else.
-
-Thank you
-Weihang
+No, 1 is the only sensible choice.  The userspace verbs interface is
+a mess and should not inflict pain on the kernel in any way.  We've moved
+away from a lot of the idiotic "Verbs API" concepts with things like
+how we handle the global lkey, the new CQ API and the RDMA R/W
+abstraction and that massively helped the kernel ecosystem.
