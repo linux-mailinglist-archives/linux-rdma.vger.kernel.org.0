@@ -2,177 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3A53552AA
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 13:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE3A3552B0
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 13:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245755AbhDFLuE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Apr 2021 07:50:04 -0400
-Received: from mail-co1nam11on2062.outbound.protection.outlook.com ([40.107.220.62]:5216
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232884AbhDFLuE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Apr 2021 07:50:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PQpbvKyh5h78ssvu9JKetle8sc2ZmLv5nQ+G+OAfdtZrHFv9FBLk0O+ablXafQZb5/eXjqufL8zvIebCH5a7yzG4UD7N5oUpyw1YiflKYksyRIuprMDQX/gUk5+fLamlUtuj+yCJCKOBb7ashdO7GIq/pFHyrSoCoFDymrptMUPOtJjKx5Lw4TZCGbUY92mKA+rCuhIRZsZZ1n0KmrU5Z2cBp55z+9/xm+Eq8/kvG0hVzqeaG8jIK/lCnvkVRlf+g46YrDxQsRU9xg+N+OaU39zfk6IpEVva6hamp2yIMowhgHByIBcvm9B/jrM6laXwcD0ZZmCQHlyxcSKmx7Urxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YU5kwv83bbU6QP//L9LIRU1lNCxipsfh6RyS7TyGJ20=;
- b=icd3+iFad6tj0vLR0VXFY19r/PBEL11RZRP/dexj6TPwLzGKcuZfaz0WLauK7faz3H/EF6YoSittdg+NoVM25vj5g9agdplEhwFc+o7LNHb9gpYNtQ1Ho+PX9Qg62liD07K54Te+As2lUfxYET0yty+LgEAa9mjSgfkhuKA6QxUgwmqtHPUueC4S8FZIkO54XztnithA/hJpZT2Oa3h/uHiggPPfh88GCTgv8M68rYl2EnlTDn/MrhK1Lqvlwa/9j4jGQaLaWKRJo5KSes/BnBOT815KWAqMhz5YhsHkZirrS/KTp5Sm94b+06o4qjMDHzXV9pfHmdAl71HmXNkIdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YU5kwv83bbU6QP//L9LIRU1lNCxipsfh6RyS7TyGJ20=;
- b=hNOwWqHRAcZ85QAKolIBZyOjAAlRAKVhIVkxX2KgcNWTpdJ6Q5fJONqvuFHsp+GF5NMc8frMQjNyIq8SL5kPV7kdQ73r780HK2CujKPdlfcQrpWj9u2l4fOURBFk3as4nl/cKZ+v1Bni+54wsWSqqedN/ySROFb53sbKpxa2patl3QaoVcJs4/3WutFX1gE+HZdH9APhEyf+u9sQTr5GMXNj0pxpWhgnQOTDXFMIYps13NZ84OFjTTjXRU1q/P3seJoLUHhBxkP0gRwrBZ54EJdnNNVdfk8ThQyUSshe5X1CCLmsuDzyk9pE/6bR08KWXbY1Hw0Gg4FRMBnOFU47mA==
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3739.namprd12.prod.outlook.com (2603:10b6:5:1c4::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32; Tue, 6 Apr
- 2021 11:49:54 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3999.032; Tue, 6 Apr 2021
- 11:49:54 +0000
-Date:   Tue, 6 Apr 2021 08:49:52 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Chuck Lever III <chuck.lever@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bruce Fields <bfields@fieldses.org>, Jens Axboe <axboe@fb.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Steve French <sfrench@samba.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
-Message-ID: <20210406114952.GH7405@nvidia.com>
-References: <20210405052404.213889-1-leon@kernel.org>
- <20210405134115.GA22346@lst.de>
- <20210405200739.GB7405@nvidia.com>
- <C2924F03-11C5-4839-A4F3-36872194EEA8@oracle.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <C2924F03-11C5-4839-A4F3-36872194EEA8@oracle.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL1PR13CA0350.namprd13.prod.outlook.com
- (2603:10b6:208:2c6::25) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S243301AbhDFLvH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Apr 2021 07:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243291AbhDFLvG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 07:51:06 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3A9C061756
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Apr 2021 04:50:58 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id k8so8768677edn.6
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Apr 2021 04:50:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8qEgfGkEH/4geB+vsRguqEiTYghExirAxMsBMTZDkxo=;
+        b=L5EBAuUn6Duc93ViZh2kS/yNB9fVN7CY+w5Gt7cS16OrCR0hyv2YCmr7M5ERRGa93Z
+         VgHaKTck15dl5prehWPTnLz7NEMiMxZ94DpylGaTtYjIJrjm6Utdx12XH5uEDjjLRolF
+         JASfucoAVbX8s+ls/X3AJxSEiA9e1JHzrWfXJnBP9B1fjal3kHR2ATd7xlv97lvIQjbA
+         LGDdi7nL82SJSlOj8rhEsiRqiZHj1TlNN99jsFpPOJ+VuF23Nx9527jD8Ft0GlQm+SUT
+         5VvYmYYgzOOEw1FsP4Q3vpRFZ6PH0/8Lgod7f+IfMPeGdtTJwklCCsZ7DM0A52HMN4Pr
+         R5Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8qEgfGkEH/4geB+vsRguqEiTYghExirAxMsBMTZDkxo=;
+        b=Xo8wC2VXQJC0SEEsTvpEwoX8hu0yoajHVB3hqCxYrOTWCEOby7akSon8UFDego7aCX
+         OhnUsa6zN2u+kGMYuwpzLkwsq6Tzcn4nfOmGsF2NyHOruCydJChkbVxEk7Qh6TDvXj6W
+         b5UKW+qxrqGgnZcgeWd5eI1pvKp5I0gVsttMmZdb10rebwkvQ7a3QF+eKRewC++bkld7
+         ttkiHJvwZCevA5Q4koiZ0t7IF7bCatvsJRyxzRIiXEbPHzvHsfKQToRobD+RLg+ggANy
+         gBKmFSaGMWnV+L9lrpPPm3fw+q0BOSrk7SkbL7kYEB7bIq9lFeKwGXYCZhgBBwV+jbxl
+         kHTA==
+X-Gm-Message-State: AOAM531WxFUaeBKrKrkZi/+0Fkhtqf4oym5sOQa/CDK5146GoZZ89q6r
+        WfK7FtXk6Pl2M53/K2dVA6HJHFI6w3Mm4ahw
+X-Google-Smtp-Source: ABdhPJwEc8Q+BidNwrVcAZ08ycPeZUQXQlxlJ27moaWipmKzJsTe4W4Vf3I2pNmsRAxbrsIYFD/Wuw==
+X-Received: by 2002:aa7:db51:: with SMTP id n17mr38765588edt.259.1617709857301;
+        Tue, 06 Apr 2021 04:50:57 -0700 (PDT)
+Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aeee5.dynamic.kabel-deutschland.de. [95.90.238.229])
+        by smtp.googlemail.com with ESMTPSA id t1sm855964eds.53.2021.04.06.04.50.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 04:50:57 -0700 (PDT)
+From:   Gioh Kim <gi-oh.kim@ionos.com>
+To:     linux-rdma@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
+        jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
+        akinobu.mita@gmail.com, corbet@lwn.net,
+        Gioh Kim <gi-oh.kim@ionos.com>
+Subject: [PATCH 0/4] Enable Fault Injection for RTRS
+Date:   Tue,  6 Apr 2021 13:50:45 +0200
+Message-Id: <20210406115049.196527-1-gi-oh.kim@ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0350.namprd13.prod.outlook.com (2603:10b6:208:2c6::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.8 via Frontend Transport; Tue, 6 Apr 2021 11:49:53 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lTkDQ-00166W-78; Tue, 06 Apr 2021 08:49:52 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ba6c7959-89f3-4d7e-90bd-08d8f8f217d3
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3739:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3739E223AE85E6F9625E6AEFC2769@DM6PR12MB3739.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: P2ye2s37xG9fAimW0VTpt3OiE9ZFx7TKIB3uZv9HdstAN7qW1YArvCpUzwJtEhpwwvoJUvWLl2lShV3cnvhpEsU15b4GecN/lmCBYpOFQnC9pCqw7VIRtsT8vK1rVbZ5ftYjdh0FmcNCDoxMC2ceAbKoQWV1F9HNegAq/mO7E9Xqxzma6W/kcAMLO22HFi6eXs474dwqIZ04bygDV8PbI2+p88W7pscvkpVdRq+GghWB6i6nUwGk5/8+E1HkqsCmF5LMTqn4cNphe/WA+pHgw9VDiCb5sCdLlZ43vrpDwWiFdYp1r5+38Pe+bXG43Vqh2bWsWx0E4wSg+fn/7rpZoU5UjYzsN5UFUJ4iixurupmkRfCn+5Oj2Xo3AAs5r9vnZTZ8xyng0sO6NB3alMB2iye+AqxoF0md1uNBN8vcD3q5DzPWPm21pZIHXvy4QK653WXhA1Hv0Lt00kD6eFG142sGXBDptTXrbzWgabmow5QN/sv+NTzqlWtzOIM8Ou7rgCVthxwlCO986FXsiP71Tr8DRsJ+RtT7y5fzbGe16DBh7WweU3vPi/N2XIuL1DIwaBgmZqb0Cz0bViSwwiUO28+Bj9rhccqvKRW+QFDQzDvSq+6es66x9DYbZZRJUJDPccD4ss/DZmLgo+50A//ue7uUnpcBGBi5VaClpvZ0ObM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(136003)(39860400002)(396003)(4744005)(478600001)(316002)(2616005)(7416002)(7406005)(54906003)(5660300002)(36756003)(186003)(86362001)(33656002)(38100700001)(4326008)(8936002)(26005)(6916009)(66476007)(66556008)(2906002)(426003)(1076003)(8676002)(9786002)(9746002)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?uPDLh4bJEN7hEX2D2W/BBTKnGqoDW2lEft+WNhzedxI8fqHT1QZkTvepyl3D?=
- =?us-ascii?Q?9YG93roldNVc3DCI8xh43r5R2g9vnpq93n8v4G36D/1ovpUifb62c2v4UXIC?=
- =?us-ascii?Q?avJ0Rk0aBcqr9+NWkhgsY3VV8vGHmSviAJ9lZarnQKaS3OFASfqP0tZNRUQs?=
- =?us-ascii?Q?9N3RXuWy4Hi19vfKzy9CekgOu8zVbqPJZq29y0D4DM+t9oIhqtlTDKhkuEJj?=
- =?us-ascii?Q?s0jxc0Q+ay+Cf+p5TNoWYq3SMTgn7G8frBMEe40SrCT/miHdrxryRaoI5Eeh?=
- =?us-ascii?Q?1Lc8wb9QhU/luZVteF6gU6iGZmkcetrQn2PR6Wwlk+PAi/hUE7vkKSUNKR6q?=
- =?us-ascii?Q?x/pZkgwTmHOY+JV+iR7fopszeEaqu+63gFt/pnWGSBI7MNq0jmDlNSCS8Wl8?=
- =?us-ascii?Q?k+rPCNWNpXmSSA7oVYPqgFh+NWlZRjMXHt/6xl61GWW8vzSfECNXP+FcheB4?=
- =?us-ascii?Q?wHmhlHwRSr3oWvsHFpc1sKhEf/184DZdM1K11CtG05y6ar/Ktfyl4IObgOnK?=
- =?us-ascii?Q?2zLtLAwIHrxD+YaQ3lwJfig8gTCL+7xa+JAwlg6L8T3RmfJBa+4JTRPDXRxL?=
- =?us-ascii?Q?TSceH9FVWU/pmjGOreNHoo4DYURRLJLmXJ31C8ic0a7dRzHEkN5uIfaY42eH?=
- =?us-ascii?Q?EqxRDCuAZcrQAtlyTDQpSIJdUt4BWlDv2jfOVP0j0zdwxMU++DBPI5nLlLgk?=
- =?us-ascii?Q?GodPqCwKaPTJVbhZ/abHqcAcNH52Ldmnifpc/1O5/FxOYeFTXZCSQy/Z+A3I?=
- =?us-ascii?Q?JZLtZM6+vHjinItltu18xRasBrFYS4X9L1viSnDVpS3reKVHAvKjW/MCmleV?=
- =?us-ascii?Q?HMu3WZMLdkU6nlo0Kp9QSRwHF/f1gVEsUZUEXwtmmaAnk23GvIol4bNrNECk?=
- =?us-ascii?Q?5WT87+E8gsG9Igi4eSiDI1OTba0iw13XKX5SxWiA1bQZbYRojbOSxj/mOiIA?=
- =?us-ascii?Q?SV1soL1rhelL1ih87P5ESrOhsauFtOglP9DsKEi1g17bcM+wxCIfSoT3FPao?=
- =?us-ascii?Q?CWxbHMq5oQiWKUEi4ntMmTkaWvPt7yR0sWV5w3Hz+mtMK+UxQ0BBtUxLoHJ+?=
- =?us-ascii?Q?1FJ/8AriZG2OZ2nXbXYiDcrPUKpxdPVIZfKwntdq+cYtKPHAnD2CP7ZNFOps?=
- =?us-ascii?Q?yglfZGAV9RtrCS1aenftBtyD9wrQf+cgcsdDaM/Zi8O/8ZH4rGUJWjPjcSAD?=
- =?us-ascii?Q?ZZb6kmDlg7DJRrjq/cdQgJ6yr5DWkhFASM+kGIvyzR1eJ+Bcsias2ktEael8?=
- =?us-ascii?Q?ez0ng5pzKRUM5OMamNUYeONeYhi1LZB+RYjt/2v0R43WHr37tpHiX+LWGJIL?=
- =?us-ascii?Q?vXuV75/XHs0Y/gN8vE7vP8hGeEGVOaaTuaP2Ba0vSKmYYg=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba6c7959-89f3-4d7e-90bd-08d8f8f217d3
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 11:49:54.2398
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: phh4UfQpks0iD3gItE5Jl4HdAGWe/e4/L/Wu2d8AxNVxqQM4PPHwKdj/0tHmCB54
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3739
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 11:42:31PM +0000, Chuck Lever III wrote:
- 
-> We need to get a better idea what correctness testing has been done,
-> and whether positive correctness testing results can be replicated
-> on a variety of platforms.
+My colleagues and I would like to apply the fault injection
+of the Linux to test error handling of RTRS module. RTRS module
+consists of client and server modules that are connected via
+Infiniband network. So it is important for the client to receive
+the error of the server and handle it smoothly.
 
-RO has been rolling out slowly on mlx5 over a few years and storage
-ULPs are the last to change. eg the mlx5 ethernet driver has had RO
-turned on for a long time, userspace HPC applications have been using
-it for a while now too.
+When debugfs is enabled, RTRS is able to export interfaces
+to fail RTRS client and server.
+Following fault injection points are enabled:
+- fail a request processing on RTRS client side
+- fail a heart-beat transferation on RTRS server side
 
-We know there are platforms with broken RO implementations (like
-Haswell) but the kernel is supposed to globally turn off RO on all
-those cases. I'd be a bit surprised if we discover any more from this
-series.
+This patch set is just a starting point. We will enable various
+faults and test as many error cases as possible.
 
-On the other hand there are platforms that get huge speed ups from
-turning this on, AMD is one example, there are a bunch in the ARM
-world too.
+Best regards
 
-Still, obviously people should test on the platforms they have.
+Gioh Kim (4):
+  RDMA/rtrs: Enable the fault-injection
+  RDMA/rtrs-clt: Inject a fault at request processing
+  RDMA/rtrs-srv: Inject a fault at heart-beat sending
+  docs: fault-injection: Add fault-injection manual of RTRS
 
-Jason
+ .../fault-injection/rtrs-fault-injection.rst  | 83 +++++++++++++++++++
+ drivers/infiniband/ulp/rtrs/Makefile          |  2 +
+ drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c  | 44 ++++++++++
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c        |  7 ++
+ drivers/infiniband/ulp/rtrs/rtrs-clt.h        | 13 +++
+ drivers/infiniband/ulp/rtrs/rtrs-fault.c      | 52 ++++++++++++
+ drivers/infiniband/ulp/rtrs/rtrs-fault.h      | 28 +++++++
+ drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c  | 44 ++++++++++
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c        |  5 ++
+ drivers/infiniband/ulp/rtrs/rtrs-srv.h        | 13 +++
+ 10 files changed, 291 insertions(+)
+ create mode 100644 Documentation/fault-injection/rtrs-fault-injection.rst
+ create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-fault.c
+ create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-fault.h
+
+-- 
+2.25.1
+
