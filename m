@@ -2,42 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C8E354AEC
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 04:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E86354C14
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Apr 2021 07:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243415AbhDFCiD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Apr 2021 22:38:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60880 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243412AbhDFCiC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Apr 2021 22:38:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617676675;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J5Y7rI+FtGX0I4XVdEnNnyzKf98zHZb+U6KjZK4yGbc=;
-        b=KrLXRSpQqL5xKRQawQg5vo9gyq6NBhIrI6oWoIZcV0VH8pj2tZQXtnVZ7o3U3DnlLFJ/Bs
-        1GXePdCxfvrPs0swavs3DbdWumZEX07ghFDZJXc7eH/LcPThvKEfT23jKfLCDJHYIgXe13
-        Lc36DzraX89lHBN0IpBGqDQRX9Z3AZQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-425-SuhA5TQCNkCWqJin6rD1AA-1; Mon, 05 Apr 2021 22:37:51 -0400
-X-MC-Unique: SuhA5TQCNkCWqJin6rD1AA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 468601800D50;
-        Tue,  6 Apr 2021 02:37:45 +0000 (UTC)
-Received: from localhost (unknown [10.66.128.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1E86A690F5;
-        Tue,  6 Apr 2021 02:37:41 +0000 (UTC)
-Date:   Tue, 6 Apr 2021 10:37:38 +0800
-From:   Honggang LI <honli@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>
+        id S242613AbhDFFJy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Apr 2021 01:09:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230073AbhDFFJy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Apr 2021 01:09:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E04D2613B8;
+        Tue,  6 Apr 2021 05:09:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617685786;
+        bh=X92KQg3tXG2x2dhtuX1igH+EpubBIGXwmzFmddKebSI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YAkOjjj0GL3XRB09Ij60URoGO7NdIuDIosagpxtfZ9iVq8xjzpRqmg0/f2VeAwevd
+         gCLGwz21lbIWMUVSXSoaqFi0Iru0BxK0GRYMSdNgIrMHK9Yg3XdHCPbe/mFLACsA/X
+         UFvAfStd4Pc48XpaL+1vVCP+pCq8UiEBkUw/DIxk2rU7bNPyvyjyKgmWx+rw14jJw/
+         p73HiTP8ZGkD/NT+l86ADeas4d0UOfVxF9OY/sGrq+KRIXmDN6hnoJfqvKvFi3f0Bw
+         dXBW8ogvsD7qEJhmTiZTbVWnJi+ud6+yxx8O41YQGlllSDdvvG13vLa6u7yKwxk3MU
+         mcvvXPEGKgaVQ==
+Date:   Tue, 6 Apr 2021 08:09:43 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Honggang LI <honli@redhat.com>
 Cc:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
         Adit Ranadive <aditr@vmware.com>,
         Anna Schumaker <anna.schumaker@netapp.com>,
         Ariel Elior <aelior@marvell.com>,
@@ -81,38 +71,50 @@ Cc:     Doug Ledford <dledford@redhat.com>,
         Yishai Hadas <yishaih@nvidia.com>,
         Zhu Yanjun <zyjzyj2000@gmail.com>
 Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
-Message-ID: <20210406023738.GB80908@dhcp-128-72.nay.redhat.com>
+Message-ID: <YGvtFxv1az754/Q5@unreal>
 References: <20210405052404.213889-1-leon@kernel.org>
+ <20210406023738.GB80908@dhcp-128-72.nay.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210405052404.213889-1-leon@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210406023738.GB80908@dhcp-128-72.nay.redhat.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 08:23:54AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Tue, Apr 06, 2021 at 10:37:38AM +0800, Honggang LI wrote:
+> On Mon, Apr 05, 2021 at 08:23:54AM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > From Avihai,
+> > 
+> > Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
+> > imposed on PCI transactions, and thus, can improve performance.
+> > 
+> > Until now, relaxed ordering could be set only by user space applications
+> > for user MRs. The following patch series enables relaxed ordering for the
+> > kernel ULPs as well. Relaxed ordering is an optional capability, and as
+> > such, it is ignored by vendors that don't support it.
+> > 
+> > The following test results show the performance improvement achieved
 > 
-> From Avihai,
+> Did you test this patchset with CPU does not support relaxed ordering?
+
+I don't think so, the CPUs that don't support RO are Intel's fourth/fifth-generation
+and they are not interesting from performance point of view.
+
 > 
-> Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
-> imposed on PCI transactions, and thus, can improve performance.
+> We observed significantly performance degradation when run perftest with
+> relaxed ordering enabled over old CPU.
 > 
-> Until now, relaxed ordering could be set only by user space applications
-> for user MRs. The following patch series enables relaxed ordering for the
-> kernel ULPs as well. Relaxed ordering is an optional capability, and as
-> such, it is ignored by vendors that don't support it.
+> https://github.com/linux-rdma/perftest/issues/116
+
+The perftest is slightly different, but you pointed to the valid point.
+We forgot to call pcie_relaxed_ordering_enabled() before setting RO bit
+and arguably this was needed to be done in perftest too.
+
+Thanks
+
 > 
-> The following test results show the performance improvement achieved
-
-Did you test this patchset with CPU does not support relaxed ordering?
-
-We observed significantly performance degradation when run perftest with
-relaxed ordering enabled over old CPU.
-
-https://github.com/linux-rdma/perftest/issues/116
-
-thanks
-
+> thanks
+> 
