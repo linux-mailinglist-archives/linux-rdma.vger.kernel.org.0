@@ -2,152 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FC3356031
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Apr 2021 02:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F430356220
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Apr 2021 05:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245326AbhDGASz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 6 Apr 2021 20:18:55 -0400
-Received: from mga17.intel.com ([192.55.52.151]:61043 "EHLO mga17.intel.com"
+        id S1348464AbhDGDuH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Apr 2021 23:50:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241990AbhDGASy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Apr 2021 20:18:54 -0400
-IronPort-SDR: ivwexgUIdWF2Zw6pl6tQG5fQq1KTwpNSWOEP7UNgyws79MJ/Isn6HIKCSoBZFJUsoV5la3Mvm5
- PXeWxxiB3MTA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="173263528"
-X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
-   d="scan'208";a="173263528"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 17:18:45 -0700
-IronPort-SDR: R84kVeu+UL5qkjO4zwChz5f/bWaR+4ALyHvRo7CXmPWukveX7ACDk2sCVeLNc1s8MClYlbWKXC
- ZfZ6Lr024fXQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
-   d="scan'208";a="598145103"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga005.jf.intel.com with ESMTP; 06 Apr 2021 17:18:45 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 17:18:44 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 17:18:43 -0700
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2106.013;
- Tue, 6 Apr 2021 17:18:43 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-Subject: RE: [PATCH v4 00/23] Add Intel Ethernet Protocol Driver for RDMA
- (irdma)
-Thread-Topic: [PATCH v4 00/23] Add Intel Ethernet Protocol Driver for RDMA
- (irdma)
-Thread-Index: AQHXKyghWxg1YMB540GtculmvcetP6qolJkA//+MQXCAAA95YA==
-Date:   Wed, 7 Apr 2021 00:18:43 +0000
-Message-ID: <9b14e89ed2d54f5581deb147a0ae4505@intel.com>
-References: <20210406210125.241-1-shiraz.saleem@intel.com>
- <20210406231550.GB7405@nvidia.com>
- <be8b420a3fa844ed94d80f5a6c65acaf@intel.com>
-In-Reply-To: <be8b420a3fa844ed94d80f5a6c65acaf@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1348457AbhDGDuF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Apr 2021 23:50:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED77A61245;
+        Wed,  7 Apr 2021 03:49:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617767396;
+        bh=3yPZvyfKsvop+5Gmiujbfk7NPCkDAXBYVU2vefEFYQo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ipYxTt0FiNQw05eYtHLNJgNAQuT7f/N2I9+GKUFdVSHtU+z6xO39CYuDewaIvfzJ6
+         gSFHN40w7kvHZOYdYu4r6WAakXKxe8KSt4xQYBTwBh/crCtZ9Ibp9JQ+/+0pgZAaJo
+         qxFqh4/JFPpU0qgrzwsI9rEOOOWCA7KuD3X5eYSB/0Zy8VGKfKR1chxSI6kQb9rrDo
+         WYt5kz0JdZtqsi4qPx9Z7vA+XuuQMDqexwPMD6hv8V10rZgY8VqWgH5z8mTjq1XPL1
+         BNGHrRHOP9TZEq1nU0/uXAuq297UfEDZPmt2FTTqTzmJmTaH/UELMnB6F1tGF2yAnj
+         bz78sIBQr5gVw==
+Message-ID: <6b7d173f940ecf02ba1f8c8d636b91329be4a5c1.camel@kernel.org>
+Subject: Re: [PATCH] net/mlx5: fix kfree mismatch in indir_table.c
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Xiaoming Ni <nixiaoming@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, vladbu@nvidia.com,
+        dlinkin@nvidia.com, davem@davemloft.net, kuba@kernel.org,
+        roid@nvidia.com, dan.carpenter@oracle.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, xiaoqian9@huawei.com
+Date:   Tue, 06 Apr 2021 20:49:55 -0700
+In-Reply-To: <YGqYfcCMWTW8fN7U@unreal>
+References: <20210405025339.86176-1-nixiaoming@huawei.com>
+         <YGqYfcCMWTW8fN7U@unreal>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: RE: [PATCH v4 00/23] Add Intel Ethernet Protocol Driver for RDMA
-> (irdma)
+On Mon, 2021-04-05 at 07:56 +0300, Leon Romanovsky wrote:
+> On Mon, Apr 05, 2021 at 10:53:39AM +0800, Xiaoming Ni wrote:
+> > Memory allocated by kvzalloc() should be freed by kvfree().
+> > 
+> > Fixes: 34ca65352ddf2 ("net/mlx5: E-Switch, Indirect table
+> > infrastructur")
+> > Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> > ---
+> >  .../net/ethernet/mellanox/mlx5/core/esw/indir_table.c  | 10 +++++-
+> > ----
+> >  1 file changed, 5 insertions(+), 5 deletions(-)
+> > 
 > 
-> > Subject: Re: [PATCH v4 00/23] Add Intel Ethernet Protocol Driver for
-> > RDMA
-> > (irdma)
-> >
-> > On Tue, Apr 06, 2021 at 04:01:02PM -0500, Shiraz Saleem wrote:
-> > > Dave Ertman (4):
-> > >   iidc: Introduce iidc.h
-> > >   ice: Initialize RDMA support
-> > >   ice: Implement iidc operations
-> > >   ice: Register auxiliary device to provide RDMA
-> > >
-> > > Michael J. Ruhl (1):
-> > >   RDMA/irdma: Add dynamic tracing for CM
-> > >
-> > > Mustafa Ismail (13):
-> > >   RDMA/irdma: Register auxiliary driver and implement private channel
-> > >     OPs
-> > >   RDMA/irdma: Implement device initialization definitions
-> > >   RDMA/irdma: Implement HW Admin Queue OPs
-> > >   RDMA/irdma: Add HMC backing store setup functions
-> > >   RDMA/irdma: Add privileged UDA queue implementation
-> > >   RDMA/irdma: Add QoS definitions
-> > >   RDMA/irdma: Add connection manager
-> > >   RDMA/irdma: Add PBLE resource manager
-> > >   RDMA/irdma: Implement device supported verb APIs
-> > >   RDMA/irdma: Add RoCEv2 UD OP support
-> > >   RDMA/irdma: Add user/kernel shared libraries
-> > >   RDMA/irdma: Add miscellaneous utility definitions
-> > >   RDMA/irdma: Add ABI definitions
-> > >
-> > > Shiraz Saleem (5):
-> > >   ice: Add devlink params support
-> > >   i40e: Prep i40e header for aux bus conversion
-> > >   i40e: Register auxiliary devices to provide RDMA
-> > >   RDMA/irdma: Add irdma Kconfig/Makefile and remove i40iw
-> > >   RDMA/irdma: Update MAINTAINERS file
-> >
-> > This doesn't apply, and I don't really know why:
-> >
-> > Applying: iidc: Introduce iidc.h
-> > Applying: ice: Initialize RDMA support
-> > Applying: ice: Implement iidc operations
-> > Applying: ice: Register auxiliary device to provide RDMA
-> > Applying: ice: Add devlink params support
-> > Applying: i40e: Prep i40e header for aux bus conversion
-> > Applying: i40e: Register auxiliary devices to provide RDMA
-> > Applying: RDMA/irdma: Register auxiliary driver and implement private
-> > channel OPs
-> > Applying: RDMA/irdma: Implement device initialization definitions
-> > Applying: RDMA/irdma: Implement HW Admin Queue OPs
-> > Applying: RDMA/irdma: Add HMC backing store setup functions
-> > Applying: RDMA/irdma: Add privileged UDA queue implementation
-> > Applying: RDMA/irdma: Add QoS definitions
-> > Applying: RDMA/irdma: Add connection manager
-> > Applying: RDMA/irdma: Add PBLE resource manager
-> > Applying: RDMA/irdma: Implement device supported verb APIs
-> > Applying: RDMA/irdma: Add RoCEv2 UD OP support
-> > Applying: RDMA/irdma: Add user/kernel shared libraries
-> > Applying: RDMA/irdma: Add miscellaneous utility definitions
-> > Applying: RDMA/irdma: Add dynamic tracing for CM
-> > Applying: RDMA/irdma: Add ABI definitions
-> > Applying: RDMA/irdma: Add irdma Kconfig/Makefile and remove i40iw
-> > Using index info to reconstruct a base tree...
-> > error: removal patch leaves file contents
-> > error: drivers/infiniband/hw/i40iw/Kconfig: patch does not apply
-> >
-> > Can you investigate and fix it? Perhaps using a 9 year old version of
-> > git is the problem?
-> >
-> 
-> Hi Jason - I think its because I used --irreversible-delete flag in git format-patch for
-> review that this one doesn't apply.
-> 
-> I can resend without it if your trying to apply.
-> 
+> Thanks,
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 
-I resend it without using --irreversible-delete. Hopefully, it applies cleanly now.
+Applied to net-mlx5.
+
+Thanks,
+Saeed.
+
