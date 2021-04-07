@@ -2,145 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96EC355F78
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Apr 2021 01:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9AE235600A
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Apr 2021 02:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344551AbhDFXai convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 6 Apr 2021 19:30:38 -0400
-Received: from mga06.intel.com ([134.134.136.31]:29081 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344418AbhDFXae (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Apr 2021 19:30:34 -0400
-IronPort-SDR: CNRnsIpyetkI6VjoOIHoh7qbbu2z3lQuF4KH27s/ehK674rBZKjB86PS20bGWxsEC1fybDOtQT
- +DP8Y03lrp+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9946"; a="254512708"
-X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
-   d="scan'208";a="254512708"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2021 16:30:25 -0700
-IronPort-SDR: OlwFKWXR4GKH/wqcB/R+3F0cE3WcEw6MfELYrLKlf4CoNj8MvK7KxctH413A3QTf3frGJLx5Zv
- h44eBY57eNGw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,201,1613462400"; 
-   d="scan'208";a="441106637"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by fmsmga004.fm.intel.com with ESMTP; 06 Apr 2021 16:30:25 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 16:30:24 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 6 Apr 2021 16:30:24 -0700
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2106.013;
- Tue, 6 Apr 2021 16:30:24 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-Subject: RE: [PATCH v4 00/23] Add Intel Ethernet Protocol Driver for RDMA
- (irdma)
-Thread-Topic: [PATCH v4 00/23] Add Intel Ethernet Protocol Driver for RDMA
- (irdma)
-Thread-Index: AQHXKyghWxg1YMB540GtculmvcetP6qolJkA//+MQXA=
-Date:   Tue, 6 Apr 2021 23:30:23 +0000
-Message-ID: <be8b420a3fa844ed94d80f5a6c65acaf@intel.com>
-References: <20210406210125.241-1-shiraz.saleem@intel.com>
- <20210406231550.GB7405@nvidia.com>
-In-Reply-To: <20210406231550.GB7405@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1347389AbhDGAQu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Apr 2021 20:16:50 -0400
+Received: from mta-p6.oit.umn.edu ([134.84.196.206]:46654 "EHLO
+        mta-p6.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347478AbhDGAQd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Apr 2021 20:16:33 -0400
+X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Tue, 06 Apr 2021 20:16:33 EDT
+Received: from localhost (unknown [127.0.0.1])
+        by mta-p6.oit.umn.edu (Postfix) with ESMTP id 4FFPrr0NKZz9vJBb
+        for <linux-rdma@vger.kernel.org>; Wed,  7 Apr 2021 00:09:16 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p6.oit.umn.edu ([127.0.0.1])
+        by localhost (mta-p6.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id gcFQEZEwxi_X for <linux-rdma@vger.kernel.org>;
+        Tue,  6 Apr 2021 19:09:15 -0500 (CDT)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mta-p6.oit.umn.edu (Postfix) with ESMTPS id 4FFPrq5q8lz9vJBV
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Apr 2021 19:09:15 -0500 (CDT)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p6.oit.umn.edu 4FFPrq5q8lz9vJBV
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p6.oit.umn.edu 4FFPrq5q8lz9vJBV
+Received: by mail-il1-f198.google.com with SMTP id l7so4947352iln.1
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Apr 2021 17:09:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umn.edu; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U106F34psccI0z0WK0my8RMdv+H4P8eVWUK1e/YtHmw=;
+        b=R7dj6M09QAZ0+Hx2gj69szBZZo0vfF27O2fStj0J4qyaWncVF7t65Icb8kyTIcHhTo
+         fnnlySyHTscBHrJzhN4Q3O2R7R7AHt6ubZ1r4AolMFI8NYT9r2223zetgC5FHwT83mYC
+         i7iQ8v/zb6yErRb6kFJZnSGKwlu9T7yrXvnyw6UnHupcQ2t4zIp+u5IxWjYCMZXmTsXz
+         XkE34Zp0QgiWLz9e9dr7TZEfqzuoQAPR27CtkUM/YbIS32tZD1RjGSQYRq7rkkqgF2iv
+         QIgWjn96jfVP/hqFVouDKxgqnoFHW8eP605xrG7EKqMY78gV12OukqBkWhSEuqLR7IvA
+         chbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U106F34psccI0z0WK0my8RMdv+H4P8eVWUK1e/YtHmw=;
+        b=h599WWOX6feFjyeZ6tHQoDDz4RefD5MbbKMf5AJ8JVyDav/Gu0CS7nlNo4gbA8sW/7
+         TXu6wEesJi52gzkLgtsMFdo3XEDmDzy5/QGjXGMuPuQc0Wc4qKLl3X/cBsVr3CBycFWJ
+         ZLge21iPWTz31RFUnuGWgx1x9lED0L7Ta4Ux58C9xbkzKNbSj/pzofwKSKrdWso7huz/
+         zY1wVe7MoB0UqHvWjx+DpIIG05XWVHSBgaU6au647BuSigkCAECq0bx7IqyJWiobaAs8
+         zJuB+Eok+iHBm4t2GMCpQ2aPkyIZuSk2NYkCcpPcOQGaQvWDBHQn1ivEKXZ683uUcho/
+         NQhQ==
+X-Gm-Message-State: AOAM532xGA7KCYRK6LtoJurAr2QCjZTFZByoytjq6OUf/0Mod6diNqCe
+        PZGirKEwrQ5W80cDpGH9tAh17s3OOlSQO5m3ZlZsWGtVhapHpjs3XYEAY40AH6IG8wWTgMBqJ29
+        Pl4+XcYbiPAtgL/NthtaKjn+ncA==
+X-Received: by 2002:a92:c7d2:: with SMTP id g18mr647808ilk.220.1617754155450;
+        Tue, 06 Apr 2021 17:09:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx2hgxNMUYYy9q8hnatKJtH920+OSUloSvGVSjVTL5uWSwLiAAx3qpbF0F18q1EbAOhOQDx4w==
+X-Received: by 2002:a92:c7d2:: with SMTP id g18mr647793ilk.220.1617754155241;
+        Tue, 06 Apr 2021 17:09:15 -0700 (PDT)
+Received: from syssec1.cs.umn.edu ([2607:ea00:101:3c74:6ecd:6512:5d03:eeb6])
+        by smtp.googlemail.com with ESMTPSA id h8sm1271850ilo.21.2021.04.06.17.09.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 17:09:15 -0700 (PDT)
+From:   Aditya Pakki <pakki001@umn.edu>
+To:     pakki001@umn.edu
+Cc:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net/rds: Avoid potential use after free in rds_send_remove_from_sock
+Date:   Tue,  6 Apr 2021 19:09:12 -0500
+Message-Id: <20210407000913.2207831-1-pakki001@umn.edu>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [PATCH v4 00/23] Add Intel Ethernet Protocol Driver for RDMA
-> (irdma)
-> 
-> On Tue, Apr 06, 2021 at 04:01:02PM -0500, Shiraz Saleem wrote:
-> > Dave Ertman (4):
-> >   iidc: Introduce iidc.h
-> >   ice: Initialize RDMA support
-> >   ice: Implement iidc operations
-> >   ice: Register auxiliary device to provide RDMA
-> >
-> > Michael J. Ruhl (1):
-> >   RDMA/irdma: Add dynamic tracing for CM
-> >
-> > Mustafa Ismail (13):
-> >   RDMA/irdma: Register auxiliary driver and implement private channel
-> >     OPs
-> >   RDMA/irdma: Implement device initialization definitions
-> >   RDMA/irdma: Implement HW Admin Queue OPs
-> >   RDMA/irdma: Add HMC backing store setup functions
-> >   RDMA/irdma: Add privileged UDA queue implementation
-> >   RDMA/irdma: Add QoS definitions
-> >   RDMA/irdma: Add connection manager
-> >   RDMA/irdma: Add PBLE resource manager
-> >   RDMA/irdma: Implement device supported verb APIs
-> >   RDMA/irdma: Add RoCEv2 UD OP support
-> >   RDMA/irdma: Add user/kernel shared libraries
-> >   RDMA/irdma: Add miscellaneous utility definitions
-> >   RDMA/irdma: Add ABI definitions
-> >
-> > Shiraz Saleem (5):
-> >   ice: Add devlink params support
-> >   i40e: Prep i40e header for aux bus conversion
-> >   i40e: Register auxiliary devices to provide RDMA
-> >   RDMA/irdma: Add irdma Kconfig/Makefile and remove i40iw
-> >   RDMA/irdma: Update MAINTAINERS file
-> 
-> This doesn't apply, and I don't really know why:
-> 
-> Applying: iidc: Introduce iidc.h
-> Applying: ice: Initialize RDMA support
-> Applying: ice: Implement iidc operations
-> Applying: ice: Register auxiliary device to provide RDMA
-> Applying: ice: Add devlink params support
-> Applying: i40e: Prep i40e header for aux bus conversion
-> Applying: i40e: Register auxiliary devices to provide RDMA
-> Applying: RDMA/irdma: Register auxiliary driver and implement private channel
-> OPs
-> Applying: RDMA/irdma: Implement device initialization definitions
-> Applying: RDMA/irdma: Implement HW Admin Queue OPs
-> Applying: RDMA/irdma: Add HMC backing store setup functions
-> Applying: RDMA/irdma: Add privileged UDA queue implementation
-> Applying: RDMA/irdma: Add QoS definitions
-> Applying: RDMA/irdma: Add connection manager
-> Applying: RDMA/irdma: Add PBLE resource manager
-> Applying: RDMA/irdma: Implement device supported verb APIs
-> Applying: RDMA/irdma: Add RoCEv2 UD OP support
-> Applying: RDMA/irdma: Add user/kernel shared libraries
-> Applying: RDMA/irdma: Add miscellaneous utility definitions
-> Applying: RDMA/irdma: Add dynamic tracing for CM
-> Applying: RDMA/irdma: Add ABI definitions
-> Applying: RDMA/irdma: Add irdma Kconfig/Makefile and remove i40iw Using index
-> info to reconstruct a base tree...
-> error: removal patch leaves file contents
-> error: drivers/infiniband/hw/i40iw/Kconfig: patch does not apply
-> 
-> Can you investigate and fix it? Perhaps using a 9 year old version of git is the
-> problem?
-> 
+In case of rs failure in rds_send_remove_from_sock(), the 'rm' resource
+is freed and later under spinlock, causing potential use-after-free.
+Set the free pointer to NULL to avoid undefined behavior.
 
-Hi Jason - I think its because I used --irreversible-delete flag in git format-patch for review that this one doesn't apply.
+Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+---
+ net/rds/message.c | 1 +
+ net/rds/send.c    | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-I can resend without it if your trying to apply.
+diff --git a/net/rds/message.c b/net/rds/message.c
+index 071a261fdaab..90ebcfe5fe3b 100644
+--- a/net/rds/message.c
++++ b/net/rds/message.c
+@@ -180,6 +180,7 @@ void rds_message_put(struct rds_message *rm)
+ 		rds_message_purge(rm);
+ 
+ 		kfree(rm);
++		rm = NULL;
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(rds_message_put);
+diff --git a/net/rds/send.c b/net/rds/send.c
+index 985d0b7713ac..fe5264b9d4b3 100644
+--- a/net/rds/send.c
++++ b/net/rds/send.c
+@@ -665,7 +665,7 @@ static void rds_send_remove_from_sock(struct list_head *messages, int status)
+ unlock_and_drop:
+ 		spin_unlock_irqrestore(&rm->m_rs_lock, flags);
+ 		rds_message_put(rm);
+-		if (was_on_sock)
++		if (was_on_sock && rm)
+ 			rds_message_put(rm);
+ 	}
+ 
+-- 
+2.25.1
 
-Shiraz
