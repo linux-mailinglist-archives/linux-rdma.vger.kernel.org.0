@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D0B356A12
+	by mail.lfdr.de (Postfix) with ESMTP id 825CA356A13
 	for <lists+linux-rdma@lfdr.de>; Wed,  7 Apr 2021 12:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234001AbhDGKmT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Apr 2021 06:42:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54184 "EHLO
+        id S234408AbhDGKmU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Apr 2021 06:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234408AbhDGKmS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Apr 2021 06:42:18 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E84C061756
+        with ESMTP id S234267AbhDGKmT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Apr 2021 06:42:19 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D79ADC06175F
         for <linux-rdma@vger.kernel.org>; Wed,  7 Apr 2021 03:42:09 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a25so3815406ejk.0
-        for <linux-rdma@vger.kernel.org>; Wed, 07 Apr 2021 03:42:08 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id n2so20599184ejy.7
+        for <linux-rdma@vger.kernel.org>; Wed, 07 Apr 2021 03:42:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yuSbwWtLvWBEDcvviHPrnkLG61kubVfLdF96J++Fyvw=;
-        b=MbVJImCC7lfaeL2yk1i4ZC948BOrijv5rEeUpO7n0YzRglOOajWZbJEHvKdIEY+tDE
-         YWy9E/lOnzH/y/h0OJLoAqbR6CAQw/VaB8upetti1Y3CtoE1qCA0FH29Bkxvg0wjx1CI
-         KSOv4SGg1q3L6rBGFUfI+MQ2iy21L1OAN9HmIXfYBJoR8skZ8LCdt9O1uuvSdx3kYeaA
-         4GA1HPfgEOEfNboWLI3cc8yL9BUlNkFYoQGtCykvLgFVrZq94r9YfoIrtujRGOBH2t5/
-         6e0FbpWc9CK/PMJGZOzOzwB1AXZqeYWMnIAAKSthXtTOQV2QlyCi6DOz0dqhi4shQ4To
-         Q67A==
+        bh=sqfP5iAb61OptBn+FoiSmF1jxKVyTz4nX1wWzNO0/8E=;
+        b=RYIwtnoDhzT0WomesigAkLfILKEh6y27z1NMnUYmIqqYyyzOA4b8xo/uote4nWWxw7
+         6fkvYX+vTvEwxB0TKe+9x8bhMEZCZdSLb28bk3F6QRyVuzMYO65xUPEm8+HL0axnhDxy
+         eNmf6C9VSG/31eprUcx9ZE3M0gaD1sCOwWlXBjw1BjFaa7YCsynIwFZqpsZKxhJI4Wi7
+         8CSQV3p8JESt426LXXoQ+dmQb0+/C1kL/AXfbmiGB3PGjVV4o8PySgoxAZ3fZu1Q+mXB
+         Vm4j3gQs4hGnaNNLrarCPkGA87cXYNFH+OgYm6CiWcn+XuZcxdWdGttIdg3C35XzKpBk
+         rXsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yuSbwWtLvWBEDcvviHPrnkLG61kubVfLdF96J++Fyvw=;
-        b=guWingvN9PFfg2R0EXYrG/zuwIhj0r+aQZE65zkbKnq6q2OSR92H4HsXvrDhlVEfO7
-         VkAzLdv6iVIu54R8pKvGvi37fOCWdc3d6DozWF0IaTVavVBS9oZGiU5JoREa2ky00zYX
-         HGUNQxLtAbvu860PEaFUZal/+qCqkBkHuSzijnAiWXM6BTaOYzAC/1uDc91CiK5v0pEP
-         fwGbGhnKE4InaJYOX6KoUhyKO2kLvGtsaAv2jA7nJ1E2eWlbtQmOlsH0VLR0sRW+tO7L
-         y2vZ99wsZx8zMl4C++W39yss0gFAOhR6BUoYHit25/r/NTN9/9txuj6CTeNDVLm+/6hA
-         GJKA==
-X-Gm-Message-State: AOAM530iTYtQmAKE+tITNC1gACX2JdF7ki91qWkdLjq+OsI3jUyeDWTw
-        rGbdFA4gC1GI9iJwiIkLdHLW5wkBB7FEjG9K
-X-Google-Smtp-Source: ABdhPJwdIQ28EzHG9rNu2AC8BBnDk2XfJiExk4TeW7tJbi2uMNuE+GhiQ6SLcGal+gHSKwjIdwKFDw==
-X-Received: by 2002:a17:906:ff41:: with SMTP id zo1mr2944034ejb.19.1617792127616;
-        Wed, 07 Apr 2021 03:42:07 -0700 (PDT)
+        bh=sqfP5iAb61OptBn+FoiSmF1jxKVyTz4nX1wWzNO0/8E=;
+        b=mawqjixu05X/NFHRtsj9ndYJanLLQadiyar1mfkIi0tonHdPLZqdEQ0RnnQBbpceTX
+         c7QnqTf9V+heVcE2WwTbYZlyS3aUI7rpkMSA4WtccpyJ/R1xGlcn1jFNTglbqaQYig2B
+         6uE74EhAWz0Wo5I7+WyNF1j6/wcdP1a5OA8WzAJlKvvUBQLfrLf/1EjFTLDJmOXKlwcu
+         Lvz6XvynL6nIl6v5GQJA4AcTYy9nhGhCJSaBZr22LQ3yxu8Tt9yXezTiV7FGrR9f351G
+         tcAUHX1Iio02HVNIlheFPn7rFe1IBivL2aM35c+iueW0UecElB6lNPXPTROqYO+/qnQD
+         tYOQ==
+X-Gm-Message-State: AOAM533UF6mg64Ms+pQVc2hjBe6K4aHPU4IkcqmG2J2I6pWtHRe8hqmr
+        /QEamtIgiXJZj5Atm+CEFK13rbDogepGlS3+
+X-Google-Smtp-Source: ABdhPJynO3NlvzFfVIrUQ4gij8cfPzuTWhzBuBmca6V3Ys0jW0HXfDgq+p1zKaekweWaslQ3sfTyWg==
+X-Received: by 2002:a17:906:398a:: with SMTP id h10mr2975370eje.155.1617792128420;
+        Wed, 07 Apr 2021 03:42:08 -0700 (PDT)
 Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aeee5.dynamic.kabel-deutschland.de. [95.90.238.229])
         by smtp.googlemail.com with ESMTPSA id j1sm12359779ejt.18.2021.04.07.03.42.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 03:42:07 -0700 (PDT)
+        Wed, 07 Apr 2021 03:42:08 -0700 (PDT)
 From:   Gioh Kim <gi-oh.kim@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
+        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
         Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCHv2 for-next 2/4] RDMA/rtrs-clt: new sysfs attribute to print the latency of each path
-Date:   Wed,  7 Apr 2021 12:42:01 +0200
-Message-Id: <20210407104203.24792-3-gi-oh.kim@ionos.com>
+Subject: [PATCHv2 for-next 3/4] RDMA/rtrs-clt: Check state of the rtrs_clt_sess before reading its stats
+Date:   Wed,  7 Apr 2021 12:42:02 +0200
+Message-Id: <20210407104203.24792-4-gi-oh.kim@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210407104203.24792-1-gi-oh.kim@ionos.com>
 References: <20210407104203.24792-1-gi-oh.kim@ionos.com>
@@ -65,50 +65,165 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
 
-It shows the latest latency that the client checked when sending
-the heart-beat.
+KASAN detected the following BUG:
+[  230.436512] ==================================================================
+[  230.437182] BUG: KASAN: use-after-free in get_next_path_min_inflight+0x95/0x150 [rtrs_client]
+[  230.437632] Read of size 4 at addr ffff88a796b4bb50 by task fio/4130
 
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+[  230.438069] CPU: 32 PID: 4130 Comm: fio Tainted: G           O      5.4.84-pserver #5.4.84-1+feature+linux+5.4.y+dbg+20201216.1319+b6b887b~deb10
+[  230.438079] Hardware name: Supermicro H8QG6/H8QG6, BIOS 3.00       09/04/2012
+[  230.438088] Call Trace:
+[  230.438111]  dump_stack+0x96/0xe0
+[  230.438136]  print_address_description.constprop.4+0x1f/0x300
+[  230.438150]  ? irq_work_claim+0x2e/0x50
+[  230.438172]  __kasan_report.cold.8+0x78/0x92
+[  230.438203]  ? get_next_path_min_inflight+0x95/0x150 [rtrs_client]
+[  230.438234]  kasan_report+0x10/0x20
+[  230.438249]  check_memory_region+0x144/0x1c0
+[  230.438274]  get_next_path_min_inflight+0x95/0x150 [rtrs_client]
+[  230.438312]  rtrs_clt_request+0x1fe/0x700 [rtrs_client]
+[  230.438364]  ? rtrs_clt_close_work+0x40/0x40 [rtrs_client]
+[  230.438395]  ? rtrs_clt_change_state_get_old+0x70/0x70 [rtrs_client]
+[  230.438417]  ? blk_mq_start_request+0x1a4/0x2c0
+[  230.438430]  ? blk_rq_map_sg+0x3d5/0xaa0
+[  230.438468]  ? round_jiffies_up+0x60/0x90
+[  230.438511]  rnbd_queue_rq+0x3e2/0x870 [rnbd_client]
+[  230.438567]  ? rnbd_softirq_done_fn+0x90/0x90 [rnbd_client]
+[  230.438587]  ? rnbd_get_permit+0x50/0x50 [rnbd_client]
+[  230.438601]  ? __lock_acquire+0x68e/0x23a0
+[  230.438635]  ? blk_mq_get_driver_tag+0xbe/0x250
+[  230.438652]  ? blk_mq_dequeue_from_ctx+0x4d0/0x4d0
+[  230.438663]  ? lock_acquire+0xf3/0x210
+[  230.438726]  __blk_mq_try_issue_directly+0x272/0x390
+[  230.438752]  ? blk_mq_get_driver_tag+0x250/0x250
+[  230.438785]  ? rcu_is_watching+0x34/0x50
+[  230.438816]  blk_mq_request_issue_directly+0xa8/0xf0
+[  230.438833]  ? blk_mq_flush_plug_list+0x690/0x690
+[  230.438859]  ? lock_downgrade+0x390/0x390
+[  230.438892]  ? lock_acquire+0xf3/0x210
+[  230.438920]  blk_mq_try_issue_list_directly+0xa1/0x160
+[  230.438952]  blk_mq_sched_insert_requests+0x23c/0x390
+[  230.438992]  blk_mq_flush_plug_list+0x361/0x690
+[  230.439037]  ? blk_mq_insert_requests+0x300/0x300
+[  230.439058]  ? current_time+0x8c/0xe0
+[  230.439074]  ? timestamp_truncate+0x180/0x180
+[  230.439101]  ? file_remove_privs+0xb4/0x1f0
+[  230.439139]  blk_flush_plug_list+0x1d1/0x210
+[  230.439167]  ? blk_insert_cloned_request+0x1e0/0x1e0
+[  230.439220]  blk_finish_plug+0x3c/0x54
+[  230.439243]  blkdev_write_iter+0x173/0x260
+[  230.439272]  ? bd_finish_claiming+0xe0/0xe0
+[  230.439298]  ? 0xffffffff9a000000
+[  230.439330]  ? rw_verify_area+0xd9/0x130
+[  230.439359]  aio_write+0x1d3/0x300
+[  230.439387]  ? aio_read+0x260/0x260
+[  230.439477]  ? lock_downgrade+0x390/0x390
+[  230.439497]  ? lock_acquire+0xf3/0x210
+[  230.439512]  ? __might_fault+0x7d/0xe0
+[  230.439570]  io_submit_one+0xccc/0x1920
+[  230.439633]  ? aio_poll_complete_work+0x850/0x850
+[  230.439735]  ? __x64_sys_io_submit+0x118/0x380
+[  230.439748]  __x64_sys_io_submit+0x118/0x380
+[  230.439777]  ? __ia32_compat_sys_io_submit+0x360/0x360
+[  230.439793]  ? __x64_sys_io_getevents+0xd7/0x150
+[  230.439807]  ? mark_held_locks+0x29/0xa0
+[  230.439827]  ? entry_SYSCALL_64_after_hwframe+0x3e/0xbe
+[  230.439840]  ? trace_hardirqs_off_caller+0x15/0x110
+[  230.439857]  ? mark_held_locks+0x29/0xa0
+[  230.439893]  ? do_syscall_64+0x68/0x270
+[  230.439903]  do_syscall_64+0x68/0x270
+[  230.439924]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+[  230.439936] RIP: 0033:0x7f8f10233f59
+[  230.439948] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 07 6f 0c 00 f7 d8 64 89 01 48
+[  230.439958] RSP: 002b:00007fff1df1d238 EFLAGS: 00000246 ORIG_RAX: 00000000000000d1
+[  230.439970] RAX: ffffffffffffffda RBX: 00007f8f104ec360 RCX: 00007f8f10233f59
+[  230.439980] RDX: 0000555c4c1f9440 RSI: 0000000000000001 RDI: 00007f8f04730000
+[  230.439989] RBP: 00007f8f04730000 R08: 0000555c4c1c97f0 R09: 00000000000001e0
+[  230.439998] R10: 0000555c4c1f9670 R11: 0000000000000246 R12: 0000000000000001
+[  230.440007] R13: 0000000000000000 R14: 0000555c4c1f9440 R15: 00007f8ee30b5210
+
+[  230.440257] Allocated by task 3440:
+[  230.440471]  save_stack+0x19/0x80
+[  230.440482]  __kasan_kmalloc.constprop.9+0xc1/0xd0
+[  230.440492]  kmem_cache_alloc_trace+0x15b/0x350
+[  230.440508]  alloc_sess+0xf4/0x570 [rtrs_client]
+[  230.440524]  rtrs_clt_open+0x3b4/0x780 [rtrs_client]
+[  230.440538]  find_and_get_or_create_sess+0x649/0x9d0 [rnbd_client]
+[  230.440551]  rnbd_clt_map_device+0xd7/0xf50 [rnbd_client]
+[  230.440565]  rnbd_clt_map_device_store+0x4ee/0x970 [rnbd_client]
+[  230.440577]  kernfs_fop_write+0x141/0x240
+[  230.440587]  vfs_write+0xf3/0x280
+[  230.440598]  ksys_write+0xba/0x150
+[  230.440608]  do_syscall_64+0x68/0x270
+[  230.440619]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+[  230.440806] Freed by task 4148:
+[  230.441013]  save_stack+0x19/0x80
+[  230.441024]  __kasan_slab_free+0x125/0x170
+[  230.441034]  kfree+0xe7/0x3f0
+[  230.441045]  kobject_put+0xd3/0x240
+[  230.441061]  rtrs_clt_destroy_sess_files+0x3f/0x60 [rtrs_client]
+[  230.441076]  rtrs_clt_remove_path_from_sysfs+0x95/0xe0 [rtrs_client]
+[  230.441092]  rtrs_clt_remove_path_store+0x3e/0xa0 [rtrs_client]
+[  230.441103]  kernfs_fop_write+0x141/0x240
+[  230.441113]  vfs_write+0xf3/0x280
+[  230.441123]  ksys_write+0xba/0x150
+[  230.441133]  do_syscall_64+0x68/0x270
+[  230.441145]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+[  230.441333] The buggy address belongs to the object at ffff88a796b4bb00
+                which belongs to the cache kmalloc-96 of size 96
+[  230.441705] The buggy address is located 80 bytes inside of
+                96-byte region [ffff88a796b4bb00, ffff88a796b4bb60)
+[  230.442063] The buggy address belongs to the page:
+[  230.442294] page:ffffea009e5ad2c0 refcount:1 mapcount:0 mapping:ffff8887c6016e00 index:0x0
+[  230.442305] flags: 0x12ffff8000000200(slab)
+[  230.442320] raw: 12ffff8000000200 dead000000000100 dead000000000122 ffff8887c6016e00
+[  230.442332] raw: 0000000000000000 0000000000200020 00000001ffffffff 0000000000000000
+[  230.442340] page dumped because: kasan: bad access detected
+
+[  230.442525] Memory state around the buggy address:
+[  230.442756]  ffff88a796b4ba00: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+[  230.443059]  ffff88a796b4ba80: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+[  230.443359] >ffff88a796b4bb00: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+[  230.443681]                                                  ^
+[  230.443935]  ffff88a796b4bb80: 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc
+[  230.444233]  ffff88a796b4bc00: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+[  230.444529] ==================================================================
+
+When get_next_path_min_inflight is called to select the next path, it
+iterates over the list of available rtrs_clt_sess (paths). It then reads
+the number of inflight IOs for that path to select one which has the least
+
+But it may so happen that that rtrs_clt_sess (path) is no longer in the
+connected state, and like in the above BUG its resources have also been
+freed.
+
+So, check the state of the rtrs_clt_sess (path) before going ahead to read
+its inflight stats.
+
+Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+Reviewed-by: Gioh Kim <gi-oh.kim@ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-index c8669d3f79f1..e2673a17b6a3 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-@@ -355,6 +355,21 @@ static ssize_t rtrs_clt_hca_name_show(struct kobject *kobj,
- static struct kobj_attribute rtrs_clt_hca_name_attr =
- 	__ATTR(hca_name, 0444, rtrs_clt_hca_name_show, NULL);
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index f3b8151052cb..96029d4ec26f 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -812,6 +812,9 @@ static struct rtrs_clt_sess *get_next_path_min_inflight(struct path_it *it)
+ 	int inflight;
  
-+static ssize_t rtrs_clt_cur_latency_show(struct kobject *kobj,
-+				    struct kobj_attribute *attr,
-+				    char *page)
-+{
-+	struct rtrs_clt_sess *sess;
+ 	list_for_each_entry_rcu(sess, &clt->paths_list, s.entry) {
++		if (unlikely(READ_ONCE(sess->state) != RTRS_CLT_CONNECTED))
++			continue;
 +
-+	sess = container_of(kobj, struct rtrs_clt_sess, kobj);
-+
-+	return scnprintf(page, PAGE_SIZE, "%lld ns\n",
-+			 ktime_to_ns(sess->s.hb_cur_latency));
-+}
-+
-+static struct kobj_attribute rtrs_clt_cur_latency_attr =
-+	__ATTR(cur_latency, 0444, rtrs_clt_cur_latency_show, NULL);
-+
- static ssize_t rtrs_clt_src_addr_show(struct kobject *kobj,
- 				       struct kobj_attribute *attr,
- 				       char *page)
-@@ -398,6 +413,7 @@ static struct attribute *rtrs_clt_sess_attrs[] = {
- 	&rtrs_clt_reconnect_attr.attr,
- 	&rtrs_clt_disconnect_attr.attr,
- 	&rtrs_clt_remove_path_attr.attr,
-+	&rtrs_clt_cur_latency_attr.attr,
- 	NULL,
- };
+ 		if (unlikely(!list_empty(raw_cpu_ptr(sess->mp_skip_entry))))
+ 			continue;
  
 -- 
 2.25.1
