@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D662C358424
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Apr 2021 15:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0C5358425
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Apr 2021 15:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbhDHNGC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Apr 2021 09:06:02 -0400
-Received: from mga01.intel.com ([192.55.52.88]:3361 "EHLO mga01.intel.com"
+        id S229837AbhDHNGS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Apr 2021 09:06:18 -0400
+Received: from mga17.intel.com ([192.55.52.151]:3953 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229741AbhDHNGB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:06:01 -0400
-IronPort-SDR: BBvllOxCZlRz+SPWJKsYjDe2RLm0ZAj5G2vO0f7gPW8+4Uyqr2fZwa5kNQB+NDEidgXB/gtHuw
- 2RI1qMvKEipQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="213941221"
+        id S229741AbhDHNGR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 8 Apr 2021 09:06:17 -0400
+IronPort-SDR: A0jpAjJTnRMCcti7AuUELCfELzHH9xW/pc9GcRz0gZM8rqj+Wlvww4eGcoFqzMvr3OEQTHU9uU
+ c3e98mBcjzGA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="173616179"
 X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
-   d="scan'208";a="213941221"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 06:04:11 -0700
-IronPort-SDR: pApk6FNPnB5/axeN6cclHSOr1XxZEWkA0wK8T+TQ5u/V8lTCvp/ca9rw7ph0JNfpt3LXsyR642
- XvidsLVVwapA==
+   d="scan'208";a="173616179"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 06:04:11 -0700
+IronPort-SDR: 5slic5/8qUyOYM+iVWqJDkaEiQwWQZyrXxkba2qRbJwwsTPvg1I+jI8juFti4x2rOqpk7QrlAr
+ 5unt+3IRbKZw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
-   d="scan'208";a="449669388"
+   d="scan'208";a="419140304"
 Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 08 Apr 2021 06:04:09 -0700
+  by orsmga007.jf.intel.com with ESMTP; 08 Apr 2021 06:04:09 -0700
 Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lUUKO-000F3i-Qo; Thu, 08 Apr 2021 13:04:08 +0000
-Date:   Thu, 08 Apr 2021 21:03:14 +0800
+        id 1lUUKO-000F3g-Q9; Thu, 08 Apr 2021 13:04:08 +0000
+Date:   Thu, 08 Apr 2021 21:03:23 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-rc] BUILD SUCCESS
- e1ad897b9c738d5550be6762bf3a6ef1672259a4
-Message-ID: <606eff12.bHstTV/hPrMg4fCh%lkp@intel.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 7d8f346504ebde71d92905e3055d40ea8f34416e
+Message-ID: <606eff1b.vdzQ/jO0LN/v3mvr%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +43,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
-branch HEAD: e1ad897b9c738d5550be6762bf3a6ef1672259a4  RDMA/qedr: Fix kernel panic when trying to access recv_cq
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 7d8f346504ebde71d92905e3055d40ea8f34416e  RDMA/core: Make the wc status prompt message clearer
 
 elapsed time: 731m
 
-configs tested: 237
+configs tested: 224
 configs skipped: 4
 
 The following configs have been built successfully.
@@ -93,10 +93,6 @@ mips                        maltaup_defconfig
 mips                         mpc30x_defconfig
 arm                        cerfcube_defconfig
 xtensa                  cadence_csp_defconfig
-m68k                        m5307c3_defconfig
-m68k                       m5208evb_defconfig
-mips                malta_qemu_32r6_defconfig
-sh                           se7712_defconfig
 arm                        oxnas_v6_defconfig
 powerpc                      ppc44x_defconfig
 arm                  colibri_pxa300_defconfig
@@ -134,12 +130,6 @@ arm                        spear3xx_defconfig
 mips                           gcw0_defconfig
 arm                          moxart_defconfig
 m68k                       m5475evb_defconfig
-m68k                             alldefconfig
-arm                          gemini_defconfig
-mips                           mtx1_defconfig
-arm                         lubbock_defconfig
-arc                           tb10x_defconfig
-mips                            gpr_defconfig
 powerpc                       maple_defconfig
 powerpc64                           defconfig
 mips                     cu1000-neo_defconfig
@@ -169,6 +159,7 @@ powerpc                        warp_defconfig
 arm                         cm_x300_defconfig
 sh                          urquell_defconfig
 alpha                            alldefconfig
+m68k                        m5307c3_defconfig
 arm                      tct_hammer_defconfig
 mips                           ip28_defconfig
 sh                   sh7724_generic_defconfig
@@ -202,10 +193,6 @@ sh                         ap325rxa_defconfig
 powerpc                 mpc832x_mds_defconfig
 powerpc                      bamboo_defconfig
 mips                      pistachio_defconfig
-arm                         shannon_defconfig
-openrisc                            defconfig
-mips                          ath25_defconfig
-mips                          ath79_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 m68k                             allmodconfig
