@@ -2,56 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3683587F3
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Apr 2021 17:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B07C335881F
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Apr 2021 17:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhDHPNv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Apr 2021 11:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        id S231785AbhDHPWq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Apr 2021 11:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231946AbhDHPNu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Apr 2021 11:13:50 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F66C061760
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Apr 2021 08:13:38 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id g10so1204839plt.8
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Apr 2021 08:13:38 -0700 (PDT)
+        with ESMTP id S231765AbhDHPWq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Apr 2021 11:22:46 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B0EC061760
+        for <linux-rdma@vger.kernel.org>; Thu,  8 Apr 2021 08:22:35 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id n38so2087386pfv.2
+        for <linux-rdma@vger.kernel.org>; Thu, 08 Apr 2021 08:22:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YjspTpOkO9p3Ur7w/KfVNUu/xYd3BqcI0THag3BvXtg=;
-        b=VkiwcdWuhDrHg9xZenefsm9LhcDjr/Ge2O6jZn8esxNs1yQYcx2ObJHddB/lMu0rUR
-         g56M7UoIOMmvRGnh+CrsgDDuY3ws/AYVfpqc6v7OJi5tlT8dcqHGRJ/RuEMxudwaMRJ8
-         2Tqmz5hr91K4g1QPIKoVkc6MxEZU8cpaySNGU=
+        bh=SaJO0g4xiNr7a4Su0BZ3ZMwk+xQOzjLbt0frLRjG+H8=;
+        b=WxTPpeXW+CqDdOuuiD/NyD03OiUhDV3+ovHDpx/cdvA/e/hUnJcG6P0N+Kgc2C57wq
+         W140ne3GKGPg4uGe16J0I3rSprpt34PthP5vL35hE9zzKBBzdRkR2b/HJfL2CoY8Cag4
+         ZARl6KwrXmC/gR4VZ9av9dEz1lTswgQpI5Z7Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YjspTpOkO9p3Ur7w/KfVNUu/xYd3BqcI0THag3BvXtg=;
-        b=X+Qll4qgjSQyjnyQwgBzztI3LUnPeCYhfTOEIafRjvmzz8eJFHG55AXCKwZTd/afAK
-         7C/wr3B8W1KsIk/cTaCL5wideJI9XkJgzqLSqRfwJG2uagiiCgqOjUYcCkwGBAY+I41i
-         dW0ODfpAJo4yhb22oJ7//bz6k93Ps9JBpVu3zpMf+hIEBRrqSscNR8FdxJc55cDRtCcr
-         fESZqsc9wQJgTG641WMM6gdab1f1+OCGcXtvHBZZUZsN3t1EKCrCv4ImfgpWNsKL04sA
-         IdBDtcmwqVa8aHqSar0P/hMZhx4z3qQa6EGFJuCz5tQhWiBEu9SaQzGcKqN9UR15o7eP
-         ewSQ==
-X-Gm-Message-State: AOAM530R03xdvHdboU8vzU1pVE8vu4JyIGqQ6ayA8MZrTws+tujEYemR
-        YViVDKZuNdUNoJhlK6WU4wKVx+fCoI9O7L7d85mik6zMddc=
-X-Google-Smtp-Source: ABdhPJwfQ9alGXqX9yRAf7AKpwYa7g8632Y2ANX8LwLWCZ/a9u4tBVA5eeS6zWNJHm84NYuShUfeHeD44WWHsflBguc=
-X-Received: by 2002:a17:902:ea0c:b029:e9:8ae7:408f with SMTP id
- s12-20020a170902ea0cb02900e98ae7408fmr4138324plg.4.1617894817227; Thu, 08 Apr
- 2021 08:13:37 -0700 (PDT)
+        bh=SaJO0g4xiNr7a4Su0BZ3ZMwk+xQOzjLbt0frLRjG+H8=;
+        b=luyWpU+U0Lcuk4ISxMq0+RBsHqAIQiEyh2fbGdl2P1P4vzSS/s0BlXJDe9PS20Guiy
+         7TnuIlIVQFzDs3/yQTM+nSzacvnO+TmST8kh0IdMqdqqsb5c/NbTANa8d5rSS5bmr4nr
+         Su4wOef0XvQ9J6/HgY8hXAXR/m7hLUr1MwzOUnA8cCrcMOiF+LLLq3XcpJLnM3VFOVl8
+         Ez5G1vu2VWia7I6VId1nF1qHeX/iiN44GGMj1+OsMJXOOxxR076eRxLbKC86UEByIqgg
+         FBXa/9XEQKYQ1AA/b99ciN2Kf3L3JRBGIkv57XM9U8BSOxTZNuuc80YwAjBlByrghu2U
+         ES4w==
+X-Gm-Message-State: AOAM533DfwA0Npt5KLMTSbYGoErrq/uWqr69y7nOgUqxMPCbow777W4e
+        4lxYkTsNNr0SXhdQhKtozCN92V4BzhdPurfFND7u9A==
+X-Google-Smtp-Source: ABdhPJz96vEdv3phuFNjkFNbIFS04YJaQgw+TIVFokXV9iSqKZXSloYi8bUxcoTZuGSwsDLUSoeQaRKYptUV5EGw9uo=
+X-Received: by 2002:a05:6a00:b86:b029:207:8ac9:85de with SMTP id
+ g6-20020a056a000b86b02902078ac985demr7697999pfj.66.1617895354273; Thu, 08 Apr
+ 2021 08:22:34 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210401065715.565226-1-leon@kernel.org> <CANjDDBiuw_VNepewLAtYE58Eg2JEsvGbpxttWyjV6DYMQdY5Zw@mail.gmail.com>
  <YGhUjarXh+BEK1pW@unreal> <CANjDDBiC-8pL+-ma1c0n8vjMaorm-CasV_D+_8q2LGy-AYuTVg@mail.gmail.com>
- <YG7srVMi8IEjuLfF@unreal>
-In-Reply-To: <YG7srVMi8IEjuLfF@unreal>
+ <YG7srVMi8IEjuLfF@unreal> <20210408115347.GO7405@nvidia.com>
+In-Reply-To: <20210408115347.GO7405@nvidia.com>
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Thu, 8 Apr 2021 20:42:57 +0530
-Message-ID: <CANjDDBirjSEkcDZ4E8u4Ce_dep3PRTmo2S9-q7=dmR+MLKi_=A@mail.gmail.com>
+Date:   Thu, 8 Apr 2021 20:51:57 +0530
+Message-ID: <CANjDDBjqvGEY4J=khzSJ4Gf3kH9865tH9K-JZUSBbxemO55mEg@mail.gmail.com>
 Subject: Re: [PATCH rdma-next v2 0/5] Get rid of custom made module dependency
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -63,116 +63,39 @@ Cc:     Jason Gunthorpe <jgg@nvidia.com>,
         Somnath Kotur <somnath.kotur@broadcom.com>,
         Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000eb59ba05bf777df8"
+        boundary="000000000000ec1ef605bf779d06"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000eb59ba05bf777df8
+--000000000000ec1ef605bf779d06
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Apr 8, 2021 at 5:14 PM Leon Romanovsky <leon@kernel.org> wrote:
+On Thu, Apr 8, 2021 at 5:23 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
 >
-> On Thu, Apr 08, 2021 at 05:06:24PM +0530, Devesh Sharma wrote:
-> > On Sat, Apr 3, 2021 at 5:12 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > On Sat, Apr 03, 2021 at 03:52:13PM +0530, Devesh Sharma wrote:
-> > > > On Thu, Apr 1, 2021 at 12:27 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > > > >
-> > > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > >
-> > > > > Changelog:
-> > > > > v2:
-> > > > >  * kbuild spotted that I didn't delete all code in patch #5, so deleted
-> > > > >    even more ulp_ops derefences.
-> > > > > v1: https://lore.kernel.org/linux-rdma/20210329085212.257771-1-leon@kernel.org
-> > > > >  * Go much deeper and removed useless ULP indirection
-> > > > > v0: https://lore.kernel.org/linux-rdma/20210324142524.1135319-1-leon@kernel.org
-> > > > > -----------------------------------------------------------------------
-> > > > >
-> > > > > The following series fixes issue spotted in [1], where bnxt_re driver
-> > > > > messed with module reference counting in order to implement symbol
-> > > > > dependency of bnxt_re and bnxt modules. All of this is done, when in
-> > > > > upstream we have only one ULP user of that bnxt module. The simple
-> > > > > declaration of exported symbol would do the trick.
-> > > > >
-> > > > > This series removes that custom module_get/_put, which is not supposed
-> > > > > to be in the driver from the beginning and get rid of nasty indirection
-> > > > > logic that isn't relevant for the upstream code.
-> > > > >
-> > > > > Such small changes allow us to simplify the bnxt code and my hope that
-> > > > > Devesh will continue where I stopped and remove struct bnxt_ulp_ops too.
-> > > > >
-> > > > > Thanks
-> > > > >
-> > > > > [1] https://lore.kernel.org/linux-rdma/20210324142524.1135319-1-leon@kernel.org
-> > > > >
-> > > > > Leon Romanovsky (5):
-> > > > >   RDMA/bnxt_re: Depend on bnxt ethernet driver and not blindly select it
-> > > > >   RDMA/bnxt_re: Create direct symbolic link between bnxt modules
-> > > > >   RDMA/bnxt_re: Get rid of custom module reference counting
-> > > > >   net/bnxt: Remove useless check of non-existent ULP id
-> > > > >   net/bnxt: Use direct API instead of useless indirection
-> > > > >
-> > > > >  drivers/infiniband/hw/bnxt_re/Kconfig         |   4 +-
-> > > > >  drivers/infiniband/hw/bnxt_re/main.c          |  93 ++-----
-> > > > >  drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   4 +-
-> > > > >  drivers/net/ethernet/broadcom/bnxt/bnxt.h     |   1 -
-> > > > >  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c | 245 +++++++-----------
-> > > > >  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |  32 +--
-> > > > >  6 files changed, 119 insertions(+), 260 deletions(-)
-> > > >
-> > > > Hi Leon,
-> > > >
-> > > > After a couple of internal discussions we reached a conclusion to
-> > > > implement the Auxbus driver interface and fix the problem once and for
-> > > > all.
-> > >
-> > > Thanks Devesh,
-> > >
-> > > Jason, it looks like we can proceed with this patchset, because in
-> > > auxbus mode this module refcount and ULP indirection logics will be
-> > > removed anyway.
-> > >
-> > > Thanks
-> > Hi Leon,
+> On Thu, Apr 08, 2021 at 02:44:45PM +0300, Leon Romanovsky wrote:
+>
+> > > In my internal testing, I am seeing a crash using the 3rd patch. I am
+> > > spending a few cycles on debugging it. expect my input in a day or so.
 > >
-> > In my internal testing, I am seeing a crash using the 3rd patch. I am
-> > spending a few cycles on debugging it. expect my input in a day or so.
+> > Can you please post the kernel crash report here?
+> > I don't see how function rename in patch #3 can cause to the crash.
 >
-> Can you please post the kernel crash report here?
-> I don't see how function rename in patch #3 can cause to the crash.
-Hey, unfortunately my kdump service config is giving me tough time on
-my host. I will share if I get it.
+> I looked too, I'm also quite surprised that 1,2,3 alone have a
+> bug.. Is there some condition where ulp_probe can be null?
 >
-> Thanks
+> Ugh the is_bnxt_re_dev() is horribly gross too
+Yeah, it is indeed. I will take this feedback to the internal team.
 >
-> > >
-> > > > >
-> > > > > --
-> > > > > 2.30.2
-> > > > >
-> > > >
-> > > >
-> > > > --
-> > > > -Regards
-> > > > Devesh
-> > >
-> > >
-> >
-> >
-> > --
-> > -Regards
-> > Devesh
->
->
+> Jason
+
 
 
 -- 
 -Regards
 Devesh
 
---000000000000eb59ba05bf777df8
+--000000000000ec1ef605bf779d06
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -243,13 +166,13 @@ G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
 PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIMbzawn5Ob16ZpTZUaRZtWKeBSg9
-5qXrw0XHSGzJ4lcNMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDQwODE1MTMzOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINzWvGITmWHLkxOq3RRdVONblunb
+Mi5SH9XGIyH0Ox3OMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDQwODE1MjIzNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQBYcoaZa+gUGOkkzDknVRz8ELAwnO+bU1bOQ93eVDfVxnIO
-Pef8WDpsMymytYCZSNoFp5gQtahE262ojbgkUG3vUKnWQ66gs32w7Sn8lnF81knISeeswRIxJDmE
-IEZW+HYo0DBcFLcl7MXdapjbLloflJYWkj6l31RYEEa9EQVxxVibtNyMv0TLHmO/uVdg9jqQZH1w
-Ydjufa1n8qmG6Btp6G+pGVGY/dYafl6eLRvwXVQNldnE9554SmPgCXBYJWNqeBERdLR+kSX56d2C
-caF/4El4MfqsqF4qrlbGaSmIMypeYAGiJUnulDNQ2xeXq5mR29QfojIng5BmDjbVW1dV
---000000000000eb59ba05bf777df8--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQCZ85JYefozpRF7G1Jw6ClTob18CBjExETiW8MX3YkqzP+2
+xq7Fzoc6vBA0VBWP28soJqOoN927SGryhBkthR0aoLDakuoj8KnKONmn1C2Rad5xmhxCdUWxLxSf
+f8zc1jcI6Pac9jb/ApZ+B6bDdcrlrD/siZSpNqDd2eGJYbNi07GfI2eSsdT7lCXFigUxeQ8xAtMD
+om2knJmn/R/czvaC5kJAKTQHwTwprEeKbcklUlgtAtlXOi5WYOHy2ULw8N1B2zVDdVfY0F30CCyf
+yGFsRJ9IodTAPdGvoBPqixv5KlHnpM0QGLEiCZNFzfxi8GW//U/6Dc1UJPmy5WEXX4h2
+--000000000000ec1ef605bf779d06--
