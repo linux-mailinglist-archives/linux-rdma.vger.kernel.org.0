@@ -2,94 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B27D357C9F
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Apr 2021 08:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F5A357D5C
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Apr 2021 09:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhDHGbO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Apr 2021 02:31:14 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:21828 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhDHGbN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Apr 2021 02:31:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1617863464; x=1649399464;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=eOMoXCK/w+gFW7dgschcX+rAvFdxsejAXBO3WCqDjoA=;
-  b=XRcIN7yF52aAAQFi4XpyXkG4MC3hhZTp9lzvrmSvJGx7KFSYIreStMhk
-   Z71yTa7zlhm+506E4GfW3vpYVQsSqqRpSsfc1ZNuz/V7MGQ96lM/OzuwJ
-   g5zMNJXsHXhZH/531tngfwlzVFkdN9cUI1afOSoEUF1oTMKV2GDCRwAvX
-   E=;
-X-IronPort-AV: E=Sophos;i="5.82,205,1613433600"; 
-   d="scan'208";a="101823599"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 08 Apr 2021 06:30:56 +0000
-Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id AD7E91A280E;
-        Thu,  8 Apr 2021 06:30:54 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.207) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 8 Apr 2021 06:30:17 +0000
-Subject: Re: [PATCH for-next v2] RDMA/nldev: Add copy-on-fork attribute to get
- sys command
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Peter Xu <peterx@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210407101606.80737-1-galpress@amazon.com>
- <YG2n/nDhhQEGefFq@unreal> <6d62496e-6bc7-4981-d3ef-5035c6fee93b@amazon.com>
- <YG2yY2PW2AJgA02J@unreal> <010c6b45-a9b0-67c7-82e3-78533a532225@amazon.com>
- <YG22Rm1jcYcKWXdT@unreal>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <21317d2c-9a8e-0dd7-3678-d2933c5053c4@amazon.com>
-Date:   Thu, 8 Apr 2021 09:30:11 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
+        id S229623AbhDHHaU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Apr 2021 03:30:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52274 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229566AbhDHHaT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 8 Apr 2021 03:30:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69BDA61104;
+        Thu,  8 Apr 2021 07:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617867009;
+        bh=xHvEEbDy+GdrYbsrArw4v1nl5+OHtHrx9LgIr/6WA/U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mh2lPsagCload/kIKR2Tf9SGYVpG1Cv4H4D5sp6hR6SRor2EgtERiU8Wk+u8H1X/m
+         LN8hufh8IpniDP+NCvJNwjqozCZw/7r9omXTjx08vbUeuHQB0M+9btF0NG6jzgN94b
+         Fe+vpk0uuSqX8DJ0dwZ/JN6MimgnZ20OF9HhdKh3BqiILuRcfgfpoxuKQyl89NHwwP
+         j6agvgXuMKxauSK2OjTl8AMv90aIgNFOxdcQp/rRVhY6wSt3KCmObOrMLdz7u1RoLP
+         Mc6/M2ydfUa2utitlGbfQx859QRI9x+cal/L6wMKAdGhIaxGdeI8uxjaZVquvlK2Wm
+         fLcDnDAD7yWRQ==
+Date:   Thu, 8 Apr 2021 10:14:47 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+Subject: Re: [PATCH v4 01/23] iidc: Introduce iidc.h
+Message-ID: <YG6tZ/iRFpt3OELK@unreal>
+References: <20210406210125.241-1-shiraz.saleem@intel.com>
+ <20210406210125.241-2-shiraz.saleem@intel.com>
+ <20210407154430.GA502757@nvidia.com>
+ <1e61169b83ac458aa9357298ecfab846@intel.com>
+ <20210407224324.GH282464@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <YG22Rm1jcYcKWXdT@unreal>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.207]
-X-ClientProxiedBy: EX13D14UWB002.ant.amazon.com (10.43.161.216) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407224324.GH282464@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 07/04/2021 16:40, Leon Romanovsky wrote:
-> On Wed, Apr 07, 2021 at 04:30:50PM +0300, Gal Pressman wrote:
->> On 07/04/2021 16:23, Leon Romanovsky wrote:
->>> On Wed, Apr 07, 2021 at 04:14:46PM +0300, Gal Pressman wrote:
->>>> On 07/04/2021 15:39, Leon Romanovsky wrote:
->>>>>> @@ -1710,7 +1721,8 @@ static int nldev_set_sys_set_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
->>>>>>
->>>>>>       err = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
->>>>>>                         nldev_policy, extack);
->>>>>> -     if (err || !tb[RDMA_NLDEV_SYS_ATTR_NETNS_MODE])
->>>>>> +     if (err || !tb[RDMA_NLDEV_SYS_ATTR_NETNS_MODE] ||
->>>>>> +         tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK])
->>>>>
->>>>> Why do we fail if user supplies RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK?
->>>>
->>>> It's a read-only attribute, if someone tries to set its value I assume it's best
->>>> to return an error.
->>>
->>> Not in netlink world, you need to ignore the parameters that
->>> you don't "know how to handle" and check for must-to-be input only.
->>
->> Not sure I understand.
->> So you expect the set function to remain unchanged in this patch? Isn't it bad
->> that a user can request to change the copy on fork value and get a success
->> return value although nothing happened?
+On Wed, Apr 07, 2021 at 07:43:24PM -0300, Jason Gunthorpe wrote:
+> On Wed, Apr 07, 2021 at 08:58:49PM +0000, Saleem, Shiraz wrote:
+> > > Subject: Re: [PATCH v4 01/23] iidc: Introduce iidc.h
+> > > 
+> > > On Tue, Apr 06, 2021 at 04:01:03PM -0500, Shiraz Saleem wrote:
+> > > 
+> > > > +/* Following APIs are implemented by core PCI driver */ struct
+> > > > +iidc_core_ops {
+> > > > +	/* APIs to allocate resources such as VEB, VSI, Doorbell queues,
+> > > > +	 * completion queues, Tx/Rx queues, etc...
+> > > > +	 */
+> > > > +	int (*alloc_res)(struct iidc_core_dev_info *cdev_info,
+> > > > +			 struct iidc_res *res,
+> > > > +			 int partial_acceptable);
+> > > > +	int (*free_res)(struct iidc_core_dev_info *cdev_info,
+> > > > +			struct iidc_res *res);
+> > > > +
+> > > > +	int (*request_reset)(struct iidc_core_dev_info *cdev_info,
+> > > > +			     enum iidc_reset_type reset_type);
+> > > > +
+> > > > +	int (*update_vport_filter)(struct iidc_core_dev_info *cdev_info,
+> > > > +				   u16 vport_id, bool enable);
+> > > > +	int (*vc_send)(struct iidc_core_dev_info *cdev_info, u32 vf_id, u8 *msg,
+> > > > +		       u16 len);
+> > > > +};
+> > > 
+> > > What is this? There is only one implementation:
+> > > 
+> > > static const struct iidc_core_ops ops = {
+> > > 	.alloc_res			= ice_cdev_info_alloc_res,
+> > > 	.free_res			= ice_cdev_info_free_res,
+> > > 	.request_reset			= ice_cdev_info_request_reset,
+> > > 	.update_vport_filter		= ice_cdev_info_update_vsi_filter,
+> > > 	.vc_send			= ice_cdev_info_vc_send,
+> > > };
+> > > 
+> > > So export and call the functions directly.
+> > 
+> > No. Then we end up requiring ice to be loaded even when just want to
+> > use irdma with x722 [whose ethernet driver is "i40e"].
 > 
-> The same goes for all netlink attributes, user can send some *_RES_*
-> attribute to _set_ and we won't fail. The same goes for rtnetlink too.
+> So what? What does it matter to load a few extra kb of modules?
 
-Thanks, will remove the check in nldev_set_sys_set_doit().
+And if user cares about it, he will blacklist that module anyway.
+
+Thanks
