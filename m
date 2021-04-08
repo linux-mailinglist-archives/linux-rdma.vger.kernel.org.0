@@ -2,96 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F5A357D5C
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Apr 2021 09:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEFF7357E28
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Apr 2021 10:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhDHHaU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Apr 2021 03:30:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229566AbhDHHaT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Apr 2021 03:30:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69BDA61104;
-        Thu,  8 Apr 2021 07:30:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617867009;
-        bh=xHvEEbDy+GdrYbsrArw4v1nl5+OHtHrx9LgIr/6WA/U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mh2lPsagCload/kIKR2Tf9SGYVpG1Cv4H4D5sp6hR6SRor2EgtERiU8Wk+u8H1X/m
-         LN8hufh8IpniDP+NCvJNwjqozCZw/7r9omXTjx08vbUeuHQB0M+9btF0NG6jzgN94b
-         Fe+vpk0uuSqX8DJ0dwZ/JN6MimgnZ20OF9HhdKh3BqiILuRcfgfpoxuKQyl89NHwwP
-         j6agvgXuMKxauSK2OjTl8AMv90aIgNFOxdcQp/rRVhY6wSt3KCmObOrMLdz7u1RoLP
-         Mc6/M2ydfUa2utitlGbfQx859QRI9x+cal/L6wMKAdGhIaxGdeI8uxjaZVquvlK2Wm
-         fLcDnDAD7yWRQ==
-Date:   Thu, 8 Apr 2021 10:14:47 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-Subject: Re: [PATCH v4 01/23] iidc: Introduce iidc.h
-Message-ID: <YG6tZ/iRFpt3OELK@unreal>
-References: <20210406210125.241-1-shiraz.saleem@intel.com>
- <20210406210125.241-2-shiraz.saleem@intel.com>
- <20210407154430.GA502757@nvidia.com>
- <1e61169b83ac458aa9357298ecfab846@intel.com>
- <20210407224324.GH282464@nvidia.com>
+        id S229566AbhDHIet (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Apr 2021 04:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229602AbhDHIet (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Apr 2021 04:34:49 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E49C061760
+        for <linux-rdma@vger.kernel.org>; Thu,  8 Apr 2021 01:34:38 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id r22so1363646edq.9
+        for <linux-rdma@vger.kernel.org>; Thu, 08 Apr 2021 01:34:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B+LFQ/PnHZ1xfPLVXvJl5z9X7NhpPOqgzc8b8A1aKVg=;
+        b=CzrXFHvkUQ1eJkxk9O5CqEhtH3XE8vGi0fHT9dOsYN/F6Q8BJy1v+BKI7VJB9SWINO
+         P0Hg9BvV9giKxTHpsqmGAd91oNs7tlbApb3dvc2bCDdQm7TgP3ZZILQeP7/mcDjK3laH
+         ox3MFXrx/Nc25KktDOHsEpXib/zBFmYhYKOuzt3nr9cQpp92z6UMx1oKO1Yfz6iyBOtL
+         T8/JXKiV8uf/2tvvqwQFDDyAp38RyOdkhELNwYEuVTI9sZaHVyOZDbEfrUH+dQORkBk1
+         jD7bI0u/NdlZ0pyrIpEokBioM8tf3bexxrI/VDStsMfPpUtqOG4vGiv7LsMxmE00gJIk
+         JmUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B+LFQ/PnHZ1xfPLVXvJl5z9X7NhpPOqgzc8b8A1aKVg=;
+        b=E/dk+RxKbVW7ItlgMhxURKnn02PfkvMsQPTARpNfRSaMxyhQnyZ+w1gXqpgMRjNtqh
+         yunS6k6kwsfSxIy9Afu9lcmq63OHS6wC8HZtAHuCCtJVTSkD1J4fEWjm1JWi6sKn2X8u
+         g6C8CPDQ5YpRtnVtjVzFe/Ikzf7xuhMf96RhXPfxtOV3RZSs1sUftlox64aSA+hnu2dC
+         wn47UXr8LddwqWimUydLXYUCD6Up0+X252v39Uu3AVhU+GKjzf5Iji55Tmd43Or0Fro7
+         RETLqecv7mBpBnt4g02ABK9ul+wjeCa4PrwfHtkdfBOfbnidqF2Vu02e+pGKOYf7md7q
+         VDdQ==
+X-Gm-Message-State: AOAM531TASVjD8g+lBmmXns6glZIZqXhmfJrblMuVL8k0EWN6B4ES904
+        4nm3nd0a6e5yIRmLeR3nKzhdV0nV+l9PIg==
+X-Google-Smtp-Source: ABdhPJz8dxWpWzswY/RiC2X0rgswRr/zOXKA4PnvYJudQ6tmDpRIzDE/l/7CD9WddjXypfkdm2ve0A==
+X-Received: by 2002:a50:e607:: with SMTP id y7mr9935112edm.18.1617870876865;
+        Thu, 08 Apr 2021 01:34:36 -0700 (PDT)
+Received: from jwang-Latitude-5491.fritz.box ([2001:16b8:4915:d200:c1e9:172b:fc28:18a5])
+        by smtp.gmail.com with ESMTPSA id r25sm17196344edv.78.2021.04.08.01.34.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 01:34:36 -0700 (PDT)
+From:   Jack Wang <jinpu.wang@ionos.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
+        jgg@ziepe.ca
+Subject: [PATCH] RDMA/ipoib: print a message if only child interface is UP
+Date:   Thu,  8 Apr 2021 10:34:35 +0200
+Message-Id: <20210408083435.13043-1-jinpu.wang@ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407224324.GH282464@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 07:43:24PM -0300, Jason Gunthorpe wrote:
-> On Wed, Apr 07, 2021 at 08:58:49PM +0000, Saleem, Shiraz wrote:
-> > > Subject: Re: [PATCH v4 01/23] iidc: Introduce iidc.h
-> > > 
-> > > On Tue, Apr 06, 2021 at 04:01:03PM -0500, Shiraz Saleem wrote:
-> > > 
-> > > > +/* Following APIs are implemented by core PCI driver */ struct
-> > > > +iidc_core_ops {
-> > > > +	/* APIs to allocate resources such as VEB, VSI, Doorbell queues,
-> > > > +	 * completion queues, Tx/Rx queues, etc...
-> > > > +	 */
-> > > > +	int (*alloc_res)(struct iidc_core_dev_info *cdev_info,
-> > > > +			 struct iidc_res *res,
-> > > > +			 int partial_acceptable);
-> > > > +	int (*free_res)(struct iidc_core_dev_info *cdev_info,
-> > > > +			struct iidc_res *res);
-> > > > +
-> > > > +	int (*request_reset)(struct iidc_core_dev_info *cdev_info,
-> > > > +			     enum iidc_reset_type reset_type);
-> > > > +
-> > > > +	int (*update_vport_filter)(struct iidc_core_dev_info *cdev_info,
-> > > > +				   u16 vport_id, bool enable);
-> > > > +	int (*vc_send)(struct iidc_core_dev_info *cdev_info, u32 vf_id, u8 *msg,
-> > > > +		       u16 len);
-> > > > +};
-> > > 
-> > > What is this? There is only one implementation:
-> > > 
-> > > static const struct iidc_core_ops ops = {
-> > > 	.alloc_res			= ice_cdev_info_alloc_res,
-> > > 	.free_res			= ice_cdev_info_free_res,
-> > > 	.request_reset			= ice_cdev_info_request_reset,
-> > > 	.update_vport_filter		= ice_cdev_info_update_vsi_filter,
-> > > 	.vc_send			= ice_cdev_info_vc_send,
-> > > };
-> > > 
-> > > So export and call the functions directly.
-> > 
-> > No. Then we end up requiring ice to be loaded even when just want to
-> > use irdma with x722 [whose ethernet driver is "i40e"].
-> 
-> So what? What does it matter to load a few extra kb of modules?
+When "enhanced IPoIB" enabled for CX-5 devices, it requires
+the parent device to be UP, otherwise the child devices won't
+work.[1]
 
-And if user cares about it, he will blacklist that module anyway.
+This add a debug message to give admin a hint, if only child interface
+is UP, but parent interface is not.
 
-Thanks
+[1]https://lore.kernel.org/linux-rdma/CAMGffE=3YYxv9i7_qQr3-Uv-NGr-7VsnMk8DTjR0YbX1vJBzXQ@mail.gmail.com/T/#u
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+---
+ drivers/infiniband/ulp/ipoib/ipoib_main.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+index e16b40c09f82..782b792985b8 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+@@ -164,8 +164,12 @@ int ipoib_open(struct net_device *dev)
+ 			dev_change_flags(cpriv->dev, flags | IFF_UP, NULL);
+ 		}
+ 		up_read(&priv->vlan_rwsem);
+-	}
++	} else if (priv->parent) {
++		struct ipoib_dev_priv *ppriv = ipoib_priv(priv->parent);
+ 
++		if (!test_bit(IPOIB_FLAG_ADMIN_UP, &ppriv->flags))
++			ipoib_dbg(priv, "parent deivce %s is not up, so child may be not functioning.\n", ((struct ipoib_dev_priv *) ppriv)->dev->name);
++	}
+ 	netif_start_queue(dev);
+ 
+ 	return 0;
+-- 
+2.25.1
+
