@@ -2,177 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07C335881F
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Apr 2021 17:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 364FB358A20
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Apr 2021 18:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231785AbhDHPWq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Apr 2021 11:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231765AbhDHPWq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Apr 2021 11:22:46 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B0EC061760
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Apr 2021 08:22:35 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id n38so2087386pfv.2
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Apr 2021 08:22:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SaJO0g4xiNr7a4Su0BZ3ZMwk+xQOzjLbt0frLRjG+H8=;
-        b=WxTPpeXW+CqDdOuuiD/NyD03OiUhDV3+ovHDpx/cdvA/e/hUnJcG6P0N+Kgc2C57wq
-         W140ne3GKGPg4uGe16J0I3rSprpt34PthP5vL35hE9zzKBBzdRkR2b/HJfL2CoY8Cag4
-         ZARl6KwrXmC/gR4VZ9av9dEz1lTswgQpI5Z7Q=
+        id S232208AbhDHQur (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Apr 2021 12:50:47 -0400
+Received: from mail-pf1-f170.google.com ([209.85.210.170]:38739 "EHLO
+        mail-pf1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231655AbhDHQup (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Apr 2021 12:50:45 -0400
+Received: by mail-pf1-f170.google.com with SMTP id y16so2259853pfc.5;
+        Thu, 08 Apr 2021 09:50:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SaJO0g4xiNr7a4Su0BZ3ZMwk+xQOzjLbt0frLRjG+H8=;
-        b=luyWpU+U0Lcuk4ISxMq0+RBsHqAIQiEyh2fbGdl2P1P4vzSS/s0BlXJDe9PS20Guiy
-         7TnuIlIVQFzDs3/yQTM+nSzacvnO+TmST8kh0IdMqdqqsb5c/NbTANa8d5rSS5bmr4nr
-         Su4wOef0XvQ9J6/HgY8hXAXR/m7hLUr1MwzOUnA8cCrcMOiF+LLLq3XcpJLnM3VFOVl8
-         Ez5G1vu2VWia7I6VId1nF1qHeX/iiN44GGMj1+OsMJXOOxxR076eRxLbKC86UEByIqgg
-         FBXa/9XEQKYQ1AA/b99ciN2Kf3L3JRBGIkv57XM9U8BSOxTZNuuc80YwAjBlByrghu2U
-         ES4w==
-X-Gm-Message-State: AOAM533DfwA0Npt5KLMTSbYGoErrq/uWqr69y7nOgUqxMPCbow777W4e
-        4lxYkTsNNr0SXhdQhKtozCN92V4BzhdPurfFND7u9A==
-X-Google-Smtp-Source: ABdhPJz96vEdv3phuFNjkFNbIFS04YJaQgw+TIVFokXV9iSqKZXSloYi8bUxcoTZuGSwsDLUSoeQaRKYptUV5EGw9uo=
-X-Received: by 2002:a05:6a00:b86:b029:207:8ac9:85de with SMTP id
- g6-20020a056a000b86b02902078ac985demr7697999pfj.66.1617895354273; Thu, 08 Apr
- 2021 08:22:34 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sdar1JYqPbP9ANx4vLPaKOvhZp3igugdf1CBVsY07+k=;
+        b=HljPIXqvBVwBfr4CCcxKBJYh/oovt/wMk6XPy0S3WGeM0eHLFhKQOjhv7+FP4mY52n
+         02yB7l1xi4L8X0M2Dt71jKmmzlZP3EN7plqGw642xJrcbFWHkhBqSe+2eDOnMQsgrfQS
+         yE4CB4AhxQ5YPitqGn/RwidRSsbMMVe/02bjTco8Mx/z2N/fVjTYnToQD5BMRnjX3Y19
+         x2guHYrVkcfesmC8bauMXSU0Ckyl6dSQUT781xTkAtJ6h65MLd1tClSyVf6osafK59uf
+         g+pQz3lrLm35+YFmH8gOCLaSeDMInF3x4kq/5QZZL09HTtaOW1waneQZ9cxfaMl5JvBA
+         +6Mw==
+X-Gm-Message-State: AOAM532bEXLO4tyV2u+VvtlB6cdVN6tYV8si4n1C+dWW83y60Xt0lHYW
+        M/Hr4vkxFvZM9+61RtUbogc=
+X-Google-Smtp-Source: ABdhPJzOi9QErRu7oWT8gam8d6+h+7Hg3lrNHxXIOaDY9mV1pB95iEGKetbftSwHe4PLucQY19+chw==
+X-Received: by 2002:a62:6451:0:b029:23f:6ea1:293f with SMTP id y78-20020a6264510000b029023f6ea1293fmr8279846pfb.53.1617900632069;
+        Thu, 08 Apr 2021 09:50:32 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:7ef5:d4a7:50dd:fa70? ([2601:647:4000:d7:7ef5:d4a7:50dd:fa70])
+        by smtp.gmail.com with ESMTPSA id c16sm29465pfc.112.2021.04.08.09.50.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 09:50:31 -0700 (PDT)
+Subject: Re: [PATCH -next] RDMA/srpt: Fix error return code in
+ srpt_cm_req_recv()
+To:     Wang Wensheng <wangwensheng4@huawei.com>, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rui.xiang@huawei.com
+References: <20210408113132.87250-1-wangwensheng4@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <241d391f-2f18-18e5-9e3f-3cf214a30b38@acm.org>
+Date:   Thu, 8 Apr 2021 09:50:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210401065715.565226-1-leon@kernel.org> <CANjDDBiuw_VNepewLAtYE58Eg2JEsvGbpxttWyjV6DYMQdY5Zw@mail.gmail.com>
- <YGhUjarXh+BEK1pW@unreal> <CANjDDBiC-8pL+-ma1c0n8vjMaorm-CasV_D+_8q2LGy-AYuTVg@mail.gmail.com>
- <YG7srVMi8IEjuLfF@unreal> <20210408115347.GO7405@nvidia.com>
-In-Reply-To: <20210408115347.GO7405@nvidia.com>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Thu, 8 Apr 2021 20:51:57 +0530
-Message-ID: <CANjDDBjqvGEY4J=khzSJ4Gf3kH9865tH9K-JZUSBbxemO55mEg@mail.gmail.com>
-Subject: Re: [PATCH rdma-next v2 0/5] Get rid of custom made module dependency
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Netdev <netdev@vger.kernel.org>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000ec1ef605bf779d06"
+In-Reply-To: <20210408113132.87250-1-wangwensheng4@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000ec1ef605bf779d06
-Content-Type: text/plain; charset="UTF-8"
+On 4/8/21 4:31 AM, Wang Wensheng wrote:
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
+> 
+> Fixes: db7683d7deb2 ("IB/srpt: Fix login-related race conditions")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+> ---
+>  drivers/infiniband/ulp/srpt/ib_srpt.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 98a393d..ea44780 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -2382,6 +2382,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>  		pr_info("rejected SRP_LOGIN_REQ because target %s_%d is not enabled\n",
+>  			dev_name(&sdev->device->dev), port_num);
+>  		mutex_unlock(&sport->mutex);
+> +		ret = -EINVAL;
+>  		goto reject;
+>  	}
 
-On Thu, Apr 8, 2021 at 5:23 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Thu, Apr 08, 2021 at 02:44:45PM +0300, Leon Romanovsky wrote:
->
-> > > In my internal testing, I am seeing a crash using the 3rd patch. I am
-> > > spending a few cycles on debugging it. expect my input in a day or so.
-> >
-> > Can you please post the kernel crash report here?
-> > I don't see how function rename in patch #3 can cause to the crash.
->
-> I looked too, I'm also quite surprised that 1,2,3 alone have a
-> bug.. Is there some condition where ulp_probe can be null?
->
-> Ugh the is_bnxt_re_dev() is horribly gross too
-Yeah, it is indeed. I will take this feedback to the internal team.
->
-> Jason
+Please fix the Hulk Robot. The following code occurs three lines above
+the modified code:
 
+	ret = -EINVAL;
 
+Thanks,
 
--- 
--Regards
-Devesh
-
---000000000000ec1ef605bf779d06
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
-Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
-KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
-SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
-PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
-G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
-PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINzWvGITmWHLkxOq3RRdVONblunb
-Mi5SH9XGIyH0Ox3OMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDQwODE1MjIzNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQCZ85JYefozpRF7G1Jw6ClTob18CBjExETiW8MX3YkqzP+2
-xq7Fzoc6vBA0VBWP28soJqOoN927SGryhBkthR0aoLDakuoj8KnKONmn1C2Rad5xmhxCdUWxLxSf
-f8zc1jcI6Pac9jb/ApZ+B6bDdcrlrD/siZSpNqDd2eGJYbNi07GfI2eSsdT7lCXFigUxeQ8xAtMD
-om2knJmn/R/czvaC5kJAKTQHwTwprEeKbcklUlgtAtlXOi5WYOHy2ULw8N1B2zVDdVfY0F30CCyf
-yGFsRJ9IodTAPdGvoBPqixv5KlHnpM0QGLEiCZNFzfxi8GW//U/6Dc1UJPmy5WEXX4h2
---000000000000ec1ef605bf779d06--
+Bart.
