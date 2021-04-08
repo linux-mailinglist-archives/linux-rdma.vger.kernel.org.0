@@ -2,106 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97BD357F2D
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Apr 2021 11:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98464357F36
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Apr 2021 11:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhDHJbc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Apr 2021 05:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42802 "EHLO
+        id S231173AbhDHJc3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Apr 2021 05:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbhDHJb3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Apr 2021 05:31:29 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C13C061760
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Apr 2021 02:31:18 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id w18so1619719edc.0
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Apr 2021 02:31:18 -0700 (PDT)
+        with ESMTP id S229751AbhDHJc3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Apr 2021 05:32:29 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6085FC061760
+        for <linux-rdma@vger.kernel.org>; Thu,  8 Apr 2021 02:32:18 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id u21so1840442ejo.13
+        for <linux-rdma@vger.kernel.org>; Thu, 08 Apr 2021 02:32:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eoTzasxUkZY3HLXBRLOvfPtkTUdcBihhjtLstNaTC7E=;
-        b=U5Z8Bnx0GS7Xs1KgAUmwLYFv94dwf77Y3yvg0LjDZkgGAIkLvoW3gmEMQAQkcCdfl7
-         QoZf2uomtFCDEVbfzTn3rIkb6ol82URImVQEuPtzAXR/x+X1RbzFMnvyJr0hBczhE4eW
-         bQk+LdK5Db6g+ILucYA5iARE5aFJF8TkScx9AF6Cjmit11Va0fnCMzvNXWETYOKYkL6Q
-         CS1SKCa1qOhLRILfz8QXBIXKknSILhvUWE2GkLBdOUQ1bMyDYSlUQxWGpMypVQ50dMjv
-         I9DsmuChauRC90FKkmgW0dn3DW55REZnP2s3wcs22ptKyC9GMQ+si7hGzzgogs7BtUZJ
-         0j/g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xP2qq76pr5MABRFct2AeqEMZEp1slspgFWSdVclXA/k=;
+        b=dk37T73eKxMAzQ9myar3XUqzF18c3maUcAAzcUxRAZjqM0h4b3Bw/vggXglGyDPxQs
+         Fm7imc94AFp815UDEOnzUceyhK2NRmQs5Tnkd6E0qnmE6jN1ukq3y0HsJ2nqwnO5itxO
+         5F+GP/08o5Dh3kVQjdo6VJkDGwydJh0AAKU5wUK7e4v7W+qN9LKNpIssQJzBdwWcgw8y
+         X5n4jgtkSOxkMgxM/Q+I5NFNu/kqCQLZvR6vs7F9loNEmMshtzYWrkpuXMuBuAeQO0dA
+         YJ4DbOmdVnZM7q3i/TWbQkbEHpFEnsW6yFsPc7VAV3199JM+xfVIZFG/V4nu3pDmDSEX
+         iQNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eoTzasxUkZY3HLXBRLOvfPtkTUdcBihhjtLstNaTC7E=;
-        b=pr+dhtJQ+k3ZDXSRC9OjNkWYXZ4TEJvNC6xX6c6mTzZcnIOyOrnLFetOWKn8H9FANI
-         nNNgo7dow5PDyWHCQE3f5GnEBodhBQ+eut6MeL0ap7l7KAbwa+oLFefriSzElYySLhBR
-         uBrHHY7bQNu3ViV+E4QzHWIWp38exy6bkmpB1YpRG/r7DKI/jl0cf97KB5P4Bd475+k6
-         6o/0RSxkdds5J+4fHUxaFdV9ItpdzwzNuSzVIWki0gfd7W5exEGIXfTYgvSC9BaoVXNw
-         I0rHwTZymU/RRXTIZWEGRBVHIWwMHrTKQGxs2pBYEfRgdP/By/GLyageL3dGP2lDXGgu
-         fQtA==
-X-Gm-Message-State: AOAM530c0flZzM//uy7SnnL/IeGz6CzzDJ0PYmp1VoWBc0uxP6MtC/2Y
-        U+1Hx2ssUn11/JbxLnryP4t/MPf6etoAvTt04f6rPQ==
-X-Google-Smtp-Source: ABdhPJwgy1NModVchE/CCjQYJvRlpoBvivORiqRXI4Hd3TsKv273s7ZiUSdlB7i/wC3xVW3eu3FTnkkBB1eQEAzaj84=
-X-Received: by 2002:a05:6402:447:: with SMTP id p7mr10103853edw.89.1617874276885;
- Thu, 08 Apr 2021 02:31:16 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xP2qq76pr5MABRFct2AeqEMZEp1slspgFWSdVclXA/k=;
+        b=CTtkRD6FGkqtNmicX2Qx6tG8g8j+rrKX8iMkSkR66SKL8hmlQkCvsypcV9e5w5Rxcn
+         dM+US1h/meY21sJYVooQFdnBOIaZfkQkRPb5rs6ESK0kKb+citaFQPv0pmJHofYLD0CU
+         PbiadDVOcnBnfNdbNISJY72BNLrTRYIcRkvQDpeEv4yIqjYZf4xkeuC814isppFVzYEp
+         gNcgToRcCsDsLonQF9Z334LvH9AXQyfCD3wv7AkguV4RTlkBC+GhqnmOkmNubKiF9m7c
+         /5Ua3dQV2mQyI09Op4Ic2dlwtItkJUN4hopf6vItp11U5GzSUJRpuM/t57OJiWz4lcEx
+         Gffw==
+X-Gm-Message-State: AOAM531K3mXtT7CokgguYT4MX4x1aMwKQCy/Fa2wS4rG+ho5aBTzbZ8B
+        TcsKmrscha1T6v82mCxvPqUf5fTvELyxcA==
+X-Google-Smtp-Source: ABdhPJyAwdjjHGY3K/LNfxRFDnqeg27G9MsBJuIFrib8OTG2lGT0W0fRdXQSJkj1mZgn9wftkiuXbQ==
+X-Received: by 2002:a17:906:5951:: with SMTP id g17mr8850067ejr.152.1617874336982;
+        Thu, 08 Apr 2021 02:32:16 -0700 (PDT)
+Received: from jwang-Latitude-5491.fritz.box ([2001:16b8:4915:d200:c1e9:172b:fc28:18a5])
+        by smtp.gmail.com with ESMTPSA id d1sm13950206eje.26.2021.04.08.02.32.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 02:32:16 -0700 (PDT)
+From:   Jack Wang <jinpu.wang@ionos.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
+        jgg@ziepe.ca
+Subject: [PATCH v3] RDMA/ipoib: print a message if only child interface is UP
+Date:   Thu,  8 Apr 2021 11:32:15 +0200
+Message-Id: <20210408093215.24023-1-jinpu.wang@ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210408083435.13043-1-jinpu.wang@ionos.com> <YG7ImyPNyqjWW8k2@unreal>
-In-Reply-To: <YG7ImyPNyqjWW8k2@unreal>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Thu, 8 Apr 2021 11:31:06 +0200
-Message-ID: <CAMGffEkDM06C+yk1Pqhj9fF5db4oWVcChxzBNWCx6xQsrB1B0A@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/ipoib: print a message if only child interface is UP
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 11:10 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Thu, Apr 08, 2021 at 10:34:35AM +0200, Jack Wang wrote:
-> > When "enhanced IPoIB" enabled for CX-5 devices, it requires
-> > the parent device to be UP, otherwise the child devices won't
-> > work.[1]
-> >
-> > This add a debug message to give admin a hint, if only child interface
-> > is UP, but parent interface is not.
-> >
-> > [1]https://lore.kernel.org/linux-rdma/CAMGffE=3YYxv9i7_qQr3-Uv-NGr-7VsnMk8DTjR0YbX1vJBzXQ@mail.gmail.com/T/#u
-> > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-> > ---
-> >  drivers/infiniband/ulp/ipoib/ipoib_main.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-> > index e16b40c09f82..782b792985b8 100644
-> > --- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
-> > +++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-> > @@ -164,8 +164,12 @@ int ipoib_open(struct net_device *dev)
-> >                       dev_change_flags(cpriv->dev, flags | IFF_UP, NULL);
-> >               }
-> >               up_read(&priv->vlan_rwsem);
-> > -     }
-> > +     } else if (priv->parent) {
-> > +             struct ipoib_dev_priv *ppriv = ipoib_priv(priv->parent);
-> >
-> > +             if (!test_bit(IPOIB_FLAG_ADMIN_UP, &ppriv->flags))
-> > +                     ipoib_dbg(priv, "parent deivce %s is not up, so child may be not functioning.\n", ((struct ipoib_dev_priv *) ppriv)->dev->name);
->
-> Why do you need extra casting? "ppriv" is already "struct ipoib_dev_priv *".
+When "enhanced IPoIB" enabled for CX-5 devices, it requires
+the parent device to be UP, otherwise the child devices won't
+work.
 
-Indeed, will remove that.
+This add a debug message to give admin a hint, if only child interface
+is UP, but parent interface is not.
 
-Thanks
->
-> Thanks
->
-> > +     }
-> >       netif_start_queue(dev);
-> >
-> >       return 0;
-> > --
-> > 2.25.1
-> >
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+---
+ drivers/infiniband/ulp/ipoib/ipoib_main.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+index e16b40c09f82..df6329abac1d 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+@@ -164,8 +164,13 @@ int ipoib_open(struct net_device *dev)
+ 			dev_change_flags(cpriv->dev, flags | IFF_UP, NULL);
+ 		}
+ 		up_read(&priv->vlan_rwsem);
+-	}
++	} else if (priv->parent) {
++		struct ipoib_dev_priv *ppriv = ipoib_priv(priv->parent);
+ 
++		if (!test_bit(IPOIB_FLAG_ADMIN_UP, &ppriv->flags))
++			ipoib_dbg(priv, "parent device %s is not up, so child device may be not functioning.\n",
++				  ppriv->dev->name);
++	}
+ 	netif_start_queue(dev);
+ 
+ 	return 0;
+-- 
+2.25.1
+
