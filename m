@@ -2,116 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC90B3582E4
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Apr 2021 14:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CD2358305
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Apr 2021 14:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhDHMIu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Apr 2021 08:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbhDHMIu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Apr 2021 08:08:50 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C09C061760
-        for <linux-rdma@vger.kernel.org>; Thu,  8 Apr 2021 05:08:39 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id m3so2110872edv.5
-        for <linux-rdma@vger.kernel.org>; Thu, 08 Apr 2021 05:08:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SX4An+Ddv1gdPP4eQd+TxqKgL66zLg4Qs8vWLdzD4IM=;
-        b=fay+47Oy6D1+jUL91EvWVxOzA2zJUfyiJroKNzl1uDRAHz1o+fy1/iT1C+8iqASZ9S
-         2mgjIgk0YJghF7KIzXoLy4q49w/5+ZhAEYkDYjGbQI+W8kVq4pFv/eZgce2z0ZjUyD6G
-         J3uSb2nDMVS+a8iCRCBFTNr3kP17YTt/YfrMRNqbFalu7TXRQot6r9olC8nQKAKg6LB0
-         whHCvXL3mgTKZKJwRTdpXeKsha1L33VOuDVFWwjrU0frAovXyPteOHn0dbvM/yY3cO17
-         IshEN+r44Hmc7mX/IEZXYJyHAgtezZjoqbFgIeteaeBafoctB5KSSR7J0ZQwWzlWttXN
-         54zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SX4An+Ddv1gdPP4eQd+TxqKgL66zLg4Qs8vWLdzD4IM=;
-        b=cJ9v5oRqKGvpCNa4HLGusD6pZPSJhf3kTPnMu3DtwlCQyYjNGymRrkdlf004gS398b
-         vfk8hpUlKXmEiRYQM0Ij8g2UHDOpuORHB5sdidxvO4KIpaQSQxSh3mSOZqtTADYAX8hL
-         PoNAsURfnzW+nVDUQr0K6fCQqDYLdFjhovz68hpVbpfkgteaP9OLZGCqnxt/o/kicXZP
-         nUyT/P27aqIGvQVX9MjYxv1XX0ilJTE9i+IiirG43Q8EetOMkyP3fVYJKav9Sg3lBWX2
-         6K0fvhb9mFzApFghTaaZiBQrWoTFJ2OjHoUzkXeglDTfahH/YOfdDobeJbsFXODkXA2/
-         9PKQ==
-X-Gm-Message-State: AOAM532s+liuAxSNUnMYbIqaJo/JFP2iPWCEO/7nkNWXiyFWFN6T1UYO
-        Ujhlh1jO2xOLhGF6zDgCxL4h9ylirE1M8FKsBxSuTw==
-X-Google-Smtp-Source: ABdhPJyH3pYK7zh6QRZJjZgos33Kbuoa5R/Ya8JqYlylH7Pcjm1ENJAvu0OByIXDgPSIrU6Iaw6OqXKDxxlv7wY6zCY=
-X-Received: by 2002:a05:6402:1c04:: with SMTP id ck4mr10841062edb.74.1617883717820;
- Thu, 08 Apr 2021 05:08:37 -0700 (PDT)
+        id S231484AbhDHMPB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 8 Apr 2021 08:15:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231132AbhDHMPA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 8 Apr 2021 08:15:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86895610F9;
+        Thu,  8 Apr 2021 12:14:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617884089;
+        bh=9Xey6Tnu5GNmbzYOAUD308zjGzjr0UYTCxR5mxWyc6U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i7TTCluuasqA6fisdGdHbsUmsB6mIG6v1HL5TJcFDWJRPcSW0KSWQXSZUiz26oahw
+         JTP9VrTKQFT6aQXGRGM4XJjbItyvcH03ZxPfmLZcDx4mt2uXZYNUlAAJx6VJLqjtwm
+         R2aswANrwqnT+dr05CBoMzV7nLd8DzG5m6XVSOK6Cnnv7H4U2taRQTmXrOvqtE+7W5
+         yW3MESf7Sy/31ZhPfVXFOumSxo7uSZ+MOulAtDwtgKMrbJAreZEQyX87/6j69OPj1b
+         VomkciZ7wb2qWXrnl7+4QFIQcIBC/bvzlC2om2/X2XKSMkykGCcAL/Cs7Ihh8e14GE
+         s15S/HoS6JQeQ==
+Date:   Thu, 8 Apr 2021 15:14:45 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        Kaike Wan <kaike.wan@intel.com>
+Subject: Re: [PATCH for-next 06/10] rdma: Set physical MTU for query_port
+ function
+Message-ID: <YG7ztT81z8BZDkUj@unreal>
+References: <1617026056-50483-1-git-send-email-dennis.dalessandro@cornelisnetworks.com>
+ <1617026056-50483-7-git-send-email-dennis.dalessandro@cornelisnetworks.com>
+ <YGWHga9RMan2uioD@unreal>
+ <44ca5d0e-7aa4-5a9a-8f3b-d30454a58fb4@cornelisnetworks.com>
 MIME-Version: 1.0
-References: <20210325153308.1214057-1-gi-oh.kim@ionos.com> <20210325153308.1214057-13-gi-oh.kim@ionos.com>
- <20210401184448.GA1647065@nvidia.com> <CAJX1Ytao0LMYkGPy+E4XQzyxZFSytRDuwB2By2HQ6VBS7btCWg@mail.gmail.com>
- <20210408120418.GQ7405@nvidia.com>
-In-Reply-To: <20210408120418.GQ7405@nvidia.com>
-From:   Gioh Kim <gi-oh.kim@ionos.com>
-Date:   Thu, 8 Apr 2021 14:08:02 +0200
-Message-ID: <CAJX1YtYUxZOiaKvTVxPou=a3icyVBrK8OCiatf+G3j6yV0bZtA@mail.gmail.com>
-Subject: Re: [PATCH for-next 12/22] RDMA/rtrs-clt: Check state of the
- rtrs_clt_sess before reading its stats
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Haris Iqbal <haris.iqbal@ionos.com>,
-        Jinpu Wang <jinpu.wang@ionos.com>,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <44ca5d0e-7aa4-5a9a-8f3b-d30454a58fb4@cornelisnetworks.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 2:04 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Tue, Apr 06, 2021 at 10:55:59AM +0200, Gioh Kim wrote:
-> > On Thu, Apr 1, 2021 at 8:44 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > >
-> > > On Thu, Mar 25, 2021 at 04:32:58PM +0100, Gioh Kim wrote:
-> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > > > index 42f49208b8f7..1519191d7154 100644
-> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > > > @@ -808,6 +808,9 @@ static struct rtrs_clt_sess *get_next_path_min_inflight(struct path_it *it)
-> > > >       int inflight;
-> > > >
-> > > >       list_for_each_entry_rcu(sess, &clt->paths_list, s.entry) {
-> > > > +             if (unlikely(READ_ONCE(sess->state) != RTRS_CLT_CONNECTED))
-> > > > +                     continue;
-> > >
-> > > There is no way this could be right, a READ_ONCE can't guarentee that
-> > > a following load is not going to happen without races.
-> > >
-> > > You need locking.
-> >
-> > Hi Jason,
-> >
-> > rtrs_clt_request() calls rcu_read_lock() before calling
-> > get_next_path_min_inflight().
-> > And rtrs_clt_change_state_from_to(), that changes the sess->state,
-> > calls spin_lock_irq() before changing it.
-> > I think that is enough, isn't it?
->
-> Why would that be enough?
->
-> Under RCU this check is racy and effetively does nothing.
+On Thu, Apr 08, 2021 at 08:06:46AM -0400, Dennis Dalessandro wrote:
+> On 4/1/2021 4:42 AM, Leon Romanovsky wrote:
+> > On Mon, Mar 29, 2021 at 09:54:12AM -0400, dennis.dalessandro@cornelisnetworks.com wrote:
+> > > From: Kaike Wan <kaike.wan@intel.com>
+> > > 
+> > > This is a follow on patch to add a phys_mtu field to the
+> > > ib_port_attr structure to indicate the maximum physical MTU
+> > > the underlying device supports.
+> > > 
+> > > Extends the following:
+> > > commit 6d72344cf6c4 ("IB/ipoib: Increase ipoib Datagram mode MTU's upper limit")
+> > > 
+> > > Reviewed-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+> > > Signed-off-by: Kaike Wan <kaike.wan@intel.com>
+> > > Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+> > > ---
+> > >   drivers/infiniband/hw/bnxt_re/ib_verbs.c        |  1 +
+> > >   drivers/infiniband/hw/cxgb4/provider.c          |  1 +
+> > >   drivers/infiniband/hw/efa/efa_verbs.c           |  1 +
+> > >   drivers/infiniband/hw/hns/hns_roce_main.c       |  1 +
+> > >   drivers/infiniband/hw/i40iw/i40iw_verbs.c       |  1 +
+> > >   drivers/infiniband/hw/mlx4/main.c               |  1 +
+> > >   drivers/infiniband/hw/mlx5/mad.c                |  1 +
+> > >   drivers/infiniband/hw/mlx5/main.c               |  2 ++
+> > >   drivers/infiniband/hw/mthca/mthca_provider.c    |  1 +
+> > >   drivers/infiniband/hw/ocrdma/ocrdma_verbs.c     |  1 +
+> > >   drivers/infiniband/hw/qib/qib_verbs.c           |  1 +
+> > >   drivers/infiniband/hw/usnic/usnic_ib_verbs.c    |  1 +
+> > >   drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c |  1 +
+> > >   drivers/infiniband/sw/siw/siw_verbs.c           |  1 +
+> > >   drivers/infiniband/ulp/ipoib/ipoib_main.c       |  2 +-
+> > >   include/rdma/ib_verbs.h                         | 17 -----------------
+> > >   16 files changed, 16 insertions(+), 18 deletions(-)
+> > 
+> > But why? What will it give us that almost all drivers have same
+> > props->phys_mtu = ib_mtu_enum_to_int(props->max_mtu); line?
+> > 
+> 
+> Almost is not all. Alternative idea to convey this? Seemed like a sensible
+> thing to at least have support for but open to other approaches.
 
-Thank you for your review.
-I will have a discussion with my colleagues and let you know the result.
+What about leave it as is? 
 
+I'm struggling to get the rationale behind this patch., the code already works
+and set the phys_mtu correctly, isn't it?
 
->
-> This is an OK usage of RCU:
->
->         list_del_rcu(&sess->s.entry);
->
->         /* Make sure everybody observes path removal. */
->         synchronize_rcu();
->
-> And you could say that observing the sess in the list is required, but
-> checking state is pointless.
->
-> Jason
+Thanks
+
+> 
+> -Denny
