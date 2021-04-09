@@ -2,78 +2,187 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7C3359186
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Apr 2021 03:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC6435969D
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Apr 2021 09:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbhDIBj0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 8 Apr 2021 21:39:26 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3938 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhDIBj0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Apr 2021 21:39:26 -0400
-Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FGgj85dMMz5jmD;
-        Fri,  9 Apr 2021 09:37:00 +0800 (CST)
-Received: from dggema752-chm.china.huawei.com (10.1.198.194) by
- dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Fri, 9 Apr 2021 09:39:12 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggema752-chm.china.huawei.com (10.1.198.194) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 9 Apr 2021 09:39:12 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.013;
- Fri, 9 Apr 2021 09:39:12 +0800
-From:   liweihang <liweihang@huawei.com>
+        id S232005AbhDIHnW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Apr 2021 03:43:22 -0400
+Received: from mga01.intel.com ([192.55.52.88]:42037 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229751AbhDIHnW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 9 Apr 2021 03:43:22 -0400
+IronPort-SDR: FIQ4FIGLRIb+lifgMVz/6k2W1Fg+4SMQfIpMbYrM+B9M49Dzd2zKUMVoEmDK+DW5CjcQAI9JTh
+ OxN8RZvrHIfw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="214132004"
+X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
+   d="scan'208";a="214132004"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 00:43:09 -0700
+IronPort-SDR: 1A81XcSme+Z4avubkFdba0sxZ4fKkYQ37XunwMEJLOeVlTtqBtsuOjKCKER2tTG2VOLQDP7PN2
+ uMY+8/eOhx+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
+   d="scan'208";a="442062261"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 09 Apr 2021 00:43:08 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lUlnH-000GOF-8L; Fri, 09 Apr 2021 07:43:07 +0000
+Date:   Fri, 09 Apr 2021 15:42:54 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        "liuyixing (A)" <liuyixing1@huawei.com>
-Subject: Re: [PATCH for-next 8/9] RDMA/hns: Simplify the function config_eqc()
-Thread-Topic: [PATCH for-next 8/9] RDMA/hns: Simplify the function
- config_eqc()
-Thread-Index: AQHXJ5//ftXrBjSIxE+RENDv6jhhjA==
-Date:   Fri, 9 Apr 2021 01:39:12 +0000
-Message-ID: <defd6389a46149c1874d9f11a997e06f@huawei.com>
-References: <1617354454-47840-1-git-send-email-liweihang@huawei.com>
- <1617354454-47840-9-git-send-email-liweihang@huawei.com>
- <20210408191334.GC692402@nvidia.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
+ d1c803a9ccd7bd3aff5e989ccfb39ed3b799b975
+Message-ID: <6070057e.tvxNnEtR4/MvD7Zr%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/4/9 3:13, Jason Gunthorpe wrote:
-> On Fri, Apr 02, 2021 at 05:07:33PM +0800, Weihang Li wrote:
->> -	roce_set_field(eqc->byte_40, HNS_ROCE_EQC_NXT_EQE_BA_L_M,
->> -		       HNS_ROCE_EQC_NXT_EQE_BA_L_S, eqe_ba[1] >> 12);
->> -
->> -	roce_set_field(eqc->byte_44, HNS_ROCE_EQC_NXT_EQE_BA_H_M,
->> -		       HNS_ROCE_EQC_NXT_EQE_BA_H_S, eqe_ba[1] >> 44);
->> -
->> -	roce_set_field(eqc->byte_44, HNS_ROCE_EQC_EQE_SIZE_M,
->> -		       HNS_ROCE_EQC_EQE_SIZE_S,
->> -		       eq->eqe_size == HNS_ROCE_V3_EQE_SIZE ? 1 : 0);
->> +	hr_reg_write(eqc, EQC_EQ_ST, HNS_ROCE_V2_EQ_STATE_VALID);
->> +	hr_reg_write(eqc, EQC_EQE_HOP_NUM, eq->hop_num);
->> +	hr_reg_write(eqc, EQC_OVER_IGNORE, eq->over_ignore);
->> +	hr_reg_write(eqc, EQC_COALESCE, eq->coalesce);
-> 
-> This really is a lot better like this, isn't it?
-> 
-> Jason
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
+branch HEAD: d1c803a9ccd7bd3aff5e989ccfb39ed3b799b975  RDMA/addr: Be strict with gid size
 
-Yes, thank you for your previous advice :)
+elapsed time: 724m
 
-Weihang
+configs tested: 125
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+mips                         rt305x_defconfig
+um                                allnoconfig
+sh                          urquell_defconfig
+sh                            titan_defconfig
+arm                             ezx_defconfig
+arm                        oxnas_v6_defconfig
+powerpc                     akebono_defconfig
+arm                     eseries_pxa_defconfig
+arm                            pleb_defconfig
+m68k                         amcore_defconfig
+sparc                       sparc32_defconfig
+powerpc                     ppa8548_defconfig
+m68k                        m5407c3_defconfig
+arm                            lart_defconfig
+arm                           spitz_defconfig
+arm                         palmz72_defconfig
+arm                         lpc32xx_defconfig
+ia64                             alldefconfig
+arm                        clps711x_defconfig
+xtensa                    xip_kc705_defconfig
+m68k                       bvme6000_defconfig
+h8300                            alldefconfig
+arc                     nsimosci_hs_defconfig
+powerpc                 mpc836x_rdk_defconfig
+powerpc                  storcenter_defconfig
+arm                         s5pv210_defconfig
+ia64                         bigsur_defconfig
+arm                         orion5x_defconfig
+m68k                        stmark2_defconfig
+sh                          landisk_defconfig
+powerpc                      arches_defconfig
+mips                          rb532_defconfig
+m68k                          hp300_defconfig
+s390                          debug_defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                             mxs_defconfig
+mips                          malta_defconfig
+arm                           u8500_defconfig
+arm                            zeus_defconfig
+arm                      footbridge_defconfig
+powerpc                        warp_defconfig
+mips                           ip22_defconfig
+m68k                          multi_defconfig
+sh                          lboxre2_defconfig
+arm64                            alldefconfig
+arm                            xcep_defconfig
+riscv                               defconfig
+ia64                            zx1_defconfig
+sh                  sh7785lcr_32bit_defconfig
+ia64                                defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+arc                                 defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                                defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210408
+x86_64               randconfig-a005-20210408
+x86_64               randconfig-a003-20210408
+x86_64               randconfig-a001-20210408
+x86_64               randconfig-a002-20210408
+x86_64               randconfig-a006-20210408
+i386                 randconfig-a006-20210408
+i386                 randconfig-a003-20210408
+i386                 randconfig-a001-20210408
+i386                 randconfig-a004-20210408
+i386                 randconfig-a005-20210408
+i386                 randconfig-a002-20210408
+i386                 randconfig-a014-20210408
+i386                 randconfig-a016-20210408
+i386                 randconfig-a011-20210408
+i386                 randconfig-a012-20210408
+i386                 randconfig-a013-20210408
+i386                 randconfig-a015-20210408
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a014-20210408
+x86_64               randconfig-a015-20210408
+x86_64               randconfig-a012-20210408
+x86_64               randconfig-a013-20210408
+x86_64               randconfig-a011-20210408
+x86_64               randconfig-a016-20210408
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
