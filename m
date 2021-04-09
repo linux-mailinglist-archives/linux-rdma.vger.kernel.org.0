@@ -2,107 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F73D359A74
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Apr 2021 11:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24585359BF2
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Apr 2021 12:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233873AbhDIJ66 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Apr 2021 05:58:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
+        id S233043AbhDIK0c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Apr 2021 06:26:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233715AbhDIJ56 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Apr 2021 05:57:58 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A64E0C0613E2
-        for <linux-rdma@vger.kernel.org>; Fri,  9 Apr 2021 02:57:45 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id r12so7728015ejr.5
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Apr 2021 02:57:45 -0700 (PDT)
+        with ESMTP id S231638AbhDIK0b (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Apr 2021 06:26:31 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0DFC061760;
+        Fri,  9 Apr 2021 03:26:18 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id s7so4987727wru.6;
+        Fri, 09 Apr 2021 03:26:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t9vjeDIq4ZMTrGb//SJ+YMICh7YJ4BNlbXxJJdfevNY=;
-        b=bzrR3or/bP+YKw44BmfouMLKsWxi/3nQ1zha+Rff7KCJOo1aFAmcJkdMV00CfHTIUl
-         9lKVQSHr0Q5qcEDNuhxY+5WnCCr/4nFthcF69kyLCON8ZTTm+dxFO9ZlewBFxmZbYiMk
-         9pQukfN8aRh80kvih6BYaYPJL33mSrzBWO8J18oSNw3V11LJZp1YiAXg1DHjYu1eQ94L
-         QAkVCJI7Olch7e+ovsUR0Bf59PJwOM0kp+aPztlrmFgwccqH1OUIGYKBlIRZN3myPzBp
-         JLxcmBmXcDOUkdl8gSQdo3xpeKCiBfkJcvyzmb8ig/qMy2+UXKioznNrL5jKx2TeWJXN
-         7tjQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LRAyoqSstv9qcrVjPv+B4YXhvLoW8/SLy7wVQjukdx4=;
+        b=fT3uh1Tg12CI5KeTSpiwstJvKUIb0Jg5amRuuD4aMieGsELFvBptCFYon3x81ZbqtJ
+         BMpXvhAdjwwqzF7CTJmxUaC9Xs0nnMs8ihbg+/zervtql6Vw8pQV0qIy1zgfIBMgrihz
+         pYigmfs/Dz7VwE+Vlf/jo4+A+0Yf/a0iKruTLa7IDRbeqJfW7pRi4Pg4YD+czhyy4KfB
+         SKri2g8qO7lhgbEef/5y94SfJBZbqUHzh39U1AP9Nu+O3NEwenFgs8AYrEiKUG6JAk7C
+         zE8cNulj/4/OO1GjEW1qB9frGfqwEWAkWXvwpr6dQkAV9V2jWXBYtJuku2jVcOfkc0W2
+         EiPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t9vjeDIq4ZMTrGb//SJ+YMICh7YJ4BNlbXxJJdfevNY=;
-        b=t7euFFe4nP2xSZ8jihW3zmS1ojPzX4lR2hL9YDHrTATtysN0VwDAGhf9mv2Zfcw/Po
-         KVmulwZmaoX3KePJuFRVrrh71ygH00NRbHUMqdLgK8FoexRoNEXgf2vfSoquYq+XILnc
-         I04kCOZMfFPbpkZPv/zf45PFR3Ih1NOmaMHrR20eNtTkHRPcnel/P1aBCBoz8Pu7Pmmt
-         zGjsB6H35xjgjdyLnyrdgqTteZlMJxVyqViEQ1fmxwJzpKAc5uv3qDtFrEVQ607ix0JI
-         h2Ek9w46DHPV3oG4hm5Qhgi/5jv/A+msqEEJXya8oyH5zEat17X/pYtb6/IL0RIjOoMh
-         0a6A==
-X-Gm-Message-State: AOAM530Rfqx95lhgjgN4rBHu2/hfppUM2Zjz/UqtZRfTHhrUn1/aRMrA
-        wQeVymTDz5PvSiYJXCxBejaNhrqwYppQNgsDnIi+Dw==
-X-Google-Smtp-Source: ABdhPJz/pst9Dtqs2xAaBLpTXdTg7PpZ4UZL3ajzn3xUUfKnlbgflz9oKsHbqZ1eMrpazll2Z6FMoB0mtovjO5QpJ7c=
-X-Received: by 2002:a17:906:f42:: with SMTP id h2mr14393452ejj.317.1617962264382;
- Fri, 09 Apr 2021 02:57:44 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LRAyoqSstv9qcrVjPv+B4YXhvLoW8/SLy7wVQjukdx4=;
+        b=m4tYAdgi2ZZNmHYdjz0EJBLNHLjNJCDoyy4DlXOl+JeVBrrIczDklbYCSUkoa3+P3h
+         Bpfl1I2puAFowfVuFmSUS4+sJbZA7RxL/vW15QjsiVuwFB9NvdkSbFKT5ZDYr8qWz2LZ
+         TJU6PM86r1ZqqzEea0/ljIJvmxUymtXTBvaoSMbb2paLRAbzhGm37mqI5uTSlx/TgvDm
+         nwV75rj3v/QCn2vu0HLGcd9JrAhrlkZwDjvoXL+4Kk46NjRJNbKrBezU66QKRcFWJDW1
+         IJvaxPeS/mT5Sj+FGiGLHirFG3hznQ+yZTjj5UitwFkHpNTEaUl6pvDClvc1A42ke5lc
+         woNQ==
+X-Gm-Message-State: AOAM532uLyPsCek1YIlKZ8GU76QaM5rItDGwjAVJoS8kh7acePIJDWob
+        gEgKOMRTlc/vLNfvwJXg/6iA6kNipv4=
+X-Google-Smtp-Source: ABdhPJyRaboQNnb4wffn7NnFkh1UNbm6Nyg27QXBRQRF0/EWjZS4BANfYNnApYnrGB93QtMRPuEhCA==
+X-Received: by 2002:a5d:5152:: with SMTP id u18mr16423345wrt.289.1617963977545;
+        Fri, 09 Apr 2021 03:26:17 -0700 (PDT)
+Received: from [192.168.1.101] ([37.167.116.29])
+        by smtp.gmail.com with ESMTPSA id y22sm3785521wmc.18.2021.04.09.03.26.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 03:26:16 -0700 (PDT)
+Subject: Re: [PATCH] net/rds: Avoid potential use after free in
+ rds_send_remove_from_sock
+To:     Aditya Pakki <pakki001@umn.edu>
+Cc:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-kernel@vger.kernel.org
+References: <20210407000913.2207831-1-pakki001@umn.edu>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <bd3c84bc-6ae0-63e9-61f2-5cf64a976531@gmail.com>
+Date:   Fri, 9 Apr 2021 12:26:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210406123639.202899-1-gi-oh.kim@ionos.com> <20210406123639.202899-2-gi-oh.kim@ionos.com>
- <YGxXD/TODlXHp2sK@unreal>
-In-Reply-To: <YGxXD/TODlXHp2sK@unreal>
-From:   Gioh Kim <gi-oh.kim@ionos.com>
-Date:   Fri, 9 Apr 2021 11:57:08 +0200
-Message-ID: <CAJX1YtZ9DPHzdBBVPff2+=eRMRPnVXvzccMA1h6tUj1vYa=Yrg@mail.gmail.com>
-Subject: Re: [PATCHv2 for-next 1/3] RDMA/rtrs-clt: Print more info when an
- error happens
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Haris Iqbal <haris.iqbal@ionos.com>,
-        Jinpu Wang <jinpu.wang@ionos.com>,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210407000913.2207831-1-pakki001@umn.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 2:41 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Tue, Apr 06, 2021 at 02:36:37PM +0200, Gioh Kim wrote:
-> > From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
-> >
-> > Client prints only error value and it is not enough for debugging.
-> >
-> > 1. When client receives an error from server:
-> > the client does not only print the error value but also
-> > more information of server connection.
-> >
-> > 2. When client failes to send IO:
-> > the client gets an error from RDMA layer. It also
-> > print more information of server connection.
-> >
-> > Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-> > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-> > ---
-> >  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 33 ++++++++++++++++++++++----
-> >  1 file changed, 29 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > index 5062328ac577..a534b2b09e13 100644
-> > --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > @@ -437,6 +437,11 @@ static void complete_rdma_req(struct rtrs_clt_io_req *req, int errno,
-> >       req->in_use = false;
-> >       req->con = NULL;
-> >
-> > +     if (unlikely(errno)) {
->
-> I'm sorry, but all your patches are full of these likely/unlikely cargo
-> cult. Can you please provide supportive performance data or delete all
-> likely/unlikely in all rtrs code?
->
-> Thanks
 
-Hi Leon,
 
-Let me check my colleagues if there is any data about it.
-I will inform you soon.
+On 4/7/21 2:09 AM, Aditya Pakki wrote:
+> In case of rs failure in rds_send_remove_from_sock(), the 'rm' resource
+> is freed and later under spinlock, causing potential use-after-free.
+> Set the free pointer to NULL to avoid undefined behavior.
+> 
+> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+> ---
+>  net/rds/message.c | 1 +
+>  net/rds/send.c    | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/rds/message.c b/net/rds/message.c
+> index 071a261fdaab..90ebcfe5fe3b 100644
+> --- a/net/rds/message.c
+> +++ b/net/rds/message.c
+> @@ -180,6 +180,7 @@ void rds_message_put(struct rds_message *rm)
+>  		rds_message_purge(rm);
+>  
+>  		kfree(rm);
+> +		rm = NULL;
+
+This is a nop really.
+
+This does not clear @rm variable in the caller.
+
+
+
+>  	}
+>  }
+>  EXPORT_SYMBOL_GPL(rds_message_put);
+> diff --git a/net/rds/send.c b/net/rds/send.c
+> index 985d0b7713ac..fe5264b9d4b3 100644
+> --- a/net/rds/send.c
+> +++ b/net/rds/send.c
+> @@ -665,7 +665,7 @@ static void rds_send_remove_from_sock(struct list_head *messages, int status)
+>  unlock_and_drop:
+>  		spin_unlock_irqrestore(&rm->m_rs_lock, flags);
+>  		rds_message_put(rm);
+> -		if (was_on_sock)
+> +		if (was_on_sock && rm)
+>  			rds_message_put(rm);
+
+Maybe the bug is that the refcount has not be elevated when was_on_sock
+has been set.
+
+>  	}
+>  
+> 
