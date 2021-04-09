@@ -2,123 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A458359184
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Apr 2021 03:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7C3359186
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Apr 2021 03:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232967AbhDIBiw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 8 Apr 2021 21:38:52 -0400
-Received: from mga02.intel.com ([134.134.136.20]:26354 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232426AbhDIBiv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Apr 2021 21:38:51 -0400
-IronPort-SDR: Gc/6z8d+MitVd4wGqawR6widHEa5X9ZwMV9KbJt05ZtvBWqqU61rzInIi0aoH84a5XOciFAaT0
- L8MB1E8F5g3Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="180797208"
-X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
-   d="scan'208";a="180797208"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 18:38:38 -0700
-IronPort-SDR: Y5ex5MMj4g1rD1ZcgQjZ6ux4YEdidqWECLVbq+k/JCp/aLfiXsaXEBICFuvAF6vchT+w3TKS4k
- Z4/g7UptzWDg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
-   d="scan'208";a="520086833"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Apr 2021 18:38:38 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 8 Apr 2021 18:38:38 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 8 Apr 2021 18:38:37 -0700
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2106.013;
- Thu, 8 Apr 2021 18:38:37 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
+        id S232918AbhDIBj0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 8 Apr 2021 21:39:26 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3938 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232426AbhDIBj0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 8 Apr 2021 21:39:26 -0400
+Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FGgj85dMMz5jmD;
+        Fri,  9 Apr 2021 09:37:00 +0800 (CST)
+Received: from dggema752-chm.china.huawei.com (10.1.198.194) by
+ dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 9 Apr 2021 09:39:12 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggema752-chm.china.huawei.com (10.1.198.194) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 9 Apr 2021 09:39:12 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2106.013;
+ Fri, 9 Apr 2021 09:39:12 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
 CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
+        "leon@kernel.org" <leon@kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-Subject: RE: [PATCH v4 01/23] iidc: Introduce iidc.h
-Thread-Topic: [PATCH v4 01/23] iidc: Introduce iidc.h
-Thread-Index: AQHXKygiEMWtUC1Uo0mj4KR4ZXyZX6qpqNQA///J7iCAAKscAIAAjuGAgACXTJA=
-Date:   Fri, 9 Apr 2021 01:38:37 +0000
-Message-ID: <61852f3ff556421c9fd89edc0ee50417@intel.com>
-References: <20210406210125.241-1-shiraz.saleem@intel.com>
- <20210406210125.241-2-shiraz.saleem@intel.com>
- <20210407154430.GA502757@nvidia.com>
- <1e61169b83ac458aa9357298ecfab846@intel.com>
- <20210407224324.GH282464@nvidia.com> <YG6tZ/iRFpt3OELK@unreal>
-In-Reply-To: <YG6tZ/iRFpt3OELK@unreal>
-Accept-Language: en-US
+        Linuxarm <linuxarm@huawei.com>,
+        "liuyixing (A)" <liuyixing1@huawei.com>
+Subject: Re: [PATCH for-next 8/9] RDMA/hns: Simplify the function config_eqc()
+Thread-Topic: [PATCH for-next 8/9] RDMA/hns: Simplify the function
+ config_eqc()
+Thread-Index: AQHXJ5//ftXrBjSIxE+RENDv6jhhjA==
+Date:   Fri, 9 Apr 2021 01:39:12 +0000
+Message-ID: <defd6389a46149c1874d9f11a997e06f@huawei.com>
+References: <1617354454-47840-1-git-send-email-liweihang@huawei.com>
+ <1617354454-47840-9-git-send-email-liweihang@huawei.com>
+ <20210408191334.GC692402@nvidia.com>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
+x-originating-ip: [10.67.100.165]
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [PATCH v4 01/23] iidc: Introduce iidc.h
+On 2021/4/9 3:13, Jason Gunthorpe wrote:
+> On Fri, Apr 02, 2021 at 05:07:33PM +0800, Weihang Li wrote:
+>> -	roce_set_field(eqc->byte_40, HNS_ROCE_EQC_NXT_EQE_BA_L_M,
+>> -		       HNS_ROCE_EQC_NXT_EQE_BA_L_S, eqe_ba[1] >> 12);
+>> -
+>> -	roce_set_field(eqc->byte_44, HNS_ROCE_EQC_NXT_EQE_BA_H_M,
+>> -		       HNS_ROCE_EQC_NXT_EQE_BA_H_S, eqe_ba[1] >> 44);
+>> -
+>> -	roce_set_field(eqc->byte_44, HNS_ROCE_EQC_EQE_SIZE_M,
+>> -		       HNS_ROCE_EQC_EQE_SIZE_S,
+>> -		       eq->eqe_size == HNS_ROCE_V3_EQE_SIZE ? 1 : 0);
+>> +	hr_reg_write(eqc, EQC_EQ_ST, HNS_ROCE_V2_EQ_STATE_VALID);
+>> +	hr_reg_write(eqc, EQC_EQE_HOP_NUM, eq->hop_num);
+>> +	hr_reg_write(eqc, EQC_OVER_IGNORE, eq->over_ignore);
+>> +	hr_reg_write(eqc, EQC_COALESCE, eq->coalesce);
 > 
-> On Wed, Apr 07, 2021 at 07:43:24PM -0300, Jason Gunthorpe wrote:
-> > On Wed, Apr 07, 2021 at 08:58:49PM +0000, Saleem, Shiraz wrote:
-> > > > Subject: Re: [PATCH v4 01/23] iidc: Introduce iidc.h
-> > > >
-> > > > On Tue, Apr 06, 2021 at 04:01:03PM -0500, Shiraz Saleem wrote:
-> > > >
-> > > > > +/* Following APIs are implemented by core PCI driver */ struct
-> > > > > +iidc_core_ops {
-> > > > > +	/* APIs to allocate resources such as VEB, VSI, Doorbell queues,
-> > > > > +	 * completion queues, Tx/Rx queues, etc...
-> > > > > +	 */
-> > > > > +	int (*alloc_res)(struct iidc_core_dev_info *cdev_info,
-> > > > > +			 struct iidc_res *res,
-> > > > > +			 int partial_acceptable);
-> > > > > +	int (*free_res)(struct iidc_core_dev_info *cdev_info,
-> > > > > +			struct iidc_res *res);
-> > > > > +
-> > > > > +	int (*request_reset)(struct iidc_core_dev_info *cdev_info,
-> > > > > +			     enum iidc_reset_type reset_type);
-> > > > > +
-> > > > > +	int (*update_vport_filter)(struct iidc_core_dev_info *cdev_info,
-> > > > > +				   u16 vport_id, bool enable);
-> > > > > +	int (*vc_send)(struct iidc_core_dev_info *cdev_info, u32 vf_id, u8
-> *msg,
-> > > > > +		       u16 len);
-> > > > > +};
-> > > >
-> > > > What is this? There is only one implementation:
-> > > >
-> > > > static const struct iidc_core_ops ops = {
-> > > > 	.alloc_res			= ice_cdev_info_alloc_res,
-> > > > 	.free_res			= ice_cdev_info_free_res,
-> > > > 	.request_reset			= ice_cdev_info_request_reset,
-> > > > 	.update_vport_filter		= ice_cdev_info_update_vsi_filter,
-> > > > 	.vc_send			= ice_cdev_info_vc_send,
-> > > > };
-> > > >
-> > > > So export and call the functions directly.
-> > >
-> > > No. Then we end up requiring ice to be loaded even when just want to
-> > > use irdma with x722 [whose ethernet driver is "i40e"].
-> >
-> > So what? What does it matter to load a few extra kb of modules?
+> This really is a lot better like this, isn't it?
 > 
-> And if user cares about it, he will blacklist that module anyway.
+> Jason
 > 
- blacklist ice when you just have an x722 card? How does that solve anything? You wont be able to load irdma then.
 
-Shiraz
+Yes, thank you for your previous advice :)
+
+Weihang
