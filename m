@@ -2,39 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5106335A795
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Apr 2021 22:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C473435A8C1
+	for <lists+linux-rdma@lfdr.de>; Sat, 10 Apr 2021 00:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231946AbhDIUHa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Apr 2021 16:07:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233527AbhDIUHa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 9 Apr 2021 16:07:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D4F761108;
-        Fri,  9 Apr 2021 20:07:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617998836;
-        bh=uxMzNT1vhL2iwaA0zwbp8jMw72R+KTpZgO7i2hDjgZE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=kAxg4ZjDhxgWOAvjV9FgphkMXaysISZeAz+xHtsWnboyKogSIhRbzB/JHvZRUlE+w
-         aMCDYXc1ylCDJ+MMsSXjpWa+JPOWb+SBEKt9PShsmdNUGl3C1HpiIGSCfdX61zusnj
-         sve1AbIWMvmaAnbiZkOTcCyfPuCmFP1DaYQk+k30Y5N2LMX9+EcldkIke7iw6YK5ce
-         Z8CRtVQflmRdt5GBre4ONASPN14HN+L82bmH+8ApgLY1FJOsfIobnZA1db3yDcRtxM
-         l8ZR+KzyCFyuoelas4gWdrmI2EM2BPnRUSI0o15TeeyW/qtgGdZ7Bx7gBqWh8FNW2a
-         QxQoi0jvx2blA==
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
+        id S234880AbhDIWiW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Apr 2021 18:38:22 -0400
+Received: from mail-ej1-f52.google.com ([209.85.218.52]:44600 "EHLO
+        mail-ej1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234602AbhDIWiW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Apr 2021 18:38:22 -0400
+Received: by mail-ej1-f52.google.com with SMTP id e14so10965640ejz.11;
+        Fri, 09 Apr 2021 15:38:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RQaj4GV0Jq3ffxY/eFd7Oq4i8/CAPwtBW6FzUex6oGs=;
+        b=Yb6NVkMJNita1PGzV5CCuUAwzPKKoTcDsweDvWicPgK5MvjWToqprZ0FjJkHtvSlxO
+         hye5PNpTW3Z1Itu3ifvn/jqOIdYRI8Tcz4SCiV2pdZJg/r4Yo5f6hfnzwrJ9LLIXv7r1
+         4cpRUx0pUxP0csi0ooBNLTkNg9nTc0ZcSyKam3/H1s1dylvm1SBnctl6CPFnPb/IUWQw
+         eugYp4U26rsz4/nNnfyvS109hQhhPJm7Mk2Yx1j+9IavpavYJJyfMNf3nYxuMp8bj8GK
+         0RbFjHZq0QbJBH3ZPYdCmkbYGIoBAoppTt5ykg5R8hWMmG+5yB494WjgZebU1IHMzdjM
+         jMSw==
+X-Gm-Message-State: AOAM533W78O8hPX7mCE4TqF/SZVxlCeO+zWMnJXjENG9XDA511ajlrPy
+        w35XLckbukF3c31nQS6ZqluqvukE89yfpw==
+X-Google-Smtp-Source: ABdhPJx4JIcTBS5XaTVR5i9muuS54gLr6k4CxbJYfTE18J+nrM5vNX7CvYmgumecUrk1XBF+7DSXBw==
+X-Received: by 2002:a17:907:33cb:: with SMTP id zk11mr1145396ejb.231.1618007887368;
+        Fri, 09 Apr 2021 15:38:07 -0700 (PDT)
+Received: from msft-t490s.teknoraver.net (net-93-66-21-119.cust.vodafonedsl.it. [93.66.21.119])
+        by smtp.gmail.com with ESMTPSA id s20sm2108726edu.93.2021.04.09.15.38.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 15:38:06 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     netdev@vger.kernel.org, linux-mm@kvack.org
+Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
         Saeed Mahameed <saeedm@nvidia.com>,
-        Saeed Mahameed <saeed@kernel.org>
-Subject: [pull-request][net-next][rdma-next] mlx5-next 2021-04-09
-Date:   Fri,  9 Apr 2021 13:07:04 -0700
-Message-Id: <20210409200704.10886-1-saeed@kernel.org>
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH net-next v3 0/5] page_pool: recycle buffers
+Date:   Sat, 10 Apr 2021 00:37:56 +0200
+Message-Id: <20210409223801.104657-1-mcroce@linux.microsoft.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -42,94 +90,67 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Dave, Jakub, Jason,
+From: Matteo Croce <mcroce@microsoft.com>
 
-This pr contains changes from  mlx5-next branch,
-already reviewed on netdev and rdma mailing lists, links below.
+This is a respin of [1]
 
-1) From Leon, Dynamically assign MSI-X vectors count
-Already Acked by Bjorn Helgaas.
-https://patchwork.kernel.org/project/netdevbpf/cover/20210314124256.70253-1-leon@kernel.org/
+This  patchset shows the plans for allowing page_pool to handle and
+maintain DMA map/unmap of the pages it serves to the driver.  For this
+to work a return hook in the network core is introduced.
 
-2) Cleanup series:
-https://patchwork.kernel.org/project/netdevbpf/cover/20210311070915.321814-1-saeed@kernel.org/
+The overall purpose is to simplify drivers, by providing a page
+allocation API that does recycling, such that each driver doesn't have
+to reinvent its own recycling scheme.  Using page_pool in a driver
+does not require implementing XDP support, but it makes it trivially
+easy to do so.  Instead of allocating buffers specifically for SKBs
+we now allocate a generic buffer and either wrap it on an SKB
+(via build_skb) or create an XDP frame.
+The recycling code leverages the XDP recycle APIs.
 
-From Mark, E-Switch cleanups and refactoring, and the addition 
-of single FDB mode needed HW bits.
+The Marvell mvpp2 and mvneta drivers are used in this patchset to
+demonstrate how to use the API, and tested on a MacchiatoBIN
+and EspressoBIN boards respectively.
 
-From Mikhael, Remove unused struct field
+Please let this going in on a future -rc1 so to allow enough time
+to have wider tests.
 
-From Saeed, Cleanup W=1 prototype warning 
+[1] https://lore.kernel.org/netdev/154413868810.21735.572808840657728172.stgit@firesoul/
 
-From Zheng, Esw related cleanup
+v2 -> v3:
+- added missing SOBs
+- CCed the MM people
 
-From Tariq, User order-0 page allocation for EQs
+v1 -> v2:
+- fix a commit message
+- avoid setting pp_recycle multiple times on mvneta
+- squash two patches to avoid breaking bisect
 
-Please pull and let me if there's any issue.
+Ilias Apalodimas (1):
+  page_pool: Allow drivers to hint on SKB recycling
 
-Thanks,
-Saeed.
+Jesper Dangaard Brouer (1):
+  xdp: reduce size of struct xdp_mem_info
 
----
+Matteo Croce (3):
+  mm: add a signature in struct page
+  mvpp2: recycle buffers
+  mvneta: recycle buffers
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+ .../chelsio/inline_crypto/ch_ktls/chcr_ktls.c |  2 +-
+ drivers/net/ethernet/marvell/mvneta.c         |  7 ++-
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 17 +++----
+ drivers/net/ethernet/marvell/sky2.c           |  2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
+ include/linux/mm_types.h                      |  1 +
+ include/linux/skbuff.h                        | 35 ++++++++++++--
+ include/net/page_pool.h                       | 15 ++++++
+ include/net/xdp.h                             |  5 +-
+ net/core/page_pool.c                          | 47 +++++++++++++++++++
+ net/core/skbuff.c                             | 20 +++++++-
+ net/core/xdp.c                                | 14 ++++--
+ net/tls/tls_device.c                          |  2 +-
+ 13 files changed, 142 insertions(+), 27 deletions(-)
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+-- 
+2.30.2
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git mlx5-next
-
-for you to fetch changes up to e71b75f73763d88665b3a19c5a4d52d559aa7732:
-
-  net/mlx5: Implement sriov_get_vf_total_msix/count() callbacks (2021-04-04 10:30:38 +0300)
-
-----------------------------------------------------------------
-Leon Romanovsky (4):
-      PCI/IOV: Add sysfs MSI-X vector assignment interface
-      net/mlx5: Add dynamic MSI-X capabilities bits
-      net/mlx5: Dynamically assign MSI-X vectors count
-      net/mlx5: Implement sriov_get_vf_total_msix/count() callbacks
-
-Mark Bloch (5):
-      net/mlx5: E-Switch, Add match on vhca id to default send rules
-      net/mlx5: E-Switch, Add eswitch pointer to each representor
-      RDMA/mlx5: Use representor E-Switch when getting netdev and metadata
-      net/mlx5: E-Switch, Refactor send to vport to be more generic
-      net/mlx5: Add IFC bits needed for single FDB mode
-
-Mikhael Goikhman (1):
-      net/mlx5: Remove unused mlx5_core_health member recover_work
-
-Saeed Mahameed (1):
-      net/mlx5: Cleanup prototype warning
-
-Tariq Toukan (1):
-      net/mlx5: Use order-0 allocations for EQs
-
-Zheng Yongjun (1):
-      net/mlx5: simplify the return expression of mlx5_esw_offloads_pair()
-
- Documentation/ABI/testing/sysfs-bus-pci            |  29 ++++++
- drivers/infiniband/hw/mlx5/fs.c                    |   2 +-
- drivers/infiniband/hw/mlx5/ib_rep.c                |   5 +-
- drivers/infiniband/hw/mlx5/main.c                  |   3 +-
- .../net/ethernet/mellanox/mlx5/core/en/health.c    |   2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_rep.c   |   3 +-
- drivers/net/ethernet/mellanox/mlx5/core/eq.c       |  27 +++---
- .../ethernet/mellanox/mlx5/core/eswitch_offloads.c |  34 ++++---
- drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c   |   2 +-
- drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h   |  15 ++-
- drivers/net/ethernet/mellanox/mlx5/core/main.c     |   6 ++
- .../net/ethernet/mellanox/mlx5/core/mlx5_core.h    |  12 +++
- drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c  |  73 +++++++++++++++
- drivers/net/ethernet/mellanox/mlx5/core/sriov.c    |  48 +++++++++-
- drivers/net/ethernet/mellanox/mlx5/core/wq.c       |   5 -
- drivers/pci/iov.c                                  | 102 +++++++++++++++++++--
- drivers/pci/pci-sysfs.c                            |   3 +-
- drivers/pci/pci.h                                  |   3 +-
- include/linux/mlx5/driver.h                        |   6 +-
- include/linux/mlx5/eswitch.h                       |   5 +-
- include/linux/mlx5/mlx5_ifc.h                      |  32 +++++--
- include/linux/pci.h                                |   8 ++
- 22 files changed, 363 insertions(+), 62 deletions(-)
