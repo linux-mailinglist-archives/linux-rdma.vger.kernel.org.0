@@ -2,122 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24585359BF2
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Apr 2021 12:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A489C359BB3
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Apr 2021 12:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233043AbhDIK0c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Apr 2021 06:26:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59670 "EHLO
+        id S234114AbhDIKPm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Apr 2021 06:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231638AbhDIK0b (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Apr 2021 06:26:31 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0DFC061760;
-        Fri,  9 Apr 2021 03:26:18 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id s7so4987727wru.6;
-        Fri, 09 Apr 2021 03:26:18 -0700 (PDT)
+        with ESMTP id S233537AbhDIKNx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Apr 2021 06:13:53 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092CBC0613F0
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Apr 2021 03:12:13 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id m13so5202172oiw.13
+        for <linux-rdma@vger.kernel.org>; Fri, 09 Apr 2021 03:12:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LRAyoqSstv9qcrVjPv+B4YXhvLoW8/SLy7wVQjukdx4=;
-        b=fT3uh1Tg12CI5KeTSpiwstJvKUIb0Jg5amRuuD4aMieGsELFvBptCFYon3x81ZbqtJ
-         BMpXvhAdjwwqzF7CTJmxUaC9Xs0nnMs8ihbg+/zervtql6Vw8pQV0qIy1zgfIBMgrihz
-         pYigmfs/Dz7VwE+Vlf/jo4+A+0Yf/a0iKruTLa7IDRbeqJfW7pRi4Pg4YD+czhyy4KfB
-         SKri2g8qO7lhgbEef/5y94SfJBZbqUHzh39U1AP9Nu+O3NEwenFgs8AYrEiKUG6JAk7C
-         zE8cNulj/4/OO1GjEW1qB9frGfqwEWAkWXvwpr6dQkAV9V2jWXBYtJuku2jVcOfkc0W2
-         EiPw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Uu3qVfx+7w9jxHiUwAe7eFdK6umncczG0xdPmz1lIjQ=;
+        b=ttKUSNCz4tE8mNbjpd64JV0uh7lVymP7ooThi/BJuEJV5dtKiGlT25JdSMpw2KacZq
+         Fq8JShgXP39lHTw5g/mSRrJiIEDA/nupOFF0x6XibOIiMAFiTwWhvJV1bjUhMg9GW0m7
+         j71rfkeKb3N8PmfGGFFl1K/9zOy/pTiltWel6FzfoDjtsQGxsuvh8rk7BksuOt0zj4Hd
+         lFr8oZt7MEB843U8+dd1+tXPHFHksFhx24hFjn8vqg2yaVFFevgCe9J4CEKwa4VA9mt1
+         MUog4nXPUKZvqjMIvSHCgdFagl9s867zHysCYFYn88x31slwAkc5Mrw2ekuripM6B9fq
+         fYuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LRAyoqSstv9qcrVjPv+B4YXhvLoW8/SLy7wVQjukdx4=;
-        b=m4tYAdgi2ZZNmHYdjz0EJBLNHLjNJCDoyy4DlXOl+JeVBrrIczDklbYCSUkoa3+P3h
-         Bpfl1I2puAFowfVuFmSUS4+sJbZA7RxL/vW15QjsiVuwFB9NvdkSbFKT5ZDYr8qWz2LZ
-         TJU6PM86r1ZqqzEea0/ljIJvmxUymtXTBvaoSMbb2paLRAbzhGm37mqI5uTSlx/TgvDm
-         nwV75rj3v/QCn2vu0HLGcd9JrAhrlkZwDjvoXL+4Kk46NjRJNbKrBezU66QKRcFWJDW1
-         IJvaxPeS/mT5Sj+FGiGLHirFG3hznQ+yZTjj5UitwFkHpNTEaUl6pvDClvc1A42ke5lc
-         woNQ==
-X-Gm-Message-State: AOAM532uLyPsCek1YIlKZ8GU76QaM5rItDGwjAVJoS8kh7acePIJDWob
-        gEgKOMRTlc/vLNfvwJXg/6iA6kNipv4=
-X-Google-Smtp-Source: ABdhPJyRaboQNnb4wffn7NnFkh1UNbm6Nyg27QXBRQRF0/EWjZS4BANfYNnApYnrGB93QtMRPuEhCA==
-X-Received: by 2002:a5d:5152:: with SMTP id u18mr16423345wrt.289.1617963977545;
-        Fri, 09 Apr 2021 03:26:17 -0700 (PDT)
-Received: from [192.168.1.101] ([37.167.116.29])
-        by smtp.gmail.com with ESMTPSA id y22sm3785521wmc.18.2021.04.09.03.26.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Apr 2021 03:26:16 -0700 (PDT)
-Subject: Re: [PATCH] net/rds: Avoid potential use after free in
- rds_send_remove_from_sock
-To:     Aditya Pakki <pakki001@umn.edu>
-Cc:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
-        linux-kernel@vger.kernel.org
-References: <20210407000913.2207831-1-pakki001@umn.edu>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <bd3c84bc-6ae0-63e9-61f2-5cf64a976531@gmail.com>
-Date:   Fri, 9 Apr 2021 12:26:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Uu3qVfx+7w9jxHiUwAe7eFdK6umncczG0xdPmz1lIjQ=;
+        b=PCevMd/Z/oG5ynr1ENMwrkAbVvfY0ZqnQu0eWeX9N6xPhLUaUhmoxw1zRd3gAHKzSc
+         V/GHo7Ojy9Mm4PlzuBVIXtsfnFlJyc3HyJHeWPsqwI42mn/D/5yOiiBet8Gt0GTjSP0Q
+         EM29mcWL9uDdd42pDsl7MjSU0KyYv8B+TrwI9r3z9DxOE76PNcksW2LLvRMbKO3AyI/d
+         fx14Rt0wSg07gT9sI2aBfGGfKMLMd+FkDPF3dNLNiX40rQHX8mlH9nDLVECGz3vGvNoI
+         Ti9xxxedeAw7IJmD+nyMrd1hCRf0W2tEr1uvQX55+ucei6WSHovvgAtlHxrj8GFNNJ/n
+         KYcw==
+X-Gm-Message-State: AOAM532Pxox50I1ckA0qnlwF0StGFaKwn977cE8amhUPlAe+3/3dRp6s
+        SnEC+lJl4RSnPHwxZbZeHtUUgmAGmtDgr3F//RM=
+X-Google-Smtp-Source: ABdhPJxAZICXVI1dlvJlU5lDvI29TRSRJcAmkckMYX3PJL1xoNQdQaEbNKauco16OmrGRSDwP16ibm8IU7SAaIKR3iM=
+X-Received: by 2002:aca:490e:: with SMTP id w14mr214510oia.169.1617963131556;
+ Fri, 09 Apr 2021 03:12:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210407000913.2207831-1-pakki001@umn.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210326012723.41769-1-yanjun.zhu@intel.com> <20210408183359.GA676678@nvidia.com>
+In-Reply-To: <20210408183359.GA676678@nvidia.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Fri, 9 Apr 2021 22:36:42 -0400
+Message-ID: <CAD=hENehGzGn=nxNO0B8u=nevFx1CGsiovxtir3OCZ2ffVB1gQ@mail.gmail.com>
+Subject: Re: [PATCHv3 for-next 1/1] RDMA/rxe: Disable ipv6 features when
+ ipv6.disable set in cmdline
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Zhu Yanjun <yanjun.zhu@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Yi Zhang <yi.zhang@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Apr 8, 2021 at 2:34 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Thu, Mar 25, 2021 at 09:27:23PM -0400, Zhu Yanjun wrote:
+> > From: Zhu Yanjun <zyjzyj2000@gmail.com>
+> >
+> > When ipv6.disable=1 is set in cmdline, ipv6 is actually disabled
+> > in the stack. As such, the operations of ipv6 in RXE will fail.
+> > So ipv6 features in RXE should also be disabled in RXE.
+> >
+> > Fixes: 8700e3e7c4857 ("Soft RoCE driver")
+> > Reported-by: Yi Zhang <yi.zhang@redhat.com>
+> > Signed-off-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+> > Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> > Tested-by: Yi Zhang <yi.zhang@redhat.com>
+> > V2->V3: Remove print message
+> > V1->V2: Modify the pr_info messages
+> >  drivers/infiniband/sw/rxe/rxe_net.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+> > index 01662727dca0..3b8ed007e8af 100644
+> > +++ b/drivers/infiniband/sw/rxe/rxe_net.c
+> > @@ -72,6 +72,9 @@ static struct dst_entry *rxe_find_route6(struct net_device *ndev,
+> >       struct dst_entry *ndst;
+> >       struct flowi6 fl6 = { { 0 } };
+> >
+> > +     if (!ipv6_mod_enabled())
+> > +             return NULL;
+> > +
+> >       memset(&fl6, 0, sizeof(fl6));
+> >       fl6.flowi6_oif = ndev->ifindex;
+> >       memcpy(&fl6.saddr, saddr, sizeof(*saddr));
+>
+> What is this actually fixing?
+>
+> ndst = ipv6_stub->ipv6_dst_lookup_flow() will return an error if the
+> ipv6 support is not loaded so why do we need more tests?
 
+As what I said in commit log, when "When ipv6.disable=1 is set in
+cmdline, ipv6 is actually disabled"
+That is, when cat /proc/cmdline, the command line is
+"
+cat /proc/cmdline
+BOOT_IMAGE=(hd0,msdos1)/vmlinuz-5.12.0-rc3+ root=/dev/mapper/cl-root
+ro resume=/dev/mapper/cl-swap rd.lvm.lv=cl/root rd.lvm.lv=cl/swap
+crashkernel=512M ipv6.disable=1
+"
+And if you make the above configurations, then modprobe rdma_rxe should work.
+then ''rdma link add rxe0 type rxe netdev eth0" should work well.
+ndst = ipv6_stub->ipv6_dst_lookup_flow should not be called.
+Can you tell me how to disable IPV6 in your test host?
 
-On 4/7/21 2:09 AM, Aditya Pakki wrote:
-> In case of rs failure in rds_send_remove_from_sock(), the 'rm' resource
-> is freed and later under spinlock, causing potential use-after-free.
-> Set the free pointer to NULL to avoid undefined behavior.
-> 
-> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
-> ---
->  net/rds/message.c | 1 +
->  net/rds/send.c    | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/rds/message.c b/net/rds/message.c
-> index 071a261fdaab..90ebcfe5fe3b 100644
-> --- a/net/rds/message.c
-> +++ b/net/rds/message.c
-> @@ -180,6 +180,7 @@ void rds_message_put(struct rds_message *rm)
->  		rds_message_purge(rm);
->  
->  		kfree(rm);
-> +		rm = NULL;
+> in the stack. As such, the operations of ipv6 in RXE will fail.
+> So ipv6 features in RXE should also be disabled in RXE."
 
-This is a nop really.
+>
+> > @@ -616,6 +619,8 @@ static int rxe_net_ipv4_init(void)
+> >  static int rxe_net_ipv6_init(void)
+> >  {
+> >  #if IS_ENABLED(CONFIG_IPV6)
+> > +     if (!ipv6_mod_enabled())
+> > +             return 0;
+> >
+> >       recv_sockets.sk6 = rxe_setup_udp_tunnel(&init_net,
+> >                                               htons(ROCE_V2_UDP_DPORT), true);
+>
+> rxe_setup_udp_tunnel() should already fail naturally because the V6
+> socket won't be created
+>
+> What is the actual symptom this patch is trying to address?
 
-This does not clear @rm variable in the caller.
+This patch is try to fix the problem in the link
+https://lore.kernel.org/linux-rdma/880d7b59-4b17-a44f-1a91-88257bfc3aaa@redhat.com/T/#t
 
+Zhu Yanjun
 
-
->  	}
->  }
->  EXPORT_SYMBOL_GPL(rds_message_put);
-> diff --git a/net/rds/send.c b/net/rds/send.c
-> index 985d0b7713ac..fe5264b9d4b3 100644
-> --- a/net/rds/send.c
-> +++ b/net/rds/send.c
-> @@ -665,7 +665,7 @@ static void rds_send_remove_from_sock(struct list_head *messages, int status)
->  unlock_and_drop:
->  		spin_unlock_irqrestore(&rm->m_rs_lock, flags);
->  		rds_message_put(rm);
-> -		if (was_on_sock)
-> +		if (was_on_sock && rm)
->  			rds_message_put(rm);
-
-Maybe the bug is that the refcount has not be elevated when was_on_sock
-has been set.
-
->  	}
->  
-> 
+>
+> Jason
