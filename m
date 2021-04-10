@@ -2,56 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D9235AF08
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 Apr 2021 18:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D513F35AF5C
+	for <lists+linux-rdma@lfdr.de>; Sat, 10 Apr 2021 19:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234818AbhDJQRL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 10 Apr 2021 12:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51454 "EHLO
+        id S234668AbhDJRnC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 10 Apr 2021 13:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234838AbhDJQRJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 10 Apr 2021 12:17:09 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B56C06138D
-        for <linux-rdma@vger.kernel.org>; Sat, 10 Apr 2021 09:16:52 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id e34so2472631wmp.0
-        for <linux-rdma@vger.kernel.org>; Sat, 10 Apr 2021 09:16:52 -0700 (PDT)
+        with ESMTP id S234513AbhDJRnB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 10 Apr 2021 13:43:01 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537A9C06138C
+        for <linux-rdma@vger.kernel.org>; Sat, 10 Apr 2021 10:42:45 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id l22so2875784ljc.9
+        for <linux-rdma@vger.kernel.org>; Sat, 10 Apr 2021 10:42:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZtZHBLTCs7MZ+oNP0mY9TjGEU/md/IA3GJQkuj80sew=;
-        b=Bp3G7rXdj30nXahmCb0DX42/GpQq1NqVzRF3U8dpNmLoLFw08YqVW0WmTFlQz+n48O
-         M2zywKwO2O5xxvb1z3UGKVFtAEDcrkDu8fWhD3WoVLSrFWHESGd3gWEfXxADH05sAM7O
-         wGaMz+7TbhLVVvc8C90tpPkoqpXDs0nzasfuK/ZtQfCl+zxDbsrTM93E9yzxqn2iXTco
-         YX2lZWxg+TldvU18p6YAWW/e3bw7NAvlwm3SHKK367vEwZzH9gKvwPrTcsdXyWMDg6qr
-         de5eOntFj7fjAPKLWzRfU+Z9V+yxdliPGzjBwyEc/fmcBy+1nxuTJ0czZ3m4q/pHEgr9
-         KwFw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YQRCaZgP2UefM3Ubw17zbmZirkjkTDsaBGQG+axJ5kQ=;
+        b=mjbnE9JRYwo/fH61O7Xyg2aVRfgPRGJsm4XORh9xQMVPMxNp+zDIb9pMaFMV3ATQt1
+         +M6LrxvuT5e9oDB0rkXB3wmBvNR5UTP6ndLcJvIlUC/C6YqLmzFDpNWr6yxOzloHsibA
+         tBA385gGi2e6vbt5P0I+lZ4/gLnEsvg1MMxBJz/poKMw42gMCkjCZeJAsSPJtDpkVpmL
+         h4P0hfiQhLFbhxUpMMAUkID0aSo/qqJaKEmrSEfzJ2rIKAOhoLyFc+USxeCPa8Cy817P
+         zqEMX41eeVSLoHDtC8131M4jumJazcD+PQis77VUdbRdVU4X/JjbmLmGylWWbsV/pbX4
+         HxRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZtZHBLTCs7MZ+oNP0mY9TjGEU/md/IA3GJQkuj80sew=;
-        b=JJvOpIEKFEtF67Z8t/eJDoz2sb44sGrR0ijP5o4FHbHufrOl7XmwtzIzOOFrcPOjqD
-         V5mwU0dz7SGq0amcHFV8v/kWmGMYHonjOmr17TYL/wFGtUawhBPaJXvMrCoO7xMqy5Q7
-         L301jGICvh2p54n5eemWlyNl8O33D/sit+yXl9T2R4Hf0jlzh0h9uf0yeiRNHy/UhQjm
-         m/mj6LMWnYvaQriEh337J7f7HVzQdKuJ8tvXZcoo55Gqnbr9HlTqJAZt3geR38tzl/BT
-         3nWeTSh6Z4M46h0aYuXryc36p6pq6iDSXx+Wkj+Mxu6hlLz7DtOhPTyCVjRnq40/g4r6
-         OQEw==
-X-Gm-Message-State: AOAM533fxTwjRt98k6eEI7tjfkJbJFVBHI0S/AgZ7i6Ki9PLwzrZ4+tQ
-        9rvbX1qgHBsoJDppKHRLY0Qo2g==
-X-Google-Smtp-Source: ABdhPJzfo2oPB457fWxv/FRl0ytj31GVMTNjfB58hqzRB9Zc1TPw+2J3WRF+a+hA0AXzUFSSRq9MXw==
-X-Received: by 2002:a05:600c:3641:: with SMTP id y1mr13991903wmq.65.1618071411457;
-        Sat, 10 Apr 2021 09:16:51 -0700 (PDT)
-Received: from enceladus (ppp-94-65-225-75.home.otenet.gr. [94.65.225.75])
-        by smtp.gmail.com with ESMTPSA id m26sm8126680wmg.17.2021.04.10.09.16.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 09:16:50 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 19:16:45 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YQRCaZgP2UefM3Ubw17zbmZirkjkTDsaBGQG+axJ5kQ=;
+        b=cV+8+8U7J8lmtbUR2twjxvROReeokaNNBheMxiQL1C9wKJd/RCwp4wnJ4vSZixlKzh
+         VjljIceV5nsWaDUnalJqWNAhm2OtrZnyDCuBM/4/fUhNt8OvxCV3wCm921FjhFx4mYd2
+         OP5CtkCuWLZ0QlXqyvYNnJpj4D4RiOvSAHCjBg6G2IdohELT7zQ4zUtDwJXCo9/EP2OT
+         2Pin4QJIQ+OWyLY74TIaBRMGx1TKj1sAxAxwS36KSlTttMP+WiOXE7yqskuuE14n2Esg
+         X0BprDytEbKS2WNZ1/atsjnAcZy2I67UJteDa60x+7wrs7MOMFi9Y9CE4e3Ikn9q4JyR
+         NCGQ==
+X-Gm-Message-State: AOAM5329hWBQUG1MpNlmt8odBtdiP3NYg0enrZe4Bi7YNOaD4KSspIxm
+        rtkQHJh5KrOSyu0XoVfUvPp9Yh8jo+sOtpGhQAq7ag==
+X-Google-Smtp-Source: ABdhPJz54PyIV6KeuDGJx6pxTDDePDj+YPgyrhMW/RNrlHb4Plp9GyuL8iOp7iVgh+YTm/eAuEaH7X7lzhVg+2SHD4E=
+X-Received: by 2002:a2e:9cc4:: with SMTP id g4mr12781684ljj.34.1618076563428;
+ Sat, 10 Apr 2021 10:42:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-3-mcroce@linux.microsoft.com> <20210410154824.GZ2531743@casper.infradead.org>
+ <YHHPbQm2pn2ysth0@enceladus>
+In-Reply-To: <YHHPbQm2pn2ysth0@enceladus>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Sat, 10 Apr 2021 10:42:30 -0700
+Message-ID: <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
         Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
         Rohit Maheshwari <rohitm@chelsio.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -88,99 +93,43 @@ Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
         Miaohe Lin <linmiaohe@huawei.com>,
         Yunsheng Lin <linyunsheng@huawei.com>,
         Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
         David Ahern <dsahern@gmail.com>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <YHHPbQm2pn2ysth0@enceladus>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-3-mcroce@linux.microsoft.com>
- <20210410154824.GZ2531743@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210410154824.GZ2531743@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Matthew 
+On Sat, Apr 10, 2021 at 9:16 AM Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+> Hi Matthew
+>
+> On Sat, Apr 10, 2021 at 04:48:24PM +0100, Matthew Wilcox wrote:
+> > On Sat, Apr 10, 2021 at 12:37:58AM +0200, Matteo Croce wrote:
+> > > This is needed by the page_pool to avoid recycling a page not allocated
+> > > via page_pool.
+> >
+> > Is the PageType mechanism more appropriate to your needs?  It wouldn't
+> > be if you use page->_mapcount (ie mapping it to userspace).
+>
+> Interesting!
+> Please keep in mind this was written ~2018 and was stale on my branches for
+> quite some time.  So back then I did try to use PageType, but had not free
+> bits.  Looking at it again though, it's cleaned up.  So yes I think this can
+> be much much cleaner.  Should we go and define a new PG_pagepool?
+>
+>
 
-On Sat, Apr 10, 2021 at 04:48:24PM +0100, Matthew Wilcox wrote:
-> On Sat, Apr 10, 2021 at 12:37:58AM +0200, Matteo Croce wrote:
-> > This is needed by the page_pool to avoid recycling a page not allocated
-> > via page_pool.
-> 
-> Is the PageType mechanism more appropriate to your needs?  It wouldn't
-> be if you use page->_mapcount (ie mapping it to userspace).
+Can this page_pool be used for TCP RX zerocopy? If yes then PageType
+can not be used.
 
-Interesting!
-Please keep in mind this was written ~2018 and was stale on my branches for
-quite some time.  So back then I did try to use PageType, but had not free
-bits.  Looking at it again though, it's cleaned up.  So yes I think this can
-be much much cleaner.  Should we go and define a new PG_pagepool?
+There is a recent discussion [1] on memcg accounting of TCP RX
+zerocopy and I am wondering if this work can somehow help in that
+regard. I will take a look at the series.
 
-
-Thanks!
-/Ilias
-> 
-> > Signed-off-by: Matteo Croce <mcroce@microsoft.com>
-> > ---
-> >  include/linux/mm_types.h | 1 +
-> >  include/net/page_pool.h  | 2 ++
-> >  net/core/page_pool.c     | 4 ++++
-> >  3 files changed, 7 insertions(+)
-> > 
-> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> > index 6613b26a8894..ef2d0d5f62e4 100644
-> > --- a/include/linux/mm_types.h
-> > +++ b/include/linux/mm_types.h
-> > @@ -101,6 +101,7 @@ struct page {
-> >  			 * 32-bit architectures.
-> >  			 */
-> >  			dma_addr_t dma_addr;
-> > +			unsigned long signature;
-> >  		};
-> >  		struct {	/* slab, slob and slub */
-> >  			union {
-> > diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> > index b5b195305346..b30405e84b5e 100644
-> > --- a/include/net/page_pool.h
-> > +++ b/include/net/page_pool.h
-> > @@ -63,6 +63,8 @@
-> >   */
-> >  #define PP_ALLOC_CACHE_SIZE	128
-> >  #define PP_ALLOC_CACHE_REFILL	64
-> > +#define PP_SIGNATURE		0x20210303
-> > +
-> >  struct pp_alloc_cache {
-> >  	u32 count;
-> >  	void *cache[PP_ALLOC_CACHE_SIZE];
-> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> > index ad8b0707af04..2ae9b554ef98 100644
-> > --- a/net/core/page_pool.c
-> > +++ b/net/core/page_pool.c
-> > @@ -232,6 +232,8 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
-> >  		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
-> >  
-> >  skip_dma_map:
-> > +	page->signature = PP_SIGNATURE;
-> > +
-> >  	/* Track how many pages are held 'in-flight' */
-> >  	pool->pages_state_hold_cnt++;
-> >  
-> > @@ -302,6 +304,8 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
-> >  			     DMA_ATTR_SKIP_CPU_SYNC);
-> >  	page->dma_addr = 0;
-> >  skip_dma_unmap:
-> > +	page->signature = 0;
-> > +
-> >  	/* This may be the last page returned, releasing the pool, so
-> >  	 * it is not safe to reference pool afterwards.
-> >  	 */
-> > -- 
-> > 2.30.2
-> > 
+[1] https://lore.kernel.org/linux-mm/20210316013003.25271-1-arjunroy.kdev@gmail.com/
