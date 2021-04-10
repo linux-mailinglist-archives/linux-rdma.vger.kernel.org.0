@@ -2,168 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1A435AFFA
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 Apr 2021 20:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD7435B01F
+	for <lists+linux-rdma@lfdr.de>; Sat, 10 Apr 2021 21:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234969AbhDJS5u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 10 Apr 2021 14:57:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234768AbhDJS5t (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 10 Apr 2021 14:57:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 121A1600D4;
-        Sat, 10 Apr 2021 18:57:34 +0000 (UTC)
-Subject: [PATCH v1 5/5] xprtrdma: Move fr_mr field to struct rpcrdma_mr
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Date:   Sat, 10 Apr 2021 14:57:33 -0400
-Message-ID: <161808105334.21544.13290885158284047691.stgit@manet.1015granger.net>
-In-Reply-To: <161808077437.21544.8496120800134971916.stgit@manet.1015granger.net>
-References: <161808077437.21544.8496120800134971916.stgit@manet.1015granger.net>
-User-Agent: StGit/0.23-29-ga622f1
+        id S234708AbhDJTkn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 10 Apr 2021 15:40:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234439AbhDJTkm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 10 Apr 2021 15:40:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFDF1C06138A;
+        Sat, 10 Apr 2021 12:40:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=99tw4rU1bA7MagbzMJxSzuFi8jXoglqEVx3rS3aCE60=; b=UGDCSJOiJywTxRKlV+QWUUkYP7
+        kHAPe+brHhCRWvTl8X0RQzmmsptTNBASWc4j9OilorC2V0moXMOenrd66GalMZDuksOyQBFG7sFY1
+        1jLeCodMt4E0psSQ7+VC0cCIB4Xzgu2R8jxbO4PUlnN76xoO30oeD5CgPk5fzBEQzyihDvOiN26Lo
+        12Pdio68QTCIU89I+zOINcuLobkzYiXQTdLKdO5+/R9uyi2j0Xk93sPyWtmnr6bYL3LR3yx7oY7/H
+        d9DYi1uymvbbmI2fSLCtHv4aPx2dEN7oqaKQBU/Sg9s6Z+Az2JgzxmDEIeClT51aqbma6dXWGBGn5
+        RICJ642g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lVJSV-0023YN-DW; Sat, 10 Apr 2021 19:40:02 +0000
+Date:   Sat, 10 Apr 2021 20:39:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+Message-ID: <20210410193955.GA2531743@casper.infradead.org>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-3-mcroce@linux.microsoft.com>
+ <20210410154824.GZ2531743@casper.infradead.org>
+ <YHHPbQm2pn2ysth0@enceladus>
+ <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+ <YHHuE7g73mZNrMV4@enceladus>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHHuE7g73mZNrMV4@enceladus>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Clean up: The last remaining field in struct rpcrdma_frwr has been
-removed, so the struct can be eliminated.
+On Sat, Apr 10, 2021 at 09:27:31PM +0300, Ilias Apalodimas wrote:
+> > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
+> > can not be used.
+> 
+> Yes it can, since it's going to be used as your default allocator for
+> payloads, which might end up on an SKB.
+> So we have to keep the extra added field on struct page for our mark.
+> Matthew had an intersting idea.  He suggested keeping it, but changing the 
+> magic number, so it can't be a kernel address, but I'll let him follow 
+> up on the details.
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- include/trace/events/rpcrdma.h  |   12 ++++++------
- net/sunrpc/xprtrdma/frwr_ops.c  |    8 ++++----
- net/sunrpc/xprtrdma/xprt_rdma.h |    7 ++-----
- 3 files changed, 12 insertions(+), 15 deletions(-)
+Sure!  So, given the misalignment problem I discovered yesterday [1],
+we probably want a page_pool page to look like:
 
-diff --git a/include/trace/events/rpcrdma.h b/include/trace/events/rpcrdma.h
-index ef6166b840e7..bd55908c1bef 100644
---- a/include/trace/events/rpcrdma.h
-+++ b/include/trace/events/rpcrdma.h
-@@ -379,7 +379,7 @@ DECLARE_EVENT_CLASS(xprtrdma_mr_class,
- 
- 		__entry->task_id = task->tk_pid;
- 		__entry->client_id = task->tk_client->cl_clid;
--		__entry->mr_id  = mr->frwr.fr_mr->res.id;
-+		__entry->mr_id  = mr->mr_ibmr->res.id;
- 		__entry->nents  = mr->mr_nents;
- 		__entry->handle = mr->mr_handle;
- 		__entry->length = mr->mr_length;
-@@ -420,7 +420,7 @@ DECLARE_EVENT_CLASS(xprtrdma_anonymous_mr_class,
- 	),
- 
- 	TP_fast_assign(
--		__entry->mr_id  = mr->frwr.fr_mr->res.id;
-+		__entry->mr_id  = mr->mr_ibmr->res.id;
- 		__entry->nents  = mr->mr_nents;
- 		__entry->handle = mr->mr_handle;
- 		__entry->length = mr->mr_length;
-@@ -903,7 +903,7 @@ TRACE_EVENT(xprtrdma_frwr_alloc,
- 	),
- 
- 	TP_fast_assign(
--		__entry->mr_id = mr->frwr.fr_mr->res.id;
-+		__entry->mr_id = mr->mr_ibmr->res.id;
- 		__entry->rc = rc;
- 	),
- 
-@@ -931,7 +931,7 @@ TRACE_EVENT(xprtrdma_frwr_dereg,
- 	),
- 
- 	TP_fast_assign(
--		__entry->mr_id  = mr->frwr.fr_mr->res.id;
-+		__entry->mr_id  = mr->mr_ibmr->res.id;
- 		__entry->nents  = mr->mr_nents;
- 		__entry->handle = mr->mr_handle;
- 		__entry->length = mr->mr_length;
-@@ -964,7 +964,7 @@ TRACE_EVENT(xprtrdma_frwr_sgerr,
- 	),
- 
- 	TP_fast_assign(
--		__entry->mr_id = mr->frwr.fr_mr->res.id;
-+		__entry->mr_id = mr->mr_ibmr->res.id;
- 		__entry->addr = mr->mr_sg->dma_address;
- 		__entry->dir = mr->mr_dir;
- 		__entry->nents = sg_nents;
-@@ -994,7 +994,7 @@ TRACE_EVENT(xprtrdma_frwr_maperr,
- 	),
- 
- 	TP_fast_assign(
--		__entry->mr_id = mr->frwr.fr_mr->res.id;
-+		__entry->mr_id = mr->mr_ibmr->res.id;
- 		__entry->addr = mr->mr_sg->dma_address;
- 		__entry->dir = mr->mr_dir;
- 		__entry->num_mapped = num_mapped;
-diff --git a/net/sunrpc/xprtrdma/frwr_ops.c b/net/sunrpc/xprtrdma/frwr_ops.c
-index bb2b9c607c71..285d73246fc2 100644
---- a/net/sunrpc/xprtrdma/frwr_ops.c
-+++ b/net/sunrpc/xprtrdma/frwr_ops.c
-@@ -55,7 +55,7 @@ static void frwr_cid_init(struct rpcrdma_ep *ep,
- 	struct rpc_rdma_cid *cid = &mr->mr_cid;
- 
- 	cid->ci_queue_id = ep->re_attr.send_cq->res.id;
--	cid->ci_completion_id = mr->frwr.fr_mr->res.id;
-+	cid->ci_completion_id = mr->mr_ibmr->res.id;
- }
- 
- static void frwr_mr_unmap(struct rpcrdma_xprt *r_xprt, struct rpcrdma_mr *mr)
-@@ -79,7 +79,7 @@ void frwr_mr_release(struct rpcrdma_mr *mr)
- 
- 	frwr_mr_unmap(mr->mr_xprt, mr);
- 
--	rc = ib_dereg_mr(mr->frwr.fr_mr);
-+	rc = ib_dereg_mr(mr->mr_ibmr);
- 	if (rc)
- 		trace_xprtrdma_frwr_dereg(mr, rc);
- 	kfree(mr->mr_sg);
-@@ -139,7 +139,7 @@ int frwr_mr_init(struct rpcrdma_xprt *r_xprt, struct rpcrdma_mr *mr)
- 		goto out_list_err;
- 
- 	mr->mr_xprt = r_xprt;
--	mr->frwr.fr_mr = frmr;
-+	mr->mr_ibmr = frmr;
- 	mr->mr_device = NULL;
- 	INIT_LIST_HEAD(&mr->mr_list);
- 	init_completion(&mr->mr_linv_done);
-@@ -323,7 +323,7 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt *r_xprt,
- 		goto out_dmamap_err;
- 	mr->mr_device = ep->re_id->device;
- 
--	ibmr = mr->frwr.fr_mr;
-+	ibmr = mr->mr_ibmr;
- 	n = ib_map_mr_sg(ibmr, mr->mr_sg, dma_nents, NULL, PAGE_SIZE);
- 	if (n != dma_nents)
- 		goto out_mapmr_err;
-diff --git a/net/sunrpc/xprtrdma/xprt_rdma.h b/net/sunrpc/xprtrdma/xprt_rdma.h
-index 99ef83d673d6..436ad7312614 100644
---- a/net/sunrpc/xprtrdma/xprt_rdma.h
-+++ b/net/sunrpc/xprtrdma/xprt_rdma.h
-@@ -229,14 +229,12 @@ struct rpcrdma_sendctx {
-  * An external memory region is any buffer or page that is registered
-  * on the fly (ie, not pre-registered).
-  */
--struct rpcrdma_frwr {
--	struct ib_mr			*fr_mr;
--};
--
- struct rpcrdma_req;
- struct rpcrdma_mr {
- 	struct list_head	mr_list;
- 	struct rpcrdma_req	*mr_req;
-+
-+	struct ib_mr		*mr_ibmr;
- 	struct ib_device	*mr_device;
- 	struct scatterlist	*mr_sg;
- 	int			mr_nents;
-@@ -247,7 +245,6 @@ struct rpcrdma_mr {
- 		struct ib_reg_wr	mr_regwr;
- 		struct ib_send_wr	mr_invwr;
- 	};
--	struct rpcrdma_frwr	frwr;
- 	struct rpcrdma_xprt	*mr_xprt;
- 	u32			mr_handle;
- 	u32			mr_length;
+unsigned long	flags;
+unsigned long	pp_magic;
+unsigned long	xmi;
+unsigned long	_pp_mapping_pad;
+dma_addr_t	dma_addr;	/* might be one or two words */
 
+The only real restriction here is that pp_magic should not be a valid
+pointer, and it must have the bottom bit clear.  I'd recommend something
+like:
+
+#define PP_MAGIC	(0x20 + POISON_POINTER_DELTA)
+
+This leaves page->mapping as NULL, so you don't have to worry about
+clearing it before free.
+
+[1] https://lore.kernel.org/linux-mm/20210410024313.GX2531743@casper.infradead.org/
 
