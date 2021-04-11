@@ -2,80 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDCB35B2C5
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 Apr 2021 11:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A227E35B2F2
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 Apr 2021 12:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235306AbhDKJcX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 11 Apr 2021 05:32:23 -0400
-Received: from mga05.intel.com ([192.55.52.43]:45300 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235005AbhDKJcV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 11 Apr 2021 05:32:21 -0400
-IronPort-SDR: QX7iD0WVJ8Nd6L99Di+QQOjjNzIsM98dDqf053hFdBGmN613rnXbnfNcWLCZPlsrDZzoK5WvNR
- oxCr8WjuCb8A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9950"; a="279300633"
-X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
-   d="scan'208";a="279300633"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 02:32:03 -0700
-IronPort-SDR: /TyDCBT4rht3wvWncRB2S9Y/kqYcQY5kFutbcCeInbSy0IOGetuj4JtOoTMS20KELp3BZyc8sM
- 8rnf+qZX3E5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
-   d="scan'208";a="449628446"
-Received: from unknown (HELO intel-86.bj.intel.com) ([10.238.154.86])
-  by FMSMGA003.fm.intel.com with ESMTP; 11 Apr 2021 02:32:01 -0700
-From:   Zhu Yanjun <yanjun.zhu@intel.com>
-To:     zyjzyj2000@gmail.com, dledford@redhat.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org
-Cc:     Yi Zhang <yi.zhang@redhat.com>, Leon Romanovsky <leonro@nvidia.com>
-Subject: [PATCHv4 for-next 1/1] RDMA/rxe: Disable ipv6 features when ipv6.disable in cmdline
-Date:   Sun, 11 Apr 2021 21:56:41 -0400
-Message-Id: <20210412015641.5016-1-yanjun.zhu@intel.com>
-X-Mailer: git-send-email 2.27.0
+        id S229804AbhDKKGB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 11 Apr 2021 06:06:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58043 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235369AbhDKKGB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 11 Apr 2021 06:06:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618135544;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MhHr3Cd5ZDKM5bg6lUgtgpxP7s+VM/Oo10g+H6b6Os0=;
+        b=O3Cr/gdGeDiQfLv6B6+jNHs7SFsa24+tbtXJLFL/VMXCVnDbyDStUUXL0JQBR0JWJCgyts
+        4Mnor+U0VS1Xb2SlMyrcHDlEC1xKRfBWKzb/J7Xgm7qoidUSJ2clm0jYqdfHK6OuZ2h5IE
+        EgG4QhZz3g+/q+kXfJSGbDijOG4Habo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-8-iUqQIEx5NBa4mkSJa5bIWw-1; Sun, 11 Apr 2021 06:05:42 -0400
+X-MC-Unique: iUqQIEx5NBa4mkSJa5bIWw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4135610053EA;
+        Sun, 11 Apr 2021 10:05:41 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 957FD14106;
+        Sun, 11 Apr 2021 10:05:18 +0000 (UTC)
+Date:   Sun, 11 Apr 2021 12:05:17 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     brouer@redhat.com, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+Message-ID: <20210411120500.73c1cadb@carbon>
+In-Reply-To: <20210410193955.GA2531743@casper.infradead.org>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+        <20210409223801.104657-3-mcroce@linux.microsoft.com>
+        <20210410154824.GZ2531743@casper.infradead.org>
+        <YHHPbQm2pn2ysth0@enceladus>
+        <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+        <YHHuE7g73mZNrMV4@enceladus>
+        <20210410193955.GA2531743@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <zyjzyj2000@gmail.com>
+On Sat, 10 Apr 2021 20:39:55 +0100
+Matthew Wilcox <willy@infradead.org> wrote:
 
-When ipv6.disable=1 is set in cmdline, ipv6 is actually disabled
-in the stack. As such, the operations of ipv6 in RXE will fail.
-So ipv6 features in RXE should also be disabled in RXE.
+> On Sat, Apr 10, 2021 at 09:27:31PM +0300, Ilias Apalodimas wrote:
+> > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
+> > > can not be used.  
+> > 
+> > Yes it can, since it's going to be used as your default allocator for
+> > payloads, which might end up on an SKB.
+> > So we have to keep the extra added field on struct page for our mark.
+> > Matthew had an intersting idea.  He suggested keeping it, but changing the 
+> > magic number, so it can't be a kernel address, but I'll let him follow 
+> > up on the details.  
+> 
+> Sure!  So, given the misalignment problem I discovered yesterday [1],
+> we probably want a page_pool page to look like:
+> 
+> unsigned long	flags;
+> unsigned long	pp_magic;
+> unsigned long	xmi;
+> unsigned long	_pp_mapping_pad;
+> dma_addr_t	dma_addr;	/* might be one or two words */
+> 
+> The only real restriction here is that pp_magic should not be a valid
+> pointer, and it must have the bottom bit clear.  I'd recommend something
+> like:
+> 
+> #define PP_MAGIC	(0x20 + POISON_POINTER_DELTA)
+> 
+> This leaves page->mapping as NULL, so you don't have to worry about
+> clearing it before free.
+>
+> [1] https://lore.kernel.org/linux-mm/20210410024313.GX2531743@casper.infradead.org/
 
-Link: https://lore.kernel.org/linux-rdma/880d7b59-4b17-a44f-1a91-88257bfc3aaa@redhat.com/T/#t
-Fixes: 8700e3e7c4857 ("Soft RoCE driver")
-Reported-by: Yi Zhang <yi.zhang@redhat.com>
-Signed-off-by: Zhu Yanjun <zyjzyj2000@gmail.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Tested-by: Yi Zhang <yi.zhang@redhat.com>
----
-V3->V4: I do not know how to reproduce Jason's problem. So I just ignore
-        the -EAFNOSUPPORT error. Hope this can fix Jason's problem.
-V2->V3: Remove print message
-V1->V2: Modify the pr_info messages
----
- drivers/infiniband/sw/rxe/rxe_net.c | 5 +++++
- 1 file changed, 5 insertions(+)
+I didn't see this, before asking[2] for explaining your intent.
+I still worry about page->index, see [2].
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 01662727dca0..b12137257af7 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -620,6 +620,11 @@ static int rxe_net_ipv6_init(void)
- 	recv_sockets.sk6 = rxe_setup_udp_tunnel(&init_net,
- 						htons(ROCE_V2_UDP_DPORT), true);
- 	if (IS_ERR(recv_sockets.sk6)) {
-+		/* Though IPv6 is not supported, IPv4 still needs to continue
-+		 */
-+		if (PTR_ERR(recv_sockets.sk6) == -EAFNOSUPPORT)
-+			return 0;
-+
- 		recv_sockets.sk6 = NULL;
- 		pr_err("Failed to create IPv6 UDP tunnel\n");
- 		return -1;
+[2] https://lore.kernel.org/netdev/20210411114307.5087f958@carbon/
+
 -- 
-2.27.0
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
