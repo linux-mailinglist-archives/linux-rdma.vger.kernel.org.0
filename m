@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4B235B415
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 Apr 2021 14:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2AF35B416
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 Apr 2021 14:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235229AbhDKMWR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 11 Apr 2021 08:22:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44962 "EHLO mail.kernel.org"
+        id S235442AbhDKMWU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 11 Apr 2021 08:22:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229804AbhDKMWR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 11 Apr 2021 08:22:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47D4D61006;
-        Sun, 11 Apr 2021 12:22:00 +0000 (UTC)
+        id S229804AbhDKMWU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 11 Apr 2021 08:22:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 988E6610CB;
+        Sun, 11 Apr 2021 12:22:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618143721;
-        bh=pyN/fbBH35UJOAGqrbVuV8ioPaMlXXKj9lRMvkmheSk=;
+        s=k20201202; t=1618143724;
+        bh=xV5yqZUK32ZeObfAY6bJhscZmrWSNpC/AxwCRUrbPv4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R6CLu57fPJJNxnCR4oYV2gicPUWOct8Y4vXqNtE2LYIZ3lampskVGH5j+A1AsVzDK
-         35puQnDBGBop/2oGJseZ/FOUhnh3FlZfD69W427QpPbiozO7z2NWaJV7bADHblrKgv
-         ObH876qAtWvWfWFi5R4YXrjY6F5xtvVYkaQCvglHM9hE6zUpBYCsrB4M8gvDV1gk4C
-         q9LioGjNQZvg/mmhb+zuZif9EYRHbJln36zjxMEkdJwxduejZHUnhQfPzlY5+l9gqo
-         kE+5/jJ0wvgPua6808bYk7WGwLDHPXOtBm9JlDF9ImqLqlU+ILGi184aMQ3YYlAP0J
-         M3dWtIYZ2V1KQ==
+        b=hZw87WsLyuQb7mVxon+fzUNla0vbgmVeHzKAJI1abZeLEuc7RCD2KoW4nJT6YArto
+         mHuyZ93hw7GPNbnd+mXnpbbp6ijeFlsrmeWRIKi4o6bQeHdHk/VqQ8B39saJ3fCeQe
+         rUjwhWfHTQVSj4GjynhOFkRY/DbpjOmKpMEN+LegZ68o3lHK+ZoVLhCHWr8Ha/3c0+
+         h7DwMRTa+TZthBSA4UfIWsaqH5YqTezdXj2+mRT3ErFmLSRTjDgAE97X4gIiqbobdg
+         sBAZuJlRgSOvi0WCgGk2/+FYSvnza9LSMDLIqIyucHcFfGUxl+IFmCP9ZAc3Bvj7rf
+         mdni82Oh+pvzQ==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Mark Zhang <markzhang@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v1 2/5] IB/cm: Simplify ib_cancel_mad() and ib_modify_mad() calls
-Date:   Sun, 11 Apr 2021 15:21:49 +0300
-Message-Id: <20210411122152.59274-3-leon@kernel.org>
+Subject: [PATCH rdma-next v1 3/5] IB/cm: Clear all associated AV's ports when remove a cm device
+Date:   Sun, 11 Apr 2021 15:21:50 +0300
+Message-Id: <20210411122152.59274-4-leon@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210411122152.59274-1-leon@kernel.org>
 References: <20210411122152.59274-1-leon@kernel.org>
@@ -41,424 +41,252 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Mark Zhang <markzhang@nvidia.com>
 
-The mad_agent parameter is redundant since the struct ib_mad_send_buf
-already has a pointer of it.
+When removed a cm device all ports are removed as well, so all AV's ports
+needs to be cleared.
+This patch adds a cm_id_priv list for each cm_devices; For a cm_id when
+it's primary AV is initialized it is added to this list, so when removing
+the device all cm_id's on this list will be removed from this list and
+have its av->port and alt_av->port pointer cleared.
 
 Signed-off-by: Mark Zhang <markzhang@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/cm.c       | 101 ++++++++++++++++++-----------
- drivers/infiniband/core/mad.c      |  17 ++---
- drivers/infiniband/core/sa_query.c |   4 +-
- include/rdma/ib_mad.h              |  27 ++++----
- 4 files changed, 84 insertions(+), 65 deletions(-)
+ drivers/infiniband/core/cm.c | 75 ++++++++++++++++++++++++++++++------
+ 1 file changed, 63 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index e33b730107b4..f7f094861f79 100644
+index f7f094861f79..b4f4a569c0b9 100644
 --- a/drivers/infiniband/core/cm.c
 +++ b/drivers/infiniband/core/cm.c
-@@ -1023,7 +1023,7 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- 		break;
- 	case IB_CM_SIDR_REQ_SENT:
- 		cm_id->state = IB_CM_IDLE;
--		ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
-+		ib_cancel_mad(cm_id_priv->msg);
- 		break;
- 	case IB_CM_SIDR_REQ_RCVD:
- 		cm_send_sidr_rep_locked(cm_id_priv,
-@@ -1034,7 +1034,7 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- 		break;
- 	case IB_CM_REQ_SENT:
- 	case IB_CM_MRA_REQ_RCVD:
--		ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
-+		ib_cancel_mad(cm_id_priv->msg);
- 		cm_send_rej_locked(cm_id_priv, IB_CM_REJ_TIMEOUT,
- 				   &cm_id_priv->id.device->node_guid,
- 				   sizeof(cm_id_priv->id.device->node_guid),
-@@ -1052,7 +1052,7 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- 		break;
- 	case IB_CM_REP_SENT:
- 	case IB_CM_MRA_REP_RCVD:
--		ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
-+		ib_cancel_mad(cm_id_priv->msg);
- 		cm_send_rej_locked(cm_id_priv, IB_CM_REJ_CONSUMER_DEFINED, NULL,
- 				   0, NULL, 0);
- 		goto retest;
-@@ -1070,7 +1070,7 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- 		cm_send_dreq_locked(cm_id_priv, NULL, 0);
- 		goto retest;
- 	case IB_CM_DREQ_SENT:
--		ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
-+		ib_cancel_mad(cm_id_priv->msg);
- 		cm_enter_timewait(cm_id_priv);
- 		goto retest;
- 	case IB_CM_DREQ_RCVD:
-@@ -1473,6 +1473,8 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
+@@ -209,6 +209,7 @@ struct cm_device {
+ 	struct ib_device *ib_device;
+ 	u8 ack_delay;
+ 	int going_down;
++	struct list_head cm_id_priv_list;
+ 	struct cm_port *port[];
+ };
+ 
+@@ -284,6 +285,8 @@ struct cm_id_private {
+ 	atomic_t work_count;
+ 
+ 	struct rdma_ucm_ece ece;
++
++	struct list_head cm_dev_list;
+ };
+ 
+ static void cm_work_handler(struct work_struct *work);
+@@ -405,9 +408,28 @@ static void cm_set_private_data(struct cm_id_private *cm_id_priv,
+ 	cm_id_priv->private_data_len = private_data_len;
+ }
+ 
++static void add_cm_id_to_cm_dev_list(struct cm_id_private *cm_id_priv,
++				     struct cm_device *cm_dev)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&cm.lock, flags);
++	if (cm_dev->going_down)
++		goto out;
++
++	if (!list_empty(&cm_id_priv->cm_dev_list))
++		list_del(&cm_id_priv->cm_dev_list);
++	list_add_tail(&cm_id_priv->cm_dev_list, &cm_dev->cm_id_priv_list);
++
++out:
++	spin_unlock_irqrestore(&cm.lock, flags);
++}
++
+ static int cm_init_av_for_lap(struct cm_port *port, struct ib_wc *wc,
+-			      struct ib_grh *grh, struct cm_av *av)
++			      struct ib_grh *grh,
++			      struct cm_id_private *cm_id_priv)
+ {
++	struct cm_av *av = &cm_id_priv->av;
+ 	struct rdma_ah_attr new_ah_attr;
+ 	int ret;
+ 
+@@ -427,14 +449,20 @@ static int cm_init_av_for_lap(struct cm_port *port, struct ib_wc *wc,
+ 	if (ret)
+ 		return ret;
+ 
++	add_cm_id_to_cm_dev_list(cm_id_priv, port->cm_dev);
++
+ 	rdma_move_ah_attr(&av->ah_attr, &new_ah_attr);
+ 	return 0;
+ }
+ 
+ static int cm_init_av_for_response(struct cm_port *port, struct ib_wc *wc,
+-				   struct ib_grh *grh, struct cm_av *av)
++				   struct ib_grh *grh,
++				   struct cm_id_private *cm_id_priv)
+ {
++	struct cm_av *av = &cm_id_priv->av;
++
+ 	av->port = port;
++	add_cm_id_to_cm_dev_list(cm_id_priv, port->cm_dev);
+ 	av->pkey_index = wc->pkey_index;
+ 	return ib_init_ah_attr_from_wc(port->cm_dev->ib_device,
+ 				       port->port_num, wc,
+@@ -484,11 +512,13 @@ get_cm_port_from_path(struct sa_path_rec *path, const struct ib_gid_attr *attr)
+ 
+ static int cm_init_av_by_path(struct sa_path_rec *path,
+ 			      const struct ib_gid_attr *sgid_attr,
+-			      struct cm_av *av)
++			      struct cm_id_private *cm_id_priv,
++			      bool is_priv_av)
+ {
+ 	struct rdma_ah_attr new_ah_attr;
+ 	struct cm_device *cm_dev;
+ 	struct cm_port *port;
++	struct cm_av *av;
+ 	int ret;
+ 
+ 	port = get_cm_port_from_path(path, sgid_attr);
+@@ -496,6 +526,11 @@ static int cm_init_av_by_path(struct sa_path_rec *path,
+ 		return -EINVAL;
+ 	cm_dev = port->cm_dev;
+ 
++	if (!is_priv_av && cm_dev != cm_id_priv->av.port->cm_dev)
++		return -EINVAL;
++
++	av = is_priv_av ? &cm_id_priv->av : &cm_id_priv->alt_av;
++
+ 	ret = ib_find_cached_pkey(cm_dev->ib_device, port->port_num,
+ 				  be16_to_cpu(path->pkey), &av->pkey_index);
+ 	if (ret)
+@@ -519,6 +554,9 @@ static int cm_init_av_by_path(struct sa_path_rec *path,
+ 
+ 	av->timeout = path->packet_life_time + 1;
+ 	rdma_move_ah_attr(&av->ah_attr, &new_ah_attr);
++	if (is_priv_av)
++		add_cm_id_to_cm_dev_list(cm_id_priv, cm_dev);
++
+ 	return 0;
+ }
+ 
+@@ -797,6 +835,7 @@ static struct cm_id_private *cm_alloc_id_priv(struct ib_device *device,
+ 	spin_lock_init(&cm_id_priv->lock);
+ 	init_completion(&cm_id_priv->comp);
+ 	INIT_LIST_HEAD(&cm_id_priv->work_list);
++	INIT_LIST_HEAD(&cm_id_priv->cm_dev_list);
+ 	atomic_set(&cm_id_priv->work_count, -1);
+ 	refcount_set(&cm_id_priv->refcount, 1);
+ 
+@@ -1098,6 +1137,8 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ 		cm_id_priv->timewait_info = NULL;
+ 	}
+ 
++	if (!list_empty(&cm_id_priv->cm_dev_list))
++		list_del(&cm_id_priv->cm_dev_list);
+ 	WARN_ON(cm_id_priv->listen_sharecount);
+ 	WARN_ON(!RB_EMPTY_NODE(&cm_id_priv->service_node));
+ 	if (!RB_EMPTY_NODE(&cm_id_priv->sidr_id_node))
+@@ -1464,12 +1505,12 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
+ 	}
+ 
+ 	ret = cm_init_av_by_path(param->primary_path,
+-				 param->ppath_sgid_attr, &cm_id_priv->av);
++				 param->ppath_sgid_attr, cm_id_priv, true);
+ 	if (ret)
+ 		goto out;
+ 	if (param->alternate_path) {
+ 		ret = cm_init_av_by_path(param->alternate_path, NULL,
+-					 &cm_id_priv->alt_av);
++					 cm_id_priv, false);
  		if (ret)
  			goto out;
  	}
-+
-+	spin_lock_irqsave(&cm_id_priv->lock, flags);
- 	cm_id->service_id = param->service_id;
- 	cm_id->service_mask = ~cpu_to_be64(0);
- 	cm_id_priv->timeout_ms = cm_convert_to_ms(
-@@ -1489,7 +1491,7 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
+@@ -2048,7 +2089,7 @@ static int cm_req_handler(struct cm_work *work)
  
- 	ret = cm_alloc_msg(cm_id_priv, &cm_id_priv->msg);
+ 	ret = cm_init_av_for_response(work->port, work->mad_recv_wc->wc,
+ 				      work->mad_recv_wc->recv_buf.grh,
+-				      &cm_id_priv->av);
++				      cm_id_priv);
  	if (ret)
--		goto out;
-+		goto error_alloc;
- 
- 	req_msg = (struct cm_req_msg *) cm_id_priv->msg->mad;
- 	cm_format_req(req_msg, cm_id_priv, param);
-@@ -1501,19 +1503,21 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
- 	cm_id_priv->rq_psn = cpu_to_be32(IBA_GET(CM_REQ_STARTING_PSN, req_msg));
- 
- 	trace_icm_send_req(&cm_id_priv->id);
--	spin_lock_irqsave(&cm_id_priv->lock, flags);
- 	ret = ib_post_send_mad(cm_id_priv->msg, NULL);
--	if (ret) {
--		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
--		goto error2;
--	}
--	BUG_ON(cm_id->state != IB_CM_IDLE);
-+	if (ret)
-+		goto error_post_send_mad;
-+
- 	cm_id->state = IB_CM_REQ_SENT;
- 	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
- 	return 0;
- 
--error2:	cm_free_msg(cm_id_priv->msg);
--out:	return ret;
-+error_post_send_mad:
-+	cm_free_msg(cm_id_priv->msg);
-+	cm_id_priv->msg = NULL;
-+error_alloc:
-+	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-+out:
-+	return ret;
- }
- EXPORT_SYMBOL(ib_send_cm_req);
- 
-@@ -2491,7 +2495,7 @@ static int cm_rep_handler(struct cm_work *work)
- 			cm_ack_timeout(cm_id_priv->target_ack_delay,
- 				       cm_id_priv->alt_av.timeout - 1);
- 
--	ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
-+	ib_cancel_mad(cm_id_priv->msg);
- 	cm_queue_work_unlock(cm_id_priv, work);
- 	return 0;
- 
-@@ -2515,7 +2519,7 @@ static int cm_establish_handler(struct cm_work *work)
- 		goto out;
- 	}
- 
--	ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
-+	ib_cancel_mad(cm_id_priv->msg);
- 	cm_queue_work_unlock(cm_id_priv, work);
- 	return 0;
- out:
-@@ -2548,7 +2552,7 @@ static int cm_rtu_handler(struct cm_work *work)
- 	}
- 	cm_id_priv->id.state = IB_CM_ESTABLISHED;
- 
--	ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
-+	ib_cancel_mad(cm_id_priv->msg);
- 	cm_queue_work_unlock(cm_id_priv, work);
- 	return 0;
- out:
-@@ -2593,7 +2597,7 @@ static int cm_send_dreq_locked(struct cm_id_private *cm_id_priv,
- 
- 	if (cm_id_priv->id.lap_state == IB_CM_LAP_SENT ||
- 	    cm_id_priv->id.lap_state == IB_CM_MRA_LAP_RCVD)
--		ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
-+		ib_cancel_mad(cm_id_priv->msg);
- 
- 	ret = cm_alloc_msg(cm_id_priv, &msg);
+ 		goto destroy;
+ 	cm_id_priv->timewait_info = cm_create_timewait_info(cm_id_priv->
+@@ -2106,7 +2147,7 @@ static int cm_req_handler(struct cm_work *work)
+ 		sa_path_set_dmac(&work->path[0],
+ 				 cm_id_priv->av.ah_attr.roce.dmac);
+ 	work->path[0].hop_limit = grh->hop_limit;
+-	ret = cm_init_av_by_path(&work->path[0], gid_attr, &cm_id_priv->av);
++	ret = cm_init_av_by_path(&work->path[0], gid_attr, cm_id_priv, true);
  	if (ret) {
-@@ -2768,12 +2772,12 @@ static int cm_dreq_handler(struct cm_work *work)
- 	switch (cm_id_priv->id.state) {
- 	case IB_CM_REP_SENT:
- 	case IB_CM_DREQ_SENT:
--		ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
-+		ib_cancel_mad(cm_id_priv->msg);
- 		break;
- 	case IB_CM_ESTABLISHED:
- 		if (cm_id_priv->id.lap_state == IB_CM_LAP_SENT ||
- 		    cm_id_priv->id.lap_state == IB_CM_MRA_LAP_RCVD)
--			ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
-+			ib_cancel_mad(cm_id_priv->msg);
- 		break;
- 	case IB_CM_MRA_REP_RCVD:
- 		break;
-@@ -2834,7 +2838,7 @@ static int cm_drep_handler(struct cm_work *work)
- 	}
- 	cm_enter_timewait(cm_id_priv);
+ 		int err;
  
--	ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
-+	ib_cancel_mad(cm_id_priv->msg);
- 	cm_queue_work_unlock(cm_id_priv, work);
- 	return 0;
- out:
-@@ -2970,7 +2974,7 @@ static int cm_rej_handler(struct cm_work *work)
- 	case IB_CM_MRA_REQ_RCVD:
- 	case IB_CM_REP_SENT:
- 	case IB_CM_MRA_REP_RCVD:
--		ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
-+		ib_cancel_mad(cm_id_priv->msg);
- 		fallthrough;
- 	case IB_CM_REQ_RCVD:
- 	case IB_CM_MRA_REQ_SENT:
-@@ -2980,7 +2984,7 @@ static int cm_rej_handler(struct cm_work *work)
- 			cm_reset_to_idle(cm_id_priv);
- 		break;
- 	case IB_CM_DREQ_SENT:
--		ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
-+		ib_cancel_mad(cm_id_priv->msg);
- 		fallthrough;
- 	case IB_CM_REP_RCVD:
- 	case IB_CM_MRA_REP_SENT:
-@@ -2990,8 +2994,7 @@ static int cm_rej_handler(struct cm_work *work)
- 		if (cm_id_priv->id.lap_state == IB_CM_LAP_UNINIT ||
- 		    cm_id_priv->id.lap_state == IB_CM_LAP_SENT) {
- 			if (cm_id_priv->id.lap_state == IB_CM_LAP_SENT)
--				ib_cancel_mad(cm_id_priv->av.port->mad_agent,
--					      cm_id_priv->msg);
-+				ib_cancel_mad(cm_id_priv->msg);
- 			cm_enter_timewait(cm_id_priv);
- 			break;
- 		}
-@@ -3130,16 +3133,14 @@ static int cm_mra_handler(struct cm_work *work)
- 	case IB_CM_REQ_SENT:
- 		if (IBA_GET(CM_MRA_MESSAGE_MRAED, mra_msg) !=
- 			    CM_MSG_RESPONSE_REQ ||
--		    ib_modify_mad(cm_id_priv->av.port->mad_agent,
--				  cm_id_priv->msg, timeout))
-+		    ib_modify_mad(cm_id_priv->msg, timeout))
- 			goto out;
- 		cm_id_priv->id.state = IB_CM_MRA_REQ_RCVD;
- 		break;
- 	case IB_CM_REP_SENT:
- 		if (IBA_GET(CM_MRA_MESSAGE_MRAED, mra_msg) !=
- 			    CM_MSG_RESPONSE_REP ||
--		    ib_modify_mad(cm_id_priv->av.port->mad_agent,
--				  cm_id_priv->msg, timeout))
-+		    ib_modify_mad(cm_id_priv->msg, timeout))
- 			goto out;
- 		cm_id_priv->id.state = IB_CM_MRA_REP_RCVD;
- 		break;
-@@ -3147,8 +3148,7 @@ static int cm_mra_handler(struct cm_work *work)
- 		if (IBA_GET(CM_MRA_MESSAGE_MRAED, mra_msg) !=
- 			    CM_MSG_RESPONSE_OTHER ||
- 		    cm_id_priv->id.lap_state != IB_CM_LAP_SENT ||
--		    ib_modify_mad(cm_id_priv->av.port->mad_agent,
--				  cm_id_priv->msg, timeout)) {
-+		    ib_modify_mad(cm_id_priv->msg, timeout)) {
- 			if (cm_id_priv->id.lap_state == IB_CM_MRA_LAP_RCVD)
- 				atomic_long_inc(&work->port->
- 						counter_group[CM_RECV_DUPLICATES].
-@@ -3348,7 +3348,7 @@ static int cm_apr_handler(struct cm_work *work)
- 		goto out;
+@@ -2125,7 +2166,7 @@ static int cm_req_handler(struct cm_work *work)
  	}
- 	cm_id_priv->id.lap_state = IB_CM_LAP_IDLE;
--	ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
-+	ib_cancel_mad(cm_id_priv->msg);
- 	cm_id_priv->msg = NULL;
- 	cm_queue_work_unlock(cm_id_priv, work);
- 	return 0;
-@@ -3674,7 +3674,7 @@ static int cm_sidr_rep_handler(struct cm_work *work)
- 		goto out;
- 	}
- 	cm_id_priv->id.state = IB_CM_IDLE;
--	ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
-+	ib_cancel_mad(cm_id_priv->msg);
- 	spin_unlock_irq(&cm_id_priv->lock);
+ 	if (cm_req_has_alt_path(req_msg)) {
+ 		ret = cm_init_av_by_path(&work->path[1], NULL,
+-					 &cm_id_priv->alt_av);
++					 cm_id_priv, false);
+ 		if (ret) {
+ 			ib_send_cm_rej(&cm_id_priv->id,
+ 				       IB_CM_REJ_INVALID_ALT_GID,
+@@ -3293,12 +3334,12 @@ static int cm_lap_handler(struct cm_work *work)
  
- 	cm_format_sidr_rep_event(work, cm_id_priv);
-@@ -3730,17 +3730,23 @@ static void cm_process_send_error(struct ib_mad_send_buf *msg,
- 
- 	/* No other events can occur on the cm_id at this point. */
- 	ret = cm_id_priv->id.cm_handler(&cm_id_priv->id, &cm_event);
-+	spin_lock_irq(&cm_id_priv->lock);
- 	cm_free_msg(msg);
-+	cm_id_priv->msg = NULL;
-+	spin_unlock_irq(&cm_id_priv->lock);
+ 	ret = cm_init_av_for_lap(work->port, work->mad_recv_wc->wc,
+ 				 work->mad_recv_wc->recv_buf.grh,
+-				 &cm_id_priv->av);
++				 cm_id_priv);
  	if (ret)
- 		ib_destroy_cm_id(&cm_id_priv->id);
- 	return;
- discard:
--	spin_unlock_irq(&cm_id_priv->lock);
-+	if (msg == cm_id_priv->msg)
-+		cm_id_priv->msg = NULL;
- 	cm_free_msg(msg);
-+	spin_unlock_irq(&cm_id_priv->lock);
- }
+ 		goto unlock;
  
--static void cm_send_handler(struct ib_mad_agent *mad_agent,
--			    struct ib_mad_send_wc *mad_send_wc)
-+static void __cm_send_handler(struct ib_mad_agent *mad_agent,
-+			      struct ib_mad_send_wc *mad_send_wc,
-+			      struct cm_id_private *cm_id_priv)
+ 	ret = cm_init_av_by_path(param->alternate_path, NULL,
+-				 &cm_id_priv->alt_av);
++				 cm_id_priv, false);
+ 	if (ret)
+ 		goto unlock;
+ 
+@@ -3418,7 +3459,7 @@ int ib_send_cm_sidr_req(struct ib_cm_id *cm_id,
+ 
+ 	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
+ 	ret = cm_init_av_by_path(param->path, param->sgid_attr,
+-				 &cm_id_priv->av);
++				 cm_id_priv, true);
+ 	if (ret)
+ 		goto out;
+ 
+@@ -3505,7 +3546,7 @@ static int cm_sidr_req_handler(struct cm_work *work)
+ 	cm_id_priv->av.dgid.global.interface_id = 0;
+ 	ret = cm_init_av_for_response(work->port, work->mad_recv_wc->wc,
+ 				      work->mad_recv_wc->recv_buf.grh,
+-				      &cm_id_priv->av);
++				      cm_id_priv);
+ 	if (ret)
+ 		goto out;
+ 
+@@ -4296,6 +4337,7 @@ static int cm_add_one(struct ib_device *ib_device)
+ 	cm_dev->ib_device = ib_device;
+ 	cm_dev->ack_delay = ib_device->attrs.local_ca_ack_delay;
+ 	cm_dev->going_down = 0;
++	INIT_LIST_HEAD(&cm_dev->cm_id_priv_list);
+ 
+ 	set_bit(IB_MGMT_METHOD_SEND, reg_req.method_mask);
+ 	rdma_for_each_port (ib_device, i) {
+@@ -4374,6 +4416,7 @@ static int cm_add_one(struct ib_device *ib_device)
+ static void cm_remove_one(struct ib_device *ib_device, void *client_data)
  {
- 	struct ib_mad_send_buf *msg = mad_send_wc->send_buf;
+ 	struct cm_device *cm_dev = client_data;
++	struct cm_id_private *cm_id_priv, *tmp;
  	struct cm_port *port;
-@@ -3769,16 +3775,37 @@ static void cm_send_handler(struct ib_mad_agent *mad_agent,
- 	case IB_WC_SUCCESS:
- 	case IB_WC_WR_FLUSH_ERR:
- 		cm_free_msg(msg);
-+		if (cm_id_priv)
-+			cm_id_priv->msg = NULL;
- 		break;
- 	default:
--		if (msg->context[0] && msg->context[1])
-+		if (msg->context[0] && msg->context[1]) {
- 			cm_process_send_error(msg, mad_send_wc->status);
--		else
-+		} else {
- 			cm_free_msg(msg);
-+			if (cm_id_priv)
-+				cm_id_priv->msg = NULL;
-+		}
- 		break;
- 	}
- }
+ 	struct ib_port_modify port_modify = {
+ 		.clr_port_cap_mask = IB_PORT_CM_SUP
+@@ -4389,6 +4432,14 @@ static void cm_remove_one(struct ib_device *ib_device, void *client_data)
+ 	cm_dev->going_down = 1;
+ 	spin_unlock_irq(&cm.lock);
  
-+static void cm_send_handler(struct ib_mad_agent *mad_agent,
-+			    struct ib_mad_send_wc *mad_send_wc)
-+{
-+	struct ib_mad_send_buf *msg = mad_send_wc->send_buf;
-+	struct cm_id_private *cm_id_priv;
-+
-+	cm_id_priv = msg->context[0];
-+	if (!cm_id_priv || cm_id_priv->msg != msg) {
-+		__cm_send_handler(mad_agent, mad_send_wc, NULL);
-+	} else {
-+		spin_lock_irq(&cm_id_priv->lock);
-+		__cm_send_handler(mad_agent, mad_send_wc, cm_id_priv);
-+		spin_unlock_irq(&cm_id_priv->lock);
++	list_for_each_entry_safe(cm_id_priv, tmp,
++				 &cm_dev->cm_id_priv_list, cm_dev_list) {
++		if (!list_empty(&cm_id_priv->cm_dev_list))
++			list_del(&cm_id_priv->cm_dev_list);
++		cm_id_priv->av.port = NULL;
++		cm_id_priv->alt_av.port = NULL;
 +	}
-+}
 +
- static void cm_work_handler(struct work_struct *_work)
- {
- 	struct cm_work *work = container_of(_work, struct cm_work, work.work);
-diff --git a/drivers/infiniband/core/mad.c b/drivers/infiniband/core/mad.c
-index ce0397fd4b7d..e7ff4420777e 100644
---- a/drivers/infiniband/core/mad.c
-+++ b/drivers/infiniband/core/mad.c
-@@ -2464,16 +2464,18 @@ find_send_wr(struct ib_mad_agent_private *mad_agent_priv,
- 	return NULL;
- }
- 
--int ib_modify_mad(struct ib_mad_agent *mad_agent,
--		  struct ib_mad_send_buf *send_buf, u32 timeout_ms)
-+int ib_modify_mad(struct ib_mad_send_buf *send_buf, u32 timeout_ms)
- {
- 	struct ib_mad_agent_private *mad_agent_priv;
- 	struct ib_mad_send_wr_private *mad_send_wr;
- 	unsigned long flags;
- 	int active;
- 
--	mad_agent_priv = container_of(mad_agent, struct ib_mad_agent_private,
--				      agent);
-+	if (!send_buf)
-+		return -EINVAL;
-+
-+	mad_agent_priv = container_of(send_buf->mad_agent,
-+				      struct ib_mad_agent_private, agent);
- 	spin_lock_irqsave(&mad_agent_priv->lock, flags);
- 	mad_send_wr = find_send_wr(mad_agent_priv, send_buf);
- 	if (!mad_send_wr || mad_send_wr->status != IB_WC_SUCCESS) {
-@@ -2498,13 +2500,6 @@ int ib_modify_mad(struct ib_mad_agent *mad_agent,
- }
- EXPORT_SYMBOL(ib_modify_mad);
- 
--void ib_cancel_mad(struct ib_mad_agent *mad_agent,
--		   struct ib_mad_send_buf *send_buf)
--{
--	ib_modify_mad(mad_agent, send_buf, 0);
--}
--EXPORT_SYMBOL(ib_cancel_mad);
--
- static void local_completions(struct work_struct *work)
- {
- 	struct ib_mad_agent_private *mad_agent_priv;
-diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index 8f1705c403b4..9a4a49c37922 100644
---- a/drivers/infiniband/core/sa_query.c
-+++ b/drivers/infiniband/core/sa_query.c
-@@ -1172,7 +1172,6 @@ EXPORT_SYMBOL(ib_sa_unregister_client);
- void ib_sa_cancel_query(int id, struct ib_sa_query *query)
- {
- 	unsigned long flags;
--	struct ib_mad_agent *agent;
- 	struct ib_mad_send_buf *mad_buf;
- 
- 	xa_lock_irqsave(&queries, flags);
-@@ -1180,7 +1179,6 @@ void ib_sa_cancel_query(int id, struct ib_sa_query *query)
- 		xa_unlock_irqrestore(&queries, flags);
- 		return;
- 	}
--	agent = query->port->agent;
- 	mad_buf = query->mad_buf;
- 	xa_unlock_irqrestore(&queries, flags);
- 
-@@ -1190,7 +1188,7 @@ void ib_sa_cancel_query(int id, struct ib_sa_query *query)
- 	 * sent to the MAD layer and has to be cancelled from there.
- 	 */
- 	if (!ib_nl_cancel_request(query))
--		ib_cancel_mad(agent, mad_buf);
-+		ib_cancel_mad(mad_buf);
- }
- EXPORT_SYMBOL(ib_sa_cancel_query);
- 
-diff --git a/include/rdma/ib_mad.h b/include/rdma/ib_mad.h
-index f1d34f06a68b..465b0d0bdaf8 100644
---- a/include/rdma/ib_mad.h
-+++ b/include/rdma/ib_mad.h
-@@ -717,28 +717,27 @@ int ib_post_send_mad(struct ib_mad_send_buf *send_buf,
-  */
- void ib_free_recv_mad(struct ib_mad_recv_wc *mad_recv_wc);
- 
--/**
-- * ib_cancel_mad - Cancels an outstanding send MAD operation.
-- * @mad_agent: Specifies the registration associated with sent MAD.
-- * @send_buf: Indicates the MAD to cancel.
-- *
-- * MADs will be returned to the user through the corresponding
-- * ib_mad_send_handler.
-- */
--void ib_cancel_mad(struct ib_mad_agent *mad_agent,
--		   struct ib_mad_send_buf *send_buf);
--
- /**
-  * ib_modify_mad - Modifies an outstanding send MAD operation.
-- * @mad_agent: Specifies the registration associated with sent MAD.
-  * @send_buf: Indicates the MAD to modify.
-  * @timeout_ms: New timeout value for sent MAD.
-  *
-  * This call will reset the timeout value for a sent MAD to the specified
-  * value.
-  */
--int ib_modify_mad(struct ib_mad_agent *mad_agent,
--		  struct ib_mad_send_buf *send_buf, u32 timeout_ms);
-+int ib_modify_mad(struct ib_mad_send_buf *send_buf, u32 timeout_ms);
-+
-+/**
-+ * ib_cancel_mad - Cancels an outstanding send MAD operation.
-+ * @send_buf: Indicates the MAD to cancel.
-+ *
-+ * MADs will be returned to the user through the corresponding
-+ * ib_mad_send_handler.
-+ */
-+static inline void ib_cancel_mad(struct ib_mad_send_buf *send_buf)
-+{
-+	ib_modify_mad(send_buf, 0);
-+}
- 
- /**
-  * ib_create_send_mad - Allocate and initialize a data buffer and work request
+ 	rdma_for_each_port (ib_device, i) {
+ 		if (!rdma_cap_ib_cm(ib_device, i))
+ 			continue;
 -- 
 2.30.2
 
