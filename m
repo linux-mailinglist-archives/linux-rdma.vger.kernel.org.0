@@ -2,227 +2,250 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D4C35D0CD
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Apr 2021 21:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B599535D1EA
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Apr 2021 22:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242697AbhDLTIM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Apr 2021 15:08:12 -0400
-Received: from mail-mw2nam10on2058.outbound.protection.outlook.com ([40.107.94.58]:9857
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236951AbhDLTIL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Apr 2021 15:08:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fb8hP+q9RW0QWRB3SOsB0yJOfNR7BcLNC+t6kpU8mwbs2tGubq0yqDfIO3nCu8Lo1NPMzVXeDmSAHJTg40w8G9qwZWCwbFJg4yOp5yyEKRWcDHiHIr2tExw/ROyOi8yu5hh3iPJvB+DJIT3Gy0DSwP3CIVEWknOoUmuZDxOC188Za4/RXdGsVkAuInACQEW/uPPpG8BShddJtIuzgDOCHhmJ+RUaytQVWOUL9CAU6X4HoI2PLVJ8FsFG/TSjQFZsDQr8q74Ij/8Q/u+eVr6CjhtMMVHKkTNmZW+ZN9wFJwg0Hl8Dkh3oV6GTi2rSyxWIj8O37iyWBK55SBqPEf60Aw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2uT8kU0UtsJyDpB7iR4PMsR6B3zrGoHNfnACRMYL/1A=;
- b=jspkRvu1wUStUtzFXgS6y6ulXd2F7Fpy0XGpoQxxueRtS4iExEcuQwxHsCvozNpGl/0lAvZ2LL5MjfoH6g0B1D0+sI36/V6GYozFE8lOD42aHcuMzuyL24UMBnZ+9GZFOfL01Y4xy0gXAQqLi4BtJJyzCC0pnSfi8BwJzVQX94DKOZobpXn0Fr9ZQ56pvIQIjpOXQAxrNbosiNqFYnc2LBu0+wPKKOrIHlVnAE27DFKdN68TBhSXOYQnwib+36HgNi6/YsFhOSwsuJj1zJaWRdsfCOx21fqv3EQL8YtB7686L54zVNuLrVZdDeJIMcHoIOhutcukXS0pLw/R0BynfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2uT8kU0UtsJyDpB7iR4PMsR6B3zrGoHNfnACRMYL/1A=;
- b=g8oICtwQ+PRZUDS1qgJaseNxD4jid3spCPkPGuNi2OHS90RzCQsGi3Hz41Uh9XyR23WfADU0AmKUOUg0w30VhfsTvWXQ7FSH+UXJrhIa8Gtc5pj7wy0iUSCqqUnYcXGKI39Vm7z7xLRAqZxM+cnJqI4Gj4PP3x4+bc03EbuMclTZqdSfs53flgaVSru9yfzlvtqrTJltUCUtUti9M/BdgY2KmLAZX2QnS34uWYjq7Gx6+q+P2VFOhWWghB6lG5AN5+KXxhz0Am4C9SXkfB9dpPIUZhnOzO9fhHNbrtk0Mhq6t8uU58S947U84ljE5qvodbYPYtJbjbl/YnkfXYkx5g==
-Received: from BY5PR12MB4322.namprd12.prod.outlook.com (2603:10b6:a03:20a::20)
- by BYAPR12MB4775.namprd12.prod.outlook.com (2603:10b6:a03:107::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Mon, 12 Apr
- 2021 19:07:52 +0000
-Received: from BY5PR12MB4322.namprd12.prod.outlook.com
- ([fe80::7cec:a7fa:db2e:3073]) by BY5PR12MB4322.namprd12.prod.outlook.com
- ([fe80::7cec:a7fa:db2e:3073%9]) with mapi id 15.20.4020.022; Mon, 12 Apr 2021
- 19:07:52 +0000
-From:   Parav Pandit <parav@nvidia.com>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Lacombe, John S" <john.s.lacombe@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Hefty, Sean" <sean.hefty@intel.com>,
-        "Keller, Jacob E" <jacob.e.keller@intel.com>
-Subject: RE: [PATCH v4 05/23] ice: Add devlink params support
-Thread-Topic: [PATCH v4 05/23] ice: Add devlink params support
-Thread-Index: AQHXKygnOko9SmU6R0GbDW2iBlZsF6qpJjuAgABk9YCAAB40gIAHVsKAgABDgiA=
-Date:   Mon, 12 Apr 2021 19:07:51 +0000
-Message-ID: <BY5PR12MB43221FA2A6295C9CF23C798DDC709@BY5PR12MB4322.namprd12.prod.outlook.com>
-References: <20210406210125.241-1-shiraz.saleem@intel.com>
- <20210406210125.241-6-shiraz.saleem@intel.com>
- <20210407145705.GA499950@nvidia.com>
- <e516fa3940984b0cb0134364b923fc8e@intel.com>
- <20210407224631.GI282464@nvidia.com>
- <c5a38fcf137e49c0af0bfa6edd3ec605@intel.com>
-In-Reply-To: <c5a38fcf137e49c0af0bfa6edd3ec605@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [136.185.184.152]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4f9525c5-d864-4281-31a1-08d8fde6455a
-x-ms-traffictypediagnostic: BYAPR12MB4775:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR12MB47750AF80E69FECB9691B386DC709@BYAPR12MB4775.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iSv7H+yq5Zjxn5j2+J+pmaVL8XU9IQurgIxIUoRTCdqAZpqRGXCaj7YsfZyn3PK6YJ8r9qcoEQZ8hS3IE+KhRaJXb8/Ivba0JuPJZzet2gzItc9tje1uL1xS8dZo7YYDAabneuraaheT7SUtsYJbMFG7O7djPawXYWG0WQnmgg5qpAXIUVZRTH6iyDKsgKYVCF6abf1EIN8koggqb4CJXxv3QncBSzKDh+2uRwOA2da6dcc+XS7pxVfLgryAh/IvB2oWSC7w0pxqcso237T0m/7aHZdnDymfgARzgLHmgZPz4xUQrpmp3uz2QBPhkSmRolVjy5oCoB3zUJXxAE/YFO1b7HuxNZFRMoRsqF/MBhulkbQ2zYQk4scm2h/q3Xh9Bgid3vjwpEfZZQ+hPCHMshNNFxZH8GB+xcMdI7JkMb+nW7KGIWKOJUKh4DdsEPdgiveTOBb+rk9hU+12x8uCyb7OMLdEL7T9b2ZaaoB0QTR65UBF5X/xYGt2kXM+xzpBFSuPQ4JyrKEc57+Z/m5GRnKSlEmArRmDakuzc4eX95NNUe1YZDHa0YCSXcdBzYh5rueq1AbuAjs/ol4zWZnlbLqNht8nZAvyMXJWhEkX+OM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4322.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(396003)(366004)(136003)(33656002)(26005)(83380400001)(8936002)(6506007)(66476007)(66946007)(5660300002)(186003)(478600001)(53546011)(86362001)(66556008)(54906003)(110136005)(55016002)(9686003)(2906002)(71200400001)(64756008)(66446008)(76116006)(7416002)(7696005)(52536014)(6636002)(316002)(8676002)(38100700002)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?po1zoAaYTCVnyqLM6f26RNKO8rEp0U34U304KNVIG97o6+Tm0/2q75qiW71D?=
- =?us-ascii?Q?kZmHMORxygnyXXCPn3Lbp7goCIfLXtVvvf2MhidGpo7cs8bwVYk9ocOb83Zc?=
- =?us-ascii?Q?mJrlhV9f/5/xgPTF9EjE3njvoz0E+cAYVSHiLmnhNN7DzASDLTxnMs1qhliV?=
- =?us-ascii?Q?mFS0E8q14orFJN6qqSwhBU7PbioBzQmTjKwV9AHOoDUUFSmNJPyfiLmh+Mpb?=
- =?us-ascii?Q?Iz4V8BxGOjYMTCOpps/PjxiX03okKocCr/waiT/Vn5pt6EPoL60nSSr9+nMc?=
- =?us-ascii?Q?z9dF0+XKFSHNE21O4/9iTaki/3hCYHNDMVDFwCP5XmDLHlFL+lFAvnvvxQrT?=
- =?us-ascii?Q?ZpqAuSpTzxsz8kLWqqhqXJXZTZZ5DBbLcZVkk4cLRdzer4pQ7P+oo6CwdzCY?=
- =?us-ascii?Q?/0xMkcS8g4wai4F52Ui6Yc1cHsi69WkrgwXIjvLjgJ1XO00QcjeOXvgIV/jP?=
- =?us-ascii?Q?9MN0e7CqHcBywbTNiyCf2ol0yUYxCxeLR0h3sqKWD1M/wOQjdvtvnOpziMhI?=
- =?us-ascii?Q?k6gjZoaNbkLumnvRHgAm95EjLmerlibZbPt2JyD3DbtDUbFisGvBzu92T2DL?=
- =?us-ascii?Q?IJ3gQ1Q1t7mmEW8ThrpyTwwc7kmVziLo6yk6NVZDtiLEnM49R7/Ug+5Zk4lr?=
- =?us-ascii?Q?Kz9Y9HZejGqS++qDZ0OfqX+Wk8htVL4ZfECgx/nSdV85KzJ4D8SEiM9FBI2E?=
- =?us-ascii?Q?bG6gu73K3F/jZ/XEUXYuUWnOeFkR0HJRlMuvhc8ZQ+131PIpegZROzFBTmpe?=
- =?us-ascii?Q?wGffxjKhm6nw2Q1JGfpq7wn4shH45J+XDL93Ctnj8GFpxBntsac2pwQ+fdm/?=
- =?us-ascii?Q?yeTwpyghVc2oZI2NsYGx4S3SSPrfs4Tcj13Uis5jIOl1Xx/xUOjAqRcoy1sW?=
- =?us-ascii?Q?brT1iSs4rvcygH6qsr2+CsGrsHM5hFgIbqnwtztZTownSzqm/zestwG1dI9F?=
- =?us-ascii?Q?t1q07jXnlOLlhgzsX6GR4Fx+GVNsDCZuO1Mqz31CBCDmWW/7qUyCYX9DHcqE?=
- =?us-ascii?Q?qI68ghPVnyVIRzIE4h6FbKyC/RuXeffyJM+Fmm72XmUlJ1Je/c4UVYXbW5OU?=
- =?us-ascii?Q?c/ret078Woto2qytJGpzH79v1Q5TSxjoSSZGiLS+9Hw5xfZANvWviMFmZvxg?=
- =?us-ascii?Q?NBPDG1gIlRdI5AUIopSkurDMAvpBnkV/1q7xbxyBuwpQM9EGrBxoxn6FvCDA?=
- =?us-ascii?Q?/KDN+iVkwziIJhbgbac5qDk5J7Lurcv25ZgZAiwEoxqijjbmglYHFO5tupJG?=
- =?us-ascii?Q?SrqSOtWP4lFaNLen0ZSWZ4ceLa5th7MvceZuz2KrU9DMnNZzlUN7iHeuaZZ8?=
- =?us-ascii?Q?K4k6NsZFio3lYfjwCfF5VAJG?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S237924AbhDLUVL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Apr 2021 16:21:11 -0400
+Received: from p3plsmtpa06-10.prod.phx3.secureserver.net ([173.201.192.111]:33712
+        "EHLO p3plsmtpa06-10.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235938AbhDLUVK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 12 Apr 2021 16:21:10 -0400
+Received: from [192.168.0.116] ([71.184.94.153])
+        by :SMTPAUTH: with ESMTPSA
+        id W339l3kjiyIwVW339ls9Ne; Mon, 12 Apr 2021 13:20:51 -0700
+X-CMAE-Analysis: v=2.4 cv=NP4QR22g c=1 sm=1 tr=0 ts=6074aba3
+ a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
+ a=IkcTkHD0fZMA:10 a=hlpFoNB0AAAA:8 a=SEc3moZ4AAAA:8 a=EXjNRlMbRGv2XLaMZsQA:9
+ a=QEXdDO2ut3YA:10 a=kMYpNb-kQgMLPvQdVK_m:22 a=5oRCH6oROnRZc2VpWJZ3:22
+X-SECURESERVER-ACCT: tom@talpey.com
+Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
+To:     Haakon Bugge <haakon.bugge@oracle.com>,
+        David Laight <David.Laight@aculab.com>
+Cc:     Chuck Lever III <chuck.lever@oracle.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bruce Fields <bfields@fieldses.org>, Jens Axboe <axboe@fb.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+References: <20210405052404.213889-1-leon@kernel.org>
+ <20210405134115.GA22346@lst.de> <20210405200739.GB7405@nvidia.com>
+ <C2924F03-11C5-4839-A4F3-36872194EEA8@oracle.com>
+ <20210406114952.GH7405@nvidia.com>
+ <aeb7334b-edc0-78c2-4adb-92d4a994210d@talpey.com>
+ <8A5E83DF-5C08-49CE-8EE3-08DC63135735@oracle.com>
+ <4b02d1b2-be0e-0d1d-7ac3-38d32e44e77e@talpey.com>
+ <1FA38618-E245-4C53-BF49-6688CA93C660@oracle.com>
+ <7b9e7d9c-13d7-0d18-23b4-0d94409c7741@talpey.com>
+ <f71b24433f4540f0a13133111a59dab8@AcuMS.aculab.com>
+ <880A23A2-F078-42CF-BEE2-30666BCB9B5D@oracle.com>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <7deadc67-650c-ea15-722b-a1d77d38faba@talpey.com>
+Date:   Mon, 12 Apr 2021 16:20:47 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4322.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f9525c5-d864-4281-31a1-08d8fde6455a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Apr 2021 19:07:51.8618
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: B7zrYq2i5PGy9hcJT60WZxD2RTzAqcG2+EJHoMn0FYON2cBknXv+9kOb22AkK/E+Nim4P0G5Ico1dZfBBXIbyA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB4775
+In-Reply-To: <880A23A2-F078-42CF-BEE2-30666BCB9B5D@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: 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
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 4/12/2021 2:32 PM, Haakon Bugge wrote:
+> 
+> 
+>> On 10 Apr 2021, at 15:30, David Laight <David.Laight@aculab.com> wrote:
+>>
+>> From: Tom Talpey
+>>> Sent: 09 April 2021 18:49
+>>> On 4/9/2021 12:27 PM, Haakon Bugge wrote:
+>>>>
+>>>>
+>>>>> On 9 Apr 2021, at 17:32, Tom Talpey <tom@talpey.com> wrote:
+>>>>>
+>>>>> On 4/9/2021 10:45 AM, Chuck Lever III wrote:
+>>>>>>> On Apr 9, 2021, at 10:26 AM, Tom Talpey <tom@talpey.com> wrote:
+>>>>>>>
+>>>>>>> On 4/6/2021 7:49 AM, Jason Gunthorpe wrote:
+>>>>>>>> On Mon, Apr 05, 2021 at 11:42:31PM +0000, Chuck Lever III wrote:
+>>>>>>>>
+>>>>>>>>> We need to get a better idea what correctness testing has been done,
+>>>>>>>>> and whether positive correctness testing results can be replicated
+>>>>>>>>> on a variety of platforms.
+>>>>>>>> RO has been rolling out slowly on mlx5 over a few years and storage
+>>>>>>>> ULPs are the last to change. eg the mlx5 ethernet driver has had RO
+>>>>>>>> turned on for a long time, userspace HPC applications have been using
+>>>>>>>> it for a while now too.
+>>>>>>>
+>>>>>>> I'd love to see RO be used more, it was always something the RDMA
+>>>>>>> specs supported and carefully architected for. My only concern is
+>>>>>>> that it's difficult to get right, especially when the platforms
+>>>>>>> have been running strictly-ordered for so long. The ULPs need
+>>>>>>> testing, and a lot of it.
+>>>>>>>
+>>>>>>>> We know there are platforms with broken RO implementations (like
+>>>>>>>> Haswell) but the kernel is supposed to globally turn off RO on all
+>>>>>>>> those cases. I'd be a bit surprised if we discover any more from this
+>>>>>>>> series.
+>>>>>>>> On the other hand there are platforms that get huge speed ups from
+>>>>>>>> turning this on, AMD is one example, there are a bunch in the ARM
+>>>>>>>> world too.
+>>>>>>>
+>>>>>>> My belief is that the biggest risk is from situations where completions
+>>>>>>> are batched, and therefore polling is used to detect them without
+>>>>>>> interrupts (which explicitly). The RO pipeline will completely reorder
+>>>>>>> DMA writes, and consumers which infer ordering from memory contents may
+>>>>>>> break. This can even apply within the provider code, which may attempt
+>>>>>>> to poll WR and CQ structures, and be tripped up.
+>>>>>> You are referring specifically to RPC/RDMA depending on Receive
+>>>>>> completions to guarantee that previous RDMA Writes have been
+>>>>>> retired? Or is there a particular implementation practice in
+>>>>>> the Linux RPC/RDMA code that worries you?
+>>>>>
+>>>>> Nothing in the RPC/RDMA code, which is IMO correct. The worry, which
+>>>>> is hopefully unfounded, is that the RO pipeline might not have flushed
+>>>>> when a completion is posted *after* posting an interrupt.
+>>>>>
+>>>>> Something like this...
+>>>>>
+>>>>> RDMA Write arrives
+>>>>> 	PCIe RO Write for data
+>>>>> 	PCIe RO Write for data
+>>>>> 	...
+>>>>> RDMA Write arrives
+>>>>> 	PCIe RO Write for data
+>>>>> 	...
+>>>>> RDMA Send arrives
+>>>>> 	PCIe RO Write for receive data
+>>>>> 	PCIe RO Write for receive descriptor
+>>>>
+>>>> Do you mean the Write of the CQE? It has to be Strongly Ordered for a correct implementation. Then
+>>> it will shure prior written RO date has global visibility when the CQE can be observed.
+>>>
+>>> I wasn't aware that a strongly-ordered PCIe Write will ensure that
+>>> prior relaxed-ordered writes went first. If that's the case, I'm
+>>> fine with it - as long as the providers are correctly coded!!
+> 
+> The PCIe spec (Table Ordering Rules Summary) is quite clear here (A Posted request is Memory Write Request in this context):
+> 
+> 	A Posted Request must not pass another Posted Request unless A2b applies.
+> 
+> 	A2b: A Posted Request with RO Set is permitted to pass another Posted Request.
+> 
+> 
+> Thxs, Håkon
 
+Ok, good - a non-RO write (for example, to a CQE), or an interrupt
+(which would be similarly non-RO), will "get behind" all prior writes.
 
-> From: Saleem, Shiraz <shiraz.saleem@intel.com>
-> Sent: Monday, April 12, 2021 8:21 PM
->=20
-> > Subject: Re: [PATCH v4 05/23] ice: Add devlink params support
-> >
-> > On Wed, Apr 07, 2021 at 08:58:25PM +0000, Saleem, Shiraz wrote:
-> > > > Subject: Re: [PATCH v4 05/23] ice: Add devlink params support
-> > > >
-> > > > On Tue, Apr 06, 2021 at 04:01:07PM -0500, Shiraz Saleem wrote:
-> > > > > Add a new generic runtime devlink parameter 'rdma_protocol'
-> > > > > and use it in ice PCI driver. Configuration changes result in
-> > > > > unplugging the auxiliary RDMA device and re-plugging it with
-> > > > > updated values for irdma auxiiary driver to consume at
-> > > > > drv.probe()
-> > > > >
-> > > > > Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > > >  .../networking/devlink/devlink-params.rst          |  6 ++
-> > > > >  Documentation/networking/devlink/ice.rst           | 13 +++
-> > > > >  drivers/net/ethernet/intel/ice/ice_devlink.c       | 92
-> > +++++++++++++++++++++-
-> > > > >  drivers/net/ethernet/intel/ice/ice_devlink.h       |  5 ++
-> > > > >  drivers/net/ethernet/intel/ice/ice_main.c          |  2 +
-> > > > >  include/net/devlink.h                              |  4 +
-> > > > >  net/core/devlink.c                                 |  5 ++
-> > > > >  7 files changed, 125 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/Documentation/networking/devlink/devlink-params.rst
-> > > > > b/Documentation/networking/devlink/devlink-params.rst
-> > > > > index 54c9f10..0b454c3 100644
-> > > > > +++ b/Documentation/networking/devlink/devlink-params.rst
-> > > > > @@ -114,3 +114,9 @@ own name.
-> > > > >         will NACK any attempt of other host to reset the device. =
-This
-> parameter
-> > > > >         is useful for setups where a device is shared by differen=
-t hosts,
-> such
-> > > > >         as multi-host setup.
-> > > > > +   * - ``rdma_protocol``
-> > > > > +     - string
-> > > > > +     - Selects the RDMA protocol selected for multi-protocol dev=
-ices.
-> > > > > +        - ``iwarp`` iWARP
-> > > > > +	- ``roce`` RoCE
-> > > > > +	- ``ib`` Infiniband
-> > > >
-> > > > I'm still not sure this belongs in devlink.
-> > >
-> > > I believe you suggested we use devlink for protocol switch.
-> >
-> > Yes, devlink is the right place, but selecting a *single* protocol
-> > doesn't seem right, or general enough.
-> >
-> > Parav is talking about generic ways to customize the aux devices
-> > created and that would seem to serve the same function as this.
->=20
-> Is there an RFC or something posted for us to look at?
-I do not have polished RFC content ready yet.
-But coping the full config sequence snippet from the internal draft (change=
-d for ice example) here as I like to discuss with you in this context.
+So the issue is only in testing all the providers and platforms,
+to be sure this new behavior isn't tickling anything that went
+unnoticed all along, because no RDMA provider ever issued RO.
 
-# (1) show auxiliary device types supported by a given devlink device.
-# applies to pci pf,vf,sf. (in general at devlink instance).
-$ devlink dev auxdev show pci/0000:06.00.0
-pci/0000:06.00.0:
-  current:
-    roce eth
-  new:
-  supported:
-    roce eth iwarp
+Honestly, the Haswell sounds like a great first candidate, because
+if it has a known-broken RO behavior, verifying that it works with
+this change is highly important. I'd have greater confidence in newer
+platforms, in other words. They *all* have to work, proveably.
 
-# (2) enable iwarp and ethernet type of aux devices and disable roce.
-$ devlink dev auxdev set pci/0000:06:00.0 roce off iwarp on
+Tom.
 
-# (3) now see which aux devices will be enable on next reload.
-$ devlink dev auxdev show pci/0000:06:00.0
-pci/0000:06:00.0:
-  current:
-    roce eth
-  new:
-    eth iwarp
-  supported:
-    roce eth iwarp
-
-# (4) now reload the device and see which aux devices are created.
-At this point driver undergoes reconfig for removal of roce and adding iwar=
-p.
-$ devlink reload pci/0000:06:00.0
-
-# (5) verify which are the aux devices now activated.
-$ devlink dev auxdev show pci/0000:06:00.0
-pci/0000:06:00.0:
-  current:
-    roce eth
-  new:
-  supported:
-    roce eth iwarp
-
-Above 'new' section is only shown when its set. (similar to devlink resourc=
-e).
-In command two vendor driver can fail the call when iwarp and roce both ena=
-bled by user.
-mlx5_core doesn't have iwarp, but its vdpa type of device. And for other ca=
-ses we just want to enable roce disabling eth and vdpa.
+>> I remember trying to read the relevant section of the PCIe spec.
+>> (Possibly in a book that was trying to make it easier to understand!)
+>> It is about as clear as mud.
+>>
+>> I presume this is all about allowing PCIe targets (eg ethernet cards)
+>> to use relaxed ordering on write requests to host memory.
+>> And that such writes can be completed out of order?
+>>
+>> It isn't entirely clear that you aren't talking of letting the
+>> cpu do 'relaxed order' writes to PCIe targets!
+>>
+>> For a typical ethernet driver the receive interrupt just means
+>> 'go and look at the receive descriptor ring'.
+>> So there is an absolute requirement that the writes for data
+>> buffer complete before the write to the receive descriptor.
+>> There is no requirement for the interrupt (requested after the
+>> descriptor write) to have been seen by the cpu.
+>>
+>> Quite often the driver will find the 'receive complete'
+>> descriptor when processing frames from an earlier interrupt
+>> (and nothing to do in response to the interrupt itself).
+>>
+>> So the write to the receive descriptor would have to have RO clear
+>> to ensure that all the buffer writes complete first.
+>>
+>> (The furthest I've got into PCIe internals was fixing the bug
+>> in some vendor-supplied FPGA logic that failed to correctly
+>> handle multiple data TLP responses to a single read TLP.
+>> Fortunately it wasn't in the hard-IP bit.)
+>>
+>> 	David
+>>
+>> -
+>> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+>> Registration No: 1397386 (Wales)
+> 
