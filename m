@@ -2,134 +2,160 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F11335BA3D
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Apr 2021 08:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D6E35BAF3
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Apr 2021 09:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbhDLGma (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Apr 2021 02:42:30 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:41652 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhDLGma (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Apr 2021 02:42:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1618209734; x=1649745734;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=PTut39yWoiWxos/LTODt7JPHIlSHSGcFpEf15jIk2R8=;
-  b=fwJ8hwoZv74/ZjVyC9AB02DMGhXQkRv/CZG1gORSgRrDKjpzTDYn0gxs
-   KgQW1V+r2CUnxsaWPUG+vlFtTFjWHgfVaRqZWRoc43U0SagObi0LRAtND
-   kalWbkQfLMzdCi4n7e+KolaDm/FB2junwywT/S9KOuIdBo58u1vXm7GLT
-   A=;
-X-IronPort-AV: E=Sophos;i="5.82,214,1613433600"; 
-   d="scan'208";a="106848578"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1e-27fb8269.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 12 Apr 2021 06:42:07 +0000
-Received: from EX13D19EUA003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1e-27fb8269.us-east-1.amazon.com (Postfix) with ESMTPS id 141A6A1914;
-        Mon, 12 Apr 2021 06:42:01 +0000 (UTC)
-Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
- EX13D19EUA003.ant.amazon.com (10.43.165.175) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 12 Apr 2021 06:42:00 +0000
-Received: from 8c85908914bf.ant.amazon.com.com (10.1.213.33) by
- mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Mon, 12 Apr 2021 06:41:57 +0000
-From:   Gal Pressman <galpress@amazon.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>
-CC:     Yossi Leybovich <sleybo@amazon.com>, <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH for-next v3] RDMA/nldev: Add copy-on-fork attribute to get sys command
-Date:   Mon, 12 Apr 2021 09:41:50 +0300
-Message-ID: <20210412064150.40064-1-galpress@amazon.com>
-X-Mailer: git-send-email 2.31.1
+        id S230034AbhDLHkj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Apr 2021 03:40:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236916AbhDLHkb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 12 Apr 2021 03:40:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C96AC61207;
+        Mon, 12 Apr 2021 07:40:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618213213;
+        bh=PqrprxM8ruC8Y4nAdtK1y3AXp+UT48yE/rDrzpZ44oU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ncs5gZO/GAf5MDEh/R3yMagsLX7kDlGoouwqzw8qOslxulyMdY5Yd3I5CyWjSTkl7
+         6OYjdro6AdnpMiX/lDHCcIh1NHzxUm0z7Ybm03Heo3I28vjHBwEGQqcY5jsg4dY88e
+         idt0/9jj7VTEtPuo+pwSTdwZCqgoEEbQwdVfmHXPekRVIFPiZbaNFM8+cGNzvbN4z2
+         w7FunmfAnnEfpQ18Zty4kEiGT63+POKsY1z55WMaRlwB2q8uPEVlWcZsaZ9KdkGo2j
+         ehIWzUmJkOdqrL/N3aO4zNGFqLVrz/wHinCgcz8ZOLnaTuorlmmDLftb47YvMCoLmw
+         6u7SfpoYo+jcw==
+Date:   Mon, 12 Apr 2021 10:40:09 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Devesh Sharma <devesh.sharma@broadcom.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Subject: Re: [PATCH rdma-next v2 0/5] Get rid of custom made module dependency
+Message-ID: <YHP5WRfEKQ3n9O0s@unreal>
+References: <20210401065715.565226-1-leon@kernel.org>
+ <CANjDDBiuw_VNepewLAtYE58Eg2JEsvGbpxttWyjV6DYMQdY5Zw@mail.gmail.com>
+ <YGhUjarXh+BEK1pW@unreal>
+ <CANjDDBiC-8pL+-ma1c0n8vjMaorm-CasV_D+_8q2LGy-AYuTVg@mail.gmail.com>
+ <YG7srVMi8IEjuLfF@unreal>
+ <CANjDDBirjSEkcDZ4E8u4Ce_dep3PRTmo2S9-q7=dmR+MLKi_=A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANjDDBirjSEkcDZ4E8u4Ce_dep3PRTmo2S9-q7=dmR+MLKi_=A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The new attribute indicates that the kernel copies DMA pages on fork,
-hence libibverbs' fork support through madvise and MADV_DONTFORK is not
-needed.
+On Thu, Apr 08, 2021 at 08:42:57PM +0530, Devesh Sharma wrote:
+> On Thu, Apr 8, 2021 at 5:14 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Thu, Apr 08, 2021 at 05:06:24PM +0530, Devesh Sharma wrote:
+> > > On Sat, Apr 3, 2021 at 5:12 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > On Sat, Apr 03, 2021 at 03:52:13PM +0530, Devesh Sharma wrote:
+> > > > > On Thu, Apr 1, 2021 at 12:27 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > > > >
+> > > > > > From: Leon Romanovsky <leonro@nvidia.com>
+> > > > > >
+> > > > > > Changelog:
+> > > > > > v2:
+> > > > > >  * kbuild spotted that I didn't delete all code in patch #5, so deleted
+> > > > > >    even more ulp_ops derefences.
+> > > > > > v1: https://lore.kernel.org/linux-rdma/20210329085212.257771-1-leon@kernel.org
+> > > > > >  * Go much deeper and removed useless ULP indirection
+> > > > > > v0: https://lore.kernel.org/linux-rdma/20210324142524.1135319-1-leon@kernel.org
+> > > > > > -----------------------------------------------------------------------
+> > > > > >
+> > > > > > The following series fixes issue spotted in [1], where bnxt_re driver
+> > > > > > messed with module reference counting in order to implement symbol
+> > > > > > dependency of bnxt_re and bnxt modules. All of this is done, when in
+> > > > > > upstream we have only one ULP user of that bnxt module. The simple
+> > > > > > declaration of exported symbol would do the trick.
+> > > > > >
+> > > > > > This series removes that custom module_get/_put, which is not supposed
+> > > > > > to be in the driver from the beginning and get rid of nasty indirection
+> > > > > > logic that isn't relevant for the upstream code.
+> > > > > >
+> > > > > > Such small changes allow us to simplify the bnxt code and my hope that
+> > > > > > Devesh will continue where I stopped and remove struct bnxt_ulp_ops too.
+> > > > > >
+> > > > > > Thanks
+> > > > > >
+> > > > > > [1] https://lore.kernel.org/linux-rdma/20210324142524.1135319-1-leon@kernel.org
+> > > > > >
+> > > > > > Leon Romanovsky (5):
+> > > > > >   RDMA/bnxt_re: Depend on bnxt ethernet driver and not blindly select it
+> > > > > >   RDMA/bnxt_re: Create direct symbolic link between bnxt modules
+> > > > > >   RDMA/bnxt_re: Get rid of custom module reference counting
+> > > > > >   net/bnxt: Remove useless check of non-existent ULP id
+> > > > > >   net/bnxt: Use direct API instead of useless indirection
+> > > > > >
+> > > > > >  drivers/infiniband/hw/bnxt_re/Kconfig         |   4 +-
+> > > > > >  drivers/infiniband/hw/bnxt_re/main.c          |  93 ++-----
+> > > > > >  drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   4 +-
+> > > > > >  drivers/net/ethernet/broadcom/bnxt/bnxt.h     |   1 -
+> > > > > >  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c | 245 +++++++-----------
+> > > > > >  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |  32 +--
+> > > > > >  6 files changed, 119 insertions(+), 260 deletions(-)
+> > > > >
+> > > > > Hi Leon,
+> > > > >
+> > > > > After a couple of internal discussions we reached a conclusion to
+> > > > > implement the Auxbus driver interface and fix the problem once and for
+> > > > > all.
+> > > >
+> > > > Thanks Devesh,
+> > > >
+> > > > Jason, it looks like we can proceed with this patchset, because in
+> > > > auxbus mode this module refcount and ULP indirection logics will be
+> > > > removed anyway.
+> > > >
+> > > > Thanks
+> > > Hi Leon,
+> > >
+> > > In my internal testing, I am seeing a crash using the 3rd patch. I am
+> > > spending a few cycles on debugging it. expect my input in a day or so.
+> >
+> > Can you please post the kernel crash report here?
+> > I don't see how function rename in patch #3 can cause to the crash.
+> Hey, unfortunately my kdump service config is giving me tough time on
+> my host. I will share if I get it.
 
-The introduced attribute is always reported as supported since the
-kernel has the patch that added the copy-on-fork behavior. This allows
-the userspace library to identify older vs newer kernel versions.
-Extra care should be taken when backporting this patch as it relies on
-the fact that the copy-on-fork patch is merged, hence no check for
-support is added.
+Any news here?
 
-Don't backport this patch unless you also have the following series:
-70e806e4e645 ("mm: Do early cow for pinned pages during fork() for ptes")
-and 4eae4efa2c29 ("hugetlb: do early cow when page pinned on src mm").
+> >
+> > Thanks
+> >
+> > > >
+> > > > > >
+> > > > > > --
+> > > > > > 2.30.2
+> > > > > >
+> > > > >
+> > > > >
+> > > > > --
+> > > > > -Regards
+> > > > > Devesh
+> > > >
+> > > >
+> > >
+> > >
+> > > --
+> > > -Regards
+> > > Devesh
+> >
+> >
+> 
+> 
+> -- 
+> -Regards
+> Devesh
 
-Fixes: 70e806e4e645 ("mm: Do early cow for pinned pages during fork() for ptes")
-Fixes: 4eae4efa2c29 ("hugetlb: do early cow when page pinned on src mm")
-Signed-off-by: Gal Pressman <galpress@amazon.com>
----
-PR was sent:
-https://github.com/linux-rdma/rdma-core/pull/975
-
-Changelog -
-v2->v3: https://lore.kernel.org/linux-rdma/21317d2c-9a8e-0dd7-3678-d2933c5053c4@amazon.com/
-* Remove check if copy-on-fork attribute was provided from nldev_set_sys_set_doit()
-
-v1->v2: https://lore.kernel.org/linux-rdma/20210405114722.98904-1-galpress@amazon.com/
-* Remove nla_put_u8() return value check
-* Add commit hashes to commit message and code comment
----
- drivers/infiniband/core/nldev.c  | 11 +++++++++++
- include/uapi/rdma/rdma_netlink.h |  2 ++
- 2 files changed, 13 insertions(+)
-
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index b8dc002a2478..4889e06a581a 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -146,6 +146,7 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
- 	[RDMA_NLDEV_ATTR_UVERBS_DRIVER_ID]	= { .type = NLA_U32 },
- 	[RDMA_NLDEV_NET_NS_FD]			= { .type = NLA_U32 },
- 	[RDMA_NLDEV_SYS_ATTR_NETNS_MODE]	= { .type = NLA_U8 },
-+	[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK]	= { .type = NLA_U8 },
- };
- 
- static int put_driver_name_print_type(struct sk_buff *msg, const char *name,
-@@ -1697,6 +1698,16 @@ static int nldev_sys_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 		nlmsg_free(msg);
- 		return err;
- 	}
-+
-+	/*
-+	 * Copy-on-fork is supported.
-+	 * See commits:
-+	 * 70e806e4e645 ("mm: Do early cow for pinned pages during fork() for ptes")
-+	 * 4eae4efa2c29 ("hugetlb: do early cow when page pinned on src mm")
-+	 * for more details. Don't backport this without them.
-+	 */
-+	nla_put_u8(msg, RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK, 1);
-+
- 	nlmsg_end(msg, nlh);
- 	return rdma_nl_unicast(sock_net(skb->sk), msg, NETLINK_CB(skb).portid);
- }
-diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
-index d2f5b8396243..342c9db5b3c1 100644
---- a/include/uapi/rdma/rdma_netlink.h
-+++ b/include/uapi/rdma/rdma_netlink.h
-@@ -533,6 +533,8 @@ enum rdma_nldev_attr {
- 
- 	RDMA_NLDEV_ATTR_RES_RAW,	/* binary */
- 
-+	RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK,	/* u8 */
-+
- 	/*
- 	 * Always the end
- 	 */
--- 
-2.31.1
 
