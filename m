@@ -2,113 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C369735BB53
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Apr 2021 09:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E542535BC59
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Apr 2021 10:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237129AbhDLHwU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Apr 2021 03:52:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237110AbhDLHwT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:52:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5549E6135A;
-        Mon, 12 Apr 2021 07:52:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618213922;
-        bh=b6caykMxiAq91PMve97bmZcXOnTtbI521lJxug83BD0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N9kF2HgmJqyH3wBfJZCe0kB56HDll4Qahf/AfoZjU6AM2eiBwOiUvXeC6gQu7STKQ
-         tI3mxfCzswwx1TXLaqgt4oeBvLhrDjfy4bzJHARa7zxDu6rsYVNLGj57yQFiRWONEq
-         ZJ40ZBP/YR1NF6cGzmxMIi+Z+5amDPQIQWK+IKXQfLemAF4wouZ+GrhawNwIBQLl6d
-         rG7gnodiOOF3jE8LJVCcqYChkRdUSfyXOSrIN6ZmrKG6XnRmpXv85LcgABrl0D1Qz9
-         5g/mRJSuT0e1+1aqoq2j+HgDJicJU3OBAQI148IO5BSSZT3d3/WWjS4K2T+FwyYeaP
-         Lwt9wgmHllANg==
-Date:   Mon, 12 Apr 2021 10:51:40 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        linux-rdma@vger.kernel.org,
-        Alexander Matushevsky <matua@amazon.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH for-next v3] RDMA/nldev: Add copy-on-fork attribute to
- get sys command
-Message-ID: <YHP8DBn2lImpOUMZ@unreal>
-References: <20210412064150.40064-1-galpress@amazon.com>
+        id S237177AbhDLIki (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Apr 2021 04:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237036AbhDLIkh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Apr 2021 04:40:37 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E459FC061574
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Apr 2021 01:40:19 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a7so18936415eju.1
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Apr 2021 01:40:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IQtGaElbeCwCBcuE2Oz71cXsOc2pbKv6F4mBG+/n82c=;
+        b=d3ce5uHb943PRm0fkoxlMR121BKoz4E42y2mdr59E1AUn7PaqJ8YfZD/JyLdy7CMwJ
+         ydczkkxaBWZVSXP66uIRVDir/0IMZDOBQxGJa3xoeqxOnqO1HzroFtN9yrvn5Ikrve3h
+         P4jOR2rOrHjiKhRb6qPvkjuN9uzwYy/bQsizE+oXuqu37WMOeMoIyGTzCsBOumP8n35F
+         lL9pbUYQ8wtVV/roDKZOVXcOugZZGUrjlK0EluezuicJda6WoDdlb7S+54bjJTWms/lE
+         ySEe+l6EutfjDMt04SaU2l96bMRmCMvdXFQkY32Pu/l8GrvqQ+PZgOUz1TjY1lnImJn2
+         9ixg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IQtGaElbeCwCBcuE2Oz71cXsOc2pbKv6F4mBG+/n82c=;
+        b=nIfvSlZbiHlrVbCvzruZxIbDyizDSHtfQa+TNOYYtjxbT2W8teupoABAudGw0wXNp5
+         lwkTGmmsiS4MTP8K+ieU6yOOpDZx7xPRLGOhgTgpFwnQGAM4HFPS4yyr8somR4GhMY/I
+         Ay4E2wgkXNUUFvXrhGAADaRcHOEsb5NJJ0RrW/ezQ2xa5WkOQYhfMqVTkrbYJgUcHjBj
+         keyhkz1tZ4RQ4xs7ZrtgMUOo+BdEqwBIlTNlOmPMnc8BZmO4egPXGNsgezpMMEA11ipY
+         7/MvWpg9JiDuNwysWQsLHCv8kMzPHBdF4YSSusdO7S86kZI9lw9fyyJBfvRho9slRdxf
+         olSQ==
+X-Gm-Message-State: AOAM533qWobnf1Q5z9xuFDZvn2kzz8MAb2hrm/yxzEGKv4wCWNgQ90K+
+        At2X7L8z5aqRpNU1aFOXwkgHvcTcgOIjUg==
+X-Google-Smtp-Source: ABdhPJx7H/1CUn8x7LyVlX/OEuhbL53v/3KIOyDSAHN874302E3Pj4jOMbP9S4GzpCk614kMJJSESA==
+X-Received: by 2002:a17:906:5203:: with SMTP id g3mr25626868ejm.95.1618216818434;
+        Mon, 12 Apr 2021 01:40:18 -0700 (PDT)
+Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aeee5.dynamic.kabel-deutschland.de. [95.90.238.229])
+        by smtp.googlemail.com with ESMTPSA id h15sm6018890edb.74.2021.04.12.01.40.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 01:40:18 -0700 (PDT)
+From:   Gioh Kim <gi-oh.kim@ionos.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
+        jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
+        Gioh Kim <gi-oh.kim@ionos.com>
+Subject: [PATCH for-next] RDMA/rtrs-clt: destroy sysfs after removing session from active list
+Date:   Mon, 12 Apr 2021 10:40:02 +0200
+Message-Id: <20210412084002.33582-1-gi-oh.kim@ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210412064150.40064-1-galpress@amazon.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 09:41:50AM +0300, Gal Pressman wrote:
-> The new attribute indicates that the kernel copies DMA pages on fork,
-> hence libibverbs' fork support through madvise and MADV_DONTFORK is not
-> needed.
-> 
-> The introduced attribute is always reported as supported since the
-> kernel has the patch that added the copy-on-fork behavior. This allows
-> the userspace library to identify older vs newer kernel versions.
-> Extra care should be taken when backporting this patch as it relies on
-> the fact that the copy-on-fork patch is merged, hence no check for
-> support is added.
-> 
-> Don't backport this patch unless you also have the following series:
-> 70e806e4e645 ("mm: Do early cow for pinned pages during fork() for ptes")
-> and 4eae4efa2c29 ("hugetlb: do early cow when page pinned on src mm").
-> 
-> Fixes: 70e806e4e645 ("mm: Do early cow for pinned pages during fork() for ptes")
-> Fixes: 4eae4efa2c29 ("hugetlb: do early cow when page pinned on src mm")
-> Signed-off-by: Gal Pressman <galpress@amazon.com>
-> ---
-> PR was sent:
-> https://github.com/linux-rdma/rdma-core/pull/975
-> 
-> Changelog -
-> v2->v3: https://lore.kernel.org/linux-rdma/21317d2c-9a8e-0dd7-3678-d2933c5053c4@amazon.com/
-> * Remove check if copy-on-fork attribute was provided from nldev_set_sys_set_doit()
-> 
-> v1->v2: https://lore.kernel.org/linux-rdma/20210405114722.98904-1-galpress@amazon.com/
-> * Remove nla_put_u8() return value check
-> * Add commit hashes to commit message and code comment
-> ---
->  drivers/infiniband/core/nldev.c  | 11 +++++++++++
->  include/uapi/rdma/rdma_netlink.h |  2 ++
->  2 files changed, 13 insertions(+)
-> 
-> diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-> index b8dc002a2478..4889e06a581a 100644
-> --- a/drivers/infiniband/core/nldev.c
-> +++ b/drivers/infiniband/core/nldev.c
-> @@ -146,6 +146,7 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
->  	[RDMA_NLDEV_ATTR_UVERBS_DRIVER_ID]	= { .type = NLA_U32 },
->  	[RDMA_NLDEV_NET_NS_FD]			= { .type = NLA_U32 },
->  	[RDMA_NLDEV_SYS_ATTR_NETNS_MODE]	= { .type = NLA_U8 },
-> +	[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK]	= { .type = NLA_U8 },
->  };
->  
->  static int put_driver_name_print_type(struct sk_buff *msg, const char *name,
-> @@ -1697,6 +1698,16 @@ static int nldev_sys_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
->  		nlmsg_free(msg);
->  		return err;
->  	}
-> +
-> +	/*
-> +	 * Copy-on-fork is supported.
-> +	 * See commits:
-> +	 * 70e806e4e645 ("mm: Do early cow for pinned pages during fork() for ptes")
-> +	 * 4eae4efa2c29 ("hugetlb: do early cow when page pinned on src mm")
-> +	 * for more details. Don't backport this without them.
-> +	 */
-> +	nla_put_u8(msg, RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK, 1);
-> +
+A session can be removed dynamically by sysfs interface "remove_path"
+that eventually calls rtrs_clt_remove_path_from_sysfs function.
+The current rtrs_clt_remove_path_from_sysfs first removes the sysfs
+interfaces and frees sess->stats object. Second it removes the session
+from the active list.
 
-Nit, it is good to write here that we don't check nla_put_u8() on purpose.
+Therefore some functions could access non-connected session and
+access the freed sess->stats object even-if they check the session
+status before accessing the session.
+For instance rtrs_clt_request and get_next_path_min_inflight
+check the session status and try to send IO to the session.
+The session status could be changed when they are trying to send IO
+but they could not catch the change and update the statistics information
+in sess->stats object, and generate use-after-free problem.
+(see: "RDMA/rtrs-clt: Check state of the rtrs_clt_sess before reading
+its stats")
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+This patch changes the rtrs_clt_remove_path_from_sysfs to remove
+the session from the active session list and then destroy the sysfs
+interfaces.
+
+Each function still should check the session status because closing
+or error recovery paths can change the status.
+
+Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
+Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+Reviewed-by: Jack Wang <jinpu.wang@ionos.com>
+---
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 96029d4ec26f..cbcabc893c46 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -2861,8 +2861,8 @@ int rtrs_clt_remove_path_from_sysfs(struct rtrs_clt_sess *sess,
+ 	} while (!changed && old_state != RTRS_CLT_DEAD);
+ 
+ 	if (likely(changed)) {
+-		rtrs_clt_destroy_sess_files(sess, sysfs_self);
+ 		rtrs_clt_remove_path_from_arr(sess);
++		rtrs_clt_destroy_sess_files(sess, sysfs_self);
+ 		kobject_put(&sess->kobj);
+ 	}
+ 
+-- 
+2.25.1
+
