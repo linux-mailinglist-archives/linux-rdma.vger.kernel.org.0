@@ -2,88 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBE335BC66
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Apr 2021 10:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F50A35C408
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Apr 2021 12:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237282AbhDLImo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Apr 2021 04:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34544 "EHLO
+        id S239344AbhDLKbw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Apr 2021 06:31:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237296AbhDLImn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Apr 2021 04:42:43 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83595C061574
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Apr 2021 01:42:25 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id u17so18930079ejk.2
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Apr 2021 01:42:25 -0700 (PDT)
+        with ESMTP id S239218AbhDLKbu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Apr 2021 06:31:50 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5996FC061574
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Apr 2021 03:31:32 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id a4so12368828wrr.2
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Apr 2021 03:31:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8mgFyTQB2ZWkRKouessvc0RE6bi0BefXvlF25DpwAIA=;
-        b=amYSfXiftN8yIT72dc3kUW24Oa+c+74DcNHf5MldljW+B7YU5fiOeujbX13MHTa1yj
-         +GZGR4sMYwYTLxmR0PwuCiqbMSQ+uCYIBvBP1RHAzpwUb4mk/TlPI1y9Jjkc0vwmbuFH
-         LJFQI+AnGDl5vkmWWwz/UcojahjdG10l/rwG1NITMVP9/E9ZjXMPnoIepCFwDNeFWpmG
-         8mhQCVgGW9FLwOOr/ix0fpai0MP7L0dkjENaTE/9TUG9tmdei8dz5CPuZwRWdH6ZJgIH
-         AkJF6LPZMJg6XkpWh4PeCoTl8QDyIzweT894hnRozSV4EhU9Tjr6oqlm+/nJcRjkPYSK
-         Gbgg==
+        h=from:message-id:subject:to:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=Mh+QZ/o6zdwL/uKfgbR29RJ8uTjxSRnfHBwvdQloXCU=;
+        b=MpH+sH5Wktxg1fddSKs9pPZdljYfzPi7noSwrZ1sbYfACJBB+xa4d4BmqGzdhlv2Ho
+         +1/m5IMk/liQq2MQjvik4ZVDvSYvTk1BAU305yplJkEAEJSwdBPTQFINGOvBldXlWu3Y
+         xqn8xPwAzTHRja7G1UcF2Y+1qXhwtOy+8vYu26w3wFh5GG1MK3XgTUoim0b7QjUSIL6+
+         Gfo6atejekotPWMYkeFxt9g3yu4MuMQ1EN4hXSwJewCu+BPiUpm7sf+YOqJKYPIv5FQC
+         6PUqt03YXtedHC1CfOjvhg/t4K2CTWCwVHZCiCsx/Uuy238vN8ZwGd7LVGeAuHjOUE+m
+         7p9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8mgFyTQB2ZWkRKouessvc0RE6bi0BefXvlF25DpwAIA=;
-        b=XZBNRjyIEXgCmt56zTbDvNcsphgfEKWHaD/QT0IvPfbvDhrJ6xvWvImo2nJyb96dSo
-         DsSUMN231HQjNfOAhoFWYt3zNhfNST/nQUM6fxt+v/pZqBcslaNmO2OpPxBLdk+uyOMK
-         q1FXvHR5yDduSgal0IHA5x0uiAeuV5x491wgHi3KyTL3qcYS7hfOISdwumhPthJdwVWl
-         Q26Q6KzlDi6wYHNxC/UjYnzNG8KAMHyycxlPP/Uhi6rbo3SNxjWHkfM87UTTbX9OY5If
-         dZckr0n0tcuKUdvBYRQU3N417oaE3s9oNZmZn3WLgsxz/EUzRPcSI5wPgcNHnhrkTIjF
-         kI5Q==
-X-Gm-Message-State: AOAM530N96TTgMHGXD4TOLxSc3B2H8bN8Tveoyi7Rw+pAg4sFcJc1Xfs
-        mDq/pQ5UStaqSJMBU8VkigSLIMU3igJpRRmjf8HNRw==
-X-Google-Smtp-Source: ABdhPJxgnc4ralj0eNUpiBdiDv5sY1HF8HIYWfgq/hFvSlsHsWYNi1RLRkjTwBOAX/UNW3HdsuXmcEnqq8r63JoKuRg=
-X-Received: by 2002:a17:906:4c91:: with SMTP id q17mr26768216eju.0.1618216944288;
- Mon, 12 Apr 2021 01:42:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210325153308.1214057-1-gi-oh.kim@ionos.com> <20210325153308.1214057-13-gi-oh.kim@ionos.com>
- <20210401184448.GA1647065@nvidia.com> <CAJX1Ytao0LMYkGPy+E4XQzyxZFSytRDuwB2By2HQ6VBS7btCWg@mail.gmail.com>
- <20210408120418.GQ7405@nvidia.com> <CAMGffE=pu7uhmsBaYBuZB2w+YOogrK+W5yEKRPZxTanx5+f0Gg@mail.gmail.com>
- <20210408135033.GT7405@nvidia.com> <CAJX1YtY2d6YHuDZ0Wbg+c33yoaoCa4_iO6_nT3Krb3uWZFfrag@mail.gmail.com>
- <20210408145124.GU7405@nvidia.com>
-In-Reply-To: <20210408145124.GU7405@nvidia.com>
-From:   Gioh Kim <gi-oh.kim@ionos.com>
-Date:   Mon, 12 Apr 2021 10:41:48 +0200
-Message-ID: <CAJX1Ytb1ztV+hgdqGhWErWooi4j+5JnZVQQ7L5qX6_D8WSemDg@mail.gmail.com>
-Subject: Re: [PATCH for-next 12/22] RDMA/rtrs-clt: Check state of the
- rtrs_clt_sess before reading its stats
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jinpu Wang <jinpu.wang@ionos.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Haris Iqbal <haris.iqbal@ionos.com>,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+        h=x-gm-message-state:from:message-id:subject:to:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=Mh+QZ/o6zdwL/uKfgbR29RJ8uTjxSRnfHBwvdQloXCU=;
+        b=SQaKdS4cqaQAlABsegIX25OiEmShi4oQ+lxnc5NQSO/lypXd5YZwOs5QQNggk6y1Z4
+         3utqlvr5N9rwMXNt3vQkgAuAXH3kZKLbzR32vDRWqI3plbU+lZxiuZQNwDd+hklkBFNM
+         Sj2qrikzkZPkPjWkJukruKeQRbPJs0kJ6WsCu2hFXPlN9IM6/wihFc0ZhkxJPf9JRVfZ
+         psu/8qu0+FRkhabnNoPFCA27ey8JNrMLSZRHmot2CRLc1uho+L9D5wSravTWF92rOZEe
+         H102UjsKxqewL06spXQgzzoALK0CmzTxLBNJJKk/wmXGMpWfqJzM3fSPpD9P/Hx2aeYU
+         Ylpw==
+X-Gm-Message-State: AOAM530KiWdEtG5m0BjhNA+PEzdFhWZFboyU2YYQxWOdqR0+uiHbStqP
+        Fjk9OJ/0Lvpvc5u3Lle8HobB3TWfgx06Jlwc
+X-Google-Smtp-Source: ABdhPJwmUOC6osdXBlkB/Qj0NsDB4aR41AiHXddPnzdRgQjncUYyow1HBMhCFCkR2Croja3zpZiSEA==
+X-Received: by 2002:adf:8b45:: with SMTP id v5mr30322369wra.398.1618223490888;
+        Mon, 12 Apr 2021 03:31:30 -0700 (PDT)
+Received: from [192.168.3.162] (ip5b401b0e.dynamic.kabel-deutschland.de. [91.64.27.14])
+        by smtp.gmail.com with ESMTPSA id l4sm13875886wrx.24.2021.04.12.03.31.30
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 03:31:30 -0700 (PDT)
+From:   Benjamin Drung <benjamin.drung@ionos.com>
+X-Google-Original-From: Benjamin Drung <benjamin.drung@cloud.ionos.com>
+Message-ID: <8d930476e5daf34147a178420596230dfecf2038.camel@cloud.ionos.com>
+Subject: rdma-core: Minimum supported Debian & Ubuntu releases
+To:     linux-rdma@vger.kernel.org
+Date:   Mon, 12 Apr 2021 12:31:26 +0200
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 4:51 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Thu, Apr 08, 2021 at 04:44:02PM +0200, Gioh Kim wrote:
->
-> > I think it might be a solution to change the
-> > rtrs_clt_remove_path_from_sysfs as below.  It changes the order:
-> > first remove the session from list and then destroy sess->stat
-> > memory.
->
-> Freeing memory used under a RCU lock before doing a RCU
-> synchronization is an error, so at least this could make sense to me
->
-> Jason
+Hi,
 
-Hi Jason,
+which Debian & Ubuntu releases should rdma-core support? Do we have a
+policy for that like all LTS versions?
 
-I just sent a patch "RDMA/rtrs-clt: destroy sysfs after removing
-session from active list".
-Thank you for the review.
+-- 
+Benjamin Drung
+
+Senior DevOps Engineer and Debian & Ubuntu Developer
+Compute Platform Operations
+
+1&1 IONOS SE | Greifswalder Str. 207 | 10405 Berlin | Deutschland
+E-Mail: benjamin.drung@ionos.com | Web: www.ionos.de
+
+Hauptsitz Montabaur, Amtsgericht Montabaur, HRB 24498
+
+Vorstand: Hüseyin Dogan, Dr. Martin Endreß, Claudia Frese, Henning
+Kettler, Arthur Mai, Matthias Steinberg, Achim Weiß
+Aufsichtsratsvorsitzender: Markus Kadelke
+
+
+Member of United Internet
+
+Diese E-Mail kann vertrauliche und/oder gesetzlich geschützte
+Informationen enthalten. Wenn Sie nicht der bestimmungsgemäße Adressat
+sind oder diese E-Mail irrtümlich erhalten haben, unterrichten Sie
+bitte den Absender und vernichten Sie diese E-Mail. Anderen als dem
+bestimmungsgemäßen Adressaten ist untersagt, diese E-Mail zu speichern,
+weiterzuleiten oder ihren Inhalt auf welche Weise auch immer zu
+verwenden.
+
+This e-mail may contain confidential and/or privileged information. If
+you are not the intended recipient of this e-mail, you are hereby
+notified that saving, distribution or use of the content of this e-mail
+in any way is prohibited. If you have received this e-mail in error,
+please notify the sender and delete the e-mail.
+
+
