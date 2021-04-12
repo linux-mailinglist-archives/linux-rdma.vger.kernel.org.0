@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D49335CC55
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Apr 2021 18:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A94E235CCDD
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Apr 2021 18:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244731AbhDLQ2O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Apr 2021 12:28:14 -0400
+        id S245154AbhDLQb6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Apr 2021 12:31:58 -0400
 Received: from mail.kernel.org ([198.145.29.99]:57636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243716AbhDLQ0N (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:26:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24FD561372;
-        Mon, 12 Apr 2021 16:24:53 +0000 (UTC)
+        id S245131AbhDLQ3m (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 12 Apr 2021 12:29:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3D14613A9;
+        Mon, 12 Apr 2021 16:25:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618244694;
-        bh=nUvGJWgWbLvPWG9YfcI1jq3Ts2T5CZOYb7nvgqz96fs=;
+        s=k20201202; t=1618244746;
+        bh=rKFoYmMFAwIlGwhmd+Fclhva+2Md0QWwljLeYRG30Qo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HAtdyuzc9EH+hLHY1RSKgnCGWfARsu0Dt7S6hNJXZfoBJKchl45BdC42LUXDxR9o0
-         Cj+yfv4OxlG2tDQxCsiuQ0BxgxeF/YD7SMPhy0b2q2CeVA1ApNOE9ixpQOnuqOyeEY
-         vPzxf7fks198yABvm0o3ksAtwNjJGg+hCpmnqoyLyJ20RemjpAWqnOZFMC7hZt+DVr
-         pPa9Gavp3y1mG1yY0SxEkXNtybVMD1mly81k4BOSfYl7kTZ0SLimaLEzZ2DOWDEQn8
-         EJzuH9MRwEZLH6PfM4+mz8fLNnwKyWZMFMRBnHbLLlB289L3NhAaP7B9G+Vy/AR6nB
-         woA0sgdr4SZPQ==
+        b=t9r9xXkcTgNQ5DHd/DadOyUwnJ2qSGMgQz9pggWbyZciv7JhAhc1qT92Qt8QKQ46Y
+         0yY5eC5GQkBbp3gqyRD/aXKBNCS4hXYeiCwLlhRnB4XPRrcyO54GY/HWgITZ5+JHTq
+         TYlA1pMp7pQTaaQKYwazuuvhUjPxX0F7hgwHeoBFL9psKyk5u8wLw2JLUpb1e3RpoW
+         HO4/vOe+f75JfsMXf7JERJPc1m8+33BrVUljXfGJt3cdRa3mjZAO9HFcx41YGKIGDD
+         zrS7E59BWKIUihzOz6LXOUNT6rvcM1wqqGoRcFhyoShPZ6E/czo5q/TXc+HhFUUj7i
+         Zz4nw9tRcWZTw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Aditya Pakki <pakki001@umn.edu>,
@@ -30,12 +30,12 @@ Cc:     Aditya Pakki <pakki001@umn.edu>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: [PATCH AUTOSEL 5.10 41/46] net/rds: Avoid potential use after free in rds_send_remove_from_sock
-Date:   Mon, 12 Apr 2021 12:23:56 -0400
-Message-Id: <20210412162401.314035-41-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 35/39] net/rds: Avoid potential use after free in rds_send_remove_from_sock
+Date:   Mon, 12 Apr 2021 12:24:57 -0400
+Message-Id: <20210412162502.314854-35-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210412162401.314035-1-sashal@kernel.org>
-References: <20210412162401.314035-1-sashal@kernel.org>
+In-Reply-To: <20210412162502.314854-1-sashal@kernel.org>
+References: <20210412162502.314854-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -62,7 +62,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/net/rds/message.c b/net/rds/message.c
-index 071a261fdaab..90ebcfe5fe3b 100644
+index 2d43e13d6dd5..c3ecde854454 100644
 --- a/net/rds/message.c
 +++ b/net/rds/message.c
 @@ -180,6 +180,7 @@ void rds_message_put(struct rds_message *rm)
@@ -74,7 +74,7 @@ index 071a261fdaab..90ebcfe5fe3b 100644
  }
  EXPORT_SYMBOL_GPL(rds_message_put);
 diff --git a/net/rds/send.c b/net/rds/send.c
-index 985d0b7713ac..fe5264b9d4b3 100644
+index 68e2bdb08fd0..aa3bc081773f 100644
 --- a/net/rds/send.c
 +++ b/net/rds/send.c
 @@ -665,7 +665,7 @@ static void rds_send_remove_from_sock(struct list_head *messages, int status)
