@@ -2,90 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D8C35CE24
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Apr 2021 18:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD06D35CF86
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Apr 2021 19:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245360AbhDLQmU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Apr 2021 12:42:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38902 "EHLO mail.kernel.org"
+        id S239731AbhDLRe7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Apr 2021 13:34:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245725AbhDLQh7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:37:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA0396136B;
-        Mon, 12 Apr 2021 16:28:03 +0000 (UTC)
+        id S239298AbhDLRe7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 12 Apr 2021 13:34:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 621F36121F;
+        Mon, 12 Apr 2021 17:34:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618244884;
-        bh=X71mqUhI13FrRualBoEXM2HTWBMdKMt/5yloOHgJxQc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rMO24C2goPPRk+yYuuil0juDpLChuv1TG2MD8WAojSGtd7pYWJVaZHQmI2vVNwexc
-         HbZT2Oh76aImNYmvVKT6QK3KWDh506zESGmxjOS2b39kMzPb5gFPL5iQVRXfevC6Og
-         t7DHROaPvtfqamB8iZ0Nasu3xzZsL6uF4dDBKSKpsTAtN9GIRSKxPLKQ3kNtZ0XR/+
-         0fKFhB9i1DuYkIQY2FHHGAfdKZ3pZ4xxAPh67h6RbnMKb+1Sq60ZtPsn5C47m6ynMD
-         K3uATL7QQefvlWhtqsqjafGIJqMwoEJcIvudAnf4PR0qziDK3hqXDka+9v2JsNUfVg
-         7mNdTouBJcI5g==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: [PATCH AUTOSEL 4.4 21/23] net/rds: Avoid potential use after free in rds_send_remove_from_sock
-Date:   Mon, 12 Apr 2021 12:27:34 -0400
-Message-Id: <20210412162736.316026-21-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210412162736.316026-1-sashal@kernel.org>
-References: <20210412162736.316026-1-sashal@kernel.org>
+        s=k20201202; t=1618248881;
+        bh=X4vHobQGMf5yS8EZZFI9B97njb3wMr6W5r0ESrF0RH4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QtBQiOzzR77bG1BUDCJ4H8wTpZ0H3J0MsrXln+iKYvnInaHFSc/l0LOWlH8Nz3au7
+         aRgTlT4yELRjmT0yqg89hzed+F+Yy8qtjZdEqSVenwze6Gi9tOzQbUIhg2Ni7ZtvPR
+         T1N5RVX34qsFsVXDB9dfZ+vBMYTeTdpg5WRc2RYwB/j7daaxCVgX8yHwqHcz92Zmer
+         CmrPc3zmG3BpXFCusL0uNiSUzoyDd7OjUk12eZC00KwXW40YEfjJ00IFGVdmiqx8u6
+         dxBkZMjYGs+xc/Sf64zxt/ifU3iOXj7SxNowK9JQZ+9OTkUvNEOLoZI4Sj1wpw+yav
+         bNkqlcEsIGuWQ==
+Date:   Mon, 12 Apr 2021 20:34:37 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Gioh Kim <gi-oh.kim@ionos.com>
+Cc:     Jinpu Wang <jinpu.wang@ionos.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Haris Iqbal <haris.iqbal@ionos.com>,
+        Gioh Kim <gi-oh.kim@cloud.ionos.com>
+Subject: Re: [PATCHv2 for-next 1/3] RDMA/rtrs-clt: Print more info when an
+ error happens
+Message-ID: <YHSErWp/Bi0kpBty@unreal>
+References: <20210406123639.202899-1-gi-oh.kim@ionos.com>
+ <20210406123639.202899-2-gi-oh.kim@ionos.com>
+ <YGxXD/TODlXHp2sK@unreal>
+ <CAMGffE=oEGRqtxCOhzFp157K==i_JWFY3BMtbVN9YrOpuvo44A@mail.gmail.com>
+ <YHQ/7MTKGD/UO4pW@unreal>
+ <CAMGffEn8AYhtO8WF4sWjPu2uVgZDL4aRiT+sPjqtK6VaGsk3bQ@mail.gmail.com>
+ <CAJX1YtZJ3sJy5fu_6v-sbqx3yLsPTh_SbvRQo9Yz1k48KxXpCA@mail.gmail.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJX1YtZJ3sJy5fu_6v-sbqx3yLsPTh_SbvRQo9Yz1k48KxXpCA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Aditya Pakki <pakki001@umn.edu>
+On Mon, Apr 12, 2021 at 04:00:55PM +0200, Gioh Kim wrote:
+> On Mon, Apr 12, 2021 at 2:54 PM Jinpu Wang <jinpu.wang@ionos.com> wrote:
+> >
+> > On Mon, Apr 12, 2021 at 2:41 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > >
+> > > On Mon, Apr 12, 2021 at 02:22:51PM +0200, Jinpu Wang wrote:
+> > > > On Tue, Apr 6, 2021 at 2:41 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > > >
+> > > > > On Tue, Apr 06, 2021 at 02:36:37PM +0200, Gioh Kim wrote:
+> > > > > > From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+> > > > > >
+> > > > > > Client prints only error value and it is not enough for debugging.
+> > > > > >
+> > > > > > 1. When client receives an error from server:
+> > > > > > the client does not only print the error value but also
+> > > > > > more information of server connection.
+> > > > > >
+> > > > > > 2. When client failes to send IO:
+> > > > > > the client gets an error from RDMA layer. It also
+> > > > > > print more information of server connection.
+> > > > > >
+> > > > > > Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+> > > > > > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+> > > > > > ---
+> > > > > >  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 33 ++++++++++++++++++++++----
+> > > > > >  1 file changed, 29 insertions(+), 4 deletions(-)
+> > > > > >
+> > > > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> > > > > > index 5062328ac577..a534b2b09e13 100644
+> > > > > > --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> > > > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> > > > > > @@ -437,6 +437,11 @@ static void complete_rdma_req(struct rtrs_clt_io_req *req, int errno,
+> > > > > >       req->in_use = false;
+> > > > > >       req->con = NULL;
+> > > > > >
+> > > > > > +     if (unlikely(errno)) {
+> > > > >
+> > > > > I'm sorry, but all your patches are full of these likely/unlikely cargo
+> > > > > cult. Can you please provide supportive performance data or delete all
+> > > > > likely/unlikely in all rtrs code?
+> > > >
+> > > > Hi Leon,
+> > > >
+> > > > All the likely/unlikely from the non-fast path was removed as you
+> > > > suggested in the past.
+> > > > This one is on IO path, my understanding is for the fast path, with
+> > > > likely/unlikely macro,
+> > > > the compiler will optimize the code for better branch prediction.
+> > >
+> > > In theory yes, in practice. gcc 10 generated same assembly code when I
+> > > placed likely() and replaced it with unlikely() later.
+> 
+> Even-thought gcc 10 generated the same assembly code,
+> there is no guarantee for gcc 11 or gcc 12.
+> 
+> I am reviewing rtrs source file and have found some unnecessary likely/unlikely.
+> But I think likely/unlikely are necessary for extreme cases.
+> I will have a discussion with my colleagues and inform you of the result.
 
-[ Upstream commit 0c85a7e87465f2d4cbc768e245f4f45b2f299b05 ]
+Please come with performance data.
 
-In case of rs failure in rds_send_remove_from_sock(), the 'rm' resource
-is freed and later under spinlock, causing potential use-after-free.
-Set the free pointer to NULL to avoid undefined behavior.
-
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/rds/message.c | 1 +
- net/rds/send.c    | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/net/rds/message.c b/net/rds/message.c
-index 756c73729126..decf2ee33c23 100644
---- a/net/rds/message.c
-+++ b/net/rds/message.c
-@@ -89,6 +89,7 @@ void rds_message_put(struct rds_message *rm)
- 		rds_message_purge(rm);
- 
- 		kfree(rm);
-+		rm = NULL;
- 	}
- }
- EXPORT_SYMBOL_GPL(rds_message_put);
-diff --git a/net/rds/send.c b/net/rds/send.c
-index 1a3c6acdd3f8..1415a296f7b2 100644
---- a/net/rds/send.c
-+++ b/net/rds/send.c
-@@ -668,7 +668,7 @@ static void rds_send_remove_from_sock(struct list_head *messages, int status)
- unlock_and_drop:
- 		spin_unlock_irqrestore(&rm->m_rs_lock, flags);
- 		rds_message_put(rm);
--		if (was_on_sock)
-+		if (was_on_sock && rm)
- 			rds_message_put(rm);
- 	}
- 
--- 
-2.30.2
-
+Thanks
