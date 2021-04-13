@@ -2,78 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4071C35DAC1
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Apr 2021 11:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C920535DAD3
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Apr 2021 11:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbhDMJLd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Apr 2021 05:11:33 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:53953 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229588AbhDMJLc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:11:32 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UVRVm4T_1618305065;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVRVm4T_1618305065)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 13 Apr 2021 17:11:11 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     dennis.dalessandro@cornelisnetworks.com
-Cc:     mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] RDMA/hw/qib/qib_iba7322: remove useless function
-Date:   Tue, 13 Apr 2021 17:11:03 +0800
-Message-Id: <1618305063-29007-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S231477AbhDMJOg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Apr 2021 05:14:36 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17323 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhDMJOg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Apr 2021 05:14:36 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FKKcF3vq5z9ygL;
+        Tue, 13 Apr 2021 17:11:57 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 13 Apr 2021 17:14:03 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@nvidia.com>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>, Yixian Liu <liuyixian@huawei.com>,
+        Weihang Li <liweihang@huawei.com>
+Subject: [PATCH for-next] RDMA/hns: Remove unnecessary flush operation for workqueue
+Date:   Tue, 13 Apr 2021 17:11:27 +0800
+Message-ID: <1618305087-30799-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.8.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fix the following clang warning:
+From: Yixian Liu <liuyixian@huawei.com>
 
-drivers/infiniband/hw/qib/qib_iba7322.c:803:19: warning: unused function
-'qib_read_ureg' [-Wunused-function].
+As flush operation is implemented inside destroy workqueue, there is no
+need to do flush operation before destroying workqueue.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Fixes: bfcc681bd09d ("IB/hns: Fix the bug when free mr")
+Fixes: 0425e3e6e0c7 ("RDMA/hns: Support flush cqe for hip08 in kernel space")
+Signed-off-by: Yixian Liu <liuyixian@huawei.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/qib/qib_iba7322.c | 22 ----------------------
- 1 file changed, 22 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 2 --
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 1 -
+ 2 files changed, 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qib/qib_iba7322.c b/drivers/infiniband/hw/qib/qib_iba7322.c
-index 9fe6ea7..3cb4429 100644
---- a/drivers/infiniband/hw/qib/qib_iba7322.c
-+++ b/drivers/infiniband/hw/qib/qib_iba7322.c
-@@ -791,28 +791,6 @@ static inline u32 qib_read_ureg32(const struct qib_devdata *dd,
- }
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+index 8a3fe6d..620acf6 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+@@ -1382,7 +1382,6 @@ static int hns_roce_free_mr_init(struct hns_roce_dev *hr_dev)
+ 	ret = hns_roce_v1_rsv_lp_qp(hr_dev);
+ 	if (ret) {
+ 		dev_err(dev, "Reserved loop qp failed(%d)!\n", ret);
+-		flush_workqueue(free_mr->free_mr_wq);
+ 		destroy_workqueue(free_mr->free_mr_wq);
+ 	}
  
- /**
-- * qib_read_ureg - read virtualized per-context register
-- * @dd: device
-- * @regno: register number
-- * @ctxt: context number
-- *
-- * Return the contents of a register that is virtualized to be per context.
-- * Returns -1 on errors (not distinguishable from valid contents at
-- * runtime; we may add a separate error variable at some point).
-- */
--static inline u64 qib_read_ureg(const struct qib_devdata *dd,
--				enum qib_ureg regno, int ctxt)
--{
--
--	if (!dd->kregbase || !(dd->flags & QIB_PRESENT))
--		return 0;
--	return readq(regno + (u64 __iomem *)(
--		(dd->ureg_align * ctxt) + (dd->userbase ?
--		 (char __iomem *)dd->userbase :
--		 (char __iomem *)dd->kregbase + dd->uregbase)));
--}
--
--/**
-  * qib_write_ureg - write virtualized per-context register
-  * @dd: device
-  * @regno: register number
+@@ -1394,7 +1393,6 @@ static void hns_roce_free_mr_free(struct hns_roce_dev *hr_dev)
+ 	struct hns_roce_v1_priv *priv = hr_dev->priv;
+ 	struct hns_roce_free_mr *free_mr = &priv->free_mr;
+ 
+-	flush_workqueue(free_mr->free_mr_wq);
+ 	destroy_workqueue(free_mr->free_mr_wq);
+ 
+ 	hns_roce_v1_release_lp_qp(hr_dev);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 1b05ebe..79c535e 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -6404,7 +6404,6 @@ static void hns_roce_v2_cleanup_eq_table(struct hns_roce_dev *hr_dev)
+ 	hns_roce_v2_int_mask_enable(hr_dev, eq_num, EQ_DISABLE);
+ 
+ 	__hns_roce_free_irq(hr_dev);
+-	flush_workqueue(hr_dev->irq_workq);
+ 	destroy_workqueue(hr_dev->irq_workq);
+ 
+ 	for (i = 0; i < eq_num; i++) {
 -- 
-1.8.3.1
+2.8.1
 
