@@ -2,150 +2,156 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A790E35E09B
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Apr 2021 15:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4BE35E0B0
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Apr 2021 15:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346189AbhDMNvq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Apr 2021 09:51:46 -0400
-Received: from mail-co1nam11on2050.outbound.protection.outlook.com ([40.107.220.50]:26976
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1346187AbhDMNvp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:51:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=laPpahyo7QADbzbhVp87nd16w8ZMgh59/GMIUCUSqfgpBDN4MTgH4wLN+HqM2rR6uJglz8hgyQU7fTNOjp8Z0PdxpPFCZEXjlZGzqI+zfoFePdL9cKZlnihthXYGkxeJ5Q//NNnLYFhHsqOml+CyQnRFH6Holt17DCu6ulEnHX/yAk0C3SdpZxTYB0hfB3Y/98S5xu7bq3zkrscF/+EmJoyC7jpVlbs6gXlNdu7LoXcG/m9bVkoziP1zmUVDBX0FOhtT6RQQ6Oaxd3Lbh/18Dts4lkDNORIAEn5TYj75oZffyTtrXULt+xlW/8T4BipA4ma+A4LXrae+3RfO8FNJ+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EyY2zMBE7enM7irQrTCHHwCilyDTmYBG+ysAXtVccyA=;
- b=iCEqqjqJWJ6Y9ipaIePY/jPyvKVzdGf1fL/4wDA6eQsh2apknrNRGEoHYXl16BleKpNFvmNcALKPDu2iMfuTk7ZQ9lPe1l2OLbfwQypgpV0YQYpZyEE3nxjrrxd4GySW10GKItfYfI6l8wIkYdM3JY1Cjc80+FwUlv19p8cASF5IwWsInTUMSKASwMp1jfgq548Vr1KWjW5r+xkLkQEMWA4cY7GG4ZfdtGKxkiQ+lsYhmXtk7GBErdyHv2Fmuwv9l+2Pq7oUeKy9CguTqqJqt6cEgE6H7mzigQZXZ+5CwcJfWKuAg5lhmJJnpjOxwAlmviouYYZsqAFkNzoNdNM7FQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EyY2zMBE7enM7irQrTCHHwCilyDTmYBG+ysAXtVccyA=;
- b=VAkwitD/oYUqDVFm6P4RsZn0EqTJKxebFNn5KevB4YEhH7uFYaAAK9Ef3H0OM6fUDvvnrgrgr8Z6EUl6CzXrQjZbStmoxvKUzMVTasyx5f2BB1TreXed+P/SA0YO2g3cbR895zFEY7JlI2oCRtEuOYleTR/K3dLVw7a0aW66BLOAkWSpV90DpLScjUmwLQFtYlk5jok0EaJdwFOXrWGCJCTzmzQZeL6Ivu580BCpD7LWsLipPn1vNtY1SdJgLE/67ENgHWFH/9VJh0i+SXyWLDzcFe7xL177I4cw9QrYoKy5oDN8KHTmB6jCk0kmpx3YeWGK91iYiWsRvsKTHyawog==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB2488.namprd12.prod.outlook.com (2603:10b6:3:e1::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Tue, 13 Apr
- 2021 13:51:22 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
- 13:51:22 +0000
-Date:   Tue, 13 Apr 2021 10:51:20 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Parav Pandit <parav@nvidia.com>, netdev@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next v3 0/2] Introduce rdma_set_min_rnr_timer() and
- use it in RDS
-Message-ID: <20210413135120.GT7405@nvidia.com>
-References: <1617216194-12890-1-git-send-email-haakon.bugge@oracle.com>
- <20210412225847.GA1189461@nvidia.com>
- <YHU6VXP6kZABXIYA@unreal>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YHU6VXP6kZABXIYA@unreal>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BLAPR03CA0147.namprd03.prod.outlook.com
- (2603:10b6:208:32e::32) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S231589AbhDMN4b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Apr 2021 09:56:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60220 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229741AbhDMN4b (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 13 Apr 2021 09:56:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618322171;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MLAZhk+pyuml0urAdbPyvsgfZfDI2WhK5G1bd71kbE4=;
+        b=N06LsPZpnM0vie0P4l0fl3dDIGPDvJ2SlYHiMELTyijBeQv9z5JiiBfPTTOiM7QuhLxyfH
+        4equoSwvlL0cLdOEjATKrrGZsd8hsSwJuQllj4PMuIm/uksvqLEIBMDjqWnb5bQ6rTJstF
+        eQlh2zkkbBiBwHJT8kK0m30LNJCFAVA=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-N82Sc8ysNuyZw1oIES4zXQ-1; Tue, 13 Apr 2021 09:56:09 -0400
+X-MC-Unique: N82Sc8ysNuyZw1oIES4zXQ-1
+Received: by mail-wr1-f69.google.com with SMTP id t17so802832wrn.12
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Apr 2021 06:56:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MLAZhk+pyuml0urAdbPyvsgfZfDI2WhK5G1bd71kbE4=;
+        b=Z7DO6wNhDJii/5WyVEX5i3CMRGBtWem5Op9sEvZL0QkDQZCK6VrWNCDH7fS2qCpScv
+         AePswy0xQkL4VaoKrfugXhy+OT3qhIjQPMfTbcMwX4vtbC1bmLi/ogNUJ6slR00/kuYF
+         icnHeFaPrHZXAKskYI0Tj/TZNPHd4YnTBr+2cULIM1ALBTvt6qWKE4J2G+vYeYEPUTgt
+         Hpg2y7PSGETi9ELFUgdRNcOmWku8MYYd3x1kPupsHQv9ncRTfk/SzTG8yOEIzMFlu/5w
+         22lTygIwi3yPXYXFIqJXmSK5+Mrn7ZpcuaYXif/TW4Lo90+cjrG0Jy7SMyDrYD3b1olb
+         iaWw==
+X-Gm-Message-State: AOAM532YRJbBxGL0ITCwPBi4eLJEP52QNFIxOo5SWVIr3q1MOY1Hs3qx
+        WFF8HPm8VWSjEJS+S4RPXj7ZGyBKlzplHOWQyYcUCtXv81sQg4b6362Bn9Q0owLc9zSf3IIiAYX
+        1ElzmVFRsBpLXzxqdf5FLow==
+X-Received: by 2002:a5d:6ace:: with SMTP id u14mr2244516wrw.322.1618322168151;
+        Tue, 13 Apr 2021 06:56:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJypjMKt9CdOApFpmiZfCgZ7YRAgvNrqk5cD92eo9Ig7NqEUj40QysbXAFaA8fvEILSat04Miw==
+X-Received: by 2002:a5d:6ace:: with SMTP id u14mr2244491wrw.322.1618322167902;
+        Tue, 13 Apr 2021 06:56:07 -0700 (PDT)
+Received: from [192.168.68.110] ([5.29.16.216])
+        by smtp.gmail.com with ESMTPSA id x2sm11993516wrg.31.2021.04.13.06.56.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Apr 2021 06:56:07 -0700 (PDT)
+Subject: Re: [PATCHv5 for-next 1/1] RDMA/rxe: Disable ipv6 features when
+ ipv6.disable in cmdline
+To:     Zhu Yanjun <yanjun.zhu@intel.com>, zyjzyj2000@gmail.com
+Cc:     Yi Zhang <yi.zhang@redhat.com>, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, jgg@ziepe.ca
+References: <20210413234252.12209-1-yanjun.zhu@intel.com>
+From:   Kamal Heib <kheib@redhat.com>
+Message-ID: <ad1ca691-2d7f-905a-2a41-818f6cc34c50@redhat.com>
+Date:   Tue, 13 Apr 2021 16:56:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BLAPR03CA0147.namprd03.prod.outlook.com (2603:10b6:208:32e::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Tue, 13 Apr 2021 13:51:22 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lWJRo-005HcI-RV; Tue, 13 Apr 2021 10:51:20 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d71bb45d-0b72-412e-b275-08d8fe8338f7
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB2488:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB248851BB4DEEB0AAAF4FF834C24F9@DM5PR1201MB2488.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xAIZRUSa6I+21dqdRPmLuAwCr6MRoA+rIpMx2rtJgxipBQOJ/ubrhXSEpIeZT6LUNua0P+LRp2LcNmKqIz21YtDDK7fD7Guro+Ri4Dh/FhKyGmm5CBB8C8NHFbJkMPwJmdBbm3QnIw+dmXTJW3J+m37jge1YS9tbvdJYJbVmoYH1+BDWL1JhtaQ91iZghEb3MQgz2v10G/Niir5h6oZKwoCbuVNTDJ4SECjeHOETnQQc8LbUZq7dEr6LZx8PGmJ75jMWulqRjR/ptHk6+cBcJxECRVaoLT2Kt8XenlC0kfuCgeFnSLDfvqAJ51TetseO7KPwOFqByH4zWWxLVB3gcOQZB3Mka5KYVhArXFcnsVHb+q2ATZdZag581OdUC89YLmn/xo5QNbyog+FhBiRDqPwd8jXkjEO5sh82ZDfsNCx0zaEmF5s38l+J5CIL5JfcX7AKc42/ZRsRXKaVNhSPATSm03Ta3OJWJGr8UEoeq27gCgrvxDcMmCM399tEce2Nlc5Kfrd7BYvu2qtO4UbJQeu426yftiTIRkg5MuqNKd6rND4vn8I4/uQ7cgyId7rlo56h5Tkx2w4O1wZkt4QmRXjrKXVDfFW/IbjIUhFJOw4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(39860400002)(376002)(396003)(136003)(26005)(186003)(66556008)(86362001)(38100700002)(4744005)(4326008)(36756003)(66946007)(33656002)(66476007)(478600001)(2616005)(426003)(9746002)(9786002)(8676002)(2906002)(6916009)(316002)(8936002)(1076003)(5660300002)(54906003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bWNpQUhpVVkrYk5iWnl3diszTnY0YkJ3MWN5SUhHTW1vSHpwL1JxMlV2L3NC?=
- =?utf-8?B?anVjMW5HMS9wc3VxaExWdXlSK1RuUnJkelRjR2l6RlM1ZjdPbXFYU0ZsNXNa?=
- =?utf-8?B?dDVKSk92cHpLQ3lVb2lPMUlCVGI1K0ZUZXR1Vm9qR2xPbSs2Uzg0Q1AzOXJD?=
- =?utf-8?B?UzdSUWpIbGU5UmxmbnZkdmlaMGV2RmxRak9ob1hmWGlpTlFaV2pzdXcwcTUv?=
- =?utf-8?B?ZFlpTEk0ZlpTYjVKTmFUWDRHb2JxN29wWUlZR24vaUJ2TlErYlNscGJaOUQr?=
- =?utf-8?B?TmhVK042QUdpSzZnR1BNYUg0RTE4R1ZZb00vT2g2cGlFU0h6QVJPeFpPaU9W?=
- =?utf-8?B?SkpFaU9TMXFoTHBnMGx2T29FZENXQ0dSK21XRE5idnBoV1IxMTlpUU5TTXlm?=
- =?utf-8?B?SGtvSGtiRER2azBXRXBEUDY5NTY0bU9ObTd3TTJIUldZOTQ0TmN2M2hSQzI2?=
- =?utf-8?B?UitKT09ENG5wa1JnY0tON0I5R2Jyem9ZdDNSd1FENFo5U05kYkJlbEd2WHpi?=
- =?utf-8?B?RUJXK0tidGlPV3pRK1hjVFlGaE50cXA1T1ZNYlFjTFhMNWh5T1NXbGViVjhT?=
- =?utf-8?B?VmlNdnoweGovaFFWcko2NVN4U0pxdElTVHQxbzd3eXFTK2pueDVHVGtud3du?=
- =?utf-8?B?RnlkSFdyTGI2blpFc25JeHMraUQ0OW0ydHphamw4cmZFSm14cE5ab0QzU1J5?=
- =?utf-8?B?STdsYStGMXJSV0c1M2lIMmR1YUpXcDk3bGpQNTBBQWhHRmt4UXExR3JZc2RQ?=
- =?utf-8?B?cm40eFd6Nk5kYzVkd1A4aHZBeGV1US9FWFNEMitRcHVMK3VkMXJIYlByUjd3?=
- =?utf-8?B?UU42dzJyaXRha3R2blY3NjlHakNrNVNqcGZiQ3VicEhuREs0M0thdml1OGFD?=
- =?utf-8?B?a2FwSytlVG95cmpSdTl2eEx0NVc1MmlFV3JZbHJFeGF0V1FrTnc3M2FGZ3pO?=
- =?utf-8?B?bkhwNjdEb3dWVm5GMEJMNEFMSlJuTUYraVNNRnVYNjN6bXA2bFlBMU96Q1Fm?=
- =?utf-8?B?MW1JWFVOWFVVckxPbTQxcEh6Q1QwV1pVUFd0NnQ5M1Z0bEVrYkdkekYzN0p1?=
- =?utf-8?B?cUFVUzZ2NXRvZEI5dXg4enVrWW1EeCtvOFNRT2tNSEtrSkU1NWlEbE5JRU5m?=
- =?utf-8?B?TEMyTmQ5NCtmSWp5ajUzVXJTSFYwaE44cGgvSlJBSWwxZEMrRVFkM2ZGOFRB?=
- =?utf-8?B?OU5LVmxQY0R6NXc3d1lYdGZLbFkyWXBHSnJpTWxHSk9aUzFxWnJ0UmdIYXEz?=
- =?utf-8?B?Q3QyTWlXN0cyc0FnUWh2dlhCZkZpcmFVaXBocHNIOGhSd2Y3WW1IVEZMd3dk?=
- =?utf-8?B?SUtaeWRlTVQxMCtCTlpqelZSVzFId2Z0REgrS0JGVWxUeFdITkY2ZjZKVFhu?=
- =?utf-8?B?MjRUM0ZvaTl5NFJFY0VCdEZxZWM4dHIvV2hIS3JQSjBNM0hUZCtPMzhJbzZo?=
- =?utf-8?B?U0dlM1JpYUkvNE5rd1ZuT3A4dXpaWU5rVm83bWV2RWxIcDYraWV6ZjZqMS8r?=
- =?utf-8?B?MFg3OHV5c29yRWYyZ253NE1jZ0ptM2h3TmxHQXRXdW9xc1Q5NmNSTzhLTFVq?=
- =?utf-8?B?NGlhNzZFa2ozZjNWQW1LdmE3VmpiYlFLNVZXMGQ0czNaNEdkRDFRMHBGRTRv?=
- =?utf-8?B?ak52dXlZS3FFb3NFSytORWFXVlVHRTFsVXNacmxvbjh6eVFpcGVUWlEzVWR3?=
- =?utf-8?B?ZURVV09uaDA0UUhQcUxDLzhhYzVzcWdYV2oxVHMrbUR0WGtKRUdqdlQ3dUVm?=
- =?utf-8?B?Z2c4QkhuaUhjcUlHKzBYTmVRU2ZUMHNCR3pvNTA3NGJBbjIxbVlZS0N3Ky9m?=
- =?utf-8?B?YWlDMmtzTFJzR28zOE5iZz09?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d71bb45d-0b72-412e-b275-08d8fe8338f7
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 13:51:22.4172
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KNtL6jYUjKGeO7xh4ACLO8fdcaKtiwqgjphsnqdwqZb43VmarjMeyIcJ89ZA9N7j
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB2488
+In-Reply-To: <20210413234252.12209-1-yanjun.zhu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 09:29:41AM +0300, Leon Romanovsky wrote:
-> On Mon, Apr 12, 2021 at 07:58:47PM -0300, Jason Gunthorpe wrote:
-> > On Wed, Mar 31, 2021 at 08:43:12PM +0200, Håkon Bugge wrote:
-> > > ib_modify_qp() is an expensive operation on some HCAs running
-> > > virtualized. This series removes two ib_modify_qp() calls from RDS.
-> > > 
-> > > I am sending this as a v3, even though it is the first sent to
-> > > net. This because the IB Core commit has reach v3.
-> > > 
-> > > Håkon Bugge (2):
-> > >   IB/cma: Introduce rdma_set_min_rnr_timer()
-> > >   rds: ib: Remove two ib_modify_qp() calls
-> > 
-> > Applied to rdma for-next, thanks
-> 
-> Jason,
-> 
-> It should be 
-> +	WARN_ON(id->qp_type != IB_QPT_RC && id->qp_type != IB_QPT_XRC_TGT);
-> 
-> and not
-> +	if (WARN_ON(id->qp_type != IB_QPT_RC && id->qp_type != IB_QPT_XRC_TGT))
-> +		return -EINVAL;
 
-Unless we can completely remove the return code the if statement is a
-reasonable way to use the WARN_ON here
 
-Jason
+On 4/14/21 2:42 AM, Zhu Yanjun wrote:
+> From: Zhu Yanjun <zyjzyj2000@gmail.com>
+> 
+> When ipv6.disable=1 is set in cmdline, ipv6 is actually disabled
+> in the stack. As such, the operations of ipv6 in RXE will fail.
+> So ipv6 features in RXE should also be disabled in RXE.
+> 
+> Link: https://lore.kernel.org/linux-rdma/880d7b59-4b17-a44f-1a91-88257bfc3aaa@redhat.com/T/#t
+> Fixes: 8700e3e7c4857 ("Soft RoCE driver")
+> Reported-by: Yi Zhang <yi.zhang@redhat.com>
+> Signed-off-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+> ---
+> V4->V5: Clean up signature block and remove error message
+> V3->V4: Check the returned value instead of ipv6 module
+> V2->V3: Remove print message
+> V1->V2: Modify the pr_info messages
+> ---
+>  drivers/infiniband/sw/rxe/rxe_net.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+> index 01662727dca0..984c3ac449bd 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_net.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
+> @@ -208,7 +208,13 @@ static struct socket *rxe_setup_udp_tunnel(struct net *net, __be16 port,
+>  	/* Create UDP socket */
+>  	err = udp_sock_create(net, &udp_cfg, &sock);
+>  	if (err < 0) {
+> -		pr_err("failed to create udp socket. err = %d\n", err);
+> +		/* If UDP tunnel over ipv6 fails with -EAFNOSUPPORT, the tunnel
+> +		 * over ipv4 still works. This error message will not pop out.
+> +		 * If UDP tunnle over ipv4 fails or other errors with ipv6
+> +		 * tunnel, this error should pop out.
+> +		 */
+> +		if (!((err == -EAFNOSUPPORT) && (ipv6)))
+> +			pr_err("failed to create udp socket. err = %d\n", err);
+>  		return ERR_PTR(err);
+>  	}
+>  
+> @@ -620,6 +626,11 @@ static int rxe_net_ipv6_init(void)
+>  	recv_sockets.sk6 = rxe_setup_udp_tunnel(&init_net,
+>  						htons(ROCE_V2_UDP_DPORT), true);
+>  	if (IS_ERR(recv_sockets.sk6)) {
+> +		/* Though IPv6 is not supported, IPv4 still needs to continue
+> +		 */
+> +		if (PTR_ERR(recv_sockets.sk6) == -EAFNOSUPPORT)
+> +			return 0;
+> +
+>  		recv_sockets.sk6 = NULL;
+>  		pr_err("Failed to create IPv6 UDP tunnel\n");
+>  		return -1;
+> 
+
+I think the following change is much simpler than changing the udp_sock_create()
+helper function?
+
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c
+b/drivers/infiniband/sw/rxe/rxe_net.c
+index 01662727dca0..b56d6f76ab31 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -621,6 +621,11 @@ static int rxe_net_ipv6_init(void)
+                                                htons(ROCE_V2_UDP_DPORT), true);
+        if (IS_ERR(recv_sockets.sk6)) {
+                recv_sockets.sk6 = NULL;
++               if (PTR_ERR(recv_sockets.sk6) == -EAFNOSUPPORT) {
++                       pr_warn("Create IPv6 UDP tunnel is not supported\n");
++                       return 0;
++               }
++
+                pr_err("Failed to create IPv6 UDP tunnel\n");
+                return -1;
+        }
+-- 
+2.26.3
+
+
+Thanks,
+Kamal
+
