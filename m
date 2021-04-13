@@ -2,156 +2,207 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C67435E71E
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Apr 2021 21:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC7B35E723
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Apr 2021 21:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348075AbhDMTbh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Apr 2021 15:31:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348079AbhDMTbd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 13 Apr 2021 15:31:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E203F613C7;
-        Tue, 13 Apr 2021 19:31:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618342273;
-        bh=eHmFJu4eUTi9ZzT30sEsjQkw4xYtthky3Z91fZVHOEE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EDXIPyKDCbX9acZ2JSMc7Uxsw8i6wE8q16rx/oYBhKKBBcPzQzZbCdBiglAH7UHpl
-         oyQu9Z9vQ20eg0KAAZVfALNY54Zjk2K/M6bUzZvuMhv6mDSRRo9VZIO2Ur/84RIdq4
-         n92r8mopWHIMNA14ZwDYJxQHLUYAu5AnRyVXQTjLVcY3TlHqro0bE5k4GE6Va23EKA
-         DuyV2STeqRyVohOFZupcoGL7H7KKUDMvCEfFqfiS85vzKhvDQ8dGtziytWtiQqkFKW
-         d8PVzFjku4aeS5zct4uRYFvJvKnj4UnTD6b+GlUcxXL8r/dS173FRzcwIFhw5AoogN
-         Vh801DzAam8sg==
-Date:   Tue, 13 Apr 2021 22:31:09 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Gioh Kim <gi-oh.kim@ionos.com>
-Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
-        Jinpu Wang <jinpu.wang@ionos.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Haris Iqbal <haris.iqbal@ionos.com>,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Subject: Re: [PATCHv2 for-next 1/3] RDMA/rtrs-clt: Print more info when an
- error happens
-Message-ID: <YHXxfaLzr7m/hPXG@unreal>
-References: <20210406123639.202899-2-gi-oh.kim@ionos.com>
- <YGxXD/TODlXHp2sK@unreal>
- <CAMGffE=oEGRqtxCOhzFp157K==i_JWFY3BMtbVN9YrOpuvo44A@mail.gmail.com>
- <YHQ/7MTKGD/UO4pW@unreal>
- <CAMGffEn8AYhtO8WF4sWjPu2uVgZDL4aRiT+sPjqtK6VaGsk3bQ@mail.gmail.com>
- <CAJX1YtZJ3sJy5fu_6v-sbqx3yLsPTh_SbvRQo9Yz1k48KxXpCA@mail.gmail.com>
- <YHSErWp/Bi0kpBty@unreal>
- <1DFC1F4B-FF53-4AA8-B5FB-9F57B378339E@oracle.com>
- <YHU9hZfkNEDy94+s@unreal>
- <CAJX1YtZ9LLqugvQHa77PCxpyoLx-k31bh7eXfxuVWw0NHr6xAw@mail.gmail.com>
+        id S1345972AbhDMTfI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Apr 2021 15:35:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20133 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231882AbhDMTfC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 13 Apr 2021 15:35:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618342481;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=czqLIaE5Dp97Yw1CgohwL/ISh6V7XUMz5DGcxDH9UnY=;
+        b=UWOlOBqvIPGl7aatSQkesf59uo2evLI768bZ3freZ06xaaI6xRR5o8voCrBmzFAs5+S7LC
+        W184dFXvZFuX1IXpo30JTaZgu7+vP8flQmsxk+n2vmL3Gr2W4r6TiOROqt2FFrqFTtbcoV
+        4XbvUOgqB7Ws4YwwQjMFpV8LIXis+Xc=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-491-jLVW8J3DM2KiHzCy3Bgqiw-1; Tue, 13 Apr 2021 15:34:39 -0400
+X-MC-Unique: jLVW8J3DM2KiHzCy3Bgqiw-1
+Received: by mail-wr1-f72.google.com with SMTP id b4so1029628wrq.9
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Apr 2021 12:34:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=czqLIaE5Dp97Yw1CgohwL/ISh6V7XUMz5DGcxDH9UnY=;
+        b=Fbo92Vz8UpKRVdRgya4G80fETK6uXUOFG8XQhN8a8YF6XkACSfftnnrUgfKKhAc9/B
+         MvVh4/htMNj5Xa+p1PMbh66s4ktUl6wQTOLO6h8HtUy9/21g63+HF7goZbnOePKHL1RY
+         omi0V58ZBje3h1U4QOMxH6RjB6dD7bvCRDiNhrwkSPSUeERBlkIeU4zybOYSU5p/+4q+
+         4ejnMzYiZsuaxes6sqDhKjmCiz/k4OxTJtu3kG66umdCruePULDiBKwkcGHGuRH6D5Xn
+         Z8lCIb48n8OEMock91FpKwj0ELGYo9k6LuNC9TUieZSCDMowa+pPLNVn3H3ep3PlIknG
+         5F1Q==
+X-Gm-Message-State: AOAM531lZf1rgaU1U+Scs9KZus3wyuRId9niYpuKgdRKKVP0tQhtj5nN
+        Ur2h6fmvlw58pIda68VZXTuT2vui5PgkdFJTSa6yG+kKLBWyCzZM2XgJsqR1TL1DdO3rNPaLV/u
+        hdTganIQCLqRATNc9RDGCwA==
+X-Received: by 2002:a05:600c:2159:: with SMTP id v25mr1526631wml.80.1618342478357;
+        Tue, 13 Apr 2021 12:34:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxDJp4g0HgptAM9dfYvV3bB5Hj8bxlI97hLveiWvzHpsuExvyuEt354mwO/acUYoAePsaZp1Q==
+X-Received: by 2002:a05:600c:2159:: with SMTP id v25mr1526615wml.80.1618342478108;
+        Tue, 13 Apr 2021 12:34:38 -0700 (PDT)
+Received: from [192.168.68.110] ([5.29.16.216])
+        by smtp.gmail.com with ESMTPSA id s13sm21383364wrv.80.2021.04.13.12.34.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Apr 2021 12:34:37 -0700 (PDT)
+Subject: Re: [PATCHv5 for-next 1/1] RDMA/rxe: Disable ipv6 features when
+ ipv6.disable in cmdline
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Zhu Yanjun <yanjun.zhu@intel.com>, zyjzyj2000@gmail.com,
+        Yi Zhang <yi.zhang@redhat.com>, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, jgg@ziepe.ca
+References: <20210413234252.12209-1-yanjun.zhu@intel.com>
+ <ad1ca691-2d7f-905a-2a41-818f6cc34c50@redhat.com> <YHWtDNjhwKJgws24@unreal>
+From:   Kamal Heib <kheib@redhat.com>
+Message-ID: <9d410fde-ade3-c7fe-e73e-ca0103ec67c5@redhat.com>
+Date:   Tue, 13 Apr 2021 22:34:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJX1YtZ9LLqugvQHa77PCxpyoLx-k31bh7eXfxuVWw0NHr6xAw@mail.gmail.com>
+In-Reply-To: <YHWtDNjhwKJgws24@unreal>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 03:11:33PM +0200, Gioh Kim wrote:
-> On Tue, Apr 13, 2021 at 8:43 AM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Tue, Apr 13, 2021 at 05:31:24AM +0000, Haakon Bugge wrote:
-> > >
-> > >
-> > > > On 12 Apr 2021, at 19:34, Leon Romanovsky <leon@kernel.org> wrote:
-> > > >
-> > > > On Mon, Apr 12, 2021 at 04:00:55PM +0200, Gioh Kim wrote:
-> > > >> On Mon, Apr 12, 2021 at 2:54 PM Jinpu Wang <jinpu.wang@ionos.com> wrote:
-> > > >>>
-> > > >>> On Mon, Apr 12, 2021 at 2:41 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > > >>>>
-> > > >>>> On Mon, Apr 12, 2021 at 02:22:51PM +0200, Jinpu Wang wrote:
-> > > >>>>> On Tue, Apr 6, 2021 at 2:41 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > > >>>>>>
-> > > >>>>>> On Tue, Apr 06, 2021 at 02:36:37PM +0200, Gioh Kim wrote:
-> > > >>>>>>> From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
-> > > >>>>>>>
-> > > >>>>>>> Client prints only error value and it is not enough for debugging.
-> > > >>>>>>>
-> > > >>>>>>> 1. When client receives an error from server:
-> > > >>>>>>> the client does not only print the error value but also
-> > > >>>>>>> more information of server connection.
-> > > >>>>>>>
-> > > >>>>>>> 2. When client failes to send IO:
-> > > >>>>>>> the client gets an error from RDMA layer. It also
-> > > >>>>>>> print more information of server connection.
-> > > >>>>>>>
-> > > >>>>>>> Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-> > > >>>>>>> Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-> > > >>>>>>> ---
-> > > >>>>>>> drivers/infiniband/ulp/rtrs/rtrs-clt.c | 33 ++++++++++++++++++++++----
-> > > >>>>>>> 1 file changed, 29 insertions(+), 4 deletions(-)
-> > > >>>>>>>
-> > > >>>>>>> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > > >>>>>>> index 5062328ac577..a534b2b09e13 100644
-> > > >>>>>>> --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > > >>>>>>> +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > > >>>>>>> @@ -437,6 +437,11 @@ static void complete_rdma_req(struct rtrs_clt_io_req *req, int errno,
-> > > >>>>>>>      req->in_use = false;
-> > > >>>>>>>      req->con = NULL;
-> > > >>>>>>>
-> > > >>>>>>> +     if (unlikely(errno)) {
-> > > >>>>>>
-> > > >>>>>> I'm sorry, but all your patches are full of these likely/unlikely cargo
-> > > >>>>>> cult. Can you please provide supportive performance data or delete all
-> > > >>>>>> likely/unlikely in all rtrs code?
-> > > >>>>>
-> > > >>>>> Hi Leon,
-> > > >>>>>
-> > > >>>>> All the likely/unlikely from the non-fast path was removed as you
-> > > >>>>> suggested in the past.
-> > > >>>>> This one is on IO path, my understanding is for the fast path, with
-> > > >>>>> likely/unlikely macro,
-> > > >>>>> the compiler will optimize the code for better branch prediction.
-> > > >>>>
-> > > >>>> In theory yes, in practice. gcc 10 generated same assembly code when I
-> > > >>>> placed likely() and replaced it with unlikely() later.
-> > > >>
-> > > >> Even-thought gcc 10 generated the same assembly code,
-> > > >> there is no guarantee for gcc 11 or gcc 12.
-> > > >>
-> > > >> I am reviewing rtrs source file and have found some unnecessary likely/unlikely.
-> > > >> But I think likely/unlikely are necessary for extreme cases.
-> > > >> I will have a discussion with my colleagues and inform you of the result.
-> > > >
-> > > > Please come with performance data.
-> > >
-> > > I think the best way to gather performance data is not remove the likely/unlikely, but swap their definitions. Less coding and more pronounced difference - if any.
-> >
-> > In theory, it will multiply by 2 gain/loss, which is nice to see if
-> > likely/ulikely change something.
-> >
-> > Thanks
-> >
-> > >
-> > >
-> > > Thxs, Håkon
-> > >
-> 
-> Hi,
-> 
-> In summary, there is no performance gap before/after swapping
-> likely/unlikely macros.
-> So I will send a patch to remove all likely/unlikely macros.
-> 
-> I guess that is because
-> - The performance of rnbd/rtrs depends on the network and block layer.
-> - The network and block layer are not fast enough to get impacted by
-> likely/unlikely.
 
-Thanks for sharing this data. Your input can't truly randomize the code
-path execution flows and your instructions cache was filled "correctly".
-It was expected.
 
-In most cases, the likely/unlikely is not needed.
+On 4/13/21 5:39 PM, Leon Romanovsky wrote:
+> On Tue, Apr 13, 2021 at 04:56:05PM +0300, Kamal Heib wrote:
+>>
+>>
+>> On 4/14/21 2:42 AM, Zhu Yanjun wrote:
+>>> From: Zhu Yanjun <zyjzyj2000@gmail.com>
+>>>
+>>> When ipv6.disable=1 is set in cmdline, ipv6 is actually disabled
+>>> in the stack. As such, the operations of ipv6 in RXE will fail.
+>>> So ipv6 features in RXE should also be disabled in RXE.
+>>>
+>>> Link: https://lore.kernel.org/linux-rdma/880d7b59-4b17-a44f-1a91-88257bfc3aaa@redhat.com/T/#t
+>>> Fixes: 8700e3e7c4857 ("Soft RoCE driver")
+>>> Reported-by: Yi Zhang <yi.zhang@redhat.com>
+>>> Signed-off-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+>>> ---
+>>> V4->V5: Clean up signature block and remove error message
+>>> V3->V4: Check the returned value instead of ipv6 module
+>>> V2->V3: Remove print message
+>>> V1->V2: Modify the pr_info messages
+>>> ---
+>>>  drivers/infiniband/sw/rxe/rxe_net.c | 13 ++++++++++++-
+>>>  1 file changed, 12 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+>>> index 01662727dca0..984c3ac449bd 100644
+>>> --- a/drivers/infiniband/sw/rxe/rxe_net.c
+>>> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
+>>> @@ -208,7 +208,13 @@ static struct socket *rxe_setup_udp_tunnel(struct net *net, __be16 port,
+>>>  	/* Create UDP socket */
+>>>  	err = udp_sock_create(net, &udp_cfg, &sock);
+>>>  	if (err < 0) {
+>>> -		pr_err("failed to create udp socket. err = %d\n", err);
+>>> +		/* If UDP tunnel over ipv6 fails with -EAFNOSUPPORT, the tunnel
+>>> +		 * over ipv4 still works. This error message will not pop out.
+>>> +		 * If UDP tunnle over ipv4 fails or other errors with ipv6
+>>> +		 * tunnel, this error should pop out.
+>>> +		 */
+>>> +		if (!((err == -EAFNOSUPPORT) && (ipv6)))
+>>> +			pr_err("failed to create udp socket. err = %d\n", err);
+>>>  		return ERR_PTR(err);
+>>>  	}
+>>>  
+>>> @@ -620,6 +626,11 @@ static int rxe_net_ipv6_init(void)
+>>>  	recv_sockets.sk6 = rxe_setup_udp_tunnel(&init_net,
+>>>  						htons(ROCE_V2_UDP_DPORT), true);
+>>>  	if (IS_ERR(recv_sockets.sk6)) {
+>>> +		/* Though IPv6 is not supported, IPv4 still needs to continue
+>>> +		 */
+>>> +		if (PTR_ERR(recv_sockets.sk6) == -EAFNOSUPPORT)
+>>> +			return 0;
+>>> +
+>>>  		recv_sockets.sk6 = NULL;
+>>>  		pr_err("Failed to create IPv6 UDP tunnel\n");
+>>>  		return -1;
+>>>
+>>
+>> I think the following change is much simpler than changing the udp_sock_create()
+>> helper function?
+>>
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c
+>> b/drivers/infiniband/sw/rxe/rxe_net.c
+>> index 01662727dca0..b56d6f76ab31 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_net.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
+>> @@ -621,6 +621,11 @@ static int rxe_net_ipv6_init(void)
+>>                                                 htons(ROCE_V2_UDP_DPORT), true);
+>>         if (IS_ERR(recv_sockets.sk6)) {
+>>                 recv_sockets.sk6 = NULL;
+>> +               if (PTR_ERR(recv_sockets.sk6) == -EAFNOSUPPORT) {
+> 
+> You have "recv_sockets.sk6 = NULL;" in the line above.
+> 
 
-Thanks
+Sorry, my bad...
+
+The idea is to handle this issue in the error path of rxe_net_ipv6_init()
+instead of changing the udp_sock_create(), also to make sure that
+"recv_sockets.sk6" is set to NULL.
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c
+b/drivers/infiniband/sw/rxe/rxe_net.c
+index 01662727dca0..445a47f82f42 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -615,17 +615,25 @@ static int rxe_net_ipv4_init(void)
+
+ static int rxe_net_ipv6_init(void)
+ {
++       int err = 0;
+ #if IS_ENABLED(CONFIG_IPV6)
+
+        recv_sockets.sk6 = rxe_setup_udp_tunnel(&init_net,
+                                                htons(ROCE_V2_UDP_DPORT), true);
+        if (IS_ERR(recv_sockets.sk6)) {
++
++               if (PTR_ERR(recv_sockets.sk6) == -EAFNOSUPPORT) {
++                       pr_warn("Create IPv6 UDP tunnel is not supported\n");
++                       err = 0;
++               } else {
++                       pr_err("Failed to create IPv6 UDP tunnel\n");
++                       err = -1;
++               }
++
+                recv_sockets.sk6 = NULL;
+-               pr_err("Failed to create IPv6 UDP tunnel\n");
+-               return -1;
+        }
+ #endif
+-       return 0;
++       return err;
+ }
+
+>> +                       pr_warn("Create IPv6 UDP tunnel is not supported\n");
+>> +                       return 0;
+>> +               }
+>> +
+>>                 pr_err("Failed to create IPv6 UDP tunnel\n");
+>>                 return -1;
+>>         }
+>> -- 
+>> 2.26.3
+>>
+>>
+>> Thanks,
+>> Kamal
+>>
+> 
+
