@@ -2,95 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C9935E073
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Apr 2021 15:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A790E35E09B
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Apr 2021 15:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346075AbhDMNpW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Apr 2021 09:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346071AbhDMNpV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Apr 2021 09:45:21 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE402C061574
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Apr 2021 06:45:00 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id x27so8053605qvd.2
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Apr 2021 06:45:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=1Jhigyf9UU6G6IXvufmrKhvm5rl8XcUyp6UG+kGmgLA=;
-        b=P8TZ3q/K2FYMwgX8ih6dAOpznLZqzG37b1Il+KiMHbiWEjdcrBMIXlzDa57UplaUu8
-         1cAAmqJDwP+fMGvD6pfollJBQ39I4eEqGf7lGvVy2tw198zw6adWvWR1L3rvb6WgYOFV
-         uQGjCtawvPEMW58igm5A0CBka0uwolxOU4LEpFWKSs1lhPa77NKyBLPUg4WWHQTJy3LB
-         156DznYIBE8+OodCuxpBC0EFExw/tzwn0R97kcNdKbOkaiQkydvJ+gJ0LLFY0JZWEeRv
-         camQQdnfN4b3Ipkdf/GOljO8I/WtnNMwVi71Eh0N1IqdmIxk8/zkFM1RV0Whu15RMwut
-         uVGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=1Jhigyf9UU6G6IXvufmrKhvm5rl8XcUyp6UG+kGmgLA=;
-        b=NKBbSjTbrlhjnR44cFGc5IO2/S1LQSHAVNK3xAWFlJvD420v+W1fwYKOSUo7Vi2/2L
-         1hTq3XHMGI87WPlwan+lkS76u/0DWaTrz2m6o2eV6lUc90RfBg4wpEpp+uDHQ+tMewAd
-         vtnXgrs7DS4pgaElzbcejFoG1i+MaWZICluALzbYeZFz14ecOaHpFDnSUW56bzRitZ3Q
-         h9cnnKWx13FjB6pkWXEk5E+vSCU+HtE0OLZCZ1/XCjrYRte7BrY52DKOKl17ex6/s0pn
-         iR771I9/2wBLBxcdOo392axdYkHj0rPI3phY4CB81nzW+2ZoS4zO0ouC7UEh+r+OcriC
-         NP5Q==
-X-Gm-Message-State: AOAM530ozmlDFwf/DFPB153w2KBlsujEyKl3XvPvdYqk33oaAGxJe32B
-        Gv2UtZnAma+2LKWAFDS6kIAF+Q==
-X-Google-Smtp-Source: ABdhPJxTLJu6I3qqH/XCtkZYAon1RFtHUEySj+DXtp3rSpBUrRvTcwgxXLIb7BBpqqA3GaZlyYTKOA==
-X-Received: by 2002:ad4:458b:: with SMTP id x11mr163890qvu.36.1618321500031;
-        Tue, 13 Apr 2021 06:45:00 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id i21sm1369148qtr.94.2021.04.13.06.44.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 06:44:59 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lWJLe-005HU5-T4; Tue, 13 Apr 2021 10:44:58 -0300
-Date:   Tue, 13 Apr 2021 10:44:58 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org, leon@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: KASAN: use-after-free Read in cma_cancel_operation, rdma_listen
-Message-ID: <20210413134458.GI227011@ziepe.ca>
-References: <CACkBjsY5-rKKzh-9GedNs53Luk6m_m3F67HguysW-=H1pdnH5Q@mail.gmail.com>
- <20210413133359.GG227011@ziepe.ca>
- <CACkBjsb2QU3+J3mhOT2nb0YRB0XodzKoNTwF3RCufFbSoXNm6A@mail.gmail.com>
-MIME-Version: 1.0
+        id S1346189AbhDMNvq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Apr 2021 09:51:46 -0400
+Received: from mail-co1nam11on2050.outbound.protection.outlook.com ([40.107.220.50]:26976
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1346187AbhDMNvp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 13 Apr 2021 09:51:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=laPpahyo7QADbzbhVp87nd16w8ZMgh59/GMIUCUSqfgpBDN4MTgH4wLN+HqM2rR6uJglz8hgyQU7fTNOjp8Z0PdxpPFCZEXjlZGzqI+zfoFePdL9cKZlnihthXYGkxeJ5Q//NNnLYFhHsqOml+CyQnRFH6Holt17DCu6ulEnHX/yAk0C3SdpZxTYB0hfB3Y/98S5xu7bq3zkrscF/+EmJoyC7jpVlbs6gXlNdu7LoXcG/m9bVkoziP1zmUVDBX0FOhtT6RQQ6Oaxd3Lbh/18Dts4lkDNORIAEn5TYj75oZffyTtrXULt+xlW/8T4BipA4ma+A4LXrae+3RfO8FNJ+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EyY2zMBE7enM7irQrTCHHwCilyDTmYBG+ysAXtVccyA=;
+ b=iCEqqjqJWJ6Y9ipaIePY/jPyvKVzdGf1fL/4wDA6eQsh2apknrNRGEoHYXl16BleKpNFvmNcALKPDu2iMfuTk7ZQ9lPe1l2OLbfwQypgpV0YQYpZyEE3nxjrrxd4GySW10GKItfYfI6l8wIkYdM3JY1Cjc80+FwUlv19p8cASF5IwWsInTUMSKASwMp1jfgq548Vr1KWjW5r+xkLkQEMWA4cY7GG4ZfdtGKxkiQ+lsYhmXtk7GBErdyHv2Fmuwv9l+2Pq7oUeKy9CguTqqJqt6cEgE6H7mzigQZXZ+5CwcJfWKuAg5lhmJJnpjOxwAlmviouYYZsqAFkNzoNdNM7FQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EyY2zMBE7enM7irQrTCHHwCilyDTmYBG+ysAXtVccyA=;
+ b=VAkwitD/oYUqDVFm6P4RsZn0EqTJKxebFNn5KevB4YEhH7uFYaAAK9Ef3H0OM6fUDvvnrgrgr8Z6EUl6CzXrQjZbStmoxvKUzMVTasyx5f2BB1TreXed+P/SA0YO2g3cbR895zFEY7JlI2oCRtEuOYleTR/K3dLVw7a0aW66BLOAkWSpV90DpLScjUmwLQFtYlk5jok0EaJdwFOXrWGCJCTzmzQZeL6Ivu580BCpD7LWsLipPn1vNtY1SdJgLE/67ENgHWFH/9VJh0i+SXyWLDzcFe7xL177I4cw9QrYoKy5oDN8KHTmB6jCk0kmpx3YeWGK91iYiWsRvsKTHyawog==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR1201MB2488.namprd12.prod.outlook.com (2603:10b6:3:e1::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Tue, 13 Apr
+ 2021 13:51:22 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
+ 13:51:22 +0000
+Date:   Tue, 13 Apr 2021 10:51:20 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Parav Pandit <parav@nvidia.com>, netdev@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next v3 0/2] Introduce rdma_set_min_rnr_timer() and
+ use it in RDS
+Message-ID: <20210413135120.GT7405@nvidia.com>
+References: <1617216194-12890-1-git-send-email-haakon.bugge@oracle.com>
+ <20210412225847.GA1189461@nvidia.com>
+ <YHU6VXP6kZABXIYA@unreal>
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACkBjsb2QU3+J3mhOT2nb0YRB0XodzKoNTwF3RCufFbSoXNm6A@mail.gmail.com>
+In-Reply-To: <YHU6VXP6kZABXIYA@unreal>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: BLAPR03CA0147.namprd03.prod.outlook.com
+ (2603:10b6:208:32e::32) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BLAPR03CA0147.namprd03.prod.outlook.com (2603:10b6:208:32e::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Tue, 13 Apr 2021 13:51:22 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lWJRo-005HcI-RV; Tue, 13 Apr 2021 10:51:20 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d71bb45d-0b72-412e-b275-08d8fe8338f7
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB2488:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB248851BB4DEEB0AAAF4FF834C24F9@DM5PR1201MB2488.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xAIZRUSa6I+21dqdRPmLuAwCr6MRoA+rIpMx2rtJgxipBQOJ/ubrhXSEpIeZT6LUNua0P+LRp2LcNmKqIz21YtDDK7fD7Guro+Ri4Dh/FhKyGmm5CBB8C8NHFbJkMPwJmdBbm3QnIw+dmXTJW3J+m37jge1YS9tbvdJYJbVmoYH1+BDWL1JhtaQ91iZghEb3MQgz2v10G/Niir5h6oZKwoCbuVNTDJ4SECjeHOETnQQc8LbUZq7dEr6LZx8PGmJ75jMWulqRjR/ptHk6+cBcJxECRVaoLT2Kt8XenlC0kfuCgeFnSLDfvqAJ51TetseO7KPwOFqByH4zWWxLVB3gcOQZB3Mka5KYVhArXFcnsVHb+q2ATZdZag581OdUC89YLmn/xo5QNbyog+FhBiRDqPwd8jXkjEO5sh82ZDfsNCx0zaEmF5s38l+J5CIL5JfcX7AKc42/ZRsRXKaVNhSPATSm03Ta3OJWJGr8UEoeq27gCgrvxDcMmCM399tEce2Nlc5Kfrd7BYvu2qtO4UbJQeu426yftiTIRkg5MuqNKd6rND4vn8I4/uQ7cgyId7rlo56h5Tkx2w4O1wZkt4QmRXjrKXVDfFW/IbjIUhFJOw4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(39860400002)(376002)(396003)(136003)(26005)(186003)(66556008)(86362001)(38100700002)(4744005)(4326008)(36756003)(66946007)(33656002)(66476007)(478600001)(2616005)(426003)(9746002)(9786002)(8676002)(2906002)(6916009)(316002)(8936002)(1076003)(5660300002)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bWNpQUhpVVkrYk5iWnl3diszTnY0YkJ3MWN5SUhHTW1vSHpwL1JxMlV2L3NC?=
+ =?utf-8?B?anVjMW5HMS9wc3VxaExWdXlSK1RuUnJkelRjR2l6RlM1ZjdPbXFYU0ZsNXNa?=
+ =?utf-8?B?dDVKSk92cHpLQ3lVb2lPMUlCVGI1K0ZUZXR1Vm9qR2xPbSs2Uzg0Q1AzOXJD?=
+ =?utf-8?B?UzdSUWpIbGU5UmxmbnZkdmlaMGV2RmxRak9ob1hmWGlpTlFaV2pzdXcwcTUv?=
+ =?utf-8?B?ZFlpTEk0ZlpTYjVKTmFUWDRHb2JxN29wWUlZR24vaUJ2TlErYlNscGJaOUQr?=
+ =?utf-8?B?TmhVK042QUdpSzZnR1BNYUg0RTE4R1ZZb00vT2g2cGlFU0h6QVJPeFpPaU9W?=
+ =?utf-8?B?SkpFaU9TMXFoTHBnMGx2T29FZENXQ0dSK21XRE5idnBoV1IxMTlpUU5TTXlm?=
+ =?utf-8?B?SGtvSGtiRER2azBXRXBEUDY5NTY0bU9ObTd3TTJIUldZOTQ0TmN2M2hSQzI2?=
+ =?utf-8?B?UitKT09ENG5wa1JnY0tON0I5R2Jyem9ZdDNSd1FENFo5U05kYkJlbEd2WHpi?=
+ =?utf-8?B?RUJXK0tidGlPV3pRK1hjVFlGaE50cXA1T1ZNYlFjTFhMNWh5T1NXbGViVjhT?=
+ =?utf-8?B?VmlNdnoweGovaFFWcko2NVN4U0pxdElTVHQxbzd3eXFTK2pueDVHVGtud3du?=
+ =?utf-8?B?RnlkSFdyTGI2blpFc25JeHMraUQ0OW0ydHphamw4cmZFSm14cE5ab0QzU1J5?=
+ =?utf-8?B?STdsYStGMXJSV0c1M2lIMmR1YUpXcDk3bGpQNTBBQWhHRmt4UXExR3JZc2RQ?=
+ =?utf-8?B?cm40eFd6Nk5kYzVkd1A4aHZBeGV1US9FWFNEMitRcHVMK3VkMXJIYlByUjd3?=
+ =?utf-8?B?UU42dzJyaXRha3R2blY3NjlHakNrNVNqcGZiQ3VicEhuREs0M0thdml1OGFD?=
+ =?utf-8?B?a2FwSytlVG95cmpSdTl2eEx0NVc1MmlFV3JZbHJFeGF0V1FrTnc3M2FGZ3pO?=
+ =?utf-8?B?bkhwNjdEb3dWVm5GMEJMNEFMSlJuTUYraVNNRnVYNjN6bXA2bFlBMU96Q1Fm?=
+ =?utf-8?B?MW1JWFVOWFVVckxPbTQxcEh6Q1QwV1pVUFd0NnQ5M1Z0bEVrYkdkekYzN0p1?=
+ =?utf-8?B?cUFVUzZ2NXRvZEI5dXg4enVrWW1EeCtvOFNRT2tNSEtrSkU1NWlEbE5JRU5m?=
+ =?utf-8?B?TEMyTmQ5NCtmSWp5ajUzVXJTSFYwaE44cGgvSlJBSWwxZEMrRVFkM2ZGOFRB?=
+ =?utf-8?B?OU5LVmxQY0R6NXc3d1lYdGZLbFkyWXBHSnJpTWxHSk9aUzFxWnJ0UmdIYXEz?=
+ =?utf-8?B?Q3QyTWlXN0cyc0FnUWh2dlhCZkZpcmFVaXBocHNIOGhSd2Y3WW1IVEZMd3dk?=
+ =?utf-8?B?SUtaeWRlTVQxMCtCTlpqelZSVzFId2Z0REgrS0JGVWxUeFdITkY2ZjZKVFhu?=
+ =?utf-8?B?MjRUM0ZvaTl5NFJFY0VCdEZxZWM4dHIvV2hIS3JQSjBNM0hUZCtPMzhJbzZo?=
+ =?utf-8?B?U0dlM1JpYUkvNE5rd1ZuT3A4dXpaWU5rVm83bWV2RWxIcDYraWV6ZjZqMS8r?=
+ =?utf-8?B?MFg3OHV5c29yRWYyZ253NE1jZ0ptM2h3TmxHQXRXdW9xc1Q5NmNSTzhLTFVq?=
+ =?utf-8?B?NGlhNzZFa2ozZjNWQW1LdmE3VmpiYlFLNVZXMGQ0czNaNEdkRDFRMHBGRTRv?=
+ =?utf-8?B?ak52dXlZS3FFb3NFSytORWFXVlVHRTFsVXNacmxvbjh6eVFpcGVUWlEzVWR3?=
+ =?utf-8?B?ZURVV09uaDA0UUhQcUxDLzhhYzVzcWdYV2oxVHMrbUR0WGtKRUdqdlQ3dUVm?=
+ =?utf-8?B?Z2c4QkhuaUhjcUlHKzBYTmVRU2ZUMHNCR3pvNTA3NGJBbjIxbVlZS0N3Ky9m?=
+ =?utf-8?B?YWlDMmtzTFJzR28zOE5iZz09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d71bb45d-0b72-412e-b275-08d8fe8338f7
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 13:51:22.4172
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KNtL6jYUjKGeO7xh4ACLO8fdcaKtiwqgjphsnqdwqZb43VmarjMeyIcJ89ZA9N7j
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB2488
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 09:42:43PM +0800, Hao Sun wrote:
-> Jason Gunthorpe <jgg@ziepe.ca> 于2021年4月13日周二 下午9:34写道：
-> >
-> > On Tue, Apr 13, 2021 at 11:36:41AM +0800, Hao Sun wrote:
-> > > Hi
-> > >
-> > > When using Healer(https://github.com/SunHao-0/healer/tree/dev) to fuzz
-> > > the Linux kernel, I found two use-after-free bugs which have been
-> > > reported a long time ago by Syzbot.
-> > > Although the corresponding patches have been merged into upstream,
-> > > these two bugs can still be triggered easily.
-> > > The original information about Syzbot report can be found here:
-> > > https://syzkaller.appspot.com/bug?id=8dc0bcd9dd6ec915ba10b3354740eb420884acaa
-> > > https://syzkaller.appspot.com/bug?id=95f89b8fb9fdc42e28ad586e657fea074e4e719b
-> >
-> > Then why hasn't syzbot seen this in a year's time? Seems strange
-> >
+On Tue, Apr 13, 2021 at 09:29:41AM +0300, Leon Romanovsky wrote:
+> On Mon, Apr 12, 2021 at 07:58:47PM -0300, Jason Gunthorpe wrote:
+> > On Wed, Mar 31, 2021 at 08:43:12PM +0200, Håkon Bugge wrote:
+> > > ib_modify_qp() is an expensive operation on some HCAs running
+> > > virtualized. This series removes two ib_modify_qp() calls from RDS.
+> > > 
+> > > I am sending this as a v3, even though it is the first sent to
+> > > net. This because the IB Core commit has reach v3.
+> > > 
+> > > Håkon Bugge (2):
+> > >   IB/cma: Introduce rdma_set_min_rnr_timer()
+> > >   rds: ib: Remove two ib_modify_qp() calls
+> > 
+> > Applied to rdma for-next, thanks
 > 
-> Seems strange to me too, but the fact is that the reproduction program
-> in attachment can trigger these two bugs quickly.
+> Jason,
+> 
+> It should be 
+> +	WARN_ON(id->qp_type != IB_QPT_RC && id->qp_type != IB_QPT_XRC_TGT);
+> 
+> and not
+> +	if (WARN_ON(id->qp_type != IB_QPT_RC && id->qp_type != IB_QPT_XRC_TGT))
+> +		return -EINVAL;
 
-Do you have this in the C format?
+Unless we can completely remove the return code the if statement is a
+reasonable way to use the WARN_ON here
 
 Jason
