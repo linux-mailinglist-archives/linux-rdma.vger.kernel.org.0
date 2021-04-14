@@ -2,28 +2,29 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D120B35F61B
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Apr 2021 16:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C53F35F65D
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Apr 2021 16:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233655AbhDNOYV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Apr 2021 10:24:21 -0400
-Received: from p3plsmtpa12-07.prod.phx3.secureserver.net ([68.178.252.236]:52157
-        "EHLO p3plsmtpa12-07.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233267AbhDNOYS (ORCPT
+        id S1351746AbhDNOmS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Apr 2021 10:42:18 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:59989 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349856AbhDNOmS (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:24:18 -0400
-X-Greylist: delayed 441 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Apr 2021 10:24:18 EDT
-Received: from [192.168.0.116] ([71.184.94.153])
-        by :SMTPAUTH: with ESMTPSA
-        id WgJgl1TYe83tOWgJgl6gLC; Wed, 14 Apr 2021 07:16:32 -0700
-X-CMAE-Analysis: v=2.4 cv=ONniYQWB c=1 sm=1 tr=0 ts=6076f940
- a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
- a=IkcTkHD0fZMA:10 a=mjHj8f7IP-_Ssy1yzXMA:9 a=QEXdDO2ut3YA:10
-X-SECURESERVER-ACCT: tom@talpey.com
-Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
-        David Laight <David.Laight@aculab.com>,
+        Wed, 14 Apr 2021 10:42:18 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-186-m3nor2MZPjeBIWMoTKeI3A-1; Wed, 14 Apr 2021 15:41:53 +0100
+X-MC-Unique: m3nor2MZPjeBIWMoTKeI3A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 14 Apr 2021 15:41:52 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Wed, 14 Apr 2021 15:41:52 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Tom Talpey' <tom@talpey.com>, Jason Gunthorpe <jgg@nvidia.com>
+CC:     Haakon Bugge <haakon.bugge@oracle.com>,
         Chuck Lever III <chuck.lever@oracle.com>,
         Christoph Hellwig <hch@lst.de>,
         Leon Romanovsky <leon@kernel.org>,
@@ -36,10 +37,10 @@ Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
         Bart Van Assche <bvanassche@acm.org>,
         Bernard Metzler <bmt@zurich.ibm.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        "Dennis Dalessandro" <dennis.dalessandro@cornelisnetworks.com>,
         Devesh Sharma <devesh.sharma@broadcom.com>,
         Faisal Latif <faisal.latif@intel.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
+        "Jack Wang" <jinpu.wang@ionos.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Bruce Fields <bfields@fieldses.org>, Jens Axboe <axboe@fb.com>,
         Karsten Graul <kgraul@linux.ibm.com>,
@@ -53,16 +54,16 @@ Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
         Max Gurtovoy <maxg@mellanox.com>,
         Max Gurtovoy <mgurtovoy@nvidia.com>,
         "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Michael Guralnik <michaelgur@nvidia.com>,
+        "Michael Guralnik" <michaelgur@nvidia.com>,
         Michal Kalderon <mkalderon@marvell.com>,
         Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
         Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
         Linux-Net <netdev@vger.kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
+        "Potnuri Bharat Teja" <bharat@chelsio.com>,
         "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
         Sagi Grimberg <sagi@grimberg.me>,
         "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "Santosh Shilimkar" <santosh.shilimkar@oracle.com>,
         Selvin Xavier <selvin.xavier@broadcom.com>,
         Shiraz Saleem <shiraz.saleem@intel.com>,
         Somnath Kotur <somnath.kotur@broadcom.com>,
@@ -73,6 +74,11 @@ Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
         Weihang Li <liweihang@huawei.com>,
         Yishai Hadas <yishaih@nvidia.com>,
         Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: RE: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
+Thread-Topic: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
+Thread-Index: AQHXLWixzqpV3HG00U+6H5w8s2gjs6qtuZCggAZdLuKAAAS+kA==
+Date:   Wed, 14 Apr 2021 14:41:52 +0000
+Message-ID: <c2318ee1464a4d1c8439699cb0652d12@AcuMS.aculab.com>
 References: <C2924F03-11C5-4839-A4F3-36872194EEA8@oracle.com>
  <20210406114952.GH7405@nvidia.com>
  <aeb7334b-edc0-78c2-4adb-92d4a994210d@talpey.com>
@@ -84,61 +90,62 @@ References: <C2924F03-11C5-4839-A4F3-36872194EEA8@oracle.com>
  <880A23A2-F078-42CF-BEE2-30666BCB9B5D@oracle.com>
  <7deadc67-650c-ea15-722b-a1d77d38faba@talpey.com>
  <20210412224843.GQ7405@nvidia.com>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <02593083-056e-cc62-22cf-d6bd6c9b18a8@talpey.com>
-Date:   Wed, 14 Apr 2021 10:16:28 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+ <02593083-056e-cc62-22cf-d6bd6c9b18a8@talpey.com>
+In-Reply-To: <02593083-056e-cc62-22cf-d6bd6c9b18a8@talpey.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20210412224843.GQ7405@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: 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
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 4/12/2021 6:48 PM, Jason Gunthorpe wrote:
-> On Mon, Apr 12, 2021 at 04:20:47PM -0400, Tom Talpey wrote:
-> 
->> So the issue is only in testing all the providers and platforms,
->> to be sure this new behavior isn't tickling anything that went
->> unnoticed all along, because no RDMA provider ever issued RO.
-> 
-> The mlx5 ethernet driver has run in RO mode for a long time, and it
-> operates in basically the same way as RDMA. The issues with Haswell
-> have been worked out there already.
-> 
-> The only open question is if the ULPs have errors in their
-> implementation, which I don't think we can find out until we apply
-> this series and people start running their tests aggressively.
-
-I agree that the core RO support should go in. But turning it on
-by default for a ULP should be the decision of each ULP maintainer.
-It's a huge risk to shift all the storage drivers overnight. How
-do you propose to ensure the aggressive testing happens?
-
-One thing that worries me is the patch02 on-by-default for the dma_lkey.
-There's no way for a ULP to prevent IB_ACCESS_RELAXED_ORDERING
-from being set in __ib_alloc_pd().
-
-Tom.
-
+RnJvbTogVG9tIFRhbHBleQ0KPiBTZW50OiAxNCBBcHJpbCAyMDIxIDE1OjE2DQo+IA0KPiBPbiA0
+LzEyLzIwMjEgNjo0OCBQTSwgSmFzb24gR3VudGhvcnBlIHdyb3RlOg0KPiA+IE9uIE1vbiwgQXBy
+IDEyLCAyMDIxIGF0IDA0OjIwOjQ3UE0gLTA0MDAsIFRvbSBUYWxwZXkgd3JvdGU6DQo+ID4NCj4g
+Pj4gU28gdGhlIGlzc3VlIGlzIG9ubHkgaW4gdGVzdGluZyBhbGwgdGhlIHByb3ZpZGVycyBhbmQg
+cGxhdGZvcm1zLA0KPiA+PiB0byBiZSBzdXJlIHRoaXMgbmV3IGJlaGF2aW9yIGlzbid0IHRpY2ts
+aW5nIGFueXRoaW5nIHRoYXQgd2VudA0KPiA+PiB1bm5vdGljZWQgYWxsIGFsb25nLCBiZWNhdXNl
+IG5vIFJETUEgcHJvdmlkZXIgZXZlciBpc3N1ZWQgUk8uDQo+ID4NCj4gPiBUaGUgbWx4NSBldGhl
+cm5ldCBkcml2ZXIgaGFzIHJ1biBpbiBSTyBtb2RlIGZvciBhIGxvbmcgdGltZSwgYW5kIGl0DQo+
+ID4gb3BlcmF0ZXMgaW4gYmFzaWNhbGx5IHRoZSBzYW1lIHdheSBhcyBSRE1BLiBUaGUgaXNzdWVz
+IHdpdGggSGFzd2VsbA0KPiA+IGhhdmUgYmVlbiB3b3JrZWQgb3V0IHRoZXJlIGFscmVhZHkuDQo+
+ID4NCj4gPiBUaGUgb25seSBvcGVuIHF1ZXN0aW9uIGlzIGlmIHRoZSBVTFBzIGhhdmUgZXJyb3Jz
+IGluIHRoZWlyDQo+ID4gaW1wbGVtZW50YXRpb24sIHdoaWNoIEkgZG9uJ3QgdGhpbmsgd2UgY2Fu
+IGZpbmQgb3V0IHVudGlsIHdlIGFwcGx5DQo+ID4gdGhpcyBzZXJpZXMgYW5kIHBlb3BsZSBzdGFy
+dCBydW5uaW5nIHRoZWlyIHRlc3RzIGFnZ3Jlc3NpdmVseS4NCj4gDQo+IEkgYWdyZWUgdGhhdCB0
+aGUgY29yZSBSTyBzdXBwb3J0IHNob3VsZCBnbyBpbi4gQnV0IHR1cm5pbmcgaXQgb24NCj4gYnkg
+ZGVmYXVsdCBmb3IgYSBVTFAgc2hvdWxkIGJlIHRoZSBkZWNpc2lvbiBvZiBlYWNoIFVMUCBtYWlu
+dGFpbmVyLg0KPiBJdCdzIGEgaHVnZSByaXNrIHRvIHNoaWZ0IGFsbCB0aGUgc3RvcmFnZSBkcml2
+ZXJzIG92ZXJuaWdodC4gSG93DQo+IGRvIHlvdSBwcm9wb3NlIHRvIGVuc3VyZSB0aGUgYWdncmVz
+c2l2ZSB0ZXN0aW5nIGhhcHBlbnM/DQo+IA0KPiBPbmUgdGhpbmcgdGhhdCB3b3JyaWVzIG1lIGlz
+IHRoZSBwYXRjaDAyIG9uLWJ5LWRlZmF1bHQgZm9yIHRoZSBkbWFfbGtleS4NCj4gVGhlcmUncyBu
+byB3YXkgZm9yIGEgVUxQIHRvIHByZXZlbnQgSUJfQUNDRVNTX1JFTEFYRURfT1JERVJJTkcNCj4g
+ZnJvbSBiZWluZyBzZXQgaW4gX19pYl9hbGxvY19wZCgpLg0KDQpXaGF0IGlzIGEgVUxQIGluIHRo
+aXMgY29udGV4dD8NCg0KSSd2ZSBwcmVzdW1lZCB0aGF0IHRoaXMgaXMgYWxsIGFib3V0IGdldHRp
+bmcgUENJZSB0YXJnZXRzIChpZSBjYXJkcykNCnRvIHNldCB0aGUgUk8gKHJlbGF4ZWQgb3JkZXJp
+bmcpIGJpdCBpbiBzb21lIG9mIHRoZSB3cml0ZSBUTFAgdGhleQ0KZ2VuZXJhdGUgZm9yIHdyaXRp
+bmcgdG8gaG9zdCBtZW1vcnk/DQoNClNvIHdoYXRldmVyIGRyaXZlciBpbml0aWFsaXNlcyB0aGUg
+dGFyZ2V0IG5lZWRzIHRvIGNvbmZpZ3VyZSB3aGF0ZXZlcg0KdGFyZ2V0LXNwZWNpZmljIHJlZ2lz
+dGVyIGVuYWJsZXMgdGhlIFJPIHRyYW5zZmVycyB0aGVtc2VsdmVzLg0KDQpBZnRlciB0aGF0IHRo
+ZXJlIGNvdWxkIGJlIGZsYWdzIGluIHRoZSBQQ0llIGNvbmZpZyBzcGFjZSBvZiB0aGUgdGFyZ2V0
+DQphbmQgYW55IGJyaWRnZXMgdGhhdCBjbGVhciB0aGUgUk8gZmxhZy4NCg0KVGhlcmUgY291bGQg
+YWxzbyBiZSBmbGFncyBpbiB0aGUgYnJpZGdlcyBhbmQgcm9vdCBjb21wbGV4IHRvIGlnbm9yZQ0K
+dGhlIFJPIGZsYWcgZXZlbiBpZiBpdCBpcyBzZXQuDQoNClRoZW4gdGhlIExpbnV4IGtlcm5lbCBj
+YW4gaGF2ZSBvcHRpb24ocykgdG8gdGVsbCB0aGUgZHJpdmVyIG5vdA0KdG8gZW5hYmxlIFJPIC0g
+ZXZlbiB0aG91Z2ggdGhlIGRyaXZlciBiZWxpZXZlcyBpdCBzaG91bGQgYWxsIHdvcmsuDQpUaGlz
+IGNvdWxkIGJlIGEgc2luZ2xlIGdsb2JhbCBmbGFnLCBvciBmaW4tZ3JhaW5lZCBpbiBzb21lIHdh
+eS4NCg0KU28gd2hhdCBleGFjdGx5IGlzIHRoaXMgcGF0Y2ggc2VyaWVzIGRvaW5nPw0KDQoJRGF2
+aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50
+IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTcz
+ODYgKFdhbGVzKQ0K
 
