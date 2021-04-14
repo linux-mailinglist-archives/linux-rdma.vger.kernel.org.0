@@ -2,59 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6AB735FC55
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Apr 2021 22:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C79835FCDC
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Apr 2021 22:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233782AbhDNUK3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Apr 2021 16:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
+        id S238808AbhDNUwg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Apr 2021 16:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231963AbhDNUKX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Apr 2021 16:10:23 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 969FBC06175F
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Apr 2021 13:10:00 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id l14so21732491ljb.1
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Apr 2021 13:10:00 -0700 (PDT)
+        with ESMTP id S231319AbhDNUwf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Apr 2021 16:52:35 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96AB4C061574
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Apr 2021 13:52:11 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id x76so13656640ybe.5
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Apr 2021 13:52:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MwY/uAWZw4+Qy6L6BtNeYzKjt04mgG0Fmf5rVKjnxzQ=;
-        b=ap3ig7KYnUhag1Gtyu8ju+wZN22X7hJAeGqlif08J6E2FDFZMStFf0J+i5MbXtUumS
-         IzvuAZFclh341ng8JxtdEr2qW9XrlIZXWpjDZb+qgeWbwxE6vWjjGEB/geNPjXxIQclW
-         dFI4IOTCs3fPKR1aHOm/iysJwoR+8kqUtA8mHyxoGySRQcfS+VCb+rZZM7/xiyt/HPID
-         YrSMrjX8rYbjzs5DbiCl29ZXCTZgvVac75YJkITMzGqfEU5saeopAsgC9TvzTPv5274g
-         cWQSom8PzYIEavCa1VDFHlyvioElMYcPnc9kDFdKK4GiYGWLDyOfnxPxwWSmPE8IQGU+
-         dUvw==
+        bh=qMc1dVoRXovpTYQV/nXgGHQYIIUU1MZrniZIcaPAzYI=;
+        b=jZ63PQvS0OSJEWxuC8eQL+mgIeY3zye5GVk1y4o1Jz5FWVvQk/PfIiL7GTYhxNoeq0
+         rGznM1hJWUQXA6P+waeuHPSY/DJs03JNq0uVwSWPnPsBzxVjgnn6TMUzGdV111v1vp2Q
+         /nX5IfLwP9juprGuNEOuTT07JchH9A7AGMglO6Rb+9+c7hhfVbUxRh2zz0sBnmQacfBf
+         EWnX8k44LFD6bjU3kBqM3T1EuffW2JooY05UpEBA0BKMVo1IB4OZNKKbX1gUPW2isFLB
+         R4bgmou+/6jqYIgPw+6DqLVgue9r1GJfCIJRUL/HusGRiJ45hR+a3JnPDjJrbBlQveOp
+         CdDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MwY/uAWZw4+Qy6L6BtNeYzKjt04mgG0Fmf5rVKjnxzQ=;
-        b=NNhMxQUqSj7Sytgfn0vzxMi0XX08PGdXJROIJf5g10vaR5iIodIaS55M/DNr9wwnQW
-         hYMBH5Lib4s6dN0wasVvvCD81XuSex5Kpmqv/ONADzh4gjTl/5Gt9p45dheJyVLZeGiN
-         lCXnQBIIGy0di/lZxTM/z+0sSebc8n8OAP7nwyAVLlfkgrkY4U73YS4odDSRD6GYyQvU
-         zPzFNmpjuWCQyd4cH6vHQ9Wqv2Fx6N1Ipww+Y9lacWy5u4KrVh8iBMipgJSEvKUBo3ot
-         N925sdAOmVgTv4eemtuLreyNNb08xftl4YbLWw+rexzKqWZ0RTFarOs2zGH0R0Bkid+w
-         IS1Q==
-X-Gm-Message-State: AOAM53033FWc1qmnDgxKniqrUyw7E2pVSGioDIp6p1i5T9LUWY4Dj9k9
-        /MosuI+SCC5p9UW3+a+ncoWEtOP4CfbHK1xH1++siA==
-X-Google-Smtp-Source: ABdhPJyGzh1aNLsj+H9I9o7DUJdlV5HTtBeAeDM8vjbeZYpt4QAwg2dIXYbLUIkqdF+ZPGeN9DUBYbygk+wOkt8Am2g=
-X-Received: by 2002:a2e:8084:: with SMTP id i4mr25644098ljg.122.1618430998695;
- Wed, 14 Apr 2021 13:09:58 -0700 (PDT)
+        bh=qMc1dVoRXovpTYQV/nXgGHQYIIUU1MZrniZIcaPAzYI=;
+        b=No2uKOFkA1Bs/rkDYKoCSy01oCT/pTn8ffJ3JIKRGE0Fq1rA7fAwsBwQv+yB+SsBhs
+         V927A681888/NulUqVMd0IQnD6YbLDVxfj7yIJv0fwp9hekv9iMWacDAhF86Mn2FLno6
+         VBM2oIMZCr1jfRngar20652kSv8JVCvq5pX4/dUkVqFwLgLnj3aX8qpizRKJ9F1yvw0h
+         Qb0HoYcan4CJDpfNAFPzdHgWCTawexXbZFF3ZUT94YCI/6oBbA9o7rUf+1Tvu7vrfYDr
+         PAQGMR8ksz4Gq3V1sy4cBRCGNUc683Rc4YbwiK/gqvdkSB8GFGr8vE9FcWRmdKnEY1aK
+         w+RA==
+X-Gm-Message-State: AOAM531f1sQyoQ/HSDBweCRXpzQDS3mMtXnWOtiMu6EPyUv4SLCYFiH5
+        ZlIPWgTKLUOEhR57OS0CYwxlLSwBxgIbspiBIwwVTQ==
+X-Google-Smtp-Source: ABdhPJyqMKv7jKazLHNQr9xfoSHuUWvXv3SH59PCH1Ndn1yE1hoJqvYOK5wZMT0jkn32p4YGeb+4ZAvFlg7cBrY5JE0=
+X-Received: by 2002:a25:850b:: with SMTP id w11mr55634403ybk.518.1618433530591;
+ Wed, 14 Apr 2021 13:52:10 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
  <20210409223801.104657-3-mcroce@linux.microsoft.com> <20210410154824.GZ2531743@casper.infradead.org>
  <YHHPbQm2pn2ysth0@enceladus> <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
- <YHHuE7g73mZNrMV4@enceladus> <20210414214132.74f721dd@carbon>
-In-Reply-To: <20210414214132.74f721dd@carbon>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 14 Apr 2021 13:09:47 -0700
-Message-ID: <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
+ <YHHuE7g73mZNrMV4@enceladus> <20210414214132.74f721dd@carbon> <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
+In-Reply-To: <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 14 Apr 2021 22:51:59 +0200
+Message-ID: <CANn89i+ASy7d+ew0BrnsB5aH8BPb+kr_pazWgfaAB9939o-cmQ@mail.gmail.com>
 Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Matthew Wilcox <willy@infradead.org>,
         Matteo Croce <mcroce@linux.microsoft.com>,
         netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
@@ -95,9 +96,9 @@ Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Miaohe Lin <linmiaohe@huawei.com>,
         Yunsheng Lin <linyunsheng@huawei.com>,
         Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, David Ahern <dsahern@gmail.com>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
@@ -106,50 +107,10 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 12:42 PM Jesper Dangaard Brouer
-<brouer@redhat.com> wrote:
->
-[...]
-> > >
-> > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
-> > > can not be used.
-> >
-> > Yes it can, since it's going to be used as your default allocator for
-> > payloads, which might end up on an SKB.
->
-> I'm not sure we want or should "allow" page_pool be used for TCP RX
-> zerocopy.
-> For several reasons.
->
-> (1) This implies mapping these pages page to userspace, which AFAIK
-> means using page->mapping and page->index members (right?).
->
-
-No, only page->_mapcount is used.
-
-> (2) It feels wrong (security wise) to keep the DMA-mapping (for the
-> device) and also map this page into userspace.
->
-
-I think this is already the case i.e pages still DMA-mapped and also
-mapped into userspace.
-
-> (3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
-> zerocopy will bump the refcnt, which means the page_pool will not
-> recycle the page when it see the elevated refcnt (it will instead
-> release its DMA-mapping).
-
-Yes this is right but the userspace might have already consumed and
-unmapped the page before the driver considers to recycle the page.
+On Wed, Apr 14, 2021 at 10:09 PM Shakeel Butt <shakeelb@google.com> wrote:
 
 >
-> (4) I remember vaguely that this code path for (TCP RX zerocopy) uses
-> page->private for tricks.  And our patch [3/5] use page->private for
-> storing xdp_mem_info.
->
-> IMHO when the SKB travel into this TCP RX zerocopy code path, we should
-> call page_pool_release_page() to release its DMA-mapping.
->
+> I will let TCP RX zerocopy experts respond to this but from my high
+> level code inspection, I didn't see page->private usage.
 
-I will let TCP RX zerocopy experts respond to this but from my high
-level code inspection, I didn't see page->private usage.
+Indeed, we do not use page->private, since we do not own the page(s).
