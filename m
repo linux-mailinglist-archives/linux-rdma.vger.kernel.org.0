@@ -2,230 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C940D35EB42
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Apr 2021 05:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D069435EB8F
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Apr 2021 05:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232944AbhDNDLg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 13 Apr 2021 23:11:36 -0400
-Received: from mga11.intel.com ([192.55.52.93]:30278 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232933AbhDNDLe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 13 Apr 2021 23:11:34 -0400
-IronPort-SDR: 8roZi80jyb06SEyGEAjU5vQT8CHSAQ6OSv5VkHvUOsVXF0pFP7qn5CN4BrKcUdADchI9qMg12V
- PoEPTB9TV3/g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="191367087"
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="191367087"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 20:11:13 -0700
-IronPort-SDR: C/mpgC3KYhBo3/c9yy4OfoxhjGu6klZfZJncyQ1QpX6YXZ0gykpd96vnH36pW3+Wkp/uDsVJPm
- QUQulzOLgMNA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="418121231"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 13 Apr 2021 20:11:12 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lWVvr-0001W1-IF; Wed, 14 Apr 2021 03:11:11 +0000
-Date:   Wed, 14 Apr 2021 11:10:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-next] BUILD SUCCESS
- 7f4a8592ff29f19c5a2ca549d0973821319afaad
-Message-ID: <60765d16.GYEKjQc7cuCJr0Zx%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1343901AbhDNDrG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Apr 2021 23:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232602AbhDNDrF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Apr 2021 23:47:05 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63DA9C061574
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Apr 2021 20:46:45 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id p6-20020a9d69460000b029028bb7c6ff64so2063710oto.10
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Apr 2021 20:46:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dsHQ4qNYSla1Cih2FNAz5UCRYyDsB61UXJuy2u+yE4s=;
+        b=Op6qZ0hdRLYq0sw7XoAByLaqpWZTZqIgCBQmPeQU3quvxjoNlCd2q8OaMN95/b3LRl
+         TC+tcOCi7tZEMaWM5PjvJ6IaK8YqYdfWNBrGZZ931qP+6L/QoNs0KbYw6jyW35KkPS7Q
+         xs8iKlQMoM90gD1kdceRdpUYX6KiD36YIykiJ7DiTa5XsMndo5mbZGJCj7rQk/W9FvQA
+         fu3aj+81fnizPfMWLCvOCt/25UCQvQo1/fH6sDxLu4tsmbqrIOqeSLaqkwk0JJyXWoBD
+         TcFRNGrYCT+0Vp1tTG7Gf+sFsSr1asv7EoGwVzlSYhuJMmNeTopwUHqL56U7WQd8w6tZ
+         9BHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dsHQ4qNYSla1Cih2FNAz5UCRYyDsB61UXJuy2u+yE4s=;
+        b=h3h/7HbfMMbu8rUdDAoKWmC8aJHXRtLRH0d30iTcAlPo9qwLtZD7f+eN6dS5QdEjcw
+         YHk4mXGI/AHvZFunEsMf92mmR2iiuYrPwZGmfHsj4ywjrpHwfnUMreHfuP8ecRZDRtXy
+         9GIoV0kqRdcd4bfjkA+2WXA7ymqEiOhaBq0UPxvYSuL6C5Fg4qTmO9HRu1yBT+L6wBsg
+         VJiUotf5uUymer4sbSuxgOTEwspIulSZPQPSS6VV/p+KHL+AEqvtlLyjcmUL9EyI4Zcz
+         XpTL5gw9FRn31rLR0Ccr1V6L5R+Au8M8usSpZP6bqDEuVMAgn74H7i4yzTxMFE9KtLBa
+         32GA==
+X-Gm-Message-State: AOAM533EXd6xdZiuqZEcvlauylr0JJccQFV+BGBtehTCtWq/uHvBDIMm
+        x5P3EVewqgXDT+n+gokqM5IUlr7vvfedYgYaulE=
+X-Google-Smtp-Source: ABdhPJylCwiTEespO1eaLcEtLTFSdqcQV8BKkNAQoisL2RcTh9yIzhBFO4z322R8lEWEdqrP0O+Q2FZag3/p/oHCnqY=
+X-Received: by 2002:a9d:74ca:: with SMTP id a10mr24725927otl.53.1618372003845;
+ Tue, 13 Apr 2021 20:46:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210413234252.12209-1-yanjun.zhu@intel.com> <YHV3F9gBeLnLvzn+@unreal>
+In-Reply-To: <YHV3F9gBeLnLvzn+@unreal>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Wed, 14 Apr 2021 11:46:32 +0800
+Message-ID: <CAD=hENc52T9Z5YrAFwL0QkcsF6mqSS6wTZQxfCECjVxtskdPuQ@mail.gmail.com>
+Subject: Re: [PATCHv5 for-next 1/1] RDMA/rxe: Disable ipv6 features when
+ ipv6.disable in cmdline
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Zhu Yanjun <yanjun.zhu@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Yi Zhang <yi.zhang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-branch HEAD: 7f4a8592ff29f19c5a2ca549d0973821319afaad  RDMA/rtrs-clt: destroy sysfs after removing session from active list
+On Tue, Apr 13, 2021 at 6:48 PM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Tue, Apr 13, 2021 at 07:42:52PM -0400, Zhu Yanjun wrote:
+> > From: Zhu Yanjun <zyjzyj2000@gmail.com>
+> >
+> > When ipv6.disable=1 is set in cmdline, ipv6 is actually disabled
+> > in the stack. As such, the operations of ipv6 in RXE will fail.
+> > So ipv6 features in RXE should also be disabled in RXE.
+> >
+> > Link: https://lore.kernel.org/linux-rdma/880d7b59-4b17-a44f-1a91-88257bfc3aaa@redhat.com/T/#t
+> > Fixes: 8700e3e7c4857 ("Soft RoCE driver")
+> > Reported-by: Yi Zhang <yi.zhang@redhat.com>
+> > Signed-off-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+> > ---
+> > V4->V5: Clean up signature block and remove error message
+> > V3->V4: Check the returned value instead of ipv6 module
+> > V2->V3: Remove print message
+> > V1->V2: Modify the pr_info messages
+> > ---
+> >  drivers/infiniband/sw/rxe/rxe_net.c | 13 ++++++++++++-
+> >  1 file changed, 12 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+> > index 01662727dca0..984c3ac449bd 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_net.c
+> > +++ b/drivers/infiniband/sw/rxe/rxe_net.c
+> > @@ -208,7 +208,13 @@ static struct socket *rxe_setup_udp_tunnel(struct net *net, __be16 port,
+> >       /* Create UDP socket */
+> >       err = udp_sock_create(net, &udp_cfg, &sock);
+> >       if (err < 0) {
+> > -             pr_err("failed to create udp socket. err = %d\n", err);
+> > +             /* If UDP tunnel over ipv6 fails with -EAFNOSUPPORT, the tunnel
+> > +              * over ipv4 still works. This error message will not pop out.
+> > +              * If UDP tunnle over ipv4 fails or other errors with ipv6
+> > +              * tunnel, this error should pop out.
+> > +              */
+> > +             if (!((err == -EAFNOSUPPORT) && (ipv6)))
+>
+> You have too much brackets.
 
-elapsed time: 720m
+My code corresponds with the comments.
 
-configs tested: 168
-configs skipped: 2
+Zhu Yanjun
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-sh                          rsk7269_defconfig
-sh                             sh03_defconfig
-ia64                                defconfig
-openrisc                 simple_smp_defconfig
-openrisc                         alldefconfig
-powerpc64                           defconfig
-sh                        apsh4ad0a_defconfig
-h8300                       h8s-sim_defconfig
-sh                           se7206_defconfig
-s390                             allmodconfig
-riscv             nommu_k210_sdcard_defconfig
-sh                           se7343_defconfig
-arm                       aspeed_g4_defconfig
-powerpc                      cm5200_defconfig
-arm                   milbeaut_m10v_defconfig
-arm                        mvebu_v7_defconfig
-mips                          ath79_defconfig
-microblaze                          defconfig
-arm                       imx_v4_v5_defconfig
-m68k                          atari_defconfig
-mips                malta_qemu_32r6_defconfig
-arm                          iop32x_defconfig
-arm                           sunxi_defconfig
-arc                         haps_hs_defconfig
-powerpc                     taishan_defconfig
-powerpc64                        alldefconfig
-powerpc                     ksi8560_defconfig
-xtensa                  cadence_csp_defconfig
-sh                          urquell_defconfig
-h8300                    h8300h-sim_defconfig
-arm                          collie_defconfig
-powerpc                    socrates_defconfig
-powerpc                   lite5200b_defconfig
-powerpc                      bamboo_defconfig
-arm                            xcep_defconfig
-mips                        nlm_xlp_defconfig
-powerpc                  iss476-smp_defconfig
-mips                         db1xxx_defconfig
-sh                            titan_defconfig
-m68k                         amcore_defconfig
-arm                       netwinder_defconfig
-m68k                        mvme147_defconfig
-ia64                            zx1_defconfig
-mips                        workpad_defconfig
-sh                          polaris_defconfig
-powerpc                     tqm5200_defconfig
-arm                         assabet_defconfig
-sh                          landisk_defconfig
-csky                             alldefconfig
-powerpc                     tqm8560_defconfig
-arm                       spear13xx_defconfig
-arc                     haps_hs_smp_defconfig
-mips                        maltaup_defconfig
-arm                        realview_defconfig
-arm                     am200epdkit_defconfig
-arm                     eseries_pxa_defconfig
-sparc                            allyesconfig
-xtensa                  nommu_kc705_defconfig
-mips                           ip27_defconfig
-sh                   sh7724_generic_defconfig
-powerpc                 xes_mpc85xx_defconfig
-xtensa                  audio_kc705_defconfig
-arm                             ezx_defconfig
-h8300                            alldefconfig
-arm                           corgi_defconfig
-mips                        omega2p_defconfig
-arm                          ixp4xx_defconfig
-powerpc                     tqm8540_defconfig
-arm                          pxa3xx_defconfig
-powerpc                      ep88xc_defconfig
-powerpc                     rainier_defconfig
-arm                          pxa168_defconfig
-mips                           ci20_defconfig
-powerpc                 mpc834x_itx_defconfig
-sparc64                             defconfig
-powerpc                     sequoia_defconfig
-arm                         bcm2835_defconfig
-sh                          rsk7201_defconfig
-arc                          axs103_defconfig
-arm                        clps711x_defconfig
-xtensa                generic_kc705_defconfig
-arm                      footbridge_defconfig
-sparc64                          alldefconfig
-arm                      jornada720_defconfig
-powerpc                    amigaone_defconfig
-powerpc                     powernv_defconfig
-powerpc                       ebony_defconfig
-sh                        edosk7760_defconfig
-arm                           stm32_defconfig
-sh                        sh7785lcr_defconfig
-powerpc                 canyonlands_defconfig
-arm                       multi_v4t_defconfig
-sh                     magicpanelr2_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20210413
-x86_64               randconfig-a002-20210413
-x86_64               randconfig-a001-20210413
-x86_64               randconfig-a005-20210413
-x86_64               randconfig-a006-20210413
-x86_64               randconfig-a004-20210413
-i386                 randconfig-a003-20210413
-i386                 randconfig-a001-20210413
-i386                 randconfig-a006-20210413
-i386                 randconfig-a005-20210413
-i386                 randconfig-a004-20210413
-i386                 randconfig-a002-20210413
-i386                 randconfig-a015-20210413
-i386                 randconfig-a014-20210413
-i386                 randconfig-a013-20210413
-i386                 randconfig-a012-20210413
-i386                 randconfig-a016-20210413
-i386                 randconfig-a011-20210413
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a014-20210413
-x86_64               randconfig-a015-20210413
-x86_64               randconfig-a011-20210413
-x86_64               randconfig-a013-20210413
-x86_64               randconfig-a012-20210413
-x86_64               randconfig-a016-20210413
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> if (err != -EAFNOSUPPORT || !ipv6)))
+>
+> > +                     pr_err("failed to create udp socket. err = %d\n", err);
+> >               return ERR_PTR(err);
+> >       }
+> >
+> > @@ -620,6 +626,11 @@ static int rxe_net_ipv6_init(void)
+> >       recv_sockets.sk6 = rxe_setup_udp_tunnel(&init_net,
+> >                                               htons(ROCE_V2_UDP_DPORT), true);
+> >       if (IS_ERR(recv_sockets.sk6)) {
+> > +             /* Though IPv6 is not supported, IPv4 still needs to continue
+> > +              */
+> > +             if (PTR_ERR(recv_sockets.sk6) == -EAFNOSUPPORT)
+> > +                     return 0;
+> > +
+> >               recv_sockets.sk6 = NULL;
+> >               pr_err("Failed to create IPv6 UDP tunnel\n");
+> >               return -1;
+> > --
+> > 2.27.0
+> >
