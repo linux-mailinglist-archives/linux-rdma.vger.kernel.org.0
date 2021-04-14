@@ -2,170 +2,153 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2033135E9F1
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Apr 2021 02:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3B835EB1B
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Apr 2021 04:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232014AbhDNAVb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 13 Apr 2021 20:21:31 -0400
-Received: from mga17.intel.com ([192.55.52.151]:25692 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230493AbhDNAVa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 13 Apr 2021 20:21:30 -0400
-IronPort-SDR: nimtIaW2PQ74Z/Hm1kzyVSqpVC3vBroxw1RuLKRrDLJjK+QFk0fDyBx0G3qsClwgtUxYFMrVtK
- uwh8wd2vAi6A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="174633928"
-X-IronPort-AV: E=Sophos;i="5.82,220,1613462400"; 
-   d="scan'208";a="174633928"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 17:21:10 -0700
-IronPort-SDR: Bl5g51HxI9V5c8Jxm1sW/ntdgLKsFWPHu5EHpZERZj13To26jaFAl3peKTyX4wYLlPlDI8uewa
- JZ1HyRpCqHUQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,220,1613462400"; 
-   d="scan'208";a="521799499"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga001.fm.intel.com with ESMTP; 13 Apr 2021 17:21:10 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 13 Apr 2021 17:21:09 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 13 Apr 2021 17:21:09 -0700
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2106.013;
- Tue, 13 Apr 2021 17:21:09 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Parav Pandit <parav@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Lacombe, John S" <john.s.lacombe@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Hefty, Sean" <sean.hefty@intel.com>,
-        "Keller, Jacob E" <jacob.e.keller@intel.com>
-Subject: RE: [PATCH v4 05/23] ice: Add devlink params support
-Thread-Topic: [PATCH v4 05/23] ice: Add devlink params support
-Thread-Index: AQHXKyglet/OMpr4HUC3+2oFUaS+kaqpm5SA///RCKCAALIhgIABT5TAgAZO+4CAAM18wIAAq1sA///kuJA=
-Date:   Wed, 14 Apr 2021 00:21:08 +0000
-Message-ID: <4d9a592fa5694de8aadc60db1376da20@intel.com>
-References: <20210406210125.241-1-shiraz.saleem@intel.com>
- <20210406210125.241-6-shiraz.saleem@intel.com>
- <20210407145705.GA499950@nvidia.com>
- <e516fa3940984b0cb0134364b923fc8e@intel.com>
- <20210407224631.GI282464@nvidia.com>
- <c5a38fcf137e49c0af0bfa6edd3ec605@intel.com>
- <BY5PR12MB43221FA2A6295C9CF23C798DDC709@BY5PR12MB4322.namprd12.prod.outlook.com>
- <8a7cd11994c2447a926cf2d3e60a019c@intel.com>
- <BY5PR12MB4322A28E6678CBB8A6544026DC4F9@BY5PR12MB4322.namprd12.prod.outlook.com>
-In-Reply-To: <BY5PR12MB4322A28E6678CBB8A6544026DC4F9@BY5PR12MB4322.namprd12.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S239489AbhDNCu5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 13 Apr 2021 22:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232339AbhDNCuw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 13 Apr 2021 22:50:52 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB96C061574
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Apr 2021 19:50:30 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id i16-20020a9d68d00000b0290286edfdfe9eso7438294oto.3
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Apr 2021 19:50:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EupS2UoYox846+ws5ITvh6BqRlFMSsxkpChKUuUfGKI=;
+        b=KOi+fB6ThwH3v9rw+MG1xfh8lIPCEnAl8WgoNVoE6Fvt2htBO4q3Rn59IFluQO2rTg
+         G8WSyiRdpb1TOmvOL1PJ7eYXVO7gJ2cLcW9cMO+NUg/ZL3fbvFvLGvscZxWzTl9KzzV0
+         afvEODx4WDseQLF9hMKZWT01raOmM797JG4Rc+diAxa6vljKL07TPMT5F/FZ8FSP8sU5
+         ciR/g8tDL91dawC7/C3BXl5vvtPioy5m66w7A4jFK5CGnyS+DmmpTuT5CHkxtLu501mg
+         MBhYsPvt+iiQu1Go2ZKPORpP9YBSR91kdkm7vFbV7ktQvb+6uTZvD531KmonD1HmZ84b
+         qOmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EupS2UoYox846+ws5ITvh6BqRlFMSsxkpChKUuUfGKI=;
+        b=dcld8QmtDE2bGipeRUnEmhuZdpVTbEcVuMC3+U1S5LXQOqKi9HKhqlRo/U5ueBQqNC
+         hpVqQC6ljY+Cgf+SdgifmbX7/WSMtcA+wDAHSpFISSRO0pqirby5JhaWIEmIr0EQrAX6
+         c/n83NGf6NSh92IDf+k/ORxK89MPL/NLn1xFY3yOiR4yiYkOaYJc+T/fFA/TKz/j/viq
+         V1Y5nF1biRMQsOaVht3UUStcCEbMDTYvsH0Zu+K1dl6+RVjOhzn1vT6VOGaIqhYyIXr3
+         7uNmeh/AQ9TrGh92uZgWRUpUodYpckzuLNfrcNIhd2YHh3uREHZ+C8lHJN2xG7BOZ0o+
+         aZPA==
+X-Gm-Message-State: AOAM533cvElHfZ/wYhqdqEyVxf9utBtc2Fx2Te4Be/elG4HJ0K6WA5dJ
+        eXVw36wH7TLArVRSL9cDtkoswTk8vOY=
+X-Google-Smtp-Source: ABdhPJz8m3uZ03O5cYAggxgnHNMJfsuxOlRzGvVE1eUktATSvbvBxmobEgmiCcfl1ol6v37nitNmaw==
+X-Received: by 2002:a9d:4f05:: with SMTP id d5mr31009310otl.88.1618368629694;
+        Tue, 13 Apr 2021 19:50:29 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:6d7:e95c:f15:6172? (2603-8081-140c-1a00-06d7-e95c-0f15-6172.res6.spectrum.com. [2603:8081:140c:1a00:6d7:e95c:f15:6172])
+        by smtp.gmail.com with ESMTPSA id f65sm476672otb.11.2021.04.13.19.50.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Apr 2021 19:50:29 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Subject: Re: [PATCH for-next 1/9] RDMA/rxe: Add bind MW fields to rxe_send_wr
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     xyzxyz2000@gmail.com, linux-rdma@vger.kernel.org,
+        Bob Pearson <rpearson@hpe.com>
+References: <20210408214040.2956-1-rpearson@hpe.com>
+ <20210408214040.2956-2-rpearson@hpe.com>
+ <20210413231136.GA1385646@nvidia.com>
+Message-ID: <eba02326-013f-1707-0db7-209413d2cd6f@gmail.com>
+Date:   Tue, 13 Apr 2021 21:50:28 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210413231136.GA1385646@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: RE: [PATCH v4 05/23] ice: Add devlink params support
+On 4/13/21 6:11 PM, Jason Gunthorpe wrote:
+> On Thu, Apr 08, 2021 at 04:40:33PM -0500, Bob Pearson wrote:
+>> Add fields to struct rxe_send_wr in rdma_user_rxe.h to
+>> support bind MW work requests from user space and kernel.
+>>
+>> Signed-off-by: Bob Pearson <rpearson@hpe.com>
+>>  include/uapi/rdma/rdma_user_rxe.h | 34 ++++++++++++++++++++++++++++++-
+>>  1 file changed, 33 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
+>> index 068433e2229d..b9c80ca73473 100644
+>> +++ b/include/uapi/rdma/rdma_user_rxe.h
+>> @@ -99,7 +99,39 @@ struct rxe_send_wr {
+>>  			__u32	remote_qkey;
+>>  			__u16	pkey_index;
+>>  		} ud;
+>> -		/* reg is only used by the kernel and is not part of the uapi */
+>> +		struct {
+>> +			__aligned_u64	addr;
+>> +			__aligned_u64	length;
+>> +			union {
+>> +				__u32		mr_lkey;
+>> +				__aligned_u64	reserved1;
+>> +			};
+>> +			union {
+>> +				__u32		mw_rkey;
+>> +				__aligned_u64	reserved2;
+>> +			};
+>> +			__u32	rkey;
+>> +			__u32	access;
+>> +			__u32	flags;
+>> +		} umw;
+>> +		/* The following are only used by the kernel
+>> +		 * and are not part of the uapi
+>> +		 */
+>> +		struct {
+>> +			__aligned_u64	addr;
+>> +			__aligned_u64	length;
+>> +			union {
+>> +				struct ib_mr	*mr;
 > 
+> A kernel struct should not appear in a uapi header, nor should secure
+> kernel data ever be stored in user memory.
 > 
+> I'm completely lost at how all this thinks it is working, we don't
+> even have kernel verbs support for memory windows??
 > 
-> > From: Saleem, Shiraz <shiraz.saleem@intel.com>
-> > Sent: Tuesday, April 13, 2021 8:11 PM
-> [..]
+> Jason
 > 
-> > > > > Parav is talking about generic ways to customize the aux devices
-> > > > > created and that would seem to serve the same function as this.
-> > > >
-> > > > Is there an RFC or something posted for us to look at?
-> > > I do not have polished RFC content ready yet.
-> > > But coping the full config sequence snippet from the internal draft
-> > > (changed for ice
-> > > example) here as I like to discuss with you in this context.
-> >
-> > Thanks Parav! Some comments below.
-> >
-> > >
-> > > # (1) show auxiliary device types supported by a given devlink device.
-> > > # applies to pci pf,vf,sf. (in general at devlink instance).
-> > > $ devlink dev auxdev show pci/0000:06.00.0
-> > > pci/0000:06.00.0:
-> > >   current:
-> > >     roce eth
-> > >   new:
-> > >   supported:
-> > >     roce eth iwarp
-> > >
-> > > # (2) enable iwarp and ethernet type of aux devices and disable roce.
-> > > $ devlink dev auxdev set pci/0000:06:00.0 roce off iwarp on
-> > >
-> > > # (3) now see which aux devices will be enable on next reload.
-> > > $ devlink dev auxdev show pci/0000:06:00.0
-> > > pci/0000:06:00.0:
-> > >   current:
-> > >     roce eth
-> > >   new:
-> > >     eth iwarp
-> > >   supported:
-> > >     roce eth iwarp
-> > >
-> > > # (4) now reload the device and see which aux devices are created.
-> > > At this point driver undergoes reconfig for removal of roce and
-> > > adding
-> > iwarp.
-> > > $ devlink reload pci/0000:06:00.0
-> >
-> > I see this is modeled like devlink resource.
-> >
-> > Do we really to need a PCI driver re-init to switch the type of the
-> > auxdev hanging off the PCI dev?
-> >
-> I don't see a need to re-init the whole PCI driver. Since only aux device config is
-> changed only that piece to get reloaded.
 
-But that is what mlx5 and other implementations does on reload no? i.e. a PCI driver reinit.
-I can see an ice implementation of reload morphing to similar over time to support a new config
-that requires a true reinit of PCI driver entities.
+Hard to see from context but I was copying the existing header file which is used to define the WQE layout
+for rxe for *both* user and kernel space. The structs shown in the hunk are contained in a union.
+The existing version of the driver has one struct
+	union {
+		...
+		struct {
+			...
+		} reg;
+	} wr;
+which is only used in kernel space. Like the old song about the 8x10 glossy pictures, I figured I'd just
+add another one and avoid looking up the MWs and MRs for bind in the kernel. This is before I discovered
+that you all deleted MW support from the kernel a while back. Not really sure why. Not used I suppose but
+it is in the spec.
 
-> 
-> > Why not just allow the setting to apply dynamically during a 'set'
-> > itself with an unplug/plug of the auxdev with correct type.
-> >
-> This suggestion came up in the internal discussion too.
-> However such task needs to synchronize with devlink reload command and also
-> with driver remove() sequence.
-> So locking wise and depending on amount of config change, it is close to what
-> reload will do.
+Clearly only user data for user WRs appear in this for user QPs and only kernel data for kernel QPs.
+There isn't any mixing. Since it is a union there is no overhead by including the kernel WQEs. There is no
+secret about what the kernel structs are.
 
-Holding this mutex across the auxiliary device unplug/plug in "set" wont cut it?
-https://elixir.bootlin.com/linux/v5.12-rc7/source/drivers/net/ethernet/mellanox/mlx5/core/main.c#L1304
+How to fix this? Since rxe was written the new variable size WQEs in ib_verbs.h (ib_send_wr and friends) were
+added and they could be a better choice. Rxe could take these as its own native wqe and that would reduce
+the amount of work on kernel WRs and reduce the amount of code dealing with them from user space. It would
+break ABI unfortunately.
 
-> For example other resource config or other params setting also to take effect.
-> So to avoid defining multiple config sequence, doing as part of already existing
-> devlink reload, it brings simple sequence to user.
-> 
-> For example,
-> 1. enable/disable desired aux devices
-> 2. configure device resources
-> 3. set some device params
-> 4. do devlink reload and apply settings done in #1 to #3
+The other approach is to, as you suggest, ifdef out the kernel stuff in user space. It works anyway because
+you can always add a pointer to an undefined struct as long as you don't try to use it. 
 
-Sure. But a user might also just want to operate on just an auxiliary device configuration change. As in #1.
-And he ends up having everything hanging off the PF to get blown out, including potentially
-the VFs. That feels like too big a hammer.
+Also as you point out ib_bind_mw doesn't exist anymore so I could get rid of the kmw struct and just use the
+rkeys. Could still support a kernel mw implementation later without a change if one showed up. There are some
+interesting articles about the security of RDMA wire protocols that strongly suggest using type2 MWs with
+randomly chosen rkeys and qp numbers instead of MRs. It's not perfect either but orders of magnitude stronger
+protection.
 
-Shiraz
-
+bob
