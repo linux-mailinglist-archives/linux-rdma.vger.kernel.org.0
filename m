@@ -2,55 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A0B360E84
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Apr 2021 17:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4865536112C
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Apr 2021 19:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234630AbhDOPQT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Apr 2021 11:16:19 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:22297 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236448AbhDOPO6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Apr 2021 11:14:58 -0400
-Received: from localhost (mehrangarh.blr.asicdesigners.com [10.193.185.169])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 13FFEN4r027341;
-        Thu, 15 Apr 2021 08:14:24 -0700
-From:   Potnuri Bharat Teja <bharat@chelsio.com>
-To:     jgg@nvidia.com, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org, bharat@chelsio.com
-Subject: [PATCH for-next] RDMA/cxgb4: add missing qpid increment
-Date:   Thu, 15 Apr 2021 20:44:22 +0530
-Message-Id: <20210415151422.9139-1-bharat@chelsio.com>
-X-Mailer: git-send-email 2.24.0
+        id S233520AbhDORh0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 15 Apr 2021 13:37:26 -0400
+Received: from mga07.intel.com ([134.134.136.100]:35993 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233395AbhDORhZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 15 Apr 2021 13:37:25 -0400
+IronPort-SDR: 24hzNGKPSUApnUIpu7ndlPXngMIlbT+nC1rfbI++33xu1XMUGpFOWa8022WFOSxwNTHKQMsiNe
+ OzC9xz0IfO3g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="258863673"
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="scan'208";a="258863673"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 10:37:01 -0700
+IronPort-SDR: BJaKfhRNnoZIE/kaBy6Cra+5zZfmPztxfd8aSURWHyKdZZQJgSrob2/LPo92YV3122nKI78AWn
+ NWy2xRBS0YLw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="scan'208";a="399646801"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga002.jf.intel.com with ESMTP; 15 Apr 2021 10:37:00 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 15 Apr 2021 10:37:00 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 15 Apr 2021 10:36:59 -0700
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2106.013;
+ Thu, 15 Apr 2021 10:36:59 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Hefty, Sean" <sean.hefty@intel.com>,
+        "Lacombe, John S" <john.s.lacombe@intel.com>
+Subject: RE: [PATCH v4 01/23] iidc: Introduce iidc.h
+Thread-Topic: [PATCH v4 01/23] iidc: Introduce iidc.h
+Thread-Index: AQHXKygiEMWtUC1Uo0mj4KR4ZXyZX6qpqNQA///J7iCAAKscAIABP3oQgAYu4wCAAadCQA==
+Date:   Thu, 15 Apr 2021 17:36:59 +0000
+Message-ID: <dff8229e5092447cb3d16fecd14e0fb8@intel.com>
+References: <20210406210125.241-1-shiraz.saleem@intel.com>
+ <20210406210125.241-2-shiraz.saleem@intel.com>
+ <20210407154430.GA502757@nvidia.com>
+ <1e61169b83ac458aa9357298ecfab846@intel.com>
+ <20210407224324.GH282464@nvidia.com>
+ <2339b8bb35b74aabbb708fcd1a6ab40f@intel.com>
+ <20210412161214.GA1115060@nvidia.com>
+In-Reply-To: <20210412161214.GA1115060@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-missing qpid increment leads to skipping few qpids while allocating QP.
-This eventually leads to adapter running out of qpids after establishing
-fewer connections than it actually supports.
-Current patch increments the qpid correctly.
+> Subject: Re: [PATCH v4 01/23] iidc: Introduce iidc.h
+> 
+> On Mon, Apr 12, 2021 at 02:50:43PM +0000, Saleem, Shiraz wrote:
+> 
 
-Fixes: cfdda9d76436 ("RDMA/cxgb4: Add driver for Chelsio T4 RNIC")
-Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
----
- drivers/infiniband/hw/cxgb4/resource.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[....]
 
-diff --git a/drivers/infiniband/hw/cxgb4/resource.c b/drivers/infiniband/hw/cxgb4/resource.c
-index 5c95c789f302..e800e8e8bed5 100644
---- a/drivers/infiniband/hw/cxgb4/resource.c
-+++ b/drivers/infiniband/hw/cxgb4/resource.c
-@@ -216,7 +216,7 @@ u32 c4iw_get_qpid(struct c4iw_rdev *rdev, struct c4iw_dev_ucontext *uctx)
- 			goto out;
- 		entry->qid = qid;
- 		list_add_tail(&entry->entry, &uctx->cqids);
--		for (i = qid; i & rdev->qpmask; i++) {
-+		for (i = qid + 1; i & rdev->qpmask; i++) {
- 			entry = kmalloc(sizeof(*entry), GFP_KERNEL);
- 			if (!entry)
- 				goto out;
--- 
-2.24.0
+> > There is a near-term Intel ethernet VF driver which will use IIDC to
+> > provide RDMA in the VF, and implement some of these .ops callbacks.
+> > There is also intent to move i40e to IIDC.
+> 
+> "near-term" We are now on year three of Intel talking about this driver!
+> 
+> Get the bulk of the thing merged and deal with the rest in followup patches.
 
+We will submit with symbols exported from ice and direct calls from irdma.
+
+Shiraz
