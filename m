@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E1D360027
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Apr 2021 04:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F5D360026
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Apr 2021 04:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbhDOCzd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Apr 2021 22:55:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55416 "EHLO
+        id S229698AbhDOCzc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Apr 2021 22:55:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhDOCzc (ORCPT
+        with ESMTP id S229467AbhDOCzc (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Apr 2021 22:55:32 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26020C061574
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4052C061756
         for <linux-rdma@vger.kernel.org>; Wed, 14 Apr 2021 19:55:09 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id m13so22802979oiw.13
+Received: by mail-ot1-x334.google.com with SMTP id h19-20020a9d64130000b02902875a567768so10326467otl.0
         for <linux-rdma@vger.kernel.org>; Wed, 14 Apr 2021 19:55:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0oK6GdjgEoldENJJRDmDumo1Lxa+DQ2oSoWDS5c4v9I=;
-        b=dSoHHDVYJ18hENn4ahbGmKEb2I1Z2Djjl/6Bjx4WTifwolN/9Rh9hisq+vbyK6fq0F
-         cxf0Mx5/t5vf1QZedA6kbCSqNtCXH82ssWyfP0IQll7WLNOJJ3A47u+djsTjaQ5WRHqY
-         8TxE6LUESZVqy2VDFdcEQwc2HbsHLNRfD63LEeIlbA1kZx0zuOl/Jpb7DpCDmG7mWv9b
-         DPlNFhEFezb+4tS9wCsHR5cwO8eZGP2ZAp8C3X1cmACR5KH2o6omS173GeXovmxoU+fa
-         zykwEZ5giYjtFU1RzW1T57E5WJ9nn+/tZ2+y7INrYfP008JFMDbgc83+RR1nu098vrwh
-         XIbA==
+        bh=Vp6xriMH+7v1tA+VRuha1iuDW3PIDThhJEhCSAZ0Alw=;
+        b=P6xTA8WBBYnQuPcz6rofcJaFbc8+T/gf+3lcrPgblZFUMi5EaeSEIuEZqEv3gRYJse
+         crzP9uU7Jpq74Qd392Jwr4hUPLmgrPmjKlXUUhe+wWT7PYB/yEfXKvqk6pSaNsw4dYbz
+         2YdzjP0z0+DdWYhDjeQbItilggRAqWBm3wTHXUWaUmx/LmEEsuhfYPzISVhoxhDMbs3z
+         AG5qe6N5p5SsvTN8W69VAiAAEVzTrNav8BU93TcIk6BJrh9V0I8DuewX65BeVsOy+Oou
+         dcFHuWE7RkaMv8JrR3JkdMOZabazBF3p3fswRDazQDcx2lB9CRBqBnZFcLFg083hh44J
+         Mw5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0oK6GdjgEoldENJJRDmDumo1Lxa+DQ2oSoWDS5c4v9I=;
-        b=aX66qp3ZWg9F8Zg9tHJ+jSIJRBe7VOX3lA9H3YanGO4LUhCev6eTbjooHOKzQlMPab
-         EBciHavh3Va7+5nyAvhJb7KdWe350ml720zOofZZVv7GG/JrrnwQZwf9nmma3bg7xOxF
-         x65k/dFxYk1wpCWy4rq3HGMtdxfTykI+PdZn9CpO9N96EWb9zJtKJN/hV64oHoHMbZSW
-         oYtu/DH/Gu/wUljyk1edB6nLJGP4oXa+X7Csss/h74JASV9SvPBhGOksVvsu0To/WWXs
-         8Ny/HJ2CyfwcqM1gf6Q1ImG5Ag0wY3SIOOawRNfTKYtkfcTiPl/xTQSd5VTeN7m0wjLX
-         c+wA==
-X-Gm-Message-State: AOAM530awIBQOB0blobDI3h3dj0pOlurtSwGhfmCEpDBEWx6CjP5o54P
-        59/KkDL5SZIXk3qJZ7kjrzwoSi0fH2Q=
-X-Google-Smtp-Source: ABdhPJyE8yaSF0mVBigIWrAcaI7Ak+PBC+jhTm8tY9lahVbPSUHzhIChA33N/MQv50k8I+rgOEcHCg==
-X-Received: by 2002:aca:f245:: with SMTP id q66mr972792oih.179.1618455308606;
-        Wed, 14 Apr 2021 19:55:08 -0700 (PDT)
+        bh=Vp6xriMH+7v1tA+VRuha1iuDW3PIDThhJEhCSAZ0Alw=;
+        b=F0DbpfARQK4SvK5wIBUw5Qe43/f//u16CPCMP+MRz6Ryj8L4ufoxmwtSxzcYV3hBF2
+         joQzSVogg1gkI+2qO5++G6X2nO1lcATzg8geg6FQ3333xxvhVpw0WBJv2lvE4lJxWkS8
+         PX+h1gksS/OoScXIO+yjhnm41BW82ANVUISQQ7jJ6IKDQeLeFP++6Wx2WV0r5LaEwDW1
+         1UbpQqcQ4b/SqFsc0v2igiEC44cTlHlAN2SqET0HjeW7o7iAStAuJWYDUBZGVHvnhaf0
+         8AoMMhS0aFJb8VRyp4xvqp27deAYBCNEndt2WnyJ7AkS7cvIrISjGXtznEUGfen09ZA7
+         XeHQ==
+X-Gm-Message-State: AOAM530nsZ7rSdO+inthoC5JaCnWex+mgUYBpdOL+VwR69pYFUfp8jZm
+        WibkoGT/LmLHpo3hhKGwR5I=
+X-Google-Smtp-Source: ABdhPJxl65es7Cpmu0RGSaTO6/vOmUhj0oTCVdZ2r8fB3qvHPT/NTOwfxiIfU4QHuGqu3Gwi9yXrLQ==
+X-Received: by 2002:a05:6830:c5:: with SMTP id x5mr812119oto.317.1618455309386;
+        Wed, 14 Apr 2021 19:55:09 -0700 (PDT)
 Received: from localhost (2603-8081-140c-1a00-9ee3-9764-577f-477e.res6.spectrum.com. [2603:8081:140c:1a00:9ee3:9764:577f:477e])
-        by smtp.gmail.com with ESMTPSA id j20sm315173ooc.29.2021.04.14.19.55.08
+        by smtp.gmail.com with ESMTPSA id o2sm356954oti.30.2021.04.14.19.55.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 19:55:08 -0700 (PDT)
+        Wed, 14 Apr 2021 19:55:09 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearson@hpe.com>
-Subject: [PATCH for-next v2 3/9] RDMA/rxe: Enable MW object pool
-Date:   Wed, 14 Apr 2021 21:54:24 -0500
-Message-Id: <20210415025429.11053-4-rpearson@hpe.com>
+Subject: [PATCH for-next v2 4/9] RDMA/rxe: Add ib_alloc_mw and ib_dealloc_mw verbs
+Date:   Wed, 14 Apr 2021 21:54:25 -0500
+Message-Id: <20210415025429.11053-5-rpearson@hpe.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210415025429.11053-1-rpearson@hpe.com>
 References: <20210415025429.11053-1-rpearson@hpe.com>
@@ -63,112 +63,214 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Currently the rxe driver has a rxe_mw struct object but
-nothing about memory windows is enabled. This patch
-turns on memory windows and some minor cleanup.
+Add ib_alloc_mw and ib_dealloc_mw verbs APIs.
 
-Set device attribute in rxe.c so max_mw = MAX_MW.
-Change parameters in rxe_param.h so that MAX_MW is the same as MAX_MR.
-Reduce the number of MRs and MWs to 4K from 256K.
-Add device capability bits for 2a and 2b memory windows.
-Removed RXE_MR_TYPE_MW from the rxe_mr_type enum.
+Added new file rxe_mw.c focused on MWs.
+Changed the 8 bit random key generator.
+Added a cleanup routine for MWs.
+Added verbs routines to ib_device_ops.
 
 Signed-off-by: Bob Pearson <rpearson@hpe.com>
 ---
- drivers/infiniband/sw/rxe/rxe.c       |  1 +
- drivers/infiniband/sw/rxe/rxe_param.h | 19 ++++++++++++-------
- drivers/infiniband/sw/rxe/rxe_verbs.h |  1 -
- 3 files changed, 13 insertions(+), 8 deletions(-)
+ drivers/infiniband/sw/rxe/Makefile    |  1 +
+ drivers/infiniband/sw/rxe/rxe_loc.h   |  6 +++
+ drivers/infiniband/sw/rxe/rxe_mr.c    | 20 +++++-----
+ drivers/infiniband/sw/rxe/rxe_mw.c    | 53 +++++++++++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_pool.c  |  1 +
+ drivers/infiniband/sw/rxe/rxe_verbs.c |  3 ++
+ drivers/infiniband/sw/rxe/rxe_verbs.h |  2 +
+ 7 files changed, 75 insertions(+), 11 deletions(-)
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_mw.c
 
-diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-index 95f0de0c8b49..8e0f9c489cab 100644
---- a/drivers/infiniband/sw/rxe/rxe.c
-+++ b/drivers/infiniband/sw/rxe/rxe.c
-@@ -54,6 +54,7 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
- 	rxe->attr.max_cq			= RXE_MAX_CQ;
- 	rxe->attr.max_cqe			= (1 << RXE_MAX_LOG_CQE) - 1;
- 	rxe->attr.max_mr			= RXE_MAX_MR;
-+	rxe->attr.max_mw			= RXE_MAX_MW;
- 	rxe->attr.max_pd			= RXE_MAX_PD;
- 	rxe->attr.max_qp_rd_atom		= RXE_MAX_QP_RD_ATOM;
- 	rxe->attr.max_res_rd_atom		= RXE_MAX_RES_RD_ATOM;
-diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
-index 25ab50d9b7c2..742e6ec93686 100644
---- a/drivers/infiniband/sw/rxe/rxe_param.h
-+++ b/drivers/infiniband/sw/rxe/rxe_param.h
-@@ -37,7 +37,6 @@ static inline enum ib_mtu eth_mtu_int_to_enum(int mtu)
- enum rxe_device_param {
- 	RXE_MAX_MR_SIZE			= -1ull,
- 	RXE_PAGE_SIZE_CAP		= 0xfffff000,
--	RXE_MAX_QP			= 0x10000,
- 	RXE_MAX_QP_WR			= 0x4000,
- 	RXE_DEVICE_CAP_FLAGS		= IB_DEVICE_BAD_PKEY_CNTR
- 					| IB_DEVICE_BAD_QKEY_CNTR
-@@ -49,7 +48,10 @@ enum rxe_device_param {
- 					| IB_DEVICE_RC_RNR_NAK_GEN
- 					| IB_DEVICE_SRQ_RESIZE
- 					| IB_DEVICE_MEM_MGT_EXTENSIONS
--					| IB_DEVICE_ALLOW_USER_UNREG,
-+					| IB_DEVICE_ALLOW_USER_UNREG
-+					| IB_DEVICE_MEM_WINDOW
-+					| IB_DEVICE_MEM_WINDOW_TYPE_2A
-+					| IB_DEVICE_MEM_WINDOW_TYPE_2B,
- 	RXE_MAX_SGE			= 32,
- 	RXE_MAX_WQE_SIZE		= sizeof(struct rxe_send_wqe) +
- 					  sizeof(struct ib_sge) * RXE_MAX_SGE,
-@@ -58,7 +60,6 @@ enum rxe_device_param {
- 	RXE_MAX_SGE_RD			= 32,
- 	RXE_MAX_CQ			= 16384,
- 	RXE_MAX_LOG_CQE			= 15,
--	RXE_MAX_MR			= 256 * 1024,
- 	RXE_MAX_PD			= 0x7ffc,
- 	RXE_MAX_QP_RD_ATOM		= 128,
- 	RXE_MAX_RES_RD_ATOM		= 0x3f000,
-@@ -67,7 +68,6 @@ enum rxe_device_param {
- 	RXE_MAX_MCAST_QP_ATTACH		= 56,
- 	RXE_MAX_TOT_MCAST_QP_ATTACH	= 0x70000,
- 	RXE_MAX_AH			= 100,
--	RXE_MAX_SRQ			= 960,
- 	RXE_MAX_SRQ_WR			= 0x4000,
- 	RXE_MIN_SRQ_WR			= 1,
- 	RXE_MAX_SRQ_SGE			= 27,
-@@ -80,16 +80,21 @@ enum rxe_device_param {
- 
- 	RXE_NUM_PORT			= 1,
- 
-+	RXE_MAX_QP			= 0x10000,
- 	RXE_MIN_QP_INDEX		= 16,
- 	RXE_MAX_QP_INDEX		= 0x00020000,
- 
-+	RXE_MAX_SRQ			= 0x00001000,
- 	RXE_MIN_SRQ_INDEX		= 0x00020001,
- 	RXE_MAX_SRQ_INDEX		= 0x00040000,
- 
-+	RXE_MAX_MR			= 0x00001000,
-+	RXE_MAX_MW			= 0x00001000,
- 	RXE_MIN_MR_INDEX		= 0x00000001,
--	RXE_MAX_MR_INDEX		= 0x00040000,
--	RXE_MIN_MW_INDEX		= 0x00040001,
--	RXE_MAX_MW_INDEX		= 0x00060000,
-+	RXE_MAX_MR_INDEX		= 0x00010000,
-+	RXE_MIN_MW_INDEX		= 0x00010001,
-+	RXE_MAX_MW_INDEX		= 0x00020000,
-+
- 	RXE_MAX_PKT_PER_ACK		= 64,
- 
- 	RXE_MAX_UNACKED_PSNS		= 128,
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index 11eba7a3ba8f..8d32e3f50813 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -273,7 +273,6 @@ enum rxe_mr_type {
- 	RXE_MR_TYPE_NONE,
- 	RXE_MR_TYPE_DMA,
- 	RXE_MR_TYPE_MR,
--	RXE_MR_TYPE_MW,
+diff --git a/drivers/infiniband/sw/rxe/Makefile b/drivers/infiniband/sw/rxe/Makefile
+index 66af72dca759..1e24673e9318 100644
+--- a/drivers/infiniband/sw/rxe/Makefile
++++ b/drivers/infiniband/sw/rxe/Makefile
+@@ -15,6 +15,7 @@ rdma_rxe-y := \
+ 	rxe_qp.o \
+ 	rxe_cq.o \
+ 	rxe_mr.o \
++	rxe_mw.o \
+ 	rxe_opcode.o \
+ 	rxe_mmap.o \
+ 	rxe_icrc.o \
+diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+index ef8061d2fbe0..edf575930a98 100644
+--- a/drivers/infiniband/sw/rxe/rxe_loc.h
++++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+@@ -76,6 +76,7 @@ enum copy_direction {
+ 	from_mr_obj,
  };
  
- #define RXE_BUF_PER_MAP		(PAGE_SIZE / sizeof(struct rxe_phys_buf))
++u8 rxe_get_next_key(u32 last_key);
+ void rxe_mr_init_dma(struct rxe_pd *pd, int access, struct rxe_mr *mr);
+ 
+ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+@@ -106,6 +107,11 @@ void rxe_mr_cleanup(struct rxe_pool_entry *arg);
+ 
+ int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
+ 
++/* rxe_mw.c */
++int rxe_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata);
++int rxe_dealloc_mw(struct ib_mw *ibmw);
++void rxe_mw_cleanup(struct rxe_pool_entry *arg);
++
+ /* rxe_net.c */
+ void rxe_loopback(struct sk_buff *skb);
+ int rxe_send(struct rxe_pkt_info *pkt, struct sk_buff *skb);
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index 9f63947bab12..7f2cfc1ce659 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -7,19 +7,17 @@
+ #include "rxe.h"
+ #include "rxe_loc.h"
+ 
+-/*
+- * lfsr (linear feedback shift register) with period 255
++/* Return a random 8 bit key value that is
++ * different than the last_key. Set last_key to -1
++ * if this is the first key for an MR or MW
+  */
+-static u8 rxe_get_key(void)
++u8 rxe_get_next_key(u32 last_key)
+ {
+-	static u32 key = 1;
+-
+-	key = key << 1;
+-
+-	key |= (0 != (key & 0x100)) ^ (0 != (key & 0x10))
+-		^ (0 != (key & 0x80)) ^ (0 != (key & 0x40));
++	u8 key;
+ 
+-	key &= 0xff;
++	do {
++		get_random_bytes(&key, 1);
++	} while (key == last_key);
+ 
+ 	return key;
+ }
+@@ -47,7 +45,7 @@ int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
+ 
+ static void rxe_mr_init(int access, struct rxe_mr *mr)
+ {
+-	u32 lkey = mr->pelem.index << 8 | rxe_get_key();
++	u32 lkey = mr->pelem.index << 8 | rxe_get_next_key(-1);
+ 	u32 rkey = (access & IB_ACCESS_REMOTE) ? lkey : 0;
+ 
+ 	mr->ibmr.lkey = lkey;
+diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
+new file mode 100644
+index 000000000000..69128e298d44
+--- /dev/null
++++ b/drivers/infiniband/sw/rxe/rxe_mw.c
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
++/*
++ * Copyright (c) 2020 Hewlett Packard Enterprise, Inc. All rights reserved.
++ */
++
++#include "rxe.h"
++
++int rxe_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
++{
++	struct rxe_mw *mw = to_rmw(ibmw);
++	struct rxe_pd *pd = to_rpd(ibmw->pd);
++	struct rxe_dev *rxe = to_rdev(ibmw->device);
++	int ret;
++
++	rxe_add_ref(pd);
++
++	ret = rxe_add_to_pool(&rxe->mw_pool, mw);
++	if (ret) {
++		rxe_drop_ref(pd);
++		return ret;
++	}
++
++	rxe_add_index(mw);
++	ibmw->rkey = (mw->pelem.index << 8) | rxe_get_next_key(-1);
++	mw->state = (mw->ibmw.type == IB_MW_TYPE_2) ?
++			RXE_MW_STATE_FREE : RXE_MW_STATE_VALID;
++	spin_lock_init(&mw->lock);
++
++	return 0;
++}
++
++int rxe_dealloc_mw(struct ib_mw *ibmw)
++{
++	struct rxe_mw *mw = to_rmw(ibmw);
++	struct rxe_pd *pd = to_rpd(ibmw->pd);
++	unsigned long flags;
++
++	spin_lock_irqsave(&mw->lock, flags);
++	mw->state = RXE_MW_STATE_INVALID;
++	spin_unlock_irqrestore(&mw->lock, flags);
++
++	rxe_drop_ref(mw);
++	rxe_drop_ref(pd);
++
++	return 0;
++}
++
++void rxe_mw_cleanup(struct rxe_pool_entry *elem)
++{
++	struct rxe_mw *mw = container_of(elem, typeof(*mw), pelem);
++
++	rxe_drop_index(mw);
++}
+diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+index 2b795e2fc4b3..5b3277e8c35d 100644
+--- a/drivers/infiniband/sw/rxe/rxe_pool.c
++++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+@@ -65,6 +65,7 @@ struct rxe_type_info rxe_type_info[RXE_NUM_TYPES] = {
+ 		.name		= "rxe-mw",
+ 		.size		= sizeof(struct rxe_mw),
+ 		.elem_offset	= offsetof(struct rxe_mw, pelem),
++		.cleanup	= rxe_mw_cleanup,
+ 		.flags		= RXE_POOL_INDEX | RXE_POOL_NO_ALLOC,
+ 		.max_index	= RXE_MAX_MW_INDEX,
+ 		.min_index	= RXE_MIN_MW_INDEX,
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index aeb5e232c195..fff81bf78a86 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -1060,6 +1060,7 @@ static const struct ib_device_ops rxe_dev_ops = {
+ 
+ 	.alloc_hw_stats = rxe_ib_alloc_hw_stats,
+ 	.alloc_mr = rxe_alloc_mr,
++	.alloc_mw = rxe_alloc_mw,
+ 	.alloc_pd = rxe_alloc_pd,
+ 	.alloc_ucontext = rxe_alloc_ucontext,
+ 	.attach_mcast = rxe_attach_mcast,
+@@ -1069,6 +1070,7 @@ static const struct ib_device_ops rxe_dev_ops = {
+ 	.create_srq = rxe_create_srq,
+ 	.create_user_ah = rxe_create_ah,
+ 	.dealloc_driver = rxe_dealloc,
++	.dealloc_mw = rxe_dealloc_mw,
+ 	.dealloc_pd = rxe_dealloc_pd,
+ 	.dealloc_ucontext = rxe_dealloc_ucontext,
+ 	.dereg_mr = rxe_dereg_mr,
+@@ -1106,6 +1108,7 @@ static const struct ib_device_ops rxe_dev_ops = {
+ 
+ 	INIT_RDMA_OBJ_SIZE(ib_ah, rxe_ah, ibah),
+ 	INIT_RDMA_OBJ_SIZE(ib_cq, rxe_cq, ibcq),
++	INIT_RDMA_OBJ_SIZE(ib_mw, rxe_mw, ibmw),
+ 	INIT_RDMA_OBJ_SIZE(ib_pd, rxe_pd, ibpd),
+ 	INIT_RDMA_OBJ_SIZE(ib_srq, rxe_srq, ibsrq),
+ 	INIT_RDMA_OBJ_SIZE(ib_ucontext, rxe_ucontext, ibuc),
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index 8d32e3f50813..c8597ae8c833 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -323,6 +323,8 @@ enum rxe_mw_state {
+ struct rxe_mw {
+ 	struct ib_mw ibmw;
+ 	struct rxe_pool_entry pelem;
++	spinlock_t lock;
++	enum rxe_mw_state state;
+ };
+ 
+ struct rxe_mc_grp {
 -- 
 2.27.0
 
