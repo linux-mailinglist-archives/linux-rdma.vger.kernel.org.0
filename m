@@ -2,115 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C79835FCDC
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Apr 2021 22:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 670E1360023
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Apr 2021 04:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238808AbhDNUwg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 14 Apr 2021 16:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33528 "EHLO
+        id S229649AbhDOCz3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 14 Apr 2021 22:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231319AbhDNUwf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Apr 2021 16:52:35 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96AB4C061574
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Apr 2021 13:52:11 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id x76so13656640ybe.5
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Apr 2021 13:52:11 -0700 (PDT)
+        with ESMTP id S229467AbhDOCz2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 14 Apr 2021 22:55:28 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56A4C061574
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Apr 2021 19:55:04 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id y23-20020a4ade170000b02901e6250b3be6so2590338oot.5
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Apr 2021 19:55:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qMc1dVoRXovpTYQV/nXgGHQYIIUU1MZrniZIcaPAzYI=;
-        b=jZ63PQvS0OSJEWxuC8eQL+mgIeY3zye5GVk1y4o1Jz5FWVvQk/PfIiL7GTYhxNoeq0
-         rGznM1hJWUQXA6P+waeuHPSY/DJs03JNq0uVwSWPnPsBzxVjgnn6TMUzGdV111v1vp2Q
-         /nX5IfLwP9juprGuNEOuTT07JchH9A7AGMglO6Rb+9+c7hhfVbUxRh2zz0sBnmQacfBf
-         EWnX8k44LFD6bjU3kBqM3T1EuffW2JooY05UpEBA0BKMVo1IB4OZNKKbX1gUPW2isFLB
-         R4bgmou+/6jqYIgPw+6DqLVgue9r1GJfCIJRUL/HusGRiJ45hR+a3JnPDjJrbBlQveOp
-         CdDw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/tLcfSlgxrXUi90RRjno4hVCSokvC8NAcUYeejW79RM=;
+        b=vR2Sy6twjbC3MoD9L9muEIciZC63w5V8t33pxD4lfRSfzhIV5Zym3uRPMQY0/vmnGZ
+         kbzzItRnzuAyP+t3lWdigmGXJIfO0fcuGui5wMwgZ0gyMn+f93R0IdwBrkf44FHS+k20
+         qx/pD4v25xOC1mhQrO7zo/teXzJ9u53HUPVpvEEMjy6ZEXgpbRX2iphMII5SAWcyPfcX
+         OiodGMpqoZ4CXJJhjWTvMw+nMnQISAlAL2YcQ1yot+D7ywWY/Ik1KSaJfr5G/zHAiHFG
+         SU/fKWcxaNITvV3cdBFsAwPQI9/G0uwE4QRdIIbuNX5s/cfugI4QBoEx6AK93L59pBU7
+         PNdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qMc1dVoRXovpTYQV/nXgGHQYIIUU1MZrniZIcaPAzYI=;
-        b=No2uKOFkA1Bs/rkDYKoCSy01oCT/pTn8ffJ3JIKRGE0Fq1rA7fAwsBwQv+yB+SsBhs
-         V927A681888/NulUqVMd0IQnD6YbLDVxfj7yIJv0fwp9hekv9iMWacDAhF86Mn2FLno6
-         VBM2oIMZCr1jfRngar20652kSv8JVCvq5pX4/dUkVqFwLgLnj3aX8qpizRKJ9F1yvw0h
-         Qb0HoYcan4CJDpfNAFPzdHgWCTawexXbZFF3ZUT94YCI/6oBbA9o7rUf+1Tvu7vrfYDr
-         PAQGMR8ksz4Gq3V1sy4cBRCGNUc683Rc4YbwiK/gqvdkSB8GFGr8vE9FcWRmdKnEY1aK
-         w+RA==
-X-Gm-Message-State: AOAM531f1sQyoQ/HSDBweCRXpzQDS3mMtXnWOtiMu6EPyUv4SLCYFiH5
-        ZlIPWgTKLUOEhR57OS0CYwxlLSwBxgIbspiBIwwVTQ==
-X-Google-Smtp-Source: ABdhPJyqMKv7jKazLHNQr9xfoSHuUWvXv3SH59PCH1Ndn1yE1hoJqvYOK5wZMT0jkn32p4YGeb+4ZAvFlg7cBrY5JE0=
-X-Received: by 2002:a25:850b:: with SMTP id w11mr55634403ybk.518.1618433530591;
- Wed, 14 Apr 2021 13:52:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/tLcfSlgxrXUi90RRjno4hVCSokvC8NAcUYeejW79RM=;
+        b=hxFK2iIxPiMmFyAB1l5GGUokCVgujrCFwlFbB9Yw6wJdG3o7ABoOCVh0h0mDdUh6qW
+         pYvjXEPJWW6bh3gvuigXqnz2niQK/xZmsrwPbbm9PIvSAiboB4lgmsPW3UZ0LOZJ1ECW
+         19IQy8GdztNxO6kZyJbrIFVt+AqiiD1hPgc3JSEggYxRCWyBa7tkIf7dRKsXjXzOuRLI
+         6AXvsgRGb/r5zkH0hs91E1qRJvY7d+HTn1ZoECM8mIeVB/iJKMKWQTZAnDzOSXCph0jC
+         0TwkIAOGg4U+g0n2H+mKRXJKr4c74cnpA037t+hDFIcNe/Q4+TXd43Q+MkF+Yb4ZIvyF
+         kPLA==
+X-Gm-Message-State: AOAM532Qb/B9MYwHK6KxvlM2LDlo2M8uUlZBk8T3F1CbFinBL0sJ8rxm
+        CbV2sH07xVRStP97HWd8F14=
+X-Google-Smtp-Source: ABdhPJyK/25suHIec23evn3VQaEWNPgND1hELgkhv/mE6kCsFAQ/WSuPW0OG6+VvpTh2dqkXeiSnIg==
+X-Received: by 2002:a4a:b305:: with SMTP id m5mr952455ooo.76.1618455304379;
+        Wed, 14 Apr 2021 19:55:04 -0700 (PDT)
+Received: from localhost (2603-8081-140c-1a00-9ee3-9764-577f-477e.res6.spectrum.com. [2603:8081:140c:1a00:9ee3:9764:577f:477e])
+        by smtp.gmail.com with ESMTPSA id q22sm361801otf.72.2021.04.14.19.55.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 19:55:04 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearson@hpe.com>
+Subject: [PATCH for-next v2 0/9] RDMA/rxe: Implement memory windows
+Date:   Wed, 14 Apr 2021 21:54:21 -0500
+Message-Id: <20210415025429.11053-1-rpearson@hpe.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-3-mcroce@linux.microsoft.com> <20210410154824.GZ2531743@casper.infradead.org>
- <YHHPbQm2pn2ysth0@enceladus> <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
- <YHHuE7g73mZNrMV4@enceladus> <20210414214132.74f721dd@carbon> <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
-In-Reply-To: <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 14 Apr 2021 22:51:59 +0200
-Message-ID: <CANn89i+ASy7d+ew0BrnsB5aH8BPb+kr_pazWgfaAB9939o-cmQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 10:09 PM Shakeel Butt <shakeelb@google.com> wrote:
+This series of patches implement memory windows for the rdma_rxe
+driver. This is a shorter reimplementation of an earlier patch
+set. They apply to and depend on the current for-next linux rdma
+tree.
 
->
-> I will let TCP RX zerocopy experts respond to this but from my high
-> level code inspection, I didn't see page->private usage.
+Signed-off-by: Bob Pearson <rpearson@hpe.com>
+---
+v2:
+  cleaned up an issue in rdma_user_rxe.h
+  cleaned up a collision in rxe_resp.c
 
-Indeed, we do not use page->private, since we do not own the page(s).
+Bob Pearson (9):
+  RDMA/rxe: Add bind MW fields to rxe_send_wr
+  RDMA/rxe: Return errors for add index and key
+  RDMA/rxe: Enable MW object pool
+  RDMA/rxe: Add ib_alloc_mw and ib_dealloc_mw verbs
+  RDMA/rxe: Replace WR_REG_MASK by WR_LOCAL_OP_MASK
+  RDMA/rxe: Move local ops to subroutine
+  RDMA/rxe: Add support for bind MW work requests
+  RDMA/rxe: Implement invalidate MW operations
+  RDMA/rxe: Implement memory access through MWs
+
+ drivers/infiniband/sw/rxe/Makefile     |   1 +
+ drivers/infiniband/sw/rxe/rxe.c        |   1 +
+ drivers/infiniband/sw/rxe/rxe_comp.c   |   1 +
+ drivers/infiniband/sw/rxe/rxe_loc.h    |  29 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c     |  79 ++++--
+ drivers/infiniband/sw/rxe/rxe_mw.c     | 356 +++++++++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_opcode.c |  11 +-
+ drivers/infiniband/sw/rxe/rxe_opcode.h |   3 +-
+ drivers/infiniband/sw/rxe/rxe_param.h  |  19 +-
+ drivers/infiniband/sw/rxe/rxe_pool.c   |  45 ++--
+ drivers/infiniband/sw/rxe/rxe_pool.h   |   8 +-
+ drivers/infiniband/sw/rxe/rxe_req.c    | 102 ++++---
+ drivers/infiniband/sw/rxe/rxe_resp.c   | 110 +++++---
+ drivers/infiniband/sw/rxe/rxe_verbs.c  |   5 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.h  |  38 ++-
+ include/uapi/rdma/rdma_user_rxe.h      |  34 ++-
+ 16 files changed, 691 insertions(+), 151 deletions(-)
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_mw.c
+-- 
+2.27.0
+
