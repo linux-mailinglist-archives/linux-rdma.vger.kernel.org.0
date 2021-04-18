@@ -2,35 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681E73635C3
+	by mail.lfdr.de (Postfix) with ESMTP id 8F45C3635C4
 	for <lists+linux-rdma@lfdr.de>; Sun, 18 Apr 2021 15:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbhDRN4b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 18 Apr 2021 09:56:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47128 "EHLO mail.kernel.org"
+        id S229630AbhDRN4e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 18 Apr 2021 09:56:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229630AbhDRN4a (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 18 Apr 2021 09:56:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FFCA6134F;
-        Sun, 18 Apr 2021 13:56:01 +0000 (UTC)
+        id S231434AbhDRN4e (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 18 Apr 2021 09:56:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CE8661278;
+        Sun, 18 Apr 2021 13:56:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618754162;
-        bh=qQ1yd2ryIzr37VFuu7iTWK3GnvRzPLu5wRht3JxBvg0=;
+        s=k20201202; t=1618754166;
+        bh=xTQVU23vv4vFVH8b5sqfOmXOSliZQPjEFMVWz/T3f6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tB/IsoP0SHbRgtFgFDK7cjzmbmdqMgPb1DBCnBKiJCwopyb9O7xQ27Vo2xUF3YQ41
-         mN+FgEeLNYlqvuqeP20w6TUoWabD5jTVZ4GcrEcvDR85T0gQU8qYFytzcwZnEUWY2c
-         spOR6/USVHERc4KrupVood0Wqe0EgRVZW6V2P+NH82ZGpwU1EC80eS+LfeeTEpdcaW
-         FG7a0whhaYFqw9GzA9PZ6LiUfaUHQ19UGxBJWsBsgwYSCP1RPezhNiQNLb3tUHCz1K
-         Ay8VE6WJ52/OlAgdByHKcXV1ObSPvBGniAoTtTfQxPvfm+VHYSWjwXJOmrNfpjLFP5
-         I43CFZsMD4GDw==
+        b=WcWioemJV1yHD+l77bhts+A8GxjjoorbaXhXE+CjdtzhSlcZwIxVWwodWP+l9N0n9
+         Gsub3QILeOjG0zKypwFdqnwopbTZhJjWsGGTXoYFmoDIEEXxEOJ/sSkRXX0XKqhMDB
+         zLMQmYqKYh4v4jMDh5GracXfBZ9Z7vlVI0F0bjvUef4xhnx7JGS5I8yRhSx9xE6ZPp
+         Rb2+HsQRxeFm1VB/5WMkx7zCBcvZ4afwrO0pxFGiR/wgVpvuHspcUTS05K8HA/bXgm
+         a2ug6d1ZAbLp3G5h24tFsUm8H26SaN1jV/u73RtwrHeZWKXvwMty4F3/hK9EoqyZ3y
+         +ueGdGXk3JGFQ==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Shay Drory <shayd@nvidia.com>, Krishna Kumar <krkumar2@in.ibm.com>,
-        linux-rdma@vger.kernel.org, Sean Hefty <sean.hefty@intel.com>
-Subject: [PATCH rdma-next 2/3] RDMA/core: Fix check of device in rdma_listen()
-Date:   Sun, 18 Apr 2021 16:55:53 +0300
-Message-Id: <b925e11d639726afbaaeea5aeaa58572b3aacf8e.1618753862.git.leonro@nvidia.com>
+Cc:     Shay Drory <shayd@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next 3/3] RDMA/core: Add CM to restrack after successful attachment to a device
+Date:   Sun, 18 Apr 2021 16:55:54 +0300
+Message-Id: <ab93e56ba831eac65c322b3256796fa1589ec0bb.1618753862.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1618753862.git.leonro@nvidia.com>
 References: <cover.1618753862.git.leonro@nvidia.com>
@@ -42,81 +41,104 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Shay Drory <shayd@nvidia.com>
 
-rdma_listen() checks if device already attached to rdma_id_priv,
-based on the response the its decide to what to listen, however
-this is different when the listeners are canceled.
+The device attach triggers addition of CM_ID to the restrack DB.
+However, when error occurs, we releasing this device, but defer CM_ID
+release. This causes to the situation where restrack sees CM_ID that
+is not valid anymore.
 
-This leads to a mismatch between rdma_listen() and cma_cancel_operation(),
-and causes to bellow wild-memory-access. Fix it by aligning rdma_listen()
-according to the cma_cancel_operation().
+As a solution, add the CM_ID to the resource tracking DB only after
+the attachment is finished.
 
 Found by syzcaller:
-BUG: KASAN: wild-memory-access in __list_del include/linux/list.h:112 [inline]
-BUG: KASAN: wild-memory-access in __list_del_entry include/linux/list.h:135 [inline]
-BUG: KASAN: wild-memory-access in list_del include/linux/list.h:146 [inline]
-BUG: KASAN: wild-memory-access in cma_cancel_listens drivers/infiniband/core/cma.c:1767 [inline]
-BUG: KASAN: wild-memory-access in cma_cancel_operation drivers/infiniband/core/cma.c:1795 [inline]
-BUG: KASAN: wild-memory-access in cma_cancel_operation+0x1f4/0x4b0 drivers/infiniband/core/cma.c:1783
-Write of size 8 at addr dead000000000108 by task syz-executor716/334
+infiniband syz0: added syz_tun
+rdma_rxe: ignoring netdev event = 10 for syz_tun
+infiniband syz0: set down
+infiniband syz0: ib_query_port failed (-19)
+restrack: ------------[ cut here    ]------------
+infiniband syz0: BUG: RESTRACK detected leak of resources
+restrack: User CM_ID object allocated by syz-executor716 is not freed
+restrack: ------------[ cut here    ]------------
 
-CPU: 0 PID: 334 Comm: syz-executor716 Not tainted 5.11.0+ #271
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0xbe/0xf9 lib/dump_stack.c:120
- __kasan_report mm/kasan/report.c:400 [inline]
- kasan_report.cold+0x5f/0xd5 mm/kasan/report.c:413
- __list_del include/linux/list.h:112 [inline]
- __list_del_entry include/linux/list.h:135 [inline]
- list_del include/linux/list.h:146 [inline]
- cma_cancel_listens drivers/infiniband/core/cma.c:1767 [inline]
- cma_cancel_operation drivers/infiniband/core/cma.c:1795 [inline]
- cma_cancel_operation+0x1f4/0x4b0 drivers/infiniband/core/cma.c:1783
- _destroy_id+0x29/0x460 drivers/infiniband/core/cma.c:1862
- ucma_close_id+0x36/0x50 drivers/infiniband/core/ucma.c:185
- ucma_destroy_private_ctx+0x58d/0x5b0 drivers/infiniband/core/ucma.c:576
- ucma_close+0x91/0xd0 drivers/infiniband/core/ucma.c:1797
- __fput+0x169/0x540 fs/file_table.c:280
- task_work_run+0xb7/0x100 kernel/task_work.c:140
- exit_task_work include/linux/task_work.h:30 [inline]
- do_exit+0x7da/0x17f0 kernel/exit.c:825
- do_group_exit+0x9e/0x190 kernel/exit.c:922
- __do_sys_exit_group kernel/exit.c:933 [inline]
- __se_sys_exit_group kernel/exit.c:931 [inline]
- __x64_sys_exit_group+0x2d/0x30 kernel/exit.c:931
- do_syscall_64+0x2d/0x40 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x44a326
-Code: Unable to access opcode bytes at RIP 0x44a2fc.
-RSP: 002b:00007ffd14306748 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 00000000006c4490 RCX: 000000000044a326
-RDX: 0000000000000001 RSI: 000000000000003c RDI: 0000000000000001
-RBP: 0000000000000001 R08: 00000000000000e7 R09: ffffffffffffffc0
-R10: bb1414ac000000c2 R11: 0000000000000246 R12: 00000000006c4490
-R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
-==================================================================
-
-Fixes: 255d0c14b375 ("RDMA/cma: rdma_bind_addr() leaks a cma_dev reference count")
+Fixes: b09c4d701220 ("RDMA/restrack: Improve readability in task name management")
 Signed-off-by: Shay Drory <shayd@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/cma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/core/cma.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 2dc302a83014..cc990adaf2b5 100644
+index cc990adaf2b5..1db2279cff18 100644
 --- a/drivers/infiniband/core/cma.c
 +++ b/drivers/infiniband/core/cma.c
-@@ -3768,7 +3768,7 @@ int rdma_listen(struct rdma_cm_id *id, int backlog)
+@@ -454,7 +454,6 @@ static void _cma_attach_to_dev(struct rdma_id_private *id_priv,
+ 	id_priv->id.route.addr.dev_addr.transport =
+ 		rdma_node_get_transport(cma_dev->device->node_type);
+ 	list_add_tail(&id_priv->list, &cma_dev->id_list);
+-	rdma_restrack_add(&id_priv->res);
+ 
+ 	trace_cm_id_attach(id_priv, cma_dev->device);
+ }
+@@ -691,6 +690,7 @@ static int cma_ib_acquire_dev(struct rdma_id_private *id_priv,
+ 	mutex_lock(&lock);
+ 	cma_attach_to_dev(id_priv, listen_id_priv->cma_dev);
+ 	mutex_unlock(&lock);
++	rdma_restrack_add(&id_priv->res);
+ 	return 0;
+ }
+ 
+@@ -745,8 +745,10 @@ static int cma_iw_acquire_dev(struct rdma_id_private *id_priv,
  	}
  
- 	id_priv->backlog = backlog;
--	if (id->device) {
-+	if (id_priv->cma_dev) {
- 		if (rdma_cap_ib_cm(id->device, 1)) {
- 			ret = cma_ib_listen(id_priv);
- 			if (ret)
+ out:
+-	if (!ret)
++	if (!ret) {
+ 		cma_attach_to_dev(id_priv, cma_dev);
++		rdma_restrack_add(&id_priv->res);
++	}
+ 
+ 	mutex_unlock(&lock);
+ 	return ret;
+@@ -807,6 +809,7 @@ static int cma_resolve_ib_dev(struct rdma_id_private *id_priv)
+ 
+ found:
+ 	cma_attach_to_dev(id_priv, cma_dev);
++	rdma_restrack_add(&id_priv->res);
+ 	mutex_unlock(&lock);
+ 	addr = (struct sockaddr_ib *)cma_src_addr(id_priv);
+ 	memcpy(&addr->sib_addr, &sgid, sizeof(sgid));
+@@ -2526,6 +2529,7 @@ static int cma_listen_on_dev(struct rdma_id_private *id_priv,
+ 	       rdma_addr_size(cma_src_addr(id_priv)));
+ 
+ 	_cma_attach_to_dev(dev_id_priv, cma_dev);
++	rdma_restrack_add(&dev_id_priv->res);
+ 	cma_id_get(id_priv);
+ 	dev_id_priv->internal_id = 1;
+ 	dev_id_priv->afonly = id_priv->afonly;
+@@ -3203,6 +3207,7 @@ static int cma_bind_loopback(struct rdma_id_private *id_priv)
+ 	ib_addr_set_pkey(&id_priv->id.route.addr.dev_addr, pkey);
+ 	id_priv->id.port_num = p;
+ 	cma_attach_to_dev(id_priv, cma_dev);
++	rdma_restrack_add(&id_priv->res);
+ 	cma_set_loopback(cma_src_addr(id_priv));
+ out:
+ 	mutex_unlock(&lock);
+@@ -3235,6 +3240,7 @@ static void addr_handler(int status, struct sockaddr *src_addr,
+ 		if (status)
+ 			pr_debug_ratelimited("RDMA CM: ADDR_ERROR: failed to acquire device. status %d\n",
+ 					     status);
++		rdma_restrack_add(&id_priv->res);
+ 	} else if (status) {
+ 		pr_debug_ratelimited("RDMA CM: ADDR_ERROR: failed to resolve IP. status %d\n", status);
+ 	}
+@@ -3846,6 +3852,8 @@ int rdma_bind_addr(struct rdma_cm_id *id, struct sockaddr *addr)
+ 	if (ret)
+ 		goto err2;
+ 
++	if (!cma_any_addr(addr))
++		rdma_restrack_add(&id_priv->res);
+ 	return 0;
+ err2:
+ 	if (id_priv->cma_dev)
 -- 
 2.30.2
 
