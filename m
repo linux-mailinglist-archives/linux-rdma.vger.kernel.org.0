@@ -2,91 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D1E3634DD
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Apr 2021 13:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E30C23634E8
+	for <lists+linux-rdma@lfdr.de>; Sun, 18 Apr 2021 13:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbhDRLaj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 18 Apr 2021 07:30:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47140 "EHLO mail.kernel.org"
+        id S229679AbhDRLvj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 18 Apr 2021 07:51:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229600AbhDRLai (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 18 Apr 2021 07:30:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7C1E610A1;
-        Sun, 18 Apr 2021 11:30:09 +0000 (UTC)
+        id S229574AbhDRLvi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 18 Apr 2021 07:51:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12BB661207;
+        Sun, 18 Apr 2021 11:51:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618745410;
-        bh=A8z1s34gsJtLKis3+DpKCjV//81Nr2WWpAV+3De/vHk=;
+        s=k20201202; t=1618746670;
+        bh=yNyR1LiE1DA8XrGTItMp716jk+EUoFMuSkUyeHkt/pU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NKRpqN2ucMbn1tVyPDS5mb0Hujk84xty4QUgtFiPMOQmI05ejMS39H+6WKTy113pz
-         bBy3Kv2E0PYusq7ra94HTaAukaYBWXkYmAz+9RiSnjbLes5LwKUCCJyDMdKD4LRNw/
-         KHtjWLhw/RSPeYEx++B/mKI4O27FtnhljYQBeddHogVICgVzgJyWb9xsfYxnRhPuAh
-         yqGUF5/VAy2K3Bo/ep528CIloRqvggBzGqdtWyl+kr73Vj+pufOgbIE/387idHqSBW
-         2O9IxgqTi3a0LBW9jHyQMJRA6fhaendjwhRYwu1H4hfIw8VEj6es8pkF29BWBAftjy
-         dcIoTWaWgsejw==
-Date:   Sun, 18 Apr 2021 14:30:07 +0300
+        b=QsRuLY+JhwIF5dQ4wZyzcRNYGW5r0XTP4YA0WdrQKmC11q22XBByNlzqU73zD35Es
+         X2w0LzvYUbuaVj3hWKtVrUMZ4znPVm1e+/02gzG+qJi55lZ0D7ipdhMlAOcgYUZc9P
+         cWOpzuBoep5Aap2sjq7ZfYiF8JhS51TkscHNQb0hdEKGi3C6xRcuy5mjCZKNWhypN4
+         jKaFgCppedqCp2zuBaW8lc+Kji3FZQeSUftLmEFbcDOb8zTUC66eIPETdwMrEir7wv
+         QM2Nyvv5aHBvr2/eYJob4u7Dti+R2luh/4nMq8nI3W/l3b093cId4IbB5l6A2kN6pK
+         iiN5kzFCmwTqA==
+Date:   Sun, 18 Apr 2021 14:51:07 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Hans Westgaard Ry <hans.westgaard.ry@oracle.com>
-Cc:     linux-rdma@vger.kernel.org, Jack Morgenstein <jackm@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>
-Subject: Re: [PATCH] net/mlx4: Treat VFs fair when handling
- comm_channel_events
-Message-ID: <YHwYP/+MRZ/7i9Yd@unreal>
-References: <1618487022-15770-1-git-send-email-hans.westgaard.ry@oracle.com>
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Cc:     Parav Pandit <parav@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Lacombe, John S" <john.s.lacombe@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Hefty, Sean" <sean.hefty@intel.com>,
+        "Keller, Jacob E" <jacob.e.keller@intel.com>
+Subject: Re: [PATCH v4 05/23] ice: Add devlink params support
+Message-ID: <YHwdKxtIi26ZmVlL@unreal>
+References: <20210406210125.241-1-shiraz.saleem@intel.com>
+ <20210406210125.241-6-shiraz.saleem@intel.com>
+ <20210407145705.GA499950@nvidia.com>
+ <e516fa3940984b0cb0134364b923fc8e@intel.com>
+ <20210407224631.GI282464@nvidia.com>
+ <c5a38fcf137e49c0af0bfa6edd3ec605@intel.com>
+ <BY5PR12MB43221FA2A6295C9CF23C798DDC709@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <8a7cd11994c2447a926cf2d3e60a019c@intel.com>
+ <BY5PR12MB4322A28E6678CBB8A6544026DC4F9@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <4d9a592fa5694de8aadc60db1376da20@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1618487022-15770-1-git-send-email-hans.westgaard.ry@oracle.com>
+In-Reply-To: <4d9a592fa5694de8aadc60db1376da20@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 01:43:42PM +0200, Hans Westgaard Ry wrote:
-> Handling comm_channel_event in mlx4_master_comm_channel uses a double
-> loop to determine which slaves have requested work. The search is
-> always started at lowest slave. This leads to unfairness; lower VFs
-> tends to be prioritized over higher VFs.
-> 
-> The patch uses find_next_bit to determine which slaves to handle.
-> Fairness is implemented by always starting at the next to the last
-> start.
-> 
-> An MPI program has been used to measure improvements. It runs 500
-> ibv_reg_mr, synchronizes with all other instances and then runs 500
-> ibv_dereg_mr.
-> 
-> The results running 500 processes, time reported is for running 500
-> calls:
-> 
-> ibv_reg_mr:
->              Mod.   Org.
-> mlx4_1    403.356ms 424.674ms
-> mlx4_2    403.355ms 424.674ms
-> mlx4_3    403.354ms 424.674ms
-> mlx4_4    403.355ms 424.674ms
-> mlx4_5    403.357ms 424.677ms
-> mlx4_6    403.354ms 424.676ms
-> mlx4_7    403.357ms 424.675ms
-> mlx4_8    403.355ms 424.675ms
-> 
-> ibv_dereg_mr:
->              Mod.   Org.
-> mlx4_1    116.408ms 142.818ms
-> mlx4_2    116.434ms 142.793ms
-> mlx4_3    116.488ms 143.247ms
-> mlx4_4    116.679ms 143.230ms
-> mlx4_5    112.017ms 107.204ms
-> mlx4_6    112.032ms 107.516ms
-> mlx4_7    112.083ms 184.195ms
-> mlx4_8    115.089ms 190.618ms
-> 
-> Suggested-by: Håkon Bugge <haakon.bugge@oracle.com>
-> Signed-off-by: Hans Westgaard Ry <hans.westgaard.ry@oracle.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx4/cmd.c  | 75 +++++++++++++++++--------------
->  drivers/net/ethernet/mellanox/mlx4/mlx4.h |  1 +
->  2 files changed, 43 insertions(+), 33 deletions(-)
+On Wed, Apr 14, 2021 at 12:21:08AM +0000, Saleem, Shiraz wrote:
+> > Subject: RE: [PATCH v4 05/23] ice: Add devlink params support
 
-Please fix kbuild error and resubmit to the netdev ML with Tariq CCed.
+<...>
+
+> > > Why not just allow the setting to apply dynamically during a 'set'
+> > > itself with an unplug/plug of the auxdev with correct type.
+> > >
+> > This suggestion came up in the internal discussion too.
+> > However such task needs to synchronize with devlink reload command and also
+> > with driver remove() sequence.
+> > So locking wise and depending on amount of config change, it is close to what
+> > reload will do.
+> 
+> Holding this mutex across the auxiliary device unplug/plug in "set" wont cut it?
+> https://elixir.bootlin.com/linux/v5.12-rc7/source/drivers/net/ethernet/mellanox/mlx5/core/main.c#L1304
+
+Like Parav said, we are working to fix it and already have one working
+solution, unfortunately it has one eyebrow raising change and we are
+trying another one.
+
+You can take a look here to get sense of the scope:
+https://git.kernel.org/pub/scm/linux/kernel/git/leon/linux-rdma.git/log/?h=devlink-core
 
 Thanks
