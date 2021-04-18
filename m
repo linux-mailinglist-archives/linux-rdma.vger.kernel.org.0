@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF12B36359C
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Apr 2021 15:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF8736359D
+	for <lists+linux-rdma@lfdr.de>; Sun, 18 Apr 2021 15:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbhDRNmE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 18 Apr 2021 09:42:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40548 "EHLO mail.kernel.org"
+        id S229826AbhDRNmG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 18 Apr 2021 09:42:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229474AbhDRNmD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 18 Apr 2021 09:42:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDDDE61001;
-        Sun, 18 Apr 2021 13:41:33 +0000 (UTC)
+        id S229474AbhDRNmF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 18 Apr 2021 09:42:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F4E061057;
+        Sun, 18 Apr 2021 13:41:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618753294;
-        bh=SOFpCGBIwUXE4yfvAK0X2Qcs2wI/OMmsQvZrtcvxtm8=;
+        s=k20201202; t=1618753297;
+        bh=tXgwfO/yXs6jZSq+SqoWxAy5cpv0WDFzMpBgfWDooGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kP7jop/kn3lDJwnUp2G1SNKOLZP7NnHwBD16oSlBHqdlkCgem/WcRsk0tfLp+dFR/
-         bNcGbmHFwImOmQsrSszMoxKqILqGoCCZnd/ht9wqZKdfLvIE0aat11/XniVufRGPY/
-         BTngILdYhtNP3kT9voX9WMJfJfZfMR4XSk2xwfGLd2cvTuTAkEO1sgi9fKfH7UkkYb
-         Xi5e0zV29AJ3IYy0ZfxzadH+7LHxfiEIZhk9/qJX4uWau5r2/OYVVR5mqVJ0M3zd4O
-         +uxrH3FycIXh70QinVuP0N2VFEzoo4O+a3UEPdd+w3meCuH4znXN6xdorU0WM3eLDU
-         2ydxpTY/kQZoQ==
+        b=tkGM6FQmqBv3B+VVNs9CUa7xfxR79BJYQ9e9UIg7UoPkDL0kdQXr63JR1/1LOubMi
+         X5soFUBu8YG1yiYLOyO8LfmX6H5MXkeXhsmCk+t6Bda8zkoo1L9Qj5l5cRMdqdjcYk
+         CR8FQ/8laUF1f7+koGEhA3g/AiQah3fz47iI1MUgdu4oP/zMfFaVnV9vNle5Jx9hNw
+         Kh+V/KAPp3hYg0Q+UQ/pceVQPkPGgLyOvZPWtdEsincbdj4Y4qEdxrHSrCOyoaOQL7
+         j/qKz97HkbWlSgwNe5RM/ZyBHArRE96liq73AZ2U3z4mwdBmeEYfBxG1h/fLcqAVMt
+         OKMuBz4DDJjBg==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Neta Ostrovsky <netao@nvidia.com>, linux-rdma@vger.kernel.org,
         Mark Zhang <markzhang@nvidia.com>
-Subject: [PATCH rdma-next 2/4] RDMA/restrack: Add support to get resource tracking for SRQ
-Date:   Sun, 18 Apr 2021 16:41:24 +0300
-Message-Id: <0db71c409f24f2f6b019bf8797a8fed96fe7079c.1618753110.git.leonro@nvidia.com>
+Subject: [PATCH rdma-next 3/4] RDMA/nldev: Return SRQ information
+Date:   Sun, 18 Apr 2021 16:41:25 +0300
+Message-Id: <322f9210b95812799190dd4a0fb92f3a3bba0333.1618753110.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1618753110.git.leonro@nvidia.com>
 References: <cover.1618753110.git.leonro@nvidia.com>
@@ -42,104 +42,138 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Neta Ostrovsky <netao@nvidia.com>
 
-In order to track SRQ resources, a new restrack object is initialized
-and added to the resource tracking database.
+Extend the RDMA nldev return a SRQ information, like SRQ number,
+SRQ type, PD number, CQ number and process ID that created that SRQ.
+
+Sample output:
+
+$ rdma res show srq
+dev ibp8s0f0 srqn 0 type BASIC pdn 3 comm [ib_ipoib]
+dev ibp8s0f0 srqn 4 type BASIC pdn 9 pid 3581 comm ibv_srq_pingpon
+dev ibp8s0f0 srqn 5 type BASIC pdn 10 pid 3584 comm ibv_srq_pingpon
+dev ibp8s0f0 srqn 6 type BASIC pdn 11 pid 3590 comm ibv_srq_pingpon
+dev ibp8s0f1 srqn 0 type BASIC pdn 3 comm [ib_ipoib]
+dev ibp8s0f1 srqn 1 type BASIC pdn 4 pid 3586 comm ibv_srq_pingpon
 
 Signed-off-by: Neta Ostrovsky <netao@nvidia.com>
 Reviewed-by: Mark Zhang <markzhang@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/restrack.c | 3 +++
- drivers/infiniband/core/verbs.c    | 7 +++++++
- include/rdma/ib_verbs.h            | 5 +++++
- include/rdma/restrack.h            | 4 ++++
- 4 files changed, 19 insertions(+)
+ drivers/infiniband/core/nldev.c  | 42 ++++++++++++++++++++++++++++++++
+ include/uapi/rdma/rdma_netlink.h |  6 +++++
+ 2 files changed, 48 insertions(+)
 
-diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
-index def0c5b0efe9..1f935d9f6178 100644
---- a/drivers/infiniband/core/restrack.c
-+++ b/drivers/infiniband/core/restrack.c
-@@ -47,6 +47,7 @@ static const char *type2str(enum rdma_restrack_type type)
- 		[RDMA_RESTRACK_MR] = "MR",
- 		[RDMA_RESTRACK_CTX] = "CTX",
- 		[RDMA_RESTRACK_COUNTER] = "COUNTER",
-+		[RDMA_RESTRACK_SRQ] = "SRQ",
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index d33d212298f6..a852af0d3045 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -132,6 +132,9 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
+ 	[RDMA_NLDEV_ATTR_RES_TYPE]		= { .type = NLA_U8 },
+ 	[RDMA_NLDEV_ATTR_RES_UNSAFE_GLOBAL_RKEY]= { .type = NLA_U32 },
+ 	[RDMA_NLDEV_ATTR_RES_USECNT]		= { .type = NLA_U64 },
++	[RDMA_NLDEV_ATTR_RES_SRQ]		= { .type = NLA_NESTED },
++	[RDMA_NLDEV_ATTR_RES_SRQN]		= { .type = NLA_U32 },
++	[RDMA_NLDEV_ATTR_RES_SRQ_ENTRY]		= { .type = NLA_NESTED },
+ 	[RDMA_NLDEV_ATTR_SM_LID]		= { .type = NLA_U32 },
+ 	[RDMA_NLDEV_ATTR_SUBNET_PREFIX]		= { .type = NLA_U64 },
+ 	[RDMA_NLDEV_ATTR_STAT_AUTO_MODE_MASK]	= { .type = NLA_U32 },
+@@ -387,6 +390,7 @@ static int fill_res_info(struct sk_buff *msg, struct ib_device *device)
+ 		[RDMA_RESTRACK_CM_ID] = "cm_id",
+ 		[RDMA_RESTRACK_MR] = "mr",
+ 		[RDMA_RESTRACK_CTX] = "ctx",
++		[RDMA_RESTRACK_SRQ] = "srq",
  	};
  
- 	return names[type];
-@@ -141,6 +142,8 @@ static struct ib_device *res_to_dev(struct rdma_restrack_entry *res)
- 		return container_of(res, struct ib_ucontext, res)->device;
- 	case RDMA_RESTRACK_COUNTER:
- 		return container_of(res, struct rdma_counter, res)->device;
-+	case RDMA_RESTRACK_SRQ:
-+		return container_of(res, struct ib_srq, res)->device;
- 	default:
- 		WARN_ONCE(true, "Wrong resource tracking type %u\n", res->type);
- 		return NULL;
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 5b6214b803a2..2b0798151fb7 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1039,8 +1039,12 @@ struct ib_srq *ib_create_srq_user(struct ib_pd *pd,
- 	}
- 	atomic_inc(&pd->usecnt);
- 
-+	rdma_restrack_new(&srq->res, RDMA_RESTRACK_SRQ);
-+	rdma_restrack_parent_name(&srq->res, &pd->res);
-+
- 	ret = pd->device->ops.create_srq(srq, srq_init_attr, udata);
- 	if (ret) {
-+		rdma_restrack_put(&srq->res);
- 		atomic_dec(&srq->pd->usecnt);
- 		if (srq->srq_type == IB_SRQT_XRC)
- 			atomic_dec(&srq->ext.xrc.xrcd->usecnt);
-@@ -1050,6 +1054,8 @@ struct ib_srq *ib_create_srq_user(struct ib_pd *pd,
- 		return ERR_PTR(ret);
- 	}
- 
-+	rdma_restrack_add(&srq->res);
-+
- 	return srq;
+ 	struct nlattr *table_attr;
+@@ -719,6 +723,32 @@ static int fill_res_ctx_entry(struct sk_buff *msg, bool has_cap_net_admin,
+ 	return fill_res_name_pid(msg, res);
  }
- EXPORT_SYMBOL(ib_create_srq_user);
-@@ -1088,6 +1094,7 @@ int ib_destroy_srq_user(struct ib_srq *srq, struct ib_udata *udata)
- 		atomic_dec(&srq->ext.xrc.xrcd->usecnt);
- 	if (ib_srq_has_cq(srq->srq_type))
- 		atomic_dec(&srq->ext.cq->usecnt);
-+	rdma_restrack_del(&srq->res);
- 	kfree(srq);
  
- 	return ret;
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index c596882893ae..7e2f3699b898 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -1610,6 +1610,11 @@ struct ib_srq {
- 			} xrc;
- 		};
- 	} ext;
++static int fill_res_srq_entry(struct sk_buff *msg, bool has_cap_net_admin,
++			      struct rdma_restrack_entry *res, uint32_t port)
++{
++	struct ib_srq *srq = container_of(res, struct ib_srq, res);
 +
-+	/*
-+	 * Implementation details of the RDMA core, don't use in drivers:
-+	 */
-+	struct rdma_restrack_entry res;
++	if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_SRQN, srq->res.id))
++		goto err;
++
++	if (nla_put_u8(msg, RDMA_NLDEV_ATTR_RES_TYPE, srq->srq_type))
++		goto err;
++
++	if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PDN, srq->pd->res.id))
++		goto err;
++
++	if (ib_srq_has_cq(srq->srq_type)) {
++		if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CQN,
++				srq->ext.cq->res.id))
++			goto err;
++	}
++
++	return fill_res_name_pid(msg, res);
++
++err:
++	return -EMSGSIZE;
++}
++
+ static int fill_stat_counter_mode(struct sk_buff *msg,
+ 				  struct rdma_counter *counter)
+ {
+@@ -1258,6 +1288,13 @@ static const struct nldev_fill_res_entry fill_entries[RDMA_RESTRACK_MAX] = {
+ 		.entry = RDMA_NLDEV_ATTR_RES_CTX_ENTRY,
+ 		.id = RDMA_NLDEV_ATTR_RES_CTXN,
+ 	},
++	[RDMA_RESTRACK_SRQ] = {
++		.nldev_attr = RDMA_NLDEV_ATTR_RES_SRQ,
++		.flags = NLDEV_PER_DEV,
++		.entry = RDMA_NLDEV_ATTR_RES_SRQ_ENTRY,
++		.id = RDMA_NLDEV_ATTR_RES_SRQN,
++	},
++
  };
  
- enum ib_raw_packet_caps {
-diff --git a/include/rdma/restrack.h b/include/rdma/restrack.h
-index 05e18839eaff..79d109c47242 100644
---- a/include/rdma/restrack.h
-+++ b/include/rdma/restrack.h
-@@ -49,6 +49,10 @@ enum rdma_restrack_type {
- 	 * @RDMA_RESTRACK_COUNTER: Statistic Counter
- 	 */
- 	RDMA_RESTRACK_COUNTER,
-+	/**
-+	 * @RDMA_RESTRACK_SRQ: Shared receive queue (SRQ)
-+	 */
-+	RDMA_RESTRACK_SRQ,
- 	/**
- 	 * @RDMA_RESTRACK_MAX: Last entry, used for array dclarations
+ static int res_get_common_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+@@ -1499,6 +1536,7 @@ RES_GET_FUNCS(mr, RDMA_RESTRACK_MR);
+ RES_GET_FUNCS(mr_raw, RDMA_RESTRACK_MR);
+ RES_GET_FUNCS(counter, RDMA_RESTRACK_COUNTER);
+ RES_GET_FUNCS(ctx, RDMA_RESTRACK_CTX);
++RES_GET_FUNCS(srq, RDMA_RESTRACK_SRQ);
+ 
+ static LIST_HEAD(link_ops);
+ static DECLARE_RWSEM(link_ops_rwsem);
+@@ -2166,6 +2204,10 @@ static const struct rdma_nl_cbs nldev_cb_table[RDMA_NLDEV_NUM_OPS] = {
+ 		.doit = nldev_res_get_ctx_doit,
+ 		.dump = nldev_res_get_ctx_dumpit,
+ 	},
++	[RDMA_NLDEV_CMD_RES_SRQ_GET] = {
++		.doit = nldev_res_get_srq_doit,
++		.dump = nldev_res_get_srq_dumpit,
++	},
+ 	[RDMA_NLDEV_CMD_SYS_GET] = {
+ 		.doit = nldev_sys_get_doit,
+ 	},
+diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
+index 9ec4d4e241fa..9abce20d39ad 100644
+--- a/include/uapi/rdma/rdma_netlink.h
++++ b/include/uapi/rdma/rdma_netlink.h
+@@ -295,6 +295,8 @@ enum rdma_nldev_command {
+ 
+ 	RDMA_NLDEV_CMD_RES_CTX_GET, /* can dump */
+ 
++	RDMA_NLDEV_CMD_RES_SRQ_GET, /* can dump */
++
+ 	RDMA_NLDEV_NUM_OPS
+ };
+ 
+@@ -538,6 +540,10 @@ enum rdma_nldev_attr {
+ 	RDMA_NLDEV_ATTR_RES_CTX,		/* nested table */
+ 	RDMA_NLDEV_ATTR_RES_CTX_ENTRY,		/* nested table */
+ 
++	RDMA_NLDEV_ATTR_RES_SRQ,		/* nested table */
++	RDMA_NLDEV_ATTR_RES_SRQ_ENTRY,		/* nested table */
++	RDMA_NLDEV_ATTR_RES_SRQN,		/* u32 */
++
+ 	/*
+ 	 * Always the end
  	 */
 -- 
 2.30.2
