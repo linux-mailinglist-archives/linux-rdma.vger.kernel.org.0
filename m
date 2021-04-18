@@ -2,145 +2,253 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD9E363504
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Apr 2021 14:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6039363577
+	for <lists+linux-rdma@lfdr.de>; Sun, 18 Apr 2021 15:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbhDRMLL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 18 Apr 2021 08:11:11 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:13482 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230096AbhDRMLL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 18 Apr 2021 08:11:11 -0400
+        id S229702AbhDRNSK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 18 Apr 2021 09:18:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhDRNSK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 18 Apr 2021 09:18:10 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67235C06174A
+        for <linux-rdma@vger.kernel.org>; Sun, 18 Apr 2021 06:17:40 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id j7so592538eds.8
+        for <linux-rdma@vger.kernel.org>; Sun, 18 Apr 2021 06:17:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1618747843; x=1650283843;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Rzc2V/R201sumpOkX2o09+dzhxfF4BjiJWbV12yT7kM=;
-  b=CykkYixooSI6hjhUmyfAGEa+Ne5NaJIQTFKADzk7ls6z4sy8IK+5hnVn
-   aDAPFfKzvM9Yob5djligm4SAoQiGtqfKKyGL4zHz7uo4U6QPcmaOJIGn/
-   L7WSHQ9haqbUr1N6LzA+0zBhRVWhItLHf2f8xLuOQgn4ouGpDA4yAub4O
-   4=;
-X-IronPort-AV: E=Sophos;i="5.82,231,1613433600"; 
-   d="scan'208";a="119325745"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2a-69849ee2.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 18 Apr 2021 12:10:37 +0000
-Received: from EX13D13EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2a-69849ee2.us-west-2.amazon.com (Postfix) with ESMTPS id 4EB40A0405;
-        Sun, 18 Apr 2021 12:10:36 +0000 (UTC)
-Received: from EX13MTAUEE002.ant.amazon.com (10.43.62.24) by
- EX13D13EUA001.ant.amazon.com (10.43.165.24) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sun, 18 Apr 2021 12:10:34 +0000
-Received: from 8c85908914bf.ant.amazon.com.com (10.1.213.14) by
- mail-relay.amazon.com (10.43.62.224) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Sun, 18 Apr 2021 12:10:31 +0000
-From:   Gal Pressman <galpress@amazon.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>
-CC:     <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH for-next v4] RDMA/nldev: Add copy-on-fork attribute to get sys command
-Date:   Sun, 18 Apr 2021 15:10:25 +0300
-Message-ID: <20210418121025.66849-1-galpress@amazon.com>
-X-Mailer: git-send-email 2.31.1
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ytsGpC789Qj444BG8Jc3Cth3L8ENInp9vZ5TCibllqE=;
+        b=VktEjKzAh9hUiEDxnAq2NFGKavl0h7peVruSBKASis93l3D/1iYl5XH9k5nRlEFIGo
+         U+Cu9Ung+bYNnM7XM9Wm8oWN1lz5VJdQi1ytAbo4pj1X82su4tkTKxv+2GoTObVFd3ao
+         VXEf1gjgaecGSrXgWvCqDfSoVE12BLjjsiJmu0V+a4a9AuzSeFR1M9V9rtMMIOOOPTDs
+         4K2f++NzJ7VsPMOO7nMXXvAC5u7cwmZ9N+17lMngj3HJ+gz+FFngz1+Avn/a6FX7oIn5
+         ADO32iwzZWZ4RYscknw6FKlFv1EfLscIXRIaLar8Jib/v54EdcWIoTy1KOgVk4Lfnmtp
+         8c3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ytsGpC789Qj444BG8Jc3Cth3L8ENInp9vZ5TCibllqE=;
+        b=Dcl2Ib/AXvwJNZT03pDgBs7xXU00PpjtCFb9MKBxS6Y/DjsY4voJcXIfCnRJt2dBgp
+         GYajU6RiIikT+c+dMvQOn7hkiNHIJAZg3VspV0eBJTxzow6ejpPIQnX314yYzL/kMt9f
+         rOx3aJJzfJH1GprZLZPDw+Xzh+bjcrTs5uJhi6aWPAG26enJ+mwg+NaChUoQDZnNBDXc
+         HQgwgzQTw0uJzoLfY8CA/jbI5F5f0maXpQn3Fef4qThn6ncd3wfA2K7rfWt/VWdots+U
+         UkyT9rHNfLP4RL7auTbQDw4RKlsf5lVVRXc7qasB/mTgVJsyEvRzf6/XJQ7JGa1BeV4w
+         tHlA==
+X-Gm-Message-State: AOAM533IFdmr289okkd6+WEjE617ekYerQ8sTmWUj/la/TqN8d07qE7g
+        PLGg2Y9XuBPLIQlUpT9fO2CmYCkeYeeVow==
+X-Google-Smtp-Source: ABdhPJxSmBVayl8UkOag7prruu0zzYNV60zV/49akfGUg5v9YNfsEt55YC3/E/9pRb7i+9YNdaaV9w==
+X-Received: by 2002:a05:6402:37a:: with SMTP id s26mr1876944edw.159.1618751859130;
+        Sun, 18 Apr 2021 06:17:39 -0700 (PDT)
+Received: from [192.168.0.108] ([77.124.61.96])
+        by smtp.gmail.com with ESMTPSA id q10sm6952562eds.26.2021.04.18.06.17.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Apr 2021 06:17:38 -0700 (PDT)
+Subject: Re: [PATCH] net/mlx4: Treat VFs fair when handling
+ comm_channel_events
+To:     Hans Westgaard Ry <hans.westgaard.ry@oracle.com>,
+        linux-rdma@vger.kernel.org
+Cc:     Jack Morgenstein <jackm@nvidia.com>
+References: <1618487022-15770-1-git-send-email-hans.westgaard.ry@oracle.com>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+Message-ID: <da86d726-bd86-2d9d-b152-c1a2785a408c@gmail.com>
+Date:   Sun, 18 Apr 2021 16:17:36 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
+In-Reply-To: <1618487022-15770-1-git-send-email-hans.westgaard.ry@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The new attribute indicates that the kernel copies DMA pages on fork,
-hence libibverbs' fork support through madvise and MADV_DONTFORK is not
-needed.
 
-The introduced attribute is always reported as supported since the
-kernel has the patch that added the copy-on-fork behavior. This allows
-the userspace library to identify older vs newer kernel versions.
-Extra care should be taken when backporting this patch as it relies on
-the fact that the copy-on-fork patch is merged, hence no check for
-support is added.
 
-Don't backport this patch unless you also have the following series:
-70e806e4e645 ("mm: Do early cow for pinned pages during fork() for ptes")
-and 4eae4efa2c29 ("hugetlb: do early cow when page pinned on src mm").
+On 4/15/2021 2:43 PM, Hans Westgaard Ry wrote:
+> Handling comm_channel_event in mlx4_master_comm_channel uses a double
+> loop to determine which slaves have requested work. The search is
+> always started at lowest slave. This leads to unfairness; lower VFs
+> tends to be prioritized over higher VFs.
+> 
+> The patch uses find_next_bit to determine which slaves to handle.
+> Fairness is implemented by always starting at the next to the last
+> start.
+> 
+> An MPI program has been used to measure improvements. It runs 500
+> ibv_reg_mr, synchronizes with all other instances and then runs 500
+> ibv_dereg_mr.
+> 
+> The results running 500 processes, time reported is for running 500
+> calls:
+> 
+> ibv_reg_mr:
+>               Mod.   Org.
+> mlx4_1    403.356ms 424.674ms
+> mlx4_2    403.355ms 424.674ms
+> mlx4_3    403.354ms 424.674ms
+> mlx4_4    403.355ms 424.674ms
+> mlx4_5    403.357ms 424.677ms
+> mlx4_6    403.354ms 424.676ms
+> mlx4_7    403.357ms 424.675ms
+> mlx4_8    403.355ms 424.675ms
+> 
+> ibv_dereg_mr:
+>               Mod.   Org.
+> mlx4_1    116.408ms 142.818ms
+> mlx4_2    116.434ms 142.793ms
+> mlx4_3    116.488ms 143.247ms
+> mlx4_4    116.679ms 143.230ms
+> mlx4_5    112.017ms 107.204ms
+> mlx4_6    112.032ms 107.516ms
+> mlx4_7    112.083ms 184.195ms
+> mlx4_8    115.089ms 190.618ms
+> 
+> Suggested-by: Håkon Bugge <haakon.bugge@oracle.com>
+> Signed-off-by: Hans Westgaard Ry <hans.westgaard.ry@oracle.com>
+> ---
+>   drivers/net/ethernet/mellanox/mlx4/cmd.c  | 75 +++++++++++++++++--------------
+>   drivers/net/ethernet/mellanox/mlx4/mlx4.h |  1 +
+>   2 files changed, 43 insertions(+), 33 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/cmd.c b/drivers/net/ethernet/mellanox/mlx4/cmd.c
+> index c678344d22a2..24989e96ab9d 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/cmd.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/cmd.c
+> @@ -51,7 +51,6 @@
+>   #include "fw.h"
+>   #include "fw_qos.h"
+>   #include "mlx4_stats.h"
+> -
+>   #define CMD_POLL_TOKEN 0xffff
+>   #define INBOX_MASK	0xffffffffffffff00ULL
+>   
 
-Fixes: 70e806e4e645 ("mm: Do early cow for pinned pages during fork() for ptes")
-Fixes: 4eae4efa2c29 ("hugetlb: do early cow when page pinned on src mm")
-Signed-off-by: Gal Pressman <galpress@amazon.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
----
-PR was sent:
-https://github.com/linux-rdma/rdma-core/pull/975
+Unrelated change. Please revert it.
 
-Changelog -
-v3->v4: https://lore.kernel.org/linux-rdma/20210412064150.40064-1-galpress@amazon.com/
-* Mention that nla_put_u8() return value is ignored on purpose
 
-v2->v3: https://lore.kernel.org/linux-rdma/21317d2c-9a8e-0dd7-3678-d2933c5053c4@amazon.com/
-* Remove check if copy-on-fork attribute was provided from nldev_set_sys_set_doit()
+> @@ -2241,48 +2240,58 @@ void mlx4_master_comm_channel(struct work_struct *work)
+>   	struct mlx4_priv *priv =
+>   		container_of(mfunc, struct mlx4_priv, mfunc);
+>   	struct mlx4_dev *dev = &priv->dev;
+> -	__be32 *bit_vec;
+>   	u32 comm_cmd;
+> -	u32 vec;
+> -	int i, j, slave;
+> +	int i, slave;
+>   	int toggle;
+>   	int served = 0;
+>   	int reported = 0;
+>   	u32 slt;
+> -
+> -	bit_vec = master->comm_arm_bit_vector;
+> -	for (i = 0; i < COMM_CHANNEL_BIT_ARRAY_SIZE; i++) {
+> -		vec = be32_to_cpu(bit_vec[i]);
+> -		for (j = 0; j < 32; j++) {
+> -			if (!(vec & (1 << j)))
+> -				continue;
+> -			++reported;
+> -			slave = (i * 32) + j;
+> -			comm_cmd = swab32(readl(
+> -					  &mfunc->comm[slave].slave_write));
+> -			slt = swab32(readl(&mfunc->comm[slave].slave_read))
+> -				     >> 31;
+> -			toggle = comm_cmd >> 31;
+> -			if (toggle != slt) {
+> -				if (master->slave_state[slave].comm_toggle
+> -				    != slt) {
+> -					pr_info("slave %d out of sync. read toggle %d, state toggle %d. Resynching.\n",
+> -						slave, slt,
+> -						master->slave_state[slave].comm_toggle);
+> -					master->slave_state[slave].comm_toggle =
+> -						slt;
+> -				}
+> -				mlx4_master_do_cmd(dev, slave,
+> -						   comm_cmd >> 16 & 0xff,
+> -						   comm_cmd & 0xffff, toggle);
+> -				++served;
+> +	u32 lbit_vec[COMM_CHANNEL_BIT_ARRAY_SIZE];
+> +	u32 nmbr_bits;
+> +	u32 prev_slave;
+> +	bool first = true;
 
-v1->v2: https://lore.kernel.org/linux-rdma/20210405114722.98904-1-galpress@amazon.com/
-* Remove nla_put_u8() return value check
-* Add commit hashes to commit message and code comment
----
- drivers/infiniband/core/nldev.c  | 14 ++++++++++++++
- include/uapi/rdma/rdma_netlink.h |  2 ++
- 2 files changed, 16 insertions(+)
+Please maintain reversed Christmas tree when possible.
+Split declaration from init if needed.
 
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index b8dc002a2478..6722011c6e81 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -146,6 +146,7 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
- 	[RDMA_NLDEV_ATTR_UVERBS_DRIVER_ID]	= { .type = NLA_U32 },
- 	[RDMA_NLDEV_NET_NS_FD]			= { .type = NLA_U32 },
- 	[RDMA_NLDEV_SYS_ATTR_NETNS_MODE]	= { .type = NLA_U8 },
-+	[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK]	= { .type = NLA_U8 },
- };
- 
- static int put_driver_name_print_type(struct sk_buff *msg, const char *name,
-@@ -1697,6 +1698,19 @@ static int nldev_sys_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 		nlmsg_free(msg);
- 		return err;
- 	}
-+
-+	/*
-+	 * Copy-on-fork is supported.
-+	 * See commits:
-+	 * 70e806e4e645 ("mm: Do early cow for pinned pages during fork() for ptes")
-+	 * 4eae4efa2c29 ("hugetlb: do early cow when page pinned on src mm")
-+	 * for more details. Don't backport this without them.
-+	 *
-+	 * Return value ignored on purpose, assume copy-on-fork is not
-+	 * supported in case of failure.
-+	 */
-+	nla_put_u8(msg, RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK, 1);
-+
- 	nlmsg_end(msg, nlh);
- 	return rdma_nl_unicast(sock_net(skb->sk), msg, NETLINK_CB(skb).portid);
- }
-diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
-index d2f5b8396243..342c9db5b3c1 100644
---- a/include/uapi/rdma/rdma_netlink.h
-+++ b/include/uapi/rdma/rdma_netlink.h
-@@ -533,6 +533,8 @@ enum rdma_nldev_attr {
- 
- 	RDMA_NLDEV_ATTR_RES_RAW,	/* binary */
- 
-+	RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK,	/* u8 */
-+
- 	/*
- 	 * Always the end
- 	 */
+> +
+> +	for (i = 0; i < COMM_CHANNEL_BIT_ARRAY_SIZE; i++)
+> +		lbit_vec[i] = be32_to_cpu(master->comm_arm_bit_vector[i]);
+> +	nmbr_bits = dev->persist->num_vfs + 1;
+> +	if (++priv->next_slave >= nmbr_bits)
+> +		priv->next_slave = 0;
+> +	slave = priv->next_slave;
+> +	while (true) {
+> +		slave = find_next_bit((const unsigned long *)&lbit_vec, nmbr_bits, slave);
+> +		if  (!first && slave >= priv->next_slave) {
+> +			break;
+> +		} else if (slave == nmbr_bits) {
 
-base-commit: 7d8f346504ebde71d92905e3055d40ea8f34416e
--- 
-2.31.1
+Unnecessary else, as if block breaks.
 
+> +			if (!first)
+> +				break;
+> +			first = false;
+> +			slave = 0;
+> +			continue;
+> +		}
+> +		++reported;
+> +		comm_cmd = swab32(readl(&mfunc->comm[slave].slave_write));
+> +		slt = swab32(readl(&mfunc->comm[slave].slave_read)) >> 31;
+> +		toggle = comm_cmd >> 31;
+> +		if (toggle != slt) {
+> +			if (master->slave_state[slave].comm_toggle
+> +			    != slt) {
+> +				pr_info("slave %d out of sync. read toggle %d, state toggle %d. Resynching.\n",
+> +					slave, slt,
+> +					master->slave_state[slave].comm_toggle);
+> +				master->slave_state[slave].comm_toggle =
+> +					slt;
+>   			}
+> +			mlx4_master_do_cmd(dev, slave,
+> +					   comm_cmd >> 16 & 0xff,
+> +					   comm_cmd & 0xffff, toggle);
+> +			++served;
+>   		}
+> +		prev_slave = slave++;
+>   	}
+>   
+>   	if (reported && reported != served)
+> -		mlx4_warn(dev, "Got command event with bitmask from %d slaves but %d were served\n",
+> -			  reported, served);
+> +		mlx4_warn(dev, "Got command event with bitmask from %d slaves but %d were served %x %d\n",
+
+Not clear from the string what these newly printed values are.
+Improve the string/description.
+
+> +			  reported, served, lbit_vec[0], priv->next_slave);
+>   
+>   	if (mlx4_ARM_COMM_CHANNEL(dev))
+>   		mlx4_warn(dev, "Failed to arm comm channel events\n");
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4.h b/drivers/net/ethernet/mellanox/mlx4/mlx4.h
+> index 64bed7ac3836..cd6ba80f4c90 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/mlx4.h
+> +++ b/drivers/net/ethernet/mellanox/mlx4/mlx4.h
+> @@ -924,6 +924,7 @@ struct mlx4_priv {
+>   
+>   	atomic_t		opreq_count;
+>   	struct work_struct	opreq_task;
+> +	u32			next_slave; /* mlx4_master_comm_channel */
+
+Move it to a more specific struct, consider struct mlx4_mfunc_master_ctx.
+
+>   };
+>   
+>   static inline struct mlx4_priv *mlx4_priv(struct mlx4_dev *dev)
+> 
+
+Please submit to netdev mailing list, and CC needed maintainers.
