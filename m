@@ -2,89 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BE73637DB
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Apr 2021 23:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7C3363869
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Apr 2021 01:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232082AbhDRV2r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 18 Apr 2021 17:28:47 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:55548 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbhDRV2q (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 18 Apr 2021 17:28:46 -0400
-Received: from [192.168.1.18] ([86.243.172.93])
-        by mwinf5d25 with ME
-        id uMUG2400321Fzsu03MUGK5; Sun, 18 Apr 2021 23:28:16 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 18 Apr 2021 23:28:16 +0200
-X-ME-IP: 86.243.172.93
-Subject: Re: [PATCH] net/mlx5: Use kasprintf instead of hand-writing it
-To:     Bart Van Assche <bvanassche@acm.org>, saeedm@nvidia.com,
-        leon@kernel.org, davem@davemloft.net, kuba@kernel.org
+        id S232147AbhDRXDu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 18 Apr 2021 19:03:50 -0400
+Received: from mail-pg1-f169.google.com ([209.85.215.169]:35633 "EHLO
+        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232023AbhDRXDt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 18 Apr 2021 19:03:49 -0400
+Received: by mail-pg1-f169.google.com with SMTP id q10so22945835pgj.2;
+        Sun, 18 Apr 2021 16:03:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2pbgAZAAd737lyZ5qqTUDuQSwoGEzsEQ6O218gt7uwI=;
+        b=YjovkHb+QCx1p5jumGPxRjxe0OqKooCOygebRQ4sJj0LfH9Wzp7HEy1sOP0MOOJZpK
+         oT+VMRzl6NKADB6n4mINpBh6RT2YaMvHqjcpMkCaliiSRrE/1aebzWJ4QGqd4ZpEbImn
+         DB9cbez3nIltUOZmzKzhvtxvUg44iWvwHzSbfEi/2aUxZ/NsTp8pt87UqYcAzj07caXA
+         3JoHwYNwy3ifVDMgzA2UUH3QWGpMUBDdbXJ5OXT9KJuNI09pwmD7XIhr469X4C+vnxJV
+         bLsPUbOB+uGD2h3WBMz2e7yT/RlGkmR623gA71RZH87tcU75duraOVtypEqel6g3iVGq
+         LTKA==
+X-Gm-Message-State: AOAM533IeM2/iO1OdSr62cE+9oAAf+q0gKG2Z04QW9ndMSpEkohrEy7k
+        BwrRacYzMpcpsrLsRXg95mIHZJ1TMmE=
+X-Google-Smtp-Source: ABdhPJxRmoJO9/4GzoOEqUZM8HagxnNbt11YNrkRwqcJHBDb+pk1VLXjxQHgzVOxzuGVuzE/LicX0g==
+X-Received: by 2002:a62:3246:0:b029:224:6c6f:b3f2 with SMTP id y67-20020a6232460000b02902246c6fb3f2mr17177062pfy.68.1618787000841;
+        Sun, 18 Apr 2021 16:03:20 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:93db:a33:19a8:2126? ([2601:647:4000:d7:93db:a33:19a8:2126])
+        by smtp.gmail.com with ESMTPSA id t19sm5078216pgv.75.2021.04.18.16.03.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Apr 2021 16:03:20 -0700 (PDT)
+Subject: Re: [PATCH 1/2] workqueue: Have 'alloc_workqueue()' like macros
+ accept a format specifier
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>, tj@kernel.org,
+        jiangshanlai@gmail.com, saeedm@nvidia.com, leon@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, Tejun Heo <tj@kernel.org>
 Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <46235ec010551d2788483ce636686a61345e40ba.1618643703.git.christophe.jaillet@wanadoo.fr>
- <131988e1-2327-99f8-95e1-778d653c36ec@acm.org>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <8513235a-eed2-7007-a873-6464df8cb3c9@wanadoo.fr>
-Date:   Sun, 18 Apr 2021 23:28:16 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+References: <cover.1618780558.git.christophe.jaillet@wanadoo.fr>
+ <ae88f6c2c613d17bc1a56692cfa4f960dbc723d2.1618780558.git.christophe.jaillet@wanadoo.fr>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <042f5fff-5faf-f3c5-0819-b8c8d766ede6@acm.org>
+Date:   Sun, 18 Apr 2021 16:03:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <131988e1-2327-99f8-95e1-778d653c36ec@acm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <ae88f6c2c613d17bc1a56692cfa4f960dbc723d2.1618780558.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Le 18/04/2021 à 22:03, Bart Van Assche a écrit :
-> On 4/17/21 12:16 AM, Christophe JAILLET wrote:
->> 'kasprintf()' can replace a kmalloc/strcpy/strcat sequence.
->> It is less verbose and avoid the use of a magic number (64).
->>
->> Anyway, the underlying 'alloc_workqueue()' would only keep the 24 first
->> chars (i.e. sizeof(struct workqueue_struct->name) = WQ_NAME_LEN).
->>
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   drivers/net/ethernet/mellanox/mlx5/core/health.c | 4 +---
->>   1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
->> index 9ff163c5bcde..a5383e701b4b 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
->> @@ -802,12 +802,10 @@ int mlx5_health_init(struct mlx5_core_dev *dev)
->>   	mlx5_fw_reporters_create(dev);
->>   
->>   	health = &dev->priv.health;
->> -	name = kmalloc(64, GFP_KERNEL);
->> +	name = kasprintf(GFP_KERNEL, "mlx5_health%s", dev_name(dev->device));
->>   	if (!name)
->>   		goto out_err;
->>   
->> -	strcpy(name, "mlx5_health");
->> -	strcat(name, dev_name(dev->device));
->>   	health->wq = create_singlethread_workqueue(name);
->>   	kfree(name);
->>   	if (!health->wq)
-> 
-> Instead of modifying the mlx5 driver, please change the definition of
-> the create_singlethread_workqueue() such that it accept a format
+On 4/18/21 2:26 PM, Christophe JAILLET wrote:
+> Improve 'create_workqueue', 'create_freezable_workqueue' and
+> 'create_singlethread_workqueue' so that they accept a format
 > specifier and a variable number of arguments.
 > 
-
-Agreed. I've sent another patch serie which is more elegant.
-Thanks for the feedback.
-
-CJ
-
-> Thanks,
+> This will put these macros more in line with 'alloc_ordered_workqueue' and
+> the underlying 'alloc_workqueue()' function.
 > 
-> Bart.
-> 
-> 
+> This will also allow further code simplification.
+
+Please Cc Tejun for workqueue changes since he maintains the workqueue code.
+
+> diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
+> index d15a7730ee18..145e756ff315 100644
+> --- a/include/linux/workqueue.h
+> +++ b/include/linux/workqueue.h
+> @@ -425,13 +425,13 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+>  	alloc_workqueue(fmt, WQ_UNBOUND | __WQ_ORDERED |		\
+>  			__WQ_ORDERED_EXPLICIT | (flags), 1, ##args)
+>  
+> -#define create_workqueue(name)						\
+> -	alloc_workqueue("%s", __WQ_LEGACY | WQ_MEM_RECLAIM, 1, (name))
+> -#define create_freezable_workqueue(name)				\
+> -	alloc_workqueue("%s", __WQ_LEGACY | WQ_FREEZABLE | WQ_UNBOUND |	\
+> -			WQ_MEM_RECLAIM, 1, (name))
+> -#define create_singlethread_workqueue(name)				\
+> -	alloc_ordered_workqueue("%s", __WQ_LEGACY | WQ_MEM_RECLAIM, name)
+> +#define create_workqueue(fmt, args...)					\
+> +	alloc_workqueue(fmt, __WQ_LEGACY | WQ_MEM_RECLAIM, 1, ##args)
+> +#define create_freezable_workqueue(fmt, args...)			\
+> +	alloc_workqueue(fmt, __WQ_LEGACY | WQ_FREEZABLE | WQ_UNBOUND |	\
+> +			WQ_MEM_RECLAIM, 1, ##args)
+> +#define create_singlethread_workqueue(fmt, args...)			\
+> +	alloc_ordered_workqueue(fmt, __WQ_LEGACY | WQ_MEM_RECLAIM, ##args)
+>  
+>  extern void destroy_workqueue(struct workqueue_struct *wq);
+>  
 > 
 
