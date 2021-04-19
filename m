@@ -2,101 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1F9363DF7
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Apr 2021 10:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0BD363F7C
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Apr 2021 12:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238331AbhDSIuZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Apr 2021 04:50:25 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:37244 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238385AbhDSIuZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Apr 2021 04:50:25 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 50B761C0B77; Mon, 19 Apr 2021 10:49:54 +0200 (CEST)
-Date:   Mon, 19 Apr 2021 10:49:53 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Aditya Pakki <pakki001@umn.edu>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: Re: [PATCH AUTOSEL 5.10 41/46] net/rds: Avoid potential use after
- free in rds_send_remove_from_sock
-Message-ID: <20210419084953.GA28564@amd>
-References: <20210412162401.314035-1-sashal@kernel.org>
- <20210412162401.314035-41-sashal@kernel.org>
+        id S238573AbhDSKXO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Apr 2021 06:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238512AbhDSKXD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Apr 2021 06:23:03 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384D5C06174A;
+        Mon, 19 Apr 2021 03:22:34 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id o5so35224293qkb.0;
+        Mon, 19 Apr 2021 03:22:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=363VWPLcAU951lFrOwLAp4x5JJh1Vw/iAvcAFa7MyZk=;
+        b=R5XQ5iZqatSvkNTU0qHCUsd0p3WT01/W6ntNqMUmTduyEm8YkOXTdWM+oK7ac+tcoA
+         NRmOJX4f9vdm9iTRu91lqQRl70RW/TSL+7MtEm5wLDZfwkOYlSjr9fbNTNh0B39Kkowt
+         Bi5WZpYn1Yk1+IA8xtPcgYX06Hc33xaf5QMYf98EMh39ixuRDZYsdE44bN8c3rKjNycy
+         jnZyz9fV93XN3GZEzzlU5szM0TFi6FCAXCFHq/Ps8ZSC0T1AxjC3mG1EKcJOT97anYWt
+         U3yn+hc4TLXFo1m12iRukb3HKdEu392+NfVNdvyNa/vpzSe/a3swEafL+a3B1hbuQLS1
+         hhHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=363VWPLcAU951lFrOwLAp4x5JJh1Vw/iAvcAFa7MyZk=;
+        b=bIywzl1my8NHAvWAiXi1qnU9dYmoQOVmpzLg9qB3O4YYqSScR/sYxYiU2V7N+xtOQD
+         U6q+Lo5sezkHXKYMoYr6u61lCVpdSjHaLJM8lRZdLyBO/Ocyj34L13whrh3aBzgZsxWB
+         4YfxCp1q7gb0QbmXQvwmvp/J86Q7c9b1ebO2DIYwoxkqbxGXLqOuuj/ozzNgWefEaQ1X
+         dBy5o73gfU2IlAyWwemK8Yvq6fkO0rK3wkSTbkWDXWdcVb0dmqB25v8jCaQLLhiSHN4v
+         JNIW8ElA8SUiQdNZtgHkiJNpP2AqwJBVIqyeLLHO4gysKVUWfnCIjWbI6zIaSyIreIGf
+         aSWg==
+X-Gm-Message-State: AOAM5339/Sk3gMsvN1tkHE6qQYfh/y4IBNOYIuzRIZndJWAI8MlLZCWp
+        xz/lvgvSUdTGrWckWlAu5uj87pf0AsOJPQ==
+X-Google-Smtp-Source: ABdhPJwv0PfWbwbywYMr0ja8rTRSIwkz72j7PM0deJVOZmAzf8SeX58JgPPuNxZ50gh2CISo9QcD3Q==
+X-Received: by 2002:a37:814:: with SMTP id 20mr10509400qki.230.1618827753300;
+        Mon, 19 Apr 2021 03:22:33 -0700 (PDT)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
+        by smtp.gmail.com with ESMTPSA id z17sm8506175qtf.10.2021.04.19.03.22.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 03:22:32 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 19 Apr 2021 06:22:31 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     jiangshanlai@gmail.com, saeedm@nvidia.com, leon@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, bvanassche@acm.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 0/2] workqueue: Have 'alloc_workqueue()' like macros
+ accept a format specifier
+Message-ID: <YH1Z57+iJxBT3S3b@slm.duckdns.org>
+References: <cover.1618780558.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210412162401.314035-41-sashal@kernel.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <cover.1618780558.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hello, Christophe.
 
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Sun, Apr 18, 2021 at 11:25:52PM +0200, Christophe JAILLET wrote:
+> Improve 'create_workqueue', 'create_freezable_workqueue' and
+> 'create_singlethread_workqueue' so that they accept a format
+> specifier and a variable number of arguments.
+> 
+> This will put these macros more in line with 'alloc_ordered_workqueue' and
+> the underlying 'alloc_workqueue()' function.
 
-Hi!
+Those interfaces are deprecated and if you're doing anything with the users,
+the right course of action would be converting them to use one of the
+alloc_workqueue interfaces.
 
-> From: Aditya Pakki <pakki001@umn.edu>
->=20
-> [ Upstream commit 0c85a7e87465f2d4cbc768e245f4f45b2f299b05 ]
->=20
-> In case of rs failure in rds_send_remove_from_sock(), the 'rm' resource
-> is freed and later under spinlock, causing potential use-after-free.
-> Set the free pointer to NULL to avoid undefined behavior.
+Thanks.
 
-This patch is crazy. It adds dead code.
-
-> +++ b/net/rds/message.c
-> @@ -180,6 +180,7 @@ void rds_message_put(struct rds_message *rm)
->  		rds_message_purge(rm);
-> =20
->  		kfree(rm);
-> +		rm =3D NULL;
->  	}
->  }
-
-We are already exiting function, changing local variable has no
-effect.
-
-> +++ b/net/rds/send.c
-> @@ -665,7 +665,7 @@ static void rds_send_remove_from_sock(struct list_hea=
-d *messages, int status)
->  unlock_and_drop:
->  		spin_unlock_irqrestore(&rm->m_rs_lock, flags);
->  		rds_message_put(rm);
-> -		if (was_on_sock)
-> +		if (was_on_sock && rm)
->  			rds_message_put(rm);
->  	}
-
-If rm was non-NULL calling first rds_message_put (and it was,
-otherwise we oopsed), it is still non-NULL in second test.
-
-Best regards,
-								Pavel
---=20
-'DENX Software Engineering GmbH,      Managing Director:    Wolfgang Denk'
-'HRB 165235 Munich, Office: Kirchenstr.5, D-82194	Groebenzell, Germany'
-=09
-
---17pEHd4RhPHOinZp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmB9RDEACgkQMOfwapXb+vKCKACfbFn3RnqNFYdhDT2ym9rSlQMQ
-StcAoIdChJp23cIYf3KpweMUNitHrXv+
-=4aJ2
------END PGP SIGNATURE-----
-
---17pEHd4RhPHOinZp--
+-- 
+tejun
