@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E167363CB9
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Apr 2021 09:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C37AA363CC4
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Apr 2021 09:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237838AbhDSHi0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Apr 2021 03:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39560 "EHLO
+        id S237951AbhDSHia (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Apr 2021 03:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237882AbhDSHiZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Apr 2021 03:38:25 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48453C061761
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 00:37:56 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id mh2so29801899ejb.8
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 00:37:56 -0700 (PDT)
+        with ESMTP id S237892AbhDSHia (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Apr 2021 03:38:30 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C063EC06174A
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 00:38:00 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id o20so13142739edc.7
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 00:38:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FY+EvpFdvOhsS+mEDCKKrQ36Emkgr0WIzmwaogwOSK0=;
-        b=AhotTSMvcBc4h2JRV2P0XHrws6lMKBwqUlhaYthkdt9GQ8b2GV+GSXFm3oGPPUeP+b
-         OkYfyRtyvvukJSZ9F0JoHkSAMLFCYvfL3cGZy2VokgKykiIuQ+Ar/YNUEt+G0XptAk2E
-         4i8UC31z4cZE1MvAcRUo3J4xu+N+HmD3WC2HRVhADPLwM02QHj+YrrJ60Tgrc3duj9y2
-         P7PeUKDzSNycwr1fWiLIItqfpXmhlatq9G6PSrbgmCyNJ90d63E9pxSeeICpte31ujsy
-         TNFJU/39+Cee8CBUDM3B9JQ913pGDlQNDLIJOqW1nT0GeHOdZgeEl0StF2I8KqEOH/6b
-         n2TA==
+        bh=bLmnUWxXmpjLG20WaKKtH95Yk3U4kV8YsSNy20QAf+E=;
+        b=f9R2wpVPRVGoY9OpAGeZteNU7r7gkoPmJ0TZVfaXa4s0vWtuNhxK4bLeRurtx9ILCW
+         083wuhrQFRsILGizsDaOs+jQtLKFME7xt/syP9GGXONrtHn/XuyDmhNUsymj3oSDdO/k
+         ZZX6Xhc7FOfYgCuTaBv6kqoPcjzsPGG1ZAAns1lC7mNlc+/bqA4dnbTJPPGxWGG5iJp8
+         pPDY/oxicfOPiJ2EwrOG6ZewcHgzMhSodQ0e8BEN5LaEmstzHJuIMJvDNNNUlQPkLnAm
+         YKxGa/WWq692Uj8hNSfGMmKiyJjTcGUa5pSa5lAAc8e9S740N/Xoc813vczX+sbYE2j+
+         qPxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FY+EvpFdvOhsS+mEDCKKrQ36Emkgr0WIzmwaogwOSK0=;
-        b=sj/jXwtHGrhymzb0QjS3Vix08cAgq1969dsw00+r4xQ2NJPzi8KMByhZ7bfudf3Ky2
-         8T47Bx4TOpvlxsZVh91Xfxt/z4lxH0WfYmROa5x2GYGV4x2iKYMITYPsTB+21C22TdqW
-         qLZt41YvrP+fr4RoiCOB8YoehAPtI/BGuA5YjInWFkj/i45vC0aFUoGmeqatrwgX1xm5
-         gvTJtppiXn5BrVwKQLIxU+JjiZDWfbi/xh0PoSoadSo0E6Y4E2hC8kCYrH8kunzCfJlW
-         WRHBZUhrwkERvByc4gEeVZGfotEpHCHWCRCGZuUzmw4dZI3nmntYpPYkmj7IrAR5iFMu
-         awHQ==
-X-Gm-Message-State: AOAM532Nv+8mjQ+oX1GoxqkNCRooQN9s445j6lFvBUqvnsdfKGoObga1
-        yBte5opchI+WRfC7HUByAxI7NQ==
-X-Google-Smtp-Source: ABdhPJxm3/Dl+gYYZ34jHAt3hmcpyInuiR+HGY15eklu5RjyPBH81+/L4lHLiVKRAtyAKRhLeKO8KQ==
-X-Received: by 2002:a17:906:4881:: with SMTP id v1mr1535769ejq.383.1618817874957;
-        Mon, 19 Apr 2021 00:37:54 -0700 (PDT)
+        bh=bLmnUWxXmpjLG20WaKKtH95Yk3U4kV8YsSNy20QAf+E=;
+        b=CRwnz+IbvkC+MGhQPDDUawXCiKKFqC1iFEY4r9cHJfR8WSol/Pcc7OfU659QQIVx5L
+         DDI3l2epkr6hMooo0bLRcAr4VbbcCjq85qaNYm1oN1b9a9gJTxm3AatkGw6n/C55Xm8C
+         BvW3pYYtFPraSYx9SXrPjoucqPBa9gEg3ZncqNjOmYviyNwWMGMKkjIuLtQRzrEzWaYN
+         HCqrsURtrFz4ZA7C7FDlbT3479mhRSoS62SHqfipIAmxctGKW/hwx1JHu3AnR6wqGeo+
+         yw44VYBwmaGLVcCd9dZ9MlmnV2mrwiG/ap7JnH/77xsXndeYJF6/Z8ThzsbJOeSsPsB4
+         pf5g==
+X-Gm-Message-State: AOAM530GfEyP8YU7XhqN8mQQsrkomeE+besWLcexSOQgyCZu9IwsnY7r
+        rGW2mriN2baJbunKl3j/Mg/3eg==
+X-Google-Smtp-Source: ABdhPJwaAUSC6YJtt4A/kYIkZHCK1+HWc7Zi9u1daErbvXgqRUeZfaJjaoASMNBaiMdEujiv2Zff0A==
+X-Received: by 2002:a50:f395:: with SMTP id g21mr24468317edm.238.1618817879432;
+        Mon, 19 Apr 2021 00:37:59 -0700 (PDT)
 Received: from localhost.localdomain (ip5f5aeee5.dynamic.kabel-deutschland.de. [95.90.238.229])
-        by smtp.googlemail.com with ESMTPSA id g22sm8701833ejz.46.2021.04.19.00.37.54
+        by smtp.googlemail.com with ESMTPSA id g22sm8701833ejz.46.2021.04.19.00.37.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 00:37:54 -0700 (PDT)
+        Mon, 19 Apr 2021 00:37:59 -0700 (PDT)
 From:   Gioh Kim <gi-oh.kim@ionos.com>
 To:     linux-block@vger.kernel.org, linux-doc@vger.kernel.org
 Cc:     axboe@kernel.dk, akinobu.mita@gmail.com, corbet@lwn.net,
@@ -54,14 +54,11 @@ Cc:     axboe@kernel.dk, akinobu.mita@gmail.com, corbet@lwn.net,
         haris.iqbal@ionos.com, jinpu.wang@ionos.com,
         Gioh Kim <gi-oh.kim@cloud.ionos.com>,
         Leon Romanovsky <leonro@nvidia.com>,
-        linux-rdma@vger.kernel.org,
-        Guoqing Jiang <guoqing.jiang@ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        linux-rdma@vger.kernel.org, Gioh Kim <gi-oh.kim@ionos.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCHv5 for-next 08/19] block/rnbd-clt: Replace {NO_WAIT,WAIT} with RTRS_PERMIT_{WAIT,NOWAIT}
-Date:   Mon, 19 Apr 2021 09:37:11 +0200
-Message-Id: <20210419073722.15351-9-gi-oh.kim@ionos.com>
+Subject: [PATCHv5 for-next 13/19] block/rnbd-clt: Support polling mode for IO latency optimization
+Date:   Mon, 19 Apr 2021 09:37:16 +0200
+Message-Id: <20210419073722.15351-14-gi-oh.kim@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210419073722.15351-1-gi-oh.kim@ionos.com>
 References: <20210419073722.15351-1-gi-oh.kim@ionos.com>
@@ -73,227 +70,558 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 
-They are defined with the same value and similar meaning, let's remove
-one of them, then we can remove {WAIT,NOWAIT}.
+RNBD can make double-queues for irq-mode and poll-mode.
+For example, on 4-CPU system 8 request-queues are created,
+4 for irq-mode and 4 for poll-mode.
+If the IO has HIPRI flag, the block-layer will call .poll function
+of RNBD. Then IO is sent to the poll-mode queue.
+Add optional nr_poll_queues argument for map_devices interface.
 
-Also change the type of 'wait' from 'int' to 'enum wait_type' to make
-it clear.
+To support polling of RNBD, RTRS client creates connections
+for both of irq-mode and direct-poll-mode.
+
+For example, on 4-CPU system it could've create 5 connections:
+con[0] => user message (softirq cq)
+con[1:4] => softirq cq
+
+After this patch, it can create 9 connections:
+con[0] => user message (softirq cq)
+con[1:4] => softirq cq
+con[5:8] => DIRECT-POLL cq
 
 Cc: Leon Romanovsky <leonro@nvidia.com>
 Cc: linux-rdma@vger.kernel.org
-Signed-off-by: Guoqing Jiang <guoqing.jiang@ionos.com>
-Reviewed-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 Acked-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- drivers/block/rnbd/rnbd-clt.c          | 42 +++++++++++---------------
- drivers/infiniband/ulp/rtrs/rtrs-clt.c |  4 +--
- drivers/infiniband/ulp/rtrs/rtrs.h     |  6 ++--
- 3 files changed, 22 insertions(+), 30 deletions(-)
+ drivers/block/rnbd/rnbd-clt-sysfs.c    | 55 ++++++++++++----
+ drivers/block/rnbd/rnbd-clt.c          | 89 +++++++++++++++++++++++---
+ drivers/block/rnbd/rnbd-clt.h          |  5 +-
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 62 ++++++++++++++----
+ drivers/infiniband/ulp/rtrs/rtrs-pri.h |  1 +
+ drivers/infiniband/ulp/rtrs/rtrs.h     |  3 +-
+ 6 files changed, 181 insertions(+), 34 deletions(-)
 
+diff --git a/drivers/block/rnbd/rnbd-clt-sysfs.c b/drivers/block/rnbd/rnbd-clt-sysfs.c
+index 49015f428e67..2b6305ecfd5f 100644
+--- a/drivers/block/rnbd/rnbd-clt-sysfs.c
++++ b/drivers/block/rnbd/rnbd-clt-sysfs.c
+@@ -34,6 +34,7 @@ enum {
+ 	RNBD_OPT_DEV_PATH	= 1 << 2,
+ 	RNBD_OPT_ACCESS_MODE	= 1 << 3,
+ 	RNBD_OPT_SESSNAME	= 1 << 6,
++	RNBD_OPT_NR_POLL_QUEUES	= 1 << 7,
+ };
+ 
+ static const unsigned int rnbd_opt_mandatory[] = {
+@@ -42,12 +43,13 @@ static const unsigned int rnbd_opt_mandatory[] = {
+ };
+ 
+ static const match_table_t rnbd_opt_tokens = {
+-	{RNBD_OPT_PATH,		"path=%s"	},
+-	{RNBD_OPT_DEV_PATH,	"device_path=%s"},
+-	{RNBD_OPT_DEST_PORT,	"dest_port=%d"  },
+-	{RNBD_OPT_ACCESS_MODE,	"access_mode=%s"},
+-	{RNBD_OPT_SESSNAME,	"sessname=%s"	},
+-	{RNBD_OPT_ERR,		NULL		},
++	{RNBD_OPT_PATH,			"path=%s"		},
++	{RNBD_OPT_DEV_PATH,		"device_path=%s"	},
++	{RNBD_OPT_DEST_PORT,		"dest_port=%d"		},
++	{RNBD_OPT_ACCESS_MODE,		"access_mode=%s"	},
++	{RNBD_OPT_SESSNAME,		"sessname=%s"		},
++	{RNBD_OPT_NR_POLL_QUEUES,	"nr_poll_queues=%d"	},
++	{RNBD_OPT_ERR,			NULL			},
+ };
+ 
+ struct rnbd_map_options {
+@@ -57,6 +59,7 @@ struct rnbd_map_options {
+ 	char *pathname;
+ 	u16 *dest_port;
+ 	enum rnbd_access_mode *access_mode;
++	u32 *nr_poll_queues;
+ };
+ 
+ static int rnbd_clt_parse_map_options(const char *buf, size_t max_path_cnt,
+@@ -68,7 +71,7 @@ static int rnbd_clt_parse_map_options(const char *buf, size_t max_path_cnt,
+ 	int opt_mask = 0;
+ 	int token;
+ 	int ret = -EINVAL;
+-	int i, dest_port;
++	int i, dest_port, nr_poll_queues;
+ 	int p_cnt = 0;
+ 
+ 	options = kstrdup(buf, GFP_KERNEL);
+@@ -178,6 +181,19 @@ static int rnbd_clt_parse_map_options(const char *buf, size_t max_path_cnt,
+ 			kfree(p);
+ 			break;
+ 
++		case RNBD_OPT_NR_POLL_QUEUES:
++			if (match_int(args, &nr_poll_queues) || nr_poll_queues < -1 ||
++			    nr_poll_queues > (int)nr_cpu_ids) {
++				pr_err("bad nr_poll_queues parameter '%d'\n",
++				       nr_poll_queues);
++				ret = -EINVAL;
++				goto out;
++			}
++			if (nr_poll_queues == -1)
++				nr_poll_queues = nr_cpu_ids;
++			*opt->nr_poll_queues = nr_poll_queues;
++			break;
++
+ 		default:
+ 			pr_err("map_device: Unknown parameter or missing value '%s'\n",
+ 			       p);
+@@ -227,6 +243,19 @@ static ssize_t state_show(struct kobject *kobj,
+ 
+ static struct kobj_attribute rnbd_clt_state_attr = __ATTR_RO(state);
+ 
++static ssize_t nr_poll_queues_show(struct kobject *kobj,
++				   struct kobj_attribute *attr, char *page)
++{
++	struct rnbd_clt_dev *dev;
++
++	dev = container_of(kobj, struct rnbd_clt_dev, kobj);
++
++	return sysfs_emit(page, "%d\n", dev->nr_poll_queues);
++}
++
++static struct kobj_attribute rnbd_clt_nr_poll_queues =
++	__ATTR_RO(nr_poll_queues);
++
+ static ssize_t mapping_path_show(struct kobject *kobj,
+ 				 struct kobj_attribute *attr, char *page)
+ {
+@@ -421,6 +450,7 @@ static struct attribute *rnbd_dev_attrs[] = {
+ 	&rnbd_clt_state_attr.attr,
+ 	&rnbd_clt_session_attr.attr,
+ 	&rnbd_clt_access_mode.attr,
++	&rnbd_clt_nr_poll_queues.attr,
+ 	NULL,
+ };
+ 
+@@ -469,7 +499,7 @@ static ssize_t rnbd_clt_map_device_show(struct kobject *kobj,
+ 					 char *page)
+ {
+ 	return scnprintf(page, PAGE_SIZE,
+-			 "Usage: echo \"[dest_port=server port number] sessname=<name of the rtrs session> path=<[srcaddr@]dstaddr> [path=<[srcaddr@]dstaddr>] device_path=<full path on remote side> [access_mode=<ro|rw|migration>]\" > %s\n\naddr ::= [ ip:<ipv4> | ip:<ipv6> | gid:<gid> ]\n",
++			 "Usage: echo \"[dest_port=server port number] sessname=<name of the rtrs session> path=<[srcaddr@]dstaddr> [path=<[srcaddr@]dstaddr>] device_path=<full path on remote side> [access_mode=<ro|rw|migration>] [nr_poll_queues=<number of queues>]\" > %s\n\naddr ::= [ ip:<ipv4> | ip:<ipv6> | gid:<gid> ]\n",
+ 			 attr->attr.name);
+ }
+ 
+@@ -541,6 +571,7 @@ static ssize_t rnbd_clt_map_device_store(struct kobject *kobj,
+ 	char sessname[NAME_MAX];
+ 	enum rnbd_access_mode access_mode = RNBD_ACCESS_RW;
+ 	u16 port_nr = RTRS_PORT;
++	u32 nr_poll_queues = 0;
+ 
+ 	struct sockaddr_storage *addrs;
+ 	struct rtrs_addr paths[6];
+@@ -552,6 +583,7 @@ static ssize_t rnbd_clt_map_device_store(struct kobject *kobj,
+ 	opt.pathname = pathname;
+ 	opt.dest_port = &port_nr;
+ 	opt.access_mode = &access_mode;
++	opt.nr_poll_queues = &nr_poll_queues;
+ 	addrs = kcalloc(ARRAY_SIZE(paths) * 2, sizeof(*addrs), GFP_KERNEL);
+ 	if (!addrs)
+ 		return -ENOMEM;
+@@ -565,12 +597,13 @@ static ssize_t rnbd_clt_map_device_store(struct kobject *kobj,
+ 	if (ret)
+ 		goto out;
+ 
+-	pr_info("Mapping device %s on session %s, (access_mode: %s)\n",
++	pr_info("Mapping device %s on session %s, (access_mode: %s, nr_poll_queues: %d)\n",
+ 		pathname, sessname,
+-		rnbd_access_mode_str(access_mode));
++		rnbd_access_mode_str(access_mode),
++		nr_poll_queues);
+ 
+ 	dev = rnbd_clt_map_device(sessname, paths, path_cnt, port_nr, pathname,
+-				  access_mode);
++				  access_mode, nr_poll_queues);
+ 	if (IS_ERR(dev)) {
+ 		ret = PTR_ERR(dev);
+ 		goto out;
 diff --git a/drivers/block/rnbd/rnbd-clt.c b/drivers/block/rnbd/rnbd-clt.c
-index 4e687ec88721..652b41cc4492 100644
+index 9b44aac680d5..ea98124e8ce9 100644
 --- a/drivers/block/rnbd/rnbd-clt.c
 +++ b/drivers/block/rnbd/rnbd-clt.c
-@@ -312,13 +312,11 @@ static void rnbd_rerun_all_if_idle(struct rnbd_clt_session *sess)
- 
- static struct rtrs_permit *rnbd_get_permit(struct rnbd_clt_session *sess,
- 					     enum rtrs_clt_con_type con_type,
--					     int wait)
-+					     enum wait_type wait)
- {
- 	struct rtrs_permit *permit;
- 
--	permit = rtrs_clt_get_permit(sess->rtrs, con_type,
--				      wait ? RTRS_PERMIT_WAIT :
--				      RTRS_PERMIT_NOWAIT);
-+	permit = rtrs_clt_get_permit(sess->rtrs, con_type, wait);
- 	if (likely(permit))
- 		/* We have a subtle rare case here, when all permits can be
- 		 * consumed before busy counter increased.  This is safe,
-@@ -344,7 +342,7 @@ static void rnbd_put_permit(struct rnbd_clt_session *sess,
- 
- static struct rnbd_iu *rnbd_get_iu(struct rnbd_clt_session *sess,
- 				     enum rtrs_clt_con_type con_type,
--				     int wait)
-+				     enum wait_type wait)
- {
- 	struct rnbd_iu *iu;
- 	struct rtrs_permit *permit;
-@@ -354,9 +352,7 @@ static struct rnbd_iu *rnbd_get_iu(struct rnbd_clt_session *sess,
- 		return NULL;
- 	}
- 
--	permit = rnbd_get_permit(sess, con_type,
--				  wait ? RTRS_PERMIT_WAIT :
--				  RTRS_PERMIT_NOWAIT);
-+	permit = rnbd_get_permit(sess, con_type, wait);
- 	if (unlikely(!permit)) {
- 		kfree(iu);
- 		return NULL;
-@@ -435,16 +431,11 @@ static void msg_conf(void *priv, int errno)
- 	schedule_work(&iu->work);
+@@ -1165,9 +1165,54 @@ static blk_status_t rnbd_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 	return ret;
  }
  
--enum wait_type {
--	NO_WAIT = 0,
--	WAIT    = 1
--};
--
- static int send_usr_msg(struct rtrs_clt *rtrs, int dir,
- 			struct rnbd_iu *iu, struct kvec *vec,
- 			size_t len, struct scatterlist *sg, unsigned int sg_len,
- 			void (*conf)(struct work_struct *work),
--			int *errno, enum wait_type wait)
-+			int *errno, int wait)
- {
- 	int err;
- 	struct rtrs_clt_req_ops req_ops;
-@@ -476,7 +467,8 @@ static void msg_close_conf(struct work_struct *work)
- 	rnbd_clt_put_dev(dev);
++static int rnbd_rdma_poll(struct blk_mq_hw_ctx *hctx)
++{
++	struct rnbd_queue *q = hctx->driver_data;
++	struct rnbd_clt_dev *dev = q->dev;
++	int cnt;
++
++	cnt = rtrs_clt_rdma_cq_direct(dev->sess->rtrs, hctx->queue_num);
++	return cnt;
++}
++
++static int rnbd_rdma_map_queues(struct blk_mq_tag_set *set)
++{
++	struct rnbd_clt_session *sess = set->driver_data;
++
++	/* shared read/write queues */
++	set->map[HCTX_TYPE_DEFAULT].nr_queues = num_online_cpus();
++	set->map[HCTX_TYPE_DEFAULT].queue_offset = 0;
++	set->map[HCTX_TYPE_READ].nr_queues = num_online_cpus();
++	set->map[HCTX_TYPE_READ].queue_offset = 0;
++	blk_mq_map_queues(&set->map[HCTX_TYPE_DEFAULT]);
++	blk_mq_map_queues(&set->map[HCTX_TYPE_READ]);
++
++	if (sess->nr_poll_queues) {
++		/* dedicated queue for poll */
++		set->map[HCTX_TYPE_POLL].nr_queues = sess->nr_poll_queues;
++		set->map[HCTX_TYPE_POLL].queue_offset = set->map[HCTX_TYPE_READ].queue_offset +
++			set->map[HCTX_TYPE_READ].nr_queues;
++		blk_mq_map_queues(&set->map[HCTX_TYPE_POLL]);
++		pr_info("[session=%s] mapped %d/%d/%d default/read/poll queues.\n",
++			sess->sessname,
++			set->map[HCTX_TYPE_DEFAULT].nr_queues,
++			set->map[HCTX_TYPE_READ].nr_queues,
++			set->map[HCTX_TYPE_POLL].nr_queues);
++	} else {
++		pr_info("[session=%s] mapped %d/%d default/read queues.\n",
++			sess->sessname,
++			set->map[HCTX_TYPE_DEFAULT].nr_queues,
++			set->map[HCTX_TYPE_READ].nr_queues);
++	}
++
++	return 0;
++}
++
+ static struct blk_mq_ops rnbd_mq_ops = {
+ 	.queue_rq	= rnbd_queue_rq,
+ 	.complete	= rnbd_softirq_done_fn,
++	.map_queues     = rnbd_rdma_map_queues,
++	.poll           = rnbd_rdma_poll,
+ };
+ 
+ static int setup_mq_tags(struct rnbd_clt_session *sess)
+@@ -1181,7 +1226,15 @@ static int setup_mq_tags(struct rnbd_clt_session *sess)
+ 	tag_set->flags		= BLK_MQ_F_SHOULD_MERGE |
+ 				  BLK_MQ_F_TAG_QUEUE_SHARED;
+ 	tag_set->cmd_size	= sizeof(struct rnbd_iu) + RNBD_RDMA_SGL_SIZE;
+-	tag_set->nr_hw_queues	= num_online_cpus();
++
++	/* for HCTX_TYPE_DEFAULT, HCTX_TYPE_READ, HCTX_TYPE_POLL */
++	tag_set->nr_maps        = sess->nr_poll_queues ? HCTX_MAX_TYPES : 2;
++	/*
++	 * HCTX_TYPE_DEFAULT and HCTX_TYPE_READ share one set of queues
++	 * others are for HCTX_TYPE_POLL
++	 */
++	tag_set->nr_hw_queues	= num_online_cpus() + sess->nr_poll_queues;
++	tag_set->driver_data    = sess;
+ 
+ 	return blk_mq_alloc_tag_set(tag_set);
  }
- 
--static int send_msg_close(struct rnbd_clt_dev *dev, u32 device_id, bool wait)
-+static int send_msg_close(struct rnbd_clt_dev *dev, u32 device_id,
-+			  enum wait_type wait)
+@@ -1189,7 +1242,7 @@ static int setup_mq_tags(struct rnbd_clt_session *sess)
+ static struct rnbd_clt_session *
+ find_and_get_or_create_sess(const char *sessname,
+ 			    const struct rtrs_addr *paths,
+-			    size_t path_cnt, u16 port_nr)
++			    size_t path_cnt, u16 port_nr, u32 nr_poll_queues)
  {
- 	struct rnbd_clt_session *sess = dev->sess;
- 	struct rnbd_msg_close msg;
-@@ -530,7 +522,7 @@ static void msg_open_conf(struct work_struct *work)
- 			 * If server thinks its fine, but we fail to process
- 			 * then be nice and send a close to server.
- 			 */
--			(void)send_msg_close(dev, device_id, NO_WAIT);
-+			send_msg_close(dev, device_id, RTRS_PERMIT_NOWAIT);
- 		}
- 	}
- 	kfree(rsp);
-@@ -554,7 +546,7 @@ static void msg_sess_info_conf(struct work_struct *work)
- 	rnbd_clt_put_sess(sess);
- }
+ 	struct rnbd_clt_session *sess;
+ 	struct rtrs_attrs attrs;
+@@ -1198,6 +1251,17 @@ find_and_get_or_create_sess(const char *sessname,
+ 	struct rtrs_clt_ops rtrs_ops;
  
--static int send_msg_open(struct rnbd_clt_dev *dev, bool wait)
-+static int send_msg_open(struct rnbd_clt_dev *dev, enum wait_type wait)
- {
- 	struct rnbd_clt_session *sess = dev->sess;
- 	struct rnbd_msg_open_rsp *rsp;
-@@ -601,7 +593,7 @@ static int send_msg_open(struct rnbd_clt_dev *dev, bool wait)
- 	return err;
- }
+ 	sess = find_or_create_sess(sessname, &first);
++	if (sess == ERR_PTR(-ENOMEM))
++		return ERR_PTR(-ENOMEM);
++	else if ((nr_poll_queues && !first) ||  (!nr_poll_queues && sess->nr_poll_queues)) {
++		/*
++		 * A device MUST have its own session to use the polling-mode.
++		 * It must fail to map new device with the same session.
++		 */
++		err = -EINVAL;
++		goto put_sess;
++	}
++
+ 	if (!first)
+ 		return sess;
  
--static int send_msg_sess_info(struct rnbd_clt_session *sess, bool wait)
-+static int send_msg_sess_info(struct rnbd_clt_session *sess, enum wait_type wait)
- {
- 	struct rnbd_msg_sess_info_rsp *rsp;
- 	struct rnbd_msg_sess_info msg;
-@@ -687,7 +679,7 @@ static void remap_devs(struct rnbd_clt_session *sess)
- 	 * be asynchronous.
- 	 */
+@@ -1219,7 +1283,7 @@ find_and_get_or_create_sess(const char *sessname,
+ 				   0, /* Do not use pdu of rtrs */
+ 				   RECONNECT_DELAY, BMAX_SEGMENTS,
+ 				   BLK_MAX_SEGMENT_SIZE,
+-				   MAX_RECONNECTS);
++				   MAX_RECONNECTS, nr_poll_queues);
+ 	if (IS_ERR(sess->rtrs)) {
+ 		err = PTR_ERR(sess->rtrs);
+ 		goto wake_up_and_put;
+@@ -1227,6 +1291,7 @@ find_and_get_or_create_sess(const char *sessname,
+ 	rtrs_clt_query(sess->rtrs, &attrs);
+ 	sess->max_io_size = attrs.max_io_size;
+ 	sess->queue_depth = attrs.queue_depth;
++	sess->nr_poll_queues = nr_poll_queues;
  
--	err = send_msg_sess_info(sess, NO_WAIT);
-+	err = send_msg_sess_info(sess, RTRS_PERMIT_NOWAIT);
- 	if (err) {
- 		pr_err("send_msg_sess_info(\"%s\"): %d\n", sess->sessname, err);
- 		return;
-@@ -711,7 +703,7 @@ static void remap_devs(struct rnbd_clt_session *sess)
- 			continue;
- 
- 		rnbd_clt_info(dev, "session reconnected, remapping device\n");
--		err = send_msg_open(dev, NO_WAIT);
-+		err = send_msg_open(dev, RTRS_PERMIT_NOWAIT);
- 		if (err) {
- 			rnbd_clt_err(dev, "send_msg_open(): %d\n", err);
- 			break;
-@@ -1242,7 +1234,7 @@ find_and_get_or_create_sess(const char *sessname,
+ 	err = setup_mq_tags(sess);
  	if (err)
- 		goto close_rtrs;
+@@ -1370,7 +1435,8 @@ static int rnbd_client_setup_device(struct rnbd_clt_dev *dev)
  
--	err = send_msg_sess_info(sess, WAIT);
-+	err = send_msg_sess_info(sess, RTRS_PERMIT_WAIT);
- 	if (err)
- 		goto close_rtrs;
+ static struct rnbd_clt_dev *init_dev(struct rnbd_clt_session *sess,
+ 				      enum rnbd_access_mode access_mode,
+-				      const char *pathname)
++				      const char *pathname,
++				      u32 nr_poll_queues)
+ {
+ 	struct rnbd_clt_dev *dev;
+ 	int ret;
+@@ -1379,7 +1445,12 @@ static struct rnbd_clt_dev *init_dev(struct rnbd_clt_session *sess,
+ 	if (!dev)
+ 		return ERR_PTR(-ENOMEM);
  
-@@ -1525,7 +1517,7 @@ struct rnbd_clt_dev *rnbd_clt_map_device(const char *sessname,
- 		ret = -EEXIST;
- 		goto put_dev;
- 	}
--	ret = send_msg_open(dev, WAIT);
-+	ret = send_msg_open(dev, RTRS_PERMIT_WAIT);
- 	if (ret) {
- 		rnbd_clt_err(dev,
- 			      "map_device: failed, can't open remote device, err: %d\n",
-@@ -1559,7 +1551,7 @@ struct rnbd_clt_dev *rnbd_clt_map_device(const char *sessname,
- 	return dev;
+-	dev->hw_queues = kcalloc(nr_cpu_ids, sizeof(*dev->hw_queues),
++	/*
++	 * nr_cpu_ids: the number of softirq queues
++	 * nr_poll_queues: the number of polling queues
++	 */
++	dev->hw_queues = kcalloc(nr_cpu_ids + nr_poll_queues,
++				 sizeof(*dev->hw_queues),
+ 				 GFP_KERNEL);
+ 	if (!dev->hw_queues) {
+ 		ret = -ENOMEM;
+@@ -1405,6 +1476,7 @@ static struct rnbd_clt_dev *init_dev(struct rnbd_clt_session *sess,
+ 	dev->clt_device_id	= ret;
+ 	dev->sess		= sess;
+ 	dev->access_mode	= access_mode;
++	dev->nr_poll_queues	= nr_poll_queues;
+ 	mutex_init(&dev->lock);
+ 	refcount_set(&dev->refcount, 1);
+ 	dev->dev_state = DEV_STATE_INIT;
+@@ -1491,7 +1563,8 @@ struct rnbd_clt_dev *rnbd_clt_map_device(const char *sessname,
+ 					   struct rtrs_addr *paths,
+ 					   size_t path_cnt, u16 port_nr,
+ 					   const char *pathname,
+-					   enum rnbd_access_mode access_mode)
++					   enum rnbd_access_mode access_mode,
++					   u32 nr_poll_queues)
+ {
+ 	struct rnbd_clt_session *sess;
+ 	struct rnbd_clt_dev *dev;
+@@ -1500,11 +1573,11 @@ struct rnbd_clt_dev *rnbd_clt_map_device(const char *sessname,
+ 	if (unlikely(exists_devpath(pathname, sessname)))
+ 		return ERR_PTR(-EEXIST);
  
- send_close:
--	send_msg_close(dev, dev->device_id, WAIT);
-+	send_msg_close(dev, dev->device_id, RTRS_PERMIT_WAIT);
- del_dev:
- 	delete_dev(dev);
- put_dev:
-@@ -1619,7 +1611,7 @@ int rnbd_clt_unmap_device(struct rnbd_clt_dev *dev, bool force,
- 	destroy_sysfs(dev, sysfs_self);
- 	destroy_gen_disk(dev);
- 	if (was_mapped && sess->rtrs)
--		send_msg_close(dev, dev->device_id, WAIT);
-+		send_msg_close(dev, dev->device_id, RTRS_PERMIT_WAIT);
+-	sess = find_and_get_or_create_sess(sessname, paths, path_cnt, port_nr);
++	sess = find_and_get_or_create_sess(sessname, paths, path_cnt, port_nr, nr_poll_queues);
+ 	if (IS_ERR(sess))
+ 		return ERR_CAST(sess);
  
- 	rnbd_clt_info(dev, "Device is unmapped\n");
+-	dev = init_dev(sess, access_mode, pathname);
++	dev = init_dev(sess, access_mode, pathname, nr_poll_queues);
+ 	if (IS_ERR(dev)) {
+ 		pr_err("map_device: failed to map device '%s' from session %s, can't initialize device, err: %ld\n",
+ 		       pathname, sess->sessname, PTR_ERR(dev));
+diff --git a/drivers/block/rnbd/rnbd-clt.h b/drivers/block/rnbd/rnbd-clt.h
+index 714d426b449b..451e7383738f 100644
+--- a/drivers/block/rnbd/rnbd-clt.h
++++ b/drivers/block/rnbd/rnbd-clt.h
+@@ -90,6 +90,7 @@ struct rnbd_clt_session {
+ 	int			queue_depth;
+ 	u32			max_io_size;
+ 	struct blk_mq_tag_set	tag_set;
++	u32			nr_poll_queues;
+ 	struct mutex		lock; /* protects state and devs_list */
+ 	struct list_head        devs_list; /* list of struct rnbd_clt_dev */
+ 	refcount_t		refcount;
+@@ -118,6 +119,7 @@ struct rnbd_clt_dev {
+ 	enum rnbd_clt_dev_state	dev_state;
+ 	char			*pathname;
+ 	enum rnbd_access_mode	access_mode;
++	u32			nr_poll_queues;
+ 	bool			read_only;
+ 	bool			rotational;
+ 	bool			wc;
+@@ -147,7 +149,8 @@ struct rnbd_clt_dev *rnbd_clt_map_device(const char *sessname,
+ 					   struct rtrs_addr *paths,
+ 					   size_t path_cnt, u16 port_nr,
+ 					   const char *pathname,
+-					   enum rnbd_access_mode access_mode);
++					   enum rnbd_access_mode access_mode,
++					   u32 nr_poll_queues);
+ int rnbd_clt_unmap_device(struct rnbd_clt_dev *dev, bool force,
+ 			   const struct attribute *sysfs_self);
  
-@@ -1653,7 +1645,7 @@ int rnbd_clt_remap_device(struct rnbd_clt_dev *dev)
- 	mutex_unlock(&dev->lock);
- 	if (!err) {
- 		rnbd_clt_info(dev, "Remapping device.\n");
--		err = send_msg_open(dev, WAIT);
-+		err = send_msg_open(dev, RTRS_PERMIT_WAIT);
- 		if (err)
- 			rnbd_clt_err(dev, "remap_device: %d\n", err);
- 	}
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 0a08b4b742a3..7efd49bdc78c 100644
+index 7efd49bdc78c..eb0a5e2058ae 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -103,11 +103,11 @@ static inline void __rtrs_put_permit(struct rtrs_clt *clt,
-  *    up earlier.
-  *
-  * Context:
-- *    Can sleep if @wait == RTRS_TAG_WAIT
-+ *    Can sleep if @wait == RTRS_PERMIT_WAIT
-  */
- struct rtrs_permit *rtrs_clt_get_permit(struct rtrs_clt *clt,
- 					  enum rtrs_clt_con_type con_type,
--					  int can_wait)
-+					  enum wait_type can_wait)
+@@ -174,7 +174,7 @@ struct rtrs_clt_con *rtrs_permit_to_clt_con(struct rtrs_clt_sess *sess,
+ 	int id = 0;
+ 
+ 	if (likely(permit->con_type == RTRS_IO_CON))
+-		id = (permit->cpu_id % (sess->s.con_num - 1)) + 1;
++		id = (permit->cpu_id % (sess->s.irq_con_num - 1)) + 1;
+ 
+ 	return to_clt_con(sess->s.con[id]);
+ }
+@@ -1400,23 +1400,29 @@ static void rtrs_clt_close_work(struct work_struct *work);
+ static struct rtrs_clt_sess *alloc_sess(struct rtrs_clt *clt,
+ 					 const struct rtrs_addr *path,
+ 					 size_t con_num, u16 max_segments,
+-					 size_t max_segment_size)
++					 size_t max_segment_size, u32 nr_poll_queues)
  {
- 	struct rtrs_permit *permit;
- 	DEFINE_WAIT(wait);
+ 	struct rtrs_clt_sess *sess;
+ 	int err = -ENOMEM;
+ 	int cpu;
++	size_t total_con;
+ 
+ 	sess = kzalloc(sizeof(*sess), GFP_KERNEL);
+ 	if (!sess)
+ 		goto err;
+ 
+-	/* Extra connection for user messages */
+-	con_num += 1;
+-
+-	sess->s.con = kcalloc(con_num, sizeof(*sess->s.con), GFP_KERNEL);
++	/*
++	 * irqmode and poll
++	 * +1: Extra connection for user messages
++	 */
++	total_con = con_num + nr_poll_queues + 1;
++	sess->s.con = kcalloc(total_con, sizeof(*sess->s.con), GFP_KERNEL);
+ 	if (!sess->s.con)
+ 		goto err_free_sess;
+ 
++	sess->s.con_num = total_con;
++	sess->s.irq_con_num = con_num + 1;
++
+ 	sess->stats = kzalloc(sizeof(*sess->stats), GFP_KERNEL);
+ 	if (!sess->stats)
+ 		goto err_free_con;
+@@ -1435,7 +1441,6 @@ static struct rtrs_clt_sess *alloc_sess(struct rtrs_clt *clt,
+ 		memcpy(&sess->s.src_addr, path->src,
+ 		       rdma_addr_size((struct sockaddr *)path->src));
+ 	strlcpy(sess->s.sessname, clt->sessname, sizeof(sess->s.sessname));
+-	sess->s.con_num = con_num;
+ 	sess->clt = clt;
+ 	sess->max_pages_per_mr = max_segments * max_segment_size >> 12;
+ 	init_waitqueue_head(&sess->state_wq);
+@@ -1576,9 +1581,14 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
+ 	}
+ 	cq_size = max_send_wr + max_recv_wr;
+ 	cq_vector = con->cpu % sess->s.dev->ib_dev->num_comp_vectors;
+-	err = rtrs_cq_qp_create(&sess->s, &con->c, sess->max_send_sge,
+-				 cq_vector, cq_size, max_send_wr,
+-				 max_recv_wr, IB_POLL_SOFTIRQ);
++	if (con->c.cid >= sess->s.irq_con_num)
++		err = rtrs_cq_qp_create(&sess->s, &con->c, sess->max_send_sge,
++					cq_vector, cq_size, max_send_wr,
++					max_recv_wr, IB_POLL_DIRECT);
++	else
++		err = rtrs_cq_qp_create(&sess->s, &con->c, sess->max_send_sge,
++					cq_vector, cq_size, max_send_wr,
++					max_recv_wr, IB_POLL_SOFTIRQ);
+ 	/*
+ 	 * In case of error we do not bother to clean previous allocations,
+ 	 * since destroy_con_cq_qp() must be called.
+@@ -2631,6 +2641,7 @@ static void free_clt(struct rtrs_clt *clt)
+  * @max_segment_size: Max. size of one segment
+  * @max_reconnect_attempts: Number of times to reconnect on error before giving
+  *			    up, 0 for * disabled, -1 for forever
++ * @nr_poll_queues: number of polling mode connection using IB_POLL_DIRECT flag
+  *
+  * Starts session establishment with the rtrs_server. The function can block
+  * up to ~2000ms before it returns.
+@@ -2644,7 +2655,7 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
+ 				 size_t pdu_sz, u8 reconnect_delay_sec,
+ 				 u16 max_segments,
+ 				 size_t max_segment_size,
+-				 s16 max_reconnect_attempts)
++				 s16 max_reconnect_attempts, u32 nr_poll_queues)
+ {
+ 	struct rtrs_clt_sess *sess, *tmp;
+ 	struct rtrs_clt *clt;
+@@ -2662,7 +2673,7 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
+ 		struct rtrs_clt_sess *sess;
+ 
+ 		sess = alloc_sess(clt, &paths[i], nr_cpu_ids,
+-				  max_segments, max_segment_size);
++				  max_segments, max_segment_size, nr_poll_queues);
+ 		if (IS_ERR(sess)) {
+ 			err = PTR_ERR(sess);
+ 			goto close_all_sess;
+@@ -2887,6 +2898,31 @@ int rtrs_clt_request(int dir, struct rtrs_clt_req_ops *ops,
+ }
+ EXPORT_SYMBOL(rtrs_clt_request);
+ 
++int rtrs_clt_rdma_cq_direct(struct rtrs_clt *clt, unsigned int index)
++{
++	int cnt;
++	struct rtrs_con *con;
++	struct rtrs_clt_sess *sess;
++	struct path_it it;
++
++	rcu_read_lock();
++	for (path_it_init(&it, clt);
++	     (sess = it.next_path(&it)) && it.i < it.clt->paths_num; it.i++) {
++		if (READ_ONCE(sess->state) != RTRS_CLT_CONNECTED)
++			continue;
++
++		con = sess->s.con[index + 1];
++		cnt = ib_process_cq_direct(con->cq, -1);
++		if (cnt)
++			break;
++	}
++	path_it_deinit(&it);
++	rcu_read_unlock();
++
++	return cnt;
++}
++EXPORT_SYMBOL(rtrs_clt_rdma_cq_direct);
++
+ /**
+  * rtrs_clt_query() - queries RTRS session attributes
+  *@clt: session pointer
+@@ -2916,7 +2952,7 @@ int rtrs_clt_create_path_from_sysfs(struct rtrs_clt *clt,
+ 	int err;
+ 
+ 	sess = alloc_sess(clt, addr, nr_cpu_ids, clt->max_segments,
+-			  clt->max_segment_size);
++			  clt->max_segment_size, 0);
+ 	if (IS_ERR(sess))
+ 		return PTR_ERR(sess);
+ 
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+index 8caad0a2322b..00eb45053339 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
++++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+@@ -101,6 +101,7 @@ struct rtrs_sess {
+ 	uuid_t			uuid;
+ 	struct rtrs_con	**con;
+ 	unsigned int		con_num;
++	unsigned int		irq_con_num;
+ 	unsigned int		recon_cnt;
+ 	struct rtrs_ib_dev	*dev;
+ 	int			dev_ref;
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs.h b/drivers/infiniband/ulp/rtrs/rtrs.h
-index 8738e90e715a..2db1b5eb3ab0 100644
+index 2db1b5eb3ab0..f891fbe7abe6 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs.h
 +++ b/drivers/infiniband/ulp/rtrs/rtrs.h
-@@ -63,9 +63,9 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
+@@ -59,7 +59,7 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
+ 				 size_t pdu_sz, u8 reconnect_delay_sec,
+ 				 u16 max_segments,
+ 				 size_t max_segment_size,
+-				 s16 max_reconnect_attempts);
++				 s16 max_reconnect_attempts, u32 nr_poll_queues);
  
  void rtrs_clt_close(struct rtrs_clt *sess);
  
--enum {
-+enum wait_type {
- 	RTRS_PERMIT_NOWAIT = 0,
--	RTRS_PERMIT_WAIT   = 1,
-+	RTRS_PERMIT_WAIT   = 1
- };
+@@ -103,6 +103,7 @@ int rtrs_clt_request(int dir, struct rtrs_clt_req_ops *ops,
+ 		     struct rtrs_clt *sess, struct rtrs_permit *permit,
+ 		     const struct kvec *vec, size_t nr, size_t len,
+ 		     struct scatterlist *sg, unsigned int sg_cnt);
++int rtrs_clt_rdma_cq_direct(struct rtrs_clt *clt, unsigned int index);
  
  /**
-@@ -81,7 +81,7 @@ enum rtrs_clt_con_type {
- 
- struct rtrs_permit *rtrs_clt_get_permit(struct rtrs_clt *sess,
- 				    enum rtrs_clt_con_type con_type,
--				    int wait);
-+				    enum wait_type wait);
- 
- void rtrs_clt_put_permit(struct rtrs_clt *sess, struct rtrs_permit *permit);
- 
+  * rtrs_attrs - RTRS session attributes
 -- 
 2.25.1
 
