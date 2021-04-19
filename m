@@ -2,59 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 152D0364681
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Apr 2021 16:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212DF364749
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Apr 2021 17:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238981AbhDSO5t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Apr 2021 10:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52610 "EHLO
+        id S241459AbhDSPn6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Apr 2021 11:43:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238850AbhDSO5s (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Apr 2021 10:57:48 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A67EC061763
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 07:57:17 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id x19so26024304lfa.2
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 07:57:16 -0700 (PDT)
+        with ESMTP id S241433AbhDSPn4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Apr 2021 11:43:56 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0FCEC061761
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 08:43:24 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id w18so41368515edc.0
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 08:43:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bOY9m1eIVASQIMnSbwflGhIUTyPWYD03S/dD7MA55Qc=;
-        b=rgKpT44z5gZPH7IcDqEdCS5YbgmApA+chMspbQ+JZGvC+YpgKwQzzX5A4jzxNEjvmG
-         MLlDYm4e7iCaE5IHqjOyN/ifzjPweOwwRpEg2SJB0fXvLMt8562VpY9TMa7hc7yb2lA1
-         2PVEZpoklcaU3AfYgP9KRx34WMyKtu4e/QsEtsbYZgOl6h8Xq+0WvD0oBFTfJC4iVd4L
-         6j0H/BV7sKihqk2a+lubMh5VtlxaVk/jrOh+titVm4bmXsc3XMgR5O5X+2oCsdriqvyU
-         BMBRSMvjklWjnZ9g9t6FGjScAawV2e+WWEzp+KcGRgjhYZ/E3Qe13rckj3cpUlBiF3sb
-         St4Q==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wf0QWwNwYK6Jhss3gCic3ehYYejoO/XLDc6PTFbc/rU=;
+        b=AcV8eFNybarUUIKChCGLHFNWKTXeCXUS2RwBuMjj5z9IPjcJJzr+bKeR2lL61o4jJJ
+         sRwQo3IzAcvyzF4JFtxWbtvpUxNLNtl+iUWDSbH8GdI2gQSryXkcPO2EgjqBsZxNL/Dp
+         oEVDryNxsWLjXMkNbGCx5oX+lFL+nn6Okl0BYTH1LHz5mYShDONiNnVrbqfgCiPz4xQG
+         h+xu8ewH/NOn5+DsVldXLFK4y0RknlSRIbJpnzFt+Me2/3yAJBF8qKjo7Wwfn1w/uHs6
+         mb2HggcdKRRt97ivNvwAFF9kD37O4OBBnD8HNyLoFsDdEp6+/21qeeklsXWgJzvdIn5X
+         hmRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bOY9m1eIVASQIMnSbwflGhIUTyPWYD03S/dD7MA55Qc=;
-        b=T6Mm/s2sEeiS1LPMiQkueRhiLFzukhILrfvaEPCBpyu9o08VHYwynpzTrh41/BAb7q
-         Bw2xgrN3xznuGfm0udmlO1y+ZhB4CL0o+VwHEikp7f7DVBip5F5tLJ8PHjwTH8Pm/VE5
-         C3Vucz4uCjeBxU8vPUrRnqZ7E/DM+pQhNYQWYNOzXpBSNef8dK2MP4gTk94zOkmMTMFI
-         Q14Lan2l/nd4A5zmMR70KmKKka9n7+35S8hA6cnUWv9N8Grg16AwQphFJIrdQfIViYZf
-         GGN/z+47tviq9U0FZipeyHUCco2HERkTnp2sbnAs1Cizwj1ISX0dBmODfIdmE44EZ56v
-         Z06g==
-X-Gm-Message-State: AOAM531PsiYQKVQmTK0K8rrmghkCf+b1fMCp/9kr+MQBunZGiRh5LCbU
-        JYm03RyEyaFk2UVLMuP3UEmGiRrUAZFqZqnziH2Rlg==
-X-Google-Smtp-Source: ABdhPJzVe3naebLuz81mJv7oonUIqkV5Z3LAXE1HEtaRfd+15ET0ZRont6UfxMYDrQHny8LYwtQzYeplG9JZRH79Gdo=
-X-Received: by 2002:a05:6512:92e:: with SMTP id f14mr6712386lft.347.1618844235220;
- Mon, 19 Apr 2021 07:57:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-3-mcroce@linux.microsoft.com> <20210410154824.GZ2531743@casper.infradead.org>
- <YHHPbQm2pn2ysth0@enceladus> <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
- <YHHuE7g73mZNrMV4@enceladus> <20210414214132.74f721dd@carbon>
- <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com> <YH0RMV7+56gVOzJe@apalos.home>
-In-Reply-To: <YH0RMV7+56gVOzJe@apalos.home>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 19 Apr 2021 07:57:03 -0700
-Message-ID: <CALvZod7oa4q6pMUyDi4FMW4WKY7AjOZ7P2=02GoxjpwrQpA-OQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wf0QWwNwYK6Jhss3gCic3ehYYejoO/XLDc6PTFbc/rU=;
+        b=DeH8h4L0LCDGgaKdH8I72I8gSOlqL/FBjiOD74zkuXDHV0AU7i9wQ05YAYbaffSF6E
+         fIwZKUp/b9QlEh/AJnWbm/QsV0Qirq96YjtY8VKY0KLSzpRwVYXZuHY061Wl4TaIF5BP
+         YxlkF6IwBJ1q9CkGn5WAEWpIqxivD2yysxEFNYOVhrNW/jvcwq7sm9/A4q8dA8uUkdCp
+         w4gHblkfjL5y/RxDqkTIb/iEH875oDmVI5vf8UTzAn3KFjbmhddmIN3lhknkwyaz+1Xq
+         xA3qu5c9QapefCZsfinMLZUYWlYJrHupUK74Su98y9kRpW6efeV/Gm9DE6SMeeXVd7GO
+         wNqw==
+X-Gm-Message-State: AOAM530YzkZKlNFrBMNcbvuVjAb2x/PmMOY6FRqY+19eqtaLSPsFgTbL
+        qk+IjgOFfMnqRs9gJgbZqxBKXg==
+X-Google-Smtp-Source: ABdhPJwF0JLAYSLI4B5eBDz2Xkr4BA5xRzg20NOS5BQtJee0K4m+lYUS7uBNOMRCPGktz319AfgEZw==
+X-Received: by 2002:aa7:d3c6:: with SMTP id o6mr19000389edr.359.1618847003325;
+        Mon, 19 Apr 2021 08:43:23 -0700 (PDT)
+Received: from apalos.home (ppp-94-65-92-88.home.otenet.gr. [94.65.92.88])
+        by smtp.gmail.com with ESMTPSA id s11sm13468946edt.27.2021.04.19.08.43.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 08:43:22 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 18:43:17 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Shakeel Butt <shakeelb@google.com>
 Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
         Matthew Wilcox <willy@infradead.org>,
         Matteo Croce <mcroce@linux.microsoft.com>,
@@ -102,90 +97,128 @@ Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+Message-ID: <YH2lFYbj3d8nC+hF@apalos.home>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-3-mcroce@linux.microsoft.com>
+ <20210410154824.GZ2531743@casper.infradead.org>
+ <YHHPbQm2pn2ysth0@enceladus>
+ <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+ <YHHuE7g73mZNrMV4@enceladus>
+ <20210414214132.74f721dd@carbon>
+ <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
+ <YH0RMV7+56gVOzJe@apalos.home>
+ <CALvZod7oa4q6pMUyDi4FMW4WKY7AjOZ7P2=02GoxjpwrQpA-OQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod7oa4q6pMUyDi4FMW4WKY7AjOZ7P2=02GoxjpwrQpA-OQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 10:12 PM Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
->
-> On Wed, Apr 14, 2021 at 01:09:47PM -0700, Shakeel Butt wrote:
-> > On Wed, Apr 14, 2021 at 12:42 PM Jesper Dangaard Brouer
-> > <brouer@redhat.com> wrote:
-> > >
-> > [...]
-> > > > >
-> > > > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
-> > > > > can not be used.
+Hi Shakeel,
+On Mon, Apr 19, 2021 at 07:57:03AM -0700, Shakeel Butt wrote:
+> On Sun, Apr 18, 2021 at 10:12 PM Ilias Apalodimas
+> <ilias.apalodimas@linaro.org> wrote:
+> >
+> > On Wed, Apr 14, 2021 at 01:09:47PM -0700, Shakeel Butt wrote:
+> > > On Wed, Apr 14, 2021 at 12:42 PM Jesper Dangaard Brouer
+> > > <brouer@redhat.com> wrote:
 > > > >
-> > > > Yes it can, since it's going to be used as your default allocator for
-> > > > payloads, which might end up on an SKB.
+> > > [...]
+> > > > > >
+> > > > > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
+> > > > > > can not be used.
+> > > > >
+> > > > > Yes it can, since it's going to be used as your default allocator for
+> > > > > payloads, which might end up on an SKB.
+> > > >
+> > > > I'm not sure we want or should "allow" page_pool be used for TCP RX
+> > > > zerocopy.
+> > > > For several reasons.
+> > > >
+> > > > (1) This implies mapping these pages page to userspace, which AFAIK
+> > > > means using page->mapping and page->index members (right?).
+> > > >
 > > >
-> > > I'm not sure we want or should "allow" page_pool be used for TCP RX
-> > > zerocopy.
-> > > For several reasons.
-> > >
-> > > (1) This implies mapping these pages page to userspace, which AFAIK
-> > > means using page->mapping and page->index members (right?).
+> > > No, only page->_mapcount is used.
 > > >
 > >
-> > No, only page->_mapcount is used.
+> > I am not sure I like leaving out TCP RX zerocopy. Since we want driver to
+> > adopt the recycling mechanism we should try preserving the current
+> > functionality of the network stack.
 > >
->
-> I am not sure I like leaving out TCP RX zerocopy. Since we want driver to
-> adopt the recycling mechanism we should try preserving the current
-> functionality of the network stack.
->
-> The question is how does it work with the current drivers that already have an
-> internal page recycling mechanism.
->
+> > The question is how does it work with the current drivers that already have an
+> > internal page recycling mechanism.
+> >
+> 
+> I think the current drivers check page_ref_count(page) to decide to
+> reuse (or not) the already allocated pages.
+> 
+> Some examples from the drivers:
+> drivers/net/ethernet/intel/ixgbe/ixgbe_main.c:ixgbe_can_reuse_rx_page()
+> drivers/net/ethernet/intel/igb/igb_main.c:igb_can_reuse_rx_page()
+> drivers/net/ethernet/mellanox/mlx5/core/en_rx.c:mlx5e_rx_cache_get()
+> 
 
-I think the current drivers check page_ref_count(page) to decide to
-reuse (or not) the already allocated pages.
+Yes, that's how internal recycling is done in drivers. As Jesper mentioned the
+refcnt of the page is 1 for the page_pool owned pages and that's how we decide 
+what to do with the page.
 
-Some examples from the drivers:
-drivers/net/ethernet/intel/ixgbe/ixgbe_main.c:ixgbe_can_reuse_rx_page()
-drivers/net/ethernet/intel/igb/igb_main.c:igb_can_reuse_rx_page()
-drivers/net/ethernet/mellanox/mlx5/core/en_rx.c:mlx5e_rx_cache_get()
-
-> > > (2) It feels wrong (security wise) to keep the DMA-mapping (for the
-> > > device) and also map this page into userspace.
+> > > > (2) It feels wrong (security wise) to keep the DMA-mapping (for the
+> > > > device) and also map this page into userspace.
+> > > >
 > > >
-> >
-> > I think this is already the case i.e pages still DMA-mapped and also
-> > mapped into userspace.
-> >
-> > > (3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
-> > > zerocopy will bump the refcnt, which means the page_pool will not
-> > > recycle the page when it see the elevated refcnt (it will instead
-> > > release its DMA-mapping).
-> >
-> > Yes this is right but the userspace might have already consumed and
-> > unmapped the page before the driver considers to recycle the page.
->
-> Same question here. I'll have a closer look in a few days and make sure we are
-> not breaking anything wrt zerocopy.
->
-
-Pages mapped into the userspace have their refcnt elevated, so the
-page_ref_count() check by the drivers indicates to not reuse such
-pages.
-
-> >
+> > > I think this is already the case i.e pages still DMA-mapped and also
+> > > mapped into userspace.
 > > >
-> > > (4) I remember vaguely that this code path for (TCP RX zerocopy) uses
-> > > page->private for tricks.  And our patch [3/5] use page->private for
-> > > storing xdp_mem_info.
+> > > > (3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
+> > > > zerocopy will bump the refcnt, which means the page_pool will not
+> > > > recycle the page when it see the elevated refcnt (it will instead
+> > > > release its DMA-mapping).
 > > >
-> > > IMHO when the SKB travel into this TCP RX zerocopy code path, we should
-> > > call page_pool_release_page() to release its DMA-mapping.
-> > >
+> > > Yes this is right but the userspace might have already consumed and
+> > > unmapped the page before the driver considers to recycle the page.
 > >
-> > I will let TCP RX zerocopy experts respond to this but from my high
-> > level code inspection, I didn't see page->private usage.
->
-> Shakeel are you aware of any 'easy' way I can have rx zerocopy running?
->
+> > Same question here. I'll have a closer look in a few days and make sure we are
+> > not breaking anything wrt zerocopy.
+> >
+> 
+> Pages mapped into the userspace have their refcnt elevated, so the
+> page_ref_count() check by the drivers indicates to not reuse such
+> pages.
+> 
 
-I would recommend tools/testing/selftests/net/tcp_mmap.c.
+When tcp_zerocopy_receive() is invoked it will call tcp_zerocopy_vm_insert_batch() 
+which will end up doing a get_page().
+What you are saying is that once the zerocopy is done though, skb_release_data() 
+won't be called, but instead put_page() will be? If that's the case then we are 
+indeed leaking DMA mappings and memory. That sounds weird though, since the
+refcnt will be one in that case (zerocopy will do +1/-1 once it's done), so who
+eventually frees the page? 
+If kfree_skb() (or any wrapper that calls skb_release_data()) is called 
+eventually, we'll end up properly recycling the page into our pool.
+
+> > >
+> > > >
+> > > > (4) I remember vaguely that this code path for (TCP RX zerocopy) uses
+> > > > page->private for tricks.  And our patch [3/5] use page->private for
+> > > > storing xdp_mem_info.
+> > > >
+> > > > IMHO when the SKB travel into this TCP RX zerocopy code path, we should
+> > > > call page_pool_release_page() to release its DMA-mapping.
+> > > >
+> > >
+> > > I will let TCP RX zerocopy experts respond to this but from my high
+> > > level code inspection, I didn't see page->private usage.
+> >
+> > Shakeel are you aware of any 'easy' way I can have rx zerocopy running?
+> >
+> 
+> I would recommend tools/testing/selftests/net/tcp_mmap.c.
+
+Ok, thanks I'll have a look.
+
+Cheers
+/Ilias
