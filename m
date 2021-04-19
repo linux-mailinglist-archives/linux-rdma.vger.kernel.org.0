@@ -2,166 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD7D364793
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Apr 2021 17:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E49A364820
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Apr 2021 18:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240360AbhDSP6O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Apr 2021 11:58:14 -0400
-Received: from mail-dm3nam07on2078.outbound.protection.outlook.com ([40.107.95.78]:43745
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239800AbhDSP6O (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 19 Apr 2021 11:58:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cBLQilBDIB1krjFD3ehWotYUMWKxeAeihdRnKPYKQNb9KCORIWpxkp7pkt6SNznsDrpd1pEdVaGpJKN46+LmeAcjdVS76sgNn2/nkiFpQZ+jMPyirDt4UqsFZD9ulRIRP6I4+6RN9DW0YbwuZnMirkKhy+49kf4689+iRAvDLL2Qm+xnNHD6LxmVineSzPrb4oA2cULWPUETbK28StMoNwT6mq6OhxsJTeK3cL+t6pgR6r8RaeqNqiYyvybuIvhtM4Pn6FKDBuG7L7kbGhKnGCeV+LBhssqzaNq/qgVZMEGc1e7pChQoSG2s/0xvNqn1aPM4mqYuUoklY2lirFVMyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q9wlo6MnGo/YAF67ldA7RbPEXXxQchc+yTzwa/qBKag=;
- b=bJrfGJPBZYvYUcU+LhHbad9m0lhmbApJPAd3lko8xci1PqgMAcPwDkf0JCb82P5wryxE/HmXp+a3xyH4EZnlF14w7JYOi03HoRrZDxwOhqBb49xInfHDW469YLRBKDctoYjgpwv4EG5ziloHB5JZvhTHDBByBRm+hH06Zm8ojTkgdxY3gL3+ilLnVXFzEXbB8+V/JQgg05bw2yrak0WcLu091VqvhzyN0N2BE6bCoGnlfsXQp8EBCyUZOPSPWys0scJYAHbJypkxaX4cnMA1rfHrO9nR4akwXjGSnlx2H7ETj20o2clAMdjbv8Kn2W3Nnc/MnpVnVADu8RhySZoslQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q9wlo6MnGo/YAF67ldA7RbPEXXxQchc+yTzwa/qBKag=;
- b=RdjzocftqEmZPvESXysrrYrZQWSxTBwrN4REuJAXjDQNdy04T9HVH5I6BjfKZ5JN7BGO6FklclLobB4kedfB+thHph/Oz6RKG/fEf19OgzJOkjw4/yJ99lp9xhl0h4A20GzHi51g0wJk6X8/TNpaPnAqDy10hmDu7h3qw2pJOmMmgZh9NSLsc9Cf4KZp7yrZz67qmCch6d5xmy2uN1fyfPRAYOkjklX9oLAfhbTu1PQ90JaKmMCbcCKiyyN5nfsik73Q0PcUJj4eoIjvncfR5Oh69d6UzNkYvvFqkyDBP26QOocgRohl9WzCk0bp924awz9d6cgjXIm+XGKMoYypdg==
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3737.namprd12.prod.outlook.com (2603:10b6:5:1c5::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Mon, 19 Apr
- 2021 15:57:43 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4042.024; Mon, 19 Apr 2021
- 15:57:43 +0000
-Date:   Mon, 19 Apr 2021 12:57:41 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Haakon Bugge <haakon.bugge@oracle.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH for-next] RDMA/core: Unify RoCE check and re-factor code
-Message-ID: <20210419155741.GV1370958@nvidia.com>
-References: <1617705423-15570-1-git-send-email-haakon.bugge@oracle.com>
- <20210408122518.GA645599@nvidia.com>
- <0E0C2ED4-DA48-49AE-AAF6-686B372638F7@oracle.com>
- <DE7C3C55-BDFC-47EE-ABBD-F2399697CBF5@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DE7C3C55-BDFC-47EE-ABBD-F2399697CBF5@oracle.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL0PR0102CA0005.prod.exchangelabs.com
- (2603:10b6:207:18::18) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S238476AbhDSQWn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Apr 2021 12:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235536AbhDSQWj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Apr 2021 12:22:39 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A533AC06138A
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 09:22:09 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id j4so17386755lfp.0
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 09:22:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O961I/6SpeSlE/psbTVuCjUHNPMleqN4PCYNj9U2q7A=;
+        b=QyCXioim+uvs6ZsZ5HXYH8805X6eZVpFOsRXDPDu0FhkLM2j9m+7VBhsbXtQ60iw90
+         VG4CzcSNws5VKEnnaLwaE+Mla8FPUF4Ifo/aduTqVEEsqkEIHDsv7++Nb8PAs+zX9RJs
+         l4FvqPnoAc6U8fzSYX23GNIlLVFESDEdeZw4ASgibwICAnAA31uQArRchuzLd7XpCmqY
+         MplUe6zFqDWDRPswRq04ECp9Kdz+N7Fihf5+eX9D+hxKcWBqFD4iHE/tYp91Yr2laL1W
+         4GCuRoeQb17je7gyDNL69BxZQAhg2z1g3kNu32/o4rF6quRGBe/h8EnLEcbHG1UhK1rf
+         DaiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O961I/6SpeSlE/psbTVuCjUHNPMleqN4PCYNj9U2q7A=;
+        b=joJAkyeKtEqvMWNTOr5hjv+9Zj2kADZV/o5VQbLOeV7Qgs4xG372Aqij564X8VQvOe
+         Ri4f2X0G5yWhrHlDMcmJuNVUWjd+oK61GlNTR7O5vNkc9XbX7VSZkoJm1OSjVzegAI+a
+         M27MqBSKJOv29YtQh8sn/NDNVRmnvEKCURfwgY64ApMuJrnEj7xP76r4rRpp2VOFYGWw
+         wKwOg3KQHA04NsFZKJJyOAVVYrqF2ONPNmjcyj4t32sPPq8lqsroWgimn5hD4Scvdk0d
+         e0EHoLjYZQVAPsBjkYe5OWTfyzy2XyXeneCbIa9gl9AzBXwhWa4vR2XR8sGf5z8S+3io
+         IiqQ==
+X-Gm-Message-State: AOAM532DxidixXXIvcPGElM/T80ulI6V19fnTN7pnFqSquC86Pl9Zw2h
+        jrQ5lUDkuGQO15CJGnkiEN8zqSzfkVpxWnMSWVcwJw==
+X-Google-Smtp-Source: ABdhPJyPLPorxRBakMjIU9mAt+YhIT0rjnyA4Jhv/b2TF9PoyD81mokL98bTTyiEHaEb8stXptpRF/697s3tntJvUOQ=
+X-Received: by 2002:ac2:58d9:: with SMTP id u25mr3133485lfo.117.1618849327780;
+ Mon, 19 Apr 2021 09:22:07 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR0102CA0005.prod.exchangelabs.com (2603:10b6:207:18::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Mon, 19 Apr 2021 15:57:43 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lYWHN-008TDX-J2; Mon, 19 Apr 2021 12:57:41 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dedc8d0f-2faa-4ef8-3842-08d9034bde0c
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3737:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3737A92C2EDFEEA66B04DBD3C2499@DM6PR12MB3737.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LFnLON/6zbiEKK8zdRorpxlJUYX4EM2Kcve22TxHcrTB6kc3fiFKd1Ke6O/L/ozkEslBg6fqGkL8ZWqpshR8xiRe1Yc2RNJRKShKJJHUN7dFO8iT96yr5KmeREy3RzBhmpVz37cKccFLLXMExUP2iROs203HgZanFz48DNfU5/Hkuu5BEKpWEEOZyOmePomD92u000Qi8vsnu17zYLN2+cBOyk3um/ym9QjwlIVJ2m4XRHAYUlb4CAiEc3xgIj1bj1A1eOkkKSUbMBSB4zgKHJjIyvAg/MHVctV7QY9PsLFfrsDvRBOx596r+HdGoyKTG/NM2pHZKGgUc3mkNrHXg7i0RaKHsVKkQduoj+JxSssVdlD+ofLN+Lbt9tILLsrg4lOsIpk30A3IluujD+bNgVJ+X58jSPcnmhztuatC1pNRzxiJz6QIaS0b/VEjURE9wbSfo63tU8okzadCRlahtqGb4LAneA6PkVmGQwFmPU6TTbjiS4znsV32f1tSG+Vn/tuVcVSBX+9il1Cl2yq7ArkLQ82heCtiSrybT/Mk3obA+IaDiXDYxBzVC0bE8RmMZ/uTJfIukOluwSkSaWRxZGcBuStwvhB9ctjWs0N8pPM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(346002)(39860400002)(136003)(2616005)(316002)(9786002)(6916009)(54906003)(1076003)(426003)(33656002)(9746002)(53546011)(38100700002)(5660300002)(2906002)(36756003)(86362001)(66574015)(26005)(4326008)(8936002)(83380400001)(478600001)(8676002)(66946007)(186003)(66476007)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eU5YUndnSVhPRnd3aGhyY1VyenpPUHRZcTBDaGJPV0hjVll2MTFmOWU4NWNM?=
- =?utf-8?B?ckVBSUx6djhjTjQ2OFVYUFBnSFozZ2dxS1pkaVdKbmUwWVh6N2E5MVlGSUJm?=
- =?utf-8?B?RzduQUJuaWN3UUZ2V2FORUVjZDdhc0JwMzZ2Q3FPVEdia0l4Wi9hMjJDdVpo?=
- =?utf-8?B?VE9VREJBbC9ScG5tV1FiYVRkU3B2ZGNaRi9QTTFwMDFnazJVaDJjTVI4NzZk?=
- =?utf-8?B?NXlxeCtZYTgvTzFRWTlBclhkLzdmT0YvclN4M0taUGNNRXdMWW1TR00weXZR?=
- =?utf-8?B?OUpjMzRuakZrZDNKMnkxcVVwUVVINVczOXJiTTlTUFlXWllVRzdxcDRld0lQ?=
- =?utf-8?B?bHl3ajVrRnl3c2FjVHljd3JCaWlGM1BaeGdURHJkZ0FGcnFGbFlva2NEZ2kr?=
- =?utf-8?B?SWtLbXk4QzdrcCtuM2dmbXVQVWtXcUJhVm5ocDhFSk95MWRtSkNyRnBwbFNj?=
- =?utf-8?B?YXlFTklQOG4vQ0o1OGN3MEVlRjYwUUJyTExaTzVXTnRyQzM0cm54Nk5ZRFZR?=
- =?utf-8?B?N0hla0Zha1JIMkw5T1RmTHczakpGeFRkd3gvU2lmQ1Q5azk4ZWduMmhZQ3dy?=
- =?utf-8?B?RDUyK0FGNEFsUjhNZDJJNE1IVDNuT2Q4SGM0SHBrYjFOUnBmVlF0MW4ydnRu?=
- =?utf-8?B?M0ZRZFpuTFdYcnRnd0llRVRwZzAveHJyNW8vUzVuY1pVTFoveGNBY3VwRTBL?=
- =?utf-8?B?RHNyRFlTdHdubWxVUnVyOVM0TmZTUmlrYURxYWZSWnQyV0xPYjZZOEd6aVRz?=
- =?utf-8?B?MXRIUlMzNnRnTk1kNnMxQ2xBRFNKUzVvd3ZBaHppOXdsc1Y4amdHQkE1YWI4?=
- =?utf-8?B?S2ozdzRXZ0s2bDg2VU0zMGIzL0tjeE1HNEJsS3pxaURZaVdPK0RMVmovOVdw?=
- =?utf-8?B?OHBLcUFOWDJxRlpSV1ZDcGJyeUx3Mjk3TitlcUJXRUJvK2tkZ0sxclNsMlZn?=
- =?utf-8?B?YnNYVkFRbVVVdUYyNHFVWEtQZkpWQ0tuSGtzRDlwaG5nMmh6akUzWXphRjFS?=
- =?utf-8?B?eWx5dlI0V3pDejRQcVQ5REZOUFNGMjJVKy9JWkpuSmY0RXJPdjZpejNCS0Z4?=
- =?utf-8?B?bnp5L3FVMUJ1U3FiU3VLM3lRbnU5OC9GaGlpQnB4bno2TlY2Q1kzUVVaRjU0?=
- =?utf-8?B?ZFg1Y0QzdHlWbnk4N21nQ1BrZzVhdjU5ZDVxVEVDaktybGhHUi9adGI1c29i?=
- =?utf-8?B?dGxZRXdneUpKZ21BeGw1eFROcGYwbDRiVi9ud2hURDVna0lUYWFRL3dZV0g0?=
- =?utf-8?B?cWlRSG9pa3VRNFZYeWRoOW9Zd2dCNThTVGdFam5FOGIvcnJqOU43YVljaDJR?=
- =?utf-8?B?UXNKUWVTZnBvYzhHUHF2S2l3TTNPWDNIRXRSbnNmVThrODhhMFUwZ2hIaUNm?=
- =?utf-8?B?TC9nSVpDNStQeXM2NFFQVHI3TWN5SDJEeVBjK2Z4QnhoZTZ5OEdvRytYZ00r?=
- =?utf-8?B?d092VXJSVjlWTFlEWm0wZ00rUTlXSHlRWUxnK1pwbTl2M250eEVzdHNwc0M2?=
- =?utf-8?B?VVB0ZzZJdUFGRExndnYxTE9VVXAyZTFtcC8zZitTQzRYTDlTSENRalgraDE0?=
- =?utf-8?B?NDlxWGQyckc2bXYxM09LeW9HQVNNRFBCSit3aVhiTWpIM2hES011dlJtSlNn?=
- =?utf-8?B?M3FRaHVPTmtJOTlPK3hsRmJDd2R1L2UxcHpKOTlub1RYYkVwN3NsUTZReFU2?=
- =?utf-8?B?dkYzdWdpR3M5U3d3TllzVU5Sejk0K2E5UGdYUnFOSGgvZXZUcGJuMEVNVEFL?=
- =?utf-8?B?alpCaDNURExiVmJIbm02STh2RHBpTnlYSThFaW9FM2NEaGkwNTBnOUprSG5R?=
- =?utf-8?B?UG5LV0o5RHNiaUZvVFpxdz09?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dedc8d0f-2faa-4ef8-3842-08d9034bde0c
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2021 15:57:43.4128
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nby7BcKAFPto0P1XfNmzR3TKm6KqhdBXKyrxz6JfyVvN5s2tCJ4G+HSA84chSBIh
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3737
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-3-mcroce@linux.microsoft.com> <20210410154824.GZ2531743@casper.infradead.org>
+ <YHHPbQm2pn2ysth0@enceladus> <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+ <YHHuE7g73mZNrMV4@enceladus> <20210414214132.74f721dd@carbon>
+ <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
+ <YH0RMV7+56gVOzJe@apalos.home> <CALvZod7oa4q6pMUyDi4FMW4WKY7AjOZ7P2=02GoxjpwrQpA-OQ@mail.gmail.com>
+ <YH2lFYbj3d8nC+hF@apalos.home>
+In-Reply-To: <YH2lFYbj3d8nC+hF@apalos.home>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 19 Apr 2021 09:21:55 -0700
+Message-ID: <CALvZod7oZ+7CNwSjqHs5XaLH9o_6+YYwEUeii5ETqeUwUTG6+Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 03:49:08PM +0000, Haakon Bugge wrote:
-> >> On 8 Apr 2021, at 14:25, Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >> 
-> >> On Tue, Apr 06, 2021 at 12:37:03PM +0200, Håkon Bugge wrote:
-> >>> In cm_req_handler(), unify the check for RoCE and re-factor to avoid
-> >>> one test.
-> >>> 
-> >>> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-> >>> Fixes: 8f9748602491 ("IB/cm: Reduce dependency on gid attribute ndev check")
-> >>> Fixes: 194f64a3cad3 ("RDMA/core: Fix corrupted SL on passive side")
-> >>> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-> >>> drivers/infiniband/core/cm.c | 8 ++------
-> >>> 1 file changed, 2 insertions(+), 6 deletions(-)
-> >>> 
-> >>> diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-> >>> index 32c836b..074faff 100644
-> >>> +++ b/drivers/infiniband/core/cm.c
-> >>> @@ -2138,21 +2138,17 @@ static int cm_req_handler(struct cm_work *work)
-> >>> 		goto destroy;
-> >>> 	}
-> >>> 
-> >>> -	if (cm_id_priv->av.ah_attr.type != RDMA_AH_ATTR_TYPE_ROCE)
-> >>> -		cm_process_routed_req(req_msg, work->mad_recv_wc->wc);
-> >>> -
-> >>> 	memset(&work->path[0], 0, sizeof(work->path[0]));
-> >>> 	if (cm_req_has_alt_path(req_msg))
-> >>> 		memset(&work->path[1], 0, sizeof(work->path[1]));
-> >>> 	grh = rdma_ah_read_grh(&cm_id_priv->av.ah_attr);
-> >>> 	gid_attr = grh->sgid_attr;
-> >>> 
-> >>> -	if (gid_attr &&
-> >>> -	    rdma_protocol_roce(work->port->cm_dev->ib_device,
-> >>> -			       work->port->port_num)) {
-> >>> +	if (gid_attr && cm_id_priv->av.ah_attr.type == RDMA_AH_ATTR_TYPE_ROCE) {
-> >> 
-> >> I think your other note was right, the gid_attr cannot be NULL when in
-> >> ROCE mode, so we can delete the 'gid_attr &&' term too
-> > 
-> > Shall I send a v2 or do you fix it when you merge?
-> 
-> Have you made up you mind here :-)
+On Mon, Apr 19, 2021 at 8:43 AM Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+[...]
+> > Pages mapped into the userspace have their refcnt elevated, so the
+> > page_ref_count() check by the drivers indicates to not reuse such
+> > pages.
+> >
+>
+> When tcp_zerocopy_receive() is invoked it will call tcp_zerocopy_vm_insert_batch()
+> which will end up doing a get_page().
+> What you are saying is that once the zerocopy is done though, skb_release_data()
+> won't be called, but instead put_page() will be? If that's the case then we are
+> indeed leaking DMA mappings and memory. That sounds weird though, since the
+> refcnt will be one in that case (zerocopy will do +1/-1 once it's done), so who
+> eventually frees the page?
+> If kfree_skb() (or any wrapper that calls skb_release_data()) is called
+> eventually, we'll end up properly recycling the page into our pool.
+>
 
-Well, I marked it as changes-requested so I guess I did..
+From what I understand (Eric, please correct me if I'm wrong) for
+simple cases there are 3 page references taken. One by the driver,
+second by skb and third by page table.
 
-But anyway I'll fix it up, it does look obviously correct
+In tcp_zerocopy_receive(), tcp_zerocopy_vm_insert_batch() gets one
+page ref through insert_page_into_pte_locked(). However before
+returning from tcp_zerocopy_receive(), the skb references are dropped
+through tcp_recv_skb(). So, whenever the user unmaps the page and
+drops the page ref only then that page can be reused by the driver.
 
-Applied to for-next
+In my understanding, for zerocopy rx the skb_release_data() is called
+on the pages while they are still mapped into the userspace. So,
+skb_release_data() might not be the right place to recycle the page
+for zerocopy. The email chain at [1] has some discussion on how to
+bundle the recycling of pages with their lifetime.
 
-Jason
+[1] https://lore.kernel.org/linux-mm/20210316013003.25271-1-arjunroy.kdev@gmail.com/
