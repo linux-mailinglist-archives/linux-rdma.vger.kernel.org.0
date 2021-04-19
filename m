@@ -2,181 +2,205 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5643649F7
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Apr 2021 20:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A8C364A35
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Apr 2021 21:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239338AbhDSSln (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Apr 2021 14:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45782 "EHLO
+        id S237685AbhDSTFT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Apr 2021 15:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238636AbhDSSlm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Apr 2021 14:41:42 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A78EC06174A
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 11:41:10 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id v6so53192748ejo.6
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 11:41:10 -0700 (PDT)
+        with ESMTP id S230295AbhDSTFS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Apr 2021 15:05:18 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B84C06174A
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 12:04:48 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id x11so36861829qkp.11
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 12:04:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3TXXauaxjaFJkryZmKe4pKXsqt2c2W4efv7xXXt6kDg=;
-        b=K9U3Wsn/ZMp1qcVYmH8K49eGtKmxmMFJSG/7TwpdB++O51Bvwx+tGQzCMd2HWtCCCj
-         XkCNqHebmllrUDYH703DvaCBFIWgSQv6LE4Cbcf2HP99jSESzpqew5uPUVaK2069tqYj
-         tZYbGjtxJ2VsQp+eM/Xqdg32vwrRUqYHp41rtvTo2tv49YUNJF97ZV4gpkqaEDa1JKZL
-         Z6YVtkJSH7bYpmUle6fdm8FVq4JLc6chNiBFVgFpOGNZ+D9JgQikxIFy4njTKnuu92mH
-         pS/DzlQqFeg0jYG6YLidrAmH1WKQgCm7dvMcSnuxGhhjUn59EuYG3vW+H+LmrqEFQqyA
-         83cA==
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sbbHCz5FZVSgID6j/1zdfBkn9TrXK+/8ButCwh/RqVY=;
+        b=fJlkeaFo1xMmhjvzK+UlpTWT5JLopekDvoxaehCCqVbNQvviEvkF00OwHApjH2u9jM
+         Kf6MrUNApVeN2JIxPBZjReE4Nnr+0Ev267lDFFfvfdjNPR2QDhH8kbNpB8HtvAr6ZYy3
+         OBgvGXnTiqJBQe1tGVcg+CpR5MskDuSOF0XzQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3TXXauaxjaFJkryZmKe4pKXsqt2c2W4efv7xXXt6kDg=;
-        b=oF9U5c895jPya7Myv0DteYEie+0bJKypKc8Q9gmRVFhRP6R/3qRit4dlIHLfny0pid
-         HAPANQLAf/kDl4Qz9iA8+XJQNAvmbSWg4YDK5YWnYM+00J8H3gc/D4ujMV/a0Nr2M0AU
-         asKn/iqFkFLo4zSrHJZGHgEBwkoMuQOEjxZHokjGLlTednpLHkDlNJNGD7g+XqVsjBjR
-         stHLzEc3t5eAvQUanZEgbtzOJQn2Rme/lqj/0UtCgefCvR5+VnZM/hQpjrFVyVzRUyX5
-         rfDcn9po5DQ/0diyTlFoVQkeKvnl7pa+l5vTdoHmBzayE3IIiXGSwdnSf1+6f+GfEP/l
-         G8PA==
-X-Gm-Message-State: AOAM532kVX7OwmkXi7ZoeakyNp7r168SKVQVuWu0tKzWHz7LKuoMe6xT
-        EDDIV0wlWKcYVmZdb+28ttRyBA==
-X-Google-Smtp-Source: ABdhPJycOdUR+CwuNkAlnUJFFot68MXH4HjBcF7ZhZklGQLGYR6WexKascVTMUkGkR7LHMZEQK+/Ig==
-X-Received: by 2002:a17:906:6896:: with SMTP id n22mr23676314ejr.316.1618857669049;
-        Mon, 19 Apr 2021 11:41:09 -0700 (PDT)
-Received: from apalos.home (ppp-94-65-92-88.home.otenet.gr. [94.65.92.88])
-        by smtp.gmail.com with ESMTPSA id l6sm5233811ejc.92.2021.04.19.11.41.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 11:41:08 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 21:41:02 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sbbHCz5FZVSgID6j/1zdfBkn9TrXK+/8ButCwh/RqVY=;
+        b=l78WTWTQGMjpkdbTqg9ZAPJdEvP+muR8D6wHyMKb46+UQ5+7LczmVFMuW/1c7g5v3g
+         4/doLKZejgAed67AkWQbt9N4NAp8M02NcLXjKQA9sR+W3Q2WQWfJoKtij9C5sqiTt+G8
+         yUvr4/e9vrxkAyuluNyYmfKspW7ecd9cS3DqGCLAgpl5BmCuZetKKt8W03aizpiCYDNy
+         ZFqa8Yph/LOrxqi2WtWadn/Ce1ow7zIDaOmq7/F8kBedNyKTMg9zv5PIMWs1zj9PIGUg
+         hvupoMdQAxinR/xIzl4JTgWVvGXoZQAC9CS3OPnc070PMs+JTs360HcJQejXMjdJiSGI
+         4HZQ==
+X-Gm-Message-State: AOAM531IvrUzGYZx1EeMA73I+Ua/vOZFCz1ThR79iI10QivJEgMIfEEK
+        NvTCWq5+oJo+y5fTEP6sOEK6MH8+9U4tyxl3kKYpOw==
+X-Google-Smtp-Source: ABdhPJzWkrXfncCVJYRQvgrvLgXGWpXoLPrzI/T7NrFBzNYY9tGX8c7Rv6CIT2J/h5tNKETgAOEXHqK/2ssrJaNWKWs=
+X-Received: by 2002:a37:b585:: with SMTP id e127mr8928850qkf.405.1618859087009;
+ Mon, 19 Apr 2021 12:04:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210401065715.565226-1-leon@kernel.org> <CANjDDBiuw_VNepewLAtYE58Eg2JEsvGbpxttWyjV6DYMQdY5Zw@mail.gmail.com>
+ <YGhUjarXh+BEK1pW@unreal> <CANjDDBiC-8pL+-ma1c0n8vjMaorm-CasV_D+_8q2LGy-AYuTVg@mail.gmail.com>
+ <YG7srVMi8IEjuLfF@unreal> <CANjDDBirjSEkcDZ4E8u4Ce_dep3PRTmo2S9-q7=dmR+MLKi_=A@mail.gmail.com>
+ <YHP5WRfEKQ3n9O0s@unreal> <CANjDDBhpJPc6wypp2u3OC9RjYEpYmXuNozZ5fRHSmx=vLWeYNw@mail.gmail.com>
+ <YHqY8Led24PuLU5W@unreal> <CANjDDBgsh9FrQOgB-uR0GGYZHcF5cnTy4Efnd3L_-T2_eWqxsg@mail.gmail.com>
+ <20210419173809.GW1370958@nvidia.com>
+In-Reply-To: <20210419173809.GW1370958@nvidia.com>
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+Date:   Tue, 20 Apr 2021 00:34:10 +0530
+Message-ID: <CANjDDBiJsM+cHKsYNtGngTqN-Q1HRg2Zj5N0FFm6CrL9iAFdaQ@mail.gmail.com>
+Subject: Re: [PATCH rdma-next v2 0/5] Get rid of custom made module dependency
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <YH3OvqpYQ0WeFpxy@apalos.home>
-References: <20210410154824.GZ2531743@casper.infradead.org>
- <YHHPbQm2pn2ysth0@enceladus>
- <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
- <YHHuE7g73mZNrMV4@enceladus>
- <20210414214132.74f721dd@carbon>
- <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
- <YH0RMV7+56gVOzJe@apalos.home>
- <CALvZod7oa4q6pMUyDi4FMW4WKY7AjOZ7P2=02GoxjpwrQpA-OQ@mail.gmail.com>
- <YH2lFYbj3d8nC+hF@apalos.home>
- <CALvZod7oZ+7CNwSjqHs5XaLH9o_6+YYwEUeii5ETqeUwUTG6+Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod7oZ+7CNwSjqHs5XaLH9o_6+YYwEUeii5ETqeUwUTG6+Q@mail.gmail.com>
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000db650905c0580079"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 09:21:55AM -0700, Shakeel Butt wrote:
-> On Mon, Apr 19, 2021 at 8:43 AM Ilias Apalodimas
-> <ilias.apalodimas@linaro.org> wrote:
-> >
-> [...]
-> > > Pages mapped into the userspace have their refcnt elevated, so the
-> > > page_ref_count() check by the drivers indicates to not reuse such
-> > > pages.
-> > >
-> >
-> > When tcp_zerocopy_receive() is invoked it will call tcp_zerocopy_vm_insert_batch()
-> > which will end up doing a get_page().
-> > What you are saying is that once the zerocopy is done though, skb_release_data()
-> > won't be called, but instead put_page() will be? If that's the case then we are
-> > indeed leaking DMA mappings and memory. That sounds weird though, since the
-> > refcnt will be one in that case (zerocopy will do +1/-1 once it's done), so who
-> > eventually frees the page?
-> > If kfree_skb() (or any wrapper that calls skb_release_data()) is called
-> > eventually, we'll end up properly recycling the page into our pool.
-> >
-> 
-> From what I understand (Eric, please correct me if I'm wrong) for
-> simple cases there are 3 page references taken. One by the driver,
-> second by skb and third by page table.
-> 
-> In tcp_zerocopy_receive(), tcp_zerocopy_vm_insert_batch() gets one
-> page ref through insert_page_into_pte_locked(). However before
-> returning from tcp_zerocopy_receive(), the skb references are dropped
-> through tcp_recv_skb(). So, whenever the user unmaps the page and
-> drops the page ref only then that page can be reused by the driver.
-> 
-> In my understanding, for zerocopy rx the skb_release_data() is called
-> on the pages while they are still mapped into the userspace. So,
-> skb_release_data() might not be the right place to recycle the page
-> for zerocopy. The email chain at [1] has some discussion on how to
-> bundle the recycling of pages with their lifetime.
-> 
-> [1] https://lore.kernel.org/linux-mm/20210316013003.25271-1-arjunroy.kdev@gmail.com/
+--000000000000db650905c0580079
+Content-Type: text/plain; charset="UTF-8"
 
-Ah right, you mentioned the same email before and I completely forgot about
-it! In the past we had thoughts of 'stealing' the page on put_page instead of 
-skb_release_data().  We were afraid that this would cause a measurable 
-performance hit, so we tried to limit it within the skb lifecycle.
+On Mon, Apr 19, 2021 at 11:08 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Sun, Apr 18, 2021 at 12:09:16AM +0530, Devesh Sharma wrote:
+>
+> > The host crash I indicated earlier is actually caused by patch 4 and
+> > not by patch 3 from this series. I spent time to root cause the
+>
+> This makes a lot more sense.
+>
+> The ulp_id stuff does need to go away as well though.
+We shall address this concern with Aux implementation.
+>
+> > problem and realized that patch-4 is touching quite many areas which
+> > would require much intrusive testing and validation.
+> > As I indicated earlier, we are implementing the PCI Aux driver
+> > interface at a faster pace.
+>
+> Doing an aux driver doesn't mean you get to keep all these single
+> implementation function pointers - see the discussion around Intel's
+> patches.
+Sure, We will try addressing this concern as well. Could you please
+point me to the exact patches please...
+>
+> > The problem of module referencing would be rectified with PCI aux
+> > change by inheritance.
+>
+> The first three patches are clearly an improvement, and quite trivial,
+> so I'm going to take them.
+To my mind the first 3 patches in this series are fine and I agree to
+Ack those. Of-course I want to spend some more time
+establishing all of our internal test harness  passing. I can Ack
+those in a couple of days at the earliest.
+Further, I do not want to proceed with patch 4 and 5 as those patches
+are too intrusive and cause host hang/crash during rmmod bnxt_re
+followed by rmmod bnxt_en.
+Probably this is some kind of race. If I try to add a few prints to
+the debug, the problem does not appear.
+Since, we want to remain focused on PCI Aux implementation instead of
+resolving instabilities at this point, we would like to pick up the
+idea from 4 and 5 in our PCI Aux implementation.
 
-However I don't think this will be a problem.  Assuming we are right here and 
-skb_release_data() is called while the userspace holds an extra reference from
-the mapping here's what will happen:
+>
+> Jason
 
-skb_release_data() -> skb_free_head() -> page_pool_return_skb_page() ->
-set_page_private() -> xdp_return_skb_frame() -> __xdp_return() -> 
-page_pool_put_full_page() -> page_pool_put_page() -> __page_pool_put_page()
 
-When we call __page_pool_put_page(), the refcnt will be != 1 (because a user
-mapping is still active), so we won't try to recycle it. Instead we'll remove 
-the DMA mappings and decrease the refcnt.
 
-So although the recycling won't 'work', nothing bad will happen (famous last
-words).
+-- 
+-Regards
+Devesh
 
-In any case, I'll double check with the test you pointed out before v4.
+--000000000000db650905c0580079
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Thanks!
-/Ilias
+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
+TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
+Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
+KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
+SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
+PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
+G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
+PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIN3JDo07/kb/BwT8X4O0yrZUWILd
+Mofu7pCoEYu4WmCiMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDQxOTE5MDQ0N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQA/34CEDTFJ5w7H3w8zxNKz9IohNgYJCZfnMGE3l2xm05NU
+ly/3bxJdgyQ49DZmBBSKqgbbdbR/ifwfxRBcBI+I1hnnxgV1a5pmpONYb097WBBSt1qv4+1wYxgU
+aZHwkmcZTuo5pQytLnhjeuDx52hG13Sj0GuiSuyTV1b45Z5j2ixtqf2mgeCqpHwQcl/3G+Zg6yka
+/NC0zWTjMEpyi2yLKuGkxBvr6Q24XpaUlS6O90tpi2LYqco6BhqxV/NnS7L2W6O/pCfzHpZ/3OXx
+tWhWAX1kohC9WaHkdXg91vSdTTP3rwRt+7nh5t8X0W4FiHekjbAenW7ZSETLr6VUoHzO
+--000000000000db650905c0580079--
