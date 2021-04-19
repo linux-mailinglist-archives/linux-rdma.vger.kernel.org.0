@@ -2,126 +2,169 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980C33641AD
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Apr 2021 14:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E0D36424E
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Apr 2021 15:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233826AbhDSMaB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Apr 2021 08:30:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60788 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229790AbhDSMaB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 19 Apr 2021 08:30:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 353F8611F0;
-        Mon, 19 Apr 2021 12:29:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618835371;
-        bh=Tx8VTZAduAKtK5TdS6KSjD6naKxE32yCKNnRkld+3vI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DHMzclgELoAkze9oowmXoGz42FJqg3zTK9SEJe93yXlG9NnY814LHN4cwnMRXRs5k
-         vzSK10Feti5/lQmCn8WkslgcYs8rBFTX04EF/JevBXYH3Sf6+3V5ZdxeYpES4S1lXG
-         8RMP/z/8/OftJSFapZ8PQ0mxtD/CCtJXfxsZUghMEUaPGxQsBuXlL8uv6c8glI/efg
-         wqreLjgL37ijeuqRV4/fphBnfgmdAa4FnpCrsCNwDMXjimzbJsk/S88hUF5fgriDR0
-         oZMIBPRKYRtIH8ti/le66HfxD9SDw6mHphZWQbTtl/14WhzLoWueuwSFYlZLlTIJHi
-         iBFfdPjV+V84g==
-Date:   Mon, 19 Apr 2021 15:29:27 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Wan, Kaike" <kaike.wan@intel.com>
-Cc:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH for-next 06/10] rdma: Set physical MTU for query_port
- function
-Message-ID: <YH13p0zRz+M9Tmzz@unreal>
-References: <1617026056-50483-1-git-send-email-dennis.dalessandro@cornelisnetworks.com>
- <1617026056-50483-7-git-send-email-dennis.dalessandro@cornelisnetworks.com>
- <YGWHga9RMan2uioD@unreal>
- <44ca5d0e-7aa4-5a9a-8f3b-d30454a58fb4@cornelisnetworks.com>
- <YG7ztT81z8BZDkUj@unreal>
- <8d987675-09f3-542c-a921-072f19243e08@cornelisnetworks.com>
- <DM6PR11MB33061E82DC3C60F2779C87DFF4499@DM6PR11MB3306.namprd11.prod.outlook.com>
+        id S238377AbhDSNEV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 19 Apr 2021 09:04:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232800AbhDSNEV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 19 Apr 2021 09:04:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E76FC061760;
+        Mon, 19 Apr 2021 06:03:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8Y0pwAVt5liDDolwhxFKvBOLg1az19k+Kyl8s6P7Mkw=; b=qh+osCLCYoBzdKk4OeJfdc7J9J
+        shl+bJI6rxfcBQSyUHfvACIIxpBednLK2EubX+7seel0bFOvQcQK+jZoQeITc+v2PI2mb2vCfurG4
+        Iz1Jx+evxKF0mxbN3hGOTdmKkw/Big46+gSRFjS7Bcm1zy1oyWgzxp5sakrTLJBWnvbYovFe8a2Tj
+        6drEwpV5y+w6FDXtd5amPm+3usP0JSTm7fxq2CdQjbgRmW6fOEF7HDFoUma/fp6LsDiBYcgbUg3lU
+        xOWtgX+S7Y2kwtviMj2NHv0xDQhr/xFfW5udlCZV7yiQvRTBIOJ4bdLWiNP47NQMfxvezra9yhVN1
+        F7lE216g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYTXA-00DlIj-GW; Mon, 19 Apr 2021 13:02:10 +0000
+Date:   Mon, 19 Apr 2021 14:01:48 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+Message-ID: <20210419130148.GA2531743@casper.infradead.org>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-3-mcroce@linux.microsoft.com>
+ <20210410154824.GZ2531743@casper.infradead.org>
+ <YHHPbQm2pn2ysth0@enceladus>
+ <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+ <YHHuE7g73mZNrMV4@enceladus>
+ <20210414214132.74f721dd@carbon>
+ <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
+ <20210419132204.1e07d5b9@carbon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM6PR11MB33061E82DC3C60F2779C87DFF4499@DM6PR11MB3306.namprd11.prod.outlook.com>
+In-Reply-To: <20210419132204.1e07d5b9@carbon>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 12:20:33PM +0000, Wan, Kaike wrote:
+On Mon, Apr 19, 2021 at 01:22:04PM +0200, Jesper Dangaard Brouer wrote:
+> On Wed, 14 Apr 2021 13:09:47 -0700
+> Shakeel Butt <shakeelb@google.com> wrote:
 > 
-> 
-> > -----Original Message-----
-> > From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-> > Sent: Thursday, April 08, 2021 8:31 AM
-> > To: Leon Romanovsky <leon@kernel.org>
-> > Cc: dledford@redhat.com; jgg@ziepe.ca; linux-rdma@vger.kernel.org; Wan,
-> > Kaike <kaike.wan@intel.com>
-> > Subject: Re: [PATCH for-next 06/10] rdma: Set physical MTU for query_port
-> > function
-> > 
-> > On 4/8/2021 8:14 AM, Leon Romanovsky wrote:
-> > > On Thu, Apr 08, 2021 at 08:06:46AM -0400, Dennis Dalessandro wrote:
-> > >> On 4/1/2021 4:42 AM, Leon Romanovsky wrote:
-> > >>> On Mon, Mar 29, 2021 at 09:54:12AM -0400,
-> > dennis.dalessandro@cornelisnetworks.com wrote:
-> > >>>> From: Kaike Wan <kaike.wan@intel.com>
-> > >>>>
-> > >>>> This is a follow on patch to add a phys_mtu field to the
-> > >>>> ib_port_attr structure to indicate the maximum physical MTU the
-> > >>>> underlying device supports.
-> > >>>>
-> > >>>> Extends the following:
-> > >>>> commit 6d72344cf6c4 ("IB/ipoib: Increase ipoib Datagram mode MTU's
-> > >>>> upper limit")
-> > >>>>
-> > >>>> Reviewed-by: Mike Marciniszyn
-> > >>>> <mike.marciniszyn@cornelisnetworks.com>
-> > >>>> Signed-off-by: Kaike Wan <kaike.wan@intel.com>
-> > >>>> Signed-off-by: Dennis Dalessandro
-> > >>>> <dennis.dalessandro@cornelisnetworks.com>
-> > >>>> ---
-> > >>>>    drivers/infiniband/hw/bnxt_re/ib_verbs.c        |  1 +
-> > >>>>    drivers/infiniband/hw/cxgb4/provider.c          |  1 +
-> > >>>>    drivers/infiniband/hw/efa/efa_verbs.c           |  1 +
-> > >>>>    drivers/infiniband/hw/hns/hns_roce_main.c       |  1 +
-> > >>>>    drivers/infiniband/hw/i40iw/i40iw_verbs.c       |  1 +
-> > >>>>    drivers/infiniband/hw/mlx4/main.c               |  1 +
-> > >>>>    drivers/infiniband/hw/mlx5/mad.c                |  1 +
-> > >>>>    drivers/infiniband/hw/mlx5/main.c               |  2 ++
-> > >>>>    drivers/infiniband/hw/mthca/mthca_provider.c    |  1 +
-> > >>>>    drivers/infiniband/hw/ocrdma/ocrdma_verbs.c     |  1 +
-> > >>>>    drivers/infiniband/hw/qib/qib_verbs.c           |  1 +
-> > >>>>    drivers/infiniband/hw/usnic/usnic_ib_verbs.c    |  1 +
-> > >>>>    drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c |  1 +
-> > >>>>    drivers/infiniband/sw/siw/siw_verbs.c           |  1 +
-> > >>>>    drivers/infiniband/ulp/ipoib/ipoib_main.c       |  2 +-
-> > >>>>    include/rdma/ib_verbs.h                         | 17 -----------------
-> > >>>>    16 files changed, 16 insertions(+), 18 deletions(-)
-> > >>>
-> > >>> But why? What will it give us that almost all drivers have same
-> > >>> props->phys_mtu = ib_mtu_enum_to_int(props->max_mtu); line?
-> > >>>
-> > >>
-> > >> Almost is not all. Alternative idea to convey this? Seemed like a
-> > >> sensible thing to at least have support for but open to other approaches.
+> > On Wed, Apr 14, 2021 at 12:42 PM Jesper Dangaard Brouer
+> > <brouer@redhat.com> wrote:
+> > >  
+> > [...]
+> > > > >
+> > > > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
+> > > > > can not be used.  
+> > > >
+> > > > Yes it can, since it's going to be used as your default allocator for
+> > > > payloads, which might end up on an SKB.  
 > > >
-> > > What about leave it as is?
+> > > I'm not sure we want or should "allow" page_pool be used for TCP RX
+> > > zerocopy.
+> > > For several reasons.
 > > >
-> > > I'm struggling to get the rationale behind this patch., the code
-> > > already works and set the phys_mtu correctly, isn't it?
+> > > (1) This implies mapping these pages page to userspace, which AFAIK
+> > > means using page->mapping and page->index members (right?).
+> > >  
 > > 
-> > I see what you are saying now. Kaike, correct me if I'm wrong, but the intent
-> > of this patch is just to make everything behave the same in the sense that a
-> > device could have a different physical MTU. The field got added to the
-> > ib_port_attr previously so this is giving it an initial value vs leaving it unset.
-> [Wan, Kaike]  Correct.
-
-No one is using this "phys_mtu" field, except one place in ipoib.
-
-Thanks
-
->   
-> > 
-> > -Denny
+> > No, only page->_mapcount is used.
 > 
+> Good to know.
+> I will admit that I don't fully understand the usage of page->mapping
+> and page->index members.
+
+That's fair.  It's not well-documented, and it's complicated.
+
+For a page mapped into userspace, page->mapping is one of:
+ - NULL
+ - A pointer to a file's address_space
+ - A pointer to an anonymous page's anon_vma
+If a page isn't mapped into userspace, you can use the space in page->mapping
+for anything you like (eg slab uses it)
+
+page->index is only used for indicating pfmemalloc today (and I want to
+move that indicator).  I think it can also be used to merge VMAs (if
+some other conditions are also true), but failing to merge VMAs isn't
+a big deal for this kind of situation.
+
+> > > (2) It feels wrong (security wise) to keep the DMA-mapping (for the
+> > > device) and also map this page into userspace.
+> > 
+> > I think this is already the case i.e pages still DMA-mapped and also
+> > mapped into userspace.
+> 
+> True, other drivers are doing the same.
+
+And the contents of this page already came from that device ... if it
+wanted to write bad data, it could already have done so.
+
+> > > (3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
+> > > zerocopy will bump the refcnt, which means the page_pool will not
+> > > recycle the page when it see the elevated refcnt (it will instead
+> > > release its DMA-mapping).  
+> > 
+> > Yes this is right but the userspace might have already consumed and
+> > unmapped the page before the driver considers to recycle the page.
+> 
+> That is a good point.  So, there is a race window where it is possible
+> to gain recycling.
+> 
+> It seems my page_pool co-maintainer Ilias is interested in taking up the
+> challenge to get this working with TCP RX zerocopy.  So, lets see how
+> this is doable.
+
+You could also check page_ref_count() - page_mapcount() instead of
+just checking page_ref_count().  Assuming mapping/unmapping can't
+race with recycling?
+
