@@ -2,23 +2,23 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD5436613B
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Apr 2021 22:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37601366124
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Apr 2021 22:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233882AbhDTU41 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Apr 2021 16:56:27 -0400
-Received: from gateway33.websitewelcome.com ([192.185.146.130]:29232 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233769AbhDTU40 (ORCPT
+        id S234009AbhDTUtA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Apr 2021 16:49:00 -0400
+Received: from gateway34.websitewelcome.com ([192.185.148.142]:41686 "EHLO
+        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234051AbhDTUtA (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 20 Apr 2021 16:56:26 -0400
-X-Greylist: delayed 1505 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Apr 2021 16:56:26 EDT
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id 0F57DC78DA0
-        for <linux-rdma@vger.kernel.org>; Tue, 20 Apr 2021 15:10:08 -0500 (CDT)
+        Tue, 20 Apr 2021 16:49:00 -0400
+X-Greylist: delayed 1442 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Apr 2021 16:49:00 EDT
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway34.websitewelcome.com (Postfix) with ESMTP id AACAB3DC4F
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Apr 2021 15:24:15 -0500 (CDT)
 Received: from gator4166.hostgator.com ([108.167.133.22])
         by cmsmtp with SMTP
-        id YwhElE0X0w11MYwhElhzPj; Tue, 20 Apr 2021 15:10:08 -0500
+        id YwuslH4AwL7DmYwuslP8gF; Tue, 20 Apr 2021 15:24:14 -0500
 X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
@@ -26,33 +26,33 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=T17AR9OHg8qWguPD0J0elr1lqd2smiUTolFswCJAyeE=; b=jQv1GMuu077q+yr2ApeKRPnqFG
-        tsMh+lvGaFmsQ34LLZzAiiaMs2XD7/RCguH8/bk/WIU0MMLRvQ9XXv7NaP1sxKaT+aHOkFZWVQ9Ks
-        af6TwikMt8WF9nYbVo1NtLINT9o0LuB5RTjOvxDRUCEKa6xDGnHE4hUMbhs45ghfWNrBlaYqbnYAh
-        es0Fz7K1Zu3HkQhpoc7ziffEQG1jzNPjbh7jeCROfAKO3ZeKb69sYyAYl+dqEPq7Flaofqnwe+L/o
-        qPCCQPMg/4ondAJGMWVr9XoGJ2Q3Dt2gDQfr5PmSQFYKdDObeidc3bGZ16ovUn0ZWqqvra5fzrvYH
-        sXxbcrcA==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:48946 helo=[192.168.15.8])
+        bh=9YUTPA5Ok3BrBYNC0Dh7n9d5iaJCdFrQ2Xsk4P+rUY4=; b=AF9vOvKsFc70HxWbjBMc8iBvUR
+        9W3NKtHd28oZAs8Z/D9ESAUgAyHDZWklzlZdN+89dclI86/ec7yK8dzU02GdJfnAk0LiB6ox1i4uQ
+        7yqN3fPdgMW7AODlUekCHWqxyTtGuTwxZ3EVGoTqjNFyBLINHDy8YkMvb96Y1Aqrnmu/J/V1xJkiE
+        hp4Gq4ctsLihrrce6fU/KXDoRgPlNuew+0x+aU0TJSpxdC1NITkuXKCftRzG1SjrdIlOgn09LV1/y
+        croRnyDr15vj0L1B8//Vh55tUf48eNazsrMT45UGZFW9fjJbO7QXy2LvjBNmUMGtx/J9Qke/eUP1W
+        3flgBZgQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:49032 helo=[192.168.15.8])
         by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.94)
         (envelope-from <gustavo@embeddedor.com>)
-        id 1lYwhA-002fLy-Gv; Tue, 20 Apr 2021 15:10:04 -0500
-Subject: Re: [PATCH RESEND][next] rds: Fix fall-through warnings for Clang
+        id 1lYwuo-0031M1-8m; Tue, 20 Apr 2021 15:24:10 -0500
+Subject: Re: [PATCH RESEND][next] net/mlx4: Fix fall-through warnings for
+ Clang
 To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>
 Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20210305090612.GA139288@embeddedor>
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210305084847.GA138343@embeddedor>
 From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <cd935ba5-a072-5b5a-d455-e06ef87a3a34@embeddedor.com>
-Date:   Tue, 20 Apr 2021 15:10:19 -0500
+Message-ID: <808373f4-25d0-9e7e-fe16-f8b279d1ebab@embeddedor.com>
+Date:   Tue, 20 Apr 2021 15:24:19 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210305090612.GA139288@embeddedor>
+In-Reply-To: <20210305084847.GA138343@embeddedor>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -64,13 +64,13 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 187.162.31.110
 X-Source-L: No
-X-Exim-ID: 1lYwhA-002fLy-Gv
+X-Exim-ID: 1lYwuo-0031M1-8m
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:48946
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:49032
 X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 51
+X-Email-Count: 165
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
 Precedence: bulk
@@ -85,48 +85,28 @@ Thanks
 --
 Gustavo
 
-On 3/5/21 03:06, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
-> warnings by explicitly adding multiple break statements instead of
-> letting the code fall through to the next case.
+On 3/5/21 02:48, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a break statement instead of just letting the code
+> fall through to the next case.
 > 
 > Link: https://github.com/KSPP/linux/issues/115
+> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > ---
->  net/rds/tcp_connect.c | 1 +
->  net/rds/threads.c     | 2 ++
->  2 files changed, 3 insertions(+)
+>  drivers/net/ethernet/mellanox/mlx4/resource_tracker.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/net/rds/tcp_connect.c b/net/rds/tcp_connect.c
-> index 4e64598176b0..5461d77fff4f 100644
-> --- a/net/rds/tcp_connect.c
-> +++ b/net/rds/tcp_connect.c
-> @@ -78,6 +78,7 @@ void rds_tcp_state_change(struct sock *sk)
->  	case TCP_CLOSE_WAIT:
->  	case TCP_CLOSE:
->  		rds_conn_path_drop(cp, false);
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
+> index a99e71bc7b3c..771b92019af1 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
+> @@ -2660,6 +2660,7 @@ int mlx4_FREE_RES_wrapper(struct mlx4_dev *dev, int slave,
+>  	case RES_XRCD:
+>  		err = xrcdn_free_res(dev, slave, vhcr->op_modifier, alop,
+>  				     vhcr->in_param, &vhcr->out_param);
 > +		break;
+>  
 >  	default:
 >  		break;
->  	}
-> diff --git a/net/rds/threads.c b/net/rds/threads.c
-> index 32dc50f0a303..1f424cbfcbb4 100644
-> --- a/net/rds/threads.c
-> +++ b/net/rds/threads.c
-> @@ -208,6 +208,7 @@ void rds_send_worker(struct work_struct *work)
->  		case -ENOMEM:
->  			rds_stats_inc(s_send_delayed_retry);
->  			queue_delayed_work(rds_wq, &cp->cp_send_w, 2);
-> +			break;
->  		default:
->  			break;
->  		}
-> @@ -232,6 +233,7 @@ void rds_recv_worker(struct work_struct *work)
->  		case -ENOMEM:
->  			rds_stats_inc(s_recv_delayed_retry);
->  			queue_delayed_work(rds_wq, &cp->cp_recv_w, 2);
-> +			break;
->  		default:
->  			break;
->  		}
 > 
