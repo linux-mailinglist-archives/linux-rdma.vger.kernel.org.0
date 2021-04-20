@@ -2,97 +2,186 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA0D36597D
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Apr 2021 15:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79112365A3E
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Apr 2021 15:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231795AbhDTNGo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Apr 2021 09:06:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57658 "EHLO mail.kernel.org"
+        id S232364AbhDTNfo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Apr 2021 09:35:44 -0400
+Received: from mga03.intel.com ([134.134.136.65]:48911 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231718AbhDTNGj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:06:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABDC161073;
-        Tue, 20 Apr 2021 13:06:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618923967;
-        bh=2w7Ed3BCqxcN4xIn6thXlQe8uN4XXNJvGRwEljF/Gxw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m8m2097tFX7TG8c+kFM8+//J9yCME8pOlpG3gBBhZLwEQdvIxyBxGKoTkFoRp9Cha
-         q2MOVhJp9fRuNWksUYWsvLDfWQvDlFfZ53iAt+38SZ/DF/FG+t76knTlLiHq23nhvm
-         DuwAqNr3rgNDwQztLAXR9N0jMEysBXGbQVd8E3NbeoYxSZ8vQBEOXLMrNqD3jyjrPH
-         48y41xDJ1ZRQt+NRA/7t+7vr4buUbd5riXpwS4cVJYAH4jPWHQFcstdtNFmMLO214c
-         PuxA2q+3+IurNbHGT2P5UtH5Pqy06VgSKBcr+Buth4PrtrQq0eacFZWT36x73zHcJg
-         tHiZVio8LUSSg==
-Date:   Tue, 20 Apr 2021 16:06:03 +0300
-From:   Leon Romanovsky <leon@kernel.org>
+        id S232260AbhDTNfm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:35:42 -0400
+IronPort-SDR: xBWLC+nOanLaT24aP9nZOOkMeDmETUy9Xcv5ybAvxzRRugcmm2Hz4LR/cQvH0eD+7oZj7r9BB/
+ +OR0XxB3hdWA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="195533234"
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="195533234"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 06:35:08 -0700
+IronPort-SDR: 9euhwCBkJTUguWcV8RzmwoPDwazogZCNy8fFTo+z8Soy8Llfb1gUBBNg85vav5tUesH0Wc4nVs
+ 0s4w1OcW7z6Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="523801377"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 20 Apr 2021 06:35:06 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lYqWw-0002V4-5W; Tue, 20 Apr 2021 13:35:06 +0000
+Date:   Tue, 20 Apr 2021 21:34:29 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Shay Drory <shayd@nvidia.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next] RDMA/restrack: Delay QP deletion till all
- users are gone
-Message-ID: <YH7Ru5ZSr1kWGZoa@unreal>
-References: <9ba5a611ceac86774d3d0fda12704cecc30606f9.1618753038.git.leonro@nvidia.com>
- <20210420123950.GA2138447@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 534d6ed5ad2a7d28a531c5c078ce33d21d27d9f9
+Message-ID: <607ed865.UKSK2cmszMEqX8lf%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210420123950.GA2138447@nvidia.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 09:39:50AM -0300, Jason Gunthorpe wrote:
-> On Sun, Apr 18, 2021 at 04:37:35PM +0300, Leon Romanovsky wrote:
-> > From: Shay Drory <shayd@nvidia.com>
-> > 
-> > Currently, in case of QP, the following use-after-free is possible:
-> > 
-> > 	cpu0				cpu1
-> > 	----				----
-> >  res_get_common_dumpit()
-> >  rdma_restrack_get()
-> >  fill_res_qp_entry()
-> > 				ib_destroy_qp_user()
-> > 				 rdma_restrack_del()
-> > 				 qp->device->ops.destroy_qp()
-> >   ib_query_qp()
-> >   qp->device->ops.query_qp()
-> >     --> use-after-free-qp
-> > 
-> > This is because rdma_restrack_del(), in case of QP, isn't waiting until
-> > all users are gone.
-> > 
-> > Fix it by making rdma_restrack_del() wait until all users are gone for
-> > QPs as well.
-> > 
-> > Fixes: 13ef5539def7 ("RDMA/restrack: Count references to the verbs objects")
-> > Signed-off-by: Shay Drory <shayd@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >  drivers/infiniband/core/restrack.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
-> > index ffabaf327242..def0c5b0efe9 100644
-> > --- a/drivers/infiniband/core/restrack.c
-> > +++ b/drivers/infiniband/core/restrack.c
-> > @@ -340,7 +340,7 @@ void rdma_restrack_del(struct rdma_restrack_entry *res)
-> >  	rt = &dev->res[res->type];
-> >  
-> >  	old = xa_erase(&rt->xa, res->id);
-> > -	if (res->type == RDMA_RESTRACK_MR || res->type == RDMA_RESTRACK_QP)
-> > +	if (res->type == RDMA_RESTRACK_MR)
-> >  		return;
-> 
-> Why is MR skipping this?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 534d6ed5ad2a7d28a531c5c078ce33d21d27d9f9  RDMA/bnxt_re: Get rid of custom module reference counting
 
-I don't remember the justification for RDMA_RESTRACK_MR || RDMA_RESTRACK_QP check.
-My guess that it is related to the allocation flow (both are not converted) and
-have internal objects to the drivers.
+elapsed time: 724m
 
-> 
-> 
-> It also calls into the driver under its dumpit, at the very least this
-> needs a comment.
-> 
-> Jason
+configs tested: 124
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+powerpc                 mpc8540_ads_defconfig
+m68k                         apollo_defconfig
+arm                           stm32_defconfig
+csky                             alldefconfig
+mips                    maltaup_xpa_defconfig
+microblaze                          defconfig
+sh                      rts7751r2d1_defconfig
+xtensa                         virt_defconfig
+arm                            mmp2_defconfig
+arm                           omap1_defconfig
+arm                        multi_v5_defconfig
+powerpc                     tqm8540_defconfig
+arm                            zeus_defconfig
+arm                         axm55xx_defconfig
+arm                          moxart_defconfig
+arm                       multi_v4t_defconfig
+arm                       spear13xx_defconfig
+m68k                          hp300_defconfig
+powerpc                 mpc8272_ads_defconfig
+m68k                       m5275evb_defconfig
+mips                          ath79_defconfig
+mips                   sb1250_swarm_defconfig
+alpha                            alldefconfig
+arm                            lart_defconfig
+powerpc                          g5_defconfig
+powerpc                      bamboo_defconfig
+mips                        nlm_xlr_defconfig
+arm                         hackkit_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                     ep8248e_defconfig
+xtensa                       common_defconfig
+h8300                               defconfig
+mips                         db1xxx_defconfig
+ia64                          tiger_defconfig
+arm                        mvebu_v7_defconfig
+ia64                      gensparse_defconfig
+m68k                                defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                      katmai_defconfig
+sh                         ecovec24_defconfig
+sh                          rsk7201_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20210419
+x86_64               randconfig-a001-20210419
+x86_64               randconfig-a005-20210419
+x86_64               randconfig-a002-20210419
+x86_64               randconfig-a006-20210419
+x86_64               randconfig-a004-20210419
+i386                 randconfig-a003-20210419
+i386                 randconfig-a001-20210419
+i386                 randconfig-a006-20210419
+i386                 randconfig-a005-20210419
+i386                 randconfig-a004-20210419
+i386                 randconfig-a002-20210419
+i386                 randconfig-a012-20210420
+i386                 randconfig-a014-20210420
+i386                 randconfig-a011-20210420
+i386                 randconfig-a013-20210420
+i386                 randconfig-a015-20210420
+i386                 randconfig-a016-20210420
+i386                 randconfig-a015-20210419
+i386                 randconfig-a013-20210419
+i386                 randconfig-a014-20210419
+i386                 randconfig-a016-20210419
+i386                 randconfig-a012-20210419
+i386                 randconfig-a011-20210419
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a014-20210419
+x86_64               randconfig-a015-20210419
+x86_64               randconfig-a013-20210419
+x86_64               randconfig-a011-20210419
+x86_64               randconfig-a012-20210419
+x86_64               randconfig-a016-20210419
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
