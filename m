@@ -2,122 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CCA366083
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Apr 2021 21:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD5436613B
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Apr 2021 22:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233829AbhDTT75 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Apr 2021 15:59:57 -0400
-Received: from mail-dm6nam11on2075.outbound.protection.outlook.com ([40.107.223.75]:28448
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233541AbhDTT7u (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 20 Apr 2021 15:59:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NdL1ja8l86QjuDRxEQsN8Wra0tXpwOTdyCogCxk1WLie47xiioAOORCmxMGumvLq2i4TXIvQdeDwIjD8dj/SRKZfHBSeBBkOJlu7ZiPkRthwOux7BpfLhGFsJLzOHJ8igIPl1VmM0Vkx5QnXWyZg3Py3d5qCLbIEWa15TsrXn+65WsLYpR1t1igFG+RgVBtIMQGOag3vfjnJcRjNPwp72ul96OR01lDb0RWEvRYivyr3SN0jCeMDeiph9G0Kevv/ThqmvEpBXMk750ZMHTR0pb+pLutQihkOqk5hTUf7IkaApQ2ErAbsDCM3PWJ5j5IERHVJGrocsFmJdK79WRXX6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9mCFnvihvy4PqCslWTicUqgoNbYWEWlzQaDuLvx0tPQ=;
- b=Y9hKhYlHCPdAlFQBbekzitY4cpWMzKYo+dKMEBmvB8d9s443j1vz2QwWyLyGn3noNOrOdyafHc7T7jcwCASi43NtWblKIQImlFuLYVUU2ylQ7VsZPBpCcuSKMTS+qjtHCbgmxhmnHyGXRkG0l8yzRODwGSElvwtVIL3JT/Klwqcap6ABFosH4k8hv8q6os/6WJoh2GfKaJU7hi8De/n4NOnwLXztiiq8pprb+pid0aiqu+fxLKc2Obt/GmnAB8o8tjFfp88Y2y+0IZfeyMP2R4AAz3+MzSo/AcoVC9ngECgOUhyIgR7nKYTHYwluAS3ZyaFA0OCbD7fkDWoJXnKLcw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9mCFnvihvy4PqCslWTicUqgoNbYWEWlzQaDuLvx0tPQ=;
- b=gbeVLVjMyhhmxTs4+AWBwsfM7irqsxk7vAFn5rDI2I3AIN25/KnYfeuKvVz0qwTGk9RYTClid+gVTDXKYl474WJhOTkPs36Fgbnz2moieZdMUSrcMbgb0nBJ2Dnhpf0lh5BtJNAqPxbA7VAqwypGcIOn6O8sWY5mbs77fjgXaPsswtNZ/wO1yxCJc5zOq4Gc9Y5QFwLtghwIddv3lS7wvJ3ujs/nHVtMsPKRmfggAaaME6+XCT8X7or1p5RB+ayWi6sYoq2ShkJDeZUcVgOheGhrGLJg/fbMSHLhauxER7xgjriHPrToEvWvmxf9OWZ7px3BmSQLbDjS1T7mfdSmkw==
-Authentication-Results: wanadoo.fr; dkim=none (message not signed)
- header.d=none;wanadoo.fr; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3212.namprd12.prod.outlook.com (2603:10b6:5:186::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18; Tue, 20 Apr
- 2021 19:59:17 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
- 19:59:16 +0000
-Date:   Tue, 20 Apr 2021 16:59:14 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     yishaih@nvidia.com, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] RDMA/mlx4: remove an unused variable
-Message-ID: <20210420195914.GA2193837@nvidia.com>
-References: <413dc6e2ea9d85bda1131bbd6a730b7620839eab.1618932283.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <413dc6e2ea9d85bda1131bbd6a730b7620839eab.1618932283.git.christophe.jaillet@wanadoo.fr>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL0PR0102CA0061.prod.exchangelabs.com
- (2603:10b6:208:25::38) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S233882AbhDTU41 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Apr 2021 16:56:27 -0400
+Received: from gateway33.websitewelcome.com ([192.185.146.130]:29232 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233769AbhDTU40 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 20 Apr 2021 16:56:26 -0400
+X-Greylist: delayed 1505 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Apr 2021 16:56:26 EDT
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id 0F57DC78DA0
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Apr 2021 15:10:08 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id YwhElE0X0w11MYwhElhzPj; Tue, 20 Apr 2021 15:10:08 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=T17AR9OHg8qWguPD0J0elr1lqd2smiUTolFswCJAyeE=; b=jQv1GMuu077q+yr2ApeKRPnqFG
+        tsMh+lvGaFmsQ34LLZzAiiaMs2XD7/RCguH8/bk/WIU0MMLRvQ9XXv7NaP1sxKaT+aHOkFZWVQ9Ks
+        af6TwikMt8WF9nYbVo1NtLINT9o0LuB5RTjOvxDRUCEKa6xDGnHE4hUMbhs45ghfWNrBlaYqbnYAh
+        es0Fz7K1Zu3HkQhpoc7ziffEQG1jzNPjbh7jeCROfAKO3ZeKb69sYyAYl+dqEPq7Flaofqnwe+L/o
+        qPCCQPMg/4ondAJGMWVr9XoGJ2Q3Dt2gDQfr5PmSQFYKdDObeidc3bGZ16ovUn0ZWqqvra5fzrvYH
+        sXxbcrcA==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:48946 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lYwhA-002fLy-Gv; Tue, 20 Apr 2021 15:10:04 -0500
+Subject: Re: [PATCH RESEND][next] rds: Fix fall-through warnings for Clang
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210305090612.GA139288@embeddedor>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <cd935ba5-a072-5b5a-d455-e06ef87a3a34@embeddedor.com>
+Date:   Tue, 20 Apr 2021 15:10:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR0102CA0061.prod.exchangelabs.com (2603:10b6:208:25::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Tue, 20 Apr 2021 19:59:16 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lYwWh-009Cjh-0B; Tue, 20 Apr 2021 16:59:15 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b931d4c0-7fab-42b4-fc29-08d90436c71f
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3212:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3212E3A6CD92F1741573E83EC2489@DM6PR12MB3212.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:350;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oFAwhXEZZDUiQevdV0+VEnm9gYOv8CZoPugvPuBL07AdTs0OPkZzKDGMtpx+0GzjilGRw2Z/qV/QA4+YqADakhpaLu7Te2kpUZsAlECe68Ld/tfPY+reaDEhd8ZXc1ADwq4/y88ZNvMw842r78bvrbDdG02l4j4XqdvRLvEba+NopHWWey+RWlNRGShedbE1gZTQ/nujsqgG2A3Otpa/vxXW1LEsF6Nf8CIfzksZ67GVndM5JaX/zAkLleNzA45lKP+IffqBINq34q+qKyxILqSWei8+Umbg4rFT4Wb4P2H3fgPVMkIwVL0fOs0xgtazVJZbokEB0gMkv0aOBNEviY7OzKkwJ+V9+zmY4s2BgvSaHGjclrxi78UHv1v9iKvVXXMOgiKgeBCm7zMbVIs9Lh2CSVuv6muugs0+5zvQV+tRuulwjZo3eWPEEhZ9C2Y7G9YsRSdXHPchsEkaJM3WSVxL3jF97zJbn3aIYh6XZrd09Wv1lyGnKl6MXgTMHzKcN9nbEzez/KMP5ATJthny9UDlnN5Rlo3mqvxzuTUMUMtfwOlv2iQawrWucHIBxDhHau7namzFgRpLXe3ZckPswcOtLLIjHyl77bnQ/op4Oik=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(39860400002)(136003)(346002)(83380400001)(26005)(426003)(38100700002)(8676002)(5660300002)(66556008)(9786002)(9746002)(36756003)(8936002)(2906002)(2616005)(86362001)(4744005)(66946007)(1076003)(66476007)(316002)(33656002)(6916009)(4326008)(186003)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?nn1hv2rKqQ6LZchWrQl63+hefyZYKuJE4A5Qi3rWx8tMU2tH1g29ZaZaUlS4?=
- =?us-ascii?Q?d0JiBRUMQfx/rq4s+oqz7awjq1Jxzyg/5Mt4UQxFERQQ4r7NXVLhK9rTwe8c?=
- =?us-ascii?Q?D94PBA8gZe8DTx0GkGOv7vH9C/95BQ12EpFQoA8IiDjuUt8bqHPjBBR7Mg9T?=
- =?us-ascii?Q?lhs/RZpNgGXGABossUr/e1xfdTzFf3A2J4T7RMNxPAdHmqFYdohCoxlugFeE?=
- =?us-ascii?Q?ffp5fMsRy4p0jGz09jfYxuQpOgqWsdfiwb9rUDE9VYGkk8OiVhvBcWrNonRt?=
- =?us-ascii?Q?XAbS0Vsw3269qtolkJf/RwXVuPe/tVJkDSuvlKcr4+298W6GvDFtLVEaynaS?=
- =?us-ascii?Q?xR4u3fXH1xpmo6nkQdDEfs8s3cJmV9YhUEBto1ttFK1yMVEziAvhe7gV2rSv?=
- =?us-ascii?Q?EJLB2IYp50vnsExoMtk7axdjbFWF9VgmJV7X4zxDjJLLIPjaSLa97cEazRPg?=
- =?us-ascii?Q?L1u3KtwSKrXvKssdz/c3yYNPntJNc3hrL0XTl0zoMY3D13C2bjhoXrAq+0Mx?=
- =?us-ascii?Q?JUpx4rHP3YwEGOvddX2zpOvgNkPf8yirrKOIalWuR4bsiOq0+cHaDqn5QCHu?=
- =?us-ascii?Q?NwFaKwh498/1pcGWWqXMQWSaeTzFJzCSNB5qwWpMLszfs/waZFf9KCL+P5wG?=
- =?us-ascii?Q?l5YQoyjA920ZoN5WkRcWwf84kvHEWnm7pyWwTU6CagI9gi/kRAJH+ZXuhnvJ?=
- =?us-ascii?Q?i859RBzZawTh0pGqpmNeGA+JDDowb0GmqbcPLkc9j6Qu/7yZbxS7hi2hjWRr?=
- =?us-ascii?Q?+k1s0JKX0lEX3FVAohcK9IztXq0n1ERE7deAlJ1/4y1xd72q4+LUbEU1xx4x?=
- =?us-ascii?Q?rTpWpYtugf5xnPsOKlrI5wuVneyeIkA7d4S4YrnFuLM4WctDFyUVKt6MmQcl?=
- =?us-ascii?Q?yb1fazGvBLJhnURqX8GgWNm1b08ynLvVcZR8o41CVjZMPmwu76a4wlFNOGBH?=
- =?us-ascii?Q?zTpqZN3Cr3SqK44EGrnILzZMiQDOZTkwh7pp9ra1a2RXIoU7KInixlmBwUjN?=
- =?us-ascii?Q?Q4cvRsoWuSPI3zoP28aWsvrJfK61lfVkstQMyILmYJXuwKw+TIsKsQpAxJfM?=
- =?us-ascii?Q?x/Ww9RYAIzH/yruqV3HgahDshcuvCgcppyzF57Gq7t7BNN0i992mlKHquQAJ?=
- =?us-ascii?Q?ke8TkGjdkHlNA521aW1nxH6XCxv6DOwuAMzfyCSAcPNvnlEen8xH/zK0Nos9?=
- =?us-ascii?Q?WtVOaStUopx3h2/UGkxgAsb2VuPFADdXyt2OK42K4bSXiAY+3kT2RjDXyqPm?=
- =?us-ascii?Q?q9YCd1YnzxWod4TyMvnUR/ZJELOAowPb3vaiH+hS62PPj0uKnrjZjYVh+V25?=
- =?us-ascii?Q?vnkkj3rfODaVsDsufkUG88iAXyY+nZecQ9mTbhuDcZ6CcA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b931d4c0-7fab-42b4-fc29-08d90436c71f
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 19:59:16.8361
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uSbbT1HsfJ/8lHPDY51DuNEUUp3VZIDuBz0ph7qkcXNge5RfbGxXPVj1jS40U/DW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3212
+In-Reply-To: <20210305090612.GA139288@embeddedor>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lYwhA-002fLy-Gv
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:48946
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 51
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 05:28:33PM +0200, Christophe JAILLET wrote:
-> 'in6' is unused. It is just declared and filled-in.
-> It can be removed.
+Hi all,
+
+Friendly ping: who can take this, please?
+
+Thanks
+--
+Gustavo
+
+On 3/5/21 03:06, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+> warnings by explicitly adding multiple break statements instead of
+> letting the code fall through to the next case.
 > 
-> This is a left over from commit 5ea8bbfc4929
-> ("mlx4: Implement IP based gids support for RoCE/SRIOV")
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > ---
->  drivers/infiniband/hw/mlx4/qp.c | 3 ---
->  1 file changed, 3 deletions(-)
-
-Applied to for-next, thanks
-
-Jason
+>  net/rds/tcp_connect.c | 1 +
+>  net/rds/threads.c     | 2 ++
+>  2 files changed, 3 insertions(+)
+> 
+> diff --git a/net/rds/tcp_connect.c b/net/rds/tcp_connect.c
+> index 4e64598176b0..5461d77fff4f 100644
+> --- a/net/rds/tcp_connect.c
+> +++ b/net/rds/tcp_connect.c
+> @@ -78,6 +78,7 @@ void rds_tcp_state_change(struct sock *sk)
+>  	case TCP_CLOSE_WAIT:
+>  	case TCP_CLOSE:
+>  		rds_conn_path_drop(cp, false);
+> +		break;
+>  	default:
+>  		break;
+>  	}
+> diff --git a/net/rds/threads.c b/net/rds/threads.c
+> index 32dc50f0a303..1f424cbfcbb4 100644
+> --- a/net/rds/threads.c
+> +++ b/net/rds/threads.c
+> @@ -208,6 +208,7 @@ void rds_send_worker(struct work_struct *work)
+>  		case -ENOMEM:
+>  			rds_stats_inc(s_send_delayed_retry);
+>  			queue_delayed_work(rds_wq, &cp->cp_send_w, 2);
+> +			break;
+>  		default:
+>  			break;
+>  		}
+> @@ -232,6 +233,7 @@ void rds_recv_worker(struct work_struct *work)
+>  		case -ENOMEM:
+>  			rds_stats_inc(s_recv_delayed_retry);
+>  			queue_delayed_work(rds_wq, &cp->cp_recv_w, 2);
+> +			break;
+>  		default:
+>  			break;
+>  		}
+> 
