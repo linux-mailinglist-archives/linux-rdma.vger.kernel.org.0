@@ -2,165 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F01C3653BD
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Apr 2021 10:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3750F3654D9
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Apr 2021 11:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhDTILF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Apr 2021 04:11:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhDTILF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Apr 2021 04:11:05 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A83AC06138B
-        for <linux-rdma@vger.kernel.org>; Tue, 20 Apr 2021 01:10:33 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id u21so56921574ejo.13
-        for <linux-rdma@vger.kernel.org>; Tue, 20 Apr 2021 01:10:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FG5E8uWGSrCvajWCjQUTriiKHPgt6q+O5wn0TlE95pQ=;
-        b=zCCqheyR986/BDJiX2v51ephpReLZP0aCw2199pReb60w50j/aQo+xHHfXXUBXXydW
-         1iPjmITiaWa8banzSpUECuDdbVOiI4NKC9wnSLuBbE/YC5846UJY1XwLTipBgGV/fZlh
-         aeu7T47FtiIPMNezvjA8OW4GOsvVFAnqOuyar1inVAZrF4tNsRDporJAlldNike4y7TC
-         ly3OBtz7A1LspIgPb3Egr4a3gGJ9ZTu+aBMUhkcr20HtAmV66EIp8V9kIURR3gtLEGMV
-         /7R5yQCiCUDpNn62ZghQyGjtFrsbOBqiirdidAeJx9UGX/bJtpyuOWB6GZnHLQfoMoL+
-         y10Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FG5E8uWGSrCvajWCjQUTriiKHPgt6q+O5wn0TlE95pQ=;
-        b=onW4lx4/yfHVc/7yY2twjnW2xGx51vEPz7ynQBXgUdeJLf4Z0z83JsL6wVLo0TddgC
-         9vB66sC/q0BgoVSNL4o1KHfKJ99k8PiXIfshWyubidsZU/HzlzSvxA84OT5h9E+MOGlU
-         U27MR2GB0wKSrqD2jInnYUh5Rdml9W9bkJDZ+wvkwGvW94yDRlFCpK7M6nYMo0LAxJi1
-         pXBpmDxAvdUiBWN2bmHT7D7buuCW4ZRBePk1161mHlTHjAHGbyz/huGZWWqmz5JbLnJa
-         4HgKAeAd8GNraezQ5E3TZ6aZP6DHAU0O2jQ2iW7SJo1p7NTDMwGnIvEcFctSh2giVTT9
-         tTWQ==
-X-Gm-Message-State: AOAM532KAL3Uz6FoUlsnw8gOuOQueY/5X2m/LHAveOj6JWzV5EJvToML
-        P+dGfgYHOGnQkggpn+0xW12WOQ==
-X-Google-Smtp-Source: ABdhPJzlY+PZZYIcEGbGdwXLxztX7H+aBXujACcm1iNj1AFfW9eP/eWpWxhk451ND+trCv13A9EbkQ==
-X-Received: by 2002:a17:906:c34d:: with SMTP id ci13mr25303488ejb.430.1618906231985;
-        Tue, 20 Apr 2021 01:10:31 -0700 (PDT)
-Received: from apalos.home (ppp-94-65-92-88.home.otenet.gr. [94.65.92.88])
-        by smtp.gmail.com with ESMTPSA id yr16sm11854378ejb.63.2021.04.20.01.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 01:10:31 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 11:10:26 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <YH6MchNQPgFjfuQ+@apalos.home>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-3-mcroce@linux.microsoft.com>
- <20210410154824.GZ2531743@casper.infradead.org>
- <YHHPbQm2pn2ysth0@enceladus>
- <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
- <YHHuE7g73mZNrMV4@enceladus>
- <20210414214132.74f721dd@carbon>
- <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
- <20210419132204.1e07d5b9@carbon>
- <20210419130148.GA2531743@casper.infradead.org>
+        id S230491AbhDTJJm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Apr 2021 05:09:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230168AbhDTJJl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 20 Apr 2021 05:09:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 765096101E;
+        Tue, 20 Apr 2021 09:09:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618909750;
+        bh=Zx+3BKAojnGAcSOH3f96YdKbuNqEzAUiJZBAF6GT+M8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gMrkhbWwZYNe4U/Hn7zbhwwvUlowNTN6ivMFRsUkVS3sExz7m0JS6bv7GtGyUPQXx
+         E/8opgt2FVBBBXsFcrMWqZBYodYulxt3Ld/EC2OA3BhEw1Y8iFS6/o9GSKIw/u+t6y
+         Sjo5yVfJUv3okjLSUUwp/9Dtf8guE2vs1o7dIAdvzGkrIjaFjHd6j/KwV+/BCWVz4T
+         pNxKOiz5TwvcOgF/Oj8xTJTugJg8oFKms91OoMQIJC2xnSmjn3C5Gmp+LQcakDZ3im
+         9MXXv/QsYa22Nkq9lvpxp2359JU3uLuN23a07aRAy9v44rdAbSPFXRD0lLoMxipYTy
+         naHrldgJlNBlg==
+Date:   Tue, 20 Apr 2021 12:09:06 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Aditya Pakki <pakki001@umn.edu>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/rds: Avoid potential use after free in
+ rds_send_remove_from_sock
+Message-ID: <YH6aMsbqruMZiWFe@unreal>
+References: <20210407000913.2207831-1-pakki001@umn.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210419130148.GA2531743@casper.infradead.org>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210407000913.2207831-1-pakki001@umn.edu>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Matthew,
+On Tue, Apr 06, 2021 at 07:09:12PM -0500, Aditya Pakki wrote:
+> In case of rs failure in rds_send_remove_from_sock(), the 'rm' resource
+> is freed and later under spinlock, causing potential use-after-free.
+> Set the free pointer to NULL to avoid undefined behavior.
+>=20
+> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+> ---
+>  net/rds/message.c | 1 +
+>  net/rds/send.c    | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
 
-[...]
-> 
-> And the contents of this page already came from that device ... if it
-> wanted to write bad data, it could already have done so.
-> 
-> > > > (3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
-> > > > zerocopy will bump the refcnt, which means the page_pool will not
-> > > > recycle the page when it see the elevated refcnt (it will instead
-> > > > release its DMA-mapping).  
-> > > 
-> > > Yes this is right but the userspace might have already consumed and
-> > > unmapped the page before the driver considers to recycle the page.
-> > 
-> > That is a good point.  So, there is a race window where it is possible
-> > to gain recycling.
-> > 
-> > It seems my page_pool co-maintainer Ilias is interested in taking up the
-> > challenge to get this working with TCP RX zerocopy.  So, lets see how
-> > this is doable.
-> 
-> You could also check page_ref_count() - page_mapcount() instead of
-> just checking page_ref_count().  Assuming mapping/unmapping can't
-> race with recycling?
-> 
+Dave, Jakub
 
-That's not a bad idea.  As I explained on my last reply to Shakeel, I don't
-think the current patch will blow up anywhere.  If the page is unmapped prior
-to kfree_skb() it will be recycled.  If it's done in a reverse order, we'll
-just free the page entirely and will have to re-allocate it.
-The only thing I need to test is potential races (assuming those can even
-happen?).
+Please revert this patch, given responses from Eric and Al together
+with this response from Greg here https://lore.kernel.org/lkml/YH5/i7OvsjSm=
+qADv@kroah.com
 
-Trying to recycle the page outside of kfree_skb() means we'd have to 'steal'
-the page, during put_page() (or some function that's outside the networking
-scope).  I think this is going to have a measurable performance penalty though
-not in networking, but in general.
-
-In any case, that should be orthogonal to the current patchset.  So unless
-someone feels strongly about it, I'd prefer keeping the current code and
-trying to enable recycling in the skb zc case, when we have enough users of
-the API.
-
+BTW, I looked on the rds code too and agree with Eric, this patch
+is a total garbage.
 
 Thanks
-/Ilias
