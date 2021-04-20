@@ -2,158 +2,288 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8293651C2
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Apr 2021 07:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C41365264
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Apr 2021 08:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229724AbhDTFQO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 20 Apr 2021 01:16:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229588AbhDTFQO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 20 Apr 2021 01:16:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99B5B613AE;
-        Tue, 20 Apr 2021 05:15:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618895743;
-        bh=dhlrIivZxquO2S27t8UwtNK40E82mVYLo2S9s3w+VQs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MjFDFFy7pA2EJpP9o3/PWq6rJ+fd3Lq8uk8C3NuqPgQKf2Jz+gME+UYSMSMqPVXnw
-         2t8U5clp3BiQnimEVW2aSV8uchZD4x8RhKHM/ZlWHQA0KuuThFt2nS0sQ8y4zUScqG
-         A0FTHMRzLAbR+8wlHtqpoPN0SneIZto3383DoKMo5NDBSvK2LB8YTMY5by+L6g8aSt
-         /1cRMK/XMARXXy9+DcwiQ1PRHnHYaihH5xS/o/4yJfOTh1DWfbMk+3IT4oo337rfRA
-         MaELR+9OqluL0DR3Rc1W8zYl0wtuPTNM/qXfDwJbOnbdCI34gCne2M7vRbt8GnZJBQ
-         UZOV4MQ6IXEdQ==
-Date:   Tue, 20 Apr 2021 08:15:39 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Wan, Kaike" <kaike.wan@intel.com>
-Cc:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH for-next 06/10] rdma: Set physical MTU for query_port
- function
-Message-ID: <YH5je/mxDIUuIIs9@unreal>
-References: <1617026056-50483-1-git-send-email-dennis.dalessandro@cornelisnetworks.com>
- <1617026056-50483-7-git-send-email-dennis.dalessandro@cornelisnetworks.com>
- <YGWHga9RMan2uioD@unreal>
- <44ca5d0e-7aa4-5a9a-8f3b-d30454a58fb4@cornelisnetworks.com>
- <YG7ztT81z8BZDkUj@unreal>
- <8d987675-09f3-542c-a921-072f19243e08@cornelisnetworks.com>
- <DM6PR11MB33061E82DC3C60F2779C87DFF4499@DM6PR11MB3306.namprd11.prod.outlook.com>
- <YH13p0zRz+M9Tmzz@unreal>
- <DM6PR11MB33060BC01328357BF1D9E562F4499@DM6PR11MB3306.namprd11.prod.outlook.com>
+        id S229577AbhDTGeu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 20 Apr 2021 02:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhDTGet (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 20 Apr 2021 02:34:49 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DA7C06174A
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 23:34:19 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 101-20020a9d0d6e0000b02902816815ff62so28985162oti.9
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Apr 2021 23:34:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sNmbNR2kd1mw8aQKfGhrLUx0ZVD1272q9EY3LDkDOjM=;
+        b=aDuGtLks6PWpeagxWmB6AQJahbV7GKxv3WlG7HpQwQo59uqC1mPhtcV6jKKJ613UJO
+         WV1t/DPT2coGqcCeNqcVDGYR2+f7goOyTUzvidoIHqMUFllk5KXiMPnvaSP7r62yGAIE
+         3Rq5CsWwqUTlTXM6+YDWHvvaWLKchCi8mJ4et2qq//aeZRmcsRrqw1f0pKSxeJ/fC45i
+         4IwCxeWue/niqVljIQS0PS2EKDGJON2lKDVBRGVtzUb8qh0RFIOxfIGyzJI3011ZGzOb
+         suJHkZpeuTDU2j5hqemoCJ8sy/t4f4qdxRmKybGNDBzfMfmfmgUbRPpiSzSqRMnVLTKo
+         iKtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sNmbNR2kd1mw8aQKfGhrLUx0ZVD1272q9EY3LDkDOjM=;
+        b=TdOoge6qLPAJr949K04A8m4lUa9oa+5Nal9lD8vloQjoQ11feoHy0q3sp63i0Lmo3e
+         0/rk7zTj+6Xb+2HUHXI/7nQqpbLhHN9PqWBg+4LQ+2IS9wphkGHrc+uy0ktznnviIXoT
+         EPGTTbmXOVne/pV6ZJvcqKPOzSHC/xcC7hzskviv91p8MbbrwOOx7TYvx9Sh1m9yvaIJ
+         TZHZLejYB9y5kPNfqb4h1Ksw8Uir62cWb7D+eBdbUf+D8sU9DeOAAD+0ixYtvuM3+y8v
+         xTJaTcIkFCDi4H9R27cA4Wt994uChuG081r3bk+UYsKC46ENKQY7zdoAKgVSNvcYycjQ
+         slGQ==
+X-Gm-Message-State: AOAM532KHsZVcE04KuEfW5PFdyuhvHiGl6bn53YreoLkVGeUHNjOPgAL
+        QkG9hFVC1+6iqHap0N8FqhgzXD7AQksGT+mQ1A8=
+X-Google-Smtp-Source: ABdhPJyM4lJZ7FZdiQSqdwOIN0uBN9gJNVqII5b8c2iFeY0NoIY/JonqelvlXP2uLc3O5KPRRnv/SvcE393llCGKPEQ=
+X-Received: by 2002:a9d:74ca:: with SMTP id a10mr17618326otl.53.1618900458533;
+ Mon, 19 Apr 2021 23:34:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB33060BC01328357BF1D9E562F4499@DM6PR11MB3306.namprd11.prod.outlook.com>
+References: <20210415025429.11053-1-rpearson@hpe.com> <20210415025429.11053-10-rpearson@hpe.com>
+In-Reply-To: <20210415025429.11053-10-rpearson@hpe.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Tue, 20 Apr 2021 14:34:07 +0800
+Message-ID: <CAD=hENfnffpYsxVNFUXDEedcGJ5oq3x-SrhKT23Y=6wiYYa3Tg@mail.gmail.com>
+Subject: Re: [PATCH for-next v2 9/9] RDMA/rxe: Implement memory access through MWs
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Bob Pearson <rpearson@hpe.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 01:09:13PM +0000, Wan, Kaike wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Monday, April 19, 2021 8:29 AM
-> > To: Wan, Kaike <kaike.wan@intel.com>
-> > Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>;
-> > dledford@redhat.com; jgg@ziepe.ca; linux-rdma@vger.kernel.org
-> > Subject: Re: [PATCH for-next 06/10] rdma: Set physical MTU for query_port
-> > function
-> > 
-> > On Mon, Apr 19, 2021 at 12:20:33PM +0000, Wan, Kaike wrote:
-> > >
-> > >
-> > > > -----Original Message-----
-> > > > From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-> > > > Sent: Thursday, April 08, 2021 8:31 AM
-> > > > To: Leon Romanovsky <leon@kernel.org>
-> > > > Cc: dledford@redhat.com; jgg@ziepe.ca; linux-rdma@vger.kernel.org;
-> > > > Wan, Kaike <kaike.wan@intel.com>
-> > > > Subject: Re: [PATCH for-next 06/10] rdma: Set physical MTU for
-> > > > query_port function
-> > > >
-> > > > On 4/8/2021 8:14 AM, Leon Romanovsky wrote:
-> > > > > On Thu, Apr 08, 2021 at 08:06:46AM -0400, Dennis Dalessandro wrote:
-> > > > >> On 4/1/2021 4:42 AM, Leon Romanovsky wrote:
-> > > > >>> On Mon, Mar 29, 2021 at 09:54:12AM -0400,
-> > > > dennis.dalessandro@cornelisnetworks.com wrote:
-> > > > >>>> From: Kaike Wan <kaike.wan@intel.com>
-> > > > >>>>
-> > > > >>>> This is a follow on patch to add a phys_mtu field to the
-> > > > >>>> ib_port_attr structure to indicate the maximum physical MTU the
-> > > > >>>> underlying device supports.
-> > > > >>>>
-> > > > >>>> Extends the following:
-> > > > >>>> commit 6d72344cf6c4 ("IB/ipoib: Increase ipoib Datagram mode
-> > > > >>>> MTU's upper limit")
-> > > > >>>>
-> > > > >>>> Reviewed-by: Mike Marciniszyn
-> > > > >>>> <mike.marciniszyn@cornelisnetworks.com>
-> > > > >>>> Signed-off-by: Kaike Wan <kaike.wan@intel.com>
-> > > > >>>> Signed-off-by: Dennis Dalessandro
-> > > > >>>> <dennis.dalessandro@cornelisnetworks.com>
-> > > > >>>> ---
-> > > > >>>>    drivers/infiniband/hw/bnxt_re/ib_verbs.c        |  1 +
-> > > > >>>>    drivers/infiniband/hw/cxgb4/provider.c          |  1 +
-> > > > >>>>    drivers/infiniband/hw/efa/efa_verbs.c           |  1 +
-> > > > >>>>    drivers/infiniband/hw/hns/hns_roce_main.c       |  1 +
-> > > > >>>>    drivers/infiniband/hw/i40iw/i40iw_verbs.c       |  1 +
-> > > > >>>>    drivers/infiniband/hw/mlx4/main.c               |  1 +
-> > > > >>>>    drivers/infiniband/hw/mlx5/mad.c                |  1 +
-> > > > >>>>    drivers/infiniband/hw/mlx5/main.c               |  2 ++
-> > > > >>>>    drivers/infiniband/hw/mthca/mthca_provider.c    |  1 +
-> > > > >>>>    drivers/infiniband/hw/ocrdma/ocrdma_verbs.c     |  1 +
-> > > > >>>>    drivers/infiniband/hw/qib/qib_verbs.c           |  1 +
-> > > > >>>>    drivers/infiniband/hw/usnic/usnic_ib_verbs.c    |  1 +
-> > > > >>>>    drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c |  1 +
-> > > > >>>>    drivers/infiniband/sw/siw/siw_verbs.c           |  1 +
-> > > > >>>>    drivers/infiniband/ulp/ipoib/ipoib_main.c       |  2 +-
-> > > > >>>>    include/rdma/ib_verbs.h                         | 17 -----------------
-> > > > >>>>    16 files changed, 16 insertions(+), 18 deletions(-)
-> > > > >>>
-> > > > >>> But why? What will it give us that almost all drivers have same
-> > > > >>> props->phys_mtu = ib_mtu_enum_to_int(props->max_mtu); line?
-> > > > >>>
-> > > > >>
-> > > > >> Almost is not all. Alternative idea to convey this? Seemed like a
-> > > > >> sensible thing to at least have support for but open to other
-> > approaches.
-> > > > >
-> > > > > What about leave it as is?
-> > > > >
-> > > > > I'm struggling to get the rationale behind this patch., the code
-> > > > > already works and set the phys_mtu correctly, isn't it?
-> > > >
-> > > > I see what you are saying now. Kaike, correct me if I'm wrong, but
-> > > > the intent of this patch is just to make everything behave the same
-> > > > in the sense that a device could have a different physical MTU. The
-> > > > field got added to the ib_port_attr previously so this is giving it an initial
-> > value vs leaving it unset.
-> > > [Wan, Kaike]  Correct.
-> > 
-> > No one is using this "phys_mtu" field, except one place in ipoib.
-> [Wan, Kaike]  Since phys_mtu was introduced into ib_port_attr and every query_port call will  return it in ib_port_attr. Rather than leaving it set to 0, setting it correctly in each hw driver seem more reasonable to me. 
+On Thu, Apr 15, 2021 at 10:55 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>
+> Add code to implement memory access through memory windows.
+>
+> Signed-off-by: Bob Pearson <rpearson@hpe.com>
+> ---
+> v2:
+>   Removed a copy of changes in ea4922518940 "Fix missing acks from responder"
+>   that was submitted separately.
+>
+>  drivers/infiniband/sw/rxe/rxe_loc.h   |  1 +
+>  drivers/infiniband/sw/rxe/rxe_mw.c    | 23 +++++++++++
+>  drivers/infiniband/sw/rxe/rxe_resp.c  | 55 +++++++++++++++++++--------
+>  drivers/infiniband/sw/rxe/rxe_verbs.h | 11 ++++++
+>  4 files changed, 75 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+> index 7f1117c51e30..99158d11dae7 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+> @@ -104,6 +104,7 @@ int rxe_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata);
+>  int rxe_dealloc_mw(struct ib_mw *ibmw);
+>  int rxe_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe);
+>  int rxe_invalidate_mw(struct rxe_qp *qp, u32 rkey);
+> +struct rxe_mw *lookup_mw(struct rxe_qp *qp, int access, u32 rkey);
+>  void rxe_mw_cleanup(struct rxe_pool_entry *arg);
+>
+>  /* rxe_net.c */
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
+> index 4c1830b4a8bf..e443e4672e00 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mw.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mw.c
+> @@ -314,6 +314,29 @@ int rxe_invalidate_mw(struct rxe_qp *qp, u32 rkey)
+>         return ret;
+>  }
+>
+> +struct rxe_mw *lookup_mw(struct rxe_qp *qp, int access, u32 rkey)
+> +{
+> +       struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
+> +       struct rxe_pd *pd = to_rpd(qp->ibqp.pd);
+> +       struct rxe_mw *mw;
+> +       int index = rkey >> 8;
+> +
+> +       mw = rxe_pool_get_index(&rxe->mw_pool, index);
+> +       if (!mw)
+> +               return NULL;
+> +
+> +       if (unlikely((mw_rkey(mw) != rkey) || mw_pd(mw) != pd ||
+> +                    (mw->ibmw.type == IB_MW_TYPE_2 && mw->qp != qp) ||
+> +                    (mw->length == 0) ||
+> +                    (access && !(access & mw->access)) ||
+> +                    mw->state != RXE_MW_STATE_VALID)) {
+> +               rxe_drop_ref(mw);
+> +               return NULL;
+> +       }
+> +
+> +       return mw;
+> +}
+> +
+>  void rxe_mw_cleanup(struct rxe_pool_entry *elem)
+>  {
+>         struct rxe_mw *mw = container_of(elem, typeof(*mw), pelem);
+> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+> index 21adc9209107..9410b8576abe 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+> @@ -394,6 +394,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+>                                    struct rxe_pkt_info *pkt)
+>  {
+>         struct rxe_mr *mr = NULL;
+> +       struct rxe_mw *mw = NULL;
+>         u64 va;
+>         u32 rkey;
+>         u32 resid;
+> @@ -405,6 +406,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+>         if (pkt->mask & (RXE_READ_MASK | RXE_WRITE_MASK)) {
+>                 if (pkt->mask & RXE_RETH_MASK) {
+>                         qp->resp.va = reth_va(pkt);
+> +                       qp->resp.offset = 0;
+>                         qp->resp.rkey = reth_rkey(pkt);
+>                         qp->resp.resid = reth_len(pkt);
+>                         qp->resp.length = reth_len(pkt);
+> @@ -413,6 +415,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+>                                                      : IB_ACCESS_REMOTE_WRITE;
+>         } else if (pkt->mask & RXE_ATOMIC_MASK) {
+>                 qp->resp.va = atmeth_va(pkt);
+> +               qp->resp.offset = 0;
+>                 qp->resp.rkey = atmeth_rkey(pkt);
+>                 qp->resp.resid = sizeof(u64);
+>                 access = IB_ACCESS_REMOTE_ATOMIC;
+> @@ -432,18 +435,36 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+>         resid   = qp->resp.resid;
+>         pktlen  = payload_size(pkt);
+>
+> -       mr = lookup_mr(qp->pd, access, rkey, lookup_remote);
+> -       if (!mr) {
+> -               state = RESPST_ERR_RKEY_VIOLATION;
+> -               goto err;
+> -       }
+> +       if (rkey_is_mw(rkey)) {
+> +               mw = lookup_mw(qp, access, rkey);
+> +               if (!mw) {
+> +                       pr_err("%s: no MW matches rkey %#x\n", __func__, rkey);
+> +                       state = RESPST_ERR_RKEY_VIOLATION;
+> +                       goto err;
+> +               }
+>
+> -       if (unlikely(mr->state == RXE_MR_STATE_FREE)) {
+> -               state = RESPST_ERR_RKEY_VIOLATION;
+> -               goto err;
+> +               mr = mw->mr;
+> +               if (!mr) {
+> +                       pr_err("%s: MW doesn't have an MR\n", __func__);
+> +                       state = RESPST_ERR_RKEY_VIOLATION;
+> +                       goto err;
+> +               }
+> +
+> +               if (mw->access & IB_ZERO_BASED)
+> +                       qp->resp.offset = mw->addr;
+> +
+> +               rxe_drop_ref(mw);
+> +               rxe_add_ref(mr);
+> +       } else {
+> +               mr = lookup_mr(qp->pd, access, rkey, lookup_remote);
+> +               if (!mr) {
+> +                       pr_err("%s: no MR matches rkey %#x\n", __func__, rkey);
+> +                       state = RESPST_ERR_RKEY_VIOLATION;
+> +                       goto err;
+> +               }
+>         }
+>
+> -       if (mr_check_range(mr, va, resid)) {
+> +       if (mr_check_range(mr, va + qp->resp.offset, resid)) {
+>                 state = RESPST_ERR_RKEY_VIOLATION;
+>                 goto err;
+>         }
+> @@ -477,6 +498,9 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
+>  err:
+>         if (mr)
+>                 rxe_drop_ref(mr);
+> +       if (mw)
+> +               rxe_drop_ref(mw);
+> +
+>         return state;
+>  }
+>
+> @@ -501,8 +525,8 @@ static enum resp_states write_data_in(struct rxe_qp *qp,
+>         int     err;
+>         int data_len = payload_size(pkt);
+>
+> -       err = rxe_mr_copy(qp->resp.mr, qp->resp.va, payload_addr(pkt), data_len,
+> -                         to_mr_obj, NULL);
+> +       err = rxe_mr_copy(qp->resp.mr, qp->resp.va + qp->resp.offset,
+> +                         payload_addr(pkt), data_len, to_mr_obj, NULL);
+>         if (err) {
+>                 rc = RESPST_ERR_RKEY_VIOLATION;
+>                 goto out;
+> @@ -521,7 +545,6 @@ static DEFINE_SPINLOCK(atomic_ops_lock);
+>  static enum resp_states process_atomic(struct rxe_qp *qp,
+>                                        struct rxe_pkt_info *pkt)
+>  {
+> -       u64 iova = atmeth_va(pkt);
+>         u64 *vaddr;
+>         enum resp_states ret;
+>         struct rxe_mr *mr = qp->resp.mr;
+> @@ -531,7 +554,7 @@ static enum resp_states process_atomic(struct rxe_qp *qp,
+>                 goto out;
+>         }
+>
+> -       vaddr = iova_to_vaddr(mr, iova, sizeof(u64));
+> +       vaddr = iova_to_vaddr(mr, qp->resp.va + qp->resp.offset, sizeof(u64));
+>
+>         /* check vaddr is 8 bytes aligned. */
+>         if (!vaddr || (uintptr_t)vaddr & 7) {
+> @@ -655,8 +678,10 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+>                 res->type               = RXE_READ_MASK;
+>                 res->replay             = 0;
+>
+> -               res->read.va            = qp->resp.va;
+> -               res->read.va_org        = qp->resp.va;
+> +               res->read.va            = qp->resp.va +
+> +                                         qp->resp.offset;
+> +               res->read.va_org        = qp->resp.va +
+> +                                         qp->resp.offset;
+>
+>                 res->first_psn          = req_pkt->psn;
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> index b286a14ec282..9f35e2c042d0 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> @@ -183,6 +183,7 @@ struct rxe_resp_info {
+>
+>         /* RDMA read / atomic only */
+>         u64                     va;
+> +       u64                     offset;
+>         struct rxe_mr           *mr;
+>         u32                     resid;
+>         u32                     rkey;
+> @@ -470,6 +471,16 @@ static inline u32 mr_rkey(struct rxe_mr *mr)
+>         return mr->ibmr.rkey;
+>  }
+>
+> +static inline struct rxe_pd *mw_pd(struct rxe_mw *mw)
 
-Yes, if the drivers set this field differently, it is not the case here.
-All of them (except one) set same value.
+inline
+Can we remove inline keyword and let the compile to decide it?
 
-If you really want to have phys_mtu be correct all the time, change
-query_port to set it.
+> +{
+> +       return to_rpd(mw->ibmw.pd);
+> +}
+> +
+> +static inline u32 mw_rkey(struct rxe_mw *mw)
 
-Something like that:
-query_port():
-  if (!phys_mtu)
-     phys_mtu = ib_mtu_enum_to_int(..)
+inline
+the same.
 
-Thanks
-
-> 
-> > 
-> > Thanks
-> > 
-> > >
-> > > >
-> > > > -Denny
-> > >
+Zhu Yanjun
+> +{
+> +       return mw->ibmw.rkey;
+> +}
+> +
+>  int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name);
+>
+>  void rxe_mc_cleanup(struct rxe_pool_entry *arg);
+> --
+> 2.27.0
+>
