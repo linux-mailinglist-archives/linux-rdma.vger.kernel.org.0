@@ -2,229 +2,161 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3023936720A
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Apr 2021 19:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 025B13672C2
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Apr 2021 20:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245050AbhDURxj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Apr 2021 13:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245043AbhDURxi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Apr 2021 13:53:38 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44659C06174A
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Apr 2021 10:53:05 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id gv2so11440296qvb.8
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Apr 2021 10:53:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ovTiMgv2+wmUw14Ta6x3ZHA/fU7fwmx8ckNP1Vlno+k=;
-        b=QQwpyCdGmtCs2qX+FJl+vxOKjcu82giKSknBZp2Tyr+810EdTjD7AG4ypYoHQyXyTj
-         OcNFHHhkRJD5s3UWR2Iu0pyOZq1TD6K635l6Sca9QAbpGkZJEzL4Yc6Jbj4eOOEBMwXO
-         mIh0Nqcb0vFrgjWQSityl6yU6yTDj8HXH1Ldw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ovTiMgv2+wmUw14Ta6x3ZHA/fU7fwmx8ckNP1Vlno+k=;
-        b=NdqyaNthEvNtVLHByW7OwYrUqSoKBLReYcT6F/j1SFT12NlfabZZoSX40lbuRr77g4
-         bNwgFrWUHk/ANblEY0jieDay8Gd2kF3OO8tBYomY/DlMCycQ5QUgh3Oku6MyBQypLCrH
-         vqK79gZ8eNfZw2Jk9gEiQfYIWokTTrNecApr25NvpUAPLuLORnvLENL/XxfUBWJVzz8R
-         qgCev8TLeo58YiKYtPolVR+vaRys87frv5xvOy5xL5yyHGNyZx/7PgTFV586VnosJNv4
-         oU2/MNlXquRKSAyofDxF5Y43MpSJe4gEGobRQLTwmVdVls6gAzvrauN7Mufp1dsvIl7e
-         /GsA==
-X-Gm-Message-State: AOAM531c86uhEAppZYQXMoEYONyq4z2wj6D5siAIbxt9XqjsWXjOMlsd
-        eEAlCDeF1PdMhL5xm539JG8r2hBq37qZLgMRQZtOlw==
-X-Google-Smtp-Source: ABdhPJwOtfGDWRc9q9mnSfzckRclcCJnhzIbNjUPn9zRxvY0u0FxoH7bbYEfCIY2+ts3/j3hgZLUst+h+DACWkBqQYE=
-X-Received: by 2002:a05:6214:161:: with SMTP id y1mr34183000qvs.31.1619027584254;
- Wed, 21 Apr 2021 10:53:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210401065715.565226-1-leon@kernel.org> <20210401065715.565226-4-leon@kernel.org>
-In-Reply-To: <20210401065715.565226-4-leon@kernel.org>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Wed, 21 Apr 2021 23:22:27 +0530
-Message-ID: <CANjDDBh_hTRKeZ+ujh4XZ5JjY1JDw0qKqgUjmvoH3koDyfSesA@mail.gmail.com>
-Subject: Re: [PATCH rdma-next v2 3/5] RDMA/bnxt_re: Get rid of custom module
- reference counting
+        id S244888AbhDUSpk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Apr 2021 14:45:40 -0400
+Received: from mail-eopbgr770077.outbound.protection.outlook.com ([40.107.77.77]:59010
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233038AbhDUSpj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 21 Apr 2021 14:45:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jztFW9zCd1K0QzKnUS358WE41YRn+/AoqFHBA0r2YTzM7weOPvDC7Li26oyzUxl/RoJ89SVe52/RK8+ox27dJjwkb6N5HiOrL4ml2VTG4ELE3ycU93+YGR7fYHwxwZ6KZLyjHs8My6Vpma7Gz3QwsLrbM6z+yjuSp71LfwFxpx8Q0F54eDvXH1Om6dcy+xW8V52S2Pndq0twdvy4CAgPWC4r0QR7Ygvaou3BOY9WT16EUN8K8suhULIn/r6OvJwOHmx+quUGXFK3gM6z7MvKXLVh9VNhVrtXKniWolKCLrhBVmbIup+vgkzeXNKpJYHcZ54nWeaj71hxcYv/Tfqu4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=opBizZvEDtFdqJkshpXkoorQCEatGXVNCh6VBMd8cjk=;
+ b=Ddh8teD5I+QQmbY9As1ky09IagHacj8PQ1gbX7KKoXzKSXwLdFMI4MLISvmY7jTAEuO54PcTFkxNZrR0f0OBZivppZ0ki2shwaZ1mZTHK2b5h8rDFvDZcK7bQ/RwVIcXWzPZFyPi3f8DgiG6iPRk4hxAkgmU15PZjv6GAIBFbiqPzkeEy+nTnQjDRinZoafANohlyusbEK2RVLdzN4muVobJeGLkdjadlneUBStjcw4WBjn+U7k07MoM5YHcRmDi2hLIFcEA9l+EKwehnJMaZq6YtZZsSfS3SozwozKXbJ9Jmwh5x+0m1Ezn2ct0btRqwaGP1YHzMScdWqFDunNOZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=opBizZvEDtFdqJkshpXkoorQCEatGXVNCh6VBMd8cjk=;
+ b=as48H3qwnT44Sw0Ol5o4YTyCfnb9/n0byeAVDf2jrJriKbgISR29AhW/5x3l/+TI4zUdG4BpXZR64mV0USJZi++p0afgHTI2ErzlRZgIpn+gcUyN8qxayR4KiEABXzDLz+AKs85hReng9zd+QUBzQ7+Psgo9ZnsqLiFr72ob7kG2SsdyrPLUBzOhC33uEnz3TAIDzPShdzmlZQx2EU/LJe67IKpzGZ4YwTV9jfURlIdcDcXoLA3sxKDuuTnIu/KDxg0kseMNNJRrBdDIVpi36ZY8VnAXVbhmPyS62L0j/v26IIg3iHWFNjkuBhfP9oUg+m/3ynciJCiCUZre0QSiTQ==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3929.namprd12.prod.outlook.com (2603:10b6:5:148::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18; Wed, 21 Apr
+ 2021 18:45:04 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4042.024; Wed, 21 Apr 2021
+ 18:45:04 +0000
+Date:   Wed, 21 Apr 2021 15:45:02 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
 To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Netdev <netdev@vger.kernel.org>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000112b6005c07f3c60"
+Cc:     Doug Ledford <dledford@redhat.com>, Mark Bloch <mbloch@nvidia.com>,
+        linux-api@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>
+Subject: Re: [PATCH rdma-next v3] RDMA/mlx5: Expose private query port
+Message-ID: <20210421184502.GA2292095@nvidia.com>
+References: <6e2ef13e5a266a6c037eb0105eb1564c7bb52f23.1618743394.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6e2ef13e5a266a6c037eb0105eb1564c7bb52f23.1618743394.git.leonro@nvidia.com>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: MN2PR07CA0009.namprd07.prod.outlook.com
+ (2603:10b6:208:1a0::19) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR07CA0009.namprd07.prod.outlook.com (2603:10b6:208:1a0::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.22 via Frontend Transport; Wed, 21 Apr 2021 18:45:03 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lZHqQ-009cIz-GJ; Wed, 21 Apr 2021 15:45:02 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 40d50e1b-b69b-4af2-72e0-08d904f59395
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3929:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3929D4F93294B7AE835D3107C2479@DM6PR12MB3929.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nXsYhDtOrgw8bB2cyolh4on4RI/N6SiLY/v7cQESVRG4coGSfBQmAF3lrk+7J7cfOS6ZPmxk0GNccavEXZpa3k0V34CboqvdfGorDGPrQnBrk/gr8hewryMBfryjTiME6kPBdrer7kMM8yUcret6LyJOwx2hv+1J+3zHtMACKXbbwzApszRR7FoY5JdYpr8hrdtlLEeD8zATBy7vVOQbCUM/34iaXlXyrHcn93fJVHz6h5f9Wd+kiMuEWZl0T8JMBd6Xw1X5+upeo554INC9gAgqlmjDSRd2xwVQ/9Vc9iCJ9jR+SWq3fKxUjRCRLitI7tyuZSvM8WjIOyaGu1EVjkuytpDtTWv3PmExyU4crB8s1qpiNYvF0c/T61bvbBxrTzd1PD/a1J5kUccFPMbwimn1uvRTeuXEIP8nyNCrbMd3tWnjzg/0k4tsC46471YX5k8CYvFLCmf8DPZnSGd9cjigj+y4xXuaK/h7XL/3cQ1es+71Y616WZBI6bWtuUoFaznwUlgaTVzmmlxZ1YYGq7QqvaqdHCrrVmLMz4G2n3qDF4ajgMwrAJxnsQa6yoeOsRaxJl6BeIgqsol+FW35fTAj0ayRM3pxlnPOJiFHU/7VX5gF9nfxslmMBwPLfS2uI0OhX/ygwiRx+4DDTP0gLHzMuR8S7ca0ifhuTaKuwp6WK4lsiK7QcV8slI/GzT3z
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(396003)(376002)(366004)(66476007)(966005)(33656002)(66946007)(83380400001)(1076003)(107886003)(26005)(86362001)(478600001)(6916009)(36756003)(426003)(2616005)(8676002)(66556008)(8936002)(316002)(186003)(4326008)(54906003)(38100700002)(5660300002)(2906002)(9786002)(9746002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Ltx5MVYbYSZPZt9/+2Ho3HJCSsRkbBzdrE84dVSdWWlIoCsWy6niinrK9JKT?=
+ =?us-ascii?Q?v4JFBvWsY/9VB3bBCA5TFW4VeNOhOG4xzKFX0MIXHyUwiAIJTewPNcFaRzV6?=
+ =?us-ascii?Q?BZ21n81uBlKoRqMX1JBiNkoktuGZOBEYpb+NO5U0RE2XG8SvNax4N7XcXr7x?=
+ =?us-ascii?Q?Y/xsu+NkzdwIP78EMtav2SgB6ja9/wT4+ta/1igdQCCwBP9DvplvhES0t5Wz?=
+ =?us-ascii?Q?g5MadfchG8BmU2xHfjXqJs9Xiuqvxdeb1ZF0cmLRSrBu1S2Qm0j0YkGpTNwQ?=
+ =?us-ascii?Q?rRB3SizD1a894H/E/NITSlsaHuTRSZEf8rA4bYqLCd9gx6linZJJN74ILf1U?=
+ =?us-ascii?Q?3nPz7pmSXcAi4suAcbDghgafRjJuCpQ5FcTBWQSwPFthUxMGlvhibdaxLy7N?=
+ =?us-ascii?Q?+gXk1VC2YKyjuZoQFxnq/iMWM73gRtVlJYyJmT2tPaNGh7yt8OoD4qioWXys?=
+ =?us-ascii?Q?ScV1L5D3NA621mMKEd11G92P+brl3D0xclQB6ndSKypn2orYZk9q5roevMw3?=
+ =?us-ascii?Q?dBdpEh8wH9xnjlVtNg536SCETA/GY04ieHjEVRKqSNGPNYR4uWokDoVUjHjw?=
+ =?us-ascii?Q?A9EYeLOFkVC9gOfPvEQXYLJSREf9JAoTTBalKBvOvDfMyQeqYguX8yz8Cq/P?=
+ =?us-ascii?Q?yW56fMnnGX6Bl3kHm2YkII6/OpXWFDFnbmjolH6VDtDHjR7xPY1m3h87SyAC?=
+ =?us-ascii?Q?+KpeL1Dt5opnISVb2dX29tW8kMT1ym1BufajebGcFbBxAZLnbmwhXniDkcfu?=
+ =?us-ascii?Q?+eM9SWXas4xz7Y4mFz/mfto2the1n3PCzVQ9j6kUkYm0xp/d2wPnjQvCdsL+?=
+ =?us-ascii?Q?OiAmvP9K54mdLC687tzqFL5RXT3WPABBCRoWYrnK1RB4OZ1qWlRRMmoKAZ6K?=
+ =?us-ascii?Q?nsPN+XM8kP92+Ws3UXEaRGQIvYTFYKJYF+a5DsVAh6LWX521rG8fUXnJYttD?=
+ =?us-ascii?Q?WPl3Q4pT8/jkQy3YI3GRu8JPsrac8/1YhiPbUIlp9+bI9EfCRD76K+0mxO7M?=
+ =?us-ascii?Q?WZeAtniWpDsZaDsqzSUVnoJkBYo79DSQLs/yzJL2h6LxgMxlguXNPgBcvO8O?=
+ =?us-ascii?Q?wHgx0Wq4NY95c23PE25Da8lrNAAxfGsFZLuvOV1tJg4M6UYKrT8eusWBOT3G?=
+ =?us-ascii?Q?I+2Dtwu4ERHN/pbyUvfOGgz2b8UQhL+xh8EavBNDSFsoRgpGleVZkkZZLR4H?=
+ =?us-ascii?Q?mJApjKNiL4bV+637UojHq6DLGxiv9Gj7ruFf+0SnMABPj3WVXlRGuyPY1Ggx?=
+ =?us-ascii?Q?AzngsgF9VRy1ryWDnS9axkG3MgFm5vjVd3GV06bxLn9OxffjFW0YLu6/9sXj?=
+ =?us-ascii?Q?JHRSHQbT+8HEDRmV5wE8fSadrEvs9PHxmQTwUkxNZjO9qg=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40d50e1b-b69b-4af2-72e0-08d904f59395
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 18:45:04.1917
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: X/TyoTIQJZFH9hJw4ajoJoUFsYtcd0l593Bm4bBZ90Z/B3XbvJSLgKo5lwGcgESx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3929
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000112b6005c07f3c60
-Content-Type: text/plain; charset="UTF-8"
-
-On Thu, Apr 1, 2021 at 12:27 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> From: Leon Romanovsky <leonro@nvidia.com>
->
-> Instead of manually messing with parent driver module reference
-> counting rely on export symbol mechanism to ensure that proper
-> probe/remove chain is performed.
->
+On Sun, Apr 18, 2021 at 01:59:21PM +0300, Leon Romanovsky wrote:
+> From: Mark Bloch <mbloch@nvidia.com>
+> 
+> Expose a non standard query port via IOCTL that will be used to expose
+> port attributes that are specific to mlx5 devices.
+> 
+> The new interface receives a port number to query and returns a
+> structure that contains the available attributes for that port.
+> This will be used to fill the gap between pure DEVX use cases
+> and use cases where a kernel needs to inform userspace about
+> various kernel driver configurations that userspace must use
+> in order to work correctly.
+> 
+> Flags is used to indicate which fields are valid on return.
+> 
+> MLX5_IB_UAPI_QUERY_PORT_VPORT:
+> 	The vport number of the queered port.
+> 
+> MLX5_IB_UAPI_QUERY_PORT_VPORT_VHCA_ID:
+> 	The VHCA ID of the vport of the queered port.
+> 
+> MLX5_IB_UAPI_QUERY_PORT_VPORT_STEERING_ICM_RX:
+> 	The vport's RX ICM address used for sw steering.
+> 
+> MLX5_IB_UAPI_QUERY_PORT_VPORT_STEERING_ICM_TX:
+> 	The vport's TX ICM address used for sw steering.
+> 
+> MLX5_IB_UAPI_QUERY_PORT_VPORT_REG_C0:
+> 	The metadata used to tag egress packets of the vport.
+> 
+> MLX5_IB_UAPI_QUERY_PORT_ESW_OWNER_VHCA_ID:
+> 	The E-Switch owner vhca id of the vport.
+> 
+> Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
+> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
 > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 > ---
->  drivers/infiniband/hw/bnxt_re/main.c | 16 ++--------------
->  1 file changed, 2 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-> index 140c54ee5916..8bfbf0231a9e 100644
-> --- a/drivers/infiniband/hw/bnxt_re/main.c
-> +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> @@ -601,13 +601,6 @@ static struct bnxt_re_dev *bnxt_re_from_netdev(struct net_device *netdev)
->         return container_of(ibdev, struct bnxt_re_dev, ibdev);
->  }
->
-> -static void bnxt_re_dev_unprobe(struct net_device *netdev,
-> -                               struct bnxt_en_dev *en_dev)
-> -{
-> -       dev_put(netdev);
-> -       module_put(en_dev->pdev->driver->driver.owner);
-> -}
-> -
->  static struct bnxt_en_dev *bnxt_re_dev_probe(struct net_device *netdev)
->  {
->         struct bnxt_en_dev *en_dev;
-> @@ -628,10 +621,6 @@ static struct bnxt_en_dev *bnxt_re_dev_probe(struct net_device *netdev)
->                 return ERR_PTR(-ENODEV);
->         }
->
-> -       /* Bump net device reference count */
-> -       if (!try_module_get(pdev->driver->driver.owner))
-> -               return ERR_PTR(-ENODEV);
-> -
->         dev_hold(netdev);
->
->         return en_dev;
-> @@ -1558,13 +1547,12 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
->
->  static void bnxt_re_dev_unreg(struct bnxt_re_dev *rdev)
->  {
-> -       struct bnxt_en_dev *en_dev = rdev->en_dev;
->         struct net_device *netdev = rdev->netdev;
->
->         bnxt_re_dev_remove(rdev);
->
->         if (netdev)
-> -               bnxt_re_dev_unprobe(netdev, en_dev);
-> +               dev_put(netdev);
->  }
->
->  static int bnxt_re_dev_reg(struct bnxt_re_dev **rdev, struct net_device *netdev)
-> @@ -1586,7 +1574,7 @@ static int bnxt_re_dev_reg(struct bnxt_re_dev **rdev, struct net_device *netdev)
->         *rdev = bnxt_re_dev_add(netdev, en_dev);
->         if (!*rdev) {
->                 rc = -ENOMEM;
-> -               bnxt_re_dev_unprobe(netdev, en_dev);
-> +               dev_put(netdev);
->                 goto exit;
->         }
->  exit:
+> Changelog:
+> v3:
+>  * declared "info" variable on stack
+> v2: https://lore.kernel.org/linux-api/20210401085004.577338-1-leon@kernel.org
+>  * Changed __u64 to be __aligned_u64 in the uapi header
+> v1: https://lore.kernel.org/linux-api/20210322093932.398466-1-leon@kernel.org
+>  * Missed sw_owner check for CX-6 device, fixed it.
+> v0: https://lore.kernel.org/linux-api/20210318135221.681014-1-leon@kernel.org
+> ---
+>  drivers/infiniband/hw/mlx5/std_types.c    | 173 ++++++++++++++++++++++
+>  include/uapi/rdma/mlx5_user_ioctl_cmds.h  |   9 ++
+>  include/uapi/rdma/mlx5_user_ioctl_verbs.h |  25 ++++
+>  3 files changed, 207 insertions(+)
 
-Acked-By: Devesh Sharma <devesh.sharma@broadcom.com>
-> --
-> 2.30.2
->
+Applied to for-next, thanks
 
-
--- 
--Regards
-Devesh
-
---000000000000112b6005c07f3c60
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIQcAYJKoZIhvcNAQcCoIIQYTCCEF0CAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg3HMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
-MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
-vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
-rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
-aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
-e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
-cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
-MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
-KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
-/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
-TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
-YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
-b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
-c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
-CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
-BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
-jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
-9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
-/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
-jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
-AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
-dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
-MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
-IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
-SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
-XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
-J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
-nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBU8wggQ3oAMCAQICDCGDU4mjRUtE1rJIfDANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMTAyMjIxNDE5MTJaFw0yMjA5MjIxNDUyNDJaMIGQ
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xFjAUBgNVBAMTDURldmVzaCBTaGFybWExKTAnBgkqhkiG9w0B
-CQEWGmRldmVzaC5zaGFybWFAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
-CgKCAQEAqdZbJYU0pwSvcEsPGU4c70rJb88AER0e2yPBliz7n1kVbUny6OTYV16gUCRD8Jchrs1F
-iA8F7XvAYvp55zrOZScmIqg0sYmhn7ueVXGAxjg3/ylsHcKMquUmtx963XI0kjWwAmTopbhtEBhx
-75mMnmfNu4/WTAtCCgi6lhgpqPrted3iCJoAYT2UAMj7z8YRp3IIfYSW34vWW5cmZjw3Vy70Zlzl
-TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
-Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
-KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
-SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
-PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
-G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
-PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDsLYZhfumERwWjJz5h+sxPNZEHQ
-xmbD6PZ4jzQKIjxLMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDQyMTE3NTMwNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQBVqkrU3UwIwBTnS4u9vmulUkPB2YVvlZ7E8Zb9PrceHhWK
-3IPs6wnEBuTH5QcJvjRWV5phgsKwdBERTY8L3CjrgXglLmCufsBXfSXJ4P/uh1M4SJlpNgdOVfs5
-tL7JA4wzVS2yugmQ6Telpe5fZN41X9kYYq7sdQ/KwZWB6P5KtpeBaU9mDfLZLdPrXKs6hdKxRNKo
-rHsGFq7436Qt4ApktpHvcz9FthnBd2nwB0/fo7OiLrelezkgB5/qLbJWTwTDrXelt3N00vko2Xb6
-q088civ86vOOhcFH52iuGfeWeenyGVX0GT5Q8rDaejxFJbU/sqGx9J8hJ4E4r//E6wtU
---000000000000112b6005c07f3c60--
+Jason
