@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4F0367206
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Apr 2021 19:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3023936720A
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Apr 2021 19:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245042AbhDURxE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Apr 2021 13:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46764 "EHLO
+        id S245050AbhDURxj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Apr 2021 13:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245043AbhDURxA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Apr 2021 13:53:00 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91359C06138A
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Apr 2021 10:52:25 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id q4so3501949qtn.5
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Apr 2021 10:52:25 -0700 (PDT)
+        with ESMTP id S245043AbhDURxi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Apr 2021 13:53:38 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44659C06174A
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Apr 2021 10:53:05 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id gv2so11440296qvb.8
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Apr 2021 10:53:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CHT2hhaYwG9cy1jbbiJbK7Kf44VKooME5MUKEcWbTpo=;
-        b=XoK6rML/46Sf2KA+LOlJqB4LQuOIUKA77xBHiE0wcTI2S4S7yfVZ0EvHuTXYh91Gyr
-         jQK2nJ7cw157CG1w7HWnoOWbNS4v+TWXgzMJklgNgTMwFZuDKBu9uL1H3lhUIK2d7aqz
-         sXvg2mRrEJnWvHIz9uyUPLssGYAnR0Hl+zpw0=
+        bh=ovTiMgv2+wmUw14Ta6x3ZHA/fU7fwmx8ckNP1Vlno+k=;
+        b=QQwpyCdGmtCs2qX+FJl+vxOKjcu82giKSknBZp2Tyr+810EdTjD7AG4ypYoHQyXyTj
+         OcNFHHhkRJD5s3UWR2Iu0pyOZq1TD6K635l6Sca9QAbpGkZJEzL4Yc6Jbj4eOOEBMwXO
+         mIh0Nqcb0vFrgjWQSityl6yU6yTDj8HXH1Ldw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CHT2hhaYwG9cy1jbbiJbK7Kf44VKooME5MUKEcWbTpo=;
-        b=YUWCnW+akC/PwhPPuCv6KHotZwudCYdaq09sK20Xua2yYaHT0E0QaRpg6FEqa1UPd/
-         WRdwkY8PUleNZJ0Pjiiq+00xA0FmPbsYAjxQRyD6BxuNyhhCF8a0KlksoM0j693fKgdT
-         Uh81PfFTh/fmljVGnPx9zliulk0W437aiEggSB9PHQJ7J71LGoiaeDIo3SPQTtixF3uA
-         +pNw+vtUcmMEfoetOSjtBPs16gGRGbDKAEE84xS2W2tKRdlNljVaI542+tI6nGX9vYKy
-         LdqhUeCRCTDLe5qVMy4cNtF5VBm/8Wc6inW/5GNVJWhFHtoq4/qFd6sUZorf5sK9jmGk
-         1/XA==
-X-Gm-Message-State: AOAM530gpbORa1TbZhvVhUSV1R+BS4x0S5OCNwCQKUOFyA1k8ZmqUq0b
-        qJjG6Wb8jUveQldEzZ9QgX17HRCPhLijlIjE8JFeWQ==
-X-Google-Smtp-Source: ABdhPJxcjXrceVF+1J6FvQMjqjVv+M3r7V95bsusoruXcGn6YwnMIACmTL5ka2RXx4hyazwu9SWsaO6pONRhTpCDss0=
-X-Received: by 2002:ac8:574f:: with SMTP id 15mr21954102qtx.50.1619027544294;
- Wed, 21 Apr 2021 10:52:24 -0700 (PDT)
+        bh=ovTiMgv2+wmUw14Ta6x3ZHA/fU7fwmx8ckNP1Vlno+k=;
+        b=NdqyaNthEvNtVLHByW7OwYrUqSoKBLReYcT6F/j1SFT12NlfabZZoSX40lbuRr77g4
+         bNwgFrWUHk/ANblEY0jieDay8Gd2kF3OO8tBYomY/DlMCycQ5QUgh3Oku6MyBQypLCrH
+         vqK79gZ8eNfZw2Jk9gEiQfYIWokTTrNecApr25NvpUAPLuLORnvLENL/XxfUBWJVzz8R
+         qgCev8TLeo58YiKYtPolVR+vaRys87frv5xvOy5xL5yyHGNyZx/7PgTFV586VnosJNv4
+         oU2/MNlXquRKSAyofDxF5Y43MpSJe4gEGobRQLTwmVdVls6gAzvrauN7Mufp1dsvIl7e
+         /GsA==
+X-Gm-Message-State: AOAM531c86uhEAppZYQXMoEYONyq4z2wj6D5siAIbxt9XqjsWXjOMlsd
+        eEAlCDeF1PdMhL5xm539JG8r2hBq37qZLgMRQZtOlw==
+X-Google-Smtp-Source: ABdhPJwOtfGDWRc9q9mnSfzckRclcCJnhzIbNjUPn9zRxvY0u0FxoH7bbYEfCIY2+ts3/j3hgZLUst+h+DACWkBqQYE=
+X-Received: by 2002:a05:6214:161:: with SMTP id y1mr34183000qvs.31.1619027584254;
+ Wed, 21 Apr 2021 10:53:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210401065715.565226-1-leon@kernel.org> <20210401065715.565226-3-leon@kernel.org>
-In-Reply-To: <20210401065715.565226-3-leon@kernel.org>
+References: <20210401065715.565226-1-leon@kernel.org> <20210401065715.565226-4-leon@kernel.org>
+In-Reply-To: <20210401065715.565226-4-leon@kernel.org>
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Wed, 21 Apr 2021 23:21:47 +0530
-Message-ID: <CANjDDBh71JLvt_c=r49_EgGaEsUoFS2Y-6cw1QL3-CN1fJrPZA@mail.gmail.com>
-Subject: Re: [PATCH rdma-next v2 2/5] RDMA/bnxt_re: Create direct symbolic
- link between bnxt modules
+Date:   Wed, 21 Apr 2021 23:22:27 +0530
+Message-ID: <CANjDDBh_hTRKeZ+ujh4XZ5JjY1JDw0qKqgUjmvoH3koDyfSesA@mail.gmail.com>
+Subject: Re: [PATCH rdma-next v2 3/5] RDMA/bnxt_re: Get rid of custom module
+ reference counting
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
@@ -62,86 +62,80 @@ Cc:     Doug Ledford <dledford@redhat.com>,
         Somnath Kotur <somnath.kotur@broadcom.com>,
         Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000b4374005c07f39ea"
+        boundary="000000000000112b6005c07f3c60"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000b4374005c07f39ea
+--000000000000112b6005c07f3c60
 Content-Type: text/plain; charset="UTF-8"
 
 On Thu, Apr 1, 2021 at 12:27 PM Leon Romanovsky <leon@kernel.org> wrote:
 >
 > From: Leon Romanovsky <leonro@nvidia.com>
 >
-> Convert indirect probe call to its direct equivalent to create
-> symbols link between RDMA and netdev modules. This will give
-> us an ability to remove custom module reference counting that
-> doesn't belong to the driver.
+> Instead of manually messing with parent driver module reference
+> counting rely on export symbol mechanism to ensure that proper
+> probe/remove chain is performed.
 >
 > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 > ---
->  drivers/infiniband/hw/bnxt_re/main.c          | 7 +------
->  drivers/net/ethernet/broadcom/bnxt/bnxt.c     | 2 --
->  drivers/net/ethernet/broadcom/bnxt/bnxt.h     | 1 -
->  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c | 1 +
->  4 files changed, 2 insertions(+), 9 deletions(-)
+>  drivers/infiniband/hw/bnxt_re/main.c | 16 ++--------------
+>  1 file changed, 2 insertions(+), 14 deletions(-)
 >
 > diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-> index b30d37f0bad2..140c54ee5916 100644
+> index 140c54ee5916..8bfbf0231a9e 100644
 > --- a/drivers/infiniband/hw/bnxt_re/main.c
 > +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> @@ -610,15 +610,10 @@ static void bnxt_re_dev_unprobe(struct net_device *netdev,
+> @@ -601,13 +601,6 @@ static struct bnxt_re_dev *bnxt_re_from_netdev(struct net_device *netdev)
+>         return container_of(ibdev, struct bnxt_re_dev, ibdev);
+>  }
 >
+> -static void bnxt_re_dev_unprobe(struct net_device *netdev,
+> -                               struct bnxt_en_dev *en_dev)
+> -{
+> -       dev_put(netdev);
+> -       module_put(en_dev->pdev->driver->driver.owner);
+> -}
+> -
 >  static struct bnxt_en_dev *bnxt_re_dev_probe(struct net_device *netdev)
 >  {
-> -       struct bnxt *bp = netdev_priv(netdev);
 >         struct bnxt_en_dev *en_dev;
->         struct pci_dev *pdev;
->
-> -       /* Call bnxt_en's RoCE probe via indirect API */
-> -       if (!bp->ulp_probe)
-> -               return ERR_PTR(-EINVAL);
-> -
-> -       en_dev = bp->ulp_probe(netdev);
-> +       en_dev = bnxt_ulp_probe(netdev);
->         if (IS_ERR(en_dev))
->                 return en_dev;
->
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-> index a680fd9c68ea..3f0e4bde5dc9 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-> @@ -12859,8 +12859,6 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
->         if (!BNXT_CHIP_P4_PLUS(bp))
->                 bp->flags |= BNXT_FLAG_DOUBLE_DB;
->
-> -       bp->ulp_probe = bnxt_ulp_probe;
-> -
->         rc = bnxt_init_mac_addr(bp);
->         if (rc) {
->                 dev_err(&pdev->dev, "Unable to initialize mac address.\n");
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-> index 1259e68cba2a..eb0314d7a9b1 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-> @@ -1745,7 +1745,6 @@ struct bnxt {
->         (BNXT_CHIP_P4(bp) || BNXT_CHIP_P5(bp))
->
->         struct bnxt_en_dev      *edev;
-> -       struct bnxt_en_dev *    (*ulp_probe)(struct net_device *);
->
->         struct bnxt_napi        **bnapi;
->
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-> index 64dbbb04b043..a918e374f3c5 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-> @@ -491,3 +491,4 @@ struct bnxt_en_dev *bnxt_ulp_probe(struct net_device *dev)
+> @@ -628,10 +621,6 @@ static struct bnxt_en_dev *bnxt_re_dev_probe(struct net_device *netdev)
+>                 return ERR_PTR(-ENODEV);
 >         }
->         return bp->edev;
+>
+> -       /* Bump net device reference count */
+> -       if (!try_module_get(pdev->driver->driver.owner))
+> -               return ERR_PTR(-ENODEV);
+> -
+>         dev_hold(netdev);
+>
+>         return en_dev;
+> @@ -1558,13 +1547,12 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
+>
+>  static void bnxt_re_dev_unreg(struct bnxt_re_dev *rdev)
+>  {
+> -       struct bnxt_en_dev *en_dev = rdev->en_dev;
+>         struct net_device *netdev = rdev->netdev;
+>
+>         bnxt_re_dev_remove(rdev);
+>
+>         if (netdev)
+> -               bnxt_re_dev_unprobe(netdev, en_dev);
+> +               dev_put(netdev);
 >  }
-> +EXPORT_SYMBOL(bnxt_ulp_probe);
+>
+>  static int bnxt_re_dev_reg(struct bnxt_re_dev **rdev, struct net_device *netdev)
+> @@ -1586,7 +1574,7 @@ static int bnxt_re_dev_reg(struct bnxt_re_dev **rdev, struct net_device *netdev)
+>         *rdev = bnxt_re_dev_add(netdev, en_dev);
+>         if (!*rdev) {
+>                 rc = -ENOMEM;
+> -               bnxt_re_dev_unprobe(netdev, en_dev);
+> +               dev_put(netdev);
+>                 goto exit;
+>         }
+>  exit:
 
 Acked-By: Devesh Sharma <devesh.sharma@broadcom.com>
 > --
@@ -153,7 +147,7 @@ Acked-By: Devesh Sharma <devesh.sharma@broadcom.com>
 -Regards
 Devesh
 
---000000000000b4374005c07f39ea
+--000000000000112b6005c07f3c60
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -224,13 +218,13 @@ G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
 PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBc37BXAdam3/mxP56cl/sPFpdX/
-9rgtT0Q2htI+iaCiMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDQyMTE3NTIyNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDsLYZhfumERwWjJz5h+sxPNZEHQ
+xmbD6PZ4jzQKIjxLMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDQyMTE3NTMwNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQArA2eOcvcYNb5DIqk/+p8QmNiQjrsh2c0LkG7cJESKx1zn
-/QZFVq3KkGKCEy8mBbulN2xT+n4Nl50IFaiWDhesMRAmOEJfSdf1bsfOKTmd/QzA/le6jM/7sXfZ
-Ru67yxHtnijdcoNYRROV3UbA//zQsN3/U8duXK+99PG8JPiBVbTVQoZrZFc/tSDBDNTmR+QbrcIL
-x88lVKanHtlhdY5hzvB1Mrc928YVG7wpEF/pUUQ3gaceqPRtmtJ4jrJdlVv/fi8KKK0L0w65+hgg
-1K+XZssgo6bfCnLVXBnT/jj/SFEK3SgZu3M6bPq1/tMGqMfQKB3kVyKQfMESfNSENfvz
---000000000000b4374005c07f39ea--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQBVqkrU3UwIwBTnS4u9vmulUkPB2YVvlZ7E8Zb9PrceHhWK
+3IPs6wnEBuTH5QcJvjRWV5phgsKwdBERTY8L3CjrgXglLmCufsBXfSXJ4P/uh1M4SJlpNgdOVfs5
+tL7JA4wzVS2yugmQ6Telpe5fZN41X9kYYq7sdQ/KwZWB6P5KtpeBaU9mDfLZLdPrXKs6hdKxRNKo
+rHsGFq7436Qt4ApktpHvcz9FthnBd2nwB0/fo7OiLrelezkgB5/qLbJWTwTDrXelt3N00vko2Xb6
+q088civ86vOOhcFH52iuGfeWeenyGVX0GT5Q8rDaejxFJbU/sqGx9J8hJ4E4r//E6wtU
+--000000000000112b6005c07f3c60--
