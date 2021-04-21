@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00A83664BA
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Apr 2021 07:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607C53664BC
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Apr 2021 07:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbhDUFVX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Apr 2021 01:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
+        id S235154AbhDUFVY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Apr 2021 01:21:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbhDUFVX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Apr 2021 01:21:23 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F12C06174A
-        for <linux-rdma@vger.kernel.org>; Tue, 20 Apr 2021 22:20:50 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id v6so13505733oiv.3
-        for <linux-rdma@vger.kernel.org>; Tue, 20 Apr 2021 22:20:50 -0700 (PDT)
+        with ESMTP id S230343AbhDUFVY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Apr 2021 01:21:24 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04BDC06174A
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Apr 2021 22:20:51 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 65-20020a9d03470000b02902808b4aec6dso33197238otv.6
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Apr 2021 22:20:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bJeUsGrNnZQzzCLtjN2Dy6J69IfylXkxR5VCG0J4XL4=;
-        b=Ca9M3fthzvNXnOZgJl2RIIyE5+n5ttY/4N+YiFwzQ/Ug5x7mX8odNKbyRFHVH1kocK
-         e0fhqR+hdzICuWr2MCELlAEYdSArxQed8C6EahowUmZvDjNt86MlHnRVFalvLJQDcXMe
-         fpbcoA2/aFkbONxB2UjssGIoTI+NLd9CWXYGVxOJ8iD/cWk7EDBFMITR4O7T38Amz1Il
-         +JlMMXlaeaPpPKJY19gvddwz6MqInF+8yMnOvyjoy1/yawIk6EfUFM7gyIS8XFZ5ytPF
-         DaXgBzeUDfzyjW5mBdnEceg1kpPFd6SdqYvLZkTQIibni6fL/6DENzFNvfotV+64hFqc
-         IidA==
+        bh=uDdfcAsojNa5e4Rr2aiXxY5LTEiEkuR/p+JzBO79sU4=;
+        b=kKJHhbZ/fbe1hpPOPkdEk7vE31KhzPFN/dJcLc9u4cqsG9rxanHZUfV0MHoFHZjhwr
+         Y22FIqwb8AKuGTXqX7JRu2gryfnq7Z25ocluqDad86oKVLpLc80BntwZClVuuhotg67R
+         kxcIGqVehXpYisVk+GBP4lrObLYMMs5JKfM97fTZ6Xn8qZuD2fz269oz+4qZ7bCwuXQM
+         zN/xDww+qNmYmsPwAYSWN3UA+vIrq/M7JgBi+d/WulQmFs46yJcS1YG2rcrG85WeOeZp
+         Td/qkWh7VxplAGSojlzMFsV0mVV303Fe7Lc2It16D6i4u4EWsTGGCkGXzVAXm3O6RIZG
+         k1dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bJeUsGrNnZQzzCLtjN2Dy6J69IfylXkxR5VCG0J4XL4=;
-        b=ok91jRuIjyE03eYbARkDpJGaiAtvTK00FswmofNnQLSsKu/fxq/EVYylDbd0Lm4M6Y
-         TM29zTxA2CC/IAOWimhi79/xBPJd2eM2k5wwYlDkc3aK5l3OnWBEThcN0Fza8pmETwYj
-         Bv45sZ3HLjW+X7zJBwuZtgnriL6J9ahtD2Tlqa3Bz3uRgDrrN0R81xCDTBGFa4sO5YTB
-         QkTiWs/WblCmmt/HBS0i7oiRGYve5t77ys1vYQ0mJZZuwY/9ZX63uvULAjaIynd1F6EZ
-         nhnLqizMLl8+2iUtFV5Rng2R70JUMk08xEq236Zc59jC660oqopIW4AxuK4hiqyNqxAX
-         KbgA==
-X-Gm-Message-State: AOAM5333qozR6KY0EX4DORT8B8K33I5YRQKgY17KBzu7Vlr+gkL9TXxE
-        RffKkXG06nqBoaw8h6dRbPA=
-X-Google-Smtp-Source: ABdhPJxLPU7ncSnuMeFBLPZUoZ7Op0coDWdAGIaSEH2E6RTiMOXCKnIoVGVX9ii++8dEqisbAGpbag==
-X-Received: by 2002:aca:309:: with SMTP id 9mr5499871oid.12.1618982450416;
-        Tue, 20 Apr 2021 22:20:50 -0700 (PDT)
+        bh=uDdfcAsojNa5e4Rr2aiXxY5LTEiEkuR/p+JzBO79sU4=;
+        b=Yt0ZowAGL3Bu9PpPO/J+3Qyy5TIQ5VRrI7x0Iv36ZCrscPsd7j3OVKhvsKcSrE6/2K
+         w7ybK6nRpLXXyjvClGOTgLiLfuObgwsnLesrQtDlVcALzwoa06xtRL4ybDTuQa0MC6nR
+         nFJksf5CwmiUrv7XSkaAq35HY7Be2DE+NrawvuN0ZNAhqYEba4gDNpbkj2eVFK9mfnAn
+         WBz/NXU6k1IOkrQXU+Ht81Q8uYYyAzLthCjw3c4Qb87VqfxQiWWcboQ9whxfNgj8gtZi
+         HwjpU5sRYoIh2ox2UTXrQggLjU1OpCMgvr9Z1XLCifFlCTr3iuW8shBxsGn7AnucpehX
+         ZkXw==
+X-Gm-Message-State: AOAM5334g6r2DOGmYE+nHYuL9GiwGM51l5yUs0r9q+cvl/GGWJsOr6YA
+        jFiuHniyLsRCCo/y2m2Tirs=
+X-Google-Smtp-Source: ABdhPJyzABdAD4jygL1bGZMajahfsXYfSGkIt/1RXbB0bSOkPItfxp9iAiYvaTvjdSlPiRjUCCz3Jg==
+X-Received: by 2002:a05:6830:104a:: with SMTP id b10mr1921856otp.181.1618982451212;
+        Tue, 20 Apr 2021 22:20:51 -0700 (PDT)
 Received: from localhost (2603-8081-140c-1a00-eeb0-9b2d-35df-5cd9.res6.spectrum.com. [2603:8081:140c:1a00:eeb0:9b2d:35df:5cd9])
-        by smtp.gmail.com with ESMTPSA id m127sm285457oib.32.2021.04.20.22.20.50
+        by smtp.gmail.com with ESMTPSA id a19sm302041oto.50.2021.04.20.22.20.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 20 Apr 2021 22:20:50 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearson@hpe.com>
-Subject: [PATCH for-next v3 1/9] RDMA/rxe: Add bind MW fields to rxe_send_wr
-Date:   Wed, 21 Apr 2021 00:20:08 -0500
-Message-Id: <20210421052015.4546-2-rpearson@hpe.com>
+Subject: [PATCH for-next v3 2/9] RDMA/rxe: Return errors for add index and key
+Date:   Wed, 21 Apr 2021 00:20:09 -0500
+Message-Id: <20210421052015.4546-3-rpearson@hpe.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210421052015.4546-1-rpearson@hpe.com>
 References: <20210421052015.4546-1-rpearson@hpe.com>
@@ -63,43 +63,166 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add fields to struct rxe_send_wr in rdma_user_rxe.h to
-support bind MW work requests
+Modify rxe_add_index() and rxe_add_key() to return an
+error if the index or key is aleady present in the pool.
+Currently they print a warning and silently fail with
+bad consequences to the caller.
 
 Signed-off-by: Bob Pearson <rpearson@hpe.com>
 ---
- include/uapi/rdma/rdma_user_rxe.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/infiniband/sw/rxe/rxe_pool.c | 44 ++++++++++++++++++----------
+ drivers/infiniband/sw/rxe/rxe_pool.h |  8 ++---
+ 2 files changed, 32 insertions(+), 20 deletions(-)
 
-diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
-index 068433e2229d..b8f408ceb1a8 100644
---- a/include/uapi/rdma/rdma_user_rxe.h
-+++ b/include/uapi/rdma/rdma_user_rxe.h
-@@ -99,7 +99,17 @@ struct rxe_send_wr {
- 			__u32	remote_qkey;
- 			__u16	pkey_index;
- 		} ud;
-+		struct {
-+			__aligned_u64	addr;
-+			__aligned_u64	length;
-+			__u32		mr_lkey;
-+			__u32		mw_rkey;
-+			__u32	rkey;
-+			__u32	access;
-+			__u32	flags;
-+		} mw;
- 		/* reg is only used by the kernel and is not part of the uapi */
-+#ifdef __KERNEL__
- 		struct {
- 			union {
- 				struct ib_mr *mr;
-@@ -108,6 +118,7 @@ struct rxe_send_wr {
- 			__u32	     key;
- 			__u32	     access;
- 		} reg;
-+#endif
- 	} wr;
- };
+diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+index d24901f2af3f..2b795e2fc4b3 100644
+--- a/drivers/infiniband/sw/rxe/rxe_pool.c
++++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+@@ -183,7 +183,7 @@ static u32 alloc_index(struct rxe_pool *pool)
+ 	return index + pool->index.min_index;
+ }
+ 
+-static void insert_index(struct rxe_pool *pool, struct rxe_pool_entry *new)
++static int insert_index(struct rxe_pool *pool, struct rxe_pool_entry *new)
+ {
+ 	struct rb_node **link = &pool->index.tree.rb_node;
+ 	struct rb_node *parent = NULL;
+@@ -195,7 +195,7 @@ static void insert_index(struct rxe_pool *pool, struct rxe_pool_entry *new)
+ 
+ 		if (elem->index == new->index) {
+ 			pr_warn("element already exists!\n");
+-			goto out;
++			return -EINVAL;
+ 		}
+ 
+ 		if (elem->index > new->index)
+@@ -206,11 +206,11 @@ static void insert_index(struct rxe_pool *pool, struct rxe_pool_entry *new)
+ 
+ 	rb_link_node(&new->index_node, parent, link);
+ 	rb_insert_color(&new->index_node, &pool->index.tree);
+-out:
+-	return;
++
++	return 0;
+ }
+ 
+-static void insert_key(struct rxe_pool *pool, struct rxe_pool_entry *new)
++static int insert_key(struct rxe_pool *pool, struct rxe_pool_entry *new)
+ {
+ 	struct rb_node **link = &pool->key.tree.rb_node;
+ 	struct rb_node *parent = NULL;
+@@ -226,7 +226,7 @@ static void insert_key(struct rxe_pool *pool, struct rxe_pool_entry *new)
+ 
+ 		if (cmp == 0) {
+ 			pr_warn("key already exists!\n");
+-			goto out;
++			return -EINVAL;
+ 		}
+ 
+ 		if (cmp > 0)
+@@ -237,26 +237,32 @@ static void insert_key(struct rxe_pool *pool, struct rxe_pool_entry *new)
+ 
+ 	rb_link_node(&new->key_node, parent, link);
+ 	rb_insert_color(&new->key_node, &pool->key.tree);
+-out:
+-	return;
++
++	return 0;
+ }
+ 
+-void __rxe_add_key_locked(struct rxe_pool_entry *elem, void *key)
++int __rxe_add_key_locked(struct rxe_pool_entry *elem, void *key)
+ {
+ 	struct rxe_pool *pool = elem->pool;
++	int err;
+ 
+ 	memcpy((u8 *)elem + pool->key.key_offset, key, pool->key.key_size);
+-	insert_key(pool, elem);
++	err = insert_key(pool, elem);
++
++	return err;
+ }
+ 
+-void __rxe_add_key(struct rxe_pool_entry *elem, void *key)
++int __rxe_add_key(struct rxe_pool_entry *elem, void *key)
+ {
+ 	struct rxe_pool *pool = elem->pool;
+ 	unsigned long flags;
++	int err;
+ 
+ 	write_lock_irqsave(&pool->pool_lock, flags);
+-	__rxe_add_key_locked(elem, key);
++	err = __rxe_add_key_locked(elem, key);
+ 	write_unlock_irqrestore(&pool->pool_lock, flags);
++
++	return err;
+ }
+ 
+ void __rxe_drop_key_locked(struct rxe_pool_entry *elem)
+@@ -276,22 +282,28 @@ void __rxe_drop_key(struct rxe_pool_entry *elem)
+ 	write_unlock_irqrestore(&pool->pool_lock, flags);
+ }
+ 
+-void __rxe_add_index_locked(struct rxe_pool_entry *elem)
++int __rxe_add_index_locked(struct rxe_pool_entry *elem)
+ {
+ 	struct rxe_pool *pool = elem->pool;
++	int err;
+ 
+ 	elem->index = alloc_index(pool);
+-	insert_index(pool, elem);
++	err = insert_index(pool, elem);
++
++	return err;
+ }
+ 
+-void __rxe_add_index(struct rxe_pool_entry *elem)
++int __rxe_add_index(struct rxe_pool_entry *elem)
+ {
+ 	struct rxe_pool *pool = elem->pool;
+ 	unsigned long flags;
++	int err;
+ 
+ 	write_lock_irqsave(&pool->pool_lock, flags);
+-	__rxe_add_index_locked(elem);
++	err = __rxe_add_index_locked(elem);
+ 	write_unlock_irqrestore(&pool->pool_lock, flags);
++
++	return err;
+ }
+ 
+ void __rxe_drop_index_locked(struct rxe_pool_entry *elem)
+diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
+index 61210b300a78..1feca1bffced 100644
+--- a/drivers/infiniband/sw/rxe/rxe_pool.h
++++ b/drivers/infiniband/sw/rxe/rxe_pool.h
+@@ -111,11 +111,11 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_entry *elem);
+ /* assign an index to an indexed object and insert object into
+  *  pool's rb tree holding and not holding the pool_lock
+  */
+-void __rxe_add_index_locked(struct rxe_pool_entry *elem);
++int __rxe_add_index_locked(struct rxe_pool_entry *elem);
+ 
+ #define rxe_add_index_locked(obj) __rxe_add_index_locked(&(obj)->pelem)
+ 
+-void __rxe_add_index(struct rxe_pool_entry *elem);
++int __rxe_add_index(struct rxe_pool_entry *elem);
+ 
+ #define rxe_add_index(obj) __rxe_add_index(&(obj)->pelem)
+ 
+@@ -133,11 +133,11 @@ void __rxe_drop_index(struct rxe_pool_entry *elem);
+ /* assign a key to a keyed object and insert object into
+  * pool's rb tree holding and not holding pool_lock
+  */
+-void __rxe_add_key_locked(struct rxe_pool_entry *elem, void *key);
++int __rxe_add_key_locked(struct rxe_pool_entry *elem, void *key);
+ 
+ #define rxe_add_key_locked(obj, key) __rxe_add_key_locked(&(obj)->pelem, key)
+ 
+-void __rxe_add_key(struct rxe_pool_entry *elem, void *key);
++int __rxe_add_key(struct rxe_pool_entry *elem, void *key);
+ 
+ #define rxe_add_key(obj, key) __rxe_add_key(&(obj)->pelem, key)
  
 -- 
 2.27.0
