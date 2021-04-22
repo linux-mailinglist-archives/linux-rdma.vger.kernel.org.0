@@ -2,173 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5650C368111
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Apr 2021 15:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143C4368184
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Apr 2021 15:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236250AbhDVNC7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Apr 2021 09:02:59 -0400
-Received: from mail-dm6nam12on2085.outbound.protection.outlook.com ([40.107.243.85]:38646
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        id S236231AbhDVNfj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Apr 2021 09:35:39 -0400
+Received: from mail-eopbgr700079.outbound.protection.outlook.com ([40.107.70.79]:16609
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236078AbhDVNC5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:02:57 -0400
+        id S236426AbhDVNfh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 22 Apr 2021 09:35:37 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OS3FMbwNx71UWcYae6jaEl9x0Mn3Z4I7fa6au8ORUKRxCPRZX4VNgicQqxFr2D95PTEJE2j89qRSyK0Nclo2xfNZDWIA1F1CQimVl5YjNN188uscWVJfOghZYRUVIgh0ou/wVTpraOrEMEdsx8xyBLjgohI84BvSq14vh7AGS1p+4TIiIT7UL44NvFTVq+6dzuO4Nd8YeAToNb3UUcz5EatpqOluTTuBE7g1fg2bQGsYd19khrKLvbzKTYd+taSiOa+ZSAUMQsf/JG7AytcGNOroclqKGGNE7M8kffmwyoIn9qJzTmDKvC7xZRcZMzibTwV8X6ATLo/Els+5jE3Ozw==
+ b=C25nEGFAlEkr/ZALwrgrfnrm0pzGP0HUaPJNuh6N4csG4T9EvpRxmzLn5NIIL+fbRD7fW5sleOC4CX5qcFLVlm1+I83lZU3kCHdE7yTDjNeFQImaW6V0CCZpvCp3ZnQ7e/s2lHFSDym0Iws34WacMoWGCTDCDXAHIY47zaoCPWiD6B5kmsDjufd6qxhmAWnd+heY80Vwn/KHrqaCtoG9uPAqXBJMGXhI5fq1T0viK7PZJYmEfHqwDqsWZobg0SUaJA66jeZ4jWCXQIOly1cteG6fediKnuQj2AePy2x5fSs2RV/n++krKgGkERBY18fFC8hshPi5MQYQYFVSSB1fYA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e90uoo7vz7uXbP6uwJ3r//qe4B/+e+KXg8hxztAHrg4=;
- b=boUtkQPfL6Vz9TPSuvWknqGEhKOZtf1DMwUyM+WbxnQ4Z76Oy/zPmVk4C36xENBYKpVlIDYoTf9mWND6gmORkwEwIRCoPvwERTF9bKkfVLMrvCXjBjSVDyFhcF8b5qkN7SqqS3Y6/q76pbjJVNqWe9SciKjhxB9OiHPd6f5+chUVr5AUkxYl60JUo2J3bKCZ8yY+mEMziKcGG890+L9/7NYheG//Wilk0MRP/wRk/oGyWiMlfBFtCAkmEJ+apjT07RjUNo1gXOv8Xcd+duFPJ7HQ8Qmd3nMkAPVk8N2sIgF8jNOlcXxVzNVb1MAQXBG9q8EWNGvR+A9E5n5Gq24rKA==
+ bh=8M73wrhyjO1xP9YvmbsWCMQLbScxW6FeCRQv8OsOFFM=;
+ b=V1BCNpHwBYLWzCMDPLPDgXeCLTeIACa5Z7ci5uIEvExrux7hqSWfrMyGP5+TT+07gWgO29U0D4uqjYunpu1Md1O4Jsp3ARh6aEISsAHOhCwR7lNLdNXF/IIi3dU71wLHh7ttOxHDVUIbsTy1Xhpi4jrn8IjB4pW4/d6ximgiWdU9ge5sA1a1nYt7gniZ2l7KK1PG2Go4I2Ngmuai+bU/Bobrq9fn4YMHiUqvFsXgCDZN8Tj6lnt49YrQfP6VIzLjxvKdgKLswxgk2TNzwDtssFJ+S2hzkweOrMr88jKcRU3r5Xqc4v69LgA9C7JHCu/k86MHRlYpdbeC5iFojDpNzw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e90uoo7vz7uXbP6uwJ3r//qe4B/+e+KXg8hxztAHrg4=;
- b=FyznmCrdlK0TICwQ/lRbpktepcy1lGjaQSYBvVchYwH7afiuBxtq4TA2pvepUrUgtqZ8nB3X3t7Cd1o+OwghotcvViU8uFTKesHBdOE3K3YOsWKL9mGcBpYx7LkZV2BUPK/sffjEYP2XxBkk7MH9XoHPMb5W4UggSaEVruxfEaSlPjdcxsNY/rgzdoGLdsnG8gqo5ithVwzRHmqJSLD9QdKka2Dk4m9jOTL2b/xWrW7xWzMCA6CuT5soENRv54AwJzoUfXb7MBX0jF1fCaRBK89BQBz3hdfj7xA/7xJQkGFVz1SWINfKG3RZ+Ls866sUCUtNLEjudnY4Nep5ylToAg==
+ bh=8M73wrhyjO1xP9YvmbsWCMQLbScxW6FeCRQv8OsOFFM=;
+ b=DS4FIelUzmx7jz6BH3avyhui+4WS8ur9pSh+JpU0pC/1zYpJltCu3gv73YtDDbSwWk31ZY4i+G/E2csa0Ypg+bXwi4Uuz+xjGNaWijmD5ekeFrAPShWeIcyuqAK/BNAAA/8ewMXJbjUj1BQWCEEY+aSkkmyE22P2kQHZbjwuzplMH5CsrOEo629or3/K/0ZZXv0A5J0zCflLzshyHYLUt5tOsFUHRiFqRq0PVoc14bOdp1JBGbBrS4+BoKmM3eVU/Pb9uhRijX/WwhBGqwuHrCzoZ8wdqH6PfbfLR/YrPsRQ7FBqiS7p4zcR5ViJ/8dBp/+0VvqSbYL/LTChVjjdSQ==
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4500.namprd12.prod.outlook.com (2603:10b6:5:28f::13) with
+ by DM6PR12MB4402.namprd12.prod.outlook.com (2603:10b6:5:2a5::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18; Thu, 22 Apr
- 2021 13:02:19 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20; Thu, 22 Apr
+ 2021 13:35:01 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4065.023; Thu, 22 Apr 2021
- 13:02:19 +0000
-Date:   Thu, 22 Apr 2021 10:02:18 -0300
+ 13:35:01 +0000
+Date:   Thu, 22 Apr 2021 10:34:59 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
 To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Shay Drory <shayd@nvidia.com>, Doug Ledford <dledford@redhat.com>,
-        Krishna Kumar <krkumar2@in.ibm.com>,
-        linux-rdma@vger.kernel.org, Sean Hefty <sean.hefty@intel.com>
-Subject: Re: [PATCH rdma-next 2/3] RDMA/core: Fix check of device in
- rdma_listen()
-Message-ID: <20210422130218.GW1370958@nvidia.com>
-References: <cover.1618753862.git.leonro@nvidia.com>
- <b925e11d639726afbaaeea5aeaa58572b3aacf8e.1618753862.git.leonro@nvidia.com>
- <20210422112802.GA2320845@nvidia.com>
- <1fca1133-8cdd-8b21-42cf-69d610b4f8f4@nvidia.com>
- <20210422125135.GV1370958@nvidia.com>
- <YIFzoJOVvZPPJwwy@unreal>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        linux-rdma@vger.kernel.org, Mark Zhang <markzhang@nvidia.com>,
+        Neta Ostrovsky <netao@nvidia.com>
+Subject: Re: [PATCH rdma-next 0/4] Extend nldev interface with contexts and
+ SRQ
+Message-ID: <20210422133459.GA2390260@nvidia.com>
+References: <cover.1618753110.git.leonro@nvidia.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YIFzoJOVvZPPJwwy@unreal>
+In-Reply-To: <cover.1618753110.git.leonro@nvidia.com>
 X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR22CA0006.namprd22.prod.outlook.com
- (2603:10b6:208:238::11) To DM6PR12MB3834.namprd12.prod.outlook.com
+X-ClientProxiedBy: MN2PR16CA0044.namprd16.prod.outlook.com
+ (2603:10b6:208:234::13) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR22CA0006.namprd22.prod.outlook.com (2603:10b6:208:238::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Thu, 22 Apr 2021 13:02:19 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lZYyI-009xuq-J6; Thu, 22 Apr 2021 10:02:18 -0300
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR16CA0044.namprd16.prod.outlook.com (2603:10b6:208:234::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21 via Frontend Transport; Thu, 22 Apr 2021 13:35:00 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lZZTv-00A1pz-2e; Thu, 22 Apr 2021 10:34:59 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1cc1a741-497b-4411-25e8-08d9058edcbf
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4500:
+X-MS-Office365-Filtering-Correlation-Id: 6a59e3d8-2f74-4419-069b-08d905936dad
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4402:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4500F0C5BBED04AC35748C9CC2469@DM6PR12MB4500.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4402CE70E096564069E1D6AFC2469@DM6PR12MB4402.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BE2HvqfGjVQU9sZt9FyQEb73ORT69xzU8MrY9Sv3Ax5t3tDZp0enydIbONTaEDnrc0qzxPJf8F0jTkJWDU+GQ/899PikxdKYcEfhGtQ/vLWdH/fVRsOACTzbRHs4R580I1nSdroKeVC1Ll0NbM4zEcD86s8WChT1SCVyn6/FEZ1eEeIbZl7mz/gttr0py0XY1sNICB7eWpOf2i/YOzuO4hpKx1qi05zqg6HZFy9uPEKZnYKmyOOqirIzHY4YSpAEi7UftOopFWpn9th3GJBGfmjdo6lDAJUseZVPQLCOEfpM19Cwsu+dfj0+lsPPFAO9epADAb0E0D6vvSJaj0S9S5j0X815iNpWF5cNPPaiM5oLBj87rlHoDQkKu3IWse9Nq1qYBMBOehNe6yLVby6N4hepbyE1QQXGZzx2zJ1hmTNQfv6b32AIUzR3UsiTVl1mNixBfF5OgJ9Li0/1eN31btv0T9OO0P0Vqo4R4SBE/OOqCgqNVsRoDM23tkZf2Qoisu8t70tn3xCx8/Bqk77z8ayfqki+dZqmx5/bMGTxql3B9bMy/Y5UhKgMQiuuQOn/BlfO3KgqPo2IfQkfuDUW02cqdKFbVEJbaMAx5BE39LM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(136003)(376002)(366004)(396003)(346002)(4326008)(9786002)(9746002)(66476007)(66946007)(66556008)(8936002)(33656002)(2616005)(478600001)(2906002)(6916009)(26005)(38100700002)(53546011)(426003)(316002)(83380400001)(86362001)(186003)(1076003)(8676002)(36756003)(5660300002)(54906003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?4t5tjZqzMNbEO5khD3UWvGIa/6aWlYKuUIOogl558EfxcUtE1YKTq55DEHPt?=
- =?us-ascii?Q?RDRhudPYSFBEiMqzyk2JswnAYIkOf7Qg/gIAhbUQiFco4oVxCPZJo8f5bD2b?=
- =?us-ascii?Q?DG2ebgstz7BTBuvpfhMX2bSvjYiPs7S4QgY3dmkT8oYxaUnzxeum4kaHfxbi?=
- =?us-ascii?Q?X7i8aM9SfHJMNcT+qd7vWAjJnvl6QFJieloSY4bP1LLElyJuqMONZIiIsGN9?=
- =?us-ascii?Q?lzf8U9xzy8GlfDbyyS7oQJ8Mq3X7rCqm+N6WR8joAPJWPdnsuNBYIfDShzMo?=
- =?us-ascii?Q?tiaW8EK/OAiVFVKeug/ZnAzalnh3LNS1bW4tPyKEf82hVQLKf/UGffX+qVX7?=
- =?us-ascii?Q?T11NX+oHb73A2crEUyQsAByR++4puB7oCIN4GoDVANME/yVZqWrjliUTcjSP?=
- =?us-ascii?Q?4ifPVmoE07TOPXqQSpNJL4UNXGEepV0tLln/JxZNcPyFyPxRF5Z8NLhQE5EQ?=
- =?us-ascii?Q?Y2Op1VJsUcEdHuXK3IxVyylpeOibws1GVjJk2pN9CCaUENmarkBguFS7ovN3?=
- =?us-ascii?Q?PDo0fjlY/xA5RCqYBa8ezcKq7Qxxq1L7F5atpAF0gUMfq3yhhkkz0vQ4AX0v?=
- =?us-ascii?Q?noNntcUVfrLbau+WEu92RretjH+PcLyhxBiUvHXQIXpLYh+hLFlM6riLrYdh?=
- =?us-ascii?Q?24LYcACeGpO9k/CR0lUKgK4LymLQnMkwKco4iN1GHso3jNHokaba1IWrF2XB?=
- =?us-ascii?Q?PGekDXcnVjUn1yGagdAU96VICAuAAmYBPKeyLiODBdYgJ3RkcoXz9mjbOzyF?=
- =?us-ascii?Q?G+Lr51XJ/f3ak65c0ozCDhEKSSjEbjrBzAM0kMU6SHGJ08h5i7qZ/dAJEDlg?=
- =?us-ascii?Q?GwoTewSNdr+xzCMrvJxWh/MEotPOxbNaxAPuwuxRthofHfo7IiS5WK1rwWkz?=
- =?us-ascii?Q?dMEM6jrV3szZ+QcXsnEoHDRF1MHn/dPY55p0br4s5gD1JGCrYIIOWImNzZDJ?=
- =?us-ascii?Q?Mq4Tnq2ebJZQOl5UzS8lXu+khlGWEYhnJMXi3Pg2vFW/0udggQcrIPJvt98/?=
- =?us-ascii?Q?9cd/rDfJ+NUEe97lPOKcoXDR7Q+TxyffX5cl06RDNmucVVoPf4NBgINt8SQ7?=
- =?us-ascii?Q?vrCgg6prIckcyJ4XbLrkQW0m8QpRlJgqIpfgDe3o9diUv1Aayi++cjlqhybe?=
- =?us-ascii?Q?T4398vEADH8A7tFAKzzOHojLn1p2LbXDgj6JB2Uzg42GVLG4JWxW9yiVytvD?=
- =?us-ascii?Q?7+2PiEEm5Z/EdECBub57KT4q6orbF/4wh+HSzDtFGcrBLaHyNl5dg55XhJME?=
- =?us-ascii?Q?Gd+9zIeR9QeGldB5gd+1yrVWvd2umnPLPNxYviARfaWO6iY3AS9xuRJvlEsn?=
- =?us-ascii?Q?FYxPGedUA1n6HIATVcDi5XQM?=
+X-Microsoft-Antispam-Message-Info: dmzgK3wD7h6UmvvEBRFxfO7RgpKpwhfJAxkIXHUWDgKpEbQ2U1NPKjZGl3LNyZ1t3UarmxSaWUx5ZdsPhBlpYeGcRlyxVN9sjEwqWULRQ348xEYWXP2XHLAGJ+LRHW7rtqtxGqHBYz4eoR+VDD9QzJMZkLXMd/oHSxLoQCgiuwemmpoLlACh1P/wRW1CCIIgXvO+KIf9vXpb3MaqJL23gWLnVacgYO7RcgD47Zf74qtk++Wncgmslqkr9MI4MKtuJPVQVZFkLtwh8U3Mce83b9ez/fDEd4WRwNv3TF7aSzacWWGXJn9o2dkLkoC2K5+w0FSfRLg+iavK12zQ0KPrbgQW50Zgh6exEkAHyplPHQdxLHor1NmivhUggS1/EAt1XX+mIv3BIzCM85Bg8PNBUDvALzxE1wYMmzS4wURauVzm+Fxt3DhQFYeGzZI0HTOSxqWhfAYpMfDNV2aXMATxzDiOg5+6RRy6prDm8wXp0zLiFjC1cx8mWgVyjTWsL+sX7pLZX9NUTQYeBgTl8Y5hW3BhiBpykHflXCD18DRpKnrW/JnjnET/9yYBRtIby0pqNPY68Fu+bBVc70G1+ARs+hnz3bvbefnvYE4ekNAGCf0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(366004)(376002)(39850400004)(396003)(54906003)(26005)(1076003)(86362001)(186003)(8936002)(316002)(66556008)(9746002)(4326008)(426003)(2616005)(2906002)(107886003)(4744005)(5660300002)(9786002)(478600001)(6916009)(38100700002)(8676002)(33656002)(36756003)(66946007)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?767kZlIshA96EAne8ldWVM0Ge1s8Nc3QHnRweQYiISSTJnPzSMiPI8HWqZX3?=
+ =?us-ascii?Q?T10zqiY6cY0fEnsnq+YfOdD3SADLBADa59b4C+80ukHWIwnHzMFb5R+WzOCs?=
+ =?us-ascii?Q?AkOk5RlCyeZ361lbmh6VbPM+lUPdA5oadDhG0cuohtqYISTgnCs/J9Cz+qI+?=
+ =?us-ascii?Q?y8CtIp+U8uu4CueYRofkMUZKNYhjnHwr6+jzfQUQeIKYY2cr/J/WKErQHYh7?=
+ =?us-ascii?Q?ZipUJwcLGcARae3C2OEqvKZ0n8mdZXRvF+Dz3Rr6oZnvAdrfT43XID7JLFiO?=
+ =?us-ascii?Q?DPp1ad0AI1+5s/vNiQ54LyPHQTfmPTYc+MZDNn0JWYwwmhfiLETEdmUp4GPi?=
+ =?us-ascii?Q?tR9cBzq7QGndtM7t7Gp3Gf9wPeIGzR4tBGUeetJigzSooFZ0PSRfZ2XUeKId?=
+ =?us-ascii?Q?90iYwkwg6ywY7ijH+nVTxWEjZGyyEbJ6ljH6A0ceP0b+2KnOSaeV919eg26F?=
+ =?us-ascii?Q?vkkF7cKYK9khD8hAxvZSY/+vFG6K30oyT1bkzaLEW4BucfdpLxkwYo/BG04I?=
+ =?us-ascii?Q?ZsvLwX7uuhuI4J4dslZg9DqC61pFGTFgwO3ljPTxA61UCOxwASj8rnLjtXAQ?=
+ =?us-ascii?Q?6WDQTlMhzfYy2acstQzQIKN9zQDlAlGr4osDidqA2ge7bWpx8lIRWRwf6YHe?=
+ =?us-ascii?Q?E3OH+/mP/9HdM6zrQQqYtpDODwAXAxMx+Wj1Pe/hzDiUfkXqYVfXUwBkcNJW?=
+ =?us-ascii?Q?hGpSsmYCiVRixt7zfG744nzuD6vQzEH3W5LPj/fcAHGAuzsXOD/LyD8Rl8OZ?=
+ =?us-ascii?Q?nH2vDrWFZpTqgB7Hwgl8a1jDZFPep9m7VsU+tTX5H9h5K1k2hS9+pz5Jx+wU?=
+ =?us-ascii?Q?8rvYVF9nA4VRCYLx8YDYCoPSBo696AETuNvv5Hy5TAKgY+ZTvTsHNtS8+bdp?=
+ =?us-ascii?Q?Spmh9jNaY9cNnkfl1uSYU+RG3muzRM16cTjVR8FA5BHLW7GVNm2bxaGJdGvR?=
+ =?us-ascii?Q?mk9uesKkYifna2MlDXLEj6cYnunMhtytCF6FC1DceB0YGlAy7UkuhVssqAQw?=
+ =?us-ascii?Q?/sWWoaQjyzIBPrnMcD33399jZq6+ZyULCBx6ntdMeO5AFCPZMTopQL7Du4Ks?=
+ =?us-ascii?Q?Fs8EkIvVRLdlQPCZgBwbVlFn26jF9Qt708btz7rs52uok1CQCMUIb4rU5mUL?=
+ =?us-ascii?Q?zyATCpnh8sL1q7dOOgxrhZ9VI9If62zbp+KoQU6T6fhKLAu1KpuEN+B/0r3P?=
+ =?us-ascii?Q?kKrFljgwORdco4FlzXB8lm7MnlsCva+QoVSOGqPf8VsQFmVFNy24Y0u+6o3E?=
+ =?us-ascii?Q?3DgHM8KHhYDmXpbzoSFRRZBxsDBd/QN9DGsZPB4FRjUNUAu7tuhhPAR2PJzn?=
+ =?us-ascii?Q?5sSNTLn5zNfPu/uX+SmVtDJC?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1cc1a741-497b-4411-25e8-08d9058edcbf
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a59e3d8-2f74-4419-069b-08d905936dad
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2021 13:02:19.7914
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2021 13:35:00.9362
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: c0AIS/BO5GPByF+OAYQhzg61FewwTyrOyaKB/ZmcmHpaNMQpBVERvYJ0HrvNwrtN
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4500
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8r9wabg9nj2jHL9Dk2B+GZez9AORl/vzxtC/n3keqXfqU2x/InGGa6zYXP6P4N/k
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4402
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 04:01:20PM +0300, Leon Romanovsky wrote:
-> On Thu, Apr 22, 2021 at 09:51:35AM -0300, Jason Gunthorpe wrote:
-> > On Thu, Apr 22, 2021 at 03:44:55PM +0300, Shay Drory wrote:
-> > > On 4/22/2021 14:28, Jason Gunthorpe wrote:
-> > > 
-> > > > On Sun, Apr 18, 2021 at 04:55:53PM +0300, Leon Romanovsky wrote:
-> > > > > From: Shay Drory <shayd@nvidia.com>
-> > > > > 
-> > > > > rdma_listen() checks if device already attached to rdma_id_priv,
-> > > > > based on the response the its decide to what to listen, however
-> > > > > this is different when the listeners are canceled.
-> > > > > 
-> > > > > This leads to a mismatch between rdma_listen() and cma_cancel_operation(),
-> > > > > and causes to bellow wild-memory-access. Fix it by aligning rdma_listen()
-> > > > > according to the cma_cancel_operation().
-> > > > So this is happening because the error unwind in rdma_bind_addr() is
-> > > > taking the exit path and calling cma_release_dev()?
-> > > > 
-> > > > This allows rdma_listen() to be called with a bogus device pointer
-> > > > which precipitates this UAF during destroy.
-> > > > 
-> > > > However, I think rdma_bind_addr() should not allow the bogus device
-> > > > pointer to leak out at all, since the ULP could see it. It really is
-> > > > invalid to have it present no matter what.
-> > > > 
-> > > > This would make cma_release_dev() and _cma_attach_to_dev()
-> > > > symmetrical - what do you think?
-> > > > 
-> > > > diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-> > > > index 2dc302a83014ae..91f6d968b46f65 100644
-> > > > +++ b/drivers/infiniband/core/cma.c
-> > > > @@ -474,6 +474,7 @@ static void cma_release_dev(struct rdma_id_private *id_priv)
-> > > >   	list_del(&id_priv->list);
-> > > >   	cma_dev_put(id_priv->cma_dev);
-> > > >   	id_priv->cma_dev = NULL;
-> > > > +	id_priv->id.device = NULL;
-> > > >   	if (id_priv->id.route.addr.dev_addr.sgid_attr) {
-> > > >   		rdma_put_gid_attr(id_priv->id.route.addr.dev_addr.sgid_attr);
-> > > >   		id_priv->id.route.addr.dev_addr.sgid_attr = NULL;
-> > > 
-> > > I try that. this will break restrack_del() since restrack_del() is
-> > > using id_priv->id.device and is being called before restrack_del():
-> > 
-> > Oh that is another bug, once cma_release_dev() is called there is no
-> > refcount protecting the id.device and any access to it is invalid.
-> > 
-> > The order of rdma_restrack_del should be moved to be ahead of the
-> > cma_release_dev, and we also can't have a restrack without a cma_dev
-> > in the first place
+On Sun, Apr 18, 2021 at 04:41:22PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> We have restrack per-cmd_id and not per-cma_dev.
+> This series from Neta extends nldev and restrack to provide an
+> information about contexts and SRQs.
+> 
+> Thanks
+> 
+> Neta Ostrovsky (4):
+>   RDMA/nldev: Return context information
+>   RDMA/restrack: Add support to get resource tracking for SRQ
+>   RDMA/nldev: Return SRQ information
+>   RDMA/nldev: Add QP numbers to SRQ information
 
-No, restrack has this:
+Applied to for-next, thanks
 
-	dev = res_to_dev(res);
-	if (WARN_ON(!dev))
-
-And here dev will be NULL if cma_dev isn't set
-
-Jasno
+Jason
