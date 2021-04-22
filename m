@@ -2,96 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7280368050
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Apr 2021 14:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D708E368059
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Apr 2021 14:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236211AbhDVMY5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Apr 2021 08:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236183AbhDVMY4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Apr 2021 08:24:56 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5FF9C06138B
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Apr 2021 05:24:21 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id z25so10876208qtn.8
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Apr 2021 05:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Is05JWHPFApn3MhnEp8CclJVYRn/uQGbj5/LETOny2Q=;
-        b=Y79UHIET3J/zpQ2D5u2CwJJkSSTTFGgD+kF1m+N8tqyw/+vNAQVJb3RB33hxOnqg6G
-         GobKirIX/Q3vme0FeNf+H6GW1JVkSwVMZKuwy0rvRWQlMRpgtvzJkMsXc+6N3gAb8BWV
-         JukzkxcQhd2qk08R8Pkun1hEaZjZAzG73ztzwQbxHPdDVX1wOiO3sE497guh1hiR57hm
-         igtSfv/t/soNU2qs7wK6pPtJRmsCFlfyC0aMyhsvdhoRqBQrP9fed2dAqOGPJtqcaqKT
-         njCH624+YLnJ3D6Z1XkEP5HoLBvK7TApYgkREivoia2MpOgC4FDLz2+J9knUMqPsXgL4
-         XI7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Is05JWHPFApn3MhnEp8CclJVYRn/uQGbj5/LETOny2Q=;
-        b=Ot8qeMC0XRmoRS+rNCrDZWdU0fn4JhpvMiWmQ3sLSslZBep6jWh7P5AIAIxZgUINEX
-         Wqct5iy8LhT95NQaLf8ajZQwr46juFPA5efX6ZQ169E2N0ierheG2lm/dnyn7lu8SKQ9
-         EmpPgM/60QzPcU7otl79qk7ULm7QA/fuQkEy7I/26/6cmSVO7sSWKppHZ05VPCkjRqWr
-         VhscwI1h+Plm6Cb+QPI7sc5sYOlfO/No7CIlc08XQq96BSbvPATWapzW3dcplx84IF+Q
-         MTHarKdNJap/qeJ5FhY11PHUrbIuihyufzj7mNqfp4hRgwPIkc5oV9ugPVzOTkwENup7
-         wWOg==
-X-Gm-Message-State: AOAM5333jOtzjnPWU6QJyGTc0lar9NaRfTKBwzr5c615ARf8bmVDSXVC
-        BzANJMZ04+FdxAyChD1SNeMMcA==
-X-Google-Smtp-Source: ABdhPJxmga5jzjCzVECn9/ABhWfehVmaeDjMx6i1nagE65VyQf4VR4HrdTJmWnLH/kTlplPQEALSZQ==
-X-Received: by 2002:a05:622a:1186:: with SMTP id m6mr2804440qtk.319.1619094261080;
-        Thu, 22 Apr 2021 05:24:21 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id e12sm2014445qtj.81.2021.04.22.05.24.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 05:24:20 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lZYNX-009xCE-Mz; Thu, 22 Apr 2021 09:24:19 -0300
-Date:   Thu, 22 Apr 2021 09:24:19 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Marion et Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        tj@kernel.org, jiangshanlai@gmail.com, saeedm@nvidia.com,
-        leon@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2] workqueue: Have 'alloc_workqueue()' like macros
- accept a format specifier
-Message-ID: <20210422122419.GF2047089@ziepe.ca>
-References: <cover.1618780558.git.christophe.jaillet@wanadoo.fr>
- <ae88f6c2c613d17bc1a56692cfa4f960dbc723d2.1618780558.git.christophe.jaillet@wanadoo.fr>
- <042f5fff-5faf-f3c5-0819-b8c8d766ede6@acm.org>
- <1032428026.331.1618814178946.JavaMail.www@wwinf2229>
- <40c21bfe-e304-230d-b319-b98063347b8b@acm.org>
+        id S230510AbhDVM1W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Apr 2021 08:27:22 -0400
+Received: from mga09.intel.com ([134.134.136.24]:11085 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235875AbhDVM1W (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 22 Apr 2021 08:27:22 -0400
+IronPort-SDR: O4+fC1ya/9y88yGl/7pN4AnEiGFxW0EZ1kanyml49ZY+9XeO0z/01hHyCiFEDN/g+l5NZ2P+BQ
+ 7Ijpz+510r4g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="195988051"
+X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
+   d="scan'208";a="195988051"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 05:26:47 -0700
+IronPort-SDR: RpSRtHtc+RJN7H2lR5Cop3CMQirIRkNkX1QUApmhdFPqUc1z0FIt2fzDsOwGwnnnMih1rC2ZD7
+ k1aJyjQ44Slg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; 
+   d="scan'208";a="603200925"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 22 Apr 2021 05:26:45 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lZYPs-00049r-Sx; Thu, 22 Apr 2021 12:26:44 +0000
+Date:   Thu, 22 Apr 2021 20:26:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ 45062f441590810772959d8e1f2b24ba57ce1bd9
+Message-ID: <60816b7e.h3XwvhaIuOEAJCWK%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <40c21bfe-e304-230d-b319-b98063347b8b@acm.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 01:02:34PM -0700, Bart Van Assche wrote:
-> On 4/18/21 11:36 PM, Marion et Christophe JAILLET wrote:
-> > The list in To: is the one given by get_maintainer.pl. Usualy, I only
-> > put the ML in Cc: I've run the script on the 2 patches of the serie
-> > and merged the 2 lists. Everyone is in the To: of the cover letter
-> > and of the 2 patches.
-> > 
-> > If Théo is "Tejun Heo" (  (maintainer:WORKQUEUE) ), he is already in
-> > the To: line.
-> Linus wants to see a "Cc: ${maintainer}" tag in patches that he receives
-> from a maintainer and that modify another subsystem than the subsystem
-> maintained by that maintainer.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: 45062f441590810772959d8e1f2b24ba57ce1bd9  RDMA/rxe: Fix a bug in rxe_fill_ip_info()
 
-Really? Do you remember a lore link for this?
+elapsed time: 723m
 
-Generally I've been junking the CC lines (vs Andrew at the other
-extreme that often has 10's of CC lines)
+configs tested: 109
+configs skipped: 2
 
-Jason
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+arm                            lart_defconfig
+mips                malta_qemu_32r6_defconfig
+mips                          malta_defconfig
+sh                             shx3_defconfig
+powerpc                      ppc44x_defconfig
+um                                  defconfig
+arm                      footbridge_defconfig
+alpha                               defconfig
+h8300                    h8300h-sim_defconfig
+xtensa                              defconfig
+powerpc                  iss476-smp_defconfig
+powerpc                     asp8347_defconfig
+ia64                          tiger_defconfig
+mips                        nlm_xlr_defconfig
+mips                  decstation_64_defconfig
+arm                         lpc18xx_defconfig
+mips                      bmips_stb_defconfig
+arm                        mvebu_v7_defconfig
+mips                      loongson3_defconfig
+xtensa                  nommu_kc705_defconfig
+mips                        maltaup_defconfig
+mips                        bcm47xx_defconfig
+powerpc                 canyonlands_defconfig
+arc                        vdk_hs38_defconfig
+powerpc                     tqm5200_defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                     loongson1b_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210421
+x86_64               randconfig-a002-20210421
+x86_64               randconfig-a001-20210421
+x86_64               randconfig-a005-20210421
+x86_64               randconfig-a006-20210421
+x86_64               randconfig-a003-20210421
+i386                 randconfig-a005-20210421
+i386                 randconfig-a002-20210421
+i386                 randconfig-a001-20210421
+i386                 randconfig-a006-20210421
+i386                 randconfig-a004-20210421
+i386                 randconfig-a003-20210421
+i386                 randconfig-a012-20210421
+i386                 randconfig-a014-20210421
+i386                 randconfig-a011-20210421
+i386                 randconfig-a013-20210421
+i386                 randconfig-a015-20210421
+i386                 randconfig-a016-20210421
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a015-20210421
+x86_64               randconfig-a016-20210421
+x86_64               randconfig-a011-20210421
+x86_64               randconfig-a014-20210421
+x86_64               randconfig-a013-20210421
+x86_64               randconfig-a012-20210421
+x86_64               randconfig-a002-20210422
+x86_64               randconfig-a004-20210422
+x86_64               randconfig-a001-20210422
+x86_64               randconfig-a005-20210422
+x86_64               randconfig-a006-20210422
+x86_64               randconfig-a003-20210422
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
