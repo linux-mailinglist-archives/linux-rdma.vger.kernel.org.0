@@ -2,159 +2,154 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F83936794B
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Apr 2021 07:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C4E367955
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Apr 2021 07:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbhDVF3b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Apr 2021 01:29:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
+        id S231631AbhDVFdj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Apr 2021 01:33:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233322AbhDVF3b (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Apr 2021 01:29:31 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A1EC06174A
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Apr 2021 22:28:56 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso27025949otm.4
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Apr 2021 22:28:56 -0700 (PDT)
+        with ESMTP id S230189AbhDVFdh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Apr 2021 01:33:37 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D28C06174A
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Apr 2021 22:33:02 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso27032391otm.4
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Apr 2021 22:33:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JcWbqqOyF9MlgaTqvIN7nO/zyisge7RNWRD6TlY0V+o=;
-        b=kJh46/5rPL6YEIAdC2s0w4z2URUpSDgqQZexyzF10LG5QDMioNsXXzCSdhe9UBOpG7
-         FMioEXch4+OfHUNSki3K/bZZF8HIP652piJ2QsT3Fmiz6gBrGEC6zek4Z5JB/vTHV1jc
-         ntYcAOtHG50WVhcE06mFh6aiYUQTblCYEgEBToiIum1obtoH8Kib/Yj0UExhRECTb3cf
-         kWQbG1+U7syL8/mkYvJO8Er7bMNCfoZ1LjUq9oQ7B7Tpy4dkpkXjjvvYvaMSoL6IY6ZQ
-         DqTMLMo6liQg8jKcOIT/skIMbmM0jBYO+DLG1+yeWgoTPXvegG9BHXKOt2fXlVF3oE5G
-         DJ6Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qhvnJBdckxYPgu7Mnwk4JrLhUIxYY9m37ukvTV7rD5w=;
+        b=t4f+dFbbTGZZ6GeHWUmn9hau7h0/yIFvYnVLMnn3pQEjkgD31neatjwn84QrPNrEvC
+         sGjuHrPcNqYSzfFbF4HjFRt64DM0me/2YetOvS0Na4mHbzGorn32HP72jZFm44egXr6f
+         cr9YZjnaKbpyrfjCpAq98y30rVZpaQub0wHUghSUcSXlLtGBOKTHeMMGxWJnGWut0itd
+         qfWLpT0r6G2GNmyP0FQa9cTWLDIUhHUxrwpk/wPhd/SQojh5t+ZL8YhmZ05TWfqBFUmn
+         mIc2FH8jMraUAlZcMoBfk77FmSD2hF2pvprFMTODiKwMrx+dAtvAkXzWoWMt4YmnmV/U
+         VcbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JcWbqqOyF9MlgaTqvIN7nO/zyisge7RNWRD6TlY0V+o=;
-        b=XnvCKpkBcPxPu8zLdrAZqM75k3A2RvYTZci6YeYtsBTLpvBg1ohiotgyS76lhpVziH
-         If/1/1oQRTTwda7zsBPfrHnZ22yLK2j0e2HXXBq7kVDRyCfdD0n6VeZNTIXEgS9vIugJ
-         NiRxx9+yoIwFaIf0uZpXxAfAQd9skv2x9L1wgF0nqZNpf2WWKa730CcnLM5RDMKZbHny
-         N5F0mnTuGBhFipeGwKa09Tm5QbXH6XMrpRAluUvekCETvY+zWDSej2RRYAzhlH60atk6
-         CkK0qZ2OCLVx4bbkmZWGveRoM+3FD/nHHKZ1TxZ6py6uuqHFlgOGpvhGpQFDbYglyuML
-         BnJA==
-X-Gm-Message-State: AOAM531axrpE3PClDid1E0B9UCyx9L4SQeScBZG9t2S7R4w7rTKaVIcj
-        +RqlnaEk07EurCNlXBvOsmU=
-X-Google-Smtp-Source: ABdhPJwOJjXcx5g7QiDju7M4U8w3GbAuFEEMeGKQPIvgOV3lq6enE5HW+Dsk8HsZacsbb3z8bT5Vcw==
-X-Received: by 2002:a9d:1724:: with SMTP id i36mr1391097ota.171.1619069336292;
-        Wed, 21 Apr 2021 22:28:56 -0700 (PDT)
-Received: from localhost (2603-8081-140c-1a00-e336-c4b4-ca5e-5b3f.res6.spectrum.com. [2603:8081:140c:1a00:e336:c4b4:ca5e:5b3f])
-        by smtp.gmail.com with ESMTPSA id d2sm416088otl.48.2021.04.21.22.28.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 22:28:55 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qhvnJBdckxYPgu7Mnwk4JrLhUIxYY9m37ukvTV7rD5w=;
+        b=pK37R+rm+lmXVEwRlUTmEgQX9cllXguN++CtcjVIxKkCwkxrAGRlFxNk8QdwHKCSIP
+         kRJEDIU7Ew729HbNAg22WD4IK9V9KBt0Tnhmdj2KlRQVvA8Efr/pGeBKf2eNuI51/LsA
+         9uYu+oRi6yaMaJzG7V3L3ROspWTLcKf0lFnBgkQIPl+B3vWrS/FeoR/hpk1R79IzevIg
+         hMtNv1l5F9txezCPTLhx1s2xZORUsZOXAgcyVO8ovV/5No41fLHwjDNy4ACK9hRYZOE9
+         zxQbFQH8y2QnAMYhaOE0gY2kGDbOx7jVAbqRL3nbJbCYbuUGfwcze3UuH+7HwEGq2hxY
+         DHvQ==
+X-Gm-Message-State: AOAM532rQUZoYDg2gxmRlWGdrpEABJqfC49+5sO8pUNP/0yydlBOILzb
+        z93YbDiymSmyPDxmj2sPt2JKCnBbzo8=
+X-Google-Smtp-Source: ABdhPJygtdP376MpS4SnWx5EBI0Y2UibG9kAeszp/vOKN9/sxgWZaetZQVDSiFaQIyEXaXGtpGwkgA==
+X-Received: by 2002:a9d:4e05:: with SMTP id p5mr1390418otf.264.1619069581727;
+        Wed, 21 Apr 2021 22:33:01 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:e336:c4b4:ca5e:5b3f? (2603-8081-140c-1a00-e336-c4b4-ca5e-5b3f.res6.spectrum.com. [2603:8081:140c:1a00:e336:c4b4:ca5e:5b3f])
+        by smtp.gmail.com with ESMTPSA id u1sm433242otj.43.2021.04.21.22.33.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Apr 2021 22:33:01 -0700 (PDT)
+Subject: Re: [PATCH for-next v3 7/9] RDMA/rxe: Add support for bind MW work
+ requests
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Bob Pearson <rpearson@hpe.com>
+References: <20210421052015.4546-1-rpearson@hpe.com>
+ <20210421052015.4546-8-rpearson@hpe.com>
+ <CAD=hENcq19ncF1bUnyY_Se0MW6R529-89UCEVwAu0QDBR9J1FA@mail.gmail.com>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearson@hpe.com>
-Subject: [PATCH for-next v4 10/10] RDMA/rxe: Disallow MR dereg and invalidate when bound
-Date:   Thu, 22 Apr 2021 00:28:23 -0500
-Message-Id: <20210422052822.36527-11-rpearson@hpe.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210422052822.36527-1-rpearson@hpe.com>
-References: <20210422052822.36527-1-rpearson@hpe.com>
+Message-ID: <f92cdfd0-8a0a-477d-4235-bacccb9ea996@gmail.com>
+Date:   Thu, 22 Apr 2021 00:33:00 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=hENcq19ncF1bUnyY_Se0MW6R529-89UCEVwAu0QDBR9J1FA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Check that an MR has no bound MWs before allowing a dereg or invalidate
-operation.
+On 4/21/21 4:36 AM, Zhu Yanjun wrote:
+> On Wed, Apr 21, 2021 at 1:20 PM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>
+>> Add support for bind MW work requests from user space.
+>> Since rdma/core does not support bind mw in ib_send_wr
+>> there is no way to support bind mw in kernel space.
+>>
+>> Added bind_mw local operation in rxe_req.c
+>> Added bind_mw WR operation in rxe_opcode.c
+>> Added bind_mw WC in rxe_comp.c
+>> Added additional fields to rxe_mw in rxe_verbs.h
+>> Added do_dealloc_mw() subroutine to cleanup an mw
+>> when rxe_dealloc_mw is called.
+>> Added code to implement bind_mw operation in rxe_mw.c
+>>
+>> Signed-off-by: Bob Pearson <rpearson@hpe.com>
+>> ---
+>> v3:
+>>   do_bind_mw() in rxe_mw.c is changed to be a void instead of
+>>   returning an int.
+>> v2:
+>>   Dropped kernel support for bind_mw in rxe_mw.c
+>>   Replaced umw with mw in struct rxe_send_wr
+>> ---
+>>  drivers/infiniband/sw/rxe/rxe_comp.c   |   1 +
+>>  drivers/infiniband/sw/rxe/rxe_loc.h    |   1 +
+>>  drivers/infiniband/sw/rxe/rxe_mw.c     | 202 ++++++++++++++++++++++++-
+>>  drivers/infiniband/sw/rxe/rxe_opcode.c |   7 +
+>>  drivers/infiniband/sw/rxe/rxe_req.c    |   9 ++
+>>  drivers/infiniband/sw/rxe/rxe_verbs.h  |  15 +-
+>>  6 files changed, 230 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+>> index 2af26737d32d..bc5488af5f55 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_comp.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+>> @@ -103,6 +103,7 @@ static enum ib_wc_opcode wr_to_wc_opcode(enum ib_wr_opcode opcode)
+>>         case IB_WR_RDMA_READ_WITH_INV:          return IB_WC_RDMA_READ;
+>>         case IB_WR_LOCAL_INV:                   return IB_WC_LOCAL_INV;
+>>         case IB_WR_REG_MR:                      return IB_WC_REG_MR;
+>> +       case IB_WR_BIND_MW:                     return IB_WC_BIND_MW;
+>>
+>>         default:
+>>                 return 0xff;
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+>> index edf575930a98..e6f574973298 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+>> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+>> @@ -110,6 +110,7 @@ int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
+>>  /* rxe_mw.c */
+>>  int rxe_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata);
+>>  int rxe_dealloc_mw(struct ib_mw *ibmw);
+>> +int rxe_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe);
+>>  void rxe_mw_cleanup(struct rxe_pool_entry *arg);
+>>
+>>  /* rxe_net.c */
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
+>> index 69128e298d44..c018e8865876 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_mw.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_mw.c
+>> @@ -29,6 +29,29 @@ int rxe_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
+>>         return 0;
+>>  }
+>>
+>> +static void do_dealloc_mw(struct rxe_mw *mw)
+>> +{
+>> +       if (mw->mr) {
+>> +               struct rxe_mr *mr = mw->mr;
+>> +
+>> +               mw->mr = NULL;
+>> +               atomic_dec(&mr->num_mw);
+> 
+> What is the usage of this num_mw?
+> 
+> Zhu Yanjun
+> 
 
-Signed-off-by: Bob Pearson <rpearson@hpe.com>
----
-v4:
-  Added this patch to check mr->num_mw to disallow
-  dereg and invalidate operations when MR has MW's
-  bound.
+I added a 10th patch to the series as v4 to address this. The other 9 are identical to v3.
 
- drivers/infiniband/sw/rxe/rxe_loc.h   |  1 +
- drivers/infiniband/sw/rxe/rxe_mr.c    | 25 +++++++++++++++++++++++++
- drivers/infiniband/sw/rxe/rxe_verbs.c | 11 -----------
- 3 files changed, 26 insertions(+), 11 deletions(-)
+Just checked if mr->num_mw > 0 and return -EINVAL if so for dereg MR and invalidate MR.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 076e1460577f..93dbd81222e8 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -87,6 +87,7 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
- int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length);
- int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
- int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey);
-+int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
- void rxe_mr_cleanup(struct rxe_pool_entry *arg);
- 
- /* rxe_mw.c */
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index f871879e5f80..ec5bafc66207 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -546,6 +546,13 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey)
- 		goto err_drop_ref;
- 	}
- 
-+	if (atomic_read(&mr->num_mw) > 0) {
-+		pr_warn("%s: Attempt to invalidate an MR while bound to MWs\n",
-+				__func__);
-+		return -EINVAL;
-+		goto err_drop_ref;
-+	}
-+
- 	mr->state = RXE_MR_STATE_FREE;
- 	ret = 0;
- 
-@@ -555,6 +562,24 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey)
- 	return ret;
- }
- 
-+int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
-+{
-+	struct rxe_mr *mr = to_rmr(ibmr);
-+
-+	if (atomic_read(&mr->num_mw) > 0) {
-+		pr_warn("%s: Attempt to deregister an MR while bound to MWs\n",
-+				__func__);
-+		return -EINVAL;
-+	}
-+
-+	mr->state = RXE_MR_STATE_ZOMBIE;
-+	rxe_drop_ref(mr_pd(mr));
-+	rxe_drop_index(mr);
-+	rxe_drop_ref(mr);
-+
-+	return 0;
-+}
-+
- void rxe_mr_cleanup(struct rxe_pool_entry *arg)
- {
- 	struct rxe_mr *mr = container_of(arg, typeof(*mr), pelem);
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index d22f011a20f3..89f8f00215d6 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -913,17 +913,6 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
- 	return ERR_PTR(err);
- }
- 
--static int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
--{
--	struct rxe_mr *mr = to_rmr(ibmr);
--
--	mr->state = RXE_MR_STATE_ZOMBIE;
--	rxe_drop_ref(mr_pd(mr));
--	rxe_drop_index(mr);
--	rxe_drop_ref(mr);
--	return 0;
--}
--
- static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
- 				  u32 max_num_sg)
- {
--- 
-2.27.0
-
+Bob
