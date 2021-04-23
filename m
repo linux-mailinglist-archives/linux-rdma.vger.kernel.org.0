@@ -2,169 +2,236 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259C13687EE
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Apr 2021 22:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE99368CD5
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Apr 2021 07:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239433AbhDVUak (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Apr 2021 16:30:40 -0400
-Received: from mail-pg1-f179.google.com ([209.85.215.179]:45859 "EHLO
-        mail-pg1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239298AbhDVUaj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Apr 2021 16:30:39 -0400
-Received: by mail-pg1-f179.google.com with SMTP id d10so33648888pgf.12;
-        Thu, 22 Apr 2021 13:30:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ErwniLcaGVO/kxmEwl8gGV0QjSUQKJ/t9ZJlSqCEkEo=;
-        b=UHgXJpPoOZl081FZ+7kXYg7dS6ENxhs/XxcdbvKZCeDIyYkcYigb8pTmVeDOynj2dU
-         yAqCRdte7xpQJkrcwylxj+YmeQ7bN/6xVlrBMUYEIVvQUGDtq77EDoRnpGC5g0O/94Lq
-         /z9zQfTWs9jeBCu6WkSWswffr6lBeCI+hr66LumWxgIQjjXwxhAYWK3zs0BS1vdI7GGg
-         iAsAkEA4MX+v67TFaGljp+vebE9hu/GIJpOqn+1z2ltMsCKIbmxHZHTDhJLjeSE/Q/L4
-         Hv+q2g19vtZGhhrTfq2h0Eoh6DIzLf46TumoHK/mIi/GqhoCwu/FeC5buUcuLRE/N5LU
-         aPew==
-X-Gm-Message-State: AOAM531AAsbQr95dMFhLh+N+Ltd2fZeZQNcWNxzNvMzhi/z+mNP/a8fC
-        E6wY4WUMsX09fplieFsVjPRbAXnXkLw6MA==
-X-Google-Smtp-Source: ABdhPJxNNltJlaq4UgjTTlU6u2x4QZW/U/kixD1KrCTqqMjziRQo0Aws14ZZK/60vBVE/YGzE7v9Mg==
-X-Received: by 2002:a63:e00f:: with SMTP id e15mr407170pgh.317.1619123403370;
-        Thu, 22 Apr 2021 13:30:03 -0700 (PDT)
-Received: from [192.168.51.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id k21sm2751759pfi.28.2021.04.22.13.30.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 13:30:02 -0700 (PDT)
-Subject: Re: [PATCH 1/2] workqueue: Have 'alloc_workqueue()' like macros
- accept a format specifier
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Marion et Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        tj@kernel.org, jiangshanlai@gmail.com, saeedm@nvidia.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <cover.1618780558.git.christophe.jaillet@wanadoo.fr>
- <ae88f6c2c613d17bc1a56692cfa4f960dbc723d2.1618780558.git.christophe.jaillet@wanadoo.fr>
- <042f5fff-5faf-f3c5-0819-b8c8d766ede6@acm.org>
- <1032428026.331.1618814178946.JavaMail.www@wwinf2229>
- <40c21bfe-e304-230d-b319-b98063347b8b@acm.org>
- <20210422122419.GF2047089@ziepe.ca>
- <782e329a-7c3f-a0da-5d2f-89871b0c4b9b@acm.org> <YIG5tLBIAledZetf@unreal>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <53b2ef14-1b8a-43b1-ef53-e314e2649ea0@acm.org>
-Date:   Thu, 22 Apr 2021 13:30:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S232966AbhDWFu6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Apr 2021 01:50:58 -0400
+Received: from mga02.intel.com ([134.134.136.20]:31575 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229456AbhDWFu6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 23 Apr 2021 01:50:58 -0400
+IronPort-SDR: BB3vJjmZBC2igGWr9K9GDGAUWq+Lw4MlyqFpujG4AQVj+1qyXqmTizTlMvSSHO/F7ZOq4ugvam
+ YAuVgLEHmrzQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="183150757"
+X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
+   d="scan'208";a="183150757"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 22:50:20 -0700
+IronPort-SDR: A1PKZQU7vGJVrrnYdvsFx3PO9YKnfcJYt007DM78n5MBJHSQHfnJeFF9FAUwcQDylcn4SZ9tY7
+ 39yvZPHWNwYA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
+   d="scan'208";a="385002331"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 22 Apr 2021 22:50:17 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lZohk-0004YE-C6; Fri, 23 Apr 2021 05:50:16 +0000
+Date:   Fri, 23 Apr 2021 13:50:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ c6c11ad3ab9fe5eb279479879e3461da99f6fdf0
+Message-ID: <6082600f.MXZ3OqjLEb6URTPJ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <YIG5tLBIAledZetf@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 4/22/21 11:00 AM, Leon Romanovsky wrote:
-> On Thu, Apr 22, 2021 at 10:12:33AM -0700, Bart Van Assche wrote:
->> On 4/22/21 5:24 AM, Jason Gunthorpe wrote:
->>> On Mon, Apr 19, 2021 at 01:02:34PM -0700, Bart Van Assche wrote:
->>>> On 4/18/21 11:36 PM, Marion et Christophe JAILLET wrote:
->>>>> The list in To: is the one given by get_maintainer.pl. Usualy, I only
->>>>> put the ML in Cc: I've run the script on the 2 patches of the serie
->>>>> and merged the 2 lists. Everyone is in the To: of the cover letter
->>>>> and of the 2 patches.
->>>>>
->>>>> If Théo is "Tejun Heo" (  (maintainer:WORKQUEUE) ), he is already in
->>>>> the To: line.
->>>> Linus wants to see a "Cc: ${maintainer}" tag in patches that he receives
->>>> from a maintainer and that modify another subsystem than the subsystem
->>>> maintained by that maintainer.
->>>
->>> Really? Do you remember a lore link for this?
->>
->> Last time I saw Linus mentioning this was a few months ago.
->> Unfortunately I cannot find that message anymore.
->>
->>> Generally I've been junking the CC lines (vs Andrew at the other
->>> extreme that often has 10's of CC lines)
->>
->> Most entries in the MAINTAINERS file have one to three email addresses
->> so I'm surprised to read that Cc-ing maintainer(s) could result in tens
->> of Cc lines?
-> 
-> git log mm/
-> 
-> commit 2b8305260fb37fc20e13f71e13073304d0a031c8
-> Author: Alexander Potapenko <glider@google.com>
-> Date:   Thu Feb 25 17:19:21 2021 -0800
-> 
->      kfence, kasan: make KFENCE compatible with KASAN
-> 
->      Make KFENCE compatible with KASAN. Currently this helps test KFENCE
->      itself, where KASAN can catch potential corruptions to KFENCE state, or
->      other corruptions that may be a result of freepointer corruptions in the
->      main allocators.
-> 
->      [akpm@linux-foundation.org: merge fixup]
->      [andreyknvl@google.com: untag addresses for KFENCE]
->        Link: https://lkml.kernel.org/r/9dc196006921b191d25d10f6e611316db7da2efc.1611946152.git.andreyknvl@google.com
-> 
->      Link: https://lkml.kernel.org/r/20201103175841.3495947-7-elver@google.com
->      Signed-off-by: Marco Elver <elver@google.com>
->      Signed-off-by: Alexander Potapenko <glider@google.com>
->      Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
->      Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
->      Reviewed-by: Jann Horn <jannh@google.com>
->      Co-developed-by: Marco Elver <elver@google.com>
->      Cc: Andrey Konovalov <andreyknvl@google.com>
->      Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
->      Cc: Andy Lutomirski <luto@kernel.org>
->      Cc: Borislav Petkov <bp@alien8.de>
->      Cc: Catalin Marinas <catalin.marinas@arm.com>
->      Cc: Christopher Lameter <cl@linux.com>
->      Cc: Dave Hansen <dave.hansen@linux.intel.com>
->      Cc: David Rientjes <rientjes@google.com>
->      Cc: Eric Dumazet <edumazet@google.com>
->      Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->      Cc: Hillf Danton <hdanton@sina.com>
->      Cc: "H. Peter Anvin" <hpa@zytor.com>
->      Cc: Ingo Molnar <mingo@redhat.com>
->      Cc: Joern Engel <joern@purestorage.com>
->      Cc: Jonathan Corbet <corbet@lwn.net>
->      Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
->      Cc: Kees Cook <keescook@chromium.org>
->      Cc: Mark Rutland <mark.rutland@arm.com>
->      Cc: Paul E. McKenney <paulmck@kernel.org>
->      Cc: Pekka Enberg <penberg@kernel.org>
->      Cc: Peter Zijlstra <peterz@infradead.org>
->      Cc: SeongJae Park <sjpark@amazon.de>
->      Cc: Thomas Gleixner <tglx@linutronix.de>
->      Cc: Vlastimil Babka <vbabka@suse.cz>
->      Cc: Will Deacon <will@kernel.org>
->      Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
->      Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: c6c11ad3ab9fe5eb279479879e3461da99f6fdf0  RDMA/nldev: Add QP numbers to SRQ information
 
-But where does that Cc-list come from? If I extract that patch and run 
-the get_maintainer.pl script, the following output appears:
+elapsed time: 724m
 
-$ git format-patch -1 2b8305260fb37fc20e13f71e13073304d0a031c8
-0001-kfence-kasan-make-KFENCE-compatible-with-KASAN.patch
-$ scripts/get_maintainer.pl 
-0001-kfence-kasan-make-KFENCE-compatible-with-KASAN.patch
-Alexander Potapenko <glider@google.com> (maintainer:KFENCE)
-Marco Elver <elver@google.com> (maintainer:KFENCE)
-Dmitry Vyukov <dvyukov@google.com> (reviewer:KFENCE)
-Andrey Ryabinin <ryabinin.a.a@gmail.com> (maintainer:KASAN)
-Andrey Konovalov <andreyknvl@gmail.com> (reviewer:KASAN)
-Andrew Morton <akpm@linux-foundation.org> (maintainer:MEMORY MANAGEMENT)
-kasan-dev@googlegroups.com (open list:KFENCE)
-linux-kernel@vger.kernel.org (open list)
-linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
+configs tested: 174
+configs skipped: 3
 
-Additionally, please note that in my email I was referring to the 
-MAINTAINERS file. I do not use the get_maintainers.pl script but instead 
-select the Cc-list manually based on what I find in the MAINTAINERS file.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks,
+gcc tested configs:
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                            allyesconfig
+arm64                               defconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                     redwood_defconfig
+m68k                          atari_defconfig
+powerpc                      cm5200_defconfig
+powerpc                 mpc85xx_cds_defconfig
+powerpc                 xes_mpc85xx_defconfig
+mips                           mtx1_defconfig
+sh                               allmodconfig
+ia64                            zx1_defconfig
+arm                          lpd270_defconfig
+sh                          kfr2r09_defconfig
+sh                            titan_defconfig
+powerpc                  storcenter_defconfig
+powerpc                 mpc834x_mds_defconfig
+m68k                         apollo_defconfig
+sh                   sh7770_generic_defconfig
+um                               allyesconfig
+mips                            e55_defconfig
+sh                        sh7757lcr_defconfig
+sh                          lboxre2_defconfig
+powerpc                       maple_defconfig
+nds32                             allnoconfig
+arm                       aspeed_g5_defconfig
+m68k                       m5275evb_defconfig
+xtensa                  audio_kc705_defconfig
+arc                     nsimosci_hs_defconfig
+powerpc                  mpc885_ads_defconfig
+mips                          rm200_defconfig
+arc                           tb10x_defconfig
+powerpc                      acadia_defconfig
+sh                                  defconfig
+powerpc                       eiger_defconfig
+arm                           h5000_defconfig
+sh                         microdev_defconfig
+powerpc                 mpc832x_mds_defconfig
+arm                       spear13xx_defconfig
+ia64                             alldefconfig
+arm                           sama5_defconfig
+mips                malta_qemu_32r6_defconfig
+mips                     cu1000-neo_defconfig
+arm                           u8500_defconfig
+sh                           se7343_defconfig
+mips                           ip32_defconfig
+sh                        sh7763rdp_defconfig
+csky                             alldefconfig
+powerpc                  iss476-smp_defconfig
+powerpc                     kmeter1_defconfig
+arm                     eseries_pxa_defconfig
+mips                     decstation_defconfig
+powerpc                        fsp2_defconfig
+powerpc                      ppc64e_defconfig
+arm                          badge4_defconfig
+sh                           se7750_defconfig
+powerpc                      arches_defconfig
+powerpc                   currituck_defconfig
+mips                         tb0287_defconfig
+arm                          pcm027_defconfig
+um                             i386_defconfig
+arm                           spitz_defconfig
+arm                         nhk8815_defconfig
+powerpc                         ps3_defconfig
+arm                    vt8500_v6_v7_defconfig
+nios2                         3c120_defconfig
+arm                          gemini_defconfig
+arm                            dove_defconfig
+arm                        neponset_defconfig
+mips                 decstation_r4k_defconfig
+mips                      maltaaprp_defconfig
+um                           x86_64_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nds32                               defconfig
+csky                                defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+s390                                defconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210421
+x86_64               randconfig-a002-20210421
+x86_64               randconfig-a001-20210421
+x86_64               randconfig-a005-20210421
+x86_64               randconfig-a006-20210421
+x86_64               randconfig-a003-20210421
+i386                 randconfig-a005-20210421
+i386                 randconfig-a002-20210421
+i386                 randconfig-a001-20210421
+i386                 randconfig-a006-20210421
+i386                 randconfig-a004-20210421
+i386                 randconfig-a003-20210421
+i386                 randconfig-a005-20210423
+i386                 randconfig-a002-20210423
+i386                 randconfig-a001-20210423
+i386                 randconfig-a006-20210423
+i386                 randconfig-a004-20210423
+i386                 randconfig-a003-20210423
+x86_64               randconfig-a015-20210422
+x86_64               randconfig-a016-20210422
+x86_64               randconfig-a011-20210422
+x86_64               randconfig-a014-20210422
+x86_64               randconfig-a012-20210422
+x86_64               randconfig-a013-20210422
+i386                 randconfig-a014-20210421
+i386                 randconfig-a015-20210421
+i386                 randconfig-a016-20210421
+i386                 randconfig-a012-20210421
+i386                 randconfig-a011-20210421
+i386                 randconfig-a013-20210421
+i386                 randconfig-a014-20210422
+i386                 randconfig-a012-20210422
+i386                 randconfig-a011-20210422
+i386                 randconfig-a013-20210422
+i386                 randconfig-a015-20210422
+i386                 randconfig-a016-20210422
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-Bart.
+clang tested configs:
+x86_64               randconfig-a015-20210421
+x86_64               randconfig-a016-20210421
+x86_64               randconfig-a011-20210421
+x86_64               randconfig-a014-20210421
+x86_64               randconfig-a013-20210421
+x86_64               randconfig-a012-20210421
+x86_64               randconfig-a015-20210423
+x86_64               randconfig-a016-20210423
+x86_64               randconfig-a011-20210423
+x86_64               randconfig-a014-20210423
+x86_64               randconfig-a012-20210423
+x86_64               randconfig-a013-20210423
+x86_64               randconfig-a002-20210422
+x86_64               randconfig-a004-20210422
+x86_64               randconfig-a001-20210422
+x86_64               randconfig-a005-20210422
+x86_64               randconfig-a006-20210422
+x86_64               randconfig-a003-20210422
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
