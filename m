@@ -2,233 +2,252 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91459369E84
-	for <lists+linux-rdma@lfdr.de>; Sat, 24 Apr 2021 04:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A718B36A269
+	for <lists+linux-rdma@lfdr.de>; Sat, 24 Apr 2021 19:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232742AbhDXCd7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Apr 2021 22:33:59 -0400
-Received: from mail-co1nam11on2082.outbound.protection.outlook.com ([40.107.220.82]:4577
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232155AbhDXCd6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 23 Apr 2021 22:33:58 -0400
+        id S232576AbhDXRkD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 24 Apr 2021 13:40:03 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:42640 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232434AbhDXRkC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 24 Apr 2021 13:40:02 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13OHdIxZ009783;
+        Sat, 24 Apr 2021 17:39:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=74trIU5w53HCxsu+wRhX4tD0aZ5EOX4Qjog8K9NW0vM=;
+ b=0McHZ1iPzxW0Tu0eHVgw4eHcYnhqq/C7XWSZH9JTvyNpL/LlMTn1RZWYI/4+jq5QWVuK
+ 2QMBP9NBy6SC121CiJ0NimWkZfI5SSL02iLLwJaM7KRCcoRCeQJawhH/+QzY2vcHGHOi
+ h7jAVDQzv6ZRUhv0bvY65Mct+w65Ph2e1HWCIk6Ttb5B0+T73HAfpBZ54/K5XYHsAkuJ
+ kYtk5GtBGJTFEs2PNQTtH+4l0CAW6gEwU4qUOK3yGYt0rIYRYIDwIdDudZ7mE3O4QKum
+ QMzRJSTWL663CFoEOV3DJvdBjhg9owhnZIFMLAPpPfhDuVpqUozrr4NtC42leLQ8PrCR DA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 384ars0pgm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 24 Apr 2021 17:39:18 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13OHZXXm091998;
+        Sat, 24 Apr 2021 17:39:17 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2172.outbound.protection.outlook.com [104.47.56.172])
+        by aserp3020.oracle.com with ESMTP id 384b51nqqc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 24 Apr 2021 17:39:17 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mVgkflp6gDTXVL+4np0j1mVnO6Xf3O2ddYYQziee6OBVw8qEq5dr47UFauybQ6FCRg1fZrPJJSd3thTb7noWU7uDgE9sMin92wj0YVrlGeUdfOa3oMm6b9vmg3hUEPkWBR+Mpt2CkXzZd1O5wIDB7ErXEgjw7sC7IT7FCWtieuPV2WJK4t/f8WKo3L3CLMnAkMA5G9SmTNqWEWtYGk52VGWo9ewddV2wagPK0PcV007MSCWram+Tx/atwJQ1+IoRjkJCMASxCHNQnwHfD3TskTbrZ6eo6ToklRg7GLX1fGWbEg0AIyRzNcXPv+SAEUWyrezYBgChL3sEqv431xLtkQ==
+ b=M9Vq+/5bAQgwzsg2XlrhW0CB3Ny9ndKTnLbMJgebQYXfPiu8fPDgJSSlhD4EB/bOIFmUAYsEfS7Sl+pSQnSA3uo2W2TkokxObsE4wdmgtEoJDXrrMgP1ecGqqeZeKr9BqNmyBtizXOFxGIX5kt3dNlipeq6L6/ZCWHs6biA17Iqc1nAW2WPuagNDkVtueAoUpHHFPk9sdyzmIX8fp5uNyR9euVRT58gQWEMXAkaD1CKqizcsn93xEUuYzQbYhE042pKbeJIIyxfRVMuxKZY/QQ13tgnw+22It35puhGC2GSJglPrTbwbMQbLfW/BOGKPh94+Qv3vvcsqz5OiPtzT1Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g9gdVZRAnsjkhKeZjgqQB2D5y0YF2NnrtI3PYr/VWsw=;
- b=Ynxo0ruugg6CcNCalxiuZo6OI0RjLT762pGr6ltrEePj7tfeCLXrCFjN7FWhV/xjEEFkW10ZAUJRUcH+BjX+A0iOwcJCT1wcoKKyPS2fAP4FKDyULWlZgYXBOxSaLc1e1HhG5yNVTAizfVv1tvkO2U4VrPYLzDznY+KCEZq/pr2sGxKlpwJiwfdA9rS4jWcyueJD8NdfGMzWbi4N+euoMJqTLXDDKvMk8u38lYdiH5UE0YrjpQ3eW3KY4+bzQT+29uG8MHA/azbFAZ2flg4fRo4l5BhVjbdrKGP3vE5/6bD3yN94/k8+YMI5MjEqvGRuanvlE1ke9wzXMLLK+n43/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=74trIU5w53HCxsu+wRhX4tD0aZ5EOX4Qjog8K9NW0vM=;
+ b=ecs2hrptjWgIT9fpJz8mAqU7l+QoH4rwLg9HnTTnoWNCVV6/EkcjamwH7mjHFniRrmecIsEJqqbdO03ddGMwa0fy9ED8X+YQ1IeAtWMS6dZXJmpShYyUF/eKx5xojsj1b+fnXUZv7ey0mTjt3udnF6HMa2u2H31VTSSzgFlNqmEvEiOqmkQlrWkkfDsNkik1ZtlpcdhKIMs0XMDI95VYOlyRIGsJfcKMbZGjalqKA9fMv9hE2M7hhjmstxy5m1nsiEZyrjeK02HXTR8kpeZJ0ym0j/xuSoc3cRMtGsZuF/4AWaVboNx74YFXGnhZKUrT+xCir5k/KG7Ey+wmIpaB0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g9gdVZRAnsjkhKeZjgqQB2D5y0YF2NnrtI3PYr/VWsw=;
- b=GjVbzAbGFNt1pYdKoHvmHyY5YM6bb71pumiTwqMIP1Y/d4f2ipIeC0myWCrFO4yFJeiH1KqiWs2ZIGDgchgRTQqOi5hvDlA8D1hqj19YSN/MHdJuvMOwbP0rMp+SZZOEQlvFEj08N2XjVK0NgKO0FC/th5Csjnwh0XOxhM/V73TkTxWc+VBc+wVzMynFu2hpmjIOkEU268CDW+TzN955g28DrXD0QzaAvmHm8oGYprVW/r0S8uWVFi12iQuKvK6b7KBCV1WwZ7GRULFWes/vzUGt9c0GsKe5EBWBSvpHH+ivMD1msULFNlO5WmQ8IpjY13f0CGQj9YD8wdNDrX/Tlw==
-Received: from MWHPR14CA0060.namprd14.prod.outlook.com (2603:10b6:300:81::22)
- by BL0PR12MB2339.namprd12.prod.outlook.com (2603:10b6:207:4e::20) with
+ bh=74trIU5w53HCxsu+wRhX4tD0aZ5EOX4Qjog8K9NW0vM=;
+ b=MlVFFzijhjLbWGZOkBUY/RuuM9/3WMbEngH8i/H+orfS4WBwrhK6yKMWBhBYkR+3x2aQXviOI2dTPZWbQLkRfqxl3rJLTcVAc+vCOhSREmWfNo2gFvDYGix/AfUC4DWVnxTxP7HSTeixx0UzODtkfuvqehRFiuG/x+TcN6lSBYU=
+Received: from SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24)
+ by BYAPR10MB2712.namprd10.prod.outlook.com (2603:10b6:a02:b3::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Sat, 24 Apr
- 2021 02:33:18 +0000
-Received: from CO1NAM11FT049.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:81:cafe::ad) by MWHPR14CA0060.outlook.office365.com
- (2603:10b6:300:81::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend
- Transport; Sat, 24 Apr 2021 02:33:18 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- CO1NAM11FT049.mail.protection.outlook.com (10.13.175.50) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4065.21 via Frontend Transport; Sat, 24 Apr 2021 02:33:18 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 23 Apr
- 2021 19:33:17 -0700
-Received: from [172.27.8.107] (172.20.145.6) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 24 Apr
- 2021 02:33:16 +0000
-Subject: Re: [PATCH rdma-next v2 7/9] IB/cm: Clear all associated AV's ports
- when remove a cm device
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>
-References: <cover.1619004798.git.leonro@nvidia.com>
- <00c97755c41b06af84f621a1b3e0e8adfe0771cc.1619004798.git.leonro@nvidia.com>
- <20210422193417.GA2435405@nvidia.com>
- <2eee42c7-04aa-eea1-f8a1-debf700ad0b0@nvidia.com>
- <20210423142430.GI1370958@nvidia.com>
-From:   Mark Zhang <markzhang@nvidia.com>
-Message-ID: <b14de504-52f8-14ac-f65c-bcdcd0eb1784@nvidia.com>
-Date:   Sat, 24 Apr 2021 10:33:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210423142430.GI1370958@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.23; Sat, 24 Apr
+ 2021 17:39:15 +0000
+Received: from SJ0PR10MB4688.namprd10.prod.outlook.com
+ ([fe80::50bf:7319:321c:96c9]) by SJ0PR10MB4688.namprd10.prod.outlook.com
+ ([fe80::50bf:7319:321c:96c9%4]) with mapi id 15.20.4065.025; Sat, 24 Apr 2021
+ 17:39:15 +0000
+From:   Chuck Lever III <chuck.lever@oracle.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+CC:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH v3 07/26] xprtrdma: Improve locking around rpcrdma_rep
+ destruction
+Thread-Topic: [PATCH v3 07/26] xprtrdma: Improve locking around rpcrdma_rep
+ destruction
+Thread-Index: AQHXNUYp2YQRCT42e0GulEubGqapWqrCnoEAgAFYbgA=
+Date:   Sat, 24 Apr 2021 17:39:15 +0000
+Message-ID: <0DA1937B-3EA1-45A9-BD37-F7426764F83D@oracle.com>
+References: <161885481568.38598.16682844600209775665.stgit@manet.1015granger.net>
+ <161885534259.38598.17355600080366820390.stgit@manet.1015granger.net>
+ <89d2e2bbc40d953e28c4e4d56be0b5c83c25dc23.camel@hammerspace.com>
+In-Reply-To: <89d2e2bbc40d953e28c4e4d56be0b5c83c25dc23.camel@hammerspace.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0a91e85e-7eb3-4b69-d16b-08d906c95233
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2339:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB23398420C39BBC093FA9F16EC7449@BL0PR12MB2339.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: a0gmKwIrr1SbOM0mf90PhhNIIdvksa05+/O/XPhQZdakUIyVSDUEkel+By0Gi/HROnngu33OVL6uVF8YISsK40+y/Rd0KOz4f/rDN8CqpvvrhKHt4DvsI/7fwsjK5l8SbBdHyTCx0RacobIWBnSXZ2DpRURnz2ISIVI2NDNWOL464fpVK/HSBMIp8kYRse6KED/JE7x4exjAJG1BtpGytkA/pYeGBl4dIxv4gDNIg1FLz1Y2bfb90MU8qqeLSVZlLHYGUQCeshw5t3yOgHJujCYRqKCvZ2BG9qcIPjuImRLDjTvOK+fW4txw0ACg220hpgcYQj0itGYMsfAb1owwTs+pdfnkbkEB7KohZRigZzmjJezcKQONbHLxJz0pAnUi57+zV+nXMAEKbFI/L/4aK4V+zJataLxCvJKdthL9N3cn8wM9zbugEVPE+jznlp4DX8kvbfiLO+pRyVCMe+mAxQ00maC5mlowbFqb11fZFkJdUmW6fPAfPKC1mzS7tbKXnHm+obgLniiL0Hs5xN/ILBIIy4cwSBlS//48s2pNKPO6Oq3PZ+I7xY4YPPPpq2z6DDMJX3ebTAaXsgQamXCQOvlk5pPSKVbEJI9EFmIMDkhh4NCUnI8MB43FJdlPfXwTGPrbSbkSnjLQ9v3YbSbyJnqjLJsnzy0e4VEgkSk/UnYdTptsZz0J2LOwfN38zJ6S
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(376002)(39860400002)(36840700001)(46966006)(37006003)(16526019)(6862004)(2906002)(4326008)(26005)(8936002)(36756003)(36860700001)(426003)(47076005)(5660300002)(31696002)(2616005)(70206006)(16576012)(54906003)(70586007)(86362001)(31686004)(8676002)(478600001)(82310400003)(316002)(6636002)(7636003)(6666004)(186003)(53546011)(356005)(82740400003)(336012)(83380400001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2021 02:33:18.5897
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: hammerspace.com; dkim=none (message not signed)
+ header.d=none;hammerspace.com; dmarc=none action=none header.from=oracle.com;
+x-originating-ip: [68.61.232.219]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9d0bb809-5574-4689-c972-08d90747e143
+x-ms-traffictypediagnostic: BYAPR10MB2712:
+x-microsoft-antispam-prvs: <BYAPR10MB271261D189D8950DD93E7B5293449@BYAPR10MB2712.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: EBNxW3y1rwAfLlWuQ10UwLLu0kHTgLA4Z4Y0D9AipygOgo87fSX0O5PuLS4jKmKYQ9xyUuRs4GiyKgb8ZI3Uw8KCfdGuAjnv34P8w4axhMEAet3cmoy5lOKzCajG/bbl5RrcvOzK+UEWKq8NRV1G3lp9BBBL+tZRaQqeHgRjQ9PBJduXG9eROJ1h7tVsTLQJCOxzInE7Z0WKaIEPgHvleqICAai28cBxMR7Qh7L3HUjQ5CD4YF+GyhOC5LYanGnm6HgFOyRpy2H+CaTwoOruC4l/bgDjtygQMafZbOKRJVtZZvG8DJTDd9qcPYpOlKUKc2N0vhZZ4SP5a8bO+c/a7IEbEC4XsuOTRn+T45vp/MhOIcOZ3Sro+vcGCwKSlmKw8El9HM0NMXr0L7VX7WOdWbOvl0KR7r3gimeBNvmxkFhE0GBEY4gSaEc/eCuXYzkmUvbQctEaB0X7jmr1D/7PY5XIVvX8jQcNqTA7E+jFM+2UE3W2JHzakZaxhIfWwkvSMjqt5mGyiVBA+3HheW/EaPoyicscbNSE9HMBX6UC+AHTpBIcHhT/+8yTKqIMUtGr/KN/kK+269Vo95nPY31TjJ8AfM31H0nz3q7GtSdYcNbpXsXKNS81eh7nNSTXBa3nDrzVJpKJF1s2L+90lan6ZcVqBVuh55R8DqXI8vqqAqQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4688.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(39860400002)(396003)(136003)(53546011)(6506007)(5660300002)(186003)(26005)(66946007)(66446008)(2616005)(2906002)(54906003)(66556008)(66476007)(64756008)(91956017)(6512007)(122000001)(76116006)(6486002)(6916009)(36756003)(71200400001)(8936002)(8676002)(4326008)(83380400001)(316002)(86362001)(478600001)(33656002)(38100700002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?MunIZOqbU8WJTMCa4cs+/3TQsb9Gy92cVvfAoAOAhIktv16u+/pZYhorFGqA?=
+ =?us-ascii?Q?LLznq3f0MJyrbVimhc6CuXeBRi57nxQrkjYYtCLVgiz34q6zsswcl5bbwhVO?=
+ =?us-ascii?Q?YHfg0BKGFgM2Ya/F0F8dnpRXcHep4fJUoMbmgn8qAFKx8fgvf8mhTKyVybIX?=
+ =?us-ascii?Q?KWPyVLbocbsUxwGt+rxdv6VxZbcRLx5fKkzbcWYt7GsRCVLGCadrHPI6EgCv?=
+ =?us-ascii?Q?nSVVpkMQIgVYgwo/8vL+dlii2pKkNLN8g9wwfFzMGzEBgcM5RVcJqgvXvoEq?=
+ =?us-ascii?Q?Rvulfehp1lkan8QK8Vvez8f5OTPse5305lAKk/24UTMzHitv7C55ZGVHCwDi?=
+ =?us-ascii?Q?SeaOjzx7N+5abUiA4DLS83YnPXBI1tBDIRXrSsV8pvBvNmDJxHSpSpqArwEJ?=
+ =?us-ascii?Q?otXxqe8zWeJM0t9LizeZrVneJG8HemFB6WlgUKoitOL3XsUta4Nj88ATPX6/?=
+ =?us-ascii?Q?4EP8po500vPMsKKqKoigWY9281M/O2eVR7lsSkUVw9JRMHcv22/DRkQDgUCf?=
+ =?us-ascii?Q?1wcu7M6IItjVYky0q4vontpmffTqLPH60IHHvmC4mh/tJs6vhZOoeCPmT8ic?=
+ =?us-ascii?Q?JGAxFxitfhyLGHnau+fhyvvVuMxnFuFSyVYMWluM4h6jzlKT/KW9fD5k2jah?=
+ =?us-ascii?Q?Ip/2+EJT1Mtlji3Vz5SFxcm3iBdJE7+MgQoef0Z/FenltG9FKwUtRbuNSmqd?=
+ =?us-ascii?Q?xK1S4rkcY3mGulaseCuGOU/f0U1QFtQJ4Dbe2Nq/Gtq8ypoNl521H7v9nLN8?=
+ =?us-ascii?Q?Mtndb+frdMbbjeOBAI7p0N8LzbzZuAPuo1PbshPpTwoUz/xm/FY7ka2SYsNR?=
+ =?us-ascii?Q?sLsbp4S1faP6/RIxaThCa60IyX8zi8VbLBSZgG70LmKjvzJwBrwRESu3Cm3x?=
+ =?us-ascii?Q?SRr7+ocFxGJDn/qkqCliTQe7b7ciFu/dGDhwqNs3DXefjg2rQ5FAySnd/UXM?=
+ =?us-ascii?Q?1bMFkgYbnhydudIvu2mLUONGfC8Nfch16O6CQEnER0xdI/I+/BR0TO4kkm35?=
+ =?us-ascii?Q?w15wRzX7Q0abQt/ZQn9h1vxsi3zPB/XSrHOsQVAl1BvtulX3xj6O2gLbFJOe?=
+ =?us-ascii?Q?RAzzuSGDwDUduivzlEDq40NL0c8dZUPp7SLR/DKcadUJHoGyAcGdX5nB2iLc?=
+ =?us-ascii?Q?Ti5B24eIe3IV12HJXJhlAXOJCEfNdW5Kw4+KjkcN6KSxZGoHqOG29/Sh4FnL?=
+ =?us-ascii?Q?+dvZ3UVkuWy68m78aPoOHw12sIN3GsLqi7J7K2SrmS8p+Navi7iKpfjbhSQo?=
+ =?us-ascii?Q?hpqiiDiUSQh/stD0TIZlrEV7WczjX07FcfKfmK++7t3vl78vqR1/MWErHL2P?=
+ =?us-ascii?Q?nM8FHRMoPW9oR7ivX97GPUv0?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <AAAAA71C1A67E94BAE36E623F58B844F@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4688.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d0bb809-5574-4689-c972-08d90747e143
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Apr 2021 17:39:15.0903
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0a91e85e-7eb3-4b69-d16b-08d906c95233
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT049.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2339
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kq54maJxB24fnWS7SKqWo53sYOk91gAvqO+fVadluGAoLXfgZDYNeCOVngH9ZDQmK0wrl++fpHdrFRDosmfnBw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2712
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9964 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxscore=0
+ malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104240133
+X-Proofpoint-ORIG-GUID: cU4bXEwNAbHu9Rtrx2u88qS0LMg7VEKc
+X-Proofpoint-GUID: cU4bXEwNAbHu9Rtrx2u88qS0LMg7VEKc
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9964 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0 adultscore=0
+ malwarescore=0 phishscore=0 mlxlogscore=999 suspectscore=0
+ priorityscore=1501 clxscore=1015 spamscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104240134
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
 
-On 4/23/2021 10:24 PM, Jason Gunthorpe wrote:
-> On Fri, Apr 23, 2021 at 09:14:21PM +0800, Mark Zhang wrote:
->>
->>
->> On 4/23/2021 3:34 AM, Jason Gunthorpe wrote:
->>> On Wed, Apr 21, 2021 at 02:40:37PM +0300, Leon Romanovsky wrote:
->>>> @@ -4396,6 +4439,14 @@ static void cm_remove_one(struct ib_device *ib_device, void *client_data)
->>>>    	cm_dev->going_down = 1;
->>>>    	spin_unlock_irq(&cm.lock);
->>>> +	list_for_each_entry_safe(cm_id_priv, tmp,
->>>> +				 &cm_dev->cm_id_priv_list, cm_dev_list) {
->>>> +		if (!list_empty(&cm_id_priv->cm_dev_list))
->>>> +			list_del(&cm_id_priv->cm_dev_list);
->>>> +		cm_id_priv->av.port = NULL;
->>>> +		cm_id_priv->alt_av.port = NULL;
->>>> +	}
->>>
->>> Ugh, this is in the wrong order, it has to be after the work queue
->>> flush..
->>>
->>> Hurm, I didn't see an easy way to fix it up, but I did think of a much
->>> better design!
->>>
->>> Generally speaking all we need is the memory of the cm_dev and port to
->>> remain active, we don't need to block or fence with cm_remove_one(),
->>> so just stick a memory kref on this thing and keep the memory. The
->>> only things that needs to seralize with cm_remove_one() are on the
->>> workqueue or take a spinlock (eg because they touch mad_agent)
->>>
->>> Try this, I didn't finish every detail, applies on top of your series,
->>> but you'll need to reflow it into new commits:
->>
->> Thanks Jason, I think we still need a rwlock to protect "av->port"? It is
->> modified and cleared by cm_set_av_port() and read in many places.
-> 
-> Hum..
-> 
-> This is a real mess.
-> 
-> It looks to me like any access to the av->port should always be
-> protected by the cm_id_priv->lock
-> 
-> Most already are, but the sets are wrong and a couple readers are wrong
-> 
-> Set reverse call chains:
-> 
-> cm_init_av_for_lap()
->   cm_lap_handler(work) (ok)
-> 
-> cm_init_av_for_response()
->   cm_req_handler(work) (OK, cm_id_priv is on stack)
->   cm_sidr_req_handler(work) (OK, cm_id_priv is on stack)
-> 
-> cm_init_av_by_path()
->   cm_req_handler(work) (OK, cm_id_priv is on stack)
->   cm_lap_handler(work) (OK)
->   ib_send_cm_req() (not locked)
->     cma_connect_ib()
->      rdma_connect_locked()
->       [..]
->     ipoib_cm_send_req()
->     srp_send_req()
->       srp_connect_ch()
->        [..]
->   ib_send_cm_sidr_req() (not locked)
->    cma_resolve_ib_udp()
->     rdma_connect_locked()
-> 
+> On Apr 23, 2021, at 5:06 PM, Trond Myklebust <trondmy@hammerspace.com> wr=
+ote:
+>=20
+> On Mon, 2021-04-19 at 14:02 -0400, Chuck Lever wrote:
+>> Currently rpcrdma_reps_destroy() assumes that, at transport
+>> tear-down, the content of the rb_free_reps list is the same as the
+>> content of the rb_all_reps list. Although that is usually true,
+>> using the rb_all_reps list should be more reliable because of
+>> the way it's managed. And, rpcrdma_reps_unmap() uses rb_all_reps;
+>> these two functions should both traverse the "all" list.
+>>=20
+>> Ensure that all rpcrdma_reps are always destroyed whether they are
+>> on the rep free list or not.
+>>=20
+>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+>> ---
+>>  net/sunrpc/xprtrdma/verbs.c |   31 ++++++++++++++++++++++++-------
+>>  1 file changed, 24 insertions(+), 7 deletions(-)
+>>=20
+>> diff --git a/net/sunrpc/xprtrdma/verbs.c
+>> b/net/sunrpc/xprtrdma/verbs.c
+>> index 1b599a623eea..482fdc9e25c2 100644
+>> --- a/net/sunrpc/xprtrdma/verbs.c
+>> +++ b/net/sunrpc/xprtrdma/verbs.c
+>> @@ -1007,16 +1007,23 @@ struct rpcrdma_rep *rpcrdma_rep_create(struct
+>> rpcrdma_xprt *r_xprt,
+>>         return NULL;
+>>  }
+>> =20
+>> -/* No locking needed here. This function is invoked only by the
+>> - * Receive completion handler, or during transport shutdown.
+>> - */
+>> -static void rpcrdma_rep_destroy(struct rpcrdma_rep *rep)
+>> +static void rpcrdma_rep_destroy_locked(struct rpcrdma_rep *rep)
+>=20
+> The name here is extremely confusing. As far as I can tell, this isn't
+> called with any lock?
 
-Both cm_init_av_for_lap() and cm_init_av_by_path() might sleep (the last 
-patch of this series tries to fix this issue), they cannot be called 
-with cm_id_priv->lock
+Fair enough.
+
+I renamed it rpcrdma_rep_free() and it doesn't seem to have
+any consequences for downstream commits in this series.
+
+You could do a global edit, I can resend you this patch with
+the change, or I can post a v4 of this series. Let me know
+your preference.
 
 
-> And
->    cm_destroy_id() (locked)
-> 
-> And read reverse call chains:
-> 
-> cm_alloc_msg()
->   ib_send_cm_req() (not locked)
->   ib_send_cm_rep() (OK)
->   ib_send_cm_rtu() (OK)
->   cm_send_dreq_locked() (OK)
->   cm_send_drep_locked() (OK)
->   cm_send_rej_locked() (OK)
->   ib_send_cm_mra() (OK)
->   ib_send_cm_sidr_req() (not locked)
->   cm_send_sidr_rep_locked() (OK)
-> cm_form_tid()
->   cm_format_req()
->    ib_send_cm_req() (sort of OK)
->   cm_format_dreq()
->     cm_send_dreq_locked (OK)
-> cm_format_req()
->    ib_send_cm_req() (sort of OK)
-> cm_format_req_event()
->   cm_req_handler() (OK, cm_id_priv is on stack)
-> cm_format_rep()
->   ib_send_cm_rep() (OK)
-> cm_rep_handler(work) (OK)
-> cm_establish_handler(work) (OK)
-> cm_rtu_handler(work) (OK)
-> cm_send_dreq_locked() (OK)
-> cm_dreq_handler(work) (OK)
-> cm_drep_handler(work) (OK)
-> cm_rej_handler(work) (OK)
-> cm_mra_handler(work) (OK)
-> cm_apr_handler(work) (OK)
-> cm_sidr_rep_handler(work) (OK)
-> cm_init_qp_init_attr() (OK)
-> cm_init_qp_rtr_attr() (OK)
-> cm_init_qp_rts_attr() (OK)
-> 
-> So.. That leaves these functions that are not obviously locked
-> correctly:
->   ib_send_cm_req()
->   ib_send_cm_sidr_req()
-> 
-> And the way their locking expects to work is basically because they
-> expect that there are not parallel touches to the cm_id - however I'm
-> doubtful this is completely true.
-> 
-> So no new lock needed, but something should be done about the above
-> two functions, and this should be documented
-> 
-> Jason
-> 
+>>  {
+>> -       list_del(&rep->rr_all);
+>>         rpcrdma_regbuf_free(rep->rr_rdmabuf);
+>>         kfree(rep);
+>>  }
+>> =20
+>> +static void rpcrdma_rep_destroy(struct rpcrdma_rep *rep)
+>> +{
+>> +       struct rpcrdma_buffer *buf =3D &rep->rr_rxprt->rx_buf;
+>> +
+>> +       spin_lock(&buf->rb_lock);
+>> +       list_del(&rep->rr_all);
+>> +       spin_unlock(&buf->rb_lock);
+>> +
+>> +       rpcrdma_rep_destroy_locked(rep);
+>> +}
+>> +
+>>  static struct rpcrdma_rep *rpcrdma_rep_get_locked(struct
+>> rpcrdma_buffer *buf)
+>>  {
+>>         struct llist_node *node;
+>> @@ -1049,8 +1056,18 @@ static void rpcrdma_reps_destroy(struct
+>> rpcrdma_buffer *buf)
+>>  {
+>>         struct rpcrdma_rep *rep;
+>> =20
+>> -       while ((rep =3D rpcrdma_rep_get_locked(buf)) !=3D NULL)
+>> -               rpcrdma_rep_destroy(rep);
+>> +       spin_lock(&buf->rb_lock);
+>> +       while ((rep =3D list_first_entry_or_null(&buf->rb_all_reps,
+>> +                                              struct rpcrdma_rep,
+>> +                                              rr_all)) !=3D NULL) {
+>> +               list_del(&rep->rr_all);
+>> +               spin_unlock(&buf->rb_lock);
+>> +
+>> +               rpcrdma_rep_destroy_locked(rep);
+>> +
+>> +               spin_lock(&buf->rb_lock);
+>> +       }
+>> +       spin_unlock(&buf->rb_lock);
+>>  }
+>> =20
+>>  /**
+>>=20
+>>=20
+>=20
+> --=20
+> Trond Myklebust
+> Linux NFS client maintainer, Hammerspace
+> trond.myklebust@hammerspace.com
+
+--
+Chuck Lever
+
+
+
