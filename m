@@ -2,187 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99FA436A4A9
-	for <lists+linux-rdma@lfdr.de>; Sun, 25 Apr 2021 06:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 927C436A524
+	for <lists+linux-rdma@lfdr.de>; Sun, 25 Apr 2021 08:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229518AbhDYEfa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 25 Apr 2021 00:35:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhDYEfa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 25 Apr 2021 00:35:30 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD328C061574
-        for <linux-rdma@vger.kernel.org>; Sat, 24 Apr 2021 21:34:49 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id l17so22001708oil.11
-        for <linux-rdma@vger.kernel.org>; Sat, 24 Apr 2021 21:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Uk59IlBVJwf7NfwTsHEDbKPT6har7olY0VCo6F4zLXM=;
-        b=Qm2zDwOv0ORkk4V+VtI05syzxdORkJPA50NmGwiZmtBSiUtxYYHqNT6cPpu42JSPs8
-         yuYX2yJZMGLmrTkzZiyHjB+CU/DWWV22yi6U5aPwWvjRzEAUwF3OfMUCiJd4KbL03our
-         jhxoMCsM3NyR0LKDnw9w+5hzTqt/lU0DL94w3rZ7dLIHaV891lYn5Ot3+g136yck8Q+y
-         zCFBRDCSN8bcM1K/DKUF/Qvwts58QZz6vFGJDmFZLzFa2rNPD084vQwShLf/oBujHsPV
-         F2cs0eDOmwzwKYpBtg5+ezMokvEx3aUgZBVTz0nXo//OIN7WtCUm+Gg9tmDYCEUtXGuX
-         KkSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Uk59IlBVJwf7NfwTsHEDbKPT6har7olY0VCo6F4zLXM=;
-        b=d6SzFXU43d72Ki162WZgOkLQ03VsI51yJqxOwnWBCegCgwu7wtlY80G49QBgbqOG6P
-         tuvLyxjcSrGeXqHIa2TIre9xmzNwss46+2ooseTdvzfZR+4Qf/inzc4Nvgb1PlebrZf3
-         cfDbRnleusstspq/ltS6ASjdxd9rYaqLGUSni/S95sBX4yFA9w9/eFmMCRqUwLkUkTox
-         hAhjjWy34zmPgNdLlJkUzaV19bHTBoU0mBxyAckyF4x/RcaQDckTTgW8vjW98d9Faf8y
-         81lvy+OCncm2zXNakJZd0TUueaJEiSBiZQySqvyMbjsADwrv+sPENUL8m3SPUCspU3o/
-         C8Ng==
-X-Gm-Message-State: AOAM532PfE1J81VZ7J55GdYuHGjPsT+mZQsiQ8pmmy1iE75oSIacEw1V
-        lh+WnKct4UT/e7jJyRKsRIcfo/tkZ7D/n+i9SKXANRmIv/k=
-X-Google-Smtp-Source: ABdhPJxu6h1S4T8Jm4ZgA9nGg4DS8ua1syKjuF6wfI8fHcrp+NQow8TDkDq6c3RkP6vKf8zVnLygUKqUv4WtQ+pwqhI=
-X-Received: by 2002:a05:6808:8c6:: with SMTP id k6mr8805129oij.163.1619325289004;
- Sat, 24 Apr 2021 21:34:49 -0700 (PDT)
+        id S229567AbhDYGkN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 25 Apr 2021 02:40:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229480AbhDYGkM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 25 Apr 2021 02:40:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C4396113D;
+        Sun, 25 Apr 2021 06:39:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619332772;
+        bh=0o3GuEStuPPp6fhAZuQAurJbIkCnuOyJDSAE60E8ZZE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k8uVJFmK9TeL94byE618v1RmX2TVpkekCbBNjNrnbNihMHrKtNdZ09yo55BHtpk1N
+         2NDYB3bVwp3rILzEifCXzazG0NcriyPBY+6HuhO+IVPjuH4fb2rNKOxEDI0gB771v0
+         zS++DL9Dvvi1lbNeOTLFUoaS4eigMIq0XtbKsrLJ5NkGjQBVEgQozJFb7XUPHe5GUE
+         qab8QYNWpVa8hFk+i4Be0cfxQhtSQCxszCnZmQkCIbGz2iA9ZtXW2ex3X3KplcdCyU
+         O9UIgGx241YCOPb0xcUQK9UJY3YWS1Zj8OCHApTqXhcRKLTN9GIHZAM5yVySKeqCwR
+         uPlZTWDlTS08Q==
+Date:   Sun, 25 Apr 2021 09:39:29 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Yevgeny Kliteynik <kliteyn@nvidia.com>,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH net-next] net/mlx5: Fix some error messages
+Message-ID: <YIUOoTKRwy3UTRWz@unreal>
+References: <YIKywXhusLj4cDFM@mwanda>
 MIME-Version: 1.0
-References: <20210422161341.41929-1-rpearson@hpe.com> <20210422161341.41929-7-rpearson@hpe.com>
-In-Reply-To: <20210422161341.41929-7-rpearson@hpe.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Sun, 25 Apr 2021 12:34:37 +0800
-Message-ID: <CAD=hENch84JXK3h_+g_Np_uwR0qmqR6659QYNq9ZAALV+wUj+g@mail.gmail.com>
-Subject: Re: [PATCH for-next v5 06/10] RDMA/rxe: Move local ops to subroutine
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Bob Pearson <rpearson@hpe.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIKywXhusLj4cDFM@mwanda>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 12:13 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->
-> Simplify rxe_requester() by moving the local operations
-> to a subroutine. Add an error return for illegal send WR opcode.
-> Moved next_index ahead of rxe_run_task which fixed a small bug where
-> work completions were delayed until after the next wqe which was not
-> the intended behavior.
->
-> Signed-off-by: Bob Pearson <rpearson@hpe.com>
+On Fri, Apr 23, 2021 at 02:42:57PM +0300, Dan Carpenter wrote:
+> This code was using IS_ERR() instead of PTR_ERR() so it prints 1 instead
+> of the correct error code.
+> 
+> Fixes: 25cb31768042 ("net/mlx5: E-Switch, Improve error messages in term table creation")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > ---
->  drivers/infiniband/sw/rxe/rxe_req.c | 89 +++++++++++++++++------------
->  1 file changed, 54 insertions(+), 35 deletions(-)
+>  .../mellanox/mlx5/core/eswitch_offloads_termtbl.c    | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 >
-> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-> index 0d4dcd514c55..0cf97e3db29f 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_req.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-> @@ -555,6 +555,56 @@ static void update_state(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
->                           jiffies + qp->qp_timeout_jiffies);
->  }
->
-> +static int do_local_ops(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
 
-rxe_do_local_ops if not used out of softroce.
+It should go through netdev@.
 
-> +{
-> +       u8 opcode = wqe->wr.opcode;
-> +       struct rxe_dev *rxe;
-> +       struct rxe_mr *mr;
-> +       u32 rkey;
-> +
-> +       switch (opcode) {
-> +       case IB_WR_LOCAL_INV:
-> +               rxe = to_rdev(qp->ibqp.device);
-> +               rkey = wqe->wr.ex.invalidate_rkey;
-> +               mr = rxe_pool_get_index(&rxe->mr_pool, rkey >> 8);
-> +               if (!mr) {
-> +                       pr_err("No MR for rkey %#x\n", rkey);
-> +                       wqe->state = wqe_state_error;
-> +                       wqe->status = IB_WC_LOC_QP_OP_ERR;
-> +                       return -EINVAL;
-> +               }
-> +               mr->state = RXE_MR_STATE_FREE;
-> +               rxe_drop_ref(mr);
-> +               break;
-> +       case IB_WR_REG_MR:
-> +               mr = to_rmr(wqe->wr.wr.reg.mr);
-> +
-> +               rxe_add_ref(mr);
-> +               mr->state = RXE_MR_STATE_VALID;
-> +               mr->access = wqe->wr.wr.reg.access;
-> +               mr->ibmr.lkey = wqe->wr.wr.reg.key;
-> +               mr->ibmr.rkey = wqe->wr.wr.reg.key;
-> +               mr->iova = wqe->wr.wr.reg.mr->iova;
-> +               rxe_drop_ref(mr);
-> +               break;
-> +       default:
-> +               pr_err("Unexpected send wqe opcode %d\n", opcode);
-> +               wqe->state = wqe_state_error;
-> +               wqe->status = IB_WC_LOC_QP_OP_ERR;
-> +               return -EINVAL;
-> +       }
-> +
-> +       wqe->state = wqe_state_done;
-> +       wqe->status = IB_WC_SUCCESS;
-> +       qp->req.wqe_index = next_index(qp->sq.queue, qp->req.wqe_index);
-> +
-> +       if ((wqe->wr.send_flags & IB_SEND_SIGNALED) ||
-> +           qp->sq_sig_type == IB_SIGNAL_ALL_WR)
-> +               rxe_run_task(&qp->comp.task, 1);
-> +
-> +       return 0;
-> +}
-> +
->  int rxe_requester(void *arg)
->  {
->         struct rxe_qp *qp = (struct rxe_qp *)arg;
-> @@ -594,42 +644,11 @@ int rxe_requester(void *arg)
->                 goto exit;
->
->         if (wqe->mask & WR_LOCAL_OP_MASK) {
-> -               if (wqe->wr.opcode == IB_WR_LOCAL_INV) {
-> -                       struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
-> -                       struct rxe_mr *rmr;
-> -
-> -                       rmr = rxe_pool_get_index(&rxe->mr_pool,
-> -                                                wqe->wr.ex.invalidate_rkey >> 8);
-> -                       if (!rmr) {
-> -                               pr_err("No mr for key %#x\n",
-> -                                      wqe->wr.ex.invalidate_rkey);
-> -                               wqe->state = wqe_state_error;
-> -                               wqe->status = IB_WC_MW_BIND_ERR;
-> -                               goto exit;
-> -                       }
-> -                       rmr->state = RXE_MR_STATE_FREE;
-> -                       rxe_drop_ref(rmr);
-> -                       wqe->state = wqe_state_done;
-> -                       wqe->status = IB_WC_SUCCESS;
-> -               } else if (wqe->wr.opcode == IB_WR_REG_MR) {
-> -                       struct rxe_mr *rmr = to_rmr(wqe->wr.wr.reg.mr);
-> -
-> -                       rmr->state = RXE_MR_STATE_VALID;
-> -                       rmr->access = wqe->wr.wr.reg.access;
-> -                       rmr->ibmr.lkey = wqe->wr.wr.reg.key;
-> -                       rmr->ibmr.rkey = wqe->wr.wr.reg.key;
-> -                       rmr->iova = wqe->wr.wr.reg.mr->iova;
-> -                       wqe->state = wqe_state_done;
-> -                       wqe->status = IB_WC_SUCCESS;
-> -               } else {
-> +               ret = do_local_ops(qp, wqe);
-> +               if (unlikely(ret))
->                         goto exit;
-> -               }
-> -               if ((wqe->wr.send_flags & IB_SEND_SIGNALED) ||
-> -                   qp->sq_sig_type == IB_SIGNAL_ALL_WR)
-> -                       rxe_run_task(&qp->comp.task, 1);
-> -               qp->req.wqe_index = next_index(qp->sq.queue,
-> -                                               qp->req.wqe_index);
-> -               goto next_wqe;
-> +               else
-> +                       goto next_wqe;
->         }
->
->         if (unlikely(qp_type(qp) == IB_QPT_RC &&
-> --
-> 2.27.0
->
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com> 
+
+
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c
+> index a81ece94f599..95f5c1a27718 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c
+> @@ -83,16 +83,16 @@ mlx5_eswitch_termtbl_create(struct mlx5_core_dev *dev,
+>  	ft_attr.autogroup.max_num_groups = 1;
+>  	tt->termtbl = mlx5_create_auto_grouped_flow_table(root_ns, &ft_attr);
+>  	if (IS_ERR(tt->termtbl)) {
+> -		esw_warn(dev, "Failed to create termination table (error %d)\n",
+> -			 IS_ERR(tt->termtbl));
+> +		esw_warn(dev, "Failed to create termination table (error %ld)\n",
+> +			 PTR_ERR(tt->termtbl));
+>  		return -EOPNOTSUPP;
+>  	}
+>  
+>  	tt->rule = mlx5_add_flow_rules(tt->termtbl, NULL, flow_act,
+>  				       &tt->dest, 1);
+>  	if (IS_ERR(tt->rule)) {
+> -		esw_warn(dev, "Failed to create termination table rule (error %d)\n",
+> -			 IS_ERR(tt->rule));
+> +		esw_warn(dev, "Failed to create termination table rule (error %ld)\n",
+> +			 PTR_ERR(tt->rule));
+>  		goto add_flow_err;
+>  	}
+>  	return 0;
+> @@ -283,8 +283,8 @@ mlx5_eswitch_add_termtbl_rule(struct mlx5_eswitch *esw,
+>  		tt = mlx5_eswitch_termtbl_get_create(esw, &term_tbl_act,
+>  						     &dest[i], attr);
+>  		if (IS_ERR(tt)) {
+> -			esw_warn(esw->dev, "Failed to get termination table (error %d)\n",
+> -				 IS_ERR(tt));
+> +			esw_warn(esw->dev, "Failed to get termination table (error %ld)\n",
+> +				 PTR_ERR(tt));
+>  			goto revert_changes;
+>  		}
+>  		attr->dests[num_vport_dests].termtbl = tt;
+> -- 
+> 2.30.2
+> 
