@@ -2,138 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCC836A775
-	for <lists+linux-rdma@lfdr.de>; Sun, 25 Apr 2021 15:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB77A36A778
+	for <lists+linux-rdma@lfdr.de>; Sun, 25 Apr 2021 15:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhDYNSe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 25 Apr 2021 09:18:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229688AbhDYNSe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 25 Apr 2021 09:18:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E3FA611B0;
-        Sun, 25 Apr 2021 13:17:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619356674;
-        bh=ciTcRFMYPpr0OfHkzC+c6c6tCIDsZtjXKOxCFuvLkXk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d6ACd1m37G1nZfbe+ItDXVY2Hn4DmGWBLOamjC4eKIQWUhc59hM1jd0C69IoCZgRJ
-         NVBtjFR9WoioXRSz/t5ZSMCASQtOscQutTjEzJBB7O2x5zW8g/ZDTtaRF9luno1dCB
-         oQwBRHOpY/B5OzktRFNYnrpvtIYVN7vg6Pw3Rqk72TPJtQlHKhZGACGJsZEjtOhA53
-         XPXWZQAmWwIhSDPw7U7iAM8uSux4dG2TYHNXnvZC2wbq4D6RmZ1sA6q6rTPip4g8iD
-         9Z0xIlL5o9fydWUDEjg6yfu6qLCaAZSNi7ee+XNa5OF5iM5ucG8kqzNe9IMkCDvKiH
-         Lvszl3rInQoGQ==
-Date:   Sun, 25 Apr 2021 16:17:51 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Shay Drory <shayd@nvidia.com>, Doug Ledford <dledford@redhat.com>,
-        Krishna Kumar <krkumar2@in.ibm.com>,
-        linux-rdma@vger.kernel.org, Sean Hefty <sean.hefty@intel.com>
-Subject: Re: [PATCH rdma-next 2/3] RDMA/core: Fix check of device in
- rdma_listen()
-Message-ID: <YIVr/2RrE6WTLbiV@unreal>
-References: <cover.1618753862.git.leonro@nvidia.com>
- <b925e11d639726afbaaeea5aeaa58572b3aacf8e.1618753862.git.leonro@nvidia.com>
- <20210422112802.GA2320845@nvidia.com>
- <1fca1133-8cdd-8b21-42cf-69d610b4f8f4@nvidia.com>
- <20210422125135.GV1370958@nvidia.com>
- <YIFzoJOVvZPPJwwy@unreal>
- <20210422130218.GW1370958@nvidia.com>
- <YIGPCjiXAR2aFO9S@unreal>
- <20210422161809.GZ1370958@nvidia.com>
+        id S229763AbhDYNVB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 25 Apr 2021 09:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhDYNVB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 25 Apr 2021 09:21:01 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CE520C061574;
+        Sun, 25 Apr 2021 06:20:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=H0P1ITf89K
+        5sWKVsgcrAvlSWObfhUJULio5yAsXO4CI=; b=xNLrQp6dpfbv9wmRm3MNjpFlcr
+        PkPMDaggIENDm1cnDoZbO58x6kGkYZDcwLaNA5uHjVbk3EX669YEgl4Q/sm/N/T6
+        JW984AkuG1xCuHyFeHMph0nvwkFaAV6Zh+BKbTamwaqNpv7GtgieFJ9hma6Te/5r
+        dK3Rf7Fap8wUevgPw=
+Received: from ubuntu.localdomain (unknown [223.104.36.137])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDHzj6FbIVgoWNDAA--.4410S4;
+        Sun, 25 Apr 2021 21:20:07 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     bmt@zurich.ibm.com, dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] rdma/siw: Fix a use after free in siw_alloc_mr
+Date:   Sun, 25 Apr 2021 06:20:01 -0700
+Message-Id: <20210425132001.3994-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422161809.GZ1370958@nvidia.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygDHzj6FbIVgoWNDAA--.4410S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Wr15Wr1xtFyxKrWftFWkJFb_yoWkXFbEkr
+        4UJFnrXw1Yyw4SkFsru3W3uFZ5K3yFyr1vqasYgr1fGayUArs5J3y8tF1rZ3y7Ww10k39I
+        gr9rW393ArW8GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4xFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
+        YxC7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUQZ23UUU
+        UU=
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 01:18:09PM -0300, Jason Gunthorpe wrote:
-> On Thu, Apr 22, 2021 at 05:58:18PM +0300, Leon Romanovsky wrote:
-> > On Thu, Apr 22, 2021 at 10:02:18AM -0300, Jason Gunthorpe wrote:
-> > > On Thu, Apr 22, 2021 at 04:01:20PM +0300, Leon Romanovsky wrote:
-> > > > On Thu, Apr 22, 2021 at 09:51:35AM -0300, Jason Gunthorpe wrote:
-> > > > > On Thu, Apr 22, 2021 at 03:44:55PM +0300, Shay Drory wrote:
-> > > > > > On 4/22/2021 14:28, Jason Gunthorpe wrote:
-> > > > > > 
-> > > > > > > On Sun, Apr 18, 2021 at 04:55:53PM +0300, Leon Romanovsky wrote:
-> > > > > > > > From: Shay Drory <shayd@nvidia.com>
-> > > > > > > > 
-> > > > > > > > rdma_listen() checks if device already attached to rdma_id_priv,
-> > > > > > > > based on the response the its decide to what to listen, however
-> > > > > > > > this is different when the listeners are canceled.
-> > > > > > > > 
-> > > > > > > > This leads to a mismatch between rdma_listen() and cma_cancel_operation(),
-> > > > > > > > and causes to bellow wild-memory-access. Fix it by aligning rdma_listen()
-> > > > > > > > according to the cma_cancel_operation().
-> > > > > > > So this is happening because the error unwind in rdma_bind_addr() is
-> > > > > > > taking the exit path and calling cma_release_dev()?
-> > > > > > > 
-> > > > > > > This allows rdma_listen() to be called with a bogus device pointer
-> > > > > > > which precipitates this UAF during destroy.
-> > > > > > > 
-> > > > > > > However, I think rdma_bind_addr() should not allow the bogus device
-> > > > > > > pointer to leak out at all, since the ULP could see it. It really is
-> > > > > > > invalid to have it present no matter what.
-> > > > > > > 
-> > > > > > > This would make cma_release_dev() and _cma_attach_to_dev()
-> > > > > > > symmetrical - what do you think?
-> > > > > > > 
-> > > > > > > diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-> > > > > > > index 2dc302a83014ae..91f6d968b46f65 100644
-> > > > > > > +++ b/drivers/infiniband/core/cma.c
-> > > > > > > @@ -474,6 +474,7 @@ static void cma_release_dev(struct rdma_id_private *id_priv)
-> > > > > > >   	list_del(&id_priv->list);
-> > > > > > >   	cma_dev_put(id_priv->cma_dev);
-> > > > > > >   	id_priv->cma_dev = NULL;
-> > > > > > > +	id_priv->id.device = NULL;
-> > > > > > >   	if (id_priv->id.route.addr.dev_addr.sgid_attr) {
-> > > > > > >   		rdma_put_gid_attr(id_priv->id.route.addr.dev_addr.sgid_attr);
-> > > > > > >   		id_priv->id.route.addr.dev_addr.sgid_attr = NULL;
-> > > > > > 
-> > > > > > I try that. this will break restrack_del() since restrack_del() is
-> > > > > > using id_priv->id.device and is being called before restrack_del():
-> > > > > 
-> > > > > Oh that is another bug, once cma_release_dev() is called there is no
-> > > > > refcount protecting the id.device and any access to it is invalid.
-> > > > > 
-> > > > > The order of rdma_restrack_del should be moved to be ahead of the
-> > > > > cma_release_dev, and we also can't have a restrack without a cma_dev
-> > > > > in the first place
-> > > > 
-> > > > We have restrack per-cmd_id and not per-cma_dev.
-> > > 
-> > > No, restrack has this:
-> > > 
-> > > 	dev = res_to_dev(res);
-> > > 	if (WARN_ON(!dev))
-> > > 
-> > > And here dev will be NULL if cma_dev isn't set
-> > 
-> >   127 static struct ib_device *res_to_dev(struct rdma_restrack_entry *res)
-> >   128 {
-> > 
-> > <...>
-> > 
-> >   136         case RDMA_RESTRACK_CM_ID:
-> >   137                 return container_of(res, struct rdma_id_private,
-> >   138                                     res)->id.device;
-> >                                                 ^^^^^ it is not cma_dev
-> 
-> The invariant is that 
-> 
->    priv.id.device == priv.cma_dev->device
-> 
-> (this de-normalization of data exists only to allow priv to be in a
-> private header)
-> 
-> If cma_dev == NULL then id.device == NULL as cma_Dev was the thing
-> preventing the pointer from being free'd.
+Our code analyzer reported a uaf.
 
-Let's see what I can do here.
+In siw_alloc_mr, it calls siw_mr_add_mem(mr,..). In the implementation
+of siw_mr_add_mem(), mem is assigned to mr->mem and then mem is freed
+via kfree(mem) if xa_alloc_cyclic() failed. Here, mr->mem still point
+to a freed object. After, the execution continue up to the err_out branch
+of siw_alloc_mr, and the freed mr->mem is used in siw_mr_drop_mem(mr).
 
-Thanks
+Fixes: 2251334dcac9e ("rdma/siw: application buffer management")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/infiniband/sw/siw/siw_mem.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> Jason
+diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
+index 34a910cf0edb..3bde3b6fca05 100644
+--- a/drivers/infiniband/sw/siw/siw_mem.c
++++ b/drivers/infiniband/sw/siw/siw_mem.c
+@@ -114,6 +114,7 @@ int siw_mr_add_mem(struct siw_mr *mr, struct ib_pd *pd, void *mem_obj,
+ 	if (xa_alloc_cyclic(&sdev->mem_xa, &id, mem, limit, &next,
+ 	    GFP_KERNEL) < 0) {
+ 		kfree(mem);
++		mr->mem = NULL;
+ 		return -ENOMEM;
+ 	}
+ 	/* Set the STag index part */
+-- 
+2.25.1
+
+
