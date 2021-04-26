@@ -2,147 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CCF36ACE6
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Apr 2021 09:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1525236B04C
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Apr 2021 11:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232062AbhDZH1a (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 26 Apr 2021 03:27:30 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60738 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231989AbhDZH13 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 26 Apr 2021 03:27:29 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13Q74HbZ005349
-        for <linux-rdma@vger.kernel.org>; Mon, 26 Apr 2021 03:26:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
- from : to : cc : date : mime-version : references :
- content-transfer-encoding : content-type : message-id; s=pp1;
- bh=HtXloDZ38JnKKbC6QD1UeOxDeLycabWHFLqjAzM9I9g=;
- b=Ouae7rTOIx7SQ9RSM/1jL+hQYa/wsTCh0OBWwbAlichDENoJA5zHFs21OmWqLKymThM4
- BWCEqog0m04iqHL5TmqVOPcFuHMOEKKumnru/TP1iMV0FSnvtJxcvppq+7PWIxVNesCJ
- TBclJM1KG4INoBLp7FiwWcJzet2AGUg2LNN/8IJfaMl0fcgmw8SP09DTBwtwyRdLWzKF
- g6vzXA9gvaaM8MeA00gyfXKBEGRjwL0yvLCKHoWl8ZMQvS02tQOQfHXPUvBXuZwr4sn1
- wlWYV7dZoXPttl9p+uG4pL/GQ3W1fiksapoqqcVDzPaSezCA1CJxxV0dCl4pUgXMUaf6 1w== 
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.110])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 385puk38rw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Mon, 26 Apr 2021 03:26:48 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Mon, 26 Apr 2021 07:26:48 -0000
-Received: from us1b3-smtp02.a3dr.sjc01.isc4sb.com (10.122.7.175)
-        by smtp.notes.na.collabserv.com (10.122.47.50) with smtp.notes.na.collabserv.com ESMTP;
-        Mon, 26 Apr 2021 07:26:45 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp02.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2021042607264488-116828 ;
-          Mon, 26 Apr 2021 07:26:44 +0000 
-In-Reply-To: <20210426011647.3561-1-lyl2019@mail.ustc.edu.cn>
-Subject: Re: [PATCH v2] rdma/siw: Fix a use after free in siw_alloc_mr
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Lv Yunlong" <lyl2019@mail.ustc.edu.cn>
-Cc:     "dledford" <dledford@redhat.com>, "jgg" <jgg@ziepe.ca>,
-        "linux-rdma" <linux-rdma@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>, leon@kernel.org
-Date:   Mon, 26 Apr 2021 07:26:45 +0000
+        id S232078AbhDZJNe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 26 Apr 2021 05:13:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232068AbhDZJNe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Apr 2021 05:13:34 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D646C061574
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Apr 2021 02:12:53 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id i21-20020a05600c3555b029012eae2af5d4so4765245wmq.4
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Apr 2021 02:12:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=35eSVZFFpgt24b284ta68xZkjVEc5DHeIHOxrBV2sa8=;
+        b=afamIN5+IzvT7nZLV7eFBLFFxabmJsbslqgRZSabWgdnpo0AkKBwtsepBhBQ8JV+Wn
+         KNT1phdBreDOnpD/b6djMTr737g0E6gz5aGSiJxyHQOzVtqCuPzSZdVKq5Kg5I+lQLfJ
+         URFFEPfhsEFere1lg2HrcomX5ZDfw0S3b897eEaERjdULMqiVGxAsF8wud4uifVLu4jL
+         7id5FvTVMOWz2ovg4+V5w+v6umHhQzQXcwVwG+6RNHL4xAdUm5aKuOzHYIhMuutZdKLP
+         1SO35Tz3pjP8AkzRsaaQAdWA4iXLJ/bLAHe0Hilagc4w/r55IfO8tdJHHEf0TN0ziQCQ
+         s1LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=35eSVZFFpgt24b284ta68xZkjVEc5DHeIHOxrBV2sa8=;
+        b=O7x5xI93qHg+HL0IiekAWofE2JA5RNiyERSQzlQZWa4CSAL4WOgmYmMHL0J9UEy9po
+         errOVX1mmeSzavTZyL5heaN7BsijyltF1fyQ9j/b6LHm53gTh4U7PETZiltC1WGmEdze
+         BOOF2Iox3ITmyV7y9gZsHrun6Z2yRe5Hw4VmWvAWRiMQo8mAxZXTuB8lSJy/U389zmon
+         9OVTbvCUZPIIp/4frcwXOIxZAexUNW1YaJsZztm+JAb1bjfNygAFC//T4ljH6aDWCyyQ
+         4aDSwAZphOLMNlCfEnZLIkXzUHznDW3T5g1OBl+hPMMhsf994hRoo6EAvqySDQub6Vdh
+         az/w==
+X-Gm-Message-State: AOAM532zMx8IOnw8mMTxrjOvO5n9N8cuoKB75u+hPmMuRbln6W+05VvJ
+        UgdVmKjCeLK859TaaqKd5T1mTe10Jla/W2Ax
+X-Google-Smtp-Source: ABdhPJxLgEEvxAaDgKW9hwFS5u/LHdtWQwYqPrKQiRYX7MxCZ8uHj41Kv9FOrrlsBvg9tkeekxBd/w==
+X-Received: by 2002:a1c:2c0a:: with SMTP id s10mr19712043wms.158.1619428372098;
+        Mon, 26 Apr 2021 02:12:52 -0700 (PDT)
+Received: from [192.168.3.162] (ip5b401b0e.dynamic.kabel-deutschland.de. [91.64.27.14])
+        by smtp.gmail.com with ESMTPSA id q20sm47163981wmq.2.2021.04.26.02.12.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 02:12:51 -0700 (PDT)
+Message-ID: <84ac2b08ac7440b12ddca7da7e722168cc15cd32.camel@ionos.com>
+Subject: Re: rdma-core: Minimum supported Debian & Ubuntu releases
+From:   Benjamin Drung <benjamin.drung@ionos.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Mon, 26 Apr 2021 11:12:50 +0200
+In-Reply-To: <20210413164012.GJ227011@ziepe.ca>
+References: <8d930476e5daf34147a178420596230dfecf2038.camel@cloud.ionos.com>
+         <YHQttR48FsDJkuWd@unreal> <20210413164012.GJ227011@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20210426011647.3561-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
-X-KeepSent: EDD7FB92:558D79F3-002586C3:0028E6C4;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 52767
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 21042607-1059-0000-0000-000003C53746
-X-IBM-SpamModules-Scores: BY=0.060901; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0; ST=0; TS=0; UL=0; ISC=; MB=0.018379
-X-IBM-SpamModules-Versions: BY=3.00014940; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000296; SDB=6.01526391; UDB=6.00825164; IPR=6.01308321;
- MB=3.00036522; MTD=3.00000008; XFM=3.00000015; UTC=2021-04-26 07:26:46
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2021-03-23 12:31:21 - 6.00012377
-x-cbparentid: 21042607-1060-0000-0000-00008A6F4D88
-Message-Id: <OFEDD7FB92.558D79F3-ON002586C3.0028E6C4-002586C3.0028E6CD@notes.na.collabserv.com>
-X-Proofpoint-ORIG-GUID: Rmoq1Y7bFYVGKE719XACAMzD_rDDqzoH
-X-Proofpoint-GUID: Rmoq1Y7bFYVGKE719XACAMzD_rDDqzoH
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-25_11:2021-04-23,2021-04-25 signatures=0
-X-Proofpoint-Spam-Reason: orgsafe
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Lv Yunlong" <lyl2019@mail.ustc.edu.cn> wrote: -----
+Am Dienstag, den 13.04.2021, 13:40 -0300 schrieb Jason Gunthorpe:
+> On Mon, Apr 12, 2021 at 02:23:33PM +0300, Leon Romanovsky wrote:
+> > On Mon, Apr 12, 2021 at 12:31:26PM +0200, Benjamin Drung wrote:
+> > > Hi,
+> > > 
+> > > which Debian & Ubuntu releases should rdma-core support? Do we
+> > > have a
+> > > policy for that like all LTS versions?
+> > 
+> > I don't think that we have a policy for that.
+> 
+> I understand there are still active users on the prior LTS, so I
+> would
+> prefer to keep that working.
 
->To: bmt@zurich.ibm.com, dledford@redhat.com, jgg@ziepe.ca
->From: "Lv Yunlong" <lyl2019@mail.ustc.edu.cn>
->Date: 04/26/2021 03:17AM
->Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, "Lv
->Yunlong" <lyl2019@mail.ustc.edu.cn>
->Subject: [EXTERNAL] [PATCH v2] rdma/siw: Fix a use after free in
->siw=5Falloc=5Fmr
->
->Our code analyzer reported a uaf.
->
->In siw=5Falloc=5Fmr, it calls siw=5Fmr=5Fadd=5Fmem(mr,..). In the
->implementation
->of siw=5Fmr=5Fadd=5Fmem(), mem is assigned to mr->mem and then mem is freed
->via kfree(mem) if xa=5Falloc=5Fcyclic() failed. Here, mr->mem still point
->to a freed object. After, the execution continue up to the err=5Fout
->branch
->of siw=5Falloc=5Fmr, and the freed mr->mem is used in
->siw=5Fmr=5Fdrop=5Fmem(mr).
->
->My patch moves "mr->mem =3D mem" behind the if (xa=5Falloc=5Fcyclic(..)<0)
->{}
->section, to avoid the uaf.
->
->Fixes: 2251334dcac9e ("rdma/siw: application buffer management")
->Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
->---
-> drivers/infiniband/sw/siw/siw=5Fmem.c | 4 ++--
-> 1 file changed, 2 insertions(+), 2 deletions(-)
->
->diff --git a/drivers/infiniband/sw/siw/siw=5Fmem.c
->b/drivers/infiniband/sw/siw/siw=5Fmem.c
->index 34a910cf0edb..96b38cfbb513 100644
->--- a/drivers/infiniband/sw/siw/siw=5Fmem.c
->+++ b/drivers/infiniband/sw/siw/siw=5Fmem.c
->@@ -106,8 +106,6 @@ int siw=5Fmr=5Fadd=5Fmem(struct siw=5Fmr *mr, struct
->ib=5Fpd *pd, void *mem=5Fobj,
-> 	mem->perms =3D rights & IWARP=5FACCESS=5FMASK;
-> 	kref=5Finit(&mem->ref);
->=20
->-	mr->mem =3D mem;
->-
-> 	get=5Frandom=5Fbytes(&next, 4);
-> 	next &=3D 0x00ffffff;
->=20
->@@ -116,6 +114,8 @@ int siw=5Fmr=5Fadd=5Fmem(struct siw=5Fmr *mr, struct
->ib=5Fpd *pd, void *mem=5Fobj,
-> 		kfree(mem);
-> 		return -ENOMEM;
-> 	}
->+
->+	mr->mem =3D mem;
-> 	/* Set the STag index part */
-> 	mem->stag =3D id << 8;
-> 	mr->base=5Fmr.lkey =3D mr->base=5Fmr.rkey =3D mem->stag;
->--=20
->2.25.1
->
->
->
-Lv Yunlong, many thanks for catching, and thanks to
-Leon for improving it.
+So to put numbers on it. rdma-core should support:
 
-Reviewed-by: Bernard Metzler <bmt@zurich.ihm.com>
+* Debian 9 (stretch) or newer
+* Ubuntu 18.04 LTS (bionic) or newer
+
+Debian 9 is currently oldstable and Ubuntu 18.04 LTS is the second
+newest Ubuntu LTS version. Or do you refer to Debian 8 "jessie" (which
+EOL last year) and Ubuntu 16.04 LTS (EOL around now)?
+
+-- 
+Benjamin Drung
+
+Senior DevOps Engineer and Debian & Ubuntu Developer
+Compute Platform Operations
+
+1&1 IONOS SE | Greifswalder Str. 207 | 10405 Berlin | Deutschland
+E-Mail: benjamin.drung@ionos.com | Web: www.ionos.de
+
+Hauptsitz Montabaur, Amtsgericht Montabaur, HRB 24498
+
+Vorstand: Hüseyin Dogan, Dr. Martin Endreß, Claudia Frese, Henning
+Kettler, Arthur Mai, Matthias Steinberg, Achim Weiß
+Aufsichtsratsvorsitzender: Markus Kadelke
+
+
+Member of United Internet
+
+Diese E-Mail kann vertrauliche und/oder gesetzlich geschützte
+Informationen enthalten. Wenn Sie nicht der bestimmungsgemäße Adressat
+sind oder diese E-Mail irrtümlich erhalten haben, unterrichten Sie
+bitte den Absender und vernichten Sie diese E-Mail. Anderen als dem
+bestimmungsgemäßen Adressaten ist untersagt, diese E-Mail zu speichern,
+weiterzuleiten oder ihren Inhalt auf welche Weise auch immer zu
+verwenden.
+
+This e-mail may contain confidential and/or privileged information. If
+you are not the intended recipient of this e-mail, you are hereby
+notified that saving, distribution or use of the content of this e-mail
+in any way is prohibited. If you have received this e-mail in error,
+please notify the sender and delete the e-mail.
+
 
