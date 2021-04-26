@@ -2,91 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E982936B47D
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Apr 2021 16:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E47EE36B5E7
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Apr 2021 17:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233560AbhDZOHL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 26 Apr 2021 10:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41534 "EHLO
+        id S234125AbhDZPhQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 26 Apr 2021 11:37:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232575AbhDZOHJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Apr 2021 10:07:09 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 550FCC061574;
-        Mon, 26 Apr 2021 07:06:21 -0700 (PDT)
+        with ESMTP id S234120AbhDZPhN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Apr 2021 11:37:13 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819FAC061574
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Apr 2021 08:36:31 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id o21-20020a1c4d150000b029012e52898006so5319821wmh.0
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Apr 2021 08:36:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=yHvzrd1ko8
-        bT/rLvfOe6xTk+KVZ/CieWVqR+uGCIwck=; b=fy3LYR0m4E/Dhy/FMGqzZYQ+Wq
-        LLKgXV6d5/mUyVopAHfORzZAnXdRcSN4/hvYIJRdhKMA5VGGnqtPSy4iuYKZ10K5
-        3z3XDJGYlPQhLoAgpW98/hkExXggFH1/Mme5nui+94czgWPVkilvo4CCveuhcbP6
-        8PBPFrXourOEOQhTo=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBXXzfYyIZgCUBLAA--.5813S4;
-        Mon, 26 Apr 2021 22:06:16 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
-        somnath.kotur@broadcom.com, sriharsha.basavapatna@broadcom.com,
-        nareshkumar.pbs@broadcom.com, dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] RDMA/bnxt_re/qplib_res: Fix a double free in bnxt_qplib_alloc_res
-Date:   Mon, 26 Apr 2021 07:06:14 -0700
-Message-Id: <20210426140614.6722-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        d=ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:reply-to:mime-version
+         :content-transfer-encoding;
+        bh=bF32FarLk9CvB1PlUh76DjVB3351BBftSmi5xzTQHpw=;
+        b=WiHuatv3oYU3qdSsDzzQH1TDV3Tkp9qtRqXw3+6CXHU9M5oL4l6JtYaF/psxydtaLZ
+         QcTtd82McF9bLHpafHyZrphFp32RRlcOVNYd+aPd+HB0KkDptCm2kPNxeo4FpHM/WLwd
+         O/0Y1UiEhr9Qo6O0KyM3PDrmGB/OHVyBqD+JRHN+4gB3LTcTKy3ekGkaxQ/U/AI5HeuZ
+         J93cXcFS2/mHLcW2RhRas/2Tti2rrwkx2WcCyrQ42ax5P9Qf+m0VhkLkY+tCoNGz3QZk
+         RvhNbQZcMyaxM3oibspkLWdEn/OT7G/6hFTQhqWcpIZZxY4BssBvGobDnzNuwTxdlPbo
+         XKZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :mime-version:content-transfer-encoding;
+        bh=bF32FarLk9CvB1PlUh76DjVB3351BBftSmi5xzTQHpw=;
+        b=CzEZE9/0zEHUpuotyrQSBC4ClKDJ+hQ9JfIZKbO/Ll5EFBvSd3r4iAKRl5w1DqahNq
+         TVX8Sb/UAwTwO9DcJeOM+7pPHpNoTuDSP5S3S1bBeA/mhgHEV/NZyUXHFuxk+GuxaBn9
+         vSGXU8Fgf5yD18k3Gac6gfW6tSimGXMqkCkRViG9e9qeMokXo0chTz5aBzVgNFQCQlA2
+         TDMI6TlRNeF+XRMrK82hlLbG/o+Zidks8fYy8GJp9AM0i1xY0F4rAh+gz1jucwIQoTjz
+         Bba7E4YYlfCd0+PqwvrIA6rdLeiCIZPgPwJvTlNouFhYJ2U2eCNsgirTuro5V15AI0fv
+         9XQQ==
+X-Gm-Message-State: AOAM532D8cqggDQiojkL2EdST5FDnXe/HU8rm1kPnnZ9CKPGnoVeXXtx
+        5YLTChFVwFr+brG9lQieoEpac/P5rxtul/Fk
+X-Google-Smtp-Source: ABdhPJzWF2R6Qog92ygaLxZCPwAHalyjm11c7/WNiZ8Dl2u9qWH+HutgmGKj+8W+jzNuOqqdf6SfEw==
+X-Received: by 2002:a1c:9854:: with SMTP id a81mr3223188wme.90.1619451390225;
+        Mon, 26 Apr 2021 08:36:30 -0700 (PDT)
+Received: from localhost (ip5b401b0e.dynamic.kabel-deutschland.de. [91.64.27.14])
+        by smtp.gmail.com with ESMTPSA id p18sm425948wrs.68.2021.04.26.08.36.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 08:36:29 -0700 (PDT)
+From:   Benjamin Drung <benjamin.drung@ionos.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Benjamin Drung <benjamin.drung@ionos.com>
+Subject: [PATCH rdma-core] README: Document supported Debian/Ubuntu releases
+Date:   Mon, 26 Apr 2021 17:36:27 +0200
+Message-Id: <20210426153627.444061-1-benjamin.drung@ionos.com>
+X-Mailer: git-send-email 2.27.0
+Reply-To: 20210426124902.GJ2047089@ziepe.ca
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygBXXzfYyIZgCUBLAA--.5813S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7GFWrWFy5GF48tw4ftw1kXwb_yoW8Jry3pr
-        47Wr90kr98JFs2kF42q3yUCr45A3srJ34vgay2k3y3C3Z5Zas7tF1kGasrtF9IyFZ8Kr1I
-        kwnxXw4UKFy7uF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwACI402YVCY1x02628vn2kIc2xKxwCY02Avz4vE14v_Xryl42xK82IYc2Ij64vIr4
-        1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
-        67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
-        8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAv
-        wI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUYZXODUUUU
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In bnxt_qplib_alloc_res, it calls bnxt_qplib_alloc_dpi_tbl().
-Inside bnxt_qplib_alloc_dpi_tbl, dpit->dbr_bar_reg_iomem is freed via
-pci_iounmap() in unmap_io error branch. After the callee returns err code,
-bnxt_qplib_alloc_res calls bnxt_qplib_free_res()->bnxt_qplib_free_dpi_tbl()
-in fail branch. Then dpit->dbr_bar_reg_iomem is freed in the second time by
-pci_iounmap().
+The Debian package in Debian testing/unstable uses a newer debhelper
+versions and drops the debug symbol migration. Document which Debian and
+Ubuntu release are supported to ensure that the Debian packaging for the
+upstream project does not drop support for those old releases.
 
-My patch set dpit->dbr_bar_reg_iomem to NULL after it is freed by pci_iounmap()
-in the first time, to avoid the double free.
-
-Fixes: 1ac5a40479752 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Signed-off-by: Benjamin Drung <benjamin.drung@ionos.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_res.c | 1 +
- 1 file changed, 1 insertion(+)
+ README.md | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-index fa7878336100..3ca47004b752 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-@@ -854,6 +854,7 @@ static int bnxt_qplib_alloc_dpi_tbl(struct bnxt_qplib_res     *res,
+diff --git a/README.md b/README.md
+index b649c6f2..48113de7 100644
+--- a/README.md
++++ b/README.md
+@@ -55,6 +55,11 @@ only load from the system path.
+ $ apt-get install build-essential cmake gcc libudev-dev libnl-3-dev libnl-route-3-dev ninja-build pkg-config valgrind python3-dev cython3 python3-docutils pandoc
+ ```
  
- unmap_io:
- 	pci_iounmap(res->pdev, dpit->dbr_bar_reg_iomem);
-+	dpit->dbr_bar_reg_iomem = NULL;
- 	return -ENOMEM;
- }
++Supported releases:
++
++* Debian 9 (stretch) or newer
++* Ubuntu 16.04 LTS (xenial) or newer
++
+ ### Fedora
  
+ ```sh
 -- 
-2.25.1
-
+2.27.0
 
