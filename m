@@ -2,122 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1525236B04C
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Apr 2021 11:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B555136B06A
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Apr 2021 11:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232078AbhDZJNe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 26 Apr 2021 05:13:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
+        id S232570AbhDZJUv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 26 Apr 2021 05:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232068AbhDZJNe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Apr 2021 05:13:34 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D646C061574
-        for <linux-rdma@vger.kernel.org>; Mon, 26 Apr 2021 02:12:53 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id i21-20020a05600c3555b029012eae2af5d4so4765245wmq.4
-        for <linux-rdma@vger.kernel.org>; Mon, 26 Apr 2021 02:12:53 -0700 (PDT)
+        with ESMTP id S232103AbhDZJUv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 26 Apr 2021 05:20:51 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2782C061574
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Apr 2021 02:20:08 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id m13so55811968oiw.13
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Apr 2021 02:20:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=35eSVZFFpgt24b284ta68xZkjVEc5DHeIHOxrBV2sa8=;
-        b=afamIN5+IzvT7nZLV7eFBLFFxabmJsbslqgRZSabWgdnpo0AkKBwtsepBhBQ8JV+Wn
-         KNT1phdBreDOnpD/b6djMTr737g0E6gz5aGSiJxyHQOzVtqCuPzSZdVKq5Kg5I+lQLfJ
-         URFFEPfhsEFere1lg2HrcomX5ZDfw0S3b897eEaERjdULMqiVGxAsF8wud4uifVLu4jL
-         7id5FvTVMOWz2ovg4+V5w+v6umHhQzQXcwVwG+6RNHL4xAdUm5aKuOzHYIhMuutZdKLP
-         1SO35Tz3pjP8AkzRsaaQAdWA4iXLJ/bLAHe0Hilagc4w/r55IfO8tdJHHEf0TN0ziQCQ
-         s1LQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uPu+ezYeFlB45Vh/sTLB83HgmTcVPeMSD1gh/BdnWTk=;
+        b=nvn8a1wyB2F/bF7N3xEK+rM3IlEf64GWZx94vz2USibSbhlZegLQlxzdsgPhfOzDwK
+         /xcrO4l2mf5/v2EcV24mcTdolCnkHSTFja/ILX7QGWmDeC+lqQmVwmZc+LFfjFO8LVeD
+         7cEA/hKDRz3ZBGwRBkZDbyoQVtxawvGgnEPWRAf9zD8QDi+T1RUoTnWFZSBNLNjnZJUb
+         pKejgHxJmGzHhCPhJ5R9bpAO/3AlS+bOkNyc0Uq95LhVEDKIOse+ELrvqwTixBHzHsm5
+         6/qgdGuxlh2GbrR1kpVtnpnZe7QHO0CYPxw5TkEa5DmFUQ65RGV2oBJ/0H02LlQy9ZXu
+         zqeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=35eSVZFFpgt24b284ta68xZkjVEc5DHeIHOxrBV2sa8=;
-        b=O7x5xI93qHg+HL0IiekAWofE2JA5RNiyERSQzlQZWa4CSAL4WOgmYmMHL0J9UEy9po
-         errOVX1mmeSzavTZyL5heaN7BsijyltF1fyQ9j/b6LHm53gTh4U7PETZiltC1WGmEdze
-         BOOF2Iox3ITmyV7y9gZsHrun6Z2yRe5Hw4VmWvAWRiMQo8mAxZXTuB8lSJy/U389zmon
-         9OVTbvCUZPIIp/4frcwXOIxZAexUNW1YaJsZztm+JAb1bjfNygAFC//T4ljH6aDWCyyQ
-         4aDSwAZphOLMNlCfEnZLIkXzUHznDW3T5g1OBl+hPMMhsf994hRoo6EAvqySDQub6Vdh
-         az/w==
-X-Gm-Message-State: AOAM532zMx8IOnw8mMTxrjOvO5n9N8cuoKB75u+hPmMuRbln6W+05VvJ
-        UgdVmKjCeLK859TaaqKd5T1mTe10Jla/W2Ax
-X-Google-Smtp-Source: ABdhPJxLgEEvxAaDgKW9hwFS5u/LHdtWQwYqPrKQiRYX7MxCZ8uHj41Kv9FOrrlsBvg9tkeekxBd/w==
-X-Received: by 2002:a1c:2c0a:: with SMTP id s10mr19712043wms.158.1619428372098;
-        Mon, 26 Apr 2021 02:12:52 -0700 (PDT)
-Received: from [192.168.3.162] (ip5b401b0e.dynamic.kabel-deutschland.de. [91.64.27.14])
-        by smtp.gmail.com with ESMTPSA id q20sm47163981wmq.2.2021.04.26.02.12.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 02:12:51 -0700 (PDT)
-Message-ID: <84ac2b08ac7440b12ddca7da7e722168cc15cd32.camel@ionos.com>
-Subject: Re: rdma-core: Minimum supported Debian & Ubuntu releases
-From:   Benjamin Drung <benjamin.drung@ionos.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org
-Date:   Mon, 26 Apr 2021 11:12:50 +0200
-In-Reply-To: <20210413164012.GJ227011@ziepe.ca>
-References: <8d930476e5daf34147a178420596230dfecf2038.camel@cloud.ionos.com>
-         <YHQttR48FsDJkuWd@unreal> <20210413164012.GJ227011@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-1 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uPu+ezYeFlB45Vh/sTLB83HgmTcVPeMSD1gh/BdnWTk=;
+        b=X3pob18vLZ85OBy+W/sAnaVg3j3gzsIUYWmBbr6+kK3FFQupGib/VhrKkhYm3FwCJc
+         lySyjllT0lmSAR3nMxDj5AHRZqO0NfOnGpskUMCLW282qaSk/YV0DZ69UR6/RQBBYKWM
+         ZsVZ/shpFUIXse4tv2BRPPrprk57u3YXlOOOu+KpYixSP3ixBqKYuiCCega8w1AzfpYU
+         hp2/aB/4OSpgxFp2zjjezL17F2Za7xcq172OnzbwUNYVg2ON28xuen70L67o0xUJ0A+3
+         /oZAmFmn1dSfBoanTN+Vt8SFfScytXEAzjfwKzOhlwDKdkLcCDu4oy/9V1dweDGoerRQ
+         Wv1g==
+X-Gm-Message-State: AOAM530uInYAfn4+KScCEl3yVvrSBEVEvvFkbbF3fBkGQIIUJ4hAfQmW
+        rwb8JUDslG3XdLUUD0FVAP/NZvI0/eIhcErhQgg=
+X-Google-Smtp-Source: ABdhPJyKaXDwydbhnBsEiPa4XNbX5FhQJWocMmsaNev2eUKZ3Duos8sZ7XRHdA7guE9QkTOgWVH4d0Qa06/cWM22kzU=
+X-Received: by 2002:aca:fd06:: with SMTP id b6mr2981357oii.89.1619428808291;
+ Mon, 26 Apr 2021 02:20:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210422161341.41929-1-rpearson@hpe.com> <20210422161341.41929-11-rpearson@hpe.com>
+In-Reply-To: <20210422161341.41929-11-rpearson@hpe.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Mon, 26 Apr 2021 17:19:57 +0800
+Message-ID: <CAD=hENfJQSBDmrHW4D6rJ36yBu5P1aa0gaJhBeKhxmaUt2DSyg@mail.gmail.com>
+Subject: Re: [PATCH for-next v5 10/10] Subject: [PATCH for-next v4 10/10]
+ RDMA/rxe: Disallow MR dereg and invalidate when bound
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Bob Pearson <rpearson@hpe.com>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Am Dienstag, den 13.04.2021, 13:40 -0300 schrieb Jason Gunthorpe:
-> On Mon, Apr 12, 2021 at 02:23:33PM +0300, Leon Romanovsky wrote:
-> > On Mon, Apr 12, 2021 at 12:31:26PM +0200, Benjamin Drung wrote:
-> > > Hi,
-> > > 
-> > > which Debian & Ubuntu releases should rdma-core support? Do we
-> > > have a
-> > > policy for that like all LTS versions?
-> > 
-> > I don't think that we have a policy for that.
-> 
-> I understand there are still active users on the prior LTS, so I
-> would
-> prefer to keep that working.
+On Fri, Apr 23, 2021 at 12:13 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>
+> Check that an MR has no bound MWs before allowing a dereg or invalidate
+> operation.
+>
+> Signed-off-by: Bob Pearson <rpearson@hpe.com>
+> ---
+> v5:
+>   Fix typo in v4 fix.
 
-So to put numbers on it. rdma-core should support:
+Thanks, Bob
 
-* Debian 9 (stretch) or newer
-* Ubuntu 18.04 LTS (bionic) or newer
+After removing "Subject: [PATCH for-next v4 10/10] " in the subject
+line and changing the function names to rxe_xxx in this V5,
+I am fine with this series.
 
-Debian 9 is currently oldstable and Ubuntu 18.04 LTS is the second
-newest Ubuntu LTS version. Or do you refer to Debian 8 "jessie" (which
-EOL last year) and Ubuntu 16.04 LTS (EOL around now)?
+Please wait for the comments from Jason Gunthorpe and Leon Romanovsky.
 
--- 
-Benjamin Drung
+Zhu Yanjun
 
-Senior DevOps Engineer and Debian & Ubuntu Developer
-Compute Platform Operations
-
-1&1 IONOS SE | Greifswalder Str. 207 | 10405 Berlin | Deutschland
-E-Mail: benjamin.drung@ionos.com | Web: www.ionos.de
-
-Hauptsitz Montabaur, Amtsgericht Montabaur, HRB 24498
-
-Vorstand: Hüseyin Dogan, Dr. Martin Endreß, Claudia Frese, Henning
-Kettler, Arthur Mai, Matthias Steinberg, Achim Weiß
-Aufsichtsratsvorsitzender: Markus Kadelke
-
-
-Member of United Internet
-
-Diese E-Mail kann vertrauliche und/oder gesetzlich geschützte
-Informationen enthalten. Wenn Sie nicht der bestimmungsgemäße Adressat
-sind oder diese E-Mail irrtümlich erhalten haben, unterrichten Sie
-bitte den Absender und vernichten Sie diese E-Mail. Anderen als dem
-bestimmungsgemäßen Adressaten ist untersagt, diese E-Mail zu speichern,
-weiterzuleiten oder ihren Inhalt auf welche Weise auch immer zu
-verwenden.
-
-This e-mail may contain confidential and/or privileged information. If
-you are not the intended recipient of this e-mail, you are hereby
-notified that saving, distribution or use of the content of this e-mail
-in any way is prohibited. If you have received this e-mail in error,
-please notify the sender and delete the e-mail.
-
-
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+>
+> v4:
+>   Added this patch to check mr->num_mw to disallow
+>   dereg and invalidate operations when MR has MW's
+>   bound.
+>
+> Reported-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_loc.h   |  1 +
+>  drivers/infiniband/sw/rxe/rxe_mr.c    | 25 +++++++++++++++++++++++++
+>  drivers/infiniband/sw/rxe/rxe_verbs.c | 11 -----------
+>  3 files changed, 26 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+> index 076e1460577f..93dbd81222e8 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+> @@ -87,6 +87,7 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
+>  int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length);
+>  int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
+>  int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey);
+> +int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
+>  void rxe_mr_cleanup(struct rxe_pool_entry *arg);
+>
+>  /* rxe_mw.c */
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+> index f871879e5f80..6a2377030f52 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> @@ -546,6 +546,13 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey)
+>                 goto err_drop_ref;
+>         }
+>
+> +       if (atomic_read(&mr->num_mw) > 0) {
+> +               pr_warn("%s: Attempt to invalidate an MR while bound to MWs\n",
+> +                       __func__);
+> +               ret = -EINVAL;
+> +               goto err_drop_ref;
+> +       }
+> +
+>         mr->state = RXE_MR_STATE_FREE;
+>         ret = 0;
+>
+> @@ -555,6 +562,24 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey)
+>         return ret;
+>  }
+>
+> +int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+> +{
+> +       struct rxe_mr *mr = to_rmr(ibmr);
+> +
+> +       if (atomic_read(&mr->num_mw) > 0) {
+> +               pr_warn("%s: Attempt to deregister an MR while bound to MWs\n",
+> +                       __func__);
+> +               return -EINVAL;
+> +       }
+> +
+> +       mr->state = RXE_MR_STATE_ZOMBIE;
+> +       rxe_drop_ref(mr_pd(mr));
+> +       rxe_drop_index(mr);
+> +       rxe_drop_ref(mr);
+> +
+> +       return 0;
+> +}
+> +
+>  void rxe_mr_cleanup(struct rxe_pool_entry *arg)
+>  {
+>         struct rxe_mr *mr = container_of(arg, typeof(*mr), pelem);
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> index d22f011a20f3..89f8f00215d6 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> @@ -913,17 +913,6 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
+>         return ERR_PTR(err);
+>  }
+>
+> -static int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+> -{
+> -       struct rxe_mr *mr = to_rmr(ibmr);
+> -
+> -       mr->state = RXE_MR_STATE_ZOMBIE;
+> -       rxe_drop_ref(mr_pd(mr));
+> -       rxe_drop_index(mr);
+> -       rxe_drop_ref(mr);
+> -       return 0;
+> -}
+> -
+>  static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
+>                                   u32 max_num_sg)
+>  {
+> --
+> 2.27.0
+>
