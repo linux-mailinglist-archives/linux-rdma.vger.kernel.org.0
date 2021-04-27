@@ -2,153 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BFC36BD10
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Apr 2021 04:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B9B36BE91
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Apr 2021 06:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233957AbhD0CAq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 26 Apr 2021 22:00:46 -0400
-Received: from mail-dm6nam12on2041.outbound.protection.outlook.com ([40.107.243.41]:59887
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231128AbhD0CAp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 26 Apr 2021 22:00:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Iu2eFcFUq/WDwLLuNKgVeXJ3D5EfOIPYbnp3FR2zxD77LBA0mwQ4WuT6vlpw9XutJjdtuLcWbsb9LxOUandxlbb+t03rWWE1kZtoref2DRImTBBpjfdysTQl9AroggQtSVZlG+aLI7CJ3vPwXX0SnMD8A3mg8SgN92IvmfKp2efjPE2b+TVLoKEgc3h1wLkRE/LT1HzCZ8OJPHgoxJ9B7KsgGeIdMGSQz6mztnoA0jOe3JjckEVEzpaKQmXLk9+OJEfotGHFpR/rnNvp68JY1FGBBj9YOn+E2l2ELGDQhsNS9TEBlLuEUPM8+f5a800RnyohWgx1Zzro7Mf5eh28Qw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=geMgtCiEVjOzkVNGKRgNe/YeyS+ZQum+KDQ24MCO0G4=;
- b=MXYvywh2kAwpKKiLEGWWCNfIPQ7gqFWybNz/g9JaarzdYD8XtuIfy73IRECtLnCQZTpk+7du30avrVZmao04gXs8fBhPso6idLalC3jTNTJqa9GVTQPlnBU0DGZoSBHFA2vo3dXXFaCgqpdTtwVYlThQx1ajbXLPlSbXDSX1RjsohWj5tl21p/iyRrf7fH9OK8iwJGH1EPkQRVYGF8OtYnX6TNG5QcajRfaTXq+zyQqfclOxkhie16hKoRdVdcQ07jifsncaYk/OoXfDAG2h0VE6SH+JQHF4Ky+82yqYUbjEtJ5zWB+PUHkzzIjZoxiPAlHUlr8WzkdhcXPtrXRUXw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=geMgtCiEVjOzkVNGKRgNe/YeyS+ZQum+KDQ24MCO0G4=;
- b=NLRepj1sppWj+h/naaMKUi6hAODOK6u6uBXc+gGz6egL7biFnFl7S+RN24VgPFr1R1IsaXljbmtwgh9XiZi0+pRdm5+uLQde9wG0KpZC/XWZXjJ/Qy+0ZT/rPJfrGOC6zYQzOufDsMHIB5IfImEurpd3fNLycIsQ5tRLwfsTfmVGAlhZ7OdmFGlgNILX2jH3H1SU8NycUzULhxDtSDYk4OW4wmUvFMLkC6RGR9fUMP7nYeFBUz0VPgEHJd/MXjstKy01EUy9natwZzuvm/jACh1Y5szM9/PwgU/qKF8OPx1UzqvPIvtSkW4hhp0qT/KasD9BM0GwGKqblyk96gNeqQ==
-Received: from MWHPR12CA0057.namprd12.prod.outlook.com (2603:10b6:300:103::19)
- by BL1PR12MB5112.namprd12.prod.outlook.com (2603:10b6:208:316::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.23; Tue, 27 Apr
- 2021 02:00:02 +0000
-Received: from CO1NAM11FT055.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:103:cafe::d3) by MWHPR12CA0057.outlook.office365.com
- (2603:10b6:300:103::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21 via Frontend
- Transport; Tue, 27 Apr 2021 02:00:01 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT055.mail.protection.outlook.com (10.13.175.129) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4065.21 via Frontend Transport; Tue, 27 Apr 2021 02:00:01 +0000
-Received: from [172.27.4.126] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 27 Apr
- 2021 02:00:00 +0000
-Subject: Re: [PATCH rdma-next v2 7/9] IB/cm: Clear all associated AV's ports
- when remove a cm device
+        id S229441AbhD0Eqb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Apr 2021 00:46:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229755AbhD0Eqa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 27 Apr 2021 00:46:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14910613A9;
+        Tue, 27 Apr 2021 04:45:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619498747;
+        bh=nqUQ105I8ndt2YTwIFdFRcbhEpkwSaveMBdmhZHZPIg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iecb3P9gO3xbUe9q0lVBsDNIoi8qVDLVw4WGxSChn7LDJpEMip6Uzka+by9W7QcjR
+         L9LqkCk13A5sk6slhGiC57h3aIo9yT+FaXfoEgKJoi7S2UHbwmwwGRQjCpw18kZbE+
+         7WmIp52vBsyI82dqrEMlePGUAWPQbvBM6ysbPEvMT0gWLsYlHwCWMSQUEjYe6CrWHz
+         a6fwQWFuDSlVp540LsnEr7xLH30MN8ix1Bov/ITS9zHQRktMXUjXl6oz3OKomHXij7
+         hG494CJfkEydYmKzR++XW56lsfjdNhWioiovkTR9ZkTVOyvalhf3q0RT2bBm0QBW7C
+         925UZf7r6N7Ug==
+Date:   Tue, 27 Apr 2021 07:45:43 +0300
+From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>
-References: <cover.1619004798.git.leonro@nvidia.com>
- <00c97755c41b06af84f621a1b3e0e8adfe0771cc.1619004798.git.leonro@nvidia.com>
- <20210422193417.GA2435405@nvidia.com>
- <2eee42c7-04aa-eea1-f8a1-debf700ad0b0@nvidia.com>
- <20210423142430.GI1370958@nvidia.com>
- <b14de504-52f8-14ac-f65c-bcdcd0eb1784@nvidia.com>
- <20210426135601.GT1370958@nvidia.com>
-From:   Mark Zhang <markzhang@nvidia.com>
-Message-ID: <0884ab78-7a02-c3fe-a3a6-871f5c03e235@nvidia.com>
-Date:   Tue, 27 Apr 2021 09:59:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+Cc:     Doug Ledford <dledford@redhat.com>, Shay Drory <shayd@nvidia.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next] RDMA/restrack: Delay QP deletion till all
+ users are gone
+Message-ID: <YIeW9ya7xV0yHfWx@unreal>
+References: <YH+yGj3cLuA5ga8s@unreal>
+ <20210422142939.GA2407382@nvidia.com>
+ <YIVosxurbZGlmCOw@unreal>
+ <20210425130857.GN1370958@nvidia.com>
+ <YIVyV2A0QhUXF+rw@unreal>
+ <20210425172254.GO1370958@nvidia.com>
+ <YIWpMbUg3VlT3uJy@unreal>
+ <20210426120349.GP1370958@nvidia.com>
+ <YIa7WtlYono4wP5T@unreal>
+ <20210426131107.GR1370958@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20210426135601.GT1370958@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8bdb544a-c296-44ba-5d48-08d909202b18
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5112:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5112080EC99FB89DBDC5B4FCC7419@BL1PR12MB5112.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: P0niI06VHNxIm8TD8hkxPFWOs1biZxsqbRbqbm1PK4lJXVHtVHrrHCmlRC1LL1POSAez8mUO0X8JjPu3pf8jzCm1Q64ywuzFafZkmREstOHoM3mY7udITCQoLYpoyaiCH9vq8orCNAfnkXDcRjT8/Y2UHAZhPZC4ZYRrprvypbU+YkMPRfm0h7pR4EIpsNbtPp6odUGjPiqUmk1wUmZmRzZUy2XkDdSykn1mEaty2ftAF6TFLaEeT41yoPpl9OaTy/dfhMFD3NXEZL1AvoariCrNSiBQhgEVINlYxfsFF/GNRqvmNclDyP1JbGBkrdOqfKYwxHTSD9vODfX0M9Y5HcXwNj6D3F/CSL5QbWW0SHPVInC11kUfgA9WTNd4m2Z8ZQpzC4t1Xb7oB4RIT7jiHkBWB0KgjPaO3LXftu/7dn45hr16I4eLpISiGB3vpPesn4fvWohD0C4Ct0SuMZGbanAD5br+/Zqo3Ffdsq1gn3P/bHhjO/fGnduDkmsC/KRZDsah8LAXTxUgs0QApUNtJNtZGkLLvu0BabQ6H4zclI/T/dWVr2N1btQbO0G6Vk9JG5k2jfAqdLVExzaAcq/3n7WcjVr9QqpnoNEnt1WetlJGCmq3ptc4YFHN94fgG44i7+1scduVLDqdxhJxBdgATVO9C0osJJg82HVdrvJRL+iouabidD7gWeccU99nG5+h
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(136003)(376002)(46966006)(36840700001)(2616005)(82310400003)(2906002)(8936002)(8676002)(6862004)(31696002)(36860700001)(426003)(53546011)(5660300002)(6636002)(37006003)(478600001)(16576012)(54906003)(316002)(70206006)(47076005)(70586007)(36906005)(16526019)(26005)(6666004)(336012)(4326008)(82740400003)(356005)(31686004)(7636003)(186003)(36756003)(86362001)(83380400001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2021 02:00:01.5276
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8bdb544a-c296-44ba-5d48-08d909202b18
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT055.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5112
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426131107.GR1370958@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Apr 26, 2021 at 10:11:07AM -0300, Jason Gunthorpe wrote:
+> On Mon, Apr 26, 2021 at 04:08:42PM +0300, Leon Romanovsky wrote:
+> > On Mon, Apr 26, 2021 at 09:03:49AM -0300, Jason Gunthorpe wrote:
+> > > On Sun, Apr 25, 2021 at 08:38:57PM +0300, Leon Romanovsky wrote:
+> > > > On Sun, Apr 25, 2021 at 02:22:54PM -0300, Jason Gunthorpe wrote:
+> > > > > On Sun, Apr 25, 2021 at 04:44:55PM +0300, Leon Romanovsky wrote:
+> > > > > > > > The proposed prepare/abort/finish flow is much harder to implement correctly.
+> > > > > > > > Let's take as an example ib_destroy_qp_user(), we called to rdma_rw_cleanup_mrs(),
+> > > > > > > > but didn't restore them after .destroy_qp() failure.
+> > > > > > > 
+> > > > > > > I think it is a bug we call rdma_rw code in a a user path.
+> > > > > > 
+> > > > > > It was an example of a flow that wasn't restored properly. 
+> > > > > > The same goes for ib_dealloc_pd_user(), release of __internal_mr.
+> > > > > > 
+> > > > > > Of course, these flows shouldn't fail because of being kernel flows, but it is not clear
+> > > > > > from the code.
+> > > > > 
+> > > > > Well, exactly, user flows are not allowed to do extra stuff before
+> > > > > calling the driver destroy
+> > > > > 
+> > > > > So the arrangement I gave is reasonable and make sense, it is
+> > > > > certainly better than the hodge podge of ordering that we have today
+> > > > 
+> > > > I thought about simpler solution - move rdma_restrack_del() before .destroy() 
+> > > > callbacks together with attempt to readd res object if destroy fails.
+> > > 
+> > > Is isn't simpler, now add can fail and can't be recovered
+> > 
+> > It is not different from failure during first call to rdma_restrack_add().
+> > You didn't like the idea to be strict with addition of restrack, but
+> > want to be strict in reinsert.
+> 
+> It is ugly we couldn't fix the add side, lets not repeat that uglyness
+> in other places
 
+Why can't we fix _add?
 
-On 4/26/2021 9:56 PM, Jason Gunthorpe wrote:
-> On Sat, Apr 24, 2021 at 10:33:13AM +0800, Mark Zhang wrote:
->>>
->>> Set reverse call chains:
->>>
->>> cm_init_av_for_lap()
->>>    cm_lap_handler(work) (ok)
->>>
->>> cm_init_av_for_response()
->>>    cm_req_handler(work) (OK, cm_id_priv is on stack)
->>>    cm_sidr_req_handler(work) (OK, cm_id_priv is on stack)
->>>
->>> cm_init_av_by_path()
->>>    cm_req_handler(work) (OK, cm_id_priv is on stack)
->>>    cm_lap_handler(work) (OK)
->>>    ib_send_cm_req() (not locked)
->>>      cma_connect_ib()
->>>       rdma_connect_locked()
->>>        [..]
->>>      ipoib_cm_send_req()
->>>      srp_send_req()
->>>        srp_connect_ch()
->>>         [..]
->>>    ib_send_cm_sidr_req() (not locked)
->>>     cma_resolve_ib_udp()
->>>      rdma_connect_locked()
->>>
->>
->> Both cm_init_av_for_lap()
-> 
-> Well, it is wrong today, look at cm_lap_handler():
-> 
-> 	spin_lock_irq(&cm_id_priv->lock);
-> 	[..]
-> 	ret = cm_init_av_for_lap(work->port, work->mad_recv_wc->wc,
-> 				 work->mad_recv_wc->recv_buf.grh,
-> 				 &cm_id_priv->av);
-> 	[..]
-> 	cm_queue_work_unlock(cm_id_priv, work);
-> 
-> These need to be restructured, the sleeping calls to extract the
-> new_ah_attr have to be done before we go into the spinlock.
-> 
-> That is probably the general solution to all the cases, do some work
-> before the lock and then copy from the stack to the memory under the
-> spinlock.
+Thanks
 
-Maybe we can call cm_set_av_port(av, port) outside of cm_init_av_*? So 
-that we can apply cm_id_priv->lock when needed.
+> 
+> Jason
