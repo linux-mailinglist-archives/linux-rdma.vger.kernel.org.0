@@ -2,63 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB2036BEA4
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Apr 2021 06:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB5736BEAF
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Apr 2021 06:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhD0EwP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Apr 2021 00:52:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42136 "EHLO mail.kernel.org"
+        id S229501AbhD0E6J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Apr 2021 00:58:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229755AbhD0EwO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 27 Apr 2021 00:52:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 738F0613B3;
-        Tue, 27 Apr 2021 04:51:31 +0000 (UTC)
+        id S229498AbhD0E6J (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 27 Apr 2021 00:58:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EE5C60FD9;
+        Tue, 27 Apr 2021 04:57:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619499092;
-        bh=3gBAzoIll1p89OyvYWwNxI5cs0m/I/82n5G1OFW5s9U=;
+        s=k20201202; t=1619499446;
+        bh=ZG8VxIhPmHsX79/PLvYJi32V9olNIjqADiJJRI3R5y4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e9iDy69cnP5nWbi5k2k/p3ad3SvZwXavXZwlCyzRe4mzqzzhjOD+qtWUtLolwmEr4
-         eAdsL9DWxkc4y0kFde9h8ZTD/Ecz7BEhbrWE/cSOoeyXzymy3FECOAEMYoGf07dGgk
-         /BHKDA5XZr91dDIyYTwLmwZmXU+O6wFt6Jyw/U4L2y+ICWkadRveHr7XKOhXMo9yOA
-         Uo7SepR/E60UstxCdw1BJzwgw38skBFceH0jpytt0AFvDjS5BmwxHXvzNInBbLEveX
-         OnYdYuXZ0+6ThhFLY/P7Zy5q4vTRwIxZku0Mh77L4xePs+vdtdWB1pzn+DOtJ+S2Gv
-         JZWZF84pIEBwg==
-Date:   Tue, 27 Apr 2021 07:51:28 +0300
+        b=GDT9lGFWhAhCkY+eQSJYuojZREDZh/dsCP2SK1mgz5aJ5Duz8bZdFOASU7mJhjEwJ
+         /8cG2tHXaUuE+SlVSssKINqNOhesz1e/G6gZPXJ3+7KU7uQZcwzvHAXgW6eBT7zrFY
+         5h3l5qFfq2dxRbUbHETW1Iinatn02a4M3cJL/fxEOvYndcWfpBBS0iRHiUikWjHeLu
+         eDdFSfOkaP9hAH1XBoTQ+M031Aoxg6b7c3SDuhkIsdbifih1tAjX+iWPxKBdx98L7a
+         ZXfXK1xCzGe7LKBMCBfxBPr29Io223YdR/SxR35phKtiMVJmE4OuI/AWq6avEDqb3l
+         lsoApSodGU4JQ==
+Date:   Tue, 27 Apr 2021 07:57:23 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Cc:     selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
-        somnath.kotur@broadcom.com, sriharsha.basavapatna@broadcom.com,
-        nareshkumar.pbs@broadcom.com, dledford@redhat.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/bnxt_re/qplib_res: Fix a double free in
- bnxt_qplib_alloc_res
-Message-ID: <YIeYUD5iWv/TI3PH@unreal>
-References: <20210426140614.6722-1-lyl2019@mail.ustc.edu.cn>
+To:     Benjamin Drung <benjamin.drung@ionos.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-core] README: Document supported Debian/Ubuntu
+ releases
+Message-ID: <YIeZsyU6fw6SoruU@unreal>
+References: <20210426153627.444061-1-benjamin.drung@ionos.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210426140614.6722-1-lyl2019@mail.ustc.edu.cn>
+In-Reply-To: <20210426153627.444061-1-benjamin.drung@ionos.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 07:06:14AM -0700, Lv Yunlong wrote:
-> In bnxt_qplib_alloc_res, it calls bnxt_qplib_alloc_dpi_tbl().
-> Inside bnxt_qplib_alloc_dpi_tbl, dpit->dbr_bar_reg_iomem is freed via
-> pci_iounmap() in unmap_io error branch. After the callee returns err code,
-> bnxt_qplib_alloc_res calls bnxt_qplib_free_res()->bnxt_qplib_free_dpi_tbl()
-> in fail branch. Then dpit->dbr_bar_reg_iomem is freed in the second time by
-> pci_iounmap().
+On Mon, Apr 26, 2021 at 05:36:27PM +0200, Benjamin Drung wrote:
+> The Debian package in Debian testing/unstable uses a newer debhelper
+> versions and drops the debug symbol migration. Document which Debian and
+> Ubuntu release are supported to ensure that the Debian packaging for the
+> upstream project does not drop support for those old releases.
 > 
-> My patch set dpit->dbr_bar_reg_iomem to NULL after it is freed by pci_iounmap()
-> in the first time, to avoid the double free.
-> 
-> Fixes: 1ac5a40479752 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> Signed-off-by: Benjamin Drung <benjamin.drung@ionos.com>
 > ---
->  drivers/infiniband/hw/bnxt_re/qplib_res.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
+>  README.md | 5 +++++
+>  1 file changed, 5 insertions(+)
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Thanks, applied.
