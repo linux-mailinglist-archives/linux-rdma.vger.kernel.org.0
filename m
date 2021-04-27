@@ -2,92 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B9B36BE91
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Apr 2021 06:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB2036BEA4
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Apr 2021 06:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229441AbhD0Eqb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Apr 2021 00:46:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38278 "EHLO mail.kernel.org"
+        id S230039AbhD0EwP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Apr 2021 00:52:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229755AbhD0Eqa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 27 Apr 2021 00:46:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14910613A9;
-        Tue, 27 Apr 2021 04:45:46 +0000 (UTC)
+        id S229755AbhD0EwO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 27 Apr 2021 00:52:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 738F0613B3;
+        Tue, 27 Apr 2021 04:51:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619498747;
-        bh=nqUQ105I8ndt2YTwIFdFRcbhEpkwSaveMBdmhZHZPIg=;
+        s=k20201202; t=1619499092;
+        bh=3gBAzoIll1p89OyvYWwNxI5cs0m/I/82n5G1OFW5s9U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iecb3P9gO3xbUe9q0lVBsDNIoi8qVDLVw4WGxSChn7LDJpEMip6Uzka+by9W7QcjR
-         L9LqkCk13A5sk6slhGiC57h3aIo9yT+FaXfoEgKJoi7S2UHbwmwwGRQjCpw18kZbE+
-         7WmIp52vBsyI82dqrEMlePGUAWPQbvBM6ysbPEvMT0gWLsYlHwCWMSQUEjYe6CrWHz
-         a6fwQWFuDSlVp540LsnEr7xLH30MN8ix1Bov/ITS9zHQRktMXUjXl6oz3OKomHXij7
-         hG494CJfkEydYmKzR++XW56lsfjdNhWioiovkTR9ZkTVOyvalhf3q0RT2bBm0QBW7C
-         925UZf7r6N7Ug==
-Date:   Tue, 27 Apr 2021 07:45:43 +0300
+        b=e9iDy69cnP5nWbi5k2k/p3ad3SvZwXavXZwlCyzRe4mzqzzhjOD+qtWUtLolwmEr4
+         eAdsL9DWxkc4y0kFde9h8ZTD/Ecz7BEhbrWE/cSOoeyXzymy3FECOAEMYoGf07dGgk
+         /BHKDA5XZr91dDIyYTwLmwZmXU+O6wFt6Jyw/U4L2y+ICWkadRveHr7XKOhXMo9yOA
+         Uo7SepR/E60UstxCdw1BJzwgw38skBFceH0jpytt0AFvDjS5BmwxHXvzNInBbLEveX
+         OnYdYuXZ0+6ThhFLY/P7Zy5q4vTRwIxZku0Mh77L4xePs+vdtdWB1pzn+DOtJ+S2Gv
+         JZWZF84pIEBwg==
+Date:   Tue, 27 Apr 2021 07:51:28 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Shay Drory <shayd@nvidia.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next] RDMA/restrack: Delay QP deletion till all
- users are gone
-Message-ID: <YIeW9ya7xV0yHfWx@unreal>
-References: <YH+yGj3cLuA5ga8s@unreal>
- <20210422142939.GA2407382@nvidia.com>
- <YIVosxurbZGlmCOw@unreal>
- <20210425130857.GN1370958@nvidia.com>
- <YIVyV2A0QhUXF+rw@unreal>
- <20210425172254.GO1370958@nvidia.com>
- <YIWpMbUg3VlT3uJy@unreal>
- <20210426120349.GP1370958@nvidia.com>
- <YIa7WtlYono4wP5T@unreal>
- <20210426131107.GR1370958@nvidia.com>
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Cc:     selvin.xavier@broadcom.com, devesh.sharma@broadcom.com,
+        somnath.kotur@broadcom.com, sriharsha.basavapatna@broadcom.com,
+        nareshkumar.pbs@broadcom.com, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/bnxt_re/qplib_res: Fix a double free in
+ bnxt_qplib_alloc_res
+Message-ID: <YIeYUD5iWv/TI3PH@unreal>
+References: <20210426140614.6722-1-lyl2019@mail.ustc.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210426131107.GR1370958@nvidia.com>
+In-Reply-To: <20210426140614.6722-1-lyl2019@mail.ustc.edu.cn>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 10:11:07AM -0300, Jason Gunthorpe wrote:
-> On Mon, Apr 26, 2021 at 04:08:42PM +0300, Leon Romanovsky wrote:
-> > On Mon, Apr 26, 2021 at 09:03:49AM -0300, Jason Gunthorpe wrote:
-> > > On Sun, Apr 25, 2021 at 08:38:57PM +0300, Leon Romanovsky wrote:
-> > > > On Sun, Apr 25, 2021 at 02:22:54PM -0300, Jason Gunthorpe wrote:
-> > > > > On Sun, Apr 25, 2021 at 04:44:55PM +0300, Leon Romanovsky wrote:
-> > > > > > > > The proposed prepare/abort/finish flow is much harder to implement correctly.
-> > > > > > > > Let's take as an example ib_destroy_qp_user(), we called to rdma_rw_cleanup_mrs(),
-> > > > > > > > but didn't restore them after .destroy_qp() failure.
-> > > > > > > 
-> > > > > > > I think it is a bug we call rdma_rw code in a a user path.
-> > > > > > 
-> > > > > > It was an example of a flow that wasn't restored properly. 
-> > > > > > The same goes for ib_dealloc_pd_user(), release of __internal_mr.
-> > > > > > 
-> > > > > > Of course, these flows shouldn't fail because of being kernel flows, but it is not clear
-> > > > > > from the code.
-> > > > > 
-> > > > > Well, exactly, user flows are not allowed to do extra stuff before
-> > > > > calling the driver destroy
-> > > > > 
-> > > > > So the arrangement I gave is reasonable and make sense, it is
-> > > > > certainly better than the hodge podge of ordering that we have today
-> > > > 
-> > > > I thought about simpler solution - move rdma_restrack_del() before .destroy() 
-> > > > callbacks together with attempt to readd res object if destroy fails.
-> > > 
-> > > Is isn't simpler, now add can fail and can't be recovered
-> > 
-> > It is not different from failure during first call to rdma_restrack_add().
-> > You didn't like the idea to be strict with addition of restrack, but
-> > want to be strict in reinsert.
+On Mon, Apr 26, 2021 at 07:06:14AM -0700, Lv Yunlong wrote:
+> In bnxt_qplib_alloc_res, it calls bnxt_qplib_alloc_dpi_tbl().
+> Inside bnxt_qplib_alloc_dpi_tbl, dpit->dbr_bar_reg_iomem is freed via
+> pci_iounmap() in unmap_io error branch. After the callee returns err code,
+> bnxt_qplib_alloc_res calls bnxt_qplib_free_res()->bnxt_qplib_free_dpi_tbl()
+> in fail branch. Then dpit->dbr_bar_reg_iomem is freed in the second time by
+> pci_iounmap().
 > 
-> It is ugly we couldn't fix the add side, lets not repeat that uglyness
-> in other places
-
-Why can't we fix _add?
-
-Thanks
-
+> My patch set dpit->dbr_bar_reg_iomem to NULL after it is freed by pci_iounmap()
+> in the first time, to avoid the double free.
 > 
-> Jason
+> Fixes: 1ac5a40479752 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> ---
+>  drivers/infiniband/hw/bnxt_re/qplib_res.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
