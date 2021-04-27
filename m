@@ -2,52 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB5736BEAF
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Apr 2021 06:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A633F36BEBB
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Apr 2021 07:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbhD0E6J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Apr 2021 00:58:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44816 "EHLO mail.kernel.org"
+        id S229541AbhD0FJJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Apr 2021 01:09:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhD0E6J (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 27 Apr 2021 00:58:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EE5C60FD9;
-        Tue, 27 Apr 2021 04:57:25 +0000 (UTC)
+        id S229490AbhD0FJI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 27 Apr 2021 01:09:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5ABB361078;
+        Tue, 27 Apr 2021 05:08:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619499446;
-        bh=ZG8VxIhPmHsX79/PLvYJi32V9olNIjqADiJJRI3R5y4=;
+        s=k20201202; t=1619500106;
+        bh=se4N3XRMNqnR8HJf2nwyOdDriOFE0QMWPZMG7tgwpMs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GDT9lGFWhAhCkY+eQSJYuojZREDZh/dsCP2SK1mgz5aJ5Duz8bZdFOASU7mJhjEwJ
-         /8cG2tHXaUuE+SlVSssKINqNOhesz1e/G6gZPXJ3+7KU7uQZcwzvHAXgW6eBT7zrFY
-         5h3l5qFfq2dxRbUbHETW1Iinatn02a4M3cJL/fxEOvYndcWfpBBS0iRHiUikWjHeLu
-         eDdFSfOkaP9hAH1XBoTQ+M031Aoxg6b7c3SDuhkIsdbifih1tAjX+iWPxKBdx98L7a
-         ZXfXK1xCzGe7LKBMCBfxBPr29Io223YdR/SxR35phKtiMVJmE4OuI/AWq6avEDqb3l
-         lsoApSodGU4JQ==
-Date:   Tue, 27 Apr 2021 07:57:23 +0300
+        b=Q0fyONEJq1UU0PsUJ8Kvd14hKCyM/qCmIpdnhlB+1gwqauzRN9cPAMH7k5avtYyFG
+         Lm/sCfs/xJubDR3BrzvGAXZuAEaJwUSqh+8Gz08D9S8r6OhkJff663Wlgw75qNVMeC
+         Tkd3ZaQrd6nzwTs0G4AM/7AE7HfTq3yz4X6dgPKDijKtqjA0emnUK46MtEHNH1MnfU
+         7WwprK6oxOAiDpn2KaV+vL37zqLSXfMe8lsOnag0U9FNyAE5bZpXXHvvwX8XcZd1JP
+         zgCQN5wo/FfIPQ1mEaiUUfmwKaF1oWmWnKfbU+4Wsme4V7TUGAiO2o9fDtpHaV0DeF
+         fEStF5weAgz4Q==
+Date:   Tue, 27 Apr 2021 08:08:22 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Benjamin Drung <benjamin.drung@ionos.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-core] README: Document supported Debian/Ubuntu
- releases
-Message-ID: <YIeZsyU6fw6SoruU@unreal>
-References: <20210426153627.444061-1-benjamin.drung@ionos.com>
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Yevgeny Kliteynik <kliteyn@nvidia.com>,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH net-next] net/mlx5: Fix some error messages
+Message-ID: <YIecRqSNq6aPiwVA@unreal>
+References: <YIKywXhusLj4cDFM@mwanda>
+ <YIUOoTKRwy3UTRWz@unreal>
+ <20210426093314.5f73781e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <d2eca0209e76544b09021d94a47bc623ebfdc20c.camel@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210426153627.444061-1-benjamin.drung@ionos.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d2eca0209e76544b09021d94a47bc623ebfdc20c.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 05:36:27PM +0200, Benjamin Drung wrote:
-> The Debian package in Debian testing/unstable uses a newer debhelper
-> versions and drops the debug symbol migration. Document which Debian and
-> Ubuntu release are supported to ensure that the Debian packaging for the
-> upstream project does not drop support for those old releases.
+On Mon, Apr 26, 2021 at 11:47:03AM -0700, Saeed Mahameed wrote:
+> On Mon, 2021-04-26 at 09:33 -0700, Jakub Kicinski wrote:
+> > On Sun, 25 Apr 2021 09:39:29 +0300 Leon Romanovsky wrote:
+> > > > diff --git
+> > > > a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtb
+> > > > l.c
+> > > > b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtb
+> > > > l.c
+> > > > index a81ece94f599..95f5c1a27718 100644
+> > > > ---
+> > > > a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtb
+> > > > l.c
+> > > > +++
+> > > > b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtb
+> > > > l.c
+> > > > @@ -83,16 +83,16 @@ mlx5_eswitch_termtbl_create(struct
+> > > > mlx5_core_dev *dev,
+> > > >         ft_attr.autogroup.max_num_groups = 1;
+> > > >         tt->termtbl =
+> > > > mlx5_create_auto_grouped_flow_table(root_ns, &ft_attr);
+> > > >         if (IS_ERR(tt->termtbl)) {
+> > > > -               esw_warn(dev, "Failed to create termination table
+> > > > (error %d)\n",
+> > > > -                        IS_ERR(tt->termtbl));
+> > > > +               esw_warn(dev, "Failed to create termination table
+> > > > (error %ld)\n",
+> > > > +                        PTR_ERR(tt->termtbl));
+> > 
+> > If these are error pointers - perhaps %pe?
 > 
-> Signed-off-by: Benjamin Drung <benjamin.drung@ionos.com>
-> ---
->  README.md | 5 +++++
->  1 file changed, 5 insertions(+)
+> no reason to use %pe, we know it is an err ptr at this point so just
+> report PTR_ERR() 
 
-Thanks, applied.
+Saeed,
+
+%pe prints string "-EINVAL" instead of "22", which is better.
+
+I didn't know about such format specifier.
+
+Thanks
