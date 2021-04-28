@@ -2,99 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AA936D94A
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Apr 2021 16:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8F036DC0A
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Apr 2021 17:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237002AbhD1OM2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Apr 2021 10:12:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48726 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231375AbhD1OM1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:12:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 269E86143E;
-        Wed, 28 Apr 2021 14:11:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619619102;
-        bh=JqXmB8zVNyXt71+iiCPZtiUidbF8eGCSLfw79Z1buCE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DgOlO1ukeDW/i4at6ahybTst2rUcsJxWEYrgQjjQOwjcfSjvrlYK63d2LOD5t17k9
-         8iyDu8sAxdZSIAlevDUKcJk9vxYlJd8Sl0mEYLtvCEa2/ngGkAgcLR+8VWxgGSvvDO
-         2WI9rGpZ15z3L+OIC1bSROFuL57IGDhWrlREWaoBrNMP66x4V9egJfj+IQvWSnQlFD
-         MTGDvCw33qpgGFOTdUj1hyPnN/JO9nSFHta9zrnx6XZMGCkI9nagDi5eVPYUAO8e2s
-         uxzxkHTagZpZISUYBWsD9qqF1tQzi0T+nXdjVwpwA0k0tu9jjfGz13BbnLnPwk2RvP
-         dk5tNQw6SLlRA==
-Date:   Wed, 28 Apr 2021 15:00:45 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     David Ahern <dsahern@gmail.com>, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, Yossi Leybovich <sleybo@amazon.com>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH iproute2-next 2/2] rdma: Add copy-on-fork to get sys
- command
-Message-ID: <YIlObZNuu8TBxHLH@unreal>
-References: <20210428114231.96944-1-galpress@amazon.com>
- <20210428114231.96944-3-galpress@amazon.com>
+        id S240842AbhD1Pld (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Apr 2021 11:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240855AbhD1Pjg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Apr 2021 11:39:36 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6BB2C061343;
+        Wed, 28 Apr 2021 08:38:20 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id k25so63460388oic.4;
+        Wed, 28 Apr 2021 08:38:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0WptjyXS6/FeNncYBoJN3uRnsgQI82+Frjd4e/WulQ4=;
+        b=qD3bHSs2GWjMZN7e8HFHZ9MxdNXBrsTvMQjG37BiEsoMb6hHhC8n1nKX2WcrnLL+S2
+         WZeLeLbFg5KhJS0pizbpWXWD7VASeTLxHxrlbZNznDlaYfEqH9XHaFh5elxMfhSlxwA/
+         TiSqT7XYlojBo/geSC5PEB5dSrmEGTtV5UlbUStypYInvy4xW77zLM0NYp0yA6CDfpuK
+         UvSek5mOBsquLcUXlHzOnOM9BdcYeJDqu44lDa4TspzMI/8XW2PQdm2O/3mWsubXhmdk
+         EZE9/EHKIhloBtSbma3UyHqCxTlU64uaDs4ulkwz7WgP+iIFxx+WzdQT/NS+BBheL2Qf
+         gIOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0WptjyXS6/FeNncYBoJN3uRnsgQI82+Frjd4e/WulQ4=;
+        b=J52xq7cKR9wvcPtIlkD3pDMyPXj3J7EpAEp+Gl9BZK376ol9dh5pmyByz9Leerjs+m
+         eiPuhQLcCgyJNqFL7NQCZQLXahK62FWMwL4AZU58ccxjvN6HdYt3boBhYyWEoVgSjmxy
+         M7K8V0g2RsgE8swqqiLJ3O0RQgcbCI2hwx9YvqmN+KKZxbOTNqYogZdaZkrRLVDPq+vZ
+         vNVe0hpkRE6foDiMk9dn2fKzX3g1Hyg6tpGXzbHksKQQVoUNjbKVKKPVOBwAxGFOxdEI
+         HAEfifnPWRgeRQ8xn21K36fcdfTsHP7ivDqu6ufERITcubrzIdN5jZYRRUHAKFM04iZG
+         +hjA==
+X-Gm-Message-State: AOAM5337eOacCA+k6KNxij4OwhPn7K56tRsJBU86MQiR+1jTj/lK6DlI
+        UJs2lFwAMMBTSnGRdil1FzLGQjxNBJ4=
+X-Google-Smtp-Source: ABdhPJz5p/u9tm8/sZ/GbvngOg3qyimwIYOUnQM9Bwnw6dcWyqnJW1oYC/KrDJq4jeMI5ZEU9UlGBA==
+X-Received: by 2002:aca:53c6:: with SMTP id h189mr382871oib.27.1619624299896;
+        Wed, 28 Apr 2021 08:38:19 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.33])
+        by smtp.googlemail.com with ESMTPSA id n105sm64731ota.45.2021.04.28.08.38.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Apr 2021 08:38:19 -0700 (PDT)
+Subject: Re: [PATCH iproute2-next 0/3] Add context and SRQ information to
+ rdmatool
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, Ido Kalir <idok@nvidia.com>,
+        linux-netdev <netdev@vger.kernel.org>,
+        Mark Zhang <markz@mellanox.com>,
+        Neta Ostrovsky <netao@nvidia.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <cover.1619351025.git.leonro@nvidia.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <5914c535-7b2f-3dbc-f804-41fd0ce37488@gmail.com>
+Date:   Wed, 28 Apr 2021 09:38:16 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428114231.96944-3-galpress@amazon.com>
+In-Reply-To: <cover.1619351025.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 02:42:31PM +0300, Gal Pressman wrote:
-> The new attribute indicates that the kernel copies DMA pages on fork,
-> hence fork support through madvise and MADV_DONTFORK is not needed.
+On 4/25/21 5:53 AM, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> If the attribute is not reported (expected on older kernels),
-> copy-on-fork is disabled.
+> Hi,
 > 
-> Example:
-> $ rdma sys
-> netns shared
-> copy-on-fork on
-
-I don't think that we need to print them on separate lines.
-$ rdma sys
-netns shared copy-on-fork on
+> This is the user space part of already accepted to the kernel series
+> that extends RDMA netlink interface to return uverbs context and SRQ
+> information.
 > 
-> Signed-off-by: Gal Pressman <galpress@amazon.com>
-> ---
->  rdma/sys.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+> The accepted kernel series can be seen here:
+> https://lore.kernel.org/linux-rdma/20210422133459.GA2390260@nvidia.com/
 > 
-> diff --git a/rdma/sys.c b/rdma/sys.c
-> index 8fb565d70598..dd9c6da33e2a 100644
-> --- a/rdma/sys.c
-> +++ b/rdma/sys.c
-> @@ -38,6 +38,15 @@ static int sys_show_parse_cb(const struct nlmsghdr *nlh, void *data)
->  		print_color_string(PRINT_ANY, COLOR_NONE, "netns", "netns %s\n",
->  				   mode_str);
->  	}
-> +
-> +	if (tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK])
-> +		print_color_on_off(PRINT_ANY, COLOR_NONE, "copy-on-fork",
-> +				   "copy-on-fork %s\n",
-> +				   mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK]));
-> +	else
-> +		print_color_on_off(PRINT_ANY, COLOR_NONE, "copy-on-fork",
-> +				   "copy-on-fork %s\n", false);
-
-Let's simplify it
-        bool cow = false;
-
- +	if (tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK])
- +		cow = mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK]);
- +
- +	print_color_on_off(PRINT_ANY, COLOR_NONE, "copy-on-fork", "copy-on-fork %s", cow);
-
-
-
-> +
->  	return MNL_CB_OK;
->  }
->  
-> -- 
-> 2.31.1
+> Thanks
 > 
+> Neta Ostrovsky (2):
+>   rdma: Update uapi headers
+>   rdma: Add context resource tracking information
+>   rdma: Add SRQ resource tracking information
+> 
+>  man/man8/rdma-resource.8              |  12 +-
+>  rdma/Makefile                         |   2 +-
+>  rdma/include/uapi/rdma/rdma_netlink.h |  13 ++
+>  rdma/res-ctx.c                        | 103 ++++++++++
+>  rdma/res-srq.c                        | 274 ++++++++++++++++++++++++++
+>  rdma/res.c                            |   8 +-
+>  rdma/res.h                            |  28 +++
+>  rdma/utils.c                          |   8 +
+>  8 files changed, 445 insertions(+), 3 deletions(-)
+>  create mode 100644 rdma/res-ctx.c
+>  create mode 100644 rdma/res-srq.c
+> 
+
+applied to iproute2-next.
