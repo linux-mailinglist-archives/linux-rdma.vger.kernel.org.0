@@ -2,72 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8E636D2E1
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Apr 2021 09:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4A836D6AE
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Apr 2021 13:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232207AbhD1HQG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Apr 2021 03:16:06 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3094 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236616AbhD1HQB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Apr 2021 03:16:01 -0400
-Received: from dggeml701-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FVVD634dHzWcYP;
-        Wed, 28 Apr 2021 15:11:18 +0800 (CST)
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggeml701-chm.china.huawei.com (10.3.17.134) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 28 Apr 2021 15:15:15 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 28 Apr 2021 15:15:14 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, Yixian Liu <liuyixian@huawei.com>,
-        Weihang Li <liweihang@huawei.com>
-Subject: [PATCH for-next] RDMA/hns: Remove the condition of light load for posting DWQE
-Date:   Wed, 28 Apr 2021 15:12:30 +0800
-Message-ID: <1619593950-29414-1-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S229520AbhD1Lno (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Apr 2021 07:43:44 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:9719 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhD1Lno (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Apr 2021 07:43:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1619610180; x=1651146180;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QnD6akGO//FI+gZLQLLDdH5w1c3ZnX3NMF7Lc/VTaH0=;
+  b=SDEcphjlVhcPwoiIgeGxs/TE9kTptnf25Nhef+sfvYhuKxNc7+MzSUAr
+   oKeoMKs+Ib+Q/7b6y09oiF2adZcjJHj45YLXKshRrx/lz/e22GHzdFAJB
+   ybzKE6cKaOgyt4X+031nUlCIYInyx7+S1NdB6Y/AFnEERYgysRSiNQpJ9
+   s=;
+X-IronPort-AV: E=Sophos;i="5.82,258,1613433600"; 
+   d="scan'208";a="131440658"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 28 Apr 2021 11:42:53 +0000
+Received: from EX13D13EUB002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id 30B61A1BCB;
+        Wed, 28 Apr 2021 11:42:50 +0000 (UTC)
+Received: from EX13MTAUEB002.ant.amazon.com (10.43.60.12) by
+ EX13D13EUB002.ant.amazon.com (10.43.166.205) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 28 Apr 2021 11:42:49 +0000
+Received: from 8c85908914bf.ant.amazon.com.com (10.85.90.101) by
+ mail-relay.amazon.com (10.43.60.234) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Wed, 28 Apr 2021 11:42:47 +0000
+From:   Gal Pressman <galpress@amazon.com>
+To:     David Ahern <dsahern@gmail.com>
+CC:     <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Gal Pressman <galpress@amazon.com>
+Subject: [PATCH iproute2-next 0/2] Add copy-on-fork to get sys command
+Date:   Wed, 28 Apr 2021 14:42:29 +0300
+Message-ID: <20210428114231.96944-1-galpress@amazon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema753-chm.china.huawei.com (10.1.198.195)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yixian Liu <liuyixian@huawei.com>
+This is the userspace part for the new copy-on-fork attribute added to
+the get sys netlink command.
 
-Even in the case of heavy load, direct WQE can still be posted. The
-hardware will decide whether to drop the DWQE or not. Thus, the limit needs
-to be removed.
+The new attribute indicates that the kernel copies DMA pages on fork,
+hence fork support through madvise and MADV_DONTFORK is not needed.
 
-Fixes: 01584a5edcc4 ("RDMA/hns: Add support of direct wqe")
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Kernel series was merged:
+https://lore.kernel.org/linux-rdma/20210418121025.66849-1-galpress@amazon.com/
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index edcfd39..fd546fd 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -791,8 +791,7 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 		qp->sq.head += nreq;
- 		qp->next_sge = sge_idx;
- 
--		if (nreq == 1 && qp->sq.head == qp->sq.tail + 1 &&
--		    (qp->en_flags & HNS_ROCE_QP_CAP_DIRECT_WQE))
-+		if (nreq == 1 && (qp->en_flags & HNS_ROCE_QP_CAP_DIRECT_WQE))
- 			write_dwqe(hr_dev, qp, wqe);
- 		else
- 			update_sq_db(hr_dev, qp);
+Thanks
+
+Gal Pressman (2):
+  rdma: update uapi headers
+  rdma: Add copy-on-fork to get sys command
+
+ rdma/include/uapi/rdma/rdma_netlink.h | 16 ++++++++++++++++
+ rdma/sys.c                            |  9 +++++++++
+ 2 files changed, 25 insertions(+)
+
 -- 
-2.8.1
+2.31.1
 
