@@ -2,161 +2,203 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CE036EFB1
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Apr 2021 20:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 584B436EFC1
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Apr 2021 20:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234028AbhD2SuF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Apr 2021 14:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
+        id S241483AbhD2SwJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Apr 2021 14:52:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241184AbhD2SuF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Apr 2021 14:50:05 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59CAC06138B
-        for <linux-rdma@vger.kernel.org>; Thu, 29 Apr 2021 11:49:18 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id n32-20020a9d1ea30000b02902a53d6ad4bdso7278079otn.3
-        for <linux-rdma@vger.kernel.org>; Thu, 29 Apr 2021 11:49:18 -0700 (PDT)
+        with ESMTP id S241448AbhD2SwJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Apr 2021 14:52:09 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22785C06138C
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Apr 2021 11:51:22 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id f15-20020a05600c4e8fb029013f5599b8a9so350641wmq.1
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Apr 2021 11:51:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rcDczA81N59JOUA4+nyxBXcfhrqAYLYY+OocJlGyOXg=;
-        b=UeoS7VmX5laEBquYqG9mNjSkLoj++WHh/c040VA/Qn8s9iLUmP2B6ggZHBgCCJL3LU
-         gSXQ0eyxk61L9Uw9Qq+AL2T0fFrvG6wMDY5ZCwkiiHAEiiC1iJOFDVgjr7WfcMw0gSdF
-         PL5wJQsDIsBLSXfJ+WXDW3BgO+2OakndVVjDSwaGUwKdP4x809qNroQc5OGxq+LXG1On
-         Th67xX/5MOG3EZuEbUr/sNokFtQWVraLnYD0dliPvEWIhBNsdsAUU21qM7kM/5VAb3/3
-         ei8jKQLvQx0LqUUzP/P3p9+AXtpkcd3TDMXlAZ7cvPJVZrZPRm8+gv0MgA5CwCXQi40U
-         QhqQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=G4T1feCRX4TLasSulNlD/YXTM3T/mKWHa/HALOMBqRE=;
+        b=QgKZ8ydzf6oyIPPQVVElrlAAvUXvjeCV+LfNBolAT+qNEs5bCdKySk/51s6GcjTh7t
+         ovdL6T/AM2Nkgg5ip/MPERs7HrwjK6whXjusJTKQBirU38Le3ua964zPqfnGVFInrfki
+         dozXtZTFfbrP2a1OWFjGiIkaoGl5mZbzF29SDm7ScjoYHqoAtQ6i4E3sIAQ1FUNmcTao
+         SN2rujJoPBg8W4pa95XN2MQQ3giTSA2MZQ+KlsaJxTh6JNvb+T3aj7OtYTo6Gd3rFOWZ
+         L+LbZLzP7MjYMe1dsmUCxwzIQL6rtGAXICqqxWZY3TSPtLnmSoUAyqk4wM5CUMiPMf/H
+         kDfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rcDczA81N59JOUA4+nyxBXcfhrqAYLYY+OocJlGyOXg=;
-        b=bc89uadrvRkWlvHPnGwDshZYOD3XXSL51cIVq+xG6lJG8ne/nnhsE0vixgjGsZMIHy
-         8t8M+5QDpqfdjMpvOgZd7ogmcDbOvWAx9mNj+UCMRTzVGvX9Elhm6hI8+bMjIA+F/dCi
-         +KFzqR/WPTK1O34fApYyiaSVzL8a1QCt9A8GyMhr7xSBXZz04EA6TvJ5XwXBOLn1nlSK
-         +OhviMouUCzVM7KJmM9+fbFUIFsK3NP6eN6GPR8dRTJUPRFHSe3PsHqT6m1xif4irrQh
-         1bUHIX13bhGVZx60HWeHR86jP5pBfVJztzqHneHkJbIuyJfR1CF0iIKvrvfea52P0aWz
-         HytQ==
-X-Gm-Message-State: AOAM5311XXmvGL4egiNopTBE9mRe4gtgKbzRclV5M5yEqpc9IvQHEy9V
-        WuAkJ/OYQn/t2d4Go44GtT/OtmWnreogSg==
-X-Google-Smtp-Source: ABdhPJxur8+AeCPuIADxVxbo/b4iRXel89koNYNpuhAo7snXmQfjK+ZPU244vS8PBJCBjpM5qDC3ww==
-X-Received: by 2002:a9d:2787:: with SMTP id c7mr628594otb.105.1619722158211;
-        Thu, 29 Apr 2021 11:49:18 -0700 (PDT)
-Received: from localhost (2603-8081-140c-1a00-a63d-9643-fc29-df2a.res6.spectrum.com. [2603:8081:140c:1a00:a63d:9643:fc29:df2a])
-        by smtp.gmail.com with ESMTPSA id q130sm172409oif.40.2021.04.29.11.49.17
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=G4T1feCRX4TLasSulNlD/YXTM3T/mKWHa/HALOMBqRE=;
+        b=C7jvtMOKpkBlEIl8TTnGEuYZjjLbPpYD0Eubj2vPJOlib+JnIwqvBIAJ6YxiDYEzlr
+         sQzkJSymfRU9qQbZjzjMDFfIli7nv0MvZCEifWFLG3arVMcbTWjG7CM7Q0Y5hptGhneX
+         qKJPeO0s3IQAORNt6RnWng/OHMESV0elwFQmwfjyHH4SZ9pcxXvN9M6FNDueqNa7a1VG
+         PLPS/MI64naZh5n4CZp7fNhI0VVpPp55nu7t4CNy+MUPhQuE5SX7PF8RmkN/nCKftX/4
+         m7pd90b4OrPB/GeVDBiKzl2xmmZP0lwE7DmRqjmsBg6oXYt3X9ID6Va5iSjg21g7cJWN
+         ekGQ==
+X-Gm-Message-State: AOAM531dMUyqZDJ5jXmhcvK+3Cyp0rr7zFo58AmSf61MeigVLTVXicPD
+        fftMhaRrIJIuRV4mluoaliaiaA==
+X-Google-Smtp-Source: ABdhPJz4cwum8Vt8KBIxLHSQujxRWtkwfsaB3lSFdUguV+8XNNJCFG1SSDkBNsPkbHC0XADsdUSIEQ==
+X-Received: by 2002:a1c:228a:: with SMTP id i132mr1768594wmi.10.1619722280823;
+        Thu, 29 Apr 2021 11:51:20 -0700 (PDT)
+Received: from apalos.home ([94.69.77.156])
+        by smtp.gmail.com with ESMTPSA id m11sm5596997wri.44.2021.04.29.11.51.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 11:49:17 -0700 (PDT)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-X-Google-Original-From: Bob Pearson <rpearson@hpe.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearson@hpe.com>
-Subject: [PATCH for-next v6 10/10] RDMA/rxe: Disallow MR dereg and invalidate when bound
-Date:   Thu, 29 Apr 2021 13:48:55 -0500
-Message-Id: <20210429184855.54939-11-rpearson@hpe.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210429184855.54939-1-rpearson@hpe.com>
-References: <20210429184855.54939-1-rpearson@hpe.com>
+        Thu, 29 Apr 2021 11:51:20 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 21:51:15 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
+Message-ID: <YIsAIzecktXXBlxn@apalos.home>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Check that an MR has no bound MWs before allowing a dereg or invalidate
-operation.
+Hi Yunsheng,
 
-Signed-off-by: Bob Pearson <rpearson@hpe.com>
----
-v5:
-  Fixed a typo in v4.
-v4:
-  Added this patch to check mr->num_mw to disallow
-  dereg and invalidate operations when MR has MW's
-  bound.
----
- drivers/infiniband/sw/rxe/rxe_loc.h   |  1 +
- drivers/infiniband/sw/rxe/rxe_mr.c    | 25 +++++++++++++++++++++++++
- drivers/infiniband/sw/rxe/rxe_verbs.c | 11 -----------
- 3 files changed, 26 insertions(+), 11 deletions(-)
+On Thu, Apr 29, 2021 at 04:27:21PM +0800, Yunsheng Lin wrote:
+> On 2021/4/10 6:37, Matteo Croce wrote:
+> > From: Matteo Croce <mcroce@microsoft.com>
+> > 
+> > This is a respin of [1]
+> > 
+> > This  patchset shows the plans for allowing page_pool to handle and
+> > maintain DMA map/unmap of the pages it serves to the driver.  For this
+> > to work a return hook in the network core is introduced.
+> > 
+> > The overall purpose is to simplify drivers, by providing a page
+> > allocation API that does recycling, such that each driver doesn't have
+> > to reinvent its own recycling scheme.  Using page_pool in a driver
+> > does not require implementing XDP support, but it makes it trivially
+> > easy to do so.  Instead of allocating buffers specifically for SKBs
+> > we now allocate a generic buffer and either wrap it on an SKB
+> > (via build_skb) or create an XDP frame.
+> > The recycling code leverages the XDP recycle APIs.
+> > 
+> > The Marvell mvpp2 and mvneta drivers are used in this patchset to
+> > demonstrate how to use the API, and tested on a MacchiatoBIN
+> > and EspressoBIN boards respectively.
+> > 
+> 
+> Hi, Matteo
+>      I added the skb frag page recycling in hns3 based on this patchset,
+> and it has above 10%~20% performance improvement for one thread iperf
+> TCP flow(IOMMU is off, there may be more performance improvement if
+> considering the DMA map/unmap avoiding for IOMMU), thanks for the job.
+> 
+>     The skb frag page recycling support in hns3 driver is not so simple
+> as the mvpp2 and mvneta driver, because:
+> 
+> 1. the hns3 driver do not have XDP support yet, so "struct xdp_rxq_info"
+>    is added to assist relation binding between the "struct page" and
+>    "struct page_pool".
+> 
+> 2. the hns3 driver has already a page reusing based on page spliting and
+>    page reference count, but it may not work if the upper stack can not
+>    handle skb and release the corresponding page fast enough.
+> 
+> 3. the hns3 driver support page reference count updating batching, see:
+>    aeda9bf87a45 ("net: hns3: batch the page reference count updates")
+> 
+> So it would be better if：
+> 
+> 1. skb frag page recycling do not need "struct xdp_rxq_info" or
+>    "struct xdp_mem_info" to bond the relation between "struct page" and
+>    "struct page_pool", which seems uncessary at this point if bonding
+>    a "struct page_pool" pointer directly in "struct page" does not cause
+>    space increasing.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 4624033d8dce..a167ae3c3514 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -87,6 +87,7 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
- int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length);
- int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
- int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey);
-+int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
- void rxe_mr_cleanup(struct rxe_pool_entry *arg);
- 
- /* rxe_mw.c */
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index f871879e5f80..6a2377030f52 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -546,6 +546,13 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey)
- 		goto err_drop_ref;
- 	}
- 
-+	if (atomic_read(&mr->num_mw) > 0) {
-+		pr_warn("%s: Attempt to invalidate an MR while bound to MWs\n",
-+			__func__);
-+		ret = -EINVAL;
-+		goto err_drop_ref;
-+	}
-+
- 	mr->state = RXE_MR_STATE_FREE;
- 	ret = 0;
- 
-@@ -555,6 +562,24 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey)
- 	return ret;
- }
- 
-+int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
-+{
-+	struct rxe_mr *mr = to_rmr(ibmr);
-+
-+	if (atomic_read(&mr->num_mw) > 0) {
-+		pr_warn("%s: Attempt to deregister an MR while bound to MWs\n",
-+			__func__);
-+		return -EINVAL;
-+	}
-+
-+	mr->state = RXE_MR_STATE_ZOMBIE;
-+	rxe_drop_ref(mr_pd(mr));
-+	rxe_drop_index(mr);
-+	rxe_drop_ref(mr);
-+
-+	return 0;
-+}
-+
- void rxe_mr_cleanup(struct rxe_pool_entry *arg)
- {
- 	struct rxe_mr *mr = container_of(arg, typeof(*mr), pelem);
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index d22f011a20f3..89f8f00215d6 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -913,17 +913,6 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
- 	return ERR_PTR(err);
- }
- 
--static int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
--{
--	struct rxe_mr *mr = to_rmr(ibmr);
--
--	mr->state = RXE_MR_STATE_ZOMBIE;
--	rxe_drop_ref(mr_pd(mr));
--	rxe_drop_index(mr);
--	rxe_drop_ref(mr);
--	return 0;
--}
--
- static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
- 				  u32 max_num_sg)
- {
--- 
-2.27.0
+We can't do that. The reason we need those structs is that we rely on the
+existing XDP code, which already recycles it's buffers, to enable
+recycling.  Since we allocate a page per packet when using page_pool for a
+driver , the same ideas apply to an SKB and XDP frame. We just recycle the
+payload and we don't really care what's in that.  We could rename the functions
+to something more generic in the future though ?
 
+> 
+> 2. it would be good to do the page reference count updating batching
+>    in page pool instead of specific driver.
+> 
+> 
+> page_pool_atomic_sub_if_positive() is added to decide who can call
+> page_pool_put_full_page(), because the driver and stack may hold
+> reference to the same page, only if last one which hold complete
+> reference to a page can call page_pool_put_full_page() to decide if
+> recycling is possible, if not, the page is released, so I am wondering
+> if a similar page_pool_atomic_sub_if_positive() can added to specific
+> user space address unmapping path to allow skb recycling for RX zerocopy
+> too?
+> 
+
+I would prefer a different page pool type if we wanted to support the split
+page model.  The changes as is are quite intrusive, since they change the 
+entire skb return path.  So I would prefer introducing the changes one at a 
+time. 
+
+The fundamental difference between having the recycling in the driver vs
+having it in a generic API is pretty straightforward.  When a driver holds
+the extra page references he is free to decide what to reuse, when he is about
+to refill his Rx descriptors.  So TCP zerocopy might work even if the
+userspace applications hold the buffers for an X amount of time.
+On this proposal though we *need* to decide what to do with the buffer when we
+are about to free the skb.
+
+[...]
+
+
+Cheers
+/Ilias
