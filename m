@@ -2,126 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3F336E953
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Apr 2021 13:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441EF36EDCB
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Apr 2021 18:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbhD2LHH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Apr 2021 07:07:07 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:36016 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237051AbhD2LHF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Apr 2021 07:07:05 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TB5TPe065867;
-        Thu, 29 Apr 2021 11:06:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=K15i1CGSnbguzBLfka7Fkv1c34A1bayqQF0r+BTLl1Y=;
- b=IN1+r6yIHsRQ3uvdp873Jp+ayYaa+t/FxxY1o2Kus51dIwYC8PV7CHsoaKAIN9V1jPV/
- 8D//K/exsHlfs7GWDci6cswqay6t/akU7uYeMBx1/O5jSQ11/OJZ3dviJbr1o2n8zDOp
- A0usEETT5mH7KtihOVhEgD385lIrrX4wb5OsL6qtM/SeSOWDmiPcKvEH5BuL/bwNb7Is
- 7IrhOKIC19LULBBMGQ1mG+D33NCkbfp2s8afvGvsSbKPNcRLeyWMStFuhEzDcIcRBQMK
- em38rpO0BjIPHgwpWEKB+F0H/v2BvMmVwEPv2+ubX14kmSTtWbOk7sijbzw46wNuVWBD iA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 385aft3y57-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 11:06:13 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13TB4reK117731;
-        Thu, 29 Apr 2021 11:06:13 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 3848f0wgxy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 11:06:13 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13TB6Cwg122571;
-        Thu, 29 Apr 2021 11:06:12 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 3848f0wgxc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Apr 2021 11:06:12 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13TB6BkG008790;
-        Thu, 29 Apr 2021 11:06:11 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 29 Apr 2021 04:06:10 -0700
-Date:   Thu, 29 Apr 2021 14:06:04 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <dddavem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yevgeny Kliteynik <kliteyn@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH v2 net-next] net/mlx5: net/mlx5: Fix some error messages
-Message-ID: <YIqTHAq37U57ehAa@mwanda>
+        id S232004AbhD2QDz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Apr 2021 12:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237123AbhD2QDv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Apr 2021 12:03:51 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6231C06138B
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Apr 2021 09:03:03 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id h7so6431797plt.1
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Apr 2021 09:03:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=4OoN217VvWnGmdJdZS6oi6fNv6UiIl9gPlvowebisU8=;
+        b=s5l4ADuqEZMcjzESh0vQDyvQ7UYNspcs8mMWnBn3uSuk+SLN3/PcmWEsKnduAudf3V
+         b2HCFuLD6KihACOapfVsh9iZ+7dF8v0ZpOVt8Td4qqZKpTGq/8sXGD1D9uLNhAQFJaXs
+         /qBo/k2mGO8LiFisde+4mhPASr2oJGrNSzujtaL9IbyOIewTcsQKglmdsnTw01Uz57c4
+         zaa0nZsGBFeWo1Xduq5mF4ZKyetV3fCHAy5e1eWBmHOO6Ync2Zuu5BrIf1OxUUkFcIpy
+         EW6XaXq9WA5dvZ528/OtmLo9UMDnAxV+SXJzER2KCFA+O3nAvrvpJtKhO1GVUDMkyC9w
+         ksnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=4OoN217VvWnGmdJdZS6oi6fNv6UiIl9gPlvowebisU8=;
+        b=erWhq94iMe1RLlVNTOVEU9QE/6ylW6dt3PCH4RxLa8a4fWwJJFPlz2SccNZb36iXim
+         RwJRLNiwhKtn38NP9jthpABWJorjuLdi5FiphjtMVXkKbQPvPkgVW91ZisAYIHkcQv4U
+         hBOWXGtfC+khnr6VSGsZbt/wpsw7wgXV4sJ3FIzP91YXPAYx2RMwCZqbQrbwodA3nMW8
+         Vm7UCkwRdz2WdJmO5h6Kc774cynukkRagTPopA+okWYfBp0Av1UbthbyNT7LttS4akTl
+         HCxD9kzTP0ZMlDBC87DaVdTMuqhVbCR+R1UNgu+doWhkqWKTJjoCGRsLvw4KW/G6R/gh
+         Xs7A==
+X-Gm-Message-State: AOAM531XyCO5kUGMZLmY3RhUWzdkgVyqatz3veNLgRrUmnrZuIu/7I0X
+        fbHT/zgmzFidECjwYLJOZ/A=
+X-Google-Smtp-Source: ABdhPJwbLKIxvFZ415HKFAjRIAuGQYiN7CvORpzK1pL9y0pnXtsYDXcWShx1f4MyEL3cOxAr/g9ToQ==
+X-Received: by 2002:a17:902:6ac3:b029:e6:c6a3:a697 with SMTP id i3-20020a1709026ac3b02900e6c6a3a697mr381555plt.2.1619712183333;
+        Thu, 29 Apr 2021 09:03:03 -0700 (PDT)
+Received: from [192.168.0.25] ([97.99.248.255])
+        by smtp.gmail.com with ESMTPSA id e20sm7912507pjt.8.2021.04.29.09.03.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Apr 2021 09:03:02 -0700 (PDT)
+Subject: Re: [PATCH for-next v5 08/10] RDMA/rxe: Implement invalidate MW
+ operations
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Bob Pearson <rpearson@hpe.com>
+References: <20210422161341.41929-1-rpearson@hpe.com>
+ <20210422161341.41929-9-rpearson@hpe.com>
+ <CAD=hENeB_XJQOy-6tvNwe6+ZyAmw6LBe16ePT4DtcEpu+hOKTg@mail.gmail.com>
+ <eb46fc9c-cc72-b928-f4ee-258fd10f2437@gmail.com>
+ <CAD=hENdeuNZ7WXkXtV7BqbE0gP34=YH_gbn7odyq-GiAVccesA@mail.gmail.com>
+ <4c176a90-0712-e8f7-222a-36cf87f899d7@gmail.com>
+ <CAD=hENcr_LuhgdSdXLcZSi97AyBof51xntDGyTKutmv5be_iXQ@mail.gmail.com>
+ <e1a4821b-dc2d-3adf-536e-62970048bcf1@gmail.com>
+ <CAD=hENeMiYHLFPttYnm1oJhq+2pxXXUC_b_sQXXmENhewkgy+Q@mail.gmail.com>
+From:   "Pearson, Robert B" <rpearsonhpe@gmail.com>
+Message-ID: <1e192a3f-a087-a72a-9415-2817b07f6db1@gmail.com>
+Date:   Thu, 29 Apr 2021 11:02:56 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-GUID: vR0WlVqWOshguFLTJbxxxJQJCFtwYnFm
-X-Proofpoint-ORIG-GUID: vR0WlVqWOshguFLTJbxxxJQJCFtwYnFm
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9968 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 lowpriorityscore=0
- mlxlogscore=999 malwarescore=0 phishscore=0 priorityscore=1501
- clxscore=1011 spamscore=0 bulkscore=0 suspectscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104290075
+In-Reply-To: <CAD=hENeMiYHLFPttYnm1oJhq+2pxXXUC_b_sQXXmENhewkgy+Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This code was using IS_ERR() instead of PTR_ERR() so it prints 1 instead
-of the correct error code.  Even better would be to use %pe which prints
-out the name of the error, as in "ENOMEM", "EINVAL" etc.
 
-Fixes: 25cb31768042 ("net/mlx5: E-Switch, Improve error messages in term table creation")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-v2:  Use %pe instead of %ld.
+On 4/29/2021 1:12 AM, Zhu Yanjun wrote:
+> On Thu, Apr 29, 2021 at 11:32 AM Pearson, Robert B
+> <rpearsonhpe@gmail.com> wrote:
+>>
+>> On 4/28/2021 10:20 PM, Zhu Yanjun wrote:
+>>> On Thu, Apr 29, 2021 at 11:07 AM Pearson, Robert B
+>>> <rpearsonhpe@gmail.com> wrote:
+>>>> On 4/28/2021 7:54 PM, Zhu Yanjun wrote:
+>>>>> Adding a prefix makes debug easy. This can help filter the functions.
+>>>>> And a prefix can help us to verify the location of the function.
+>>>>>
+>>>>> Zhu Yanjun
+>>>> For comparison here are all the subroutine names from a well known
+>>>> driver file. As you can see, 100% of the non static subroutines *do*
+>>>> have mlx5 in their name but the majority of the static ones *do not*,
+>>>> and these are by definition not shared anywhere else but this file. This
+>>>> is representative of the typical style in linux-rdma.
+>>> With perf or ftrace debug tools, a lot of functions will pop out.
+>>> A prefix can help the developer to locate the functions source code easily.
+>>> And a prefix can help the developer filter the functions conveniently.
+>>>
+>>> This is why I recommend a prefix.
+>>>
+>>> Zhu Yanjun
+>> Yes, I can tell. We're still debating this. Obviously the developers of
+>> mr.c don't entirely agree and I don't either. There are places where it
+>> makes sense but the code is ugly IMHO. I think you should let developers
+> A prefix can make code easy to debug, then easy to maintain. This is
+> not ugly code.^o^
+> On the contrary, it is beautiful code. ^o^
+>
+>> write in the style they are most effective with, especially in the
+>> context of a local static subroutine which have a very narrow scope.
+> Even though the local static functions still possibly appear in kernel
+> debug tools,
+> it is necessary to add a prefix to make it easy to locate and filter.
+> This can make maintenance
+> easy.
+>
+> Zhu Yanjun
+>
+>> Bob
 
-Leon says this goes through netdev instead of the RDMA tree.
+OK, I'll try.
 
- .../mellanox/mlx5/core/eswitch_offloads_termtbl.c    | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c
-index a81ece94f599..a0efb19bf285 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c
-@@ -83,16 +83,16 @@ mlx5_eswitch_termtbl_create(struct mlx5_core_dev *dev,
- 	ft_attr.autogroup.max_num_groups = 1;
- 	tt->termtbl = mlx5_create_auto_grouped_flow_table(root_ns, &ft_attr);
- 	if (IS_ERR(tt->termtbl)) {
--		esw_warn(dev, "Failed to create termination table (error %d)\n",
--			 IS_ERR(tt->termtbl));
-+		esw_warn(dev, "Failed to create termination table (error %pe)\n",
-+			 tt->termtbl);
- 		return -EOPNOTSUPP;
- 	}
- 
- 	tt->rule = mlx5_add_flow_rules(tt->termtbl, NULL, flow_act,
- 				       &tt->dest, 1);
- 	if (IS_ERR(tt->rule)) {
--		esw_warn(dev, "Failed to create termination table rule (error %d)\n",
--			 IS_ERR(tt->rule));
-+		esw_warn(dev, "Failed to create termination table rule (error %pe)\n",
-+			 tt->rule);
- 		goto add_flow_err;
- 	}
- 	return 0;
-@@ -283,8 +283,8 @@ mlx5_eswitch_add_termtbl_rule(struct mlx5_eswitch *esw,
- 		tt = mlx5_eswitch_termtbl_get_create(esw, &term_tbl_act,
- 						     &dest[i], attr);
- 		if (IS_ERR(tt)) {
--			esw_warn(esw->dev, "Failed to get termination table (error %d)\n",
--				 IS_ERR(tt));
-+			esw_warn(esw->dev, "Failed to get termination table (error %pe)\n",
-+				 tt);
- 			goto revert_changes;
- 		}
- 		attr->dests[num_vport_dests].termtbl = tt;
--- 
-2.30.2
+Bob
 
