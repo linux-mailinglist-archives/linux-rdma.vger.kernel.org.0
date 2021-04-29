@@ -2,47 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B81A36E4BD
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Apr 2021 08:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3FD36E4E6
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Apr 2021 08:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhD2GNr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Apr 2021 02:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43068 "EHLO
+        id S238809AbhD2G0U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Apr 2021 02:26:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhD2GNq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Apr 2021 02:13:46 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2ECC06138B
-        for <linux-rdma@vger.kernel.org>; Wed, 28 Apr 2021 23:12:59 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so55395597otf.12
-        for <linux-rdma@vger.kernel.org>; Wed, 28 Apr 2021 23:12:58 -0700 (PDT)
+        with ESMTP id S238802AbhD2G0T (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Apr 2021 02:26:19 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817EFC06138B
+        for <linux-rdma@vger.kernel.org>; Wed, 28 Apr 2021 23:25:32 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso38034459otl.0
+        for <linux-rdma@vger.kernel.org>; Wed, 28 Apr 2021 23:25:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vNZ6ag12I9SuKfs9etxvaeXwq662BVP6PvqAlpjKMnU=;
-        b=g+LTzoCWIhPibFD3mVpLYD9nKCldTvqNiA29AfD6EjqrWiceSgjVDLBwGo7BHmaN+Y
-         btiXbwZ9yUOz5JOSRLecv/n2VZvln0IRGKnfYpBeS+dB9peVuwZZOqzV8BDPQe6UQHHc
-         DocZjOtc1mqShsgFueKZmPWkhkd3Fhqk1z91vx/3JjBpUdD8JkAHC7T6NfE+mBIn+fuj
-         sZtOOocz3UlWiI+360HGtgM2p6IayJ4VPeRnr6iqIX6CE3K/Y5D2ba7nhS32eEqmBzA4
-         d69ix9C2PCq9uEIlrkuUW/xOXT/yFlURdNF59FSF4tkDQjK8s/GmDmplp5I/vYxNVjDt
-         IKqw==
+        bh=3tjB9byydsO5xEns2tg8tLwt3btdnE9sk8QcW0MfkY8=;
+        b=ZB8w/a3QQgdI1rMilOEZhRyb7/xmEj20fAt+VkoeOqAFJwEd5zZPD2HfPU0wTW+K7M
+         MHGxqm4tfkd4I6dD5eiQo7EroIc+ZgTJZI0F9MFXet/z/crFbD9cLEjqDkIjJBgHssgf
+         IRilWqLGSqztrg/8GwHezfg+63wstHXG4BRzygi3Q16YMhKAHWJ173IqLtmAUd1yKu2h
+         nsxkIK+LyRlzWe97ouHDj936K/WjmtNhxpD6+37zYiB7664NTZJnDDbj4RJK2Fri7GP9
+         5rUeUtr/2kebChW8fuOqoL13HFrM65he+Ms0xoB7gtqMLvj/Xwgrvq6CNB+XQ15RakF1
+         vlAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vNZ6ag12I9SuKfs9etxvaeXwq662BVP6PvqAlpjKMnU=;
-        b=CuhOTww58AV3RlkP2nscw/S0+f3O346m4qu/OtcRwWRoX3T5xEEGydF9L+DkR8Ps4a
-         fQjpvnv53v8Z31QNOrRr7hRr63GiPRqRdEcn8hgbRkhJEwzvPRAHxLhNhMUOgsbJmdaO
-         OPvijutzvJUtbxvlcto+tbWEvX2hUXgzZJOMoKK03evud2EQOZy87za4s4p+6GgqBWY4
-         EIHIS4msOwiCHWi4v4auSCDrCOnNc39C/F+fVz6IA/dDtJevKeb958yjJvtPhCjdSh3H
-         GMEVPLtKsxXKVRKML/txm5d8HO1Gsna5vhLP7y4UHySMtI1tjido+hOpSlHc91LNC6Md
-         j5dw==
-X-Gm-Message-State: AOAM532sZzQuW5qmNRBWYGSPphl5H1E53y2j7JJbZ1tzycSZXMkjoOcT
-        vlS67m2N9Ubl5ymoc55imjHGURbz0B+LZYkP8LJbmaKh
-X-Google-Smtp-Source: ABdhPJwDpSefWhg+rOAUJWp9dO5xPrm+1kB+177xgsj3fU19x5C4cLSI9g4s379hkmomW+vWMfVtzg1/J4f2HhTfBmQ=
-X-Received: by 2002:a9d:28d:: with SMTP id 13mr27223262otl.278.1619676778353;
- Wed, 28 Apr 2021 23:12:58 -0700 (PDT)
+        bh=3tjB9byydsO5xEns2tg8tLwt3btdnE9sk8QcW0MfkY8=;
+        b=JK7Bxi4hHWWuzOW4ZMDLvmI2Tw4708M2+tHdL/oRP7e4evqi1A9ym/Hkr192sPxsXT
+         kztV4IMAfN5gK1W5bU4Gz9RRKRWOHCmS7+6hzvKqPzIKlUJP06ggZANhk6A9qneaQ2UK
+         2cyK8fdXEueFLIakeB/dUd7mnOzS6pNrqmXnYA/GRJQ8fFz/HNPfQkVA9API1kCBUSKJ
+         NDvznrAfpJIQhq8GenBecrRjFbWGPLEhkgPKaE32n36uQf+fT5ET2PM/VAUbpmekiG4R
+         PVq2UsXsyVCwRnT0q4oiu9gsmpDv9+ViWKqoBFQaKWDtk6oCpBKlcoG6YW+jfdQvAk1m
+         xlGg==
+X-Gm-Message-State: AOAM5320sQuOr6jqggliGPoMM1I/iKXt8DF4cvKOnYEaLjZDsNWlZ/CF
+        rIBZc/B5GuM0WuvUnSDj++cITbKoDPYUrBlf+3M=
+X-Google-Smtp-Source: ABdhPJx1LBoassi+s5fZprp7rFxgzhyOAXi7cBWMm8jfpIdex0tAnz38xy7V5LCYCEhupTNJffcOpAWUt3wtre2XoSM=
+X-Received: by 2002:a05:6830:1b76:: with SMTP id d22mr16001676ote.59.1619677531921;
+ Wed, 28 Apr 2021 23:25:31 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210422161341.41929-1-rpearson@hpe.com> <20210422161341.41929-9-rpearson@hpe.com>
  <CAD=hENeB_XJQOy-6tvNwe6+ZyAmw6LBe16ePT4DtcEpu+hOKTg@mail.gmail.com>
@@ -51,8 +51,8 @@ References: <20210422161341.41929-1-rpearson@hpe.com> <20210422161341.41929-9-rp
  <e1a4821b-dc2d-3adf-536e-62970048bcf1@gmail.com>
 In-Reply-To: <e1a4821b-dc2d-3adf-536e-62970048bcf1@gmail.com>
 From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Thu, 29 Apr 2021 14:12:47 +0800
-Message-ID: <CAD=hENeMiYHLFPttYnm1oJhq+2pxXXUC_b_sQXXmENhewkgy+Q@mail.gmail.com>
+Date:   Thu, 29 Apr 2021 14:25:20 +0800
+Message-ID: <CAD=hENcYUHsW080JCwc3rHmpyVQy_4wYgQ_5TqLQnnhG0uP1UQ@mail.gmail.com>
 Subject: Re: [PATCH for-next v5 08/10] RDMA/rxe: Implement invalidate MW operations
 To:     "Pearson, Robert B" <rpearsonhpe@gmail.com>
 Cc:     Jason Gunthorpe <jgg@nvidia.com>,
@@ -91,23 +91,15 @@ On Thu, Apr 29, 2021 at 11:32 AM Pearson, Robert B
 >
 > Yes, I can tell. We're still debating this. Obviously the developers of
 > mr.c don't entirely agree and I don't either. There are places where it
-> makes sense but the code is ugly IMHO. I think you should let developers
 
-A prefix can make code easy to debug, then easy to maintain. This is
-not ugly code.^o^
-On the contrary, it is beautiful code. ^o^
-
-> write in the style they are most effective with, especially in the
-> context of a local static subroutine which have a very narrow scope.
-
-Even though the local static functions still possibly appear in kernel
-debug tools,
-it is necessary to add a prefix to make it easy to locate and filter.
-This can make maintenance
-easy.
+About the functions that have no rxe_ prefix, I will fix them very soon.
+I can do everything to make the source codes perfect.
 
 Zhu Yanjun
 
+> makes sense but the code is ugly IMHO. I think you should let developers
+> write in the style they are most effective with, especially in the
+> context of a local static subroutine which have a very narrow scope.
 >
 > Bob
 >
