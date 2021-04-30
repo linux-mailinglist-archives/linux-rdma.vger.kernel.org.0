@@ -2,58 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584B436EFC1
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Apr 2021 20:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F24C136F432
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Apr 2021 05:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241483AbhD2SwJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Apr 2021 14:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241448AbhD2SwJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Apr 2021 14:52:09 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22785C06138C
-        for <linux-rdma@vger.kernel.org>; Thu, 29 Apr 2021 11:51:22 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id f15-20020a05600c4e8fb029013f5599b8a9so350641wmq.1
-        for <linux-rdma@vger.kernel.org>; Thu, 29 Apr 2021 11:51:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=G4T1feCRX4TLasSulNlD/YXTM3T/mKWHa/HALOMBqRE=;
-        b=QgKZ8ydzf6oyIPPQVVElrlAAvUXvjeCV+LfNBolAT+qNEs5bCdKySk/51s6GcjTh7t
-         ovdL6T/AM2Nkgg5ip/MPERs7HrwjK6whXjusJTKQBirU38Le3ua964zPqfnGVFInrfki
-         dozXtZTFfbrP2a1OWFjGiIkaoGl5mZbzF29SDm7ScjoYHqoAtQ6i4E3sIAQ1FUNmcTao
-         SN2rujJoPBg8W4pa95XN2MQQ3giTSA2MZQ+KlsaJxTh6JNvb+T3aj7OtYTo6Gd3rFOWZ
-         L+LbZLzP7MjYMe1dsmUCxwzIQL6rtGAXICqqxWZY3TSPtLnmSoUAyqk4wM5CUMiPMf/H
-         kDfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=G4T1feCRX4TLasSulNlD/YXTM3T/mKWHa/HALOMBqRE=;
-        b=C7jvtMOKpkBlEIl8TTnGEuYZjjLbPpYD0Eubj2vPJOlib+JnIwqvBIAJ6YxiDYEzlr
-         sQzkJSymfRU9qQbZjzjMDFfIli7nv0MvZCEifWFLG3arVMcbTWjG7CM7Q0Y5hptGhneX
-         qKJPeO0s3IQAORNt6RnWng/OHMESV0elwFQmwfjyHH4SZ9pcxXvN9M6FNDueqNa7a1VG
-         PLPS/MI64naZh5n4CZp7fNhI0VVpPp55nu7t4CNy+MUPhQuE5SX7PF8RmkN/nCKftX/4
-         m7pd90b4OrPB/GeVDBiKzl2xmmZP0lwE7DmRqjmsBg6oXYt3X9ID6Va5iSjg21g7cJWN
-         ekGQ==
-X-Gm-Message-State: AOAM531dMUyqZDJ5jXmhcvK+3Cyp0rr7zFo58AmSf61MeigVLTVXicPD
-        fftMhaRrIJIuRV4mluoaliaiaA==
-X-Google-Smtp-Source: ABdhPJz4cwum8Vt8KBIxLHSQujxRWtkwfsaB3lSFdUguV+8XNNJCFG1SSDkBNsPkbHC0XADsdUSIEQ==
-X-Received: by 2002:a1c:228a:: with SMTP id i132mr1768594wmi.10.1619722280823;
-        Thu, 29 Apr 2021 11:51:20 -0700 (PDT)
-Received: from apalos.home ([94.69.77.156])
-        by smtp.gmail.com with ESMTPSA id m11sm5596997wri.44.2021.04.29.11.51.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 11:51:20 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 21:51:15 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        id S229609AbhD3DCm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Apr 2021 23:02:42 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3348 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229577AbhD3DCl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Apr 2021 23:02:41 -0400
+Received: from dggeml706-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FWcVl0gH5z19K60;
+        Fri, 30 Apr 2021 10:57:51 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggeml706-chm.china.huawei.com (10.3.17.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 30 Apr 2021 11:01:49 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 30 Apr
+ 2021 11:01:49 +0800
+Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+CC:     Matteo Croce <mcroce@linux.microsoft.com>,
+        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        "Vinay Kumar Yadav" <vinay.yadav@chelsio.com>,
         Rohit Maheshwari <rohitm@chelsio.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -62,11 +36,11 @@ Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
         Russell King <linux@armlinux.org.uk>,
         Mirko Lindner <mlindner@marvell.com>,
         Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
+        "Tariq Toukan" <tariqt@nvidia.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
+        "John Fastabend" <john.fastabend@gmail.com>,
         Boris Pismenny <borisp@nvidia.com>,
         Arnd Bergmann <arnd@arndb.de>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -88,117 +62,121 @@ Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
         Willem de Bruijn <willemb@google.com>,
         Miaohe Lin <linmiaohe@huawei.com>,
         Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
         Eric Dumazet <edumazet@google.com>,
         David Ahern <dsahern@gmail.com>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
-Message-ID: <YIsAIzecktXXBlxn@apalos.home>
 References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
  <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
+ <YIsAIzecktXXBlxn@apalos.home>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <9bf7c5b3-c3cf-e669-051f-247aa8df5c5a@huawei.com>
+Date:   Fri, 30 Apr 2021 11:01:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
+In-Reply-To: <YIsAIzecktXXBlxn@apalos.home>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Yunsheng,
-
-On Thu, Apr 29, 2021 at 04:27:21PM +0800, Yunsheng Lin wrote:
-> On 2021/4/10 6:37, Matteo Croce wrote:
-> > From: Matteo Croce <mcroce@microsoft.com>
-> > 
-> > This is a respin of [1]
-> > 
-> > This  patchset shows the plans for allowing page_pool to handle and
-> > maintain DMA map/unmap of the pages it serves to the driver.  For this
-> > to work a return hook in the network core is introduced.
-> > 
-> > The overall purpose is to simplify drivers, by providing a page
-> > allocation API that does recycling, such that each driver doesn't have
-> > to reinvent its own recycling scheme.  Using page_pool in a driver
-> > does not require implementing XDP support, but it makes it trivially
-> > easy to do so.  Instead of allocating buffers specifically for SKBs
-> > we now allocate a generic buffer and either wrap it on an SKB
-> > (via build_skb) or create an XDP frame.
-> > The recycling code leverages the XDP recycle APIs.
-> > 
-> > The Marvell mvpp2 and mvneta drivers are used in this patchset to
-> > demonstrate how to use the API, and tested on a MacchiatoBIN
-> > and EspressoBIN boards respectively.
-> > 
+On 2021/4/30 2:51, Ilias Apalodimas wrote:
+> Hi Yunsheng,
 > 
-> Hi, Matteo
->      I added the skb frag page recycling in hns3 based on this patchset,
-> and it has above 10%~20% performance improvement for one thread iperf
-> TCP flow(IOMMU is off, there may be more performance improvement if
-> considering the DMA map/unmap avoiding for IOMMU), thanks for the job.
-> 
->     The skb frag page recycling support in hns3 driver is not so simple
-> as the mvpp2 and mvneta driver, because:
-> 
-> 1. the hns3 driver do not have XDP support yet, so "struct xdp_rxq_info"
->    is added to assist relation binding between the "struct page" and
->    "struct page_pool".
-> 
-> 2. the hns3 driver has already a page reusing based on page spliting and
->    page reference count, but it may not work if the upper stack can not
->    handle skb and release the corresponding page fast enough.
-> 
-> 3. the hns3 driver support page reference count updating batching, see:
->    aeda9bf87a45 ("net: hns3: batch the page reference count updates")
-> 
-> So it would be better if：
-> 
-> 1. skb frag page recycling do not need "struct xdp_rxq_info" or
->    "struct xdp_mem_info" to bond the relation between "struct page" and
->    "struct page_pool", which seems uncessary at this point if bonding
->    a "struct page_pool" pointer directly in "struct page" does not cause
->    space increasing.
-
-We can't do that. The reason we need those structs is that we rely on the
-existing XDP code, which already recycles it's buffers, to enable
-recycling.  Since we allocate a page per packet when using page_pool for a
-driver , the same ideas apply to an SKB and XDP frame. We just recycle the
-payload and we don't really care what's in that.  We could rename the functions
-to something more generic in the future though ?
-
-> 
-> 2. it would be good to do the page reference count updating batching
->    in page pool instead of specific driver.
-> 
-> 
-> page_pool_atomic_sub_if_positive() is added to decide who can call
-> page_pool_put_full_page(), because the driver and stack may hold
-> reference to the same page, only if last one which hold complete
-> reference to a page can call page_pool_put_full_page() to decide if
-> recycling is possible, if not, the page is released, so I am wondering
-> if a similar page_pool_atomic_sub_if_positive() can added to specific
-> user space address unmapping path to allow skb recycling for RX zerocopy
-> too?
-> 
-
-I would prefer a different page pool type if we wanted to support the split
-page model.  The changes as is are quite intrusive, since they change the 
-entire skb return path.  So I would prefer introducing the changes one at a 
-time. 
-
-The fundamental difference between having the recycling in the driver vs
-having it in a generic API is pretty straightforward.  When a driver holds
-the extra page references he is free to decide what to reuse, when he is about
-to refill his Rx descriptors.  So TCP zerocopy might work even if the
-userspace applications hold the buffers for an X amount of time.
-On this proposal though we *need* to decide what to do with the buffer when we
-are about to free the skb.
+> On Thu, Apr 29, 2021 at 04:27:21PM +0800, Yunsheng Lin wrote:
+>> On 2021/4/10 6:37, Matteo Croce wrote:
+>>> From: Matteo Croce <mcroce@microsoft.com>
 
 [...]
 
+>>
+>> 1. skb frag page recycling do not need "struct xdp_rxq_info" or
+>>    "struct xdp_mem_info" to bond the relation between "struct page" and
+>>    "struct page_pool", which seems uncessary at this point if bonding
+>>    a "struct page_pool" pointer directly in "struct page" does not cause
+>>    space increasing.
+> 
+> We can't do that. The reason we need those structs is that we rely on the
+> existing XDP code, which already recycles it's buffers, to enable
+> recycling.  Since we allocate a page per packet when using page_pool for a
+> driver , the same ideas apply to an SKB and XDP frame. We just recycle the
 
-Cheers
-/Ilias
+I am not really familar with XDP here, but a packet from hw is either a
+"struct xdp_frame/xdp_buff" for XDP or a "struct sk_buff" for TCP/IP stack,
+a packet can not be both "struct xdp_frame/xdp_buff" and "struct sk_buff" at
+the same time, right?
+
+What does not really make sense to me is that the page has to be from page
+pool when a skb's frag page can be recycled, right? If it is ture, the switch
+case in __xdp_return() does not really make sense for skb recycling, why go
+all the trouble of checking the mem->type and mem->id to find the page_pool
+pointer when recyclable page for skb can only be from page pool?
+
+> payload and we don't really care what's in that.  We could rename the functions
+> to something more generic in the future though ?
+> 
+>>
+>> 2. it would be good to do the page reference count updating batching
+>>    in page pool instead of specific driver.
+>>
+>>
+>> page_pool_atomic_sub_if_positive() is added to decide who can call
+>> page_pool_put_full_page(), because the driver and stack may hold
+>> reference to the same page, only if last one which hold complete
+>> reference to a page can call page_pool_put_full_page() to decide if
+>> recycling is possible, if not, the page is released, so I am wondering
+>> if a similar page_pool_atomic_sub_if_positive() can added to specific
+>> user space address unmapping path to allow skb recycling for RX zerocopy
+>> too?
+>>
+> 
+> I would prefer a different page pool type if we wanted to support the split
+> page model.  The changes as is are quite intrusive, since they change the 
+> entire skb return path.  So I would prefer introducing the changes one at a 
+> time. 
+
+I understand there may be fundamental semantic change when split page model
+is supported by page pool, but the split page support change mainly affect the
+skb recycling path and the driver that uses page pool(XDP too) if we are careful
+enough, not the entire skb return path as my understanding.
+
+Anyway, one changes at a time is always prefered if supporting split page is
+proved to be non-trivel and intrusive.
+
+> 
+> The fundamental difference between having the recycling in the driver vs
+> having it in a generic API is pretty straightforward.  When a driver holds
+> the extra page references he is free to decide what to reuse, when he is about
+> to refill his Rx descriptors.  So TCP zerocopy might work even if the
+> userspace applications hold the buffers for an X amount of time.
+> On this proposal though we *need* to decide what to do with the buffer when we
+> are about to free the skb.
+
+I am not sure I understand what you meant by "free the skb", does it mean
+that kfree_skb() is called to free the skb.
+
+As my understanding, if the skb completely own the page(which means page_count()
+== 1) when kfree_skb() is called, __page_pool_put_page() is called, otherwise
+page_ref_dec() is called, which is exactly what page_pool_atomic_sub_if_positive()
+try to handle it atomically.
+
+> 
+> [...]
+> 
+> 
+> Cheers
+> /Ilias
+> 
+> .
+> 
+
