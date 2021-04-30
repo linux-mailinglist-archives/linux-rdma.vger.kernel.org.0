@@ -2,181 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F24C136F432
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Apr 2021 05:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C45336F58B
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Apr 2021 08:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbhD3DCm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Apr 2021 23:02:42 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3348 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhD3DCl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Apr 2021 23:02:41 -0400
-Received: from dggeml706-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FWcVl0gH5z19K60;
-        Fri, 30 Apr 2021 10:57:51 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggeml706-chm.china.huawei.com (10.3.17.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 30 Apr 2021 11:01:49 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 30 Apr
- 2021 11:01:49 +0800
-Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Matteo Croce <mcroce@linux.microsoft.com>,
-        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        "Vinay Kumar Yadav" <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        "Tariq Toukan" <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
- <YIsAIzecktXXBlxn@apalos.home>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <9bf7c5b3-c3cf-e669-051f-247aa8df5c5a@huawei.com>
-Date:   Fri, 30 Apr 2021 11:01:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S230357AbhD3GDG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 30 Apr 2021 02:03:06 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:50260 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230304AbhD3GDD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Apr 2021 02:03:03 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13U60dXq008516;
+        Fri, 30 Apr 2021 06:02:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=bR2+KtIaPtC53CBJQihPGd4Br58pLWSVwuOGAQwAsho=;
+ b=g0Yx3mnXrukZJV1v+sAU14/qziuEXJcfhSePIOnIjApdyhMQM/ARyAs5f15Q21ge5fxq
+ L1S9YIuAa2THzpWwb6iOOZovmm/IioohP1B30CbjPHq5kl2YErwQvfDjmszhLImpaD92
+ 6uk3w1XURcKRdMn9lRbnw1Qtl4QSevmaXpk0xdJ7EAXogtSJB1XqS9HfiKA52zfCBBf5
+ C7VN5nKiALBOash0vjMqffCh6d771iv/se/Sq1uUSe7IzWj9PF0CKkW5d1afxKRh8JWY
+ E4BceURVH23nRkcbltbY4RJAlRO+N0IEyhm+TVfbBrDge5lsNv2YJ2g+LsSPFuLH8XXZ Uw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 385aft6gm0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Apr 2021 06:02:13 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13U5stKM172365;
+        Fri, 30 Apr 2021 06:02:13 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 3874d4hk3v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Apr 2021 06:02:12 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13U5x32c185636;
+        Fri, 30 Apr 2021 06:02:12 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 3874d4hk38-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Apr 2021 06:02:12 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13U62Bld007530;
+        Fri, 30 Apr 2021 06:02:11 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 30 Apr 2021 06:02:10 +0000
+Date:   Fri, 30 Apr 2021 09:02:05 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     parav@nvidia.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [bug report] net/mlx5: E-Switch, Consider SF ports of host PF
+Message-ID: <YIudXfl7K83HgIzM@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <YIsAIzecktXXBlxn@apalos.home>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Proofpoint-GUID: t6A9p2wbh6RLvNXTnQpohQ_w3vvYoU8n
+X-Proofpoint-ORIG-GUID: t6A9p2wbh6RLvNXTnQpohQ_w3vvYoU8n
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9969 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 lowpriorityscore=0
+ mlxlogscore=999 malwarescore=0 phishscore=0 priorityscore=1501
+ clxscore=1011 spamscore=0 bulkscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104300042
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/4/30 2:51, Ilias Apalodimas wrote:
-> Hi Yunsheng,
-> 
-> On Thu, Apr 29, 2021 at 04:27:21PM +0800, Yunsheng Lin wrote:
->> On 2021/4/10 6:37, Matteo Croce wrote:
->>> From: Matteo Croce <mcroce@microsoft.com>
+Hello Parav Pandit,
 
-[...]
+The patch 87bd418ea751: "net/mlx5: E-Switch, Consider SF ports of
+host PF" from Mar 2, 2021, leads to the following static checker
+warning:
 
->>
->> 1. skb frag page recycling do not need "struct xdp_rxq_info" or
->>    "struct xdp_mem_info" to bond the relation between "struct page" and
->>    "struct page_pool", which seems uncessary at this point if bonding
->>    a "struct page_pool" pointer directly in "struct page" does not cause
->>    space increasing.
-> 
-> We can't do that. The reason we need those structs is that we rely on the
-> existing XDP code, which already recycles it's buffers, to enable
-> recycling.  Since we allocate a page per packet when using page_pool for a
-> driver , the same ideas apply to an SKB and XDP frame. We just recycle the
+	drivers/net/ethernet/mellanox/mlx5/core/eswitch.c:1571 mlx5_query_hca_cap_host_pf()
+	warn: odd binop '0x0 & 0x1'
 
-I am not really familar with XDP here, but a packet from hw is either a
-"struct xdp_frame/xdp_buff" for XDP or a "struct sk_buff" for TCP/IP stack,
-a packet can not be both "struct xdp_frame/xdp_buff" and "struct sk_buff" at
-the same time, right?
+drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+  1569  static int mlx5_query_hca_cap_host_pf(struct mlx5_core_dev *dev, void *out)
+  1570  {
+  1571          u16 opmod = (MLX5_CAP_GENERAL << 1) | (HCA_CAP_OPMOD_GET_MAX & 0x01);
+                                                       ^^^^^^^^^^^^^^^^^^^^^
+HCA_CAP_OPMOD_GET_MAX is zero.
 
-What does not really make sense to me is that the page has to be from page
-pool when a skb's frag page can be recycled, right? If it is ture, the switch
-case in __xdp_return() does not really make sense for skb recycling, why go
-all the trouble of checking the mem->type and mem->id to find the page_pool
-pointer when recyclable page for skb can only be from page pool?
+  1572          u8 in[MLX5_ST_SZ_BYTES(query_hca_cap_in)] = {};
+  1573  
+  1574          MLX5_SET(query_hca_cap_in, in, opcode, MLX5_CMD_OP_QUERY_HCA_CAP);
+  1575          MLX5_SET(query_hca_cap_in, in, op_mod, opmod);
+  1576          MLX5_SET(query_hca_cap_in, in, function_id, MLX5_VPORT_PF);
+  1577          MLX5_SET(query_hca_cap_in, in, other_function, true);
+  1578          return mlx5_cmd_exec_inout(dev, query_hca_cap, in, out);
+  1579  }
 
-> payload and we don't really care what's in that.  We could rename the functions
-> to something more generic in the future though ?
-> 
->>
->> 2. it would be good to do the page reference count updating batching
->>    in page pool instead of specific driver.
->>
->>
->> page_pool_atomic_sub_if_positive() is added to decide who can call
->> page_pool_put_full_page(), because the driver and stack may hold
->> reference to the same page, only if last one which hold complete
->> reference to a page can call page_pool_put_full_page() to decide if
->> recycling is possible, if not, the page is released, so I am wondering
->> if a similar page_pool_atomic_sub_if_positive() can added to specific
->> user space address unmapping path to allow skb recycling for RX zerocopy
->> too?
->>
-> 
-> I would prefer a different page pool type if we wanted to support the split
-> page model.  The changes as is are quite intrusive, since they change the 
-> entire skb return path.  So I would prefer introducing the changes one at a 
-> time. 
-
-I understand there may be fundamental semantic change when split page model
-is supported by page pool, but the split page support change mainly affect the
-skb recycling path and the driver that uses page pool(XDP too) if we are careful
-enough, not the entire skb return path as my understanding.
-
-Anyway, one changes at a time is always prefered if supporting split page is
-proved to be non-trivel and intrusive.
-
-> 
-> The fundamental difference between having the recycling in the driver vs
-> having it in a generic API is pretty straightforward.  When a driver holds
-> the extra page references he is free to decide what to reuse, when he is about
-> to refill his Rx descriptors.  So TCP zerocopy might work even if the
-> userspace applications hold the buffers for an X amount of time.
-> On this proposal though we *need* to decide what to do with the buffer when we
-> are about to free the skb.
-
-I am not sure I understand what you meant by "free the skb", does it mean
-that kfree_skb() is called to free the skb.
-
-As my understanding, if the skb completely own the page(which means page_count()
-== 1) when kfree_skb() is called, __page_pool_put_page() is called, otherwise
-page_ref_dec() is called, which is exactly what page_pool_atomic_sub_if_positive()
-try to handle it atomically.
-
-> 
-> [...]
-> 
-> 
-> Cheers
-> /Ilias
-> 
-> .
-> 
-
+regards,
+dan carpenter
