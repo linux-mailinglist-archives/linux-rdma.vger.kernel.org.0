@@ -2,175 +2,178 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F2A370524
-	for <lists+linux-rdma@lfdr.de>; Sat,  1 May 2021 05:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00313705BF
+	for <lists+linux-rdma@lfdr.de>; Sat,  1 May 2021 07:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbhEAD13 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 30 Apr 2021 23:27:29 -0400
-Received: from mga14.intel.com ([192.55.52.115]:14062 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230298AbhEAD13 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 30 Apr 2021 23:27:29 -0400
-IronPort-SDR: NZ/hscpy5Bgu/kxtX9dmwUueVx1tBq6/6BnTCA16N9rdsrwptorjCgi07AXM1HSGxnh1pkl5/f
- j+Kc4d+AmtfQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9970"; a="196980912"
-X-IronPort-AV: E=Sophos;i="5.82,264,1613462400"; 
-   d="scan'208";a="196980912"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2021 20:26:39 -0700
-IronPort-SDR: 7GjntREsA+piEe0c5jQLIhBGRLrjkrDq4FGzG8j96mhCbSek9ViaUK9OKyj3DMuZyLUau3/bau
- AlV0NKZslcog==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,264,1613462400"; 
-   d="scan'208";a="456213610"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 30 Apr 2021 20:26:37 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lcgH6-0008PQ-Os; Sat, 01 May 2021 03:26:36 +0000
-Date:   Sat, 01 May 2021 11:25:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-next] BUILD SUCCESS
- 6da7bda36388ae00822f732c11febfe2ebbb5544
-Message-ID: <608cca43.10qqZRt2OiEOk0bL%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229640AbhEAFtM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 1 May 2021 01:49:12 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:36645 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229546AbhEAFtM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 1 May 2021 01:49:12 -0400
+Received: by mail-il1-f197.google.com with SMTP id t15-20020a92dc0f0000b029016b11675c42so401302iln.3
+        for <linux-rdma@vger.kernel.org>; Fri, 30 Apr 2021 22:48:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=VM41VnBAt7GHJWqpUqrj+PUmTwLBYBfrS5Df+9Sr+3w=;
+        b=rdKEh0IUhlJO7fAhd8r4hIxNtR3bUYQlC2x93lODQJWcFebX7iQ6J03FQGBWu6rXIG
+         1LCFE768SogPD7vXQx6hhJkk6Pow0xeZg/THqXezU7QtPUGBRCMai+qZhH5+Sd+Z63Bs
+         Mz1wZO7uX2lALfU2xLW4jb/dl6RI9QUOvsnNZDD7enbDo9P4JrudRQZ+083nqEYqwMrI
+         SbWgtjzdHgTMD5/0U4FF13PhvcjKCo8PaO6lI84vhFzKOoFLTI1EIl0GBRjHsarFjGAw
+         CgyeHgNYUEURDoTp0Aa+oTR1xtFLeU/YEcRHIs3qEpKzFap04N3r282sC7VdNGum9YbP
+         rCnw==
+X-Gm-Message-State: AOAM530dI/4GD1lLNucDZJq6gSMmVza3iA3MGLbjDTyk68cXJQATnbRM
+        syRBSQWhGGMqvIYhvNsRnnlrODkgd/pkcJBH571AfmpBjmDJ
+X-Google-Smtp-Source: ABdhPJwk1rLUEEBX7O5WOerj4SjwHOZ+aCB95Ff9z5C/crvJCDB3kIPUbqSz/EyOElyIyc9mAPh3XZ6dDPCkCuy/WUaB2TgT/srA
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:48b:: with SMTP id b11mr7030027ils.245.1619848102814;
+ Fri, 30 Apr 2021 22:48:22 -0700 (PDT)
+Date:   Fri, 30 Apr 2021 22:48:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c22a6805c13e46a8@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in rdma_listen (3)
+From:   syzbot <syzbot+6bb0528b13611047209c@syzkaller.appspotmail.com>
+To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-branch HEAD: 6da7bda36388ae00822f732c11febfe2ebbb5544  IB/qib: Remove redundant assignment to ret
+Hello,
 
-elapsed time: 720m
+syzbot found the following issue on:
 
-configs tested: 113
-configs skipped: 2
+HEAD commit:    90c911ad Merge tag 'fixes' of git://git.kernel.org/pub/scm..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14eb4399d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9404cfa686df2c05
+dashboard link: https://syzkaller.appspot.com/bug?extid=6bb0528b13611047209c
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-m68k                          hp300_defconfig
-powerpc                   bluestone_defconfig
-nios2                         3c120_defconfig
-powerpc                 mpc832x_rdb_defconfig
-mips                        omega2p_defconfig
-sh                      rts7751r2d1_defconfig
-m68k                       m5208evb_defconfig
-powerpc                          g5_defconfig
-i386                                defconfig
-s390                             alldefconfig
-mips                         rt305x_defconfig
-powerpc                      katmai_defconfig
-m68k                       m5275evb_defconfig
-h8300                            allyesconfig
-arm                        shmobile_defconfig
-sh                               allmodconfig
-powerpc                     pseries_defconfig
-mips                      loongson3_defconfig
-powerpc                 mpc8315_rdb_defconfig
-ia64                          tiger_defconfig
-mips                        jmr3927_defconfig
-m68k                       bvme6000_defconfig
-ia64                         bigsur_defconfig
-mips                        vocore2_defconfig
-parisc                              defconfig
-mips                          ath79_defconfig
-m68k                        stmark2_defconfig
-mips                           jazz_defconfig
-openrisc                            defconfig
-sh                             shx3_defconfig
-sh                  sh7785lcr_32bit_defconfig
-h8300                       h8s-sim_defconfig
-mips                           ip27_defconfig
-m68k                        m5407c3_defconfig
-sh                        edosk7760_defconfig
-sh                   secureedge5410_defconfig
-arm                         mv78xx0_defconfig
-openrisc                  or1klitex_defconfig
-mips                          rb532_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20210430
-x86_64               randconfig-a004-20210430
-x86_64               randconfig-a002-20210430
-x86_64               randconfig-a006-20210430
-x86_64               randconfig-a001-20210430
-x86_64               randconfig-a005-20210430
-i386                 randconfig-a004-20210430
-i386                 randconfig-a001-20210430
-i386                 randconfig-a003-20210430
-i386                 randconfig-a002-20210430
-i386                 randconfig-a005-20210430
-i386                 randconfig-a006-20210430
-i386                 randconfig-a013-20210430
-i386                 randconfig-a011-20210430
-i386                 randconfig-a016-20210430
-i386                 randconfig-a015-20210430
-i386                 randconfig-a012-20210430
-i386                 randconfig-a014-20210430
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6bb0528b13611047209c@syzkaller.appspotmail.com
 
-clang tested configs:
-x86_64               randconfig-a011-20210430
-x86_64               randconfig-a016-20210430
-x86_64               randconfig-a013-20210430
-x86_64               randconfig-a014-20210430
-x86_64               randconfig-a012-20210430
-x86_64               randconfig-a015-20210430
+==================================================================
+BUG: KASAN: use-after-free in __list_add_valid+0x93/0xa0 lib/list_debug.c:26
+Read of size 8 at addr ffff8881546491e0 by task syz-executor.1/32204
+
+CPU: 1 PID: 32204 Comm: syz-executor.1 Not tainted 5.12.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
+ __kasan_report mm/kasan/report.c:399 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
+ __list_add_valid+0x93/0xa0 lib/list_debug.c:26
+ __list_add include/linux/list.h:67 [inline]
+ list_add_tail include/linux/list.h:100 [inline]
+ cma_listen_on_all drivers/infiniband/core/cma.c:2557 [inline]
+ rdma_listen+0x787/0xe00 drivers/infiniband/core/cma.c:3751
+ ucma_listen+0x16a/0x210 drivers/infiniband/core/ucma.c:1102
+ ucma_write+0x259/0x350 drivers/infiniband/core/ucma.c:1732
+ vfs_write+0x28e/0xa30 fs/read_write.c:603
+ ksys_write+0x1ee/0x250 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb4c3093188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 00000000004665f9
+RDX: 0000000000000010 RSI: 0000000020000180 RDI: 0000000000000003
+RBP: 00000000004bfbb9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 00007ffd209035df R14: 00007fb4c3093300 R15: 0000000000022000
+
+Allocated by task 32201:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:427 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:506 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:465 [inline]
+ __kasan_kmalloc+0x99/0xc0 mm/kasan/common.c:515
+ kmalloc include/linux/slab.h:554 [inline]
+ kzalloc include/linux/slab.h:684 [inline]
+ __rdma_create_id+0x5b/0x550 drivers/infiniband/core/cma.c:844
+ rdma_create_user_id+0x79/0xd0 drivers/infiniband/core/cma.c:897
+ ucma_create_id+0x162/0x370 drivers/infiniband/core/ucma.c:461
+ ucma_write+0x259/0x350 drivers/infiniband/core/ucma.c:1732
+ vfs_write+0x28e/0xa30 fs/read_write.c:603
+ ksys_write+0x1ee/0x250 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 32201:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+ ____kasan_slab_free mm/kasan/common.c:360 [inline]
+ ____kasan_slab_free mm/kasan/common.c:325 [inline]
+ __kasan_slab_free+0xf5/0x130 mm/kasan/common.c:367
+ kasan_slab_free include/linux/kasan.h:199 [inline]
+ slab_free_hook mm/slub.c:1562 [inline]
+ slab_free_freelist_hook+0x92/0x210 mm/slub.c:1600
+ slab_free mm/slub.c:3161 [inline]
+ kfree+0xe5/0x7f0 mm/slub.c:4213
+ ucma_close_id drivers/infiniband/core/ucma.c:185 [inline]
+ ucma_destroy_private_ctx+0x8b3/0xb70 drivers/infiniband/core/ucma.c:576
+ ucma_destroy_id+0x1e6/0x280 drivers/infiniband/core/ucma.c:614
+ ucma_write+0x259/0x350 drivers/infiniband/core/ucma.c:1732
+ vfs_write+0x28e/0xa30 fs/read_write.c:603
+ ksys_write+0x1ee/0x250 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3039 [inline]
+ call_rcu+0xb1/0x740 kernel/rcu/tree.c:3114
+ netlink_release+0xd48/0x1cf0 net/netlink/af_netlink.c:810
+ __sock_release+0xcd/0x280 net/socket.c:599
+ sock_close+0x18/0x20 net/socket.c:1258
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xbfc/0x2a60 kernel/exit.c:825
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ __do_sys_exit_group kernel/exit.c:933 [inline]
+ __se_sys_exit_group kernel/exit.c:931 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff888154649000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 480 bytes inside of
+ 2048-byte region [ffff888154649000, ffff888154649800)
+The buggy address belongs to the page:
+page:ffffea0005519200 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x154648
+head:ffffea0005519200 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x57ff00000010200(slab|head)
+raw: 057ff00000010200 ffffea0005474a00 0000000200000002 ffff888010442000
+raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888154649080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888154649100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888154649180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                       ^
+ ffff888154649200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888154649280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
 
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
