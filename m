@@ -2,154 +2,164 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04DE370B50
-	for <lists+linux-rdma@lfdr.de>; Sun,  2 May 2021 13:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCBA3711B5
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 08:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhEBL3I (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 2 May 2021 07:29:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230222AbhEBL3I (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 2 May 2021 07:29:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 561CE6101A;
-        Sun,  2 May 2021 11:28:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619954897;
-        bh=AMNoy9B2VJ3g2uiK6VkzTXDVLNv3gwMBB1RJc6UaDYk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I8Pu9MVE1UNok5UCP45oOAHZd5q+v3DL5ttb4uh7yX1+6z0Lal/QUTs+8RiNkm7F3
-         G/VAWEEqwIpfTsCkNNqfsN8dhqFs9HoPSpWoNz3T1jqRF7vcdHI+w17JwfylXbI38W
-         uqCvvhwbtRsgdiA5EmL5CI9DpQu7Smvb/mVEfTCF6qOFlAc9Yzn/M8sYuj0X+4dT9P
-         OJs0WqNuCOhwG4iZJdqRjz4V00jfQakeUMuqdyPZN5yQOCdFVDkt4MgNoHRIWViSlt
-         46ELMVUClzv1VX8x+PdnP0lRVMZpFHg54PUVA6y476HX2vJw4WE+kJ9kvb/LQQALbM
-         8bScCO2jBQizg==
-Date:   Sun, 2 May 2021 14:28:13 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Shay Drory <shayd@nvidia.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next] RDMA/restrack: Delay QP deletion till all
- users are gone
-Message-ID: <YI6MzXZ/AG9COtgh@unreal>
-References: <9ba5a611ceac86774d3d0fda12704cecc30606f9.1618753038.git.leonro@nvidia.com>
- <20210420123950.GA2138447@nvidia.com>
- <YH7Ru5ZSr1kWGZoa@unreal>
- <20210420152541.GC1370958@nvidia.com>
- <YH+yGj3cLuA5ga8s@unreal>
- <20210422142939.GA2407382@nvidia.com>
+        id S229820AbhECGtI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 May 2021 02:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229817AbhECGtI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 02:49:08 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1873C06174A
+        for <linux-rdma@vger.kernel.org>; Sun,  2 May 2021 23:48:15 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id g24so1724805pji.4
+        for <linux-rdma@vger.kernel.org>; Sun, 02 May 2021 23:48:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version;
+        bh=GRh9pZiKKeU8159D4S1Mre2533S7mEiyVe05q3wG4qs=;
+        b=TAZNpL7oCsWcRUU5UUxrw8HawDsJDaANEoIhzFG5cLAofs4lZsBEcpwqb+G16ho2Sc
+         OzsgApQmq9W51UJyGgiD33PBaoT2UlyTKczdfOIZEHy6HVZiMFOqzxyeWD6mgX/jVTaG
+         O6ow09PuQvNHyFXFkvGlXOb3a2dE+phYqtiio=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
+        bh=GRh9pZiKKeU8159D4S1Mre2533S7mEiyVe05q3wG4qs=;
+        b=FKpR75y63alPnTUD2WRYDi0adOO8dkP2GRVZRdT3CZgtue/zDZMjFA9Ow4TX5O3NP9
+         uMUxNJ2Ap4g2qx02d8Dz4bNUGywwxc8vfaKbhZ+wjUZPclcFYYtvFWGHogeblvvAqUqt
+         iJxN1I7i9hGMijVPbTWpRwegNd7CSCKfyW6/jaoruoIHBnNhOZvKZKjf9JnqVzvacWO7
+         F+FvGNqmaVZ1vp/2hHOD0BCRm+vg6NQBT72sCxSTjcd9jNloibiXHT2J07OZVjPo9sR5
+         xLqZWwsAuA01vAc1aySt5NHSBYhWs864/odaI0kaH9cSoltU5xACaSB1C7hZmFJbDv0Q
+         7Cmg==
+X-Gm-Message-State: AOAM531N+IAdAwOmKcVCdgZx2effGGFqgEmzDmPmJztharl5Me24Xy+u
+        EKLY5O1Qm9Ig7porSz+syKDkol9uA4L3jzsM24mfusI9a2sAY7pmKTXWqnt++ZVfOa3ndVqXHaE
+        nIMzhnxqCFY4zohzyZiOUBUDzY6Je6nVmEDdkIpUacBfzv7uTcJD+tglQTfiwO09Vov/gyW6+y7
+        TVNCKhvAp5
+X-Google-Smtp-Source: ABdhPJz59bGmHvAg1Y0zUwUjOrBahtWSEIh1pOxBvgfuvGdQEdoDgvm+qz8XDOgpNinbHzuuOmO2Bw==
+X-Received: by 2002:a17:902:e986:b029:ee:d430:6bf9 with SMTP id f6-20020a170902e986b02900eed4306bf9mr4653746plb.0.1620024494422;
+        Sun, 02 May 2021 23:48:14 -0700 (PDT)
+Received: from dev01.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id i9sm19585389pjh.9.2021.05.02.23.48.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 May 2021 23:48:13 -0700 (PDT)
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Devesh Sharma <devesh.sharma@broadcom.com>
+Subject: [rdma-core 0/4] Broadcom's rdma provider lib update
+Date:   Mon,  3 May 2021 12:17:58 +0530
+Message-Id: <20210503064802.457482-1-devesh.sharma@broadcom.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422142939.GA2407382@nvidia.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000008edbdb05c1675842"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 11:29:39AM -0300, Jason Gunthorpe wrote:
-> On Wed, Apr 21, 2021 at 08:03:22AM +0300, Leon Romanovsky wrote:
-> 
-> > I didn't understand when reviewed either, but decided to post it anyway
-> > to get possible explanation for this RDMA_RESTRACK_MR || RDMA_RESTRACK_QP
-> > check.
-> 
-> I think the whole thing should look more like this and we delete the
-> if entirely.
+--0000000000008edbdb05c1675842
+Content-Transfer-Encoding: 8bit
 
-Finally, I had a time to work on it and got immediate reminder why we
-have "if ...".
+This patch series is a part of bigger feature submission which
+changes the wqe posting logic. The current series adds the
+ground work in the direction to change the wqe posting algorithm.
 
-> 
-> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-> index 2b9ffc21cbc4ad..479b16b8f6723a 100644
+Devesh Sharma (4):
+  bnxt_re/lib: fix AH validity check
+  bnxt_re/lib: align base sq entry structure to 16B
+  bnxt_re/lib: consolidate hwque and swque in common structure
+  bnxt_re/lib: let bnxt_re_dev store device attrs
 
-<...>
+ providers/bnxt_re/bnxt_re-abi.h |  24 ++---
+ providers/bnxt_re/db.c          |   6 +-
+ providers/bnxt_re/main.c        |  31 +++---
+ providers/bnxt_re/main.h        |  15 ++-
+ providers/bnxt_re/verbs.c       | 184 +++++++++++++++++---------------
+ 5 files changed, 140 insertions(+), 120 deletions(-)
 
-> @@ -1963,31 +1969,33 @@ int ib_destroy_qp_user(struct ib_qp *qp, struct ib_udata *udata)
->  		rdma_rw_cleanup_mrs(qp);
->  
->  	rdma_counter_unbind_qp(qp, true);
-> -	rdma_restrack_del(&qp->res);
-> +	rdma_restrack_prepare_del(&qp->res);
->  	ret = qp->device->ops.destroy_qp(qp, udata);
-> -	if (!ret) {
-> -		if (alt_path_sgid_attr)
-> -			rdma_put_gid_attr(alt_path_sgid_attr);
-> -		if (av_sgid_attr)
-> -			rdma_put_gid_attr(av_sgid_attr);
-> -		if (pd)
-> -			atomic_dec(&pd->usecnt);
-> -		if (scq)
-> -			atomic_dec(&scq->usecnt);
-> -		if (rcq)
-> -			atomic_dec(&rcq->usecnt);
-> -		if (srq)
-> -			atomic_dec(&srq->usecnt);
-> -		if (ind_tbl)
-> -			atomic_dec(&ind_tbl->usecnt);
-> -		if (sec)
-> -			ib_destroy_qp_security_end(sec);
-> -	} else {
-> +	if (ret) {
-> +		rdma_restrack_abort_del(&qp->res);
->  		if (sec)
->  			ib_destroy_qp_security_abort(sec);
-> +		return ret;
->  	}
->  
-> -	return ret;
-> +	rdma_restrack_finish_del(&qp->res);
+-- 
+2.25.1
 
-This causes to use-after-free because "qp" is released in the driver.
 
-[leonro@vm ~]$ mkt test
-.s....[   24.350657] ==================================================================
-[   24.350917] BUG: KASAN: use-after-free in rdma_restrack_finish_del+0x1a7/0x210 [ib_core]
-[   24.351303] Read of size 1 at addr ffff88800c59f118 by task python3/243
-[   24.351416] 
-[   24.351495] CPU: 4 PID: 243 Comm: python3 Not tainted 5.12.0-rc2+ #2923
-[   24.351644] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-[   24.351832] Call Trace:
-[   24.351886]  dump_stack+0x93/0xc2
-[   24.351965]  print_address_description.constprop.0+0x18/0x140
-[   24.352074]  ? rdma_restrack_finish_del+0x1a7/0x210 [ib_core]
-[   24.352204]  ? rdma_restrack_finish_del+0x1a7/0x210 [ib_core]
-[   24.352333]  kasan_report.cold+0x7c/0xd8
-[   24.352413]  ? rdma_restrack_finish_del+0x1a7/0x210 [ib_core]
-[   24.352543]  rdma_restrack_finish_del+0x1a7/0x210 [ib_core]
-[   24.352654]  ib_destroy_qp_user+0x297/0x540 [ib_core]
-[   24.352769]  uverbs_free_qp+0x7d/0x150 [ib_uverbs]
-[   24.352864]  uverbs_destroy_uobject+0x164/0x6c0 [ib_uverbs]
-[   24.352949]  uobj_destroy+0x72/0xf0 [ib_uverbs]
-[   24.353041]  ib_uverbs_cmd_verbs+0x19b9/0x2ee0 [ib_uverbs]
-[   24.353147]  ? uverbs_free_qp+0x150/0x150 [ib_uverbs]
-[   24.353246]  ? lockdep_hardirqs_on_prepare+0x3e0/0x3e0
-[   24.353340]  ? uverbs_fill_udata+0x540/0x540 [ib_uverbs]
-[   24.353455]  ? filemap_map_pages+0x2d9/0xf30
-[   24.353552]  ? lock_acquire+0x1a9/0x6d0
-[   24.353620]  ? ib_uverbs_ioctl+0x11e/0x260 [ib_uverbs]
-[   24.353720]  ? __might_fault+0xba/0x160
-[   24.353790]  ? lock_release+0x6c0/0x6c0
-[   24.353866]  ib_uverbs_ioctl+0x169/0x260 [ib_uverbs]
-[   24.353958]  ? ib_uverbs_ioctl+0x11e/0x260 [ib_uverbs]
-[   24.354049]  ? ib_uverbs_cmd_verbs+0x2ee0/0x2ee0 [ib_uverbs]
-[   24.354158]  __x64_sys_ioctl+0x7e6/0x1050
-[   24.354217]  ? generic_block_fiemap+0x60/0x60
-[   24.354305]  ? down_write_nested+0x150/0x150
-[   24.354400]  ? do_user_addr_fault+0x219/0xdc0
-[   24.354497]  ? lockdep_hardirqs_on_prepare+0x273/0x3e0
-[   24.354584]  ? syscall_enter_from_user_mode+0x1d/0x50
-[   24.354678]  do_syscall_64+0x2d/0x40
-[   24.354747]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   24.354837] RIP: 0033:0x7fbfd862b5db
-[   24.354911] Code: 89 d8 49 8d 3c 1c 48 f7 d8 49 39 c4 72 b5 e8 1c ff ff ff 85 c0 78 ba 4c 89 e0 5b 5d 41 5c c3 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 6d b8 0c 00 f7 d8 64 89 01 48
-[   24.355200] RSP: 002b:00007fff7e9fde58 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-[   24.355336] RAX: ffffffffffffffda RBX: 00007fff7e9fdf88 RCX: 00007fbfd862b5db
-[   24.355468] RDX: 00007fff7e9fdf70 RSI: 00000000c0181b01 RDI: 0000000000000005
-[   24.355587] RBP: 00007fff7e9fdf50 R08: 000055d6a4f8b3f0 R09: 00007fbfd800d000
-[   24.355713] R10: 00007fbfd800d0f0 R11: 0000000000000246 R12: 00007fff7e9fdf50
-[   24.355836] R13: 00007fff7e9fdf2c R14: 000055d6a4e59d90 R15: 000055d6a4f8b530
-[   24.355973] 
+--0000000000008edbdb05c1675842
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-So let's finish memory allocation conversion patches before.
-
-Thanks
+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
+TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
+Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
+KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
+SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
+PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
+G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
+PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIAPODl1M/zkgMNN7rOtBrx5ezRBL
+3YKlPvW3ZMBH900yMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDUwMzA2NDgxNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQCEpsLW2KwwCR9sYp4A5xZmWYCsxcwwFQUtogfHkQJEt7bL
+WLJEoG9c7tEqhyNrV3IbRFQcy+y41HUlrZA7FER0BVNJe0op56304I6Nw/1GRM4k/Hr2qQqlbzla
+fqDZzAd16tjQloBU9K+QrIAGBZ5oN5obv1NvD/WV21BPvu+EjBm1sZaZj4OaUQaPqKH4ZSTGwGX2
+51AsaXKnLngWqyPMh/wQBi0va+VK0lR1qJaXMSKU3iNeleTf5Za+Du9qnZmgQzcPn9fwuhiYLPxw
+a3f806EsGLOXAWQ1JqtZQlE4/mMDM1icmZIJ9aFyct0rhnTMte+1uwY+Ul6FildzJo4Z
+--0000000000008edbdb05c1675842--
