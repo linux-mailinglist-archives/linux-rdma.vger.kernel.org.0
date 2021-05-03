@@ -2,87 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCBA3711B5
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 08:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 454DD3711B6
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 08:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbhECGtI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 May 2021 02:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
+        id S232837AbhECGtL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 May 2021 02:49:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhECGtI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 02:49:08 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1873C06174A
-        for <linux-rdma@vger.kernel.org>; Sun,  2 May 2021 23:48:15 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id g24so1724805pji.4
-        for <linux-rdma@vger.kernel.org>; Sun, 02 May 2021 23:48:15 -0700 (PDT)
+        with ESMTP id S230137AbhECGtK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 02:49:10 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A508DC06174A
+        for <linux-rdma@vger.kernel.org>; Sun,  2 May 2021 23:48:17 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id lp4so1079384pjb.1
+        for <linux-rdma@vger.kernel.org>; Sun, 02 May 2021 23:48:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version;
-        bh=GRh9pZiKKeU8159D4S1Mre2533S7mEiyVe05q3wG4qs=;
-        b=TAZNpL7oCsWcRUU5UUxrw8HawDsJDaANEoIhzFG5cLAofs4lZsBEcpwqb+G16ho2Sc
-         OzsgApQmq9W51UJyGgiD33PBaoT2UlyTKczdfOIZEHy6HVZiMFOqzxyeWD6mgX/jVTaG
-         O6ow09PuQvNHyFXFkvGlXOb3a2dE+phYqtiio=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=ij4EqvSXmUindSaSBqg7+7uaA6z9QVC4n3zPQC4djz8=;
+        b=dHJaOc9imd8RkxJrnxj4vv+kNg69YU+cpI/RL0Y8mix3u83RMsy7moh1vAIoBWLVbs
+         XpbpylzaIoz1XIz3YyYtGt04REB5rhgq+epU/cbVSzCOoqb2omfhbK78UxWxWwza99zJ
+         TJe4irH9yo7wW4pmXhUcnrP3ZNs4dtSajTbHQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
-        bh=GRh9pZiKKeU8159D4S1Mre2533S7mEiyVe05q3wG4qs=;
-        b=FKpR75y63alPnTUD2WRYDi0adOO8dkP2GRVZRdT3CZgtue/zDZMjFA9Ow4TX5O3NP9
-         uMUxNJ2Ap4g2qx02d8Dz4bNUGywwxc8vfaKbhZ+wjUZPclcFYYtvFWGHogeblvvAqUqt
-         iJxN1I7i9hGMijVPbTWpRwegNd7CSCKfyW6/jaoruoIHBnNhOZvKZKjf9JnqVzvacWO7
-         F+FvGNqmaVZ1vp/2hHOD0BCRm+vg6NQBT72sCxSTjcd9jNloibiXHT2J07OZVjPo9sR5
-         xLqZWwsAuA01vAc1aySt5NHSBYhWs864/odaI0kaH9cSoltU5xACaSB1C7hZmFJbDv0Q
-         7Cmg==
-X-Gm-Message-State: AOAM531N+IAdAwOmKcVCdgZx2effGGFqgEmzDmPmJztharl5Me24Xy+u
-        EKLY5O1Qm9Ig7porSz+syKDkol9uA4L3jzsM24mfusI9a2sAY7pmKTXWqnt++ZVfOa3ndVqXHaE
-        nIMzhnxqCFY4zohzyZiOUBUDzY6Je6nVmEDdkIpUacBfzv7uTcJD+tglQTfiwO09Vov/gyW6+y7
-        TVNCKhvAp5
-X-Google-Smtp-Source: ABdhPJz59bGmHvAg1Y0zUwUjOrBahtWSEIh1pOxBvgfuvGdQEdoDgvm+qz8XDOgpNinbHzuuOmO2Bw==
-X-Received: by 2002:a17:902:e986:b029:ee:d430:6bf9 with SMTP id f6-20020a170902e986b02900eed4306bf9mr4653746plb.0.1620024494422;
-        Sun, 02 May 2021 23:48:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=ij4EqvSXmUindSaSBqg7+7uaA6z9QVC4n3zPQC4djz8=;
+        b=lo7NVKrjgmpLFapwMp5oyBRLnLBigl9PGTsYOMCx+sf+RbySwpO+5qvjrXjNtnylp5
+         L8ipxXlFELLNqEBpOPMxugQZzzJmQho6+HiqjeLzVQi4C/G6zzD4sdbn5Iq/adARK2e0
+         jx08o0fd34newgBkGqqzAvj8a4omgSoswND3Jfy6yyzyOGwE+BnJpj2/WYrdZ6c4s9Ig
+         C5crQHLp4uNJdwdeZa5C/zUOVOjY6FC0428tzqAHd9xFK58sLqdFT6z7Ag3Ccdw45qdb
+         AnXiXLBP4gWa8WyB65Q3OwnHgJUcy6JtQLBATbkR/g2Yewz1n9BEZy+jXzdkn0EwjwbE
+         xBPg==
+X-Gm-Message-State: AOAM531YH/c58LCNItvkx2olsuiwbl4xiLtTi6hYzVlLBAtt2eI5s99r
+        Rj3wRiFMQWKgpqhJQYy3mYd9kd0x59Y6uhoqcU7u9nVbA6vno+r7sMsFJTqoqScp8pX0VkkwBKu
+        ir1ANvAPypBsyrnmFArGdJ/TCHVQykyJIJW7+gVLVVZ7/Hp/VKoJsUOhxSh3LPaoLvXu45ZvxSi
+        vxIOW0a+4S
+X-Google-Smtp-Source: ABdhPJwoIydYFLlYGRjLE84QwME48CGTnM95Z/uBQiteW2hPmA7tAEJ7anBUlK6junuzmrBuYpc97w==
+X-Received: by 2002:a17:902:fe98:b029:ed:23f5:7d54 with SMTP id x24-20020a170902fe98b02900ed23f57d54mr19064329plm.57.1620024496390;
+        Sun, 02 May 2021 23:48:16 -0700 (PDT)
 Received: from dev01.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id i9sm19585389pjh.9.2021.05.02.23.48.12
+        by smtp.gmail.com with ESMTPSA id i9sm19585389pjh.9.2021.05.02.23.48.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 May 2021 23:48:13 -0700 (PDT)
+        Sun, 02 May 2021 23:48:16 -0700 (PDT)
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [rdma-core 0/4] Broadcom's rdma provider lib update
-Date:   Mon,  3 May 2021 12:17:58 +0530
-Message-Id: <20210503064802.457482-1-devesh.sharma@broadcom.com>
+Subject: [rdma-core 1/4] bnxt_re/lib: fix AH validity check
+Date:   Mon,  3 May 2021 12:17:59 +0530
+Message-Id: <20210503064802.457482-2-devesh.sharma@broadcom.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210503064802.457482-1-devesh.sharma@broadcom.com>
+References: <20210503064802.457482-1-devesh.sharma@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000008edbdb05c1675842"
+        boundary="000000000000b0613e05c1675821"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000008edbdb05c1675842
+--000000000000b0613e05c1675821
 Content-Transfer-Encoding: 8bit
 
-This patch series is a part of bigger feature submission which
-changes the wqe posting logic. The current series adds the
-ground work in the direction to change the wqe posting algorithm.
+Fixing the AH validity check when initializing the
+UD SQE from AH.
 
-Devesh Sharma (4):
-  bnxt_re/lib: fix AH validity check
-  bnxt_re/lib: align base sq entry structure to 16B
-  bnxt_re/lib: consolidate hwque and swque in common structure
-  bnxt_re/lib: let bnxt_re_dev store device attrs
+Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+---
+ providers/bnxt_re/verbs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- providers/bnxt_re/bnxt_re-abi.h |  24 ++---
- providers/bnxt_re/db.c          |   6 +-
- providers/bnxt_re/main.c        |  31 +++---
- providers/bnxt_re/main.h        |  15 ++-
- providers/bnxt_re/verbs.c       | 184 +++++++++++++++++---------------
- 5 files changed, 140 insertions(+), 120 deletions(-)
-
+diff --git a/providers/bnxt_re/verbs.c b/providers/bnxt_re/verbs.c
+index ca561662..a015bed7 100644
+--- a/providers/bnxt_re/verbs.c
++++ b/providers/bnxt_re/verbs.c
+@@ -1193,13 +1193,13 @@ static int bnxt_re_build_ud_sqe(struct bnxt_re_qp *qp, void *wqe,
+ 	int len;
+ 
+ 	len = bnxt_re_build_send_sqe(qp, wqe, wr, is_inline);
+-	sqe->qkey = htole32(wr->wr.ud.remote_qkey);
+-	sqe->dst_qp = htole32(wr->wr.ud.remote_qpn);
+ 	if (!wr->wr.ud.ah) {
+ 		len = -EINVAL;
+ 		goto bail;
+ 	}
+ 	ah = to_bnxt_re_ah(wr->wr.ud.ah);
++	sqe->qkey = htole32(wr->wr.ud.remote_qkey);
++	sqe->dst_qp = htole32(wr->wr.ud.remote_qpn);
+ 	sqe->avid = htole32(ah->avid & 0xFFFFF);
+ bail:
+ 	return len;
 -- 
 2.25.1
 
 
---0000000000008edbdb05c1675842
+--000000000000b0613e05c1675821
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -153,13 +168,13 @@ G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
 PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIAPODl1M/zkgMNN7rOtBrx5ezRBL
-3YKlPvW3ZMBH900yMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDUwMzA2NDgxNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIB1kUuhLGwiY8Hr4BjycJHQNG2UH
+haGhogBvFpSIK6m1MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDUwMzA2NDgxN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQCEpsLW2KwwCR9sYp4A5xZmWYCsxcwwFQUtogfHkQJEt7bL
-WLJEoG9c7tEqhyNrV3IbRFQcy+y41HUlrZA7FER0BVNJe0op56304I6Nw/1GRM4k/Hr2qQqlbzla
-fqDZzAd16tjQloBU9K+QrIAGBZ5oN5obv1NvD/WV21BPvu+EjBm1sZaZj4OaUQaPqKH4ZSTGwGX2
-51AsaXKnLngWqyPMh/wQBi0va+VK0lR1qJaXMSKU3iNeleTf5Za+Du9qnZmgQzcPn9fwuhiYLPxw
-a3f806EsGLOXAWQ1JqtZQlE4/mMDM1icmZIJ9aFyct0rhnTMte+1uwY+Ul6FildzJo4Z
---0000000000008edbdb05c1675842--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQCGry9rle5iAIlFB+3SsaKHUkjWM7Zxs+CRHOQJ2VIHF7+0
+jjrTIXAINfpiyVainU0JNsyBuNecFmPSwU9LsaByW+DZTMkwG459IPcyiMBzSKAM/JnjqG5brBOE
+nTNlR0xtTR1oYJs+h7mRnQ1pfVWWSSshH9wE1kOBsZdJ7pEEkaE88RIzFOHddnWKTeR1m/gAwLf2
+L2UANda7Pk3Wfx6bIO88uPL2B4im8VqyLEjjSlcIp72TLNWAAkaPX7sIpS1UbOxG1T/pOsGLmewF
+VIGhLndrR4s3CF0mewFfUDwZdt0Rk44eAAgm+780cxI4EBuAI9cODrAW0cMqui/EzaWa
+--000000000000b0613e05c1675821--
