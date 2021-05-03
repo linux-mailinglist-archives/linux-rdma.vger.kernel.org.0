@@ -2,79 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B161371601
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 15:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818AB3716DB
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 16:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233980AbhECNd5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 May 2021 09:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36648 "EHLO
+        id S229731AbhECOpk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 May 2021 10:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233966AbhECNd4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 09:33:56 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C653C06174A
-        for <linux-rdma@vger.kernel.org>; Mon,  3 May 2021 06:33:03 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id 1so3649012qtb.0
-        for <linux-rdma@vger.kernel.org>; Mon, 03 May 2021 06:33:03 -0700 (PDT)
+        with ESMTP id S229657AbhECOpj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 10:45:39 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52CDAC06174A;
+        Mon,  3 May 2021 07:44:46 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id v24so5592567oiv.9;
+        Mon, 03 May 2021 07:44:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ra4OfKTrWuvfvsnnvmy7RMlO5oRYrblQvpl+7g9d3P0=;
-        b=Y1fNMMZaCd7eVIoZJa2p9nDYcpFo3RCQkjFOfj9IULILafpdc22i5oi9jcAUXqpxPG
-         w3wUipXQHcP4kmQ3JKsefDxHUtAeXOlccSiAe1qMeQwGte+e9/MvdMQv9Q74Y4UE8UmL
-         QZzWzQAiwPGRRKkLZ2XUt0jwGfKiIW/enQgvfE6KSq6mWZgOtmtTdyc0AJVg5xRNHwgJ
-         Pxfx7kfexmYDTjTVDmcEUFdqdpu3IdcM1viomREbngFCHd2eVJc9oCqJXmohzNXp2y4c
-         a3Ih83/wxeUuWmNqi+sJMzqXFtnnqITB1Y/fYegW0JI0Gdqq1Y4hS3r+JeDGfmxNca4k
-         58oA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6dkv1diytowCkvVVBDe3P56VdfrlcPPTRc/t0hgxBUs=;
+        b=gKJpHRFyBXao+qZ4Tt4X8Fz6f/f7n0hpHarXlfd1k8R+G4OB/+ibnU3L+PAnBRQyFA
+         u8Dh+ZsXDgV3+LDcaSuqFMmuiDTYyPWeOIKx5/73cGBbSNJT/wNFcAcoL2G61G7TwwEg
+         pGIDSlpCX/B0SDqDQUnCtiIaAr4FhqU6HqXlqXW3UTI1nTZTSwyKVYUhC6AWDHK6PpFo
+         8ngdzo3ri0MYZ3X7Laca2KrB07am+yKyDZI6kHZRcIb+4QqEfCvdbnRBzF7qla9OXxw4
+         4WbY5vmCmOxf8Au5zKmpeqXpmoeCf/4b0mP6Em7YNBIjJIjpCpRBU6/ypO7bjd+hH1dz
+         XiQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ra4OfKTrWuvfvsnnvmy7RMlO5oRYrblQvpl+7g9d3P0=;
-        b=sfBc+6tbKeGZo8jM3upoWOXjMJmbha0cnIsuwVTItorDnyPFF6gb5CGQ+q8J5Ks1Xs
-         skBPi4ueWRkvzhjQqOZYnQr6mORuNGkWeRJL6UR+w2vVFnBpk0j7oT3njW0ax45z2tbo
-         rSecAkH3Q/AFtSrfdEofLXhapn3/HxgSrYVMPqriiVkIYbt0KiIEUgjyfhLF5P857p9B
-         FreOo9JuNEepweFXo+C8ZbGbrM6FkFfLyFb0kRxNV5TGl0t7+8xkPl4rfkk6e/GjWpKV
-         3goS/X3ksSIIm3R7zIBfgV4bxbWC6phUfOXp2/wuDeloPiEH9gFQlDapqCM19e6MuoDW
-         aKtw==
-X-Gm-Message-State: AOAM531yYJspSYksXsXMfADn3m4NXRJQz4k4lNzX0mmnBeFFighPeMOQ
-        cCJzs761az3AejzEeH9PgTBYvvoXDwusZ1mQ
-X-Google-Smtp-Source: ABdhPJxWSPtJ+YHB6p0Sf4JfBayFNEuLT5POootHMOshwiCIniN4fox8UKdfex2r1LYBugNTgh0TdA==
-X-Received: by 2002:ac8:7fc5:: with SMTP id b5mr16951578qtk.122.1620048782222;
-        Mon, 03 May 2021 06:33:02 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id l8sm8648652qtv.18.2021.05.03.06.33.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 06:33:01 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ldYh2-00GLLS-An; Mon, 03 May 2021 10:33:00 -0300
-Date:   Mon, 3 May 2021 10:33:00 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Devesh Sharma <devesh.sharma@broadcom.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [rdma-core 1/4] bnxt_re/lib: fix AH validity check
-Message-ID: <20210503133300.GZ2047089@ziepe.ca>
-References: <20210503064802.457482-1-devesh.sharma@broadcom.com>
- <20210503064802.457482-2-devesh.sharma@broadcom.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6dkv1diytowCkvVVBDe3P56VdfrlcPPTRc/t0hgxBUs=;
+        b=USC1xwadicJfWnwyia9PRn3dLyqVJouGUoZAZnGrQyBt2JzuARn/8Xg84dO5DTnYAQ
+         Ie+3tNX8bzTAqpI/UE4wLUe3luFmX08yJSWxClv8u5ajt4cqB8+Hvt7wnicEYYXWsNgH
+         o8cSdVRv8pGubuC35KI6AI+zI4t9Y3r3VsnQhlhsJ2ne55WzfV5t3eb6dO6QIrFrx6nq
+         FsqMFp/0JQ3s63G1M4V6jlZacWZcySSE+Bejzh39LefxNEbuqZe51jaXOmlYoyK3zmCS
+         1Y8m1uzBf1dgT1l83A6b/I/kORQoH7ju+EmEuzhs+SUCSa8fPcWT8iW+aafJicQrasFb
+         mFeA==
+X-Gm-Message-State: AOAM531qNmg0WzR426IwBvV8DLowN4EFjF3Dl7f1U7yCHfb5bIj9Wyh9
+        uSLIbLl9Y0wWOuhjqnhwFjc=
+X-Google-Smtp-Source: ABdhPJwWs4dF9JkdG0wp3no7YgV70u43/cyLduOygM7cE3NXALRe0dsmwywxq4FjenXK+Q9W0VyPrQ==
+X-Received: by 2002:aca:488f:: with SMTP id v137mr3865337oia.173.1620053085795;
+        Mon, 03 May 2021 07:44:45 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.33])
+        by smtp.googlemail.com with ESMTPSA id d62sm2752650oia.37.2021.05.03.07.44.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 07:44:45 -0700 (PDT)
+Subject: Re: [PATCH iproute2-next v2 0/2] Add copy-on-fork to get sys command
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+References: <20210429064803.58458-1-galpress@amazon.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <bc278121-ed27-597b-cbc7-38129a58b7e1@gmail.com>
+Date:   Mon, 3 May 2021 08:44:43 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210503064802.457482-2-devesh.sharma@broadcom.com>
+In-Reply-To: <20210429064803.58458-1-galpress@amazon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 03, 2021 at 12:17:59PM +0530, Devesh Sharma wrote:
-> Fixing the AH validity check when initializing the
-> UD SQE from AH.
+On 4/29/21 12:48 AM, Gal Pressman wrote:
+> This is the userspace part for the new copy-on-fork attribute added to
+> the get sys netlink command.
 > 
-> Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
-> ---
->  providers/bnxt_re/verbs.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> The new attribute indicates that the kernel copies DMA pages on fork,
+> hence fork support through madvise and MADV_DONTFORK is not needed.
+> 
+> Kernel series was merged:
+> https://lore.kernel.org/linux-rdma/20210418121025.66849-1-galpress@amazon.com/
+> 
+> Changelog -
+> v1->v2: https://lore.kernel.org/linux-rdma/20210428114231.96944-1-galpress@amazon.com/
+> * Rebase kernel headers
+> * Print attributes on the same line
+> * Simplify if statement
+> 
+> Thanks
+> 
+> Gal Pressman (2):
+>   rdma: update uapi headers
+>   rdma: Add copy-on-fork to get sys command
+> 
+>  rdma/include/uapi/rdma/rdma_netlink.h |  3 +++
+>  rdma/sys.c                            | 11 ++++++++++-
+>  2 files changed, 13 insertions(+), 1 deletion(-)
+> 
 
-This all need fixes lines and why do they have such a strange subject?
-
-Jason
+applied to iproute2-next
