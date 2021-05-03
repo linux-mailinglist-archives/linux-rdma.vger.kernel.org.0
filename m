@@ -2,49 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1FD371482
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 13:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07775371484
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 13:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbhECLtX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S233251AbhECLtX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Mon, 3 May 2021 07:49:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41714 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233541AbhECLtW (ORCPT
+        with ESMTP id S233551AbhECLtW (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 07:49:22 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0724C061761
-        for <linux-rdma@vger.kernel.org>; Mon,  3 May 2021 04:48:28 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id l4so7361039ejc.10
-        for <linux-rdma@vger.kernel.org>; Mon, 03 May 2021 04:48:28 -0700 (PDT)
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B27AC06174A
+        for <linux-rdma@vger.kernel.org>; Mon,  3 May 2021 04:48:29 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id u13so3210317edd.3
+        for <linux-rdma@vger.kernel.org>; Mon, 03 May 2021 04:48:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yE/rvzHkZGy1N5Z/cqUKjEOF4LLSvM26nBzknaJPIAM=;
-        b=TV+RzRHMMkGxxenw829C1sFdMY5uNOE0alRQZzmz3gjIzT7JHCs8vWkQxvAC/rM5lY
-         HDeI884vto/HhZoVS3oRxtuen1CuhU0WgeIBjyf3yaGL8UDdp1kT9GZA45FW57cIDgre
-         aueM6mw30NXppHlbc1ox6tGwkCRfW0LK2b6LXmJzzEwKsfzBF2dPlgLRF6QSJAIYZL4i
-         Odd6Ij/GYmxwDUC05gwBr7tFazhXON6U8RhKwOCNg7uObnSXzNl7qB/RffGF8hvrPd2M
-         Ogk3dgURi3J53261bLMFzokrWqr9Of149UFdPYqINb6UpTjo84vFmHIqqB8gNjPHw8LZ
-         cETg==
+        bh=TD+IUqvK3rmRyo/UXMWEt8JGbAptLLrQ1RYAde9/BdQ=;
+        b=dj89Q+TI9pXmz5M4PQL43nPBzF0Stx8hAExWQJZoyCGNRwStuAeOC9ShAE2EjZZEV8
+         rQ0IH0hXBuYDJElrq2SDXr3Htj6Y3J2etYcyKsCPr232EMTBnUjMFV4f2knbXpQI18Jo
+         FuJo4fXNQT0WhAcI/+hkhGHbASf3W94cRpI/T4jCIH7TXVX8paAXmt7xpUCx1geZ25kF
+         R0ZlzPpHdL0Gw5UVro6zsXtB+37f4LdUOYz/Ph+/v50kGcSZ7PkpgoXjU+w+9Tjff5in
+         Um9gw9IELfoYVl3PtodA66maiDJjwyiXH/0xkMxRsKa+ABoqiyY8C3LIrqXP62qfYFaw
+         9ZCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yE/rvzHkZGy1N5Z/cqUKjEOF4LLSvM26nBzknaJPIAM=;
-        b=MqXDl8HfWHrpKrdVaNB6umvJJ+ZgjhmTN9BdELQYXHjZh//ZQ0gEWeW+Ch8srYu2lY
-         Sod19Vmw7vwf1NyuLWkTYvy/07U9OJNMn2+WDMS5edGnlg4glwMGP10swAtqikCohbs6
-         shAEz6LTv9m5JOdSinReOH2QW6w4P80t0D5V9pUcfKMuK3+coR8l7TXEAj9Xz/msoJJw
-         Qy+2JfXZ8Ao3btEW/jV5YPPRXwFbq8VBqqE53Ps3K5bbU8iZFPzejnKqFabdyG8Kaoyy
-         n/MHae25rDGYZgtJ8lRG8IEUuV/KDzGV4c3ZRheQMYEak5IRa61QiIB6RbXv8JYxlAuH
-         dkrw==
-X-Gm-Message-State: AOAM531nwm/CLeEAjOh+u+RejXhDyLAO+LKcNgRM4sZdYxsE6vmmGtFs
-        RKuV9WnLhjVzdKumWn6Aq7QInHoz1LMhSA==
-X-Google-Smtp-Source: ABdhPJzyfcLeUQnldXjlCbqFOiQ5uPox1rIQV6S7Ve6vcgRitVssLEXsnBbejrWv/ww/jY1PafJr1Q==
-X-Received: by 2002:a17:907:948d:: with SMTP id dm13mr15976194ejc.180.1620042507309;
+        bh=TD+IUqvK3rmRyo/UXMWEt8JGbAptLLrQ1RYAde9/BdQ=;
+        b=BMjVeMeyf+TaIX7r7OTz7U3sFPivyZ3x0CnOXzWCM9Hy2skO0w0PPocBZVNmsUptwX
+         /iJtOcMyO5KwB++1eebqTYGE/9q2KWxCMmR1SGgrDPjYj366xZkO/h4QKgEiAuolckZD
+         lh7EaOKRtA+PuFP7HpayArHpvhcL9qBp0fsv3tadM5MyWb7c59wRBe7YIFAthcWZzO1n
+         01chrk7OXvUnBdHc0f8ttu3VO85EFZdVeWlQdsXBIP1Xb12ld639oTcIx6wgwEu5gwE7
+         QIvFtKVhZdnURaGFRhc7sW8+w1JDj7oTaceEKj+RiJJdpCP3S+0HhNu21UfRsIL+XUaF
+         CCqg==
+X-Gm-Message-State: AOAM531pC06ebZV8em5y9EF1OCYfi1F6laN+bvg6Fdo99iumY7w2uhlD
+        7FQs6XgmaSO1qjZrt/T33WtZRx890X6MaA==
+X-Google-Smtp-Source: ABdhPJxC1C4FtJc+UzzhS3NgID6SgivJqJXLnk5FrSsl0vMRss1u04J/7ULau5L3vFlasvYaKSDxPw==
+X-Received: by 2002:aa7:c850:: with SMTP id g16mr19001661edt.324.1620042507983;
         Mon, 03 May 2021 04:48:27 -0700 (PDT)
 Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aef30.dynamic.kabel-deutschland.de. [95.90.239.48])
-        by smtp.googlemail.com with ESMTPSA id z12sm7307705ejd.83.2021.05.03.04.48.26
+        by smtp.googlemail.com with ESMTPSA id z12sm7307705ejd.83.2021.05.03.04.48.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 03 May 2021 04:48:27 -0700 (PDT)
 From:   Gioh Kim <gi-oh.kim@ionos.com>
@@ -54,9 +54,9 @@ Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
         Guoqing Jiang <guoqing.jiang@ionos.com>,
         Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCH for-next 09/20] RDMA/rtrs-clt: Kill rtrs_clt_{start,stop}_hb
-Date:   Mon,  3 May 2021 13:48:07 +0200
-Message-Id: <20210503114818.288896-10-gi-oh.kim@ionos.com>
+Subject: [PATCH for-next 10/20] RDMA/rtrs-clt: Kill rtrs_clt_disconnect_from_sysfs
+Date:   Mon,  3 May 2021 13:48:08 +0200
+Message-Id: <20210503114818.288896-11-gi-oh.kim@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210503114818.288896-1-gi-oh.kim@ionos.com>
 References: <20210503114818.288896-1-gi-oh.kim@ionos.com>
@@ -68,55 +68,81 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 
-The two wrappers are not needed since we can call rtrs_{start,stop}_hb
-directly.
+The function is just a wrapper of rtrs_clt_close_conns, let's call
+rtrs_clt_close_conns directly.
 
 Signed-off-by: Guoqing Jiang <guoqing.jiang@ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c | 5 +----
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c       | 9 +--------
+ drivers/infiniband/ulp/rtrs/rtrs-clt.h       | 2 +-
+ 3 files changed, 3 insertions(+), 13 deletions(-)
 
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
+index 7d53d18a5004..4ee592ccf979 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
+@@ -250,7 +250,6 @@ static ssize_t rtrs_clt_disconnect_store(struct kobject *kobj,
+ 					  const char *buf, size_t count)
+ {
+ 	struct rtrs_clt_sess *sess;
+-	int ret;
+ 
+ 	sess = container_of(kobj, struct rtrs_clt_sess, kobj);
+ 	if (!sysfs_streq(buf, "1")) {
+@@ -258,9 +257,7 @@ static ssize_t rtrs_clt_disconnect_store(struct kobject *kobj,
+ 			  attr->attr.name, buf);
+ 		return -EINVAL;
+ 	}
+-	ret = rtrs_clt_disconnect_from_sysfs(sess);
+-	if (ret)
+-		return ret;
++	rtrs_clt_close_conns(sess, true);
+ 
+ 	return count;
+ }
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 5ba87862a251..76040f6c43b2 100644
+index 76040f6c43b2..d9764d1fe0f4 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1449,16 +1449,6 @@ static void rtrs_clt_init_hb(struct rtrs_clt_sess *sess)
- 		      rtrs_wq);
+@@ -1843,7 +1843,7 @@ static int rtrs_rdma_conn_rejected(struct rtrs_clt_con *con,
+ 	return -ECONNRESET;
  }
  
--static void rtrs_clt_start_hb(struct rtrs_clt_sess *sess)
+-static void rtrs_clt_close_conns(struct rtrs_clt_sess *sess, bool wait)
++void rtrs_clt_close_conns(struct rtrs_clt_sess *sess, bool wait)
+ {
+ 	if (rtrs_clt_change_state_get_old(sess, RTRS_CLT_CLOSING, NULL))
+ 		queue_work(rtrs_wq, &sess->close_work);
+@@ -2818,13 +2818,6 @@ int rtrs_clt_reconnect_from_sysfs(struct rtrs_clt_sess *sess)
+ 	return err;
+ }
+ 
+-int rtrs_clt_disconnect_from_sysfs(struct rtrs_clt_sess *sess)
 -{
--	rtrs_start_hb(&sess->s);
+-	rtrs_clt_close_conns(sess, true);
+-
+-	return 0;
 -}
 -
--static void rtrs_clt_stop_hb(struct rtrs_clt_sess *sess)
--{
--	rtrs_stop_hb(&sess->s);
--}
--
- static void rtrs_clt_reconnect_work(struct work_struct *work);
- static void rtrs_clt_close_work(struct work_struct *work);
+ int rtrs_clt_remove_path_from_sysfs(struct rtrs_clt_sess *sess,
+ 				     const struct attribute *sysfs_self)
+ {
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.h b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
+index ef15927dfeda..0a0ea43d2b46 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.h
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
+@@ -203,7 +203,7 @@ static inline struct rtrs_permit *get_permit(struct rtrs_clt *clt, int idx)
+ }
  
-@@ -2082,7 +2072,7 @@ static void rtrs_clt_stop_and_destroy_conns(struct rtrs_clt_sess *sess)
- 	 */
- 	synchronize_rcu();
- 
--	rtrs_clt_stop_hb(sess);
-+	rtrs_stop_hb(&sess->s);
- 
- 	/*
- 	 * The order it utterly crucial: firstly disconnect and complete all
-@@ -2275,7 +2265,7 @@ static int init_conns(struct rtrs_clt_sess *sess)
- 	if (err)
- 		goto destroy;
- 
--	rtrs_clt_start_hb(sess);
-+	rtrs_start_hb(&sess->s);
- 
- 	return 0;
- 
+ int rtrs_clt_reconnect_from_sysfs(struct rtrs_clt_sess *sess);
+-int rtrs_clt_disconnect_from_sysfs(struct rtrs_clt_sess *sess);
++void rtrs_clt_close_conns(struct rtrs_clt_sess *sess, bool wait);
+ int rtrs_clt_create_path_from_sysfs(struct rtrs_clt *clt,
+ 				     struct rtrs_addr *addr);
+ int rtrs_clt_remove_path_from_sysfs(struct rtrs_clt_sess *sess,
 -- 
 2.25.1
 
