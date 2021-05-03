@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB4B371483
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1FD371482
 	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 13:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233550AbhECLtW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 May 2021 07:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41708 "EHLO
+        id S233555AbhECLtX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 May 2021 07:49:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233362AbhECLtV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 07:49:21 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A597C06174A
+        with ESMTP id S233541AbhECLtW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 07:49:22 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0724C061761
         for <linux-rdma@vger.kernel.org>; Mon,  3 May 2021 04:48:28 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id y26so5924147eds.4
-        for <linux-rdma@vger.kernel.org>; Mon, 03 May 2021 04:48:27 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id l4so7361039ejc.10
+        for <linux-rdma@vger.kernel.org>; Mon, 03 May 2021 04:48:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=AsOLe37N5znL2LIGR5NZpMMy/fBT3bZJkmUhhMqrF1U=;
-        b=h3S8SMS9E/9HUPefDA3pn0AT8ss4ufjJveY8qp18fxX0xSpe1mB92psmzpKonnVNU0
-         RgkMpyliAfepjxDPPOH7PSjyv61HxKzv+H1nf29HYkHWdxOUQItZ9BBgAVjscRSG6+5z
-         jt1J2Elx86qKYO1P+y6SVN2bI+NttpOo10RGD1Xit6uDs/XVCkVXsCMCL8Lzx7+Olt/9
-         mnHcpAMq8iBgn8NIyt5sbY4AORnRexGq+5daHD0SVqY1hLfKuv6zW+xoJjAXkOXrJD6i
-         LMss30xrtFhZOZzhudb5OL1WwmoVSJq1TaaTWiHq5KUCUYm/fGmS+0G1JRvKxk19rSBD
-         U11g==
+        bh=yE/rvzHkZGy1N5Z/cqUKjEOF4LLSvM26nBzknaJPIAM=;
+        b=TV+RzRHMMkGxxenw829C1sFdMY5uNOE0alRQZzmz3gjIzT7JHCs8vWkQxvAC/rM5lY
+         HDeI884vto/HhZoVS3oRxtuen1CuhU0WgeIBjyf3yaGL8UDdp1kT9GZA45FW57cIDgre
+         aueM6mw30NXppHlbc1ox6tGwkCRfW0LK2b6LXmJzzEwKsfzBF2dPlgLRF6QSJAIYZL4i
+         Odd6Ij/GYmxwDUC05gwBr7tFazhXON6U8RhKwOCNg7uObnSXzNl7qB/RffGF8hvrPd2M
+         Ogk3dgURi3J53261bLMFzokrWqr9Of149UFdPYqINb6UpTjo84vFmHIqqB8gNjPHw8LZ
+         cETg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AsOLe37N5znL2LIGR5NZpMMy/fBT3bZJkmUhhMqrF1U=;
-        b=FkJh6uNNjazFUEnH+Eo1AzmGu6xra2huf8iAMUHapMPlu3CaudU+B/iVz8UyqXPn2R
-         9iVaxP7z/kH5OOX1iy3y60O1QBp84LBd5eNmKuuCR8BKoc/aWlaHwhtuo2pBc7G+Q9Pr
-         DPF/Kzyup5kbpx8iKHJgVjNcc1WQ3E2ZReTAErLKYuegLnZjCAqF4hAOTw8124yZJju1
-         UMRN7rCiW+92YzolNJFJRS5s2s59TDTGDIhpteg9kJdJW0UDVMBzsnwS97PkU+sozeia
-         QW3orpNt5OS6AfGxxZaLEtM6OvA+AubdEMsOgw8srSUt6SeSwR22ksPuFLcZGTYAohUP
-         9Bvw==
-X-Gm-Message-State: AOAM531TEIJ0sgbNEhf6NKAbg/h3ed3BXlaemgWqKggcUqASjl4zs3Bb
-        sNHhgFg7ZlR6tqBpN7QVTDyY+Mjs4OsoXA==
-X-Google-Smtp-Source: ABdhPJwseVk6l9vdQ6uYMGFCCAbQVvkPcXV8Dj0NZvHWbpqIx137ywiVuys+Vm4ietF60SvmSa56qQ==
-X-Received: by 2002:a05:6402:4403:: with SMTP id y3mr9492692eda.369.1620042506680;
-        Mon, 03 May 2021 04:48:26 -0700 (PDT)
+        bh=yE/rvzHkZGy1N5Z/cqUKjEOF4LLSvM26nBzknaJPIAM=;
+        b=MqXDl8HfWHrpKrdVaNB6umvJJ+ZgjhmTN9BdELQYXHjZh//ZQ0gEWeW+Ch8srYu2lY
+         Sod19Vmw7vwf1NyuLWkTYvy/07U9OJNMn2+WDMS5edGnlg4glwMGP10swAtqikCohbs6
+         shAEz6LTv9m5JOdSinReOH2QW6w4P80t0D5V9pUcfKMuK3+coR8l7TXEAj9Xz/msoJJw
+         Qy+2JfXZ8Ao3btEW/jV5YPPRXwFbq8VBqqE53Ps3K5bbU8iZFPzejnKqFabdyG8Kaoyy
+         n/MHae25rDGYZgtJ8lRG8IEUuV/KDzGV4c3ZRheQMYEak5IRa61QiIB6RbXv8JYxlAuH
+         dkrw==
+X-Gm-Message-State: AOAM531nwm/CLeEAjOh+u+RejXhDyLAO+LKcNgRM4sZdYxsE6vmmGtFs
+        RKuV9WnLhjVzdKumWn6Aq7QInHoz1LMhSA==
+X-Google-Smtp-Source: ABdhPJzyfcLeUQnldXjlCbqFOiQ5uPox1rIQV6S7Ve6vcgRitVssLEXsnBbejrWv/ww/jY1PafJr1Q==
+X-Received: by 2002:a17:907:948d:: with SMTP id dm13mr15976194ejc.180.1620042507309;
+        Mon, 03 May 2021 04:48:27 -0700 (PDT)
 Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aef30.dynamic.kabel-deutschland.de. [95.90.239.48])
         by smtp.googlemail.com with ESMTPSA id z12sm7307705ejd.83.2021.05.03.04.48.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 04:48:26 -0700 (PDT)
+        Mon, 03 May 2021 04:48:27 -0700 (PDT)
 From:   Gioh Kim <gi-oh.kim@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        Dima Stepanov <dmitrii.stepanov@cloud.ionos.com>,
-        Dima Stepanov <dmitrii.stepanov@ionos.com>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Guoqing Jiang <guoqing.jiang@ionos.com>,
         Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCH for-next 08/20] RDMA/rtrs: Use strscpy instead of strlcpy
-Date:   Mon,  3 May 2021 13:48:06 +0200
-Message-Id: <20210503114818.288896-9-gi-oh.kim@ionos.com>
+Subject: [PATCH for-next 09/20] RDMA/rtrs-clt: Kill rtrs_clt_{start,stop}_hb
+Date:   Mon,  3 May 2021 13:48:07 +0200
+Message-Id: <20210503114818.288896-10-gi-oh.kim@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210503114818.288896-1-gi-oh.kim@ionos.com>
 References: <20210503114818.288896-1-gi-oh.kim@ionos.com>
@@ -66,73 +66,57 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Dima Stepanov <dmitrii.stepanov@cloud.ionos.com>
+From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 
-During checkpatch analyzing the following warning message was found:
-  WARNING:STRLCPY: Prefer strscpy over strlcpy - see:
-  https://lore.kernel.org/r/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com/
-Fix it by using strscpy calls instead of strlcpy.
+The two wrappers are not needed since we can call rtrs_{start,stop}_hb
+directly.
 
-Signed-off-by: Dima Stepanov <dmitrii.stepanov@ionos.com>
+Signed-off-by: Guoqing Jiang <guoqing.jiang@ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 4 ++--
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 0c828ea0f500..5ba87862a251 100644
+index 5ba87862a251..76040f6c43b2 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1499,7 +1499,7 @@ static struct rtrs_clt_sess *alloc_sess(struct rtrs_clt *clt,
- 	if (path->src)
- 		memcpy(&sess->s.src_addr, path->src,
- 		       rdma_addr_size((struct sockaddr *)path->src));
--	strlcpy(sess->s.sessname, clt->sessname, sizeof(sess->s.sessname));
-+	strscpy(sess->s.sessname, clt->sessname, sizeof(sess->s.sessname));
- 	sess->s.con_num = con_num;
- 	sess->clt = clt;
- 	sess->max_pages_per_mr = max_segments * max_segment_size >> 12;
-@@ -2638,7 +2638,7 @@ static struct rtrs_clt *alloc_clt(const char *sessname, size_t paths_num,
- 	clt->priv = priv;
- 	clt->link_ev = link_ev;
- 	clt->mp_policy = MP_POLICY_MIN_INFLIGHT;
--	strlcpy(clt->sessname, sessname, sizeof(clt->sessname));
-+	strscpy(clt->sessname, sessname, sizeof(clt->sessname));
- 	init_waitqueue_head(&clt->permits_wait);
- 	mutex_init(&clt->paths_ev_mutex);
- 	mutex_init(&clt->paths_mutex);
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 02bc704667a8..afa63f06586b 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -780,7 +780,7 @@ static int process_info_req(struct rtrs_srv_con *con,
- 	rwr = kcalloc(sess->mrs_num, sizeof(*rwr), GFP_KERNEL);
- 	if (unlikely(!rwr))
- 		return -ENOMEM;
--	strlcpy(sess->s.sessname, msg->sessname, sizeof(sess->s.sessname));
-+	strscpy(sess->s.sessname, msg->sessname, sizeof(sess->s.sessname));
+@@ -1449,16 +1449,6 @@ static void rtrs_clt_init_hb(struct rtrs_clt_sess *sess)
+ 		      rtrs_wq);
+ }
  
- 	tx_sz  = sizeof(*rsp);
- 	tx_sz += sizeof(rsp->desc[0]) * sess->mrs_num;
-@@ -1261,7 +1261,7 @@ int rtrs_srv_get_sess_name(struct rtrs_srv *srv, char *sessname, size_t len)
- 	list_for_each_entry(sess, &srv->paths_list, s.entry) {
- 		if (sess->state != RTRS_SRV_CONNECTED)
- 			continue;
--		strlcpy(sessname, sess->s.sessname,
-+		strscpy(sessname, sess->s.sessname,
- 		       min_t(size_t, sizeof(sess->s.sessname), len));
- 		err = 0;
- 		break;
-@@ -1715,7 +1715,7 @@ static struct rtrs_srv_sess *__alloc_sess(struct rtrs_srv *srv,
- 	path.src = &sess->s.src_addr;
- 	path.dst = &sess->s.dst_addr;
- 	rtrs_addr_to_str(&path, str, sizeof(str));
--	strlcpy(sess->s.sessname, str, sizeof(sess->s.sessname));
-+	strscpy(sess->s.sessname, str, sizeof(sess->s.sessname));
+-static void rtrs_clt_start_hb(struct rtrs_clt_sess *sess)
+-{
+-	rtrs_start_hb(&sess->s);
+-}
+-
+-static void rtrs_clt_stop_hb(struct rtrs_clt_sess *sess)
+-{
+-	rtrs_stop_hb(&sess->s);
+-}
+-
+ static void rtrs_clt_reconnect_work(struct work_struct *work);
+ static void rtrs_clt_close_work(struct work_struct *work);
  
- 	sess->s.con_num = con_num;
- 	sess->s.recon_cnt = recon_cnt;
+@@ -2082,7 +2072,7 @@ static void rtrs_clt_stop_and_destroy_conns(struct rtrs_clt_sess *sess)
+ 	 */
+ 	synchronize_rcu();
+ 
+-	rtrs_clt_stop_hb(sess);
++	rtrs_stop_hb(&sess->s);
+ 
+ 	/*
+ 	 * The order it utterly crucial: firstly disconnect and complete all
+@@ -2275,7 +2265,7 @@ static int init_conns(struct rtrs_clt_sess *sess)
+ 	if (err)
+ 		goto destroy;
+ 
+-	rtrs_clt_start_hb(sess);
++	rtrs_start_hb(&sess->s);
+ 
+ 	return 0;
+ 
 -- 
 2.25.1
 
