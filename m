@@ -2,98 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5FC37272C
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 May 2021 10:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC68372836
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 May 2021 11:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhEDI0t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 May 2021 04:26:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229948AbhEDI0s (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 4 May 2021 04:26:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC1FF6023C;
-        Tue,  4 May 2021 08:25:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620116754;
-        bh=lyUvO8wDMyZ0Z0GJaYiY7oMjn3xDvDRiwe0amVL95bA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WYVMYad3aMpgoiIpcoEH0TGohIpeot3bm8mcgjiZHUxM0L2GHUyvacWxep7Irvekj
-         wbIQbiWe3coF7YmXq/J11a+RTDCZC9Gbh38GAodPZP69llK6Pk7qQvCIvinQMeNWMD
-         NblsKU8UB/31fgaEtD1NsIdvZdBWtCoQSnNgs0i+RKnAcfIheSz012x5m7tzmLUO4k
-         vcx8iixwF4u9GjIi+zGydppUyUJzliYMeUKC1ROzEErbaL0iY+fFlkDDwIdUMdkD5X
-         I13PLXY3qtpcVhx+Br1wN3WsdqzxBw117KzAtaClTEA+OCP70kU+V/H6tyedl+wNAG
-         JOAm0+1ZNjong==
-Date:   Tue, 4 May 2021 11:25:50 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     maorg@nvidia.com, linux-rdma@vger.kernel.org
-Subject: Re: [bug report] RDMA/mlx5: Add support in MEMIC operations
-Message-ID: <YJEFDmeCW3IjTdWc@unreal>
-References: <YJD81HgeXxGUMaik@mwanda>
+        id S229993AbhEDJra convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 4 May 2021 05:47:30 -0400
+Received: from [31.10.15.123] ([31.10.15.123]:59821 "EHLO ecbilibino.ru"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229953AbhEDJr3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 4 May 2021 05:47:29 -0400
+X-Greylist: delayed 77422 seconds by postgrey-1.27 at vger.kernel.org; Tue, 04 May 2021 05:47:26 EDT
+Received: by ecbilibino.ru (Sendmail, from userid 20005)
+        id DBCE9D829F; Mon,  3 May 2021 12:37:44 +1200 (+12)
+Authentication-Results: ecbilibino.ru; dkim=none
+X-Envelope-Sender: blmtg@ecbilibino.ru
+X-Envelope-Recipient: linux-rdma@vger.kernel.org
+X-Original-To: linux-rdma@vger.kernel.org
+Received: from [91.224.92.185] (unknown [91.224.92.185])
+        (Authenticated sender: postmaster@ecb.local)
+        by ecbilibino.ru (Sendmail) with ESMTPSA id 067F3D7F28;
+        Mon,  3 May 2021 12:37:13 +1200 (+12)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJD81HgeXxGUMaik@mwanda>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Werden Sie unser Agent.
+To:     Recipient <BLMTG@ecbilibino.ru>
+From:   BLMTG@ecbilibino.ru, Agent@ecbilibino.ru, Portal@ecbilibino.ru,
+        "<postmaster>"@ecbilibino.ru
+Date:   Sun, 02 May 2021 17:36:44 -0700
+Reply-To: blmtgagents@consultant.com
+Message-Id: <20210503003745.DBCE9D829F@ecbilibino.ru>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 04, 2021 at 10:50:44AM +0300, Dan Carpenter wrote:
-> Hello Maor Gottlieb,
-> 
-> The patch cea85fa5dbc2: "RDMA/mlx5: Add support in MEMIC operations"
-> from Apr 11, 2021, leads to the following static checker warning:
-> 
-> 	drivers/infiniband/hw/mlx5/dm.c:220 mlx5_ib_handler_MLX5_IB_METHOD_DM_MAP_OP_ADDR()
-> 	error: undefined (user controlled) shift '(((1))) << op'
-> 
-> drivers/infiniband/hw/mlx5/dm.c
->    204  static int UVERBS_HANDLER(MLX5_IB_METHOD_DM_MAP_OP_ADDR)(
->    205          struct uverbs_attr_bundle *attrs)
->    206  {
->    207          struct ib_uobject *uobj = uverbs_attr_get_uobject(
->    208                  attrs, MLX5_IB_ATTR_DM_MAP_OP_ADDR_REQ_HANDLE);
->    209          struct mlx5_ib_dev *dev = to_mdev(uobj->context->device);
->    210          struct ib_dm *ibdm = uobj->object;
->    211          struct mlx5_ib_dm_memic *dm = to_memic(ibdm);
->    212          struct mlx5_ib_dm_op_entry *op_entry;
->    213          int err;
->    214          u8 op;
->    215  
->    216          err = uverbs_copy_from(&op, attrs, MLX5_IB_ATTR_DM_MAP_OP_ADDR_REQ_OP);
->                                         ^^
-> op is user controlled and in the 0-255 range.
-> 
->    217          if (err)
->    218                  return err;
->    219  
->    220          if (!(MLX5_CAP_DEV_MEM(dev->mdev, memic_operations) & BIT(op)))
->                                                                       ^^^^^^^
-> If it's more than 31 then this is undefined (shift wrapping generally).
-> Plus it might trigger a UBSan warning at run time.
+Wir rekrutieren Makler für ein in Großbritannien ansässiges Unternehmen für digitale Handelsfinanzierung. Nach der erfolgreichen Finanzierung grenzüberschreitender Transaktionen in Höhe von über 1 Milliarde US-Dollar haben wir jetzt ein Partnerschaftsprogramm gestartet.
+ 
+Hier ein kurzer Überblick über unsere Angebote:
 
+Wir rekrutieren derzeit Agenten, die unsere Dienstleistungen vor Ort erweitern werden.
 
-Thanks Dan, we will prepare the proper patch.
-It should be something like this:
-diff --git a/drivers/infiniband/hw/mlx5/dm.c b/drivers/infiniband/hw/mlx5/dm.c
-index 094bf85589db..dd4480aed1aa 100644
---- a/drivers/infiniband/hw/mlx5/dm.c
-+++ b/drivers/infiniband/hw/mlx5/dm.c
-@@ -217,6 +217,9 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DM_MAP_OP_ADDR)(
-        if (err)
-                return err;
+Die Gehaltsstruktur basiert auf Provisionen. Eine Maklergebühr von 3%
 
-+       if (op > 31)
-+               return -EINVAL;
-+
-        if (!(MLX5_CAP_DEV_MEM(dev->mdev, memic_operations) & BIT(op)))
-                return -EOPNOTSUPP;
+Bitte klicken Sie auf den Link unten und füllen Sie das Formular aus. Unser Team wird sich mit Ihnen in Verbindung setzen, um weitere Informationen zu erhalten.
 
-
-> 
->    221                  return -EOPNOTSUPP;
->    222  
->    223          mutex_lock(&dm->ops_xa_lock);
-> 
-> regards,
-> dan carpenter
+https://www.bluelmtg.net/become-an-agent
