@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39ED37147D
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 13:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5439C37147E
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 13:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233245AbhECLtT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 May 2021 07:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
+        id S233439AbhECLtU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 May 2021 07:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233251AbhECLtS (ORCPT
+        with ESMTP id S233362AbhECLtS (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 07:49:18 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8889AC061763
-        for <linux-rdma@vger.kernel.org>; Mon,  3 May 2021 04:48:24 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a4so7414109ejk.1
-        for <linux-rdma@vger.kernel.org>; Mon, 03 May 2021 04:48:24 -0700 (PDT)
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50953C06138B
+        for <linux-rdma@vger.kernel.org>; Mon,  3 May 2021 04:48:25 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id m12so7422978eja.2
+        for <linux-rdma@vger.kernel.org>; Mon, 03 May 2021 04:48:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rpuDjvDwrAl+4Do92O+UgpuhmW8xe1GkSLXNGhMxOe8=;
-        b=HGIhJHyZZ4ybWyaT/Zig9Z/WzTZY3w2cL0xRxyx7qIuViKBHmoR+ciCClprF2ondKj
-         BsRwfJVMjlaZOC0JhDk94hTQKISQMZ4lSjMvhjaAYbrP5iCfnQywBHgNnPN52TCUV1Ic
-         UASOtfpDBCWqS23yCKXYNHxiPvx46TsmMKklJYJLjFG5mFEqtqMhkl+f3ypI4AwAs3/7
-         EautqMs0cW81zXALuK5tk6EDNlumHfwn0QEuEh/8c6JmJ5v2iLl226QEt4qjB+hbn0CP
-         blzfm4Iy/zT29uC/fyUX2xNE4Sock/l5q3VlfeDieYnZFeDeKnAIA5RH5tKb6Nlb7un9
-         7NOQ==
+        bh=nzWg2WdxSRFvsIuV0pZDFdY4JIfzwTgd0gPbycE6Cw8=;
+        b=a20snxajAcB11PIa5DZKX47cySrtJJ7waYonESp0n4h5EcIo3BmUXULCpi0/78/P/X
+         Fp1cmZpMAQzmcFljaHWyx5qopM91XZbFp2hN5UMDtqc0RV+/LwOghtQB3tn1Wg17dWk4
+         Sq620EeXbZapGnt73So7/yzFzIVPVh43ia4yliEEw1rX0xeC1u+0U6Li03FXdeWh2DOs
+         LhO97WKiEsXYqfanUQXkX7bss2usvXJCRhXIHjj47LBrq5mEDNnXnoukHHXsNci9KYMF
+         6nP6ieAf/Yzi6iaTBRnGOEHWJPC4n/KM59Lttpv/P3wDy97zirORCWc/+JDUChVantLr
+         8n/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rpuDjvDwrAl+4Do92O+UgpuhmW8xe1GkSLXNGhMxOe8=;
-        b=W1rl6A5VbRqUP7DJYCeZS9TdCDVjalOE3Mf0YH+BsNmX/A7LhpKT/VLCwCZWLzQL92
-         7qS3BdbXGb3h04ABGzVXfLh/T4C/6fcNKNakx0h1FPZRw72IiPbWBqj0lnpCNUXvcjJJ
-         Y+9Pevj2XnvOU9MSJb42YeehNQmfucA33gc/435fVk+g7YqofJl+7u8USzMrDHRCPAvh
-         uDVOWgqXPl9pb/w9ia3TUFSx7nSKqtDaKv/wXHPDJPaw2Atdlr/7TpJ+/EmynbZDXr7j
-         rxi28WO1wogYjqfUMDf7Ze42PChz95uxXy08DssO3VHLYU7/B+/lwNAPtcGiw6jaDGex
-         uYQQ==
-X-Gm-Message-State: AOAM530Yp8xtYaA7SGpTRFyb3PAuWcMxpWHGo1IW/DQ/MwHrc4Kh3TVR
-        8RofeLX9J4ANdTZUrNgNHQk7ZtNgk2HJHg==
-X-Google-Smtp-Source: ABdhPJz86dp692j2MrnkvONrjmUyHBkQD9oknB5RQaC49cTM6dR0T4s6IkJhYXnwNnAkXO4ZZeGKpA==
-X-Received: by 2002:a17:906:8904:: with SMTP id fr4mr9162979ejc.146.1620042503209;
+        bh=nzWg2WdxSRFvsIuV0pZDFdY4JIfzwTgd0gPbycE6Cw8=;
+        b=Pp4eCHsYXsUaWdn6AesRCNzn/QJudBbjkhqiJ25je/XzW3M/UuahZU0XvJjh9l7QKw
+         7g0OQLMJjUyM5QmO2ZYn5GFAzYckU5TWF9UGH4SQEMisQpCyi8Cz0YmCc+iLrk0XwyYB
+         PFUh0ESuIoRKrQ/mAtYfEM9uoN+fGByIJzYtiYzWf47hPsfpRGh3COwKeWzQwt7lCoHJ
+         hqFq4DgpuoNLFLa28YRWmvyxokpZypOG5zQmO4UTHHNN6P2rtOQDp8lnHYyzQBCxYIEM
+         Ft+qc9qM3Fo7+Im5p2hJjVL2njuUVaHIDOy0L5BfSBYAwScVGhnG5VrT2jRgGKCnmOdM
+         jc+A==
+X-Gm-Message-State: AOAM533BzAKd/Mm7FNE//zaSajfs6gP6JoAo7b89gw2yW7tqmmSbw5Ea
+        czmfeScaCAZ4T0fRaHkvGRPJwY7N4m7R7Q==
+X-Google-Smtp-Source: ABdhPJwT8lMel3RvjZBvEf9I64tr0WBB4Q57h/tzhdxMQ0UVjhVUaOFMvvtrKnyI86N5Wuxlurd8mg==
+X-Received: by 2002:a17:906:c0c7:: with SMTP id bn7mr13646835ejb.393.1620042503879;
         Mon, 03 May 2021 04:48:23 -0700 (PDT)
 Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aef30.dynamic.kabel-deutschland.de. [95.90.239.48])
-        by smtp.googlemail.com with ESMTPSA id z12sm7307705ejd.83.2021.05.03.04.48.22
+        by smtp.googlemail.com with ESMTPSA id z12sm7307705ejd.83.2021.05.03.04.48.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 03 May 2021 04:48:23 -0700 (PDT)
 From:   Gioh Kim <gi-oh.kim@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
+        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
         Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCH for-next 03/20] RDMA/rtrs-clt: No need to check queue_depth when receiving
-Date:   Mon,  3 May 2021 13:48:01 +0200
-Message-Id: <20210503114818.288896-4-gi-oh.kim@ionos.com>
+Subject: [PATCH for-next 04/20] RDMA/rtrs-srv: Add error messages for cases when failing RDMA connection
+Date:   Mon,  3 May 2021 13:48:02 +0200
+Message-Id: <20210503114818.288896-5-gi-oh.kim@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210503114818.288896-1-gi-oh.kim@ionos.com>
 References: <20210503114818.288896-1-gi-oh.kim@ionos.com>
@@ -65,34 +65,65 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
 
-The queue_depth size is sent from server and
-server already checks validity of the value.
+It was difficult to find out why it failed to establish RDMA
+connection. This patch adds some messages to show which function
+has failed why.
 
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 930a1b496f84..0c828ea0f500 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1772,12 +1772,6 @@ static int rtrs_rdma_conn_established(struct rtrs_clt_con *con,
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index 3d09d01e34b4..df17dd4c1e28 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -1356,8 +1356,10 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
+ 	 * If this request is not the first connection request from the
+ 	 * client for this session then fail and return error.
+ 	 */
+-	if (!first_conn)
++	if (!first_conn) {
++		pr_err("Error: Not the first connection request for this session\n");
+ 		return ERR_PTR(-ENXIO);
++	}
+ 
+ 	/* need to allocate a new srv */
+ 	srv = kzalloc(sizeof(*srv), GFP_KERNEL);
+@@ -1812,6 +1814,7 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
+ 	srv = get_or_create_srv(ctx, &msg->paths_uuid, msg->first_conn);
+ 	if (IS_ERR(srv)) {
+ 		err = PTR_ERR(srv);
++		pr_err("get_or_create_srv(), error %d\n", err);
+ 		goto reject_w_err;
  	}
- 	if (con->c.cid == 0) {
- 		queue_depth = le16_to_cpu(msg->queue_depth);
--
--		if (queue_depth > MAX_SESS_QUEUE_DEPTH) {
--			rtrs_err(clt, "Invalid RTRS message: queue=%d\n",
--				  queue_depth);
--			return -ECONNRESET;
--		}
- 		if (!sess->rbufs || sess->queue_depth < queue_depth) {
- 			kfree(sess->rbufs);
- 			sess->rbufs = kcalloc(queue_depth, sizeof(*sess->rbufs),
+ 	mutex_lock(&srv->paths_mutex);
+@@ -1850,11 +1853,13 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
+ 			mutex_unlock(&srv->paths_mutex);
+ 			put_srv(srv);
+ 			err = PTR_ERR(sess);
++			pr_err("RTRS server session allocation failed: %d\n", err);
+ 			goto reject_w_err;
+ 		}
+ 	}
+ 	err = create_con(sess, cm_id, cid);
+ 	if (err) {
++		rtrs_err((&sess->s), "create_con(), error %d\n", err);
+ 		(void)rtrs_rdma_do_reject(cm_id, err);
+ 		/*
+ 		 * Since session has other connections we follow normal way
+@@ -1865,6 +1870,7 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
+ 	}
+ 	err = rtrs_rdma_do_accept(sess, cm_id);
+ 	if (err) {
++		rtrs_err((&sess->s), "rtrs_rdma_do_accept(), error %d\n", err);
+ 		(void)rtrs_rdma_do_reject(cm_id, err);
+ 		/*
+ 		 * Since current connection was successfully added to the
 -- 
 2.25.1
 
