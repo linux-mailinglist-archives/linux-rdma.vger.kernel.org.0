@@ -2,102 +2,279 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454DD3711B6
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 08:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1006B3711B7
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 08:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232837AbhECGtL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 May 2021 02:49:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
+        id S229817AbhECGtM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 May 2021 02:49:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhECGtK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 02:49:10 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A508DC06174A
-        for <linux-rdma@vger.kernel.org>; Sun,  2 May 2021 23:48:17 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id lp4so1079384pjb.1
-        for <linux-rdma@vger.kernel.org>; Sun, 02 May 2021 23:48:17 -0700 (PDT)
+        with ESMTP id S232853AbhECGtM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 02:49:12 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89432C06174A
+        for <linux-rdma@vger.kernel.org>; Sun,  2 May 2021 23:48:19 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id e15so3466750pfv.10
+        for <linux-rdma@vger.kernel.org>; Sun, 02 May 2021 23:48:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version;
-        bh=ij4EqvSXmUindSaSBqg7+7uaA6z9QVC4n3zPQC4djz8=;
-        b=dHJaOc9imd8RkxJrnxj4vv+kNg69YU+cpI/RL0Y8mix3u83RMsy7moh1vAIoBWLVbs
-         XpbpylzaIoz1XIz3YyYtGt04REB5rhgq+epU/cbVSzCOoqb2omfhbK78UxWxWwza99zJ
-         TJe4irH9yo7wW4pmXhUcnrP3ZNs4dtSajTbHQ=
+        bh=R179ARZvIjln9KCXhLhDanQPTgK4VzAROYHU4eEaVTQ=;
+        b=fZasdJyvar9LzV0TUHIM/ubz6i+lmo+IDCRKRqH1RB3moAWtcQuK9p5mOdtOKLiCVh
+         72iYqCmYdc8NzacGrxcICTIdeoH3aJoGHxhPRd+4gfdMJDmPTZOSeBz8/Q2fDYuC9/mn
+         m5fpF7uyBUYXpNONlPINKp02PW3qNSCM1Zvxw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version;
-        bh=ij4EqvSXmUindSaSBqg7+7uaA6z9QVC4n3zPQC4djz8=;
-        b=lo7NVKrjgmpLFapwMp5oyBRLnLBigl9PGTsYOMCx+sf+RbySwpO+5qvjrXjNtnylp5
-         L8ipxXlFELLNqEBpOPMxugQZzzJmQho6+HiqjeLzVQi4C/G6zzD4sdbn5Iq/adARK2e0
-         jx08o0fd34newgBkGqqzAvj8a4omgSoswND3Jfy6yyzyOGwE+BnJpj2/WYrdZ6c4s9Ig
-         C5crQHLp4uNJdwdeZa5C/zUOVOjY6FC0428tzqAHd9xFK58sLqdFT6z7Ag3Ccdw45qdb
-         AnXiXLBP4gWa8WyB65Q3OwnHgJUcy6JtQLBATbkR/g2Yewz1n9BEZy+jXzdkn0EwjwbE
-         xBPg==
-X-Gm-Message-State: AOAM531YH/c58LCNItvkx2olsuiwbl4xiLtTi6hYzVlLBAtt2eI5s99r
-        Rj3wRiFMQWKgpqhJQYy3mYd9kd0x59Y6uhoqcU7u9nVbA6vno+r7sMsFJTqoqScp8pX0VkkwBKu
-        ir1ANvAPypBsyrnmFArGdJ/TCHVQykyJIJW7+gVLVVZ7/Hp/VKoJsUOhxSh3LPaoLvXu45ZvxSi
-        vxIOW0a+4S
-X-Google-Smtp-Source: ABdhPJwoIydYFLlYGRjLE84QwME48CGTnM95Z/uBQiteW2hPmA7tAEJ7anBUlK6junuzmrBuYpc97w==
-X-Received: by 2002:a17:902:fe98:b029:ed:23f5:7d54 with SMTP id x24-20020a170902fe98b02900ed23f57d54mr19064329plm.57.1620024496390;
-        Sun, 02 May 2021 23:48:16 -0700 (PDT)
+        bh=R179ARZvIjln9KCXhLhDanQPTgK4VzAROYHU4eEaVTQ=;
+        b=MwAR0a/QCPJwSZUIuUWfrE1jWw39rmKp/SfA9oYLryAE9DQMMntY7b6YU35uFQbAp4
+         kzzhEexuH532wuLQdRzEPZ7+DMx3F3dRpqtkJqBHQ5HlC1YM39dljeyUOuPeo/JQSS/b
+         MGH1Hlfzq3A9Y91fxgdqf1gxnAiW+OLxkYsUu/xiLkvzrlKEWtPhTiU7SASmRZltJFmf
+         G8+xXehXggnanX+OdT/2o/Tuz+LU1+JO2h+ccIv7cRmvLMm3YvgO1/4Sk4aG8n/C4qhG
+         OZXGDuJMD16kczNd2XIQC5Vqx0d0phe92jA0PEdJJtnL0Ksgnq7dhanF0BhmN0ugAd2N
+         /LTw==
+X-Gm-Message-State: AOAM533sfnJTksVzYnd2hBu42cmy7mOBJX+KD9Fe+0iR/24qpK/IL9IO
+        JXYx1cd81TCtQ2HrrgX3vCuM6qR8F9fAGsy7eVsSQ70qjpKS1Asatk3PsC+k5Ta9QW8ptp4TFDf
+        vbX6WlCElqC4kMoDzbkN/QoZeaFFmr86OvqIBE24P1w4+zkaLslc2NEop6pQD/ggasoUJfI19TS
+        FO6DqJ1Nn3
+X-Google-Smtp-Source: ABdhPJy5jF192fNmgTi8Jq3VjTjwOdP1usTt41QsdKnOjk/cH66u5peKEfTQkkrPIKrxykYQAJVBSw==
+X-Received: by 2002:a63:575b:: with SMTP id h27mr17382550pgm.180.1620024498478;
+        Sun, 02 May 2021 23:48:18 -0700 (PDT)
 Received: from dev01.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id i9sm19585389pjh.9.2021.05.02.23.48.14
+        by smtp.gmail.com with ESMTPSA id i9sm19585389pjh.9.2021.05.02.23.48.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 May 2021 23:48:16 -0700 (PDT)
+        Sun, 02 May 2021 23:48:18 -0700 (PDT)
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [rdma-core 1/4] bnxt_re/lib: fix AH validity check
-Date:   Mon,  3 May 2021 12:17:59 +0530
-Message-Id: <20210503064802.457482-2-devesh.sharma@broadcom.com>
+Subject: [rdma-core 2/4] bnxt_re/lib: align base sq entry structure to 16B
+Date:   Mon,  3 May 2021 12:18:00 +0530
+Message-Id: <20210503064802.457482-3-devesh.sharma@broadcom.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210503064802.457482-1-devesh.sharma@broadcom.com>
 References: <20210503064802.457482-1-devesh.sharma@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000b0613e05c1675821"
+        boundary="000000000000cba77205c1675803"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000b0613e05c1675821
+--000000000000cba77205c1675803
 Content-Transfer-Encoding: 8bit
 
-Fixing the AH validity check when initializing the
-UD SQE from AH.
+The base SQ entry structure needs to be aligned to
+16B boundary to support new method of SQE/RQE posting.
+Changing the same.
 
 Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
 ---
- providers/bnxt_re/verbs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ providers/bnxt_re/bnxt_re-abi.h | 24 ++++++++++--------------
+ providers/bnxt_re/verbs.c       | 26 ++++++++++++--------------
+ 2 files changed, 22 insertions(+), 28 deletions(-)
 
+diff --git a/providers/bnxt_re/bnxt_re-abi.h b/providers/bnxt_re/bnxt_re-abi.h
+index c6998e85..c82019e8 100644
+--- a/providers/bnxt_re/bnxt_re-abi.h
++++ b/providers/bnxt_re/bnxt_re-abi.h
+@@ -234,9 +234,16 @@ struct bnxt_re_term_cqe {
+ 	__le64 rsvd1;
+ };
+ 
++union lower_shdr {
++	__le64 qkey_len;
++	__le64 lkey_plkey;
++	__le64 rva;
++};
++
+ struct bnxt_re_bsqe {
+ 	__le32 rsv_ws_fl_wt;
+ 	__le32 key_immd;
++	union lower_shdr lhdr;
+ };
+ 
+ struct bnxt_re_psns {
+@@ -262,42 +269,33 @@ struct bnxt_re_sge {
+ #define BNXT_RE_MAX_INLINE_SIZE		0x60
+ 
+ struct bnxt_re_send {
+-	__le32 length;
+-	__le32 qkey;
+ 	__le32 dst_qp;
+ 	__le32 avid;
+ 	__le64 rsvd;
+ };
+ 
+ struct bnxt_re_raw {
+-	__le32 length;
+-	__le32 rsvd1;
+ 	__le32 cfa_meta;
+ 	__le32 rsvd2;
+ 	__le64 rsvd3;
+ };
+ 
+ struct bnxt_re_rdma {
+-	__le32 length;
+-	__le32 rsvd1;
+ 	__le64 rva;
+ 	__le32 rkey;
+ 	__le32 rsvd2;
+ };
+ 
+ struct bnxt_re_atomic {
+-	__le64 rva;
+ 	__le64 swp_dt;
+ 	__le64 cmp_dt;
+ };
+ 
+ struct bnxt_re_inval {
+-	__le64 rsvd[3];
++	__le64 rsvd[2];
+ };
+ 
+ struct bnxt_re_bind {
+-	__le32 plkey;
+-	__le32 lkey;
+ 	__le64 va;
+ 	__le64 len; /* only 40 bits are valid */
+ };
+@@ -305,17 +303,15 @@ struct bnxt_re_bind {
+ struct bnxt_re_brqe {
+ 	__le32 rsv_ws_fl_wt;
+ 	__le32 rsvd;
++	__le32 wrid;
++	__le32 rsvd1;
+ };
+ 
+ struct bnxt_re_rqe {
+-	__le32 wrid;
+-	__le32 rsvd1;
+ 	__le64 rsvd[2];
+ };
+ 
+ struct bnxt_re_srqe {
+-	__le32 srq_tag; /* 20 bits are valid */
+-	__le32 rsvd1;
+ 	__le64 rsvd[2];
+ };
+ #endif
 diff --git a/providers/bnxt_re/verbs.c b/providers/bnxt_re/verbs.c
-index ca561662..a015bed7 100644
+index a015bed7..760e840a 100644
 --- a/providers/bnxt_re/verbs.c
 +++ b/providers/bnxt_re/verbs.c
-@@ -1193,13 +1193,13 @@ static int bnxt_re_build_ud_sqe(struct bnxt_re_qp *qp, void *wqe,
+@@ -1150,17 +1150,16 @@ static void bnxt_re_fill_wrid(struct bnxt_re_wrid *wrid, struct ibv_send_wr *wr,
+ static int bnxt_re_build_send_sqe(struct bnxt_re_qp *qp, void *wqe,
+ 				  struct ibv_send_wr *wr, uint8_t is_inline)
+ {
+-	struct bnxt_re_bsqe *hdr = wqe;
+-	struct bnxt_re_send *sqe = ((void *)wqe + sizeof(struct bnxt_re_bsqe));
+ 	struct bnxt_re_sge *sge = ((void *)wqe + bnxt_re_get_sqe_hdr_sz());
++	struct bnxt_re_bsqe *hdr = wqe;
+ 	uint32_t wrlen, hdrval = 0;
+-	int len;
+ 	uint8_t opcode, qesize;
++	int len;
+ 
+ 	len = bnxt_re_build_sge(sge, wr->sg_list, wr->num_sge, is_inline);
+ 	if (len < 0)
+ 		return len;
+-	sqe->length = htole32(len);
++	hdr->lhdr.qkey_len = htole64((uint64_t)len);
+ 
+ 	/* Fill Header */
+ 	opcode = bnxt_re_ibv_to_bnxt_wr_opcd(wr->opcode);
+@@ -1189,7 +1188,9 @@ static int bnxt_re_build_ud_sqe(struct bnxt_re_qp *qp, void *wqe,
+ 				struct ibv_send_wr *wr, uint8_t is_inline)
+ {
+ 	struct bnxt_re_send *sqe = ((void *)wqe + sizeof(struct bnxt_re_bsqe));
++	struct bnxt_re_bsqe *hdr = wqe;
+ 	struct bnxt_re_ah *ah;
++	uint64_t qkey;
  	int len;
  
  	len = bnxt_re_build_send_sqe(qp, wqe, wr, is_inline);
--	sqe->qkey = htole32(wr->wr.ud.remote_qkey);
--	sqe->dst_qp = htole32(wr->wr.ud.remote_qpn);
- 	if (!wr->wr.ud.ah) {
- 		len = -EINVAL;
+@@ -1198,7 +1199,8 @@ static int bnxt_re_build_ud_sqe(struct bnxt_re_qp *qp, void *wqe,
  		goto bail;
  	}
  	ah = to_bnxt_re_ah(wr->wr.ud.ah);
-+	sqe->qkey = htole32(wr->wr.ud.remote_qkey);
-+	sqe->dst_qp = htole32(wr->wr.ud.remote_qpn);
+-	sqe->qkey = htole32(wr->wr.ud.remote_qkey);
++	qkey = wr->wr.ud.remote_qkey;
++	hdr->lhdr.qkey_len |= htole64(qkey << 32);
+ 	sqe->dst_qp = htole32(wr->wr.ud.remote_qpn);
  	sqe->avid = htole32(ah->avid & 0xFFFFF);
  bail:
+@@ -1228,7 +1230,7 @@ static int bnxt_re_build_cns_sqe(struct bnxt_re_qp *qp, void *wqe,
+ 
+ 	len = bnxt_re_build_send_sqe(qp, wqe, wr, false);
+ 	hdr->key_immd = htole32(wr->wr.atomic.rkey);
+-	sqe->rva = htole64(wr->wr.atomic.remote_addr);
++	hdr->lhdr.rva = htole64(wr->wr.atomic.remote_addr);
+ 	sqe->cmp_dt = htole64(wr->wr.atomic.compare_add);
+ 	sqe->swp_dt = htole64(wr->wr.atomic.swap);
+ 
+@@ -1245,7 +1247,7 @@ static int bnxt_re_build_fna_sqe(struct bnxt_re_qp *qp, void *wqe,
+ 
+ 	len = bnxt_re_build_send_sqe(qp, wqe, wr, false);
+ 	hdr->key_immd = htole32(wr->wr.atomic.rkey);
+-	sqe->rva = htole64(wr->wr.atomic.remote_addr);
++	hdr->lhdr.rva = htole64(wr->wr.atomic.remote_addr);
+ 	sqe->cmp_dt = htole64(wr->wr.atomic.compare_add);
+ 
  	return len;
+@@ -1368,13 +1370,11 @@ static int bnxt_re_build_rqe(struct bnxt_re_qp *qp, struct ibv_recv_wr *wr,
+ 			     void *rqe)
+ {
+ 	struct bnxt_re_brqe *hdr = rqe;
+-	struct bnxt_re_rqe *rwr;
+-	struct bnxt_re_sge *sge;
+ 	struct bnxt_re_wrid *wrid;
++	struct bnxt_re_sge *sge;
+ 	int wqe_sz, len;
+ 	uint32_t hdrval;
+ 
+-	rwr = (rqe + sizeof(struct bnxt_re_brqe));
+ 	sge = (rqe + bnxt_re_get_rqe_hdr_sz());
+ 	wrid = &qp->rwrid[qp->rqq->tail];
+ 
+@@ -1388,7 +1388,7 @@ static int bnxt_re_build_rqe(struct bnxt_re_qp *qp, struct ibv_recv_wr *wr,
+ 	hdrval = BNXT_RE_WR_OPCD_RECV;
+ 	hdrval |= ((wqe_sz & BNXT_RE_HDR_WS_MASK) << BNXT_RE_HDR_WS_SHIFT);
+ 	hdr->rsv_ws_fl_wt = htole32(hdrval);
+-	rwr->wrid = htole32(qp->rqq->tail);
++	hdr->wrid = htole32(qp->rqq->tail);
+ 
+ 	/* Fill wrid */
+ 	wrid->wrid = wr->wr_id;
+@@ -1586,13 +1586,11 @@ static int bnxt_re_build_srqe(struct bnxt_re_srq *srq,
+ 			      struct ibv_recv_wr *wr, void *srqe)
+ {
+ 	struct bnxt_re_brqe *hdr = srqe;
+-	struct bnxt_re_rqe *rwr;
+ 	struct bnxt_re_sge *sge;
+ 	struct bnxt_re_wrid *wrid;
+ 	int wqe_sz, len, next;
+ 	uint32_t hdrval = 0;
+ 
+-	rwr = (srqe + sizeof(struct bnxt_re_brqe));
+ 	sge = (srqe + bnxt_re_get_srqe_hdr_sz());
+ 	next = srq->start_idx;
+ 	wrid = &srq->srwrid[next];
+@@ -1602,7 +1600,7 @@ static int bnxt_re_build_srqe(struct bnxt_re_srq *srq,
+ 	wqe_sz = wr->num_sge + (bnxt_re_get_srqe_hdr_sz() >> 4); /* 16B align */
+ 	hdrval |= ((wqe_sz & BNXT_RE_HDR_WS_MASK) << BNXT_RE_HDR_WS_SHIFT);
+ 	hdr->rsv_ws_fl_wt = htole32(hdrval);
+-	rwr->wrid = htole32((uint32_t)next);
++	hdr->wrid = htole32((uint32_t)next);
+ 
+ 	/* Fill wrid */
+ 	wrid->wrid = wr->wr_id;
 -- 
 2.25.1
 
 
---000000000000b0613e05c1675821
+--000000000000cba77205c1675803
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -168,13 +345,13 @@ G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
 PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIB1kUuhLGwiY8Hr4BjycJHQNG2UH
-haGhogBvFpSIK6m1MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDUwMzA2NDgxN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDnQjHXg++GP7qp/seAVU0o8lR+s
+JczrgJduu1bevL9JMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDUwMzA2NDgxOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQCGry9rle5iAIlFB+3SsaKHUkjWM7Zxs+CRHOQJ2VIHF7+0
-jjrTIXAINfpiyVainU0JNsyBuNecFmPSwU9LsaByW+DZTMkwG459IPcyiMBzSKAM/JnjqG5brBOE
-nTNlR0xtTR1oYJs+h7mRnQ1pfVWWSSshH9wE1kOBsZdJ7pEEkaE88RIzFOHddnWKTeR1m/gAwLf2
-L2UANda7Pk3Wfx6bIO88uPL2B4im8VqyLEjjSlcIp72TLNWAAkaPX7sIpS1UbOxG1T/pOsGLmewF
-VIGhLndrR4s3CF0mewFfUDwZdt0Rk44eAAgm+780cxI4EBuAI9cODrAW0cMqui/EzaWa
---000000000000b0613e05c1675821--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQCDgaopIGvToe2YEeKeodI2CFXhklxvAkTc6NZGQ/YTfaAG
+bxjyOJGLUvmRWueK++58tjpb/9OqkT2juoAbI2YeGlSou0GcksUJ0MT4D9iBCxqtLzwmPSDsNg7+
+3IuKjhXMezfIm1DOUfhACNZjzxfg0Mgu58q/d70LI9O6dlQxM/iZPItFyIlJ9jfcN0nrcerva15F
++b/sMJzp8urMURNKgLBk0GWyluTdEE9CdjXyHH8uV6mSHjGABwV9FP731X1iqF2oPruiKBOZKaHA
+svf+hf4b0GprEVvKYfwBMEe6E/+LVmjRTOX4Brh1eYHjsnVikT1V8OIwxCDvCjFlUN9I
+--000000000000cba77205c1675803--
