@@ -2,60 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E31737148C
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 13:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6EDE37148D
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 13:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233556AbhECLtc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 May 2021 07:49:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41746 "EHLO
+        id S233571AbhECLtd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 May 2021 07:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233569AbhECLt2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 07:49:28 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71360C06138C
-        for <linux-rdma@vger.kernel.org>; Mon,  3 May 2021 04:48:35 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id zg3so7373972ejb.8
-        for <linux-rdma@vger.kernel.org>; Mon, 03 May 2021 04:48:35 -0700 (PDT)
+        with ESMTP id S233573AbhECLt3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 07:49:29 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5D9C061343
+        for <linux-rdma@vger.kernel.org>; Mon,  3 May 2021 04:48:36 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id b25so7399152eju.5
+        for <linux-rdma@vger.kernel.org>; Mon, 03 May 2021 04:48:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gj0C0QwtaN1Rh//VX6cnQf70Ky35wzcTBtkiTbdkQaU=;
-        b=BK/n6Wb+/nwD0lLrx6CmCOBwcVj0rMxtB+tv5uzuEKkoMSQO+Vu2VFubxH9tciCytu
-         jsKTU3diCzf4oswvMCEZ+8b2srAjVVeY7YAJFKxiF86mhVQfmHmI6F0XEsIBpfB88c+u
-         RbRl/q1i0s0ehCIW/loT7hWXqrpZ0wPIJ4ddxSFJMVWGkc0NWgmaFz318c5owESwlgTs
-         I8lVY2PG19k3lE5xDj+WIcXrNQpILgzWtEP3udWyYFkpmSWElJApITVsHZarvc+Jefhk
-         Ihhl25f66jhqyiEyvyQF/uyxEDF/aH2smB2IQA/36q+M5fQXIEId5V2Nu0RBfR7CFYFw
-         UjXA==
+        bh=Bi3i72VMOLp+OX8jpM1jiHQgGARH2szZ5CRD2tHJhoo=;
+        b=FyzZ6HyeqkUjng52QX6IewdoPqnZqz2PHJPrwy7MoR4kfOplST7OlFBrvKi2OqqzB2
+         wwVBB3o83mPS3zcJtMpKM0jr3rjJEGGMPU2vMOvjVd2lsE26wRghT6OgJnSQr1DGDqyx
+         bfr4pYNDthIPGrt8WxGugdqqDjkw37tMTJ5L2bdGPNPZEFMu4HO7NfthTUX8i1eYgUc7
+         HFSW/sXUfR/GBzmpD4Wodg7cf5xJ3TcTkQ2/kyl3xfY2ajdhbyyJ2w++epx5SutlBryF
+         fC93SywBSqTI/sgs7Zles2btHIw8guqlwbyqGuzvtXWfFj8ayRkOm1z8d6XUP9iuqjox
+         VvTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gj0C0QwtaN1Rh//VX6cnQf70Ky35wzcTBtkiTbdkQaU=;
-        b=CaIEe33OG1af8BlsBWjDnS5PJdGknk+q2Ni6W8kLMSHLpQmiUxjS2gWiVf6iuF/Roh
-         6UBbU8qULeHkZdzo0hIWHjzPYV524OFajMugP9q3i1uGDpFgXSML+Xkq//5r1FFjk9kD
-         +nScuoFgGt45n76TftZCFMzlkR5qbHoh4qolZnDnIfLDXspHxAIWKBi0PepQL7q6xkRO
-         9tNwQ0ndqFmG83C3DMNiHrqwm2yab3enK7kRtUotkLacSjEUzFt8sdjWG1kyXFx/7SJs
-         b2dX5ujEAZF4tfXTnZhnUwQS/VNQn6CkhNuYq9GngW6UBzWHSDhl8M7km0I3C3a0roTn
-         scKQ==
-X-Gm-Message-State: AOAM531BWhooRUBO5cjdkx4TICwu/9APUs8ds+zQn0s1exGSStPagqwQ
-        sRInDWFZ2CjwdPeFoBvCPtxnRHYB2cTNGw==
-X-Google-Smtp-Source: ABdhPJwJDeGS1SJ/xq77A/hDx1J2fPKdC0bIuorY11+jp86AM8wDpH5Jz/RyO/kb5E6jhaVTiNHe4A==
-X-Received: by 2002:a17:906:d7a2:: with SMTP id pk2mr16374697ejb.551.1620042514118;
+        bh=Bi3i72VMOLp+OX8jpM1jiHQgGARH2szZ5CRD2tHJhoo=;
+        b=n39qnqyZ8MVltEEDPZulRjl+L3b+5fqf11y8qOnfpU0S/ZX3T6Bc7a9zg8XKdxuEMS
+         cHKa6F2yLYjn5eKigF4kSwS1rK8kxz1Q6vXoEv36pkzxqpn7QZaF7hsg8oOl3IcOKseJ
+         rJlBmlg6U6LQ8jJ8E9sc+JO0k5+VP2eLDVLEIl+XrObVy+PYLTzjDPhpsrO6OpE/z9nx
+         0cSZQvARq/IxzqxxjsE5d3CjCT+27vt73jQYv21CVeRskW185rjBHbBjzmb4b4XCWTJd
+         zhbABlTRwq6NaV8skfQo7WhKaiToevV2IHpSVeqG8b3oi73W5D6niPc8Ak8JRO5v75hq
+         UkkA==
+X-Gm-Message-State: AOAM530IQEm9wg4Vlo8PwUkDTnTt0VvpAnLYJH0ddlRYfUp67O4ePnKo
+        1t33wQGjZo6vk7b+9xYkcNUMc4IHze/5jA==
+X-Google-Smtp-Source: ABdhPJwubN5BEYVPCKLsqCdpeGXq8uBQg+zbxLzMBVJPEeyeAohcd2NZPdn2qfUkOKFsKG1Y+W0PJA==
+X-Received: by 2002:a17:906:2ac5:: with SMTP id m5mr16416631eje.517.1620042514708;
         Mon, 03 May 2021 04:48:34 -0700 (PDT)
 Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aef30.dynamic.kabel-deutschland.de. [95.90.239.48])
-        by smtp.googlemail.com with ESMTPSA id z12sm7307705ejd.83.2021.05.03.04.48.33
+        by smtp.googlemail.com with ESMTPSA id z12sm7307705ejd.83.2021.05.03.04.48.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 04:48:33 -0700 (PDT)
+        Mon, 03 May 2021 04:48:34 -0700 (PDT)
 From:   Gioh Kim <gi-oh.kim@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
         Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCH for-next 18/20] RDMA/rtrs-srv: Fix memory leak when having multiple sessions
-Date:   Mon,  3 May 2021 13:48:16 +0200
-Message-Id: <20210503114818.288896-19-gi-oh.kim@ionos.com>
+Subject: [PATCH for-next 19/20] RDMA/rtrs-clt: Check if the queue_depth has changed during a reconnection
+Date:   Mon,  3 May 2021 13:48:17 +0200
+Message-Id: <20210503114818.288896-20-gi-oh.kim@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210503114818.288896-1-gi-oh.kim@ionos.com>
 References: <20210503114818.288896-1-gi-oh.kim@ionos.com>
@@ -65,81 +65,70 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@cloud.ionos.com>
+From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
 
-Gioh notice memory leak below
-unreferenced object 0xffff8880acda2000 (size 2048):
-  comm "kworker/4:1", pid 77, jiffies 4295062871 (age 1270.730s)
-  hex dump (first 32 bytes):
-    00 20 da ac 80 88 ff ff 00 20 da ac 80 88 ff ff  . ....... ......
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e85d85b5>] rtrs_srv_rdma_cm_handler+0x8e5/0xa90 [rtrs_server]
-    [<00000000e31a988a>] cma_ib_req_handler+0xdc5/0x2b50 [rdma_cm]
-    [<000000000eb02c5b>] cm_process_work+0x2d/0x100 [ib_cm]
-    [<00000000e1650ca9>] cm_req_handler+0x11bc/0x1c40 [ib_cm]
-    [<000000009c28818b>] cm_work_handler+0xe65/0x3cf2 [ib_cm]
-    [<000000002b53eaa1>] process_one_work+0x4bc/0x980
-    [<00000000da3499fb>] worker_thread+0x78/0x5c0
-    [<00000000167127a4>] kthread+0x191/0x1e0
-    [<0000000060802104>] ret_from_fork+0x3a/0x50
-unreferenced object 0xffff88806d595d90 (size 8):
-  comm "kworker/4:1H", pid 131, jiffies 4295062972 (age 1269.720s)
-  hex dump (first 8 bytes):
-    62 6c 61 00 6b 6b 6b a5                          bla.kkk.
-  backtrace:
-    [<000000004447d253>] kstrdup+0x2e/0x60
-    [<0000000047259793>] kobject_set_name_vargs+0x2f/0xb0
-    [<00000000c2ee3bc8>] dev_set_name+0xab/0xe0
-    [<000000002b6bdfb1>] rtrs_srv_create_sess_files+0x260/0x290 [rtrs_server]
-    [<0000000075d87bd7>] rtrs_srv_info_req_done+0x71b/0x960 [rtrs_server]
-    [<00000000ccdf1bb5>] __ib_process_cq+0x94/0x100 [ib_core]
-    [<00000000cbcb60cb>] ib_cq_poll_work+0x32/0xc0 [ib_core]
-    [<000000002b53eaa1>] process_one_work+0x4bc/0x980
-    [<00000000da3499fb>] worker_thread+0x78/0x5c0
-    [<00000000167127a4>] kthread+0x191/0x1e0
-    [<0000000060802104>] ret_from_fork+0x3a/0x50
-unreferenced object 0xffff88806d6bb100 (size 256):
-  comm "kworker/4:1H", pid 131, jiffies 4295062972 (age 1269.720s)
-  hex dump (first 32 bytes):
-    00 00 00 00 ad 4e ad de ff ff ff ff 00 00 00 00  .....N..........
-    ff ff ff ff ff ff ff ff 00 59 4d 86 ff ff ff ff  .........YM.....
-  backtrace:
-    [<00000000a18a11e4>] device_add+0x74d/0xa00
-    [<00000000a915b95f>] rtrs_srv_create_sess_files.cold+0x49/0x1fe [rtrs_server]
-    [<0000000075d87bd7>] rtrs_srv_info_req_done+0x71b/0x960 [rtrs_server]
-    [<00000000ccdf1bb5>] __ib_process_cq+0x94/0x100 [ib_core]
-    [<00000000cbcb60cb>] ib_cq_poll_work+0x32/0xc0 [ib_core]
-    [<000000002b53eaa1>] process_one_work+0x4bc/0x980
-    [<00000000da3499fb>] worker_thread+0x78/0x5c0
-    [<00000000167127a4>] kthread+0x191/0x1e0
-    [<0000000060802104>] ret_from_fork+0x3a/0x50
+The queue_depth is a module parameter for rtrs_server. It is used on the
+client side to determing the queue_depth of the request queue for the RNBD
+virtual block device.
 
-The problem is we increase device refcount by get_device in
-process_info_req for each path, but only does put_deice for last path,
-which lead to memory leak.
+During a reconnection event for an already mapped device, in case the
+rtrs_server module queue_depth has changed, fail the reconnect attempt.
 
-To fix it, it also calls put_device when dev_ref is not 0.
+Also stop further auto reconnection attempts. A manual reconnect via
+sysfs has to be triggerred.
 
-Fixes: e2853c49477d1 ("RDMA/rtrs-srv-sysfs: fix missing put_device")
+Fixes: 6a98d71daea18 ("RDMA/rtrs: client: main functionality")
+Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-index a9288175fbb5..20efd44297fb 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-@@ -208,6 +208,7 @@ rtrs_srv_destroy_once_sysfs_root_folders(struct rtrs_srv_sess *sess)
- 		device_del(&srv->dev);
- 		put_device(&srv->dev);
- 	} else {
-+		put_device(&srv->dev);
- 		mutex_unlock(&srv->paths_mutex);
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index c8a7807793bf..ec7055b8136b 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -1764,7 +1764,20 @@ static int rtrs_rdma_conn_established(struct rtrs_clt_con *con,
  	}
- }
+ 	if (con->c.cid == 0) {
+ 		queue_depth = le16_to_cpu(msg->queue_depth);
+-		if (!sess->rbufs || sess->queue_depth < queue_depth) {
++
++		if (sess->queue_depth > 0 && queue_depth != sess->queue_depth) {
++			rtrs_err(clt, "Error: queue depth changed\n");
++
++			/*
++			 * Stop any more reconnection attempts
++			 */
++			sess->reconnect_attempts = -1;
++			rtrs_err(clt,
++				"Disabling auto-reconnect. Trigger a manual reconnect after issue is resolved\n");
++			return -ECONNRESET;
++		}
++
++		if (!sess->rbufs) {
+ 			kfree(sess->rbufs);
+ 			sess->rbufs = kcalloc(queue_depth, sizeof(*sess->rbufs),
+ 					      GFP_KERNEL);
+@@ -1778,7 +1791,7 @@ static int rtrs_rdma_conn_established(struct rtrs_clt_con *con,
+ 		sess->chunk_size = sess->max_io_size + sess->max_hdr_size;
+ 
+ 		/*
+-		 * Global queue depth and IO size is always a minimum.
++		 * Global IO size is always a minimum.
+ 		 * If while a reconnection server sends us a value a bit
+ 		 * higher - client does not care and uses cached minimum.
+ 		 *
+@@ -1786,8 +1799,7 @@ static int rtrs_rdma_conn_established(struct rtrs_clt_con *con,
+ 		 * connections in parallel, use lock.
+ 		 */
+ 		mutex_lock(&clt->paths_mutex);
+-		clt->queue_depth = min_not_zero(sess->queue_depth,
+-						clt->queue_depth);
++		clt->queue_depth = sess->queue_depth;
+ 		clt->max_io_size = min_not_zero(sess->max_io_size,
+ 						clt->max_io_size);
+ 		mutex_unlock(&clt->paths_mutex);
 -- 
 2.25.1
 
