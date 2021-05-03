@@ -2,449 +2,236 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE31D3711B8
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 08:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E933711B9
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 08:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbhECGtR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 May 2021 02:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60840 "EHLO
+        id S230364AbhECGtS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 May 2021 02:49:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhECGtP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 02:49:15 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F99BC06174A
-        for <linux-rdma@vger.kernel.org>; Sun,  2 May 2021 23:48:22 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id i190so3453730pfc.12
-        for <linux-rdma@vger.kernel.org>; Sun, 02 May 2021 23:48:22 -0700 (PDT)
+        with ESMTP id S231605AbhECGtR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 02:49:17 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96EA6C061756
+        for <linux-rdma@vger.kernel.org>; Sun,  2 May 2021 23:48:23 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id h20so2294574plr.4
+        for <linux-rdma@vger.kernel.org>; Sun, 02 May 2021 23:48:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version;
-        bh=ydJlfORRJGno2vbsBJz/rxcGZaiw0BGJ6KRAYYnVMT0=;
-        b=NgjhKP1DLi4yzeGfhBbyeRVF/WM1UzdLzGMI/+mcUs/ifiHCCsQzZ4Y3by10Lu+S7x
-         PedAZBKvBVzOumykgkiUEE6sIisxo2AeTFY9Z/Y2b/scj7BgJdolNmJzFcuOuRFZnTC8
-         cZTbKIPubtHKQ2ijo5hXSjzrC1ubiXKjn8P8A=
+        bh=COVqszlNJard7bUu4+ks4yO1w9lOMnS489/lJ5qSl8s=;
+        b=elx7maC22nnoisv8YS39tZ93cfHKqaOyjRcOQpx1HM99ERkdnG/O3fI1hobu47AU0C
+         y61Pk8992mU6eh/7P98KBBzd/xxRtiNyyh2Uvi4vW3VpNwrPzJHwUV3I6C5yvDK6fXLR
+         gv4L79yuXy8bsWu7ES1sMR0LxZ3uhxdZ/a/Jo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version;
-        bh=ydJlfORRJGno2vbsBJz/rxcGZaiw0BGJ6KRAYYnVMT0=;
-        b=dQtq0kX7RXw1LbibAbXiGxVpVN6+dlbB9Cga9NQuSA8tOg5l1KpbN9HFjB5JkheZh3
-         FluJsU6BZZzkckGTKV2dAM9pzdATnJxg3ET8RbYEMe3QrjdkDyJR3tvRaFkZ662wWKAy
-         +lATJD2arwn2BnoYaxxnALx4S19noIL8mWWg/Zpf/4juqiMkmdn7oloGZ1pl/YfA9NKG
-         yHKgd8La08NEK5G05TADZpQKf6qaKarxGSnBad2BHWrauPWCvQZ3ISICD7676SNwatHQ
-         Z1xOPfM/+OWbxrdW6PX3bOZRXt6PQsZQrLMDLhROPnoT/dxVT2H6Otcc1hqoRCw77xPu
-         rxXg==
-X-Gm-Message-State: AOAM5307tyw+c3NZPQcJ8/Uk+4JZeMIb8xoEUsQepmD6r8mH1DUnwiDJ
-        Qa2iQMEo32UaB8O/bAeNOe+fH5EWF6feMvSW4mglp0AeW6W5ZvoO3S4aQJRIXlx9at1/eTZm88z
-        NFDyTrdM0XpPGdZ4UR8hQWHEIYHr6yXz294QXfOP+pu+vuRtq88AaXxYrHB3CZZURQS5NHxU94W
-        U9yPVOmGh9
-X-Google-Smtp-Source: ABdhPJxkerP1deT0pbsKPSF9BIJYdtmH9UVlB787J3KZ4JoKQtSOZEqiEv+ZHEzNPmCRAGsvrrRFXg==
-X-Received: by 2002:a05:6a00:bc7:b029:28e:aa38:6332 with SMTP id x7-20020a056a000bc7b029028eaa386332mr2027324pfu.34.1620024500498;
-        Sun, 02 May 2021 23:48:20 -0700 (PDT)
+        bh=COVqszlNJard7bUu4+ks4yO1w9lOMnS489/lJ5qSl8s=;
+        b=eeQVB9QcNNLvlIGacij99yxHgKlDMZliqQRavZH+0kjDnSoVeaXwWBjNGxJFO8Ki0Z
+         LvAXMRMEBLh2pAQyBAAjwK2JwtMc1FB6Yy0GDOrSTPwYbaK9DYqhbw4dXmWX4/DB6xYT
+         tRmlHP5TAj+vT6IU9Y8HXPsvD05yrCKVXqigkCwwB1h1qBglhYK4Tx9M1QArRqgEk1D2
+         Ufkp92UFe3RqjBKSAvLEtcBbO2r19PgLMsjssX9/OxWVYZfKaDHDOBKFUYZwMkm9Y2qw
+         m/JvI4BPUaKTzOrKubyP9IAr0Bu7lVsnLh9mYvJg/ipOE5FHn5aWdcsGIiwoia/1V5a+
+         I04w==
+X-Gm-Message-State: AOAM533nNVph+SQzt7VN3MQbQTU2K7XzhAeemgMi2xQU//Y0G2fmGhMA
+        3DDmoZR3yzTfRz4/oPDLmPNTqjgon9/LB54ZfzCAW2yzYu8ft4QjgE8bVDpiUK3cHGMz25jbgmA
+        WyYq/15nJEnmGP7tfkEPEQgbiJLGfXs/ZjMN9qgXo/BU5orkwzJ5jrqSoDGuGmqjmCq9vc47Aqv
+        uy4WepTCkT
+X-Google-Smtp-Source: ABdhPJxbZcCsodQZ7EcGhzhhncC1vhcEaGee235AN+XzRLJ8f4Ryv3ZSztWyn0lWsMA80MQBbLqOkA==
+X-Received: by 2002:a17:90a:5806:: with SMTP id h6mr19476504pji.14.1620024502475;
+        Sun, 02 May 2021 23:48:22 -0700 (PDT)
 Received: from dev01.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id i9sm19585389pjh.9.2021.05.02.23.48.18
+        by smtp.gmail.com with ESMTPSA id i9sm19585389pjh.9.2021.05.02.23.48.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 May 2021 23:48:20 -0700 (PDT)
+        Sun, 02 May 2021 23:48:22 -0700 (PDT)
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [rdma-core 3/4] bnxt_re/lib: consolidate hwque and swque in common structure
-Date:   Mon,  3 May 2021 12:18:01 +0530
-Message-Id: <20210503064802.457482-4-devesh.sharma@broadcom.com>
+Subject: [rdma-core 4/4] bnxt_re/lib: let bnxt_re_dev store device attrs
+Date:   Mon,  3 May 2021 12:18:02 +0530
+Message-Id: <20210503064802.457482-5-devesh.sharma@broadcom.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210503064802.457482-1-devesh.sharma@broadcom.com>
 References: <20210503064802.457482-1-devesh.sharma@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000f15a9a05c167588b"
+        boundary="0000000000000a610805c167594b"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000f15a9a05c167588b
+--0000000000000a610805c167594b
 Content-Transfer-Encoding: 8bit
 
-Consolidating hardware queue (hwque) and software queue (swque)
-under a single bookkeeping data structure bnxt_re_joint_queue.
-
-This is to ease the hardware and software queue management. Further
-reduces the size of bnxt_re_qp structure.
+Making a change to let bnxt_re_dev strucutre store
+the device attributes once for entire life of device
+context. This change saves a firmware call per QP
+creation and speed it up.
 
 Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
 ---
- providers/bnxt_re/db.c    |   6 +-
- providers/bnxt_re/main.h  |  13 ++--
- providers/bnxt_re/verbs.c | 133 +++++++++++++++++++++-----------------
- 3 files changed, 87 insertions(+), 65 deletions(-)
+ providers/bnxt_re/main.c  | 31 ++++++++++++++++++-------------
+ providers/bnxt_re/main.h  |  2 ++
+ providers/bnxt_re/verbs.c | 25 +++++++++++--------------
+ 3 files changed, 31 insertions(+), 27 deletions(-)
 
-diff --git a/providers/bnxt_re/db.c b/providers/bnxt_re/db.c
-index 85da182e..3c797573 100644
---- a/providers/bnxt_re/db.c
-+++ b/providers/bnxt_re/db.c
-@@ -63,7 +63,8 @@ void bnxt_re_ring_rq_db(struct bnxt_re_qp *qp)
+diff --git a/providers/bnxt_re/main.c b/providers/bnxt_re/main.c
+index a78e6b98..1779e1ec 100644
+--- a/providers/bnxt_re/main.c
++++ b/providers/bnxt_re/main.c
+@@ -129,10 +129,11 @@ static struct verbs_context *bnxt_re_alloc_context(struct ibv_device *vdev,
+ 						   int cmd_fd,
+ 						   void *private_data)
  {
- 	struct bnxt_re_db_hdr hdr;
+-	struct ibv_get_context cmd;
++	struct bnxt_re_dev *rdev = to_bnxt_re_dev(vdev);
+ 	struct ubnxt_re_cntx_resp resp;
+-	struct bnxt_re_dev *dev = to_bnxt_re_dev(vdev);
+ 	struct bnxt_re_context *cntx;
++	struct ibv_get_context cmd;
++	int ret;
  
--	bnxt_re_init_db_hdr(&hdr, qp->rqq->tail, qp->qpid, BNXT_RE_QUE_TYPE_RQ);
-+	bnxt_re_init_db_hdr(&hdr, qp->jrqq->hwque->tail,
-+			    qp->qpid, BNXT_RE_QUE_TYPE_RQ);
- 	bnxt_re_ring_db(qp->udpi, &hdr);
+ 	cntx = verbs_init_and_alloc_context(vdev, cmd_fd, cntx, ibvctx,
+ 					    RDMA_DRIVER_BNXT_RE);
+@@ -146,9 +147,9 @@ static struct verbs_context *bnxt_re_alloc_context(struct ibv_device *vdev,
+ 
+ 	cntx->dev_id = resp.dev_id;
+ 	cntx->max_qp = resp.max_qp;
+-	dev->pg_size = resp.pg_size;
+-	dev->cqe_size = resp.cqe_sz;
+-	dev->max_cq_depth = resp.max_cqd;
++	rdev->pg_size = resp.pg_size;
++	rdev->cqe_size = resp.cqe_sz;
++	rdev->max_cq_depth = resp.max_cqd;
+ 	if (resp.comp_mask & BNXT_RE_UCNTX_CMASK_HAVE_CCTX) {
+ 		cntx->cctx.chip_num = resp.chip_id0 & 0xFFFF;
+ 		cntx->cctx.chip_rev = (resp.chip_id0 >>
+@@ -159,7 +160,7 @@ static struct verbs_context *bnxt_re_alloc_context(struct ibv_device *vdev,
+ 	}
+ 	pthread_spin_init(&cntx->fqlock, PTHREAD_PROCESS_PRIVATE);
+ 	/* mmap shared page. */
+-	cntx->shpg = mmap(NULL, dev->pg_size, PROT_READ | PROT_WRITE,
++	cntx->shpg = mmap(NULL, rdev->pg_size, PROT_READ | PROT_WRITE,
+ 			  MAP_SHARED, cmd_fd, 0);
+ 	if (cntx->shpg == MAP_FAILED) {
+ 		cntx->shpg = NULL;
+@@ -168,6 +169,10 @@ static struct verbs_context *bnxt_re_alloc_context(struct ibv_device *vdev,
+ 	pthread_mutex_init(&cntx->shlock, NULL);
+ 
+ 	verbs_set_ops(&cntx->ibvctx, &bnxt_re_cntx_ops);
++	cntx->rdev = rdev;
++	ret = ibv_query_device(&cntx->ibvctx.context, &rdev->devattr);
++	if (ret)
++		goto failed;
+ 
+ 	return &cntx->ibvctx;
+ 
+@@ -180,19 +185,19 @@ failed:
+ static void bnxt_re_free_context(struct ibv_context *ibvctx)
+ {
+ 	struct bnxt_re_context *cntx = to_bnxt_re_context(ibvctx);
+-	struct bnxt_re_dev *dev = to_bnxt_re_dev(ibvctx->device);
++	struct bnxt_re_dev *rdev = to_bnxt_re_dev(ibvctx->device);
+ 
+ 	/* Unmap if anything device specific was mapped in init_context. */
+ 	pthread_mutex_destroy(&cntx->shlock);
+ 	if (cntx->shpg)
+-		munmap(cntx->shpg, dev->pg_size);
++		munmap(cntx->shpg, rdev->pg_size);
+ 	pthread_spin_destroy(&cntx->fqlock);
+ 
+ 	/* Un-map DPI only for the first PD that was
+ 	 * allocated in this context.
+ 	 */
+ 	if (cntx->udpi.dbpage && cntx->udpi.dbpage != MAP_FAILED) {
+-		munmap(cntx->udpi.dbpage, dev->pg_size);
++		munmap(cntx->udpi.dbpage, rdev->pg_size);
+ 		cntx->udpi.dbpage = NULL;
+ 	}
+ 
+@@ -203,13 +208,13 @@ static void bnxt_re_free_context(struct ibv_context *ibvctx)
+ static struct verbs_device *
+ bnxt_re_device_alloc(struct verbs_sysfs_dev *sysfs_dev)
+ {
+-	struct bnxt_re_dev *dev;
++	struct bnxt_re_dev *rdev;
+ 
+-	dev = calloc(1, sizeof(*dev));
+-	if (!dev)
++	rdev = calloc(1, sizeof(*rdev));
++	if (!rdev)
+ 		return NULL;
+ 
+-	return &dev->vdev;
++	return &rdev->vdev;
  }
  
-@@ -71,7 +72,8 @@ void bnxt_re_ring_sq_db(struct bnxt_re_qp *qp)
- {
- 	struct bnxt_re_db_hdr hdr;
- 
--	bnxt_re_init_db_hdr(&hdr, qp->sqq->tail, qp->qpid, BNXT_RE_QUE_TYPE_SQ);
-+	bnxt_re_init_db_hdr(&hdr, qp->jsqq->hwque->tail,
-+			    qp->qpid, BNXT_RE_QUE_TYPE_SQ);
- 	bnxt_re_ring_db(qp->udpi, &hdr);
- }
- 
+ static const struct verbs_device_ops bnxt_re_dev_ops = {
 diff --git a/providers/bnxt_re/main.h b/providers/bnxt_re/main.h
-index 368297e6..d470e30a 100644
+index d470e30a..a63719e8 100644
 --- a/providers/bnxt_re/main.h
 +++ b/providers/bnxt_re/main.h
-@@ -120,13 +120,18 @@ struct bnxt_re_srq {
- 	bool arm_req;
+@@ -166,10 +166,12 @@ struct bnxt_re_dev {
+ 
+ 	uint32_t cqe_size;
+ 	uint32_t max_cq_depth;
++	struct ibv_device_attr devattr;
  };
  
-+struct bnxt_re_joint_queue {
-+	struct bnxt_re_queue *hwque;
-+	struct bnxt_re_wrid *swque;
-+	uint32_t start_idx;
-+	uint32_t last_idx;
-+};
-+
- struct bnxt_re_qp {
- 	struct ibv_qp ibvqp;
- 	struct bnxt_re_chip_ctx *cctx;
--	struct bnxt_re_queue *sqq;
--	struct bnxt_re_wrid *swrid;
--	struct bnxt_re_queue *rqq;
--	struct bnxt_re_wrid *rwrid;
-+	struct bnxt_re_joint_queue *jsqq;
-+	struct bnxt_re_joint_queue *jrqq;
- 	struct bnxt_re_srq *srq;
- 	struct bnxt_re_cq *scq;
- 	struct bnxt_re_cq *rcq;
+ struct bnxt_re_context {
+ 	struct verbs_context ibvctx;
++	struct bnxt_re_dev *rdev;
+ 	uint32_t dev_id;
+ 	uint32_t max_qp;
+ 	struct bnxt_re_chip_ctx cctx;
 diff --git a/providers/bnxt_re/verbs.c b/providers/bnxt_re/verbs.c
-index 760e840a..4344b3dd 100644
+index 4344b3dd..7f98c260 100644
 --- a/providers/bnxt_re/verbs.c
 +++ b/providers/bnxt_re/verbs.c
-@@ -242,7 +242,7 @@ static uint8_t bnxt_re_poll_err_scqe(struct bnxt_re_qp *qp,
- 				     struct bnxt_re_bcqe *hdr,
- 				     struct bnxt_re_req_cqe *scqe, int *cnt)
- {
--	struct bnxt_re_queue *sq = qp->sqq;
-+	struct bnxt_re_queue *sq = qp->jsqq->hwque;
- 	struct bnxt_re_context *cntx;
- 	struct bnxt_re_wrid *swrid;
- 	struct bnxt_re_psns *spsn;
-@@ -252,7 +252,7 @@ static uint8_t bnxt_re_poll_err_scqe(struct bnxt_re_qp *qp,
- 
- 	scq = to_bnxt_re_cq(qp->ibvqp.send_cq);
- 	cntx = to_bnxt_re_context(scq->ibvcq.context);
--	swrid = &qp->swrid[head];
-+	swrid = &qp->jsqq->swque[head];
- 	spsn = swrid->psns;
- 
- 	*cnt = 1;
-@@ -267,7 +267,7 @@ static uint8_t bnxt_re_poll_err_scqe(struct bnxt_re_qp *qp,
- 			BNXT_RE_PSNS_OPCD_MASK;
- 	ibvwc->byte_len = 0;
- 
--	bnxt_re_incr_head(qp->sqq);
-+	bnxt_re_incr_head(sq);
- 
- 	if (qp->qpst != IBV_QPS_ERR)
- 		qp->qpst = IBV_QPS_ERR;
-@@ -284,14 +284,14 @@ static uint8_t bnxt_re_poll_success_scqe(struct bnxt_re_qp *qp,
- 					 struct bnxt_re_req_cqe *scqe,
- 					 int *cnt)
- {
--	struct bnxt_re_queue *sq = qp->sqq;
-+	struct bnxt_re_queue *sq = qp->jsqq->hwque;
- 	struct bnxt_re_wrid *swrid;
- 	struct bnxt_re_psns *spsn;
--	uint8_t pcqe = false;
- 	uint32_t head = sq->head;
-+	uint8_t pcqe = false;
- 	uint32_t cindx;
- 
--	swrid = &qp->swrid[head];
-+	swrid = &qp->jsqq->swque[head];
- 	spsn = swrid->psns;
- 	cindx = le32toh(scqe->con_indx);
- 
-@@ -361,8 +361,8 @@ static int bnxt_re_poll_err_rcqe(struct bnxt_re_qp *qp, struct ibv_wc *ibvwc,
- 	cntx = to_bnxt_re_context(rcq->ibvcq.context);
- 
- 	if (!qp->srq) {
--		rq = qp->rqq;
--		ibvwc->wr_id = qp->rwrid[rq->head].wrid;
-+		rq = qp->jrqq->hwque;
-+		ibvwc->wr_id = qp->jrqq->swque[rq->head].wrid;
- 	} else {
- 		struct bnxt_re_srq *srq;
- 		int tag;
-@@ -423,8 +423,8 @@ static void bnxt_re_poll_success_rcqe(struct bnxt_re_qp *qp,
- 
- 	rcqe = cqe;
- 	if (!qp->srq) {
--		rq = qp->rqq;
--		ibvwc->wr_id = qp->rwrid[rq->head].wrid;
-+		rq = qp->jrqq->hwque;
-+		ibvwc->wr_id = qp->jrqq->swque[rq->head].wrid;
- 	} else {
- 		struct bnxt_re_srq *srq;
- 		int tag;
-@@ -648,13 +648,13 @@ static int bnxt_re_poll_flush_wqes(struct bnxt_re_cq *cq,
- 			if (sq_list) {
- 				qp = container_of(cur, struct bnxt_re_qp,
- 						  snode);
--				que = qp->sqq;
--				wridp = qp->swrid;
-+				que = qp->jsqq->hwque;
-+				wridp = qp->jsqq->swque;
- 			} else {
- 				qp = container_of(cur, struct bnxt_re_qp,
- 						  rnode);
--				que = qp->rqq;
--				wridp = qp->rwrid;
-+				que = qp->jrqq->hwque;
-+				wridp = qp->jrqq->swque;
- 			}
- 			if (bnxt_re_is_que_empty(que))
- 				continue;
-@@ -802,55 +802,68 @@ static int bnxt_re_check_qp_limits(struct bnxt_re_context *cntx,
- 
- static void bnxt_re_free_queue_ptr(struct bnxt_re_qp *qp)
- {
--	if (qp->rqq)
--		free(qp->rqq);
--	if (qp->sqq)
--		free(qp->sqq);
-+	free(qp->jrqq->hwque);
-+	free(qp->jrqq);
-+	free(qp->jsqq->hwque);
-+	free(qp->jsqq);
- }
- 
- static int bnxt_re_alloc_queue_ptr(struct bnxt_re_qp *qp,
+@@ -777,25 +777,22 @@ int bnxt_re_arm_cq(struct ibv_cq *ibvcq, int flags)
+ static int bnxt_re_check_qp_limits(struct bnxt_re_context *cntx,
  				   struct ibv_qp_init_attr *attr)
  {
--	qp->sqq = calloc(1, sizeof(struct bnxt_re_queue));
--	if (!qp->sqq)
--		return -ENOMEM;
-+	int rc = -ENOMEM;
+-	struct ibv_device_attr devattr;
+-	int ret;
++	struct ibv_device_attr *devattr;
++	struct bnxt_re_dev *rdev;
+ 
+-	ret = bnxt_re_query_device(
+-		&cntx->ibvctx.context, NULL,
+-		container_of(&devattr, struct ibv_device_attr_ex, orig_attr),
+-		sizeof(devattr));
+-	if (ret)
+-		return ret;
+-	if (attr->cap.max_send_sge > devattr.max_sge)
++	rdev = cntx->rdev;
++	devattr = &rdev->devattr;
 +
-+	qp->jsqq = calloc(1, sizeof(struct bnxt_re_joint_queue));
-+	if (!qp->jsqq)
-+		return rc;
-+	qp->jsqq->hwque = calloc(1, sizeof(struct bnxt_re_queue));
-+	if (!qp->jsqq->hwque)
-+		goto fail;
-+
- 	if (!attr->srq) {
--		qp->rqq = calloc(1, sizeof(struct bnxt_re_queue));
--		if (!qp->rqq) {
--			free(qp->sqq);
--			return -ENOMEM;
-+		qp->jrqq = calloc(1, sizeof(struct bnxt_re_joint_queue));
-+		if (!qp->jrqq) {
-+			free(qp->jsqq);
-+			goto fail;
- 		}
-+		qp->jrqq->hwque = calloc(1, sizeof(struct bnxt_re_queue));
-+		if (!qp->jrqq->hwque)
-+			goto fail;
- 	}
++	if (attr->cap.max_send_sge > devattr->max_sge)
+ 		return EINVAL;
+-	if (attr->cap.max_recv_sge > devattr.max_sge)
++	if (attr->cap.max_recv_sge > devattr->max_sge)
+ 		return EINVAL;
+ 	if (attr->cap.max_inline_data > BNXT_RE_MAX_INLINE_SIZE)
+ 		return EINVAL;
+-	if (attr->cap.max_send_wr > devattr.max_qp_wr)
+-		attr->cap.max_send_wr = devattr.max_qp_wr;
+-	if (attr->cap.max_recv_wr > devattr.max_qp_wr)
+-		attr->cap.max_recv_wr = devattr.max_qp_wr;
++	if (attr->cap.max_send_wr > devattr->max_qp_wr)
++		attr->cap.max_send_wr = devattr->max_qp_wr;
++	if (attr->cap.max_recv_wr > devattr->max_qp_wr)
++		attr->cap.max_recv_wr = devattr->max_qp_wr;
  
  	return 0;
-+fail:
-+	bnxt_re_free_queue_ptr(qp);
-+	return rc;
  }
- 
- static void bnxt_re_free_queues(struct bnxt_re_qp *qp)
- {
--	if (qp->rqq) {
--		if (qp->rwrid)
--			free(qp->rwrid);
--		pthread_spin_destroy(&qp->rqq->qlock);
--		bnxt_re_free_aligned(qp->rqq);
-+	if (qp->jrqq) {
-+		if (qp->jrqq->swque)
-+			free(qp->jrqq->swque);
-+		pthread_spin_destroy(&qp->jrqq->hwque->qlock);
-+		bnxt_re_free_aligned(qp->jrqq->hwque);
- 	}
- 
--	if (qp->swrid)
--		free(qp->swrid);
--	pthread_spin_destroy(&qp->sqq->qlock);
--	bnxt_re_free_aligned(qp->sqq);
-+	if (qp->jsqq->swque)
-+		free(qp->jsqq->swque);
-+	pthread_spin_destroy(&qp->jsqq->hwque->qlock);
-+	bnxt_re_free_aligned(qp->jsqq->hwque);
- }
- 
- static int bnxt_re_alloc_queues(struct bnxt_re_qp *qp,
- 				struct ibv_qp_init_attr *attr,
- 				uint32_t pg_size) {
- 	struct bnxt_re_psns_ext *psns_ext;
-+	struct bnxt_re_wrid *swque;
- 	struct bnxt_re_queue *que;
- 	struct bnxt_re_psns *psns;
- 	uint32_t psn_depth;
- 	uint32_t psn_size;
- 	int ret, indx;
- 
--	que = qp->sqq;
-+	que = qp->jsqq->hwque;
- 	que->stride = bnxt_re_get_sqe_sz();
- 	/* 8916 adjustment */
- 	que->depth = roundup_pow_of_two(attr->cap.max_send_wr + 1 +
-@@ -870,7 +883,7 @@ static int bnxt_re_alloc_queues(struct bnxt_re_qp *qp,
- 	 * is UD-qp. UD-qp use this memory to maintain WC-opcode.
- 	 * See definition of bnxt_re_fill_psns() for the use case.
- 	 */
--	ret = bnxt_re_alloc_aligned(qp->sqq, pg_size);
-+	ret = bnxt_re_alloc_aligned(que, pg_size);
- 	if (ret)
- 		return ret;
- 	/* exclude psns depth*/
-@@ -878,36 +891,38 @@ static int bnxt_re_alloc_queues(struct bnxt_re_qp *qp,
- 	/* start of spsn space sizeof(struct bnxt_re_psns) each. */
- 	psns = (que->va + que->stride * que->depth);
- 	psns_ext = (struct bnxt_re_psns_ext *)psns;
--	pthread_spin_init(&que->qlock, PTHREAD_PROCESS_PRIVATE);
--	qp->swrid = calloc(que->depth, sizeof(struct bnxt_re_wrid));
--	if (!qp->swrid) {
-+	swque = calloc(que->depth, sizeof(struct bnxt_re_wrid));
-+	if (!swque) {
- 		ret = -ENOMEM;
- 		goto fail;
- 	}
- 
- 	for (indx = 0 ; indx < que->depth; indx++, psns++)
--		qp->swrid[indx].psns = psns;
-+		swque[indx].psns = psns;
- 	if (bnxt_re_is_chip_gen_p5(qp->cctx)) {
- 		for (indx = 0 ; indx < que->depth; indx++, psns_ext++) {
--			qp->swrid[indx].psns_ext = psns_ext;
--			qp->swrid[indx].psns = (struct bnxt_re_psns *)psns_ext;
-+			swque[indx].psns_ext = psns_ext;
-+			swque[indx].psns = (struct bnxt_re_psns *)psns_ext;
- 		}
- 	}
-+	qp->jsqq->swque = swque;
- 
- 	qp->cap.max_swr = que->depth;
-+	pthread_spin_init(&que->qlock, PTHREAD_PROCESS_PRIVATE);
- 
--	if (qp->rqq) {
--		que = qp->rqq;
-+	if (qp->jrqq) {
-+		que = qp->jrqq->hwque;
- 		que->stride = bnxt_re_get_rqe_sz();
- 		que->depth = roundup_pow_of_two(attr->cap.max_recv_wr + 1);
- 		que->diff = que->depth - attr->cap.max_recv_wr;
--		ret = bnxt_re_alloc_aligned(qp->rqq, pg_size);
-+		ret = bnxt_re_alloc_aligned(que, pg_size);
- 		if (ret)
- 			goto fail;
- 		pthread_spin_init(&que->qlock, PTHREAD_PROCESS_PRIVATE);
- 		/* For RQ only bnxt_re_wri.wrid is used. */
--		qp->rwrid = calloc(que->depth, sizeof(struct bnxt_re_wrid));
--		if (!qp->rwrid) {
-+		qp->jrqq->swque = calloc(que->depth,
-+					 sizeof(struct bnxt_re_wrid));
-+		if (!qp->jrqq->swque) {
- 			ret = -ENOMEM;
- 			goto fail;
- 		}
-@@ -946,8 +961,8 @@ struct ibv_qp *bnxt_re_create_qp(struct ibv_pd *ibvpd,
- 		goto failq;
- 	/* Fill ibv_cmd */
- 	cap = &qp->cap;
--	req.qpsva = (uintptr_t)qp->sqq->va;
--	req.qprva = qp->rqq ? (uintptr_t)qp->rqq->va : 0;
-+	req.qpsva = (uintptr_t)qp->jsqq->hwque->va;
-+	req.qprva = qp->jrqq ? (uintptr_t)qp->jrqq->hwque->va : 0;
- 	req.qp_handle = (uintptr_t)qp;
- 
- 	if (ibv_cmd_create_qp(ibvpd, &qp->ibvqp, attr, &req.ibv_cmd, sizeof(req),
-@@ -995,11 +1010,11 @@ int bnxt_re_modify_qp(struct ibv_qp *ibvqp, struct ibv_qp_attr *attr,
- 			qp->qpst = attr->qp_state;
- 			/* transition to reset */
- 			if (qp->qpst == IBV_QPS_RESET) {
--				qp->sqq->head = 0;
--				qp->sqq->tail = 0;
--				if (qp->rqq) {
--					qp->rqq->head = 0;
--					qp->rqq->tail = 0;
-+				qp->jsqq->hwque->head = 0;
-+				qp->jsqq->hwque->tail = 0;
-+				if (qp->jrqq) {
-+					qp->jrqq->hwque->head = 0;
-+					qp->jrqq->hwque->tail = 0;
- 				}
- 			}
- 		}
-@@ -1257,7 +1272,7 @@ int bnxt_re_post_send(struct ibv_qp *ibvqp, struct ibv_send_wr *wr,
- 		      struct ibv_send_wr **bad)
- {
- 	struct bnxt_re_qp *qp = to_bnxt_re_qp(ibvqp);
--	struct bnxt_re_queue *sq = qp->sqq;
-+	struct bnxt_re_queue *sq = qp->jsqq->hwque;
- 	struct bnxt_re_wrid *wrid;
- 	uint8_t is_inline = false;
- 	struct bnxt_re_bsqe *hdr;
-@@ -1289,7 +1304,7 @@ int bnxt_re_post_send(struct ibv_qp *ibvqp, struct ibv_send_wr *wr,
- 		}
- 
- 		sqe = (void *)(sq->va + (sq->tail * sq->stride));
--		wrid = &qp->swrid[sq->tail];
-+		wrid = &qp->jsqq->swque[sq->tail];
- 
- 		memset(sqe, 0, bnxt_re_get_sqe_sz());
- 		hdr = sqe;
-@@ -1376,7 +1391,7 @@ static int bnxt_re_build_rqe(struct bnxt_re_qp *qp, struct ibv_recv_wr *wr,
- 	uint32_t hdrval;
- 
- 	sge = (rqe + bnxt_re_get_rqe_hdr_sz());
--	wrid = &qp->rwrid[qp->rqq->tail];
-+	wrid = &qp->jrqq->swque[qp->jrqq->hwque->tail];
- 
- 	len = bnxt_re_build_sge(sge, wr->sg_list, wr->num_sge, false);
- 	wqe_sz = wr->num_sge + (bnxt_re_get_rqe_hdr_sz() >> 4); /* 16B align */
-@@ -1388,7 +1403,7 @@ static int bnxt_re_build_rqe(struct bnxt_re_qp *qp, struct ibv_recv_wr *wr,
- 	hdrval = BNXT_RE_WR_OPCD_RECV;
- 	hdrval |= ((wqe_sz & BNXT_RE_HDR_WS_MASK) << BNXT_RE_HDR_WS_SHIFT);
- 	hdr->rsv_ws_fl_wt = htole32(hdrval);
--	hdr->wrid = htole32(qp->rqq->tail);
-+	hdr->wrid = htole32(qp->jrqq->hwque->tail);
- 
- 	/* Fill wrid */
- 	wrid->wrid = wr->wr_id;
-@@ -1402,7 +1417,7 @@ int bnxt_re_post_recv(struct ibv_qp *ibvqp, struct ibv_recv_wr *wr,
- 		      struct ibv_recv_wr **bad)
- {
- 	struct bnxt_re_qp *qp = to_bnxt_re_qp(ibvqp);
--	struct bnxt_re_queue *rq = qp->rqq;
-+	struct bnxt_re_queue *rq = qp->jrqq->hwque;
- 	void *rqe;
- 	int ret;
- 
 -- 
 2.25.1
 
 
---000000000000f15a9a05c167588b
+--0000000000000a610805c167594b
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -515,13 +302,13 @@ G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
 PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIHlgUO25JL8FdAPCQe9pj0a3u/xe
-4Syl51rzXV2MWxpuMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDUwMzA2NDgyMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEICRIpHsn+cK87dL93eTtrpkeChvg
+E8YuGBsqd8X5aBnOMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDUwMzA2NDgyM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQA/Tsh/XJo74HyZjAiUIV3wwy09qc7yEjq7XB3M+pMuh6Al
-Ect7JzmEbP2GxPLiPvMWNTl3pyPsAMqmL+aF2iAbvH74Wtjp41yKzH+Rgm5H47s1P+c3jictA157
-ZlG+JdyJ/wDzeXGNmjk3sjd7toGnBCzK0d/Y7yVOhObT/GsEZXGajcR/sY395tv8grcP8tjwcfw+
-eYe0XAzLsfns7ajwr6iYxtrJd88F0QAmK+DL8h4C4JHM/l1kxThmpDLtsP7LlLINoBfwDXab04TL
-zytsQPdymEaKVzXqiI9YU0d/YvfAMrtzxuHlw4XJlpOZRsxgB0/iDUOivN7KZL7n8KLs
---000000000000f15a9a05c167588b--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQAAFvXwdUhf66jmoDDQCgQfC8tlCaVZtBBK+r7/XGCd6GEN
+X9Bvyk727cWkEj0Xmi3/WB3vS7XWOTE42A7gMadTJov8q1Q1kFO9cxhrk3ixEaVoMTtxosX8G3UJ
+uSITSYIfXuRCsMIGp0c7BXcXOjcYBcjOhYzOf5Z9cMnXu8cMFWc6iVH2Ehw4SluxjrWe5+pQr4SR
+jVtz+MtFiQ65FoHtmqJpfEqVDv6Wwtr6R1vYh4wjgVyIeGFva+iMAiOMo9WrvbjSbB5ZSxJ+4EX3
+kkRueqIVJqOtdiPVlTYLBFMhFA7J+beExNaZI6w84okweoUFbXlA2zR8eAO/74s7n6nU
+--0000000000000a610805c167594b--
