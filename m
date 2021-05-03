@@ -2,61 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50752371480
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 13:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B7A37147F
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 13:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233440AbhECLtW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 May 2021 07:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41704 "EHLO
+        id S233514AbhECLtV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 May 2021 07:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233460AbhECLtU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 07:49:20 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E41DC061761
-        for <linux-rdma@vger.kernel.org>; Mon,  3 May 2021 04:48:27 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id j28so5890294edy.9
-        for <linux-rdma@vger.kernel.org>; Mon, 03 May 2021 04:48:27 -0700 (PDT)
+        with ESMTP id S233440AbhECLtT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 07:49:19 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B9FC06174A
+        for <linux-rdma@vger.kernel.org>; Mon,  3 May 2021 04:48:26 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id g14so5893345edy.6
+        for <linux-rdma@vger.kernel.org>; Mon, 03 May 2021 04:48:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=v2jM+Ra/5Z6joqP338SkpJMALJWRGixf8r+AeqFXX7U=;
-        b=RLhoPS7ErTDj/EdnXB4wRrVJiOtgvDs9Lnf5QQ2VKNWElhBFVtuzHpBHJB7b7bk8SG
-         KUHU0r4mzckZXk9/PhqseWwybkofJXRehQ7Ahfr1iue8nbJPtXQBPScDZTkDbIKGE4Yc
-         ZHRNetu7e1VBRguHgC/3ujyCM6a7CCq7IgAGEUz7uTv38LDE7tblDpZk4V6QaCTLNiCq
-         K2beJFXX1zRWQ1MQCDd3s7Aje1/ujQka0A8KYD53/CR96zeuJZNcf2P6exJcSqdQhO3U
-         MeFOUmN9Lw4TD6CSWvnuP5+4qm865zaOGvk0iYBAyHR9nsniwJl5X0pdnYmJb9MRhRPh
-         F2aA==
+        bh=1jwh9n3cEUrIKhH1fG8xS+kyq9CAdzrPRzFsqcgnQ84=;
+        b=UH4Sz2kyBAgdbeYq5MudmycswqLXFYYrkJTuhkPTaOktKAQYEd/XMdX+2nc/IQjeoZ
+         pC3bGsnCR3swqUUFPxvvxlOtHygrAP8RRp5P3FYG3umfvQ6PBypOvli3QKdG4Z06Z2YH
+         THq6xay1u14jaPZP/liFEDGLglNGxJOfi3Ow8eoE7e5heKJxUd8dielwCWn/LG6qPBNT
+         yZ5uLeZKimNsfQP7lY9qFATo32soh7SpfvBs5EUjiq8obklDb6hWVI62PtecyeGBOFcK
+         0OTrMOKDSRDdorsdDffXe9Agzy7anicYgvk8Mp/HT86YU8O5foLQHXrPRiVNCHcFcFkn
+         sJUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=v2jM+Ra/5Z6joqP338SkpJMALJWRGixf8r+AeqFXX7U=;
-        b=XK+meu6kuHdlCcwXtDaeyNURHPNw479KamgEMwkIJtYetEF8cnoTqZx3lV9uvUa4e9
-         oeppvZ3liG5rojqb+W3Ns7JaJ5us4Z5+47w4Ru1fP1xWS0TJDY49j+gW9uqNQcHZ21Ji
-         9pj6GlPWngBx3kcaiR41HQJPCcYUfCFIgTwGdDTRVsn7m7shV5o1Tlg16nlC3DsIriJI
-         yqIq8rUWeKv0+rRIbxaC7oVwOlJbovCatl80KN9KyTmt/YHm50wyY6sZpvt7uF6UIksE
-         L0WUkosYXyOfQuamH4s03hxm5KtYvPnCCnEg1EbPEoilryqsNvHjf19Irwvi8oz1YaVp
-         +OJg==
-X-Gm-Message-State: AOAM5316U30a4523KDKnLZGrGTOmw7NJrNIbLB62yclBIsl9qz2fNJR5
-        gqt7eFA3txhtj+S/4mM/rf2z/FGRYqEjdg==
-X-Google-Smtp-Source: ABdhPJw7NkHJBZwPlSUd540tSAU/mTKMDa+OexxabwPHV79RxFkaYQTdPH1UjPByH7uAdYNORNMCdw==
-X-Received: by 2002:a50:9e0b:: with SMTP id z11mr19731012ede.228.1620042504649;
-        Mon, 03 May 2021 04:48:24 -0700 (PDT)
+        bh=1jwh9n3cEUrIKhH1fG8xS+kyq9CAdzrPRzFsqcgnQ84=;
+        b=OBoiYoZP/dKEaYcXVFZFefYVuXcghUfZ3aJyhYvh9/n27nN8bjS3ysv+qmo4qwZt3q
+         BkWu56B9Y/21ox5aT0Sur2kN2+sIpVT7w0QhL8Qrruh/0tzy2fHZaDtPGhlPpqFZ/eIz
+         QRLO8oWE25R6NZcvazNSvVxB1AL3q2+lnsUKEyKaB4T2LUieFpgc88ppEUikEi8I6mPL
+         mzIGmWh5rzfDFQ44gFeDJd/wG5CDd+QeVFsJ7r4hqnyB/GcA3NoRhLq6pQNWR/UvYzIq
+         ue8vEWkDPf7Ax/z84DF1aYweRjBCxiytZ7xbcwiNSvXex2z7TtNFREITjsgxz2ViIZfR
+         MBig==
+X-Gm-Message-State: AOAM531KnmXZzwdE4a/tHBSuaHukNBm37y5QAg/JHM7l3P2oQASFyGCI
+        +rntASUQfg52MEBe7HcbT7uvoEIfy9/+sg==
+X-Google-Smtp-Source: ABdhPJxcGGr8WWmUnlBrh18E5ugx4stolTKmFJePxg9Q4MopCNBOcv3OstF5U9lW2XcPUi2H2QoxSQ==
+X-Received: by 2002:a05:6402:2283:: with SMTP id cw3mr19352827edb.122.1620042505256;
+        Mon, 03 May 2021 04:48:25 -0700 (PDT)
 Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aef30.dynamic.kabel-deutschland.de. [95.90.239.48])
         by smtp.googlemail.com with ESMTPSA id z12sm7307705ejd.83.2021.05.03.04.48.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 04:48:24 -0700 (PDT)
+        Mon, 03 May 2021 04:48:25 -0700 (PDT)
 From:   Gioh Kim <gi-oh.kim@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Guoqing Jiang <guoqing.jiang@ionos.com>,
+        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
         Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCH for-next 05/20] RDMA/rtrs-srv: Clean up the code in __rtrs_srv_change_state
-Date:   Mon,  3 May 2021 13:48:03 +0200
-Message-Id: <20210503114818.288896-6-gi-oh.kim@ionos.com>
+Subject: [PATCH for-next 06/20] RDMA/rtrs: Change MAX_SESS_QUEUE_DEPTH
+Date:   Mon,  3 May 2021 13:48:04 +0200
+Message-Id: <20210503114818.288896-7-gi-oh.kim@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210503114818.288896-1-gi-oh.kim@ionos.com>
 References: <20210503114818.288896-1-gi-oh.kim@ionos.com>
@@ -66,59 +65,43 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 
-No need to use double switch to check the change of state everywhere,
-let's change them to "if" to reduce size.
+Max IB immediate data size is 2^28 (MAX_IMM_PAYL_BITS)
+and the minimum chunk size is 4096 (2^12).
+Therefore the maximum sess_queue_depth is 65536 (2^16).
 
-Signed-off-by: Guoqing Jiang <guoqing.jiang@ionos.com>
-Reviewed-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 23 ++++-------------------
- 1 file changed, 4 insertions(+), 19 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-pri.h | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index df17dd4c1e28..74a5dfe85813 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -77,32 +77,17 @@ static bool __rtrs_srv_change_state(struct rtrs_srv_sess *sess,
- 	old_state = sess->state;
- 	switch (new_state) {
- 	case RTRS_SRV_CONNECTED:
--		switch (old_state) {
--		case RTRS_SRV_CONNECTING:
-+		if (old_state == RTRS_SRV_CONNECTING)
- 			changed = true;
--			fallthrough;
--		default:
--			break;
--		}
- 		break;
- 	case RTRS_SRV_CLOSING:
--		switch (old_state) {
--		case RTRS_SRV_CONNECTING:
--		case RTRS_SRV_CONNECTED:
-+		if (old_state == RTRS_SRV_CONNECTING ||
-+		    old_state == RTRS_SRV_CONNECTED)
- 			changed = true;
--			fallthrough;
--		default:
--			break;
--		}
- 		break;
- 	case RTRS_SRV_CLOSED:
--		switch (old_state) {
--		case RTRS_SRV_CLOSING:
-+		if (old_state == RTRS_SRV_CLOSING)
- 			changed = true;
--			fallthrough;
--		default:
--			break;
--		}
- 		break;
- 	default:
- 		break;
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+index bcad5e2168c5..62924ad5362d 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
++++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+@@ -47,12 +47,15 @@ enum {
+ 	MAX_PATHS_NUM = 128,
+ 
+ 	/*
+-	 * With the size of struct rtrs_permit allocated on the client, 4K
+-	 * is the maximum number of rtrs_permits we can allocate. This number is
+-	 * also used on the client to allocate the IU for the user connection
+-	 * to receive the RDMA addresses from the server.
++	 * Max IB immediate data size is 2^28 (MAX_IMM_PAYL_BITS)
++	 * and the minimum chunk size is 4096 (2^12).
++	 * So the maximum sess_queue_depth is 65536 (2^16) in theory.
++	 * But mempool_create, create_qp and ib_post_send fail with
++	 * "cannot allocate memory" error if sess_queue_depth is too big.
++	 * Therefore the pratical max value of sess_queue_depth is
++	 * somewhere between 1 and 65536 and it depends on the system.
+ 	 */
+-	MAX_SESS_QUEUE_DEPTH = 4096,
++	MAX_SESS_QUEUE_DEPTH = 65536,
+ 
+ 	RTRS_HB_INTERVAL_MS = 5000,
+ 	RTRS_HB_MISSED_MAX = 5,
 -- 
 2.25.1
 
