@@ -2,171 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F2E371200
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 09:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B3C37147A
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 May 2021 13:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhECHbF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 May 2021 03:31:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39044 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232946AbhECHbD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 03:31:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620027010;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UBqDie/EmaAjrhH4oH0oAYawtCNkHwB6gsCC/PU7Wy0=;
-        b=Y9T2y7uiFqjceOKpQ8Y7nE04NBOg8LV/Opy3nGKLwqfbfQuXjoNvfgwov7AwaUo+fPGh4A
-        mcaMsRz9r5sit8quLZbQB5t+8yA/tVt9TmfyLHvJj8urk2l4ehAc+JezclYQI+U98K7+R+
-        vicxNooaLY1x87SPlE0+gTzT9XwODAM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-380-EzkpyYkoNWyE-8nvZc86AQ-1; Mon, 03 May 2021 03:30:05 -0400
-X-MC-Unique: EzkpyYkoNWyE-8nvZc86AQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D6FB800D62;
-        Mon,  3 May 2021 07:29:59 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A36E70592;
-        Mon,  3 May 2021 07:29:38 +0000 (UTC)
-Date:   Mon, 3 May 2021 09:29:37 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     brouer@redhat.com, Yunsheng Lin <linyunsheng@huawei.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Networking <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
-Message-ID: <20210503092937.78a1eb05@carbon>
-In-Reply-To: <CAC_iWj+wkjcGjwbVqEFXFyUi_zgn4-uYhQKKHKk84jkgo1sxRw@mail.gmail.com>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
-        <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
-        <YIsAIzecktXXBlxn@apalos.home>
-        <9bf7c5b3-c3cf-e669-051f-247aa8df5c5a@huawei.com>
-        <YIwvI5/ygBvZG5sy@apalos.home>
-        <CAC_iWj+wkjcGjwbVqEFXFyUi_zgn4-uYhQKKHKk84jkgo1sxRw@mail.gmail.com>
+        id S233204AbhECLtQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 May 2021 07:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhECLtP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 May 2021 07:49:15 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9378CC06174A
+        for <linux-rdma@vger.kernel.org>; Mon,  3 May 2021 04:48:22 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id c22so5902047edn.7
+        for <linux-rdma@vger.kernel.org>; Mon, 03 May 2021 04:48:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KlgjX89Rr/7BLuyVCwzxlD3tiv0FfQYTpRIbP6WwSyc=;
+        b=R6V4q70J1yiT7d12Ba7NZUIRCNhw5jeoPnBZaVAClhXUc/wHQuG29M+XIhbollI23V
+         facNTFKPnxE/HzX5t5KSmwK/iCr2EzbJtjIljYjbI6ll5IN7IRxHw+TEoJhhJ6y7TZeW
+         B7SBVd2kVaOA2N/KZr9y/SP4Q2y6M1kS75Ivjm0RV5NEdMsrT3MQhl+IPdrFhR+E+cZL
+         BBw521FlFAZqqeyuo4NtQNXxkBBiG3vieW63ZT02IG/N72h/vdy3Fatk5nxuAG6Koju+
+         xKDXrULwdzNySUJtPnZjqKkTTFtvHt4n3fqY0LjCXY5CBSCrwswfOZTDvAm4OvF3HnS3
+         IMKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KlgjX89Rr/7BLuyVCwzxlD3tiv0FfQYTpRIbP6WwSyc=;
+        b=h8xl7/S+fvAKfB4uV7yTyk+gM/IkeK5fLIUqVXheJ67Sn/bol1epPmP9n80pdJ/LRe
+         r0oxrabOhK718U/UmkxeVp44wFgy2WsHaejPwyRxpNbvsxcyepFFwPjXWUMMgESsGzMx
+         oP8nP3+ZS8we11UPqeIlPWYDFeaMzZIpcf+8K2roQUmBV81Odn+o7ooYV3o926GQJpPM
+         +bDbtXsEFx8coDLdHudjD4nKCIGmwDOttC0EsGLZuE2gFx3K243EmVaHJIIKnOds8pgJ
+         KS2/FrkNFXgHl2ANGBekFUWJUFX+LJESykr3OnJW5WoYFxCgCf8DHpjxhWqkMxi4Wsld
+         ltKg==
+X-Gm-Message-State: AOAM532Ba4YOez7VJB2WOlvQqCl3f1dfeurLlR2/xr1TS/m1TKgpiRPj
+        jne5I0u5zJcvHnsv/Fg5SuTzGJH9H+wduQ==
+X-Google-Smtp-Source: ABdhPJxEqI1XsPOnT1nhBzUR1HIsjLA939O4+0Cf30pljrORpxY7Y+M2f7TyfpkmRa9cVElI2+O6cw==
+X-Received: by 2002:a05:6402:617:: with SMTP id n23mr19638862edv.45.1620042501244;
+        Mon, 03 May 2021 04:48:21 -0700 (PDT)
+Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aef30.dynamic.kabel-deutschland.de. [95.90.239.48])
+        by smtp.googlemail.com with ESMTPSA id z12sm7307705ejd.83.2021.05.03.04.48.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 04:48:21 -0700 (PDT)
+From:   Gioh Kim <gi-oh.kim@ionos.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
+        jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
+        Gioh Kim <gi-oh.kim@ionos.com>
+Subject: [PATCH for-next 00/20] Misc update for rtrs
+Date:   Mon,  3 May 2021 13:47:58 +0200
+Message-Id: <20210503114818.288896-1-gi-oh.kim@ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, 30 Apr 2021 20:32:07 +0300
-Ilias Apalodimas <ilias.apalodimas@linaro.org> wrote:
+Hi Jason, hi Doug,
 
-> (-cc invalid emails)
-> Replying to my self here but....
-> 
-> [...]
-> > > >
-> > > > We can't do that. The reason we need those structs is that we rely on the
-> > > > existing XDP code, which already recycles it's buffers, to enable
-> > > > recycling.  Since we allocate a page per packet when using page_pool for a
-> > > > driver , the same ideas apply to an SKB and XDP frame. We just recycle the  
-> > >
-> > > I am not really familar with XDP here, but a packet from hw is either a
-> > > "struct xdp_frame/xdp_buff" for XDP or a "struct sk_buff" for TCP/IP stack,
-> > > a packet can not be both "struct xdp_frame/xdp_buff" and "struct sk_buff" at
-> > > the same time, right?
-> > >  
-> >
-> > Yes, but the payload is irrelevant in both cases and that's what we use
-> > page_pool for.  You can't use this patchset unless your driver usues
-> > build_skb().  So in both cases you just allocate memory for the payload and
-> > decide what the wrap the buffer with (XDP or SKB) later.
-> >  
-> > > What does not really make sense to me is that the page has to be from page
-> > > pool when a skb's frag page can be recycled, right? If it is ture, the switch
-> > > case in __xdp_return() does not really make sense for skb recycling, why go
-> > > all the trouble of checking the mem->type and mem->id to find the page_pool
-> > > pointer when recyclable page for skb can only be from page pool?  
-> >
-> > In any case you need to find in which pool the buffer you try to recycle
-> > belongs.  In order to make the whole idea generic and be able to recycle skb
-> > fragments instead of just the skb head you need to store some information on
-> > struct page.  That's the fundamental difference of this patchset compared to
-> > the RFC we sent a few years back [1] which was just storing information on the
-> > skb.  The way this is done on the current patchset is that we store the
-> > struct xdp_mem_info in page->private and then look it up on xdp_return().
-> >
-> > Now that being said Matthew recently reworked struct page, so we could see if
-> > we can store the page pool pointer directly instead of the struct
-> > xdp_mem_info. That would allow us to call into page pool functions directly.
-> > But we'll have to agree if that makes sense to go into struct page to begin
-> > with and make sure the pointer is still valid when we take the recycling path.
-> >  
-> 
-> Thinking more about it the reason that prevented us from storing a
-> page pool pointer directly is not there anymore. Jesper fixed that
-> already a while back. So we might as well store the page_pool ptr in
-> page->private and call into the functions directly.  I'll have a look
-> before v4.
+Please consider to include following changes to the next merge window.
+It contains:
+- Patch 01 ~ 12: Typical code refactoring patches
+- Patch 13: Requested by Jason
+https://www.spinics.net/lists/linux-rdma/msg102009.html
+- Patch 14 ~ 20: Bug fixes
 
-I want to give credit to Jonathan Lemon whom came up with the idea of
-storing the page_pool object that "owns" the page directly in struct
-page.  I see this as an optimization that we can add later, so it
-doesn't block this patchset.  As Ilias mention, it required some
-work/changes[1]+[2] to guarantee that the page_pool object life-time
-were longer than all the outstanding in-flight page-objects, but that
-have been stable for some/many kernel releases now.  This is already
-need/used for making sure the DMA-mappings can be safely released[1],
-but I on-purpose enabled the same in-flight tracking for page_pool
-users that doesn't use the DMA-mapping feature (making sure the code is
-exercised).
+Dima Stepanov (1):
+  RDMA/rtrs: Use strscpy instead of strlcpy
 
+Gioh Kim (8):
+  RDMA/rtrs-clt: Remove MAX_SESS_QUEUE_DEPTH from rtrs_send_sess_info
+  RDMA/rtrs-clt: No need to check queue_depth when receiving
+  RDMA/rtrs: Change MAX_SESS_QUEUE_DEPTH
+  RDMA/rtrs: Define MIN_CHUNK_SIZE
+  RDMA/rtrs: Do not reset hb_missed_max after re-connection
+  RDMA/rtrs-srv: Duplicated session name is not allowed
+  RDMA/rtrs-srv: Fix memory leak of unfreed rtrs_srv_stats object
+  RDMA/rtrs-clt: Fix memory leak of not-freed sess->stats and
+    stats->pcpu_stats
 
-[1] 99c07c43c4ea ("xdp: tracking page_pool resources and safe removal")
-[2] c3f812cea0d7 ("page_pool: do not release pool until inflight == 0.")
+Guoqing Jiang (6):
+  RDMA/rtrs-srv: Kill reject_w_econnreset label
+  RDMA/rtrs-srv: Clean up the code in __rtrs_srv_change_state
+  RDMA/rtrs-clt: Kill rtrs_clt_{start,stop}_hb
+  RDMA/rtrs-clt: Kill rtrs_clt_disconnect_from_sysfs
+  RDMA/rtrs-srv: Kill __rtrs_srv_change_state
+  RDMA/rtrs-clt: Remove redundant 'break'
+
+Jack Wang (1):
+  RDMA/rtrs-srv: Fix memory leak when having multiple sessions
+
+Md Haris Iqbal (4):
+  RDMA/rtrs-srv: Add error messages for cases when failing RDMA
+    connection
+  RDMA/rtrs-clt: Check state of the rtrs_clt_sess before reading its
+    stats
+  RDMA/rtrs-srv: Replace atomic_t with percpu_ref for ids_inflight
+  RDMA/rtrs-clt: Check if the queue_depth has changed during a
+    reconnection
+
+ drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c |   5 +-
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c       |  59 ++++---
+ drivers/infiniband/ulp/rtrs/rtrs-clt.h       |   2 +-
+ drivers/infiniband/ulp/rtrs/rtrs-pri.h       |  14 +-
+ drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c |  12 +-
+ drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c |   1 +
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c       | 163 +++++++++++--------
+ drivers/infiniband/ulp/rtrs/rtrs-srv.h       |   4 +-
+ drivers/infiniband/ulp/rtrs/rtrs.c           |   1 -
+ 9 files changed, 144 insertions(+), 117 deletions(-)
+
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+2.25.1
 
