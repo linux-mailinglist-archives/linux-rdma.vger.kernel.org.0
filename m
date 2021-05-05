@@ -2,65 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76733373FB9
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 May 2021 18:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7A6374013
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 May 2021 18:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234056AbhEEQ1Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 May 2021 12:27:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46076 "EHLO mail.kernel.org"
+        id S234200AbhEEQcm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 May 2021 12:32:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234044AbhEEQ1W (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 5 May 2021 12:27:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3A146121F;
-        Wed,  5 May 2021 16:26:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620231986;
-        bh=+XVmn+qQ0hZ/pDYHrA4fm3voToW9efhwPKJClQ2Ns7o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OT9gM4ATRF7EKC10IJ4fI+H7Hqsj1wvNtM7A7lBUYC/s8V341V0eUabPn2xPEMNRA
-         drpNeXq16PcBGH+kQLUd4WwVtWlG4M5jviIBP6Je28TSOZM10RWhPUHstVOt/E9O8I
-         f5Cgti962c5HE7yDC44oA4xy6LmGunCM/OWjN2Dg=
-Date:   Wed, 5 May 2021 18:26:24 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@nvidia.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: CFI violation in drivers/infiniband/core/sysfs.c
-Message-ID: <YJLHMLq9qd5R0CiQ@kroah.com>
-References: <20210402195241.gahc5w25gezluw7p@archlinux-ax161>
- <202104021555.08B883C7@keescook>
- <20210403065559.5vebyyx2p5uej5nw@archlinux-ax161>
- <20210504202222.GB2047089@ziepe.ca>
+        id S234125AbhEEQcj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 5 May 2021 12:32:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C065D613C4;
+        Wed,  5 May 2021 16:31:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620232302;
+        bh=D1HnKk3qKfabMQLP5TPQQ+NW7JOqOCi7mRF2YovF1OU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=InwEnx0olsgucrDinW5D1EWDBz4V41z6zldPsbphK7EEXGFFXnD94UL2QMMuOhU7n
+         7qG4265Rs4EngdYEmpgZVs4nUu+mxsEAZXpoigJvxvCwsTgVsONCh64GJnxDCey2Ob
+         np/pcXgWNl2izGtFFWfLqkA9G9HRWOF/Q1olgtTxhDkOz2A1fvYaRJfMVhzjVheKDh
+         V3YJQK6fX36kS1NUxfC/CrvQm4BHDGbpZh/wdS3Hx8APrIG8QrUm5US1p98Jz3vAXD
+         JQh6OaMp0Qq5qK63/is0yMjPREoQBj969V+NoN1gi9rNZw8fiaAp4x/HBrmLuCUE5i
+         HMt9JGyj6su3A==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.12 013/116] net/mlx5e: Use net_prefetchw instead of prefetchw in MPWQE TX datapath
+Date:   Wed,  5 May 2021 12:29:41 -0400
+Message-Id: <20210505163125.3460440-13-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210505163125.3460440-1-sashal@kernel.org>
+References: <20210505163125.3460440-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210504202222.GB2047089@ziepe.ca>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 04, 2021 at 05:22:22PM -0300, Jason Gunthorpe wrote:
-> On Fri, Apr 02, 2021 at 11:55:59PM -0700, Nathan Chancellor wrote:
-> > > So, I think, the solution is below. This hasn't been runtime tested. It
-> > > basically removes the ib_port callback prototype and leaves everything
-> > > as kobject/attr. The callbacks then do their own container_of() calls.
-> > 
-> > Well that appear to be okay from a runtime perspective.
-> 
-> This giant thing should fix it, and some of the other stuff Greg observed:
-> 
-> https://github.com/jgunthorpe/linux/commits/rmda_sysfs_cleanup
-> 
-> It needs some testing before it gets posted
+From: Maxim Mikityanskiy <maximmi@mellanox.com>
 
-When you post it, can you cc: me?
+[ Upstream commit 991b2654605b455a94dac73e14b23480e7e20991 ]
 
-thanks,
+Commit e20f0dbf204f ("net/mlx5e: RX, Add a prefetch command for small
+L1_CACHE_BYTES") switched to using net_prefetchw at all places in mlx5e.
+In the same time frame, commit 5af75c747e2a ("net/mlx5e: Enhanced TX
+MPWQE for SKBs") added one more usage of prefetchw. When these two
+changes were merged, this new occurrence of prefetchw wasn't replaced
+with net_prefetchw.
 
-greg k-h
+This commit fixes this last occurrence of prefetchw in
+mlx5e_tx_mpwqe_session_start, making the same change that was done in
+mlx5e_xdp_mpwqe_session_start.
+
+Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_tx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+index bdbffe484fce..d2efe2455955 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+@@ -576,7 +576,7 @@ static void mlx5e_tx_mpwqe_session_start(struct mlx5e_txqsq *sq,
+ 
+ 	pi = mlx5e_txqsq_get_next_pi(sq, MLX5E_TX_MPW_MAX_WQEBBS);
+ 	wqe = MLX5E_TX_FETCH_WQE(sq, pi);
+-	prefetchw(wqe->data);
++	net_prefetchw(wqe->data);
+ 
+ 	*session = (struct mlx5e_tx_mpwqe) {
+ 		.wqe = wqe,
+-- 
+2.30.2
+
