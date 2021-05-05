@@ -2,92 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E61374707
+	by mail.lfdr.de (Postfix) with ESMTP id 8D217374708
 	for <lists+linux-rdma@lfdr.de>; Wed,  5 May 2021 19:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235009AbhEERlg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 May 2021 13:41:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51712 "EHLO
+        id S235093AbhEERli (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 May 2021 13:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237292AbhEERiV (ORCPT
+        with ESMTP id S238345AbhEERiV (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 May 2021 13:38:21 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9424C0612B0
-        for <linux-rdma@vger.kernel.org>; Wed,  5 May 2021 10:11:13 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id e15so2437786pfv.10
-        for <linux-rdma@vger.kernel.org>; Wed, 05 May 2021 10:11:13 -0700 (PDT)
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9E8C0612B1
+        for <linux-rdma@vger.kernel.org>; Wed,  5 May 2021 10:11:15 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id s22so2238635pgk.6
+        for <linux-rdma@vger.kernel.org>; Wed, 05 May 2021 10:11:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version;
-        bh=rExriOypx9qGbixSdf47bLz8DiZhafPmDG80eWv0Tag=;
-        b=gO11OxdgrQEkX7SHLG+Yq06Fvz8Xv4m5N4CRPORHxse3k3qzpZYC4TGBSW06mA3AYS
-         5oiasSw+D/ZLcWGKmexuGjdi90FFLVbt9lHypxSPoUXecVXVo5G41M/Zjq1QgB0If21D
-         rVSgl8MEa2L7PDsKsk3VJQoNkvGFSoi+uKqjQ=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=R5jYFJOWxglxcx+TgEgtgWg0SvFZ5YyijOPGLPbzLtg=;
+        b=iA4xmo3JaNRWXw2uvgZPhg0jRMQiPqIgbFLv1C8T6qfrMGSqE+qNvQOf3NXaPZJVKc
+         kENFVHjCqhVYtQD3GE7MgPNrAWdZLAf6FoC9RyaFrTzr7KGOeLe7fbCPbr5tW9e5E+Tf
+         aHJkY4Ax25XInQlChKQi2uvQxxwdey+idlpbQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
-        bh=rExriOypx9qGbixSdf47bLz8DiZhafPmDG80eWv0Tag=;
-        b=rRhZB+FAqzHIn3D13dJ+j0qKt7MbcoRZ5FcLeQN57GaNRBprS8pi4z1JgtJ5Gusg2B
-         urMuWVM+U8Z/DuFHvm50OpJprJyJ7yTNWVDSHbjoSS9oPOfNzZiXuG+o7Kl+4789aihP
-         884sJf8qnAVSuOo4VLwsxUs8+/Ljq9HuhJEQNivropTFb66T9DJ7ftrePjyj0f8SHSWF
-         42AeCiuQCruuv8kICQ/+BG7WFf5dMYn2WW732C75r+85YtNl7dFoyhT25ejVQCQ29rTU
-         PPD27SPsQYiVgMBJm1Cg/yozSn9S9AWTAusBRUFv6yP03SUqKt1XRGmMgjNGL2nqW0uQ
-         THag==
-X-Gm-Message-State: AOAM5330P5p7Gji+xWQtuOfPqmC6yiX+IAQ3z6To7E6H8gZfvytJpWLh
-        7O7dR0dYm+Yu0ns+b8rudBSTfFqvH6ZFNUTaJxEPfjHvre/Ni/oU6hg4Qrcx8fqoW8LHEOiqRm3
-        JivpRt82dngWR1I4pdQtbKUR6i7lW3jT8H0pkG8gxL8vUIJcJNccsu8gaKKwTuvzlNPB+P0ROOt
-        HQXxb3mMgJ
-X-Google-Smtp-Source: ABdhPJwfMlrM6MwiRsdRJKhIYUA8b5iSUZRgPqjcYof5/PoHmfkSWF2LSOIdlYCUz3HoZTaaPJLyfw==
-X-Received: by 2002:a62:7f84:0:b029:25f:b701:38e5 with SMTP id a126-20020a627f840000b029025fb70138e5mr53703pfd.5.1620234672511;
-        Wed, 05 May 2021 10:11:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=R5jYFJOWxglxcx+TgEgtgWg0SvFZ5YyijOPGLPbzLtg=;
+        b=XAiGsD9oLxcZYIhRyMOW41txxsv1L8LJbW7/bbRzqMXyuKqJASO2ltBW6lWhbBXbKp
+         Phm7iFGArv3QMr8ZkQgRxAMJmxZtjPheP9ShYzIOWsMI/EyywfGR6SXY7t6RNI1/joBW
+         G9u8aFD4hRAV20FzR3z4MvIOzMLAFP0uhQjQM5bs0DGxjg/5coU1mSHnSyzTS39iQ4uq
+         /pgJUA+pqasf8yZR4/yRX2Q5HhB9CzzE30t5UVnU7mNzJKhlRutR1oObJfDBPPM7UUOe
+         W+ma21E386RbPai9s/P7XIKL2HkrU5gKuhdd9y13VPlHre0xJFGMOfad4asBjUffQcNA
+         q3PQ==
+X-Gm-Message-State: AOAM532L4eu5STcvvT6agqd2lTM+8VX5K1SiamPkj8dZeBTvoDGY9i/X
+        SUSYZwv4j+OXGSVVBBTpfeQJYfFTDgeqf8nnynQfVI3g2eGZ8upAAb5gnFN7oAJ3YaHwImsXDy2
+        LgJNdhZfUfYQcWAPNy/S/sAEmW+/PHiWJf2kc4ddS/aqWWV1xCxE4eipMFYSGGitdZRtq7EysOR
+        sUs+dInvkg
+X-Google-Smtp-Source: ABdhPJzjcKOYKj5H2LVPooS9Zwn3LNLs/17gGTPJDRKPrOZYHEpmSzk0ifDanfhWdTi9R0vzaYtCjA==
+X-Received: by 2002:aa7:9aa2:0:b029:28e:af64:ec59 with SMTP id x2-20020aa79aa20000b029028eaf64ec59mr92802pfi.0.1620234674103;
+        Wed, 05 May 2021 10:11:14 -0700 (PDT)
 Received: from dev01.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id u21sm15381614pfm.89.2021.05.05.10.11.10
+        by smtp.gmail.com with ESMTPSA id u21sm15381614pfm.89.2021.05.05.10.11.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 10:11:11 -0700 (PDT)
+        Wed, 05 May 2021 10:11:13 -0700 (PDT)
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [V2 rdma-core 0/4] Broadcom's rdma provider lib update
-Date:   Wed,  5 May 2021 22:40:52 +0530
-Message-Id: <20210505171056.514204-1-devesh.sharma@broadcom.com>
+Subject: [V2 rdma-core 1/4] bnxt_re/lib: Check AH handler validity before use
+Date:   Wed,  5 May 2021 22:40:53 +0530
+Message-Id: <20210505171056.514204-2-devesh.sharma@broadcom.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210505171056.514204-1-devesh.sharma@broadcom.com>
+References: <20210505171056.514204-1-devesh.sharma@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000027c7f505c19848ad"
+        boundary="0000000000003d110405c19848ab"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000027c7f505c19848ad
+--0000000000003d110405c19848ab
 Content-Transfer-Encoding: 8bit
 
-This patch series is a part of bigger feature submission which
-changes the wqe posting logic. The current series adds the
-ground work in the direction to change the wqe posting algorithm.
+Provider library should check the validity of AH
+handler before referencing it.
 
-v1->v2
-- added Fixes tag
-- updated patch description
-- dropped if() check before free.
+Fixing the AH validity check when initializing the
+UD SQE from AH.
 
-Devesh Sharma (4):
-  bnxt_re/lib: Check AH handler validity before use
-  bnxt_re/lib: align base sq entry structure to 16B boundary
-  bnxt_re/lib: consolidate hwque and swque in common structure
-  bnxt_re/lib: query device attributes only once and store
+Fixes: 60ce22c59eaa ("Enable-UD-control-path-and-wqe-posting")
+Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+---
+ providers/bnxt_re/verbs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- providers/bnxt_re/bnxt_re-abi.h |  24 ++---
- providers/bnxt_re/db.c          |   6 +-
- providers/bnxt_re/main.c        |  31 +++---
- providers/bnxt_re/main.h        |  15 ++-
- providers/bnxt_re/verbs.c       | 182 +++++++++++++++++---------------
- 5 files changed, 138 insertions(+), 120 deletions(-)
-
+diff --git a/providers/bnxt_re/verbs.c b/providers/bnxt_re/verbs.c
+index ca561662..a015bed7 100644
+--- a/providers/bnxt_re/verbs.c
++++ b/providers/bnxt_re/verbs.c
+@@ -1193,13 +1193,13 @@ static int bnxt_re_build_ud_sqe(struct bnxt_re_qp *qp, void *wqe,
+ 	int len;
+ 
+ 	len = bnxt_re_build_send_sqe(qp, wqe, wr, is_inline);
+-	sqe->qkey = htole32(wr->wr.ud.remote_qkey);
+-	sqe->dst_qp = htole32(wr->wr.ud.remote_qpn);
+ 	if (!wr->wr.ud.ah) {
+ 		len = -EINVAL;
+ 		goto bail;
+ 	}
+ 	ah = to_bnxt_re_ah(wr->wr.ud.ah);
++	sqe->qkey = htole32(wr->wr.ud.remote_qkey);
++	sqe->dst_qp = htole32(wr->wr.ud.remote_qpn);
+ 	sqe->avid = htole32(ah->avid & 0xFFFFF);
+ bail:
+ 	return len;
 -- 
 2.25.1
 
 
---00000000000027c7f505c19848ad
+--0000000000003d110405c19848ab
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -158,13 +172,13 @@ G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
 PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPGC0emPKtTiTePCitO9hZ3PI2ss
-KI1IyLcwXD1hm2t3MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDUwNTE3MTExM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFuDXVLLpD9HvxZI1/1/1aR9XVIY
+R64ctosNqWLwtNlrMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDUwNTE3MTExNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQBT+Z+6OIs/bRXwujkSTDUVyn+kMCE7VtGuLVCLVFNa6YSL
-yjhYu696u6gjy8FsdrAIwMJ8tzbTgK1l4exyPkbqHDezmm1vwnBdW8jUpvOJqaV7/INMAAxEJGk3
-8WTZaYiYqRtEo/xS33bXVuCf/WLMvDMUStMU2PTB/nGvcg1lhoEmqgwx7CkvzF7g60cVEQXcUgcg
-U9sygkidxLsIe2OBQrOlCZBZqdZmuegnfdL1q6vqw59j8MG/CxIUf4I7nFGlzXCTuX3rU5dTv3ZA
-N2Ti8Z2LJ4RZgvMa9ZS/6hZOuwoCIrI59+WDtKsRYpv2GyWIwQzr6fIkhFdb5S+StA9G
---00000000000027c7f505c19848ad--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQAwaJApjrg6eHv/T5tLYG3f3AGjofVBKvo5cPja2nK4b9XK
+FGGQZf16zwuPEtaEWbLFl6Xj2dXZnuBHHySmGYx2l67jw3GJHC2vg1tEy7crMyO80xsWOtYL7UNp
+BuhVXg9YG6kURkMFfQKa9DC98YE3NVQI6X1+Pv5azEuoT7aeYx5I7j2PaO6BoWZ1Nl3WGAvs8w7b
+NmJCx5vDA7npzZcEwiX0aBDhXuKskTENZWTCZNtzY4npuAArBVGE1xGRty7/pTaiBD7Df06djW+f
+tBjTjZfw2t67lYEDVd71CuZJOhXJkrTLtodJ1zeVkEP6lkweMHU6X7qtRVpBTpB4Cj7R
+--0000000000003d110405c19848ab--
