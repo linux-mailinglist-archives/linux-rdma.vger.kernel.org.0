@@ -2,136 +2,169 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B35F37444A
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 May 2021 19:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E61374707
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 May 2021 19:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236680AbhEEQ4D (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 May 2021 12:56:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234606AbhEEQu4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 5 May 2021 12:50:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 210F761961;
-        Wed,  5 May 2021 16:37:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232663;
-        bh=B7C2uLl3oCAR7UoLAPkYETn4E+GUgmyrJG3uXjPqceU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TAkQqnokJUoSJb0CA4LzDoasjk+hrp9KPjFm9X/v9SmVFahFYiG0iyUTdaBq4fUNc
-         0o8pThkAgamRgoEiIcVhK+YeQ8zN1vKCaoFvloiQuMxVdTJwvFzTfP2gDo6iLYskWu
-         z6e7GM4d8S+ImgLr/nVIDZcNuqheM7skYBwXhDPB7V6n2U+NPKP2iikDSq44ZCKNsP
-         J2TYMAodouHPpxp+MTf81oo0xCgziX3IuwLz9cqg6z8JGfCgPVJ7Z3s48JP6/tugyl
-         ylVc45sYA6vVR3hdw4qSE38sgHjPcIV5dOLt0OLMM0pXrH+hZYz5wwe43pj3mAogbS
-         X7tZpg1f0aEIw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 37/85] IB/hfi1: Correct oversized ring allocation
-Date:   Wed,  5 May 2021 12:36:00 -0400
-Message-Id: <20210505163648.3462507-37-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210505163648.3462507-1-sashal@kernel.org>
-References: <20210505163648.3462507-1-sashal@kernel.org>
+        id S235009AbhEERlg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 May 2021 13:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237292AbhEERiV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 May 2021 13:38:21 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9424C0612B0
+        for <linux-rdma@vger.kernel.org>; Wed,  5 May 2021 10:11:13 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id e15so2437786pfv.10
+        for <linux-rdma@vger.kernel.org>; Wed, 05 May 2021 10:11:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version;
+        bh=rExriOypx9qGbixSdf47bLz8DiZhafPmDG80eWv0Tag=;
+        b=gO11OxdgrQEkX7SHLG+Yq06Fvz8Xv4m5N4CRPORHxse3k3qzpZYC4TGBSW06mA3AYS
+         5oiasSw+D/ZLcWGKmexuGjdi90FFLVbt9lHypxSPoUXecVXVo5G41M/Zjq1QgB0If21D
+         rVSgl8MEa2L7PDsKsk3VJQoNkvGFSoi+uKqjQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
+        bh=rExriOypx9qGbixSdf47bLz8DiZhafPmDG80eWv0Tag=;
+        b=rRhZB+FAqzHIn3D13dJ+j0qKt7MbcoRZ5FcLeQN57GaNRBprS8pi4z1JgtJ5Gusg2B
+         urMuWVM+U8Z/DuFHvm50OpJprJyJ7yTNWVDSHbjoSS9oPOfNzZiXuG+o7Kl+4789aihP
+         884sJf8qnAVSuOo4VLwsxUs8+/Ljq9HuhJEQNivropTFb66T9DJ7ftrePjyj0f8SHSWF
+         42AeCiuQCruuv8kICQ/+BG7WFf5dMYn2WW732C75r+85YtNl7dFoyhT25ejVQCQ29rTU
+         PPD27SPsQYiVgMBJm1Cg/yozSn9S9AWTAusBRUFv6yP03SUqKt1XRGmMgjNGL2nqW0uQ
+         THag==
+X-Gm-Message-State: AOAM5330P5p7Gji+xWQtuOfPqmC6yiX+IAQ3z6To7E6H8gZfvytJpWLh
+        7O7dR0dYm+Yu0ns+b8rudBSTfFqvH6ZFNUTaJxEPfjHvre/Ni/oU6hg4Qrcx8fqoW8LHEOiqRm3
+        JivpRt82dngWR1I4pdQtbKUR6i7lW3jT8H0pkG8gxL8vUIJcJNccsu8gaKKwTuvzlNPB+P0ROOt
+        HQXxb3mMgJ
+X-Google-Smtp-Source: ABdhPJwfMlrM6MwiRsdRJKhIYUA8b5iSUZRgPqjcYof5/PoHmfkSWF2LSOIdlYCUz3HoZTaaPJLyfw==
+X-Received: by 2002:a62:7f84:0:b029:25f:b701:38e5 with SMTP id a126-20020a627f840000b029025fb70138e5mr53703pfd.5.1620234672511;
+        Wed, 05 May 2021 10:11:12 -0700 (PDT)
+Received: from dev01.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id u21sm15381614pfm.89.2021.05.05.10.11.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 10:11:11 -0700 (PDT)
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Devesh Sharma <devesh.sharma@broadcom.com>
+Subject: [V2 rdma-core 0/4] Broadcom's rdma provider lib update
+Date:   Wed,  5 May 2021 22:40:52 +0530
+Message-Id: <20210505171056.514204-1-devesh.sharma@broadcom.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000027c7f505c19848ad"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+--00000000000027c7f505c19848ad
+Content-Transfer-Encoding: 8bit
 
-[ Upstream commit b536d4b2a279733f440c911dc831764690b90050 ]
+This patch series is a part of bigger feature submission which
+changes the wqe posting logic. The current series adds the
+ground work in the direction to change the wqe posting algorithm.
 
-The completion ring for tx is using the wrong size to size the ring,
-oversizing the ring by two orders of magniture.
+v1->v2
+- added Fixes tag
+- updated patch description
+- dropped if() check before free.
 
-Correct the allocation size and use kcalloc_node() to allocate the ring.
-Fix mistaken GFP defines in similar allocations.
+Devesh Sharma (4):
+  bnxt_re/lib: Check AH handler validity before use
+  bnxt_re/lib: align base sq entry structure to 16B boundary
+  bnxt_re/lib: consolidate hwque and swque in common structure
+  bnxt_re/lib: query device attributes only once and store
 
-Link: https://lore.kernel.org/r/1617026056-50483-4-git-send-email-dennis.dalessandro@cornelisnetworks.com
-Reviewed-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/infiniband/hw/hfi1/ipoib.h    |  3 ++-
- drivers/infiniband/hw/hfi1/ipoib_tx.c | 14 +++++++-------
- 2 files changed, 9 insertions(+), 8 deletions(-)
+ providers/bnxt_re/bnxt_re-abi.h |  24 ++---
+ providers/bnxt_re/db.c          |   6 +-
+ providers/bnxt_re/main.c        |  31 +++---
+ providers/bnxt_re/main.h        |  15 ++-
+ providers/bnxt_re/verbs.c       | 182 +++++++++++++++++---------------
+ 5 files changed, 138 insertions(+), 120 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/ipoib.h b/drivers/infiniband/hw/hfi1/ipoib.h
-index b8c9d0a003fb..1ee361c6d11a 100644
---- a/drivers/infiniband/hw/hfi1/ipoib.h
-+++ b/drivers/infiniband/hw/hfi1/ipoib.h
-@@ -52,8 +52,9 @@ union hfi1_ipoib_flow {
-  * @producer_lock: producer sync lock
-  * @consumer_lock: consumer sync lock
-  */
-+struct ipoib_txreq;
- struct hfi1_ipoib_circ_buf {
--	void **items;
-+	struct ipoib_txreq **items;
- 	unsigned long head;
- 	unsigned long tail;
- 	unsigned long max_items;
-diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-index 9df292b51a05..ab1eefffc14b 100644
---- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
-+++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-@@ -702,14 +702,14 @@ int hfi1_ipoib_txreq_init(struct hfi1_ipoib_dev_priv *priv)
- 
- 	priv->tx_napis = kcalloc_node(dev->num_tx_queues,
- 				      sizeof(struct napi_struct),
--				      GFP_ATOMIC,
-+				      GFP_KERNEL,
- 				      priv->dd->node);
- 	if (!priv->tx_napis)
- 		goto free_txreq_cache;
- 
- 	priv->txqs = kcalloc_node(dev->num_tx_queues,
- 				  sizeof(struct hfi1_ipoib_txq),
--				  GFP_ATOMIC,
-+				  GFP_KERNEL,
- 				  priv->dd->node);
- 	if (!priv->txqs)
- 		goto free_tx_napis;
-@@ -741,9 +741,9 @@ int hfi1_ipoib_txreq_init(struct hfi1_ipoib_dev_priv *priv)
- 					     priv->dd->node);
- 
- 		txq->tx_ring.items =
--			vzalloc_node(array_size(tx_ring_size,
--						sizeof(struct ipoib_txreq)),
--				     priv->dd->node);
-+			kcalloc_node(tx_ring_size,
-+				     sizeof(struct ipoib_txreq *),
-+				     GFP_KERNEL, priv->dd->node);
- 		if (!txq->tx_ring.items)
- 			goto free_txqs;
- 
-@@ -764,7 +764,7 @@ int hfi1_ipoib_txreq_init(struct hfi1_ipoib_dev_priv *priv)
- 		struct hfi1_ipoib_txq *txq = &priv->txqs[i];
- 
- 		netif_napi_del(txq->napi);
--		vfree(txq->tx_ring.items);
-+		kfree(txq->tx_ring.items);
- 	}
- 
- 	kfree(priv->txqs);
-@@ -817,7 +817,7 @@ void hfi1_ipoib_txreq_deinit(struct hfi1_ipoib_dev_priv *priv)
- 		hfi1_ipoib_drain_tx_list(txq);
- 		netif_napi_del(txq->napi);
- 		(void)hfi1_ipoib_drain_tx_ring(txq, txq->tx_ring.max_items);
--		vfree(txq->tx_ring.items);
-+		kfree(txq->tx_ring.items);
- 	}
- 
- 	kfree(priv->txqs);
 -- 
-2.30.2
+2.25.1
 
+
+--00000000000027c7f505c19848ad
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
+Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
+KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
+SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
+PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
+G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
+PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPGC0emPKtTiTePCitO9hZ3PI2ss
+KI1IyLcwXD1hm2t3MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDUwNTE3MTExM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQBT+Z+6OIs/bRXwujkSTDUVyn+kMCE7VtGuLVCLVFNa6YSL
+yjhYu696u6gjy8FsdrAIwMJ8tzbTgK1l4exyPkbqHDezmm1vwnBdW8jUpvOJqaV7/INMAAxEJGk3
+8WTZaYiYqRtEo/xS33bXVuCf/WLMvDMUStMU2PTB/nGvcg1lhoEmqgwx7CkvzF7g60cVEQXcUgcg
+U9sygkidxLsIe2OBQrOlCZBZqdZmuegnfdL1q6vqw59j8MG/CxIUf4I7nFGlzXCTuX3rU5dTv3ZA
+N2Ti8Z2LJ4RZgvMa9ZS/6hZOuwoCIrI59+WDtKsRYpv2GyWIwQzr6fIkhFdb5S+StA9G
+--00000000000027c7f505c19848ad--
