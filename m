@@ -2,90 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B254A373E12
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 May 2021 17:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD853373E13
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 May 2021 17:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232314AbhEEPCs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 May 2021 11:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45408 "EHLO
+        id S232644AbhEEPDE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 May 2021 11:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232449AbhEEPCr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 May 2021 11:02:47 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F115C061574
-        for <linux-rdma@vger.kernel.org>; Wed,  5 May 2021 08:01:51 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id c11so1288948qth.2
-        for <linux-rdma@vger.kernel.org>; Wed, 05 May 2021 08:01:51 -0700 (PDT)
+        with ESMTP id S232585AbhEEPDD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 May 2021 11:03:03 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E743AC061574
+        for <linux-rdma@vger.kernel.org>; Wed,  5 May 2021 08:02:06 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id l19so1337820qvu.8
+        for <linux-rdma@vger.kernel.org>; Wed, 05 May 2021 08:02:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+61Pw9dhU42ugfB+EzGfpQ2juP9e/rql7RpfZFj7zfs=;
-        b=GEFTSLjSywyWoJ0xlifqhVcF9XZ+cvtKyGLFDQmSruVGoYr0ZkcyImQnpUym9w0d8T
-         BG6eJN+R65DGTDgjp4/2NiAScuzjywuAUkxQ9BaC2DOCyiYuIXSMeGxp2OT75jupht0A
-         eoicYJqEtUph8yUQtC0kppawA27kUsl6hSsjs=
+        bh=yrhEQ1QtxSbJR3rSrZOnL/ZULht1twyjcDUkhu5Td9o=;
+        b=RDYTvdqdKtvTm/T6pLZ+Y7Ng7lIC1WmGiNRYsD5CqxSjmRFz9EzOYlIY+e+RD6OYsP
+         sDaBNy9KJB4GbuUTqh5mXZjF1Z3updlV39G9TEPQFXgqzMwc5+zhM4GyBqXRdyV3FEFn
+         2+lijSZsNm4GjEh2ndcJ4BhL1Ids6mQ/SWo+w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+61Pw9dhU42ugfB+EzGfpQ2juP9e/rql7RpfZFj7zfs=;
-        b=t3Pp4rG/Gyi1VXu3AfNY1sWl2z8qmFVdRbS07Ro6Sgmv1GKWXy6YLXAiVDPp1+HKR4
-         60souRK97wiVWdmLscNNwRIPShPi4y9T1PM4upRUFhIO/7TmkQicEcZq/lrSka1L/GhW
-         HHJg33GavB3gql7Mc3BnJ4PMFkh5uU2zlJvtEEkJMwOJfV9Kao6mYGsV/wPF1Cq5Ha4E
-         IQ2w3xkDP+l4oDC2WyHz1RX0IMmCuwo53vf7iMDOxstkaoklZMT1R5ZUX2HPi515bFTk
-         eSxDt5l0y32qALjBubn9h6yLMLnB1k9rGqel1qXfohfw7/EFn9UokZfa3bQ7IFUf9nKw
-         Ufsw==
-X-Gm-Message-State: AOAM532iut8DUWtxGOPOj32Py541LqkTCPv9zzmWb4H8zBpbrrd0zQjH
-        hN1115jqeTr+uKrS2zROUPTFjPLIrCbBFQuSiFScH/z559ZtZw==
-X-Google-Smtp-Source: ABdhPJzcNm9126FHvkQ6M/pOMi+imyBgZpdZjD6mKDl557ECyVV6R2SJPdHoJOQKLrgH/khUcGz0B/QsxcSg2n2dxG0=
-X-Received: by 2002:a05:620a:481:: with SMTP id 1mr24126757qkr.46.1620226899771;
- Wed, 05 May 2021 08:01:39 -0700 (PDT)
+        bh=yrhEQ1QtxSbJR3rSrZOnL/ZULht1twyjcDUkhu5Td9o=;
+        b=kr/oEwVZYDoFOFjQVbX+0NuV8AQh8P88ds36doiB8h1OliN2q/dZUR3guqXf/97A+s
+         j16BKxOqd2gZjvKDR/3td/LgW1v14n/OEJMrUoNz/0czyXDbcDY8arTI2cheFMcjBkeb
+         Y70B3z5Y9i9XccL9CkxBs07kwwxLS0D0SeOKWCdMfKXPzdQ+AEP1Owoc77icOfXbBgEf
+         Jf2+kyfnOwXMiOymBacySP+/j3KilcRJF5ybJ2pQR2VLnLqiB5E7l4HFBiPZmVyz3cQD
+         huYe86+Tnz86C2nnAzJgzg0KQ4pTlbIRZ8Z1Kd4fOd96B59SbKM1ZGXXPCwHrpTSSX2Q
+         +7nw==
+X-Gm-Message-State: AOAM533l+4zdieF/o3ZgkViK51/0J5ByNunfqn5dRDKkK8FgD2sFGF1D
+        lZeXrV8ecSmrLaRb9KkmQcl/rOw3Uue6X2MTbyvv6qN2h6PRLg==
+X-Google-Smtp-Source: ABdhPJzuf2AQAPH24Nkrowp+2rE/1MnPS4Z8RnMxd7FauWtDtzLOv7ShpxlYkrATtv4c+4ppKpqaXIMv0fJ9euxfXNg=
+X-Received: by 2002:ad4:4f11:: with SMTP id fb17mr31760273qvb.18.1620226925695;
+ Wed, 05 May 2021 08:02:05 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210503064802.457482-1-devesh.sharma@broadcom.com>
- <20210503064802.457482-2-devesh.sharma@broadcom.com> <20210503133300.GZ2047089@ziepe.ca>
-In-Reply-To: <20210503133300.GZ2047089@ziepe.ca>
+ <20210503064802.457482-4-devesh.sharma@broadcom.com> <YJDgX1gIJ0UYqXEc@unreal>
+In-Reply-To: <YJDgX1gIJ0UYqXEc@unreal>
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Wed, 5 May 2021 20:31:03 +0530
-Message-ID: <CANjDDBgZMEtcer4EhjJYsqbb4fEWbwpjC3sp8c1w5L89RvKmvA@mail.gmail.com>
-Subject: Re: [rdma-core 1/4] bnxt_re/lib: fix AH validity check
-To:     Jason Gunthorpe <jgg@ziepe.ca>
+Date:   Wed, 5 May 2021 20:31:29 +0530
+Message-ID: <CANjDDBg3CpEoqnfV6s6sbO8ptcBcO7zo3jwgoSn+r4FBojPO8w@mail.gmail.com>
+Subject: Re: [rdma-core 3/4] bnxt_re/lib: consolidate hwque and swque in
+ common structure
+To:     Leon Romanovsky <leon@kernel.org>
 Cc:     linux-rdma <linux-rdma@vger.kernel.org>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000078221105c196793a"
+        boundary="00000000000066cfff05c1967ae9"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000078221105c196793a
+--00000000000066cfff05c1967ae9
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, May 3, 2021 at 7:03 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Tue, May 4, 2021 at 11:19 AM Leon Romanovsky <leon@kernel.org> wrote:
 >
-> On Mon, May 03, 2021 at 12:17:59PM +0530, Devesh Sharma wrote:
-> > Fixing the AH validity check when initializing the
-> > UD SQE from AH.
+> On Mon, May 03, 2021 at 12:18:01PM +0530, Devesh Sharma wrote:
+> > Consolidating hardware queue (hwque) and software queue (swque)
+> > under a single bookkeeping data structure bnxt_re_joint_queue.
+> >
+> > This is to ease the hardware and software queue management. Further
+> > reduces the size of bnxt_re_qp structure.
 > >
 > > Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
 > > ---
-> >  providers/bnxt_re/verbs.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >  providers/bnxt_re/db.c    |   6 +-
+> >  providers/bnxt_re/main.h  |  13 ++--
+> >  providers/bnxt_re/verbs.c | 133 +++++++++++++++++++++-----------------
+> >  3 files changed, 87 insertions(+), 65 deletions(-)
 >
-> This all need fixes lines and why do they have such a strange subject?
-
-Let me get back with V2. May be I did the patches in a hurry, let me
-correct these.
+> <...>
 >
+> >  static void bnxt_re_free_queues(struct bnxt_re_qp *qp)
+> >  {
+> > -     if (qp->rqq) {
+> > -             if (qp->rwrid)
+> > -                     free(qp->rwrid);
+> > -             pthread_spin_destroy(&qp->rqq->qlock);
+> > -             bnxt_re_free_aligned(qp->rqq);
+> > +     if (qp->jrqq) {
+> > +             if (qp->jrqq->swque)
+> > +                     free(qp->jrqq->swque);
 >
-> Jason
+> You don't need "if() free()", use "free" directly in all places.
+True, let me spin V2
+>
+> Thanks
 
 
 
-
---
+-- 
 -Regards
 Devesh
 
---00000000000078221105c196793a
+--00000000000066cfff05c1967ae9
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -156,13 +171,13 @@ G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
 PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIHCjcw486q+XgJpV/MyyivjwCrci
-fZsey80xeZKpDKf0MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDUwNTE1MDE1MFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJ5ggk1TJqNxNwEftvCN2RGXpXBQ
+OWbZCQeSfscuTlJfMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDUwNTE1MDIwNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQBxc4JCd974lxQngHfwGUHbfYSE7okX45TcpA74KDaxCqpo
-3vsibQYhgyU/vLf2xhzEqgUdaFDUuB8jDujjb0PoFuqiLftIOr595iuYLnwZZBgVGhgSAxacr3vI
-WPt7ADHLOxFTQ61QkRFhgzypLltzF9JeL8M+uR0w3XWNt4PvanW0xIqvgAATIZMgILJRupfz1tWc
-KNNgJHqzh0TUTHJT0oGm2j6dORVqHPj1/Dl9hc+3wu7NjqWEqUbIZluh9JjL3BIHfiIAUnlVp8rH
-IZxguDdraDWBXGjSed0bteLmiO9hz+q9CD1pVf+xWSjMzEQ9wUyW2nAu8rpiWKrjn5QQ
---00000000000078221105c196793a--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQB2BYEvDfbPzaOjf00v6+AahO/Ui+Af7rNWv+rs102iO1GO
+7Z6nBI7yFouf633Y+db87tGyuTiJryFMR6hWd3J6cx0EACHJwUNAs9xzpS/Hc/7duT0Xd7n/qWgi
+G2C4Cl641ug6AGLgHPWrjGunOA7KI4ac1WquxrlbcDd/bFsl8yCG5+SmUB1wLYhAtRn/hgDi70b9
+p2aZ8PjMMsh2ftMdHHPimMGx3IAKEg/2bnWly0zr63D+LkvKq6cQ8LAtIGoRvhADTPROf/ktjYG3
+5YFFpyMOdzdsWsObhi1UXROfXCqto3uENWZHrjyanh0spC/l/QI7L90APntBFukNbsiG
+--00000000000066cfff05c1967ae9--
