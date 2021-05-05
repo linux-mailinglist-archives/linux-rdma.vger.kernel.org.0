@@ -2,37 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29120374201
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 May 2021 18:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A15C37428E
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 May 2021 18:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235131AbhEEQnV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 May 2021 12:43:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39680 "EHLO mail.kernel.org"
+        id S235786AbhEEQrH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 May 2021 12:47:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235173AbhEEQlP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 5 May 2021 12:41:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41E8F61404;
-        Wed,  5 May 2021 16:34:31 +0000 (UTC)
+        id S235449AbhEEQoA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 5 May 2021 12:44:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BAE161432;
+        Wed,  5 May 2021 16:35:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232472;
-        bh=pA65frvz9Je2dhxeBGvonLp1FZJzdusgRI1gUhk9gCk=;
+        s=k20201202; t=1620232518;
+        bh=QQqDryPfFACoY7jZFMHJBJG2Zc3/Zw7l8kN5pQchqnw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GKN48+hSNfxp8sl0V2MrMsD6kKVrrRsct/PCUrI2CqH07TDe2GcTffkgUjeZgjfr0
-         IGZG7b21Wn1wNJKI2jgAow0HOFFjtrglJjwYRLccF7CGnUlLREMvAgI5S0uVTtd3E7
-         7UMom1VUqm9w62N7UDUKJDUOk4UxYqmqtLIjcmPFRkMRMm/G7Kr4jy/beODVw3dB5t
-         zuMe0w9+8XdF3r+ggXZZW8I1dPYpYQilh8EpFyw4hJC/iqjNbQnQ0BMkE1vV+6BYM/
-         zUMADg7PhY5v8k9ngSZanCKwtfJ1wbOn9CqWIt+p+BdIfeT8awYvNVsqORnW3DhsiO
-         2MmD6ckzu1Z2g==
+        b=uBR02frArtLWc5gJYrWdoqS6YJP21FCvddaTnpnnJ8Myovi09RT9/gg2X297yzrgC
+         2LO2+T7ZljbWl9KYASyiMwfuXoXurtF2eXYILDt6Y5BTJUEvGoi/JcrkY3fY5GlUeo
+         ctNS862CysQKCOlURsYjU20wlnNRxneTO/xXOveqicd1FgZXvyJLwKWQ5wEv/SjWnX
+         gZV/obPTd1oN4avNcEvR0BruB9opEsjoWHi9MdwM7ApkJBMk6QcLXTxXXz8UqKjiQC
+         W8qMZoeilRalo+rigG7OvXsP5a7ACYUEPRpF7p2a15pa0OfD4vkYmZ1Zr6Y42JoCn7
+         w+cFxGFx8Ep+w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 013/104] net/mlx5e: Use net_prefetchw instead of prefetchw in MPWQE TX datapath
-Date:   Wed,  5 May 2021 12:32:42 -0400
-Message-Id: <20210505163413.3461611-13-sashal@kernel.org>
+Cc:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Kaike Wan <kaike.wan@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 045/104] IB/hfi1: Correct oversized ring allocation
+Date:   Wed,  5 May 2021 12:33:14 -0400
+Message-Id: <20210505163413.3461611-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163413.3461611-1-sashal@kernel.org>
 References: <20210505163413.3461611-1-sashal@kernel.org>
@@ -44,43 +44,94 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maxim Mikityanskiy <maximmi@mellanox.com>
+From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 
-[ Upstream commit 991b2654605b455a94dac73e14b23480e7e20991 ]
+[ Upstream commit b536d4b2a279733f440c911dc831764690b90050 ]
 
-Commit e20f0dbf204f ("net/mlx5e: RX, Add a prefetch command for small
-L1_CACHE_BYTES") switched to using net_prefetchw at all places in mlx5e.
-In the same time frame, commit 5af75c747e2a ("net/mlx5e: Enhanced TX
-MPWQE for SKBs") added one more usage of prefetchw. When these two
-changes were merged, this new occurrence of prefetchw wasn't replaced
-with net_prefetchw.
+The completion ring for tx is using the wrong size to size the ring,
+oversizing the ring by two orders of magniture.
 
-This commit fixes this last occurrence of prefetchw in
-mlx5e_tx_mpwqe_session_start, making the same change that was done in
-mlx5e_xdp_mpwqe_session_start.
+Correct the allocation size and use kcalloc_node() to allocate the ring.
+Fix mistaken GFP defines in similar allocations.
 
-Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Link: https://lore.kernel.org/r/1617026056-50483-4-git-send-email-dennis.dalessandro@cornelisnetworks.com
+Reviewed-by: Kaike Wan <kaike.wan@intel.com>
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_tx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hfi1/ipoib.h    |  3 ++-
+ drivers/infiniband/hw/hfi1/ipoib_tx.c | 14 +++++++-------
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-index 61ed671fe741..1b3c93c3fd23 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-@@ -553,7 +553,7 @@ static void mlx5e_tx_mpwqe_session_start(struct mlx5e_txqsq *sq,
+diff --git a/drivers/infiniband/hw/hfi1/ipoib.h b/drivers/infiniband/hw/hfi1/ipoib.h
+index f650cac9d424..d30c23b6527a 100644
+--- a/drivers/infiniband/hw/hfi1/ipoib.h
++++ b/drivers/infiniband/hw/hfi1/ipoib.h
+@@ -52,8 +52,9 @@ union hfi1_ipoib_flow {
+  * @producer_lock: producer sync lock
+  * @consumer_lock: consumer sync lock
+  */
++struct ipoib_txreq;
+ struct hfi1_ipoib_circ_buf {
+-	void **items;
++	struct ipoib_txreq **items;
+ 	unsigned long head;
+ 	unsigned long tail;
+ 	unsigned long max_items;
+diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c b/drivers/infiniband/hw/hfi1/ipoib_tx.c
+index edd4eeac8dd1..cdc26ee3cf52 100644
+--- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
++++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
+@@ -702,14 +702,14 @@ int hfi1_ipoib_txreq_init(struct hfi1_ipoib_dev_priv *priv)
  
- 	pi = mlx5e_txqsq_get_next_pi(sq, MLX5E_TX_MPW_MAX_WQEBBS);
- 	wqe = MLX5E_TX_FETCH_WQE(sq, pi);
--	prefetchw(wqe->data);
-+	net_prefetchw(wqe->data);
+ 	priv->tx_napis = kcalloc_node(dev->num_tx_queues,
+ 				      sizeof(struct napi_struct),
+-				      GFP_ATOMIC,
++				      GFP_KERNEL,
+ 				      priv->dd->node);
+ 	if (!priv->tx_napis)
+ 		goto free_txreq_cache;
  
- 	*session = (struct mlx5e_tx_mpwqe) {
- 		.wqe = wqe,
+ 	priv->txqs = kcalloc_node(dev->num_tx_queues,
+ 				  sizeof(struct hfi1_ipoib_txq),
+-				  GFP_ATOMIC,
++				  GFP_KERNEL,
+ 				  priv->dd->node);
+ 	if (!priv->txqs)
+ 		goto free_tx_napis;
+@@ -741,9 +741,9 @@ int hfi1_ipoib_txreq_init(struct hfi1_ipoib_dev_priv *priv)
+ 					     priv->dd->node);
+ 
+ 		txq->tx_ring.items =
+-			vzalloc_node(array_size(tx_ring_size,
+-						sizeof(struct ipoib_txreq)),
+-				     priv->dd->node);
++			kcalloc_node(tx_ring_size,
++				     sizeof(struct ipoib_txreq *),
++				     GFP_KERNEL, priv->dd->node);
+ 		if (!txq->tx_ring.items)
+ 			goto free_txqs;
+ 
+@@ -764,7 +764,7 @@ int hfi1_ipoib_txreq_init(struct hfi1_ipoib_dev_priv *priv)
+ 		struct hfi1_ipoib_txq *txq = &priv->txqs[i];
+ 
+ 		netif_napi_del(txq->napi);
+-		vfree(txq->tx_ring.items);
++		kfree(txq->tx_ring.items);
+ 	}
+ 
+ 	kfree(priv->txqs);
+@@ -817,7 +817,7 @@ void hfi1_ipoib_txreq_deinit(struct hfi1_ipoib_dev_priv *priv)
+ 		hfi1_ipoib_drain_tx_list(txq);
+ 		netif_napi_del(txq->napi);
+ 		(void)hfi1_ipoib_drain_tx_ring(txq, txq->tx_ring.max_items);
+-		vfree(txq->tx_ring.items);
++		kfree(txq->tx_ring.items);
+ 	}
+ 
+ 	kfree(priv->txqs);
 -- 
 2.30.2
 
