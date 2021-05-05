@@ -2,88 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FE4373152
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 May 2021 22:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7D6373BC0
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 May 2021 14:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbhEDUXV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 May 2021 16:23:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230425AbhEDUXU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 May 2021 16:23:20 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28359C061574
-        for <linux-rdma@vger.kernel.org>; Tue,  4 May 2021 13:22:25 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id j19so4514137qtp.7
-        for <linux-rdma@vger.kernel.org>; Tue, 04 May 2021 13:22:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wZ5rLmppeNysLxYZlMRY8jT3QJH17/ddU1plSVt+R7g=;
-        b=cF72n9KhM31XWLCoY/ufX4mETUrZ38iaDoUfd1+xvm43H8mPXEZGI0pqs9f+6D6d9h
-         Ok7tJSLf/6lKgmaIwbNlPE+OebT8zWp+FBF0GMExzS90NMR1aABG1Dwh5cCUDZ+JF7TZ
-         Fm1lOq+RaqoKoyNVUvMl/vrVH1CInEsX02qRZ0uBlpIfUWRjtWFyQSRYYi4qXcLXk/cs
-         kEf/Cjjvt54bG7CGCFcywtU/hQGvUzQ896UGRSabKFc9z+TUis0+3phuclMpKdglKyJx
-         aFOJh83FvkUe2ZfvVwvdCMakBnGHOQmMd95NIP4wlSzN/B9/NddTXbKP/ECO3QthX4c7
-         r86w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wZ5rLmppeNysLxYZlMRY8jT3QJH17/ddU1plSVt+R7g=;
-        b=MPZ1stNcFg2sNSPADL+v/osc0+qlStvAyiJmZ38ujtcIunA26Uy2MN0SKQpy0sD5eZ
-         q2fVg5p1XJpXXTRAD3It82xCJV6Ehizgin5NuPeuSx3KEUGUjoN3bQm14bpwEzmsSNpV
-         Vxcpt1S2q8W2WAQzPWaS3rOjBOpwsveyBwzPCa8CgGmOJtiT2nm9M92SOTua9u6k8qYr
-         tKGW9KYTDcLHeP9dEa+6h3Zfmq2I6YgnzeW8XaMogvDiLyO3zcJ7G/YCxiVDzyvimyD/
-         VvHvlKjzJEfU5/OOGPI41uEoQkySZX4KF+Jn2xaapQQCqKBd//1ApIIEB/AWYsHNjm8k
-         Jg4Q==
-X-Gm-Message-State: AOAM533ha+cktqpyjI1IFx3Sa6zWKw3c8NuP2Q7HdGIw9DmPWNzQfm5a
-        RfmGx5N348mOoeeHqsMKByiijg==
-X-Google-Smtp-Source: ABdhPJyYRkAsVpmjy6Fc0GkmgaKDAGK58ktBExQWeDqwJMdDAK85VOjhm89/mlyCX6knVm4j1UVIWw==
-X-Received: by 2002:ac8:4a19:: with SMTP id x25mr20683950qtq.389.1620159744382;
-        Tue, 04 May 2021 13:22:24 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id f5sm12471396qkk.12.2021.05.04.13.22.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 13:22:23 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1le1Yk-000nvc-GB; Tue, 04 May 2021 17:22:22 -0300
-Date:   Tue, 4 May 2021 17:22:22 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@nvidia.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: CFI violation in drivers/infiniband/core/sysfs.c
-Message-ID: <20210504202222.GB2047089@ziepe.ca>
-References: <20210402195241.gahc5w25gezluw7p@archlinux-ax161>
- <202104021555.08B883C7@keescook>
- <20210403065559.5vebyyx2p5uej5nw@archlinux-ax161>
+        id S230217AbhEEMzP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 May 2021 08:55:15 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:37984 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232079AbhEEMzO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 May 2021 08:55:14 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 145CYZod159255;
+        Wed, 5 May 2021 12:54:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=t+5lqmtjv+sPKKe3bPXE2yQsUbsn6vWPDtvWeUP/R14=;
+ b=JHPd77mC+0Z2WyNxCt2tfPCtFiM09pi3FNoTolnX0ukUDJdORV3DPZ1IaU9vMqeKAgmp
+ Lprh2PJzp6FZ2jVSsDReDOMqqCTV/Nd9nTk4vEnZb5pcO3heVH9cP6oQ11m7ms98WdGV
+ hHSC6+fEMZM+dGihGkUm7avz0pahIe5LRG7Aop9ENCVd1DPnMOnpigm8wVBOyq/mvPM/
+ aOdZoU8K18I6N4EejrqYY9bAxGuR1djpRKbEmCJjHyHTzrnXbjJbeJN5OvwoO/Xrxdl4
+ 8lDbfhQIwDi8q2psKkCMpSTkpz1OQNCLy6tWr2FQQknJ+KZcK7+sIcag55Mq1cdCwgrR BA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 38bebc1nyq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 05 May 2021 12:54:13 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 145CZRdd022240;
+        Wed, 5 May 2021 12:54:12 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 38bewqq0rv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 05 May 2021 12:54:12 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 145CsB9F019139;
+        Wed, 5 May 2021 12:54:11 GMT
+Received: from lab02.no.oracle.com (/10.172.144.56)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 05 May 2021 05:54:11 -0700
+From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: [PATCH for-rc] IB/cma: Fix false P_Key mismatch messages
+Date:   Wed,  5 May 2021 14:54:01 +0200
+Message-Id: <1620219241-24979-1-git-send-email-haakon.bugge@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210403065559.5vebyyx2p5uej5nw@archlinux-ax161>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9974 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ suspectscore=0 bulkscore=0 spamscore=0 adultscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105050091
+X-Proofpoint-ORIG-GUID: IGDXU14FJDTikPxLXdF2aIFyyJ3Ztt3g
+X-Proofpoint-GUID: IGDXU14FJDTikPxLXdF2aIFyyJ3Ztt3g
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9974 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 lowpriorityscore=0
+ phishscore=0 spamscore=0 adultscore=0 clxscore=1015 mlxscore=0
+ malwarescore=0 mlxlogscore=999 impostorscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2105050091
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 11:55:59PM -0700, Nathan Chancellor wrote:
-> > So, I think, the solution is below. This hasn't been runtime tested. It
-> > basically removes the ib_port callback prototype and leaves everything
-> > as kobject/attr. The callbacks then do their own container_of() calls.
-> 
-> Well that appear to be okay from a runtime perspective.
+There are three conditions that must be fulfilled in order to consider
+a partition match. Those are:
 
-This giant thing should fix it, and some of the other stuff Greg observed:
+      1. Both P_Keys must valid
+      2. At least one must be a full member
+      3. The partitions (lower 15 bits) must match
 
-https://github.com/jgunthorpe/linux/commits/rmda_sysfs_cleanup
+In system employing both limited and full membership ports, we see
+these false warning messages:
 
-It needs some testing before it gets posted
+RDMA CMA: got different BTH P_Key (0x2a00) and primary path P_Key (0xaa00)
+RDMA CMA: in the future this may cause the request to be dropped
 
-Jason
+even though the partition is the same.
+
+See IBTA 10.9.1.2 Special P_Keys and 10.9.3 Partition Key Matching for
+a reference.
+
+Fixes: 84424a7fc793 ("IB/cma: Print warning on different inner and header P_Keys")
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+---
+ drivers/infiniband/core/cma.c | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 2b9ffc2..f5bcf7d 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -1368,6 +1368,24 @@ static int cma_save_net_info(struct sockaddr *src_addr,
+ 	return cma_save_ip_info(src_addr, dst_addr, ib_event, service_id);
+ }
+ 
++/*
++ * If at least one of the pkeys is a full member, none of them are
++ * invalid, and the partitions (lower 15 bits) are equal, we have a
++ * match.
++ *
++ * See IBTA 10.9.1.2 Special P_Keys and 10.9.3 Partition Key Matching
++ */
++
++static bool partition_match(u16 pkey_a, u16 pkey_b)
++{
++	const u16 fmb = 0x8000; /* Full Member Bit */
++	const bool valid_pkeys = (pkey_a & ~fmb) && (pkey_b & ~fmb);
++	const bool one_full = (pkey_a | pkey_b) & fmb;
++	const bool same_partition = (pkey_a | fmb) == (pkey_b | fmb);
++
++	return valid_pkeys && one_full && same_partition;
++}
++
+ static int cma_save_req_info(const struct ib_cm_event *ib_event,
+ 			     struct cma_req_info *req)
+ {
+@@ -1385,7 +1403,7 @@ static int cma_save_req_info(const struct ib_cm_event *ib_event,
+ 		req->has_gid	= true;
+ 		req->service_id = req_param->primary_path->service_id;
+ 		req->pkey	= be16_to_cpu(req_param->primary_path->pkey);
+-		if (req->pkey != req_param->bth_pkey)
++		if (!partition_match(req->pkey, req_param->bth_pkey))
+ 			pr_warn_ratelimited("RDMA CMA: got different BTH P_Key (0x%x) and primary path P_Key (0x%x)\n"
+ 					    "RDMA CMA: in the future this may cause the request to be dropped\n",
+ 					    req_param->bth_pkey, req->pkey);
+@@ -1396,7 +1414,7 @@ static int cma_save_req_info(const struct ib_cm_event *ib_event,
+ 		req->has_gid	= false;
+ 		req->service_id	= sidr_param->service_id;
+ 		req->pkey	= sidr_param->pkey;
+-		if (req->pkey != sidr_param->bth_pkey)
++		if (!partition_match(req->pkey, sidr_param->bth_pkey))
+ 			pr_warn_ratelimited("RDMA CMA: got different BTH P_Key (0x%x) and SIDR request payload P_Key (0x%x)\n"
+ 					    "RDMA CMA: in the future this may cause the request to be dropped\n",
+ 					    sidr_param->bth_pkey, req->pkey);
+-- 
+1.8.3.1
+
