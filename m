@@ -2,76 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4B2375D62
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 May 2021 01:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608A2375D7F
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 May 2021 01:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhEFX1j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 May 2021 19:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54420 "EHLO
+        id S231883AbhEFXh7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 May 2021 19:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbhEFX1h (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 May 2021 19:27:37 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1397C061761
-        for <linux-rdma@vger.kernel.org>; Thu,  6 May 2021 16:26:38 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id a36so9211856ljq.8
-        for <linux-rdma@vger.kernel.org>; Thu, 06 May 2021 16:26:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Xp9dYjhe/Vcf/1U9K6J7f8gATNxIqHK6R23defdkMSM=;
-        b=CMqSvW/TVolV1UzwC+ubVuZuHGlvmz2sBEOTinx8ew6GoJMoO+GK7ZKgyX7Jj/7XuP
-         Y6zFS7Yf+jBTMbSvSebkGMfYvxnzirfIWThF138zxVeum0dGGlmtXSvXNDpCy+sRFgoz
-         z3WXLyFi0jbP7O1NVdZ2RozrN/l3Taf+GOjiLtpNhg/QlHaS/jusBc9liGQSHjJskiSH
-         0e1Ah33KMJH43DAeMXhBHZe3iSmlestTBWjoAemUqpq4JZCrWJiu2hVOkAbnURVziuqu
-         2ka8DBaA5mnnQ6wsr8Urw9LaobNxcnYJ6KdTgf6/tT7RAeOvqhlfPjnQonxotr/tlut4
-         I67Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=Xp9dYjhe/Vcf/1U9K6J7f8gATNxIqHK6R23defdkMSM=;
-        b=LK2Lb+CFQSrA2yEA0ukQ3jCQNpkUJlauROX5dyGH7nENESzhH28aocro0qN+TpYzU5
-         vJP/jEVZCoxATtM3fhuRyG/D4S8r8mgMIVx+5p/KwubMVecg0ElmLqxM2HOxC0e3WVlJ
-         Q6Rm/Po4+sZ6xG8sSL6efaCN8EokoT696m1U1bNFM9wboK/lltmlAzmE13nH18egjpY/
-         sfIIq3WdRCRXO5BliylemMnhqcP/uFpGTGZU7gvm0evVG1q2pwqzxgHF5pf/OA5llkl0
-         eOVJ5sw7Kdz9ovzV83dZBrwz8ceP9YghQJNSWYTaQASS4lfa+pxpEEztAdJXz/r+Q0b4
-         Alkw==
-X-Gm-Message-State: AOAM530Ei8QfcdWf3o6TU2y2mtVjX/eKyAnzQIFoMW5EAfPxcTvSdl9w
-        QDWW9P48BlpHCbUYAGUT7iJThxqXMnQE+HfyzmR46SHXwI8=
-X-Google-Smtp-Source: ABdhPJzuHQCGXg7G39NBm/WzYGyV/YT6Is8KhJxwydTe0/zBr8GBtfEIiuN0PuUChHrCSugrIj+XGeSAS9GfEPrsXtA=
-X-Received: by 2002:a2e:2245:: with SMTP id i66mr5342744lji.118.1620343597100;
- Thu, 06 May 2021 16:26:37 -0700 (PDT)
+        with ESMTP id S230387AbhEFXh7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 May 2021 19:37:59 -0400
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F3BC061574
+        for <linux-rdma@vger.kernel.org>; Thu,  6 May 2021 16:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+         s=42; h=Message-Id:Date:Cc:To:From;
+        bh=HEhI1uX59CHq4mvBJkxKLkk0tilSIJx6eBLA9GbPMt8=; b=L/iWcYdYHL0Jn2XG6S8g/nkUFe
+        DkzKmCMBhIAHJA+9YuJCdOspYEJ1RiLkQZsfTxsR5BObef7i+FMKBkaG6/0LZCyYr3JeWy+LiA/aq
+        6uiLAHOj1yzsz8x4Od4qZeaCdHp3GvWptWxx59vAH6zR3btBuSWQF19uDjvWEosX96AIgrvYCTq7h
+        EiYbX61W2vUnmcZXOo9SJEpL1VfekIO0vt8hEbIFNn6QBHp3CyV0NP/7E+NA35pJHci5daAie3V7G
+        xyNQcky7XHfo7oXCkrTJW87g/rkBjEgBosZqtKv/j/EoG5zeNEr9PkE8rjbPTQDJaBEpODE8srixu
+        +zqB443hLQ91NX0/v8DbBmb1Q9GtBjf7EUXHzZsn/ntFYBwNHOmlDdF2Dh458SBtpjaBULDO7MuZ2
+        UfGY9D9xGpupRBn8IbSyZ7DzFBEGqdYL3S+lZbc8DCj7kFwr2UC3HuB0y0CKdqGlhrVNHkrUofHTG
+        yruV2KxiurpIxdAaq7UH4dIi;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
+        (Exim)
+        id 1lenY7-0004I0-57; Thu, 06 May 2021 23:36:55 +0000
+From:   Stefan Metzmacher <metze@samba.org>
+To:     Bernard Metzler <bmt@zurich.ibm.com>
+Cc:     linux-rdma@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
+Subject: [PATCH 00/31] rdma/siw: fix a lot of deadlocks and use after free bugs
+Date:   Fri,  7 May 2021 01:36:06 +0200
+Message-Id: <cover.1620343860.git.metze@samba.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CALmWCACoz8vG9=ofcKG6biFju1+OWkmTKkSWS3Ln5Hvx-LS_CQ@mail.gmail.com>
- <CALmWCAAAxu0FVOrSwOJyc6v-pSERGRcvEh1a1ZYm0fHjcpY67Q@mail.gmail.com>
-In-Reply-To: <CALmWCAAAxu0FVOrSwOJyc6v-pSERGRcvEh1a1ZYm0fHjcpY67Q@mail.gmail.com>
-From:   Badalian Vyacheslav <slavon.net@gmail.com>
-Date:   Fri, 7 May 2021 02:26:25 +0300
-Message-ID: <CALmWCACBskRhbQU0pYMBB6fxB4x5=_mVcyUMjFPdHOELq9rWNQ@mail.gmail.com>
-Subject: Re: MLX4 SRIOV mtu issue
-To:     linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Sorry.
-Host info -
-Centos 8 Stream. Last updates. Kernel ML 5.12.1. Use kernel.org mlx4
-driver (don't use Mellanox modules). rdma-core 32.0-4
+Hi Bernard,
 
-=D1=87=D1=82, 6 =D0=BC=D0=B0=D1=8F 2021 =D0=B3. =D0=B2 20:26, Badalian Vyac=
-heslav <slavon.net@gmail.com>:
->
-> Hello all
->
-> Have connect X-3 with
-> probe_vf=3D0,0 num_vfs=3D16,16 port_type_array=3D2,1
->
-> If mtu=3D5 in partition IB interface can't start (NO CARRIER, Can't join
-> multicast, Error -22).
-> If change to mtu=3D4 all done but i use 4k mtu in all IB networks. How
-> to fix this?
+while testing with my smbdirect driver I hit a lot of
+bugs in the siw.ko driver. They all cause problems where
+the siw driver was not able to unload anymore and I had to
+reboot the machine.
+
+I implemented:
+- a non blocking connect
+- fixed a lot of bugs where siw_cep_put() was called too often.
+- fixed bugs where siw_cm_upcall() confused the core IWCM logic
+
+I have some more changes to follow, but I wanted to send them
+finally out after having them one and a half year sitting in some
+private branch...
+
+Stefan Metzmacher (31):
+  rdma/siw: fix warning in siw_proc_send()
+  rdma/siw: call smp_mb() after mem->stag_valid = 0 in
+    siw_invalidate_stag() too
+  rdma/siw: remove superfluous siw_cep_put() from siw_connect() error
+    path
+  rdma/siw: let siw_accept() deferr RDMA_MODE until EVENT_ESTABLISHED
+  rdma/siw: make use of kernel_{bind,connect,listen}()
+  rdma/siw: make siw_cm_upcall() a noop without valid 'id'
+  rdma/siw: split out a __siw_cep_terminate_upcall() function
+  rdma/siw: use __siw_cep_terminate_upcall() for indirect
+    SIW_CM_WORK_CLOSE_LLP
+  rdma/siw: use __siw_cep_terminate_upcall() for SIW_CM_WORK_PEER_CLOSE
+  rdma/siw: use __siw_cep_terminate_upcall() for SIW_CM_WORK_MPATIMEOUT
+  rdma/siw: introduce SIW_EPSTATE_ACCEPTING/REJECTING for
+    rdma_accept/rdma_reject
+  rdma/siw: add some debugging of state and sk_state to the teardown
+    process
+  rdma/siw: handle SIW_EPSTATE_CONNECTING in
+    __siw_cep_terminate_upcall()
+  rdma/siw: let siw_connect() set AWAIT_MPAREP before
+    siw_send_mpareqrep()
+  rdma/siw: create a temporary copy of private data
+  rdma/siw: use error and out logic at the end of siw_connect()
+  rdma/siw: start mpa timer before calling siw_send_mpareqrep()
+  rdma/siw: call the blocking kernel_bindconnect() just before
+    siw_send_mpareqrep()
+  rdma/siw: split out a __siw_cep_close() function
+  rdma/siw: implement non-blocking connect.
+  rdma/siw: let siw_listen_address() call siw_cep_alloc() first
+  rdma/siw: let siw_listen_address() call siw_cep_set_inuse() early
+  rdma/siw: make use of __siw_cep_close() in siw_accept()
+  rdma/siw: do the full disassociation of cep and qp in
+    siw_qp_llp_close()
+  rdma/siw: fix double siw_cep_put() in siw_cm_work_handler()
+  rdma/siw: make use of __siw_cep_close() in siw_cm_work_handler()
+  rdma/siw: fix the "close" logic in siw_qp_cm_drop()
+  rdma/siw: make use of __siw_cep_close() in siw_qp_cm_drop()
+  rdma/siw: make use of __siw_cep_close() in siw_reject()
+  rdma/siw: make use of __siw_cep_close() in siw_listen_address()
+  rdma/siw: make use of __siw_cep_close() in siw_drop_listeners()
+
+ drivers/infiniband/sw/siw/siw_cm.c    | 537 +++++++++++++++-----------
+ drivers/infiniband/sw/siw/siw_cm.h    |   3 +
+ drivers/infiniband/sw/siw/siw_mem.c   |   2 +
+ drivers/infiniband/sw/siw/siw_qp.c    |   3 +
+ drivers/infiniband/sw/siw/siw_qp_rx.c |   2 +-
+ 5 files changed, 316 insertions(+), 231 deletions(-)
+
+-- 
+2.25.1
+
