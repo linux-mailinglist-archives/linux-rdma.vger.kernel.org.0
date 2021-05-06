@@ -2,39 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608A2375D7F
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 May 2021 01:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EEED375D82
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 May 2021 01:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbhEFXh7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 May 2021 19:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56748 "EHLO
+        id S232578AbhEFXiU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 May 2021 19:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230387AbhEFXh7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 May 2021 19:37:59 -0400
+        with ESMTP id S232642AbhEFXiT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 May 2021 19:38:19 -0400
 Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F3BC061574
-        for <linux-rdma@vger.kernel.org>; Thu,  6 May 2021 16:36:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D6CC061574
+        for <linux-rdma@vger.kernel.org>; Thu,  6 May 2021 16:37:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
          s=42; h=Message-Id:Date:Cc:To:From;
-        bh=HEhI1uX59CHq4mvBJkxKLkk0tilSIJx6eBLA9GbPMt8=; b=L/iWcYdYHL0Jn2XG6S8g/nkUFe
-        DkzKmCMBhIAHJA+9YuJCdOspYEJ1RiLkQZsfTxsR5BObef7i+FMKBkaG6/0LZCyYr3JeWy+LiA/aq
-        6uiLAHOj1yzsz8x4Od4qZeaCdHp3GvWptWxx59vAH6zR3btBuSWQF19uDjvWEosX96AIgrvYCTq7h
-        EiYbX61W2vUnmcZXOo9SJEpL1VfekIO0vt8hEbIFNn6QBHp3CyV0NP/7E+NA35pJHci5daAie3V7G
-        xyNQcky7XHfo7oXCkrTJW87g/rkBjEgBosZqtKv/j/EoG5zeNEr9PkE8rjbPTQDJaBEpODE8srixu
-        +zqB443hLQ91NX0/v8DbBmb1Q9GtBjf7EUXHzZsn/ntFYBwNHOmlDdF2Dh458SBtpjaBULDO7MuZ2
-        UfGY9D9xGpupRBn8IbSyZ7DzFBEGqdYL3S+lZbc8DCj7kFwr2UC3HuB0y0CKdqGlhrVNHkrUofHTG
-        yruV2KxiurpIxdAaq7UH4dIi;
+        bh=l5TAd/20QZ8OSJ+6jWJNzrr1+IYZ42ZUw0bVB2P7asY=; b=Pv6xo1zrOOa6LfTpR4vACUmVny
+        5mhuUgxz1sCax6om6GflbKcebXsLRAuOFFK4bCCSRlwuS4LQhBk92PjtVYLLOdPG5DYN9cg2csJP4
+        QnZ++tcAKZp6AP+x91nhOKcXFOBAic4dxRbSXa7N2VQcSU5gX9C8ZkU39CScqI7Ry+A1e7EK1xz1o
+        lz0Us1Xql5oWDn3mU3VCqFH7dIjmxirHki61kU6mMTViL2fdU1LjdnE2wO2PqnsaFWZ1lha/0ZV0q
+        HeYO6J9YnUCQhtu5+XsIN5OfXqES/zGPm/bm39q1XlrEYMx40rRiILxxPpJ80c7ID7lTSR8YKTklW
+        mlhZ2bLtCQwGb48YToHTZDhx3rtMXsTCLanv2EqE/05QWHxCzvuADz9Ky0/anPsOkKbwyOMWNDwl+
+        fpOY9zIl9mkWGAwTHTxDC+USY3MUxng0TMMNB9/4vvEuqIwWTVah3bW9wySrRh1HYSNpmHgViAVtl
+        PLdYk5N9Mchy7Sg8y8qff0bg;
 Received: from [127.0.0.2] (localhost [127.0.0.1])
         by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
         (Exim)
-        id 1lenY7-0004I0-57; Thu, 06 May 2021 23:36:55 +0000
+        id 1lenYD-0004ID-Tb; Thu, 06 May 2021 23:37:01 +0000
 From:   Stefan Metzmacher <metze@samba.org>
 To:     Bernard Metzler <bmt@zurich.ibm.com>
 Cc:     linux-rdma@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
-Subject: [PATCH 00/31] rdma/siw: fix a lot of deadlocks and use after free bugs
-Date:   Fri,  7 May 2021 01:36:06 +0200
-Message-Id: <cover.1620343860.git.metze@samba.org>
+Subject: [PATCH 01/31] rdma/siw: fix warning in siw_proc_send()
+Date:   Fri,  7 May 2021 01:36:07 +0200
+Message-Id: <1aa26782ef60cc69aa49886a4c478fbbf74a186e.1620343860.git.metze@samba.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1620343860.git.metze@samba.org>
+References: <cover.1620343860.git.metze@samba.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,71 +44,38 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Bernard,
+  CC [M]  drivers/infiniband/sw/siw/siw_qp_rx.o
+In file included from ./include/linux/wait.h:9:0,
+                 from ./include/linux/net.h:19,
+                 from drivers/infiniband/sw/siw/siw_qp_rx.c:8:
+drivers/infiniband/sw/siw/siw_qp_rx.c: In function ‘siw_proc_send’:
+./include/linux/spinlock.h:288:3: warning: ‘flags’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+   _raw_spin_unlock_irqrestore(lock, flags); \
+   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/infiniband/sw/siw/siw_qp_rx.c:335:16: note: ‘flags’ was declared here
+  unsigned long flags;
 
-while testing with my smbdirect driver I hit a lot of
-bugs in the siw.ko driver. They all cause problems where
-the siw driver was not able to unload anymore and I had to
-reboot the machine.
+Fixes: 6c52fdc244b5 ("rdma/siw: connection management")
+Signed-off-by: Stefan Metzmacher <metze@samba.org>
+Cc: Bernard Metzler <bmt@zurich.ibm.com>
+Cc: linux-rdma@vger.kernel.org
+---
+ drivers/infiniband/sw/siw/siw_qp_rx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I implemented:
-- a non blocking connect
-- fixed a lot of bugs where siw_cep_put() was called too often.
-- fixed bugs where siw_cm_upcall() confused the core IWCM logic
-
-I have some more changes to follow, but I wanted to send them
-finally out after having them one and a half year sitting in some
-private branch...
-
-Stefan Metzmacher (31):
-  rdma/siw: fix warning in siw_proc_send()
-  rdma/siw: call smp_mb() after mem->stag_valid = 0 in
-    siw_invalidate_stag() too
-  rdma/siw: remove superfluous siw_cep_put() from siw_connect() error
-    path
-  rdma/siw: let siw_accept() deferr RDMA_MODE until EVENT_ESTABLISHED
-  rdma/siw: make use of kernel_{bind,connect,listen}()
-  rdma/siw: make siw_cm_upcall() a noop without valid 'id'
-  rdma/siw: split out a __siw_cep_terminate_upcall() function
-  rdma/siw: use __siw_cep_terminate_upcall() for indirect
-    SIW_CM_WORK_CLOSE_LLP
-  rdma/siw: use __siw_cep_terminate_upcall() for SIW_CM_WORK_PEER_CLOSE
-  rdma/siw: use __siw_cep_terminate_upcall() for SIW_CM_WORK_MPATIMEOUT
-  rdma/siw: introduce SIW_EPSTATE_ACCEPTING/REJECTING for
-    rdma_accept/rdma_reject
-  rdma/siw: add some debugging of state and sk_state to the teardown
-    process
-  rdma/siw: handle SIW_EPSTATE_CONNECTING in
-    __siw_cep_terminate_upcall()
-  rdma/siw: let siw_connect() set AWAIT_MPAREP before
-    siw_send_mpareqrep()
-  rdma/siw: create a temporary copy of private data
-  rdma/siw: use error and out logic at the end of siw_connect()
-  rdma/siw: start mpa timer before calling siw_send_mpareqrep()
-  rdma/siw: call the blocking kernel_bindconnect() just before
-    siw_send_mpareqrep()
-  rdma/siw: split out a __siw_cep_close() function
-  rdma/siw: implement non-blocking connect.
-  rdma/siw: let siw_listen_address() call siw_cep_alloc() first
-  rdma/siw: let siw_listen_address() call siw_cep_set_inuse() early
-  rdma/siw: make use of __siw_cep_close() in siw_accept()
-  rdma/siw: do the full disassociation of cep and qp in
-    siw_qp_llp_close()
-  rdma/siw: fix double siw_cep_put() in siw_cm_work_handler()
-  rdma/siw: make use of __siw_cep_close() in siw_cm_work_handler()
-  rdma/siw: fix the "close" logic in siw_qp_cm_drop()
-  rdma/siw: make use of __siw_cep_close() in siw_qp_cm_drop()
-  rdma/siw: make use of __siw_cep_close() in siw_reject()
-  rdma/siw: make use of __siw_cep_close() in siw_listen_address()
-  rdma/siw: make use of __siw_cep_close() in siw_drop_listeners()
-
- drivers/infiniband/sw/siw/siw_cm.c    | 537 +++++++++++++++-----------
- drivers/infiniband/sw/siw/siw_cm.h    |   3 +
- drivers/infiniband/sw/siw/siw_mem.c   |   2 +
- drivers/infiniband/sw/siw/siw_qp.c    |   3 +
- drivers/infiniband/sw/siw/siw_qp_rx.c |   2 +-
- 5 files changed, 316 insertions(+), 231 deletions(-)
-
+diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
+index 60116f20653c..0170c05d2cc3 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_rx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
+@@ -333,7 +333,7 @@ static struct siw_wqe *siw_rqe_get(struct siw_qp *qp)
+ 	struct siw_srq *srq;
+ 	struct siw_wqe *wqe = NULL;
+ 	bool srq_event = false;
+-	unsigned long flags;
++	unsigned long flags = 0;
+ 
+ 	srq = qp->srq;
+ 	if (srq) {
 -- 
 2.25.1
 
