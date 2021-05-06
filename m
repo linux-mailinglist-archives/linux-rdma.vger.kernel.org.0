@@ -2,54 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24FF4375136
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 May 2021 11:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0483751B5
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 May 2021 11:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233852AbhEFJFR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 May 2021 05:05:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40196 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233765AbhEFJFR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 6 May 2021 05:05:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50434611AD;
-        Thu,  6 May 2021 09:04:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620291859;
-        bh=t5kO1RsBj6L282zo2Irz4ki0RAdod79K0nlUviJ0DRY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dr53OI1jURTtSScsXd57eUQ9+2gsxRRQ5HE8nSaQjtxPiDpLi1OUYk3IfWGj50WeL
-         lsxXsfBKQNaS+YCt6aFGYEhLMDYppmMkoj2RghPGPa9dOnlYwDgW/Z1iB+QG4vmW4s
-         Gk/1EOtZD7f4bze/Q7+pGvLY54pEPJ7s5rcpoS/0Hn4AkRYbBEge0u0HX+ubH1kQz6
-         Df12ZMnE4yAi3Tu3O9pFA/CxKkD3QLThxqeUZqxdIyCRbmUhgELaVBHyoi4xl7yE1L
-         9vqEGnKxBguWG2hgrXUaAhazZeSSIw595UkjoOy1VFO9RLIBgREWYGb/Yu4+PiIKR6
-         VMaEA2aSKQD0w==
-Date:   Thu, 6 May 2021 12:04:14 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Xiaofei Tan <tanxiaofei@huawei.com>
-Cc:     jgg@ziepe.ca, liweihang@huawei.com, liangwenpeng@huawei.com,
-        shiju.jose@huawei.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org
-Subject: Re: [PATCH] RDMA/ucma: Cleanup to reduce duplicate code
-Message-ID: <YJOxDlL1v9bV0dZf@unreal>
-References: <1620291106-3675-1-git-send-email-tanxiaofei@huawei.com>
+        id S233928AbhEFJnH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 May 2021 05:43:07 -0400
+Received: from mail-wr1-f51.google.com ([209.85.221.51]:41484 "EHLO
+        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231976AbhEFJnH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 May 2021 05:43:07 -0400
+Received: by mail-wr1-f51.google.com with SMTP id d11so4871322wrw.8
+        for <linux-rdma@vger.kernel.org>; Thu, 06 May 2021 02:42:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
+        b=eYcTursilqoBb0NS6mUJy/uJbJscMo4ur2kt9ynsWpo6Iulym8I2i5OfcPGCxYhaEy
+         LTWMCo3wxPZ75KemOqip1KMS7Cr+9+mWPc7dOP0EfajngFDDC8Pr3Qf0PxZ9ccKxeyW7
+         vfmgogF2rnHVL1IMmjF95jODFkw6edsTMTbtcEq7B5aJmBAUbmeYkHw0+7j/+i9Oc60P
+         7G1YlfXwDiTACu7L9PgSehsdCIRxApJQc2n0gw39IVEkrk2/mQxvXWmfPm0ojBvhAM+3
+         ctx1NM3fIetExPvEXVdwb+dTH/FTHP7TWJ26H9cyMDxdFbmVQ4npW3Fpw1BVH+9oFi7G
+         fGyw==
+X-Gm-Message-State: AOAM533AZ2Ca6EAIGAKy3j2230DSD8zKcLpP4ZNjKETPDYV5iwavGfvI
+        5O/O7x42I0f8JZtJKbR3+Rg=
+X-Google-Smtp-Source: ABdhPJyUaqjAz3GRAiEx/ZRxrbT4E3AIC/Ncv/qVtgCa9NjThK9ECW54mRRUyP9vmj5C4k0L29EHAg==
+X-Received: by 2002:a5d:55ca:: with SMTP id i10mr3858464wrw.299.1620294128513;
+        Thu, 06 May 2021 02:42:08 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:e504:8c1:c1db:d524? ([2601:647:4802:9070:e504:8c1:c1db:d524])
+        by smtp.gmail.com with ESMTPSA id f6sm3983347wru.72.2021.05.06.02.42.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 May 2021 02:42:08 -0700 (PDT)
+Subject: Re: [PATCH] nvmet-rdma: Fix NULL deref when SEND is completed with
+ error
+To:     Michal Kalderon <michal.kalderon@marvell.com>,
+        mkalderon@marvell.com, aelior@marvell.com, hch@lst.de,
+        yaminf@mellanox.com
+Cc:     linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+        Shai Malin <smalin@marvell.com>
+References: <20210506070819.12502-1-michal.kalderon@marvell.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <7290ab44-130e-1723-af23-8a5336b72334@grimberg.me>
+Date:   Thu, 6 May 2021 02:42:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620291106-3675-1-git-send-email-tanxiaofei@huawei.com>
+In-Reply-To: <20210506070819.12502-1-michal.kalderon@marvell.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 06, 2021 at 04:51:46PM +0800, Xiaofei Tan wrote:
-> The lable "err1" does the same thing as the branch of copy_to_user()
-> failed in the function ucma_create_id(). Just jump to the label directly
-> to reduce duplicate code.
-> 
-> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
-> ---
->  drivers/infiniband/core/ucma.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
