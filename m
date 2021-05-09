@@ -2,125 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10842377144
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 May 2021 12:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914AE377597
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 May 2021 07:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbhEHKmj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 8 May 2021 06:42:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230234AbhEHKmi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 8 May 2021 06:42:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id BB61761075
-        for <linux-rdma@vger.kernel.org>; Sat,  8 May 2021 10:41:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620470497;
-        bh=nSgtjPiY4rYbYE2K+loqAUNqeGVDfx8jscbS40LFOaM=;
-        h=From:To:Subject:Date:From;
-        b=TE4qDBJxf4uqxxz2wnAPUwLgRKn9vL19bm+olgON9OI6bu6pPMsgZQt3ugEsXICv+
-         dQyXui/Abx5LNCAiAqrOuoyAUNqTyfcFaKL4gjPgLPR6rIHGcwgYhqz4kFNIW39oaJ
-         z2uleseUiyOTfDoHqmNw307VyBB/rYsTs8+4Xb187eWffD/XpXS1sYyARPewmIX3+O
-         L6JWv7wW4KtmMKfcwD5FlEpgUkhAU+PadEQ1Z7w8tk+HEg1ZxZopfuW/aOSpCH38Ux
-         qPx6o4WQhMcP6pSRE9BOKUqy4wn/7Frxh72V7hkXQ+4WpLwX6GzwFLd7wocfnhwjNG
-         E6M0IKh5kr0gQ==
-Received: by pdx-korg-bugzilla-2.web.codeaurora.org (Postfix, from userid 48)
-        id AF2D3611B0; Sat,  8 May 2021 10:41:37 +0000 (UTC)
-From:   bugzilla-daemon@bugzilla.kernel.org
-To:     linux-rdma@vger.kernel.org
-Subject: [Bug 212991] New: A possible divide by zero in calc_sq_size
-Date:   Sat, 08 May 2021 10:41:37 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: new
-X-Bugzilla-Watch-Reason: AssignedTo
- drivers_infiniband-rdma@kernel-bugs.osdl.org
-X-Bugzilla-Product: Drivers
-X-Bugzilla-Component: Infiniband/RDMA
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: yguoaz@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: drivers_infiniband-rdma@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_id short_desc product version
- cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
- priority component assigned_to reporter cf_regression
-Message-ID: <bug-212991-11804@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S229605AbhEIFNs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 9 May 2021 01:13:48 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:32241 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229453AbhEIFNs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 9 May 2021 01:13:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1620537165; x=1652073165;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=XVtQRWhA4CuXLzObdTcbpeSXr8ZueHXWK6PH9f+p+0w=;
+  b=v1WPo1YHYOKGrHFhZjvvAWMzbEDpvW1UOzGpiw4sJHHElau0nbELpCbG
+   o4mg3/gFXyC8+nYa8Dxhjc7IrLPzLqW5QxtSdX3JBWds7y2cub0iSgwqs
+   hR3C/Vl0uT2tb68ja6H9+d4CC4GVlK0/WTt27aPFHf4zvO+D16locrgkV
+   M=;
+X-IronPort-AV: E=Sophos;i="5.82,284,1613433600"; 
+   d="scan'208";a="134015522"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2b-c300ac87.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 09 May 2021 05:12:39 +0000
+Received: from EX13D28EUC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-c300ac87.us-west-2.amazon.com (Postfix) with ESMTPS id 51476A17D3;
+        Sun,  9 May 2021 05:12:22 +0000 (UTC)
+Received: from u570694869fb251.ant.amazon.com.amazon.com (10.43.160.119) by
+ EX13D28EUC001.ant.amazon.com (10.43.164.4) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sun, 9 May 2021 05:11:57 +0000
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
+ <YIsAIzecktXXBlxn@apalos.home>
+ <9bf7c5b3-c3cf-e669-051f-247aa8df5c5a@huawei.com>
+ <YIwvI5/ygBvZG5sy@apalos.home>
+ <33b02220-cc50-f6b2-c436-f4ec041d6bc4@huawei.com>
+ <YJPn5t2mdZKC//dp@apalos.home>
+ <75a332fa-74e4-7b7b-553e-3a1a6cb85dff@huawei.com>
+ <YJTm4uhvqCy2lJH8@apalos.home>
+ <bdd97ac5-f932-beec-109e-ace9cd62f661@huawei.com>
+ <20210507121953.59e22aa8@carbon>
+User-agent: mu4e 1.4.15; emacs 27.1
+From:   Shay Agroskin <shayagr@amazon.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+CC:     Yunsheng Lin <linyunsheng@huawei.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        "Russell King" <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        "Jonathan Lemon" <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        "Cong Wang" <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
+In-Reply-To: <20210507121953.59e22aa8@carbon>
+Date:   Sun, 9 May 2021 08:11:35 +0300
+Message-ID: <pj41zl4kfclce0.fsf@u570694869fb251.ant.amazon.com>
 MIME-Version: 1.0
+Content-Type: text/plain; format=flowed
+X-Originating-IP: [10.43.160.119]
+X-ClientProxiedBy: EX13D13UWB002.ant.amazon.com (10.43.161.21) To
+ EX13D28EUC001.ant.amazon.com (10.43.164.4)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D212991
 
-            Bug ID: 212991
-           Summary: A possible divide by zero in calc_sq_size
-           Product: Drivers
-           Version: 2.5
-    Kernel Version: 5.12.2
-          Hardware: All
-                OS: Linux
-              Tree: Mainline
-            Status: NEW
-          Severity: normal
-          Priority: P1
-         Component: Infiniband/RDMA
-          Assignee: drivers_infiniband-rdma@kernel-bugs.osdl.org
-          Reporter: yguoaz@gmail.com
-        Regression: No
+Jesper Dangaard Brouer <brouer@redhat.com> writes:
 
-In the file drivers/infiniband/hw/mlx5/qp.c, the function calc_sq_size has =
-the
-following code(link to code location:
-https://github.com/torvalds/linux/blob/master/drivers/infiniband/hw/mlx5/qp=
-.c#L510):
+> On Fri, 7 May 2021 16:28:30 +0800
+> Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+>> On 2021/5/7 15:06, Ilias Apalodimas wrote:
+>> > On Fri, May 07, 2021 at 11:23:28AM +0800, Yunsheng Lin wrote:  
+>> >> On 2021/5/6 20:58, Ilias Apalodimas wrote:  
+>> >>>>>>  
+>> >>>>>
+> ...
+>> > 
+>> > 
+>> > I think both choices are sane.  What I am trying to explain 
+>> > here, is
+>> > regardless of what we choose now, we can change it in the 
+>> > future without
+>> > affecting the API consumers at all.  What will change 
+>> > internally is the way we
+>> > lookup the page pool pointer we are trying to recycle.  
+>> 
+>> It seems the below API need changing?
+>> +static inline void skb_mark_for_recycle(struct sk_buff *skb, 
+>> struct page *page,
+>> +					struct xdp_mem_info *mem)
+>
+> I don't think we need to change this API, to support future 
+> memory
+> models.  Notice that xdp_mem_info have a 'type' member.
 
-static int calc_sq_size(struct mlx5_ib_dev *dev, struct ib_qp_init_attr *at=
-tr,
-                        struct mlx5_ib_qp *qp) {
-   ...
-   wqe_size =3D calc_send_wqe(attr);
-   ...
-   qp->sq.max_post =3D wq_size / wqe_size;
-}
+Hi,
+Providing that we will (possibly as a future optimization) store 
+the pointer to the page pool in struct page instead of strcut 
+xdp_mem_info, passing
+xdp_mem_info * instead of struct page_pool * would mean that for 
+every packet we'll need to call
+             xa = rhashtable_lookup(mem_id_ht, &mem->id, 
+             mem_id_rht_params);
+             xa->page_pool;
 
+which might pressure the Dcache to fetch a pointer that might be 
+present already in cache as part of driver's data-structures.
 
-static int calc_send_wqe(struct ib_qp_init_attr *attr)
-{
-        int inl_size =3D 0;
-        int size;
+I tend to agree with Yunsheng that it makes more sense to adjust 
+the API for the clear use-case now rather than using xdp_mem_info 
+indirection. It seems to me like
+the page signature provides the same information anyway and allows 
+to support different memory types.
 
-        size =3D sq_overhead(attr);
-        if (size < 0)
-                return size;
+Shay
 
-        if (attr->cap.max_inline_data) {
-                inl_size =3D size + sizeof(struct mlx5_wqe_inline_seg) +
-                        attr->cap.max_inline_data;
-        }
+>
+> Naming in Computer Science is a hard problem ;-). Something that 
+> seems
+> to confuse a lot of people is the naming of the struct 
+> "xdp_mem_info".  
+> Maybe we should have named it "mem_info" instead or 
+> "net_mem_info", as
+> it doesn't indicate that the device is running XDP.
+>
+> I see XDP as the RX-layer before the network stack, that helps 
+> drivers
+> to support different memory models, also for handling normal 
+> packets
+> that doesn't get process by XDP, and the drivers doesn't even 
+> need to
+> support XDP to use the "xdp_mem_info" type.
 
-        size +=3D attr->cap.max_send_sge * sizeof(struct mlx5_wqe_data_seg);
-        if (attr->create_flags & IB_QP_CREATE_INTEGRITY_EN &&
-            ALIGN(max_t(int, inl_size, size), MLX5_SEND_WQE_BB) <
-MLX5_SIG_WQE_SIZE)
-                return MLX5_SIG_WQE_SIZE;
-        else
-                return ALIGN(max_t(int, inl_size, size), MLX5_SEND_WQE_BB);
-}
-
-The function calc_send_wqe may return 0 (when attr->qp_type =3D=3D IB_QPT_X=
-RC_TGT
-&& attr->cap.max_send_sge =3D=3D 0), leading to a possible divide by zero p=
-roblem.
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
