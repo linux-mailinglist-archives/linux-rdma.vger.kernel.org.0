@@ -2,97 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51417377609
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 May 2021 11:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FDE377613
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 May 2021 11:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbhEIJhP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 9 May 2021 05:37:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36520 "EHLO mail.kernel.org"
+        id S229614AbhEIJl1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 9 May 2021 05:41:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229555AbhEIJhO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 9 May 2021 05:37:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3E15613E8;
-        Sun,  9 May 2021 09:36:10 +0000 (UTC)
+        id S229555AbhEIJl1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 9 May 2021 05:41:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D64F61421;
+        Sun,  9 May 2021 09:40:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620552971;
-        bh=NNn0uJEsZRFXR91wj8X+mBzYJYdBKTNqyz0ZDY48sZE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PTg09FbxXkngNkg7rOTjgpCGYSAr7fjUTWeXdoSfBY4WqrR8nayX9vAvcDf8CHqpI
-         4RshxrJ6I+hJxwNr6AJyYMH8GBbnNAVqq74CFpyLh6dc2Xv/Y1l71mORdMVrSHxNBX
-         UOY0uqpDdnOyDJnCHI/wHoUv84SuJ3hr1v33/QxQPATjFtTbX793kHCNVZBJDs5Cui
-         QPHvMF2AXdjTOw3Pj9nPnf06xVkicqW/L/8kS513fpMWhyRkk0bkNpzhSmwFQPq8RE
-         2zf3VoxY0azZkRJIitYpvgpxVU7zPYdTyUWYxZSV71Bo1Qh+i7rLldTXYkzB1E4At4
-         aWM4zTgL2uH9Q==
+        s=k20201202; t=1620553224;
+        bh=LHjhKg+Bl2xpAY5vzNiT9BE9j0VusASjGP1iaIU9g9o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ABluCzLOJEL397Rll7rd9mpgQq8bTxmeenZJiQ7+gDnUyF+1CbxXpGYuiBKBHGmPm
+         U//v3coR8RaHiCpIckZOqluceqp6hb6hQa6uxymNj9Q58AQ76UROvI2xuqBUekTdLl
+         /SDyTJzQbbSABBkMmVisZZeGue2H35E7ArMEEEhhTOVrJm5dIDjleEVoye2THTUvVV
+         PgvJhHauBQpk6Ytmpk2JPIcl/kQS318pjw9MKtZhQFusoQykI2V94rxLfOcqEq/Jdy
+         7FcSfRrpJ7U5M3c0/eydnNJFb+G9PbkMXS3IoPG/4K+yQrPnizI8adv/FbOlswmAzU
+         HNRU/z+fkJzdw==
+Date:   Sun, 9 May 2021 12:40:21 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next] RDMA/core: Remove never used ib_modify_wq function call
-Date:   Sun,  9 May 2021 12:36:06 +0300
-Message-Id: <c5e48d517b9163fe4f9ffd224050b83fdb3571c6.1620552935.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     yishaih@nvidia.com, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/mlx4: Remove unnessesary check in
+ mlx4_ib_modify_wq()
+Message-ID: <YJeuBYslGHMB84la@unreal>
+References: <1620382961-69701-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620382961-69701-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Fri, May 07, 2021 at 06:22:41PM +0800, Jiapeng Chong wrote:
+> cur_state and new_state are enums and when GCC considers
+> them as unsigned, the conditions are never met.
+> 
+> Clean up the following smatch warning:
+> 
+> drivers/infiniband/hw/mlx4/qp.c:4258 mlx4_ib_modify_wq() warn: unsigned
+> 'cur_state' is never less than zero.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/infiniband/hw/mlx4/qp.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+> index 92ddbcc..162aa59 100644
+> --- a/drivers/infiniband/hw/mlx4/qp.c
+> +++ b/drivers/infiniband/hw/mlx4/qp.c
+> @@ -4255,8 +4255,7 @@ int mlx4_ib_modify_wq(struct ib_wq *ibwq, struct ib_wq_attr *wq_attr,
+>  						     ibwq->state;
+>  	new_state = wq_attr_mask & IB_WQ_STATE ? wq_attr->wq_state : cur_state;
+>  
+> -	if (cur_state  < IB_WQS_RESET || cur_state  > IB_WQS_ERR ||
+> -	    new_state < IB_WQS_RESET || new_state > IB_WQS_ERR)
+> +	if (cur_state > IB_WQS_ERR || new_state > IB_WQS_ERR)
+>  		return -EINVAL;
 
-The function ib_modify_wq() is not used, so remove it.
+Actually the more robust change will be to move this change to the ib_uverbs_ex_modify_wq().
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/verbs.c | 21 ---------------------
- include/rdma/ib_verbs.h         |  2 --
- 2 files changed, 23 deletions(-)
+Thanks
 
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 2b0798151fb7..a2dfe2d3a3c6 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -2445,27 +2445,6 @@ int ib_destroy_wq_user(struct ib_wq *wq, struct ib_udata *udata)
- }
- EXPORT_SYMBOL(ib_destroy_wq_user);
- 
--/**
-- * ib_modify_wq - Modifies the specified WQ.
-- * @wq: The WQ to modify.
-- * @wq_attr: On input, specifies the WQ attributes to modify.
-- * @wq_attr_mask: A bit-mask used to specify which attributes of the WQ
-- *   are being modified.
-- * On output, the current values of selected WQ attributes are returned.
-- */
--int ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
--		 u32 wq_attr_mask)
--{
--	int err;
--
--	if (!wq->device->ops.modify_wq)
--		return -EOPNOTSUPP;
--
--	err = wq->device->ops.modify_wq(wq, wq_attr, wq_attr_mask, NULL);
--	return err;
--}
--EXPORT_SYMBOL(ib_modify_wq);
--
- int ib_check_mr_status(struct ib_mr *mr, u32 check_mask,
- 		       struct ib_mr_status *mr_status)
- {
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index fc82fd24eddc..5473dd4e56f2 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -4286,8 +4286,6 @@ struct net_device *ib_device_netdev(struct ib_device *dev, u32 port);
- struct ib_wq *ib_create_wq(struct ib_pd *pd,
- 			   struct ib_wq_init_attr *init_attr);
- int ib_destroy_wq_user(struct ib_wq *wq, struct ib_udata *udata);
--int ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *attr,
--		 u32 wq_attr_mask);
- 
- int ib_map_mr_sg(struct ib_mr *mr, struct scatterlist *sg, int sg_nents,
- 		 unsigned int *sg_offset, unsigned int page_size);
--- 
-2.31.1
-
+>  
+>  	if ((new_state == IB_WQS_RDY) && (cur_state == IB_WQS_ERR))
+> -- 
+> 1.8.3.1
+> 
