@@ -2,78 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85FDE377613
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 May 2021 11:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12610377642
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 May 2021 12:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbhEIJl1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 9 May 2021 05:41:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42142 "EHLO mail.kernel.org"
+        id S229619AbhEIKvM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 9 May 2021 06:51:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229555AbhEIJl1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 9 May 2021 05:41:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D64F61421;
-        Sun,  9 May 2021 09:40:23 +0000 (UTC)
+        id S229602AbhEIKvL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 9 May 2021 06:51:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0653461424;
+        Sun,  9 May 2021 10:50:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620553224;
-        bh=LHjhKg+Bl2xpAY5vzNiT9BE9j0VusASjGP1iaIU9g9o=;
+        s=k20201202; t=1620557408;
+        bh=GngOjC6k8lCrzwT8wRaDWgh3sX8bZvsp0XPX4FZfRwo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ABluCzLOJEL397Rll7rd9mpgQq8bTxmeenZJiQ7+gDnUyF+1CbxXpGYuiBKBHGmPm
-         U//v3coR8RaHiCpIckZOqluceqp6hb6hQa6uxymNj9Q58AQ76UROvI2xuqBUekTdLl
-         /SDyTJzQbbSABBkMmVisZZeGue2H35E7ArMEEEhhTOVrJm5dIDjleEVoye2THTUvVV
-         PgvJhHauBQpk6Ytmpk2JPIcl/kQS318pjw9MKtZhQFusoQykI2V94rxLfOcqEq/Jdy
-         7FcSfRrpJ7U5M3c0/eydnNJFb+G9PbkMXS3IoPG/4K+yQrPnizI8adv/FbOlswmAzU
-         HNRU/z+fkJzdw==
-Date:   Sun, 9 May 2021 12:40:21 +0300
+        b=Ullut+s0iLthN42nUHHKrYyZX5dOhD54zy6JuX4/ylmlKkwbfBiNEJ9Naasw3KW4U
+         j7C+uxZGpjRNoMfeeBRaCKvZSmZIFcVlwbcYZfaANMn2j4NLNU7dV5op5w1PqW+N47
+         9m0T7WE0FzgMd1iExBlIGHPE2t9yPnpJsO3JGfdUsPo8wm2B/X9YvKMuYt83PwCidL
+         35N99+h9mzJnf0A6HBBvPytOCEsfU39pBXBmNpiTGz49DHWx88WtmCF6GQTkS0dVnf
+         Ql38tD580+v96lNvBYKKeBZGgkBc9SVKGhjV+QnjF7Xb067OS+4Okt2CkB+Zv1t0/r
+         csoO9HwVYzunw==
+Date:   Sun, 9 May 2021 13:50:04 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     yishaih@nvidia.com, dledford@redhat.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/mlx4: Remove unnessesary check in
- mlx4_ib_modify_wq()
-Message-ID: <YJeuBYslGHMB84la@unreal>
-References: <1620382961-69701-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+To:     Wei Ming Chen <jj251510319013@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] i40iw: Use fallthrough pseudo-keyword
+Message-ID: <YJe+XDO5PEr4SF0l@unreal>
+References: <20210509083135.14575-1-jj251510319013@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1620382961-69701-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <20210509083135.14575-1-jj251510319013@gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 07, 2021 at 06:22:41PM +0800, Jiapeng Chong wrote:
-> cur_state and new_state are enums and when GCC considers
-> them as unsigned, the conditions are never met.
+On Sun, May 09, 2021 at 04:31:35PM +0800, Wei Ming Chen wrote:
+> Add pseudo-keyword macro fallthrough[1]
 > 
-> Clean up the following smatch warning:
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 > 
-> drivers/infiniband/hw/mlx4/qp.c:4258 mlx4_ib_modify_wq() warn: unsigned
-> 'cur_state' is never less than zero.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
 > ---
->  drivers/infiniband/hw/mlx4/qp.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-> index 92ddbcc..162aa59 100644
-> --- a/drivers/infiniband/hw/mlx4/qp.c
-> +++ b/drivers/infiniband/hw/mlx4/qp.c
-> @@ -4255,8 +4255,7 @@ int mlx4_ib_modify_wq(struct ib_wq *ibwq, struct ib_wq_attr *wq_attr,
->  						     ibwq->state;
->  	new_state = wq_attr_mask & IB_WQ_STATE ? wq_attr->wq_state : cur_state;
->  
-> -	if (cur_state  < IB_WQS_RESET || cur_state  > IB_WQS_ERR ||
-> -	    new_state < IB_WQS_RESET || new_state > IB_WQS_ERR)
-> +	if (cur_state > IB_WQS_ERR || new_state > IB_WQS_ERR)
->  		return -EINVAL;
+>  drivers/infiniband/hw/i40iw/i40iw_ctrl.c | 1 +
+>  drivers/infiniband/hw/i40iw/i40iw_uk.c   | 1 +
+>  2 files changed, 2 insertions(+)
 
-Actually the more robust change will be to move this change to the ib_uverbs_ex_modify_wq().
+What exactly are you fixing?
+"case" without any code doesn't need "fallthrough".
 
 Thanks
 
->  
->  	if ((new_state == IB_WQS_RDY) && (cur_state == IB_WQS_ERR))
+> 
+> diff --git a/drivers/infiniband/hw/i40iw/i40iw_ctrl.c b/drivers/infiniband/hw/i40iw/i40iw_ctrl.c
+> index eaea5d545eb8..c6081283217c 100644
+> --- a/drivers/infiniband/hw/i40iw/i40iw_ctrl.c
+> +++ b/drivers/infiniband/hw/i40iw/i40iw_ctrl.c
+> @@ -2454,6 +2454,7 @@ static enum i40iw_status_code i40iw_sc_qp_init(struct i40iw_sc_qp *qp,
+>  			return ret_code;
+>  		break;
+>  	case 5: /* fallthrough until next ABI version */
+> +		fallthrough;
+>  	default:
+>  		if (qp->qp_uk.max_rq_frag_cnt > I40IW_MAX_WQ_FRAGMENT_COUNT)
+>  			return I40IW_ERR_INVALID_FRAG_COUNT;
+> diff --git a/drivers/infiniband/hw/i40iw/i40iw_uk.c b/drivers/infiniband/hw/i40iw/i40iw_uk.c
+> index f521be16bf31..e1c318c291c0 100644
+> --- a/drivers/infiniband/hw/i40iw/i40iw_uk.c
+> +++ b/drivers/infiniband/hw/i40iw/i40iw_uk.c
+> @@ -1004,6 +1004,7 @@ enum i40iw_status_code i40iw_qp_uk_init(struct i40iw_qp_uk *qp,
+>  			i40iw_get_wqe_shift(info->max_rq_frag_cnt, 0, &rqshift);
+>  			break;
+>  		case 5: /* fallthrough until next ABI version */
+> +			fallthrough;
+>  		default:
+>  			rqshift = I40IW_MAX_RQ_WQE_SHIFT;
+>  			break;
 > -- 
-> 1.8.3.1
+> 2.25.1
 > 
