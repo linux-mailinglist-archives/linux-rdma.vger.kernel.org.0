@@ -2,111 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA71377652
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 May 2021 13:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95033377674
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 May 2021 13:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhEIL2R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 9 May 2021 07:28:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47034 "EHLO mail.kernel.org"
+        id S229591AbhEILka (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 9 May 2021 07:40:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229585AbhEIL2R (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 9 May 2021 07:28:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0963613D6;
-        Sun,  9 May 2021 11:27:13 +0000 (UTC)
+        id S229563AbhEILk3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 9 May 2021 07:40:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F8686128C;
+        Sun,  9 May 2021 11:39:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620559634;
-        bh=CUb6XiTslRMA++3a24z876mske8vyztssjU/uX+396M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pCELK4X6eYcrylckqqzLn2B2KvDZyu7LMLGZG/VXeVZgBORBRI+5UOJeKlHJrx9RU
-         Me0Ljrd4s99ew1zZ7y8sDS7LktbXprTgfYJNoXabQMwomoNZ6um6WNqdMv2qiP/MGA
-         IG49rtocyyrS2CsftrGmUpBc1S+lUg2h95uAakSmXMwCHn+MIyVndmXuJmw00OJzlV
-         FM6YiEFjl0Ong1yGXQxdQvKqEwpxbvELk2PSUIycOdxQT3j0BabPSOshadEJ+xyzCz
-         LdkE5k5nlCmzjx5KasRTuf3ckhmmi0QOvMyfQbMjvcPCR8gGJUl/gQh3BDRreNjaGi
-         h2yn5FGow6H8w==
-Date:   Sun, 9 May 2021 14:27:10 +0300
+        s=k20201202; t=1620560366;
+        bh=CW6/79/uay0ryKqIqGv5DyheSLCb88VpnKqt/nCWuPc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BWFMLbFgKi+yQmIaC4D1W6GELACpCf4PZf9vVtSotOt5CEMNvRoiJadcbQy2iW0e0
+         P0gGfIiaFO20NJok26LvNk6gc50rvQ9D9rziqAE9VWFO0XsxfuaRCEsZQIbrzrzVQd
+         UdwFQ7ZdsE491T0YhYBw7T9vFcxuwN1/PhG5peQqVSFBi8XsqHPx2bTUfUksLyD9/N
+         sHamkFnX7D6o+1XMIF2XPXDmC+53jgC1qIHeowVn1V8ZGXsSAOqGF9AvAWGl6rDxIE
+         GdH/yrAr248azBJEwTXW8v5+Zr2cNMSsyzA7m40vwM0S6CwSBd3fenfDXnkbo5w4TU
+         oDPNoXBQKmLLQ==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Gioh Kim <gi-oh.kim@ionos.com>
-Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org,
-        dledford@redhat.com, jgg@ziepe.ca, haris.iqbal@ionos.com,
-        jinpu.wang@ionos.com, Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Subject: Re: [PATCH for-next 04/20] RDMA/rtrs-srv: Add error messages for
- cases when failing RDMA connection
-Message-ID: <YJfHDvkc4BK7plTK@unreal>
-References: <20210503114818.288896-1-gi-oh.kim@ionos.com>
- <20210503114818.288896-5-gi-oh.kim@ionos.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-rc] RDMA/siw: Properly check send and receive CQ pointers
+Date:   Sun,  9 May 2021 14:39:21 +0300
+Message-Id: <a7535a82925f6f4c1f062abaa294f3ae6e54bdd2.1620560310.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210503114818.288896-5-gi-oh.kim@ionos.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 03, 2021 at 01:48:02PM +0200, Gioh Kim wrote:
-> From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-> 
-> It was difficult to find out why it failed to establish RDMA
-> connection. This patch adds some messages to show which function
-> has failed why.
-> 
-> Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-> Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-> Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-> ---
->  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> index 3d09d01e34b4..df17dd4c1e28 100644
-> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> @@ -1356,8 +1356,10 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
->  	 * If this request is not the first connection request from the
->  	 * client for this session then fail and return error.
->  	 */
-> -	if (!first_conn)
-> +	if (!first_conn) {
-> +		pr_err("Error: Not the first connection request for this session\n");
->  		return ERR_PTR(-ENXIO);
-> +	}
->  
->  	/* need to allocate a new srv */
->  	srv = kzalloc(sizeof(*srv), GFP_KERNEL);
-> @@ -1812,6 +1814,7 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
->  	srv = get_or_create_srv(ctx, &msg->paths_uuid, msg->first_conn);
->  	if (IS_ERR(srv)) {
->  		err = PTR_ERR(srv);
-> +		pr_err("get_or_create_srv(), error %d\n", err);
->  		goto reject_w_err;
->  	}
->  	mutex_lock(&srv->paths_mutex);
-> @@ -1850,11 +1853,13 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
->  			mutex_unlock(&srv->paths_mutex);
->  			put_srv(srv);
->  			err = PTR_ERR(sess);
-> +			pr_err("RTRS server session allocation failed: %d\n", err);
->  			goto reject_w_err;
->  		}
->  	}
->  	err = create_con(sess, cm_id, cid);
->  	if (err) {
-> +		rtrs_err((&sess->s), "create_con(), error %d\n", err);
->  		(void)rtrs_rdma_do_reject(cm_id, err);
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Unrelated to this change, but this (void) casting should be go.
+The check for the NULL of pointer received from container_of is
+incorrect by definition as it points to some random memory.
 
-Thanks
+Change such check with proper NULL check of SIW QP attributes.
 
->  		/*
->  		 * Since session has other connections we follow normal way
-> @@ -1865,6 +1870,7 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
->  	}
->  	err = rtrs_rdma_do_accept(sess, cm_id);
->  	if (err) {
-> +		rtrs_err((&sess->s), "rtrs_rdma_do_accept(), error %d\n", err);
->  		(void)rtrs_rdma_do_reject(cm_id, err);
->  		/*
->  		 * Since current connection was successfully added to the
-> -- 
-> 2.25.1
-> 
+Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/sw/siw/siw_verbs.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index d2313efb26db..917c8a919f38 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -300,7 +300,6 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
+ 	struct siw_ucontext *uctx =
+ 		rdma_udata_to_drv_context(udata, struct siw_ucontext,
+ 					  base_ucontext);
+-	struct siw_cq *scq = NULL, *rcq = NULL;
+ 	unsigned long flags;
+ 	int num_sqe, num_rqe, rv = 0;
+ 	size_t length;
+@@ -343,10 +342,8 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
+ 		rv = -EINVAL;
+ 		goto err_out;
+ 	}
+-	scq = to_siw_cq(attrs->send_cq);
+-	rcq = to_siw_cq(attrs->recv_cq);
+ 
+-	if (!scq || (!rcq && !attrs->srq)) {
++	if (!attrs->send_cq || (!attrs->recv_cq && !attrs->srq)) {
+ 		siw_dbg(base_dev, "send CQ or receive CQ invalid\n");
+ 		rv = -EINVAL;
+ 		goto err_out;
+@@ -401,8 +398,8 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
+ 		}
+ 	}
+ 	qp->pd = pd;
+-	qp->scq = scq;
+-	qp->rcq = rcq;
++	qp->scq = to_siw_cq(attrs->send_cq);
++	qp->rcq = to_siw_cq(attrs->recv_cq);
+ 
+ 	if (attrs->srq) {
+ 		/*
+-- 
+2.31.1
+
