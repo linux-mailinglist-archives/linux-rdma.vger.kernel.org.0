@@ -2,32 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9274378EBE
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 May 2021 15:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB720378EDA
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 May 2021 15:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240884AbhEJNXQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 May 2021 09:23:16 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:2431 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241765AbhEJMu5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 May 2021 08:50:57 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Ff1672JllzCr8C;
-        Mon, 10 May 2021 20:47:11 +0800 (CST)
+        id S242365AbhEJNYh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 May 2021 09:24:37 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2613 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352236AbhEJNOW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 May 2021 09:14:22 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Ff1cL2LBMzQlns;
+        Mon, 10 May 2021 21:09:54 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 10 May 2021 20:49:44 +0800
+ 14.3.498.0; Mon, 10 May 2021 21:13:06 +0800
 From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, "Xi Wang" <wangxi11@huawei.com>,
-        Weihang Li <liweihang@huawei.com>
-Subject: [PATCH for-next 7/7] RDMA/hns: Add method to query WQE buffer's address
-Date:   Mon, 10 May 2021 20:48:09 +0800
-Message-ID: <1620650889-61650-8-git-send-email-liweihang@huawei.com>
+To:     <jgg@nvidia.com>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: [PATCH rdma-core 0/6] libhns: Add support for Dynamic Context Attachment
+Date:   Mon, 10 May 2021 21:12:58 +0800
+Message-ID: <1620652384-34097-1-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620650889-61650-1-git-send-email-liweihang@huawei.com>
-References: <1620650889-61650-1-git-send-email-liweihang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.69.192.56]
@@ -36,210 +32,74 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+The HIP09 introduces the DCA(Dynamic Context Attachment) feature which
+supports many RC QPs to share the WQE buffer in a memory pool. If a QP
+enables DCA feature, the WQE's buffer will not be allocated when creating
+but when the users start to post WRs. This will reduce the memory
+consumption when there are too many QPs are inactive.
 
-If a uQP works in DCA mode, the userspace driver need to get the buffer's
-address in DCA memory pool by calling the 'HNS_IB_METHOD_DCA_MEM_QUERY'
-method after the QP was attached by calling the
-'HNS_IB_METHOD_DCA_MEM_ATTACH' method.
+For more detailed information, please refer to the man pages provided by
+the last patch of this series.
 
-This method will return the DCA mem object's key and the offset to let the
-userspace driver get the WQE's virtual address in DCA memory pool.
+This series is associated with the kernel one "RDMA/hns: Add support for
+Dynamic Context Attachment", and two RFC versions of this series has been
+sent before.
 
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_dca.c | 112 ++++++++++++++++++++++++++++++-
- drivers/infiniband/hw/hns/hns_roce_dca.h |   6 ++
- include/uapi/rdma/hns-abi.h              |  10 +++
- 3 files changed, 127 insertions(+), 1 deletion(-)
+No changes since RFC v2.
+* Link: https://patchwork.kernel.org/project/linux-rdma/cover/1614847759-33139-1-git-send-email-liweihang@huawei.com/
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_dca.c b/drivers/infiniband/hw/hns/hns_roce_dca.c
-index 0a12559..0d018c0 100644
---- a/drivers/infiniband/hw/hns/hns_roce_dca.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_dca.c
-@@ -80,6 +80,14 @@ static inline bool dca_page_is_attached(struct hns_dca_page_state *state,
- 			(HNS_DCA_OWN_MASK & state->buf_id);
- }
- 
-+static inline bool dca_page_is_active(struct hns_dca_page_state *state,
-+				      u32 buf_id)
-+{
-+	/* all buf id bits must be matched */
-+	return (HNS_DCA_ID_MASK & buf_id) == state->buf_id &&
-+		!state->lock && state->active;
-+}
-+
- static inline bool dca_page_is_allocated(struct hns_dca_page_state *state,
- 					 u32 buf_id)
- {
-@@ -792,6 +800,64 @@ static int attach_dca_mem(struct hns_roce_dev *hr_dev,
- 	return 0;
- }
- 
-+struct dca_page_query_active_attr {
-+	u32 buf_id;
-+	u32 curr_index;
-+	u32 start_index;
-+	u32 page_index;
-+	u32 page_count;
-+	u64 mem_key;
-+};
-+
-+static int query_dca_active_pages_proc(struct dca_mem *mem, int index,
-+				       void *param)
-+{
-+	struct hns_dca_page_state *state = &mem->states[index];
-+	struct dca_page_query_active_attr *attr = param;
-+
-+	if (!dca_page_is_active(state, attr->buf_id))
-+		return 0;
-+
-+	if (attr->curr_index < attr->start_index) {
-+		attr->curr_index++;
-+		return 0;
-+	} else if (attr->curr_index > attr->start_index) {
-+		return DCA_MEM_STOP_ITERATE;
-+	}
-+
-+	/* Search first page in DCA mem */
-+	attr->page_index = index;
-+	attr->mem_key = mem->key;
-+	/* Search active pages in continuous addresses */
-+	while (index < mem->page_count) {
-+		state = &mem->states[index];
-+		if (!dca_page_is_active(state, attr->buf_id))
-+			break;
-+
-+		index++;
-+		attr->page_count++;
-+	}
-+
-+	return DCA_MEM_STOP_ITERATE;
-+}
-+
-+static int query_dca_mem(struct hns_roce_qp *hr_qp, u32 page_index,
-+			 struct hns_dca_query_resp *resp)
-+{
-+	struct hns_roce_dca_ctx *ctx = hr_qp_to_dca_ctx(hr_qp);
-+	struct dca_page_query_active_attr attr = {};
-+
-+	attr.buf_id = hr_qp->dca_cfg.buf_id;
-+	attr.start_index = page_index;
-+	travel_dca_pages(ctx, &attr, query_dca_active_pages_proc);
-+
-+	resp->mem_key = attr.mem_key;
-+	resp->mem_ofs = attr.page_index << HNS_HW_PAGE_SHIFT;
-+	resp->page_count = attr.page_count;
-+
-+	return attr.page_count ? 0 : -ENOMEM;
-+}
-+
- struct dca_page_free_buf_attr {
- 	u32 buf_id;
- 	u32 max_pages;
-@@ -1131,13 +1197,57 @@ DECLARE_UVERBS_NAMED_METHOD(
- 	UVERBS_ATTR_PTR_IN(HNS_IB_ATTR_DCA_MEM_DETACH_SQ_INDEX,
- 			   UVERBS_ATTR_TYPE(u32), UA_MANDATORY));
- 
-+static int UVERBS_HANDLER(HNS_IB_METHOD_DCA_MEM_QUERY)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct hns_roce_qp *hr_qp = uverbs_attr_to_hr_qp(attrs);
-+	struct hns_dca_query_resp resp = {};
-+	u32 page_idx;
-+	int ret;
-+
-+	if (!hr_qp)
-+		return -EINVAL;
-+
-+	if (uverbs_copy_from(&page_idx, attrs,
-+			     HNS_IB_ATTR_DCA_MEM_QUERY_PAGE_INDEX))
-+		return -EFAULT;
-+
-+	ret = query_dca_mem(hr_qp, page_idx, &resp);
-+	if (ret)
-+		return ret;
-+
-+	if (uverbs_copy_to(attrs, HNS_IB_ATTR_DCA_MEM_QUERY_OUT_KEY,
-+			   &resp.mem_key, sizeof(resp.mem_key)) ||
-+	    uverbs_copy_to(attrs, HNS_IB_ATTR_DCA_MEM_QUERY_OUT_OFFSET,
-+			   &resp.mem_ofs, sizeof(resp.mem_ofs)) ||
-+	    uverbs_copy_to(attrs, HNS_IB_ATTR_DCA_MEM_QUERY_OUT_PAGE_COUNT,
-+			   &resp.page_count, sizeof(resp.page_count)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+DECLARE_UVERBS_NAMED_METHOD(
-+	HNS_IB_METHOD_DCA_MEM_QUERY,
-+	UVERBS_ATTR_IDR(HNS_IB_ATTR_DCA_MEM_QUERY_HANDLE, UVERBS_OBJECT_QP,
-+			UVERBS_ACCESS_READ, UA_MANDATORY),
-+	UVERBS_ATTR_PTR_IN(HNS_IB_ATTR_DCA_MEM_QUERY_PAGE_INDEX,
-+			   UVERBS_ATTR_TYPE(u32), UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(HNS_IB_ATTR_DCA_MEM_QUERY_OUT_KEY,
-+			    UVERBS_ATTR_TYPE(u64), UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(HNS_IB_ATTR_DCA_MEM_QUERY_OUT_OFFSET,
-+			    UVERBS_ATTR_TYPE(u32), UA_MANDATORY),
-+	UVERBS_ATTR_PTR_OUT(HNS_IB_ATTR_DCA_MEM_QUERY_OUT_PAGE_COUNT,
-+			    UVERBS_ATTR_TYPE(u32), UA_MANDATORY));
-+
- DECLARE_UVERBS_NAMED_OBJECT(HNS_IB_OBJECT_DCA_MEM,
- 			    UVERBS_TYPE_ALLOC_IDR(dca_cleanup),
- 			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_REG),
- 			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_DEREG),
- 			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_SHRINK),
- 			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_ATTACH),
--			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_DETACH));
-+			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_DETACH),
-+			    &UVERBS_METHOD(HNS_IB_METHOD_DCA_MEM_QUERY));
- 
- static bool dca_is_supported(struct ib_device *device)
- {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_dca.h b/drivers/infiniband/hw/hns/hns_roce_dca.h
-index 8155903..3e9971a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_dca.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_dca.h
-@@ -50,6 +50,12 @@ struct hns_dca_detach_attr {
- 	u32 sq_idx;
- };
- 
-+struct hns_dca_query_resp {
-+	u64 mem_key;
-+	u32 mem_ofs;
-+	u32 page_count;
-+};
-+
- void hns_roce_register_udca(struct hns_roce_dev *hr_dev,
- 			    struct hns_roce_ucontext *uctx);
- void hns_roce_unregister_udca(struct hns_roce_dev *hr_dev,
-diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
-index 119fa4e..edcecc1 100644
---- a/include/uapi/rdma/hns-abi.h
-+++ b/include/uapi/rdma/hns-abi.h
-@@ -113,6 +113,7 @@ enum hns_ib_dca_mem_methods {
- 	HNS_IB_METHOD_DCA_MEM_SHRINK,
- 	HNS_IB_METHOD_DCA_MEM_ATTACH,
- 	HNS_IB_METHOD_DCA_MEM_DETACH,
-+	HNS_IB_METHOD_DCA_MEM_QUERY,
- };
- 
- enum hns_ib_dca_mem_reg_attrs {
-@@ -148,4 +149,13 @@ enum hns_ib_dca_mem_detach_attrs {
- 	HNS_IB_ATTR_DCA_MEM_DETACH_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
- 	HNS_IB_ATTR_DCA_MEM_DETACH_SQ_INDEX,
- };
-+
-+enum hns_ib_dca_mem_query_attrs {
-+	HNS_IB_ATTR_DCA_MEM_QUERY_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
-+	HNS_IB_ATTR_DCA_MEM_QUERY_PAGE_INDEX,
-+	HNS_IB_ATTR_DCA_MEM_QUERY_OUT_KEY,
-+	HNS_IB_ATTR_DCA_MEM_QUERY_OUT_OFFSET,
-+	HNS_IB_ATTR_DCA_MEM_QUERY_OUT_PAGE_COUNT,
-+};
-+
- #endif /* HNS_ABI_USER_H */
+Changes since RFC v1:
+* Add direct verbs to set the parameters about size that used to
+  configuring DCA. 
+* Add man pages to explain what is DCA, how does it works and how to use
+  it.
+* Link: https://patchwork.kernel.org/project/linux-rdma/cover/1612667574-56673-1-git-send-email-liweihang@huawei.com/
+
+Weihang Li (1):
+  Update kernel headers
+
+Xi Wang (5):
+  libhns: Introduce DCA for RC QP
+  libhns: Add support for shrinking DCA memory pool
+  libhns: Add support for attaching QP's WQE buffer
+  libhns: Add direct verbs support to config DCA
+  libhns: Add man pages to introduce DCA feature
+
+ CMakeLists.txt                             |   1 +
+ debian/control                             |   2 +-
+ debian/ibverbs-providers.install           |   1 +
+ debian/ibverbs-providers.lintian-overrides |   4 +-
+ debian/ibverbs-providers.symbols           |   6 +
+ debian/libibverbs-dev.install              |   6 +
+ kernel-headers/rdma/hns-abi.h              |  64 +++++
+ providers/hns/CMakeLists.txt               |   9 +-
+ providers/hns/hns_roce_u.c                 | 100 ++++++++
+ providers/hns/hns_roce_u.h                 |  44 ++++
+ providers/hns/hns_roce_u_abi.h             |   1 +
+ providers/hns/hns_roce_u_buf.c             | 387 +++++++++++++++++++++++++++++
+ providers/hns/hns_roce_u_hw_v2.c           | 130 ++++++++--
+ providers/hns/hns_roce_u_hw_v2.h           |   7 +
+ providers/hns/hns_roce_u_verbs.c           |  67 ++++-
+ providers/hns/hnsdv.h                      |  61 +++++
+ providers/hns/libhns.map                   |   9 +
+ providers/hns/man/CMakeLists.txt           |   7 +
+ providers/hns/man/hns_dca.7.md             |  35 +++
+ providers/hns/man/hnsdv.7.md               |  34 +++
+ providers/hns/man/hnsdv_create_qp.3.md     |  69 +++++
+ providers/hns/man/hnsdv_is_supported.3.md  |  39 +++
+ providers/hns/man/hnsdv_open_device.3.md   |  70 ++++++
+ redhat/rdma-core.spec                      |   7 +-
+ suse/rdma-core.spec                        |  21 +-
+ 25 files changed, 1149 insertions(+), 32 deletions(-)
+ create mode 100644 providers/hns/hnsdv.h
+ create mode 100644 providers/hns/libhns.map
+ create mode 100644 providers/hns/man/CMakeLists.txt
+ create mode 100644 providers/hns/man/hns_dca.7.md
+ create mode 100644 providers/hns/man/hnsdv.7.md
+ create mode 100644 providers/hns/man/hnsdv_create_qp.3.md
+ create mode 100644 providers/hns/man/hnsdv_is_supported.3.md
+ create mode 100644 providers/hns/man/hnsdv_open_device.3.md
+
 -- 
 2.7.4
 
