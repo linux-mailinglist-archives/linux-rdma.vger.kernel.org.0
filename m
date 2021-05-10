@@ -2,143 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E87E3794F4
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 May 2021 19:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5CA3795F9
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 May 2021 19:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbhEJRF6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 May 2021 13:05:58 -0400
-Received: from mail-mw2nam10on2044.outbound.protection.outlook.com ([40.107.94.44]:44064
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232394AbhEJRFk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 May 2021 13:05:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EGCMfWQ7/Ey8t4UttBRcgMpVnexAIDgN0P/axpvNiL1Jsdf5haK6dC+meAllwhqh4BNZpLZ348s2N9xvdW2MExcp9EEZNeadlShWotC8mU69SV337Sc/g2Y8yidmd8X6ZyQfF0UMlFiOgYQqZbCKfm4MmuQsF3dwN6s0/uXr5KLYcaERoOLDl+ZBObOcSehQCwhdcHU+07w0UnBEbxQMW9d5BPvaT6F+Euk7LZ3ZU0dtPz8oAgLY6eqqDJZDDzOhyxz9I7k1yCxqQan6PSV/5nx5JsgzbIA9PcvG73Hi6lCkhB8WwoYFpQtKQQ7hIPhmgEYe00mamsztec+Fgf4Qfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pIMx+nuNFJylPYOBI3cKXVsWU6zga+zPVBUpGEIpwK4=;
- b=jjEjT/fPXK2Du+N5acPAq2Ry7izx14nzECiDWpU4onHlvllgmoQ5tQayBmZtN66Hy8l7HR7Lad1cowKaR7wjOFJkl12ktiBkGac/soJzXBo3+s/OcSB0HBfCeRNRZsQ4BmslwLzcTzm6wAHUZF6s7MEhNxzEgijnLCi+Z8XFYZXpweSF9bXGg9BpFOL7eJF+0sF7k0PUmCApuNa6rYIs2E0eagKdW9/b27Mmq+WRByutdelYAHKD2YZpMqMuN21sgxl7h3a5DSOIBETEhf6taFp8rRQIwWT8my/Ck8xD6LcH2o+adO5PhWRONf8LffMWDgUn2LZ25XODiP4OuzqqcA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pIMx+nuNFJylPYOBI3cKXVsWU6zga+zPVBUpGEIpwK4=;
- b=f6VI/5zy6nmE5PX5HtcIKVnXQy3pyWyuA9ObLI64EKcW8FC0KRcTlKIA6LzmAvTEuqjc4Dg/DQr23vOL+kRxuminadbF1qS6MVhnAnX4HEM+5y8YdpopQcbYq25j+rHfarXQugB0rJi2jmRm8/QNUl4JJGvwFusbiDxsGaRQIY5EY3U99xS1NJ8KxAW0ghGLaj7s/N0xzAXouIYn7pGigviWgPzwRegO8Kp6AS9wJ6Zg8hXpI4t3zt0loThOM6x3f6fMt6xqKUQ9Tj2yqUF9CKpNX4rI0T93eVg0jKHRDO88JdlA5rIr1XrPcRdWxN4ro1JeOawWkf02H5cPbksdEQ==
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4620.namprd12.prod.outlook.com (2603:10b6:5:76::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.27; Mon, 10 May
- 2021 17:04:34 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4108.031; Mon, 10 May 2021
- 17:04:34 +0000
-Date:   Mon, 10 May 2021 14:04:33 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-rc] IB/cma: Fix false P_Key mismatch messages
-Message-ID: <20210510170433.GA1104569@nvidia.com>
-References: <1620219241-24979-1-git-send-email-haakon.bugge@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1620219241-24979-1-git-send-email-haakon.bugge@oracle.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR22CA0011.namprd22.prod.outlook.com
- (2603:10b6:208:238::16) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S231285AbhEJRdX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 May 2021 13:33:23 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61304 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233436AbhEJRbx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 10 May 2021 13:31:53 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14AHIjXk051194
+        for <linux-rdma@vger.kernel.org>; Mon, 10 May 2021 13:30:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
+ from : to : cc : date : mime-version : references :
+ content-transfer-encoding : content-type : message-id; s=pp1;
+ bh=O7t3E8f6afvRrEIHpBcgV+tX3m8XCdkTaVANeHqT4Lc=;
+ b=Xv1zwF4+MNoh6lre5n57U/zqTNgI8X1JUXd3bTKajMF5I3l54SE4vCkjf2OPtG2xhRYD
+ dvQIqBkY2rJw2DDlEuQIZB7eyXhojgfMqQD5pdA+OZ+G9IW61l+BlGfXQ3M32ZTGx5VD
+ 7a8nS0qr10c4uyY9cKANDle1UHou9ppy95+PNyFe4/7DEy/Q4yW0FVZFG57uq/ZTwl04
+ rC2ySy4IwU+LCH7bMJ8TlDOgqQwQTybLU2LGKaULfa/o4ECDrxh0zt3hVLclghjD1kdR
+ JGZeJsKeGho54HzqvNaZxaKSrUfVMcKgxD0ilwogORVC7QVNrxEGpp6crzyI782dylZV qA== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.73])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38f94cr81r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Mon, 10 May 2021 13:30:48 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Mon, 10 May 2021 17:30:47 -0000
+Received: from us1a3-smtp02.a3.dal06.isc4sb.com (10.106.154.159)
+        by smtp.notes.na.collabserv.com (10.106.227.90) with smtp.notes.na.collabserv.com ESMTP;
+        Mon, 10 May 2021 17:30:46 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp02.a3.dal06.isc4sb.com
+          with ESMTP id 2021051017304543-607398 ;
+          Mon, 10 May 2021 17:30:45 +0000 
+In-Reply-To: <a7535a82925f6f4c1f062abaa294f3ae6e54bdd2.1620560310.git.leonro@nvidia.com>
+Subject: Re: [PATCH rdma-rc] RDMA/siw: Properly check send and receive CQ pointers
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Leon Romanovsky" <leon@kernel.org>
+Cc:     "Doug Ledford" <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@nvidia.com>,
+        "Leon Romanovsky" <leonro@nvidia.com>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "linux-rdma" <linux-rdma@vger.kernel.org>
+Date:   Mon, 10 May 2021 17:30:45 +0000
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR22CA0011.namprd22.prod.outlook.com (2603:10b6:208:238::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Mon, 10 May 2021 17:04:34 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lg9Kb-004dNC-Mb; Mon, 10 May 2021 14:04:33 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 985f34da-c55c-4793-82fe-08d913d5afae
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4620:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4620AB15A18526EC9495281DC2549@DM6PR12MB4620.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AmeVgGOor4rUYeHHcHGU7TyT8echCEtn8W9t3kMQqMkufVrZbF5u08y9eeMgYCfKcrR1iyT4z7oh0AboR54JWhdJVmt0vvayHl0vA7cAQ8UuwidDgA/dNijA0qEuhJgR4T9a6DIUzfd8VgHuNWdnPq9ciYKF68nX1FbKa5vBFTorE12tl4kgy/gekBFQKVkWVUC4SP+8fzRTPJMdXCf7uhv0q1+/ylTM38c4Hs/24oVm7gvckfP4qbKyTkkdxga1WNzMUhezlcE7MCOxW5LvgjSI13zHvpLBJUw3mXIHXIFednxBKda4CRJLb/l09uIrbAlAvnLI8Bzqn0Is/4DbkEKPJMU5mz5BzEvPe7/QfGWkMdyXQ3xzzDlMUrCH1HeLhdUpsUlDZa7CNAfK2G/YJnuGbO+0aK/2WqQS57V7UCSj2slsHmwjiLIYeQfM7AJsJoeA+VPyowvLNMcCTKeGWpeiN5sapXmPBVDo+fLyf4De080obo1T3J1/2c4mNYGMiZNM+g0eod/HdA654SgjZfYhqAf9fmm0LD6CK5XDkk3w+ecqjWmtiQMVVzZ6oCW8ou2GCf6QyWNV/qTpwCUDfAJKhix1MSOHFTYQsx8xZBk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(39860400002)(376002)(366004)(9786002)(478600001)(9746002)(86362001)(2616005)(8676002)(6916009)(26005)(15650500001)(33656002)(36756003)(83380400001)(66574015)(1076003)(2906002)(66946007)(8936002)(316002)(186003)(4326008)(5660300002)(426003)(66476007)(38100700002)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UzhnUXZsdkYvY3hTR00rc1V4SzVta3d1QW04RFRpNkRWcFZlRHF0cFRGR3Zx?=
- =?utf-8?B?RHQ0VHplRHhWeEF2eFZNczd3Tlo4a3Z2SjBiSmRuNGQ0OVRhbmJva2VFYlJq?=
- =?utf-8?B?WkEzVElzeUJubmFra3JtcTlFVVczY0pWUk9DY1N0dzZKaWJsMCtYZTZUZVdQ?=
- =?utf-8?B?cmduaENzaFhnNVBIbG1NZDVDM0tqeFB2OXpqS3BFNzk0cjFiTmJjRkN6Z28z?=
- =?utf-8?B?RlhKK0tqT0dJZlJtT2E3ZDNkay9NSzBtTlFqOTlxaUwvUkNCbUxCeFFsRnAx?=
- =?utf-8?B?U1Y2TDlwWEVoVUVWNm0rcjFPUjZ2M2N0UmpWeWc1TGE2aXhBU1V1eTZKU3pH?=
- =?utf-8?B?Tk5oUzdhMFN1MXd5eUpIdFB6Wk95dkttdWY0T0FOWWl4WmZCOWpPV3RwdjZX?=
- =?utf-8?B?ejNXTWg0WVB5K2JwSE1qZ1AycFd4U3JpMHg1cjNZNGNSOC96RjdmSzE5ZnFk?=
- =?utf-8?B?a3cxMGp5SzFqdXdNampHSm9lbS9HcE5oSEltUHJtT2pPeWFybVdVSklNSk9I?=
- =?utf-8?B?d2JGeTJ3NGpXZW1tNXVhU3EveHRRdzMxTEpOcTJJMzNQVFo2U1E1YnJWVGhn?=
- =?utf-8?B?UElSakxSM1dHT3ExaVVsREFRQVNka3YreFdrbFdJQjdKZUYrc2NaVEVpUHI0?=
- =?utf-8?B?ZU1GSTZ0dEsxcGRkZ0E0UGRGRVB4L2kyVzJicHBRNkZSdEVJQ0YxdHZHVWpJ?=
- =?utf-8?B?WDNrT1gwTW5uMk9Ha3F2V3NOK1k5aGZhTGM3a0J3WDNGdkIxNHVrL3ZnbDBj?=
- =?utf-8?B?Ym5CcW9jUWh6R1FJdWNTQk0zNnFQM3ZBNjlLWk9TUTdNcjlsWVd5NHp5MHR0?=
- =?utf-8?B?WVV3ajRab1R5VnlDSUZZT05KaHRpazBVYW1UbDhGRjUxdE1YVmxYWFlJNFE2?=
- =?utf-8?B?ZDZDdkZESlN3RCtMWkc2N3BZdXJVVDJ4ZVhicXVLOWxZd21BWVJRZklJdm1G?=
- =?utf-8?B?TXpkdVp0UTk2S28wcG1CMUF0VlFuNFArOVFmZnVkRUJiNGpFZmVyZlJiemoy?=
- =?utf-8?B?KzJNQlJHUjhmTlJqM3k5M3BJYjdPVjk5MWpOSjVHRTdjRWpoTGcxUUlSRUhw?=
- =?utf-8?B?L1psWmdiSHpyR1NWalRSNGRBbHptZ1BDVlBVaDZYK2JsK0JMcHVwZnFWNFZp?=
- =?utf-8?B?Q3V0RURZckdUMFYwbnZpMjRuMUp0MHdXejBXbWgrMllFRmduMGtSN0NwUncv?=
- =?utf-8?B?NFN3QU9tTmE4ZjN4OHB5bnI1czA2aFFJWUpKYlN6VDF1SmdwWmRDV3lDcUx2?=
- =?utf-8?B?eG96aDFwVC82WDBoWFNjZFJoTXYyc2UxZ1Q0Z0cwK25iam5tU1dIQW9ad1Rz?=
- =?utf-8?B?bmR5d3Q3cXdkcS9OY2g4MlFQbFBRajNHaWZJdFQ1ZVZmbVdUT25NSHhTOGpx?=
- =?utf-8?B?TFpGS0djeFVqR2ViSTdQL2NnYzZPbFA1UFdYWUpEa0Z4RzBvY0JVR2tuK3Js?=
- =?utf-8?B?NmMyWlBQQlZqYjhId21UNmNtL25GUVlGMmRZRFdMZGI5V2lYM3d4cWFsSCtm?=
- =?utf-8?B?SVpzUG1icGdhb3FPUWIyempPbEd0aTI3WGhFK0JpM3hsUFR1Q2l1MndjVkw1?=
- =?utf-8?B?NlNLaGhvaFMvd2cxdVQwckJldGtrNTcxQ3RyUFJBTlVJbFZzQTBHc1hvck9Y?=
- =?utf-8?B?MFpibTBYcjV3QW13ZVhkVnN2Q2w0N21wUlZpMzZWcnJqcnJqajlDQWM3Tm1v?=
- =?utf-8?B?V3JsOHJ6ejlBYXR0VkVicmZkV3daYW9pdjJiMW1RM0tpalV5M05EWFQ3QS9h?=
- =?utf-8?Q?3KvTI0/lr0rwk5wdEi/4I58TjKAcffRDkLlLJA6?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 985f34da-c55c-4793-82fe-08d913d5afae
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 May 2021 17:04:34.8156
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gR2IPnJErRGP78jq16rI/6JbKtGtW6akZMUioJN70yPUHhcgkmbNTvWRZ1wEK6uY
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4620
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <a7535a82925f6f4c1f062abaa294f3ae6e54bdd2.1620560310.git.leonro@nvidia.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
+X-LLNOutbound: False
+X-Disclaimed: 52419
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 21051017-8877-0000-0000-00000600758B
+X-IBM-SpamModules-Scores: BY=0.057814; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0; ST=0; TS=0; UL=0; ISC=; MB=0.001860
+X-IBM-SpamModules-Versions: BY=3.00015193; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000296; SDB=6.01548292; UDB=6.00838382; IPR=6.01330253;
+ MB=3.00036958; MTD=3.00000008; XFM=3.00000015; UTC=2021-05-10 17:30:47
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2021-03-25 10:42:53 - 6.00012377
+x-cbparentid: 21051017-8878-0000-0000-0000F6227B5A
+Message-Id: <OF52748745.A17A3172-ON002586D1.0060334D-002586D1.00603353@notes.na.collabserv.com>
+X-Proofpoint-GUID: mRPvwlkyP-2H6_YrV-JnX1tn84ssaD0n
+X-Proofpoint-ORIG-GUID: mRPvwlkyP-2H6_YrV-JnX1tn84ssaD0n
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-10_11:2021-05-10,2021-05-10 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 05, 2021 at 02:54:01PM +0200, Håkon Bugge wrote:
-> There are three conditions that must be fulfilled in order to consider
-> a partition match. Those are:
-> 
->       1. Both P_Keys must valid
->       2. At least one must be a full member
->       3. The partitions (lower 15 bits) must match
-> 
-> In system employing both limited and full membership ports, we see
-> these false warning messages:
-> 
-> RDMA CMA: got different BTH P_Key (0x2a00) and primary path P_Key (0xaa00)
-> RDMA CMA: in the future this may cause the request to be dropped
-> 
-> even though the partition is the same.
-> 
-> See IBTA 10.9.1.2 Special P_Keys and 10.9.3 Partition Key Matching for
-> a reference.
-> 
-> Fixes: 84424a7fc793 ("IB/cma: Print warning on different inner and header P_Keys")
-> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-> ---
->  drivers/infiniband/core/cma.c | 22 ++++++++++++++++++++--
->  1 file changed, 20 insertions(+), 2 deletions(-)
+-----"Leon Romanovsky" <leon@kernel.org> wrote: -----
 
-What is this trying to fix?
+>To: "Doug Ledford" <dledford@redhat.com>, "Jason Gunthorpe"
+><jgg@nvidia.com>
+>From: "Leon Romanovsky" <leon@kernel.org>
+>Date: 05/09/2021 01:39PM
+>Cc: "Leon Romanovsky" <leonro@nvidia.com>, "Bernard Metzler"
+><bmt@zurich.ibm.com>, linux-kernel@vger.kernel.org,
+>linux-rdma@vger.kernel.org
+>Subject: [EXTERNAL] [PATCH rdma-rc] RDMA/siw: Properly check send and
+>receive CQ pointers
+>
+>From: Leon Romanovsky <leonro@nvidia.com>
+>
+>The check for the NULL of pointer received from container=5Fof is
+>incorrect by definition as it points to some random memory.
+>
+>Change such check with proper NULL check of SIW QP attributes.
+>
+>Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
+>Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+>---
+> drivers/infiniband/sw/siw/siw=5Fverbs.c | 9 +++------
+> 1 file changed, 3 insertions(+), 6 deletions(-)
+>
+>diff --git a/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>b/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>index d2313efb26db..917c8a919f38 100644
+>--- a/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>+++ b/drivers/infiniband/sw/siw/siw=5Fverbs.c
+>@@ -300,7 +300,6 @@ struct ib=5Fqp *siw=5Fcreate=5Fqp(struct ib=5Fpd *pd,
+> 	struct siw=5Fucontext *uctx =3D
+> 		rdma=5Fudata=5Fto=5Fdrv=5Fcontext(udata, struct siw=5Fucontext,
+> 					  base=5Fucontext);
+>-	struct siw=5Fcq *scq =3D NULL, *rcq =3D NULL;
+> 	unsigned long flags;
+> 	int num=5Fsqe, num=5Frqe, rv =3D 0;
+> 	size=5Ft length;
+>@@ -343,10 +342,8 @@ struct ib=5Fqp *siw=5Fcreate=5Fqp(struct ib=5Fpd *pd,
+> 		rv =3D -EINVAL;
+> 		goto err=5Fout;
+> 	}
+>-	scq =3D to=5Fsiw=5Fcq(attrs->send=5Fcq);
+>-	rcq =3D to=5Fsiw=5Fcq(attrs->recv=5Fcq);
+>=20
+>-	if (!scq || (!rcq && !attrs->srq)) {
+>+	if (!attrs->send=5Fcq || (!attrs->recv=5Fcq && !attrs->srq)) {
+> 		siw=5Fdbg(base=5Fdev, "send CQ or receive CQ invalid\n");
+> 		rv =3D -EINVAL;
+> 		goto err=5Fout;
+>@@ -401,8 +398,8 @@ struct ib=5Fqp *siw=5Fcreate=5Fqp(struct ib=5Fpd *pd,
+> 		}
+> 	}
+> 	qp->pd =3D pd;
+>-	qp->scq =3D scq;
+>-	qp->rcq =3D rcq;
+>+	qp->scq =3D to=5Fsiw=5Fcq(attrs->send=5Fcq);
+>+	qp->rcq =3D to=5Fsiw=5Fcq(attrs->recv=5Fcq);
+>=20
+> 	if (attrs->srq) {
+> 		/*
+>--=20
+>2.31.1
+>
+>
 
-IMHO it is a bug on the sender side to send GMPs to use a pkey that
-doesn't exactly match the data path pkey.
+Many thanks Leon!
 
-Jason
+Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
+
