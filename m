@@ -2,415 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D71D378EE6
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 May 2021 15:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96AEA378EED
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 May 2021 15:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242449AbhEJNYo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 May 2021 09:24:44 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2615 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234227AbhEJNO6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 May 2021 09:14:58 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Ff1cL2xZ4zQlp0;
-        Mon, 10 May 2021 21:09:54 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 10 May 2021 21:13:07 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH rdma-core 6/6] libhns: Add man pages to introduce DCA feature
-Date:   Mon, 10 May 2021 21:13:04 +0800
-Message-ID: <1620652384-34097-7-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620652384-34097-1-git-send-email-liweihang@huawei.com>
-References: <1620652384-34097-1-git-send-email-liweihang@huawei.com>
+        id S242498AbhEJNYt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 May 2021 09:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236863AbhEJNR0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 May 2021 09:17:26 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3A6C06138C;
+        Mon, 10 May 2021 06:16:19 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 82-20020a1c01550000b0290142562ff7c9so8868251wmb.3;
+        Mon, 10 May 2021 06:16:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Sh4i9feljTPFrIfpR/IU/E8n0D3Fda88xyQfypmum7w=;
+        b=GfQpYA/u/ESXNzCwhJN35I1L0Sb2vRVeukRNG83W8xG2OMlDA6+i5W0OODo/+LWE9E
+         ivWW5//Dci3M+PXPgJnH/odM7KtTO7yjQKrEe7KAvh4E7fvrd/ZuLkJAZP62sWtsDMuB
+         AIqgCRqoTLZzj0iGC6/REa3QuGlmZjiRxifV0mZYrMLJSap8JjiujnvbMmFTzTlx+O95
+         x9XnwiLNDr5qqWcsdoyW+ETG1hWAlzA+FW12aKJEwh2j5DlnppfpjkE6ahf9DAyZ8V+v
+         c4HLN0tsaWZM2+zfMzrOFU3u/mXI98pyg6LlDYSgFBtDuHlk1DmX0lhge4HX1KOLhtwA
+         z+4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Sh4i9feljTPFrIfpR/IU/E8n0D3Fda88xyQfypmum7w=;
+        b=cYGoVbnuzC8qi/rSzJ+ExaPcPY6WDiRnoQYrUOJUW/LDLaupeK70YlIz31CC6DpEIO
+         YjQqqXw2K1KRvLE2EmkMqZgmSNaOqjLw3WgaQER7nKYN78smSnUQvql/Lq9C3BYIAbbS
+         A89hiMUo84LxHpIIH5PXWbH2rmZnREpJ+CAq/H0QPEPvY3481ifRRLSpOK8Cv3AHyzwB
+         Y9C4Y5kQCgYC6MsNt9LSL+mATP7JJWBNR9KZjed7REYhOTmkJTYOrQnd1aSrwgzazjvo
+         Ixtv6yd4OPdU4nF7WYCxOtY9Watsai28mxpDWeEFK5xhy198jgxuKAvRFJqigderRiYZ
+         zU/w==
+X-Gm-Message-State: AOAM5320WfRdSTq1VXESkXjcB7G2WrDl9rtLEDxZcnwiFr7WOtK+XUaU
+        ikYqT3CuD1N4pbhEXWdxDhI=
+X-Google-Smtp-Source: ABdhPJysoQ4YBpE1J87NsTC/Z24p8NQqGLKPSudpVCmtLwZFhM2Wy0R7/k0aKiXMKdpTI23nPdYVEw==
+X-Received: by 2002:a05:600c:47d7:: with SMTP id l23mr36980376wmo.95.1620652578722;
+        Mon, 10 May 2021 06:16:18 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
+        by smtp.gmail.com with ESMTPSA id s1sm27945073wmj.8.2021.05.10.06.16.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 06:16:17 -0700 (PDT)
+Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as ASCII
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fpga@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
+        rcu@vger.kernel.org, x86@kernel.org
+References: <cover.1620641727.git.mchehab+huawei@kernel.org>
+ <2ae366fdff4bd5910a2270823e8da70521c859af.camel@infradead.org>
+ <20210510135518.305cc03d@coco.lan>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <df6b4567-030c-a480-c5a6-fe579830e8c0@gmail.com>
+Date:   Mon, 10 May 2021 14:16:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210510135518.305cc03d@coco.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+On 10/05/2021 12:55, Mauro Carvalho Chehab wrote:
+> The main point on this series is to replace just the occurrences
+> where ASCII represents the symbol equally well
 
-Document hns DCA feature and related direct verbs.
+> 	- U+2014 ('—'): EM DASH
+Em dash is not the same thing as hyphen-minus, and the latter does not
+ serve 'equally well'.  People use em dashes because — even in
+ monospace fonts — they make text easier to read and comprehend, when
+ used correctly.
+I accept that some of the other distinctions — like en dashes — are
+ needlessly pedantic (though I don't doubt there is someone out there
+ who will gladly defend them with the same fervour with which I argue
+ for the em dash) and I wouldn't take the trouble to use them myself;
+ but I think there is a reasonable assumption that when someone goes
+ to the effort of using a Unicode punctuation mark that is semantic
+ (rather than merely typographical), they probably had a reason for
+ doing so.
 
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- CMakeLists.txt                            |  1 +
- debian/ibverbs-providers.install          |  2 +-
- debian/libibverbs-dev.install             |  2 +
- providers/hns/man/CMakeLists.txt          |  7 ++++
- providers/hns/man/hns_dca.7.md            | 35 ++++++++++++++++
- providers/hns/man/hnsdv.7.md              | 34 +++++++++++++++
- providers/hns/man/hnsdv_create_qp.3.md    | 69 ++++++++++++++++++++++++++++++
- providers/hns/man/hnsdv_is_supported.3.md | 39 +++++++++++++++++
- providers/hns/man/hnsdv_open_device.3.md  | 70 +++++++++++++++++++++++++++++++
- redhat/rdma-core.spec                     |  2 +
- 10 files changed, 260 insertions(+), 1 deletion(-)
- create mode 100644 providers/hns/man/CMakeLists.txt
- create mode 100644 providers/hns/man/hns_dca.7.md
- create mode 100644 providers/hns/man/hnsdv.7.md
- create mode 100644 providers/hns/man/hnsdv_create_qp.3.md
- create mode 100644 providers/hns/man/hnsdv_is_supported.3.md
- create mode 100644 providers/hns/man/hnsdv_open_device.3.md
+> 	- U+2018 ('‘'): LEFT SINGLE QUOTATION MARK
+> 	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
+> 	- U+201c ('“'): LEFT DOUBLE QUOTATION MARK
+> 	- U+201d ('”'): RIGHT DOUBLE QUOTATION MARK
+(These are purely typographic, I have no problem with dumping them.)
 
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 74293bf..744179d 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -669,6 +669,7 @@ add_subdirectory(providers/cxgb4) # NO SPARSE
- add_subdirectory(providers/efa)
- add_subdirectory(providers/efa/man)
- add_subdirectory(providers/hns)
-+add_subdirectory(providers/hns/man)
- add_subdirectory(providers/i40iw) # NO SPARSE
- add_subdirectory(providers/mlx4)
- add_subdirectory(providers/mlx4/man)
-diff --git a/debian/ibverbs-providers.install b/debian/ibverbs-providers.install
-index c6ecbbc..c4c4c11 100644
---- a/debian/ibverbs-providers.install
-+++ b/debian/ibverbs-providers.install
-@@ -1,6 +1,6 @@
- etc/libibverbs.d/
- usr/lib/*/libefa.so.*
--usr/lib/*/libibverbs/lib*-rdmav*.so
- usr/lib/*/libhns.so.*
-+usr/lib/*/libibverbs/lib*-rdmav*.so
- usr/lib/*/libmlx4.so.*
- usr/lib/*/libmlx5.so.*
-diff --git a/debian/libibverbs-dev.install b/debian/libibverbs-dev.install
-index 7d6e6a2..89a02a8 100644
---- a/debian/libibverbs-dev.install
-+++ b/debian/libibverbs-dev.install
-@@ -29,11 +29,13 @@ usr/lib/*/pkgconfig/libibverbs.pc
- usr/lib/*/pkgconfig/libmlx4.pc
- usr/lib/*/pkgconfig/libmlx5.pc
- usr/share/man/man3/efadv_*.3
-+usr/share/man/man3/hns*.3
- usr/share/man/man3/ibv_*
- usr/share/man/man3/mbps_to_ibv_rate.3
- usr/share/man/man3/mlx4dv_*.3
- usr/share/man/man3/mlx5dv_*.3
- usr/share/man/man3/mult_to_ibv_rate.3
- usr/share/man/man7/efadv.7
-+usr/share/man/man3/hns*.7
- usr/share/man/man7/mlx4dv.7
- usr/share/man/man7/mlx5dv.7
-diff --git a/providers/hns/man/CMakeLists.txt b/providers/hns/man/CMakeLists.txt
-new file mode 100644
-index 0000000..b375a65
---- /dev/null
-+++ b/providers/hns/man/CMakeLists.txt
-@@ -0,0 +1,7 @@
-+rdma_man_pages(
-+  hnsdv_is_supported.3.md
-+  hnsdv_open_device.3.md
-+  hnsdv_create_qp.3.md
-+  hnsdv.7
-+  hns_dca.7
-+)
-diff --git a/providers/hns/man/hns_dca.7.md b/providers/hns/man/hns_dca.7.md
-new file mode 100644
-index 0000000..de26d07
---- /dev/null
-+++ b/providers/hns/man/hns_dca.7.md
-@@ -0,0 +1,35 @@
-+---
-+layout: page
-+title: DCA
-+section: 7
-+tagline: DCA
-+date: 2021-03-03
-+header: "HNS DCA Manual"
-+footer: hns
-+---
-+
-+# NAME
-+
-+DCA - Dynamic Context Attachment
-+
-+This allows all WQEs to share a memory pool that belongs to the user context.
-+
-+# DESCRIPTION
-+
-+The DCA feature aims to reduce memory consumption by sharing WQE memory for QPs working in sparse traffic scenarios.
-+
-+The DCA memory pool consists of multiple umem objects. Each umem object is a buffer allocated in user driver and register into kernel driver. The ULP need to setup the memory pool's parameter by calling hnsdv_open_device() and the driver will expand or shrink the memory pool based on this parameter.
-+
-+When a QP's DCA was enabled by setting create flags through ibv_create_qp_ex(), the WQE buffer will not be allocated directly until the ULP invokes the ibv_post_xxx(). If the memory in the pool is insufficient and the capacity expansion conditions are met, the driver will add new umem objects to the pool.
-+
-+When all WQEs of a QP are not used by the ROCEE after ibv_poll_cq() or ibv_modify_qp() are invoked, the WQE buffer will be reclaimed to the DCA memory pool. If the free memory in the pool meets the shrink conditions, the driver will delete the unused umem object.
-+
-+# SEE ALSO
-+
-+*hnsdv_open_device(3)*, *hnsdv_create_qp(3)*
-+
-+# AUTHORS
-+
-+Xi Wang <wangxi11@huawei.com>
-+
-+Weihang Li <liweihang@huawei.com>
-diff --git a/providers/hns/man/hnsdv.7.md b/providers/hns/man/hnsdv.7.md
-new file mode 100644
-index 0000000..ada73ec
---- /dev/null
-+++ b/providers/hns/man/hnsdv.7.md
-@@ -0,0 +1,34 @@
-+---
-+layout: page
-+title: HNSDV
-+section: 7
-+tagline: Verbs
-+date: 2021-03-03
-+header: "HNS Direct Verbs Manual"
-+footer: hns
-+---
-+
-+# NAME
-+
-+hnsdv - Direct verbs for hns devices
-+
-+This provides low level access to hns devices to perform direct operations,
-+without general branching performed by libibverbs.
-+
-+# DESCRIPTION
-+
-+The libibverbs API is an abstract one. It is agnostic to any underlying provider specific implementation. While this abstraction has the advantage of user applications portability, it has a performance penalty. For some applications optimizing performance is more important than portability.
-+
-+The hns direct verbs API is intended for such applications. It exposes hns specific low level operations, allowing the application to bypass the libibverbs API.
-+
-+The direct include of hnsdv.h together with linkage to hns library will allow usage of this new interface.
-+
-+# SEE ALSO
-+
-+**verbs**(7)
-+
-+# AUTHORS
-+
-+Xi Wang <wangxi11@huawei.com>
-+
-+Weihang Li <liweihang@huawei.com>
-diff --git a/providers/hns/man/hnsdv_create_qp.3.md b/providers/hns/man/hnsdv_create_qp.3.md
-new file mode 100644
-index 0000000..57446e9
---- /dev/null
-+++ b/providers/hns/man/hnsdv_create_qp.3.md
-@@ -0,0 +1,69 @@
-+---
-+layout: page
-+title: hnsdv_create_qp
-+section: 3
-+tagline: Verbs
-+date: 2021-3-15
-+header: "hns Programmer's Manual"
-+footer: hns
-+---
-+
-+# NAME
-+
-+hnsdv_create_qp - creates a queue pair (QP)
-+
-+# SYNOPSIS
-+
-+```c
-+#include <infiniband/hnsdv.h>
-+
-+struct ibv_qp *hnsdv_create_qp(struct ibv_context *context,
-+			       struct ibv_qp_init_attr_ex *attr,
-+			       struct hnsdv_qp_init_attr *hns_attr)
-+```
-+
-+
-+# DESCRIPTION
-+
-+**hnsdv_create_qp()** creates a queue pair (QP) with specific driver properties.
-+
-+# ARGUMENTS
-+
-+Please see *ibv_create_qp_ex(3)* man page for *context* and *attr*.
-+
-+## hns_attr
-+
-+```c
-+struct hnsdv_qp_init_attr {
-+	uint64_t comp_mask;
-+	uint32_t create_flags;
-+};
-+```
-+
-+*comp_mask*
-+:	Bitmask specifying what fields in the structure are valid:
-+	HNSDV_QP_INIT_ATTR_MASK_QP_CREATE_FLAGS:
-+		valid values in *create_flags*
-+
-+*create_flags*
-+:	A bitwise OR of the various values described below.
-+
-+	HNSDV_QP_CREATE_DYNAMIC_CONTEXT_ATTACH :
-+		Enable DCA feature for QP, the WQE buffer will allocate
-+		from DCA memory pool when calling ibv_post_send() or
-+		ibv_post_recv().
-+
-+# RETURN VALUE
-+
-+**hnsdv_create_qp()**
-+returns a pointer to the created QP, on error NULL will be returned and errno will be set.
-+
-+# SEE ALSO
-+
-+**ibv_create_qp_ex**(3),
-+
-+# AUTHOR
-+
-+Xi Wang <wangxi11@huawei.com>
-+
-+Weihang Li <liweihang@huawei.com>
-diff --git a/providers/hns/man/hnsdv_is_supported.3.md b/providers/hns/man/hnsdv_is_supported.3.md
-new file mode 100644
-index 0000000..b5f00bd
---- /dev/null
-+++ b/providers/hns/man/hnsdv_is_supported.3.md
-@@ -0,0 +1,39 @@
-+---
-+layout: page
-+title: hnsdv_is_supported
-+section: 3
-+tagline: Verbs
-+---
-+
-+# NAME
-+
-+hnsdv_is_supported - Check whether an RDMA device implemented by the hns provider
-+
-+# SYNOPSIS
-+
-+```c
-+#include <infiniband/hnsdv.h>
-+
-+bool hnsdv_is_supported(struct ibv_device *device);
-+```
-+
-+# DESCRIPTION
-+
-+hnsdv functions may be called only if this function returns true for the RDMA device.
-+
-+# ARGUMENTS
-+
-+*device*
-+:	RDMA device to check.
-+
-+# RETURN VALUE
-+
-+Returns true if device is implemented by hns provider.
-+
-+# SEE ALSO
-+
-+*hnsdv(7)*
-+
-+# AUTHOR
-+
-+Xi Wang <wangxi11@huawei.com>
-diff --git a/providers/hns/man/hnsdv_open_device.3.md b/providers/hns/man/hnsdv_open_device.3.md
-new file mode 100644
-index 0000000..c05ce5d
---- /dev/null
-+++ b/providers/hns/man/hnsdv_open_device.3.md
-@@ -0,0 +1,70 @@
-+---
-+layout: page
-+title: hnsdv_open_device
-+section: 3
-+tagline: Verbs
-+---
-+
-+# NAME
-+
-+hnsdv_open_device - Open an RDMA device context for the hns provider
-+
-+# SYNOPSIS
-+
-+```c
-+#include <infiniband/hnsdv.h>
-+
-+struct ibv_context *
-+hnsdv_open_device(struct ibv_device *device, struct hnsdv_context_attr *attr);
-+```
-+
-+# DESCRIPTION
-+
-+Open an RDMA device context with specific hns provider attributes.
-+
-+# ARGUMENTS
-+
-+*device*
-+:	RDMA device to open.
-+
-+## *attr* argument
-+
-+```c
-+struct hnsdv_context_attr {
-+        uint32_t flags;
-+        uint64_t comp_mask;
-+	uint32_t dca_unit_size;
-+	uint64_t dca_max_size;
-+	uint64_t dca_min_size;
-+};
-+```
-+
-+*flags*
-+:       A bitwise OR of the various values described below.
-+
-+        *HNSDV_CONTEXT_FLAGS_DCA*:
-+        Create a DCA memory pool to support all QPs share it.
-+
-+*comp_mask*
-+:       Bitmask specifying what fields in the structure are valid
-+
-+*dca_unit_size*
-+:       The unit size when adding a new buffer to DCA memory pool.
-+
-+*dca_max_size*
-+:       The DCA pool will be expanded when the total size is smaller than maximal size.
-+
-+*dca_min_size*
-+:       The DCA pool will be shrunk when the free size is bigger than minimal size.
-+
-+# RETURN VALUE
-+
-+Returns a pointer to the allocated device context, or NULL if the request fails.
-+
-+# SEE ALSO
-+
-+*hnsdv_create_qp(3)*, *hns_dca(7)*
-+
-+# AUTHOR
-+
-+Xi Wang <wangxi11@huawei.com>
-diff --git a/redhat/rdma-core.spec b/redhat/rdma-core.spec
-index e1dda8f..fcbec50 100644
---- a/redhat/rdma-core.spec
-+++ b/redhat/rdma-core.spec
-@@ -440,6 +440,7 @@ fi
- %{_libdir}/lib*.so
- %{_libdir}/pkgconfig/*.pc
- %{_mandir}/man3/efadv*
-+%{_mandir}/man3/hns*
- %{_mandir}/man3/ibv_*
- %{_mandir}/man3/rdma*
- %{_mandir}/man3/umad*
-@@ -448,6 +449,7 @@ fi
- %{_mandir}/man3/mlx5dv*
- %{_mandir}/man3/mlx4dv*
- %{_mandir}/man7/efadv*
-+%{_mandir}/man7/hns*
- %{_mandir}/man7/mlx5dv*
- %{_mandir}/man7/mlx4dv*
- %{_mandir}/man3/ibnd_*
--- 
-2.7.4
+> 	- U+00d7 ('×'): MULTIPLICATION SIGN
+Presumably this is appearing in mathematical formulae, in which case
+ changing it to 'x' loses semantic information.
 
+> Using the above symbols will just trick tools like grep for no good
+> reason.
+NBSP, sure.  That one's probably an artefact of some document format
+ conversion somewhere along the line, anyway.
+But what kinds of things with × or — in are going to be grept for?
+
+If there are em dashes lying around that semantically _should_ be
+ hyphen-minus (one of your patches I've seen, for instance, fixes an
+ *en* dash moonlighting as the option character in an `ethtool`
+ command line), then sure, convert them.
+But any time someone is using a Unicode character to *express
+ semantics*, even if you happen to think the semantic distinction
+ involved is a pedantic or unimportant one, I think you need an
+ explicit grep case to justify ASCIIfying it.
+
+-ed
