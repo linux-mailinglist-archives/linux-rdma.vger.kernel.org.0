@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD947378EEA
+	by mail.lfdr.de (Postfix) with ESMTP id 3D71D378EE6
 	for <lists+linux-rdma@lfdr.de>; Mon, 10 May 2021 15:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242479AbhEJNYr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 May 2021 09:24:47 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2614 "EHLO
+        id S242449AbhEJNYo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 May 2021 09:24:44 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2615 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234525AbhEJNO7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 May 2021 09:14:59 -0400
+        with ESMTP id S234227AbhEJNO6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 May 2021 09:14:58 -0400
 Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Ff1cL1QSzzQlnj;
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Ff1cL2xZ4zQlp0;
         Mon, 10 May 2021 21:09:54 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
@@ -20,9 +20,9 @@ Received: from localhost.localdomain (10.69.192.56) by
 From:   Weihang Li <liweihang@huawei.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH rdma-core 5/6] libhns: Add direct verbs support to config DCA
-Date:   Mon, 10 May 2021 21:13:03 +0800
-Message-ID: <1620652384-34097-6-git-send-email-liweihang@huawei.com>
+Subject: [PATCH rdma-core 6/6] libhns: Add man pages to introduce DCA feature
+Date:   Mon, 10 May 2021 21:13:04 +0800
+Message-ID: <1620652384-34097-7-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1620652384-34097-1-git-send-email-liweihang@huawei.com>
 References: <1620652384-34097-1-git-send-email-liweihang@huawei.com>
@@ -36,586 +36,381 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Xi Wang <wangxi11@huawei.com>
 
-Add two direct verbs to config DCA:
-1. hnsdv_open_device() is used to config DCA memory pool.
-2. hnsdv_create_qp() is used to create a DCA QP.
+Document hns DCA feature and related direct verbs.
 
 Signed-off-by: Xi Wang <wangxi11@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- debian/control                             |  2 +-
- debian/ibverbs-providers.install           |  1 +
- debian/ibverbs-providers.lintian-overrides |  4 +-
- debian/ibverbs-providers.symbols           |  6 +++
- debian/libibverbs-dev.install              |  4 ++
- providers/hns/CMakeLists.txt               |  9 +++-
- providers/hns/hns_roce_u.c                 | 71 ++++++++++++++++++++++++++----
- providers/hns/hns_roce_u.h                 |  4 +-
- providers/hns/hns_roce_u_abi.h             |  1 +
- providers/hns/hns_roce_u_verbs.c           | 43 ++++++++++++++----
- providers/hns/hnsdv.h                      | 61 +++++++++++++++++++++++++
- providers/hns/libhns.map                   |  9 ++++
- redhat/rdma-core.spec                      |  5 ++-
- suse/rdma-core.spec                        | 21 ++++++++-
- 14 files changed, 218 insertions(+), 23 deletions(-)
- create mode 100644 providers/hns/hnsdv.h
- create mode 100644 providers/hns/libhns.map
+ CMakeLists.txt                            |  1 +
+ debian/ibverbs-providers.install          |  2 +-
+ debian/libibverbs-dev.install             |  2 +
+ providers/hns/man/CMakeLists.txt          |  7 ++++
+ providers/hns/man/hns_dca.7.md            | 35 ++++++++++++++++
+ providers/hns/man/hnsdv.7.md              | 34 +++++++++++++++
+ providers/hns/man/hnsdv_create_qp.3.md    | 69 ++++++++++++++++++++++++++++++
+ providers/hns/man/hnsdv_is_supported.3.md | 39 +++++++++++++++++
+ providers/hns/man/hnsdv_open_device.3.md  | 70 +++++++++++++++++++++++++++++++
+ redhat/rdma-core.spec                     |  2 +
+ 10 files changed, 260 insertions(+), 1 deletion(-)
+ create mode 100644 providers/hns/man/CMakeLists.txt
+ create mode 100644 providers/hns/man/hns_dca.7.md
+ create mode 100644 providers/hns/man/hnsdv.7.md
+ create mode 100644 providers/hns/man/hnsdv_create_qp.3.md
+ create mode 100644 providers/hns/man/hnsdv_is_supported.3.md
+ create mode 100644 providers/hns/man/hnsdv_open_device.3.md
 
-diff --git a/debian/control b/debian/control
-index 8cbab0b..1ccb7f4 100644
---- a/debian/control
-+++ b/debian/control
-@@ -94,7 +94,7 @@ Description: User space provider drivers for libibverbs
-   - cxgb4: Chelsio T4 iWARP HCAs
-   - efa: Amazon Elastic Fabric Adapter
-   - hfi1verbs: Intel Omni-Path HFI
--  - hns: HiSilicon Hip06 SoC
-+  - hns: HiSilicon Hip06+ SoC
-   - i40iw: Intel Ethernet Connection X722 RDMA
-   - ipathverbs: QLogic InfiniPath HCAs
-   - mlx4: Mellanox ConnectX-3 InfiniBand HCAs
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 74293bf..744179d 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -669,6 +669,7 @@ add_subdirectory(providers/cxgb4) # NO SPARSE
+ add_subdirectory(providers/efa)
+ add_subdirectory(providers/efa/man)
+ add_subdirectory(providers/hns)
++add_subdirectory(providers/hns/man)
+ add_subdirectory(providers/i40iw) # NO SPARSE
+ add_subdirectory(providers/mlx4)
+ add_subdirectory(providers/mlx4/man)
 diff --git a/debian/ibverbs-providers.install b/debian/ibverbs-providers.install
-index 4f971fb..c6ecbbc 100644
+index c6ecbbc..c4c4c11 100644
 --- a/debian/ibverbs-providers.install
 +++ b/debian/ibverbs-providers.install
-@@ -1,5 +1,6 @@
+@@ -1,6 +1,6 @@
  etc/libibverbs.d/
  usr/lib/*/libefa.so.*
- usr/lib/*/libibverbs/lib*-rdmav*.so
-+usr/lib/*/libhns.so.*
+-usr/lib/*/libibverbs/lib*-rdmav*.so
+ usr/lib/*/libhns.so.*
++usr/lib/*/libibverbs/lib*-rdmav*.so
  usr/lib/*/libmlx4.so.*
  usr/lib/*/libmlx5.so.*
-diff --git a/debian/ibverbs-providers.lintian-overrides b/debian/ibverbs-providers.lintian-overrides
-index 8a44d54..f6afb70 100644
---- a/debian/ibverbs-providers.lintian-overrides
-+++ b/debian/ibverbs-providers.lintian-overrides
-@@ -1,2 +1,2 @@
--# libefa, libmlx4 and libmlx5 are ibverbs provider that provides more functions.
--ibverbs-providers: package-name-doesnt-match-sonames libefa1 libmlx4-1 libmlx5-1
-+# libefa, libhns, libmlx4 and libmlx5 are ibverbs provider that provides more functions.
-+ibverbs-providers: package-name-doesnt-match-sonames libefa1 libhns-1 libmlx4-1 libmlx5-1
-diff --git a/debian/ibverbs-providers.symbols b/debian/ibverbs-providers.symbols
-index 3c75ecc..34bc9d5 100644
---- a/debian/ibverbs-providers.symbols
-+++ b/debian/ibverbs-providers.symbols
-@@ -136,3 +136,9 @@ libefa.so.1 ibverbs-providers #MINVER#
-  efadv_create_qp_ex@EFA_1.1 26
-  efadv_query_device@EFA_1.1 26
-  efadv_query_ah@EFA_1.1 26
-+libhns.so.1 ibverbs-providers #MINVER#
-+* Build-Depends-Package: libibverbs-dev
-+ HNS_1.0@HNS_1.0 34
-+ hnsdv_is_supported@HNS_1.0 34
-+ hnsdv_open_device@HNS_1.0 34
-+ hnsdv_create_qp@HNS_1.0 34
 diff --git a/debian/libibverbs-dev.install b/debian/libibverbs-dev.install
-index bc8caa5..7d6e6a2 100644
+index 7d6e6a2..89a02a8 100644
 --- a/debian/libibverbs-dev.install
 +++ b/debian/libibverbs-dev.install
-@@ -1,5 +1,6 @@
- usr/include/infiniband/arch.h
- usr/include/infiniband/efadv.h
-+usr/include/infiniband/hnsdv.h
- usr/include/infiniband/ib_user_ioctl_verbs.h
- usr/include/infiniband/mlx4dv.h
- usr/include/infiniband/mlx5_api.h
-@@ -14,6 +15,8 @@ usr/include/infiniband/verbs_api.h
- usr/lib/*/lib*-rdmav*.a
- usr/lib/*/libefa.a
- usr/lib/*/libefa.so
-+usr/lib/*/libhns.a
-+usr/lib/*/libhns.so
- usr/lib/*/libibverbs*.so
- usr/lib/*/libibverbs.a
- usr/lib/*/libmlx4.a
-@@ -21,6 +24,7 @@ usr/lib/*/libmlx4.so
- usr/lib/*/libmlx5.a
- usr/lib/*/libmlx5.so
- usr/lib/*/pkgconfig/libefa.pc
-+usr/lib/*/pkgconfig/libhns.pc
- usr/lib/*/pkgconfig/libibverbs.pc
+@@ -29,11 +29,13 @@ usr/lib/*/pkgconfig/libibverbs.pc
  usr/lib/*/pkgconfig/libmlx4.pc
  usr/lib/*/pkgconfig/libmlx5.pc
-diff --git a/providers/hns/CMakeLists.txt b/providers/hns/CMakeLists.txt
-index 697dbd7..6e602f6 100644
---- a/providers/hns/CMakeLists.txt
-+++ b/providers/hns/CMakeLists.txt
-@@ -1,4 +1,5 @@
--rdma_provider(hns
-+rdma_shared_provider(hns libhns.map
-+  1 1.0.${PACKAGE_VERSION}
-   hns_roce_u.c
-   hns_roce_u_buf.c
-   hns_roce_u_db.c
-@@ -6,3 +7,9 @@ rdma_provider(hns
-   hns_roce_u_hw_v2.c
-   hns_roce_u_verbs.c
- )
-+
-+publish_headers(infiniband
-+	hnsdv.h
+ usr/share/man/man3/efadv_*.3
++usr/share/man/man3/hns*.3
+ usr/share/man/man3/ibv_*
+ usr/share/man/man3/mbps_to_ibv_rate.3
+ usr/share/man/man3/mlx4dv_*.3
+ usr/share/man/man3/mlx5dv_*.3
+ usr/share/man/man3/mult_to_ibv_rate.3
+ usr/share/man/man7/efadv.7
++usr/share/man/man3/hns*.7
+ usr/share/man/man7/mlx4dv.7
+ usr/share/man/man7/mlx5dv.7
+diff --git a/providers/hns/man/CMakeLists.txt b/providers/hns/man/CMakeLists.txt
+new file mode 100644
+index 0000000..b375a65
+--- /dev/null
++++ b/providers/hns/man/CMakeLists.txt
+@@ -0,0 +1,7 @@
++rdma_man_pages(
++  hnsdv_is_supported.3.md
++  hnsdv_open_device.3.md
++  hnsdv_create_qp.3.md
++  hnsdv.7
++  hns_dca.7
 +)
+diff --git a/providers/hns/man/hns_dca.7.md b/providers/hns/man/hns_dca.7.md
+new file mode 100644
+index 0000000..de26d07
+--- /dev/null
++++ b/providers/hns/man/hns_dca.7.md
+@@ -0,0 +1,35 @@
++---
++layout: page
++title: DCA
++section: 7
++tagline: DCA
++date: 2021-03-03
++header: "HNS DCA Manual"
++footer: hns
++---
 +
-+rdma_pkg_config("hns" "libibverbs" "${CMAKE_THREAD_LIBS_INIT}")
-diff --git a/providers/hns/hns_roce_u.c b/providers/hns/hns_roce_u.c
-index a4e0997..230befe 100644
---- a/providers/hns/hns_roce_u.c
-+++ b/providers/hns/hns_roce_u.c
-@@ -95,22 +95,69 @@ static const struct verbs_context_ops hns_common_ops = {
- 	.get_srq_num = hns_roce_u_get_srq_num,
- };
- 
--static int init_dca_context(struct hns_roce_context *ctx, int page_size)
-+bool hnsdv_is_supported(struct ibv_device *device)
-+{
-+	return is_hns_dev(device);
-+}
++# NAME
 +
-+struct ibv_context *hnsdv_open_device(struct ibv_device *device,
-+				      struct hnsdv_context_attr *attr)
-+{
-+	if (!is_hns_dev(device)) {
-+		errno = EOPNOTSUPP;
-+		return NULL;
-+	}
++DCA - Dynamic Context Attachment
 +
-+	return verbs_open_device(device, attr);
-+}
++This allows all WQEs to share a memory pool that belongs to the user context.
 +
-+static void set_dca_pool_param(struct hnsdv_context_attr *attr, int page_size,
-+			       struct hns_roce_dca_ctx *ctx)
-+{
-+	if (attr->comp_mask & HNSDV_CONTEXT_MASK_DCA_UNIT_SIZE)
-+		ctx->unit_size = align(attr->dca_unit_size, page_size);
-+	else
-+		ctx->unit_size = page_size * HNS_DCA_DEFAULT_UNIT_PAGES;
++# DESCRIPTION
 +
-+	/* The memory pool cannot be expanded, only init the DCA context. */
-+	if (ctx->unit_size == 0)
-+		return;
++The DCA feature aims to reduce memory consumption by sharing WQE memory for QPs working in sparse traffic scenarios.
 +
-+	/* If not set, the memory pool can be expanded unlimitedly. */
-+	if (attr->comp_mask & HNSDV_CONTEXT_MASK_DCA_MAX_SIZE)
-+		ctx->max_size = DIV_ROUND_UP(attr->dca_max_size,
-+					     ctx->unit_size);
-+	else
-+		ctx->max_size = HNS_DCA_MAX_MEM_SIZE;
++The DCA memory pool consists of multiple umem objects. Each umem object is a buffer allocated in user driver and register into kernel driver. The ULP need to setup the memory pool's parameter by calling hnsdv_open_device() and the driver will expand or shrink the memory pool based on this parameter.
 +
-+	/* If not set, the memory pool cannot be shrunk. */
-+	if (attr->comp_mask & HNSDV_CONTEXT_MASK_DCA_MIN_SIZE)
-+		ctx->min_size = DIV_ROUND_UP(attr->dca_min_size,
-+					     ctx->unit_size);
-+	else
-+		ctx->min_size = HNS_DCA_MAX_MEM_SIZE;
-+}
++When a QP's DCA was enabled by setting create flags through ibv_create_qp_ex(), the WQE buffer will not be allocated directly until the ULP invokes the ibv_post_xxx(). If the memory in the pool is insufficient and the capacity expansion conditions are met, the driver will add new umem objects to the pool.
 +
-+static int init_dca_context(struct hns_roce_context *ctx, int page_size,
-+			    struct hnsdv_context_attr *attr)
- {
- 	struct hns_roce_dca_ctx *dca_ctx = &ctx->dca_ctx;
- 	int ret;
- 
--	if (!(ctx->cap_flags & HNS_ROCE_CAP_FLAG_DCA_MODE))
--		return 0;
--
-+	dca_ctx->unit_size = 0;
-+	dca_ctx->mem_cnt = 0;
- 	list_head_init(&dca_ctx->mem_list);
- 	ret = pthread_spin_init(&dca_ctx->lock, PTHREAD_PROCESS_PRIVATE);
- 	if (ret)
- 		return ret;
- 
--	dca_ctx->unit_size = page_size * HNS_DCA_DEFAULT_UNIT_PAGES;
--	dca_ctx->max_size = HNS_DCA_MAX_MEM_SIZE;
--	dca_ctx->mem_cnt = 0;
-+	if (!attr)
-+		return 0;
++When all WQEs of a QP are not used by the ROCEE after ibv_poll_cq() or ibv_modify_qp() are invoked, the WQE buffer will be reclaimed to the DCA memory pool. If the free memory in the pool meets the shrink conditions, the driver will delete the unused umem object.
 +
-+	if (!(attr->flags & HNSDV_CONTEXT_FLAGS_DCA))
-+		return 0;
++# SEE ALSO
 +
-+	set_dca_pool_param(attr, page_size, dca_ctx);
- 
- 	return 0;
- }
-@@ -133,6 +180,7 @@ static struct verbs_context *hns_roce_alloc_context(struct ibv_device *ibdev,
- 						    int cmd_fd,
- 						    void *private_data)
- {
-+	struct hnsdv_context_attr *ctx_attr = private_data;
- 	struct hns_roce_device *hr_dev = to_hr_dev(ibdev);
- 	struct hns_roce_alloc_ucontext_resp resp = {};
- 	struct ibv_device_attr dev_attrs;
-@@ -214,7 +262,7 @@ static struct verbs_context *hns_roce_alloc_context(struct ibv_device *ibdev,
- 	verbs_set_ops(&context->ibv_ctx, &hns_common_ops);
- 	verbs_set_ops(&context->ibv_ctx, &hr_dev->u_hw->hw_ops);
- 
--	if (init_dca_context(context, hr_dev->page_size))
-+	if (init_dca_context(context, hr_dev->page_size, ctx_attr))
- 		goto tptr_free;
- 
- 	return &context->ibv_ctx;
-@@ -278,4 +326,11 @@ static const struct verbs_device_ops hns_roce_dev_ops = {
- 	.uninit_device = hns_uninit_device,
- 	.alloc_context = hns_roce_alloc_context,
- };
++*hnsdv_open_device(3)*, *hnsdv_create_qp(3)*
 +
-+bool is_hns_dev(struct ibv_device *device)
-+{
-+	struct verbs_device *verbs_device = verbs_get_device(device);
++# AUTHORS
 +
-+	return verbs_device->ops == &hns_roce_dev_ops;
-+}
- PROVIDER_DRIVER(hns, hns_roce_dev_ops);
-diff --git a/providers/hns/hns_roce_u.h b/providers/hns/hns_roce_u.h
-index a488694..5c8427a 100644
---- a/providers/hns/hns_roce_u.h
-+++ b/providers/hns/hns_roce_u.h
-@@ -157,11 +157,11 @@ struct hns_roce_db_page {
- struct hns_roce_dca_ctx {
- 	struct list_head mem_list;
- 	pthread_spinlock_t lock;
-+	uint32_t unit_size;
- 	uint64_t max_size;
- 	uint64_t min_size;
- 	uint64_t curr_size;
- 	int mem_cnt;
--	unsigned int unit_size;
- };
- 
- struct hns_roce_context {
-@@ -391,6 +391,8 @@ static inline struct hns_roce_ah *to_hr_ah(struct ibv_ah *ibv_ah)
- 	return container_of(ibv_ah, struct hns_roce_ah, ibv_ah);
- }
- 
-+bool is_hns_dev(struct ibv_device *device);
++Xi Wang <wangxi11@huawei.com>
 +
- int hns_roce_u_query_device(struct ibv_context *context,
- 			    const struct ibv_query_device_ex_input *input,
- 			    struct ibv_device_attr_ex *attr, size_t attr_size);
-diff --git a/providers/hns/hns_roce_u_abi.h b/providers/hns/hns_roce_u_abi.h
-index e56f9d3..92404bc 100644
---- a/providers/hns/hns_roce_u_abi.h
-+++ b/providers/hns/hns_roce_u_abi.h
-@@ -36,6 +36,7 @@
- #include <infiniband/kern-abi.h>
- #include <rdma/hns-abi.h>
- #include <kernel-abi/hns-abi.h>
-+#include "hnsdv.h"
- 
- DECLARE_DRV_CMD(hns_roce_alloc_pd, IB_USER_VERBS_CMD_ALLOC_PD,
- 		empty, hns_roce_ib_alloc_pd_resp);
-diff --git a/providers/hns/hns_roce_u_verbs.c b/providers/hns/hns_roce_u_verbs.c
-index 21e295a..350a6d2 100644
---- a/providers/hns/hns_roce_u_verbs.c
-+++ b/providers/hns/hns_roce_u_verbs.c
-@@ -870,9 +870,21 @@ static int calc_qp_buff_size(struct hns_roce_device *hr_dev,
- 	return 0;
- }
- 
--static inline bool check_qp_support_dca(bool pool_en, enum ibv_qp_type qp_type)
-+static inline bool check_qp_support_dca(struct hns_roce_dca_ctx *dca_ctx,
-+					struct ibv_qp_init_attr_ex *attr,
-+					struct hnsdv_qp_init_attr *hns_attr)
- {
--	if (pool_en && (qp_type == IBV_QPT_RC || qp_type == IBV_QPT_XRC_SEND))
-+	/* DCA pool disable */
-+	if (!dca_ctx->unit_size)
-+		return false;
++Weihang Li <liweihang@huawei.com>
+diff --git a/providers/hns/man/hnsdv.7.md b/providers/hns/man/hnsdv.7.md
+new file mode 100644
+index 0000000..ada73ec
+--- /dev/null
++++ b/providers/hns/man/hnsdv.7.md
+@@ -0,0 +1,34 @@
++---
++layout: page
++title: HNSDV
++section: 7
++tagline: Verbs
++date: 2021-03-03
++header: "HNS Direct Verbs Manual"
++footer: hns
++---
 +
-+	/* Unsupport type */
-+	if (attr->qp_type != IBV_QPT_RC && attr->qp_type != IBV_QPT_XRC_SEND)
-+		return false;
++# NAME
 +
-+	if (hns_attr &&
-+	    (hns_attr->comp_mask & HNSDV_QP_INIT_ATTR_MASK_QP_CREATE_FLAGS) &&
-+	    (hns_attr->create_flags & HNSDV_QP_CREATE_DYNAMIC_CONTEXT_ATTACH))
- 		return true;
- 
- 	return false;
-@@ -890,6 +902,7 @@ static void qp_free_wqe(struct hns_roce_qp *qp)
- }
- 
- static int qp_alloc_wqe(struct ibv_qp_init_attr_ex *attr,
-+			struct hnsdv_qp_init_attr *hns_attr,
- 			struct hns_roce_qp *qp, struct hns_roce_context *ctx)
- {
- 	struct hns_roce_device *hr_dev = to_hr_dev(ctx->ibv_ctx.context.device);
-@@ -912,7 +925,7 @@ static int qp_alloc_wqe(struct ibv_qp_init_attr_ex *attr,
- 			goto err_alloc;
- 	}
- 
--	if (check_qp_support_dca(ctx->dca_ctx.max_size != 0, attr->qp_type)) {
-+	if (check_qp_support_dca(&ctx->dca_ctx, attr, hns_attr)) {
- 		/* when DCA is enabled, use a buffer list to store page addr */
- 		qp->buf.buf = NULL;
- 		qp->page_list.max_cnt = hr_hw_page_count(qp->buf_size);
-@@ -1134,6 +1147,7 @@ void hns_roce_free_qp_buf(struct hns_roce_qp *qp, struct hns_roce_context *ctx)
- }
- 
- static int hns_roce_alloc_qp_buf(struct ibv_qp_init_attr_ex *attr,
-+				 struct hnsdv_qp_init_attr *hns_attr,
- 				 struct hns_roce_qp *qp,
- 				 struct hns_roce_context *ctx)
- {
-@@ -1143,7 +1157,7 @@ static int hns_roce_alloc_qp_buf(struct ibv_qp_init_attr_ex *attr,
- 	    pthread_spin_init(&qp->rq.lock, PTHREAD_PROCESS_PRIVATE))
- 		return -ENOMEM;
- 
--	ret = qp_alloc_wqe(attr, qp, ctx);
-+	ret = qp_alloc_wqe(attr, hns_attr, qp, ctx);
- 	if (ret)
- 		return ret;
- 
-@@ -1155,7 +1169,8 @@ static int hns_roce_alloc_qp_buf(struct ibv_qp_init_attr_ex *attr,
- }
- 
- static struct ibv_qp *create_qp(struct ibv_context *ibv_ctx,
--				struct ibv_qp_init_attr_ex *attr)
-+				struct ibv_qp_init_attr_ex *attr,
-+				struct hnsdv_qp_init_attr *hns_attr)
- {
- 	struct hns_roce_context *context = to_hr_ctx(ibv_ctx);
- 	struct hns_roce_qp *qp;
-@@ -1173,7 +1188,7 @@ static struct ibv_qp *create_qp(struct ibv_context *ibv_ctx,
- 
- 	hns_roce_set_qp_params(attr, qp, context);
- 
--	ret = hns_roce_alloc_qp_buf(attr, qp, context);
-+	ret = hns_roce_alloc_qp_buf(attr, hns_attr, qp, context);
- 	if (ret)
- 		goto err_buf;
- 
-@@ -1213,7 +1228,7 @@ struct ibv_qp *hns_roce_u_create_qp(struct ibv_pd *pd,
- 	attrx.comp_mask = IBV_QP_INIT_ATTR_PD;
- 	attrx.pd = pd;
- 
--	qp = create_qp(pd->context, &attrx);
-+	qp = create_qp(pd->context, &attrx, NULL);
- 	if (qp)
- 		memcpy(attr, &attrx, sizeof(*attr));
- 
-@@ -1223,7 +1238,19 @@ struct ibv_qp *hns_roce_u_create_qp(struct ibv_pd *pd,
- struct ibv_qp *hns_roce_u_create_qp_ex(struct ibv_context *context,
- 				       struct ibv_qp_init_attr_ex *attr)
- {
--	return create_qp(context, attr);
-+	return create_qp(context, attr, NULL);
-+}
++hnsdv - Direct verbs for hns devices
++
++This provides low level access to hns devices to perform direct operations,
++without general branching performed by libibverbs.
++
++# DESCRIPTION
++
++The libibverbs API is an abstract one. It is agnostic to any underlying provider specific implementation. While this abstraction has the advantage of user applications portability, it has a performance penalty. For some applications optimizing performance is more important than portability.
++
++The hns direct verbs API is intended for such applications. It exposes hns specific low level operations, allowing the application to bypass the libibverbs API.
++
++The direct include of hnsdv.h together with linkage to hns library will allow usage of this new interface.
++
++# SEE ALSO
++
++**verbs**(7)
++
++# AUTHORS
++
++Xi Wang <wangxi11@huawei.com>
++
++Weihang Li <liweihang@huawei.com>
+diff --git a/providers/hns/man/hnsdv_create_qp.3.md b/providers/hns/man/hnsdv_create_qp.3.md
+new file mode 100644
+index 0000000..57446e9
+--- /dev/null
++++ b/providers/hns/man/hnsdv_create_qp.3.md
+@@ -0,0 +1,69 @@
++---
++layout: page
++title: hnsdv_create_qp
++section: 3
++tagline: Verbs
++date: 2021-3-15
++header: "hns Programmer's Manual"
++footer: hns
++---
++
++# NAME
++
++hnsdv_create_qp - creates a queue pair (QP)
++
++# SYNOPSIS
++
++```c
++#include <infiniband/hnsdv.h>
 +
 +struct ibv_qp *hnsdv_create_qp(struct ibv_context *context,
-+			       struct ibv_qp_init_attr_ex *qp_attr,
++			       struct ibv_qp_init_attr_ex *attr,
 +			       struct hnsdv_qp_init_attr *hns_attr)
-+{
-+	if (!is_hns_dev(context->device)) {
-+		errno = EOPNOTSUPP;
-+		return NULL;
-+	}
++```
 +
-+	return create_qp(context, qp_attr, hns_attr);
- }
- 
- struct ibv_qp *hns_roce_u_open_qp(struct ibv_context *context,
-diff --git a/providers/hns/hnsdv.h b/providers/hns/hnsdv.h
++
++# DESCRIPTION
++
++**hnsdv_create_qp()** creates a queue pair (QP) with specific driver properties.
++
++# ARGUMENTS
++
++Please see *ibv_create_qp_ex(3)* man page for *context* and *attr*.
++
++## hns_attr
++
++```c
++struct hnsdv_qp_init_attr {
++	uint64_t comp_mask;
++	uint32_t create_flags;
++};
++```
++
++*comp_mask*
++:	Bitmask specifying what fields in the structure are valid:
++	HNSDV_QP_INIT_ATTR_MASK_QP_CREATE_FLAGS:
++		valid values in *create_flags*
++
++*create_flags*
++:	A bitwise OR of the various values described below.
++
++	HNSDV_QP_CREATE_DYNAMIC_CONTEXT_ATTACH :
++		Enable DCA feature for QP, the WQE buffer will allocate
++		from DCA memory pool when calling ibv_post_send() or
++		ibv_post_recv().
++
++# RETURN VALUE
++
++**hnsdv_create_qp()**
++returns a pointer to the created QP, on error NULL will be returned and errno will be set.
++
++# SEE ALSO
++
++**ibv_create_qp_ex**(3),
++
++# AUTHOR
++
++Xi Wang <wangxi11@huawei.com>
++
++Weihang Li <liweihang@huawei.com>
+diff --git a/providers/hns/man/hnsdv_is_supported.3.md b/providers/hns/man/hnsdv_is_supported.3.md
 new file mode 100644
-index 0000000..876183b
+index 0000000..b5f00bd
 --- /dev/null
-+++ b/providers/hns/hnsdv.h
-@@ -0,0 +1,61 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
-+/*
-+ * Copyright (c) 2021 Hisilicon Limited.
-+ */
++++ b/providers/hns/man/hnsdv_is_supported.3.md
+@@ -0,0 +1,39 @@
++---
++layout: page
++title: hnsdv_is_supported
++section: 3
++tagline: Verbs
++---
 +
-+#ifndef __HNSDV_H__
-+#define __HNSDV_H__
++# NAME
 +
-+#include <stdio.h>
-+#include <sys/types.h>
++hnsdv_is_supported - Check whether an RDMA device implemented by the hns provider
 +
-+#include <infiniband/verbs.h>
++# SYNOPSIS
 +
-+#ifdef __cplusplus
-+extern "C" {
-+#endif
++```c
++#include <infiniband/hnsdv.h>
 +
-+enum hnsdv_context_attr_flags {
-+	HNSDV_CONTEXT_FLAGS_DCA = 1 << 0,
-+};
++bool hnsdv_is_supported(struct ibv_device *device);
++```
 +
-+enum hnsdv_context_comp_mask {
-+	HNSDV_CONTEXT_MASK_DCA_UNIT_SIZE = 1 << 0,
-+	HNSDV_CONTEXT_MASK_DCA_MAX_SIZE = 1 << 1,
-+	HNSDV_CONTEXT_MASK_DCA_MIN_SIZE = 1 << 2,
-+};
++# DESCRIPTION
 +
++hnsdv functions may be called only if this function returns true for the RDMA device.
++
++# ARGUMENTS
++
++*device*
++:	RDMA device to check.
++
++# RETURN VALUE
++
++Returns true if device is implemented by hns provider.
++
++# SEE ALSO
++
++*hnsdv(7)*
++
++# AUTHOR
++
++Xi Wang <wangxi11@huawei.com>
+diff --git a/providers/hns/man/hnsdv_open_device.3.md b/providers/hns/man/hnsdv_open_device.3.md
+new file mode 100644
+index 0000000..c05ce5d
+--- /dev/null
++++ b/providers/hns/man/hnsdv_open_device.3.md
+@@ -0,0 +1,70 @@
++---
++layout: page
++title: hnsdv_open_device
++section: 3
++tagline: Verbs
++---
++
++# NAME
++
++hnsdv_open_device - Open an RDMA device context for the hns provider
++
++# SYNOPSIS
++
++```c
++#include <infiniband/hnsdv.h>
++
++struct ibv_context *
++hnsdv_open_device(struct ibv_device *device, struct hnsdv_context_attr *attr);
++```
++
++# DESCRIPTION
++
++Open an RDMA device context with specific hns provider attributes.
++
++# ARGUMENTS
++
++*device*
++:	RDMA device to open.
++
++## *attr* argument
++
++```c
 +struct hnsdv_context_attr {
-+	uint32_t flags; /* Use enum hnsdv_context_attr_flags */
-+	uint64_t comp_mask; /* Use enum hnsdv_context_comp_mask */
++        uint32_t flags;
++        uint64_t comp_mask;
 +	uint32_t dca_unit_size;
 +	uint64_t dca_max_size;
 +	uint64_t dca_min_size;
 +};
++```
 +
-+bool hnsdv_is_supported(struct ibv_device *device);
-+struct ibv_context *hnsdv_open_device(struct ibv_device *device,
-+				      struct hnsdv_context_attr *attr);
++*flags*
++:       A bitwise OR of the various values described below.
 +
-+enum hnsdv_qp_create_flags {
-+	HNSDV_QP_CREATE_DYNAMIC_CONTEXT_ATTACH = 1 << 0,
-+};
++        *HNSDV_CONTEXT_FLAGS_DCA*:
++        Create a DCA memory pool to support all QPs share it.
 +
-+enum hnsdv_qp_init_attr_mask {
-+	HNSDV_QP_INIT_ATTR_MASK_QP_CREATE_FLAGS	= 1 << 0,
-+};
++*comp_mask*
++:       Bitmask specifying what fields in the structure are valid
 +
-+struct hnsdv_qp_init_attr {
-+	uint64_t comp_mask;	/* Use enum hnsdv_qp_init_attr_mask */
-+	uint32_t create_flags;	/* Use enum hnsdv_qp_create_flags */
-+};
++*dca_unit_size*
++:       The unit size when adding a new buffer to DCA memory pool.
 +
-+struct ibv_qp *hnsdv_create_qp(struct ibv_context *context,
-+			       struct ibv_qp_init_attr_ex *qp_attr,
-+			       struct hnsdv_qp_init_attr *hns_qp_attr);
++*dca_max_size*
++:       The DCA pool will be expanded when the total size is smaller than maximal size.
 +
-+#ifdef __cplusplus
-+}
-+#endif
++*dca_min_size*
++:       The DCA pool will be shrunk when the free size is bigger than minimal size.
 +
-+#endif /* __HNSDV_H__ */
-diff --git a/providers/hns/libhns.map b/providers/hns/libhns.map
-new file mode 100644
-index 0000000..aed491c
---- /dev/null
-+++ b/providers/hns/libhns.map
-@@ -0,0 +1,9 @@
-+/* Export symbols should be added below according to
-+   Documentation/versioning.md document. */
-+HNS_1.0 {
-+	global:
-+		hnsdv_is_supported;
-+		hnsdv_open_device;
-+		hnsdv_create_qp;
-+	local: *;
-+};
++# RETURN VALUE
++
++Returns a pointer to the allocated device context, or NULL if the request fails.
++
++# SEE ALSO
++
++*hnsdv_create_qp(3)*, *hns_dca(7)*
++
++# AUTHOR
++
++Xi Wang <wangxi11@huawei.com>
 diff --git a/redhat/rdma-core.spec b/redhat/rdma-core.spec
-index 207859d..e1dda8f 100644
+index e1dda8f..fcbec50 100644
 --- a/redhat/rdma-core.spec
 +++ b/redhat/rdma-core.spec
-@@ -151,6 +151,8 @@ Provides: libefa = %{version}-%{release}
- Obsoletes: libefa < %{version}-%{release}
- Provides: libhfi1 = %{version}-%{release}
- Obsoletes: libhfi1 < %{version}-%{release}
-+Provides: libhns = %{version}-%{release}
-+Obsoletes: libhns < %{version}-%{release}
- Provides: libi40iw = %{version}-%{release}
- Obsoletes: libi40iw < %{version}-%{release}
- Provides: libipathverbs = %{version}-%{release}
-@@ -178,7 +180,7 @@ Device-specific plug-in ibverbs userspace drivers are included:
- - libcxgb4: Chelsio T4 iWARP HCA
- - libefa: Amazon Elastic Fabric Adapter
- - libhfi1: Intel Omni-Path HFI
--- libhns: HiSilicon Hip06 SoC
-+- libhns: HiSilicon Hip06+ SoC
- - libi40iw: Intel Ethernet Connection X722 RDMA
- - libipathverbs: QLogic InfiniPath HCA
- - libmlx4: Mellanox ConnectX-3 InfiniBand HCA
-@@ -563,6 +565,7 @@ fi
- %dir %{_sysconfdir}/libibverbs.d
- %dir %{_libdir}/libibverbs
- %{_libdir}/libefa.so.*
-+%{_libdir}/libhns.so.*
- %{_libdir}/libibverbs*.so.*
- %{_libdir}/libibverbs/*.so
- %{_libdir}/libmlx5.so.*
-diff --git a/suse/rdma-core.spec b/suse/rdma-core.spec
-index db6a361..1c14773 100644
---- a/suse/rdma-core.spec
-+++ b/suse/rdma-core.spec
-@@ -30,6 +30,7 @@ License:        GPL-2.0-only OR BSD-2-Clause
- Group:          Productivity/Networking/Other
- 
- %define efa_so_major    1
-+%define hns_so_major    1
- %define verbs_so_major  1
- %define rdmacm_so_major 1
- %define umad_so_major   3
-@@ -39,6 +40,7 @@ Group:          Productivity/Networking/Other
- %define mad_major       5
- 
- %define  efa_lname    libefa%{efa_so_major}
-+%define  hns_lname    libhns%{hns_so_major}
- %define  verbs_lname  libibverbs%{verbs_so_major}
- %define  rdmacm_lname librdmacm%{rdmacm_so_major}
- %define  umad_lname   libibumad%{umad_so_major}
-@@ -145,6 +147,7 @@ Requires:       %{umad_lname} = %{version}-%{release}
- Requires:       %{verbs_lname} = %{version}-%{release}
- %if 0%{?dma_coherent}
- Requires:       %{efa_lname} = %{version}-%{release}
-+Requires:       %{hns_lname} = %{version}-%{release}
- Requires:       %{mlx4_lname} = %{version}-%{release}
- Requires:       %{mlx5_lname} = %{version}-%{release}
- %endif
-@@ -185,6 +188,7 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
- Obsoletes:      libcxgb4-rdmav2 < %{version}-%{release}
- Obsoletes:      libefa-rdmav2 < %{version}-%{release}
- Obsoletes:      libhfi1verbs-rdmav2 < %{version}-%{release}
-+Obsoletes:      libhns-rdmav2 < %{version}-%{release}
- Obsoletes:      libi40iw-rdmav2 < %{version}-%{release}
- Obsoletes:      libipathverbs-rdmav2 < %{version}-%{release}
- Obsoletes:      libmlx4-rdmav2 < %{version}-%{release}
-@@ -194,6 +198,7 @@ Obsoletes:      libocrdma-rdmav2 < %{version}-%{release}
- Obsoletes:      librxe-rdmav2 < %{version}-%{release}
- %if 0%{?dma_coherent}
- Requires:       %{efa_lname} = %{version}-%{release}
-+Requires:       %{hns_lname} = %{version}-%{release}
- Requires:       %{mlx4_lname} = %{version}-%{release}
- Requires:       %{mlx5_lname} = %{version}-%{release}
- %endif
-@@ -212,7 +217,7 @@ Device-specific plug-in ibverbs userspace drivers are included:
- - libcxgb4: Chelsio T4 iWARP HCA
- - libefa: Amazon Elastic Fabric Adapter
- - libhfi1: Intel Omni-Path HFI
--- libhns: HiSilicon Hip06 SoC
-+- libhns: HiSilicon Hip06+ SoC
- - libi40iw: Intel Ethernet Connection X722 RDMA
- - libipathverbs: QLogic InfiniPath HCA
- - libmlx4: Mellanox ConnectX-3 InfiniBand HCA
-@@ -239,6 +244,13 @@ Group:          System/Libraries
- %description -n %efa_lname
- This package contains the efa runtime library.
- 
-+%package -n %hns_lname
-+Summary:        HNS runtime library
-+Group:          System/Libraries
-+
-+%description -n %hns_lname
-+This package contains the hns runtime library.
-+
- %package -n %mlx4_lname
- Summary:        MLX4 runtime library
- Group:          System/Libraries
-@@ -482,6 +494,9 @@ rm -rf %{buildroot}/%{_sbindir}/srp_daemon.sh
- %post -n %efa_lname -p /sbin/ldconfig
- %postun -n %efa_lname -p /sbin/ldconfig
- 
-+%post -n %hns_lname -p /sbin/ldconfig
-+%postun -n %hns_lname -p /sbin/ldconfig
-+
- %post -n %mlx4_lname -p /sbin/ldconfig
- %postun -n %mlx4_lname -p /sbin/ldconfig
- 
-@@ -664,6 +679,10 @@ rm -rf %{buildroot}/%{_sbindir}/srp_daemon.sh
- %defattr(-,root,root)
- %{_libdir}/libefa*.so.*
- 
-+%files -n %hns_lname
-+%defattr(-,root,root)
-+%{_libdir}/libhns*.so.*
-+
- %files -n %mlx4_lname
- %defattr(-,root,root)
- %{_libdir}/libmlx4*.so.*
+@@ -440,6 +440,7 @@ fi
+ %{_libdir}/lib*.so
+ %{_libdir}/pkgconfig/*.pc
+ %{_mandir}/man3/efadv*
++%{_mandir}/man3/hns*
+ %{_mandir}/man3/ibv_*
+ %{_mandir}/man3/rdma*
+ %{_mandir}/man3/umad*
+@@ -448,6 +449,7 @@ fi
+ %{_mandir}/man3/mlx5dv*
+ %{_mandir}/man3/mlx4dv*
+ %{_mandir}/man7/efadv*
++%{_mandir}/man7/hns*
+ %{_mandir}/man7/mlx5dv*
+ %{_mandir}/man7/mlx4dv*
+ %{_mandir}/man3/ibnd_*
 -- 
 2.7.4
 
