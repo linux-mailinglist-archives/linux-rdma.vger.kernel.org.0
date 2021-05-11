@@ -2,115 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E0D37A3DE
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 May 2021 11:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1067E37A4AE
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 May 2021 12:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbhEKJik (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 May 2021 05:38:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52066 "EHLO mail.kernel.org"
+        id S230188AbhEKKhs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 May 2021 06:37:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230434AbhEKJif (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 11 May 2021 05:38:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A14E161925;
-        Tue, 11 May 2021 09:37:20 +0000 (UTC)
+        id S229892AbhEKKhs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 11 May 2021 06:37:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59523615FF;
+        Tue, 11 May 2021 10:36:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620725848;
-        bh=6o759ShUxJ4M0iPoewavcBs0joP5lvg0/UyuatoupKw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VmShZQzrJkNUYpzDiT8lkPsxOAMSd9Mve7i5gQll5qndGWVpx/umg+CXxAKGpoNMA
-         r3FMkUmVknRLOM40Or9NWwNOL92NSwkHrq/d0ndNeQRTu32uCCDHx2IbSd5VG2b4ul
-         nosZAixjCj57nhk32NpeqSVxAJnPk2eny4EB88KTc/gQGnVuXNqo0yWlzvNXSmu4ZF
-         mRycl9aLbRnBPpCgKOBrtmqpOvb6P16yZBfRn67Vau0A0Tq2FleVuS/QpC4INaUcg7
-         P/ifJQg2MpIKloJneBuh4wLQ19EHMgDmJrDBTumwAHsRVeIkB/VjkEIaNgqi+q08au
-         3pae3xKzjvu8Q==
-Date:   Tue, 11 May 2021 11:37:17 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
-        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fpga@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
-        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 00/53] Get rid of UTF-8 chars that can be mapped as
- ASCII
-Message-ID: <20210511113717.5c8b68f7@coco.lan>
-In-Reply-To: <YJmH2irxoRsyNudb@mit.edu>
-References: <cover.1620641727.git.mchehab+huawei@kernel.org>
-        <2ae366fdff4bd5910a2270823e8da70521c859af.camel@infradead.org>
-        <20210510135518.305cc03d@coco.lan>
-        <de6d1fa5b7934f4afd61370d9c58502bef588466.camel@infradead.org>
-        <YJmH2irxoRsyNudb@mit.edu>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        s=k20201202; t=1620729402;
+        bh=iCwCQzeBxnPwWxyhinRtYJkB1sfSkl6qO8qDvw0ZQO8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XnhL6csMuWFtiWEWUZ4vgXc6NU3TJTkXcKQbgyaFonBegnJxgzy78BcxKJulMxl1f
+         qL/AgUDGdDKpohj+/r7atMB/VhqaaNTCBu5k53DiBW99xXYiWnyoXUKtmDpYZChwmB
+         I1u4kU+j8x2owZrSYWpLDX4ooOOCokiPnCKVy99Iv6DFH8zcVY/BKL4dxvKLz1Ghy8
+         pkZ3LI+h0U6O+CxSffp3O3IG8vB8aiHV6kMf1yIux2+kOiuKV+5NlDT5buDTPUOpCw
+         PafDBow0rVVionHo72Ty2UqbLuh09oEBKW2RYbY9y+CnnPusUaOJI7zp6xZZgEsZvJ
+         G5FZ+RwYA7SdQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Subject: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists allocations
+Date:   Tue, 11 May 2021 13:36:36 +0300
+Message-Id: <c34a864803f9bbd33d3f856a6ba2dd595ab708a7.1620729033.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Em Mon, 10 May 2021 15:22:02 -0400
-"Theodore Ts'o" <tytso@mit.edu> escreveu:
+From: Leon Romanovsky <leonro@nvidia.com>
 
-> On Mon, May 10, 2021 at 02:49:44PM +0100, David Woodhouse wrote:
-> > On Mon, 2021-05-10 at 13:55 +0200, Mauro Carvalho Chehab wrote: =20
-> > > This patch series is doing conversion only when using ASCII makes
-> > > more sense than using UTF-8.=20
-> > >=20
-> > > See, a number of converted documents ended with weird characters
-> > > like ZERO WIDTH NO-BREAK SPACE (U+FEFF) character. This specific
-> > > character doesn't do any good.
-> > >=20
-> > > Others use NO-BREAK SPACE (U+A0) instead of 0x20. Harmless, until
-> > > someone tries to use grep[1]. =20
-> >=20
-> > Replacing those makes sense. But replacing emdashes =E2=80=94 which are=
- a
-> > distinct character that has no direct replacement in ASCII and which
-> > people do *deliberately* use instead of hyphen-minus =E2=80=94 does not=
-. =20
->=20
-> I regularly use --- for em-dashes and -- for en-dashes.  Markdown will
-> automatically translate 3 ASCII hypens to em-dashes, and 2 ASCII
-> hyphens to en-dashes.  It's much, much easier for me to type 2 or 3
-> hypens into my text editor of choice than trying to enter the UTF-8
-> characters.=20
+The rdmavt QP has fields that are both needed for the control and data
+path. Such mixed declaration caused to the very specific allocation flow
+with kzalloc_node and SGE list embedded into the struct rvt_qp.
 
-Yeah, typing those UTF-8 chars are a lot harder than typing -- and ---
-on several text editors ;-)
+This patch separates QP creation to two: regular memory allocation for
+the control path and specific code for the SGE list, while the access to
+the later is performed through derefenced pointer.
 
-Here, I only type UTF-8 chars for accents (my US-layout keyboards are=20
-all set to US international, so typing those are easy).
+Such pointer and its context are expected to be in the cache, so
+performance difference is expected to be negligible, if any exists.
 
-> If we can make sphinx do this translation, maybe that's
-> the best way of dealing with these two characters?
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+Hi,
 
-Sphinx already does that by default[1], using smartquotes:
+This change is needed to convert QP to core allocation scheme. In that
+scheme QP is allocated outside of the driver and size of such allocation
+is constant and can be calculated at the compile time.
 
-	https://docutils.sourceforge.io/docs/user/smartquotes.html
+Thanks
+---
+ drivers/infiniband/sw/rdmavt/qp.c | 13 ++++++++-----
+ include/rdma/rdmavt_qp.h          |  2 +-
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
-Those are the conversions that are done there:
+diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+index 9d13db68283c..4522071fc220 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -1077,7 +1077,7 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 	int err;
+ 	struct rvt_swqe *swq = NULL;
+ 	size_t sz;
+-	size_t sg_list_sz;
++	size_t sg_list_sz = 0;
+ 	struct ib_qp *ret = ERR_PTR(-ENOMEM);
+ 	struct rvt_dev_info *rdi = ib_to_rvt(ibpd->device);
+ 	void *priv = NULL;
+@@ -1125,8 +1125,6 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 		if (!swq)
+ 			return ERR_PTR(-ENOMEM);
+ 
+-		sz = sizeof(*qp);
+-		sg_list_sz = 0;
+ 		if (init_attr->srq) {
+ 			struct rvt_srq *srq = ibsrq_to_rvtsrq(init_attr->srq);
+ 
+@@ -1136,10 +1134,13 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 		} else if (init_attr->cap.max_recv_sge > 1)
+ 			sg_list_sz = sizeof(*qp->r_sg_list) *
+ 				(init_attr->cap.max_recv_sge - 1);
+-		qp = kzalloc_node(sz + sg_list_sz, GFP_KERNEL,
+-				  rdi->dparms.node);
++		qp = kzalloc(sizeof(*qp), GFP_KERNEL);
+ 		if (!qp)
+ 			goto bail_swq;
++		qp->r_sg_list =
++			kzalloc_node(sg_list_sz, GFP_KERNEL, rdi->dparms.node);
++		if (!qp->r_sg_list)
++			goto bail_qp;
+ 		qp->allowed_ops = get_allowed_ops(init_attr->qp_type);
+ 
+ 		RCU_INIT_POINTER(qp->next, NULL);
+@@ -1327,6 +1328,7 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 
+ bail_qp:
+ 	kfree(qp->s_ack_queue);
++	kfree(qp->r_sg_list);
+ 	kfree(qp);
+ 
+ bail_swq:
+@@ -1761,6 +1763,7 @@ int rvt_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ 	kvfree(qp->r_rq.kwq);
+ 	rdi->driver_f.qp_priv_free(rdi, qp);
+ 	kfree(qp->s_ack_queue);
++	kfree(qp->r_sg_list);
+ 	rdma_destroy_ah_attr(&qp->remote_ah_attr);
+ 	rdma_destroy_ah_attr(&qp->alt_ah_attr);
+ 	free_ud_wq_attr(qp);
+diff --git a/include/rdma/rdmavt_qp.h b/include/rdma/rdmavt_qp.h
+index 8275954f5ce6..2e58d5e6ac0e 100644
+--- a/include/rdma/rdmavt_qp.h
++++ b/include/rdma/rdmavt_qp.h
+@@ -444,7 +444,7 @@ struct rvt_qp {
+ 	/*
+ 	 * This sge list MUST be last. Do not add anything below here.
+ 	 */
+-	struct rvt_sge r_sg_list[] /* verified SGEs */
++	struct rvt_sge *r_sg_list /* verified SGEs */
+ 		____cacheline_aligned_in_smp;
+ };
+ 
+-- 
+2.31.1
 
-      - Straight quotes (" and ') turned into "curly" quote characters;
-      - dashes (-- and ---) turned into en- and em-dash entities;
-      - three consecutive dots (... or . . .) turned into an ellipsis char.
-
-So, we can simply use single/double commas, hyphens and dots for
-curly commas and ellipses.
-
-[1] There's a way to disable it at conf.py, but at the Kernel this is
-    kept on its default: to automatically do such conversions.=20
-
-Thanks,
-Mauro
