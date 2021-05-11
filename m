@@ -2,332 +2,189 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A0837A214
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 May 2021 10:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FAD37A258
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 May 2021 10:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhEKIcj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 May 2021 04:32:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230473AbhEKIci (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 11 May 2021 04:32:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41C706193D;
-        Tue, 11 May 2021 08:23:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620721395;
-        bh=KRSlpw7GAj/rToMbf95w4v5XrJqIGcof7/1rcJHrlf4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VuVwa5QjzwQnG6atHOCTyaqkjV50X8rEfq2lHabDiyanJS+MSSjDbYOpeqeD2ljW+
-         KgRTPo7xc0LrqTG6MpqU5pjFeGcQZZPxzI76ETa4ZyTezoa/7zzoCuOaZuFQUt07D3
-         Nl8qj/OhhpOgLMB/L9QsOVegvN/+wz4IS8cgp9zTP2OyoaoNZGqJGC505/SgklCfPX
-         v4bdVhL5BTj8PWevAosqcOEbmq+MrZeufjd4Wv6JB5jOheCVil2cnRFAKZ67/SXHai
-         rYwd/+HdJYjc19H43nOahuN6jSgUewXG/YzK/woQWviXXBaEWxV766FNM+s9TrYmFe
-         VGUNnW9KDFjqQ==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Mark Zhang <markzhang@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Sean Hefty <sean.hefty@intel.com>
-Subject: [PATCH rdma-next v3 8/8] IB/cm: Protect cm_dev, cm_ports and mad_agent with kref and lock
-Date:   Tue, 11 May 2021 11:22:12 +0300
-Message-Id: <7ca9e316890a3755abadefdd7fe3fc1dc4a1e79f.1620720467.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1620720467.git.leonro@nvidia.com>
-References: <cover.1620720467.git.leonro@nvidia.com>
+        id S230442AbhEKImh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 May 2021 04:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230338AbhEKImg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 May 2021 04:42:36 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837FAC061760
+        for <linux-rdma@vger.kernel.org>; Tue, 11 May 2021 01:41:30 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id j26so18219756edf.9
+        for <linux-rdma@vger.kernel.org>; Tue, 11 May 2021 01:41:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DBeVQ+DbzVOqheKpDE6b/l8xGHNgrrKmzCyeg4MY9MM=;
+        b=H3Vh0QtHbME6isjyak/fqgO1goM8VONv7XU0YXMAPQLdU6UuWv+3oBPI7jY4t2CneN
+         SMOLlmHljBNrs5MNsFp9KmTtTgcZjgAILR6/z0e9S+esC5zunVNqcbjGbksG5i9kfqXY
+         rvoSyY0KFxeVSUWRAMZlfhOOPc5ZgRVGbosfSdzAyX+Al6QmkNZbpVgfycj18NeTncEg
+         I6LAlWymuOFttSd3GMTry/9cWsWU/pTXXw8FKcbou7hoGgzDuzEA7Tdswuy6o3EcNH3T
+         lSDrAwZIAkrCgJd1FkzdDnpFdMBSK/w+j2AjZ6QJkgnqvZi5kcqPY+tEWFr2jycq0CfH
+         7h6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DBeVQ+DbzVOqheKpDE6b/l8xGHNgrrKmzCyeg4MY9MM=;
+        b=rm3dUxltEfQ9BaVpUFP1nkrGYtcRKItv6/Tu9/QLf5k4WTvRyeQqKYUQEa2dfu75s7
+         a9wzS2b4VMxkdud0b/bcNEls6ZEVyzsCol2kXiIVYo5h4PrnQlJImEdbcFGfGoR/W8CX
+         8O7joR1jlL/MmGS0rk/1LgbjNzBp/JKmszfuDTVGgC7SsW23DBs0/DqdW3EbYD1mZgoX
+         Cve6z7Q6KfnHSieFhzLpQmSEzkxKilDgXmZFDpShtJiJI+DUHw1iHu6xDH/hbNNWnI8F
+         8w3cFaVGltCQPperu+ch8ht1VGKHcxZNGTXf/Juyp67hvXmar1GKNrOIuqsqvkokbseA
+         Oyfg==
+X-Gm-Message-State: AOAM532Rk9SYsv7otFM/6ztWfMqvhp6KCJnuLpLtkMGRfqV2I/zxsf8V
+        stN7DGYECuBbhOKueL616RC3BQ==
+X-Google-Smtp-Source: ABdhPJyk1DjUXXkr6mF3j2Ysv/fMzGsrok8fiyPMtBUheYMHXlhk4hlvbY3ypUShk/aetQ5cK9agQA==
+X-Received: by 2002:aa7:c390:: with SMTP id k16mr31251270edq.97.1620722489173;
+        Tue, 11 May 2021 01:41:29 -0700 (PDT)
+Received: from apalos.home ([94.69.77.156])
+        by smtp.gmail.com with ESMTPSA id w6sm8263246edc.25.2021.05.11.01.41.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 01:41:28 -0700 (PDT)
+Date:   Tue, 11 May 2021 11:41:23 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Shay Agroskin <shayagr@amazon.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev@vger.kernel.org, linux-mm@kvack.org,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
+Message-ID: <YJpDMwhX3OJrdjDd@apalos.home>
+References: <YIsAIzecktXXBlxn@apalos.home>
+ <9bf7c5b3-c3cf-e669-051f-247aa8df5c5a@huawei.com>
+ <YIwvI5/ygBvZG5sy@apalos.home>
+ <33b02220-cc50-f6b2-c436-f4ec041d6bc4@huawei.com>
+ <YJPn5t2mdZKC//dp@apalos.home>
+ <75a332fa-74e4-7b7b-553e-3a1a6cb85dff@huawei.com>
+ <YJTm4uhvqCy2lJH8@apalos.home>
+ <bdd97ac5-f932-beec-109e-ace9cd62f661@huawei.com>
+ <20210507121953.59e22aa8@carbon>
+ <pj41zl4kfclce0.fsf@u570694869fb251.ant.amazon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <pj41zl4kfclce0.fsf@u570694869fb251.ant.amazon.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mark Zhang <markzhang@nvidia.com>
+Hi Shay,
 
-During cm_dev deregistration in cm_remove_one(), the cm_device and
-cm_ports will be freed, after that they should not be accessed. The
-mad_agent needs to be protected as well.
+On Sun, May 09, 2021 at 08:11:35AM +0300, Shay Agroskin wrote:
+> 
+> Jesper Dangaard Brouer <brouer@redhat.com> writes:
+> 
+> > On Fri, 7 May 2021 16:28:30 +0800
+> > Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> > 
+> > > On 2021/5/7 15:06, Ilias Apalodimas wrote:
+> > > > On Fri, May 07, 2021 at 11:23:28AM +0800, Yunsheng Lin wrote:  >>
+> > > On 2021/5/6 20:58, Ilias Apalodimas wrote:  >>>>>>  >>>>>
+> > ...
+> > > > > > I think both choices are sane.  What I am trying to explain >
+> > > here, is
+> > > > regardless of what we choose now, we can change it in the > future
+> > > without
+> > > > affecting the API consumers at all.  What will change > internally
+> > > is the way we
+> > > > lookup the page pool pointer we are trying to recycle.
+> > > 
+> > > It seems the below API need changing?
+> > > +static inline void skb_mark_for_recycle(struct sk_buff *skb, struct
+> > > page *page,
+> > > +					struct xdp_mem_info *mem)
+> > 
+> > I don't think we need to change this API, to support future memory
+> > models.  Notice that xdp_mem_info have a 'type' member.
+> 
+> Hi,
+> Providing that we will (possibly as a future optimization) store the pointer
+> to the page pool in struct page instead of strcut xdp_mem_info, passing
+> xdp_mem_info * instead of struct page_pool * would mean that for every
+> packet we'll need to call
+>             xa = rhashtable_lookup(mem_id_ht, &mem->id,
+> mem_id_rht_params);
+>             xa->page_pool;
+> 
+> which might pressure the Dcache to fetch a pointer that might be present
+> already in cache as part of driver's data-structures.
+> 
+> I tend to agree with Yunsheng that it makes more sense to adjust the API for
+> the clear use-case now rather than using xdp_mem_info indirection. It seems
+> to me like
+> the page signature provides the same information anyway and allows to
+> support different memory types.
 
-This patch adds a cm_device kref to protect cm_dev and cm_ports, and
-a mad_agent_lock spinlock to protect mad_agent.
+We've switched the patches already.  We didn't notice any performance boost
+by doing so (tested on a machiattobin), but I agree as well.  As I
+explained the only thing that will change if we ever the need the struct
+xdp_mem_info in struct page is the internal contract between struct page
+and the recycling function, so let's start clean and see if we ever need
+that.
 
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Mark Zhang <markzhang@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/cm.c | 112 +++++++++++++++++++++++++++++------
- 1 file changed, 93 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 2e4658795e8e..292f1639e8b0 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -205,7 +205,9 @@ struct cm_port {
- };
- 
- struct cm_device {
-+	struct kref kref;
- 	struct list_head list;
-+	spinlock_t mad_agent_lock;
- 	struct ib_device *ib_device;
- 	u8 ack_delay;
- 	int going_down;
-@@ -287,6 +289,22 @@ struct cm_id_private {
- 	struct rdma_ucm_ece ece;
- };
- 
-+static void cm_dev_release(struct kref *kref)
-+{
-+	struct cm_device *cm_dev = container_of(kref, struct cm_device, kref);
-+	u32 i;
-+
-+	rdma_for_each_port(cm_dev->ib_device, i)
-+		kfree(cm_dev->port[i - 1]);
-+
-+	kfree(cm_dev);
-+}
-+
-+static void cm_device_put(struct cm_device *cm_dev)
-+{
-+	kref_put(&cm_dev->kref, cm_dev_release);
-+}
-+
- static void cm_work_handler(struct work_struct *work);
- 
- static inline void cm_deref_id(struct cm_id_private *cm_id_priv)
-@@ -301,10 +319,23 @@ static struct ib_mad_send_buf *cm_alloc_msg(struct cm_id_private *cm_id_priv)
- 	struct ib_mad_send_buf *m;
- 	struct ib_ah *ah;
- 
-+	lockdep_assert_held(&cm_id_priv->lock);
-+
-+	if (!cm_id_priv->av.port)
-+		return ERR_PTR(-EINVAL);
-+
-+	spin_lock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
- 	mad_agent = cm_id_priv->av.port->mad_agent;
-+	if (!mad_agent) {
-+		m = ERR_PTR(-EINVAL);
-+		goto out;
-+	}
-+
- 	ah = rdma_create_ah(mad_agent->qp->pd, &cm_id_priv->av.ah_attr, 0);
--	if (IS_ERR(ah))
--		return (void *)ah;
-+	if (IS_ERR(ah)) {
-+		m = ERR_CAST(ah);
-+		goto out;
-+	}
- 
- 	m = ib_create_send_mad(mad_agent, cm_id_priv->id.remote_cm_qpn,
- 			       cm_id_priv->av.pkey_index,
-@@ -313,7 +344,7 @@ static struct ib_mad_send_buf *cm_alloc_msg(struct cm_id_private *cm_id_priv)
- 			       IB_MGMT_BASE_VERSION);
- 	if (IS_ERR(m)) {
- 		rdma_destroy_ah(ah, 0);
--		return m;
-+		goto out;
- 	}
- 
- 	/* Timeout set by caller if response is expected. */
-@@ -322,6 +353,9 @@ static struct ib_mad_send_buf *cm_alloc_msg(struct cm_id_private *cm_id_priv)
- 
- 	refcount_inc(&cm_id_priv->refcount);
- 	m->context[0] = cm_id_priv;
-+
-+out:
-+	spin_unlock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
- 	return m;
- }
- 
-@@ -440,10 +474,24 @@ static void cm_set_private_data(struct cm_id_private *cm_id_priv,
- 	cm_id_priv->private_data_len = private_data_len;
- }
- 
-+static void cm_set_av_port(struct cm_av *av, struct cm_port *port)
-+{
-+	struct cm_port *old_port = av->port;
-+
-+	if (old_port == port)
-+		return;
-+
-+	av->port = port;
-+	if (old_port)
-+		cm_device_put(old_port->cm_dev);
-+	if (port)
-+		kref_get(&port->cm_dev->kref);
-+}
-+
- static void cm_init_av_for_lap(struct cm_port *port, struct ib_wc *wc,
- 			       struct rdma_ah_attr *ah_attr, struct cm_av *av)
- {
--	av->port = port;
-+	cm_set_av_port(av, port);
- 	av->pkey_index = wc->pkey_index;
- 	rdma_move_ah_attr(&av->ah_attr, ah_attr);
- }
-@@ -451,7 +499,7 @@ static void cm_init_av_for_lap(struct cm_port *port, struct ib_wc *wc,
- static int cm_init_av_for_response(struct cm_port *port, struct ib_wc *wc,
- 				   struct ib_grh *grh, struct cm_av *av)
- {
--	av->port = port;
-+	cm_set_av_port(av, port);
- 	av->pkey_index = wc->pkey_index;
- 	return ib_init_ah_attr_from_wc(port->cm_dev->ib_device,
- 				       port->port_num, wc,
-@@ -518,7 +566,7 @@ static int cm_init_av_by_path(struct sa_path_rec *path,
- 	if (ret)
- 		return ret;
- 
--	av->port = port;
-+	cm_set_av_port(av, port);
- 
- 	/*
- 	 * av->ah_attr might be initialized based on wc or during
-@@ -542,7 +590,8 @@ static int cm_init_av_by_path(struct sa_path_rec *path,
- /* Move av created by cm_init_av_by_path(), so av.dgid is not moved */
- static void cm_move_av_from_path(struct cm_av *dest, struct cm_av *src)
- {
--	dest->port = src->port;
-+	cm_set_av_port(dest, src->port);
-+	cm_set_av_port(src, NULL);
- 	dest->pkey_index = src->pkey_index;
- 	rdma_move_ah_attr(&dest->ah_attr, &src->ah_attr);
- 	dest->timeout = src->timeout;
-@@ -551,6 +600,7 @@ static void cm_move_av_from_path(struct cm_av *dest, struct cm_av *src)
- static void cm_destroy_av(struct cm_av *av)
- {
- 	rdma_destroy_ah_attr(&av->ah_attr);
-+	cm_set_av_port(av, NULL);
- }
- 
- static u32 cm_local_id(__be32 local_id)
-@@ -1275,10 +1325,18 @@ EXPORT_SYMBOL(ib_cm_insert_listen);
- 
- static __be64 cm_form_tid(struct cm_id_private *cm_id_priv)
- {
--	u64 hi_tid, low_tid;
-+	u64 hi_tid = 0, low_tid;
-+
-+	lockdep_assert_held(&cm_id_priv->lock);
-+
-+	low_tid = (u64)cm_id_priv->id.local_id;
-+	if (!cm_id_priv->av.port)
-+		return cpu_to_be64(low_tid);
- 
--	hi_tid   = ((u64) cm_id_priv->av.port->mad_agent->hi_tid) << 32;
--	low_tid  = (u64)cm_id_priv->id.local_id;
-+	spin_lock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
-+	if (cm_id_priv->av.port->mad_agent)
-+		hi_tid = ((u64)cm_id_priv->av.port->mad_agent->hi_tid) << 32;
-+	spin_unlock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
- 	return cpu_to_be64(hi_tid | low_tid);
- }
- 
-@@ -2139,6 +2197,8 @@ static int cm_req_handler(struct cm_work *work)
- 		sa_path_set_dmac(&work->path[0],
- 				 cm_id_priv->av.ah_attr.roce.dmac);
- 	work->path[0].hop_limit = grh->hop_limit;
-+
-+	cm_destroy_av(&cm_id_priv->av);
- 	ret = cm_init_av_by_path(&work->path[0], gid_attr, &cm_id_priv->av);
- 	if (ret) {
- 		int err;
-@@ -4090,7 +4150,8 @@ static int cm_init_qp_init_attr(struct cm_id_private *cm_id_priv,
- 			qp_attr->qp_access_flags |= IB_ACCESS_REMOTE_READ |
- 						    IB_ACCESS_REMOTE_ATOMIC;
- 		qp_attr->pkey_index = cm_id_priv->av.pkey_index;
--		qp_attr->port_num = cm_id_priv->av.port->port_num;
-+		if (cm_id_priv->av.port)
-+			qp_attr->port_num = cm_id_priv->av.port->port_num;
- 		ret = 0;
- 		break;
- 	default:
-@@ -4132,7 +4193,8 @@ static int cm_init_qp_rtr_attr(struct cm_id_private *cm_id_priv,
- 					cm_id_priv->responder_resources;
- 			qp_attr->min_rnr_timer = 0;
- 		}
--		if (rdma_ah_get_dlid(&cm_id_priv->alt_av.ah_attr)) {
-+		if (rdma_ah_get_dlid(&cm_id_priv->alt_av.ah_attr) &&
-+		    cm_id_priv->alt_av.port) {
- 			*qp_attr_mask |= IB_QP_ALT_PATH;
- 			qp_attr->alt_port_num = cm_id_priv->alt_av.port->port_num;
- 			qp_attr->alt_pkey_index = cm_id_priv->alt_av.pkey_index;
-@@ -4193,7 +4255,9 @@ static int cm_init_qp_rts_attr(struct cm_id_private *cm_id_priv,
- 			}
- 		} else {
- 			*qp_attr_mask = IB_QP_ALT_PATH | IB_QP_PATH_MIG_STATE;
--			qp_attr->alt_port_num = cm_id_priv->alt_av.port->port_num;
-+			if (cm_id_priv->alt_av.port)
-+				qp_attr->alt_port_num =
-+					cm_id_priv->alt_av.port->port_num;
- 			qp_attr->alt_pkey_index = cm_id_priv->alt_av.pkey_index;
- 			qp_attr->alt_timeout = cm_id_priv->alt_av.timeout;
- 			qp_attr->alt_ah_attr = cm_id_priv->alt_av.ah_attr;
-@@ -4311,6 +4375,8 @@ static int cm_add_one(struct ib_device *ib_device)
- 	if (!cm_dev)
- 		return -ENOMEM;
- 
-+	kref_init(&cm_dev->kref);
-+	spin_lock_init(&cm_dev->mad_agent_lock);
- 	cm_dev->ib_device = ib_device;
- 	cm_dev->ack_delay = ib_device->attrs.local_ca_ack_delay;
- 	cm_dev->going_down = 0;
-@@ -4373,7 +4439,6 @@ static int cm_add_one(struct ib_device *ib_device)
- error1:
- 	port_modify.set_port_cap_mask = 0;
- 	port_modify.clr_port_cap_mask = IB_PORT_CM_SUP;
--	kfree(port);
- 	while (--i) {
- 		if (!rdma_cap_ib_cm(ib_device, i))
- 			continue;
-@@ -4382,10 +4447,9 @@ static int cm_add_one(struct ib_device *ib_device)
- 		ib_modify_port(ib_device, port->port_num, 0, &port_modify);
- 		ib_unregister_mad_agent(port->mad_agent);
- 		cm_remove_port_fs(port);
--		kfree(port);
- 	}
- free:
--	kfree(cm_dev);
-+	cm_device_put(cm_dev);
- 	return ret;
- }
- 
-@@ -4408,10 +4472,13 @@ static void cm_remove_one(struct ib_device *ib_device, void *client_data)
- 	spin_unlock_irq(&cm.lock);
- 
- 	rdma_for_each_port (ib_device, i) {
-+		struct ib_mad_agent *mad_agent;
-+
- 		if (!rdma_cap_ib_cm(ib_device, i))
- 			continue;
- 
- 		port = cm_dev->port[i-1];
-+		mad_agent = port->mad_agent;
- 		ib_modify_port(ib_device, port->port_num, 0, &port_modify);
- 		/*
- 		 * We flush the queue here after the going_down set, this
-@@ -4419,12 +4486,19 @@ static void cm_remove_one(struct ib_device *ib_device, void *client_data)
- 		 * after that we can call the unregister_mad_agent
- 		 */
- 		flush_workqueue(cm.wq);
--		ib_unregister_mad_agent(port->mad_agent);
-+		/*
-+		 * The above ensures no call paths from the work are running,
-+		 * the remaining paths all take the unregistration lock
-+		 */
-+		spin_lock(&cm_dev->mad_agent_lock);
-+		port->mad_agent = NULL;
-+		spin_unlock(&cm_dev->mad_agent_lock);
-+		ib_unregister_mad_agent(mad_agent);
- 		cm_remove_port_fs(port);
--		kfree(port);
- 	}
- 
--	kfree(cm_dev);
-+	/* All touches can only be on call path from the work */
-+	cm_device_put(cm_dev);
- }
- 
- static int __init ib_cm_init(void)
--- 
-2.31.1
-
+Cheers
+/Ilias
+> 
+> Shay
+> 
+> > 
+> > Naming in Computer Science is a hard problem ;-). Something that seems
+> > to confuse a lot of people is the naming of the struct "xdp_mem_info".
+> > Maybe we should have named it "mem_info" instead or "net_mem_info", as
+> > it doesn't indicate that the device is running XDP.
+> > 
+> > I see XDP as the RX-layer before the network stack, that helps drivers
+> > to support different memory models, also for handling normal packets
+> > that doesn't get process by XDP, and the drivers doesn't even need to
+> > support XDP to use the "xdp_mem_info" type.
+> 
