@@ -2,327 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 849D537A6B9
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 May 2021 14:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FD737A6C7
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 May 2021 14:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbhEKMcT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 May 2021 08:32:19 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:45776 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231587AbhEKMcR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 11 May 2021 08:32:17 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14BC2vEY050705
-        for <linux-rdma@vger.kernel.org>; Tue, 11 May 2021 08:31:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
- from : to : cc : date : mime-version : references :
- content-transfer-encoding : content-type : message-id; s=pp1;
- bh=3+oqO8EbLNPnpiziKxHWXhZ5+cGFc8wDa52a2wDah4U=;
- b=ddmVcxwpkXnVHXGJGJuMMAN15PImpP6vZ+J++4mr+cCdfWibc6Zl1rhHcdofN8My08HK
- TXF9RkAI2V+vCKPCsZHRvaZV51ogVdTwDf14hzeeALrqS6JJYhwaZ4F9nox0KHU7/Bfn
- e/N/wreNBhV/W/eQOfqFD8SdN1RX4CCRxMIM+mgY7o+cQMb2c3Pp2Pu+MvFBpbpYMIH0
- 0/oXytRrwGYlZOH09126SVpdn4bWNAsTWF6GRIN3Kd1Y/YpVU2fx+SZTVa++bK0BwEqq
- 5K5WZRqSykIg802kkFzAZaqxrJtw0gagbzhbGMNQrNfkP3waIiIko+VYUzImHuEPFDZT PQ== 
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.82])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38frm9amnd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Tue, 11 May 2021 08:31:10 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Tue, 11 May 2021 12:31:10 -0000
-Received: from us1a3-smtp03.a3.dal06.isc4sb.com (10.106.154.98)
-        by smtp.notes.na.collabserv.com (10.106.227.105) with smtp.notes.na.collabserv.com ESMTP;
-        Tue, 11 May 2021 12:31:09 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp03.a3.dal06.isc4sb.com
-          with ESMTP id 2021051112310855-378067 ;
-          Tue, 11 May 2021 12:31:08 +0000 
-In-Reply-To: <80a82b4d3029d1a63042910e3ac4c3731561967e.1620343860.git.metze@samba.org>
-Subject: Re: [PATCH 20/31] rdma/siw: implement non-blocking connect.
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Stefan Metzmacher" <metze@samba.org>
-Cc:     "linux-rdma" <linux-rdma@vger.kernel.org>
-Date:   Tue, 11 May 2021 12:31:08 +0000
+        id S231558AbhEKMfm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 May 2021 08:35:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230475AbhEKMfi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 11 May 2021 08:35:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3BE16190A;
+        Tue, 11 May 2021 12:34:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620736470;
+        bh=n+jSmGNQbhjtny2vTOSU0U5rOWM5+bi641fvtQxXXbE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ENjFrDtflR7X8+9+kXKiEToh7QqEjvV6UEUoFO01UfneHCBiV6CkrH/qV8yoPbBYQ
+         uaGMRg2dgjmUgcD4UibaT9/4Rpo/TOPHwTJh8jkcB4L7Q3M1ZoclHmU/EEV7sEGS27
+         Wa9FySRvxHiI6f/JDvMA+dAh8yn4g9og8kWqrMlsNLSj3l/BtINs9sednTc1RvI/Lo
+         b+/26+g4lEuJvcPIkUU/6BCJTMcfvZsYSFY2LMuQ7ErYQ0xm2G96mf1UjV+DdF1wb7
+         F4lMM9cDUpZrDS4GHSwup6/fb0iRl/xHyi5zE+F3W2s8wOxExWv9eDxKMB4yMkMEYf
+         2UXPyLTRUhdFg==
+Date:   Tue, 11 May 2021 15:34:26 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
+ allocations
+Message-ID: <YJp50nw6JD3ptVDp@unreal>
+References: <c34a864803f9bbd33d3f856a6ba2dd595ab708a7.1620729033.git.leonro@nvidia.com>
+ <F62CF3D3-E605-4CBA-B171-5BB98594C658@oracle.com>
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <80a82b4d3029d1a63042910e3ac4c3731561967e.1620343860.git.metze@samba.org>,<cover.1620343860.git.metze@samba.org>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
-X-LLNOutbound: False
-X-Disclaimed: 44895
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 21051112-9463-0000-0000-000005BA1C14
-X-IBM-SpamModules-Scores: BY=0.245143; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0; ST=0; TS=0; UL=0; ISC=; MB=0.001057
-X-IBM-SpamModules-Versions: BY=3.00015193; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000296; SDB=6.01548293; UDB=6.00838381; IPR=6.01330253;
- MB=3.00036958; MTD=3.00000008; XFM=3.00000015; UTC=2021-05-11 12:31:09
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2021-03-25 10:44:38 - 6.00012377
-x-cbparentid: 21051112-9464-0000-0000-000061581C59
-Message-Id: <OFBC50BE05.41477A2E-ON002586D2.0044C4E8-002586D2.0044C4EE@notes.na.collabserv.com>
-X-Proofpoint-GUID: uN4Yr9LOnMvuSQgmkR-5Bykp04dWVC_M
-X-Proofpoint-ORIG-GUID: uN4Yr9LOnMvuSQgmkR-5Bykp04dWVC_M
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-11_02:2021-05-11,2021-05-11 signatures=0
-X-Proofpoint-Spam-Reason: orgsafe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <F62CF3D3-E605-4CBA-B171-5BB98594C658@oracle.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Stefan Metzmacher" <metze@samba.org> wrote: -----
+On Tue, May 11, 2021 at 10:59:52AM +0000, Haakon Bugge wrote:
+> 
+> 
+> > On 11 May 2021, at 12:36, Leon Romanovsky <leon@kernel.org> wrote:
+> > 
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > The rdmavt QP has fields that are both needed for the control and data
+> > path. Such mixed declaration caused to the very specific allocation flow
+> > with kzalloc_node and SGE list embedded into the struct rvt_qp.
+> > 
+> > This patch separates QP creation to two: regular memory allocation for
+> > the control path and specific code for the SGE list, while the access to
+> > the later is performed through derefenced pointer.
+> > 
+> > Such pointer and its context are expected to be in the cache, so
+> > performance difference is expected to be negligible, if any exists.
+> > 
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> > Hi,
+> > 
+> > This change is needed to convert QP to core allocation scheme. In that
+> > scheme QP is allocated outside of the driver and size of such allocation
+> > is constant and can be calculated at the compile time.
+> > 
+> > Thanks
+> > ---
+> > drivers/infiniband/sw/rdmavt/qp.c | 13 ++++++++-----
+> > include/rdma/rdmavt_qp.h          |  2 +-
+> > 2 files changed, 9 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+> > index 9d13db68283c..4522071fc220 100644
+> > --- a/drivers/infiniband/sw/rdmavt/qp.c
+> > +++ b/drivers/infiniband/sw/rdmavt/qp.c
+> > @@ -1077,7 +1077,7 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+> > 	int err;
+> > 	struct rvt_swqe *swq = NULL;
+> > 	size_t sz;
+> > -	size_t sg_list_sz;
+> > +	size_t sg_list_sz = 0;
+> > 	struct ib_qp *ret = ERR_PTR(-ENOMEM);
+> > 	struct rvt_dev_info *rdi = ib_to_rvt(ibpd->device);
+> > 	void *priv = NULL;
+> > @@ -1125,8 +1125,6 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+> > 		if (!swq)
+> > 			return ERR_PTR(-ENOMEM);
+> > 
+> > -		sz = sizeof(*qp);
+> > -		sg_list_sz = 0;
+> > 		if (init_attr->srq) {
+> > 			struct rvt_srq *srq = ibsrq_to_rvtsrq(init_attr->srq);
+> > 
+> > @@ -1136,10 +1134,13 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+> > 		} else if (init_attr->cap.max_recv_sge > 1)
+> > 			sg_list_sz = sizeof(*qp->r_sg_list) *
+> > 				(init_attr->cap.max_recv_sge - 1);
+> > -		qp = kzalloc_node(sz + sg_list_sz, GFP_KERNEL,
+> > -				  rdi->dparms.node);
+> > +		qp = kzalloc(sizeof(*qp), GFP_KERNEL);
+> 
+> Why not kzalloc_node() here?
 
->To: "Bernard Metzler" <bmt@zurich.ibm.com>
->From: "Stefan Metzmacher" <metze@samba.org>
->Date: 05/07/2021 01:39AM
->Cc: linux-rdma@vger.kernel.org, "Stefan Metzmacher" <metze@samba.org>
->Subject: [EXTERNAL] [PATCH 20/31] rdma/siw: implement non-blocking
->connect.
->
->This is very important in order to prevent deadlocks.
->
->The RDMA application layer expects rdma=5Fconnect() to be non-blocking
->as the completion is handled via RDMA=5FCM=5FEVENT=5FESTABLISHED and
->other async events. It's not unlikely to hold a lock during
->the rdma=5Fconnect() call.
->
->Without out this a connection attempt to a non-existing/reachable
->server block until the very long tcp timeout hits.
->The application layer had no chance to have its own timeout handler
->as that would just deadlock with the already blocking rdma=5Fconnect().
->
->Fixes: 6c52fdc244b5 ("rdma/siw: connection management")
->Signed-off-by: Stefan Metzmacher <metze@samba.org>
->Cc: Bernard Metzler <bmt@zurich.ibm.com>
->Cc: linux-rdma@vger.kernel.org
->---
-> drivers/infiniband/sw/siw/siw=5Fcm.c | 114
->+++++++++++++++++++++--------
-> drivers/infiniband/sw/siw/siw=5Fcm.h |   1 +
-> 2 files changed, 85 insertions(+), 30 deletions(-)
->
->diff --git a/drivers/infiniband/sw/siw/siw=5Fcm.c
->b/drivers/infiniband/sw/siw/siw=5Fcm.c
->index cf0f881c6793..9a550f040678 100644
->--- a/drivers/infiniband/sw/siw/siw=5Fcm.c
->+++ b/drivers/infiniband/sw/siw/siw=5Fcm.c
->@@ -37,6 +37,7 @@ static void siw=5Fcm=5Fllp=5Fwrite=5Fspace(struct sock *=
-s);
-> static void siw=5Fcm=5Fllp=5Ferror=5Freport(struct sock *s);
-> static int siw=5Fcm=5Fupcall(struct siw=5Fcep *cep, enum iw=5Fcm=5Fevent=
-=5Ftype
->reason,
-> 			 int status);
->+static void siw=5Fconnected(struct siw=5Fcep *cep);
->=20
-> static void siw=5Fsk=5Fassign=5Fcm=5Fupcalls(struct sock *sk)
-> {
->@@ -1141,6 +1142,10 @@ static void siw=5Fcm=5Fwork=5Fhandler(struct
->work=5Fstruct *w)
-> 		siw=5Faccept=5Fnewconn(cep);
-> 		break;
->=20
->+	case SIW=5FCM=5FWORK=5FCONNECTED:
->+		siw=5Fconnected(cep);
->+		break;
->+
-> 	case SIW=5FCM=5FWORK=5FREAD=5FMPAHDR:
-> 		if (cep->state =3D=3D SIW=5FEPSTATE=5FAWAIT=5FMPAREQ) {
-> 			if (cep->listen=5Fcep) {
->@@ -1306,6 +1311,7 @@ static void siw=5Fcm=5Fllp=5Fdata=5Fready(struct sock
->*sk)
-> 	switch (cep->state) {
-> 	case SIW=5FEPSTATE=5FRDMA=5FMODE:
-> 	case SIW=5FEPSTATE=5FLISTENING:
->+	case SIW=5FEPSTATE=5FCONNECTING:
-> 		break;
->=20
-> 	case SIW=5FEPSTATE=5FAWAIT=5FMPAREQ:
->@@ -1359,12 +1365,26 @@ static void siw=5Fcm=5Fllp=5Fstate=5Fchange(struct
->sock *sk)
->=20
-> 	switch (sk->sk=5Fstate) {
-> 	case TCP=5FESTABLISHED:
->-		/*
->-		 * handle accepting socket as special case where only
->-		 * new connection is possible
->-		 */
->-		siw=5Fcm=5Fqueue=5Fwork(cep, SIW=5FCM=5FWORK=5FACCEPT);
->-		break;
->+		if (cep->state =3D=3D SIW=5FEPSTATE=5FCONNECTING) {
->+			/*
->+			 * handle accepting socket as special case where only
->+			 * new connection is possible
->+			 */
->+			siw=5Fcm=5Fqueue=5Fwork(cep, SIW=5FCM=5FWORK=5FCONNECTED);
->+			break;
->+
->+		} else if (cep->state =3D=3D SIW=5FEPSTATE=5FLISTENING) {
->+			/*
->+			 * handle accepting socket as special case where only
->+			 * new connection is possible
->+			 */
->+			siw=5Fcm=5Fqueue=5Fwork(cep, SIW=5FCM=5FWORK=5FACCEPT);
->+			break;
->+		}
->+		siw=5Fdbg=5Fcep(cep,
->+			    "unexpected socket state %d with cep state %d\n",
->+			    sk->sk=5Fstate, cep->state);
->+		/* fall through */
->=20
-> 	case TCP=5FCLOSE:
-> 	case TCP=5FCLOSE=5FWAIT:
->@@ -1383,7 +1403,7 @@ static void siw=5Fcm=5Fllp=5Fstate=5Fchange(struct s=
-ock
->*sk)
-> static int kernel=5Fbindconnect(struct socket *s, struct sockaddr
->*laddr,
-> 			      struct sockaddr *raddr, bool afonly)
-> {
->-	int rv, flags =3D 0;
->+	int rv;
-> 	size=5Ft size =3D laddr->sa=5Ffamily =3D=3D AF=5FINET ?
-> 		sizeof(struct sockaddr=5Fin) : sizeof(struct sockaddr=5Fin6);
->=20
->@@ -1402,7 +1422,7 @@ static int kernel=5Fbindconnect(struct socket *s,
->struct sockaddr *laddr,
-> 	if (rv < 0)
-> 		return rv;
->=20
->-	rv =3D kernel=5Fconnect(s, raddr, size, flags);
->+	rv =3D kernel=5Fconnect(s, raddr, size, O=5FNONBLOCK);
->=20
-> 	return rv < 0 ? rv : 0;
-> }
->@@ -1547,36 +1567,27 @@ int siw=5Fconnect(struct iw=5Fcm=5Fid *id, struct
->iw=5Fcm=5Fconn=5Fparam *params)
-> 		goto error;
-> 	}
->=20
->-	/*
->-	 * NOTE: For simplification, connect() is called in blocking
->-	 * mode. Might be reconsidered for async connection setup at
->-	 * TCP level.
->-	 */
-> 	rv =3D kernel=5Fbindconnect(s, laddr, raddr, id->afonly);
->+	if (rv =3D=3D -EINPROGRESS) {
->+		siw=5Fdbg=5Fqp(qp, "kernel=5Fbindconnect: EINPROGRESS\n");
->+		rv =3D 0;
->+	}
-> 	if (rv !=3D 0) {
-> 		siw=5Fdbg=5Fqp(qp, "kernel=5Fbindconnect: error %d\n", rv);
-> 		goto error;
-> 	}
->-	if (siw=5Ftcp=5Fnagle =3D=3D false)
->-		tcp=5Fsock=5Fset=5Fnodelay(s->sk);
->-
->-	cep->state =3D SIW=5FEPSTATE=5FAWAIT=5FMPAREP;
->=20
->-	rv =3D siw=5Fsend=5Fmpareqrep(cep, cep->mpa.pdata,
->-				cep->mpa.hdr.params.pd=5Flen);
-> 	/*
->-	 * Reset private data.
->+	 * The rest will be done by siw=5Fconnected()
+The idea is to delete this kzalloc later in next patch, because all
+drivers are doing same thing "qp = kzalloc(sizeof(*qp), GFP_KERNEL);".
 
-Please use more concise language, giving some details.
-The 'rest' and 'everything' refers to some state of code
-understanding we cannot assume for every reader ;)
-
-
->+	 *
->+	 * siw=5Fcm=5Fllp=5Fstate=5Fchange() will detect
->+	 * TCP=5FESTABLISHED and schedules SIW=5FCM=5FWORK=5FCONNECTED,
->+	 * which will finally call siw=5Fconnected().
->+	 *
->+	 * As siw=5Fcm=5Fllp=5Fstate=5Fchange() handles everything
->+	 * siw=5Fcm=5Fllp=5Fdata=5Fready() can be a noop for
->+	 * SIW=5FEPSTATE=5FCONNECTING.
-> 	 */
->-	if (cep->mpa.hdr.params.pd=5Flen) {
->-		cep->mpa.hdr.params.pd=5Flen =3D 0;
->-		kfree(cep->mpa.pdata);
->-		cep->mpa.pdata =3D NULL;
->-	}
->-
->-	if (rv < 0) {
->-		goto error;
->-	}
->-
-> 	siw=5Fdbg=5Fcep(cep, "[QP %u]: exit\n", qp=5Fid(qp));
-> 	siw=5Fcep=5Fset=5Ffree(cep);
-> 	return 0;
->@@ -1604,6 +1615,49 @@ int siw=5Fconnect(struct iw=5Fcm=5Fid *id, struct
->iw=5Fcm=5Fconn=5Fparam *params)
-> 	return rv;
-> }
->=20
->+static void siw=5Fconnected(struct siw=5Fcep *cep)
->+{
->+	struct siw=5Fqp *qp =3D cep->qp;
->+	struct socket *s =3D cep->sock;
->+	int rv =3D -ECONNABORTED;
->+
->+	/*
->+	 * already called with
->+	 * siw=5Fcep=5Fset=5Finuse(cep);
->+	 */
->+
->+	if (cep->state !=3D SIW=5FEPSTATE=5FCONNECTING)
->+		goto error;
->+
->+	if (siw=5Ftcp=5Fnagle =3D=3D false)
->+		tcp=5Fsock=5Fset=5Fnodelay(s->sk);
->+
->+	cep->state =3D SIW=5FEPSTATE=5FAWAIT=5FMPAREP;
->+
->+	rv =3D siw=5Fsend=5Fmpareqrep(cep, cep->mpa.pdata,
->+				cep->mpa.hdr.params.pd=5Flen);
->+	/*
->+	 * Reset private data.
->+	 */
->+	if (cep->mpa.hdr.params.pd=5Flen) {
->+		cep->mpa.hdr.params.pd=5Flen =3D 0;
->+		kfree(cep->mpa.pdata);
->+		cep->mpa.pdata =3D NULL;
->+	}
->+
->+	if (rv < 0) {
->+		goto error;
->+	}
->+
->+	siw=5Fdbg=5Fcep(cep, "[QP %u]: exit\n", qp=5Fid(qp));
->+	return;
->+
->+error:
->+	siw=5Fdbg=5Fcep(cep, "[QP %u]: exit, error %d\n", qp=5Fid(qp), rv);
->+	siw=5Fqp=5Fcm=5Fdrop(qp, 1);
->+	return;
->+}
->+
-> /*
->  * siw=5Faccept - Let SoftiWARP accept an RDMA connection request
->  *
->diff --git a/drivers/infiniband/sw/siw/siw=5Fcm.h
->b/drivers/infiniband/sw/siw/siw=5Fcm.h
->index 4f6219bd746b..62c9947999ac 100644
->--- a/drivers/infiniband/sw/siw/siw=5Fcm.h
->+++ b/drivers/infiniband/sw/siw/siw=5Fcm.h
->@@ -78,6 +78,7 @@ struct siw=5Fcep {
->=20
-> enum siw=5Fwork=5Ftype {
-> 	SIW=5FCM=5FWORK=5FACCEPT =3D 1,
->+	SIW=5FCM=5FWORK=5FCONNECTED,
-> 	SIW=5FCM=5FWORK=5FREAD=5FMPAHDR,
-> 	SIW=5FCM=5FWORK=5FCLOSE=5FLLP, /* close socket */
-> 	SIW=5FCM=5FWORK=5FPEER=5FCLOSE, /* socket indicated peer close */
->--=20
->2.25.1
->
->
-
+Thanks
