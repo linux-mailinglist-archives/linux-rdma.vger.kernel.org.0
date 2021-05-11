@@ -2,230 +2,156 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBEA379F92
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 May 2021 08:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DD337A0C8
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 May 2021 09:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhEKGOA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 May 2021 02:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbhEKGOA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 May 2021 02:14:00 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08118C061574
-        for <linux-rdma@vger.kernel.org>; Mon, 10 May 2021 23:12:53 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id t17-20020a4a3e110000b02901fab2f46a48so3988672oot.6
-        for <linux-rdma@vger.kernel.org>; Mon, 10 May 2021 23:12:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fCjgoCj3ngyy8uA1NZhyaXfUu+80xaIHyyRVlM6n8vs=;
-        b=D57L1q8SVDMHhXTrbByVfiQvKpQw/LA4nMhe4Gq15L3aT9L0ZWf2ogJ4CO9dFbzKU4
-         zliqSX9v578ZlNFWV3NrsKL47yf45SeMiZhCUbFmQNFvtP2zJrSSYbzqbRyd9ERJYsFN
-         xJxsKZQ0XiuP5+N1ravrz0rw/WXF2iNi9g9uuhIrcQ6wiHCnCooGAoCzy9lvyJAGXskb
-         0tkRQ+PbpnOvBs3IEFDA7iixuSBIpg/sS2zxIA+Q0QPIW7NfH3m8P9oUSpaTXjjoD0MZ
-         UJwAIe3zRbdUPrk4uUbgsPFF/HXFQt0seaRvmwATGvMG7AeO1FlGXYowGwKABeLOaK2q
-         Yd4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fCjgoCj3ngyy8uA1NZhyaXfUu+80xaIHyyRVlM6n8vs=;
-        b=Gl0Er0qeyjKq8OfrP5B5TxgLOG85Yt24/o+k/ReKW1eTkbh9tQcfqpYsdKbI7ZaPPQ
-         cXULoiE8OFM+4g2xMKAKSb0xZbPK684JXO2asSM/S1VP76S5P1Pr0MdSycPdNXhL+OTi
-         5QPcvoZFf+FvqQ3TMZq59ISn1tEWeu8RgpPXyVPAXfa8+M0I+Ri98C/ahO4aXQ4nmJeA
-         xIts8uyJ6xgKoFuWAh7ZpaxdjZFSMBBXZgSBOI+fUxuyVmSVWGK2tziTnuiLCJHzABK9
-         LXOiEnw/U6Qi0NDj6OTTML+EhL+E2LnOpFLVcL0yWRvTu99VsvS8bFWXV+kFT9RjiQ5Y
-         eWtw==
-X-Gm-Message-State: AOAM531B7nxCu+vRZxQRQUA8+izfrOw0HJV734ixQdtgLlB7OuLyX6SA
-        by4isT6O2wN7xhS3M8L4bU+N56HVX/rldGbm2GwbpfPf
-X-Google-Smtp-Source: ABdhPJyo850EIMhMAdApFvpSKiKdipfWBwC3M6zqwbAGI0E3NIh+FPtaoGAc+TslqbS4dL7Wb4lC2o61z7xS7jeTJc8=
-X-Received: by 2002:a4a:b997:: with SMTP id e23mr22003259oop.13.1620713572333;
- Mon, 10 May 2021 23:12:52 -0700 (PDT)
+        id S229871AbhEKH1P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 May 2021 03:27:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhEKH1P (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 11 May 2021 03:27:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 540826186A;
+        Tue, 11 May 2021 07:26:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620717969;
+        bh=3JMzIMeQzxE5DWUbQRLHd4TyQ7AtkcTds4O1YHSswGI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=l+wWFa58UfPIq9uamJkAFlrtebZCUwpiPeFp36SlYHSJEmKo6FW/jBkMFuVC3Ngt8
+         NWpDdzWGekpMmPkV4QoukaycoyMIvajuJnSOJViiG0ApdCEwoiYiidvJPISVU7g+TQ
+         UKBwNfQZQ5gUUVmUOTvE5pPfwqSw2eRzxvzAEXqXPpzL+N6Ahel2JJEWFGb2bxsnWN
+         VQkY6OlXZeV7gsWVs2bw/1cQxmK6oIU4cqCTX3qnw0syvhhNMDTBCEkK55zcbAG3cI
+         UgrjdwssXaFIM1Aih0wwIgH5bVP5ZJ2aJf8/aq/icJf/ielpmWefTWHftCt3ZAxTvB
+         brDN+bQzfWdZw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Moni Shoua <monis@mellanox.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com
+Subject: [PATCH rdma-rc] RDMA/rxe: Clear all QP fields if creation failed
+Date:   Tue, 11 May 2021 10:26:03 +0300
+Message-Id: <7bf8d548764d406dbbbaf4b574960ebfd5af8387.1620717918.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <cover.1620711734.git.leonro@nvidia.com> <11e7b553f3a6f5371c6bb3f57c494bb52b88af99.1620711734.git.leonro@nvidia.com>
-In-Reply-To: <11e7b553f3a6f5371c6bb3f57c494bb52b88af99.1620711734.git.leonro@nvidia.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Tue, 11 May 2021 14:12:40 +0800
-Message-ID: <CAD=hENe+uoX6gtRjXWiiSfAvhYHSx+NkTPZj=R30xBtQdORPHA@mail.gmail.com>
-Subject: Re: [PATCH rdma-rc 5/5] RDMA/rxe: Return CQE error if invalid lkey
- was supplied
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>, Shay Drory <shayd@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 11, 2021 at 1:48 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> From: Leon Romanovsky <leonro@nvidia.com>
->
-> The RXE is missing update of WQE status in LOCAL_WRITE failures.
-> This caused to the following kernel panic if someone sent atomic
-> operation with explicitly wrong lkey.
->
-> [leonro@vm ~]$ mkt test
-> test_atomic_invalid_lkey (tests.test_atomic.AtomicTest) ... [   43.860977] ------------[ cut here ]------------
->  WARNING: CPU: 5 PID: 263 at drivers/infiniband/sw/rxe/rxe_comp.c:740 rxe_completer+0x1a6d/0x2e30 [rdma_rxe]
->  Modules linked in: crc32_generic rdma_rxe ip6_udp_tunnel udp_tunnel rdma_ucm rdma_cm ib_umad ib_ipoib iw_cm ib_cm mlx5_ib ib_uverbs ib_core mlx5_core ptp pps_core
->  CPU: 5 PID: 263 Comm: python3 Not tainted 5.13.0-rc1+ #2936
->  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
->  RIP: 0010:rxe_completer+0x1a6d/0x2e30 [rdma_rxe]
->  Code: 03 0f 8e 65 0e 00 00 3b 93 10 06 00 00 0f 84 82 0a 00 00 4c 89 ff 4c 89 44 24 38 e8 2d 74 a9 e1 4c 8b 44 24 38 e9 1c f5 ff ff <0f> 0b e9 0c e8 ff ff b8 05 00 00 00 41 bf 05 00 00 00 e9 ab e7 ff
->  RSP: 0018:ffff8880158af090 EFLAGS: 00010246
->  RAX: 0000000000000000 RBX: ffff888016a78000 RCX: ffffffffa0cf1652
->  RDX: 1ffff9200004b442 RSI: 0000000000000004 RDI: ffffc9000025a210
->  RBP: dffffc0000000000 R08: 00000000ffffffea R09: ffff88801617740b
->  R10: ffffed1002c2ee81 R11: 0000000000000007 R12: ffff88800f3b63e8
->  R13: ffff888016a78008 R14: ffffc9000025a180 R15: 000000000000000c
->  FS:  00007f88b622a740(0000) GS:ffff88806d540000(0000) knlGS:0000000000000000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 00007f88b5a1fa10 CR3: 000000000d848004 CR4: 0000000000370ea0
->  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->  Call Trace:
->   ? lock_release+0x1f9/0x6c0
->   ? rxe_comp_queue_pkt+0xb0/0xb0 [rdma_rxe]
->   ? lock_downgrade+0x6d0/0x6d0
->   ? lock_downgrade+0x6d0/0x6d0
->   ? lockdep_hardirqs_on_prepare+0x273/0x3e0
->   ? _raw_spin_unlock_irqrestore+0x2d/0x40
->   ? rxe_comp_queue_pkt+0xb0/0xb0 [rdma_rxe]
->   rxe_do_task+0x130/0x230 [rdma_rxe]
->   ? _raw_spin_unlock_irqrestore+0x2d/0x40
->   rxe_rcv+0xb11/0x1df0 [rdma_rxe]
->   ? rxe_crc32.isra.0+0x120/0x120 [rdma_rxe]
->   ? prepare_ack_packet+0x50b/0xa20 [rdma_rxe]
->   rxe_loopback+0x157/0x1e0 [rdma_rxe]
->   ? rxe_send+0x520/0x520 [rdma_rxe]
->   ? lockdep_hardirqs_on_prepare+0x273/0x3e0
->   rxe_responder+0x5532/0x7620 [rdma_rxe]
->   ? rxe_resp_queue_pkt+0xa0/0xa0 [rdma_rxe]
->   ? lock_downgrade+0x6d0/0x6d0
->   ? rxe_crc32.isra.0+0x8e/0x120 [rdma_rxe]
->   ? lock_is_held_type+0x98/0x110
->   ? find_held_lock+0x2d/0x110
->   ? lock_release+0x1f9/0x6c0
->   ? rxe_do_task+0xe5/0x230 [rdma_rxe]
->   ? lock_downgrade+0x6d0/0x6d0
->   ? rxe_resp_queue_pkt+0x19/0xa0 [rdma_rxe]
->   ? lockdep_hardirqs_on_prepare+0x273/0x3e0
->   ? _raw_spin_unlock_irqrestore+0x2d/0x40
->   ? rxe_resp_queue_pkt+0xa0/0xa0 [rdma_rxe]
->   rxe_do_task+0x130/0x230 [rdma_rxe]
->   rxe_rcv+0x9c8/0x1df0 [rdma_rxe]
->   ? __kmalloc_track_caller+0x174/0x390
->   ? rxe_crc32.isra.0+0x120/0x120 [rdma_rxe]
->   rxe_loopback+0x157/0x1e0 [rdma_rxe]
->   ? rxe_send+0x520/0x520 [rdma_rxe]
->   rxe_requester+0x1efd/0x58c0 [rdma_rxe]
->   ? lock_is_held_type+0x98/0x110
->   ? find_held_lock+0x2d/0x110
->   ? rnr_nak_timer+0x70/0x70 [rdma_rxe]
->   ? lock_release+0x1f9/0x6c0
->   ? rxe_do_task+0xe5/0x230 [rdma_rxe]
->   ? lock_downgrade+0x6d0/0x6d0
->   ? lockdep_hardirqs_on_prepare+0x273/0x3e0
->   ? _raw_spin_unlock_irqrestore+0x2d/0x40
->   ? rnr_nak_timer+0x70/0x70 [rdma_rxe]
->   rxe_do_task+0x130/0x230 [rdma_rxe]
->   ? rxe_poll_cq+0x450/0x450 [rdma_rxe]
->   rxe_post_send+0x998/0x1860 [rdma_rxe]
->   ? lock_is_held_type+0x98/0x110
->   ? lock_is_held_type+0x98/0x110
->   ? rdma_lookup_get_uobject+0x22c/0x4a0 [ib_uverbs]
->   ? rxe_poll_cq+0x450/0x450 [rdma_rxe]
->   ib_uverbs_post_send+0xd5f/0x1220 [ib_uverbs]
->   ? lock_acquire+0x1a9/0x6d0
->   ? lock_is_held_type+0x98/0x110
->   ? ib_uverbs_ex_create_wq+0xb00/0xb00 [ib_uverbs]
->   ? lock_release+0x1f9/0x6c0
->   ? __might_fault+0xba/0x160
->   ? lock_downgrade+0x6d0/0x6d0
->   ib_uverbs_write+0x847/0xc80 [ib_uverbs]
->   ? ib_uverbs_open+0x810/0x810 [ib_uverbs]
->   ? vfs_fileattr_set+0x990/0x990
->   ? __up_read+0x1a1/0x7b0
->   vfs_write+0x1c5/0x840
->   ksys_write+0x176/0x1d0
->   ? __x64_sys_read+0xb0/0xb0
->   ? lockdep_hardirqs_on_prepare+0x273/0x3e0
->   ? syscall_enter_from_user_mode+0x1d/0x50
->   do_syscall_64+0x3f/0x80
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
->  RIP: 0033:0x7f88b64917a7
->  Code: 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
->  RSP: 002b:00007ffee189e6c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
->  RAX: ffffffffffffffda RBX: 000055c17c8b2660 RCX: 00007f88b64917a7
->  RDX: 0000000000000020 RSI: 00007ffee189e6e0 RDI: 0000000000000003
->  RBP: 0000000000000000 R08: 00007f88b5cbbc80 R09: 00007f88b689fdc0
->  R10: 00007f88b66a0510 R11: 0000000000000246 R12: 00007f88b6072180
->  R13: 0000000000000000 R14: 00007f88b5e6e9d0 R15: 0000000000000008
->  irq event stamp: 809719
->  hardirqs last  enabled at (809727): [<ffffffff813990c4>] console_unlock+0x434/0x850
->  hardirqs last disabled at (809734): [<ffffffff81399279>] console_unlock+0x5e9/0x850
->  softirqs last  enabled at (809016): [<ffffffff8129089e>] irq_exit_rcu+0x11e/0x1a0
->  softirqs last disabled at (808963): [<ffffffff8129089e>] irq_exit_rcu+0x11e/0x1a0
->  ---[ end trace 1e302e4b7857843b ]---
->
-> Fixes: 8700e3e7c485 ("Soft RoCE driver")
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Thanks,
-Acked-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+rxe_qp_do_cleanup() relies on valid pointer values in QP for the
+properly created ones, but in case rxe_qp_from_init() failed it was
+filled with garbage and caused tot the following error.
 
-Zhu Yanjun
+------------[ cut here ]------------
+refcount_t: underflow; use-after-free.
+WARNING: CPU: 1 PID: 12560 at lib/refcount.c:28 refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
+Modules linked in:
+CPU: 1 PID: 12560 Comm: syz-executor.4 Not tainted 5.12.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
+Code: e9 db fe ff ff 48 89 df e8 2c c2 ea fd e9 8a fe ff ff e8 72 6a a7 fd 48 c7 c7 e0 b2 c1 89 c6 05 dc 3a e6 09 01 e8 ee 74 fb 04 <0f> 0b e9 af fe ff ff 0f 1f 84 00 00 00 00 00 41 56 41 55 41 54 55
+RSP: 0018:ffffc900097ceba8 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff815bb075 RDI: fffff520012f9d67
+RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815b4eae R11: 0000000000000000 R12: ffff8880322a4800
+R13: ffff8880322a4940 R14: ffff888033044e00 R15: 0000000000000000
+FS:  00007f6eb2be3700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fdbe5d41000 CR3: 000000001d181000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __refcount_sub_and_test include/linux/refcount.h:283 [inline]
+ __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+ refcount_dec_and_test include/linux/refcount.h:333 [inline]
+ kref_put include/linux/kref.h:64 [inline]
+ rxe_qp_do_cleanup+0x96f/0xaf0 drivers/infiniband/sw/rxe/rxe_qp.c:805
+ execute_in_process_context+0x37/0x150 kernel/workqueue.c:3327
+ rxe_elem_release+0x9f/0x180 drivers/infiniband/sw/rxe/rxe_pool.c:391
+ kref_put include/linux/kref.h:65 [inline]
+ rxe_create_qp+0x2cd/0x310 drivers/infiniband/sw/rxe/rxe_verbs.c:425
+ _ib_create_qp drivers/infiniband/core/core_priv.h:331 [inline]
+ ib_create_named_qp+0x2ad/0x1370 drivers/infiniband/core/verbs.c:1231
+ ib_create_qp include/rdma/ib_verbs.h:3644 [inline]
+ create_mad_qp+0x177/0x2d0 drivers/infiniband/core/mad.c:2920
+ ib_mad_port_open drivers/infiniband/core/mad.c:3001 [inline]
+ ib_mad_init_device+0xd6f/0x1400 drivers/infiniband/core/mad.c:3092
+ add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:717
+ enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1331
+ ib_register_device drivers/infiniband/core/device.c:1413 [inline]
+ ib_register_device+0x7c7/0xa50 drivers/infiniband/core/device.c:1365
+ rxe_register_device+0x3d5/0x4a0 drivers/infiniband/sw/rxe/rxe_verbs.c:1147
+ rxe_add+0x12fe/0x16d0 drivers/infiniband/sw/rxe/rxe.c:247
+ rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:503
+ rxe_newlink drivers/infiniband/sw/rxe/rxe.c:269 [inline]
+ rxe_newlink+0xb7/0xe0 drivers/infiniband/sw/rxe/rxe.c:250
+ nldev_newlink+0x30e/0x550 drivers/infiniband/core/nldev.c:1555
+ rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f6eb2be3188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 00000000004665f9
+RDX: 0000000000000000 RSI: 0000000020000600 RDI: 0000000000000003
+RBP: 00000000004bfce1 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 00007ffc54e34f4f R14: 00007f6eb2be3300 R15: 0000000000022000
 
-> ---
->  drivers/infiniband/sw/rxe/rxe_comp.c | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-> index 2af26737d32d..a6712e373eed 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_comp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-> @@ -346,13 +346,15 @@ static inline enum comp_state do_read(struct rxe_qp *qp,
->         ret = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE,
->                         &wqe->dma, payload_addr(pkt),
->                         payload_size(pkt), to_mr_obj, NULL);
-> -       if (ret)
-> +       if (ret) {
-> +               wqe->status = IB_WC_LOC_PROT_ERR;
->                 return COMPST_ERROR;
-> +       }
->
->         if (wqe->dma.resid == 0 && (pkt->mask & RXE_END_MASK))
->                 return COMPST_COMP_ACK;
-> -       else
-> -               return COMPST_UPDATE_COMP;
-> +
-> +       return COMPST_UPDATE_COMP;
->  }
->
->  static inline enum comp_state do_atomic(struct rxe_qp *qp,
-> @@ -366,10 +368,12 @@ static inline enum comp_state do_atomic(struct rxe_qp *qp,
->         ret = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE,
->                         &wqe->dma, &atomic_orig,
->                         sizeof(u64), to_mr_obj, NULL);
-> -       if (ret)
-> +       if (ret) {
-> +               wqe->status = IB_WC_LOC_PROT_ERR;
->                 return COMPST_ERROR;
-> -       else
-> -               return COMPST_COMP_ACK;
-> +       }
-> +
-> +       return COMPST_COMP_ACK;
->  }
->
->  static void make_send_cqe(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
-> --
-> 2.31.1
->
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Reported-by: syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/sw/rxe/rxe_qp.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index 34ae957a315c..b0f350d674fd 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -242,6 +242,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	if (err) {
+ 		vfree(qp->sq.queue->buf);
+ 		kfree(qp->sq.queue);
++		qp->sq.queue = NULL;
+ 		return err;
+ 	}
+ 
+@@ -295,6 +296,7 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 		if (err) {
+ 			vfree(qp->rq.queue->buf);
+ 			kfree(qp->rq.queue);
++			qp->rq.queue = NULL;
+ 			return err;
+ 		}
+ 	}
+@@ -355,6 +357,11 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
+ err2:
+ 	rxe_queue_cleanup(qp->sq.queue);
+ err1:
++	qp->pd = NULL;
++	qp->rcq = NULL;
++	qp->scq = NULL;
++	qp->srq = NULL;
++
+ 	if (srq)
+ 		rxe_drop_ref(srq);
+ 	rxe_drop_ref(scq);
+-- 
+2.31.1
+
