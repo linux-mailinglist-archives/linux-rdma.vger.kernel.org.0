@@ -2,93 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7627337B43F
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 May 2021 04:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4525837B480
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 May 2021 05:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhELCqg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 May 2021 22:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbhELCqf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 May 2021 22:46:35 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0604C061763
-        for <linux-rdma@vger.kernel.org>; Tue, 11 May 2021 19:45:28 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so15352764oto.0
-        for <linux-rdma@vger.kernel.org>; Tue, 11 May 2021 19:45:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TQPv4sd6wol2MmhFzNAj7tufTKys/Y2hVpNqb63vOU4=;
-        b=FNtC73b5l6i/E8Ykqpumcwfsex/j/yT6c1uLckIfFEdyUHRNi8mZycB3pDX9sR/WKX
-         HXDRTi0YIoIlCO5pyRYNQPI8wshzRRGdyZk4De2GvH0/8pJdAQBV58QNcFoBDoamF9Ob
-         WWux1E8IpDs75CRvZB2s1Gdp40G8KOsgGo5LFGpuv5C10axkVZB6IUCVim9T3QnpHUba
-         uDGsIpTEsmuSQN7fLPnd4LVH2jpV5N299eyf4wh1E/qDlfQDlpndnsQH2OkLdgACTSYu
-         ZlUPAKqWFi36IBFPftLD8nVI+nyjUz2IDBxo4w528NZQCS3EukEpvtM9/8oeAWnPe5s/
-         2SOA==
+        id S229951AbhELD3I (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 May 2021 23:29:08 -0400
+Received: from mail-pf1-f180.google.com ([209.85.210.180]:46605 "EHLO
+        mail-pf1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229848AbhELD3H (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 May 2021 23:29:07 -0400
+Received: by mail-pf1-f180.google.com with SMTP id q2so17490547pfh.13
+        for <linux-rdma@vger.kernel.org>; Tue, 11 May 2021 20:27:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TQPv4sd6wol2MmhFzNAj7tufTKys/Y2hVpNqb63vOU4=;
-        b=Yr5MIVQz0RP2TKUpdMpibF1jNkO8m/ZOVPnAVj9yjjknNYab1OvKZVStdOH+yut4Ex
-         i+pUoj7LJLn6TFoUeM60B/Wnv6/JDBRXBDkeudN3EJHAGWJE0I0HQqYsYSIt8ROzU3NJ
-         puO7MBQTkwGR9FmVuu624hWEDMiuggMsBqTCOgQwYynI5B4eyBSwvnGFTOJaB4+cn3Tm
-         YE/93AP4eB4ePC2oe+Xk+r+1YFGGKdZEShuDS6QDhCY6PflEdnfu0HlaZ0m97zrNhEc7
-         zlRGzE4mzI7264ts/EOD8NR/tbm/nKlqSexMLbIGgBnfFz65eieWVp8Bs7/KY+gs21Fr
-         SeNQ==
-X-Gm-Message-State: AOAM530Xurj+fhx3peUnEtAdpApmKF+/bJba+ORd4wTlHvzAx3fJj/JD
-        FpaNEXWqae2dtXC8j1jSoUJxUVrYt25NBk2mBCE=
-X-Google-Smtp-Source: ABdhPJxGrvi8o+uWOR01jSzOMi351nLZHSmrxrT9Xj0EOn7aP6ubBKmD+ZvGwv+x6KLhfthgB8suH9OMuTszs4qeMAQ=
-X-Received: by 2002:a9d:614b:: with SMTP id c11mr28725989otk.59.1620787528276;
- Tue, 11 May 2021 19:45:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7NIkwCVnHdsIh7if1p+8mswBSPL3Giet5HV93R6+NOQ=;
+        b=bmtl2Utr0NcMxSDvTOAoP6Xvy2ZMhZeEV3LnfegdM9VUtBSqApX4XzSvymZ8VSQ9Mw
+         +1YraFTQGW9aUsHuPTXGm6Na6JYF4sGUrB+/b3XuUnrlzD0A4rXZ1DVoBF2fmPQtwyVF
+         ZxsHbIxBN4wtdS75C5bjVTwQ7facworjwDmXtYEcltwGMDBP9lhMtpxKz7Jnqsh8PCT/
+         nzbJUYMHKqLq/q9wAwtAIqWF5N5WW6WMSG9n/n/8y79WZJdE4Wk6iVXBVR8LCr7tRpZQ
+         id4ljLr+uOcbRZheYGvjc5D0XvwOetLtzFC3d9Vcmoyk+6A6ZIiZNlmZbftcUpBLHKVr
+         PfHA==
+X-Gm-Message-State: AOAM530DbYt8reyueTX17cPVR2SsNfrgNiasFq/M2hTZrxkhtpHdWJsY
+        KPZmAG+J7bHoW0aNyGaUHe4=
+X-Google-Smtp-Source: ABdhPJxs3l35e50CTFBxPFRr1kdBP8kDuPAPgpsmPCa/1KdlV01WK8ATW7Ze/PBaTJ4AZFqQQ9Lp4g==
+X-Received: by 2002:a63:4f50:: with SMTP id p16mr33573127pgl.245.1620790079183;
+        Tue, 11 May 2021 20:27:59 -0700 (PDT)
+Received: from asus.hsd1.ca.comcast.net ([2601:647:4000:d7:76b9:3c77:17e3:3073])
+        by smtp.gmail.com with ESMTPSA id q194sm15008703pfc.62.2021.05.11.20.27.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 20:27:58 -0700 (PDT)
+From:   Bart Van Assche <bvanassche@acm.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: [PATCH 0/5] SRP kernel patches for kernel v5.14
+Date:   Tue, 11 May 2021 20:27:47 -0700
+Message-Id: <20210512032752.16611-1-bvanassche@acm.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210510084235.223628-1-yanjun.zhu@intel.com>
-In-Reply-To: <20210510084235.223628-1-yanjun.zhu@intel.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Wed, 12 May 2021 10:45:17 +0800
-Message-ID: <CAD=hENfbmEasEY4n7fN9NV4HjQWOPE6kJRROYWn+q_j33JOwHQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] RDMA/rxe: remove the unnecessary break
-To:     Zhu Yanjun <yanjun.zhu@intel.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leon@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 10, 2021 at 12:18 AM Zhu Yanjun <yanjun.zhu@intel.com> wrote:
->
-> From: Zhu Yanjun <zyjzyj2000@gmail.com>
->
-> In the final default, the break is not necessary.
+Hi Jason,
 
-Hi, Jason Gunthorpe and Leon Romanovsky
+Please consider the five patches in this series for kernel v5.14.
 
-Gently ping
+Thanks,
 
-Zhu Yanjun
->
-> Fixes: 8700e3e7c485 ("Soft RoCE driver")
-> Signed-off-by: Zhu Yanjun <zyjzyj2000@gmail.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_qp.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-> index 34ae957a315c..00588735744f 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-> @@ -186,7 +186,6 @@ static void rxe_qp_init_misc(struct rxe_dev *rxe, struct rxe_qp *qp,
->
->         default:
->                 qp->ibqp.qp_num         = qpn;
-> -               break;
->         }
->
->         INIT_LIST_HEAD(&qp->grp_list);
-> --
-> 2.27.0
->
+Bart.
+
+Bart Van Assche (5):
+  RDMA/ib_hdrs.h: Remove a superfluous cast
+  RDMA/srp: Add more structure size checks
+  RDMA/srp: Apply the __packed attribute to members instead of
+    structures
+  RDMA/srp: Fix a recently introduced memory leak
+  RDMA/srp: Make struct scsi_cmnd and struct srp_request adjacent
+
+ drivers/infiniband/ulp/srp/ib_srp.c | 154 ++++++++++++----------------
+ drivers/infiniband/ulp/srp/ib_srp.h |   2 -
+ include/rdma/ib_hdrs.h              |   2 +-
+ include/scsi/srp.h                  |  26 ++---
+ 4 files changed, 76 insertions(+), 108 deletions(-)
+
