@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A6A37EE36
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 May 2021 00:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C066D37EE38
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 May 2021 00:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346343AbhELVND (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 May 2021 17:13:03 -0400
-Received: from mga02.intel.com ([134.134.136.20]:16266 "EHLO mga02.intel.com"
+        id S240066AbhELVNI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 May 2021 17:13:08 -0400
+Received: from mga01.intel.com ([192.55.52.88]:22803 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377332AbhELTDh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 12 May 2021 15:03:37 -0400
-IronPort-SDR: TPiS0m8W5tMVcGPJRtf3Hfb88xRK3rSctYSAnItoqVuSi0alk60xfVFSLLudUXS/Uz+ngvbTTR
- ggwIBbWA0dLw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="186915222"
+        id S1377354AbhELTDv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 12 May 2021 15:03:51 -0400
+IronPort-SDR: vm4k5lnXbW29CHavfXO7SzVscYzC/+GF3EYLRKNWSxj9CdskGJrEaPM35AkUHqPZHhcY+O297D
+ Mmp1z4CVNzxQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="220763006"
 X-IronPort-AV: E=Sophos;i="5.82,295,1613462400"; 
-   d="scan'208";a="186915222"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 12:01:40 -0700
-IronPort-SDR: nUjM+pstKiWo1oPxxvqfo1SQpFz/vgbUJ/1q8me2nHeuEY+eQ/0fSxtXNMoRPrVRJuJdz6eIi7
- 9tXWx0l57HQg==
+   d="scan'208";a="220763006"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 12:02:42 -0700
+IronPort-SDR: B9VBkB/DPW2I/PHYMGFedcCHPqOwACkAQnjzJ9e6UlklXUZwroSAHRYCYMx0LfPc53DUwYB918
+ 18h7LiMkvekw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,295,1613462400"; 
-   d="scan'208";a="400499536"
+   d="scan'208";a="435338063"
 Received: from lkp-server01.sh.intel.com (HELO 1e931876798f) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 12 May 2021 12:01:39 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 12 May 2021 12:02:40 -0700
 Received: from kbuild by 1e931876798f with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lgu70-0000RZ-Hz; Wed, 12 May 2021 19:01:38 +0000
-Date:   Thu, 13 May 2021 03:01:22 +0800
+        id 1lgu7z-0000Rx-Pd; Wed, 12 May 2021 19:02:39 +0000
+Date:   Thu, 13 May 2021 03:01:46 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- 67f29896fdc83298eed5a6576ff8f9873f709228
-Message-ID: <609c2602.Pd30YOT7vQJcYo0f%lkp@intel.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 620ccaaa46d1fa9e6d15d78deaa37a4228772592
+Message-ID: <609c261a.GFsppoejm3igUVl6%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +43,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
-branch HEAD: 67f29896fdc83298eed5a6576ff8f9873f709228  RDMA/rxe: Clear all QP fields if creation failed
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 620ccaaa46d1fa9e6d15d78deaa37a4228772592  IB/hfi1: Delete an unneeded bool conversion
 
 elapsed time: 735m
 
-configs tested: 183
+configs tested: 182
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -65,16 +65,16 @@ m68k                          sun3x_defconfig
 mips                          rb532_defconfig
 arm                      jornada720_defconfig
 arm                          imote2_defconfig
+mips                            ar7_defconfig
+arm64                            alldefconfig
+powerpc                     mpc512x_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                 mpc85xx_cds_defconfig
 powerpc                      pcm030_defconfig
 powerpc               mpc834x_itxgp_defconfig
 arm                            hisi_defconfig
 powerpc                     tqm8560_defconfig
 mips                        nlm_xlp_defconfig
-um                               allmodconfig
-sh                          landisk_defconfig
-arm                         at91_dt_defconfig
-powerpc                     tqm8555_defconfig
-powerpc                 mpc836x_mds_defconfig
 openrisc                  or1klitex_defconfig
 m68k                          amiga_defconfig
 mips                           xway_defconfig
@@ -83,22 +83,12 @@ arm                          collie_defconfig
 powerpc                     ppa8548_defconfig
 powerpc                      obs600_defconfig
 mips                     decstation_defconfig
-mips                             allyesconfig
 arm                           sunxi_defconfig
 powerpc                    sam440ep_defconfig
 arm                       mainstone_defconfig
 mips                           jazz_defconfig
 powerpc                        warp_defconfig
 powerpc                 mpc834x_itx_defconfig
-mips                           ip27_defconfig
-sh                        edosk7760_defconfig
-sh                   sh7770_generic_defconfig
-sh                          rsk7201_defconfig
-s390                       zfcpdump_defconfig
-xtensa                         virt_defconfig
-sh                        sh7763rdp_defconfig
-csky                                defconfig
-arm                        mini2440_defconfig
 powerpc                    socrates_defconfig
 arm                         s5pv210_defconfig
 arm                        magician_defconfig
@@ -125,10 +115,6 @@ sh                          rsk7203_defconfig
 powerpc                    klondike_defconfig
 arm                            dove_defconfig
 mips                      maltasmvp_defconfig
-arc                      axs103_smp_defconfig
-arm                       imx_v6_v7_defconfig
-powerpc                     asp8347_defconfig
-arm                          pxa910_defconfig
 m68k                       m5475evb_defconfig
 mips                      bmips_stb_defconfig
 arm                          ep93xx_defconfig
@@ -138,9 +124,11 @@ sh                          rsk7264_defconfig
 powerpc                       holly_defconfig
 mips                         mpc30x_defconfig
 mips                  decstation_64_defconfig
+mips                           ip27_defconfig
 ia64                                defconfig
 arc                 nsimosci_hs_smp_defconfig
 arm                        keystone_defconfig
+powerpc                 mpc836x_mds_defconfig
 powerpc                      tqm8xx_defconfig
 arm                            xcep_defconfig
 arm                        vexpress_defconfig
@@ -162,13 +150,21 @@ sh                            migor_defconfig
 h8300                     edosk2674_defconfig
 arm                         lpc18xx_defconfig
 sparc64                             defconfig
+powerpc                     tqm8555_defconfig
 sh                            hp6xx_defconfig
+arm                         at91_dt_defconfig
 powerpc64                           defconfig
 arm                          pcm027_defconfig
 arm                             rpc_defconfig
+arm                         cm_x300_defconfig
+mips                           ip28_defconfig
+sh                         microdev_defconfig
+mips                        bcm47xx_defconfig
+arm                           tegra_defconfig
 arm                         shannon_defconfig
 powerpc                    ge_imp3a_defconfig
 sh                            titan_defconfig
+sh                   sh7770_generic_defconfig
 powerpc                         ps3_defconfig
 powerpc                      chrp32_defconfig
 sh                           se7343_defconfig
@@ -183,6 +179,7 @@ arc                              allyesconfig
 nds32                             allnoconfig
 nds32                               defconfig
 nios2                            allyesconfig
+csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
 xtensa                           allyesconfig
@@ -198,6 +195,7 @@ i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
+mips                             allyesconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
@@ -223,6 +221,7 @@ riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                          rv32_defconfig
 riscv                            allmodconfig
+um                               allmodconfig
 um                                allnoconfig
 um                               allyesconfig
 um                                  defconfig
