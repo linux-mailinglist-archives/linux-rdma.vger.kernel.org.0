@@ -2,66 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841D037BFAD
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 May 2021 16:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6241B37BFE7
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 May 2021 16:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhELORE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 May 2021 10:17:04 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41050 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231630AbhELOQh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 May 2021 10:16:37 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 14CEEiap031112
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 May 2021 10:14:45 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 448C815C39C2; Wed, 12 May 2021 10:14:44 -0400 (EDT)
-Date:   Wed, 12 May 2021 10:14:44 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Mali DP Maintainers <malidp@foss.arm.com>,
-        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
-        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
-        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH v2 00/40] Use ASCII subset instead of UTF-8 alternate
- symbols
-Message-ID: <YJvi1L2ss5Tfi+My@mit.edu>
-References: <cover.1620823573.git.mchehab+huawei@kernel.org>
+        id S230370AbhELO14 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 May 2021 10:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230247AbhELO1z (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 May 2021 10:27:55 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23A4C061574
+        for <linux-rdma@vger.kernel.org>; Wed, 12 May 2021 07:26:47 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id l129so22317288qke.8
+        for <linux-rdma@vger.kernel.org>; Wed, 12 May 2021 07:26:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wxN06JjJ6XnpJCDuxr2U67h/cndLQfTctCEklsgpTSY=;
+        b=h1RZFQYljL7P0OHrCaDb6HgIQdDL6Zw15gvCpNlnmu30OdSCSl5caH27EaguSqVJwL
+         FvJaxo7ySuGDcRiU4wCDYmYQtiCcFWgXRcIIMjUOzowJqFdj9dAbu/AZeamD6FMDcwao
+         YpgWvLXWXZ0TCNXvPQrVaM2qeYnEbKasOpk4wXCXQqdjseBJdv//mbn27v73hB8bb20G
+         Of7b8T4rDNaUn36KmKR+deTuyxgMkHaG4+Yro4UTtr1MP1jQnYYT+x+K3BzReoZyamWF
+         jhcCLWcTCRRmYOOt+QM+yJFubNUbYWPvxapgYDJa7TKNTCf/sLmkrdCzswoo8bDSGFyL
+         QZnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wxN06JjJ6XnpJCDuxr2U67h/cndLQfTctCEklsgpTSY=;
+        b=rUAV6kO6Pd/u0Hf+YlM8OvqKES+6/plc7xRM3d38J/P2QYxnHcmONPSWxmdgjFHh1A
+         2uwwnOLR75D7xFmjQ9EiwExga7UD/sZ6pFCOPmf/0bd8ACxlOsE+yqHw1X6FgzVIsMmw
+         MmKjC/3ljT8/lq/rfCe5NqXG2pmOf7rLz1d64asvFpcOEbwAFy8gQspS77a/fgu+9eHu
+         j26D7MYz2V+b/l4xcMywzdyYwsnKb71rZGaRRXpzZCCnEKot2aCbTfPhoQCIfIRk8+sp
+         OfMud0VOXzu+fwRhBATmo3I207r1X8+s61rH73++Lb6SNUD/8NxNAgSTqfW6Lr5kg7iu
+         iG3w==
+X-Gm-Message-State: AOAM5334xe0MY6W6GoC/xn5HRUlZceLkDFPdHU3g1Xuz1Nt7vPg7j4a3
+        ESXoSozJU+plAp1Vq5FNa+JOig==
+X-Google-Smtp-Source: ABdhPJzPqqMsYDv236LsadB0eeUZqR0pX2QlPILuajH9dP/LbpfNHhFRddrgwftwOeLdxYMlsz8DMQ==
+X-Received: by 2002:a37:ef05:: with SMTP id j5mr9602108qkk.203.1620829607000;
+        Wed, 12 May 2021 07:26:47 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id j9sm119211qtl.15.2021.05.12.07.26.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 07:26:46 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lgpoz-005rA5-PA; Wed, 12 May 2021 11:26:45 -0300
+Date:   Wed, 12 May 2021 11:26:45 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] RDMA/cm: Optimise rbtree searching
+Message-ID: <20210512142645.GF1096940@ziepe.ca>
+References: <20210512100537.6273-1-thunder.leizhen@huawei.com>
+ <20210512100537.6273-3-thunder.leizhen@huawei.com>
+ <20210512125006.GE1096940@ziepe.ca>
+ <afb85ebf-4b76-d5e7-847a-14461bcf7310@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1620823573.git.mchehab+huawei@kernel.org>
+In-Reply-To: <afb85ebf-4b76-d5e7-847a-14461bcf7310@huawei.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 12, 2021 at 02:50:04PM +0200, Mauro Carvalho Chehab wrote:
-> v2:
-> - removed EM/EN DASH conversion from this patchset;
+On Wed, May 12, 2021 at 09:12:08PM +0800, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2021/5/12 20:50, Jason Gunthorpe wrote:
+> > On Wed, May 12, 2021 at 06:05:37PM +0800, Zhen Lei wrote:
+> >>  static struct cm_id_private *cm_find_listen(struct ib_device *device,
+> >> @@ -686,22 +687,23 @@ static struct cm_id_private *cm_find_listen(struct ib_device *device,
+> >>  
+> >>  	while (node) {
+> >>  		cm_id_priv = rb_entry(node, struct cm_id_private, service_node);
+> >> -		if ((cm_id_priv->id.service_mask & service_id) ==
+> >> -		     cm_id_priv->id.service_id &&
+> >> -		    (cm_id_priv->id.device == device)) {
+> >> -			refcount_inc(&cm_id_priv->refcount);
+> >> -			return cm_id_priv;
+> >> -		}
+> >> +
+> >>  		if (device < cm_id_priv->id.device)
+> >>  			node = node->rb_left;
+> >>  		else if (device > cm_id_priv->id.device)
+> >>  			node = node->rb_right;
+> >> +		else if ((cm_id_priv->id.service_mask & service_id) == cm_id_priv->id.service_id)
+> >> +			goto found;
+> >>  		else if (be64_lt(service_id, cm_id_priv->id.service_id))
+> >>  			node = node->rb_left;
+> >>  		else
+> >>  			node = node->rb_right;
+> >>  	}
+> > 
+> > This is not the pattern I showed you. Drop the first patch and rely on
+> > the implicit equality in the final else.
+> 
+> Do you mean treate the "found" process as the else branch?
+> 
+> But ((cm_id_priv->id.service_mask & service_id) ==
+> cm_id_priv->id.service_id) is different from (service_id ==
+> cm_id_priv->id.service_id),I'm just worried that it might change
+> the original logic.
 
-Are you still thinking about doing the
+The service_mask is always ~cpu_to_be64(0), it is some non-working
+dead code that has been left in here.
 
-EN DASH --> "--"
-EM DASH --> "---"
+If you really want to touch this then you should have a prep patch to
+remove that entire API facet, then the above will make sense.
 
-conversion?  That's not going to change what the documentation will
-look like in the HTML and PDF output forms, and I think it would make
-life easier for people are reading and editing the Documentation/*
-files in text form.
-
-				- Ted
+Jason
