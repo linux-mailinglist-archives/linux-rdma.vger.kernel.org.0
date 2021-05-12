@@ -2,168 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705F937BF69
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 May 2021 16:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 841D037BFAD
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 May 2021 16:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhELOLJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 May 2021 10:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbhELOLI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 May 2021 10:11:08 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E495C061760
-        for <linux-rdma@vger.kernel.org>; Wed, 12 May 2021 07:10:00 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id v39so30873164ybd.4
-        for <linux-rdma@vger.kernel.org>; Wed, 12 May 2021 07:10:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZMqb9pDlPkxQxt7DO3JSQX2FDPEZa9Tg1uyg9iwkb3w=;
-        b=OV7yj3NQQdF7FlfLdQEdonq710miiphHYoEQVNeNZ/aiBaF4QduqoFFT+PXWILPjkX
-         3lLKurAgxyUo4GVwvrLvBheX30QVU+hvIwSwo0XJOk9i6RCZk2lFYq4cfVn8gyMZcCpj
-         0FRw/iy/24u2PDncsePYn6l0Rj8jfq5YN5I2LIey4wp0seVSlh2HD5eVdLyVPNxYGaz9
-         i4ClNAwgNx1rLyC2Au/6hAjL1MYoriYfm4dd70BhFeDJnXG2VxqDvFekWkaKcfju6DmF
-         TOUNPilaGx7Sod94c+dOHZgvHtrzjtHLOlD6Rx6V+8gI/3vJGfZI4gD2mjvfjOheQiCC
-         qqcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZMqb9pDlPkxQxt7DO3JSQX2FDPEZa9Tg1uyg9iwkb3w=;
-        b=bBV5Gc8WxOJZ/2d3ZN1grXSXvMCeWJBrAyAmax6LymiiauHuz4+0A1fYW1GbDE9Alq
-         RfNBc/rPpkK1A05GQIKil6/jfGcZKeI3qB5rp4BF7fKq1QG24OJV3qCEGNX11x/GXkPR
-         XjJSPBkSEDaoZ45BUz1O2FPey/iwDLvr2F7Faj6r5udNlPAskMB1E5NsF/AMiQDxRDbf
-         73dPvf0pNx2Lki214xC/+BntSTRGO8kgm+qfLEAwRvPQXUigWQzPYx8vhWA1SZCW/DsL
-         rxg5YefZoAMSsHZD5hgfr8X1LuEQmI29eRj+SWbm0D4xQSsDs+GYYwZlaH4wEMohP7b0
-         KYbQ==
-X-Gm-Message-State: AOAM533YZBntkU6R3KmAMaPD3bXY9+MkM+N5gr+KdKD2XRcZ5lTVPEl0
-        aABhkfdJaVN0zoepAEDiHj3wPTAvF3Hmw7coOpSacw==
-X-Google-Smtp-Source: ABdhPJxHpb6RWithEu2vmhMDoaI9be2NUJek9rc1e/+bPZxqSoTLthtREkjsSfQchD2N3oC1udEzZ0LIqBewSkPZWUI=
-X-Received: by 2002:a25:7ac5:: with SMTP id v188mr27529673ybc.132.1620828599169;
- Wed, 12 May 2021 07:09:59 -0700 (PDT)
+        id S231453AbhELORE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 May 2021 10:17:04 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41050 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231630AbhELOQh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 May 2021 10:16:37 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 14CEEiap031112
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 May 2021 10:14:45 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 448C815C39C2; Wed, 12 May 2021 10:14:44 -0400 (EDT)
+Date:   Wed, 12 May 2021 10:14:44 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Mali DP Maintainers <malidp@foss.arm.com>,
+        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH v2 00/40] Use ASCII subset instead of UTF-8 alternate
+ symbols
+Message-ID: <YJvi1L2ss5Tfi+My@mit.edu>
+References: <cover.1620823573.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
- <20210511133118.15012-3-mcroce@linux.microsoft.com> <fa93976a-3460-0f7f-7af4-e78bfe55900a@gmail.com>
- <YJuk3o6CezbVrT+P@apalos.home>
-In-Reply-To: <YJuk3o6CezbVrT+P@apalos.home>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 12 May 2021 16:09:47 +0200
-Message-ID: <CANn89iLkq0zcbVeRRPGfeb5ZRcnz+e7dR1BCj-RGehNYE1Hzkw@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 2/4] page_pool: Allow drivers to hint on SKB recycling
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1620823573.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 12, 2021 at 11:50 AM Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
->
-> [...]
-> > > Since we added an extra argument on __skb_frag_unref() to handle
-> > > recycling, update the current users of the function with that.
-> >
-> > This part could be done with a preliminary patch, only adding this
-> > extra boolean, this would keep the 'complex' patch smaller.
->
-> Sure
->
-> [...]
-> > >  #include <linux/uaccess.h>
-> > >  #include <trace/events/skb.h>
-> > > @@ -645,6 +648,11 @@ static void skb_free_head(struct sk_buff *skb)
-> > >  {
-> > >     unsigned char *head = skb->head;
-> > >
-> > > +#if IS_BUILTIN(CONFIG_PAGE_POOL)
-> >
-> > Why IS_BUILTIN() ?
->
-> No reason, we'll replace it with an ifdef
->
-> >
-> > PAGE_POOL is either y or n
-> >
-> > IS_ENABLED() would look better, since we use IS_BUILTIN() for the cases where a module might be used.
-> >
-> > Or simply #ifdef CONFIG_PAGE_POOL
-> >
-> > > +   if (skb->pp_recycle && page_pool_return_skb_page(head))
-> >
-> > This probably should be attempted only in the (skb->head_frag) case ?
->
-> I think the extra check makes sense.
+On Wed, May 12, 2021 at 02:50:04PM +0200, Mauro Carvalho Chehab wrote:
+> v2:
+> - removed EM/EN DASH conversion from this patchset;
 
-What do you mean here ?
+Are you still thinking about doing the
 
->
-> >
-> > Also this patch misses pskb_expand_head()
->
-> I am not sure I am following. Misses what? pskb_expand_head() will either
-> call skb_release_data() or skb_free_head(), which would either recycle or
-> unmap the buffer for us (depending on the page refcnt)
+EN DASH --> "--"
+EM DASH --> "---"
 
- pskb_expand_head() allocates a new skb->head, from slab.
+conversion?  That's not going to change what the documentation will
+look like in the HTML and PDF output forms, and I think it would make
+life easier for people are reading and editing the Documentation/*
+files in text form.
 
-We should clear skb->pp_recycle for consistency of the skb->head_frag
-clearing we perform there.
-
-But then, I now realize you use skb->pp_recycle bit for both skb->head
-and fragments,
-and rely on this PP_SIGNATURE thing (I note that patch 1 changelog
-does not describe why a random page will _not_ have this signature by
-bad luck)
-
-Please document/describe which struct page fields are aliased with
-page->signature ?
-
-Thanks !
+				- Ted
