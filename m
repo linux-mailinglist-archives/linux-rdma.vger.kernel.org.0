@@ -2,191 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1962B37C069
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 May 2021 16:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6B737C689
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 May 2021 17:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbhELOku (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 May 2021 10:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbhELOkt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 May 2021 10:40:49 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95329C061760
-        for <linux-rdma@vger.kernel.org>; Wed, 12 May 2021 07:39:40 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id e7so5349333wrc.11
-        for <linux-rdma@vger.kernel.org>; Wed, 12 May 2021 07:39:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rfei5MEg9bMEdOxZz3i9gp/4Xf63nRd6sW81/rNWaPA=;
-        b=zkeeqiVHma3XJR/YrkY21U3s61+aPn20UKjLvK2B6kIuhVHYPMLf+YCIAZYOV2cOwA
-         GCgI9Iac036xWy7Ttp1TDN5cXN2sFNjE1DBNA6/3sokb7tEXhvTjVxhfdpOH1/PUHIvs
-         iJqiIzJ7sTSwwNgkCAwMRI+pHWYdLA1e53lomjMrZPFdBg0ENDrUoo0IxnlaUWGALyeJ
-         gDCUwT0IoJ6hnLYeIs3/GdcDVteMS9mmUc0AuillQR8knPOjzmpuZiZ/kldaw1b4hjb5
-         hZoHP0FJK5G4bZ8L8afAbmJ9y6WG5t5gxL1ak3NvCE5Ts3cPtUzH+nlUKLGJ5SfS+6yZ
-         3lrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rfei5MEg9bMEdOxZz3i9gp/4Xf63nRd6sW81/rNWaPA=;
-        b=j1KeURFH/nagy7pPaQCDKNzYZA3uoKofY9zR3K2T3Z+f1+tIRxly+eOrb053LXr175
-         q19yUnT+h6PQnfEM50IcSUEeB2ArVtffeHFXdvokg2RY4x6i4n89IgVMTA4NYKzm4jD2
-         xG3L313gJjyHZREuKFxwGUvnGxA0a2WDQOeLfKtBlPma8+GQ8h+ZDHQMf9wDOu0QhnZO
-         2nV2urAD0jv6h9wxDOtyvkPti5qMLQnb1LnDQIRmAQzOqmzYXj8L8TxfVc7hH6VDw4XM
-         qPV3vMa/zwnAMBggrMH1onzAh7gaLFItLz99USlUQzZZ9xPvK2nYechOwSNm7thYKbZQ
-         uq5g==
-X-Gm-Message-State: AOAM531r+tJaHZuw/m8nWZ0F/fUiQPzLB93YFnyIIlMnLIEchqWtshgD
-        6i4wJcLqtWXNzx+AeSKDghM57g==
-X-Google-Smtp-Source: ABdhPJyVfNFYYeNQ4AG+yp0IlLCFS0VkZrtKFW3E+38v4QOFOQ28Vij61Om2GuDVOc7ydR2EYbR9cA==
-X-Received: by 2002:adf:d1c6:: with SMTP id b6mr42542657wrd.110.1620830379358;
-        Wed, 12 May 2021 07:39:39 -0700 (PDT)
-Received: from apalos.home ([94.69.77.156])
-        by smtp.gmail.com with ESMTPSA id v17sm29739475wrd.89.2021.05.12.07.39.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 07:39:38 -0700 (PDT)
-Date:   Wed, 12 May 2021 17:39:33 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v4 2/4] page_pool: Allow drivers to hint on SKB
- recycling
-Message-ID: <YJvopUsZHcGb7q24@apalos.home>
-References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
- <20210511133118.15012-3-mcroce@linux.microsoft.com>
- <fa93976a-3460-0f7f-7af4-e78bfe55900a@gmail.com>
- <YJuk3o6CezbVrT+P@apalos.home>
- <CANn89iLkq0zcbVeRRPGfeb5ZRcnz+e7dR1BCj-RGehNYE1Hzkw@mail.gmail.com>
+        id S234750AbhELPwA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 May 2021 11:52:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235091AbhELPfS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 12 May 2021 11:35:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 455F961C3E;
+        Wed, 12 May 2021 15:17:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620832672;
+        bh=zB2G4t5ozyJ72g68BGRplKf2lQRTS6CtRvJ7FVX3NWE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DBjrvZcbfODq6o/u3ovhcKp34o3mQ/2g2kqOKbw7rqi0UbJcuDmNkgLMMy0M05dFs
+         mwfV7fdqIvkaHvs5FkFIxP3pQ5mW2wuelKsM0Zg1XI928MZ1g6hDtwlC/lZ6mTYtDn
+         L0yXyxJPdKzjgMXD6Vs/vdQOXuvQV+DBBKSwRDhM/LlZ9x9/DV6Qnq7MjBym4Ue3He
+         LklNFflnfSaW1SCikrvqRJriPDliUiNhIaGm2pb/3nXItDzT/4/obeOPpO0NPN/v0m
+         Pwish5sD0axq4vDEIuCSUJZyKrnPcy3P6Nd30IKN+fHXybC5E+QSyK+xdLgaNeWw/l
+         +EUyGcBOd8VUw==
+Date:   Wed, 12 May 2021 17:17:41 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Mali DP Maintainers <malidp@foss.arm.com>,
+        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH v2 00/40] Use ASCII subset instead of UTF-8 alternate
+ symbols
+Message-ID: <20210512171741.2870bcbc@coco.lan>
+In-Reply-To: <YJvi1L2ss5Tfi+My@mit.edu>
+References: <cover.1620823573.git.mchehab+huawei@kernel.org>
+        <YJvi1L2ss5Tfi+My@mit.edu>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANn89iLkq0zcbVeRRPGfeb5ZRcnz+e7dR1BCj-RGehNYE1Hzkw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Eric,
+Em Wed, 12 May 2021 10:14:44 -0400
+"Theodore Ts'o" <tytso@mit.edu> escreveu:
 
-[...]
-> > > > +   if (skb->pp_recycle && page_pool_return_skb_page(head))
-> > >
-> > > This probably should be attempted only in the (skb->head_frag) case ?
-> >
-> > I think the extra check makes sense.
-> 
-> What do you mean here ?
-> 
+> On Wed, May 12, 2021 at 02:50:04PM +0200, Mauro Carvalho Chehab wrote:
+> > v2:
+> > - removed EM/EN DASH conversion from this patchset; =20
+>=20
+> Are you still thinking about doing the
+>=20
+> EN DASH --> "--"
+> EM DASH --> "---"
+>=20
+> conversion? =20
 
-I thought you wanted an extra check in the if statement above.  So move the
-block under the existing if. Something like
+Yes, but I intend to submit it on a separate patch series, probably after
+having this one merged. Let's first cleanup the large part of the=20
+conversion-generated UTF-8 char noise ;-)
 
-	if (skb->head_frag) {
-		#ifdef (CONFIG_PAGE_POOL)
-			if (skb->pp_recycle && page_pool_return_skb_page(head))
-			return;
-		#endif
-        skb_free_frag(head);
-	} else {
-	.....
+> That's not going to change what the documentation will
+> look like in the HTML and PDF output forms, and I think it would make
+> life easier for people are reading and editing the Documentation/*
+> files in text form.
 
-> >
-> > >
-> > > Also this patch misses pskb_expand_head()
-> >
-> > I am not sure I am following. Misses what? pskb_expand_head() will either
-> > call skb_release_data() or skb_free_head(), which would either recycle or
-> > unmap the buffer for us (depending on the page refcnt)
-> 
->  pskb_expand_head() allocates a new skb->head, from slab.
-> 
-> We should clear skb->pp_recycle for consistency of the skb->head_frag
-> clearing we perform there.
+Agreed. I'm also considering to add a couple of cases of this char:
 
-Ah right, good catch. I was mostly worried we are not freeing/unmapping
-buffers and I completely missed that.  I think nothing bad will happen even
-if we don't, since the signature will eventually protect us, but it's
-definitely the right thing to do.
+	- U+2026 ('=E2=80=A6'): HORIZONTAL ELLIPSIS
 
-> 
-> But then, I now realize you use skb->pp_recycle bit for both skb->head
-> and fragments,
-> and rely on this PP_SIGNATURE thing (I note that patch 1 changelog
-> does not describe why a random page will _not_ have this signature by
-> bad luck)
+As Sphinx also replaces "..." into HORIZONTAL ELLIPSIS.
 
-Correct.  I've tried to explain in the previous posting as well, but that's
-the big difference compared to the initial RFC we sent a few years ago (the
-ability to recycle frags as well).
+-
 
-> 
-> Please document/describe which struct page fields are aliased with
-> page->signature ?
-> 
+Anyway, I'm opting to submitting those in separate because it seems
+that at least some maintainers added EM/EN DASH intentionally.
 
-Sure, any preference on this? Right above page_pool_return_skb_page() ?
+So, it may generate case-per-case discussions.
 
-Keep in mind the current [1/4] patch is wrong, since it will overlap
-pp_signature with mapping.  So we'll have interesting results if a page
-gets mapped to userspace :).
-What Matthew proposed makes sense, we can add something along the lines of: 
+Also, IMO, at least a couple of EN/EM DASH cases would be better served=20
+with a single hyphen.
 
-+ unsigned long pp_magic;
-+ struct page_pool *pp;
-+ unsigned long _pp_mapping_pad;
-+ unsigned long dma_addr[2];
-
-in struct page. In this case page->mapping aliases to pa->_pp_mapping_pad
-
-The first word (that we'll now be using) is used for a pointer or a
-compound_head.  So as long as pp_magic doesn't resemble a pointer and has 
-bits 0/1 set to 0 we should be safe.
-
-Thanks!
-/Ilias
+Thanks,
+Mauro
