@@ -2,59 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CAB37F61F
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 May 2021 13:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2999737F692
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 May 2021 13:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232889AbhEMLBh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 May 2021 07:01:37 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:58892 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232226AbhEMLBd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 May 2021 07:01:33 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UYkXWdp_1620903615;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UYkXWdp_1620903615)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 13 May 2021 19:00:21 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     saeedm@nvidia.com
-Cc:     leon@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] net/mlx5: Fix duplicate included vhca_event.h
-Date:   Thu, 13 May 2021 19:00:14 +0800
-Message-Id: <1620903614-65524-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S233309AbhEMLRj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 May 2021 07:17:39 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:2474 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233253AbhEMLRh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 May 2021 07:17:37 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fgptx5RkDzBvCG;
+        Thu, 13 May 2021 19:13:45 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 13 May 2021 19:16:19 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@nvidia.com>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>, Weihang Li <liweihang@huawei.com>
+Subject: [PATCH for-next 0/3] RDMA/hns: Cleanups on CMDQ
+Date:   Thu, 13 May 2021 19:16:15 +0800
+Message-ID: <1620904578-29829-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Clean up the following includecheck warning:
+This series first rename the CMDQ pointers to make it better
+understandable, then remove some dead code.
 
-./drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c: vhca_event.h is
-included more than once.
+Lang Cheng (3):
+  RDMA/hns: Rename CMDQ head/tail pointer to PI/CI
+  RDMA/hns: Remove Receive Queue of CMDQ
+  RDMA/hns: Remove unused CMDQ member
 
-No functional change.
+ drivers/infiniband/hw/hns/hns_roce_common.h |   4 +-
+ drivers/infiniband/hw/hns/hns_roce_device.h |   1 -
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 101 ++++++++--------------------
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |   1 -
+ 4 files changed, 30 insertions(+), 77 deletions(-)
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c b/drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c
-index ef5f892..500c71f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/sf/hw_table.c
-@@ -6,7 +6,6 @@
- #include "sf.h"
- #include "mlx5_ifc_vhca_event.h"
- #include "ecpf.h"
--#include "vhca_event.h"
- #include "mlx5_core.h"
- #include "eswitch.h"
- 
 -- 
-1.8.3.1
+2.7.4
 
