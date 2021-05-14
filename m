@@ -2,189 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4772F380600
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 May 2021 11:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A93F380825
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 May 2021 13:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhENJTL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 May 2021 05:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
+        id S231783AbhENLJy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 May 2021 07:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231851AbhENJTK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 May 2021 05:19:10 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D1EC06175F
-        for <linux-rdma@vger.kernel.org>; Fri, 14 May 2021 02:17:57 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id lg14so1830424ejb.9
-        for <linux-rdma@vger.kernel.org>; Fri, 14 May 2021 02:17:57 -0700 (PDT)
+        with ESMTP id S229445AbhENLJu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 May 2021 07:09:50 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39449C061574;
+        Fri, 14 May 2021 04:08:39 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so1248684wmk.1;
+        Fri, 14 May 2021 04:08:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=KpUWkUumoCfSvMpSBUUJEGaD2Gr/qdkOSMbFvxzdrIs=;
-        b=wOVTnfZj32G+M9YPoPGwNSJl3x2VMEEDdWxCWvw3KCnTNmhxbmAr2LphAYMvK9rotD
-         0iqItIiOPagYPG2tNmBId2QaztuDBpgz+SyfPCCKBPUKwDH+uSN8Xhf3dmU/orKKupfP
-         lHDei2hgUfFvCLXDvmB6XJQv6OvXTT6QMv1nPeYaVAOpRQA97jrLd448+nGbh/EOW8Ki
-         fidWFFcC7TzGuU73oCdA8/xEoF9kecR8Bkkwj9bEWzyyH+F+ywO31BlqLSUvTqvSSBgp
-         edFAYgN6oKtQB0xW4wuna7uGatVbp0Ai9v7v90MM0nWYCwAeNkkH2zPRWWDrlenHUNjT
-         RUbw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DnsDrIqkWnYf7da8HpIWFBQQt2XImu+6ZyHWBvjrfcE=;
+        b=sDX/4vOZ59ic93Kj1k7EQHH5H75TwRxFQdfU97NsB2/Y+xVttZgCu6VcmdiZBbTXV4
+         Yd9dS94Y1asR2VIYZN7NEerfwgmtEUFK3NZSUIzeY6J/4AmyVofgnwxiuO5puvulkCHX
+         zAH+iCNJUU2yLFhQkplxklOlcyZUbrmQbTIThNq4BukYbZy9X610Bla24hpoPnMCKKtF
+         HaX7GWwtAjZyjiNuvWcCoIBPkXTf9xY5aCFfjMGcrbRCdRoMLY/c+VX1+t1XGHSYNqtQ
+         /vEAS8jymBn+QTD3oR/5dtU3nH62pPJpzKh6iPn38AjBb8Fr8EpkCArPsjTRrMSNZ8n3
+         9CtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KpUWkUumoCfSvMpSBUUJEGaD2Gr/qdkOSMbFvxzdrIs=;
-        b=qrxVnegWcgaU5u6JiPUypa18NlGGmP+w/oGW9dKxnvgGKjJBrPD4uitdIZIxGnAlFw
-         AH3KXg/S5wEnTU4YlIMULRcHe2rsJcrBRJvmnT8HGm4WJt59o/OftI0HXrvBAc4G5ve2
-         6MsDvPPEH9u7TbRM7hNDkAQRyd0LykM6E9T25Z92Ca64FSKUO+3PG+NKVZhrmX1RHtF+
-         Gf826by/CjwHXTy+Kcbobf4NlIGYCrQzHKwNcajJa5U0Z0xD62jG+BqXmQFYk8rCVJRZ
-         CFMbcsXpSDEgDMRQQBzQLoLh81CbUlkF2ToIEAi44T//DBAkhkKaIAkFNbgS3oeaqZ5y
-         LiDA==
-X-Gm-Message-State: AOAM530FtsmX5rYNN9Z3LTobdRRA7IwpV21vATRc2ybRHzvyht6dlsoN
-        0/88rcm7amjL1UDNR38R17UMFA==
-X-Google-Smtp-Source: ABdhPJy7u0vp54IwPd698tdL4ob3exH4UZJnsi9nd6zWe+32A7rELSgshx9as+boeH8h/FE7Srq6yw==
-X-Received: by 2002:a17:906:9bf3:: with SMTP id de51mr1246754ejc.394.1620983876468;
-        Fri, 14 May 2021 02:17:56 -0700 (PDT)
-Received: from apalos.home ([94.69.77.156])
-        by smtp.gmail.com with ESMTPSA id rs8sm3298538ejb.17.2021.05.14.02.17.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 02:17:56 -0700 (PDT)
-Date:   Fri, 14 May 2021 12:17:50 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v5 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-Message-ID: <YJ5APhzabmAKIKCE@apalos.home>
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
- <20210513165846.23722-4-mcroce@linux.microsoft.com>
- <798d6dad-7950-91b2-46a5-3535f44df4e2@huawei.com>
- <YJ4ocslvURa/H+6f@apalos.home>
- <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DnsDrIqkWnYf7da8HpIWFBQQt2XImu+6ZyHWBvjrfcE=;
+        b=TD856n5ZaQSeJHGEx9lBl3DYJwSrmzWVHV1McUmXOwhUBLbSBNiZ/6VlNVh199g9Ri
+         9ldmsRKsgTpW0jJKu8wKKq9vTGxH8oYk1RYzr0pjjLyUXEWToFutGV6NHvDxrr3dRNcd
+         xpI6drJa0q8KxQI7Q383NhY5taZvAWG0bu4SH+Vv8KsL8GmXv+26WjLv17OjGJIsC9KP
+         zFk3FPiWWaCXwZzHBuEalGXketW02Jwpz/pzIJrrM7hhmVXx0ONOcWgQH31a0goO2DN0
+         0t4ahJ7da1+KepMU+CFz4Dgi5zZsjD3BtWZd2x/DzFYx57euWgcPya3+ADCpQXiDX1a0
+         9KEw==
+X-Gm-Message-State: AOAM530kBEY1aeTl7/fqP01xjKBxsG+XUhMJjIAC3GW4JTFpOAA74x2o
+        06yceDCYnkP+PZ9QsYvx+4mADfV1+btBCg==
+X-Google-Smtp-Source: ABdhPJwViz0BDPUuVH349RqXP0p4zCVFhrVjXNorTYnm55dAjMiaqH0FajvtM+sJwCYcinjBh5k1qQ==
+X-Received: by 2002:a7b:c005:: with SMTP id c5mr21007074wmb.113.1620990517974;
+        Fri, 14 May 2021 04:08:37 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
+        by smtp.gmail.com with ESMTPSA id b10sm7116349wrr.27.2021.05.14.04.08.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 May 2021 04:08:37 -0700 (PDT)
+Subject: Re: [PATCH v2 00/40] Use ASCII subset instead of UTF-8 alternate
+ symbols
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Mali DP Maintainers <malidp@foss.arm.com>,
+        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
+        rcu@vger.kernel.org
+References: <cover.1620823573.git.mchehab+huawei@kernel.org>
+ <d2fed242fbe200706b8d23a53512f0311d900297.camel@infradead.org>
+ <20210514102118.1b71bec3@coco.lan>
+ <61c286b7afd6c4acf71418feee4eecca2e6c80c8.camel@infradead.org>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <8b8bc929-2f07-049d-f24c-cb1f1d85bbaa@gmail.com>
+Date:   Fri, 14 May 2021 12:08:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <61c286b7afd6c4acf71418feee4eecca2e6c80c8.camel@infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 14, 2021 at 04:31:50PM +0800, Yunsheng Lin wrote:
-> On 2021/5/14 15:36, Ilias Apalodimas wrote:
-> > [...]
-> >>> +		return false;
-> >>> +
-> >>> +	pp = (struct page_pool *)page->pp;
-> >>> +
-> >>> +	/* Driver set this to memory recycling info. Reset it on recycle.
-> >>> +	 * This will *not* work for NIC using a split-page memory model.
-> >>> +	 * The page will be returned to the pool here regardless of the
-> >>> +	 * 'flipped' fragment being in use or not.
-> >>> +	 */
-> >>> +	page->pp = NULL;
-> >>
-> >> Why not only clear the page->pp when the page can not be recycled
-> >> by the page pool? so that we do not need to set and clear it every
-> >> time the page is recycled。
-> >>
-> > 
-> > If the page cannot be recycled, page->pp will not probably be set to begin
-> > with. Since we don't embed the feature in page_pool and we require the
-> > driver to explicitly enable it, as part of the 'skb flow', I'd rather keep 
-> > it as is.  When we set/clear the page->pp, the page is probably already in 
-> > cache, so I doubt this will have any measurable impact.
-> 
-> The point is that we already have the skb->pp_recycle to let driver to
-> explicitly enable recycling, as part of the 'skb flow, if the page pool keep
-> the page->pp while it owns the page, then the driver may only need to call
-> one skb_mark_for_recycle() for a skb, instead of call skb_mark_for_recycle()
-> for each page frag of a skb.
-> 
+> On Fri, 2021-05-14 at 10:21 +0200, Mauro Carvalho Chehab wrote:
+>> I do use a lot of UTF-8 here, as I type texts in Portuguese, but I rely
+>> on the US-intl keyboard settings, that allow me to type as "'a" for á.
+>> However, there's no shortcut for non-Latin UTF-codes, as far as I know.
+>>
+>> So, if would need to type a curly comma on the text editors I normally 
+>> use for development (vim, nano, kate), I would need to cut-and-paste
+>> it from somewhere
 
-The driver is meant to call skb_mark_for_recycle for the skb and
-page_pool_store_mem_info() for the fragments (in order to store page->pp).
-Nothing bad will happen if you call skb_mark_for_recycle on a frag though,
-but in any case you need to store the page_pool pointer of each frag to
-struct page.
+For anyone who doesn't know about it: X has this wonderful thing called
+ the Compose key[1].  For instance, type ⎄--- to get —, or ⎄<" for “.
+Much more mnemonic than Unicode codepoints; and you can extend it with
+ user-defined sequences in your ~/.XCompose file.
+(I assume Wayland supports all this too, but don't know the details.)
 
-> Maybe we can add a parameter in "struct page_pool_params" to let driver
-> to decide if the page pool ptr is stored in page->pp while the page pool
-> owns the page?
+On 14/05/2021 10:06, David Woodhouse wrote:
+> Again, if you want to make specific fixes like removing non-breaking
+> spaces and byte order marks, with specific reasons, then those make
+> sense. But it's got very little to do with UTF-8 and how easy it is to
+> type them. And the excuse you've put in the commit comment for your
+> patches is utterly bogus.
 
-Then you'd have to check the page pool config before saving the meta-data,
-and you would have to make the skb path aware of that as well (I assume you
-mean replace pp_recycle with this?).
-If not and you just want to add an extra flag on page_pool_params and be able 
-to enable recycling depending on that flag, we just add a patch afterwards.
-I am not sure we need an extra if for each packet though.
++1
 
-> 
-> Another thing accured to me is that if the driver use page from the
-> page pool to form a skb, and it does not call skb_mark_for_recycle(),
-> then there will be resource leaking, right? if yes, it seems the
-> skb_mark_for_recycle() call does not seems to add any value?
-> 
+-ed
 
-Not really, the driver has 2 choices:
-- call page_pool_release_page() once it receives the payload. That will
-  clean up dma mappings (if page pool is responsible for them) and free the
-  buffer
-- call skb_mark_for_recycle(). Which will end up recycling the buffer.
-
-If you call none of those, you'd leak a page, but that's a driver bug.
-patches [4/5, 5/5] do that for two marvell drivers.
-I really want to make drivers opt-in in the feature instead of always
-enabling it.
-
-Thanks
-/Ilias
-> 
-> > 
-> >>> +	page_pool_put_full_page(pp, virt_to_head_page(data), false);
-> >>> +
-> >>>  	C(end);
-> > 
-> > [...]
-> 
-> 
+[1] https://en.wikipedia.org/wiki/Compose_key
