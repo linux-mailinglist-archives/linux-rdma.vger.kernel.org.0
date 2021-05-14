@@ -2,105 +2,192 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DDD3804B5
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 May 2021 09:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C441380514
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 May 2021 10:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbhENHzd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 May 2021 03:55:33 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:2979 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233293AbhENHzc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 May 2021 03:55:32 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FhLMq2v9wzmWHl;
-        Fri, 14 May 2021 15:52:07 +0800 (CST)
-Received: from [10.174.179.215] (10.174.179.215) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 14 May 2021 15:54:18 +0800
-Subject: Re: [PATCH] IB/srpt: Fix passing zero to 'PTR_ERR'
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Bart Van Assche <bvanassche@acm.org>
-CC:     <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        <target-devel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201112145443.17832-1-yuehaibing@huawei.com>
- <20201112172008.GA944848@nvidia.com>
- <c73d9be0-0bd8-634a-e3d1-c81fe4c30482@acm.org>
- <20201112183023.GB917484@nvidia.com>
-From:   YueHaibing <yuehaibing@huawei.com>
-Message-ID: <9afea945-8991-4c27-10d0-e02c732705fc@huawei.com>
-Date:   Fri, 14 May 2021 15:54:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S233494AbhENIWm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 May 2021 04:22:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233416AbhENIWk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 May 2021 04:22:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C728061408;
+        Fri, 14 May 2021 08:21:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620980488;
+        bh=gH2wh+Hc0GOhQOIRbo/h4JAX62sDUeKs2tmsR+5ILos=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=e4qbUbfx0hxY+yj5rwe10X7fv77kQb6ZtXwJRT57564V2F/AP6l30KEqmfnQ8Z9/m
+         GbE6KTSFaLVgK/IALz8lgNCCJI09Wv6ypJxw7X8+NYsSH+qLTaA3rBVUJFbnXj6RkO
+         OLP+toeaBJ59mDypgIfhUX1EfHY2OFa2Ex63sriWaBCbSg8WSO+y0qdrgc5mMfEUKi
+         zoIKuKJCbIWchz7V1P1kNvQQPYr/hVEIXMXwl9v4IpEIdTp9mOKu3ZsGi5lbDjocf7
+         LN9AhGRwhMXdDuYb3SF+qI1QUoGfgKM56pIxwAOv5jsDOpM5r9sAA4fr4BFVLy6RmQ
+         IhAi7M7Jw2dRw==
+Date:   Fri, 14 May 2021 10:21:18 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Mali DP Maintainers <malidp@foss.arm.com>,
+        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH v2 00/40] Use ASCII subset instead of UTF-8 alternate
+ symbols
+Message-ID: <20210514102118.1b71bec3@coco.lan>
+In-Reply-To: <d2fed242fbe200706b8d23a53512f0311d900297.camel@infradead.org>
+References: <cover.1620823573.git.mchehab+huawei@kernel.org>
+        <d2fed242fbe200706b8d23a53512f0311d900297.camel@infradead.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201112183023.GB917484@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.215]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020/11/13 2:30, Jason Gunthorpe wrote:
-> On Thu, Nov 12, 2020 at 10:25:48AM -0800, Bart Van Assche wrote:
->> On 11/12/20 9:20 AM, Jason Gunthorpe wrote:
->>> I think it should be like this, Bart?
->>>
->>> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
->>> index 6017d525084a0c..80f9673956ced2 100644
->>> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
->>> @@ -2311,7 +2311,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
->>>   	mutex_lock(&sport->port_guid_id.mutex);
->>>   	list_for_each_entry(stpg, &sport->port_guid_id.tpg_list, entry) {
->>> -		if (!IS_ERR_OR_NULL(ch->sess))
->>> +		if (ch->sess)
->>>   			break;
->>>   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
->>>   						tag_size, TARGET_PROT_NORMAL,
->>> @@ -2321,12 +2321,12 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
->>>   	mutex_lock(&sport->port_gid_id.mutex);
->>>   	list_for_each_entry(stpg, &sport->port_gid_id.tpg_list, entry) {
->>> -		if (!IS_ERR_OR_NULL(ch->sess))
->>> +		if (ch->sess)
->>>   			break;
->>>   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
->>>   					tag_size, TARGET_PROT_NORMAL, i_port_id,
->>>   					ch, NULL);
->>> -		if (!IS_ERR_OR_NULL(ch->sess))
->>> +		if (ch->sess)
->>>   			break;
->>>   		/* Retry without leading "0x" */
->>>   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
->>> @@ -2335,7 +2335,9 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
->>>   	}
->>>   	mutex_unlock(&sport->port_gid_id.mutex);
->>> -	if (IS_ERR_OR_NULL(ch->sess)) {
->>> +	if (!ch->sess)
->>> +		ch->sess = ERR_PTR(-ENOENT);
->>> +	if (IS_ERR(ch->sess)) {
->>>   		WARN_ON_ONCE(ch->sess == NULL);
->>>   		ret = PTR_ERR(ch->sess);
->>>   		ch->sess = NULL;
->>>
->>
->> Hi Jason,
->>
->> The ib_srpt driver accepts three different formats for the initiator ACL. Up
->> to two of the three target_setup_session() calls will fail if the fifth
->> argument of target_setup_session() does not use the format of the initiator
->> ID in configfs. If the first or the second target_setup_session() call fails
->> it is essential that later target_setup_session() calls happen. Hence the
->> IS_ERR_OR_NULL(ch->sess) checks in the above loops.
-> 
-> IS_ERR_OR_NULL is an abomination, it should not be used.
-> 
-> I see I didn't quite get it right, but that is still closer to sane,
-> probably target_setup_session() should return NULL not err_ptr
+Em Wed, 12 May 2021 18:07:04 +0100
+David Woodhouse <dwmw2@infradead.org> escreveu:
 
-Any fix plan?
+> On Wed, 2021-05-12 at 14:50 +0200, Mauro Carvalho Chehab wrote:
+> > Such conversion tools - plus some text editor like LibreOffice  or simi=
+lar  - have
+> > a set of rules that turns some typed ASCII characters into UTF-8 altern=
+atives,
+> > for instance converting commas into curly commas and adding non-breakab=
+le
+> > spaces. All of those are meant to produce better results when the text =
+is
+> > displayed in HTML or PDF formats. =20
+>=20
+> And don't we render our documentation into HTML or PDF formats?=20
 
-> 
-> Jason
-> .
-> 
+Yes.
+
+> Are
+> some of those non-breaking spaces not actually *useful* for their
+> intended purpose?
+
+No.
+
+The thing is: non-breaking space can cause a lot of problems.
+
+We even had to disable Sphinx usage of non-breaking space for
+PDF outputs, as this was causing bad LaTeX/PDF outputs.
+
+See, commit: 3b4c963243b1 ("docs: conf.py: adjust the LaTeX document output=
+")
+
+The afore mentioned patch disables Sphinx default behavior of
+using NON-BREAKABLE SPACE on literal blocks and strings, using this
+special setting: "parsedliteralwraps=3Dtrue".
+
+When NON-BREAKABLE SPACE were used on PDF outputs, several parts of=20
+the media uAPI docs were violating the document margins by far,
+causing texts to be truncated.
+
+So, please **don't add NON-BREAKABLE SPACE**, unless you test
+(and keep testing it from time to time) if outputs on all
+formats are properly supporting it on different Sphinx versions.
+
+-
+
+Also, most of those came from conversion tools, together with other
+eccentricities, like the usage of U+FEFF (BOM) character at the
+start of some documents. The remaining ones seem to came from=20
+cut-and-paste.
+
+For instance,  bibliographic references (there are a couple of
+those on media) sometimes have NON-BREAKABLE SPACE. I'm pretty
+sure that those came from cut-and-pasting the document titles
+from their names at the original PDF documents or web pages that
+are referenced.
+
+> > While it is perfectly fine to use UTF-8 characters in Linux, and specia=
+lly at
+> > the documentation,  it is better to  stick to the ASCII subset  on such
+> > particular case,  due to a couple of reasons:
+> >=20
+> > 1. it makes life easier for tools like grep; =20
+>=20
+> Barely, as noted, because of things like line feeds.
+
+You can use grep with "-z" to seek for multi-line strings(*), Like:
+
+	$ grep -Pzl 'grace period started,\s*then' $(find Documentation/ -type f)
+	Documentation/RCU/Design/Data-Structures/Data-Structures.rst
+
+(*) Unfortunately, while "git grep" also has a "-z" flag, it
+    seems that this is (currently?) broken with regards of handling multili=
+nes:
+
+	$ git grep -Pzl 'grace period started,\s*then'
+	$
+
+> > 2. they easier to edit with the some commonly used text/source
+> >    code editors. =20
+>=20
+> That is nonsense. Any but the most broken and/or anachronistic
+> environments and editors will be just fine.
+
+Not really.
+
+I do use a lot of UTF-8 here, as I type texts in Portuguese, but I rely
+on the US-intl keyboard settings, that allow me to type as "'a" for =C3=A1.
+However, there's no shortcut for non-Latin UTF-codes, as far as I know.
+
+So, if would need to type a curly comma on the text editors I normally=20
+use for development (vim, nano, kate), I would need to cut-and-paste
+it from somewhere[1].
+
+[1] If I have a table with UTF-8 codes handy, I could type the UTF-8=20
+    number manually... However, it seems that this is currently broken=20
+    at least on Fedora 33 (with Mate Desktop and US intl keyboard with=20
+    dead keys).
+
+    Here, <CTRL><SHIFT>U is not working. No idea why. I haven't=20
+    test it for *years*, as I din't see any reason why I would
+    need to type UTF-8 characters by numbers until we started
+    this thread.
+=20
+In practice, on the very rare cases where I needed to write
+non-Latin utf-8 chars (maybe once in a year or so, Like when I
+would need to use a Greek letter or some weird symbol), there changes
+are high that I wouldn't remember its UTF-8 code.
+
+So, If I need to spend time to seek for an specific symbol, after
+finding it, I just cut-and-paste it.
+
+But even in the best case scenario where I know the UTF-8 and
+<CTRL><SHIFT>U works, if I wanted to use, for instance, a curly
+comma, the keystroke sequence would be:
+
+	<CTRL><SHIFT>U201csome string<CTRL><SHIFT>U201d
+
+That's a lot harder than typing and has a higher chances of
+mistakenly add a wrong symbol than just typing:
+
+	"some string"
+
+Knowing that both will produce *exactly* the same output, why
+should I bother doing it the hard way?
+
+-
+
+Now, I'm not arguing that you can't use whatever UTF-8 symbol you
+want on your docs. I'm just saying that, now that the conversion=20
+is over and a lot of documents ended getting some UTF-8 characters
+by accident, it is time for a cleanup.
+
+Thanks,
+Mauro
