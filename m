@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568AD3801CD
+	by mail.lfdr.de (Postfix) with ESMTP id C951E3801CF
 	for <lists+linux-rdma@lfdr.de>; Fri, 14 May 2021 04:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbhENCNG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 May 2021 22:13:06 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3660 "EHLO
+        id S229981AbhENCNH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 May 2021 22:13:07 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3662 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhENCNF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 May 2021 22:13:05 -0400
+        with ESMTP id S230144AbhENCNG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 May 2021 22:13:06 -0400
 Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FhBm80QXzz1BMNQ;
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FhBm80BBnz1BMNM;
         Fri, 14 May 2021 10:09:12 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
@@ -20,10 +20,11 @@ Received: from localhost.localdomain (10.69.192.56) by
 From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@nvidia.com>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, Weihang Li <liweihang@huawei.com>
-Subject: [PATCH for-next 3/6] RDMA/hns: Use refcount_t APIs for HEM
-Date:   Fri, 14 May 2021 10:11:36 +0800
-Message-ID: <1620958299-4869-4-git-send-email-liweihang@huawei.com>
+        <linuxarm@huawei.com>, Weihang Li <liweihang@huawei.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>
+Subject: [PATCH for-next 4/6] RDMA/cxgb4: Use refcount_t instead of atomic_t for reference counting
+Date:   Fri, 14 May 2021 10:11:37 +0800
+Message-ID: <1620958299-4869-5-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1620958299-4869-1-git-send-email-liweihang@huawei.com>
 References: <1620958299-4869-1-git-send-email-liweihang@huawei.com>
@@ -35,119 +36,92 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-refcount_t is better than integer for reference counting, it will WARN on
-overflow/underflow and avoid use-after-free risks.
+The refcount_t API will WARN on underflow and overflow of a reference
+counter, and avoid use-after-free risks.
 
+Cc: Potnuri Bharat Teja <bharat@chelsio.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hem.c | 33 ++++++++++++++++----------------
- drivers/infiniband/hw/hns/hns_roce_hem.h |  4 ++--
- 2 files changed, 18 insertions(+), 19 deletions(-)
+ drivers/infiniband/hw/cxgb4/cq.c       | 6 +++---
+ drivers/infiniband/hw/cxgb4/ev.c       | 8 ++++----
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h | 2 +-
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
-index cfd2e1b..84f3cd1 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
-@@ -271,7 +271,7 @@ static struct hns_roce_hem *hns_roce_alloc_hem(struct hns_roce_dev *hr_dev,
- 	if (!hem)
- 		return NULL;
+diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
+index 44c2416..6c8c910 100644
+--- a/drivers/infiniband/hw/cxgb4/cq.c
++++ b/drivers/infiniband/hw/cxgb4/cq.c
+@@ -976,8 +976,8 @@ int c4iw_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ 	chp = to_c4iw_cq(ib_cq);
  
--	hem->refcount = 0;
-+	refcount_set(&hem->refcount, 0);
- 	INIT_LIST_HEAD(&hem->chunk_list);
+ 	xa_erase_irq(&chp->rhp->cqs, chp->cq.cqid);
+-	atomic_dec(&chp->refcnt);
+-	wait_event(chp->wait, !atomic_read(&chp->refcnt));
++	refcount_dec(&chp->refcnt);
++	wait_event(chp->wait, !refcount_read(&chp->refcnt));
  
- 	order = get_order(hem_alloc_size);
-@@ -618,7 +618,7 @@ static int hns_roce_table_mhop_get(struct hns_roce_dev *hr_dev,
- 
- 	mutex_lock(&table->mutex);
- 	if (table->hem[index.buf]) {
--		++table->hem[index.buf]->refcount;
-+		refcount_inc(&table->hem[index.buf]->refcount);
- 		goto out;
+ 	ucontext = rdma_udata_to_drv_context(udata, struct c4iw_ucontext,
+ 					     ibucontext);
+@@ -1080,7 +1080,7 @@ int c4iw_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	chp->ibcq.cqe = entries - 2;
+ 	spin_lock_init(&chp->lock);
+ 	spin_lock_init(&chp->comp_handler_lock);
+-	atomic_set(&chp->refcnt, 1);
++	refcount_set(&chp->refcnt, 1);
+ 	init_waitqueue_head(&chp->wait);
+ 	ret = xa_insert_irq(&rhp->cqs, chp->cq.cqid, chp, GFP_KERNEL);
+ 	if (ret)
+diff --git a/drivers/infiniband/hw/cxgb4/ev.c b/drivers/infiniband/hw/cxgb4/ev.c
+index 4cd877b..7798d090 100644
+--- a/drivers/infiniband/hw/cxgb4/ev.c
++++ b/drivers/infiniband/hw/cxgb4/ev.c
+@@ -151,7 +151,7 @@ void c4iw_ev_dispatch(struct c4iw_dev *dev, struct t4_cqe *err_cqe)
  	}
  
-@@ -637,7 +637,7 @@ static int hns_roce_table_mhop_get(struct hns_roce_dev *hr_dev,
- 		}
+ 	c4iw_qp_add_ref(&qhp->ibqp);
+-	atomic_inc(&chp->refcnt);
++	refcount_inc(&chp->refcnt);
+ 	xa_unlock_irq(&dev->qps);
+ 
+ 	/* Bad incoming write */
+@@ -213,7 +213,7 @@ void c4iw_ev_dispatch(struct c4iw_dev *dev, struct t4_cqe *err_cqe)
+ 		break;
  	}
- 
--	++table->hem[index.buf]->refcount;
-+	refcount_set(&table->hem[index.buf]->refcount, 1);
- 	goto out;
- 
- err_alloc:
-@@ -663,7 +663,7 @@ int hns_roce_table_get(struct hns_roce_dev *hr_dev,
- 	mutex_lock(&table->mutex);
- 
- 	if (table->hem[i]) {
--		++table->hem[i]->refcount;
-+		refcount_inc(&table->hem[i]->refcount);
- 		goto out;
- 	}
- 
-@@ -686,7 +686,7 @@ int hns_roce_table_get(struct hns_roce_dev *hr_dev,
- 		goto out;
- 	}
- 
--	++table->hem[i]->refcount;
-+	refcount_set(&table->hem[i]->refcount, 1);
+ done:
+-	if (atomic_dec_and_test(&chp->refcnt))
++	if (refcount_dec_and_test(&chp->refcnt))
+ 		wake_up(&chp->wait);
+ 	c4iw_qp_rem_ref(&qhp->ibqp);
  out:
- 	mutex_unlock(&table->mutex);
- 	return ret;
-@@ -753,11 +753,11 @@ static void hns_roce_table_mhop_put(struct hns_roce_dev *hr_dev,
- 		return;
- 	}
- 
--	mutex_lock(&table->mutex);
--	if (check_refcount && (--table->hem[index.buf]->refcount > 0)) {
--		mutex_unlock(&table->mutex);
-+	if (!check_refcount)
-+		mutex_lock(&table->mutex);
-+	else if (!refcount_dec_and_mutex_lock(&table->hem[index.buf]->refcount,
-+					      &table->mutex))
- 		return;
--	}
- 
- 	clear_mhop_hem(hr_dev, table, obj, &mhop, &index);
- 	free_mhop_hem(hr_dev, table, &mhop, &index);
-@@ -779,16 +779,15 @@ void hns_roce_table_put(struct hns_roce_dev *hr_dev,
- 	i = (obj & (table->num_obj - 1)) /
- 	    (table->table_chunk_size / table->obj_size);
- 
--	mutex_lock(&table->mutex);
-+	if (!refcount_dec_and_mutex_lock(&table->hem[i]->refcount,
-+					 &table->mutex))
-+		return;
- 
--	if (--table->hem[i]->refcount == 0) {
--		/* Clear HEM base address */
--		if (hr_dev->hw->clear_hem(hr_dev, table, obj, 0))
--			dev_warn(dev, "Clear HEM base address failed.\n");
-+	if (hr_dev->hw->clear_hem(hr_dev, table, obj, 0))
-+		dev_warn(dev, "failed to clear HEM base address.\n");
- 
--		hns_roce_free_hem(hr_dev, table->hem[i]);
--		table->hem[i] = NULL;
--	}
-+	hns_roce_free_hem(hr_dev, table->hem[i]);
-+	table->hem[i] = NULL;
- 
- 	mutex_unlock(&table->mutex);
- }
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.h b/drivers/infiniband/hw/hns/hns_roce_hem.h
-index 13fdeb3..ffa65e8 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.h
-@@ -88,8 +88,8 @@ struct hns_roce_hem_chunk {
+@@ -228,13 +228,13 @@ int c4iw_ev_handler(struct c4iw_dev *dev, u32 qid)
+ 	xa_lock_irqsave(&dev->cqs, flag);
+ 	chp = xa_load(&dev->cqs, qid);
+ 	if (chp) {
+-		atomic_inc(&chp->refcnt);
++		refcount_inc(&chp->refcnt);
+ 		xa_unlock_irqrestore(&dev->cqs, flag);
+ 		t4_clear_cq_armed(&chp->cq);
+ 		spin_lock_irqsave(&chp->comp_handler_lock, flag);
+ 		(*chp->ibcq.comp_handler)(&chp->ibcq, chp->ibcq.cq_context);
+ 		spin_unlock_irqrestore(&chp->comp_handler_lock, flag);
+-		if (atomic_dec_and_test(&chp->refcnt))
++		if (refcount_dec_and_test(&chp->refcnt))
+ 			wake_up(&chp->wait);
+ 	} else {
+ 		pr_debug("unknown cqid 0x%x\n", qid);
+diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+index cdec5de..3883af3 100644
+--- a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
++++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+@@ -427,7 +427,7 @@ struct c4iw_cq {
+ 	struct t4_cq cq;
+ 	spinlock_t lock;
+ 	spinlock_t comp_handler_lock;
+-	atomic_t refcnt;
++	refcount_t refcnt;
+ 	wait_queue_head_t wait;
+ 	struct c4iw_wr_wait *wr_waitp;
  };
- 
- struct hns_roce_hem {
--	struct list_head	 chunk_list;
--	int			 refcount;
-+	struct list_head chunk_list;
-+	refcount_t refcount;
- };
- 
- struct hns_roce_hem_iter {
 -- 
 2.7.4
 
