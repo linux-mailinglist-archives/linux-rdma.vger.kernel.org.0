@@ -2,114 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A93F380825
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 May 2021 13:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C09C03809A5
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 May 2021 14:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhENLJy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 May 2021 07:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhENLJu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 May 2021 07:09:50 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39449C061574;
-        Fri, 14 May 2021 04:08:39 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so1248684wmk.1;
-        Fri, 14 May 2021 04:08:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DnsDrIqkWnYf7da8HpIWFBQQt2XImu+6ZyHWBvjrfcE=;
-        b=sDX/4vOZ59ic93Kj1k7EQHH5H75TwRxFQdfU97NsB2/Y+xVttZgCu6VcmdiZBbTXV4
-         Yd9dS94Y1asR2VIYZN7NEerfwgmtEUFK3NZSUIzeY6J/4AmyVofgnwxiuO5puvulkCHX
-         zAH+iCNJUU2yLFhQkplxklOlcyZUbrmQbTIThNq4BukYbZy9X610Bla24hpoPnMCKKtF
-         HaX7GWwtAjZyjiNuvWcCoIBPkXTf9xY5aCFfjMGcrbRCdRoMLY/c+VX1+t1XGHSYNqtQ
-         /vEAS8jymBn+QTD3oR/5dtU3nH62pPJpzKh6iPn38AjBb8Fr8EpkCArPsjTRrMSNZ8n3
-         9CtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DnsDrIqkWnYf7da8HpIWFBQQt2XImu+6ZyHWBvjrfcE=;
-        b=TD856n5ZaQSeJHGEx9lBl3DYJwSrmzWVHV1McUmXOwhUBLbSBNiZ/6VlNVh199g9Ri
-         9ldmsRKsgTpW0jJKu8wKKq9vTGxH8oYk1RYzr0pjjLyUXEWToFutGV6NHvDxrr3dRNcd
-         xpI6drJa0q8KxQI7Q383NhY5taZvAWG0bu4SH+Vv8KsL8GmXv+26WjLv17OjGJIsC9KP
-         zFk3FPiWWaCXwZzHBuEalGXketW02Jwpz/pzIJrrM7hhmVXx0ONOcWgQH31a0goO2DN0
-         0t4ahJ7da1+KepMU+CFz4Dgi5zZsjD3BtWZd2x/DzFYx57euWgcPya3+ADCpQXiDX1a0
-         9KEw==
-X-Gm-Message-State: AOAM530kBEY1aeTl7/fqP01xjKBxsG+XUhMJjIAC3GW4JTFpOAA74x2o
-        06yceDCYnkP+PZ9QsYvx+4mADfV1+btBCg==
-X-Google-Smtp-Source: ABdhPJwViz0BDPUuVH349RqXP0p4zCVFhrVjXNorTYnm55dAjMiaqH0FajvtM+sJwCYcinjBh5k1qQ==
-X-Received: by 2002:a7b:c005:: with SMTP id c5mr21007074wmb.113.1620990517974;
-        Fri, 14 May 2021 04:08:37 -0700 (PDT)
-Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
-        by smtp.gmail.com with ESMTPSA id b10sm7116349wrr.27.2021.05.14.04.08.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 04:08:37 -0700 (PDT)
-Subject: Re: [PATCH v2 00/40] Use ASCII subset instead of UTF-8 alternate
- symbols
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Mali DP Maintainers <malidp@foss.arm.com>,
-        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
-        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
-        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
-        rcu@vger.kernel.org
-References: <cover.1620823573.git.mchehab+huawei@kernel.org>
- <d2fed242fbe200706b8d23a53512f0311d900297.camel@infradead.org>
- <20210514102118.1b71bec3@coco.lan>
- <61c286b7afd6c4acf71418feee4eecca2e6c80c8.camel@infradead.org>
-From:   Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <8b8bc929-2f07-049d-f24c-cb1f1d85bbaa@gmail.com>
-Date:   Fri, 14 May 2021 12:08:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S233616AbhENMgA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 May 2021 08:36:00 -0400
+Received: from mail-mw2nam12on2040.outbound.protection.outlook.com ([40.107.244.40]:38753
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233019AbhENMf7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 May 2021 08:35:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z+v5EiRQekV9/2orf/WOroPkQgIoQoHpzVhdd4xQ7qOwFwq7dWipUi88MPKMrgkAGk/QC7x1Im1bTwTkTG8D+S/x3rvCHCZsLJvMVQ5pVH3yyZ577P49IfLPkKkmWZvvk8O/yKBGSbBXAY/HZ8kpXCQWxfswCBNhsOv46ChuCc3AQjQdN1kWSS62eyxFwoqEmYiV6+/WeR6/Q9WHMgVFb4Z3R5ZC7plK8F8HIkSP/F8Lo4gIonyMgo8CXEhUx+SyMHxipqF+5sMjuiMhcghri5Wxi02D8zH2Yzi2ckJhBX4ofE5Jv1lDofow01JVoZp4JixRLGvBcpyZUd6qiRnywA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BA2MH/211hddoknnwnmOGVgFhOx0xginwV9ob9MNUeo=;
+ b=hpCe/L5/+9RkScWc+9WouIuvitaA8HOWwfermHPdCM8tiOetb/GEdtZJbyTGPCJDRzn2g1cNc8L0r1bgr+p6AUzicYKKB2FxjdPU9yA5/TRtoAJQyJ7sb+QDwSTLppMdwniNWKJMPbyC3lkcVlTApThROp4a1PNfrNd1lprD9dj8xHjwFbf6Z7Q+91v10fPPQ3XRsd6esqQtz/Oo7ryfqKusqvu8sFIoZuG7uzqcDkTBYHislfOkuKnySR7Y6qBj84SZ864yMv+nQJVBuw3Q+OrxehZ5RTp1DdWfgBIif99QL1xCZrUwaxNJgQOMaPilrZnejAifaQhc1KdK1aHuCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BA2MH/211hddoknnwnmOGVgFhOx0xginwV9ob9MNUeo=;
+ b=AJ7DA2+VOiFp4yxnXmYq6xmuTL6Rd/3XqScIIMI+pA5KokslfwyXIEknwPkt52dx9tDulQWD28VGnJr+ECa0MEYTl+cbovwrlTZMWbtIh4N/XVY7Nw5dKpTRg9JepITK+nZg95fwfmstexgDFOuMprLzPVf81PCAF+3ciZChG/a0WoHuwz7J4GI7YX+16M5z1u228Q4iK2GV5+ZKXoC7RTXoFLgpoGg5ziuR7S3eWfUzHYDYSD46F7ObzA2yd7GHkMZ2kJA3Yq3tpt7ZTgp2W+LwSDuyMLmyo0hnxdVAGQJS9yx6q/h7BlhS4BnEOB+BcENZf0BRGq/n8Qte3qotfw==
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3929.namprd12.prod.outlook.com (2603:10b6:5:148::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Fri, 14 May
+ 2021 12:34:47 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4129.028; Fri, 14 May 2021
+ 12:34:47 +0000
+Date:   Fri, 14 May 2021 09:34:45 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next 1/6] RDMA/core: Use refcount_t instead of
+ atomic_t for reference counting
+Message-ID: <20210514123445.GY1002214@nvidia.com>
+References: <1620958299-4869-1-git-send-email-liweihang@huawei.com>
+ <1620958299-4869-2-git-send-email-liweihang@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620958299-4869-2-git-send-email-liweihang@huawei.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR13CA0002.namprd13.prod.outlook.com
+ (2603:10b6:208:160::15) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <61c286b7afd6c4acf71418feee4eecca2e6c80c8.camel@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR13CA0002.namprd13.prod.outlook.com (2603:10b6:208:160::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.11 via Frontend Transport; Fri, 14 May 2021 12:34:46 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lhX1h-007OYz-HC; Fri, 14 May 2021 09:34:45 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cd82538a-976f-49aa-c83a-08d916d4a888
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3929:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3929E5B7D05C3A6AEFD079DBC2509@DM6PR12MB3929.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yzNdhpEBQ4ki8QReNv6cM3reomF6tuBCZ1vP8vNr92Eua+LdAF3MJm2i7Zld8iDAAMb2ni6Vxa7GSz6kDn1k6trvvizN2wJBHf3iO8oSk+jGIDxtI0miBbcxV757GdUi767mdMveLOmN4Z8OEcREGIk+GIGSiRMvQqFWPlqx3oLoH2mKIUtxshKGUbi0sWlLESTfZRV+eTCPcn0L0HOFb94kAgWfznh/UVWiw8usJ5XJqowz/Nbrz0tu6lV6pFho4wJVJs9AFTcisqpzi+iHHP6o/Rv0ThO7kjgG78zsCGh3SNd4c+2hI9+2V4+wh9mApkPSkG9dRQl5legWzNkP0ERhzWwNJZVnNzr36k46qZrbjkI1isGD2wfVAgE3rRXtNcK7MjmQd7q8rE0NNHQDGF4DWLubycNj2CaXf27jMv6KqA6awjmfE5qkMdg/LhBq2Metxyq7A1FseomEMTB/2+4caXGFfPgLynYi9IOefrtizN2Qq2EcSdFwe/QBRzsvB0W+y64NUiTJNRF64sdvz0Q10Oa/E+TRhqEZTVqLeFxmZM7u5IVusKZLuPewPvdtoZq1IetgKGlm6EbiIh7wyM1vZqUduooWaap05injvtw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(366004)(376002)(346002)(136003)(6916009)(66946007)(5660300002)(66476007)(66556008)(8936002)(2906002)(316002)(8676002)(38100700002)(36756003)(1076003)(86362001)(4326008)(4744005)(9786002)(2616005)(186003)(426003)(83380400001)(9746002)(478600001)(26005)(33656002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?N+1d682HWB1VJKUBTC4ISnpSasWE4Y3OIoNzysGFH94H4T79pX9Y48+tAvX5?=
+ =?us-ascii?Q?xiZ6Lt019FDjzdWy4kOy6FI4VVmgU5bMhvwoicKSjz7iHor/yxgN9m9huzGW?=
+ =?us-ascii?Q?paWlKggW1pdCM/K2msmJZkAI4WvHVwY2hIv6YBIh5wOFZYShAUKgWPSI/sp9?=
+ =?us-ascii?Q?ZPTFYfT3ON6mQXMhAkIBS9e4ikFm7XU24ZZ5Dz8LrMqiXT6TKQbeiFF5pqep?=
+ =?us-ascii?Q?6mpK2c6qUNwsvOMb070ZICC4CVS4BiQj7SoauPIWq21iGeGPWbHPdI53odvd?=
+ =?us-ascii?Q?OgEz5s62+MEK6FRYgIAYlvMVDnilHARXHmULd/vubEG9wtK1G0crlgfHAbHJ?=
+ =?us-ascii?Q?LdrOUruzhnvsjRQ2VuBZz1ztcsbK8NIWHcvk6uy/I5RHHMdec5vL5wBabRPO?=
+ =?us-ascii?Q?eAxpznJFxTb+1FAe+rHqBTMeCdeFu2k9Py395VMqz3/fXDZ8mDIfCGt1JsDW?=
+ =?us-ascii?Q?t+yGB3OsTsWrjOLf+qvYYjmZfdrPnOW4CDs0/6oMfxnlfuFVnL0P9AQVz49t?=
+ =?us-ascii?Q?28ALI2gmNnJAQ437lQ6ePpkfCF2SQ428TI9dqE6KQZfTEvdXTOnFTbs6VZKZ?=
+ =?us-ascii?Q?R23pLOCvmWjp5CL1YmAdHwfHM2fwuQyFsiFTH5T7t1spLP10y8Cy2KpnuZHf?=
+ =?us-ascii?Q?mn+6P/ZAPrS1NMUKA/P/k05IwZWsrxT3SfcxeL0Z2rbjF78mb4lHhXEJo1wC?=
+ =?us-ascii?Q?bKs0x6RtjU96cpKB7Kmt57Tb70aRgHLzMvuagUZg2HPPMQUv1CMDbCHAZ49V?=
+ =?us-ascii?Q?N/pfWHpdfQNWc9Ca6IzPARwzz0Y6m0xju0XmdOOh4p/mXW5Rhy66i8cwcfV0?=
+ =?us-ascii?Q?HadpNjTY837HBywX6QrfMJTHO7ElWzqZzcEsuKq/qutsD+cMgbwLCOphOrwq?=
+ =?us-ascii?Q?lMA4+giXMMvKk1QOZou+oY/DAnfnc10U6hbBFoS+3Wfv1vU/lOB71ku4GCsl?=
+ =?us-ascii?Q?LuLmtrKtQ2hR5zVGH7YUGPwy5LwkojHdHoM0Ey2O1ZEQo6SiGT41ewtlS+xY?=
+ =?us-ascii?Q?y2szvuFNb7vYklHdznEUV5CM7CmnJ0p9sF+4LXPPDmrI6y256wicuQbDePjR?=
+ =?us-ascii?Q?OM41i8mdE3KNy2ZNY0YRgAScBFxTwX4Uu6H5GOm81a8PrfwUfo5A5nChyt76?=
+ =?us-ascii?Q?eLwgdre7t8iX5gk2qIw7220DeE9xQAY7CwlK8rqCSpX1NSv+hQHIQ2cy3g6A?=
+ =?us-ascii?Q?JgjUOF9Rs54fnoxEBMHLPrspmYsWq8eHRASXCTGpj0b0N3xw0V1LyQ7REjS7?=
+ =?us-ascii?Q?RHFO2Q9kooT8FLP17jRH7HgbuBB8YB+sjlEisfaPpcUNyrIyaNvNZF7Klis5?=
+ =?us-ascii?Q?sZiT5RxlqDjQ5zQojT9tYK01?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd82538a-976f-49aa-c83a-08d916d4a888
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2021 12:34:46.7839
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PZqs2mZ3Bv4tEh72SRaGaWsciqyvgkBDmpZ1zA8fv6W/JrhKHg+4EPgQERItyred
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3929
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> On Fri, 2021-05-14 at 10:21 +0200, Mauro Carvalho Chehab wrote:
->> I do use a lot of UTF-8 here, as I type texts in Portuguese, but I rely
->> on the US-intl keyboard settings, that allow me to type as "'a" for á.
->> However, there's no shortcut for non-Latin UTF-codes, as far as I know.
->>
->> So, if would need to type a curly comma on the text editors I normally 
->> use for development (vim, nano, kate), I would need to cut-and-paste
->> it from somewhere
+On Fri, May 14, 2021 at 10:11:34AM +0800, Weihang Li wrote:
+> The refcount_t API will WARN on underflow and overflow of a reference
+> counter, and avoid use-after-free risks. Increase refcount_t from 0 to 1 is
+> regarded as there is a risk about use-after-free. So it should be set to 1
+> directly during initialization.
 
-For anyone who doesn't know about it: X has this wonderful thing called
- the Compose key[1].  For instance, type ⎄--- to get —, or ⎄<" for “.
-Much more mnemonic than Unicode codepoints; and you can extend it with
- user-defined sequences in your ~/.XCompose file.
-(I assume Wayland supports all this too, but don't know the details.)
+What does this comment about 0 to 1 mean?
 
-On 14/05/2021 10:06, David Woodhouse wrote:
-> Again, if you want to make specific fixes like removing non-breaking
-> spaces and byte order marks, with specific reasons, then those make
-> sense. But it's got very little to do with UTF-8 and how easy it is to
-> type them. And the excuse you've put in the commit comment for your
-> patches is utterly bogus.
+This all seems like a good idea but I wish you had done one patch per
+variable changed
 
-+1
-
--ed
-
-[1] https://en.wikipedia.org/wiki/Compose_key
+Jason
