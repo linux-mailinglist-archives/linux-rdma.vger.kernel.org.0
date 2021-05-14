@@ -2,316 +2,213 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DCE380A8F
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 May 2021 15:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6082380B23
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 May 2021 16:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234092AbhENNoF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 May 2021 09:44:05 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:54598 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234060AbhENNoB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 May 2021 09:44:01 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14EDdALo019904;
-        Fri, 14 May 2021 13:42:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=JZmqJU4h7F/sZysKb/miALV2zWt469ImvSW4v6ZDn5g=;
- b=vBALLgQxiahPvBuR9uGPheBbEdKrGQZ1iHvmUeVvZqODv1Qo2GE7fg32oN9z/KTksPxX
- Huk2qNsnMmNILNEAGtSPkW94ocwf/cAYH2iayxWZ4yYaJfpnHl54rmtcl8MO+9Vj40n7
- MokOLuq3a8/CqKfUi45CUYV7K+7vFz5iUtxgT7XU7joQ/CToPhawCH1zX1jYLOM/HzRR
- 1QxTHWodmDrNPjds3y5t25i451glnZRKdcLIoL/TU8yIrCgu416hY0Rgz+MYo6F5P77o
- wEmoNcos5lUEubmv5MGgaivc43yjQXZhb3EwJ41MsF+PDGS39inX8t68me4HsfCeXC1W Fw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 38gpnumbyj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 13:42:46 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14EDdnlS048368;
-        Fri, 14 May 2021 13:42:46 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2106.outbound.protection.outlook.com [104.47.70.106])
-        by userp3030.oracle.com with ESMTP id 38gpq33nmm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 13:42:45 +0000
+        id S234169AbhENOKp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 May 2021 10:10:45 -0400
+Received: from mail-bn1nam07on2099.outbound.protection.outlook.com ([40.107.212.99]:1750
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234179AbhENOK2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 May 2021 10:10:28 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E1LaxJWuRkn7A6ZG44zoiRHKTjXCjzpHpC36d5q0+hUFDtrIxve0IxMOwobD9zd6GFEFYsmBTKjOQYjvB5SYljvVU9AeNHjUPCIZXl0sAD4LRM5ZSG2Fp4aRCBOCrMNlrrcPaYg7URnwSopIvk5z7MUphHFqge+9j4fpS/GiOt25+NBTpXHUhR2Kn0J2+07My/UhpYALQCdgo8MEV5XD13xNnrMQ63qp/R4Zp2NiQkdA4pNB4lSxRZMz+CVgqo0sTCMSGdQRzGxCjqmt0qr2nDnp7BteuFtotLWIPkLMAC0Tb88hniGu0J7KSRsAJLSdPzVFLvNgXVrgsU50Nf41mg==
+ b=FcQeaBWBWHFAra7XuRB7WP+jtmnuLkMGhQJ8oHiyZo4j+jZ0IUzF+EQBTG4iVCACwBKUI2mUEToI9rLv2gpU0e9+oU/kbJpFV1kAaDb9SAbv5/TiQ2KCbT0G3Uhcg1T1b82ktuHA67h7pOnqNuB9pXhGdRgiASq8axZ61HEZgCdXjMVcNsxY33bHhqBxpIQxNek1iAJD+2Zv7sRWYPU+xBvZzD1i4KHbTXaoaZQ61wol2KraOSpo28T5akYwiXhR+BGiRRD1s5ViNov3MJWSMEvZhW3Kf5myWBE5SfoaNiZoqWWDkUckbo0lvkwxTikJaRXTGmuFVGD6dbFHp1mifA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JZmqJU4h7F/sZysKb/miALV2zWt469ImvSW4v6ZDn5g=;
- b=Lqjc4b6fXanjLCN1PC6S6Dcjv1PrKEb4wFjFrG1ZwJ3hXnM/lTXCPF1RC+eI9fQxT6FnL1AR2aQmrD268+W+HjXUi3PxCS1hPxMeYj37MBHAcuzxHkEVSepr6Ta4vXVcMyN3QvdyT3OsM6LliIDcenhIwsg5u8hFuI26YzMcJhKK3wYKOoD84HsdqHP/nUb/4/YXyfRR31SRbg08uF787IbvevSdpdUGbOpAvlbi+Nyw8c+sydbYS6Kq/1EApt6+5fuRWjObIRXGI2Jd5Afi9bGoWEqN50BetolK5vJa/6w2uv8yIZ4EXHoqq5XtBN8bIKruxk80oSKkF6v/mmKpMg==
+ bh=aX9BY/vXKbS1NWGMECmYF4/mCoy7yokhPAfaSl8IROM=;
+ b=odOApRf5E1JHWhjlSHlCR3vSMMk2ZGpIbD7GPCidXdUCKICH5/u/KwdqVsIl8gGoKj2LR+Z/x12imECVVsvsJqJ+mnKttBFssdf/gvFB8YE6X7HZID2AfgdChmiF1h5luwNZUNf8kvJual82Pr5w4tplSW4URFYKiXUHdSpKP2N71qdN+GMkbeQ6R9hq5/n+EAWWSUddoE4WkMyzRW2yzr10xZryPT91jeDnrJ8MZbUM6l9xPqLZaRv/NerN7EaImv2WiR1ZrtrjDD1M5vpMZyUS78CAoQUdEan8/Z2tyBUYm7qs6JT2EQ/20yOYDkmv48tUE4ATJIwFZAVn42uV6Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JZmqJU4h7F/sZysKb/miALV2zWt469ImvSW4v6ZDn5g=;
- b=qoNrwXTm+c6+UirVWMhz7TmcDCmENvOotpIq/eZiiTyYQbkDkT6lcYqfQYoPW6qcasibRzXPxSnl5EhVo7Qh0m0WPcMFQIc+uG+Ag8Q6RlMZu4ff1Dj2BkwUVNCF2CpPlll1dYROAZeUX3pX6JuHXCfjVfty3rdcuWs93WSBeCQ=
-Received: from CY4PR1001MB2086.namprd10.prod.outlook.com
- (2603:10b6:910:49::39) by CY4PR10MB1479.namprd10.prod.outlook.com
- (2603:10b6:903:27::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.29; Fri, 14 May
- 2021 13:42:43 +0000
-Received: from CY4PR1001MB2086.namprd10.prod.outlook.com
- ([fe80::7c49:4778:12a9:c4d]) by CY4PR1001MB2086.namprd10.prod.outlook.com
- ([fe80::7c49:4778:12a9:c4d%6]) with mapi id 15.20.4087.047; Fri, 14 May 2021
- 13:42:43 +0000
-From:   Anand Khoje <anand.a.khoje@oracle.com>
-To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        Haakon Bugge <haakon.bugge@oracle.com>
-Subject: RE: [PATCH] IB/core: Obtain subnet_prefix from cache in IB devices
-Thread-Topic: [PATCH] IB/core: Obtain subnet_prefix from cache in IB devices
-Thread-Index: AQHXQ0pi/HLZMpxzBUi7HBs/GgOkeKrbAJAAgAgDTnA=
-Date:   Fri, 14 May 2021 13:42:42 +0000
-Message-ID: <CY4PR1001MB208657D6DD29CB6A092D5C73C5509@CY4PR1001MB2086.namprd10.prod.outlook.com>
-References: <20210507140638.339-1-anand.a.khoje@oracle.com>
- <YJfCkMETxfnzd5rD@unreal>
-In-Reply-To: <YJfCkMETxfnzd5rD@unreal>
-Accept-Language: en-US
+ bh=aX9BY/vXKbS1NWGMECmYF4/mCoy7yokhPAfaSl8IROM=;
+ b=XXjRcSwUyApOuES9Eyt3EccRipTPpdfXUXb8AvjYepe3KnbqsGeZJcV8WlNL3zSZZnrbn4dZZgX5Y6bxisWUNJAx4cWKD5Fy1FvcmYSo+nXpysyvVBTrYr4Wna6b0QsLGF/jeR0FyL76BhD1UNTEJnK+rNsi6xQcoznrX7K87E4zHrBACv6x375G0VYTb3duQ73Ev49FWchBuKp45wBeP6PnzA7eaJoa/KfwnV6IDUNa95S8FLqKH4k8fuK0m/tDO41Wpthq51LdKZiMjMquDJoR6ch1UQ86C8P0Sy1DipmAM9AhAiu7x6Ck3jFdvsdvM0mWrS2MWVWPaoobEpYfFA==
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=cornelisnetworks.com;
+Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
+ PH0PR01MB6620.prod.exchangelabs.com (2603:10b6:510:90::9) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4129.28; Fri, 14 May 2021 14:07:46 +0000
+Received: from PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::b43d:7749:62fa:2488]) by PH0PR01MB6439.prod.exchangelabs.com
+ ([fe80::b43d:7749:62fa:2488%7]) with mapi id 15.20.4129.025; Fri, 14 May 2021
+ 14:07:46 +0000
+Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
+ allocations
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <c34a864803f9bbd33d3f856a6ba2dd595ab708a7.1620729033.git.leonro@nvidia.com>
+ <f72bb31b-ea93-f3c9-607f-a696eac27344@cornelisnetworks.com>
+ <YJp589JwbqGvljew@unreal>
+ <BYAPR01MB3816C9521A96A8BA773CF613F2529@BYAPR01MB3816.prod.exchangelabs.com>
+ <YJvPDbV0VpFShidZ@unreal>
+ <7e7c411b-572b-6080-e991-deb324e3d0e2@cornelisnetworks.com>
+ <20210513191551.GT1002214@nvidia.com>
+ <4237ab8a-a851-ecdf-ec41-4e798a2da156@cornelisnetworks.com>
+ <20210514130247.GA1002214@nvidia.com>
+From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Message-ID: <47acc7ec-a37f-fa20-ea67-b546c6050279@cornelisnetworks.com>
+Date:   Fri, 14 May 2021 10:07:43 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
+In-Reply-To: <20210514130247.GA1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [103.155.226.253]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 68f1c611-1fb7-4842-b9c6-08d916de2646
-x-ms-traffictypediagnostic: CY4PR10MB1479:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR10MB1479B346A462471EAF7DAA8CC5509@CY4PR10MB1479.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JCrnXBtAVcZY/n1IfLuLB1jClrEEBYj9PIegfiUgR5kYDf1SBOunUq0gNbDbqGKVxWhaonPwaWXmqo0YUjCl3lLYBPxBcma5UzRfOBpVe4errvPbFwh7E6c87Y9adboJXF13KRbjPJsZZfGzL+G+TZXWvaW1mv5vL9q2uOE47cVBBG9WENQwgsoI1+RaTrI4Pcs7ZRH1FiWEqOut2kiF1XvHHmGWn7bd57YpEH20Jj7kCyRh/V8MVuqN2sEVLctZCzhoCdtd3iXb4oXn6F/6DVXCTyDMQjjL2gXp4A1fvBVLkMB7HcPC9uDP23iKHjkUwUnKSqmcqlD78ma6GJKJFemUCKrKh0r1WDsBxZUmsFKPbErKw1xMODFk72lpkcItNW33+2nRXArlvGQcD+802CSydHKQjZ1GQSOvyTz9MxONLd7vTumGTOdhpKqmmTXmAh5m9Yyu4ll0UUn9Pai9o/5VQfsFwxZmsdBcya+qq2vYckLh+2BMyGV8PH7MEoxVIYUXGVCQ4Ys2z9fWENwUg/b1nVpv9PXQp4R692SWxBTyYYsdi7cu3NgeZPwYA1n1zvOwhBeNFq6+yUsjkG+qnA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1001MB2086.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(39860400002)(396003)(346002)(5660300002)(66446008)(64756008)(8936002)(66476007)(66556008)(55016002)(33656002)(478600001)(9686003)(316002)(8676002)(66946007)(4326008)(6506007)(53546011)(7696005)(54906003)(26005)(86362001)(76116006)(6916009)(52536014)(71200400001)(186003)(122000001)(38100700002)(83380400001)(107886003)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?sB2Ty4Dxn2gAtAwyrzKoETvKG/cr065KkHrWVFZbeZBuZMRTEnQ+if+GmDg3?=
- =?us-ascii?Q?WJjWh8JCQMBSRPrbRjRqBjozgdJUkWSwWuLD4zm7oS/hRMTyNQ5GhT85sa+N?=
- =?us-ascii?Q?HEId+6fnR19X8YgNH0e9jwDuqczzhLWAVhT2YIfV6N7N8U7MSp/Dy+Nl/IJX?=
- =?us-ascii?Q?Sex0eIKE6ajKsOkJFqO9GlDxh1fA19t7eMPrpZkrSr9Fh3SEPz3FcQ1USz9x?=
- =?us-ascii?Q?rkmTZP4tuJTaCYWs/ox8jDHMun+rn+9D3RR8mJoBWIwI/qLSs2Us+jkD7pdc?=
- =?us-ascii?Q?LAam0Fxzyfo9lGSoaC4uxZ0VzZS/uGE3nRdgPkMDlmOWwYMXd/0WlMo4ccz1?=
- =?us-ascii?Q?4LGrgQRCZu2PJ+Rl2BlqpHa7Y+5vLWhTDeXJtqdXggRShRyvObpp3EPTF69M?=
- =?us-ascii?Q?w9zOnd5Ahf8lTB9QawC6v0fVsaXyr7DlqHpkeltAT/aLLA9cpkCZ9e2klZ7c?=
- =?us-ascii?Q?ceLfA91bA47R5hCeO2AkbnwS8AIlCptCuAPO4zqAQhrnDGzwWYUiXImfs/eU?=
- =?us-ascii?Q?aqWc0UbN4j1VxRO8qbD4wjOGaQK8RZc78RCEYKpl/7PDyq/tqKLw8ebNNw8+?=
- =?us-ascii?Q?MdoVlComrJx4oFk6YMpHwmh2siAXfV6R9H2dYOxrsi6O7V60LpQZEp80wDns?=
- =?us-ascii?Q?b34Y1s8H4MQfdHJhdwuC+PZ8qhwQm453NmpYLU+fAetdP2sab6rJOEQ1/504?=
- =?us-ascii?Q?MaJpkChBRJXhcnvO3BwGUGmjeGaO82V6kx5rEZOhVGJ3LjAwaOwg2Is9AiaI?=
- =?us-ascii?Q?9L8JuNG2CkH5t8kHeRznhyv33pse1zzYwwrP0mNoggx+Ff6SYz2aI+75e+wz?=
- =?us-ascii?Q?UqqNcTrM6yc5JtZIVAY82skSa7kamCX8sgtdE3z+SuJsK+6prDTqrQ6jdwkt?=
- =?us-ascii?Q?rd04+Mv2yGmKlQNjfkIABSTzFrzmLWIw+fJNxm7mOa4ff13jlx64xNweE69e?=
- =?us-ascii?Q?kHUR2teFYkHy23OyYSC/je2BNhKBU+Vt51IAZFl5bUXaOZQFdcpYgirTH38m?=
- =?us-ascii?Q?HNXfjHpR2Gaoi5kLPbtiL9K50bHtXpNydEtCTzWh6It2KnvwwGAHDzMFgGZW?=
- =?us-ascii?Q?NWHz6Ex1NxP9iCHcpZYLJ8KZ+Q8EhRLqqdGbln2v/i8A1fIQaDhmGJ3cVfPw?=
- =?us-ascii?Q?1N0QqMtXyfxlY3wArMIQiz1NcEFt2f7AqgftCdUkJTqZ/LuJsVokdjenxnMY?=
- =?us-ascii?Q?RhBkgPuA0l2nAizCQhC4JjzvBQw5wlQAuHX6QOCAp2ypVpu7mOuJJ43aCw2q?=
- =?us-ascii?Q?IGch4kHkNCom2nEJWg9TmGjDlP0q68BXFckUtrk3mU/xBBFma6d615jLMoEU?=
- =?us-ascii?Q?JZwiHVMaHe9K2ovNAgumLxZv?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [24.154.216.5]
+X-ClientProxiedBy: MN2PR06CA0027.namprd06.prod.outlook.com
+ (2603:10b6:208:23d::32) To PH0PR01MB6439.prod.exchangelabs.com
+ (2603:10b6:510:d::22)
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Denniss-MacBook-Pro.local (24.154.216.5) by MN2PR06CA0027.namprd06.prod.outlook.com (2603:10b6:208:23d::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Fri, 14 May 2021 14:07:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d705dc86-3a42-4725-7962-08d916e1a634
+X-MS-TrafficTypeDiagnostic: PH0PR01MB6620:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR01MB6620741E327046759377F0B3F4509@PH0PR01MB6620.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:608;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: orJy4Q1p1xjVZjZwKpfk5XyYHXkUytDPV1KubCgy0P9k4PhNvNB1v0BkR86KnZp++QRIrgu8mbtMkkBlxlHSzQb695e3QyutS9jgpSXFiYhsVxJKSp1w9ZGVUcpksyLJsRR7kaCJz/0zjWQqVtySS4Jw0lOaswm6l320OETXeuz+ZSCRrJqCmJ128VbErU66JuXbmFH/X6/HymAnrPPdbUQR2J0O8SQqqHfJkMLhck6v5kPVOdXBGzAXToBdJ89W2P9PnVpv7TEp9kWCnzTxSM/uktax39L2uwA7rkKgwwvMB47A1+PRJ4mUlFb2pyC8DEmpav57KbWhHGx8O0QAwGvguuQg/J59To2NuxawpYuxwv38E5CRtvXtWDaV66eCyAPSg0S71J37Sm5idFPMxYwAR5wVsNPUv2WuuO6+6lZVflpJKhU2EwnJm1Xuk8ge0LEHwxniKBfwuZh6yiJHuVRfDhXx486XpTxxu7DbnHf/WoX5fG1G2Iyg9js/E44UxyriRymYfh3R64zfsRN+KBdzboTWp/7gX9y4NTawtpl4fGUtzaJNzSccnE64o1HvSEZdMhGwhqkgEAWiVT0E8i2Avj/V3Egzy3YxfgGyDbg5awb+m6yX6aWHaz/TYT+6IgeWq6+swb1jI5z14PtWRK+D7lclKXSFkEnOgQPHZmQCovPDGIk3xVAAu6uU68JxsYw+39W6Z4GXSsn5uV+qhRmCQAfMz5+ABJQE/Y0MOIA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39830400003)(376002)(346002)(136003)(8936002)(5660300002)(478600001)(8676002)(54906003)(4326008)(6916009)(186003)(36756003)(6506007)(26005)(16526019)(2906002)(31686004)(316002)(66946007)(66556008)(66476007)(38100700002)(38350700002)(31696002)(44832011)(2616005)(6486002)(956004)(53546011)(86362001)(52116002)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?djF1ekxvOHVjend6TzN1OVpRMGxZOTd3RUJsUnoyMHE2cUFWWkNLZWdacmpx?=
+ =?utf-8?B?SlVkeWZVK3F2ZVJnYlFXclBJTmIvaXQ1aFNVWW52YVNIeWczUUFtUjFUdVpT?=
+ =?utf-8?B?ZnBDMlNqMUN2MFF1R3JBalZNUkVldHMrdHgzOGxvMEdXOFR2b3NPN0MyNlNu?=
+ =?utf-8?B?TVFPeDFEUDFmb1NWZVRGMFhoUmpjcnE4TlEyRGJHWkVJbEVVZ0ZVb0IzVDVl?=
+ =?utf-8?B?NlVtMGRFcDRqYStsMXJzNVhyM0R3c21haUVLK3pTVk9LMWVZbmVCUUhncmhI?=
+ =?utf-8?B?NVgvWHhVTzVsWUxLOFNtYms1SHZ4NGVkZFB0a2sxZkFCZnN5TDNPNUdQM3Y1?=
+ =?utf-8?B?VG4rV3FtNG5RTmJBNEl1MGpEU2lxRVlWemxZRUpERzI3cktveEhzZFZxN0Nw?=
+ =?utf-8?B?WEJjNFRESjBlK1VZQ2s0bHNoN0Z1YjlZR1V2anFoRmVxTTVjSVhZL09uMlRu?=
+ =?utf-8?B?c3g1T2djVkRyWVRvUkdjdGpvYmRKcHZsUXZNQ1FjRHBNbG5EUm9tVGM3Y1V3?=
+ =?utf-8?B?eGxRblJPby9HM2QvdTNyVFM3TFhld1hWcmh3VDZwN2pKUk1zRjVDRDlOQStu?=
+ =?utf-8?B?QXpRS3p1WFN5Y1AzRjR0dWI2Z0FHRzdjTXlJc3hYMjd5cThsSGtYVGE5TXBX?=
+ =?utf-8?B?bmcrREhiTlZYenVEVWkzdmtKY2d3QTJxODNZT3dMeEpDN212SjB1amd6RjFn?=
+ =?utf-8?B?Z010dWlyTmxhTS95Y0VaejZXejRuWkQ5Qjl1K0s0TjFjMWxCdmw5cDNrUm93?=
+ =?utf-8?B?cVZQa3dtQnFFbHV0dzZ2RzFLN1VWR0FNenhMRTF2bWlCaUFHYnRXQzFHbVIv?=
+ =?utf-8?B?VUcyK1U2aXBnSkZRU29KWk1sVVBPVVFGay9UUkl2S25VZzFKeGg5M0xNZXRX?=
+ =?utf-8?B?d2gvcDMwUDZxUXJETVNtU0loMkhUOGJGMnVOeFBlYVdZVDJZR3V6cGtVT0R6?=
+ =?utf-8?B?WHNuanpqVys3OVhjNFhYWGRNeUNnTWpIU2wzK3cvc2dJUWVqL1JaOEJFSHhV?=
+ =?utf-8?B?c0Z3d0kzUjd5VWR4WlNzUUdEOEduaUxSNXRTZW5QcnBsamtUQ3NPVUdBOEVx?=
+ =?utf-8?B?U0xUQS92U1NUaXo3dTFkLzhhOG9QYmZBU2JIQm9TRFpBZ09ZSUR5emYvT01u?=
+ =?utf-8?B?cTFNdHNRMEJVZWcvRjBIMEtrcXdzVkUyZ2tKUUVsRkVUVjliVmlHV2VkK0NE?=
+ =?utf-8?B?UW9rT2swUEFWdDFNbUI2cEJNN3ZtbnI1OVJsVzUyaXdBSDRhVWVFTjdYNHlR?=
+ =?utf-8?B?ZFFwdFFHb2d0WktneSt1d2xPclUrVEFUa2ZzYTVaWXRrN05yNld6Nkc1Z3RB?=
+ =?utf-8?B?am5QOVpDbFN3M2ZUR3V5RFk4RHRhOVJtVUhVYUliZjhBM2NZN3o3WFBkU01l?=
+ =?utf-8?B?djd5SFpReE5GMmwrL0swYW56ZXZhZ2lXcjhNWVEyMm9pc1lVVGkveVJsVzRI?=
+ =?utf-8?B?MjA2NU9TeStaTzd6ZTFQV1YzUTdHZ1F1NllKOHJRVHdrNGVSM0ZHQVZhVUJR?=
+ =?utf-8?B?akJhTUxaMEdKMWNOZjZDNlJiZmdnVWw4REV4Ym9TQTI0emdrUUdZQlpPa1lk?=
+ =?utf-8?B?WmJIMFpKVnNoeDNoYVdxWUpjeVA5L25xQXdsYUhFRlR6dzdrZ0JabTdPeCsx?=
+ =?utf-8?B?RkJVVmFsZ2N1QkJlU3N1K3RwQndsWjBtQkU3U0ZrTHlEWTNrb25icFJZWDFM?=
+ =?utf-8?B?WStxTTdBaWYvZnROK2Zja1hGZzlSNS9veElJUlMyTDBGL2R5ZXc5ODNVRkRD?=
+ =?utf-8?Q?bi32F8cncOKJYwnxQz41Hjo1/s0c+vWSj0tq4P9?=
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d705dc86-3a42-4725-7962-08d916e1a634
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1001MB2086.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68f1c611-1fb7-4842-b9c6-08d916de2646
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 May 2021 13:42:42.8986
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2021 14:07:46.3755
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: m5yTV47gPFdNv3MoJ/WIMwd3XWCnskeqyRNj4BfnXM4fWzL+m5oUWETfsMlqSQOReOaVS8h/YvVHlR+KKd5EhHi2bQYCcCHAdp/O5s9vd2k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1479
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9983 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- malwarescore=0 spamscore=0 mlxscore=0 adultscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105140110
-X-Proofpoint-ORIG-GUID: 5t_cbLxzGMqryfXKAIE6Qm1CKnNjoh6X
-X-Proofpoint-GUID: 5t_cbLxzGMqryfXKAIE6Qm1CKnNjoh6X
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9983 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- adultscore=0 spamscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
- mlxscore=0 priorityscore=1501 malwarescore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105140110
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RzU/w3OT0qHyOvW30SOkuDnVCz1dVV/I1a/YQcQup3ZdDku5v1bKWLPq4dGc3thKZ/fj5rujO3nTHeX0CokmyENrhfvluGfudZ52oF4Umo0ndcwb8Csp6+5r5BYJ5qRh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6620
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Leon,
+On 5/14/21 9:02 AM, Jason Gunthorpe wrote:
+> On Thu, May 13, 2021 at 03:31:48PM -0400, Dennis Dalessandro wrote:
+>> On 5/13/21 3:15 PM, Jason Gunthorpe wrote:
+>>> On Thu, May 13, 2021 at 03:03:43PM -0400, Dennis Dalessandro wrote:
+>>>> On 5/12/21 8:50 AM, Leon Romanovsky wrote:
+>>>>> On Wed, May 12, 2021 at 12:25:15PM +0000, Marciniszyn, Mike wrote:
+>>>>>>>> Thanks Leon, we'll get this put through our testing.
+>>>>>>>
+>>>>>>> Thanks a lot.
+>>>>>>>
+>>>>>>>>
+>>>>>>
+>>>>>> The patch as is passed all our functional testing.
+>>>>>
+>>>>> Thanks Mike,
+>>>>>
+>>>>> Can I ask you to perform a performance comparison between this patch and
+>>>>> the following?
+>>>>
+>>>> We have years of performance data with the code the way it is. Please
+>>>> maintain the original functionality of the code when moving things into the
+>>>> core unless there is a compelling reason to change. That is not the case
+>>>> here.
+>>>
+>>> Well, making the core do node allocations for metadata on every driver
+>>> is a pretty big thing to ask for with no data.
+>>
+>> Can't you just make the call into the core take a flag for this? You are
+>> looking to make a change to key behavior without any clear reason that I can
+>> see for why it needs to be that way. If there is a good reason, please
+>> explain so we can understand.
+> 
+> The lifetime model of all this data is messed up, there are a bunch of
+> little bugs on the error paths, and we can't have a proper refcount
+> lifetime module when this code really wants to have it.
+> 
+> IMHO if hf1 has a performance need here it should chain a sub
+> allocation since promoting node awareness to the core code looks
+> not nice..
 
-If I understand your comment " Can you please make ib_get_cached_subnet_pre=
-fix() void and move port check to the security.c? " correctly,=20
-you want the check rdma_is_port_valid() to be moved to get_pkey_and_subnet_=
-prefix() and ib_security_pkey_access() before the call to ib_get_cached_pke=
-y()?
-If yes, do you want to move that check from inside ib_get_cached_pkey() as =
-well?
+That's part of what I want to understand. Why is it "not nice"? Is it 
+because there is only 1 driver that needs it or something else.
 
-Thanks,
-Anand A. Khoje
+As far as chaining a sub allocation, I'm not sure I follow. Isn't that 
+kinda what Leon is doing here? Or will do, in other words move the qp 
+allocation to the core and leave the SGE allocation in the driver per 
+node. I can't say for any certainty one way or the other this is OK. I 
+just know it would really suck to end up with a performance regression 
+for something that was easily avoided by not changing the code behavior. 
+A regression in code that has been this way since day 1 would be really 
+bad. I'd just really rather not take that chance.
 
+> These are not supposed to be performance sensitive data structures,
+> they haven't even been organized for cache locality or anything.
+> 
+>> I would think the person authoring the patch should be responsible to prove
+>> their patch doesn't cause a regression.
+> 
+> I'm more interested in this argument as it applied to functional
+> regressions. Performance is always shifting around and a win for a
+> node specific allocation seems highly situational to me. I half wonder
+> if all the node allocation in this driver is just some copy and
+> paste.
 
------Original Message-----
-From: Leon Romanovsky <leon@kernel.org>=20
-Sent: Sunday, May 9, 2021 4:38 PM
-To: Anand Khoje <anand.a.khoje@oracle.com>
-Cc: dledford@redhat.com; jgg@ziepe.ca; avihaih@nvidia.com; liangwenpeng@hua=
-wei.com; jackm@dev.mellanox.co.il; galpress@amazon.com; kamalheib1@gmail.co=
-m; mbloch@nvidia.com; lee.jones@linaro.org; maorg@mellanox.com; maxg@mellan=
-ox.com; parav@nvidia.com; eli@mellanox.com; ogerlitz@mellanox.com; linux-rd=
-ma@vger.kernel.org; linux-kernel@vger.kernel.org; Haakon Bugge <haakon.bugg=
-e@oracle.com>
-Subject: Re: [PATCH] IB/core: Obtain subnet_prefix from cache in IB devices
+I think prove is too strong of a word. Should have said do what is 
+reasonably necessary to ensure their patch doesn't cause a regression. 
+Whether that's running their own tests or taking the advice from the 
+folks who wrote the initial code or even other non-biased review 
+opinions, etc. I certainly don't expect Leon to throw some HFIs in a 
+machine and do a performance evaluation.
 
-On Fri, May 07, 2021 at 07:36:38PM +0530, Anand Khoje wrote:
-> ib_query_port() calls device->ops.query_port() to get the port=20
-> attributes. The method of querying is device driver specific.
-> The same function calls device->ops.query_gid() to get the GID and=20
-> extract the subnet_prefix (gid_prefix).
+I think this is the exact opposite of copy/paste. When we wrote this 
+code originally there was a ton of work that went into how data 
+structures were aligned and organized, as well as an examination of 
+allocations and per node allocations were found to be important. If you 
+look at the original qib code in v4.5, before we did rdmavt, the 
+allocation was not per node. We specifically changed that in v4.6 when 
+we put in rdmavt. In v4.3 when hfi1 went into staging it was not using 
+the per node variant either (because that was copy/paste).
 
-Please add blank lines to separate paragraphs.
+I would love to be able to go back in our code reviews and bug tracking 
+and tell you exactly why this line of code was changed to be per node. 
+Unfortunately that level of information has not passed on to Cornelis.
 
-> The GID and subnet_prefix are stored in a cache. But they do not get=20
-> read from the cache if the device is an Infiniband device. The=20
-> following change takes advantage of the cached subnet_prefix.
-> Testing with RDBMS has shown a significant improvement in performance=20
-> with this change.
-
-Here too
-
-> The function ib_cache_is_initialised() is introduced because
-> ib_query_port() gets called early in the stage when the cache is not=20
-> built while reading port immutable property.
-> In that case, the default GID still gets read from HCA for IB link=20
-> layer.  The shuffling of netdev_lock in struct ib_port_data is done=20
-> such that the size of struct ib_port_data remains the same after=20
-> adding flags.
->=20
-> Fixes: fad61ad ("IB/core: Add subnet prefix to port info")
->=20
-
-No blank line here.
-
-> Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
-> Signed-off-by: Haakon Bugge <haakon.bugge@oracle.com>
-> ---
->  drivers/infiniband/core/cache.c  |  7 ++++++- =20
-> drivers/infiniband/core/device.c | 11 +++++++++++
->  include/rdma/ib_cache.h          |  7 +++++++
->  include/rdma/ib_verbs.h          | 10 +++++++++-
->  4 files changed, 33 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/infiniband/core/cache.c=20
-> b/drivers/infiniband/core/cache.c index 3b0991f..b580c26 100644
-> --- a/drivers/infiniband/core/cache.c
-> +++ b/drivers/infiniband/core/cache.c
-> @@ -1627,6 +1627,8 @@ int ib_cache_setup_one(struct ib_device *device)
->  		err =3D ib_cache_update(device, p, true);
->  		if (err)
->  			return err;
-> +		set_bit(IB_PORT_CACHE_INITIALIZED,
-> +			&device->port_data[p].flags);
->  	}
-> =20
->  	return 0;
-> @@ -1642,8 +1644,11 @@ void ib_cache_release_one(struct ib_device *device=
-)
->  	 * all the device's resources when the cache could no
->  	 * longer be accessed.
->  	 */
-> -	rdma_for_each_port (device, p)
-> +	rdma_for_each_port (device, p) {
-> +		clear_bit(IB_PORT_CACHE_INITIALIZED,
-> +			  &device->port_data[p].flags);
->  		kfree(device->port_data[p].cache.pkey);
-> +	}
-> =20
->  	gid_table_release_one(device);
->  }
-> diff --git a/drivers/infiniband/core/device.c=20
-> b/drivers/infiniband/core/device.c
-> index c660cef..6d62023 100644
-> --- a/drivers/infiniband/core/device.c
-> +++ b/drivers/infiniband/core/device.c
-> @@ -2064,6 +2064,17 @@ static int __ib_query_port(struct ib_device *devic=
-e,
->  	    IB_LINK_LAYER_INFINIBAND)
->  		return 0;
-> =20
-> +	if (!ib_cache_is_initialised(device, port_num))
-> +		goto query_gid_from_device;
-> +
-> +	err =3D ib_get_cached_subnet_prefix(device, port_num,
-> +			&port_attr->subnet_prefix);
-
-Can you please make ib_get_cached_subnet_prefix() void and move port check =
-to the security.c?
-
-> +	if (err)
-> +		goto query_gid_from_device;
-> +
-> +	return 0;
-> +
-> +query_gid_from_device:
->  	err =3D device->ops.query_gid(device, port_num, 0, &gid);
->  	if (err)
->  		return err;
-> diff --git a/include/rdma/ib_cache.h b/include/rdma/ib_cache.h index=20
-> 226ae37..bebeb94 100644
-> --- a/include/rdma/ib_cache.h
-> +++ b/include/rdma/ib_cache.h
-> @@ -114,4 +114,11 @@ ssize_t rdma_query_gid_table(struct ib_device *devic=
-e,
->  			     struct ib_uverbs_gid_entry *entries,
->  			     size_t max_entries);
-> =20
-> +static inline bool ib_cache_is_initialised(struct ib_device *device,
-> +					   u8 port_num)
-> +{
-> +	return test_bit(IB_PORT_CACHE_INITIALIZED,
-> +			&device->port_data[port_num].flags);
-> +}
-> +
->  #endif /* _IB_CACHE_H */
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h index=20
-> 7e2f369..ad2a55e 100644
-> --- a/include/rdma/ib_verbs.h
-> +++ b/include/rdma/ib_verbs.h
-> @@ -2169,17 +2169,25 @@ struct ib_port_immutable {
->  	u32                           max_mad_size;
->  };
-> =20
-> +enum ib_port_data_flags {
-> +	IB_PORT_CACHE_INITIALIZED =3D 1 << 0,
-> +};
-> +
->  struct ib_port_data {
->  	struct ib_device *ib_dev;
-> =20
->  	struct ib_port_immutable immutable;
-> =20
->  	spinlock_t pkey_list_lock;
-> +
-> +	spinlock_t netdev_lock;
-
-This change is unrelated.
-
-> +
-> +	unsigned long flags;
-> +
->  	struct list_head pkey_list;
-> =20
->  	struct ib_port_cache cache;
-> =20
-> -	spinlock_t netdev_lock;
->  	struct net_device __rcu *netdev;
->  	struct hlist_node ndev_hash_link;
->  	struct rdma_port_counter port_counter;
-> --
-> 1.8.3.1
->=20
+-Denny
