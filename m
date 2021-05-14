@@ -2,213 +2,334 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6082380B23
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 May 2021 16:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73384380B52
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 May 2021 16:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234169AbhENOKp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 May 2021 10:10:45 -0400
-Received: from mail-bn1nam07on2099.outbound.protection.outlook.com ([40.107.212.99]:1750
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234179AbhENOK2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 May 2021 10:10:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FcQeaBWBWHFAra7XuRB7WP+jtmnuLkMGhQJ8oHiyZo4j+jZ0IUzF+EQBTG4iVCACwBKUI2mUEToI9rLv2gpU0e9+oU/kbJpFV1kAaDb9SAbv5/TiQ2KCbT0G3Uhcg1T1b82ktuHA67h7pOnqNuB9pXhGdRgiASq8axZ61HEZgCdXjMVcNsxY33bHhqBxpIQxNek1iAJD+2Zv7sRWYPU+xBvZzD1i4KHbTXaoaZQ61wol2KraOSpo28T5akYwiXhR+BGiRRD1s5ViNov3MJWSMEvZhW3Kf5myWBE5SfoaNiZoqWWDkUckbo0lvkwxTikJaRXTGmuFVGD6dbFHp1mifA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aX9BY/vXKbS1NWGMECmYF4/mCoy7yokhPAfaSl8IROM=;
- b=odOApRf5E1JHWhjlSHlCR3vSMMk2ZGpIbD7GPCidXdUCKICH5/u/KwdqVsIl8gGoKj2LR+Z/x12imECVVsvsJqJ+mnKttBFssdf/gvFB8YE6X7HZID2AfgdChmiF1h5luwNZUNf8kvJual82Pr5w4tplSW4URFYKiXUHdSpKP2N71qdN+GMkbeQ6R9hq5/n+EAWWSUddoE4WkMyzRW2yzr10xZryPT91jeDnrJ8MZbUM6l9xPqLZaRv/NerN7EaImv2WiR1ZrtrjDD1M5vpMZyUS78CAoQUdEan8/Z2tyBUYm7qs6JT2EQ/20yOYDkmv48tUE4ATJIwFZAVn42uV6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aX9BY/vXKbS1NWGMECmYF4/mCoy7yokhPAfaSl8IROM=;
- b=XXjRcSwUyApOuES9Eyt3EccRipTPpdfXUXb8AvjYepe3KnbqsGeZJcV8WlNL3zSZZnrbn4dZZgX5Y6bxisWUNJAx4cWKD5Fy1FvcmYSo+nXpysyvVBTrYr4Wna6b0QsLGF/jeR0FyL76BhD1UNTEJnK+rNsi6xQcoznrX7K87E4zHrBACv6x375G0VYTb3duQ73Ev49FWchBuKp45wBeP6PnzA7eaJoa/KfwnV6IDUNa95S8FLqKH4k8fuK0m/tDO41Wpthq51LdKZiMjMquDJoR6ch1UQ86C8P0Sy1DipmAM9AhAiu7x6Ck3jFdvsdvM0mWrS2MWVWPaoobEpYfFA==
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=cornelisnetworks.com;
-Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
- PH0PR01MB6620.prod.exchangelabs.com (2603:10b6:510:90::9) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4129.28; Fri, 14 May 2021 14:07:46 +0000
-Received: from PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::b43d:7749:62fa:2488]) by PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::b43d:7749:62fa:2488%7]) with mapi id 15.20.4129.025; Fri, 14 May 2021
- 14:07:46 +0000
-Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
- allocations
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <c34a864803f9bbd33d3f856a6ba2dd595ab708a7.1620729033.git.leonro@nvidia.com>
- <f72bb31b-ea93-f3c9-607f-a696eac27344@cornelisnetworks.com>
- <YJp589JwbqGvljew@unreal>
- <BYAPR01MB3816C9521A96A8BA773CF613F2529@BYAPR01MB3816.prod.exchangelabs.com>
- <YJvPDbV0VpFShidZ@unreal>
- <7e7c411b-572b-6080-e991-deb324e3d0e2@cornelisnetworks.com>
- <20210513191551.GT1002214@nvidia.com>
- <4237ab8a-a851-ecdf-ec41-4e798a2da156@cornelisnetworks.com>
- <20210514130247.GA1002214@nvidia.com>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Message-ID: <47acc7ec-a37f-fa20-ea67-b546c6050279@cornelisnetworks.com>
-Date:   Fri, 14 May 2021 10:07:43 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
-In-Reply-To: <20210514130247.GA1002214@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [24.154.216.5]
-X-ClientProxiedBy: MN2PR06CA0027.namprd06.prod.outlook.com
- (2603:10b6:208:23d::32) To PH0PR01MB6439.prod.exchangelabs.com
- (2603:10b6:510:d::22)
+        id S233051AbhENOQS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 May 2021 10:16:18 -0400
+Received: from mga04.intel.com ([192.55.52.120]:41443 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232888AbhENOQR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 May 2021 10:16:17 -0400
+IronPort-SDR: jIwAcp+SQSqlUdp6Wl4fDazHipj9uVXzBq+YKSjCNpmvw4NPEgdYLAhqtf6LyajtMqJy0Lacvz
+ BXeuWB88tcyw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9984"; a="198227384"
+X-IronPort-AV: E=Sophos;i="5.82,300,1613462400"; 
+   d="scan'208";a="198227384"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 07:15:06 -0700
+IronPort-SDR: vOPNp6YskCb+9fmQ8ENcO2uw1RnEdU14rcsSFrsXkkL4uKVcXZ2a/VeUIRdghZjTB6w5Dv0Xfg
+ ysyEFik8HdKQ==
+X-IronPort-AV: E=Sophos;i="5.82,300,1613462400"; 
+   d="scan'208";a="542867677"
+Received: from ssaleem-mobl.amr.corp.intel.com ([10.212.97.94])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 07:15:05 -0700
+From:   Shiraz Saleem <shiraz.saleem@intel.com>
+To:     dledford@redhat.com, jgg@nvidia.com, kuba@kernel.org,
+        davem@davemloft.net
+Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        david.m.ertman@intel.com, anthony.l.nguyen@intel.com,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: [PATCH v5 00/22] Add Intel Ethernet Protocol Driver for RDMA (irdma)
+Date:   Fri, 14 May 2021 09:11:52 -0500
+Message-Id: <20210514141214.2120-1-shiraz.saleem@intel.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Denniss-MacBook-Pro.local (24.154.216.5) by MN2PR06CA0027.namprd06.prod.outlook.com (2603:10b6:208:23d::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Fri, 14 May 2021 14:07:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d705dc86-3a42-4725-7962-08d916e1a634
-X-MS-TrafficTypeDiagnostic: PH0PR01MB6620:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR01MB6620741E327046759377F0B3F4509@PH0PR01MB6620.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:608;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: orJy4Q1p1xjVZjZwKpfk5XyYHXkUytDPV1KubCgy0P9k4PhNvNB1v0BkR86KnZp++QRIrgu8mbtMkkBlxlHSzQb695e3QyutS9jgpSXFiYhsVxJKSp1w9ZGVUcpksyLJsRR7kaCJz/0zjWQqVtySS4Jw0lOaswm6l320OETXeuz+ZSCRrJqCmJ128VbErU66JuXbmFH/X6/HymAnrPPdbUQR2J0O8SQqqHfJkMLhck6v5kPVOdXBGzAXToBdJ89W2P9PnVpv7TEp9kWCnzTxSM/uktax39L2uwA7rkKgwwvMB47A1+PRJ4mUlFb2pyC8DEmpav57KbWhHGx8O0QAwGvguuQg/J59To2NuxawpYuxwv38E5CRtvXtWDaV66eCyAPSg0S71J37Sm5idFPMxYwAR5wVsNPUv2WuuO6+6lZVflpJKhU2EwnJm1Xuk8ge0LEHwxniKBfwuZh6yiJHuVRfDhXx486XpTxxu7DbnHf/WoX5fG1G2Iyg9js/E44UxyriRymYfh3R64zfsRN+KBdzboTWp/7gX9y4NTawtpl4fGUtzaJNzSccnE64o1HvSEZdMhGwhqkgEAWiVT0E8i2Avj/V3Egzy3YxfgGyDbg5awb+m6yX6aWHaz/TYT+6IgeWq6+swb1jI5z14PtWRK+D7lclKXSFkEnOgQPHZmQCovPDGIk3xVAAu6uU68JxsYw+39W6Z4GXSsn5uV+qhRmCQAfMz5+ABJQE/Y0MOIA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39830400003)(376002)(346002)(136003)(8936002)(5660300002)(478600001)(8676002)(54906003)(4326008)(6916009)(186003)(36756003)(6506007)(26005)(16526019)(2906002)(31686004)(316002)(66946007)(66556008)(66476007)(38100700002)(38350700002)(31696002)(44832011)(2616005)(6486002)(956004)(53546011)(86362001)(52116002)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?djF1ekxvOHVjend6TzN1OVpRMGxZOTd3RUJsUnoyMHE2cUFWWkNLZWdacmpx?=
- =?utf-8?B?SlVkeWZVK3F2ZVJnYlFXclBJTmIvaXQ1aFNVWW52YVNIeWczUUFtUjFUdVpT?=
- =?utf-8?B?ZnBDMlNqMUN2MFF1R3JBalZNUkVldHMrdHgzOGxvMEdXOFR2b3NPN0MyNlNu?=
- =?utf-8?B?TVFPeDFEUDFmb1NWZVRGMFhoUmpjcnE4TlEyRGJHWkVJbEVVZ0ZVb0IzVDVl?=
- =?utf-8?B?NlVtMGRFcDRqYStsMXJzNVhyM0R3c21haUVLK3pTVk9LMWVZbmVCUUhncmhI?=
- =?utf-8?B?NVgvWHhVTzVsWUxLOFNtYms1SHZ4NGVkZFB0a2sxZkFCZnN5TDNPNUdQM3Y1?=
- =?utf-8?B?VG4rV3FtNG5RTmJBNEl1MGpEU2lxRVlWemxZRUpERzI3cktveEhzZFZxN0Nw?=
- =?utf-8?B?WEJjNFRESjBlK1VZQ2s0bHNoN0Z1YjlZR1V2anFoRmVxTTVjSVhZL09uMlRu?=
- =?utf-8?B?c3g1T2djVkRyWVRvUkdjdGpvYmRKcHZsUXZNQ1FjRHBNbG5EUm9tVGM3Y1V3?=
- =?utf-8?B?eGxRblJPby9HM2QvdTNyVFM3TFhld1hWcmh3VDZwN2pKUk1zRjVDRDlOQStu?=
- =?utf-8?B?QXpRS3p1WFN5Y1AzRjR0dWI2Z0FHRzdjTXlJc3hYMjd5cThsSGtYVGE5TXBX?=
- =?utf-8?B?bmcrREhiTlZYenVEVWkzdmtKY2d3QTJxODNZT3dMeEpDN212SjB1amd6RjFn?=
- =?utf-8?B?Z010dWlyTmxhTS95Y0VaejZXejRuWkQ5Qjl1K0s0TjFjMWxCdmw5cDNrUm93?=
- =?utf-8?B?cVZQa3dtQnFFbHV0dzZ2RzFLN1VWR0FNenhMRTF2bWlCaUFHYnRXQzFHbVIv?=
- =?utf-8?B?VUcyK1U2aXBnSkZRU29KWk1sVVBPVVFGay9UUkl2S25VZzFKeGg5M0xNZXRX?=
- =?utf-8?B?d2gvcDMwUDZxUXJETVNtU0loMkhUOGJGMnVOeFBlYVdZVDJZR3V6cGtVT0R6?=
- =?utf-8?B?WHNuanpqVys3OVhjNFhYWGRNeUNnTWpIU2wzK3cvc2dJUWVqL1JaOEJFSHhV?=
- =?utf-8?B?c0Z3d0kzUjd5VWR4WlNzUUdEOEduaUxSNXRTZW5QcnBsamtUQ3NPVUdBOEVx?=
- =?utf-8?B?U0xUQS92U1NUaXo3dTFkLzhhOG9QYmZBU2JIQm9TRFpBZ09ZSUR5emYvT01u?=
- =?utf-8?B?cTFNdHNRMEJVZWcvRjBIMEtrcXdzVkUyZ2tKUUVsRkVUVjliVmlHV2VkK0NE?=
- =?utf-8?B?UW9rT2swUEFWdDFNbUI2cEJNN3ZtbnI1OVJsVzUyaXdBSDRhVWVFTjdYNHlR?=
- =?utf-8?B?ZFFwdFFHb2d0WktneSt1d2xPclUrVEFUa2ZzYTVaWXRrN05yNld6Nkc1Z3RB?=
- =?utf-8?B?am5QOVpDbFN3M2ZUR3V5RFk4RHRhOVJtVUhVYUliZjhBM2NZN3o3WFBkU01l?=
- =?utf-8?B?djd5SFpReE5GMmwrL0swYW56ZXZhZ2lXcjhNWVEyMm9pc1lVVGkveVJsVzRI?=
- =?utf-8?B?MjA2NU9TeStaTzd6ZTFQV1YzUTdHZ1F1NllKOHJRVHdrNGVSM0ZHQVZhVUJR?=
- =?utf-8?B?akJhTUxaMEdKMWNOZjZDNlJiZmdnVWw4REV4Ym9TQTI0emdrUUdZQlpPa1lk?=
- =?utf-8?B?WmJIMFpKVnNoeDNoYVdxWUpjeVA5L25xQXdsYUhFRlR6dzdrZ0JabTdPeCsx?=
- =?utf-8?B?RkJVVmFsZ2N1QkJlU3N1K3RwQndsWjBtQkU3U0ZrTHlEWTNrb25icFJZWDFM?=
- =?utf-8?B?WStxTTdBaWYvZnROK2Zja1hGZzlSNS9veElJUlMyTDBGL2R5ZXc5ODNVRkRD?=
- =?utf-8?Q?bi32F8cncOKJYwnxQz41Hjo1/s0c+vWSj0tq4P9?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d705dc86-3a42-4725-7962-08d916e1a634
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2021 14:07:46.3755
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RzU/w3OT0qHyOvW30SOkuDnVCz1dVV/I1a/YQcQup3ZdDku5v1bKWLPq4dGc3thKZ/fj5rujO3nTHeX0CokmyENrhfvluGfudZ52oF4Umo0ndcwb8Csp6+5r5BYJ5qRh
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6620
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/14/21 9:02 AM, Jason Gunthorpe wrote:
-> On Thu, May 13, 2021 at 03:31:48PM -0400, Dennis Dalessandro wrote:
->> On 5/13/21 3:15 PM, Jason Gunthorpe wrote:
->>> On Thu, May 13, 2021 at 03:03:43PM -0400, Dennis Dalessandro wrote:
->>>> On 5/12/21 8:50 AM, Leon Romanovsky wrote:
->>>>> On Wed, May 12, 2021 at 12:25:15PM +0000, Marciniszyn, Mike wrote:
->>>>>>>> Thanks Leon, we'll get this put through our testing.
->>>>>>>
->>>>>>> Thanks a lot.
->>>>>>>
->>>>>>>>
->>>>>>
->>>>>> The patch as is passed all our functional testing.
->>>>>
->>>>> Thanks Mike,
->>>>>
->>>>> Can I ask you to perform a performance comparison between this patch and
->>>>> the following?
->>>>
->>>> We have years of performance data with the code the way it is. Please
->>>> maintain the original functionality of the code when moving things into the
->>>> core unless there is a compelling reason to change. That is not the case
->>>> here.
->>>
->>> Well, making the core do node allocations for metadata on every driver
->>> is a pretty big thing to ask for with no data.
->>
->> Can't you just make the call into the core take a flag for this? You are
->> looking to make a change to key behavior without any clear reason that I can
->> see for why it needs to be that way. If there is a good reason, please
->> explain so we can understand.
-> 
-> The lifetime model of all this data is messed up, there are a bunch of
-> little bugs on the error paths, and we can't have a proper refcount
-> lifetime module when this code really wants to have it.
-> 
-> IMHO if hf1 has a performance need here it should chain a sub
-> allocation since promoting node awareness to the core code looks
-> not nice..
+The following patch series introduces a unified Intel Ethernet Protocol Driver
+for RDMA (irdma) for the X722 iWARP device and a new E810 device which supports
+iWARP and RoCEv2. The irdma module replaces the legacy i40iw module for X722
+and extends the ABI already defined for i40iw. It is backward compatible with
+legacy X722 rdma-core provider (libi40iw).
 
-That's part of what I want to understand. Why is it "not nice"? Is it 
-because there is only 1 driver that needs it or something else.
+X722 and E810 are PCI network devices that are RDMA capable. The RDMA block of
+this parent device is represented via an auxiliary device exported to 'irdma'
+using the core auxiliary bus infrastructure recently added for 5.11 kernel.
+The parent PCI netdev drivers 'i40e' and 'ice' register auxiliary RDMA devices
+with private data/ops encapsulated that bind to auxiliary drivers registered
+in irdma module.
 
-As far as chaining a sub allocation, I'm not sure I follow. Isn't that 
-kinda what Leon is doing here? Or will do, in other words move the qp 
-allocation to the core and leave the SGE allocation in the driver per 
-node. I can't say for any certainty one way or the other this is OK. I 
-just know it would really suck to end up with a performance regression 
-for something that was easily avoided by not changing the code behavior. 
-A regression in code that has been this way since day 1 would be really 
-bad. I'd just really rather not take that chance.
+This patchset was initially submitted as an RFC where in we got feedback
+to come up with a generic scheme for RDMA drivers to attach to a PCI device
+owned by netdev PCI driver [1]. Solutions using platform bus and MFD were explored
+but rejected by the community and the consensus was to add a new bus infrastructure
+to support this usage model.
 
-> These are not supposed to be performance sensitive data structures,
-> they haven't even been organized for cache locality or anything.
-> 
->> I would think the person authoring the patch should be responsible to prove
->> their patch doesn't cause a regression.
-> 
-> I'm more interested in this argument as it applied to functional
-> regressions. Performance is always shifting around and a win for a
-> node specific allocation seems highly situational to me. I half wonder
-> if all the node allocation in this driver is just some copy and
-> paste.
+Further revisions of this series along with the auxiliary bus were submitted
+[2]. At this point, Greg KH requested that we take the auxiliary bus review and
+revision process to an internal mailing list and garner the buy-in of a respected
+kernel contributor, along with consensus of all major stakeholders including
+Nvidia (for mlx5 sub-function use-case) and Intel sound driver. This process
+took a while and stalled further development/review of this netdev/irdma series.
+The auxiliary bus was eventually merged in 5.11.
 
-I think prove is too strong of a word. Should have said do what is 
-reasonably necessary to ensure their patch doesn't cause a regression. 
-Whether that's running their own tests or taking the advice from the 
-folks who wrote the initial code or even other non-biased review 
-opinions, etc. I certainly don't expect Leon to throw some HFIs in a 
-machine and do a performance evaluation.
+Between v1-->v2 and v4-->v5 of this submission, the IIDC went through a major re-write
+based on the feedback and we hope it is now more in alignment with what the
+community wants.
 
-I think this is the exact opposite of copy/paste. When we wrote this 
-code originally there was a ton of work that went into how data 
-structures were aligned and organized, as well as an examination of 
-allocations and per node allocations were found to be important. If you 
-look at the original qib code in v4.5, before we did rdmavt, the 
-allocation was not per node. We specifically changed that in v4.6 when 
-we put in rdmavt. In v4.3 when hfi1 went into staging it was not using 
-the per node variant either (because that was copy/paste).
+Currently, default is RoCEv2 for E810. Runtime support for protocol switch to iWARP will
+be made available via devlink in a future patch.
 
-I would love to be able to go back in our code reviews and bug tracking 
-and tell you exactly why this line of code was changed to be per node. 
-Unfortunately that level of information has not passed on to Cornelis.
+This series is built against 5.13-rc1 and currently includes the netdev
+patches for ease of review. This includes updates to 'ice' driver to provide
+RDMA support and converts 'i40e' driver to use the auxiliary bus infrastructure.
+A shared pull request can be submitted once the community ACKs this submission.
 
--Denny
+v4-->v5:
+*Export all IIDC core ops callbacks and make direct calls from irdma. Have irdma depend on both i40e and ice.
+*Remove devlink runtime option for protocol switch. Default to RoCEv2 on E810. Run-time option to switch to IWARP
+will be added via the community work discussed in [3]
+*Export the ice_pf pointer in iidc_auxiliary_dev which is made available in irdma drv.probe()
+and use it derive PCI function related subfields.
+*Use a define to set the auxiliary dev name as opposed to kasprintf.
+*Remove all future provisioning in IIDC. Remove multiple auxiliary driver support in IIDC.
+*Add the auxiliary ops callbacks for core driver to use directly in iidc_auxiliary_drv object.
+*Fix an auxdevice ida resource leak in ice, and update to latest ida APIs in i40e.
+*Remove any left-over VF cruft in IIDC and irdma driver.
+*Simplify the IIDC API to add and delete RDMA qsets. Remove iidc_res_base union usage.
+*Convert all single implementation indirect .ops callbacks in irdma with direct calls
+*Add rsvd only for aligmnent in irdma ABI
+*clean-up on iw_memreg_type enum
+
+v3-->v4:
+* Fixup W=1 warnings in ice patches
+* Fix issues uncovered by pyverbs for create user AH and multicast
+* Fix descriptor set issue for fast register introduced during port to FIELD_PREP in v2 submission 
+
+v2-->v3:
+* rebase rdma for-next. Adapt to core change '1fb7f8973f51 ("RDMA: Support more than 255 rdma ports")'
+* irdma Kconfig updates to conform with linux coding style.
+* Fix a 0-day build issue
+* Remove rdma_resource_limits selector devlink param. Follow on patch to be submitted
+for it with suggestion from Parav to use devlink resource.
+* Capitalize abbreviations in ice idc. e.g. 'aux' to 'AUX'
+
+v1-->v2:
+* Remove IIDC channel OPs - open, close, peer_register and peer_unregister.
+  And all its associated FSM in ice PCI core driver.
+* Use device_lock in ice PCI core driver while issuing IIDC ops callbacks.
+* Remove peer_* verbiage from shared IIDC header and rename the structs and channel ops
+  with iidc_core*/iidc_auxiliary*.
+* Allocate ib_device at start and register it at the end of drv.probe() in irdma gen2 auxiliary driver.
+* Use ibdev_* printing extensively throughout most of the driver
+  Remove idev_to_dev, ihw_to_dev macros as no longer required in new print scheme.
+* Do not bump ABI ver. to 6 in irdma. Maintain irdma ABI ver. at 5 for legacy i40iw user-provider compatibility.
+* Add a boundary check in irdma_alloc_ucontext to fail binding with < 4 user-space provider version.
+* Remove devlink from irdma. Add 2 new rdma-related devlink parameters added to ice PCI core driver.
+* Use FIELD_PREP/FIELD_GET/GENMASK on get/set of descriptor fields versus home grown ones LS_*/RS_*.
+* Bind 2 separate auxiliary drivers in irdma - one for gen1 and one for gen2 and future devices.
+* Misc. driver fixes in irdma
+
+[1] https://patchwork.kernel.org/project/linux-rdma/patch/20190215171107.6464-2-shiraz.saleem@intel.com/
+[2] https://lore.kernel.org/linux-rdma/20200520070415.3392210-1-jeffrey.t.kirsher@intel.com/
+[3] https://lore.kernel.org/linux-rdma/20210407224631.GI282464@nvidia.com/
+
+Dave Ertman (4):
+  iidc: Introduce iidc.h
+  ice: Initialize RDMA support
+  ice: Implement iidc operations
+  ice: Register auxiliary device to provide RDMA
+
+Michael J. Ruhl (1):
+  RDMA/irdma: Add dynamic tracing for CM
+
+Mustafa Ismail (13):
+  RDMA/irdma: Register auxiliary driver and implement private channel
+    OPs
+  RDMA/irdma: Implement device initialization definitions
+  RDMA/irdma: Implement HW Admin Queue OPs
+  RDMA/irdma: Add HMC backing store setup functions
+  RDMA/irdma: Add privileged UDA queue implementation
+  RDMA/irdma: Add QoS definitions
+  RDMA/irdma: Add connection manager
+  RDMA/irdma: Add PBLE resource manager
+  RDMA/irdma: Implement device supported verb APIs
+  RDMA/irdma: Add RoCEv2 UD OP support
+  RDMA/irdma: Add user/kernel shared libraries
+  RDMA/irdma: Add miscellaneous utility definitions
+  RDMA/irdma: Add ABI definitions
+
+Shiraz Saleem (4):
+  i40e: Prep i40e header for aux bus conversion
+  i40e: Register auxiliary devices to provide RDMA
+  RDMA/irdma: Add irdma Kconfig/Makefile and remove i40iw
+  RDMA/irdma: Update MAINTAINERS file
+
+ Documentation/ABI/stable/sysfs-class-infiniband |   20 -
+ MAINTAINERS                                     |   17 +-
+ drivers/infiniband/Kconfig                      |    2 +-
+ drivers/infiniband/hw/Makefile                  |    2 +-
+ drivers/infiniband/hw/i40iw/Kconfig             |    9 -
+ drivers/infiniband/hw/i40iw/Makefile            |    9 -
+ drivers/infiniband/hw/i40iw/i40iw.h             |  602 ---
+ drivers/infiniband/hw/i40iw/i40iw_cm.c          | 4419 ------------------
+ drivers/infiniband/hw/i40iw/i40iw_cm.h          |  462 --
+ drivers/infiniband/hw/i40iw/i40iw_ctrl.c        | 5243 ---------------------
+ drivers/infiniband/hw/i40iw/i40iw_d.h           | 1746 -------
+ drivers/infiniband/hw/i40iw/i40iw_hmc.c         |  821 ----
+ drivers/infiniband/hw/i40iw/i40iw_hmc.h         |  241 -
+ drivers/infiniband/hw/i40iw/i40iw_hw.c          |  851 ----
+ drivers/infiniband/hw/i40iw/i40iw_main.c        | 2065 ---------
+ drivers/infiniband/hw/i40iw/i40iw_osdep.h       |  195 -
+ drivers/infiniband/hw/i40iw/i40iw_p.h           |  129 -
+ drivers/infiniband/hw/i40iw/i40iw_pble.c        |  611 ---
+ drivers/infiniband/hw/i40iw/i40iw_pble.h        |  131 -
+ drivers/infiniband/hw/i40iw/i40iw_puda.c        | 1496 ------
+ drivers/infiniband/hw/i40iw/i40iw_puda.h        |  188 -
+ drivers/infiniband/hw/i40iw/i40iw_register.h    | 1030 -----
+ drivers/infiniband/hw/i40iw/i40iw_status.h      |  101 -
+ drivers/infiniband/hw/i40iw/i40iw_type.h        | 1358 ------
+ drivers/infiniband/hw/i40iw/i40iw_uk.c          | 1200 -----
+ drivers/infiniband/hw/i40iw/i40iw_user.h        |  422 --
+ drivers/infiniband/hw/i40iw/i40iw_utils.c       | 1518 ------
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c       | 2652 -----------
+ drivers/infiniband/hw/i40iw/i40iw_verbs.h       |  179 -
+ drivers/infiniband/hw/i40iw/i40iw_vf.c          |   85 -
+ drivers/infiniband/hw/i40iw/i40iw_vf.h          |   62 -
+ drivers/infiniband/hw/i40iw/i40iw_virtchnl.c    |  759 ---
+ drivers/infiniband/hw/i40iw/i40iw_virtchnl.h    |  124 -
+ drivers/infiniband/hw/irdma/Kconfig             |   12 +
+ drivers/infiniband/hw/irdma/Makefile            |   27 +
+ drivers/infiniband/hw/irdma/cm.c                | 4421 ++++++++++++++++++
+ drivers/infiniband/hw/irdma/cm.h                |  417 ++
+ drivers/infiniband/hw/irdma/ctrl.c              | 5657 +++++++++++++++++++++++
+ drivers/infiniband/hw/irdma/defs.h              | 1155 +++++
+ drivers/infiniband/hw/irdma/hmc.c               |  710 +++
+ drivers/infiniband/hw/irdma/hmc.h               |  180 +
+ drivers/infiniband/hw/irdma/hw.c                | 2726 +++++++++++
+ drivers/infiniband/hw/irdma/i40iw_hw.c          |  216 +
+ drivers/infiniband/hw/irdma/i40iw_hw.h          |  160 +
+ drivers/infiniband/hw/irdma/i40iw_if.c          |  216 +
+ drivers/infiniband/hw/irdma/icrdma_hw.c         |  149 +
+ drivers/infiniband/hw/irdma/icrdma_hw.h         |   71 +
+ drivers/infiniband/hw/irdma/irdma.h             |  153 +
+ drivers/infiniband/hw/irdma/main.c              |  358 ++
+ drivers/infiniband/hw/irdma/main.h              |  555 +++
+ drivers/infiniband/hw/irdma/osdep.h             |   86 +
+ drivers/infiniband/hw/irdma/pble.c              |  521 +++
+ drivers/infiniband/hw/irdma/pble.h              |  136 +
+ drivers/infiniband/hw/irdma/protos.h            |  116 +
+ drivers/infiniband/hw/irdma/puda.c              | 1745 +++++++
+ drivers/infiniband/hw/irdma/puda.h              |  194 +
+ drivers/infiniband/hw/irdma/status.h            |   71 +
+ drivers/infiniband/hw/irdma/trace.c             |  112 +
+ drivers/infiniband/hw/irdma/trace.h             |    3 +
+ drivers/infiniband/hw/irdma/trace_cm.h          |  458 ++
+ drivers/infiniband/hw/irdma/type.h              | 1541 ++++++
+ drivers/infiniband/hw/irdma/uda.c               |  271 ++
+ drivers/infiniband/hw/irdma/uda.h               |   89 +
+ drivers/infiniband/hw/irdma/uda_d.h             |  128 +
+ drivers/infiniband/hw/irdma/uk.c                | 1684 +++++++
+ drivers/infiniband/hw/irdma/user.h              |  437 ++
+ drivers/infiniband/hw/irdma/utils.c             | 2541 ++++++++++
+ drivers/infiniband/hw/irdma/verbs.c             | 4524 ++++++++++++++++++
+ drivers/infiniband/hw/irdma/verbs.h             |  225 +
+ drivers/infiniband/hw/irdma/ws.c                |  406 ++
+ drivers/infiniband/hw/irdma/ws.h                |   41 +
+ drivers/net/ethernet/intel/Kconfig              |    2 +
+ drivers/net/ethernet/intel/i40e/i40e.h          |    2 +
+ drivers/net/ethernet/intel/i40e/i40e_client.c   |  152 +-
+ drivers/net/ethernet/intel/i40e/i40e_main.c     |    1 +
+ drivers/net/ethernet/intel/ice/Makefile         |    1 +
+ drivers/net/ethernet/intel/ice/ice.h            |   44 +-
+ drivers/net/ethernet/intel/ice/ice_adminq_cmd.h |   33 +
+ drivers/net/ethernet/intel/ice/ice_common.c     |  217 +-
+ drivers/net/ethernet/intel/ice/ice_common.h     |    9 +
+ drivers/net/ethernet/intel/ice/ice_dcb_lib.c    |   19 +
+ drivers/net/ethernet/intel/ice/ice_hw_autogen.h |    3 +-
+ drivers/net/ethernet/intel/ice/ice_idc.c        |  339 ++
+ drivers/net/ethernet/intel/ice/ice_idc_int.h    |   14 +
+ drivers/net/ethernet/intel/ice/ice_lag.c        |    2 +
+ drivers/net/ethernet/intel/ice/ice_lib.c        |   11 +
+ drivers/net/ethernet/intel/ice/ice_lib.h        |    2 +-
+ drivers/net/ethernet/intel/ice/ice_main.c       |  142 +-
+ drivers/net/ethernet/intel/ice/ice_sched.c      |   69 +-
+ drivers/net/ethernet/intel/ice/ice_switch.c     |   27 +
+ drivers/net/ethernet/intel/ice/ice_switch.h     |    4 +
+ drivers/net/ethernet/intel/ice/ice_type.h       |    4 +
+ include/linux/net/intel/i40e_client.h           |   11 +
+ include/linux/net/intel/iidc.h                  |  100 +
+ include/uapi/rdma/i40iw-abi.h                   |  107 -
+ include/uapi/rdma/ib_user_ioctl_verbs.h         |    1 +
+ include/uapi/rdma/irdma-abi.h                   |  111 +
+ 97 files changed, 33789 insertions(+), 28899 deletions(-)
+ delete mode 100644 drivers/infiniband/hw/i40iw/Kconfig
+ delete mode 100644 drivers/infiniband/hw/i40iw/Makefile
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw.h
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_cm.c
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_cm.h
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_ctrl.c
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_d.h
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_hmc.c
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_hmc.h
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_hw.c
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_main.c
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_osdep.h
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_p.h
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_pble.c
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_pble.h
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_puda.c
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_puda.h
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_register.h
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_status.h
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_type.h
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_uk.c
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_user.h
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_utils.c
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_verbs.c
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_verbs.h
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_vf.c
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_vf.h
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_virtchnl.c
+ delete mode 100644 drivers/infiniband/hw/i40iw/i40iw_virtchnl.h
+ create mode 100644 drivers/infiniband/hw/irdma/Kconfig
+ create mode 100644 drivers/infiniband/hw/irdma/Makefile
+ create mode 100644 drivers/infiniband/hw/irdma/cm.c
+ create mode 100644 drivers/infiniband/hw/irdma/cm.h
+ create mode 100644 drivers/infiniband/hw/irdma/ctrl.c
+ create mode 100644 drivers/infiniband/hw/irdma/defs.h
+ create mode 100644 drivers/infiniband/hw/irdma/hmc.c
+ create mode 100644 drivers/infiniband/hw/irdma/hmc.h
+ create mode 100644 drivers/infiniband/hw/irdma/hw.c
+ create mode 100644 drivers/infiniband/hw/irdma/i40iw_hw.c
+ create mode 100644 drivers/infiniband/hw/irdma/i40iw_hw.h
+ create mode 100644 drivers/infiniband/hw/irdma/i40iw_if.c
+ create mode 100644 drivers/infiniband/hw/irdma/icrdma_hw.c
+ create mode 100644 drivers/infiniband/hw/irdma/icrdma_hw.h
+ create mode 100644 drivers/infiniband/hw/irdma/irdma.h
+ create mode 100644 drivers/infiniband/hw/irdma/main.c
+ create mode 100644 drivers/infiniband/hw/irdma/main.h
+ create mode 100644 drivers/infiniband/hw/irdma/osdep.h
+ create mode 100644 drivers/infiniband/hw/irdma/pble.c
+ create mode 100644 drivers/infiniband/hw/irdma/pble.h
+ create mode 100644 drivers/infiniband/hw/irdma/protos.h
+ create mode 100644 drivers/infiniband/hw/irdma/puda.c
+ create mode 100644 drivers/infiniband/hw/irdma/puda.h
+ create mode 100644 drivers/infiniband/hw/irdma/status.h
+ create mode 100644 drivers/infiniband/hw/irdma/trace.c
+ create mode 100644 drivers/infiniband/hw/irdma/trace.h
+ create mode 100644 drivers/infiniband/hw/irdma/trace_cm.h
+ create mode 100644 drivers/infiniband/hw/irdma/type.h
+ create mode 100644 drivers/infiniband/hw/irdma/uda.c
+ create mode 100644 drivers/infiniband/hw/irdma/uda.h
+ create mode 100644 drivers/infiniband/hw/irdma/uda_d.h
+ create mode 100644 drivers/infiniband/hw/irdma/uk.c
+ create mode 100644 drivers/infiniband/hw/irdma/user.h
+ create mode 100644 drivers/infiniband/hw/irdma/utils.c
+ create mode 100644 drivers/infiniband/hw/irdma/verbs.c
+ create mode 100644 drivers/infiniband/hw/irdma/verbs.h
+ create mode 100644 drivers/infiniband/hw/irdma/ws.c
+ create mode 100644 drivers/infiniband/hw/irdma/ws.h
+ create mode 100644 drivers/net/ethernet/intel/ice/ice_idc.c
+ create mode 100644 drivers/net/ethernet/intel/ice/ice_idc_int.h
+ create mode 100644 include/linux/net/intel/iidc.h
+ delete mode 100644 include/uapi/rdma/i40iw-abi.h
+ create mode 100644 include/uapi/rdma/irdma-abi.h
+
+-- 
+1.8.3.1
+
