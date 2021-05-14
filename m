@@ -2,43 +2,33 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B744380101
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 May 2021 01:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F31380161
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 May 2021 03:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhEMXyq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 May 2021 19:54:46 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:41922 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230363AbhEMXyq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 May 2021 19:54:46 -0400
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 7CF4820B8016;
-        Thu, 13 May 2021 16:53:35 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7CF4820B8016
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620950015;
-        bh=74exrwhdEAndba6EEggC6xPKpjQILxDdAehUL/iquxA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=b+KNMoqREIqx46idPfncLneexiy4iBoRpX+ChVNjqQut8RgcoeIYL/Fr8YAzPM9Pl
-         8Q4UJxhtfLzV3UIgEYqHWDn3E4uA/Lx5Y4VxiElQtCIhrpnjXSq5rX7NzvCORGjsx2
-         rsXmVsFci83Av+jB5KeQ0yDsNC+cjPAS9Vl24ucU=
-Received: by mail-pf1-f171.google.com with SMTP id c13so9689377pfv.4;
-        Thu, 13 May 2021 16:53:35 -0700 (PDT)
-X-Gm-Message-State: AOAM532KIWaY7e3iGbrAU6ndgwW8IXyTIm+r+LnfNkFgMSJ8o6qhHN2Y
-        PyN/AhM6zSR67k/Efxr/fxe+vrC91IA1talfOu0=
-X-Google-Smtp-Source: ABdhPJzRgCD5ObQcFpxCY7nlnqj1S/fiXzXBQfzUBfVXg2LuiGUoPmo/XFxC3ZhAJ3P7tq1jlOZ0eCMvsl0hXlFkOhw=
-X-Received: by 2002:a63:4d22:: with SMTP id a34mr16258481pgb.421.1620950014935;
- Thu, 13 May 2021 16:53:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
- <20210513165846.23722-5-mcroce@linux.microsoft.com> <20210513182048.GA12395@shell.armlinux.org.uk>
-In-Reply-To: <20210513182048.GA12395@shell.armlinux.org.uk>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 14 May 2021 01:52:58 +0200
-X-Gmail-Original-Message-ID: <CAFnufp2HP1e7hg_bKpWwASDLhK+jgAtZX+mQGJg08nSVzxgioA@mail.gmail.com>
-Message-ID: <CAFnufp2HP1e7hg_bKpWwASDLhK+jgAtZX+mQGJg08nSVzxgioA@mail.gmail.com>
-Subject: Re: [PATCH net-next v5 4/5] mvpp2: recycle buffers
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+        id S232006AbhENBCp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 May 2021 21:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231265AbhENBCn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 May 2021 21:02:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E594C061574;
+        Thu, 13 May 2021 18:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AewoeCdKzupjrAmmf0ZaCNC8yUlU7sjr3AelIO0F/XM=; b=aeMzHZzq2PEe+UoOqIrdKwzBHp
+        SpD13pChgGsdAlUV5up3rlgtz61ceBqKB4YVlPxrnpfIlr7qixm35r1pzxJdKP5QLSEv8lpn96D0y
+        XzkuZ5dWtc2OwZ5MLmRA63ZiRfVsiuzDjvNofa4ETRslxO8M2Jiy0ABimf/OQBBIBKNe6+XoAKHKm
+        jnu6IBehlAN86e5u5i1YiDGMdh6HbEFpXvmqZfg0uWWZ0RgIYELAbrImjCvmT3Mj3MNXddpgvVD4Q
+        wk2S0O02ZQlAvoJJaMqZAfsaJd5UMN1xmGhYemsBXOmYPilm+wJEFjNiGZw6xjlSivEfoga3pOTMt
+        bF+rEfzQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lhMBp-009wQq-20; Fri, 14 May 2021 01:00:50 +0000
+Date:   Fri, 14 May 2021 02:00:29 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
 Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
         Ayush Sawal <ayush.sawal@chelsio.com>,
         Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
@@ -47,6 +37,7 @@ Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
         Jakub Kicinski <kuba@kernel.org>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
         Mirko Lindner <mlindner@marvell.com>,
         Stephen Hemminger <stephen@networkplumber.org>,
         Tariq Toukan <tariqt@nvidia.com>,
@@ -75,71 +66,44 @@ Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
         Yunsheng Lin <linyunsheng@huawei.com>,
         Guillaume Nault <gnault@redhat.com>,
         linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
+        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
         David Ahern <dsahern@gmail.com>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
         Sven Auhagen <sven.auhagen@voleatech.de>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH net-next v5 1/5] mm: add a signature in struct page
+Message-ID: <YJ3Lrdx1oIm/MDV8@casper.infradead.org>
+References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
+ <20210513165846.23722-2-mcroce@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210513165846.23722-2-mcroce@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 13, 2021 at 8:21 PM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
->
-> On Thu, May 13, 2021 at 06:58:45PM +0200, Matteo Croce wrote:
-> > diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> > index b2259bf1d299..9dceabece56c 100644
-> > --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> > +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> > @@ -3847,6 +3847,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
-> >       struct mvpp2_pcpu_stats ps = {};
-> >       enum dma_data_direction dma_dir;
-> >       struct bpf_prog *xdp_prog;
-> > +     struct xdp_rxq_info *rxqi;
-> >       struct xdp_buff xdp;
-> >       int rx_received;
-> >       int rx_done = 0;
-> > @@ -3912,15 +3913,15 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
-> >               else
-> >                       frag_size = bm_pool->frag_size;
-> >
-> > +             if (bm_pool->pkt_size == MVPP2_BM_SHORT_PKT_SIZE)
-> > +                     rxqi = &rxq->xdp_rxq_short;
-> > +             else
-> > +                     rxqi = &rxq->xdp_rxq_long;
-> >
-> > +             if (xdp_prog) {
-> > +                     xdp.rxq = rxqi;
-> >
-> > +                     xdp_init_buff(&xdp, PAGE_SIZE, rxqi);
-> >                       xdp_prepare_buff(&xdp, data,
-> >                                        MVPP2_MH_SIZE + MVPP2_SKB_HEADROOM,
-> >                                        rx_bytes, false);
-> > @@ -3964,7 +3965,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
-> >               }
-> >
-> >               if (pp)
-> > +                     skb_mark_for_recycle(skb, virt_to_page(data), pp);
-> >               else
-> >                       dma_unmap_single_attrs(dev->dev.parent, dma_addr,
-> >                                              bm_pool->buf_size, DMA_FROM_DEVICE,
->
-> Looking at the above, which I've only quoted the _resulting_ code after
-> your patch above, I don't see why you have moved the
-> "bm_pool->pkt_size == MVPP2_BM_SHORT_PKT_SIZE" conditional outside of
-> the test for xdp_prog - I don't see rxqi being used except within that
-> conditional. Please can you explain the reasoning there?
->
+On Thu, May 13, 2021 at 06:58:42PM +0200, Matteo Croce wrote:
+>  		struct {	/* page_pool used by netstack */
+> +			/**
+> +			 * @pp_magic: magic value to avoid recycling non
+> +			 * page_pool allocated pages.
+> +			 * It aliases with page->lru.next
 
-Back in v3, skb_mark_for_recycle() was accepting an xdp_mem_info*, so
-I needed rxqi out of that conditional scope to get that pointer.
-Now we just need a page_pool*, so I can restore the original chunk.
-Nice catch.
+I'm not really keen on documenting what aliases with what.
+pp_magic also aliases with compound_head, 'next' (for slab),
+and dev_pagemap.  This is an O(n^2) documentation problem ...
 
-Thanks,
--- 
-per aspera ad upstream
+I feel like I want to document the pfmemalloc bit in mm_types.h,
+but I don't have a concrete suggestion yet.
+
+> +++ b/include/net/page_pool.h
+> @@ -63,6 +63,8 @@
+>   */
+>  #define PP_ALLOC_CACHE_SIZE	128
+>  #define PP_ALLOC_CACHE_REFILL	64
+> +#define PP_SIGNATURE		(POISON_POINTER_DELTA + 0x40)
+
+I wonder if this wouldn't be better in linux/poison.h?
+
