@@ -2,205 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CD4381517
-	for <lists+linux-rdma@lfdr.de>; Sat, 15 May 2021 04:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7240381561
+	for <lists+linux-rdma@lfdr.de>; Sat, 15 May 2021 05:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233436AbhEOCIX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 May 2021 22:08:23 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:2985 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbhEOCIX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 May 2021 22:08:23 -0400
-Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fhpcl200qzldZs;
-        Sat, 15 May 2021 10:04:55 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+        id S231355AbhEODJN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 14 May 2021 23:09:13 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3760 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230371AbhEODJM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 May 2021 23:09:12 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FhqxZ0DwLzmgRW;
+        Sat, 15 May 2021 11:04:34 +0800 (CST)
+Received: from dggpeml100022.china.huawei.com (7.185.36.176) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 15 May 2021 10:07:08 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Sat, 15 May
- 2021 10:07:07 +0800
-Subject: Re: [PATCH net-next v5 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Matteo Croce <mcroce@linux.microsoft.com>,
-        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        "Vinay Kumar Yadav" <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        "Tariq Toukan" <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
- <20210513165846.23722-4-mcroce@linux.microsoft.com>
- <798d6dad-7950-91b2-46a5-3535f44df4e2@huawei.com>
- <YJ4ocslvURa/H+6f@apalos.home>
- <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
- <YJ5APhzabmAKIKCE@apalos.home>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <cd0c0a2b-986e-a672-de7e-798ab2843d76@huawei.com>
-Date:   Sat, 15 May 2021 10:07:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
-MIME-Version: 1.0
-In-Reply-To: <YJ5APhzabmAKIKCE@apalos.home>
-Content-Type: text/plain; charset="utf-8"
+ 15.1.2176.2; Sat, 15 May 2021 11:07:59 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggpeml100022.china.huawei.com (7.185.36.176) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 15 May 2021 11:07:58 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2176.012;
+ Sat, 15 May 2021 11:07:58 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH for-next 1/6] RDMA/core: Use refcount_t instead of
+ atomic_t for reference counting
+Thread-Topic: [PATCH for-next 1/6] RDMA/core: Use refcount_t instead of
+ atomic_t for reference counting
+Thread-Index: AQHXSGaCBgr5LwNpvECpXt268+zsNg==
+Date:   Sat, 15 May 2021 03:07:58 +0000
+Message-ID: <693f3fc2bcb04615b22a829ac50eb679@huawei.com>
+References: <1620958299-4869-1-git-send-email-liweihang@huawei.com>
+ <1620958299-4869-2-git-send-email-liweihang@huawei.com>
+ <20210514123445.GY1002214@nvidia.com>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/5/14 17:17, Ilias Apalodimas wrote:
-> On Fri, May 14, 2021 at 04:31:50PM +0800, Yunsheng Lin wrote:
->> On 2021/5/14 15:36, Ilias Apalodimas wrote:
->>> [...]
->>>>> +		return false;
->>>>> +
->>>>> +	pp = (struct page_pool *)page->pp;
->>>>> +
->>>>> +	/* Driver set this to memory recycling info. Reset it on recycle.
->>>>> +	 * This will *not* work for NIC using a split-page memory model.
->>>>> +	 * The page will be returned to the pool here regardless of the
->>>>> +	 * 'flipped' fragment being in use or not.
->>>>> +	 */
->>>>> +	page->pp = NULL;
->>>>
->>>> Why not only clear the page->pp when the page can not be recycled
->>>> by the page pool? so that we do not need to set and clear it every
->>>> time the page is recycled。
->>>>
->>>
->>> If the page cannot be recycled, page->pp will not probably be set to begin
->>> with. Since we don't embed the feature in page_pool and we require the
->>> driver to explicitly enable it, as part of the 'skb flow', I'd rather keep 
->>> it as is.  When we set/clear the page->pp, the page is probably already in 
->>> cache, so I doubt this will have any measurable impact.
->>
->> The point is that we already have the skb->pp_recycle to let driver to
->> explicitly enable recycling, as part of the 'skb flow, if the page pool keep
->> the page->pp while it owns the page, then the driver may only need to call
->> one skb_mark_for_recycle() for a skb, instead of call skb_mark_for_recycle()
->> for each page frag of a skb.
->>
+On 2021/5/14 20:34, Jason Gunthorpe wrote:
+> On Fri, May 14, 2021 at 10:11:34AM +0800, Weihang Li wrote:
+>> The refcount_t API will WARN on underflow and overflow of a reference
+>> counter, and avoid use-after-free risks. Increase refcount_t from 0 to 1 is
+>> regarded as there is a risk about use-after-free. So it should be set to 1
+>> directly during initialization.
 > 
-> The driver is meant to call skb_mark_for_recycle for the skb and
-> page_pool_store_mem_info() for the fragments (in order to store page->pp).
-> Nothing bad will happen if you call skb_mark_for_recycle on a frag though,
-> but in any case you need to store the page_pool pointer of each frag to
-> struct page.
-
-Right. Nothing bad will happen when we keep the page_pool pointer in
-page->pp while page pool owns the page too, even if the skb->pp_recycle
-is not set, right?
-
+> What does this comment about 0 to 1 mean?
 > 
->> Maybe we can add a parameter in "struct page_pool_params" to let driver
->> to decide if the page pool ptr is stored in page->pp while the page pool
->> owns the page?
+
+Hi Jason,
+
+I first thought refcount_inc() and atomic_inc() are exactly the same, but I got
+a warning about refcount_t on iwpm_init() after the replacement:
+
+[   16.882939] refcount_t: addition on 0; use-after-free.
+[   16.888065] WARNING: CPU: 2 PID: 1 at lib/refcount.c:25
+refcount_warn_saturate+0xa0/0x144
+..
+[   17.014698] Call trace:
+[   17.017135]  refcount_warn_saturate+0xa0/0x144
+[   17.021559]  iwpm_init+0x104/0x12c
+[   17.024948]  iw_cm_init+0x24/0xd0
+[   17.028248]  do_one_initcall+0x54/0x2d0
+[   17.032068]  kernel_init_freeable+0x224/0x294
+[   17.036407]  kernel_init+0x20/0x12c
+[   17.039880]  ret_from_fork+0x10/0x18
+
+Then I noticed that the comment of refcount_inc() says:
+
+ * Will WARN if the refcount is 0, as this represents a possible use-after-free
+ * condition.
+
+so I made changes:
+
+@@ -77,8 +77,12 @@ int iwpm_init(u8 nl_client)
+                        ret = -ENOMEM;
+                        goto init_exit;
+                }
++
++               refcount_set(&iwpm_admin.refcount, 1);
++       } else {
++               refcount_inc(&iwpm_admin.refcount);
+        }
+-       refcount_inc(&iwpm_admin.refcount);
++
+
+I wrote the comments because I thought someone might be confused by the above
+changes :)
+
+> This all seems like a good idea but I wish you had done one patch per
+> variable changed
 > 
-> Then you'd have to check the page pool config before saving the meta-data,
-
-I am not sure what the "saving the meta-data" meant?
-
-> and you would have to make the skb path aware of that as well (I assume you
-> mean replace pp_recycle with this?).
-
-I meant we could set the in page->pp when the page is allocated from
-alloc_pages() in __page_pool_alloc_pages_slow() unconditionally or
-according to a newly add filed in pool->p, and only clear it in
-page_pool_release_page(), between which the page is owned by page pool,
-right?
-
-> If not and you just want to add an extra flag on page_pool_params and be able 
-> to enable recycling depending on that flag, we just add a patch afterwards.
-> I am not sure we need an extra if for each packet though.
-
-In that case, the skb_mark_for_recycle() could only set the skb->pp_recycle,
-but not the pool->p.
-
+> Jason
 > 
->>
->> Another thing accured to me is that if the driver use page from the
->> page pool to form a skb, and it does not call skb_mark_for_recycle(),
->> then there will be resource leaking, right? if yes, it seems the
->> skb_mark_for_recycle() call does not seems to add any value?
->>
-> 
-> Not really, the driver has 2 choices:
-> - call page_pool_release_page() once it receives the payload. That will
->   clean up dma mappings (if page pool is responsible for them) and free the
->   buffer
 
-The is only needed before SKB recycling is supported or the driver does not
-want the SKB recycling support explicitly, right?
+Sure, thanks.
 
-> - call skb_mark_for_recycle(). Which will end up recycling the buffer.
-
-If the driver need to add extra flag to enable recycling based on skb
-instead of page pool, then adding skb_mark_for_recycle() makes sense to
-me too, otherwise it seems adding a field in pool->p to recycling based
-on skb makes more sense?
-
-> 
-> If you call none of those, you'd leak a page, but that's a driver bug.
-> patches [4/5, 5/5] do that for two marvell drivers.
-> I really want to make drivers opt-in in the feature instead of always
-> enabling it.
-> 
-> Thanks
-> /Ilias
->>
->>>
->>>>> +	page_pool_put_full_page(pp, virt_to_head_page(data), false);
->>>>> +
->>>>>  	C(end);
->>>
->>> [...]
->>
->>
-> 
-> .
-> 
+Weihang
 
