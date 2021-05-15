@@ -2,186 +2,205 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C8C380D4C
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 May 2021 17:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CD4381517
+	for <lists+linux-rdma@lfdr.de>; Sat, 15 May 2021 04:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbhENPhW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 May 2021 11:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbhENPhV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 May 2021 11:37:21 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E404C061574;
-        Fri, 14 May 2021 08:36:10 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id x8so29099917qkl.2;
-        Fri, 14 May 2021 08:36:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Opk4YA82Psd+Q8mksl+F6kI1x1kOPzJPFBLRaMr3inM=;
-        b=HbSouYzy/VvObF2hulJDRCyga4Hzp06qrS38Fe5GTOtkkgcxwYz0Ocnma95BPT203l
-         snul+DqjvD4YCjVDej53RKpUu4FuYleTN/XRM0Rrc0KGbdMHOoDJbttKTGUb/mSfeswD
-         zTbpo+F4/Y00qsGzn0MX+vC93hlMVWhI7qd0JxO7WLiHPGWApotMXFDx6SoRZ5wbOFZL
-         hGwWs//FyXzj9f1use0roejhdBeSejuFKFAkIeN5efRXTWKXmU3XAWOwjS5JjiQ4AZzD
-         4QicjagwwpWsvYRYHBIkbr1b2dBbzaDKvbbeHCfMTRRZ3cicKnq8+gAnLCgit5Fyk+Ul
-         ImkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Opk4YA82Psd+Q8mksl+F6kI1x1kOPzJPFBLRaMr3inM=;
-        b=bul0l1SgmVq+ogP8EHoFXj204Br+MfJWix82Kle+0wsRestGkqhZGx/XSXhWUzJfl0
-         +Ii0ltRaXEttgaiwJCpsWpQAhENokN7C44wTmFGouH5k6GehDSOi5PB41W0q/uZ2gs6Y
-         Z953J+2l+g1hoa3DCU2HH8b9r8vUnpHb0a9+/ZLgBVm0gfLjZz+Ux3ti/VWHV9AGlmyt
-         OkJCtWmJd4EiLknIRHVfHM2v8Ac/x6RjQ8mzkoagtWbS+DjMWMm8PL8QY10y+hRjxdwL
-         pfBla88EHlXU3UV8NTJ0br+l0Q10pQJgU56n6c8SOlUQYTW41aXf2TW1fwsgJ1QqmZer
-         UC4g==
-X-Gm-Message-State: AOAM532nCkJI22oE5XsKzFvAMXzqxtb1dKlALDTYtOzySU6ya3WFBAVs
-        FY3Mk6iwsKPyV1VyYURxmBW6GK9e8gA=
-X-Google-Smtp-Source: ABdhPJyuV8nNUiIIEBT3dmt7ZgL62KnBrvXk0CStzKk3OYc5gQ5ZJvwRYn79YBmKH3duG34FZuwXlA==
-X-Received: by 2002:a37:9d58:: with SMTP id g85mr43899555qke.426.1621006569671;
-        Fri, 14 May 2021 08:36:09 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c141sm4954723qke.12.2021.05.14.08.36.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 08:36:09 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>
-Cc:     Devesh Sharma <devesh.sharma@broadcom.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] RDMA/bnxt_re: Drop unnecessary NULL checks after container_of
-Date:   Fri, 14 May 2021 08:36:06 -0700
-Message-Id: <20210514153606.1377119-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.25.1
+        id S233436AbhEOCIX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 May 2021 22:08:23 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:2985 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230146AbhEOCIX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 May 2021 22:08:23 -0400
+Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fhpcl200qzldZs;
+        Sat, 15 May 2021 10:04:55 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 15 May 2021 10:07:08 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Sat, 15 May
+ 2021 10:07:07 +0800
+Subject: Re: [PATCH net-next v5 3/5] page_pool: Allow drivers to hint on SKB
+ recycling
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+CC:     Matteo Croce <mcroce@linux.microsoft.com>,
+        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        "Vinay Kumar Yadav" <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        "Tariq Toukan" <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
+ <20210513165846.23722-4-mcroce@linux.microsoft.com>
+ <798d6dad-7950-91b2-46a5-3535f44df4e2@huawei.com>
+ <YJ4ocslvURa/H+6f@apalos.home>
+ <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
+ <YJ5APhzabmAKIKCE@apalos.home>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <cd0c0a2b-986e-a672-de7e-798ab2843d76@huawei.com>
+Date:   Sat, 15 May 2021 10:07:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
+In-Reply-To: <YJ5APhzabmAKIKCE@apalos.home>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The result of container_of() operations is never NULL unless the first
-element of the embedding structure is extracted. This is either not the
-case here, or the pointer passed to container_of() is known to be not
-NULL. The NULL checks are therefore unnecessary and misleading.
-Remove them.
+On 2021/5/14 17:17, Ilias Apalodimas wrote:
+> On Fri, May 14, 2021 at 04:31:50PM +0800, Yunsheng Lin wrote:
+>> On 2021/5/14 15:36, Ilias Apalodimas wrote:
+>>> [...]
+>>>>> +		return false;
+>>>>> +
+>>>>> +	pp = (struct page_pool *)page->pp;
+>>>>> +
+>>>>> +	/* Driver set this to memory recycling info. Reset it on recycle.
+>>>>> +	 * This will *not* work for NIC using a split-page memory model.
+>>>>> +	 * The page will be returned to the pool here regardless of the
+>>>>> +	 * 'flipped' fragment being in use or not.
+>>>>> +	 */
+>>>>> +	page->pp = NULL;
+>>>>
+>>>> Why not only clear the page->pp when the page can not be recycled
+>>>> by the page pool? so that we do not need to set and clear it every
+>>>> time the page is recycled。
+>>>>
+>>>
+>>> If the page cannot be recycled, page->pp will not probably be set to begin
+>>> with. Since we don't embed the feature in page_pool and we require the
+>>> driver to explicitly enable it, as part of the 'skb flow', I'd rather keep 
+>>> it as is.  When we set/clear the page->pp, the page is probably already in 
+>>> cache, so I doubt this will have any measurable impact.
+>>
+>> The point is that we already have the skb->pp_recycle to let driver to
+>> explicitly enable recycling, as part of the 'skb flow, if the page pool keep
+>> the page->pp while it owns the page, then the driver may only need to call
+>> one skb_mark_for_recycle() for a skb, instead of call skb_mark_for_recycle()
+>> for each page frag of a skb.
+>>
+> 
+> The driver is meant to call skb_mark_for_recycle for the skb and
+> page_pool_store_mem_info() for the fragments (in order to store page->pp).
+> Nothing bad will happen if you call skb_mark_for_recycle on a frag though,
+> but in any case you need to store the page_pool pointer of each frag to
+> struct page.
 
-The channges in this patch were made automatically with the following
-Coccinelle script.
+Right. Nothing bad will happen when we keep the page_pool pointer in
+page->pp while page pool owns the page too, even if the skb->pp_recycle
+is not set, right?
 
-@@
-type t;
-identifier v;
-statement s;
-@@
+> 
+>> Maybe we can add a parameter in "struct page_pool_params" to let driver
+>> to decide if the page pool ptr is stored in page->pp while the page pool
+>> owns the page?
+> 
+> Then you'd have to check the page pool config before saving the meta-data,
 
-<+...
-(
-  t v = container_of(...);
-|
-  v = container_of(...);
-)
-  ...
-  when != v
-- if (\( !v \| v == NULL \) ) s
-...+>
+I am not sure what the "saving the meta-data" meant?
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 18 ------------------
- drivers/infiniband/hw/bnxt_re/main.c     | 12 ------------
- 2 files changed, 30 deletions(-)
+> and you would have to make the skb path aware of that as well (I assume you
+> mean replace pp_recycle with this?).
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 2efaa80bfbd2..537471ffaa79 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -1098,10 +1098,6 @@ static int bnxt_re_init_rq_attr(struct bnxt_re_qp *qp,
- 		struct bnxt_re_srq *srq;
- 
- 		srq = container_of(init_attr->srq, struct bnxt_re_srq, ib_srq);
--		if (!srq) {
--			ibdev_err(&rdev->ibdev, "SRQ not found");
--			return -EINVAL;
--		}
- 		qplqp->srq = &srq->qplib_srq;
- 		rq->max_wqe = 0;
- 	} else {
-@@ -1279,22 +1275,12 @@ static int bnxt_re_init_qp_attr(struct bnxt_re_qp *qp, struct bnxt_re_pd *pd,
- 	/* Setup CQs */
- 	if (init_attr->send_cq) {
- 		cq = container_of(init_attr->send_cq, struct bnxt_re_cq, ib_cq);
--		if (!cq) {
--			ibdev_err(&rdev->ibdev, "Send CQ not found");
--			rc = -EINVAL;
--			goto out;
--		}
- 		qplqp->scq = &cq->qplib_cq;
- 		qp->scq = cq;
- 	}
- 
- 	if (init_attr->recv_cq) {
- 		cq = container_of(init_attr->recv_cq, struct bnxt_re_cq, ib_cq);
--		if (!cq) {
--			ibdev_err(&rdev->ibdev, "Receive CQ not found");
--			rc = -EINVAL;
--			goto out;
--		}
- 		qplqp->rcq = &cq->qplib_cq;
- 		qp->rcq = cq;
- 	}
-@@ -3473,10 +3459,6 @@ int bnxt_re_poll_cq(struct ib_cq *ib_cq, int num_entries, struct ib_wc *wc)
- 				((struct bnxt_qplib_qp *)
- 				 (unsigned long)(cqe->qp_handle),
- 				 struct bnxt_re_qp, qplib_qp);
--			if (!qp) {
--				ibdev_err(&cq->rdev->ibdev, "POLL CQ : bad QP handle");
--				continue;
--			}
- 			wc->qp = &qp->ib_qp;
- 			wc->ex.imm_data = cqe->immdata;
- 			wc->src_qp = cqe->src_qp;
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 8bfbf0231a9e..b090dfa4f4cb 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -885,12 +885,6 @@ static int bnxt_re_srqn_handler(struct bnxt_qplib_nq *nq,
- 	struct ib_event ib_event;
- 	int rc = 0;
- 
--	if (!srq) {
--		ibdev_err(NULL, "%s: SRQ is NULL, SRQN not handled",
--			  ROCE_DRV_MODULE_NAME);
--		rc = -EINVAL;
--		goto done;
--	}
- 	ib_event.device = &srq->rdev->ibdev;
- 	ib_event.element.srq = &srq->ib_srq;
- 	if (event == NQ_SRQ_EVENT_EVENT_SRQ_THRESHOLD_EVENT)
-@@ -903,7 +897,6 @@ static int bnxt_re_srqn_handler(struct bnxt_qplib_nq *nq,
- 		(*srq->ib_srq.event_handler)(&ib_event,
- 					     srq->ib_srq.srq_context);
- 	}
--done:
- 	return rc;
- }
- 
-@@ -913,11 +906,6 @@ static int bnxt_re_cqn_handler(struct bnxt_qplib_nq *nq,
- 	struct bnxt_re_cq *cq = container_of(handle, struct bnxt_re_cq,
- 					     qplib_cq);
- 
--	if (!cq) {
--		ibdev_err(NULL, "%s: CQ is NULL, CQN not handled",
--			  ROCE_DRV_MODULE_NAME);
--		return -EINVAL;
--	}
- 	if (cq->ib_cq.comp_handler) {
- 		/* Lock comp_handler? */
- 		(*cq->ib_cq.comp_handler)(&cq->ib_cq, cq->ib_cq.cq_context);
--- 
-2.25.1
+I meant we could set the in page->pp when the page is allocated from
+alloc_pages() in __page_pool_alloc_pages_slow() unconditionally or
+according to a newly add filed in pool->p, and only clear it in
+page_pool_release_page(), between which the page is owned by page pool,
+right?
+
+> If not and you just want to add an extra flag on page_pool_params and be able 
+> to enable recycling depending on that flag, we just add a patch afterwards.
+> I am not sure we need an extra if for each packet though.
+
+In that case, the skb_mark_for_recycle() could only set the skb->pp_recycle,
+but not the pool->p.
+
+> 
+>>
+>> Another thing accured to me is that if the driver use page from the
+>> page pool to form a skb, and it does not call skb_mark_for_recycle(),
+>> then there will be resource leaking, right? if yes, it seems the
+>> skb_mark_for_recycle() call does not seems to add any value?
+>>
+> 
+> Not really, the driver has 2 choices:
+> - call page_pool_release_page() once it receives the payload. That will
+>   clean up dma mappings (if page pool is responsible for them) and free the
+>   buffer
+
+The is only needed before SKB recycling is supported or the driver does not
+want the SKB recycling support explicitly, right?
+
+> - call skb_mark_for_recycle(). Which will end up recycling the buffer.
+
+If the driver need to add extra flag to enable recycling based on skb
+instead of page pool, then adding skb_mark_for_recycle() makes sense to
+me too, otherwise it seems adding a field in pool->p to recycling based
+on skb makes more sense?
+
+> 
+> If you call none of those, you'd leak a page, but that's a driver bug.
+> patches [4/5, 5/5] do that for two marvell drivers.
+> I really want to make drivers opt-in in the feature instead of always
+> enabling it.
+> 
+> Thanks
+> /Ilias
+>>
+>>>
+>>>>> +	page_pool_put_full_page(pp, virt_to_head_page(data), false);
+>>>>> +
+>>>>>  	C(end);
+>>>
+>>> [...]
+>>
+>>
+> 
+> .
+> 
 
