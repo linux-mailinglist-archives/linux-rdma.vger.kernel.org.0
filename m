@@ -2,60 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7DD382814
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 May 2021 11:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FF1382817
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 May 2021 11:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235821AbhEQJUy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 May 2021 05:20:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
+        id S235883AbhEQJU4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 May 2021 05:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235911AbhEQJUl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 May 2021 05:20:41 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA37C0613ED
-        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 02:19:21 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id t15so5965726edr.11
-        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 02:19:21 -0700 (PDT)
+        with ESMTP id S235882AbhEQJUm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 May 2021 05:20:42 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2824CC06138A
+        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 02:19:22 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id k14so4625925eji.2
+        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 02:19:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5hfBn9GhMfx7I0EOUEgaTpDRmXZT14MLT0af7KVBCEc=;
-        b=SYuwFK5WT90Kv2mwVFuJ9Y0zU3I9R/tEqgH2j2Ns1D6B45UxC8VB4PZ3TF7g9+pJtp
-         llqcQ/oA/k3LYSQoQ/GV+UefhrgRY/OwZiOyXXWO+Hb50LszeDDAfGVTJ3bC1JvkmFIu
-         aiOZJKrnOwXYeqH0VKgFHX8Rr6tee4mBFE3iuY/PEWVSztD8nkScA0X7truiNmqtmL6/
-         E/B9AFuPhGafRX6X+gtx7BoYcB1sXnCDqBSD3rusWu0fJFF0oyvLl+1okVL/pHEEfujN
-         gto+0iIAJxdpHs5kDUDsc6TDqBQL1wqoSfSxVsIl/b3/76ezZ8gr9KgLe3liaBO508e5
-         3s7Q==
+        bh=sau5iekBbmjCCggqbzRjsAgo7kkG9VsIP1EEGY5j7Zc=;
+        b=Dw4pNwnsp4K/9S5lFpBS5A0i89eowUm+AEg0BtgBEy2s2qYVd1m0WI4q6GnFVU9DGM
+         7hY+gtBhaKBqQwyTWO1HGMZRVKBnizS3ErCPbKak9IqupOiXUwRSZCFQzFoST14cmPSo
+         2F1TZDn0zCwcjm1wk7p04uenIrPBq9B7zvK2aUCskf0eIHVnjbbPvsICtc1fn6IXDfE2
+         oU0Adn1DO7zRt5Pd3sgebCJFV/Myb76E894zjV0ACH4NOTyi6S1rKyQ8IChqTGFfBrP7
+         mo0S/QRTEjwGh1s6T5t6SjdvA7mxfpN2BRMTBCKtvq5LNKXILfHwd7dEOJHeZ5BEAUlP
+         1S9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5hfBn9GhMfx7I0EOUEgaTpDRmXZT14MLT0af7KVBCEc=;
-        b=L/EfGZhvD87h8GfqUa95kOwIahi0WpbC4/C++Vdbsmn9Uf3cmBwgVpMU+80Vh6Aw2s
-         RFClT8U3jatquqkxGCW/qmznIj3a9ciVZnHgj7H39KEXygITWpnrnPjmcBIn5NuBiuXO
-         6YDy6QB3lDfpseAkQpM+QSxnStcfdyj4Z3mevc7Ew/C56WqZGZZmrfQQRdWNOwAmRGyH
-         wasWX5wgFHlFWRMW8dcf3Z9IXqKRlAC2WyX6JbMXlbCBiHK6c7iW067moNcdG6fUyT8v
-         sbRjtouso3cNSALcTHf6ZZjVNbHqVP3IQxEmTLQ0ivKwRYoAqT4WgLgDWmAGHgfdUUEa
-         GsfQ==
-X-Gm-Message-State: AOAM530m/g34XTZ6ZriEuH/u4hBkBd0MXq7BYzdG2f8KmzWqaaOdlFtF
-        FiEhCxS/IPRMXcJ9bXRDTRxt8G+qLlbSow==
-X-Google-Smtp-Source: ABdhPJzxrjorSrzvJoIghQhxHN4pSvzLwh9cDSVzi2nwWmCn+Dl3N1sjx8/LcrLMW6OfJhRK9B5QvA==
-X-Received: by 2002:a50:ff08:: with SMTP id a8mr38301725edu.46.1621243160077;
+        bh=sau5iekBbmjCCggqbzRjsAgo7kkG9VsIP1EEGY5j7Zc=;
+        b=DQ7OEgKtWFzH8+DQFG/r6nIBawmh6CCiYyJ8LwYcdTjN2XTvgB46EAXUXsYYMRoxEb
+         tDZxFdGLfi2AUyCvMdIA7WCzXA6HqnTN0Uch/9kEl1es+w187nfXuQncYWmrFREKG8Kl
+         47XEIx5mjcE8ujvlYFLdUUh2zlpUTYMbmOuaaFkbU+3sWEG/l0eufP5pAI/YAGmyuFHT
+         GDC0MUwwF6kGvCjwQt06Tzn38FrJILN5Zp+vI0906XWDlOpDDGQFCj7R4cOZQ3jGfaXh
+         3AzIUwsuxy6nbeziU1lfYOBUhxnqSELeu1h/ZJpcOgXdkIMp5XWbza9qKsoz5mlz6bdL
+         F7rQ==
+X-Gm-Message-State: AOAM533qRiDetLd4fNzoJJ2d7MZIKSpzcsilCpWhpC6aTf1SoDNjJhbm
+        kUiquLDeY7+6/Qw8y7SXqH3yLKhBWhYmFA==
+X-Google-Smtp-Source: ABdhPJwnCZJDOstoqi7MS5V66nmYQ6U3gRLzmuC3aR8STpTtlzonoobTs43q8/0yf+OGj7DJ+oISGA==
+X-Received: by 2002:a17:906:14c1:: with SMTP id y1mr63147656ejc.481.1621243160745;
         Mon, 17 May 2021 02:19:20 -0700 (PDT)
 Received: from gkim-laptop.fkb.profitbricks.net (ip5f5aef30.dynamic.kabel-deutschland.de. [95.90.239.48])
-        by smtp.googlemail.com with ESMTPSA id g10sm7925845ejd.109.2021.05.17.02.19.19
+        by smtp.googlemail.com with ESMTPSA id g10sm7925845ejd.109.2021.05.17.02.19.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 02:19:19 -0700 (PDT)
+        Mon, 17 May 2021 02:19:20 -0700 (PDT)
 From:   Gioh Kim <gi-oh.kim@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
+        Dima Stepanov <dmitrii.stepanov@cloud.ionos.com>,
+        Dima Stepanov <dmitrii.stepanov@ionos.com>,
         Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCHv2 for-next 06/19] RDMA/rtrs: Define MIN_CHUNK_SIZE
-Date:   Mon, 17 May 2021 11:18:30 +0200
-Message-Id: <20210517091844.260810-7-gi-oh.kim@ionos.com>
+Subject: [PATCHv2 for-next 07/19] RDMA/rtrs: Use strscpy instead of strlcpy
+Date:   Mon, 17 May 2021 11:18:31 +0200
+Message-Id: <20210517091844.260810-8-gi-oh.kim@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210517091844.260810-1-gi-oh.kim@ionos.com>
 References: <20210517091844.260810-1-gi-oh.kim@ionos.com>
@@ -65,46 +66,73 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+From: Dima Stepanov <dmitrii.stepanov@cloud.ionos.com>
 
-Define MIN_CHUNK_SIZE to replace the hard-coding number.
-We need 4k for metadata, so MIN_CHUNK_SIZE should be at least 8k.
+During checkpatch analyzing the following warning message was found:
+  WARNING:STRLCPY: Prefer strscpy over strlcpy - see:
+  https://lore.kernel.org/r/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com/
+Fix it by using strscpy calls instead of strlcpy.
 
+Signed-off-by: Dima Stepanov <dmitrii.stepanov@ionos.com>
 Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-pri.h | 1 +
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 4 ++--
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 4 ++--
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-index 62924ad5362d..a092f7d7c7b3 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-@@ -56,6 +56,7 @@ enum {
- 	 * somewhere between 1 and 65536 and it depends on the system.
- 	 */
- 	MAX_SESS_QUEUE_DEPTH = 65536,
-+	MIN_CHUNK_SIZE = 8192,
- 
- 	RTRS_HB_INTERVAL_MS = 5000,
- 	RTRS_HB_MISSED_MAX = 5,
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 930a1b496f84..a2505ea4a7a2 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -1499,7 +1499,7 @@ static struct rtrs_clt_sess *alloc_sess(struct rtrs_clt *clt,
+ 	if (path->src)
+ 		memcpy(&sess->s.src_addr, path->src,
+ 		       rdma_addr_size((struct sockaddr *)path->src));
+-	strlcpy(sess->s.sessname, clt->sessname, sizeof(sess->s.sessname));
++	strscpy(sess->s.sessname, clt->sessname, sizeof(sess->s.sessname));
+ 	sess->s.con_num = con_num;
+ 	sess->clt = clt;
+ 	sess->max_pages_per_mr = max_segments * max_segment_size >> 12;
+@@ -2644,7 +2644,7 @@ static struct rtrs_clt *alloc_clt(const char *sessname, size_t paths_num,
+ 	clt->priv = priv;
+ 	clt->link_ev = link_ev;
+ 	clt->mp_policy = MP_POLICY_MIN_INFLIGHT;
+-	strlcpy(clt->sessname, sessname, sizeof(clt->sessname));
++	strscpy(clt->sessname, sessname, sizeof(clt->sessname));
+ 	init_waitqueue_head(&clt->permits_wait);
+ 	mutex_init(&clt->paths_ev_mutex);
+ 	mutex_init(&clt->paths_mutex);
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 74a5dfe85813..02bc704667a8 100644
+index 02bc704667a8..afa63f06586b 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -2165,9 +2165,9 @@ static int check_module_params(void)
- 		       sess_queue_depth, 1, MAX_SESS_QUEUE_DEPTH);
- 		return -EINVAL;
- 	}
--	if (max_chunk_size < 4096 || !is_power_of_2(max_chunk_size)) {
-+	if (max_chunk_size < MIN_CHUNK_SIZE || !is_power_of_2(max_chunk_size)) {
- 		pr_err("Invalid max_chunk_size value %d, has to be >= %d and should be power of two.\n",
--		       max_chunk_size, 4096);
-+		       max_chunk_size, MIN_CHUNK_SIZE);
- 		return -EINVAL;
- 	}
+@@ -780,7 +780,7 @@ static int process_info_req(struct rtrs_srv_con *con,
+ 	rwr = kcalloc(sess->mrs_num, sizeof(*rwr), GFP_KERNEL);
+ 	if (unlikely(!rwr))
+ 		return -ENOMEM;
+-	strlcpy(sess->s.sessname, msg->sessname, sizeof(sess->s.sessname));
++	strscpy(sess->s.sessname, msg->sessname, sizeof(sess->s.sessname));
  
+ 	tx_sz  = sizeof(*rsp);
+ 	tx_sz += sizeof(rsp->desc[0]) * sess->mrs_num;
+@@ -1261,7 +1261,7 @@ int rtrs_srv_get_sess_name(struct rtrs_srv *srv, char *sessname, size_t len)
+ 	list_for_each_entry(sess, &srv->paths_list, s.entry) {
+ 		if (sess->state != RTRS_SRV_CONNECTED)
+ 			continue;
+-		strlcpy(sessname, sess->s.sessname,
++		strscpy(sessname, sess->s.sessname,
+ 		       min_t(size_t, sizeof(sess->s.sessname), len));
+ 		err = 0;
+ 		break;
+@@ -1715,7 +1715,7 @@ static struct rtrs_srv_sess *__alloc_sess(struct rtrs_srv *srv,
+ 	path.src = &sess->s.src_addr;
+ 	path.dst = &sess->s.dst_addr;
+ 	rtrs_addr_to_str(&path, str, sizeof(str));
+-	strlcpy(sess->s.sessname, str, sizeof(sess->s.sessname));
++	strscpy(sess->s.sessname, str, sizeof(sess->s.sessname));
+ 
+ 	sess->s.con_num = con_num;
+ 	sess->s.recon_cnt = recon_cnt;
 -- 
 2.25.1
 
