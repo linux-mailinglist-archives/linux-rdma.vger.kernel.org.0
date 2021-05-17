@@ -2,217 +2,492 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C43382D87
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 May 2021 15:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF9A382D88
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 May 2021 15:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237378AbhEQNhD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 May 2021 09:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56968 "EHLO
+        id S237380AbhEQNhF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 May 2021 09:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhEQNhD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 May 2021 09:37:03 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E09C061573
-        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 06:35:46 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id b13so1213328pfv.4
-        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 06:35:46 -0700 (PDT)
+        with ESMTP id S237379AbhEQNhF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 May 2021 09:37:05 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A59C061573
+        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 06:35:48 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id j12so4659768pgh.7
+        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 06:35:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version;
-        bh=jpcGlmwMomLrV84CXsnu4LeMxpQTCIAEqqwajtmTr28=;
-        b=Vgh+8XSq3ZJXsaQs31HfyX1O01yTwojGJTBDEDUpLKhG+xnKj7YTh0wNFaVdmWHB3j
-         HvPmfkPkFGTvURFUshLiYUqU/2WLKrKKIlnbvAz6LZWiNIeQXrYvx2mIpIiHl18rcrTK
-         jbzaGh1NqHLKbZ8BXJvOcHdJGzAcZ5bLNcB8M=
+        bh=AxKOcj0CuJv3ktci/J/Y4SI3lM8VlLIcoZWORiV/bCI=;
+        b=LefU3zZdWe/fbdBzSiCAnS5WpWptVm0OX06O/9tAGl4V9KBuem+kNAINZn0KqZyM1A
+         TLSJPFWUXSFDuMBg78GekHLOh1E6OSVOb2+YE79vZuSCyv5aWdhTKiC35+TCar46gVeD
+         269mJH/kEHvrOPLY5fXQVRf1eDQ+Qu5g3sPHo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version;
-        bh=jpcGlmwMomLrV84CXsnu4LeMxpQTCIAEqqwajtmTr28=;
-        b=QeaHXn5CDaTsiMMFvKGQx9CQirBnsAWxfLl+R5lyxOs1A2eA0V0g+8RDhjSD1rrKDa
-         LhWzOQDw96NMVR4/XAkL/t5GrhzxYSr5W6OJacnCEasMZBf7vUgUGGO0Z+8oHA3SVmAL
-         UmToB5JL/ILln8w7AIaU7YuspLKagkJkUeFQPqOQzTLnGaXKAogQ/i0sW9mA6jANpXxm
-         QiYovfHHkeAnXEzJ9BuzPOoaDTcUpYAcIWwqBoD3EDMrzUvwI6OKFJcZ5vY0UPyfZ7yX
-         qD4zFueEed/NbJnpdZGP8SBe8eM0O+ob8q8E4JSeLv6VoKquQj97yl40odq4dRya8Vqw
-         VPpQ==
-X-Gm-Message-State: AOAM530yHcLoqJ+G1b/1svSsLOt8HQpBk8GTZN20Df2X5MN1IV3RL3M+
-        JBVFR/ftqk9ezUIu4eNbcKdmN+vVSVzhLV8IGwTCT4TuQECswCj0atpMxhJ+NjhecY0DMvRsGdo
-        AYM7J0KuPN1ZT1GoIRPRyxU/tIpJLk6YdFbSqD0ZFsIyLjxDug71Lg0is3MnSVuzFOogUsP/3Uw
-        ySMDHvuVJA
-X-Google-Smtp-Source: ABdhPJxLL4iMoAeu7SV9lHGuOB7EQewzyb7kviNYdbwZXv+6qEDWI+4tg5zK8N5cKi3CBL0usrT2lw==
-X-Received: by 2002:aa7:8c59:0:b029:28e:9093:cd4d with SMTP id e25-20020aa78c590000b029028e9093cd4dmr58993112pfd.25.1621258545807;
-        Mon, 17 May 2021 06:35:45 -0700 (PDT)
+        bh=AxKOcj0CuJv3ktci/J/Y4SI3lM8VlLIcoZWORiV/bCI=;
+        b=POzmMjCmIm8R+O2MNmb9E7Gcq4eTteD3y164nEjz7G3eVJglL8Cp4K+naTygnePQil
+         ma/CS+qfyIWNOJ7pMvNQARRoGPx9fIxCdPfv+uYUCd7Vr01IAnHGjb6B6IsWilUxv5vt
+         ua8xtHftvKItFTNmJ4FNIcDTc3/qYCSkNKNhQFGHYR0PRsDwUKx5T5+KRGa007k7DvHP
+         jnYXXS9QvsjApXKS73eFTcsQhbEuVny72A8X0Q693lqZs389edoJWx3lZdrju7pung49
+         IuufYFv6bp1UTDh81tJHOw68MdYwK0BbFw84GaXawHVWz2nkcLTLUBEGwc9BmOXHXB1Z
+         kEmw==
+X-Gm-Message-State: AOAM531n29WAJIbYjcl6KYm97zgiKl00LHC4SnVbkLd0uL/SWx+qlQOK
+        9HlpfTAtaX6Fg5wdQWx0gr+iIqC4S/9Fglc2cfWwu8/U+uK/L3pdJf7QWQccN3lZyQt/CYtBDoM
+        NxzqxG+x6Hev6XkRjuwEhTXLL2ENEDRsLz28FU1X24mYLueZ2sFi0ejjAjoA0nyvV1EOD9VqfIA
+        P3Gpq0ZHKG
+X-Google-Smtp-Source: ABdhPJyZcYXfXPgzI8Dn4FKaNiwb/9nvpWZe0pL7cBhMhhVR6sLJn74ErwZEOiaTeb83AaR93W41CQ==
+X-Received: by 2002:a62:b604:0:b029:2d5:d7b8:b531 with SMTP id j4-20020a62b6040000b02902d5d7b8b531mr16559581pff.31.1621258547394;
+        Mon, 17 May 2021 06:35:47 -0700 (PDT)
 Received: from dev01.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id b6sm10953618pjk.13.2021.05.17.06.35.44
+        by smtp.gmail.com with ESMTPSA id b6sm10953618pjk.13.2021.05.17.06.35.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 06:35:45 -0700 (PDT)
+        Mon, 17 May 2021 06:35:47 -0700 (PDT)
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [PATCH V2 INTERNAL 2/4] bnxt_re/lib: add a function to initialize software queue
-Date:   Mon, 17 May 2021 19:05:30 +0530
-Message-Id: <20210517133532.774998-3-devesh.sharma@broadcom.com>
+Subject: [PATCH V2 INTERNAL 3/4] bnxt_re/lib: Use separate indices for shadow queue
+Date:   Mon, 17 May 2021 19:05:31 +0530
+Message-Id: <20210517133532.774998-4-devesh.sharma@broadcom.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210517133532.774998-1-devesh.sharma@broadcom.com>
 References: <20210517133532.774998-1-devesh.sharma@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000c0b63d05c286ab53"
+        boundary="000000000000d9cc1305c286ab7d"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000c0b63d05c286ab53
+--000000000000d9cc1305c286ab7d
 Content-Transfer-Encoding: 8bit
 
-Splitting the shadow software queue initialization into
-a separate function. Same is being called for both RQ and
-SQ during create QP.
+The shadow queue is used for wrid and flush wqe management.
+The indices used in this queue are independent to what is
+actually used by hardware. Thus, detaching the shadow queue
+indices from hardware queue indices. This even more useful
+when the hardware queue indices has alignment other than wqe
+boundary.
 
 Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
 ---
- providers/bnxt_re/main.h  |  3 ++
- providers/bnxt_re/verbs.c | 62 ++++++++++++++++++++++++---------------
- 2 files changed, 42 insertions(+), 23 deletions(-)
+ providers/bnxt_re/main.h   |  20 ++++++
+ providers/bnxt_re/memory.h |   8 +--
+ providers/bnxt_re/verbs.c  | 128 ++++++++++++++++++++++---------------
+ 3 files changed, 101 insertions(+), 55 deletions(-)
 
 diff --git a/providers/bnxt_re/main.h b/providers/bnxt_re/main.h
-index dc8166f2..94d42958 100644
+index 94d42958..ad660e1a 100644
 --- a/providers/bnxt_re/main.h
 +++ b/providers/bnxt_re/main.h
-@@ -96,7 +96,10 @@ struct bnxt_re_wrid {
- 	uint64_t wrid;
- 	uint32_t bytes;
- 	int next_idx;
-+	uint32_t st_slot_idx;
-+	uint8_t slots;
- 	uint8_t sig;
-+
- };
- 
- struct bnxt_re_qpcap {
-diff --git a/providers/bnxt_re/verbs.c b/providers/bnxt_re/verbs.c
-index 11c01574..8507617b 100644
---- a/providers/bnxt_re/verbs.c
-+++ b/providers/bnxt_re/verbs.c
-@@ -847,6 +847,23 @@ static void bnxt_re_free_queues(struct bnxt_re_qp *qp)
- 	bnxt_re_free_aligned(qp->jsqq->hwque);
+@@ -437,4 +437,24 @@ static inline void bnxt_re_change_cq_phase(struct bnxt_re_cq *cq)
+ 	if (!cq->cqq.head)
+ 		cq->phase = (~cq->phase & BNXT_RE_BCQE_PH_MASK);
  }
- 
-+static int bnxt_re_alloc_init_swque(struct bnxt_re_joint_queue *jqq, int nwr)
++
++static inline void *bnxt_re_get_swqe(struct bnxt_re_joint_queue *jqq,
++				     uint32_t *wqe_idx)
 +{
-+	int indx;
-+
-+	jqq->swque = calloc(nwr, sizeof(struct bnxt_re_wrid));
-+	if (!jqq->swque)
-+		return -ENOMEM;
-+	jqq->start_idx = 0;
-+	jqq->last_idx = nwr - 1;
-+	for (indx = 0; indx < nwr; indx++)
-+		jqq->swque[indx].next_idx = indx + 1;
-+	jqq->swque[jqq->last_idx].next_idx = 0;
-+	jqq->last_idx = 0;
-+
-+	return 0;
++	if (wqe_idx)
++		*wqe_idx = jqq->start_idx;
++	return &jqq->swque[jqq->start_idx];
 +}
 +
- static int bnxt_re_alloc_queues(struct bnxt_re_qp *qp,
- 				struct ibv_qp_init_attr *attr,
- 				uint32_t pg_size) {
-@@ -857,22 +874,23 @@ static int bnxt_re_alloc_queues(struct bnxt_re_qp *qp,
- 	uint32_t psn_depth;
- 	uint32_t psn_size;
- 	int ret, indx;
-+	uint32_t nswr;
- 
- 	que = qp->jsqq->hwque;
- 	que->stride = bnxt_re_get_sqe_sz();
- 	/* 8916 adjustment */
--	que->depth = roundup_pow_of_two(attr->cap.max_send_wr + 1 +
--					BNXT_RE_FULL_FLAG_DELTA);
--	que->diff = que->depth - attr->cap.max_send_wr;
-+	nswr  = roundup_pow_of_two(attr->cap.max_send_wr + 1 +
-+				   BNXT_RE_FULL_FLAG_DELTA);
-+	que->diff = nswr - attr->cap.max_send_wr;
- 
- 	/* psn_depth extra entries of size que->stride */
- 	psn_size = bnxt_re_is_chip_gen_p5(qp->cctx) ?
- 					sizeof(struct bnxt_re_psns_ext) :
- 					sizeof(struct bnxt_re_psns);
--	psn_depth = (que->depth * psn_size) / que->stride;
--	if ((que->depth * psn_size) % que->stride)
-+	psn_depth = (nswr * psn_size) / que->stride;
-+	if ((nswr * psn_size) % que->stride)
- 		psn_depth++;
--	que->depth += psn_depth;
-+	que->depth = nswr + psn_depth;
- 	/* PSN-search memory is allocated without checking for
- 	 * QP-Type. Kenrel driver do not map this memory if it
- 	 * is UD-qp. UD-qp use this memory to maintain WC-opcode.
-@@ -884,44 +902,42 @@ static int bnxt_re_alloc_queues(struct bnxt_re_qp *qp,
- 	/* exclude psns depth*/
- 	que->depth -= psn_depth;
- 	/* start of spsn space sizeof(struct bnxt_re_psns) each. */
--	psns = (que->va + que->stride * que->depth);
-+	psns = (que->va + que->stride * nswr);
- 	psns_ext = (struct bnxt_re_psns_ext *)psns;
--	swque = calloc(que->depth, sizeof(struct bnxt_re_wrid));
--	if (!swque) {
++static inline void bnxt_re_jqq_mod_start(struct bnxt_re_joint_queue *jqq,
++					 uint32_t idx)
++{
++	jqq->start_idx = jqq->swque[idx].next_idx;
++}
 +
-+	ret = bnxt_re_alloc_init_swque(qp->jsqq, nswr);
-+	if (ret) {
- 		ret = -ENOMEM;
- 		goto fail;
++static inline void bnxt_re_jqq_mod_last(struct bnxt_re_joint_queue *jqq,
++					uint32_t idx)
++{
++	jqq->last_idx = jqq->swque[idx].next_idx;
++}
+ #endif
+diff --git a/providers/bnxt_re/memory.h b/providers/bnxt_re/memory.h
+index 75564c43..5bcdef9a 100644
+--- a/providers/bnxt_re/memory.h
++++ b/providers/bnxt_re/memory.h
+@@ -97,14 +97,14 @@ static inline uint32_t bnxt_re_incr(uint32_t val, uint32_t max)
+ 	return (++val & (max - 1));
+ }
+ 
+-static inline void bnxt_re_incr_tail(struct bnxt_re_queue *que)
++static inline void bnxt_re_incr_tail(struct bnxt_re_queue *que, uint8_t cnt)
+ {
+-	que->tail = bnxt_re_incr(que->tail, que->depth);
++	que->tail = (que->tail + cnt) & (que->depth - 1);
+ }
+ 
+-static inline void bnxt_re_incr_head(struct bnxt_re_queue *que)
++static inline void bnxt_re_incr_head(struct bnxt_re_queue *que, uint8_t cnt)
+ {
+-	que->head = bnxt_re_incr(que->head, que->depth);
++	que->head = (que->head + cnt) & (que->depth - 1);
+ }
+ 
+ #endif
+diff --git a/providers/bnxt_re/verbs.c b/providers/bnxt_re/verbs.c
+index 8507617b..9c3cfbd3 100644
+--- a/providers/bnxt_re/verbs.c
++++ b/providers/bnxt_re/verbs.c
+@@ -247,10 +247,12 @@ static uint8_t bnxt_re_poll_err_scqe(struct bnxt_re_qp *qp,
+ 	struct bnxt_re_wrid *swrid;
+ 	struct bnxt_re_psns *spsn;
+ 	struct bnxt_re_cq *scq;
+-	uint32_t head = sq->head;
+ 	uint8_t status;
++	uint32_t head;
+ 
+ 	scq = to_bnxt_re_cq(qp->ibvqp.send_cq);
++
++	head = qp->jsqq->last_idx;
+ 	cntx = to_bnxt_re_context(scq->ibvcq.context);
+ 	swrid = &qp->jsqq->swque[head];
+ 	spsn = swrid->psns;
+@@ -267,7 +269,8 @@ static uint8_t bnxt_re_poll_err_scqe(struct bnxt_re_qp *qp,
+ 			BNXT_RE_PSNS_OPCD_MASK;
+ 	ibvwc->byte_len = 0;
+ 
+-	bnxt_re_incr_head(sq);
++	bnxt_re_incr_head(sq, swrid->slots);
++	bnxt_re_jqq_mod_last(qp->jsqq, head);
+ 
+ 	if (qp->qpst != IBV_QPS_ERR)
+ 		qp->qpst = IBV_QPS_ERR;
+@@ -287,13 +290,14 @@ static uint8_t bnxt_re_poll_success_scqe(struct bnxt_re_qp *qp,
+ 	struct bnxt_re_queue *sq = qp->jsqq->hwque;
+ 	struct bnxt_re_wrid *swrid;
+ 	struct bnxt_re_psns *spsn;
+-	uint32_t head = sq->head;
+ 	uint8_t pcqe = false;
+ 	uint32_t cindx;
++	uint32_t head;
+ 
++	head = qp->jsqq->last_idx;
+ 	swrid = &qp->jsqq->swque[head];
+ 	spsn = swrid->psns;
+-	cindx = le32toh(scqe->con_indx);
++	cindx = le32toh(scqe->con_indx) & (qp->cap.max_swr - 1);
+ 
+ 	if (!(swrid->sig & IBV_SEND_SIGNALED)) {
+ 		*cnt = 0;
+@@ -313,8 +317,10 @@ static uint8_t bnxt_re_poll_success_scqe(struct bnxt_re_qp *qp,
+ 		*cnt = 1;
  	}
  
--	for (indx = 0 ; indx < que->depth; indx++, psns++)
-+	swque = qp->jsqq->swque;
-+	for (indx = 0 ; indx < nswr; indx++, psns++)
- 		swque[indx].psns = psns;
- 	if (bnxt_re_is_chip_gen_p5(qp->cctx)) {
--		for (indx = 0 ; indx < que->depth; indx++, psns_ext++) {
-+		for (indx = 0 ; indx < nswr; indx++, psns_ext++) {
- 			swque[indx].psns_ext = psns_ext;
- 			swque[indx].psns = (struct bnxt_re_psns *)psns_ext;
+-	bnxt_re_incr_head(sq);
+-	if (sq->head != cindx)
++	bnxt_re_incr_head(sq, swrid->slots);
++	bnxt_re_jqq_mod_last(qp->jsqq, head);
++
++	if (qp->jsqq->last_idx != cindx)
+ 		pcqe = true;
+ 
+ 	return pcqe;
+@@ -352,23 +358,29 @@ static void bnxt_re_release_srqe(struct bnxt_re_srq *srq, int tag)
+ static int bnxt_re_poll_err_rcqe(struct bnxt_re_qp *qp, struct ibv_wc *ibvwc,
+ 				 struct bnxt_re_bcqe *hdr, void *cqe)
+ {
++	struct bnxt_re_context *cntx;
++	struct bnxt_re_wrid *swque;
+ 	struct bnxt_re_queue *rq;
++	uint8_t status, cnt = 0;
+ 	struct bnxt_re_cq *rcq;
+-	struct bnxt_re_context *cntx;
+-	uint8_t status;
++	uint32_t head = 0;
+ 
+ 	rcq = to_bnxt_re_cq(qp->ibvqp.recv_cq);
+ 	cntx = to_bnxt_re_context(rcq->ibvcq.context);
+ 
+ 	if (!qp->srq) {
+ 		rq = qp->jrqq->hwque;
+-		ibvwc->wr_id = qp->jrqq->swque[rq->head].wrid;
++		head = qp->jrqq->last_idx;
++		swque = &qp->jrqq->swque[head];
++		ibvwc->wr_id = swque->wrid;
++		cnt = swque->slots;
+ 	} else {
+ 		struct bnxt_re_srq *srq;
+ 		int tag;
+ 
+ 		srq = qp->srq;
+ 		rq = srq->srqq;
++		cnt = 1;
+ 		tag = le32toh(hdr->qphi_rwrid) & BNXT_RE_BCQE_RWRID_MASK;
+ 		ibvwc->wr_id = srq->srwrid[tag].wrid;
+ 		bnxt_re_release_srqe(srq, tag);
+@@ -387,7 +399,10 @@ static int bnxt_re_poll_err_rcqe(struct bnxt_re_qp *qp, struct ibv_wc *ibvwc,
+ 	ibvwc->wc_flags = 0;
+ 	if (qp->qptyp == IBV_QPT_UD)
+ 		ibvwc->src_qp = 0;
+-	bnxt_re_incr_head(rq);
++
++	if (!qp->srq)
++		bnxt_re_jqq_mod_last(qp->jrqq, head);
++	bnxt_re_incr_head(rq, cnt);
+ 
+ 	if (!qp->srq) {
+ 		pthread_spin_lock(&cntx->fqlock);
+@@ -417,14 +432,20 @@ static void bnxt_re_poll_success_rcqe(struct bnxt_re_qp *qp,
+ 				      struct ibv_wc *ibvwc,
+ 				      struct bnxt_re_bcqe *hdr, void *cqe)
+ {
+-	struct bnxt_re_queue *rq;
+-	struct bnxt_re_rc_cqe *rcqe;
+ 	uint8_t flags, is_imm, is_rdma;
++	struct bnxt_re_rc_cqe *rcqe;
++	struct bnxt_re_wrid *swque;
++	struct bnxt_re_queue *rq;
++	uint32_t head = 0;
++	uint8_t cnt = 0;
+ 
+ 	rcqe = cqe;
+ 	if (!qp->srq) {
+ 		rq = qp->jrqq->hwque;
+-		ibvwc->wr_id = qp->jrqq->swque[rq->head].wrid;
++		head = qp->jrqq->last_idx;
++		swque = &qp->jrqq->swque[head];
++		ibvwc->wr_id = swque->wrid;
++		cnt = swque->slots;
+ 	} else {
+ 		struct bnxt_re_srq *srq;
+ 		int tag;
+@@ -433,6 +454,7 @@ static void bnxt_re_poll_success_rcqe(struct bnxt_re_qp *qp,
+ 		rq = srq->srqq;
+ 		tag = le32toh(hdr->qphi_rwrid) & BNXT_RE_BCQE_RWRID_MASK;
+ 		ibvwc->wr_id = srq->srwrid[tag].wrid;
++		cnt = 1;
+ 		bnxt_re_release_srqe(srq, tag);
+ 	}
+ 
+@@ -463,7 +485,9 @@ static void bnxt_re_poll_success_rcqe(struct bnxt_re_qp *qp,
+ 	if (qp->qptyp == IBV_QPT_UD)
+ 		bnxt_re_fill_ud_cqe(ibvwc, hdr, cqe);
+ 
+-	bnxt_re_incr_head(rq);
++	if (!qp->srq)
++		bnxt_re_jqq_mod_last(qp->jrqq, head);
++	bnxt_re_incr_head(rq, cnt);
+ }
+ 
+ static uint8_t bnxt_re_poll_rcqe(struct bnxt_re_qp *qp, struct ibv_wc *ibvwc,
+@@ -575,7 +599,7 @@ static int bnxt_re_poll_one(struct bnxt_re_cq *cq, int nwc, struct ibv_wc *wc)
+ 			*qp_handle = 0x0ULL; /* mark cqe as read */
+ 			qp_handle = NULL;
  		}
- 	}
--	qp->jsqq->swque = swque;
+-		bnxt_re_incr_head(&cq->cqq);
++		bnxt_re_incr_head(&cq->cqq, 1);
+ 		bnxt_re_change_cq_phase(cq);
+ skipp_real:
+ 		if (cnt) {
+@@ -592,21 +616,21 @@ skipp_real:
+ 	return dqed;
+ }
+ 
+-static int bnxt_re_poll_flush_wcs(struct bnxt_re_queue *que,
+-				  struct bnxt_re_wrid *wridp,
++static int bnxt_re_poll_flush_wcs(struct bnxt_re_joint_queue *jqq,
+ 				  struct ibv_wc *ibvwc, uint32_t qpid,
+ 				  int nwc)
+ {
++	uint8_t opcode = IBV_WC_RECV;
++	struct bnxt_re_queue *que;
+ 	struct bnxt_re_wrid *wrid;
+ 	struct bnxt_re_psns *psns;
+-	uint32_t cnt = 0, head;
+-	uint8_t opcode = IBV_WC_RECV;
++	uint32_t cnt = 0;
+ 
++	que = jqq->hwque;
+ 	while (nwc) {
+ 		if (bnxt_re_is_que_empty(que))
+ 			break;
+-		head = que->head;
+-		wrid = &wridp[head];
++		wrid = &jqq->swque[jqq->last_idx];
+ 		if (wrid->psns) {
+ 			psns = wrid->psns;
+ 			opcode = (le32toh(psns->opc_spsn) >>
+@@ -621,7 +645,8 @@ static int bnxt_re_poll_flush_wcs(struct bnxt_re_queue *que,
+ 		ibvwc->byte_len = 0;
+ 		ibvwc->wc_flags = 0;
+ 
+-		bnxt_re_incr_head(que);
++		bnxt_re_jqq_mod_last(jqq, jqq->last_idx);
++		bnxt_re_incr_head(que, wrid->slots);
+ 		nwc--;
+ 		cnt++;
+ 		ibvwc++;
+@@ -636,8 +661,7 @@ static int bnxt_re_poll_flush_wqes(struct bnxt_re_cq *cq,
+ 				   int32_t nwc)
+ {
+ 	struct bnxt_re_fque_node *cur, *tmp;
+-	struct bnxt_re_wrid *wridp;
+-	struct bnxt_re_queue *que;
++	struct bnxt_re_joint_queue *jqq;
+ 	struct bnxt_re_qp *qp;
+ 	bool sq_list = false;
+ 	uint32_t polled = 0;
+@@ -648,18 +672,15 @@ static int bnxt_re_poll_flush_wqes(struct bnxt_re_cq *cq,
+ 			if (sq_list) {
+ 				qp = container_of(cur, struct bnxt_re_qp,
+ 						  snode);
+-				que = qp->jsqq->hwque;
+-				wridp = qp->jsqq->swque;
++				jqq = qp->jsqq;
+ 			} else {
+ 				qp = container_of(cur, struct bnxt_re_qp,
+ 						  rnode);
+-				que = qp->jrqq->hwque;
+-				wridp = qp->jrqq->swque;
++				jqq = qp->jrqq;
+ 			}
+-			if (bnxt_re_is_que_empty(que))
++			if (bnxt_re_is_que_empty(jqq->hwque))
+ 				continue;
+-			polled += bnxt_re_poll_flush_wcs(que, wridp,
+-							 ibvwc + polled,
++			polled += bnxt_re_poll_flush_wcs(jqq, ibvwc + polled,
+ 							 qp->qpid,
+ 							 nwc - polled);
+ 			if (!(nwc - polled))
+@@ -1164,14 +1185,17 @@ static void bnxt_re_fill_psns(struct bnxt_re_qp *qp, struct bnxt_re_wrid *wrid,
+ 		psns_ext->st_slot_idx = 0;
+ }
+ 
+-static void bnxt_re_fill_wrid(struct bnxt_re_wrid *wrid, struct ibv_send_wr *wr,
+-			      uint32_t len, uint8_t sqsig)
++static void bnxt_re_fill_wrid(struct bnxt_re_wrid *wrid, uint64_t wr_id,
++			      uint32_t len, uint8_t sqsig, uint32_t st_idx,
++			      uint8_t slots)
+ {
+-	wrid->wrid = wr->wr_id;
++	wrid->wrid = wr_id;
+ 	wrid->bytes = len;
+ 	wrid->sig = 0;
+-	if (wr->send_flags & IBV_SEND_SIGNALED || sqsig)
++	if (sqsig)
+ 		wrid->sig = IBV_SEND_SIGNALED;
++	wrid->st_slot_idx = st_idx;
++	wrid->slots = slots;
+ }
+ 
+ static int bnxt_re_build_send_sqe(struct bnxt_re_qp *qp, void *wqe,
+@@ -1290,6 +1314,8 @@ int bnxt_re_post_send(struct ibv_qp *ibvqp, struct ibv_send_wr *wr,
+ 	struct bnxt_re_bsqe *hdr;
+ 	int ret = 0, bytes = 0;
+ 	bool ring_db = false;
++	uint32_t swq_idx;
++	uint32_t sig;
+ 	void *sqe;
+ 
+ 	pthread_spin_lock(&sq->qlock);
+@@ -1316,8 +1342,6 @@ int bnxt_re_post_send(struct ibv_qp *ibvqp, struct ibv_send_wr *wr,
+ 		}
+ 
+ 		sqe = (void *)(sq->va + (sq->tail * sq->stride));
+-		wrid = &qp->jsqq->swque[sq->tail];
 -
--	qp->cap.max_swr = que->depth;
-+	qp->cap.max_swr = nswr;
- 	pthread_spin_init(&que->qlock, PTHREAD_PROCESS_PRIVATE);
+ 		memset(sqe, 0, bnxt_re_get_sqe_sz());
+ 		hdr = sqe;
+ 		is_inline = bnxt_re_set_hdr_flags(hdr, wr->send_flags,
+@@ -1365,9 +1389,12 @@ int bnxt_re_post_send(struct ibv_qp *ibvqp, struct ibv_send_wr *wr,
+ 			break;
+ 		}
  
- 	if (qp->jrqq) {
- 		que = qp->jrqq->hwque;
- 		que->stride = bnxt_re_get_rqe_sz();
--		que->depth = roundup_pow_of_two(attr->cap.max_recv_wr + 1);
--		que->diff = que->depth - attr->cap.max_recv_wr;
-+		nswr = roundup_pow_of_two(attr->cap.max_recv_wr + 1);
-+		que->depth = nswr;
-+		que->diff = nswr - attr->cap.max_recv_wr;
- 		ret = bnxt_re_alloc_aligned(que, pg_size);
- 		if (ret)
- 			goto fail;
--		pthread_spin_init(&que->qlock, PTHREAD_PROCESS_PRIVATE);
- 		/* For RQ only bnxt_re_wri.wrid is used. */
--		qp->jrqq->swque = calloc(que->depth,
--					 sizeof(struct bnxt_re_wrid));
--		if (!qp->jrqq->swque) {
--			ret = -ENOMEM;
-+		ret = bnxt_re_alloc_init_swque(qp->jrqq, nswr);
-+		if (ret)
- 			goto fail;
--		}
--		qp->cap.max_rwr = que->depth;
-+		pthread_spin_init(&que->qlock, PTHREAD_PROCESS_PRIVATE);
-+		qp->cap.max_rwr = nswr;
+-		bnxt_re_fill_wrid(wrid, wr, bytes, qp->cap.sqsig);
++		wrid = bnxt_re_get_swqe(qp->jsqq, &swq_idx);
++		sig = ((wr->send_flags & IBV_SEND_SIGNALED) || qp->cap.sqsig);
++		bnxt_re_fill_wrid(wrid, wr->wr_id, bytes, sig, sq->tail, 1);
+ 		bnxt_re_fill_psns(qp, wrid, wr->opcode, bytes);
+-		bnxt_re_incr_tail(sq);
++		bnxt_re_jqq_mod_start(qp->jsqq, swq_idx);
++		bnxt_re_incr_tail(sq, 1);
+ 		qp->wqe_cnt++;
+ 		wr = wr->next;
+ 		ring_db = true;
+@@ -1394,16 +1421,14 @@ bad_wr:
+ }
+ 
+ static int bnxt_re_build_rqe(struct bnxt_re_qp *qp, struct ibv_recv_wr *wr,
+-			     void *rqe)
++			     void *rqe, uint32_t idx)
+ {
+ 	struct bnxt_re_brqe *hdr = rqe;
+-	struct bnxt_re_wrid *wrid;
+ 	struct bnxt_re_sge *sge;
+ 	int wqe_sz, len;
+ 	uint32_t hdrval;
+ 
+ 	sge = (rqe + bnxt_re_get_rqe_hdr_sz());
+-	wrid = &qp->jrqq->swque[qp->jrqq->hwque->tail];
+ 
+ 	len = bnxt_re_build_sge(sge, wr->sg_list, wr->num_sge, false);
+ 	wqe_sz = wr->num_sge + (bnxt_re_get_rqe_hdr_sz() >> 4); /* 16B align */
+@@ -1415,12 +1440,7 @@ static int bnxt_re_build_rqe(struct bnxt_re_qp *qp, struct ibv_recv_wr *wr,
+ 	hdrval = BNXT_RE_WR_OPCD_RECV;
+ 	hdrval |= ((wqe_sz & BNXT_RE_HDR_WS_MASK) << BNXT_RE_HDR_WS_SHIFT);
+ 	hdr->rsv_ws_fl_wt = htole32(hdrval);
+-	hdr->wrid = htole32(qp->jrqq->hwque->tail);
+-
+-	/* Fill wrid */
+-	wrid->wrid = wr->wr_id;
+-	wrid->bytes = len; /* N.A. for RQE */
+-	wrid->sig = 0; /* N.A. for RQE */
++	hdr->wrid = htole32(idx);
+ 
+ 	return len;
+ }
+@@ -1430,6 +1450,8 @@ int bnxt_re_post_recv(struct ibv_qp *ibvqp, struct ibv_recv_wr *wr,
+ {
+ 	struct bnxt_re_qp *qp = to_bnxt_re_qp(ibvqp);
+ 	struct bnxt_re_queue *rq = qp->jrqq->hwque;
++	struct bnxt_re_wrid *swque;
++	uint32_t swq_idx;
+ 	void *rqe;
+ 	int ret;
+ 
+@@ -1451,14 +1473,18 @@ int bnxt_re_post_recv(struct ibv_qp *ibvqp, struct ibv_recv_wr *wr,
+ 
+ 		rqe = (void *)(rq->va + (rq->tail * rq->stride));
+ 		memset(rqe, 0, bnxt_re_get_rqe_sz());
+-		ret = bnxt_re_build_rqe(qp, wr, rqe);
++		swque = bnxt_re_get_swqe(qp->jrqq, &swq_idx);
++		ret = bnxt_re_build_rqe(qp, wr, rqe, swq_idx);
+ 		if (ret < 0) {
+ 			pthread_spin_unlock(&rq->qlock);
+ 			*bad = wr;
+ 			return ENOMEM;
+ 		}
+ 
+-		bnxt_re_incr_tail(rq);
++		swque = bnxt_re_get_swqe(qp->jrqq, NULL);
++		bnxt_re_fill_wrid(swque, wr->wr_id, ret, 0, rq->tail, 1);
++		bnxt_re_jqq_mod_start(qp->jrqq, swq_idx);
++		bnxt_re_incr_tail(rq, 1);
+ 		wr = wr->next;
+ 		bnxt_re_ring_rq_db(qp);
  	}
+@@ -1666,7 +1692,7 @@ int bnxt_re_post_srq_recv(struct ibv_srq *ibvsrq, struct ibv_recv_wr *wr,
+ 		}
  
- 	return 0;
+ 		srq->start_idx = srq->srwrid[srq->start_idx].next_idx;
+-		bnxt_re_incr_tail(rq);
++		bnxt_re_incr_tail(rq, 1);
+ 		wr = wr->next;
+ 		bnxt_re_ring_srq_db(srq);
+ 		count++;
 -- 
 2.25.1
 
 
---000000000000c0b63d05c286ab53
+--000000000000d9cc1305c286ab7d
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -283,13 +558,13 @@ G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
 PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGUzRqSN4oZ+S4MaVZAjE/s2A016
-+0mWp74nVF+0uWeOMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDUxNzEzMzU0NlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFDvZ/FvYs2ZM1Ya9L0PU/aT7DOb
+wfm7M+CxJhdoGYSKMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDUxNzEzMzU0OFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQB8wjizOARMRv0+H1FTSqF9YAr+NVaqS0yiBRMAeDKbqu5X
-xTlPf7IQmxGIY51fJ8tstysw0qJCxEcQFT4aWCEzf7UNMVUdZITIFJM7l/1gfXXhdi5++6xuvVF5
-pkHD3Ub12CInfE+yUhqFWfYmiAuYPID2Qwuc2KfEKsgYPR5SLRNXfBYrpz0gNn2ZbxbIjLdj05dD
-F4BPv83TBV19SdaYYCRjgSO+QLbglbOTtNT/53NpAzdeKHbBZYe9S7jSZHgvRUictwSIskMvhGV9
-XyJR09VMtN7+CSOApDeNFvx4J7zrmgoHvNkWIXrjLVshV/29N6mfCOdsT4QQfWCYZlAC
---000000000000c0b63d05c286ab53--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQAOlDdbpV42MklAtTLu7HWe/CBdMungNJ1sJix6arY/EVBf
+jD3fT9925CUDz4kSU0djVN8BkrP9ohoJd4e08nzEmh3tTG7Yz7eIVLsXhPdM9Zi7dsuzPh9XPpbu
+EcjI8weFMKOQEEdK4K/r5WPcFp5iRtBpsoX9XXRUKzu7UcceHs4YVzJ1kDZCHWq7a2EAq5Ldi3WI
+4H0aGfHl0BNHRGaJ2u4SWRiHwrIB92OI89HhSk1pxAGfRnWYieKBhIFA43M/g6c8Y8CBemfabNhW
+9VenJ9P7ucoASWaE2JsO5TWDbBrFotdB4v7lkvEnmvx+/Vi0Q1Coo7xmP/bl+Bs8Zqml
+--000000000000d9cc1305c286ab7d--
