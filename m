@@ -2,170 +2,228 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDC8382D96
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 May 2021 15:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB9C3839C9
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 May 2021 18:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234748AbhEQNkB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 May 2021 09:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231858AbhEQNkB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 May 2021 09:40:01 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321C1C061573
-        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 06:38:45 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id k127so5690974qkc.6
-        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 06:38:45 -0700 (PDT)
+        id S245153AbhEQQ27 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 May 2021 12:28:59 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:49888 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244352AbhEQQ2z (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 May 2021 12:28:55 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14HGP8Tc076953;
+        Mon, 17 May 2021 16:27:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=yvMtZz+5uXuxi93VLb1ruknj3vebDajCwhaGmKwmzBE=;
+ b=mf8tx21IwNyFeAizccicdLR8MQpe/qDZXi+GJHPJbOtGSv3GG1OzfZ18PzH+r0SpcZg6
+ 3TjB1GAP8RbAe6grN/FA4ewpWEvEYidlcs/lBV5Vi+sJtVw7o5AYSobDN5q+P8Et4fSt
+ K3AVfFfFkIbnI44oID9d4I21Ecxu9S9Q55YDRcDLp6qBHFEhrMNYKj1PybWoOFG99qS1
+ DiBuTa9vEBlag60NJGzlg+f4M6oaO/DrBxsS+iqggHi70yMGYKI7jdlO11hQXQcMA0GU
+ cNL+jXFs1hNB37kMXT4cBw86A0uALR1iLw4FgcFzzZXpBrFf8lRYGPnwHMwBmFJcphJn QA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 38j6xnbqtj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 May 2021 16:27:31 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14HGK0sE110803;
+        Mon, 17 May 2021 16:27:31 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2170.outbound.protection.outlook.com [104.47.58.170])
+        by userp3030.oracle.com with ESMTP id 38j3dtfspr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 May 2021 16:27:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NL0MzODsPtcCdtRU9WuVEA7S/8yroNA8yWo8LNBZoP+nDE/SikhE7NGmP2ke65k8sBPYNKceyeIqK+EZ16lG8gKHk33CLpVI7oawAt40JLN838fUSk30gZPb32jWA2B6cPA/2ZBFrpecAt4dhgN7JioSQl1utyWhLSiEPgVEAAGvTEQ9u/XiTcq/LH8HMKR2qeDvHpGhcc5yqWU3MSXMUHXnXk/ptBVUt/R2q85MSfrFqd8ChNF0rSIgd4tjMVy8x2FuATqY0nf0FRfIFvP/eUXXHB+E2WLegCAawEtemAtbEt+VWN53p07Pi7+itVS4KbvhojCRgYNcx04iTtj1gA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yvMtZz+5uXuxi93VLb1ruknj3vebDajCwhaGmKwmzBE=;
+ b=BNqoP2J8qVYCn5ZCdEqao0MNYo1hrkybJuRKUBVetXjX56Chpm2OoxlLyNeJq4yXvGl+4xpTQFTjQFXPL0byIWSyutsOfw/NcoghZGrZ9MiNKwNe9pM9MCe2auFbfSqz5Re0QknDIMlNxchWcD7xHbCax6clqp8Rq5xZLHnoFH9BVg8fBZWFIPpvkme7RkvtHL2QJFLerx2Iey2FVbA4btjnTYAvS40s+vhSaseVj/gRnlOJotZ+CRzoR1LV4jUB+kpigurxJALu/jmp2ihxiYM7qu+9tB6nZBxv141gHPbq5J9oqhHx0liH8BpkYaNdqZfbPWejStgmaZAXT9ahtA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=kEo74xbHJKpLjjE9cmio6TcU2Q0+vctY4XIERvQpbNI=;
-        b=Q69VzuuWu4JTnddOjV5wfmd9iYrLbxoY+r+zOha+Qy54BwgTJ9vIfBRModW1GeheM3
-         UVGqpp9BqW41jjvYuYXfPKjDPy5/fSJ+Q5ovD176ZvLh28B90tN3K/1uldsL7ap0/OPv
-         wVMiPZlLX5w7PnOphiQdE8AetWvVtsJHldJjQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=kEo74xbHJKpLjjE9cmio6TcU2Q0+vctY4XIERvQpbNI=;
-        b=PA89K8Co3IiuG1ob6yg3+Le3dEiZfi6I8uGQmLxjulGB5X9fQqe/5qxXk0xkM7Ckdk
-         X/wXs+avNlx0jKRlYA03EjOOayf2IPGkJSqpFR7k/ic7Z8TBr5o1EV+UXXaJ1VXVAt/9
-         Jc64SIWp2rD+x2QA38oRwPIyDfdrHdRlQGG4tdr4b/y/N82z4zO3aD/119SPXNBX9w61
-         b1yc+mP05Bd4D8wGeiYBln5NnAJdPxLRogNwOkZiCzs5BqAjy+SbXRVqk0MOT7qv3hRw
-         G7eGGhoB7zf4NME5l+Hcp5xvEAA3YABfkAgvmJlGPgUbNJSm7f2KEptbOQRFuI7+7chl
-         OP+Q==
-X-Gm-Message-State: AOAM532IZ0xRyPn5mzzB9klom/FZjFo+1iBteY+nHJlerYxRCvatSQbt
-        6LypkSGKyHnr21H6MG8DiJKmKEcBpyh1JTt290Wg38ffFvnNaA==
-X-Google-Smtp-Source: ABdhPJxVgQ0BCwW9t/YgedB+BG+VjqcTbs2ht+iINwnYZ8QgsGOWW15q/TXfuPitN8eFyfmY1sqimS+3HjwHD/O6Zpo=
-X-Received: by 2002:a05:620a:481:: with SMTP id 1mr56552524qkr.46.1621258723803;
- Mon, 17 May 2021 06:38:43 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yvMtZz+5uXuxi93VLb1ruknj3vebDajCwhaGmKwmzBE=;
+ b=o213b99jKuKiGZUQbrxKynJU544kdjEwEOAzWLgYP575564lLrgKbDx9gvPdOta+CbWROrdrZZdCOCuqC4pmWJomkDSH2iiA3MMsW3gtZfn4lQqCEdyNtWEdOQGs6sNKp9Y2BAUjQz3FzJI3btIiJRHoVsnkFMAlukvbeH0I4MQ=
+Received: from SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24)
+ by BY5PR10MB3858.namprd10.prod.outlook.com (2603:10b6:a03:1b2::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Mon, 17 May
+ 2021 16:27:29 +0000
+Received: from SJ0PR10MB4688.namprd10.prod.outlook.com
+ ([fe80::2d8b:b7de:e1ce:dcb1]) by SJ0PR10MB4688.namprd10.prod.outlook.com
+ ([fe80::2d8b:b7de:e1ce:dcb1%3]) with mapi id 15.20.4129.031; Mon, 17 May 2021
+ 16:27:29 +0000
+From:   Chuck Lever III <chuck.lever@oracle.com>
+To:     Timo Rothenpieler <timo@rothenpieler.org>
+CC:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Subject: Re: Spurious instability with NFSoRDMA under moderate load
+Thread-Topic: Spurious instability with NFSoRDMA under moderate load
+Thread-Index: AQHXSnp8j8N6G2OhyUK9Nr2RtJxnoarn3hgA
+Date:   Mon, 17 May 2021 16:27:29 +0000
+Message-ID: <72ECF9E1-1F6E-44AF-850C-536BED898DDD@oracle.com>
+References: <4da3b074-a6be-d83f-ccd4-b151557066aa@rothenpieler.org>
+In-Reply-To: <4da3b074-a6be-d83f-ccd4-b151557066aa@rothenpieler.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: rothenpieler.org; dkim=none (message not signed)
+ header.d=none;rothenpieler.org; dmarc=none action=none
+ header.from=oracle.com;
+x-originating-ip: [68.61.232.219]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 098cfa39-0491-466a-fc8e-08d91950aa38
+x-ms-traffictypediagnostic: BY5PR10MB3858:
+x-microsoft-antispam-prvs: <BY5PR10MB38588838BA6FCAAF11BB7EB2932D9@BY5PR10MB3858.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jbfqrCyqiFrT4lz3SrXSkFw+1yYz5y1QZzKnsl51miNqcBSeuQoRYvaVZh7AE8BRryJiUbOXl6TvB+ITQKbiCkeMVB5x/3FpL2XdN5bfBJxkjy550cdoaHMuECmrI4gDQCBzVAMNACB6DG/EJnPpr/02hMedHhnBS65ybmHRGXe5A4LShmjcryGD8E3mt8AeQJqmOqNvL2S2vdx/vWRCu4/8j9HuYKsPbVFYKRl64Y0Fa3Ty8SpFK2S0PVoQXb7v9yuxRdaV0RMZTGOEEdpeuBBH3GLUFuuJ+GZB5lkyhyUWWEeBplH/hQo0/KKVSCvzqf9Hlx3YklouQKFizuJmQI8SuN6Yj7rOi1Gt8oFfw9EFUhdg2RmUoMBUpGW3kX+cdQoxirP1l8VtKDOMNJgIPI4t5SRq49hanKtv5feuFBODiOJfYJkopNfF0dvMthfwaUjFSQGvRcCLSPiBCuOyPqoAcsQ2I/8zmEVncaJV2CPSGRGxyi45yOHLCl5UjOpOaaPLSeq1WYbdwhE+KqvTiFl1weDmZlXrpaIFt9+p4TJWXrvwSB0ug96ahFO1uAkKNMKLOeTkDi8Vow5RNzGPTG6aV9N5Vzqoo2K/CnfEDYuF2ct3Jtj0Iq7t6utwhVP62Z4C/xZJt9vQONdYUBa1wxs4emOEHQnuoJoiRbc1XucMAaOErzLpfRzSQLJWRCPw
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4688.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(136003)(396003)(346002)(366004)(122000001)(316002)(54906003)(38100700002)(5660300002)(4326008)(53546011)(66446008)(64756008)(6506007)(66556008)(478600001)(76116006)(8676002)(91956017)(66946007)(86362001)(8936002)(186003)(71200400001)(36756003)(6512007)(33656002)(2616005)(2906002)(83380400001)(66476007)(26005)(6916009)(6486002)(45980500001)(505234006);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?jnhpCbpswChZssYVdRgsT+dvciwLJ58sXnwHyCKcanXDkL82PeXYvF1J5VsX?=
+ =?us-ascii?Q?iZW7OQPPYXq0V9sWew2SP1e5/FV7EofaoRNlu4LO/oWYO55R4RDKY7jzXGMW?=
+ =?us-ascii?Q?0G4T6xJk4uvFN9gFEwV9+2KEpCir3P2fuv0E30u4VNEehxG2M1RXXjJtaJax?=
+ =?us-ascii?Q?YZSUca+U4RpZt9xPva/kud9BHO086atVJrWctPoZBIP7toPNKnZ+/QO9eZr2?=
+ =?us-ascii?Q?TMSZRABaCG583qOrkxZWttqrkDZe0LVOZCCUgCrNB1z2MYtEv6ZDTqLR7byq?=
+ =?us-ascii?Q?2FnWUzs/2eeDCbGvVzLSk1N+KImfACi1Pv54H9x1B0Mi059JUyQW2R/svVb/?=
+ =?us-ascii?Q?8PhV76zAVImnzd914o9xgI27S97ztZHzbWtBmYj7oT7fifEJPJWxBVjZtgpN?=
+ =?us-ascii?Q?WAuqRAeIOzurz405Jqr2yY0OL/FsXmW0hKT3ggstUllhOGmxV4D7h5UJqPzl?=
+ =?us-ascii?Q?qXKh4oB3OX8t7Fe4F7rIOaGsVTxx9AugMR9oaZTJwKHJsLBoCI2x7ub0njKV?=
+ =?us-ascii?Q?wGP3uXR8phdrFCGn2iLmf3BT/wLB1SO8gPxHDdRbRIKw7IdlZqwq+qpPdr0X?=
+ =?us-ascii?Q?HDfcb+zyJclxdjpNN53nQfnCAlTtyG4o+kxTxrnAiyO4OQrh3NdR6QZx8e9+?=
+ =?us-ascii?Q?PmdntbeHo+byknxa3h3GeidXhvOWgMiw6Vq91i/SMvwlnzgmFlS/1uoilMPR?=
+ =?us-ascii?Q?KyQ2jSe+JpQ7LrFWQ0lJgmIuo3EpflGFJU3YcdYco9zVuuArTBlTouSiR6Wf?=
+ =?us-ascii?Q?q+8ZSHUeQtesZvIX6S33z0NzNzq286J78YiSyUcEuSaGKloVU6ZfxFNr2+fF?=
+ =?us-ascii?Q?P3UxvQzl1Gpn6BoLE/VJcLMyZw/VlQfoL06qRUjO7Cja/qIkbFNLpcJlQQfy?=
+ =?us-ascii?Q?aIx/R3Laldn+gVEy7DGivnbFfMjBvbeXj9g1qSbWjyOj07iyRyzYxmS4Sq78?=
+ =?us-ascii?Q?XJPuFwtIHCylokPCqy5stGIuwAtq9tB75mHqtUjel89R08JZIRfV1INJvfd3?=
+ =?us-ascii?Q?jSFLKNNwPeQPuqi/1aZkvLle0lZo06OVg4hvzgMLnNdPqagjcx7CMuWSy6eY?=
+ =?us-ascii?Q?dyZtM6+LVkH9MEHLTlexP/T8BL8746ZZfBxflgkFlz56hzE6k+9Wqp0x8l/z?=
+ =?us-ascii?Q?Wh9we7sMGsLxxPLLkS8VBPpbxhvzI8vFx6Q2PldhOULpbWPCVHM5tp0R4R8q?=
+ =?us-ascii?Q?rIaPJYwGteWOKsoXH6e6p1GZxh4S9D0BCtKOpWuQ21jjVxY8TkImGtUuiKjM?=
+ =?us-ascii?Q?8BpFF7NKL6nD/l+bQTOZ8gRMka0qB5czTxhVVZcG+BSw/K7+HiLdmYZ9v8pc?=
+ =?us-ascii?Q?+c4SXOELvWqo7BbJMAjiy7F3?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4BED40FAF015D84A8849A3BC764A6702@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210517133532.774998-1-devesh.sharma@broadcom.com>
-In-Reply-To: <20210517133532.774998-1-devesh.sharma@broadcom.com>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Mon, 17 May 2021 19:08:08 +0530
-Message-ID: <CANjDDBgR_wP5WHWWRue_Pg8XYujcuoqFs2J-zHD0c2g9+bRfjg@mail.gmail.com>
-Subject: Re: [PATCH V2 INTERNAL 0/4] Broadcom's user library update
-To:     linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000005c5cfb05c286b62b"
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4688.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 098cfa39-0491-466a-fc8e-08d91950aa38
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 May 2021 16:27:29.1982
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Mn1xZlKX7gagQbKmCAs0lZzWNM+Un4MRhGpoL6oQtnCxOtre4rtCjaPcDLtdn/7VQPxUnsR4N3Dgo6R+pn8oAQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3858
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9987 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105170112
+X-Proofpoint-GUID: cHUM_DF5WyaNyN-UWV00_vzVVVritOC7
+X-Proofpoint-ORIG-GUID: cHUM_DF5WyaNyN-UWV00_vzVVVritOC7
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9987 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
+ mlxlogscore=999 adultscore=0 malwarescore=0 priorityscore=1501
+ phishscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1011
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105170112
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000005c5cfb05c286b62b
-Content-Type: text/plain; charset="UTF-8"
+Hello Timo-
 
-On Mon, May 17, 2021 at 7:05 PM Devesh Sharma
-<devesh.sharma@broadcom.com> wrote:
->
-> The main focus of this patch series is to move SQ and RQ
-> wqe posting indices from 128B fixed stride to 16B aligned stride.
-> This allows more flexibility in choosing wqe size.
->
->
-> Devesh Sharma (4):
->   bnxt_re/lib: Read wqe mode from the driver
->   bnxt_re/lib: add a function to initialize software queue
->   bnxt_re/lib: Use separate indices for shadow queue
->   bnxt_re/lib: Move hardware queue to 16B aligned indices
->
->  kernel-headers/rdma/bnxt_re-abi.h |   5 +-
->  providers/bnxt_re/bnxt_re-abi.h   |   5 +
->  providers/bnxt_re/db.c            |  10 +-
->  providers/bnxt_re/main.c          |   4 +
->  providers/bnxt_re/main.h          |  26 ++
->  providers/bnxt_re/memory.h        |  37 ++-
->  providers/bnxt_re/verbs.c         | 522 ++++++++++++++++++++----------
->  7 files changed, 431 insertions(+), 178 deletions(-)
->
-> --
-> 2.25.1
->
-Please ignore the "Internal" keyword in the subject line.
+> On May 16, 2021, at 1:29 PM, Timo Rothenpieler <timo@rothenpieler.org> wr=
+ote:
+>=20
+> This has happened 3 times so far over the last couple months, and I do no=
+t have a clear way to reproduce it.
+> It happens under moderate load, when lots of nodes read and write from th=
+e server. Though not in any super intense way. Just normal program executio=
+n, writing of light logs, and other standard tasks.
+>=20
+> The issues on the clients manifest in a multitude of ways. Most of the ti=
+me, random IO operations just fail, rarely hang indefinitely and make the p=
+rocess unkillable.
+> Another example would be: "Failed to remove '.../.nfs00000000007b03af0000=
+0001': Device or resource busy"
+>=20
+> Once a client is in that state, the only way to get it back into order is=
+ a reboot.
+>=20
+> On the server side, a single error cqe is dumped each time this problem h=
+appened. So far, I always rebooted the server as well, to make sure everyth=
+ing is back in order. Not sure if that is strictly necessary.
+>=20
+>> [561889.198889] infiniband mlx5_0: dump_cqe:272:(pid 709): dump error cq=
+e
+>> [561889.198945] 00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0=
+0
+>> [561889.198984] 00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0=
+0
+>> [561889.199023] 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0=
+0
+>> [561889.199061] 00000030: 00 00 00 00 00 00 88 13 08 00 01 13 07 47 67 d=
+2
+>=20
+>> [985074.602880] infiniband mlx5_0: dump_cqe:272:(pid 599): dump error cq=
+e
+>> [985074.602921] 00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0=
+0
+>> [985074.602946] 00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0=
+0
+>> [985074.602970] 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0=
+0
+>> [985074.602994] 00000030: 00 00 00 00 00 00 88 13 08 00 01 46 f2 93 0b d=
+3
+>=20
+>> [1648894.168819] infiniband ibp1s0: dump_cqe:272:(pid 696): dump error c=
+qe
+>> [1648894.168853] 00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 =
+00
+>> [1648894.168878] 00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 =
+00
+>> [1648894.168903] 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 =
+00
+>> [1648894.168928] 00000030: 00 00 00 00 00 00 88 13 08 00 01 08 6b d2 b9 =
+d3
 
--- 
--Regards
-Devesh
+I'm hoping Leon can get out his magic decoder ring and tell us if
+these CQE dumps contain a useful WC status code.
 
---0000000000005c5cfb05c286b62b
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Meanwhile, you could try 5.11 or 5.12 on your NFS server to see if
+the problem persists.
 
-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
-TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
-Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
-KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
-SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
-PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
-G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
-PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBZD5YWiVjXF7KM+KR3DSFMrUOVm
-/7e0C/v0kue72vVTMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDUxNzEzMzg0NFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQB5eq+s/IlKo0x7viJ+z1EzJVSUvvgqgmUz/2gmVn7cMQVh
-HbSDBCKncNjVaou2qiEnCjNATIuIUU+VuYL3MxItQPuFQ+dqwLrh7mEvBjg4WWiU/CJErrqhRQ7y
-M2elWilTe4Gx/8V0THs/YdEPhIjhsGphZtG5m0b/tAkcR35ErjOljK7ysMgX0eTd6wZj/RnClTWv
-w7eaoqWJ9qSlxbrT4N8CkMcNb70AtYLGIX/efgz/Gsy5mLv0ZVrsOZc0kQHn/IXAz8mPUYTWlUad
-2uzA+0L/8/5/qq05ebGuAg78q3RM78A0WyfPUlfbNGrGsjbUUXzunBpdKNg5+7Z3R50U
---0000000000005c5cfb05c286b62b--
+
+> These all happened under different Versions of the 5.10 Kernel. The last =
+one under 5.10.32 today.
+>=20
+> Switching all clients to TCP seems to make NFS works perfectly reliable.
+>=20
+> I'm not sure how to read those error dumps, so help there would be apprec=
+iated.
+>=20
+> Could this be similar to spurious issues you get with UDP, where dropped =
+packages cause havoc? Though I would not expect heavy load on IB to cause a=
+n error cqe to be logged.
+
+The underlying RDMA connection for RPC/RDMA is reliable (lossless),
+so I don't see an immediate relation to how RPC/UDP might behave.
+
+
+--
+Chuck Lever
+
+
+
