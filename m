@@ -2,610 +2,924 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 279D4383A6D
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 May 2021 18:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89ABB383A6B
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 May 2021 18:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240554AbhEQQtj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 May 2021 12:49:39 -0400
-Received: from mail-mw2nam10on2066.outbound.protection.outlook.com ([40.107.94.66]:65527
+        id S240159AbhEQQti (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 May 2021 12:49:38 -0400
+Received: from mail-mw2nam10on2063.outbound.protection.outlook.com ([40.107.94.63]:14656
         "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S242415AbhEQQta (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 17 May 2021 12:49:30 -0400
+        id S241473AbhEQQt2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 17 May 2021 12:49:28 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WCAXPBCLpu0bHPlJ4YhgnXcR2t+24GwEn40iiAIRLuAcAiH9u80sPHMcH6EVOhRCEbqpj4RTd85I3uFS8sdBVfUKKVKeHr2HhARQ8MIdIPMy9xL3Gt7NEZIt+SdjybSo8ro4eoUqtVuflAbqCg1nkYFxeJGBEcdBhvn0HikrwEP5WwFju+11IaIAcaFrRqt7LB+4zawhYBQPlAbJa+PLVbtm1gZYspQzM4FnMRvgy8izdMXSDa1df2bvTOJiIgq7C74Br0DklKn6AQWVXn+AeYgFdFdYE0Q5HX1VZPBYijjXY2oDTGCLV0mkCYpfawOzLVhf96w7RjdrWb16a4wT8A==
+ b=k8jB1GbFVNw7cAP4KwXHtmbddMFimOZyWHc7mfzF+e4Nr9wi/3yWzLFH4ZEo6rUIDy6XfWldgVsSbOrhJKVAADxasvDcjdq10V3XWkil8pTRcPWmEWCvLgi72XnxVXJO+EMgi++P6gnh36f5u15U82Vu/0X3VvSXvJeq6HMu0s9/nR2JMFQCFKXzOSACuav1bTNZ/nLyhNt01uruNbhTGKsO5Y81x9o85RkzIc9dDoGjHXxycXT8eL6IXrNS8haeCl0m6PoNDbNu2zpO4bTcnL8ee5oP9+7a0M2Qp/pEY3yJtzNX8pr+AGN0IHmY/NwN5Yul0e53Ft47bQY/eOR7Rw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PdvSy9d1raH9lgNQt8O5rTK95wQq2pYsMmdcHpAvFdQ=;
- b=RPmRKPkyAONyFYljIDlHyuVl1pe14+4dfI3MdnawfYpsBPtVi7d+bLen355WiFM3xP/cLSzefapG9sGMmqBuDbeYzpokrk7td2/JobDgrslnwYJ1S/k+MARMCNKoR9Ajl0grMfekWvYr4q5h0xuNCJY6MLsd1lNGnkLPYBCf+SXTnWmQXVb/L9DNZ/3D3foFN32TIw+1SCaaBCJe53tXuoGqixDc92HOjVJRO5HmfIV5b6HGaXd8Ly2rt2kQjuwhHpfxZ4M2eVZsb8e6g9i8ySNHOMzC7cC0CIJErIkeWIDxcrPaFz5V6oIFp52end5SDVoslI+0ro0j7+JjyxDN3Q==
+ bh=D/IKekmtCEnhAqa/eOG0TcPSUJfIqBebcOmg/UY6vvg=;
+ b=A5GuiN4MtjdJ0vlrzJVxNp0jw3/Xtnq21Xg5hdtkYlXrNrR8kIgNdQsPAU7i+gjvtCs+I2XN8QgSIHNGPX4nvsvDHgPt5ezO/Y+HbhWAKn6fUJ0eB64WsetPq0vg6CrPGlE2BAUc3ZwiaZYR7R2W2QFUEwGg5qicWdGHZWNrhdUdwCcX/I07k6BZeGWmXHFGDFwHkZri6E6Km8erkyyAffrcLTX5mVpovnvTnf12nMgMf4mvKsq/bg46aplhMM7L8gKJaTez3P8YArCQ03SdEZ/ZGbHTLNSny5fv/36BDo4Dk2mSGah8fR/pmwkeD/8aNXtoQ3WhN+1ocsstpouebg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PdvSy9d1raH9lgNQt8O5rTK95wQq2pYsMmdcHpAvFdQ=;
- b=Z8z0R7mSVhVLdcZt5PSL6q6uMvvicy0zEPOwOHIdMkfu2exkD2F9dhz9nwFt7sOiQWjDuqU9WEsSJgYTLRURvW9+ccoL4EcnOxYDQpemaTVp9Hei8zTRfD9skf2D9ZJMg+fpOnvVH3Hf0mNKhlxBmiIQqflgKe51dj64QsKk6WY56DKzBR70omylUAQEBmQC49AsuyKr+gQnUFusNubFztbqObIYJHG1WD8XqN5slXbuWyC+O4btb4QJV9PmgUlv/weC0EVUg218EmYDcgO/Sognt4QpL+plKsLSK/qERDeEmnkxbcn2sPmY3DonINzTWOkbAiAN1n08bvf86VAsVw==
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+ bh=D/IKekmtCEnhAqa/eOG0TcPSUJfIqBebcOmg/UY6vvg=;
+ b=ENVGlzFD8rGUzMzeTOnk/f/nfSrnLoRcoR3Z438Zh3TbLdkhBg13ZVLbIUupfTGmB4/C9kS3l2jrEY8A5nBVV49ZyoLLp/wgfkYWbi760g+gzmsnwkCE/joctBDrxeBXTgNvt1t/+OB/sVRIpWUibvKY7Bpk7aBR0ZbAZe9HqwlR15c5gyj+P9F3Ci1hyTDTyuX3qmpytezlgTetNE7ilNGXggKKk4OWbBag4B64XMlbTC+PQ0xODQE4fRLe7E/+KcMqsuIaKtQ5EWaomcn2j6ij6ZjutMO2ektGo9X2OAvbSj16Gb7a5kTuevKou7qttCXS2f5MsdKPK2lmeBLCew==
+Authentication-Results: cornelisnetworks.com; dkim=none (message not signed)
+ header.d=none;cornelisnetworks.com; dmarc=none action=none
+ header.from=nvidia.com;
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
  by DM6PR12MB2858.namprd12.prod.outlook.com (2603:10b6:5:182::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Mon, 17 May
- 2021 16:47:49 +0000
+ 2021 16:47:48 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4129.031; Mon, 17 May 2021
- 16:47:49 +0000
+ 16:47:48 +0000
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 Cc:     Greg KH <gregkh@linuxfoundation.org>,
         Kees Cook <keescook@chromium.org>,
         Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH 10/13] RDMA/cm: Use an attribute_group on the ib_port_attribute intead of kobj's
-Date:   Mon, 17 May 2021 13:47:38 -0300
-Message-Id: <10-v1-34c90fa45f1c+3c7b0-port_sysfs_jgg@nvidia.com>
+Subject: [PATCH 11/13] RDMA/qib: Use attributes for the port sysfs
+Date:   Mon, 17 May 2021 13:47:39 -0300
+Message-Id: <11-v1-34c90fa45f1c+3c7b0-port_sysfs_jgg@nvidia.com>
 In-Reply-To: <0-v1-34c90fa45f1c+3c7b0-port_sysfs_jgg@nvidia.com>
 References: 
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR03CA0004.namprd03.prod.outlook.com
- (2603:10b6:208:23a::9) To DM6PR12MB3834.namprd12.prod.outlook.com
+X-ClientProxiedBy: BL1PR13CA0201.namprd13.prod.outlook.com
+ (2603:10b6:208:2be::26) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR03CA0004.namprd03.prod.outlook.com (2603:10b6:208:23a::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25 via Frontend Transport; Mon, 17 May 2021 16:47:45 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ligP8-009LYw-4u; Mon, 17 May 2021 13:47:42 -0300
+Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0201.namprd13.prod.outlook.com (2603:10b6:208:2be::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.11 via Frontend Transport; Mon, 17 May 2021 16:47:44 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ligP8-009LZ0-7G; Mon, 17 May 2021 13:47:42 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 32959656-a5cc-4809-f960-08d919537f29
+X-MS-Office365-Filtering-Correlation-Id: 34ebfd8d-e25d-42ca-b98f-08d919537e97
 X-MS-TrafficTypeDiagnostic: DM6PR12MB2858:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB28587F5AC0611952FB393F7EC22D9@DM6PR12MB2858.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:235;
+X-Microsoft-Antispam-PRVS: <DM6PR12MB2858EE5232CE942E258CA8E6C22D9@DM6PR12MB2858.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2201;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rA4MPHtABUywT3jTJbxw0lIH3Q75GClSSHW29unHK0p2qsAkoCMYNnHk7jfaXaOhnRjayij+71IdzpyJSIwJFQ8Z7hA8r1VSzZODFOIFwDRrrr53ZJYHa22sf3HfqEIGhq3ZTU30hpAO3dxnUIvqGPm6frGFx8n+1DQALzhTpl86qtfvLrL2bprya51nKXquewN2rkf/NCrwGnYS1moUpOqyV0y7DH0NxiU5CGGZuY4OSdPZ8106IMuKyuakeinQu6cKqG/kF22UzeXNoyjuFEC0+2uZ4mX7hR0PENYtPJd6fGk3NSXovDiRrckfN2ikDpD8OrCtcrM9s5m+1EDPhtpvsySFZ342LauNIG+4dSnWpeusGCtuMYsPS/lYvuRbdJ4cJKz3ioFFmDdSeLqCAB3JHPPOpUmZO2fBN7+8ARzMftzKfvgAxaRWmVt7qfHZWw5uyecry3ZSNlwWQ+OLTbPosF7iJ6zXl53DzZTfr4wh99CbTYJtcx+hL5C01KqU89/+MyexNtU0ZVPJIM6ACnEud02iimSdOlxfTuh93sfU45uRqRv3y7Z3gnQauJkSK4WCPmrz9Af3hJsIUsW5PZbj98uf0cz2nod7cDdwwPw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(366004)(39860400002)(376002)(54906003)(6666004)(9746002)(8676002)(66556008)(426003)(83380400001)(36756003)(30864003)(9786002)(26005)(66946007)(38100700002)(316002)(66476007)(4326008)(478600001)(86362001)(5660300002)(186003)(8936002)(2616005)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?vwmY5GzfU9y/hvS7PsZLeYdRBi14bkjfuGKb1ghLtl9MLyFw2680JS/UZqoI?=
- =?us-ascii?Q?GGmw36vY2G2XnNx0aFotysgGLk+P/28tsmCMjj+NjLgx130R3X3O/YaK4nCu?=
- =?us-ascii?Q?lI3bvhAd3iEh41k8n0dKYiLPMPV0BH/PcKYB1SpoasZjhAMsc0C/O3aFSvOS?=
- =?us-ascii?Q?oLPvZbnwQKp9Hil/pxb/fiong8YDMRG++5FiZD0lOBqD3HYHtTaINO8/8oLe?=
- =?us-ascii?Q?dvPcCd3HzfJmf+jgNXb1TyIECFZWfUjJ6VVtICZ0Nwr3v30XEs1ow0Zb5GuT?=
- =?us-ascii?Q?2hvn6gKEHwKYR1LAax0HQgFEd72qoYcsgAPISUwE+eYcz0LlMmk+PcVFUeyN?=
- =?us-ascii?Q?6dCv6bV8XuxpHsCnppeiPPdY8C6g/PUVymv4xk30xrl/lS9v4lQNqppfo/gg?=
- =?us-ascii?Q?GhZJxiKZr/Ql/88+u1i7nXUbLrc9HzICj7CWcpVHyCZfH5K+HHijOMnN/21O?=
- =?us-ascii?Q?In2H1Z3O35qfq4YpWT1zWNXcKsPT/Cy6kQBx6klvk0LGMfw2/W0UU2bVcLZV?=
- =?us-ascii?Q?wJ812X3FC/NnL/WlH5SdSMNnqrhwbTcgnPUz72r+/dRrmffbzzDWjr8TLx4k?=
- =?us-ascii?Q?G8k5J+lh6qrrttXRmDeQhBxM9IKbEoyJcXnyJJ5IjRaQoK3tgNGvMeDyZwFt?=
- =?us-ascii?Q?S6JFO6yiMqQkUxOHCZr/VmzckY3iYCxiIGtA7bpsfI64FLedF2rKH50vghy1?=
- =?us-ascii?Q?73CB6U9ko3BBOW3Sg2h5OjhnUTok64yLfmbPSuOHzQ+5PgUuQVwIHmxguOOL?=
- =?us-ascii?Q?COSfTDJ/iKd7erqsrNr+rOdP3xrPtXl7hJlXSardB0kESOwFiD7ZzxqwRFAd?=
- =?us-ascii?Q?Eqr1AGib6FSubgTnkZ64GLKdLCy8a3fR/xui49NWgGGJni9eNsGykWfbgBMU?=
- =?us-ascii?Q?FbSskJ9axUbQIm9Rp8ila68aescRAzCk3Ksd6TTpYHOCWivSQlF9E7AyS2gN?=
- =?us-ascii?Q?4MAIsOuQO0Olsv0H+KQk3fDwjBNRYswRGO++lz6mGXxn/2cjCb1borItUQ7P?=
- =?us-ascii?Q?z44+XkYPZgAyQKxf/X6D/NqrJoH0qszHon6+3hc7D03xygR8Lspmx/dbxkfg?=
- =?us-ascii?Q?I8ODrqvw+QKf55F2ov6yGOk+69ANETYzONZHc/AmUBZSq/wfgCWi1BEh1fZa?=
- =?us-ascii?Q?8vn/CTcl2amRE7Nb8IVLR1xwhRBQF2KYo7yzjUoUQd9jjyPqV1EII14QUTxy?=
- =?us-ascii?Q?l7MsrTAvvdfN+bt7tchbafAy9x/BlL2Fd9JZLM4HAdErOTDUGxqKXn13L/L6?=
- =?us-ascii?Q?ZATRrMpxOVf0ONJp9h/lvu9dNF5P1b8z86Ua7AjLxKVXmIcJ+UGn52Q4V5Ni?=
- =?us-ascii?Q?QGm91qNbyjjZcJpRhTcmI+7e?=
+X-Microsoft-Antispam-Message-Info: SsX4tYItjr6+DTWMKUEEtWDfKOejb2H72oJU9hOx8VzV1Rmfr9cxNC5uPiGpVVeHjpJB6jcRo11VuRy4+ckp4rZ+c5gNeOmMsyXtU2H+njvgqcCliPGedKyxB2HCkNqZ1r5I71BKH+g+TiYEun7OvZB+zJZBSw2CyCVuvUW9ilZVwyqNmqOYmRbNviEsDbSmtFPvVcRzN44l8CmfMw0boEPiN3zyB0MN+0t9lEjkGt6YleYwLBUonOD2CdMtY/0jqMRXp/cxe7s+H0KQehlEjiQvltIe8skQ9+aiTODKmXb4UjIc9vsl9Pe4SAW/OKUvA62j6lo2hbPzEUhorZL1wQoWicIj+v9Oqhf8sn8U8dP2SKThRGX9fneQcvhxgdaQjRJhCnJWNo59jDN+d2UZsQaqnN3A8+90QLc3PITyqzIOGL6YvPjEDv7kghJ+ev7IetHQxJVRcxVTtfo6/7uru142xhbYCEA6TP6afl/rVv25dQPmWMw3gcPY+6V65xebkABM6f6WKAPe/eeNG5A3xveJIiC/ZAGjJfRNNhJZe2SC0AWdKdJRfigc6TdJBj9yuG18+d2C9nwFzYw2Ur+lmsfChDvybJcM0EWV5ccw5uQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(366004)(39860400002)(376002)(54906003)(6666004)(110136005)(9746002)(8676002)(66556008)(426003)(83380400001)(36756003)(30864003)(9786002)(26005)(66946007)(38100700002)(316002)(66476007)(4326008)(478600001)(86362001)(5660300002)(186003)(8936002)(2616005)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?HMmNZBpRgc0gSmusgmQ9HqrgiCtNOGdjlOfDj0U/SSNGAFtcg/omDLDJ0hvP?=
+ =?us-ascii?Q?cjdyI/t7uLlp24lGskBUYd02Wlh6kTsbCRvsVhNAggCgIgcBf8yELko9E/MQ?=
+ =?us-ascii?Q?LtFxe1HWRjOj5wwU72qKeHHygopOU1JXG34pDOjPZKFZvOuDkyeieAdfzNU+?=
+ =?us-ascii?Q?HMc86TUJkZgFANL+/CqUrqvInKRdIMxYnzYA/A5FnDtaSaJIZoCrQhn3k71Y?=
+ =?us-ascii?Q?PhcNij5lQn+lYctse1NWZYsFye1A1UoKlKZhaYLp6vXEJU+lbw+bs9UHiEzg?=
+ =?us-ascii?Q?Ha6AyuIaMNpj+Rl7//cDfOhPnTDYJIJ856WBSUd2HjeEQj/rWzYO0tWBEWNG?=
+ =?us-ascii?Q?J4LgQ5Qmxr784OiWTVQ5sUb+AVvVib+OsHHLi3zpLf26/HC7zyMxPnd5Q5cy?=
+ =?us-ascii?Q?afiXg02BHNXLrYBTKJPw25EUk2gbbimq2xIabquTaQJh1IS9yWfFQs8AnuED?=
+ =?us-ascii?Q?UR/GoM+ej22fvc/kBKSYcWPi/LbWxrpTCsQIFBZP6/+2Fk2R8/IF8O/2OTjR?=
+ =?us-ascii?Q?k2cFY/1S583nbSeGpNubXFeNRIZrGKFx2X9XLOLH5CkTxaE4eFwevjgB+QRV?=
+ =?us-ascii?Q?Y1GzUPyZxQ7XLDOA9wc4xyzYOS9ip5wWSE2WoT82ckDaKoJZtaSVoLS+jvWR?=
+ =?us-ascii?Q?Yv5fIz1MVt3m699gWmdnJtydobYt9s7ntU0AXTs6tyd9sgZTrsQ8OB8gdMQ4?=
+ =?us-ascii?Q?QEO6rFClTR/bHJ4mHCEdx9l/R9mJDZZZznrgmCeqAKuW2LYbd/enMV1puRi1?=
+ =?us-ascii?Q?moR5j1eRO1atCU/tH9TWtyDIpRe9dVBo7Z5GJ5ui9/aTfsrBsbDzaPC+mlaR?=
+ =?us-ascii?Q?6rCxIkjjzAdoyR6PAU0BDI9jeCu1tNfZYaFRt26UYWiYvSYdLc29x8g61Bs+?=
+ =?us-ascii?Q?XYlbjsalaNXUDYSoUbPQm/QOi+cz9l4aStgd87G1s08d14izOCoTdPugpj6x?=
+ =?us-ascii?Q?MtNjyk273VzUnaCpNXiMQEBt0e9TRf6wC8CQHFIvbCgo8K2+NESs4lgRNb8p?=
+ =?us-ascii?Q?TSwuzSgk51ML98y90oAdL2TAxOEZaX7YuPX8DnFlBaN9xFPrB1KuIFp7knka?=
+ =?us-ascii?Q?47Pmw6aK7f39BOK3IBP01PyaqmaK0rIKPy6oP37ONX7s8DsHpPKKkAWw5XST?=
+ =?us-ascii?Q?DPqcv1AIWKM4sdzR9ETqU1hXxpG+mZ+B9HZqlgYkFbwrlPepf1IXJMMlvhcK?=
+ =?us-ascii?Q?vFucAUY4JQOqY3YVNlyK0FVGUWNL+xW6L61KEGHHumAh0tnOuHAySvDUEX/y?=
+ =?us-ascii?Q?z3hLuZ2wL7/Dd+/wn7mRapAy07tcoR2AkrfYu5TQyfkM1iLuCmGhLXQmUDvB?=
+ =?us-ascii?Q?DDum9VOLZ3UqF6psK6cFw9c1?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32959656-a5cc-4809-f960-08d919537f29
+X-MS-Exchange-CrossTenant-Network-Message-Id: 34ebfd8d-e25d-42ca-b98f-08d919537e97
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 May 2021 16:47:45.8661
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 May 2021 16:47:44.9696
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: P37uA2HZQdtMO4BhC5XUTaBvVMeObQgEpsfUMCoFP2b9pCxwa+rSPITjN2TBEG6+
+X-MS-Exchange-CrossTenant-UserPrincipalName: V9aT8rVccpXUnglb/4X6CdNbHhgWb+1HXwg4yzgzeNSvaneW1qTpoZV2eL4mcW3p
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2858
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This code is trying to attach a list of counters grouped into 4 groups to
-the ib_port sysfs. Instead of creating a bunch of kobjects simply express
-everything naturally as an ib_port_attribute and add a single
-attribute_groups list.
-
-Remove all the naked kobject manipulations.
+qib should not be creating a mess of kobjects to attach to the port
+kobject - this is all attributes. The proper API is to create an
+attribute_group list and create it against the port's kobject.
 
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- drivers/infiniband/core/cm.c        | 227 ++++++++++++----------------
- drivers/infiniband/core/core_priv.h |   8 +-
- drivers/infiniband/core/sysfs.c     |  50 ++----
- 3 files changed, 119 insertions(+), 166 deletions(-)
+ drivers/infiniband/hw/qib/qib.h       |   5 +-
+ drivers/infiniband/hw/qib/qib_sysfs.c | 596 +++++++++++---------------
+ 2 files changed, 248 insertions(+), 353 deletions(-)
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 0ead0d22315401..fc8fcb502eb479 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -25,6 +25,7 @@
+diff --git a/drivers/infiniband/hw/qib/qib.h b/drivers/infiniband/hw/qib/qib.h
+index 88497739029e02..3decd6d0843172 100644
+--- a/drivers/infiniband/hw/qib/qib.h
++++ b/drivers/infiniband/hw/qib/qib.h
+@@ -521,10 +521,7 @@ struct qib_pportdata {
  
- #include <rdma/ib_cache.h>
- #include <rdma/ib_cm.h>
+ 	struct qib_devdata *dd;
+ 	struct qib_chippport_specific *cpspec; /* chip-specific per-port */
+-	struct kobject pport_kobj;
+-	struct kobject pport_cc_kobj;
+-	struct kobject sl2vl_kobj;
+-	struct kobject diagc_kobj;
++	const struct attribute_group *groups[5];
+ 
+ 	/* GUID for this interface, in network order */
+ 	__be64 guid;
+diff --git a/drivers/infiniband/hw/qib/qib_sysfs.c b/drivers/infiniband/hw/qib/qib_sysfs.c
+index 5e9e66f2706479..2c81285d245fa7 100644
+--- a/drivers/infiniband/hw/qib/qib_sysfs.c
++++ b/drivers/infiniband/hw/qib/qib_sysfs.c
+@@ -32,25 +32,38 @@
+  * SOFTWARE.
+  */
+ #include <linux/ctype.h>
 +#include <rdma/ib_sysfs.h>
- #include "cm_msgs.h"
- #include "core_priv.h"
- #include "cm_trace.h"
-@@ -150,53 +151,10 @@ enum {
- 	CM_COUNTER_GROUPS
- };
  
--static char const counter_group_names[CM_COUNTER_GROUPS]
--				     [sizeof("cm_rx_duplicates")] = {
--	"cm_tx_msgs", "cm_tx_retries",
--	"cm_rx_msgs", "cm_rx_duplicates"
--};
--
--struct cm_counter_group {
--	struct kobject obj;
--	atomic_long_t counter[CM_ATTR_COUNT];
--};
--
- struct cm_counter_attribute {
--	struct attribute attr;
--	int index;
--};
--
--#define CM_COUNTER_ATTR(_name, _index) \
--struct cm_counter_attribute cm_##_name##_counter_attr = { \
--	.attr = { .name = __stringify(_name), .mode = 0444 }, \
--	.index = _index \
--}
--
--static CM_COUNTER_ATTR(req, CM_REQ_COUNTER);
--static CM_COUNTER_ATTR(mra, CM_MRA_COUNTER);
--static CM_COUNTER_ATTR(rej, CM_REJ_COUNTER);
--static CM_COUNTER_ATTR(rep, CM_REP_COUNTER);
--static CM_COUNTER_ATTR(rtu, CM_RTU_COUNTER);
--static CM_COUNTER_ATTR(dreq, CM_DREQ_COUNTER);
--static CM_COUNTER_ATTR(drep, CM_DREP_COUNTER);
--static CM_COUNTER_ATTR(sidr_req, CM_SIDR_REQ_COUNTER);
--static CM_COUNTER_ATTR(sidr_rep, CM_SIDR_REP_COUNTER);
--static CM_COUNTER_ATTR(lap, CM_LAP_COUNTER);
--static CM_COUNTER_ATTR(apr, CM_APR_COUNTER);
--
--static struct attribute *cm_counter_default_attrs[] = {
--	&cm_req_counter_attr.attr,
--	&cm_mra_counter_attr.attr,
--	&cm_rej_counter_attr.attr,
--	&cm_rep_counter_attr.attr,
--	&cm_rtu_counter_attr.attr,
--	&cm_dreq_counter_attr.attr,
--	&cm_drep_counter_attr.attr,
--	&cm_sidr_req_counter_attr.attr,
--	&cm_sidr_rep_counter_attr.attr,
--	&cm_lap_counter_attr.attr,
--	&cm_apr_counter_attr.attr,
--	NULL
-+	struct ib_port_attribute attr;
-+	unsigned short group;
-+	unsigned short index;
- };
+ #include "qib.h"
+ #include "qib_mad.h"
  
- struct cm_port {
-@@ -205,7 +163,7 @@ struct cm_port {
- 	u32 port_num;
- 	struct list_head cm_priv_prim_list;
- 	struct list_head cm_priv_altr_list;
--	struct cm_counter_group counter_group[CM_COUNTER_GROUPS];
-+	atomic_long_t counters[CM_COUNTER_GROUPS][CM_ATTR_COUNT];
- };
+-/* start of per-port functions */
++static struct qib_pportdata *qib_get_pportdata_kobj(struct kobject *kobj)
++{
++	u32 port_num;
++	struct ib_device *ibdev = ib_port_sysfs_get_ibdev_kobj(kobj, &port_num);
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++
++	return &dd->pport[port_num - 1];
++}
++
+ /*
+  * Get/Set heartbeat enable. OR of 1=enabled, 2=auto
+  */
+-static ssize_t show_hrtbt_enb(struct qib_pportdata *ppd, char *buf)
++static ssize_t hrtbt_enable_show(struct ib_device *ibdev, u32 port_num,
++				 struct ib_port_attribute *attr, char *buf)
+ {
+-	struct qib_devdata *dd = ppd->dd;
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++	struct qib_pportdata *ppd = &dd->pport[port_num - 1];
  
- struct cm_device {
-@@ -1934,8 +1892,8 @@ static void cm_dup_req_handler(struct cm_work *work,
- 	struct ib_mad_send_buf *msg = NULL;
- 	int ret;
- 
--	atomic_long_inc(&work->port->counter_group[CM_RECV_DUPLICATES].
--			counter[CM_REQ_COUNTER]);
-+	atomic_long_inc(
-+		&work->port->counters[CM_RECV_DUPLICATES][CM_REQ_COUNTER]);
- 
- 	/* Quick state check to discard duplicate REQs. */
- 	spin_lock_irq(&cm_id_priv->lock);
-@@ -2426,8 +2384,8 @@ static void cm_dup_rep_handler(struct cm_work *work)
- 	if (!cm_id_priv)
- 		return;
- 
--	atomic_long_inc(&work->port->counter_group[CM_RECV_DUPLICATES].
--			counter[CM_REP_COUNTER]);
-+	atomic_long_inc(
-+		&work->port->counters[CM_RECV_DUPLICATES][CM_REP_COUNTER]);
- 	ret = cm_alloc_response_msg(work->port, work->mad_recv_wc, &msg);
- 	if (ret)
- 		goto deref;
-@@ -2604,8 +2562,8 @@ static int cm_rtu_handler(struct cm_work *work)
- 	if (cm_id_priv->id.state != IB_CM_REP_SENT &&
- 	    cm_id_priv->id.state != IB_CM_MRA_REP_RCVD) {
- 		spin_unlock_irq(&cm_id_priv->lock);
--		atomic_long_inc(&work->port->counter_group[CM_RECV_DUPLICATES].
--				counter[CM_RTU_COUNTER]);
-+		atomic_long_inc(&work->port->counters[CM_RECV_DUPLICATES]
-+						     [CM_RTU_COUNTER]);
- 		goto out;
- 	}
- 	cm_id_priv->id.state = IB_CM_ESTABLISHED;
-@@ -2810,8 +2768,8 @@ static int cm_dreq_handler(struct cm_work *work)
- 		cpu_to_be32(IBA_GET(CM_DREQ_REMOTE_COMM_ID, dreq_msg)),
- 		cpu_to_be32(IBA_GET(CM_DREQ_LOCAL_COMM_ID, dreq_msg)));
- 	if (!cm_id_priv) {
--		atomic_long_inc(&work->port->counter_group[CM_RECV_DUPLICATES].
--				counter[CM_DREQ_COUNTER]);
-+		atomic_long_inc(&work->port->counters[CM_RECV_DUPLICATES]
-+						     [CM_DREQ_COUNTER]);
- 		cm_issue_drep(work->port, work->mad_recv_wc);
- 		trace_icm_no_priv_err(
- 			IBA_GET(CM_DREQ_LOCAL_COMM_ID, dreq_msg),
-@@ -2840,8 +2798,8 @@ static int cm_dreq_handler(struct cm_work *work)
- 	case IB_CM_MRA_REP_RCVD:
- 		break;
- 	case IB_CM_TIMEWAIT:
--		atomic_long_inc(&work->port->counter_group[CM_RECV_DUPLICATES].
--				counter[CM_DREQ_COUNTER]);
-+		atomic_long_inc(&work->port->counters[CM_RECV_DUPLICATES]
-+						     [CM_DREQ_COUNTER]);
- 		msg = cm_alloc_response_msg_no_ah(work->port, work->mad_recv_wc);
- 		if (IS_ERR(msg))
- 			goto unlock;
-@@ -2856,8 +2814,8 @@ static int cm_dreq_handler(struct cm_work *work)
- 			cm_free_msg(msg);
- 		goto deref;
- 	case IB_CM_DREQ_RCVD:
--		atomic_long_inc(&work->port->counter_group[CM_RECV_DUPLICATES].
--				counter[CM_DREQ_COUNTER]);
-+		atomic_long_inc(&work->port->counters[CM_RECV_DUPLICATES]
-+						     [CM_DREQ_COUNTER]);
- 		goto unlock;
- 	default:
- 		trace_icm_dreq_unknown_err(&cm_id_priv->id);
-@@ -3212,17 +3170,17 @@ static int cm_mra_handler(struct cm_work *work)
- 		    ib_modify_mad(cm_id_priv->av.port->mad_agent,
- 				  cm_id_priv->msg, timeout)) {
- 			if (cm_id_priv->id.lap_state == IB_CM_MRA_LAP_RCVD)
--				atomic_long_inc(&work->port->
--						counter_group[CM_RECV_DUPLICATES].
--						counter[CM_MRA_COUNTER]);
-+				atomic_long_inc(
-+					&work->port->counters[CM_RECV_DUPLICATES]
-+							     [CM_MRA_COUNTER]);
- 			goto out;
- 		}
- 		cm_id_priv->id.lap_state = IB_CM_MRA_LAP_RCVD;
- 		break;
- 	case IB_CM_MRA_REQ_RCVD:
- 	case IB_CM_MRA_REP_RCVD:
--		atomic_long_inc(&work->port->counter_group[CM_RECV_DUPLICATES].
--				counter[CM_MRA_COUNTER]);
-+		atomic_long_inc(&work->port->counters[CM_RECV_DUPLICATES]
-+						     [CM_MRA_COUNTER]);
- 		fallthrough;
- 	default:
- 		trace_icm_mra_unknown_err(&cm_id_priv->id);
-@@ -3328,8 +3286,8 @@ static int cm_lap_handler(struct cm_work *work)
- 	case IB_CM_LAP_IDLE:
- 		break;
- 	case IB_CM_MRA_LAP_SENT:
--		atomic_long_inc(&work->port->counter_group[CM_RECV_DUPLICATES].
--				counter[CM_LAP_COUNTER]);
-+		atomic_long_inc(&work->port->counters[CM_RECV_DUPLICATES]
-+						     [CM_LAP_COUNTER]);
- 		msg = cm_alloc_response_msg_no_ah(work->port, work->mad_recv_wc);
- 		if (IS_ERR(msg))
- 			goto unlock;
-@@ -3346,8 +3304,8 @@ static int cm_lap_handler(struct cm_work *work)
- 			cm_free_msg(msg);
- 		goto deref;
- 	case IB_CM_LAP_RCVD:
--		atomic_long_inc(&work->port->counter_group[CM_RECV_DUPLICATES].
--				counter[CM_LAP_COUNTER]);
-+		atomic_long_inc(&work->port->counters[CM_RECV_DUPLICATES]
-+						     [CM_LAP_COUNTER]);
- 		goto unlock;
- 	default:
- 		goto unlock;
-@@ -3576,8 +3534,8 @@ static int cm_sidr_req_handler(struct cm_work *work)
- 	listen_cm_id_priv = cm_insert_remote_sidr(cm_id_priv);
- 	if (listen_cm_id_priv) {
- 		spin_unlock_irq(&cm.lock);
--		atomic_long_inc(&work->port->counter_group[CM_RECV_DUPLICATES].
--				counter[CM_SIDR_REQ_COUNTER]);
-+		atomic_long_inc(&work->port->counters[CM_RECV_DUPLICATES]
-+						     [CM_SIDR_REQ_COUNTER]);
- 		goto out; /* Duplicate message. */
- 	}
- 	cm_id_priv->id.state = IB_CM_SIDR_REQ_RCVD;
-@@ -3821,12 +3779,10 @@ static void cm_send_handler(struct ib_mad_agent *mad_agent,
- 	if (!msg->context[0] && (attr_index != CM_REJ_COUNTER))
- 		msg->retries = 1;
- 
--	atomic_long_add(1 + msg->retries,
--			&port->counter_group[CM_XMIT].counter[attr_index]);
-+	atomic_long_add(1 + msg->retries, &port->counters[CM_XMIT][attr_index]);
- 	if (msg->retries)
- 		atomic_long_add(msg->retries,
--				&port->counter_group[CM_XMIT_RETRIES].
--				counter[attr_index]);
-+				&port->counters[CM_XMIT_RETRIES][attr_index]);
- 
- 	switch (mad_send_wc->status) {
- 	case IB_WC_SUCCESS:
-@@ -4063,8 +4019,7 @@ static void cm_recv_handler(struct ib_mad_agent *mad_agent,
- 	}
- 
- 	attr_id = be16_to_cpu(mad_recv_wc->recv_buf.mad->mad_hdr.attr_id);
--	atomic_long_inc(&port->counter_group[CM_RECV].
--			counter[attr_id - CM_ATTR_ID_OFFSET]);
-+	atomic_long_inc(&port->counters[CM_RECV][attr_id - CM_ATTR_ID_OFFSET]);
- 
- 	work = kmalloc(struct_size(work, path, paths), GFP_KERNEL);
- 	if (!work) {
-@@ -4262,59 +4217,74 @@ int ib_cm_init_qp_attr(struct ib_cm_id *cm_id,
+ 	return sysfs_emit(buf, "%d\n", dd->f_get_ib_cfg(ppd, QIB_IB_CFG_HRTBT));
  }
- EXPORT_SYMBOL(ib_cm_init_qp_attr);
  
--static ssize_t cm_show_counter(struct kobject *obj, struct attribute *attr,
--			       char *buf)
-+static ssize_t cm_show_counter(struct ib_device *ibdev, u32 port_num,
+-static ssize_t store_hrtbt_enb(struct qib_pportdata *ppd, const char *buf,
+-			       size_t count)
++static ssize_t hrtbt_enable_store(struct ib_device *ibdev, u32 port_num,
++				  struct ib_port_attribute *attr,
++				  const char *buf, size_t count)
+ {
+-	struct qib_devdata *dd = ppd->dd;
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++	struct qib_pportdata *ppd = &dd->pport[port_num - 1];
+ 	int ret;
+ 	u16 val;
+ 
+@@ -70,11 +83,14 @@ static ssize_t store_hrtbt_enb(struct qib_pportdata *ppd, const char *buf,
+ 	ret = dd->f_set_ib_cfg(ppd, QIB_IB_CFG_HRTBT, val);
+ 	return ret < 0 ? ret : count;
+ }
++static IB_PORT_ATTR_RW(hrtbt_enable);
+ 
+-static ssize_t store_loopback(struct qib_pportdata *ppd, const char *buf,
++static ssize_t loopback_store(struct ib_device *ibdev, u32 port_num,
++			      struct ib_port_attribute *attr, const char *buf,
+ 			      size_t count)
+ {
+-	struct qib_devdata *dd = ppd->dd;
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++	struct qib_pportdata *ppd = &dd->pport[port_num - 1];
+ 	int ret = count, r;
+ 
+ 	r = dd->f_set_ib_loopback(ppd, buf);
+@@ -83,11 +99,14 @@ static ssize_t store_loopback(struct qib_pportdata *ppd, const char *buf,
+ 
+ 	return ret;
+ }
++static IB_PORT_ATTR_WO(loopback);
+ 
+-static ssize_t store_led_override(struct qib_pportdata *ppd, const char *buf,
+-				  size_t count)
++static ssize_t led_override_store(struct ib_device *ibdev, u32 port_num,
++				  struct ib_port_attribute *attr,
++				  const char *buf, size_t count)
+ {
+-	struct qib_devdata *dd = ppd->dd;
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++	struct qib_pportdata *ppd = &dd->pport[port_num - 1];
+ 	int ret;
+ 	u16 val;
+ 
+@@ -100,14 +119,20 @@ static ssize_t store_led_override(struct qib_pportdata *ppd, const char *buf,
+ 	qib_set_led_override(ppd, val);
+ 	return count;
+ }
++static IB_PORT_ATTR_WO(led_override);
+ 
+-static ssize_t show_status(struct qib_pportdata *ppd, char *buf)
++static ssize_t status_show(struct ib_device *ibdev, u32 port_num,
++			   struct ib_port_attribute *attr, char *buf)
+ {
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++	struct qib_pportdata *ppd = &dd->pport[port_num - 1];
++
+ 	if (!ppd->statusp)
+ 		return -EINVAL;
+ 
+ 	return sysfs_emit(buf, "0x%llx\n", (unsigned long long)*(ppd->statusp));
+ }
++static IB_PORT_ATTR_RO(status);
+ 
+ /*
+  * For userland compatibility, these offsets must remain fixed.
+@@ -127,8 +152,11 @@ static const char * const qib_status_str[] = {
+ 	NULL,
+ };
+ 
+-static ssize_t show_status_str(struct qib_pportdata *ppd, char *buf)
++static ssize_t status_str_show(struct ib_device *ibdev, u32 port_num,
 +			       struct ib_port_attribute *attr, char *buf)
  {
--	struct cm_counter_group *group;
--	struct cm_counter_attribute *cm_attr;
-+	struct cm_counter_attribute *cm_attr =
-+		container_of(attr, struct cm_counter_attribute, attr);
-+	struct cm_device *cm_dev = ib_get_client_data(ibdev, &cm_client);
- 
--	group = container_of(obj, struct cm_counter_group, obj);
--	cm_attr = container_of(attr, struct cm_counter_attribute, attr);
-+	if (WARN_ON(!cm_dev))
-+		return -EINVAL;
- 
--	return sysfs_emit(buf, "%ld\n",
--			  atomic_long_read(&group->counter[cm_attr->index]));
-+	return sysfs_emit(
-+		buf, "%ld\n",
-+		atomic_long_read(
-+			&cm_dev->port[port_num - 1]
-+				 ->counters[cm_attr->group][cm_attr->index]));
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++	struct qib_pportdata *ppd = &dd->pport[port_num - 1];
+ 	int i, any;
+ 	u64 s;
+ 	ssize_t ret;
+@@ -160,38 +188,22 @@ static ssize_t show_status_str(struct qib_pportdata *ppd, char *buf)
+ bail:
+ 	return ret;
  }
++static IB_PORT_ATTR_RO(status_str);
  
--static const struct sysfs_ops cm_counter_ops = {
--	.show = cm_show_counter
--};
+ /* end of per-port functions */
+ 
+-/*
+- * Start of per-port file structures and support code
+- * Because we are fitting into other infrastructure, we have to supply the
+- * full set of kobject/sysfs_ops structures and routines.
+- */
+-#define QIB_PORT_ATTR(name, mode, show, store) \
+-	static struct qib_port_attr qib_port_attr_##name = \
+-		__ATTR(name, mode, show, store)
 -
--static struct kobj_type cm_counter_obj_type = {
--	.sysfs_ops = &cm_counter_ops,
--	.default_attrs = cm_counter_default_attrs
--};
+-struct qib_port_attr {
+-	struct attribute attr;
+-	ssize_t (*show)(struct qib_pportdata *, char *);
+-	ssize_t (*store)(struct qib_pportdata *, const char *, size_t);
++static struct attribute *port_linkcontrol_attributes[] = {
++	&ib_port_attr_loopback.attr,
++	&ib_port_attr_led_override.attr,
++	&ib_port_attr_hrtbt_enable.attr,
++	&ib_port_attr_status.attr,
++	&ib_port_attr_status_str.attr,
++	NULL
+ };
+ 
+-QIB_PORT_ATTR(loopback, S_IWUSR, NULL, store_loopback);
+-QIB_PORT_ATTR(led_override, S_IWUSR, NULL, store_led_override);
+-QIB_PORT_ATTR(hrtbt_enable, S_IWUSR | S_IRUGO, show_hrtbt_enb,
+-	      store_hrtbt_enb);
+-QIB_PORT_ATTR(status, S_IRUGO, show_status, NULL);
+-QIB_PORT_ATTR(status_str, S_IRUGO, show_status_str, NULL);
 -
--static int cm_create_port_fs(struct cm_port *port)
+-static struct attribute *port_default_attributes[] = {
+-	&qib_port_attr_loopback.attr,
+-	&qib_port_attr_led_override.attr,
+-	&qib_port_attr_hrtbt_enable.attr,
+-	&qib_port_attr_status.attr,
+-	&qib_port_attr_status_str.attr,
+-	NULL
++static const struct attribute_group port_linkcontrol_group = {
++	.name = "linkcontrol",
++	.attrs = port_linkcontrol_attributes,
+ };
+ 
+ /*
+@@ -201,13 +213,12 @@ static struct attribute *port_default_attributes[] = {
+ /*
+  * Congestion control table size followed by table entries
+  */
+-static ssize_t read_cc_table_bin(struct file *filp, struct kobject *kobj,
+-		struct bin_attribute *bin_attr,
+-		char *buf, loff_t pos, size_t count)
++static ssize_t cc_table_bin_read(struct file *filp, struct kobject *kobj,
++				 struct bin_attribute *bin_attr, char *buf,
++				 loff_t pos, size_t count)
+ {
++	struct qib_pportdata *ppd = qib_get_pportdata_kobj(kobj);
+ 	int ret;
+-	struct qib_pportdata *ppd =
+-		container_of(kobj, struct qib_pportdata, pport_cc_kobj);
+ 
+ 	if (!qib_cc_table_size || !ppd->ccti_entries_shadow)
+ 		return -EINVAL;
+@@ -230,34 +241,19 @@ static ssize_t read_cc_table_bin(struct file *filp, struct kobject *kobj,
+ 
+ 	return count;
+ }
+-
+-static void qib_port_release(struct kobject *kobj)
 -{
--	int i, ret;
--
--	for (i = 0; i < CM_COUNTER_GROUPS; i++) {
--		ret = ib_port_register_module_stat(port->cm_dev->ib_device,
--						   port->port_num,
--						   &port->counter_group[i].obj,
--						   &cm_counter_obj_type,
--						   counter_group_names[i]);
--		if (ret)
--			goto error;
-+#define CM_COUNTER_ATTR(_name, _group, _index)                                 \
-+	{                                                                      \
-+		.attr = __ATTR(_name, 0444, cm_show_counter, NULL),            \
-+		.group = _group, .index = _index                               \
- 	}
- 
--	return 0;
--
--error:
--	while (i--)
--		ib_port_unregister_module_stat(&port->counter_group[i].obj);
--	return ret;
--
+-	/* nothing to do since memory is freed by qib_free_devdata() */
 -}
 -
--static void cm_remove_port_fs(struct cm_port *port)
--{
--	int i;
+-static struct kobj_type qib_port_cc_ktype = {
+-	.release = qib_port_release,
+-};
 -
--	for (i = 0; i < CM_COUNTER_GROUPS; i++)
--		ib_port_unregister_module_stat(&port->counter_group[i].obj);
-+#define CM_COUNTER_GROUP(_group, _name)                                        \
-+	static struct cm_counter_attribute cm_counter_attr_##_group[] = {      \
-+		CM_COUNTER_ATTR(req, _group, CM_REQ_COUNTER),                  \
-+		CM_COUNTER_ATTR(mra, _group, CM_MRA_COUNTER),                  \
-+		CM_COUNTER_ATTR(rej, _group, CM_REJ_COUNTER),                  \
-+		CM_COUNTER_ATTR(rep, _group, CM_REP_COUNTER),                  \
-+		CM_COUNTER_ATTR(rtu, _group, CM_RTU_COUNTER),                  \
-+		CM_COUNTER_ATTR(dreq, _group, CM_DREQ_COUNTER),                \
-+		CM_COUNTER_ATTR(drep, _group, CM_DREP_COUNTER),                \
-+		CM_COUNTER_ATTR(sidr_req, _group, CM_SIDR_REQ_COUNTER),        \
-+		CM_COUNTER_ATTR(sidr_rep, _group, CM_SIDR_REP_COUNTER),        \
-+		CM_COUNTER_ATTR(lap, _group, CM_LAP_COUNTER),                  \
-+		CM_COUNTER_ATTR(apr, _group, CM_APR_COUNTER),                  \
-+	};                                                                     \
-+	static struct attribute *cm_counter_attrs_##_group[] = {               \
-+		&cm_counter_attr_##_group[0].attr.attr,                        \
-+		&cm_counter_attr_##_group[1].attr.attr,                        \
-+		&cm_counter_attr_##_group[2].attr.attr,                        \
-+		&cm_counter_attr_##_group[3].attr.attr,                        \
-+		&cm_counter_attr_##_group[4].attr.attr,                        \
-+		&cm_counter_attr_##_group[5].attr.attr,                        \
-+		&cm_counter_attr_##_group[6].attr.attr,                        \
-+		&cm_counter_attr_##_group[7].attr.attr,                        \
-+		&cm_counter_attr_##_group[8].attr.attr,                        \
-+		&cm_counter_attr_##_group[9].attr.attr,                        \
-+		&cm_counter_attr_##_group[10].attr.attr,                       \
-+		NULL,                                                          \
-+	};                                                                     \
-+	static const struct attribute_group cm_counter_group_##_group = {      \
-+		.name = _name,                                                 \
-+		.attrs = cm_counter_attrs_##_group,                            \
-+	};
+-static const struct bin_attribute cc_table_bin_attr = {
+-	.attr = {.name = "cc_table_bin", .mode = 0444},
+-	.read = read_cc_table_bin,
+-	.size = PAGE_SIZE,
+-};
++static BIN_ATTR_RO(cc_table_bin, PAGE_SIZE);
  
--}
-+CM_COUNTER_GROUP(CM_XMIT, "cm_tx_msgs")
-+CM_COUNTER_GROUP(CM_XMIT_RETRIES, "cm_tx_retries")
-+CM_COUNTER_GROUP(CM_RECV, "cm_rx_msgs")
-+CM_COUNTER_GROUP(CM_RECV_DUPLICATES, "cm_rx_duplicates")
-+
-+static const struct attribute_group *cm_counter_groups[] = {
-+	&cm_counter_group_CM_XMIT,
-+	&cm_counter_group_CM_XMIT_RETRIES,
-+	&cm_counter_group_CM_RECV,
-+	&cm_counter_group_CM_RECV_DUPLICATES,
+ /*
+  * Congestion settings: port control, control map and an array of 16
+  * entries for the congestion entries - increase, timer, event log
+  * trigger threshold and the minimum injection rate delay.
+  */
+-static ssize_t read_cc_setting_bin(struct file *filp, struct kobject *kobj,
+-		struct bin_attribute *bin_attr,
+-		char *buf, loff_t pos, size_t count)
++static ssize_t cc_setting_bin_read(struct file *filp, struct kobject *kobj,
++				   struct bin_attribute *bin_attr, char *buf,
++				   loff_t pos, size_t count)
+ {
++	struct qib_pportdata *ppd = qib_get_pportdata_kobj(kobj);
+ 	int ret;
+-	struct qib_pportdata *ppd =
+-		container_of(kobj, struct qib_pportdata, pport_cc_kobj);
+ 
+ 	if (!qib_cc_table_size || !ppd->congestion_entries_shadow)
+ 		return -EINVAL;
+@@ -278,67 +274,43 @@ static ssize_t read_cc_setting_bin(struct file *filp, struct kobject *kobj,
+ 
+ 	return count;
+ }
++static BIN_ATTR_RO(cc_setting_bin, PAGE_SIZE);
+ 
+-static const struct bin_attribute cc_setting_bin_attr = {
+-	.attr = {.name = "cc_settings_bin", .mode = 0444},
+-	.read = read_cc_setting_bin,
+-	.size = PAGE_SIZE,
++static struct bin_attribute *port_ccmgta_attributes[] = {
++	&bin_attr_cc_setting_bin,
++	&bin_attr_cc_table_bin,
 +	NULL,
+ };
+ 
++static const struct attribute_group port_ccmgta_attribute_group = {
++	.name = "CCMgtA",
++	.bin_attrs = port_ccmgta_attributes,
 +};
  
- static int cm_add_one(struct ib_device *ib_device)
- {
-@@ -4341,6 +4311,8 @@ static int cm_add_one(struct ib_device *ib_device)
- 	cm_dev->ack_delay = ib_device->attrs.local_ca_ack_delay;
- 	cm_dev->going_down = 0;
- 
-+	ib_set_client_data(ib_device, &cm_client, cm_dev);
-+
- 	set_bit(IB_MGMT_METHOD_SEND, reg_req.method_mask);
- 	rdma_for_each_port (ib_device, i) {
- 		if (!rdma_cap_ib_cm(ib_device, i))
-@@ -4359,7 +4331,8 @@ static int cm_add_one(struct ib_device *ib_device)
- 		INIT_LIST_HEAD(&port->cm_priv_prim_list);
- 		INIT_LIST_HEAD(&port->cm_priv_altr_list);
- 
--		ret = cm_create_port_fs(port);
-+		ret = ib_port_register_client_groups(ib_device, i,
-+						     cm_counter_groups);
- 		if (ret)
- 			goto error1;
- 
-@@ -4388,8 +4361,6 @@ static int cm_add_one(struct ib_device *ib_device)
- 		goto free;
- 	}
- 
--	ib_set_client_data(ib_device, &cm_client, cm_dev);
+-static ssize_t qib_portattr_show(struct kobject *kobj,
+-	struct attribute *attr, char *buf)
+-{
+-	struct qib_port_attr *pattr =
+-		container_of(attr, struct qib_port_attr, attr);
+-	struct qib_pportdata *ppd =
+-		container_of(kobj, struct qib_pportdata, pport_kobj);
 -
- 	write_lock_irqsave(&cm.device_lock, flags);
- 	list_add_tail(&cm_dev->list, &cm.device_list);
- 	write_unlock_irqrestore(&cm.device_lock, flags);
-@@ -4398,7 +4369,7 @@ static int cm_add_one(struct ib_device *ib_device)
- error3:
- 	ib_unregister_mad_agent(port->mad_agent);
- error2:
--	cm_remove_port_fs(port);
-+	ib_port_unregister_client_groups(ib_device, i, cm_counter_groups);
- error1:
- 	port_modify.set_port_cap_mask = 0;
- 	port_modify.clr_port_cap_mask = IB_PORT_CM_SUP;
-@@ -4410,7 +4381,8 @@ static int cm_add_one(struct ib_device *ib_device)
- 		port = cm_dev->port[i-1];
- 		ib_modify_port(ib_device, port->port_num, 0, &port_modify);
- 		ib_unregister_mad_agent(port->mad_agent);
--		cm_remove_port_fs(port);
-+		ib_port_unregister_client_groups(ib_device, i,
-+						 cm_counter_groups);
- 		kfree(port);
- 	}
- free:
-@@ -4462,7 +4434,8 @@ static void cm_remove_one(struct ib_device *ib_device, void *client_data)
- 		port->mad_agent = NULL;
- 		spin_unlock_irq(&cm.state_lock);
- 		ib_unregister_mad_agent(cur_mad_agent);
--		cm_remove_port_fs(port);
-+		ib_port_unregister_client_groups(ib_device, i,
-+						 cm_counter_groups);
- 		kfree(port);
- 	}
+-	if (!pattr->show)
+-		return -EIO;
++/* Start sl2vl */
  
-diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index 6066c4b39876d6..78782cce47a19f 100644
---- a/drivers/infiniband/core/core_priv.h
-+++ b/drivers/infiniband/core/core_priv.h
-@@ -382,10 +382,10 @@ int ib_setup_device_attrs(struct ib_device *ibdev);
+-	return pattr->show(ppd, buf);
+-}
++struct qib_sl2vl_attr {
++	struct ib_port_attribute attr;
++	int sl;
++};
  
- int rdma_compatdev_set(u8 enable);
+-static ssize_t qib_portattr_store(struct kobject *kobj,
+-	struct attribute *attr, const char *buf, size_t len)
++static ssize_t sl2vl_attr_show(struct ib_device *ibdev, u32 port_num,
++			       struct ib_port_attribute *attr, char *buf)
+ {
+-	struct qib_port_attr *pattr =
+-		container_of(attr, struct qib_port_attr, attr);
+-	struct qib_pportdata *ppd =
+-		container_of(kobj, struct qib_pportdata, pport_kobj);
+-
+-	if (!pattr->store)
+-		return -EIO;
++	struct qib_sl2vl_attr *sattr =
++		container_of(attr, struct qib_sl2vl_attr, attr);
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++	struct qib_ibport *qibp = &dd->pport[port_num - 1].ibport_data;
  
--int ib_port_register_module_stat(struct ib_device *device, u32 port_num,
--				 struct kobject *kobj, struct kobj_type *ktype,
--				 const char *name);
--void ib_port_unregister_module_stat(struct kobject *kobj);
-+int ib_port_register_client_groups(struct ib_device *ibdev, u32 port_num,
-+				   const struct attribute_group **groups);
-+void ib_port_unregister_client_groups(struct ib_device *ibdev, u32 port_num,
-+				     const struct attribute_group **groups);
- 
- int ib_device_set_netns_put(struct sk_buff *skb,
- 			    struct ib_device *dev, u32 ns_fd);
-diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
-index 58a45548bf1568..5d9c8bfc280d8f 100644
---- a/drivers/infiniband/core/sysfs.c
-+++ b/drivers/infiniband/core/sysfs.c
-@@ -1449,46 +1449,26 @@ int ib_setup_port_attrs(struct ib_core_device *coredev)
+-	return pattr->store(ppd, buf, len);
++	return sysfs_emit(buf, "%u\n", qibp->sl_to_vl[sattr->sl]);
  }
  
- /**
-- * ib_port_register_module_stat - add module counters under relevant port
-- *  of IB device.
-+ * ib_port_register_client_group - Add an ib_client's attributes to the port
-  *
-- * @device: IB device to add counters
-+ * @ibdev: IB device to add counters
-  * @port_num: valid port number
-- * @kobj: pointer to the kobject to initialize
-- * @ktype: pointer to the ktype for this kobject.
-- * @name: the name of the kobject
-+ * @groups: Group list of attributes
-+ *
-+ * Do not use. Only for legacy sysfs compatibility.
-  */
--int ib_port_register_module_stat(struct ib_device *device, u32 port_num,
--				 struct kobject *kobj, struct kobj_type *ktype,
--				 const char *name)
-+int ib_port_register_client_groups(struct ib_device *ibdev, u32 port_num,
-+				   const struct attribute_group **groups)
- {
--	struct kobject *p, *t;
--	int ret;
 -
--	list_for_each_entry_safe(p, t, &device->coredev.port_list, entry) {
--		struct ib_port *port = container_of(p, struct ib_port, kobj);
+-static const struct sysfs_ops qib_port_ops = {
+-	.show = qib_portattr_show,
+-	.store = qib_portattr_store,
+-};
 -
--		if (port->port_num != port_num)
--			continue;
+-static struct kobj_type qib_port_ktype = {
+-	.release = qib_port_release,
+-	.sysfs_ops = &qib_port_ops,
+-	.default_attrs = port_default_attributes
+-};
 -
--		ret = kobject_init_and_add(kobj, ktype, &port->kobj, "%s",
--					   name);
--		if (ret) {
--			kobject_put(kobj);
--			return ret;
--		}
+-/* Start sl2vl */
+-
+-#define QIB_SL2VL_ATTR(N) \
+-	static struct qib_sl2vl_attr qib_sl2vl_attr_##N = { \
+-		.attr = { .name = __stringify(N), .mode = 0444 }, \
+-		.sl = N \
++#define QIB_SL2VL_ATTR(N)                                                      \
++	static struct qib_sl2vl_attr qib_sl2vl_attr_##N = {                    \
++		.attr = __ATTR(N, 0444, sl2vl_attr_show, NULL),                \
++		.sl = N,                                                       \
+ 	}
+ 
+-struct qib_sl2vl_attr {
+-	struct attribute attr;
+-	int sl;
+-};
+-
+ QIB_SL2VL_ATTR(0);
+ QIB_SL2VL_ATTR(1);
+ QIB_SL2VL_ATTR(2);
+@@ -356,72 +328,74 @@ QIB_SL2VL_ATTR(13);
+ QIB_SL2VL_ATTR(14);
+ QIB_SL2VL_ATTR(15);
+ 
+-static struct attribute *sl2vl_default_attributes[] = {
+-	&qib_sl2vl_attr_0.attr,
+-	&qib_sl2vl_attr_1.attr,
+-	&qib_sl2vl_attr_2.attr,
+-	&qib_sl2vl_attr_3.attr,
+-	&qib_sl2vl_attr_4.attr,
+-	&qib_sl2vl_attr_5.attr,
+-	&qib_sl2vl_attr_6.attr,
+-	&qib_sl2vl_attr_7.attr,
+-	&qib_sl2vl_attr_8.attr,
+-	&qib_sl2vl_attr_9.attr,
+-	&qib_sl2vl_attr_10.attr,
+-	&qib_sl2vl_attr_11.attr,
+-	&qib_sl2vl_attr_12.attr,
+-	&qib_sl2vl_attr_13.attr,
+-	&qib_sl2vl_attr_14.attr,
+-	&qib_sl2vl_attr_15.attr,
++static struct attribute *port_sl2vl_attributes[] = {
++	&qib_sl2vl_attr_0.attr.attr,
++	&qib_sl2vl_attr_1.attr.attr,
++	&qib_sl2vl_attr_2.attr.attr,
++	&qib_sl2vl_attr_3.attr.attr,
++	&qib_sl2vl_attr_4.attr.attr,
++	&qib_sl2vl_attr_5.attr.attr,
++	&qib_sl2vl_attr_6.attr.attr,
++	&qib_sl2vl_attr_7.attr.attr,
++	&qib_sl2vl_attr_8.attr.attr,
++	&qib_sl2vl_attr_9.attr.attr,
++	&qib_sl2vl_attr_10.attr.attr,
++	&qib_sl2vl_attr_11.attr.attr,
++	&qib_sl2vl_attr_12.attr.attr,
++	&qib_sl2vl_attr_13.attr.attr,
++	&qib_sl2vl_attr_14.attr.attr,
++	&qib_sl2vl_attr_15.attr.attr,
+ 	NULL
+ };
+ 
+-static ssize_t sl2vl_attr_show(struct kobject *kobj, struct attribute *attr,
+-			       char *buf)
+-{
+-	struct qib_sl2vl_attr *sattr =
+-		container_of(attr, struct qib_sl2vl_attr, attr);
+-	struct qib_pportdata *ppd =
+-		container_of(kobj, struct qib_pportdata, sl2vl_kobj);
+-	struct qib_ibport *qibp = &ppd->ibport_data;
+-
+-	return sysfs_emit(buf, "%u\n", qibp->sl_to_vl[sattr->sl]);
+-}
+-
+-static const struct sysfs_ops qib_sl2vl_ops = {
+-	.show = sl2vl_attr_show,
+-};
+-
+-static struct kobj_type qib_sl2vl_ktype = {
+-	.release = qib_port_release,
+-	.sysfs_ops = &qib_sl2vl_ops,
+-	.default_attrs = sl2vl_default_attributes
++static const struct attribute_group port_sl2vl_group = {
++	.name = "sl2vl",
++	.attrs = port_sl2vl_attributes,
+ };
+ 
+ /* End sl2vl */
+ 
+ /* Start diag_counters */
+ 
+-#define QIB_DIAGC_ATTR(N) \
+-	static struct qib_diagc_attr qib_diagc_attr_##N = { \
+-		.attr = { .name = __stringify(N), .mode = 0664 }, \
+-		.counter = offsetof(struct qib_ibport, rvp.n_##N) \
 -	}
 -
--	return 0;
-+	return sysfs_create_groups(&ibdev->port_data[port_num].sysfs->kobj,
-+				   groups);
- }
--EXPORT_SYMBOL(ib_port_register_module_stat);
-+EXPORT_SYMBOL(ib_port_register_client_groups);
+-#define QIB_DIAGC_ATTR_PER_CPU(N) \
+-	static struct qib_diagc_attr qib_diagc_attr_##N = { \
+-		.attr = { .name = __stringify(N), .mode = 0664 }, \
+-		.counter = offsetof(struct qib_ibport, rvp.z_##N) \
+-	}
+-
+ struct qib_diagc_attr {
+-	struct attribute attr;
++	struct ib_port_attribute attr;
+ 	size_t counter;
+ };
  
--/**
-- * ib_port_unregister_module_stat - release module counters
-- * @kobj: pointer to the kobject to release
-- */
--void ib_port_unregister_module_stat(struct kobject *kobj)
-+void ib_port_unregister_client_groups(struct ib_device *ibdev, u32 port_num,
-+				      const struct attribute_group **groups)
+-QIB_DIAGC_ATTR_PER_CPU(rc_acks);
+-QIB_DIAGC_ATTR_PER_CPU(rc_qacks);
+-QIB_DIAGC_ATTR_PER_CPU(rc_delayed_comp);
++static ssize_t diagc_attr_show(struct ib_device *ibdev, u32 port_num,
++			       struct ib_port_attribute *attr, char *buf)
++{
++	struct qib_diagc_attr *dattr =
++		container_of(attr, struct qib_diagc_attr, attr);
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++	struct qib_ibport *qibp = &dd->pport[port_num - 1].ibport_data;
++
++	return sysfs_emit(buf, "%llu\n", *((u64 *)qibp + dattr->counter));
++}
++
++static ssize_t diagc_attr_store(struct ib_device *ibdev, u32 port_num,
++				struct ib_port_attribute *attr, const char *buf,
++				size_t count)
++{
++	struct qib_diagc_attr *dattr =
++		container_of(attr, struct qib_diagc_attr, attr);
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++	struct qib_ibport *qibp = &dd->pport[port_num - 1].ibport_data;
++	u64 val;
++	int ret;
++
++	ret = kstrtou64(buf, 0, &val);
++	if (ret)
++		return ret;
++	*((u64 *)qibp + dattr->counter) = val;
++	return count;
++}
++
++#define QIB_DIAGC_ATTR(N)                                                      \
++	static struct qib_diagc_attr qib_diagc_attr_##N = {                    \
++		.attr = __ATTR(N, 0664, diagc_attr_show, diagc_attr_store),    \
++		.counter = &((struct qib_ibport *)0)->rvp.n_##N - (u64 *)0,    \
++	}
+ 
+ QIB_DIAGC_ATTR(rc_resends);
+ QIB_DIAGC_ATTR(seq_naks);
+@@ -437,26 +411,6 @@ QIB_DIAGC_ATTR(rc_dupreq);
+ QIB_DIAGC_ATTR(rc_seqnak);
+ QIB_DIAGC_ATTR(rc_crwaits);
+ 
+-static struct attribute *diagc_default_attributes[] = {
+-	&qib_diagc_attr_rc_resends.attr,
+-	&qib_diagc_attr_rc_acks.attr,
+-	&qib_diagc_attr_rc_qacks.attr,
+-	&qib_diagc_attr_rc_delayed_comp.attr,
+-	&qib_diagc_attr_seq_naks.attr,
+-	&qib_diagc_attr_rdma_seq.attr,
+-	&qib_diagc_attr_rnr_naks.attr,
+-	&qib_diagc_attr_other_naks.attr,
+-	&qib_diagc_attr_rc_timeouts.attr,
+-	&qib_diagc_attr_loop_pkts.attr,
+-	&qib_diagc_attr_pkt_drops.attr,
+-	&qib_diagc_attr_dmawait.attr,
+-	&qib_diagc_attr_unaligned.attr,
+-	&qib_diagc_attr_rc_dupreq.attr,
+-	&qib_diagc_attr_rc_seqnak.attr,
+-	&qib_diagc_attr_rc_crwaits.attr,
+-	NULL
+-};
+-
+ static u64 get_all_cpu_total(u64 __percpu *cntr)
  {
--	kobject_put(kobj);
-+	return sysfs_remove_groups(&ibdev->port_data[port_num].sysfs->kobj,
-+				   groups);
+ 	int cpu;
+@@ -467,82 +421,115 @@ static u64 get_all_cpu_total(u64 __percpu *cntr)
+ 	return counter;
  }
--EXPORT_SYMBOL(ib_port_unregister_module_stat);
-+EXPORT_SYMBOL(ib_port_unregister_client_groups);
+ 
+-#define def_write_per_cpu(cntr) \
+-static void write_per_cpu_##cntr(struct qib_pportdata *ppd, u32 data)	\
+-{									\
+-	struct qib_devdata *dd = ppd->dd;				\
+-	struct qib_ibport *qibp = &ppd->ibport_data;			\
+-	/*  A write can only zero the counter */			\
+-	if (data == 0)							\
+-		qibp->rvp.z_##cntr = get_all_cpu_total(qibp->rvp.cntr); \
+-	else								\
+-		qib_dev_err(dd, "Per CPU cntrs can only be zeroed");	\
++static ssize_t qib_store_per_cpu(struct qib_devdata *dd, const char *buf,
++				 size_t count, u64 *zero, u64 cur)
++{
++	u32 val;
++	int ret;
++
++	ret = kstrtou32(buf, 0, &val);
++	if (ret)
++		return ret;
++	if (val != 0) {
++		qib_dev_err(dd, "Per CPU cntrs can only be zeroed");
++		return count;
++	}
++	*zero = cur;
++	return count;
+ }
+ 
+-def_write_per_cpu(rc_acks)
+-def_write_per_cpu(rc_qacks)
+-def_write_per_cpu(rc_delayed_comp)
++static ssize_t rc_acks_show(struct ib_device *ibdev, u32 port_num,
++			    struct ib_port_attribute *attr, char *buf)
++{
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++	struct qib_ibport *qibp = &dd->pport[port_num - 1].ibport_data;
+ 
+-#define READ_PER_CPU_CNTR(cntr) (get_all_cpu_total(qibp->rvp.cntr) - \
+-							qibp->rvp.z_##cntr)
++	return sysfs_emit(buf, "%llu\n",
++			  get_all_cpu_total(qibp->rvp.rc_acks) -
++				  qibp->rvp.z_rc_acks);
++}
+ 
+-static ssize_t diagc_attr_show(struct kobject *kobj, struct attribute *attr,
+-			       char *buf)
++static ssize_t rc_acks_store(struct ib_device *ibdev, u32 port_num,
++			     struct ib_port_attribute *attr, const char *buf,
++			     size_t count)
+ {
+-	struct qib_diagc_attr *dattr =
+-		container_of(attr, struct qib_diagc_attr, attr);
+-	struct qib_pportdata *ppd =
+-		container_of(kobj, struct qib_pportdata, diagc_kobj);
+-	struct qib_ibport *qibp = &ppd->ibport_data;
+-	u64 val;
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++	struct qib_ibport *qibp = &dd->pport[port_num - 1].ibport_data;
+ 
+-	if (!strncmp(dattr->attr.name, "rc_acks", 7))
+-		val = READ_PER_CPU_CNTR(rc_acks);
+-	else if (!strncmp(dattr->attr.name, "rc_qacks", 8))
+-		val = READ_PER_CPU_CNTR(rc_qacks);
+-	else if (!strncmp(dattr->attr.name, "rc_delayed_comp", 15))
+-		val = READ_PER_CPU_CNTR(rc_delayed_comp);
+-	else
+-		val = *(u32 *)((char *)qibp + dattr->counter);
++	return qib_store_per_cpu(dd, buf, count, &qibp->rvp.z_rc_acks,
++				 get_all_cpu_total(qibp->rvp.rc_acks));
++}
++static IB_PORT_ATTR_RW(rc_acks);
+ 
+-	return sysfs_emit(buf, "%llu\n", val);
++static ssize_t rc_qacks_show(struct ib_device *ibdev, u32 port_num,
++			     struct ib_port_attribute *attr, char *buf)
++{
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++	struct qib_ibport *qibp = &dd->pport[port_num - 1].ibport_data;
++
++	return sysfs_emit(buf, "%llu\n",
++			  get_all_cpu_total(qibp->rvp.rc_qacks) -
++				  qibp->rvp.z_rc_qacks);
+ }
+ 
+-static ssize_t diagc_attr_store(struct kobject *kobj, struct attribute *attr,
+-				const char *buf, size_t size)
++static ssize_t rc_qacks_store(struct ib_device *ibdev, u32 port_num,
++			      struct ib_port_attribute *attr, const char *buf,
++			      size_t count)
+ {
+-	struct qib_diagc_attr *dattr =
+-		container_of(attr, struct qib_diagc_attr, attr);
+-	struct qib_pportdata *ppd =
+-		container_of(kobj, struct qib_pportdata, diagc_kobj);
+-	struct qib_ibport *qibp = &ppd->ibport_data;
+-	u32 val;
+-	int ret;
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++	struct qib_ibport *qibp = &dd->pport[port_num - 1].ibport_data;
+ 
+-	ret = kstrtou32(buf, 0, &val);
+-	if (ret)
+-		return ret;
++	return qib_store_per_cpu(dd, buf, count, &qibp->rvp.z_rc_qacks,
++				 get_all_cpu_total(qibp->rvp.rc_qacks));
++}
++static IB_PORT_ATTR_RW(rc_qacks);
++
++static ssize_t rc_delayed_comp_show(struct ib_device *ibdev, u32 port_num,
++				    struct ib_port_attribute *attr, char *buf)
++{
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++	struct qib_ibport *qibp = &dd->pport[port_num - 1].ibport_data;
+ 
+-	if (!strncmp(dattr->attr.name, "rc_acks", 7))
+-		write_per_cpu_rc_acks(ppd, val);
+-	else if (!strncmp(dattr->attr.name, "rc_qacks", 8))
+-		write_per_cpu_rc_qacks(ppd, val);
+-	else if (!strncmp(dattr->attr.name, "rc_delayed_comp", 15))
+-		write_per_cpu_rc_delayed_comp(ppd, val);
+-	else
+-		*(u32 *)((char *)qibp + dattr->counter) = val;
+-	return size;
++	return sysfs_emit(buf, "%llu\n",
++			 get_all_cpu_total(qibp->rvp.rc_delayed_comp) -
++				 qibp->rvp.z_rc_delayed_comp);
+ }
+ 
+-static const struct sysfs_ops qib_diagc_ops = {
+-	.show = diagc_attr_show,
+-	.store = diagc_attr_store,
++static ssize_t rc_delayed_comp_store(struct ib_device *ibdev, u32 port_num,
++				     struct ib_port_attribute *attr,
++				     const char *buf, size_t count)
++{
++	struct qib_devdata *dd = dd_from_ibdev(ibdev);
++	struct qib_ibport *qibp = &dd->pport[port_num - 1].ibport_data;
++
++	return qib_store_per_cpu(dd, buf, count, &qibp->rvp.z_rc_delayed_comp,
++				 get_all_cpu_total(qibp->rvp.rc_delayed_comp));
++}
++static IB_PORT_ATTR_RW(rc_delayed_comp);
++
++static struct attribute *port_diagc_attributes[] = {
++	&qib_diagc_attr_rc_resends.attr.attr,
++	&qib_diagc_attr_seq_naks.attr.attr,
++	&qib_diagc_attr_rdma_seq.attr.attr,
++	&qib_diagc_attr_rnr_naks.attr.attr,
++	&qib_diagc_attr_other_naks.attr.attr,
++	&qib_diagc_attr_rc_timeouts.attr.attr,
++	&qib_diagc_attr_loop_pkts.attr.attr,
++	&qib_diagc_attr_pkt_drops.attr.attr,
++	&qib_diagc_attr_dmawait.attr.attr,
++	&qib_diagc_attr_unaligned.attr.attr,
++	&qib_diagc_attr_rc_dupreq.attr.attr,
++	&qib_diagc_attr_rc_seqnak.attr.attr,
++	&qib_diagc_attr_rc_crwaits.attr.attr,
++	&ib_port_attr_rc_acks.attr,
++	&ib_port_attr_rc_qacks.attr,
++	&ib_port_attr_rc_delayed_comp.attr,
++	NULL
+ };
+ 
+-static struct kobj_type qib_diagc_ktype = {
+-	.release = qib_port_release,
+-	.sysfs_ops = &qib_diagc_ops,
+-	.default_attrs = diagc_default_attributes
++static const struct attribute_group port_diagc_group = {
++	.name = "linkcontrol",
++	.attrs = port_diagc_attributes,
+ };
+ 
+ /* End diag_counters */
+@@ -731,99 +718,19 @@ const struct attribute_group qib_attr_group = {
+ int qib_create_port_files(struct ib_device *ibdev, u32 port_num,
+ 			  struct kobject *kobj)
+ {
+-	struct qib_pportdata *ppd;
+ 	struct qib_devdata *dd = dd_from_ibdev(ibdev);
+-	int ret;
++	struct qib_pportdata *ppd = &dd->pport[port_num - 1];
++	const struct attribute_group **cur_group;
+ 
+-	if (!port_num || port_num > dd->num_pports) {
+-		qib_dev_err(dd,
+-			"Skipping infiniband class with invalid port %u\n",
+-			port_num);
+-		ret = -ENODEV;
+-		goto bail;
+-	}
+-	ppd = &dd->pport[port_num - 1];
++	cur_group = &ppd->groups[0];
++	*cur_group++ = &port_linkcontrol_group;
++	*cur_group++ = &port_sl2vl_group;
++	*cur_group++ = &port_diagc_group;
+ 
+-	ret = kobject_init_and_add(&ppd->pport_kobj, &qib_port_ktype, kobj,
+-				   "linkcontrol");
+-	if (ret) {
+-		qib_dev_err(dd,
+-			"Skipping linkcontrol sysfs info, (err %d) port %u\n",
+-			ret, port_num);
+-		goto bail_link;
+-	}
+-	kobject_uevent(&ppd->pport_kobj, KOBJ_ADD);
++	if (qib_cc_table_size && ppd->congestion_entries_shadow)
++		*cur_group++ = &port_ccmgta_attribute_group;
+ 
+-	ret = kobject_init_and_add(&ppd->sl2vl_kobj, &qib_sl2vl_ktype, kobj,
+-				   "sl2vl");
+-	if (ret) {
+-		qib_dev_err(dd,
+-			"Skipping sl2vl sysfs info, (err %d) port %u\n",
+-			ret, port_num);
+-		goto bail_sl;
+-	}
+-	kobject_uevent(&ppd->sl2vl_kobj, KOBJ_ADD);
+-
+-	ret = kobject_init_and_add(&ppd->diagc_kobj, &qib_diagc_ktype, kobj,
+-				   "diag_counters");
+-	if (ret) {
+-		qib_dev_err(dd,
+-			"Skipping diag_counters sysfs info, (err %d) port %u\n",
+-			ret, port_num);
+-		goto bail_diagc;
+-	}
+-	kobject_uevent(&ppd->diagc_kobj, KOBJ_ADD);
+-
+-	if (!qib_cc_table_size || !ppd->congestion_entries_shadow)
+-		return 0;
+-
+-	ret = kobject_init_and_add(&ppd->pport_cc_kobj, &qib_port_cc_ktype,
+-				kobj, "CCMgtA");
+-	if (ret) {
+-		qib_dev_err(dd,
+-		 "Skipping Congestion Control sysfs info, (err %d) port %u\n",
+-		 ret, port_num);
+-		goto bail_cc;
+-	}
+-
+-	kobject_uevent(&ppd->pport_cc_kobj, KOBJ_ADD);
+-
+-	ret = sysfs_create_bin_file(&ppd->pport_cc_kobj,
+-				&cc_setting_bin_attr);
+-	if (ret) {
+-		qib_dev_err(dd,
+-		 "Skipping Congestion Control setting sysfs info, (err %d) port %u\n",
+-		 ret, port_num);
+-		goto bail_cc;
+-	}
+-
+-	ret = sysfs_create_bin_file(&ppd->pport_cc_kobj,
+-				&cc_table_bin_attr);
+-	if (ret) {
+-		qib_dev_err(dd,
+-		 "Skipping Congestion Control table sysfs info, (err %d) port %u\n",
+-		 ret, port_num);
+-		goto bail_cc_entry_bin;
+-	}
+-
+-	qib_devinfo(dd->pcidev,
+-		"IB%u: Congestion Control Agent enabled for port %d\n",
+-		dd->unit, port_num);
+-
+-	return 0;
+-
+-bail_cc_entry_bin:
+-	sysfs_remove_bin_file(&ppd->pport_cc_kobj, &cc_setting_bin_attr);
+-bail_cc:
+-	kobject_put(&ppd->pport_cc_kobj);
+-bail_diagc:
+-	kobject_put(&ppd->diagc_kobj);
+-bail_sl:
+-	kobject_put(&ppd->sl2vl_kobj);
+-bail_link:
+-	kobject_put(&ppd->pport_kobj);
+-bail:
+-	return ret;
++	return ib_port_sysfs_create_groups(ibdev, port_num, ppd->groups);
+ }
+ 
+ /*
+@@ -831,21 +738,12 @@ int qib_create_port_files(struct ib_device *ibdev, u32 port_num,
+  */
+ void qib_verbs_unregister_sysfs(struct qib_devdata *dd)
+ {
+-	struct qib_pportdata *ppd;
+ 	int i;
+ 
+ 	for (i = 0; i < dd->num_pports; i++) {
+-		ppd = &dd->pport[i];
+-		if (qib_cc_table_size &&
+-			ppd->congestion_entries_shadow) {
+-			sysfs_remove_bin_file(&ppd->pport_cc_kobj,
+-				&cc_setting_bin_attr);
+-			sysfs_remove_bin_file(&ppd->pport_cc_kobj,
+-				&cc_table_bin_attr);
+-			kobject_put(&ppd->pport_cc_kobj);
+-		}
+-		kobject_put(&ppd->diagc_kobj);
+-		kobject_put(&ppd->sl2vl_kobj);
+-		kobject_put(&ppd->pport_kobj);
++		struct qib_pportdata *ppd = &dd->pport[i];
++
++		ib_port_sysfs_remove_groups(&dd->verbs_dev.rdi.ibdev, i,
++					    ppd->groups);
+ 	}
+ }
 -- 
 2.31.1
 
