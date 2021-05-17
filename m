@@ -2,33 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FE1382A9C
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 May 2021 13:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D81C382B29
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 May 2021 13:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236623AbhEQLL3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 May 2021 07:11:29 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3569 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236528AbhEQLL3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 May 2021 07:11:29 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FkGYp48QHzmVSc;
-        Mon, 17 May 2021 19:07:26 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 19:10:10 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 17 May
- 2021 19:10:10 +0800
-Subject: Re: [PATCH net-next v5 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Matteo Croce <mcroce@linux.microsoft.com>,
-        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        "Vinay Kumar Yadav" <vinay.yadav@chelsio.com>,
+        id S236810AbhEQLhI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 May 2021 07:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236751AbhEQLhI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 May 2021 07:37:08 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956E5C061756
+        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 04:35:51 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id l1so8692657ejb.6
+        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 04:35:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cpVCz5J0mualmBJL14dU/kCHM8m4z1AkfD48q7fb54Y=;
+        b=j7UvTXiSILRPux9PGsOIlTxwHEXL4df2qspCBdJq2w8fVwIVveJzi/6katDaWZo4kb
+         WN+z1G8hvYNmldIuH4Fl5+DrK+e+1lb+3S9aIv1EdWQOae9rn5VmJ1jHd6S+gSrJfvwV
+         Lk7kMEZB1sfEEzgaNAxgb0yoPriBMzUXWa32eDVvkQexwx6BI3xnQVOBuX8KSWVX+m0e
+         rB4bWR23P0G5dAzeAsBAjeIOYEK3DoYX98NiaEhZXc1+THb4z8mOEGv2788ult9f2SZT
+         0gT7uwxcvFZy+qZYMvUCpCCUdPYZYRCCQQr0DDqYtVrHDkKGg1j/KWB0P0iwo9wtF/WT
+         3cwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cpVCz5J0mualmBJL14dU/kCHM8m4z1AkfD48q7fb54Y=;
+        b=GVHzNJGXzPOTLR/6UI38lldY6p6KyHWnPoaBZobapL6e8u+gcVZ0nbAmWKGPin/Qhh
+         V3bkE1ajZavUgXfOjGiwnRhDnAVZwvsOqetMPH8FnN2VW2FUEn1OP8Yvq1VuTg0HjKWm
+         5nz7JrNYlllT2TtUcFMji+fRatXxmGoW9e6VcxoHTaorx7y4li+Ui/lG31AXzoLDqFer
+         oZxeNhdF/76cg95pSz6y+kWqU0IpBv0nKF9q+va3MDqPoxFWkb1MB+V8pqW5mOPdnRBk
+         fOGfPNsTAABNBC47s4DQuNLoBum58YVLAihO8XrlWLAbfrjiNrCyEU1762QWReL1u7TI
+         pScg==
+X-Gm-Message-State: AOAM533/Lm7s5D8E/QhAamdB2D5BY9C05DrcUmuBcALxGi00AqtpMKjy
+        +/d0ysUnVyQXCkp8Sh0H2bmM8g==
+X-Google-Smtp-Source: ABdhPJzt2r6RHjtKUUNYBd1PR/7rdCUkb6ACw8GomMcdp8eOm4/+GQQxMTKlfPAItXeOe1oy5amyFg==
+X-Received: by 2002:a17:907:20a8:: with SMTP id pw8mr11169946ejb.256.1621251350130;
+        Mon, 17 May 2021 04:35:50 -0700 (PDT)
+Received: from enceladus ([94.69.77.156])
+        by smtp.gmail.com with ESMTPSA id b19sm10631737edd.66.2021.05.17.04.35.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 04:35:49 -0700 (PDT)
+Date:   Mon, 17 May 2021 14:35:44 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
         Rohit Maheshwari <rohitm@chelsio.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -37,11 +61,11 @@ CC:     Matteo Croce <mcroce@linux.microsoft.com>,
         Russell King <linux@armlinux.org.uk>,
         Mirko Lindner <mlindner@marvell.com>,
         Stephen Hemminger <stephen@networkplumber.org>,
-        "Tariq Toukan" <tariqt@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "John Fastabend" <john.fastabend@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Boris Pismenny <borisp@nvidia.com>,
         Arnd Bergmann <arnd@arndb.de>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -60,16 +84,18 @@ CC:     Matteo Croce <mcroce@linux.microsoft.com>,
         Willem de Bruijn <willemb@google.com>,
         Miaohe Lin <linmiaohe@huawei.com>,
         Guillaume Nault <gnault@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
         Eric Dumazet <edumazet@google.com>,
         David Ahern <dsahern@gmail.com>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
         Sven Auhagen <sven.auhagen@voleatech.de>
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
- <20210513165846.23722-4-mcroce@linux.microsoft.com>
+Subject: Re: [PATCH net-next v5 3/5] page_pool: Allow drivers to hint on SKB
+ recycling
+Message-ID: <YKJVEDUjmv6rRnFP@enceladus>
+References: <20210513165846.23722-4-mcroce@linux.microsoft.com>
  <798d6dad-7950-91b2-46a5-3535f44df4e2@huawei.com>
  <YJ4ocslvURa/H+6f@apalos.home>
  <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
@@ -78,53 +104,59 @@ References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
  <YKIPcF9ACNmFtksz@enceladus>
  <fade4bc7-c1c7-517e-a775-0a5bb2e66be6@huawei.com>
  <YKI5JxG2rw2y6C1P@apalos.home>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <074b0d1d-9531-57f3-8e0e-a447387478d1@huawei.com>
-Date:   Mon, 17 May 2021 19:10:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+ <074b0d1d-9531-57f3-8e0e-a447387478d1@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <YKI5JxG2rw2y6C1P@apalos.home>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <074b0d1d-9531-57f3-8e0e-a447387478d1@huawei.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/5/17 17:36, Ilias Apalodimas wrote:
- >>
->> Even if when skb->pp_recycle is 1, pages allocated from page allocator directly
->> or page pool are both supported, so it seems page->signature need to be reliable
->> to indicate a page is indeed owned by a page pool, which means the skb->pp_recycle
->> is used mainly to short cut the code path for skb->pp_recycle is 0 case, so that
->> the page->signature does not need checking?
+On Mon, May 17, 2021 at 07:10:09PM +0800, Yunsheng Lin wrote:
+> On 2021/5/17 17:36, Ilias Apalodimas wrote:
+>  >>
+> >> Even if when skb->pp_recycle is 1, pages allocated from page allocator directly
+> >> or page pool are both supported, so it seems page->signature need to be reliable
+> >> to indicate a page is indeed owned by a page pool, which means the skb->pp_recycle
+> >> is used mainly to short cut the code path for skb->pp_recycle is 0 case, so that
+> >> the page->signature does not need checking?
+> > 
+> > Yes, the idea for the recycling bit, is that you don't have to fetch the page
+> > in cache do do more processing (since freeing is asynchronous and we
+> > can't have any guarantees on what the cache will have at that point).  So we
+> > are trying to affect the existing release path a less as possible. However it's
+> > that new skb bit that triggers the whole path.
+> > 
+> > What you propose could still be doable though.  As you said we can add the
+> > page pointer to struct page when we allocate a page_pool page and never
+> > reset it when we recycle the buffer. But I don't think there will be any
+> > performance impact whatsoever. So I prefer the 'visible' approach, at least for
 > 
-> Yes, the idea for the recycling bit, is that you don't have to fetch the page
-> in cache do do more processing (since freeing is asynchronous and we
-> can't have any guarantees on what the cache will have at that point).  So we
-> are trying to affect the existing release path a less as possible. However it's
-> that new skb bit that triggers the whole path.
-> 
-> What you propose could still be doable though.  As you said we can add the
-> page pointer to struct page when we allocate a page_pool page and never
-> reset it when we recycle the buffer. But I don't think there will be any
-> performance impact whatsoever. So I prefer the 'visible' approach, at least for
+> setting and unsetting the page_pool ptr every time the page is recycled may
+> cause a cache bouncing problem when rx cleaning and skb releasing is not
+> happening on the same cpu.
 
-setting and unsetting the page_pool ptr every time the page is recycled may
-cause a cache bouncing problem when rx cleaning and skb releasing is not
-happening on the same cpu.
+In our case since the skb is asynchronous and not protected by a NAPI context,
+the buffer wont end up in the 'fast' page pool cache.  So we'll recycle by
+calling page_pool_recycle_in_ring() not page_pool_recycle_in_cache().  Which
+means that the page you recycled will be re-filled later, in batches, when
+page_pool_refill_alloc_cache() is called to refill the fast cache.  I am not i
+saying it might not happen, but I don't really know if it's going to make a
+difference or not.  So I just really prefer taking this as is and perhaps
+later, when 40/100gbit drivers start using it we can justify the optimization
+(along with supporting the split page model).
 
-> the first iteration.
-> 
-> Thanks
-> /Ilias
->  
-> 
-> .
-> 
+Thanks
+/Ilias
 
+> 
+> > the first iteration.
+> > 
+> > Thanks
+> > /Ilias
+> >  
+> > 
+> > .
+> > 
+> 
