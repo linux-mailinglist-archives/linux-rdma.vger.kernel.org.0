@@ -2,161 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D81C382B29
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 May 2021 13:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA88382D66
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 May 2021 15:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236810AbhEQLhI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 May 2021 07:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58130 "EHLO
+        id S235916AbhEQN0x (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 May 2021 09:26:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236751AbhEQLhI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 May 2021 07:37:08 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956E5C061756
-        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 04:35:51 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id l1so8692657ejb.6
-        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 04:35:51 -0700 (PDT)
+        with ESMTP id S235870AbhEQN0w (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 May 2021 09:26:52 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D50C061573
+        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 06:25:36 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id pf4-20020a17090b1d84b029015ccffe0f2eso5572426pjb.0
+        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 06:25:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cpVCz5J0mualmBJL14dU/kCHM8m4z1AkfD48q7fb54Y=;
-        b=j7UvTXiSILRPux9PGsOIlTxwHEXL4df2qspCBdJq2w8fVwIVveJzi/6katDaWZo4kb
-         WN+z1G8hvYNmldIuH4Fl5+DrK+e+1lb+3S9aIv1EdWQOae9rn5VmJ1jHd6S+gSrJfvwV
-         Lk7kMEZB1sfEEzgaNAxgb0yoPriBMzUXWa32eDVvkQexwx6BI3xnQVOBuX8KSWVX+m0e
-         rB4bWR23P0G5dAzeAsBAjeIOYEK3DoYX98NiaEhZXc1+THb4z8mOEGv2788ult9f2SZT
-         0gT7uwxcvFZy+qZYMvUCpCCUdPYZYRCCQQr0DDqYtVrHDkKGg1j/KWB0P0iwo9wtF/WT
-         3cwg==
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version;
+        bh=juqZf6yl3UqWOEs3WldFlg03Jdl2QVKdsG7btfdsoFM=;
+        b=NK8CrmihIELbu/3KGQn4qe9oUU+TRuwNfCoRTPlEt3KxrJGz4v3n/cE4zP06OYBpzY
+         XAevQsWFf5t6WWSE/bFMyPtZDw2mAaaaTjBQ671c8qqMiNBCEv8l2JYUhZaZaLJfsqaJ
+         nV3A20Pe75nLfjcQDC1lRsWyfzgDR5CjnnXDk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cpVCz5J0mualmBJL14dU/kCHM8m4z1AkfD48q7fb54Y=;
-        b=GVHzNJGXzPOTLR/6UI38lldY6p6KyHWnPoaBZobapL6e8u+gcVZ0nbAmWKGPin/Qhh
-         V3bkE1ajZavUgXfOjGiwnRhDnAVZwvsOqetMPH8FnN2VW2FUEn1OP8Yvq1VuTg0HjKWm
-         5nz7JrNYlllT2TtUcFMji+fRatXxmGoW9e6VcxoHTaorx7y4li+Ui/lG31AXzoLDqFer
-         oZxeNhdF/76cg95pSz6y+kWqU0IpBv0nKF9q+va3MDqPoxFWkb1MB+V8pqW5mOPdnRBk
-         fOGfPNsTAABNBC47s4DQuNLoBum58YVLAihO8XrlWLAbfrjiNrCyEU1762QWReL1u7TI
-         pScg==
-X-Gm-Message-State: AOAM533/Lm7s5D8E/QhAamdB2D5BY9C05DrcUmuBcALxGi00AqtpMKjy
-        +/d0ysUnVyQXCkp8Sh0H2bmM8g==
-X-Google-Smtp-Source: ABdhPJzt2r6RHjtKUUNYBd1PR/7rdCUkb6ACw8GomMcdp8eOm4/+GQQxMTKlfPAItXeOe1oy5amyFg==
-X-Received: by 2002:a17:907:20a8:: with SMTP id pw8mr11169946ejb.256.1621251350130;
-        Mon, 17 May 2021 04:35:50 -0700 (PDT)
-Received: from enceladus ([94.69.77.156])
-        by smtp.gmail.com with ESMTPSA id b19sm10631737edd.66.2021.05.17.04.35.46
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
+        bh=juqZf6yl3UqWOEs3WldFlg03Jdl2QVKdsG7btfdsoFM=;
+        b=gI8Th2HOTM+h7Y1Ucsf+B30fMgRyY8abM2yBKWP1BrcgnFc6UcQHSBJZtRwZZIKh2p
+         KKWiOaqQa8DKoZjsOGxq6bN6n/Vjvrl0Xy0Teke7eCM94RoQo55wR1adr5OC3VnyaCj0
+         DL/BtNtT3Q2eeEFywLnp0eF4nRnOHnwosVZr9NquvS8gMrokR472R2dpipHzPDE+eAJP
+         e//63flLKthKIQQbM4P+yvpGqSQqFesJw3niCBbMSrFS/HBRymAV6iyCLMD+JfrrcDuh
+         KtzdkO5SLS8vAo2LqhOD1Cr7X155wWkxbqUGgsdjHySTSmL/jSzATYexRRD/TDte7P+E
+         vHVQ==
+X-Gm-Message-State: AOAM531zWOq3kP+Hm7AQgW2znBYY9FSML+/PSgrnYudQCP6s9n56n740
+        8v0Ru1SkVgjIGbIClP6wAvRZFwYoznYnm/rHZ5uBGih2/8kjuKWq7OsyCjAqF09sZi9oEBuEpdF
+        40Q+hpdDMVFQd3S+FhPlKB3eKI5t31kLCvepc+ormHStcdGAj2DzbLb/JuEeVP16oPtYMrU2IrG
+        GZ0vjeoyCa
+X-Google-Smtp-Source: ABdhPJzctgVH/bg9sWcBRoKhYlQoY2n/DujIR1FEnFpSd//Z6Ys98ORHAbOWmIiyjkGXwwDBXWQw8g==
+X-Received: by 2002:a17:90a:784e:: with SMTP id y14mr6790834pjl.29.1621257934405;
+        Mon, 17 May 2021 06:25:34 -0700 (PDT)
+Received: from dev01.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id n6sm11069944pgq.72.2021.05.17.06.25.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 04:35:49 -0700 (PDT)
-Date:   Mon, 17 May 2021 14:35:44 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v5 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-Message-ID: <YKJVEDUjmv6rRnFP@enceladus>
-References: <20210513165846.23722-4-mcroce@linux.microsoft.com>
- <798d6dad-7950-91b2-46a5-3535f44df4e2@huawei.com>
- <YJ4ocslvURa/H+6f@apalos.home>
- <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
- <YJ5APhzabmAKIKCE@apalos.home>
- <cd0c0a2b-986e-a672-de7e-798ab2843d76@huawei.com>
- <YKIPcF9ACNmFtksz@enceladus>
- <fade4bc7-c1c7-517e-a775-0a5bb2e66be6@huawei.com>
- <YKI5JxG2rw2y6C1P@apalos.home>
- <074b0d1d-9531-57f3-8e0e-a447387478d1@huawei.com>
+        Mon, 17 May 2021 06:25:33 -0700 (PDT)
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Devesh Sharma <devesh.sharma@broadcom.com>
+Subject: [for-next 0/2] Broadcom's driver add global atomics
+Date:   Mon, 17 May 2021 18:55:20 +0530
+Message-Id: <20210517132522.774762-1-devesh.sharma@broadcom.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <074b0d1d-9531-57f3-8e0e-a447387478d1@huawei.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000539a5b05c28687f8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 17, 2021 at 07:10:09PM +0800, Yunsheng Lin wrote:
-> On 2021/5/17 17:36, Ilias Apalodimas wrote:
->  >>
-> >> Even if when skb->pp_recycle is 1, pages allocated from page allocator directly
-> >> or page pool are both supported, so it seems page->signature need to be reliable
-> >> to indicate a page is indeed owned by a page pool, which means the skb->pp_recycle
-> >> is used mainly to short cut the code path for skb->pp_recycle is 0 case, so that
-> >> the page->signature does not need checking?
-> > 
-> > Yes, the idea for the recycling bit, is that you don't have to fetch the page
-> > in cache do do more processing (since freeing is asynchronous and we
-> > can't have any guarantees on what the cache will have at that point).  So we
-> > are trying to affect the existing release path a less as possible. However it's
-> > that new skb bit that triggers the whole path.
-> > 
-> > What you propose could still be doable though.  As you said we can add the
-> > page pointer to struct page when we allocate a page_pool page and never
-> > reset it when we recycle the buffer. But I don't think there will be any
-> > performance impact whatsoever. So I prefer the 'visible' approach, at least for
-> 
-> setting and unsetting the page_pool ptr every time the page is recycled may
-> cause a cache bouncing problem when rx cleaning and skb releasing is not
-> happening on the same cpu.
+--000000000000539a5b05c28687f8
+Content-Transfer-Encoding: 8bit
 
-In our case since the skb is asynchronous and not protected by a NAPI context,
-the buffer wont end up in the 'fast' page pool cache.  So we'll recycle by
-calling page_pool_recycle_in_ring() not page_pool_recycle_in_cache().  Which
-means that the page you recycled will be re-filled later, in batches, when
-page_pool_refill_alloc_cache() is called to refill the fast cache.  I am not i
-saying it might not happen, but I don't really know if it's going to make a
-difference or not.  So I just really prefer taking this as is and perhaps
-later, when 40/100gbit drivers start using it we can justify the optimization
-(along with supporting the split page model).
+Adding automated detection and enablement of global PCI atomic
+operation support.
 
-Thanks
-/Ilias
+Devesh Sharma (2):
+  RDMA/bnxt_re: Enable global atomic ops if platform supports
+  bnxt_re: Update maintainers list
 
-> 
-> > the first iteration.
-> > 
-> > Thanks
-> > /Ilias
-> >  
-> > 
-> > .
-> > 
-> 
+ MAINTAINERS                               |  2 --
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c  |  4 ++++
+ drivers/infiniband/hw/bnxt_re/main.c      |  4 ++++
+ drivers/infiniband/hw/bnxt_re/qplib_res.c | 15 +++++++++++++++
+ drivers/infiniband/hw/bnxt_re/qplib_res.h |  1 +
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c  | 13 ++++++++++++-
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h  |  2 --
+ 7 files changed, 36 insertions(+), 5 deletions(-)
+
+-- 
+2.25.1
+
+
+--000000000000539a5b05c28687f8
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
+Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
+KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
+SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
+PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
+G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
+PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIMyUrzmYhbD4QeuSmxejdHqVW2uO
+HkaqxwcM5UaOg9HGMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDUxNzEzMjUzNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQCEgGcLrPaeoSwBKGC0O/TL1h+WGiAOrvIWz3weWQOIUYiD
+ftadAIE/mdVZ6BlD4KJAvul3rpwyTMbPuaCutBjacnGuhDH6sTk6Q5A4b1QN5zzkHwenlThX3eBo
+gI5JKtohqQ5yn6iEyV9HrVdoDIwRDx57SXKGkHeMVK9xlDvYsub8nuX7FwMS4RGJoRKiURXrXtaK
+cKIPLuBIQHeK9cpqdoPjCqxLFlElegOvMZ1ShaLAIb3KqEfPxkteNCQQATeA4ZR+vxTpm6xNsZ04
+gwEUieuy8qpC/7DMTvNJvAmUzqMR0vbzMWEeYV3dqTR6xSnERHx0SAiNYQbQgga6lxxI
+--000000000000539a5b05c28687f8--
