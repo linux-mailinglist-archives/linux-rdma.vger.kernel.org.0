@@ -2,160 +2,184 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6360386F9D
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 May 2021 03:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E3E386FBF
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 May 2021 04:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346130AbhERBvh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 May 2021 21:51:37 -0400
-Received: from gateway24.websitewelcome.com ([192.185.51.139]:13577 "EHLO
-        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233295AbhERBvg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 17 May 2021 21:51:36 -0400
-X-Greylist: delayed 1496 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 May 2021 21:51:36 EDT
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway24.websitewelcome.com (Postfix) with ESMTP id C0B7E174A1
-        for <linux-rdma@vger.kernel.org>; Mon, 17 May 2021 20:01:12 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id io6ilaFtmnrr4io6ilY2YB; Mon, 17 May 2021 20:01:12 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=g9aBbdlWEIXLQ91l3oXZPVNVSDcfsWGvnZBY5r44FHw=; b=phC7PcKu2EfF/L0ObDfrRVu57u
-        NmUUFnmFNKyhKdBOCpZQ2d4Byb7bZ20uGqYRChDe6Y2gt3GHIf7dWd53OgQJG9qP9oPVVGZ80duIy
-        33ShssOmlZK5WKi+MYOy75ni/bN5BgETuQna3tZatlMfKMUdv7xodXn7KNrTGK8UkSbQ5XIfV0SVU
-        Hi573Frstn5Couafpa48R8giz5RzXLVcwmWbS9oOHW8zj0sXM+4iwDJCLjTHk4lwtHX3DIddeQ3KM
-        4E8WjeLqNkizaH2V17E3zIQyg6MQhGErcarrH1Zp5VvMLnMi3CEiOblrlE5OL7OPQH4W9THSjtW+m
-        i87XNBnQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53596 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lio6f-002yw1-5y; Mon, 17 May 2021 20:01:09 -0500
-Subject: Re: [PATCH RESEND][next] rds: Fix fall-through warnings for Clang
-To:     Haakon Bugge <haakon.bugge@oracle.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-References: <20210305090612.GA139288@embeddedor>
- <cd935ba5-a072-5b5a-d455-e06ef87a3a34@embeddedor.com>
- <6AB78D3D-C73D-4633-A6FD-9452DD8E4751@oracle.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <480ab028-5de9-85ea-3dc1-275eba61f544@embeddedor.com>
-Date:   Mon, 17 May 2021 20:01:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <6AB78D3D-C73D-4633-A6FD-9452DD8E4751@oracle.com>
-Content-Type: text/plain; charset=utf-8
+        id S239555AbhERCCB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 17 May 2021 22:02:01 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:2959 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235741AbhERCCB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 May 2021 22:02:01 -0400
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FkfKK37rQzCtJH;
+        Tue, 18 May 2021 09:57:57 +0800 (CST)
+Received: from dggpeml100023.china.huawei.com (7.185.36.151) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 18 May 2021 10:00:42 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggpeml100023.china.huawei.com (7.185.36.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 18 May 2021 10:00:42 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2176.012;
+ Tue, 18 May 2021 10:00:42 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        "wangxi (M)" <wangxi11@huawei.com>
+Subject: Re: [PATCH for-next 1/7] RDMA/hns: Introduce DCA for RC QP
+Thread-Topic: [PATCH for-next 1/7] RDMA/hns: Introduce DCA for RC QP
+Thread-Index: AQHXRZr4v1t5v7kOE0qVw3PCypfZYA==
+Date:   Tue, 18 May 2021 02:00:42 +0000
+Message-ID: <8b8bec1cb505477aa22cc36d317a8433@huawei.com>
+References: <1620650889-61650-1-git-send-email-liweihang@huawei.com>
+ <1620650889-61650-2-git-send-email-liweihang@huawei.com>
+ <YKIa/1BmNmMh5WPx@unreal>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lio6f-002yw1-5y
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53596
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 7
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi all,
-
-If you don't mind, I'm taking this in my -next[1] branch for v5.14.
-
-Thanks
---
-Gustavo
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
-
-On 5/6/21 01:50, Haakon Bugge wrote:
-> Sorry for the delay.
-> 
-> 
->> On 20 Apr 2021, at 22:10, Gustavo A. R. Silva <gustavo@embeddedor.com> wrote:
+On 2021/5/17 15:28, Leon Romanovsky wrote:
+> On Mon, May 10, 2021 at 08:48:03PM +0800, Weihang Li wrote:
+>> From: Xi Wang <wangxi11@huawei.com>
 >>
->> Hi all,
+>> The hip09 introduces the DCA(Dynamic context attachment) feature which
+>> supports many RC QPs to share the WQE buffer in a memory pool, this will
+>> reduce the memory consumption when there are too many QPs are inactive.
 >>
->> Friendly ping: who can take this, please?
+>> If a QP enables DCA feature, the WQE's buffer will not be allocated when
+>> creating. But when the users start to post WRs, the hns driver will
+>> allocate a buffer from the memory pool and then fill WQEs which tagged with
+>> this QP's number.
 >>
->> Thanks
->> --
->> Gustavo
+>> The hns ROCEE will stop accessing the WQE buffer when the user polled all
+>> of the CQEs for a DCA QP, then the driver will recycle this WQE's buffer
+>> to the memory pool.
 >>
->> On 3/5/21 03:06, Gustavo A. R. Silva wrote:
->>> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
->>> warnings by explicitly adding multiple break statements instead of
->>> letting the code fall through to the next case.
->>>
->>> Link: https://github.com/KSPP/linux/issues/115
->>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> This patch adds a group of methods to support the user space register
+>> buffers to a memory pool which belongs to the user context. The hns kernel
+>> driver will update the pages state in this pool when the user calling the
+>> post/poll methods and the user driver can get the QP's WQE buffer address
+>> by the key and offset which queried from kernel.
+>>
+>> Signed-off-by: Xi Wang <wangxi11@huawei.com>
+>> Signed-off-by: Weihang Li <liweihang@huawei.com>
+>> ---
+>>  drivers/infiniband/hw/hns/Makefile          |   2 +-
+>>  drivers/infiniband/hw/hns/hns_roce_dca.c    | 381 ++++++++++++++++++++++++++++
+>>  drivers/infiniband/hw/hns/hns_roce_dca.h    |  22 ++
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |   9 +
+>>  drivers/infiniband/hw/hns/hns_roce_main.c   |  27 +-
+>>  include/uapi/rdma/hns-abi.h                 |  27 ++
+>>  6 files changed, 465 insertions(+), 3 deletions(-)
+>>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_dca.c
+>>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_dca.h
+>>
+>> diff --git a/drivers/infiniband/hw/hns/Makefile b/drivers/infiniband/hw/hns/Makefile
+>> index e105945..9962b23 100644
+>> --- a/drivers/infiniband/hw/hns/Makefile
+>> +++ b/drivers/infiniband/hw/hns/Makefile
+>> @@ -6,7 +6,7 @@
+>>  ccflags-y :=  -I $(srctree)/drivers/net/ethernet/hisilicon/hns3
+>>  
+>>  hns-roce-objs := hns_roce_main.o hns_roce_cmd.o hns_roce_pd.o \
+>> -	hns_roce_ah.o hns_roce_hem.o hns_roce_mr.o hns_roce_qp.o \
+>> +	hns_roce_ah.o hns_roce_hem.o hns_roce_mr.o hns_roce_qp.o hns_roce_dca.o \
+>>  	hns_roce_cq.o hns_roce_alloc.o hns_roce_db.o hns_roce_srq.o hns_roce_restrack.o
+>>  
+>>  ifdef CONFIG_INFINIBAND_HNS_HIP06
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_dca.c b/drivers/infiniband/hw/hns/hns_roce_dca.c
+>> new file mode 100644
+>> index 0000000..2a03cf3
+>> --- /dev/null
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_dca.c
+>> @@ -0,0 +1,381 @@
+>> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>> +/*
+>> + * Copyright (c) 2021 Hisilicon Limited. All rights reserved.
+>> + */
+>> +
+>> +#include <rdma/ib_user_verbs.h>
+>> +#include <rdma/ib_verbs.h>
+>> +#include <rdma/uverbs_types.h>
+>> +#include <rdma/uverbs_ioctl.h>
+>> +#include <rdma/uverbs_std_types.h>
+>> +#include <rdma/ib_umem.h>
+>> +#include "hns_roce_device.h"
+>> +#include "hns_roce_dca.h"
+>> +
+>> +#define UVERBS_MODULE_NAME hns_ib
+>> +#include <rdma/uverbs_named_ioctl.h>
+>> +
+>> +/* DCA memory */
+>> +struct dca_mem {
+>> +#define DCA_MEM_FLAGS_ALLOCED BIT(0)
+>> +#define DCA_MEM_FLAGS_REGISTERED BIT(1)
+>> +	u32 flags;
+>> +	struct list_head list; /* link to mem list in dca context */
+>> +	spinlock_t lock; /* protect the @flags and @list */
+>> +	int page_count; /* page count in this mem obj */
+>> +	u64 key; /* register by caller */
+>> +	u32 size; /* bytes in this mem object */
+>> +	struct hns_dca_page_state *states; /* record each page's state */
+>> +	void *pages; /* memory handle for getting dma address */
+>> +};
+>> +
+>> +struct dca_mem_attr {
+>> +	u64 key;
+>> +	u64 addr;
+>> +	u32 size;
+>> +};
+>> +
+>> +static inline bool dca_mem_is_free(struct dca_mem *mem)
+>> +{
+>> +	return mem->flags == 0;
+>> +}
+>> +
+>> +static inline void set_dca_mem_free(struct dca_mem *mem)
+>> +{
+>> +	mem->flags = 0;
+>> +}
+>> +
+>> +static inline void set_dca_mem_alloced(struct dca_mem *mem)
+>> +{
+>> +	mem->flags |= DCA_MEM_FLAGS_ALLOCED;
+>> +}
+>> +
+>> +static inline void set_dca_mem_registered(struct dca_mem *mem)
+>> +{
+>> +	mem->flags |= DCA_MEM_FLAGS_REGISTERED;
+>> +}
+>> +
+>> +static inline void clr_dca_mem_registered(struct dca_mem *mem)
+>> +{
+>> +	mem->flags &= ~DCA_MEM_FLAGS_REGISTERED;
+>> +}
+>> +
+>> +static void free_dca_pages(void *pages)
+>> +{
+>> +	ib_umem_release(pages);
+>> +}
 > 
-> Reviewed-by: Håkon Bugge <haakon.bugge@oracle.com>
+> All this oneline madness should go.
 > 
+> Thanks
 > 
-> Thxs, Håkon
-> 
-> 
->>> ---
->>> net/rds/tcp_connect.c | 1 +
->>> net/rds/threads.c     | 2 ++
->>> 2 files changed, 3 insertions(+)
->>>
->>> diff --git a/net/rds/tcp_connect.c b/net/rds/tcp_connect.c
->>> index 4e64598176b0..5461d77fff4f 100644
->>> --- a/net/rds/tcp_connect.c
->>> +++ b/net/rds/tcp_connect.c
->>> @@ -78,6 +78,7 @@ void rds_tcp_state_change(struct sock *sk)
->>> 	case TCP_CLOSE_WAIT:
->>> 	case TCP_CLOSE:
->>> 		rds_conn_path_drop(cp, false);
->>> +		break;
->>> 	default:
->>> 		break;
->>> 	}
->>> diff --git a/net/rds/threads.c b/net/rds/threads.c
->>> index 32dc50f0a303..1f424cbfcbb4 100644
->>> --- a/net/rds/threads.c
->>> +++ b/net/rds/threads.c
->>> @@ -208,6 +208,7 @@ void rds_send_worker(struct work_struct *work)
->>> 		case -ENOMEM:
->>> 			rds_stats_inc(s_send_delayed_retry);
->>> 			queue_delayed_work(rds_wq, &cp->cp_send_w, 2);
->>> +			break;
->>> 		default:
->>> 			break;
->>> 		}
->>> @@ -232,6 +233,7 @@ void rds_recv_worker(struct work_struct *work)
->>> 		case -ENOMEM:
->>> 			rds_stats_inc(s_recv_delayed_retry);
->>> 			queue_delayed_work(rds_wq, &cp->cp_recv_w, 2);
->>> +			break;
->>> 		default:
->>> 			break;
->>> 		}
->>>
-> 
+
+Sure, thanks.
+
+Weihang
