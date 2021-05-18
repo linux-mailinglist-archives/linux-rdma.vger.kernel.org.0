@@ -2,89 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 888EB387905
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 May 2021 14:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E160387931
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 May 2021 14:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349289AbhERMmN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 May 2021 08:42:13 -0400
-Received: from mga18.intel.com ([134.134.136.126]:53511 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349285AbhERMmN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 18 May 2021 08:42:13 -0400
-IronPort-SDR: 4FAgMFK7rHv8c1Xxo2/7SUW9dfcyCTXPaV7rRXYpUwjF5mrqQneW3VEYZ/QbVIiLVrDAGQf9zB
- 5sD/IbntMhbw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="188109671"
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="188109671"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 05:40:54 -0700
-IronPort-SDR: sgggo7ok56IsqNjKGpzCvHMUBi/XmWmxVBdqawlmROTrG0Hvs0QHaEvwXDv+HgO2oh5jBlGM7P
- zk+xuEcfUn+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,310,1613462400"; 
-   d="scan'208";a="544093527"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 18 May 2021 05:40:53 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 5526312F; Tue, 18 May 2021 15:41:14 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: [PATCH v1 1/1] infiniband: hf1: Use string_upper() instead of open coded variant
-Date:   Tue, 18 May 2021 15:41:11 +0300
-Message-Id: <20210518124111.20030-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S244269AbhERMxo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 May 2021 08:53:44 -0400
+Received: from mail-m2835.qiye.163.com ([103.74.28.35]:30110 "EHLO
+        mail-m2835.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244238AbhERMxn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 May 2021 08:53:43 -0400
+X-Greylist: delayed 487 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 May 2021 08:53:43 EDT
+Received: from localhost (unknown [117.48.120.186])
+        by mail-m2835.qiye.163.com (Hmail) with ESMTPA id 6C74D780AAA;
+        Tue, 18 May 2021 20:44:12 +0800 (CST)
+Date:   Tue, 18 May 2021 20:44:11 +0800
+From:   WANG Chao <chao.wang@ucloud.cn>
+To:     Mark Zhang <markzhang@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: Mellanox CX6DX switchdev mode VF fails rdma-core
+ tests.test_mlx5_dc.DCTest
+Message-ID: <20210518124411.vps2uyjfzo4ikjjz@MacBook-Air.local>
+References: <20210518092537.mzlmqn7eua4ugztu@MacBook-Air.local>
+ <13a4c4a3-0914-c8c9-1873-da83ca0177ed@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <13a4c4a3-0914-c8c9-1873-da83ca0177ed@nvidia.com>
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSUI3V1ktWUFJV1kPCR
+        oVCBIfWUFZGk5ISVZKTU8eQh4eHkhOSR5VGRETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mhw6PSo4Az05MAMwEC8WIwxW
+        IhgaFBJVSlVKTUlKSE9KQ05JTUNNVTMWGhIXVRgTGhRVDBoVHDsOGBcUDh9VGBVFWVdZEgtZQVlK
+        SkxVT0NVSklLVUpDTVlXWQgBWUFIT01JNwY+
+X-HM-Tid: 0a797f815322841dkuqw6c74d780aaa
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Use string_upper() from string helper module instead of open coded variant.
+On 05/18/21 at 08:30P, Mark Zhang wrote:
+> On 5/18/2021 5:25 PM, WANG Chao wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > 
+> > Hi All
+> > 
+> > I'm running tests from https://github.com/linux-rdma/rdma-core/tree/master and
+> > got the following errors from all tests.test_mlx5_dc.DCTest tests:
+> > 
+> > build/bin/run_tests.py --dev mlx5_2 --port 1 tests.test_mlx5_dc.DCTest.test_dc_rdma_write
+> > E
+> > ======================================================================
+> > ERROR: test_dc_rdma_write (tests.test_mlx5_dc.DCTest)
+> > ----------------------------------------------------------------------
+> > Traceback (most recent call last):
+> >    File "/data/rdma-core.master/tests/test_mlx5_dc.py", line 62, in test_dc_rdma_write
+> >      send_ops_flags=e.IBV_QP_EX_WITH_RDMA_WRITE)
+> >    File "/data/rdma-core.master/tests/test_mlx5_dc.py", line 53, in create_players
+> >      self.client.pre_run(self.server.psns, self.server.qps_num)
+> >    File "/data/rdma-core.master/tests/mlx5_base.py", line 36, in pre_run
+> >      self.to_rts()
+> >    File "/data/rdma-core.master/tests/mlx5_base.py", line 31, in to_rts
+> >      self.dct_qp.to_rtr(attr)
+> >    File "qp.pyx", line 1113, in pyverbs.qp.QP.to_rtr
+> > pyverbs.pyverbs_error.PyverbsRDMAError: Failed to modify QP state to RTR. Errno: 22, Invalid argument
+> > 
+> > ----------------------------------------------------------------------
+> > Ran 1 test in 0.051s
+> > 
+> > FAILED (errors=1)
+> > 
+> > ===
+> > Additional information:
+> > 
+> > - VF is LAG and VF binds to host.
+> > - DC tests fail when NIC is in switchdev mode while legacy mode is fine.
+> > - Tested on 5.12 inbox driver or OFED 5.3, neither is working.
+> > - 5f:00.0 Ethernet controller [0200]: Mellanox Technologies MT2892 Family [ConnectX-6 Dx] [15b3:101d]
+> > - firmware-version: 22.30.1004 (MT_0000000536)
+> > 
+> > I worked a bit tracepoint on 5.12 inbox driver. It seems like there's a firmware
+> > command error for CREATE_DCT.
+> > 
+> > I can provide more information if you ask.
+> > 
+> > Thanks
+> > WANG Chao
+> > 
+> Is there any syndrome in kernel log? Try to reproduce with debug log
+> enabled:
+> echo -n "func mlx5_cmd_check +p" > /sys/kernel/debug/dynamic_debug/control
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/infiniband/hw/hfi1/efivar.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hfi1/efivar.c b/drivers/infiniband/hw/hfi1/efivar.c
-index c22ab7b5163b..197cbd620662 100644
---- a/drivers/infiniband/hw/hfi1/efivar.c
-+++ b/drivers/infiniband/hw/hfi1/efivar.c
-@@ -45,7 +45,8 @@
-  *
-  */
- 
--#include <linux/ctype.h>
-+#include <linux/string_helpers.h>
-+
- #include "efivar.h"
- 
- /* GUID for HFI1 variables in EFI */
-@@ -154,7 +155,6 @@ int read_hfi1_efi_var(struct hfi1_devdata *dd, const char *kind,
- 	char prefix_name[64];
- 	char name[64];
- 	int result;
--	int i;
- 
- 	/* create a common prefix */
- 	snprintf(prefix_name, sizeof(prefix_name), "%04x:%02x:%02x.%x",
-@@ -170,10 +170,7 @@ int read_hfi1_efi_var(struct hfi1_devdata *dd, const char *kind,
- 	 * variable.
- 	 */
- 	if (result) {
--		/* Converting to uppercase */
--		for (i = 0; prefix_name[i]; i++)
--			if (isalpha(prefix_name[i]))
--				prefix_name[i] = toupper(prefix_name[i]);
-+		string_upper(prefix_name, prefix_name);
- 		snprintf(name, sizeof(name), "%s-%s", prefix_name, kind);
- 		result = read_efi_var(name, size, return_data);
- 	}
--- 
-2.30.2
-
+[26538.391991] mlx5_core 0000:5f:00.2: mlx5_cmd_check:820:(pid 27332): CREATE_DCT(0x710) op_mod(0x0) failed, status bad parameter(0x3), syndrome (0xa22b82)
