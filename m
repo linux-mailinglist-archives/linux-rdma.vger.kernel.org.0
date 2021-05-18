@@ -2,105 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66BB5387CAB
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 May 2021 17:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B903387DE7
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 May 2021 18:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350289AbhERPqQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 May 2021 11:46:16 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54446 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350273AbhERPqP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 May 2021 11:46:15 -0400
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 6016C20B7188;
-        Tue, 18 May 2021 08:44:57 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6016C20B7188
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1621352697;
-        bh=3HQYFgD4lxpqADotbbiCx33GTkFHpxK08+XG1XtrjPI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aAkJCclcikW+/0HQ2xhJWDmuSo5v7++8kyppG7KPOk4FYls1Zr4KkH7FOig1KrT0x
-         ntrA36/umwOyfuecwNuHVZ6ntToWOuTNJ0pu0kn1/nZnuU2sMxEQYFplD9v8InxJ4P
-         aQ39IUDGyxvZV8dxu0tCsJ9FJ0BqtoIMKvM4COxg=
-Received: by mail-pl1-f178.google.com with SMTP id s4so3753280plg.12;
-        Tue, 18 May 2021 08:44:57 -0700 (PDT)
-X-Gm-Message-State: AOAM531qjQTQ8yutVE4m2F6w1hajF6tHAx7wLhTefLKPyxAu3OV76w2D
-        B+fJ2jhlSgJSLxkQYv4iQ5jaMafjtot5ku8Z4fs=
-X-Google-Smtp-Source: ABdhPJyH71DOHHf5vAHuwNoiGYshpXvPej6HckHw0XokpfXTIkipE9bPqtisiMcZNB0rqtLKF6U49DPWaygEV8C2+PI=
-X-Received: by 2002:a17:902:bc88:b029:ee:7ef1:e770 with SMTP id
- bb8-20020a170902bc88b02900ee7ef1e770mr5296175plb.19.1621352697022; Tue, 18
- May 2021 08:44:57 -0700 (PDT)
+        id S1346721AbhERQxp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 May 2021 12:53:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230355AbhERQxo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 May 2021 12:53:44 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74F2C061573
+        for <linux-rdma@vger.kernel.org>; Tue, 18 May 2021 09:52:24 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id z1so5277863qvo.4
+        for <linux-rdma@vger.kernel.org>; Tue, 18 May 2021 09:52:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kYQfhZjGiB21uwvvii/eDl4WBostiu4HLhRObj8C+iE=;
+        b=FxbWpdm0IGamsgn5IAHkrTg5jNhGHVEvUDe5Kvnef6Ejvv72ZkKfKFszCiOhBk8zZb
+         cHlseBtwFAt6roLP7q6SLV+7/H7/MQB3nPy47Uj2ywlj2dpvYhR7qVnoRy/Qj7vsTPXf
+         2HrwfeKjER0STv3afEBVzmnYEPkfqBS1Eg4eUDivQDxK0allmhz/F3q5NhR65wuge/AU
+         lyDq3LwBpyK6nMhQNjsynGnk3Hn97TCe1WTZD2imE/c9mNgjoh5Tb4LtEED9QuA4nF8w
+         +w+FDYS2yXUzyCp619HgVehdTXU3rB4A+XT/wtUHQyoWDlvZDtAA54E1mGXAkjhITlxA
+         YvXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kYQfhZjGiB21uwvvii/eDl4WBostiu4HLhRObj8C+iE=;
+        b=Hma1aZaq5fd5aJkx4f/Usonj9+6j2NAaAJxeE3XqnD6h2xGcCwD5cFADHjvPiY4dBD
+         oIHtMGyBAZCN0zMA1ZC2zsWrJsVFnMTNObyb6rnBkdGlBaZWnUjYpWPKvk823NnuHEd/
+         +wEzvs5FzJHVMOpWvXPJeafkAkKD4bKQETqWJ+qxVE2GLdyofoXUqr7E117f1+asyJ+5
+         DrcVd+3MBnFGmYmE1V52Vrh0fvXGEMCdsUfuVeobk88YCP1+4EzhNKjeEzEbYEBGpB6v
+         0S4u7expm4n3EvMRd7EhsgQ0dSn5u3iXdZ6CFt45ZenbFefznhuS0D1dts77tSKiWhRj
+         j7Pw==
+X-Gm-Message-State: AOAM531IZMADeN4nKQeo879j6g8jsijuoLEe6TjYWGEHO9VOi642glC4
+        KJoLhBRDjM7OirLL/p1ohABVzw==
+X-Google-Smtp-Source: ABdhPJzOVjvr8hWPrgrF7NAZj7ND3/sNqIGJupou1P68bmQVgnS5sFhzm63OZGfJulIBnmyBUsmBXA==
+X-Received: by 2002:ad4:42b3:: with SMTP id e19mr6693632qvr.62.1621356744149;
+        Tue, 18 May 2021 09:52:24 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id g5sm14962434qtm.2.2021.05.18.09.52.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 09:52:23 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lj2xC-00ALLW-ET; Tue, 18 May 2021 13:52:22 -0300
+Date:   Tue, 18 May 2021 13:52:22 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Mark Zhang <markzhang@nvidia.com>
+Cc:     WANG Chao <chao.wang@ucloud.cn>, linux-rdma@vger.kernel.org
+Subject: Re: Mellanox CX6DX switchdev mode VF fails rdma-core
+ tests.test_mlx5_dc.DCTest
+Message-ID: <20210518165222.GS1096940@ziepe.ca>
+References: <20210518092537.mzlmqn7eua4ugztu@MacBook-Air.local>
+ <13a4c4a3-0914-c8c9-1873-da83ca0177ed@nvidia.com>
+ <20210518124411.vps2uyjfzo4ikjjz@MacBook-Air.local>
+ <4eb5c13e-6e9a-5d79-da7d-bd4219eef447@nvidia.com>
 MIME-Version: 1.0
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
- <20210513165846.23722-2-mcroce@linux.microsoft.com> <YJ3Lrdx1oIm/MDV8@casper.infradead.org>
-In-Reply-To: <YJ3Lrdx1oIm/MDV8@casper.infradead.org>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Tue, 18 May 2021 17:44:21 +0200
-X-Gmail-Original-Message-ID: <CAFnufp0jwSMx_-CeFguNnec0pC0WNcPnhobiVE0sH9Jo9tjK+g@mail.gmail.com>
-Message-ID: <CAFnufp0jwSMx_-CeFguNnec0pC0WNcPnhobiVE0sH9Jo9tjK+g@mail.gmail.com>
-Subject: Re: [PATCH net-next v5 1/5] mm: add a signature in struct page
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4eb5c13e-6e9a-5d79-da7d-bd4219eef447@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, May 14, 2021 at 3:01 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> I feel like I want to document the pfmemalloc bit in mm_types.h,
-> but I don't have a concrete suggestion yet.
->
+On Tue, May 18, 2021 at 09:00:29PM +0800, Mark Zhang wrote:
+> On 5/18/2021 8:44 PM, WANG Chao wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > 
+> > On 05/18/21 at 08:30P, Mark Zhang wrote:
+> > > On 5/18/2021 5:25 PM, WANG Chao wrote:
+> > > > External email: Use caution opening links or attachments
+> > > > 
+> > > > 
+> > > > Hi All
+> > > > 
+> > > > I'm running tests from https://github.com/linux-rdma/rdma-core/tree/master and
+> > > > got the following errors from all tests.test_mlx5_dc.DCTest tests:
+> > > > 
+> > > > build/bin/run_tests.py --dev mlx5_2 --port 1 tests.test_mlx5_dc.DCTest.test_dc_rdma_write
+> > > > E
+> > > > ======================================================================
+> > > > ERROR: test_dc_rdma_write (tests.test_mlx5_dc.DCTest)
+> > > > Traceback (most recent call last):
+> > > >     File "/data/rdma-core.master/tests/test_mlx5_dc.py", line 62, in test_dc_rdma_write
+> > > >       send_ops_flags=e.IBV_QP_EX_WITH_RDMA_WRITE)
+> > > >     File "/data/rdma-core.master/tests/test_mlx5_dc.py", line 53, in create_players
+> > > >       self.client.pre_run(self.server.psns, self.server.qps_num)
+> > > >     File "/data/rdma-core.master/tests/mlx5_base.py", line 36, in pre_run
+> > > >       self.to_rts()
+> > > >     File "/data/rdma-core.master/tests/mlx5_base.py", line 31, in to_rts
+> > > >       self.dct_qp.to_rtr(attr)
+> > > >     File "qp.pyx", line 1113, in pyverbs.qp.QP.to_rtr
+> > > > pyverbs.pyverbs_error.PyverbsRDMAError: Failed to modify QP state to RTR. Errno: 22, Invalid argument
+> > > > 
+> > > > Ran 1 test in 0.051s
+> > > > 
+> > > > FAILED (errors=1)
+> > > > 
+> > > > ===
+> > > > Additional information:
+> > > > 
+> > > > - VF is LAG and VF binds to host.
+> > > > - DC tests fail when NIC is in switchdev mode while legacy mode is fine.
+> > > > - Tested on 5.12 inbox driver or OFED 5.3, neither is working.
+> > > > - 5f:00.0 Ethernet controller [0200]: Mellanox Technologies MT2892 Family [ConnectX-6 Dx] [15b3:101d]
+> > > > - firmware-version: 22.30.1004 (MT_0000000536)
+> > > > 
+> > > > I worked a bit tracepoint on 5.12 inbox driver. It seems like there's a firmware
+> > > > command error for CREATE_DCT.
+> > > > 
+> > > > I can provide more information if you ask.
+> > > > 
+> > > > Thanks
+> > > > WANG Chao
+> > > > 
+> > > Is there any syndrome in kernel log? Try to reproduce with debug log
+> > > enabled:
+> > > echo -n "func mlx5_cmd_check +p" > /sys/kernel/debug/dynamic_debug/control
+> > 
+> > [26538.391991] mlx5_core 0000:5f:00.2: mlx5_cmd_check:820:(pid 27332): CREATE_DCT(0x710) op_mod(0x0) failed, status bad parameter(0x3), syndrome (0xa22b82)
+> > 
+> This syndrome indicates DCT is not supported in VF LAG mode here.
 
-Maybe simply:
+Is this out of order:
 
-/* Bit zero is set
- * Bit one if pfmemalloc page
- */
- unsigned long compound_head;
+    def test_odp_dc_traffic(self):
+        send_ops_flag = e.IBV_QP_EX_WITH_SEND
+        self.create_players(OdpDc, qp_count=2, send_ops_flags=send_ops_flag)
+        self.check_odp_dc_support()
+         ^^^^^^^^^^^^^^^^^^^^^
 
-Regards,
--- 
-per aspera ad upstream
+?
+
+Jason
+
