@@ -2,88 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4A3388CD6
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 May 2021 13:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B85388CD7
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 May 2021 13:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239359AbhESLb6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 May 2021 07:31:58 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:49100 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhESLb5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 May 2021 07:31:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1621423839; x=1652959839;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=ieAMlp0e92WQWZAvsoX/ywDjpd8as1Xa1upk2S4udvo=;
-  b=FovU9ogloGmcdmDK/jEwP6DLWQiTQwp27T0CajNJP+zMbPb49zDP6ZFk
-   ZzGgTHWa+or0oWBaXUb0urVAoy3VPim+6QBAgJfjIl/VhvvCs0PkzU5lf
-   s8LJzMJgHtEw9oKThS4g93hdF17Js9tnNOktwazDcrQ5eKDhLjcKS7l3b
-   w=;
-X-IronPort-AV: E=Sophos;i="5.82,312,1613433600"; 
-   d="scan'208";a="110235358"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1e-42f764a0.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 19 May 2021 11:30:32 +0000
-Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-42f764a0.us-east-1.amazon.com (Postfix) with ESMTPS id 9BA08C0578;
-        Wed, 19 May 2021 11:30:25 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.253) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Wed, 19 May 2021 11:30:17 +0000
-Subject: Re: [PATCH 01/13] RDMA: Split the alloc_hw_stats() ops to port and
- device variants
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>
-References: <1-v1-34c90fa45f1c+3c7b0-port_sysfs_jgg@nvidia.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <2cdd5b33-1e54-779b-53b4-054d734b5eb2@amazon.com>
-Date:   Wed, 19 May 2021 14:29:57 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        id S236642AbhESLc0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 May 2021 07:32:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229554AbhESLc0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 May 2021 07:32:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F561611BF;
+        Wed, 19 May 2021 11:31:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621423866;
+        bh=dsffP4B2KxQ0TA2m4wAHg4MsBgQovUMUcSginK2ygdk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZTtZJUrQUHx7dKCNUnm0nSVkxQJt/m+OOxqCuzD4gwEu7KQWYljTf4D5QhMt9d24I
+         UfrA8SPJlVn6Zq3KNYl4E6Zy+DRNr0MBSYgxTLGF4/dckU+UuWH2beZNVaLOSTa0RW
+         Q0/NwzZbDQLjL1KmmvMqqiIiM9aijpCk62wGBb2i9kCA5j38pSq8vbTqp55R8IB3Rk
+         wnYruVA5lC/meMQtIykr8zBqRNcT3boAIRnrC92Bo4sB79Q8Yy7dHvRrvxEWMKueOy
+         Mk/Z/Ka6gzRabJNFatiG+Ktqk9otAMjlPhsSiCxBk6n/f7WeHW8n+/rojA4mOBIMSi
+         YdnSApwxWl6FA==
+Date:   Wed, 19 May 2021 14:31:03 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Shiraz Saleem <shiraz.saleem@intel.com>
+Cc:     dledford@redhat.com, jgg@nvidia.com, kuba@kernel.org,
+        davem@davemloft.net, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, david.m.ertman@intel.com,
+        anthony.l.nguyen@intel.com
+Subject: Re: [PATCH v5 04/22] ice: Register auxiliary device to provide RDMA
+Message-ID: <YKT292HPpKRmzDC4@unreal>
+References: <20210514141214.2120-1-shiraz.saleem@intel.com>
+ <20210514141214.2120-5-shiraz.saleem@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1-v1-34c90fa45f1c+3c7b0-port_sysfs_jgg@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.253]
-X-ClientProxiedBy: EX13D42UWA001.ant.amazon.com (10.43.160.153) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514141214.2120-5-shiraz.saleem@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 17/05/2021 19:47, Jason Gunthorpe wrote:
-> +struct rdma_hw_stats *efa_alloc_hw_device_stats(struct ib_device *ibdev)
+On Fri, May 14, 2021 at 09:11:56AM -0500, Shiraz Saleem wrote:
+> From: Dave Ertman <david.m.ertman@intel.com>
+> 
+> Register ice client auxiliary RDMA device on the auxiliary bus per
+> PCIe device function for the auxiliary driver (irdma) to attach to.
+> It allows to realize a single RDMA driver (irdma) capable of working with
+> multiple netdev drivers over multi-generation Intel HW supporting RDMA.
+> There is no load ordering dependencies between ice and irdma.
+> 
+> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> ---
+>  drivers/net/ethernet/intel/Kconfig        |  1 +
+>  drivers/net/ethernet/intel/ice/ice.h      |  8 +++-
+>  drivers/net/ethernet/intel/ice/ice_idc.c  | 71 ++++++++++++++++++++++++++++++-
+>  drivers/net/ethernet/intel/ice/ice_main.c | 11 ++++-
+>  4 files changed, 87 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/Kconfig b/drivers/net/ethernet/intel/Kconfig
+> index c1d1556..d8a12da 100644
+> --- a/drivers/net/ethernet/intel/Kconfig
+> +++ b/drivers/net/ethernet/intel/Kconfig
+> @@ -294,6 +294,7 @@ config ICE
+>  	tristate "Intel(R) Ethernet Connection E800 Series Support"
+>  	default n
+>  	depends on PCI_MSI
+> +	select AUXILIARY_BUS
+>  	select DIMLIB
+>  	select NET_DEVLINK
+>  	select PLDMFW
+> diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
+> index 225f8a5..228055e 100644
+> --- a/drivers/net/ethernet/intel/ice/ice.h
+> +++ b/drivers/net/ethernet/intel/ice/ice.h
+> @@ -34,6 +34,7 @@
+>  #include <linux/if_bridge.h>
+>  #include <linux/ctype.h>
+>  #include <linux/bpf.h>
+> +#include <linux/auxiliary_bus.h>
+>  #include <linux/avf/virtchnl.h>
+>  #include <linux/cpu_rmap.h>
+>  #include <linux/dim.h>
+> @@ -647,6 +648,8 @@ static inline void ice_clear_sriov_cap(struct ice_pf *pf)
+>  void ice_fill_rss_lut(u8 *lut, u16 rss_table_size, u16 rss_size);
+>  int ice_schedule_reset(struct ice_pf *pf, enum ice_reset_req reset);
+>  void ice_print_link_msg(struct ice_vsi *vsi, bool isup);
+> +int ice_plug_aux_dev(struct ice_pf *pf);
+> +void ice_unplug_aux_dev(struct ice_pf *pf);
+>  int ice_init_rdma(struct ice_pf *pf);
+>  const char *ice_stat_str(enum ice_status stat_err);
+>  const char *ice_aq_str(enum ice_aq_err aq_err);
+> @@ -678,8 +681,10 @@ int ice_aq_wait_for_event(struct ice_pf *pf, u16 opcode, unsigned long timeout,
+>   */
+>  static inline void ice_set_rdma_cap(struct ice_pf *pf)
+>  {
+> -	if (pf->hw.func_caps.common_cap.rdma && pf->num_rdma_msix)
+> +	if (pf->hw.func_caps.common_cap.rdma && pf->num_rdma_msix) {
+>  		set_bit(ICE_FLAG_RDMA_ENA, pf->flags);
+> +		ice_plug_aux_dev(pf);
+> +	}
+>  }
+>  
+>  /**
+> @@ -688,6 +693,7 @@ static inline void ice_set_rdma_cap(struct ice_pf *pf)
+>   */
+>  static inline void ice_clear_rdma_cap(struct ice_pf *pf)
+>  {
+> +	ice_unplug_aux_dev(pf);
+>  	clear_bit(ICE_FLAG_RDMA_ENA, pf->flags);
+>  }
+>  #endif /* _ICE_H_ */
+> diff --git a/drivers/net/ethernet/intel/ice/ice_idc.c b/drivers/net/ethernet/intel/ice/ice_idc.c
+> index ffca0d5..e7bb8f6 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_idc.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_idc.c
+> @@ -255,6 +255,71 @@ static int ice_reserve_rdma_qvector(struct ice_pf *pf)
+>  }
+>  
+>  /**
+> + * ice_adev_release - function to be mapped to AUX dev's release op
+> + * @dev: pointer to device to free
+> + */
+> +static void ice_adev_release(struct device *dev)
 > +{
-> +	/*
-> +	 * It is probably a bug that efa reports its port stats as device
-> +	 * stats
-> +	 */
+> +	struct iidc_auxiliary_dev *iadev;
+> +
+> +	iadev = container_of(dev, struct iidc_auxiliary_dev, adev.dev);
+> +	kfree(iadev);
+> +}
+> +
+> +/**
+> + * ice_plug_aux_dev - allocate and register AUX device
+> + * @pf: pointer to pf struct
+> + */
+> +int ice_plug_aux_dev(struct ice_pf *pf)
+> +{
+> +	struct iidc_auxiliary_dev *iadev;
+> +	struct auxiliary_device *adev;
+> +	int ret;
+> +
+> +	iadev = kzalloc(sizeof(*iadev), GFP_KERNEL);
+> +	if (!iadev)
+> +		return -ENOMEM;
+> +
+> +	adev = &iadev->adev;
+> +	pf->adev = adev;
+> +	iadev->pf = pf;
+> +
+> +	adev->id = pf->aux_idx;
+> +	adev->dev.release = ice_adev_release;
+> +	adev->dev.parent = &pf->pdev->dev;
+> +	adev->name = IIDC_RDMA_ROCE_NAME;
 
-Hmm, yea this needs some work.
-Most of these stats are in fact port stats, but others (admin commands,
-keep-alive, allocation/creation error) are device stats.
+You declared IIDC_RDMA_ROCE_NAME as intel_rdma_roce, so it will create
+extremely awful device name, something like irdma.intel_rdma_roce.0
 
-You can split them if you wish, or I can send a followup patch.
+I would say that "intel" and "rdma" can be probably dropped.
 
-Thanks,
-Tested-by: Gal Pressman <galpress@amazon.com>
+Thanks
