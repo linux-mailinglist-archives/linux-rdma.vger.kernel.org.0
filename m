@@ -2,203 +2,137 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B003892F4
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 May 2021 17:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB5A389415
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 May 2021 18:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346171AbhESPuJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 May 2021 11:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233708AbhESPuI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 May 2021 11:50:08 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCE5C06175F
-        for <linux-rdma@vger.kernel.org>; Wed, 19 May 2021 08:48:48 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id a2so13141417qkh.11
-        for <linux-rdma@vger.kernel.org>; Wed, 19 May 2021 08:48:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x63CDkbpjrpOmS69kD+XBMLK30BCtwwCMgbZs5D9GJU=;
-        b=KYJbuaE8MNqDFjrByUBoDljcz28pqSJ9IP4Zw+X4uKNMUhKlxfswUoyprquRcXOJli
-         WDpGqYUed+S7+EgZDjz8FXzyWWEs/+1whaSM1uHfI0PghjBQWkSJOLNN8wXWf19klAMP
-         6nzX/cq0poJTOjbubMToa/w//IlMTTZxfDIlM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x63CDkbpjrpOmS69kD+XBMLK30BCtwwCMgbZs5D9GJU=;
-        b=bdmgvn2vZ3hKcTZEw8A0AkR+P3KvoVfZl9gH+6fB2m/nRlr8PJfZbCOA96dBBrnzjn
-         /ezS9A/HJuvNkypFxUFr6S9rQ2yfdv3gIQ2df2Wfhsaxl31MpvW/F0eG0/WFQl04tCsr
-         bEmGA4j8xueU7FoMa+Rc3aCCfnWpswuB9vOTB8UKlAZzg5yt3gdtX1BeO3QaQbniQ7Zb
-         ac3grVKAdog5D9l1/CjTcKF59AgnLXmpOLxPmwspSEBLF2hO0dAziFxjW/i8Mi79NFc8
-         GPppf5ket3yu0TkpU1x2LTSLytvJ8vvtO3nH0rTEsfEJNMuT1DBBPP94ttAcOPgx8/Pp
-         e4vg==
-X-Gm-Message-State: AOAM530tltFFOnVHMrTCfEPWD2to72FFLnAde4fuKnb9gTYdFvqXyWGx
-        HwDHRBTaG6oQBWjw4nO2rzhWI/lyZ6XsbtWM5Fr1zH6Lt4EQAw==
-X-Google-Smtp-Source: ABdhPJwZwVD+kyRUuOTktBvTZ5Za37jJQ+TyMFMBcT9ECOjFv6LwxBw+Dfp8Mme50c2x4FW04fBEBSvt3LxAf+VPwAA=
-X-Received: by 2002:a37:5c7:: with SMTP id 190mr8882553qkf.169.1621439327621;
- Wed, 19 May 2021 08:48:47 -0700 (PDT)
+        id S237640AbhESQwN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 19 May 2021 12:52:13 -0400
+Received: from mga06.intel.com ([134.134.136.31]:59018 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231124AbhESQwM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 May 2021 12:52:12 -0400
+IronPort-SDR: /3DcR93rBS4NeIfHQD6EFPFaeSjxtEMmTGxNz2UmdEbsBPV+54BTH1CVq9fR/ul27Q0SZTZnb9
+ moWgM7Gfjiaw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="262252083"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="262252083"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 09:50:51 -0700
+IronPort-SDR: 3iU63YcdY7pTDbG3uOUzGORWKkVIGeT5+kacB9ff9o6VcMx6/lGiY9i3LChlVbJ4r8zNE6ca7x
+ YWOJI4CluG4Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="439804360"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga008.fm.intel.com with ESMTP; 19 May 2021 09:50:51 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Wed, 19 May 2021 09:50:50 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Wed, 19 May 2021 09:50:50 -0700
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2242.008;
+ Wed, 19 May 2021 09:50:50 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Potnuri Bharat Teja <bharat@chelsio.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "Latif, Faisal" <faisal.latif@intel.com>,
+        Gal Pressman <galpress@amazon.com>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "Zhu Yanjun" <zyjzyj2000@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Kees Cook" <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: RE: [PATCH 01/13] RDMA: Split the alloc_hw_stats() ops to port and
+ device variants
+Thread-Topic: [PATCH 01/13] RDMA: Split the alloc_hw_stats() ops to port and
+ device variants
+Thread-Index: AQHXSzxfKpiSrsBJnEi7XaP3x/HUP6roAbcwgADA44D//47VQIAAhKYA//+S/jCAAsniAP//qu5g
+Date:   Wed, 19 May 2021 16:50:50 +0000
+Message-ID: <b130c0fd865d46e98761646ddff6f34e@intel.com>
+References: <0-v1-34c90fa45f1c+3c7b0-port_sysfs_jgg@nvidia.com>
+ <1-v1-34c90fa45f1c+3c7b0-port_sysfs_jgg@nvidia.com>
+ <b6045737954e4279939669a1f229c835@intel.com>
+ <20210517231045.GV1002214@nvidia.com>
+ <641e6b83b8694f859281e74ee887c6b3@intel.com>
+ <20210518002028.GX1002214@nvidia.com>
+ <91089ed56df74ef2b1f0199ce7aaec5f@intel.com>
+ <20210519122524.GH1002214@nvidia.com>
+In-Reply-To: <20210519122524.GH1002214@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20210517133532.774998-1-devesh.sharma@broadcom.com>
- <CANjDDBgR_wP5WHWWRue_Pg8XYujcuoqFs2J-zHD0c2g9+bRfjg@mail.gmail.com>
- <CANjDDBjO4dOXCb5rVe1UOd6foeFp8FLTqJbz8w6c36eTZSZtkg@mail.gmail.com> <YKUwKa6fNfBq8b8a@unreal>
-In-Reply-To: <YKUwKa6fNfBq8b8a@unreal>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Wed, 19 May 2021 21:18:11 +0530
-Message-ID: <CANjDDBgM5pgaCJoMM-nFwGFJOu7g2qcTQaM957-RFiUSKK-_vQ@mail.gmail.com>
-Subject: Re: [PATCH V2 INTERNAL 0/4] Broadcom's user library update
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000030f20b05c2b0c334"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000030f20b05c2b0c334
-Content-Type: text/plain; charset="UTF-8"
-
-On Wed, May 19, 2021 at 9:05 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Wed, May 19, 2021 at 08:45:20PM +0530, Devesh Sharma wrote:
-> > On Mon, May 17, 2021 at 7:08 PM Devesh Sharma
-> > <devesh.sharma@broadcom.com> wrote:
+> Subject: Re: [PATCH 01/13] RDMA: Split the alloc_hw_stats() ops to port and
+> device variants
+> 
+> On Tue, May 18, 2021 at 09:58:28PM +0000, Saleem, Shiraz wrote:
+> > > Subject: Re: [PATCH 01/13] RDMA: Split the alloc_hw_stats() ops to
+> > > port and device variants
 > > >
-> > > On Mon, May 17, 2021 at 7:05 PM Devesh Sharma
-> > > <devesh.sharma@broadcom.com> wrote:
-> > > >
-> > > > The main focus of this patch series is to move SQ and RQ
-> > > > wqe posting indices from 128B fixed stride to 16B aligned stride.
-> > > > This allows more flexibility in choosing wqe size.
-> > > >
-> > > >
-> > > > Devesh Sharma (4):
-> > > >   bnxt_re/lib: Read wqe mode from the driver
-> > > >   bnxt_re/lib: add a function to initialize software queue
-> > > >   bnxt_re/lib: Use separate indices for shadow queue
-> > > >   bnxt_re/lib: Move hardware queue to 16B aligned indices
-> > > >
-> > > >  kernel-headers/rdma/bnxt_re-abi.h |   5 +-
-> > > >  providers/bnxt_re/bnxt_re-abi.h   |   5 +
-> > > >  providers/bnxt_re/db.c            |  10 +-
-> > > >  providers/bnxt_re/main.c          |   4 +
-> > > >  providers/bnxt_re/main.h          |  26 ++
-> > > >  providers/bnxt_re/memory.h        |  37 ++-
-> > > >  providers/bnxt_re/verbs.c         | 522 ++++++++++++++++++++----------
-> > > >  7 files changed, 431 insertions(+), 178 deletions(-)
-> > > >
-> > > > --
-> > > > 2.25.1
-> > > >
-> > > Please ignore the "Internal" keyword in the subject line.
+> > > On Tue, May 18, 2021 at 12:18:13AM +0000, Saleem, Shiraz wrote:
 > > >
-> > > --
-> > > -Regards
-> > > Devesh
-> > Hi Leon,
+> > > > > What does the sysfs look like? Aren't there duplicated HW stats?
+> > > >
+> > > >
+> > > > Yeah it is duplicated. So we are saying for phys_port_cnt = 1, we
+> > > > want the stats to show up in only place?
+> > >
+> > > Yes.
+> > >
+> > > Imagine you had a multi port device, and assign the stats appropriately.
+> > >
+> > > I didn't see anything in the list that made me think "device stat"
+> > > but I don't know what several of these do
 > >
-> > Do you have any comments on this series. For the subject line I can
-> > resend the series.
->
-> Yes, the change in kernel-headers/rdma/bnxt_re-abi.h should be separate
-> commit created with kernel-headers/update script.
-Okay sure
->
-> Thanks
->
+> > Are we exporting port stat when it should be really be device stat in some of the
+> drivers though?
 > >
+> > Most vendor drivers do port stats allocation only. Like...
+> > https://elixir.bootlin.com/linux/v5.13-rc2/source/drivers/infiniband/h
+> > w/cxgb4/provider.c#L392
+> > https://elixir.bootlin.com/linux/v5.13-rc2/source/drivers/infiniband/s
+> > w/rxe/rxe_hw_counters.c#L27
+> 
+> Yes they don't have global device counters, presumably because they only have 1
+> port.
+> 
+> > However .get_hw_stats callback appears to extract from same set of
+> > registers for each port
+> 
+> Most devices should only have port counters
+> 
+> > > If you can confirm that these are all port stats I can delete the
+> > > device stats in this series.
 > >
-> > --
-> > -Regards
-> > Devesh
->
->
+> > So your device and port stats op callback separation feels warranted.
+> 
+> So should I delete the device counters here?
 
+For i40iw, yes. Just expose port stats and NULL out the device stat op.
 
--- 
--Regards
-Devesh
-
---00000000000030f20b05c2b0c334
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
-Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
-KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
-SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
-PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
-G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
-PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKIdVnlwXMYxa555zPqrDw2XY/lz
-PDcNU1AEdtBzXauUMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDUxOTE1NDg0OFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQCOudJNh4MmVVa/EVuKi6nyxlZGZ3VFdzT2zHo5BVUEV6gv
-J2saPBvXDUfxzxv9aCcAJot7nsBnL2/00AMIxhjSgi/19fpTsleypEqts3EOFE4RkimcUfy4W4Ws
-BJCm34qrODA1EflqrCrspoicvayvzy4DqGCzkb5rkJg2rNMMMt/54rFrm1k0R7Y+rv8gwQ55PEg2
-FjrUyqOGU1ArysMYMOFcLadL7ZZEUr8Wqnu3NctFU0YgVapu99H2QiBw0a9kmGMgUDQD5p4zbZme
-ZKHniGLWuN7ExLwxbOON0eS3VaEFUBiZdqQhR8/8jHWFp62n5ZYNbGiI16WkQGUxMnA7
---00000000000030f20b05c2b0c334--
