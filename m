@@ -2,182 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF7938925B
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 May 2021 17:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C6F389270
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 May 2021 17:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234298AbhESPRS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 May 2021 11:17:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231823AbhESPRR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 May 2021 11:17:17 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B993DC06175F
-        for <linux-rdma@vger.kernel.org>; Wed, 19 May 2021 08:15:57 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id k127so13040898qkc.6
-        for <linux-rdma@vger.kernel.org>; Wed, 19 May 2021 08:15:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=7FzHCcYo02FR6sZP93JCAhD4PsbyaPHWxThMVklqu74=;
-        b=Iq+rBjVxgz6w9cm5+Hx3XIkkESy6Pr3d1z904LQF7L84/+R1794AEHOlAACN22hFDG
-         XT5h2JQ/6IXQXeiH8EaVi3dEv5PtGCoF1ufNaSnflWtHi9lPFBwip0TVJnTaZ+QCvA4G
-         0BahMUZ+28mj/F0uYRsBshONFOVhA6SkGafkk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=7FzHCcYo02FR6sZP93JCAhD4PsbyaPHWxThMVklqu74=;
-        b=MN2yFH8YFLq2PAjwx2zot+kq5iQhlLx5pQzU9M21iBK9pd5U9Sz6JWBl+Lv3pGijP4
-         M1klcJX/RIqnkC/Wqj58O0D9Q/xwzR0rlzgzC2cHNlsJLa6JMJ2SRsL4EGYWFoIHVfEd
-         CWAWqNRnv/9rfFgMHjR26ZVzjNdwNLlTw4LfKNzBNsDBieSZfLpDT8kUqBT4c/DkP9aP
-         JAkmleMLqNAqj4jbrfCwfF6WrgBM8JXGHb0wiJhzY0RzevwF536I/jNn3tBbuAHcMmYZ
-         r3gSjFXPJCBWdC5ttu8/LpfMC/4qnX9xEQ7/GYF5JKeJA5C+QGdGijg0OHHDU6Af80C7
-         J9cg==
-X-Gm-Message-State: AOAM531WNspdDQ17WmUV4VtJIAsusbRG+deCvjm1oCCmEucfnf6Hf1bG
-        eaGH1nqgWXGlKCxZNhvD6nkC/oJoLJUIgw4xYnKaPVJzK5rcwA==
-X-Google-Smtp-Source: ABdhPJxIdGtKGvh7zaZBQQomLFoM/LE09Q4glBg2H6eFVV1N4ekicSstgmUxhIw4XC3T6Qa9Y2k7sgjNaTMdPXaOvwE=
-X-Received: by 2002:a37:4386:: with SMTP id q128mr13011450qka.76.1621437356266;
- Wed, 19 May 2021 08:15:56 -0700 (PDT)
+        id S1354574AbhESPWN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 May 2021 11:22:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1354564AbhESPWG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 May 2021 11:22:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F301610A8;
+        Wed, 19 May 2021 15:20:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621437645;
+        bh=3+9rvynNd8HYd4k51Z7zS9qoKyq5UZFHkH6xhY5p2JU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b3n4UsNjr7kl+Ql764EN2DQLeN07wKo7FkScraqkyEWQ6ZlYxvngaCKGHAxF9JjZu
+         0engIRSvx000O/e7TgXb6ZCcZF8fw4yZEzDidZpH4LL5lLVzEVQj2HVJ4bKtalwTet
+         0jPogiyi7RH7hPCeMNbfoJiEjOZrxYJWsNWyfTsO/SP1PVqoGkCU812ZxnL5nV7qSO
+         RWixH/aLGgz4dwt9h0Xql3pVactv6sySZHNMDQpXWo4ptvr9ft8z8GmfNEFWTL0yJc
+         7niLo0B7ZcCBUASPLLdloXBj6v7drlPM4tXK2FlB7pY1f0Gg0cRAvBv1rY4yq2PTie
+         9X3V9vhSboFyQ==
+Date:   Wed, 19 May 2021 18:20:40 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     Timo Rothenpieler <timo@rothenpieler.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Subject: Re: Spurious instability with NFSoRDMA under moderate load
+Message-ID: <YKUsyKUFdL9IfLRp@unreal>
+References: <4da3b074-a6be-d83f-ccd4-b151557066aa@rothenpieler.org>
+ <72ECF9E1-1F6E-44AF-850C-536BED898DDD@oracle.com>
 MIME-Version: 1.0
-References: <20210517133532.774998-1-devesh.sharma@broadcom.com> <CANjDDBgR_wP5WHWWRue_Pg8XYujcuoqFs2J-zHD0c2g9+bRfjg@mail.gmail.com>
-In-Reply-To: <CANjDDBgR_wP5WHWWRue_Pg8XYujcuoqFs2J-zHD0c2g9+bRfjg@mail.gmail.com>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Wed, 19 May 2021 20:45:20 +0530
-Message-ID: <CANjDDBjO4dOXCb5rVe1UOd6foeFp8FLTqJbz8w6c36eTZSZtkg@mail.gmail.com>
-Subject: Re: [PATCH V2 INTERNAL 0/4] Broadcom's user library update
-To:     linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000b04daf05c2b04d5a"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <72ECF9E1-1F6E-44AF-850C-536BED898DDD@oracle.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000b04daf05c2b04d5a
-Content-Type: text/plain; charset="UTF-8"
+On Mon, May 17, 2021 at 04:27:29PM +0000, Chuck Lever III wrote:
+> Hello Timo-
+> 
+> > On May 16, 2021, at 1:29 PM, Timo Rothenpieler <timo@rothenpieler.org> wrote:
+> > 
+> > This has happened 3 times so far over the last couple months, and I do not have a clear way to reproduce it.
+> > It happens under moderate load, when lots of nodes read and write from the server. Though not in any super intense way. Just normal program execution, writing of light logs, and other standard tasks.
+> > 
+> > The issues on the clients manifest in a multitude of ways. Most of the time, random IO operations just fail, rarely hang indefinitely and make the process unkillable.
+> > Another example would be: "Failed to remove '.../.nfs00000000007b03af00000001': Device or resource busy"
+> > 
+> > Once a client is in that state, the only way to get it back into order is a reboot.
+> > 
+> > On the server side, a single error cqe is dumped each time this problem happened. So far, I always rebooted the server as well, to make sure everything is back in order. Not sure if that is strictly necessary.
+> > 
+> >> [561889.198889] infiniband mlx5_0: dump_cqe:272:(pid 709): dump error cqe
+> >> [561889.198945] 00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> >> [561889.198984] 00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> >> [561889.199023] 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> >> [561889.199061] 00000030: 00 00 00 00 00 00 88 13 08 00 01 13 07 47 67 d2
+> > 
+> >> [985074.602880] infiniband mlx5_0: dump_cqe:272:(pid 599): dump error cqe
+> >> [985074.602921] 00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> >> [985074.602946] 00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> >> [985074.602970] 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> >> [985074.602994] 00000030: 00 00 00 00 00 00 88 13 08 00 01 46 f2 93 0b d3
+> > 
+> >> [1648894.168819] infiniband ibp1s0: dump_cqe:272:(pid 696): dump error cqe
+> >> [1648894.168853] 00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> >> [1648894.168878] 00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> >> [1648894.168903] 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> >> [1648894.168928] 00000030: 00 00 00 00 00 00 88 13 08 00 01 08 6b d2 b9 d3
+> 
+> I'm hoping Leon can get out his magic decoder ring and tell us if
+> these CQE dumps contain a useful WC status code.
 
-On Mon, May 17, 2021 at 7:08 PM Devesh Sharma
-<devesh.sharma@broadcom.com> wrote:
->
-> On Mon, May 17, 2021 at 7:05 PM Devesh Sharma
-> <devesh.sharma@broadcom.com> wrote:
-> >
-> > The main focus of this patch series is to move SQ and RQ
-> > wqe posting indices from 128B fixed stride to 16B aligned stride.
-> > This allows more flexibility in choosing wqe size.
-> >
-> >
-> > Devesh Sharma (4):
-> >   bnxt_re/lib: Read wqe mode from the driver
-> >   bnxt_re/lib: add a function to initialize software queue
-> >   bnxt_re/lib: Use separate indices for shadow queue
-> >   bnxt_re/lib: Move hardware queue to 16B aligned indices
-> >
-> >  kernel-headers/rdma/bnxt_re-abi.h |   5 +-
-> >  providers/bnxt_re/bnxt_re-abi.h   |   5 +
-> >  providers/bnxt_re/db.c            |  10 +-
-> >  providers/bnxt_re/main.c          |   4 +
-> >  providers/bnxt_re/main.h          |  26 ++
-> >  providers/bnxt_re/memory.h        |  37 ++-
-> >  providers/bnxt_re/verbs.c         | 522 ++++++++++++++++++++----------
-> >  7 files changed, 431 insertions(+), 178 deletions(-)
-> >
-> > --
-> > 2.25.1
-> >
-> Please ignore the "Internal" keyword in the subject line.
->
-> --
-> -Regards
-> Devesh
-Hi Leon,
+Unfortunately, no. I failed to parse it, if I read the dump correctly,
+it is not marked as error and opcode is 0.
 
-Do you have any comments on this series. For the subject line I can
-resend the series.
-
-
--- 
--Regards
-Devesh
-
---000000000000b04daf05c2b04d5a
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
-Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
-KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
-SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
-PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
-G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
-PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJmeo7hYbL2fXeFfwG25neadznUO
-ifVKksYqDSsxTQUPMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDUxOTE1MTU1NlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQCDEMj+j51KRRP85HBgcwvyujaBlBiTrywVRRLO1ZtIyYHY
-03IAWiueiaZApr2Kr2iqfFOCREpv0pwe4Bb5y5NyUb7NS5PYAiqwHUbCPd06QRLpWxWEHJMYYtXC
-EsgIFjyU5bKxKZxyyvqFJxbEnk6gNy5RHR0TzPgxEO4R6WgGxdVjQJSQbXvYMMV3F7H0fkWinXio
-n5KB2AKgcnqBeffeBSnGjnqBuqX69pbkpz3aLVGZvti5XDAHGzaZEr1mTk8GTjDyQbp7ABjNOvFF
-QYPwLxrAXqnZseBuP8/SLv9qiRWDV/2dz+g9BmNowq8aUqgvQOfwbioMuoDfH7jrqABa
---000000000000b04daf05c2b04d5a--
+Thanks
