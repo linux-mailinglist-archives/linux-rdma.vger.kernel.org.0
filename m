@@ -2,93 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DAF3892BC
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 May 2021 17:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8E03892D9
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 May 2021 17:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347218AbhESPg3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 May 2021 11:36:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56616 "EHLO mail.kernel.org"
+        id S1354351AbhESPov (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 May 2021 11:44:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241453AbhESPg3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 19 May 2021 11:36:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF342611AB;
-        Wed, 19 May 2021 15:35:08 +0000 (UTC)
+        id S242076AbhESPos (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 May 2021 11:44:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A055C611BD;
+        Wed, 19 May 2021 15:43:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621438509;
-        bh=TIdH56pA8oiWYwKhzlxiHAYT2jBBDUbUUWp0BBclgtU=;
+        s=k20201202; t=1621439008;
+        bh=DMr8lSulIAPylUxWoxAnCkPFFhWH0Kf0bTYVbrlD5oU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZeC+sUrllGvxt/YES/WuW3sb27UHpU8KPda/EohYte9IwOjpnOj/tJt6c9hF/ZhZ0
-         ch8WLeHZY/KNH6c6hbfQhIkwwHAHFWYQUnif1SW7f0oS+JBO6Rz49QPXWweVGqdmvN
-         HzLBPe/Z8J+o73JW9V4W8WgXRwxcQ42EDuuQmU05F806bvO4FfSSac/xfJ30uJ0JSi
-         xE44CLVPHJjiJNJQKUusN3SYcWUf45JbqMse9JZPf12Ek8IE/tuZ4y3E+MvT1PCKOM
-         vYoiCgDaArjLObxiwfCVrf/qv6LBsm8MO3qYq+Dr9iPm4x9Eou05MJ1ByWBK2CA4jT
-         6Y2xQcOf0dLZQ==
-Date:   Wed, 19 May 2021 18:35:05 +0300
+        b=ZBsRsLtvL3OG+6gDXNSRZE+UBQZ7qyYaRl7IaaqFCLr8JAtCBcGwvWaCkCAfZCR39
+         PDJB2FUHo1Pj09dgtXv9TM4S31AMMet7lAA1fFh7FJDx3uiBMvKMoC1X9pFQn+sAlc
+         TPSaFn7VgzCBug6b+05DyFrIApccSbS6J65rG2tvl9cNFFci0VSW87F5Cb6mnf8Weh
+         caOHUdyc3bU4PPYxoMNvwjOt6/nEi3/nISlh6NSEYaxeCkonnLEwBvlbZVP2r3XFAz
+         wLU/S5EQr/i7vykRTT5cOJLEWDZooAikUHjeiN4K74s8Sh9bDwsbOhBrf+Pr8ePnvo
+         33YvVjgLHfQhQ==
+Date:   Wed, 19 May 2021 18:43:24 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Devesh Sharma <devesh.sharma@broadcom.com>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH V2 INTERNAL 0/4] Broadcom's user library update
-Message-ID: <YKUwKa6fNfBq8b8a@unreal>
-References: <20210517133532.774998-1-devesh.sharma@broadcom.com>
- <CANjDDBgR_wP5WHWWRue_Pg8XYujcuoqFs2J-zHD0c2g9+bRfjg@mail.gmail.com>
- <CANjDDBjO4dOXCb5rVe1UOd6foeFp8FLTqJbz8w6c36eTZSZtkg@mail.gmail.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Shiraz Saleem <shiraz.saleem@intel.com>, dledford@redhat.com,
+        kuba@kernel.org, davem@davemloft.net, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, david.m.ertman@intel.com,
+        anthony.l.nguyen@intel.com
+Subject: Re: [PATCH v5 06/22] i40e: Register auxiliary devices to provide RDMA
+Message-ID: <YKUyHBegLKDlYYoN@unreal>
+References: <20210514141214.2120-1-shiraz.saleem@intel.com>
+ <20210514141214.2120-7-shiraz.saleem@intel.com>
+ <YKUJ4rnZf4u4qUYc@unreal>
+ <20210519134349.GK1002214@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANjDDBjO4dOXCb5rVe1UOd6foeFp8FLTqJbz8w6c36eTZSZtkg@mail.gmail.com>
+In-Reply-To: <20210519134349.GK1002214@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 19, 2021 at 08:45:20PM +0530, Devesh Sharma wrote:
-> On Mon, May 17, 2021 at 7:08 PM Devesh Sharma
-> <devesh.sharma@broadcom.com> wrote:
-> >
-> > On Mon, May 17, 2021 at 7:05 PM Devesh Sharma
-> > <devesh.sharma@broadcom.com> wrote:
-> > >
-> > > The main focus of this patch series is to move SQ and RQ
-> > > wqe posting indices from 128B fixed stride to 16B aligned stride.
-> > > This allows more flexibility in choosing wqe size.
-> > >
-> > >
-> > > Devesh Sharma (4):
-> > >   bnxt_re/lib: Read wqe mode from the driver
-> > >   bnxt_re/lib: add a function to initialize software queue
-> > >   bnxt_re/lib: Use separate indices for shadow queue
-> > >   bnxt_re/lib: Move hardware queue to 16B aligned indices
-> > >
-> > >  kernel-headers/rdma/bnxt_re-abi.h |   5 +-
-> > >  providers/bnxt_re/bnxt_re-abi.h   |   5 +
-> > >  providers/bnxt_re/db.c            |  10 +-
-> > >  providers/bnxt_re/main.c          |   4 +
-> > >  providers/bnxt_re/main.h          |  26 ++
-> > >  providers/bnxt_re/memory.h        |  37 ++-
-> > >  providers/bnxt_re/verbs.c         | 522 ++++++++++++++++++++----------
-> > >  7 files changed, 431 insertions(+), 178 deletions(-)
-> > >
-> > > --
-> > > 2.25.1
-> > >
-> > Please ignore the "Internal" keyword in the subject line.
-> >
-> > --
-> > -Regards
-> > Devesh
-> Hi Leon,
+On Wed, May 19, 2021 at 10:43:49AM -0300, Jason Gunthorpe wrote:
+> On Wed, May 19, 2021 at 03:51:46PM +0300, Leon Romanovsky wrote:
+> > On Fri, May 14, 2021 at 09:11:58AM -0500, Shiraz Saleem wrote:
+> > > Convert i40e to use the auxiliary bus infrastructure to export
+> > > the RDMA functionality of the device to the RDMA driver.
+> > > Register i40e client auxiliary RDMA device on the auxiliary bus per
+> > > PCIe device function for the new auxiliary rdma driver (irdma) to
+> > > attach to.
+> > > 
+> > > The global i40e_register_client and i40e_unregister_client symbols
+> > > will be obsoleted once irdma replaces i40iw in the kernel
+> > > for the X722 device.
+> > > 
+> > > Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> > >  drivers/net/ethernet/intel/Kconfig            |   1 +
+> > >  drivers/net/ethernet/intel/i40e/i40e.h        |   2 +
+> > >  drivers/net/ethernet/intel/i40e/i40e_client.c | 152 ++++++++++++++++++++++----
+> > >  drivers/net/ethernet/intel/i40e/i40e_main.c   |   1 +
+> > >  4 files changed, 136 insertions(+), 20 deletions(-)
+> > 
+> > The amount of obfuscation in this driver is astonishing.
+> > 
+> > I would expect that after this series, the i40e_client_add_*() would
+> > be cleaned, for example simple grep of I40E_CLIENT_VERSION_MAJOR
+> > shows that i40e_register_client() still have no-go code.
 > 
-> Do you have any comments on this series. For the subject line I can
-> resend the series.
+> While it would be nice to see i40e fully cleaned I think we agreed to
+> largely ignore it as-is so long as the new driver's aux implementation
+> was sane.
 
-Yes, the change in kernel-headers/rdma/bnxt_re-abi.h should be separate
-commit created with kernel-headers/update script.
+It is hard to say, the code is so obfuscated with many layers in between.
+
+For example, I tried to follow where and how they use IDA index that is used
+in aux device creation and went lost. Sometimes they take it from PF, sometimes
+from the client from different allocation pool.
+
+If client logic goes, we will see less code which should be similar for
+netdev and RDMA. It is not the case now.
 
 Thanks
 
 > 
-> 
-> -- 
-> -Regards
-> Devesh
-
-
+> Jason
