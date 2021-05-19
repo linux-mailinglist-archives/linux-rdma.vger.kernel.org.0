@@ -2,79 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92568388AEB
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 May 2021 11:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D89388C00
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 May 2021 12:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238464AbhESJp1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 May 2021 05:45:27 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3027 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239386AbhESJp1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 May 2021 05:45:27 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FlSXf3pKNzQppK;
-        Wed, 19 May 2021 17:40:34 +0800 (CST)
-Received: from dggpeml500023.china.huawei.com (7.185.36.114) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 17:44:04 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 17:44:04 +0800
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-To:     <linux-rdma@vger.kernel.org>
-CC:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: [PATCH] IB/hfi1: Remove the repeated declaration
-Date:   Wed, 19 May 2021 17:43:35 +0800
-Message-ID: <1621417415-3772-1-git-send-email-zhangshaokun@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        id S240111AbhESKvA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 May 2021 06:51:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43800 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238171AbhESKu6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 May 2021 06:50:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBCFB610A8;
+        Wed, 19 May 2021 10:49:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621421379;
+        bh=HXNQsZ6q8IIw05bj9iv+LdxcCHl+2V/wr105TIR8OeA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C2GmDmOFwgFIy2r2147pY/R8MtngfZy9nerNHDWDuefKUIudZTIZpliiXYF2SxUMF
+         Pe/+CCvoifU/ukght8Ktyt6PtfpTClqKG583/cNjLh9pNXiXHJujxfDHHa3EIEjvJ/
+         KQE1rAZeSMcafrcyHBI3v/mRgcSOjiidaaVf+rRut+3ThAk9bASY7oFN3BdotqKhMm
+         H0jYbp5ZE3ADsvfrVNM5VhXVEuVYCL7FpHV2RpZ1+OFFe0XyBDs1huPn9pZmuNBIls
+         WTkR3OUQ+sDaYaoI82MwO1wZItdSTk0cXwvOaB3jPbS7e+zky4wMSpd60kLTvM3eEC
+         ihDhGtr1/xxeA==
+Date:   Wed, 19 May 2021 13:49:35 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, jgg@nvidia.com, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com, Lang Cheng <chenglang@huawei.com>
+Subject: Re: [PATCH for-next 1/4] RDMA/hns: Remove unused parameter udata
+Message-ID: <YKTtP3/q6tILVMsh@unreal>
+References: <1620807142-39157-1-git-send-email-liweihang@huawei.com>
+ <1620807142-39157-2-git-send-email-liweihang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500023.china.huawei.com (7.185.36.114)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620807142-39157-2-git-send-email-liweihang@huawei.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Function 'init_credit_return' and 'sc_return_credits' are declared
-twice, remove the repeated declaration.
+On Wed, May 12, 2021 at 04:12:19PM +0800, Weihang Li wrote:
+> From: Lang Cheng <chenglang@huawei.com>
+> 
+> The old version of ib_umem_get() need these udata as a parameter but now
+> they are unnecessary.
+> 
+> Fixes: c320e527e154 ("IB: Allow calls to ib_umem_get from kernel ULPs")
+> Signed-off-by: Lang Cheng <chenglang@huawei.com>
+> Signed-off-by: Weihang Li <liweihang@huawei.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_cq.c     | 3 +--
+>  drivers/infiniband/hw/hns/hns_roce_db.c     | 3 +--
+>  drivers/infiniband/hw/hns/hns_roce_device.h | 3 +--
+>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 4 ++--
+>  4 files changed, 5 insertions(+), 8 deletions(-)
+> 
 
-Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
----
- drivers/infiniband/hw/hfi1/pio.h | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hfi1/pio.h b/drivers/infiniband/hw/hfi1/pio.h
-index 0102262343c0..9e5f08d2b985 100644
---- a/drivers/infiniband/hw/hfi1/pio.h
-+++ b/drivers/infiniband/hw/hfi1/pio.h
-@@ -279,7 +279,6 @@ int init_credit_return(struct hfi1_devdata *dd);
- void free_credit_return(struct hfi1_devdata *dd);
- int init_sc_pools_and_sizes(struct hfi1_devdata *dd);
- int init_send_contexts(struct hfi1_devdata *dd);
--int init_credit_return(struct hfi1_devdata *dd);
- int init_pervl_scs(struct hfi1_devdata *dd);
- struct send_context *sc_alloc(struct hfi1_devdata *dd, int type,
- 			      uint hdrqentsize, int numa);
-@@ -294,7 +293,6 @@ void sc_stop(struct send_context *sc, int bit);
- struct pio_buf *sc_buffer_alloc(struct send_context *sc, u32 dw_len,
- 				pio_release_cb cb, void *arg);
- void sc_release_update(struct send_context *sc);
--void sc_return_credits(struct send_context *sc);
- void sc_group_release_update(struct hfi1_devdata *dd, u32 hw_context);
- void sc_add_credit_return_intr(struct send_context *sc);
- void sc_del_credit_return_intr(struct send_context *sc);
--- 
-2.7.4
-
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
