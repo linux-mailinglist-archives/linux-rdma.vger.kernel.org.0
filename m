@@ -2,149 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D84B738B230
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 May 2021 16:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E21038B264
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 May 2021 17:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhETOuV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 May 2021 10:50:21 -0400
-Received: from mail-mw2nam10on2077.outbound.protection.outlook.com ([40.107.94.77]:52224
+        id S231562AbhETPD0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 May 2021 11:03:26 -0400
+Received: from mail-mw2nam10on2052.outbound.protection.outlook.com ([40.107.94.52]:13357
         "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230483AbhETOuU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 May 2021 10:50:20 -0400
+        id S231330AbhETPDZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 20 May 2021 11:03:25 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c7sjztByP3VNe2YMSpglj9gfvKSu7jCf8WLdI2VULfnk1YSBXKHtsANU+1NsqAuiDZzRcHb0Os5L6g9HCGrwU8EafBzgnUV48+AN7z+7FsIt5tFOz1ElG5hM3gb4ZBv/RSrj29RG0wuSCZz1cJw2hLOHWvXx/LMmlD9DfWtfuv7pzjacaiBKJH0Z3UIWDOJsgAEJ2WdlR8FDczShJLQI+jA1vtzAQaV+wKALDyYAKpMHSzCilS+eOVILU0euGU418ZPsiNFpTNYRNO9TIKemhl9qqYavT1nLbAJUWJDxb/9hJWb6IiP168kiPW9kVasWn5dfAl6t/mhhCBDY95Ug6g==
+ b=kG8gaTfE5ta+G9LrjGMv1JXFKDrXnaKXGD9sMEwoiMu/f1tG0cTbyFwzZdVzfdoWJlukR1JVRUcBGZX3kxeLjn236jgMmFEp/jqfNV5chmf7n/fqPUnrWgav0jYFhbU43KQaoQDXBwpnzSXWWBhYOdV5nYb0rTY1tEySYoyrRWOqVJ4bzcf7ZZm51MIDjkWx9KdIsrrJ4tPQX4DXcW/A8mw2PR5BB7Fr0bVZ2Ke7eTPV3YPD6QQRLTnpJoeWMBt0+s0CZL0gvKpzT/ZTUT6UkOXON7M9qm9NlAhdqRo6qFRXj+r5NJnqoaJu914oqWMM2SCOtodjswLTFuh2WyQIpQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6JdqJfEMF/wbaTNRhvukozdmnLz9VLq8Y7f0KlHaGno=;
- b=Wgel6qQoTfyhbsWvI345DLjdHJyecHC1QBM6NNViaQC3pza1gZWCP/XADmtX1ttiiJ+jD9rGq/6MwdC9vLc6aB18iOUcSEG9aMo0QwxeoVfqJC6UADYa+O0xrllaxpeQmsTXK20rt71iOm4UKOYDYr7wa+Q94ZoAYLCmkixmAwLG91agcCdNFlPjSs6ABOTnZ0OTVSEsfetQ/5oeGgZPHd6HsP52jb1XkQzbfx5UAEqNiM0XBg9Q7i5B3Kcclz8Q/keUBUUi+wYeL7PjoVOWb3xuYfjEg6WHZ9k4MV8FP08ixY53N3e+PBYTEBt0nm03/qA7smNnYnHhrUYdWVnGlw==
+ bh=qEJgi3eWAbp0TXWqSBwk0EvUI5v+f5iJ0yqIjpAf8/A=;
+ b=i1WLtAEFdN0J2JoJN2hsUYpn/6KyGjRHTrm3lctIzlyL+tn+fOxst68bBA2fYsOw0wnzGoE6V8gDsRzEK4FIDEdBaHSfVfcs8Fka+W/xXlH+i5F0flhkuAFxEaJoYw3sMTksP7b7s/PR8hCnrYBmUggvUjtpmmisNpUOOMPOW45aR1It4+y+MM0f8Iwyzd/8cpKWk3tnmadJ5nB/S+Sz31q4OHODYP0N47ymktBAxUabg7705v2vAYlsJ0tiZ8OqgisOUl0xhciyf/AoXIal8KtSSZCcmLw1h4rlNQIbkWYwQZ+j3RjUJgMeGTwPZef+6aIQ8c9VYKlH9pogtZIypg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6JdqJfEMF/wbaTNRhvukozdmnLz9VLq8Y7f0KlHaGno=;
- b=nOq9VeyDI1c20M6IbKlcNevqItRoSaV9WUpU2thq3DIz/GeAaYAFUXRs4pwWMFvD/q9kZ+2B+faCWcjF51t6MPz5mxMuJiHUdOVwGOvRffwCmBUdywa5EtOcTrFgYtpGsNVANhUv/z2nKJG1fMwrnla3eoQvAIkqfqifiAIVvBCjK4gVZwCl/6FVtA5+aTMBGev61l/77TRKClioeA5fYJZ/JX3ABxlfti7/e34gZHOjXPLlBh9rJbCjwPdnc9jXeXNgBglpiPBmF4vf3AZ5uKJc59eGs0FXFDGNgBPQOnSzOwb5yNtRr9KpczCld07fBeroo/1qeoFWljokdewuUA==
-Authentication-Results: acm.org; dkim=none (message not signed)
- header.d=none;acm.org; dmarc=none action=none header.from=nvidia.com;
+ bh=qEJgi3eWAbp0TXWqSBwk0EvUI5v+f5iJ0yqIjpAf8/A=;
+ b=WVhSozNYXQiFUhjKt4gbLeujR37kpC1Tj8C/ydwuI8jjKJ0s33HQ4qJLWFL/aDSrMhvrgzlKIcUJKJOHWJ63paGDIqIGb+W+vvGUMloawzVfr94yXMVfeJgx4ooVlGOKEzLlkI4eJGGOEWhHaVLojZ+ljBHuyLAePWYcc6LlkDXi2gvLIXM3ZnuCGvJ2/1rZjMQ92p2ED1k0yxJs1DV5QEJjvAKc947yqEGSTxNYMvE6JCQYUnop860j7DfKPr9KFyyKp/uJFG7meWQvFIFQMeS+HeK6G+sySm0DFRR3VgcgtN5Vd+AOPaOfviGRAIHjjBFEbDegbKYTAAE6qYMBUQ==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1753.namprd12.prod.outlook.com (2603:10b6:3:10d::16) with
+ by DM6PR12MB4009.namprd12.prod.outlook.com (2603:10b6:5:1cd::25) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Thu, 20 May
- 2021 14:48:58 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Thu, 20 May
+ 2021 15:02:03 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4150.023; Thu, 20 May 2021
- 14:48:58 +0000
-Date:   Thu, 20 May 2021 11:48:56 -0300
+ 15:02:03 +0000
+Date:   Thu, 20 May 2021 12:02:01 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Subject: Re: [PATCH 3/5] RDMA/srp: Apply the __packed attribute to members
- instead of structures
-Message-ID: <20210520144856.GA2720258@nvidia.com>
-References: <20210512032752.16611-1-bvanassche@acm.org>
- <20210512032752.16611-4-bvanassche@acm.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Evgenii Kochetov <evgeniik@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Sergey Gorenko <sergeygo@nvidia.com>
+Subject: Re: [PATCH rdma-next 0/2] Add support to SQD2RTS transition
+Message-ID: <20210520150201.GA2734122@nvidia.com>
+References: <cover.1620641808.git.leonro@nvidia.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210512032752.16611-4-bvanassche@acm.org>
+In-Reply-To: <cover.1620641808.git.leonro@nvidia.com>
 X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR10CA0029.namprd10.prod.outlook.com
- (2603:10b6:208:120::42) To DM6PR12MB3834.namprd12.prod.outlook.com
+X-ClientProxiedBy: MN2PR14CA0010.namprd14.prod.outlook.com
+ (2603:10b6:208:23e::15) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR10CA0029.namprd10.prod.outlook.com (2603:10b6:208:120::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Thu, 20 May 2021 14:48:57 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ljjyq-00BPnj-OX; Thu, 20 May 2021 11:48:56 -0300
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR14CA0010.namprd14.prod.outlook.com (2603:10b6:208:23e::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.33 via Frontend Transport; Thu, 20 May 2021 15:02:02 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ljkBV-00BTHV-PV; Thu, 20 May 2021 12:02:01 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4f46a16e-5292-4cb1-f41b-08d91b9e65ed
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1753:
+X-MS-Office365-Filtering-Correlation-Id: a3bba526-5858-421f-343c-08d91ba039e7
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4009:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1753AC927526D9A924FB5A5BC22A9@DM5PR12MB1753.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4009B072AC34D6222CDD446DC22A9@DM6PR12MB4009.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8uifl4LEhrgT/5ihhQjdzvgMmnQkwszOYHAcflSx85uydrBFzdONjhCVBXmXEABYK40nP8GN72p8c2zWVrdmb4ybvWlHY/vOEKoE9IJe7Ug60FhDolWz3voEeAwj+cz6ne4S8n3VBIec+aVTJ3MuSehYL7YlXpTEqx7T9WekjNF1GxQLgcb4DqBzceC7v34j3G/hcPOMW5+lKsWQdRNwEXob3RRjUcfGdGJNIefFnJP0jpTArNETvxWMqvOCZgh5+NhHURQoma7mK2sQ6qbg+b+kPvzY1L5arPyFzvUUDStLpFcXeXmhVRigg19IfBA4cQp1/ZLvHxQ1wzkBpwjhFj/v0Oit73DnNdIwEChkKpN0KCgWMw3KToCKd7v3vfJ8tsgAO2GutMYE+mcQ4+V99mC0PEELw+fHANaHKzMIGKXWWtJn5JLFYeZHyjNZwpHq7jZsuyoicKdoMf44eOQBEN38q0nv0LU3ZxrJy5e6amnaIXoSQmhehYMWJmv2qVarq3BL0vLrMaO0dODCuulRjaXoie+zssVeuxqrA+7q6wLk4XSUj/28OhQVL956FxoS3pFddJM9ZlBcSNSzm/GBe62cxlb7KjmGGuvXfrkdRHk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(396003)(366004)(346002)(66476007)(186003)(86362001)(6916009)(9786002)(83380400001)(66556008)(33656002)(9746002)(66946007)(478600001)(8936002)(2616005)(54906003)(38100700002)(36756003)(8676002)(316002)(1076003)(5660300002)(426003)(2906002)(26005)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?nPMA1quSOuB3DsjpUFrVlFk6ov4WWsF3wCqCoGB8Hy8fH5903ZsvQ+aBqbRM?=
- =?us-ascii?Q?2WBKzVyYdOzYcFoKSGOoySvfpV/ZE6ZUeKu12RFgwsOll7jya1NKCEPw8Gpn?=
- =?us-ascii?Q?LyULkcFMlgtQ4qLd/+jtiLZcix6if4/uw6PzuaB+olnkM16W0PcU5W8s4YvB?=
- =?us-ascii?Q?UlCpkMgsoKgSQzo2gq/i2DkcJ00D4zOUJXimfge61DiYerXtjKUli9jZjL7n?=
- =?us-ascii?Q?QuGuXusHBLTR4LDMyjcSmDynySjP2c3dPKJdk1285MOf6BT0Nd8w3a+D1Uwe?=
- =?us-ascii?Q?FFnaJmI2PqU8Eh+Y9TiyUvAYxnjMk7lDyOm0pl7kywmPp/eMzAXGBGGQbktF?=
- =?us-ascii?Q?UhQD6Bzprwms4moku2+Q15Sl3A5srmz7cFVtVc4/TbGG3ZhcoDT1Bgaifkby?=
- =?us-ascii?Q?BR6hIKtPIbB6A2aAK0m9bErOYy0BSSM34rGNIAabvlfAEceo4/CLpvlQ1Gpc?=
- =?us-ascii?Q?WSZZYr2E0yHir5lGVpppOYavv28biXfSa3oqhNRsmX3BOSGJ6LAQdLAcxCdq?=
- =?us-ascii?Q?WlCDPpHfhVRk2lIkP9L2RG/9MEdos6cp1sCAv1D5HhnJ263CL4xb57m5krxc?=
- =?us-ascii?Q?61MA06CPYPqbosKviye/zvb7GnOrqGKXSF62CUI7oEG3YV+3MkDIp+/JP8Da?=
- =?us-ascii?Q?h4mLfQuSrfYb3KL3aOwdd2BOmOn5Wex2ujA2nJa/FGlLGFz2U2el59CY8xQF?=
- =?us-ascii?Q?wuxR0Cu8lDsbmq64DQhbIrBkldi5jJc/TQK+xJWRs5erEUXGwLVHsbjBKmbK?=
- =?us-ascii?Q?g+sK0l6+nwyFJg9UyyAIImwZdbXQ4m2+fgT4t7GB298KkFGNKxd6wXkzMh2I?=
- =?us-ascii?Q?GCDSkeAixAWjUEqlCX27gkJ+v4zNMaNpdWgRMM/agMP5IiTwzf2MkC5Ax0VR?=
- =?us-ascii?Q?HFJ3MTBARBv37Z/qnP5H5A0DPGaaNn+zaiWsU7Jd6a4PI0gpD1CG7OFKRUEi?=
- =?us-ascii?Q?uyEBZjyn2gJ5FuUkhIIGmpmHuozu+TLTnLm1K6/0CmU1no3Snyu5Vr73OKhz?=
- =?us-ascii?Q?W+nwqW4p2FuNRtsLErr9kcusVU8pIxC2QeYUILf3vGFJmTpDMhMJ4VQTwj13?=
- =?us-ascii?Q?UWKcl+4N33o2HM+YXnYDbsKxG2hxqZjD7mqEn93dAs7wrTp18kcYFTAo8qpC?=
- =?us-ascii?Q?yNom8yqpWc/yvZDgLGoXPcAEnol60GSMTpZxKMxZEmXX68T3LvV36rdsXoND?=
- =?us-ascii?Q?UqBRQyoLJdA/GX1SNc84OoHpFN6xv19PsPsdTSZot83tHIPT8dB8UjcPjl7p?=
- =?us-ascii?Q?2hZ5YzQSdr40wbQqct6w2oaKNEFDFISPahIebPv1AGZBQUgW5tYmaRGa1KoO?=
- =?us-ascii?Q?LXmWWxYVSzBB8s1kp64PNJGy?=
+X-Microsoft-Antispam-Message-Info: hgkZ9wC8EvzpmXaTOlgTMTaWUgQrhJ1O7BWHlstpHCd3V3Ku2Lqfl7yiczxVhutu8EdiwoIqUiqhBGhfhv7/Q/NrF8ZvGcI2f6Pgj+NLKktZA4VJEEzHO0ftFs2JFkX/pHDrHCWUPbGhjOEktXb+z5WHw8Y4a/3y3DVp02H3/sRKzrFCU+fkd77qJA/A88+8UD/InQ2wUC/EcOFO+QxS7BWcGW2ZN5zOekV4qC7uG2XqJdn9jQxQJwpA3OKAKRP4NhJMabLjVD1H2h7XqdqnzRDInhKd17H8384E5IsDqnwuu5+erzV2iFBV+EGD1gFN93yR7NAozRzx6B5V22bSSNZztS3pbdFcKsupoixEAaP/Z+NPY72W6BWkeSm25DEO4lpaf+Ve0XSpoY7QffCH8MhrAIAw1CVMuPeZ/BtgevXrPm345QKIAfLo44qUCNwLQasbmWX7ItDeBwglR1zgOuQUwkv6TBtWVZzRVHJCal+J+IBMlErQVk9oVY4Rf1YnRDAa2P7WEAybAi10v6Ge2AnsGLSPWKPrcgK3lYAoR/j8DEj6Tl6Po3mDch6KC4WmWgQx6dYw+ruG0I4WAersVWNHT4i3kM/mAxdSYL9eFtc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(39860400002)(396003)(376002)(9746002)(8676002)(9786002)(8936002)(478600001)(86362001)(26005)(38100700002)(2906002)(186003)(66556008)(5660300002)(316002)(54906003)(1076003)(6916009)(66946007)(66476007)(33656002)(107886003)(36756003)(4326008)(4744005)(2616005)(426003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?iivOlTdq7CqiVGFiW7Asi+wdY4o0W/E0rcrldkQRE/kN7zZ8JZNYBtj5W9/E?=
+ =?us-ascii?Q?Lj7myB2xWJLc5dWL9FS3eGRGWC28Sfjt5iqsxPJElBgoT+lXvk7+AcAj4tDg?=
+ =?us-ascii?Q?9nzFMMOxXkIiHTQ70+DyWJbJycZf56/a38PfEKfKEIdhdFd74tufXQJ/6FSJ?=
+ =?us-ascii?Q?Q7akqFvfug3icYyDC0zoWYVCLTtsA4voa6AlQnF3NnRdjZO/6AmyQqybxuyL?=
+ =?us-ascii?Q?xtvsJGw1jZZNBlGwVkWtMM8UpSFBx1BRQ5bGH0bUXRLIZEdQgOiHeIjldMH7?=
+ =?us-ascii?Q?mMnXONh+0u4T3Yap2GLgqFhoBH83nWnpx8tkQL7J93XNPJFeAvyn3U2m6whd?=
+ =?us-ascii?Q?gFDOgiYdytKRR/DEpcP7KTgllJ8/dg3Cxkol2AZQx/7yF7o0h9zkyNxb0dVy?=
+ =?us-ascii?Q?mUTp6v26nNT+iZnn3HvdQd0YAU9BffClu+Fjrtr8cwsj6e763bm6LIVK1XQU?=
+ =?us-ascii?Q?GP1gJ2sMTr2JKHVVSQOypkvC68s51q+EHXMlRSWAXBeu7pDeulSBuPHqe/Ty?=
+ =?us-ascii?Q?jfY/1e+a6isQBtur5Qwm9OlJbOgLYPRPEyciOivckqlYwew6cIjJD1AzsYKY?=
+ =?us-ascii?Q?rm+eFIurHIRtw5MPmRsC6qPsOOWYaZh2iFShAkt+PKSttrfQvZZGIB7qZwf3?=
+ =?us-ascii?Q?Uz9pkoXR0nHkxC7ZIblC739QsTUJl2vDvHM3HayTXmM1ZvtrFPouYrSZajpH?=
+ =?us-ascii?Q?MpPW0Tk39eVeZRTgCFY9Ymb/K7LWJNWCxzwJV5XyGDEYoet2UcxYuemN3lR7?=
+ =?us-ascii?Q?BYVqJ92sIE//GIRjDUjc2CC12MVenjqkAzOAySUshCl0kY59LMZTWU4Z6+BE?=
+ =?us-ascii?Q?y2HNt1Uv/o4efwCKoasAM6ygq0y9uHrFF6CXi/MV7wAyjAVKQReDJb57DWtJ?=
+ =?us-ascii?Q?eC+18GB7IsaHEVFb5HkFoslnyL/3MT8FsBOEvn6dX5xusG0h0o++ZDxrzcd6?=
+ =?us-ascii?Q?RhojX8GREFqd/NsBcz0572gJwe5zPgrRHqHWUTxWdluSDWRr+lFoABUtPRdQ?=
+ =?us-ascii?Q?zrf4fP8q6AoV+c9wkdAjOFF2Y2RV3+NXWenFhaoxZUzDtFgSJCGFHSPbGA+5?=
+ =?us-ascii?Q?6yX80XpbhUZfMLrmG/Pg5d53l+3toL4vu+0TGdOWqQLM5Kxdkaycb3JpXMZn?=
+ =?us-ascii?Q?6nFkBHcgNcNQrwzRhsejv73KWRxb26mtA4xydWNtU5+EBKePR1zPw5w/HKK2?=
+ =?us-ascii?Q?VhYWrF4ZsHW+hmFhlgWSR2w9U4dYzsUHRPAdyO9Z6nRI3J0UE1pHp6YuOZho?=
+ =?us-ascii?Q?4IWeTGbe9dVqY5vM/aP8w6ZdXTm5FxyV47rIrOh9YJarDl9CbgwTXICRKbob?=
+ =?us-ascii?Q?fOSwN39b63ThKXG//GBfUxS3?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f46a16e-5292-4cb1-f41b-08d91b9e65ed
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3bba526-5858-421f-343c-08d91ba039e7
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 14:48:58.3868
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 15:02:03.3134
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2BneszMvWASC3ormnKG/evuiSjHhike6zYQ1uJNfy4tu+vQlmy3DutxTAlYLDcIR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1753
+X-MS-Exchange-CrossTenant-UserPrincipalName: PMYYXlHAc84WUAuui2FHfyRsx53rTioW51QxUaeFleAtYazITpfnxze9utoYO3Ny
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4009
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 11, 2021 at 08:27:50PM -0700, Bart Van Assche wrote:
-> @@ -107,10 +107,10 @@ struct srp_direct_buf {
->   * having the 20-byte structure padded to 24 bytes on 64-bit architectures.
->   */
->  struct srp_indirect_buf {
-> -	struct srp_direct_buf	table_desc;
-> +	struct srp_direct_buf	table_desc __packed;
->  	__be32			len;
-> -	struct srp_direct_buf	desc_list[];
-> -} __attribute__((packed));
-> +	struct srp_direct_buf	desc_list[] __packed;
-> +};
->  
->  /* Immediate data buffer descriptor as defined in SRP2. */
->  struct srp_imm_buf {
-> @@ -175,13 +175,13 @@ struct srp_login_rsp {
->  	u8	opcode;
->  	u8	reserved1[3];
->  	__be32	req_lim_delta;
-> -	u64	tag;
-> +	u64	tag __packed;
+On Mon, May 10, 2021 at 01:23:31PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> The IBTA specification allows SQD2RTS QP transition, however the mlx5_ib
+> driver didn't have needed implementation. 
+> 
+> This patchset from Sergey adds the needed functionality for this modify QP
+> transition state and adds extra flag to mark supported kernel.
+> 
+> Thanks
+> 
+> Sergey Gorenko (2):
+>   RDMA/mlx5: Support SQD2RTS for modify QP
+>   RDMA/mlx5: Add SQD2RTS bit to the alloc ucontext response
 
-What you really want is just something like this:
-
-typedef u64 __attribute__((aligned(4))) compat_u64;
-
-And then use that every place you have the u64 and forget about packed
-entirely.
-
-Except for a couple exceptions IBA mads are always aligned to 4 bytes,
-only the 64 bit quantities are unaligned.
-
-But really this whole thing should be replaced with the IBA_FIELD
-macros like include/rdma/ibta_vol1_c12.h demos.
-
-Then it would be sparse safe and obviously endian correct as well.
-
-I suppose you are respinning this due to the other comments?
+Applied to for-next, thanks
 
 Jason
