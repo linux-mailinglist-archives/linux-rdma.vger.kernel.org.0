@@ -2,89 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F345D38B808
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 May 2021 22:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A98F38B8E5
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 May 2021 23:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233624AbhETUEv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 May 2021 16:04:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233470AbhETUEu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 May 2021 16:04:50 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE881C061761
-        for <linux-rdma@vger.kernel.org>; Thu, 20 May 2021 13:03:28 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id c10so13712941qtx.10
-        for <linux-rdma@vger.kernel.org>; Thu, 20 May 2021 13:03:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=C/+vTD+2ra02aIrojfRO5PS5Iv9P0dSQotJ3idCKxkU=;
-        b=SYrqldV+yrCUmxhxlnjgEL5gDTYGlJxY1AmlnUOjGwqwgbk5gYDN20NAqlcuM8Zemv
-         t2F4ulXhIxtukfhNPWnXOPC9mZg3i3yz//lr9GLS9YC5glB2cfxuKOBefzlkifiAsSpU
-         vEHmDeU0HcGQ1eDDP6P9/vzvU0GSwPzw+WpY6xIA4EBDnAsxtQfZkSiqwIgdxwt5MHtc
-         m1h7InUqXmdnUcP11qYxtSvsXO+Hjn7QXxGNziRXyw3Wi6FQDJNJp2c0NxJ2RmswXuns
-         hoUChIVzrPONVoxwHGIvwOiyJmiWjGX1RhVcjicKviOE5kRttkavMa85mVu7jhBXW0CX
-         wmwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C/+vTD+2ra02aIrojfRO5PS5Iv9P0dSQotJ3idCKxkU=;
-        b=T3lT7yIh/Vyx8R1dDOrV/4CWxXafLLLlGslzCKJYduxGkcGPAvB2hGkJdlM3taJ6DR
-         sdrFcseKVugXF+4HL0lkfILCv6Im8qqYQ2q6btYxD1tZIrhN+enStRMU/bXH180N2DWe
-         cWvu5zPScYb73yxW7oaud2wTcYvpTnMObEtj4tztaO3YcL9UZ7rxMkRzndijKEn4RyJo
-         ogNlV/JKKG3tko4fVoohoHK6GH2zU/UUNLinW0qc7EW6AuzHVfjxdQzVUpWKwq7Iifgx
-         4cqAYbK7VJlUkgfsUtzBqrL//zHisqTcw/4R1P621mbhGz/ac5nQiRuabf684Nm05lTg
-         xEUg==
-X-Gm-Message-State: AOAM530Ub7p4+zMgO5w/0gGQCqFICVakaLWRBpewKQhzPiohDrKNM4zB
-        863uayPMTwZfsmxYH+wl45Y50YCm38JXEUN8
-X-Google-Smtp-Source: ABdhPJwu5l/r/vIA6Iz+wI2IUcU9fL/hLUSk4qsM2tr+ABwERp7VBauGL6o7RiExCuwsnuQzgRWyvg==
-X-Received: by 2002:ac8:6605:: with SMTP id c5mr7356037qtp.21.1621541008165;
-        Thu, 20 May 2021 13:03:28 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id z18sm2730885qki.55.2021.05.20.13.03.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 13:03:27 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ljotC-00ByQE-CE; Thu, 20 May 2021 17:03:26 -0300
-Date:   Thu, 20 May 2021 17:03:26 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Shiraz Saleem <shiraz.saleem@intel.com>
-Cc:     dledford@redhat.com, kuba@kernel.org, davem@davemloft.net,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        david.m.ertman@intel.com, anthony.l.nguyen@intel.com
-Subject: Re: [PATCH v6 00/22] Add Intel Ethernet Protocol Driver for RDMA
+        id S229629AbhETVTU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 20 May 2021 17:19:20 -0400
+Received: from mga07.intel.com ([134.134.136.100]:19453 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229655AbhETVTT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 20 May 2021 17:19:19 -0400
+IronPort-SDR: VXSlu6l+90tFyqfU7xmiieiAJrjMGAjCZKR4gNxO6G4AcaRqSePgCMbYnPWcnNXcwKYgk5whRp
+ qnvUvFyqUrAA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="265252802"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="265252802"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 14:17:45 -0700
+IronPort-SDR: 5qP8ALGYrDiw0UFI9U++VIFR4pUgo1ORKlskViqNzFfkhCiBhyGac8bwBIVJofTFz7tq+kBgn5
+ cL2iI2QxM8QA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="474210956"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by orsmga001.jf.intel.com with ESMTP; 20 May 2021 14:17:45 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Thu, 20 May 2021 14:17:44 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Thu, 20 May 2021 14:17:44 -0700
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2242.008;
+ Thu, 20 May 2021 14:17:44 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>
+Subject: RE: [PATCH v6 00/22] Add Intel Ethernet Protocol Driver for RDMA
  (irdma)
-Message-ID: <20210520200326.GX1096940@ziepe.ca>
+Thread-Topic: [PATCH v6 00/22] Add Intel Ethernet Protocol Driver for RDMA
+ (irdma)
+Thread-Index: AQHXTYXiXzxdtSbvXk+1moyi7tDMtKrtQLAA//+Qm2A=
+Date:   Thu, 20 May 2021 21:17:43 +0000
+Message-ID: <6ed0e6eed0b54dff84d831aa854b0df2@intel.com>
 References: <20210520143809.819-1-shiraz.saleem@intel.com>
+ <20210520200326.GX1096940@ziepe.ca>
+In-Reply-To: <20210520200326.GX1096940@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520143809.819-1-shiraz.saleem@intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 20, 2021 at 09:37:47AM -0500, Shiraz Saleem wrote:
+> Subject: Re: [PATCH v6 00/22] Add Intel Ethernet Protocol Driver for RDMA
+> (irdma)
+> 
+> On Thu, May 20, 2021 at 09:37:47AM -0500, Shiraz Saleem wrote:
+> 
+> > This series is built against 5.13-rc1 and currently includes the
+> > netdev patches for ease of review. This includes updates to 'ice'
+> > driver to provide RDMA support and converts 'i40e' driver to use the auxiliary
+> bus infrastructure.
+> > A shared pull request can be submitted once the community ACKs this
+> submission.
+> 
+> Other than the one note I think I am fine with this now, but it is absolutely huge.
+> 
+> The rdma-core part needs to be put as a PR to the github, and I haven't looked at
+> that yet. The current provider will work with this driver, yes?
 
-> This series is built against 5.13-rc1 and currently includes the netdev
-> patches for ease of review. This includes updates to 'ice' driver to provide
-> RDMA support and converts 'i40e' driver to use the auxiliary bus infrastructure.
-> A shared pull request can be submitted once the community ACKs this submission.
+Yes.
 
-Other than the one note I think I am fine with this now, but it is
-absolutely huge.
+Tatyana will send a PR on github for new rdma-core provider.
 
-The rdma-core part needs to be put as a PR to the github, and I
-haven't looked at that yet. The current provider will work with this
-driver, yes?
+> 
+> Next you need to get the first 6 ethernet i40e patches onto a git branch based on
+> v5.13-rc1 for Dave/Jakub to pull. Resend a v7 of just the rdma parts once netdev's
+> part is accepted and I'll sort out the last steps for the rdma part.
 
-Next you need to get the first 6 ethernet i40e patches onto a git
-branch based on v5.13-rc1 for Dave/Jakub to pull. Resend a v7 of just
-the rdma parts once netdev's part is accepted and I'll sort out the
-last steps for the rdma part.
-
-Jason
+OK.
