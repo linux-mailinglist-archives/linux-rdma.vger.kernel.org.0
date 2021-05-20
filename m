@@ -2,243 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24FDD389EDC
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 May 2021 09:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6729C389F1C
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 May 2021 09:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbhETHYN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 May 2021 03:24:13 -0400
-Received: from mga17.intel.com ([192.55.52.151]:20909 "EHLO mga17.intel.com"
+        id S229536AbhETHv5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 May 2021 03:51:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230102AbhETHYM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 May 2021 03:24:12 -0400
-IronPort-SDR: BRjIPQtStxV+I4cdEOJXJ5pHGrZMqFqeM7vD00lXE2TwZ7JbRtbkeNZ6ZCt9EJ94YBp9RQNEM7
- 9GXwkxPmL1uQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="181443517"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="181443517"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 00:22:51 -0700
-IronPort-SDR: jI9Q0wzo8WWdgN7/EtzZCGBxAom1oeXQnzTkcXMFricojcqx9j0iJ60u8xoqp/JQgTlU3Iohpi
- MtS3v5fIJwEg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="461765977"
-Received: from lkp-server02.sh.intel.com (HELO 1b329be5b008) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 20 May 2021 00:22:50 -0700
-Received: from kbuild by 1b329be5b008 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ljd17-0000U2-US; Thu, 20 May 2021 07:22:49 +0000
-Date:   Thu, 20 May 2021 15:22:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-rc] BUILD SUCCESS
- cfa3b797118eda7d68f9ede9b1a0279192aca653
-Message-ID: <60a60e1b.TXG1ZueQiiF48qiz%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229534AbhETHv5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 20 May 2021 03:51:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4795611BD;
+        Thu, 20 May 2021 07:50:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621497036;
+        bh=VKPgjtg5Gbzyh5hWy4PQWagpv3gICsyq/k8AZLY+KP8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fw7vLqlBnEq3l1DMreaeaIG3jRDNIU3DzGICM9YSEUMAX6LCMwKwTmsOAKayrbxom
+         aonwZzTqB9EdFyK+hEgAETD+CLj8MUhIfEQQjV6UlYCBMVL7Gfg02IpFL3JloG3uGx
+         HGHTSg7wr20jI0eePVu1oVwxqySzEk/wuN+o6STm73UDCR23i6hlFF+Cgdynmo02k4
+         sZHCGlQ4mJ5VDKqhjZ9vmLZHZkMmhHgtOUvr7sgM+PVgCOwvoAYVdG6+RSS9sTPfQm
+         NQTGOP3yH26TMyWSBoD7PmIirFVOoz1DycVv8gRSVMva9B5wNY12RmXl6+oD/HgHHO
+         bv0LaAWEQ7VtQ==
+Date:   Thu, 20 May 2021 10:50:32 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Devesh Sharma <devesh.sharma@broadcom.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [for-next 1/2] RDMA/bnxt_re: Enable global atomic ops if
+ platform supports
+Message-ID: <YKYUyPOfeER2FVGD@unreal>
+References: <20210517132522.774762-1-devesh.sharma@broadcom.com>
+ <20210517132522.774762-2-devesh.sharma@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210517132522.774762-2-devesh.sharma@broadcom.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
-branch HEAD: cfa3b797118eda7d68f9ede9b1a0279192aca653  RDMA/mlx5: Fix query DCT via DEVX
+On Mon, May 17, 2021 at 06:55:21PM +0530, Devesh Sharma wrote:
+> Enabling Atomic operations for Gen P5 devices if the underlying
+> platform supports global atomic ops.
+> 
+> Fixes:7ff662b76167 ("Disable atomic capability on bnxt_re adapters")
+> Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+> ---
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c  |  4 ++++
+>  drivers/infiniband/hw/bnxt_re/main.c      |  4 ++++
+>  drivers/infiniband/hw/bnxt_re/qplib_res.c | 15 +++++++++++++++
+>  drivers/infiniband/hw/bnxt_re/qplib_res.h |  1 +
+>  drivers/infiniband/hw/bnxt_re/qplib_sp.c  | 13 ++++++++++++-
+>  drivers/infiniband/hw/bnxt_re/qplib_sp.h  |  2 --
+>  6 files changed, 36 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> index 2efaa80bfbd2..8194ac52a484 100644
+> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> @@ -163,6 +163,10 @@ int bnxt_re_query_device(struct ib_device *ibdev,
+>  	ib_attr->max_qp_init_rd_atom = dev_attr->max_qp_init_rd_atom;
+>  	ib_attr->atomic_cap = IB_ATOMIC_NONE;
+>  	ib_attr->masked_atomic_cap = IB_ATOMIC_NONE;
+> +	if (dev_attr->is_atomic) {
+> +		ib_attr->atomic_cap = IB_ATOMIC_GLOB;
+> +		ib_attr->masked_atomic_cap = IB_ATOMIC_GLOB;
+> +	}
+>  
+>  	ib_attr->max_ee_rd_atom = 0;
+>  	ib_attr->max_res_rd_atom = 0;
+> diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+> index 8bfbf0231a9e..e91e987b7861 100644
+> --- a/drivers/infiniband/hw/bnxt_re/main.c
+> +++ b/drivers/infiniband/hw/bnxt_re/main.c
+> @@ -128,6 +128,10 @@ static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev, u8 wqe_mode)
+>  	rdev->rcfw.res = &rdev->qplib_res;
+>  
+>  	bnxt_re_set_drv_mode(rdev, wqe_mode);
+> +	if (bnxt_qplib_enable_atomic_ops_to_root(en_dev->pdev))
+> +		ibdev_info(&rdev->ibdev,
+> +			   "platform doesn't support global atomics.");
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+> index 3ca47004b752..d2efb295e0f6 100644
+> --- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
+> +++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+> @@ -959,3 +959,18 @@ int bnxt_qplib_alloc_res(struct bnxt_qplib_res *res, struct pci_dev *pdev,
+>  	bnxt_qplib_free_res(res);
+>  	return rc;
+>  }
+> +
+> +bool bnxt_qplib_enable_atomic_ops_to_root(struct pci_dev *dev)
 
-elapsed time: 723m
+Why do you need open-coded variant of pci_enable_atomic_ops_to_root()?
 
-configs tested: 181
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                     mpc5200_defconfig
-openrisc                         alldefconfig
-powerpc                      walnut_defconfig
-mips                      malta_kvm_defconfig
-mips                           mtx1_defconfig
-sh                         microdev_defconfig
-arm                         socfpga_defconfig
-arm                         bcm2835_defconfig
-arc                            hsdk_defconfig
-powerpc                        icon_defconfig
-powerpc                    amigaone_defconfig
-arm                             mxs_defconfig
-arm64                            alldefconfig
-powerpc                      katmai_defconfig
-powerpc                       eiger_defconfig
-mips                         tb0226_defconfig
-arm                        clps711x_defconfig
-sh                          sdk7780_defconfig
-xtensa                       common_defconfig
-sh                              ul2_defconfig
-arm                         shannon_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                      pasemi_defconfig
-powerpc                     powernv_defconfig
-mips                        qi_lb60_defconfig
-arm                          badge4_defconfig
-m68k                       m5208evb_defconfig
-arm                          pcm027_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                    adder875_defconfig
-ia64                          tiger_defconfig
-powerpc                mpc7448_hpc2_defconfig
-riscv                            allyesconfig
-mips                        workpad_defconfig
-powerpc                 mpc834x_itx_defconfig
-arm                      tct_hammer_defconfig
-mips                         tb0287_defconfig
-mips                             allyesconfig
-powerpc                      arches_defconfig
-mips                          malta_defconfig
-powerpc                  storcenter_defconfig
-powerpc                       ppc64_defconfig
-powerpc                 mpc836x_rdk_defconfig
-mips                           ip27_defconfig
-powerpc                      ep88xc_defconfig
-arm                             rpc_defconfig
-arm                         assabet_defconfig
-mips                           ci20_defconfig
-m68k                        mvme147_defconfig
-mips                         cobalt_defconfig
-xtensa                         virt_defconfig
-sh                         ap325rxa_defconfig
-m68k                       m5275evb_defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                  mpc885_ads_defconfig
-sh                            hp6xx_defconfig
-sh                           se7721_defconfig
-arc                      axs103_smp_defconfig
-arm                           h3600_defconfig
-ia64                        generic_defconfig
-arm                            hisi_defconfig
-powerpc                      ppc40x_defconfig
-m68k                            q40_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                   currituck_defconfig
-sh                          rsk7269_defconfig
-xtensa                    xip_kc705_defconfig
-mips                         bigsur_defconfig
-arm                         s3c2410_defconfig
-m68k                             allyesconfig
-sh                          rsk7203_defconfig
-arm                           corgi_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                      jornada720_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                     tqm8541_defconfig
-arc                              alldefconfig
-powerpc                 mpc834x_mds_defconfig
-arc                     haps_hs_smp_defconfig
-sh                        apsh4ad0a_defconfig
-arm                           viper_defconfig
-mips                     cu1000-neo_defconfig
-powerpc                      cm5200_defconfig
-powerpc                     rainier_defconfig
-mips                          rb532_defconfig
-arm                          ixp4xx_defconfig
-arm                         lpc18xx_defconfig
-sh                           se7712_defconfig
-powerpc                     taishan_defconfig
-sh                        dreamcast_defconfig
-arm                        oxnas_v6_defconfig
-arc                        vdk_hs38_defconfig
-sh                        edosk7760_defconfig
-m68k                         amcore_defconfig
-xtensa                  audio_kc705_defconfig
-ia64                            zx1_defconfig
-arm                      integrator_defconfig
-powerpc                 mpc836x_mds_defconfig
-arc                          axs101_defconfig
-sh                          kfr2r09_defconfig
-powerpc                 mpc8313_rdb_defconfig
-arm                        mvebu_v7_defconfig
-powerpc                     stx_gp3_defconfig
-arm                           sunxi_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210519
-i386                 randconfig-a001-20210519
-i386                 randconfig-a005-20210519
-i386                 randconfig-a004-20210519
-i386                 randconfig-a002-20210519
-i386                 randconfig-a006-20210519
-x86_64               randconfig-a012-20210519
-x86_64               randconfig-a015-20210519
-x86_64               randconfig-a013-20210519
-x86_64               randconfig-a011-20210519
-x86_64               randconfig-a016-20210519
-x86_64               randconfig-a014-20210519
-i386                 randconfig-a014-20210519
-i386                 randconfig-a016-20210519
-i386                 randconfig-a011-20210519
-i386                 randconfig-a015-20210519
-i386                 randconfig-a012-20210519
-i386                 randconfig-a013-20210519
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210519
-x86_64               randconfig-a003-20210519
-x86_64               randconfig-a004-20210519
-x86_64               randconfig-a005-20210519
-x86_64               randconfig-a001-20210519
-x86_64               randconfig-a002-20210519
-x86_64               randconfig-a006-20210519
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks
