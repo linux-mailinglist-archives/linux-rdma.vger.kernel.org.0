@@ -2,121 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374EB38B369
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 May 2021 17:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9719338B436
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 May 2021 18:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231852AbhETPnV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 May 2021 11:43:21 -0400
-Received: from mail-co1nam11on2077.outbound.protection.outlook.com ([40.107.220.77]:54625
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        id S232363AbhETQaf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 May 2021 12:30:35 -0400
+Received: from mail-bn8nam08on2057.outbound.protection.outlook.com ([40.107.100.57]:30944
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232484AbhETPnU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 May 2021 11:43:20 -0400
+        id S231980AbhETQaf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 20 May 2021 12:30:35 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dQV/I90ZrzyVL2TfbuFBQeARXPGB7TFdAdJH/yqv52Zq4pIbJanWCbfd5W4vo1kttuLysg4UkJkCUGH0yvWGWGjs1Jv4tNtE6/kfPabs+kiZ/WhZxpHtiXmmSXx43xe/NIlyAwcPFlBOpyN8nUaWv7EDO1HUg0mAwfhuzQJ8YIDKoU0p6a6tiTOiQMuvZ8ezK8GlAIwzQbG2R1LrIQ+lNL5SJ++MmaMYB0WMe8gOHkLf6S9e8s2sYTIHM97K1o/lUIK1J9VHdRR9NjvWecDTDc8sN5yYOjHXD2ZiEQZcNTJMW4c1YdiS8QmfYZS7N/H3SKO+SXO3zy9MxTBfqVEo4w==
+ b=GZUHdQF8xIpp6kfuIIhEiQ0iHEOqWGOH2VzscoFH73t5BsQiHtZ+udAOH0Z1AR7+mNKR5b8O9KWasz6O4z/UD1uHe76Up5V8YvHSvFhUDcZWFIdmZ7ndRZj35AGSk6vqW4tFJNT9SS8RU8aqXSbZWENIzYYFk1UjtB3hoEgGkuweq3k20RTXj7bInohATbItR6qY/HAvYgJq5cZku0cLCm/hbZxDPuzm1rSM/4c0oQe5yhjYMBBldi8sMrzaxT4ZN/4/7faa8poAB+lPETrYNnE9l/pR9MNQdGleX8hq88uWnNFfFtAAOh1OIcE5HCCxTgwYJbudRIp1Eec6j8ATCA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0y+S9pOz0V9qM1K7YuzK6x04O4k6y7NlqgxzH89IKl0=;
- b=EUz2+rq9N9yWXPyvkuqzW4M5T6tDyFIC9I/S3ib8w1GfHCRBmUUDTKL+Qb4v0z4kWxcFXBSpTzs7uLbZFL3YxwidArVyYtAchdSRAYc2JQukp0cUclDw1Dh3UmZFf/AflXTXRjd+znGrq1cOPPISh1HZ5jchfGse5BPy/bZZ0x0fB46XI5aRlYYXh7D/lsi44Ng6seavb8kOYD7yy52w42SOr60SdBfdJeCyJ+9Yh34x7BgJpZ0SssSQl8sX2waHgskN+OSWsLltSxu3WSuDrS/WMwdr32x2uHrHfjO8J+Z3a1GIfSdlpTx7yMz9V5zPKPZNM6IduoKcgXcYNPaRcQ==
+ bh=JCTDLWYngKwf+cagXi/9pPSqhJDDhwf235MPTvq8kXc=;
+ b=S3U8zfBYWNgQajC2eF9TaZplnU1rWzayWXRgo0PeuBziR4PZj8AHo429D8v7Wrm302l4jWkoZOUasBNGTzOK32DpyJzi3ZaMaGCX3D1QZXc8RlhGnsOFEI6uHZ2sogZfdZWQ+zyMK4NZpRLUKDFoRl6SJE9lRzjbt7T9ktkGACldmxOyju+rjanxR7K0Ym+hBWBTi5O6AibqhZsxRB/suGpo2BuUUv5MB+STsM1kFHigJBbIyMP7MmJ3NXDuzaAXngv8by2g01rt/5qEAGM3RqeHLuJXNW3As9OcIUKhQp9eOXmZ959OkWzd4VB2CxLiskzqV02KbAAL5U0K6mrTUA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0y+S9pOz0V9qM1K7YuzK6x04O4k6y7NlqgxzH89IKl0=;
- b=VIQNE3XPU7tH3wmOpxer58Sd2qQAnzIoB5DtDkfTwuElQqAcxqGGB9hgrAXUhjcquHS3et1HueqLbJjW3cNQCjn3Qe9+GJqgav2wOCQNQa77wzF8Qnoz+YJjIxduCgNs3ISpTs0e9ElGlJ4sBGMlyz5asyIwSzcgQ6zUSyma5DvsgSFKiEH0q8exHy8secIYaXslRSlTHSBcDPn1WjgEpWCXLA/hpAF5F4onp1tXSyjtR9kISJKtYWPPQEE+/4RFf4mi7cPWNwZXJFBbhgejoxrVkWsMcSl1pdH2c8LtJZlhO4a/1jUqA7QO1m20lI+FVqgvxSki2NQ2y1XWNwhAeQ==
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
+ bh=JCTDLWYngKwf+cagXi/9pPSqhJDDhwf235MPTvq8kXc=;
+ b=ZfbIQVddmgx9kdjlP0l3fU9RnFgmozzEbBeFMajXg0KRMZBa8LBImdT/f2chYKs8DgcUnKRr1EczfHWpm8vounGQwR6WXq6RwRbOD5RyQLL2oQNoFZWd8EKZIRVXLM8Kc6a/UXhoHhwCzk2Bkp6FmEm60vd8ExluG/H3VXVNlhoreHL/Mli51usvqqjIPxj7LoKFuKB3mhENwlCP8314mtd5jhRbn4AEIeM68ybwsyx0HeRllU/iLpC+/8Jvr8mpEu9kk1vhAlF9zhzfJfXED+IockxZAvO5aClJt3cxBtHZ2MEkguE5trsfNEhjWmxjgywxEOkAnRZD04MLUbKLCg==
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB2490.namprd12.prod.outlook.com (2603:10b6:3:e3::20) with
+ by DM6PR12MB4483.namprd12.prod.outlook.com (2603:10b6:5:2a2::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Thu, 20 May
- 2021 15:41:58 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Thu, 20 May
+ 2021 16:29:12 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4150.023; Thu, 20 May 2021
- 15:41:58 +0000
-Date:   Thu, 20 May 2021 12:41:56 -0300
+ 16:29:12 +0000
+Date:   Thu, 20 May 2021 13:29:10 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v2 for-next 0/3] RDMA/hns: Cleanups on CMDQ
-Message-ID: <20210520154156.GB2749689@nvidia.com>
-References: <1621482876-35780-1-git-send-email-liweihang@huawei.com>
+To:     Mark Zhang <markzhang@nvidia.com>
+Cc:     Potnuri Bharat Teja <bharat@chelsio.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH 01/13] RDMA: Split the alloc_hw_stats() ops to port and
+ device variants
+Message-ID: <20210520162910.GY1002214@nvidia.com>
+References: <1-v1-34c90fa45f1c+3c7b0-port_sysfs_jgg@nvidia.com>
+ <b39b0550-6602-be80-7343-349a6f6f30a9@nvidia.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1621482876-35780-1-git-send-email-liweihang@huawei.com>
+In-Reply-To: <b39b0550-6602-be80-7343-349a6f6f30a9@nvidia.com>
 X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR01CA0055.prod.exchangelabs.com (2603:10b6:208:23f::24)
- To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+X-ClientProxiedBy: BL0PR0102CA0011.prod.exchangelabs.com
+ (2603:10b6:207:18::24) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR01CA0055.prod.exchangelabs.com (2603:10b6:208:23f::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Thu, 20 May 2021 15:41:57 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ljko8-00BXL1-Jr; Thu, 20 May 2021 12:41:56 -0300
+Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR0102CA0011.prod.exchangelabs.com (2603:10b6:207:18::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Thu, 20 May 2021 16:29:11 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ljlXq-00Bdfv-Iy; Thu, 20 May 2021 13:29:10 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0f32289a-71a1-47e8-5f31-08d91ba5cd47
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB2490:
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB2490FD67F24A0AC794D455B8C22A9@DM5PR1201MB2490.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
+X-MS-Office365-Filtering-Correlation-Id: 2351238e-36d4-4661-04d8-08d91bac6672
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4483:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB44838B39E8401EB9FA9F53A1C22A9@DM6PR12MB4483.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VT4aI6pHJvXgWzzZ7ANnr3zmy8h7UU3UOk2Jxo1AIk8LK0xItOYIQH2enWcdniaXUw/ax4yuVodKtfHrQcm0DgCaIe9ezoozEdH2s1ZD4r25/6CVoorlvDp4pSSU1MWvAOWeMBmRvJ95DPN9mLpKHcSeT9sc6PAxeLFNTm00V1TfW58L5h71oWmw4oKQfeqOqggnZZIWJeXUI2NP+Bz6DhdsiVC17Idk5Gx/b/Pdw0tTlNP/MGlFeljQmrU4ccm9LgOa8ZIvS8MQHxiR5T+cOn0O0BXjNOTB4crPWDrf3zb8P17ndVIyfFURUzkCaMsc5Xxx4FwG1OZnPvsU/f7mE/h2gM2VoVGc8sTDrbVowqKa2VU/iRivw/USWrxc5kED2uoJUMnqoBVX7nYOPz3i9NPX0PIeTpZA/W9jozX3RZgcvwNp2FrWh+M3o+J9yJ8dMbZHaJRY9r1iIgixeRYsSKsJn6c5Dy+A5UY1N2kJ1PuOW1OmixcbZBuI1WQJ9jkbTwDeCGmzk3VKDv9T+m2jfLwqk/gLi5CUtJ7WPkUW1vID4PmTdUIP7fkBSgBKQ4kXiCjWSNezvrF6p0MN7oGIB/Z0fMUR+IaLjNk7/ZhT+TlD7JUiSjko9ONlxuQlHE6DDQ92c4EmbxKcOSn5kHptrkAhql88MglvmTcMiFxOssgIcwcsdTzQRBDhyc+2FFGb
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(39860400002)(136003)(366004)(376002)(5660300002)(2906002)(4744005)(6916009)(966005)(86362001)(36756003)(33656002)(26005)(316002)(8936002)(1076003)(9786002)(9746002)(426003)(4326008)(186003)(66476007)(2616005)(66946007)(66556008)(8676002)(478600001)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?lh//g1FYm0N4hSyC6cO4E4aPlgfVimU//N/2g144Yettmh14c7jKE2kBvv9I?=
- =?us-ascii?Q?E97eUNC5TP1UTXGhvzLRfoRJgzsW1UhrA6Gij+xJXgxXXDJ5PLbwoIwN9UKp?=
- =?us-ascii?Q?FZnR38MDPrhQ7OJTLDejL4pfWpb0Gq2GsxfhlcA/QsfS+IgDkbOXd+xsuZSV?=
- =?us-ascii?Q?K8a/otqJmXYuK3Q9762yZ20lp3uyKMndsaYqoZ0slJYryaxZ8pAtp5MVAxy+?=
- =?us-ascii?Q?cNOmHeTDIQqpjSxmJLkiRqw/2stz5pkr+zDo1DPCWnAQ5WJPJAeIlimCyg1z?=
- =?us-ascii?Q?r76nQiPNWx/cnoqQWzIddM0zI8Nt23nQJaMDZ0S9odYKKzmQBVrv6wFBWhzR?=
- =?us-ascii?Q?eNXXNbblgx7cujqiS2MEcmahDofn1OCy7WY3EcIEp2CQu1yGqjuIy4yjysbf?=
- =?us-ascii?Q?rA3Ou8GLJ/eLMsam8WB9J9WiJk5laPF801deVuHT2IjS5DYwOzgjVh7dT96c?=
- =?us-ascii?Q?kbLO4wpXxFnccPfY7ETsEzR0M8w7IoIJgu/sfRCEpjepq4EEJLkf0Pe8s0Me?=
- =?us-ascii?Q?/KaSPxxvCXW07jItA8NJx74qB3epd+JCUbz8HSAWo4AeZC6tjccYWeYc6HLL?=
- =?us-ascii?Q?LugUXRGLa+Ll3Xho2f0hz8H4DRd9i3oGAwRPTFXwigDzS+955gDlGglkCKI0?=
- =?us-ascii?Q?enlCxTURxsWJD22bpwRlLJp8v2/OR8RloVSMtH4ZP2zFI0UE9BeBuuc2zqjV?=
- =?us-ascii?Q?Hn50DigoZYWGBMOn1WNJ1/r2wSB/+eKF5ZT+xvKG+XeAycwx6SjXoT1VkPRe?=
- =?us-ascii?Q?Jlhr6X8oZ6va9ibLwVh1SsPtVCrkZMzP5XSOoi1rdb2MyBCrbF9v+wUxV+1T?=
- =?us-ascii?Q?ucmGSoq25B01G3ydMjDzMwgn7mUCQamy5+CpwuPuv9YIBNsS81QDtumkJ+oZ?=
- =?us-ascii?Q?CllbB2D9cny8EdI10ArQ0B0wAx5zTeYpba9y8B4tsncJMQQpdA+3kJa+uKue?=
- =?us-ascii?Q?FSnK4+RUmCsZp0JVddIsG++faYRi8ZKswnjNo1ALoOAfihTYQo7TAzUbSjSD?=
- =?us-ascii?Q?DLw71JX3KSRdy76IX66divuW+KByJ+uz2u9R0Vh5ptnUZTt5Sq4O8391jdm2?=
- =?us-ascii?Q?Az//mBjhpPUoALKcf1p88x70x/sJn85ctQRpFlPlu5SGtSjzMOHbHd3/05Bf?=
- =?us-ascii?Q?W/Kbxo2DlAGx4uaN6bF1OTP5tnDJ9D6tMjLpMqwRvYQFdTsTR4P/HqQEfmo6?=
- =?us-ascii?Q?sRePYRxHcTW0J6L+ZP7ayZ9aP5fNjyJbrpqAD0z7dTz8YQrtgtr/dm33wsJL?=
- =?us-ascii?Q?Ln+Dk6LJz3Cit1JLXMMuU+gJlRWje2jnmdi5NGOuPtMrI41oEiJoSyu+Qgct?=
- =?us-ascii?Q?a2fRJN9mdzXfg6umguhSPRJc?=
+X-Microsoft-Antispam-Message-Info: oLV1mCaLmcXFk3Hi5TAm4L0uKpeRdBWwyFOpbJg6yrKUDfFyPrOmXDjczpquwWR5tIfUwPZfeSM30+pRMYfnxp+AGcayIMLZfWtejbEhic+/yJ5q+o5FhKVsgw+v3mV3ktLeh5tV/fhXHfm07plzjEriMlQfEeO3xxgXoiptf3qWizWO5Nma7y4xKikseEPKt5tzaPcG36w0SycvBDsH5dHuzMP0Y+U21qWFq53LCkY9pxHFaSqGLFKUa5+624DZZfWNOHJDmCqaBIBKedKeElASTQxmDN0GO/FUysT+TlRwMwfL47HkLJsyOjnrezT35A6ps21hePUG82ri6dF4fe/x/3ils2XubMJUNyeI+wfQkcKn61SqsHruVf+evG5ZTLKbnFohQRKnjOm8FjoAPkWygxrLL2meJH5uHGY6jrKaJIYo/wvrhR+vVFUYaIyui/hk33Zx8afeF8xQV/VYAgke+yRKd9Qfgv1WdLVCE2Jx3T9EXj6Ks3+4djdm5o6Nsj9vLAGPxVFHeNBHcHMgrSHDOF2GTraixH0arTZgNTni1uK+J9nDHNbeVa/JTyJlhtmMlk0sSiCsBKhygfQ7qcSXLkdxccRachA9+VZp9Ig=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(39860400002)(396003)(346002)(316002)(4326008)(36756003)(66556008)(1076003)(186003)(9746002)(6862004)(9786002)(8936002)(66946007)(8676002)(66476007)(37006003)(54906003)(2906002)(86362001)(33656002)(2616005)(53546011)(5660300002)(426003)(478600001)(38100700002)(7416002)(26005)(6636002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?9NAMXpp7c1bGmcKgR2BHkKDsiNCUAC4y2uXU+1KWpuW+mNCfIi6Zmg17/YLA?=
+ =?us-ascii?Q?nDRv04sTD7d+yVV6wXdiTmUGe6WvmssxM1ICff/JEXO7+DkuCOlR6QkGs9yZ?=
+ =?us-ascii?Q?YRBB7jTzNeVzXpULax17rT2OaLrwyChMfkWE/ft6xzlG7Tqb7Omz6HMZSsQV?=
+ =?us-ascii?Q?iTkwF0H26Khc73hDJd8bgsEOj74dIXeQoakgdAhuq9+XxIklzw5cRRtngY5u?=
+ =?us-ascii?Q?7yQhvbJNoB18sJjdNofncxEKYyL0KQqbl1A+ZnWxk6q1V88DfHZYyoZ+dqIm?=
+ =?us-ascii?Q?JixpPJywXW3plUoHbEwEEPitfVtWm128nJwEsphaX6Fc937QfNKuVkLHCB3H?=
+ =?us-ascii?Q?n3f3LrPpx94EteAnIByPkkJholImsR6NnG1kM0QpvgKCGsHmznuukMTkcxIZ?=
+ =?us-ascii?Q?XYb8F+eh+czCsmyhv8mdXd7rBkQNttWhalN1AxdVTwiI7jI/f16VrRMZ8hT9?=
+ =?us-ascii?Q?HXpX1MrJQcTzPSxBLfO7niO9sihZhKzTDe87yIMQnjV1fqkf5j4PU6HU7+QD?=
+ =?us-ascii?Q?kOCWlIgaa0qYDZgPaPRKIz8/usaValBKQjlTzIO9ZqI4MjhagQn6i+Anqm0F?=
+ =?us-ascii?Q?kmCHOZBasspGPovnz6DA9wr1vFhsAY1RLY/cpJkf2ItPAMb+dZR6Ivxq6/Ff?=
+ =?us-ascii?Q?THBFeMwbT5wHpRX/z9SmgZ93W7Q/HT7dYy+wlriwefFxR5yfK/OZHtKWfkwj?=
+ =?us-ascii?Q?uXW9liVY5Wd3uJQARKgDykkHuQ2Y5IIIN56nCqMTCKAQMOg6Bx3hJlghKTLj?=
+ =?us-ascii?Q?UBxfY0Er9LbJwk8Nhit1KUJHSX/2H6D6GZeQ1wRwT4dNSC3rtESZcKNJs5Fo?=
+ =?us-ascii?Q?oidiR0RNY/hhlQtkHBTIhHhm3+prAjiisNc404Ze93BWMUvywGesbri3C2a3?=
+ =?us-ascii?Q?98P6phnbLrCazI7xYi+amh9R2DfgyC/LIRtwlGBBGgxtHyBxWJ/X0GJVTPDm?=
+ =?us-ascii?Q?PGvAAd+RXcGANwCxSDkPY+xFsuLlZze/kDoDpoH6W+Iubs3wAvzz9xtx0/7z?=
+ =?us-ascii?Q?wK7cvGyxwADtG4KKrG26Qbu7NYjMxuwoqiVNSlNoEWQpgI2tQtVL9wMLDakp?=
+ =?us-ascii?Q?4LoEWDTGqrlo5sO3aS+G7VixIt9i3rKa+CJ3r43+57Xoj4ttqXRTbyJA5a49?=
+ =?us-ascii?Q?q1/1cKBzrUyZhBcAZO/WfS+TQGdOKH7k1g5nQl1gpm9/YfVFH72NcvjMtGds?=
+ =?us-ascii?Q?cy4hlDBJTXwTxFzZzsxV4o+7u/nxaghsDRv/cMvHFmuB6XxPYG8AmlR3S/mC?=
+ =?us-ascii?Q?AMAq+sJEndKEfUpsn7WeZUVFqq8K1sbYsepX8j+HmYa2p50KBxmjsFLawHcF?=
+ =?us-ascii?Q?v0OWlNOweh7xCp5XTt/LKUk4?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0f32289a-71a1-47e8-5f31-08d91ba5cd47
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2351238e-36d4-4661-04d8-08d91bac6672
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 15:41:57.9804
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 16:29:11.9397
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +Bu7w9MrYklKhkccE/29TusuXjbdPL1BIeJ4DwgFBqCsetgIBd1kulFr8HrM5Hbm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB2490
+X-MS-Exchange-CrossTenant-UserPrincipalName: z+cgi5x0UQca0ON/pG9+lm/MxYGRW+hjOeB/Nsnix7W8Og66M2/gz+ugOKNqTvZr
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4483
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 20, 2021 at 11:54:33AM +0800, Weihang Li wrote:
-> This series first rename the CMDQ pointers to make it better
-> understandable, then remove some dead code.
+On Tue, May 18, 2021 at 11:49:57AM +0800, Mark Zhang wrote:
+> On 5/18/2021 12:47 AM, Jason Gunthorpe wrote:
+> > diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
+> > index 05b702de00e89b..29082d8d45fc4f 100644
+> > +++ b/drivers/infiniband/core/sysfs.c
+> > @@ -981,8 +981,15 @@ static void setup_hw_stats(struct ib_device *device, struct ib_port *port,
+> >          struct rdma_hw_stats *stats;
+> >          int i, ret;
+> > 
+> > -       stats = device->ops.alloc_hw_stats(device, port_num);
+> > -
+> > +       if (port_num) {
+> > +               if (!device->ops.alloc_hw_port_stats)
+> > +                       return;
 > 
-> Changes since v1:
-> * Remove the print in hns_roce_alloc_cmq_desc() in #2 because the caller
->   already has a print.
-> * Link: https://patchwork.kernel.org/project/linux-rdma/cover/1620904578-29829-1-git-send-email-liweihang@huawei.com/
+> Do we need this "if (!device->ops.alloc_hw_port_stats)" here?
+
+Not really in this patch, one of the next patches needs them near
+here, but there isn't a good reason to leave them in this patch at
+this point.
+
+> > index 3f1893e180ddf3..c0f01799f4a0b9 100644
+> > +++ b/drivers/infiniband/hw/cxgb4/provider.c
+> > @@ -377,14 +377,11 @@ static const char * const names[] = {
+> >          [IP6OUTRSTS] = "ip6OutRsts"
+> >   };
+> > 
+> > -static struct rdma_hw_stats *c4iw_alloc_stats(struct ib_device *ibdev,
+> > -                                             u32 port_num)
+> > +static struct rdma_hw_stats *c4iw_alloc_port_stats(struct ib_device *ibdev,
+> > +                                                  u32 port_num)
+> >   {
+> >          BUILD_BUG_ON(ARRAY_SIZE(names) != NR_COUNTERS);
+> > 
+> > -       if (port_num != 0)
+> > -               return NULL;
+> > -
 > 
-> Lang Cheng (3):
->   RDMA/hns: Rename CMDQ head/tail pointer to PI/CI
->   RDMA/hns: Remove Receive Queue of CMDQ
->   RDMA/hns: Remove unused CMDQ member
+> I'm not familiar with this driver, but if port_num must be 0 here, does it
+> mean this is per-device not per-port?
 
-Applied to for-next, thanks
+Yes, I switched it, though the actual counters look per port to me.
 
+Thanks,
 Jason
