@@ -2,153 +2,297 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7155F38CED6
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 May 2021 22:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C7B38CF22
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 May 2021 22:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbhEUUUp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 May 2021 16:20:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36268 "EHLO
+        id S229535AbhEUUgZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 May 2021 16:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbhEUUUo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 May 2021 16:20:44 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E45C06138D
-        for <linux-rdma@vger.kernel.org>; Fri, 21 May 2021 13:19:21 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id c196so12602201oib.9
-        for <linux-rdma@vger.kernel.org>; Fri, 21 May 2021 13:19:21 -0700 (PDT)
+        with ESMTP id S229534AbhEUUgY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 May 2021 16:36:24 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051D9C061574
+        for <linux-rdma@vger.kernel.org>; Fri, 21 May 2021 13:34:59 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id s19so20818692oic.7
+        for <linux-rdma@vger.kernel.org>; Fri, 21 May 2021 13:34:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cE7E6256nwQASA75N374ABr0fpgsDymtSFvOShfQN9I=;
-        b=qbcUpUi6CHsbe770Wf9mCGAK2u95HAHCnjvsPGvgQYDR9oZjBWIjRZUHnVp/1HZVlR
-         49APDRcBvnmKcfKSKW5gPAr6+MOX7HdS1gdc1LVp5CcnyfsSuGYTocoBsjqPf4Uirf9/
-         6ncclKMRvhRxHA/SfBWQV2VEIIeiI+oeF5TiMG+Ncqeqix6tJxwEgTzsmB8vKXgasBoZ
-         bEgcSQ4HuucgjV7kTLt+meLZi3cupcAmv6tbINNoPRXsWnymW/qzN2GIv3Esmg4ZBSvv
-         +jd79zytQv/46whrTie8F8qx8PPqABYmuVFvTCc1/9NojCKJkuey2fQuFtrnsTjUTO9t
-         MVPg==
+        h=subject:references:to:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=3UQAywlgXHaVkRjpEPPAFtNgPyK/P0UxLlGM1ZBqBhs=;
+        b=jdreAls30lJzrbWtdraMhmKTSb7+IufHv7YA2oS8RfPJAYYN1XKUzvrpmDef9jw1hH
+         BzFDHab355kK1jduXncmS0M/TTQDO9imZIFkbRodiHW10c7d6SpejO861Eg3XJguyJSH
+         0UNOSWJSG7tL/eoMiYRvy9wWPA0q7nw7DjzrFQIMihMJQBKKn3ExQ3wTMdLyzo5SK5C7
+         6OOVWbrxvvdzIXnZv2KUloYyA6iI0C78+2vUircNqC4inGLSU3FgkSO2o93ty1U6ZULD
+         UFaPAMRhPhcOXseBY8uMYxaj6fzGbbs/M3tl/DjdmeU568BHdCjl+S0trJwyuJWHgRmW
+         2Kag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cE7E6256nwQASA75N374ABr0fpgsDymtSFvOShfQN9I=;
-        b=NlNW//9+FrF1X+89X/+nXXqggwv0SeCi4eMIOZC2lY/GdAL57BgMGSBoGuTX+qSKSy
-         VgCyxFte3dWq6rCqEN2l4qAAWsBx/WyId8LWS7ULg0HJqgTnvfmuB3Mu25hCoMvt3PiN
-         zOO6mmt2kKfDhvappHNmA7+bq7HNuMJuiDRjTMmAOd0Brj2Vg3x7gmefFBqqfUcGIsDZ
-         YnWmemEzOnGP6OFJzJ9wFgA8qh1PWYobZJvwqtFo094x4nb6Ie9+Q7hZhU8EJGuKT1f0
-         ZZ6CXJX65mpI/vYNBHqKfwkrYUc4QY3YGXDblsKEWXdVAwPviwtZU2TIxZuwoqSp1yji
-         7iVg==
-X-Gm-Message-State: AOAM530FOZ2XdcVISq023CK3vQp8Gh5D+9wGVVGL1dXPxi+E+MKr2uGb
-        5jvLJQ7Kq2Cv3jsGMZ8H7Wc=
-X-Google-Smtp-Source: ABdhPJwJOZNfvTWU5q93l7CrHfYDm/LVKLXocpQaZfuM4fyw53IDw+Bp6PhxedQazaxwyocMMfUXFg==
-X-Received: by 2002:aca:c085:: with SMTP id q127mr3283457oif.7.1621628360797;
-        Fri, 21 May 2021 13:19:20 -0700 (PDT)
-Received: from localhost (2603-8081-140c-1a00-7300-72eb-72bd-e6db.res6.spectrum.com. [2603:8081:140c:1a00:7300:72eb:72bd:e6db])
-        by smtp.gmail.com with ESMTPSA id e21sm1348412oie.32.2021.05.21.13.19.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 13:19:20 -0700 (PDT)
+        h=x-gm-message-state:subject:references:to:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3UQAywlgXHaVkRjpEPPAFtNgPyK/P0UxLlGM1ZBqBhs=;
+        b=BrY5RnM+wuRkt4daTRSAAH8QF4QoQ8h5EVqwYpIt/KE55U9frzMTYxsAbbwFJlqJ+u
+         P/3C59p5VtxTd2HVLPu7mE1d+BD8Dz4tmiY+8OjJX5Muy4tykDNf9loEFYDAHUzoBTO5
+         BE5HrZuRBHY7Xe0kma5K2ZEP+ddnZtzzjIocSMX9moe1Ev7lYwngqVrO1tSdSqbi2+2b
+         HqFn1Jy2bsaMQHw0Jeg3xSZZyOBVFsMQN91sRSsmZaHmgMiWGsyJK6e+YyWOLphC6XjK
+         Fj5tCZwfHTEMfxTmGqy0rX4NlXdhuZ3UObIaUe0z1RysEjgmJ46caK5c+w/UcStXwaVN
+         Id9Q==
+X-Gm-Message-State: AOAM531ZV6/mqwhxoxeXcQ3UNJRE5WES+j/vWOpYVyNOXPLbljdkrmV+
+        nN3QGulrzOKQeSojl4ImBJWdDvlz52Ddag==
+X-Google-Smtp-Source: ABdhPJzWxVnCH99ybGA19dC0ynMFlxsYYtQZ5fUwdugIfHW4RHeS5d74FOp8qQs+JrR4MrwVQ66Ufw==
+X-Received: by 2002:aca:d68a:: with SMTP id n132mr3319990oig.105.1621629298983;
+        Fri, 21 May 2021 13:34:58 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:7300:72eb:72bd:e6db? (2603-8081-140c-1a00-7300-72eb-72bd-e6db.res6.spectrum.com. [2603:8081:140c:1a00:7300:72eb:72bd:e6db])
+        by smtp.gmail.com with ESMTPSA id y7sm1310936oix.36.2021.05.21.13.34.58
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 May 2021 13:34:58 -0700 (PDT)
+Subject: Fwd: [PATCH] Providers/rxe: Implement memory windows
+References: <20210521202044.659671-1-rpearsonhpe@gmail.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v7 10/10] RDMA/rxe: Disallow MR dereg and invalidate when bound
-Date:   Fri, 21 May 2021 15:18:25 -0500
-Message-Id: <20210521201824.659565-11-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210521201824.659565-1-rpearsonhpe@gmail.com>
-References: <20210521201824.659565-1-rpearsonhpe@gmail.com>
+X-Forwarded-Message-Id: <20210521202044.659671-1-rpearsonhpe@gmail.com>
+Message-ID: <0f282b2a-74d3-af15-9afe-8c2ff300784f@gmail.com>
+Date:   Fri, 21 May 2021 15:34:58 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210521202044.659671-1-rpearsonhpe@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Check that an MR has no bound MWs before allowing a dereg or invalidate
-operation.
+Oops can't spell today.
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+
+-------- Forwarded Message --------
+Subject: [PATCH] Providers/rxe: Implement memory windows
+Date: Fri, 21 May 2021 15:20:45 -0500
+From: Bob Pearson <rpearsonhpe@gmail.com>
+To: jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.gmail.com
+CC: Bob Pearson <rpearson@hpe.com>
+
+From: Bob Pearson <rpearson@hpe.com>
+
+For Zhu to test kernel driver. As of today this applies to
+rdma-core cleanly. This is already pushed to my githib tree waiting
+for the kernel patches to go in. Once that happens I can send a PR
+to rdma-core at github.
+
+Bob
+
+Add ibv_alloc_mw verb
+Add ibc_dealloc_verb
+Add ibc_bind_mw verb for type1 MWs
+Add code to support bind MW WRs for type2 MWs
+
+Depends on kernel driver changes and changes to
+kernel-headers/rdma/rdma_user_rxe.h.
+
+Signed-off-by: Bob Pearson <rpearson@hpe.com>
 ---
- drivers/infiniband/sw/rxe/rxe_loc.h   |  1 +
- drivers/infiniband/sw/rxe/rxe_mr.c    | 25 +++++++++++++++++++++++++
- drivers/infiniband/sw/rxe/rxe_verbs.c | 11 -----------
- 3 files changed, 26 insertions(+), 11 deletions(-)
+ providers/rxe/rxe.c | 127 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 125 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 6e4b5e22541e..1ddb20855dee 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -87,6 +87,7 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
- int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length);
- int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
- int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey);
-+int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
- void rxe_mr_cleanup(struct rxe_pool_entry *arg);
- 
- /* rxe_mw.c */
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 3fb58d2c7814..7f169329a8bf 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -546,6 +546,13 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey)
- 		goto err_drop_ref;
- 	}
- 
-+	if (atomic_read(&mr->num_mw) > 0) {
-+		pr_warn("%s: Attempt to invalidate an MR while bound to MWs\n",
-+			__func__);
-+		ret = -EINVAL;
-+		goto err_drop_ref;
-+	}
-+
- 	mr->state = RXE_MR_STATE_FREE;
- 	ret = 0;
- 
-@@ -555,6 +562,24 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey)
+diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
+index a68656ae..09b21195 100644
+--- a/providers/rxe/rxe.c
++++ b/providers/rxe/rxe.c
+@@ -128,6 +128,95 @@ static int rxe_dealloc_pd(struct ibv_pd *pd)
  	return ret;
  }
  
-+int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
++static struct ibv_mw *rxe_alloc_mw(struct ibv_pd *ibpd, enum ibv_mw_type type)
 +{
-+	struct rxe_mr *mr = to_rmr(ibmr);
++	int ret;
++	struct ibv_mw *ibmw;
++	struct ibv_alloc_mw cmd = {};
++	struct ib_uverbs_alloc_mw_resp resp = {};
 +
-+	if (atomic_read(&mr->num_mw) > 0) {
-+		pr_warn("%s: Attempt to deregister an MR while bound to MWs\n",
-+			__func__);
-+		return -EINVAL;
++	ibmw = calloc(1, sizeof(*ibmw));
++	if (!ibmw)
++		return NULL;
++
++	ret = ibv_cmd_alloc_mw(ibpd, type, ibmw, &cmd, sizeof(cmd),
++						&resp, sizeof(resp));
++	if (ret) {
++		free(ibmw);
++		return NULL;
 +	}
 +
-+	mr->state = RXE_MR_STATE_ZOMBIE;
-+	rxe_drop_ref(mr_pd(mr));
-+	rxe_drop_index(mr);
-+	rxe_drop_ref(mr);
++	return ibmw;
++}
 +
++static int rxe_dealloc_mw(struct ibv_mw *ibmw)
++{
++	int ret;
++
++	ret = ibv_cmd_dealloc_mw(ibmw);
++	if (ret)
++		return ret;
++
++	free(ibmw);
 +	return 0;
 +}
 +
- void rxe_mr_cleanup(struct rxe_pool_entry *arg)
++static int next_rkey(int rkey)
++{
++	return (rkey & 0xffffff00) | ((rkey + 1) & 0x000000ff);
++}
++
++static int rxe_post_send(struct ibv_qp *ibqp, struct ibv_send_wr *wr_list,
++			 struct ibv_send_wr **bad_wr);
++
++static int rxe_bind_mw(struct ibv_qp *ibqp, struct ibv_mw *ibmw,
++			struct ibv_mw_bind *mw_bind)
++{
++	int ret;
++	struct ibv_mw_bind_info	*bind_info = &mw_bind->bind_info;
++	struct ibv_send_wr ibwr;
++	struct ibv_send_wr *bad_wr;
++
++	if (!bind_info->mr && (bind_info->addr || bind_info->length)) {
++		ret = EINVAL;
++		goto err;
++	}
++
++	if (bind_info->mw_access_flags & IBV_ACCESS_ZERO_BASED) {
++		ret = EINVAL;
++		goto err;
++	}
++
++	if (bind_info->mr) {
++		if (ibmw->pd != bind_info->mr->pd) {
++			ret = EPERM;
++			goto err;
++		}
++	}
++
++	memset(&ibwr, 0, sizeof(ibwr));
++
++	ibwr.opcode		= IBV_WR_BIND_MW;
++	ibwr.next		= NULL;
++	ibwr.wr_id		= mw_bind->wr_id;
++	ibwr.send_flags		= mw_bind->send_flags;
++	ibwr.bind_mw.bind_info	= mw_bind->bind_info;
++	ibwr.bind_mw.mw		= ibmw;
++	ibwr.bind_mw.rkey	= next_rkey(ibmw->rkey);
++
++	ret = rxe_post_send(ibqp, &ibwr, &bad_wr);
++	if (ret)
++		goto err;
++
++	/* user has to undo this if he gets an error wc */
++	ibmw->rkey = ibwr.bind_mw.rkey;
++
++	return 0;
++err:
++	errno = ret;
++	return errno;
++}
++
+ static struct ibv_mr *rxe_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+ 				 uint64_t hca_va, int access)
  {
- 	struct rxe_mr *mr = container_of(arg, typeof(*mr), pelem);
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 4860e8ab378e..3e0bab4994d1 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -913,17 +913,6 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
- 	return ERR_PTR(err);
+@@ -1275,9 +1364,10 @@ static int rxe_destroy_qp(struct ibv_qp *ibqp)
  }
  
--static int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
--{
--	struct rxe_mr *mr = to_rmr(ibmr);
--
--	mr->state = RXE_MR_STATE_ZOMBIE;
--	rxe_drop_ref(mr_pd(mr));
--	rxe_drop_index(mr);
--	rxe_drop_ref(mr);
--	return 0;
--}
--
- static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
- 				  u32 max_num_sg)
+ /* basic sanity checks for send work request */
+-static int validate_send_wr(struct rxe_wq *sq, struct ibv_send_wr *ibwr,
++static int validate_send_wr(struct rxe_qp *qp, struct ibv_send_wr *ibwr,
+ 			    unsigned int length)
  {
++	struct rxe_wq *sq = &qp->sq;
+ 	enum ibv_wr_opcode opcode = ibwr->opcode;
+ 
+ 	if (ibwr->num_sge > sq->max_sge)
+@@ -1291,11 +1381,26 @@ static int validate_send_wr(struct rxe_wq *sq, struct ibv_send_wr *ibwr,
+ 	if ((ibwr->send_flags & IBV_SEND_INLINE) && (length > sq->max_inline))
+ 		return -EINVAL;
+ 
++	if (ibwr->opcode == IBV_WR_BIND_MW) {
++		if (length)
++			return -EINVAL;
++		if (ibwr->num_sge)
++			return -EINVAL;
++		if (ibwr->imm_data)
++			return -EINVAL;
++		if ((qp_type(qp) != IBV_QPT_RC) &&
++		    (qp_type(qp) != IBV_QPT_UC))
++			return -EINVAL;
++	}
++
+ 	return 0;
+ }
+ 
+ static void convert_send_wr(struct rxe_send_wr *kwr, struct ibv_send_wr *uwr)
+ {
++	struct ibv_mw *ibmw;
++	struct ibv_mr *ibmr;
++
+ 	memset(kwr, 0, sizeof(*kwr));
+ 
+ 	kwr->wr_id		= uwr->wr_id;
+@@ -1326,6 +1431,18 @@ static void convert_send_wr(struct rxe_send_wr *kwr, struct ibv_send_wr *uwr)
+ 		kwr->wr.atomic.rkey		= uwr->wr.atomic.rkey;
+ 		break;
+ 
++	case IBV_WR_BIND_MW:
++		ibmr = uwr->bind_mw.bind_info.mr;
++		ibmw = uwr->bind_mw.mw;
++
++		kwr->wr.mw.addr = uwr->bind_mw.bind_info.addr;
++		kwr->wr.mw.length = uwr->bind_mw.bind_info.length;
++		kwr->wr.mw.mr_lkey = ibmr->lkey;
++		kwr->wr.mw.mw_rkey = ibmw->rkey;
++		kwr->wr.mw.rkey = uwr->bind_mw.rkey;
++		kwr->wr.mw.access = uwr->bind_mw.bind_info.mw_access_flags;
++		break;
++
+ 	default:
+ 		break;
+ 	}
+@@ -1348,6 +1465,8 @@ static int init_send_wqe(struct rxe_qp *qp, struct rxe_wq *sq,
+ 	if (ibwr->send_flags & IBV_SEND_INLINE) {
+ 		uint8_t *inline_data = wqe->dma.inline_data;
+ 
++		wqe->dma.resid = 0;
++
+ 		for (i = 0; i < num_sge; i++) {
+ 			memcpy(inline_data,
+ 			       (uint8_t *)(long)ibwr->sg_list[i].addr,
+@@ -1363,6 +1482,7 @@ static int init_send_wqe(struct rxe_qp *qp, struct rxe_wq *sq,
+ 		wqe->iova	= ibwr->wr.atomic.remote_addr;
+ 	else
+ 		wqe->iova	= ibwr->wr.rdma.remote_addr;
++
+ 	wqe->dma.length		= length;
+ 	wqe->dma.resid		= length;
+ 	wqe->dma.num_sge	= num_sge;
+@@ -1385,7 +1505,7 @@ static int post_one_send(struct rxe_qp *qp, struct rxe_wq *sq,
+ 	for (i = 0; i < ibwr->num_sge; i++)
+ 		length += ibwr->sg_list[i].length;
+ 
+-	err = validate_send_wr(sq, ibwr, length);
++	err = validate_send_wr(qp, ibwr, length);
+ 	if (err) {
+ 		printf("validate send failed\n");
+ 		return err;
+@@ -1579,6 +1699,9 @@ static const struct verbs_context_ops rxe_ctx_ops = {
+ 	.dealloc_pd = rxe_dealloc_pd,
+ 	.reg_mr = rxe_reg_mr,
+ 	.dereg_mr = rxe_dereg_mr,
++	.alloc_mw = rxe_alloc_mw,
++	.dealloc_mw = rxe_dealloc_mw,
++	.bind_mw = rxe_bind_mw,
+ 	.create_cq = rxe_create_cq,
+ 	.create_cq_ex = rxe_create_cq_ex,
+ 	.poll_cq = rxe_poll_cq,
 -- 
-2.30.2
+2.27.0
 
