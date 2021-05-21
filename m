@@ -2,20 +2,20 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42FF38C31C
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 May 2021 11:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A313B38C31F
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 May 2021 11:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232335AbhEUJb4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 May 2021 05:31:56 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4570 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236505AbhEUJbp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 May 2021 05:31:45 -0400
-Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fmh8M4Cb8zqVJX;
+        id S236460AbhEUJb5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 May 2021 05:31:57 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5647 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236502AbhEUJbq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 May 2021 05:31:46 -0400
+Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fmh8M4gxQz16PJL;
         Fri, 21 May 2021 17:27:15 +0800 (CST)
 Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
  15.1.2176.2; Fri, 21 May 2021 17:30:03 +0800
 Received: from localhost.localdomain (10.69.192.56) by
@@ -25,11 +25,10 @@ Received: from localhost.localdomain (10.69.192.56) by
 From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@nvidia.com>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, "Xi Wang" <wangxi11@huawei.com>,
-        Weihang Li <liweihang@huawei.com>
-Subject: [PATCH for-next 3/5] RDMA/hns: Fix wrong timer context buffer page size
-Date:   Fri, 21 May 2021 17:29:53 +0800
-Message-ID: <1621589395-2435-4-git-send-email-liweihang@huawei.com>
+        <linuxarm@huawei.com>, Weihang Li <liweihang@huawei.com>
+Subject: [PATCH for-next 4/5] RDMA/hns: Use refcount_t APIs for HEM
+Date:   Fri, 21 May 2021 17:29:54 +0800
+Message-ID: <1621589395-2435-5-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1621589395-2435-1-git-send-email-liweihang@huawei.com>
 References: <1621589395-2435-1-git-send-email-liweihang@huawei.com>
@@ -43,36 +42,118 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+refcount_t is better than integer for reference counting, it will WARN on
+overflow/underflow and avoid use-after-free risks.
 
-The HEM page size for QPC timer and CQC timer is always 4K and there's no
-need to calculate a different size by the hns driver, otherwise the ROCEE
-may access an invalid address.
-
-Fixes: 719d13415f59 ("RDMA/hns: Remove duplicated hem page size config code")
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hem.c | 32 +++++++++++++++-----------------
+ drivers/infiniband/hw/hns/hns_roce_hem.h |  4 ++--
+ 2 files changed, 17 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 0c12d87..17cf51a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -2057,12 +2057,6 @@ static void set_hem_page_size(struct hns_roce_dev *hr_dev)
- 	calc_pg_sz(caps->max_cqes, caps->cqe_sz, caps->cqe_hop_num,
- 		   1, &caps->cqe_buf_pg_sz, &caps->cqe_ba_pg_sz, HEM_TYPE_CQE);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
+index 63776da..fe6940b 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hem.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
+@@ -271,7 +271,6 @@ static struct hns_roce_hem *hns_roce_alloc_hem(struct hns_roce_dev *hr_dev,
+ 	if (!hem)
+ 		return NULL;
  
--	if (caps->cqc_timer_entry_sz)
--		calc_pg_sz(caps->num_cqc_timer, caps->cqc_timer_entry_sz,
--			   caps->cqc_timer_hop_num, caps->cqc_timer_bt_num,
--			   &caps->cqc_timer_buf_pg_sz,
--			   &caps->cqc_timer_ba_pg_sz, HEM_TYPE_CQC_TIMER);
--
- 	/* SRQ */
- 	if (caps->flags & HNS_ROCE_CAP_FLAG_SRQ) {
- 		caps->srqc_ba_pg_sz = 0;
+-	hem->refcount = 0;
+ 	INIT_LIST_HEAD(&hem->chunk_list);
+ 
+ 	order = get_order(hem_alloc_size);
+@@ -618,7 +617,7 @@ static int hns_roce_table_mhop_get(struct hns_roce_dev *hr_dev,
+ 
+ 	mutex_lock(&table->mutex);
+ 	if (table->hem[index.buf]) {
+-		++table->hem[index.buf]->refcount;
++		refcount_inc(&table->hem[index.buf]->refcount);
+ 		goto out;
+ 	}
+ 
+@@ -637,7 +636,7 @@ static int hns_roce_table_mhop_get(struct hns_roce_dev *hr_dev,
+ 		}
+ 	}
+ 
+-	++table->hem[index.buf]->refcount;
++	refcount_set(&table->hem[index.buf]->refcount, 1);
+ 	goto out;
+ 
+ err_alloc:
+@@ -663,7 +662,7 @@ int hns_roce_table_get(struct hns_roce_dev *hr_dev,
+ 	mutex_lock(&table->mutex);
+ 
+ 	if (table->hem[i]) {
+-		++table->hem[i]->refcount;
++		refcount_inc(&table->hem[i]->refcount);
+ 		goto out;
+ 	}
+ 
+@@ -686,7 +685,7 @@ int hns_roce_table_get(struct hns_roce_dev *hr_dev,
+ 		goto out;
+ 	}
+ 
+-	++table->hem[i]->refcount;
++	refcount_set(&table->hem[i]->refcount, 1);
+ out:
+ 	mutex_unlock(&table->mutex);
+ 	return ret;
+@@ -753,11 +752,11 @@ static void hns_roce_table_mhop_put(struct hns_roce_dev *hr_dev,
+ 		return;
+ 	}
+ 
+-	mutex_lock(&table->mutex);
+-	if (check_refcount && (--table->hem[index.buf]->refcount > 0)) {
+-		mutex_unlock(&table->mutex);
++	if (!check_refcount)
++		mutex_lock(&table->mutex);
++	else if (!refcount_dec_and_mutex_lock(&table->hem[index.buf]->refcount,
++					      &table->mutex))
+ 		return;
+-	}
+ 
+ 	clear_mhop_hem(hr_dev, table, obj, &mhop, &index);
+ 	free_mhop_hem(hr_dev, table, &mhop, &index);
+@@ -779,16 +778,15 @@ void hns_roce_table_put(struct hns_roce_dev *hr_dev,
+ 	i = (obj & (table->num_obj - 1)) /
+ 	    (table->table_chunk_size / table->obj_size);
+ 
+-	mutex_lock(&table->mutex);
++	if (!refcount_dec_and_mutex_lock(&table->hem[i]->refcount,
++					 &table->mutex))
++		return;
+ 
+-	if (--table->hem[i]->refcount == 0) {
+-		/* Clear HEM base address */
+-		if (hr_dev->hw->clear_hem(hr_dev, table, obj, 0))
+-			dev_warn(dev, "Clear HEM base address failed.\n");
++	if (hr_dev->hw->clear_hem(hr_dev, table, obj, 0))
++		dev_warn(dev, "failed to clear HEM base address.\n");
+ 
+-		hns_roce_free_hem(hr_dev, table->hem[i]);
+-		table->hem[i] = NULL;
+-	}
++	hns_roce_free_hem(hr_dev, table->hem[i]);
++	table->hem[i] = NULL;
+ 
+ 	mutex_unlock(&table->mutex);
+ }
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.h b/drivers/infiniband/hw/hns/hns_roce_hem.h
+index 13fdeb3..ffa65e8 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hem.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hem.h
+@@ -88,8 +88,8 @@ struct hns_roce_hem_chunk {
+ };
+ 
+ struct hns_roce_hem {
+-	struct list_head	 chunk_list;
+-	int			 refcount;
++	struct list_head chunk_list;
++	refcount_t refcount;
+ };
+ 
+ struct hns_roce_hem_iter {
 -- 
 2.7.4
 
