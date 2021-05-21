@@ -2,99 +2,247 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48F638BF54
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 May 2021 08:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEB238C171
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 May 2021 10:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbhEUGa4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 May 2021 02:30:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53542 "EHLO mail.kernel.org"
+        id S236632AbhEUIMX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 May 2021 04:12:23 -0400
+Received: from mga03.intel.com ([134.134.136.65]:47861 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232537AbhEUGai (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 21 May 2021 02:30:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 450E0613B6;
-        Fri, 21 May 2021 06:29:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621578555;
-        bh=OuOaLVeLKVL4MFpcuq3Eo84euhKxqBGRDkgy+5MHpLw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dyIjc4BUYThjwUDUvf68JEDT/V7EuMP833iA1CyCL8RA+WH6ASbVu0VKQsLPHDI3X
-         4QxQC0FsAEjiOTQ4ycMtbJT4fe0J17R1Vs3GJfL5NNwj4Ao+QQD0AGpMzV1qSZNjZV
-         iWIXG1KZzO6qQG7B0vdzVfEWwH/2s3tFhyGona/4byjrJab47FMrprPZJxJ8qKRKcc
-         I//8wRRLeukkmELMLoSWkney6NmeoT0LVdbykHDmraPNBt8hxbcyKiv0wAjb7CNTCW
-         ns9YKbOdM91PpeLT3eoSYOs4/MG5qUtGVSNoK9XJpJi3+dv9Qne4TLecLU4tRMnYLi
-         duBCrbqydM9zA==
-Date:   Fri, 21 May 2021 09:29:12 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
- allocations
-Message-ID: <YKdTOEeC55X+SZl+@unreal>
-References: <47acc7ec-a37f-fa20-ea67-b546c6050279@cornelisnetworks.com>
- <20210514143516.GG1002214@nvidia.com>
- <CH0PR01MB71533DE9DBEEAEC7C250F8F8F2509@CH0PR01MB7153.prod.exchangelabs.com>
- <20210514150237.GJ1002214@nvidia.com>
- <YKTDPm6j29jziSxT@unreal>
- <0b3cc247-b67b-6151-2a32-e4682ff9af22@cornelisnetworks.com>
- <20210519182941.GQ1002214@nvidia.com>
- <1ceb34ec-eafb-697e-672c-17f9febb2e82@cornelisnetworks.com>
- <20210519202623.GU1002214@nvidia.com>
- <983802a6-0fa2-e181-832e-13a2d5f0fa82@cornelisnetworks.com>
+        id S231786AbhEUIME (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 21 May 2021 04:12:04 -0400
+IronPort-SDR: WM25UqRTw/Q0JHxM2eU0r28SV6W0cbx4wBUBqqEV1wAy+4/6FnStGopAcMokR4K+vBzvWQqnJ8
+ asYkpuYVU9Ww==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="201485569"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="201485569"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 01:10:07 -0700
+IronPort-SDR: zbdgvOqEuAap9aCYIGaZHGOT8VoS+4fywqQmECm7qAgwYuT7sm5ZTIAX9k0gkPrXp6jlZwqZjM
+ oKnc6x1+LwGQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="440834735"
+Received: from lkp-server02.sh.intel.com (HELO 1b329be5b008) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 21 May 2021 01:10:04 -0700
+Received: from kbuild by 1b329be5b008 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lk0EO-000125-5F; Fri, 21 May 2021 08:10:04 +0000
+Date:   Fri, 21 May 2021 16:10:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 331859d320f568a5ef8912063a2ec56956e519d9
+Message-ID: <60a76ada.bZT84xWPi8O6AHuR%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <983802a6-0fa2-e181-832e-13a2d5f0fa82@cornelisnetworks.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 20, 2021 at 06:02:09PM -0400, Dennis Dalessandro wrote:
-> On 5/19/21 4:26 PM, Jason Gunthorpe wrote:
-> > On Wed, May 19, 2021 at 03:49:31PM -0400, Dennis Dalessandro wrote:
-> > > On 5/19/21 2:29 PM, Jason Gunthorpe wrote:
-> > > > On Wed, May 19, 2021 at 07:56:32AM -0400, Dennis Dalessandro wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 331859d320f568a5ef8912063a2ec56956e519d9  RDMA/hns: Remove unused CMDQ member
 
-<...>
+elapsed time: 724m
 
-> > Especially since for RDMA all of the above is highly situational. The
-> > IRQ/WQ processing anything in RDMA should be tied to the comp_vector,
-> > so without knowing that information you simply can't do anything
-> > correct at allocation time.
-> 
-> I don't think that's true for our case. The comp_vector may in some cases be
-> the right thing to dictate where memory should be, in our case I don't think
-> that's true all the time.
+configs tested: 185
+configs skipped: 3
 
-In verbs world, the comp_vector is always the right thing to dictate
-node policy. We can argue if it works correctly or not.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-https://www.rdmamojo.com/2012/11/03/ibv_create_cq/
-comp_vector:
- MSI-X completion vector that will be used for signaling Completion events.
- If the IRQ affinity masks of these interrupts have been configured to spread
- each MSI-X interrupt to be handled by a different core, this parameter can be
- used to spread the completion workload over multiple cores.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                  colibri_pxa300_defconfig
+powerpc                      mgcoge_defconfig
+mips                      bmips_stb_defconfig
+mips                        jmr3927_defconfig
+sh                           se7343_defconfig
+openrisc                  or1klitex_defconfig
+arc                     haps_hs_smp_defconfig
+arm                        mvebu_v5_defconfig
+arm                     am200epdkit_defconfig
+mips                          rb532_defconfig
+powerpc                         ps3_defconfig
+powerpc                     tqm5200_defconfig
+m68k                       m5275evb_defconfig
+sh                          lboxre2_defconfig
+arm                            qcom_defconfig
+powerpc                    klondike_defconfig
+arm                        realview_defconfig
+mips                        qi_lb60_defconfig
+mips                           rs90_defconfig
+sh                           se7721_defconfig
+arm                          moxart_defconfig
+m68k                       m5208evb_defconfig
+mips                malta_qemu_32r6_defconfig
+sh                   secureedge5410_defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                     skiroot_defconfig
+mips                           ip27_defconfig
+powerpc                      ep88xc_defconfig
+arm                        spear6xx_defconfig
+arm                       aspeed_g5_defconfig
+um                                  defconfig
+arm                         shannon_defconfig
+powerpc                       maple_defconfig
+mips                       capcella_defconfig
+powerpc                     tqm8560_defconfig
+ia64                             allmodconfig
+powerpc                     tqm8541_defconfig
+powerpc                      pcm030_defconfig
+m68k                       m5475evb_defconfig
+powerpc                 mpc832x_rdb_defconfig
+powerpc                    mvme5100_defconfig
+powerpc                     pq2fads_defconfig
+xtensa                    xip_kc705_defconfig
+sparc                       sparc64_defconfig
+arm                         s5pv210_defconfig
+powerpc                 mpc8315_rdb_defconfig
+mips                         rt305x_defconfig
+mips                        workpad_defconfig
+m68k                            q40_defconfig
+arm                       netwinder_defconfig
+arm                            hisi_defconfig
+mips                            e55_defconfig
+sh                           se7722_defconfig
+powerpc               mpc834x_itxgp_defconfig
+sh                         apsh4a3a_defconfig
+arm                       omap2plus_defconfig
+arc                         haps_hs_defconfig
+m68k                          sun3x_defconfig
+powerpc                     tqm8555_defconfig
+arc                        nsimosci_defconfig
+arm                         cm_x300_defconfig
+mips                           ip28_defconfig
+powerpc                     asp8347_defconfig
+powerpc                 mpc834x_mds_defconfig
+powerpc                      makalu_defconfig
+powerpc                     rainier_defconfig
+arm                         lubbock_defconfig
+mips                         tb0287_defconfig
+arm                       aspeed_g4_defconfig
+mips                      malta_kvm_defconfig
+arm                         palmz72_defconfig
+arm                        vexpress_defconfig
+arm                         mv78xx0_defconfig
+powerpc                     mpc83xx_defconfig
+powerpc                      chrp32_defconfig
+nios2                         3c120_defconfig
+nds32                             allnoconfig
+sh                               j2_defconfig
+sh                             espt_defconfig
+s390                       zfcpdump_defconfig
+powerpc                        warp_defconfig
+powerpc                     tqm8548_defconfig
+mips                            gpr_defconfig
+powerpc                      walnut_defconfig
+arc                    vdk_hs38_smp_defconfig
+openrisc                 simple_smp_defconfig
+mips                        vocore2_defconfig
+arm                     davinci_all_defconfig
+sh                          landisk_defconfig
+alpha                            allyesconfig
+x86_64                            allnoconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a001-20210520
+x86_64               randconfig-a006-20210520
+x86_64               randconfig-a005-20210520
+x86_64               randconfig-a003-20210520
+x86_64               randconfig-a004-20210520
+x86_64               randconfig-a002-20210520
+i386                 randconfig-a001-20210520
+i386                 randconfig-a005-20210520
+i386                 randconfig-a002-20210520
+i386                 randconfig-a006-20210520
+i386                 randconfig-a004-20210520
+i386                 randconfig-a003-20210520
+i386                 randconfig-a001-20210521
+i386                 randconfig-a005-20210521
+i386                 randconfig-a002-20210521
+i386                 randconfig-a006-20210521
+i386                 randconfig-a003-20210521
+i386                 randconfig-a004-20210521
+x86_64               randconfig-a013-20210521
+x86_64               randconfig-a014-20210521
+x86_64               randconfig-a012-20210521
+x86_64               randconfig-a016-20210521
+x86_64               randconfig-a015-20210521
+x86_64               randconfig-a011-20210521
+i386                 randconfig-a016-20210520
+i386                 randconfig-a011-20210520
+i386                 randconfig-a015-20210520
+i386                 randconfig-a012-20210520
+i386                 randconfig-a014-20210520
+i386                 randconfig-a013-20210520
+i386                 randconfig-a016-20210521
+i386                 randconfig-a011-20210521
+i386                 randconfig-a015-20210521
+i386                 randconfig-a012-20210521
+i386                 randconfig-a014-20210521
+i386                 randconfig-a013-20210521
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-> 
-> > The idea of allocating every to the HW's node is simply not correct
-> > design. I will grant you it may have made sense ages ago before the
-> > NUMA stuff was more completed, but today it does not and you'd be
-> > better to remove it all and use memory policy properly than insist we
-> > keep it around forever.
-> 
-> Not insisting anything. If the trend is to remove these sort of allocations
-> and other drivers are no longer doing this "not correct design" we are
-> certainly open to change. We just want to understand the impact first rather
-> than being strong armed into accepting a performance regression just so Leon
-> can refactor some code.
+clang tested configs:
+x86_64               randconfig-b001-20210521
+x86_64               randconfig-b001-20210520
+x86_64               randconfig-a013-20210520
+x86_64               randconfig-a014-20210520
+x86_64               randconfig-a012-20210520
+x86_64               randconfig-a016-20210520
+x86_64               randconfig-a015-20210520
+x86_64               randconfig-a011-20210520
 
-It is hard to talk without data.
-
-Thanks
-
-> 
-> -Denny
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
