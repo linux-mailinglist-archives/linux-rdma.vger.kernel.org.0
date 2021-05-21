@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B1F38C422
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 May 2021 11:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F01B638C420
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 May 2021 11:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235661AbhEUJ5N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 May 2021 05:57:13 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4573 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235560AbhEUJzT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 May 2021 05:55:19 -0400
+        id S235740AbhEUJ5M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 May 2021 05:57:12 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5652 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235701AbhEUJzU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 May 2021 05:55:20 -0400
 Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fmhgw0xpHzqVJZ;
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fmhgw15Ylz16Pnm;
         Fri, 21 May 2021 17:51:08 +0800 (CST)
 Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
  dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
@@ -26,10 +26,11 @@ From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@nvidia.com>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>, Weihang Li <liweihang@huawei.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>
-Subject: [PATCH v2 for-next 11/17] RDMA/cxgb4: Use refcount_t instead of atomic_t for reference counting
-Date:   Fri, 21 May 2021 17:53:39 +0800
-Message-ID: <1621590825-60693-12-git-send-email-liweihang@huawei.com>
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: [PATCH v2 for-next 12/17] RDMA/i40iw: Use refcount_t instead of atomic_t on refcount of i40iw_cqp_request
+Date:   Fri, 21 May 2021 17:53:40 +0800
+Message-ID: <1621590825-60693-13-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1621590825-60693-1-git-send-email-liweihang@huawei.com>
 References: <1621590825-60693-1-git-send-email-liweihang@huawei.com>
@@ -46,89 +47,85 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 The refcount_t API will WARN on underflow and overflow of a reference
 counter, and avoid use-after-free risks.
 
-Cc: Potnuri Bharat Teja <bharat@chelsio.com>
+Cc: Faisal Latif <faisal.latif@intel.com>
+Cc: Shiraz Saleem <shiraz.saleem@intel.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/cxgb4/cq.c       | 6 +++---
- drivers/infiniband/hw/cxgb4/ev.c       | 8 ++++----
- drivers/infiniband/hw/cxgb4/iw_cxgb4.h | 2 +-
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/infiniband/hw/i40iw/i40iw.h       |  2 +-
+ drivers/infiniband/hw/i40iw/i40iw_main.c  |  2 +-
+ drivers/infiniband/hw/i40iw/i40iw_utils.c | 10 +++++-----
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
-index 44c2416..6c8c910 100644
---- a/drivers/infiniband/hw/cxgb4/cq.c
-+++ b/drivers/infiniband/hw/cxgb4/cq.c
-@@ -976,8 +976,8 @@ int c4iw_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
- 	chp = to_c4iw_cq(ib_cq);
- 
- 	xa_erase_irq(&chp->rhp->cqs, chp->cq.cqid);
--	atomic_dec(&chp->refcnt);
--	wait_event(chp->wait, !atomic_read(&chp->refcnt));
-+	refcount_dec(&chp->refcnt);
-+	wait_event(chp->wait, !refcount_read(&chp->refcnt));
- 
- 	ucontext = rdma_udata_to_drv_context(udata, struct c4iw_ucontext,
- 					     ibucontext);
-@@ -1080,7 +1080,7 @@ int c4iw_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	chp->ibcq.cqe = entries - 2;
- 	spin_lock_init(&chp->lock);
- 	spin_lock_init(&chp->comp_handler_lock);
--	atomic_set(&chp->refcnt, 1);
-+	refcount_set(&chp->refcnt, 1);
- 	init_waitqueue_head(&chp->wait);
- 	ret = xa_insert_irq(&rhp->cqs, chp->cq.cqid, chp, GFP_KERNEL);
- 	if (ret)
-diff --git a/drivers/infiniband/hw/cxgb4/ev.c b/drivers/infiniband/hw/cxgb4/ev.c
-index 4cd877b..7798d090 100644
---- a/drivers/infiniband/hw/cxgb4/ev.c
-+++ b/drivers/infiniband/hw/cxgb4/ev.c
-@@ -151,7 +151,7 @@ void c4iw_ev_dispatch(struct c4iw_dev *dev, struct t4_cqe *err_cqe)
+diff --git a/drivers/infiniband/hw/i40iw/i40iw.h b/drivers/infiniband/hw/i40iw/i40iw.h
+index be4094a..15c5dd6 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw.h
++++ b/drivers/infiniband/hw/i40iw/i40iw.h
+@@ -137,7 +137,7 @@ struct i40iw_cqp_request {
+ 	struct cqp_commands_info info;
+ 	wait_queue_head_t waitq;
+ 	struct list_head list;
+-	atomic_t refcount;
++	refcount_t refcount;
+ 	void (*callback_fcn)(struct i40iw_cqp_request*, u32);
+ 	void *param;
+ 	struct i40iw_cqp_compl_info compl_info;
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_main.c b/drivers/infiniband/hw/i40iw/i40iw_main.c
+index b496f30..fc48555 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_main.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_main.c
+@@ -1125,7 +1125,7 @@ static enum i40iw_status_code i40iw_alloc_local_mac_ipaddr_entry(struct i40iw_de
  	}
  
- 	c4iw_qp_add_ref(&qhp->ibqp);
--	atomic_inc(&chp->refcnt);
-+	refcount_inc(&chp->refcnt);
- 	xa_unlock_irq(&dev->qps);
+ 	/* increment refcount, because we need the cqp request ret value */
+-	atomic_inc(&cqp_request->refcount);
++	refcount_inc(&cqp_request->refcount);
  
- 	/* Bad incoming write */
-@@ -213,7 +213,7 @@ void c4iw_ev_dispatch(struct c4iw_dev *dev, struct t4_cqe *err_cqe)
- 		break;
+ 	cqp_info = &cqp_request->info;
+ 	cqp_info->cqp_cmd = OP_ALLOC_LOCAL_MAC_IPADDR_ENTRY;
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_utils.c b/drivers/infiniband/hw/i40iw/i40iw_utils.c
+index 9ff825f..32ff432b 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_utils.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_utils.c
+@@ -384,10 +384,10 @@ struct i40iw_cqp_request *i40iw_get_cqp_request(struct i40iw_cqp *cqp, bool wait
  	}
- done:
--	if (atomic_dec_and_test(&chp->refcnt))
-+	if (refcount_dec_and_test(&chp->refcnt))
- 		wake_up(&chp->wait);
- 	c4iw_qp_rem_ref(&qhp->ibqp);
- out:
-@@ -228,13 +228,13 @@ int c4iw_ev_handler(struct c4iw_dev *dev, u32 qid)
- 	xa_lock_irqsave(&dev->cqs, flag);
- 	chp = xa_load(&dev->cqs, qid);
- 	if (chp) {
--		atomic_inc(&chp->refcnt);
-+		refcount_inc(&chp->refcnt);
- 		xa_unlock_irqrestore(&dev->cqs, flag);
- 		t4_clear_cq_armed(&chp->cq);
- 		spin_lock_irqsave(&chp->comp_handler_lock, flag);
- 		(*chp->ibcq.comp_handler)(&chp->ibcq, chp->ibcq.cq_context);
- 		spin_unlock_irqrestore(&chp->comp_handler_lock, flag);
--		if (atomic_dec_and_test(&chp->refcnt))
-+		if (refcount_dec_and_test(&chp->refcnt))
- 			wake_up(&chp->wait);
+ 
+ 	if (wait) {
+-		atomic_set(&cqp_request->refcount, 2);
++		refcount_set(&cqp_request->refcount, 2);
+ 		cqp_request->waiting = true;
  	} else {
- 		pr_debug("unknown cqid 0x%x\n", qid);
-diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-index cdec5de..3883af3 100644
---- a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-+++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-@@ -427,7 +427,7 @@ struct c4iw_cq {
- 	struct t4_cq cq;
- 	spinlock_t lock;
- 	spinlock_t comp_handler_lock;
--	atomic_t refcnt;
-+	refcount_t refcnt;
- 	wait_queue_head_t wait;
- 	struct c4iw_wr_wait *wr_waitp;
- };
+-		atomic_set(&cqp_request->refcount, 1);
++		refcount_set(&cqp_request->refcount, 1);
+ 	}
+ 	return cqp_request;
+ }
+@@ -424,7 +424,7 @@ void i40iw_free_cqp_request(struct i40iw_cqp *cqp, struct i40iw_cqp_request *cqp
+ void i40iw_put_cqp_request(struct i40iw_cqp *cqp,
+ 			   struct i40iw_cqp_request *cqp_request)
+ {
+-	if (atomic_dec_and_test(&cqp_request->refcount))
++	if (refcount_dec_and_test(&cqp_request->refcount))
+ 		i40iw_free_cqp_request(cqp, cqp_request);
+ }
+ 
+@@ -445,7 +445,7 @@ static void i40iw_free_pending_cqp_request(struct i40iw_cqp *cqp,
+ 	}
+ 	i40iw_put_cqp_request(cqp, cqp_request);
+ 	wait_event_timeout(iwdev->close_wq,
+-			   !atomic_read(&cqp_request->refcount),
++			   !refcount_read(&cqp_request->refcount),
+ 			   1000);
+ }
+ 
+@@ -1005,7 +1005,7 @@ static void i40iw_cqp_manage_hmc_fcn_callback(struct i40iw_cqp_request *cqp_requ
+ 
+ 	if (hmcfcninfo && hmcfcninfo->callback_fcn) {
+ 		i40iw_debug(&iwdev->sc_dev, I40IW_DEBUG_HMC, "%s1\n", __func__);
+-		atomic_inc(&cqp_request->refcount);
++		refcount_inc(&cqp_request->refcount);
+ 		work = &iwdev->virtchnl_w[hmcfcninfo->iw_vf_idx];
+ 		work->cqp_request = cqp_request;
+ 		INIT_WORK(&work->work, i40iw_cqp_manage_hmc_fcn_worker);
 -- 
 2.7.4
 
