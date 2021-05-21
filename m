@@ -2,179 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34C138CACA
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 May 2021 18:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BEE38CCD5
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 May 2021 20:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234535AbhEUQRj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 May 2021 12:17:39 -0400
-Received: from mail-ej1-f54.google.com ([209.85.218.54]:35331 "EHLO
-        mail-ej1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237448AbhEUQRa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 May 2021 12:17:30 -0400
-Received: by mail-ej1-f54.google.com with SMTP id k14so27830948eji.2;
-        Fri, 21 May 2021 09:16:06 -0700 (PDT)
+        id S236521AbhEUSCN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 May 2021 14:02:13 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:38576 "EHLO
+        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232931AbhEUSCN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 May 2021 14:02:13 -0400
+Received: by mail-wr1-f47.google.com with SMTP id j14so20140765wrq.5
+        for <linux-rdma@vger.kernel.org>; Fri, 21 May 2021 11:00:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=U7ZvUyo5cvuZbTuvN7LnA/PadmdyYwPwKD15N5Pl26w=;
-        b=EfhYZyXuPZ7K0fII8igmveke0SZfjNukSrQERB8w0qwp1AJ/dg6oR20vbhjErYTbay
-         Z5q6tp6fCZVfXuwBycQ09xKcopN2/3OzqEGapeaAZnl53LJLzyotu3S3r6fBwSsW0Jv1
-         eHOMZeqYFnnIAQ0pkCAzGaZln0vCwCS6FiTgA1/FbcSyT6QzQuQebZiLLJqCqgcDG+wh
-         59psjrmo8KUDPGZlRVu0FyA5kaeA6WqkKGH7D9ad2X15kiVMaDeWFAWVmuPtXjWvPpNH
-         5WIp/cbmThx39f2LBfuZozbXOGh/4UtVq3t5HYtOIQ2ZTTjLL/JgGmW44AZEU/WYMR8j
-         5vhA==
-X-Gm-Message-State: AOAM530goU04YhMxBsVdYDcAlIzTXkjHd4HqhX/DPuP9JNvd043xYBCv
-        AG+865MZri126n7b4W1yvLCR0VlKCKsYZRGo
-X-Google-Smtp-Source: ABdhPJwHMUtFQrHR3qCaBqNfiBZo3V7m3zHyYkIPd0RJkTTH9LtccsBM9DdJOX9BfDVvM/OxH6YoIQ==
-X-Received: by 2002:a17:906:4f91:: with SMTP id o17mr10993803eju.219.1621613765795;
-        Fri, 21 May 2021 09:16:05 -0700 (PDT)
-Received: from msft-t490s.teknoraver.net (net-5-94-253-60.cust.vodafonedsl.it. [5.94.253.60])
-        by smtp.gmail.com with ESMTPSA id f7sm3871644ejz.95.2021.05.21.09.16.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 09:16:05 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     netdev@vger.kernel.org, linux-mm@kvack.org
-Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: [PATCH net-next v6 5/5] mvneta: recycle buffers
-Date:   Fri, 21 May 2021 18:15:27 +0200
-Message-Id: <20210521161527.34607-6-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210521161527.34607-1-mcroce@linux.microsoft.com>
-References: <20210521161527.34607-1-mcroce@linux.microsoft.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=K2OMHwJrFA1wNd3dbbnfZzfa7bj0/B6q6MDz93o2gys=;
+        b=TJkpUeRXOP1ialbYwl5fprD0kZnnvZP2s3XHj6nBpGXSonmy9a0FNW8WXub+v7cXmH
+         d5phnuknOUGF53AX3yAqlGuWk8Z7oLgWe87GYEGPW3v8wO5CstNH1Qjnq2Cn33/kZUfR
+         Ju2kFFlp4GEdy6FiVSLRpqPjZYHfWgUM13YQqXlSAjRi3Jtj2izH3E1x1JqbGJvrG/rF
+         kvcKrRGV/sJCcLj9OSq+lGQX2m19AqmDplmvze/IjLcVPUAMMeYAbFFruHbcpnGSULeh
+         pwi8WW8gtCO/j/5VObER+PhcfS6lmn6Au6yrn9/9Re/oTHr5pdUeKowzKarKGMdw7X1U
+         Su8Q==
+X-Gm-Message-State: AOAM531LgP4glqxjBQOlJswo6pUi4gwlyTHXwWdPFMZzUH+V6T0D9mKX
+        AjERqxA4RR6katli6jN4kW8=
+X-Google-Smtp-Source: ABdhPJwSsgONsBUKuWTQWzH+H/MLK3jNvF2rYJSDp1OM5I/f4uKleXyGGzvfG+qvaGKFxNu6PVlOzw==
+X-Received: by 2002:a5d:5404:: with SMTP id g4mr11078217wrv.286.1621620049533;
+        Fri, 21 May 2021 11:00:49 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:66b2:1988:438b:4253? ([2601:647:4802:9070:66b2:1988:438b:4253])
+        by smtp.gmail.com with ESMTPSA id u14sm238914wmc.41.2021.05.21.11.00.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 May 2021 11:00:49 -0700 (PDT)
+Subject: Re: [bug report] NVMe/IB: reset_controller need more than 1min
+To:     Yi Zhang <yi.zhang@redhat.com>, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org
+Cc:     maxg@mellanox.com
+References: <CAHj4cs8cT23z+h2i+g6o3OQqEhWnHS88JO4jNoQo0Nww-sdkYg@mail.gmail.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <3c86dc88-97d9-5a71-20e1-a90279f47db5@grimberg.me>
+Date:   Fri, 21 May 2021 11:00:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHj4cs8cT23z+h2i+g6o3OQqEhWnHS88JO4jNoQo0Nww-sdkYg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
 
-Use the new recycling API for page_pool.
-In a drop rate test, the packet rate increased by 10%,
-from 269 Kpps to 296 Kpps.
+> Hi
+> I found this issue on 5.13-rc2 with NVMe/IB environment, could anyone
+> help check it?
+> Thanks.
+> 
+> $ time echo 1 >/sys/block/nvme0n1/device/reset_controller
+> real 0m10.678s
+> user 0m0.000s
+> sys 0m0.000s
+> $ time echo 1 >/sys/block/nvme0n1/device/reset_controller
+> real 1m11.530s
+> user 0m0.000s
+> sys 0m0.000s
+> 
+> target:
+> $ dmesg | grep nvme
+> [  276.891454] nvmet: creating controller 1 for subsystem testnqn for
+> NQN nqn.2014-08.org.nvmexpress:uuid:4c4c4544-0056-4c10-8058-b7c04f383432.
+> [  287.374412] nvmet: ctrl 1 keep-alive timer (5 seconds) expired!
+> [  287.399317] nvmet: ctrl 1 fatal error occurred!
+> [  348.412672] nvmet: creating controller 1 for subsystem testnqn for
+> NQN nqn.2014-08.org.nvmexpress:uuid:4c4c4544-0056-4c10-8058-b7c04f383432.
+> 
+> client:
+> $ dmesg | grep nvme
+> [  281.704475] nvme nvme0: creating 40 I/O queues.
+> [  285.557759] nvme nvme0: mapped 40/0/0 default/read/poll queues.
+> [  353.187809] nvme nvme0: I/O 8 QID 0 timeout
+> [  353.193100] nvme nvme0: Property Set error: 881, offset 0x14
+> [  353.226082] nvme nvme0: creating 40 I/O queues.
+> [  357.088266] nvme nvme0: mapped 40/0/0 default/read/poll queues.
 
-perf top on a stock system shows:
+It appears that there is an admin timeout that is either triggered
+by the reset or unrelated.
 
-Overhead  Shared Object     Symbol
-  21.78%  [kernel]          [k] __pi___inval_dcache_area
-  21.66%  [mvneta]          [k] mvneta_rx_swbm
-   7.00%  [kernel]          [k] kmem_cache_alloc
-   6.05%  [kernel]          [k] eth_type_trans
-   4.44%  [kernel]          [k] kmem_cache_free.part.0
-   3.80%  [kernel]          [k] __netif_receive_skb_core
-   3.68%  [kernel]          [k] dev_gro_receive
-   3.65%  [kernel]          [k] get_page_from_freelist
-   3.43%  [kernel]          [k] page_pool_release_page
-   3.35%  [kernel]          [k] free_unref_page
-
-And this is the same output with recycling enabled:
-
-Overhead  Shared Object     Symbol
-  24.10%  [kernel]          [k] __pi___inval_dcache_area
-  23.02%  [mvneta]          [k] mvneta_rx_swbm
-   7.19%  [kernel]          [k] kmem_cache_alloc
-   6.50%  [kernel]          [k] eth_type_trans
-   4.93%  [kernel]          [k] __netif_receive_skb_core
-   4.77%  [kernel]          [k] kmem_cache_free.part.0
-   3.93%  [kernel]          [k] dev_gro_receive
-   3.03%  [kernel]          [k] build_skb
-   2.91%  [kernel]          [k] page_pool_put_page
-   2.85%  [kernel]          [k] __xdp_return
-
-The test was done with mausezahn on the TX side with 64 byte raw
-ethernet frames.
-
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- drivers/net/ethernet/marvell/mvneta.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 7d5cd9bc6c99..c15ce06427d0 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -2320,7 +2320,7 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
- }
- 
- static struct sk_buff *
--mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
-+mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
- 		      struct xdp_buff *xdp, u32 desc_status)
- {
- 	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-@@ -2331,7 +2331,7 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
- 	if (!skb)
- 		return ERR_PTR(-ENOMEM);
- 
--	page_pool_release_page(rxq->page_pool, virt_to_page(xdp->data));
-+	skb_mark_for_recycle(skb, virt_to_page(xdp->data), pool);
- 
- 	skb_reserve(skb, xdp->data - xdp->data_hard_start);
- 	skb_put(skb, xdp->data_end - xdp->data);
-@@ -2343,7 +2343,10 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
- 		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
- 				skb_frag_page(frag), skb_frag_off(frag),
- 				skb_frag_size(frag), PAGE_SIZE);
--		page_pool_release_page(rxq->page_pool, skb_frag_page(frag));
-+		/* We don't need to reset pp_recycle here. It's already set, so
-+		 * just mark fragments for recycling.
-+		 */
-+		page_pool_store_mem_info(skb_frag_page(frag), pool);
- 	}
- 
- 	return skb;
-@@ -2425,7 +2428,7 @@ static int mvneta_rx_swbm(struct napi_struct *napi,
- 		    mvneta_run_xdp(pp, rxq, xdp_prog, &xdp_buf, frame_sz, &ps))
- 			goto next;
- 
--		skb = mvneta_swbm_build_skb(pp, rxq, &xdp_buf, desc_status);
-+		skb = mvneta_swbm_build_skb(pp, rxq->page_pool, &xdp_buf, desc_status);
- 		if (IS_ERR(skb)) {
- 			struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
- 
--- 
-2.31.1
-
+Can you run nvme reset /dev/nvme0 instead so we can see the "resetting
+controller" print?
