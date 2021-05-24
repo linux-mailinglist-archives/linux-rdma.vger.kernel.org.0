@@ -2,160 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8267F38DEFA
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 May 2021 03:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F70E38DFC8
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 May 2021 05:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231744AbhEXBwY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Sun, 23 May 2021 21:52:24 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:3918 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbhEXBwY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 May 2021 21:52:24 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FpKq86NGyzBvPr;
-        Mon, 24 May 2021 09:48:04 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (7.185.36.21) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 24 May 2021 09:50:55 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 24 May 2021 09:50:55 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2176.012;
- Mon, 24 May 2021 09:50:54 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: Re: [PATCH v2 for-next 12/17] RDMA/i40iw: Use refcount_t instead of
- atomic_t on refcount of i40iw_cqp_request
-Thread-Topic: [PATCH v2 for-next 12/17] RDMA/i40iw: Use refcount_t instead of
- atomic_t on refcount of i40iw_cqp_request
-Thread-Index: AQHXTic2j3WRaJIwa0aqR+ASAZXnEw==
-Date:   Mon, 24 May 2021 01:50:54 +0000
-Message-ID: <d71b12bd9d2d4509a642cc5d3090ea83@huawei.com>
-References: <1621590825-60693-1-git-send-email-liweihang@huawei.com>
- <1621590825-60693-13-git-send-email-liweihang@huawei.com>
- <CAD=hENcvLGEYOSXqU-KsWLn1He4hWoZt0S29hG7bwmpwU6ZS=g@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S232108AbhEXDOV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 23 May 2021 23:14:21 -0400
+Received: from mail-pf1-f174.google.com ([209.85.210.174]:47024 "EHLO
+        mail-pf1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231896AbhEXDOV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 May 2021 23:14:21 -0400
+Received: by mail-pf1-f174.google.com with SMTP id y15so8291285pfn.13
+        for <linux-rdma@vger.kernel.org>; Sun, 23 May 2021 20:12:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+fmVuCuixKGhuXSeUeY2q0JiT53RZOvlkYC00/9tKpI=;
+        b=nR2Kj8OAVdtxiM/2LXe83MAp6GaxCR2MiO0P99VJtVozJLuNUJyc6wPpPswar6x8YG
+         UNSzo26hlJyP9AT6TgYdqihjQzp08FaSWMe/YgG3d9SH8V4D09/luKrRf0oYvBLPqbZY
+         OIPDJIjBQjk8cUBVX8uS3YCQAB8Wffy89KCOTRuOxXSiybiU3rbpLS/GZTeRZtprkSCc
+         +gc5tmi9Ke4dPNJJnRy/3kdgEJPahviTzlrfcdTx4Kpr7WZgbdcvT52YAzvYP2pDXbdT
+         +BDCPBDLhk7skAX/MQ3eGMj/OvEG5fDGroHEaPdhyTiEl6MvRsiluSTivOB2w6YN3ONl
+         p91g==
+X-Gm-Message-State: AOAM530O5zqDGxqhyHXe0dcGF6+d/jQW3xfOlZ9JAnL3Xq7JfgwF/pam
+        1r/BaFR2CVAB7mH7pC/AxPae8ZPA9GvvMA==
+X-Google-Smtp-Source: ABdhPJzQHe/5sAnynAJLSsOSnSp1Z+9mT3xUmd7G2iFfNsu1/AIscI9sP4ZjO9/AV4xbVXGPT/RcaA==
+X-Received: by 2002:aa7:8ec4:0:b029:2e6:54e2:3055 with SMTP id b4-20020aa78ec40000b02902e654e23055mr10679523pfr.15.1621825972905;
+        Sun, 23 May 2021 20:12:52 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id p19sm7213733pgi.59.2021.05.23.20.12.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 May 2021 20:12:52 -0700 (PDT)
+Subject: Re: [PATCH 1/5] RDMA/ib_hdrs.h: Remove a superfluous cast
+To:     Leon Romanovsky <leonro@mellanox.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
+        linux-rdma@vger.kernel.org, Don Hiatt <don.hiatt@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>
+References: <20210512032752.16611-1-bvanassche@acm.org>
+ <20210512032752.16611-2-bvanassche@acm.org> <YKTTufav7me+Sgic@unreal>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <b8d4f515-4ec7-0221-f898-308b10331401@acm.org>
+Date:   Sun, 23 May 2021 20:12:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <YKTTufav7me+Sgic@unreal>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/5/22 17:42, Zhu Yanjun wrote:
-> On Fri, May 21, 2021 at 7:35 PM Weihang Li <liweihang@huawei.com> wrote:
->>
->> The refcount_t API will WARN on underflow and overflow of a reference
->> counter, and avoid use-after-free risks.
->>
->> Cc: Faisal Latif <faisal.latif@intel.com>
->> Cc: Shiraz Saleem <shiraz.saleem@intel.com>
->> Signed-off-by: Weihang Li <liweihang@huawei.com>
->> ---
->>  drivers/infiniband/hw/i40iw/i40iw.h       |  2 +-
->>  drivers/infiniband/hw/i40iw/i40iw_main.c  |  2 +-
->>  drivers/infiniband/hw/i40iw/i40iw_utils.c | 10 +++++-----
-> 
-> https://patchwork.kernel.org/project/linux-rdma/patch/20210520143809.819-22-shiraz.saleem@intel.com/
-> 
-> In this commit, i40iw will be removed. And this commit will be merged
-> into upstream linux.
-> Not sure if this commit makes sense.
-> 
-
-I see, changes on i40iw will be dropped from this series, thanks.
-
-Weihang
-
->>  3 files changed, 7 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/i40iw/i40iw.h b/drivers/infiniband/hw/i40iw/i40iw.h
->> index be4094a..15c5dd6 100644
->> --- a/drivers/infiniband/hw/i40iw/i40iw.h
->> +++ b/drivers/infiniband/hw/i40iw/i40iw.h
->> @@ -137,7 +137,7 @@ struct i40iw_cqp_request {
->>         struct cqp_commands_info info;
->>         wait_queue_head_t waitq;
->>         struct list_head list;
->> -       atomic_t refcount;
->> +       refcount_t refcount;
->>         void (*callback_fcn)(struct i40iw_cqp_request*, u32);
->>         void *param;
->>         struct i40iw_cqp_compl_info compl_info;
->> diff --git a/drivers/infiniband/hw/i40iw/i40iw_main.c b/drivers/infiniband/hw/i40iw/i40iw_main.c
->> index b496f30..fc48555 100644
->> --- a/drivers/infiniband/hw/i40iw/i40iw_main.c
->> +++ b/drivers/infiniband/hw/i40iw/i40iw_main.c
->> @@ -1125,7 +1125,7 @@ static enum i40iw_status_code i40iw_alloc_local_mac_ipaddr_entry(struct i40iw_de
->>         }
->>
->>         /* increment refcount, because we need the cqp request ret value */
->> -       atomic_inc(&cqp_request->refcount);
->> +       refcount_inc(&cqp_request->refcount);
->>
->>         cqp_info = &cqp_request->info;
->>         cqp_info->cqp_cmd = OP_ALLOC_LOCAL_MAC_IPADDR_ENTRY;
->> diff --git a/drivers/infiniband/hw/i40iw/i40iw_utils.c b/drivers/infiniband/hw/i40iw/i40iw_utils.c
->> index 9ff825f..32ff432b 100644
->> --- a/drivers/infiniband/hw/i40iw/i40iw_utils.c
->> +++ b/drivers/infiniband/hw/i40iw/i40iw_utils.c
->> @@ -384,10 +384,10 @@ struct i40iw_cqp_request *i40iw_get_cqp_request(struct i40iw_cqp *cqp, bool wait
->>         }
->>
->>         if (wait) {
->> -               atomic_set(&cqp_request->refcount, 2);
->> +               refcount_set(&cqp_request->refcount, 2);
->>                 cqp_request->waiting = true;
->>         } else {
->> -               atomic_set(&cqp_request->refcount, 1);
->> +               refcount_set(&cqp_request->refcount, 1);
->>         }
->>         return cqp_request;
->>  }
->> @@ -424,7 +424,7 @@ void i40iw_free_cqp_request(struct i40iw_cqp *cqp, struct i40iw_cqp_request *cqp
->>  void i40iw_put_cqp_request(struct i40iw_cqp *cqp,
->>                            struct i40iw_cqp_request *cqp_request)
+On 5/19/21 2:00 AM, Leon Romanovsky wrote:
+> On Tue, May 11, 2021 at 08:27:48PM -0700, Bart Van Assche wrote:
+>> diff --git a/include/rdma/ib_hdrs.h b/include/rdma/ib_hdrs.h
+>> index 57c1ac881d08..82483120539f 100644
+>> --- a/include/rdma/ib_hdrs.h
+>> +++ b/include/rdma/ib_hdrs.h
+>> @@ -208,7 +208,7 @@ static inline u8 ib_get_lver(struct ib_header *hdr)
+>>  
+>>  static inline u16 ib_get_len(struct ib_header *hdr)
 >>  {
->> -       if (atomic_dec_and_test(&cqp_request->refcount))
->> +       if (refcount_dec_and_test(&cqp_request->refcount))
->>                 i40iw_free_cqp_request(cqp, cqp_request);
+>> -	return (u16)(be16_to_cpu(hdr->lrh[2]));
+>> +	return be16_to_cpu(hdr->lrh[2]);
 >>  }
->>
->> @@ -445,7 +445,7 @@ static void i40iw_free_pending_cqp_request(struct i40iw_cqp *cqp,
->>         }
->>         i40iw_put_cqp_request(cqp, cqp_request);
->>         wait_event_timeout(iwdev->close_wq,
->> -                          !atomic_read(&cqp_request->refcount),
->> +                          !refcount_read(&cqp_request->refcount),
->>                            1000);
->>  }
->>
->> @@ -1005,7 +1005,7 @@ static void i40iw_cqp_manage_hmc_fcn_callback(struct i40iw_cqp_request *cqp_requ
->>
->>         if (hmcfcninfo && hmcfcninfo->callback_fcn) {
->>                 i40iw_debug(&iwdev->sc_dev, I40IW_DEBUG_HMC, "%s1\n", __func__);
->> -               atomic_inc(&cqp_request->refcount);
->> +               refcount_inc(&cqp_request->refcount);
->>                 work = &iwdev->virtchnl_w[hmcfcninfo->iw_vf_idx];
->>                 work->cqp_request = cqp_request;
->>                 INIT_WORK(&work->work, i40iw_cqp_manage_hmc_fcn_worker);
->> --
->> 2.7.4
->>
+>>  
+>>  static inline u32 ib_get_qkey(struct ib_other_headers *ohdr)
 > 
+> It is unclear why this function in the header. It is called only once.
+
+That's a good point. I will move it into the .c file that uses this
+function.
+
+Thanks,
+
+Bart.
 
