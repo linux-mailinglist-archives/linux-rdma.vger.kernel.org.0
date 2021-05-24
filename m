@@ -2,147 +2,168 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF8F38F14B
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 May 2021 18:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DBE738F5FD
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 May 2021 01:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236829AbhEXQOD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 May 2021 12:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236736AbhEXQN5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 May 2021 12:13:57 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 182A0C06138A
-        for <linux-rdma@vger.kernel.org>; Mon, 24 May 2021 09:04:18 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so25678787otg.2
-        for <linux-rdma@vger.kernel.org>; Mon, 24 May 2021 09:04:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Nk+ZrSTAPLCXCuQpr/kJw1xz+e/xh30HnEeWFcKjVhE=;
-        b=aihKVDy1HmPv7W76TiSDb70K5a4uuPEGT2Du25SBu/sTP3FvEtorZtIStmZLNq+XVb
-         QcvmFdQ9xWaI4Um0NGvO6pLEl805HnJFRfoJG1MhGYLz8R6iP3UJ0KspOEEMdqbab4sg
-         Fi2aNb+cbSYwx04dSZq2Vd+jfXyiYj8HTrrqiQgSNVqV9bd1mBCJc8CC8op5N66eVLEs
-         Y2xUXuTxdXQsWDXorpO6Hs5UnvShIawqwJ/pGmIP/hBqVgdovHjAR8T6fQ0yAsyKqrBT
-         uGbUSKf2v93uIa5XQGLoqLTn7hS2cvo/fDfVpO4+ewPfDpAUm/MUhJszr7X6kX/rFS4d
-         9aGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Nk+ZrSTAPLCXCuQpr/kJw1xz+e/xh30HnEeWFcKjVhE=;
-        b=rBwXlPlPhiiKfiy6O/wvmnl3Kztud57ljmVYiUMUVR8EC5yqReOUQ61+bowwarQC13
-         FCodMRVPXHZheBY6iKlulkivmSyvDf2S4ZImnfQ53WXNHFo9PzevdBfpOcAWx7/afdba
-         z/EP/NGa06F2dSMM9SM1ATPS04cGH/prcetyK8Y8nfAOTUkRUsxLwmmQkmCJQc1SqXn3
-         Svfhv1tz1i7mx1AQxyAWpFprzTJEMauR39rinhvvn+aEJcMIbH4tYrUVIk0Sl+PaQu+b
-         Y0pe5qyhQ4QP4odzBa/FvU72RG/B8VNifmYRGtgZKszO7iG/fhDqATlefbZGOc23xrgi
-         rOrQ==
-X-Gm-Message-State: AOAM5303rxuhw8la4tgn9S694lvcEaMEgMXhZosYP846wDbvf4l2mBxO
-        zQYaSZb55ym7C5DkoAZCFQ3+LGa8zO4yGg==
-X-Google-Smtp-Source: ABdhPJy67crWHmBeYILOeFZ1ZBAGRIAXqu7YNI/POnTDAinYeM6t9fVkqKGn3JgCwJ1yrc8rIvko7Q==
-X-Received: by 2002:a05:6830:90f:: with SMTP id v15mr18955566ott.223.1621872257266;
-        Mon, 24 May 2021 09:04:17 -0700 (PDT)
-Received: from ?IPv6:2603:8081:140c:1a00:6c75:b0b:aa76:4a5c? (2603-8081-140c-1a00-6c75-0b0b-aa76-4a5c.res6.spectrum.com. [2603:8081:140c:1a00:6c75:b0b:aa76:4a5c])
-        by smtp.gmail.com with ESMTPSA id v79sm2726397oia.14.2021.05.24.09.04.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 09:04:16 -0700 (PDT)
-Subject: Re: [PATCH for-next v7 00/10] RDMA/rxe: Implement memory windows
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-References: <20210521201824.659565-1-rpearsonhpe@gmail.com>
- <CAD=hENeKHgwLEOAsZ+2tu7M-+3Pv9QVccbWSwLy+zV-zX2h-bg@mail.gmail.com>
-From:   "Pearson, Robert B" <rpearsonhpe@gmail.com>
-Message-ID: <dd81d60d-f4fa-feae-90a0-201ee995e07f@gmail.com>
-Date:   Mon, 24 May 2021 11:04:12 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229539AbhEXXCM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 May 2021 19:02:12 -0400
+Received: from mail-bn1nam07on2082.outbound.protection.outlook.com ([40.107.212.82]:27522
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229503AbhEXXCK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 May 2021 19:02:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EpTRgXaFUvVut6A+UgJyTvBdT9iKyR9BHP2YlvsAiLv/8MF8i+4Xe+Lcp5GRv3qF9G1i+yS0McaTx+hvmZT1RvzF5FiY0qv7+7Gey+vnCYOKlPnEAsVR+BGKDfWxtQ6PDURkzuSFp4LpimZtBR82gIKQiBDd4slScwSKOYMyAnYAEZEC1K0Zq8VC9x5bjZZPSYDZ8A8ZjIVzDNFqda2oUJmXKFVZgOrMWDEEF8LufHTOM6yBTFMzfwno2k0CN4l7kwgLRs6f3Qjkx60+9STHDZr8oG/wn6n70tl2D8CrB0c48EJMgwAFnVZhScRsO4qjZCycQPKCsRmAVbx5WI+16g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g/sXDYMczqJiZKiVzbcLWC4f7E1IArKpIroJEu0zucA=;
+ b=h4yhTfTc7dk2rKDyaeFSEUMLYaMTSAwynVF05Hnp+s9nwFbwUoTAWYWfvT8D5Wit4cwcAjK+lqhze5x1CTOOR2BesAtmfgTlGXtOwRiG7vJVnbZqRyEQa/qzB9bIzLcbkM/vT+RYQAxCRzTU0rb4vas9IcevPFUEk3rrbl5MWb+JY/prXj38yGikzwM55iMnvA6Je5fzZbqox8K+w8OMyqN06uvNQRvc12AK9XCtsPS0NnZX/hAo4nrpYmVeQWWro9TEPpUwU4vu+o8+4aNNPWDtaD55cFkV04jPuTSqvqLEoKO6Bfe5ukDtOZhLyrhQReooCE6hOrkGUCKTIy5Iyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g/sXDYMczqJiZKiVzbcLWC4f7E1IArKpIroJEu0zucA=;
+ b=XYZ8CowqvG7MAX99Satb+yG/gGl8ULOqL/h1C1p+Tc6pf+3JEI4q8t1yGc7NMpLZsYqEa1NrY9wg0T6MKHF+u5B1WiKsPZOjhftX5bQN4tW3QBwxtdaP7ISe4q7c5guQZUnvap5BMuGxtv2ihcYJ2D1DOPI1C8ygSeHkJiOQlTjxXxY13b26uE/auxJR2f/AFYiZGLwy07pcJFC21rVbCN4OLfxNSP03CnwEJnDpZx3fXfzQZK3P9y1fi3USqW7zIo5BBksSbo5V71iKtCBndniYduR4kBXMau1vxIBzNVUdY7yWLr/NsvTOQRiF8RDNDIkXNg9EjDynMkg8eoEMsA==
+Authentication-Results: acm.org; dkim=none (message not signed)
+ header.d=none;acm.org; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5240.namprd12.prod.outlook.com (2603:10b6:208:319::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Mon, 24 May
+ 2021 23:00:40 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4150.027; Mon, 24 May 2021
+ 23:00:40 +0000
+Date:   Mon, 24 May 2021 20:00:38 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Subject: Re: [PATCH 3/5] RDMA/srp: Apply the __packed attribute to members
+ instead of structures
+Message-ID: <20210524230038.GP1002214@nvidia.com>
+References: <20210512032752.16611-1-bvanassche@acm.org>
+ <20210512032752.16611-4-bvanassche@acm.org>
+ <20210520144856.GA2720258@nvidia.com>
+ <7a77c2ed-5336-11ea-162e-539b593a1ce7@acm.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7a77c2ed-5336-11ea-162e-539b593a1ce7@acm.org>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YT1PR01CA0047.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2e::16) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <CAD=hENeKHgwLEOAsZ+2tu7M-+3Pv9QVccbWSwLy+zV-zX2h-bg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0047.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2e::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27 via Frontend Transport; Mon, 24 May 2021 23:00:40 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1llJYs-00DocE-Nm; Mon, 24 May 2021 20:00:38 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 57ea5f66-5a9c-4c3b-5294-08d91f07c098
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5240:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB524078D726F100B10883D252C2269@BL1PR12MB5240.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5iYpo+XDOCrhNhkr4DaHCvSKWW6ZhAavmt9tiz6Cyab/2hTUfIxwlBEGBJlpaDihZJJydUsaQpV2Pys3zTmHikH0/mU+0p6xo7aX3p9/Jz+JeZVO8LSzj5GbycOj02EixufGxOrmy33A2nGFuK1dKdfG1XoydzJJV7iGMRXsmmSoiXy7Q2HbpdPrEsvKoX+FZXUkEF2nhOLbUq34IjtfeRv/6bYu/IIM22w6itctAmqA0eUbGrh07XrIf6iCk1g1bL0+aH3EDwr6hQdbDQqbKLLJiRCX0+SPH44Quof04uh8cIC22Hv6D6bsBos6NH3LiVLqkW1nzCqFMd1FyuY6y0LOMmtRVPaSFm/E5EIW1cqPTln7FqoOgcIQHtX+MFyQSiNJYyMzwv98XDaEpmFXjvMgKb0Uxy4ze5ZcYv4bLcOfmVeEj/i+JDwLcZ3VglX5fHkEhhL8zR5h86SIPblTvOoDCcFOI+zAMVKrCP5ckB5L2SzTozCq6TYofAzpVLrGK9M/EL6FEE89sUGQIIHSTk1uuGDaBhvV1Z/BfA4utTde/whsVnU8MgtxN334kP0kSXNrC3gBlLF9a3hIOUXbQp1cjrySMoTVtHYQhF0wK54=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(39860400002)(376002)(136003)(346002)(8676002)(83380400001)(8936002)(316002)(1076003)(86362001)(36756003)(33656002)(2616005)(26005)(5660300002)(4326008)(186003)(66476007)(6916009)(9786002)(38100700002)(2906002)(426003)(66946007)(9746002)(66556008)(478600001)(54906003)(53546011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?//S0aLWVWq4l4A+WQzKzmyq81x0F96Q9MxICt/YUHcVJ7zyc1cbemI77vZa9?=
+ =?us-ascii?Q?+ZoWYXge4eHcYL2hnIb6Z2dtMih9cEp1R4bbryxH0vN3R2tHEX6xgoucLxJU?=
+ =?us-ascii?Q?YPlDvYKkooB6YHFpIiZvApqyFhWeYP5hberJaLhTG+Gx+rppPjgXpubpuj+a?=
+ =?us-ascii?Q?5AL+8uQv5gbqpCAkRYEmnmVYb43sKRLlZ+Aiwf0fvBws02L/wwfquxq8EqkI?=
+ =?us-ascii?Q?gjJ2p/lZcDuiF1PtgW3TrlybdDqtZAGZ8/j8WxWbIoAml4usW9Lt1Zq0co1p?=
+ =?us-ascii?Q?3EHRzrtOfxHR+iP/wfqbuyC0sp0VgXJ2PULsAJZYc+TgwkDfYzK2J2n76ecZ?=
+ =?us-ascii?Q?Sn4Z/H6VaARNLBrxyLhCNcJa9boobiVauzu5aPeYR3bLnMchdWBOW7wafSzz?=
+ =?us-ascii?Q?wRmJq38JNmp8FcV8vgdKpu7eW/7zWV6UcIzLMmPtSJX6zGr4X0yDE74mXYat?=
+ =?us-ascii?Q?HhboXnFoOqWTw0b8Wsoh7OhkVy7hGYmqSW4fffmuzaLLhPBMQygbEgmCKRay?=
+ =?us-ascii?Q?OvzEaXKPaELz4ViPcgp8zMbgiPvyGLeAzrHES7O+CTZ2AxVab0/voQyXoqQr?=
+ =?us-ascii?Q?sI1cs/taUST0UfV4RviCr90D67GUFGciz8iajh3dldaqwV3s+1cN/mexl3vS?=
+ =?us-ascii?Q?j3MHRYWotMONt9BYfdwgFNCEZKp7Y36PCjWh7PsVdyn8r+nK2W6j2EWPe6Fe?=
+ =?us-ascii?Q?dqc0OytjNeB1goTwFZlG6/jJzGJ/Qt2Xn2Az1Benv4C8dJevH5AkUs5yDM11?=
+ =?us-ascii?Q?mkj4umNcMXRi67VF9i0Pgp45rtvRBQvobI1dHKfn4qzb4uZ1v71MoIPJIGEI?=
+ =?us-ascii?Q?LSXPN4Rpb56VNBYmDBrEjLzpltvkCsp92RfnmjCa+W2SklRXXAD4aaEEkjhk?=
+ =?us-ascii?Q?SjcqA3f//6gKZ1JFMjZ2hz5+Eod9xeAXB4vwkCbAM3RLaKIS+I0FHBp/8WSy?=
+ =?us-ascii?Q?P2uJyUmxKcg4ZrVMaA7BFVMMhUqHs2hrxXGzOx9h3cQQAuOB5i8SWVjqyieo?=
+ =?us-ascii?Q?SmvnqNyiAy8QNh+9GBGEfySh3vHF//OHozPJZPbJ9dW9haL3Gu/1PHb1Wg9d?=
+ =?us-ascii?Q?/A2El7k2Fl/NlSdlfYNB/iH1Y0oHjTpmsXFre5PFuvY2O4xqBeet+q+kMu5i?=
+ =?us-ascii?Q?lhifXLVwY32FFE+inHrc8QMuM6aBIPIF7WS0N6czePVQkNxsnnapK9f+4m+H?=
+ =?us-ascii?Q?teu0VPgKacJi8eoNhrHSnapq8fEI/dbMm/edeuj/JkviZaCg0CCdhxqZ9rVO?=
+ =?us-ascii?Q?WtpanWbI/wgwjIj37dpq2OHwH+dKER4qF0IiyyFSPIhNqrAqwrOqq/2NTaxz?=
+ =?us-ascii?Q?PSF1uZ31Kbq+k2PpZihbtgE8?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57ea5f66-5a9c-4c3b-5294-08d91f07c098
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2021 23:00:40.7718
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7bi0Fi7o3WVGihj0SwddhIgGw+DUV5MqzG7JP6+u26MQouQdiPifOFF9e2GAp5x9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5240
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/23/2021 10:14 PM, Zhu Yanjun wrote:
-> On Sat, May 22, 2021 at 4:19 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->> This series of patches implement memory windows for the rdma_rxe
->> driver. This is a shorter reimplementation of an earlier patch set.
->> They apply to and depend on the current for-next linux rdma tree.
->>
->> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
->> ---
->> v7:
->>    Fixed a duplicate INIT_RDMA_OBJ_SIZE(ib_mw, ...) in rxe_verbs.c.
-> With this patch series, there are about 17 errors and 1 failure in rdma-core.
+On Sun, May 23, 2021 at 08:41:25PM -0700, Bart Van Assche wrote:
+> On 5/20/21 7:48 AM, Jason Gunthorpe wrote:
+> > On Tue, May 11, 2021 at 08:27:50PM -0700, Bart Van Assche wrote:
+> >> @@ -107,10 +107,10 @@ struct srp_direct_buf {
+> >>   * having the 20-byte structure padded to 24 bytes on 64-bit architectures.
+> >>   */
+> >>  struct srp_indirect_buf {
+> >> -	struct srp_direct_buf	table_desc;
+> >> +	struct srp_direct_buf	table_desc __packed;
+> >>  	__be32			len;
+> >> -	struct srp_direct_buf	desc_list[];
+> >> -} __attribute__((packed));
+> >> +	struct srp_direct_buf	desc_list[] __packed;
+> >> +};
+> >>  
+> >>  /* Immediate data buffer descriptor as defined in SRP2. */
+> >>  struct srp_imm_buf {
+> >> @@ -175,13 +175,13 @@ struct srp_login_rsp {
+> >>  	u8	opcode;
+> >>  	u8	reserved1[3];
+> >>  	__be32	req_lim_delta;
+> >> -	u64	tag;
+> >> +	u64	tag __packed;
+> > 
+> > What you really want is just something like this:
+> > 
+> > typedef u64 __attribute__((aligned(4))) compat_u64;
+> > 
+> > And then use that every place you have the u64 and forget about packed
+> > entirely.
+> 
+> Really? My understanding is that the aligned attribute can be used to
+> increase alignment of a structure member but not to decrease it. 
 
-Zhu,
+I didn't test it, but that is pre-existing code in Linux.. Maybe it
+doesn't work and/or needs packed too
 
-You have to sync the kernel-header file with the kernel.
+> Additionally, there is a recommendation in
+> Documentation/process/coding-style.rst not to introduce new typedefs.
 
-Bob
+That we tend to selective ignore <shrug>
 
-> "
-> ----------------------------------------------------------------------
-> Ran 183 tests in 2.130s
->
-> FAILED (failures=1, errors=17, skipped=124)
-> "
->
-> After these patches, not sure if rxe can communicate with the physical
-> NICs correctly because of the
-> above errors and failure.
->
-> Zhu Yanjun
->
->> v6:
->>    Added rxe_ prefix to subroutine names in lines that changed
->>    from Zhu's review of v5.
->> v5:
->>    Fixed a typo in 10th patch.
->> v4:
->>    Added a 10th patch to check when MRs have bound MWs
->>    and disallow dereg and invalidate operations.
->> v3:
->>    cleaned up void return and lower case enums from
->>    Zhu's review.
->> v2:
->>    cleaned up an issue in rdma_user_rxe.h
->>    cleaned up a collision in rxe_resp.c
->>
->> Bob Pearson (9):
->>    RDMA/rxe: Add bind MW fields to rxe_send_wr
->>    RDMA/rxe: Return errors for add index and key
->>    RDMA/rxe: Enable MW object pool
->>    RDMA/rxe: Add ib_alloc_mw and ib_dealloc_mw verbs
->>    RDMA/rxe: Replace WR_REG_MASK by WR_LOCAL_OP_MASK
->>    RDMA/rxe: Move local ops to subroutine
->>    RDMA/rxe: Add support for bind MW work requests
->>    RDMA/rxe: Implement invalidate MW operations
->>    RDMA/rxe: Implement memory access through MWs
->>
->>   drivers/infiniband/sw/rxe/Makefile     |   1 +
->>   drivers/infiniband/sw/rxe/rxe.c        |   1 +
->>   drivers/infiniband/sw/rxe/rxe_comp.c   |   1 +
->>   drivers/infiniband/sw/rxe/rxe_loc.h    |  29 +-
->>   drivers/infiniband/sw/rxe/rxe_mr.c     |  79 ++++--
->>   drivers/infiniband/sw/rxe/rxe_mw.c     | 356 +++++++++++++++++++++++++
->>   drivers/infiniband/sw/rxe/rxe_opcode.c |  11 +-
->>   drivers/infiniband/sw/rxe/rxe_opcode.h |   3 +-
->>   drivers/infiniband/sw/rxe/rxe_param.h  |  19 +-
->>   drivers/infiniband/sw/rxe/rxe_pool.c   |  45 ++--
->>   drivers/infiniband/sw/rxe/rxe_pool.h   |   8 +-
->>   drivers/infiniband/sw/rxe/rxe_req.c    | 102 ++++---
->>   drivers/infiniband/sw/rxe/rxe_resp.c   | 110 +++++---
->>   drivers/infiniband/sw/rxe/rxe_verbs.c  |   5 +-
->>   drivers/infiniband/sw/rxe/rxe_verbs.h  |  38 ++-
->>   include/uapi/rdma/rdma_user_rxe.h      |  34 ++-
->>   16 files changed, 691 insertions(+), 151 deletions(-)
->>   create mode 100644 drivers/infiniband/sw/rxe/rxe_mw.c
->> --
->> 2.27.0
->>
+> > Except for a couple exceptions IBA mads are always aligned to 4 bytes,
+> > only the 64 bit quantities are unaligned.
+> > 
+> > But really this whole thing should be replaced with the IBA_FIELD
+> > macros like include/rdma/ibta_vol1_c12.h demos.
+> > 
+> > Then it would be sparse safe and obviously endian correct as well.
+> 
+> I prefer a structure over the IBA_FIELD macros so I will change __packed
+> into __packed __aligned(4).
+
+IMHO the struct is alot worse due to lack of endian safety and
+complexity in establishing the layout.
+
+Jason
