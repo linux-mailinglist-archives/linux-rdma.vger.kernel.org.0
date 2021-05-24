@@ -2,204 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DACD638E713
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 May 2021 15:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF8F38F14B
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 May 2021 18:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232424AbhEXNFH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 May 2021 09:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41420 "EHLO
+        id S236829AbhEXQOD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 May 2021 12:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232874AbhEXNFA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 May 2021 09:05:00 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C88EC061574
-        for <linux-rdma@vger.kernel.org>; Mon, 24 May 2021 06:03:30 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id w9so14080879qvi.13
-        for <linux-rdma@vger.kernel.org>; Mon, 24 May 2021 06:03:30 -0700 (PDT)
+        with ESMTP id S236736AbhEXQN5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 May 2021 12:13:57 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 182A0C06138A
+        for <linux-rdma@vger.kernel.org>; Mon, 24 May 2021 09:04:18 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so25678787otg.2
+        for <linux-rdma@vger.kernel.org>; Mon, 24 May 2021 09:04:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SH+IyXXo/InRw15NVRSdTmL6s5absHD6DhRn7F8U8yM=;
-        b=FEkxQyfuJjQRM3cBN6HFD6fT2zO5JZNwKC2a88HP8f7HZABfoVmATgHuh+l9SXKZaK
-         CPpIofds2zzu5//dZvjSmfik0+NZOnnRg4gSzxmK7GnLN/9veLZbSVqyhwLABttRLWhN
-         hf7TWQeKW9V6adHEhTSBBE/MbMs9zpRWpy9Ms=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=Nk+ZrSTAPLCXCuQpr/kJw1xz+e/xh30HnEeWFcKjVhE=;
+        b=aihKVDy1HmPv7W76TiSDb70K5a4uuPEGT2Du25SBu/sTP3FvEtorZtIStmZLNq+XVb
+         QcvmFdQ9xWaI4Um0NGvO6pLEl805HnJFRfoJG1MhGYLz8R6iP3UJ0KspOEEMdqbab4sg
+         Fi2aNb+cbSYwx04dSZq2Vd+jfXyiYj8HTrrqiQgSNVqV9bd1mBCJc8CC8op5N66eVLEs
+         Y2xUXuTxdXQsWDXorpO6Hs5UnvShIawqwJ/pGmIP/hBqVgdovHjAR8T6fQ0yAsyKqrBT
+         uGbUSKf2v93uIa5XQGLoqLTn7hS2cvo/fDfVpO4+ewPfDpAUm/MUhJszr7X6kX/rFS4d
+         9aGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SH+IyXXo/InRw15NVRSdTmL6s5absHD6DhRn7F8U8yM=;
-        b=tlPVh726cDq3S20gTU2y64ghTQD4/NEUyPrxxhE+v+wOcZrvrfIJqbkQ1NmcGnpqyH
-         T2WV39wCpf9gBstWC2bs6FE7FFxlkt508dClBeixiP1Xa4DfEaIQnLLfEVTVBru20TNN
-         RDWEepPpBd+2tVmZ9q6Xm+4xC4xNjN59YLHfnSoetgZPyqPzaA1bjdbromaA7kxDZwfz
-         o2l8jNCDDrfCdP4CxaY0y3dV7InKZrNbTdj7qxYmyI4OpIrymxt5efcsc3LyxoCTv0b1
-         zkC9fI48QDRctxLpE5Q3wapZLGyUygr/xbiwLq0p6sOpQRkBY5DQnQ2loNSfkAOZVaAv
-         hUgg==
-X-Gm-Message-State: AOAM533oaYZRBPo2zAlUBNG17YsvefqRTKktRi6RwYJz4O5cpwnMGZBj
-        Kf723PICAzrGZEy+MpGDbX7VuVxsv/4fR6viEzxVAYk8wx7/Yg==
-X-Google-Smtp-Source: ABdhPJzV4jPgBY9/UL1BBMd1uG5QRq5odm68fAv2LsMlcdgoIVF4lRvY64PRVS/EO/gxIi5SUMjf0tSxAfikLFEKDhE=
-X-Received: by 2002:a0c:9e4e:: with SMTP id z14mr30521271qve.31.1621861408594;
- Mon, 24 May 2021 06:03:28 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Nk+ZrSTAPLCXCuQpr/kJw1xz+e/xh30HnEeWFcKjVhE=;
+        b=rBwXlPlPhiiKfiy6O/wvmnl3Kztud57ljmVYiUMUVR8EC5yqReOUQ61+bowwarQC13
+         FCodMRVPXHZheBY6iKlulkivmSyvDf2S4ZImnfQ53WXNHFo9PzevdBfpOcAWx7/afdba
+         z/EP/NGa06F2dSMM9SM1ATPS04cGH/prcetyK8Y8nfAOTUkRUsxLwmmQkmCJQc1SqXn3
+         Svfhv1tz1i7mx1AQxyAWpFprzTJEMauR39rinhvvn+aEJcMIbH4tYrUVIk0Sl+PaQu+b
+         Y0pe5qyhQ4QP4odzBa/FvU72RG/B8VNifmYRGtgZKszO7iG/fhDqATlefbZGOc23xrgi
+         rOrQ==
+X-Gm-Message-State: AOAM5303rxuhw8la4tgn9S694lvcEaMEgMXhZosYP846wDbvf4l2mBxO
+        zQYaSZb55ym7C5DkoAZCFQ3+LGa8zO4yGg==
+X-Google-Smtp-Source: ABdhPJy67crWHmBeYILOeFZ1ZBAGRIAXqu7YNI/POnTDAinYeM6t9fVkqKGn3JgCwJ1yrc8rIvko7Q==
+X-Received: by 2002:a05:6830:90f:: with SMTP id v15mr18955566ott.223.1621872257266;
+        Mon, 24 May 2021 09:04:17 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:6c75:b0b:aa76:4a5c? (2603-8081-140c-1a00-6c75-0b0b-aa76-4a5c.res6.spectrum.com. [2603:8081:140c:1a00:6c75:b0b:aa76:4a5c])
+        by smtp.gmail.com with ESMTPSA id v79sm2726397oia.14.2021.05.24.09.04.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 09:04:16 -0700 (PDT)
+Subject: Re: [PATCH for-next v7 00/10] RDMA/rxe: Implement memory windows
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <20210521201824.659565-1-rpearsonhpe@gmail.com>
+ <CAD=hENeKHgwLEOAsZ+2tu7M-+3Pv9QVccbWSwLy+zV-zX2h-bg@mail.gmail.com>
+From:   "Pearson, Robert B" <rpearsonhpe@gmail.com>
+Message-ID: <dd81d60d-f4fa-feae-90a0-201ee995e07f@gmail.com>
+Date:   Mon, 24 May 2021 11:04:12 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210517133532.774998-1-devesh.sharma@broadcom.com>
- <CANjDDBgR_wP5WHWWRue_Pg8XYujcuoqFs2J-zHD0c2g9+bRfjg@mail.gmail.com>
- <CANjDDBjO4dOXCb5rVe1UOd6foeFp8FLTqJbz8w6c36eTZSZtkg@mail.gmail.com> <YKUwKa6fNfBq8b8a@unreal>
-In-Reply-To: <YKUwKa6fNfBq8b8a@unreal>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Mon, 24 May 2021 18:32:52 +0530
-Message-ID: <CANjDDBhNFh4VqPdD09ssUMVZKHgvnRxS8MuttNS1JjeFSk23EQ@mail.gmail.com>
-Subject: Re: [PATCH V2 INTERNAL 0/4] Broadcom's user library update
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000331e1705c31309ca"
+In-Reply-To: <CAD=hENeKHgwLEOAsZ+2tu7M-+3Pv9QVccbWSwLy+zV-zX2h-bg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000331e1705c31309ca
-Content-Type: text/plain; charset="UTF-8"
+On 5/23/2021 10:14 PM, Zhu Yanjun wrote:
+> On Sat, May 22, 2021 at 4:19 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>> This series of patches implement memory windows for the rdma_rxe
+>> driver. This is a shorter reimplementation of an earlier patch set.
+>> They apply to and depend on the current for-next linux rdma tree.
+>>
+>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+>> ---
+>> v7:
+>>    Fixed a duplicate INIT_RDMA_OBJ_SIZE(ib_mw, ...) in rxe_verbs.c.
+> With this patch series, there are about 17 errors and 1 failure in rdma-core.
 
-On Wed, May 19, 2021 at 9:05 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Wed, May 19, 2021 at 08:45:20PM +0530, Devesh Sharma wrote:
-> > On Mon, May 17, 2021 at 7:08 PM Devesh Sharma
-> > <devesh.sharma@broadcom.com> wrote:
-> > >
-> > > On Mon, May 17, 2021 at 7:05 PM Devesh Sharma
-> > > <devesh.sharma@broadcom.com> wrote:
-> > > >
-> > > > The main focus of this patch series is to move SQ and RQ
-> > > > wqe posting indices from 128B fixed stride to 16B aligned stride.
-> > > > This allows more flexibility in choosing wqe size.
-> > > >
-> > > >
-> > > > Devesh Sharma (4):
-> > > >   bnxt_re/lib: Read wqe mode from the driver
-> > > >   bnxt_re/lib: add a function to initialize software queue
-> > > >   bnxt_re/lib: Use separate indices for shadow queue
-> > > >   bnxt_re/lib: Move hardware queue to 16B aligned indices
-> > > >
-> > > >  kernel-headers/rdma/bnxt_re-abi.h |   5 +-
-> > > >  providers/bnxt_re/bnxt_re-abi.h   |   5 +
-> > > >  providers/bnxt_re/db.c            |  10 +-
-> > > >  providers/bnxt_re/main.c          |   4 +
-> > > >  providers/bnxt_re/main.h          |  26 ++
-> > > >  providers/bnxt_re/memory.h        |  37 ++-
-> > > >  providers/bnxt_re/verbs.c         | 522 ++++++++++++++++++++----------
-> > > >  7 files changed, 431 insertions(+), 178 deletions(-)
-> > > >
-> > > > --
-> > > > 2.25.1
-> > > >
-> > > Please ignore the "Internal" keyword in the subject line.
-> > >
-> > > --
-> > > -Regards
-> > > Devesh
-> > Hi Leon,
-> >
-> > Do you have any comments on this series. For the subject line I can
-> > resend the series.
->
-> Yes, the change in kernel-headers/rdma/bnxt_re-abi.h should be separate
-> commit created with kernel-headers/update script.
-Leon, I need to have my abi changes in the upstream kernel before I
-change user ABI in rdmacore? The script is popping out some errors.
->
-> Thanks
->
-> >
-> >
-> > --
-> > -Regards
-> > Devesh
->
->
+Zhu,
 
+You have to sync the kernel-header file with the kernel.
 
--- 
--Regards
-Devesh
+Bob
 
---000000000000331e1705c31309ca
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
-Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
-KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
-SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
-PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
-G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
-PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILz0j3D6benBc5j2iweTCrpL1c9n
-d0Wp0G0Y4bYTTSScMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDUyNDEzMDMyOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQBBXBws0G3vTHcO/1ZtrGBjw+4z758LwTQi4X29DR35ff0/
-jbiQrhWvMQXZRbRFlqvL0mScE6SMqjqgKVZRPB67tl4euSZcgnXycjn8EfkZv5sudVBrN7b0AvRa
-zRodlGNnjnsREmRLKJrctnkJ7vlkvHVPy+T01bxcfL4ilQBwOdYuwQqE5Qu1DTx7CTdUKdht0WyM
-R874Og9Yr21zB8qWCD8ij2Wg3dzTQ6E8jevVZKeDby4fZRmsMeqaM4fQ0DVgNdWYSYiXwYz1bphm
-YkXSA0HHdULsCq52csS/vjTegD6uTq+5gUWH96/KY/xyxZ2PikNbgqwm4jkwETwvcoeN
---000000000000331e1705c31309ca--
+> "
+> ----------------------------------------------------------------------
+> Ran 183 tests in 2.130s
+>
+> FAILED (failures=1, errors=17, skipped=124)
+> "
+>
+> After these patches, not sure if rxe can communicate with the physical
+> NICs correctly because of the
+> above errors and failure.
+>
+> Zhu Yanjun
+>
+>> v6:
+>>    Added rxe_ prefix to subroutine names in lines that changed
+>>    from Zhu's review of v5.
+>> v5:
+>>    Fixed a typo in 10th patch.
+>> v4:
+>>    Added a 10th patch to check when MRs have bound MWs
+>>    and disallow dereg and invalidate operations.
+>> v3:
+>>    cleaned up void return and lower case enums from
+>>    Zhu's review.
+>> v2:
+>>    cleaned up an issue in rdma_user_rxe.h
+>>    cleaned up a collision in rxe_resp.c
+>>
+>> Bob Pearson (9):
+>>    RDMA/rxe: Add bind MW fields to rxe_send_wr
+>>    RDMA/rxe: Return errors for add index and key
+>>    RDMA/rxe: Enable MW object pool
+>>    RDMA/rxe: Add ib_alloc_mw and ib_dealloc_mw verbs
+>>    RDMA/rxe: Replace WR_REG_MASK by WR_LOCAL_OP_MASK
+>>    RDMA/rxe: Move local ops to subroutine
+>>    RDMA/rxe: Add support for bind MW work requests
+>>    RDMA/rxe: Implement invalidate MW operations
+>>    RDMA/rxe: Implement memory access through MWs
+>>
+>>   drivers/infiniband/sw/rxe/Makefile     |   1 +
+>>   drivers/infiniband/sw/rxe/rxe.c        |   1 +
+>>   drivers/infiniband/sw/rxe/rxe_comp.c   |   1 +
+>>   drivers/infiniband/sw/rxe/rxe_loc.h    |  29 +-
+>>   drivers/infiniband/sw/rxe/rxe_mr.c     |  79 ++++--
+>>   drivers/infiniband/sw/rxe/rxe_mw.c     | 356 +++++++++++++++++++++++++
+>>   drivers/infiniband/sw/rxe/rxe_opcode.c |  11 +-
+>>   drivers/infiniband/sw/rxe/rxe_opcode.h |   3 +-
+>>   drivers/infiniband/sw/rxe/rxe_param.h  |  19 +-
+>>   drivers/infiniband/sw/rxe/rxe_pool.c   |  45 ++--
+>>   drivers/infiniband/sw/rxe/rxe_pool.h   |   8 +-
+>>   drivers/infiniband/sw/rxe/rxe_req.c    | 102 ++++---
+>>   drivers/infiniband/sw/rxe/rxe_resp.c   | 110 +++++---
+>>   drivers/infiniband/sw/rxe/rxe_verbs.c  |   5 +-
+>>   drivers/infiniband/sw/rxe/rxe_verbs.h  |  38 ++-
+>>   include/uapi/rdma/rdma_user_rxe.h      |  34 ++-
+>>   16 files changed, 691 insertions(+), 151 deletions(-)
+>>   create mode 100644 drivers/infiniband/sw/rxe/rxe_mw.c
+>> --
+>> 2.27.0
+>>
