@@ -2,569 +2,204 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4740538E6DE
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 May 2021 14:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DACD638E713
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 May 2021 15:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232371AbhEXMsu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 May 2021 08:48:50 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3650 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232512AbhEXMst (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 May 2021 08:48:49 -0400
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FpcMh0n2NzNygV;
-        Mon, 24 May 2021 20:43:44 +0800 (CST)
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 24 May 2021 20:47:19 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 24 May 2021 20:47:19 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, "Xi Wang" <wangxi11@huawei.com>,
-        Yixing Liu <liuyixing1@huawei.com>,
-        Weihang Li <liweihang@huawei.com>
-Subject: [PATCH for-next] RDMA/hns: Refactor capability configuration flow of VF
-Date:   Mon, 24 May 2021 20:47:08 +0800
-Message-ID: <1621860428-58009-1-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        id S232424AbhEXNFH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 May 2021 09:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232874AbhEXNFA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 May 2021 09:05:00 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C88EC061574
+        for <linux-rdma@vger.kernel.org>; Mon, 24 May 2021 06:03:30 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id w9so14080879qvi.13
+        for <linux-rdma@vger.kernel.org>; Mon, 24 May 2021 06:03:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SH+IyXXo/InRw15NVRSdTmL6s5absHD6DhRn7F8U8yM=;
+        b=FEkxQyfuJjQRM3cBN6HFD6fT2zO5JZNwKC2a88HP8f7HZABfoVmATgHuh+l9SXKZaK
+         CPpIofds2zzu5//dZvjSmfik0+NZOnnRg4gSzxmK7GnLN/9veLZbSVqyhwLABttRLWhN
+         hf7TWQeKW9V6adHEhTSBBE/MbMs9zpRWpy9Ms=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SH+IyXXo/InRw15NVRSdTmL6s5absHD6DhRn7F8U8yM=;
+        b=tlPVh726cDq3S20gTU2y64ghTQD4/NEUyPrxxhE+v+wOcZrvrfIJqbkQ1NmcGnpqyH
+         T2WV39wCpf9gBstWC2bs6FE7FFxlkt508dClBeixiP1Xa4DfEaIQnLLfEVTVBru20TNN
+         RDWEepPpBd+2tVmZ9q6Xm+4xC4xNjN59YLHfnSoetgZPyqPzaA1bjdbromaA7kxDZwfz
+         o2l8jNCDDrfCdP4CxaY0y3dV7InKZrNbTdj7qxYmyI4OpIrymxt5efcsc3LyxoCTv0b1
+         zkC9fI48QDRctxLpE5Q3wapZLGyUygr/xbiwLq0p6sOpQRkBY5DQnQ2loNSfkAOZVaAv
+         hUgg==
+X-Gm-Message-State: AOAM533oaYZRBPo2zAlUBNG17YsvefqRTKktRi6RwYJz4O5cpwnMGZBj
+        Kf723PICAzrGZEy+MpGDbX7VuVxsv/4fR6viEzxVAYk8wx7/Yg==
+X-Google-Smtp-Source: ABdhPJzV4jPgBY9/UL1BBMd1uG5QRq5odm68fAv2LsMlcdgoIVF4lRvY64PRVS/EO/gxIi5SUMjf0tSxAfikLFEKDhE=
+X-Received: by 2002:a0c:9e4e:: with SMTP id z14mr30521271qve.31.1621861408594;
+ Mon, 24 May 2021 06:03:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema753-chm.china.huawei.com (10.1.198.195)
-X-CFilter-Loop: Reflected
+References: <20210517133532.774998-1-devesh.sharma@broadcom.com>
+ <CANjDDBgR_wP5WHWWRue_Pg8XYujcuoqFs2J-zHD0c2g9+bRfjg@mail.gmail.com>
+ <CANjDDBjO4dOXCb5rVe1UOd6foeFp8FLTqJbz8w6c36eTZSZtkg@mail.gmail.com> <YKUwKa6fNfBq8b8a@unreal>
+In-Reply-To: <YKUwKa6fNfBq8b8a@unreal>
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+Date:   Mon, 24 May 2021 18:32:52 +0530
+Message-ID: <CANjDDBhNFh4VqPdD09ssUMVZKHgvnRxS8MuttNS1JjeFSk23EQ@mail.gmail.com>
+Subject: Re: [PATCH V2 INTERNAL 0/4] Broadcom's user library update
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000331e1705c31309ca"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+--000000000000331e1705c31309ca
+Content-Type: text/plain; charset="UTF-8"
 
-The capbability configurations of PFs and VFs are coupled. Decoupling them
-by abstracting some functions and reorganizing the configuration process.
+On Wed, May 19, 2021 at 9:05 PM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Wed, May 19, 2021 at 08:45:20PM +0530, Devesh Sharma wrote:
+> > On Mon, May 17, 2021 at 7:08 PM Devesh Sharma
+> > <devesh.sharma@broadcom.com> wrote:
+> > >
+> > > On Mon, May 17, 2021 at 7:05 PM Devesh Sharma
+> > > <devesh.sharma@broadcom.com> wrote:
+> > > >
+> > > > The main focus of this patch series is to move SQ and RQ
+> > > > wqe posting indices from 128B fixed stride to 16B aligned stride.
+> > > > This allows more flexibility in choosing wqe size.
+> > > >
+> > > >
+> > > > Devesh Sharma (4):
+> > > >   bnxt_re/lib: Read wqe mode from the driver
+> > > >   bnxt_re/lib: add a function to initialize software queue
+> > > >   bnxt_re/lib: Use separate indices for shadow queue
+> > > >   bnxt_re/lib: Move hardware queue to 16B aligned indices
+> > > >
+> > > >  kernel-headers/rdma/bnxt_re-abi.h |   5 +-
+> > > >  providers/bnxt_re/bnxt_re-abi.h   |   5 +
+> > > >  providers/bnxt_re/db.c            |  10 +-
+> > > >  providers/bnxt_re/main.c          |   4 +
+> > > >  providers/bnxt_re/main.h          |  26 ++
+> > > >  providers/bnxt_re/memory.h        |  37 ++-
+> > > >  providers/bnxt_re/verbs.c         | 522 ++++++++++++++++++++----------
+> > > >  7 files changed, 431 insertions(+), 178 deletions(-)
+> > > >
+> > > > --
+> > > > 2.25.1
+> > > >
+> > > Please ignore the "Internal" keyword in the subject line.
+> > >
+> > > --
+> > > -Regards
+> > > Devesh
+> > Hi Leon,
+> >
+> > Do you have any comments on this series. For the subject line I can
+> > resend the series.
+>
+> Yes, the change in kernel-headers/rdma/bnxt_re-abi.h should be separate
+> commit created with kernel-headers/update script.
+Leon, I need to have my abi changes in the upstream kernel before I
+change user ABI in rdmacore? The script is popping out some errors.
+>
+> Thanks
+>
+> >
+> >
+> > --
+> > -Regards
+> > Devesh
+>
+>
 
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 300 +++++++++++++++--------------
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h |   2 +-
- 2 files changed, 156 insertions(+), 146 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index d5e72e5..c73e375 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1675,17 +1675,7 @@ static int load_func_res_caps(struct hns_roce_dev *hr_dev, bool is_vf)
- 	return 0;
- }
- 
--static int hns_roce_query_pf_resource(struct hns_roce_dev *hr_dev)
--{
--	return load_func_res_caps(hr_dev, false);
--}
--
--static int hns_roce_query_vf_resource(struct hns_roce_dev *hr_dev)
--{
--	return load_func_res_caps(hr_dev, true);
--}
--
--static int hns_roce_query_pf_timer_resource(struct hns_roce_dev *hr_dev)
-+static int load_pf_timer_res_caps(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_cmq_desc desc;
- 	struct hns_roce_cmq_req *req = (struct hns_roce_cmq_req *)desc.data;
-@@ -1705,6 +1695,29 @@ static int hns_roce_query_pf_timer_resource(struct hns_roce_dev *hr_dev)
- 	return 0;
- }
- 
-+static int hns_roce_query_pf_resource(struct hns_roce_dev *hr_dev)
-+{
-+	struct device *dev = hr_dev->dev;
-+	int ret;
-+
-+	ret = load_func_res_caps(hr_dev, false);
-+	if (ret) {
-+		dev_err(dev, "failed to load func caps, ret = %d.\n", ret);
-+		return ret;
-+	}
-+
-+	ret = load_pf_timer_res_caps(hr_dev);
-+	if (ret)
-+		dev_err(dev, "failed to load timer res, ret = %d.\n", ret);
-+
-+	return ret;
-+}
-+
-+static int hns_roce_query_vf_resource(struct hns_roce_dev *hr_dev)
-+{
-+	return load_func_res_caps(hr_dev, true);
-+}
-+
- static int __hns_roce_set_vf_switch_param(struct hns_roce_dev *hr_dev,
- 					  u32 vf_id)
- {
-@@ -1744,7 +1757,7 @@ static int hns_roce_set_vf_switch_param(struct hns_roce_dev *hr_dev)
- 	return 0;
- }
- 
--static int __hns_roce_alloc_vf_resource(struct hns_roce_dev *hr_dev, int vf_id)
-+static int config_vf_hem_resource(struct hns_roce_dev *hr_dev, int vf_id)
- {
- 	struct hns_roce_cmq_desc desc[2];
- 	struct hns_roce_cmq_req *r_a = (struct hns_roce_cmq_req *)desc[0].data;
-@@ -1791,11 +1804,12 @@ static int __hns_roce_alloc_vf_resource(struct hns_roce_dev *hr_dev, int vf_id)
- 
- static int hns_roce_alloc_vf_resource(struct hns_roce_dev *hr_dev)
- {
--	int vf_id;
-+	u32 func_num = max_t(u32, 1, hr_dev->func_num);
-+	u32 vf_id;
- 	int ret;
- 
--	for (vf_id = 0; vf_id < hr_dev->func_num; vf_id++) {
--		ret = __hns_roce_alloc_vf_resource(hr_dev, vf_id);
-+	for (vf_id = 0; vf_id < func_num; vf_id++) {
-+		ret = config_vf_hem_resource(hr_dev, vf_id);
- 		if (ret)
- 			return ret;
- 	}
-@@ -1849,9 +1863,9 @@ static int hns_roce_v2_set_bt(struct hns_roce_dev *hr_dev)
- 	return hns_roce_cmq_send(hr_dev, &desc, 1);
- }
- 
-+/* Use default caps when hns_roce_query_pf_caps() failed or init VF profile */
- static void set_default_caps(struct hns_roce_dev *hr_dev)
- {
--	struct hns_roce_v2_priv *priv = hr_dev->priv;
- 	struct hns_roce_caps *caps = &hr_dev->caps;
- 
- 	caps->num_qps		= HNS_ROCE_V2_MAX_QP_NUM;
-@@ -1863,19 +1877,18 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
- 	caps->max_sq_sg		= HNS_ROCE_V2_MAX_SQ_SGE_NUM;
- 	caps->max_extend_sg	= HNS_ROCE_V2_MAX_EXTEND_SGE_NUM;
- 	caps->max_rq_sg		= HNS_ROCE_V2_MAX_RQ_SGE_NUM;
-+
- 	caps->num_uars		= HNS_ROCE_V2_UAR_NUM;
- 	caps->phy_num_uars	= HNS_ROCE_V2_PHY_UAR_NUM;
- 	caps->num_aeq_vectors	= HNS_ROCE_V2_AEQE_VEC_NUM;
--	caps->num_comp_vectors	=
--			min_t(u32, caps->eqc_bt_num - 1,
--			      (u32)priv->handle->rinfo.num_vectors - 2);
- 	caps->num_other_vectors = HNS_ROCE_V2_ABNORMAL_VEC_NUM;
-+	caps->num_comp_vectors	= 0;
-+
- 	caps->num_mtpts		= HNS_ROCE_V2_MAX_MTPT_NUM;
--	caps->num_mtt_segs	= HNS_ROCE_V2_MAX_MTT_SEGS;
--	caps->num_srqwqe_segs	= HNS_ROCE_V2_MAX_SRQWQE_SEGS;
--	caps->num_idx_segs	= HNS_ROCE_V2_MAX_IDX_SEGS;
- 	caps->num_pds		= HNS_ROCE_V2_MAX_PD_NUM;
--	caps->num_xrcds		= HNS_ROCE_V2_MAX_XRCD_NUM;
-+	caps->num_qpc_timer	= HNS_ROCE_V2_MAX_QPC_TIMER_NUM;
-+	caps->num_cqc_timer	= HNS_ROCE_V2_MAX_CQC_TIMER_NUM;
-+
- 	caps->max_qp_init_rdma	= HNS_ROCE_V2_MAX_QP_INIT_RDMA;
- 	caps->max_qp_dest_rdma	= HNS_ROCE_V2_MAX_QP_DEST_RDMA;
- 	caps->max_sq_desc_sz	= HNS_ROCE_V2_MAX_SQ_DESC_SZ;
-@@ -1886,12 +1899,10 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
- 	caps->cqc_entry_sz	= HNS_ROCE_V2_CQC_ENTRY_SZ;
- 	caps->srqc_entry_sz	= HNS_ROCE_V2_SRQC_ENTRY_SZ;
- 	caps->mtpt_entry_sz	= HNS_ROCE_V2_MTPT_ENTRY_SZ;
--	caps->mtt_entry_sz	= HNS_ROCE_V2_MTT_ENTRY_SZ;
- 	caps->idx_entry_sz	= HNS_ROCE_V2_IDX_ENTRY_SZ;
- 	caps->page_size_cap	= HNS_ROCE_V2_PAGE_SIZE_SUPPORTED;
- 	caps->reserved_lkey	= 0;
- 	caps->reserved_pds	= 0;
--	caps->reserved_xrcds	= HNS_ROCE_V2_RSV_XRCD_NUM;
- 	caps->reserved_mrws	= 1;
- 	caps->reserved_uars	= 0;
- 	caps->reserved_cqs	= 0;
-@@ -1902,15 +1913,15 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
- 	caps->srqc_hop_num	= HNS_ROCE_CONTEXT_HOP_NUM;
- 	caps->cqc_hop_num	= HNS_ROCE_CONTEXT_HOP_NUM;
- 	caps->mpt_hop_num	= HNS_ROCE_CONTEXT_HOP_NUM;
-+	caps->sccc_hop_num	= HNS_ROCE_SCCC_HOP_NUM;
-+
- 	caps->mtt_hop_num	= HNS_ROCE_MTT_HOP_NUM;
--	caps->pbl_hop_num       = HNS_ROCE_PBL_HOP_NUM;
- 	caps->wqe_sq_hop_num	= HNS_ROCE_SQWQE_HOP_NUM;
- 	caps->wqe_sge_hop_num	= HNS_ROCE_EXT_SGE_HOP_NUM;
- 	caps->wqe_rq_hop_num	= HNS_ROCE_RQWQE_HOP_NUM;
- 	caps->cqe_hop_num	= HNS_ROCE_CQE_HOP_NUM;
- 	caps->srqwqe_hop_num	= HNS_ROCE_SRQWQE_HOP_NUM;
- 	caps->idx_hop_num	= HNS_ROCE_IDX_HOP_NUM;
--	caps->eqe_hop_num       = HNS_ROCE_EQE_HOP_NUM;
- 	caps->chunk_sz          = HNS_ROCE_V2_TABLE_CHUNK_SIZE;
- 
- 	caps->flags		= HNS_ROCE_CAP_FLAG_REREG_MR |
-@@ -1931,36 +1942,17 @@ static void set_default_caps(struct hns_roce_dev *hr_dev)
- 		       HNS_ROCE_CAP_FLAG_SRQ | HNS_ROCE_CAP_FLAG_FRMR |
- 		       HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL | HNS_ROCE_CAP_FLAG_XRC;
- 
--	caps->num_qpc_timer	  = HNS_ROCE_V2_MAX_QPC_TIMER_NUM;
--	caps->qpc_timer_entry_sz  = HNS_ROCE_V2_QPC_TIMER_ENTRY_SZ;
--	caps->qpc_timer_hop_num   = HNS_ROCE_HOP_NUM_0;
--	caps->num_cqc_timer	  = HNS_ROCE_V2_MAX_CQC_TIMER_NUM;
--	caps->cqc_timer_entry_sz  = HNS_ROCE_V2_CQC_TIMER_ENTRY_SZ;
--	caps->cqc_timer_hop_num   = HNS_ROCE_HOP_NUM_0;
--
--	caps->sccc_hop_num	  = HNS_ROCE_SCCC_HOP_NUM;
-+	caps->gid_table_len[0] = HNS_ROCE_V2_GID_INDEX_NUM;
- 
- 	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09) {
--		caps->aeqe_size = HNS_ROCE_V3_EQE_SIZE;
--		caps->ceqe_size = HNS_ROCE_V3_EQE_SIZE;
--		caps->cqe_sz = HNS_ROCE_V3_CQE_SIZE;
--		caps->qpc_sz = HNS_ROCE_V3_QPC_SZ;
--		caps->sccc_sz = HNS_ROCE_V3_SCCC_SZ;
--		caps->gmv_entry_sz = HNS_ROCE_V3_GMV_ENTRY_SZ;
--		caps->gmv_entry_num = caps->gmv_bt_num * (PAGE_SIZE /
--							  caps->gmv_entry_sz);
--		caps->gmv_hop_num = HNS_ROCE_HOP_NUM_0;
--		caps->gid_table_len[0] = caps->gmv_bt_num * (HNS_HW_PAGE_SIZE /
--					 caps->gmv_entry_sz);
--		caps->max_sq_inline = HNS_ROCE_V2_MAX_SQ_INL_EXT;
-+		caps->max_sq_inline = HNS_ROCE_V3_MAX_SQ_INLINE;
- 	} else {
--		caps->aeqe_size = HNS_ROCE_AEQE_SIZE;
--		caps->ceqe_size = HNS_ROCE_CEQE_SIZE;
--		caps->cqe_sz = HNS_ROCE_V2_CQE_SIZE;
-+		caps->max_sq_inline = HNS_ROCE_V2_MAX_SQ_INLINE;
-+
-+		/* The following configuration are only valid for HIP08 */
- 		caps->qpc_sz = HNS_ROCE_V2_QPC_SZ;
- 		caps->sccc_sz = HNS_ROCE_V2_SCCC_SZ;
--		caps->gid_table_len[0] = HNS_ROCE_V2_GID_INDEX_NUM;
--		caps->max_sq_inline = HNS_ROCE_V2_MAX_SQ_INLINE;
-+		caps->cqe_sz = HNS_ROCE_V2_CQE_SIZE;
- 	}
- }
- 
-@@ -2070,6 +2062,71 @@ static void set_hem_page_size(struct hns_roce_dev *hr_dev)
- 	caps->gmv_buf_pg_sz = 0;
- }
- 
-+/* Apply all loaded caps before setting to hardware */
-+static void apply_func_caps(struct hns_roce_dev *hr_dev)
-+{
-+	struct hns_roce_caps *caps = &hr_dev->caps;
-+	struct hns_roce_v2_priv *priv = hr_dev->priv;
-+
-+	/* The following configurations don't need to be got from firmware. */
-+	caps->qpc_timer_entry_sz = HNS_ROCE_V2_QPC_TIMER_ENTRY_SZ;
-+	caps->cqc_timer_entry_sz = HNS_ROCE_V2_CQC_TIMER_ENTRY_SZ;
-+	caps->mtt_entry_sz = HNS_ROCE_V2_MTT_ENTRY_SZ;
-+
-+	caps->eqe_hop_num = HNS_ROCE_EQE_HOP_NUM;
-+	caps->pbl_hop_num = HNS_ROCE_PBL_HOP_NUM;
-+	caps->qpc_timer_hop_num = HNS_ROCE_HOP_NUM_0;
-+	caps->cqc_timer_hop_num = HNS_ROCE_HOP_NUM_0;
-+
-+	caps->num_xrcds = HNS_ROCE_V2_MAX_XRCD_NUM;
-+	caps->reserved_xrcds = HNS_ROCE_V2_RSV_XRCD_NUM;
-+
-+	caps->num_mtt_segs = HNS_ROCE_V2_MAX_MTT_SEGS;
-+	caps->num_srqwqe_segs = HNS_ROCE_V2_MAX_SRQWQE_SEGS;
-+	caps->num_idx_segs = HNS_ROCE_V2_MAX_IDX_SEGS;
-+
-+	if (!caps->num_comp_vectors)
-+		caps->num_comp_vectors = min_t(u32, caps->eqc_bt_num - 1,
-+				  (u32)priv->handle->rinfo.num_vectors - 2);
-+
-+	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09) {
-+		caps->ceqe_size = HNS_ROCE_V3_EQE_SIZE;
-+		caps->aeqe_size = HNS_ROCE_V3_EQE_SIZE;
-+
-+		/* The following configurations will be overwritten */
-+		caps->qpc_sz = HNS_ROCE_V3_QPC_SZ;
-+		caps->cqe_sz = HNS_ROCE_V3_CQE_SIZE;
-+		caps->sccc_sz = HNS_ROCE_V3_SCCC_SZ;
-+
-+		/* The following configurations are not got from firmware */
-+		caps->gmv_entry_sz = HNS_ROCE_V3_GMV_ENTRY_SZ;
-+
-+		caps->gmv_hop_num = HNS_ROCE_HOP_NUM_0;
-+		caps->gid_table_len[0] = caps->gmv_bt_num *
-+					(HNS_HW_PAGE_SIZE / caps->gmv_entry_sz);
-+
-+		caps->gmv_entry_num = caps->gmv_bt_num * (PAGE_SIZE /
-+							  caps->gmv_entry_sz);
-+	} else {
-+		u32 func_num = max_t(u32, 1, hr_dev->func_num);
-+
-+		caps->ceqe_size = HNS_ROCE_CEQE_SIZE;
-+		caps->aeqe_size = HNS_ROCE_AEQE_SIZE;
-+		caps->gid_table_len[0] /= func_num;
-+	}
-+
-+	if (hr_dev->is_vf) {
-+		caps->default_aeq_arm_st = 0x3;
-+		caps->default_ceq_arm_st = 0x3;
-+		caps->default_ceq_max_cnt = 0x1;
-+		caps->default_ceq_period = 0x10;
-+		caps->default_aeq_max_cnt = 0x1;
-+		caps->default_aeq_period = 0x10;
-+	}
-+
-+	set_hem_page_size(hr_dev);
-+}
-+
- static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_cmq_desc desc[HNS_ROCE_QUERY_PF_CAPS_CMD_NUM];
-@@ -2119,7 +2176,7 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
- 	caps->max_sq_desc_sz	     = resp_a->max_sq_desc_sz;
- 	caps->max_rq_desc_sz	     = resp_a->max_rq_desc_sz;
- 	caps->max_srq_desc_sz	     = resp_a->max_srq_desc_sz;
--	caps->cqe_sz		     = HNS_ROCE_V2_CQE_SIZE;
-+	caps->cqe_sz		     = resp_a->cqe_sz;
- 
- 	caps->mtpt_entry_sz	     = resp_b->mtpt_entry_sz;
- 	caps->irrl_entry_sz	     = resp_b->irrl_entry_sz;
-@@ -2129,7 +2186,7 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
- 	caps->idx_entry_sz	     = resp_b->idx_entry_sz;
- 	caps->sccc_sz		     = resp_b->sccc_sz;
- 	caps->max_mtu		     = resp_b->max_mtu;
--	caps->qpc_sz		     = HNS_ROCE_V2_QPC_SZ;
-+	caps->qpc_sz		     = le16_to_cpu(resp_b->qpc_sz);
- 	caps->min_cqes		     = resp_b->min_cqes;
- 	caps->min_wqes		     = resp_b->min_wqes;
- 	caps->page_size_cap	     = le32_to_cpu(resp_b->page_size_cap);
-@@ -2154,8 +2211,6 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
- 						V2_QUERY_PF_CAPS_C_MAX_GID_M,
- 						V2_QUERY_PF_CAPS_C_MAX_GID_S);
- 
--	caps->gid_table_len[0] /= hr_dev->func_num;
--
- 	caps->max_cqes = 1 << roce_get_field(resp_c->cq_depth,
- 					     V2_QUERY_PF_CAPS_C_CQ_DEPTH_M,
- 					     V2_QUERY_PF_CAPS_C_CQ_DEPTH_S);
-@@ -2226,18 +2281,8 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
- 	caps->default_aeq_max_cnt = le16_to_cpu(resp_e->aeq_max_cnt);
- 	caps->default_aeq_period = le16_to_cpu(resp_e->aeq_period);
- 
--	caps->qpc_timer_entry_sz = HNS_ROCE_V2_QPC_TIMER_ENTRY_SZ;
--	caps->cqc_timer_entry_sz = HNS_ROCE_V2_CQC_TIMER_ENTRY_SZ;
--	caps->mtt_entry_sz = HNS_ROCE_V2_MTT_ENTRY_SZ;
--	caps->num_mtt_segs = HNS_ROCE_V2_MAX_MTT_SEGS;
--	caps->ceqe_size = HNS_ROCE_CEQE_SIZE;
--	caps->aeqe_size = HNS_ROCE_AEQE_SIZE;
--	caps->num_xrcds = HNS_ROCE_V2_MAX_XRCD_NUM;
--	caps->reserved_xrcds = HNS_ROCE_V2_RSV_XRCD_NUM;
--	caps->num_srqwqe_segs = HNS_ROCE_V2_MAX_SRQWQE_SEGS;
--	caps->num_idx_segs = HNS_ROCE_V2_MAX_IDX_SEGS;
--
- 	caps->qpc_hop_num = ctx_hop_num;
-+	caps->sccc_hop_num = ctx_hop_num;
- 	caps->srqc_hop_num = ctx_hop_num;
- 	caps->cqc_hop_num = ctx_hop_num;
- 	caps->mpt_hop_num = ctx_hop_num;
-@@ -2255,23 +2300,6 @@ static int hns_roce_query_pf_caps(struct hns_roce_dev *hr_dev)
- 					  V2_QUERY_PF_CAPS_D_RQWQE_HOP_NUM_M,
- 					  V2_QUERY_PF_CAPS_D_RQWQE_HOP_NUM_S);
- 
--	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09) {
--		caps->ceqe_size = HNS_ROCE_V3_EQE_SIZE;
--		caps->aeqe_size = HNS_ROCE_V3_EQE_SIZE;
--		caps->cqe_sz = HNS_ROCE_V3_CQE_SIZE;
--		caps->qpc_sz = HNS_ROCE_V3_QPC_SZ;
--		caps->sccc_sz = HNS_ROCE_V3_SCCC_SZ;
--		caps->gmv_entry_sz = HNS_ROCE_V3_GMV_ENTRY_SZ;
--		caps->gmv_entry_num = caps->gmv_bt_num * (PAGE_SIZE /
--						    caps->gmv_entry_sz);
--		caps->gmv_hop_num = HNS_ROCE_HOP_NUM_0;
--		caps->gid_table_len[0] = caps->gmv_bt_num *
--				(HNS_HW_PAGE_SIZE / caps->gmv_entry_sz);
--	}
--
--	caps->qpc_timer_hop_num = HNS_ROCE_HOP_NUM_0;
--	caps->cqc_timer_hop_num = HNS_ROCE_HOP_NUM_0;
--
- 	return 0;
- }
- 
-@@ -2314,121 +2342,103 @@ static int hns_roce_config_entry_size(struct hns_roce_dev *hr_dev)
- 
- static int hns_roce_v2_vf_profile(struct hns_roce_dev *hr_dev)
- {
-+	struct device *dev = hr_dev->dev;
- 	int ret;
- 
--	hr_dev->vendor_part_id = hr_dev->pci_dev->device;
--	hr_dev->sys_image_guid = be64_to_cpu(hr_dev->ib_dev.node_guid);
- 	hr_dev->func_num = 1;
- 
-+	set_default_caps(hr_dev);
-+
- 	ret = hns_roce_query_vf_resource(hr_dev);
- 	if (ret) {
--		dev_err(hr_dev->dev,
--			"Query the VF resource fail, ret = %d.\n", ret);
-+		dev_err(dev, "failed to query VF resource, ret = %d.\n", ret);
- 		return ret;
- 	}
- 
--	set_default_caps(hr_dev);
--	set_hem_page_size(hr_dev);
-+	apply_func_caps(hr_dev);
- 
- 	ret = hns_roce_v2_set_bt(hr_dev);
--	if (ret) {
--		dev_err(hr_dev->dev,
--			"Configure the VF bt attribute fail, ret = %d.\n",
--			ret);
--		return ret;
--	}
-+	if (ret)
-+		dev_err(dev, "failed to config VF BA table, ret = %d.\n", ret);
- 
--	return 0;
-+	return ret;
- }
- 
--static int hns_roce_v2_profile(struct hns_roce_dev *hr_dev)
-+static int hns_roce_v2_pf_profile(struct hns_roce_dev *hr_dev)
- {
--	struct hns_roce_caps *caps = &hr_dev->caps;
-+	struct device *dev = hr_dev->dev;
- 	int ret;
- 
--	ret = hns_roce_cmq_query_hw_info(hr_dev);
-+	ret = hns_roce_query_func_info(hr_dev);
- 	if (ret) {
--		dev_err(hr_dev->dev, "Query hardware version fail, ret = %d.\n",
--			ret);
-+		dev_err(dev, "failed to query func info, ret = %d.\n", ret);
- 		return ret;
- 	}
- 
--	ret = hns_roce_query_fw_ver(hr_dev);
-+	ret = hns_roce_config_global_param(hr_dev);
- 	if (ret) {
--		dev_err(hr_dev->dev, "Query firmware version fail, ret = %d.\n",
--			ret);
-+		dev_err(dev, "failed to config global param, ret = %d.\n", ret);
- 		return ret;
- 	}
- 
--	if (hr_dev->is_vf)
--		return hns_roce_v2_vf_profile(hr_dev);
--
--	ret = hns_roce_query_func_info(hr_dev);
-+	ret = hns_roce_set_vf_switch_param(hr_dev);
- 	if (ret) {
--		dev_err(hr_dev->dev, "Query function info fail, ret = %d.\n",
--			ret);
-+		dev_err(dev, "failed to set switch param, ret = %d.\n", ret);
- 		return ret;
- 	}
- 
--	ret = hns_roce_config_global_param(hr_dev);
--	if (ret) {
--		dev_err(hr_dev->dev, "Configure global param fail, ret = %d.\n",
--			ret);
--		return ret;
--	}
-+	ret = hns_roce_query_pf_caps(hr_dev);
-+	if (ret)
-+		set_default_caps(hr_dev);
- 
--	/* Get pf resource owned by every pf */
- 	ret = hns_roce_query_pf_resource(hr_dev);
- 	if (ret) {
--		dev_err(hr_dev->dev, "Query pf resource fail, ret = %d.\n",
--			ret);
-+		dev_err(dev, "failed to query pf resource, ret = %d.\n", ret);
- 		return ret;
- 	}
- 
--	ret = hns_roce_query_pf_timer_resource(hr_dev);
-+	apply_func_caps(hr_dev);
-+
-+	ret = hns_roce_alloc_vf_resource(hr_dev);
- 	if (ret) {
--		dev_err(hr_dev->dev,
--			"failed to query pf timer resource, ret = %d.\n", ret);
-+		dev_err(dev, "failed to alloc vf resource, ret = %d.\n", ret);
- 		return ret;
- 	}
- 
--	ret = hns_roce_set_vf_switch_param(hr_dev);
-+	ret = hns_roce_v2_set_bt(hr_dev);
- 	if (ret) {
--		dev_err(hr_dev->dev,
--			"failed to set function switch param, ret = %d.\n",
--			ret);
-+		dev_err(dev, "failed to config BA table, ret = %d.\n", ret);
- 		return ret;
- 	}
- 
--	hr_dev->vendor_part_id = hr_dev->pci_dev->device;
--	hr_dev->sys_image_guid = be64_to_cpu(hr_dev->ib_dev.node_guid);
--
--	caps->pbl_hop_num	= HNS_ROCE_PBL_HOP_NUM;
--	caps->eqe_hop_num	= HNS_ROCE_EQE_HOP_NUM;
-+	/* Configure the size of QPC, SCCC, etc. */
-+	return hns_roce_config_entry_size(hr_dev);
-+}
- 
--	ret = hns_roce_query_pf_caps(hr_dev);
--	if (ret)
--		set_default_caps(hr_dev);
-+static int hns_roce_v2_profile(struct hns_roce_dev *hr_dev)
-+{
-+	struct device *dev = hr_dev->dev;
-+	int ret;
- 
--	ret = hns_roce_alloc_vf_resource(hr_dev);
-+	ret = hns_roce_cmq_query_hw_info(hr_dev);
- 	if (ret) {
--		dev_err(hr_dev->dev, "Allocate vf resource fail, ret = %d.\n",
--			ret);
-+		dev_err(dev, "failed to query hardware info, ret = %d.\n", ret);
- 		return ret;
- 	}
- 
--	set_hem_page_size(hr_dev);
--	ret = hns_roce_v2_set_bt(hr_dev);
-+	ret = hns_roce_query_fw_ver(hr_dev);
- 	if (ret) {
--		dev_err(hr_dev->dev,
--			"Configure bt attribute fail, ret = %d.\n", ret);
-+		dev_err(dev, "failed to query firmware info, ret = %d.\n", ret);
- 		return ret;
- 	}
- 
--	/* Configure the size of QPC, SCCC, etc. */
--	ret = hns_roce_config_entry_size(hr_dev);
-+	hr_dev->vendor_part_id = hr_dev->pci_dev->device;
-+	hr_dev->sys_image_guid = be64_to_cpu(hr_dev->ib_dev.node_guid);
- 
--	return ret;
-+	if (hr_dev->is_vf)
-+		return hns_roce_v2_vf_profile(hr_dev);
-+	else
-+		return hns_roce_v2_pf_profile(hr_dev);
- }
- 
- static void config_llm_table(struct hns_roce_buf *data_buf, void *cfg_buf)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index e374309..cd361c0 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -59,7 +59,7 @@
- #define HNS_ROCE_V2_MAX_SQ_SGE_NUM		64
- #define HNS_ROCE_V2_MAX_EXTEND_SGE_NUM		0x200000
- #define HNS_ROCE_V2_MAX_SQ_INLINE		0x20
--#define HNS_ROCE_V2_MAX_SQ_INL_EXT		0x400
-+#define HNS_ROCE_V3_MAX_SQ_INLINE		0x400
- #define HNS_ROCE_V2_MAX_RC_INL_INN_SZ		32
- #define HNS_ROCE_V2_UAR_NUM			256
- #define HNS_ROCE_V2_PHY_UAR_NUM			1
 -- 
-2.7.4
+-Regards
+Devesh
 
+--000000000000331e1705c31309ca
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
+Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
+KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
+SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
+PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
+G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
+PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILz0j3D6benBc5j2iweTCrpL1c9n
+d0Wp0G0Y4bYTTSScMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDUyNDEzMDMyOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQBBXBws0G3vTHcO/1ZtrGBjw+4z758LwTQi4X29DR35ff0/
+jbiQrhWvMQXZRbRFlqvL0mScE6SMqjqgKVZRPB67tl4euSZcgnXycjn8EfkZv5sudVBrN7b0AvRa
+zRodlGNnjnsREmRLKJrctnkJ7vlkvHVPy+T01bxcfL4ilQBwOdYuwQqE5Qu1DTx7CTdUKdht0WyM
+R874Og9Yr21zB8qWCD8ij2Wg3dzTQ6E8jevVZKeDby4fZRmsMeqaM4fQ0DVgNdWYSYiXwYz1bphm
+YkXSA0HHdULsCq52csS/vjTegD6uTq+5gUWH96/KY/xyxZ2PikNbgqwm4jkwETwvcoeN
+--000000000000331e1705c31309ca--
