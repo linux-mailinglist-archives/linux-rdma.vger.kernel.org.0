@@ -2,386 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E21C38E013
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 May 2021 06:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1312B38E2C0
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 May 2021 10:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbhEXENz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 May 2021 00:13:55 -0400
-Received: from mail-pj1-f54.google.com ([209.85.216.54]:55042 "EHLO
-        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbhEXENx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 May 2021 00:13:53 -0400
-Received: by mail-pj1-f54.google.com with SMTP id g24so14061863pji.4
-        for <linux-rdma@vger.kernel.org>; Sun, 23 May 2021 21:12:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gdbdsE3IsJLj9mxd+E3jnCSAdPkKigPpJkQYcoy6ejI=;
-        b=fveyXDMLi3VTdIZ0o0CrguidcwYc69kBXQkAVk1m+oR2OCj/8qnYMAejHB6IgDlaKv
-         bahh5KUz5pZYK3ZD0m6S2D3rbXKEXSXvHMIdVCT7ex7edWYdBPS2RClAAGWSGamCjVOl
-         hjShNpaOMoUJMJ76rwCbLbF5u/OeW/KkAlyq7FlzrCHjgI3st2WACuZlFwkv0bDQwU+u
-         O7SKA4yqDlwev1s/iPuL6F6W8yll9gkd2QYZWxCq/reoQVk5Fs52POYrsivL8bnR2SCZ
-         ukuGyYJtcxy5Mpxl4sOwdCfAxty//E7/YFf7FN3ZMyQ/I7wcdW6solmh50DhjGgLfd4z
-         JcAQ==
-X-Gm-Message-State: AOAM533VMKS9BAgdzAl4+w5NAwn28RJbiUKQhrEKOlaC97CunXURXiQW
-        DkybPPO71r6bt07W/lVclveziN7uUNpK0g==
-X-Google-Smtp-Source: ABdhPJx+kegtw79B9JwyYYRX/svY5xR9NWQuPZO/MN5I+GYtq6ZzYPoGKvWXtM0Pwbtx6BM8ToYA8Q==
-X-Received: by 2002:a17:90a:1f47:: with SMTP id y7mr3335150pjy.171.1621829546015;
-        Sun, 23 May 2021 21:12:26 -0700 (PDT)
-Received: from asus.hsd1.ca.comcast.net (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id q9sm13141979pjm.23.2021.05.23.21.12.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 21:12:25 -0700 (PDT)
-From:   Bart Van Assche <bvanassche@acm.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Subject: [PATCH v2 5/5] RDMA/srp: Make struct scsi_cmnd and struct srp_request adjacent
-Date:   Sun, 23 May 2021 21:12:11 -0700
-Message-Id: <20210524041211.9480-6-bvanassche@acm.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524041211.9480-1-bvanassche@acm.org>
-References: <20210524041211.9480-1-bvanassche@acm.org>
+        id S232422AbhEXIxt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 May 2021 04:53:49 -0400
+Received: from mail-bn8nam08on2066.outbound.protection.outlook.com ([40.107.100.66]:61952
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232318AbhEXIxt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 May 2021 04:53:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MBpfOzu5GaoQokJ9Rm/A2IO1pm0wUj3NkjZUlLddHBTPZ9g7H8MBAATv3zRqxSzDvBedvABFrSoMPQw/n7ZCqXpW9Q+rgvLeOAJXJ70C1dGoQ4RI6Anydfw5rGgP9zgvDa/1Kbe7wuFZy8PPozzhMXK7FWlltu+R4OGUYHKX/Lz55Fy+TyNaXzd0fvYXwCZ+9fWlpMh/97Hfm209mxzwmitFUbf4Qwxe6sTDkuDy8LCo7PoA55+/oCU6kLeNkjGS/6s1vGi/rRT7Kpcr1thktAKdTyQNbpCz6ovQB2p34BPUtEJ9qReWUR+scKpV3bTuPfe64ZyD7/uhVg2E+tm32w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mA5GjhSCnkVqWmgej3cbMgC6PoB1PGvKjrJGTv/2EoQ=;
+ b=chOILD4V+cVsjevw8MasSxNU3UK4pRmp6N7WLMzQd8G+Si3G/JLuH3jCMv8jq+cMudIKreKOEHhHI72KplkdA8+w0ejqBKERDUNriNH9FAn0xWQ4M9jJ6cgFXIA4QL+IFut42lhqCixhq++dlx7EkgJDqUWiEtafbW9L2ic90YdnPl2nguITp4TBtk1GFgYHbr+t4exO+Yt+CaQ7JxDKmdyyxnJE0QRePw92jK4DdQbKwLol7JJIy+4DSEVpFV6+BYltMJrlc9GJeZt/fOrV7MqYIavQD6IFRqwOYF8KD24ne9FhHgIcjjQLPkDhbXIxBrOlBQOCnECQfDzFex0rFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mA5GjhSCnkVqWmgej3cbMgC6PoB1PGvKjrJGTv/2EoQ=;
+ b=qXLlXvd4tEUj0/ChWArb7CVZqEZXT0fHqPXWR2VVfCEsSdNmcKNdzx4yvrnCxanK1n9mFM9IH54G5E+RZX4vai9WsBU7B8T1P+CKRetMK2HkFqLiSTIPaXCCljCn80XtReDDY6+CKXGVOSSxPW9pDWkhV/kB/yFvAPc2dRrvNFMVBMxhlDMwNmzwtGJxLYq5TxMql6RQbrLOGwzZ7NuYfQzGvbu2N5xeeyTd0W/4eyej7lj+bkeE7CfqVf9wumZzj4Ws71lP7PxY1Gf4UjuLjXdfKYccx+S8Hj5sEDffTwJui6SuPYYhDeQUk3FBLtbD/3TaVYUDtnwmFf/y3pqCpQ==
+Received: from DM6PR03CA0091.namprd03.prod.outlook.com (2603:10b6:5:333::24)
+ by MW2PR12MB4684.namprd12.prod.outlook.com (2603:10b6:302:13::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27; Mon, 24 May
+ 2021 08:52:19 +0000
+Received: from DM6NAM11FT025.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:333:cafe::d9) by DM6PR03CA0091.outlook.office365.com
+ (2603:10b6:5:333::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend
+ Transport; Mon, 24 May 2021 08:52:19 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ DM6NAM11FT025.mail.protection.outlook.com (10.13.172.197) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4129.25 via Frontend Transport; Mon, 24 May 2021 08:52:19 +0000
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 24 May
+ 2021 01:52:18 -0700
+Received: from r-arch-stor02.mtr.labs.mlnx (172.20.145.6) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 24 May 2021 08:52:16 +0000
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+To:     <sagi@grimberg.me>, <linux-rdma@vger.kernel.org>, <jgg@nvidia.com>
+CC:     <israelr@nvidia.com>, <alaa@nvidia.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: [PATCH 1/1] IB/isert: align target max I/O size to initiator size
+Date:   Mon, 24 May 2021 11:52:15 +0300
+Message-ID: <20210524085215.29005-1-mgurtovoy@nvidia.com>
+X-Mailer: git-send-email 2.18.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 55646ba4-4865-470c-ac96-08d91e913d28
+X-MS-TrafficTypeDiagnostic: MW2PR12MB4684:
+X-Microsoft-Antispam-PRVS: <MW2PR12MB46844DECDEA4B20870A954DFDE269@MW2PR12MB4684.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: be74rzjXufCYvWMEMaIhIZh3cioTbkQf/MDTkW29UvwvTZVMEvol8SviH5uF4MQYK25XEiIRXlQ8LbTGmYmAeiPHEj72i0IIU5STxwU/Q6u9grI9m8DE9SIh0PLIMIrvXEjND+sb/o3IWUk3DlTvdrTvIaHSw68FujJgyF0E5w+ykXW1Rvzr7uD8W6Cw6vJMgWHqiEUriX8MST3gFZ2SE1xgZ3To1n02nSrO/YQMh8A+uyLOqfNwzVS3V3zb9/QUwf9gmhPNvT8/8F7gLHhWnj+Qrz6s4GQ6p33Fxz/xcKaL6TUzX6eTwfPXmV1B3lQ1eQxHAAcGAzI9pU5EupLr/ggPvGuzXfdXfCbwgTN9Lwpi1ihjfdVCf6Q7gpW2omQuGZiWWS57GYE4UwMJEeAazwITv0vlY0wVwxggPe4cH0SKOstKNXqqPNsc6EGa1xSGNGwWL+CuTrDKGUS5oalYDweJK9OT7JYpdeVmfv5fhDwAcWUfrJIgbCYKKYBXeHl42tCl8LhlbJXKDSiOQfebThAdHGBNgsrkM7e2vKoZQ6ZJUyJgI4n24yJZcSh4t6ioYbuzqO3CaLtoXvF3gsCngaJu1sQHNFarZciHJoIb/Ay2dFERwp8qsp1DjaJyHDg/0zss9BM4GCwfFgAp+ZDs4DYCLrE0Jf7gHC2CKVsTIMM=
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(396003)(346002)(36840700001)(46966006)(8936002)(5660300002)(478600001)(107886003)(26005)(186003)(47076005)(356005)(110136005)(1076003)(36860700001)(54906003)(36756003)(8676002)(83380400001)(336012)(2616005)(426003)(6636002)(316002)(70206006)(82740400003)(4326008)(82310400003)(70586007)(86362001)(2906002)(7636003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2021 08:52:19.3433
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55646ba4-4865-470c-ac96-08d91e913d28
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT025.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB4684
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Define .init_cmd_priv and .exit_cmd_priv callback functions in struct
-scsi_host_template. Set .cmd_size such that the SCSI core allocates
-per-command private data. Use scsi_cmd_priv() to access that private
-data. Remove the req_ring pointer from struct srp_rdma_ch since it is
-no longer necessary. Convert srp_alloc_req_data() and srp_free_req_data()
-into functions that initialize one instance of the SRP-private command
-data. This is a micro-optimization since this patch removes several
-pointer dereferences from the hot path.
+Since the Linux iser initiator default max I/O size set to 512KB and
+since there is no handshake procedure for this size in iser protocol,
+set the default max IO size of the target to 512KB as well.
 
-Note: due to commit e73a5e8e8003 ("scsi: core: Only return started requests
-from scsi_host_find_tag()"), it is no longer necessary to protect the
-completion path against duplicate responses.
+For changing the default values, there is a module parameter for both
+drivers.
 
-Cc: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Alaa Hleihel <alaa@nvidia.com>
+Reviewed-by: Israel Rukshin <israelr@nvidia.com>
+Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
 ---
- drivers/infiniband/ulp/srp/ib_srp.c | 153 ++++++++++++----------------
- drivers/infiniband/ulp/srp/ib_srp.h |   2 -
- 2 files changed, 63 insertions(+), 92 deletions(-)
+ drivers/infiniband/ulp/isert/ib_isert.c | 4 ++--
+ drivers/infiniband/ulp/isert/ib_isert.h | 3 ---
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index 70107ab0179a..71405b01b85e 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -965,67 +965,52 @@ static void srp_disconnect_target(struct srp_target_port *target)
- 	}
- }
- 
--static void srp_free_req_data(struct srp_target_port *target,
--			      struct srp_rdma_ch *ch)
-+static int srp_exit_cmd_priv(struct Scsi_Host *shost, struct scsi_cmnd *cmd)
- {
-+	struct srp_target_port *target = host_to_target(shost);
- 	struct srp_device *dev = target->srp_host->srp_dev;
- 	struct ib_device *ibdev = dev->dev;
--	struct srp_request *req;
--	int i;
-+	struct srp_request *req = scsi_cmd_priv(cmd);
- 
--	if (!ch->req_ring)
--		return;
--
--	for (i = 0; i < target->req_ring_size; ++i) {
--		req = &ch->req_ring[i];
--		if (dev->use_fast_reg)
--			kfree(req->fr_list);
--		if (req->indirect_dma_addr) {
--			ib_dma_unmap_single(ibdev, req->indirect_dma_addr,
--					    target->indirect_size,
--					    DMA_TO_DEVICE);
--		}
--		kfree(req->indirect_desc);
-+	kfree(req->fr_list);
-+	if (req->indirect_dma_addr) {
-+		ib_dma_unmap_single(ibdev, req->indirect_dma_addr,
-+				    target->indirect_size,
-+				    DMA_TO_DEVICE);
- 	}
-+	kfree(req->indirect_desc);
- 
--	kfree(ch->req_ring);
--	ch->req_ring = NULL;
-+	return 0;
- }
- 
--static int srp_alloc_req_data(struct srp_rdma_ch *ch)
-+static int srp_init_cmd_priv(struct Scsi_Host *shost, struct scsi_cmnd *cmd)
- {
--	struct srp_target_port *target = ch->target;
-+	struct srp_target_port *target = host_to_target(shost);
- 	struct srp_device *srp_dev = target->srp_host->srp_dev;
- 	struct ib_device *ibdev = srp_dev->dev;
--	struct srp_request *req;
-+	struct srp_request *req = scsi_cmd_priv(cmd);
- 	dma_addr_t dma_addr;
--	int i, ret = -ENOMEM;
-+	int ret = -ENOMEM;
- 
--	ch->req_ring = kcalloc(target->req_ring_size, sizeof(*ch->req_ring),
--			       GFP_KERNEL);
--	if (!ch->req_ring)
--		goto out;
--
--	for (i = 0; i < target->req_ring_size; ++i) {
--		req = &ch->req_ring[i];
--		if (srp_dev->use_fast_reg) {
--			req->fr_list = kmalloc_array(target->mr_per_cmd,
--						sizeof(void *), GFP_KERNEL);
--			if (!req->fr_list)
--				goto out;
--		}
--		req->indirect_desc = kmalloc(target->indirect_size, GFP_KERNEL);
--		if (!req->indirect_desc)
--			goto out;
--
--		dma_addr = ib_dma_map_single(ibdev, req->indirect_desc,
--					     target->indirect_size,
--					     DMA_TO_DEVICE);
--		if (ib_dma_mapping_error(ibdev, dma_addr))
-+	if (srp_dev->use_fast_reg) {
-+		req->fr_list = kmalloc_array(target->mr_per_cmd, sizeof(void *),
-+					GFP_KERNEL);
-+		if (!req->fr_list)
- 			goto out;
-+	}
-+	req->indirect_desc = kmalloc(target->indirect_size, GFP_KERNEL);
-+	if (!req->indirect_desc)
-+		goto out;
- 
--		req->indirect_dma_addr = dma_addr;
-+	dma_addr = ib_dma_map_single(ibdev, req->indirect_desc,
-+				     target->indirect_size,
-+				     DMA_TO_DEVICE);
-+	if (ib_dma_mapping_error(ibdev, dma_addr)) {
-+		srp_exit_cmd_priv(shost, cmd);
-+		goto out;
- 	}
-+
-+	req->indirect_dma_addr = dma_addr;
- 	ret = 0;
- 
- out:
-@@ -1067,10 +1052,6 @@ static void srp_remove_target(struct srp_target_port *target)
- 	}
- 	cancel_work_sync(&target->tl_err_work);
- 	srp_rport_put(target->rport);
--	for (i = 0; i < target->ch_count; i++) {
--		ch = &target->ch[i];
--		srp_free_req_data(target, ch);
--	}
- 	kfree(target->ch);
- 	target->ch = NULL;
- 
-@@ -1289,22 +1270,32 @@ static void srp_finish_req(struct srp_rdma_ch *ch, struct srp_request *req,
- 	}
- }
- 
--static void srp_terminate_io(struct srp_rport *rport)
-+struct srp_terminate_context {
-+	struct srp_target_port *srp_target;
-+	int scsi_result;
-+};
-+
-+static bool srp_terminate_cmd(struct scsi_cmnd *scmnd, void *context_ptr,
-+			      bool reserved)
- {
--	struct srp_target_port *target = rport->lld_data;
--	struct srp_rdma_ch *ch;
--	int i, j;
-+	struct srp_terminate_context *context = context_ptr;
-+	struct srp_target_port *target = context->srp_target;
-+	u32 tag = blk_mq_unique_tag(scmnd->request);
-+	struct srp_rdma_ch *ch = &target->ch[blk_mq_unique_tag_to_hwq(tag)];
-+	struct srp_request *req = scsi_cmd_priv(scmnd);
- 
--	for (i = 0; i < target->ch_count; i++) {
--		ch = &target->ch[i];
-+	srp_finish_req(ch, req, NULL, context->scsi_result);
- 
--		for (j = 0; j < target->req_ring_size; ++j) {
--			struct srp_request *req = &ch->req_ring[j];
-+	return true;
-+}
- 
--			srp_finish_req(ch, req, NULL,
--				       DID_TRANSPORT_FAILFAST << 16);
--		}
--	}
-+static void srp_terminate_io(struct srp_rport *rport)
-+{
-+	struct srp_target_port *target = rport->lld_data;
-+	struct srp_terminate_context context = { .srp_target = target,
-+		.scsi_result = DID_TRANSPORT_FAILFAST << 16 };
-+
-+	scsi_host_busy_iter(target->scsi_host, srp_terminate_cmd, &context);
- }
- 
- /* Calculate maximum initiator to target information unit length. */
-@@ -1360,13 +1351,12 @@ static int srp_rport_reconnect(struct srp_rport *rport)
- 		ch = &target->ch[i];
- 		ret += srp_new_cm_id(ch);
- 	}
--	for (i = 0; i < target->ch_count; i++) {
--		ch = &target->ch[i];
--		for (j = 0; j < target->req_ring_size; ++j) {
--			struct srp_request *req = &ch->req_ring[j];
-+	{
-+		struct srp_terminate_context context = {
-+			.srp_target = target, .scsi_result = DID_RESET << 16};
- 
--			srp_finish_req(ch, req, NULL, DID_RESET << 16);
--		}
-+		scsi_host_busy_iter(target->scsi_host, srp_terminate_cmd,
-+				    &context);
- 	}
- 	for (i = 0; i < target->ch_count; i++) {
- 		ch = &target->ch[i];
-@@ -1962,13 +1952,10 @@ static void srp_process_rsp(struct srp_rdma_ch *ch, struct srp_rsp *rsp)
- 		spin_unlock_irqrestore(&ch->lock, flags);
- 	} else {
- 		scmnd = scsi_host_find_tag(target->scsi_host, rsp->tag);
--		if (scmnd && scmnd->host_scribble) {
--			req = (void *)scmnd->host_scribble;
-+		if (scmnd) {
-+			req = scsi_cmd_priv(scmnd);
- 			scmnd = srp_claim_req(ch, req, NULL, scmnd);
- 		} else {
--			scmnd = NULL;
--		}
--		if (!scmnd) {
- 			shost_printk(KERN_ERR, target->scsi_host,
- 				     "Null scmnd for RSP w/tag %#016llx received on ch %td / QP %#x\n",
- 				     rsp->tag, ch - target->ch, ch->qp->qp_num);
-@@ -2000,7 +1987,6 @@ static void srp_process_rsp(struct srp_rdma_ch *ch, struct srp_rsp *rsp)
- 		srp_free_req(ch, req, scmnd,
- 			     be32_to_cpu(rsp->req_lim_delta));
- 
--		scmnd->host_scribble = NULL;
- 		scmnd->scsi_done(scmnd);
- 	}
- }
-@@ -2168,13 +2154,12 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
- {
- 	struct srp_target_port *target = host_to_target(shost);
- 	struct srp_rdma_ch *ch;
--	struct srp_request *req;
-+	struct srp_request *req = scsi_cmd_priv(scmnd);
- 	struct srp_iu *iu;
- 	struct srp_cmd *cmd;
- 	struct ib_device *dev;
- 	unsigned long flags;
- 	u32 tag;
--	u16 idx;
- 	int len, ret;
- 
- 	scmnd->result = srp_chkready(target->rport);
-@@ -2184,10 +2169,6 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
- 	WARN_ON_ONCE(scmnd->request->tag < 0);
- 	tag = blk_mq_unique_tag(scmnd->request);
- 	ch = &target->ch[blk_mq_unique_tag_to_hwq(tag)];
--	idx = blk_mq_unique_tag_to_tag(tag);
--	WARN_ONCE(idx >= target->req_ring_size, "%s: tag %#x: idx %d >= %d\n",
--		  dev_name(&shost->shost_gendev), tag, idx,
--		  target->req_ring_size);
- 
- 	spin_lock_irqsave(&ch->lock, flags);
- 	iu = __srp_get_tx_iu(ch, SRP_IU_CMD);
-@@ -2196,13 +2177,10 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
- 	if (!iu)
- 		goto err;
- 
--	req = &ch->req_ring[idx];
- 	dev = target->srp_host->srp_dev->dev;
- 	ib_dma_sync_single_for_cpu(dev, iu->dma, ch->max_it_iu_len,
- 				   DMA_TO_DEVICE);
- 
--	scmnd->host_scribble = (void *) req;
--
- 	cmd = iu->buf;
- 	memset(cmd, 0, sizeof *cmd);
- 
-@@ -3083,6 +3061,8 @@ static struct scsi_host_template srp_template = {
- 	.target_alloc			= srp_target_alloc,
- 	.slave_configure		= srp_slave_configure,
- 	.info				= srp_target_info,
-+	.init_cmd_priv			= srp_init_cmd_priv,
-+	.exit_cmd_priv			= srp_exit_cmd_priv,
- 	.queuecommand			= srp_queuecommand,
- 	.change_queue_depth             = srp_change_queue_depth,
- 	.eh_timed_out			= srp_timed_out,
-@@ -3096,6 +3076,7 @@ static struct scsi_host_template srp_template = {
- 	.cmd_per_lun			= SRP_DEFAULT_CMD_SQ_SIZE,
- 	.shost_attrs			= srp_host_attrs,
- 	.track_queue_depth		= 1,
-+	.cmd_size			= sizeof(struct srp_request),
+diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
+index 160efef66031..97214329c571 100644
+--- a/drivers/infiniband/ulp/isert/ib_isert.c
++++ b/drivers/infiniband/ulp/isert/ib_isert.c
+@@ -35,10 +35,10 @@ static const struct kernel_param_ops sg_tablesize_ops = {
+ 	.get = param_get_int,
  };
  
- static int srp_sdev_count(struct Scsi_Host *host)
-@@ -3675,8 +3656,6 @@ static ssize_t srp_create_target(struct device *dev,
- 	if (ret)
- 		goto out;
+-static int isert_sg_tablesize = ISCSI_ISER_DEF_SG_TABLESIZE;
++static int isert_sg_tablesize = ISCSI_ISER_MIN_SG_TABLESIZE;
+ module_param_cb(sg_tablesize, &sg_tablesize_ops, &isert_sg_tablesize, 0644);
+ MODULE_PARM_DESC(sg_tablesize,
+-		 "Number of gather/scatter entries in a single scsi command, should >= 128 (default: 256, max: 4096)");
++		 "Number of gather/scatter entries in a single scsi command, should >= 128 (default: 128, max: 4096)");
  
--	target->req_ring_size = target->queue_size - SRP_TSK_MGMT_SQ_SIZE;
+ static DEFINE_MUTEX(device_list_mutex);
+ static LIST_HEAD(device_list);
+diff --git a/drivers/infiniband/ulp/isert/ib_isert.h b/drivers/infiniband/ulp/isert/ib_isert.h
+index 6c5af13db4e0..ca8cfebe26ca 100644
+--- a/drivers/infiniband/ulp/isert/ib_isert.h
++++ b/drivers/infiniband/ulp/isert/ib_isert.h
+@@ -65,9 +65,6 @@
+  */
+ #define ISER_RX_SIZE		(ISCSI_DEF_MAX_RECV_SEG_LEN + 1024)
+ 
+-/* Default I/O size is 1MB */
+-#define ISCSI_ISER_DEF_SG_TABLESIZE 256
 -
- 	if (!srp_conn_unique(target->srp_host, target)) {
- 		if (target->using_rdma_cm) {
- 			shost_printk(KERN_INFO, target->scsi_host,
-@@ -3779,10 +3758,6 @@ static ssize_t srp_create_target(struct device *dev,
- 		if (ret)
- 			goto err_disconnect;
+ /* Minimum I/O size is 512KB */
+ #define ISCSI_ISER_MIN_SG_TABLESIZE 128
  
--		ret = srp_alloc_req_data(ch);
--		if (ret)
--			goto err_disconnect;
--
- 		ret = srp_connect_ch(ch, max_iu_len, multich);
- 		if (ret) {
- 			char dst[64];
-@@ -3801,7 +3776,6 @@ static ssize_t srp_create_target(struct device *dev,
- 				goto free_ch;
- 			} else {
- 				srp_free_ch_ib(target, ch);
--				srp_free_req_data(target, ch);
- 				target->ch_count = ch - target->ch;
- 				goto connected;
- 			}
-@@ -3862,7 +3836,6 @@ static ssize_t srp_create_target(struct device *dev,
- 	for (i = 0; i < target->ch_count; i++) {
- 		ch = &target->ch[i];
- 		srp_free_ch_ib(target, ch);
--		srp_free_req_data(target, ch);
- 	}
- 
- 	kfree(target->ch);
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.h b/drivers/infiniband/ulp/srp/ib_srp.h
-index 6818cac0a3b7..abccddeea1e3 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.h
-+++ b/drivers/infiniband/ulp/srp/ib_srp.h
-@@ -174,7 +174,6 @@ struct srp_rdma_ch {
- 
- 	struct srp_iu	      **tx_ring;
- 	struct srp_iu	      **rx_ring;
--	struct srp_request     *req_ring;
- 	int			comp_vector;
- 
- 	u64			tsk_mgmt_tag;
-@@ -220,7 +219,6 @@ struct srp_target_port {
- 	int			mr_pool_size;
- 	int			mr_per_cmd;
- 	int			queue_size;
--	int			req_ring_size;
- 	int			comp_vector;
- 	int			tl_retry_count;
- 
+-- 
+2.18.1
+
