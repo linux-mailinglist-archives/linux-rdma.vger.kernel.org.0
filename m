@@ -2,244 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A97C390467
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 May 2021 17:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C261A390477
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 May 2021 17:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbhEYPCC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 May 2021 11:02:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54554 "EHLO
+        id S230421AbhEYPDR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 May 2021 11:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231182AbhEYPCC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 May 2021 11:02:02 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3732C061574
-        for <linux-rdma@vger.kernel.org>; Tue, 25 May 2021 08:00:29 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id t22-20020a4ad0b60000b029020fe239e804so4433152oor.4
-        for <linux-rdma@vger.kernel.org>; Tue, 25 May 2021 08:00:29 -0700 (PDT)
+        with ESMTP id S230398AbhEYPDP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 May 2021 11:03:15 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A73C061574
+        for <linux-rdma@vger.kernel.org>; Tue, 25 May 2021 08:01:44 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso13664450wmh.4
+        for <linux-rdma@vger.kernel.org>; Tue, 25 May 2021 08:01:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Le51YFGa0h9aNBwwb5MrcfDspMfyZGabNRbm4fag6VE=;
-        b=Fg3F1wygYijBWklnO16CcyWPVKtHPIhbiiopbXhefune73g1GXOJJw+v5oS2wJciv5
-         nCMooWPHCLxQS94wZCamjiiSV3BIUZaWflwOklax66DRg/tHtzy68EawyoV3nQoKA4eG
-         vbo2VwJmBAJxZPw7AanK/cdDsQiTXFqvUcBq2wkxaoyg0pHrjwK7amNGU7+VpJVNThjC
-         mVqs0wpzozisPqerSELrMaqaopO6hhDZRYAD/VykzKQty4ilYxgp5uSEPuvZ3wG1M9Md
-         DEYcS1t5bqCS8CkRM/OSCCw+KY5PStmBv+OLzUrTCrm5OUp/BQ72RQUtbQ5+ivoneXA6
-         bftw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=espu6hbJNQlJc2vEJrTbS+1+0xJX7+izxDqne7PHbeQ=;
+        b=ZESaQuGpLuo00FjomObydUa4ZSTC29IRgTtQ+tq9eVS/ggXLwKC6Rz6onBvMvIZd/r
+         IvlQNuLZ4XXyCkYYiinRf9P6SL947mQoIOC3HzKu8YODz3qZjA5ni4ViAQNO8fyqOpsk
+         Z8E1G7FyEgKaVn7aq6zUYUtgPJVO4W65sPkRJbvzSp8DgfkpHXArTcrn3yQ98yWWgdLs
+         2qVGCe7OKnlCFAVl2aB/ezc0lKI6TJg0UQblU+I03AgeDx30ylBfRfFg5cJnxArA1EYU
+         Fiy8llZSPHc5mI4heCdX+CxCX5VUnng5TrbaVxUtR0kJPZA80bzfaa33LXP7teJ/px7q
+         u0Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Le51YFGa0h9aNBwwb5MrcfDspMfyZGabNRbm4fag6VE=;
-        b=lB84/6Dg4dE929+PIsFp0Pf91BCGlX9Rc+Z6RJFzVsRKiUAF1zkV9atw2rlyIbUlyH
-         i5EtxwSq52nR+q2eSky7UE0WX0fuNEzwkPloyKJ2JmXWKl64IiapyWMPNzpItD2jR94W
-         5DF3xujmfB9INF5+DlaV3O9PasQTaODMsGyo2A5H79cs5cwS7hb9NEHnlJwJUGkZSIko
-         QxAvU6UsVS+Jt4CwAvrLTVQtFxzHAKQ2auSm2bCDxsJZfqaWLBwHdZj8Y7pUJaejds5n
-         ZeAEKjrC72Vd9NGhTCt1HOW9zYhAoxU6/YLn0U2iphkAJplVi9DXgO+X+/WuRMVymfX1
-         8Qnw==
-X-Gm-Message-State: AOAM530+NapfLXLgz0+gCrotbxHjD/iYm2aw4KKm9pnexskeUNR6cjkn
-        rILUrsFy1hadkFjQPSxC/WwXlwagTwPvXojkkzA=
-X-Google-Smtp-Source: ABdhPJxLPVmIlmmcTKRAqUMP+idfw6Ahu1j2MwZOxdVs9b37OEaw396kKpj1n0zIubog3Xgre7T8oFXgTEwny8+hCIg=
-X-Received: by 2002:a05:6820:54e:: with SMTP id n14mr22657185ooj.49.1621954829051;
- Tue, 25 May 2021 08:00:29 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=espu6hbJNQlJc2vEJrTbS+1+0xJX7+izxDqne7PHbeQ=;
+        b=mal6MTzf60ehosrUHJgX7xVX7oA2/CrJfft8hxCoSc+yw5rbOIy/OJxc9PcSpeBPo9
+         e/ZtDwTXFQcNhMWe25IPy0YzzHHj7mpEmaL3WpebmnaDIOw86vF+9sBz/JEkOhTTBGi+
+         qO5/YaWG+4g/Je5SsU0nQ/WBJGlYLZ0aKi7PWnZ5bZ23/IwWIHihL+bsrf8NbRjw2W9b
+         P4G8l/J1oXH/dLuM7mxlUVW0ISL1aQJTdXCRKwA7On4RLtM0utzt0OSgElfAxyUCz2ui
+         JaHGlGOQ7JWfwIdUYi3ARY7ly2fSf9DGgE+trNK5un1lI86XbbXGAX/yZx+qo/Y4wluB
+         wq5w==
+X-Gm-Message-State: AOAM53140+J38wbauE/9yOnIZqpFh+jhAtDIszXduhNN/K0kE0/8CgyC
+        wG6IIA2oCXKftdzgFQ9tLUga4sDbECk=
+X-Google-Smtp-Source: ABdhPJyjkF7XdNujL/jimAWHkvXZ5GFmaOMYnLgz1KjawJ4QC+am53TXqZ9LYTVc6eMHLvyxQ/YpgQ==
+X-Received: by 2002:a1c:b306:: with SMTP id c6mr4260719wmf.37.1621954902710;
+        Tue, 25 May 2021 08:01:42 -0700 (PDT)
+Received: from kheib-workstation.redhat.com ([2a00:a040:19b:e02f::1007])
+        by smtp.gmail.com with ESMTPSA id h13sm11760599wml.26.2021.05.25.08.01.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 08:01:42 -0700 (PDT)
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: [PATCH for-rc] RDMA/ipoib: Fix warning caused by destroying non-initial netns
+Date:   Tue, 25 May 2021 18:01:34 +0300
+Message-Id: <20210525150134.139342-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-References: <20210521201824.659565-1-rpearsonhpe@gmail.com>
- <CAD=hENeKHgwLEOAsZ+2tu7M-+3Pv9QVccbWSwLy+zV-zX2h-bg@mail.gmail.com>
- <dd81d60d-f4fa-feae-90a0-201ee995e07f@gmail.com> <CAD=hENeP=wh2gHAzkyi9KyZrKmDcmQeR3GB46Re-7ufL-CJqXw@mail.gmail.com>
- <CS1PR8401MB1096CDA5C1FF0BD22611015FBC259@CS1PR8401MB1096.NAMPRD84.PROD.OUTLOOK.COM>
- <CAD=hENdi4XC=ZQDnm4TGx2CHTgkQuFWd2ET7GbXOMz1zsz_JRg@mail.gmail.com> <CS1PR8401MB10960767E276430FB619CC6ABC259@CS1PR8401MB1096.NAMPRD84.PROD.OUTLOOK.COM>
-In-Reply-To: <CS1PR8401MB10960767E276430FB619CC6ABC259@CS1PR8401MB1096.NAMPRD84.PROD.OUTLOOK.COM>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Tue, 25 May 2021 23:00:17 +0800
-Message-ID: <CAD=hENfATTprVG+wYa+1qjdTcuetLyzTt8gHjfcWp5PsLVL4Pw@mail.gmail.com>
-Subject: Re: [PATCH for-next v7 00/10] RDMA/rxe: Implement memory windows
-To:     "Pearson, Robert B" <robert.pearson2@hpe.com>
-Cc:     "Pearson, Robert B" <rpearsonhpe@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 25, 2021 at 1:27 PM Pearson, Robert B
-<robert.pearson2@hpe.com> wrote:
->
-> There's nothing to change. There is no problem. Just get the headers sync=
-'ed.
-> If that doesn't fix your issues your tree has gotten corrupted somehow. B=
-ut, I don't think that is the issue. I saw the same type of errors you repo=
-rted when rdma_core is built with the old header file. That definitely will=
- cause problems. The size of the send queue WQEs changed because new fields=
- were added. Then user space and the kernel immediately get off from each o=
-ther.
->
-> Good luck,
+After the introduce of 5ce2dced8e95 ("RDMA/ipoib: Set rtnl_link_ops for
+ipoib interfaces"), If the IPoIB device is moved to non-initial netns,
+destroying that netns lets the device vanish instead of moving it back
+to the initial netns, This is happening because default_device_exit()
+skips the interfaces due to having rtnl_link_ops set.
 
-About rdma-core, the root cause is clear. I am fine with this patch series.
-Thanks, Bob.
+Steps to reporoduce:
+  ip netns add foo
+  ip link set mlx5_ib0 netns foo
+  ip netns delete foo
 
-Zhu Yanjun
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 704 at net/core/dev.c:11435 netdev_exit+0x3f/0x50
+Modules linked in: xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT
+nf_reject_ipv4 nft_compat nft_counter nft_chain_nat nf_nat nf_conntrack
+nf_defrag_ipv6 nf_defrag_ipv4 nf_tables nfnetlink tun d
+ fuse
+CPU: 1 PID: 704 Comm: kworker/u64:3 Tainted: G S      W  5.13.0-rc1+ #1
+Hardware name: Dell Inc. PowerEdge R630/02C2CP, BIOS 2.1.5 04/11/2016
+Workqueue: netns cleanup_net
+RIP: 0010:netdev_exit+0x3f/0x50
+Code: 48 8b bb 30 01 00 00 e8 ef 81 b1 ff 48 81 fb c0 3a 54 a1 74 13 48
+8b 83 90 00 00 00 48 81 c3 90 00 00 00 48 39 d8 75 02 5b c3 <0f> 0b 5b
+c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 0f 1f 44 00
+RSP: 0018:ffffb297079d7e08 EFLAGS: 00010206
+RAX: ffff8eb542c00040 RBX: ffff8eb541333150 RCX: 000000008010000d
+RDX: 000000008010000e RSI: 000000008010000d RDI: ffff8eb440042c00
+RBP: ffffb297079d7e48 R08: 0000000000000001 R09: ffffffff9fdeac00
+R10: ffff8eb5003be000 R11: 0000000000000001 R12: ffffffffa1545620
+R13: ffffffffa1545628 R14: 0000000000000000 R15: ffffffffa1543b20
+FS:  0000000000000000(0000) GS:ffff8ed37fa00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005601b5f4c2e8 CR3: 0000001fc8c10002 CR4: 00000000003706e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ ops_exit_list.isra.9+0x36/0x70
+ cleanup_net+0x234/0x390
+ process_one_work+0x1cb/0x360
+ ? process_one_work+0x360/0x360
+ worker_thread+0x30/0x370
+ ? process_one_work+0x360/0x360
+ kthread+0x116/0x130
+ ? kthread_park+0x80/0x80
+ ret_from_fork+0x22/0x30
+---[ end trace 74b40f8fbd65a323 ]---
 
->
-> Bob
->
-> -----Original Message-----
-> From: Zhu Yanjun <zyjzyj2000@gmail.com>
-> Sent: Tuesday, May 25, 2021 12:18 AM
-> To: Pearson, Robert B <robert.pearson2@hpe.com>
-> Cc: Pearson, Robert B <rpearsonhpe@gmail.com>; Jason Gunthorpe <jgg@nvidi=
-a.com>; RDMA mailing list <linux-rdma@vger.kernel.org>
-> Subject: Re: [PATCH for-next v7 00/10] RDMA/rxe: Implement memory windows
->
-> On Tue, May 25, 2021 at 12:57 PM Pearson, Robert B <robert.pearson2@hpe.c=
-om> wrote:
-> >
-> > Zhu,
-> >
-> > I'm not sure about the script. Starting from where you were I copied
-> > <LINUX>/include/uapi/rdma/rdma_user_rxe.h to
-> > <RDMA_CORE>/kernel-headers/rdma/rdma_user_rxe.h. After running the
-> > script you should be able to just diff these two files to make sure
-> > they are the same. If they aren't copy the header file over. After the
-> > shift to 5.13
-> > rc1+ I re-pulled both trees and applied the kernel patches and then
-> > rc1+ built everything. The python test cases look like
-> >
-> > .............sssssssss.............sssssssssssssssssssssssssssssssssss
-> > ssssssssssssssssssssssssssssssssssss.ssssssssssssssssssssssssss....sss
-> > s.............s.....s.......ssssssssss..ss
-> > ----------------------------------------------------------------------
-> > Ran 182 tests in 0.380s
->
-> Thanks. Please submit a new patch for this problem.
->
-> >
-> > OK (skipped=3D124)
-> >
-> > There are a lot of skips but no errors. The skips are from features tha=
-t rxe does not support.
-> >
-> > Adding the MW rdma_core patch picks up a small number of additional tes=
-t cases involving memory windows.
->
-> Thanks a lot. Look forward to these additional test cases involving memor=
-y windows.
->
-> Zhu Yanjun
->
-> >
-> > Regards,
-> >
-> > Bob
-> >
-> > -----Original Message-----
-> > From: Zhu Yanjun <zyjzyj2000@gmail.com>
-> > Sent: Monday, May 24, 2021 9:09 PM
-> > To: Pearson, Robert B <rpearsonhpe@gmail.com>
-> > Cc: Jason Gunthorpe <jgg@nvidia.com>; RDMA mailing list
-> > <linux-rdma@vger.kernel.org>
-> > Subject: Re: [PATCH for-next v7 00/10] RDMA/rxe: Implement memory
-> > windows
-> >
-> > On Tue, May 25, 2021 at 12:04 AM Pearson, Robert B <rpearsonhpe@gmail.c=
-om> wrote:
-> > >
-> > > On 5/23/2021 10:14 PM, Zhu Yanjun wrote:
-> > > > On Sat, May 22, 2021 at 4:19 AM Bob Pearson <rpearsonhpe@gmail.com>=
- wrote:
-> > > >> This series of patches implement memory windows for the rdma_rxe
-> > > >> driver. This is a shorter reimplementation of an earlier patch set=
-.
-> > > >> They apply to and depend on the current for-next linux rdma tree.
-> > > >>
-> > > >> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-> > > >> ---
-> > > >> v7:
-> > > >>    Fixed a duplicate INIT_RDMA_OBJ_SIZE(ib_mw, ...) in rxe_verbs.c=
-.
-> > > > With this patch series, there are about 17 errors and 1 failure in =
-rdma-core.
-> > >
-> > > Zhu,
-> > >
-> > > You have to sync the kernel-header file with the kernel.
-> >
-> > From the link
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tre
-> > e/Documentation/kbuild/headers_install.rst?h=3Dv5.13-rc3
-> > you mean "make headers_install"?
-> >
-> > In fact, after "make headers_install", these patches still cause errors=
- and failures in rdma-core.
-> >
-> > I will delve into these errors of rdma-core. Too many errors.
-> >
-> > Zhu Yanjun
-> >
-> > >
-> > > Bob
-> > >
-> > > > "
-> > > > ------------------------------------------------------------------
-> > > > --
-> > > > --
-> > > > Ran 183 tests in 2.130s
-> > > >
-> > > > FAILED (failures=3D1, errors=3D17, skipped=3D124) "
-> > > >
-> > > > After these patches, not sure if rxe can communicate with the
-> > > > physical NICs correctly because of the above errors and failure.
-> > > >
-> > > > Zhu Yanjun
-> > > >
-> > > >> v6:
-> > > >>    Added rxe_ prefix to subroutine names in lines that changed
-> > > >>    from Zhu's review of v5.
-> > > >> v5:
-> > > >>    Fixed a typo in 10th patch.
-> > > >> v4:
-> > > >>    Added a 10th patch to check when MRs have bound MWs
-> > > >>    and disallow dereg and invalidate operations.
-> > > >> v3:
-> > > >>    cleaned up void return and lower case enums from
-> > > >>    Zhu's review.
-> > > >> v2:
-> > > >>    cleaned up an issue in rdma_user_rxe.h
-> > > >>    cleaned up a collision in rxe_resp.c
-> > > >>
-> > > >> Bob Pearson (9):
-> > > >>    RDMA/rxe: Add bind MW fields to rxe_send_wr
-> > > >>    RDMA/rxe: Return errors for add index and key
-> > > >>    RDMA/rxe: Enable MW object pool
-> > > >>    RDMA/rxe: Add ib_alloc_mw and ib_dealloc_mw verbs
-> > > >>    RDMA/rxe: Replace WR_REG_MASK by WR_LOCAL_OP_MASK
-> > > >>    RDMA/rxe: Move local ops to subroutine
-> > > >>    RDMA/rxe: Add support for bind MW work requests
-> > > >>    RDMA/rxe: Implement invalidate MW operations
-> > > >>    RDMA/rxe: Implement memory access through MWs
-> > > >>
-> > > >>   drivers/infiniband/sw/rxe/Makefile     |   1 +
-> > > >>   drivers/infiniband/sw/rxe/rxe.c        |   1 +
-> > > >>   drivers/infiniband/sw/rxe/rxe_comp.c   |   1 +
-> > > >>   drivers/infiniband/sw/rxe/rxe_loc.h    |  29 +-
-> > > >>   drivers/infiniband/sw/rxe/rxe_mr.c     |  79 ++++--
-> > > >>   drivers/infiniband/sw/rxe/rxe_mw.c     | 356 +++++++++++++++++++=
-++++++
-> > > >>   drivers/infiniband/sw/rxe/rxe_opcode.c |  11 +-
-> > > >>   drivers/infiniband/sw/rxe/rxe_opcode.h |   3 +-
-> > > >>   drivers/infiniband/sw/rxe/rxe_param.h  |  19 +-
-> > > >>   drivers/infiniband/sw/rxe/rxe_pool.c   |  45 ++--
-> > > >>   drivers/infiniband/sw/rxe/rxe_pool.h   |   8 +-
-> > > >>   drivers/infiniband/sw/rxe/rxe_req.c    | 102 ++++---
-> > > >>   drivers/infiniband/sw/rxe/rxe_resp.c   | 110 +++++---
-> > > >>   drivers/infiniband/sw/rxe/rxe_verbs.c  |   5 +-
-> > > >>   drivers/infiniband/sw/rxe/rxe_verbs.h  |  38 ++-
-> > > >>   include/uapi/rdma/rdma_user_rxe.h      |  34 ++-
-> > > >>   16 files changed, 691 insertions(+), 151 deletions(-)
-> > > >>   create mode 100644 drivers/infiniband/sw/rxe/rxe_mw.c
-> > > >> --
-> > > >> 2.27.0
-> > > >>
+To avoid the above warning and later on the kernel panic that could
+happen on shutdown due to a null pointer dereference, Make sure to set
+the netns_refund flag that was introduced by [1] to properly restore
+the IPoIB interfaces to the initial netns.
+
+[1] - 3a5ca857079e ("can: dev: Move device back to init netns on owning
+netns delete").
+
+Fixes: 5ce2dced8e95 ("RDMA/ipoib: Set rtnl_link_ops for ipoib interfaces")
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+---
+ drivers/infiniband/ulp/ipoib/ipoib_netlink.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_netlink.c b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
+index d5a90a66b45c..5b05cf3837da 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
+@@ -163,6 +163,7 @@ static size_t ipoib_get_size(const struct net_device *dev)
+ 
+ static struct rtnl_link_ops ipoib_link_ops __read_mostly = {
+ 	.kind		= "ipoib",
++	.netns_refund   = true,
+ 	.maxtype	= IFLA_IPOIB_MAX,
+ 	.policy		= ipoib_policy,
+ 	.priv_size	= sizeof(struct ipoib_dev_priv),
+-- 
+2.26.3
+
