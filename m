@@ -2,138 +2,153 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C261A390477
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 May 2021 17:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D875B3904C7
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 May 2021 17:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbhEYPDR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 May 2021 11:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbhEYPDP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 May 2021 11:03:15 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A73C061574
-        for <linux-rdma@vger.kernel.org>; Tue, 25 May 2021 08:01:44 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso13664450wmh.4
-        for <linux-rdma@vger.kernel.org>; Tue, 25 May 2021 08:01:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=espu6hbJNQlJc2vEJrTbS+1+0xJX7+izxDqne7PHbeQ=;
-        b=ZESaQuGpLuo00FjomObydUa4ZSTC29IRgTtQ+tq9eVS/ggXLwKC6Rz6onBvMvIZd/r
-         IvlQNuLZ4XXyCkYYiinRf9P6SL947mQoIOC3HzKu8YODz3qZjA5ni4ViAQNO8fyqOpsk
-         Z8E1G7FyEgKaVn7aq6zUYUtgPJVO4W65sPkRJbvzSp8DgfkpHXArTcrn3yQ98yWWgdLs
-         2qVGCe7OKnlCFAVl2aB/ezc0lKI6TJg0UQblU+I03AgeDx30ylBfRfFg5cJnxArA1EYU
-         Fiy8llZSPHc5mI4heCdX+CxCX5VUnng5TrbaVxUtR0kJPZA80bzfaa33LXP7teJ/px7q
-         u0Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=espu6hbJNQlJc2vEJrTbS+1+0xJX7+izxDqne7PHbeQ=;
-        b=mal6MTzf60ehosrUHJgX7xVX7oA2/CrJfft8hxCoSc+yw5rbOIy/OJxc9PcSpeBPo9
-         e/ZtDwTXFQcNhMWe25IPy0YzzHHj7mpEmaL3WpebmnaDIOw86vF+9sBz/JEkOhTTBGi+
-         qO5/YaWG+4g/Je5SsU0nQ/WBJGlYLZ0aKi7PWnZ5bZ23/IwWIHihL+bsrf8NbRjw2W9b
-         P4G8l/J1oXH/dLuM7mxlUVW0ISL1aQJTdXCRKwA7On4RLtM0utzt0OSgElfAxyUCz2ui
-         JaHGlGOQ7JWfwIdUYi3ARY7ly2fSf9DGgE+trNK5un1lI86XbbXGAX/yZx+qo/Y4wluB
-         wq5w==
-X-Gm-Message-State: AOAM53140+J38wbauE/9yOnIZqpFh+jhAtDIszXduhNN/K0kE0/8CgyC
-        wG6IIA2oCXKftdzgFQ9tLUga4sDbECk=
-X-Google-Smtp-Source: ABdhPJyjkF7XdNujL/jimAWHkvXZ5GFmaOMYnLgz1KjawJ4QC+am53TXqZ9LYTVc6eMHLvyxQ/YpgQ==
-X-Received: by 2002:a1c:b306:: with SMTP id c6mr4260719wmf.37.1621954902710;
-        Tue, 25 May 2021 08:01:42 -0700 (PDT)
-Received: from kheib-workstation.redhat.com ([2a00:a040:19b:e02f::1007])
-        by smtp.gmail.com with ESMTPSA id h13sm11760599wml.26.2021.05.25.08.01.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 08:01:42 -0700 (PDT)
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
-        Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH for-rc] RDMA/ipoib: Fix warning caused by destroying non-initial netns
-Date:   Tue, 25 May 2021 18:01:34 +0300
-Message-Id: <20210525150134.139342-1-kamalheib1@gmail.com>
-X-Mailer: git-send-email 2.26.3
-MIME-Version: 1.0
+        id S229898AbhEYPOK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 May 2021 11:14:10 -0400
+Received: from mail-sn1anam02on2068.outbound.protection.outlook.com ([40.107.96.68]:23557
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229894AbhEYPOJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 25 May 2021 11:14:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SjXItuVVpAsq8kkk4wQPzNzVuKqfJclwZ9+M8pRobEl2QJkGsymfZFiEJany3pxVnUCTw/u/ul2RLwyf/QropxtDJrUqM3+EhwQWaaMyH6dlYhdH399v5sOBUOrw66z85g9r5U1LDG50jkIJmiz08mgRLGfrh9FUbvdacykdg+kSuty4RlzTvghFHbfYedL6QhXWmjuwAXxMm5iAk7627udhsP6XyGPZhMgi9L0ykLM8kGJhl9b4YptKVcxLCJe9QgEaCwtsM5ao1Bqj0ieVbljjCRQxbocm02dPUjK03doE8f49HeIonBLOdffcTohloQ09MyZOusu7F95M52dYUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hZhyHNqNy3DdNblEwhwqcg2osHSYJ2Y8LRyq8bK1gx0=;
+ b=W3lQLZiGzNfIYMX8PJ9sCpuyV67+y+hRJt0YziCJmcDmlikmCgNPZgrBjMnmFyD9H79Zji10MMIbDs88H4Sdi5YaE4kWva/3W5ATPTODiB/rm34oXvl3W3/KGY8sRxNt40wFWZBsdKaRc0AoPSKPFHSVTasuTJ5dfqVmxk6sw1FICa93RVFy2T5C0t+M4w5AFIptVDZ7rX9/h058fnb42D9NCvxq0SmV+Lc/SeBCXZcqmsTB7iejOb33PR9Ju7QY54vy9rwfC7YSVWd0+xfPzzlioRL98dFht4O4PtOHYFB6p9qbSpCRrcumYBMKZKlZHCLhWGGIp/dNoUWnbz3Ekg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hZhyHNqNy3DdNblEwhwqcg2osHSYJ2Y8LRyq8bK1gx0=;
+ b=JmSB+pUgd0YAwFJl3JTL8FuKqh3ME0KaDmC4WH4vXmKtR2p8Rx9MkLyRrRYa8AdhHMQOA51ZMPyAXzSSDzuKxO+4s/n+AJOxNkTIQA6Pw3fkyifsQmQ7flAJrsvGhDKN1DNSie2BgtERxe2In74iyydMIv2jP04lGxBihhUkER5MR8aKbztZSZnSyTV1K5kYF1Ouc+NRWuYkcQ9EmBSlcxBtEdjwRhoGylvqm4SV3JeIY6TOc+oUW/sgxv7A4sqydNjGr3NOB+etAbt4IxMKZqIH4wh0YnE3z6znsnCtFxkG4IRcdpibQeeB2FscNaJwfTkobuFpI2Rm1+yC5uUEZA==
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5270.namprd12.prod.outlook.com (2603:10b6:208:31e::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Tue, 25 May
+ 2021 15:12:38 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.020; Tue, 25 May 2021
+ 15:12:38 +0000
+Date:   Tue, 25 May 2021 12:12:37 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH for-next v2] IB/core: Only update PKEY and GID caches on
+ respective events
+Message-ID: <20210525151237.GA3433349@nvidia.com>
+References: <1620289904-27687-1-git-send-email-haakon.bugge@oracle.com>
+ <YJeTp0W1S81E5fcZ@unreal>
+ <0E229A2D-178F-427C-9F66-221439B63395@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <0E229A2D-178F-427C-9F66-221439B63395@oracle.com>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: CH0PR04CA0111.namprd04.prod.outlook.com
+ (2603:10b6:610:75::26) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by CH0PR04CA0111.namprd04.prod.outlook.com (2603:10b6:610:75::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.24 via Frontend Transport; Tue, 25 May 2021 15:12:38 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1llYjV-00EPEh-6V; Tue, 25 May 2021 12:12:37 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9e794487-d243-4f00-39b6-08d91f8f88cc
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5270:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5270701C6D4F253EBECC3D54C2259@BL1PR12MB5270.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6xn5v3GgwIm1PgrCi1VK6aQjK39PICA9BrFWgi3qRualEqUFNKNwXVuIKbRscEocaEkAKi1QTyPIcC6KRQ7/a8bHb36l7KgOpeGIOAHS6ocvPz7OICIglCI87e4br5Lql0hC6jfJHq/Ekfnra2OdC+5D8DJvqEUjz2NH6iFQbjW0AsrPALgUXZUa2AzQqjeZZpgKtAuVqZXe8l+U8GlRA+oRmp3PsB5JnqNS76GM3W5IPRcmRSjUlvqPq0LfdVsaQkfugOSHmxxpPTnhCEJhye5bcKrXljcP02zXvCBNDgqqnlG0N74YnLfzTTRlXC+2i2XPXLnyccIBTic38MwQjT3OQd2B26eyxHEiXE/5qBk5cwWPst6EOFyrW6QLFyQjLLPFtx9aUzr/2RWaXPmmQ1pfkX7YpjaHRx3UH1eOpU6LyVxFOs7upzc+P4yCeiVHpXdymrGu1Js3BCa3QPkNiFNn1VvVFDjNE1kj0JMl8rnb7LOLy+ibqGbk72MJn06vyl+EVDDgC2j0AJXToPf/6FqXpTRh/1rIUcqUsGmVdqQJt3wgkEmrpxjGuMDhZrGBrrgBhLPAPmb1V8VJhUwNyCYwaaPJMzSTT3QAGP//N8Y=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(376002)(39860400002)(346002)(6916009)(426003)(38100700002)(2906002)(9746002)(9786002)(1076003)(54906003)(478600001)(186003)(66556008)(53546011)(66946007)(8936002)(66476007)(36756003)(8676002)(83380400001)(26005)(5660300002)(86362001)(33656002)(2616005)(4326008)(316002)(66574015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?OFg4U1NxdlhSNDdYVG93SVAzdmw0NWs3SmUwT3dnUktmYmhaQWVkSmVYbWty?=
+ =?utf-8?B?U29ZSVE0bHR4a1ZTMUp6bVNJc3ZaZml5VU5kRDhZMWROUllCSldxaXFmTDhh?=
+ =?utf-8?B?NHJqMERra1lPU1Y2aG1FTkhuWHkyVTR5bXlzTDk2REtBSXBHdW8yS2NsMUFO?=
+ =?utf-8?B?cVZGWUNlWHJNMlRMYkgzaWExeE9HU2tiMGF0eHBldUNxbkVXZlp1VGxidS85?=
+ =?utf-8?B?bnRQZjlHM2lySFdWeFNUT0FoNFdwOUlOMUhpTXNHQXFoK0xNMXpGQXY1Wis4?=
+ =?utf-8?B?ZEtURkJISjZjY2xSRzBQUmFIUXdvNlZZODhEQmdGdkxMRmNoVElyeXpTZG1E?=
+ =?utf-8?B?UkdlWnBPc3ZQN0paYUJ0aXFtRFBGUUc2OFJmSk5XUURIdm5LTjJsS0JsYmFl?=
+ =?utf-8?B?NUtJNGY5TXZnWEZjVDJ6Zi9PWGcvWk9EcFlQMlZRMmNGZHR5ejJ3RGNEWTNz?=
+ =?utf-8?B?NXNyWnpFTklEZE8rYi9VRGFzNkJSVEcyWmVOYW41cktSSk1ZMGlyUFFJVHFH?=
+ =?utf-8?B?ODJLdG9HbzlUNk5RZDFDck9ZT2h3UUw1ajY1eDJ1QkhiSldLamFscjZaRU5Y?=
+ =?utf-8?B?VjRKSVp2SzRNcGNvb25FZnNFekVTNWpKQjE4emp4MWxFTTRnb3BKeTBNOTVw?=
+ =?utf-8?B?RnBiWVJiellhM0xWRThkWC81cExsZ2diTHRhb2tyZzFLcGNYcnVyMTBmc3Fi?=
+ =?utf-8?B?aDkwK0hUdVhFazd6SDMrSFVXVXluZ3RUa2J5dmJKNXdGS2x4OXhRZ0svYVl0?=
+ =?utf-8?B?aitsTXhtMFNUZ1prbkY4UVBYNFpyRHIrZHVBTTZMb2x6b0J6SlRMUXhucmlV?=
+ =?utf-8?B?djBoZFN0WnUwamN5SXlXeklHQVE1eisyRDRrWWdYWFcyY1IwbDFFbmtlTmpM?=
+ =?utf-8?B?T25PTUdEYmJQeVc0RWUzcGR3c3ZibFJxWUNobUVVN3V3Z2xWOUdZTlVKNzlH?=
+ =?utf-8?B?WHAwb2phYlRkc0VlNFd4cGYvTklqZ0xTWjU2N3NpclpDaDBFSkQ5Q2VNNFg4?=
+ =?utf-8?B?dEVmcWJ6ZmpjanRNdG53V01FZkVsa2lzc21IY1JZQy9vYlA2akxzdmRRbWlu?=
+ =?utf-8?B?R2dsMmF3TFRzV0RId2Q3WjFiQkZaYlpkaE95SDdTRWlYSGQra0xtKzI3N09j?=
+ =?utf-8?B?U0hXSitKTnF6bW5Kb09helBGdFBnM1FiSXBJMnVBbEdCQ0pvM3hscW4zNTlD?=
+ =?utf-8?B?U2c5cjhUeXRiTmI5dTV3bnhFM3AzbjZnNTAxNjhRNCtZaDZiTHJqVGZnWUJV?=
+ =?utf-8?B?T0g5UWtiU1JZdHg1WllFWElVdFJ5aWtLQnNVdWdJMWJrQWxlakdvaGEvdG1y?=
+ =?utf-8?B?UmtVOXd5M3gvemFwOWlPdHF1QkR4VFgvQWF4SGk1ejc4eTBLcFZJTVlwNE1Y?=
+ =?utf-8?B?L0NWZHZLUlpuRVh3KytlMUU2bHpQNXllV3FWNGNzNHVTbVM4WHp6WlUrYUY2?=
+ =?utf-8?B?Zmh4T0pJeDN0NHJsaUFaZ1hCTEgwbTlUcCtMUDl1eDRPZUNmMmtiRjhNbG8r?=
+ =?utf-8?B?VlFPcVo4NFNUcm52Wjd4RUE4b2lrcUM0RG5hcUdSaVRqN3FHUVdoTmZ2YkFw?=
+ =?utf-8?B?VTF5aExNVHVIcWNQNFdnYkdKWjZWY2JlSExRZ241WTMrUE9rM25xVTR6VURv?=
+ =?utf-8?B?K0R0ZUVBWkdGTE9xRUFvVmNSU2N3blpRNzhTTi9zTmF4WFpRMW1EcndaZjIr?=
+ =?utf-8?B?bXErVkNUaEUyQXp1QVA2MjFZZXhySXBJemRpWCs3d0tqSnc2L2lONHBVNjJY?=
+ =?utf-8?Q?bOFV3WgzmVwZIDDEpX2TkQI4xfDAaQ0gHGC4EHv?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e794487-d243-4f00-39b6-08d91f8f88cc
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 15:12:38.7447
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: okDAkeP8ffJbQKGMDrE2hWHc1Y8r1cB8gKW5ZUEIXeFsPCvcPhjxHgPWkq+kmCT4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5270
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-After the introduce of 5ce2dced8e95 ("RDMA/ipoib: Set rtnl_link_ops for
-ipoib interfaces"), If the IPoIB device is moved to non-initial netns,
-destroying that netns lets the device vanish instead of moving it back
-to the initial netns, This is happening because default_device_exit()
-skips the interfaces due to having rtnl_link_ops set.
+On Mon, May 24, 2021 at 10:26:16AM +0000, Haakon Bugge wrote:
+> 
+> 
+> > On 9 May 2021, at 09:47, Leon Romanovsky <leon@kernel.org> wrote:
+> > 
+> > On Thu, May 06, 2021 at 10:31:44AM +0200, Håkon Bugge wrote:
+> >> Both the PKEY and GID tables in an HCA can hold in the order of
+> >> hundreds entries. Reading them are expensive. Partly because the API
+> >> for retrieving them only returns a single entry at a time. Further, on
+> >> certain implementations, e.g., CX-3, the VFs are paravirtualized in
+> >> this respect and have to rely on the PF driver to perform the
+> >> read. This again demands VF to PF communication.
+> >> 
+> >> IB Core's cache is refreshed on all events. Hence, filter the refresh
+> >> of the PKEY and GID caches based on the event received being
+> >> IB_EVENT_PKEY_CHANGE and IB_EVENT_GID_CHANGE respectively.
+> >> 
+> >> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> >> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+> >> 
+> >> 
+> >> v1 -> v2:
+> >>   * Changed signature of ib_cache_update() as per Leon's suggestion
+> >>   * Added Fixes tag as per Zhu Yanjun' suggestion
+> >> drivers/infiniband/core/cache.c | 23 +++++++++++++++--------
+> >> 1 file changed, 15 insertions(+), 8 deletions(-)
+> >> 
+> > 
+> > Thanks,
+> > Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> 
+> I saw a handful commits being applied for-next. Anything needed from my side here?
 
-Steps to reporoduce:
-  ip netns add foo
-  ip link set mlx5_ib0 netns foo
-  ip netns delete foo
+It doesn't apply please resend it
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 704 at net/core/dev.c:11435 netdev_exit+0x3f/0x50
-Modules linked in: xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT
-nf_reject_ipv4 nft_compat nft_counter nft_chain_nat nf_nat nf_conntrack
-nf_defrag_ipv6 nf_defrag_ipv4 nf_tables nfnetlink tun d
- fuse
-CPU: 1 PID: 704 Comm: kworker/u64:3 Tainted: G S      W  5.13.0-rc1+ #1
-Hardware name: Dell Inc. PowerEdge R630/02C2CP, BIOS 2.1.5 04/11/2016
-Workqueue: netns cleanup_net
-RIP: 0010:netdev_exit+0x3f/0x50
-Code: 48 8b bb 30 01 00 00 e8 ef 81 b1 ff 48 81 fb c0 3a 54 a1 74 13 48
-8b 83 90 00 00 00 48 81 c3 90 00 00 00 48 39 d8 75 02 5b c3 <0f> 0b 5b
-c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 0f 1f 44 00
-RSP: 0018:ffffb297079d7e08 EFLAGS: 00010206
-RAX: ffff8eb542c00040 RBX: ffff8eb541333150 RCX: 000000008010000d
-RDX: 000000008010000e RSI: 000000008010000d RDI: ffff8eb440042c00
-RBP: ffffb297079d7e48 R08: 0000000000000001 R09: ffffffff9fdeac00
-R10: ffff8eb5003be000 R11: 0000000000000001 R12: ffffffffa1545620
-R13: ffffffffa1545628 R14: 0000000000000000 R15: ffffffffa1543b20
-FS:  0000000000000000(0000) GS:ffff8ed37fa00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005601b5f4c2e8 CR3: 0000001fc8c10002 CR4: 00000000003706e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ops_exit_list.isra.9+0x36/0x70
- cleanup_net+0x234/0x390
- process_one_work+0x1cb/0x360
- ? process_one_work+0x360/0x360
- worker_thread+0x30/0x370
- ? process_one_work+0x360/0x360
- kthread+0x116/0x130
- ? kthread_park+0x80/0x80
- ret_from_fork+0x22/0x30
----[ end trace 74b40f8fbd65a323 ]---
-
-To avoid the above warning and later on the kernel panic that could
-happen on shutdown due to a null pointer dereference, Make sure to set
-the netns_refund flag that was introduced by [1] to properly restore
-the IPoIB interfaces to the initial netns.
-
-[1] - 3a5ca857079e ("can: dev: Move device back to init netns on owning
-netns delete").
-
-Fixes: 5ce2dced8e95 ("RDMA/ipoib: Set rtnl_link_ops for ipoib interfaces")
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
----
- drivers/infiniband/ulp/ipoib/ipoib_netlink.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_netlink.c b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
-index d5a90a66b45c..5b05cf3837da 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
-@@ -163,6 +163,7 @@ static size_t ipoib_get_size(const struct net_device *dev)
- 
- static struct rtnl_link_ops ipoib_link_ops __read_mostly = {
- 	.kind		= "ipoib",
-+	.netns_refund   = true,
- 	.maxtype	= IFLA_IPOIB_MAX,
- 	.policy		= ipoib_policy,
- 	.priv_size	= sizeof(struct ipoib_dev_priv),
--- 
-2.26.3
-
+Jason
