@@ -2,33 +2,33 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6512438FB32
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 May 2021 08:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B42738FB39
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 May 2021 08:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbhEYGx0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 May 2021 02:53:26 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:3996 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231245AbhEYGx0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 May 2021 02:53:26 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fq4Sb0fGSzmWYR;
-        Tue, 25 May 2021 14:49:35 +0800 (CST)
+        id S231389AbhEYGx3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 May 2021 02:53:29 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:3935 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231387AbhEYGx2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 May 2021 02:53:28 -0400
+Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fq4Rz6D98zBvZq;
+        Tue, 25 May 2021 14:49:03 +0800 (CST)
 Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
+ dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
  15.1.2176.2; Tue, 25 May 2021 14:51:55 +0800
 Received: from localhost.localdomain (10.69.192.56) by
  dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 25 May 2021 14:51:54 +0800
+ 15.1.2176.2; Tue, 25 May 2021 14:51:55 +0800
 From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@nvidia.com>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>, Weihang Li <liweihang@huawei.com>
-Subject: [PATCH v3 for-next 07/13] RDMA/core: Use refcount_t instead of atomic_t on refcount of ib_uverbs_device
-Date:   Tue, 25 May 2021 14:51:38 +0800
-Message-ID: <1621925504-33019-8-git-send-email-liweihang@huawei.com>
+Subject: [PATCH v3 for-next 08/13] RDMA/hns: Use refcount_t instead of atomic_t for CQ reference counting
+Date:   Tue, 25 May 2021 14:51:39 +0800
+Message-ID: <1621925504-33019-9-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1621925504-33019-1-git-send-email-liweihang@huawei.com>
 References: <1621925504-33019-1-git-send-email-liweihang@huawei.com>
@@ -47,81 +47,63 @@ counter, and avoid use-after-free risks.
 
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/core/uverbs.h      |  2 +-
- drivers/infiniband/core/uverbs_main.c | 12 ++++++------
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_cq.c     | 8 ++++----
+ drivers/infiniband/hw/hns/hns_roce_device.h | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
-index 53a1047..821d93c 100644
---- a/drivers/infiniband/core/uverbs.h
-+++ b/drivers/infiniband/core/uverbs.h
-@@ -97,7 +97,7 @@ ib_uverbs_init_udata_buf_or_null(struct ib_udata *udata,
-  */
+diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
+index 488d86b..1422bdc 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_cq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
+@@ -154,7 +154,7 @@ static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
+ 	hr_cq->cons_index = 0;
+ 	hr_cq->arm_sn = 1;
  
- struct ib_uverbs_device {
--	atomic_t				refcount;
-+	refcount_t				refcount;
- 	u32					num_comp_vectors;
- 	struct completion			comp;
- 	struct device				dev;
-diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-index f173ecd..d544340 100644
---- a/drivers/infiniband/core/uverbs_main.c
-+++ b/drivers/infiniband/core/uverbs_main.c
-@@ -197,7 +197,7 @@ void ib_uverbs_release_file(struct kref *ref)
- 		module_put(ib_dev->ops.owner);
- 	srcu_read_unlock(&file->device->disassociate_srcu, srcu_key);
+-	atomic_set(&hr_cq->refcount, 1);
++	refcount_set(&hr_cq->refcount, 1);
+ 	init_completion(&hr_cq->free);
  
--	if (atomic_dec_and_test(&file->device->refcount))
-+	if (refcount_dec_and_test(&file->device->refcount))
- 		ib_uverbs_comp_dev(file->device);
+ 	return 0;
+@@ -188,7 +188,7 @@ static void free_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
+ 	synchronize_irq(hr_dev->eq_table.eq[hr_cq->vector].irq);
  
- 	if (file->default_async_file)
-@@ -891,7 +891,7 @@ static int ib_uverbs_open(struct inode *inode, struct file *filp)
- 	int srcu_key;
+ 	/* wait for all interrupt processed */
+-	if (atomic_dec_and_test(&hr_cq->refcount))
++	if (refcount_dec_and_test(&hr_cq->refcount))
+ 		complete(&hr_cq->free);
+ 	wait_for_completion(&hr_cq->free);
  
- 	dev = container_of(inode->i_cdev, struct ib_uverbs_device, cdev);
--	if (!atomic_inc_not_zero(&dev->refcount))
-+	if (!refcount_inc_not_zero(&dev->refcount))
- 		return -ENXIO;
- 
- 	get_device(&dev->dev);
-@@ -955,7 +955,7 @@ static int ib_uverbs_open(struct inode *inode, struct file *filp)
- err:
- 	mutex_unlock(&dev->lists_mutex);
- 	srcu_read_unlock(&dev->disassociate_srcu, srcu_key);
--	if (atomic_dec_and_test(&dev->refcount))
-+	if (refcount_dec_and_test(&dev->refcount))
- 		ib_uverbs_comp_dev(dev);
- 
- 	put_device(&dev->dev);
-@@ -1124,7 +1124,7 @@ static int ib_uverbs_add_one(struct ib_device *device)
- 	uverbs_dev->dev.release = ib_uverbs_release_dev;
- 	uverbs_dev->groups[0] = &dev_attr_group;
- 	uverbs_dev->dev.groups = uverbs_dev->groups;
--	atomic_set(&uverbs_dev->refcount, 1);
-+	refcount_set(&uverbs_dev->refcount, 1);
- 	init_completion(&uverbs_dev->comp);
- 	uverbs_dev->xrcd_tree = RB_ROOT;
- 	mutex_init(&uverbs_dev->xrcd_tree_mutex);
-@@ -1166,7 +1166,7 @@ static int ib_uverbs_add_one(struct ib_device *device)
- err_uapi:
- 	ida_free(&uverbs_ida, devnum);
- err:
--	if (atomic_dec_and_test(&uverbs_dev->refcount))
-+	if (refcount_dec_and_test(&uverbs_dev->refcount))
- 		ib_uverbs_comp_dev(uverbs_dev);
- 	wait_for_completion(&uverbs_dev->comp);
- 	put_device(&uverbs_dev->dev);
-@@ -1229,7 +1229,7 @@ static void ib_uverbs_remove_one(struct ib_device *device, void *client_data)
- 		wait_clients = 0;
+@@ -480,7 +480,7 @@ void hns_roce_cq_event(struct hns_roce_dev *hr_dev, u32 cqn, int event_type)
+ 		return;
  	}
  
--	if (atomic_dec_and_test(&uverbs_dev->refcount))
-+	if (refcount_dec_and_test(&uverbs_dev->refcount))
- 		ib_uverbs_comp_dev(uverbs_dev);
- 	if (wait_clients)
- 		wait_for_completion(&uverbs_dev->comp);
+-	atomic_inc(&hr_cq->refcount);
++	refcount_inc(&hr_cq->refcount);
+ 
+ 	ibcq = &hr_cq->ib_cq;
+ 	if (ibcq->event_handler) {
+@@ -490,7 +490,7 @@ void hns_roce_cq_event(struct hns_roce_dev *hr_dev, u32 cqn, int event_type)
+ 		ibcq->event_handler(&event, ibcq->cq_context);
+ 	}
+ 
+-	if (atomic_dec_and_test(&hr_cq->refcount))
++	if (refcount_dec_and_test(&hr_cq->refcount))
+ 		complete(&hr_cq->free);
+ }
+ 
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 111cab5..d90a39c 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -446,7 +446,7 @@ struct hns_roce_cq {
+ 	int				cqe_size;
+ 	unsigned long			cqn;
+ 	u32				vector;
+-	atomic_t			refcount;
++	refcount_t			refcount;
+ 	struct completion		free;
+ 	struct list_head		sq_list; /* all qps on this send cq */
+ 	struct list_head		rq_list; /* all qps on this recv cq */
 -- 
 2.7.4
 
