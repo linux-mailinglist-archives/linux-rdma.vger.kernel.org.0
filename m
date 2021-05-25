@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213D8390BA2
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 May 2021 23:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0D8390BA3
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 May 2021 23:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233438AbhEYVkF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 May 2021 17:40:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
+        id S233464AbhEYVkG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 May 2021 17:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231430AbhEYVkF (ORCPT
+        with ESMTP id S233460AbhEYVkF (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 May 2021 17:40:05 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA885C061574
-        for <linux-rdma@vger.kernel.org>; Tue, 25 May 2021 14:38:33 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so30033134otc.6
-        for <linux-rdma@vger.kernel.org>; Tue, 25 May 2021 14:38:33 -0700 (PDT)
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EEAEC061756
+        for <linux-rdma@vger.kernel.org>; Tue, 25 May 2021 14:38:34 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id x15so31633274oic.13
+        for <linux-rdma@vger.kernel.org>; Tue, 25 May 2021 14:38:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=U5rPLEnmJZPFrJiSUM0o7pDJxLnxJTWiGzt2ZHYvHDE=;
-        b=IN3pYctKWMYc3MESbiQzk6vTSVeRJMjM43IsLMrogaqBCjpUAHgP7K/WvLaPO/2XZN
-         XV7EMRUGIvnvjzuDoZEmnjO5podzyF7Lgpmx81aqxkV4Kl1DCmBma9KkUZKP7+at1HBM
-         PNoVAUhu7OA1PvcPR9WiOpCftPQ8u/Q9uoG6PRso4mX6lHYUeSsCgTF6x+i/XjvCB2oO
-         Ig19THpfdFLM4NukX1cx6BhCeWf3W9tecz7ErIY60hNV/8Sie3511hDkk2WLDsmizvJm
-         FEDCzWSYSnhhcGn3m2zcncB4PRnv2c8mfKp2oQuTFeZ2xrg3I3va9pjm1hhFY1NhU5gI
-         RnQw==
+        bh=ZMY8b1tjz2YG/shEnfos8gYNdvZROrbl7LCopGoAwvk=;
+        b=lPrF/fPvoMmGyfbRidIy8GyKDelNBOM7Xs8Mi4KVGyybHaPKjfrBfgTSTN7P63+VXW
+         MrVDKzW+i6boBbNouAkLVr3tncxzdyLN/LzT3zWuFxSuuKNSRqvIYIi0H7gmhlz63Jit
+         oPE0dAuW3PG3GfklSDP7EosznIiS5Z9ZKxAGd4in6R13DNvHnp0JsBHkJ3u9mGDG5e1T
+         s01Sfn+bsryy5oIB/e7ctPBx77aiYM9xVulaDZcb01cLH7EednGE095ifZKok3V/eBCX
+         FBtSkYmkutDioy+ceandzIsOEqq+GjjkXZBWFuH6HGtfJjdLQpu85RYwstRUzg4zt1Gc
+         XDpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=U5rPLEnmJZPFrJiSUM0o7pDJxLnxJTWiGzt2ZHYvHDE=;
-        b=tSpAbDV2NdXL4F4py+slVKnTi7ce+ogD3l03sKY/dcEGiBGZeEIgvaPlP+06BavsGj
-         fx/QBeo/+fWHbrJB5jMSkZStxIvve13NylPedYjypDaxz+gZvFwwSojfsxcvReKItZBL
-         blMktJQyapD5f3b7QoRYYbdrQANMyDY+l1MEYTibLho40gtv9k8UMF/FLXzkcMpsh3RM
-         y/VJGFmwDoy/B9XsVFXB372sJmJcYoPJs37bym6JCoIqWVtBF20weKjLoo5RSg/oqpfP
-         VPIytzYikJVE2CYC/4QkcI552QVNS/DpKNiu6uuMBNR1ddVfZOXKamuuLQnGZQzh7CKq
-         hCQw==
-X-Gm-Message-State: AOAM530tGSSm6vMbgvzH3l644faMNkK3uLh/Y1re79NI2nxssz0M7KSQ
-        GfAKpAZ0NpcNTUu2m4Nx2eI=
-X-Google-Smtp-Source: ABdhPJyrIXMMi3qXHOjn3megAmnNQ1jPoM9JZnL1+06r+m1VmWT6F26yaciPPlrjbdDLN1aJlR4eGw==
-X-Received: by 2002:a05:6830:108c:: with SMTP id y12mr23892526oto.319.1621978713264;
-        Tue, 25 May 2021 14:38:33 -0700 (PDT)
+        bh=ZMY8b1tjz2YG/shEnfos8gYNdvZROrbl7LCopGoAwvk=;
+        b=XWGP7VLv5PNTYYqhTGPlIUbO8NDjrCEStSYYGeXGmFQ/PbOXl2xmdECPxXo9sBbOSX
+         gcADu9drcb/4GNTMSVhDGhrtOiZGpAZPnC1Hn5m/SfdlxBeLW3tcaOqC0QL3NBXf6fkH
+         qPA0BDe0u0zPFHBU3+Tqk2iwoFttNlaFSMzsp/nLIXN72uSFtHsze82dUTBU1Htrwj/E
+         LTXOr8Gwi6bYa/TQFQgI4oBi8rEgaIfegg6dhIr6SFyQdw9FNtWQRYv6+APJuPGlnZ4i
+         Q020/jfmCvXHquHez2ulRF30/b9QdkAa8n7xei/MgctDtm6sf00Jsd4uxv/0ziT9eXN1
+         k9gw==
+X-Gm-Message-State: AOAM533Jm8NjEM//lzKu8Kf9HfVoRQKbHn0QmkSL+O2Kb3xjgZ/P0aCT
+        8p2OiVsGAi0fbTAtUmiXYHU=
+X-Google-Smtp-Source: ABdhPJym9Zd6z+//h+Pz05dzF/bqiTge7piBElnyBhJRUCXNLNePaHibmyJ7q8Uh+OFx8YWflrF+LA==
+X-Received: by 2002:aca:4a8b:: with SMTP id x133mr16004630oia.124.1621978714042;
+        Tue, 25 May 2021 14:38:34 -0700 (PDT)
 Received: from localhost (2603-8081-140c-1a00-e4a4-ac6f-8cca-71ad.res6.spectrum.com. [2603:8081:140c:1a00:e4a4:ac6f:8cca:71ad])
-        by smtp.gmail.com with ESMTPSA id y7sm4064489oto.60.2021.05.25.14.38.32
+        by smtp.gmail.com with ESMTPSA id r124sm3479856oig.38.2021.05.25.14.38.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 14:38:32 -0700 (PDT)
+        Tue, 25 May 2021 14:38:33 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v8 05/10] RDMA/rxe: Replace WR_REG_MASK by WR_LOCAL_OP_MASK
-Date:   Tue, 25 May 2021 16:37:47 -0500
-Message-Id: <20210525213751.629017-6-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v8 06/10] RDMA/rxe: Move local ops to subroutine
+Date:   Tue, 25 May 2021 16:37:48 -0500
+Message-Id: <20210525213751.629017-7-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210525213751.629017-1-rpearsonhpe@gmail.com>
 References: <20210525213751.629017-1-rpearsonhpe@gmail.com>
@@ -62,79 +62,124 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Rxe has two mask bits WR_LOCAL_MASK and WR_REG_MASK with WR_REG_MASK
-used to indicate any local operation and WR_LOCAL_MASK unused. This
-patch replaces both of these with one mask bit WR_LOCAL_OP_MASK which
-is clearer.
+Simplify rxe_requester() by moving the local operations to a subroutine.
+Add an error return for illegal send WR opcode.  Moved next_index ahead
+of rxe_run_task which fixed a small bug where work completions were
+delayed until after the next wqe which was not the intended behavior.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_opcode.c | 4 ++--
- drivers/infiniband/sw/rxe/rxe_opcode.h | 3 +--
- drivers/infiniband/sw/rxe/rxe_req.c    | 2 +-
- drivers/infiniband/sw/rxe/rxe_verbs.c  | 2 +-
- 4 files changed, 5 insertions(+), 6 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_req.c | 89 +++++++++++++++++------------
+ 1 file changed, 54 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_opcode.c b/drivers/infiniband/sw/rxe/rxe_opcode.c
-index 0cb4b01fd910..1e4b67b048f3 100644
---- a/drivers/infiniband/sw/rxe/rxe_opcode.c
-+++ b/drivers/infiniband/sw/rxe/rxe_opcode.c
-@@ -87,13 +87,13 @@ struct rxe_wr_opcode_info rxe_wr_opcode_info[] = {
- 	[IB_WR_LOCAL_INV]				= {
- 		.name	= "IB_WR_LOCAL_INV",
- 		.mask	= {
--			[IB_QPT_RC]	= WR_REG_MASK,
-+			[IB_QPT_RC]	= WR_LOCAL_OP_MASK,
- 		},
- 	},
- 	[IB_WR_REG_MR]					= {
- 		.name	= "IB_WR_REG_MR",
- 		.mask	= {
--			[IB_QPT_RC]	= WR_REG_MASK,
-+			[IB_QPT_RC]	= WR_LOCAL_OP_MASK,
- 		},
- 	},
- };
-diff --git a/drivers/infiniband/sw/rxe/rxe_opcode.h b/drivers/infiniband/sw/rxe/rxe_opcode.h
-index 1041ac9a9233..e02f039b8c44 100644
---- a/drivers/infiniband/sw/rxe/rxe_opcode.h
-+++ b/drivers/infiniband/sw/rxe/rxe_opcode.h
-@@ -19,8 +19,7 @@ enum rxe_wr_mask {
- 	WR_SEND_MASK			= BIT(2),
- 	WR_READ_MASK			= BIT(3),
- 	WR_WRITE_MASK			= BIT(4),
--	WR_LOCAL_MASK			= BIT(5),
--	WR_REG_MASK			= BIT(6),
-+	WR_LOCAL_OP_MASK		= BIT(5),
- 
- 	WR_READ_OR_WRITE_MASK		= WR_READ_MASK | WR_WRITE_MASK,
- 	WR_READ_WRITE_OR_SEND_MASK	= WR_READ_OR_WRITE_MASK | WR_SEND_MASK,
 diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 3664cdae7e1f..0d4dcd514c55 100644
+index 0d4dcd514c55..9163aac41848 100644
 --- a/drivers/infiniband/sw/rxe/rxe_req.c
 +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -593,7 +593,7 @@ int rxe_requester(void *arg)
- 	if (unlikely(!wqe))
+@@ -555,6 +555,56 @@ static void update_state(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+ 			  jiffies + qp->qp_timeout_jiffies);
+ }
+ 
++static int rxe_do_local_ops(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
++{
++	u8 opcode = wqe->wr.opcode;
++	struct rxe_dev *rxe;
++	struct rxe_mr *mr;
++	u32 rkey;
++
++	switch (opcode) {
++	case IB_WR_LOCAL_INV:
++		rxe = to_rdev(qp->ibqp.device);
++		rkey = wqe->wr.ex.invalidate_rkey;
++		mr = rxe_pool_get_index(&rxe->mr_pool, rkey >> 8);
++		if (!mr) {
++			pr_err("No MR for rkey %#x\n", rkey);
++			wqe->state = wqe_state_error;
++			wqe->status = IB_WC_LOC_QP_OP_ERR;
++			return -EINVAL;
++		}
++		mr->state = RXE_MR_STATE_FREE;
++		rxe_drop_ref(mr);
++		break;
++	case IB_WR_REG_MR:
++		mr = to_rmr(wqe->wr.wr.reg.mr);
++
++		rxe_add_ref(mr);
++		mr->state = RXE_MR_STATE_VALID;
++		mr->access = wqe->wr.wr.reg.access;
++		mr->ibmr.lkey = wqe->wr.wr.reg.key;
++		mr->ibmr.rkey = wqe->wr.wr.reg.key;
++		mr->iova = wqe->wr.wr.reg.mr->iova;
++		rxe_drop_ref(mr);
++		break;
++	default:
++		pr_err("Unexpected send wqe opcode %d\n", opcode);
++		wqe->state = wqe_state_error;
++		wqe->status = IB_WC_LOC_QP_OP_ERR;
++		return -EINVAL;
++	}
++
++	wqe->state = wqe_state_done;
++	wqe->status = IB_WC_SUCCESS;
++	qp->req.wqe_index = next_index(qp->sq.queue, qp->req.wqe_index);
++
++	if ((wqe->wr.send_flags & IB_SEND_SIGNALED) ||
++	    qp->sq_sig_type == IB_SIGNAL_ALL_WR)
++		rxe_run_task(&qp->comp.task, 1);
++
++	return 0;
++}
++
+ int rxe_requester(void *arg)
+ {
+ 	struct rxe_qp *qp = (struct rxe_qp *)arg;
+@@ -594,42 +644,11 @@ int rxe_requester(void *arg)
  		goto exit;
  
--	if (wqe->mask & WR_REG_MASK) {
-+	if (wqe->mask & WR_LOCAL_OP_MASK) {
- 		if (wqe->wr.opcode == IB_WR_LOCAL_INV) {
- 			struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
- 			struct rxe_mr *rmr;
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 552a1ea9c8b7..4860e8ab378e 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -577,7 +577,7 @@ static void init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
- 	init_send_wr(qp, &wqe->wr, ibwr);
+ 	if (wqe->mask & WR_LOCAL_OP_MASK) {
+-		if (wqe->wr.opcode == IB_WR_LOCAL_INV) {
+-			struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
+-			struct rxe_mr *rmr;
+-
+-			rmr = rxe_pool_get_index(&rxe->mr_pool,
+-						 wqe->wr.ex.invalidate_rkey >> 8);
+-			if (!rmr) {
+-				pr_err("No mr for key %#x\n",
+-				       wqe->wr.ex.invalidate_rkey);
+-				wqe->state = wqe_state_error;
+-				wqe->status = IB_WC_MW_BIND_ERR;
+-				goto exit;
+-			}
+-			rmr->state = RXE_MR_STATE_FREE;
+-			rxe_drop_ref(rmr);
+-			wqe->state = wqe_state_done;
+-			wqe->status = IB_WC_SUCCESS;
+-		} else if (wqe->wr.opcode == IB_WR_REG_MR) {
+-			struct rxe_mr *rmr = to_rmr(wqe->wr.wr.reg.mr);
+-
+-			rmr->state = RXE_MR_STATE_VALID;
+-			rmr->access = wqe->wr.wr.reg.access;
+-			rmr->ibmr.lkey = wqe->wr.wr.reg.key;
+-			rmr->ibmr.rkey = wqe->wr.wr.reg.key;
+-			rmr->iova = wqe->wr.wr.reg.mr->iova;
+-			wqe->state = wqe_state_done;
+-			wqe->status = IB_WC_SUCCESS;
+-		} else {
++		ret = rxe_do_local_ops(qp, wqe);
++		if (unlikely(ret))
+ 			goto exit;
+-		}
+-		if ((wqe->wr.send_flags & IB_SEND_SIGNALED) ||
+-		    qp->sq_sig_type == IB_SIGNAL_ALL_WR)
+-			rxe_run_task(&qp->comp.task, 1);
+-		qp->req.wqe_index = next_index(qp->sq.queue,
+-						qp->req.wqe_index);
+-		goto next_wqe;
++		else
++			goto next_wqe;
+ 	}
  
- 	/* local operation */
--	if (unlikely(mask & WR_REG_MASK)) {
-+	if (unlikely(mask & WR_LOCAL_OP_MASK)) {
- 		wqe->mask = mask;
- 		wqe->state = wqe_state_posted;
- 		return;
+ 	if (unlikely(qp_type(qp) == IB_QPT_RC &&
 -- 
 2.30.2
 
