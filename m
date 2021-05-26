@@ -2,100 +2,197 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998E9391C26
+	by mail.lfdr.de (Postfix) with ESMTP id E2D7A391C27
 	for <lists+linux-rdma@lfdr.de>; Wed, 26 May 2021 17:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233819AbhEZPiR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S232913AbhEZPiR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Wed, 26 May 2021 11:38:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48984 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232913AbhEZPiQ (ORCPT
+        with ESMTP id S233675AbhEZPiQ (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 May 2021 11:38:16 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48DCCC061574
-        for <linux-rdma@vger.kernel.org>; Wed, 26 May 2021 08:36:43 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so535587pjp.4
-        for <linux-rdma@vger.kernel.org>; Wed, 26 May 2021 08:36:43 -0700 (PDT)
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32BB8C061756
+        for <linux-rdma@vger.kernel.org>; Wed, 26 May 2021 08:36:45 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id k5so1008708pjj.1
+        for <linux-rdma@vger.kernel.org>; Wed, 26 May 2021 08:36:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version;
-        bh=TdLQRDWnUaViMWcP8Zk5idvOXRnFJ0hjK/Ri7RYyjcI=;
-        b=H6P9u2PTc2BU3DHtZlhqWxIW0Y6k/1FGWAenuVTbdluNHFxvbMzZU9gqZR3X4eD2h8
-         bquP7ifbCwG12OvOdSNji10EoxVCAE3octA8VDNxTIppvsf+y28aCqUWTKiIp1yBR4lC
-         7q2KoKe+THJYD9R8MGCNCp0pVy8AnDFMC4Q8U=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=IkeI+ydRt/4XYMLwmEyfljlSDRLCvkCSMtIwLATLWDc=;
+        b=FNOb6pVdCAfqnRhv0iGjlPNeNnyEOSRtfOgTMLSczkoO/y7+3t868CqRJfs8qtkVk5
+         IIy3i9uQ+O9LN1kSWejOq9RdeP5KMpZJRULxZXGjQ+yQQigLRvedkpyN0grHH7ax02x/
+         59mFzAhSBEZZ46o8iCIi5vo2/F5Dl/ChhUHL0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
-        bh=TdLQRDWnUaViMWcP8Zk5idvOXRnFJ0hjK/Ri7RYyjcI=;
-        b=NuGAR9Bvh2VbTLHBjBPAb5E7d3IbGoTruklqnMERs7NgofxHpqrZCl1MoW9evg3Nav
-         iiJEOLhh+FA7h5vT6vIsRDMvy23x+cQieQmJOWOx30L+WN+1HG5ExwYfnOCmaSQli4hn
-         krY8P4DrPv0Mko2msmvroBDkd0UIroYCKmeG6vGRFN+xyBd7P7f3ZjYSLPrWIdtfyagX
-         Wkr+pEzwHyFtis9xVbBtWeSFVJgansuNQodGf2uuMJ6lrA28iFdDccQF8BKGC6mpSaen
-         9Bab2R6rKHFUrwiYx1s2UcR9zdZMHgfqasjJpwlOKAL/iZcyA4TUgdfc38OwUwe3tQzK
-         SAEw==
-X-Gm-Message-State: AOAM5310h+yIjt4R9h4vk44qdsm24tJLuDt7yDgTC/K9Ne1X08CeN/dY
-        IGAiJNcXKj6buWIAct50N6b2WVH65Km8KIpc6SvzrADX3iwf5S3ApzNHFFCIJUBJUM8pW3Gkm0M
-        5JEwKaTHY/xa3SDpHVbg4bqjFQVNrLHJq4PGq8n9I1hsJuM/QP6SHwqgt3Qb3f0Ubgo4Zmde+SO
-        CDboH3T6eB
-X-Google-Smtp-Source: ABdhPJxy49YgK7tBx9zUOhlRWjZVSv72pX0rQBJa0rp/xY7+zACh0zAYyYD2ZIwbc/r3UKGyjnNZhA==
-X-Received: by 2002:a17:90a:4545:: with SMTP id r5mr4571678pjm.51.1622043402057;
-        Wed, 26 May 2021 08:36:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=IkeI+ydRt/4XYMLwmEyfljlSDRLCvkCSMtIwLATLWDc=;
+        b=h0y88PIWQJC7UVywF/0CsU/J5tw+wpAre94xmNeIyu82+sGnZPHx6k3dE5iduf91sn
+         DaQnt2xf58iSAiFG0BF5nycdEOzT1z0iAPKH3vHz1fFe3g2wWHZp6zlzNSqPVH0M5F1h
+         4FmNiqZXvlYnNAFKezLstvyP2NBN0tLIc+G5BgmaRKJrm/1FLxo3CLCY9v6i/MkO8aK4
+         egxzUHZLukiOhX0qrsQrz+qGk+HIJwmXIi+Hxx+QqveoDxXC8syTXxlCpu9DDCbXWmPC
+         uK2kwVVZ0QZ+AA1Btt52jU8R5/WleklEBd1LfgqVctHAESYeUXPPhN/+4vkw8SnEXB5W
+         zzUg==
+X-Gm-Message-State: AOAM531kXvU6cbxzIQAmVx26YnkADwSXt97QmZT+j4tEiEPIPUoMKstj
+        yjVZM2PbR+F9FdOdyb2fSW0Zlx7mNJ6iR/+KRfD68P44GRLd3SF6AoRwIxUCvjG2FkYkhCxSYlv
+        EOmLMek1s9kyCBk7ZmGZxQ3x54NkUh1EWwcZ+/AsVSyD+YR2NpQK6vO3DapPX0Cpu+7JIoe6RYP
+        UQUQNtybia
+X-Google-Smtp-Source: ABdhPJyBW5ah5Acwy0JIiqV5ULNYmg1MZ0XU1GxtNpcmtsQZEuJwUWclByVP0O0kCYvPlVHBGZdVVw==
+X-Received: by 2002:a17:90a:7bcc:: with SMTP id d12mr4644400pjl.230.1622043403846;
+        Wed, 26 May 2021 08:36:43 -0700 (PDT)
 Received: from dev01.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 125sm15887052pfg.52.2021.05.26.08.36.40
+        by smtp.gmail.com with ESMTPSA id 125sm15887052pfg.52.2021.05.26.08.36.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 08:36:41 -0700 (PDT)
+        Wed, 26 May 2021 08:36:43 -0700 (PDT)
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [PATCH for-next V3 0/3] Broadcom's driver add global atomics
-Date:   Wed, 26 May 2021 21:06:26 +0530
-Message-Id: <20210526153629.872796-1-devesh.sharma@broadcom.com>
+Subject: [PATCH for-next V3 1/3] RDMA/bnxt_re: Enable global atomic ops if platform supports
+Date:   Wed, 26 May 2021 21:06:27 +0530
+Message-Id: <20210526153629.872796-2-devesh.sharma@broadcom.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210526153629.872796-1-devesh.sharma@broadcom.com>
+References: <20210526153629.872796-1-devesh.sharma@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000d6a91305c33d68ce"
+        boundary="000000000000f31d7e05c33d689e"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000d6a91305c33d68ce
+--000000000000f31d7e05c33d689e
 Content-Transfer-Encoding: 8bit
 
-Adding automated detection and enablement of global PCI atomic
-operation support.
-Updated to ABI to pass wqe-mode to user to support rdma-core
-pull request:
-https://github.com/linux-rdma/rdma-core/pull/1007
+Enabling Atomic operations for Gen P5 devices if the underlying
+platform supports global atomic ops.
 
-
-v2->v3
-Added additional patch to update ABI. A PR corresponding to this
-is open.
-
-V1->V2
-renamed bnxt_qplib_enable_atomic_ops_to_root to
-bnxt_qplib_determine_atomics
-
-Devesh Sharma (3):
-  RDMA/bnxt_re: Enable global atomic ops if platform supports
-  bnxt_re: Update maintainers list
-  RDMA/bnxt_re: update ABI to pass wqe-mode to user space
-
- MAINTAINERS                               |  2 --
- drivers/infiniband/hw/bnxt_re/ib_verbs.c  |  7 +++++++
+Fixes:7ff662b76167 ("Disable atomic capability on bnxt_re adapters")
+Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c  |  4 ++++
  drivers/infiniband/hw/bnxt_re/main.c      |  4 ++++
  drivers/infiniband/hw/bnxt_re/qplib_res.c | 15 +++++++++++++++
  drivers/infiniband/hw/bnxt_re/qplib_res.h |  1 +
  drivers/infiniband/hw/bnxt_re/qplib_sp.c  | 13 ++++++++++++-
  drivers/infiniband/hw/bnxt_re/qplib_sp.h  |  2 --
- include/uapi/rdma/bnxt_re-abi.h           |  5 ++++-
- 8 files changed, 43 insertions(+), 6 deletions(-)
+ 6 files changed, 36 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index 537471ffaa79..a113d8d9e9ed 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -163,6 +163,10 @@ int bnxt_re_query_device(struct ib_device *ibdev,
+ 	ib_attr->max_qp_init_rd_atom = dev_attr->max_qp_init_rd_atom;
+ 	ib_attr->atomic_cap = IB_ATOMIC_NONE;
+ 	ib_attr->masked_atomic_cap = IB_ATOMIC_NONE;
++	if (dev_attr->is_atomic) {
++		ib_attr->atomic_cap = IB_ATOMIC_GLOB;
++		ib_attr->masked_atomic_cap = IB_ATOMIC_GLOB;
++	}
+ 
+ 	ib_attr->max_ee_rd_atom = 0;
+ 	ib_attr->max_res_rd_atom = 0;
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index b090dfa4f4cb..ee0cdf89eb1a 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -128,6 +128,10 @@ static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev, u8 wqe_mode)
+ 	rdev->rcfw.res = &rdev->qplib_res;
+ 
+ 	bnxt_re_set_drv_mode(rdev, wqe_mode);
++	if (bnxt_qplib_determine_atomics(en_dev->pdev))
++		ibdev_info(&rdev->ibdev,
++			   "platform doesn't support global atomics.");
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+index 3ca47004b752..4de9359c2028 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+@@ -959,3 +959,18 @@ int bnxt_qplib_alloc_res(struct bnxt_qplib_res *res, struct pci_dev *pdev,
+ 	bnxt_qplib_free_res(res);
+ 	return rc;
+ }
++
++bool bnxt_qplib_determine_atomics(struct pci_dev *dev)
++{
++	u16 ctl2;
++
++	if(pci_enable_atomic_ops_to_root(dev, PCI_EXP_DEVCAP2_ATOMIC_COMP32) &&
++	   pci_enable_atomic_ops_to_root(dev, PCI_EXP_DEVCAP2_ATOMIC_COMP64))
++		return true; /* Failure */
++	pcie_capability_read_word(dev, PCI_EXP_DEVCTL2, &ctl2);
++	if (ctl2 & PCI_EXP_DEVCTL2_ATOMIC_REQ)
++		return 0; /* Success */
++	pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
++				 PCI_EXP_DEVCTL2_ATOMIC_REQ);
++	return 0; /* Success */
++}
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+index 7a1ab38b95da..fb7fde4fed56 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+@@ -373,6 +373,7 @@ void bnxt_qplib_free_ctx(struct bnxt_qplib_res *res,
+ int bnxt_qplib_alloc_ctx(struct bnxt_qplib_res *res,
+ 			 struct bnxt_qplib_ctx *ctx,
+ 			 bool virt_fn, bool is_p5);
++bool bnxt_qplib_determine_atomics(struct pci_dev *dev);
+ 
+ static inline void bnxt_qplib_hwq_incr_prod(struct bnxt_qplib_hwq *hwq, u32 cnt)
+ {
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+index 049b3576302b..57407be16f27 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+@@ -54,6 +54,17 @@ const struct bnxt_qplib_gid bnxt_qplib_gid_zero = {{ 0, 0, 0, 0, 0, 0, 0, 0,
+ 
+ /* Device */
+ 
++static u8 bnxt_qplib_is_atomic_cap(struct bnxt_qplib_rcfw *rcfw)
++{
++	u16 pcie_ctl2 = 0;
++
++	if (!bnxt_qplib_is_chip_gen_p5(rcfw->res->cctx))
++		return false;
++
++	pcie_capability_read_word(rcfw->pdev, PCI_EXP_DEVCTL2, &pcie_ctl2);
++	return (pcie_ctl2 & PCI_EXP_DEVCTL2_ATOMIC_REQ);
++}
++
+ static void bnxt_qplib_query_version(struct bnxt_qplib_rcfw *rcfw,
+ 				     char *fw_ver)
+ {
+@@ -162,7 +173,7 @@ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw,
+ 		attr->tqm_alloc_reqs[i * 4 + 3] = *(++tqm_alloc);
+ 	}
+ 
+-	attr->is_atomic = false;
++	attr->is_atomic = bnxt_qplib_is_atomic_cap(rcfw);
+ bail:
+ 	bnxt_qplib_rcfw_free_sbuf(rcfw, sbuf);
+ 	return rc;
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+index bc228340684f..260104783691 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+@@ -42,8 +42,6 @@
+ 
+ #define BNXT_QPLIB_RESERVED_QP_WRS	128
+ 
+-#define PCI_EXP_DEVCTL2_ATOMIC_REQ      0x0040
+-
+ struct bnxt_qplib_dev_attr {
+ #define FW_VER_ARR_LEN			4
+ 	u8				fw_ver[FW_VER_ARR_LEN];
 -- 
 2.25.1
 
 
---000000000000d6a91305c33d68ce
+--000000000000f31d7e05c33d689e
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -166,13 +263,13 @@ G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
 PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIMUocA4LzBZzWBPBs0R5OmWIRA/h
-JJEhfVmjd8xqhJMmMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDUyNjE1MzY0MlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIENsPTVl2GhMYAEfiKmAJwuIkUKL
+WUvDPyvotiIGGl2UMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDUyNjE1MzY0NFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQCjVjOXLnR0CNjZh1mhwnfdHycIzqEGhd4drHterc2OGDNX
-Zmqn/7Bk8YtjdYUzr3hm5Ep4cshvXZSfcz1g54FH9OEa/wl+ApQykVoyvQozCzZFhLvb+JE1BFDm
-W1g0ohFbeSSZ2Hc9FxOlbaqvKLGSszTvGGY41E4AxGvlUB/kCUlo+44IgzjlFfDfQjpurh2PadWB
-AsajOBWyLh2w68uCOpdDTOba7gfdKbXFl1p7tLYgUBtctfmrPC55QKiP6OQSfv+6+Ht2AJPi/7Aq
-1yWNJaFcxo3f4HDTwrJkXwoF7lhxDTwmOgs1dIsKQPjOChfssYt8+CLZX5TH6V9KdOpQ
---000000000000d6a91305c33d68ce--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQCCTc8pD6+SaKnv9BIJpasMUdcQyhpnFClByeXTrFA4qcWG
+1T2+npAqnDNMXhAQNcf/jZo36TbkxmAufQcfBRBzfm02cyxyHQWWrSXa++D2trqEQD0dTZLq4jjA
+JhZlST3/5bS1TsMmGO6nspLj6hMOEIx7/Y1bi1X4cILuQ3TU3QHMIShkylfOWoDaHRB7HTX5KwHJ
+A3Tc9KboVNsNJr8uQb1FIV2p17xXIglKDUH35I5S9KzvLv0hWZnOhRIupM3mKUyoYFMr9Bv41ebn
+a7L3LIrBKW8suYEmlUKEIGQXsDBCxan5mgaxv/BIQJyO1D3quGenFTsGM8t661rsGgMf
+--000000000000f31d7e05c33d689e--
