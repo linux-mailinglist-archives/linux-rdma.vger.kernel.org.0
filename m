@@ -2,56 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87F7391384
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 May 2021 11:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D823913A9
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 May 2021 11:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbhEZJSe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 May 2021 05:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
+        id S233117AbhEZJaZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 May 2021 05:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232412AbhEZJSe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 May 2021 05:18:34 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE98C061574
-        for <linux-rdma@vger.kernel.org>; Wed, 26 May 2021 02:17:02 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id w15so685474ljo.10
-        for <linux-rdma@vger.kernel.org>; Wed, 26 May 2021 02:17:02 -0700 (PDT)
+        with ESMTP id S233321AbhEZJaY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 May 2021 05:30:24 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730DDC061574
+        for <linux-rdma@vger.kernel.org>; Wed, 26 May 2021 02:28:53 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id b26so1528730lfq.4
+        for <linux-rdma@vger.kernel.org>; Wed, 26 May 2021 02:28:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ko2UxlXFXsR8uDKA3n1q+PlE7RejPivDVfcksGNd8S0=;
-        b=ZQip1zDixRJ5JT3Zj4zKGdiEHXdkJb1Qll/GD/LlxjtQx2ia4n8zDtCQFGUfvkPqjK
-         QiAw/fROIx+573ERM0sJSGw7r/1RskE56GLstsxi7p46up+pe+LDQ1yfjsgHahxqDZ3l
-         flqS5gM/bGUjn29kPYh4wSQh118YWfsWUVwuH4iKooo3VyuZHdQw2sH5cXC50761nFqF
-         ar1AXYnrGmw7wsk7N0IUmkk8+PwvyZMfIDhfJ48BOaO5jdcelTPTJ20FI9xaSwZHGR9P
-         cYVviaOuEPI2E7rbnpUYgLwO78Inlie9IloqAqVXg4SV0A0pykUHZExiJ6BRUPHPokxW
-         plPA==
+        bh=8w2Jy5Cq5f1+0bPseflhgS2YKhSClT6YBD1zn0iGl2w=;
+        b=Kt4WvM55V3zfA2F7KwwNllmANkMG7JyTxcO36MM458Q+wkM7DyDCpjEztFJYQ11k+f
+         uqpQ9jiwrXBrzP18Oq5cSSd7cJwkEvhcW76mlbl4ndMNwyRbq/xwAkOZu9ELqLMoJlH6
+         UXzIQFDcVenaATOfEQ7CVgQDF9AP6HkHrxfBnH6YAEEQUzaRYFtSp9u/Tj4IR6139zVe
+         Ev4L2JarwSHTZpwZF2syoEFcwNTAOIS4PfX2KNdO3Z7MYMz4D2U3AFEXDv0tfqsvGqdE
+         RjeY1kEicHhONXnMbIeFb6vXWjhdkOxUIgtasW5voddcON28BNBmfRIuivUolPOQZvEK
+         N6RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ko2UxlXFXsR8uDKA3n1q+PlE7RejPivDVfcksGNd8S0=;
-        b=UhaeC51g1lmvwGm+xfKXr/xDYaSSdXRs6B5hF0z067HabBBMKkmtHOBwkfEgfuVH8J
-         pvp7B7NBJiwk/QaZjHckeBfUS4YlfJk04pDNccEGKHp04jzfXScgr2yBeeqxYVRAPSJ5
-         jjzLi9iwTuF2/uOOj3ga0kS5WUtULb6esvHcK25yFXTkj1rOMZeS5mWE438YRtPSGNl5
-         q2Y+FpEEHjDXvO8AzRYLBA/ISwnMUEaDTUeSgX6boGPD0nCJ7KsHm7namJrN0lz99ksT
-         Xe7YfjlvO5Sd2OzjcMe+yvPZhsvlOUgAS8SPVXkg0UxhAy5XOGAc264lkWFfGEbUTTDA
-         6Clw==
-X-Gm-Message-State: AOAM533RIMeOoI1yuqYf7uEkAu77YE7T6VFM5UO/YgYF5qYtZ1/ZONw+
-        exk47sRxaW62T6oLO2aZaojuBVlKYPScPjT6THflYg==
-X-Google-Smtp-Source: ABdhPJx3VMqKQvRy0/wI0ZOvD7TvM5fJ6RPQhvzydq7drAIOiWPdrOOUWMapid3IkcahxGAYZJs/OfoFtnMLcRHKUdE=
-X-Received: by 2002:a05:651c:232:: with SMTP id z18mr1502764ljn.489.1622020620764;
- Wed, 26 May 2021 02:17:00 -0700 (PDT)
+        bh=8w2Jy5Cq5f1+0bPseflhgS2YKhSClT6YBD1zn0iGl2w=;
+        b=LLH2vtspk1yO3cwqSabK9D4spxLjdzJ3v7GVod2C5Q6mqqhujfKLDmm09VUUpTsRZ6
+         0FC/OYwkvpDa3bkQCxh+TRTLWrZpCyiBG6CkmMP4/NAvuX+e0RZDhgoP16sXHRKfseqK
+         hV9GABH/1w6pPsTaviReJwVlddbRqVZ3OvQ4h9dH0zQXM86zIi6bmBDOOFkFk4gGT0w4
+         inV2RkRhk/yUFWDyhXg5/bnknIbfnjEiTBxq4SzMSntbhjTAwhyk6ioCoDZcJmEymKEf
+         bmrNe5uoMMu35U2f9urHqXMnf8Nz2yChMRou/RLwM4UWZ29X0STjqsKReGIdESLsyv/s
+         17UQ==
+X-Gm-Message-State: AOAM532httIhY0VbsJOF1AnTzSTeVfpUG4XEpj91Kx3zdHf9SmyN+liu
+        qce89zbeDfvtkG0cE180c/2g8bpnjxrZlaORuu77Fg==
+X-Google-Smtp-Source: ABdhPJzlT2ku9iM7YcKLlvQF7pFRvCalUJJAY2xu95Rbq6UoOk7hPgXOjIubGB4dXe6a6MQNuWtebNT6bKKNL/xj4f8=
+X-Received: by 2002:ac2:533a:: with SMTP id f26mr1554551lfh.424.1622021331782;
+ Wed, 26 May 2021 02:28:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210517091844.260810-1-gi-oh.kim@ionos.com> <20210517091844.260810-14-gi-oh.kim@ionos.com>
- <20210525201543.GA3482418@nvidia.com>
-In-Reply-To: <20210525201543.GA3482418@nvidia.com>
+References: <20210517091844.260810-1-gi-oh.kim@ionos.com> <20210517091844.260810-4-gi-oh.kim@ionos.com>
+ <20210525201823.GA3482566@nvidia.com>
+In-Reply-To: <20210525201823.GA3482566@nvidia.com>
 From:   Haris Iqbal <haris.iqbal@ionos.com>
-Date:   Wed, 26 May 2021 11:16:49 +0200
-Message-ID: <CAJpMwyh2Xw2CpWZBeVS3mTKOXFx6qQymZkxsUSA1oiGaohRJzg@mail.gmail.com>
-Subject: Re: [PATCHv2 for-next 13/19] RDMA/rtrs-srv: Replace atomic_t with
- percpu_ref for ids_inflight
+Date:   Wed, 26 May 2021 11:28:41 +0200
+Message-ID: <CAJpMwyg+SZjaYOi4z01gjphzzvVsG74dKkXzLQHG94=R5Lx3Dg@mail.gmail.com>
+Subject: Re: [PATCHv2 for-next 03/19] RDMA/rtrs-srv: Add error messages for
+ cases when failing RDMA connection
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Gioh Kim <gi-oh.kim@ionos.com>, linux-rdma@vger.kernel.org,
         bvanassche@acm.org, Leon Romanovsky <leon@kernel.org>,
@@ -63,64 +63,42 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 25, 2021 at 10:15 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+On Tue, May 25, 2021 at 10:18 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
 >
-> On Mon, May 17, 2021 at 11:18:37AM +0200, Gioh Kim wrote:
+> On Mon, May 17, 2021 at 11:18:27AM +0200, Gioh Kim wrote:
 > > From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
 > >
-> > ids_inflight is used to track the inflight IOs. But the use of atomic_t
-> > variable can cause performance drops and can also become a performance
-> > bottleneck.
+> > It was difficult to find out why it failed to establish RDMA
+> > connection. This patch adds some messages to show which function
+> > has failed why.
 > >
-> > This commit replaces the use of atomic_t with a percpu_ref structure. The
-> > advantage it offers is, it doesn't check if the reference has fallen to 0,
-> > until the user explicitly signals it to; and that is done by the
-> > percpu_ref_kill() function call. After that, the percpu_ref structure
-> > behaves like an atomic_t and for every put call, checks whether the
-> > reference has fallen to 0 or not.
-> >
-> > rtrs_srv_stats_rdma_to_str shows the count of ids_inflight as 0
-> > for user-mode tools not to be confused.
-> >
-> > Fixes: 9cb837480424e ("RDMA/rtrs: server: main functionality")
 > > Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 > > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 > > Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
 > > ---
-> >  drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c | 12 +++---
-> >  drivers/infiniband/ulp/rtrs/rtrs-srv.c       | 43 +++++++++++++-------
-> >  drivers/infiniband/ulp/rtrs/rtrs-srv.h       |  4 +-
-> >  3 files changed, 35 insertions(+), 24 deletions(-)
+> >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
 > >
-> > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c
-> > index e102b1368d0c..df1d7d6b1884 100644
-> > --- a/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c
-> > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c
-> > @@ -27,12 +27,10 @@ ssize_t rtrs_srv_stats_rdma_to_str(struct rtrs_srv_stats *stats,
-> >                                   char *page, size_t len)
-> >  {
-> >       struct rtrs_srv_stats_rdma_stats *r = &stats->rdma_stats;
-> > -     struct rtrs_srv_sess *sess = stats->sess;
-> >
-> > -     return scnprintf(page, len, "%lld %lld %lld %lld %u\n",
-> > -                      (s64)atomic64_read(&r->dir[READ].cnt),
-> > -                      (s64)atomic64_read(&r->dir[READ].size_total),
-> > -                      (s64)atomic64_read(&r->dir[WRITE].cnt),
-> > -                      (s64)atomic64_read(&r->dir[WRITE].size_total),
-> > -                      atomic_read(&sess->ids_inflight));
-> > +     return sysfs_emit(page, "%lld %lld %lld %lldn\n",
-> > +                       (s64)atomic64_read(&r->dir[READ].cnt),
-> > +                       (s64)atomic64_read(&r->dir[READ].size_total),
-> > +                       (s64)atomic64_read(&r->dir[WRITE].cnt),
-> > +                       (s64)atomic64_read(&r->dir[WRITE].size_total));
-> >  }
+> > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > index 3d09d01e34b4..df17dd4c1e28 100644
+> > --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > @@ -1356,8 +1356,10 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
+> >        * If this request is not the first connection request from the
+> >        * client for this session then fail and return error.
+> >        */
+> > -     if (!first_conn)
+> > +     if (!first_conn) {
+> > +             pr_err("Error: Not the first connection request for this session\n");
+> >               return ERR_PTR(-ENXIO);
 >
-> This seems like an unrelated hunk
+> You really shouldn't be printing based on attacker controlled data..
 
-Previous to the commit, ids_inflight was an atomic variable, and hence
-was read and printed along with other rtrs_srv stats. With this
-commit, since ids_inflight is changed to percpu_ref, we removed it
-being printed in rtrs_srv stats. Its related to the commit.
+I want to make sure I understand correctly. Did you mean that an
+attacker can bombard a server with such connection request, which can
+lead to uncontrolled prints, and possibly DOS?
+
+If so, would a ratelimited print be better?
 
 
 >
