@@ -2,116 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2516A392AB4
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 May 2021 11:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52241392BD2
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 May 2021 12:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235649AbhE0J1z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 May 2021 05:27:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35384 "EHLO
+        id S235950AbhE0K35 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 May 2021 06:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235777AbhE0J1y (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 May 2021 05:27:54 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30FBC061574
-        for <linux-rdma@vger.kernel.org>; Thu, 27 May 2021 02:26:21 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id f12so5418859ljp.2
-        for <linux-rdma@vger.kernel.org>; Thu, 27 May 2021 02:26:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lpii1sDx8QQz+caYuzp9XPtbKulyfWpR5gjq56j7G1c=;
-        b=b6VQDvQ68pJxSi2emR9u5ryt/mEMZ/WiJ7OUKLsK+0HDLOWLmMSAaVFHP+SEfQutW2
-         qKdBU16hMiGYTZAcbtKHwmvZzLKQPnl8KJ2/oGKGy32Vc7/8ywmUO7cpalQsuP66xHyl
-         ocEwt+HDwhcAYyvkJGXBohUTpowMikpiLlmQDR4EwxhTev5RZiN9kQckEHhDcekUcvT9
-         EZAC7RXSN+hs9B0CkYtNgybBQ15LX1fod7mCVxoQseuTPCKzwHf4EGQYgd3ZP1GUAq7X
-         vYvKaAN8DinAsjTmnFu6u+NqXiXyDUrAXegLGU++O9wRBZpTrVuk9UxiF7gQww0c4dkq
-         ny7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lpii1sDx8QQz+caYuzp9XPtbKulyfWpR5gjq56j7G1c=;
-        b=KmtQFo4AHU89pvhPaQ+9es2PimvT54nRBlrnarO963ZnBCu6+fRPeA0b6quOufwD9h
-         2Nx821tO0tH7NDLB2AmWDs41YFmHz7BXVP+0v2QN6OYfvkmur7crqQjIb1AG5GLA2wkT
-         4tjPTe0cbJdbmyoTpWMTAO6ziwkuOvRLjpFw5uqx0hVejkKygzX4wgDEQt1BqGsYY9/E
-         xcvOI2tSkdvpE4TfZNqAtf7kupKz/sDeykl2y95rLjSPNc7vMWzIOtlmb1NfQZWGs4j9
-         sy2lKTrbWePg/hboL38qehjWpg0dXjN+Nl9deUFPBccQ5S0zWYdnQYGw05Riw20CHey4
-         tRoQ==
-X-Gm-Message-State: AOAM5335cmjgNbJSIFcqV/Pworzl8MohOmPmXr3qC11Gq6QEX9aNyz2U
-        7wwC7wId58abeto5oT0uSR6KNYOE68nk3rJecbdK9A==
-X-Google-Smtp-Source: ABdhPJxxVber0A38/08Vt/ZyIlSi6xjIJAUG40Yc/yOb895u0C6xY9QH8apaq8ftBW++XiA05iql/2guEM5qrZfq6zQ=
-X-Received: by 2002:a2e:9346:: with SMTP id m6mr1873492ljh.150.1622107579986;
- Thu, 27 May 2021 02:26:19 -0700 (PDT)
+        with ESMTP id S236093AbhE0K3y (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 May 2021 06:29:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FA7C061574;
+        Thu, 27 May 2021 03:28:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=37FHlrs537m89HhOgV9zLgVKZ+yxkRp2d6A8j89nLIA=; b=kpzlqDsfs/8cEBjpcdUcF+ME9+
+        GWv0EA0jkCwfAkELq8mgJLwVBXRzRyvJXck2ITOucucI5zul0gTnXod9pZMZRXraYjjJG0B4/WY/t
+        EXRBbrghbMejxLXEzsTne+I+nkaKBt5bhBBhK1p9rKNl0bNuDe6EeovnGl+gORCq6oiX79BzXezSU
+        k4SD/gyBq67M+W1qGw3Tu1Gmh+cM9Ggj9HMDqERORzLYprMtZ6vLt5sh5e1UBGU+RqMVBHmFDHjq6
+        D6mwhsfNfFAUNWgcjp5WkXMofuxoOEE7C8O23vZO0Q1KC1o0Kty+6ZtPlMInekehbqPG9gPIViwH4
+        iSBJbnJg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lmDFA-005Qcf-86; Thu, 27 May 2021 10:28:03 +0000
+Date:   Thu, 27 May 2021 11:28:00 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next v1 1/2] RDMA: Enable Relaxed Ordering by
+ default for kernel ULPs
+Message-ID: <YK90MOp0ZKeUMf5w@infradead.org>
+References: <cover.1621505111.git.leonro@nvidia.com>
+ <73af770234656d5f884ead5b8d40132d9ed289d6.1621505111.git.leonro@nvidia.com>
 MIME-Version: 1.0
-References: <20210517091844.260810-1-gi-oh.kim@ionos.com> <20210517091844.260810-4-gi-oh.kim@ionos.com>
- <20210525201823.GA3482566@nvidia.com> <CAJpMwyg+SZjaYOi4z01gjphzzvVsG74dKkXzLQHG94=R5Lx3Dg@mail.gmail.com>
- <20210526160736.GB1096940@ziepe.ca>
-In-Reply-To: <20210526160736.GB1096940@ziepe.ca>
-From:   Haris Iqbal <haris.iqbal@ionos.com>
-Date:   Thu, 27 May 2021 11:26:09 +0200
-Message-ID: <CAJpMwyi=16apTfO-urWX3Ooy-7xJ_KYt8gLZ66H6wEVeBJx=Ow@mail.gmail.com>
-Subject: Re: [PATCHv2 for-next 03/19] RDMA/rtrs-srv: Add error messages for
- cases when failing RDMA connection
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Gioh Kim <gi-oh.kim@ionos.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jinpu Wang <jinpu.wang@ionos.com>,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <73af770234656d5f884ead5b8d40132d9ed289d6.1621505111.git.leonro@nvidia.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 26, 2021 at 6:07 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Wed, May 26, 2021 at 11:28:41AM +0200, Haris Iqbal wrote:
-> > On Tue, May 25, 2021 at 10:18 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > >
-> > > On Mon, May 17, 2021 at 11:18:27AM +0200, Gioh Kim wrote:
-> > > > From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-> > > >
-> > > > It was difficult to find out why it failed to establish RDMA
-> > > > connection. This patch adds some messages to show which function
-> > > > has failed why.
-> > > >
-> > > > Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-> > > > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-> > > > Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-> > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 8 +++++++-
-> > > >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > > index 3d09d01e34b4..df17dd4c1e28 100644
-> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > > @@ -1356,8 +1356,10 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
-> > > >        * If this request is not the first connection request from the
-> > > >        * client for this session then fail and return error.
-> > > >        */
-> > > > -     if (!first_conn)
-> > > > +     if (!first_conn) {
-> > > > +             pr_err("Error: Not the first connection request for this session\n");
-> > > >               return ERR_PTR(-ENXIO);
-> > >
-> > > You really shouldn't be printing based on attacker controlled data..
-> >
-> > I want to make sure I understand correctly. Did you mean that an
-> > attacker can bombard a server with such connection request, which can
-> > lead to uncontrolled prints, and possibly DOS?
->
-> Yes
->
-> > If so, would a ratelimited print be better?
->
-> Probably
+The way this is implemented looks confusing and error prone to me.
 
-Alright.. Will change this print to a ratelimited one, and send the
-updates patches.
+I'd like to suggest the following:
 
-Thanks.
-
->
-> Jason
+ 1) add a prep patch that entirely untangles IB_ACCESS_* from
+    IB_UVERBS_ACCESS.  Maybe even add a __bitwise type for IB_ACCESS_*
+    to allow sparse based type checking.  Preferably ib_check_mr_access
+    could be changed into a function that does this translation as it
+    needs to be called anyway.
+ 2) then just invert IB_ACCESS_RELAXED_ORDERING while keeping
+    IB_UVERBS_ACCESS_REMOTE_ATOMIC as-is, and enable
+    IB_ACCESS_STRICT_ORDERING if IB_UVERBS_ACCESS_REMOTE_ATOMIC is not
+    set in ib_check_mr_access.
