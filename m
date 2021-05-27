@@ -2,138 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CFD392AB0
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 May 2021 11:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2516A392AB4
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 May 2021 11:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235666AbhE0J1O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 May 2021 05:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
+        id S235649AbhE0J1z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 May 2021 05:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235649AbhE0J1N (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 May 2021 05:27:13 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B35C061574
-        for <linux-rdma@vger.kernel.org>; Thu, 27 May 2021 02:25:40 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id a5so6262303lfm.0
-        for <linux-rdma@vger.kernel.org>; Thu, 27 May 2021 02:25:40 -0700 (PDT)
+        with ESMTP id S235777AbhE0J1y (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 May 2021 05:27:54 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30FBC061574
+        for <linux-rdma@vger.kernel.org>; Thu, 27 May 2021 02:26:21 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id f12so5418859ljp.2
+        for <linux-rdma@vger.kernel.org>; Thu, 27 May 2021 02:26:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wJWDG0x5hmvmBul/Q3qGakGO8DJLQhwz2E01+5Exm7k=;
-        b=dH/IKjJWTcwp35AbFPn7IKpMT+5X4msQfmFK5ZLHZpCYVxg2leOoN7E9OsyDeurWqs
-         U21mmv8bErXBkmW8syeEl4K5xAr4wTGmy2exAUJ832O61AwV3Xc4PlnQeX1l9j6oDxZ+
-         V1DmK3RnvXReon70po7T8uLXwFCwkSVZJFiRX2/R/knZ6IfJG4cuCK4DEiNEA4Z2WBKW
-         sYaRirkn+DlgGiYDRasTa48ag/MPaLuioAbK92VsrOjqZc2gqOJO9/M/1JPb95+lVXOO
-         ximWDivxeQMyeaFxsUBtzTAbGSHAEWFxGjhwcSBc7rLpqZdk0SsOpwDSvMizLmvQ/P7E
-         eUIQ==
+        bh=lpii1sDx8QQz+caYuzp9XPtbKulyfWpR5gjq56j7G1c=;
+        b=b6VQDvQ68pJxSi2emR9u5ryt/mEMZ/WiJ7OUKLsK+0HDLOWLmMSAaVFHP+SEfQutW2
+         qKdBU16hMiGYTZAcbtKHwmvZzLKQPnl8KJ2/oGKGy32Vc7/8ywmUO7cpalQsuP66xHyl
+         ocEwt+HDwhcAYyvkJGXBohUTpowMikpiLlmQDR4EwxhTev5RZiN9kQckEHhDcekUcvT9
+         EZAC7RXSN+hs9B0CkYtNgybBQ15LX1fod7mCVxoQseuTPCKzwHf4EGQYgd3ZP1GUAq7X
+         vYvKaAN8DinAsjTmnFu6u+NqXiXyDUrAXegLGU++O9wRBZpTrVuk9UxiF7gQww0c4dkq
+         ny7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wJWDG0x5hmvmBul/Q3qGakGO8DJLQhwz2E01+5Exm7k=;
-        b=CsK1pFaPYe8NCsRBOUethcFHWSZhFewvLOJl620rWgmR0tgDYlBWBTp61A9RMbn7kk
-         kiFLS3lafHP5dz9qz2ipNcHZWxbv/g8glEJlFK3DEpp6T0+6w7ZmSHJGdgvmENT3nnAB
-         a4tmr0GjB+5CgKS87POVdBidi3zSpyqCTeMCv1ZMEiwM80BKyF0jZjtPCnx26i6I0yaz
-         qertdwUvz5t8Q8X9oOQfSuabL6V2Yj84m0QlM/1xU8nMqtOFd9M1lfBn0elYEeyfZHqx
-         Vxs6r9rbPJV2WwV7cZg4pth/t2bcBzDh4ir1qoDVg6VfQb0bY49vgfb46gCBV2MV53AC
-         hWWQ==
-X-Gm-Message-State: AOAM531GzvqLvxN09vbDQHYmSxrdzUDUT5rsduR47l2ye/FZ54Vb6V/5
-        gga4Qq7FykHCsBnHKR7WAa18S5gP97+8JBsHCN6urQ==
-X-Google-Smtp-Source: ABdhPJy6DALJLqq20ZlHPVDyws3t/62gscoQZTSXd+bINyIE2meIm7E9tjTAgoCf+EhEOL9A+OjhK9lkgsIsi2GwCB0=
-X-Received: by 2002:a05:6512:2192:: with SMTP id b18mr1792033lft.422.1622107538761;
- Thu, 27 May 2021 02:25:38 -0700 (PDT)
+        bh=lpii1sDx8QQz+caYuzp9XPtbKulyfWpR5gjq56j7G1c=;
+        b=KmtQFo4AHU89pvhPaQ+9es2PimvT54nRBlrnarO963ZnBCu6+fRPeA0b6quOufwD9h
+         2Nx821tO0tH7NDLB2AmWDs41YFmHz7BXVP+0v2QN6OYfvkmur7crqQjIb1AG5GLA2wkT
+         4tjPTe0cbJdbmyoTpWMTAO6ziwkuOvRLjpFw5uqx0hVejkKygzX4wgDEQt1BqGsYY9/E
+         xcvOI2tSkdvpE4TfZNqAtf7kupKz/sDeykl2y95rLjSPNc7vMWzIOtlmb1NfQZWGs4j9
+         sy2lKTrbWePg/hboL38qehjWpg0dXjN+Nl9deUFPBccQ5S0zWYdnQYGw05Riw20CHey4
+         tRoQ==
+X-Gm-Message-State: AOAM5335cmjgNbJSIFcqV/Pworzl8MohOmPmXr3qC11Gq6QEX9aNyz2U
+        7wwC7wId58abeto5oT0uSR6KNYOE68nk3rJecbdK9A==
+X-Google-Smtp-Source: ABdhPJxxVber0A38/08Vt/ZyIlSi6xjIJAUG40Yc/yOb895u0C6xY9QH8apaq8ftBW++XiA05iql/2guEM5qrZfq6zQ=
+X-Received: by 2002:a2e:9346:: with SMTP id m6mr1873492ljh.150.1622107579986;
+ Thu, 27 May 2021 02:26:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210517091844.260810-1-gi-oh.kim@ionos.com> <20210517091844.260810-14-gi-oh.kim@ionos.com>
- <20210525201543.GA3482418@nvidia.com> <CAJpMwyh2Xw2CpWZBeVS3mTKOXFx6qQymZkxsUSA1oiGaohRJzg@mail.gmail.com>
- <CAMGffEnX4OQnmqrK4AaDQ=dSE1e4LrHWNUQQSiL_viL_emQYyw@mail.gmail.com>
-In-Reply-To: <CAMGffEnX4OQnmqrK4AaDQ=dSE1e4LrHWNUQQSiL_viL_emQYyw@mail.gmail.com>
+References: <20210517091844.260810-1-gi-oh.kim@ionos.com> <20210517091844.260810-4-gi-oh.kim@ionos.com>
+ <20210525201823.GA3482566@nvidia.com> <CAJpMwyg+SZjaYOi4z01gjphzzvVsG74dKkXzLQHG94=R5Lx3Dg@mail.gmail.com>
+ <20210526160736.GB1096940@ziepe.ca>
+In-Reply-To: <20210526160736.GB1096940@ziepe.ca>
 From:   Haris Iqbal <haris.iqbal@ionos.com>
-Date:   Thu, 27 May 2021 11:25:27 +0200
-Message-ID: <CAJpMwyg3HpEvfapLGFLUnB8FJo6yY6OLUErS+=6oyo4L5Y543A@mail.gmail.com>
-Subject: Re: [PATCHv2 for-next 13/19] RDMA/rtrs-srv: Replace atomic_t with
- percpu_ref for ids_inflight
-To:     Jinpu Wang <jinpu.wang@ionos.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, Gioh Kim <gi-oh.kim@ionos.com>,
+Date:   Thu, 27 May 2021 11:26:09 +0200
+Message-ID: <CAJpMwyi=16apTfO-urWX3Ooy-7xJ_KYt8gLZ66H6wEVeBJx=Ow@mail.gmail.com>
+Subject: Re: [PATCHv2 for-next 03/19] RDMA/rtrs-srv: Add error messages for
+ cases when failing RDMA connection
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Gioh Kim <gi-oh.kim@ionos.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Bart Van Assche <bvanassche@acm.org>,
         Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
+        Jinpu Wang <jinpu.wang@ionos.com>,
         Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 26, 2021 at 11:38 AM Jinpu Wang <jinpu.wang@ionos.com> wrote:
+On Wed, May 26, 2021 at 6:07 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 >
-> On Wed, May 26, 2021 at 11:17 AM Haris Iqbal <haris.iqbal@ionos.com> wrote:
-> >
-> > On Tue, May 25, 2021 at 10:15 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+> On Wed, May 26, 2021 at 11:28:41AM +0200, Haris Iqbal wrote:
+> > On Tue, May 25, 2021 at 10:18 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
 > > >
-> > > On Mon, May 17, 2021 at 11:18:37AM +0200, Gioh Kim wrote:
+> > > On Mon, May 17, 2021 at 11:18:27AM +0200, Gioh Kim wrote:
 > > > > From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
 > > > >
-> > > > ids_inflight is used to track the inflight IOs. But the use of atomic_t
-> > > > variable can cause performance drops and can also become a performance
-> > > > bottleneck.
+> > > > It was difficult to find out why it failed to establish RDMA
+> > > > connection. This patch adds some messages to show which function
+> > > > has failed why.
 > > > >
-> > > > This commit replaces the use of atomic_t with a percpu_ref structure. The
-> > > > advantage it offers is, it doesn't check if the reference has fallen to 0,
-> > > > until the user explicitly signals it to; and that is done by the
-> > > > percpu_ref_kill() function call. After that, the percpu_ref structure
-> > > > behaves like an atomic_t and for every put call, checks whether the
-> > > > reference has fallen to 0 or not.
-> > > >
-> > > > rtrs_srv_stats_rdma_to_str shows the count of ids_inflight as 0
-> > > > for user-mode tools not to be confused.
-> > > >
-> > > > Fixes: 9cb837480424e ("RDMA/rtrs: server: main functionality")
 > > > > Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 > > > > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 > > > > Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-> > > > ---
-> > > >  drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c | 12 +++---
-> > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c       | 43 +++++++++++++-------
-> > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.h       |  4 +-
-> > > >  3 files changed, 35 insertions(+), 24 deletions(-)
+> > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 8 +++++++-
+> > > >  1 file changed, 7 insertions(+), 1 deletion(-)
 > > > >
-> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c
-> > > > index e102b1368d0c..df1d7d6b1884 100644
-> > > > --- a/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c
-> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c
-> > > > @@ -27,12 +27,10 @@ ssize_t rtrs_srv_stats_rdma_to_str(struct rtrs_srv_stats *stats,
-> > > >                                   char *page, size_t len)
-> > > >  {
-> > > >       struct rtrs_srv_stats_rdma_stats *r = &stats->rdma_stats;
-> > > > -     struct rtrs_srv_sess *sess = stats->sess;
-> > > >
-> > > > -     return scnprintf(page, len, "%lld %lld %lld %lld %u\n",
-> > > > -                      (s64)atomic64_read(&r->dir[READ].cnt),
-> > > > -                      (s64)atomic64_read(&r->dir[READ].size_total),
-> > > > -                      (s64)atomic64_read(&r->dir[WRITE].cnt),
-> > > > -                      (s64)atomic64_read(&r->dir[WRITE].size_total),
-> > > > -                      atomic_read(&sess->ids_inflight));
-> > > > +     return sysfs_emit(page, "%lld %lld %lld %lldn\n",
-> > > > +                       (s64)atomic64_read(&r->dir[READ].cnt),
-> > > > +                       (s64)atomic64_read(&r->dir[READ].size_total),
-> > > > +                       (s64)atomic64_read(&r->dir[WRITE].cnt),
-> > > > +                       (s64)atomic64_read(&r->dir[WRITE].size_total));
-> > > >  }
+> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > > > index 3d09d01e34b4..df17dd4c1e28 100644
+> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > > > @@ -1356,8 +1356,10 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
+> > > >        * If this request is not the first connection request from the
+> > > >        * client for this session then fail and return error.
+> > > >        */
+> > > > -     if (!first_conn)
+> > > > +     if (!first_conn) {
+> > > > +             pr_err("Error: Not the first connection request for this session\n");
+> > > >               return ERR_PTR(-ENXIO);
 > > >
-> > > This seems like an unrelated hunk
+> > > You really shouldn't be printing based on attacker controlled data..
 > >
-> > Previous to the commit, ids_inflight was an atomic variable, and hence
-> > was read and printed along with other rtrs_srv stats. With this
-> > commit, since ids_inflight is changed to percpu_ref, we removed it
-> > being printed in rtrs_srv stats. Its related to the commit.
-> I think Jason meant the sysfs_emit conversion should be in a separate patch.
+> > I want to make sure I understand correctly. Did you mean that an
+> > attacker can bombard a server with such connection request, which can
+> > lead to uncontrolled prints, and possibly DOS?
+>
+> Yes
+>
+> > If so, would a ratelimited print be better?
+>
+> Probably
 
-Okay. I missed that.
+Alright.. Will change this print to a ratelimited one, and send the
+updates patches.
 
-Thanks; will send the updated patches.
+Thanks.
 
-> >
-> >
-> > >
-> > > Jason
+>
+> Jason
