@@ -2,153 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B0C392943
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 May 2021 10:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CFD392AB0
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 May 2021 11:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhE0IMy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 27 May 2021 04:12:54 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:35279 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235251AbhE0IMx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 27 May 2021 04:12:53 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-279-KkwZFJaGNEGUEK60W_pQZA-1; Thu, 27 May 2021 09:11:15 +0100
-X-MC-Unique: KkwZFJaGNEGUEK60W_pQZA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Thu, 27 May 2021 09:11:14 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Thu, 27 May 2021 09:11:14 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Jason Gunthorpe' <jgg@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Tom Talpey <tom@talpey.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Chuck Lever III <chuck.lever@oracle.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Honggang LI <honli@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
-Subject: RE: [PATCH rdma-next v1 0/2] Enable relaxed ordering for ULPs
-Thread-Topic: [PATCH rdma-next v1 0/2] Enable relaxed ordering for ULPs
-Thread-Index: AQHXUmWU6o4h3uGgPUqVoazWtMs6IKr2+KAA
-Date:   Thu, 27 May 2021 08:11:14 +0000
-Message-ID: <5ae77009a18a4ea2b309f3ca4e4095f9@AcuMS.aculab.com>
-References: <cover.1621505111.git.leonro@nvidia.com>
- <20210526193021.GA3644646@nvidia.com>
-In-Reply-To: <20210526193021.GA3644646@nvidia.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S235666AbhE0J1O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 May 2021 05:27:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235649AbhE0J1N (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 May 2021 05:27:13 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B35C061574
+        for <linux-rdma@vger.kernel.org>; Thu, 27 May 2021 02:25:40 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id a5so6262303lfm.0
+        for <linux-rdma@vger.kernel.org>; Thu, 27 May 2021 02:25:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wJWDG0x5hmvmBul/Q3qGakGO8DJLQhwz2E01+5Exm7k=;
+        b=dH/IKjJWTcwp35AbFPn7IKpMT+5X4msQfmFK5ZLHZpCYVxg2leOoN7E9OsyDeurWqs
+         U21mmv8bErXBkmW8syeEl4K5xAr4wTGmy2exAUJ832O61AwV3Xc4PlnQeX1l9j6oDxZ+
+         V1DmK3RnvXReon70po7T8uLXwFCwkSVZJFiRX2/R/knZ6IfJG4cuCK4DEiNEA4Z2WBKW
+         sYaRirkn+DlgGiYDRasTa48ag/MPaLuioAbK92VsrOjqZc2gqOJO9/M/1JPb95+lVXOO
+         ximWDivxeQMyeaFxsUBtzTAbGSHAEWFxGjhwcSBc7rLpqZdk0SsOpwDSvMizLmvQ/P7E
+         eUIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wJWDG0x5hmvmBul/Q3qGakGO8DJLQhwz2E01+5Exm7k=;
+        b=CsK1pFaPYe8NCsRBOUethcFHWSZhFewvLOJl620rWgmR0tgDYlBWBTp61A9RMbn7kk
+         kiFLS3lafHP5dz9qz2ipNcHZWxbv/g8glEJlFK3DEpp6T0+6w7ZmSHJGdgvmENT3nnAB
+         a4tmr0GjB+5CgKS87POVdBidi3zSpyqCTeMCv1ZMEiwM80BKyF0jZjtPCnx26i6I0yaz
+         qertdwUvz5t8Q8X9oOQfSuabL6V2Yj84m0QlM/1xU8nMqtOFd9M1lfBn0elYEeyfZHqx
+         Vxs6r9rbPJV2WwV7cZg4pth/t2bcBzDh4ir1qoDVg6VfQb0bY49vgfb46gCBV2MV53AC
+         hWWQ==
+X-Gm-Message-State: AOAM531GzvqLvxN09vbDQHYmSxrdzUDUT5rsduR47l2ye/FZ54Vb6V/5
+        gga4Qq7FykHCsBnHKR7WAa18S5gP97+8JBsHCN6urQ==
+X-Google-Smtp-Source: ABdhPJy6DALJLqq20ZlHPVDyws3t/62gscoQZTSXd+bINyIE2meIm7E9tjTAgoCf+EhEOL9A+OjhK9lkgsIsi2GwCB0=
+X-Received: by 2002:a05:6512:2192:: with SMTP id b18mr1792033lft.422.1622107538761;
+ Thu, 27 May 2021 02:25:38 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210517091844.260810-1-gi-oh.kim@ionos.com> <20210517091844.260810-14-gi-oh.kim@ionos.com>
+ <20210525201543.GA3482418@nvidia.com> <CAJpMwyh2Xw2CpWZBeVS3mTKOXFx6qQymZkxsUSA1oiGaohRJzg@mail.gmail.com>
+ <CAMGffEnX4OQnmqrK4AaDQ=dSE1e4LrHWNUQQSiL_viL_emQYyw@mail.gmail.com>
+In-Reply-To: <CAMGffEnX4OQnmqrK4AaDQ=dSE1e4LrHWNUQQSiL_viL_emQYyw@mail.gmail.com>
+From:   Haris Iqbal <haris.iqbal@ionos.com>
+Date:   Thu, 27 May 2021 11:25:27 +0200
+Message-ID: <CAJpMwyg3HpEvfapLGFLUnB8FJo6yY6OLUErS+=6oyo4L5Y543A@mail.gmail.com>
+Subject: Re: [PATCHv2 for-next 13/19] RDMA/rtrs-srv: Replace atomic_t with
+ percpu_ref for ids_inflight
+To:     Jinpu Wang <jinpu.wang@ionos.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, Gioh Kim <gi-oh.kim@ionos.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe
-> Sent: 26 May 2021 20:30
-> 
-> On Thu, May 20, 2021 at 01:13:34PM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
+On Wed, May 26, 2021 at 11:38 AM Jinpu Wang <jinpu.wang@ionos.com> wrote:
+>
+> On Wed, May 26, 2021 at 11:17 AM Haris Iqbal <haris.iqbal@ionos.com> wrote:
 > >
-> > Changelog:
-> > v1:
-> >  * Enabled by default RO in IB/core instead of changing all users
-> > v0: https://lore.kernel.org/lkml/20210405052404.213889-1-leon@kernel.org
+> > On Tue, May 25, 2021 at 10:15 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > >
+> > > On Mon, May 17, 2021 at 11:18:37AM +0200, Gioh Kim wrote:
+> > > > From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+> > > >
+> > > > ids_inflight is used to track the inflight IOs. But the use of atomic_t
+> > > > variable can cause performance drops and can also become a performance
+> > > > bottleneck.
+> > > >
+> > > > This commit replaces the use of atomic_t with a percpu_ref structure. The
+> > > > advantage it offers is, it doesn't check if the reference has fallen to 0,
+> > > > until the user explicitly signals it to; and that is done by the
+> > > > percpu_ref_kill() function call. After that, the percpu_ref structure
+> > > > behaves like an atomic_t and for every put call, checks whether the
+> > > > reference has fallen to 0 or not.
+> > > >
+> > > > rtrs_srv_stats_rdma_to_str shows the count of ids_inflight as 0
+> > > > for user-mode tools not to be confused.
+> > > >
+> > > > Fixes: 9cb837480424e ("RDMA/rtrs: server: main functionality")
+> > > > Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+> > > > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+> > > > Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+> > > > ---
+> > > >  drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c | 12 +++---
+> > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c       | 43 +++++++++++++-------
+> > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.h       |  4 +-
+> > > >  3 files changed, 35 insertions(+), 24 deletions(-)
+> > > >
+> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c
+> > > > index e102b1368d0c..df1d7d6b1884 100644
+> > > > --- a/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c
+> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c
+> > > > @@ -27,12 +27,10 @@ ssize_t rtrs_srv_stats_rdma_to_str(struct rtrs_srv_stats *stats,
+> > > >                                   char *page, size_t len)
+> > > >  {
+> > > >       struct rtrs_srv_stats_rdma_stats *r = &stats->rdma_stats;
+> > > > -     struct rtrs_srv_sess *sess = stats->sess;
+> > > >
+> > > > -     return scnprintf(page, len, "%lld %lld %lld %lld %u\n",
+> > > > -                      (s64)atomic64_read(&r->dir[READ].cnt),
+> > > > -                      (s64)atomic64_read(&r->dir[READ].size_total),
+> > > > -                      (s64)atomic64_read(&r->dir[WRITE].cnt),
+> > > > -                      (s64)atomic64_read(&r->dir[WRITE].size_total),
+> > > > -                      atomic_read(&sess->ids_inflight));
+> > > > +     return sysfs_emit(page, "%lld %lld %lld %lldn\n",
+> > > > +                       (s64)atomic64_read(&r->dir[READ].cnt),
+> > > > +                       (s64)atomic64_read(&r->dir[READ].size_total),
+> > > > +                       (s64)atomic64_read(&r->dir[WRITE].cnt),
+> > > > +                       (s64)atomic64_read(&r->dir[WRITE].size_total));
+> > > >  }
+> > >
+> > > This seems like an unrelated hunk
 > >
-> > >From Avihai,
-> >
-> > Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
-> > imposed on PCI transactions, and thus, can improve performance for
-> > applications that can handle this lack of strict ordering.
-> >
-> > Currently, relaxed ordering can be set only by user space applications
-> > for user MRs. Not all user space applications support relaxed ordering
-> > and for this reason it was added as an optional capability that is
-> > disabled by default. This behavior is not changed as part of this series,
-> > and relaxed ordering remains disabled by default for user space.
-> >
-> > On the other hand, kernel users should universally support relaxed
-> > ordering, as they are designed to read data only after observing the CQE
-> > and use the DMA API correctly. There are a few platforms with broken
-> > relaxed ordering implementation, but for them relaxed ordering is expected
-> > to be turned off globally in the PCI level. In addition, note that this is
-> > not the first use of relaxed ordering. Relaxed ordering has been enabled
-> > by default in mlx5 ethernet driver, and user space apps use it as well for
-> > quite a while.
-> >
-> > Hence, this series enabled relaxed ordering by default for kernel users so
-> > they can benefit as well from the performance improvements.
-> >
-> > The following test results show the performance improvement achieved
-> > with relaxed ordering. The test was performed by running FIO traffic
-> > between a NVIDIA DGX A100 (ConnectX-6 NICs and AMD CPUs) and a NVMe
-> > storage fabric, using NFSoRDMA:
-> >
-> > Without Relaxed Ordering:
-> > READ: bw=16.5GiB/s (17.7GB/s), 16.5GiB/s-16.5GiB/s (17.7GB/s-17.7GB/s),
-> > io=1987GiB (2133GB), run=120422-120422msec
-> >
-> > With relaxed ordering:
-> > READ: bw=72.9GiB/s (78.2GB/s), 72.9GiB/s-72.9GiB/s (78.2GB/s-78.2GB/s),
-> > io=2367GiB (2542GB), run=32492-32492msec
-> >
-> > The series has been tested over NVMe, iSER, SRP and NFS with ConnectX-6
-> > NIC. The tests included FIO verify and stress tests, and various
-> > resiliency tests (shutting down NIC port in the middle of traffic,
-> > rebooting the target in the middle of traffic etc.).
-> 
-> There was such a big discussion on the last version I wondered why
-> this was so quiet. I guess because the cc list isn't very big..
-> 
-> Adding the people from the original thread, here is the patches:
-> 
-> https://lore.kernel.org/linux-rdma/cover.1621505111.git.leonro@nvidia.com/
-> 
-> I think this is the general approach that was asked for, to special case
-> uverbs and turn it on in kernel universally
+> > Previous to the commit, ids_inflight was an atomic variable, and hence
+> > was read and printed along with other rtrs_srv stats. With this
+> > commit, since ids_inflight is changed to percpu_ref, we removed it
+> > being printed in rtrs_srv stats. Its related to the commit.
+> I think Jason meant the sysfs_emit conversion should be in a separate patch.
 
-I'm still not sure which PCIe transactions you are enabling relaxed
-ordering for.
-Nothing has ever said that in layman's terms.
+Okay. I missed that.
 
-IIRC PCIe targets (like ethernet chips) can use relaxed ordered
-writes for frame contents but must use strongly ordered writes
-for the corresponding ring (control structure) updates.
+Thanks; will send the updated patches.
 
-If the kernel is issuing relaxed ordered writes then the same
-conditions would need to be satisfied.
-CPU barrier instructions are unlikely to affect what happens
-once a (posted) write is issued - but the re-ordering happens
-at the PCIe bridges or actual targets.
-So barrier instructions are unlikely to help.
-
-I'm not sure what a 'MR' is in this context.
-But if you are changing the something that is part of the
-virtual to physical address mapping then such a global
-change is actually likely to break anything that cares.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+> >
+> >
+> > >
+> > > Jason
