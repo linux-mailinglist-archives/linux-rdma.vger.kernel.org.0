@@ -2,193 +2,153 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78CF392222
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 May 2021 23:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B0C392943
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 May 2021 10:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbhEZVgC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 May 2021 17:36:02 -0400
-Received: from gateway24.websitewelcome.com ([192.185.51.196]:17148 "EHLO
-        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233477AbhEZVgB (ORCPT
+        id S229793AbhE0IMy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 27 May 2021 04:12:54 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:35279 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235251AbhE0IMx (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 26 May 2021 17:36:01 -0400
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway24.websitewelcome.com (Postfix) with ESMTP id 0D2AC3E4A4
-        for <linux-rdma@vger.kernel.org>; Wed, 26 May 2021 16:34:27 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id m1AYlgMoS8uM0m1AZlsHXc; Wed, 26 May 2021 16:34:27 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=AVftKSHQScIRK8be+dU0JJK0i8MExIzulGIQ7Lt68hQ=; b=hXXj4RoQgzHnVE78yp975cleDa
-        HrxSn9+oN9PI8XKXdFnJ3DoO4tePmCGV/jcjaCOvVOYnbbnUhnBL+NUNpo3Q6QFGObmNDdfjexIK8
-        7LJtxOzqIlq1UlZgn/YVpbSf1gJYJTyy26aWjZNDDi4Mh9y1tAMy5FOSPlg4O57uGjfHJOZG/ifCc
-        STvK0PHs3PcUQDE2ZgL31kpHRveisbF6w0iq2ri1Jbr2/2VLqBpQJZiaa8QOpNWjrJNWxkJG9Fm98
-        8AFk+KailfXWtTWPyOg8G7fCp/OV/dMIH1qkxqIVKiNOsLFxUAuHRVb+WJC/b1ht4kWvKhc99ptca
-        FvGIcXwA==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:46830 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lm1AT-003fxT-AA; Wed, 26 May 2021 16:34:21 -0500
-Subject: Re: [Intel-wired-lan] [PATCH][next] i40e: Replace one-element array
- with flexible-array member
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "Latif, Faisal" <faisal.latif@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        Thu, 27 May 2021 04:12:53 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-279-KkwZFJaGNEGUEK60W_pQZA-1; Thu, 27 May 2021 09:11:15 +0100
+X-MC-Unique: KkwZFJaGNEGUEK60W_pQZA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Thu, 27 May 2021 09:11:14 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Thu, 27 May 2021 09:11:14 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jason Gunthorpe' <jgg@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Avihai Horon <avihaih@nvidia.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-References: <20210525230038.GA175516@embeddedor>
- <bf46b428deef4e9e89b0ea1704b1f0e5@intel.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <79c3c00d-c364-9db1-b8de-7ed0686ca8dc@embeddedor.com>
-Date:   Wed, 26 May 2021 16:35:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Tom Talpey <tom@talpey.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Honggang LI <honli@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: RE: [PATCH rdma-next v1 0/2] Enable relaxed ordering for ULPs
+Thread-Topic: [PATCH rdma-next v1 0/2] Enable relaxed ordering for ULPs
+Thread-Index: AQHXUmWU6o4h3uGgPUqVoazWtMs6IKr2+KAA
+Date:   Thu, 27 May 2021 08:11:14 +0000
+Message-ID: <5ae77009a18a4ea2b309f3ca4e4095f9@AcuMS.aculab.com>
+References: <cover.1621505111.git.leonro@nvidia.com>
+ <20210526193021.GA3644646@nvidia.com>
+In-Reply-To: <20210526193021.GA3644646@nvidia.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <bf46b428deef4e9e89b0ea1704b1f0e5@intel.com>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lm1AT-003fxT-AA
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:46830
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 11
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 5/26/21 16:29, Saleem, Shiraz wrote:
->> Subject: [PATCH][next] i40e: Replace one-element array with flexible-array member
->>
->> There is a regular need in the kernel to provide a way to declare having a
->> dynamically sized set of trailing elements in a structure. Kernel code should always
->> use “flexible array members”[1] for these cases. The older style of one-element or
->> zero-length arrays should no longer be used[2].
->>
->> Refactor the code according to the use of a flexible-array member in struct
->> i40e_qvlist_info instead of one-element array, and use the struct_size() helper.
->>
->> [1] https://en.wikipedia.org/wiki/Flexible_array_member
->> [2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-
->> and-one-element-arrays
->>
->> Link: https://github.com/KSPP/linux/issues/79
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+From: Jason Gunthorpe
+> Sent: 26 May 2021 20:30
 > 
-> This looks ok to me.
-> Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> On Thu, May 20, 2021 at 01:13:34PM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> >
+> > Changelog:
+> > v1:
+> >  * Enabled by default RO in IB/core instead of changing all users
+> > v0: https://lore.kernel.org/lkml/20210405052404.213889-1-leon@kernel.org
+> >
+> > >From Avihai,
+> >
+> > Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
+> > imposed on PCI transactions, and thus, can improve performance for
+> > applications that can handle this lack of strict ordering.
+> >
+> > Currently, relaxed ordering can be set only by user space applications
+> > for user MRs. Not all user space applications support relaxed ordering
+> > and for this reason it was added as an optional capability that is
+> > disabled by default. This behavior is not changed as part of this series,
+> > and relaxed ordering remains disabled by default for user space.
+> >
+> > On the other hand, kernel users should universally support relaxed
+> > ordering, as they are designed to read data only after observing the CQE
+> > and use the DMA API correctly. There are a few platforms with broken
+> > relaxed ordering implementation, but for them relaxed ordering is expected
+> > to be turned off globally in the PCI level. In addition, note that this is
+> > not the first use of relaxed ordering. Relaxed ordering has been enabled
+> > by default in mlx5 ethernet driver, and user space apps use it as well for
+> > quite a while.
+> >
+> > Hence, this series enabled relaxed ordering by default for kernel users so
+> > they can benefit as well from the performance improvements.
+> >
+> > The following test results show the performance improvement achieved
+> > with relaxed ordering. The test was performed by running FIO traffic
+> > between a NVIDIA DGX A100 (ConnectX-6 NICs and AMD CPUs) and a NVMe
+> > storage fabric, using NFSoRDMA:
+> >
+> > Without Relaxed Ordering:
+> > READ: bw=16.5GiB/s (17.7GB/s), 16.5GiB/s-16.5GiB/s (17.7GB/s-17.7GB/s),
+> > io=1987GiB (2133GB), run=120422-120422msec
+> >
+> > With relaxed ordering:
+> > READ: bw=72.9GiB/s (78.2GB/s), 72.9GiB/s-72.9GiB/s (78.2GB/s-78.2GB/s),
+> > io=2367GiB (2542GB), run=32492-32492msec
+> >
+> > The series has been tested over NVMe, iSER, SRP and NFS with ConnectX-6
+> > NIC. The tests included FIO verify and stress tests, and various
+> > resiliency tests (shutting down NIC port in the middle of traffic,
+> > rebooting the target in the middle of traffic etc.).
 > 
-> It seems we should add this to the new irdma driver submission as well which replaces i40iw.
-> I will fold it into v7 of the rdma portion of the series
-> https://lore.kernel.org/linux-rdma/20210520200326.GX1096940@ziepe.ca/
+> There was such a big discussion on the last version I wondered why
+> this was so quiet. I guess because the cc list isn't very big..
+> 
+> Adding the people from the original thread, here is the patches:
+> 
+> https://lore.kernel.org/linux-rdma/cover.1621505111.git.leonro@nvidia.com/
+> 
+> I think this is the general approach that was asked for, to special case
+> uverbs and turn it on in kernel universally
 
-OK. Just please, when you fold it, add my Signed-off-by tag like this:
+I'm still not sure which PCIe transactions you are enabling relaxed
+ordering for.
+Nothing has ever said that in layman's terms.
 
-[flexible array transformation]
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+IIRC PCIe targets (like ethernet chips) can use relaxed ordered
+writes for frame contents but must use strongly ordered writes
+for the corresponding ring (control structure) updates.
 
-Thanks
---
-Gustavo
+If the kernel is issuing relaxed ordered writes then the same
+conditions would need to be satisfied.
+CPU barrier instructions are unlikely to affect what happens
+once a (posted) write is issued - but the re-ordering happens
+at the PCIe bridges or actual targets.
+So barrier instructions are unlikely to help.
 
-> Additionally we will add this patch when we resend this PR on iwl-next.
-> https://lore.kernel.org/linux-rdma/62555c6de641e10cb4169653731389a51d086345.camel@intel.com/
-> 
-> 
->> ---
->>  drivers/infiniband/hw/i40iw/i40iw_main.c      | 5 ++---
->>  drivers/net/ethernet/intel/i40e/i40e_client.c | 2 +-
->>  include/linux/net/intel/i40e_client.h         | 2 +-
->>  3 files changed, 4 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/i40iw/i40iw_main.c
->> b/drivers/infiniband/hw/i40iw/i40iw_main.c
->> index b496f30ce066..364f69cd620f 100644
->> --- a/drivers/infiniband/hw/i40iw/i40iw_main.c
->> +++ b/drivers/infiniband/hw/i40iw/i40iw_main.c
->> @@ -1423,7 +1423,7 @@ static enum i40iw_status_code
->> i40iw_save_msix_info(struct i40iw_device *iwdev,
->>  	struct i40e_qv_info *iw_qvinfo;
->>  	u32 ceq_idx;
->>  	u32 i;
->> -	u32 size;
->> +	size_t size;
->>
->>  	if (!ldev->msix_count) {
->>  		i40iw_pr_err("No MSI-X vectors\n");
->> @@ -1433,8 +1433,7 @@ static enum i40iw_status_code
->> i40iw_save_msix_info(struct i40iw_device *iwdev,
->>  	iwdev->msix_count = ldev->msix_count;
->>
->>  	size = sizeof(struct i40iw_msix_vector) * iwdev->msix_count;
->> -	size += sizeof(struct i40e_qvlist_info);
->> -	size +=  sizeof(struct i40e_qv_info) * iwdev->msix_count - 1;
->> +	size += struct_size(iw_qvlist, qv_info, iwdev->msix_count);
->>  	iwdev->iw_msixtbl = kzalloc(size, GFP_KERNEL);
->>
->>  	if (!iwdev->iw_msixtbl)
->> diff --git a/drivers/net/ethernet/intel/i40e/i40e_client.c
->> b/drivers/net/ethernet/intel/i40e/i40e_client.c
->> index 32f3facbed1a..63eab14a26df 100644
->> --- a/drivers/net/ethernet/intel/i40e/i40e_client.c
->> +++ b/drivers/net/ethernet/intel/i40e/i40e_client.c
->> @@ -579,7 +579,7 @@ static int i40e_client_setup_qvlist(struct i40e_info *ldev,
->>  	u32 v_idx, i, reg_idx, reg;
->>
->>  	ldev->qvlist_info = kzalloc(struct_size(ldev->qvlist_info, qv_info,
->> -				    qvlist_info->num_vectors - 1), GFP_KERNEL);
->> +				    qvlist_info->num_vectors), GFP_KERNEL);
->>  	if (!ldev->qvlist_info)
->>  		return -ENOMEM;
->>  	ldev->qvlist_info->num_vectors = qvlist_info->num_vectors; diff --git
->> a/include/linux/net/intel/i40e_client.h b/include/linux/net/intel/i40e_client.h
->> index f41387a8969f..fd7bc860a241 100644
->> --- a/include/linux/net/intel/i40e_client.h
->> +++ b/include/linux/net/intel/i40e_client.h
->> @@ -48,7 +48,7 @@ struct i40e_qv_info {
->>
->>  struct i40e_qvlist_info {
->>  	u32 num_vectors;
->> -	struct i40e_qv_info qv_info[1];
->> +	struct i40e_qv_info qv_info[];
->>  };
->>
->>
->> --
->> 2.27.0
-> 
-> _______________________________________________
-> Intel-wired-lan mailing list
-> Intel-wired-lan@osuosl.org
-> https://lists.osuosl.org/mailman/listinfo/intel-wired-lan
-> 
+I'm not sure what a 'MR' is in this context.
+But if you are changing the something that is part of the
+virtual to physical address mapping then such a global
+change is actually likely to break anything that cares.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
