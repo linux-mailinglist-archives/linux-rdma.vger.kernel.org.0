@@ -2,76 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC673931D8
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 May 2021 17:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601743934C7
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 May 2021 19:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236877AbhE0PKP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 May 2021 11:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236885AbhE0PJc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 May 2021 11:09:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99832C06138A;
-        Thu, 27 May 2021 08:07:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1s+6QDFBX8Mw27bzQ3Jot3pBebhUbhaY0z0KFk7Dj10=; b=OEuTEn+54fMK3IBeWKRZDhlbYy
-        R/+jQl96Q8ceGti8Qp9+IXuX5PhFiu++DcZrNrioYymQEClUivGaSPq1xOyMxUUdyCS9QHdC17MEt
-        1L6QZSTo4AtNceJwCDCwFYNpVwfijo3/O/ujZJxcxAxvit4TFhiWCnq4yFllydkbdbnLCtBKbTAiQ
-        /hBswydB20IPRDxGE4wC5k863nU62HBjsDxJUOQQ/zhspWhwMkjZmx4rCanWDfLb2m7hNDTnOppqd
-        bbi7hDgaORAFRj3gmEqfl8xqZffjvgDGQlVdmA+COxWf08KE0La0zzWI8dr4oWOCTHchytNYigdex
-        l4S5JyUA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lmHaM-005efr-6M; Thu, 27 May 2021 15:06:20 +0000
-Date:   Thu, 27 May 2021 16:06:10 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next v1 2/2] RDMA/mlx5: Allow modifying Relaxed
- Ordering via fast registration
-Message-ID: <YK+1YoO8SR5Z/4b9@infradead.org>
-References: <cover.1621505111.git.leonro@nvidia.com>
- <9442b0de75f4ee029e7c306fce34b1f6f94a9e34.1621505111.git.leonro@nvidia.com>
- <20210526194906.GA3646419@nvidia.com>
- <YK992cLoTRWG30H9@infradead.org>
- <20210527145710.GF1002214@nvidia.com>
+        id S236994AbhE0RaI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 May 2021 13:30:08 -0400
+Received: from mga18.intel.com ([134.134.136.126]:44427 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235266AbhE0RaG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 27 May 2021 13:30:06 -0400
+IronPort-SDR: zMEIxuKu3nD83aOrzeTeOld8kXRl1R9+TmCf0tqSi3vyF9WDh0iopY0UB4EU/E3OmKVm3EAoLa
+ wYGn8glhQsWQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="190164929"
+X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
+   d="scan'208";a="190164929"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 10:27:52 -0700
+IronPort-SDR: qS99XsOMNSuHyF/AHD3J+EILjfWFvFwj0B+EZFKg9cEmis6V0RAgnIVEy2AhiO/tsGUjmz34sV
+ T/C+Cj6jbRhA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
+   d="scan'208";a="480682787"
+Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
+  by fmsmga002.fm.intel.com with ESMTP; 27 May 2021 10:27:51 -0700
+From:   Tony Nguyen <anthony.l.nguyen@intel.com>
+To:     davem@davemloft.net, kuba@kernel.org, dledford@redhat.com,
+        jgg@mellanox.com
+Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, shiraz.saleem@intel.com,
+        david.m.ertman@intel.com
+Subject: [PATCH net-next v2 0/7][pull request] iwl-next Intel Wired LAN Driver Updates 2021-05-27
+Date:   Thu, 27 May 2021 10:30:07 -0700
+Message-Id: <20210527173014.362216-1-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527145710.GF1002214@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 27, 2021 at 11:57:10AM -0300, Jason Gunthorpe wrote:
-> >  2) IB_UVERBS_ACCESS_*.  These just get checked using ib_check_mr_access
-> >     and then passed into ->reg_user_mr, ->rereg_user_mr and
-> >     ->reg_user_mr_dmabuf
-> 
-> Yes. Using the kernerl flags for those user marked APIs is intended to
-> simplify the drivers as the user/kernel MR logic should have shared
-> elements
+This pull request is targeting net-next and rdma-next branches.
+These patches have been reviewed by netdev and rdma mailing lists[1].
 
-I'd rather map between these flags somewhere low done if and when this
-actually happens.  Usually the driver will map to their internal flags
-somewhere, and I bet not doing a detour will clean this up while also
-removing the possibility for stupid errors.
+This series adds RDMA support to the ice driver for E810 devices and
+converts the i40e driver to use the auxiliary bus infrastructure
+for X722 devices. The PCI netdev drivers register auxiliary RDMA devices
+that will bind to auxiliary drivers registered by the new irdma module.
 
-> 
-> >  3) in-kernel FRWR uses IB_ACCESS_*, but all users seem to hardcode it
-> >     to IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_READ |
-> >     IB_ACCESS_REMOTE_WRITE anyway
-> 
-> So when a ULP is processing a READ it doesn't create a FRWR with
-> read-only rights? Isn't that security wrong?
+[1] https://lore.kernel.org/netdev/20210520143809.819-1-shiraz.saleem@intel.com/
+---
+v2:
+- Added patch 'i40e: Replace one-element array with flexible-array
+member'
 
-Probably.  We probably want a helper that does the right thing based
-off a enum dma_data_direction parameter.
+Changes since linked review (v6):
+- Removed unnecessary checks in i40e_client_device_register() and
+i40e_client_device_unregister()
+- Simplified the i40e_client_device_register() API
+---
+The following are changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+  Linux 5.13-rc1
+and are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/linux iwl-next
+
+Dave Ertman (4):
+  iidc: Introduce iidc.h
+  ice: Initialize RDMA support
+  ice: Implement iidc operations
+  ice: Register auxiliary device to provide RDMA
+
+Gustavo A. R. Silva (1):
+  i40e: Replace one-element array with flexible-array member
+
+Shiraz Saleem (2):
+  i40e: Prep i40e header for aux bus conversion
+  i40e: Register auxiliary devices to provide RDMA
+
+ MAINTAINERS                                   |   1 +
+ drivers/infiniband/hw/i40iw/i40iw_main.c      |   5 +-
+ drivers/net/ethernet/intel/Kconfig            |   2 +
+ drivers/net/ethernet/intel/i40e/i40e.h        |   2 +
+ drivers/net/ethernet/intel/i40e/i40e_client.c | 132 +++++--
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |   1 +
+ drivers/net/ethernet/intel/ice/Makefile       |   1 +
+ drivers/net/ethernet/intel/ice/ice.h          |  44 ++-
+ .../net/ethernet/intel/ice/ice_adminq_cmd.h   |  33 ++
+ drivers/net/ethernet/intel/ice/ice_common.c   | 217 ++++++++++-
+ drivers/net/ethernet/intel/ice/ice_common.h   |   9 +
+ drivers/net/ethernet/intel/ice/ice_dcb_lib.c  |  19 +
+ .../net/ethernet/intel/ice/ice_hw_autogen.h   |   3 +-
+ drivers/net/ethernet/intel/ice/ice_idc.c      | 339 ++++++++++++++++++
+ drivers/net/ethernet/intel/ice/ice_idc_int.h  |  14 +
+ drivers/net/ethernet/intel/ice/ice_lag.c      |   2 +
+ drivers/net/ethernet/intel/ice/ice_lib.c      |  11 +
+ drivers/net/ethernet/intel/ice/ice_lib.h      |   2 +-
+ drivers/net/ethernet/intel/ice/ice_main.c     | 142 ++++++--
+ drivers/net/ethernet/intel/ice/ice_sched.c    |  69 +++-
+ drivers/net/ethernet/intel/ice/ice_switch.c   |  27 ++
+ drivers/net/ethernet/intel/ice/ice_switch.h   |   4 +
+ drivers/net/ethernet/intel/ice/ice_type.h     |   4 +
+ include/linux/net/intel/i40e_client.h         |  12 +-
+ include/linux/net/intel/iidc.h                | 100 ++++++
+ 25 files changed, 1136 insertions(+), 59 deletions(-)
+ create mode 100644 drivers/net/ethernet/intel/ice/ice_idc.c
+ create mode 100644 drivers/net/ethernet/intel/ice/ice_idc_int.h
+ create mode 100644 include/linux/net/intel/iidc.h
+
+-- 
+2.26.2
+
