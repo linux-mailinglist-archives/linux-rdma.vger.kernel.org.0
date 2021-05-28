@@ -2,163 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CB4394325
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 May 2021 15:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF67394443
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 May 2021 16:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhE1NDv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 May 2021 09:03:51 -0400
-Received: from mail-mw2nam12on2084.outbound.protection.outlook.com ([40.107.244.84]:18304
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234853AbhE1NDu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 28 May 2021 09:03:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AgVHDKG1ErDt4rFjtOpYKxlTg0p1kE8Umi9sfWEDQCVJounDH/gOWzl2dBCMdujEJsiSkqYeG5j+5xHgkiZVHzUyVTGGiSTCyoB4LLoWNHmvTmGFhqsKpuxPxLdUl1II682dsqA8xU0/fSH3Fg9GIYmS87UNRFPnGp3YissmjL4cBNjN8LhygFGUXqGOfRuGU5ODiCMdmVRAYobXTv8Ct9tZzcz9jal1z5EkYYNmGpwuOxOXQ05hyq3DWtzuK7hy0G5BEsV4G1abbKUMvIGLPdxCPNn22TXEn/l9d9oj5JyMch2baD1NpkmxfJAopRmH/NCrId44i/ImBDkqiSjt6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vzB3jQRRkoEVhoWlXiRyMTJGVdF2RyypfwWFei4DlSk=;
- b=WQGVW0v572lB0Q++Br+eXfRuLEN7uwgF7joS7rQUkdgeLgSfyUQx+lPPHyiLLwCX8oePrVAX73Lz2M7SzYCLykBNJ3DZ1f0DO/p9R/OaQvHlvoT31Q5UrBS6RwtIA3Q3Z6QeHGGHVCRROXxkVxv2CJYP48PZydx85c3T6FkOeTFdA0DXTCb9mLfOqMD13LuSAnc7HPbXfCFCuFrCIpvZtZeCrz2ebkLmhOSYjj2gqjtM86E0Cj7FMpsSF+GoJSP/S/3NkzMRWNTPgLsxHBMN1GVUh3y0VzIN2r+8J8xxeBIeUAmyD5Ca9Maa/277Cn4cItZQSR4wf41E6mXI1X6UAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vzB3jQRRkoEVhoWlXiRyMTJGVdF2RyypfwWFei4DlSk=;
- b=fJJRROhdXVyfpu0xMNW3wDrkIpUPv8VYuZ2fmraS/raMSSjaQHIkyLNWeN0mkStc1R+W6qBriLSAoWr2KYFrukbZfjL07sI7tVmRE1XRRJsAoZ8Qw4EdIYIoaIDgV7nFS6BhHRnADrSRlA2XvM9OaB9jyzGMQWL1zRdMW8+Vnb4p9wk0dxBlSrjU8LQSaxyjV6c1E8Ke41VF9RVg6qn7Cm/EekotJG7lJnxgxzYXUUUZ8jU6dy2Mu72WUGc6eFUHT7UF48mdB7FrGz78l1rt/zzQ5Qpvry4qUarvSFwQ/NP4dfXuVF+zTEP5awRH1pzJQo4nNuGyUjyhQXnW5+mP7w==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5304.namprd12.prod.outlook.com (2603:10b6:208:314::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Fri, 28 May
- 2021 13:02:14 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.023; Fri, 28 May 2021
- 13:02:14 +0000
-Date:   Fri, 28 May 2021 10:02:12 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, leonro@nvidia.com, davem@davemloft.net,
-        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
-        shiraz.saleem@intel.com
-Subject: Re: [PATCH net-next v2 4/7] ice: Implement iidc operations
-Message-ID: <20210528130212.GL1002214@nvidia.com>
-References: <20210527173014.362216-1-anthony.l.nguyen@intel.com>
- <20210527173014.362216-5-anthony.l.nguyen@intel.com>
- <20210527171241.3b886692@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527171241.3b886692@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0245.namprd13.prod.outlook.com
- (2603:10b6:208:2ba::10) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S236064AbhE1Ogp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 May 2021 10:36:45 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27808 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235940AbhE1Ogo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 28 May 2021 10:36:44 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14SEYSkJ006920
+        for <linux-rdma@vger.kernel.org>; Fri, 28 May 2021 10:35:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
+ from : to : cc : date : references : content-type : message-id :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=DW5mBKpkUgFiPSP91P2mSiY2zI3d1i3W6MiUcpe3+Bo=;
+ b=Xt1kRFlGVFnyNAZhZQroYeE+jJTpsW/ZaaR3tEaFzvHM5rc7aYnKXE+5/Fa7i9vpsetI
+ irtFdSssOol24JOArjT4jh4s+oFW6iAHZVYyuoeokLLR6NR+aeUhKEORdNpWXLtMSZ1T
+ etGoxCUw4S06nzUWJE2PwuKV5Wf7DxMsSFWxBWze7m8x21X8o7l/mPzEuS4CW0xj3qr4
+ y2X0MfYgaTG+I+5GAUeUR4/TMfsbrpoJLPc59BAcdV8P1haEATwAjHEsi4KSDqWxj8dC
+ jcCP1JGVlRqAWEEm6cBOoYaa0V9Cq3wL3M9rvSqQHLsgsYi73oOeO3mtx3N1MB9p/WrJ 7g== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.66])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38u2bsr3xr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Fri, 28 May 2021 10:35:09 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Fri, 28 May 2021 14:35:08 -0000
+Received: from us1a3-smtp08.a3.dal06.isc4sb.com (10.146.103.57)
+        by smtp.notes.na.collabserv.com (10.106.227.127) with smtp.notes.na.collabserv.com ESMTP;
+        Fri, 28 May 2021 14:35:07 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp08.a3.dal06.isc4sb.com
+          with ESMTP id 2021052814350700-371770 ;
+          Fri, 28 May 2021 14:35:07 +0000 
+In-Reply-To: <731bc8e0-4bbc-7006-23ef-2e0008f5e415@samba.org>
+Subject: Re: Re: [PATCH 00/31] rdma/siw: fix a lot of deadlocks and use after free
+ bugs
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Stefan Metzmacher" <metze@samba.org>
+Cc:     "linux-rdma" <linux-rdma@vger.kernel.org>
+Date:   Fri, 28 May 2021 14:35:07 +0000
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <731bc8e0-4bbc-7006-23ef-2e0008f5e415@samba.org>,<cover.1620343860.git.metze@samba.org>
+ <OF63068FA7.7F9E2E59-ON002586CE.0041A961-002586CE.0042BDA1@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
+X-LLNOutbound: False
+X-Disclaimed: 60523
+X-TNEFEvaluated: 1
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 21052814-4409-0000-0000-00000530F3B3
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0; SC=0;
+ ST=0; TS=0; UL=0; ISC=; MB=0.000356
+X-IBM-SpamModules-Versions: BY=3.00015193; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000296; SDB=6.01548293; UDB=6.00841538; IPR=6.01330255;
+ MB=3.00036958; MTD=3.00000008; XFM=3.00000015; UTC=2021-05-28 14:35:08
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2021-03-25 10:49:15 - 6.00012377
+x-cbparentid: 21052814-4410-0000-0000-0000A820F783
+Message-Id: <OF3E623A7B.5CEABB75-ON002586E3.004D659D-002586E3.00501E8D@notes.na.collabserv.com>
+X-Proofpoint-GUID: H86999tpL_U2X1LKR1u3V9Sn0laPVH51
+X-Proofpoint-ORIG-GUID: H86999tpL_U2X1LKR1u3V9Sn0laPVH51
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0245.namprd13.prod.outlook.com (2603:10b6:208:2ba::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.10 via Frontend Transport; Fri, 28 May 2021 13:02:13 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lmc7w-00FwoE-Ss; Fri, 28 May 2021 10:02:12 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 55b9d26a-3d18-4a44-c0d2-08d921d8d032
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5304:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5304D656AEEE85E3C5209098C2229@BL1PR12MB5304.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: u+kn+gRxRiJalqr/zB5XYe9M85QqQmCFfdBt1HSUh2CE7lXrnhcjgYNNEiqELbuDrhWnferB5JX695nnUbCiuPoYVuCm5AyEpIM04TzKnBH51pHlVc7ehViUCe8TQie+JtQz+zJnL3LxAMG1+MRCDt0wYByaxBD4moHifzqSVDngiSqsr59xme3JhP54Lh0WVRX/3CGM52P/CahKzoI6yKwC6TproUjR8DZyWjtz5tQOaG57y3J4akSItm7r4j+PRJwIgs+4U28tyEtGXFbD8lIV5eGuELx5FhYjz90lS8xbY6Ce1WCAxZzsdreMHJeD4OQGVu/1n/YkY7fR+g3D+U4yl7AKWUFc2bflZh31fvS9GC4qiZhj6QvNxqOepe6yAjxMNsm8DQgghn9pdMqbdptXPgpMpBFdAybjLGoVKCJK5qR+MwUup0WUAPkZl7n4mOl5Hf9oEyUncPKHoN6rYh9wCeV/kSNGcFVYcKxY+Nm4Spv+0ax6knafN4MC6VXmqKe94w+WV9jQGyyMCL+2c0LYKIxtf4CkbCPxBXpaX9PIttlAragi2LDkWi194gqZ225NOWlwLUZNx2QjNAtJQkzlxZIVYAXmF3lbg695kEk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(39860400002)(396003)(346002)(136003)(2906002)(9786002)(9746002)(66556008)(6916009)(26005)(86362001)(2616005)(54906003)(66946007)(36756003)(4326008)(66476007)(5660300002)(8676002)(478600001)(8936002)(1076003)(38100700002)(426003)(186003)(316002)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?uwJhKU8cvg65+DD8Nm2ymFET34Nn7dcXzDcQ/aJpFWmww9GzVjjJpcqr+iIz?=
- =?us-ascii?Q?5Ke8Kn0yGL+tPCvUwMwihvINal/DAhLqh55zCr3uEQbP0Hy2WHdadM/nn53A?=
- =?us-ascii?Q?YDTfxCrMX30tqW+0t2RNCApRFJJ4VHGLwjHjn5sGXWMEZBADEKZ08LTcKoYr?=
- =?us-ascii?Q?lr8c1UzvEpwP5vmR6RiZdNWP4rxyx8foPudyCgL0uX/yKQJ7XkJ4Ul+AnY9n?=
- =?us-ascii?Q?XVTR6N7xrJRqPj+p/TFbYNsCBRX402Wa6+RWNuN0tljFSM6OcVeunmGTBpzL?=
- =?us-ascii?Q?Vw8F/blZiOkZ8d7RtHELSqlUPU0IG3hriBCmmTQYCflcCILw9IxfSSDHxSzB?=
- =?us-ascii?Q?3jc61pUDQPTCG+rJiLEKUrpYe/ExasAkZXlRiP6LkoVJDb76NqPTY+WIMYgq?=
- =?us-ascii?Q?djEvVRfOy1G2uKcsOGJCpudNe9US27gfl7q/lP27zSbIHVKsH1DvwfsB0IFl?=
- =?us-ascii?Q?e8adHC9VqgMxEQr+J+uImDbBiZ6IumIOIxs1MRr7+MPIrDAB1ya3spxma9mx?=
- =?us-ascii?Q?zGFK5iH47XqXXtNPEJm72godoM1Vru0v927A57UJP+bz7iVTCHHQ1N0Za/vB?=
- =?us-ascii?Q?rfdr7t4rbC1uePqXcTU01yzcbShuHj79jbXBeMj6hDw30F7lgkOMRi1Q675i?=
- =?us-ascii?Q?zj6m7S+wPRpDvqlmt0NqASxwe6ABwXEYRrnyDCxm09T2aiSy5JbX9ink4YYe?=
- =?us-ascii?Q?zOIoO7X5TUIWk5X/8WM/0lEEJddQFDz8qOnIQ12sRa4m8uQuqYH3jiC+IeWB?=
- =?us-ascii?Q?xOK4toicVaJlyYzVKc0s9KMgmnL5XOWv/OsVICjnfM23z/3+xPhjf8xW0C0t?=
- =?us-ascii?Q?0KiTkuL2B9Ed0vQH/6W911+uyr0hHf+Kh483J4Tv6/m1OmS/9lwaUDi+JQGl?=
- =?us-ascii?Q?HS06M4mxc6x1zdRpQXjQ/8J14oTxh2B7rvE0lknSAKSlKtvb/64nnyPdQGIK?=
- =?us-ascii?Q?ochapdiNwp0Ehodm4NUqZow/9GGNt7Y5S1FQ2miLZFHIHE8CZgWE351xxXS2?=
- =?us-ascii?Q?P0sNQ2Af6NU73+3MbenbFvjBqjKIbyAPf+4gXui6kpTRx1NOQ+Yc7slcRLnL?=
- =?us-ascii?Q?9XQbCeI13T2yVA08/1BVC33Lvrcto6I4vS6nRGY4gMqE0NzLA1Oqnq2Vd+tY?=
- =?us-ascii?Q?aupBf7yC+D5lSYieQWeb1U/nRc0uT0ZpPIzCxHbMnBEnXc5UcmUmQMm/WBEE?=
- =?us-ascii?Q?mg0efIHU/E2jetklQfQyQGVeHA/qfif0MirR2uM8DJhbv7JRMpwU+9FjBDs3?=
- =?us-ascii?Q?+QmfJaa9k+721pyg/8ZO8/j7nvbK6VbKvkLk4+V5DIj7LJKHnxfLEIM664zY?=
- =?us-ascii?Q?8SgDRWhV1C27XvUyKwlXvn/p?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 55b9d26a-3d18-4a44-c0d2-08d921d8d032
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2021 13:02:14.0709
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: v0K1LqrHDnDCyB2n2RmUAAvkT5u874r2r4xQFjsKEK63e81K3nSzuk0VtoNJpV6H
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5304
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-28_05:2021-05-27,2021-05-28 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 27, 2021 at 05:12:41PM -0700, Jakub Kicinski wrote:
-> On Thu, 27 May 2021 10:30:11 -0700 Tony Nguyen wrote:
-> > +static enum ice_status
-> > +ice_aq_add_rdma_qsets(struct ice_hw *hw, u8 num_qset_grps,
-> > +		      struct ice_aqc_add_rdma_qset_data *qset_list,
-> > +		      u16 buf_size, struct ice_sq_cd *cd)
-> > +{
-> > +	struct ice_aqc_add_rdma_qset_data *list;
-> > +	struct ice_aqc_add_rdma_qset *cmd;
-> > +	struct ice_aq_desc desc;
-> > +	u16 i, sum_size = 0;
-> > +
-> > +	cmd = &desc.params.add_rdma_qset;
-> > +
-> > +	ice_fill_dflt_direct_cmd_desc(&desc, ice_aqc_opc_add_rdma_qset);
-> > +
-> > +	if (!qset_list)
-> 
-> defensive programming
-> 
-> > +		return ICE_ERR_PARAM;
-> 
-> RDMA folks, are you okay with drivers inventing their own error
-> codes?
+-----"Stefan Metzmacher" <metze@samba.org> wrote: -----
 
-Not really, I was ignoring it because it looks like big part of their
-netdev driver layer.
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Stefan Metzmacher" <metze@samba.org>
+>Date: 05/26/2021 05:44PM
+>Cc: "linux-rdma" <linux-rdma@vger.kernel.org>
+>Subject: [EXTERNAL] Re: [PATCH 00/31] rdma/siw: fix a lot of
+>deadlocks and use after free bugs
+>
+>Hi Bernard,
+>
+>> Much appreciated!
+>> These are quite some patches, and I will need some time
+>> to go through. Would bee nice if those would be broken
+>> down into smaller bundles (introduce non-blocking connect,
+>> _siw_cep_close() subroutine, fixing cep reference counting,
+>> smp_mb() after STag invalidation, ..).=20
+>
+>They mostly fall out naturally getting one step further
+>with each commit. So most of them depend on each other.
+>I'll see if I can reorder some of them, but I'm not sure it's really
+>worth the effort.
 
-> Having had to make tree-wide changes and deal with this cruft in 
-> the past I've developed a strong dislike for it. But if you're okay
-> I guess it can stay, these are RDMA functions after all.
+Why not having just a few patches - one fixing the obvious
+object management bug(s), one on a more concise error handling,
+one on using exported kernel functions instead of calling
+socket method directly, one introducing asynchronous connect..?
 
-I don't think it is a "RDMA" issue:
+I understand you collected problems over time and fixed those,
+but it would be much easier to digest if separated logically.
 
-$ git grep ICE_ERR_PARAM | wc -l
-168
-$ git grep -l ICE_ERR_PARAM
-drivers/net/ethernet/intel/ice/ice_common.c
-drivers/net/ethernet/intel/ice/ice_controlq.c
-drivers/net/ethernet/intel/ice/ice_dcb.c
-drivers/net/ethernet/intel/ice/ice_fdir.c
-drivers/net/ethernet/intel/ice/ice_flex_pipe.c
-drivers/net/ethernet/intel/ice/ice_flow.c
-drivers/net/ethernet/intel/ice/ice_lib.c
-drivers/net/ethernet/intel/ice/ice_main.c
-drivers/net/ethernet/intel/ice/ice_nvm.c
-drivers/net/ethernet/intel/ice/ice_sched.c
-drivers/net/ethernet/intel/ice/ice_sriov.c
-drivers/net/ethernet/intel/ice/ice_status.h
-drivers/net/ethernet/intel/ice/ice_switch.c
-drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
+>
+>> Anyway, many thanks for the effort,
+>
+>Thanks a lot for the review.
+>
+>> it will improve the driver!
+>
+>Yes!
+>
+>On top I have some code to support MPA rev1 in peer_to_peer mode
+>in order to interoperate with a Chelcio T404-BT card running
+>under Windows.
+>
+>In preparation I've code that moves the currently hardcoded values
+>(which where module params before) into a per device structure,
+>some like 'sdev->options.crc_strict'. With that we only need to
+>find a good way to pass these parameters from userspace to the
+>device. I guess that should be done somehow via the 'rdma link add'
+>command, or via files similar to /proc/sys/net/ipv4/conf/*.
+>
+yes with dropping the module parameters we lost that flexibility...
 
-Jason
+I'd prefer protocol specific extensions to the rdma tools.
+
+In fact, we could allow different CRC and MPA settings per
+QP (which would make sense if we have connections from a
+local siw device to multiple remote devices with different
+capabilities etc.). But we do not have endpoint/QP object
+specific settings in rdma netlink currently.=20
+Having link specific settings might be sufficient though.
+
+
+>Here's my branch with all (partly incomplete) siw changes:
+>INVALID URI REMOVED
+>Fp-3Dmetze_linux_wip.git-3Ba-3Dshortlog-3Bh-3Drefs_heads_rdma-2Dnext-
+>2Dsiw&d=3DDwIDaQ&c=3Djf_iaSHvJObTbx-siA1ZOg&r=3D2TaYXQ0T-r8ZO1PP1alNwU_QJcR
+>RLfmYTAgd3QCvqSc&m=3DbcCk65hNAmUVFgsBxIE9Y6S1cnxdE1otmHllxAlO-Ko&s=3DRgu7
+>GuEAeI9MyUx7m03KEMLH2qA7Y3065X8LCBo3EBY&e=3D=20
+>
+
+Thanks, I'll have a look.
+
+>> First comments:
+>>=20
+>> A non blocking connect does really makes sense as you
+>> are pointing out. I hope it doesn't complicate the CM
+>> code even further.
+>>=20
+>> I think we agreed upon not using BUG() and BUG_ON(),
+>> so please don't introduce it.
+>
+>Ok.
+>
+>> 'I hit a lot of bugs' is not very helpful, but just
+>> a statement.
+>
+>More details are in the individual commit messages,
+>should I double them in the cover letter next time?
+>
+>Currently I'm quite busy with other stuff...
+>I hope to find some time in the next weeks to
+>comment more detailed and post a new revision.
+>
+>metze
+>
+Thanks again!
+Bernard.
+
