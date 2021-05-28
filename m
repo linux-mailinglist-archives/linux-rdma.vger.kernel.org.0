@@ -2,312 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BFDE394310
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 May 2021 14:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6CB4394325
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 May 2021 15:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234773AbhE1M7z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 May 2021 08:59:55 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2452 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233583AbhE1M7z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 May 2021 08:59:55 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fs4RJ0qh9z66Yn;
-        Fri, 28 May 2021 20:55:24 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 28 May 2021 20:58:17 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 28
- May 2021 20:58:17 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <bvanassche@acm.org>, <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH v3 -next] RDMA/srp: use DEVICE_ATTR_*() macro
-Date:   Fri, 28 May 2021 20:57:50 +0800
-Message-ID: <20210528125750.20788-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S230080AbhE1NDv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 May 2021 09:03:51 -0400
+Received: from mail-mw2nam12on2084.outbound.protection.outlook.com ([40.107.244.84]:18304
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234853AbhE1NDu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 28 May 2021 09:03:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AgVHDKG1ErDt4rFjtOpYKxlTg0p1kE8Umi9sfWEDQCVJounDH/gOWzl2dBCMdujEJsiSkqYeG5j+5xHgkiZVHzUyVTGGiSTCyoB4LLoWNHmvTmGFhqsKpuxPxLdUl1II682dsqA8xU0/fSH3Fg9GIYmS87UNRFPnGp3YissmjL4cBNjN8LhygFGUXqGOfRuGU5ODiCMdmVRAYobXTv8Ct9tZzcz9jal1z5EkYYNmGpwuOxOXQ05hyq3DWtzuK7hy0G5BEsV4G1abbKUMvIGLPdxCPNn22TXEn/l9d9oj5JyMch2baD1NpkmxfJAopRmH/NCrId44i/ImBDkqiSjt6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vzB3jQRRkoEVhoWlXiRyMTJGVdF2RyypfwWFei4DlSk=;
+ b=WQGVW0v572lB0Q++Br+eXfRuLEN7uwgF7joS7rQUkdgeLgSfyUQx+lPPHyiLLwCX8oePrVAX73Lz2M7SzYCLykBNJ3DZ1f0DO/p9R/OaQvHlvoT31Q5UrBS6RwtIA3Q3Z6QeHGGHVCRROXxkVxv2CJYP48PZydx85c3T6FkOeTFdA0DXTCb9mLfOqMD13LuSAnc7HPbXfCFCuFrCIpvZtZeCrz2ebkLmhOSYjj2gqjtM86E0Cj7FMpsSF+GoJSP/S/3NkzMRWNTPgLsxHBMN1GVUh3y0VzIN2r+8J8xxeBIeUAmyD5Ca9Maa/277Cn4cItZQSR4wf41E6mXI1X6UAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vzB3jQRRkoEVhoWlXiRyMTJGVdF2RyypfwWFei4DlSk=;
+ b=fJJRROhdXVyfpu0xMNW3wDrkIpUPv8VYuZ2fmraS/raMSSjaQHIkyLNWeN0mkStc1R+W6qBriLSAoWr2KYFrukbZfjL07sI7tVmRE1XRRJsAoZ8Qw4EdIYIoaIDgV7nFS6BhHRnADrSRlA2XvM9OaB9jyzGMQWL1zRdMW8+Vnb4p9wk0dxBlSrjU8LQSaxyjV6c1E8Ke41VF9RVg6qn7Cm/EekotJG7lJnxgxzYXUUUZ8jU6dy2Mu72WUGc6eFUHT7UF48mdB7FrGz78l1rt/zzQ5Qpvry4qUarvSFwQ/NP4dfXuVF+zTEP5awRH1pzJQo4nNuGyUjyhQXnW5+mP7w==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5304.namprd12.prod.outlook.com (2603:10b6:208:314::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Fri, 28 May
+ 2021 13:02:14 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.023; Fri, 28 May 2021
+ 13:02:14 +0000
+Date:   Fri, 28 May 2021 10:02:12 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, leonro@nvidia.com, davem@davemloft.net,
+        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
+        shiraz.saleem@intel.com
+Subject: Re: [PATCH net-next v2 4/7] ice: Implement iidc operations
+Message-ID: <20210528130212.GL1002214@nvidia.com>
+References: <20210527173014.362216-1-anthony.l.nguyen@intel.com>
+ <20210527173014.362216-5-anthony.l.nguyen@intel.com>
+ <20210527171241.3b886692@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527171241.3b886692@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL1PR13CA0245.namprd13.prod.outlook.com
+ (2603:10b6:208:2ba::10) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0245.namprd13.prod.outlook.com (2603:10b6:208:2ba::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.10 via Frontend Transport; Fri, 28 May 2021 13:02:13 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lmc7w-00FwoE-Ss; Fri, 28 May 2021 10:02:12 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 55b9d26a-3d18-4a44-c0d2-08d921d8d032
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5304:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5304D656AEEE85E3C5209098C2229@BL1PR12MB5304.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: u+kn+gRxRiJalqr/zB5XYe9M85QqQmCFfdBt1HSUh2CE7lXrnhcjgYNNEiqELbuDrhWnferB5JX695nnUbCiuPoYVuCm5AyEpIM04TzKnBH51pHlVc7ehViUCe8TQie+JtQz+zJnL3LxAMG1+MRCDt0wYByaxBD4moHifzqSVDngiSqsr59xme3JhP54Lh0WVRX/3CGM52P/CahKzoI6yKwC6TproUjR8DZyWjtz5tQOaG57y3J4akSItm7r4j+PRJwIgs+4U28tyEtGXFbD8lIV5eGuELx5FhYjz90lS8xbY6Ce1WCAxZzsdreMHJeD4OQGVu/1n/YkY7fR+g3D+U4yl7AKWUFc2bflZh31fvS9GC4qiZhj6QvNxqOepe6yAjxMNsm8DQgghn9pdMqbdptXPgpMpBFdAybjLGoVKCJK5qR+MwUup0WUAPkZl7n4mOl5Hf9oEyUncPKHoN6rYh9wCeV/kSNGcFVYcKxY+Nm4Spv+0ax6knafN4MC6VXmqKe94w+WV9jQGyyMCL+2c0LYKIxtf4CkbCPxBXpaX9PIttlAragi2LDkWi194gqZ225NOWlwLUZNx2QjNAtJQkzlxZIVYAXmF3lbg695kEk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(39860400002)(396003)(346002)(136003)(2906002)(9786002)(9746002)(66556008)(6916009)(26005)(86362001)(2616005)(54906003)(66946007)(36756003)(4326008)(66476007)(5660300002)(8676002)(478600001)(8936002)(1076003)(38100700002)(426003)(186003)(316002)(33656002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?uwJhKU8cvg65+DD8Nm2ymFET34Nn7dcXzDcQ/aJpFWmww9GzVjjJpcqr+iIz?=
+ =?us-ascii?Q?5Ke8Kn0yGL+tPCvUwMwihvINal/DAhLqh55zCr3uEQbP0Hy2WHdadM/nn53A?=
+ =?us-ascii?Q?YDTfxCrMX30tqW+0t2RNCApRFJJ4VHGLwjHjn5sGXWMEZBADEKZ08LTcKoYr?=
+ =?us-ascii?Q?lr8c1UzvEpwP5vmR6RiZdNWP4rxyx8foPudyCgL0uX/yKQJ7XkJ4Ul+AnY9n?=
+ =?us-ascii?Q?XVTR6N7xrJRqPj+p/TFbYNsCBRX402Wa6+RWNuN0tljFSM6OcVeunmGTBpzL?=
+ =?us-ascii?Q?Vw8F/blZiOkZ8d7RtHELSqlUPU0IG3hriBCmmTQYCflcCILw9IxfSSDHxSzB?=
+ =?us-ascii?Q?3jc61pUDQPTCG+rJiLEKUrpYe/ExasAkZXlRiP6LkoVJDb76NqPTY+WIMYgq?=
+ =?us-ascii?Q?djEvVRfOy1G2uKcsOGJCpudNe9US27gfl7q/lP27zSbIHVKsH1DvwfsB0IFl?=
+ =?us-ascii?Q?e8adHC9VqgMxEQr+J+uImDbBiZ6IumIOIxs1MRr7+MPIrDAB1ya3spxma9mx?=
+ =?us-ascii?Q?zGFK5iH47XqXXtNPEJm72godoM1Vru0v927A57UJP+bz7iVTCHHQ1N0Za/vB?=
+ =?us-ascii?Q?rfdr7t4rbC1uePqXcTU01yzcbShuHj79jbXBeMj6hDw30F7lgkOMRi1Q675i?=
+ =?us-ascii?Q?zj6m7S+wPRpDvqlmt0NqASxwe6ABwXEYRrnyDCxm09T2aiSy5JbX9ink4YYe?=
+ =?us-ascii?Q?zOIoO7X5TUIWk5X/8WM/0lEEJddQFDz8qOnIQ12sRa4m8uQuqYH3jiC+IeWB?=
+ =?us-ascii?Q?xOK4toicVaJlyYzVKc0s9KMgmnL5XOWv/OsVICjnfM23z/3+xPhjf8xW0C0t?=
+ =?us-ascii?Q?0KiTkuL2B9Ed0vQH/6W911+uyr0hHf+Kh483J4Tv6/m1OmS/9lwaUDi+JQGl?=
+ =?us-ascii?Q?HS06M4mxc6x1zdRpQXjQ/8J14oTxh2B7rvE0lknSAKSlKtvb/64nnyPdQGIK?=
+ =?us-ascii?Q?ochapdiNwp0Ehodm4NUqZow/9GGNt7Y5S1FQ2miLZFHIHE8CZgWE351xxXS2?=
+ =?us-ascii?Q?P0sNQ2Af6NU73+3MbenbFvjBqjKIbyAPf+4gXui6kpTRx1NOQ+Yc7slcRLnL?=
+ =?us-ascii?Q?9XQbCeI13T2yVA08/1BVC33Lvrcto6I4vS6nRGY4gMqE0NzLA1Oqnq2Vd+tY?=
+ =?us-ascii?Q?aupBf7yC+D5lSYieQWeb1U/nRc0uT0ZpPIzCxHbMnBEnXc5UcmUmQMm/WBEE?=
+ =?us-ascii?Q?mg0efIHU/E2jetklQfQyQGVeHA/qfif0MirR2uM8DJhbv7JRMpwU+9FjBDs3?=
+ =?us-ascii?Q?+QmfJaa9k+721pyg/8ZO8/j7nvbK6VbKvkLk4+V5DIj7LJKHnxfLEIM664zY?=
+ =?us-ascii?Q?8SgDRWhV1C27XvUyKwlXvn/p?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55b9d26a-3d18-4a44-c0d2-08d921d8d032
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2021 13:02:14.0709
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: v0K1LqrHDnDCyB2n2RmUAAvkT5u874r2r4xQFjsKEK63e81K3nSzuk0VtoNJpV6H
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5304
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
-which makes the code a bit shorter and easier to read.
+On Thu, May 27, 2021 at 05:12:41PM -0700, Jakub Kicinski wrote:
+> On Thu, 27 May 2021 10:30:11 -0700 Tony Nguyen wrote:
+> > +static enum ice_status
+> > +ice_aq_add_rdma_qsets(struct ice_hw *hw, u8 num_qset_grps,
+> > +		      struct ice_aqc_add_rdma_qset_data *qset_list,
+> > +		      u16 buf_size, struct ice_sq_cd *cd)
+> > +{
+> > +	struct ice_aqc_add_rdma_qset_data *list;
+> > +	struct ice_aqc_add_rdma_qset *cmd;
+> > +	struct ice_aq_desc desc;
+> > +	u16 i, sum_size = 0;
+> > +
+> > +	cmd = &desc.params.add_rdma_qset;
+> > +
+> > +	ice_fill_dflt_direct_cmd_desc(&desc, ice_aqc_opc_add_rdma_qset);
+> > +
+> > +	if (!qset_list)
+> 
+> defensive programming
+> 
+> > +		return ICE_ERR_PARAM;
+> 
+> RDMA folks, are you okay with drivers inventing their own error
+> codes?
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
-v3: rearrange attrs
-v2: convert show_port device attr
+Not really, I was ignoring it because it looks like big part of their
+netdev driver layer.
 
- drivers/infiniband/ulp/srp/ib_srp.c | 109 ++++++++++++++++------------
- 1 file changed, 62 insertions(+), 47 deletions(-)
+> Having had to make tree-wide changes and deal with this cruft in 
+> the past I've developed a strong dislike for it. But if you're okay
+> I guess it can stay, these are RDMA functions after all.
 
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index 31f8aa2c40ed..9e5bf2cb47e7 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -2891,23 +2891,27 @@ static int srp_slave_configure(struct scsi_device *sdev)
- 	return 0;
- }
- 
--static ssize_t show_id_ext(struct device *dev, struct device_attribute *attr,
--			   char *buf)
-+static ssize_t id_ext_show(struct device *dev,
-+			   struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
- 
- 	return sysfs_emit(buf, "0x%016llx\n", be64_to_cpu(target->id_ext));
- }
- 
--static ssize_t show_ioc_guid(struct device *dev, struct device_attribute *attr,
--			     char *buf)
-+static DEVICE_ATTR_RO(id_ext);
-+
-+static ssize_t ioc_guid_show(struct device *dev,
-+			     struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
- 
- 	return sysfs_emit(buf, "0x%016llx\n", be64_to_cpu(target->ioc_guid));
- }
- 
--static ssize_t show_service_id(struct device *dev,
-+static DEVICE_ATTR_RO(ioc_guid);
-+
-+static ssize_t service_id_show(struct device *dev,
- 			       struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -2918,8 +2922,10 @@ static ssize_t show_service_id(struct device *dev,
- 			  be64_to_cpu(target->ib_cm.service_id));
- }
- 
--static ssize_t show_pkey(struct device *dev, struct device_attribute *attr,
--			 char *buf)
-+static DEVICE_ATTR_RO(service_id);
-+
-+static ssize_t pkey_show(struct device *dev,
-+			 struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
- 
-@@ -2929,16 +2935,20 @@ static ssize_t show_pkey(struct device *dev, struct device_attribute *attr,
- 	return sysfs_emit(buf, "0x%04x\n", be16_to_cpu(target->ib_cm.pkey));
- }
- 
--static ssize_t show_sgid(struct device *dev, struct device_attribute *attr,
--			 char *buf)
-+static DEVICE_ATTR_RO(pkey);
-+
-+static ssize_t sgid_show(struct device *dev,
-+			 struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
- 
- 	return sysfs_emit(buf, "%pI6\n", target->sgid.raw);
- }
- 
--static ssize_t show_dgid(struct device *dev, struct device_attribute *attr,
--			 char *buf)
-+static DEVICE_ATTR_RO(sgid);
-+
-+static ssize_t dgid_show(struct device *dev,
-+			 struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
- 	struct srp_rdma_ch *ch = &target->ch[0];
-@@ -2949,7 +2959,9 @@ static ssize_t show_dgid(struct device *dev, struct device_attribute *attr,
- 	return sysfs_emit(buf, "%pI6\n", ch->ib_cm.path.dgid.raw);
- }
- 
--static ssize_t show_orig_dgid(struct device *dev,
-+static DEVICE_ATTR_RO(dgid);
-+
-+static ssize_t orig_dgid_show(struct device *dev,
- 			      struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -2960,7 +2972,9 @@ static ssize_t show_orig_dgid(struct device *dev,
- 	return sysfs_emit(buf, "%pI6\n", target->ib_cm.orig_dgid.raw);
- }
- 
--static ssize_t show_req_lim(struct device *dev,
-+static DEVICE_ATTR_RO(orig_dgid);
-+
-+static ssize_t req_lim_show(struct device *dev,
- 			    struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -2975,7 +2989,9 @@ static ssize_t show_req_lim(struct device *dev,
- 	return sysfs_emit(buf, "%d\n", req_lim);
- }
- 
--static ssize_t show_zero_req_lim(struct device *dev,
-+static DEVICE_ATTR_RO(req_lim);
-+
-+static ssize_t zero_req_lim_show(struct device *dev,
- 				 struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -2983,7 +2999,9 @@ static ssize_t show_zero_req_lim(struct device *dev,
- 	return sysfs_emit(buf, "%d\n", target->zero_req_lim);
- }
- 
--static ssize_t show_local_ib_port(struct device *dev,
-+static DEVICE_ATTR_RO(zero_req_lim);
-+
-+static ssize_t local_ib_port_show(struct device *dev,
- 				  struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -2991,7 +3009,9 @@ static ssize_t show_local_ib_port(struct device *dev,
- 	return sysfs_emit(buf, "%d\n", target->srp_host->port);
- }
- 
--static ssize_t show_local_ib_device(struct device *dev,
-+static DEVICE_ATTR_RO(local_ib_port);
-+
-+static ssize_t local_ib_device_show(struct device *dev,
- 				    struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -3000,15 +3020,19 @@ static ssize_t show_local_ib_device(struct device *dev,
- 			  dev_name(&target->srp_host->srp_dev->dev->dev));
- }
- 
--static ssize_t show_ch_count(struct device *dev, struct device_attribute *attr,
--			     char *buf)
-+static DEVICE_ATTR_RO(local_ib_device);
-+
-+static ssize_t ch_count_show(struct device *dev,
-+			     struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
- 
- 	return sysfs_emit(buf, "%d\n", target->ch_count);
- }
- 
--static ssize_t show_comp_vector(struct device *dev,
-+static DEVICE_ATTR_RO(ch_count);
-+
-+static ssize_t comp_vector_show(struct device *dev,
- 				struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -3016,7 +3040,9 @@ static ssize_t show_comp_vector(struct device *dev,
- 	return sysfs_emit(buf, "%d\n", target->comp_vector);
- }
- 
--static ssize_t show_tl_retry_count(struct device *dev,
-+static DEVICE_ATTR_RO(comp_vector);
-+
-+static ssize_t tl_retry_count_show(struct device *dev,
- 				   struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -3024,7 +3050,9 @@ static ssize_t show_tl_retry_count(struct device *dev,
- 	return sysfs_emit(buf, "%d\n", target->tl_retry_count);
- }
- 
--static ssize_t show_cmd_sg_entries(struct device *dev,
-+static DEVICE_ATTR_RO(tl_retry_count);
-+
-+static ssize_t cmd_sg_entries_show(struct device *dev,
- 				   struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -3032,7 +3060,9 @@ static ssize_t show_cmd_sg_entries(struct device *dev,
- 	return sysfs_emit(buf, "%u\n", target->cmd_sg_cnt);
- }
- 
--static ssize_t show_allow_ext_sg(struct device *dev,
-+static DEVICE_ATTR_RO(cmd_sg_entries);
-+
-+static ssize_t allow_ext_sg_show(struct device *dev,
- 				 struct device_attribute *attr, char *buf)
- {
- 	struct srp_target_port *target = host_to_target(class_to_shost(dev));
-@@ -3040,22 +3070,7 @@ static ssize_t show_allow_ext_sg(struct device *dev,
- 	return sysfs_emit(buf, "%s\n", target->allow_ext_sg ? "true" : "false");
- }
- 
--static DEVICE_ATTR(id_ext,	    S_IRUGO, show_id_ext,	   NULL);
--static DEVICE_ATTR(ioc_guid,	    S_IRUGO, show_ioc_guid,	   NULL);
--static DEVICE_ATTR(service_id,	    S_IRUGO, show_service_id,	   NULL);
--static DEVICE_ATTR(pkey,	    S_IRUGO, show_pkey,		   NULL);
--static DEVICE_ATTR(sgid,	    S_IRUGO, show_sgid,		   NULL);
--static DEVICE_ATTR(dgid,	    S_IRUGO, show_dgid,		   NULL);
--static DEVICE_ATTR(orig_dgid,	    S_IRUGO, show_orig_dgid,	   NULL);
--static DEVICE_ATTR(req_lim,         S_IRUGO, show_req_lim,         NULL);
--static DEVICE_ATTR(zero_req_lim,    S_IRUGO, show_zero_req_lim,	   NULL);
--static DEVICE_ATTR(local_ib_port,   S_IRUGO, show_local_ib_port,   NULL);
--static DEVICE_ATTR(local_ib_device, S_IRUGO, show_local_ib_device, NULL);
--static DEVICE_ATTR(ch_count,        S_IRUGO, show_ch_count,        NULL);
--static DEVICE_ATTR(comp_vector,     S_IRUGO, show_comp_vector,     NULL);
--static DEVICE_ATTR(tl_retry_count,  S_IRUGO, show_tl_retry_count,  NULL);
--static DEVICE_ATTR(cmd_sg_entries,  S_IRUGO, show_cmd_sg_entries,  NULL);
--static DEVICE_ATTR(allow_ext_sg,    S_IRUGO, show_allow_ext_sg,    NULL);
-+static DEVICE_ATTR_RO(allow_ext_sg);
- 
- static struct device_attribute *srp_host_attrs[] = {
- 	&dev_attr_id_ext,
-@@ -3617,9 +3632,9 @@ static int srp_parse_options(struct net *net, const char *buf,
- 	return ret;
- }
- 
--static ssize_t srp_create_target(struct device *dev,
--				 struct device_attribute *attr,
--				 const char *buf, size_t count)
-+static ssize_t add_target_store(struct device *dev,
-+				struct device_attribute *attr,
-+				const char *buf, size_t count)
- {
- 	struct srp_host *host =
- 		container_of(dev, struct srp_host, dev);
-@@ -3870,19 +3885,19 @@ static ssize_t srp_create_target(struct device *dev,
- 	goto out;
- }
- 
--static DEVICE_ATTR(add_target, S_IWUSR, NULL, srp_create_target);
-+static DEVICE_ATTR_WO(add_target);
- 
--static ssize_t show_ibdev(struct device *dev, struct device_attribute *attr,
--			  char *buf)
-+static ssize_t ibdev_show(struct device *dev,
-+			  struct device_attribute *attr, char *buf)
- {
- 	struct srp_host *host = container_of(dev, struct srp_host, dev);
- 
- 	return sysfs_emit(buf, "%s\n", dev_name(&host->srp_dev->dev->dev));
- }
- 
--static DEVICE_ATTR(ibdev, S_IRUGO, show_ibdev, NULL);
-+static DEVICE_ATTR_RO(ibdev);
- 
--static ssize_t show_port(struct device *dev, struct device_attribute *attr,
-+static ssize_t port_show(struct device *dev, struct device_attribute *attr,
- 			 char *buf)
- {
- 	struct srp_host *host = container_of(dev, struct srp_host, dev);
-@@ -3890,7 +3905,7 @@ static ssize_t show_port(struct device *dev, struct device_attribute *attr,
- 	return sysfs_emit(buf, "%d\n", host->port);
- }
- 
--static DEVICE_ATTR(port, S_IRUGO, show_port, NULL);
-+static DEVICE_ATTR_RO(port);
- 
- static struct srp_host *srp_add_port(struct srp_device *device, u8 port)
- {
--- 
-2.17.1
+I don't think it is a "RDMA" issue:
 
+$ git grep ICE_ERR_PARAM | wc -l
+168
+$ git grep -l ICE_ERR_PARAM
+drivers/net/ethernet/intel/ice/ice_common.c
+drivers/net/ethernet/intel/ice/ice_controlq.c
+drivers/net/ethernet/intel/ice/ice_dcb.c
+drivers/net/ethernet/intel/ice/ice_fdir.c
+drivers/net/ethernet/intel/ice/ice_flex_pipe.c
+drivers/net/ethernet/intel/ice/ice_flow.c
+drivers/net/ethernet/intel/ice/ice_lib.c
+drivers/net/ethernet/intel/ice/ice_main.c
+drivers/net/ethernet/intel/ice/ice_nvm.c
+drivers/net/ethernet/intel/ice/ice_sched.c
+drivers/net/ethernet/intel/ice/ice_sriov.c
+drivers/net/ethernet/intel/ice/ice_status.h
+drivers/net/ethernet/intel/ice/ice_switch.c
+drivers/net/ethernet/intel/ice/ice_virtchnl_pf.c
+
+Jason
