@@ -2,22 +2,22 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE712394005
+	by mail.lfdr.de (Postfix) with ESMTP id C435B394004
 	for <lists+linux-rdma@lfdr.de>; Fri, 28 May 2021 11:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhE1Jer (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 May 2021 05:34:47 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5130 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhE1Jer (ORCPT
+        id S229911AbhE1Jes (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 May 2021 05:34:48 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2390 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234153AbhE1Jer (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 May 2021 05:34:47 -0400
-Received: from dggeml752-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Frztt4PTszYn7m;
-        Fri, 28 May 2021 17:30:30 +0800 (CST)
+Received: from dggeml759-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Frzsm1Kdmz65Zk;
+        Fri, 28 May 2021 17:29:32 +0800 (CST)
 Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggeml752-chm.china.huawei.com (10.1.199.151) with Microsoft SMTP Server
+ dggeml759-chm.china.huawei.com (10.1.199.138) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 28 May 2021 17:33:10 +0800
+ 15.1.2176.2; Fri, 28 May 2021 17:33:11 +0800
 Received: from localhost.localdomain (10.69.192.56) by
  dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
@@ -25,9 +25,9 @@ Received: from localhost.localdomain (10.69.192.56) by
 From:   Weihang Li <liweihang@huawei.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH rdma-core 2/4] libhns: Refactor hns uar mmap flow
-Date:   Fri, 28 May 2021 17:32:57 +0800
-Message-ID: <1622194379-59868-3-git-send-email-liweihang@huawei.com>
+Subject: [PATCH rdma-core 3/4] libhns: Fixes data type when writing doorbell
+Date:   Fri, 28 May 2021 17:32:58 +0800
+Message-ID: <1622194379-59868-4-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1622194379-59868-1-git-send-email-liweihang@huawei.com>
 References: <1622194379-59868-1-git-send-email-liweihang@huawei.com>
@@ -41,148 +41,177 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+From: Lang Cheng <chenglang@huawei.com>
 
-Classify the uar address by wrapping the uar type and start page as offset
-for rdma io mmap.
+The doorbell data is a __le32[] value instead of uint32_t[], and the DB
+register should be written with a little-endian data instead of uint64_t.
 
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
 Signed-off-by: Lang Cheng <chenglang@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- providers/hns/hns_roce_u.c | 76 ++++++++++++++++++++++++++++++----------------
- providers/hns/hns_roce_u.h | 12 ++++++++
- 2 files changed, 61 insertions(+), 27 deletions(-)
+ providers/hns/hns_roce_u_db.h    | 13 +++----------
+ providers/hns/hns_roce_u_hw_v1.c | 17 +++++++++--------
+ providers/hns/hns_roce_u_hw_v2.c | 28 +++++++++++++++++-----------
+ 3 files changed, 29 insertions(+), 29 deletions(-)
 
-diff --git a/providers/hns/hns_roce_u.c b/providers/hns/hns_roce_u.c
-index 3b31ad3..2d9c46f 100644
---- a/providers/hns/hns_roce_u.c
-+++ b/providers/hns/hns_roce_u.c
-@@ -95,16 +95,58 @@ static const struct verbs_context_ops hns_common_ops = {
- 	.get_srq_num = hns_roce_u_get_srq_num,
- };
+diff --git a/providers/hns/hns_roce_u_db.h b/providers/hns/hns_roce_u_db.h
+index b44e64d..453fa5a 100644
+--- a/providers/hns/hns_roce_u_db.h
++++ b/providers/hns/hns_roce_u_db.h
+@@ -37,18 +37,11 @@
+ #ifndef _HNS_ROCE_U_DB_H
+ #define _HNS_ROCE_U_DB_H
  
--static struct verbs_context *hns_roce_alloc_context(struct ibv_device *ibdev,
--						    int cmd_fd,
--						    void *private_data)
-+static off_t get_uar_mmap_offset(unsigned long idx, int page_size, int cmd)
-+{
-+	off_t offset = 0;
-+
-+	hns_roce_mmap_set_command(cmd, &offset);
-+	hns_roce_mmap_set_index(idx, &offset);
-+
-+	return offset * page_size;
-+}
-+
-+static int hns_roce_mmap(struct hns_roce_device *hr_dev,
-+			 struct hns_roce_context *context, int cmd_fd)
-+{
-+	int page_size = hr_dev->page_size;
-+	off_t offset;
-+
-+	offset = get_uar_mmap_offset(0, page_size, HNS_ROCE_MMAP_REGULAR_PAGE);
-+	context->uar = mmap(NULL, page_size, PROT_READ | PROT_WRITE,
-+			    MAP_SHARED, cmd_fd, offset);
-+	if (context->uar == MAP_FAILED)
-+		return -EINVAL;
-+
-+	offset = get_uar_mmap_offset(1, page_size, HNS_ROCE_MMAP_REGULAR_PAGE);
-+
-+	if (hr_dev->hw_version == HNS_ROCE_HW_VER1) {
-+		/*
-+		 * when vma->vm_pgoff is 1, the cq_tptr_base includes 64K CQ,
-+		 * a pointer of CQ need 2B size
-+		 */
-+		context->cq_tptr_base = mmap(NULL, HNS_ROCE_CQ_DB_BUF_SIZE,
-+					     PROT_READ | PROT_WRITE, MAP_SHARED,
-+					     cmd_fd, offset);
-+		if (context->cq_tptr_base == MAP_FAILED)
-+			goto db_free;
-+	}
-+
-+	return 0;
-+
-+db_free:
-+	munmap(context->uar, hr_dev->page_size);
-+
-+	return -EINVAL;
-+}
-+
-+static struct verbs_context *
-+hns_roce_alloc_context(struct ibv_device *ibdev, int cmd_fd, void *private_data)
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
+-#define HNS_ROCE_PAIR_TO_64(val) ((uint64_t) val[1] << 32 | val[0])
+-#elif __BYTE_ORDER == __BIG_ENDIAN
+-#define HNS_ROCE_PAIR_TO_64(val) ((uint64_t) val[0] << 32 | val[1])
+-#else
+-#error __BYTE_ORDER not defined
+-#endif
++#define HNS_ROCE_WORD_NUM 2
+ 
+-static inline void hns_roce_write64(uint32_t val[2],
+-				    struct hns_roce_context *ctx, int offset)
++static inline void hns_roce_write64(__le64 *dest, __le32 val[HNS_ROCE_WORD_NUM])
  {
- 	struct hns_roce_device *hr_dev = to_hr_dev(ibdev);
- 	struct hns_roce_alloc_ucontext_resp resp = {};
- 	struct ibv_device_attr dev_attrs;
- 	struct hns_roce_context *context;
- 	struct ibv_get_context cmd;
--	int offset = 0;
- 	int i;
- 
- 	context = verbs_init_and_alloc_context(ibdev, cmd_fd, context, ibv_ctx,
-@@ -154,35 +196,15 @@ static struct verbs_context *hns_roce_alloc_context(struct ibv_device *ibdev,
- 	context->max_srq_wr = dev_attrs.max_srq_wr;
- 	context->max_srq_sge = dev_attrs.max_srq_sge;
- 
--	context->uar = mmap(NULL, hr_dev->page_size, PROT_READ | PROT_WRITE,
--			    MAP_SHARED, cmd_fd, offset);
--	if (context->uar == MAP_FAILED)
--		goto err_free;
--
--	offset += hr_dev->page_size;
--
--	if (hr_dev->hw_version == HNS_ROCE_HW_VER1) {
--		/*
--		 * when vma->vm_pgoff is 1, the cq_tptr_base includes 64K CQ,
--		 * a pointer of CQ need 2B size
--		 */
--		context->cq_tptr_base = mmap(NULL, HNS_ROCE_CQ_DB_BUF_SIZE,
--					     PROT_READ | PROT_WRITE, MAP_SHARED,
--					     cmd_fd, offset);
--		if (context->cq_tptr_base == MAP_FAILED)
--			goto db_free;
--	}
--
- 	pthread_spin_init(&context->uar_lock, PTHREAD_PROCESS_PRIVATE);
- 
- 	verbs_set_ops(&context->ibv_ctx, &hns_common_ops);
- 	verbs_set_ops(&context->ibv_ctx, &hr_dev->u_hw->hw_ops);
- 
--	return &context->ibv_ctx;
-+	if (hns_roce_mmap(hr_dev, context, cmd_fd))
-+		goto err_free;
- 
--db_free:
--	munmap(context->uar, hr_dev->page_size);
--	context->uar = NULL;
-+	return &context->ibv_ctx;
- 
- err_free:
- 	verbs_uninit_context(&context->ibv_ctx);
-diff --git a/providers/hns/hns_roce_u.h b/providers/hns/hns_roce_u.h
-index 0d7abd8..3c4b162 100644
---- a/providers/hns/hns_roce_u.h
-+++ b/providers/hns/hns_roce_u.h
-@@ -357,6 +357,18 @@ static inline struct hns_roce_ah *to_hr_ah(struct ibv_ah *ibv_ah)
- 	return container_of(ibv_ah, struct hns_roce_ah, ibv_ah);
+-	*(volatile uint64_t *) (ctx->uar + offset) = HNS_ROCE_PAIR_TO_64(val);
++	*(volatile __le64 *)dest = *(__le64 *)val;
  }
  
-+/* command value is offset[15:8] */
-+static inline void hns_roce_mmap_set_command(int command, off_t *offset)
-+{
-+	*offset |= (command & 0xff) << 8;
-+}
+ void *hns_roce_alloc_db(struct hns_roce_context *ctx,
+diff --git a/providers/hns/hns_roce_u_hw_v1.c b/providers/hns/hns_roce_u_hw_v1.c
+index 8f0a71a..d00230c 100644
+--- a/providers/hns/hns_roce_u_hw_v1.c
++++ b/providers/hns/hns_roce_u_hw_v1.c
+@@ -65,7 +65,7 @@ static void hns_roce_update_rq_head(struct hns_roce_context *ctx,
+ 
+ 	udma_to_device_barrier();
+ 
+-	hns_roce_write64((uint32_t *)&rq_db, ctx, ROCEE_DB_OTHERS_L_0_REG);
++	hns_roce_write64(ctx->uar + ROCEE_DB_OTHERS_L_0_REG, (__le32 *)&rq_db);
+ }
+ 
+ static void hns_roce_update_sq_head(struct hns_roce_context *ctx,
+@@ -84,7 +84,7 @@ static void hns_roce_update_sq_head(struct hns_roce_context *ctx,
+ 
+ 	udma_to_device_barrier();
+ 
+-	hns_roce_write64((uint32_t *)&sq_db, ctx, ROCEE_DB_SQ_L_0_REG);
++	hns_roce_write64(ctx->uar + ROCEE_DB_SQ_L_0_REG, (__le32 *)&sq_db);
+ }
+ 
+ static void hns_roce_update_cq_cons_index(struct hns_roce_context *ctx,
+@@ -102,7 +102,7 @@ static void hns_roce_update_cq_cons_index(struct hns_roce_context *ctx,
+ 		       CQ_DB_U32_4_CONS_IDX_S,
+ 		       cq->cons_index & ((cq->cq_depth << 1) - 1));
+ 
+-	hns_roce_write64((uint32_t *)&cq_db, ctx, ROCEE_DB_OTHERS_L_0_REG);
++	hns_roce_write64(ctx->uar + ROCEE_DB_OTHERS_L_0_REG, (__le32 *)&cq_db);
+ }
+ 
+ static void hns_roce_handle_error_cqe(struct hns_roce_cqe *cqe,
+@@ -422,10 +422,11 @@ static int hns_roce_u_v1_poll_cq(struct ibv_cq *ibvcq, int ne,
+  */
+ static int hns_roce_u_v1_arm_cq(struct ibv_cq *ibvcq, int solicited)
+ {
+-	uint32_t ci;
+-	uint32_t solicited_flag;
+-	struct hns_roce_cq_db cq_db = {};
++	struct hns_roce_context *ctx = to_hr_ctx(ibvcq->context);
+ 	struct hns_roce_cq *cq = to_hr_cq(ibvcq);
++	struct hns_roce_cq_db cq_db = {};
++	uint32_t solicited_flag;
++	uint32_t ci;
+ 
+ 	ci = cq->cons_index & ((cq->cq_depth << 1) - 1);
+ 	solicited_flag = solicited ? HNS_ROCE_CQ_DB_REQ_SOL :
+@@ -441,8 +442,8 @@ static int hns_roce_u_v1_arm_cq(struct ibv_cq *ibvcq, int solicited)
+ 	roce_set_field(cq_db.u32_4, CQ_DB_U32_4_CONS_IDX_M,
+ 		       CQ_DB_U32_4_CONS_IDX_S, ci);
+ 
+-	hns_roce_write64((uint32_t *)&cq_db, to_hr_ctx(ibvcq->context),
+-			  ROCEE_DB_OTHERS_L_0_REG);
++	hns_roce_write64(ctx->uar + ROCEE_DB_OTHERS_L_0_REG,
++			 (uint32_t *)&cq_db);
+ 	return 0;
+ }
+ 
+diff --git a/providers/hns/hns_roce_u_hw_v2.c b/providers/hns/hns_roce_u_hw_v2.c
+index 2308f78..aa57cc4 100644
+--- a/providers/hns/hns_roce_u_hw_v2.c
++++ b/providers/hns/hns_roce_u_hw_v2.c
+@@ -293,7 +293,8 @@ static void hns_roce_update_rq_db(struct hns_roce_context *ctx,
+ 		       HNS_ROCE_V2_RQ_DB);
+ 	rq_db.parameter = htole32(rq_head);
+ 
+-	hns_roce_write64((uint32_t *)&rq_db, ctx, ROCEE_VF_DB_CFG0_OFFSET);
++	hns_roce_write64(ctx->uar + ROCEE_VF_DB_CFG0_OFFSET,
++			 (__le32 *)&rq_db);
+ }
+ 
+ static void hns_roce_update_sq_db(struct hns_roce_context *ctx,
+@@ -308,7 +309,8 @@ static void hns_roce_update_sq_db(struct hns_roce_context *ctx,
+ 	sq_db.parameter = htole32(sq_head);
+ 	roce_set_field(sq_db.parameter, DB_PARAM_SL_M, DB_PARAM_SL_S, sl);
+ 
+-	hns_roce_write64((uint32_t *)&sq_db, ctx, ROCEE_VF_DB_CFG0_OFFSET);
++	hns_roce_write64(ctx->uar + ROCEE_VF_DB_CFG0_OFFSET,
++			 (__le32 *)&sq_db);
+ }
+ 
+ static void hns_roce_v2_update_cq_cons_index(struct hns_roce_context *ctx,
+@@ -325,7 +327,8 @@ static void hns_roce_v2_update_cq_cons_index(struct hns_roce_context *ctx,
+ 	roce_set_field(cq_db.parameter, DB_PARAM_CQ_CMD_SN_M,
+ 		       DB_PARAM_CQ_CMD_SN_S, 1);
+ 
+-	hns_roce_write64((uint32_t *)&cq_db, ctx, ROCEE_VF_DB_CFG0_OFFSET);
++	hns_roce_write64(ctx->uar + ROCEE_VF_DB_CFG0_OFFSET,
++			 (__le32 *)&cq_db);
+ }
+ 
+ static struct hns_roce_qp *hns_roce_v2_find_qp(struct hns_roce_context *ctx,
+@@ -659,11 +662,12 @@ static int hns_roce_u_v2_poll_cq(struct ibv_cq *ibvcq, int ne,
+ 
+ static int hns_roce_u_v2_arm_cq(struct ibv_cq *ibvcq, int solicited)
+ {
+-	uint32_t ci;
+-	uint32_t cmd_sn;
+-	uint32_t solicited_flag;
+-	struct hns_roce_db cq_db = {};
++	struct hns_roce_context *ctx = to_hr_ctx(ibvcq->context);
+ 	struct hns_roce_cq *cq = to_hr_cq(ibvcq);
++	struct hns_roce_db cq_db = {};
++	uint32_t solicited_flag;
++	uint32_t cmd_sn;
++	uint32_t ci;
+ 
+ 	ci = cq->cons_index & ((cq->cq_depth << 1) - 1);
+ 	cmd_sn = cq->arm_sn & HNS_ROCE_CMDSN_MASK;
+@@ -681,8 +685,9 @@ static int hns_roce_u_v2_arm_cq(struct ibv_cq *ibvcq, int solicited)
+ 		       DB_PARAM_CQ_CMD_SN_S, cmd_sn);
+ 	roce_set_bit(cq_db.parameter, DB_PARAM_CQ_NOTIFY_S, solicited_flag);
+ 
+-	hns_roce_write64((uint32_t *)&cq_db, to_hr_ctx(ibvcq->context),
+-			  ROCEE_VF_DB_CFG0_OFFSET);
++	hns_roce_write64(ctx->uar + ROCEE_VF_DB_CFG0_OFFSET,
++			 (uint32_t *)&cq_db);
 +
-+/* index value is offset[63:16] | offset[7:0] */
-+static inline void hns_roce_mmap_set_index(unsigned long index, off_t *offset)
-+{
-+	*offset |= (index & 0xff) | ((index >> 8) << 16);
-+}
+ 	return 0;
+ }
+ 
+@@ -1693,8 +1698,9 @@ static int hns_roce_u_v2_post_srq_recv(struct ibv_srq *ib_srq,
+ 		srq_db.parameter = htole32(srq->idx_que.head &
+ 					   DB_PARAM_SRQ_PRODUCER_COUNTER_M);
+ 
+-		hns_roce_write64((uint32_t *)&srq_db, ctx,
+-				 ROCEE_VF_DB_CFG0_OFFSET);
++		hns_roce_write64(ctx->uar + ROCEE_VF_DB_CFG0_OFFSET,
++				 (uint32_t *)&srq_db);
 +
- int hns_roce_u_query_device(struct ibv_context *context,
- 			    const struct ibv_query_device_ex_input *input,
- 			    struct ibv_device_attr_ex *attr, size_t attr_size);
+ 	}
+ 
+ 	pthread_spin_unlock(&srq->lock);
 -- 
 2.7.4
 
