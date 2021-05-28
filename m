@@ -2,152 +2,217 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D203394035
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 May 2021 11:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE719394037
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 May 2021 11:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235437AbhE1Jlk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S234497AbhE1Jlk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Fri, 28 May 2021 05:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234497AbhE1Jlg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 May 2021 05:41:36 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66597C061574
-        for <linux-rdma@vger.kernel.org>; Fri, 28 May 2021 02:40:02 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id z4so1357015plg.8
-        for <linux-rdma@vger.kernel.org>; Fri, 28 May 2021 02:40:02 -0700 (PDT)
+        with ESMTP id S235299AbhE1Jli (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 May 2021 05:41:38 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16382C06174A
+        for <linux-rdma@vger.kernel.org>; Fri, 28 May 2021 02:40:04 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id u7so1374360plq.4
+        for <linux-rdma@vger.kernel.org>; Fri, 28 May 2021 02:40:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version;
-        bh=5AahqhNbCkh1whBZgLpBGKPjMIgbUf11ZZ3n1AruYtc=;
-        b=SzKljFn0+1d/dtdL3LsGgHTqnfiPj2MJB1kxKRQzZjKa1zVp8A/tUsSlDjKgn2kYxD
-         4h4r+hPQvT4gARwdd7MIoQy5zlolhlWKCAmZlABllDw5Bf77h05pjye5lrXHtX0hddNr
-         2fvUa+V1IaSV2v2vmJiQqEiGb26yzsncM11+w=
+        bh=O6tJu82LqiIvd31XcQdSUYATxFdhZ+bx362Ug0ZSZ9k=;
+        b=XWeJSdbyQPzrFDETGcp9lN7Qd6kxhv5D11SdngwtDjabWwgBlMX4/io74OxUF9DFFh
+         +4/vC99xj6j88Ro7wDXlXG0c7JuPXhlLMWErHyfShk2wmyAR4sExYvR+ixc54dXLc6l6
+         zouUg8ILr/Q79I0gu0NtJbQyIHtyJJQ7B2evM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version;
-        bh=5AahqhNbCkh1whBZgLpBGKPjMIgbUf11ZZ3n1AruYtc=;
-        b=BkF9iA5I92bfzhEB4AyDjOz70991jw13Jn2LGI6zeo7Pypo0A9jfJHYbBkZuU86Bxy
-         xX74LfdC6FZGdOYfzZlNKsWWvXMwhaGW9hgQzV9Qxi4WIG/dvVoJSaCz+ei9VkIvtnKv
-         jkHh5/SoBKWrsWCVRi08hnSo6Mqg8ahMbZs+1lgjueEfZmZ0pm/aRNJ3VhvYfSkguXiV
-         tReSi+YI0gtHOWFzD7XsryVT9uAvdV5ODSnZUyN1NdNFzWhbat4VDhn5YMr6CyJcyZUO
-         RMkauDmutOXTAR732Pok4m0x3XZXWNiw631D1LZWDL4wIwP0QDhWEN0DDQn7RfWK/LyX
-         9D7w==
-X-Gm-Message-State: AOAM532E6ep4T4Fib+53WzZPld2vkeRjcezLld401UMsdJFYt9FHyn8U
-        8NhM3PCdNdmeRPWsH9kj25V4oJcga5rUkhRWcvpOAsT6fdLly5ELdsbrRAu7M/rQH9TpjcmN0l1
-        R7STxd+dgWE6wqvWSUhUtDaFEcI/Pmyu4zSA/vKGN0mOR5GUdHXkMe79xbAhQTRuT3Il1Q2/hqZ
-        fdpolNDSjE
-X-Google-Smtp-Source: ABdhPJzJOcldh1Es7dk1P8AIWtWljRv/3O0v5C5EXcJlgZxWn2mwXGWwqRFFcPyVvq6xpaSJrnwSTA==
-X-Received: by 2002:a17:90a:448c:: with SMTP id t12mr3495273pjg.142.1622194801354;
-        Fri, 28 May 2021 02:40:01 -0700 (PDT)
+        bh=O6tJu82LqiIvd31XcQdSUYATxFdhZ+bx362Ug0ZSZ9k=;
+        b=PH4+4HFMuDfO5aDq9khx7XIA0WItdQXunJk/B4JlbnJT8WTvgRT9kvI0FAYiv00ukJ
+         4Ad6S1peYLF2BgTK+wvjymCGLo4/7tnag+6W+A/QkmJ/Yyo5AAqRP4wKRDZXFUk6iHMz
+         hFS293XoDQR0NFGUIqR4DvUa18EA9pjGutxw0U94eCJpUWXNUFKO5SVQQ419SHQp+ptk
+         o6zwUCnBdASwcp3AVN9H362f3GtI5SL5iZec7FNQ1Gzd5hNj/7L+nDAlFXi7PvIY793T
+         K8QG0viQtryPBYymoCif6DTXf8+o+rV6vsxXkMhi5GVAyEKRMUewqHFmjsGuWe9nxt2X
+         Z1LQ==
+X-Gm-Message-State: AOAM530+tA7mQ1LGanFlAFiEqXkSLAMFSowYSkjCN6jvJrerVVUEiz4q
+        ArL6g0uwCEzhcOAHdzeSi5QWcTcbhj40hGMI2YWk9fCeZes/w/p9hn5e2HDh6jIUMaHrH0DjgJi
+        JC7fRXOrTFk8fQQvAXe/VvCzuSWRC0OIr4lGBoih/LAHaNjCz/JJodhjV4uO+HBT4AHQxipABXA
+        CZidrxdS2t
+X-Google-Smtp-Source: ABdhPJy7jGNfuip8T6tkQ0qPMMoBur+jJj518L5wQiBSVtbVb2uZOrILkUS/a2H4MlnSWTBCBHNRHg==
+X-Received: by 2002:a17:902:8645:b029:fd:25ef:3df7 with SMTP id y5-20020a1709028645b02900fd25ef3df7mr7267334plt.48.1622194802964;
+        Fri, 28 May 2021 02:40:02 -0700 (PDT)
 Received: from dev01.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id s140sm3913216pfs.73.2021.05.28.02.40.00
+        by smtp.gmail.com with ESMTPSA id s140sm3913216pfs.73.2021.05.28.02.40.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 02:40:01 -0700 (PDT)
+        Fri, 28 May 2021 02:40:02 -0700 (PDT)
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [PATCH V3 rdma-core 2/5] bnxt_re/lib: Read wqe mode from the driver
-Date:   Fri, 28 May 2021 15:09:43 +0530
-Message-Id: <20210528093946.900940-3-devesh.sharma@broadcom.com>
+Subject: [PATCH V3 rdma-core 3/5] bnxt_re/lib: add a function to initialize software queue
+Date:   Fri, 28 May 2021 15:09:44 +0530
+Message-Id: <20210528093946.900940-4-devesh.sharma@broadcom.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210528093946.900940-1-devesh.sharma@broadcom.com>
 References: <20210528093946.900940-1-devesh.sharma@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000ed3e7105c360a8ea"
+        boundary="00000000000005e91305c360a953"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000ed3e7105c360a8ea
+--00000000000005e91305c360a953
 Content-Transfer-Encoding: 8bit
 
-During bnxt_re device context creation, read the
-wqe mode and store it in context structure and
-in the QP context structure. wqe mode would be
-required to change between fixed size wqe and
-non-fixed sized wqe modes of SQ/RQ in gen-p5
-or newer devices.
+Splitting the shadow software queue initialization into
+a separate function. Same is being called for both RQ and
+SQ during create QP.
 
 Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
 ---
- providers/bnxt_re/bnxt_re-abi.h | 5 +++++
- providers/bnxt_re/main.c        | 4 ++++
- providers/bnxt_re/main.h        | 2 ++
- providers/bnxt_re/verbs.c       | 1 +
- 4 files changed, 12 insertions(+)
+ providers/bnxt_re/main.h  |  3 ++
+ providers/bnxt_re/verbs.c | 62 ++++++++++++++++++++++++---------------
+ 2 files changed, 42 insertions(+), 23 deletions(-)
 
-diff --git a/providers/bnxt_re/bnxt_re-abi.h b/providers/bnxt_re/bnxt_re-abi.h
-index c82019e8..d138cd9c 100644
---- a/providers/bnxt_re/bnxt_re-abi.h
-+++ b/providers/bnxt_re/bnxt_re-abi.h
-@@ -196,6 +196,11 @@ enum bnxt_re_ud_cqe_mask {
- 	BNXT_RE_UD_CQE_SRCQPLO_SHIFT	= 0x30
- };
- 
-+enum bnxt_re_modes {
-+	BNXT_RE_WQE_MODE_STATIC =	0x00,
-+	BNXT_RE_WQE_MODE_VARIABLE =	0x01
-+};
-+
- struct bnxt_re_db_hdr {
- 	__le32 indx;
- 	__le32 typ_qid; /* typ: 4, qid:20*/
-diff --git a/providers/bnxt_re/main.c b/providers/bnxt_re/main.c
-index 1779e1ec..ee9edd7d 100644
---- a/providers/bnxt_re/main.c
-+++ b/providers/bnxt_re/main.c
-@@ -158,6 +158,10 @@ static struct verbs_context *bnxt_re_alloc_context(struct ibv_device *vdev,
- 					 BNXT_RE_CHIP_ID0_CHIP_MET_SFT) &
- 					 0xFF;
- 	}
-+
-+	if (resp.comp_mask & BNXT_RE_UCNTX_CMASK_HAVE_MODE)
-+		cntx->wqe_mode = resp.mode;
-+
- 	pthread_spin_init(&cntx->fqlock, PTHREAD_PROCESS_PRIVATE);
- 	/* mmap shared page. */
- 	cntx->shpg = mmap(NULL, rdev->pg_size, PROT_READ | PROT_WRITE,
 diff --git a/providers/bnxt_re/main.h b/providers/bnxt_re/main.h
-index a63719e8..dc8166f2 100644
+index dc8166f2..94d42958 100644
 --- a/providers/bnxt_re/main.h
 +++ b/providers/bnxt_re/main.h
-@@ -146,6 +146,7 @@ struct bnxt_re_qp {
- 	uint64_t wqe_cnt;
- 	uint16_t mtu;
- 	uint16_t qpst;
-+	uint32_t qpmode;
- 	uint8_t qptyp;
- 	/* irdord? */
+@@ -96,7 +96,10 @@ struct bnxt_re_wrid {
+ 	uint64_t wrid;
+ 	uint32_t bytes;
+ 	int next_idx;
++	uint32_t st_slot_idx;
++	uint8_t slots;
+ 	uint8_t sig;
++
  };
-@@ -178,6 +179,7 @@ struct bnxt_re_context {
- 	uint32_t max_srq;
- 	struct bnxt_re_dpi udpi;
- 	void *shpg;
-+	uint32_t wqe_mode;
- 	pthread_mutex_t shlock;
- 	pthread_spinlock_t fqlock;
- };
+ 
+ struct bnxt_re_qpcap {
 diff --git a/providers/bnxt_re/verbs.c b/providers/bnxt_re/verbs.c
-index fb2cf5ac..11c01574 100644
+index 11c01574..8507617b 100644
 --- a/providers/bnxt_re/verbs.c
 +++ b/providers/bnxt_re/verbs.c
-@@ -952,6 +952,7 @@ struct ibv_qp *bnxt_re_create_qp(struct ibv_pd *ibvpd,
+@@ -847,6 +847,23 @@ static void bnxt_re_free_queues(struct bnxt_re_qp *qp)
+ 	bnxt_re_free_aligned(qp->jsqq->hwque);
+ }
+ 
++static int bnxt_re_alloc_init_swque(struct bnxt_re_joint_queue *jqq, int nwr)
++{
++	int indx;
++
++	jqq->swque = calloc(nwr, sizeof(struct bnxt_re_wrid));
++	if (!jqq->swque)
++		return -ENOMEM;
++	jqq->start_idx = 0;
++	jqq->last_idx = nwr - 1;
++	for (indx = 0; indx < nwr; indx++)
++		jqq->swque[indx].next_idx = indx + 1;
++	jqq->swque[jqq->last_idx].next_idx = 0;
++	jqq->last_idx = 0;
++
++	return 0;
++}
++
+ static int bnxt_re_alloc_queues(struct bnxt_re_qp *qp,
+ 				struct ibv_qp_init_attr *attr,
+ 				uint32_t pg_size) {
+@@ -857,22 +874,23 @@ static int bnxt_re_alloc_queues(struct bnxt_re_qp *qp,
+ 	uint32_t psn_depth;
+ 	uint32_t psn_size;
+ 	int ret, indx;
++	uint32_t nswr;
+ 
+ 	que = qp->jsqq->hwque;
+ 	que->stride = bnxt_re_get_sqe_sz();
+ 	/* 8916 adjustment */
+-	que->depth = roundup_pow_of_two(attr->cap.max_send_wr + 1 +
+-					BNXT_RE_FULL_FLAG_DELTA);
+-	que->diff = que->depth - attr->cap.max_send_wr;
++	nswr  = roundup_pow_of_two(attr->cap.max_send_wr + 1 +
++				   BNXT_RE_FULL_FLAG_DELTA);
++	que->diff = nswr - attr->cap.max_send_wr;
+ 
+ 	/* psn_depth extra entries of size que->stride */
+ 	psn_size = bnxt_re_is_chip_gen_p5(qp->cctx) ?
+ 					sizeof(struct bnxt_re_psns_ext) :
+ 					sizeof(struct bnxt_re_psns);
+-	psn_depth = (que->depth * psn_size) / que->stride;
+-	if ((que->depth * psn_size) % que->stride)
++	psn_depth = (nswr * psn_size) / que->stride;
++	if ((nswr * psn_size) % que->stride)
+ 		psn_depth++;
+-	que->depth += psn_depth;
++	que->depth = nswr + psn_depth;
+ 	/* PSN-search memory is allocated without checking for
+ 	 * QP-Type. Kenrel driver do not map this memory if it
+ 	 * is UD-qp. UD-qp use this memory to maintain WC-opcode.
+@@ -884,44 +902,42 @@ static int bnxt_re_alloc_queues(struct bnxt_re_qp *qp,
+ 	/* exclude psns depth*/
+ 	que->depth -= psn_depth;
+ 	/* start of spsn space sizeof(struct bnxt_re_psns) each. */
+-	psns = (que->va + que->stride * que->depth);
++	psns = (que->va + que->stride * nswr);
+ 	psns_ext = (struct bnxt_re_psns_ext *)psns;
+-	swque = calloc(que->depth, sizeof(struct bnxt_re_wrid));
+-	if (!swque) {
++
++	ret = bnxt_re_alloc_init_swque(qp->jsqq, nswr);
++	if (ret) {
+ 		ret = -ENOMEM;
  		goto fail;
- 	/* alloc queues */
- 	qp->cctx = &cntx->cctx;
-+	qp->qpmode = cntx->wqe_mode & BNXT_RE_WQE_MODE_VARIABLE;
- 	if (bnxt_re_alloc_queues(qp, attr, dev->pg_size))
- 		goto failq;
- 	/* Fill ibv_cmd */
+ 	}
+ 
+-	for (indx = 0 ; indx < que->depth; indx++, psns++)
++	swque = qp->jsqq->swque;
++	for (indx = 0 ; indx < nswr; indx++, psns++)
+ 		swque[indx].psns = psns;
+ 	if (bnxt_re_is_chip_gen_p5(qp->cctx)) {
+-		for (indx = 0 ; indx < que->depth; indx++, psns_ext++) {
++		for (indx = 0 ; indx < nswr; indx++, psns_ext++) {
+ 			swque[indx].psns_ext = psns_ext;
+ 			swque[indx].psns = (struct bnxt_re_psns *)psns_ext;
+ 		}
+ 	}
+-	qp->jsqq->swque = swque;
+-
+-	qp->cap.max_swr = que->depth;
++	qp->cap.max_swr = nswr;
+ 	pthread_spin_init(&que->qlock, PTHREAD_PROCESS_PRIVATE);
+ 
+ 	if (qp->jrqq) {
+ 		que = qp->jrqq->hwque;
+ 		que->stride = bnxt_re_get_rqe_sz();
+-		que->depth = roundup_pow_of_two(attr->cap.max_recv_wr + 1);
+-		que->diff = que->depth - attr->cap.max_recv_wr;
++		nswr = roundup_pow_of_two(attr->cap.max_recv_wr + 1);
++		que->depth = nswr;
++		que->diff = nswr - attr->cap.max_recv_wr;
+ 		ret = bnxt_re_alloc_aligned(que, pg_size);
+ 		if (ret)
+ 			goto fail;
+-		pthread_spin_init(&que->qlock, PTHREAD_PROCESS_PRIVATE);
+ 		/* For RQ only bnxt_re_wri.wrid is used. */
+-		qp->jrqq->swque = calloc(que->depth,
+-					 sizeof(struct bnxt_re_wrid));
+-		if (!qp->jrqq->swque) {
+-			ret = -ENOMEM;
++		ret = bnxt_re_alloc_init_swque(qp->jrqq, nswr);
++		if (ret)
+ 			goto fail;
+-		}
+-		qp->cap.max_rwr = que->depth;
++		pthread_spin_init(&que->qlock, PTHREAD_PROCESS_PRIVATE);
++		qp->cap.max_rwr = nswr;
+ 	}
+ 
+ 	return 0;
 -- 
 2.25.1
 
 
---000000000000ed3e7105c360a8ea
+--00000000000005e91305c360a953
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -218,13 +283,13 @@ G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
 PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIiMzCivFU4tVTC0n8iPTKDZouct
-qWxXXDARdYfZQQq8MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDUyODA5NDAwMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGUzRqSN4oZ+S4MaVZAjE/s2A016
++0mWp74nVF+0uWeOMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDUyODA5NDAwM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQA0/KjfmtIwvZwjhzT8LdrveBDPUT9zGS41jAk+6uEqOe6Q
-OZj8vCzgLBe6/A6ARyd5nad4WRGgX0ViLlAnDibiOeETYxdi+d/Q0e5z0xodzMgD+7rp1vr3zAz/
-qo3PrHefTZbNvciJfvy9ROw3I6m4D7OE2oS1fCfU8zpKaytM1bJLpqqvPv8wbT3f+nXvqR+CLQiP
-g2LnwlDCO0hloVC2CAx57bbiIy7e7H+tIl+0AMoa6ETHIa0CQpOclr4G9ljDdjE8IImwij0hifBX
-bmZ+qYbbzzvU+peujacczwK1AzwuKQtBDIAoTjk+N5yV1gTsYtfmdbYAqq09IpHxkiv3
---000000000000ed3e7105c360a8ea--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQBDcp9H0D1PCl4YQuKLkGeiRqyVfpBN/yhSG7jX7cd2+ANP
+Kpc3zUSQAzTRL7vQMoF35NzgQm/QBZyj0CFzIzDTzw3m653NQ4yY7zrH4SLxd7sSqnx9LUmpw+Fg
+vVpBooIo6TSTwtwSTVVJ/Q/SoPaynRHq8jLg00Cv2/6pl4UfSZRvS7888CeleGpc0YJk3lcRTBlB
+fYW+bfQO1M6x9+qpys1rUxx6qm78SEQVahoAfvkYH+JNMakpv2fGY/rrLlv2xOBZ2ZCJrD1LjGTo
+Y4P3h4ivJp2ER/wvj7kaeov2f37Qp6+myQKsv4VSR/1hM/xE4ceO5ZnjtiUtdWY/8Igi
+--00000000000005e91305c360a953--
