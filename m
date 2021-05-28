@@ -2,60 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2398E3941CF
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 May 2021 13:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECF33941D1
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 May 2021 13:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234568AbhE1LcQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S234882AbhE1LcQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Fri, 28 May 2021 07:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49426 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234367AbhE1LcJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 May 2021 07:32:09 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15166C0613CE
-        for <linux-rdma@vger.kernel.org>; Fri, 28 May 2021 04:30:34 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id j9so4464762edt.6
+        with ESMTP id S233270AbhE1LcK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 May 2021 07:32:10 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DCF5C0613ED
+        for <linux-rdma@vger.kernel.org>; Fri, 28 May 2021 04:30:35 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id h20so4890112ejg.1
         for <linux-rdma@vger.kernel.org>; Fri, 28 May 2021 04:30:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wr3oGd2AXGQRTQMnzq8qo5e2Hw8gAn5xCsknsd45XjQ=;
-        b=JmJ8GDvajYFVGnoDmhVxib5sYfeig/zI1UxiZ0ChWWE5lAeBfn6yhgcvHeRU6x3LxO
-         DbjmvAi7Z4ZTIBn8wjrzZoZofNUp2IjAOHCLw3V0GKZSD/PynQ34di9ve3ajszWd/r1D
-         +mo8mpedjp3udQaj8WX4DLDalRQJXam4hSrK0H7dpw3YA6Pkn5PcP1jrapGpxGTVZAox
-         MRDwC0b+S4PKqH13cIcxhcCpa80bDy4McQwe7F3yNI0GU1lmUgSuN/8bEjXWC1DLac1k
-         aCJyAyodDUZXeIp4enc+Koef/UrsB8I38JEY6frW/lCT6YC4hKsOqv3GISltMN8KAp0t
-         Ffcg==
+        bh=jrwBwRyV/dgjPl2sDnRgTh6UPcWjl8bJANqc538yFec=;
+        b=FfJlDuRjtk6zWTQPpprS0E/rQdubvyAwgamb72Bhz036F/1mZbFOcHCUd7VW7CBm3M
+         H+IHnp7O1Nx6L4EO8utzfdmjo7fvqS/HpG/+eWoZ2UKUA3v/wRkacMZx/0jnLfTw2xFQ
+         qB9vjz4ufAbRWIAJyikbD7etMigVk1qfDdDTjIm8HWC7N7fq2+VsPjIuSHbrnmdKkrXk
+         0tftzNnumblJa+9oaRDi0BYLP0mmauMGDvmgVG4QLN84vkx3It1ApdmYF0xW2AUJQgJv
+         icow/plqKjMALdIdhvJhF/cfnZBkzGIZ3QusrBlZWl1geVfm+UzUIm8wQJAiqJ6jYe7F
+         Vi5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wr3oGd2AXGQRTQMnzq8qo5e2Hw8gAn5xCsknsd45XjQ=;
-        b=kDYeEkf592Ik4UYyO2Jf+76s9vuAXhnCtqAHAXT/1HHrLsKiJl4fcS0+N1+7BibHJj
-         vNtCXfObAO/i3Xc95jdQaX4prIV0OVWPCXkG4HlZFdCbgC5TIInGbAFE/d70auX69FXu
-         F0SyT2PBSIvbwAnbCySYvQS11dsbEIhkgG+//NQBh5mUDrRtbp68dxKSGnrVAtyWlaXl
-         JxhTe/5kPk+W95hyQKICt45DZvoj1MtIatQTvqpDvnSvWWH3yEtq9UHL5xyh60oFsgqx
-         34YCNY6FC31Q/9NT8s0RqGjr14TIEwga2mXFCNMR520o+JLIvW2gSfB6N13FYaeR+W6s
-         cHew==
-X-Gm-Message-State: AOAM532RVJV6NWucZU1iBwG+kTsdbxiiMigknHJBoMUbmpJJLyE0UDWG
-        4V1GBTC5Fm9Z8u+0mCofbIa9IIBB7Lwu0w==
-X-Google-Smtp-Source: ABdhPJwm+zxPNva/6u4ydjhdLD8A99d23bOCOefgl7eMURmwp1x7i1fPcRaxrB9/ThyACOhKotgh7A==
-X-Received: by 2002:a05:6402:684:: with SMTP id f4mr9622781edy.25.1622201432532;
-        Fri, 28 May 2021 04:30:32 -0700 (PDT)
+        bh=jrwBwRyV/dgjPl2sDnRgTh6UPcWjl8bJANqc538yFec=;
+        b=gzFC2jC5lHJsmpQKJoFwUpR5yoap6CSSrIrwWiXwXpbTonavuR6y1OjW4AnuQ51HLa
+         f+YQTC+/old0mG1VbTliWqDyvpXvFlse/eYiWzBQ7Yxl5pmQpkxFrfHtOAbm/p1HXrtq
+         08N8qo+Yx9+lUtIXcmzG16zchvhypfFR/UPyBUyETLcxZZSI+omVhcguYtk0zXCPjfvm
+         KznDHwJd6cKUy3gB3oN/vEI6AzAi71c31lbnkIJTMhCY+M3m+GZ7wMRGD8P4r0gH/3H3
+         ieKbzqT8LMNHblrLNmjhS2ANKbqY2k8dcfW2u048WcTWi+l+FEvjxiSivHqWrApbbgM3
+         Qujw==
+X-Gm-Message-State: AOAM5333dVo7hfU7Onn0+7MD3PZiNkGQ2Gj56yeue4a4SnOzXSBIR1ro
+        1jvuH8qhvGhvG8NUF8FMqnADFg1H2lan+A==
+X-Google-Smtp-Source: ABdhPJxdzCJSQ4WX0ubrVs6jCmmIh3KBt8J70lSqa3JsjeAvSAsSfjWlhkWXbepcFluni8aXjupEiQ==
+X-Received: by 2002:a17:906:2bd0:: with SMTP id n16mr8656804ejg.110.1622201433539;
+        Fri, 28 May 2021 04:30:33 -0700 (PDT)
 Received: from jwang-Latitude-5491.fkb.profitbricks.net ([2001:16b8:497d:7d00:983b:122a:4685:3849])
-        by smtp.gmail.com with ESMTPSA id p15sm2594578edr.50.2021.05.28.04.30.31
+        by smtp.gmail.com with ESMTPSA id p15sm2594578edr.50.2021.05.28.04.30.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 04:30:32 -0700 (PDT)
+        Fri, 28 May 2021 04:30:33 -0700 (PDT)
 From:   Jack Wang <jinpu.wang@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
         Gioh Kim <gi-oh.kim@cloud.ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCHv3 for-next 15/20] RDMA/rtrs: Do not reset hb_missed_max after re-connection
-Date:   Fri, 28 May 2021 13:30:13 +0200
-Message-Id: <20210528113018.52290-16-jinpu.wang@ionos.com>
+        Gioh Kim <gi-oh.kim@ionos.com>,
+        Aleksei Marov <aleksei.marov@ionos.com>
+Subject: [PATCHv3 for-next 16/20] RDMA/rtrs-srv: Duplicated session name is not allowed
+Date:   Fri, 28 May 2021 13:30:14 +0200
+Message-Id: <20210528113018.52290-17-jinpu.wang@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210528113018.52290-1-jinpu.wang@ionos.com>
 References: <20210528113018.52290-1-jinpu.wang@ionos.com>
@@ -67,34 +68,88 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 
-When re-connecting, it resets hb_missed_max to 0.
-Before the first re-connecting, client will trigger re-connection
-when it gets hb-ack more than 5 times. But after the first
-re-connecting, clients will do re-connection whenever it does
-not get hb-ack because hb_missed_max is 0.
+If two clients try to use the same session name, rtrs-server generates a
+kernel error that it failed to create the sysfs because the filename
+is duplicated.
 
-There is no need to reset hb_missed_max when re-connecting.
-hb_missed_max should be kept until closing the session.
+This patch adds code to check if there already exists the same session
+name with the different UUID. If a client tries to add more session,
+it sends the UUID and the session name. Therefore it is ok if there is
+already same session name with the same UUID. The rtrs-server must fail
+only-if there is the same session name with the different UUID.
 
-Fixes: c0894b3ea69d3 ("RDMA/rtrs: core: lib functions shared between client and server modules")
 Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+Signed-off-by: Aleksei Marov <aleksei.marov@ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 42 +++++++++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
-index a7847282a2eb..4e602e40f623 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs.c
-@@ -376,7 +376,6 @@ void rtrs_stop_hb(struct rtrs_sess *sess)
- {
- 	cancel_delayed_work_sync(&sess->hb_dwork);
- 	sess->hb_missed_cnt = 0;
--	sess->hb_missed_max = 0;
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index 631d37976518..78a861843705 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -753,7 +753,40 @@ static void rtrs_srv_sess_down(struct rtrs_srv_sess *sess)
+ 	mutex_unlock(&srv->paths_ev_mutex);
  }
- EXPORT_SYMBOL_GPL(rtrs_stop_hb);
  
++static bool exist_sessname(struct rtrs_srv_ctx *ctx,
++			   const char *sessname, const uuid_t *path_uuid)
++{
++	struct rtrs_srv *srv;
++	struct rtrs_srv_sess *sess;
++	bool found = false;
++
++	mutex_lock(&ctx->srv_mutex);
++	list_for_each_entry(srv, &ctx->srv_list, ctx_list) {
++		mutex_lock(&srv->paths_mutex);
++
++		/* when a client with same uuid and same sessname tried to add a path */
++		if (uuid_equal(&srv->paths_uuid, path_uuid)) {
++			mutex_unlock(&srv->paths_mutex);
++			continue;
++		}
++
++		list_for_each_entry(sess, &srv->paths_list, s.entry) {
++			if (strlen(sess->s.sessname) == strlen(sessname) &&
++			    !strcmp(sess->s.sessname, sessname)) {
++				found = true;
++				break;
++			}
++		}
++		mutex_unlock(&srv->paths_mutex);
++		if (found)
++			break;
++	}
++	mutex_unlock(&ctx->srv_mutex);
++	return found;
++}
++
+ static int post_recv_sess(struct rtrs_srv_sess *sess);
++static int rtrs_rdma_do_reject(struct rdma_cm_id *cm_id, int errno);
+ 
+ static int process_info_req(struct rtrs_srv_con *con,
+ 			    struct rtrs_msg_info_req *msg)
+@@ -772,10 +805,17 @@ static int process_info_req(struct rtrs_srv_con *con,
+ 		rtrs_err(s, "post_recv_sess(), err: %d\n", err);
+ 		return err;
+ 	}
++
++	if (exist_sessname(sess->srv->ctx,
++			   msg->sessname, &sess->srv->paths_uuid)) {
++		rtrs_err(s, "sessname is duplicated: %s\n", msg->sessname);
++		return -EPERM;
++	}
++	strscpy(sess->s.sessname, msg->sessname, sizeof(sess->s.sessname));
++
+ 	rwr = kcalloc(sess->mrs_num, sizeof(*rwr), GFP_KERNEL);
+ 	if (unlikely(!rwr))
+ 		return -ENOMEM;
+-	strscpy(sess->s.sessname, msg->sessname, sizeof(sess->s.sessname));
+ 
+ 	tx_sz  = sizeof(*rsp);
+ 	tx_sz += sizeof(rsp->desc[0]) * sess->mrs_num;
 -- 
 2.25.1
 
