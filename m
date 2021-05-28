@@ -2,61 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECF33941D1
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 May 2021 13:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8EFF3941D0
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 May 2021 13:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234882AbhE1LcQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 May 2021 07:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
+        id S235045AbhE1LcT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 May 2021 07:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233270AbhE1LcK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 May 2021 07:32:10 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DCF5C0613ED
+        with ESMTP id S234573AbhE1LcL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 May 2021 07:32:11 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3E9C06138B
         for <linux-rdma@vger.kernel.org>; Fri, 28 May 2021 04:30:35 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id h20so4890112ejg.1
-        for <linux-rdma@vger.kernel.org>; Fri, 28 May 2021 04:30:34 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id df21so4478111edb.3
+        for <linux-rdma@vger.kernel.org>; Fri, 28 May 2021 04:30:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jrwBwRyV/dgjPl2sDnRgTh6UPcWjl8bJANqc538yFec=;
-        b=FfJlDuRjtk6zWTQPpprS0E/rQdubvyAwgamb72Bhz036F/1mZbFOcHCUd7VW7CBm3M
-         H+IHnp7O1Nx6L4EO8utzfdmjo7fvqS/HpG/+eWoZ2UKUA3v/wRkacMZx/0jnLfTw2xFQ
-         qB9vjz4ufAbRWIAJyikbD7etMigVk1qfDdDTjIm8HWC7N7fq2+VsPjIuSHbrnmdKkrXk
-         0tftzNnumblJa+9oaRDi0BYLP0mmauMGDvmgVG4QLN84vkx3It1ApdmYF0xW2AUJQgJv
-         icow/plqKjMALdIdhvJhF/cfnZBkzGIZ3QusrBlZWl1geVfm+UzUIm8wQJAiqJ6jYe7F
-         Vi5w==
+        bh=kyDSwVDxaz/2g5qVIzlNJqfchWdo5hv8O+V3TRK4MSo=;
+        b=bOR/KGXCJg5e//wyv6Z0me4gDtvi36mKP6wdrHE+HLg6QfeqAyuinzyYUIgJ9h5f7n
+         Cz87kaqQYvSgW0ccf6FD2OIETl4wDnBLGsIVwGmdAJz1UX+Hbe8QZEM6syh5Oxoc/XAs
+         YBKskIroHOXC/Tbog8rFZ3N4BiQrd9wRGhE+E65YTfXsqFZlBJzLLnHwFTKvYMF427GU
+         oU6XdXls6yyI/CWF2AmJ+dhO0gqDnDqhjSuvwumUILYyFk3FwE+EebqXVLVbYlDD4arU
+         CNiGCOz9coFU22s9Cw/BEIkJ0fe/Pc+FxQmg4OQ2nZEhtqYKGBnWY8VlZ/3RzY/FsKCe
+         WvUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jrwBwRyV/dgjPl2sDnRgTh6UPcWjl8bJANqc538yFec=;
-        b=gzFC2jC5lHJsmpQKJoFwUpR5yoap6CSSrIrwWiXwXpbTonavuR6y1OjW4AnuQ51HLa
-         f+YQTC+/old0mG1VbTliWqDyvpXvFlse/eYiWzBQ7Yxl5pmQpkxFrfHtOAbm/p1HXrtq
-         08N8qo+Yx9+lUtIXcmzG16zchvhypfFR/UPyBUyETLcxZZSI+omVhcguYtk0zXCPjfvm
-         KznDHwJd6cKUy3gB3oN/vEI6AzAi71c31lbnkIJTMhCY+M3m+GZ7wMRGD8P4r0gH/3H3
-         ieKbzqT8LMNHblrLNmjhS2ANKbqY2k8dcfW2u048WcTWi+l+FEvjxiSivHqWrApbbgM3
-         Qujw==
-X-Gm-Message-State: AOAM5333dVo7hfU7Onn0+7MD3PZiNkGQ2Gj56yeue4a4SnOzXSBIR1ro
-        1jvuH8qhvGhvG8NUF8FMqnADFg1H2lan+A==
-X-Google-Smtp-Source: ABdhPJxdzCJSQ4WX0ubrVs6jCmmIh3KBt8J70lSqa3JsjeAvSAsSfjWlhkWXbepcFluni8aXjupEiQ==
-X-Received: by 2002:a17:906:2bd0:: with SMTP id n16mr8656804ejg.110.1622201433539;
-        Fri, 28 May 2021 04:30:33 -0700 (PDT)
+        bh=kyDSwVDxaz/2g5qVIzlNJqfchWdo5hv8O+V3TRK4MSo=;
+        b=L6s7Q5ZjAQ1NxQhPlAICr13z50PuP/CMpZUej6hHT2mjsVzQcckY45WebNFnR98lnU
+         BgTuh5WB1v425sLq6KGQ7CqnZJbUbVrgdmg4FCrirE1dMgWadFKs86mF7Tfq7DYsK6ou
+         J+lkiS1/AVsuSukJSMNIv6Jd32swL78TLzSxwreAClju01OeIeTTrKdRI8m8o2sL1buJ
+         pmz2CJgjG6JAXNYoGNd9TobxakCozE36cwKflFt4tyxnJ4QFW+ofSYtKDNN8CAY0K/ae
+         mTYYBMYwvD9FAaSmMyvv8YoxDWNSwWtEEYrWoWlqrpnc9ORdLGhJRQGf8jWBayw1ZH/b
+         kC4w==
+X-Gm-Message-State: AOAM532J0njKNv5zU7aiELHWn6BtfiKlXKP4+gdz/BXVW+kbVFHn9VvN
+        /etouKmTQgmptNn0gYTXCjhwnZuE27NTxQ==
+X-Google-Smtp-Source: ABdhPJzNQI5Lo3miaOBEIwUvmixjxYPiS6hiNiTYGHai1OHEBLxv6EJcTqRRb8JqltLodmjNcJTPOw==
+X-Received: by 2002:a05:6402:2691:: with SMTP id w17mr9644741edd.140.1622201434336;
+        Fri, 28 May 2021 04:30:34 -0700 (PDT)
 Received: from jwang-Latitude-5491.fkb.profitbricks.net ([2001:16b8:497d:7d00:983b:122a:4685:3849])
-        by smtp.gmail.com with ESMTPSA id p15sm2594578edr.50.2021.05.28.04.30.32
+        by smtp.gmail.com with ESMTPSA id p15sm2594578edr.50.2021.05.28.04.30.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 04:30:33 -0700 (PDT)
+        Fri, 28 May 2021 04:30:34 -0700 (PDT)
 From:   Jack Wang <jinpu.wang@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
         Gioh Kim <gi-oh.kim@cloud.ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>,
-        Aleksei Marov <aleksei.marov@ionos.com>
-Subject: [PATCHv3 for-next 16/20] RDMA/rtrs-srv: Duplicated session name is not allowed
-Date:   Fri, 28 May 2021 13:30:14 +0200
-Message-Id: <20210528113018.52290-17-jinpu.wang@ionos.com>
+        Gioh Kim <gi-oh.kim@ionos.com>
+Subject: [PATCHv3 for-next 17/20] RDMA/rtrs-srv: Fix memory leak of unfreed rtrs_srv_stats object
+Date:   Fri, 28 May 2021 13:30:15 +0200
+Message-Id: <20210528113018.52290-18-jinpu.wang@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210528113018.52290-1-jinpu.wang@ionos.com>
 References: <20210528113018.52290-1-jinpu.wang@ionos.com>
@@ -68,88 +67,60 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 
-If two clients try to use the same session name, rtrs-server generates a
-kernel error that it failed to create the sysfs because the filename
-is duplicated.
+When closing a session, currently the rtrs_srv_stats object in the
+closing session is freed by kobject release. But if it failed
+to create a session by various reasons, it must free the rtrs_srv_stats
+object directly because kobject is not created yet.
 
-This patch adds code to check if there already exists the same session
-name with the different UUID. If a client tries to add more session,
-it sends the UUID and the session name. Therefore it is ok if there is
-already same session name with the same UUID. The rtrs-server must fail
-only-if there is the same session name with the different UUID.
+This problem is found by kmemleak as below:
 
+1. One client machine maps /dev/nullb0 with session name 'bla':
+root@test1:~# echo "sessname=bla path=ip:192.168.122.190 \
+device_path=/dev/nullb0" > /sys/devices/virtual/rnbd-client/ctl/map_device
+
+2. Another machine failed to create a session with the same name 'bla':
+root@test2:~# echo "sessname=bla path=ip:192.168.122.190 \
+device_path=/dev/nullb1" > /sys/devices/virtual/rnbd-client/ctl/map_device
+-bash: echo: write error: Connection reset by peer
+
+3. The kmemleak on server machine reported an error:
+unreferenced object 0xffff888033cdc800 (size 128):
+  comm "kworker/2:1", pid 83, jiffies 4295086585 (age 2508.680s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000a72903b2>] __alloc_sess+0x1d4/0x1250 [rtrs_server]
+    [<00000000d1e5321e>] rtrs_srv_rdma_cm_handler+0xc31/0xde0 [rtrs_server]
+    [<00000000bb2f6e7e>] cma_ib_req_handler+0xdc5/0x2b50 [rdma_cm]
+    [<00000000e896235d>] cm_process_work+0x2d/0x100 [ib_cm]
+    [<00000000b6866c5f>] cm_req_handler+0x11bc/0x1c40 [ib_cm]
+    [<000000005f5dd9aa>] cm_work_handler+0xe65/0x3cf2 [ib_cm]
+    [<00000000610151e7>] process_one_work+0x4bc/0x980
+    [<00000000541e0f77>] worker_thread+0x78/0x5c0
+    [<00000000423898ca>] kthread+0x191/0x1e0
+    [<000000005a24b239>] ret_from_fork+0x3a/0x50
+
+Fixes: 39c2d639ca183 ("RDMA/rtrs-srv: Set .release function for rtrs srv device during device init")
 Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Signed-off-by: Aleksei Marov <aleksei.marov@ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 42 +++++++++++++++++++++++++-
- 1 file changed, 41 insertions(+), 1 deletion(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 631d37976518..78a861843705 100644
+index 78a861843705..5639b29b8b02 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -753,7 +753,40 @@ static void rtrs_srv_sess_down(struct rtrs_srv_sess *sess)
- 	mutex_unlock(&srv->paths_ev_mutex);
- }
- 
-+static bool exist_sessname(struct rtrs_srv_ctx *ctx,
-+			   const char *sessname, const uuid_t *path_uuid)
-+{
-+	struct rtrs_srv *srv;
-+	struct rtrs_srv_sess *sess;
-+	bool found = false;
-+
-+	mutex_lock(&ctx->srv_mutex);
-+	list_for_each_entry(srv, &ctx->srv_list, ctx_list) {
-+		mutex_lock(&srv->paths_mutex);
-+
-+		/* when a client with same uuid and same sessname tried to add a path */
-+		if (uuid_equal(&srv->paths_uuid, path_uuid)) {
-+			mutex_unlock(&srv->paths_mutex);
-+			continue;
-+		}
-+
-+		list_for_each_entry(sess, &srv->paths_list, s.entry) {
-+			if (strlen(sess->s.sessname) == strlen(sessname) &&
-+			    !strcmp(sess->s.sessname, sessname)) {
-+				found = true;
-+				break;
-+			}
-+		}
-+		mutex_unlock(&srv->paths_mutex);
-+		if (found)
-+			break;
-+	}
-+	mutex_unlock(&ctx->srv_mutex);
-+	return found;
-+}
-+
- static int post_recv_sess(struct rtrs_srv_sess *sess);
-+static int rtrs_rdma_do_reject(struct rdma_cm_id *cm_id, int errno);
- 
- static int process_info_req(struct rtrs_srv_con *con,
- 			    struct rtrs_msg_info_req *msg)
-@@ -772,10 +805,17 @@ static int process_info_req(struct rtrs_srv_con *con,
- 		rtrs_err(s, "post_recv_sess(), err: %d\n", err);
- 		return err;
+@@ -1503,6 +1503,7 @@ static void free_sess(struct rtrs_srv_sess *sess)
+ 		kobject_del(&sess->kobj);
+ 		kobject_put(&sess->kobj);
+ 	} else {
++		kfree(sess->stats);
+ 		kfree(sess);
  	}
-+
-+	if (exist_sessname(sess->srv->ctx,
-+			   msg->sessname, &sess->srv->paths_uuid)) {
-+		rtrs_err(s, "sessname is duplicated: %s\n", msg->sessname);
-+		return -EPERM;
-+	}
-+	strscpy(sess->s.sessname, msg->sessname, sizeof(sess->s.sessname));
-+
- 	rwr = kcalloc(sess->mrs_num, sizeof(*rwr), GFP_KERNEL);
- 	if (unlikely(!rwr))
- 		return -ENOMEM;
--	strscpy(sess->s.sessname, msg->sessname, sizeof(sess->s.sessname));
- 
- 	tx_sz  = sizeof(*rsp);
- 	tx_sz += sizeof(rsp->desc[0]) * sess->mrs_num;
+ }
 -- 
 2.25.1
 
