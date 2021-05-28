@@ -2,119 +2,291 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544253941D4
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 May 2021 13:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BD6394284
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 May 2021 14:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234665AbhE1LcZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 May 2021 07:32:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233711AbhE1LcN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 May 2021 07:32:13 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF20C061763
-        for <linux-rdma@vger.kernel.org>; Fri, 28 May 2021 04:30:38 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id gb17so4815145ejc.8
-        for <linux-rdma@vger.kernel.org>; Fri, 28 May 2021 04:30:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Wf/xwTk8dJcDxIyKJjIrWlgy2XpHIkaxNy3ZNk6imnM=;
-        b=IvGXNZLCz27ydYzSo891kzVs80DcluELdSD42ctJmMdwPXg5avxILjjuke4tMaewhd
-         PqueOhQYc3dr/9tKuLszFtwKl5J/G0qC6lRwTLM88g06Xj4/nw4l2g3TieCGPJXjAJMy
-         sx/j6fh0J+ylngs96Hw/OGA51gw86nVZVzEG00oamzPeyTclR9EBmcCyO2xOSBUKI0HE
-         V04pbHp0QvgNfCMbCmq08TGwKXZM+Wea2spGby9vti7oV1Ll2CUrKCt4vOGphQqC2X2C
-         TqJRkI5lnhWvYulJENBM2KMSZCwHG3UvF1fXYCmdYcMLUhK4U5torOTRKGTttWQzo6BK
-         2XwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Wf/xwTk8dJcDxIyKJjIrWlgy2XpHIkaxNy3ZNk6imnM=;
-        b=mKlMehpCcrzeetw+Myf23j3dxbkjfkveL1GzaEeRUVddJArY1/uXBZTdzBjJcivNT2
-         +KlmB2wEI9+5k4XPebz7mVkr5mBFH/28g5KTuat0PuLkZYZTMtBra4ngvg1tzjFVA1il
-         jcc+yI3v3MLsdXTiwBLFogKbnfdxaz108ueiS4sr9VhzUIrLyVDYRVPJjk89V+Lc57Gk
-         j+Zop5UcRaIHmavHVlw9Yd23k2HtFQkRfAKK72cI651ZXEf4p05KzWLxk5gGcyFjjngp
-         wKzQZuA+lMcwb+ofGasEV3YR+BkWOsVnmxPko+z3TGRXQnUP0MZ48IYsmq6O/rYnH6eD
-         tXWA==
-X-Gm-Message-State: AOAM531RftL+USlEMfMlxRqemR+NUyKqqvQIRSKpG/k8fYb3PsYDzWWR
-        o1S8qJF77w3dnGBC/mMuYwmUqXERmRRyRw==
-X-Google-Smtp-Source: ABdhPJw8Vmig8BvnJ1FhTY4+W9XCndQl9qnaxdGF5R4S1axXFN1vKJJOfAelsJdWgZwYhTMbsc0xZw==
-X-Received: by 2002:a17:907:1117:: with SMTP id qu23mr285228ejb.71.1622201436974;
-        Fri, 28 May 2021 04:30:36 -0700 (PDT)
-Received: from jwang-Latitude-5491.fkb.profitbricks.net ([2001:16b8:497d:7d00:983b:122a:4685:3849])
-        by smtp.gmail.com with ESMTPSA id p15sm2594578edr.50.2021.05.28.04.30.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 04:30:36 -0700 (PDT)
-From:   Jack Wang <jinpu.wang@ionos.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
-        jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCHv3 for-next 20/20] RDMA/rtrs-clt: Fix memory leak of not-freed sess->stats and stats->pcpu_stats
-Date:   Fri, 28 May 2021 13:30:18 +0200
-Message-Id: <20210528113018.52290-21-jinpu.wang@ionos.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210528113018.52290-1-jinpu.wang@ionos.com>
-References: <20210528113018.52290-1-jinpu.wang@ionos.com>
+        id S230215AbhE1McH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 May 2021 08:32:07 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2518 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230056AbhE1McH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 May 2021 08:32:07 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fs3qV1k7FzYpfl;
+        Fri, 28 May 2021 20:27:50 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 28 May 2021 20:30:30 +0800
+Received: from [10.174.179.215] (10.174.179.215) by
+ dggema769-chm.china.huawei.com (10.1.198.211) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 28 May 2021 20:30:30 +0800
+Subject: Re: [PATCH -next] RDMA/srp: use DEVICE_ATTR_*() macro
+To:     <bvanassche@acm.org>, <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210526133537.5544-1-yuehaibing@huawei.com>
+From:   YueHaibing <yuehaibing@huawei.com>
+Message-ID: <5c658abb-1126-8b68-aee0-a4292fc28591@huawei.com>
+Date:   Fri, 28 May 2021 20:30:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210526133537.5544-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+forget this:
 
-sess->stats and sess->stats->pcpu_stats objects are freed
-when sysfs entry is removed. If something wrong happens and
-session is closed before sysfs entry is created,
-sess->stats and sess->stats->pcpu_stats objects are not freed.
+ DEVICE_ATTR(port, S_IRUGO, show_port, NULL);
 
-This patch adds freeing of them at three places:
-1. When client uses wrong address and session creation fails.
-2. When client fails to create a sysfs entry.
-3. When client adds wrong address via sysfs add_path.
+will convert it in v2.
 
-Fixes: 215378b838df0 ("RDMA/rtrs: client: sysfs interface functions")
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
----
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index e4a23c40d4c7..8e05a71d8da1 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -2765,6 +2765,8 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
- 		if (err) {
- 			list_del_rcu(&sess->s.entry);
- 			rtrs_clt_close_conns(sess, true);
-+			free_percpu(sess->stats->pcpu_stats);
-+			kfree(sess->stats);
- 			free_sess(sess);
- 			goto close_all_sess;
- 		}
-@@ -2773,6 +2775,8 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
- 		if (err) {
- 			list_del_rcu(&sess->s.entry);
- 			rtrs_clt_close_conns(sess, true);
-+			free_percpu(sess->stats->pcpu_stats);
-+			kfree(sess->stats);
- 			free_sess(sess);
- 			goto close_all_sess;
- 		}
-@@ -3048,6 +3052,8 @@ int rtrs_clt_create_path_from_sysfs(struct rtrs_clt *clt,
- close_sess:
- 	rtrs_clt_remove_path_from_arr(sess);
- 	rtrs_clt_close_conns(sess, true);
-+	free_percpu(sess->stats->pcpu_stats);
-+	kfree(sess->stats);
- 	free_sess(sess);
- 
- 	return err;
--- 
-2.25.1
-
+On 2021/5/26 21:35, YueHaibing wrote:
+> Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
+> which makes the code a bit shorter and easier to read.
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  drivers/infiniband/ulp/srp/ib_srp.c | 90 ++++++++++++++---------------
+>  1 file changed, 45 insertions(+), 45 deletions(-)
+> 
+> diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
+> index 31f8aa2c40ed..e8ae75ab672c 100644
+> --- a/drivers/infiniband/ulp/srp/ib_srp.c
+> +++ b/drivers/infiniband/ulp/srp/ib_srp.c
+> @@ -2891,23 +2891,23 @@ static int srp_slave_configure(struct scsi_device *sdev)
+>  	return 0;
+>  }
+>  
+> -static ssize_t show_id_ext(struct device *dev, struct device_attribute *attr,
+> -			   char *buf)
+> +static ssize_t id_ext_show(struct device *dev,
+> +			   struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+>  
+>  	return sysfs_emit(buf, "0x%016llx\n", be64_to_cpu(target->id_ext));
+>  }
+>  
+> -static ssize_t show_ioc_guid(struct device *dev, struct device_attribute *attr,
+> -			     char *buf)
+> +static ssize_t ioc_guid_show(struct device *dev,
+> +			     struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+>  
+>  	return sysfs_emit(buf, "0x%016llx\n", be64_to_cpu(target->ioc_guid));
+>  }
+>  
+> -static ssize_t show_service_id(struct device *dev,
+> +static ssize_t service_id_show(struct device *dev,
+>  			       struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+> @@ -2918,8 +2918,8 @@ static ssize_t show_service_id(struct device *dev,
+>  			  be64_to_cpu(target->ib_cm.service_id));
+>  }
+>  
+> -static ssize_t show_pkey(struct device *dev, struct device_attribute *attr,
+> -			 char *buf)
+> +static ssize_t pkey_show(struct device *dev,
+> +			 struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+>  
+> @@ -2929,16 +2929,16 @@ static ssize_t show_pkey(struct device *dev, struct device_attribute *attr,
+>  	return sysfs_emit(buf, "0x%04x\n", be16_to_cpu(target->ib_cm.pkey));
+>  }
+>  
+> -static ssize_t show_sgid(struct device *dev, struct device_attribute *attr,
+> -			 char *buf)
+> +static ssize_t sgid_show(struct device *dev,
+> +			 struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+>  
+>  	return sysfs_emit(buf, "%pI6\n", target->sgid.raw);
+>  }
+>  
+> -static ssize_t show_dgid(struct device *dev, struct device_attribute *attr,
+> -			 char *buf)
+> +static ssize_t dgid_show(struct device *dev,
+> +			 struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+>  	struct srp_rdma_ch *ch = &target->ch[0];
+> @@ -2949,7 +2949,7 @@ static ssize_t show_dgid(struct device *dev, struct device_attribute *attr,
+>  	return sysfs_emit(buf, "%pI6\n", ch->ib_cm.path.dgid.raw);
+>  }
+>  
+> -static ssize_t show_orig_dgid(struct device *dev,
+> +static ssize_t orig_dgid_show(struct device *dev,
+>  			      struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+> @@ -2960,7 +2960,7 @@ static ssize_t show_orig_dgid(struct device *dev,
+>  	return sysfs_emit(buf, "%pI6\n", target->ib_cm.orig_dgid.raw);
+>  }
+>  
+> -static ssize_t show_req_lim(struct device *dev,
+> +static ssize_t req_lim_show(struct device *dev,
+>  			    struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+> @@ -2975,7 +2975,7 @@ static ssize_t show_req_lim(struct device *dev,
+>  	return sysfs_emit(buf, "%d\n", req_lim);
+>  }
+>  
+> -static ssize_t show_zero_req_lim(struct device *dev,
+> +static ssize_t zero_req_lim_show(struct device *dev,
+>  				 struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+> @@ -2983,7 +2983,7 @@ static ssize_t show_zero_req_lim(struct device *dev,
+>  	return sysfs_emit(buf, "%d\n", target->zero_req_lim);
+>  }
+>  
+> -static ssize_t show_local_ib_port(struct device *dev,
+> +static ssize_t local_ib_port_show(struct device *dev,
+>  				  struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+> @@ -2991,7 +2991,7 @@ static ssize_t show_local_ib_port(struct device *dev,
+>  	return sysfs_emit(buf, "%d\n", target->srp_host->port);
+>  }
+>  
+> -static ssize_t show_local_ib_device(struct device *dev,
+> +static ssize_t local_ib_device_show(struct device *dev,
+>  				    struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+> @@ -3000,15 +3000,15 @@ static ssize_t show_local_ib_device(struct device *dev,
+>  			  dev_name(&target->srp_host->srp_dev->dev->dev));
+>  }
+>  
+> -static ssize_t show_ch_count(struct device *dev, struct device_attribute *attr,
+> -			     char *buf)
+> +static ssize_t ch_count_show(struct device *dev,
+> +			     struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+>  
+>  	return sysfs_emit(buf, "%d\n", target->ch_count);
+>  }
+>  
+> -static ssize_t show_comp_vector(struct device *dev,
+> +static ssize_t comp_vector_show(struct device *dev,
+>  				struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+> @@ -3016,7 +3016,7 @@ static ssize_t show_comp_vector(struct device *dev,
+>  	return sysfs_emit(buf, "%d\n", target->comp_vector);
+>  }
+>  
+> -static ssize_t show_tl_retry_count(struct device *dev,
+> +static ssize_t tl_retry_count_show(struct device *dev,
+>  				   struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+> @@ -3024,7 +3024,7 @@ static ssize_t show_tl_retry_count(struct device *dev,
+>  	return sysfs_emit(buf, "%d\n", target->tl_retry_count);
+>  }
+>  
+> -static ssize_t show_cmd_sg_entries(struct device *dev,
+> +static ssize_t cmd_sg_entries_show(struct device *dev,
+>  				   struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+> @@ -3032,7 +3032,7 @@ static ssize_t show_cmd_sg_entries(struct device *dev,
+>  	return sysfs_emit(buf, "%u\n", target->cmd_sg_cnt);
+>  }
+>  
+> -static ssize_t show_allow_ext_sg(struct device *dev,
+> +static ssize_t allow_ext_sg_show(struct device *dev,
+>  				 struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_target_port *target = host_to_target(class_to_shost(dev));
+> @@ -3040,22 +3040,22 @@ static ssize_t show_allow_ext_sg(struct device *dev,
+>  	return sysfs_emit(buf, "%s\n", target->allow_ext_sg ? "true" : "false");
+>  }
+>  
+> -static DEVICE_ATTR(id_ext,	    S_IRUGO, show_id_ext,	   NULL);
+> -static DEVICE_ATTR(ioc_guid,	    S_IRUGO, show_ioc_guid,	   NULL);
+> -static DEVICE_ATTR(service_id,	    S_IRUGO, show_service_id,	   NULL);
+> -static DEVICE_ATTR(pkey,	    S_IRUGO, show_pkey,		   NULL);
+> -static DEVICE_ATTR(sgid,	    S_IRUGO, show_sgid,		   NULL);
+> -static DEVICE_ATTR(dgid,	    S_IRUGO, show_dgid,		   NULL);
+> -static DEVICE_ATTR(orig_dgid,	    S_IRUGO, show_orig_dgid,	   NULL);
+> -static DEVICE_ATTR(req_lim,         S_IRUGO, show_req_lim,         NULL);
+> -static DEVICE_ATTR(zero_req_lim,    S_IRUGO, show_zero_req_lim,	   NULL);
+> -static DEVICE_ATTR(local_ib_port,   S_IRUGO, show_local_ib_port,   NULL);
+> -static DEVICE_ATTR(local_ib_device, S_IRUGO, show_local_ib_device, NULL);
+> -static DEVICE_ATTR(ch_count,        S_IRUGO, show_ch_count,        NULL);
+> -static DEVICE_ATTR(comp_vector,     S_IRUGO, show_comp_vector,     NULL);
+> -static DEVICE_ATTR(tl_retry_count,  S_IRUGO, show_tl_retry_count,  NULL);
+> -static DEVICE_ATTR(cmd_sg_entries,  S_IRUGO, show_cmd_sg_entries,  NULL);
+> -static DEVICE_ATTR(allow_ext_sg,    S_IRUGO, show_allow_ext_sg,    NULL);
+> +static DEVICE_ATTR_RO(id_ext);
+> +static DEVICE_ATTR_RO(ioc_guid);
+> +static DEVICE_ATTR_RO(service_id);
+> +static DEVICE_ATTR_RO(pkey);
+> +static DEVICE_ATTR_RO(sgid);
+> +static DEVICE_ATTR_RO(dgid);
+> +static DEVICE_ATTR_RO(orig_dgid);
+> +static DEVICE_ATTR_RO(req_lim);
+> +static DEVICE_ATTR_RO(zero_req_lim);
+> +static DEVICE_ATTR_RO(local_ib_port);
+> +static DEVICE_ATTR_RO(local_ib_device);
+> +static DEVICE_ATTR_RO(ch_count);
+> +static DEVICE_ATTR_RO(comp_vector);
+> +static DEVICE_ATTR_RO(tl_retry_count);
+> +static DEVICE_ATTR_RO(cmd_sg_entries);
+> +static DEVICE_ATTR_RO(allow_ext_sg);
+>  
+>  static struct device_attribute *srp_host_attrs[] = {
+>  	&dev_attr_id_ext,
+> @@ -3617,9 +3617,9 @@ static int srp_parse_options(struct net *net, const char *buf,
+>  	return ret;
+>  }
+>  
+> -static ssize_t srp_create_target(struct device *dev,
+> -				 struct device_attribute *attr,
+> -				 const char *buf, size_t count)
+> +static ssize_t add_target_store(struct device *dev,
+> +				struct device_attribute *attr,
+> +				const char *buf, size_t count)
+>  {
+>  	struct srp_host *host =
+>  		container_of(dev, struct srp_host, dev);
+> @@ -3870,17 +3870,17 @@ static ssize_t srp_create_target(struct device *dev,
+>  	goto out;
+>  }
+>  
+> -static DEVICE_ATTR(add_target, S_IWUSR, NULL, srp_create_target);
+> +static DEVICE_ATTR_WO(add_target);
+>  
+> -static ssize_t show_ibdev(struct device *dev, struct device_attribute *attr,
+> -			  char *buf)
+> +static ssize_t ibdev_show(struct device *dev,
+> +			  struct device_attribute *attr, char *buf)
+>  {
+>  	struct srp_host *host = container_of(dev, struct srp_host, dev);
+>  
+>  	return sysfs_emit(buf, "%s\n", dev_name(&host->srp_dev->dev->dev));
+>  }
+>  
+> -static DEVICE_ATTR(ibdev, S_IRUGO, show_ibdev, NULL);
+> +static DEVICE_ATTR_RO(ibdev);
+>  
+>  static ssize_t show_port(struct device *dev, struct device_attribute *attr,
+>  			 char *buf)
+> 
