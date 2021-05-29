@@ -2,22 +2,22 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551FE394B5C
-	for <lists+linux-rdma@lfdr.de>; Sat, 29 May 2021 11:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE622394B5B
+	for <lists+linux-rdma@lfdr.de>; Sat, 29 May 2021 11:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbhE2JlH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 29 May 2021 05:41:07 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2463 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhE2JlE (ORCPT
+        id S229652AbhE2JlG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 29 May 2021 05:41:06 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2351 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229597AbhE2JlE (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Sat, 29 May 2021 05:41:04 -0400
 Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FsbzN2nFmz67hW;
-        Sat, 29 May 2021 17:36:32 +0800 (CST)
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FsbxP3wtvz1BFqh;
+        Sat, 29 May 2021 17:34:49 +0800 (CST)
 Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
  dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 17:39:26 +0800
+ 15.1.2176.2; Sat, 29 May 2021 17:39:27 +0800
 Received: from localhost.localdomain (10.69.192.56) by
  dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
@@ -27,9 +27,9 @@ To:     <dledford@redhat.com>, <jgg@nvidia.com>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>, Yixing Liu <liuyixing1@huawei.com>,
         Weihang Li <liweihang@huawei.com>
-Subject: [PATCH for-next 4/6] RDMA/hns: Use new interface to write FRMR fields
-Date:   Sat, 29 May 2021 17:39:12 +0800
-Message-ID: <1622281154-49867-5-git-send-email-liweihang@huawei.com>
+Subject: [PATCH for-next 5/6] RDMA/hns: Use new interface to write DB related fields
+Date:   Sat, 29 May 2021 17:39:13 +0800
+Message-ID: <1622281154-49867-6-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1622281154-49867-1-git-send-email-liweihang@huawei.com>
 References: <1622281154-49867-1-git-send-email-liweihang@huawei.com>
@@ -45,101 +45,233 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Yixing Liu <liuyixing1@huawei.com>
 
-Use "hr_reg_write" to replace "roce_set_filed".
+Use hr_write_reg() instead of roece_set_field().
 
 Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 23 +++++++++--------------
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 26 ++++++++++++--------------
- 2 files changed, 21 insertions(+), 28 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 85 ++++++++++++------------------
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 42 ++++++---------
+ 2 files changed, 49 insertions(+), 78 deletions(-)
 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index a65cebc..047b27c 100644
+index 047b27c..7cd0bc6 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -105,16 +105,12 @@ static void set_frmr_seg(struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
- 	u64 pbl_ba;
+@@ -639,17 +639,10 @@ static inline void update_sq_db(struct hns_roce_dev *hr_dev,
+ 	} else {
+ 		struct hns_roce_v2_db sq_db = {};
  
- 	/* use ib_access_flags */
--	roce_set_bit(fseg->byte_40, V2_RC_FRMR_WQE_BYTE_40_BIND_EN_S,
--		     !!(wr->access & IB_ACCESS_MW_BIND));
--	roce_set_bit(fseg->byte_40, V2_RC_FRMR_WQE_BYTE_40_ATOMIC_S,
-+	hr_reg_write(fseg, FRMR_BIND_EN, !!(wr->access & IB_ACCESS_MW_BIND));
-+	hr_reg_write(fseg, FRMR_ATOMIC,
- 		     !!(wr->access & IB_ACCESS_REMOTE_ATOMIC));
--	roce_set_bit(fseg->byte_40, V2_RC_FRMR_WQE_BYTE_40_RR_S,
--		     !!(wr->access & IB_ACCESS_REMOTE_READ));
--	roce_set_bit(fseg->byte_40, V2_RC_FRMR_WQE_BYTE_40_RW_S,
--		     !!(wr->access & IB_ACCESS_REMOTE_WRITE));
--	roce_set_bit(fseg->byte_40, V2_RC_FRMR_WQE_BYTE_40_LW_S,
--		     !!(wr->access & IB_ACCESS_LOCAL_WRITE));
-+	hr_reg_write(fseg, FRMR_RR, !!(wr->access & IB_ACCESS_REMOTE_READ));
-+	hr_reg_write(fseg, FRMR_RW, !!(wr->access & IB_ACCESS_REMOTE_WRITE));
-+	hr_reg_write(fseg, FRMR_LW, !!(wr->access & IB_ACCESS_LOCAL_WRITE));
+-		roce_set_field(sq_db.byte_4, V2_DB_TAG_M, V2_DB_TAG_S,
+-			       qp->doorbell_qpn);
+-		roce_set_field(sq_db.byte_4, V2_DB_CMD_M, V2_DB_CMD_S,
+-			       HNS_ROCE_V2_SQ_DB);
+-
+-		/* indicates data on new BAR, 0 : SQ doorbell, 1 : DWQE */
+-		roce_set_bit(sq_db.byte_4, V2_DB_FLAG_S, 0);
+-		roce_set_field(sq_db.parameter, V2_DB_PRODUCER_IDX_M,
+-			       V2_DB_PRODUCER_IDX_S, qp->sq.head);
+-		roce_set_field(sq_db.parameter, V2_DB_SL_M, V2_DB_SL_S,
+-			       qp->sl);
++		hr_reg_write(&sq_db, DB_TAG, qp->doorbell_qpn);
++		hr_reg_write(&sq_db, DB_CMD, HNS_ROCE_V2_SQ_DB);
++		hr_reg_write(&sq_db, DB_PI, qp->sq.head);
++		hr_reg_write(&sq_db, DB_SL, qp->sl);
  
- 	/* Data structure reuse may lead to confusion */
- 	pbl_ba = mr->pbl_mtr.hem_cfg.root_ba;
-@@ -126,11 +122,10 @@ static void set_frmr_seg(struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
- 	rc_sq_wqe->rkey = cpu_to_le32(wr->key);
- 	rc_sq_wqe->va = cpu_to_le64(wr->mr->iova);
+ 		hns_roce_write64(hr_dev, (__le32 *)&sq_db, qp->sq.db_reg);
+ 	}
+@@ -677,12 +670,9 @@ static inline void update_rq_db(struct hns_roce_dev *hr_dev,
+ 		} else {
+ 			struct hns_roce_v2_db rq_db = {};
  
--	fseg->pbl_size = cpu_to_le32(mr->npages);
--	roce_set_field(fseg->byte_40, V2_RC_FRMR_WQE_BYTE_40_PBL_BUF_PG_SZ_M,
--		       V2_RC_FRMR_WQE_BYTE_40_PBL_BUF_PG_SZ_S,
--		       to_hr_hw_page_shift(mr->pbl_mtr.hem_cfg.buf_pg_shift));
--	roce_set_bit(fseg->byte_40, V2_RC_FRMR_WQE_BYTE_40_BLK_MODE_S, 0);
-+	hr_reg_write(fseg, FRMR_PBL_SIZE, mr->npages);
-+	hr_reg_write(fseg, FRMR_PBL_BUF_PG_SZ,
-+		     to_hr_hw_page_shift(mr->pbl_mtr.hem_cfg.buf_pg_shift));
-+	hr_reg_clear(fseg, FRMR_BLK_MODE);
+-			roce_set_field(rq_db.byte_4, V2_DB_TAG_M, V2_DB_TAG_S,
+-				       qp->qpn);
+-			roce_set_field(rq_db.byte_4, V2_DB_CMD_M, V2_DB_CMD_S,
+-				       HNS_ROCE_V2_RQ_DB);
+-			roce_set_field(rq_db.parameter, V2_DB_PRODUCER_IDX_M,
+-				       V2_DB_PRODUCER_IDX_S, qp->rq.head);
++			hr_reg_write(&rq_db, DB_TAG, qp->qpn);
++			hr_reg_write(&rq_db, DB_CMD, HNS_ROCE_V2_RQ_DB);
++			hr_reg_write(&rq_db, DB_PI, qp->rq.head);
+ 
+ 			hns_roce_write64(hr_dev, (__le32 *)&rq_db,
+ 					 qp->rq.db_reg);
+@@ -999,6 +989,13 @@ static void fill_wqe_idx(struct hns_roce_srq *srq, unsigned int wqe_idx)
+ 	idx_que->head++;
  }
  
- static void set_atomic_seg(const struct ib_send_wr *wr,
++static void update_srq_db(struct hns_roce_v2_db *db, struct hns_roce_srq *srq)
++{
++	hr_reg_write(db, DB_TAG, srq->srqn);
++	hr_reg_write(db, DB_CMD, HNS_ROCE_V2_SRQ_DB);
++	hr_reg_write(db, DB_PI, srq->idx_que.head);
++}
++
+ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
+ 				     const struct ib_recv_wr *wr,
+ 				     const struct ib_recv_wr **bad_wr)
+@@ -1036,12 +1033,7 @@ static int hns_roce_v2_post_srq_recv(struct ib_srq *ibsrq,
+ 	}
+ 
+ 	if (likely(nreq)) {
+-		roce_set_field(srq_db.byte_4, V2_DB_TAG_M, V2_DB_TAG_S,
+-			       srq->srqn);
+-		roce_set_field(srq_db.byte_4, V2_DB_CMD_M, V2_DB_CMD_S,
+-			       HNS_ROCE_V2_SRQ_DB);
+-		roce_set_field(srq_db.parameter, V2_DB_PRODUCER_IDX_M,
+-			       V2_DB_PRODUCER_IDX_S, srq->idx_que.head);
++		update_srq_db(&srq_db, srq);
+ 
+ 		hns_roce_write64(hr_dev, (__le32 *)&srq_db, srq->db_reg);
+ 	}
+@@ -3195,14 +3187,10 @@ static inline void update_cq_db(struct hns_roce_dev *hr_dev,
+ 	} else {
+ 		struct hns_roce_v2_db cq_db = {};
+ 
+-		roce_set_field(cq_db.byte_4, V2_DB_TAG_M, V2_DB_TAG_S,
+-			       hr_cq->cqn);
+-		roce_set_field(cq_db.byte_4, V2_DB_CMD_M, V2_DB_CMD_S,
+-			       HNS_ROCE_V2_CQ_DB);
+-		roce_set_field(cq_db.parameter, V2_CQ_DB_CONS_IDX_M,
+-			       V2_CQ_DB_CONS_IDX_S, hr_cq->cons_index);
+-		roce_set_field(cq_db.parameter, V2_CQ_DB_CMD_SN_M,
+-			       V2_CQ_DB_CMD_SN_S, 1);
++		hr_reg_write(&cq_db, DB_TAG, hr_cq->cqn);
++		hr_reg_write(&cq_db, DB_CMD, HNS_ROCE_V2_CQ_DB);
++		hr_reg_write(&cq_db, DB_CQ_CI, hr_cq->cons_index);
++		hr_reg_write(&cq_db, DB_CQ_CMD_SN, 1);
+ 
+ 		hns_roce_write64(hr_dev, (__le32 *)&cq_db, hr_cq->db_reg);
+ 	}
+@@ -3323,14 +3311,11 @@ static int hns_roce_v2_req_notify_cq(struct ib_cq *ibcq,
+ 	notify_flag = (flags & IB_CQ_SOLICITED_MASK) == IB_CQ_SOLICITED ?
+ 		      V2_CQ_DB_REQ_NOT : V2_CQ_DB_REQ_NOT_SOL;
+ 
+-	roce_set_field(cq_db.byte_4, V2_DB_TAG_M, V2_DB_TAG_S, hr_cq->cqn);
+-	roce_set_field(cq_db.byte_4, V2_DB_CMD_M, V2_DB_CMD_S,
+-		       HNS_ROCE_V2_CQ_DB_NOTIFY);
+-	roce_set_field(cq_db.parameter, V2_CQ_DB_CONS_IDX_M,
+-		       V2_CQ_DB_CONS_IDX_S, hr_cq->cons_index);
+-	roce_set_field(cq_db.parameter, V2_CQ_DB_CMD_SN_M,
+-		       V2_CQ_DB_CMD_SN_S, hr_cq->arm_sn);
+-	roce_set_bit(cq_db.parameter, V2_CQ_DB_NOTIFY_TYPE_S, notify_flag);
++	hr_reg_write(&cq_db, DB_TAG, hr_cq->cqn);
++	hr_reg_write(&cq_db, DB_CMD, HNS_ROCE_V2_CQ_DB_NOTIFY);
++	hr_reg_write(&cq_db, DB_CQ_CI, hr_cq->cons_index);
++	hr_reg_write(&cq_db, DB_CQ_CMD_SN, hr_cq->arm_sn);
++	hr_reg_write(&cq_db, DB_CQ_NOTIFY, notify_flag);
+ 
+ 	hns_roce_write64(hr_dev, (__le32 *)&cq_db, hr_cq->db_reg);
+ 
+@@ -5545,22 +5530,20 @@ static void update_eq_db(struct hns_roce_eq *eq)
+ 	struct hns_roce_v2_db eq_db = {};
+ 
+ 	if (eq->type_flag == HNS_ROCE_AEQ) {
+-		roce_set_field(eq_db.byte_4, V2_EQ_DB_CMD_M, V2_EQ_DB_CMD_S,
+-			       eq->arm_st == HNS_ROCE_V2_EQ_ALWAYS_ARMED ?
+-			       HNS_ROCE_EQ_DB_CMD_AEQ :
+-			       HNS_ROCE_EQ_DB_CMD_AEQ_ARMED);
++		hr_reg_write(&eq_db, EQ_DB_CMD,
++			     eq->arm_st == HNS_ROCE_V2_EQ_ALWAYS_ARMED ?
++			     HNS_ROCE_EQ_DB_CMD_AEQ :
++			     HNS_ROCE_EQ_DB_CMD_AEQ_ARMED);
+ 	} else {
+-		roce_set_field(eq_db.byte_4, V2_EQ_DB_TAG_M, V2_EQ_DB_TAG_S,
+-			       eq->eqn);
++		hr_reg_write(&eq_db, EQ_DB_TAG, eq->eqn);
+ 
+-		roce_set_field(eq_db.byte_4, V2_EQ_DB_CMD_M, V2_EQ_DB_CMD_S,
+-			       eq->arm_st == HNS_ROCE_V2_EQ_ALWAYS_ARMED ?
+-			       HNS_ROCE_EQ_DB_CMD_CEQ :
+-			       HNS_ROCE_EQ_DB_CMD_CEQ_ARMED);
++		hr_reg_write(&eq_db, EQ_DB_CMD,
++			     eq->arm_st == HNS_ROCE_V2_EQ_ALWAYS_ARMED ?
++			     HNS_ROCE_EQ_DB_CMD_CEQ :
++			     HNS_ROCE_EQ_DB_CMD_CEQ_ARMED);
+ 	}
+ 
+-	roce_set_field(eq_db.parameter, V2_EQ_DB_CONS_IDX_M,
+-		       V2_EQ_DB_CONS_IDX_S, eq->cons_index);
++	hr_reg_write(&eq_db, EQ_DB_CI, eq->cons_index);
+ 
+ 	hns_roce_write64(hr_dev, (__le32 *)&eq_db, eq->db_reg);
+ }
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index a395606..8387756 100644
+index 8387756..19f5f87 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -1062,16 +1062,6 @@ struct hns_roce_v2_rc_send_wqe {
+@@ -943,28 +943,30 @@ struct hns_roce_v2_mpt_entry {
+ #define V2_MPT_BYTE_64_PBL_BUF_PG_SZ_S 28
+ #define V2_MPT_BYTE_64_PBL_BUF_PG_SZ_M GENMASK(31, 28)
  
- #define V2_RC_SEND_WQE_BYTE_4_INLINE_S 12
+-#define V2_DB_TAG_S 0
+-#define V2_DB_TAG_M GENMASK(23, 0)
++struct hns_roce_v2_db {
++	__le32	data[2];
++};
  
--#define V2_RC_FRMR_WQE_BYTE_40_BIND_EN_S 10
--
--#define V2_RC_FRMR_WQE_BYTE_40_ATOMIC_S 11
--
--#define V2_RC_FRMR_WQE_BYTE_40_RR_S 12
--
--#define V2_RC_FRMR_WQE_BYTE_40_RW_S 13
--
--#define V2_RC_FRMR_WQE_BYTE_40_LW_S 14
--
- #define V2_RC_SEND_WQE_BYTE_4_FLAG_S 31
+-#define V2_DB_CMD_S 24
+-#define V2_DB_CMD_M GENMASK(27, 24)
++#define DB_FIELD_LOC(h, l) FIELD_LOC(struct hns_roce_v2_db, h, l)
  
- #define	V2_RC_SEND_WQE_BYTE_16_XRC_SRQN_S 0
-@@ -1090,10 +1080,18 @@ struct hns_roce_wqe_frmr_seg {
- 	__le32	byte_40;
+-#define V2_DB_FLAG_S 31
++#define DB_TAG DB_FIELD_LOC(23, 0)
++#define DB_CMD DB_FIELD_LOC(27, 24)
++#define DB_FLAG DB_FIELD_LOC(31, 31)
++#define DB_PI DB_FIELD_LOC(47, 32)
++#define DB_SL DB_FIELD_LOC(50, 48)
++#define DB_CQ_CI DB_FIELD_LOC(55, 32)
++#define DB_CQ_NOTIFY DB_FIELD_LOC(56, 56)
++#define DB_CQ_CMD_SN DB_FIELD_LOC(58, 57)
++#define EQ_DB_TAG DB_FIELD_LOC(7, 0)
++#define EQ_DB_CMD DB_FIELD_LOC(17, 16)
++#define EQ_DB_CI DB_FIELD_LOC(55, 32)
+ 
+ #define V2_DB_PRODUCER_IDX_S 0
+ #define V2_DB_PRODUCER_IDX_M GENMASK(15, 0)
+ 
+-#define V2_DB_SL_S 16
+-#define V2_DB_SL_M GENMASK(18, 16)
+-
+ #define V2_CQ_DB_CONS_IDX_S 0
+ #define V2_CQ_DB_CONS_IDX_M GENMASK(23, 0)
+ 
+-#define V2_CQ_DB_NOTIFY_TYPE_S 24
+-
+-#define V2_CQ_DB_CMD_SN_S 25
+-#define V2_CQ_DB_CMD_SN_M GENMASK(26, 25)
+-
+ struct hns_roce_v2_ud_send_wqe {
+ 	__le32	byte_4;
+ 	__le32	msg_len;
+@@ -1099,11 +1101,6 @@ struct hns_roce_v2_wqe_data_seg {
+ 	__le64    addr;
  };
  
--#define V2_RC_FRMR_WQE_BYTE_40_PBL_BUF_PG_SZ_S	4
--#define V2_RC_FRMR_WQE_BYTE_40_PBL_BUF_PG_SZ_M	GENMASK(7, 4)
+-struct hns_roce_v2_db {
+-	__le32	byte_4;
+-	__le32	parameter;
+-};
 -
--#define V2_RC_FRMR_WQE_BYTE_40_BLK_MODE_S 8
-+#define FRMR_WQE_FIELD_LOC(h, l) FIELD_LOC(struct hns_roce_wqe_frmr_seg, h, l)
-+
-+#define FRMR_PBL_SIZE FRMR_WQE_FIELD_LOC(31, 0)
-+#define FRMR_BLOCK_SIZE FRMR_WQE_FIELD_LOC(35, 32)
-+#define FRMR_PBL_BUF_PG_SZ FRMR_WQE_FIELD_LOC(39, 36)
-+#define FRMR_BLK_MODE FRMR_WQE_FIELD_LOC(40, 40)
-+#define FRMR_ZBVA FRMR_WQE_FIELD_LOC(41, 41)
-+#define FRMR_BIND_EN FRMR_WQE_FIELD_LOC(42, 42)
-+#define FRMR_ATOMIC FRMR_WQE_FIELD_LOC(43, 43)
-+#define FRMR_RR FRMR_WQE_FIELD_LOC(44, 44)
-+#define FRMR_RW FRMR_WQE_FIELD_LOC(45, 45)
-+#define FRMR_LW FRMR_WQE_FIELD_LOC(46, 46)
+ struct hns_roce_query_version {
+ 	__le16 rocee_vendor_id;
+ 	__le16 rocee_hw_version;
+@@ -1627,15 +1624,6 @@ struct hns_roce_dip {
+ #define HNS_ROCE_V2_AEQE_SUB_TYPE_S 8
+ #define HNS_ROCE_V2_AEQE_SUB_TYPE_M GENMASK(15, 8)
  
- struct hns_roce_v2_wqe_data_seg {
- 	__le32    len;
+-#define V2_EQ_DB_TAG_S	0
+-#define V2_EQ_DB_TAG_M	GENMASK(7, 0)
+-
+-#define V2_EQ_DB_CMD_S	16
+-#define V2_EQ_DB_CMD_M	GENMASK(17, 16)
+-
+-#define V2_EQ_DB_CONS_IDX_S 0
+-#define V2_EQ_DB_CONS_IDX_M GENMASK(23, 0)
+-
+ #define HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_S 0
+ #define HNS_ROCE_V2_AEQE_EVENT_QUEUE_NUM_M GENMASK(23, 0)
+ 
 -- 
 2.7.4
 
