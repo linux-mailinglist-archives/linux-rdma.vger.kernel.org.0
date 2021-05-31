@@ -2,198 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04349395B0A
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 May 2021 15:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7BE3964B6
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 May 2021 18:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbhEaNBk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 May 2021 09:01:40 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3480 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231449AbhEaNBd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 May 2021 09:01:33 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FtwKv6w2zzYrrx;
-        Mon, 31 May 2021 20:57:07 +0800 (CST)
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 20:59:51 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 31 May 2021 20:59:50 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, "Xi Wang" <wangxi11@huawei.com>,
-        Weihang Li <liweihang@huawei.com>
-Subject: [PATCH v2 for-next 7/7] RDMA/hns: Clean SRQC structure definition
-Date:   Mon, 31 May 2021 20:59:34 +0800
-Message-ID: <1622465974-20415-8-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622465974-20415-1-git-send-email-liweihang@huawei.com>
-References: <1622465974-20415-1-git-send-email-liweihang@huawei.com>
+        id S233490AbhEaQIo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 31 May 2021 12:08:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233532AbhEaQGc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 31 May 2021 12:06:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A01A46135B;
+        Mon, 31 May 2021 16:04:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622477091;
+        bh=kCp6aYVcCujGkUJXPmilT6hK0GNRhSCg0OjUQI2yIfs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KNMvZrkJ2PavU3B+WRaBIFd4tiuP93GNjhhP9Wwh4KJ7vlDFzvHJ2a4uTy8avCf1x
+         Cj9vXucRadATI9pX4KlWAYIwztfjxs8Ho4cAcrzn8veyJd+9PaGJEhWgk8uGEDV5SQ
+         BVs9n4MrTDS7tIxMvCIX5t1IDp4KMXLvQjNhQgGWkUicyxXtmszRKXavqn42VZXd3c
+         ZhdRSzljcWofnNmIP5gQpExUCAUe7yDu7vsCuN1YCvwvUY0l3A4lZEZTs9P+3k1jBq
+         8BxHZy0TSAXCzxEKeulDtLDP7PzQLJxSasN8V2Oscyox3lR8qjr/3OrSI7oAsB65VQ
+         4uE6yUI+6Qd1Q==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Daniel Jurgens <danielj@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Parav Pandit <parav@mellanox.com>
+Subject: [PATCH rdma-next] RDMA/mlx5: Don't add slave port to unaffiliated list
+Date:   Mon, 31 May 2021 19:04:44 +0300
+Message-Id: <2726e6603b1e6ecfe76aa5a12a063af72173bcf7.1622477058.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema753-chm.china.huawei.com (10.1.198.195)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Remove unused members in srq context structure.
+The mlx5_ib_bind_slave_port() doesn't remove multiport device from the
+unaffiliated list, but mlx5_ib_unbind_slave_port() did it. This unbalanced
+flow caused to the situation where mlx5_ib_unaffiliated_port_list was changed
+during iteration.
 
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
+Fixes: 32f69e4be269 ("{net, IB}/mlx5: Manage port association for multiport RoCE")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 15 ++----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 82 +-----------------------------
- 2 files changed, 4 insertions(+), 93 deletions(-)
+ drivers/infiniband/hw/mlx5/main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 7cd0bc6..00b5b72 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -5349,12 +5349,8 @@ static int hns_roce_v2_modify_srq(struct ib_srq *ibsrq,
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 9357ed28813c..e541a9f5f163 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -3192,8 +3192,6 @@ static void mlx5_ib_unbind_slave_port(struct mlx5_ib_dev *ibdev,
  
- 		memset(srqc_mask, 0xff, sizeof(*srqc_mask));
+ 	port->mp.mpi = NULL;
  
--		roce_set_field(srq_context->byte_8_limit_wl,
--			       SRQC_BYTE_8_SRQ_LIMIT_WL_M,
--			       SRQC_BYTE_8_SRQ_LIMIT_WL_S, srq_attr->srq_limit);
--		roce_set_field(srqc_mask->byte_8_limit_wl,
--			       SRQC_BYTE_8_SRQ_LIMIT_WL_M,
--			       SRQC_BYTE_8_SRQ_LIMIT_WL_S, 0);
-+		hr_reg_write(srq_context, SRQC_LIMIT_WL, srq_attr->srq_limit);
-+		hr_reg_clear(srqc_mask, SRQC_LIMIT_WL);
+-	list_add_tail(&mpi->list, &mlx5_ib_unaffiliated_port_list);
+-
+ 	spin_unlock(&port->mp.mpi_lock);
  
- 		ret = hns_roce_cmd_mbox(hr_dev, mailbox->dma, 0, srq->srqn, 0,
- 					HNS_ROCE_CMD_MODIFY_SRQC,
-@@ -5377,7 +5373,6 @@ static int hns_roce_v2_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr)
- 	struct hns_roce_srq *srq = to_hr_srq(ibsrq);
- 	struct hns_roce_srq_context *srq_context;
- 	struct hns_roce_cmd_mailbox *mailbox;
--	int limit_wl;
- 	int ret;
- 
- 	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
-@@ -5395,11 +5390,7 @@ static int hns_roce_v2_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr)
- 		goto out;
+ 	err = mlx5_nic_vport_unaffiliate_multiport(mpi->mdev);
+@@ -3342,6 +3340,8 @@ static void mlx5_ib_cleanup_multiport_master(struct mlx5_ib_dev *dev)
+ 				mlx5_ib_dbg(dev, "unbinding port_num: %u\n",
+ 					    i + 1);
+ 				mlx5_ib_unbind_slave_port(dev, dev->port[i].mp.mpi);
++				list_add_tail(&dev->port[i].mp.mpi->list,
++					      &mlx5_ib_unaffiliated_port_list);
+ 			}
+ 		}
  	}
- 
--	limit_wl = roce_get_field(srq_context->byte_8_limit_wl,
--				  SRQC_BYTE_8_SRQ_LIMIT_WL_M,
--				  SRQC_BYTE_8_SRQ_LIMIT_WL_S);
--
--	attr->srq_limit = limit_wl;
-+	attr->srq_limit = hr_reg_read(srq_context, SRQC_LIMIT_WL);
- 	attr->max_wr = srq->wqe_cnt;
- 	attr->max_sge = srq->max_gs - srq->rsv_sge;
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index 19f5f87..57e3981 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -377,22 +377,7 @@ struct hns_roce_v2_cq_context {
- #define CQC_POE_QID_H_1 CQC_FIELD_LOC(511, 511)
- 
- struct hns_roce_srq_context {
--	__le32 byte_4_srqn_srqst;
--	__le32 byte_8_limit_wl;
--	__le32 byte_12_xrcd;
--	__le32 byte_16_pi_ci;
--	__le32 wqe_bt_ba;
--	__le32 byte_24_wqe_bt_ba;
--	__le32 byte_28_rqws_pd;
--	__le32 idx_bt_ba;
--	__le32 rsv_idx_bt_ba;
--	__le32 idx_cur_blk_addr;
--	__le32 byte_44_idxbufpgsz_addr;
--	__le32 idx_nxt_blk_addr;
--	__le32 rsv_idxnxtblkaddr;
--	__le32 byte_56_xrc_cqn;
--	__le32 db_record_addr_record_en;
--	__le32 db_record_addr;
-+	__le32 data[16];
- };
- 
- #define SRQC_FIELD_LOC(h, l) FIELD_LOC(struct hns_roce_srq_context, h, l)
-@@ -433,71 +418,6 @@ struct hns_roce_srq_context {
- #define SRQC_DB_RECORD_ADDR_L SRQC_FIELD_LOC(479, 449)
- #define SRQC_DB_RECORD_ADDR_H SRQC_FIELD_LOC(511, 480)
- 
--#define SRQC_BYTE_4_SRQ_ST_S 0
--#define SRQC_BYTE_4_SRQ_ST_M GENMASK(1, 0)
--
--#define SRQC_BYTE_4_SRQ_WQE_HOP_NUM_S 2
--#define SRQC_BYTE_4_SRQ_WQE_HOP_NUM_M GENMASK(3, 2)
--
--#define SRQC_BYTE_4_SRQ_SHIFT_S 4
--#define SRQC_BYTE_4_SRQ_SHIFT_M GENMASK(7, 4)
--
--#define SRQC_BYTE_4_SRQN_S 8
--#define SRQC_BYTE_4_SRQN_M GENMASK(31, 8)
--
--#define SRQC_BYTE_8_SRQ_LIMIT_WL_S 0
--#define SRQC_BYTE_8_SRQ_LIMIT_WL_M GENMASK(15, 0)
--
--#define SRQC_BYTE_12_SRQ_XRCD_S 0
--#define SRQC_BYTE_12_SRQ_XRCD_M GENMASK(23, 0)
--
--#define SRQC_BYTE_16_SRQ_PRODUCER_IDX_S 0
--#define SRQC_BYTE_16_SRQ_PRODUCER_IDX_M GENMASK(15, 0)
--
--#define SRQC_BYTE_16_SRQ_CONSUMER_IDX_S 0
--#define SRQC_BYTE_16_SRQ_CONSUMER_IDX_M GENMASK(31, 16)
--
--#define SRQC_BYTE_24_SRQ_WQE_BT_BA_S 0
--#define SRQC_BYTE_24_SRQ_WQE_BT_BA_M GENMASK(28, 0)
--
--#define SRQC_BYTE_28_PD_S 0
--#define SRQC_BYTE_28_PD_M GENMASK(23, 0)
--
--#define SRQC_BYTE_28_RQWS_S 24
--#define SRQC_BYTE_28_RQWS_M GENMASK(27, 24)
--
--#define SRQC_BYTE_36_SRQ_IDX_BT_BA_S 0
--#define SRQC_BYTE_36_SRQ_IDX_BT_BA_M GENMASK(28, 0)
--
--#define SRQC_BYTE_44_SRQ_IDX_CUR_BLK_ADDR_S 0
--#define SRQC_BYTE_44_SRQ_IDX_CUR_BLK_ADDR_M GENMASK(19, 0)
--
--#define SRQC_BYTE_44_SRQ_IDX_HOP_NUM_S 22
--#define SRQC_BYTE_44_SRQ_IDX_HOP_NUM_M GENMASK(23, 22)
--
--#define SRQC_BYTE_44_SRQ_IDX_BA_PG_SZ_S 24
--#define SRQC_BYTE_44_SRQ_IDX_BA_PG_SZ_M GENMASK(27, 24)
--
--#define SRQC_BYTE_44_SRQ_IDX_BUF_PG_SZ_S 28
--#define SRQC_BYTE_44_SRQ_IDX_BUF_PG_SZ_M GENMASK(31, 28)
--
--#define SRQC_BYTE_52_SRQ_IDX_NXT_BLK_ADDR_S 0
--#define SRQC_BYTE_52_SRQ_IDX_NXT_BLK_ADDR_M GENMASK(19, 0)
--
--#define SRQC_BYTE_56_SRQ_XRC_CQN_S 0
--#define SRQC_BYTE_56_SRQ_XRC_CQN_M GENMASK(23, 0)
--
--#define SRQC_BYTE_56_SRQ_WQE_BA_PG_SZ_S 24
--#define SRQC_BYTE_56_SRQ_WQE_BA_PG_SZ_M GENMASK(27, 24)
--
--#define SRQC_BYTE_56_SRQ_WQE_BUF_PG_SZ_S 28
--#define SRQC_BYTE_56_SRQ_WQE_BUF_PG_SZ_M GENMASK(31, 28)
--
--#define SRQC_BYTE_60_SRQ_RECORD_EN_S 0
--
--#define SRQC_BYTE_60_SRQ_DB_RECORD_ADDR_S 1
--#define SRQC_BYTE_60_SRQ_DB_RECORD_ADDR_M GENMASK(31, 1)
--
- enum {
- 	V2_MPT_ST_VALID = 0x1,
- 	V2_MPT_ST_FREE	= 0x2,
 -- 
-2.7.4
+2.31.1
 
