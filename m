@@ -2,58 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F96397217
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Jun 2021 13:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE3B397233
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Jun 2021 13:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231918AbhFALJ7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Jun 2021 07:09:59 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:7433 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231726AbhFALJ6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Jun 2021 07:09:58 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Uaw9rV6_1622545681;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Uaw9rV6_1622545681)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 01 Jun 2021 19:08:05 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     bharat@chelsio.com
-Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] RDMA/cxgb4: Fix missing error code in create_qp()
-Date:   Tue,  1 Jun 2021 19:07:49 +0800
-Message-Id: <1622545669-20625-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S231201AbhFALSG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Jun 2021 07:18:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230308AbhFALSF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 1 Jun 2021 07:18:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14BE6613B4;
+        Tue,  1 Jun 2021 11:16:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622546184;
+        bh=vgObDi0w/WOhgzUmHwSxN+bIji2gl6xSVnK4VlfhTbM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E2+EUcvg24fqMJPK9pOKCKEOcBoUE32JRXobpeH6r6Rx3bxXIYhqx8TxCB+jHm2nr
+         OSkIaAyxYSWxjnedzk4LbmaJXt9x8Caj0u2ci1DivwF1aqfBGD3MO9V2yichCV6Smt
+         aPVmeE7CBeLR4bZgLhcluJ0Ut5dEFbQb6VetZVvS485fG+hkS33yVggS5Pn62ZdUQJ
+         4m14az0FhglZFDevmKteWrr2H1kue6bjFPEj7Mwwp3Kl2duF1m/e3HHsGgTrIyl99L
+         ZQ/aj/YBlLbvE9xB892b29xz+a5OdBUnFi5YftTzQX79M34OAdO32TvRWVZffW0Tad
+         1DtoE/9cj3oqQ==
+Date:   Tue, 1 Jun 2021 14:16:20 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+Cc:     linux-rdma@vger.kernel.org, lizhijian@fujitsu.com
+Subject: Re: rdma_get_cm_event error behaviour defined?
+Message-ID: <YLYXBD9jupPOslnR@unreal>
+References: <YKJAKy1oNcTd7sRn@work-vm>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKJAKy1oNcTd7sRn@work-vm>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The error code is missing in this code scenario, add the error code
-'-EINVAL' to the return value 'ret'.
+On Mon, May 17, 2021 at 11:06:35AM +0100, Dr. David Alan Gilbert wrote:
+> Hi,
+>   Is 'rdma_get_cm_event's behaviour in initialising **event
+> defined in the error case?
+>   We don't see anything in the manual page, my reading of the
+> code is it's not set/changed in the case of failure - but is
+> that defined?
+>   It would be good if the manpage could explicitly state it.
 
-Eliminate the follow smatch warning:
+AFAIK, the general practice do not rely on any output argument if
+function returns an error and I'm not sure that the man update is
+needed.
 
-drivers/infiniband/hw/cxgb4/qp.c:298 create_qp() warn: missing error
-code 'ret'.
+Thanks
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/infiniband/hw/cxgb4/qp.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
-index d109bb3..c940374 100644
---- a/drivers/infiniband/hw/cxgb4/qp.c
-+++ b/drivers/infiniband/hw/cxgb4/qp.c
-@@ -295,6 +295,7 @@ static int create_qp(struct c4iw_rdev *rdev, struct t4_wq *wq,
- 	if (user && (!wq->sq.bar2_pa || (need_rq && !wq->rq.bar2_pa))) {
- 		pr_warn("%s: sqid %u or rqid %u not in BAR2 range\n",
- 			pci_name(rdev->lldi.pdev), wq->sq.qid, wq->rq.qid);
-+		ret = -EINVAL;
- 		goto free_dma;
- 	}
- 
--- 
-1.8.3.1
-
+> 
+> Dave
+> -- 
+> Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+> 
