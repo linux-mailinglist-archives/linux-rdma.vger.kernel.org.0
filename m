@@ -2,95 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEE1398053
+	by mail.lfdr.de (Postfix) with ESMTP id 83F61398055
 	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jun 2021 06:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbhFBEbh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Jun 2021 00:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
+        id S229581AbhFBEbg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Jun 2021 00:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhFBEbe (ORCPT
+        with ESMTP id S229516AbhFBEbe (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Jun 2021 00:31:34 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985F1C061756
-        for <linux-rdma@vger.kernel.org>; Tue,  1 Jun 2021 21:28:56 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id e22so1193884pgv.10
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Jun 2021 21:28:56 -0700 (PDT)
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 664DDC06175F
+        for <linux-rdma@vger.kernel.org>; Tue,  1 Jun 2021 21:28:58 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id ei4so926727pjb.3
+        for <linux-rdma@vger.kernel.org>; Tue, 01 Jun 2021 21:28:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version;
-        bh=0j3AXUZfn6Utm78ytcxICWTmrOouB6v6ujLLlD5rAMY=;
-        b=Cr2BL1DINmidzJKCForXvzvaWxG6YM8/mc9/O9lbiCjgdSH9Fo4K4jxkZXuugJAK7e
-         QWmaPguqM9jPEKNwFeHfioPyOu0eLy7PoSLOnKMqgDeJgV5Ep6dYjRfhY4VeM3kAC96f
-         TJn1VDVz/SA5lb76GLdSvZf666wBXXGmO9h8g=
+        bh=UkrCmBBAm9eP7VPLBeulDrHuKTF3vMyVVtqsxEtE/08=;
+        b=QtUEA5dfSYfRxWEHVfXlGcVM/QNUTsjou9J/p3lF8VQIZnwECfskW6On8rd9b+kIzc
+         e8qqo6tri4xovQewOyx8HFwT62P+qPNYHfLTe0Fp15/YZS1SUIvjkiQPjo+DpfAiwuet
+         2bg+ANZfyIIw4b8zxqAq1gfUkV1ntNk20jrgg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version;
-        bh=0j3AXUZfn6Utm78ytcxICWTmrOouB6v6ujLLlD5rAMY=;
-        b=UqvdVkAe4CKaYY3pwpmVYU4LKAY58nU9tQW4JiDG3yMZhmmhbqpb8cDn/WqHpgWReQ
-         /ik+xC5Miadgh/xGFZH9OAW7n9iHa0HOGLaum6DNkrcblA+ssIHGb806KiCDHRWAP8/q
-         AAS0eRkQwgUu3AlweHPK/Q1WkAWdMdLD2uctwiuj/Hw++qrCwcSiaTDkGVeNbYS7niJO
-         xtwlpLinUo0VMD9Jll9usxNkQ9hAV5mwkbWciEEQEPbQkgvSBG80Way75NMH0tuHpTcR
-         lV6lGhxhTEXp4fqxTQlIRk0kin5C9ROK8DDXbhwTmwL+tl5KsE/7UAGBjwVVJevJIkan
-         7/kQ==
-X-Gm-Message-State: AOAM532Yd2dq3Y4Mhj4HF0BftZBRf0f4bBhNDzy7MFUVdV+3MCzL1T47
-        rwIb2mBjYH36xcKXYNWXm56AwlTcipXM8nGx8Iyq++2ZJQ12zvSQ9WjuFBMcYzfvHQoEbPYfLez
-        rPjlpjdLbHppvB9WLfRELfolGgr29frugph1mLRbzhVUHxTogbJpjCCk+o6AXZNg1exIBeY/CxN
-        ZWsgteNw==
-X-Google-Smtp-Source: ABdhPJx5wPLRXyuAALPLfxmS+ZKTLcjoc8CPNEmq7pVdZYNC3J/e6p6nTy7a/6fYXEkkWGeos/se+A==
-X-Received: by 2002:a63:4c41:: with SMTP id m1mr31587227pgl.394.1622608135305;
-        Tue, 01 Jun 2021 21:28:55 -0700 (PDT)
+        bh=UkrCmBBAm9eP7VPLBeulDrHuKTF3vMyVVtqsxEtE/08=;
+        b=beSmN90R9r3WFMWR7vb4w8r1ovufwDm/NYhVl+DuNNk6FJwh2/fl3RL7a0MzhDMXUT
+         gpYXoywY4D/UjqXMJPFl+ZRQQPNeTqQKgYVBl/0T+Err5yCAioS29HU/MAo+jwfAE9Jx
+         FwhfY0/0MGn6cA8riqI+ZQI4l1Qlhv+HchxtN2cgurPVlAPaKDNsGZaMULAOX4sks0ZI
+         6o0pnmMnlT5l6lvMMRS8+XzGp6WhKNcKCHknu3LQTFPN0tlmUmaoL2ePyThIPNS+PZRO
+         iG4p1mquM1LR1uiB3T8SX8MMuT9lGWbAbO4UuESNPJQS5w6ktjh7bpm+pj2gc7UqQn/t
+         7OoA==
+X-Gm-Message-State: AOAM532mDbcwGGkWzXiLLgeA2RAesQxwSbXfkbQp2PqzTAN8ZvrTy2YW
+        +Zr0c/7shvI3cPc9UHC5aaivaqVsfeMnW+AcUoYj42W5DS87OCyVIrjNGA1DxX2sQ98PWjKu+ku
+        EZOOQTOgKj/Mfaat63m5uj1t97inDcd/oYlbV5FOQYFr913OYhG6ZYUyykU/qnxxN3ccm6/grxj
+        uLDmQtww==
+X-Google-Smtp-Source: ABdhPJw22JPS70UKIuxP68iTfhD5V39R43mwEFka91ffYPcyAKiYYBvqmmAs0b9ewvJstEqMMtG5rg==
+X-Received: by 2002:a17:90a:117:: with SMTP id b23mr28635633pjb.183.1622608137355;
+        Tue, 01 Jun 2021 21:28:57 -0700 (PDT)
 Received: from dev01.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id b7sm14052547pfv.149.2021.06.01.21.28.53
+        by smtp.gmail.com with ESMTPSA id b7sm14052547pfv.149.2021.06.01.21.28.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Jun 2021 21:28:55 -0700 (PDT)
+        Tue, 01 Jun 2021 21:28:57 -0700 (PDT)
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [PATCH V4 for-next 2/3] bnxt_re: Update maintainers list
-Date:   Wed,  2 Jun 2021 09:58:38 +0530
-Message-Id: <20210602042839.968833-3-devesh.sharma@broadcom.com>
+Subject: [PATCH V4 for-next 3/3] RDMA/bnxt_re: update ABI to pass wqe-mode to user space
+Date:   Wed,  2 Jun 2021 09:58:39 +0530
+Message-Id: <20210602042839.968833-4-devesh.sharma@broadcom.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210602042839.968833-1-devesh.sharma@broadcom.com>
 References: <20210602042839.968833-1-devesh.sharma@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000009091b405c3c0e501"
+        boundary="000000000000ab943d05c3c0e5c5"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000009091b405c3c0e501
+--000000000000ab943d05c3c0e5c5
 Content-Transfer-Encoding: 8bit
 
-Updated the maintainers list and removed
-non-active members.
+Changing ucontext ABI response structure to pass wqe_mode
+to user library.
+A flag in comp_mask has been set to indicate presence of
+wqe_mode.
 
 Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
 ---
- MAINTAINERS | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 3 +++
+ include/uapi/rdma/bnxt_re-abi.h          | 5 ++++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bd7aff0c120f..786573a556b9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3736,8 +3736,6 @@ F:	drivers/gpio/gpio-bcm-kona.c
- BROADCOM NETXTREME-E ROCE DRIVER
- M:	Selvin Xavier <selvin.xavier@broadcom.com>
- M:	Devesh Sharma <devesh.sharma@broadcom.com>
--M:	Somnath Kotur <somnath.kotur@broadcom.com>
--M:	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
- M:	Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
- L:	linux-rdma@vger.kernel.org
- S:	Supported
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index a113d8d9e9ed..5955713234cb 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -3882,6 +3882,9 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
+ 	resp.max_cqd = dev_attr->max_cq_wqes;
+ 	resp.rsvd    = 0;
+ 
++	resp.comp_mask |= BNXT_RE_UCNTX_CMASK_HAVE_MODE;
++	resp.mode = rdev->chip_ctx->modes.wqe_mode;
++
+ 	rc = ib_copy_to_udata(udata, &resp, min(udata->outlen, sizeof(resp)));
+ 	if (rc) {
+ 		ibdev_err(ibdev, "Failed to copy user context");
+diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bnxt_re-abi.h
+index dc52e3cf574c..52205ed2b898 100644
+--- a/include/uapi/rdma/bnxt_re-abi.h
++++ b/include/uapi/rdma/bnxt_re-abi.h
+@@ -49,7 +49,8 @@
+ #define BNXT_RE_CHIP_ID0_CHIP_MET_SFT		0x18
+ 
+ enum {
+-	BNXT_RE_UCNTX_CMASK_HAVE_CCTX = 0x1ULL
++	BNXT_RE_UCNTX_CMASK_HAVE_CCTX = 0x1ULL,
++	BNXT_RE_UCNTX_CMASK_HAVE_MODE = 0x02ULL
+ };
+ 
+ struct bnxt_re_uctx_resp {
+@@ -62,6 +63,8 @@ struct bnxt_re_uctx_resp {
+ 	__aligned_u64 comp_mask;
+ 	__u32 chip_id0;
+ 	__u32 chip_id1;
++	__u32 mode;
++	__u32 rsvd1; /* padding */
+ };
+ 
+ /*
 -- 
 2.25.1
 
 
---0000000000009091b405c3c0e501
+--000000000000ab943d05c3c0e5c5
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -161,13 +188,13 @@ G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
 PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIL2Y3qh345HRSO7UKudbxn9EVGmz
-ro4bROn1sfoiA3tbMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDYwMjA0Mjg1NlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIArnvUfv+lJQOKwiOhkJR+mjcsvc
+bN/5065JlgHJXGUyMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDYwMjA0Mjg1N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQB5+0QLi19Izt1enBD6VeBPr1ZyKq1F3gifKtqRvknQ0b0r
-E2N40uYUbazp0/9dr4xB3yPHX5aUSiuQdZzbwta6D/1cLrH6AEEMGmLsltXVU/b6vz+cTfJBAA8Y
-0O8jNYqaLgWGsFG/Y7Sn50AsUJ57UTmm13ZHIRO6Xm4virf5qD72H7d3dvpZNtdodbE05bfeGf3q
-+UkzYBajKoRGyopxhLtj7bf6kzopTCEsK/OWPvIT56xJo0NPwVGvObIb3YsYHigic1X42Q207WUa
-XQ2vQFa3lPiUo9+xUB+GX2kKP2xkpYnznkHXnzgZod0zX1spmWTISwI8bXpC4N7nJV2+
---0000000000009091b405c3c0e501--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQB6GNnWQpIB5BEJcEMhTfWDZB23K3QglxEM1vV0jKJ+ILPd
+KdjAC7FcZ7PDLDddBf21vi+ckCZajxfZ2xFDQCwAFZJLAdzwAQUPURaQg7RHQObJjyzy9rbbBfgm
+ak/m737LDuQT2BZsl0Zyd3R3oMYDVY0GmN30j8Ikp+Mgx7HdEEdZOxlvhUD5xGW1SOlOr9JTRITd
+g0tdvEzdaoYDBEI/dz9ZMTka4XjXqxGn26sOVt+8VgUdEVW8EqFB5NA5R45mwax2PqtbBDQYFnpf
+oiy1XCMD3Ta034L9Vd+AzcQYJtTQT0mqcwCKEV3f4T1QBBvaPfsSlHWKs0iXhcv9jXmc
+--000000000000ab943d05c3c0e5c5--
