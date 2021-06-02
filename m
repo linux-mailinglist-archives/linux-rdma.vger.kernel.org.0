@@ -2,199 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C081C398F30
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jun 2021 17:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D553992A5
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jun 2021 20:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231837AbhFBPsS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Jun 2021 11:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231770AbhFBPsS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Jun 2021 11:48:18 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D996C061574
-        for <linux-rdma@vger.kernel.org>; Wed,  2 Jun 2021 08:46:35 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id t28so2485297pfg.10
-        for <linux-rdma@vger.kernel.org>; Wed, 02 Jun 2021 08:46:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version;
-        bh=j0FJxOFYLJLVRqClp4JQ6sPTgxnrGD6HhrCiq72Lrwo=;
-        b=WADkFldzO/ZaMNMulsgSlCYXDArm1fRoyFPU78wisXwCqDSaDk8NlG0VhYjS89lLI1
-         eq0jV5o5CEgcMNEYGf/zy4HZkvKqWZ5DFToOCUoGgdmRhP1QBE0RHIodLnnGHBjQoRjG
-         krViKKA1Pmmx/mhRVek5pC3xTASgLCnEXuuU8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version;
-        bh=j0FJxOFYLJLVRqClp4JQ6sPTgxnrGD6HhrCiq72Lrwo=;
-        b=jTECw1PSDnNz9CXGxeGKGNCihf5tBHzuuMJeaavA1JLVyc/6wfEA4a4EhnaUDjWzCi
-         PQJKjELuUg7xeW7IJ+VM40GeVXHwCIO6F9Z3NDMe/5ZIAgZeGa87phSYO2oCmoTilyaI
-         KTC2fnIJ/80ixc420SuIPZtoYhWVxjtgXYiI6fckR/rY41x7Xc6bYBG/sG9fXz4kyf2r
-         R393bEgTH/GPiTlmdKxJL2GbJ22xUuMtlX4KSxzIz4pSm8SafwvI9r3rzTqgeTaoE0h2
-         EnMUjk5DpSsb+fweXNi4ul7r1XAdFiFg8uVsUcRZG7OFr3kldy4qqpe9dFaqPotdXtRL
-         sB+g==
-X-Gm-Message-State: AOAM532JkTzYeUv2yiVenGmv5VmCwMgSMcMuqBco+DJcRdVntkjCAHe9
-        UmSsl4+IgrtQxWMVnRwzprTKuRTUtqoLm3eB08i3f4/nSnW60v6ds8+KMb5dO88N/wfpUqx3k28
-        Lx4BP04gCtbgw4mTI4Osg2HdmRE2THg6Q4to9/0dORkyyb63Ms0od59AHwohhOqHfWNcQ/Al92c
-        tE4Zyhkw==
-X-Google-Smtp-Source: ABdhPJytkJn6HCK/+IDWAHuHMtQcZtNOdsj5CV38xzflK/5qMhDrHvo0VhfguQ+7Xbj4YOJXNEWtJA==
-X-Received: by 2002:a63:7204:: with SMTP id n4mr34979937pgc.78.1622648794565;
-        Wed, 02 Jun 2021 08:46:34 -0700 (PDT)
-Received: from dev01.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id k7sm30204pjj.46.2021.06.02.08.46.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 08:46:34 -0700 (PDT)
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [PATCH V5 for-next 3/3] RDMA/bnxt_re: update ABI to pass wqe-mode to user space
-Date:   Wed,  2 Jun 2021 21:16:18 +0530
-Message-Id: <20210602154618.973816-4-devesh.sharma@broadcom.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210602154618.973816-1-devesh.sharma@broadcom.com>
-References: <20210602154618.973816-1-devesh.sharma@broadcom.com>
+        id S229491AbhFBShG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Jun 2021 14:37:06 -0400
+Received: from mail-dm6nam11on2087.outbound.protection.outlook.com ([40.107.223.87]:53856
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229468AbhFBShF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 2 Jun 2021 14:37:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f7xytipjBkOU2NE5c4T0tlv8+lfLbLJowWnITSEwdYc8Otz35VaW7Dw9p5ytp0ORV0L/rv5AJgK0KpI+v6Z/AaUj0yr9AE6WwAS8SFhDuT9fAOvX/MBl37Jg5j4N+awBm6SgIpINLamFXippnAOaAIKBAxADhN0oHegLmEzZYYEwKeEYmOYMSWJWBG8j+ro01LSa2dhAFHElT96lKY/xSc3bjTKsTJI37+JiTAYGJzsWmDetojiSmiKzVbRGoKiMG8o6wIkHaUPCF9S1grOtOUadXSiwc2pR1aJacVN8xz2gGm31uulUNWPUY/G8nDP6oS3An8Z/0iihRcX2hj1y4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lUphzbwtDvwxh5p+U1jHF6eZ5FBP+sITJwd6OgspNXM=;
+ b=PtITQbGeUrG7tbUTrTKR3W0YWBmM5uu8/OWeZDhCsiTYyaQg8ps8RKszMJ3CBHEciYMl8UyM9yLhbOD2w1KKhX10BsKA0dwrL3UVEwIRN1A+pTIl3f7ICCLowfXHg5iPeHar/W+TTgufRzRWC8UUxxcyE/bVOTkKGy8ozs85/oMtLxFZwAyWUSRuHma8ti+1OSpVnpJFqu1RD1WzQ11VneEma805gppPI+XLL/D2Zztqpq1275kBlQ/Ei1wGpWM6MOCXYQoPkitELnKONWmjnqhxXvKL1oghdufXHro24LIsSTlYoFQgwQSeGIDe93VKn14kWvbxvn2P3Y46cECP2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lUphzbwtDvwxh5p+U1jHF6eZ5FBP+sITJwd6OgspNXM=;
+ b=aIvKDncdxj3/OcVXDcHxBt+a2DNEjINhYFicWQS2RAXbZlog5QCME8FEVYMxHi615RieAEarWxm1EMXxi6xgWmTv1p7RQTwf4lRCr98E8t5JKmCzIVhA6bt93IkPa1ZeiGjBvOyAVYRzpV2+X4Yk6pLoEvLTCxgpTza5qy4dIPKhfG/zkFsMFVY1WZMvwmZTyDFEbFguCFi5lVRnndGLJ6qft0IgOrPEOsQ3zoqqtnM3tjaCXo7lg3/wZ3H2UORVVqesAitQ/UG6HKRNkRxp+vnCkcqY1lz1Pyp3PJWla5CbI5pUQiIYxT9mFx0PIjmwFhLY7POskDDzPJ2cyToLgQ==
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5159.namprd12.prod.outlook.com (2603:10b6:208:318::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22; Wed, 2 Jun
+ 2021 18:35:21 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%6]) with mapi id 15.20.4195.020; Wed, 2 Jun 2021
+ 18:35:21 +0000
+Date:   Wed, 2 Jun 2021 15:35:20 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Kamal Heib <kamalheib1@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: Re: [PATCH for-rc] RDMA/ipoib: Fix warning caused by destroying
+ non-initial netns
+Message-ID: <20210602183520.GA120702@nvidia.com>
+References: <20210525150134.139342-1-kamalheib1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525150134.139342-1-kamalheib1@gmail.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR02CA0007.namprd02.prod.outlook.com
+ (2603:10b6:208:fc::20) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000006983605c3ca5d42"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR02CA0007.namprd02.prod.outlook.com (2603:10b6:208:fc::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20 via Frontend Transport; Wed, 2 Jun 2021 18:35:21 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1loVi4-000VPI-8C; Wed, 02 Jun 2021 15:35:20 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6c24321c-4ae5-47fa-77c0-08d925f52d91
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5159:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5159FA9824FD020382D920E0C23D9@BL1PR12MB5159.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rmLiCfiRo/jQJxj7/LIBuYXCAF+5iPUorCu9Fpjb1PqZq7sOCjqqGF3yrb607wAspDAekW+SjW9hPk2+FCn7rq8/o9ViyNgjcQwA44I8l+3UQfJwzIGR+cQXdE5ukTZjVwF2cRhDG7H/oUPm2yKn4VDoDGk5Rng4xAwHzc277T1T08FStOJusBWQgth8AzmhzBreX4xNU6MLIZkgGExxuNE3ydV6zuOON52GlcXSrxoqaO6KxhOHdRYyAU6siQq/Xinb3jtWdfBhi9U3IEYgef30hIbibk3F08bTxWpDaO7pVzrZFM63Usg41axt6ANoonuS6nkDjMdwabhC9ZdrVMv2d5SLq8m8bLYX5B7oYOfdP1eBXGbt5kdsuiTihkJZcWEoJwob+AXDNcqXyt0DWgRs+HVAKSEr8HVo0IXvimFfsA7haktYgOkd0Hu2fEubjjAOyou5RfCuzwxsv4M32/B/8lQ647II5cyye08mQhSNf8lFS33ILsILmV2nyxd6QPMmy+8Ead2C0louiuYMt09t4koFnQq2MPGWaR2iEUExONxAJX+MNfIKwJa8KvWp1Yq3RJw76bOk+MnK0yMGU+WpVxw8eVbd9fnoSEN2wV6Nb7s/DGpjdQc0TKr0bXQaE4xVywQaeBZwInhIYznHPg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39850400004)(346002)(136003)(396003)(186003)(6916009)(316002)(4326008)(86362001)(426003)(26005)(45080400002)(33656002)(36756003)(2616005)(8676002)(478600001)(83380400001)(8936002)(5660300002)(38100700002)(2906002)(66946007)(66476007)(66556008)(9786002)(9746002)(1076003)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: zbFsopr7KRnN++0Z9kHXeU1mD3lYCYhtbY/K23Kq3mFkHCMYuGFG5us2Ie4iLY2lXxWgs32tKd3vrmg1eUs0NZQwNlDE/ZJprhQ+j3VERAnlzwc17MU2QoMbDuqZnAtSr4sfXFQKJAPvJNzGfmRj7bWvu4kyZz0K8YaMIN6XRgXTdb9PHtiYkN/VpUL5brWJj7sZ0sK/wA3u2S8fXeZ5P+cxDGw2JUs+Mhi3PO/Q6kBnNJ5oaPj5ukmVUfwKpGPtZrFq2PQZKF9z8s4RddbXeEyC0S+QILB3awx/PISSt+8NtchIZT8DRaoRGr1JOcaQSzvVnmDDOFpnL2oz5LI+C7m6dkWunVrW4MhuXcZn9Q1A9QISD/5+RPojXneu9leYN2Ps7AKoB1iIrsSVrktwpsFigpb2JiCjInrVYuHldTePHBk5HuXaY0sBvFtNRP+CkatA2P8ug9J52DjfPQNl0Uo2mnSJRiSLs9DmtVDY21bcaZEBedyC6NiQxXxh613//1K0wHBVegCU9BDtggB0oswHSzBcaIBtav6qaWo0aiKBiR+F2MxFOnfH9zpXOxAgfs0WU4TV/TKou+ep3CIwnzVqSXBLPtEPu642Yjy/1Qzo0qsslP6Nfx/yDGkV1Aej577d9b07DdVRcRsQ0nzmpH7HRJhernFEhEoJjBN4LzntbIcy9BOOCWggWLDoTmwmL0uamxaxtEEBbjlpEBAGgKIB6SppLi7Np/t4ttt1iFxhy/CvEMtQCfnONKi/O1HW
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c24321c-4ae5-47fa-77c0-08d925f52d91
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jun 2021 18:35:21.2942
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NLaR8lzFX/V47dzuUzA+DWqqi0X+dbNdMjOFrM+5iXF7uMksqijLUS9mvn0x4dar
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5159
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000006983605c3ca5d42
-Content-Transfer-Encoding: 8bit
+On Tue, May 25, 2021 at 06:01:34PM +0300, Kamal Heib wrote:
+> After the introduce of 5ce2dced8e95 ("RDMA/ipoib: Set rtnl_link_ops for
+> ipoib interfaces"), If the IPoIB device is moved to non-initial netns,
+> destroying that netns lets the device vanish instead of moving it back
+> to the initial netns, This is happening because default_device_exit()
+> skips the interfaces due to having rtnl_link_ops set.
+> 
+> Steps to reporoduce:
+>   ip netns add foo
+>   ip link set mlx5_ib0 netns foo
+>   ip netns delete foo
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 704 at net/core/dev.c:11435 netdev_exit+0x3f/0x50
+> Modules linked in: xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT
+> nf_reject_ipv4 nft_compat nft_counter nft_chain_nat nf_nat nf_conntrack
+> nf_defrag_ipv6 nf_defrag_ipv4 nf_tables nfnetlink tun d
+>  fuse
+> CPU: 1 PID: 704 Comm: kworker/u64:3 Tainted: G S      W  5.13.0-rc1+ #1
+> Hardware name: Dell Inc. PowerEdge R630/02C2CP, BIOS 2.1.5 04/11/2016
+> Workqueue: netns cleanup_net
+> RIP: 0010:netdev_exit+0x3f/0x50
+> Code: 48 8b bb 30 01 00 00 e8 ef 81 b1 ff 48 81 fb c0 3a 54 a1 74 13 48
+> 8b 83 90 00 00 00 48 81 c3 90 00 00 00 48 39 d8 75 02 5b c3 <0f> 0b 5b
+> c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 0f 1f 44 00
+> RSP: 0018:ffffb297079d7e08 EFLAGS: 00010206
+> RAX: ffff8eb542c00040 RBX: ffff8eb541333150 RCX: 000000008010000d
+> RDX: 000000008010000e RSI: 000000008010000d RDI: ffff8eb440042c00
+> RBP: ffffb297079d7e48 R08: 0000000000000001 R09: ffffffff9fdeac00
+> R10: ffff8eb5003be000 R11: 0000000000000001 R12: ffffffffa1545620
+> R13: ffffffffa1545628 R14: 0000000000000000 R15: ffffffffa1543b20
+> FS:  0000000000000000(0000) GS:ffff8ed37fa00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00005601b5f4c2e8 CR3: 0000001fc8c10002 CR4: 00000000003706e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  ops_exit_list.isra.9+0x36/0x70
+>  cleanup_net+0x234/0x390
+>  process_one_work+0x1cb/0x360
+>  ? process_one_work+0x360/0x360
+>  worker_thread+0x30/0x370
+>  ? process_one_work+0x360/0x360
+>  kthread+0x116/0x130
+>  ? kthread_park+0x80/0x80
+>  ret_from_fork+0x22/0x30
+> ---[ end trace 74b40f8fbd65a323 ]---
+> 
+> To avoid the above warning and later on the kernel panic that could
+> happen on shutdown due to a null pointer dereference, Make sure to set
+> the netns_refund flag that was introduced by [1] to properly restore
+> the IPoIB interfaces to the initial netns.
+> 
+> [1] - 3a5ca857079e ("can: dev: Move device back to init netns on owning
+> netns delete").
+> 
+> Fixes: 5ce2dced8e95 ("RDMA/ipoib: Set rtnl_link_ops for ipoib interfaces")
+> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/infiniband/ulp/ipoib/ipoib_netlink.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-Changing ucontext ABI response structure to pass wqe_mode
-to user library.
-A flag in comp_mask has been set to indicate presence of
-wqe_mode.
+Applied to for-next, thanks
 
-Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 3 +++
- include/uapi/rdma/bnxt_re-abi.h          | 5 ++++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index a113d8d9e9ed..5955713234cb 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -3882,6 +3882,9 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
- 	resp.max_cqd = dev_attr->max_cq_wqes;
- 	resp.rsvd    = 0;
- 
-+	resp.comp_mask |= BNXT_RE_UCNTX_CMASK_HAVE_MODE;
-+	resp.mode = rdev->chip_ctx->modes.wqe_mode;
-+
- 	rc = ib_copy_to_udata(udata, &resp, min(udata->outlen, sizeof(resp)));
- 	if (rc) {
- 		ibdev_err(ibdev, "Failed to copy user context");
-diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bnxt_re-abi.h
-index dc52e3cf574c..52205ed2b898 100644
---- a/include/uapi/rdma/bnxt_re-abi.h
-+++ b/include/uapi/rdma/bnxt_re-abi.h
-@@ -49,7 +49,8 @@
- #define BNXT_RE_CHIP_ID0_CHIP_MET_SFT		0x18
- 
- enum {
--	BNXT_RE_UCNTX_CMASK_HAVE_CCTX = 0x1ULL
-+	BNXT_RE_UCNTX_CMASK_HAVE_CCTX = 0x1ULL,
-+	BNXT_RE_UCNTX_CMASK_HAVE_MODE = 0x02ULL
- };
- 
- struct bnxt_re_uctx_resp {
-@@ -62,6 +63,8 @@ struct bnxt_re_uctx_resp {
- 	__aligned_u64 comp_mask;
- 	__u32 chip_id0;
- 	__u32 chip_id1;
-+	__u32 mode;
-+	__u32 rsvd1; /* padding */
- };
- 
- /*
--- 
-2.25.1
-
-
---00000000000006983605c3ca5d42
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIQcAYJKoZIhvcNAQcCoIIQYTCCEF0CAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg3HMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
-MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
-vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
-rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
-aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
-e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
-cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
-MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
-KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
-/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
-TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
-YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
-b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
-c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
-CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
-BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
-jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
-9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
-/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
-jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
-AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
-dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
-MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
-IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
-SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
-XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
-J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
-nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBU8wggQ3oAMCAQICDCGDU4mjRUtE1rJIfDANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMTAyMjIxNDE5MTJaFw0yMjA5MjIxNDUyNDJaMIGQ
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xFjAUBgNVBAMTDURldmVzaCBTaGFybWExKTAnBgkqhkiG9w0B
-CQEWGmRldmVzaC5zaGFybWFAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
-CgKCAQEAqdZbJYU0pwSvcEsPGU4c70rJb88AER0e2yPBliz7n1kVbUny6OTYV16gUCRD8Jchrs1F
-iA8F7XvAYvp55zrOZScmIqg0sYmhn7ueVXGAxjg3/ylsHcKMquUmtx963XI0kjWwAmTopbhtEBhx
-75mMnmfNu4/WTAtCCgi6lhgpqPrted3iCJoAYT2UAMj7z8YRp3IIfYSW34vWW5cmZjw3Vy70Zlzl
-TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
-Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
-KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
-SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
-PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
-G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
-PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIArnvUfv+lJQOKwiOhkJR+mjcsvc
-bN/5065JlgHJXGUyMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDYwMjE1NDYzNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQA6NU1QSowGWgC67ab7KYkkKmie/cxIRg2fW227P5XCH5bv
-rBLjM6Mw0tjlG/Y34RRwqRZmKw7HEiQ5fY6LKFBkIrMUQxBsKxhG0LZ5AT/qzJ8r/S9Yp/P+oz+g
-uIjfxnmhg0cw6EslSlCCq9U5yDL8EoTtsta2+zJEdE/oawg1IIqUDPvn56fxu6NWwBViYKO1ygOv
-LDLu7sNw7dvKmTQxRFwRh8678kFvoA5BOlO9UHl8U583GtPcZb5r8Z29Y4J1RnfZwZPlhcddtHJi
-5iWfiMdAW6DJXLAYYfue6i2llkGWrpU/cqigJbF7DLEBO9Mt1GEk6kz5MbC9uzbGSYVJ
---00000000000006983605c3ca5d42--
+Jason
