@@ -2,109 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B14398A1D
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jun 2021 14:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8736F398A38
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jun 2021 15:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbhFBM5t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Jun 2021 08:57:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59895 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229579AbhFBM5s (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Jun 2021 08:57:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622638565;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=68bJSY1FBTPQ80K65CfylStjee9ZQzAVnTo+uSvrYlo=;
-        b=h7DqS3kVyNpH5t6f77rMUjoeFNG7qvhKz/pYQmsO6bd5JIVxEdnztfNc6DaDOL+kwd5abM
-        ip2MdK+FMluuAncD7GZotTQ1FkqBPP3R7xSe+R02jYzyyijoyvSfIKBByjM7jlkGIY0LZf
-        i+PgvkQifb2tqf2PjqohFCuVVJV8ZI0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-179-lTgot2TwMiKPJRVZALBcxw-1; Wed, 02 Jun 2021 08:56:04 -0400
-X-MC-Unique: lTgot2TwMiKPJRVZALBcxw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1F813501E0;
-        Wed,  2 Jun 2021 12:56:03 +0000 (UTC)
-Received: from work-vm (ovpn-113-195.ams2.redhat.com [10.36.113.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3B22760BD9;
-        Wed,  2 Jun 2021 12:56:01 +0000 (UTC)
-Date:   Wed, 2 Jun 2021 13:55:58 +0100
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, lizhijian@fujitsu.com
-Subject: Re: rdma_get_cm_event error behaviour defined?
-Message-ID: <YLd/3ojhnU0LVIw1@work-vm>
-References: <YKJAKy1oNcTd7sRn@work-vm>
- <YLYXBD9jupPOslnR@unreal>
- <YLYasCUuuNMpag2M@work-vm>
- <YLd6o7p6+29Sjdtq@unreal>
+        id S229594AbhFBNNF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Jun 2021 09:13:05 -0400
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:37386 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229579AbhFBNNF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Jun 2021 09:13:05 -0400
+Received: by mail-wr1-f54.google.com with SMTP id q5so2262520wrs.4
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Jun 2021 06:11:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=gBCJYnoJpuqRW576Yf02FGegSq1LCH38/9HZEgrcF2c=;
+        b=TgWgsv5nRzRRcE/o23ajEupAx5DJm/qWcSffnlMtO1W9BcsCOQ1KrTx0GzR+D5X+Ep
+         vMFnIAIbW33t+D6wyHGCO0pgAEFUwQAwDbY63Xya9OHWVIKhYylp0yzchvF0vKWhArFT
+         VWSD3sw6anwKUE9m+k3GdKGj67Tf6FLrfAYDONfmPropGa6EGqQ9/FFGHTb4+a0FRWyU
+         DlesGOE6iz0lmITLuMJ2Zycb/L73fn2tFxz3yeJs7TLqWRMlGzHpQ0hkrCsqLGONavSr
+         pyvDMcNHyXwkSIoxsGfYdCGttDBA7O11u76zyVpoI1hF9MYXMRudISmlCrFKwqWtp3jT
+         PxSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=gBCJYnoJpuqRW576Yf02FGegSq1LCH38/9HZEgrcF2c=;
+        b=NFR4PEMXiFm6K9EhYSZEzsQYmDXqDzM9rxkIMvTmHSmDlG+VnKR2RoIKNA7kKv87Po
+         HqCUG7mVwkv6LiHglQez0HxhhuRXR1dvT9f3sBmOMzl2XhBRexrnBUszvUDKqFk5UIUD
+         xZGVi2JR+ZAwr+RjlqHcSEgO47HrPsF0NtD48kWzDAtDumxBnoPM9JlSj7sEj4Poj8Uo
+         MHXrE/YW9CXiaOsGtsF+5hptP5frMMym3A03Opl3n8AiHh/RP03LWs1nfl3+X3rEe2gr
+         DbYxynhO4x4sY02cI6v0cIpJw/10Hip90xKT+vak3I5mJRnPp1btUn2O+1TcJXljuOP8
+         kP7g==
+X-Gm-Message-State: AOAM532PtP81ONtd6S9XOD5QMddZfllIcsZMLXFLiTl1eKRMT6tZOsG4
+        zQW2XCBgML8ftAD6UYH73zA=
+X-Google-Smtp-Source: ABdhPJywfkSpOTcaKQ/5zgOQCjFuZ1qsgYQgrZls+OHcy7DjBgHOKTUG/vwyyH7sUphhAsRezCcCBA==
+X-Received: by 2002:a5d:4385:: with SMTP id i5mr12164325wrq.233.1622639410340;
+        Wed, 02 Jun 2021 06:10:10 -0700 (PDT)
+Received: from kheib-workstation (bzq-109-67-139-103.red.bezeqint.net. [109.67.139.103])
+        by smtp.gmail.com with ESMTPSA id t14sm6446949wra.60.2021.06.02.06.10.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Jun 2021 06:10:09 -0700 (PDT)
+Date:   Wed, 2 Jun 2021 16:10:07 +0300
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>
+Subject: Re: [PATCH for-rc] RDMA/rxe: Fix failure during driver load
+Message-ID: <YLeDL+Omy8QdI+Q+@kheib-workstation>
+References: <CAD=hENe9O+3Z9ck6G5+t9RaVpbqUL-edfa+b1-Ki5NZO0eJPPA@mail.gmail.com>
+ <8649FCE4-EAEE-4DA9-AF51-FC6329F67C43@gmail.com>
+ <CAD=hENdazayh5wmjd=3shHMVrNMrMw40qFdDFbkTqtaST46o8A@mail.gmail.com>
+ <YLX5PLZjjoRiDNGN@kheib-workstation>
+ <CAD=hENc2v4j9KyAL_La9tZcFzzcGyJdnw=5gwxwyekDxD7aOqA@mail.gmail.com>
+ <20210601170132.GN1096940@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YLd6o7p6+29Sjdtq@unreal>
-User-Agent: Mutt/2.0.7 (2021-05-04)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210601170132.GN1096940@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-* Leon Romanovsky (leon@kernel.org) wrote:
-> On Tue, Jun 01, 2021 at 12:32:00PM +0100, Dr. David Alan Gilbert wrote:
-> > * Leon Romanovsky (leon@kernel.org) wrote:
-> > > On Mon, May 17, 2021 at 11:06:35AM +0100, Dr. David Alan Gilbert wrote:
-> > > > Hi,
-> > > >   Is 'rdma_get_cm_event's behaviour in initialising **event
-> > > > defined in the error case?
-> > > >   We don't see anything in the manual page, my reading of the
-> > > > code is it's not set/changed in the case of failure - but is
-> > > > that defined?
-> > > >   It would be good if the manpage could explicitly state it.
-> > > 
-> > > AFAIK, the general practice do not rely on any output argument if
-> > > function returns an error and I'm not sure that the man update is
-> > > needed.
+On Tue, Jun 01, 2021 at 02:01:32PM -0300, Jason Gunthorpe wrote:
+> On Tue, Jun 01, 2021 at 11:59:44PM +0800, Zhu Yanjun wrote:
+> > On Tue, Jun 1, 2021 at 5:09 PM Kamal Heib <kamalheib1@gmail.com> wrote:
+> > >
+> > > On Tue, Jun 01, 2021 at 04:11:08PM +0800, Zhu Yanjun wrote:
+> > > > On Tue, Jun 1, 2021 at 3:56 PM kamal heib <kamalheib1@gmail.com> wrote:
+> > > > >
+> > > > >
+> > > > >
+> > > > > > On 1 Jun 2021, at 10:45, Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
+> > > > > >
+> > > > > > ﻿On Tue, Jun 1, 2021 at 1:58 PM Kamal Heib <kamalheib1@gmail.com> wrote:
+> > > > > >>
+> > > > > >> To avoid the following failure when trying to load the rdma_rxe module
+> > > > > >> while IPv6 is disabled, Add a check to make sure that IPv6 is enabled
+> > > > > >> before trying to create the IPv6 UDP tunnel.
+> > > > > >>
+> > > > > >> $ modprobe rdma_rxe
+> > > > > >> modprobe: ERROR: could not insert 'rdma_rxe': Operation not permitted
+> > > > > >
+> > > > > > About this problem, this link:
+> > > > > > https://patchwork.kernel.org/project/linux-rdma/patch/20210413234252.12209-1-yanjun.zhu@intel.com/
+> > > > > > also tries to solve ipv6 problem.
+> > > > > >
+> > > > > > Zhu Yanjun
+> > > > > >
+> > > > >
+> > > > > Yes, but this patch is fixing the problem more cleanly and I’ve tested it.
 > > 
-> > The case we had was whether we needed to clean up or not in the error
-> > case; the original code in qemu was:
+> > Please check this link
+> > https://lore.kernel.org/linux-rdma/20210326012723.41769-1-yanjun.zhu@intel.com/T/
+> > carefully.
 > > 
-> >     2496     ret = rdma_get_cm_event(rdma->channel, &cm_event);
-> >     2497     if (ret) {
-> >     2498         perror("rdma_get_cm_event after rdma_connect");
-> >     2499         ERROR(errp, "connecting to destination!");
-> >     2500         rdma_ack_cm_event(cm_event);
-> >     2501         goto err_rdma_source_connect;
-> >     2502     }
-> > 
-> > and Li spotted that rdma_ack_cm_event  would seg in the case
-> > rdma_get_cm_event failed.
+> > Please pay attention to the comments from Jason Gunthorpe
 > 
-> man page says that you should rdma_ack_cm_event() on success only.
+> I think the comment still holds, the correct fix is to detect the -97
+> errno down in the call chain and just ignore ipv6 support in this
+> case.
 > 
->    14 All events which are allocated by rdma_get_cm_event must be released,
->    15 there should be a one-to-one correspondence between successful gets
->    16 and acks.  This call frees the event structure and any memory that it
->    17 references.
+> Jason
 
-Hmm ok; it did fool at least 2 of us; and I ended up going to the code
-to check.
+OK, Could you please tell me what do you think about the following:
 
-> > 
-> > While I agree on not relying on an output; without a definition you're
-> > stuck between not knowing if you're leaking an event that should
-> > have been cleaned up.
-> 
-> You are not supposed to have rdma_ack_cm_event() in your snippet.
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index 01662727dca0..144d9e1c1c3d 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -208,6 +208,11 @@ static struct socket *rxe_setup_udp_tunnel(struct net *net, __be16 port,
+        /* Create UDP socket */
+        err = udp_sock_create(net, &udp_cfg, &sock);
+        if (err < 0) {
++               if (ipv6 && (err == -EAFNOSUPPORT)) {
++                       pr_warn("IPv6 is not supported can not create UDP socket\n");
++                       return NULL;
++               }
++
+                pr_err("failed to create udp socket. err = %d\n", err);
+                return ERR_PTR(err);
+        }
 
-Right, that's what we figured out the hard way.
 
-Dave
-
-> Thanks
-> 
--- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
-
+Thanks,
+Kamal
