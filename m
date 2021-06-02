@@ -2,198 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1D73984C2
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jun 2021 10:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FB33984D5
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jun 2021 11:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232987AbhFBJAB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Jun 2021 05:00:01 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3390 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232989AbhFBJAA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Jun 2021 05:00:00 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Fw2s30qBbz67qj;
-        Wed,  2 Jun 2021 16:54:31 +0800 (CST)
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 16:58:11 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 2 Jun 2021 16:58:10 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, "Xi Wang" <wangxi11@huawei.com>,
-        Weihang Li <liweihang@huawei.com>
-Subject: [PATCH RESEND v2 for-next 7/7] RDMA/hns: Clean SRQC structure definition
-Date:   Wed, 2 Jun 2021 16:57:45 +0800
-Message-ID: <1622624265-44796-8-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622624265-44796-1-git-send-email-liweihang@huawei.com>
-References: <1622624265-44796-1-git-send-email-liweihang@huawei.com>
+        id S231208AbhFBJEy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Jun 2021 05:04:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230264AbhFBJEr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 2 Jun 2021 05:04:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 160A5611BF;
+        Wed,  2 Jun 2021 09:03:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622624581;
+        bh=W1HS+Fd5lgTIqMdQwJRoo5JfX/u3a8PaEyluE/TZuT0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Qr9An8cMbX3JEhmRezEGFys8/LMarivFw2Xi/mtgaYikJQQK9fX2YBiDdXy6qxrZb
+         i8GrKhB4erFFO6IEAQw+/w7IvD8WuLw5Y0UZJCAfoIb+fih9KxxCQhqAIGLxwBuDtx
+         3w/toMaVZhSZ2p4QOvImLgHk9eqHRovxCZtqDOj8NgOClz9uEc3zL4yNU1WpLeLHKR
+         4hUQoam05Yw3BhDwdmslRcAtX7Lgl+WAglWMZ4yaZ5+++fqwYBUVNXaHjBSZT/WCZ+
+         HiMof72xLVIuJA+UTpqdLvy5e6Wl4AhX1CxyBgUKGAqZ49INSF2p1rTF3qeu26V3XH
+         9Mst0gXeIc/gQ==
+Date:   Wed, 2 Jun 2021 12:02:57 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Devesh Sharma <devesh.sharma@broadcom.com>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH V2 INTERNAL 0/4] Broadcom's user library update
+Message-ID: <YLdJQZDpqD0Niuky@unreal>
+References: <20210517133532.774998-1-devesh.sharma@broadcom.com>
+ <CANjDDBgR_wP5WHWWRue_Pg8XYujcuoqFs2J-zHD0c2g9+bRfjg@mail.gmail.com>
+ <CANjDDBjO4dOXCb5rVe1UOd6foeFp8FLTqJbz8w6c36eTZSZtkg@mail.gmail.com>
+ <YKUwKa6fNfBq8b8a@unreal>
+ <CANjDDBhNFh4VqPdD09ssUMVZKHgvnRxS8MuttNS1JjeFSk23EQ@mail.gmail.com>
+ <CANjDDBiymTXPo2Oj=vfpNUgOXbX8HDjsoiDQs5nh=5QUiMYavQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema753-chm.china.huawei.com (10.1.198.195)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANjDDBiymTXPo2Oj=vfpNUgOXbX8HDjsoiDQs5nh=5QUiMYavQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+On Wed, May 26, 2021 at 11:03:09AM +0530, Devesh Sharma wrote:
+> On Mon, May 24, 2021 at 6:32 PM Devesh Sharma
+> <devesh.sharma@broadcom.com> wrote:
+> >
+> > On Wed, May 19, 2021 at 9:05 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > >
+> > > On Wed, May 19, 2021 at 08:45:20PM +0530, Devesh Sharma wrote:
+> > > > On Mon, May 17, 2021 at 7:08 PM Devesh Sharma
+> > > > <devesh.sharma@broadcom.com> wrote:
+> > > > >
+> > > > > On Mon, May 17, 2021 at 7:05 PM Devesh Sharma
+> > > > > <devesh.sharma@broadcom.com> wrote:
+> > > > > >
+> > > > > > The main focus of this patch series is to move SQ and RQ
+> > > > > > wqe posting indices from 128B fixed stride to 16B aligned stride.
+> > > > > > This allows more flexibility in choosing wqe size.
+> > > > > >
+> > > > > >
+> > > > > > Devesh Sharma (4):
+> > > > > >   bnxt_re/lib: Read wqe mode from the driver
+> > > > > >   bnxt_re/lib: add a function to initialize software queue
+> > > > > >   bnxt_re/lib: Use separate indices for shadow queue
+> > > > > >   bnxt_re/lib: Move hardware queue to 16B aligned indices
+> > > > > >
+> > > > > >  kernel-headers/rdma/bnxt_re-abi.h |   5 +-
+> > > > > >  providers/bnxt_re/bnxt_re-abi.h   |   5 +
+> > > > > >  providers/bnxt_re/db.c            |  10 +-
+> > > > > >  providers/bnxt_re/main.c          |   4 +
+> > > > > >  providers/bnxt_re/main.h          |  26 ++
+> > > > > >  providers/bnxt_re/memory.h        |  37 ++-
+> > > > > >  providers/bnxt_re/verbs.c         | 522 ++++++++++++++++++++----------
+> > > > > >  7 files changed, 431 insertions(+), 178 deletions(-)
+> > > > > >
+> > > > > > --
+> > > > > > 2.25.1
+> > > > > >
+> > > > > Please ignore the "Internal" keyword in the subject line.
+> > > > >
+> > > > > --
+> > > > > -Regards
+> > > > > Devesh
+> > > > Hi Leon,
+> > > >
+> > > > Do you have any comments on this series. For the subject line I can
+> > > > resend the series.
+> > >
+> > > Yes, the change in kernel-headers/rdma/bnxt_re-abi.h should be separate
+> > > commit created with kernel-headers/update script.
+> > Leon, I need to have my abi changes in the upstream kernel before I
+> > change user ABI in rdmacore? The script is popping out some errors.
+> Leon Ping!
 
-Remove unused members in srq context structure.
+Leon was on vacation.
 
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 15 ++----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 82 +-----------------------------
- 2 files changed, 4 insertions(+), 93 deletions(-)
+Thanks
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 7cd0bc6..00b5b72 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -5349,12 +5349,8 @@ static int hns_roce_v2_modify_srq(struct ib_srq *ibsrq,
- 
- 		memset(srqc_mask, 0xff, sizeof(*srqc_mask));
- 
--		roce_set_field(srq_context->byte_8_limit_wl,
--			       SRQC_BYTE_8_SRQ_LIMIT_WL_M,
--			       SRQC_BYTE_8_SRQ_LIMIT_WL_S, srq_attr->srq_limit);
--		roce_set_field(srqc_mask->byte_8_limit_wl,
--			       SRQC_BYTE_8_SRQ_LIMIT_WL_M,
--			       SRQC_BYTE_8_SRQ_LIMIT_WL_S, 0);
-+		hr_reg_write(srq_context, SRQC_LIMIT_WL, srq_attr->srq_limit);
-+		hr_reg_clear(srqc_mask, SRQC_LIMIT_WL);
- 
- 		ret = hns_roce_cmd_mbox(hr_dev, mailbox->dma, 0, srq->srqn, 0,
- 					HNS_ROCE_CMD_MODIFY_SRQC,
-@@ -5377,7 +5373,6 @@ static int hns_roce_v2_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr)
- 	struct hns_roce_srq *srq = to_hr_srq(ibsrq);
- 	struct hns_roce_srq_context *srq_context;
- 	struct hns_roce_cmd_mailbox *mailbox;
--	int limit_wl;
- 	int ret;
- 
- 	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
-@@ -5395,11 +5390,7 @@ static int hns_roce_v2_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr)
- 		goto out;
- 	}
- 
--	limit_wl = roce_get_field(srq_context->byte_8_limit_wl,
--				  SRQC_BYTE_8_SRQ_LIMIT_WL_M,
--				  SRQC_BYTE_8_SRQ_LIMIT_WL_S);
--
--	attr->srq_limit = limit_wl;
-+	attr->srq_limit = hr_reg_read(srq_context, SRQC_LIMIT_WL);
- 	attr->max_wr = srq->wqe_cnt;
- 	attr->max_sge = srq->max_gs - srq->rsv_sge;
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index 974f8c1..bf4f179 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -377,22 +377,7 @@ struct hns_roce_v2_cq_context {
- #define CQC_POE_QID_H_1 CQC_FIELD_LOC(511, 511)
- 
- struct hns_roce_srq_context {
--	__le32 byte_4_srqn_srqst;
--	__le32 byte_8_limit_wl;
--	__le32 byte_12_xrcd;
--	__le32 byte_16_pi_ci;
--	__le32 wqe_bt_ba;
--	__le32 byte_24_wqe_bt_ba;
--	__le32 byte_28_rqws_pd;
--	__le32 idx_bt_ba;
--	__le32 rsv_idx_bt_ba;
--	__le32 idx_cur_blk_addr;
--	__le32 byte_44_idxbufpgsz_addr;
--	__le32 idx_nxt_blk_addr;
--	__le32 rsv_idxnxtblkaddr;
--	__le32 byte_56_xrc_cqn;
--	__le32 db_record_addr_record_en;
--	__le32 db_record_addr;
-+	__le32 data[16];
- };
- 
- #define SRQC_FIELD_LOC(h, l) FIELD_LOC(struct hns_roce_srq_context, h, l)
-@@ -433,71 +418,6 @@ struct hns_roce_srq_context {
- #define SRQC_DB_RECORD_ADDR_L SRQC_FIELD_LOC(479, 449)
- #define SRQC_DB_RECORD_ADDR_H SRQC_FIELD_LOC(511, 480)
- 
--#define SRQC_BYTE_4_SRQ_ST_S 0
--#define SRQC_BYTE_4_SRQ_ST_M GENMASK(1, 0)
--
--#define SRQC_BYTE_4_SRQ_WQE_HOP_NUM_S 2
--#define SRQC_BYTE_4_SRQ_WQE_HOP_NUM_M GENMASK(3, 2)
--
--#define SRQC_BYTE_4_SRQ_SHIFT_S 4
--#define SRQC_BYTE_4_SRQ_SHIFT_M GENMASK(7, 4)
--
--#define SRQC_BYTE_4_SRQN_S 8
--#define SRQC_BYTE_4_SRQN_M GENMASK(31, 8)
--
--#define SRQC_BYTE_8_SRQ_LIMIT_WL_S 0
--#define SRQC_BYTE_8_SRQ_LIMIT_WL_M GENMASK(15, 0)
--
--#define SRQC_BYTE_12_SRQ_XRCD_S 0
--#define SRQC_BYTE_12_SRQ_XRCD_M GENMASK(23, 0)
--
--#define SRQC_BYTE_16_SRQ_PRODUCER_IDX_S 0
--#define SRQC_BYTE_16_SRQ_PRODUCER_IDX_M GENMASK(15, 0)
--
--#define SRQC_BYTE_16_SRQ_CONSUMER_IDX_S 0
--#define SRQC_BYTE_16_SRQ_CONSUMER_IDX_M GENMASK(31, 16)
--
--#define SRQC_BYTE_24_SRQ_WQE_BT_BA_S 0
--#define SRQC_BYTE_24_SRQ_WQE_BT_BA_M GENMASK(28, 0)
--
--#define SRQC_BYTE_28_PD_S 0
--#define SRQC_BYTE_28_PD_M GENMASK(23, 0)
--
--#define SRQC_BYTE_28_RQWS_S 24
--#define SRQC_BYTE_28_RQWS_M GENMASK(27, 24)
--
--#define SRQC_BYTE_36_SRQ_IDX_BT_BA_S 0
--#define SRQC_BYTE_36_SRQ_IDX_BT_BA_M GENMASK(28, 0)
--
--#define SRQC_BYTE_44_SRQ_IDX_CUR_BLK_ADDR_S 0
--#define SRQC_BYTE_44_SRQ_IDX_CUR_BLK_ADDR_M GENMASK(19, 0)
--
--#define SRQC_BYTE_44_SRQ_IDX_HOP_NUM_S 22
--#define SRQC_BYTE_44_SRQ_IDX_HOP_NUM_M GENMASK(23, 22)
--
--#define SRQC_BYTE_44_SRQ_IDX_BA_PG_SZ_S 24
--#define SRQC_BYTE_44_SRQ_IDX_BA_PG_SZ_M GENMASK(27, 24)
--
--#define SRQC_BYTE_44_SRQ_IDX_BUF_PG_SZ_S 28
--#define SRQC_BYTE_44_SRQ_IDX_BUF_PG_SZ_M GENMASK(31, 28)
--
--#define SRQC_BYTE_52_SRQ_IDX_NXT_BLK_ADDR_S 0
--#define SRQC_BYTE_52_SRQ_IDX_NXT_BLK_ADDR_M GENMASK(19, 0)
--
--#define SRQC_BYTE_56_SRQ_XRC_CQN_S 0
--#define SRQC_BYTE_56_SRQ_XRC_CQN_M GENMASK(23, 0)
--
--#define SRQC_BYTE_56_SRQ_WQE_BA_PG_SZ_S 24
--#define SRQC_BYTE_56_SRQ_WQE_BA_PG_SZ_M GENMASK(27, 24)
--
--#define SRQC_BYTE_56_SRQ_WQE_BUF_PG_SZ_S 28
--#define SRQC_BYTE_56_SRQ_WQE_BUF_PG_SZ_M GENMASK(31, 28)
--
--#define SRQC_BYTE_60_SRQ_RECORD_EN_S 0
--
--#define SRQC_BYTE_60_SRQ_DB_RECORD_ADDR_S 1
--#define SRQC_BYTE_60_SRQ_DB_RECORD_ADDR_M GENMASK(31, 1)
--
- enum {
- 	V2_MPT_ST_VALID = 0x1,
- 	V2_MPT_ST_FREE	= 0x2,
--- 
-2.7.4
+> > >
+> > > Thanks
+> > >
+> > > >
+> > > >
+> > > > --
+> > > > -Regards
+> > > > Devesh
+> > >
+> > >
+> >
+> >
+> > --
+> > -Regards
+> > Devesh
+> 
+> 
+> 
+> -- 
+> -Regards
+> Devesh
+
 
