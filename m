@@ -2,79 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802F339892A
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jun 2021 14:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD04D39899D
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jun 2021 14:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbhFBMSA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Jun 2021 08:18:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55908 "EHLO mail.kernel.org"
+        id S229662AbhFBMf0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Jun 2021 08:35:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229590AbhFBMR6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 2 Jun 2021 08:17:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95E6061168;
-        Wed,  2 Jun 2021 12:16:14 +0000 (UTC)
+        id S229647AbhFBMfZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 2 Jun 2021 08:35:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6BCB613B8;
+        Wed,  2 Jun 2021 12:33:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622636175;
-        bh=V5ZVNSg6VrBxlRJfakhW8sRXrsgoOMu9QTiqmV0EpM8=;
+        s=k20201202; t=1622637222;
+        bh=miRjTtiZRHo1tSKbaixL/u5ulDWB0rxCGkUBBVp+0KA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U5BQOKFTG5Gj3+Bo6Eoo68asasoK7acYLGLDysOhTY+8aHVw424AI8nFwHWCJLpPP
-         kO4g5mMvwO+zu04/wOKP9Y+K+Cccmg2RFbn4p7UwXdnnzbK30IKgoqL/3g/8jm9L/j
-         RvtOMHdQNgN/ebTQnPcfPvcK8ry3rTKdM5Zx3GjATpG2ISfoE5GceKUJxBHcFlRuNI
-         VdcPU7at1QltZ8u+P9CKDuu47rPI1MzDhIsE1AX6FzM1zWyP2olrR5D+KPr6gp/890
-         oJU1+t+BpjPjh7s+0bWInxFKeisMDRTOgIKnOTqXvrC+ACqnWAnUBxjuXJXYEgspZj
-         j9YPOouTrJdrg==
-Date:   Wed, 2 Jun 2021 15:16:11 +0300
+        b=O14GwIcsULtb08iz9QHq1xNXsFYmE0k6Thx/ScK8ZEd19iF2vofsVg0XP1hifQoL8
+         2xZ32vVox8M3g4sAXF7DDeehA4qJXAYWuDvFkJN84GMW/EYEpLGv2feFslniYDJpJl
+         Yc38ZexnKxdu5Ge8yqjy1zPOo72ud3qInKC1xblOf1nc7+WSuGd01ZaBcwBCVJSnSn
+         MaxOosdxO1gdXl+YTsUnTbEqxC3ETLG6giMLOKL6fSxqE1lpKwxLL85TPlDOXwCCI5
+         NagjT7NjGbSjvQGqjsOchCgmNk1kIxhPftN+SKpxJy3SH5FwqPUSnSVF8I9ncf6/th
+         AWtBFSC/d+XcQ==
+Date:   Wed, 2 Jun 2021 15:33:39 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next v1 2/2] RDMA/mlx5: Allow modifying Relaxed
- Ordering via fast registration
-Message-ID: <YLd2i7LnWurwLWUs@unreal>
-References: <cover.1621505111.git.leonro@nvidia.com>
- <9442b0de75f4ee029e7c306fce34b1f6f94a9e34.1621505111.git.leonro@nvidia.com>
- <20210526194906.GA3646419@nvidia.com>
+To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+Cc:     linux-rdma@vger.kernel.org, lizhijian@fujitsu.com
+Subject: Re: rdma_get_cm_event error behaviour defined?
+Message-ID: <YLd6o7p6+29Sjdtq@unreal>
+References: <YKJAKy1oNcTd7sRn@work-vm>
+ <YLYXBD9jupPOslnR@unreal>
+ <YLYasCUuuNMpag2M@work-vm>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210526194906.GA3646419@nvidia.com>
+In-Reply-To: <YLYasCUuuNMpag2M@work-vm>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 26, 2021 at 04:49:06PM -0300, Jason Gunthorpe wrote:
-> On Thu, May 20, 2021 at 01:13:36PM +0300, Leon Romanovsky wrote:
-> > From: Avihai Horon <avihaih@nvidia.com>
+On Tue, Jun 01, 2021 at 12:32:00PM +0100, Dr. David Alan Gilbert wrote:
+> * Leon Romanovsky (leon@kernel.org) wrote:
+> > On Mon, May 17, 2021 at 11:06:35AM +0100, Dr. David Alan Gilbert wrote:
+> > > Hi,
+> > >   Is 'rdma_get_cm_event's behaviour in initialising **event
+> > > defined in the error case?
+> > >   We don't see anything in the manual page, my reading of the
+> > > code is it's not set/changed in the case of failure - but is
+> > > that defined?
+> > >   It would be good if the manpage could explicitly state it.
 > > 
-> > Relaxed Ordering is enabled by default for kernel ULPs, and is set
-> > during MKey creation, yet it cannot be modified by them afterwards.
-> > 
-> > Allow modifying Relaxed Ordering via fast registration work request.
-> > This is done by setting the relevant flags in the MKey context mask and
-> > the Relaxed Ordering flags in the MKey context itself.
-> > 
-> > Only ConnectX-7 supports modifying Relaxed Ordering via fast
-> > registration, and HCA capabilities indicate it. These capabilities are
-> > checked, and if a fast registration work request tries to modify Relaxed
-> > Ordering and the capabilities are not present, the work request will fail.
+> > AFAIK, the general practice do not rely on any output argument if
+> > function returns an error and I'm not sure that the man update is
+> > needed.
 > 
->  
-> > @@ -762,23 +786,33 @@ static void set_sig_mkey_segment(struct mlx5_mkey_seg *seg,
-> >  	seg->len = cpu_to_be64(length);
-> >  	seg->xlt_oct_size = cpu_to_be32(get_xlt_octo(size));
-> >  	seg->bsfs_octo_size = cpu_to_be32(MLX5_MKEY_BSF_OCTO_SIZE);
-> > +
-> > +	if (!(access_flags & IB_ACCESS_DISABLE_RELAXED_ORDERING)) {
-> > +		MLX5_SET(mkc, seg, relaxed_ordering_write,
-> > +			 MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write_umr));
-> > +		MLX5_SET(mkc, seg, relaxed_ordering_read,
-> > +			 MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read_umr));
-> > +	}
-> >  }
+> The case we had was whether we needed to clean up or not in the error
+> case; the original code in qemu was:
 > 
-> I don't quite get this patch
+>     2496     ret = rdma_get_cm_event(rdma->channel, &cm_event);
+>     2497     if (ret) {
+>     2498         perror("rdma_get_cm_event after rdma_connect");
+>     2499         ERROR(errp, "connecting to destination!");
+>     2500         rdma_ack_cm_event(cm_event);
+>     2501         goto err_rdma_source_connect;
+>     2502     }
+> 
+> and Li spotted that rdma_ack_cm_event  would seg in the case
+> rdma_get_cm_event failed.
 
-This is premature optimization. We don't really need it.
+man page says that you should rdma_ack_cm_event() on success only.
+
+   14 All events which are allocated by rdma_get_cm_event must be released,
+   15 there should be a one-to-one correspondence between successful gets
+   16 and acks.  This call frees the event structure and any memory that it
+   17 references.
+
+> 
+> While I agree on not relying on an output; without a definition you're
+> stuck between not knowing if you're leaking an event that should
+> have been cleaned up.
+
+You are not supposed to have rdma_ack_cm_event() in your snippet.
 
 Thanks
