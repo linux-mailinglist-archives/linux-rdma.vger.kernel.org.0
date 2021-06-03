@@ -2,222 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07AA39A1E7
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 15:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 436E339A1ED
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 15:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhFCNMu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Jun 2021 09:12:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbhFCNMu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Jun 2021 09:12:50 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81358C06174A
-        for <linux-rdma@vger.kernel.org>; Thu,  3 Jun 2021 06:11:05 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id o27so5781215qkj.9
-        for <linux-rdma@vger.kernel.org>; Thu, 03 Jun 2021 06:11:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3Kmx7+jIj9TgkcPJHVbC+k4uoAziEXaxIqzDkbIy3HA=;
-        b=KUZg5VEJb4t7aQ77B5uRaJsYCWdISybNMHgeyC5miJGmIPE3X/lAKxUt+WzpiyTe8C
-         aK0LRUxtD9u+YovU1an5a/bCtlss/zMiVOKBE2Gjec1YM5Qu/j1vm+YBEWnW1IayuE4R
-         5p53M2NL7XcDB/uKaS/1PUYgIFfgUndZ8qtTE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3Kmx7+jIj9TgkcPJHVbC+k4uoAziEXaxIqzDkbIy3HA=;
-        b=JCWZzjEqMjUqD6cN20ValgwZwuhuWq2eMziagnASasxpokJ3RhecsEnKX2rkSzpOIJ
-         9G3kGoM8GdXTPwU63LOA1gIyAQKGKEH7NfhuNLEklUh7D1zB1KCEEQ6JgbJTOPy+CI6G
-         6ArmQapzujeBEsaCJuInMwviQl8HXm6li/uk9cFsDY+ZA6IPPyHYBYB97lOG9iIjKRDS
-         xeQLT/4uVexu+3/nzhX6YNPXzhZwr4j70CpsNV5ScSt44R69kp7/M1R1SUNF8jfzzHFP
-         XiUnhxKBO57U6k2fW6xXpR87qpEPL1sIO028d+cjuGMvRPAiEBdwwep6n9KhnebYIIgw
-         uq7Q==
-X-Gm-Message-State: AOAM530av5nD6bDiR6e2O4Tc7Yo6PXLp0zaHZWC61W6X606ZCyX8tHaR
-        R57x9yDbg9f6bOA45UArwQv15W2Iyf1k24O5h2h7AVa2jtI=
-X-Google-Smtp-Source: ABdhPJyXfFNwhzobEiuvWcPOjiZkX0IkmlzFxxqIVfgPbw4XbXo7j90Ob3Y/JrwUDfH9f78AM5IyH3Dn1tDqqN95X6k=
-X-Received: by 2002:a05:620a:139a:: with SMTP id k26mr21621985qki.169.1622725864107;
- Thu, 03 Jun 2021 06:11:04 -0700 (PDT)
+        id S231235AbhFCNO1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Jun 2021 09:14:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230507AbhFCNO1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 3 Jun 2021 09:14:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA5A8613B8;
+        Thu,  3 Jun 2021 13:12:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622725962;
+        bh=8tSih8TQEldph7biZCjMKrsNnNHCD8lD50ZmP4OjqOs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HWwdxsnwDy6prcdmSIEV0nkPPHl0DOXqnkHYngVt2dP5gOZQkB1VMnauT1l7QEqVi
+         OHWau7iPqbFoypBecWrowAI9aasPD93DcvTwb7u20P+OR1tlGqAaYbkTxIPpz88dwX
+         lsYNHZ0s1s6HFFD2D8bte4/vw69Cw12XBt/ZHpwP45T0JUUZVyNZokfzn3cP8BBl7U
+         LqwNsXUuchCx1Yr/LSwbMR5BuD9TOaak6OJ9qn3W3lyUR/yV1YxvTXSk2qidEeK6Zs
+         pGDT2Q0Pe/rlnvx3UoZAgwAO12miNIJHSV8nKSVTaLl0WrdQBxOdGblvQET3z3s0D1
+         L37RcVYdiFl5A==
+Date:   Thu, 3 Jun 2021 16:12:38 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Paul Blakey <paulb@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH net-next] net/mlx5: check for allocation failure in
+ mlx5_ft_pool_init()
+Message-ID: <YLjVRjAyP3UpzgVr@unreal>
+References: <YLjNfHuTQ817oUtX@mwanda>
 MIME-Version: 1.0
-References: <20210603103057.980996-1-devesh.sharma@broadcom.com>
- <20210603103057.980996-2-devesh.sharma@broadcom.com> <YLjTTzw2L1hLj/vf@unreal>
-In-Reply-To: <YLjTTzw2L1hLj/vf@unreal>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Thu, 3 Jun 2021 18:40:28 +0530
-Message-ID: <CANjDDBgtC+2dpdLppqHXADzv-Dzp3YhAnR-hezQgO-i57Y-mgw@mail.gmail.com>
-Subject: Re: [PATCH V6 for-next 1/3] RDMA/bnxt_re: Enable global atomic ops if
- platform supports
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000bd6d0705c3dc4eb3"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLjNfHuTQ817oUtX@mwanda>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000bd6d0705c3dc4eb3
-Content-Type: text/plain; charset="UTF-8"
-
-On Thu, Jun 3, 2021 at 6:34 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Thu, Jun 03, 2021 at 04:00:55PM +0530, Devesh Sharma wrote:
-> > Enabling Atomic operations for Gen P5 devices if the underlying
-> > platform supports global atomic ops.
-> >
-> > Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
-> > ---
-> >  drivers/infiniband/hw/bnxt_re/ib_verbs.c  |  4 ++++
-> >  drivers/infiniband/hw/bnxt_re/main.c      |  3 +++
-> >  drivers/infiniband/hw/bnxt_re/qplib_res.c | 17 +++++++++++++++++
-> >  drivers/infiniband/hw/bnxt_re/qplib_res.h |  1 +
-> >  drivers/infiniband/hw/bnxt_re/qplib_sp.c  | 13 ++++++++++++-
-> >  drivers/infiniband/hw/bnxt_re/qplib_sp.h  |  2 --
-> >  6 files changed, 37 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> > index 537471ffaa79..a113d8d9e9ed 100644
-> > --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> > +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> > @@ -163,6 +163,10 @@ int bnxt_re_query_device(struct ib_device *ibdev,
-> >       ib_attr->max_qp_init_rd_atom = dev_attr->max_qp_init_rd_atom;
-> >       ib_attr->atomic_cap = IB_ATOMIC_NONE;
-> >       ib_attr->masked_atomic_cap = IB_ATOMIC_NONE;
-> > +     if (dev_attr->is_atomic) {
-> > +             ib_attr->atomic_cap = IB_ATOMIC_GLOB;
-> > +             ib_attr->masked_atomic_cap = IB_ATOMIC_GLOB;
-> > +     }
-> >
-> >       ib_attr->max_ee_rd_atom = 0;
-> >       ib_attr->max_res_rd_atom = 0;
-> > diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-> > index b090dfa4f4cb..0de4e22f9750 100644
-> > --- a/drivers/infiniband/hw/bnxt_re/main.c
-> > +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> > @@ -128,6 +128,9 @@ static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev, u8 wqe_mode)
-> >       rdev->rcfw.res = &rdev->qplib_res;
-> >
-> >       bnxt_re_set_drv_mode(rdev, wqe_mode);
-> > +     if (bnxt_qplib_determine_atomics(en_dev->pdev))
-> > +             ibdev_info(&rdev->ibdev,
-> > +                        "platform doesn't support global atomics.");
-> >       return 0;
-> >  }
-> >
-> > diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-> > index 3ca47004b752..108a591e66ff 100644
-> > --- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
-> > +++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-> > @@ -959,3 +959,20 @@ int bnxt_qplib_alloc_res(struct bnxt_qplib_res *res, struct pci_dev *pdev,
-> >       bnxt_qplib_free_res(res);
-> >       return rc;
-> >  }
-> > +
-> > +int bnxt_qplib_determine_atomics(struct pci_dev *dev)
-> > +{
-> > +     int comp;
-> > +     u16 ctl2;
-> > +
-> > +     comp = pci_enable_atomic_ops_to_root(dev,
-> > +                                          PCI_EXP_DEVCAP2_ATOMIC_COMP32);
-> > +     if (comp)
-> > +             return -ENOTSUPP;
->
-> I would say that it needs to be EOPNOTSUPP, not critical.
->
-> > +     comp = pci_enable_atomic_ops_to_root(dev,
-> > +                                          PCI_EXP_DEVCAP2_ATOMIC_COMP64);
-> > +     if (comp)
-> > +             return -ENOTSUPP;
-Okay..on the way..
->
-> Thanks
+On Thu, Jun 03, 2021 at 03:39:24PM +0300, Dan Carpenter wrote:
+> Add a check for if the kzalloc() fails.
+> 
+> Fixes: 4a98544d1827 ("net/mlx5: Move chains ft pool to be used by all firmware steering")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c
+> index 526fbb669142..c14590acc772 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c
+> @@ -27,6 +27,8 @@ int mlx5_ft_pool_init(struct mlx5_core_dev *dev)
+>  	int i;
+>  
+>  	ft_pool = kzalloc(sizeof(*ft_pool), GFP_KERNEL);
+> +	if (!ft_pool)
+> +		return -ENOMEM;
+>  
+>  	for (i = ARRAY_SIZE(FT_POOLS) - 1; i >= 0; i--)
+>  		ft_pool->ft_left[i] = FT_SIZE / FT_POOLS[i];
 
 
+Dan thanks for your patch.
 
--- 
--Regards
-Devesh
+When reviewed your patch, I spotted another error in the patch from the Fixes line.
 
---000000000000bd6d0705c3dc4eb3
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+  2955         err = mlx5_ft_pool_init(dev);
+  2956         if (err)
+  2957                 return err;
+  2958
+  2959         steering = kzalloc(sizeof(*steering), GFP_KERNEL);
+  2960         if (!steering)
+  2961                 goto err;
+                       ^^^^^^^^ it will return success, while should return ENOMEM.
 
-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
-TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
-Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
-KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
-SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
-PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
-G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
-PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBowXumTIF3vrGfym/cGauxdzq/F
-Y9zKfitwwNEbxyFPMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDYwMzEzMTEwNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQA08/zmhXESrq/smIODg+U+L1LFgilwsnhvM7QnU2h9uUed
-0SdLEd5p9aE7SKThEJHAjRTY8EtY0p2MidKkTQzC1mc85yUQt7okTVTrq732HIMS+6zwt//vjf18
-MK0+2i4OxEkzSb8Cykoy3xDyMUtTXXcS70PCx2yJGwh3UGtoGtUs8NVWMfV2xGBNToOj/RBSBcpT
-OLID1MZX1FdRQWaDSfrOcbdgWhYOZdnrU9Q7wnYAnlfbLSMNP1E2xFx8fbYPLBYmzJ26xvLfy7jc
-kNUIt86CE0MPe8PeZyPV87DJAxx69NeaYyi2pCgJqf/aye7MXiBdSwHJEiBvz24Ozy08
---000000000000bd6d0705c3dc4eb3--
+Thanks,
+Acked-by: Leon Romanovsky <leonro@nvidia.com>
