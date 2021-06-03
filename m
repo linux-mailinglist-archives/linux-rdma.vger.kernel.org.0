@@ -2,98 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E3F399663
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 01:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76E439986E
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 05:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbhFBXdn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Jun 2021 19:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhFBXdn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Jun 2021 19:33:43 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3023C06174A
-        for <linux-rdma@vger.kernel.org>; Wed,  2 Jun 2021 16:31:46 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id o27so4211183qkj.9
-        for <linux-rdma@vger.kernel.org>; Wed, 02 Jun 2021 16:31:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iBRXvb4CVhDNCZovMRHGqhARcL8Ag6Ys+ACP65LMVjQ=;
-        b=Tf7R+zAydNZSuHSWfC4lPJmLXwnxdT/WGz+K3reUpt6v7/ShyPbO5nOPoTTNSLAqEy
-         I8x0HH3YCL9uoWZ5TXrFCZZMVXfK80a+F9E6+EZpReZHATctP0/ZDZupjkdw2WluU7wG
-         QjdA9Am2ATXiGJd4HN7lKHr0l9SjaKAc/Ia10JybyuVc6hUUxTegTSNznGBpnnsDtKVt
-         lDj32a6z/z8CeexNLsNZ6505A2ACMMSmA5pCCqLB184Bmllv8ikAV46K9yfXOGYE5Mlh
-         GIKa9/4CbnvMBR6y7I0dM2legB9cQTtuhykH4Yt22AJ471SGa0pKf7w4gHPj4RgC6NXM
-         F3wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iBRXvb4CVhDNCZovMRHGqhARcL8Ag6Ys+ACP65LMVjQ=;
-        b=NIzDmctdUVGCtGctxbHQttJYIsqEJdFiadOqBC81y8R74aNtVUfw4xMChGMuLRXg7l
-         igN48q8pyKaHoVCWSBy2JRQfpYkxei7LXoTUT09CXhPhbX3zk4I+5yRXi4sYmeXTvWYV
-         JuO1mHk8s38Fop3duBOmOXpXK3Tc601Q2QhjxN/v+TPnarXJJNYxuLWs7A0wpTRhCEzz
-         WgvXR4Ou/UjM2gpqvz9zw4tSlRepHQYcJ2CpmbCsHe9lv/Ggk68LGavLkqs0OWcvr78K
-         c5bxBqjNj5ZZpCkFOu1cC0u3nZeWD5leSvZpA/03L+/kUTw3h/AtcmBwVI7Z6VAd9ocF
-         4OnA==
-X-Gm-Message-State: AOAM531vDmSKrhAklZPVbg3CvAqz9LVIiIgdF60spDme4/+rJkcdrS7O
-        RN/ytgdjx3C+5jXmgAym33AFVQ==
-X-Google-Smtp-Source: ABdhPJxI9umDCXwDxklj2NtqSIbVMfDn48XRZSiTXL/2FxPT2cevmZYvO3zSULt+WkMGpDbo3NCD9w==
-X-Received: by 2002:a05:620a:a08:: with SMTP id i8mr22591629qka.221.1622676705854;
-        Wed, 02 Jun 2021 16:31:45 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id m10sm793753qtq.62.2021.06.02.16.31.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 16:31:45 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1loaKu-000nhH-F9; Wed, 02 Jun 2021 20:31:44 -0300
-Date:   Wed, 2 Jun 2021 20:31:44 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Kamal Heib <kamalheib1@gmail.com>
-Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH for-rc] RDMA/rxe: Fix failure during driver load
-Message-ID: <20210602233144.GO1096940@ziepe.ca>
-References: <CAD=hENe9O+3Z9ck6G5+t9RaVpbqUL-edfa+b1-Ki5NZO0eJPPA@mail.gmail.com>
- <8649FCE4-EAEE-4DA9-AF51-FC6329F67C43@gmail.com>
- <CAD=hENdazayh5wmjd=3shHMVrNMrMw40qFdDFbkTqtaST46o8A@mail.gmail.com>
- <YLX5PLZjjoRiDNGN@kheib-workstation>
- <CAD=hENc2v4j9KyAL_La9tZcFzzcGyJdnw=5gwxwyekDxD7aOqA@mail.gmail.com>
- <20210601170132.GN1096940@ziepe.ca>
- <YLeDL+Omy8QdI+Q+@kheib-workstation>
+        id S229629AbhFCDOB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 2 Jun 2021 23:14:01 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7079 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229611AbhFCDOA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Jun 2021 23:14:00 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FwW8V0xfhzYnVj;
+        Thu,  3 Jun 2021 11:09:30 +0800 (CST)
+Received: from dggpeml100021.china.huawei.com (7.185.36.148) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 3 Jun 2021 11:12:15 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggpeml100021.china.huawei.com (7.185.36.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 3 Jun 2021 11:12:14 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2176.012;
+ Thu, 3 Jun 2021 11:12:14 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        "wangxi (M)" <wangxi11@huawei.com>
+Subject: Re: [PATCH for-next 1/2] RDMA/hns: Refactor hns uar mmap flow
+Thread-Topic: [PATCH for-next 1/2] RDMA/hns: Refactor hns uar mmap flow
+Thread-Index: AQHXU6KIYF57APVpj02AMxmljmiQ3A==
+Date:   Thu, 3 Jun 2021 03:12:14 +0000
+Message-ID: <2fd072cd42804bc9aa2948123fcf48cf@huawei.com>
+References: <1622193545-3281-1-git-send-email-liweihang@huawei.com>
+ <1622193545-3281-2-git-send-email-liweihang@huawei.com>
+ <YLdocig+JjG+nLF+@unreal>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLeDL+Omy8QdI+Q+@kheib-workstation>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 04:10:07PM +0300, Kamal Heib wrote:
+On 2021/6/2 19:16, Leon Romanovsky wrote:
+> On Fri, May 28, 2021 at 05:19:04PM +0800, Weihang Li wrote:
+>> From: Xi Wang <wangxi11@huawei.com>
+>>
+>> Classify the uar address by wrapping the uar type and start page as offset
+>> for hns rdma io mmap.
+>>
+>> Signed-off-by: Xi Wang <wangxi11@huawei.com>
+>> Signed-off-by: Weihang Li <liweihang@huawei.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_main.c | 27 ++++++++++++++++++++++++---
+>>  include/uapi/rdma/hns-abi.h               |  4 ++++
+>>  2 files changed, 28 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+>> index 6c6e82b..00dbbf1 100644
+>> --- a/drivers/infiniband/hw/hns/hns_roce_main.c
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+>> @@ -338,12 +338,23 @@ static void hns_roce_dealloc_ucontext(struct ib_ucontext *ibcontext)
+>>  	hns_roce_uar_free(to_hr_dev(ibcontext->device), &context->uar);
+>>  }
+>>  
+>> -static int hns_roce_mmap(struct ib_ucontext *context,
+>> -			 struct vm_area_struct *vma)
+>> +/* command value is offset[15:8] */
+>> +static inline int hns_roce_mmap_get_command(unsigned long offset)
+>> +{
+>> +	return (offset >> 8) & 0xff;
+>> +}
+>> +
+>> +/* index value is offset[63:16] | offset[7:0] */
+>> +static inline unsigned long hns_roce_mmap_get_index(unsigned long offset)
+>> +{
+>> +	return ((offset >> 16) << 8) | (offset & 0xff);
+>> +}
+> 
+> Let's follow the common practice and don't introduce inline functions in .c files.
+> 
+> Thanks
+> 
 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-> index 01662727dca0..144d9e1c1c3d 100644
-> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
-> @@ -208,6 +208,11 @@ static struct socket *rxe_setup_udp_tunnel(struct net *net, __be16 port,
->         /* Create UDP socket */
->         err = udp_sock_create(net, &udp_cfg, &sock);
->         if (err < 0) {
-> +               if (ipv6 && (err == -EAFNOSUPPORT)) {
-> +                       pr_warn("IPv6 is not supported can not create UDP socket\n");
-> +                       return NULL;
-> +               }
-> +
+Sure, thanks.
 
-I would put this test in rxe_net_ipv6_init. returning errptr, null or
-a valid pointer is a bit too ugly
-
->                 pr_err("failed to create udp socket. err = %d\n",
->                 err);
-
-And delete some of this needless debugging
-
-Jason
+Weihang
