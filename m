@@ -2,40 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5066239AAEC
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 21:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F2839AB05
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 21:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbhFCTaU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Jun 2021 15:30:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33472 "EHLO mail.kernel.org"
+        id S229620AbhFCTng (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Jun 2021 15:43:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229617AbhFCTaU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 3 Jun 2021 15:30:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10FE26124B;
-        Thu,  3 Jun 2021 19:28:35 +0000 (UTC)
+        id S229576AbhFCTng (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 3 Jun 2021 15:43:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0265860FF1;
+        Thu,  3 Jun 2021 19:41:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622748515;
-        bh=L1bDZ0alG/5e7gBpSxuoaamS+QVgRnLecZ9WFAr+uTY=;
+        s=k20201202; t=1622749311;
+        bh=gfW2NBT1gmkyoXmJ7xTyURuZARAwmYV7uxm6d+hE5HY=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=euxD5jCS9J8wMyg0ayyPfIjoTa1VlOWovui5tcMFLxFSbEdsSz68IdFzFlkN3/cXJ
-         ZKL2ubCuBh+rjFPC2UPe5fyiMIObcYMoWTtu8lDSGj5YplbIHKw93UpTBw3ybi6VjC
-         BmDQdoBu+KxZr3R2r3wXa6Lx5tIg7tbLRdhJWmApEqR9QUX3P7XyK/ZV1JIVP1rt7/
-         YZKnaLYwYz3RpEDRDBxphzjPW+ceBe5aj2Wj79Pg0xm84rCEoUpeu6rRbMlZAZKw+t
-         5K6kll9JKhqCtkSS6xUCWLXAyAZA3zJL/d1fB8VBwtescCmBNvB2xBCLNE+G1yoUOq
-         CfiJyj8JJPzHQ==
-Message-ID: <d7d38bb6686df957df2f962451e24800535024e8.camel@kernel.org>
-Subject: Re: [PATCH] net/mlx5e: Fix an error code in
- mlx5e_arfs_create_tables()
+        b=hYoU7cf/Ov0qbg09AcNg8DhcO5RA6zYHrnGn0Xk5nQea7DYGI+vJQjwqufzGVjHxA
+         zMToXSCTOQmH9Lp53Tmsjnj5Tc89JJ5hwIVoknHsj5ddXQzNJOCuxNJcolXc4IpQ/o
+         SWKBRKQ+FMKY05dbaiDS8gQ0J9IgOVZlREE0A7bqMa9awjH2nx4wb5QlrQX+d4qu87
+         Fa4oCpt051CCLDrFqIs1xc1HRQisl83BHAYeUNm6SVTToPZDFpSYi5nLoVTKD4ilbr
+         8BiT0gZdIEYb7QJrJpXbvE3wp3VIEzRYZgJec7cg4o/28npDsJfIUa0mfBFWOKAh9+
+         8v9U5xKpGDlHg==
+Message-ID: <17516f064a19ca009aa5b512fef33eb2c267c8b0.camel@kernel.org>
+Subject: Re: [PATCH] net/mlx5e: Remove the repeated declaration
 From:   Saeed Mahameed <saeed@kernel.org>
-To:     Mark Zhang <markzhang@nvidia.com>,
-        Yang Li <yang.lee@linux.alibaba.com>
-Cc:     leon@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 03 Jun 2021 12:28:34 -0700
-In-Reply-To: <7b14006a-4528-bdd9-dd12-0785d8409a5d@nvidia.com>
-References: <1622628553-89257-1-git-send-email-yang.lee@linux.alibaba.com>
-         <7b14006a-4528-bdd9-dd12-0785d8409a5d@nvidia.com>
+To:     Shaokun Zhang <zhangshaokun@hisilicon.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     Leon Romanovsky <leon@kernel.org>
+Date:   Thu, 03 Jun 2021 12:41:50 -0700
+In-Reply-To: <1622451130-58224-1-git-send-email-zhangshaokun@hisilicon.com>
+References: <1622451130-58224-1-git-send-email-zhangshaokun@hisilicon.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
@@ -44,60 +40,32 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 2021-06-02 at 19:49 +0800, Mark Zhang wrote:
-> On 6/2/2021 6:09 PM, Yang Li wrote:
-> > When the code execute 'if (!priv->fs.arfs->wq)', the value of err
-> > is 0.
-> > So, we use -ENOMEM to indicate that the function
-> > create_singlethread_workqueue() return NULL.
-> > 
-> > Clean up smatch warning:
-> > drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c:373
-> > mlx5e_arfs_create_tables() warn: missing error code 'err'.
-> > 
-> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > Fixes: 'commit f6755b80d693 ("net/mlx5e: Dynamic alloc arfs table
-> > for netdev when needed")'
-
-This is not the right format.
-
-Please use the following command to generate the fixes tag:
-git log -1 --abbrev=12 --format='Fixes: %h ("%s")' f6755b80d693
-
-> > Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> > ---
-> >   drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c | 4 +++-
-> >   1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-> > b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-> > index 5cd466e..2949437 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c
-> > @@ -369,8 +369,10 @@ int mlx5e_arfs_create_tables(struct mlx5e_priv
-> > *priv)
-> >         spin_lock_init(&priv->fs.arfs->arfs_lock);
-> >         INIT_LIST_HEAD(&priv->fs.arfs->rules);
-> >         priv->fs.arfs->wq =
-> > create_singlethread_workqueue("mlx5e_arfs");
-> > -       if (!priv->fs.arfs->wq)
-> > +       if (!priv->fs.arfs->wq) {
-> > +               err = -ENOMEM;
-> >                 goto err;
-> > +       }
-> >   
-
-you can just initialize err to -ENOMEM; on declaration. 
-
-> >         for (i = 0; i < ARFS_NUM_TYPES; i++) {
-> >                 err = arfs_create_table(priv, i);
+On Mon, 2021-05-31 at 16:52 +0800, Shaokun Zhang wrote:
+> Function 'mlx5e_deactivate_rq' is declared twice, so remove the
+> repeated declaration.
 > 
-> Maybe also need to "destroy_workqueue(priv->fs.arfs->wq);" in
-> err_des.
-
-yes, it can be in the same patch.
-
-Thanks a lot.  
-
-
+> Cc: Saeed Mahameed <saeedm@nvidia.com>
+> Cc: Leon Romanovsky <leon@kernel.org>
+> Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> index b636d63358d2..d966d5f40e78 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+> @@ -974,7 +974,6 @@ int mlx5e_open_rq(struct mlx5e_params *params,
+> struct mlx5e_rq_param *param,
+>                   struct mlx5e_xsk_param *xsk, int node,
+>                   struct mlx5e_rq *rq);
+>  int mlx5e_wait_for_min_rx_wqes(struct mlx5e_rq *rq, int wait_time);
+> -void mlx5e_deactivate_rq(struct mlx5e_rq *rq);
+>  void mlx5e_close_rq(struct mlx5e_rq *rq);
+>  int mlx5e_create_rq(struct mlx5e_rq *rq, struct mlx5e_rq_param
+> *param);
+>  void mlx5e_destroy_rq(struct mlx5e_rq *rq);
+ 
+applied to net-next-mlx5
 
