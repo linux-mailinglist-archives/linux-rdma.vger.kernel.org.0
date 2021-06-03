@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DA439A7B2
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 19:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B9339A7F9
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 19:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhFCRMO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Jun 2021 13:12:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43620 "EHLO mail.kernel.org"
+        id S230450AbhFCRNZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Jun 2021 13:13:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232116AbhFCRLZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:11:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F259B61405;
-        Thu,  3 Jun 2021 17:09:39 +0000 (UTC)
+        id S232844AbhFCRM0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:12:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49FE961408;
+        Thu,  3 Jun 2021 17:10:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622740180;
-        bh=Ja5bAS1hsg1L75SIVrXZFVHDp1orBzMzdFT05Ril3VU=;
+        s=k20201202; t=1622740216;
+        bh=q9k3YzAEHpT8Rzbg1lco2MjqlB28jDWaaMu2ZXjtxLQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WSpt67deaW0MPsY4r63arX0OtrxrfijSZGRAKRPNz+hZ2HBttkTT/2OzjxlK54uAO
-         /HdR8LER7QeCu0gJdjzq5xsAZkXJF8icwlRZXNTHVv7wsD1cTQJe0Arc46fN1fVxtQ
-         mDxdp9664CdwQk6H4YOtVKLEfpgnUX24HUQFWhHRbdmS+bMQzGo8UfrI6HOn7BSu9K
-         iYnWgP5HvQ9NnSqmw/N4lgIgC14lBqBa0o+1f+fiRs4SE7E/Cf4GkQjpRWCFAFmSa6
-         Cf4yulAtGIuQYy+x6Iz5bsdTLx3awTgG3WJnSejJRlo/Ftgr+sBk5i35XZ9B+rSxEF
-         fcqedh+MWqQcw==
+        b=rqYt0WdRhvZanvTRMwV4T9e/I/nU4zVidvCjQ5S1x0fklS/2exh6ijxX9cKCh+sU8
+         j6RlpVl7+mQr4QH5m4EJ7vzmSLYWxOGWHct1Sco21wUJc5P1RnS8wAaZcfNZLoQrGH
+         J7g42jUrnEKGr1jDOpAYz1cgqQdueqYQVryE30C9Ugs41t14bIGfDa/ASsoQWyzMvw
+         oX1uNPzsnREKcvm3mD8y5eQt9AeZC/9o+GfTBJVIXWIdTNX+2+zRRIGSeUsNJqyhKe
+         glsqQt8DgYAcMraz0uiGRetT8ARgpLwsC0EW29EjnodyRZCgXzSwHax9tGpIj55j+v
+         zF76xJu+aE5Ew==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Rao Shoaib <rao.shoaib@oracle.com>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: [PATCH AUTOSEL 5.4 17/31] RDS tcp loopback connection can hang
-Date:   Thu,  3 Jun 2021 13:09:05 -0400
-Message-Id: <20210603170919.3169112-17-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 13/23] RDS tcp loopback connection can hang
+Date:   Thu,  3 Jun 2021 13:09:49 -0400
+Message-Id: <20210603170959.3169420-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210603170919.3169112-1-sashal@kernel.org>
-References: <20210603170919.3169112-1-sashal@kernel.org>
+In-Reply-To: <20210603170959.3169420-1-sashal@kernel.org>
+References: <20210603170959.3169420-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -77,10 +77,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  4 files changed, 27 insertions(+), 9 deletions(-)
 
 diff --git a/net/rds/connection.c b/net/rds/connection.c
-index ed7f2133acc2..c85bd6340eaa 100644
+index 3bd2f4a5a30d..ac3300b204a6 100644
 --- a/net/rds/connection.c
 +++ b/net/rds/connection.c
-@@ -240,12 +240,23 @@ static struct rds_connection *__rds_conn_create(struct net *net,
+@@ -237,12 +237,23 @@ static struct rds_connection *__rds_conn_create(struct net *net,
  	if (loop_trans) {
  		rds_trans_put(loop_trans);
  		conn->c_loopback = 1;
@@ -111,10 +111,10 @@ index ed7f2133acc2..c85bd6340eaa 100644
  	}
  
 diff --git a/net/rds/tcp.c b/net/rds/tcp.c
-index 66121bc6f34e..1402e9166a7e 100644
+index 18bb522df282..d0bce439198f 100644
 --- a/net/rds/tcp.c
 +++ b/net/rds/tcp.c
-@@ -323,8 +323,8 @@ static void rds6_tcp_tc_info(struct socket *sock, unsigned int len,
+@@ -322,8 +322,8 @@ static void rds6_tcp_tc_info(struct socket *sock, unsigned int len,
  }
  #endif
  
@@ -140,7 +140,7 @@ index 3c69361d21c7..4620549ecbeb 100644
  int rds_tcp_conn_path_connect(struct rds_conn_path *cp);
  void rds_tcp_conn_path_shutdown(struct rds_conn_path *conn);
 diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
-index 810a3a49e947..26a3e18e460d 100644
+index c12203f646da..0d095d3f5fee 100644
 --- a/net/rds/tcp_listen.c
 +++ b/net/rds/tcp_listen.c
 @@ -198,6 +198,12 @@ int rds_tcp_accept_one(struct socket *sock)
@@ -155,7 +155,7 @@ index 810a3a49e947..26a3e18e460d 100644
 +
  	conn = rds_conn_create(sock_net(sock->sk),
  			       my_addr, peer_addr,
- 			       &rds_tcp_transport, 0, GFP_KERNEL, dev_if);
+ 			       &rds_tcp_transport, GFP_KERNEL, dev_if);
 -- 
 2.30.2
 
