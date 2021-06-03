@@ -2,69 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BBD5399E21
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 11:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7527399EBA
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 12:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbhFCJxE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Jun 2021 05:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbhFCJxD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Jun 2021 05:53:03 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77EBBC06174A
-        for <linux-rdma@vger.kernel.org>; Thu,  3 Jun 2021 02:51:19 -0700 (PDT)
+        id S229967AbhFCKSa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Jun 2021 06:18:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53772 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229685AbhFCKSa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 3 Jun 2021 06:18:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 696EA6139A;
+        Thu,  3 Jun 2021 10:16:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622715406;
+        bh=7HZciQxLsBuDoWMd4Kb6D5lue9+WuT5FUDqHbpuuJFQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qBn9EBCTr/3wcixKOMWXn/re9l7QnkKOGGYXUU7FMUKCbzdv6J01w7AQa7hlB8tDG
+         1+GPwyig2oF++DkVY1lBIYDte4/IP9mhnSf3o0RUYpmd/jscIrozXAOkY+VtvgxvW8
+         708BT7bDa6iZZqOYm0UqNQ1tCQHjLivlzV81NT4FxZKcOWrE7vj+xExLp3hxGChQNs
+         SWG2V6nXkz3Mn+qLTI+eqUqtNg+dcY0GLdCPRSkZtuht/OrzCWGf3bV4COqT7N95n+
+         wLoe7vzrAKNM1ykOKcuREzzqFDIbpnkcrzqgDvsBkYvkDyHwqRkDjokBleLInCkY9i
+         ZwQdoM98OQ3kQ==
+Date:   Thu, 3 Jun 2021 13:16:42 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     Anand Khoje <anand.a.khoje@oracle.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>
+Subject: Re: [PATCH v2 3/3] IB/core: Obtain subnet_prefix from cache in IB
+ devices
+Message-ID: <YLisCgBLu9pD1qSw@unreal>
+References: <20210603065024.1051-1-anand.a.khoje@oracle.com>
+ <20210603065024.1051-4-anand.a.khoje@oracle.com>
+ <YLib5BhTX6tEMTfe@unreal>
+ <D188B984-4B47-4992-80E6-6927ADC3DA26@oracle.com>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1622713877;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LEKekvRZ0gEcIM4ZPqgTuhKau84picTbD6ksI9abu64=;
-        b=j6Ens4XE9kHq/v1Oh1lPrB5+8jvSdd6s6fz5b+RxotQ822Rbxx/HNTnDMVcgtqn7Cng4mM
-        jopa/pX+HsLBXwr4WT1Hiy0Rtprcf8kNcXBgFkziy+zK0ttirsH9Oa+v7CqAJM16g3x58A
-        36o1yw/fwRXBZcxVehHk6mv+ZQ5pF1c=
-Date:   Thu, 03 Jun 2021 09:51:16 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   yanjun.zhu@linux.dev
-Message-ID: <50b8e6889371090f47322437a54153ab@linux.dev>
-Subject: Re: [PATCH for-rc v1] RDMA/rxe: Fix failure during driver load
-To:     "Kamal Heib" <kamalheib1@gmail.com>, linux-rdma@vger.kernel.org
-Cc:     "Doug Ledford" <dledford@redhat.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>
-In-Reply-To: <20210603090112.36341-1-kamalheib1@gmail.com>
-References: <20210603090112.36341-1-kamalheib1@gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yanjun.zhu@linux.dev
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <D188B984-4B47-4992-80E6-6927ADC3DA26@oracle.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-June 3, 2021 5:01 PM, "Kamal Heib" <kamalheib1@gmail.com> wrote:=0A=0A> T=
-o avoid the following failure when trying to load the rdma_rxe module=0A>=
- while IPv6 is disabled, add a check for EAFNOSUPPORT to ignore the=0A> f=
-ailure, also delete the needless debug print from rxe_setup_udp_tunnel().=
-=0A> =0A> $ modprobe rdma_rxe=0A> modprobe: ERROR: could not insert 'rdma=
-_rxe': Operation not permitted=0A> =0A> Fixes: dfdd6158ca2c ("IB/rxe: Fix=
- kernel panic in udp_setup_tunnel")=0A> Signed-off-by: Kamal Heib <kamalh=
-eib1@gmail.com>=0A> ---=0A> drivers/infiniband/sw/rxe/rxe_net.c | 10 ++++=
-+++---=0A> 1 file changed, 7 insertions(+), 3 deletions(-)=0A> =0A> diff =
---git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/r=
-xe_net.c=0A> index 01662727dca0..6cb4446a0bdb 100644=0A> --- a/drivers/in=
-finiband/sw/rxe/rxe_net.c=0A> +++ b/drivers/infiniband/sw/rxe/rxe_net.c=
-=0A> @@ -207,10 +207,8 @@ static struct socket *rxe_setup_udp_tunnel(stru=
-ct net *net, __be16 port,=0A> =0A> /* Create UDP socket */=0A> err =3D ud=
-p_sock_create(net, &udp_cfg, &sock);=0A> - if (err < 0) {=0A> - pr_err("f=
-ailed to create udp socket. err =3D %d\n", err);=0A> + if (err < 0)=0A> r=
-eturn ERR_PTR(err);=0A> - }=0A> =0A> tnl_cfg.encap_type =3D 1;=0A> tnl_cf=
-g.encap_rcv =3D rxe_udp_encap_recv;=0A> @@ -619,6 +617,12 @@ static int r=
-xe_net_ipv6_init(void)=0A> =0A> recv_sockets.sk6 =3D rxe_setup_udp_tunnel=
-(&init_net,=0A> htons(ROCE_V2_UDP_DPORT), true);=0A> + if (PTR_ERR(recv_s=
-ockets.sk6) =3D=3D -EAFNOSUPPORT) {=0A> + recv_sockets.sk6 =3D NULL;=0A> =
-+ pr_warn("IPv6 is not supported can not create UDP socket\n");=0A=0AThis=
- warning doesn't read smoothly.=0A=0AZhu Yanjun=0A=0A> + return 0;=0A> + =
-}=0A> +=0A> if (IS_ERR(recv_sockets.sk6)) {=0A> recv_sockets.sk6 =3D NULL=
-;=0A> pr_err("Failed to create IPv6 UDP tunnel\n");=0A> -- =0A> 2.26.3
+On Thu, Jun 03, 2021 at 09:29:32AM +0000, Haakon Bugge wrote:
+> 
+> 
+> > On 3 Jun 2021, at 11:07, Leon Romanovsky <leon@kernel.org> wrote:
+> > 
+> > On Thu, Jun 03, 2021 at 12:20:24PM +0530, Anand Khoje wrote:
+> >> ib_query_port() calls device->ops.query_port() to get the port
+> >> attributes. The method of querying is device driver specific.
+> >> The same function calls device->ops.query_gid() to get the GID and
+> >> extract the subnet_prefix (gid_prefix).
+> >> 
+> >> The GID and subnet_prefix are stored in a cache. But they do not get
+> >> read from the cache if the device is an Infiniband device. The
+> >> following change takes advantage of the cached subnet_prefix.
+> >> Testing with RDBMS has shown a significant improvement in performance
+> >> with this change.
+> >> 
+> >> The function ib_cache_is_initialised() is introduced because
+> >> ib_query_port() gets called early in the stage when the cache is not
+> >> built while reading port immutable property.
+> >> 
+> >> In that case, the default GID still gets read from HCA for IB link-
+> >> layer devices.
+> >> 
+> >> Fixes: fad61ad ("IB/core: Add subnet prefix to port info")
+> >> Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
+> >> Signed-off-by: Haakon Bugge <haakon.bugge@oracle.com>
+> >> ---
+> >> drivers/infiniband/core/cache.c  | 7 ++++++-
+> >> drivers/infiniband/core/device.c | 9 +++++++++
+> >> include/rdma/ib_cache.h          | 6 ++++++
+> >> include/rdma/ib_verbs.h          | 6 ++++++
+> >> 4 files changed, 27 insertions(+), 1 deletion(-)
+> > 
+> > Can you please help me to understand how cache is updated?
+> > 
+> > There are a lot of calls to ib_query_port() and I wonder how callers can
+> > get new GID after it was changed in already initialized cache.
+> 
+> The cache is initialized when it is created, just before the bit IB_PORT_CACHE_INITIALIZED is set in flags.
+> 
+> After commit d58c23c92548 ("IB/core: Only update PKEY and GID caches on respective events"), the GID portion of the cache is updated when a IB_EVENT_GID_CHANGE event is received.
+> 
+> Before said commit, it was updated on any event.
+
+This part is clear to me, the missing piece is to understand what will
+happen if cache and GID are not in sync because of asynchronous nature of
+events.
+
+Thanks
+
+> 
+> 
+> Thxs, Håkon
+> 
