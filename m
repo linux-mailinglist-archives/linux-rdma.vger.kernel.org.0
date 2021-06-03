@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41EEA39A6F2
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 19:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 863F639A74A
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 19:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231415AbhFCRJy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Jun 2021 13:09:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40994 "EHLO mail.kernel.org"
+        id S232082AbhFCRKz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Jun 2021 13:10:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231328AbhFCRJu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:09:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F29A1613F9;
-        Thu,  3 Jun 2021 17:08:04 +0000 (UTC)
+        id S232114AbhFCRKn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:10:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7859A613FF;
+        Thu,  3 Jun 2021 17:08:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622740085;
+        s=k20201202; t=1622740138;
         bh=6QKkR5t4coIHM9tRx8EuV6Udze82Okir+WpbB5BRJ1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HpqpMXgL/0dzbvLtm/s05y4wobMnyplPDPbULjxNhHGl+msi55tMWPOU2PTwij/Q4
-         dxy6hEHqhTziEiRd2cPaUxzgo6RLI+BvhkIfxXSCJZDfA51t2Vv1ArTEZUtjxg4tAy
-         t+XxWWKkNBjQTvA2rA18l1XqzSY7FCb3T6vLk8VkKUeDrVgRE9pCygzREnDiDzhCpx
-         6OVjuk4H6VwEs3Y87uXluBtadVpm8eBzfH7pZMIynPlLf0in9tNsSixZymYSYUWbN9
-         /d5VTvDmjw2QYms302RMIoOWYYLiS0i0dDg6utuI80hdbGCWRg4fXXS2xzgJmQuDig
-         Oh7Mb8kiNn+Mg==
+        b=iC/+PKacqLIkXRtFmCZtmfkzhbKyfwYPz8ncWr/N5l0i2tuoNHrfpIfxt64IAHwi4
+         0tq4Z6INfoTav4yVxqeIKOzA9qUtIlsZYDo1wj35akuqJA1VNzmkoun7FjyuLdWKXz
+         +WV0JizzYvMqj9Lsdun3cT/VDphGqlwUyVPMACOevuW+FIqJXlcR+c9ZpyIw6GEZON
+         uRjF8+kVg8SDR1gN4MvZxCgdcgRUZRWIlNNCj6hezxptbIyps16LvZjoqFobvOSu+9
+         SYel8oNqvRwfpaVLuZl/tWBY+kZwoVMyqsNKz7bXZEwVkQ1uHkP9Qqt7CHXBXnaJyT
+         jeV1DZxG5vL2A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Rao Shoaib <rao.shoaib@oracle.com>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: [PATCH AUTOSEL 5.12 25/43] RDS tcp loopback connection can hang
-Date:   Thu,  3 Jun 2021 13:07:15 -0400
-Message-Id: <20210603170734.3168284-25-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 23/39] RDS tcp loopback connection can hang
+Date:   Thu,  3 Jun 2021 13:08:13 -0400
+Message-Id: <20210603170829.3168708-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210603170734.3168284-1-sashal@kernel.org>
-References: <20210603170734.3168284-1-sashal@kernel.org>
+In-Reply-To: <20210603170829.3168708-1-sashal@kernel.org>
+References: <20210603170829.3168708-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
