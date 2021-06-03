@@ -2,107 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEE939A48A
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 17:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DE239A4F6
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 17:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhFCP3v convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 3 Jun 2021 11:29:51 -0400
-Received: from mga06.intel.com ([134.134.136.31]:4862 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229823AbhFCP3v (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 3 Jun 2021 11:29:51 -0400
-IronPort-SDR: g9J5YT1KzZXtPEXFwjdU7ncGX7MshcRybRH253t7gEtclWPNLbVXY6Jh4cc3z2rEOtEzBt01Hz
- fBaSfExFPmcQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="265239006"
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="265239006"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jun 2021 08:28:06 -0700
-IronPort-SDR: s7ugCr/3xn7nn4tlKgh/Ps80/V2DE04BkfH3dGLtTIMAJEc+ALmsfUUZwRSaQMUeMkLFDVc0Ju
- aqjjCiyVKaTg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,246,1616482800"; 
-   d="scan'208";a="636275289"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by fmsmga005.fm.intel.com with ESMTP; 03 Jun 2021 08:28:05 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Thu, 3 Jun 2021 08:28:05 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Thu, 3 Jun 2021 08:28:05 -0700
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2242.008;
- Thu, 3 Jun 2021 08:28:05 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "gustavoars@kernel.org" <gustavoars@kernel.org>,
-        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>
-Subject: RE: [PATCH v7 00/16] Add Intel Ethernet Protocol Driver for RDMA
- (irdma)
-Thread-Topic: [PATCH v7 00/16] Add Intel Ethernet Protocol Driver for RDMA
- (irdma)
-Thread-Index: AQHXV/FDG6bKRhKrD0umWvGqP6xLmasBz7SA//+QAWA=
-Date:   Thu, 3 Jun 2021 15:28:04 +0000
-Message-ID: <362328112f414b6ca0cd06b5ca4baea2@intel.com>
-References: <20210602205138.889-1-shiraz.saleem@intel.com>
- <20210602231505.GA188443@nvidia.com>
-In-Reply-To: <20210602231505.GA188443@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S229809AbhFCPsa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Jun 2021 11:48:30 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:47084 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbhFCPsa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Jun 2021 11:48:30 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 153Fj79S170845;
+        Thu, 3 Jun 2021 15:46:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=JqeuEbZiTIXjC3KOdhlbcdTYqDxBV/Ur9X+bVkW1dA0=;
+ b=a6geYAtXFfh1waSU7eu0TlnYw1ZWG7KK7KR236BxQtK6P7R/BYZg+B9GbK8PiRh6CvQh
+ N1sz8RfGOeyZc4Vnfyi9cv6AZDnt3kByk/V81oA1SSt4XdnO3/0x3ZoLe3X5LFrVG/lc
+ fuhLWRz4v0typYv4Pf2g9K2OxneZ4lvHMStq3/36kUlaiZOBjHlF1cGp9tvHIlxg+4ME
+ PQaxlnwW6mqnFVXZJ3foO951o2Ahpvfl9GUWG/b925kGVMMe888LKJDRDXHEAZVNDGYK
+ TbGoed6V/6OHDjjLyN7N88VYx1GAWf/bY3GK7tdUBbYNMojdeUbnmPLG+tnvZqWW1Pl6 xQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 38ub4cutfs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 03 Jun 2021 15:46:39 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 153Fkb8W064827;
+        Thu, 3 Jun 2021 15:46:39 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 38ubneyfv7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 03 Jun 2021 15:46:39 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 153Fkcki064974;
+        Thu, 3 Jun 2021 15:46:38 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 38ubneyfuf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 03 Jun 2021 15:46:38 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 153FkXVW006379;
+        Thu, 3 Jun 2021 15:46:33 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 03 Jun 2021 15:46:33 +0000
+Date:   Thu, 3 Jun 2021 18:46:25 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>, Paul Blakey <paulb@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH net-next] net/mlx5: check for allocation failure in
+ mlx5_ft_pool_init()
+Message-ID: <20210603154625.GI1955@kadam>
+References: <YLjNfHuTQ817oUtX@mwanda>
+ <YLjVRjAyP3UpzgVr@unreal>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLjVRjAyP3UpzgVr@unreal>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: zKS5juQhn23kX7cRcPi15XDD2LSxMgNc
+X-Proofpoint-ORIG-GUID: zKS5juQhn23kX7cRcPi15XDD2LSxMgNc
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10004 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
+ clxscore=1015 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106030106
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [PATCH v7 00/16] Add Intel Ethernet Protocol Driver for RDMA
-> (irdma)
+On Thu, Jun 03, 2021 at 04:12:38PM +0300, Leon Romanovsky wrote:
+> On Thu, Jun 03, 2021 at 03:39:24PM +0300, Dan Carpenter wrote:
+> > Add a check for if the kzalloc() fails.
+> > 
+> > Fixes: 4a98544d1827 ("net/mlx5: Move chains ft pool to be used by all firmware steering")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > ---
+> >  drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c
+> > index 526fbb669142..c14590acc772 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c
+> > @@ -27,6 +27,8 @@ int mlx5_ft_pool_init(struct mlx5_core_dev *dev)
+> >  	int i;
+> >  
+> >  	ft_pool = kzalloc(sizeof(*ft_pool), GFP_KERNEL);
+> > +	if (!ft_pool)
+> > +		return -ENOMEM;
+> >  
+> >  	for (i = ARRAY_SIZE(FT_POOLS) - 1; i >= 0; i--)
+> >  		ft_pool->ft_left[i] = FT_SIZE / FT_POOLS[i];
 > 
-> On Wed, Jun 02, 2021 at 03:51:22PM -0500, Shiraz Saleem wrote:
-> > The following patch series introduces a unified Intel Ethernet
-> > Protocol Driver for RDMA (irdma) for the X722 iWARP device and a new
-> > E810 device which supports iWARP and RoCEv2. The irdma module replaces
-> > the legacy i40iw module for X722 and extends the ABI already defined
-> > for i40iw. It is backward compatible with legacy X722 rdma-core provider
-> (libi40iw).
-> >
-> > X722 and E810 are PCI network devices that are RDMA capable. The RDMA
-> > block of this parent device is represented via an auxiliary device exported to
-> 'irdma'
-> > using the core auxiliary bus infrastructure recently added for 5.11 kernel.
-> > The parent PCI netdev drivers 'i40e' and 'ice' register auxiliary RDMA
-> > devices with private data/ops encapsulated that bind to auxiliary
-> > drivers registered in irdma module.
-> >
-> > Currently, default is RoCEv2 for E810. Runtime support for protocol
-> > switch to iWARP will be made available via devlink in a future patch.
-> >
-> > This rdma series is built against the shared branch iwl-next [1] which
-> > is expected to be merged into rdma-next first for the netdev parts.
 > 
-> Okay, applied to for-next, please keep on top of any 0-day stuff that comes out. I
-> need it all fixed in 2 weeks
+> Dan thanks for your patch.
 > 
+> When reviewed your patch, I spotted another error in the patch from the Fixes line.
+> 
+>   2955         err = mlx5_ft_pool_init(dev);
+>   2956         if (err)
+>   2957                 return err;
+>   2958
+>   2959         steering = kzalloc(sizeof(*steering), GFP_KERNEL);
+>   2960         if (!steering)
+>   2961                 goto err;
+>                        ^^^^^^^^ it will return success, while should return ENOMEM.
 
-Sure.
+Smatch prints a static checker warning for this, but I never finished
+going through the backlog of old "missing error code" warnings.  At one
+point I was down to 38 warnings left but now I see that the backlog is
+62 warnings so people are adding new bugs faster than I'm reviewing
+them...  :P
 
-Tatyana is out till June 7th, so I sent a new PR for the user-space bit with the updated kernel headers commit.
+I will take care of this tomorrow as a separate patch.  I will just
+report or the other 61 warnings and get the backlog cleared out so that
+I can start checking these better in the future.
 
-Shiraz
+regards,
+dan carpenter
+
