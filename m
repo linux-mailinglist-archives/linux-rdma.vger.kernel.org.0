@@ -2,174 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEAA639A186
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 14:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A4939A1C5
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 15:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhFCMxv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Jun 2021 08:53:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48678 "EHLO mail.kernel.org"
+        id S229916AbhFCNGD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Jun 2021 09:06:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230453AbhFCMxu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 3 Jun 2021 08:53:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5918F613B1;
-        Thu,  3 Jun 2021 12:52:05 +0000 (UTC)
+        id S229801AbhFCNGD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 3 Jun 2021 09:06:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C9F6601FA;
+        Thu,  3 Jun 2021 13:04:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622724726;
-        bh=XepZ1U0Qa2Thhn1gad0wQi1sUrgO4FiRSeae6z6azOA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E/YWP2WvD+BD0xc98CnqyUST4dv4bu9lqwG1o1l/Thyl6UpBmybrXTdO6M4TpLT7M
-         Gs6AC3St/wEvQtjqcVcIx9w1QrRZhhGxO7L8W90RuBjqdmfKQKiNn/vNAPL80GD+Rz
-         yObhns2biYXicAcpUiTiHTYy7rASCoKrjvKnVuGfiaqe2EdNXyycbVlhPTDjmHxCRH
-         EhYmPMWYwh8wLGyRnfEWvIP/gPS5lFm7zD2KxXK+i9sXwBRU6E056ktFx3zDVEAAA7
-         lRQBjv/YaKfH3SEdFcXdrVnKnJbLtTVZznKqLtuevEoAkY3+kw/Szf1suTKrPvAfyf
-         +rglohzX0bQ7Q==
+        s=k20201202; t=1622725459;
+        bh=9OmY3x3ItIVZ7LqEBGM9yDAJrhOSsswmfLM51oWkQpg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gCSAJUWiXP9hajE/frFB848NzL67xwg4zPLjwtAKcVti+J4sUfPHBQ17y+hdzuOvO
+         W9zVnHQu+3HC+gPnYQXyOGCasclb26CaoZFKGvaGxFot6eahVmtdZr4mnAmyxWk6rJ
+         kKqR6okfyu7cTk7DjsudoHy/x/WZcqs+j3viqmpojUUc3j6AesoJjw/R2GoUj1dxVH
+         3/VOwXbl85yoNPRHuxifShaIJ6yG3LDf2828SAu632U8yNwKbdDN3UrzMYH7H4rAhD
+         PxszkqZkGolbuI4D/wItY8SQOxZaSxyEaTfv6amO0d/z8IGclBSeYv/PzU9V1T0V9B
+         GQ0RmbaaB2tcQ==
+Date:   Thu, 3 Jun 2021 16:04:15 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Lior Nahmanson <liorna@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Meir Lichtinger <meirl@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH rdma-next 3/3] RDMA/mlx5: Add DCS offload support
-Date:   Thu,  3 Jun 2021 15:51:50 +0300
-Message-Id: <2ff3ac235fa6e62adafcbbf786221b92bdeae2e0.1622723815.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1622723815.git.leonro@nvidia.com>
-References: <cover.1622723815.git.leonro@nvidia.com>
+To:     Devesh Sharma <devesh.sharma@broadcom.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH V6 for-next 1/3] RDMA/bnxt_re: Enable global atomic ops
+ if platform supports
+Message-ID: <YLjTTzw2L1hLj/vf@unreal>
+References: <20210603103057.980996-1-devesh.sharma@broadcom.com>
+ <20210603103057.980996-2-devesh.sharma@broadcom.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210603103057.980996-2-devesh.sharma@broadcom.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lior Nahmanson <liorna@nvidia.com>
+On Thu, Jun 03, 2021 at 04:00:55PM +0530, Devesh Sharma wrote:
+> Enabling Atomic operations for Gen P5 devices if the underlying
+> platform supports global atomic ops.
+> 
+> Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+> ---
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c  |  4 ++++
+>  drivers/infiniband/hw/bnxt_re/main.c      |  3 +++
+>  drivers/infiniband/hw/bnxt_re/qplib_res.c | 17 +++++++++++++++++
+>  drivers/infiniband/hw/bnxt_re/qplib_res.h |  1 +
+>  drivers/infiniband/hw/bnxt_re/qplib_sp.c  | 13 ++++++++++++-
+>  drivers/infiniband/hw/bnxt_re/qplib_sp.h  |  2 --
+>  6 files changed, 37 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> index 537471ffaa79..a113d8d9e9ed 100644
+> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> @@ -163,6 +163,10 @@ int bnxt_re_query_device(struct ib_device *ibdev,
+>  	ib_attr->max_qp_init_rd_atom = dev_attr->max_qp_init_rd_atom;
+>  	ib_attr->atomic_cap = IB_ATOMIC_NONE;
+>  	ib_attr->masked_atomic_cap = IB_ATOMIC_NONE;
+> +	if (dev_attr->is_atomic) {
+> +		ib_attr->atomic_cap = IB_ATOMIC_GLOB;
+> +		ib_attr->masked_atomic_cap = IB_ATOMIC_GLOB;
+> +	}
+>  
+>  	ib_attr->max_ee_rd_atom = 0;
+>  	ib_attr->max_res_rd_atom = 0;
+> diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+> index b090dfa4f4cb..0de4e22f9750 100644
+> --- a/drivers/infiniband/hw/bnxt_re/main.c
+> +++ b/drivers/infiniband/hw/bnxt_re/main.c
+> @@ -128,6 +128,9 @@ static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev, u8 wqe_mode)
+>  	rdev->rcfw.res = &rdev->qplib_res;
+>  
+>  	bnxt_re_set_drv_mode(rdev, wqe_mode);
+> +	if (bnxt_qplib_determine_atomics(en_dev->pdev))
+> +		ibdev_info(&rdev->ibdev,
+> +			   "platform doesn't support global atomics.");
+>  	return 0;
+>  }
+>  
+> diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+> index 3ca47004b752..108a591e66ff 100644
+> --- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
+> +++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+> @@ -959,3 +959,20 @@ int bnxt_qplib_alloc_res(struct bnxt_qplib_res *res, struct pci_dev *pdev,
+>  	bnxt_qplib_free_res(res);
+>  	return rc;
+>  }
+> +
+> +int bnxt_qplib_determine_atomics(struct pci_dev *dev)
+> +{
+> +	int comp;
+> +	u16 ctl2;
+> +
+> +	comp = pci_enable_atomic_ops_to_root(dev,
+> +					     PCI_EXP_DEVCAP2_ATOMIC_COMP32);
+> +	if (comp)
+> +		return -ENOTSUPP;
 
-DCS is an offload to SW load balancing of DC initiator work requests.
+I would say that it needs to be EOPNOTSUPP, not critical.
 
-A single DCI can be connected to only one target at the time and can't
-start new connection until the previous work request is completed.
-This limitation will cause to delay when the initiator process needs to
-transfer data to multiple targets at the same time.
-The SW solution is to use a process that handling and spreading the work
-request on many DCIs according to destinations.
+> +	comp = pci_enable_atomic_ops_to_root(dev,
+> +					     PCI_EXP_DEVCAP2_ATOMIC_COMP64);
+> +	if (comp)
+> +		return -ENOTSUPP;
 
-This feature is an offload to this process and coming to reduce the load
-from the CPU and improve the performance.
-
-Reviewed-by: Meir Lichtinger <meirl@nvidia.com>
-Signed-off-by: Lior Nahmanson <liorna@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/main.c | 10 ++++++++++
- drivers/infiniband/hw/mlx5/qp.c   | 11 +++++++++++
- include/uapi/rdma/mlx5-abi.h      | 17 +++++++++++++++--
- 3 files changed, 36 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 312aa731860d..9357ed28813c 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -1174,6 +1174,16 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
- 				MLX5_IB_TUNNELED_OFFLOADS_MPLS_UDP;
- 	}
- 
-+	if (offsetofend(typeof(resp), dci_streams_caps) <= uhw_outlen) {
-+		resp.response_length += sizeof(resp.dci_streams_caps);
-+
-+		resp.dci_streams_caps.max_log_num_concurent =
-+			MLX5_CAP_GEN(mdev, log_max_dci_stream_channels);
-+
-+		resp.dci_streams_caps.max_log_num_errored =
-+			MLX5_CAP_GEN(mdev, log_max_dci_errored_streams);
-+	}
-+
- 	if (uhw_outlen) {
- 		err = ib_copy_to_udata(uhw, &resp, resp.response_length);
- 
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 65a380543f5a..7b545eac37a3 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -2056,6 +2056,13 @@ static int create_dci(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 		MLX5_SET(qpc, qpc, log_rq_size, ilog2(qp->rq.wqe_cnt));
- 	}
- 
-+	if (qp->flags_en & MLX5_QP_FLAG_DCI_STREAM) {
-+		MLX5_SET(qpc, qpc, log_num_dci_stream_channels,
-+			 ucmd->dci_streams.log_num_concurent);
-+		MLX5_SET(qpc, qpc, log_num_dci_errored_streams,
-+			 ucmd->dci_streams.log_num_errored);
-+	}
-+
- 	MLX5_SET(qpc, qpc, ts_format, ts_format);
- 	MLX5_SET(qpc, qpc, rq_type, get_rx_type(qp, init_attr));
- 
-@@ -2799,6 +2806,10 @@ static int process_vendor_flags(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
- 
- 	process_vendor_flag(dev, &flags, MLX5_QP_FLAG_TYPE_DCI, true, qp);
- 	process_vendor_flag(dev, &flags, MLX5_QP_FLAG_TYPE_DCT, true, qp);
-+	process_vendor_flag(dev, &flags, MLX5_QP_FLAG_DCI_STREAM,
-+			    MLX5_CAP_GEN(mdev, log_max_dci_stream_channels) &&
-+			    MLX5_CAP_GEN(mdev, log_max_dci_errored_streams),
-+			    qp);
- 
- 	process_vendor_flag(dev, &flags, MLX5_QP_FLAG_SIGNATURE, true, qp);
- 	process_vendor_flag(dev, &flags, MLX5_QP_FLAG_SCATTER_CQE,
-diff --git a/include/uapi/rdma/mlx5-abi.h b/include/uapi/rdma/mlx5-abi.h
-index 995faf8f44bd..6f54ab3d99e5 100644
---- a/include/uapi/rdma/mlx5-abi.h
-+++ b/include/uapi/rdma/mlx5-abi.h
-@@ -50,6 +50,7 @@ enum {
- 	MLX5_QP_FLAG_ALLOW_SCATTER_CQE	= 1 << 8,
- 	MLX5_QP_FLAG_PACKET_BASED_CREDIT_MODE	= 1 << 9,
- 	MLX5_QP_FLAG_UAR_PAGE_INDEX = 1 << 10,
-+	MLX5_QP_FLAG_DCI_STREAM	= 1 << 11,
- };
- 
- enum {
-@@ -237,6 +238,11 @@ struct mlx5_ib_striding_rq_caps {
- 	__u32 reserved;
- };
- 
-+struct mlx5_ib_dci_streams_caps {
-+	__u8 max_log_num_concurent;
-+	__u8 max_log_num_errored;
-+};
-+
- enum mlx5_ib_query_dev_resp_flags {
- 	/* Support 128B CQE compression */
- 	MLX5_IB_QUERY_DEV_RESP_FLAGS_CQE_128B_COMP = 1 << 0,
-@@ -265,7 +271,8 @@ struct mlx5_ib_query_device_resp {
- 	struct mlx5_ib_sw_parsing_caps sw_parsing_caps;
- 	struct mlx5_ib_striding_rq_caps striding_rq_caps;
- 	__u32	tunnel_offloads_caps; /* enum mlx5_ib_tunnel_offloads */
--	__u32	reserved;
-+	struct  mlx5_ib_dci_streams_caps dci_streams_caps;
-+	__u16 reserved;
- };
- 
- enum mlx5_ib_create_cq_flags {
-@@ -311,6 +318,11 @@ struct mlx5_ib_create_srq_resp {
- 	__u32	reserved;
- };
- 
-+struct mlx5_ib_create_qp_dci_streams {
-+	__u8 log_num_concurent;
-+	__u8 log_num_errored;
-+};
-+
- struct mlx5_ib_create_qp {
- 	__aligned_u64 buf_addr;
- 	__aligned_u64 db_addr;
-@@ -325,7 +337,8 @@ struct mlx5_ib_create_qp {
- 		__aligned_u64 access_key;
- 	};
- 	__u32  ece_options;
--	__u32  reserved;
-+	struct  mlx5_ib_create_qp_dci_streams dci_streams;
-+	__u16 reserved;
- };
- 
- /* RX Hash function flags */
--- 
-2.31.1
-
+Thanks
