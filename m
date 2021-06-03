@@ -2,83 +2,186 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436E339A1ED
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 15:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F6139A1FB
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jun 2021 15:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhFCNO1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Jun 2021 09:14:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230507AbhFCNO1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 3 Jun 2021 09:14:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA5A8613B8;
-        Thu,  3 Jun 2021 13:12:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622725962;
-        bh=8tSih8TQEldph7biZCjMKrsNnNHCD8lD50ZmP4OjqOs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HWwdxsnwDy6prcdmSIEV0nkPPHl0DOXqnkHYngVt2dP5gOZQkB1VMnauT1l7QEqVi
-         OHWau7iPqbFoypBecWrowAI9aasPD93DcvTwb7u20P+OR1tlGqAaYbkTxIPpz88dwX
-         lsYNHZ0s1s6HFFD2D8bte4/vw69Cw12XBt/ZHpwP45T0JUUZVyNZokfzn3cP8BBl7U
-         LqwNsXUuchCx1Yr/LSwbMR5BuD9TOaak6OJ9qn3W3lyUR/yV1YxvTXSk2qidEeK6Zs
-         pGDT2Q0Pe/rlnvx3UoZAgwAO12miNIJHSV8nKSVTaLl0WrdQBxOdGblvQET3z3s0D1
-         L37RcVYdiFl5A==
-Date:   Thu, 3 Jun 2021 16:12:38 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Paul Blakey <paulb@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH net-next] net/mlx5: check for allocation failure in
- mlx5_ft_pool_init()
-Message-ID: <YLjVRjAyP3UpzgVr@unreal>
-References: <YLjNfHuTQ817oUtX@mwanda>
+        id S230131AbhFCNRf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Jun 2021 09:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231312AbhFCNRe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Jun 2021 09:17:34 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB7EC06174A
+        for <linux-rdma@vger.kernel.org>; Thu,  3 Jun 2021 06:15:50 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id h12so2841627plf.11
+        for <linux-rdma@vger.kernel.org>; Thu, 03 Jun 2021 06:15:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version;
+        bh=/2z9DHgALYhCRI/SMbgKCS1CLY3xF8iJ9fFWK0sGxTE=;
+        b=CM0GQ3Tj/a842zm23AAD6FZ7FkJsjwZi/4KpT/Yr789Aam1KX6voPeGiwSDVa3VWIF
+         rKbNR2ZC9cYX5TCqZl4wkG9R03Fcu0HHZSRh5cP/+qx8QI1cWkU/xDFP5uGjfCTzZVtQ
+         C5cNOBlxej4zI3Nl4l29s073k+KkyH/nNgBLE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
+        bh=/2z9DHgALYhCRI/SMbgKCS1CLY3xF8iJ9fFWK0sGxTE=;
+        b=pgzeD6pW772KEj16YbE32fwJTPWL8pCn2o4dWtniA36D8Mticr3GfkE08G60PPVAXz
+         v3F6ATWUiBrWQ1NxTON17DfSo64rQ7zG3HVJpXrn3DUH9cgmV+vB1Ys98v3xg+GgUF++
+         48zqfpM5Y9tZGBOmlS5ZD/b9pUzUMkMzw7DLACDChtPvHiC6t6tfGCqnSg0/npPQ9c13
+         RA0/o+qqrB7E7c+V6kuPAn4pcweHPSsWpPCZVErgdKyWIrJRM6Y70QW6oZ6Schk0GFvo
+         B8ydx0Q0j0zl4N6jfiyAOvJ81pVJG4t/dOOkG1GpNzFi0BwLTYKeC4zXhLEOIT5bmuXV
+         jvXg==
+X-Gm-Message-State: AOAM533BQVcz8AYKc4xXrw/ScDX5uHTPQpWZQhRye4f3qgKmkE+L16Un
+        P9GPnQv2OoKSCjPdrswV7ccXolpZkhh7VY7H8b4Qqe/oe/b/WnTnIVVisb9RE7LWInE3UNZ7f3z
+        lXwfiXMODV0Qoqhhjr5SGs7jr/UFhAhtRKw8QxBTooa9vLjRSD15Z7XngVs3bo9Ourrnpb+pdbk
+        ujUNXbTw==
+X-Google-Smtp-Source: ABdhPJzO0PSgQP4MKHZWNM+Vc7XdRKZP9pQ/XBt73a7h5Hq9WTikUqjXLSjGNt4geRvO1nobz2zzeA==
+X-Received: by 2002:a17:90a:16c2:: with SMTP id y2mr36065005pje.236.1622726148390;
+        Thu, 03 Jun 2021 06:15:48 -0700 (PDT)
+Received: from dev01.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id t24sm2336917pji.56.2021.06.03.06.15.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Jun 2021 06:15:47 -0700 (PDT)
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Devesh Sharma <devesh.sharma@broadcom.com>
+Subject: [PATCH V7 for-next 0/3] Broadcom's driver add global atomics
+Date:   Thu,  3 Jun 2021 18:45:31 +0530
+Message-Id: <20210603131534.982257-1-devesh.sharma@broadcom.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLjNfHuTQ817oUtX@mwanda>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000af9dda05c3dc5f3b"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 03:39:24PM +0300, Dan Carpenter wrote:
-> Add a check for if the kzalloc() fails.
-> 
-> Fixes: 4a98544d1827 ("net/mlx5: Move chains ft pool to be used by all firmware steering")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c
-> index 526fbb669142..c14590acc772 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c
-> @@ -27,6 +27,8 @@ int mlx5_ft_pool_init(struct mlx5_core_dev *dev)
->  	int i;
->  
->  	ft_pool = kzalloc(sizeof(*ft_pool), GFP_KERNEL);
-> +	if (!ft_pool)
-> +		return -ENOMEM;
->  
->  	for (i = ARRAY_SIZE(FT_POOLS) - 1; i >= 0; i--)
->  		ft_pool->ft_left[i] = FT_SIZE / FT_POOLS[i];
+--000000000000af9dda05c3dc5f3b
+Content-Transfer-Encoding: 8bit
+
+Adding automated detection and enablement of global PCI atomic
+operation support.
+Updated to ABI to pass wqe-mode to user to support rdma-core
+pull request:
+https://github.com/linux-rdma/rdma-core/pull/1007
+
+v6->v7
+ updated error return type to -EOPNOTSUPP
+v5->v6
+ dropped fixes tag
+v4->v5
+ fixed commit msg in patch 0001
+ fixed mixing of int with bool
+v3->v4
+ removed redundant code to enable global atomics
+ refactored to honor standard error codes.
+v2->v3
+ Added additional patch to update ABI. A PR corresponding to this
+ is open.
+
+V1->V2
+ renamed bnxt_qplib_enable_atomic_ops_to_root to
+ bnxt_qplib_determine_atomics
+
+Devesh Sharma (3):
+  RDMA/bnxt_re: Enable global atomic ops if platform supports
+  bnxt_re: Update maintainers list
+  RDMA/bnxt_re: update ABI to pass wqe-mode to user space
+
+ MAINTAINERS                               |  2 --
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c  |  7 +++++++
+ drivers/infiniband/hw/bnxt_re/main.c      |  3 +++
+ drivers/infiniband/hw/bnxt_re/qplib_res.c | 17 +++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/qplib_res.h |  1 +
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c  | 13 ++++++++++++-
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h  |  2 --
+ include/uapi/rdma/bnxt_re-abi.h           |  5 ++++-
+ 8 files changed, 44 insertions(+), 6 deletions(-)
+
+-- 
+2.25.1
 
 
-Dan thanks for your patch.
+--000000000000af9dda05c3dc5f3b
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-When reviewed your patch, I spotted another error in the patch from the Fixes line.
-
-  2955         err = mlx5_ft_pool_init(dev);
-  2956         if (err)
-  2957                 return err;
-  2958
-  2959         steering = kzalloc(sizeof(*steering), GFP_KERNEL);
-  2960         if (!steering)
-  2961                 goto err;
-                       ^^^^^^^^ it will return success, while should return ENOMEM.
-
-Thanks,
-Acked-by: Leon Romanovsky <leonro@nvidia.com>
+MIIQcAYJKoZIhvcNAQcCoIIQYTCCEF0CAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg3HMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
+MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
+rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
+aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
+e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
+cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
+MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
+KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
+/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
+TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
+YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
+b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
+c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
+CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
+BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
+jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
+9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
+/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
+jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
+AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
+dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
+MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
+IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
+XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
+J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
+nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBU8wggQ3oAMCAQICDCGDU4mjRUtE1rJIfDANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMTAyMjIxNDE5MTJaFw0yMjA5MjIxNDUyNDJaMIGQ
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xFjAUBgNVBAMTDURldmVzaCBTaGFybWExKTAnBgkqhkiG9w0B
+CQEWGmRldmVzaC5zaGFybWFAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+CgKCAQEAqdZbJYU0pwSvcEsPGU4c70rJb88AER0e2yPBliz7n1kVbUny6OTYV16gUCRD8Jchrs1F
+iA8F7XvAYvp55zrOZScmIqg0sYmhn7ueVXGAxjg3/ylsHcKMquUmtx963XI0kjWwAmTopbhtEBhx
+75mMnmfNu4/WTAtCCgi6lhgpqPrted3iCJoAYT2UAMj7z8YRp3IIfYSW34vWW5cmZjw3Vy70Zlzl
+TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
+Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
+KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
+SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
+PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
+G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
+PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINxFR88ySghuvIniwGofIEKQW0VL
+LL+g7F9eQ/wAMc7iMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDYwMzEzMTU0OVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQCIdGDWNpuTESvnw66fHT1Z+pYWgQrKbo6Wh7OKoohJnMtW
+XpxaZIOQ9pIXIeKtknKZm4xcd5Ni4ADid0/J1KWP9wGsRmdHelOiNyrY+Tc12X1YcXHiYCJaKs42
+CtgHTFQ9p8ZD7oF6/EjxMb7y4fBoI8+8vwOSW/I2GRuLjRnq8XMMye+jxUPZVIY2iHVFxFomFqrO
+tuPNH1H9yGtaWdw2yhBAfkOkFCyZaLs5Gr8X2cIachFizgAAt7QV1qP+6GMdJ31wyahWGDtXiGAC
+4FbVD8xLmiRAN5X9Ixp8ildIr4GrQDF4eYM8EEztNom6S9PZce26gSTqx8V1qhcA5CXX
+--000000000000af9dda05c3dc5f3b--
