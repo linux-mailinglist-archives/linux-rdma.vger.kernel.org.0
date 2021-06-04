@@ -2,40 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFF439BFBA
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Jun 2021 20:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A65E739BFFE
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Jun 2021 20:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhFDSgc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Jun 2021 14:36:32 -0400
-Received: from mail-ej1-f48.google.com ([209.85.218.48]:37563 "EHLO
-        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbhFDSgc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Jun 2021 14:36:32 -0400
-Received: by mail-ej1-f48.google.com with SMTP id ce15so15930001ejb.4;
-        Fri, 04 Jun 2021 11:34:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KVXA2B0j0E76Hw4rKgteG9BP+cY/0VQ2EiVfHUNMg/4=;
-        b=nlkGuBMd+Vty6+XLHkc2LbiSbwqfINiZ/ReNk8htptoFZbKJd4j2KgwYSoht5E5Wqe
-         c6Za3C57g7wbv7IzS8m5R2Nry1bmPbbzNpLd4jYp2QY9jMXLxhS2A9DE2wDfHGeOB+aK
-         3SgbN6soIrUNvwHNmClCEoU8fW4uDLkaHySq5QeBe4T9t4Mfrncw8G4PxHN3sWJqQi+3
-         74+ByQ6lqGbWdZ9lTOi0ikr8wEmE5/SmExv8tGHXwzh/6EqJzCqanW/ZOwJ8y8uRHe8B
-         jlzxaRhMnV7g7eQOrj0K+aAbn/0jHHTSEUc2Il9M4yHndUQmc+Evu1c0wVXx3tYp+auR
-         uf3Q==
-X-Gm-Message-State: AOAM532Xqv9vvQNeR7kEp2xOlQIMPig8BED5NzFcu5nyXyT7BW4uZFiL
-        SzjvsZY4Jxsvm4vJbhxPX8F4z8bKZIecfA==
-X-Google-Smtp-Source: ABdhPJwzWy/UpSiAT2oGFWyX5XJHteunpsaqe2BdTWj7r5QsxGM1CjDsIVuG2Daau4lDB2+8+7DnXg==
-X-Received: by 2002:a17:907:7808:: with SMTP id la8mr3285635ejc.13.1622831671378;
-        Fri, 04 Jun 2021 11:34:31 -0700 (PDT)
-Received: from msft-t490s.teknoraver.net (net-37-119-128-179.cust.vodafonedsl.it. [37.119.128.179])
-        by smtp.gmail.com with ESMTPSA id k12sm3732039edi.87.2021.06.04.11.34.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 11:34:30 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     netdev@vger.kernel.org, linux-mm@kvack.org
-Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        id S230173AbhFDTAL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Jun 2021 15:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhFDTAL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Jun 2021 15:00:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B72C061766;
+        Fri,  4 Jun 2021 11:58:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5MvaiAWjLGk3BHpT4GtgC0BCk10yQbwM++7om0Gh/Og=; b=Lw+etIYt/cnkSMmmDfC+9WwYsp
+        RLO2juaVjwp5xMpzCrfJthw48JEqkhrGunHRQPnD6JwZ6EjVOJ6bSQsV6/ERJi7NWYN/9boIvU9fL
+        wN0ITcYu4peettadICHgpcpzBp/m7cjOYlzntU1mLYWSoDERhcMslbJlOEEqdG8zKWFiKClwBnZHE
+        TszV7uGfMypw6H5C3taFAPOJUivCQVg1TBELllvIuW5KDyejP7t4ukbkg0Hat/2D9o2D6SRvNimr+
+        38mSPI+/auyXqvzjLaB9EBjTUxOh/RLo8LoOVfR8R/d1bWrL7LnjlYG4KojiDQkGLUE/PF0FiNM1W
+        mdSwYUfw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lpF0u-00DUe5-5E; Fri, 04 Jun 2021 18:57:54 +0000
+Date:   Fri, 4 Jun 2021 19:57:48 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
         Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
         Rohit Maheshwari <rohitm@chelsio.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -71,120 +66,29 @@ Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
         Yunsheng Lin <linyunsheng@huawei.com>,
         Guillaume Nault <gnault@redhat.com>,
         linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
+        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
         David Ahern <dsahern@gmail.com>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
         Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: [PATCH net-next v7 5/5] mvneta: recycle buffers
-Date:   Fri,  4 Jun 2021 20:33:49 +0200
-Message-Id: <20210604183349.30040-6-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210604183349.30040-1-mcroce@linux.microsoft.com>
+Subject: Re: [PATCH net-next v7 0/5] page_pool: recycle buffers
+Message-ID: <YLp3rKsWdcKyRU4D@casper.infradead.org>
 References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210604183349.30040-1-mcroce@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+On Fri, Jun 04, 2021 at 08:33:44PM +0200, Matteo Croce wrote:
+> Please let this going in on a future -rc1 so to allow enough time
+> to have wider tests.
+> 
+> Note that this series depends on the change "mm: fix struct page layout
+> on 32-bit systems"[2] which is not yet in master.
 
-Use the new recycling API for page_pool.
-In a drop rate test, the packet rate increased by 10%,
-from 296 Kpps to 326 Kpps.
-
-perf top on a stock system shows:
-
-Overhead  Shared Object     Symbol
-  23.66%  [kernel]          [k] __pi___inval_dcache_area
-  22.85%  [mvneta]          [k] mvneta_rx_swbm
-   7.54%  [kernel]          [k] kmem_cache_alloc
-   6.49%  [kernel]          [k] eth_type_trans
-   3.94%  [kernel]          [k] dev_gro_receive
-   3.91%  [kernel]          [k] __netif_receive_skb_core
-   3.91%  [kernel]          [k] kmem_cache_free
-   3.76%  [kernel]          [k] page_pool_release_page
-   3.56%  [kernel]          [k] free_unref_page
-   2.40%  [kernel]          [k] build_skb
-   1.49%  [kernel]          [k] skb_release_data
-   1.45%  [kernel]          [k] __alloc_pages_bulk
-   1.30%  [kernel]          [k] page_frag_free
-
-And this is the same output with recycling enabled:
-
-Overhead  Shared Object     Symbol
-  26.41%  [kernel]          [k] __pi___inval_dcache_area
-  25.00%  [mvneta]          [k] mvneta_rx_swbm
-   8.14%  [kernel]          [k] kmem_cache_alloc
-   6.84%  [kernel]          [k] eth_type_trans
-   4.44%  [kernel]          [k] __netif_receive_skb_core
-   4.38%  [kernel]          [k] kmem_cache_free
-   4.16%  [kernel]          [k] dev_gro_receive
-   3.21%  [kernel]          [k] page_pool_put_page
-   2.41%  [kernel]          [k] build_skb
-   1.82%  [kernel]          [k] skb_release_data
-   1.61%  [kernel]          [k] napi_gro_receive
-   1.25%  [kernel]          [k] page_pool_refill_alloc_cache
-   1.16%  [kernel]          [k] __netif_receive_skb_list_core
-
-We can see that page_pool_release_page(), free_unref_page() and
-__alloc_pages_bulk() are no longer on top of the list when receiving
-traffic.
-
-The test was done with mausezahn on the TX side with 64 byte raw
-ethernet frames.
-
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- drivers/net/ethernet/marvell/mvneta.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 7d5cd9bc6c99..c15ce06427d0 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -2320,7 +2320,7 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
- }
- 
- static struct sk_buff *
--mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
-+mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
- 		      struct xdp_buff *xdp, u32 desc_status)
- {
- 	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-@@ -2331,7 +2331,7 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
- 	if (!skb)
- 		return ERR_PTR(-ENOMEM);
- 
--	page_pool_release_page(rxq->page_pool, virt_to_page(xdp->data));
-+	skb_mark_for_recycle(skb, virt_to_page(xdp->data), pool);
- 
- 	skb_reserve(skb, xdp->data - xdp->data_hard_start);
- 	skb_put(skb, xdp->data_end - xdp->data);
-@@ -2343,7 +2343,10 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
- 		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
- 				skb_frag_page(frag), skb_frag_off(frag),
- 				skb_frag_size(frag), PAGE_SIZE);
--		page_pool_release_page(rxq->page_pool, skb_frag_page(frag));
-+		/* We don't need to reset pp_recycle here. It's already set, so
-+		 * just mark fragments for recycling.
-+		 */
-+		page_pool_store_mem_info(skb_frag_page(frag), pool);
- 	}
- 
- 	return skb;
-@@ -2425,7 +2428,7 @@ static int mvneta_rx_swbm(struct napi_struct *napi,
- 		    mvneta_run_xdp(pp, rxq, xdp_prog, &xdp_buf, frame_sz, &ps))
- 			goto next;
- 
--		skb = mvneta_swbm_build_skb(pp, rxq, &xdp_buf, desc_status);
-+		skb = mvneta_swbm_build_skb(pp, rxq->page_pool, &xdp_buf, desc_status);
- 		if (IS_ERR(skb)) {
- 			struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
- 
--- 
-2.31.1
+is so!  9ddb3c14afba8bc5950ed297f02d4ae05ff35cd1
 
