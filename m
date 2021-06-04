@@ -2,33 +2,44 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D003839C0A3
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Jun 2021 21:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1054A39C39E
+	for <lists+linux-rdma@lfdr.de>; Sat,  5 Jun 2021 01:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhFDTuI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Jun 2021 15:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhFDTuI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Jun 2021 15:50:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8D7C061766;
-        Fri,  4 Jun 2021 12:48:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eiQrNqdISPy8DYhhvO2OscxdNKhEOxSE8gN4mRiagEk=; b=O2upqpo6o6nhEWDpsc9Hs9Z3c9
-        faGUrFI+9BTj6l6tBDhH1UeU8hlXS/n/boLKdmkumKnrRFA/sduZ4gJBPM/CSHeENVstyMcZ6VVkX
-        3SO5Z49XSHCW/fDktp58ABTAD6S8TrZ4gL99DkyjHkI2SbZ6erV75nVvwlKZxoNWLjxIk8R04MUW4
-        kScJh+ZpTG97XID+HsY3rznGAdmWNSdAdebBr0wx6Gecr80F3JUrH2wqCk8kgVug0fKARVsicWTMi
-        KPI+pzJHvglr9vrZcT65UproKpAB6kQ72iRNwymhjN6BFeJAYjXpsICthEk73CcsRewjHbMltPieE
-        2iqI0vMw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lpFnV-00DWt8-Va; Fri, 04 Jun 2021 19:48:11 +0000
-Date:   Fri, 4 Jun 2021 20:48:01 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
+        id S229986AbhFDXCQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Jun 2021 19:02:16 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:60832 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229873AbhFDXCO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Jun 2021 19:02:14 -0400
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 34CC320B8027;
+        Fri,  4 Jun 2021 16:00:27 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 34CC320B8027
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1622847627;
+        bh=ds51mNDX2G6dtPwMYtC2iH66YJ5n86Y8klWdH2tkMc4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XYz4/W3rhZgn0WtZvdgmMaHRaVqzVwn6IVh4JyObNKuXoGULCr+DeklBdqctv+WLH
+         +YDlKAaqSzKxHoPZRsN/5LrGxCvti2+suGbHEIJaEcMQRlPxlo4mWI1E3Ub2Bvhlue
+         CimDnobsP6ICm7HD6L+rLXcj1agw6pW2LknrZfq0=
+Received: by mail-pj1-f49.google.com with SMTP id k7so6330369pjf.5;
+        Fri, 04 Jun 2021 16:00:27 -0700 (PDT)
+X-Gm-Message-State: AOAM532jQ85ADh/Izbj6tz//pw6hobDdmqs38TTaUZ8PHyRoVyHZ+wpu
+        WEVChW1KbVpNBziuzhFueX2mzQ7IEhkoeDN20HI=
+X-Google-Smtp-Source: ABdhPJwV60Zzvd7d6fYgOL0a7JwYyjAs1nlvuHWpkTkjNBPxUYcdJFR2UE+iVPVhb+MZfruC6CI6og/E3m0vnuc7kAY=
+X-Received: by 2002:a17:902:ee06:b029:10b:baee:6593 with SMTP id
+ z6-20020a170902ee06b029010bbaee6593mr6640758plb.33.1622847626662; Fri, 04 Jun
+ 2021 16:00:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
+ <20210604183349.30040-2-mcroce@linux.microsoft.com> <YLp6D7mEh85vL+pY@casper.infradead.org>
+In-Reply-To: <YLp6D7mEh85vL+pY@casper.infradead.org>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Sat, 5 Jun 2021 00:59:50 +0200
+X-Gmail-Original-Message-ID: <CAFnufp2jGRsr9jexBLFRZfJu9AwGO0ghzExT1R4bJdscwHqSnQ@mail.gmail.com>
+Message-ID: <CAFnufp2jGRsr9jexBLFRZfJu9AwGO0ghzExT1R4bJdscwHqSnQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v7 1/5] mm: add a signature in struct page
+To:     Matthew Wilcox <willy@infradead.org>
 Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
         Ayush Sawal <ayush.sawal@chelsio.com>,
         Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
@@ -72,27 +83,41 @@ Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
         Saeed Mahameed <saeedm@nvidia.com>,
         Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
         Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v7 4/5] mvpp2: recycle buffers
-Message-ID: <YLqDcVGPomZRLJYd@casper.infradead.org>
-References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
- <20210604183349.30040-5-mcroce@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604183349.30040-5-mcroce@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 08:33:48PM +0200, Matteo Croce wrote:
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> @@ -3997,7 +3997,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
->  		}
->  
->  		if (pp)
-> -			page_pool_release_page(pp, virt_to_page(data));
-> +			skb_mark_for_recycle(skb, virt_to_page(data), pp);
+On Fri, Jun 4, 2021 at 9:08 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Fri, Jun 04, 2021 at 08:33:45PM +0200, Matteo Croce wrote:
+> > @@ -130,7 +137,10 @@ struct page {
+> >                       };
+> >               };
+> >               struct {        /* Tail pages of compound page */
+> > -                     unsigned long compound_head;    /* Bit zero is set */
+> > +                     /* Bit zero is set
+> > +                      * Bit one if pfmemalloc page
+> > +                      */
+> > +                     unsigned long compound_head;
+>
+> I would drop this hunk.  Bit 1 is not used for this purpose in tail
+> pages; it's used for that purpose in head and base pages.
+>
+> I suppose we could do something like ...
+>
+>  static inline void set_page_pfmemalloc(struct page *page)
+>  {
+> -       page->index = -1UL;
+> +       page->lru.next = (void *)2;
+>  }
+>
+> if it's causing confusion.
+>
 
-Does this driver only use order-0 pages?  Should it be using
-virt_to_head_page() here?  or should skb_mark_for_recycle() call
-compound_head() internally?
+If you prefer, ok for me.
+Why not "(void *)BIT(1)"? Just to remark that it's a single bit and
+not a magic like value?
+
+-- 
+per aspera ad upstream
