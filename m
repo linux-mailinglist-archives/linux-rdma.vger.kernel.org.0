@@ -2,122 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1054A39C39E
-	for <lists+linux-rdma@lfdr.de>; Sat,  5 Jun 2021 01:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3042539C3B5
+	for <lists+linux-rdma@lfdr.de>; Sat,  5 Jun 2021 01:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhFDXCQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Jun 2021 19:02:16 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:60832 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbhFDXCO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Jun 2021 19:02:14 -0400
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 34CC320B8027;
-        Fri,  4 Jun 2021 16:00:27 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 34CC320B8027
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1622847627;
-        bh=ds51mNDX2G6dtPwMYtC2iH66YJ5n86Y8klWdH2tkMc4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XYz4/W3rhZgn0WtZvdgmMaHRaVqzVwn6IVh4JyObNKuXoGULCr+DeklBdqctv+WLH
-         +YDlKAaqSzKxHoPZRsN/5LrGxCvti2+suGbHEIJaEcMQRlPxlo4mWI1E3Ub2Bvhlue
-         CimDnobsP6ICm7HD6L+rLXcj1agw6pW2LknrZfq0=
-Received: by mail-pj1-f49.google.com with SMTP id k7so6330369pjf.5;
-        Fri, 04 Jun 2021 16:00:27 -0700 (PDT)
-X-Gm-Message-State: AOAM532jQ85ADh/Izbj6tz//pw6hobDdmqs38TTaUZ8PHyRoVyHZ+wpu
-        WEVChW1KbVpNBziuzhFueX2mzQ7IEhkoeDN20HI=
-X-Google-Smtp-Source: ABdhPJwV60Zzvd7d6fYgOL0a7JwYyjAs1nlvuHWpkTkjNBPxUYcdJFR2UE+iVPVhb+MZfruC6CI6og/E3m0vnuc7kAY=
-X-Received: by 2002:a17:902:ee06:b029:10b:baee:6593 with SMTP id
- z6-20020a170902ee06b029010bbaee6593mr6640758plb.33.1622847626662; Fri, 04 Jun
- 2021 16:00:26 -0700 (PDT)
+        id S229873AbhFDXKi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Jun 2021 19:10:38 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:45693 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229853AbhFDXKi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Jun 2021 19:10:38 -0400
+Received: by mail-oi1-f177.google.com with SMTP id w127so11297460oig.12
+        for <linux-rdma@vger.kernel.org>; Fri, 04 Jun 2021 16:08:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F+1jdOQbnDoEUvi8uvl5HpLXOMImTf+jfewPWN4mJ/g=;
+        b=ty6pxMofdlMD5zfKASdqo4atCPUXP4ub9dQp2VMznrCfyJ5Lp/suANqhXyn+3PGm4W
+         39dJ4kGFCfc8B87nIw4Mzz7bR+0ly9vR6WnHbgnmcshuxyqiv64Cvx7AUGjyi5H0xj4q
+         sTYRYJnaBxCdezaBzlVCgoJWHRp8NLYZLQpWCjfKpnXuguqdlLxCBzHDaowEXYPGFkXO
+         F42Kyi8RPjhZIWLbxT2rPOlEX7shRp81MCFkUJ30iUjXZ40wt7TyKXQzLeNrekYFd2tU
+         IXXuJc9Ut55jNkBfLq+8kg/Gi/cNxbjFdTotqcpq1ZUX6Dhwc491q70CEW5YiOapo8tB
+         5LdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F+1jdOQbnDoEUvi8uvl5HpLXOMImTf+jfewPWN4mJ/g=;
+        b=F2xjUxuRMdfzZ7vu0r6q8EANbUZvDDKexCv5smUsFw69nnKWZEGUtvebfRso3CcB7Q
+         55RdInVghL35SqoAty2fYRS1fVgPIRv8MY7hPJdbJu2AoI2s0gg2/7z2H9Z5xuOZwqSG
+         9t+aUujYnsC95ZONhzySP9z3+a/0ywNbO1LO04AX9q5EN9+FiRNUWFHoLREur6nyaXhw
+         D3yGLWZ5nvcPDcAHvmoErYiToHXsaiScDVMebWi8oIgWzmkUmulE0Nzk8ZI3V6Gi3CLe
+         LgMGZVhqO8+J2+aESaIURxtr7IQz/6wDyoy63UoK3ewZhTBMWCiR6JlbE0ns4sHv5iZN
+         lztQ==
+X-Gm-Message-State: AOAM532eN1q6Wvm+88OJm62Ftt25Ry277sUAHp2tROhpEVfIiZR/ogB/
+        LYnfw9YkD6fFusbUUcpghYrEi72ILvE=
+X-Google-Smtp-Source: ABdhPJx2YbaDoXsoiZBqkl1dEDsJOKyDW3CcSJHHEybPS7ERrK2evGbKdLVKFgGpyizv0IrwCRMldQ==
+X-Received: by 2002:aca:400b:: with SMTP id n11mr4421676oia.111.1622848057998;
+        Fri, 04 Jun 2021 16:07:37 -0700 (PDT)
+Received: from localhost (2603-8081-140c-1a00-c04b-c76e-4a4f-9612.res6.spectrum.com. [2603:8081:140c:1a00:c04b:c76e:4a4f:9612])
+        by smtp.gmail.com with ESMTPSA id t23sm745010oij.21.2021.06.04.16.07.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 16:07:37 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next] RDMA/rxe: Fix qp reference counting for atomic ops
+Date:   Fri,  4 Jun 2021 18:05:59 -0500
+Message-Id: <20210604230558.4812-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
- <20210604183349.30040-2-mcroce@linux.microsoft.com> <YLp6D7mEh85vL+pY@casper.infradead.org>
-In-Reply-To: <YLp6D7mEh85vL+pY@casper.infradead.org>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Sat, 5 Jun 2021 00:59:50 +0200
-X-Gmail-Original-Message-ID: <CAFnufp2jGRsr9jexBLFRZfJu9AwGO0ghzExT1R4bJdscwHqSnQ@mail.gmail.com>
-Message-ID: <CAFnufp2jGRsr9jexBLFRZfJu9AwGO0ghzExT1R4bJdscwHqSnQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v7 1/5] mm: add a signature in struct page
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 4, 2021 at 9:08 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Fri, Jun 04, 2021 at 08:33:45PM +0200, Matteo Croce wrote:
-> > @@ -130,7 +137,10 @@ struct page {
-> >                       };
-> >               };
-> >               struct {        /* Tail pages of compound page */
-> > -                     unsigned long compound_head;    /* Bit zero is set */
-> > +                     /* Bit zero is set
-> > +                      * Bit one if pfmemalloc page
-> > +                      */
-> > +                     unsigned long compound_head;
->
-> I would drop this hunk.  Bit 1 is not used for this purpose in tail
-> pages; it's used for that purpose in head and base pages.
->
-> I suppose we could do something like ...
->
->  static inline void set_page_pfmemalloc(struct page *page)
->  {
-> -       page->index = -1UL;
-> +       page->lru.next = (void *)2;
->  }
->
-> if it's causing confusion.
->
+Currently the rdma_rxe driver attempts to protect atomic responder
+resources by taking a reference to the qp which is only freed when the
+resource is recycled for a new read or atomic operation. This means that
+in normal circumstances there is almost always an extra qp reference
+once an atomic operation has been executed which prevents cleaning up
+the qp and associated pd and cqs when the qp is destroyed.
 
-If you prefer, ok for me.
-Why not "(void *)BIT(1)"? Just to remark that it's a single bit and
-not a magic like value?
+This patch removes the call to rxe_add_ref() in send_atomic_ack() and the
+call to rxe_drop_ref() in free_rd_atomic_resource(). If the qp is
+destroyed while a peer is retrying an atomic op it will cause the
+operation to fail which is acceptable.
 
+Reported-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+Fixes: 86af61764151 ("IB/rxe: remove unnecessary skb_clone")
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+ drivers/infiniband/sw/rxe/rxe_qp.c   | 1 -
+ drivers/infiniband/sw/rxe/rxe_resp.c | 2 --
+ 2 files changed, 3 deletions(-)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index 34ae957a315c..b6d83d82e4f9 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -136,7 +136,6 @@ static void free_rd_atomic_resources(struct rxe_qp *qp)
+ void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res)
+ {
+ 	if (res->type == RXE_ATOMIC_MASK) {
+-		rxe_drop_ref(qp);
+ 		kfree_skb(res->atomic.skb);
+ 	} else if (res->type == RXE_READ_MASK) {
+ 		if (res->read.mr)
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index 2b220659bddb..39dc39be586e 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -966,8 +966,6 @@ static int send_atomic_ack(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
+ 		goto out;
+ 	}
+ 
+-	rxe_add_ref(qp);
+-
+ 	res = &qp->resp.resources[qp->resp.res_head];
+ 	free_rd_atomic_resource(qp, res);
+ 	rxe_advance_resp_resource(qp);
 -- 
-per aspera ad upstream
+2.30.2
+
