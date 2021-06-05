@@ -2,35 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E13239C90E
-	for <lists+linux-rdma@lfdr.de>; Sat,  5 Jun 2021 16:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA0A39C9BE
+	for <lists+linux-rdma@lfdr.de>; Sat,  5 Jun 2021 18:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhFEOe3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 5 Jun 2021 10:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51422 "EHLO
+        id S230073AbhFEQIi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 5 Jun 2021 12:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhFEOe3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 5 Jun 2021 10:34:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45187C061766;
-        Sat,  5 Jun 2021 07:32:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6ysSoi5gpx3YeFtFoqCR9odJnpVrSzapVJNhGgAq3Zo=; b=Zh95QZ+oAmIGkHWHQAEFl6vDTO
-        GmvBEgb4eLNge3M/1YZWLQSUlr3gr6cZIATaXD6kJjhc0l9JRxx+XGMlKyGnYHX7XdUbOmZ+0bQxM
-        xnfQFPtWmEkTjgNAOXyn43QONLJt6HaOnASbfUu/UIQTsHNpDR4jaQTOHi+RR3kr8vbfVUmf2ptSh
-        bVmZJOnROEtX7cZlHgNDUk07U9pA40FzDKCXEOXn3pDIHzqz9+9xSTGc0NoHcRLgIrRKh0JHVCOiD
-        idtvZvVVbSllHCR8Mx+3Pdtug5xMAXlRJIJiDHozuLGZZlf4gFMz5ziEFQKnxHZsE8twc0ZRTl1S5
-        1Itzs3yQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lpXLY-00E9xR-Ev; Sat, 05 Jun 2021 14:32:21 +0000
-Date:   Sat, 5 Jun 2021 15:32:20 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
+        with ESMTP id S229930AbhFEQIg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 5 Jun 2021 12:08:36 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DFB0C061766;
+        Sat,  5 Jun 2021 09:06:37 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so12212382otl.3;
+        Sat, 05 Jun 2021 09:06:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hsUvo0Z31jHzTyWdPjams5W26nQJVQkDf7AjZ09gvvE=;
+        b=m9kPfzBycC3YKOIS3oTGC+mz9M6QD9nWpdY+FEYYsQQqupPC0rDpP2NxFTw/t4I+GQ
+         Izga7S2Lgj2/pFSbCRYAx0DYbPAS88YcZhMb1L5T0QrPnj8Oxy06Vebsdvbl3jrt40Zx
+         tUbfohpD7ZO1reTbhit9yiGi0PC8qm5sZ6LFDCJ4iOFFixmKCEGfxiARED2LEmzlpTDE
+         io+IRZjwh6FMvvFwPQeMn4oy/EXc8Gv4teeLtkSVSSk2ao6mEvcqTeL5UhBFU7tKGJ08
+         I2iRL1/TGLiY2CByVGEQoK1DhUReOWRRYwBpIGOhc6XUI0WzNt1afSOY+nzhX4m2w68u
+         0izA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hsUvo0Z31jHzTyWdPjams5W26nQJVQkDf7AjZ09gvvE=;
+        b=g4aRNRoygleR19zOQXv/YHI8NSG/G6+UT5qkWgScT3yWuYGyIahAEgQJWUnJn7lKz1
+         RfGJO/Q/jVK0hPzxZuwl3LNePdAyXHk+zrDxEM7bHJSmiWSCPe/3/jZt1P9Go0RgymOX
+         JTONBZBEWubG+z8bsdk8KJ4g0xTolX9pmpNsdPeRqB3Gf9UAPnWHqUX4r8Hq/VuI7IDq
+         avl3t4q8QoNAnnVqKWusi21LhvrJFEbSd3C3GtUzAoNqpYrzqD5Nu1OYtRuyKSZXQjLV
+         qCyA3xK7qkinc+7sbaHQH+jokSbwNpUzaWSvBNH17uwYlbe9WiybgWJv+kEa117N2ez4
+         0M9g==
+X-Gm-Message-State: AOAM532XmyqCfzK34UpjMMg+vUBfupJjDU6yJM0GHvyQWwxgDzlCP9DY
+        uORKkxz5ZROnO9eZPM0sC6U=
+X-Google-Smtp-Source: ABdhPJxbglEED8yHHBv9b4qHkZGzEGhMuNGEOQ5HAC6n9QkPLmPeHoddwQhhjIdxRMn2SRlpIzi9xw==
+X-Received: by 2002:a9d:870:: with SMTP id 103mr1920466oty.44.1622909195740;
+        Sat, 05 Jun 2021 09:06:35 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.22])
+        by smtp.googlemail.com with ESMTPSA id q26sm1200218otn.0.2021.06.05.09.06.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Jun 2021 09:06:35 -0700 (PDT)
+Subject: Re: [PATCH net-next v6 3/5] page_pool: Allow drivers to hint on SKB
+ recycling
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
         Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
         Rohit Maheshwari <rohitm@chelsio.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -42,7 +65,6 @@ Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
         Stephen Hemminger <stephen@networkplumber.org>,
         Tariq Toukan <tariqt@nvidia.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         John Fastabend <john.fastabend@gmail.com>,
@@ -63,60 +85,51 @@ Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
         Marco Elver <elver@google.com>,
         Willem de Bruijn <willemb@google.com>,
         Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
         Guillaume Nault <gnault@redhat.com>,
         linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
         Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v7 1/5] mm: add a signature in struct page
-Message-ID: <YLuK9P+loeKwUUK3@casper.infradead.org>
-References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
- <20210604183349.30040-2-mcroce@linux.microsoft.com>
- <YLp6D7mEh85vL+pY@casper.infradead.org>
- <CAFnufp2jGRsr9jexBLFRZfJu9AwGO0ghzExT1R4bJdscwHqSnQ@mail.gmail.com>
+References: <20210521161527.34607-1-mcroce@linux.microsoft.com>
+ <20210521161527.34607-4-mcroce@linux.microsoft.com>
+ <badedf51-ce74-061d-732c-61d0678180b3@huawei.com>
+ <YLnnaRLMlnm+LKwX@iliass-mbp>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <722e5567-d8ee-228c-978e-9d5966257bb1@gmail.com>
+Date:   Sat, 5 Jun 2021 10:06:30 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFnufp2jGRsr9jexBLFRZfJu9AwGO0ghzExT1R4bJdscwHqSnQ@mail.gmail.com>
+In-Reply-To: <YLnnaRLMlnm+LKwX@iliass-mbp>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Jun 05, 2021 at 12:59:50AM +0200, Matteo Croce wrote:
-> On Fri, Jun 4, 2021 at 9:08 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Fri, Jun 04, 2021 at 08:33:45PM +0200, Matteo Croce wrote:
-> > > @@ -130,7 +137,10 @@ struct page {
-> > >                       };
-> > >               };
-> > >               struct {        /* Tail pages of compound page */
-> > > -                     unsigned long compound_head;    /* Bit zero is set */
-> > > +                     /* Bit zero is set
-> > > +                      * Bit one if pfmemalloc page
-> > > +                      */
-> > > +                     unsigned long compound_head;
-> >
-> > I would drop this hunk.  Bit 1 is not used for this purpose in tail
-> > pages; it's used for that purpose in head and base pages.
-> >
-> > I suppose we could do something like ...
-> >
-> >  static inline void set_page_pfmemalloc(struct page *page)
-> >  {
-> > -       page->index = -1UL;
-> > +       page->lru.next = (void *)2;
-> >  }
-> >
-> > if it's causing confusion.
-> >
+On 6/4/21 2:42 AM, Ilias Apalodimas wrote:
+> [...]
+>>> +	/* Driver set this to memory recycling info. Reset it on recycle.
+>>> +	 * This will *not* work for NIC using a split-page memory model.
+>>> +	 * The page will be returned to the pool here regardless of the
+>>> +	 * 'flipped' fragment being in use or not.
+>>> +	 */
+>>
+>> I am not sure I understand how does the last part of comment related
+>> to the code below, as there is no driver using split-page memory model
+>> will reach here because those driver will not call skb_mark_for_recycle(),
+>> right?
+>>
 > 
-> If you prefer, ok for me.
-> Why not "(void *)BIT(1)"? Just to remark that it's a single bit and
-> not a magic like value?
+> Yes the comment is there to prohibit people (mlx5 only actually) to add the
+> recycling bit on their driver.  Because if they do it will *probably* work
+> but they might get random corrupted packets which will be hard to debug.
+> 
 
-I don't have a strong preference.  I'd use '2', but I wouldn't ask
-BIT(1) to be changed.
+What's the complexity for getting it to work with split page model?
+Since 1500 is the default MTU, requiring a page per packet means a lot
+of wasted memory.
