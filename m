@@ -2,122 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D8939C9E8
-	for <lists+linux-rdma@lfdr.de>; Sat,  5 Jun 2021 18:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EEE39CAE2
+	for <lists+linux-rdma@lfdr.de>; Sat,  5 Jun 2021 22:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbhFEQhI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 5 Jun 2021 12:37:08 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:48346 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhFEQhI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 5 Jun 2021 12:37:08 -0400
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-        by linux.microsoft.com (Postfix) with ESMTPSA id F2E3C20B802A;
-        Sat,  5 Jun 2021 09:35:19 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F2E3C20B802A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1622910920;
-        bh=cOclEmmWl6j6+WY9j7NfknHEEHkDrYdGYI0sPaVF3h0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sTFupoEnOZa+Rg9zsHZoCvqOc14skuu1zRcwpinyRGbdbTusvqQrZDUm0fjbulPTF
-         sVrftj5RO8RAowEHni7wtOe2n/P/gl20hV6SUtbkq1vkwkJTA8qTEdWVj8lguBKVx8
-         /00lyf31dKHGn9dPLpuaHeNnfb/kAifuczy0T20Y=
-Received: by mail-pj1-f43.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so9185221pjs.2;
-        Sat, 05 Jun 2021 09:35:19 -0700 (PDT)
-X-Gm-Message-State: AOAM531Agx8VrbqAEAQJQtambbnDsRlKP5GFCekXBUOEnwFdW3jL3o55
-        EjRbKe+lgjeCSHTcs0s46yAsqUH507TgQrFTfiU=
-X-Google-Smtp-Source: ABdhPJygiZdUBMofrvGIJKnAiSIUtdPe75CqrwuMthYT+s5sMbTwwbqXGEATDjb4JXV1JYjGO5sE09p+XSOr4C1NyS8=
-X-Received: by 2002:a17:90b:109:: with SMTP id p9mr23537983pjz.11.1622910919349;
- Sat, 05 Jun 2021 09:35:19 -0700 (PDT)
+        id S230029AbhFEUXM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 5 Jun 2021 16:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230010AbhFEUXM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 5 Jun 2021 16:23:12 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E383C061766;
+        Sat,  5 Jun 2021 13:21:08 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id f11so19308256lfq.4;
+        Sat, 05 Jun 2021 13:21:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ogeBL4TcRDY07px4nouuwmteF277fCXlnUA+B+W6KM=;
+        b=mqqKwwLvMDY3JlUWWWYLyoi/pDeqzc6aUpBSLsDNUYKPFUW/jsQUOWtQ1jnHCg5EgG
+         delRQ/eQ+VcplHkZhp8MXSXV5dpoKSK8p/iDfUdE5+SZgIAuprM6SJOmSKYwDxm4v0kH
+         ckSi4B8Zh16QiPdwmhLEW4VkWgSmxs15GjBNOBPVXohx397jOgoepgC41NLxwI/+AOge
+         jYuUEJ0nMd8+dBHADULuJwg8MNAqsidltpNHfA+UT8qzEUdvsGW0FGQs1KUm6YshjXKE
+         a5igEKJasg4hKHoao1LYFltlKKJ7CV3Wv+tg/9+mV0WV13Dog/Y03imQ4/EP5cSMxcsP
+         nsIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ogeBL4TcRDY07px4nouuwmteF277fCXlnUA+B+W6KM=;
+        b=MyKIKk8EUOFhq3YSInc7Kd4l99mYOiYYORH02UK79p3yvvqUzDXrbNGoajRP9DK+W0
+         StiR4NRXetjJmoMDyyQ0C0zUh89MsluFRn2Nl0XfxTEFSwAYSJGjOaGzDZsaPUjex3Hj
+         P9gouvhCU4VQyPbELVJ/yJksvArwvAMEITjwLPSXTRahcRaa3MMVHNFFTyk/JecyxlJu
+         KS4wNF4/I7x8ou+k42bBb40q+KBqYZ4T3DPNp1TTE+CwBuhLwOrU9BdpCnfKyDRqyKBB
+         cvnz+/qT3wX9wAL87rdK7qfe8vvPLKKU5riqQSj9olA4j7GsNZxEeneHw6AjOduuo1yf
+         gN3w==
+X-Gm-Message-State: AOAM531hdGCRH35O/HJDf7Oc70c1g95aXW0tVClI2rIFnjmFP5+137aV
+        9Cjg5RPM6nUbiit8wAm32ZM=
+X-Google-Smtp-Source: ABdhPJyT/r2kiS8+pHX0yX1Hgi8Lw8GXSW7vBmHaEZESE8HfV+DkRY5gU8Te6n8ghcaK/KJT8CBohA==
+X-Received: by 2002:ac2:57c1:: with SMTP id k1mr1213103lfo.231.1622924466507;
+        Sat, 05 Jun 2021 13:21:06 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.224.40])
+        by smtp.gmail.com with ESMTPSA id o14sm954399lfi.193.2021.06.05.13.21.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Jun 2021 13:21:05 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
+        shayd@nvidia.com
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>, stable@vger.kernel.org
+Subject: [PATCH] infiniband: core: fix memory leak
+Date:   Sat,  5 Jun 2021 23:20:51 +0300
+Message-Id: <20210605202051.14783-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210521161527.34607-1-mcroce@linux.microsoft.com>
- <20210521161527.34607-4-mcroce@linux.microsoft.com> <badedf51-ce74-061d-732c-61d0678180b3@huawei.com>
- <YLnnaRLMlnm+LKwX@iliass-mbp> <722e5567-d8ee-228c-978e-9d5966257bb1@gmail.com>
-In-Reply-To: <722e5567-d8ee-228c-978e-9d5966257bb1@gmail.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Sat, 5 Jun 2021 18:34:43 +0200
-X-Gmail-Original-Message-ID: <CAFnufp3rWwFgknBUBy9mHB36zpTKRiTeUAFeJXKVvp2DzvG3bw@mail.gmail.com>
-Message-ID: <CAFnufp3rWwFgknBUBy9mHB36zpTKRiTeUAFeJXKVvp2DzvG3bw@mail.gmail.com>
-Subject: Re: [PATCH net-next v6 3/5] page_pool: Allow drivers to hint on SKB recycling
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Yunsheng Lin <linyunsheng@huawei.com>, netdev@vger.kernel.org,
-        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 6:06 PM David Ahern <dsahern@gmail.com> wrote:
->
-> On 6/4/21 2:42 AM, Ilias Apalodimas wrote:
-> > [...]
-> >>> +   /* Driver set this to memory recycling info. Reset it on recycle.
-> >>> +    * This will *not* work for NIC using a split-page memory model.
-> >>> +    * The page will be returned to the pool here regardless of the
-> >>> +    * 'flipped' fragment being in use or not.
-> >>> +    */
-> >>
-> >> I am not sure I understand how does the last part of comment related
-> >> to the code below, as there is no driver using split-page memory model
-> >> will reach here because those driver will not call skb_mark_for_recycle(),
-> >> right?
-> >>
-> >
-> > Yes the comment is there to prohibit people (mlx5 only actually) to add the
-> > recycling bit on their driver.  Because if they do it will *probably* work
-> > but they might get random corrupted packets which will be hard to debug.
-> >
->
-> What's the complexity for getting it to work with split page model?
-> Since 1500 is the default MTU, requiring a page per packet means a lot
-> of wasted memory.
+My local syzbot instance hit memory leak in
+copy_process(). The problem was in unputted task
+struct in _destroy_id().
 
-We could create a new memory model, e.g. MEM_TYPE_PAGE_SPLIT, and
-restore the behavior present in the previous versions of this serie,
-which is, save xdp_mem_info in struct page.
-As this could slightly impact the performances, this can be added in a
-future change when the drivers which are doing it want to use this
-recycling api.
+Simple reproducer:
 
+int main(void)
+{
+        struct rdma_ucm_cmd_hdr *hdr;
+        struct rdma_ucm_create_id *cmd_id;
+        char cmd[sizeof(*hdr) + sizeof(*cmd_id)] = {0};
+        int fd;
+
+        hdr = (struct rdma_ucm_cmd_hdr *)cmd;
+        cmd_id = (struct rdma_ucm_create_id *) (cmd + sizeof(*hdr));
+
+        hdr->cmd = 0;
+        hdr->in = 0x18;
+        hdr->out = 0xfa00;
+
+        cmd_id->uid = 0x3;
+        cmd_id->response = 0x0;
+        cmd_id->ps = 0x106;
+
+        fd = open("/dev/infiniband/rdma_cm", O_WRONLY);
+        write(fd, cmd, sizeof(cmd));
+}
+
+Ftrace log:
+
+ucma_open();
+ucma_write() {
+  ucma_create_id() {
+    ucma_alloc_ctx();
+    rdma_create_user_id() {
+      rdma_restrack_new();
+      rdma_restrack_set_name() {
+        rdma_restrack_attach_task.part.0(); <--- task_struct getted
+      }
+    }
+    ucma_destroy_private_ctx() {
+      ucma_put_ctx();
+      rdma_destroy_id() {
+        _destroy_id()			    <--- id_priv freed
+      }
+    }
+  }
+}
+ucma_close();
+
+From previous log it's easy to undertand that
+_destroy_id() is the last place, where task_struct
+can be putted, because at the end of this function
+id_priv is freed.
+
+With this patch applied, above reproducer doesn't hit memory
+leak anymore.
+
+Fixes: e51060f08a61 ("IB: IP address based RDMA connection manager")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/infiniband/core/cma.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index ab148a696c0c..2760352261b3 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -1874,6 +1874,7 @@ static void _destroy_id(struct rdma_id_private *id_priv,
+ 
+ 	kfree(id_priv->id.route.path_rec);
+ 
++	rdma_restrack_put(&id_priv->res);
+ 	put_net(id_priv->id.route.addr.dev_addr.net);
+ 	kfree(id_priv);
+ }
 -- 
-per aspera ad upstream
+2.31.1
+
