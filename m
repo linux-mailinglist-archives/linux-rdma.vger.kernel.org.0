@@ -2,143 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19EEE39CAE2
-	for <lists+linux-rdma@lfdr.de>; Sat,  5 Jun 2021 22:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786BF39CC0A
+	for <lists+linux-rdma@lfdr.de>; Sun,  6 Jun 2021 03:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhFEUXM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 5 Jun 2021 16:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbhFEUXM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 5 Jun 2021 16:23:12 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E383C061766;
-        Sat,  5 Jun 2021 13:21:08 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id f11so19308256lfq.4;
-        Sat, 05 Jun 2021 13:21:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1ogeBL4TcRDY07px4nouuwmteF277fCXlnUA+B+W6KM=;
-        b=mqqKwwLvMDY3JlUWWWYLyoi/pDeqzc6aUpBSLsDNUYKPFUW/jsQUOWtQ1jnHCg5EgG
-         delRQ/eQ+VcplHkZhp8MXSXV5dpoKSK8p/iDfUdE5+SZgIAuprM6SJOmSKYwDxm4v0kH
-         ckSi4B8Zh16QiPdwmhLEW4VkWgSmxs15GjBNOBPVXohx397jOgoepgC41NLxwI/+AOge
-         jYuUEJ0nMd8+dBHADULuJwg8MNAqsidltpNHfA+UT8qzEUdvsGW0FGQs1KUm6YshjXKE
-         a5igEKJasg4hKHoao1LYFltlKKJ7CV3Wv+tg/9+mV0WV13Dog/Y03imQ4/EP5cSMxcsP
-         nsIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1ogeBL4TcRDY07px4nouuwmteF277fCXlnUA+B+W6KM=;
-        b=MyKIKk8EUOFhq3YSInc7Kd4l99mYOiYYORH02UK79p3yvvqUzDXrbNGoajRP9DK+W0
-         StiR4NRXetjJmoMDyyQ0C0zUh89MsluFRn2Nl0XfxTEFSwAYSJGjOaGzDZsaPUjex3Hj
-         P9gouvhCU4VQyPbELVJ/yJksvArwvAMEITjwLPSXTRahcRaa3MMVHNFFTyk/JecyxlJu
-         KS4wNF4/I7x8ou+k42bBb40q+KBqYZ4T3DPNp1TTE+CwBuhLwOrU9BdpCnfKyDRqyKBB
-         cvnz+/qT3wX9wAL87rdK7qfe8vvPLKKU5riqQSj9olA4j7GsNZxEeneHw6AjOduuo1yf
-         gN3w==
-X-Gm-Message-State: AOAM531hdGCRH35O/HJDf7Oc70c1g95aXW0tVClI2rIFnjmFP5+137aV
-        9Cjg5RPM6nUbiit8wAm32ZM=
-X-Google-Smtp-Source: ABdhPJyT/r2kiS8+pHX0yX1Hgi8Lw8GXSW7vBmHaEZESE8HfV+DkRY5gU8Te6n8ghcaK/KJT8CBohA==
-X-Received: by 2002:ac2:57c1:: with SMTP id k1mr1213103lfo.231.1622924466507;
-        Sat, 05 Jun 2021 13:21:06 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.224.40])
-        by smtp.gmail.com with ESMTPSA id o14sm954399lfi.193.2021.06.05.13.21.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Jun 2021 13:21:05 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
-        shayd@nvidia.com
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>, stable@vger.kernel.org
-Subject: [PATCH] infiniband: core: fix memory leak
-Date:   Sat,  5 Jun 2021 23:20:51 +0300
-Message-Id: <20210605202051.14783-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S230050AbhFFBMC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 5 Jun 2021 21:12:02 -0400
+Received: from smtprelay0100.hostedemail.com ([216.40.44.100]:53090 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230022AbhFFBMC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 5 Jun 2021 21:12:02 -0400
+Received: from omf15.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 17133100E7B43;
+        Sun,  6 Jun 2021 01:10:13 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf15.hostedemail.com (Postfix) with ESMTPA id 03FE4C4178;
+        Sun,  6 Jun 2021 01:10:11 +0000 (UTC)
+Message-ID: <9e07e80d8aa464447323670fd810f455d53f76f3.camel@perches.com>
+Subject: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
+From:   Joe Perches <joe@perches.com>
+To:     Mustafa Ismail <mustafa.ismail@intel.com>
+Cc:     Shiraz Saleem <shiraz.saleem@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Sat, 05 Jun 2021 18:10:10 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 03FE4C4178
+X-Spam-Status: No, score=1.10
+X-Stat-Signature: skjieu6c8if6fmcgcrgx6a1j5q95zjrb
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+Pv7iUn8+XZ8iroSvbZ5WUjQz4ljaBJp4=
+X-HE-Tag: 1622941811-105777
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-My local syzbot instance hit memory leak in
-copy_process(). The problem was in unputted task
-struct in _destroy_id().
+There are some odd mismatches in field and access index.
+These may be simple cut/paste typos.
 
-Simple reproducer:
+Are these intentional?
 
-int main(void)
-{
-        struct rdma_ucm_cmd_hdr *hdr;
-        struct rdma_ucm_create_id *cmd_id;
-        char cmd[sizeof(*hdr) + sizeof(*cmd_id)] = {0};
-        int fd;
+ip4txfrag is set to the value from IP4RXFRAGS
 
-        hdr = (struct rdma_ucm_cmd_hdr *)cmd;
-        cmd_id = (struct rdma_ucm_create_id *) (cmd + sizeof(*hdr));
+915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1753)  gather_stats->ip4txfrag =
+915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1754)          rd64(dev->hw,
+915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1755)               dev->hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP4RXFRAGS]
+915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1756)               + stats_inst_offset_64);
 
-        hdr->cmd = 0;
-        hdr->in = 0x18;
-        hdr->out = 0xfa00;
+ip4txfrag is set again a few lines later, so the case above is probably
+a defect.
 
-        cmd_id->uid = 0x3;
-        cmd_id->response = 0x0;
-        cmd_id->ps = 0x106;
+915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1769)  gather_stats->ip4txfrag =
+915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1770)          rd64(dev->hw,
+915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1771)               dev->hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP4TXFRAGS]
+915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1772)               + stats_inst_offset_64);
 
-        fd = open("/dev/infiniband/rdma_cm", O_WRONLY);
-        write(fd, cmd, sizeof(cmd));
-}
+And here ip6txfrag is set to the value of IP6RXFRAGS
 
-Ftrace log:
+915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1785)  gather_stats->ip6txfrags =
+915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1786)          rd64(dev->hw,
+915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1787)               dev->hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP6RXFRAGS]
+915cc7ac0f8e2a (Mustafa Ismail 2021-06-02 15:51:34 -0500 1788)               + stats_inst_offset_64);
 
-ucma_open();
-ucma_write() {
-  ucma_create_id() {
-    ucma_alloc_ctx();
-    rdma_create_user_id() {
-      rdma_restrack_new();
-      rdma_restrack_set_name() {
-        rdma_restrack_attach_task.part.0(); <--- task_struct getted
-      }
-    }
-    ucma_destroy_private_ctx() {
-      ucma_put_ctx();
-      rdma_destroy_id() {
-        _destroy_id()			    <--- id_priv freed
-      }
-    }
-  }
-}
-ucma_close();
-
-From previous log it's easy to undertand that
-_destroy_id() is the last place, where task_struct
-can be putted, because at the end of this function
-id_priv is freed.
-
-With this patch applied, above reproducer doesn't hit memory
-leak anymore.
-
-Fixes: e51060f08a61 ("IB: IP address based RDMA connection manager")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/infiniband/core/cma.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index ab148a696c0c..2760352261b3 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -1874,6 +1874,7 @@ static void _destroy_id(struct rdma_id_private *id_priv,
- 
- 	kfree(id_priv->id.route.path_rec);
- 
-+	rdma_restrack_put(&id_priv->res);
- 	put_net(id_priv->id.route.addr.dev_addr.net);
- 	kfree(id_priv);
- }
--- 
-2.31.1
 
