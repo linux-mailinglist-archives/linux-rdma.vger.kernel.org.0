@@ -2,58 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F86539DCEF
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jun 2021 14:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4720539DD9A
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jun 2021 15:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhFGMwI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Jun 2021 08:52:08 -0400
-Received: from mail-dm6nam12on2058.outbound.protection.outlook.com ([40.107.243.58]:54624
+        id S230211AbhFGNbw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Jun 2021 09:31:52 -0400
+Received: from mail-dm6nam12on2048.outbound.protection.outlook.com ([40.107.243.48]:39188
         "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230396AbhFGMwH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 7 Jun 2021 08:52:07 -0400
+        id S230177AbhFGNbv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Jun 2021 09:31:51 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=htw3Te87RZaFhL5Q54+puTt9regJ16TbmsEDomqNNaGqLqyQ1H2PMbu783byopWu8M93caBOO5P1tdin08D37acT1HrlTOA6egPplA8zK78/z3i/0tvbK7vqoIY5u+T5S26WrhA6JlDKvWujcsTBbqezQL86RVuo2BcQ2s2UPe1V2ZjPpUiYceAVxs5WNM+819bNHamtNIpQP7W0OAshrxjHTL/C8hEHBtcIKQBB4TvoUPfTAqqpdqj6OKze5caf7r/RIEC0KV6MYs5wRb+qFAs4HEvZ4nTS/xgfZbcyuqZYiNxOSgAez/uWHPfZ4pn6NJlElpNerrf6zZPitwgU/A==
+ b=lZ4DHZgfa1lrnGl14jBix6GN2QyW7tfjNWOs/Sin/b+VFiFHhU4uYok7SLqoRNog/RsUzcBoYX4suG9cM2DBKYVx1LcfCFd2nU9SHlA7XQgO+yJjKhL8H0O3xYZ9oY2mHjbWL/ZsLxEfeMpBZnasMLLXQdlf5XBE2LqiUvfZw9OU9RwevYc9ebALH8LUsngcy2Tn+7TDaWD7rml9vmL02eVJv3LvgHIS4KHmSirAIzp/8B3wcKd0kTNbdI9Uir6ecIVpJeyLzIGZnBa5/e9qRx+Z6kvg8FAWavEJSkOIpTTmK0QIKRaT4rLUPqF+DvhMG4NpG2beMcslSnDwLpD0bw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h0X8ivA5RIbq1KQPqriIiFa4RMjlmtZOOxxBxMnHJjo=;
- b=nDihR0zGVqoKLFhyIvDzUDG9rnsy3UcskrNCf5hTT1uimLV8f7QjNjFB7A6gi7qb8I/GBEaSHYvaQmnV2P8YK2gYrMyWyE6lTYqfMLmVmMgg09bkiK2PEwCrLdc/4o+yzD95gQqBanhRT85qR5ACW1mPMpexOpcCRu0t4MfJVueUFO/+NDqaUOaZYVplT4FUJqJxZfckj2knDCjDoSAqIpFuw2PlbYmCOMsfAh3oYjKx570EISiJF7W+FeXyLIcxFDaW0xXjaHRfLdXfiSFom9KjXthxB1jM7qxXEDrSNy9VNR1rmVq69wUMdChbLlPAdJeILNYiOBfxyIvkFXieyg==
+ bh=fOHeeB0yY8Vu6Q/GObAJe7mirW8YqQOUX5YUM/Ifvq8=;
+ b=VSgW7CussRhvIpZIjg1TE1eeTryYvID9f+nBfTjqfP5Qg+HCoxWtszh5cqWPvakLc0qilYw+bfcc76PxnwYy+g0WXIhtxnTsIXyugppPvy14vg70kw5ii5rdP/jVpSeMb0Mqwm/vEH7eUjm2h3ohJ9TuQib3Y3QQ9Oudy8/H8BpHR3ctQE8qhuqaDW35xEAAwdW5tITJF76icL7AdBGhTQrUPFEQKiIrhnAqc5q9fKIy02e68syxb6pemrtdhvWh1gulmYmiDI32URAR/MjB+KtOvjVXo+xNKk+oarjaOYcKsaemJXJADtSlbPIukrf+ZG2hwLDFilBjMR1mFgzLuQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h0X8ivA5RIbq1KQPqriIiFa4RMjlmtZOOxxBxMnHJjo=;
- b=hW3N/R/xaJ+kP6FPiByM6y6LABiK0sGMrBuul2IFt84AdL2ty5lAE5Ex0YUUiuPfcNZzNPVQImlGnARpFRWofCU6z1Wbvv6Tt5CriLcslpTcxDUB7tSFxAwujXRCw2X1heOngLa/TeDLOaUThITPX/lXWLOyUSnUdFy62it9XqEWE0MTkY7WbN+mNYy9b/GrBHnOb56U1mz6hhrr5hYHRjhQiqAVvR5348X7Nw4txv/+Yhz0UJVLfKKqocP7JBCh+bC/pPjQ6PC2e4O1siaG9FKLdqotEGs2ITbBU1nHR8H646kmKUomf0OakEm7/Pz+RundVmOR19g9gA3KKvkqlQ==
-Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5270.namprd12.prod.outlook.com (2603:10b6:208:31e::7) with
+ bh=fOHeeB0yY8Vu6Q/GObAJe7mirW8YqQOUX5YUM/Ifvq8=;
+ b=BurDxBNbcHt2Q9BVfJU2claTHqtYvUzc9SJdfZPXP7V5qCmhPYRrs8+tJj1p7w/x3tFncnYihiayFPFt+xgweRtpYkvWEfKfxLBkEq3B0BGy5RaywNBr9mD8Ec5slN3iEm8tVMgmr251NVEjsMGGTRw9A5UPqWMYlpH+6b61J4/NlySo+2pOiP8qBuCl7ziO/Vj6mOswOolqnkzskz0XLylLXCiZq+1Ey36UtFo2IzO9JQ3+KdLHhQuiRLE+k/MnvAa7R+hVVOikVtzmJxgDAH3s+dxCGNXnzujWEX7eZgtUP7xYqv7lHt4GOv+YTjIQOqZ4PGGTcqDqqq8JAWA3ZA==
+Received: from PH0PR12MB5481.namprd12.prod.outlook.com (2603:10b6:510:d4::15)
+ by PH0PR12MB5450.namprd12.prod.outlook.com (2603:10b6:510:e8::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22; Mon, 7 Jun
- 2021 12:50:13 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%6]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
- 12:50:13 +0000
-Date:   Mon, 7 Jun 2021 09:50:12 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Mon, 7 Jun
+ 2021 13:29:58 +0000
+Received: from PH0PR12MB5481.namprd12.prod.outlook.com
+ ([fe80::b0d9:bff5:2fbf:b344]) by PH0PR12MB5481.namprd12.prod.outlook.com
+ ([fe80::b0d9:bff5:2fbf:b344%6]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
+ 13:29:58 +0000
+From:   Parav Pandit <parav@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
         Kees Cook <keescook@chromium.org>,
         Nathan Chancellor <nathan@kernel.org>,
         Adit Ranadive <aditr@vmware.com>,
         Ariel Elior <aelior@marvell.com>,
         Christian Benvenuti <benve@cisco.com>,
-        clang-built-linux@googlegroups.com,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Devesh Sharma <devesh.sharma@broadcom.com>,
         Gal Pressman <galpress@amazon.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         Michal Kalderon <mkalderon@marvell.com>,
         Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
         Mustafa Ismail <mustafa.ismail@intel.com>,
@@ -66,127 +65,140 @@ Cc:     Leon Romanovsky <leon@kernel.org>,
         VMware PV-Drivers <pv-drivers@vmware.com>,
         Yishai Hadas <yishaih@nvidia.com>,
         Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v1 10/15] RDMA/cm: Use an attribute_group on
- the ib_port_attribute intead of kobj's
-Message-ID: <20210607125012.GE1002214@nvidia.com>
+Subject: RE: [PATCH rdma-next v1 14/15] RDMA/core: Allow port_groups to be
+ used with namespaces
+Thread-Topic: [PATCH rdma-next v1 14/15] RDMA/core: Allow port_groups to be
+ used with namespaces
+Thread-Index: AQHXW3XTgmUrShoLP0aSfA0ttnjNH6sIiqTA
+Date:   Mon, 7 Jun 2021 13:29:58 +0000
+Message-ID: <PH0PR12MB5481C3DE73C097E938B4E5D1DC389@PH0PR12MB5481.namprd12.prod.outlook.com>
 References: <cover.1623053078.git.leonro@nvidia.com>
- <00e578937f557954d240bc0856f45b3f752d6cba.1623053078.git.leonro@nvidia.com>
- <YL3z/xpm5EYHFuZs@kroah.com>
- <20210607121411.GC1002214@nvidia.com>
- <YL4TkfVlTellmnc+@kroah.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YL4TkfVlTellmnc+@kroah.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0072.namprd13.prod.outlook.com
- (2603:10b6:208:2b8::17) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+ <a1a8a96629405ff3b2990f5f8dbd7b57a818571e.1623053078.git.leonro@nvidia.com>
+In-Reply-To: <a1a8a96629405ff3b2990f5f8dbd7b57a818571e.1623053078.git.leonro@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [49.207.218.7]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f273cb05-4e94-4352-e562-08d929b85868
+x-ms-traffictypediagnostic: PH0PR12MB5450:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR12MB545053E293DAA6B3234867DFDC389@PH0PR12MB5450.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: z5WuCjxhYh6DXCA4PXlcDNW+5zogulLSR6xI4g7LQWnXizMFoAsj6QYHXJkolupsUlY5zRuGQHsm9ItqGL1+CVVFnt5mOlu23P+fr9UT7OAcdDv7VBFiK7LDVgioiBbnAfGNiP3/D8Fp3CvQ8hGJUEiiTNo0Msvtrz+5btGozMApEhq70nGwgzTLUJW0oDl2hoFVfBdm3cuCrdDu5lKdguS8dxFCS0YlaZkWFGjFxx4YaTcxqnI0g87i4jYoHb+6mCsTXxud0eRwIZIpokT2OTuDcq3I9ahDpO4LWaTQUb3BupfnVLU0282mS7fROeLJX91ZYZVJdZq1nn66aZbUrdyGadfxTs7Y1S3QJpNwo9GDTig8at5ZOW5kc+/4IgBdTWENssW3gllkXScc85C0LxxUEBjR/vsfzaa38U+E9kA9WWVfAhWBSCcUF7m0Ggye8UR0bKgNJ13A5MrYZo/BsfjZPB6Gtm5BT7e75/Z+xUxkOzf+vz9lz1WY+7mGiO0zGcRb/PpMpnH1YiIP+h/dqlLgrdUShMLR1ScJngIzWyq4n+aNJTSZj4NKG9ESJ/yySDC1XzCNlO/po2ifIYwcEXo2WZ4tui13gsk6+qilJr4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB5481.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(396003)(366004)(376002)(346002)(4326008)(5660300002)(55016002)(6636002)(54906003)(110136005)(7696005)(52536014)(6506007)(316002)(2906002)(83380400001)(7416002)(71200400001)(9686003)(86362001)(26005)(186003)(122000001)(33656002)(8676002)(66946007)(8936002)(478600001)(38100700002)(66556008)(66446008)(66476007)(76116006)(64756008)(55236004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?pn1yZUeOj0SUA72s1TFJYYSBI3mEmwslXqhI8mi4X5n22CkTfEGHFd9mL5PW?=
+ =?us-ascii?Q?FUkCt3qlBang+n4AohUiFA5mWdgRvymabJm1SvJcsilLmiuMolX7hGhn3Xsm?=
+ =?us-ascii?Q?8M5n6XeFkb11aMbxnOCXiLbqM/qn3a8FGjpE5s1HDewJOYpK3Ny9GeD6Bxwl?=
+ =?us-ascii?Q?/X82MivEvxlk3dmj6L4czPh5kkC/TgG9FPo07wShhHmEqhi29/0z74BGt4hZ?=
+ =?us-ascii?Q?LsXWbCCFoh7VOEgsGUhX/EXb+OLkx669RfaCh+al6+9bU2+gznJMXGySeDXR?=
+ =?us-ascii?Q?M5DcbjQVyXdZXEU/V9A6oJNMqcdqt7F7ITpuwubhUOykWjKQkvBC5N/4HQoP?=
+ =?us-ascii?Q?jIUQywRv1Ihx+fvPGFsdK4BpTBPGYPwLSv6474j0TVV4phGAk5wb0F3CLNBh?=
+ =?us-ascii?Q?046U/pHnqnEbyzbLxeRsFcsW3MlmdNPiyvPK6RPFGtbzY2cE8ntgLfhvi4vn?=
+ =?us-ascii?Q?TW0hZzkDi+0ZbfI9CNen79zTjLIUHQFs5I6jChpSjPQOUq5diB/h5pM3uvy4?=
+ =?us-ascii?Q?KwOUGcHPgB2q+f519nqqdFsrCq+DYqT+OTlHxn3Lb/PeavkmCuSR+XMQ1K+a?=
+ =?us-ascii?Q?mJIRhwaxBG/TsLt5JvFQcsUQ9obaE0eC01aRo1h9RZLb1hwkvf0/nkmpumK9?=
+ =?us-ascii?Q?Gshzl+L+hri91LRXS8KRDWJkKRAwJuiwFi1j+u4OqVeoC41xdxmitScXG175?=
+ =?us-ascii?Q?QpIDHFFQ4ojF0/vWYmqhfWTKwqPo1CVUW5qBcPkYIN/zZ47u8uao0HJfRw4t?=
+ =?us-ascii?Q?FWUtfxPFD+jaUVrw5L9pZ8f26eQ7BtnJP5YLxcpadEhHYyMaqn3tGBiBb9Nc?=
+ =?us-ascii?Q?XZzkuJwS5RT9/DFobUgv2GADfW8uH64Vm/TY4ZjHpV20PoSThUAlzaxN0Y4Z?=
+ =?us-ascii?Q?ZRZG0s32HAUajOwt1U0WTyqjrrL6/s1l9sr68WHjo1ofmtVX/EJU3MIDbpfU?=
+ =?us-ascii?Q?MWsmc0t0oexjdNnmjIHYTKrZN2J130oVFRz+cbTyx0A+kT3nNRLYnTt9bSoT?=
+ =?us-ascii?Q?DSC2R+UYgJyToKUIPjFWhYdScVonSBsCruLuuYiAwdBBSEGuvvKJ95d80mCU?=
+ =?us-ascii?Q?84H+hGAsOuUIC723f1pQQv/P+SutpWG0PzkkS/6x7vl8b0GCGso2VW4ZeNx2?=
+ =?us-ascii?Q?LmR/IIVroKWkbil3oi2+B2OXUHcO5Kze686UX5nMwJg0+9PIBrubjIYfUyyG?=
+ =?us-ascii?Q?COYxppi9OCWnZp7CHqfSCk2+Jy2cqq4CEBk7F/g+7mi8wdkrPkS01GKyIBK/?=
+ =?us-ascii?Q?xz362A1kHfbEuCmEevpxvNkOUzWsqVFGp9Lcobj4ybTnk6Coa4/L7m/GzX/p?=
+ =?us-ascii?Q?UKLqlt2v3vbv685sYgZ9futj?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0072.namprd13.prod.outlook.com (2603:10b6:208:2b8::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.9 via Frontend Transport; Mon, 7 Jun 2021 12:50:13 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lqEho-003Gzl-Cd; Mon, 07 Jun 2021 09:50:12 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0c989740-9276-45ed-d109-08d929b2cabc
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5270:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5270FFB317CA74B731CBC4F0C2389@BL1PR12MB5270.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nXG/IKRqqB1+ziLvjZD1TXvelnv6NpEmaKj6zoYA/i+V74GcjvUA+i0AtsP0tMAqjUsCMXjQQ5UyChOpRRj0+aD5HKP3NQqpeC3W8Ay3r8QTPh1L/WiloYLt8K0FHklcaV5sE6PuxABF13Tzwx+p4cuUqsODmtyUqpPvJZUtlk8ZpMbgvYw8zJiJf1wEo9JJ6/sx20iWwjQkdvJN4dp9j7G078ZaqgIJUnNO7dA/i4/AyEme7saVjBi5A1EM6OPgjh3mxcwOXM1/sWYq3M7Z0mGh3QBEetRGoj0jKbcAB7IifvK8/9TvUmcLKfnbkwufVKlzOViBfKkaAskqf4c1bMt26477QHuR/aCdQbJGWiSS+e6XqIsAqQj6szzAY191MMo3XXMXNeS+7w49ep3HpoqfNEIOPalH8FCDHp8AWqXE6nNbhfBi+mgam0OPXWlG0mtcb5nYMhh6aBNcsoIzIJESr5IYZF8iEbPWNHiJdXSRWofuuqjeWFfbhKDEC6J61tVGhg4UNIF9K9dRSevbox3jjvA+vQLk7TfbIV1IKjKxRWEkXkh8bOhO8qwd1rfGGpFxuIKjbO5gt4avtvUlhAQMN3nRK40fcE5zKwBp2XE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(396003)(39860400002)(366004)(478600001)(2616005)(36756003)(26005)(426003)(9746002)(4326008)(7416002)(9786002)(5660300002)(33656002)(86362001)(54906003)(316002)(66476007)(66946007)(83380400001)(8936002)(66556008)(186003)(6916009)(38100700002)(8676002)(2906002)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?liVsfgCwHtF380dNal3j/MYTv4uwFYL+y9fqXIwJ+zg7ZL3PyDvljYL1QGag?=
- =?us-ascii?Q?v4YTv4/P/HOoRv8RC/iE/UrSUViSbxJ5FLgOvfqiNvmE3MRrZ16qn6VUM6CJ?=
- =?us-ascii?Q?0ql+srvifwha5AgGwLBQWAAOkzEzr0rfUOf1ckVO9fwpcwlCJTD/Kg0MKwTF?=
- =?us-ascii?Q?Yr4Up/vU6cpti+Jsw2zPCl97s8gLTrU2fUr2yAyyOrfVHih65Lb2RRd3kZGR?=
- =?us-ascii?Q?ZQd6liUtExs6nToFHCauxIhmlzstthxUx1LvNQmGOJWfWrtNmMhrRVIxo77q?=
- =?us-ascii?Q?D2O9vlJao9yMNxkJhXLRnJYFWy65xFdiMPNsnwWAL/EzJZQwL1/yV86xDaES?=
- =?us-ascii?Q?QOqyc3iypwYAQIfSPPpMSQKfXvdbEgaY0aNTjpYw2PeSzeACEU6mDsmNq3Z1?=
- =?us-ascii?Q?lfvdSR2BPPC7ddHSODudi/Trze5NQ60T/VPjn3uWFHUB5syFMwhf2zG6OHZs?=
- =?us-ascii?Q?6RrtM10khxkIJC2V6SmDCF8FcPIKZBZa0EbTlgj90gene1hZN0MJ1WknqanC?=
- =?us-ascii?Q?RELn7X5LCX3Ki6kr+N3YRMtXcczat7EF71N4NE7CnfEGHUQt8fOD4543/cE9?=
- =?us-ascii?Q?Q0V4R8yS44K9kEeE7MC3+uukjB9KdcnQCDdbkrfjOKzpw1Qmx9czExUsixwq?=
- =?us-ascii?Q?yVcWXd4DDgKbZglN08BhzlnCnJV4dZC4vHWUBmF8plisxpFWuLs0pI6kVI4Q?=
- =?us-ascii?Q?PhnXRfCoONCOR0kUeQOwIX5vcJQ7Z8HRL85he07XM1/L9N5ytIRBgS81P8xN?=
- =?us-ascii?Q?eibZM8I7H49sJBWwLRF3gNmLVx5FnuQ0bk3u8qVHCmpINRemVbW2pRZDEUMF?=
- =?us-ascii?Q?tdpb5q6a4rHJnbDSHRT+jT/99HPUsAJqxAUElGU9m1r+4I5kl8Ae8DeO2dpV?=
- =?us-ascii?Q?xuU6H9CqCJYHU6IlC65y83/FhLLyY/kJ7brqU2YY/RwHqv1uQk7KtpLuRmyk?=
- =?us-ascii?Q?SIfa9iHzgfhwN91Z2zXfltt/i1HKUc6fqrQDt+xrOdeZ9O+E5lALk+JQcIzO?=
- =?us-ascii?Q?zw0ZVFerFmYMQVrykqnR3tP+5hZ3hkQwLWYD1XGAYv4tf16J5Eo4wdE6loWU?=
- =?us-ascii?Q?KGKVxXIf7j2+6BabewX3EtuUBjZ6IwEfoMR2ddrNAvbKf864QzGIPjH12emz?=
- =?us-ascii?Q?kk7T/UU+Hta/nk8Uj2Ct/73xlC44Bf1M+ekF8V5O6Et8CmOLR4PKLB3C1NoB?=
- =?us-ascii?Q?PcFW/QtVKvA1JnLDuF0rr2eIVmuDAIuidZxFnVAJD4YygwK4KABrmhcDCNsy?=
- =?us-ascii?Q?OybNPpiL3RMc9rt/HF7L+sVfyljTRYdT4GwalM6c7fKHDNwYb4HLQgDowHNc?=
- =?us-ascii?Q?8ZWDFz3RzP9mVWplPY50RaCr?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c989740-9276-45ed-d109-08d929b2cabc
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 12:50:13.4513
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB5481.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f273cb05-4e94-4352-e562-08d929b85868
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jun 2021 13:29:58.1037
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kxt9jfuJlYnuJus336vcM4EOIcswxKXJhi1q9gTEYe2/0zoZbv5OfXaAsQVB+1Hb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5270
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: njFbctC6g1YJFqVoKAwPlCFrJICxTnRfCAHt2wJcT2zJgEGWv34oCYd1b09H694iBb0BY5q4BFthDFDsNJeF6Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB5450
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 02:39:45PM +0200, Greg KH wrote:
-> On Mon, Jun 07, 2021 at 09:14:11AM -0300, Jason Gunthorpe wrote:
-> > On Mon, Jun 07, 2021 at 12:25:03PM +0200, Greg KH wrote:
-> > > On Mon, Jun 07, 2021 at 11:17:35AM +0300, Leon Romanovsky wrote:
-> > > > From: Jason Gunthorpe <jgg@nvidia.com>
-> > > > 
-> > > > This code is trying to attach a list of counters grouped into 4 groups to
-> > > > the ib_port sysfs. Instead of creating a bunch of kobjects simply express
-> > > > everything naturally as an ib_port_attribute and add a single
-> > > > attribute_groups list.
-> > > > 
-> > > > Remove all the naked kobject manipulations.
-> > > 
-> > > Much nicer.
-> > > 
-> > > But why do you need your counters to be atomic in the first place?  What
-> > > are they counting that requires this?  
-> > 
-> > The write side of the counter is being updated from concurrent kernel
-> > threads without locking, so this is an atomic because the write side
-> > needs atomic_add().
-> 
-> So the atomic write forces a lock :(
 
-Of course, but a single atomic is cheaper than the double atomic in a
-full spinlock.
- 
-> > Making them a naked u64 will cause significant corruption on the write
-> > side, and packet counters that are not accurate after quiescence are
-> > not very useful things.
-> 
-> How "accurate" do these have to be?
 
-They have to be accurate. They are networking packet counters. What is
-the point of burning CPU cycles keeping track of inaccurate data?
-
-> And have you all tried them?
-
-I've used them over the years. This stuff is something like 15 years
-old now.
- 
-> I'm pushing back here as I see a lot of atomics used for debugging
-> statistics for no good reason all over the place.  Especially when
-> userspace just does not care.
-
-If userspace doesn't care then just delete the counter entirely.
-
-Reporting a wrong/misleading debugging counter data sounds just
-horrible to me.
-
-What good is any debug result you get from the counter if it has to be
-questioned because the counter is allowed to be wrong?
-
-""The sender says it sent 7 packets, but the receivers debug counter
-reports only 6! I guess my bug is a lost packet in the network.""
-
-Jason
+> From: Leon Romanovsky <leon@kernel.org>
+> Sent: Monday, June 7, 2021 1:48 PM
+>=20
+> From: Jason Gunthorpe <jgg@nvidia.com>
+>=20
+> Now that the port_groups data is being destroyed and managed by the core
+> code this restriction is no longer needed. All the ib_port_attrs are comp=
+atible
+> with the core's sysfs lifecycle.
+>=20
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/infiniband/core/device.c | 10 ++++------
+> drivers/infiniband/core/sysfs.c  | 17 ++++++-----------
+>  2 files changed, 10 insertions(+), 17 deletions(-)
+>=20
+> diff --git a/drivers/infiniband/core/device.c
+> b/drivers/infiniband/core/device.c
+> index 2cbd77933ea5..92f224a97481 100644
+> --- a/drivers/infiniband/core/device.c
+> +++ b/drivers/infiniband/core/device.c
+> @@ -1698,13 +1698,11 @@ int ib_device_set_netns_put(struct sk_buff
+> *skb,
+>  	}
+>=20
+>  	/*
+> -	 * Currently supported only for those providers which support
+> -	 * disassociation and don't do port specific sysfs init. Once a
+> -	 * port_cleanup infrastructure is implemented, this limitation will be
+> -	 * removed.
+> +	 * All the ib_clients, including uverbs, are reset when the namespace
+> is
+> +	 * changed and this cannot be blocked waiting for userspace to do
+> +	 * something, so disassociation is mandatory.
+>  	 */
+> -	if (!dev->ops.disassociate_ucontext || dev->ops.port_groups ||
+> -	    ib_devices_shared_netns) {
+> +	if (!dev->ops.disassociate_ucontext || ib_devices_shared_netns) {
+>  		ret =3D -EOPNOTSUPP;
+>  		goto ns_err;
+>  	}
+> diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sy=
+sfs.c
+> index 09a2e1066df0..f42034fcf3d9 100644
+> --- a/drivers/infiniband/core/sysfs.c
+> +++ b/drivers/infiniband/core/sysfs.c
+> @@ -1236,11 +1236,9 @@ static struct ib_port *setup_port(struct
+> ib_core_device *coredev, int port_num,
+>  	ret =3D sysfs_create_groups(&p->kobj, p->groups_list);
+>  	if (ret)
+>  		goto err_del;
+> -	if (is_full_dev) {
+> -		ret =3D sysfs_create_groups(&p->kobj, device-
+> >ops.port_groups);
+> -		if (ret)
+> -			goto err_groups;
+> -	}
+> +	ret =3D sysfs_create_groups(&p->kobj, device->ops.port_groups);
+> +	if (ret)
+> +		goto err_groups;
+>=20
+This will expose counters in all net namespaces in shared mode (default cas=
+e).
+Application running in one net namespace will be able to monitor counters o=
+f other net namespace.
+This should be avoided.
