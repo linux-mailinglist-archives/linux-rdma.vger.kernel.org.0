@@ -2,116 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D142D39D6F1
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jun 2021 10:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0278439D6F2
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jun 2021 10:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229545AbhFGITs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Jun 2021 04:19:48 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:43800 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhFGITr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Jun 2021 04:19:47 -0400
-Received: by mail-ot1-f51.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso15892424otu.10
-        for <linux-rdma@vger.kernel.org>; Mon, 07 Jun 2021 01:17:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fRRphp1pMXetIPqWzfUb4kEsWYYyxyULXVCeARJ2rBs=;
-        b=WsRjxIKoOaxQ+MpqjqRAFekuzhP6wYW9RrmfRAvGtAzVDnrZ8c94rkSW88eV5ttalj
-         d6jXplqBBPPARjsXYKVql12lEsvc+lUUWyTbg/6OKJYvgm142Ek4oVWAKL26g2hsrE9R
-         sel1drjLkb3XrkR7+tAHzsOX7Oc0ed1xTe+kSWBM1DPtwO6QJd0i0eT3/nbmZJZdulLZ
-         WjEi4W8s8jgPOX9bOnS7kAHeOERzBQIcpHpA1VvZeLHleczg5LwEoYRYAX7h12LryjXA
-         kR5WeSDKg5DWHlc5o0pMKhOT/AznG3mwm3hwVN4my7c9Ygqz6d4wWiTG9Yb+8lyNLX5m
-         HwKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fRRphp1pMXetIPqWzfUb4kEsWYYyxyULXVCeARJ2rBs=;
-        b=Oz2lXtpBh00rOhgyQOCEqejm4YLAYSmuH68mXwC8RJNEZEx7HmU6Wnwyuiq61DXKQe
-         OOoBCPO7fIMwHXt8lOcqD7YRReg/j0AUYNku1Y07HRgBpghQuCHRCaEITbn4xL2GfZZO
-         SEQ/H1lQVUW4VrRa3S3U+zxOweuX/wqWYHlFDb3+ogyA6DWzZPA7oe0hNo5Yn5ilWJvC
-         M9MYCXuVLVPYVRTC/mlR14d9EkE8R8gsq1lnhBLdpiWyABq5mxapP+ohgWUg7vqBPXYA
-         PcvAx9zRgw2z2szxfk7BSgaZKtL/nWLJw3FyXAqZNU0iaDuDdUmhLJ6VmFQEPqQf5/jp
-         iO9Q==
-X-Gm-Message-State: AOAM53048UzlwB80s8HVqgjkMnxvFD8v64AGe8PzETG3okDp4bGduIeq
-        +njpM3Tngi7fksKsoysAOK9lz6HBZPlQ2u43/zU=
-X-Google-Smtp-Source: ABdhPJyUEKOTOgk5fhadNQ042a6pfhh6fmAvEvY1Tzg1K2tIXap5iQu2n9yTy/Ejev6pXjbJ1n6D788PwojgdNLXGO8=
-X-Received: by 2002:a05:6830:c5:: with SMTP id x5mr2263478oto.59.1623053808508;
- Mon, 07 Jun 2021 01:16:48 -0700 (PDT)
+        id S229966AbhFGITy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Jun 2021 04:19:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229436AbhFGITy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Jun 2021 04:19:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D17DE61205;
+        Mon,  7 Jun 2021 08:18:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623053883;
+        bh=rcNYVbMyXafr9ZPeLGrjEbrvpNK5tT6ia0SsufJVmzk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SKlOT+R7SNtF0XK1O4xH620h0QsH0T7g+8cn4p1H2nwjwDy4riCOWuxM2fVPREPzK
+         cXDrQ74468qT9gdGrsiJy+3W18fGtzzWmi3AE/b1vXZeeShY88Dp3ZYJVVV6qjubGs
+         V6amFAU9fEdrhowYIDoLDwUDLe9Wv3iIz4smN4AtClVj3ldVQhunzRhuZTGcGhyRHL
+         AuQlhnmQbxaAbpA3z6gk4W9JimdgOMbUK8S/vOLrJWbsk15MiH0QMNQq9KAGthCLRU
+         bC5kjUhZpxd8FOKkhjfeaww1usR0m2uzMDcOUaCVklF5obeqgY2MbCDo8XpL3GrXJE
+         PM9uuQ6RMTkKA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        clang-built-linux@googlegroups.com,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Gal Pressman <galpress@amazon.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: [PATCH rdma-next v1 00/15] Reorganize sysfs file creation for struct ib_devices
+Date:   Mon,  7 Jun 2021 11:17:25 +0300
+Message-Id: <cover.1623053078.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210604230558.4812-1-rpearsonhpe@gmail.com>
-In-Reply-To: <20210604230558.4812-1-rpearsonhpe@gmail.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Mon, 7 Jun 2021 16:16:37 +0800
-Message-ID: <CAD=hENcwwjS8X2R24+cFRyyrA5_k=F5LuC4bx1tzCVW969uvuQ@mail.gmail.com>
-Subject: Re: [PATCH for-next] RDMA/rxe: Fix qp reference counting for atomic ops
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Jun 5, 2021 at 7:07 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->
-> Currently the rdma_rxe driver attempts to protect atomic responder
-> resources by taking a reference to the qp which is only freed when the
-> resource is recycled for a new read or atomic operation. This means that
-> in normal circumstances there is almost always an extra qp reference
-> once an atomic operation has been executed which prevents cleaning up
-> the qp and associated pd and cqs when the qp is destroyed.
->
-> This patch removes the call to rxe_add_ref() in send_atomic_ack() and the
-> call to rxe_drop_ref() in free_rd_atomic_resource(). If the qp is
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Not sure if it is a good way to fix this problem by removing the call
-to rxe_add_ref.
-Because taking a reference to the qp is to protect atomic responder resources.
+Chagelog:
+v1:
+ * Added two new patches to the series
+     RDMA/core: Allow port_groups to be used with namespaces
+     RDMA: Remove rdma_set_device_sysfs_group()
+ * Fixed missing ops definition in device.c
+ * Passed proper internal validation and review
+ * changed EXPORT_SYMBOL to be EXPORT_SYMBOL_GPL for the ib_port_sysfs_create_groups
+ * qib was converted to use .is_visible() callback together with static
+   attribute_group declaration.
+v0: https://lore.kernel.org/linux-rdma/0-v1-34c90fa45f1c+3c7b0-port_sysfs_jgg@nvidia.com/
 
-Removing rxe_add_ref is to decrease the protection of the atomic
-responder resources.
+-------------------------------------------------------------------------------
+From Jason,
 
-Zhu Yanjun
+IB has a complex sysfs with a deep nesting of attributes. Nathan and Kees
+recently noticed this was not even slightly sane with how it was handling
+attributes and a deeper inspection shows the whole thing is a pretty
+"ick" coding style.
 
-> destroyed while a peer is retrying an atomic op it will cause the
-> operation to fail which is acceptable.
->
-> Reported-by: Zhu Yanjun <zyjzyj2000@gmail.com>
-> Fixes: 86af61764151 ("IB/rxe: remove unnecessary skb_clone")
-> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_qp.c   | 1 -
->  drivers/infiniband/sw/rxe/rxe_resp.c | 2 --
->  2 files changed, 3 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-> index 34ae957a315c..b6d83d82e4f9 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-> @@ -136,7 +136,6 @@ static void free_rd_atomic_resources(struct rxe_qp *qp)
->  void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res)
->  {
->         if (res->type == RXE_ATOMIC_MASK) {
-> -               rxe_drop_ref(qp);
->                 kfree_skb(res->atomic.skb);
->         } else if (res->type == RXE_READ_MASK) {
->                 if (res->read.mr)
-> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-> index 2b220659bddb..39dc39be586e 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-> @@ -966,8 +966,6 @@ static int send_atomic_ack(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
->                 goto out;
->         }
->
-> -       rxe_add_ref(qp);
-> -
->         res = &qp->resp.resources[qp->resp.res_head];
->         free_rd_atomic_resource(qp, res);
->         rxe_advance_resp_resource(qp);
-> --
-> 2.30.2
->
+Further review shows the ick extends outward from the ib_port sysfs and
+basically everything is pretty crazy.
+
+Simplify all of it:
+
+ - Organize the ib_port and gid_attr's kobj's to have clear setup/destroy
+   function pairings that work only on their own kobjs.
+
+ - All memory allocated in service of a kobject's attributes is freed as
+   part of the kobj release function. Thus all the error handling defers
+   the memory frees to a put.
+
+ - Build up lists of groups for every kobject and add the entire group
+   list as a one-shot operation as the last thing in setup function.
+
+ - Remove essentially all the error cleanup. The final kobject_put() will
+   always free any memory allocated or do an internal kobject_del() if
+   required. The new ordering eliminates all the other cleanup cases.
+
+ - Make all attributes use proper typing for the kobj they are attached
+   to. Split device and port hw_stats handling.
+
+ - Create a ib_port_attribute type and change hfi1, qib and the CM code to
+   work with attribute lists of ib_port_attribute type instead of building
+   their own kobject madness
+
+Thanks
+
+Jason Gunthorpe (15):
+  RDMA: Split the alloc_hw_stats() ops to port and device variants
+  RDMA/core: Replace the ib_port_data hw_stats pointers with a ib_port
+    pointer
+  RDMA/core: Split port and device counter sysfs attributes
+  RDMA/core: Split gid_attrs related sysfs from add_port()
+  RDMA/core: Simplify how the gid_attrs sysfs is created
+  RDMA/core: Simplify how the port sysfs is created
+  RDMA/core: Create the device hw_counters through the normal groups
+    mechanism
+  RDMA/core: Remove the kobject_uevent() NOP
+  RDMA/core: Expose the ib port sysfs attribute machinery
+  RDMA/cm: Use an attribute_group on the ib_port_attribute intead of
+    kobj's
+  RDMA/qib: Use attributes for the port sysfs
+  RDMA/hfi1: Use attributes for the port sysfs
+  RDMA: Change ops->init_port to ops->port_groups
+  RDMA/core: Allow port_groups to be used with namespaces
+  RDMA: Remove rdma_set_device_sysfs_group()
+
+ drivers/infiniband/core/cm.c                  |  227 ++--
+ drivers/infiniband/core/core_priv.h           |   13 +-
+ drivers/infiniband/core/counters.c            |    4 +-
+ drivers/infiniband/core/device.c              |   30 +-
+ drivers/infiniband/core/nldev.c               |   10 +-
+ drivers/infiniband/core/sysfs.c               | 1095 ++++++++---------
+ drivers/infiniband/hw/bnxt_re/hw_counters.c   |    7 +-
+ drivers/infiniband/hw/bnxt_re/hw_counters.h   |    4 +-
+ drivers/infiniband/hw/bnxt_re/main.c          |    4 +-
+ drivers/infiniband/hw/cxgb4/provider.c        |   11 +-
+ drivers/infiniband/hw/efa/efa.h               |    3 +-
+ drivers/infiniband/hw/efa/efa_main.c          |    3 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         |   11 +-
+ drivers/infiniband/hw/hfi1/hfi.h              |    7 +-
+ drivers/infiniband/hw/hfi1/sysfs.c            |  529 +++-----
+ drivers/infiniband/hw/hfi1/verbs.c            |   92 +-
+ drivers/infiniband/hw/irdma/verbs.c           |   11 +-
+ drivers/infiniband/hw/mlx4/main.c             |   27 +-
+ drivers/infiniband/hw/mlx5/counters.c         |   42 +-
+ drivers/infiniband/hw/mlx5/main.c             |    2 +-
+ drivers/infiniband/hw/mthca/mthca_provider.c  |    2 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_main.c    |    2 +-
+ drivers/infiniband/hw/qedr/main.c             |    2 +-
+ drivers/infiniband/hw/qib/qib.h               |    8 +-
+ drivers/infiniband/hw/qib/qib_sysfs.c         |  616 ++++------
+ drivers/infiniband/hw/qib/qib_verbs.c         |    6 +-
+ drivers/infiniband/hw/usnic/usnic_ib_main.c   |    3 +-
+ .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    |    2 +-
+ drivers/infiniband/sw/rdmavt/vt.c             |    2 +-
+ drivers/infiniband/sw/rxe/rxe_hw_counters.c   |    7 +-
+ drivers/infiniband/sw/rxe/rxe_hw_counters.h   |    4 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c         |    4 +-
+ include/rdma/ib_sysfs.h                       |   37 +
+ include/rdma/ib_verbs.h                       |   68 +-
+ 34 files changed, 1313 insertions(+), 1582 deletions(-)
+ create mode 100644 include/rdma/ib_sysfs.h
+
+-- 
+2.31.1
+
