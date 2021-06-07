@@ -2,132 +2,206 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 951F039EA02
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jun 2021 01:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD5739EA29
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jun 2021 01:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhFGXUe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Jun 2021 19:20:34 -0400
-Received: from mail-bn1nam07on2042.outbound.protection.outlook.com ([40.107.212.42]:60286
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        id S230386AbhFGXeA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Jun 2021 19:34:00 -0400
+Received: from mail-dm6nam12on2086.outbound.protection.outlook.com ([40.107.243.86]:17248
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230183AbhFGXUd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 7 Jun 2021 19:20:33 -0400
+        id S230239AbhFGXd7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Jun 2021 19:33:59 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SxIwi4Xhcnkklb6lhyEtkOHNC+kNNzHXIoezBroFJweqL1X7rdEtS13l6MggGcPkb9tKpQsutosjc6FJoxfw4zUqs/4gfGvm9vTMjzsGB1BhFzN8b6Yw9VqlplFWyJfuSOWeB9e+Ce6NhC0yLAhDob7vu9xynLOKjRjGPRmcKwV+Kj2VEmbIX0sjZOkhww951HNn+A+8kI51nNU35344bFwk6Vpiof4f9ikc19cYBL0E1p9v1pSK8V5VNqTvOyDeuG+TlaKxNWM+DYqioevOdiIzDGjy0X7T2ppsHy1hHIZQneeDdWwqiGLIqCXCB7RQhNg/nc/mXsEMaigQCxvQyw==
+ b=edjaNQ4jUD8WLQcYKrCKubfFJsps73R7b3VcdK2QeXg9uRxl4VKG+9uGLeEz2tTMwyWF6Hsw9Jz+wUUmzggpysr7O38721DcKQldCgI3pRV3rtXS9z+3Ps+a1t6omizAx9WHIBH9VBiwmdKCMdrBjcj7w8lYhpyxq1lN9OE9/IWTcIcFZvjz83NHPZOvdpg6IpDs67TZ0jS8cYb4NEvLpnh3mdjlt1WZYSmnYev5FVkBEsBTRRgUzJ93VjBpL7KzHqQQRBJhg21vegMjKMm4kgMWuSiEmfLkCHvuXcQ0GulEp+gneye0ZjqpoHaHeIuFzkbCETgvBv4QkwlODXC0KA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WcqCMQrGavgYjOt2lGIXN2oQn3dkrM4UhcUIjURHt0M=;
- b=dYyTx2EA95CQwtvWvJGbofqZaWcLG7jQk47A5wF7Ei/0VRwN9bLBv3iPIaYAe4LP+2VjQjMngj1dCFt/4+3VqCpiboCE1XP+U2aNhnNpUTNv3tiarMTigBsLpbGMSfrq7ylKgfbY1R1mTjoz+aWZPuxx+kd6+jcPLGdY84AGYS5+rLR3SZcopGzTfzoOrWLS2F424ushifWz7ScSJPHd2wMQ0Y2dv7ipaMNdiFl4gBdVitwJ2LTEowv1fo22PCNg14RbHwMrWMOMPsyMe430sGg0u6DueubS9F4JDuII4k54HLzqWbwSvlB/rCMyj4z+dlgP/Kvqem7ar3HXmRUTeg==
+ bh=35tgb7VnE398mqraT5aYrDQ5RJbp5fn1InjDMrIGms4=;
+ b=JVggemMVdFTbrA/YAy4NdVNSNXA2+CeJj98BNTnvc7LUyZCO9NQqD1EAAIZZOyffJ7D3k5SSxv8FgNZySK1Fr1APZiWxEQzk2vzpnZ9k53oSR4cyYfT0l9oT4art/ivaBSQWkd6P2vvqc7iljGxfozZQcp8j3TG4eYsR/x+wB1+1M8z7G2cxYXliqp3YyaSd9smdhJjmAVqTtiJeXd5xA0lmx8bm352FXriOwCgbO1NUBJCvREGoUsyGN5Opmvid83XOFsDg9YglSLmGCXqlhMJ0rrfVgdMvb4disgYXGLjUUQ4hDNZpc3qNZj3a79YSJqJWTzlZFWLj7N/FcrkyBg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WcqCMQrGavgYjOt2lGIXN2oQn3dkrM4UhcUIjURHt0M=;
- b=MkT3r8M0OYsEVLO7cCOXyS5OTiRNjN7sizRQjEARwUa01DPPfMX0K0Tp7aH6w9nddh9AwelmTtGK54XDmi+N25V6z6J6pSzfIaWWYktx8jXZw5I96HB8HSerCS8BMxYU5H2pflFpU2vFF1uNNYfghNMHYmTYuI4lEml9y3rIIKLGYjLO24ceI2ToyUAF7HMO13snbfm6deOP7ZtHhz43SNU81sCn7AXiYfoOl8qUBUTje+zHtFc3k+5mJKqCjxMQV9IuQDjFGU+QMtEPxzT/CWcNbXWcBw4yjn6zYH4syd83AOO//h5aa0FtaqA1zfhhja4VD6Pce0tdDtIXf6Puwg==
-Authentication-Results: perches.com; dkim=none (message not signed)
- header.d=none;perches.com; dmarc=none action=none header.from=nvidia.com;
+ bh=35tgb7VnE398mqraT5aYrDQ5RJbp5fn1InjDMrIGms4=;
+ b=XNTfj0QloZ+azBc3V3OY2NVV1HkaN2w0gs29Uu7tTjSIYfRBkyB/B7jhBqdG02Xl6dhfeNKyIittOtcx7ykaJVTseNGmMI1JaxZnxMxQ+k/E/IRGW40GDh74zrxW0S6cZoqO7GScbdk3FLmIvFJyLkHfxBFlS5XHZavjxeOkxkdBzkccaYoL2F71leXv+SFcNVFHZW7x6sp0PUSHJSJn2At5s+4rUaSfkMKl/vw3Kh1em6h2cubYS1reeLuP6JHyoPxmuOI25sa1y+ATTYfXuftwCiB7Hxh9wugXCM/QDtL7be80ayiF7n4E89OweXa1lCxJaytW8Q/R6XS+UlBS5w==
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
 Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5318.namprd12.prod.outlook.com (2603:10b6:208:31d::20) with
+ by BL1PR12MB5141.namprd12.prod.outlook.com (2603:10b6:208:309::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.21; Mon, 7 Jun
- 2021 23:18:39 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.20; Mon, 7 Jun
+ 2021 23:32:04 +0000
 Received: from BL0PR12MB5506.namprd12.prod.outlook.com
  ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
  ([fe80::3d51:a3b9:8611:684e%6]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
- 23:18:38 +0000
-Date:   Mon, 7 Jun 2021 20:18:37 -0300
+ 23:32:04 +0000
+Date:   Mon, 7 Jun 2021 20:32:02 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, lima@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH] treewide: Add missing semicolons to __assign_str uses
-Message-ID: <20210607231837.GA831267@nvidia.com>
-References: <cover.1621024265.git.bristot@redhat.com>
- <2c59beee3b36b15592bfbb9f26dee7f8b55fd814.1621024265.git.bristot@redhat.com>
- <20210603172902.41648183@gandalf.local.home>
- <1e068d21106bb6db05b735b4916bb420e6c9842a.camel@perches.com>
- <20210604122128.0d348960@oasis.local.home>
- <144460ce4f34a51dabb76e422a718573db77cdc8.camel@perches.com>
+To:     Parav Pandit <parav@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Adit Ranadive <aditr@vmware.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Gal Pressman <galpress@amazon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v1 14/15] RDMA/core: Allow port_groups to be
+ used with namespaces
+Message-ID: <20210607233202.GU1002214@nvidia.com>
+References: <cover.1623053078.git.leonro@nvidia.com>
+ <a1a8a96629405ff3b2990f5f8dbd7b57a818571e.1623053078.git.leonro@nvidia.com>
+ <PH0PR12MB5481C3DE73C097E938B4E5D1DC389@PH0PR12MB5481.namprd12.prod.outlook.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <144460ce4f34a51dabb76e422a718573db77cdc8.camel@perches.com>
+In-Reply-To: <PH0PR12MB5481C3DE73C097E938B4E5D1DC389@PH0PR12MB5481.namprd12.prod.outlook.com>
 X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0007.namprd13.prod.outlook.com
- (2603:10b6:208:256::12) To BL0PR12MB5506.namprd12.prod.outlook.com
+X-ClientProxiedBy: BL0PR02CA0092.namprd02.prod.outlook.com
+ (2603:10b6:208:51::33) To BL0PR12MB5506.namprd12.prod.outlook.com
  (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0007.namprd13.prod.outlook.com (2603:10b6:208:256::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.10 via Frontend Transport; Mon, 7 Jun 2021 23:18:38 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lqOVx-003UGN-4z; Mon, 07 Jun 2021 20:18:37 -0300
+Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR02CA0092.namprd02.prod.outlook.com (2603:10b6:208:51::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23 via Frontend Transport; Mon, 7 Jun 2021 23:32:03 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lqOiw-003WBG-V0; Mon, 07 Jun 2021 20:32:02 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ea855673-a817-4d6b-036a-08d92a0a94b6
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5318:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB531868D60C97342FEC81E141C2389@BL1PR12MB5318.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Office365-Filtering-Correlation-Id: afe03612-a17f-46a6-5025-08d92a0c74ca
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5141:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB51413589046CE96D6EA1D410C2389@BL1PR12MB5141.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1IQIx1Kt2aRGjU2JT97DmzuN4KpSkwPKVfdKyU0IUzq+uIc0ZdBJDlIXVKX0czRpEvtl1/rlvruGzP8W4QwKNAWQ4SQ696qtZKeZ/JHZPVEOGO5DT6ukNWcuVo3IPkBzGUHijB/mtXnRn4Jv7OIL05WjtfOnDdaqbAjXWe8xlDWcfCE60CVCxR4UT3KzjS6dN/rmebdAvKEhE9MK7CkVMPXEQB2DUMtWnakKFUxeyKoI8obrLm8bQWMNU7L/Vwr8vwWET5dNUP7zATZ67NKsFP9VUkEA0lPHFGFc17IQSxbrbU8Mh8rQg9D/zemTYCfTd5Sdi814M3bfLQNAyRYmJA6iqwhsMKdKibcU3dCJ40VRETy4n9pI71BnNtZlEKob/BCUW99/0szsyZ2YibVsyr8wvG6AchchcbIFhWHLcA88S4NwYhBC5VtlVPT9jMpsWhMNuEqiinlWwd1XFONHMUnCTwrPbrTnqcpd5rI8PDqNNTMTSHNqI0nyNu0/mKpboma0BGwM0p1Hh42EqWhjl4yDqItkAKqJBEgIhz5L7fCQsxKoNwePab9wLw4rXdjTJCP25j00FLxTYQfIubEoVXRLK675yZrIJr/krobFjLiTGneeMNY0PbBaXk+9gfi3OoZDsPnVcTGCYV2Wedid9A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(396003)(39860400002)(346002)(7416002)(478600001)(83380400001)(36756003)(8936002)(2906002)(66556008)(186003)(66946007)(6916009)(2616005)(66476007)(38100700002)(86362001)(4326008)(8676002)(4744005)(316002)(26005)(426003)(5660300002)(9746002)(1076003)(9786002)(33656002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?yfBM5qtu8tW6vwBJ0j080dK2cZ8vkOmiwZLJ63PMA+/80r8loKMql6hfUJtv?=
- =?us-ascii?Q?6/bo86HhiNe2f9aiBnzKG4hmtbrNTVQVN0yMwYTXE0+44JTFlyj5VUPCdlh3?=
- =?us-ascii?Q?zXT0us0CVFTOq6IpG+kPrQ9iyYbsfAGp+P9v/x2G/nPCHp+2J1B89B/NEXUd?=
- =?us-ascii?Q?43NyjGvlkhtynXZ9+gKXfRo319yGsWXE8Bm4qVP2x8J6GsNlZ6JpBB78zlon?=
- =?us-ascii?Q?JuFGZw1w7PzLN4uFvfW3RV7Rw4AROjhJSAufSqHjpnzDZ4cWQFICGXNXyB1Z?=
- =?us-ascii?Q?a8OS6DDubFGFVGi2ZtPdAZCAVFPQ+jzlZcfh+j7Z/F1j4l726Imb1BZzt7RL?=
- =?us-ascii?Q?YvjCyCdhaS4MxEL7XJ6Qr4zGq01QA5KQdfa0bAStdAoJZkBuHH42IxknlE8N?=
- =?us-ascii?Q?krqaxuS5f0Q3uW1V6XB2Tzs1zzlRzPe7EeQzkBGAZWALu1pKkcaE3z67CuGT?=
- =?us-ascii?Q?4aW3/iuFkKePhFQWWAD0BgN9n2ZyGkg/SQC5JwiZHOY5W3+MJovVTXcoo2i4?=
- =?us-ascii?Q?Xhi3LVT2VxW3+7Jbup3Ls3Z2A0502lvQpkoDUsiJF1Z2o7XLYKPRKowZiiC0?=
- =?us-ascii?Q?3yVhtkjYo2DTJSl8xTkjw+ArZYHYEnOSKszHzRqJdACQi5vhSQeMJwYsSPwa?=
- =?us-ascii?Q?eqhGRK9pSpM+8c7pkEJX3B+5TOMS4N2U057w5Y2LtauHW0AKePCeCRFP5tya?=
- =?us-ascii?Q?ZBmIa0dSvfgOSYjgdGPgGe2jVSDVT69E94/HM5Rh2CtjSmUBpGsS9dcwhlJK?=
- =?us-ascii?Q?qyCM1GN1HDU6ZNX/Jg9TbRM/vnZZZ1jTt8QHYhSgNKVlSXDX3fTMUwEATJA+?=
- =?us-ascii?Q?o3DfCY1T6MscrU9x9qc/aqzf+Z4efgpjIedZgDIIyZX56CJDC/2IqAN5GNDq?=
- =?us-ascii?Q?IhPFRAItHkfHEWtba6cZTZIRipHhFMmD4Bo/pDW+TCVHNHi+3FczVbX0Jj72?=
- =?us-ascii?Q?U4JL5OpQuYz/ZNg+9otDanDtkI3MWVP3xac56nWxoUA42yEA5wdZh6sad4UE?=
- =?us-ascii?Q?tXcfX6BXEv3VCwEbEFVrrNab76IGdhT9hG0EQL6PlWSKLvI7oLIBptOmo5E0?=
- =?us-ascii?Q?lS3Yb5MZ+SzW2wyXMWw0g7OkvII/rdaRuJFmRS+KG+c/XxCMjIDM6GZLt89c?=
- =?us-ascii?Q?hmi89HoDAvgn2SqtZhNMLE8lVXxDJ2/YfA8OPJpFkj/6fQR1u+f1nZm2yeSQ?=
- =?us-ascii?Q?5ms2a6uMnSEZLYTV53qY8dkjWED1YMeoDgmLuaKOnL5z+KeIZo+WBhKpXdhg?=
- =?us-ascii?Q?OTEWOgO3p+d8j5Qxms6gqTsPeJA3rKOHB8opXaX1K+0Kbkcbxv8c6gM9LSj/?=
- =?us-ascii?Q?nncr1s2JcbTuYBXrU4ZST25Q?=
+X-Microsoft-Antispam-Message-Info: +Jcnifj29MCP/pIrw4ATRTurf76khZp1htj+WjjQ/GW+PrFPQfBmjXrPzujpuScM0K0eksQiRBJi92cUrnFDECGx5PO4gX8sI5Oh0Py99qHyJi08DexHaryRffFU0tRVH5a1hYVkIFPdQTFa656tyfv+wdPXA//OFgLZqcLHdGskLTunY7ct9/4Kw8lVlunG9+ykYtiX8HIFUnndMKV11hwJmyTABFQTIDFCxzEG+L9YpFqDrtzlowmgHildvYk2isKjyu9D5rDlhykKEk5C/RwJHUwNVCkZQIlNwrVHN/jJwKjZmt1617M2XNhz8MqdWyqUHQf3w+1cyTB9wRyDVGlTHvJTk7mBTEuiwYVdPBcaQEAHkaCrSU97s4Fg4RzZvry9dddLkaeYb8hf8XMlyla2i1WApvQwjESTlmB5KL1yFHgxVVOJbu9QWBUlpj7GxzDF2XizYG0WOro2TKUpjKtyxpFc4pZ4KlAf4r/8l1WsqUPFQBNeHAUBsO/dmgHmMOm+S109zufcp0qdCFHZq03b/PET+M4s6xkebjH+C7WiFox7zhpcC0TozELaHqicZ657v3spSv9HkaTmKJpBCNI+X1LPCNAuAgH0In0mOj0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(346002)(39860400002)(396003)(2616005)(7416002)(316002)(1076003)(37006003)(26005)(5660300002)(2906002)(66556008)(66476007)(186003)(9786002)(4326008)(66946007)(426003)(54906003)(9746002)(33656002)(83380400001)(478600001)(36756003)(6636002)(8676002)(8936002)(6862004)(38100700002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?+AhU9Pmq5OIYVKE42826jxR9bqvhXC+o2ZV1MWxz9ysJ1MzZIJ0+l10mp0nh?=
+ =?us-ascii?Q?5TaQRmKNIgjG2iId+1ZAXoOKJ9SG60Xeqe0cty50mm2ErYLjzbSrgotrAFhW?=
+ =?us-ascii?Q?mIMYxLj0FViKEamTOsbvPwOt2lKuaeXsdLGAvWAOCji1bzsgV9OoRl1Qig5f?=
+ =?us-ascii?Q?0XEeGqPdEdxEuyiYXmpkLh6FkUrNy75cGsGDDHEaNNuFXlrGXqrwxn96e+sq?=
+ =?us-ascii?Q?KNRgBjj9i0mUvwqOcTN1KhXEyTAGWvc8PbP411gt9T2sti03bIBCSdV+ImeN?=
+ =?us-ascii?Q?qf249Vj0tXPJ08Iwct8TVqkeNVVxObf1j10PS9m40naavU+LTgRxycOKPDzV?=
+ =?us-ascii?Q?q40IIag7gqRG4D3qJVsr7356zui4bEBQRcRz/rIP842i4XfcZR35yiIZZgf1?=
+ =?us-ascii?Q?h8GUrwM1kh3e9QEo8oaiqSd60rJP33s5HC3xclfSzVZoKIgZgwL/RUxvNG/V?=
+ =?us-ascii?Q?mqfEKygpdZd5P5v4Ts8d96S5L4hCl1pMBeWP+S2pgBZs5sEQjrjI/4KxOYi0?=
+ =?us-ascii?Q?bw5oS5nAa5MKjIcNNE0cy8F7BSfhFAmJq2Op9tCVF7B4lXf4xrfp3+pfhViQ?=
+ =?us-ascii?Q?UZl+c5k14r3NA38SUAWs0bC6Y/DXAiW0h6PMthY+UWgSTGAQNt4SWD8h7v3V?=
+ =?us-ascii?Q?mdVXCcGFeU+7R/gp6pKGV9Cohlw5lYIOUc6IjAFZ6ZuLnfRZ5F5arAQKZxT8?=
+ =?us-ascii?Q?kvUTyQm2HR0hSCX98Ayl3dxbFLRVhmhGz2iz+vVCqUGVc2WeLoj9ML9Ru98G?=
+ =?us-ascii?Q?QPNjqPfvZyHI25XOtCP5VhmkOHZ6BVAKtQwgJ0bBYZ7ETrjDDtIrWtrNrwEW?=
+ =?us-ascii?Q?W6rlpuB5JQ0i5g+0l70T4xUhg/H/5zIgSZ1Jtf8KB3FaY/NxxQTJTvGtvpMj?=
+ =?us-ascii?Q?EMXym+8KXCbnivRjrtOFccsnbPscmnWWWp7f6KTK5o5h2kw+5DxwDVdZNvRv?=
+ =?us-ascii?Q?6vgzRUviTA5PerMoP4q7p8u+9FbcFJvFOlqCuwQGRVr0OF3VBcWExOuFiZZo?=
+ =?us-ascii?Q?oj4ZmeaPsdr4SeWl/cvCiQy5VbPMEmrEm4e7aCp3/5AjlklkUAV2Thiiayqo?=
+ =?us-ascii?Q?Qth67M9adhttjcWtTCfq98VsyioGx3n62dfg4LYN2Dbay1a0SYNwficg1yzO?=
+ =?us-ascii?Q?/Qb+6mxUev5iV8gbcgn0ed8ReeeMs4DksrAts58rBGefwmvoNxp/SOliVx9k?=
+ =?us-ascii?Q?gBVxRHSx3Zj86FypUbOzKif59M+7HW43FykFmip5N3A2lrQqBeYrGcMFhk/C?=
+ =?us-ascii?Q?dohCrjFJLRpD2fmOuqYyR3pC7of59KCMr6B4gAiRAnMl9CYcHDzo169moLH/?=
+ =?us-ascii?Q?BoduT5tX0wjec+4QIzWlAfdd?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea855673-a817-4d6b-036a-08d92a0a94b6
+X-MS-Exchange-CrossTenant-Network-Message-Id: afe03612-a17f-46a6-5025-08d92a0c74ca
 X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 23:18:38.5967
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 23:32:03.9166
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: neQlgCFaKGpzHFVPgyILIvzKgtLEt7yz1tRHrJ5G3XSQq+P1Tt3kJpJYuZGkAwLn
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5318
+X-MS-Exchange-CrossTenant-UserPrincipalName: ecuL86syDestcKggzs9FMylbtr5OnlQB8XITxz7SxqsRvcSwEG6hsIX9XGNryZKU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5141
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 12:38:07PM -0700, Joe Perches wrote:
-> The __assign_str macro has an unusual ending semicolon but the vast
-> majority of uses of the macro already have semicolon termination.
+On Mon, Jun 07, 2021 at 01:29:58PM +0000, Parav Pandit wrote:
 > 
-> $ git grep -P '\b__assign_str\b' | wc -l
-> 551
-> $ git grep -P '\b__assign_str\b.*;' | wc -l
-> 480
 > 
-> Add semicolons to the __assign_str() uses without semicolon termination
-> and all the other uses without semicolon termination via additional defines
-> that are equivalent to __assign_str() with the eventual goal of removing
-> the semicolon from the __assign_str() macro definition.
+> > From: Leon Romanovsky <leon@kernel.org>
+> > Sent: Monday, June 7, 2021 1:48 PM
+> > 
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > 
+> > Now that the port_groups data is being destroyed and managed by the core
+> > code this restriction is no longer needed. All the ib_port_attrs are compatible
+> > with the core's sysfs lifecycle.
+> > 
+> > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> >  drivers/infiniband/core/device.c | 10 ++++------
+> > drivers/infiniband/core/sysfs.c  | 17 ++++++-----------
+> >  2 files changed, 10 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/drivers/infiniband/core/device.c
+> > b/drivers/infiniband/core/device.c
+> > index 2cbd77933ea5..92f224a97481 100644
+> > +++ b/drivers/infiniband/core/device.c
+> > @@ -1698,13 +1698,11 @@ int ib_device_set_netns_put(struct sk_buff
+> > *skb,
+> >  	}
+> > 
+> >  	/*
+> > -	 * Currently supported only for those providers which support
+> > -	 * disassociation and don't do port specific sysfs init. Once a
+> > -	 * port_cleanup infrastructure is implemented, this limitation will be
+> > -	 * removed.
+> > +	 * All the ib_clients, including uverbs, are reset when the namespace
+> > is
+> > +	 * changed and this cannot be blocked waiting for userspace to do
+> > +	 * something, so disassociation is mandatory.
+> >  	 */
+> > -	if (!dev->ops.disassociate_ucontext || dev->ops.port_groups ||
+> > -	    ib_devices_shared_netns) {
 
-Acked-by: Jason Gunthorpe <jgg@nvidia.com>
+So this is OK since we have the clean up now
+
+> > +	if (!dev->ops.disassociate_ucontext || ib_devices_shared_netns) {
+> >  		ret = -EOPNOTSUPP;
+> >  		goto ns_err;
+> >  	}
+> > diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
+> > index 09a2e1066df0..f42034fcf3d9 100644
+> > +++ b/drivers/infiniband/core/sysfs.c
+> > @@ -1236,11 +1236,9 @@ static struct ib_port *setup_port(struct
+> > ib_core_device *coredev, int port_num,
+> >  	ret = sysfs_create_groups(&p->kobj, p->groups_list);
+> >  	if (ret)
+> >  		goto err_del;
+> > -	if (is_full_dev) {
+> > -		ret = sysfs_create_groups(&p->kobj, device-
+> > >ops.port_groups);
+> > -		if (ret)
+> > -			goto err_groups;
+> > -	}
+> > +	ret = sysfs_create_groups(&p->kobj, device->ops.port_groups);
+> > +	if (ret)
+> > +		goto err_groups;
+> 
+> This will expose counters in all net namespaces in shared mode
+> (default case).  Application running in one net namespace will be
+> able to monitor counters of other net namespace.  This should be
+> avoided.
+
+And you want this to stay blocked because the port_groups mostly
+contain counters?
 
 Jason
