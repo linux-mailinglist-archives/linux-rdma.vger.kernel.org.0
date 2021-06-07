@@ -2,634 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C5439E9B5
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jun 2021 00:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951F039EA02
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jun 2021 01:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhFGWmf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 7 Jun 2021 18:42:35 -0400
-Received: from mga02.intel.com ([134.134.136.20]:21448 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230183AbhFGWme (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 7 Jun 2021 18:42:34 -0400
-IronPort-SDR: GElL5h6vFOFYierhbeh36a5q7CzVNEV6t4DQqqu0eay9ek8sTOrwnDoHdn+XciOioBD3dU6MIn
- Uo5kgewnztVQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="191838414"
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
-   d="scan'208";a="191838414"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 15:40:42 -0700
-IronPort-SDR: vuPK8ozOBl/iYuSt0nc1ChRzlfK8bkLqZxTTQ7+ZJh04ZlcVA+2GRd5SUGcmX9WwF4ahgLku25
- eEYjyM8pdo2g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,256,1616482800"; 
-   d="scan'208";a="401836686"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga003.jf.intel.com with ESMTP; 07 Jun 2021 15:40:41 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Mon, 7 Jun 2021 15:40:41 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Mon, 7 Jun 2021 15:40:40 -0700
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2242.008;
- Mon, 7 Jun 2021 15:40:40 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Joe Perches <joe@perches.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>
-CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: RE: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
-Thread-Topic: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
-Thread-Index: AQHXWnC6BhX5oDUlRUmhwRc1TlnwJqsHGdlAgAIELQD//9K5YA==
-Date:   Mon, 7 Jun 2021 22:40:40 +0000
-Message-ID: <7bc8c264a70a4026b3bc7d9edd9e8945@intel.com>
-References: <9e07e80d8aa464447323670fd810f455d53f76f3.camel@perches.com>
-         <d41c5503b5b74996af3f3c1853a67935@intel.com>
- <e3242b18d12db4bff77127d82d5e788b7712035a.camel@perches.com>
-In-Reply-To: <e3242b18d12db4bff77127d82d5e788b7712035a.camel@perches.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S230319AbhFGXUe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Jun 2021 19:20:34 -0400
+Received: from mail-bn1nam07on2042.outbound.protection.outlook.com ([40.107.212.42]:60286
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230183AbhFGXUd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Jun 2021 19:20:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SxIwi4Xhcnkklb6lhyEtkOHNC+kNNzHXIoezBroFJweqL1X7rdEtS13l6MggGcPkb9tKpQsutosjc6FJoxfw4zUqs/4gfGvm9vTMjzsGB1BhFzN8b6Yw9VqlplFWyJfuSOWeB9e+Ce6NhC0yLAhDob7vu9xynLOKjRjGPRmcKwV+Kj2VEmbIX0sjZOkhww951HNn+A+8kI51nNU35344bFwk6Vpiof4f9ikc19cYBL0E1p9v1pSK8V5VNqTvOyDeuG+TlaKxNWM+DYqioevOdiIzDGjy0X7T2ppsHy1hHIZQneeDdWwqiGLIqCXCB7RQhNg/nc/mXsEMaigQCxvQyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WcqCMQrGavgYjOt2lGIXN2oQn3dkrM4UhcUIjURHt0M=;
+ b=dYyTx2EA95CQwtvWvJGbofqZaWcLG7jQk47A5wF7Ei/0VRwN9bLBv3iPIaYAe4LP+2VjQjMngj1dCFt/4+3VqCpiboCE1XP+U2aNhnNpUTNv3tiarMTigBsLpbGMSfrq7ylKgfbY1R1mTjoz+aWZPuxx+kd6+jcPLGdY84AGYS5+rLR3SZcopGzTfzoOrWLS2F424ushifWz7ScSJPHd2wMQ0Y2dv7ipaMNdiFl4gBdVitwJ2LTEowv1fo22PCNg14RbHwMrWMOMPsyMe430sGg0u6DueubS9F4JDuII4k54HLzqWbwSvlB/rCMyj4z+dlgP/Kvqem7ar3HXmRUTeg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WcqCMQrGavgYjOt2lGIXN2oQn3dkrM4UhcUIjURHt0M=;
+ b=MkT3r8M0OYsEVLO7cCOXyS5OTiRNjN7sizRQjEARwUa01DPPfMX0K0Tp7aH6w9nddh9AwelmTtGK54XDmi+N25V6z6J6pSzfIaWWYktx8jXZw5I96HB8HSerCS8BMxYU5H2pflFpU2vFF1uNNYfghNMHYmTYuI4lEml9y3rIIKLGYjLO24ceI2ToyUAF7HMO13snbfm6deOP7ZtHhz43SNU81sCn7AXiYfoOl8qUBUTje+zHtFc3k+5mJKqCjxMQV9IuQDjFGU+QMtEPxzT/CWcNbXWcBw4yjn6zYH4syd83AOO//h5aa0FtaqA1zfhhja4VD6Pce0tdDtIXf6Puwg==
+Authentication-Results: perches.com; dkim=none (message not signed)
+ header.d=none;perches.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5318.namprd12.prod.outlook.com (2603:10b6:208:31d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.21; Mon, 7 Jun
+ 2021 23:18:39 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%6]) with mapi id 15.20.4195.030; Mon, 7 Jun 2021
+ 23:18:38 +0000
+Date:   Mon, 7 Jun 2021 20:18:37 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, lima@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH] treewide: Add missing semicolons to __assign_str uses
+Message-ID: <20210607231837.GA831267@nvidia.com>
+References: <cover.1621024265.git.bristot@redhat.com>
+ <2c59beee3b36b15592bfbb9f26dee7f8b55fd814.1621024265.git.bristot@redhat.com>
+ <20210603172902.41648183@gandalf.local.home>
+ <1e068d21106bb6db05b735b4916bb420e6c9842a.camel@perches.com>
+ <20210604122128.0d348960@oasis.local.home>
+ <144460ce4f34a51dabb76e422a718573db77cdc8.camel@perches.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <144460ce4f34a51dabb76e422a718573db77cdc8.camel@perches.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL1PR13CA0007.namprd13.prod.outlook.com
+ (2603:10b6:208:256::12) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0007.namprd13.prod.outlook.com (2603:10b6:208:256::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.10 via Frontend Transport; Mon, 7 Jun 2021 23:18:38 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lqOVx-003UGN-4z; Mon, 07 Jun 2021 20:18:37 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ea855673-a817-4d6b-036a-08d92a0a94b6
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5318:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB531868D60C97342FEC81E141C2389@BL1PR12MB5318.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1IQIx1Kt2aRGjU2JT97DmzuN4KpSkwPKVfdKyU0IUzq+uIc0ZdBJDlIXVKX0czRpEvtl1/rlvruGzP8W4QwKNAWQ4SQ696qtZKeZ/JHZPVEOGO5DT6ukNWcuVo3IPkBzGUHijB/mtXnRn4Jv7OIL05WjtfOnDdaqbAjXWe8xlDWcfCE60CVCxR4UT3KzjS6dN/rmebdAvKEhE9MK7CkVMPXEQB2DUMtWnakKFUxeyKoI8obrLm8bQWMNU7L/Vwr8vwWET5dNUP7zATZ67NKsFP9VUkEA0lPHFGFc17IQSxbrbU8Mh8rQg9D/zemTYCfTd5Sdi814M3bfLQNAyRYmJA6iqwhsMKdKibcU3dCJ40VRETy4n9pI71BnNtZlEKob/BCUW99/0szsyZ2YibVsyr8wvG6AchchcbIFhWHLcA88S4NwYhBC5VtlVPT9jMpsWhMNuEqiinlWwd1XFONHMUnCTwrPbrTnqcpd5rI8PDqNNTMTSHNqI0nyNu0/mKpboma0BGwM0p1Hh42EqWhjl4yDqItkAKqJBEgIhz5L7fCQsxKoNwePab9wLw4rXdjTJCP25j00FLxTYQfIubEoVXRLK675yZrIJr/krobFjLiTGneeMNY0PbBaXk+9gfi3OoZDsPnVcTGCYV2Wedid9A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(396003)(39860400002)(346002)(7416002)(478600001)(83380400001)(36756003)(8936002)(2906002)(66556008)(186003)(66946007)(6916009)(2616005)(66476007)(38100700002)(86362001)(4326008)(8676002)(4744005)(316002)(26005)(426003)(5660300002)(9746002)(1076003)(9786002)(33656002)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?yfBM5qtu8tW6vwBJ0j080dK2cZ8vkOmiwZLJ63PMA+/80r8loKMql6hfUJtv?=
+ =?us-ascii?Q?6/bo86HhiNe2f9aiBnzKG4hmtbrNTVQVN0yMwYTXE0+44JTFlyj5VUPCdlh3?=
+ =?us-ascii?Q?zXT0us0CVFTOq6IpG+kPrQ9iyYbsfAGp+P9v/x2G/nPCHp+2J1B89B/NEXUd?=
+ =?us-ascii?Q?43NyjGvlkhtynXZ9+gKXfRo319yGsWXE8Bm4qVP2x8J6GsNlZ6JpBB78zlon?=
+ =?us-ascii?Q?JuFGZw1w7PzLN4uFvfW3RV7Rw4AROjhJSAufSqHjpnzDZ4cWQFICGXNXyB1Z?=
+ =?us-ascii?Q?a8OS6DDubFGFVGi2ZtPdAZCAVFPQ+jzlZcfh+j7Z/F1j4l726Imb1BZzt7RL?=
+ =?us-ascii?Q?YvjCyCdhaS4MxEL7XJ6Qr4zGq01QA5KQdfa0bAStdAoJZkBuHH42IxknlE8N?=
+ =?us-ascii?Q?krqaxuS5f0Q3uW1V6XB2Tzs1zzlRzPe7EeQzkBGAZWALu1pKkcaE3z67CuGT?=
+ =?us-ascii?Q?4aW3/iuFkKePhFQWWAD0BgN9n2ZyGkg/SQC5JwiZHOY5W3+MJovVTXcoo2i4?=
+ =?us-ascii?Q?Xhi3LVT2VxW3+7Jbup3Ls3Z2A0502lvQpkoDUsiJF1Z2o7XLYKPRKowZiiC0?=
+ =?us-ascii?Q?3yVhtkjYo2DTJSl8xTkjw+ArZYHYEnOSKszHzRqJdACQi5vhSQeMJwYsSPwa?=
+ =?us-ascii?Q?eqhGRK9pSpM+8c7pkEJX3B+5TOMS4N2U057w5Y2LtauHW0AKePCeCRFP5tya?=
+ =?us-ascii?Q?ZBmIa0dSvfgOSYjgdGPgGe2jVSDVT69E94/HM5Rh2CtjSmUBpGsS9dcwhlJK?=
+ =?us-ascii?Q?qyCM1GN1HDU6ZNX/Jg9TbRM/vnZZZ1jTt8QHYhSgNKVlSXDX3fTMUwEATJA+?=
+ =?us-ascii?Q?o3DfCY1T6MscrU9x9qc/aqzf+Z4efgpjIedZgDIIyZX56CJDC/2IqAN5GNDq?=
+ =?us-ascii?Q?IhPFRAItHkfHEWtba6cZTZIRipHhFMmD4Bo/pDW+TCVHNHi+3FczVbX0Jj72?=
+ =?us-ascii?Q?U4JL5OpQuYz/ZNg+9otDanDtkI3MWVP3xac56nWxoUA42yEA5wdZh6sad4UE?=
+ =?us-ascii?Q?tXcfX6BXEv3VCwEbEFVrrNab76IGdhT9hG0EQL6PlWSKLvI7oLIBptOmo5E0?=
+ =?us-ascii?Q?lS3Yb5MZ+SzW2wyXMWw0g7OkvII/rdaRuJFmRS+KG+c/XxCMjIDM6GZLt89c?=
+ =?us-ascii?Q?hmi89HoDAvgn2SqtZhNMLE8lVXxDJ2/YfA8OPJpFkj/6fQR1u+f1nZm2yeSQ?=
+ =?us-ascii?Q?5ms2a6uMnSEZLYTV53qY8dkjWED1YMeoDgmLuaKOnL5z+KeIZo+WBhKpXdhg?=
+ =?us-ascii?Q?OTEWOgO3p+d8j5Qxms6gqTsPeJA3rKOHB8opXaX1K+0Kbkcbxv8c6gM9LSj/?=
+ =?us-ascii?Q?nncr1s2JcbTuYBXrU4ZST25Q?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea855673-a817-4d6b-036a-08d92a0a94b6
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2021 23:18:38.5967
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: neQlgCFaKGpzHFVPgyILIvzKgtLEt7yz1tRHrJ5G3XSQq+P1Tt3kJpJYuZGkAwLn
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5318
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
+On Fri, Jun 04, 2021 at 12:38:07PM -0700, Joe Perches wrote:
+> The __assign_str macro has an unusual ending semicolon but the vast
+> majority of uses of the macro already have semicolon termination.
 > 
-> On Mon, 2021-06-07 at 14:54 +0000, Saleem, Shiraz wrote:
-> > > Subject: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
-> > >
-> > > There are some odd mismatches in field and access index.
-> > > These may be simple cut/paste typos.
-> > >
-> > > Are these intentional?
-> >
-> > No. Accidental. Likely cut/copy mistake. I will send a fix. Thanks
-> > Joe!
+> $ git grep -P '\b__assign_str\b' | wc -l
+> 551
+> $ git grep -P '\b__assign_str\b.*;' | wc -l
+> 480
 > 
-> Reason is I was refactoring what I thought was rather templated and overly verbose
-> code.
-> 
-> Here's a possible patch (with probable corrections to these index typos):
+> Add semicolons to the __assign_str() uses without semicolon termination
+> and all the other uses without semicolon termination via additional defines
+> that are equivalent to __assign_str() with the eventual goal of removing
+> the semicolon from the __assign_str() macro definition.
 
-Looks reasonable to me. Wondering if irdma_update_stats should also use your IRDMA_STAT macro.
+Acked-by: Jason Gunthorpe <jgg@nvidia.com>
 
-> ---
->  drivers/infiniband/hw/irdma/type.h  | 104 ++++++++++---------
-> drivers/infiniband/hw/irdma/utils.c | 196 +++++++++---------------------------
->  drivers/infiniband/hw/irdma/verbs.c | 125 +++++++++--------------
->  3 files changed, 147 insertions(+), 278 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/irdma/type.h b/drivers/infiniband/hw/irdma/type.h
-> index 7387b83e826d2..4050e5b19c6e1 100644
-> --- a/drivers/infiniband/hw/irdma/type.h
-> +++ b/drivers/infiniband/hw/irdma/type.h
-> @@ -101,60 +101,64 @@ enum irdma_qp_event_type {
->  	IRDMA_QP_EVENT_ACCESS_ERR,
->  };
-> 
-> +#define IRDMA_STAT(index)    IRDMA_HW_STAT_INDEX_ ## index
-> +#define IRDMA_STAT_32(index) (IRDMA_HW_STAT_INDEX_ ## index) #define
-> +IRDMA_STAT_64(index) (IRDMA_HW_STAT_INDEX_MAX_32 +
-> +IRDMA_STAT_32(index))
-> +
->  enum irdma_hw_stats_index_32b {
-> -	IRDMA_HW_STAT_INDEX_IP4RXDISCARD	= 0,
-> -	IRDMA_HW_STAT_INDEX_IP4RXTRUNC		= 1,
-> -	IRDMA_HW_STAT_INDEX_IP4TXNOROUTE	= 2,
-> -	IRDMA_HW_STAT_INDEX_IP6RXDISCARD	= 3,
-> -	IRDMA_HW_STAT_INDEX_IP6RXTRUNC		= 4,
-> -	IRDMA_HW_STAT_INDEX_IP6TXNOROUTE	= 5,
-> -	IRDMA_HW_STAT_INDEX_TCPRTXSEG		= 6,
-> -	IRDMA_HW_STAT_INDEX_TCPRXOPTERR		= 7,
-> -	IRDMA_HW_STAT_INDEX_TCPRXPROTOERR	= 8,
-> -	IRDMA_HW_STAT_INDEX_MAX_32_GEN_1	= 9, /* Must be same
-> value as next entry */
-> -	IRDMA_HW_STAT_INDEX_RXVLANERR		= 9,
-> -	IRDMA_HW_STAT_INDEX_RXRPCNPHANDLED	= 10,
-> -	IRDMA_HW_STAT_INDEX_RXRPCNPIGNORED	= 11,
-> -	IRDMA_HW_STAT_INDEX_TXNPCNPSENT		= 12,
-> -	IRDMA_HW_STAT_INDEX_MAX_32, /* Must be last entry */
-> +	IRDMA_STAT(IP4RXDISCARD)	= 0,
-> +	IRDMA_STAT(IP4RXTRUNC)		= 1,
-> +	IRDMA_STAT(IP4TXNOROUTE)	= 2,
-> +	IRDMA_STAT(IP6RXDISCARD)	= 3,
-> +	IRDMA_STAT(IP6RXTRUNC)		= 4,
-> +	IRDMA_STAT(IP6TXNOROUTE)	= 5,
-> +	IRDMA_STAT(TCPRTXSEG)		= 6,
-> +	IRDMA_STAT(TCPRXOPTERR)		= 7,
-> +	IRDMA_STAT(TCPRXPROTOERR)	= 8,
-> +	IRDMA_STAT(MAX_32_GEN_1)	= 9, /* Must be same value as next entry */
-> +	IRDMA_STAT(RXVLANERR)		= 9,
-> +	IRDMA_STAT(RXRPCNPHANDLED)	= 10,
-> +	IRDMA_STAT(RXRPCNPIGNORED)	= 11,
-> +	IRDMA_STAT(TXNPCNPSENT)		= 12,
-> +	IRDMA_STAT(MAX_32), /* Must be last entry */
->  };
-> 
->  enum irdma_hw_stats_index_64b {
-> -	IRDMA_HW_STAT_INDEX_IP4RXOCTS	= 0,
-> -	IRDMA_HW_STAT_INDEX_IP4RXPKTS	= 1,
-> -	IRDMA_HW_STAT_INDEX_IP4RXFRAGS	= 2,
-> -	IRDMA_HW_STAT_INDEX_IP4RXMCPKTS	= 3,
-> -	IRDMA_HW_STAT_INDEX_IP4TXOCTS	= 4,
-> -	IRDMA_HW_STAT_INDEX_IP4TXPKTS	= 5,
-> -	IRDMA_HW_STAT_INDEX_IP4TXFRAGS	= 6,
-> -	IRDMA_HW_STAT_INDEX_IP4TXMCPKTS	= 7,
-> -	IRDMA_HW_STAT_INDEX_IP6RXOCTS	= 8,
-> -	IRDMA_HW_STAT_INDEX_IP6RXPKTS	= 9,
-> -	IRDMA_HW_STAT_INDEX_IP6RXFRAGS	= 10,
-> -	IRDMA_HW_STAT_INDEX_IP6RXMCPKTS	= 11,
-> -	IRDMA_HW_STAT_INDEX_IP6TXOCTS	= 12,
-> -	IRDMA_HW_STAT_INDEX_IP6TXPKTS	= 13,
-> -	IRDMA_HW_STAT_INDEX_IP6TXFRAGS	= 14,
-> -	IRDMA_HW_STAT_INDEX_IP6TXMCPKTS	= 15,
-> -	IRDMA_HW_STAT_INDEX_TCPRXSEGS	= 16,
-> -	IRDMA_HW_STAT_INDEX_TCPTXSEG	= 17,
-> -	IRDMA_HW_STAT_INDEX_RDMARXRDS	= 18,
-> -	IRDMA_HW_STAT_INDEX_RDMARXSNDS	= 19,
-> -	IRDMA_HW_STAT_INDEX_RDMARXWRS	= 20,
-> -	IRDMA_HW_STAT_INDEX_RDMATXRDS	= 21,
-> -	IRDMA_HW_STAT_INDEX_RDMATXSNDS	= 22,
-> -	IRDMA_HW_STAT_INDEX_RDMATXWRS	= 23,
-> -	IRDMA_HW_STAT_INDEX_RDMAVBND	= 24,
-> -	IRDMA_HW_STAT_INDEX_RDMAVINV	= 25,
-> -	IRDMA_HW_STAT_INDEX_MAX_64_GEN_1 = 26, /* Must be same value
-> as next entry */
-> -	IRDMA_HW_STAT_INDEX_IP4RXMCOCTS	= 26,
-> -	IRDMA_HW_STAT_INDEX_IP4TXMCOCTS	= 27,
-> -	IRDMA_HW_STAT_INDEX_IP6RXMCOCTS	= 28,
-> -	IRDMA_HW_STAT_INDEX_IP6TXMCOCTS	= 29,
-> -	IRDMA_HW_STAT_INDEX_UDPRXPKTS	= 30,
-> -	IRDMA_HW_STAT_INDEX_UDPTXPKTS	= 31,
-> -	IRDMA_HW_STAT_INDEX_RXNPECNMARKEDPKTS = 32,
-> -	IRDMA_HW_STAT_INDEX_MAX_64, /* Must be last entry */
-> +	IRDMA_STAT(IP4RXOCTS)	= 0,
-> +	IRDMA_STAT(IP4RXPKTS)	= 1,
-> +	IRDMA_STAT(IP4RXFRAGS)	= 2,
-> +	IRDMA_STAT(IP4RXMCPKTS)	= 3,
-> +	IRDMA_STAT(IP4TXOCTS)	= 4,
-> +	IRDMA_STAT(IP4TXPKTS)	= 5,
-> +	IRDMA_STAT(IP4TXFRAGS)	= 6,
-> +	IRDMA_STAT(IP4TXMCPKTS)	= 7,
-> +	IRDMA_STAT(IP6RXOCTS)	= 8,
-> +	IRDMA_STAT(IP6RXPKTS)	= 9,
-> +	IRDMA_STAT(IP6RXFRAGS)	= 10,
-> +	IRDMA_STAT(IP6RXMCPKTS)	= 11,
-> +	IRDMA_STAT(IP6TXOCTS)	= 12,
-> +	IRDMA_STAT(IP6TXPKTS)	= 13,
-> +	IRDMA_STAT(IP6TXFRAGS)	= 14,
-> +	IRDMA_STAT(IP6TXMCPKTS)	= 15,
-> +	IRDMA_STAT(TCPRXSEGS)	= 16,
-> +	IRDMA_STAT(TCPTXSEG)	= 17,
-> +	IRDMA_STAT(RDMARXRDS)	= 18,
-> +	IRDMA_STAT(RDMARXSNDS)	= 19,
-> +	IRDMA_STAT(RDMARXWRS)	= 20,
-> +	IRDMA_STAT(RDMATXRDS)	= 21,
-> +	IRDMA_STAT(RDMATXSNDS)	= 22,
-> +	IRDMA_STAT(RDMATXWRS)	= 23,
-> +	IRDMA_STAT(RDMAVBND)	= 24,
-> +	IRDMA_STAT(RDMAVINV)	= 25,
-> +	IRDMA_STAT(MAX_64_GEN_1) = 26, /* Must be same value as next entry
-> */
-> +	IRDMA_STAT(IP4RXMCOCTS)	= 26,
-> +	IRDMA_STAT(IP4TXMCOCTS)	= 27,
-> +	IRDMA_STAT(IP6RXMCOCTS)	= 28,
-> +	IRDMA_STAT(IP6TXMCOCTS)	= 29,
-> +	IRDMA_STAT(UDPRXPKTS)	= 30,
-> +	IRDMA_STAT(UDPTXPKTS)	= 31,
-> +	IRDMA_STAT(RXNPECNMARKEDPKTS) = 32,
-> +	IRDMA_STAT(MAX_64), /* Must be last entry */
->  };
-> 
->  enum irdma_feature_type {
-> diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
-> index 2f078155d6fd0..32c1200810eb8 100644
-> --- a/drivers/infiniband/hw/irdma/utils.c
-> +++ b/drivers/infiniband/hw/irdma/utils.c
-> @@ -1705,155 +1705,53 @@ void irdma_cqp_gather_stats_gen1(struct
-> irdma_sc_dev *dev,
->  	stats_inst_offset_32 *= 4;
->  	stats_inst_offset_64 = stats_inst_offset_32 * 2;
-> 
-> -	gather_stats->rxvlanerr =
-> -		rd32(dev->hw,
-> -		     dev-
-> >hw_stats_regs_32[IRDMA_HW_STAT_INDEX_RXVLANERR]
-> -		     + stats_inst_offset_32);
-> -	gather_stats->ip4rxdiscard =
-> -		rd32(dev->hw,
-> -		     dev-
-> >hw_stats_regs_32[IRDMA_HW_STAT_INDEX_IP4RXDISCARD]
-> -		     + stats_inst_offset_32);
-> -	gather_stats->ip4rxtrunc =
-> -		rd32(dev->hw,
-> -		     dev-
-> >hw_stats_regs_32[IRDMA_HW_STAT_INDEX_IP4RXTRUNC]
-> -		     + stats_inst_offset_32);
-> -	gather_stats->ip4txnoroute =
-> -		rd32(dev->hw,
-> -		     dev-
-> >hw_stats_regs_32[IRDMA_HW_STAT_INDEX_IP4TXNOROUTE]
-> -		     + stats_inst_offset_32);
-> -	gather_stats->ip6rxdiscard =
-> -		rd32(dev->hw,
-> -		     dev-
-> >hw_stats_regs_32[IRDMA_HW_STAT_INDEX_IP6RXDISCARD]
-> -		     + stats_inst_offset_32);
-> -	gather_stats->ip6rxtrunc =
-> -		rd32(dev->hw,
-> -		     dev-
-> >hw_stats_regs_32[IRDMA_HW_STAT_INDEX_IP6RXTRUNC]
-> -		     + stats_inst_offset_32);
-> -	gather_stats->ip6txnoroute =
-> -		rd32(dev->hw,
-> -		     dev-
-> >hw_stats_regs_32[IRDMA_HW_STAT_INDEX_IP6TXNOROUTE]
-> -		     + stats_inst_offset_32);
-> -	gather_stats->tcprtxseg =
-> -		rd32(dev->hw,
-> -		     dev-
-> >hw_stats_regs_32[IRDMA_HW_STAT_INDEX_TCPRTXSEG]
-> -		     + stats_inst_offset_32);
-> -	gather_stats->tcprxopterr =
-> -		rd32(dev->hw,
-> -		     dev-
-> >hw_stats_regs_32[IRDMA_HW_STAT_INDEX_TCPRXOPTERR]
-> -		     + stats_inst_offset_32);
-> -
-> -	gather_stats->ip4rxocts =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP4RXOCTS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->ip4rxpkts =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP4RXPKTS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->ip4txfrag =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP4RXFRAGS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->ip4rxmcpkts =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP4RXMCPKTS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->ip4txocts =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP4TXOCTS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->ip4txpkts =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP4TXPKTS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->ip4txfrag =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP4TXFRAGS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->ip4txmcpkts =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP4TXMCPKTS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->ip6rxocts =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP6RXOCTS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->ip6rxpkts =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP6RXPKTS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->ip6txfrags =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP6RXFRAGS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->ip6rxmcpkts =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP6RXMCPKTS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->ip6txocts =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP6TXOCTS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->ip6txpkts =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP6TXPKTS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->ip6txfrags =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP6TXFRAGS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->ip6txmcpkts =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_IP6TXMCPKTS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->tcprxsegs =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_TCPRXSEGS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->tcptxsegs =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_TCPTXSEG]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->rdmarxrds =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_RDMARXRDS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->rdmarxsnds =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_RDMARXSNDS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->rdmarxwrs =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_RDMARXWRS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->rdmatxrds =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_RDMATXRDS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->rdmatxsnds =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_RDMATXSNDS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->rdmatxwrs =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_RDMATXWRS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->rdmavbn =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_RDMAVBND]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->rdmavinv =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_RDMAVINV]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->udprxpkts =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_UDPRXPKTS]
-> -		     + stats_inst_offset_64);
-> -	gather_stats->udptxpkts =
-> -		rd64(dev->hw,
-> -		     dev-
-> >hw_stats_regs_64[IRDMA_HW_STAT_INDEX_UDPTXPKTS]
-> -		     + stats_inst_offset_64);
-> +#define get32(index)							\
-> +	rd32(dev->hw,							\
-> +	     dev->hw_stats_regs_32[IRDMA_STAT(index)] +			\
-> +	     stats_inst_offset_32)
-> +#define get64(index)							\
-> +	rd64(dev->hw,							\
-> +	     dev->hw_stats_regs_64[IRDMA_STAT(index)] +			\
-> +	     stats_inst_offset_64)
-> +
-> +	gather_stats->rxvlanerr = get32(RXVLANERR);
-> +	gather_stats->ip4rxdiscard = get32(IP4RXDISCARD);
-> +	gather_stats->ip4rxtrunc = get32(IP4RXTRUNC);
-> +	gather_stats->ip4txnoroute = get32(IP4TXNOROUTE);
-> +	gather_stats->ip6rxdiscard = get32(IP6RXDISCARD);
-> +	gather_stats->ip6rxtrunc = get32(IP6RXTRUNC);
-> +	gather_stats->ip6txnoroute = get32(IP6TXNOROUTE);
-> +	gather_stats->tcprtxseg = get32(TCPRTXSEG);
-> +	gather_stats->tcprxopterr = get32(TCPRXOPTERR);
-> +
-> +	gather_stats->ip4rxocts = get64(IP4RXOCTS);
-> +	gather_stats->ip4rxpkts = get64(IP4RXPKTS);
-> +	gather_stats->ip4rxfrags = get64(IP4RXFRAGS);
-> +	gather_stats->ip4rxmcpkts = get64(IP4RXMCPKTS);
-> +	gather_stats->ip4txocts = get64(IP4TXOCTS);
-> +	gather_stats->ip4txpkts = get64(IP4TXPKTS);
-> +	gather_stats->ip4txfrag = get64(IP4TXFRAGS);
-> +	gather_stats->ip4txmcpkts = get64(IP4TXMCPKTS);
-> +	gather_stats->ip6rxocts = get64(IP6RXOCTS);
-> +	gather_stats->ip6rxpkts = get64(IP6RXPKTS);
-> +	gather_stats->ip6rxfrags = get64(IP6RXFRAGS);
-> +	gather_stats->ip6rxmcpkts = get64(IP6RXMCPKTS);
-> +	gather_stats->ip6txocts = get64(IP6TXOCTS);
-> +	gather_stats->ip6txpkts = get64(IP6TXPKTS);
-> +	gather_stats->ip6txfrags = get64(IP6TXFRAGS);
-> +	gather_stats->ip6txmcpkts = get64(IP6TXMCPKTS);
-> +	gather_stats->tcprxsegs = get64(TCPRXSEGS);
-> +	gather_stats->tcptxsegs = get64(TCPTXSEG);
-> +	gather_stats->rdmarxrds = get64(RDMARXRDS);
-> +	gather_stats->rdmarxsnds = get64(RDMARXSNDS);
-> +	gather_stats->rdmarxwrs = get64(RDMARXWRS);
-> +	gather_stats->rdmatxrds = get64(RDMATXRDS);
-> +	gather_stats->rdmatxsnds = get64(RDMATXSNDS);
-> +	gather_stats->rdmatxwrs = get64(RDMATXWRS);
-> +	gather_stats->rdmavbn = get64(RDMAVBND);
-> +	gather_stats->rdmavinv = get64(RDMAVINV);
-> +	gather_stats->udprxpkts = get64(UDPRXPKTS);
-> +	gather_stats->udptxpkts = get64(UDPTXPKTS);
-> 
->  	irdma_process_stats(pestat);
->  }
-> diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-> index 2941552932431..cc8e7be0614ed 100644
-> --- a/drivers/infiniband/hw/irdma/verbs.c
-> +++ b/drivers/infiniband/hw/irdma/verbs.c
-> @@ -3634,87 +3634,54 @@ static int irdma_iw_port_immutable(struct ib_device
-> *ibdev, u32 port_num,
-> 
->  static const char *const irdma_hw_stat_names[] = {
->  	/* 32bit names */
-> -	[IRDMA_HW_STAT_INDEX_RXVLANERR] = "rxVlanErrors",
-> -	[IRDMA_HW_STAT_INDEX_IP4RXDISCARD] = "ip4InDiscards",
-> -	[IRDMA_HW_STAT_INDEX_IP4RXTRUNC] = "ip4InTruncatedPkts",
-> -	[IRDMA_HW_STAT_INDEX_IP4TXNOROUTE] = "ip4OutNoRoutes",
-> -	[IRDMA_HW_STAT_INDEX_IP6RXDISCARD] = "ip6InDiscards",
-> -	[IRDMA_HW_STAT_INDEX_IP6RXTRUNC] = "ip6InTruncatedPkts",
-> -	[IRDMA_HW_STAT_INDEX_IP6TXNOROUTE] = "ip6OutNoRoutes",
-> -	[IRDMA_HW_STAT_INDEX_TCPRTXSEG] = "tcpRetransSegs",
-> -	[IRDMA_HW_STAT_INDEX_TCPRXOPTERR] = "tcpInOptErrors",
-> -	[IRDMA_HW_STAT_INDEX_TCPRXPROTOERR] = "tcpInProtoErrors",
-> -	[IRDMA_HW_STAT_INDEX_RXRPCNPHANDLED] = "cnpHandled",
-> -	[IRDMA_HW_STAT_INDEX_RXRPCNPIGNORED] = "cnpIgnored",
-> -	[IRDMA_HW_STAT_INDEX_TXNPCNPSENT] = "cnpSent",
-> +	[IRDMA_STAT_32(RXVLANERR)]	= "rxVlanErrors",
-> +	[IRDMA_STAT_32(IP4RXDISCARD)]	= "ip4InDiscards",
-> +	[IRDMA_STAT_32(IP4RXTRUNC)]	= "ip4InTruncatedPkts",
-> +	[IRDMA_STAT_32(IP4TXNOROUTE)]	= "ip4OutNoRoutes",
-> +	[IRDMA_STAT_32(IP6RXDISCARD)]	= "ip6InDiscards",
-> +	[IRDMA_STAT_32(IP6RXTRUNC)]	= "ip6InTruncatedPkts",
-> +	[IRDMA_STAT_32(IP6TXNOROUTE)]	= "ip6OutNoRoutes",
-> +	[IRDMA_STAT_32(TCPRTXSEG)]	= "tcpRetransSegs",
-> +	[IRDMA_STAT_32(TCPRXOPTERR)]	= "tcpInOptErrors",
-> +	[IRDMA_STAT_32(TCPRXPROTOERR)]	= "tcpInProtoErrors",
-> +	[IRDMA_STAT_32(RXRPCNPHANDLED)]	= "cnpHandled",
-> +	[IRDMA_STAT_32(RXRPCNPIGNORED)]	= "cnpIgnored",
-> +	[IRDMA_STAT_32(TXNPCNPSENT)]	= "cnpSent",
-> 
->  	/* 64bit names */
-> -	[IRDMA_HW_STAT_INDEX_IP4RXOCTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip4InOctets",
-> -	[IRDMA_HW_STAT_INDEX_IP4RXPKTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip4InPkts",
-> -	[IRDMA_HW_STAT_INDEX_IP4RXFRAGS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip4InReasmRqd",
-> -	[IRDMA_HW_STAT_INDEX_IP4RXMCOCTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip4InMcastOctets",
-> -	[IRDMA_HW_STAT_INDEX_IP4RXMCPKTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip4InMcastPkts",
-> -	[IRDMA_HW_STAT_INDEX_IP4TXOCTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip4OutOctets",
-> -	[IRDMA_HW_STAT_INDEX_IP4TXPKTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip4OutPkts",
-> -	[IRDMA_HW_STAT_INDEX_IP4TXFRAGS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip4OutSegRqd",
-> -	[IRDMA_HW_STAT_INDEX_IP4TXMCOCTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip4OutMcastOctets",
-> -	[IRDMA_HW_STAT_INDEX_IP4TXMCPKTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip4OutMcastPkts",
-> -	[IRDMA_HW_STAT_INDEX_IP6RXOCTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip6InOctets",
-> -	[IRDMA_HW_STAT_INDEX_IP6RXPKTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip6InPkts",
-> -	[IRDMA_HW_STAT_INDEX_IP6RXFRAGS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip6InReasmRqd",
-> -	[IRDMA_HW_STAT_INDEX_IP6RXMCOCTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip6InMcastOctets",
-> -	[IRDMA_HW_STAT_INDEX_IP6RXMCPKTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip6InMcastPkts",
-> -	[IRDMA_HW_STAT_INDEX_IP6TXOCTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip6OutOctets",
-> -	[IRDMA_HW_STAT_INDEX_IP6TXPKTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip6OutPkts",
-> -	[IRDMA_HW_STAT_INDEX_IP6TXFRAGS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip6OutSegRqd",
-> -	[IRDMA_HW_STAT_INDEX_IP6TXMCOCTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip6OutMcastOctets",
-> -	[IRDMA_HW_STAT_INDEX_IP6TXMCPKTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"ip6OutMcastPkts",
-> -	[IRDMA_HW_STAT_INDEX_TCPRXSEGS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"tcpInSegs",
-> -	[IRDMA_HW_STAT_INDEX_TCPTXSEG +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"tcpOutSegs",
-> -	[IRDMA_HW_STAT_INDEX_RDMARXRDS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"iwInRdmaReads",
-> -	[IRDMA_HW_STAT_INDEX_RDMARXSNDS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"iwInRdmaSends",
-> -	[IRDMA_HW_STAT_INDEX_RDMARXWRS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"iwInRdmaWrites",
-> -	[IRDMA_HW_STAT_INDEX_RDMATXRDS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"iwOutRdmaReads",
-> -	[IRDMA_HW_STAT_INDEX_RDMATXSNDS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"iwOutRdmaSends",
-> -	[IRDMA_HW_STAT_INDEX_RDMATXWRS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"iwOutRdmaWrites",
-> -	[IRDMA_HW_STAT_INDEX_RDMAVBND +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"iwRdmaBnd",
-> -	[IRDMA_HW_STAT_INDEX_RDMAVINV +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"iwRdmaInv",
-> -	[IRDMA_HW_STAT_INDEX_UDPRXPKTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"RxUDP",
-> -	[IRDMA_HW_STAT_INDEX_UDPTXPKTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"TxUDP",
-> -	[IRDMA_HW_STAT_INDEX_RXNPECNMARKEDPKTS +
-> IRDMA_HW_STAT_INDEX_MAX_32] =
-> -		"RxECNMrkd",
-> +	[IRDMA_STAT_64(IP4RXOCTS)]	= "ip4InOctets",
-> +	[IRDMA_STAT_64(IP4RXPKTS)]	= "ip4InPkts",
-> +	[IRDMA_STAT_64(IP4RXFRAGS)]	= "ip4InReasmRqd",
-> +	[IRDMA_STAT_64(IP4RXMCOCTS)]	= "ip4InMcastOctets",
-> +	[IRDMA_STAT_64(IP4RXMCPKTS)]	= "ip4InMcastPkts",
-> +	[IRDMA_STAT_64(IP4TXOCTS)]	= "ip4OutOctets",
-> +	[IRDMA_STAT_64(IP4TXPKTS)]	= "ip4OutPkts",
-> +	[IRDMA_STAT_64(IP4TXFRAGS)]	= "ip4OutSegRqd",
-> +	[IRDMA_STAT_64(IP4TXMCOCTS)]	= "ip4OutMcastOctets",
-> +	[IRDMA_STAT_64(IP4TXMCPKTS)]	= "ip4OutMcastPkts",
-> +	[IRDMA_STAT_64(IP6RXOCTS)]	= "ip6InOctets",
-> +	[IRDMA_STAT_64(IP6RXPKTS)]	= "ip6InPkts",
-> +	[IRDMA_STAT_64(IP6RXFRAGS)]	= "ip6InReasmRqd",
-> +	[IRDMA_STAT_64(IP6RXMCOCTS)]	= "ip6InMcastOctets",
-> +	[IRDMA_STAT_64(IP6RXMCPKTS)]	= "ip6InMcastPkts",
-> +	[IRDMA_STAT_64(IP6TXOCTS)]	= "ip6OutOctets",
-> +	[IRDMA_STAT_64(IP6TXPKTS)]	= "ip6OutPkts",
-> +	[IRDMA_STAT_64(IP6TXFRAGS)]	= "ip6OutSegRqd",
-> +	[IRDMA_STAT_64(IP6TXMCOCTS)]	= "ip6OutMcastOctets",
-> +	[IRDMA_STAT_64(IP6TXMCPKTS)]	= "ip6OutMcastPkts",
-> +	[IRDMA_STAT_64(TCPRXSEGS)]	= "tcpInSegs",
-> +	[IRDMA_STAT_64(TCPTXSEG)]	= "tcpOutSegs",
-> +	[IRDMA_STAT_64(RDMARXRDS)]	= "iwInRdmaReads",
-> +	[IRDMA_STAT_64(RDMARXSNDS)]	= "iwInRdmaSends",
-> +	[IRDMA_STAT_64(RDMARXWRS)]	= "iwInRdmaWrites",
-> +	[IRDMA_STAT_64(RDMATXRDS)]	= "iwOutRdmaReads",
-> +	[IRDMA_STAT_64(RDMATXSNDS)]	= "iwOutRdmaSends",
-> +	[IRDMA_STAT_64(RDMATXWRS)]	= "iwOutRdmaWrites",
-> +	[IRDMA_STAT_64(RDMAVBND)]	= "iwRdmaBnd",
-> +	[IRDMA_STAT_64(RDMAVINV)]	= "iwRdmaInv",
-> +	[IRDMA_STAT_64(UDPRXPKTS)]	= "RxUDP",
-> +	[IRDMA_STAT_64(UDPTXPKTS)]	= "TxUDP",
-> +	[IRDMA_STAT_64(RXNPECNMARKEDPKTS)]	= "RxECNMrkd",
->  };
-> 
->  static void irdma_get_dev_fw_str(struct ib_device *dev, char *str)
-
+Jason
