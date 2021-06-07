@@ -2,129 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A1439E7A9
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jun 2021 21:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA5E39E92A
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jun 2021 23:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbhFGTnS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Jun 2021 15:43:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbhFGTnS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Jun 2021 15:43:18 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB627C061574;
-        Mon,  7 Jun 2021 12:41:15 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id e11so23759596ljn.13;
-        Mon, 07 Jun 2021 12:41:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Z8D7EP2ZXRo81V/Iibvxl9tc2KeLwiTlPeliqLE5Xwg=;
-        b=Sqb1NYOa8vHwXP3ElbXmXIQUG9dhhuJtAdEv1ZZa1iQF+yHfhAwGBWXzd4x0FSrF5i
-         xc4u7/dPLXxCCamCLIYTyx9HoXPBV/+EdFlDOfPHqWRWL5qE/1LWYlita4PVUw4nHhzA
-         XhF3NbLx+eJ0ItCMTma0mkNDUbm72PyewEw9Yqc/nLCugMghg/CNkZSxkST9e60HnQ3c
-         1rCv/ClYQrZOAyKYCq9AZiUa8CuC7Tuy6n8w3mNfI6O0he9dvS79olfTvUbF2UumoTJD
-         Xb2SJvIt97DysKYl2475kcoR+tji2SVDzU81StRI5uTXR1nJLzEhOxXZT/GUQbaER9y0
-         F7uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Z8D7EP2ZXRo81V/Iibvxl9tc2KeLwiTlPeliqLE5Xwg=;
-        b=el6kLLHEGb4BFHPVeYcnFc3lkxIifkw7toSc66VUBcZ+VokWdUqPJ+sjzCUi4LIvbx
-         /KCILDrgkWPd9ouegr3B4x9zYWfSYzQUt1h5n3VRTEgWnTlyrYM8feCoakFBWGujKp8A
-         0eamnZzEc1hHs+AtLJdgYi1BqarNuBO5M2qVfUvyF4jr6Rgm2VjPCSnUCw0F4tfeGnAp
-         pOi6WV2mhZjEUDX2GFos9uY/e3fQJbZKuosYgm+U2UBE6MN+dG4+YTEmvJ9BVDYhM4wZ
-         UUK+JrrazWCbj7Z4XJmZtq2K6He98khVI83HhXq8PgI8OFf+DbFlNApTRSdEnrxxPrlZ
-         r9dw==
-X-Gm-Message-State: AOAM530SxLdqeSkLZWhYi4lZC7vqeCgaxtcM+g7Bbzg7t74M2X3cf+LC
-        G4oQZF591K5f7KjK+jedPHI=
-X-Google-Smtp-Source: ABdhPJw0gv5os//4zZ7uIHsRUPvsAoxDmXosX1GUW6X5G9iPQpPEnuEUpRJig52/WV+foGZSojv2cg==
-X-Received: by 2002:a2e:9e57:: with SMTP id g23mr15942260ljk.123.1623094874132;
-        Mon, 07 Jun 2021 12:41:14 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.224.40])
-        by smtp.gmail.com with ESMTPSA id k10sm1118272ljm.39.2021.06.07.12.41.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 12:41:13 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com
-Subject: [PATCH] net: rds: fix memory leak in rds_recvmsg
-Date:   Mon,  7 Jun 2021 22:41:02 +0300
-Message-Id: <20210607194102.2883-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S230507AbhFGVl4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Jun 2021 17:41:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230359AbhFGVl4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Jun 2021 17:41:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3BC9261245;
+        Mon,  7 Jun 2021 21:40:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623102004;
+        bh=1Ynso/1KIAIG5yOFhl1gYy9VV5KZHL8N+eirf9uSnCw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=VIONcEN/8K1PNtXW8znF2A3C1mZQV9k0cvMRFkaUQKTOxAQNxwwIRieJDZktyGSkH
+         iZ49tAd/JYvDaqvUrXBs59KzybGP+6QcBwoRqiQJ9VCPOIz/RqvQp606HDs7IPyAmp
+         gGFPeszGws5jyA5yOHlPHiFcxBxvTFAUorGiomapx7HViq5wG4SsYmTH2piG4ZeCEQ
+         LbvtdN9mL0BmbQQTN36J+W0vnkai9OQJ/CObc2t4fzEYDdZPDHp+0oCkrfVnQwXqds
+         cN8Z74cebO4y7grOqAEldV12UGzvnkA4rS2BegefVJuqEpErYjvHczF0Jn8klMGLW8
+         cZlui9jiLSPFg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1D34860BE2;
+        Mon,  7 Jun 2021 21:40:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v8 0/5] page_pool: recycle buffers
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162310200411.11768.6205430346849160444.git-patchwork-notify@kernel.org>
+Date:   Mon, 07 Jun 2021 21:40:04 +0000
+References: <20210607190240.36900-1-mcroce@linux.microsoft.com>
+In-Reply-To: <20210607190240.36900-1-mcroce@linux.microsoft.com>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
+        ayush.sawal@chelsio.com, vinay.yadav@chelsio.com,
+        rohitm@chelsio.com, davem@davemloft.net, kuba@kernel.org,
+        thomas.petazzoni@bootlin.com, mw@semihalf.com,
+        linux@armlinux.org.uk, mlindner@marvell.com,
+        stephen@networkplumber.org, tariqt@nvidia.com, hawk@kernel.org,
+        ilias.apalodimas@linaro.org, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, borisp@nvidia.com, arnd@arndb.de,
+        akpm@linux-foundation.org, peterz@infradead.org, vbabka@suse.cz,
+        yuzhao@google.com, will@kernel.org, fenghua.yu@intel.com,
+        guro@fb.com, hughd@google.com, peterx@redhat.com, jgg@ziepe.ca,
+        jonathan.lemon@gmail.com, alobakin@pm.me, cong.wang@bytedance.com,
+        wenxu@ucloud.cn, haokexin@gmail.com, jakub@cloudflare.com,
+        elver@google.com, willemb@google.com, linmiaohe@huawei.com,
+        linyunsheng@huawei.com, gnault@redhat.com,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, willy@infradead.org, edumazet@google.com,
+        dsahern@gmail.com, lorenzo@kernel.org, saeedm@nvidia.com,
+        andrew@lunn.ch, pabeni@redhat.com, sven.auhagen@voleatech.de,
+        yhs@fb.com, walken@google.com, kpsingh@kernel.org,
+        andrii@kernel.org, kafai@fb.com, david@redhat.com,
+        songliubraving@fb.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Syzbot reported memory leak in rds. The problem
-was in unputted refcount in case of error.
+Hello:
 
-int rds_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
-		int msg_flags)
-{
-...
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-	if (!rds_next_incoming(rs, &inc)) {
-		...
-	}
+On Mon,  7 Jun 2021 21:02:35 +0200 you wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
+> 
+> This is a respin of [1]
+> 
+> This patchset shows the plans for allowing page_pool to handle and
+> maintain DMA map/unmap of the pages it serves to the driver. For this
+> to work a return hook in the network core is introduced.
+> 
+> [...]
 
-After this "if" inc refcount incremented and
+Here is the summary with links:
+  - [net-next,v8,1/5] mm: add a signature in struct page
+    https://git.kernel.org/netdev/net-next/c/c07aea3ef4d4
+  - [net-next,v8,2/5] skbuff: add a parameter to __skb_frag_unref
+    https://git.kernel.org/netdev/net-next/c/c420c98982fa
+  - [net-next,v8,3/5] page_pool: Allow drivers to hint on SKB recycling
+    https://git.kernel.org/netdev/net-next/c/6a5bcd84e886
+  - [net-next,v8,4/5] mvpp2: recycle buffers
+    https://git.kernel.org/netdev/net-next/c/133637fcfab2
+  - [net-next,v8,5/5] mvneta: recycle buffers
+    https://git.kernel.org/netdev/net-next/c/e4017570daee
 
-	if (rds_cmsg_recv(inc, msg, rs)) {
-		ret = -EFAULT;
-		goto out;
-	}
-...
-out:
-	return ret;
-}
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-in case of rds_cmsg_recv() fail the refcount won't be
-decremented. And it's easy to see from ftrace log, that
-rds_inc_addref() don't have rds_inc_put() pair in
-rds_recvmsg() after rds_cmsg_recv()
-
- 1)               |  rds_recvmsg() {
- 1)   3.721 us    |    rds_inc_addref();
- 1)   3.853 us    |    rds_message_inc_copy_to_user();
- 1) + 10.395 us   |    rds_cmsg_recv();
- 1) + 34.260 us   |  }
-
-Fixes: bdbe6fbc6a2f ("RDS: recv.c")
-Reported-and-tested-by: syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- net/rds/recv.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/net/rds/recv.c b/net/rds/recv.c
-index 4db109fb6ec2..3fa16c339bfe 100644
---- a/net/rds/recv.c
-+++ b/net/rds/recv.c
-@@ -714,7 +714,7 @@ int rds_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 
- 		if (rds_cmsg_recv(inc, msg, rs)) {
- 			ret = -EFAULT;
--			goto out;
-+			goto out_put;
- 		}
- 		rds_recvmsg_zcookie(rs, msg);
- 
-@@ -740,6 +740,7 @@ int rds_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 		break;
- 	}
- 
-+out_put:
- 	if (inc)
- 		rds_inc_put(inc);
- 
--- 
-2.31.1
 
