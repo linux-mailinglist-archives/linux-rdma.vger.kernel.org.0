@@ -2,82 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837A039E934
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jun 2021 23:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1B439E96A
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jun 2021 00:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhFGVxf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Jun 2021 17:53:35 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:42639 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbhFGVxf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Jun 2021 17:53:35 -0400
-Received: by mail-oi1-f169.google.com with SMTP id v142so19141371oie.9
-        for <linux-rdma@vger.kernel.org>; Mon, 07 Jun 2021 14:51:29 -0700 (PDT)
+        id S231220AbhFGWSF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Jun 2021 18:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231184AbhFGWSE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Jun 2021 18:18:04 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8093CC061574
+        for <linux-rdma@vger.kernel.org>; Mon,  7 Jun 2021 15:16:01 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id l11-20020a05600c4f0bb029017a7cd488f5so602847wmq.0
+        for <linux-rdma@vger.kernel.org>; Mon, 07 Jun 2021 15:16:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=XV8UNpucrCzRdAKbsRjSVbGmMu2s8pZIPqOoNm89hdw=;
-        b=Rs0EyqA6k33/eTlQ9dD5IDmN3MbrRJuCKBnQ9x+LmnBgNd9MfTMi1rgs7teCu+mcZV
-         5lhUraY4pwnKWEVba1j/jmSrZ2DWuJX5sOxYSjtn4sPowrFiMEHxuRiBuZDCqZI1ThsP
-         CAD7721RK3EMlng2GIoBx4KUjK+lQ00eu7xr7I15n0dwDen8IMM/LSm+oRX4LpKzd2D8
-         8hnZGlfo8SdnIpa7Dk6Rsxl+J4d5YRXUG8mhNp8TTVJbBHRWrUaZobe6TqzIF7vKXUhy
-         7A5WgKvfhoRGW6M86DryqRrdftETsMn1qIckuXCho8mDVxlAbrep7qnMqwKvvSybq3F6
-         N2ZA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/dJwp/5qIv6m4+sjUeD1Id8SPwL449jXcbq/vD1eHq8=;
+        b=MDFe37QCtrDjLED85hMNm+pf0wcsqcgkbzHSYgBMNTsSy/aRFT+5Y/X+ZpTyI78Xfu
+         IpxUtVQMqWPT2515j5haj4eBnIjd4DWZ2i00eN9tKrV27FR/rk8nUZ03esOlnynoAKyb
+         WgiW148McJkhtZ3/GlG05pve0plhbHRBEX2YufSaBZf7MiBkSkYayAtFIhUkLuTO+q9v
+         OkcN4wlEn/aCMvgb/LWJqd9jPjuRVQwCLLUAjOsKifwyenuTkQAhfOBEUDuq12pIDWM9
+         7uTuFfuNdCQgDT9iYskxq5NZbzATzhz+a7pB0UVxyxBgDS6JWbpiema00HqpVfxZ08OK
+         geTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=XV8UNpucrCzRdAKbsRjSVbGmMu2s8pZIPqOoNm89hdw=;
-        b=jStdf2GtQH+axxLdMhhhd2V9Jhjk8+gDMwqGouPnxCRrxhHNDLmDylbvxOH7pY6sos
-         W1RpVTQW3itk5Cpsrr9xxgDWJ8n5Vlz+Q6KsFUDPGl1uDr90k2o7uVJpSUddL8Iqbuh3
-         PiXxm2AN65Qvybgbow0GW5gR3jK+V1gmEBc28p8TB3IWbxx0ip8i/sBqv2stMvaUAFA7
-         bG6znWjv20nU58cFnWipgffJEQQpccPhSdM+dfK9vDgwRBgTLMBRdqIWEFuGxFWE2Q84
-         xF/hj+auFoVD8wZHiiRT+fZP0dvq+JncnWyyGtcIK4xoVq0o8MH+NwOuxAhCu8CalZCD
-         nSAQ==
-X-Gm-Message-State: AOAM531tMY9SC1BJ128QyEsvD4lKLEZmb9yxZi/EmfobUy5/fna9Cxad
-        M1L9FV8U2OVjoEo/hHDqWmN5GnekOps=
-X-Google-Smtp-Source: ABdhPJxUTVFfuOFIY66POdefgJyz/mHTf5q62JTBM5bArTjijWNH5OhRfBpX2nTQA0Y76KsB3vQrIA==
-X-Received: by 2002:aca:6106:: with SMTP id v6mr799347oib.175.1623102629358;
-        Mon, 07 Jun 2021 14:50:29 -0700 (PDT)
-Received: from [192.168.0.25] ([97.99.248.255])
-        by smtp.gmail.com with ESMTPSA id d1sm2688725otu.9.2021.06.07.14.50.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Jun 2021 14:50:29 -0700 (PDT)
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-From:   "Pearson, Robert B" <rpearsonhpe@gmail.com>
-Subject: [Bug Report] RDMA/core: test_qpex.py attempts invalid MW bind
- operation
-Message-ID: <8d329494-6653-359b-91aa-31ac9dc8122c@gmail.com>
-Date:   Mon, 7 Jun 2021 16:50:20 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/dJwp/5qIv6m4+sjUeD1Id8SPwL449jXcbq/vD1eHq8=;
+        b=GnHde5yeF6DlocfMPKUtBjaUJN1z7dMb6fUgcRAnK/OF16cLvFlWB6Ys2nIq4wbmtf
+         M2mxkT/I60Ina1OfUGk+T756FnNwP0TEOTLDz+YZs5Yv+xVgWOQ4uq0zP084IJx4A6RK
+         5/sakDlHAH4wsFdWreOO/hn0h4g8c8ASG3SpGIH6TUc+kHw0xr4gZa9b3q89ev2KWMbu
+         gA6iZ9tUgrzR8lGOYHE3YRvdu7jOMs1sV9Q0gxjFqDICZfiizP4oHkn0onVuSikwo6CZ
+         iIfnAF+b+XeDmnr3U5rXy5/kUbq/+RpCBflRPR9ywlhcoO+8wkMQpHMOM9arIC3rTc6R
+         DWCw==
+X-Gm-Message-State: AOAM531NmQWT+x3XylmLxOhC22lujAzkCZqf9cbmieaBRMBVByThRhNo
+        9L7pN6oXimKt2BxEZf3JBIeq1Zgt9+v7Hw==
+X-Google-Smtp-Source: ABdhPJyn/VP5d0B2CFDzcZstPstBmvZ/5qimdw18LiAV2AgYkVToIKQImeO+V2Q6WvnG2MO25EW9Pg==
+X-Received: by 2002:a1c:e907:: with SMTP id q7mr1090814wmc.1.1623104159907;
+        Mon, 07 Jun 2021 15:15:59 -0700 (PDT)
+Received: from kheib-workstation.redhat.com ([2a00:a040:19b:e02f::1006])
+        by smtp.gmail.com with ESMTPSA id b188sm1036496wmh.18.2021.06.07.15.15.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 15:15:59 -0700 (PDT)
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: [PATCH for-next] RDMA/irdma: Fix return error sign from irdma_modify_qp
+Date:   Tue,  8 Jun 2021 01:15:43 +0300
+Message-Id: <20210607221543.254144-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-sorry/this time without the HTML.
+There is a typo in the returned error code sign from irdma_modify_qp()
+when the attr_mask is not supported - Fix it.
 
-======================================================================
-ERROR: test_qp_ex_rc_bind_mw (tests.test_qpex.QpExTestCase)
-Verify bind memory window operation using the new post_send API.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-   File "/home/rpearson/src/rdma-core/tests/test_qpex.py", line 292, in 
-test_qp_ex_rc_bind_mw
-     u.poll_cq(server.cq)
-   File "/home/rpearson/src/rdma-core/tests/utils.py", line 538, in poll_cq
-     raise PyverbsRDMAError('Completion status is {s}'.
-pyverbs.pyverbs_error.PyverbsRDMAError: Completion status is Memory 
-window bind error. Errno: 6, No such device or address
+Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+---
+ drivers/infiniband/hw/irdma/verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This test attempts to bind a type 2 MW to an MR that does not have bind 
-mw access set and expects the test to succeed.
-
-Bob Pearson
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 294155293243..154ca25e7e32 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -1472,7 +1472,7 @@ int irdma_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr, int attr_mask,
+ 	unsigned long flags;
+ 
+ 	if (attr_mask & ~IB_QP_ATTR_STANDARD_BITS)
+-		return ~EOPNOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	ctx_info = &iwqp->ctx_info;
+ 	offload_info = &iwqp->iwarp_info;
+-- 
+2.26.3
 
