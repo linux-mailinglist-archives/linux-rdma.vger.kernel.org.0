@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E0039DA21
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jun 2021 12:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F9B39DA7A
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jun 2021 13:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbhFGKxb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Jun 2021 06:53:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42784 "EHLO mail.kernel.org"
+        id S231140AbhFGLCV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Jun 2021 07:02:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230215AbhFGKxa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 7 Jun 2021 06:53:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4C7C60FDA;
-        Mon,  7 Jun 2021 10:51:38 +0000 (UTC)
+        id S230390AbhFGLCU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Jun 2021 07:02:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25AAB60FDA;
+        Mon,  7 Jun 2021 11:00:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623063099;
-        bh=i0XQNJYxQaqmmDQoZDk8J9PTxBJKV9BhW0RKaQP+lP0=;
+        s=k20201202; t=1623063629;
+        bh=6bMsVqbjM3++t48Qy6Kp7HdeCZdhuDq84Ibcb57h3cc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bHrnrbfddswK+S1j4C42LhenrJnyZz8UOTxrgN3YF3wyeoVCG6OQWsgTr/IjKhoJn
-         ERbu8T9RJahz6h/t91glP9JYPjgNjDYX4V25Um/a25NEcNoG3TV4vhSQk3IYZCBCX0
-         K8veW/Sk2qjS5tAv586p2y63jVNOcVh8IOw4ttuW16ZJALshA+J/thRn7+2vy0JV3m
-         yJlbI82t4IJ/JYWqnhKC6nefiGfB4TlUuLkrDFd5AFuv/JRPZfrh4YV6Qx9cyJR96/
-         ai+OgIGQyppbYEsFX2PBppGU7A3bxONEKc3ZFo3zrpaNz21ZhHi31JM2TY24Ni0UY1
-         Xc8ejs8iyrAvw==
-Date:   Mon, 7 Jun 2021 13:51:36 +0300
+        b=UeoyKq7nK1d24iFE9saVFY/HYwebI1+iEUwBoEHw6MYPdCPdV3i6cyRJEtSPG0N40
+         tNN+rWvYgDtV1Brk/6ZbVvUJp2ce7xxARktYxSaq4IFv7ST4VxuWUlGAMCvCUcJsCy
+         8N/foYQ+CQpwPBSQYjDcuE4Vn3NZwrMBVVsoY6kxDq+kqQwCK+DnKyg268+w7sGojd
+         DkikBp2TjdE0SSuLKd3oUt2D5sEVer899LH6wNdJ/jFykwoU/Ehh6ekbujtOKHQJWw
+         HYilPjP6jFSw3hM98+3yDGv5H216YLaIqNp5u/JubhD59YcOHG9Rgvy6pApjmMOJqA
+         A+UmnH8JSu7Og==
+Date:   Mon, 7 Jun 2021 14:00:26 +0300
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Greg KH <gregkh@linuxfoundation.org>
 Cc:     Doug Ledford <dledford@redhat.com>,
@@ -50,42 +50,117 @@ Cc:     Doug Ledford <dledford@redhat.com>,
         VMware PV-Drivers <pv-drivers@vmware.com>,
         Yishai Hadas <yishaih@nvidia.com>,
         Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v1 10/15] RDMA/cm: Use an attribute_group on
- the ib_port_attribute intead of kobj's
-Message-ID: <YL36OFkmlxJiqjvc@unreal>
+Subject: Re: [PATCH rdma-next v1 02/15] RDMA/core: Replace the ib_port_data
+ hw_stats pointers with a ib_port pointer
+Message-ID: <YL38SpQ3+mXAvp67@unreal>
 References: <cover.1623053078.git.leonro@nvidia.com>
- <00e578937f557954d240bc0856f45b3f752d6cba.1623053078.git.leonro@nvidia.com>
- <YL3z/xpm5EYHFuZs@kroah.com>
+ <6477a29059b1b4d92ea003e3b801a8d1df6d516d.1623053078.git.leonro@nvidia.com>
+ <YL3zmzSTJ8nE1yr6@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YL3z/xpm5EYHFuZs@kroah.com>
+In-Reply-To: <YL3zmzSTJ8nE1yr6@kroah.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 12:25:03PM +0200, Greg KH wrote:
-> On Mon, Jun 07, 2021 at 11:17:35AM +0300, Leon Romanovsky wrote:
+On Mon, Jun 07, 2021 at 12:23:23PM +0200, Greg KH wrote:
+> On Mon, Jun 07, 2021 at 11:17:27AM +0300, Leon Romanovsky wrote:
 > > From: Jason Gunthorpe <jgg@nvidia.com>
 > > 
-> > This code is trying to attach a list of counters grouped into 4 groups to
-> > the ib_port sysfs. Instead of creating a bunch of kobjects simply express
-> > everything naturally as an ib_port_attribute and add a single
-> > attribute_groups list.
+> > It is much saner to store a pointer to the kobject structure that contains
+> > the cannonical stats pointer than to copy the stats pointers into a public
+> > structure.
 > > 
-> > Remove all the naked kobject manipulations.
+> > Future patches will require the sysfs pointer for other purposes.
+> > 
+> > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >  drivers/infiniband/core/core_priv.h |  1 +
+> >  drivers/infiniband/core/nldev.c     |  8 ++------
+> >  drivers/infiniband/core/sysfs.c     | 14 +++++++++++---
+> >  include/rdma/ib_verbs.h             |  3 ++-
+> >  4 files changed, 16 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
+> > index 29809dd30041..ec5c2c3db423 100644
+> > --- a/drivers/infiniband/core/core_priv.h
+> > +++ b/drivers/infiniband/core/core_priv.h
+> > @@ -378,6 +378,7 @@ struct net_device *rdma_read_gid_attr_ndev_rcu(const struct ib_gid_attr *attr);
+> >  
+> >  void ib_free_port_attrs(struct ib_core_device *coredev);
+> >  int ib_setup_port_attrs(struct ib_core_device *coredev);
+> > +struct rdma_hw_stats *ib_get_hw_stats_port(struct ib_device *ibdev, u32 port_num);
+> >  
+> >  int rdma_compatdev_set(u8 enable);
+> >  
+> > diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+> > index 01316926cef6..e9b4b2cccaa0 100644
+> > --- a/drivers/infiniband/core/nldev.c
+> > +++ b/drivers/infiniband/core/nldev.c
+> > @@ -2066,7 +2066,8 @@ static int stat_get_doit_default_counter(struct sk_buff *skb,
+> >  	}
+> >  
+> >  	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
+> > -	if (!rdma_is_port_valid(device, port)) {
+> > +	stats = ib_get_hw_stats_port(device, port);
+> > +	if (!stats) {
+> >  		ret = -EINVAL;
+> >  		goto err;
+> >  	}
+> > @@ -2088,11 +2089,6 @@ static int stat_get_doit_default_counter(struct sk_buff *skb,
+> >  		goto err_msg;
+> >  	}
+> >  
+> > -	stats = device->port_data ? device->port_data[port].hw_stats : NULL;
+> > -	if (stats == NULL) {
+> > -		ret = -EINVAL;
+> > -		goto err_msg;
+> > -	}
+> >  	mutex_lock(&stats->lock);
+> >  
+> >  	num_cnts = device->ops.get_hw_stats(device, stats, port, 0);
+> > diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
+> > index d11ceff2b4e4..b153dee1e0fa 100644
+> > --- a/drivers/infiniband/core/sysfs.c
+> > +++ b/drivers/infiniband/core/sysfs.c
+> > @@ -1031,8 +1031,6 @@ static void setup_hw_stats(struct ib_device *device, struct ib_port *port,
+> >  			goto err;
+> >  		port->hw_stats_ag = hsag;
+> >  		port->hw_stats = stats;
+> > -		if (device->port_data)
+> > -			device->port_data[port_num].hw_stats = stats;
+> >  	} else {
+> >  		struct kobject *kobj = &device->dev.kobj;
+> >  		ret = sysfs_create_group(kobj, hsag);
+> > @@ -1053,6 +1051,14 @@ static void setup_hw_stats(struct ib_device *device, struct ib_port *port,
+> >  	kfree(stats);
+> >  }
+> >  
+> > +struct rdma_hw_stats *ib_get_hw_stats_port(struct ib_device *ibdev,
+> > +					   u32 port_num)
+> > +{
+> > +	if (!ibdev->port_data || !rdma_is_port_valid(ibdev, port_num))
+> > +		return NULL;
+> > +	return ibdev->port_data[port_num].sysfs->hw_stats;
+> > +}
+> > +
+> >  static int add_port(struct ib_core_device *coredev, int port_num)
+> >  {
+> >  	struct ib_device *device = rdma_device_to_ibdev(&coredev->dev);
+> > @@ -1171,6 +1177,8 @@ static int add_port(struct ib_core_device *coredev, int port_num)
+> >  		setup_hw_stats(device, p, port_num);
+> >  
+> >  	list_add_tail(&p->kobj.entry, &coredev->port_list);
+> > +	if (device->port_data && is_full_dev)
+> > +		device->port_data[port_num].sysfs = p;
 > 
-> Much nicer.
-> 
-> But why do you need your counters to be atomic in the first place?  What
-> are they counting that requires this?  Given that they are just a
-> statistic for userspace, making them be a u64 should work just the same,
-> right?
+> You are saving off a pointer to a reference counted structure without
+> incrementing the reference count on it?  That's brave, and really wrong.
 
-The statistic counters are per-port, while the cm.c flows run in
-asynchronically in parallel for every CM connection.
-
-We need atomic variable to ensure that "write to u64" is not
-interrupted.
+This is done to ensure that device->port_data[port_num].sysfs is not set
+before "p" is properly configured. From reference point of view  "sysfs"
+is equal to "p" and the latter already initialized.
 
 Thanks
