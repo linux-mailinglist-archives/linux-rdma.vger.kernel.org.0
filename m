@@ -2,122 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F43439DE35
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jun 2021 15:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2747139DFAB
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jun 2021 16:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhFGOAv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Jun 2021 10:00:51 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:42230 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhFGOAv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Jun 2021 10:00:51 -0400
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E2F5620B83E2;
-        Mon,  7 Jun 2021 06:58:59 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E2F5620B83E2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623074339;
-        bh=RJbR6n7tHj/RCUL2D5DbLcr8QLAchc6CH5JQTYC4VdU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LQbkQMdP+nmBliT3UwZstLqlQwOPVfdPgbreKMa1weAEhwkoovfn7EdWQ14mVYrMi
-         Ryz5slXCdq3r55mkT2FqK6bIbGYqZ/84qXLieDUnWoDdFsXM3x6okJuOJKNUxAw4oY
-         gMeyoLL9ns5WqboirBnyKATj+9vxTL4gOHn1etjk=
-Received: by mail-pf1-f169.google.com with SMTP id s14so12243255pfd.9;
-        Mon, 07 Jun 2021 06:58:59 -0700 (PDT)
-X-Gm-Message-State: AOAM531bBCjQcvxNlLB8bB31ROVhxu0d5w9vJqDCkRXC4upLNoOdonjU
-        Wua/VQ/aRvQCyVcsi3nlhKkSZW24ftJ9QmF7Q7M=
-X-Google-Smtp-Source: ABdhPJzrHLqPChd08nP1N0FnCsUSWppo+7N/IfO51VOEQxz8ChUp/9waJhKWDPkGBpNi/mUbAds+1gb+BPlL1TqNxko=
-X-Received: by 2002:aa7:900f:0:b029:2ec:82d2:d23 with SMTP id
- m15-20020aa7900f0000b02902ec82d20d23mr15780817pfo.16.1623074339484; Mon, 07
- Jun 2021 06:58:59 -0700 (PDT)
+        id S231558AbhFGO4R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Jun 2021 10:56:17 -0400
+Received: from mga01.intel.com ([192.55.52.88]:16307 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231460AbhFGOz4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Jun 2021 10:55:56 -0400
+IronPort-SDR: aANCVRNkvEzQxQqWN6Dp3zwS8G40AR/1qOIZi138Pm1Z9VZeOcRCtmZGwzj1/EpmhVSOXLGMil
+ E4p5PjE/ISuQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10008"; a="225970581"
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="225970581"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2021 07:53:59 -0700
+IronPort-SDR: rESX0qh2f3FwoP3KUZNHspOUbN6dmTHnyp/Bn36J+ePzu8fkZBRzA/nDAzUugsZFBctskkCKMJ
+ lgXSBFsafCeQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,255,1616482800"; 
+   d="scan'208";a="481550650"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga001.jf.intel.com with ESMTP; 07 Jun 2021 07:53:59 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Mon, 7 Jun 2021 07:53:58 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Mon, 7 Jun 2021 07:53:58 -0700
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2242.008;
+ Mon, 7 Jun 2021 07:53:58 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Colin King <colin.king@canonical.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH][next] RDMA/irdma: remove redundant initialization of
+ variable val
+Thread-Topic: [PATCH][next] RDMA/irdma: remove redundant initialization of
+ variable val
+Thread-Index: AQHXWgyjSr5u0/j66kWtCSOcRAlE5asHG4Qw
+Date:   Mon, 7 Jun 2021 14:53:58 +0000
+Message-ID: <002eafeb137b42a8ae6782e6394c2170@intel.com>
+References: <20210605131347.26293-1-colin.king@canonical.com>
+In-Reply-To: <20210605131347.26293-1-colin.king@canonical.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210604183349.30040-1-mcroce@linux.microsoft.com>
- <20210604183349.30040-2-mcroce@linux.microsoft.com> <YLp6D7mEh85vL+pY@casper.infradead.org>
- <CAFnufp2jGRsr9jexBLFRZfJu9AwGO0ghzExT1R4bJdscwHqSnQ@mail.gmail.com>
- <YLuK9P+loeKwUUK3@casper.infradead.org> <CAFnufp1e893Yz+KTjDvX4tyA8ngqmnMVudf1v0cBPdi9d_2zLw@mail.gmail.com>
- <YL4kpntfzMBXGSfV@casper.infradead.org>
-In-Reply-To: <YL4kpntfzMBXGSfV@casper.infradead.org>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Mon, 7 Jun 2021 15:58:23 +0200
-X-Gmail-Original-Message-ID: <CAFnufp1fF5NtM_NzhVG6MmRwkvDot+usPdAOhHdfQUVCHhV75w@mail.gmail.com>
-Message-ID: <CAFnufp1fF5NtM_NzhVG6MmRwkvDot+usPdAOhHdfQUVCHhV75w@mail.gmail.com>
-Subject: Re: [PATCH net-next v7 1/5] mm: add a signature in struct page
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 7, 2021 at 3:53 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Sun, Jun 06, 2021 at 03:50:54AM +0200, Matteo Croce wrote:
-> > And change all the *_pfmemalloc functions to use page->lru.next like this?
-> >
-> > @@ -1668,10 +1668,12 @@ struct address_space *page_mapping(struct page *page);
-> > static inline bool page_is_pfmemalloc(const struct page *page)
-> > {
-> >        /*
-> > -        * Page index cannot be this large so this must be
-> > -        * a pfmemalloc page.
-> > +        * This is not a tail page; compound_head of a head page is unused
-> > +        * at return from the page allocator, and will be overwritten
-> > +        * by callers who do not care whether the page came from the
-> > +        * reserves.
-> >         */
->
-> The comment doesn't make a lot of sense if we're switching to use
-> lru.next.  How about:
->
->         /*
->          * lru.next has bit 1 set if the page is allocated from the
->          * pfmemalloc reserves.  Callers may simply overwrite it if
->          * they do not need to preserve that information.
->          */
-
-Sounds good!
-
--- 
-per aspera ad upstream
+PiBTdWJqZWN0OiBbUEFUQ0hdW25leHRdIFJETUEvaXJkbWE6IHJlbW92ZSByZWR1bmRhbnQgaW5p
+dGlhbGl6YXRpb24gb2YgdmFyaWFibGUgdmFsDQo+IA0KPiBGcm9tOiBDb2xpbiBJYW4gS2luZyA8
+Y29saW4ua2luZ0BjYW5vbmljYWwuY29tPg0KPiANCj4gVGhlIHZhcmlhYmxlIHZhbCBpcyBiZWlu
+ZyBpbml0aWFsaXplZCB3aXRoIGEgdmFsdWUgdGhhdCBpcyBuZXZlciByZWFkLCBpdCBpcyBiZWlu
+Zw0KPiB1cGRhdGVkIGxhdGVyIG9uLiBUaGUgYXNzaWdubWVudCBpcyByZWR1bmRhbnQgYW5kIGNh
+biBiZSByZW1vdmVkLg0KPiANCj4gQWRkcmVzc2VzLUNvdmVyaXR5OiAoIlVudXNlZCB2YWx1ZSIp
+DQo+IFNpZ25lZC1vZmYtYnk6IENvbGluIElhbiBLaW5nIDxjb2xpbi5raW5nQGNhbm9uaWNhbC5j
+b20+DQo+IC0tLQ0KPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L2lyZG1hL2N0cmwuYyB8IDIgKy0N
+Cj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4g
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW5maW5pYmFuZC9ody9pcmRtYS9jdHJsLmMgYi9kcml2ZXJz
+L2luZmluaWJhbmQvaHcvaXJkbWEvY3RybC5jDQo+IGluZGV4IDhiZDNhZWNhZGFmNi4uYjEwMjNh
+N2QwYmQxIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvaXJkbWEvY3RybC5j
+DQo+ICsrKyBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9pcmRtYS9jdHJsLmMNCj4gQEAgLTMzMjMs
+NyArMzMyMyw3IEBAIF9fbGU2NCAqaXJkbWFfc2NfY3FwX2dldF9uZXh0X3NlbmRfd3FlX2lkeChz
+dHJ1Y3QNCj4gaXJkbWFfc2NfY3FwICpjcXAsIHU2NCBzY3JhdGNoDQo+ICAgKi8NCj4gIGVudW0g
+aXJkbWFfc3RhdHVzX2NvZGUgaXJkbWFfc2NfY3FwX2Rlc3Ryb3koc3RydWN0IGlyZG1hX3NjX2Nx
+cCAqY3FwKSAgew0KPiAtCXUzMiBjbnQgPSAwLCB2YWwgPSAxOw0KPiArCXUzMiBjbnQgPSAwLCB2
+YWw7DQoNCkFja2VkLWJ5OiBTaGlyYXogU2FsZWVtIDxzaGlyYXouc2FsZWVtQGludGVsLmNvbT4N
+Cg==
