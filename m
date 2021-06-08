@@ -2,337 +2,236 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FA639FC38
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jun 2021 18:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC5439FC4A
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jun 2021 18:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbhFHQT7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 8 Jun 2021 12:19:59 -0400
-Received: from mga03.intel.com ([134.134.136.65]:58990 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230222AbhFHQT6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 8 Jun 2021 12:19:58 -0400
-IronPort-SDR: o2nClvxJSC+m4HnHfxX45b2m26h+4Zc1TBGAVz0Dk2scs1zkzavUMRXhUZh0RVhcqYRbV2ykph
- 0t+fDa/3wpnA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="204903120"
-X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
-   d="scan'208";a="204903120"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jun 2021 09:18:05 -0700
-IronPort-SDR: uU1v7fLi1Ekq+TjSizPLVILzOEAg8ij5b63LrkyUuj5VysbCot24pOgNBb+HJuktN2N35QD6mZ
- bYgDN+KTAwoA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,258,1616482800"; 
-   d="scan'208";a="619358458"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga005.jf.intel.com with ESMTP; 08 Jun 2021 09:18:05 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Tue, 8 Jun 2021 09:18:04 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Tue, 8 Jun 2021 09:18:03 -0700
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2242.008;
- Tue, 8 Jun 2021 09:18:03 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Joe Perches <joe@perches.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>
-CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: RE: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
-Thread-Topic: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
-Thread-Index: AQHXWnC6BhX5oDUlRUmhwRc1TlnwJqsHGdlAgAIELQD//9K5YIAAu9CAgACgZAA=
-Date:   Tue, 8 Jun 2021 16:18:03 +0000
-Message-ID: <38e0a7b9c19543c2aee679bdd346c5a9@intel.com>
-References: <9e07e80d8aa464447323670fd810f455d53f76f3.camel@perches.com>
-         <d41c5503b5b74996af3f3c1853a67935@intel.com>
-         <e3242b18d12db4bff77127d82d5e788b7712035a.camel@perches.com>
-         <7bc8c264a70a4026b3bc7d9edd9e8945@intel.com>
- <6147b2a2a5992525482f2cf61d2939b110062d8c.camel@perches.com>
-In-Reply-To: <6147b2a2a5992525482f2cf61d2939b110062d8c.camel@perches.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S231689AbhFHQYa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Jun 2021 12:24:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230261AbhFHQY3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Jun 2021 12:24:29 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BA5C061574
+        for <linux-rdma@vger.kernel.org>; Tue,  8 Jun 2021 09:22:22 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id a26so1369080oie.11
+        for <linux-rdma@vger.kernel.org>; Tue, 08 Jun 2021 09:22:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=ZLNNz5cZgoB0842GuQxnQhlKb6JGzToW2/gAQr2wLg4=;
+        b=PeaSLfca6RLReeG9ZWCRZj8LwQnDn6ZuTgOqXmjmOBqkgZS+Ts0VYhMVFhlWoiXK7E
+         cjB50ET5NZDas04YHQQdnN1spu84ggBErQP27iSyNbcmy5IVH8ETkhQScYDT7LY0jtI+
+         /gfNiHLp+eAG0jyTyBtjRz9WQMjq77KobY/uAQfWS1HgZLqCDrrVr722tLxSXBcNNC/8
+         WqZFdITqknbCbXQH6hTfXtjrGAW5aUR2IgV8PQwebbdq/Zs4XXIktIAkd67AMTVM62jC
+         hOsqOHA5bWQZlZNUco+5DaXyGxFzVru4LaS/yxQHwTafQ52OnQOgkvgVPV24je0sgIVR
+         Nt+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=ZLNNz5cZgoB0842GuQxnQhlKb6JGzToW2/gAQr2wLg4=;
+        b=VP1jD1PfMAg+KJNJtxI6VSGoejArr0Z/K5WAa9zC6O4O+2peJ5tI+b9CyCXdElQHfa
+         T0/HED+y/7NqNaetKrcmputY+9RelHY89kaA3bQGV/6Y1IzuyaUDDr8HwwtnnJgI2UEh
+         9/WvKb+YHkXAhidTsxnBIGEOxXOyRfEjYzdikZGVdEGFbo+ofjzuaAvTKolFXWjv821p
+         guCUTxPXLYGgVKwG6r2dyJzX9gZS6l5Md0S+nzh5YkNpVJVrb8lIAhAv5xocFgVEQFuK
+         VIH+Cb++brgMbPFwf9pTIMwjVjv0nb/QLjvyqn7tmH83vWJe9TJaa9l/pCXNX3ddTdpF
+         iLng==
+X-Gm-Message-State: AOAM530gEDiBzbAE2X9NgyAQmcqhh5CUVMmJ32WGH0KFVdfQoaYGdlCU
+        NmvKRYZVQm0UCX8XZU0NEjEnKYSvSog=
+X-Google-Smtp-Source: ABdhPJxjEMWqjIiyjm5b7T9iy1epXUhQ0/2swPGXfwTfdIJmWrpRWkR71s8KxJan8SToE5jmCh4qng==
+X-Received: by 2002:a05:6808:1c9:: with SMTP id x9mr3410764oic.108.1623169341860;
+        Tue, 08 Jun 2021 09:22:21 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:e53f:9e9b:cd17:cd87? (2603-8081-140c-1a00-e53f-9e9b-cd17-cd87.res6.spectrum.com. [2603:8081:140c:1a00:e53f:9e9b:cd17:cd87])
+        by smtp.gmail.com with ESMTPSA id x24sm3122965otq.34.2021.06.08.09.22.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 09:22:21 -0700 (PDT)
+Subject: Re: [Bug Report] RDMA/core: test_qpex.py attempts invalid MW bind
+ operation
+From:   "Pearson, Robert B" <rpearsonhpe@gmail.com>
+To:     Edward Srouji <edwards@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <8d329494-6653-359b-91aa-31ac9dc8122c@gmail.com>
+ <YL704NdV9F15CDtQ@unreal> <474ad554-574c-120e-97ba-b617e346f14d@gmail.com>
+ <YL8SbuEHsyioU/Ne@unreal> <591f489c-882b-de37-eb1f-d39a71fcbd05@nvidia.com>
+ <bee1cfd7-09f1-5420-b09f-b6eb9de897e9@gmail.com>
+ <90cbdee5-c1f6-0373-8d09-c28e3ad7a6c8@gmail.com>
+Message-ID: <0d5a9421-e2a4-c6a6-2934-500559bfc651@gmail.com>
+Date:   Tue, 8 Jun 2021 11:22:20 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <90cbdee5-c1f6-0373-8d09-c28e3ad7a6c8@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
-> 
-> On Mon, 2021-06-07 at 22:40 +0000, Saleem, Shiraz wrote:
-> > > Subject: Re: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
-> > >
-> > > On Mon, 2021-06-07 at 14:54 +0000, Saleem, Shiraz wrote:
-> > > > > Subject: irdma: utils.c typos in irdma_cqp_gather_stats_gen1 ?
-> > > > >
-> > > > > There are some odd mismatches in field and access index.
-> > > > > These may be simple cut/paste typos.
-> > > > >
-> > > > > Are these intentional?
-> > > >
-> > > > No. Accidental. Likely cut/copy mistake. I will send a fix. Thanks
-> > > > Joe!
-> > >
-> > > Reason is I was refactoring what I thought was rather templated and
-> > > overly verbose code.
-> > >
-> > > Here's a possible patch (with probable corrections to these index
-> > > typos):
-> >
-> > Looks reasonable to me. Wondering if irdma_update_stats should also
-> > use your IRDMA_STAT macro.
-> 
-> Probably, and it could really a macro or two of its own.
-> 
-> And it looks like that block has it's own copy/paste defects.
-> 
-> Maybe:
-> ---
->  drivers/infiniband/hw/irdma/ctrl.c | 219 +++++++++----------------------------
->  1 file changed, 51 insertions(+), 168 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/irdma/ctrl.c b/drivers/infiniband/hw/irdma/ctrl.c
-> index 5aa112067bce8..90c6f82ea0c8d 100644
-> --- a/drivers/infiniband/hw/irdma/ctrl.c
-> +++ b/drivers/infiniband/hw/irdma/ctrl.c
-> @@ -5484,174 +5484,57 @@ void irdma_update_stats(struct irdma_dev_hw_stats
-> *hw_stats,  {
->  	u64 *stats_val = hw_stats->stats_val_32;
-> 
-> -	stats_val[IRDMA_HW_STAT_INDEX_RXVLANERR] +=
-> -		IRDMA_STATS_DELTA(gather_stats->rxvlanerr,
-> -				  last_gather_stats->rxvlanerr,
-> -				  IRDMA_MAX_STATS_32);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP4RXDISCARD] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip4rxdiscard,
-> -				  last_gather_stats->ip4rxdiscard,
-> -				  IRDMA_MAX_STATS_32);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP4RXTRUNC] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip4rxtrunc,
-> -				  last_gather_stats->ip4rxtrunc,
-> -				  IRDMA_MAX_STATS_32);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP4TXNOROUTE] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip4txnoroute,
-> -				  last_gather_stats->ip4txnoroute,
-> -				  IRDMA_MAX_STATS_32);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP6RXDISCARD] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip6rxdiscard,
-> -				  last_gather_stats->ip6rxdiscard,
-> -				  IRDMA_MAX_STATS_32);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP6RXTRUNC] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip6rxtrunc,
-> -				  last_gather_stats->ip6rxtrunc,
-> -				  IRDMA_MAX_STATS_32);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP6TXNOROUTE] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip6txnoroute,
-> -				  last_gather_stats->ip6txnoroute,
-> -				  IRDMA_MAX_STATS_32);
-> -	stats_val[IRDMA_HW_STAT_INDEX_TCPRTXSEG] +=
-> -		IRDMA_STATS_DELTA(gather_stats->tcprtxseg,
-> -				  last_gather_stats->tcprtxseg,
-> -				  IRDMA_MAX_STATS_32);
-> -	stats_val[IRDMA_HW_STAT_INDEX_TCPRXOPTERR] +=
-> -		IRDMA_STATS_DELTA(gather_stats->tcprxopterr,
-> -				  last_gather_stats->tcprxopterr,
-> -				  IRDMA_MAX_STATS_32);
-> -	stats_val[IRDMA_HW_STAT_INDEX_TCPRXPROTOERR] +=
-> -		IRDMA_STATS_DELTA(gather_stats->tcprxprotoerr,
-> -				  last_gather_stats->tcprxprotoerr,
-> -				  IRDMA_MAX_STATS_32);
-> -	stats_val[IRDMA_HW_STAT_INDEX_RXRPCNPHANDLED] +=
-> -		IRDMA_STATS_DELTA(gather_stats->rxrpcnphandled,
-> -				  last_gather_stats->rxrpcnphandled,
-> -				  IRDMA_MAX_STATS_32);
-> -	stats_val[IRDMA_HW_STAT_INDEX_RXRPCNPIGNORED] +=
-> -		IRDMA_STATS_DELTA(gather_stats->rxrpcnpignored,
-> -				  last_gather_stats->rxrpcnpignored,
-> -				  IRDMA_MAX_STATS_32);
-> -	stats_val[IRDMA_HW_STAT_INDEX_TXNPCNPSENT] +=
-> -		IRDMA_STATS_DELTA(gather_stats->txnpcnpsent,
-> -				  last_gather_stats->txnpcnpsent,
-> -				  IRDMA_MAX_STATS_32);
-> +#define irdma_update_stat(index, var, size)				\
 
-Maybe var --> name. Other than that looks good.
+On 6/8/2021 11:12 AM, Pearson, Robert B wrote:
+>
+> On 6/8/2021 10:54 AM, Pearson, Robert B wrote:
+>>
+>> On 6/8/2021 6:53 AM, Edward Srouji wrote:
+>>>
+>>> On 6/8/2021 9:47 AM, Leon Romanovsky wrote:
+>>>> On Mon, Jun 07, 2021 at 11:54:29PM -0500, Pearson, Robert B wrote:
+>>>>> On 6/7/2021 11:41 PM, Leon Romanovsky wrote:
+>>>>>> On Mon, Jun 07, 2021 at 04:50:20PM -0500, Pearson, Robert B wrote:
+>>>>>>> sorry/this time without the HTML.
+>>>>>>>
+>>>>>>> ====================================================================== 
+>>>>>>>
+>>>>>>> ERROR: test_qp_ex_rc_bind_mw (tests.test_qpex.QpExTestCase)
+>>>>>>> Verify bind memory window operation using the new post_send API.
+>>>>>>> ---------------------------------------------------------------------- 
+>>>>>>>
+>>>>>>> Traceback (most recent call last):
+>>>>>>>     File "/home/rpearson/src/rdma-core/tests/test_qpex.py", line 
+>>>>>>> 292, in
+>>>>>>> test_qp_ex_rc_bind_mw
+>>>>>>>       u.poll_cq(server.cq)
+>>>>>>>     File "/home/rpearson/src/rdma-core/tests/utils.py", line 
+>>>>>>> 538, in poll_cq
+>>>>>>>       raise PyverbsRDMAError('Completion status is {s}'.
+>>>>>>> pyverbs.pyverbs_error.PyverbsRDMAError: Completion status is 
+>>>>>>> Memory window
+>>>>>>> bind error. Errno: 6, No such device or address
+>>>>>>>
+>>>>>>> This test attempts to bind a type 2 MW to an MR that does not 
+>>>>>>> have bind mw
+>>>>>>> access set and expects the test to succeed.
+>>>
+>>> You're right, looks like a test bug. I'll send a fix upstream.
+>>>
+>>> Can you please confirm that this solves your issue:
+>> Well I get further. I am hitting a seg fault in python at
+>>
+>>         client.qp.wr_rdma_write(new_key, server.mr.buf)
+>>
+>> in test_qp_ex_rc_bind_mw.
+>>
+>> I'm trying to track it down. I'm not very familiar with python and 
+>> don't know how to run the test under gdb.
+>>
+>> Thanks for the fix.
+>>
+>> Bob
+>
+> OK got it. In the setup for the test you write
+>
+>     class QpExRCBindMw(RCResources):
+>         def create_qps(self):
+>             create_qp_ex(self, e.IBV_QPT_RC, e.IBV_QP_EX_WITH_BIND_MW)
+>
+>         def create_mr(self):
+>             self.mr = u.create_custom_mr(self, 
+> e.IBV_ACCESS_REMOTE_WRITE |
+>                             e.IBV_ACCESS_MW_BIND)
+>
+> which asks for qp_ex->wr_bind_mw() to be set but later in the test you 
+> write
+>
+>     client.qp.wr_rdma_write(new_key, server.mr.buf)
+>
+> which calls qp_ex->wr_rdma_write() which is not set causing the seg 
+> fault. I think you should have written
+>
+>             create_qp_ex(self, e.IBV_QPT_RC, e.IBV_QP_EX_WITH_BIND_MW 
+> | e.IBV_QP_EX_WITH_RDMA_WRITE)
+>
+> since you need both extended QP operations.
+>
+> Bob
+
+With this patch the test is now running correctly
+
+diff --git a/tests/test_qpex.py b/tests/test_qpex.py
+index 20288d45..0316bfcb 100644
+--- a/tests/test_qpex.py
++++ b/tests/test_qpex.py
+@@ -146,10 +146,12 @@ class QpExRCAtomicFetchAdd(RCResources):
+
+  class QpExRCBindMw(RCResources):
+      def create_qps(self):
+-        create_qp_ex(self, e.IBV_QPT_RC, e.IBV_QP_EX_WITH_BIND_MW)
++        create_qp_ex(self, e.IBV_QPT_RC, e.IBV_QP_EX_WITH_BIND_MW |
++                       e.IBV_QP_EX_WITH_RDMA_WRITE)
+
+      def create_mr(self):
+-        self.mr = u.create_custom_mr(self, e.IBV_ACCESS_REMOTE_WRITE)
++        self.mr = u.create_custom_mr(self, e.IBV_ACCESS_REMOTE_WRITE |
++                       e.IBV_ACCESS_MW_BIND)
 
 
-> +	stats_val[IRDMA_STAT(index)] +=					\
-> +		IRDMA_STATS_DELTA(gather_stats->var,			\
-> +				  last_gather_stats->var,		\
-> +				  IRDMA_MAX_STATS_##size)
-> +
-> +	irdma_update_stat(RXVLANERR, rxvlanerr, 32);
-> +	irdma_update_stat(IP4RXDISCARD, ip4rxdiscard, 32);
-> +	irdma_update_stat(IP4RXTRUNC, ip4rxtrunc, 32);
-> +	irdma_update_stat(IP4TXNOROUTE, ip4txnoroute, 32);
-> +	irdma_update_stat(IP6RXDISCARD, ip6rxdiscard, 32);
-> +	irdma_update_stat(IP6RXTRUNC, ip6rxtrunc, 32);
-> +	irdma_update_stat(IP6TXNOROUTE, ip6txnoroute, 32);
-> +	irdma_update_stat(TCPRTXSEG, tcprtxseg, 32);
-> +	irdma_update_stat(TCPRXOPTERR, tcprxopterr, 32);
-> +	irdma_update_stat(TCPRXPROTOERR, tcprxprotoerr, 32);
-> +	irdma_update_stat(RXRPCNPHANDLED, rxrpcnphandled, 32);
-> +	irdma_update_stat(RXRPCNPIGNORED, rxrpcnpignored, 32);
-> +	irdma_update_stat(TXNPCNPSENT, txnpcnpsent, 32);
-> +
->  	stats_val = hw_stats->stats_val_64;
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP4RXOCTS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip4rxocts,
-> -				  last_gather_stats->ip4rxocts,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP4RXPKTS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip4rxpkts,
-> -				  last_gather_stats->ip4rxpkts,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP4RXFRAGS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip4txfrag,
-> -				  last_gather_stats->ip4txfrag,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP4RXMCPKTS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip4rxmcpkts,
-> -				  last_gather_stats->ip4rxmcpkts,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP4TXOCTS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip4txocts,
-> -				  last_gather_stats->ip4txocts,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP4TXPKTS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip4txpkts,
-> -				  last_gather_stats->ip4txpkts,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP4TXFRAGS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip4txfrag,
-> -				  last_gather_stats->ip4txfrag,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP4TXMCPKTS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip4txmcpkts,
-> -				  last_gather_stats->ip4txmcpkts,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP6RXOCTS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip6rxocts,
-> -				  last_gather_stats->ip6rxocts,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP6RXPKTS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip6rxpkts,
-> -				  last_gather_stats->ip6rxpkts,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP6RXFRAGS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip6txfrags,
-> -				  last_gather_stats->ip6txfrags,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP6RXMCPKTS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip6rxmcpkts,
-> -				  last_gather_stats->ip6rxmcpkts,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP6TXOCTS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip6txocts,
-> -				  last_gather_stats->ip6txocts,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP6TXPKTS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip6txpkts,
-> -				  last_gather_stats->ip6txpkts,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP6TXFRAGS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip6txfrags,
-> -				  last_gather_stats->ip6txfrags,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_IP6TXMCPKTS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->ip6txmcpkts,
-> -				  last_gather_stats->ip6txmcpkts,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_TCPRXSEGS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->tcprxsegs,
-> -				  last_gather_stats->tcprxsegs,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_TCPTXSEG] +=
-> -		IRDMA_STATS_DELTA(gather_stats->tcptxsegs,
-> -				  last_gather_stats->tcptxsegs,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_RDMARXRDS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->rdmarxrds,
-> -				  last_gather_stats->rdmarxrds,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_RDMARXSNDS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->rdmarxsnds,
-> -				  last_gather_stats->rdmarxsnds,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_RDMARXWRS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->rdmarxwrs,
-> -				  last_gather_stats->rdmarxwrs,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_RDMATXRDS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->rdmatxrds,
-> -				  last_gather_stats->rdmatxrds,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_RDMATXSNDS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->rdmatxsnds,
-> -				  last_gather_stats->rdmatxsnds,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_RDMATXWRS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->rdmatxwrs,
-> -				  last_gather_stats->rdmatxwrs,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_RDMAVBND] +=
-> -		IRDMA_STATS_DELTA(gather_stats->rdmavbn,
-> -				  last_gather_stats->rdmavbn,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_RDMAVINV] +=
-> -		IRDMA_STATS_DELTA(gather_stats->rdmavinv,
-> -				  last_gather_stats->rdmavinv,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_UDPRXPKTS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->udprxpkts,
-> -				  last_gather_stats->udprxpkts,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_UDPTXPKTS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->udptxpkts,
-> -				  last_gather_stats->udptxpkts,
-> -				  IRDMA_MAX_STATS_48);
-> -	stats_val[IRDMA_HW_STAT_INDEX_RXNPECNMARKEDPKTS] +=
-> -		IRDMA_STATS_DELTA(gather_stats->rxnpecnmrkpkts,
-> -				  last_gather_stats->rxnpecnmrkpkts,
-> -				  IRDMA_MAX_STATS_48);
-> +
-> +	irdma_update_stat(IP4RXOCTS, ip4rxocts, 48);
-> +	irdma_update_stat(IP4RXPKTS, ip4rxpkts, 48);
-> +	irdma_update_stat(IP4RXFRAGS, ip4rxfrags, 48);
-> +	irdma_update_stat(IP4RXMCPKTS, ip4rxmcpkts, 48);
-> +	irdma_update_stat(IP4TXOCTS, ip4txocts, 48);
-> +	irdma_update_stat(IP4TXPKTS, ip4txpkts, 48);
-> +	irdma_update_stat(IP4TXFRAGS, ip4txfrag, 48);
-> +	irdma_update_stat(IP4TXMCPKTS, ip4txmcpkts, 48);
-> +	irdma_update_stat(IP6RXOCTS, ip6rxocts, 48);
-> +	irdma_update_stat(IP6RXPKTS, ip6rxpkts, 48);
-> +	irdma_update_stat(IP6RXFRAGS, ip6rxfrags, 48);
-> +	irdma_update_stat(IP6RXMCPKTS, ip6rxmcpkts, 48);
-> +	irdma_update_stat(IP6TXOCTS, ip6txocts, 48);
-> +	irdma_update_stat(IP6TXPKTS, ip6txpkts, 48);
-> +	irdma_update_stat(IP6TXFRAGS, ip6txfrags, 48);
-> +	irdma_update_stat(IP6TXMCPKTS, ip6txmcpkts, 48);
-> +	irdma_update_stat(TCPRXSEGS, tcprxsegs, 48);
-> +	irdma_update_stat(TCPTXSEG, tcptxsegs, 48);
-> +	irdma_update_stat(RDMARXRDS, rdmarxrds, 48);
-> +	irdma_update_stat(RDMARXSNDS, rdmarxsnds, 48);
-> +	irdma_update_stat(RDMARXWRS, rdmarxwrs, 48);
-> +	irdma_update_stat(RDMATXRDS, rdmatxrds, 48);
-> +	irdma_update_stat(RDMATXSNDS, rdmatxsnds, 48);
-> +	irdma_update_stat(RDMATXWRS, rdmatxwrs, 48);
-> +	irdma_update_stat(RDMAVBND, rdmavbn, 48);
-> +	irdma_update_stat(RDMAVINV, rdmavinv, 48);
-> +	irdma_update_stat(UDPRXPKTS, udprxpkts, 48);
-> +	irdma_update_stat(UDPTXPKTS, udptxpkts, 48);
-> +	irdma_update_stat(RXNPECNMARKEDPKTS, rxnpecnmrkpkts, 48);
-> +
->  	memcpy(last_gather_stats, gather_stats, sizeof(*last_gather_stats));  }
+  class QpExTestCase(RDMATestCase):
 
+>
+>>
+>>>
+>>> diff --git a/tests/test_qpex.py b/tests/test_qpex.py
+>>> index 4b58260f..c2d67ee8 100644
+>>> --- a/tests/test_qpex.py
+>>> +++ b/tests/test_qpex.py
+>>> @@ -149,7 +149,7 @@ class QpExRCBindMw(RCResources):
+>>>          create_qp_ex(self, e.IBV_QPT_RC, e.IBV_QP_EX_WITH_BIND_MW)
+>>>
+>>>      def create_mr(self):
+>>> -        self.mr = u.create_custom_mr(self, e.IBV_ACCESS_REMOTE_WRITE)
+>>> +        self.mr = u.create_custom_mr(self, 
+>>> e.IBV_ACCESS_REMOTE_WRITE | e.IBV_ACCESS_MW_BIND)
+>>>
+>>>>>> Does the test break after your MW series? Or will it break 
+>>>>>> not-merged
+>>>>>> code yet?
+>>>>>>
+>>>>>> Generally speaking, we expect that developers run rdma-core tests 
+>>>>>> and
+>>>>>> fixed/extend them prior to the submission.
+>>>>>>
+>>>>>> Thanks
+>>>>>>
+>>>>>>> Bob Pearson
+>>>>> Nope. I don't have real RNICs at home to test. But (see my note to 
+>>>>> Zhu) the
+>>>>> non extended APIs do set the access flags correctly and the 
+>>>>> extended test
+>>>>> case does not. The wr_bind_mw() function can't fix this for the 
+>>>>> test case.
+>>>>> It has to set the access flags when it creates the MR and it 
+>>>>> didn't. It is
+>>>>> possible that mlx5 doesn't check the bind access flag but that seems
+>>>>> unlikely.
+>>>> mlx5 devices support MW 1 & 2 and kernel checks that only these types
+>>>> can be accepted from the user space. This is why mlx5 doesn't need to
+>>>> check access flags again.
+>>>>
+>>>>     903 static int ib_uverbs_alloc_mw(struct uverbs_attr_bundle 
+>>>> *attrs)
+>>>>     904 {
+>>>>
+>>>> ....
+>>>>
+>>>>     927         if (cmd.mw_type != IB_MW_TYPE_1 && cmd.mw_type != 
+>>>> IB_MW_TYPE_2) {
+>>>>     928                 ret = -EINVAL;
+>>>>     929                 goto err_put;
+>>>>     930         }
+>>>>
+>>>>
+>>>> Thanks
+>>>
+>>> I see that mlx5 checks the access flags in userspace only if 
+>>> MW_DEBUG is turned on (in set_bind_wr()).
+>>>
+>>> I guess that's for the sake of performance, as it's part of the data 
+>>> path.
+>>>
+>>>>> Bob
+>>>>>
