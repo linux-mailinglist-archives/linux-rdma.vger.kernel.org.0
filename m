@@ -2,195 +2,177 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE09C39F961
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jun 2021 16:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D2139FB45
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jun 2021 17:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233336AbhFHOnj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Jun 2021 10:43:39 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:27176 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233239AbhFHOnj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Jun 2021 10:43:39 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 158Eb0sn024004;
-        Tue, 8 Jun 2021 14:41:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=SuSmJ50tLBzpTJu/fzyR1driBeCTt7UBkjyedNYgLlo=;
- b=L3xjBvT260ZCZvKXEP68Zhjx0ja7tzkuxsJP88f2ziiRCFkKuKbRYcsNZSQzBZhMl32T
- cvGv6FZ7xfBAV3A6JoNWmib7O9NIkrjQpLW4ohXLsFjwDrtqkJSv3Eh5BBqkiFj+6OXX
- pZYRL1aQdpbi8IYQ3/hp5LRTppN/qyt5oXPg5PlF+Q+YXoeuuItjw4zQErIBR7qhsET7
- gTEMVKyDkg+1fFRrILBVBh61Yi4fgTmosVOHkDkWdvKsbtm5XCOTKRaaVuIshhRAAtgK
- PH5eIR/wxQp0mf14NsomSAsxiJmWQQRRH09rCyoOpRkBmJX6H6D/qKFgN6TLKis3p2sX 3g== 
-Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3917pwgps3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Jun 2021 14:41:42 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 158Ed42x154597;
-        Tue, 8 Jun 2021 14:41:41 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2175.outbound.protection.outlook.com [104.47.56.175])
-        by userp3030.oracle.com with ESMTP id 38yxcus1sd-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Jun 2021 14:41:41 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lDadaiUkz+oH4Bx6imR9sLSSmYGv700Cw41sn/cVrxtNuLnsRZlqW+FAF7S6nXPUbQLSd8FZmvVGxABfrC9CF2uwJmHIgkFygOyWiG6qasf2tuvdoYLNTCTDlfG5AKa3k5wqIu6d9eRlLtwe8T/Bh0AabR7eq8INUNkdf2DylsyIukEdXzHWGg5BpnYJnGCwpmiC5DskbE9TUGd6X1yNRIXod8AArYwsneOwMc0lsiS5ARatloKFHPbssPOSwt1L883Dy1AiyQ7SPJMtHsrzTi0KEe9YwDfZf7vakew5pXePyhhKBLNpMXCh6VC+vs7XTfLfU8drd7xsg94JJpY9zQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SuSmJ50tLBzpTJu/fzyR1driBeCTt7UBkjyedNYgLlo=;
- b=YLDZXfiGu5VmQOHmhTIbq4EjborOOxM+Ly3iaeRQGcNxY0fQP8jTJ0eHw7QvbDphm6wmCw2YUYcxKNBPvdTVWZ8urTDJjUqMRdUmyuqLj9XHDu98gGwB7VCVRyLWp+7cHtelWGw82rVZYd0xFU4coNjcDOO1OEjhoI2BOpXNfEjljwFrXFKfsGalJoerJx0J4EMIKajdg0QPmAf2SK1EAYwxtrt+My3oiO3jI0MC6STiaZr8DC3IBITXquCtlW0ev+re0IvHgdxnOJ/QKDSCcOzbGddwvqZsHNMtJCHsTq6BEyPkM5CCtPuq7miCj8z7dxzHLNAkS2sW0dKL05lnjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        id S232870AbhFHP4L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Jun 2021 11:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232772AbhFHP4K (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Jun 2021 11:56:10 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3811AC061787
+        for <linux-rdma@vger.kernel.org>; Tue,  8 Jun 2021 08:54:07 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so20753847otp.4
+        for <linux-rdma@vger.kernel.org>; Tue, 08 Jun 2021 08:54:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SuSmJ50tLBzpTJu/fzyR1driBeCTt7UBkjyedNYgLlo=;
- b=gnbgWwNiYgU4hRIUe1jAK7XsI4rLaayzP2evzU95vQf5PMiXvIfXk2MfVAlFKQ+eSRGsKJig9kCTvHPTYK4z8zWKlPRd/XvBSkzigLe6T2WRXDk0G4FxEpT+keOHiyEMhnhs2KtyNSL4H4RIEBzVWBuTqic3cflThoJpoby8x8c=
-Received: from BYAPR10MB3270.namprd10.prod.outlook.com (2603:10b6:a03:159::25)
- by BYAPR10MB3270.namprd10.prod.outlook.com (2603:10b6:a03:159::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Tue, 8 Jun
- 2021 14:41:38 +0000
-Received: from BYAPR10MB3270.namprd10.prod.outlook.com
- ([fe80::b867:7c17:11b1:4705]) by BYAPR10MB3270.namprd10.prod.outlook.com
- ([fe80::b867:7c17:11b1:4705%7]) with mapi id 15.20.4219.021; Tue, 8 Jun 2021
- 14:41:38 +0000
-From:   Santosh Shilimkar <santosh.shilimkar@oracle.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com" 
-        <syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com>
-Subject: Re: [PATCH v2] net: rds: fix memory leak in rds_recvmsg
-Thread-Topic: [PATCH v2] net: rds: fix memory leak in rds_recvmsg
-Thread-Index: AQHXXHRjHk4wgQwXQUuKHUobVcZ1xA==
-Date:   Tue, 8 Jun 2021 14:41:38 +0000
-Message-ID: <56870339-B19F-41D4-8A92-BECB2EAC5646@oracle.com>
-References: <CF68E17D-CC8A-4B30-9B67-4A0B0047FCE1@oracle.com>
- <20210608080641.16543-1-paskripkin@gmail.com>
-In-Reply-To: <20210608080641.16543-1-paskripkin@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [138.3.200.26]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ce11e02b-9d75-4386-e9dd-08d92a8b85ac
-x-ms-traffictypediagnostic: BYAPR10MB3270:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR10MB32706514AEEF51D2B828E3B993379@BYAPR10MB3270.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iBlEkI3PhJkAmTkUU8A9gLBahqmhzPM96ZTNpwuLNb9TJAgfhYFHDb/XZGy7K9VqnvBtHWwQgPJoWBlbBuLnr04Pdg7/Maxo9Texd53Pt6/VaZfvlfBj9YswXE9a6iPvXltxc1x/PVpZK0PgM4sbzHMABmIgvL2DaDfUXLoHrte+552C6LKlnPNVeVMnpHLjpWkBKHdaUUo0Zjy0WYPYdeD8MNaw3tkScLvb3x8j00owROlSWlE65owWO3k/uRAQrHhgBzVCpYSZmHdnI0Stxn0AF4gx99dA8vDKAXpBIBRUK2Fg1ty2MjRfLHVzid1ljN0+ITRD/OXKA1NTHvHOXbLq/gd+Hejy4NYv4SWWY4nKXP9toYeZyO1nixo0IGwsyG41ZvqgoQlBAgRsY2myK5peZKz0WGNVccWeuqOofPnHBlxVsDecsguoGCwCGsNAkj+lfsiZBN5HdVNKwiJhH/Vp8rFL4zdbXFMbC0cSdLTb0s7T1M56jlRyED026upvyUME69Pl3pRkWQe+Zhm6mh66IbXuZuQAITaHxGMqMAwzJ7oXdqCaRVvXROkGPRXRk5VUBogFDm8Kholvd5IBZwLDQWYsxycn/j73ZgVDsro1JL0UmBe19bfHF3LTbA/gAB4+wwxRlcgvZQizwnFAxjKik4rlE+//pu3W8FtabG4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3270.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(396003)(346002)(39860400002)(376002)(6916009)(8676002)(186003)(26005)(4326008)(66446008)(64756008)(8936002)(66946007)(66476007)(66556008)(6512007)(2616005)(76116006)(83380400001)(71200400001)(478600001)(38100700002)(5660300002)(316002)(86362001)(54906003)(2906002)(6486002)(44832011)(122000001)(36756003)(53546011)(6506007)(33656002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?PTcHDzLAmOErubH4f9nfAkz9dr72r0UykK5FQ5OBmOGKJjZXA9Fow2Gu9kwf?=
- =?us-ascii?Q?Qfv+NeLByhS+DyZLKoURk2bG0T4AlxcVVIukzYQlkHl8dM1aOmSPddgYOzzC?=
- =?us-ascii?Q?KkJCzyY5Lfk+n1eUfgjxA4HU8hK6gsVJ6UqVvTt1ckkGE22BBZ6/pz1g2Tau?=
- =?us-ascii?Q?lkKa38qY+JcZ4bvq2OZBPulLZ+dvWrzrfDL+Aq9HNxQ7BhEee2OEotbePEZZ?=
- =?us-ascii?Q?ebxzqbmiuG1+n3WieLG5yHDnYs/FKQYtzLdWJl9q9HzYMdgXDawDmfZ2vfyO?=
- =?us-ascii?Q?hMNdA143XbeIvHFJd0lFpVVvaiGri+dUW0es1vwHNmUHpfvcbdUWrA1VTTwa?=
- =?us-ascii?Q?fRfj1EBOr9a2Mg6zY1F9LfH+wdM0exdvZBUqqeDxcTWcL4efKDuITN3A5bLx?=
- =?us-ascii?Q?6SPFOoyQ6ERkImUEk6Ulnjs1YxtU0KxucdPDXpsWb0oK/a6cbfn6oa9ug+lc?=
- =?us-ascii?Q?kcnf01MaLxRx04+ouSQfOU5LQPfFsnmS4o9NQwUYriqySJ8NINlyFyyp8/6m?=
- =?us-ascii?Q?QMr2GPAtMDlQ2fS9KkiyGgohC1mkmBcByy7u26q6KBObd4r20ctk+Sjt2PPC?=
- =?us-ascii?Q?aKFGmtBKbL+2smQI70S3/BcEa7rjlPcvgg4c7f8/9tnAlXOf2qkqY6DDIOSs?=
- =?us-ascii?Q?lC2aVwJc3ymmX+KfDP7RaONIYHB4zA36c37rLhH+2O0ZTyyeSNa16VD0z+j6?=
- =?us-ascii?Q?r1je9y7ehxkZGLx646ftRUnf8Itu+YPmeDMztsxOUJXZqPlVRbzp9LZTIwi4?=
- =?us-ascii?Q?k49HDMP4NRm1cvft2emnciVO6KGp1HQArM3CRa6YImp8YFgQQ7/q1sdVD/L+?=
- =?us-ascii?Q?BM1TfhB/12eqDhrE/5uOAAbHX0zjZvNmWPHh8g7tpkmvaTN95OPPfXmi6I5i?=
- =?us-ascii?Q?V+NWh9x660MWl9tbZoVtdtT5XbY9WgYxacuxiYaE/WANHR2bG1/u0xZFqVRB?=
- =?us-ascii?Q?G8+3c9Zxlou/hQs2s+G9bu7/2hjb4aMWxeKfgg16AetNwI8TnfeNVoEx/bfq?=
- =?us-ascii?Q?JiNOlzemSj3Q4o3Y57OP8nRNllAMtTkZM3Tcvsk9mlJOpcN4kQPTXKq+uemJ?=
- =?us-ascii?Q?uDxGmGlCot0sNGzQRpbv8wtdudvV2n0MoFbvbA1OQjtNuDlYoirpE/syjVQO?=
- =?us-ascii?Q?11FP7A4gbrnyiZeUvjFoNFeMh/QaUvsn6gxyQM82eSd27gNsmaE5P+Zwoe+1?=
- =?us-ascii?Q?t6mspRP31f2M10a7GopkTw8nFuwgKqBbE/SkKcy7as4WgfP0Je/zy5GuBUIo?=
- =?us-ascii?Q?1WmU71U1ESYNe+iwb4fU871BRvt2c/PIDC7v7uqnQizsAwKzOqwJu9lLnXPp?=
- =?us-ascii?Q?BXY/HoMBXC24G12Me6QR7dvv?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4A128030DDB73846818FF8EF4F905252@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=nAHDGZo+ET5udZGSL9YURShWFPIzAJCWEa6dw9Q6IFE=;
+        b=t7AnIg8QOhFb8UZkmeuA8UriBHjCcQI8sNuTZmzcmerROOGacskCo1ZXy8AyPRvAnf
+         k39SIF7eTa/ghbqtmeuefXnDbOe93nBGRlZEEfBr5j5LozdPhOL2PJYpKWiUx7rhLY/d
+         5QfO5kV+tchDDQSMnDFASC/D6T/R5OkgMw0jFE6UyzQpvmYNwgTwyTFTQ6IdfxJq/vvi
+         /8rYglpmtUIzFHZ0WnVw9AzlZHSE2fcfi6ykHb/gedv0C2VPuWgXpCsYmTJYoS07iF7o
+         mlDuLbNcgxaJSySBWj++pJe/GSp9Jsh/Ov2puciX1VPuEAuzNDBGbpDICZr6wdvnSbui
+         w5WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=nAHDGZo+ET5udZGSL9YURShWFPIzAJCWEa6dw9Q6IFE=;
+        b=m3D0vIxd4LPZd5nqPABSCB/zS6L/WhF/HytN4iw1nIKnOJ7V4SFqUDY2/krJUoSHxY
+         vStsnkZ3X06rzQsdhk7bZoM5txqtdcLqNGCIpLEOE/+6vatuXv6sAfcluNx8kuZrp90O
+         oFqu9ePsbh3GVxa+QK/3239ApHNVrlpA84XiEz2/TqUTNR25+axU87OxnDCg2iNptlqy
+         +TimPj8V0g6BFkRnSUiVV4jj8zekyI7ewzOqvTajX+GfNVJ0gAAMP3mOojkY6/iTg5Fl
+         8lSu3Mf2fVXj+Vldgm0eLZ+uhSMFVncH66JWOlLlcQRYcLozSgBbBMlDxZ6m3vzqg2pu
+         Y9jw==
+X-Gm-Message-State: AOAM530noYOcq7wQSZTYYSvfazvl5UmQ/wju0Fd4xBUbkxZQlxFkeniI
+        gqUkyRFmXdPRdnvonGXLY2hXPxfMgJ4=
+X-Google-Smtp-Source: ABdhPJwWYcpJdfFCE6wXDL2Df8jzvrU4jFG2HqdVinsrYtmZ+Dq/kztifiEpXsGnm4Ek3Ot8bk4kDw==
+X-Received: by 2002:a05:6830:792:: with SMTP id w18mr11177728ots.210.1623167646249;
+        Tue, 08 Jun 2021 08:54:06 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:e53f:9e9b:cd17:cd87? (2603-8081-140c-1a00-e53f-9e9b-cd17-cd87.res6.spectrum.com. [2603:8081:140c:1a00:e53f:9e9b:cd17:cd87])
+        by smtp.gmail.com with ESMTPSA id w6sm3138569otj.5.2021.06.08.08.54.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Jun 2021 08:54:05 -0700 (PDT)
+Subject: Re: [Bug Report] RDMA/core: test_qpex.py attempts invalid MW bind
+ operation
+To:     Edward Srouji <edwards@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <8d329494-6653-359b-91aa-31ac9dc8122c@gmail.com>
+ <YL704NdV9F15CDtQ@unreal> <474ad554-574c-120e-97ba-b617e346f14d@gmail.com>
+ <YL8SbuEHsyioU/Ne@unreal> <591f489c-882b-de37-eb1f-d39a71fcbd05@nvidia.com>
+From:   "Pearson, Robert B" <rpearsonhpe@gmail.com>
+Message-ID: <bee1cfd7-09f1-5420-b09f-b6eb9de897e9@gmail.com>
+Date:   Tue, 8 Jun 2021 10:54:04 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3270.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce11e02b-9d75-4386-e9dd-08d92a8b85ac
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jun 2021 14:41:38.0668
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: b/3RDkZ8V2nOJUQxsZufinnKmrq2fdjoYm/HZraVoo8wF3vXyTjznPEUlgORPbQ/DiyxXTSYHeUZ5lDjUiS2su3fN1+5d2P0N79X3/0Lmfk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3270
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10009 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
- spamscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106080094
-X-Proofpoint-ORIG-GUID: ZGmTBR02F7JYeeR5Ra94LSW1iZrDJxEh
-X-Proofpoint-GUID: ZGmTBR02F7JYeeR5Ra94LSW1iZrDJxEh
+In-Reply-To: <591f489c-882b-de37-eb1f-d39a71fcbd05@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Jun 8, 2021, at 1:06 AM, Pavel Skripkin <paskripkin@gmail.com> wrote:
->=20
-> Syzbot reported memory leak in rds. The problem
-> was in unputted refcount in case of error.
->=20
-> int rds_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
-> 		int msg_flags)
-> {
-> ...
->=20
-> 	if (!rds_next_incoming(rs, &inc)) {
-> 		...
-> 	}
->=20
-> After this "if" inc refcount incremented and
->=20
-> 	if (rds_cmsg_recv(inc, msg, rs)) {
-> 		ret =3D -EFAULT;
-> 		goto out;
-> 	}
-> ...
-> out:
-> 	return ret;
-> }
->=20
-> in case of rds_cmsg_recv() fail the refcount won't be
-> decremented. And it's easy to see from ftrace log, that
-> rds_inc_addref() don't have rds_inc_put() pair in
-> rds_recvmsg() after rds_cmsg_recv()
->=20
-> 1)               |  rds_recvmsg() {
-> 1)   3.721 us    |    rds_inc_addref();
-> 1)   3.853 us    |    rds_message_inc_copy_to_user();
-> 1) + 10.395 us   |    rds_cmsg_recv();
-> 1) + 34.260 us   |  }
->=20
-> Fixes: bdbe6fbc6a2f ("RDS: recv.c")
-> Reported-and-tested-by: syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail=
-.com
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
->=20
-> Changes in v2:
-> 	Changed goto to break.
->=20
-Looks fine by me. Thanks for the fix.
 
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+On 6/8/2021 6:53 AM, Edward Srouji wrote:
+>
+> On 6/8/2021 9:47 AM, Leon Romanovsky wrote:
+>> On Mon, Jun 07, 2021 at 11:54:29PM -0500, Pearson, Robert B wrote:
+>>> On 6/7/2021 11:41 PM, Leon Romanovsky wrote:
+>>>> On Mon, Jun 07, 2021 at 04:50:20PM -0500, Pearson, Robert B wrote:
+>>>>> sorry/this time without the HTML.
+>>>>>
+>>>>> ====================================================================== 
+>>>>>
+>>>>> ERROR: test_qp_ex_rc_bind_mw (tests.test_qpex.QpExTestCase)
+>>>>> Verify bind memory window operation using the new post_send API.
+>>>>> ---------------------------------------------------------------------- 
+>>>>>
+>>>>> Traceback (most recent call last):
+>>>>>     File "/home/rpearson/src/rdma-core/tests/test_qpex.py", line 
+>>>>> 292, in
+>>>>> test_qp_ex_rc_bind_mw
+>>>>>       u.poll_cq(server.cq)
+>>>>>     File "/home/rpearson/src/rdma-core/tests/utils.py", line 538, 
+>>>>> in poll_cq
+>>>>>       raise PyverbsRDMAError('Completion status is {s}'.
+>>>>> pyverbs.pyverbs_error.PyverbsRDMAError: Completion status is 
+>>>>> Memory window
+>>>>> bind error. Errno: 6, No such device or address
+>>>>>
+>>>>> This test attempts to bind a type 2 MW to an MR that does not have 
+>>>>> bind mw
+>>>>> access set and expects the test to succeed.
+>
+> You're right, looks like a test bug. I'll send a fix upstream.
+>
+> Can you please confirm that this solves your issue:
+Well I get further. I am hitting a seg fault in python at
 
+         client.qp.wr_rdma_write(new_key, server.mr.buf)
 
+in test_qp_ex_rc_bind_mw.
+
+I'm trying to track it down. I'm not very familiar with python and don't 
+know how to run the test under gdb.
+
+Thanks for the fix.
+
+Bob
+
+>
+> diff --git a/tests/test_qpex.py b/tests/test_qpex.py
+> index 4b58260f..c2d67ee8 100644
+> --- a/tests/test_qpex.py
+> +++ b/tests/test_qpex.py
+> @@ -149,7 +149,7 @@ class QpExRCBindMw(RCResources):
+>          create_qp_ex(self, e.IBV_QPT_RC, e.IBV_QP_EX_WITH_BIND_MW)
+>
+>      def create_mr(self):
+> -        self.mr = u.create_custom_mr(self, e.IBV_ACCESS_REMOTE_WRITE)
+> +        self.mr = u.create_custom_mr(self, e.IBV_ACCESS_REMOTE_WRITE 
+> | e.IBV_ACCESS_MW_BIND)
+>
+>>>> Does the test break after your MW series? Or will it break not-merged
+>>>> code yet?
+>>>>
+>>>> Generally speaking, we expect that developers run rdma-core tests and
+>>>> fixed/extend them prior to the submission.
+>>>>
+>>>> Thanks
+>>>>
+>>>>> Bob Pearson
+>>> Nope. I don't have real RNICs at home to test. But (see my note to 
+>>> Zhu) the
+>>> non extended APIs do set the access flags correctly and the extended 
+>>> test
+>>> case does not. The wr_bind_mw() function can't fix this for the test 
+>>> case.
+>>> It has to set the access flags when it creates the MR and it didn't. 
+>>> It is
+>>> possible that mlx5 doesn't check the bind access flag but that seems
+>>> unlikely.
+>> mlx5 devices support MW 1 & 2 and kernel checks that only these types
+>> can be accepted from the user space. This is why mlx5 doesn't need to
+>> check access flags again.
+>>
+>>     903 static int ib_uverbs_alloc_mw(struct uverbs_attr_bundle *attrs)
+>>     904 {
+>>
+>> ....
+>>
+>>     927         if (cmd.mw_type != IB_MW_TYPE_1 && cmd.mw_type != 
+>> IB_MW_TYPE_2) {
+>>     928                 ret = -EINVAL;
+>>     929                 goto err_put;
+>>     930         }
+>>
+>>
+>> Thanks
+>
+> I see that mlx5 checks the access flags in userspace only if MW_DEBUG 
+> is turned on (in set_bind_wr()).
+>
+> I guess that's for the sake of performance, as it's part of the data 
+> path.
+>
+>>> Bob
+>>>
