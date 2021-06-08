@@ -2,122 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1AB039ED2A
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jun 2021 05:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692E539EDA7
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jun 2021 06:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbhFHDwL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Jun 2021 23:52:11 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:45888 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbhFHDwK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Jun 2021 23:52:10 -0400
-Received: by mail-oi1-f177.google.com with SMTP id w127so20243142oig.12
-        for <linux-rdma@vger.kernel.org>; Mon, 07 Jun 2021 20:50:05 -0700 (PDT)
+        id S229535AbhFHE2V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Jun 2021 00:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhFHE2U (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Jun 2021 00:28:20 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ADD0C061787
+        for <linux-rdma@vger.kernel.org>; Mon,  7 Jun 2021 21:26:13 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id d21so20333126oic.11
+        for <linux-rdma@vger.kernel.org>; Mon, 07 Jun 2021 21:26:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4V1UKngQb1OfdlMJvAzivz52HPO3vyo6u+Kdok2BV68=;
-        b=sqkxVOnRnoz/b2srZ+7OLyfPVFnOjEe4sCYUrfm+Q/UcQjV94ZvFEJEQahMyKtGPbf
-         r7yQqbWQJHOg5+N2ReSn8ee5BZ9gdGAz38c7J9zAKPpbtYr3SW2qfreoqa+idOV4rEJs
-         rjN4FnCeYGmWDyiHNGE5pKN4B78frLx59QE9UT5JNFrScBk6oby5ElLpdnOJ7arau0ge
-         K66fS/F5cnPjjhxVo/nPQxQRcmq4o4Ua7QcDnWyiRzf/RLLf6j1F9/bfsC1BQzE8Goe6
-         ASSws2EEAiuI3vLTTZSEQbvfn8Ki9YFTdvkObm2bibfG5opErWNn3tJSuuomU0vFjY5l
-         tW1Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uDB3hz2aC7MBG67WcCitihPXqPtoZlfKndZ5yLDs02U=;
+        b=P2cTYxOEo35FcohfrPl2wVhKkCHrHtxLZ6cEkSxp23KUXuUwCf0TkoAaD5x/Erjvg/
+         0PUDiaikdRAtWKWT3cibbLF0Z/9UIOvTnzVteOyMGD5f06qpgf+l89l+xUQ5wylqxjnh
+         KviMLJUJp1ncW41LjU8hGwVOwUYF8rYxfHC03SYbRDo6V8i+xW/BIynJXaN0VHFnMRoq
+         tSFclR5+vayRhvqDZ3YOyvr0KZNNqWaa+7Izi7slRnuLAuhlI9jUrqVj8jTUvCwvV4fO
+         JVEIdIq2NC3fS8W4OOO8dKVziNuDWgcUmJONdIZ4wvms5OuFLa9Cb9m+QKvBOrMs5NEm
+         CKAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4V1UKngQb1OfdlMJvAzivz52HPO3vyo6u+Kdok2BV68=;
-        b=MyqA7SheoBEpOyFATsd62Xs0rcJkXMcnzkZeb7boVDU0Z5lXdaMpdp1hP69fUk/2Vu
-         MN0zwgLMLh7fVjFKA4mKcJQRzuOAHCKBdOIa5GsMF/6+efFTuvwTm0qtNVhIxBWEGgOr
-         OBbUyBcicaEsGlO/SclrubwirBROz/qu/xg0IBoyVJ6IYS9F71axViHG5gVhzPxaAUFB
-         iQh97XGYPomflcMsgnCm16vlc31a06mW3AodheZ5xiNuhF9vVEWuwvj+3Fqf70BPjX86
-         UC4jb4c9hIWEZFRMqIe2cNuoCbuk1qcbbOc/jpJbLX1cr2dBxtYChiP/O94sjosPMVq1
-         PoKw==
-X-Gm-Message-State: AOAM533TUS/hetEfkwKUf95BRf+4C1ka7Xe1Us2a9ezyxB/Nw5+7NeQY
-        KGq2eEQUSb0Irz0Zo84oZc7k2ImTv6TS1UkLslQ=
-X-Google-Smtp-Source: ABdhPJxnoEe6hrRu3lDnUl/N/3M0a1FK9i74y1FpdyICd8/oNO7yZ6eUL3Z6qnpFx9nWJKfqDkbkI34Ew6Olb52/wyg=
-X-Received: by 2002:aca:2404:: with SMTP id n4mr1542587oic.169.1623124144914;
- Mon, 07 Jun 2021 20:49:04 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uDB3hz2aC7MBG67WcCitihPXqPtoZlfKndZ5yLDs02U=;
+        b=c9fQ8+8ILfN4ttzoFyI0Q9bREe3fVENlMKuysM6SI2asyrM/Jw6F5wYM9PfQZGjklr
+         Ku+erdrGOGemL1YR3gTTc0bh6GETrxMneKmtGhgGf2cb7mmyeLx+kfmr3FM61VJTjslL
+         ZX0SKsagWtxYKLJJ93czNBauaNqkqiDTjbbncxWW//l2YPyuas0wlElojHhR3zMVX5jU
+         Q4UrrbXVqHZMt/B4nEeBqMBIERr+TrHJKMpHwi/5GZyWZzkjpY1jq6gHJGyQKH9NCBqW
+         +yLu3RO56et23PtcmhkLCfBlR60lRJKG8QZSLlow8jCrQboFL6qMT6+BEIc2nP+ZJiXv
+         FQXA==
+X-Gm-Message-State: AOAM5329TNAwyTKWd5FXtD1F/IRJv2GADKio04Uo4AmSPzLj60Ks+X3C
+        kRHC4ejS1Dm1ZhcmEl+IGAc=
+X-Google-Smtp-Source: ABdhPJynUA6N3uN85/Y7vKxEkiIFvDBtSn0IhNgQv/KiSXUJBZCgZ4FfoAN7+/0s4rSU5dr0ks7KLA==
+X-Received: by 2002:a05:6808:f0b:: with SMTP id m11mr1522050oiw.12.1623126371813;
+        Mon, 07 Jun 2021 21:26:11 -0700 (PDT)
+Received: from localhost (2603-8081-140c-1a00-cb25-4f27-0965-41cc.res6.spectrum.com. [2603:8081:140c:1a00:cb25:4f27:965:41cc])
+        by smtp.gmail.com with ESMTPSA id p9sm2827118otl.64.2021.06.07.21.26.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jun 2021 21:26:11 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, monis@mellanox.com,
+        linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v9 00/10] RDMA/rxe: Implement memory windows
+Date:   Mon,  7 Jun 2021 23:25:43 -0500
+Message-Id: <20210608042552.33275-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210604230558.4812-1-rpearsonhpe@gmail.com> <CAD=hENcwwjS8X2R24+cFRyyrA5_k=F5LuC4bx1tzCVW969uvuQ@mail.gmail.com>
- <YL389Dqd8+akhb1i@unreal> <CAD=hENd6J=1eTPn3u8M5rvym1xP_A30DnreKOCvi+hLTh0iuNw@mail.gmail.com>
- <e0be8fe4-dcda-ddbe-faa4-104d36442b96@gmail.com> <CAD=hENeoK7971B4koPPaJ+u_DL=VSgL8zoF3GZXexozSHuK8pA@mail.gmail.com>
- <95a4ddf1-fcbc-51fd-6cc7-932f065c61bf@gmail.com>
-In-Reply-To: <95a4ddf1-fcbc-51fd-6cc7-932f065c61bf@gmail.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Tue, 8 Jun 2021 11:48:53 +0800
-Message-ID: <CAD=hENdJeroo5+MaxBFMKfF8zJjVkEbMXFffUjBKZjODLxQgvg@mail.gmail.com>
-Subject: Re: [PATCH for-next] RDMA/rxe: Fix qp reference counting for atomic ops
-To:     "Pearson, Robert B" <rpearsonhpe@gmail.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 8, 2021 at 10:01 AM Pearson, Robert B <rpearsonhpe@gmail.com> wrote:
->
->
-> On 6/7/2021 8:39 PM, Zhu Yanjun wrote:
-> > On Tue, Jun 8, 2021 at 12:14 AM Pearson, Robert B <rpearsonhpe@gmail.com> wrote:
-> >>
-> >> On 6/7/2021 6:12 AM, Zhu Yanjun wrote:
-> >>> On Mon, Jun 7, 2021 at 7:03 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >>>> On Mon, Jun 07, 2021 at 04:16:37PM +0800, Zhu Yanjun wrote:
-> >>>>> On Sat, Jun 5, 2021 at 7:07 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
-> >>>>>> Currently the rdma_rxe driver attempts to protect atomic responder
-> >>>>>> resources by taking a reference to the qp which is only freed when the
-> >>>>>> resource is recycled for a new read or atomic operation. This means that
-> >>>>>> in normal circumstances there is almost always an extra qp reference
-> >>>>>> once an atomic operation has been executed which prevents cleaning up
-> >>>>>> the qp and associated pd and cqs when the qp is destroyed.
-> >>>>>>
-> >>>>>> This patch removes the call to rxe_add_ref() in send_atomic_ack() and the
-> >>>>>> call to rxe_drop_ref() in free_rd_atomic_resource(). If the qp is
-> >>>>> Not sure if it is a good way to fix this problem by removing the call
-> >>>>> to rxe_add_ref.
-> >>>>> Because taking a reference to the qp is to protect atomic responder resources.
-> >>>>>
-> >>>>> Removing rxe_add_ref is to decrease the protection of the atomic
-> >>>>> responder resources.
-> >>>> All those rxe_add_ref/rxe_drop_ref in RXE are horrid. It will be good to delete them all.
-> >>>>
-> >>> I made tests with this commit. After this commit is applied, this
-> >>> problem disappeared.
-> >> You were testing MW when you saw this bug. Does that mean that now MW is
-> >> working for you?
-> > Your MW patches are huge. After these patches are applied, I found 2
-> > problems in my test environment.
->
-> The trace you showed looked like the pyverbs tests all passed and then
-> there were leaked QP/PD/CQ. I also saw those. After fixing the QP
-> reference count bug (not in MW) I did not see any errors from the
-> pyverbs tests of MW. Or any other errors for that matter. What was the
-> other problem? Was that the memory barrier one (also not in MW)?
->
-> Mostly I want to know if you currently see any errors in the kernel
-> related to MW. The test case bug (in test_qpex.py) is a separate issue
+This series of patches implement memory windows for the rdma_rxe
+driver. This is a shorter reimplementation of an earlier patch set.
+They apply to and depend on the current for-next linux rdma tree.
 
-The current test cases in rdma-core just confirm a regression in RXE.
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+v9:
+  Fixed error return from bind MW local operation.
+v8:
+  Dropped wr.mw.flags in the rxe_send_wr struct in rdma_user_rxe.h.
+v7:
+  Fixed a duplicate INIT_RDMA_OBJ_SIZE(ib_mw, ...) in rxe_verbs.c.
+v6:
+  Added rxe_ prefix to subroutine names in lines that changed
+  from Zhu's review of v5.
+v5:
+  Fixed a typo in 10th patch.
+v4:
+  Added a 10th patch to check when MRs have bound MWs
+  and disallow dereg and invalidate operations.
+v3:
+  cleaned up void return and lower case enums from
+  Zhu's review.
+v2:
+  cleaned up an issue in rdma_user_rxe.h
+  cleaned up a collision in rxe_resp.c
 
-Zhu Yanjun
+Bob Pearson (10):
+  RDMA/rxe: Add bind MW fields to rxe_send_wr
+  RDMA/rxe: Return errors for add index and key
+  RDMA/rxe: Enable MW object pool
+  RDMA/rxe: Add ib_alloc_mw and ib_dealloc_mw verbs
+  RDMA/rxe: Replace WR_REG_MASK by WR_LOCAL_OP_MASK
+  RDMA/rxe: Move local ops to subroutine
+  RDMA/rxe: Add support for bind MW work requests
+  RDMA/rxe: Implement invalidate MW operations
+  RDMA/rxe: Implement memory access through MWs
+  RDMA/rxe: Disallow MR dereg and invalidate when bound
 
-> that is not a rxe bug at all.
->
-> Bob
->
-> > So IMO, can you send the test cases about MW to rdma-core? So we can
-> > verify these MW patches with them.
-> >
-> > In previous mails, you mentioned these MW test cases.
-> >
-> > Thanks a lot.
-> > Zhu Yanjun
-> >
-> >>> Zhu Yanjun
-> >>>
-> >>>> Thanks
+ drivers/infiniband/sw/rxe/Makefile     |   1 +
+ drivers/infiniband/sw/rxe/rxe.c        |   1 +
+ drivers/infiniband/sw/rxe/rxe_comp.c   |   5 +-
+ drivers/infiniband/sw/rxe/rxe_loc.h    |  36 +--
+ drivers/infiniband/sw/rxe/rxe_mr.c     | 126 ++++++---
+ drivers/infiniband/sw/rxe/rxe_mw.c     | 343 +++++++++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_opcode.c |  11 +-
+ drivers/infiniband/sw/rxe/rxe_opcode.h |   3 +-
+ drivers/infiniband/sw/rxe/rxe_param.h  |  19 +-
+ drivers/infiniband/sw/rxe/rxe_pool.c   |  45 ++--
+ drivers/infiniband/sw/rxe/rxe_pool.h   |   8 +-
+ drivers/infiniband/sw/rxe/rxe_req.c    | 104 +++++---
+ drivers/infiniband/sw/rxe/rxe_resp.c   | 111 +++++---
+ drivers/infiniband/sw/rxe/rxe_verbs.c  |  15 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.h  |  48 +++-
+ include/uapi/rdma/rdma_user_rxe.h      |  10 +
+ 16 files changed, 702 insertions(+), 184 deletions(-)
+ create mode 100644 drivers/infiniband/sw/rxe/rxe_mw.c
+-- 
+2.27.0
+
