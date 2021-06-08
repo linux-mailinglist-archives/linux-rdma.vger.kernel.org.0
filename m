@@ -2,125 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CCF39F069
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jun 2021 10:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B6939F229
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jun 2021 11:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbhFHIKF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Jun 2021 04:10:05 -0400
-Received: from mail-lf1-f41.google.com ([209.85.167.41]:40469 "EHLO
-        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhFHIKF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Jun 2021 04:10:05 -0400
-Received: by mail-lf1-f41.google.com with SMTP id w33so30732259lfu.7;
-        Tue, 08 Jun 2021 01:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Lnqh2KFBanSAc5Sbde66Uudde2Nu0b01lQi+nfaMyCU=;
-        b=DqsatKiRTA/YuW1kJivNqJcOmvLcRweI14FJc9DaMPE/P2aovac65RbISuumMiu5a8
-         pjFMf/BR4PlGm0tF4lLduN2WPzXcOSyh6TEzBwI7rnia+X9Cw2MNOS5OKtA+FOzhFfDE
-         9D++TqnrsSWsQdteYwLcmQxWL6qb7ePxgc5hIUtPO3jj3cIjLP0fzFYZDn6uUxeYtpsS
-         A8/7af2U8HhngQ2TB+Ra9mtc4Gkom6BgSbGWavnM2VQqHzGu70KFd6aHGkeWDFLMe6KK
-         fRmEEcSmvAg1IH+6sgXpoB/cAd8IDTMHf5796y4X5jcj1H9CRV7+IybGnmPcEXvJqYUC
-         wcEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Lnqh2KFBanSAc5Sbde66Uudde2Nu0b01lQi+nfaMyCU=;
-        b=PAM2WkUsYO+69ETuQqeIxcfwzOOEpeYlWF542mJG4wagWenPD0fT8ZYUkQIH2w0Olp
-         UvRU0+KNwOSFNpBUb/oYRcnnYTd1mW1A2B1QQH3C2QJi3qYhh8OMPSBjB5Kpl44kqRcw
-         FjsmaJjLmWgG/TIfpILAYdXGesKE3XISuj5D1PAXix0QssBrfWhHaYnMzwlKy1LyqATP
-         nDfiBlaoMM7K4fz0wYkVsnrvoadLw8vUuluJ7JvA+kqxSQs4BxPB7CfUIWf13a/0QrmK
-         qeaYXhFufOoY+zJSsdZ8jVxAXkpYVua89jMzTwtUK8FAJvZS8CyRAuV1VeyZuPbBvlzG
-         J7Qg==
-X-Gm-Message-State: AOAM532XsDqbqNz+VWRQ5i9jfhvMisEcPSRB1jTWKis6M1iFcr4t0zJj
-        WKAnDb3OFcA1gf3fTa64CzA=
-X-Google-Smtp-Source: ABdhPJzPIltCu2GVDqjHbfuKru8AgxKbx64lQuNgfgDY/ZF4T9YYZPAo6iVbKfqhTp6FzkKNUNZIxA==
-X-Received: by 2002:a19:f509:: with SMTP id j9mr14691310lfb.80.1623139631179;
-        Tue, 08 Jun 2021 01:07:11 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.224.40])
-        by smtp.gmail.com with ESMTPSA id k21sm521789lfu.38.2021.06.08.01.07.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 01:07:10 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com
-Subject: [PATCH v2] net: rds: fix memory leak in rds_recvmsg
-Date:   Tue,  8 Jun 2021 11:06:41 +0300
-Message-Id: <20210608080641.16543-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <CF68E17D-CC8A-4B30-9B67-4A0B0047FCE1@oracle.com>
-References: <CF68E17D-CC8A-4B30-9B67-4A0B0047FCE1@oracle.com>
+        id S230306AbhFHJUc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Jun 2021 05:20:32 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:60846 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230261AbhFHJUc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Jun 2021 05:20:32 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1589A9dY047780;
+        Tue, 8 Jun 2021 09:18:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=8vywc9LiIxJFnVq434tlJouj+nH7l4AqgUu98HjeVMc=;
+ b=ayEgkM9VZreZg45VYBaXPrjQafjFvnlPi8H49jEKjV+D8qSIVc27n2GJ+44GYX0UwLMA
+ zCmizPemBm6yJ0H+fs6ZjQ9+FRZy3yJYRASpA96N6ioSbUROBMcISzj9V9cEXRqMm9d7
+ ES1NkfYpvDMwC+TZNpeDg/usL6S4qwTDo/JOKEyItXuhZXC/BlIcg8vc5p5HAtWZ1pkx
+ hKSMGogcUtgsF9Ly52/LRe1yNqAlhR8H0cjeI97v73VyllfIjnMolyzB2gp/nIzZ50/3
+ xCohMeJ5wDaMm6bRkoGmZ0O3l5TDnhSDiydTRfAZRz0q5rIteDVkhYvh2hfO+asToQcU dQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 3914quky53-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Jun 2021 09:18:24 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1589AYRb116613;
+        Tue, 8 Jun 2021 09:18:23 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 3922wregw9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Jun 2021 09:18:23 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1589ILk8179665;
+        Tue, 8 Jun 2021 09:18:22 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 3922wregv6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Jun 2021 09:18:21 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1589IHci031161;
+        Tue, 8 Jun 2021 09:18:20 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 08 Jun 2021 09:18:17 +0000
+Date:   Tue, 8 Jun 2021 12:18:08 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, weiyongjun1@huawei.com,
+        yuehaibing@huawei.com, yangjihong1@huawei.com, yukuai3@huawei.com,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH -next] RDMA/irdma: Use list_move instead of
+ list_del/list_add
+Message-ID: <20210608091808.GB1955@kadam>
+References: <20210608031041.2820429-1-libaokun1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608031041.2820429-1-libaokun1@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: snVVomTToNRPPz5sYfEWRDhHv8vK1Uex
+X-Proofpoint-GUID: snVVomTToNRPPz5sYfEWRDhHv8vK1Uex
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10008 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0
+ spamscore=0 malwarescore=0 clxscore=1011 lowpriorityscore=0
+ priorityscore=1501 adultscore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106080061
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Syzbot reported memory leak in rds. The problem
-was in unputted refcount in case of error.
+On Tue, Jun 08, 2021 at 11:10:41AM +0800, Baokun Li wrote:
+> Using list_move() instead of list_del() + list_add().
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+>  drivers/infiniband/hw/irdma/puda.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/irdma/puda.c b/drivers/infiniband/hw/irdma/puda.c
+> index 18057139817d..c0be6e37d425 100644
+> --- a/drivers/infiniband/hw/irdma/puda.c
+> +++ b/drivers/infiniband/hw/irdma/puda.c
+> @@ -1420,8 +1420,7 @@ irdma_ieq_handle_partial(struct irdma_puda_rsrc *ieq, struct irdma_pfpdu *pfpdu,
+>  error:
+>  	while (!list_empty(&pbufl)) {
+>  		buf = (struct irdma_puda_buf *)(pbufl.prev);
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-int rds_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
-		int msg_flags)
-{
-...
+Not related to your patch but this would be nicer as:
 
-	if (!rds_next_incoming(rs, &inc)) {
-		...
-	}
+		buf = list_last_entry(&pbufl, struct irdma_puda_buf, list);
 
-After this "if" inc refcount incremented and
+> -		list_del(&buf->list);
+> -		list_add(&buf->list, rxlist);
+> +		list_move(&buf->list, rxlist);
 
-	if (rds_cmsg_recv(inc, msg, rs)) {
-		ret = -EFAULT;
-		goto out;
-	}
-...
-out:
-	return ret;
-}
-
-in case of rds_cmsg_recv() fail the refcount won't be
-decremented. And it's easy to see from ftrace log, that
-rds_inc_addref() don't have rds_inc_put() pair in
-rds_recvmsg() after rds_cmsg_recv()
-
- 1)               |  rds_recvmsg() {
- 1)   3.721 us    |    rds_inc_addref();
- 1)   3.853 us    |    rds_message_inc_copy_to_user();
- 1) + 10.395 us   |    rds_cmsg_recv();
- 1) + 34.260 us   |  }
-
-Fixes: bdbe6fbc6a2f ("RDS: recv.c")
-Reported-and-tested-by: syzbot+5134cdf021c4ed5aaa5f@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
-
-Changes in v2:
-	Changed goto to break.
-
----
- net/rds/recv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/rds/recv.c b/net/rds/recv.c
-index 4db109fb6ec2..5b426dc3634d 100644
---- a/net/rds/recv.c
-+++ b/net/rds/recv.c
-@@ -714,7 +714,7 @@ int rds_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 
- 		if (rds_cmsg_recv(inc, msg, rs)) {
- 			ret = -EFAULT;
--			goto out;
-+			break;
- 		}
- 		rds_recvmsg_zcookie(rs, msg);
- 
--- 
-2.31.1
-
+regards,
+dan carpenter
