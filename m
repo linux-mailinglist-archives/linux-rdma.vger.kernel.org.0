@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8D83A128E
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Jun 2021 13:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BDB3A1293
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Jun 2021 13:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238703AbhFIL0e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Jun 2021 07:26:34 -0400
-Received: from mga02.intel.com ([134.134.136.20]:29913 "EHLO mga02.intel.com"
+        id S237862AbhFIL1h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Jun 2021 07:27:37 -0400
+Received: from mga14.intel.com ([192.55.52.115]:60106 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237862AbhFIL0e (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 9 Jun 2021 07:26:34 -0400
-IronPort-SDR: QWc7LsvUmiL7D9v9Pf/ileVGnQYcHo2IRsrLMkp43BGu18DrfECbP3jL78HmLea4ylLcpg//1h
- 1KXSrZck/xgw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="192161271"
+        id S237376AbhFIL1h (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 9 Jun 2021 07:27:37 -0400
+IronPort-SDR: KnAf3u5MqWpy7GIqLU+tIil/TBNl1omC5KAff3fYn6ZOw/5ZHnQjLKk21nIbNrBUilmG3Y2uS3
+ Mllso6S5JgqA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="204864977"
 X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="192161271"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 04:24:39 -0700
-IronPort-SDR: oIjqRO/oCiOkQ/5lGMejbZmMOAnaWSNzxw8dfuiq9cgjmkLiHtLLqdCNYS8+sjZNLQfmR/mHmR
- cafFa05KW+Ag==
+   d="scan'208";a="204864977"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 04:25:42 -0700
+IronPort-SDR: oRFCYxMkScSBESXSqjCzBk997I4ZsZF8QQVKgZWS+GM7+EUpMa+RBuU6NQj5Pw0WQKA8f6twar
+ a8uj9lGoDalw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="619639023"
+   d="scan'208";a="419249596"
 Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 09 Jun 2021 04:24:38 -0700
+  by orsmga002.jf.intel.com with ESMTP; 09 Jun 2021 04:25:38 -0700
 Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lqwK5-0009Ye-CZ; Wed, 09 Jun 2021 11:24:37 +0000
-Date:   Wed, 09 Jun 2021 19:24:30 +0800
+        id 1lqwL3-0009Yq-Eg; Wed, 09 Jun 2021 11:25:37 +0000
+Date:   Wed, 09 Jun 2021 19:24:37 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- edc0b0bccc9c80d9a44d3002dcca94984b25e7cf
-Message-ID: <60c0a4ee.5xAqa9yOYzbPqcLq%lkp@intel.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 6246f1ccb9c3aa748cd5622dd6b0ddd432eadd5d
+Message-ID: <60c0a4f5.vt+jsviKFBaM1h1O%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +43,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
-branch HEAD: edc0b0bccc9c80d9a44d3002dcca94984b25e7cf  RDMA/mlx5: Block FDB rules when not in switchdev mode
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 6246f1ccb9c3aa748cd5622dd6b0ddd432eadd5d  RDMA/irdma: Use list_last_entry/list_first_entry
 
-elapsed time: 723m
+elapsed time: 724m
 
-configs tested: 190
+configs tested: 184
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -115,11 +115,6 @@ arm                         bcm2835_defconfig
 mips                            ar7_defconfig
 arm64                            alldefconfig
 arm                           tegra_defconfig
-sh                           se7206_defconfig
-sh                 kfr2r09-romimage_defconfig
-powerpc                 linkstation_defconfig
-xtensa                  nommu_kc705_defconfig
-i386                             allyesconfig
 ia64                        generic_defconfig
 powerpc                        warp_defconfig
 powerpc                   currituck_defconfig
@@ -127,18 +122,14 @@ mips                  cavium_octeon_defconfig
 sh                          sdk7780_defconfig
 arm                             mxs_defconfig
 mips                       rbtx49xx_defconfig
-mips                             allmodconfig
 arm                       aspeed_g4_defconfig
+sh                           se7206_defconfig
 powerpc                      ppc6xx_defconfig
 arm                         s5pv210_defconfig
+xtensa                  nommu_kc705_defconfig
 arm                         shannon_defconfig
 m68k                          amiga_defconfig
 powerpc                     tqm8555_defconfig
-nios2                         3c120_defconfig
-powerpc                    mvme5100_defconfig
-arm                        cerfcube_defconfig
-mips                      maltaaprp_defconfig
-csky                                defconfig
 um                           x86_64_defconfig
 powerpc                    gamecube_defconfig
 arc                 nsimosci_hs_smp_defconfig
@@ -147,13 +138,12 @@ sh                           se7619_defconfig
 xtensa                         virt_defconfig
 powerpc                 mpc832x_rdb_defconfig
 arm                       imx_v6_v7_defconfig
-um                             i386_defconfig
 arm                       netwinder_defconfig
 powerpc                  mpc866_ads_defconfig
 mips                        workpad_defconfig
+nds32                             allnoconfig
 powerpc                     mpc83xx_defconfig
 arm                      jornada720_defconfig
-nds32                             allnoconfig
 sh                        edosk7760_defconfig
 s390                             allyesconfig
 sh                   sh7770_generic_defconfig
@@ -179,6 +169,7 @@ nios2                               defconfig
 arc                              allyesconfig
 nds32                               defconfig
 nios2                            allyesconfig
+csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
 xtensa                           allyesconfig
@@ -188,10 +179,12 @@ parisc                              defconfig
 s390                             allmodconfig
 parisc                           allyesconfig
 s390                                defconfig
+i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
 mips                             allyesconfig
+mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
@@ -226,6 +219,7 @@ riscv                             allnoconfig
 riscv                               defconfig
 riscv                          rv32_defconfig
 riscv                            allmodconfig
+um                             i386_defconfig
 um                            kunit_defconfig
 x86_64                           allyesconfig
 x86_64                    rhel-8.3-kselftests
