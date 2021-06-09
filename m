@@ -2,103 +2,252 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C903A1219
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Jun 2021 13:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8D83A128E
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Jun 2021 13:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234777AbhFILNX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Jun 2021 07:13:23 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:5306 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236318AbhFILNW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Jun 2021 07:13:22 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G0PS90JR4z19S63;
-        Wed,  9 Jun 2021 19:06:33 +0800 (CST)
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 19:11:25 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 9 Jun 2021 19:11:24 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, "Xi Wang" <wangxi11@huawei.com>,
-        Weihang Li <liweihang@huawei.com>
-Subject: [PATCH for-next] RDMA/hns: Clear extended doorbell info before using
-Date:   Wed, 9 Jun 2021 19:11:05 +0800
-Message-ID: <1623237065-43344-1-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        id S238703AbhFIL0e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Jun 2021 07:26:34 -0400
+Received: from mga02.intel.com ([134.134.136.20]:29913 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237862AbhFIL0e (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 9 Jun 2021 07:26:34 -0400
+IronPort-SDR: QWc7LsvUmiL7D9v9Pf/ileVGnQYcHo2IRsrLMkp43BGu18DrfECbP3jL78HmLea4ylLcpg//1h
+ 1KXSrZck/xgw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="192161271"
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208";a="192161271"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 04:24:39 -0700
+IronPort-SDR: oIjqRO/oCiOkQ/5lGMejbZmMOAnaWSNzxw8dfuiq9cgjmkLiHtLLqdCNYS8+sjZNLQfmR/mHmR
+ cafFa05KW+Ag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
+   d="scan'208";a="619639023"
+Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 09 Jun 2021 04:24:38 -0700
+Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lqwK5-0009Ye-CZ; Wed, 09 Jun 2021 11:24:37 +0000
+Date:   Wed, 09 Jun 2021 19:24:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
+ edc0b0bccc9c80d9a44d3002dcca94984b25e7cf
+Message-ID: <60c0a4ee.5xAqa9yOYzbPqcLq%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema753-chm.china.huawei.com (10.1.198.195)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
+branch HEAD: edc0b0bccc9c80d9a44d3002dcca94984b25e7cf  RDMA/mlx5: Block FDB rules when not in switchdev mode
 
-Both of HIP08 and HIP09 require the extended doorbell information to be
-cleared before being used.
+elapsed time: 723m
 
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
+configs tested: 190
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                         rt305x_defconfig
+mips                      malta_kvm_defconfig
+powerpc                     asp8347_defconfig
+arm                           spitz_defconfig
+sparc                       sparc32_defconfig
+sh                          rsk7203_defconfig
+mips                    maltaup_xpa_defconfig
+openrisc                 simple_smp_defconfig
+mips                      maltasmvp_defconfig
+arm                         orion5x_defconfig
+h8300                       h8s-sim_defconfig
+arm                   milbeaut_m10v_defconfig
+xtensa                           alldefconfig
+mips                          ath79_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                           ip27_defconfig
+sh                           se7722_defconfig
+sh                           se7724_defconfig
+sh                          sdk7786_defconfig
+arc                          axs103_defconfig
+arm                    vt8500_v6_v7_defconfig
+mips                     loongson2k_defconfig
+powerpc                     taishan_defconfig
+xtensa                          iss_defconfig
+powerpc                     pseries_defconfig
+parisc                generic-32bit_defconfig
+h8300                    h8300h-sim_defconfig
+mips                      loongson3_defconfig
+ia64                      gensparse_defconfig
+m68k                            q40_defconfig
+openrisc                            defconfig
+mips                     cu1000-neo_defconfig
+arc                        nsim_700_defconfig
+arm                       versatile_defconfig
+h8300                            allyesconfig
+sh                         microdev_defconfig
+powerpc                 mpc837x_rdb_defconfig
+sh                             espt_defconfig
+powerpc                      ep88xc_defconfig
+m68k                          atari_defconfig
+powerpc                      cm5200_defconfig
+arc                    vdk_hs38_smp_defconfig
+powerpc                       eiger_defconfig
+powerpc                     tqm8560_defconfig
+mips                      fuloong2e_defconfig
+xtensa                  audio_kc705_defconfig
+arm                         lpc32xx_defconfig
+sh                           se7343_defconfig
+mips                         tb0226_defconfig
+arm                      integrator_defconfig
+arm                         cm_x300_defconfig
+arm                         bcm2835_defconfig
+mips                            ar7_defconfig
+arm64                            alldefconfig
+arm                           tegra_defconfig
+sh                           se7206_defconfig
+sh                 kfr2r09-romimage_defconfig
+powerpc                 linkstation_defconfig
+xtensa                  nommu_kc705_defconfig
+i386                             allyesconfig
+ia64                        generic_defconfig
+powerpc                        warp_defconfig
+powerpc                   currituck_defconfig
+mips                  cavium_octeon_defconfig
+sh                          sdk7780_defconfig
+arm                             mxs_defconfig
+mips                       rbtx49xx_defconfig
+mips                             allmodconfig
+arm                       aspeed_g4_defconfig
+powerpc                      ppc6xx_defconfig
+arm                         s5pv210_defconfig
+arm                         shannon_defconfig
+m68k                          amiga_defconfig
+powerpc                     tqm8555_defconfig
+nios2                         3c120_defconfig
+powerpc                    mvme5100_defconfig
+arm                        cerfcube_defconfig
+mips                      maltaaprp_defconfig
+csky                                defconfig
+um                           x86_64_defconfig
+powerpc                    gamecube_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arm                         mv78xx0_defconfig
+sh                           se7619_defconfig
+xtensa                         virt_defconfig
+powerpc                 mpc832x_rdb_defconfig
+arm                       imx_v6_v7_defconfig
+um                             i386_defconfig
+arm                       netwinder_defconfig
+powerpc                  mpc866_ads_defconfig
+mips                        workpad_defconfig
+powerpc                     mpc83xx_defconfig
+arm                      jornada720_defconfig
+nds32                             allnoconfig
+sh                        edosk7760_defconfig
+s390                             allyesconfig
+sh                   sh7770_generic_defconfig
+arm                     am200epdkit_defconfig
+powerpc                      pmac32_defconfig
+mips                      bmips_stb_defconfig
+um                               alldefconfig
+arm                          pxa168_defconfig
+arm                        spear6xx_defconfig
+x86_64                           alldefconfig
+m68k                         amcore_defconfig
+powerpc                      ppc64e_defconfig
+arc                     nsimosci_hs_defconfig
+h8300                               defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210608
+x86_64               randconfig-a002-20210608
+x86_64               randconfig-a003-20210608
+x86_64               randconfig-a006-20210608
+x86_64               randconfig-a005-20210608
+x86_64               randconfig-a001-20210608
+i386                 randconfig-a003-20210609
+i386                 randconfig-a006-20210609
+i386                 randconfig-a004-20210609
+i386                 randconfig-a001-20210609
+i386                 randconfig-a002-20210609
+i386                 randconfig-a005-20210609
+i386                 randconfig-a003-20210608
+i386                 randconfig-a006-20210608
+i386                 randconfig-a004-20210608
+i386                 randconfig-a001-20210608
+i386                 randconfig-a005-20210608
+i386                 randconfig-a002-20210608
+i386                 randconfig-a015-20210608
+i386                 randconfig-a013-20210608
+i386                 randconfig-a016-20210608
+i386                 randconfig-a011-20210608
+i386                 randconfig-a012-20210608
+i386                 randconfig-a014-20210608
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a002-20210607
+x86_64               randconfig-a004-20210607
+x86_64               randconfig-a003-20210607
+x86_64               randconfig-a006-20210607
+x86_64               randconfig-a005-20210607
+x86_64               randconfig-a001-20210607
+x86_64               randconfig-a015-20210608
+x86_64               randconfig-a012-20210608
+x86_64               randconfig-a014-20210608
+x86_64               randconfig-a011-20210608
+x86_64               randconfig-a016-20210608
+x86_64               randconfig-a013-20210608
+
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 16 ++++++++++++++++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h |  1 +
- 2 files changed, 17 insertions(+)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index fbc45b9..c5d2cfb 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1572,6 +1572,20 @@ static void hns_roce_function_clear(struct hns_roce_dev *hr_dev)
- 	}
- }
- 
-+static void hns_roce_clear_extdb_list_info(struct hns_roce_dev *hr_dev)
-+{
-+	struct hns_roce_cmq_desc desc;
-+	int ret;
-+
-+	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_CLEAR_EXTDB_LIST_INFO,
-+				      false);
-+	ret = hns_roce_cmq_send(hr_dev, &desc, 1);
-+	if (ret)
-+		ibdev_warn(&hr_dev->ib_dev,
-+			   "failed to clear extended doorbell info, ret = %d.\n",
-+			   ret);
-+}
-+
- static int hns_roce_query_fw_ver(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_query_fw_info *resp;
-@@ -2684,6 +2698,8 @@ static int hns_roce_v2_init(struct hns_roce_dev *hr_dev)
- 	if (ret)
- 		return ret;
- 
-+	/* The hns ROCEE requires the extdb info to be cleared before using */
-+	hns_roce_clear_extdb_list_info(hr_dev);
- 	if (hr_dev->is_vf)
- 		return 0;
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index cd361c0..073e835 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -250,6 +250,7 @@ enum hns_roce_opcode_type {
- 	HNS_ROCE_OPC_CLR_SCCC				= 0x8509,
- 	HNS_ROCE_OPC_QUERY_SCCC				= 0x850a,
- 	HNS_ROCE_OPC_RESET_SCCC				= 0x850b,
-+	HNS_ROCE_OPC_CLEAR_EXTDB_LIST_INFO		= 0x850d,
- 	HNS_ROCE_OPC_QUERY_VF_RES			= 0x850e,
- 	HNS_ROCE_OPC_CFG_GMV_TBL			= 0x850f,
- 	HNS_ROCE_OPC_CFG_GMV_BT				= 0x8510,
--- 
-2.7.4
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
