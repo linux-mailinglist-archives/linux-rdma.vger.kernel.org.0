@@ -2,116 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642423A2591
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Jun 2021 09:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BABE3A25B5
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Jun 2021 09:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbhFJHgj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Jun 2021 03:36:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
+        id S229935AbhFJHqz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Jun 2021 03:46:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230216AbhFJHgi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 10 Jun 2021 03:36:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0813A613C8;
-        Thu, 10 Jun 2021 07:34:41 +0000 (UTC)
+        id S229778AbhFJHqy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 10 Jun 2021 03:46:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1269F61285;
+        Thu, 10 Jun 2021 07:44:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623310482;
-        bh=O1B3V2YPO+YDp3N7oiYD0TcuWdFjo3OnLD6+S6ZVUYQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dfAgcFxv2C+3x9JN7Hc1OC16J444Krsc4aHaJPL28gn6cQfNgIZ5/2r/L0bS/8lF2
-         54fFyvWORyRwMM4H9hKT26z4keSnP+tRcWgtk2xlE75fWnDHy/ExFL7xVYb6FrWlQv
-         FJHgR4qJ373zht/QUYBf1qP4i29yUORllsCMzAtzpYd86GYvXibn237z3xjZQ+Pp0y
-         1QqVFNBiSIII9scrDcEszro86QiSpAl1L/Jyu0nnV9dJxMVxTLOgixstcQyIRE8R6l
-         iocR/QNZRFnJIUoJ4FyUrOQnqFWBehIGRkUA/VvjOkyT2sQLZ525kVh+1gOfsccvFZ
-         oZserdl87dJZw==
+        s=k20201202; t=1623311098;
+        bh=uVaVAXezmcKR672TdMVYwDUSC9AEQ2C0Kp/upa9s9Tc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zuh7wUq3K25jW9uvEs7TexQSpUpd5koG1M3KhyuPJYYSyxAkeA3I9hbWcPARiI2tf
+         IEFvzSoWZhb+BJf8tHgB3/sDmDDXSDZ6om1fsqjG1T8eXEn/370DmQT0/W1X2jNIp6
+         2qxE/33IrfPTTwqTb/qAkD/+oO49wj/ZtX08nvv+f7ouHERNgVY53H5aSuAnq3d+PO
+         hUH/2Xp2eN3vPLKbbNoG9NHVtdNmG6RaSSfPHIDEXrJzeXImHpFP+CVzsccBTE0lFn
+         m6FmLcLWYhI6t33mSM1f0zAQUanzjBgjInxu1p5nmcbjFZ5A3DjraYv6x3eZTCOvaG
+         1ASjecj0+rTzQ==
+Date:   Thu, 10 Jun 2021 10:44:55 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alaa Hleihel <alaa@nvidia.com>, Aharon Landau <aharonl@nvidia.com>,
+To:     Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Avihai Horon <avihaih@nvidia.com>,
         linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@nvidia.com>
-Subject: [PATCH rdma-rc 3/3] IB/mlx5: Fix initializing CQ fragments buffer
-Date:   Thu, 10 Jun 2021 10:34:27 +0300
-Message-Id: <90a0e8c924093cfa50a482880ad7e7edb73dc19a.1623309971.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1623309971.git.leonro@nvidia.com>
-References: <cover.1623309971.git.leonro@nvidia.com>
+        Bart Van Assche <bvanassche@acm.org>,
+        Tom Talpey <tom@talpey.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        Keith Busch <kbusch@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Honggang LI <honli@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH v2 rdma-next] RDMA/mlx5: Enable Relaxed Ordering by
+ default for kernel ULPs
+Message-ID: <YMHC93U12rgLlQCx@unreal>
+References: <b7e820aab7402b8efa63605f4ea465831b3b1e5e.1623236426.git.leonro@nvidia.com>
+ <20210609125241.GA1347@lst.de>
+ <YMDH05/yTtSIk9kI@unreal>
+ <20210609135924.GA6510@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609135924.GA6510@lst.de>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Alaa Hleihel <alaa@nvidia.com>
+On Wed, Jun 09, 2021 at 03:59:24PM +0200, Christoph Hellwig wrote:
+> On Wed, Jun 09, 2021 at 04:53:23PM +0300, Leon Romanovsky wrote:
+> > Sure, did you have in mind some concrete place? Or will new file in the
+> > Documentation/infiniband/ folder be good enough too?
+> 
+> Maybe add a kerneldoc comment for the map_mr_sg() ib_device_ops method?
 
-Function init_cq_frag_buf() can be called to initialize the current CQ
-fragments buffer cq->buf, or the temporary cq->resize_buf that is filled
-during CQ resize operation.
+I hope that this hunk from the previous cover letter is good enough.
 
-However, the offending commit started to use function get_cqe() for
-getting the CQEs, the issue with this change is that get_cqe() always
-returns CQEs from cq->buf, which leads us to initialize the wrong
-buffer, and in case of enlarging the CQ we try to access elements beyond
-the size of the current cq->buf and eventually hit a kernel panic.
+Jason, do you want v3? or you can fold this into v2?
 
- [exception RIP: init_cq_frag_buf+103]
-  [ffff9f799ddcbcd8] mlx5_ib_resize_cq at ffffffffc0835d60 [mlx5_ib]
-  [ffff9f799ddcbdb0] ib_resize_cq at ffffffffc05270df [ib_core]
-  [ffff9f799ddcbdc0] llt_rdma_setup_qp at ffffffffc0a6a712 [llt]
-  [ffff9f799ddcbe10] llt_rdma_cc_event_action at ffffffffc0a6b411 [llt]
-  [ffff9f799ddcbe98] llt_rdma_client_conn_thread at ffffffffc0a6bb75 [llt]
-  [ffff9f799ddcbec8] kthread at ffffffffa66c5da1
-  [ffff9f799ddcbf50] ret_from_fork_nospec_begin at ffffffffa6d95ddd
-
-Fix it by getting the needed CQE by calling mlx5_frag_buf_get_wqe() that
-takes the correct source buffer as a parameter.
-
-Fixes: 388ca8be0037 ("IB/mlx5: Implement fragmented completion queue (CQ)")
-Signed-off-by: Alaa Hleihel <alaa@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/cq.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-index eb92cefffd77..9ce01f729673 100644
---- a/drivers/infiniband/hw/mlx5/cq.c
-+++ b/drivers/infiniband/hw/mlx5/cq.c
-@@ -849,15 +849,14 @@ static void destroy_cq_user(struct mlx5_ib_cq *cq, struct ib_udata *udata)
- 	ib_umem_release(cq->buf.umem);
- }
- 
--static void init_cq_frag_buf(struct mlx5_ib_cq *cq,
--			     struct mlx5_ib_cq_buf *buf)
-+static void init_cq_frag_buf(struct mlx5_ib_cq_buf *buf)
- {
- 	int i;
- 	void *cqe;
- 	struct mlx5_cqe64 *cqe64;
- 
- 	for (i = 0; i < buf->nent; i++) {
--		cqe = get_cqe(cq, i);
-+		cqe = mlx5_frag_buf_get_wqe(&buf->fbc, i);
- 		cqe64 = buf->cqe_size == 64 ? cqe : cqe + 64;
- 		cqe64->op_own = MLX5_CQE_INVALID << 4;
- 	}
-@@ -883,7 +882,7 @@ static int create_cq_kernel(struct mlx5_ib_dev *dev, struct mlx5_ib_cq *cq,
- 	if (err)
- 		goto err_db;
- 
--	init_cq_frag_buf(cq, &cq->buf);
-+	init_cq_frag_buf(&cq->buf);
- 
- 	*inlen = MLX5_ST_SZ_BYTES(create_cq_in) +
- 		 MLX5_FLD_SZ_BYTES(create_cq_in, pas[0]) *
-@@ -1184,7 +1183,7 @@ static int resize_kernel(struct mlx5_ib_dev *dev, struct mlx5_ib_cq *cq,
- 	if (err)
- 		goto ex;
- 
--	init_cq_frag_buf(cq, cq->resize_buf);
-+	init_cq_frag_buf(cq->resize_buf);
- 
- 	return 0;
- 
--- 
-2.31.1
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 9423e70a881c..aaf63a6643d6 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -2468,6 +2468,13 @@ struct ib_device_ops {
+                         enum ib_uverbs_advise_mr_advice advice, u32 flags,
+                         struct ib_sge *sg_list, u32 num_sge,
+                         struct uverbs_attr_bundle *attrs);
++       /*
++        * Kernel users should universally support relaxed ordering (RO),
++        * as they are designed to read data only after observing the CQE
++        * and use the DMA API correctly.
++        *
++        * Some drivers implicitly enable RO if platform supports it.
++        */
+        int (*map_mr_sg)(struct ib_mr *mr, struct scatterlist *sg, int sg_nents,
+                         unsigned int *sg_offset);
+        int (*check_mr_status)(struct ib_mr *mr, u32 check_mask,
 
