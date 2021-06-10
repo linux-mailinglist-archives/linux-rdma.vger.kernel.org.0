@@ -2,125 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DAD3A2A9E
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Jun 2021 13:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A233A2AAA
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Jun 2021 13:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbhFJLtY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Jun 2021 07:49:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55560 "EHLO mail.kernel.org"
+        id S230130AbhFJLuk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Jun 2021 07:50:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230033AbhFJLtY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 10 Jun 2021 07:49:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3FA960FD8;
-        Thu, 10 Jun 2021 11:47:27 +0000 (UTC)
+        id S230117AbhFJLuj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 10 Jun 2021 07:50:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 144F3613CA;
+        Thu, 10 Jun 2021 11:48:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623325648;
-        bh=7YxuqwYsONDTA+qgI2aFEeQMgplxmNsE4J8CozrGE5w=;
+        s=k20201202; t=1623325723;
+        bh=OichHuMC0wIFssq6xKyc++HmwrkwJ+fMZTVl83jkHM4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bXWdtSZhHuDdBalkXqg2WYUd0yWxMJnELLfm5pmvHZOffo/tp4kOMnv9BSUv2VmhF
-         HsEbQbVuGwgzHMdnLos/WSC78ggYBLosLxMr5J66AOhnHp3GBVxHEhgrxdclVeZQK+
-         kkQILXWlJVu+0bTzgP2O83QLyNEWAIJQ/mJI6gbCXaexTaWULOZ0Od4b8nKYA/uLws
-         dd4Ps38Hb+c0Q6sOFYSMe+x8p7D+mwPujoIolNJ3ZkI/Zw5DY82rOxwPPKHsIV/F88
-         4qY4h0kmube/KlaZOEBXO1F8CNy6Y204EIMJtuCheeIQMevAcdAEuBumitna7SP9Ci
-         238FnzpJngSiQ==
-Date:   Thu, 10 Jun 2021 14:47:24 +0300
+        b=QFwJlYMyYLQTs1NqUoPOGJePGuKwCSmrVM3qqig7SdhvYKUcjoYJj4QbpDUNURJV4
+         jctsW8+AC6iDwNQwJGeQD/hYq8+LgKeMrLB2hV0Ar4uVZaA5hphYntXNtd+piXxESR
+         rQfji5KkcCcyGNaOZ+UdWRftDq1TWqnQjsRGEnj+GbaYFqcEgMFnDWYWpcfGvr71EM
+         Twh6e7soONpd4CaUgY4YxmtTQ5NjDz00g0H/ks2MOekAhGeuHDiCLGO4V2lAQgDDD6
+         Nv4YMlvl9rVJCoL2e3Nll9V1Lr0EMz1FHgNGYTDTzPusInwIadK4fVPJeRTl8QsfoT
+         toelhlLXZerMQ==
+Date:   Thu, 10 Jun 2021 14:48:40 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jinpu Wang <jinpu.wang@ionos.com>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Haris Iqbal <haris.iqbal@ionos.com>,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>
-Subject: Re: [PATCH for-next 3/4] RDMA/rtrs: RDMA_RXE requires more number of
- WR
-Message-ID: <YMH7zI0VZ4u1EfoJ@unreal>
-References: <20210608103039.39080-1-jinpu.wang@ionos.com>
- <20210608103039.39080-4-jinpu.wang@ionos.com>
- <YMG99IVNqCK8OIVX@unreal>
- <CAMGffE=dUEnVrtYLy2xVYdm0Jb=JEnfBYvUB1ZZavx5a1BpnDA@mail.gmail.com>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, jgg@nvidia.com, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com, Xi Wang <wangxi11@huawei.com>
+Subject: Re: [PATCH v2 for-next] RDMA/hns: Clear extended doorbell info
+ before using
+Message-ID: <YMH8GD2eoGLJugsS@unreal>
+References: <1623323990-62343-1-git-send-email-liweihang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMGffE=dUEnVrtYLy2xVYdm0Jb=JEnfBYvUB1ZZavx5a1BpnDA@mail.gmail.com>
+In-Reply-To: <1623323990-62343-1-git-send-email-liweihang@huawei.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 01:01:07PM +0200, Jinpu Wang wrote:
-> On Thu, Jun 10, 2021 at 9:23 AM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Tue, Jun 08, 2021 at 12:30:38PM +0200, Jack Wang wrote:
-> > > From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-> > >
-> > > When using rdma_rxe, post_one_recv() returns
-> > > NOMEM error due to the full recv queue.
-> > > This patch increase the number of WR for receive queue
-> > > to support all devices.
-> >
-> > Why don't you query IB device to get max_qp_wr and set accordingly?
-> >
-> > Thanks
-> Hi Leon,
+On Thu, Jun 10, 2021 at 07:19:50PM +0800, Weihang Li wrote:
+> From: Xi Wang <wangxi11@huawei.com>
 > 
-> We don't want to set the max_qp_wr, it will consume lots of memory.
-> this patch is only for service connection
-> used control messages.
+> Both of HIP08 and HIP09 require the extended doorbell information to be
+> cleared before being used.
+> 
+> Fixes: 6b63597d3540 ("RDMA/hns: Add TSQ link table support")
+> Signed-off-by: Xi Wang <wangxi11@huawei.com>
+> Signed-off-by: Weihang Li <liweihang@huawei.com>
+> ---
+> Changes since v1:
+> - Add fixes tag.
+> - Add check for return value of hns_roce_clear_extdb_list_info().
+> - Link: https://patchwork.kernel.org/project/linux-rdma/patch/1623237065-43344-1-git-send-email-liweihang@huawei.com/
+> 
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 21 +++++++++++++++++++++
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h |  1 +
+>  2 files changed, 22 insertions(+)
+> 
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> index fbc45b9..d24ac5c 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> @@ -1572,6 +1572,22 @@ static void hns_roce_function_clear(struct hns_roce_dev *hr_dev)
+>  	}
+>  }
+>  
+> +static int hns_roce_clear_extdb_list_info(struct hns_roce_dev *hr_dev)
+> +{
+> +	struct hns_roce_cmq_desc desc;
+> +	int ret;
+> +
+> +	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_CLEAR_EXTDB_LIST_INFO,
+> +				      false);
+> +	ret = hns_roce_cmq_send(hr_dev, &desc, 1);
+> +	if (ret)
+> +		ibdev_err(&hr_dev->ib_dev,
+> +			  "failed to clear extended doorbell info, ret = %d.\n",
+> +			  ret);
+> +
+> +	return ret;
+> +}
+> +
+>  static int hns_roce_query_fw_ver(struct hns_roce_dev *hr_dev)
+>  {
+>  	struct hns_roce_query_fw_info *resp;
+> @@ -2684,6 +2700,11 @@ static int hns_roce_v2_init(struct hns_roce_dev *hr_dev)
+>  	if (ret)
+>  		return ret;
+>  
+> +	/* The hns ROCEE requires the extdb info to be cleared before using */
+> +	ret = hns_roce_clear_extdb_list_info(hr_dev);
+> +	if (ret)
+> +		return ret;
 
-OK, so why don't you set min(your_define, max_qp_wr)?
+You forgot to call to put_hem_table(hr_dev).
 
 Thanks
 
+> +
+>  	if (hr_dev->is_vf)
+>  		return 0;
+>  
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+> index cd361c0..073e835 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+> @@ -250,6 +250,7 @@ enum hns_roce_opcode_type {
+>  	HNS_ROCE_OPC_CLR_SCCC				= 0x8509,
+>  	HNS_ROCE_OPC_QUERY_SCCC				= 0x850a,
+>  	HNS_ROCE_OPC_RESET_SCCC				= 0x850b,
+> +	HNS_ROCE_OPC_CLEAR_EXTDB_LIST_INFO		= 0x850d,
+>  	HNS_ROCE_OPC_QUERY_VF_RES			= 0x850e,
+>  	HNS_ROCE_OPC_CFG_GMV_TBL			= 0x850f,
+>  	HNS_ROCE_OPC_CFG_GMV_BT				= 0x8510,
+> -- 
+> 2.7.4
 > 
-> For IO connection, we do query and max_qp_wr of the device, but still
-> we need to set the minimum to
-> reduce the memory consumption.
-> 
-> Thanks! Regards
-> >
-> > >
-> > > Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-> > > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > > Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-> > > ---
-> > >  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 7 ++++---
-> > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 2 +-
-> > >  2 files changed, 5 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > > index cd53edddfe1f..acf0fde410c3 100644
-> > > --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > > @@ -1579,10 +1579,11 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
-> > >       lockdep_assert_held(&con->con_mutex);
-> > >       if (con->c.cid == 0) {
-> > >               /*
-> > > -              * One completion for each receive and two for each send
-> > > -              * (send request + registration)
-> > > +              * Two (request + registration) completion for send
-> > > +              * Two for recv if always_invalidate is set on server
-> > > +              * or one for recv.
-> > >                * + 2 for drain and heartbeat
-> > > -              * in case qp gets into error state
-> > > +              * in case qp gets into error state.
-> > >                */
-> > >               max_send_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
-> > >               max_recv_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
-> > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > index 04ec3080e9b5..bb73f7762a87 100644
-> > > --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > @@ -1656,7 +1656,7 @@ static int create_con(struct rtrs_srv_sess *sess,
-> > >                * + 2 for drain and heartbeat
-> > >                */
-> > >               max_send_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
-> > > -             max_recv_wr = SERVICE_CON_QUEUE_DEPTH + 2;
-> > > +             max_recv_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
-> > >               cq_size = max_send_wr + max_recv_wr;
-> > >       } else {
-> > >               /*
-> > > --
-> > > 2.25.1
-> > >
