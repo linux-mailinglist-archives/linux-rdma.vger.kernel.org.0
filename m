@@ -2,61 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D433A41C3
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jun 2021 14:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321CF3A41C4
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jun 2021 14:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbhFKMMo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 11 Jun 2021 08:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51946 "EHLO
+        id S231602AbhFKMMp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 11 Jun 2021 08:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbhFKMMj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Jun 2021 08:12:39 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0009FC0613A2
-        for <linux-rdma@vger.kernel.org>; Fri, 11 Jun 2021 05:10:40 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id og14so4228900ejc.5
-        for <linux-rdma@vger.kernel.org>; Fri, 11 Jun 2021 05:10:40 -0700 (PDT)
+        with ESMTP id S231614AbhFKMMk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Jun 2021 08:12:40 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DA0C061574
+        for <linux-rdma@vger.kernel.org>; Fri, 11 Jun 2021 05:10:41 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id ci15so4195211ejc.10
+        for <linux-rdma@vger.kernel.org>; Fri, 11 Jun 2021 05:10:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tXPQ5gfawfQniyV8yQcAPx6eoaR9jr7ethn/8o5VfWI=;
-        b=XU09Ja2J6qzF7FybxT/mbN8+4xM4/P+MpCXoZVIeI2rUCe1or54plDbRVy3me9fvLf
-         IiKbNLMUKss/9alsGZPcONT7AiHzmdecwSg/Cq21DanNNGix78RR24d19n51/M0iXWuk
-         InVkUpmEWCxUh+E5VQSOuM7XvLFEaQgStVRwXEPbhKDj8rtMuEb19RCcRkP+D7cRKfVJ
-         nFqJhTIzPCl/3mKzt/iaTHDXdE3VJcbaWUoQgmZrFV9pfEjTGCTlNnRNi8jHT7fdgpKK
-         giM1jzejmQbGKYF53LPrW4Ysjp0VifmExW0rQdf3DPOmHW+xPMTbfB+nAC5fYi4Ctc6C
-         Fulg==
+        bh=LmfvrlqKSugQrOL3uDjwzUCdVnUY/gjEb2dxgjwjjNg=;
+        b=fAnUYJgum7cGYE2JHYhFz3/HVmaY307Sh6Qi57160xT/FvgFp/OBcRiQ+v//ZHOYyS
+         3WWzqb+nWvdGMf+dEqKseRlOF1HagmerwyOTrSoHstKNIBzKkPT5iHdE3tn7QnLKmGgZ
+         PqqYFq4giI+pBB40h87S8NszZ72K6+/gQ2K5J6kKQXny2P2GzHLhhP+u86LnlqiC34vi
+         Kcs3f4saaP+LronH/XChEsOw+6k3RRoyek+QU/zHRx8ow+gK8wb6/Er8fCPHBlTvdvuo
+         TKoTSMYDqflSueq8gksuaYfJCl6qXkaal8HlMKJiqoZFOgFW5J3aoKE2jP368gA03jqk
+         ZTmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tXPQ5gfawfQniyV8yQcAPx6eoaR9jr7ethn/8o5VfWI=;
-        b=QgcmKT1fixsn8tc+PMQMRWVv5v+m4GBuHJ7eeIfrndC1QLWYkz07wnq+98KwkFuV3Q
-         PnPJcCcZ+DgHtczcW4tzUw94orFikqgaAul9d5eNUSgGfZKBNQQV/TinUHAXG3meu6AK
-         /m8V6O+2D48+9gsMHjP2HFm7kw3AUMz4F6THTs8YZrSCBZI+GcvCyQ4UanPD2alzSNTJ
-         F4iwVQ60gVObOUQHWEFJ2/voGgZZS/QSZ1g/+X37tWqL7xpU25nb31Ycnl8y4NmH/7ul
-         w96LUMl/49z+Yn0SMrF7DEuglnCm8ttYV6M3Laa09G9M5FrJygM8/fwzyJZccPWA/dr2
-         Oxag==
-X-Gm-Message-State: AOAM530pdGmKmTHLcWkEvo7OSjkH8G+3ujIB4PcvKWH806UhCj+AuEsd
-        zAUsiQZVOPQfvNxSCOwsTojGk+ktOyHcIA==
-X-Google-Smtp-Source: ABdhPJyXKTWGE/pcvzmetwQz3ww3jIs+n53uDbo5MYSFYlMD3s2CS2s2C5J0hTl9hRT/hkEk1qgNKw==
-X-Received: by 2002:a17:906:b352:: with SMTP id cd18mr3265573ejb.222.1623413439233;
-        Fri, 11 Jun 2021 05:10:39 -0700 (PDT)
+        bh=LmfvrlqKSugQrOL3uDjwzUCdVnUY/gjEb2dxgjwjjNg=;
+        b=IeNuXdxmmqWVMNzrBKvTI6XvF+ULoL9RgPX0WTLvuimYOXx479xXubey7YtLhOyrdK
+         9FWO3GLMMe+xFf8xHGmmgn3hA/FGNnShKDhCkuF+YvYEv1D0dr0cM2LfHmQzbUlFYkFt
+         RIK+ySacHUoTv1Af1t0Fmc9UzkwkOi8yX3st4uXzRHk/7MQwtoIPxM1t0bGvuK5b3n3g
+         sXjZn2Kk6haKKp/qfDbJJZtgRXjV3IBAQ3RUrMHT8xBeUr2RSVDWUrXb94IR5Yp3gihe
+         MwhVbZ0zgnQCqM/cKar6iJcJzj7lBetDptlYXWizQ6Fzlapia5FRp7x9lLOCH+TnfLa9
+         LXuQ==
+X-Gm-Message-State: AOAM533Xq01BO5Oawkv1eyGOq9b8zG1/7++Fa8qG9omiqI/ccg93VE0G
+        HDWiCrut/HgxonowqNdPkfFAxbMdM9vrYg==
+X-Google-Smtp-Source: ABdhPJwZPMZrUj5Ej651reVSiTGgNJLB6e3l+Nfs/+yvQMpia9i+JHZ3VX75XHk6lR1+6QxfdUQ92w==
+X-Received: by 2002:a17:907:628a:: with SMTP id nd10mr3425060ejc.326.1623413440217;
+        Fri, 11 Jun 2021 05:10:40 -0700 (PDT)
 Received: from jwang-Latitude-5491.fritz.box ([2001:16b8:4954:2e00:fd6f:fc71:2689:4a7a])
-        by smtp.gmail.com with ESMTPSA id n11sm2084116ejg.43.2021.06.11.05.10.38
+        by smtp.gmail.com with ESMTPSA id n11sm2084116ejg.43.2021.06.11.05.10.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 05:10:38 -0700 (PDT)
+        Fri, 11 Jun 2021 05:10:39 -0700 (PDT)
 From:   Jack Wang <jinpu.wang@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-Subject: [PATCHv2 for-next 4/5] RDMA/rtrs: Rename some variables to avoid confusion
-Date:   Fri, 11 Jun 2021 14:10:33 +0200
-Message-Id: <20210611121034.48837-5-jinpu.wang@ionos.com>
+        Leon Romanovsky <leonro@nvidia.com>,
+        Gioh Kim <gi-oh.kim@ionos.com>
+Subject: [PATCHv2 for-next 5/5] RDMA/rtrs: Check device max_qp_wr limit when create QP
+Date:   Fri, 11 Jun 2021 14:10:34 +0200
+Message-Id: <20210611121034.48837-6-jinpu.wang@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210611121034.48837-1-jinpu.wang@ionos.com>
 References: <20210611121034.48837-1-jinpu.wang@ionos.com>
@@ -66,271 +65,116 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Currently we only check device max_qp_wr limit for IO connection,
+but not for service connection. We should check for both.
 
-Those variables are passed to create_cq, create_qp, rtrs_iu_alloc and
-rtrs_iu_free, so these *_size means the num of unit. And cq_size also
-means number of cq element.
+So save the max_qp_wr device limit in wr_limit, and use it for both
+IO connections and service connections.
 
-Also move the setting of cq_num to common path.
+While at it, also remove an outdated comments.
 
-Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Reviewed-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Suggested-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 18 +++++++++---------
- drivers/infiniband/ulp/rtrs/rtrs-clt.h |  2 +-
- drivers/infiniband/ulp/rtrs/rtrs-pri.h | 10 +++++-----
- drivers/infiniband/ulp/rtrs/rtrs-srv.c |  7 +++----
- drivers/infiniband/ulp/rtrs/rtrs.c     | 24 ++++++++++++------------
- 5 files changed, 30 insertions(+), 31 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 29 +++++++++++++-------------
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 13 ++++--------
+ 2 files changed, 19 insertions(+), 23 deletions(-)
 
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index acf0fde410c3..67ff5bf9bfa8 100644
+index 67ff5bf9bfa8..125e0bead262 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1572,7 +1572,7 @@ static void destroy_con(struct rtrs_clt_con *con)
+@@ -1572,21 +1572,12 @@ static void destroy_con(struct rtrs_clt_con *con)
  static int create_con_cq_qp(struct rtrs_clt_con *con)
  {
  	struct rtrs_clt_sess *sess = to_clt_sess(con->c.sess);
--	u32 max_send_wr, max_recv_wr, cq_size, max_send_sge;
-+	u32 max_send_wr, max_recv_wr, cq_num, max_send_sge;
+-	u32 max_send_wr, max_recv_wr, cq_num, max_send_sge;
++	u32 max_send_wr, max_recv_wr, cq_num, max_send_sge, wr_limit;
  	int err, cq_vector;
  	struct rtrs_msg_rkey_rsp *rsp;
  
-@@ -1628,26 +1628,26 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
+ 	lockdep_assert_held(&con->con_mutex);
+ 	if (con->c.cid == 0) {
+-		/*
+-		 * Two (request + registration) completion for send
+-		 * Two for recv if always_invalidate is set on server
+-		 * or one for recv.
+-		 * + 2 for drain and heartbeat
+-		 * in case qp gets into error state.
+-		 */
+-		max_send_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
+-		max_recv_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
+ 		max_send_sge = 1;
+ 		/* We must be the first here */
+ 		if (WARN_ON(sess->s.dev))
+@@ -1606,6 +1597,17 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
+ 		}
+ 		sess->s.dev_ref = 1;
+ 		query_fast_reg_mode(sess);
++		wr_limit = sess->s.dev->ib_dev->attrs.max_qp_wr;
++		/*
++		 * Two (request + registration) completion for send
++		 * Two for recv if always_invalidate is set on server
++		 * or one for recv.
++		 * + 2 for drain and heartbeat
++		 * in case qp gets into error state.
++		 */
++		max_send_wr =
++			min_t(int, wr_limit, SERVICE_CON_QUEUE_DEPTH * 2 + 2);
++		max_recv_wr = max_send_wr;
+ 	} else {
+ 		/*
+ 		 * Here we assume that session members are correctly set.
+@@ -1617,14 +1619,13 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
+ 		if (WARN_ON(!sess->queue_depth))
+ 			return -EINVAL;
+ 
++		wr_limit = sess->s.dev->ib_dev->attrs.max_qp_wr;
+ 		/* Shared between connections */
+ 		sess->s.dev_ref++;
+-		max_send_wr =
+-			min_t(int, sess->s.dev->ib_dev->attrs.max_qp_wr,
++		max_send_wr = min_t(int, wr_limit,
+ 			      /* QD * (REQ + RSP + FR REGS or INVS) + drain */
+ 			      sess->queue_depth * 3 + 1);
+-		max_recv_wr =
+-			min_t(int, sess->s.dev->ib_dev->attrs.max_qp_wr,
++		max_recv_wr = min_t(int, wr_limit,
  			      sess->queue_depth * 3 + 1);
  		max_send_sge = sess->clt->max_segments + 1;
  	}
--	cq_size = max_send_wr + max_recv_wr;
-+	cq_num = max_send_wr + max_recv_wr;
- 	/* alloc iu to recv new rkey reply when server reports flags set */
- 	if (sess->flags & RTRS_MSG_NEW_RKEY_F || con->c.cid == 0) {
--		con->rsp_ius = rtrs_iu_alloc(cq_size, sizeof(*rsp),
-+		con->rsp_ius = rtrs_iu_alloc(cq_num, sizeof(*rsp),
- 					      GFP_KERNEL, sess->s.dev->ib_dev,
- 					      DMA_FROM_DEVICE,
- 					      rtrs_clt_rdma_done);
- 		if (!con->rsp_ius)
- 			return -ENOMEM;
--		con->queue_size = cq_size;
-+		con->queue_num = cq_num;
- 	}
--	cq_size = max_send_wr + max_recv_wr;
-+	cq_num = max_send_wr + max_recv_wr;
- 	cq_vector = con->cpu % sess->s.dev->ib_dev->num_comp_vectors;
- 	if (con->c.cid >= sess->s.irq_con_num)
- 		err = rtrs_cq_qp_create(&sess->s, &con->c, max_send_sge,
--					cq_vector, cq_size, max_send_wr,
-+					cq_vector, cq_num, max_send_wr,
- 					max_recv_wr, IB_POLL_DIRECT);
- 	else
- 		err = rtrs_cq_qp_create(&sess->s, &con->c, max_send_sge,
--					cq_vector, cq_size, max_send_wr,
-+					cq_vector, cq_num, max_send_wr,
- 					max_recv_wr, IB_POLL_SOFTIRQ);
- 	/*
- 	 * In case of error we do not bother to clean previous allocations,
-@@ -1667,9 +1667,9 @@ static void destroy_con_cq_qp(struct rtrs_clt_con *con)
- 	lockdep_assert_held(&con->con_mutex);
- 	rtrs_cq_qp_destroy(&con->c);
- 	if (con->rsp_ius) {
--		rtrs_iu_free(con->rsp_ius, sess->s.dev->ib_dev, con->queue_size);
-+		rtrs_iu_free(con->rsp_ius, sess->s.dev->ib_dev, con->queue_num);
- 		con->rsp_ius = NULL;
--		con->queue_size = 0;
-+		con->queue_num = 0;
- 	}
- 	if (sess->s.dev_ref && !--sess->s.dev_ref) {
- 		rtrs_ib_dev_put(sess->s.dev);
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.h b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-index 822a820540d4..eed2a20ee9be 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-@@ -71,7 +71,7 @@ struct rtrs_clt_stats {
- struct rtrs_clt_con {
- 	struct rtrs_con	c;
- 	struct rtrs_iu		*rsp_ius;
--	u32			queue_size;
-+	u32			queue_num;
- 	unsigned int		cpu;
- 	struct mutex		con_mutex;
- 	atomic_t		io_cnt;
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-index bd06a79fd516..76cca2058f6f 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-@@ -95,7 +95,7 @@ struct rtrs_con {
- 	struct ib_cq		*cq;
- 	struct rdma_cm_id	*cm_id;
- 	unsigned int		cid;
--	u16                     cq_size;
-+	int                     nr_cqe;
- };
- 
- struct rtrs_sess {
-@@ -294,10 +294,10 @@ struct rtrs_msg_rdma_hdr {
- 
- /* rtrs.c */
- 
--struct rtrs_iu *rtrs_iu_alloc(u32 queue_size, size_t size, gfp_t t,
-+struct rtrs_iu *rtrs_iu_alloc(u32 queue_num, size_t size, gfp_t t,
- 			      struct ib_device *dev, enum dma_data_direction,
- 			      void (*done)(struct ib_cq *cq, struct ib_wc *wc));
--void rtrs_iu_free(struct rtrs_iu *iu, struct ib_device *dev, u32 queue_size);
-+void rtrs_iu_free(struct rtrs_iu *iu, struct ib_device *dev, u32 queue_num);
- int rtrs_iu_post_recv(struct rtrs_con *con, struct rtrs_iu *iu);
- int rtrs_iu_post_send(struct rtrs_con *con, struct rtrs_iu *iu, size_t size,
- 		      struct ib_send_wr *head);
-@@ -312,8 +312,8 @@ int rtrs_post_rdma_write_imm_empty(struct rtrs_con *con, struct ib_cqe *cqe,
- 				   u32 imm_data, enum ib_send_flags flags,
- 				   struct ib_send_wr *head);
- 
--int rtrs_cq_qp_create(struct rtrs_sess *rtrs_sess, struct rtrs_con *con,
--		      u32 max_send_sge, int cq_vector, int cq_size,
-+int rtrs_cq_qp_create(struct rtrs_sess *sess, struct rtrs_con *con,
-+		      u32 max_send_sge, int cq_vector, int nr_cqe,
- 		      u32 max_send_wr, u32 max_recv_wr,
- 		      enum ib_poll_context poll_ctx);
- void rtrs_cq_qp_destroy(struct rtrs_con *con);
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index bb73f7762a87..c10dfc296259 100644
+index c10dfc296259..1a30fd833792 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1634,7 +1634,7 @@ static int create_con(struct rtrs_srv_sess *sess,
- 	struct rtrs_sess *s = &sess->s;
- 	struct rtrs_srv_con *con;
+@@ -1649,22 +1649,17 @@ static int create_con(struct rtrs_srv_sess *sess,
+ 	con->c.sess = &sess->s;
+ 	con->c.cid = cid;
+ 	atomic_set(&con->wr_cnt, 1);
++	wr_limit = sess->s.dev->ib_dev->attrs.max_qp_wr;
  
--	u32 cq_size, max_send_wr, max_recv_wr, wr_limit;
-+	u32 cq_num, max_send_wr, max_recv_wr, wr_limit;
- 	int err, cq_vector;
- 
- 	con = kzalloc(sizeof(*con), GFP_KERNEL);
-@@ -1657,7 +1657,6 @@ static int create_con(struct rtrs_srv_sess *sess,
- 		 */
- 		max_send_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
- 		max_recv_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
--		cq_size = max_send_wr + max_recv_wr;
- 	} else {
+ 	if (con->c.cid == 0) {
  		/*
- 		 * In theory we might have queue_depth * 32
-@@ -1683,13 +1682,13 @@ static int create_con(struct rtrs_srv_sess *sess,
- 		 * requires an invalidate request + drain
- 		 * and qp gets into error state.
+ 		 * All receive and all send (each requiring invalidate)
+ 		 * + 2 for drain and heartbeat
  		 */
--		cq_size = max_send_wr + max_recv_wr;
- 	}
-+	cq_num = max_send_wr + max_recv_wr;
- 	atomic_set(&con->sq_wr_avail, max_send_wr);
- 	cq_vector = rtrs_srv_get_next_cq_vector(sess);
- 
- 	/* TODO: SOFTIRQ can be faster, but be careful with softirq context */
--	err = rtrs_cq_qp_create(&sess->s, &con->c, 1, cq_vector, cq_size,
-+	err = rtrs_cq_qp_create(&sess->s, &con->c, 1, cq_vector, cq_num,
- 				 max_send_wr, max_recv_wr,
- 				 IB_POLL_WORKQUEUE);
- 	if (err) {
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
-index 4e602e40f623..08e1f7d82c95 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs.c
-@@ -18,7 +18,7 @@
- MODULE_DESCRIPTION("RDMA Transport Core");
- MODULE_LICENSE("GPL");
- 
--struct rtrs_iu *rtrs_iu_alloc(u32 queue_size, size_t size, gfp_t gfp_mask,
-+struct rtrs_iu *rtrs_iu_alloc(u32 iu_num, size_t size, gfp_t gfp_mask,
- 			      struct ib_device *dma_dev,
- 			      enum dma_data_direction dir,
- 			      void (*done)(struct ib_cq *cq, struct ib_wc *wc))
-@@ -26,10 +26,10 @@ struct rtrs_iu *rtrs_iu_alloc(u32 queue_size, size_t size, gfp_t gfp_mask,
- 	struct rtrs_iu *ius, *iu;
- 	int i;
- 
--	ius = kcalloc(queue_size, sizeof(*ius), gfp_mask);
-+	ius = kcalloc(iu_num, sizeof(*ius), gfp_mask);
- 	if (!ius)
- 		return NULL;
--	for (i = 0; i < queue_size; i++) {
-+	for (i = 0; i < iu_num; i++) {
- 		iu = &ius[i];
- 		iu->direction = dir;
- 		iu->buf = kzalloc(size, gfp_mask);
-@@ -50,7 +50,7 @@ struct rtrs_iu *rtrs_iu_alloc(u32 queue_size, size_t size, gfp_t gfp_mask,
- }
- EXPORT_SYMBOL_GPL(rtrs_iu_alloc);
- 
--void rtrs_iu_free(struct rtrs_iu *ius, struct ib_device *ibdev, u32 queue_size)
-+void rtrs_iu_free(struct rtrs_iu *ius, struct ib_device *ibdev, u32 queue_num)
- {
- 	struct rtrs_iu *iu;
- 	int i;
-@@ -58,7 +58,7 @@ void rtrs_iu_free(struct rtrs_iu *ius, struct ib_device *ibdev, u32 queue_size)
- 	if (!ius)
- 		return;
- 
--	for (i = 0; i < queue_size; i++) {
-+	for (i = 0; i < queue_num; i++) {
- 		iu = &ius[i];
- 		ib_dma_unmap_single(ibdev, iu->dma_addr, iu->size, iu->direction);
- 		kfree(iu->buf);
-@@ -212,20 +212,20 @@ static void qp_event_handler(struct ib_event *ev, void *ctx)
- 	}
- }
- 
--static int create_cq(struct rtrs_con *con, int cq_vector, u16 cq_size,
-+static int create_cq(struct rtrs_con *con, int cq_vector, int nr_cqe,
- 		     enum ib_poll_context poll_ctx)
- {
- 	struct rdma_cm_id *cm_id = con->cm_id;
- 	struct ib_cq *cq;
- 
--	cq = ib_cq_pool_get(cm_id->device, cq_size, cq_vector, poll_ctx);
-+	cq = ib_cq_pool_get(cm_id->device, nr_cqe, cq_vector, poll_ctx);
- 	if (IS_ERR(cq)) {
- 		rtrs_err(con->sess, "Creating completion queue failed, errno: %ld\n",
- 			  PTR_ERR(cq));
- 		return PTR_ERR(cq);
- 	}
- 	con->cq = cq;
--	con->cq_size = cq_size;
-+	con->nr_cqe = nr_cqe;
- 
- 	return 0;
- }
-@@ -260,20 +260,20 @@ static int create_qp(struct rtrs_con *con, struct ib_pd *pd,
- }
- 
- int rtrs_cq_qp_create(struct rtrs_sess *sess, struct rtrs_con *con,
--		       u32 max_send_sge, int cq_vector, int cq_size,
-+		       u32 max_send_sge, int cq_vector, int nr_cqe,
- 		       u32 max_send_wr, u32 max_recv_wr,
- 		       enum ib_poll_context poll_ctx)
- {
- 	int err;
- 
--	err = create_cq(con, cq_vector, cq_size, poll_ctx);
-+	err = create_cq(con, cq_vector, nr_cqe, poll_ctx);
- 	if (err)
- 		return err;
- 
- 	err = create_qp(con, sess->dev->ib_pd, max_send_wr, max_recv_wr,
- 			max_send_sge);
- 	if (err) {
--		ib_cq_pool_put(con->cq, con->cq_size);
-+		ib_cq_pool_put(con->cq, con->nr_cqe);
- 		con->cq = NULL;
- 		return err;
- 	}
-@@ -290,7 +290,7 @@ void rtrs_cq_qp_destroy(struct rtrs_con *con)
- 		con->qp = NULL;
- 	}
- 	if (con->cq) {
--		ib_cq_pool_put(con->cq, con->cq_size);
-+		ib_cq_pool_put(con->cq, con->nr_cqe);
- 		con->cq = NULL;
- 	}
- }
+-		max_send_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
+-		max_recv_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
++		max_send_wr = min_t(int, wr_limit,
++				    SERVICE_CON_QUEUE_DEPTH * 2 + 2);
++		max_recv_wr = max_send_wr;
+ 	} else {
+-		/*
+-		 * In theory we might have queue_depth * 32
+-		 * outstanding requests if an unsafe global key is used
+-		 * and we have queue_depth read requests each consisting
+-		 * of 32 different addresses. div 3 for mlx5.
+-		 */
+-		wr_limit = sess->s.dev->ib_dev->attrs.max_qp_wr / 3;
+ 		/* when always_invlaidate enalbed, we need linv+rinv+mr+imm */
+ 		if (always_invalidate)
+ 			max_send_wr =
 -- 
 2.25.1
 
