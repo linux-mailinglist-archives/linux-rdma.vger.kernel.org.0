@@ -2,130 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B573A3EF9
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jun 2021 11:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2DF73A3F0F
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jun 2021 11:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhFKJWv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 11 Jun 2021 05:22:51 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:5388 "EHLO
+        id S230460AbhFKJch (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 11 Jun 2021 05:32:37 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:5389 "EHLO
         szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231250AbhFKJWv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Jun 2021 05:22:51 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G1Zwn531Pz6w6L;
-        Fri, 11 Jun 2021 17:16:57 +0800 (CST)
-Received: from dggpeml500024.china.huawei.com (7.185.36.10) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 17:20:51 +0800
+        with ESMTP id S230358AbhFKJcg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Jun 2021 05:32:36 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G1b832Q1Cz6w6S;
+        Fri, 11 Jun 2021 17:26:43 +0800 (CST)
 Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 17:20:51 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2176.012;
- Fri, 11 Jun 2021 17:20:51 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH rdma-core 4/4] libhns: Add support for direct wqe
-Thread-Topic: [PATCH rdma-core 4/4] libhns: Add support for direct wqe
-Thread-Index: AQHXU6R/LojSLjaQ0EW84zhJi1oR7g==
-Date:   Fri, 11 Jun 2021 09:20:51 +0000
-Message-ID: <efc5283d762542f6a4add9329744c4ee@huawei.com>
-References: <1622194379-59868-1-git-send-email-liweihang@huawei.com>
- <1622194379-59868-5-git-send-email-liweihang@huawei.com>
- <20210604145005.GA405010@nvidia.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+ 15.1.2176.2; Fri, 11 Jun 2021 17:30:37 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 11 Jun 2021 17:30:36 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@nvidia.com>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>, Jiaran Zhang <zhangjiaran@huawei.com>,
+        Lang Cheng <chenglang@huawei.com>,
+        Weihang Li <liweihang@huawei.com>
+Subject: [PATCH for-next] RDMA/hns: Solve the problem that dma_pool is used during the reset
+Date:   Fri, 11 Jun 2021 17:30:11 +0800
+Message-ID: <1623403811-38752-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema753-chm.china.huawei.com (10.1.198.195)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/6/4 22:50, Jason Gunthorpe wrote:
-> On Fri, May 28, 2021 at 05:32:59PM +0800, Weihang Li wrote:
->> diff --git a/providers/hns/hns_roce_u_hw_v2.c b/providers/hns/hns_roce_u_hw_v2.c
->> index aa57cc4..28d455b 100644
->> +++ b/providers/hns/hns_roce_u_hw_v2.c
->> @@ -33,10 +33,15 @@
->>  #define _GNU_SOURCE
->>  #include <stdio.h>
->>  #include <string.h>
->> +#include <sys/mman.h>
->>  #include "hns_roce_u.h"
->>  #include "hns_roce_u_db.h"
->>  #include "hns_roce_u_hw_v2.h"
->>  
->> +#if defined(__aarch64__) || defined(__arm__)
->> +#include <arm_neon.h>
->> +#endif
->> +
->>  #define HR_IBV_OPC_MAP(ib_key, hr_key) \
->>  		[IBV_WR_ ## ib_key] = HNS_ROCE_WQE_OP_ ## hr_key
->>  
->> @@ -313,6 +318,39 @@ static void hns_roce_update_sq_db(struct hns_roce_context *ctx,
->>  			 (__le32 *)&sq_db);
->>  }
->>  
->> +static inline void hns_roce_write512(uint64_t *dest, uint64_t *val)
->> +{
->> +#if defined(__aarch64__) || defined(__arm__)
->> +	uint64x2x4_t dwqe;
->> +
->> +	/* Load multiple 4-element structures to 4 registers */
->> +	dwqe = vld4q_u64(val);
->> +	/* store multiple 4-element structures from 4 registers */
->> +	vst4q_u64(dest, dwqe);
->> +#else
->> +	int i;
->> +
->> +	for (i = 0; i < HNS_ROCE_WRITE_TIMES; i++)
->> +		hns_roce_write64(dest + i, val + HNS_ROCE_WORD_NUM * i);
->> +#endif
->> +}
-> 
-> No code like this in providers. This should be done similiarly to how
-> SSE is handled on x86
-> 
-> This is 
-> 
->    mmio_memcpy_x64(dest, val, 64);
-> 
-> The above should be conditionalized to trigger NEON
-> 
-> #if defined(__aarch64__) || defined(__arm__)
-> static inline void __mmio_memcpy_x64_64b(..)
-> {..
->     vst4q_u64(dest, vld4q_u64(src))
-> ..}
-> #endif
-> 
-> #define mmio_memcpy_x64(dest, src, bytecount)
->  ({if (__builtin_constant_p(bytecount == 64)
->         __mmio_memcpy_x64_64b(dest,src,bytecount)
->    ...
-> 
+From: Jiaran Zhang <zhangjiaran@huawei.com>
 
-OK, thank you.
+During the reset, the driver calls dma_pool_destroy() to release the
+dma_pool resources. If the dma_pool_free interface is called during the
+modify_qp operation, an exception will occur. The completion
+synchronization mechanism is used to ensure that dma_pool_destroy() is
+executed after the dma_pool_free operation is complete.
 
-> And I'm not sure what barriers you need for prot_device, but certainly
-> more than none. If you don't know then use the WC barriers
-> 
+Signed-off-by: Jiaran Zhang <zhangjiaran@huawei.com>
+Signed-off-by: Lang Cheng <chenglang@huawei.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_cmd.c    | 24 +++++++++++++++++++++++-
+ drivers/infiniband/hw/hns/hns_roce_device.h |  2 ++
+ 2 files changed, 25 insertions(+), 1 deletion(-)
 
-ST4 instructions can guarantee the 64 bytes data to be wrote at a time, so we
-don't need a barrier.
-
-Weihang
-
-> Jason
-> 
+diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.c b/drivers/infiniband/hw/hns/hns_roce_cmd.c
+index 8f68cc3..e7293ca 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_cmd.c
++++ b/drivers/infiniband/hw/hns/hns_roce_cmd.c
+@@ -198,11 +198,20 @@ int hns_roce_cmd_init(struct hns_roce_dev *hr_dev)
+ 	if (!hr_dev->cmd.pool)
+ 		return -ENOMEM;
+ 
++	init_completion(&hr_dev->cmd.can_free);
++
++	refcount_set(&hr_dev->cmd.refcnt, 1);
++
+ 	return 0;
+ }
+ 
+ void hns_roce_cmd_cleanup(struct hns_roce_dev *hr_dev)
+ {
++	if (refcount_dec_and_test(&hr_dev->cmd.refcnt))
++		complete(&hr_dev->cmd.can_free);
++
++	wait_for_completion(&hr_dev->cmd.can_free);
++
+ 	dma_pool_destroy(hr_dev->cmd.pool);
+ }
+ 
+@@ -248,13 +257,22 @@ hns_roce_alloc_cmd_mailbox(struct hns_roce_dev *hr_dev)
+ {
+ 	struct hns_roce_cmd_mailbox *mailbox;
+ 
+-	mailbox = kmalloc(sizeof(*mailbox), GFP_KERNEL);
++	mailbox = kzalloc(sizeof(*mailbox), GFP_KERNEL);
+ 	if (!mailbox)
+ 		return ERR_PTR(-ENOMEM);
+ 
++	/* If refcnt is 0, it means dma_pool has been destroyed. */
++	if (!refcount_inc_not_zero(&hr_dev->cmd.refcnt)) {
++		kfree(mailbox);
++		return ERR_PTR(-ENOMEM);
++	}
++
+ 	mailbox->buf =
+ 		dma_pool_alloc(hr_dev->cmd.pool, GFP_KERNEL, &mailbox->dma);
+ 	if (!mailbox->buf) {
++		if (refcount_dec_and_test(&hr_dev->cmd.refcnt))
++			complete(&hr_dev->cmd.can_free);
++
+ 		kfree(mailbox);
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+@@ -269,5 +287,9 @@ void hns_roce_free_cmd_mailbox(struct hns_roce_dev *hr_dev,
+ 		return;
+ 
+ 	dma_pool_free(hr_dev->cmd.pool, mailbox->buf, mailbox->dma);
++
++	if (refcount_dec_and_test(&hr_dev->cmd.refcnt))
++		complete(&hr_dev->cmd.can_free);
++
+ 	kfree(mailbox);
+ }
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 7d00d4c..5187e3f 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -570,6 +570,8 @@ struct hns_roce_cmdq {
+ 	 * close device, switch into poll mode(non event mode)
+ 	 */
+ 	u8			use_events;
++	refcount_t		refcnt;
++	struct completion	can_free;
+ };
+ 
+ struct hns_roce_cmd_mailbox {
+-- 
+2.7.4
 
