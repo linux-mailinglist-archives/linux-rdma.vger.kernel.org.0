@@ -2,67 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75FD93A3F1D
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jun 2021 11:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E683A3F28
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jun 2021 11:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhFKJfU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 11 Jun 2021 05:35:20 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:5505 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231663AbhFKJfL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Jun 2021 05:35:11 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G1bDD6mFYzZg97;
-        Fri, 11 Jun 2021 17:30:20 +0800 (CST)
-Received: from dggpemm100002.china.huawei.com (7.185.36.179) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 17:33:12 +0800
+        id S230358AbhFKJiS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 11 Jun 2021 05:38:18 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:4037 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230212AbhFKJiR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Jun 2021 05:38:17 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G1bFR08hpzWtN5;
+        Fri, 11 Jun 2021 17:31:23 +0800 (CST)
 Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggpemm100002.china.huawei.com (7.185.36.179) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 11 Jun 2021 17:33:12 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2176.012;
- Fri, 11 Jun 2021 17:33:12 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>
-CC:     "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        zhangjiaran <zhangjiaran@huawei.com>,
-        chenglang <chenglang@huawei.com>
-Subject: Re: [PATCH for-next] RDMA/hns: Solve the problem that dma_pool is
- used during the reset
-Thread-Topic: [PATCH for-next] RDMA/hns: Solve the problem that dma_pool is
- used during the reset
-Thread-Index: AQHXXqRvLEFVAPSt2UitBmW68KSyPw==
-Date:   Fri, 11 Jun 2021 09:33:12 +0000
-Message-ID: <4a8c28fe424542c286c204859e80d35d@huawei.com>
-References: <1623403811-38752-1-git-send-email-liweihang@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+ 15.1.2176.2; Fri, 11 Jun 2021 17:36:17 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 11 Jun 2021 17:36:17 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@nvidia.com>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>, Jiaran Zhang <zhangjiaran@huawei.com>,
+        Lang Cheng <chenglang@huawei.com>,
+        Weihang Li <liweihang@huawei.com>
+Subject: [PATCH RESEND for-next] RDMA/hns: Solve the problem that dma_pool is used during the reset
+Date:   Fri, 11 Jun 2021 17:35:56 +0800
+Message-ID: <1623404156-50317-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema753-chm.china.huawei.com (10.1.198.195)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/6/11 17:30, liweihang wrote:
-> From: Jiaran Zhang <zhangjiaran@huawei.com>
-> 
-> During the reset, the driver calls dma_pool_destroy() to release the
-> dma_pool resources. If the dma_pool_free interface is called during the
-> modify_qp operation, an exception will occur. The completion
-> synchronization mechanism is used to ensure that dma_pool_destroy() is
-> executed after the dma_pool_free operation is complete.
+From: Jiaran Zhang <zhangjiaran@huawei.com>
 
-Sorry, I forgot to add fixes tag, will send v2 soon.
+During the reset, the driver calls dma_pool_destroy() to release the
+dma_pool resources. If the dma_pool_free interface is called during the
+modify_qp operation, an exception will occur. The completion
+synchronization mechanism is used to ensure that dma_pool_destroy() is
+executed after the dma_pool_free operation is complete.
 
-Weihang
+Fixes: 9a4435375cd1 ("IB/hns: Add driver files for hns RoCE driver")
+Signed-off-by: Jiaran Zhang <zhangjiaran@huawei.com>
+Signed-off-by: Lang Cheng <chenglang@huawei.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_cmd.c    | 24 +++++++++++++++++++++++-
+ drivers/infiniband/hw/hns/hns_roce_device.h |  2 ++
+ 2 files changed, 25 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.c b/drivers/infiniband/hw/hns/hns_roce_cmd.c
+index 8f68cc3..e7293ca 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_cmd.c
++++ b/drivers/infiniband/hw/hns/hns_roce_cmd.c
+@@ -198,11 +198,20 @@ int hns_roce_cmd_init(struct hns_roce_dev *hr_dev)
+ 	if (!hr_dev->cmd.pool)
+ 		return -ENOMEM;
+ 
++	init_completion(&hr_dev->cmd.can_free);
++
++	refcount_set(&hr_dev->cmd.refcnt, 1);
++
+ 	return 0;
+ }
+ 
+ void hns_roce_cmd_cleanup(struct hns_roce_dev *hr_dev)
+ {
++	if (refcount_dec_and_test(&hr_dev->cmd.refcnt))
++		complete(&hr_dev->cmd.can_free);
++
++	wait_for_completion(&hr_dev->cmd.can_free);
++
+ 	dma_pool_destroy(hr_dev->cmd.pool);
+ }
+ 
+@@ -248,13 +257,22 @@ hns_roce_alloc_cmd_mailbox(struct hns_roce_dev *hr_dev)
+ {
+ 	struct hns_roce_cmd_mailbox *mailbox;
+ 
+-	mailbox = kmalloc(sizeof(*mailbox), GFP_KERNEL);
++	mailbox = kzalloc(sizeof(*mailbox), GFP_KERNEL);
+ 	if (!mailbox)
+ 		return ERR_PTR(-ENOMEM);
+ 
++	/* If refcnt is 0, it means dma_pool has been destroyed. */
++	if (!refcount_inc_not_zero(&hr_dev->cmd.refcnt)) {
++		kfree(mailbox);
++		return ERR_PTR(-ENOMEM);
++	}
++
+ 	mailbox->buf =
+ 		dma_pool_alloc(hr_dev->cmd.pool, GFP_KERNEL, &mailbox->dma);
+ 	if (!mailbox->buf) {
++		if (refcount_dec_and_test(&hr_dev->cmd.refcnt))
++			complete(&hr_dev->cmd.can_free);
++
+ 		kfree(mailbox);
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+@@ -269,5 +287,9 @@ void hns_roce_free_cmd_mailbox(struct hns_roce_dev *hr_dev,
+ 		return;
+ 
+ 	dma_pool_free(hr_dev->cmd.pool, mailbox->buf, mailbox->dma);
++
++	if (refcount_dec_and_test(&hr_dev->cmd.refcnt))
++		complete(&hr_dev->cmd.can_free);
++
+ 	kfree(mailbox);
+ }
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 7d00d4c..5187e3f 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -570,6 +570,8 @@ struct hns_roce_cmdq {
+ 	 * close device, switch into poll mode(non event mode)
+ 	 */
+ 	u8			use_events;
++	refcount_t		refcnt;
++	struct completion	can_free;
+ };
+ 
+ struct hns_roce_cmd_mailbox {
+-- 
+2.7.4
+
