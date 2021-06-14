@@ -2,93 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471463A5CBA
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jun 2021 08:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B103A5DA9
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jun 2021 09:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbhFNGJP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Jun 2021 02:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232045AbhFNGJM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Jun 2021 02:09:12 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06D0C061574
-        for <linux-rdma@vger.kernel.org>; Sun, 13 Jun 2021 23:07:09 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id r7so30452640edv.12
-        for <linux-rdma@vger.kernel.org>; Sun, 13 Jun 2021 23:07:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1h4TYpPMMObiC8cdwoWcjYut6ndBoHW97lNHs9UZqYI=;
-        b=eTO1N02D81gJXNE+P7muJx2317CyE8QiYX1+vd1H/Xt11vv0Xp4bYQmvGmLb31RpDg
-         z413jQZFQwxeE+RZ/cM3d4SCfU2RDb5MvxuAevPKPR3ruqeVuzRSele1cdifl8S9fTL1
-         xHBklq17EDWZdS+YrH2vZqxsbAc/+znJWlH12AgOzrX6UBFIbBPqxviIl0xePtKAamii
-         +EXJ6G7Brk2sjAXaLgYjAgRlb6p0QIkuteYQ/gKIfREi9FSg0+4ckDTMzErWCh2kBCQe
-         z4d39CJ+G9Oe6KqCW8vLx51Pmo1GcaFh0kwIwRZV/UR1/KHhTSHMnS2R7JQfNhoY1bE7
-         qH1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1h4TYpPMMObiC8cdwoWcjYut6ndBoHW97lNHs9UZqYI=;
-        b=UVeVFrcJ2oA2r/8bBjZB8pva60xWTbmsUvqKQOwJA4TOgMr0lw8Tqfh5V9hb6HIePD
-         hLlAM86XPsZKexeDpB8JwYyRF0lnWbN920KWh/LD/eLcIvAyzL8NNterkd+Jmz70EzdL
-         bfGNTTK4AmDL70JmW1e0d+rQNmqjCcScGhx68mrQE4kVwcXUtS1Ot+7NiQtLXFg+BKY5
-         xnxT7sw4kHYmTLtgvFuPttd4AorD2xM7a2tSzxnr8qKhMm7mXkywMoMfY2Xq3TWltymq
-         f599vHORfX4y0Ya1DA84pFmDCOfD82qdV4CJXt3PC1GQR0fK+LTPX1b9JewYAIll3Y1A
-         Ctzw==
-X-Gm-Message-State: AOAM531Re69BQZ6Ii6whOJfub4BMgKekkaeWoJhURGuWB8NlgAKeUexx
-        OzkzO7xAIeWqtXJGuOJRcufHHW5XLO6YnYUMwR+VgA==
-X-Google-Smtp-Source: ABdhPJwaJ0wQe9j1OvA1CFQ0p0mrxLXWrQcpkLZnwiDZI6JdLhqf8LyEI1933pPq5RDnm291FkAv/zubtnSZo4Ubrz0=
-X-Received: by 2002:a05:6402:48f:: with SMTP id k15mr15117538edv.262.1623650828333;
- Sun, 13 Jun 2021 23:07:08 -0700 (PDT)
+        id S232486AbhFNH1j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Jun 2021 03:27:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232454AbhFNH1j (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 14 Jun 2021 03:27:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45D85613C3;
+        Mon, 14 Jun 2021 07:25:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623655535;
+        bh=6fnOGnEJwjNZCWpw7r4U37RPUuXg/sl8PL80A20gFpQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N3VcW2twsucfZ5JVLqWfrdl6FdDF5BezyhACYGnXM5FIJLXrc8AQhF8mki5SjLSRJ
+         FPbzurCr4ah3RsNQPnd035M3MxHyy7ltauDLCkzezA8SZhA6MwaZnhJPkiWh5PTsVY
+         yFWSmdxezPAD4YXFgsuQr5n18Lt2wDNvs51b/jF2Ht21DeH0MOYRLAv9A1whVIIBh8
+         i3/Kgzghp39e+d7/FGfAollPDoaZ39zivMeuD23UVn3OnpIDGuGlGN0DLjscDGkYQT
+         vToYT1IK8t4NSZIA6mnMVmBxZ8JzFJpwyHGhoTMEt8hQc/abUfwIx2jNBQqpQzA+IY
+         XkP+6VwMordvg==
+Date:   Mon, 14 Jun 2021 10:25:32 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     Anand Khoje <anand.a.khoje@oracle.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>
+Subject: Re: [PATCH v3 3/3] IB/core: Obtain subnet_prefix from cache in IB
+ devices.
+Message-ID: <YMcEbBrDyDgmYEPu@unreal>
+References: <20210609055534.855-1-anand.a.khoje@oracle.com>
+ <20210609055534.855-4-anand.a.khoje@oracle.com>
+ <YMB9gxlKbDvdynUE@unreal>
+ <MWHPR1001MB2096CA7F29DCF86DE921903EC5369@MWHPR1001MB2096.namprd10.prod.outlook.com>
+ <YMCakSCQLqUbcQ1H@unreal>
+ <30CD8612-2030-44C1-A879-9A1EC668FC9C@oracle.com>
 MIME-Version: 1.0
-References: <20210611121034.48837-1-jinpu.wang@ionos.com> <20210611121034.48837-4-jinpu.wang@ionos.com>
- <YMWkvJmA3rjfUjoK@unreal>
-In-Reply-To: <YMWkvJmA3rjfUjoK@unreal>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Mon, 14 Jun 2021 08:06:57 +0200
-Message-ID: <CAMGffEkB0gkt=_ZsgVnR1aYMKB=PsJdW=-9tFCPJSDXCVwZZpA@mail.gmail.com>
-Subject: Re: [PATCHv2 for-next 3/5] RDMA/rtrs: RDMA_RXE requires more number
- of WR
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Haris Iqbal <haris.iqbal@ionos.com>,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <30CD8612-2030-44C1-A879-9A1EC668FC9C@oracle.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Jun 13, 2021 at 12:12 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Fri, Jun 11, 2021 at 02:10:32PM +0200, Jack Wang wrote:
-> > From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-> >
-> > When using rdma_rxe, post_one_recv() returns
-> > NOMEM error due to the full recv queue.
-> > This patch increase the number of WR for receive queue
-> > to support all devices.
-> >
-> > Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-> > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-> > ---
-> >  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 7 ++++---
-> >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 2 +-
-> >  2 files changed, 5 insertions(+), 4 deletions(-)
-> >
->
-> NOMEM -> ENOMEM
->
-> Thanks,
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Thanks for the review, I will address all the comments in the next round.
+On Mon, Jun 14, 2021 at 03:32:39AM +0000, Haakon Bugge wrote:
+> 
+> 
+> > On 9 Jun 2021, at 12:40, Leon Romanovsky <leon@kernel.org> wrote:
+> > 
+> > On Wed, Jun 09, 2021 at 09:26:03AM +0000, Anand Khoje wrote:
+> >> Hi Leon,
+> > 
+> > Please don't do top-posting.
+> > 
+> > 
+> >> 
+> >> The set_bit()/clear_bit() and enum ib_port_data_flags  has been added as a device that can be used for future enhancements. 
+> >> Also, usage of set_bit()/clear_bit() ensures the operations on this bit is atomic.
+> > 
+> > The bitfield variables are better suit this use case.
+> > Let's don't overcomplicate code without the reason.
+> 
+> The problem is always that people tend to build on what's in there. For example, look at the bitfields in rdma_id_private, tos_set,  timeout_set, and min_rnr_timer_set.
+> 
+> What do you think will happen when, let's say, rdma_set_service_type() and rdma_set_ack_timeout() are called in close proximity in time? There is no locking, and the RMW will fail intermittently.
 
-Regards!
+We are talking about device initialization flow that shouldn't be
+performed in parallel to another initialization of same device, so the
+comparison to rdma-cm is not valid here.
+
+Thanks
