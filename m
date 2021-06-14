@@ -2,76 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B103A5DA9
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jun 2021 09:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C74273A5ECA
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jun 2021 11:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbhFNH1j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Jun 2021 03:27:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51972 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232454AbhFNH1j (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 14 Jun 2021 03:27:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45D85613C3;
-        Mon, 14 Jun 2021 07:25:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623655535;
-        bh=6fnOGnEJwjNZCWpw7r4U37RPUuXg/sl8PL80A20gFpQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N3VcW2twsucfZ5JVLqWfrdl6FdDF5BezyhACYGnXM5FIJLXrc8AQhF8mki5SjLSRJ
-         FPbzurCr4ah3RsNQPnd035M3MxHyy7ltauDLCkzezA8SZhA6MwaZnhJPkiWh5PTsVY
-         yFWSmdxezPAD4YXFgsuQr5n18Lt2wDNvs51b/jF2Ht21DeH0MOYRLAv9A1whVIIBh8
-         i3/Kgzghp39e+d7/FGfAollPDoaZ39zivMeuD23UVn3OnpIDGuGlGN0DLjscDGkYQT
-         vToYT1IK8t4NSZIA6mnMVmBxZ8JzFJpwyHGhoTMEt8hQc/abUfwIx2jNBQqpQzA+IY
-         XkP+6VwMordvg==
-Date:   Mon, 14 Jun 2021 10:25:32 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Haakon Bugge <haakon.bugge@oracle.com>
-Cc:     Anand Khoje <anand.a.khoje@oracle.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>
-Subject: Re: [PATCH v3 3/3] IB/core: Obtain subnet_prefix from cache in IB
- devices.
-Message-ID: <YMcEbBrDyDgmYEPu@unreal>
-References: <20210609055534.855-1-anand.a.khoje@oracle.com>
- <20210609055534.855-4-anand.a.khoje@oracle.com>
- <YMB9gxlKbDvdynUE@unreal>
- <MWHPR1001MB2096CA7F29DCF86DE921903EC5369@MWHPR1001MB2096.namprd10.prod.outlook.com>
- <YMCakSCQLqUbcQ1H@unreal>
- <30CD8612-2030-44C1-A879-9A1EC668FC9C@oracle.com>
+        id S232565AbhFNJGm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Jun 2021 05:06:42 -0400
+Received: from mail-ej1-f48.google.com ([209.85.218.48]:45990 "EHLO
+        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232528AbhFNJGm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Jun 2021 05:06:42 -0400
+Received: by mail-ej1-f48.google.com with SMTP id k7so15390572ejv.12
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Jun 2021 02:04:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/8skk959+yJZ6i3vudYxWQePThQjvG9B3KzS7DG1fG8=;
+        b=MgYULn2nhpUAjsCI2eBhF7ssm03PpZ2rVBmx5TN53KJEzPbyDqoVNJlMajHvVKUb8J
+         /D26okvFmfwI633Y3I5UKMzSPOZ8/bWKmRes+qPj/ZNEkuAR98mTrQxMc7PAM9vqVSNN
+         Zmu7ebKCHJgIhIcyHw45jBN5bXb606PeM9Gqr5HTA8TTzihwnd2QRt+bq7VKKOATD0Pg
+         IB+8d+ZnR/Js0R/jheR2uS+K9uhWKSBJEauDcqJlz5x3Mwh9vNgKi7Jdhdnv5ZWNfFBE
+         rmmB481jz6I6orkfHQjse33EsuB9t2dQ8+wPFhZPdwAkZ5jVes/ZXBLKIGsn1kYPQ/5U
+         /LTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/8skk959+yJZ6i3vudYxWQePThQjvG9B3KzS7DG1fG8=;
+        b=n5zg5krLHXJowGtLaOq1yZQuDfEorr4kQVYfeglOfMuInegilRFblmmVLW93Ng4FXt
+         XmROu9DH0vrDT6sPAtPFIQIzziD4tHf76kh3eV5LWrjiS+gyGyMEWs85TaNcTyL3Ph5v
+         3qRDLufh+hF6btLsW9NzXGQCV3Bb9g2RzanEBdbaPQA3lt/IqetOSjaT+wioMUZhLt6e
+         CZwBqtEu5ZHcq6q4sh7o8ccl2qMAyXMgswoayNIXqkNpAOmW25dL/L5D+3+cfcRrAlP6
+         broESPz1FrLCDt8eSGxrS1BROyiuRrm/bY7ROxRwRKOMd8pJ6pQgRx84Iqo8n1lbzbVT
+         hIUw==
+X-Gm-Message-State: AOAM531BFyeqZ8FWG8UAecOpWnBoms5lJD/mSP8lIwuNuKaIm7c+BCOv
+        zjzS5HMRP+j04xIwdDUBYPq1ZzI9dm/GnA==
+X-Google-Smtp-Source: ABdhPJzugzjgTBjnwfw4IBM3P5g2eRnUVMzjR3VWlTz/wfjLIFNT2FY82Gbiuagqidk/qsSw0/zLwQ==
+X-Received: by 2002:a17:906:264c:: with SMTP id i12mr14277968ejc.101.1623661418686;
+        Mon, 14 Jun 2021 02:03:38 -0700 (PDT)
+Received: from jwang-Latitude-5491.fkb.profitbricks.net ([2001:16b8:4960:8600:dc5e:964f:b034:cb7d])
+        by smtp.gmail.com with ESMTPSA id qq26sm6764355ejb.6.2021.06.14.02.03.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 02:03:38 -0700 (PDT)
+From:   Jack Wang <jinpu.wang@ionos.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
+        jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com
+Subject: [PATCHv3 for-next 0/5] Misc update for RTRS
+Date:   Mon, 14 Jun 2021 11:03:32 +0200
+Message-Id: <20210614090337.29557-1-jinpu.wang@ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <30CD8612-2030-44C1-A879-9A1EC668FC9C@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 03:32:39AM +0000, Haakon Bugge wrote:
-> 
-> 
-> > On 9 Jun 2021, at 12:40, Leon Romanovsky <leon@kernel.org> wrote:
-> > 
-> > On Wed, Jun 09, 2021 at 09:26:03AM +0000, Anand Khoje wrote:
-> >> Hi Leon,
-> > 
-> > Please don't do top-posting.
-> > 
-> > 
-> >> 
-> >> The set_bit()/clear_bit() and enum ib_port_data_flags  has been added as a device that can be used for future enhancements. 
-> >> Also, usage of set_bit()/clear_bit() ensures the operations on this bit is atomic.
-> > 
-> > The bitfield variables are better suit this use case.
-> > Let's don't overcomplicate code without the reason.
-> 
-> The problem is always that people tend to build on what's in there. For example, look at the bitfields in rdma_id_private, tos_set,  timeout_set, and min_rnr_timer_set.
-> 
-> What do you think will happen when, let's say, rdma_set_service_type() and rdma_set_ack_timeout() are called in close proximity in time? There is no locking, and the RMW will fail intermittently.
+Hi Jason, hi Doug,
 
-We are talking about device initialization flow that shouldn't be
-performed in parallel to another initialization of same device, so the
-comparison to rdma-cm is not valid here.
+Please consider to include following changes to the next merge window.
+It contains:
+- first 2 patches are for reducing the memory usage when create QP.
+- the third one are to make testing on RXE working.
+- the fourth one is just cleanup for variables.
+- the last one is new to check max_qp_wr as suggested by Leon
 
-Thanks
+v3->v2:
+- added R-b from Leon for all 5 patches.
+- s/NOMEM/ENOMEM in patch3 commit message as suggested by Leon.
+- Rephrase the commit message for the renaming (patch4) as suggested by Leon
+v2->v1:
+- A new patch to check device map_qp_wr when create QP.
+
+v2: https://lore.kernel.org/linux-rdma/20210611121034.48837-1-jinpu.wang@ionos.com/T/#t
+v1: https://lore.kernel.org/linux-rdma/20210608103039.39080-1-jinpu.wang@ionos.com/T/#t
+
+This patchset is based on rdma/for-next branch.
+
+Note: I tried the patchset for fast memory registration on write path can still apply.
+https://lore.kernel.org/linux-rdma/20210608113536.42965-1-jinpu.wang@ionos.com/T/#t
+
+Thanks!
+
+Guoqing Jiang (1):
+  RDMA/rtrs: Rename cq_size/queue_size to cq_num/queue_num
+
+Jack Wang (3):
+  RDMA/rtrs-srv: Set minimal max_send_wr and max_recv_wr
+  RDMA/rtrs-clt: Use minimal max_send_sge when create qp
+  RDMA/rtrs: Check device max_qp_wr limit when create QP
+
+Md Haris Iqbal (1):
+  RDMA/rtrs: RDMA_RXE requires more number of WR
+
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 50 ++++++++++++++------------
+ drivers/infiniband/ulp/rtrs/rtrs-clt.h |  3 +-
+ drivers/infiniband/ulp/rtrs/rtrs-pri.h | 10 +++---
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 34 ++++++++++--------
+ drivers/infiniband/ulp/rtrs/rtrs.c     | 24 ++++++-------
+ 5 files changed, 65 insertions(+), 56 deletions(-)
+
+-- 
+2.25.1
+
