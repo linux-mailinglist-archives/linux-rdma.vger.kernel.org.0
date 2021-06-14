@@ -2,177 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB8A3A5ECC
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jun 2021 11:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD2F3A6789
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jun 2021 15:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232528AbhFNJGr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Jun 2021 05:06:47 -0400
-Received: from mail-ej1-f41.google.com ([209.85.218.41]:33624 "EHLO
-        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232602AbhFNJGq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Jun 2021 05:06:46 -0400
-Received: by mail-ej1-f41.google.com with SMTP id g20so15501966ejt.0
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Jun 2021 02:04:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=G7wBlBhcjt+JBKvdzfqGXD54W6BOnME0Fs8J1TkKeak=;
-        b=b9A+5sSF2zJZ5gX/DzFpF3XZXr2MsIE1ZFvmcT2XDTV6VO/bHUSCcQMCD2JjS+2PFI
-         RZTS5P5tXzRzCvEvPvLUOEKjK2hKIiMUn6E6s1TkjUVjp6gxrN7BVWUDmjmJkVCQ7DSw
-         lH5FExywr+ZGQmXTy7prJRmHeHuXfUatLDMY+zWPHQDLjvguoGqIbxgGdlHG2pP5qJkP
-         LEirpK6SKPDFwyyXxcd6mIpJMr7fOL40sMOCnd9Wp+WVA4gHkbR3Uob7Wp89o7Tl0Q92
-         0MqyVUK6uwF+wE65jEslfjagxbMyBR3LyE5r/wIazOswR5uxwg+KBnpETbbMC+sZNznj
-         H91A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=G7wBlBhcjt+JBKvdzfqGXD54W6BOnME0Fs8J1TkKeak=;
-        b=FSxTw4IpSDGYKP8s065YnH0TLOEkkkLdYZbxnx/2laM62wiP2V/Yt7LgIWAf8rzJjc
-         NCV9/VYFFKglbtG9AE3S8PW2G1OSnnVJzrRbehhwcG27cKa6gHtSZYdA2We/PspPdS8W
-         cXgsrn8G3J+eXqPpxHD3BoUTwGxlF8VGufPQ+FqjRzacd1hzuAlGQdIoJo5VWbbmsKY1
-         sJU8heL6lajHqYCXX/BeS16hMKt7i+kjwApJXfk9T0vdK5+gktj1+Q5E1jjSkEPf9u9L
-         xr4dNdVZtijpAi/4WH+KS9tO3q1AWoN6jeXtieVRRNS59GQJoVBMx2t0nymjsNSGdTRb
-         QETQ==
-X-Gm-Message-State: AOAM530qi6s5iIadBVuwjCm35gVcyUyUwgynendNpCrwyC+2qJU0pB+h
-        QORhk35LIvMLx7zNJM2r8vYkY8fDfSDMmw==
-X-Google-Smtp-Source: ABdhPJzdc7ZCWtfHznXBFU8fFiZXGwxuaVArrq5je7NKaCrLlHOlzlRSHunX5er5LGPI34grbdlzeg==
-X-Received: by 2002:a17:906:22c7:: with SMTP id q7mr14152713eja.547.1623661422932;
-        Mon, 14 Jun 2021 02:03:42 -0700 (PDT)
-Received: from jwang-Latitude-5491.fkb.profitbricks.net ([2001:16b8:4960:8600:dc5e:964f:b034:cb7d])
-        by smtp.gmail.com with ESMTPSA id qq26sm6764355ejb.6.2021.06.14.02.03.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 02:03:42 -0700 (PDT)
-From:   Jack Wang <jinpu.wang@ionos.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
-        jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCHv3 for-next 5/5] RDMA/rtrs: Check device max_qp_wr limit when create QP
-Date:   Mon, 14 Jun 2021 11:03:37 +0200
-Message-Id: <20210614090337.29557-6-jinpu.wang@ionos.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210614090337.29557-1-jinpu.wang@ionos.com>
-References: <20210614090337.29557-1-jinpu.wang@ionos.com>
+        id S232818AbhFNNQ5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Jun 2021 09:16:57 -0400
+Received: from mail-sn1anam02on2076.outbound.protection.outlook.com ([40.107.96.76]:5991
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233346AbhFNNQ5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 14 Jun 2021 09:16:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MBAFISjmiqzuMIu+AZ/2CZbmjbxsoj39NMBv894Zw3pK9XXVS5hOfG+8eFWZJkoIyKjZ3g8hCQi6Yd4wNhTnjryUn7ZZXJSvvftXEPokRYgp7NhDhQ5vzgASA9EPlKAN+2pv18Xyd3PjhZiO0icN60cXMQmfb/nlgVtVHZQKdMf3q7Jiu+M9PFTpEuL2B8717RHDyd9t1OTP2ZZ1FLr7aHW2TGFtLp0k0rZkKeE5mLU3s6zfll+AsaSRItwNlB51PzHYxKyydrhMeit6iiZYJBW8X4XD9jxB/prTQVXxndfuKfzuwWvBdWUiaSre4DQ/+g18maRB4BJ7Rr6MyaEq1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y6kFjIvICoKjXGmLjSU2HcF0OEwjNJ7BGnVLdrm/DMQ=;
+ b=oVnIwq7qiSHuzplvA5duMWpXwGlx2ZD4GyGvBfzBUFh4PPqPQ6BLtaFXAXa1hGjdboxC4OYopbzbls13dUwFXI3owljWp7zOZhsCmCCPf57xMiXIrSsFNenDsFK2QB/vhWc4i4+dcnfriL6fJsR8cZ/80ob7oscEHZoEjjMOsYf6jNGF45gS+RJDa8DW2NBedhoIUkWcqpgEpLInuRSUisOAtfYlfezswOEYJLjC1pRr/xXqQ6ziGQ23jptivYu+cOnHQh3spoqUJwpeZt9HLN0btHX2al0eVxpBBxtACXY5oKiFAQKKqp5nEJrN9xOkNf1WqzO21GmZ/mIaemhMSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y6kFjIvICoKjXGmLjSU2HcF0OEwjNJ7BGnVLdrm/DMQ=;
+ b=ZUL5pCRTTAvE3lDFehfxWT1p+5pZS9uUTgswHBvL2QPs0VCigVLchDVp/1gr1qEqVBDBLiQZsm4XSo3b6IaRC4Xqa2OYVfXxlgpu0xuxAP92S3JFQRek8iljWDnMNysch2FKeOmaJVItxGnPvcq18WP1hZkbXVH+9xkj0HxlkJO1nxGtWpCJShks2v+Te1Pp5ANUXFzRYbZXgtuiDLBiwaGXXJ0ybmUow98C/66vCt0B8/J25zAhJjVT1fz5yJvIKPhzCQdTt66drvGMZItV1Nv7IGTABbmTK6uM7P8RdLEe2R9UnHKBscXIyN89BVJpE8rZWEFJVmcYFr8k9BrkHw==
+Received: from PH0PR12MB5402.namprd12.prod.outlook.com (2603:10b6:510:ef::23)
+ by PH0PR12MB5468.namprd12.prod.outlook.com (2603:10b6:510:ea::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Mon, 14 Jun
+ 2021 13:14:53 +0000
+Received: from PH0PR12MB5402.namprd12.prod.outlook.com
+ ([fe80::69d2:50d:3dae:77d2]) by PH0PR12MB5402.namprd12.prod.outlook.com
+ ([fe80::69d2:50d:3dae:77d2%8]) with mapi id 15.20.4219.025; Mon, 14 Jun 2021
+ 13:14:53 +0000
+From:   Tamir Ronen <tamirr@nvidia.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "ewg@lists.openfabrics.org" <ewg@lists.openfabrics.org>
+Subject: [ANNOUNCE] opensm 3.3.24 release
+Thread-Topic: [ANNOUNCE] opensm 3.3.24 release
+Thread-Index: AddhGf19LEVb8/DeSMaSf2HrqHDfFA==
+Date:   Mon, 14 Jun 2021 13:14:53 +0000
+Message-ID: <PH0PR12MB5402EEE2EBE0BAA3800DA8B9B9319@PH0PR12MB5402.namprd12.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [2a00:a040:199:82fb:88c4:37d6:7f4c:c75a]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0dd47b98-18b4-4549-115b-08d92f3665bc
+x-ms-traffictypediagnostic: PH0PR12MB5468:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR12MB5468AE18E35FCEB20D804E5EB9319@PH0PR12MB5468.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: L4HeBFye2rftBwWL2gu356l54VirIpYbCQn/RJO4EXpwcQTboKFxh9KC1LxEq6uRwq5t3p6Ht38yRJ31+u6g0tptNb+4wLxxaSCBPoMu8oJzJIyrkBtWxbsFLaiWM6FmIArDqonfR2NtM6DqANgd+e09ZhB3tHVA/hEOGgT5zT9uBPD0OkW3xwksO8SZtU7XmSQuxAgS+tuk8xjalkc5ptNy2ly7MJnQaFkiQMQdF+x0qmGedeVptgncgxEXXW4KBeSaxSLktgBcezPGfQ7ePmYSEZoddk8eBVmx2aFfYDnS97GejTDnfx88yFeLt+wd8MJ6Ct/rMbr6Igvs76fd9s+jky7GGMSIXhcI7olVv//yWeH9iIDXNLc2ERyX/gWpefJF80gk5BrJkdio4sCuDBuF2fPJguamjV3njYaAXqzqQPmBn3EY0fyM7neyZeadBD3We3mtvCe0JYswmSPHgPt8tSKBjhUpBLVMbHobN4BP7GDtuiXDAMedNMgRcj1ERTIR+d+B28lOt7FMGvWe2h8yP1vlCksNztLungDzVDsIH3hFS4VwbVKWqAd3eqfvBrECRaO17sOZMafMx21TcB/fS9RSXRKlefSixv0t2N9buOVr+q7UiKOZOSjB9Pegaj1vzOxnFESXG4jnbPgKftkBzMDwsaYW9BqIoIaf70Na2334Rr/K8cs6qD8jtfOww/PH+LQn2Joia3Ai3fZMhlOZkbQzVjLmnaFUdifke6efIsdclws7j6ZbkN8ltjuZHDoz7A54Hegw5ghDl2fiHA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB5402.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(136003)(39860400002)(376002)(316002)(966005)(33656002)(2906002)(478600001)(9686003)(86362001)(83380400001)(186003)(55016002)(52536014)(66476007)(66556008)(71200400001)(66446008)(122000001)(8676002)(64756008)(38100700002)(7696005)(76116006)(5660300002)(110136005)(8936002)(66946007)(6506007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?9CM27LRdaWhazByiucf/sRQ2SUOtbkBai9hHmhpMYmZ+W3VaVWYcMX4vdP2T?=
+ =?us-ascii?Q?2ZCbAP/DIyYNjAFMSH012yd7b6oWITMVXy8r2a8QuoAg0XcMQY6qiX276Fof?=
+ =?us-ascii?Q?GROjNlFAdai6Wi6u5KkHi7xdh0qBvZYX6lmdHtNq6fp7mrB5yDZIvC0iZLRV?=
+ =?us-ascii?Q?+szy+M4Mrls23+MQNHvPhr3UWARR5vBXKmhnQs1u4OuTvFIO8CykSkgorh4Q?=
+ =?us-ascii?Q?9YgVyexuenVL1z+8FF4+8rvaLzOEVuL8YM1z15PY2EI1Hz0Xap9t7afQCTVf?=
+ =?us-ascii?Q?eUvFRNMMtW/VEHJ/fNj1hw1wEAX5t1VBBXvkJHICdUNRLbiZMpZCdi4S9ael?=
+ =?us-ascii?Q?dMCWQidN6ZuzYpGBZSwAOUnKxikkN9YQPVDgE2jT4Qf4ZAu82yCuGGuAbkFT?=
+ =?us-ascii?Q?g93BzTSW1NoP9HHHbOzZEC1oQ10NOJ9P6LanZuX0OszsXHiVUGuiiV8+FXSN?=
+ =?us-ascii?Q?PLiVSd5ABT+PNySxUi0OcEpk/zipaotAftD8i2XzsIia+oz48Kgeer+pPJ4Q?=
+ =?us-ascii?Q?tSs0dB1uIdLLZt7zawBMKn6YwgrrBuOM98G/sfxWg/lwHsYmq6fSX13SdQR1?=
+ =?us-ascii?Q?N0LUk5vuG5CQ4NDcPwi8wEO0AOku9q1xApyTTbdHA/XWdxhDysPR6RObWCuh?=
+ =?us-ascii?Q?XwShE6Q7Gu5aV1azIYBMSs/A3zECrIOksiYSq4RlkAlbwBps9kCLiAKx6dul?=
+ =?us-ascii?Q?WpLHt4DW3j9GG3FIbnkxp882B2Rp9w90Ba9DARgn2DQwsgUISyUWHzavhAXO?=
+ =?us-ascii?Q?DsDKeGqAcuuJGgqyjKRez+wjgGbMga0oPIl0/93C1CCM4pgTZnfhdKcLtPZo?=
+ =?us-ascii?Q?18LM6jaHmv1eFN5tw4cR6zIC0/iNzgaDzNYI13cv8b8vGdAnsoq1oXyL7z0M?=
+ =?us-ascii?Q?en7NuCB4WBpfHUFaHItB+YGoVe459bEUELffSvrU0fQ3PabUXQAIRVPECrWx?=
+ =?us-ascii?Q?02slRVo+frtV9M0T8Lkore5351r6HsQmm/zsfHeZZxnHWnOGrdROm+JKmz7p?=
+ =?us-ascii?Q?fH2qk6035d5onNVBHdLZa8bkvBui5Ti+WOOkX31N7btt1NqzK3ayuwK9YGpW?=
+ =?us-ascii?Q?/Qwa82ATxHYPD66VfAAZMiumgYVHmAOAWsnFMpNttsO4EF14YnK9u5iTHJan?=
+ =?us-ascii?Q?/LG6Pj2CO525r2QTANc08ZaY1U/ew3AGb/Npsa1I24/7/DuUQbBVQoFTjGOV?=
+ =?us-ascii?Q?NAYnREsnC3DNyfYuWw6Al/lt2cCFrxrUtFMmaVfVzzy06J1/hda4ToPZvPSC?=
+ =?us-ascii?Q?T/swsO35QW7+vWQgaN2Qw68l8YNI1i/W0sKr9kwy1sOGmLSXGMwxhJQtgXsB?=
+ =?us-ascii?Q?v8GlEh8azYdvFCStbWFaG4+CBZZHFpwP24Ho6r1ZAsP+hC7PX62mkjKsWgoS?=
+ =?us-ascii?Q?PWQdx+sXjMrrByfKXeZRdBClIYPr?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB5402.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0dd47b98-18b4-4549-115b-08d92f3665bc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jun 2021 13:14:53.0532
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: POpejqLUKZhhqbIM+6GXvol4uwHn+jlyWnNqGcIXEyk2o2yEBO4I0x5x+uAvGr30lr7gKURgBUOaR6kP7DaVwQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB5468
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Currently we only check device max_qp_wr limit for IO connection,
-but not for service connection. We should check for both.
+There is a new 3.3.24 release of opensm.
 
-So save the max_qp_wr device limit in wr_limit, and use it for both
-IO connections and service connections.
+https://github.com/linux-rdma/opensm/releases/tag/3.3.24
 
-While at it, also remove an outdated comments.
+Changes since 3.3.23:
+Add support for NDR link speed, improvements and bug fixes as noted below a=
+nd in release notes
 
-Suggested-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 29 +++++++++++++-------------
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 13 ++++--------
- 2 files changed, 19 insertions(+), 23 deletions(-)
+See https://github.com/linux-rdma/opensm/tree/master/doc/opensm_release_not=
+es-3.3.txt
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 67ff5bf9bfa8..125e0bead262 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1572,21 +1572,12 @@ static void destroy_con(struct rtrs_clt_con *con)
- static int create_con_cq_qp(struct rtrs_clt_con *con)
- {
- 	struct rtrs_clt_sess *sess = to_clt_sess(con->c.sess);
--	u32 max_send_wr, max_recv_wr, cq_num, max_send_sge;
-+	u32 max_send_wr, max_recv_wr, cq_num, max_send_sge, wr_limit;
- 	int err, cq_vector;
- 	struct rtrs_msg_rkey_rsp *rsp;
- 
- 	lockdep_assert_held(&con->con_mutex);
- 	if (con->c.cid == 0) {
--		/*
--		 * Two (request + registration) completion for send
--		 * Two for recv if always_invalidate is set on server
--		 * or one for recv.
--		 * + 2 for drain and heartbeat
--		 * in case qp gets into error state.
--		 */
--		max_send_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
--		max_recv_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
- 		max_send_sge = 1;
- 		/* We must be the first here */
- 		if (WARN_ON(sess->s.dev))
-@@ -1606,6 +1597,17 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
- 		}
- 		sess->s.dev_ref = 1;
- 		query_fast_reg_mode(sess);
-+		wr_limit = sess->s.dev->ib_dev->attrs.max_qp_wr;
-+		/*
-+		 * Two (request + registration) completion for send
-+		 * Two for recv if always_invalidate is set on server
-+		 * or one for recv.
-+		 * + 2 for drain and heartbeat
-+		 * in case qp gets into error state.
-+		 */
-+		max_send_wr =
-+			min_t(int, wr_limit, SERVICE_CON_QUEUE_DEPTH * 2 + 2);
-+		max_recv_wr = max_send_wr;
- 	} else {
- 		/*
- 		 * Here we assume that session members are correctly set.
-@@ -1617,14 +1619,13 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
- 		if (WARN_ON(!sess->queue_depth))
- 			return -EINVAL;
- 
-+		wr_limit = sess->s.dev->ib_dev->attrs.max_qp_wr;
- 		/* Shared between connections */
- 		sess->s.dev_ref++;
--		max_send_wr =
--			min_t(int, sess->s.dev->ib_dev->attrs.max_qp_wr,
-+		max_send_wr = min_t(int, wr_limit,
- 			      /* QD * (REQ + RSP + FR REGS or INVS) + drain */
- 			      sess->queue_depth * 3 + 1);
--		max_recv_wr =
--			min_t(int, sess->s.dev->ib_dev->attrs.max_qp_wr,
-+		max_recv_wr = min_t(int, wr_limit,
- 			      sess->queue_depth * 3 + 1);
- 		max_send_sge = sess->clt->max_segments + 1;
- 	}
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index c10dfc296259..1a30fd833792 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1649,22 +1649,17 @@ static int create_con(struct rtrs_srv_sess *sess,
- 	con->c.sess = &sess->s;
- 	con->c.cid = cid;
- 	atomic_set(&con->wr_cnt, 1);
-+	wr_limit = sess->s.dev->ib_dev->attrs.max_qp_wr;
- 
- 	if (con->c.cid == 0) {
- 		/*
- 		 * All receive and all send (each requiring invalidate)
- 		 * + 2 for drain and heartbeat
- 		 */
--		max_send_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
--		max_recv_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
-+		max_send_wr = min_t(int, wr_limit,
-+				    SERVICE_CON_QUEUE_DEPTH * 2 + 2);
-+		max_recv_wr = max_send_wr;
- 	} else {
--		/*
--		 * In theory we might have queue_depth * 32
--		 * outstanding requests if an unsafe global key is used
--		 * and we have queue_depth read requests each consisting
--		 * of 32 different addresses. div 3 for mlx5.
--		 */
--		wr_limit = sess->s.dev->ib_dev->attrs.max_qp_wr / 3;
- 		/* when always_invlaidate enalbed, we need linv+rinv+mr+imm */
- 		if (always_invalidate)
- 			max_send_wr =
--- 
-2.25.1
+Full list of changes is below:
 
+Or Nechemia (3):
+      Support NDR devices
+      Backward compatibility for old drivers
+      Remove redundant negativity check of size_t type, which is unsigned  =
+   thus non negative.
+
+Tamir Ronen (3):
+      Update shared (internal) library versions in accordance with changes =
+since OpenSM 3.3.23
+      configure.ac: Update package number for OpenSM to 3.3.24 for release
+      Update opensm_release_notes-3.3.txt
+
+tamirronen (3):
+      Merge pull request #21 from kleindaniel7/allow_mcmr_with_default_pref=
+ix
+      Merge pull request #23 from kleindaniel7/fix_2x_width_check
+      Merge pull request #25 from ornechemia/ndr_support
+
+Aleksandr Minchiu (2):
+      libopensm/osm_helper.c: Fix printing trap 259 details
+      libopensm/osm_helper.c: Fix printing trap 256 details
+
+Daniel Klein (2):
+      osm_sa_mcmember_record.c: Allow MCMR requests with default subnet pre=
+fix
+      osm_link_mgr.c: Fix checking if port support link width 2x
